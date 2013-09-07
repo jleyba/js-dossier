@@ -12,6 +12,7 @@ import com.google.javascript.rhino.jstype.FunctionType;
 import com.google.javascript.rhino.jstype.JSType;
 import com.google.javascript.rhino.jstype.JSTypeRegistry;
 import com.google.javascript.rhino.jstype.ObjectType;
+import com.google.javascript.rhino.jstype.UnionType;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -140,7 +141,16 @@ class Descriptor {
   }
 
   ObjectType toObjectType() {
+    checkState(isObject());
     ObjectType obj = ObjectType.cast(type);
+    if (obj == null && type.isUnionType()) {
+      for (JSType t : ((UnionType) type).getAlternates()) {
+        obj = ObjectType.cast(t);
+        if (obj != null) {
+          break;
+        }
+      }
+    }
     checkState(obj != null);
     return obj;
   }

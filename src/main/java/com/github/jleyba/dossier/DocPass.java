@@ -12,6 +12,7 @@ import com.google.javascript.rhino.jstype.JSType;
 import com.google.javascript.rhino.jstype.JSTypeRegistry;
 import com.google.javascript.rhino.jstype.ObjectType;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,19 +26,17 @@ import java.util.Set;
 
 class DocPass  implements CompilerPass {
 
-  private final Path outputDir;
+  private final Config config;
   private final AbstractCompiler compiler;
-  private final Set<Path> sourceFiles;
   private final DocWriterFactory writerFactory;
 
   private final DocRegistry docRegistry = new DocRegistry();
 
-  DocPass(Path outputDir, AbstractCompiler compiler, Set<Path> sourceFiles) {
-    this.outputDir = outputDir;
+  DocPass(Config config, AbstractCompiler compiler) {
     this.compiler = compiler;
-    this.sourceFiles = ImmutableSet.copyOf(sourceFiles);
+    this.config = config;
 
-    LinkResolver linkResolver = new LinkResolver(outputDir, docRegistry);
+    LinkResolver linkResolver = new LinkResolver(config.outputDir, docRegistry);
     this.writerFactory = new DocWriterFactory(linkResolver);
   }
 
@@ -47,7 +46,7 @@ class DocPass  implements CompilerPass {
     NodeTraversal.traverse(compiler, root, new TypeCollector());
 
     try {
-      Files.createDirectories(outputDir);
+      Files.createDirectories(config.outputDir);
       copyResources();
       copySources();
       copyTypes();
@@ -57,12 +56,12 @@ class DocPass  implements CompilerPass {
   }
 
   private void copyResources() throws IOException {
-    FileSystem fs = outputDir.getFileSystem();
-    copyResource(fs.getPath("/docs.css"), outputDir);
-    copyResource(fs.getPath("/source.css"), outputDir);
-    copyResource(fs.getPath("/prettify.css"), outputDir);
-    copyResource(fs.getPath("/prettify.js"), outputDir);
-    copyResource(fs.getPath("/run_prettify.js"), outputDir);
+    FileSystem fs = config.outputDir.getFileSystem();
+    copyResource(fs.getPath("/docs.css"), config.outputDir);
+    copyResource(fs.getPath("/source.css"), config.outputDir);
+//    copyResource(fs.getPath("/prettify.css"), config.outputDir);
+//    copyResource(fs.getPath("/prettify.js"), config.outputDir);
+//    copyResource(fs.getPath("/run_prettify.js"), config.outputDir);
   }
 
   private static void copyResource(Path resourcePath, Path outputDir) throws IOException {
@@ -81,13 +80,13 @@ class DocPass  implements CompilerPass {
 
   private void copySources() throws IOException {
     // TODO: LinkResolver should handle this.
-    Path fileDir = outputDir.resolve("file");
-    Path prettifyCss = outputDir.resolve("prettify.css");
-    Path prettifyJs = outputDir.resolve("prettify.js");
-    Path runPrettyPrint = outputDir.resolve("run_prettify.js");
-    Path sourceCss = outputDir.resolve("source.css");
+    Path fileDir = config.outputDir.resolve("file");
+    Path prettifyCss = config.outputDir.resolve("prettify.css");
+    Path prettifyJs = config.outputDir.resolve("prettify.js");
+    Path runPrettyPrint = config.outputDir.resolve("run_prettify.js");
+    Path sourceCss = config.outputDir.resolve("source.css");
 
-    for (Path source : sourceFiles) {
+    for (Path source : config.filteredDocSrcs()) {
       Path dest = simplifySourcePath(source);
       dest = fileDir.resolve(dest.toString() + ".src.html");
 
@@ -126,6 +125,23 @@ class DocPass  implements CompilerPass {
     }
     return output;
   }
+//
+//  /**
+//   * Traverses the AST, collecting {@code {@literal @}fileoverview} and
+//   * {@code {@literal @}license} information.
+//   */
+//  private class FileOverviewCollector extends NodeTraversal.AbstractShallowStatementCallback {
+//
+//    @Override
+//    public void visit(NodeTraversal nodeTraversal, Node node, Node parent) {
+//      JSDocInfo info = node.getJSDocInfo();
+//      if (node.isScript() && node.getSourceFileName() != null
+//          && info != null && info.getFileOverview() != null) {
+//        File file = new File(node.getSourceFileName());
+////        docRoot.addFileNamespace(new FileNamespace(file, info));
+//      }
+//    }
+//  }
 
   /**
    * Traverses the root of the extern tree to gather all external type definitions.
@@ -176,12 +192,12 @@ class DocPass  implements CompilerPass {
             type = info.getType().evaluate(scope, registry);
           }
 
-          if (null == type) {
+          if (null == type && null != var.getInitialValue()) {
             type = var.getInitialValue().getJSType();
           }
         }
 
-        if (null == info) {
+        if (null == info && null != type) {
           info = type.getJSDocInfo();
         }
 
