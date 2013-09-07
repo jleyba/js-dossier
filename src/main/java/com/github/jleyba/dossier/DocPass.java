@@ -45,19 +45,11 @@ class DocPass  implements CompilerPass {
     NodeTraversal.traverse(compiler, externs, new ExternCollector());
     NodeTraversal.traverse(compiler, root, new TypeCollector());
 
-    DocWriter writer = writerFactory.createDocWriter(config, docRegistry, null);
+    DocWriter writer = writerFactory.createDocWriter(config, docRegistry);
     try {
-      writer.copySourceFiles();
-      copyTypes();
+      writer.generateDocs(compiler.getTypeRegistry());
     } catch (IOException e) {
       throw new RuntimeException(e);
-    }
-  }
-
-  private void copyTypes() throws IOException {
-    for (Descriptor descriptor : docRegistry.getTypes()) {
-      writerFactory.createDocWriter(config, docRegistry, descriptor)
-          .generateDocs(compiler.getTypeRegistry());
     }
   }
 

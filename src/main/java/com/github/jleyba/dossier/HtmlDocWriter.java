@@ -28,7 +28,6 @@ import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.security.DigestOutputStream;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
@@ -44,70 +43,30 @@ class HtmlDocWriter implements DocWriter {
 
   private final Config config;
   private final DocRegistry docRegistry;
-  private final Descriptor descriptor;
   private final LinkResolver resolver;
 
-  HtmlDocWriter(Config config, DocRegistry registry, Descriptor descriptor, LinkResolver resolver) {
+  HtmlDocWriter(Config config, DocRegistry registry, LinkResolver resolver) {
     this.config = checkNotNull(config);
     this.docRegistry = checkNotNull(registry);
-    this.descriptor = descriptor;
     this.resolver = checkNotNull(resolver);
-  }
-
-  private String getTitlePrefix() {
-    if (descriptor.isInterface()) {
-      return "interface";
-    } else if (descriptor.isConstructor()) {
-      return "class";
-    } else if (descriptor.isEnum()) {
-      return "enum";
-    } else {
-      return "namespace";
-    }
-  }
-
-  private void printTopNav(PrintStream stream) {
-    stream.println("<div id=\"top\">");
-    stream.println("<div id=\"searchbox\">");
-    stream.println("<span>Search:</span>");
-    stream.println("<input name=\"search\" type=\"search\">");
-    stream.println("</div>");
-    stream.println("</div>");
-  }
-
-  private void printLeftNav(PrintStream stream) {
-    stream.println("<nav id=\"left\">");
-    stream.println("<details><summary>Classes</summary>");
-    stream.println("<ul>");
-    stream.println("<li>TODO");
-    stream.println("</ul>");
-    stream.println("</details>");
-    stream.println("<details><summary>Enums</summary>");
-    stream.println("<ul>");
-    stream.println("<li>TODO");
-    stream.println("</ul>");
-    stream.println("</details>");
-    stream.println("<details><summary>Interfaces</summary>");
-    stream.println("<ul>");
-    stream.println("<li>TODO");
-    stream.println("</ul>");
-    stream.println("</details>");
-    stream.println("<details><summary>Files</summary>");
-    stream.println("<ul>");
-    stream.println("<li>TODO");
-    stream.println("</ul>");
-    stream.println("</details>");
-    stream.println("<details><summary>Namespaces</summary>");
-    stream.println("<ul>");
-    stream.println("<li>TODO");
-    stream.println("</ul>");
-    stream.println("</details>");
-    stream.println("</nav>");
   }
 
   @Override
   public void generateDocs(JSTypeRegistry registry) throws IOException {
+    copyResources();
+    copySourceFiles();
+    for (Descriptor descriptor : docRegistry.getTypes()) {
+      if (descriptor.getSource() != null) {
+        Path path = config.outputDir.getFileSystem().getPath(descriptor.getSource());
+        if (config.excludeDocs.contains(path)) {
+          continue;
+        }
+      }
+      generateDocs(descriptor, registry);
+    }
+  }
 
+  private void generateDocs(Descriptor descriptor, JSTypeRegistry registry) throws IOException {
     Path output = resolver.getFilePath(descriptor);
     Files.createDirectories(output.getParent());
 
@@ -126,10 +85,10 @@ class HtmlDocWriter implements DocWriter {
       stream.println();
       stream.println("<article id=\"content\">");
       stream.println("<header>");
-      printTitle(stream);
+      printTitle(stream, descriptor);
       stream.println(getSourceLink(descriptor));
-      printEnumType(stream);
-      printInheritanceTree(stream, registry);
+      printEnumType(stream, descriptor);
+      printInheritanceTree(stream, descriptor, registry);
       printInterfaces(stream, "All implemented interfaces:",
           descriptor.getImplementedInterfaces(registry));
       printInterfaces(stream, "All extended interfaces:",
@@ -141,17 +100,17 @@ class HtmlDocWriter implements DocWriter {
       stream.println("<section>");
       printSummary(stream, descriptor.getInfo());
       printConstructor(stream, descriptor);
-      printEnumValues(stream);
+      printEnumValues(stream, descriptor);
       stream.println("</section>");
 
-      printTypedefs(stream);
-      printNestedTypeSummaries(stream, "Interfaces", isInterface());
-      printNestedTypeSummaries(stream, "Classes", isClass());
-      printNestedTypeSummaries(stream, "Enumerations", isEnum());
-      printInstanceMethods(stream, registry);
-      printInstanceProperties(stream, registry);
-      printFunctions(stream);
-      printProperties(stream);
+      printTypedefs(stream, descriptor);
+      printNestedTypeSummaries(stream, "Interfaces", descriptor, isInterface());
+      printNestedTypeSummaries(stream, "Classes", descriptor, isClass());
+      printNestedTypeSummaries(stream, "Enumerations", descriptor, isEnum());
+      printInstanceMethods(stream, descriptor, registry);
+      printInstanceProperties(stream, descriptor, registry);
+      printFunctions(stream, descriptor);
+      printProperties(stream, descriptor);
 
       stream.println();
       stream.println();
@@ -162,11 +121,21 @@ class HtmlDocWriter implements DocWriter {
     }
   }
 
-  @Override
-  public void copySourceFiles() throws IOException {
+  private void copyResources() throws IOException {
     FileSystem fs = config.outputDir.getFileSystem();
     copyResource(fs.getPath("/docs.css"), config.outputDir);
-    Path sourceCss = copyResource(fs.getPath("/source.css"), config.outputDir);
+    copyResource(fs.getPath("/source.css"), config.outputDir);
+  }
+
+  private static void copyResource(Path resourcePath, Path outputDir) throws IOException {
+    try (InputStream stream = DocPass.class.getResourceAsStream(resourcePath.toString())) {
+      Path outputPath = outputDir.resolve(resourcePath.getFileName());
+      Files.copy(stream, outputPath, StandardCopyOption.REPLACE_EXISTING);
+    }
+  }
+
+  private void copySourceFiles() throws IOException {
+    Path sourceCss = config.outputDir.resolve("source.css");
 
     Path fileDir = config.outputDir.resolve("source");
     for (Path source : config.filteredDocSrcs()) {
@@ -216,15 +185,8 @@ class HtmlDocWriter implements DocWriter {
     return output;
   }
 
-  private static Path copyResource(Path resourcePath, Path outputDir) throws IOException {
-    try (InputStream stream = DocPass.class.getResourceAsStream(resourcePath.toString())) {
-      Path outputPath = outputDir.resolve(resourcePath.getFileName());
-      Files.copy(stream, outputPath, StandardCopyOption.REPLACE_EXISTING);
-      return outputPath;
-    }
-  }
-
-  private void printInheritanceTree(PrintStream stream, JSTypeRegistry registry) {
+  private void printInheritanceTree(
+      PrintStream stream, Descriptor descriptor, JSTypeRegistry registry) {
     Stack<String> types = descriptor.getAllTypes(registry);
     if (types.size() < 2) {
       return;
@@ -244,7 +206,7 @@ class HtmlDocWriter implements DocWriter {
     stream.println("</code></pre>\n");
   }
 
-  private void printEnumType(PrintStream stream) {
+  private void printEnumType(PrintStream stream, Descriptor descriptor) {
     if (descriptor.isEnum()) {
       JSDocInfo info = descriptor.getInfo();
       if (info != null) {
@@ -273,8 +235,8 @@ class HtmlDocWriter implements DocWriter {
     stream.println("</dd></dl>");
   }
 
-  private void printTitle(PrintStream stream) {
-    stream.println("<h1>" + getTitlePrefix() + " " + descriptor.getFullName() + "</h1>");
+  private void printTitle(PrintStream stream, Descriptor descriptor) {
+    stream.println("<h1>" + getTitlePrefix(descriptor) + " " + descriptor.getFullName() + "</h1>");
   }
 
   private void printConstructor(PrintStream stream, Descriptor descriptor) {
@@ -306,7 +268,7 @@ class HtmlDocWriter implements DocWriter {
     }
   }
 
-  private void printEnumValues(PrintStream stream) {
+  private void printEnumValues(PrintStream stream, Descriptor descriptor) {
     if (!descriptor.isEnum()) {
       return;
     }
@@ -366,7 +328,7 @@ class HtmlDocWriter implements DocWriter {
     return "";
   }
 
-  private void printTypedefs(PrintStream stream) {
+  private void printTypedefs(PrintStream stream, Descriptor descriptor) {
     List<Descriptor> typedefs = FluentIterable.from(descriptor.getProperties())
         .filter(isTypedef())
         .toSortedList(DescriptorNameComparator.INSTANCE);
@@ -395,7 +357,7 @@ class HtmlDocWriter implements DocWriter {
   }
 
   private void printNestedTypeSummaries(
-      PrintStream stream, String title, Predicate<Descriptor> predicate) {
+      PrintStream stream, String title, Descriptor descriptor, Predicate<Descriptor> predicate) {
     List<Descriptor> children = FluentIterable.from(descriptor.getProperties())
         .filter(predicate)
         .toSortedList(DescriptorNameComparator.INSTANCE);
@@ -425,17 +387,80 @@ class HtmlDocWriter implements DocWriter {
     stream.println("</section>");
   }
 
-  private void printInstanceMethods(PrintStream stream, JSTypeRegistry registry) throws IOException {
+  private void printInstanceMethods(
+      PrintStream stream, Descriptor descriptor, JSTypeRegistry registry) {
     if (!descriptor.isConstructor() && !descriptor.isInterface()) {
       return;
     }
     StringBuilder methods = new StringBuilder();
     for (String type : descriptor.getAllTypes(registry)) {
-      Descriptor descriptor = docRegistry.getType(type);
-      if (descriptor != null) {
-        methods.append(printInstanceMethods(descriptor))
-            .append("\n");
+      Descriptor typeDescriptor = docRegistry.getType(type);
+      if (typeDescriptor == null) {
+        continue;
       }
+
+      List<Descriptor> functions = FluentIterable.from(descriptor.getInstanceProperties())
+          .filter(isFunction())
+          .toSortedList(DescriptorNameComparator.INSTANCE);
+      if (functions.isEmpty()) {
+        continue;
+      }
+      methods.append("<h3>Defined in <code class=\"type\">");
+      if (typeDescriptor != descriptor) {
+        methods.append("<a href=\"")
+            .append(resolver.getRelativeTypeLink(typeDescriptor.getFullName()))
+            .append("\">");
+      }
+      methods.append(typeDescriptor.getFullName());
+      if (typeDescriptor != descriptor) {
+        methods.append("</a>");
+      }
+      methods.append("</code></h3>\n");
+
+      for (Descriptor function : functions) {
+        List<ArgDescriptor> args = function.getArgs();
+        methods.append("<details class=\"function\"><summary>\n")
+            .append("<div>").append(getSourceLink(function))
+            .append(String.format("<a class=\"member\" name=\"%s$%s\">%s</a>",
+                typeDescriptor.getFullName(), function.getName(), function.getName()))
+            .append(" <span class=\"args\">(")
+            .append(Joiner.on(", ").join(transform(args, new Function<ArgDescriptor, String>() {
+              @Override
+              public String apply(ArgDescriptor input) {
+                return input.getName();
+              }
+            })))
+            .append(")</span>");
+
+        String returnType = getReturnType(function);
+        if (returnType == null || "undefined".equals(returnType) || "?".equals(returnType)) {
+          returnType = "";
+        }
+        if (!returnType.isEmpty()) {
+          methods.append(" &rArr; <code class=\"type\">").append(returnType).append("</code>");
+        }
+        methods.append("</div>");
+
+        JSDocInfo info = function.getInfo();
+        if (info != null) {
+          String comment = CommentUtil.getBlockDescription(resolver, info);
+          if (!comment.isEmpty()) {
+            methods.append(comment);
+          }
+        }
+        methods.append("</summary>\n");
+
+        StringBuilder details = printArgs(args, false)
+            .append(printReturns(function))
+            .append(printThrows(function));
+        if (details.length() > 0) {
+          methods.append("<div class=\"fn-info\"><table><tbody>\n")
+              .append(details)
+              .append("</table></div>\n");
+        }
+        methods.append("</details>");
+      }
+      methods.append("\n");
     }
 
     if (methods.length() > 0) {
@@ -448,157 +473,84 @@ class HtmlDocWriter implements DocWriter {
     }
   }
 
-  private StringBuilder printInstanceMethods(Descriptor descriptor) {
-    StringBuilder builder = new StringBuilder();
-
-    List<Descriptor> functions = FluentIterable.from(descriptor.getInstanceProperties())
-        .filter(isFunction())
-        .toSortedList(DescriptorNameComparator.INSTANCE);
-    if (functions.isEmpty()) {
-      return builder;
-    }
-
-    builder.append("<h3>Defined in <code class=\"type\">");
-    if (descriptor != this.descriptor) {
-      builder.append("<a href=\"")
-          .append(resolver.getRelativeTypeLink(descriptor.getFullName()))
-          .append("\">");
-    }
-    builder.append(descriptor.getFullName());
-    if (descriptor != this.descriptor) {
-      builder.append("</a>");
-    }
-    builder.append("</code></h3>\n");
-
-    for (Descriptor function : functions) {
-      List<ArgDescriptor> args = function.getArgs();
-      builder.append("<details class=\"function\"><summary>\n")
-          .append("<div>").append(getSourceLink(function))
-          .append(String.format("<a class=\"member\" name=\"%s$%s\">%s</a>",
-              descriptor.getFullName(), function.getName(), function.getName()))
-          .append(" <span class=\"args\">(")
-          .append(Joiner.on(", ").join(transform(args, new Function<ArgDescriptor, String>() {
-            @Override
-            public String apply(ArgDescriptor input) {
-              return input.getName();
-            }
-          })))
-          .append(")</span>");
-
-      String returnType = getReturnType(function);
-      if (returnType == null || "undefined".equals(returnType) || "?".equals(returnType)) {
-        returnType = "";
-      }
-      if (!returnType.isEmpty()) {
-        builder.append(" &rArr; <code class=\"type\">").append(returnType).append("</code>");
-      }
-      builder.append("</div>");
-
-      JSDocInfo info = function.getInfo();
-      if (info != null) {
-        String comment = CommentUtil.getBlockDescription(resolver, info);
-        if (!comment.isEmpty()) {
-          builder.append(comment);
-        }
-      }
-      builder.append("</summary>\n");
-
-      StringBuilder details = printArgs(args, false)
-          .append(printReturns(function))
-          .append(printThrows(function));
-      if (details.length() > 0) {
-        builder.append("<div class=\"fn-info\"><table><tbody>\n")
-            .append(details)
-            .append("</table></div>\n");
-      }
-      builder.append("</details>");
-    }
-    return builder;
-  }
-
-  private void printInstanceProperties(PrintStream stream, JSTypeRegistry registry)
-      throws IOException {
+  private void printInstanceProperties(
+      PrintStream stream, Descriptor descriptor, JSTypeRegistry registry) {
     if (!descriptor.isConstructor() && !descriptor.isInterface()) {
       return;
     }
 
-    StringBuilder properties = new StringBuilder();
+    StringBuilder builder = new StringBuilder();
     for (String type : descriptor.getAllTypes(registry)) {
-      Descriptor descriptor = docRegistry.getType(type);
-      if (descriptor != null) {
-        properties.append(printInstanceProperties(descriptor))
-            .append("\n");
+      Descriptor typeDescriptor = docRegistry.getType(type);
+      if (typeDescriptor == null) {
+        continue;
       }
+
+      List<Descriptor> properties = FluentIterable.from(typeDescriptor.getInstanceProperties())
+          .filter(isProperty())
+          .toSortedList(DescriptorNameComparator.INSTANCE);
+      if (properties.isEmpty()) {
+        continue;
+      }
+
+      builder.append("<h3>Defined in <code class=\"type\">");
+      if (typeDescriptor != descriptor) {
+        builder.append("<a href=\"")
+            .append(resolver.getRelativeTypeLink(typeDescriptor.getFullName()))
+            .append("\">");
+      }
+      builder.append(typeDescriptor.getFullName());
+      if (typeDescriptor != descriptor) {
+        builder.append("</a>");
+      }
+      builder.append("</code></h3>\n");
+
+      for (Descriptor property : properties) {
+        builder.append("<details><summary>\n")
+            .append("<div>").append(getSourceLink(property))
+            .append(String.format("<a class=\"member\" name=\"%s$%s\">%s</a>",
+                typeDescriptor.getFullName(), property.getName(), property.getName()));
+
+        JSDocInfo info = property.getInfo();
+        if (info != null && info.getType() != null) {
+          String typeStr = CommentUtil.formatTypeExpression(info.getType(), resolver);
+          builder.append(" : <code class=\"type\">" + typeStr + "</code>");
+        } else if (property.getType() != null) {
+          Descriptor propertyTypeDescriptor =
+              docRegistry.getType(property.getType().toString());
+          if (propertyTypeDescriptor == null) {
+            propertyTypeDescriptor = docRegistry.getType(property.getType().toString());
+          }
+
+          if (propertyTypeDescriptor == null) {
+            builder.append(" : <code>" + property.getType() + "</code>");
+          } else {
+            builder.append(String.format(" : <code><a href=\"%s\">%s</a></code>",
+                resolver.getRelativeTypeLink(propertyTypeDescriptor.getFullName()),
+                propertyTypeDescriptor.getFullName()));
+          }
+        }
+        builder.append("</div>\n");
+
+        if (info != null) {
+          builder.append(CommentUtil.getBlockDescription(resolver, info));
+        }
+        builder.append("</summary></details>");
+      }
+      builder.append("\n");
     }
 
-    if (properties.length() > 0) {
+    if (builder.length() > 0) {
       stream.println();
       stream.println();
       stream.println("<section>");
       stream.println("<h2>Instance Properties</h2>");
-      stream.println(properties);
+      stream.println(builder);
       stream.println("</section>");
     }
   }
 
-  private StringBuilder printInstanceProperties(Descriptor descriptor) {
-    StringBuilder builder = new StringBuilder();
-
-    List<Descriptor> properties = FluentIterable.from(descriptor.getInstanceProperties())
-        .filter(isProperty())
-        .toSortedList(DescriptorNameComparator.INSTANCE);
-    if (properties.isEmpty()) {
-      return builder;
-    }
-
-    builder.append("<h3>Defined in <code class=\"type\">");
-    if (descriptor != this.descriptor) {
-      builder.append("<a href=\"")
-          .append(resolver.getRelativeTypeLink(descriptor.getFullName()))
-          .append("\">");
-    }
-    builder.append(descriptor.getFullName());
-    if (descriptor != this.descriptor) {
-      builder.append("</a>");
-    }
-    builder.append("</code></h3>\n");
-
-    for (Descriptor property : properties) {
-      builder.append("<details><summary>\n")
-          .append("<div>").append(getSourceLink(property))
-          .append(String.format("<a class=\"member\" name=\"%s$%s\">%s</a>",
-              descriptor.getFullName(), property.getName(), property.getName()));
-
-      JSDocInfo info = property.getInfo();
-      if (info != null && info.getType() != null) {
-        String typeStr = CommentUtil.formatTypeExpression(info.getType(), resolver);
-        builder.append(" : <code class=\"type\">" + typeStr + "</code>");
-      } else if (property.getType() != null) {
-        Descriptor propertyTypeDescriptor =
-            docRegistry.getType(property.getType().toString());
-        if (propertyTypeDescriptor == null) {
-          propertyTypeDescriptor = docRegistry.getType(property.getType().toString());
-        }
-
-        if (propertyTypeDescriptor == null) {
-          builder.append(" : <code>" + property.getType() + "</code>");
-        } else {
-          builder.append(String.format(" : <code><a href=\"%s\">%s</a></code>",
-              resolver.getRelativeTypeLink(propertyTypeDescriptor.getFullName()),
-              propertyTypeDescriptor.getFullName()));
-        }
-      }
-      builder.append("</div>\n");
-
-      if (info != null) {
-        builder.append(CommentUtil.getBlockDescription(resolver, info));
-      }
-      builder.append("</summary></details>");
-    }
-    return builder;
-  }
-
-  private void printFunctions(PrintStream stream) throws IOException {
+  private void printFunctions(PrintStream stream, Descriptor descriptor) {
     List<Descriptor> functions = FluentIterable.from(descriptor.getProperties())
         .filter(isFunction())
         .toSortedList(DescriptorNameComparator.INSTANCE);
@@ -763,7 +715,7 @@ class HtmlDocWriter implements DocWriter {
     return type == null ? null : type.toString();
   }
 
-  private void printProperties(PrintStream stream) {
+  private void printProperties(PrintStream stream, Descriptor descriptor) {
     List<Descriptor> properties = FluentIterable.from(descriptor.getProperties())
         .filter(isProperty())
         .toSortedList(DescriptorNameComparator.INSTANCE);
@@ -813,6 +765,57 @@ class HtmlDocWriter implements DocWriter {
       stream.println("</summary></details>");
     }
     stream.println("</section>");
+  }
+
+  private String getTitlePrefix(Descriptor descriptor) {
+    if (descriptor.isInterface()) {
+      return "interface";
+    } else if (descriptor.isConstructor()) {
+      return "class";
+    } else if (descriptor.isEnum()) {
+      return "enum";
+    } else {
+      return "namespace";
+    }
+  }
+
+  private void printTopNav(PrintStream stream) {
+    stream.println("<div id=\"top\">");
+    stream.println("<div id=\"searchbox\">");
+    stream.println("<span>Search:</span>");
+    stream.println("<input name=\"search\" type=\"search\">");
+    stream.println("</div>");
+    stream.println("</div>");
+  }
+
+  private void printLeftNav(PrintStream stream) {
+    stream.println("<nav id=\"left\">");
+    stream.println("<details><summary>Classes</summary>");
+    stream.println("<ul>");
+    stream.println("<li>TODO");
+    stream.println("</ul>");
+    stream.println("</details>");
+    stream.println("<details><summary>Enums</summary>");
+    stream.println("<ul>");
+    stream.println("<li>TODO");
+    stream.println("</ul>");
+    stream.println("</details>");
+    stream.println("<details><summary>Interfaces</summary>");
+    stream.println("<ul>");
+    stream.println("<li>TODO");
+    stream.println("</ul>");
+    stream.println("</details>");
+    stream.println("<details><summary>Files</summary>");
+    stream.println("<ul>");
+    stream.println("<li>TODO");
+    stream.println("</ul>");
+    stream.println("</details>");
+    stream.println("<details><summary>Namespaces</summary>");
+    stream.println("<ul>");
+    stream.println("<li>TODO");
+    stream.println("</ul>");
+    stream.println("</details>");
+    stream.println("</nav>");
   }
 
   private static Predicate<Descriptor> isTypedef() {
