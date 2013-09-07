@@ -209,9 +209,11 @@ class Descriptor {
     while (!allTypes.isEmpty()) {
       String name = allTypes.pop();
       JSType type = registry.getType(name);
-      JSDocInfo info = type.getJSDocInfo();
-      for (JSTypeExpression expr : info.getImplementedInterfaces()) {
-        interfaces.add(expr.evaluate(null, registry).toString());
+      if (type != null) {
+        JSDocInfo info = type.getJSDocInfo();
+        for (JSTypeExpression expr : info.getImplementedInterfaces()) {
+          interfaces.add(expr.evaluate(null, registry).toString());
+        }
       }
     }
 
