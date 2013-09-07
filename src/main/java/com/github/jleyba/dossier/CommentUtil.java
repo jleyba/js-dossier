@@ -144,7 +144,8 @@ class CommentUtil {
       start = tagletEnd + 1;
     }
 
-    return Joiner.on("").join(nodes);
+    return Joiner.on("").join(nodes)
+        .replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;");
   }
 
   private static int findInlineTagStart(String text, int start) {

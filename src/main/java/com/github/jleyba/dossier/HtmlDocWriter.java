@@ -9,6 +9,8 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Predicate;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
+import com.google.common.base.Supplier;
+import com.google.common.base.Suppliers;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Ordering;
@@ -30,6 +32,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.Stack;
@@ -44,6 +47,74 @@ class HtmlDocWriter implements DocWriter {
   private final Config config;
   private final DocRegistry docRegistry;
   private final LinkResolver resolver;
+
+  private final Supplier<String> sideNav = Suppliers.memoize(new Supplier<String>() {
+    @Override
+    public String get() {
+      List<String> classes = new LinkedList<>();
+      List<String> enums = new LinkedList<>();
+      List<String> interfaces = new LinkedList<>();
+      List<String> namespaces = new LinkedList<>();
+      // TODO: files
+
+      Iterable<Descriptor> types = FluentIterable.from(docRegistry.getTypes())
+          .filter(new Predicate<Descriptor>() {
+            @Override
+            public boolean apply(Descriptor input) {
+              String path = input.getSource();
+              return path == null
+                  || !config.excludeDocs.contains(config.outputDir.getFileSystem().getPath(path));
+            }
+          })
+          .toSortedList(DescriptorNameComparator.INSTANCE);
+
+      for (Descriptor descriptor : types) {
+        String path = descriptor.getSource();
+        if (path != null) {
+          if (config.excludeDocs.contains(config.outputDir.getFileSystem().getPath(path))) {
+            continue;
+          }
+        }
+        String item = "<li><a href=\"" + resolver.getFilePath(descriptor).getFileName() +
+            "\">" + descriptor.getFullName() + "</a>";
+        if (descriptor.isConstructor()) {
+          classes.add(item);
+        } else if (descriptor.isInterface()) {
+          interfaces.add(item);
+        } else if (descriptor.isEnum()) {
+          enums.add(item);
+        } else {
+          namespaces.add(item);
+        }
+      }
+
+      Joiner joiner = Joiner.on("\n");
+      StringBuilder builder = new StringBuilder("<nav id=\"left\">");
+      if (!classes.isEmpty()) {
+        builder.append("<details><summary>Classes</summary><ul>")
+            .append(joiner.join(classes))
+            .append("</ul></details>");
+      }
+      if (!enums.isEmpty()) {
+        builder.append("<details><summary>Enums</summary><ul>")
+            .append(joiner.join(enums))
+            .append("</ul></details>");
+      }
+      if (!interfaces.isEmpty()) {
+        builder.append("<details><summary>Interfaces</summary><ul>")
+            .append(joiner.join(interfaces))
+            .append("</ul></details>");
+      }
+      if (!namespaces.isEmpty()) {
+        builder.append("<details><summary>Namespaces</summary><ul>")
+            .append(joiner.join(namespaces))
+            .append("</ul></details>");
+      }
+      builder.append("</nav>");
+      return builder.toString();
+    }
+  });
+
 
   HtmlDocWriter(Config config, DocRegistry registry, LinkResolver resolver) {
     this.config = checkNotNull(config);
@@ -82,7 +153,7 @@ class HtmlDocWriter implements DocWriter {
       printTopNav(stream);
       stream.println();
       stream.println();
-      printLeftNav(stream);
+      stream.println(sideNav.get());
       stream.println();
       stream.println();
       stream.println("<article id=\"content\">");
@@ -787,36 +858,6 @@ class HtmlDocWriter implements DocWriter {
     stream.println("<input name=\"search\" type=\"search\">");
     stream.println("</div>");
     stream.println("</div>");
-  }
-
-  private void printLeftNav(PrintStream stream) {
-    stream.println("<nav id=\"left\">");
-    stream.println("<details><summary>Classes</summary>");
-    stream.println("<ul>");
-    stream.println("<li>TODO");
-    stream.println("</ul>");
-    stream.println("</details>");
-    stream.println("<details><summary>Enums</summary>");
-    stream.println("<ul>");
-    stream.println("<li>TODO");
-    stream.println("</ul>");
-    stream.println("</details>");
-    stream.println("<details><summary>Interfaces</summary>");
-    stream.println("<ul>");
-    stream.println("<li>TODO");
-    stream.println("</ul>");
-    stream.println("</details>");
-    stream.println("<details><summary>Files</summary>");
-    stream.println("<ul>");
-    stream.println("<li>TODO");
-    stream.println("</ul>");
-    stream.println("</details>");
-    stream.println("<details><summary>Namespaces</summary>");
-    stream.println("<ul>");
-    stream.println("<li>TODO");
-    stream.println("</ul>");
-    stream.println("</details>");
-    stream.println("</nav>");
   }
 
   private static Predicate<Descriptor> isTypedef() {
