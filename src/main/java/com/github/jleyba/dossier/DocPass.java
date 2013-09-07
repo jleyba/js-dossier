@@ -45,86 +45,22 @@ class DocPass  implements CompilerPass {
     NodeTraversal.traverse(compiler, externs, new ExternCollector());
     NodeTraversal.traverse(compiler, root, new TypeCollector());
 
+    DocWriter writer = writerFactory.createDocWriter(config, docRegistry, null);
     try {
-      Files.createDirectories(config.outputDir);
-      copyResources();
-      copySources();
+      writer.copySourceFiles();
       copyTypes();
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
   }
 
-  private void copyResources() throws IOException {
-    FileSystem fs = config.outputDir.getFileSystem();
-    copyResource(fs.getPath("/docs.css"), config.outputDir);
-    copyResource(fs.getPath("/source.css"), config.outputDir);
-//    copyResource(fs.getPath("/prettify.css"), config.outputDir);
-//    copyResource(fs.getPath("/prettify.js"), config.outputDir);
-//    copyResource(fs.getPath("/run_prettify.js"), config.outputDir);
-  }
-
-  private static void copyResource(Path resourcePath, Path outputDir) throws IOException {
-    try (InputStream stream = DocPass.class.getResourceAsStream(resourcePath.toString())) {
-      Files.copy(stream, outputDir.resolve(resourcePath.getFileName()),
-          StandardCopyOption.REPLACE_EXISTING);
-    }
-  }
-
   private void copyTypes() throws IOException {
     for (Descriptor descriptor : docRegistry.getTypes()) {
-      writerFactory.createDocWriter(docRegistry, descriptor)
+      writerFactory.createDocWriter(config, docRegistry, descriptor)
           .generateDocs(compiler.getTypeRegistry());
     }
   }
 
-  private void copySources() throws IOException {
-    // TODO: LinkResolver should handle this.
-    Path fileDir = config.outputDir.resolve("file");
-    Path prettifyCss = config.outputDir.resolve("prettify.css");
-    Path prettifyJs = config.outputDir.resolve("prettify.js");
-    Path runPrettyPrint = config.outputDir.resolve("run_prettify.js");
-    Path sourceCss = config.outputDir.resolve("source.css");
-
-    for (Path source : config.filteredDocSrcs()) {
-      Path dest = simplifySourcePath(source);
-      dest = fileDir.resolve(dest.toString() + ".src.html");
-
-      Files.createDirectories(dest.getParent());
-      try (FileOutputStream stream = new FileOutputStream(dest.toString())) {
-        PrintStream printStream = new PrintStream(stream);
-        printStream.println("<!DOCTYPE html>");
-
-        printStream.printf("<link href=\"%s\" type=\"text/css\" rel=\"stylesheet\">\n",
-            dest.getParent().relativize(prettifyCss));
-        printStream.printf("<link href=\"%s\" type=\"text/css\" rel=\"stylesheet\">\n",
-            dest.getParent().relativize(sourceCss));
-
-        printStream.println("<pre>");
-        String content = com.google.common.io.Files.toString(source.toFile(), Charsets.UTF_8)
-            .replace("&", "&amp;")
-            .replace("<", "&lt;")
-            .replace(">", "&gt;");
-        printStream.print(content);
-        printStream.println("</pre>");
-        printStream.printf("<script src=\"%s\"></script>\n", dest.getParent().relativize(prettifyJs));
-        printStream.printf("<script src=\"%s\"></script>\n",
-            dest.getParent().relativize(runPrettyPrint));
-      }
-    }
-  }
-
-  private static Path simplifySourcePath(Path path) {
-    Iterator<Path> parts = path.iterator();
-    Path output = path.getFileSystem().getPath("");
-    while (parts.hasNext()) {
-      Path part = parts.next();
-      if (!part.toString().equals(".") && !part.toString().equals("..")) {
-        output = output.resolve(part);
-      }
-    }
-    return output;
-  }
 //
 //  /**
 //   * Traverses the AST, collecting {@code {@literal @}fileoverview} and

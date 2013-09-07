@@ -2,23 +2,23 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1559ebdc-2c34-4d4c-be42-cac99434e450" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__junit_junit_4_11.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_hamcrest_hamcrest_core_1_3.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/config.json" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/com/github/jleyba/dossier/Options.java" afterPath="$PROJECT_DIR$/src/main/java/com/github/jleyba/dossier/Config.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/github/jleyba/dossier/CommentUtil.java" afterPath="$PROJECT_DIR$/src/main/java/com/github/jleyba/dossier/CommentUtil.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/github/jleyba/dossier/Descriptor.java" afterPath="$PROJECT_DIR$/src/main/java/com/github/jleyba/dossier/Descriptor.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/github/jleyba/dossier/DocPass.java" afterPath="$PROJECT_DIR$/src/main/java/com/github/jleyba/dossier/DocPass.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/github/jleyba/dossier/Main.java" afterPath="$PROJECT_DIR$/src/main/java/com/github/jleyba/dossier/Main.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/github/jleyba/dossier/DocWriter.java" afterPath="$PROJECT_DIR$/src/main/java/com/github/jleyba/dossier/DocWriter.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/github/jleyba/dossier/DocWriterFactory.java" afterPath="$PROJECT_DIR$/src/main/java/com/github/jleyba/dossier/DocWriterFactory.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/github/jleyba/dossier/HtmlDocWriter.java" afterPath="$PROJECT_DIR$/src/main/java/com/github/jleyba/dossier/HtmlDocWriter.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/github/jleyba/dossier/LinkResolver.java" afterPath="$PROJECT_DIR$/src/main/java/com/github/jleyba/dossier/LinkResolver.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/config.json" afterPath="$PROJECT_DIR$/config.json" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js-dossier.iml" afterPath="$PROJECT_DIR$/js-dossier.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pom.xml" afterPath="$PROJECT_DIR$/pom.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/resources/source.css" afterPath="$PROJECT_DIR$/src/main/resources/source.css" />
     </list>
     <ignored path="js-dossier.iws" />
     <ignored path=".idea/workspace.xml" />
     <file path="/Dummy.txt" changelist="1559ebdc-2c34-4d4c-be42-cac99434e450" time="1378513650792" ignored="false" />
     <file path="$PROJECT_DIR$/../closure_docs/.idea/workspace.xml" changelist="1559ebdc-2c34-4d4c-be42-cac99434e450" time="1378513843988" ignored="false" />
     <file path="/ArgDescriptor.java" changelist="1559ebdc-2c34-4d4c-be42-cac99434e450" time="1378513561987" ignored="false" />
-    <file path="/DocPass.java" changelist="1559ebdc-2c34-4d4c-be42-cac99434e450" time="1378531360626" ignored="false" />
+    <file path="/DocPass.java" changelist="1559ebdc-2c34-4d4c-be42-cac99434e450" time="1378569826166" ignored="false" />
     <file path="/Options.java" changelist="1559ebdc-2c34-4d4c-be42-cac99434e450" time="1378514306258" ignored="false" />
     <file path="/OptionPrinter.java" changelist="1559ebdc-2c34-4d4c-be42-cac99434e450" time="1378514662500" ignored="false" />
     <file path="/Flags.java" changelist="1559ebdc-2c34-4d4c-be42-cac99434e450" time="1378517645617" ignored="false" />
@@ -28,10 +28,16 @@
     <file path="/Config.java" changelist="1559ebdc-2c34-4d4c-be42-cac99434e450" time="1378531087538" ignored="false" />
     <file path="/ConfigLoader.java" changelist="1559ebdc-2c34-4d4c-be42-cac99434e450" time="1378523537593" ignored="false" />
     <file path="/config.json" changelist="1559ebdc-2c34-4d4c-be42-cac99434e450" time="1378517811669" ignored="false" />
-    <file path="/fragment.java" changelist="1559ebdc-2c34-4d4c-be42-cac99434e450" time="1378532059917" ignored="false" />
+    <file path="/fragment.java" changelist="1559ebdc-2c34-4d4c-be42-cac99434e450" time="1378565953307" ignored="false" />
     <file path="/Descriptor.java" changelist="1559ebdc-2c34-4d4c-be42-cac99434e450" time="1378530774682" ignored="false" />
     <file path="$PROJECT_DIR$/../closure_docs/sample.css" changelist="1559ebdc-2c34-4d4c-be42-cac99434e450" time="1378533390544" ignored="false" />
     <file path="$PROJECT_DIR$/../closure_docs/deferred.html" changelist="1559ebdc-2c34-4d4c-be42-cac99434e450" time="1378533192069" ignored="false" />
+    <file path="$PROJECT_DIR$/.idea/workspace.xml" changelist="1559ebdc-2c34-4d4c-be42-cac99434e450" time="1378571175337" ignored="false" />
+    <file path="/DocWriterFactory.java" changelist="1559ebdc-2c34-4d4c-be42-cac99434e450" time="1378565440931" ignored="false" />
+    <file path="/HtmlDocWriter.java" changelist="1559ebdc-2c34-4d4c-be42-cac99434e450" time="1378570060180" ignored="false" />
+    <file path="/LinkResolver.java" changelist="1559ebdc-2c34-4d4c-be42-cac99434e450" time="1378570827348" ignored="false" />
+    <file path="/DocWriter.java" changelist="1559ebdc-2c34-4d4c-be42-cac99434e450" time="1378567397538" ignored="false" />
+    <file path="/source.css" changelist="1559ebdc-2c34-4d4c-be42-cac99434e450" time="1378571100109" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -83,27 +89,8 @@
       </breakpoint>
     </breakpoint_any>
     <ui_properties default_suspend_policy="SuspendAll" default_condition_enabled="true" />
-    <method_breakpoints>
-      <breakpoint url="file://$PROJECT_DIR$/src/main/java/com/github/jleyba/dossier/Descriptor.java" line="41" class="com.github.jleyba.dossier.Descriptor" package="com.github.jleyba.dossier">
-        <option name="WATCH_ENTRY" value="true" />
-        <option name="WATCH_EXIT" value="true" />
-        <option name="ENABLED" value="true" />
-        <option name="LOG_ENABLED" value="false" />
-        <option name="LOG_EXPRESSION_ENABLED" value="false" />
-        <option name="REMOVE_AFTER_HIT" value="false" />
-        <option name="SUSPEND_POLICY" value="SuspendAll" />
-        <option name="SUSPEND" value="true" />
-        <option name="COUNT_FILTER_ENABLED" value="false" />
-        <option name="COUNT_FILTER" value="0" />
-        <option name="CONDITION_ENABLED" value="true" />
-        <option name="CLASS_FILTERS_ENABLED" value="false" />
-        <option name="INSTANCE_FILTERS_ENABLED" value="false" />
-        <option name="CONDITION" value="" />
-        <option name="LOG_MESSAGE" value="" />
-      </breakpoint>
-    </method_breakpoints>
     <line_breakpoints>
-      <breakpoint url="file://$PROJECT_DIR$/src/main/java/com/github/jleyba/dossier/Descriptor.java" line="153" class="com.github.jleyba.dossier.Descriptor" package="com.github.jleyba.dossier">
+      <breakpoint url="file://$PROJECT_DIR$/src/main/java/com/github/jleyba/dossier/Descriptor.java" line="145" class="com.github.jleyba.dossier.Descriptor" package="com.github.jleyba.dossier">
         <option name="ENABLED" value="true" />
         <option name="LOG_ENABLED" value="false" />
         <option name="LOG_EXPRESSION_ENABLED" value="false" />
@@ -118,6 +105,21 @@
         <option name="CONDITION" value="obj == null&#13;&#13;JAVA" />
         <option name="LOG_MESSAGE" value="&#13;&#13;JAVA" />
       </breakpoint>
+      <breakpoint url="file://$PROJECT_DIR$/src/main/java/com/github/jleyba/dossier/Descriptor.java" line="211" class="com.github.jleyba.dossier.Descriptor" package="com.github.jleyba.dossier">
+        <option name="ENABLED" value="true" />
+        <option name="LOG_ENABLED" value="false" />
+        <option name="LOG_EXPRESSION_ENABLED" value="false" />
+        <option name="REMOVE_AFTER_HIT" value="false" />
+        <option name="SUSPEND_POLICY" value="SuspendAll" />
+        <option name="SUSPEND" value="true" />
+        <option name="COUNT_FILTER_ENABLED" value="false" />
+        <option name="COUNT_FILTER" value="0" />
+        <option name="CONDITION_ENABLED" value="true" />
+        <option name="CLASS_FILTERS_ENABLED" value="false" />
+        <option name="INSTANCE_FILTERS_ENABLED" value="false" />
+        <option name="CONDITION" value="type == null&#13;&#13;JAVA" />
+        <option name="LOG_MESSAGE" value="&#13;&#13;JAVA" />
+      </breakpoint>
     </line_breakpoints>
     <breakpoint_rules />
     <ui_properties />
@@ -127,118 +129,151 @@
     <favorites_list name="js-dossier" />
   </component>
   <component name="FileEditorManager">
-    <leaf>
-      <file leaf-file-name="Descriptor.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/github/jleyba/dossier/Descriptor.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="219" column="0" selection-start="5761" selection-end="5761" vertical-scroll-proportion="0.0">
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="pom.xml" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/pom.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="27" column="0" selection-start="891" selection-end="891" vertical-scroll-proportion="0.65648854">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ObjectType.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="jar://$MAVEN_REPOSITORY$/com/google/javascript/closure-compiler/v20130722/closure-compiler-v20130722-sources.jar!/com/google/javascript/rhino/jstype/ObjectType.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="603" column="33" selection-start="19259" selection-end="19259" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="JSType.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="jar://$MAVEN_REPOSITORY$/com/google/javascript/closure-compiler/v20130722/closure-compiler-v20130722-sources.jar!/com/google/javascript/rhino/jstype/JSType.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="66" column="22" selection-start="2639" selection-end="2639" vertical-scroll-proportion="0.0">
-              <folding>
-                <element signature="e#0#45822#0" expanded="false" />
-                <element signature="imports" expanded="false" />
-                <element signature="e#3575#3725#0" expanded="false" />
-                <element signature="e#3589#3597#0" expanded="false" />
-                <element signature="e#3720#3721#0" expanded="false" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="DocPass.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/github/jleyba/dossier/DocPass.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="64" column="3" selection-start="2206" selection-end="2206" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="FieldSetter.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="jar://$MAVEN_REPOSITORY$/args4j/args4j/2.0.16/args4j-2.0.16-sources.jar!/org/kohsuke/args4j/spi/FieldSetter.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="35" column="0" selection-start="736" selection-end="736" vertical-scroll-proportion="0.0">
-              <folding>
-                <element signature="imports" expanded="false" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="DocRegistry.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/github/jleyba/dossier/DocRegistry.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="17" column="41" selection-start="413" selection-end="413" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Config.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/github/jleyba/dossier/Config.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="81" column="23" selection-start="2926" selection-end="2979" vertical-scroll-proportion="0.0">
-              <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="e#3135#3271#0" expanded="true" />
-                <element signature="e#3264#3265#0" expanded="true" />
-                <element signature="e#3340#3508#0" expanded="true" />
-                <element signature="e#3501#3502#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Option.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="jar://$MAVEN_REPOSITORY$/args4j/args4j/2.0.16/args4j-2.0.16-sources.jar!/org/kohsuke/args4j/Option.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="70" column="18" selection-start="2262" selection-end="2262" vertical-scroll-proportion="0.0">
-              <folding>
-                <element signature="imports" expanded="false" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Main.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/github/jleyba/dossier/Main.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="179" column="3" selection-start="5927" selection-end="5927" vertical-scroll-proportion="0.0">
-              <folding>
-                <element signature="method#preprocessArgs#0;class#Main#0" expanded="false" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
+    <splitter split-orientation="vertical" split-proportion="0.2782101">
+      <split-first>
+        <leaf>
+          <file leaf-file-name="Descriptor.java" pinned="false" current="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/src/main/java/com/github/jleyba/dossier/Descriptor.java">
+              <provider selected="true" editor-type-id="text-editor">
+                <state line="124" column="3" selection-start="3287" selection-end="3287" vertical-scroll-proportion="0.0">
+                  <folding>
+                    <element signature="imports" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="pom.xml" pinned="false" current="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/pom.xml">
+              <provider selected="true" editor-type-id="text-editor">
+                <state line="27" column="0" selection-start="891" selection-end="891" vertical-scroll-proportion="0.0">
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="DocWriter.java" pinned="false" current="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/src/main/java/com/github/jleyba/dossier/DocWriter.java">
+              <provider selected="true" editor-type-id="text-editor">
+                <state line="13" column="23" selection-start="329" selection-end="329" vertical-scroll-proportion="0.0">
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="DocWriterFactory.java" pinned="false" current="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/src/main/java/com/github/jleyba/dossier/DocWriterFactory.java">
+              <provider selected="true" editor-type-id="text-editor">
+                <state line="21" column="67" selection-start="575" selection-end="575" vertical-scroll-proportion="0.0">
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="HtmlDocWriter.java" pinned="false" current="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/src/main/java/com/github/jleyba/dossier/HtmlDocWriter.java">
+              <provider selected="true" editor-type-id="text-editor">
+                <state line="361" column="42" selection-start="12231" selection-end="12231" vertical-scroll-proportion="0.0">
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="docs.css" pinned="false" current="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/src/main/resources/docs.css">
+              <provider selected="true" editor-type-id="text-editor">
+                <state line="89" column="0" selection-start="1523" selection-end="1605" vertical-scroll-proportion="0.0">
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="FileSystem.java" pinned="false" current="false" current-in-tab="false">
+            <entry file="jar:///Library/Java/JavaVirtualMachines/jdk1.7.0_25.jdk/Contents/Home/src.zip!/java/nio/file/FileSystem.java">
+              <provider selected="true" editor-type-id="text-editor">
+                <state line="294" column="25" selection-start="13212" selection-end="13212" vertical-scroll-proportion="0.0">
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="DocRegistry.java" pinned="false" current="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/src/main/java/com/github/jleyba/dossier/DocRegistry.java">
+              <provider selected="true" editor-type-id="text-editor">
+                <state line="17" column="41" selection-start="413" selection-end="413" vertical-scroll-proportion="0.0">
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="LinkResolver.java" pinned="false" current="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/src/main/java/com/github/jleyba/dossier/LinkResolver.java">
+              <provider selected="true" editor-type-id="text-editor">
+                <state line="156" column="0" selection-start="4765" selection-end="4765" vertical-scroll-proportion="2.3846154">
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="Main.java" pinned="false" current="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/src/main/java/com/github/jleyba/dossier/Main.java">
+              <provider selected="true" editor-type-id="text-editor">
+                <state line="179" column="3" selection-start="5927" selection-end="5927" vertical-scroll-proportion="0.0">
+                  <folding>
+                    <element signature="method#preprocessArgs#0;class#Main#0" expanded="false" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+        </leaf>
+      </split-first>
+      <split-second>
+        <leaf>
+          <file leaf-file-name="LinkResolver.java" pinned="false" current="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/src/main/java/com/github/jleyba/dossier/LinkResolver.java">
+              <provider selected="true" editor-type-id="text-editor">
+                <state line="43" column="0" selection-start="1143" selection-end="1143" vertical-scroll-proportion="0.0">
+                  <folding>
+                    <marker date="1378570838000" expanded="true" signature="736:837" placeholder="{...}" />
+                    <marker date="1378570838000" expanded="true" signature="900:1142" placeholder="{...}" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="CommentUtil.java" pinned="false" current="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/src/main/java/com/github/jleyba/dossier/CommentUtil.java">
+              <provider selected="true" editor-type-id="text-editor">
+                <state line="250" column="20" selection-start="8216" selection-end="8216" vertical-scroll-proportion="0.0">
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="DocPass.java" pinned="false" current="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/src/main/java/com/github/jleyba/dossier/DocPass.java">
+              <provider selected="true" editor-type-id="text-editor">
+                <state line="65" column="21" selection-start="2062" selection-end="2062" vertical-scroll-proportion="0.0">
+                  <folding>
+                    <element signature="method#copyTypes#0;class#DocPass#0" expanded="false" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="source.css" pinned="false" current="true" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/src/main/resources/source.css">
+              <provider selected="true" editor-type-id="text-editor">
+                <state line="67" column="0" selection-start="1153" selection-end="1153" vertical-scroll-proportion="0.77678573">
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+        </leaf>
+      </split-second>
+    </splitter>
   </component>
   <component name="FindManager">
     <FindUsagesManager>
@@ -256,22 +291,22 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/src/main/java/com/github/jleyba/dossier/DocWriterFactory.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/github/jleyba/dossier/FileDescriptor.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/github/jleyba/dossier/HtmlDocWriter.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/github/jleyba/dossier/LinkResolver.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/github/jleyba/dossier/Options.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/github/jleyba/dossier/OptionPrinter.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/github/jleyba/dossier/Usage.java" />
         <option value="$PROJECT_DIR$/src/test/java/com/github/jleyba/dossier/FlagsTest.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/github/jleyba/dossier/Flags.java" />
         <option value="$PROJECT_DIR$/config.json" />
         <option value="$PROJECT_DIR$/src/main/java/com/github/jleyba/dossier/ConfigLoader.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/github/jleyba/dossier/Descriptor.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/github/jleyba/dossier/Config.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/github/jleyba/dossier/DocPass.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/github/jleyba/dossier/Main.java" />
         <option value="$PROJECT_DIR$/pom.xml" />
+        <option value="$PROJECT_DIR$/src/main/java/com/github/jleyba/dossier/Descriptor.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/github/jleyba/dossier/CommentUtil.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/github/jleyba/dossier/DocWriterFactory.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/github/jleyba/dossier/DocWriter.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/github/jleyba/dossier/DocPass.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/github/jleyba/dossier/HtmlDocWriter.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/github/jleyba/dossier/LinkResolver.java" />
+        <option value="$PROJECT_DIR$/src/main/resources/source.css" />
       </list>
     </option>
   </component>
@@ -496,7 +531,7 @@
     <configuration default="false" name="Main" type="Application" factoryName="Application" temporary="true">
       <option name="MAIN_CLASS_NAME" value="com.github.jleyba.dossier.Main" />
       <option name="VM_PARAMETERS" value="" />
-      <option name="PROGRAM_PARAMETERS" value="--closure_root=../selenium_jsdoc/third_party/closure/goog --src=../selenium_jsdoc/javascript/atoms --src=../selenium_jsdoc/javascript/webdriver --exclude=../selenium_jsdoc/javascript/atoms/test --exclude=../selenium_jsdoc/javascript/webdriver/test --exclude=../selenium_jsdoc/third_party/closure/goog/i18n/compactnumberformatsymbols.js --exclude=../selenium_jsdoc/third_party/closure/goog/i18n/compactnumberformatsymbols_ext.js --exclude=../selenium_jsdoc/third_party/closure/goog/i18n/datetimesymbols.js --exclude=../selenium_jsdoc/third_party/closure/goog/i18n/datetimesymbolsext.js --exclude=../selenium_jsdoc/third_party/closure/goog/i18n/numberformatsymbols.js --exclude=../selenium_jsdoc/third_party/closure/goog/i18n/numberformatsymbolsext.js --exclude=../selenium_jsdoc/third_party/closure/goog/demos --exclude=../selenium_jsdoc/third_party/js/wgxpath/ --output=target/docs" />
+      <option name="PROGRAM_PARAMETERS" value="--src=../selenium_jsdoc/javascript/atoms --src=../selenium_jsdoc/javascript/webdriver --exclude=../selenium_jsdoc/javascript/atoms/test --exclude=../selenium_jsdoc/javascript/webdriver/test --exclude=../selenium_jsdoc/third_party/closure/goog/i18n/compactnumberformatsymbols.js --exclude=../selenium_jsdoc/third_party/closure/goog/i18n/compactnumberformatsymbols_ext.js --exclude=../selenium_jsdoc/third_party/closure/goog/i18n/datetimesymbols.js --exclude=../selenium_jsdoc/third_party/closure/goog/i18n/datetimesymbolsext.js --exclude=../selenium_jsdoc/third_party/closure/goog/i18n/numberformatsymbols.js --exclude=../selenium_jsdoc/third_party/closure/goog/i18n/numberformatsymbolsext.js --exclude=../selenium_jsdoc/third_party/closure/goog/demos --exclude=../selenium_jsdoc/third_party/js/wgxpath/ --output=target/docs" />
       <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" value="" />
@@ -601,22 +636,22 @@
     <frame x="0" y="0" width="1440" height="900" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32917705" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.31047383" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.44638404" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32917705" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.20803443" sideWeight="0.6932668" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24892396" sideWeight="0.553616" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.44638404" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.5598504" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24892396" sideWeight="0.64089775" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.35910225" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
@@ -683,68 +718,6 @@
     <breakpoint-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="jar:///Library/Java/JavaVirtualMachines/jdk1.7.0_25.jdk/Contents/Home/src.zip!/java/lang/Class.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="1790" column="19" selection-start="75845" selection-end="75845" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/github/jleyba/dossier/CommentUtil.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="27" column="6" selection-start="795" selection-end="795" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/github/jleyba/dossier/LinkResolver.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="23" column="6" selection-start="684" selection-end="684" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/args4j/args4j/2.0.16/args4j-2.0.16-sources.jar!/org/kohsuke/args4j/spi/Setter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="1" column="0" selection-start="32" selection-end="32" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar:///Library/Java/JavaVirtualMachines/jdk1.7.0_25.jdk/Contents/Home/src.zip!/java/nio/file/DirectoryStream.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="118" column="17" selection-start="4637" selection-end="4637" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/args4j/args4j/2.0.16/args4j-2.0.16-sources.jar!/org/kohsuke/args4j/spi/MultiValueFieldSetter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="60" column="0" selection-start="1702" selection-end="1702" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="imports" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/args4j/args4j/2.0.16/args4j-2.0.16-sources.jar!/org/kohsuke/args4j/Option.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="70" column="18" selection-start="2262" selection-end="2262" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="imports" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/args4j/args4j/2.0.16/args4j-2.0.16-sources.jar!/org/kohsuke/args4j/spi/FieldSetter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="35" column="0" selection-start="736" selection-end="736" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="imports" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://$MAVEN_REPOSITORY$/com/google/javascript/closure-compiler/v20130722/closure-compiler-v20130722-sources.jar!/com/google/javascript/rhino/jstype/JSType.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="66" column="22" selection-start="2639" selection-end="2639" vertical-scroll-proportion="0.0">
@@ -778,13 +751,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/github/jleyba/dossier/DocPass.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="64" column="3" selection-start="2206" selection-end="2206" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/github/jleyba/dossier/DocRegistry.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="17" column="41" selection-start="413" selection-end="413" vertical-scroll-proportion="0.0">
@@ -801,18 +767,86 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="27" column="0" selection-start="891" selection-end="891" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/github/jleyba/dossier/DocWriterFactory.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="21" column="67" selection-start="575" selection-end="575" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/github/jleyba/dossier/CommentUtil.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="250" column="20" selection-start="8216" selection-end="8216" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/github/jleyba/dossier/Descriptor.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="219" column="0" selection-start="5761" selection-end="5761" vertical-scroll-proportion="0.0">
+        <state line="124" column="3" selection-start="3287" selection-end="3287" vertical-scroll-proportion="0.0">
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/pom.xml">
+    <entry file="jar:///Library/Java/JavaVirtualMachines/jdk1.7.0_25.jdk/Contents/Home/src.zip!/java/nio/file/FileSystem.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="27" column="0" selection-start="891" selection-end="891" vertical-scroll-proportion="0.65648854">
+        <state line="294" column="25" selection-start="13212" selection-end="13212" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/github/jleyba/dossier/DocWriter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="13" column="23" selection-start="329" selection-end="329" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/github/jleyba/dossier/DocPass.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="65" column="21" selection-start="2062" selection-end="2062" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="method#copyTypes#0;class#DocPass#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/docs.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="89" column="0" selection-start="1523" selection-end="1605" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/github/jleyba/dossier/HtmlDocWriter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="361" column="42" selection-start="12231" selection-end="12231" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/github/jleyba/dossier/LinkResolver.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="43" column="0" selection-start="1143" selection-end="1143" vertical-scroll-proportion="0.0">
+          <folding>
+            <marker date="1378570838000" expanded="true" signature="736:837" placeholder="{...}" />
+            <marker date="1378570838000" expanded="true" signature="900:1142" placeholder="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/source.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="67" column="0" selection-start="1153" selection-end="1153" vertical-scroll-proportion="0.77678573">
           <folding />
         </state>
       </provider>

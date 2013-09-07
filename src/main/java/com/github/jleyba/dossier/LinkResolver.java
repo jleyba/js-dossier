@@ -1,19 +1,14 @@
 package com.github.jleyba.dossier;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
 import com.google.javascript.rhino.JSDocInfo;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Iterator;
 
 import javax.annotation.Nullable;
@@ -25,52 +20,35 @@ class LinkResolver {
 
   private final Path outputDir;
   private final DocRegistry docRegistry;
-  @Nullable private final Descriptor descriptor;
 
   /**
    * @param outputDir The base output directory.
    * @param docRegistry The documented type registry.
    */
   LinkResolver(Path outputDir, DocRegistry docRegistry) {
-    this(outputDir, docRegistry, null);
-  }
-
-  private LinkResolver(Path outputDir, DocRegistry docRegistry, @Nullable Descriptor descriptor) {
     this.outputDir = checkNotNull(outputDir);
     this.docRegistry = checkNotNull(docRegistry);
-    this.descriptor = descriptor;
   }
 
-  /**
-   * Creates a new link resolver specifically for the given descriptor.
-   */
-  LinkResolver createResolver(Descriptor descriptor) {
-    return new LinkResolver(outputDir, docRegistry, descriptor);
-  }
-
-  /**
-   * Returns the path of the generated document, relative to this instance's output directory,
-   * for the descriptor managed by this resolver.
-   *
-   * @throws IllegalStateException If this resolver does not have a descriptor.
-   */
-  Path getFilePath() {
-    checkState(descriptor != null);
-    return getFilePath(descriptor);
+  private static String getTypePrefix(Descriptor descriptor) {
+    if (descriptor.isInterface()) {
+      return "interface_";
+    } else if (descriptor.isConstructor()) {
+      return "class_";
+    } else if (descriptor.isEnum()) {
+      return "enum_";
+    } else {
+      return "namespace_";
+    }
   }
 
   /**
    * Returns the path of the generated document file for the given descriptor. The generated path
    * will always be relative to this resolver's output directory.
    */
-  private Path getFilePath(Descriptor descriptor) {
+  Path getFilePath(Descriptor descriptor) {
     String name = descriptor.getFullName().replace('.', '_') + ".html";
-    if (descriptor.isConstructor()
-        || descriptor.isInterface()
-        || descriptor.isEnum()) {
-      return outputDir.resolve("type").resolve(name);
-    }
-    return outputDir.resolve("ns").resolve(name);
+    return outputDir.resolve(getTypePrefix(descriptor) + name);
   }
 
   /**
@@ -110,7 +88,7 @@ class LinkResolver {
       return getExternLink(to);
     }
 
-    return getRelativePath(getFilePath(), toPath) + fragment;
+    return toPath + fragment;
   }
 
   @Nullable
@@ -161,31 +139,14 @@ class LinkResolver {
     return null;
   }
 
-  /**
-   * Resolves a path relative to the root directory against the output file for the descriptor
-   * managed by this instance. If this instance does not have a descriptor, the root relative path
-   * will be trivially returned.
-   */
-  Path resolveRootRelativePath(String path) {
-    Path p = outputDir.resolve(path);
-    if (descriptor == null) {
-      return p;
-    }
-    return getRelativePath(getFilePath(), p);
-  }
-
   @Nullable
-  String getPathToSourceFile() {
-    if (descriptor == null) {
-      return null;
-    }
+  String getSourcePath(Descriptor descriptor) {
     String strPath = descriptor.getSource();
     if (strPath == null) {
       return null;
     }
-    Path path = outputDir.getFileSystem().getPath(strPath);
-    Iterator<Path> parts = path.iterator();
-    Path output = outputDir.resolve("file");
+    Iterator<Path> parts = outputDir.getFileSystem().getPath(strPath).iterator();
+    Path output = outputDir.getFileSystem().getPath("source");
     while (parts.hasNext()) {
       Path part = parts.next();
       if (!part.toString().equals(".") && !part.toString().equals("..")) {
@@ -194,24 +155,11 @@ class LinkResolver {
     }
     output = output.resolveSibling(output.getFileName() + ".src.html");
 
-    String relPath = getRelativePath(getFilePath(), output).toString();
+    String relPath = output.toString();
     int lineNum = descriptor.getLineNum();
     if (lineNum > 1) {
       relPath += "#l" + (lineNum - 1);
     }
     return relPath;
-  }
-
-  /**
-   * Computes the relative path from one file to another. Assumes both files are located under
-   * {@link #outputDir}.
-   *
-   * @param from The source file.
-   * @param to The destination file.
-   * @return The relative path between the two files.
-   */
-  private Path getRelativePath(Path from, Path to) {
-    Path fromDir = Files.isDirectory(from) ? from : from.getParent();
-    return fromDir.relativize(to);
   }
 }

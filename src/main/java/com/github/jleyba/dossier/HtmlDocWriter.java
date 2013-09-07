@@ -3,9 +3,11 @@ package com.github.jleyba.dossier;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Iterables.transform;
 
+import com.google.common.base.Charsets;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Predicate;
+import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
@@ -20,10 +22,15 @@ import com.google.javascript.rhino.jstype.ObjectType;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintStream;
+import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+import java.security.DigestOutputStream;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.Stack;
@@ -35,13 +42,15 @@ import javax.annotation.Nullable;
  */
 class HtmlDocWriter implements DocWriter {
 
+  private final Config config;
   private final DocRegistry docRegistry;
   private final Descriptor descriptor;
   private final LinkResolver resolver;
 
-  HtmlDocWriter(DocRegistry registry, Descriptor descriptor, LinkResolver resolver) {
+  HtmlDocWriter(Config config, DocRegistry registry, Descriptor descriptor, LinkResolver resolver) {
+    this.config = checkNotNull(config);
     this.docRegistry = checkNotNull(registry);
-    this.descriptor = checkNotNull(descriptor);
+    this.descriptor = descriptor;
     this.resolver = checkNotNull(resolver);
   }
 
@@ -98,15 +107,15 @@ class HtmlDocWriter implements DocWriter {
 
   @Override
   public void generateDocs(JSTypeRegistry registry) throws IOException {
-    Path output = resolver.getFilePath();
+
+    Path output = resolver.getFilePath(descriptor);
     Files.createDirectories(output.getParent());
 
     try (FileOutputStream os = new FileOutputStream(output.toFile())) {
       PrintStream stream = new PrintStream(os);
       stream.println("<!DOCTYPE html>");
       stream.println("<title>" + descriptor.getFullName() + "</title>");
-      stream.printf("<link href=\"%s\" type=\"text/css\" rel=\"stylesheet\">\n",
-          resolver.resolveRootRelativePath("docs.css"));
+      stream.println("<link href=\"docs.css\" type=\"text/css\" rel=\"stylesheet\">");
       stream.println();
       stream.println();
       printTopNav(stream);
@@ -118,11 +127,7 @@ class HtmlDocWriter implements DocWriter {
       stream.println("<article id=\"content\">");
       stream.println("<header>");
       printTitle(stream);
-
-      String sourcePath = resolver.getPathToSourceFile();
-      if (null != sourcePath) {
-        stream.printf("<a class=\"source\" href=\"%s\">code &raquo;</a>\n", sourcePath);
-      }
+      stream.println(getSourceLink(descriptor));
       printEnumType(stream);
       printInheritanceTree(stream, registry);
       printInterfaces(stream, "All implemented interfaces:",
@@ -154,6 +159,68 @@ class HtmlDocWriter implements DocWriter {
           "<a href=\"https://github.com/jleyba/js-dossier\">dossier</a></footer>");
       stream.println("</article>");
       stream.println("<script src=\"../polyfill.js\"></script>");
+    }
+  }
+
+  @Override
+  public void copySourceFiles() throws IOException {
+    FileSystem fs = config.outputDir.getFileSystem();
+    copyResource(fs.getPath("/docs.css"), config.outputDir);
+    Path sourceCss = copyResource(fs.getPath("/source.css"), config.outputDir);
+
+    Path fileDir = config.outputDir.resolve("source");
+    for (Path source : config.filteredDocSrcs()) {
+      Path simpleSource = simplifySourcePath(source);
+      Path dest = fileDir.resolve(simpleSource.toString() + ".src.html");
+
+      Splitter lineSplitter = Splitter.on('\n');
+      Files.createDirectories(dest.getParent());
+      try (FileOutputStream fos = new FileOutputStream(dest.toString())) {
+        PrintStream stream = new PrintStream(fos);
+        stream.println("<!DOCTYPE html>");
+        stream.println("<title>" + source.getFileName() + "</title>");
+        stream.printf("<link href=\"%s\" type=\"text/css\" rel=\"stylesheet\">\n",
+            dest.getParent().relativize(sourceCss));
+        printTopNav(stream);
+        stream.println();
+        stream.println();
+        stream.println("<article id=\"content\">");
+        stream.println("<h1>" + simpleSource + "</h1>");
+        stream.print("<pre><table><tbody>");
+
+        Iterable<String> lines = lineSplitter.split(
+            com.google.common.io.Files.toString(source.toFile(), Charsets.UTF_8));
+        int count = 1;
+        for (String line : lines) {
+          stream.printf("<tr><td><a name=\"l%d\" href=\"#l%d\">%d</a><td>",
+              count, count, count);
+          stream.println(line.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;"));
+          count += 1;
+        }
+
+        stream.println("</table></pre>");
+        stream.println("</article>");
+      }
+    }
+  }
+
+  private static Path simplifySourcePath(Path path) {
+    Iterator<Path> parts = path.iterator();
+    Path output = path.getFileSystem().getPath("");
+    while (parts.hasNext()) {
+      Path part = parts.next();
+      if (!part.toString().equals(".") && !part.toString().equals("..")) {
+        output = output.resolve(part);
+      }
+    }
+    return output;
+  }
+
+  private static Path copyResource(Path resourcePath, Path outputDir) throws IOException {
+    try (InputStream stream = DocPass.class.getResourceAsStream(resourcePath.toString())) {
+      Path outputPath = outputDir.resolve(resourcePath.getFileName());
+      Files.copy(stream, outputPath, StandardCopyOption.REPLACE_EXISTING);
+      return outputPath;
     }
   }
 
@@ -292,7 +359,7 @@ class HtmlDocWriter implements DocWriter {
   }
 
   private String getSourceLink(Descriptor descriptor) {
-    String sourcePath = resolver.createResolver(descriptor).getPathToSourceFile();
+    String sourcePath = resolver.getSourcePath(descriptor);
     if (null != sourcePath) {
       return String.format("<a class=\"source\" href=\"%s\">code &raquo;</a>\n", sourcePath);
     }

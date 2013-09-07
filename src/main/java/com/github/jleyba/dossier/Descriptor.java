@@ -35,14 +35,6 @@ class Descriptor {
 
   private final Set<Descriptor> children = new HashSet<>();
 
-  Descriptor(String name, @Nullable JSType type) {
-    this(name, type, null, null);
-  }
-
-  Descriptor(String name, @Nullable JSType type, @Nullable Descriptor parent) {
-    this(name, type, null, parent);
-  }
-
   Descriptor(String name, @Nullable JSType type, @Nullable JSDocInfo info) {
     this(name, type, info, null);
   }

@@ -1,21 +1,33 @@
-pre.prettyprint {
+/* poly-fill */
+article, details, nav, section, summary { display: block; }
+
+
+/* General page styling */
+body {
+  margin: 0;
+  padding: 0;
+  font-size: 10pt;
+  font-family: sans-serif;
+  color: #333;
+}
+pre {
   padding: 0;
   border: 0;
 }
 table {
   border-collapse: collapse;
-  border: 1px solid #808080;
+  border: 1px solid #c0c0c0;
   font-size: 9pt;
 }
 td {
-  padding: 1px 4px;
+  padding: .15em 1em;
   background-color: #f0f0f0;
   vertical-align: baseline;
 }
 /* line number column */
 td:first-child {
   text-align: right;
-  border-right: 1px solid #808080;
+  border-right: 1px solid #c0c0c0;
   color: #808080;
   font-size: .9em;
   -webkit-touch-callout: none;
@@ -25,8 +37,39 @@ td:first-child {
   -ms-user-select: none;
   user-select: none;
 }
-td:first-child a {
-  color: #808080;
-  text-decoration: none;
+a { text-decoration: none; }
+a[href] { color: #66f; }
+a[href]:hover {text-decoration: underline; }
+td:first-child a { color: #808080; }
+
+
+
+/* Top banner bar styling */
+#top {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2.5em;
+  background-color: #333;
+  color: white;
+  font-weight: bold;
+  z-index: 1;
 }
-td:first-child a:hover { text-decoration: underline; }
+#searchbox {
+  float: right;
+  margin: .3em 2em .2em 0;
+}
+
+
+/* Main content styling */
+#content {
+  margin: 0 0 0 2em;
+  padding: 3.5em .5em 0 2em;
+}
+#content h1 {
+  border-bottom: 1px solid silver;
+  margin: 0;
+  font-size: 2em;
+}
+

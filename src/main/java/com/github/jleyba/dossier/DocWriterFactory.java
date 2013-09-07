@@ -18,7 +18,7 @@ class DocWriterFactory {
   /**
    * Creates a new {@link DocWriter} for the given {@code descriptor}.
    */
-  DocWriter createDocWriter(DocRegistry registry, Descriptor descriptor) {
-    return new HtmlDocWriter(registry, descriptor, resolver.createResolver(descriptor));
+  DocWriter createDocWriter(Config config, DocRegistry registry, Descriptor descriptor) {
+    return new HtmlDocWriter(config, registry, descriptor, resolver);
   }
 }

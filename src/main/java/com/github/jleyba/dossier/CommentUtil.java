@@ -254,8 +254,6 @@ class CommentUtil {
 
     if (path != null) {
       return String.format("<a href=\"%s\">%s</a>", path, namedType);
-    } else {
-      System.err.println("Could not resolve: " + namedType + " relative to " + resolver.getFilePath());
     }
     return namedType;
   }
