@@ -7,7 +7,6 @@ import com.google.javascript.rhino.JSDocInfo;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Iterator;
 
@@ -92,10 +91,10 @@ class LinkResolver {
   }
 
   @Nullable
-  Path getTypePath(String name) {
+  private Path getTypePath(String name) {
     Descriptor descriptor = docRegistry.getType(name);
     if (descriptor != null) {
-      return getFilePath(descriptor);
+      return getFilePath(descriptor).getFileName();
     }
     return null;
   }

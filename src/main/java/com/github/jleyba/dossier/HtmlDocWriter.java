@@ -53,6 +53,7 @@ class HtmlDocWriter implements DocWriter {
 
   @Override
   public void generateDocs(JSTypeRegistry registry) throws IOException {
+    Files.createDirectories(config.outputDir);
     copyResources();
     copySourceFiles();
     for (Descriptor descriptor : docRegistry.getTypes()) {
@@ -374,8 +375,8 @@ class HtmlDocWriter implements DocWriter {
     for (Descriptor child : children) {
       JSDocInfo info = checkNotNull(child.getInfo());
 
-      String link = checkNotNull(resolver.getRelativeTypeLink(child.getFullName()));
-      stream.println("<dt><a href=\"" + link + "\">" + child.getFullName() + "</a>");
+      Path path = resolver.getFilePath(child);
+      stream.println("<dt><a href=\"" + path.getFileName() + "\">" + child.getFullName() + "</a>");
 
       String comment = CommentUtil.getBlockDescription(resolver, info);
       String summary = CommentUtil.getSummary(comment);
