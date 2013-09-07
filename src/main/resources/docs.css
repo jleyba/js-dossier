@@ -45,7 +45,7 @@ code.type a[href] { color: #080; }
   position: fixed;
   top: 2.5em;
   left: 0;
-  bottom: 0;
+  bottom: 1.5em;
   width: 15em;
   overflow: auto;
   border-right: 1px solid silver;
@@ -168,10 +168,20 @@ a.source { float:right; }
 }
 
 footer {
-  border-top: 1px solid silver;
-  margin-top: 3em;
-  padding: .5em .5em 1em 1em;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  background-color: white;
+  height: 1.5em;
+  width: 15em;
+  border-right: 1px solid silver;
   color: #555;
+  margin: 0;
+}
+footer div {
+  border-top: 1px solid silver;
+  margin: 0 3em 0 0;
   font-size: .85em;
+  padding: .33em 0 0 1em;
 }
 footer a[href] { color: #555; }
