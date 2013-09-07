@@ -350,7 +350,7 @@ class HtmlDocWriter implements DocWriter {
     for (String name : object.getOwnPropertyNames()) {
       JSType type = object.getPropertyType(name);
       if (type.isEnumElementType()) {
-        stream.println("<dt>" + name);
+        stream.printf("<dt><a name=\"%s\">%s</a>\n", descriptor.getFullName() + "." + name, name);
 
         Node node = object.getPropertyNode(name);
         if (node == null) {
@@ -372,7 +372,7 @@ class HtmlDocWriter implements DocWriter {
   }
 
   private String getTypeLink(String type) {
-    String path = resolver.getRelativeTypeLink(type);
+    String path = resolver.getLink(type);
     if (path == null) {
       return type;
     }
@@ -487,7 +487,7 @@ class HtmlDocWriter implements DocWriter {
       methods.append("<h3>Defined in <code class=\"type\">");
       if (typeDescriptor != descriptor) {
         methods.append("<a href=\"")
-            .append(resolver.getRelativeTypeLink(typeDescriptor.getFullName()))
+            .append(resolver.getLink(typeDescriptor.getFullName()))
             .append("\">");
       }
       methods.append(typeDescriptor.getFullName());
@@ -581,7 +581,7 @@ class HtmlDocWriter implements DocWriter {
       builder.append("<h3>Defined in <code class=\"type\">");
       if (typeDescriptor != descriptor) {
         builder.append("<a href=\"")
-            .append(resolver.getRelativeTypeLink(typeDescriptor.getFullName()))
+            .append(resolver.getLink(typeDescriptor.getFullName()))
             .append("\">");
       }
       builder.append(typeDescriptor.getFullName());
@@ -611,7 +611,7 @@ class HtmlDocWriter implements DocWriter {
             builder.append(" : <code>" + property.getType() + "</code>");
           } else {
             builder.append(String.format(" : <code><a href=\"%s\">%s</a></code>",
-                resolver.getRelativeTypeLink(propertyTypeDescriptor.getFullName()),
+                resolver.getLink(propertyTypeDescriptor.getFullName()),
                 propertyTypeDescriptor.getFullName()));
           }
         }
@@ -838,7 +838,7 @@ class HtmlDocWriter implements DocWriter {
           stream.print(" : <code>" + property.getType() + "</code>");
         } else {
           stream.printf(" : <code><a href=\"%s\">%s</a></code>",
-              resolver.getRelativeTypeLink(propertyTypeDescriptor.getFullName()),
+              resolver.getLink(propertyTypeDescriptor.getFullName()),
               propertyTypeDescriptor.getFullName());
         }
       }

@@ -56,7 +56,7 @@ class LinkResolver {
    * relative to the output directory.
    */
   @Nullable
-  String getRelativeTypeLink(String to) {
+  String getLink(String to) {
     // Trim down the target symbol to something that would be indexable.
     int index = to.indexOf("(");
     if (index != -1) {
@@ -64,30 +64,33 @@ class LinkResolver {
     }
 
     String fragment = "";
-    Path toPath;
+    Path path;
     index = to.indexOf("#");
     if (index != -1) {
-      fragment = to.substring(index);
-      toPath = getTypePath(to.substring(0, index));
-      if (toPath != null) {
-        toPath = toPath.resolveSibling(
-            toPath.getFileName() + to.substring(index));
+      String typeName = to.substring(0, index);
+      String propertyName = "$" + to.substring(index + 1);
+      path = getTypePath(typeName);
+      if (path != null) {
+        fragment = "#" + typeName + propertyName;
       }
     } else {
-      toPath = getTypePath(to);
-      if (toPath == null) {
+      path = getTypePath(to);
+      if (path == null) {
         index = to.lastIndexOf('.');
         if (index != -1) {
-          toPath = getTypePath(to.substring(0, index));
+          path = getTypePath(to.substring(0, index));
+          if (path != null) {
+            fragment = "#" + to;
+          }
         }
       }
     }
 
-    if (toPath == null) {
+    if (path == null) {
       return getExternLink(to);
     }
 
-    return toPath + fragment;
+    return path + fragment;
   }
 
   @Nullable

@@ -12,7 +12,6 @@ import com.google.javascript.rhino.JSTypeExpression;
 import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.Token;
 
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -245,7 +244,7 @@ class CommentUtil {
 
   private static String formatTypeString(LinkResolver resolver, Node node) {
     String namedType = node.getString();
-    @Nullable String path = resolver.getRelativeTypeLink(namedType);
+    @Nullable String path = resolver.getLink(namedType);
 
     ImmutableList<String> templateNames = getTemplateTypeNames(node);
     if (!templateNames.isEmpty()) {
@@ -424,7 +423,7 @@ class CommentUtil {
       }
 
       CodeNode linkContent = new CodeNode(linkText);
-      String link = resolver.getRelativeTypeLink(linkedType);
+      String link = resolver.getLink(linkedType);
       if (link == null) {
         return "<a class=\"unresolved\">" + linkContent + "</a>";
       } else {
