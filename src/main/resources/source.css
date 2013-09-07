@@ -1,0 +1,32 @@
+pre.prettyprint {
+  padding: 0;
+  border: 0;
+}
+table {
+  border-collapse: collapse;
+  border: 1px solid #808080;
+  font-size: 9pt;
+}
+td {
+  padding: 1px 4px;
+  background-color: #f0f0f0;
+  vertical-align: baseline;
+}
+/* line number column */
+td:first-child {
+  text-align: right;
+  border-right: 1px solid #808080;
+  color: #808080;
+  font-size: .9em;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: -moz-none;
+  -ms-user-select: none;
+  user-select: none;
+}
+td:first-child a {
+  color: #808080;
+  text-decoration: none;
+}
+td:first-child a:hover { text-decoration: underline; }
