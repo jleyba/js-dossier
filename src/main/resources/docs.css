@@ -84,7 +84,7 @@ code.type a[href] { color: #080; }
 /* Main content styling */
 #content {
   margin: 0 0 0 15em;
-  padding: 3.5em .5em 0 2em;
+  padding: 3.5em .5em 1em 2em;
 }
 #content header * { margin-top: .33em; }
 #content h1 {

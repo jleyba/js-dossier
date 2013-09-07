@@ -379,6 +379,19 @@ class Descriptor {
     return properties;
   }
 
+  boolean hasOwnInstanceProprety(String name) {
+    if (!isConstructor() && !isInterface()) {
+      return false;
+    }
+    ObjectType obj = toObjectType();
+    if (isConstructor() && obj.getConstructor() != null) {
+      obj = obj.getConstructor();
+    }
+    FunctionType ctor = (FunctionType) obj;
+    return ctor.getInstanceType().hasOwnProperty(name)
+        || ctor.getPrototype().hasOwnProperty(name);
+  }
+
   private static Set<String> getExtendedInterfaces(JSDocInfo info, JSTypeRegistry registry) {
     Set<String> interfaces = new HashSet<>();
     if (info == null) {

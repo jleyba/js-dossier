@@ -464,6 +464,8 @@ class HtmlDocWriter implements DocWriter {
     if (!descriptor.isConstructor() && !descriptor.isInterface()) {
       return;
     }
+
+    List<Descriptor> seen = new LinkedList<>();
     StringBuilder methods = new StringBuilder();
     for (String type : descriptor.getAllTypes(registry)) {
       Descriptor typeDescriptor = docRegistry.getType(type);
@@ -471,9 +473,14 @@ class HtmlDocWriter implements DocWriter {
         continue;
       }
 
-      List<Descriptor> functions = FluentIterable.from(descriptor.getInstanceProperties())
-          .filter(isFunction())
-          .toSortedList(DescriptorNameComparator.INSTANCE);
+      FluentIterable<Descriptor> unsorted = FluentIterable
+          .from(typeDescriptor.getInstanceProperties())
+          .filter(isFunction());
+      if (typeDescriptor != descriptor) {
+        unsorted = unsorted.filter(notOwnPropertyOf(seen));
+      }
+      List<Descriptor> functions = unsorted.toSortedList(DescriptorNameComparator.INSTANCE);
+      seen.add(typeDescriptor);
       if (functions.isEmpty()) {
         continue;
       }
@@ -551,6 +558,7 @@ class HtmlDocWriter implements DocWriter {
       return;
     }
 
+    List<Descriptor> seen = new LinkedList<>();
     StringBuilder builder = new StringBuilder();
     for (String type : descriptor.getAllTypes(registry)) {
       Descriptor typeDescriptor = docRegistry.getType(type);
@@ -558,9 +566,14 @@ class HtmlDocWriter implements DocWriter {
         continue;
       }
 
-      List<Descriptor> properties = FluentIterable.from(typeDescriptor.getInstanceProperties())
-          .filter(isProperty())
-          .toSortedList(DescriptorNameComparator.INSTANCE);
+      FluentIterable<Descriptor> unsorted = FluentIterable
+          .from(typeDescriptor.getInstanceProperties())
+          .filter(isProperty());
+      if (typeDescriptor != descriptor) {
+        unsorted = unsorted.filter(notOwnPropertyOf(seen));
+      }
+      List<Descriptor> properties = unsorted.toSortedList(DescriptorNameComparator.INSTANCE);
+      seen.add(typeDescriptor);
       if (properties.isEmpty()) {
         continue;
       }
@@ -901,6 +914,20 @@ class HtmlDocWriter implements DocWriter {
       @Override
       public boolean apply(Descriptor input) {
         return input.isFunction() && !input.isConstructor() && !input.isInterface();
+      }
+    };
+  }
+
+  private static Predicate<Descriptor> notOwnPropertyOf(final Iterable<Descriptor> descriptors) {
+    return new Predicate<Descriptor>() {
+      @Override
+      public boolean apply(Descriptor input) {
+        for (Descriptor descriptor : descriptors) {
+          if (descriptor.hasOwnInstanceProprety(input.getName())) {
+            return false;
+          }
+        }
+        return true;
       }
     };
   }
