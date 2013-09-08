@@ -1,6 +1,7 @@
 package com.github.jleyba.dossier;
 
 import com.google.common.base.Charsets;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableSet;
 import com.google.javascript.jscomp.AbstractCompiler;
 import com.google.javascript.jscomp.CompilerPass;
@@ -188,7 +189,6 @@ class DocPass  implements CompilerPass {
         // We're building an index of types, so do not traverse prototypes or enum values.
         JSType propType = obj.getPropertyType(prop);
         if (propType.isFunctionPrototypeType() || propType.isEnumElementType()) {
-//          System.err.println("Skipping proto/enum value " + descriptor.getFullName() + "." + prop);
           continue;
         }
 
@@ -198,7 +198,6 @@ class DocPass  implements CompilerPass {
             && node.getParent().isAssign()
             && node.getNext() != null
             && node.getNext().isNew()) {
-//          System.err.println("Skipping new " + descriptor.getFullName() + "." + prop);
           continue;
         }
 
@@ -211,18 +210,11 @@ class DocPass  implements CompilerPass {
         }
       }
 
-      if (!docRegistry.isKnownType(descriptor.getFullName()) && descriptor.isNamespace()) {
+      if (!docRegistry.isKnownType(descriptor.getFullName())
+          && (registry.hasNamespace(descriptor.getFullName()) || descriptor.isNamespace())) {
         System.out.println("Found namespace: " + descriptor.getFullName());
         docRegistry.addType(descriptor);
       }
-//
-//      Iterable<Descriptor> children = descriptor.getChildren();
-//      if (children.iterator().hasNext()) {
-//        System.out.println("___" + descriptor.getFullName());
-//        for (Descriptor child : children) {
-//          System.out.println("______" + child.getFullName());
-//        }
-//      }
     }
   }
 

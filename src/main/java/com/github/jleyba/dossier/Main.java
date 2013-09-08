@@ -171,7 +171,7 @@ public class Main extends CommandLineRunner {
     });
     args = compilerFlags.toArray(new String[compilerFlags.size()]);
 
-    Main main = new Main(args, nullStream, System.err, config);
+    Main main = new Main(args, nullStream, nullStream, config);
     if (main.shouldRunCompiler()) {
       main.run();
     } else {

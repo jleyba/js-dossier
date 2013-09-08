@@ -123,17 +123,24 @@ class HtmlDocWriter implements DocWriter {
   }
 
   @Override
-  public void generateDocs(JSTypeRegistry registry) throws IOException {
+  public void generateDocs(final JSTypeRegistry registry) throws IOException {
     Files.createDirectories(config.outputDir);
     copyResources();
     copySourceFiles();
-    for (Descriptor descriptor : docRegistry.getTypes()) {
-      if (descriptor.getSource() != null) {
-        Path path = config.outputDir.getFileSystem().getPath(descriptor.getSource());
-        if (config.excludeDocs.contains(path)) {
-          continue;
-        }
-      }
+
+    Iterable<Descriptor> descriptors = FluentIterable.from(docRegistry.getTypes())
+        .filter(new Predicate<Descriptor>() {
+          @Override
+          public boolean apply(Descriptor input) {
+            if (input.getSource() == null) {
+              return true;
+            }
+            Path path = config.outputDir.getFileSystem().getPath(input.getSource());
+            return !config.excludeDocs.contains(path);
+          }
+        });
+
+    for (Descriptor descriptor : descriptors) {
       generateDocs(descriptor, registry);
     }
   }
@@ -614,9 +621,9 @@ class HtmlDocWriter implements DocWriter {
           }
 
           if (propertyTypeDescriptor == null) {
-            builder.append(" : <code>" + property.getType() + "</code>");
+            builder.append(" : <code class=\"type\">" + property.getType() + "</code>");
           } else {
-            builder.append(String.format(" : <code><a href=\"%s\">%s</a></code>",
+            builder.append(String.format(" : <code class=\"type\"><a href=\"%s\">%s</a></code>",
                 resolver.getLink(propertyTypeDescriptor.getFullName()),
                 propertyTypeDescriptor.getFullName()));
           }
@@ -841,9 +848,9 @@ class HtmlDocWriter implements DocWriter {
         }
 
         if (propertyTypeDescriptor == null) {
-          stream.print(" : <code>" + property.getType() + "</code>");
+          stream.print(" : <code class=\"type\">" + property.getType() + "</code>");
         } else {
-          stream.printf(" : <code><a href=\"%s\">%s</a></code>",
+          stream.printf(" : <code class=\"type\"><a href=\"%s\">%s</a></code>",
               resolver.getLink(propertyTypeDescriptor.getFullName()),
               propertyTypeDescriptor.getFullName());
         }
@@ -938,10 +945,14 @@ class HtmlDocWriter implements DocWriter {
     };
   }
 
-  private static Predicate<Descriptor> isProperty() {
+  private Predicate<Descriptor> isProperty() {
     return new Predicate<Descriptor>() {
       @Override
       public boolean apply(Descriptor input) {
+        if (docRegistry.isKnownType(input.getFullName())) {
+          return false;
+        }
+
         JSType type = input.getType();
         if (type == null) {
           return true;
