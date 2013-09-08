@@ -214,6 +214,12 @@ class HtmlDocWriter implements DocWriter {
       Path simpleSource = simplifySourcePath(source);
       Path dest = fileDir.resolve(simpleSource.toString() + ".src.html");
 
+      Path toSourceCss = fileDir.getFileSystem().getPath("..");
+      for (Iterator<Path> it = simpleSource.getParent().iterator(); it.hasNext(); it.next()) {
+        toSourceCss = toSourceCss.resolve("..");
+      }
+      toSourceCss = toSourceCss.resolve("source.css");
+
       Splitter lineSplitter = Splitter.on('\n');
       Files.createDirectories(dest.getParent());
       try (FileOutputStream fos = new FileOutputStream(dest.toString())) {
@@ -221,7 +227,7 @@ class HtmlDocWriter implements DocWriter {
         stream.println("<!DOCTYPE html>");
         stream.println("<meta charset=\"UTF-8\">");
         stream.println("<title>" + source.getFileName() + "</title>");
-        stream.println("<link href=\"source.css\" type=\"text/css\" rel=\"stylesheet\">");
+        stream.println("<link href=\"" + toSourceCss + "\" type=\"text/css\" rel=\"stylesheet\">");
         printTopNav(stream);
         stream.println();
         stream.println();
