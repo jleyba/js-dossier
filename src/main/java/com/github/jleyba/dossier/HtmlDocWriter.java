@@ -173,6 +173,7 @@ class HtmlDocWriter implements DocWriter {
           descriptor.getImplementedInterfaces(registry));
       printInterfaces(stream, "All extended interfaces:",
           descriptor.getExtendedInterfaces(registry));
+      stream.println(printDeprecation(descriptor));
       stream.println("</header>");
 
       stream.println();
@@ -321,7 +322,11 @@ class HtmlDocWriter implements DocWriter {
   }
 
   private void printTitle(PrintStream stream, Descriptor descriptor) {
-    stream.println("<h1>" + getTitlePrefix(descriptor) + " " + descriptor.getFullName() + "</h1>");
+    stream.print("<h1>" + getTitlePrefix(descriptor) + " " + descriptor.getFullName());
+    if (descriptor.isDeprecated()) {
+      stream.print(" <span class=\"deprecation-notice\">(deprecated)</span>");
+    }
+    stream.println("</h1>");
   }
 
   private void printConstructor(PrintStream stream, Descriptor descriptor) {
@@ -332,7 +337,11 @@ class HtmlDocWriter implements DocWriter {
     List<ArgDescriptor> args = descriptor.getArgs();
 
     stream.println("<h2>Constructor</h2>");
-    stream.print("<div class=\"member\">" + descriptor.getFullName() + " <span class=\"args\">(");
+    stream.print("<div><span class=\"member");
+    if (descriptor.isDeprecated()) {
+      stream.print(" deprecation-notice");
+    }
+    stream.print("\">" + descriptor.getFullName() + "</span> <span class=\"args\">(");
     stream.print(Joiner.on(", ").join(transform(args, new Function<ArgDescriptor, String>() {
 
       @Override
@@ -342,10 +351,11 @@ class HtmlDocWriter implements DocWriter {
     })));
     stream.println(")</span></div>");
 
-    StringBuilder details = printArgs(args, true)
+    StringBuilder details = new StringBuilder()
+        .append(printArgs(args, true))
         .append(printThrows(descriptor));
     if (details.length() > 0) {
-      stream.println("<div class=\"fn-info\">");
+      stream.println("<div class=\"info\">");
       stream.println("<table><tbody>");
       stream.println(details);
       stream.println("</table>");
@@ -363,20 +373,26 @@ class HtmlDocWriter implements DocWriter {
     for (String name : object.getOwnPropertyNames()) {
       JSType type = object.getPropertyType(name);
       if (type.isEnumElementType()) {
-        stream.printf("<dt><a name=\"%s\">%s</a>\n", descriptor.getFullName() + "." + name, name);
-
         Node node = object.getPropertyNode(name);
-        if (node == null) {
+        JSDocInfo info = node == null ? null : node.getJSDocInfo();
+
+        stream.print("<dt><a class=\"enum member");
+        if (info != null && info.isDeprecated()) {
+          stream.print(" deprecation-notice");
+        }
+        stream.printf("\" name=\"%s\">%s</a>\n", descriptor.getFullName() + "." + name, name);
+
+        if (node == null || info == null) {
           continue;
         }
 
-        JSDocInfo info = node.getJSDocInfo();
-        if (info == null) {
-          continue;
+        StringBuilder comment = new StringBuilder();
+        if (info.isDeprecated()) {
+          comment.append(formatDeprecationNotice(info.getDeprecationReason()));
         }
+        comment.append(CommentUtil.getBlockDescription(resolver, info));
 
-        String comment = CommentUtil.getBlockDescription(resolver, info);
-        if (!comment.isEmpty()) {
+        if (comment.length() > 0) {
           stream.println("<dd>" + comment);
         }
       }
@@ -427,10 +443,15 @@ class HtmlDocWriter implements DocWriter {
       JSDocInfo info = checkNotNull(typedef.getInfo());
       stream.println("<details><summary>");
       stream.print("<div>" + getSourceLink(typedef));
-      stream.print("<a class=\"member\" name=\"" + typedef.getFullName() + "\">");
+      stream.print("<a class=\"member");
+      if (typedef.isDeprecated()) {
+        stream.print(" deprecation-notice");
+      }
+      stream.print("\" name=\"" + typedef.getFullName() + "\">");
       stream.print(typedef.getFullName() + "</a> : ");
       String type = CommentUtil.formatTypeExpression(info.getTypedefType(), resolver);
       stream.println("<code class=\"type\">" + type + "</code></div>");
+      stream.println(printDeprecation(typedef));
 
       String comment = CommentUtil.getBlockDescription(resolver, info);
       if (!comment.isEmpty()) {
@@ -513,8 +534,12 @@ class HtmlDocWriter implements DocWriter {
         List<ArgDescriptor> args = function.getArgs();
         methods.append("<details class=\"function\"><summary>\n")
             .append("<div>").append(getSourceLink(function))
-            .append(String.format("<a class=\"member\" name=\"%s$%s\">%s</a>",
-                typeDescriptor.getFullName(), function.getName(), function.getName()))
+            .append("<a class=\"member");
+        if (function.isDeprecated()) {
+          methods.append(" deprecation-notice");
+        }
+        methods.append(String.format("\" name=\"%s$%s\">%s</a>",
+            typeDescriptor.getFullName(), function.getName(), function.getName()))
             .append(" <span class=\"args\">(")
             .append(Joiner.on(", ").join(transform(args, new Function<ArgDescriptor, String>() {
               @Override
@@ -533,6 +558,8 @@ class HtmlDocWriter implements DocWriter {
         }
         methods.append("</div>");
 
+        methods.append(printDeprecation(function));
+
         JSDocInfo info = function.getInfo();
         if (info != null) {
           String comment = CommentUtil.getBlockDescription(resolver, info);
@@ -542,11 +569,12 @@ class HtmlDocWriter implements DocWriter {
         }
         methods.append("</summary>\n");
 
-        StringBuilder details = printArgs(args, false)
+        StringBuilder details = new StringBuilder()
+            .append(printArgs(args, false))
             .append(printReturns(function))
             .append(printThrows(function));
         if (details.length() > 0) {
-          methods.append("<div class=\"fn-info\"><table><tbody>\n")
+          methods.append("<div class=\"info\"><table><tbody>\n")
               .append(details)
               .append("</table></div>\n");
         }
@@ -606,8 +634,12 @@ class HtmlDocWriter implements DocWriter {
       for (Descriptor property : properties) {
         builder.append("<details><summary>\n")
             .append("<div>").append(getSourceLink(property))
-            .append(String.format("<a class=\"member\" name=\"%s$%s\">%s</a>",
-                typeDescriptor.getFullName(), property.getName(), property.getName()));
+            .append("<a class=\"member");
+        if (property.isDeprecated()) {
+          builder.append(" deprecation-notice");
+        }
+        builder.append(String.format("\" name=\"%s$%s\">%s</a>",
+            typeDescriptor.getFullName(), property.getName(), property.getName()));
 
         JSDocInfo info = property.getInfo();
         if (info != null && info.getType() != null) {
@@ -629,6 +661,8 @@ class HtmlDocWriter implements DocWriter {
           }
         }
         builder.append("</div>\n");
+
+        builder.append(printDeprecation(property));
 
         if (info != null) {
           builder.append(CommentUtil.getBlockDescription(resolver, info));
@@ -679,8 +713,11 @@ class HtmlDocWriter implements DocWriter {
           stream.print("&gt;</code> ");
         }
       }
-      stream.printf("<a class=\"member\" name=\"%s\">%s</a>",
-          function.getFullName(), function.getFullName());
+      stream.print("<a class=\"member");
+      if (function.isDeprecated()) {
+        stream.print(" deprecation-notice");
+      }
+      stream.printf("\" name=\"%s\">%s</a>", function.getFullName(), function.getFullName());
       stream.print(" <span class=\"args\">(");
       stream.print(Joiner.on(", ").join(transform(args, new Function<ArgDescriptor, String>() {
         @Override
@@ -699,6 +736,8 @@ class HtmlDocWriter implements DocWriter {
       }
       stream.println("</div>");
 
+      stream.println(printDeprecation(function));
+
       if (info != null) {
         String comment = CommentUtil.getBlockDescription(resolver, info);
         if (!comment.isEmpty()) {
@@ -707,11 +746,12 @@ class HtmlDocWriter implements DocWriter {
       }
       stream.println("</summary>");
 
-      StringBuilder details = printArgs(args, false)
+      StringBuilder details = new StringBuilder()
+          .append(printArgs(args, false))
           .append(printReturns(function))
           .append(printThrows(function));
       if (details.length() > 0) {
-        stream.println("<div class=\"fn-info\"><table><tbody>\n");
+        stream.println("<div class=\"info\"><table><tbody>\n");
         stream.println(details);
         stream.println("</table></div>");
       }
@@ -720,7 +760,23 @@ class HtmlDocWriter implements DocWriter {
     stream.println("</section>");
   }
 
-  private StringBuilder printThrows(Descriptor function) {
+  private CharSequence printDeprecation(Descriptor descriptor) {
+    if (!descriptor.isDeprecated()) {
+      return "";
+    }
+    return formatDeprecationNotice(descriptor.getDeprecationReason());
+  }
+
+  private CharSequence formatDeprecationNotice(String reason) {
+    String text = CommentUtil.formatCommentText(resolver, reason);
+    if (!text.isEmpty()) {
+      text = "<div class=\"deprecation-notice\">Deprecated: " +
+          "<span class=\"deprecation-reason\">" + text + "</span></div>";
+    }
+    return text;
+  }
+
+  private CharSequence printThrows(Descriptor function) {
     StringBuilder builder = new StringBuilder();
     JSDocInfo info = function.getInfo();
     if (info == null) {
@@ -757,7 +813,7 @@ class HtmlDocWriter implements DocWriter {
     return builder;
   }
 
-  private StringBuilder printReturns(Descriptor function) {
+  private CharSequence printReturns(Descriptor function) {
     StringBuilder builder = new StringBuilder();
     JSDocInfo info = function.getInfo();
     String desc = null;
@@ -771,7 +827,7 @@ class HtmlDocWriter implements DocWriter {
     return builder.append("<tr><th>Returns\n<tr><td>\n<dl><dd>").append(desc).append("</dl>");
   }
 
-  private StringBuilder printArgs(List<ArgDescriptor> args, boolean defaultToNone) {
+  private CharSequence printArgs(List<ArgDescriptor> args, boolean defaultToNone) {
     StringBuilder builder = new StringBuilder();
     if (args.isEmpty() && !defaultToNone) {
       return builder;
@@ -833,8 +889,11 @@ class HtmlDocWriter implements DocWriter {
     for (Descriptor property : properties) {
       stream.println("<details><summary>");
       stream.print("<div>" + getSourceLink(property));
-      stream.printf("<a class=\"member\" name=\"%s\">%s</a>",
-          property.getFullName(), property.getFullName());
+      stream.print("<a class=\"member");
+      if (property.isDeprecated()) {
+        stream.print(" deprecation-notice");
+      }
+      stream.printf("\" name=\"%s\">%s</a>", property.getFullName(), property.getFullName());
 
       JSDocInfo info = property.getInfo();
       if (info != null && info.getType() != null) {
@@ -856,6 +915,8 @@ class HtmlDocWriter implements DocWriter {
         }
       }
       stream.println("</div>");
+
+      stream.println(printDeprecation(property));
 
       if (info != null) {
         stream.println(CommentUtil.getBlockDescription(resolver, info));

@@ -175,6 +175,17 @@ class Descriptor {
         || (info != null && info.getEnumParameterType() != null);
   }
 
+  boolean isDeprecated() {
+    return (info != null && info.isDeprecated());
+  }
+
+  @Nullable
+  String getDeprecationReason() {
+    checkState(isDeprecated(), "%s is not deprecated", getFullName());
+    assert info != null;
+    return info.getDeprecationReason();
+  }
+
   /**
    * Returns all of the super types for this descriptor as a stack with this descriptor at the
    * bottom and the root ancestor at the top (Object is excluded as it is implied).
