@@ -15,7 +15,6 @@ import com.google.javascript.rhino.Token;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -26,8 +25,6 @@ import javax.annotation.Nullable;
  */
 class CommentUtil {
   private CommentUtil() {}  // Utility class.
-
-  private static final Logger logger = Logger.getLogger(CommentUtil.class.getName());
 
   private static Pattern SUMMARY_REGEX = Pattern.compile("(.*?\\.)[\\s$]", Pattern.DOTALL);
   private static final Pattern TAGLET_START_PATTERN = Pattern.compile("\\{@(\\w+)\\s");
@@ -137,7 +134,6 @@ class CommentUtil {
           nodes.add(new LiteralNode(tagletText));
           break;
         default:
-          logger.warning("Unrecognized taglet: " + tagletName);
           nodes.add(new TextNode(tagletText));
       }
       start = tagletEnd + 1;
@@ -151,7 +147,6 @@ class CommentUtil {
     if (!matcher.find(start)) {
       return -1;
     } else if (text.indexOf('}', matcher.start()) == -1) {
-      logger.warning("Missing closing }");
       return -1;
     } else {
       return matcher.start();
