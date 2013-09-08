@@ -52,6 +52,10 @@ code.type a[href] { color: #080; }
   margin: 0;
   padding: 1em 0 0;
 }
+#left > div {
+  margin-left: .75em;
+  padding-top: .25em;
+}
 #left summary {
   font-size: 1.25em;
   font-weight: bold;
