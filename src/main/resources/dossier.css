@@ -165,8 +165,14 @@ section > .type-summary {
   padding: .5em 0 0 1.5em;
 }
 
-:focus, details.focused { outline: rgba(175, 175, 255, .4) auto 5px; }
-summary:focus { outline: 0; }
+details.focused {
+  border-color: #66f;
+  box-shadow: 0 0 5px #66f;
+  -webkit-box-shadow: 0 0 5px #66f;
+  -moz-box-shadow: 0 0 5px #66f;
+}
+a:focus { text-decoration: underline; }
+:focus { outline: 0; }
 summary::-webkit-details-marker { display: none; }
 
 details + details { margin-top: .5em; }
