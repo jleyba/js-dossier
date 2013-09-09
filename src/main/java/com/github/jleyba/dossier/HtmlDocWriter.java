@@ -103,7 +103,7 @@ class HtmlDocWriter implements DocWriter {
       stream.println("<!DOCTYPE html>");
       stream.println("<meta charset=\"UTF-8\">");
       stream.println("<title>" + descriptor.getFullName() + "</title>");
-      stream.println("<link href=\"docs.css\" type=\"text/css\" rel=\"stylesheet\">");
+      stream.println("<link href=\"dossier.css\" type=\"text/css\" rel=\"stylesheet\">");
       stream.println();
       stream.println();
       printTopNav(stream);
@@ -154,8 +154,7 @@ class HtmlDocWriter implements DocWriter {
 
   private void copyResources() throws IOException {
     FileSystem fs = config.outputDir.getFileSystem();
-    copyResource(fs.getPath("/docs.css"), config.outputDir);
-    copyResource(fs.getPath("/source.css"), config.outputDir);
+    copyResource(fs.getPath("/dossier.css"), config.outputDir);
     copyResource(fs.getPath("/dossier.js"), config.outputDir);
   }
 
@@ -231,7 +230,7 @@ class HtmlDocWriter implements DocWriter {
       Path dest = fileDir.resolve(simpleSource.toString() + ".src.html");
 
       Path relativePath = getPathToOutputDir(simpleSource);
-      Path toSourceCss = relativePath.resolve("source.css");
+      Path toDossierCss = relativePath.resolve("dossier.css");
       Path toTypesJs = relativePath.resolve("types.js");
       Path toDossierJs = relativePath.resolve("dossier.js");
 
@@ -242,12 +241,16 @@ class HtmlDocWriter implements DocWriter {
         stream.println("<!DOCTYPE html>");
         stream.println("<meta charset=\"UTF-8\">");
         stream.println("<title>" + source.getFileName() + "</title>");
-        stream.println("<link href=\"" + toSourceCss + "\" type=\"text/css\" rel=\"stylesheet\">");
+        stream.println("<link href=\"" + toDossierCss + "\" type=\"text/css\" rel=\"stylesheet\">");
+        stream.println();
+        stream.println();
         printTopNav(stream);
         stream.println();
         stream.println();
-        stream.println("<article id=\"content\">");
+        stream.println("<article class=\"srcfile\" id=\"content\">");
+        stream.println("<header>");
         stream.println("<h1>" + simpleSource + "</h1>");
+        stream.println("</header>");
         stream.print("<pre><table><tbody>");
 
         Iterable<String> lines = lineSplitter.split(

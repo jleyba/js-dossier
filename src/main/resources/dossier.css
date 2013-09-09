@@ -165,7 +165,7 @@ section > .type-summary {
   padding: .5em 0 0 1.5em;
 }
 
-:focus, details.focused { outline: rgba(150, 150, 255, .4) auto 5px; }
+:focus, details.focused { outline: rgba(175, 175, 255, .4) auto 5px; }
 summary:focus { outline: 0; }
 summary::-webkit-details-marker { display: none; }
 
@@ -250,3 +250,43 @@ footer div {
   padding: .33em 0 0 1em;
 }
 footer a[href] { color: #555; }
+
+
+/* Styles for pages that render source .js files */
+.srcfile#content {
+  /* Use the same left margin as the #left nav pane, which is not included on
+   * srcfile pages.
+   */
+  margin-left: .75em;
+}
+.srcfile pre {
+  padding: 0;
+  border: 0;
+}
+.srcfile table {
+  border: 1px solid #c0c0c0;
+  font-size: 9pt;
+  /* The table should only be big enough to display the pre-formatted source
+   * code.
+   */
+  width: inherit;
+}
+.srcfile td {
+  padding: .15em 1em;
+  background-color: #f0f0f0;
+  vertical-align: baseline;
+}
+/* line number column */
+.srcfile td:first-child {
+  text-align: right;
+  border-right: 1px solid #c0c0c0;
+  color: #808080;
+  font-size: .9em;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: -moz-none;
+  -ms-user-select: none;
+  user-select: none;
+}
+.srcfile td:first-child a { color: #808080; }
