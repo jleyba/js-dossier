@@ -149,6 +149,7 @@ section > .type-summary {
   padding: .5em 0 0 1.5em;
 }
 
+:focus, details.focused { outline: rgba(150, 150, 255, .4) auto 5px; }
 summary:focus { outline: 0; }
 summary::-webkit-details-marker { display: none; }
 

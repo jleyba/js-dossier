@@ -12,6 +12,7 @@ goog.require('goog.events.EventType');
 goog.require('goog.dom');
 goog.require('goog.dom.NodeType');
 goog.require('goog.dom.TagName');
+goog.require('goog.dom.classes');
 goog.require('goog.style');
 goog.require('goog.ui.ac');
 
@@ -32,10 +33,9 @@ dossier.TypeInfo_;
 dossier.init = function() {
   var typeInfo = /** @type {dossier.TypeInfo_} */(goog.global['TYPES']);
   dossier.initNavList_(typeInfo);
-  setTimeout(function() {
-    dossier.initSearchBox_(typeInfo);
-    setTimeout(dossier.polyFillDetailsElements_, 0);
-  }, 0);
+  setTimeout(goog.partial(dossier.initSearchBox_, typeInfo), 0);
+  setTimeout(dossier.polyFillDetailsElements_, 0);
+  setTimeout(dossier.initFocusHandlers_, 0);
 };
 goog.exportSymbol('init', dossier.init);
 
@@ -172,6 +172,37 @@ dossier.createNavList_ = function(header, linkPrefix, types) {
             }, type)));
   });
   return details;
+};
+
+
+/**
+ * Sets up focus handlers so when a summary element is focused, its parent
+ * details element is outlined instead of the summary. This helps the
+ * outline keep a consistent shape when the details element is expanded.
+ * @private
+ */
+dossier.initFocusHandlers_ = function() {
+  goog.events.listen(
+      goog.dom.getDocument().body,
+      [goog.events.EventType.FOCUSIN, goog.events.EventType.FOCUSOUT],
+      function(e) {
+        var details = getDetailParent(e.target);
+        if (details) {
+          if (e.type === goog.events.EventType.FOCUSIN) {
+            goog.dom.classes.add(details, 'focused');
+          } else {
+            goog.dom.classes.remove(details, 'focused');
+          }
+        }
+      });
+
+  function getDetailParent(node) {
+    if (node.nodeType === goog.dom.NodeType.ELEMENT &&
+        node.tagName.toUpperCase() === goog.dom.TagName.SUMMARY) {
+      return goog.dom.getParentElement(node);
+    }
+    return null;
+  }
 };
 
 
