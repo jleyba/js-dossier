@@ -264,6 +264,11 @@ footer a[href] { color: #555; }
    * srcfile pages.
    */
   margin-left: .75em;
+  padding-bottom: 0;
+}
+footer.srcfile {
+  position: inherit;
+  border-right: 0;
 }
 .srcfile pre {
   padding: 0;
