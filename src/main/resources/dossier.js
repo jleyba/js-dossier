@@ -82,7 +82,23 @@ parseFloat(k),parseFloat(d))),c=fc(c),b.pixelWidth=e.width-c.left-d.left-d.right
 function vd(a,b,c){if(3==b.nodeType){var d=null;q(c)&&1<c.length&&!a.va&&(d=Aa(c,1));c=xd(a,c);if(0!=c.length){var e=b.nodeValue,f=a.Cb?RegExp("\\b(?:"+c+")","gi"):RegExp(c,"gi");c=[];for(var g=0,k=f.exec(e),m=0;k;)m++,c.push(e.substring(g,k.index)),c.push(e.substring(k.index,f.lastIndex)),g=f.lastIndex,k=f.exec(e);c.push(e.substring(g));if(1<c.length){d=a.va?m:1;for(e=0;e<d;e++)f=2*e,b.nodeValue=c[f],g=a.r.createElement("b"),g.className=a.Ab,a.r.appendChild(g,a.r.createTextNode(c[f+1])),g=b.parentNode.insertBefore(g,
 b.nextSibling),b.parentNode.insertBefore(a.r.createTextNode(""),g.nextSibling),b=g.nextSibling;a=Aa(c,2*d);b.nodeValue=a.join("")}else d&&vd(a,b,d)}}else for(b=b.firstChild;b;)d=b.nextSibling,vd(a,b,c),b=d}
 function xd(a,b){var c="";if(!b)return c;q(b)&&(b=ua(b,function(a){return!/^[\s\xa0]*$/.test(null==a?"":String(a))}));a.va?q(b)?c=va(b,sa).join("|"):(c=b.replace(/[\s\xa0]+/g," ").replace(/^\s+|\s+$/g,""),c=sa(c),c=c.replace(/ /g,"|")):q(b)?c=0<b.length?sa(b[0]):"":/^\W/.test(b)||(c=sa(b));return c}function yd(a,b){for(;b&&b!=a.b&&!xa(Cb(b),a.Fa);)b=b.parentNode;return b?z(a.L,b):-1}h.Na=function(a){var b=yd(this,a.target);0<=b&&this.dispatchEvent({type:nc,U:this.c[b].id});a.stopPropagation()};
-h.Pa=function(a){a.stopPropagation();a.preventDefault()};h.Qa=function(a){a=yd(this,a.target);0<=a&&!(300>w()-this.ib)&&this.dispatchEvent({type:mc,U:this.c[a].id})};function zd(a,b){var c=new hc(a),d=new rd,e=new Zc(null,null,!1),c=new lc(c,d,e);e.d=c;e.sa(b)};function Ad(){var a=l.TYPES;Bd(a);setTimeout(ka(Cd,a),0);setTimeout(Dd,0);setTimeout(Ed,0)}var Fd=["init"],$=l;Fd[0]in $||!$.execScript||$.execScript("var "+Fd[0]);for(var Gd;Fd.length&&(Gd=Fd.shift());)Fd.length||void 0===Ad?$=$[Gd]?$[Gd]:$[Gd]={}:$[Gd]=Ad;var Hd=function(){var a="./";wa(function(b){b=b.src;var c=b.length;return"dossier.js"===b.substr(c-10)?(a=b.substr(0,c-10),!0):!1});return a}();
+h.Pa=function(a){a.stopPropagation();a.preventDefault()};h.Qa=function(a){a=yd(this,a.target);0<=a&&!(300>w()-this.ib)&&this.dispatchEvent({type:mc,U:this.c[a].id})};function zd(a,b){var c=new hc(a),d=new rd,e=new Zc(null,null,!1),c=new lc(c,d,e);e.d=c;e.sa(b)};/*
+
+  Copyright 2013 Jason Leyba
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+*/
+function Ad(){var a=l.TYPES;Bd(a);setTimeout(ka(Cd,a),0);setTimeout(Dd,0);setTimeout(Ed,0)}var Fd=["init"],$=l;Fd[0]in $||!$.execScript||$.execScript("var "+Fd[0]);for(var Gd;Fd.length&&(Gd=Fd.shift());)Fd.length||void 0===Ad?$=$[Gd]?$[Gd]:$[Gd]={}:$[Gd]=Ad;var Hd=function(){var a="./";wa(function(b){b=b.src;var c=b.length;return"dossier.js"===b.substr(c-10)?(a=b.substr(0,c-10),!0):!1});return a}();
 function Cd(a){var b=Jb("searchbox"),c=b.getElementsByTagName("input")[0];zd(ya(a.classes,a.enums,a.interfaces,a.namespaces),c);N(b,"submit",function(b){b.preventDefault();b.stopPropagation();b=c.value;var e;0<=z(a.classes,b)?e="class_":0<=z(a.enums,b)?e="enum_":0<=z(a.interfaces,b)?e="interface_":0<=z(a.namespaces,b)&&(e="namespace_");e&&(window.location.href=Hd+e+b.replace(/\./g,"_")+".html");return!1})}
 function Bd(a){var b=Jb("left");if(b){var c=[];a.classes.length&&c.push(Id("Classes","class_",a.classes));a.enums.length&&c.push(Id("Enums","enum_",a.enums));a.interfaces.length&&c.push(Id("Interfaces","interface_",a.interfaces));a.namespaces.length&&c.push(Id("Namespaces","namespace_",a.namespaces));Pb(b);ta(c,function(a){b.appendChild(a)})}}
 function Id(a,b,c){a=Mb("DETAILS",null,Mb("SUMMARY",null,a));var d=document.createElement("UL");a.appendChild(d);ta(c,function(a){a=Mb("LI",null,Mb("A",{href:Hd+b+a.replace(/\./g,"_")+".html"},a));d.appendChild(a)});return a}
