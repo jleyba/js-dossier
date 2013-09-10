@@ -24,6 +24,8 @@ import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.JSTypeExpression;
@@ -519,7 +521,7 @@ class HtmlDocWriter implements DocWriter {
 
     List<Descriptor> seen = new LinkedList<>();
     StringBuilder methods = new StringBuilder();
-    for (String type : descriptor.getAllTypes(registry)) {
+    for (String type : descriptor.getAssignableTypes(registry)) {
       Descriptor typeDescriptor = docRegistry.getType(type);
       if (typeDescriptor == null) {
         continue;
@@ -619,7 +621,7 @@ class HtmlDocWriter implements DocWriter {
 
     List<Descriptor> seen = new LinkedList<>();
     StringBuilder builder = new StringBuilder();
-    for (String type : descriptor.getAllTypes(registry)) {
+    for (String type : descriptor.getAssignableTypes(registry)) {
       Descriptor typeDescriptor = docRegistry.getType(type);
       if (typeDescriptor == null) {
         continue;

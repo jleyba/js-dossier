@@ -16,6 +16,7 @@ package com.github.jleyba.dossier;
 import static com.google.common.base.Preconditions.checkState;
 
 import com.google.common.base.Function;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.javascript.rhino.JSDocInfo;
@@ -256,6 +257,23 @@ class Descriptor {
   }
 
   /**
+   * Returns the names of types this object can be assigned.  That is, if {@code x} is an
+   * an instance of class {@code X}, which extends {@code Y} and implements {@code Z},
+   * {@code x} may be assigned to {@code X}, {@code Y}, or {@code Z}.
+   */
+  Iterable<String> getAssignableTypes(JSTypeRegistry registry) {
+    if (isConstructor()) {
+      return getAllTypes(registry);
+    } else if (isInterface()) {
+      return Iterables.concat(
+          Lists.newArrayList(getFullName()),
+          getExtendedInterfaces(registry));
+    } else {
+      return ImmutableList.of();
+    }
+  }
+
+  /**
    * Returns the argument descriptors for this instance.
    *
    * @throws IllegalStateException If this instance does not describe a function.
@@ -360,7 +378,7 @@ class Descriptor {
     }
 
     ObjectType obj = toObjectType();
-    if (isConstructor() && obj.getConstructor() != null) {
+    if ((isConstructor() || isInterface()) && obj.getConstructor() != null) {
       obj = obj.getConstructor();
     }
 
