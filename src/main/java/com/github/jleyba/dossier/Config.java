@@ -43,7 +43,7 @@ class Config {
     checkArgument(intersection(srcs, externs).isEmpty(),
         "The sources and externs inputs must be disjoint:\n  sources: %s\n  externs: %s",
         srcs, externs);
-    checkArgument(Files.isDirectory(output),
+    checkArgument(!Files.exists(output) || Files.isDirectory(output),
         "Output path, %s, is not a directory", output);
 
     this.srcs = srcs;

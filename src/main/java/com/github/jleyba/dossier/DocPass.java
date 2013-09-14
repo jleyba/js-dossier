@@ -23,35 +23,20 @@ import com.google.javascript.rhino.jstype.JSType;
 import com.google.javascript.rhino.jstype.JSTypeRegistry;
 import com.google.javascript.rhino.jstype.ObjectType;
 
-import java.io.IOException;
-
 class DocPass  implements CompilerPass {
 
-  private final Config config;
   private final AbstractCompiler compiler;
-  private final DocWriterFactory writerFactory;
+  private final DocRegistry docRegistry;
 
-  private final DocRegistry docRegistry = new DocRegistry();
-
-  DocPass(Config config, AbstractCompiler compiler) {
+  DocPass(AbstractCompiler compiler, DocRegistry docRegistry) {
     this.compiler = compiler;
-    this.config = config;
-
-    LinkResolver linkResolver = new LinkResolver(config.getOutput(), docRegistry);
-    this.writerFactory = new DocWriterFactory(linkResolver);
+    this.docRegistry = docRegistry;
   }
 
   @Override
   public void process(Node externs, Node root) {
     NodeTraversal.traverse(compiler, externs, new ExternCollector());
     NodeTraversal.traverse(compiler, root, new TypeCollector());
-
-    DocWriter writer = writerFactory.createDocWriter(config, docRegistry);
-    try {
-      writer.generateDocs(compiler.getTypeRegistry());
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
   }
 
 //

@@ -18,10 +18,7 @@ import static com.google.common.collect.Lists.newLinkedList;
 
 import com.google.common.base.Function;
 import com.google.common.base.Supplier;
-import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
@@ -32,48 +29,41 @@ import com.google.javascript.jscomp.CompilationLevel;
 import com.google.javascript.jscomp.CompilerOptions;
 import com.google.javascript.jscomp.CompilerPass;
 import com.google.javascript.jscomp.CustomPassExecutionTime;
-import org.kohsuke.args4j.CmdLineException;
-import org.kohsuke.args4j.CmdLineParser;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.PrintStream;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.annotation.Nullable;
 
 public class Main extends CommandLineRunner {
 
   private static final List<String> STANDARD_FLAGS = ImmutableList.of(
-      "--jscomp_error=accessControls",
-      "--jscomp_error=ambiguousFunctionDecl",
-      "--jscomp_error=checkRegExp",
-      "--jscomp_error=checkTypes",
-      "--jscomp_error=checkVars",
-      "--jscomp_error=constantProperty",
-//      "--jscomp_error=deprecated",
-      "--jscomp_error=duplicateMessage",
-      "--jscomp_error=es5Strict",
-      "--jscomp_error=externsValidation",
-      "--jscomp_error=fileoverviewTags",
-      "--jscomp_error=globalThis",
-      "--jscomp_error=invalidCasts",
-      "--jscomp_error=missingProperties",
-      "--jscomp_error=nonStandardJsDocs",
-      "--jscomp_error=strictModuleDepCheck",
-      "--jscomp_error=typeInvalidation",
-      "--jscomp_error=undefinedVars",
-      "--jscomp_error=unknownDefines",
-      "--jscomp_error=uselessCode",
-      "--jscomp_error=visibility",
+      "--jscomp_warning=accessControls",
+      "--jscomp_warning=ambiguousFunctionDecl",
+      "--jscomp_warning=checkRegExp",
+      "--jscomp_warning=checkTypes",
+      "--jscomp_warning=checkVars",
+      "--jscomp_warning=constantProperty",
+      "--jscomp_warning=deprecated",
+      "--jscomp_warning=duplicateMessage",
+      "--jscomp_warning=es5Strict",
+      "--jscomp_warning=externsValidation",
+      "--jscomp_warning=fileoverviewTags",
+      "--jscomp_warning=globalThis",
+      "--jscomp_warning=invalidCasts",
+      "--jscomp_warning=missingProperties",
+      "--jscomp_warning=nonStandardJsDocs",
+      "--jscomp_warning=strictModuleDepCheck",
+      "--jscomp_warning=typeInvalidation",
+      "--jscomp_warning=undefinedVars",
+      "--jscomp_warning=unknownDefines",
+      "--jscomp_warning=uselessCode",
+      "--jscomp_warning=visibility",
       "--third_party=false");
 
   private final Config config;
+  private final DocRegistry docRegistry = new DocRegistry();
 
   private Main(String[] args, PrintStream out, PrintStream err, Config config) {
     super(args, out, err);
@@ -102,10 +92,40 @@ public class Main extends CommandLineRunner {
         });
 
     customPasses.put(CustomPassExecutionTime.BEFORE_OPTIMIZATIONS,
-        new DocPass(config, getCompiler()));
+        new DocPass(getCompiler(), docRegistry));
 
     options.setCustomPasses(customPasses);
     return options;
+  }
+
+  private void runCompiler() {
+    if (!shouldRunCompiler()) {
+      System.exit(-1);
+    }
+
+    int result = 0;
+    try {
+      result = doRun();
+    } catch (FlagUsageException e) {
+      System.err.println(e.getMessage());
+      System.exit(-1);
+    } catch (Throwable t) {
+      t.printStackTrace(System.err);
+      System.exit(-2);
+    }
+
+    if (result != 0) {
+      System.exit(result);
+    }
+
+    LinkResolver linkResolver = new LinkResolver(config.getOutput(), docRegistry);
+    DocWriter writer = new DocWriterFactory(linkResolver).createDocWriter(config, docRegistry);
+    try {
+      writer.generateDocs(getCompiler().getTypeRegistry());
+    } catch (IOException e) {
+      e.printStackTrace(System.err);
+      System.exit(-3);
+    }
   }
 
   private static Function<Path, String> toFlag(final String flagPrefix) {
@@ -129,11 +149,7 @@ public class Main extends CommandLineRunner {
     PrintStream nullStream = new PrintStream(ByteStreams.nullOutputStream());
     args = compilerFlags.toArray(new String[compilerFlags.size()]);
 
-    Main main = new Main(args, nullStream, nullStream, config);
-    if (main.shouldRunCompiler()) {
-      main.run();
-    } else {
-      System.exit(-1);
-    }
+    Main main = new Main(args, nullStream, System.err, config);
+    main.runCompiler();
   }
 }
