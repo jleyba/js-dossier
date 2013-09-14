@@ -213,7 +213,7 @@ class HtmlDocWriter implements DocWriter {
   private void copySourceFiles() throws IOException {
     Path fileDir = config.getOutput().resolve("source");
     for (Path source : config.getSources()) {
-      Path simpleSource = simplifySourcePath(source);
+      Path simpleSource = config.getSrcPrefix().relativize(source);
       Path dest = fileDir.resolve(simpleSource.toString() + ".src.html");
 
       Path relativePath = getPathToOutputDir(simpleSource);

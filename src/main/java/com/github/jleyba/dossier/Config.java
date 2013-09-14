@@ -44,6 +44,7 @@ class Config {
 
   private final ImmutableSet<Path> srcs;
   private final ImmutableSet<Path> externs;
+  private final Path srcPrefix;
   private final Path output;
 
   /**
@@ -63,18 +64,35 @@ class Config {
         "Output path, %s, is not a directory", output);
 
     this.srcs = srcs;
+    this.srcPrefix = Paths.getCommonPrefix(srcs);
     this.externs = externs;
     this.output = output;
   }
 
+  /**
+   * Returns the set of input sources for the compiler.
+   */
   ImmutableSet<Path> getSources() {
     return srcs;
   }
 
+  /**
+   * Returns the longest common path prefix for all of the input sources.
+   */
+  Path getSrcPrefix() {
+    return srcPrefix;
+  }
+
+  /**
+   * Returns the set of extern files to use.
+   */
   ImmutableSet<Path> getExterns() {
     return externs;
   }
 
+  /**
+   * Returns the path to the output directory.
+   */
   Path getOutput() {
     return output;
   }
