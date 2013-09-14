@@ -138,7 +138,14 @@ public class Main extends CommandLineRunner {
   }
 
   public static void main(String[] args) {
-    Config config = Flags.initConfig(args);
+    Flags flags = Flags.parse(args);
+    Config config = null;
+    try {
+      config = Config.load(flags);
+    } catch (IOException e) {
+      e.printStackTrace(System.err);
+      System.exit(-1);
+    }
 
     ImmutableList<String> compilerFlags = ImmutableList.<String>builder()
         .addAll(transform(config.getSources(), toFlag("--js=")))

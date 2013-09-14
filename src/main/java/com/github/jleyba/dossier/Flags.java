@@ -13,9 +13,7 @@
 // limitations under the License.
 package com.github.jleyba.dossier;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.FluentIterable;
-import com.google.common.collect.ImmutableSet;
+import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
@@ -25,8 +23,6 @@ import org.kohsuke.args4j.spi.OptionHandler;
 import org.kohsuke.args4j.spi.Parameters;
 import org.kohsuke.args4j.spi.Setter;
 
-import java.io.IOException;
-import java.nio.file.DirectoryStream;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
@@ -45,6 +41,21 @@ class Flags {
       name = "--help", aliases = "-h",
       usage = "Print this help message and exit.")
   boolean displayHelp;
+
+  @Option(name = "--closure_library",
+      handler = ClosurePathHandler.class,
+      usage = "Path to the base directory of the Closure library (which must contain base.js " +
+          "and deps.js. When provided, Closure's deps.js, and all of the --closure_deps, will " +
+          "be parsed for dependency info.  Any symbols goog.required'd by a --src file will " +
+          "automatically be included as an input for the compiler. All dependencies will be " +
+          "sorted so that a file that goog.provides symbol X will always come before a file " +
+          "that goog.requires symbol X.")
+  Optional<Path> closureLibraryDir = Optional.absent();
+
+  @Option(name = "--closure_deps",
+      handler = SimplePathHandler.class,
+      usage = "List of files that should be parsed for Closure dependency mappings.")
+  List<Path> closureDepsFile = new LinkedList<>();
 
   @Option(
       name = "--src", aliases = "-s",
@@ -75,16 +86,13 @@ class Flags {
       required = true)
   Path outputDir;
 
+  private Flags() {}
+
   /**
-   * Initializes a new runtime configuration from the given command line flags. If the givne
-   * command line arguments are invalid, or the usage string is requested via the
-   * {@link #displayHelp --help} flag, this method will print the usage string to stderr and
-   * terminate the program.
-   *
-   * @param args The command line flags.
-   * @return The new runtime configuration.
+   * Parses the given command line flags, exiting the program if there are any errors or if usage
+   * information was requested with the {@link #displayHelp --help} flag.
    */
-  static Config initConfig(String[] args) {
+  static Flags parse(String[] args) {
     Flags flags = new Flags();
     CmdLineParser parser = new CmdLineParser(flags);
 
@@ -102,26 +110,7 @@ class Flags {
       System.exit(1);
     }
 
-    Iterable<Path> filteredRawSources = FluentIterable.from(flags.srcs)
-        .filter(excluded(flags.excludes));
-    ImmutableSet.Builder<Path> sources = ImmutableSet.builder();
-    for (Path source : filteredRawSources) {
-      if (Files.isDirectory(source)) {
-        try {
-          sources.addAll(Paths.expandDir(source, unhiddenJsFiles()));
-        } catch (IOException e) {
-          e.printStackTrace(System.err);
-          System.exit(2);
-        }
-      } else {
-        sources.add(source);
-      }
-    }
-
-    return new Config(
-        sources.build(),
-        ImmutableSet.copyOf(flags.externs),
-        flags.outputDir);
+    return flags;
   }
 
   private static List<String> preprocessArgs(String[] args) {
@@ -148,33 +137,14 @@ class Flags {
     return processedArgs;
   }
 
-  private static Predicate<Path> excluded(final List<Path> excludes) {
-    return new Predicate<Path>() {
-      @Override
-      public boolean apply(Path input) {
-        for (Path exclude : excludes) {
-            if (input.startsWith(exclude)) {
-              return false;
-            }
-        }
-        return true;
-      }
-    };
-  }
-
-  private static DirectoryStream.Filter<Path> unhiddenJsFiles() {
-    return new DirectoryStream.Filter<Path>() {
-      @Override
-      public boolean accept(Path entry) throws IOException {
-        return !Files.isHidden(entry)
-            && (Files.isDirectory(entry) || entry.toString().endsWith(".js"));
-      }
-    };
+  private static Path getPath(String path) {
+    return FileSystems.getDefault()
+        .getPath(path)
+        .toAbsolutePath()
+        .normalize();
   }
 
   public static class OutputDirPathHandler extends OptionHandler<Path> {
-
-    private final FileSystem fileSystem = FileSystems.getDefault();
 
     public OutputDirPathHandler(
         CmdLineParser parser, OptionDef option, Setter<? super Path> setter) {
@@ -183,7 +153,7 @@ class Flags {
 
     @Override
     public int parseArguments(Parameters params) throws CmdLineException {
-      Path path = fileSystem.getPath(params.getParameter(0));
+      Path path = getPath(params.getParameter(0));
       if (Files.exists(path) && !Files.isDirectory(path)) {
         throw new CmdLineException(owner, "Path must be a directory: " + path);
       }
@@ -198,8 +168,6 @@ class Flags {
   }
 
   public static class SimplePathHandler extends OptionHandler<Path> {
-    private final FileSystem fileSystem = FileSystems.getDefault();
-
     public SimplePathHandler(
         CmdLineParser parser, OptionDef option, Setter<? super Path> setter) {
       super(parser, option, setter);
@@ -207,7 +175,7 @@ class Flags {
 
     @Override
     public int parseArguments(Parameters params) throws CmdLineException {
-      Path path = fileSystem.getPath(params.getParameter(0));
+      Path path = getPath(params.getParameter(0));
       if (!Files.exists(path)) {
         throw new CmdLineException(owner, "Path does not exist: " + path);
       }
@@ -223,6 +191,38 @@ class Flags {
     @Override
     public String getDefaultMetaVariable() {
       return "PATH";
+    }
+  }
+
+  public static class ClosurePathHandler extends OptionHandler<Optional<Path>> {
+    public ClosurePathHandler(
+        CmdLineParser parser, OptionDef option, Setter<? super Optional<Path>> setter) {
+      super(parser, option, setter);
+    }
+
+    @Override
+    public int parseArguments(Parameters params) throws CmdLineException {
+      Path path = getPath(params.getParameter(0));
+      if (Files.exists(path) && !Files.isDirectory(path)) {
+        throw new CmdLineException(owner, "Path must be a directory: " + path);
+      }
+      checkExists(path.resolve("base.js"));
+      checkExists(path.resolve("deps.js"));
+      setter.addValue(Optional.of(path));
+      return 1;
+    }
+
+    @Override
+    public String getDefaultMetaVariable() {
+      return "PATH";
+    }
+
+    private void checkExists(Path p) throws CmdLineException {
+      if (!Files.exists(p) || !Files.isReadable(p)) {
+        throw new CmdLineException(owner, String.format(
+            "%s must exist in the specified directory: %s",
+            p.getFileName(), p.getParent()));
+      }
     }
   }
 }
