@@ -37,7 +37,7 @@ class DocPass  implements CompilerPass {
     this.compiler = compiler;
     this.config = config;
 
-    LinkResolver linkResolver = new LinkResolver(config.outputDir, docRegistry);
+    LinkResolver linkResolver = new LinkResolver(config.getOutput(), docRegistry);
     this.writerFactory = new DocWriterFactory(linkResolver);
   }
 

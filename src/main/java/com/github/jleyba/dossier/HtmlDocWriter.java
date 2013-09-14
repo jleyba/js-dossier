@@ -14,6 +14,7 @@
 package com.github.jleyba.dossier;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.collect.Iterables.filter;
 import static com.google.common.collect.Iterables.transform;
 
 import com.google.common.base.Charsets;
@@ -73,23 +74,11 @@ class HtmlDocWriter implements DocWriter {
 
   @Override
   public void generateDocs(final JSTypeRegistry registry) throws IOException {
-    Files.createDirectories(config.outputDir);
+    Files.createDirectories(config.getOutput());
     copyResources();
     copySourceFiles();
 
-    Iterable<Descriptor> descriptors = FluentIterable.from(docRegistry.getTypes())
-        .filter(new Predicate<Descriptor>() {
-          @Override
-          public boolean apply(Descriptor input) {
-            if (input.getSource() == null) {
-              return true;
-            }
-            Path path = config.outputDir.getFileSystem().getPath(input.getSource());
-            return !config.excludeDocs.contains(path);
-          }
-        });
-
-    for (Descriptor descriptor : descriptors) {
+    for (Descriptor descriptor : docRegistry.getTypes()) {
       generateDocs(descriptor, registry);
     }
 
@@ -155,9 +144,9 @@ class HtmlDocWriter implements DocWriter {
   }
 
   private void copyResources() throws IOException {
-    FileSystem fs = config.outputDir.getFileSystem();
-    copyResource(fs.getPath("/dossier.css"), config.outputDir);
-    copyResource(fs.getPath("/dossier.js"), config.outputDir);
+    FileSystem fs = config.getOutput().getFileSystem();
+    copyResource(fs.getPath("/dossier.css"), config.getOutput());
+    copyResource(fs.getPath("/dossier.js"), config.getOutput());
   }
 
   private static void copyResource(Path resourcePath, Path outputDir) throws IOException {
@@ -174,14 +163,6 @@ class HtmlDocWriter implements DocWriter {
     JSONArray namespaces = new JSONArray();
 
     Iterable<Descriptor> types = FluentIterable.from(docRegistry.getTypes())
-        .filter(new Predicate<Descriptor>() {
-          @Override
-          public boolean apply(Descriptor input) {
-            String path = input.getSource();
-            return path == null
-                || !config.excludeDocs.contains(config.outputDir.getFileSystem().getPath(path));
-          }
-        })
         .toSortedList(DescriptorNameComparator.INSTANCE);
 
     for (Descriptor descriptor : types) {
@@ -206,9 +187,13 @@ class HtmlDocWriter implements DocWriter {
 
       String content = "var TYPES = " + json + ";";
 
-      Path outputPath = config.outputDir.resolve("types.js");
+      Path outputPath = config.getOutput().resolve("types.js");
+
+      if (Files.exists(outputPath)) {
+        Files.delete(outputPath);
+      }
       Files.write(outputPath, content.getBytes(Charsets.UTF_8),
-          StandardOpenOption.CREATE, StandardOpenOption.WRITE);
+          StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE);
     } catch (JSONException e) {
       throw new IOException(e);
     }
@@ -226,8 +211,8 @@ class HtmlDocWriter implements DocWriter {
   }
 
   private void copySourceFiles() throws IOException {
-    Path fileDir = config.outputDir.resolve("source");
-    for (Path source : config.filteredDocSrcs()) {
+    Path fileDir = config.getOutput().resolve("source");
+    for (Path source : config.getSources()) {
       Path simpleSource = simplifySourcePath(source);
       Path dest = fileDir.resolve(simpleSource.toString() + ".src.html");
 

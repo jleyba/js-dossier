@@ -25,6 +25,9 @@
         <module name="js-dossier" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="js-dossier" target="1.7" />
+    </bytecodeTargetLevel>
   </component>
 </project>
 
