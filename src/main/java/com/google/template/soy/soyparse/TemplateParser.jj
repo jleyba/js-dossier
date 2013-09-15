@@ -1,0 +1,2777 @@
+/*
+ * Copyright 2008 Google Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+//
+// JavaCC grammar specification for the body of a Soy template.
+//
+// @author Kai Huang
+
+
+// =================================================================================================
+// Options
+// =================================================================================================
+
+options {
+  JDK_VERSION = "1.7";
+  STATIC = false;
+  UNICODE_INPUT = true;
+}
+
+
+// =================================================================================================
+// Parser class
+// =================================================================================================
+
+
+PARSER_BEGIN(TemplateParser)
+
+package com.google.template.soy.soyparse;
+
+import com.google.common.base.CharMatcher;
+import com.google.common.base.Joiner;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
+import com.google.template.soy.base.IdGenerator;
+import com.google.template.soy.base.SourceLocation;
+import com.google.template.soy.base.SoySyntaxException;
+import com.google.template.soy.soytree.CallBasicNode;
+import com.google.template.soy.soytree.CallDelegateNode;
+import com.google.template.soy.soytree.CallNode;
+import com.google.template.soy.soytree.CallParamContentNode;
+import com.google.template.soy.soytree.CallParamNode;
+import com.google.template.soy.soytree.CallParamValueNode;
+import com.google.template.soy.soytree.CssNode;
+import com.google.template.soy.soytree.DebuggerNode;
+import com.google.template.soy.soytree.ForNode;
+import com.google.template.soy.soytree.ForeachIfemptyNode;
+import com.google.template.soy.soytree.ForeachNode;
+import com.google.template.soy.soytree.ForeachNonemptyNode;
+import com.google.template.soy.soytree.IfCondNode;
+import com.google.template.soy.soytree.IfElseNode;
+import com.google.template.soy.soytree.IfNode;
+import com.google.template.soy.soytree.LetContentNode;
+import com.google.template.soy.soytree.LetNode;
+import com.google.template.soy.soytree.LetValueNode;
+import com.google.template.soy.soytree.LogNode;
+import com.google.template.soy.soytree.MsgHtmlTagNode;
+import com.google.template.soy.soytree.MsgNode;
+import com.google.template.soy.soytree.MsgPlaceholderNode;
+import com.google.template.soy.soytree.MsgPluralCaseNode;
+import com.google.template.soy.soytree.MsgPluralDefaultNode;
+import com.google.template.soy.soytree.MsgPluralNode;
+import com.google.template.soy.soytree.MsgSelectCaseNode;
+import com.google.template.soy.soytree.MsgSelectDefaultNode;
+import com.google.template.soy.soytree.MsgSelectNode;
+import com.google.template.soy.soytree.PrintDirectiveNode;
+import com.google.template.soy.soytree.PrintNode;
+import com.google.template.soy.soytree.RawTextNode;
+import com.google.template.soy.soytree.SoyNode;
+import com.google.template.soy.soytree.SoyNode.CommandNode;
+import com.google.template.soy.soytree.SoyNode.MsgPlaceholderInitialNode;
+import com.google.template.soy.soytree.SoyNode.StandaloneNode;
+import com.google.template.soy.soytree.SoyNode.StatementNode;
+import com.google.template.soy.soytree.SoySyntaxExceptionUtils;
+import com.google.template.soy.soytree.SwitchCaseNode;
+import com.google.template.soy.soytree.SwitchDefaultNode;
+import com.google.template.soy.soytree.SwitchNode;
+
+import java.io.*;
+import java.util.*;
+import java.util.regex.*;
+
+
+/**
+ * This parser's specification is in TemplateParser.jj, which is read by JavaCC and transformed
+ * into TemplateParser.java. To modify this parser, please edit TemplateParser.jj. Do not edit
+ * TemplateParser.java directly.
+ *
+ * <p> Important: Do not use outside of Soy code (treat as superpackage-private).
+ *
+ * <pre>
+ * This parser parses the body of a Soy template:
+ *
+ * 1. Comments:
+ *    + Comments are only allowed outside of Soy tags.
+ *    + Standard "//" for a rest-of-line comment. Must appear at start of line or after a space.
+ *    + Standard slash-star (/*) ... star-slash (*&#47;) for a block comment.
+ *
+ * 2. Soy tag format:
+ *    + Can be delimited by single braces "{...}" or double braces "{{...}}".
+ *    + Soy tags delimited by double braces are allowed to contain single braces within.
+ *    + Some Soy tags are allowed to end in "/}" or "/}}" to denote immediate ending of a block.
+ *    + It is an error to use "/}" or "/}}" when it's not applicable to the command.
+ *    + If there is a command name, it must come immediately after the opening delimiter.
+ *    + The command name must be followed by either the closing delimiter (if the command does not
+ *      take any command text) or a whitespace (if the command takes command text).
+ *    + It is an error to provide command text when it's not applicable, and vice versa.
+ *    + This parser does not parse command text (that will be separate).
+ *    Examples:
+ *    {print $boo}   // explicit 'print' command
+ *    {$boo.foo}   // implicit 'print' command
+ *    {printer}   // implicit 'print' command (the prefix 'print' here is not a command name)
+ *    {\n}   // a command that doesn't take any command text
+ *    {call .gooMoo data="all" /}   // self-ending block
+ *    {call .gooMoo data="all"}...{/call}   // block with separate start and end tags
+ *
+ * 3. Raw text:
+ *    + Raw text is fixed text that will be part of the template output. There are 3 types.
+ *    + Any text outside of Soy tags is raw text.
+ *    + There are 7 special character commands that produce raw text strings:
+ *      {sp} = space   {nil} = empty string   {\n} = newline (line feed)   {\r} = carriage return
+ *      {\t} = tab   {lb} = left brace   {rb} = right brace
+ *    + A section of raw text (may contain braces) can be enclosed within a 'literal' block:
+ *      {literal}...{/literal}
+ *
+ * 4. Msg blocks:
+ *    + A block between 'msg' and '/msg' tags represents a message for translation.
+ *    + It is an error to nest 'msg' blocks.
+ *    + Within a 'msg' block, the parsing of Soy tags is the same. The only difference is that we
+ *      also recognize "&lt;" and "&gt;" as opening and closing an HTML tag. This is because each
+ *      HTML tag as a whole needs to be turned into a single placeholder in the message.
+ *    Example:
+ *    {msg desc="Event title."}
+ *      Join event &lt;a href="{$event.url}"&gt;{$event.title}&lt;/a&gt;.
+ *    {/msg}
+ *
+ * 5. Other Soy commands:
+ *    {print ...}
+ *    {...}    // implied 'print' command
+ *    {css ...}
+ *    {let ... /}
+ *    {let ...}...{/let}
+ *    {if ...}...{elseif ...}...{else ...}...{/if}
+ *    {switch ...}{case ...}...{default}...{/switch}
+ *    {foreach ...}...{ifempty}...{/foreach}
+ *    {for ...}...{/for}
+ *    {call ... /}
+ *    {delcall ... /}
+ *    {call ...}{param ... /}{param ...}...{/param}{/call}
+ *    {delcall ...}{param ... /}{param ...}...{/param}{/delcall}
+ *    {log}...{/log}
+ *    {debugger}
+ *
+ * 6. Misc:
+ *    + The following commands are not allowed to appear in a template:
+ *      {namespace ...}   {template ...}   {/template}
+ * </pre>
+ *
+ * @author Kai Huang
+ */
+public class TemplateParser {
+
+
+  /**
+   * Parsed content and information about the source from which it is derived.
+   */
+  static final class SourceItemInfo<T> {
+
+    /** Content derived from tokens. */
+    final T parsedContent;
+
+    /**
+     * Line number as counted from the start of the template body (1-indexed).
+     * To convert this to a line number relative to the entire source file, add
+     * {@link TemplateParser#lineNumOffset}.
+     */
+    final int lineNum;
+
+
+    SourceItemInfo(T parsedContent, int lineNum) {
+      this.parsedContent = parsedContent;
+      this.lineNum = lineNum;
+    }
+  }
+
+
+  /** Regex string used in patterns below. Note the first set of spaces is reluctant. */
+  private static final String LINE_BOUNDARY_REGEX = "\\s*?(\\n|\\r)\\s*";
+
+  /** Pattern for a line boundary. */
+  private static final Pattern LINE_BOUNDARY_PATTERN = Pattern.compile(LINE_BOUNDARY_REGEX);
+
+  /** Pattern for a line boundary appearing at the start edge of the string being matched. */
+  private static final Pattern START_EDGE_LINE_BOUNDARY_PATTERN =
+      Pattern.compile("^" + LINE_BOUNDARY_REGEX);
+
+  /** Pattern for a line boundary appearing at the end edge of the string being matched. */
+  private static final Pattern END_EDGE_LINE_BOUNDARY_PATTERN =
+      Pattern.compile(LINE_BOUNDARY_REGEX + "$");
+
+  /** Pattern for a line boundary not appearing at either edge of the string being matched. */
+  private static final Pattern NONEDGE_LINE_BOUNDARY_PATTERN =
+      Pattern.compile("(?<=\\S)" + LINE_BOUNDARY_REGEX + "(?=\\S)");
+
+  /** Path of source file being parsed. This is descriptive, not a means to refetch the source. */
+  // Should be marked 'final' (except JavaCC-generated constructors do not init it).
+  private String filePath;
+
+  /** The number of lines that precede the start of the template being parsed. */
+  // Should be marked 'final' (except JavaCC-generated constructors do not init it).
+  private int lineNumOffset;
+
+  /** Node id generator for the tree being built. */
+  private IdGenerator nodeIdGen;
+
+
+  /**
+   * Constructor that takes a reader object providing the input.
+   * Important: The input should end with a newline sequence (one of "\n", "\r", or "\r\n").
+   *
+   * @param input The input to parse. This reader will not be closed by this parser.
+   * @param nodeIdGen The node id generator for the tree being built.
+   */
+  public TemplateParser(
+      Reader input, String filePath, int templateBodyStartLine, IdGenerator nodeIdGen) {
+    this(input);
+    this.filePath = filePath;
+    // Line numbers are 1-indexed but offsets are not.
+    this.lineNumOffset = templateBodyStartLine - 1;
+    this.nodeIdGen = nodeIdGen;
+  }
+
+
+  /**
+   * Constructor that takes a string input.
+   * Important: The input should end with a newline sequence (one of "\n", "\r", or "\r\n").
+   *
+   * @param input The input to parse.
+   * @param filePath File path or uri describing where the input is from. Used for reporting.
+   * @param templateBodyStartLine The start line for input, 1-indexed.
+   * @param nodeIdGen The node id generator for the tree being built.
+   */
+  public TemplateParser(
+      String input, String filePath, int templateBodyStartLine, IdGenerator nodeIdGen) {
+    this(new StringReader(input), filePath, templateBodyStartLine, nodeIdGen);
+  }
+
+
+  /**
+   * Attempts to parse the input as the body of a Soy template.
+   * @throws TokenMgrError When the input has a token error.
+   * @throws ParseException When the input has a parse error.
+   */
+  public List<StandaloneNode> parseTemplateBody()
+      throws SoySyntaxException, TokenMgrError, ParseException {
+    Preconditions.checkNotNull(nodeIdGen);
+    return TemplateBodyInput();
+  }
+
+
+  /** Map from special character command names to their respective raw text strings. */
+  private static final Map<String, String> SPECIAL_CHAR_CMD_NAME_TO_RAW_TEXT =
+      ImmutableMap.<String, String>builder()
+          .put("sp", " ").put("nil", "").put("\\n", "\n").put("\\r", "\r").put("\\t", "\t")
+          .put("lb", "{").put("rb", "}")
+          .build();
+
+
+  /**
+   * @param lineNum A 1-indexed line number into the input source text of this template (the input
+   *     passed to this parser's constructor).
+   */
+  private SourceLocation createSrcLoc(int lineNum) {
+    return new SourceLocation(filePath, lineNumOffset + lineNum);
+  }
+
+
+  /**
+   * Sets the source location for the given Soy node.
+   * @param node The node to set source location on.
+   * @param lineNum A 1-indexed line number into the input source text of this template (the input
+   *     passed to this parser's constructor).
+   * @return The given node, for convenience.
+   */
+  private <T extends SoyNode> T setSrcLoc(T node, int lineNum) {
+    node.setSourceLocation(createSrcLoc(lineNum));
+    return node;
+  }
+
+}
+
+PARSER_END(TemplateParser)
+
+
+// =================================================================================================
+// Tokens
+// =================================================================================================
+
+
+TOKEN_MGR_DECLS:
+{
+
+  /** Enum for the two types of Soy tag delimiters. */
+  private static enum SoyTagDelimiter {
+    SINGLE_BRACES, DOUBLE_BRACES;
+  }
+
+
+  /**
+   * Within a Soy tag, this records what the opening delimiter was (affects what is allowed in the
+   * command text and what the closing delimiter should be). Not applicable outside of Soy tags.
+   */
+  private SoyTagDelimiter currSoyTagDelim = SoyTagDelimiter.SINGLE_BRACES;
+
+  /**
+   * Within some Soy tags (the commands requiring special case processing), this records the
+   * current command name. Within the rest of the Soy tags, this should be null. Not applicable
+   * outside of Soy tags.
+   */
+  private String currCmdName = null;
+
+  /**
+   * Whether we're currently within a 'literal' block. Currently only used to tell when we should
+   * be switching to state IN_LITERAL_BLOCK.
+   */
+  private boolean isInLiteralBlock = false;
+
+  /**
+   * Whether we're within a 'msg' block. We need to record this because we sometimes leave
+   * states DEFAULT* (e.g. to parse a Soy tag) and then when we're done, we need to know which
+   * DEFAULT* state to return to. See switchToStateDefault*() below.
+   */
+  private boolean isInMsgBlock = false;
+
+  /** Whether we're within an HTML tag. Only applicable within a 'msg' block */
+  private boolean isInMsgHtmlTag = false;
+
+
+  /**
+   * Special case processing for tags without command text.
+   */
+  private void handleSpecialCaseCmdsWithoutCmdText(Token matchedToken) {
+
+    if (currCmdName == null) {
+      return;  // not a special case command
+
+    } else if (currCmdName.equals("literal")) {
+      isInLiteralBlock = true;
+
+    } else if (currCmdName.equals("/literal")) {
+      throwTokenMgrError("Found '/literal' tag outside of any 'literal' block", matchedToken);
+
+    } else if (currCmdName.equals("msg")) {
+      throwTokenMgrError("Tag 'msg' must have command text", matchedToken);
+
+    } else if (currCmdName.equals("/msg")) {
+      if (!isInMsgBlock) {
+        throwTokenMgrError("Found unmatched '/msg' tag outside of any 'msg' block", matchedToken);
+      }
+      if (isInMsgHtmlTag) {
+        throwTokenMgrError(
+            "Found '/msg' tag while within an HTML tag in a 'msg' block. Please close the HTML" +
+            " tag before ending the 'msg' block", matchedToken);
+      }
+      isInMsgBlock = false;
+
+    } else {
+      throw new AssertionError();
+    }
+  }
+
+
+  /**
+   * Special case processing for tags with command text.
+   */
+  private void handleSpecialCaseCmdsWithCmdText(Token matchedToken) {
+
+    if (currCmdName == null) {
+      return;  // not a special case command
+
+    } else if (currCmdName.equals("literal")) {
+      throwTokenMgrError("Tag 'literal' must not have command text", matchedToken);
+
+    } else if (currCmdName.equals("/literal")) {
+      throwTokenMgrError("Found '/literal' tag outside of any 'literal' block", matchedToken);
+
+    } else if (currCmdName.equals("msg")) {
+      if (isInMsgBlock) {
+        throwTokenMgrError("Nested 'msg' tags not allowed", matchedToken);
+      }
+      isInMsgBlock = true;
+      isInMsgHtmlTag = false;
+
+    } else if (currCmdName.equals("/msg")) {
+      throwTokenMgrError("Tag '/msg' must not have command text", matchedToken);
+
+    } else {
+      throw new AssertionError();
+    }
+  }
+
+
+  /**
+   * Helper for lexical actions to switch back to one of the states DEFAULT or
+   * DEFAULT_IN_MSG_BLOCK_AT_SOL, depending on whether we're currently within a 'msg' block.
+   *
+   * Note: DEFAULT should really be named DEFAULT_AT_SOL, but since we have to jump through a lot of
+   * hoops to change the starting state name in JavaCC, I opted to leave it as DEFAULT.
+   */
+  private void switchToStateDefaultAtSol() {
+    if (isInMsgBlock) {
+      SwitchTo(DEFAULT_IN_MSG_BLOCK_AT_SOL);
+    } else {
+      SwitchTo(DEFAULT);
+    }
+  }
+
+
+  /**
+   * Helper for lexical actions to switch back to one of the states DEFAULT_NOT_SOL or
+   * DEFAULT_IN_MSG_BLOCK_NOT_SOL, depending on whether we're currently within a 'msg' block.
+   */
+  private void switchToStateDefaultNotSol() {
+    if (isInMsgBlock) {
+      SwitchTo(DEFAULT_IN_MSG_BLOCK_NOT_SOL);
+    } else {
+      SwitchTo(DEFAULT_NOT_SOL);
+    }
+  }
+
+
+  /**
+   * Helper for lexical actions to switch to one of the states DEFAULT_NOT_SOL,
+   * DEFAULT_IN_MSG_BLOCK_NOT_SOL, or IN_LITERAL_BLOCK, depending on whether we're currently within
+   * a 'literal' block, a 'msg' block (but not a 'literal' block), or neither.
+   */
+  private void switchToStateDefaultNotSolOrLiteral() {
+    if (isInLiteralBlock) {
+      SwitchTo(IN_LITERAL_BLOCK);
+    } else if (isInMsgBlock) {
+      SwitchTo(DEFAULT_IN_MSG_BLOCK_NOT_SOL);
+    } else {
+      SwitchTo(DEFAULT_NOT_SOL);
+    }
+  }
+
+
+  /**
+   * Helper for lexical actions to switch to one of the states AFTER_CMD_NAME_1 or AFTER_CMD_NAME_2,
+   * depending on the current Soy tag's opening delimiter.
+   */
+  private void switchToStateAfterCmdName() {
+    if (currSoyTagDelim == SoyTagDelimiter.SINGLE_BRACES) {
+      SwitchTo(AFTER_CMD_NAME_1);
+    } else {
+      SwitchTo(AFTER_CMD_NAME_2);
+    }
+  }
+
+
+  /**
+   * Helper for lexical actions to switch to one of the states IN_CMD_TEXT_1 or IN_CMD_TEXT_2,
+   * depending on the current Soy tag's opening delimiter.
+   */
+  private void switchToStateInCmdText() {
+    if (currSoyTagDelim == SoyTagDelimiter.SINGLE_BRACES) {
+      SwitchTo(IN_CMD_TEXT_1);
+    } else {
+      SwitchTo(IN_CMD_TEXT_2);
+    }
+  }
+
+
+  /**
+   * Creates a new TokenMgrError with the given message and line/column numbers and throws it.
+   * @param message The error message. Should not end with a period because the suffix
+   *     " [line ..., column ...]" will be appended.
+   * @param matchedToken The current matched token to get the line/column numbers from.
+   * @throws TokenMgrError Always.
+   */
+  private static void throwTokenMgrError(String message, Token matchedToken) throws TokenMgrError {
+    throw new TokenMgrError(message + " [line " + matchedToken.beginLine +
+                            ", column " + matchedToken.beginColumn + "].",
+                            TokenMgrError.LEXICAL_ERROR);
+  }
+
+}
+
+
+// -------------------------------------------------------------------------------------------------
+// Comment.
+
+// Comments are only recognized in states DEFAULT*.
+
+// Note: DEFAULT should really be named DEFAULT_AT_SOL, but since we have to jump through a lot of
+// hoops to change the starting state name in JavaCC, I opted to leave it as DEFAULT.
+
+// The only difference between DEFAULT*_AT_SOL and DEFAULT*_NOT_SOL is that the former allow a line
+// comment to start without preceding whitespace.
+
+<DEFAULT, DEFAULT_NOT_SOL, DEFAULT_IN_MSG_BLOCK_AT_SOL, DEFAULT_IN_MSG_BLOCK_NOT_SOL> SKIP:
+{
+  < BLOCK_COMMENT_START: "/*" > : IN_COMMENT_BLOCK
+}
+
+<DEFAULT, DEFAULT_IN_MSG_BLOCK_AT_SOL> SKIP:
+{
+  < LINE_COMMENT_AT_SOL: ( <WS_NOT_NL> )? "//" ( <NOT_NL> )* >
+  { switchToStateDefaultNotSol(); }
+}
+
+<DEFAULT_NOT_SOL, DEFAULT_IN_MSG_BLOCK_NOT_SOL> SKIP:
+{
+  < LINE_COMMENT_NOT_SOL: <WS_NOT_NL> "//" ( <NOT_NL> )* >
+}
+
+<IN_COMMENT_BLOCK> SKIP:
+{
+  < BLOCK_COMMENT_END: "*/" > { switchToStateDefaultNotSol(); }
+|
+  < BLOCK_COMMENT_CHAR: <ANY_CHAR> >
+}
+
+
+// -------------------------------------------------------------------------------------------------
+// Soy tag.
+
+
+// ------------ Step 1: Match the opening delimiter (single or double left brace) ------------
+
+<DEFAULT, DEFAULT_NOT_SOL, DEFAULT_IN_MSG_BLOCK_AT_SOL, DEFAULT_IN_MSG_BLOCK_NOT_SOL> TOKEN:
+{
+  < SOY_TAG_OPEN_1: "{" >
+  { currSoyTagDelim = SoyTagDelimiter.SINGLE_BRACES; }
+  : AFTER_SOY_TAG_OPEN
+|
+  < SOY_TAG_OPEN_2: "{{" >
+  { currSoyTagDelim = SoyTagDelimiter.DOUBLE_BRACES; }
+  : AFTER_SOY_TAG_OPEN
+}
+
+// Error check: Unmatched right brace.
+<DEFAULT, DEFAULT_NOT_SOL, DEFAULT_IN_MSG_BLOCK_AT_SOL, DEFAULT_IN_MSG_BLOCK_NOT_SOL> TOKEN:
+{
+  < XXX_UNMATCHED_RIGHT_BRACE_1: "}" >
+  { throwTokenMgrError("Unmatched right brace '}'", matchedToken); }
+|
+  < XXX_UNMATCHED_RIGHT_BRACE_2: "}}" >
+  { throwTokenMgrError("Unmatched double right brace '}}'", matchedToken); }
+}
+
+
+// ------------ Step 2: Maybe match a command name ------------
+
+<AFTER_SOY_TAG_OPEN> TOKEN:
+{
+  < CMD_NAME_SP: "sp" > { switchToStateAfterCmdName(); }
+| < CMD_NAME_NIL : "nil" > { switchToStateAfterCmdName(); }
+| < CMD_NAME_LF : "\\n" > { switchToStateAfterCmdName(); }
+| < CMD_NAME_CR : "\\r" > { switchToStateAfterCmdName(); }
+| < CMD_NAME_TAB : "\\t" > { switchToStateAfterCmdName(); }
+| < CMD_NAME_LB : "lb" > { switchToStateAfterCmdName(); }
+| < CMD_NAME_RB : "rb" > { switchToStateAfterCmdName(); }
+
+| < CMD_NAME_LITERAL : "literal" >
+  { currCmdName = "literal";  // record command name for special case handling
+    switchToStateAfterCmdName();
+  }
+| < CMD_NAME_END_LITERAL : "/literal" >
+  { currCmdName = "/literal";  // record command name for special case handling
+    switchToStateAfterCmdName();
+  }
+
+| < CMD_NAME_MSG : "msg" >
+  { currCmdName = "msg";  // record command name for special case handling
+    switchToStateAfterCmdName();
+  }
+| < CMD_NAME_END_MSG : "/msg" >
+  { currCmdName = "/msg";  // record command name for special case handling
+    switchToStateAfterCmdName();
+  }
+
+| < CMD_NAME_PLURAL : "plural" > { switchToStateAfterCmdName(); }
+| < CMD_NAME_END_PLURAL : "/plural" > { switchToStateAfterCmdName(); }
+
+| < CMD_NAME_SELECT : "select" > { switchToStateAfterCmdName(); }
+| < CMD_NAME_END_SELECT : "/select" > { switchToStateAfterCmdName(); }
+
+| < CMD_NAME_PRINT : "print" > { switchToStateAfterCmdName(); }
+
+| < CMD_NAME_CSS : "css" > { switchToStateAfterCmdName(); }
+
+| < CMD_NAME_LET : "let" > { switchToStateAfterCmdName(); }
+| < CMD_NAME_END_LET : "/let" > { switchToStateAfterCmdName(); }
+
+| < CMD_NAME_IF : "if" > { switchToStateAfterCmdName(); }
+| < CMD_NAME_ELSEIF : "elseif" > { switchToStateAfterCmdName(); }
+| < CMD_NAME_ELSE : "else" > { switchToStateAfterCmdName(); }
+| < CMD_NAME_END_IF : "/if" > { switchToStateAfterCmdName(); }
+
+| < CMD_NAME_SWITCH : "switch" > { switchToStateAfterCmdName(); }
+| < CMD_NAME_END_SWITCH : "/switch" > { switchToStateAfterCmdName(); }
+
+| < CMD_NAME_FOREACH : "foreach" > { switchToStateAfterCmdName(); }
+| < CMD_NAME_IFEMPTY : "ifempty" > { switchToStateAfterCmdName(); }
+| < CMD_NAME_END_FOREACH : "/foreach" > { switchToStateAfterCmdName(); }
+
+| < CMD_NAME_FOR : "for" > { switchToStateAfterCmdName(); }
+| < CMD_NAME_END_FOR : "/for" > { switchToStateAfterCmdName(); }
+
+| < CMD_NAME_ANY_CALL : "call" | "delcall" > { switchToStateAfterCmdName(); }
+| < CMD_NAME_END_ANY_CALL : "/call" | "/delcall" > { switchToStateAfterCmdName(); }
+| < CMD_NAME_PARAM : "param" > { switchToStateAfterCmdName(); }
+| < CMD_NAME_END_PARAM : "/param" > { switchToStateAfterCmdName(); }
+
+| < CMD_NAME_LOG : "log" > { switchToStateAfterCmdName(); }
+| < CMD_NAME_END_LOG : "/log" > { switchToStateAfterCmdName(); }
+| < CMD_NAME_DEBUGGER : "debugger" > { switchToStateAfterCmdName(); }
+
+// Shared commands.
+| < CMD_NAME_CASE : "case" > { switchToStateAfterCmdName(); }
+| < CMD_NAME_DEFAULT : "default" > { switchToStateAfterCmdName(); }
+
+// The following commands should never appear within a template. They would cause a parse error
+// since they don't have corresponding nonterminals in the grammar.
+| < CMD_NAME_NAMESPACE : "namespace" > { switchToStateAfterCmdName(); }
+| < CMD_NAME_TEMPLATE : "template" > { switchToStateAfterCmdName(); }
+| < CMD_NAME_END_TEMPLATE : "/template" > { switchToStateAfterCmdName(); }
+}
+
+// If we don't find a command name, then match nothing, but switch to state IN_CMD_TEXT_*.
+<AFTER_SOY_TAG_OPEN> SKIP:
+{
+  < XXX_NO_CMD_NAME: "" > { switchToStateInCmdText(); }
+}
+
+// Error check: First character in a Soy tag must not be a brace character.
+<AFTER_SOY_TAG_OPEN> TOKEN:
+{
+  < XXX_BRACE_AFTER_SOY_TAG_OPEN: <BRACE> >
+  { throwTokenMgrError(
+        "First character in a Soy tag must not be a brace character (consider inserting a space" +
+        " before the brace character)", matchedToken);
+  }
+}
+
+
+// ------------ Step 3: Check the character after the command name ------------
+// Case 1: Tag close. This indicates a command name with no command text.
+// Case 2: Whitespace. This indicates a command name with command text to follow.
+// Case 3: Not case 1 or 2 (i.e. not command boundary). This indicates that it's not actually a
+//         command name. It's just a freak case where the first few characters of the expression
+//         for an implied-'print' command happens to be the same string as a command name.
+
+<AFTER_CMD_NAME_1> TOKEN:
+{
+  < REG_SOY_TAG_CLOSE_AFTER_CMD_NAME_1: "}" >
+  { handleSpecialCaseCmdsWithoutCmdText(matchedToken);
+    currCmdName = null;  // clear command name since we're out of the tag
+    switchToStateDefaultNotSolOrLiteral();  // note: may switch to state IN_LITERAL_BLOCK
+  }
+|
+  < SELF_ENDING_SOY_TAG_CLOSE_AFTER_CMD_NAME_1: "/}" >
+  { handleSpecialCaseCmdsWithoutCmdText(matchedToken);
+    currCmdName = null;  // clear command name since we're out of the tag
+    switchToStateDefaultNotSolOrLiteral();  // note: may switch to state IN_LITERAL_BLOCK
+  }
+}
+
+<AFTER_CMD_NAME_2> TOKEN:
+{
+  < REG_SOY_TAG_CLOSE_AFTER_CMD_NAME_2: "}}" >
+  { handleSpecialCaseCmdsWithoutCmdText(matchedToken);
+    currCmdName = null;  // clear command name since we're out of the tag
+    switchToStateDefaultNotSolOrLiteral();  // note: may switch to state IN_LITERAL_BLOCK
+  }
+|
+  < SELF_ENDING_SOY_TAG_CLOSE_AFTER_CMD_NAME_2: "/}}" >
+  { handleSpecialCaseCmdsWithoutCmdText(matchedToken);
+    currCmdName = null;  // clear command name since we're out of the tag
+    switchToStateDefaultNotSolOrLiteral();  // note: may switch to state IN_LITERAL_BLOCK
+  }
+}
+
+<AFTER_CMD_NAME_1, AFTER_CMD_NAME_2> TOKEN:
+{
+  < WS_AFTER_CMD_NAME: <WS> >
+  { handleSpecialCaseCmdsWithCmdText(matchedToken);
+    switchToStateInCmdText();
+  }
+|
+  < NOT_CMD_NAME_BOUNDARY_AFTER_CMD_NAME: "" > { switchToStateInCmdText(); }
+}
+
+
+// ------------ Step 4: Match the command text and closing delimiter ------------
+// Note: For each rule, we need two versions (for Soy tags delimited by single and double braces).
+
+<IN_CMD_TEXT_1, IN_CMD_TEXT_2> TOKEN:
+{
+  < CMD_TEXT_DIRECTIVE_NAME: "|" <IDENT> >
+|
+  < CMD_TEXT_PHNAME_ATTR: <WS_CHAR> "phname=\"" <IDENT> "\"" >
+|
+  < XXX_CMD_TEXT_PHNAME_NOT_IDENT: <WS_CHAR> "phname=\"" ( ~["\""] )* "\"" >
+  { throwTokenMgrError(
+        "Found 'phname' attribute that is not a valid identifier (" + matchedToken.image + ")",
+        matchedToken);
+  }
+}
+
+<IN_CMD_TEXT_1> TOKEN:
+{
+  < CMD_TEXT_CHAR_1: <NOT_BRACE> >
+}
+
+<IN_CMD_TEXT_2> TOKEN:
+{
+  < CMD_TEXT_CHAR_2: <ANY_CHAR> >
+}
+
+<IN_CMD_TEXT_1> TOKEN:
+{
+  < REG_SOY_TAG_CLOSE_AFTER_CMD_TEXT_1: "}" >
+  { currCmdName = null;  // clear command name since we're out of the tag
+    switchToStateDefaultNotSol();
+  }
+|
+  < SELF_ENDING_SOY_TAG_CLOSE_AFTER_CMD_TEXT_1: "/}" >
+  { currCmdName = null;  // clear command name since we're out of the tag
+    switchToStateDefaultNotSol();
+  }
+}
+
+<IN_CMD_TEXT_2> TOKEN:
+{
+  < REG_SOY_TAG_CLOSE_AFTER_CMD_TEXT_2: "}}" >
+  { currCmdName = null;  // clear command name since we're out of the tag
+    switchToStateDefaultNotSol();
+  }
+|
+  < SELF_ENDING_SOY_TAG_CLOSE_AFTER_CMD_TEXT_2: "/}}" >
+  { currCmdName = null;  // clear command name since we're out of the tag
+    switchToStateDefaultNotSol();
+  }
+}
+
+// Error check: Illegal braces in a Soy tag delmited by single braces.
+<IN_CMD_TEXT_1> TOKEN:
+{
+  < XXX_LEFT_BRACE_IN_SOY_TAG_1: "{" >
+  { throwTokenMgrError(
+        "Left brace '{' not allowed within a Soy tag delimited by single braces (consider using" +
+        " double braces to delimit the Soy tag)", matchedToken);
+  }
+|
+  < XXX_DOUBLE_RIGHT_BRACE_IN_SOY_TAG_1: "}}" | "/}}" >
+  { throwTokenMgrError(
+        "Found Soy tag opened by '{' but closed by '}}' (please use consistent delimiters)",
+        matchedToken);
+  }
+}
+
+// Error check: Illegal braces in a Soy tag delmited by double braces.
+<IN_CMD_TEXT_2> TOKEN:
+{
+  < XXX_DOUBLE_LEFT_BRACE_IN_SOY_TAG_2: "{{" >
+  { throwTokenMgrError(
+        "Double left brace '{{' not allowed within a Soy tag delimited by double braces" +
+        " (consider inserting a space: '{ {')", matchedToken);
+  }
+|
+  < XXX_BRACE_BEFORE_SOY_TAG_CLOSE: "{}}" | "}}}" >
+  { throwTokenMgrError(
+        "Last character in a Soy tag must not be a brace character (consider inserting a space" +
+        " after the brace character)", matchedToken);
+  }
+}
+
+
+// -------------------------------------------------------------------------------------------------
+// In a 'msg' block.
+
+// The only difference between states DEFAULT/DEFAULT_NOT_SOL and
+// DEFAULT_IN_MSG_BLOCK_AT_SOL/DEFAULT_IN_MSG_BLOCK_NOT_SOL is that the latter also create tokens
+// for HTML tag open/close.
+<DEFAULT_IN_MSG_BLOCK_AT_SOL, DEFAULT_IN_MSG_BLOCK_NOT_SOL> TOKEN:
+{
+  < MSG_HTML_TAG_OPEN: "<" >
+  { if (isInMsgHtmlTag) {
+      throwTokenMgrError("In a 'msg' block, found '<' within HTML tag", matchedToken);
+    }
+    isInMsgHtmlTag = true;
+  }
+|
+  < MSG_HTML_TAG_CLOSE: ">" >
+  { if (!isInMsgHtmlTag) {
+      throwTokenMgrError("In a 'msg' block, found '>' while not within HTML tag", matchedToken);
+    }
+    isInMsgHtmlTag = false;
+  }
+}
+
+
+// -------------------------------------------------------------------------------------------------
+// In a 'literal' block.
+
+// Collect the literal text using MORE.
+<IN_LITERAL_BLOCK> MORE:
+{
+  < <ANY_CHAR> >
+}
+
+// When we reach the '/literal' tag, return the collected text content (minus the end tag).
+<IN_LITERAL_BLOCK> TOKEN:
+{
+  < LITERAL_RAW_TEXT_CONTENT: ( "{/literal}" | "{{/literal}}" ) >
+  { isInLiteralBlock = false;
+    // Note: 'image' is cumulative over MOREs while 'lengthOfMatch' is just the end tag length.
+    matchedToken.image = image.substring(0, image.length() - lengthOfMatch);
+    switchToStateDefaultNotSol();
+  }
+}
+
+// Error check: Invalid 'literal' and '/literal' tags in state IN_LITERAL_BLOCK.
+<IN_LITERAL_BLOCK> TOKEN:
+{
+  < XXX_INVALID_END_LITERAL_TAG: ( "{" | "{{" ) "/literal" <WS> >
+  { throwTokenMgrError("Tag '/literal' must not have command text", matchedToken); }
+|
+  < XXX_NESTED_LITERAL_TAG: ( "{" | "{{" ) "literal" ( "}" | <WS> ) >
+  { throwTokenMgrError("Nested 'literal' tags not allowed", matchedToken); }
+}
+
+
+// -------------------------------------------------------------------------------------------------
+// Misc.
+
+// In states DEFAULT*, all unmatched characters are basic raw text.
+
+<DEFAULT, DEFAULT_NOT_SOL, DEFAULT_IN_MSG_BLOCK_AT_SOL, DEFAULT_IN_MSG_BLOCK_NOT_SOL> TOKEN:
+{
+  < BASIC_RAW_TEXT_NL: <NL> >
+  { switchToStateDefaultAtSol(); }
+|
+  < BASIC_RAW_TEXT_NOT_NL_1: <NOT_WS> "//" ( "/" )* | <NOT_NL> >
+  { switchToStateDefaultNotSol(); }
+}
+
+<DEFAULT, DEFAULT_IN_MSG_BLOCK_AT_SOL> TOKEN:
+{
+  < BASIC_RAW_TEXT_NOT_NL_2: <NOT_WS> "//" ( "/" )* | <NOT_NL> >
+  { switchToStateDefaultNotSol(); }
+}
+
+<DEFAULT_NOT_SOL, DEFAULT_IN_MSG_BLOCK_NOT_SOL> TOKEN:
+{
+  < BASIC_RAW_TEXT_NOT_NL_3: <NOT_WS> "//" ( "/" )* | <NOT_NL> >
+  // Don't call switchToStateDefaultNotSol() because we're already in that state.
+}
+
+// Private helper regexes.
+<*> TOKEN:
+{
+  < #ANY_CHAR: ~[] >
+|
+  < #WS: " " | "\t" | "\n" | "\r" | "\r\n" >
+|
+  < #WS_CHAR: " " | "\t" | "\n" | "\r" >
+|
+  < #NOT_WS: ~[" ","\t","\n","\r"] >
+|
+  < #NL: "\n" | "\r" | "\r\n" >
+|
+  < #NOT_NL: ~["\n","\r"] >
+|
+  < #WS_NOT_NL: " " | "\t" >
+|
+  < #BRACE: ["{","}"] >
+|
+  < #NOT_BRACE: ~["{","}"] >
+|
+  < #IDENT: ["a"-"z","A"-"Z","_"] ( ["a"-"z","A"-"Z","_","0"-"9"] )* >
+}
+
+
+// =================================================================================================
+// Grammar basics
+// =================================================================================================
+
+
+// -------------------------------------------------------------------------------------------------
+// Soy tag parts.
+
+
+/**
+ * SoyTagOpen -> SoyTagOpen1 | SoyTagOpen2
+ */
+private SourceItemInfo<Void> SoyTagOpen() :
+{
+  Token tagOpen;
+}
+{
+  (
+    tagOpen = <SOY_TAG_OPEN_1>
+  | tagOpen = <SOY_TAG_OPEN_2>
+  )
+
+  { return new SourceItemInfo<Void>(null, tagOpen.beginLine); }
+}
+
+
+/**
+ * RegSoyTagClose ->   RegSoyTagCloseAfterCmdName1 | RegSoyTagCloseAfterCmdName2
+ *                   | RegSoyTagCloseAfterCmdText1 | RegSoyTagCloseAfterCmdText2
+ */
+private void RegSoyTagClose() :
+{}
+{
+    <REG_SOY_TAG_CLOSE_AFTER_CMD_NAME_1>
+  | <REG_SOY_TAG_CLOSE_AFTER_CMD_NAME_2>
+  | <REG_SOY_TAG_CLOSE_AFTER_CMD_TEXT_1>
+  | <REG_SOY_TAG_CLOSE_AFTER_CMD_TEXT_2>
+}
+
+
+/**
+ * SelfEndingSoyTagClose ->   SelfEndingSoyTagCloseAfterCmdName1
+ *                          | SelfEndingSoyTagCloseAfterCmdName2
+ *                          | SelfEndingSoyTagCloseAfterCmdText1
+ *                          | SelfEndingSoyTagCloseAfterCmdText2
+ */
+private void SelfEndingSoyTagClose() :
+{}
+{
+    <SELF_ENDING_SOY_TAG_CLOSE_AFTER_CMD_NAME_1>
+  | <SELF_ENDING_SOY_TAG_CLOSE_AFTER_CMD_NAME_2>
+  | <SELF_ENDING_SOY_TAG_CLOSE_AFTER_CMD_TEXT_1>
+  | <SELF_ENDING_SOY_TAG_CLOSE_AFTER_CMD_TEXT_2>
+}
+
+
+/**
+ * CmdText -> CmdTextParts
+ */
+private String CmdText():
+{
+  List<String> cmdTextParts;
+}
+{
+  cmdTextParts = CmdTextParts()
+  { return Joiner.on("").join(cmdTextParts); }
+}
+
+
+/**
+ * Note: The optional part "[ AnyCmdName NotCmdNameBoundaryAfterCmdName ]" handles the freak case
+ * where the expression for an implied-'print' command begins with the same letters as one of the
+ * command names.
+ *
+ * CmdTextParts -> [ AnyCmdName NotCmdNameBoundaryAfterCmdName ]
+ *                 ( CmdTextChar1 | CmdTextChar2 | CmdTextDirectiveName | CmdTextPhnameAttr )*
+ */
+private List<String> CmdTextParts() :
+{
+  String freakCmdName;
+  Token cmdTextChar;
+  Token cmdTextSpecialPart;
+}
+{
+  { List<String> cmdTextParts = Lists.newArrayList();
+    StringBuilder currCmdTextPartSb = new StringBuilder();
+  }
+
+  [
+    freakCmdName = AnyCmdName()
+    { currCmdTextPartSb.append(freakCmdName); }
+
+    <NOT_CMD_NAME_BOUNDARY_AFTER_CMD_NAME>
+  ]
+
+  (
+    (
+      cmdTextChar = <CMD_TEXT_CHAR_1>
+      { currCmdTextPartSb.append(cmdTextChar.image); }
+    |
+      cmdTextChar = <CMD_TEXT_CHAR_2>
+      { currCmdTextPartSb.append(cmdTextChar.image); }
+    |
+      (
+        cmdTextSpecialPart = <CMD_TEXT_DIRECTIVE_NAME>
+      | cmdTextSpecialPart = <CMD_TEXT_PHNAME_ATTR>
+      )
+      { // Add the preceding part if nonempty.
+        if (currCmdTextPartSb.length() > 0) {
+          cmdTextParts.add(currCmdTextPartSb.toString());
+          currCmdTextPartSb = new StringBuilder();
+        }
+        // Add the special part.
+        cmdTextParts.add(cmdTextSpecialPart.image);
+      }
+    )
+  )*
+
+  { // Add the last part if nonempty.
+    if (currCmdTextPartSb.length() > 0) {
+      cmdTextParts.add(currCmdTextPartSb.toString());
+      currCmdTextPartSb = new StringBuilder();
+    }
+
+    // Process whitespace.
+    for (int i = 0, n = cmdTextParts.size(); i < n; i++) {
+      String cmdTextPart = cmdTextParts.get(i);
+      if (i == 0) {
+        cmdTextPart = CharMatcher.WHITESPACE.trimLeadingFrom(cmdTextPart);
+      }
+      if (i == n - 1) {
+        cmdTextPart = CharMatcher.WHITESPACE.trimTrailingFrom(cmdTextPart);
+      }
+      cmdTextPart = LINE_BOUNDARY_PATTERN.matcher(cmdTextPart).replaceAll(" ");
+      cmdTextParts.set(i, cmdTextPart);
+    }
+
+    return cmdTextParts;
+  }
+}
+
+
+/**
+ * Helper for CmdTextParts(). This rule is only used for matching any command name in the freak
+ * case where the expression for an implied-'print' command begins with the same letters as one of
+ * the command names.
+ *
+ * AnyCmdName -> ...
+ */
+private String AnyCmdName() :
+{
+  Token cmdName;
+}
+{
+  (
+    cmdName = <CMD_NAME_SP>
+  | cmdName = <CMD_NAME_NIL>
+  | cmdName = <CMD_NAME_LF>
+  | cmdName = <CMD_NAME_CR>
+  | cmdName = <CMD_NAME_TAB>
+  | cmdName = <CMD_NAME_LB>
+  | cmdName = <CMD_NAME_RB>
+  | cmdName = <CMD_NAME_LITERAL>
+  | cmdName = <CMD_NAME_END_LITERAL>
+  | cmdName = <CMD_NAME_MSG>
+  | cmdName = <CMD_NAME_END_MSG>
+  | cmdName = <CMD_NAME_PRINT>
+  | cmdName = <CMD_NAME_CSS>
+  | cmdName = <CMD_NAME_LET>
+  | cmdName = <CMD_NAME_END_LET>
+  | cmdName = <CMD_NAME_IF>
+  | cmdName = <CMD_NAME_ELSEIF>
+  | cmdName = <CMD_NAME_ELSE>
+  | cmdName = <CMD_NAME_END_IF>
+  | cmdName = <CMD_NAME_SWITCH>
+  | cmdName = <CMD_NAME_END_SWITCH>
+  | cmdName = <CMD_NAME_FOREACH>
+  | cmdName = <CMD_NAME_IFEMPTY>
+  | cmdName = <CMD_NAME_END_FOREACH>
+  | cmdName = <CMD_NAME_FOR>
+  | cmdName = <CMD_NAME_END_FOR>
+  | cmdName = <CMD_NAME_ANY_CALL>
+  | cmdName = <CMD_NAME_END_ANY_CALL>
+  | cmdName = <CMD_NAME_PARAM>
+  | cmdName = <CMD_NAME_END_PARAM>
+  | cmdName = <CMD_NAME_LOG>
+  | cmdName = <CMD_NAME_END_LOG>
+  | cmdName = <CMD_NAME_DEBUGGER>
+  | cmdName = <CMD_NAME_CASE>
+  | cmdName = <CMD_NAME_DEFAULT>
+  | cmdName = <CMD_NAME_NAMESPACE>
+  | cmdName = <CMD_NAME_TEMPLATE>
+  | cmdName = <CMD_NAME_END_TEMPLATE>
+  )
+
+  { return cmdName.image; }
+}
+
+
+// -------------------------------------------------------------------------------------------------
+// Raw text.
+
+
+/**
+ * BasicRawTextToken ->
+ *     BasicRawTextNl | BasicRawTextNotNl1 | BasicRawTextNotNl2 | BasicRawTextNotNl3
+ */
+private Token BasicRawTextToken() :
+{
+  Token token;
+}
+{
+  (
+    token = <BASIC_RAW_TEXT_NL>
+  |
+    token = <BASIC_RAW_TEXT_NOT_NL_1>
+  |
+    token = <BASIC_RAW_TEXT_NOT_NL_2>
+  |
+    token = <BASIC_RAW_TEXT_NOT_NL_3>
+  )
+
+  { return token; }
+}
+
+
+/**
+ * BasicRawText -> ( BasicRawTextToken )+
+ */
+private SourceItemInfo<String> BasicRawText() :
+{
+  Token basicRawTextToken;
+}
+{
+  { StringBuilder basicRawTextSb = new StringBuilder();
+    boolean isStartOfTemplate;
+    int lineNum;
+  }
+
+  basicRawTextToken = BasicRawTextToken()
+  { basicRawTextSb.append(basicRawTextToken.image);
+    // Use the first character's position to determine whether we're at start-of-template.
+    // Note: Token.beginLine and Token.beginColumn are 1-based. This is not documented!
+    isStartOfTemplate = (basicRawTextToken.beginLine == 1 && basicRawTextToken.beginColumn == 1);
+    lineNum = basicRawTextToken.beginLine;
+  }
+
+  (
+    LOOKAHEAD( BasicRawTextToken() )
+
+    basicRawTextToken = BasicRawTextToken()
+    { basicRawTextSb.append(basicRawTextToken.image); }
+  )*
+
+  { String basicRawText = basicRawTextSb.toString();
+
+    // Strip start-of-template space.
+    if (isStartOfTemplate) {
+      basicRawText = CharMatcher.WHITESPACE.trimLeadingFrom(basicRawText);
+    }
+
+    // Handle line boundaries after Soy tags (includes stripping end-of-template space sinceinput
+    // ends with a newline).
+    basicRawText = START_EDGE_LINE_BOUNDARY_PATTERN.matcher(basicRawText).replaceFirst("");
+
+    // Adjust line by counting forward for each newline removed.
+    // So far, we have only removed content from the beginning of the string.
+    int numSpaceCharsRemovedFromFront = basicRawTextSb.length() - basicRawText.length();
+    for (int i = 0; i < numSpaceCharsRemovedFromFront; ++i) {
+      char ch = basicRawTextSb.charAt(i);
+       if (ch == '\r') {
+        if (i + 1 == numSpaceCharsRemovedFromFront || basicRawTextSb.charAt(i + 1) != '\n') {
+          ++lineNum;  // Only count this CR if it is not part of a CRLF.
+        }
+      } else if (ch == '\n') {
+        ++lineNum;
+      }
+    }
+
+    // Handle line boundaries before Soy tags (includes stripping end-of-template space since input
+    // ends with a newline).
+    basicRawText = END_EDGE_LINE_BOUNDARY_PATTERN.matcher(basicRawText).replaceFirst("");
+
+    // Handle line boundaries in the middle of the raw text. Note we have to check the characters
+    // before and after because the line boundaries may be adjacent to HTML tags.
+    Matcher matcher = NONEDGE_LINE_BOUNDARY_PATTERN.matcher(basicRawText);
+    StringBuffer basicRawTextWithoutNewlinesSb = new StringBuffer(basicRawText.length());
+    while (matcher.find()) {
+      char charBefore = basicRawText.charAt(matcher.start() - 1);
+      char charAfter = basicRawText.charAt(matcher.end());
+      matcher.appendReplacement(basicRawTextWithoutNewlinesSb,
+                                (charBefore == '>' || charAfter == '<') ? "" : " ");
+    }
+    matcher.appendTail(basicRawTextWithoutNewlinesSb);
+
+    return new SourceItemInfo<String>(basicRawTextWithoutNewlinesSb.toString(), lineNum);
+  }
+}
+
+
+/**
+ * Matches empty string or BasicRawText, and if the latter, then ensures it's all whitespace.
+ * Used for areas that should not have any content (e.g. between 'call' and 'param' tags).
+ *
+ * MaybeWhitespace -> [ BasicRawText ]
+ *
+ * Package visible for testing.
+ */
+void MaybeWhitespace(String errorMessage) :
+{
+  SourceItemInfo<String> basicRawText;
+}
+{
+  [
+    basicRawText = BasicRawText()
+    { if (basicRawText.parsedContent.trim().length() != 0) {
+
+        throw new ParseException(
+            errorMessage + " Found on line " + (lineNumOffset + basicRawText.lineNum) );
+      }
+    }
+  ]
+}
+
+
+/**
+ * LiteralRawText -> SoyTagOpen CmdNameLiteral RegSoyTagClose LiteralRawTextContent
+ */
+private SourceItemInfo<String> LiteralRawText() :
+{
+  SourceItemInfo<Void> tagOpen;
+  Token literalRawTextContent;
+}
+{
+  tagOpen = SoyTagOpen()
+  <CMD_NAME_LITERAL>
+  RegSoyTagClose()
+
+  literalRawTextContent = <LITERAL_RAW_TEXT_CONTENT>
+  { return new SourceItemInfo<String>(literalRawTextContent.image, tagOpen.lineNum); }
+}
+
+
+/**
+ * SpecialCharRawText -> SoyTagOpen SpecialCharCmdName RegSoyTagClose
+ */
+private SourceItemInfo<String> SpecialCharRawText() :
+{
+  SourceItemInfo<String> specialCharCmdName;
+}
+{
+  SoyTagOpen()
+  specialCharCmdName = SpecialCharCmdName()
+  RegSoyTagClose()
+
+  { return new SourceItemInfo<String>(
+        SPECIAL_CHAR_CMD_NAME_TO_RAW_TEXT.get(specialCharCmdName.parsedContent),
+        specialCharCmdName.lineNum);
+  }
+}
+
+
+/**
+ * SpecialCharCmdName ->   CmdNameSp | CmdNameNil | CmdNameLf | CmdNameCr | CmdNameTab
+ *                       | CmdNameLb | CmdNameRb
+ */
+private SourceItemInfo<String> SpecialCharCmdName() :
+{
+  Token specialCharCmdName;
+}
+{
+  (
+    specialCharCmdName = <CMD_NAME_SP>
+  | specialCharCmdName = <CMD_NAME_NIL>
+  | specialCharCmdName = <CMD_NAME_LF>
+  | specialCharCmdName = <CMD_NAME_CR>
+  | specialCharCmdName = <CMD_NAME_TAB>
+  | specialCharCmdName = <CMD_NAME_LB>
+  | specialCharCmdName = <CMD_NAME_RB>
+  )
+
+  { return new SourceItemInfo<String>(specialCharCmdName.image, specialCharCmdName.beginLine); }
+}
+
+
+// -------------------------------------------------------------------------------------------------
+// Other tags.
+
+
+/**
+ * MsgTag -> SoyTagOpen CmdNameMsg WsAfterCmdName CmdText RegSoyTagClose
+ */
+private SourceItemInfo<String> MsgTag() :
+{
+  SourceItemInfo<Void> tagOpen;
+  String cmdText;
+}
+{
+  tagOpen = SoyTagOpen()
+  <CMD_NAME_MSG> <WS_AFTER_CMD_NAME>
+  cmdText = CmdText()
+  RegSoyTagClose()
+
+  { return new SourceItemInfo<String>(cmdText, tagOpen.lineNum); }
+}
+
+
+/**
+ * EndMsgTag -> SoyTagOpen CmdNameEndMsg RegSoyTagClose
+ */
+private void EndMsgTag() :
+{}
+{
+  SoyTagOpen()
+  <CMD_NAME_END_MSG>
+  RegSoyTagClose()
+}
+
+
+/**
+ * PluralTag -> SoyTagOpen CmdNamePlural WsAfterCmdName CmdText RegSoyTagClose
+ */
+private SourceItemInfo<String> PluralTag() :
+{
+  SourceItemInfo<Void> tagOpen;
+  String cmdText;
+}
+{
+  tagOpen = SoyTagOpen()
+  <CMD_NAME_PLURAL> <WS_AFTER_CMD_NAME>
+  cmdText = CmdText()
+  RegSoyTagClose()
+
+  { return new SourceItemInfo<String>(cmdText, tagOpen.lineNum); }
+}
+
+
+/**
+ * EndPluralTag -> SoyTagOpen CmdNameEndPlural RegSoyTagClose
+ */
+private void EndPluralTag() :
+{}
+{
+  SoyTagOpen()
+  <CMD_NAME_END_PLURAL>
+  RegSoyTagClose()
+}
+
+
+/**
+ * SelectTag -> SoyTagOpen CmdNameSelect WsAfterCmdName CmdText RegSoyTagClose
+ */
+private SourceItemInfo<String> SelectTag() :
+{
+  SourceItemInfo<Void> tagOpen;
+  String cmdText;
+}
+{
+  tagOpen = SoyTagOpen()
+  <CMD_NAME_SELECT> <WS_AFTER_CMD_NAME>
+  cmdText = CmdText()
+  RegSoyTagClose()
+
+  { return new SourceItemInfo<String>(cmdText, tagOpen.lineNum); }
+}
+
+
+/**
+ * EndSelectTag -> SoyTagOpen CmdNameEndSelect RegSoyTagClose
+ */
+private void EndSelectTag() :
+{}
+{
+  SoyTagOpen()
+  <CMD_NAME_END_SELECT>
+  RegSoyTagClose()
+}
+
+
+/**
+ * PrintTag -> SoyTagOpen [ CmdNamePrint WsAfterCmdName ] CmdTextParts RegSoyTagClose
+ */
+private SourceItemInfo<List<String>> PrintTag() :
+{
+  SourceItemInfo<Void> tagOpen;
+  List<String> cmdTextParts;
+}
+{
+  { List<String> printTagParts = Lists.newArrayList(); }
+
+  tagOpen = SoyTagOpen()
+  [
+    LOOKAHEAD( <CMD_NAME_PRINT> <WS_AFTER_CMD_NAME> )
+    <CMD_NAME_PRINT> <WS_AFTER_CMD_NAME>
+    { printTagParts.add("print"); }
+  ]
+  cmdTextParts = CmdTextParts()
+  { printTagParts.addAll(cmdTextParts); }
+  RegSoyTagClose()
+
+  { return new SourceItemInfo<List<String>>(printTagParts, tagOpen.lineNum); }
+}
+
+
+/**
+ * CssTag -> SoyTagOpen CmdNameCss WsAfterCmdName CmdText RegSoyTagClose
+ */
+private SourceItemInfo<String> CssTag() :
+{
+  SourceItemInfo<Void> tagOpen;
+  String cmdText;
+}
+{
+  tagOpen = SoyTagOpen()
+  <CMD_NAME_CSS> <WS_AFTER_CMD_NAME>
+  cmdText = CmdText()
+  RegSoyTagClose()
+
+  { return new SourceItemInfo<String>(cmdText, tagOpen.lineNum); }
+}
+
+
+/**
+ * LetTagSelfEnding -> SoyTagOpen CmdNameLet WsAfterCmdName CmdText SelfEndingSoyTagClose
+ */
+private SourceItemInfo<String> LetTagSelfEnding() :
+{
+  SourceItemInfo<Void> tagOpen;
+  String cmdText;
+}
+{
+  tagOpen = SoyTagOpen()
+  <CMD_NAME_LET> <WS_AFTER_CMD_NAME>
+  cmdText = CmdText()
+  SelfEndingSoyTagClose()
+
+  { return new SourceItemInfo<String>(cmdText, tagOpen.lineNum); }
+}
+
+
+/**
+ * LetTagNotSelfEnding -> SoyTagOpen CmdNameLet WsAfterCmdName CmdText RegSoyTagClose
+ */
+private SourceItemInfo<String> LetTagNotSelfEnding() :
+{
+  SourceItemInfo<Void> tagOpen;
+  String cmdText;
+}
+{
+  tagOpen = SoyTagOpen()
+  <CMD_NAME_LET> <WS_AFTER_CMD_NAME>
+  cmdText = CmdText()
+  RegSoyTagClose()
+
+  { return new SourceItemInfo<String>(cmdText, tagOpen.lineNum); }
+}
+
+
+/**
+ * EndLetTag -> SoyTagOpen CmdNameEndLet RegSoyTagClose
+ */
+private void EndLetTag() :
+{}
+{
+  SoyTagOpen()
+  <CMD_NAME_END_LET>
+  RegSoyTagClose()
+}
+
+
+/**
+ * IfTag -> SoyTagOpen CmdNameIf WsAfterCmdName CmdText RegSoyTagClose
+ */
+private SourceItemInfo<String> IfTag() :
+{
+  SourceItemInfo<Void> tagOpen;
+  String cmdText;
+}
+{
+  tagOpen = SoyTagOpen()
+  <CMD_NAME_IF> <WS_AFTER_CMD_NAME>
+  cmdText = CmdText()
+  RegSoyTagClose()
+
+  { return new SourceItemInfo<String>(cmdText, tagOpen.lineNum); }
+}
+
+
+/**
+ * ElseifTag -> SoyTagOpen CmdNameElseif WsAfterCmdName CmdText RegSoyTagClose
+ */
+private SourceItemInfo<String> ElseifTag() :
+{
+  SourceItemInfo<Void> tagOpen;
+  String cmdText;
+}
+{
+  tagOpen = SoyTagOpen()
+  <CMD_NAME_ELSEIF> <WS_AFTER_CMD_NAME>
+  cmdText = CmdText()
+  RegSoyTagClose()
+
+  { return new SourceItemInfo<String>(cmdText, tagOpen.lineNum); }
+}
+
+
+/**
+ * ElseTag -> SoyTagOpen CmdNameElse RegSoyTagClose
+ */
+private SourceItemInfo<Void> ElseTag() :
+{
+  SourceItemInfo<Void> tagOpen;
+}
+{
+  tagOpen = SoyTagOpen()
+  <CMD_NAME_ELSE>
+  RegSoyTagClose()
+
+  { return tagOpen; }
+}
+
+
+/**
+ * EndIfTag -> SoyTagOpen CmdNameEndIf RegSoyTagClose
+ */
+private void EndIfTag() :
+{}
+{
+  SoyTagOpen()
+  <CMD_NAME_END_IF>
+  RegSoyTagClose()
+}
+
+
+/**
+ * SwitchTag -> SoyTagOpen CmdNameSwitch WsAfterCmdName CmdText RegSoyTagClose
+ */
+private SourceItemInfo<String> SwitchTag() :
+{
+  SourceItemInfo<Void> tagOpen;
+  String cmdText;
+}
+{
+  tagOpen = SoyTagOpen()
+  <CMD_NAME_SWITCH> <WS_AFTER_CMD_NAME>
+  cmdText = CmdText()
+  RegSoyTagClose()
+
+  { return new SourceItemInfo<String>(cmdText, tagOpen.lineNum); }
+}
+
+
+/**
+ * EndSwitchTag -> SoyTagOpen CmdNameEndSwitch RegSoyTagClose
+ */
+private void EndSwitchTag() :
+{}
+{
+  SoyTagOpen()
+  <CMD_NAME_END_SWITCH>
+  RegSoyTagClose()
+}
+
+
+/**
+ * ForeachTag -> SoyTagOpen CmdNameForeach WsAfterCmdName CmdText RegSoyTagClose
+ */
+private SourceItemInfo<String> ForeachTag() :
+{
+  SourceItemInfo<Void> tagOpen;
+  String cmdText;
+}
+{
+  tagOpen = SoyTagOpen()
+  <CMD_NAME_FOREACH> <WS_AFTER_CMD_NAME>
+  cmdText = CmdText()
+  RegSoyTagClose()
+
+  { return new SourceItemInfo<String>(cmdText, tagOpen.lineNum); }
+}
+
+
+/**
+ * IfemptyTag -> SoyTagOpen CmdNameIfempty RegSoyTagClose
+ */
+private SourceItemInfo<Void> IfemptyTag() :
+{
+  SourceItemInfo<Void> tagOpen;
+}
+{
+  tagOpen = SoyTagOpen()
+  <CMD_NAME_IFEMPTY>
+  RegSoyTagClose()
+
+  { return tagOpen; }
+}
+
+
+/**
+ * EndForeachTag -> SoyTagOpen CmdNameEndForeach RegSoyTagClose
+ */
+private void EndForeachTag() :
+{}
+{
+  SoyTagOpen()
+  <CMD_NAME_END_FOREACH>
+  RegSoyTagClose()
+}
+
+
+/**
+ * ForTag -> SoyTagOpen CmdNameFor WsAfterCmdName CmdText RegSoyTagClose
+ */
+private SourceItemInfo<String> ForTag() :
+{
+  SourceItemInfo<Void> tagOpen;
+  String cmdText;
+}
+{
+  tagOpen = SoyTagOpen()
+  <CMD_NAME_FOR> <WS_AFTER_CMD_NAME>
+  cmdText = CmdText()
+  RegSoyTagClose()
+
+  { return new SourceItemInfo<String>(cmdText, tagOpen.lineNum); }
+}
+
+
+/**
+ * EndForTag -> SoyTagOpen CmdNameEndFor RegSoyTagClose
+ */
+private void EndForTag() :
+{}
+{
+  SoyTagOpen()
+  <CMD_NAME_END_FOR>
+  RegSoyTagClose()
+}
+
+
+/**
+ * AnyCallTagSelfEnding -> SoyTagOpen CmdNameAnyCall WsAfterCmdName CmdTextParts
+ *                         SelfEndingSoyTagClose
+ */
+private SourceItemInfo<List<String>> AnyCallTagSelfEnding() :
+{
+  SourceItemInfo<Void> tagOpen;
+  Token cmdName;
+  List<String> cmdTextParts;
+}
+{
+  { List<String> callTagParts = Lists.newArrayList(); }
+
+  tagOpen = SoyTagOpen()
+  cmdName = <CMD_NAME_ANY_CALL>
+  { callTagParts.add(cmdName.image); }
+  <WS_AFTER_CMD_NAME>
+  cmdTextParts = CmdTextParts()
+  { callTagParts.addAll(cmdTextParts); }
+  SelfEndingSoyTagClose()
+
+  { return new SourceItemInfo<List<String>>(callTagParts, tagOpen.lineNum); }
+}
+
+
+/**
+ * AnyCallTagNotSelfEnding -> SoyTagOpen CmdNameAnyCall WsAfterCmdName CmdTextParts RegSoyTagClose
+ */
+private SourceItemInfo<List<String>> AnyCallTagNotSelfEnding() :
+{
+  SourceItemInfo<Void> tagOpen;
+  Token cmdName;
+  List<String> cmdTextParts;
+}
+{
+  { List<String> callTagParts = Lists.newArrayList(); }
+
+  tagOpen = SoyTagOpen()
+  cmdName = <CMD_NAME_ANY_CALL>
+  { callTagParts.add(cmdName.image); }
+  <WS_AFTER_CMD_NAME>
+  cmdTextParts = CmdTextParts()
+  { callTagParts.addAll(cmdTextParts); }
+  RegSoyTagClose()
+
+  { return new SourceItemInfo<List<String>>(callTagParts, tagOpen.lineNum); }
+}
+
+
+/**
+ * EndAnyCallTag -> SoyTagOpen CmdNameEndAnyCall RegSoyTagClose
+ *
+ * The return value is a boolean isBasicCall.
+ */
+private boolean EndAnyCallTag() :
+{
+  Token cmdName;
+}
+{
+  SoyTagOpen()
+  cmdName = <CMD_NAME_END_ANY_CALL>
+  RegSoyTagClose()
+
+  { return cmdName.image.equals("/call"); }
+}
+
+
+/**
+ * ParamTagSelfEnding -> SoyTagOpen CmdNameParam WsAfterCmdName CmdText SelfEndingSoyTagClose
+ */
+private SourceItemInfo<String> ParamTagSelfEnding() :
+{
+  SourceItemInfo<Void> tagOpen;
+  String cmdText;
+}
+{
+  tagOpen = SoyTagOpen()
+  <CMD_NAME_PARAM> <WS_AFTER_CMD_NAME>
+  cmdText = CmdText()
+  SelfEndingSoyTagClose()
+
+  { return new SourceItemInfo<String>(cmdText, tagOpen.lineNum); }
+}
+
+
+/**
+ * ParamTagNotSelfEnding -> SoyTagOpen CmdNameParam WsAfterCmdName CmdText RegSoyTagClose
+ */
+private SourceItemInfo<String> ParamTagNotSelfEnding() :
+{
+  SourceItemInfo<Void> tagOpen;
+  String cmdText;
+}
+{
+  tagOpen = SoyTagOpen()
+  <CMD_NAME_PARAM> <WS_AFTER_CMD_NAME>
+  cmdText = CmdText()
+  RegSoyTagClose()
+
+  { return new SourceItemInfo<String>(cmdText, tagOpen.lineNum); }
+}
+
+
+/**
+ * EndParamTag -> SoyTagOpen CmdNameEndParam RegSoyTagClose
+ */
+private void EndParamTag() :
+{}
+{
+  SoyTagOpen()
+  <CMD_NAME_END_PARAM>
+  RegSoyTagClose()
+}
+
+
+/**
+ * LogTag -> SoyTagOpen CmdNameLog RegSoyTagClose
+ */
+private SourceItemInfo<Void> LogTag() :
+{
+  SourceItemInfo<Void> tagOpen;
+}
+{
+  tagOpen = SoyTagOpen()
+  <CMD_NAME_LOG>
+  RegSoyTagClose()
+
+  { return tagOpen; }
+}
+
+
+/**
+ * EndLogTag -> SoyTagOpen CmdNameEndLog RegSoyTagClose
+ */
+private void EndLogTag() :
+{}
+{
+  SoyTagOpen()
+  <CMD_NAME_END_LOG>
+  RegSoyTagClose()
+}
+
+
+/**
+ * DebuggerTag -> SoyTagOpen CmdNameDebugger RegSoyTagClose
+ */
+private SourceItemInfo<Void> DebuggerTag() :
+{
+  SourceItemInfo<Void> tagOpen;
+}
+{
+  tagOpen = SoyTagOpen()
+  <CMD_NAME_DEBUGGER>
+  RegSoyTagClose()
+
+  { return tagOpen; }
+}
+
+
+// -------------------------------------------------------------------------------------------------
+// Shared tags.
+
+
+/**
+ * CaseTag -> SoyTagOpen CmdNameCase WsAfterCmdName CmdText RegSoyTagClose
+ *
+ * Note: Shared between 'switch', 'plural', and 'select'.
+ */
+private SourceItemInfo<String> CaseTag() :
+{
+  SourceItemInfo<Void> tagOpen;
+  String cmdText;
+}
+{
+  tagOpen = SoyTagOpen()
+  <CMD_NAME_CASE> <WS_AFTER_CMD_NAME>
+  cmdText = CmdText()
+  RegSoyTagClose()
+
+  { return new SourceItemInfo<String>(cmdText, tagOpen.lineNum); }
+}
+
+
+/**
+ * DefaultTag -> SoyTagOpen CmdNameDefault RegSoyTagClose
+ *
+ * Note: Shared between 'switch', 'plural', and 'select'.
+ */
+private SourceItemInfo<Void> DefaultTag() :
+{
+  SourceItemInfo<Void> tagOpen;
+}
+{
+  tagOpen = SoyTagOpen()
+  <CMD_NAME_DEFAULT>
+  RegSoyTagClose()
+  { return tagOpen; }
+}
+
+
+// =================================================================================================
+// Grammar
+// =================================================================================================
+
+
+/**
+ * TemplateBodyInput -> TemplateBlock EOF
+ */
+private List<StandaloneNode> TemplateBodyInput() throws SoySyntaxException :
+{
+  List<StandaloneNode> templateBlock;
+}
+{
+  templateBlock = TemplateBlock()
+
+  <EOF>
+  { // Note: We're using an undocumented API to check the token manager's state. If this ever
+    // breaks due to changes in JavaCC (extremely unlikely since many users around the world are
+    // depending on it), then we'll have to use a different method to detect whether we're within
+    // a comment block.
+    if (token_source.curLexState == IN_COMMENT_BLOCK) {
+      throw new ParseException("At end of template, found comment block that is never closed.");
+    }
+  }
+
+  { return templateBlock; }
+}
+
+
+/**
+ * TemplateBlock -> ( ContiguousRawText | Stmt )*
+ */
+private List<StandaloneNode> TemplateBlock() throws SoySyntaxException :
+{
+  RawTextNode contiguousRawText;
+  StatementNode stmt;
+}
+{
+  { List<StandaloneNode> templateBlock = Lists.newArrayList(); }
+
+  (
+    LOOKAHEAD( ContiguousRawTextLookaheadHelper() | StmtLookaheadHelper() )
+
+    (
+      LOOKAHEAD( ContiguousRawTextLookaheadHelper() )
+
+      contiguousRawText = ContiguousRawText()
+      { if (contiguousRawText != null) templateBlock.add(contiguousRawText); }
+
+    |
+      stmt = Stmt()
+      { templateBlock.add(stmt); }
+    )
+  )*
+
+  { return templateBlock; }
+}
+
+
+/**
+ * ContiguousRawText -> ( BasicRawText | LiteralRawText | SpecialCharRawText )+
+ *
+ * May return null if the raw text ends up empty (after line joining, etc).
+ */
+private RawTextNode ContiguousRawText() :
+{
+  SourceItemInfo<String> basicRawText, literalRawText, specialCharRawText;
+}
+{
+  { StringBuilder sb = new StringBuilder();
+    int lineNum = -1;
+  }
+
+  (
+    LOOKAHEAD( ContiguousRawTextLookaheadHelper() )
+
+    (
+      basicRawText = BasicRawText()
+      { if (basicRawText.parsedContent.length() != 0) {
+          if (lineNum == -1) { lineNum = basicRawText.lineNum; }
+          sb.append(basicRawText.parsedContent);
+        }
+      }
+    |
+      LOOKAHEAD( SoyTagOpen() <CMD_NAME_LITERAL> RegSoyTagClose() )
+      literalRawText = LiteralRawText()
+      { if (lineNum == -1) { lineNum = literalRawText.lineNum; }
+        sb.append(literalRawText.parsedContent);
+      }
+    |
+      specialCharRawText = SpecialCharRawText()
+      { if (lineNum == -1) { lineNum = specialCharRawText.lineNum; }
+        sb.append(specialCharRawText.parsedContent);
+      }
+    )
+  )+
+
+  { return (sb.length() > 0) ?
+        setSrcLoc(new RawTextNode(nodeIdGen.genId(), sb.toString()), lineNum) : null;
+  }
+}
+
+
+/**
+ * Helper for use in LOOKAHEAD to check for ContiguousRawText coming next.
+ *
+ * ContiguousRawTextLookaheadHelper ->
+ *     basicRawTextToken | SpecialCharRawText | SoyTagOpen CmdNameLiteral RegSoyTagClose
+ */
+private void ContiguousRawTextLookaheadHelper() :
+{}
+{
+    BasicRawTextToken()
+  |
+    LOOKAHEAD( SoyTagOpen() <CMD_NAME_LITERAL> RegSoyTagClose() )
+    SoyTagOpen() <CMD_NAME_LITERAL> RegSoyTagClose()
+  |
+    SpecialCharRawText()
+}
+
+
+// -------------------------------------------------------------------------------------------------
+// Soy statements.
+
+
+/**
+ * Stmt ->   MsgStmt | PrintStmt | CssStmt | LetStmt | IfStmt | SwitchStmt | ForeachStmt | ForStmt
+ *         | CallStmt | LogStmt | DebuggerStmt
+ */
+private StatementNode Stmt() throws SoySyntaxException :
+{
+  StatementNode stmt;
+}
+{
+  (
+    LOOKAHEAD( SoyTagOpen() <CMD_NAME_MSG> <WS_AFTER_CMD_NAME> )
+    stmt = MsgStmt()
+  |
+    LOOKAHEAD( PrintStmtLookaheadHelper() )
+    stmt = PrintStmt()
+  |
+    LOOKAHEAD( SoyTagOpen() <CMD_NAME_CSS> <WS_AFTER_CMD_NAME> )
+    stmt = CssStmt()
+  |
+    LOOKAHEAD( SoyTagOpen() <CMD_NAME_LET> <WS_AFTER_CMD_NAME> )
+    stmt = LetStmt()
+  |
+    LOOKAHEAD( SoyTagOpen() <CMD_NAME_IF> <WS_AFTER_CMD_NAME> )
+    stmt = IfStmt()
+  |
+    LOOKAHEAD( SoyTagOpen() <CMD_NAME_SWITCH> <WS_AFTER_CMD_NAME> )
+    stmt = SwitchStmt()
+  |
+    LOOKAHEAD( SoyTagOpen() <CMD_NAME_FOREACH> <WS_AFTER_CMD_NAME> )
+    stmt = ForeachStmt()
+  |
+    LOOKAHEAD( SoyTagOpen() <CMD_NAME_FOR> <WS_AFTER_CMD_NAME> )
+    stmt = ForStmt()
+  |
+    LOOKAHEAD( SoyTagOpen() <CMD_NAME_ANY_CALL> <WS_AFTER_CMD_NAME> )
+    stmt = CallStmt()
+  |
+    LOOKAHEAD( SoyTagOpen() <CMD_NAME_LOG> RegSoyTagClose() )
+    stmt = LogStmt()
+  |
+    LOOKAHEAD( SoyTagOpen() <CMD_NAME_DEBUGGER> RegSoyTagClose() )
+    stmt = DebuggerStmt()
+  )
+
+  { return stmt; }
+}
+
+
+/**
+ * Helper for use in LOOKAHEAD to check for Stmt coming next.
+ *
+ * StmtLookaheadHelper ->
+ *       PrintStmtLookaheadHelper
+ *     |
+ *       SoyTagOpen
+ *       (   CmdNameMsg | CmdNameCss | CmdNameLet | CmdNameIf | CmdNameSwitch | CmdNameForeach
+ *         | CmdNameFor | CmdNameAnyCall | CmdNameLog | CmdNameDebugger )
+ *       WsAfterCmdName
+ */
+private void StmtLookaheadHelper() :
+{}
+{
+    LOOKAHEAD( PrintStmtLookaheadHelper() )
+    PrintStmtLookaheadHelper()
+
+  |
+    SoyTagOpen()
+
+    (
+      <CMD_NAME_MSG>
+    | <CMD_NAME_CSS>
+    | <CMD_NAME_LET>
+    | <CMD_NAME_IF>
+    | <CMD_NAME_SWITCH>
+    | <CMD_NAME_FOREACH>
+    | <CMD_NAME_FOR>
+    | <CMD_NAME_ANY_CALL>
+    | <CMD_NAME_LOG>
+    | <CMD_NAME_DEBUGGER>
+    )
+
+    (
+      <WS_AFTER_CMD_NAME>
+    | RegSoyTagClose()
+    )
+}
+
+
+/**
+ * MsgStmt -> MsgTag TemplateBlockForMsg EndMsgTag
+ */
+private MsgNode MsgStmt() throws SoySyntaxException :
+{
+  SourceItemInfo<String> cmdText;
+  List<StandaloneNode> templateBlockForMsg;
+}
+{
+  cmdText = MsgTag()
+  { MsgNode msgNode = setSrcLoc(
+        new MsgNode(nodeIdGen.genId(), cmdText.parsedContent), cmdText.lineNum);
+  }
+
+  templateBlockForMsg = TemplateBlockForMsg()
+  { msgNode.addChildren(templateBlockForMsg); }
+
+  EndMsgTag()
+
+  { return msgNode; }
+}
+
+
+/**
+ * TemplateBlockForMsg ->   MaybeWhitespace MsgPlural MaybeWhitespace
+ *                        | MaybeWhitespace MsgSelect MaybeWhitespace
+ *                        | ( ContiguousRawText | Stmt | MsgHtmlTag )*
+ */
+private List<StandaloneNode> TemplateBlockForMsg() throws SoySyntaxException :
+{
+  RawTextNode contiguousRawText;
+  StatementNode stmt;
+  MsgHtmlTagNode msgHtmlTag;
+  MsgPluralNode msgPlural;
+  MsgSelectNode msgSelect;
+}
+{
+  { List<StandaloneNode> templateBlock = Lists.newArrayList(); }
+
+  (
+    LOOKAHEAD( MaybeWhitespace("") SoyTagOpen() <CMD_NAME_PLURAL> <WS_AFTER_CMD_NAME> )
+    MaybeWhitespace("No message content is allowed before a 'plural' block.")
+    msgPlural = MsgPlural()
+    { templateBlock.add(msgPlural); }
+    MaybeWhitespace("No message content is allowed after a 'plural' block.")
+
+  |
+    LOOKAHEAD( MaybeWhitespace("") SoyTagOpen() <CMD_NAME_SELECT> <WS_AFTER_CMD_NAME> )
+    MaybeWhitespace("No message content is allowed before a 'select' block.")
+    msgSelect = MsgSelect()
+    { templateBlock.add(msgSelect); }
+    MaybeWhitespace("No message content is allowed after a 'select' block.")
+
+  |
+    (
+      LOOKAHEAD(   ContiguousRawTextLookaheadHelper() | StmtLookaheadHelper()
+                 | <MSG_HTML_TAG_OPEN> )
+
+      (
+        LOOKAHEAD( ContiguousRawTextLookaheadHelper() )
+        contiguousRawText = ContiguousRawText()
+        { if (contiguousRawText != null) templateBlock.add(contiguousRawText); }
+
+      |
+        stmt = Stmt()
+        { if (! (stmt instanceof MsgPlaceholderInitialNode)) {
+            String commandName =
+                (stmt instanceof IfNode) ? "if" : ((CommandNode) stmt).getCommandName();
+            throw SoySyntaxExceptionUtils.createWithNode(
+                "Command '" + commandName + "' not allowed within a 'msg' block.", stmt);
+          }
+          templateBlock.add(
+              new MsgPlaceholderNode(nodeIdGen.genId(), (MsgPlaceholderInitialNode) stmt));
+        }
+
+      |
+        msgHtmlTag = MsgHtmlTag()
+        { templateBlock.add(new MsgPlaceholderNode(nodeIdGen.genId(), msgHtmlTag)); }
+      )
+    )*
+  )
+
+  { return templateBlock; }
+}
+
+
+/**
+ * MsgPlural -> PluralTag MaybeWhitespace ( CaseTag TemplateBlockForMsg )*
+ *              DefaultTag TemplateBlockForMsg EndPluralTag
+ */
+private MsgPluralNode MsgPlural() throws SoySyntaxException :
+{
+  SourceItemInfo<Void> defaultTagInfo;
+  SourceItemInfo<String> cmdText;
+  List<StandaloneNode> templateBlockForMsg;
+}
+{
+  cmdText = PluralTag()
+  { MsgPluralNode msgPluralNode = setSrcLoc(
+        new MsgPluralNode(nodeIdGen.genId(), cmdText.parsedContent), cmdText.lineNum);
+  }
+  MaybeWhitespace("No content allowed between 'plural' and 'case'" +
+      " (whitespace and comments are okay).")
+
+  (
+    LOOKAHEAD( SoyTagOpen() <CMD_NAME_CASE> <WS_AFTER_CMD_NAME> )
+
+    cmdText = CaseTag()
+    { MsgPluralCaseNode msgPluralCaseNode = setSrcLoc(
+          new MsgPluralCaseNode(nodeIdGen.genId(), cmdText.parsedContent), cmdText.lineNum);
+      msgPluralNode.addChild(msgPluralCaseNode);
+    }
+    templateBlockForMsg = TemplateBlockForMsg()
+    { if (templateBlockForMsg.size() == 1 &&
+          (templateBlockForMsg.get(0) instanceof MsgPluralNode ||
+           templateBlockForMsg.get(0) instanceof MsgSelectNode )) {
+        throw SoySyntaxExceptionUtils.createWithNode(
+            "Tags 'plural' and 'select' are not allowed inside 'plural' blocks.",
+            templateBlockForMsg.get(0));
+      }
+      msgPluralCaseNode.addChildren(templateBlockForMsg);
+    }
+  )*
+
+  defaultTagInfo = DefaultTag()
+  { MsgPluralDefaultNode msgPluralDefaultNode = setSrcLoc(
+        new MsgPluralDefaultNode(nodeIdGen.genId()), defaultTagInfo.lineNum);
+    msgPluralNode.addChild(msgPluralDefaultNode);
+  }
+  templateBlockForMsg = TemplateBlockForMsg()
+  { if (templateBlockForMsg.size() == 1 &&
+        (templateBlockForMsg.get(0) instanceof MsgPluralNode ||
+         templateBlockForMsg.get(0) instanceof MsgSelectNode )) {
+      throw SoySyntaxExceptionUtils.createWithNode(
+          "Tags 'plural' and 'select' are not allowed inside 'plural' blocks.",
+          templateBlockForMsg.get(0));
+    }
+    msgPluralDefaultNode.addChildren(templateBlockForMsg);
+  }
+
+  EndPluralTag()
+
+  { return msgPluralNode; }
+}
+
+
+/**
+ * MsgSelect -> SelectTag MaybeWhitespace ( CaseTag TemplateBlockForMsg )*
+ *              DefaultTag TemplateBlockForMsg EndSelectTag
+ */
+private MsgSelectNode MsgSelect() throws SoySyntaxException :
+{
+  SourceItemInfo<Void> defaultTagInfo;
+  SourceItemInfo<String> cmdText;
+  List<StandaloneNode> templateBlockForMsg;
+}
+{
+  cmdText = SelectTag()
+  { MsgSelectNode msgSelectNode = setSrcLoc(
+        new MsgSelectNode(nodeIdGen.genId(), cmdText.parsedContent), cmdText.lineNum);
+  }
+  MaybeWhitespace("No content allowed between 'select' and 'case'" +
+      " (whitespace and comments are okay).")
+
+  (
+    LOOKAHEAD( SoyTagOpen() <CMD_NAME_CASE> <WS_AFTER_CMD_NAME> )
+
+    cmdText = CaseTag()
+    { MsgSelectCaseNode msgSelectCaseNode = setSrcLoc(
+          new MsgSelectCaseNode(nodeIdGen.genId(), cmdText.parsedContent), cmdText.lineNum);
+      msgSelectNode.addChild(msgSelectCaseNode);
+    }
+    templateBlockForMsg = TemplateBlockForMsg()
+    { msgSelectCaseNode.addChildren(templateBlockForMsg); }
+  )*
+
+  defaultTagInfo = DefaultTag()
+  { MsgSelectDefaultNode msgSelectDefaultNode = setSrcLoc(
+        new MsgSelectDefaultNode(nodeIdGen.genId()), defaultTagInfo.lineNum);
+    msgSelectNode.addChild(msgSelectDefaultNode);
+  }
+  templateBlockForMsg = TemplateBlockForMsg()
+  { msgSelectDefaultNode.addChildren(templateBlockForMsg); }
+
+  EndSelectTag()
+
+  { return msgSelectNode; }
+}
+
+
+/**
+ * MsgHtmlTag -> MsgHtmlTagOpen TemplateBlock MsgHtmlTagClose
+ */
+private MsgHtmlTagNode MsgHtmlTag() throws SoySyntaxException :
+{
+  Token htmlTagOpen;
+  List<StandaloneNode> templateBlock;
+}
+{
+  htmlTagOpen = <MSG_HTML_TAG_OPEN>
+  templateBlock = TemplateBlock()
+  <MSG_HTML_TAG_CLOSE>
+
+  { // First, we add back the HTML tag's opening and closing angle brackets.
+    // Minor note: If there's only one RawTextNode, we'll replace it twice. No big deal.
+    int lineNum = htmlTagOpen.beginLine;
+    if (templateBlock.get(0) instanceof RawTextNode) {
+      RawTextNode firstNode = (RawTextNode) templateBlock.get(0);
+      RawTextNode newNode = new RawTextNode(nodeIdGen.genId(), "<" + firstNode.getRawText());
+      templateBlock.set(0, setSrcLoc(newNode, lineNum));
+    } else {
+      templateBlock.add(0, setSrcLoc(new RawTextNode(nodeIdGen.genId(), "<"), lineNum));
+    }
+    int lastNodeIndex = templateBlock.size() - 1;
+    if (templateBlock.get(lastNodeIndex) instanceof RawTextNode) {
+      RawTextNode lastNode = (RawTextNode) templateBlock.get(lastNodeIndex);
+      RawTextNode newNode = new RawTextNode(nodeIdGen.genId(), lastNode.getRawText() + ">");
+      templateBlock.set(lastNodeIndex, setSrcLoc(newNode, lineNum));
+    } else {
+      templateBlock.add(setSrcLoc(new RawTextNode(nodeIdGen.genId(), ">"), lineNum));
+    }
+
+    return setSrcLoc(new MsgHtmlTagNode(nodeIdGen.genId(), templateBlock), lineNum);
+  }
+}
+
+
+/**
+ * PrintStmt -> PrintTag
+ */
+private PrintNode PrintStmt() throws SoySyntaxException :
+{
+  SourceItemInfo<List<String>> printTagInfo;
+}
+{
+  printTagInfo = PrintTag()
+
+  { List<String> printTagParts = printTagInfo.parsedContent;
+    int lineNum = printTagInfo.lineNum;
+
+    // ------ Process command name (implicit or explicit). ------
+    boolean isImplicit;
+    List<String> cmdTextParts;
+    if (!printTagParts.isEmpty() && printTagParts.get(0).equals("print")) {
+      isImplicit = false;
+      cmdTextParts = printTagParts.subList(1, printTagParts.size());
+    } else {
+      isImplicit = true;
+      cmdTextParts = printTagParts;
+    }
+    String cmdText = Joiner.on("").join(cmdTextParts);
+
+    // ------ Process 'phname' attribute (if any). ------
+    String phnameAttr = null;
+    for (String cmdTextPart : cmdTextParts) {
+      if (cmdTextPart.startsWith(" phname=\"") && cmdTextPart.endsWith("\"")) {
+        if (phnameAttr != null) {
+          throw SoySyntaxException.createWithMetaInfo(
+              "Found multiple 'phname' attributes in 'print' command text \"" + cmdText + "\".",
+              createSrcLoc(lineNum), null, null);
+        }
+        phnameAttr = cmdTextPart;
+      }
+    }
+    String userSuppliedPhName;
+    if (phnameAttr != null) {
+      cmdTextParts.remove(phnameAttr);
+      userSuppliedPhName = phnameAttr.substring(9, phnameAttr.length() - 1);
+    } else {
+      userSuppliedPhName = null;
+    }
+
+    // ------ Process expression. ------
+    // Note: First part is expression, rest of parts are directives or directive args.
+    if (cmdTextParts.isEmpty()) {
+      throw SoySyntaxException.createWithMetaInfo(
+          "Found 'print' command with empty command text.", createSrcLoc(lineNum), null, null);
+    }
+    String exprText = cmdTextParts.get(0).trim();
+    PrintNode printNode = setSrcLoc(
+        new PrintNode(nodeIdGen.genId(), isImplicit, exprText, userSuppliedPhName), lineNum);
+
+    // ------ Process directives (if any). ------
+    String directiveName = null;
+    for (int i = 1, n = cmdTextParts.size(); i < n; i++) {
+      String cmdTextPart = cmdTextParts.get(i);
+
+      if (cmdTextPart.startsWith("|")) {
+        // Create previous directive and save current directive name.
+        if (directiveName != null) {
+          printNode.addChild(setSrcLoc(
+              new PrintDirectiveNode(nodeIdGen.genId(), directiveName, ""), lineNum));
+        }
+        directiveName = cmdTextPart;
+
+      } else if (cmdTextPart.startsWith(":")) {
+        // Create previous directive with current args text.
+        if (directiveName == null) {
+          throw new AssertionError();
+        }
+        String argsText = cmdTextPart.substring(1);
+        printNode.addChild(setSrcLoc(
+            new PrintDirectiveNode(nodeIdGen.genId(), directiveName, argsText), lineNum));
+        directiveName = null;
+
+      } else if (cmdTextPart.trim().length() == 0) {
+        continue;
+
+      } else {
+        throw SoySyntaxExceptionUtils.createWithNode(
+            "Invalid 'print' command text \"" + cmdText + "\" (check the directives).", printNode);
+      }
+    }
+    // Add last directive.
+    if (directiveName != null) {
+      printNode.addChild(setSrcLoc(
+          new PrintDirectiveNode(nodeIdGen.genId(), directiveName, ""), lineNum));
+    }
+
+    return printNode;
+  }
+}
+
+
+/**
+ * Helper for use in LOOKAHEAD to check for PrintStmt coming next.
+ *
+ * PrintStmtLookaheadHelper ->
+ *     SoyTagOpen (   CmdNamePrint WsAfterCmdName | AnyCmdName NotCmdNameBoundaryAfterCmdName
+ *                  | CmdTextChar1 | CmdTextChar2 )
+ */
+private void PrintStmtLookaheadHelper() :
+{}
+{
+  SoyTagOpen()
+  (
+      LOOKAHEAD( <CMD_NAME_PRINT> <WS_AFTER_CMD_NAME> )
+      <CMD_NAME_PRINT> <WS_AFTER_CMD_NAME>
+    |
+      AnyCmdName() <NOT_CMD_NAME_BOUNDARY_AFTER_CMD_NAME>
+    |
+      <CMD_TEXT_CHAR_1>
+    |
+      <CMD_TEXT_CHAR_2>
+  )
+}
+
+
+/**
+ * CssStmt -> CssTag
+ */
+private CssNode CssStmt() throws SoySyntaxException :
+{
+  SourceItemInfo<String> cmdText;
+}
+{
+  cmdText = CssTag()
+  { return setSrcLoc(new CssNode(nodeIdGen.genId(), cmdText.parsedContent), cmdText.lineNum); }
+}
+
+
+/**
+ * LetStmt ->   LetTagSelfEnding
+ *            | LetTagNotSelfEnding TemplateBlock EndLetTag
+ */
+private LetNode LetStmt() throws SoySyntaxException :
+{
+  SourceItemInfo<String> cmdText;
+  List<StandaloneNode> templateBlock;
+}
+{
+  { LetNode letNode; }
+
+  (
+    LOOKAHEAD( LetTagSelfEnding() )
+
+    cmdText = LetTagSelfEnding()
+    { letNode = setSrcLoc(
+          new LetValueNode(nodeIdGen.genId(), false, cmdText.parsedContent), cmdText.lineNum);
+    }
+
+  |
+    LOOKAHEAD( LetTagNotSelfEnding() )
+
+    cmdText = LetTagNotSelfEnding()
+    { LetContentNode letContentNode = setSrcLoc(
+          new LetContentNode(nodeIdGen.genId(), false, cmdText.parsedContent), cmdText.lineNum);
+    }
+    templateBlock = TemplateBlock()
+    { letContentNode.addChildren(templateBlock);
+      letNode = letContentNode;
+    }
+    EndLetTag()
+  )
+
+  { return letNode; }
+}
+
+
+/**
+ * IfStmt -> IfTag TemplateBlock ( ElseifTag TemplateBlock )* [ ElseTag TemplateBlock ] EndIfTag
+ */
+private IfNode IfStmt() throws SoySyntaxException :
+{
+  SourceItemInfo<String> cmdText;
+  List<StandaloneNode> templateBlock;
+  SourceItemInfo<Void> elseTagInfo;
+}
+{
+  { IfCondNode ifCondNode; }
+
+  cmdText = IfTag()
+  { IfNode ifNode = setSrcLoc(new IfNode(nodeIdGen.genId()), cmdText.lineNum);
+    ifCondNode = setSrcLoc(
+        new IfCondNode(nodeIdGen.genId(), "if", cmdText.parsedContent), cmdText.lineNum);
+    ifNode.addChild(ifCondNode);
+  }
+  templateBlock = TemplateBlock()
+  { ifCondNode.addChildren(templateBlock); }
+
+  (
+    LOOKAHEAD( SoyTagOpen() <CMD_NAME_ELSEIF> <WS_AFTER_CMD_NAME> )
+
+    cmdText = ElseifTag()
+    { ifCondNode = setSrcLoc(
+          new IfCondNode(nodeIdGen.genId(), "elseif", cmdText.parsedContent), cmdText.lineNum);
+      ifNode.addChild(ifCondNode);
+    }
+    templateBlock = TemplateBlock()
+    { ifCondNode.addChildren(templateBlock); }
+  )*
+
+  [
+    LOOKAHEAD( SoyTagOpen() <CMD_NAME_ELSE> RegSoyTagClose() )
+
+    elseTagInfo = ElseTag()
+    { IfElseNode ifElseNode = setSrcLoc(new IfElseNode(nodeIdGen.genId()), elseTagInfo.lineNum);
+      ifNode.addChild(ifElseNode);
+    }
+    templateBlock = TemplateBlock()
+    { ifElseNode.addChildren(templateBlock); }
+  ]
+
+  EndIfTag()
+
+  { return ifNode; }
+}
+
+
+/**
+ * SwitchStmt -> SwitchTag MaybeWhitespace ( CaseTag TemplateBlock )* [ DefaultTag TemplateBlock ]
+ *               EndSwitchTag
+ */
+private SwitchNode SwitchStmt() throws SoySyntaxException :
+{
+  SourceItemInfo<String> cmdText;
+  SourceItemInfo<Void> defaultTagInfo;
+  List<StandaloneNode> templateBlock;
+}
+{
+  cmdText = SwitchTag()
+  { SwitchNode switchNode = setSrcLoc(
+        new SwitchNode(nodeIdGen.genId(), cmdText.parsedContent), cmdText.lineNum);
+  }
+
+  MaybeWhitespace("No content allowed between 'switch' and 'case'" +
+      " (whitespace and comments are okay).")
+
+  (
+    LOOKAHEAD( SoyTagOpen() <CMD_NAME_CASE> <WS_AFTER_CMD_NAME> )
+
+    cmdText = CaseTag()
+    { SwitchCaseNode switchCaseNode = setSrcLoc(
+          new SwitchCaseNode(nodeIdGen.genId(), cmdText.parsedContent), cmdText.lineNum);
+      switchNode.addChild(switchCaseNode);
+    }
+    templateBlock = TemplateBlock()
+    { switchCaseNode.addChildren(templateBlock); }
+  )*
+
+  [
+    LOOKAHEAD( SoyTagOpen() <CMD_NAME_DEFAULT> RegSoyTagClose() )
+
+    defaultTagInfo = DefaultTag()
+    { SwitchDefaultNode switchDefaultNode = setSrcLoc(
+          new SwitchDefaultNode(nodeIdGen.genId()), defaultTagInfo.lineNum);
+      switchNode.addChild(switchDefaultNode);
+    }
+    templateBlock = TemplateBlock()
+    { switchDefaultNode.addChildren(templateBlock); }
+  ]
+
+  EndSwitchTag()
+
+  { return switchNode; }
+}
+
+
+/**
+ * ForeachStmt -> ForeachTag TemplateBlock [ IfemptyTag TemplateBlock ] EndForeachTag
+ */
+private ForeachNode ForeachStmt() throws SoySyntaxException :
+{
+  SourceItemInfo<String> cmdText;
+  List<StandaloneNode> templateBlock;
+  SourceItemInfo<Void> ifemptyTagInfo;
+}
+{
+  cmdText = ForeachTag()
+  { ForeachNode foreachNode = setSrcLoc(
+        new ForeachNode(nodeIdGen.genId(), cmdText.parsedContent), cmdText.lineNum);
+  }
+
+  { int lineNum = getToken(0).beginLine; }
+  templateBlock = TemplateBlock()
+  { ForeachNonemptyNode foreachNonemptyNode = setSrcLoc(
+        new ForeachNonemptyNode(nodeIdGen.genId()), lineNum);
+    foreachNode.addChild(foreachNonemptyNode);
+    foreachNonemptyNode.addChildren(templateBlock);
+  }
+
+  [
+    LOOKAHEAD( SoyTagOpen() <CMD_NAME_IFEMPTY> RegSoyTagClose() )
+
+    ifemptyTagInfo = IfemptyTag()
+    templateBlock = TemplateBlock()
+    { ForeachIfemptyNode foreachIfemptyNode = setSrcLoc(
+          new ForeachIfemptyNode(nodeIdGen.genId()), ifemptyTagInfo.lineNum);
+      foreachNode.addChild(foreachIfemptyNode);
+      foreachIfemptyNode.addChildren(templateBlock);
+    }
+  ]
+
+  EndForeachTag()
+
+  { return foreachNode; }
+}
+
+
+/**
+ * ForStmt -> ForTag TemplateBlock EndForTag
+ */
+private ForNode ForStmt() throws SoySyntaxException :
+{
+  SourceItemInfo<String> cmdText;
+  List<StandaloneNode> templateBlock;
+}
+{
+  cmdText = ForTag()
+  { ForNode forNode = setSrcLoc(
+        new ForNode(nodeIdGen.genId(), cmdText.parsedContent), cmdText.lineNum);
+  }
+
+  templateBlock = TemplateBlock()
+  { forNode.addChildren(templateBlock); }
+
+  EndForTag()
+
+  { return forNode; }
+}
+
+
+/**
+ * CallStmt ->
+ *       AnyCallTagSelfEnding
+ *     | AnyCallTagNotSelfEnding MaybeWhitespace ( CallParam MaybeWhitespace )* EndAnyCallTag
+ */
+private CallNode CallStmt() throws SoySyntaxException :
+{
+  SourceItemInfo<List<String>> callTagInfo;
+  CallParamNode callParam;
+  Boolean isBasicEndCallTag;
+}
+{
+  { List<CallParamNode> callParams = Lists.newArrayList(); }
+
+  (
+    LOOKAHEAD( AnyCallTagSelfEnding() )
+
+    callTagInfo = AnyCallTagSelfEnding()
+
+    { isBasicEndCallTag = null; }
+
+  |
+    LOOKAHEAD( AnyCallTagNotSelfEnding() )
+
+    callTagInfo = AnyCallTagNotSelfEnding()
+
+    MaybeWhitespace("No content allowed between 'call' and 'param'" +
+        " (whitespace and comments are okay).")
+
+    (
+      LOOKAHEAD( SoyTagOpen() <CMD_NAME_PARAM> <WS_AFTER_CMD_NAME> )
+
+      callParam = CallParam()
+      { callParams.add(callParam); }
+      MaybeWhitespace("No content allowed between 'param' and 'param'" +
+          " (whitespace and comments are okay).")
+    )*
+
+    isBasicEndCallTag = EndAnyCallTag()
+  )
+
+  { List<String> callTagParts = callTagInfo.parsedContent;
+
+    // ------ Divide callTagParts into cmdName, cmdText, and phnameAttr (if any). ------
+    String cmdName = callTagParts.get(0);
+
+    StringBuilder cmdTextSb = new StringBuilder();
+    String phnameAttr = null;
+
+    for (int i = 1; i < callTagParts.size(); i++) {
+      String cmdTextPart = callTagParts.get(i);
+      if (cmdTextPart.startsWith(" phname=\"") && cmdTextPart.endsWith("\"")) {
+        if (phnameAttr != null) {
+          throw SoySyntaxException.createWithMetaInfo(
+              "Found multiple 'phname' attributes in '" + cmdName + "' command text \"" +
+                  Joiner.on("").join(callTagParts.subList(1, callTagParts.size())) + "\".",
+              createSrcLoc(callTagInfo.lineNum), null, null);
+        }
+        phnameAttr = cmdTextPart;
+      } else {
+        cmdTextSb.append(cmdTextPart);
+      }
+    }
+
+    String cmdText = cmdTextSb.toString();
+
+    // ------ Compute isBasicCallTag and userSuppliedPhName. ------
+    boolean isBasicCallTag = callTagParts.get(0).equals("call");
+    if (isBasicEndCallTag != null && isBasicCallTag != isBasicEndCallTag) {
+      if (isBasicCallTag) {
+        throw new ParseException("Mismatched 'call' and '/delcall'.");
+      } else {
+        throw new ParseException("Mismatched 'delcall' and '/call'.");
+      }
+    }
+
+    String userSuppliedPhName =
+        (phnameAttr != null) ? phnameAttr.substring(9, phnameAttr.length() - 1) : null;
+
+    // ------ Create the CallNode. ------
+    CallNode callNode;
+    if (isBasicCallTag) {
+      callNode = new CallBasicNode(nodeIdGen.genId(), cmdText, userSuppliedPhName);
+    } else {
+      callNode = new CallDelegateNode(nodeIdGen.genId(), cmdText, userSuppliedPhName);
+    }
+    callNode = setSrcLoc(callNode, callTagInfo.lineNum);
+    callNode.addChildren(callParams);
+
+    return callNode;
+  }
+}
+
+
+/**
+ * CallParam ->   ParamTagSelfEnding
+ *              | ParamTagNotSelfEnding TemplateBlock EndParamTag
+ */
+private CallParamNode CallParam() throws SoySyntaxException :
+{
+  SourceItemInfo<String> cmdText;
+  List<StandaloneNode> templateBlock;
+}
+{
+  { CallParamNode callParamNode; }
+
+  (
+    LOOKAHEAD( ParamTagSelfEnding() )
+
+    cmdText = ParamTagSelfEnding()
+    { callParamNode = setSrcLoc(
+          new CallParamValueNode(nodeIdGen.genId(), cmdText.parsedContent), cmdText.lineNum);
+    }
+
+  |
+    LOOKAHEAD( ParamTagNotSelfEnding() )
+
+    cmdText = ParamTagNotSelfEnding()
+    { CallParamContentNode cpcn = setSrcLoc(
+          new CallParamContentNode(nodeIdGen.genId(), cmdText.parsedContent), cmdText.lineNum);
+    }
+    templateBlock = TemplateBlock()
+    { cpcn.addChildren(templateBlock);
+      callParamNode = cpcn;
+    }
+    EndParamTag()
+  )
+
+  { return callParamNode; }
+}
+
+
+/**
+ * LogStmt -> LogTag TemplateBlock EndLogTag
+ */
+private LogNode LogStmt() throws SoySyntaxException :
+{
+  SourceItemInfo<Void> logTagInfo;
+  List<StandaloneNode> templateBlock;
+}
+{
+  logTagInfo = LogTag()
+  { LogNode logNode = setSrcLoc(new LogNode(nodeIdGen.genId()), logTagInfo.lineNum); }
+
+  templateBlock = TemplateBlock()
+  { logNode.addChildren(templateBlock); }
+
+  EndLogTag()
+
+  { return logNode; }
+}
+
+
+/**
+ * DebuggerStmt -> DebuggerTag TemplateBlock EndDebuggerTag
+ */
+private DebuggerNode DebuggerStmt() throws SoySyntaxException :
+{
+  SourceItemInfo<Void> debuggerTagInfo;
+}
+{
+  debuggerTagInfo = DebuggerTag()
+  { return setSrcLoc(new DebuggerNode(nodeIdGen.genId()), debuggerTagInfo.lineNum); }
+}

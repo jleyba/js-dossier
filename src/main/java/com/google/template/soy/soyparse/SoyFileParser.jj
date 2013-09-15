@@ -1,0 +1,703 @@
+/*
+ * Copyright 2008 Google Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+//
+// JavaCC grammar specification for a Soy file.
+//
+// @author Kai Huang
+
+
+// =================================================================================================
+// Options
+// =================================================================================================
+
+options {
+  JDK_VERSION = "1.7";
+  STATIC = false;
+  UNICODE_INPUT = true;
+}
+
+
+// =================================================================================================
+// Parser class
+// =================================================================================================
+
+
+PARSER_BEGIN(SoyFileParser)
+
+package com.google.template.soy.soyparse;
+
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Joiner;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
+import com.google.template.soy.base.IdGenerator;
+import com.google.template.soy.base.IncrementingIdGenerator;
+import com.google.template.soy.base.SourceLocation;
+import com.google.template.soy.base.SoyFileKind;
+import com.google.template.soy.base.SoySyntaxException;
+import com.google.template.soy.soytree.SoyFileNode;
+import com.google.template.soy.soytree.SoyNode.StandaloneNode;
+import com.google.template.soy.soytree.TemplateBasicNode;
+import com.google.template.soy.soytree.TemplateDelegateNode;
+import com.google.template.soy.soytree.TemplateNode;
+import com.google.template.soy.soytree.TemplateNode.SoyFileHeaderInfo;
+
+import java.io.*;
+import java.util.*;
+import java.util.regex.*;
+
+
+/**
+ * This parser's specification is in SoyFileParser.jj, which is read by JavaCC and transformed
+ * into SoyFileParser.java. To modify this parser, please edit SoyFileParser.jj. Do not edit
+ * SoyFileParser.java directly.
+ *
+ * <p> Important: Do not use outside of Soy code (treat as superpackage-private).
+ *
+ * <pre>
+ * This parser parses the following Soy file structure:
+ *
+ * 1. Delegate package (delpackage):
+ *    + Optional.
+ *    + The file must contain 0 or 1 delpackage declaration.
+ *    + It must appear before the namespace declaration.
+ *    + It must appear on its own line and start at the start of a line.
+ *    Example:  {delpackage MySecretFeature}
+ *
+ * 2. Namespace:
+ *    + The file must contain exactly one namespace declaration.
+ *    + It must appear before any templates.
+ *    + It must appear on its own line and start at the start of a line.
+ *    Examples:
+ *    {namespace boo.foo}
+ *    {namespace boo.foo autoescape="..."}
+ *
+ * 3. Alias:
+ *    + Alias declarations must appear after the namespace declaration.
+ *    + They must appear before any templates.
+ *    + Each must appear on its own line and start at the start of a line.
+ *    Examples:
+ *    {alias boo.foo.goo.moo}
+ *    {alias boo.foo.goo.moo as zoo}    // currently disabled
+ *
+ * 4. SoyDoc:
+ *    + Starts with slash-star-star (/**) and ends with star-slash (*&#47;) like JavaDoc.
+ *    + SoyDoc must appear on its own line(s) and start at the start of a line.
+ *    + Currently recognizes two tags: "&#64;param keyName" and "&#64;param? optionalKeyName".
+ *    Example:
+ *    /**
+ *     * &#64;param boo Something scary.
+ *     * &#64;param? goo Something slimy (optional).
+ *     *&#47;
+ *
+ * 5. Template:
+ *    + Each template must be immediately preceded by a SoyDoc block.
+ *    + The 'template' tag and the '/template' tag much each appear on its own line(s) and start
+ *      at the start of a line.
+ *    + The template body is not parsed by this parser. The body will be saved and returned for
+ *      parsing by the template parser.
+ *    Examples:
+ *    /**
+ *     * New style.
+ *     * &#64;param boo Something scary.
+ *     * &#64;param? goo Something slimy (optional).
+ *     *&#47;
+ *    {template .foo autoescape="..."}
+ *      {msg desc=""}
+ *        {$boo} has a friend named {$goo.firstName}.
+ *      {/msg}
+ *    {/template}
+ *    /**
+ *     * Old style.
+ *     *&#47;
+ *    {template name="foo"}
+ *      ...
+ *    {/template}
+ *
+ * 6. Misc:
+ *    + Other than the items specified above, everything else is ignored.
+ *    + SoyDoc blocks not immediately followed by a template are ignored.
+ *    + The file must end with a newline.
+ * </pre>
+ *
+ * @author Kai Huang
+ */
+public class SoyFileParser {
+
+
+  /** Pattern for the line number in an error message generated by the parser or token manager. */
+  private static final Pattern ERROR_MSG_LINE_NUM_PAT =
+      Pattern.compile("(?<=line )\\d+(?=, column )");
+
+
+  /** Node id generator for the tree being built. */
+  private IdGenerator nodeIdGen;
+
+  /** Path of source being parsed. This is descriptive, not a means to refetch source. */
+  private String filePath = SourceLocation.UNKNOWN.getFilePath();
+
+  /** The kind of this Soy file. */
+  private SoyFileKind soyFileKind;
+
+
+  /**
+   * Constructor that takes a reader object providing the input.
+   * @param input The input to parse.
+   * @param soyFileKind The kind of this Soy file.
+   * @param filePath The path of the source being parsed. Used for reporting.
+   * @param nodeIdGen The node id generator for the tree being built.
+   */
+  public SoyFileParser(
+      Reader input, SoyFileKind soyFileKind, String filePath, IdGenerator nodeIdGen) {
+    this(input);
+    this.soyFileKind = soyFileKind;
+    this.filePath = filePath;
+    this.nodeIdGen = nodeIdGen;
+  }
+
+
+  /**
+   * Constructor that takes a string input.
+   * @param input The input to parse.
+   * @param soyFileKind The kind of this Soy file.
+   * @param filePath The path of the source being parsed. Used for reporting.
+   * @param nodeIdGen The node id generator for the tree being built.
+   */
+  public SoyFileParser(
+      String input, SoyFileKind soyFileKind, String filePath, IdGenerator nodeIdGen) {
+    this(new StringReader(input), soyFileKind, filePath, nodeIdGen);
+  }
+
+
+  /**
+   * Attempts to parse STDIN as a Soy file in UTF-8 encoding. If successful, prints "Valid input."
+   * to STDOUT. If unsuccessful, throws an exception.
+   * @param args This executable does not take any args.
+   * @throws TokenMgrError When the input from STDIN has a token error.
+   * @throws ParseException When the input from STDIN has a parse error.
+   * @throws SoySyntaxException When the input from STDIN has a syntax error.
+   */
+  public static void main(String[] args) throws SoySyntaxException, TokenMgrError, ParseException {
+    Reader stdinReader;
+    try {
+      stdinReader = new InputStreamReader(System.in, "UTF-8");
+    } catch (UnsupportedEncodingException e) {
+      throw new AssertionError();
+    }
+    (new SoyFileParser(stdinReader, SoyFileKind.SRC, "stdin", new IncrementingIdGenerator()))
+        .SoyFile();
+    System.out.println("Valid input.");
+  }
+
+
+  /**
+   * Attempts to parse the given input as a Soy file.
+   * @throws TokenMgrError When the input has a token error.
+   * @throws ParseException When the input has a parse error.
+   * @throws SoySyntaxException When the input from STDIN has a syntax error.
+   */
+  public SoyFileNode parseSoyFile() throws SoySyntaxException, TokenMgrError, ParseException {
+    Preconditions.checkNotNull(nodeIdGen);
+    return SoyFile();
+  }
+
+
+  /**
+   * Adjusts an error message generated by the template parser or template token manager so that the
+   * line number is with respect to the Soy file instead of with respect to the template.
+   * @param errorMsg Error message from a parser or token manager error.
+   * @param templateTagLineNum The line number of the 'template' tag with respect to the Soy file.
+   * @return The adjusted error message with the new line number, or the original error message if
+   *     no line number is found in it.
+   */
+  @VisibleForTesting
+  static String adjustLineNumInErrorMsg(String errorMsg, int templateTagLineNum) {
+
+    Matcher matcher = ERROR_MSG_LINE_NUM_PAT.matcher(errorMsg);
+    if (! matcher.find()) {
+      // Can't find line number, so no adjustment.
+      return errorMsg;
+    }
+
+    int newLineNum = templateTagLineNum + Integer.parseInt(matcher.group());
+    return errorMsg.substring(0, matcher.start()) + newLineNum + errorMsg.substring(matcher.end());
+  }
+
+}
+
+PARSER_END(SoyFileParser)
+
+
+// =================================================================================================
+// Tokens
+// =================================================================================================
+
+
+TOKEN_MGR_DECLS:
+{
+
+  /** Whether we have encountered a delpackage declaration. */
+  private boolean seenDelpackage = false;
+
+  /** Whether we have encountered a namespace declaration. */
+  private boolean seenNamespace = false;
+
+  /** Whether we have encountered a alias declaration. */
+  private boolean seenAlias = false;
+
+  /** Whether we have already encountered a template. */
+  private boolean seenTemplate = false;
+
+  /** When inside a template, this field holds the command name ('template' or 'deltemplate'). */
+  private String currTemplateCmdName = null;
+
+
+  /**
+   * Creates a new TokenMgrError with the given message and throws it.
+   * @param message The error message.
+   * @throws TokenMgrError Always.
+   */
+  private static void throwTokenMgrError(String message) throws TokenMgrError {
+    throw new TokenMgrError(message, TokenMgrError.LEXICAL_ERROR);
+  }
+
+
+  /**
+   * Creates a new TokenMgrError with the given message and line/column numbers and throws it.
+   * @param message The error message. Should not end with a period because the suffix
+   *     " [line ..., column ...]" will be appended.
+   * @param matchedToken The current matched token to get the line/column numbers from.
+   * @throws TokenMgrError Always.
+   */
+  private static void throwTokenMgrError(String message, Token matchedToken) throws TokenMgrError {
+    throw new TokenMgrError(message + " [line " + matchedToken.beginLine +
+                            ", column " + matchedToken.beginColumn + "].",
+                            TokenMgrError.LEXICAL_ERROR);
+  }
+
+}
+
+
+// -------------------------------------------------------------------------------------------------
+// Delpackage.
+
+<DEFAULT> TOKEN:
+{
+  < DELPACKAGE_TAG: "{delpackage" (<WS>)+ <DOTTED_IDENT> (<WS>)* "}" >
+  { if (seenDelpackage) {
+      throwTokenMgrError("Found multiple 'delpackage' declarations.");
+    }
+    if (seenNamespace) {
+      throwTokenMgrError(
+          "The 'delpackage' declaration must appear before the 'namespace' declaration.");
+    }
+    if (seenAlias) {
+      throwTokenMgrError(
+          "The 'delpackage' declaration must appear before any 'alias' declarations.");
+    }
+    if (seenTemplate) {
+      throwTokenMgrError("The 'delpackage' declaration must appear before any templates.");
+    }
+    seenDelpackage = true;
+  }
+}
+
+// Invalid 'delpackage' tags.
+<DEFAULT> TOKEN:
+{
+  < XXX_DELPACKAGE_TAG_NOT_SOL: <NOT_SOL> "{delpackage" >
+  { throwTokenMgrError("Tag 'delpackage' not at start of line."); }
+|
+  < XXX_DELPACKAGE_TAG_NOT_EOL: "{delpackage" ( <NOT_BRACE> )* "}" <NOT_EOL> >
+  { throwTokenMgrError("End of tag 'delpackage' not at end of line."); }
+}
+
+// Catch all other errors.
+<DEFAULT, IN_TEMPLATE> TOKEN:
+{
+  < XXX_DELPACKAGE_INVALID: "{delpackage" >
+  { throwTokenMgrError("Invalid 'delpackage' tag", matchedToken); }
+}
+
+
+// -------------------------------------------------------------------------------------------------
+// Namespace.
+
+<DEFAULT> TOKEN:
+{
+  < NAMESPACE_TAG: "{namespace" (<WS>)+ <DOTTED_IDENT> ( <NOT_BRACE> )* "}" >
+  { if (seenNamespace) {
+      throwTokenMgrError("Found multiple 'namespace' declarations.");
+    }
+    if (seenAlias) {
+      throwTokenMgrError(
+          "The 'namespace' declaration must appear before any 'alias' declarations.");
+    }
+    if (seenTemplate) {
+      throwTokenMgrError("The 'namespace' declaration must appear before any templates.");
+    }
+    seenNamespace = true;
+  }
+}
+
+// Invalid 'namespace' tags.
+<DEFAULT> TOKEN:
+{
+  < XXX_NAMESPACE_TAG_NOT_SOL: <NOT_SOL> "{namespace" >
+  { throwTokenMgrError("Tag 'namespace' not at start of line."); }
+|
+  < XXX_NAMESPACE_TAG_NOT_EOL: "{namespace" ( <NOT_BRACE> )* "}" <NOT_EOL> >
+  { throwTokenMgrError("End of tag 'namespace' not at end of line."); }
+}
+
+// Catch all other errors.
+<DEFAULT, IN_TEMPLATE> TOKEN:
+{
+  < XXX_NAMESPACE_INVALID: "{namespace" >
+  { throwTokenMgrError("Invalid 'namespace' tag", matchedToken); }
+}
+
+
+// -------------------------------------------------------------------------------------------------
+// Alias.
+
+<DEFAULT> TOKEN:
+{
+  < ALIAS_TAG: "{alias" (<WS>)+ <DOTTED_IDENT> (<WS>)* "}" >
+  { if (! seenNamespace) {
+      throwTokenMgrError("The 'alias' declarations must appear after the 'namespace' declaration.");
+    }
+    if (seenTemplate) {
+      throwTokenMgrError("The 'alias' declarations must appear before any templates.");
+    }
+    seenAlias = true;
+  }
+}
+
+// Specific invalid 'alias' tags.
+<DEFAULT> TOKEN:
+{
+  < XXX_ALIAS_TAG_WITH_AS:
+      "{alias" (<WS>)+ <DOTTED_IDENT> (<WS>)+ "as" (<WS>)+ ( <NOT_BRACE> )* "}" >
+  { throwTokenMgrError("The form of the 'alias' tag with \"as ...\" is currently disabled."); }
+|
+  < XXX_ALIAS_TAG_NOT_SOL: <NOT_SOL> "{alias" >
+  { throwTokenMgrError("Tag 'alias' not at start of line."); }
+|
+  < XXX_ALIAS_TAG_NOT_EOL: "{alias" ( <NOT_BRACE> )* "}" <NOT_EOL> >
+  { throwTokenMgrError("End of tag 'alias' not at end of line."); }
+}
+
+// Catch all other errors.
+<DEFAULT, IN_TEMPLATE> TOKEN:
+{
+  < XXX_ALIAS_INVALID: "{alias" >
+  { throwTokenMgrError("Invalid 'alias' tag", matchedToken); }
+}
+
+
+// -------------------------------------------------------------------------------------------------
+// SoyDoc.
+
+<DEFAULT> SPECIAL_TOKEN:
+{
+  < SOY_DOC_START: "/**" > : IN_SOY_DOC
+}
+
+<IN_SOY_DOC> SPECIAL_TOKEN:
+{
+  < SOY_DOC_NEWLINE: <NEWLINE> >
+|
+  < SOY_DOC_CHAR: <ANY_CHAR> >
+|
+  // Grab everything until end of line so that if there's a following template, then this special
+  // token will be the special token immediately before the template tag.
+  < SOY_DOC_END: "*/" <WS_UNTIL_EOL> > : DEFAULT
+}
+
+// Invalid SoyDoc start.
+<DEFAULT> TOKEN:
+{
+  < XXX_SOY_DOC_START_NOT_SOL: <NOT_SOL> "/**" >
+  { throwTokenMgrError("SoyDoc not at start of line", matchedToken); }
+}
+
+// Invalid SoyDoc end.
+<IN_SOY_DOC> TOKEN:
+{
+  < XXX_SOY_DOC_END_NOT_EOL: "*/" <NOT_EOL> >
+  { throwTokenMgrError("End of SoyDoc not at end of line", matchedToken); }
+}
+
+
+// -------------------------------------------------------------------------------------------------
+// Template.
+
+<DEFAULT> TOKEN:
+{
+  // Grab everything until end of line so that the template body starts with the next line.
+  < ANY_TEMPLATE_TAG: "{" <ANY_TEMPLATE_CMD_NAME> <WS> ( <NOT_BRACE> )+ "}" <WS_UNTIL_EOL> >
+  { seenTemplate = true;
+    if (image.substring(0, 9).equals("{template")) {
+      currTemplateCmdName = "template";
+    } else if (image.substring(0, 12).equals("{deltemplate")) {
+      currTemplateCmdName = "deltemplate";
+    } else {
+      throw new AssertionError();
+    }
+    // Remove the extra whitespace that we matched after the tag.
+    int rbIndex = image.lastIndexOf("}");
+    matchedToken.image = image.substring(0, rbIndex + 1);
+  }
+  : IN_TEMPLATE
+}
+
+// Collect the template body using MORE and return it when we reach the '/template' tag.
+<IN_TEMPLATE> MORE:
+{
+  < TEMPLATE_BODY_CHAR: <ANY_CHAR> >
+}
+
+<IN_TEMPLATE> TOKEN:
+{
+  // Match a '/template' tag and return the collected template body as the TEMPLATE_BODY token.
+  < TEMPLATE_BODY: "{/" <ANY_TEMPLATE_CMD_NAME> "}" >
+  { int lbIndex = image.lastIndexOf("{");
+    switch (image.length() - lbIndex) {
+      case 11:
+        if (! currTemplateCmdName.equals("template")) {
+          throwTokenMgrError(
+              "Cannot start a template with 'deltemplate' and end it with '/template'.");
+        }
+        break;
+      case 14:
+        if (! currTemplateCmdName.equals("deltemplate")) {
+          throwTokenMgrError(
+              "Cannot start a template with 'template' and end it with '/deltemplate'.");
+        }
+        break;
+      default:
+        throw new AssertionError();
+    }
+    currTemplateCmdName = null;
+    // Remove the end-template tag so that the template body ends with the last newline.
+    matchedToken.image = image.substring(0, lbIndex);
+  }
+  : DEFAULT
+}
+
+// Invalid 'template' tag.
+<DEFAULT> TOKEN:
+{
+  < XXX_TEMPLATE_TAG_NOT_SOL: <NOT_SOL> "{" <ANY_TEMPLATE_CMD_NAME> >
+  { throwTokenMgrError("Template tag not at start of line", matchedToken); }
+|
+  < XXX_TEMPLATE_TAG_NOT_EOL: "{" <ANY_TEMPLATE_CMD_NAME> ( <NOT_BRACE> )+ "}" <NOT_EOL> >
+  { throwTokenMgrError("End of template tag not at end of line", matchedToken); }
+}
+
+// Invalid '/template' tag.
+<IN_TEMPLATE> TOKEN:
+{
+  < XXX_END_TEMPLATE_TAG_NOT_SOL: <NOT_SOL> "{/" <ANY_TEMPLATE_CMD_NAME> "}" >
+  { throwTokenMgrError("End-template tag not at start of line", matchedToken); }
+|
+  < XXX_END_TEMPLATE_TAG_NOT_EOL: "{/" <ANY_TEMPLATE_CMD_NAME> "}" <NOT_EOL> >
+  { throwTokenMgrError("End of end-template tag not at end of line", matchedToken); }
+}
+
+// Catch all other errors.
+<DEFAULT, IN_TEMPLATE> TOKEN:
+{
+  < XXX_TEMPLATE_TAG_INVALID: "{" <ANY_TEMPLATE_CMD_NAME> >
+  { throwTokenMgrError("Invalid template tag", matchedToken); }
+|
+  < XXX_END_TEMPLATE_TAG_INVALID: "{/" <ANY_TEMPLATE_CMD_NAME> >
+  { throwTokenMgrError("Invalid end-template tag", matchedToken); }
+}
+
+// Private helper regexes.
+<DEFAULT, IN_TEMPLATE> TOKEN:
+{
+  < #ANY_TEMPLATE_CMD_NAME: "template" | "deltemplate" >
+}
+
+
+// -------------------------------------------------------------------------------------------------
+// Misc.
+
+// Skip unmatched characters in all states except IN_TEMPLATE.
+// Note: We need to capture characters using SPECIAL_TOKEN instead of SKIP so we can check for
+// newline before EOF.
+<DEFAULT> SPECIAL_TOKEN:
+{
+  < SKIPPED_NEWLINE: <NEWLINE> >
+|
+  < SKIPPED_CHAR: <ANY_CHAR> >
+}
+
+// Private helper regexes.
+<*> TOKEN:
+{
+  < #ANY_CHAR: ~[] >
+|
+  < #WS: " " | "\t" | "\n" | "\r" | "\r\n" >
+|
+  < #NEWLINE: "\n" | "\r" | "\r\n" >
+|
+  < #WS_UNTIL_EOL: ( [" ","\t"] )* <NEWLINE> >
+|
+  < #NOT_SOL: ~["\n","\r"] >
+|
+  < #NOT_EOL: ( [" ","\t"] )* ~[" ","\t","\n","\r"] >  // allows whitespace at end of line
+|
+  < #NOT_BRACE: ~["{","}"] >
+|
+  < #IDENT: ["a"-"z","A"-"Z","_"] ( ["a"-"z","A"-"Z","_","0"-"9"] )* >
+|
+  < #DOTTED_IDENT: <IDENT> ( (<WS>)* "." (<WS>)* <IDENT> )* >
+}
+
+
+// =================================================================================================
+// Grammar
+// =================================================================================================
+
+
+/**
+ * Matches the whole input if it is a valid Soy file.
+ *
+ * SoyFile -> [ DelpackageTag ] [ NamespaceTag ] ( AliasTag )* ( Template )* EOF
+ */
+private SoyFileNode SoyFile() throws SoySyntaxException :
+{
+  Token delpackageTag, namespaceTag, aliasTag;
+  TemplateNode template;
+}
+{
+  { String delpackageCmdText = null;
+    String namespaceCmdText = null;
+  }
+
+  [
+    delpackageTag = <DELPACKAGE_TAG>
+    { int start = "{delpackage".length();
+      int end = delpackageTag.image.length() - 1;
+      delpackageCmdText = delpackageTag.image.substring(start, end);
+    }
+  ]
+
+  [
+    namespaceTag = <NAMESPACE_TAG>
+    { int start = "{namespace".length();
+      int end = namespaceTag.image.length() - 1;
+      namespaceCmdText = namespaceTag.image.substring(start, end);
+    }
+  ]
+
+  { List<String> aliasCmdTexts = null; }
+  (
+    aliasTag = <ALIAS_TAG>
+    { int start = "{alias".length();
+      int end = aliasTag.image.length() - 1;
+      if (aliasCmdTexts == null) {
+        aliasCmdTexts = Lists.newArrayList();
+      }
+      aliasCmdTexts.add(aliasTag.image.substring(start, end));
+    }
+  )*
+
+  { SoyFileNode soyFileNode = new SoyFileNode(
+        nodeIdGen.genId(), soyFileKind, delpackageCmdText, namespaceCmdText, aliasCmdTexts);
+    soyFileNode.setFilePath(filePath);
+    SoyFileHeaderInfo soyFileHeaderInfo = new SoyFileHeaderInfo(soyFileNode);
+  }
+
+  (
+    template = Template(soyFileHeaderInfo)
+    { soyFileNode.addChild(template); }
+  )*
+
+  <EOF>
+
+  { return soyFileNode; }
+}
+
+
+/**
+ * Template -> AnyTemplateTag TemplateBody
+ * @param soyFileHeaderInfo Info from the containing Soy file's header declarations. Needed by the
+ *     TemplateNode constructors.
+ */
+private TemplateNode Template(SoyFileHeaderInfo soyFileHeaderInfo) throws SoySyntaxException :
+{
+  Token templateTag, templateBody;
+}
+{
+  templateTag = <ANY_TEMPLATE_TAG>
+
+  { String soyDoc;
+    Token soyDocEnd = templateTag.specialToken;
+    if (soyDocEnd != null && soyDocEnd.kind == SOY_DOC_END) {
+      // Collect all the preceding special tokens to reconstruct the SoyDoc. The special tokens
+      // should be a list of the form
+      //     SOY_DOC_START ( SOY_DOC_NEWLINE | SOY_DOC_CHAR )* SOY_DOC_END
+      // Note that since we're iterating in reverse, we need to prepend to the list we're building.
+      List<String> soyDocParts = Lists.newArrayList();
+      soyDocParts.add(0, "*/");
+      for (Token st = soyDocEnd.specialToken; st.kind != SOY_DOC_START; st = st.specialToken) {
+        soyDocParts.add(0, st.image);
+      }
+      soyDocParts.add(0, "/**");
+      soyDoc = Joiner.on("").join(soyDocParts);
+    } else {
+      // Null means there is no preceding SoyDoc.
+      soyDoc = null;
+    }
+
+    boolean isBasicTemplate = templateTag.image.startsWith("{template");
+    String cmdText =
+        templateTag.image.substring(isBasicTemplate ? 10 : 13, templateTag.image.length() - 1)
+            .trim();
+
+    TemplateNode templateNode = isBasicTemplate ?
+        new TemplateBasicNode(nodeIdGen.genId(), soyFileHeaderInfo, cmdText, soyDoc) :
+        new TemplateDelegateNode(nodeIdGen.genId(), soyFileHeaderInfo, cmdText, soyDoc);
+    templateNode.setSourceLocation(new SourceLocation(filePath, templateTag.beginLine));
+  }
+
+  templateBody = <TEMPLATE_BODY>
+  { List<StandaloneNode> templateBodyNodes;
+    try {
+      templateBodyNodes = new TemplateParser(
+          templateBody.image, filePath, templateBody.beginLine, nodeIdGen)
+          .parseTemplateBody();
+    } catch (TokenMgrError tme) {
+      String adjustedErrorMsg = adjustLineNumInErrorMsg(tme.getMessage(), templateTag.beginLine);
+      throw SoySyntaxException.createCausedWithMetaInfo(
+          adjustedErrorMsg, tme, null, filePath, templateNode.getTemplateNameForUserMsgs());
+    } catch (ParseException pe) {
+      String adjustedErrorMsg = adjustLineNumInErrorMsg(pe.getMessage(), templateTag.beginLine);
+      throw SoySyntaxException.createCausedWithMetaInfo(
+          adjustedErrorMsg, pe, null, filePath, templateNode.getTemplateNameForUserMsgs());
+    } catch (SoySyntaxException sse) {
+      throw sse.associateMetaInfo(null, filePath, templateNode.getTemplateNameForUserMsgs());
+    }
+    templateNode.addChildren(templateBodyNodes);
+  }
+
+  { return templateNode; }
+}
