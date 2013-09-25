@@ -43,7 +43,10 @@ a[href] { color: #66f; }
 a[href]:hover { text-decoration: underline; }
 code { font-size: 1.2rem; }
 code.type,
-code.type a[href] { color: #080; }
+code.type a[href] {
+  font-weight: normal;
+  color: #080;
+}
 table {
   border-collapse: collapse;
   border-spacing: 0;
@@ -77,7 +80,7 @@ dt { font-weight: bold; }
 dd + dt { margin-top: .5rem; }
 
 .args {
-  color: #555;
+  color: #808080;
   font-weight: normal;
 }
 .member {
