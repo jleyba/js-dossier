@@ -16,6 +16,7 @@ package com.github.jleyba.dossier;
 import static com.google.common.collect.Iterables.transform;
 import static com.google.common.collect.Lists.newLinkedList;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Function;
 import com.google.common.base.Supplier;
 import com.google.common.collect.ImmutableList;
@@ -65,7 +66,8 @@ public class Main extends CommandLineRunner {
   private final Config config;
   private final DocRegistry docRegistry = new DocRegistry();
 
-  private Main(String[] args, PrintStream out, PrintStream err, Config config) {
+  @VisibleForTesting
+  Main(String[] args, PrintStream out, PrintStream err, Config config) {
     super(args, out, err);
     this.config = config;
   }

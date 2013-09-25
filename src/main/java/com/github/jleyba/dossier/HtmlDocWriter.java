@@ -18,11 +18,8 @@ import static com.google.common.collect.Iterables.transform;
 
 import com.google.common.base.Charsets;
 import com.google.common.base.Function;
-import com.google.common.base.Joiner;
 import com.google.common.base.Predicate;
-import com.google.common.base.Strings;
 import com.google.common.collect.FluentIterable;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Ordering;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.JSTypeExpression;
@@ -39,6 +36,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedWriter;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -66,6 +64,8 @@ class HtmlDocWriter implements DocWriter {
   private final DocRegistry docRegistry;
   private final LinkResolver resolver;
   private SoyTofu tofu;
+  private Iterable<Descriptor> sortedTypes;
+  private Iterable<Path> sortedFiles;
 
   HtmlDocWriter(Config config, DocRegistry registry, LinkResolver resolver) {
     this.config = checkNotNull(config);
@@ -80,11 +80,16 @@ class HtmlDocWriter implements DocWriter {
         .build()
         .compileToTofu();
 
+    sortedTypes = FluentIterable.from(docRegistry.getTypes())
+        .toSortedList(DescriptorNameComparator.INSTANCE);
+    sortedFiles = FluentIterable.from(config.getSources())
+        .toSortedList(PathComparator.INSTANCE);
+
     Files.createDirectories(config.getOutput());
     copyResources();
     copySourceFiles();
 
-    for (Descriptor descriptor : docRegistry.getTypes()) {
+    for (Descriptor descriptor : sortedTypes) {
       generateDocs(descriptor, registry);
     }
 
@@ -95,52 +100,67 @@ class HtmlDocWriter implements DocWriter {
     Path output = resolver.getFilePath(descriptor);
     Files.createDirectories(output.getParent());
 
-    try (FileOutputStream os = new FileOutputStream(output.toFile());
-         PrintStream stream = new PrintStream(os)) {
+    SoyMapData sideNavData = buildSideNavData(output);
+    SoyMapData desc = new SoyMapData(
+        "name", descriptor.getFullName(),
+        "isClass", descriptor.isConstructor(),
+        "isInterface", descriptor.isInterface(),
+        "isEnum", descriptor.isEnum(),
+        "sourceLink", resolver.getSourcePath(descriptor),
+        "descriptionHtml", CommentUtil.getBlockDescription(resolver, descriptor.getInfo()),
+        "typedefs", getTypeDefs(descriptor),
+        "nested", new SoyMapData(
+            "interfaces", getNestedTypeSummaries(descriptor, isInterface()),
+            "classes", getNestedTypeSummaries(descriptor, isClass()),
+            "enums", getNestedTypeSummaries(descriptor, isEnum())),
+        "prototype", getPrototypeData(descriptor, registry),
+        "static", getStaticData(descriptor));
+
+    if (descriptor.isDeprecated()) {
+      desc.put("isDeprecated", true);
+      desc.put("deprecationHtml", CommentUtil.formatCommentText(
+          resolver, descriptor.getDeprecationReason()));
+    }
+
+    if (descriptor.isEnum() && descriptor.getInfo() != null) {
+      JSDocInfo info = descriptor.getInfo();
+      String type = CommentUtil.formatTypeExpression(info.getEnumParameterType(), resolver);
+      desc.put("enumType", type);
+    }
+
+    desc.put("inheritedTypes", getInheritedTypes(descriptor, registry));
+
+    Set<String> interfaces = descriptor.isInterface()
+        ? descriptor.getExtendedInterfaces(registry)
+        : descriptor.getImplementedInterfaces(registry);
+    desc.put("interfaces", transform(Ordering.natural().sortedCopy(interfaces),
+        new Function<String, String>() {
+          @Override
+          public String apply(String input) {
+            return new StringBuilder("<code>")
+                .append(getTypeLink(input))
+                .append("</code>")
+                .toString();
+          }
+        }));
+
+    if (descriptor.isConstructor()) {
+      desc.put("ctor", getFunctionData(descriptor, true));
+    }
+
+    if (descriptor.isEnum()) {
+      desc.put("enumValues", getEnumData(descriptor));
+    }
+
+    try (BufferedWriter writer = Files.newBufferedWriter(output, Charsets.UTF_8)) {
       tofu.newRenderer("dossier.typefile")
           .setData(new SoyMapData(
               "title", descriptor.getFullName(),
-              "styleSheets", new SoyListData("dossier.css")))
-          .render(stream);
-      stream.println();
-      stream.println("<article id=\"content\">");
-      stream.println("<header>");
-      printTitle(stream, descriptor);
-      stream.println(getSourceLink(descriptor));
-      printEnumType(stream, descriptor);
-      printInheritanceTree(stream, descriptor, registry);
-      printInterfaces(stream, "All implemented interfaces:",
-          descriptor.getImplementedInterfaces(registry));
-      printInterfaces(stream, "All extended interfaces:",
-          descriptor.getExtendedInterfaces(registry));
-      stream.println(printDeprecation(descriptor));
-      stream.println("</header>");
-
-      stream.println();
-      stream.println();
-      stream.println("<section>");
-      printSummary(stream, descriptor.getInfo());
-      printConstructor(stream, descriptor);
-      printEnumValues(stream, descriptor);
-      stream.println("</section>");
-
-      printTypedefs(stream, descriptor);
-      printNestedTypeSummaries(stream, "Interfaces", descriptor, isInterface());
-      printNestedTypeSummaries(stream, "Classes", descriptor, isClass());
-      printNestedTypeSummaries(stream, "Enumerations", descriptor, isEnum());
-      printInstanceMethods(stream, descriptor, registry);
-      printInstanceProperties(stream, descriptor, registry);
-      printFunctions(stream, descriptor);
-      printProperties(stream, descriptor);
-
-      stream.println();
-      stream.println();
-      stream.println("</article>");
-
-      tofu.newRenderer("dossier.footer")
-          .setData(new SoyMapData(
-              "scripts", new SoyListData("types.js", "dossier.js")))
-          .render(stream);
+              "styleSheets", new SoyListData("dossier.css"),
+              "scripts", new SoyListData("types.js", "dossier.js"),
+              "descriptor", desc,
+              "index", sideNavData))
+          .render(writer);
     }
   }
 
@@ -163,10 +183,7 @@ class HtmlDocWriter implements DocWriter {
     JSONArray interfaces = new JSONArray();
     JSONArray namespaces = new JSONArray();
 
-    Iterable<Descriptor> types = FluentIterable.from(docRegistry.getTypes())
-        .toSortedList(DescriptorNameComparator.INSTANCE);
-
-    for (Descriptor descriptor : types) {
+    for (Descriptor descriptor : sortedTypes) {
       String name = descriptor.getFullName();
       if (descriptor.isConstructor()) {
         classes.put(name);
@@ -200,6 +217,33 @@ class HtmlDocWriter implements DocWriter {
     }
   }
 
+  /**
+   * Builds the SoyMapData for the side navigation pane.
+   *
+   * @param path Path to the file under the output directory that all navigation paths
+   *     should be relative to.
+   */
+  private SoyMapData buildSideNavData(Path path) {
+    Path fileDir = config.getSourceOutput();
+    Path relativePath = getPathToOutputDir(path);
+
+    SideNavData data = new SideNavData();
+    for (Path source : sortedFiles) {
+      Path displayPath = config.getSrcPrefix().relativize(source);
+      Path sourcePath = fileDir.resolve(displayPath.toString() + ".src.html");
+      Path pathToSource = relativePath.resolve(sourcePath).normalize();
+      data.addFile(displayPath.toString(), pathToSource);
+    }
+
+    for (Descriptor type : sortedTypes) {
+      Path typePath = resolver.getFilePath(type);
+      Path pathToType = relativePath.resolve(typePath).normalize();
+      data.addType(type.getFullName(), pathToType, type.isInterface());
+    }
+
+    return data.toSoy();
+  }
+
   private Path getPathToOutputDir(Path from) {
     if (!Files.isDirectory(from)) {
       from = from.getParent();
@@ -212,7 +256,7 @@ class HtmlDocWriter implements DocWriter {
   }
 
   private void copySourceFiles() throws IOException {
-    Path fileDir = config.getOutput().resolve("source");
+    Path fileDir = config.getSourceOutput();
     for (Path source : config.getSources()) {
       Path simpleSource = config.getSrcPrefix().relativize(source);
       Path dest = fileDir.resolve(simpleSource.toString() + ".src.html");
@@ -223,118 +267,32 @@ class HtmlDocWriter implements DocWriter {
       Path toDossierJs = relativePath.resolve("dossier.js");
 
       Files.createDirectories(dest.getParent());
-      try (FileOutputStream fos = new FileOutputStream(dest.toString());
-           PrintStream stream = new PrintStream(fos)) {
+      try (BufferedWriter writer = Files.newBufferedWriter(dest, Charsets.UTF_8)) {
         tofu.newRenderer("dossier.srcfile")
             .setData(new SoyMapData(
                 "title", source.getFileName().toString(),
                 "styleSheets", new SoyListData(toDossierCss.toString()),
                 "displayPath", simpleSource.toString(),
+                "index", buildSideNavData(dest),
                 "lines", new SoyListData(Files.readAllLines(source, Charsets.UTF_8)),
                 "scripts", new SoyListData(toTypesJs.toString(), toDossierJs.toString())))
-            .render(stream);
+            .render(writer);
       }
     }
   }
 
-  private void printInheritanceTree(
-      PrintStream stream, Descriptor descriptor, JSTypeRegistry registry) {
+  private SoyListData getInheritedTypes(Descriptor descriptor, JSTypeRegistry registry) {
     Stack<String> types = descriptor.getAllTypes(registry);
-    if (types.size() < 2) {
-      return;
-    }
-
-    stream.print("<pre><code>" + getTypeLink(types.pop()));
-    int depth = 0;
+    SoyListData inheritedTypes = new SoyListData();
     while (!types.isEmpty()) {
-      String indent = "  ";
-      if (++depth > 1) {
-        indent += Strings.repeat("    ", depth - 1);
-      }
       String type = types.pop();
-      stream.printf("\n%s&#x2514; %s", indent,
-          types.isEmpty() ? type :  getTypeLink(type));
+      inheritedTypes.add(types.isEmpty() ? type : getTypeLink(type));
     }
-    stream.println("</code></pre>\n");
+    return inheritedTypes;
   }
 
-  private void printEnumType(PrintStream stream, Descriptor descriptor) {
-    if (descriptor.isEnum()) {
-      JSDocInfo info = descriptor.getInfo();
-      if (info != null) {
-        String type = CommentUtil.formatTypeExpression(info.getEnumParameterType(), resolver);
-        stream.print("<dl><dt>Type: <code class=\"type\">" + type + "</code></dl>");
-      }
-    }
-  }
-
-  private void printInterfaces(PrintStream stream, String header, Set<String> interfaces) {
-    if (interfaces.isEmpty()) {
-      return;
-    }
-    stream.println("<dl><dt>" + header + "</dt><dd>");
-    Iterable<String> tmp = transform(Ordering.natural().sortedCopy(interfaces),
-        new Function<String, String>() {
-          @Override
-          public String apply(String input) {
-            return new StringBuilder("<code>")
-                .append(getTypeLink(input))
-                .append("</code>")
-                .toString();
-          }
-        });
-    stream.print(Joiner.on(", ").join(tmp));
-    stream.println("</dd></dl>");
-  }
-
-  private void printTitle(PrintStream stream, Descriptor descriptor) {
-    stream.print("<h1>" + getTitlePrefix(descriptor) + " " + descriptor.getFullName());
-    if (descriptor.isDeprecated()) {
-      stream.print(" <span class=\"deprecation-notice\">(deprecated)</span>");
-    }
-    stream.println("</h1>");
-  }
-
-  private void printConstructor(PrintStream stream, Descriptor descriptor) {
-    if (!descriptor.isConstructor()) {
-      return;
-    }
-
-    List<ArgDescriptor> args = descriptor.getArgs();
-
-    stream.println("<h2>Constructor</h2>");
-    stream.print("<div><span class=\"member");
-    if (descriptor.isDeprecated()) {
-      stream.print(" deprecation-notice");
-    }
-    stream.print("\">" + descriptor.getFullName() + "</span> <span class=\"args\">(");
-    stream.print(Joiner.on(", ").join(transform(args, new Function<ArgDescriptor, String>() {
-
-      @Override
-      public String apply(ArgDescriptor input) {
-        return input.getName();
-      }
-    })));
-    stream.println(")</span></div>");
-
-    StringBuilder details = new StringBuilder()
-        .append(printArgs(args, true))
-        .append(printThrows(descriptor));
-    if (details.length() > 0) {
-      stream.println("<div class=\"info\">");
-      stream.println("<table><tbody>");
-      stream.println(details);
-      stream.println("</table>");
-      stream.println("</div>");
-    }
-  }
-
-  private void printEnumValues(PrintStream stream, Descriptor descriptor) {
-    if (!descriptor.isEnum()) {
-      return;
-    }
-    stream.println("<h2>Values and Descriptions</h2>");
-    stream.println("<div class=\"type-summary\"><table><tbody><tr><td><dl>");
+  private SoyListData getEnumData(Descriptor descriptor) {
+    SoyListData values = new SoyListData();
     ObjectType object = descriptor.toObjectType();
     for (String name : object.getOwnPropertyNames()) {
       JSType type = object.getPropertyType(name);
@@ -342,28 +300,24 @@ class HtmlDocWriter implements DocWriter {
         Node node = object.getPropertyNode(name);
         JSDocInfo info = node == null ? null : node.getJSDocInfo();
 
-        stream.print("<dt><a class=\"enum member");
-        if (info != null && info.isDeprecated()) {
-          stream.print(" deprecation-notice");
-        }
-        stream.printf("\" name=\"%s\">%s</a>\n", descriptor.getFullName() + "." + name, name);
+        SoyMapData data = new SoyMapData(
+            "name", name,
+            "fullName", descriptor.getFullName() + "." + name);
+        values.add(data);
 
         if (node == null || info == null) {
           continue;
         }
 
-        StringBuilder comment = new StringBuilder();
         if (info.isDeprecated()) {
-          comment.append(formatDeprecationNotice(info.getDeprecationReason()));
+          data.put("isDeprecated", true);
+          data.put("deprecationHtml", CommentUtil.formatCommentText(
+              resolver, info.getDeprecationReason()));
         }
-        comment.append(CommentUtil.getBlockDescription(resolver, info));
-
-        if (comment.length() > 0) {
-          stream.println("<dd>" + comment);
-        }
+        data.put("descriptionHtml", CommentUtil.getBlockDescription(resolver, info));
       }
     }
-    stream.println("</dl></table></div>");
+    return values;
   }
 
   private String getTypeLink(String type) {
@@ -374,99 +328,58 @@ class HtmlDocWriter implements DocWriter {
     return String.format("<a href=\"%s\">%s</a>", path, type);
   }
 
-  private void printSummary(PrintStream stream, @Nullable JSDocInfo info) {
-    if (info == null) {
-      return;
-    }
-
-    String summary = CommentUtil.getBlockDescription(resolver, info);
-    if (summary.isEmpty()) {
-      return;
-    }
-
-    stream.println("<p>" + summary);
-  }
-
-  private String getSourceLink(Descriptor descriptor) {
-    String sourcePath = resolver.getSourcePath(descriptor);
-    if (null != sourcePath) {
-      return String.format("<a class=\"source\" href=\"%s\">code &raquo;</a>\n", sourcePath);
-    }
-    return "";
-  }
-
-  private void printTypedefs(PrintStream stream, Descriptor descriptor) {
+  private SoyListData getTypeDefs(Descriptor descriptor) {
     List<Descriptor> typedefs = FluentIterable.from(descriptor.getProperties())
         .filter(isTypedef())
         .toSortedList(DescriptorNameComparator.INSTANCE);
-    if (typedefs.isEmpty()) {
-      return;
-    }
-    stream.println();
-    stream.println();
-    stream.println("<section><h2>Type Definitions</h2>");
+
+    SoyListData typedefList = new SoyListData();
     for (Descriptor typedef : typedefs) {
       JSDocInfo info = checkNotNull(typedef.getInfo());
-      stream.println("<details><summary>");
-      stream.print("<div>" + getSourceLink(typedef));
-      stream.print("<a class=\"member");
-      if (typedef.isDeprecated()) {
-        stream.print(" deprecation-notice");
-      }
-      stream.print("\" name=\"" + typedef.getFullName() + "\">");
-      stream.print(typedef.getFullName() + "</a> : ");
-      String type = CommentUtil.formatTypeExpression(info.getTypedefType(), resolver);
-      stream.println("<code class=\"type\">" + type + "</code></div>");
-      stream.println(printDeprecation(typedef));
 
-      String comment = CommentUtil.getBlockDescription(resolver, info);
-      if (!comment.isEmpty()) {
-        stream.println("<div>" + comment + "</div>");
+      SoyMapData typedefData = new SoyMapData(
+          "name", typedef.getFullName(),
+          "typeHtml", CommentUtil.formatTypeExpression(info.getTypedefType(), resolver),
+          "href", resolver.getSourcePath(typedef),
+          "descriptionHtml", CommentUtil.getBlockDescription(resolver, info));
+      typedefList.add(typedefData);
+
+      if (typedef.isDeprecated()) {
+        typedefData.put("isDeprecated", typedef.isDeprecated());
+        typedefData.put("deprecationHtml", CommentUtil.formatCommentText(resolver,
+            typedef.getDeprecationReason()));
       }
-      stream.println("</summary></details>");
     }
-    stream.println("</section>");
+    return typedefList;
   }
 
-  private void printNestedTypeSummaries(
-      PrintStream stream, String title, Descriptor descriptor, Predicate<Descriptor> predicate) {
+  private SoyListData getNestedTypeSummaries(Descriptor descriptor, Predicate<Descriptor> predicate) {
     List<Descriptor> children = FluentIterable.from(descriptor.getProperties())
         .filter(predicate)
         .toSortedList(DescriptorNameComparator.INSTANCE);
 
-    if (children.isEmpty()) {
-      return;
-    }
-
-    stream.println();
-    stream.println();
-    stream.println("<section>");
-    stream.println("<h2>" + title + "</h2>");
-    stream.println("<div class=\"type-summary\"><table><tbody><tr><td><dl>");
+    SoyListData types = new SoyListData();
     for (Descriptor child : children) {
       JSDocInfo info = checkNotNull(child.getInfo());
-
-      Path path = resolver.getFilePath(child);
-      stream.println("<dt><a href=\"" + path.getFileName() + "\">" + child.getFullName() + "</a>");
-
       String comment = CommentUtil.getBlockDescription(resolver, info);
       String summary = CommentUtil.getSummary(comment);
-      if (!summary.isEmpty()) {
-        stream.println("<dd>" + summary);
-      }
+      types.add(new SoyMapData(
+          "name", child.getFullName(),
+          "href", resolver.getFilePath(child).getFileName().toString(),
+          "summaryHtml", summary));
     }
-    stream.println("</dl></table></div>");
-    stream.println("</section>");
+    return types;
   }
 
-  private void printInstanceMethods(
-      PrintStream stream, Descriptor descriptor, JSTypeRegistry registry) {
+  private SoyMapData getPrototypeData(Descriptor descriptor, JSTypeRegistry registry) {
+    SoyListData prototypes = new SoyListData();
+    SoyMapData prototypeData = new SoyMapData("chain", prototypes);
+
     if (!descriptor.isConstructor() && !descriptor.isInterface()) {
-      return;
+      return prototypeData;
     }
 
     List<Descriptor> seen = new LinkedList<>();
-    StringBuilder methods = new StringBuilder();
     for (String type : descriptor.getAssignableTypes(registry)) {
       Descriptor typeDescriptor = docRegistry.getType(type);
       if (typeDescriptor == null) {
@@ -474,352 +387,174 @@ class HtmlDocWriter implements DocWriter {
       }
 
       FluentIterable<Descriptor> unsorted = FluentIterable
-          .from(typeDescriptor.getInstanceProperties())
-          .filter(isFunction());
+          .from(typeDescriptor.getInstanceProperties());
       if (typeDescriptor != descriptor) {
+        // Filter out properties that have been overridden.
         unsorted = unsorted.filter(notOwnPropertyOf(seen));
       }
-      List<Descriptor> functions = unsorted.toSortedList(DescriptorNameComparator.INSTANCE);
-      seen.add(typeDescriptor);
-      if (functions.isEmpty()) {
-        continue;
-      }
-      methods.append("<h3>Defined in <code class=\"type\">");
-      if (typeDescriptor != descriptor) {
-        methods.append("<a href=\"")
-            .append(resolver.getLink(typeDescriptor.getFullName()))
-            .append("\">");
-      }
-      methods.append(typeDescriptor.getFullName());
-      if (typeDescriptor != descriptor) {
-        methods.append("</a>");
-      }
-      methods.append("</code></h3>\n");
 
-      for (Descriptor function : functions) {
-        List<ArgDescriptor> args = function.getArgs();
-        methods.append("<details class=\"function\"><summary>\n")
-            .append("<div>").append(getSourceLink(function))
-            .append("<a class=\"member");
-        if (function.isDeprecated()) {
-          methods.append(" deprecation-notice");
-        }
-        methods.append(String.format("\" name=\"%s$%s\">%s</a>",
-            typeDescriptor.getFullName(), function.getName(), function.getName()))
-            .append(" <span class=\"args\">(")
-            .append(Joiner.on(", ").join(transform(args, new Function<ArgDescriptor, String>() {
-              @Override
-              public String apply(ArgDescriptor input) {
-                return input.getName();
-              }
-            })))
-            .append(")</span>");
-
-        String returnType = getReturnType(function);
-        if (returnType == null || "undefined".equals(returnType) || "?".equals(returnType)) {
-          returnType = "";
-        }
-        if (!returnType.isEmpty()) {
-          methods.append(" &rArr; <code class=\"type\">").append(returnType).append("</code>");
-        }
-        methods.append("</div>");
-
-        methods.append(printDeprecation(function));
-
-        JSDocInfo info = function.getInfo();
-        if (info != null) {
-          String comment = CommentUtil.getBlockDescription(resolver, info);
-          if (!comment.isEmpty()) {
-            methods.append(comment);
-          }
-        }
-        methods.append("</summary>\n");
-
-        StringBuilder details = new StringBuilder()
-            .append(printArgs(args, false))
-            .append(printReturns(function))
-            .append(printThrows(function));
-        if (details.length() > 0) {
-          methods.append("<div class=\"info\"><table><tbody>\n")
-              .append(details)
-              .append("</table></div>\n");
-        }
-        methods.append("</details>");
-      }
-      methods.append("\n");
-    }
-
-    if (methods.length() > 0) {
-      stream.println();
-      stream.println();
-      stream.println("<section>");
-      stream.println("<h2>Instance Methods</h2>");
-      stream.println(methods);
-      stream.println("</section>");
-    }
-  }
-
-  private void printInstanceProperties(
-      PrintStream stream, Descriptor descriptor, JSTypeRegistry registry) {
-    if (!descriptor.isConstructor() && !descriptor.isInterface()) {
-      return;
-    }
-
-    List<Descriptor> seen = new LinkedList<>();
-    StringBuilder builder = new StringBuilder();
-    for (String type : descriptor.getAssignableTypes(registry)) {
-      Descriptor typeDescriptor = docRegistry.getType(type);
-      if (typeDescriptor == null) {
-        continue;
-      }
-
-      FluentIterable<Descriptor> unsorted = FluentIterable
-          .from(typeDescriptor.getInstanceProperties())
-          .filter(isProperty());
-      if (typeDescriptor != descriptor) {
-        unsorted = unsorted.filter(notOwnPropertyOf(seen));
-      }
       List<Descriptor> properties = unsorted.toSortedList(DescriptorNameComparator.INSTANCE);
       seen.add(typeDescriptor);
       if (properties.isEmpty()) {
         continue;
       }
 
-      builder.append("<h3>Defined in <code class=\"type\">");
+      SoyListData props = new SoyListData();
+      SoyListData methods = new SoyListData();
+      SoyMapData propertySet = new SoyMapData(
+          "name", typeDescriptor.getFullName(),
+          "methods", methods,
+          "properties", props);
+      prototypes.add(propertySet);
       if (typeDescriptor != descriptor) {
-        builder.append("<a href=\"")
-            .append(resolver.getLink(typeDescriptor.getFullName()))
-            .append("\">");
+        propertySet.put("href", resolver.getLink(typeDescriptor.getFullName()));
       }
-      builder.append(typeDescriptor.getFullName());
-      if (typeDescriptor != descriptor) {
-        builder.append("</a>");
-      }
-      builder.append("</code></h3>\n");
 
       for (Descriptor property : properties) {
-        builder.append("<details><summary>\n")
-            .append("<div>").append(getSourceLink(property))
-            .append("<a class=\"member");
-        if (property.isDeprecated()) {
-          builder.append(" deprecation-notice");
+        if (isProperty(property)) {
+          prototypeData.put("hasProperties", true);
+          props.add(getPropertyData(property, false));
+        } else if (isFunction(property)) {
+          prototypeData.put("hasMethods", true);
+          methods.add(getFunctionData(property, false));
         }
-        builder.append(String.format("\" name=\"%s$%s\">%s</a>",
-            typeDescriptor.getFullName(), property.getName(), property.getName()));
-
-        JSDocInfo info = property.getInfo();
-        if (info != null && info.getType() != null) {
-          String typeStr = CommentUtil.formatTypeExpression(info.getType(), resolver);
-          builder.append(" : <code class=\"type\">" + typeStr + "</code>");
-        } else if (property.getType() != null) {
-          Descriptor propertyTypeDescriptor =
-              docRegistry.getType(property.getType().toString());
-          if (propertyTypeDescriptor == null) {
-            propertyTypeDescriptor = docRegistry.getType(property.getType().toString());
-          }
-
-          if (propertyTypeDescriptor == null) {
-            builder.append(" : <code class=\"type\">" + property.getType() + "</code>");
-          } else {
-            builder.append(String.format(" : <code class=\"type\"><a href=\"%s\">%s</a></code>",
-                resolver.getLink(propertyTypeDescriptor.getFullName()),
-                propertyTypeDescriptor.getFullName()));
-          }
-        }
-        builder.append("</div>\n");
-
-        builder.append(printDeprecation(property));
-
-        if (info != null) {
-          builder.append(CommentUtil.getBlockDescription(resolver, info));
-        }
-        builder.append("</summary></details>");
       }
-      builder.append("\n");
     }
-
-    if (builder.length() > 0) {
-      stream.println();
-      stream.println();
-      stream.println("<section>");
-      stream.println("<h2>Instance Properties</h2>");
-      stream.println(builder);
-      stream.println("</section>");
-    }
+    return prototypeData;
   }
 
-  private void printFunctions(PrintStream stream, Descriptor descriptor) {
-    List<Descriptor> functions = FluentIterable.from(descriptor.getProperties())
-        .filter(isFunction())
+  private SoyMapData getPropertyData(Descriptor property, boolean useFullName) {
+    SoyMapData data = new SoyMapData(
+        "fullName", property.getFullName(),
+        "name", property.getName(),
+        "href", resolver.getSourcePath(property),
+        "frag", useFullName ? property.getFullName() : property.getFullName()
+            .replace("." + property.getName(), "$" + property.getName()));
+
+    if (property.isDeprecated()) {
+      data.put("isDeprecated", true);
+      data.put("deprecationHtml", CommentUtil.formatCommentText(
+          resolver, property.getDeprecationReason()));
+    }
+
+    JSDocInfo info = property.getInfo();
+    if (info != null) {
+      data.put("descriptionHtml", CommentUtil.getBlockDescription(resolver, info));
+      if (info.getType() != null) {
+        data.put("typeHtml", CommentUtil.formatTypeExpression(info.getType(), resolver));
+      }
+    } else if (property.getType() != null) {
+      Descriptor propertyTypeDescriptor =
+          docRegistry.getType(property.getType().toString());
+      if (propertyTypeDescriptor == null) {
+        propertyTypeDescriptor = docRegistry.getType(property.getType().toString());
+      }
+
+      if (propertyTypeDescriptor != null) {
+        data.put("typeHtml", String.format("<a href=\"%s\">%s</a>",
+            resolver.getLink(propertyTypeDescriptor.getFullName()),
+            propertyTypeDescriptor.getFullName()));
+      } else {
+        data.put("typeHtml", property.getType().toString());
+      }
+    }
+
+    return data;
+  }
+
+  private SoyMapData getStaticData(Descriptor descriptor) {
+    SoyListData functions = new SoyListData();
+    SoyListData properties = new SoyListData();
+
+    List<Descriptor> props = FluentIterable.from(descriptor.getProperties())
         .toSortedList(DescriptorNameComparator.INSTANCE);
-    if (functions.isEmpty()) {
-      return;
+    for (Descriptor property : props) {
+      if (isProperty(property)) {
+        properties.add(getPropertyData(property, true));
+      } else if (isFunction(property)) {
+        functions.add(getFunctionData(property, true));
+      }
     }
-
-    String header = "Global Functions";
-    if (descriptor.isConstructor() || descriptor.isInterface()) {
-      header = "Static Functions";
-    }
-
-    stream.println();
-    stream.println();
-    stream.println("<section>");
-    stream.println("<h2>" + header + "</h2>");
-    for (Descriptor function : functions) {
-      List<ArgDescriptor> args = function.getArgs();
-
-      stream.println("<details class=\"function\"><summary>");
-      stream.print("<div>" + getSourceLink(function));
-      JSDocInfo info = function.getInfo();
-      if (info != null) {
-        ImmutableList<String> templateNames = info.getTemplateTypeNames();
-        if (!templateNames.isEmpty()) {
-          stream.print("<code class=\"type\">&lt;");
-          stream.print(Joiner.on(", ").join(templateNames));
-          stream.print("&gt;</code> ");
-        }
-      }
-      stream.print("<a class=\"member");
-      if (function.isDeprecated()) {
-        stream.print(" deprecation-notice");
-      }
-      stream.printf("\" name=\"%s\">%s</a>", function.getFullName(), function.getFullName());
-      stream.print(" <span class=\"args\">(");
-      stream.print(Joiner.on(", ").join(transform(args, new Function<ArgDescriptor, String>() {
-        @Override
-        public String apply(ArgDescriptor input) {
-          return input.getName();
-        }
-      })));
-      stream.print(")</span>");
-
-      String returnType = getReturnType(function);
-      if (returnType == null || "undefined".equals(returnType) || "?".equals(returnType)) {
-        returnType = "";
-      }
-      if (!returnType.isEmpty()) {
-        stream.print(" &rArr; <code class=\"type\">" + returnType + "</code>");
-      }
-      stream.println("</div>");
-
-      stream.println(printDeprecation(function));
-
-      if (info != null) {
-        String comment = CommentUtil.getBlockDescription(resolver, info);
-        if (!comment.isEmpty()) {
-          stream.println(comment);
-        }
-      }
-      stream.println("</summary>");
-
-      StringBuilder details = new StringBuilder()
-          .append(printArgs(args, false))
-          .append(printReturns(function))
-          .append(printThrows(function));
-      if (details.length() > 0) {
-        stream.println("<div class=\"info\"><table><tbody>\n");
-        stream.println(details);
-        stream.println("</table></div>");
-      }
-      stream.println("</details>");
-    }
-    stream.println("</section>");
+    return new SoyMapData(
+        "functions", functions,
+        "properties", properties);
   }
 
-  private CharSequence printDeprecation(Descriptor descriptor) {
-    if (!descriptor.isDeprecated()) {
-      return "";
-    }
-    return formatDeprecationNotice(descriptor.getDeprecationReason());
+  private SoyMapData buildFunctionDetail(
+      @Nullable String name, @Nullable String typeHtml, @Nullable String rawText) {
+    return new SoyMapData(
+        "name", name,
+        "typeHtml", typeHtml,
+        "descriptionHtml", CommentUtil.formatCommentText(resolver, rawText));
   }
 
-  private CharSequence formatDeprecationNotice(String reason) {
-    String text = CommentUtil.formatCommentText(resolver, reason);
-    if (!text.isEmpty()) {
-      text = "<div class=\"deprecation-notice\">Deprecated: " +
-          "<span class=\"deprecation-reason\">" + text + "</span></div>";
-    }
-    return text;
-  }
-
-  private CharSequence printThrows(Descriptor function) {
-    StringBuilder builder = new StringBuilder();
-    JSDocInfo info = function.getInfo();
-    if (info == null) {
-      return builder;
-    }
-
+  private SoyListData buildThrowsData(JSDocInfo info) {
+    SoyListData throwsData = new SoyListData();
     // Manually scan the function markers so we can associated thrown types with the
     // document description for why that type would be thrown.
     for (JSDocInfo.Marker marker : info.getMarkers()) {
-      if ("throws".equals(marker.getAnnotation().getItem())) {
-        if (marker.getType() != null) {
-          JSTypeExpression expr = new JSTypeExpression(
-              marker.getType().getItem(), info.getSourceName());
-          builder.append("<dt><code class=\"type\">")
-              .append(CommentUtil.formatTypeExpression(expr, resolver))
-              .append("</code>\n");
-        } else {
-          builder.append("<dt><code class=\"type\">?</code>\n");
-        }
-
-        if (marker.getDescription() != null) {
-          String desc = marker.getDescription().getItem();
-          builder.append("<dd>")
-              .append(CommentUtil.formatCommentText(resolver, desc))
-              .append("\n");
-        }
+      if (!"throws".equals(marker.getAnnotation().getItem())) {
+        continue;
       }
-    }
 
-    if (builder.length() > 0) {
-      builder = new StringBuilder("<tr><th>Throws\n<tr><td>\n<dl>\n")
-          .append(builder);
+      @Nullable String thrownType = null;
+      @Nullable String thrownDescription = null;
+      if (marker.getType() != null) {
+        JSTypeExpression expr = new JSTypeExpression(
+            marker.getType().getItem(), info.getSourceName());
+        thrownType = CommentUtil.formatTypeExpression(expr, resolver);
+      }
+
+      if (marker.getDescription() != null) {
+        thrownDescription = marker.getDescription().getItem();
+      }
+
+      throwsData.add(buildFunctionDetail(null, thrownType, thrownDescription));
     }
-    return builder;
+    return throwsData;
   }
 
-  private CharSequence printReturns(Descriptor function) {
-    StringBuilder builder = new StringBuilder();
+  private SoyMapData getFunctionData(Descriptor function, boolean useFullName) {
+    SoyMapData data = new SoyMapData(
+        "fullName", function.getFullName(),
+        "name", function.getName(),
+        "href", resolver.getSourcePath(function),
+        "frag", useFullName ? function.getFullName()
+            : function.getFullName().replace(
+                "." + function.getName(),
+                "$" + function.getName()));
+
     JSDocInfo info = function.getInfo();
-    String desc = null;
+
+    if (!function.isConstructor()) {
+      data.put("returns", buildFunctionDetail(null,
+          getReturnType(function),
+          info == null ? null : info.getReturnDescription()));
+    }
+
     if (info != null) {
-      desc = CommentUtil.formatCommentText(resolver, info.getReturnDescription());
+      data.put("descriptionHtml", CommentUtil.getBlockDescription(resolver, info));
+      data.put("throws", buildThrowsData(info));
     }
 
-    if (Strings.isNullOrEmpty(desc)) {
-      return builder;
+    if (function.isDeprecated()) {
+      data.put("isDeprecated", true);
+      data.put("deprecationHtml", CommentUtil.formatCommentText(
+          resolver, function.getDeprecationReason()));
     }
-    return builder.append("<tr><th>Returns\n<tr><td>\n<dl><dd>").append(desc).append("</dl>");
-  }
 
-  private CharSequence printArgs(List<ArgDescriptor> args, boolean defaultToNone) {
-    StringBuilder builder = new StringBuilder();
-    if (args.isEmpty() && !defaultToNone) {
-      return builder;
-    }
-    builder.append("<tr><th>Parameters\n")
-        .append("<tr><td>\n")
-        .append("<dl>\n");
-    if (args.isEmpty() && defaultToNone) {
-      builder.append("<dd>None</dd>\n");
-    } else {
-      for (ArgDescriptor arg : args) {
-        builder.append("<dt>").append(arg.getName());
-        if (arg.getType() != null) {
-          String type = CommentUtil.formatTypeExpression(arg.getType(), resolver);
-          builder.append(": <code class=\"type\">")
-              .append(type)
-              .append("</code>");
-        }
-        builder.append("\n");
-        if (!arg.getDescription().isEmpty()) {
-          builder.append("<dd>").append(arg.getDescription());
-        }
+    data.put("args", transform(function.getArgs(), new Function<ArgDescriptor, SoyMapData>() {
+      @Override
+      public SoyMapData apply(ArgDescriptor arg) {
+        return buildFunctionDetail(
+            arg.getName(),
+            arg.getType() == null ? null
+                : CommentUtil.formatTypeExpression(arg.getType(), resolver),
+            arg.getDescription());
       }
-      builder.append("</dl>");
-    }
-    return builder;
+    }));
+
+    return data;
   }
 
   @Nullable
@@ -833,75 +568,6 @@ class HtmlDocWriter implements DocWriter {
     }
     JSType type = ((FunctionType) function.toObjectType()).getReturnType();
     return type == null ? null : type.toString();
-  }
-
-  private void printProperties(PrintStream stream, Descriptor descriptor) {
-    List<Descriptor> properties = FluentIterable.from(descriptor.getProperties())
-        .filter(isProperty())
-        .toSortedList(DescriptorNameComparator.INSTANCE);
-    if (properties.isEmpty()) {
-      return;
-    }
-
-    String header = "Global Properties";
-    if (descriptor.isConstructor() || descriptor.isInterface()) {
-      header = "Static Properties";
-    }
-
-    stream.println();
-    stream.println();
-    stream.println("<section>");
-    stream.println("<h2>" + header + "</h2>");
-    for (Descriptor property : properties) {
-      stream.println("<details><summary>");
-      stream.print("<div>" + getSourceLink(property));
-      stream.print("<a class=\"member");
-      if (property.isDeprecated()) {
-        stream.print(" deprecation-notice");
-      }
-      stream.printf("\" name=\"%s\">%s</a>", property.getFullName(), property.getFullName());
-
-      JSDocInfo info = property.getInfo();
-      if (info != null && info.getType() != null) {
-        String typeStr = CommentUtil.formatTypeExpression(info.getType(), resolver);
-        stream.print(" : <code class=\"type\">" + typeStr + "</code>");
-      } else if (property.getType() != null) {
-        Descriptor propertyTypeDescriptor =
-            docRegistry.getType(property.getType().toString());
-        if (propertyTypeDescriptor == null) {
-          propertyTypeDescriptor = docRegistry.getType(property.getType().toString());
-        }
-
-        if (propertyTypeDescriptor == null) {
-          stream.print(" : <code class=\"type\">" + property.getType() + "</code>");
-        } else {
-          stream.printf(" : <code class=\"type\"><a href=\"%s\">%s</a></code>",
-              resolver.getLink(propertyTypeDescriptor.getFullName()),
-              propertyTypeDescriptor.getFullName());
-        }
-      }
-      stream.println("</div>");
-
-      stream.println(printDeprecation(property));
-
-      if (info != null) {
-        stream.println(CommentUtil.getBlockDescription(resolver, info));
-      }
-      stream.println("</summary></details>");
-    }
-    stream.println("</section>");
-  }
-
-  private String getTitlePrefix(Descriptor descriptor) {
-    if (descriptor.isInterface()) {
-      return "interface";
-    } else if (descriptor.isConstructor()) {
-      return "class";
-    } else if (descriptor.isEnum()) {
-      return "enum";
-    } else {
-      return "namespace";
-    }
   }
 
   private static Predicate<Descriptor> isTypedef() {
@@ -940,13 +606,10 @@ class HtmlDocWriter implements DocWriter {
     };
   }
 
-  private static Predicate<Descriptor> isFunction() {
-    return new Predicate<Descriptor>() {
-      @Override
-      public boolean apply(Descriptor input) {
-        return input.isFunction() && !input.isConstructor() && !input.isInterface();
-      }
-    };
+  private boolean isFunction(Descriptor descriptor) {
+    return descriptor.isFunction()
+        && !descriptor.isConstructor()
+        && !descriptor.isInterface();
   }
 
   private static Predicate<Descriptor> notOwnPropertyOf(final Iterable<Descriptor> descriptors) {
@@ -963,26 +626,21 @@ class HtmlDocWriter implements DocWriter {
     };
   }
 
-  private Predicate<Descriptor> isProperty() {
-    return new Predicate<Descriptor>() {
-      @Override
-      public boolean apply(Descriptor input) {
-        if (docRegistry.isKnownType(input.getFullName())) {
-          return false;
-        }
+  private boolean isProperty(Descriptor descriptor) {
+    if (docRegistry.isKnownType(descriptor.getFullName())) {
+      return false;
+    }
 
-        JSType type = input.getType();
-        if (type == null) {
-          return true;
-        }
-        return !type.isFunctionPrototypeType()
-            && !type.isEnumType()
-            && !type.isEnumElementType()
-            && !type.isFunctionType()
-            && !type.isConstructor()
-            && !type.isInterface();
-      }
-    };
+    JSType type = descriptor.getType();
+    if (type == null) {
+      return true;
+    }
+    return !type.isFunctionPrototypeType()
+        && !type.isEnumType()
+        && !type.isEnumElementType()
+        && !type.isFunctionType()
+        && !type.isConstructor()
+        && !type.isInterface();
   }
 
   private static enum DescriptorNameComparator implements Comparator<Descriptor> {
@@ -991,6 +649,15 @@ class HtmlDocWriter implements DocWriter {
     @Override
     public int compare(Descriptor a, Descriptor b) {
       return a.getFullName().compareTo(b.getFullName());
+    }
+  }
+
+  private static enum PathComparator implements Comparator<Path> {
+    INSTANCE;
+
+    @Override
+    public int compare(Path o1, Path o2) {
+      return o1.toString().compareTo(o2.toString());
     }
   }
 }

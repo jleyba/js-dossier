@@ -17,6 +17,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.collect.Iterables.transform;
 import static com.google.common.collect.Sets.intersection;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
@@ -95,6 +96,13 @@ class Config {
    */
   Path getOutput() {
     return output;
+  }
+
+  /**
+   * Returns the path to the base directory to copy source files to.
+   */
+  Path getSourceOutput() {
+    return output.resolve("source");
   }
 
   /**

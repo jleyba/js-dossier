@@ -7,6 +7,7 @@ import static com.google.common.collect.Lists.newArrayList;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
 
@@ -27,6 +28,21 @@ import java.util.List;
  */
 class Paths {
   private Paths() {}
+
+  /**
+   * Computes the relative path {@code from} one path {@code to} another. The
+   * origin path is assumed to be a file.
+   */
+  static Path getRelativePath(Path from, Path to) {
+    from = from.toAbsolutePath().getParent();
+    to = to.toAbsolutePath();
+
+    Path root = getCommonPrefix(ImmutableSet.<Path>of(from, to));
+    Path pathToRoot = from.relativize(root);
+    Path pathFromRoot = root.relativize(to);
+
+    return pathToRoot.resolve(pathFromRoot).normalize();
+  }
 
   /**
    * Returns the {@link Path} that represents the longest common prefix for the provided
