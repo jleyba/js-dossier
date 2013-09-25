@@ -153,28 +153,4 @@ class LinkResolver {
     }
     return null;
   }
-
-  @Nullable
-  String getSourcePath(Descriptor descriptor) {
-    String strPath = descriptor.getSource();
-    if (strPath == null) {
-      return null;
-    }
-    Iterator<Path> parts = outputDir.getFileSystem().getPath(strPath).iterator();
-    Path output = outputDir.getFileSystem().getPath("source");
-    while (parts.hasNext()) {
-      Path part = parts.next();
-      if (!part.toString().equals(".") && !part.toString().equals("..")) {
-        output = output.resolve(part);
-      }
-    }
-    output = output.resolveSibling(output.getFileName() + ".src.html");
-
-    String relPath = output.toString();
-    int lineNum = descriptor.getLineNum();
-    if (lineNum > 1) {
-      relPath += "#l" + (lineNum - 1);
-    }
-    return relPath;
-  }
 }

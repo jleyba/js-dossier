@@ -106,7 +106,7 @@ class HtmlDocWriter implements DocWriter {
         "isClass", descriptor.isConstructor(),
         "isInterface", descriptor.isInterface(),
         "isEnum", descriptor.isEnum(),
-        "sourceLink", resolver.getSourcePath(descriptor),
+        "sourceLink", getSourcePath(descriptor),
         "descriptionHtml", CommentUtil.getBlockDescription(resolver, descriptor.getInfo()),
         "typedefs", getTypeDefs(descriptor),
         "nested", new SoyMapData(
@@ -210,8 +210,7 @@ class HtmlDocWriter implements DocWriter {
       if (Files.exists(outputPath)) {
         Files.delete(outputPath);
       }
-      Files.write(outputPath, content.getBytes(Charsets.UTF_8),
-          StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE);
+      Files.write(outputPath, content.getBytes(Charsets.UTF_8));
     } catch (JSONException e) {
       throw new IOException(e);
     }
@@ -224,24 +223,40 @@ class HtmlDocWriter implements DocWriter {
    *     should be relative to.
    */
   private SoyMapData buildSideNavData(Path path) {
-    Path fileDir = config.getSourceOutput();
-    Path relativePath = getPathToOutputDir(path);
-
     SideNavData data = new SideNavData();
     for (Path source : sortedFiles) {
       Path displayPath = config.getSrcPrefix().relativize(source);
-      Path sourcePath = fileDir.resolve(displayPath.toString() + ".src.html");
-      Path pathToSource = relativePath.resolve(sourcePath).normalize();
+      Path sourcePath = config.getSourceOutput().resolve(displayPath.toString() + ".src.html");
+      Path pathToSource = Paths.getRelativePath(path, sourcePath);
       data.addFile(displayPath.toString(), pathToSource);
     }
 
     for (Descriptor type : sortedTypes) {
       Path typePath = resolver.getFilePath(type);
-      Path pathToType = relativePath.resolve(typePath).normalize();
+      Path pathToType = Paths.getRelativePath(path, typePath);
       data.addType(type.getFullName(), pathToType, type.isInterface());
     }
 
     return data.toSoy();
+  }
+
+  @Nullable
+  private String getSourcePath(Descriptor descriptor) {
+    String strPath = descriptor.getSource();
+    if (strPath == null) {
+      return null;
+    }
+    Path path = config.getOutput().getFileSystem().getPath(strPath).toAbsolutePath().normalize();
+    path = config.getSrcPrefix().relativize(path);
+    path = config.getSourceOutput().resolve(path);
+    path = path.resolveSibling(path.getFileName() + ".src.html");
+    path = config.getOutput().relativize(path);
+
+    int lineNum = descriptor.getLineNum();
+    if (lineNum > 1) {
+      return path + "#l" + (lineNum - 1);
+    }
+    return path.toString();
   }
 
   private Path getPathToOutputDir(Path from) {
@@ -340,7 +355,7 @@ class HtmlDocWriter implements DocWriter {
       SoyMapData typedefData = new SoyMapData(
           "name", typedef.getFullName(),
           "typeHtml", CommentUtil.formatTypeExpression(info.getTypedefType(), resolver),
-          "href", resolver.getSourcePath(typedef),
+          "href", getSourcePath(typedef),
           "descriptionHtml", CommentUtil.getBlockDescription(resolver, info));
       typedefList.add(typedefData);
 
@@ -427,7 +442,7 @@ class HtmlDocWriter implements DocWriter {
     SoyMapData data = new SoyMapData(
         "fullName", property.getFullName(),
         "name", property.getName(),
-        "href", resolver.getSourcePath(property),
+        "href", getSourcePath(property),
         "frag", useFullName ? property.getFullName() : property.getFullName()
             .replace("." + property.getName(), "$" + property.getName()));
 
@@ -518,7 +533,7 @@ class HtmlDocWriter implements DocWriter {
     SoyMapData data = new SoyMapData(
         "fullName", function.getFullName(),
         "name", function.getName(),
-        "href", resolver.getSourcePath(function),
+        "href", getSourcePath(function),
         "frag", useFullName ? function.getFullName()
             : function.getFullName().replace(
                 "." + function.getName(),
