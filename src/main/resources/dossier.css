@@ -71,6 +71,7 @@ h1 {
   border-bottom: 1px solid #a8a8a8;
   margin-bottom: 1rem;
   padding-bottom: .75rem;
+  font-size: 2.5rem;
 }
 a.source { float: right; }
 header + * { clear: right; }
@@ -86,7 +87,6 @@ dd + dt { margin-top: .5rem; }
 }
 .member {
   font-weight: bold;
-  font-size: 1.5rem;
 }
 .member.enum { font-size: 1em; }
 .member.deprecation-notice {
@@ -172,7 +172,6 @@ details {
   border-left: 1px solid #a8a8a8;
 }
 details + details { margin-top: .5rem; }
-details + h3 { margin-top: 1rem; }
 details > summary {
   margin-top: .5rem;
   margin-left: 1.5rem;
@@ -193,13 +192,15 @@ header div.deprecation-notice {
   margin-top: 1rem;
 }
 h2 {
+  font-size: 2rem;
   margin-top: 1.25rem;
   margin-bottom: .25rem;
 }
 section > h3 {
-  margin: .25rem 0;
-  font-size: 1.2rem;
+  margin: 1rem 0 .5rem;
+  font-size: 1.5rem;
 }
+section + section { margin-top: 3rem; }
 section > .type-summary {
   border-top: 1px solid #a8a8a8;
   border-left: 1px solid #a8a8a8;

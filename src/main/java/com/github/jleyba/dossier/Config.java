@@ -17,7 +17,6 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.collect.Iterables.transform;
 import static com.google.common.collect.Sets.intersection;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
@@ -37,6 +36,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.List;
+import java.util.regex.Pattern;
+
+import javax.annotation.Nullable;
 
 /**
  * Describes the runtime configuration for the app.
@@ -111,11 +113,16 @@ class Config {
   static Config load(Flags flags) throws IOException {
     Iterable<Path> filteredRawSources = FluentIterable.from(flags.srcs)
         .filter(excluded(flags.excludes));
+
+    Predicate<Path> regexFilter = excludePatterns(flags.filter);
+
     ImmutableSet.Builder<Path> srcBuilder = ImmutableSet.builder();
     for (Path source : filteredRawSources) {
       if (Files.isDirectory(source)) {
-        srcBuilder.addAll(Paths.expandDir(source, unhiddenJsFiles()));
-      } else {
+        srcBuilder.addAll(
+            FluentIterable.from(Paths.expandDir(source, unhiddenJsFiles()))
+                .filter(regexFilter));
+      } else if (regexFilter.apply(source)) {
         srcBuilder.add(source);
       }
     }
@@ -204,6 +211,20 @@ class Config {
       @Override
       public SourceFile apply(Path input) {
         return SourceFile.fromFile(input.toAbsolutePath().toFile());
+      }
+    };
+  }
+
+  private static Predicate<Path> excludePatterns(final List<Pattern> exclusionPatterns) {
+    return new Predicate<Path>() {
+      @Override
+      public boolean apply(Path input) {
+        for (Pattern pattern : exclusionPatterns) {
+          if (pattern.matcher(input.toString()).matches()) {
+            return false;
+          }
+        }
+        return true;
       }
     };
   }

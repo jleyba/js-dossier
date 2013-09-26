@@ -74,6 +74,14 @@ class Flags {
   List<Path> excludes = new LinkedList<>();
 
   @Option(
+      name = "--filter", aliases = "-f",
+      handler = PatternHandler.class,
+      usage = "Defines an exclusive regular expression to apply to the input sources; those " +
+          "sources matching this expression will be excluded from processing. More than one " +
+          "filter may be defined.")
+  List<Pattern> filter = new LinkedList<>();
+
+  @Option(
       name = "--extern", aliases = "-e",
       handler = SimplePathHandler.class,
       usage = "Defines an externs file to pass to the Closure compiler.")
@@ -142,6 +150,25 @@ class Flags {
         .getPath(path)
         .toAbsolutePath()
         .normalize();
+  }
+
+  public static class PatternHandler extends OptionHandler<Pattern> {
+
+    public PatternHandler(
+        CmdLineParser parser, OptionDef option, Setter<? super Pattern> setter) {
+      super(parser, option, setter);
+    }
+
+    @Override
+    public int parseArguments(Parameters params) throws CmdLineException {
+      setter.addValue(Pattern.compile(params.getParameter(0)));
+      return 1;
+    }
+
+    @Override
+    public String getDefaultMetaVariable() {
+      return "REGEX";
+    }
   }
 
   public static class OutputDirPathHandler extends OptionHandler<Path> {

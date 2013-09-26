@@ -332,7 +332,7 @@
  * @param details A list of dossier.soy.FunctionDetail objects.
  */
 {template .typeDetails}
-  {if length($details) > 0}
+  {if $details and length($details) > 0}
     <tr><th>{$header}
     <tr><td><dl>
       {foreach $detail in $details}
@@ -359,8 +359,8 @@
  */
 {template .fnDetails}
   // Only generate the table if there is data to actually display.
-  {if length($fn.args) > 0
-      or length($fn.throws) > 0
+  {if ($fn.args and length($fn.args) > 0)
+      or ($fn.throws and length($fn.throws) > 0)
       or ($fn.returns and $fn.returns.descriptionHtml)}
     <div class="info">
       <table><tbody>

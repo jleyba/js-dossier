@@ -58,7 +58,11 @@ class CommentUtil {
   /**
    * Extracts the block comment string from the given {@link JSDocInfo} object.
    */
-  static String getBlockDescription(LinkResolver resolver, JSDocInfo info) {
+  static String getBlockDescription(LinkResolver resolver, @Nullable JSDocInfo info) {
+    if (info == null) {
+      return "";
+    }
+
     // The Closure compiler trims whitespace from each line of the block comment string, which
     // ruins formatting on <pre> blocks, so we have to do a quick and dirty re-parse.
     String comment = Strings.nullToEmpty(info.getOriginalCommentString());
