@@ -20,6 +20,7 @@ import com.google.common.base.Charsets;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Ordering;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.JSTypeExpression;
@@ -550,6 +551,7 @@ class HtmlDocWriter implements DocWriter {
     if (info != null) {
       data.put("descriptionHtml", CommentUtil.getBlockDescription(resolver, info));
       data.put("throws", buildThrowsData(info));
+      data.put("templateNames", info.getTemplateTypeNames());
     }
 
     if (function.isDeprecated()) {
