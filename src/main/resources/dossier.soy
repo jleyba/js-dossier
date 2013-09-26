@@ -183,13 +183,18 @@
   <header>
     <h1>
       {if $descriptor.isClass}
-        class {$descriptor.name}
+        Class {$descriptor.name}
       {elseif $descriptor.isInterface}
-        interface {$descriptor.name}
+        Interface {$descriptor.name}
       {elseif $descriptor.isEnum}
-        enum {$descriptor.name}
+        Enum {$descriptor.name}
       {else}
-        namespace {$descriptor.name}
+        Namespace {$descriptor.name}
+      {/if}
+      {if $descriptor.templateNames and length($descriptor.templateNames)}
+        .{call .printTemplateNames}
+          {param names: $descriptor.templateNames /}
+        {/call}
       {/if}
       {if $descriptor.isDeprecated}
         <span class="deprecation-notice"> (deprecated)</span>
@@ -377,17 +382,30 @@
 
 
 /**
+ * Prints a list of template type names: {@literal <A, B, C>}.
+ *
+ * @param names The list of template type names.
+ */
+{template .printTemplateNames}
+  <code class="type">&lt;
+  {foreach $name in $names}
+    {$name}
+    {if not isLast($name)},{sp}{/if}
+  {/foreach}
+  &gt;</code>
+{/template}
+
+
+/**
  * Generates the HTML for a member signature (function or property).
  * @param member The member descriptor.
  */
 {template .memberSignature}
   {if $member.templateNames and length($member.templateNames)}
-    <code class="type">&lt;
-    {foreach $name in $member.templateNames}
-      {$name}
-      {if not isLast($name)},{sp}{/if}
-    {/foreach}
-    &gt;{sp}</code>
+    {call .printTemplateNames}
+      {param names: $member.templateNames /}
+    {/call}
+    {sp}
   {/if}
 
   {let $frag: $member.frag ? 'name="' + $member.frag + '"' : '' /}

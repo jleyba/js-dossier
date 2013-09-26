@@ -42,6 +42,7 @@ a { text-decoration: none; }
 a[href] { color: #66f; }
 a[href]:hover { text-decoration: underline; }
 code { font-size: 1.2rem; }
+h1 code { font-size: 1.85rem; }
 code.type,
 code.type a[href] {
   font-weight: normal;

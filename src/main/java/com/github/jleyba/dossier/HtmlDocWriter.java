@@ -149,6 +149,13 @@ class HtmlDocWriter implements DocWriter {
       desc.put("ctor", getFunctionData(descriptor, true));
     }
 
+    if (descriptor.isConstructor() || descriptor.isInterface()) {
+      JSDocInfo info = descriptor.getInfo();
+      if (info != null) {
+        desc.put("templateNames", info.getTemplateTypeNames());
+      }
+    }
+
     if (descriptor.isEnum()) {
       desc.put("enumValues", getEnumData(descriptor));
     }
@@ -551,7 +558,9 @@ class HtmlDocWriter implements DocWriter {
     if (info != null) {
       data.put("descriptionHtml", CommentUtil.getBlockDescription(resolver, info));
       data.put("throws", buildThrowsData(info));
-      data.put("templateNames", info.getTemplateTypeNames());
+      if (!function.isConstructor()) {
+        data.put("templateNames", info.getTemplateTypeNames());
+      }
     }
 
     if (function.isDeprecated()) {
