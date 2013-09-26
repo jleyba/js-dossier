@@ -23,10 +23,10 @@ goog.provide('goog.labs.net.webChannel.BaseTestChannel');
 goog.require('goog.json.EvalJsonProcessor');
 goog.require('goog.labs.net.webChannel.Channel');
 goog.require('goog.labs.net.webChannel.ChannelRequest');
+goog.require('goog.labs.net.webChannel.netUtils');
 goog.require('goog.labs.net.webChannel.requestStats');
 goog.require('goog.labs.net.webChannel.requestStats.ServerReachability');
 goog.require('goog.labs.net.webChannel.requestStats.Stat');
-goog.require('goog.net.tmpnetwork');
 
 
 
@@ -307,7 +307,8 @@ BaseTestChannel.prototype.checkBlocked_ = function() {
   var uri = this.channel_.createDataUri(this.blockedPrefix_,
       '/mail/images/cleardot.gif');
   uri.makeUnique();
-  goog.net.tmpnetwork.testLoadImageWithRetries(uri.toString(),
+  goog.labs.net.webChannel.netUtils.testLoadImageWithRetries(
+      uri.toString(),
       BaseTestChannel.BLOCKED_TIMEOUT_,
       goog.bind(this.checkBlockedCallback_, this),
       BaseTestChannel.BLOCKED_RETRIES_,

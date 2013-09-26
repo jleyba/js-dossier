@@ -31,11 +31,11 @@ goog.require('goog.labs.net.webChannel.Channel');
 goog.require('goog.labs.net.webChannel.ChannelRequest');
 goog.require('goog.labs.net.webChannel.ForwardChannelRequestPool');
 goog.require('goog.labs.net.webChannel.WebChannelDebug');
+goog.require('goog.labs.net.webChannel.netUtils');
 goog.require('goog.labs.net.webChannel.requestStats');
 goog.require('goog.labs.net.webChannel.requestStats.Stat');
 goog.require('goog.log');
 goog.require('goog.net.XhrIo');
-goog.require('goog.net.tmpnetwork');
 goog.require('goog.string');
 goog.require('goog.structs');
 goog.require('goog.structs.CircularBuffer');
@@ -543,7 +543,6 @@ WebChannelBase.prototype.getChannelDebug = function() {
 
 /**
  * Sets the logger.
- * TODO(user): Add interface for channel loggers or remove this function.
  *
  * @param {!WebChannelDebug} channelDebug The channel debug object.
  */
@@ -695,8 +694,7 @@ WebChannelBase.prototype.getExtraHeaders = function() {
  *
  * @param {Object} extraHeaders The HTTP headers, or null.
  */
-WebChannelBase.prototype.setExtraHeaders = function(
-    extraHeaders) {
+WebChannelBase.prototype.setExtraHeaders = function(extraHeaders) {
   this.extraHeaders_ = extraHeaders;
 };
 
@@ -1757,13 +1755,14 @@ WebChannelBase.prototype.signalError_ = function(error) {
   this.channelDebug_.info('Error code ' + error);
   if (error == WebChannelBase.Error.REQUEST_FAILED ||
       error == WebChannelBase.Error.BLOCKED) {
-    // Ping google to check if it's a server error or user's network error.
+    // Create a separate Internet connection to check
+    // if it's a server error or user's network error.
     var imageUri = null;
     if (this.handler_) {
       imageUri = this.handler_.getNetworkTestImageUri(this);
     }
-    goog.net.tmpnetwork.testGoogleCom(
-        goog.bind(this.testGoogleComCallback_, this), imageUri);
+    goog.labs.net.webChannel.netUtils.testNetwork(
+        goog.bind(this.testNetworkCallback_, this), imageUri);
   } else {
     requestStats.notifyStatEvent(requestStats.Stat.ERROR_OTHER);
   }
@@ -1772,11 +1771,11 @@ WebChannelBase.prototype.signalError_ = function(error) {
 
 
 /**
- * Callback for testGoogleCom during error handling.
+ * Callback for netUtils.testNetwork during error handling.
  * @param {boolean} networkUp Whether the network is up.
  * @private
  */
-WebChannelBase.prototype.testGoogleComCallback_ = function(networkUp) {
+WebChannelBase.prototype.testNetworkCallback_ = function(networkUp) {
   if (networkUp) {
     this.channelDebug_.info('Successfully pinged google.com');
     requestStats.notifyStatEvent(requestStats.Stat.ERROR_OTHER);

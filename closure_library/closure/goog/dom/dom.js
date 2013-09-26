@@ -154,7 +154,8 @@ goog.dom.getRequiredElementHelper_ = function(doc, id) {
   // To prevent users passing in Elements as is permitted in getElement().
   goog.asserts.assertString(id);
   var element = goog.dom.getElement(id);
-  goog.asserts.assert(element, 'No element found with id: ' + id);
+  element = goog.asserts.assertElement(element,
+      'No element found with id: ' + id);
   return element;
 };
 
@@ -598,9 +599,13 @@ goog.dom.getDocumentScrollElement = function() {
  * @private
  */
 goog.dom.getDocumentScrollElement_ = function(doc) {
-  // Safari (2 and 3) needs body.scrollLeft in both quirks mode and strict mode.
-  return !goog.userAgent.WEBKIT && goog.dom.isCss1CompatMode_(doc) ?
-      doc.documentElement : doc.body;
+  // WebKit needs body.scrollLeft in both quirks mode and strict mode. We also
+  // default to the documentElement if the document does not have a body (e.g.
+  // a SVG document).
+  if (!goog.userAgent.WEBKIT && goog.dom.isCss1CompatMode_(doc)) {
+    return doc.documentElement;
+  }
+  return doc.body || doc.documentElement;
 };
 
 
@@ -861,16 +866,6 @@ goog.dom.htmlToDocumentFragment_ = function(doc, htmlString) {
     }
     return fragment;
   }
-};
-
-
-/**
- * Returns the compatMode of the document.
- * @return {string} The result is either CSS1Compat or BackCompat.
- * @deprecated use goog.dom.isCss1CompatMode instead.
- */
-goog.dom.getCompatMode = function() {
-  return goog.dom.isCss1CompatMode() ? 'CSS1Compat' : 'BackCompat';
 };
 
 
@@ -2389,16 +2384,6 @@ goog.dom.DomHelper.prototype.createTable = function(rows, columns,
  */
 goog.dom.DomHelper.prototype.htmlToDocumentFragment = function(htmlString) {
   return goog.dom.htmlToDocumentFragment_(this.document_, htmlString);
-};
-
-
-/**
- * Returns the compatMode of the document.
- * @return {string} The result is either CSS1Compat or BackCompat.
- * @deprecated use goog.dom.DomHelper.prototype.isCss1CompatMode instead.
- */
-goog.dom.DomHelper.prototype.getCompatMode = function() {
-  return this.isCss1CompatMode() ? 'CSS1Compat' : 'BackCompat';
 };
 
 

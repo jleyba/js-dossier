@@ -31,9 +31,9 @@ goog.require('goog.labs.net.webChannel.ForwardChannelRequestPool');
 goog.require('goog.labs.net.webChannel.WebChannelBase');
 goog.require('goog.labs.net.webChannel.WebChannelBaseTransport');
 goog.require('goog.labs.net.webChannel.WebChannelDebug');
+goog.require('goog.labs.net.webChannel.netUtils');
 goog.require('goog.labs.net.webChannel.requestStats');
 goog.require('goog.labs.net.webChannel.requestStats.Stat');
-goog.require('goog.net.tmpnetwork');
 goog.require('goog.structs.Map');
 goog.require('goog.testing.MockClock');
 goog.require('goog.testing.PropertyReplacer');
@@ -83,15 +83,15 @@ function debugToWindow(message) {
 
 
 /**
- * Stubs goog.net.tmpnetwork to always time out. It maintains the
- * contract given by goog.net.tmpnetwork.testGoogleCom, but always
+ * Stubs goog.labs.net.webChannel.netUtils to always time out. It maintains the
+ * contract given by goog.labs.net.webChannel.netUtils.testNetwork, but always
  * times out (calling callback(false)).
  *
- * stubTmpnetwork should be called in tests that require it before
- * a call to testGoogleCom happens. It is reset at tearDown.
+ * stubNetUtils should be called in tests that require it before
+ * a call to testNetwork happens. It is reset at tearDown.
  */
-function stubTmpnetwork() {
-  stubs.set(goog.net.tmpnetwork, 'testLoadImage',
+function stubNetUtils() {
+  stubs.set(goog.labs.net.webChannel.netUtils, 'testLoadImage',
       function(url, timeout, callback) {
         goog.Timer.callOnce(goog.partial(callback, false), timeout);
       });
@@ -772,7 +772,7 @@ function testTimingEvent() {
  * reports an error, and prevents another request from firing.
  */
 function testSetFailFastWhileWaitingForRetry() {
-  stubTmpnetwork();
+  stubNetUtils();
 
   connect();
   setFailFastWhileWaitingForRetry();
@@ -780,7 +780,7 @@ function testSetFailFastWhileWaitingForRetry() {
 
 
 function testSetFailFastWhileWaitingForRetryWithSpdyEnabled() {
-  stubTmpnetwork();
+  stubNetUtils();
 
   connect(undefined, undefined, undefined, true);
   setFailFastWhileWaitingForRetry();
@@ -819,8 +819,8 @@ function setFailFastWhileWaitingForRetry() {
   // Simulate that timing out. We should get a network error in addition to the
   // initial failure.
   gotError = false;
-  mockClock.tick(goog.net.tmpnetwork.GOOGLECOM_TIMEOUT);
-  assertTrue('No error after tmpnetwork ping timed out.', gotError);
+  mockClock.tick(goog.labs.net.webChannel.netUtils.NETWORK_TIMEOUT);
+  assertTrue('No error after network ping timed out.', gotError);
 
   // Make sure no more retry timers are firing.
   mockClock.tick(ALL_DAY_MS);
@@ -836,7 +836,7 @@ function setFailFastWhileWaitingForRetry() {
  * reports an error, and prevents another request from firing.
  */
 function testSetFailFastWhileRetryXhrIsInFlight() {
-  stubTmpnetwork();
+  stubNetUtils();
 
   connect();
   setFailFastWhileRetryXhrIsInFlight();
@@ -844,7 +844,7 @@ function testSetFailFastWhileRetryXhrIsInFlight() {
 
 
 function testSetFailFastWhileRetryXhrIsInFlightWithSpdyEnabled() {
-  stubTmpnetwork();
+  stubNetUtils();
 
   connect(undefined, undefined, undefined, true);
   setFailFastWhileRetryXhrIsInFlight();
@@ -894,8 +894,8 @@ function setFailFastWhileRetryXhrIsInFlight() {
   // We get the error immediately before starting to ping google.com.
   // Simulate that timing out. We should get a network error in addition to the
   gotError = false;
-  mockClock.tick(goog.net.tmpnetwork.GOOGLECOM_TIMEOUT);
-  assertTrue('No error after tmpnetwork ping timed out.', gotError);
+  mockClock.tick(goog.labs.net.webChannel.netUtils.NETWORK_TIMEOUT);
+  assertTrue('No error after network ping timed out.', gotError);
 
   // Make sure no more retry timers are firing.
   mockClock.tick(ALL_DAY_MS);
@@ -910,7 +910,7 @@ function setFailFastWhileRetryXhrIsInFlight() {
  * Makes sure that setting fail fast while not retrying doesn't cause a failure.
  */
 function testSetFailFastAtRetryCount() {
-  stubTmpnetwork();
+  stubNetUtils();
 
   connect();
   assertEquals(1, numTimingEvents);
@@ -938,8 +938,8 @@ function testSetFailFastAtRetryCount() {
   // Simulate that timing out. We should get a network error in addition to the
   // initial failure.
   gotError = false;
-  mockClock.tick(goog.net.tmpnetwork.GOOGLECOM_TIMEOUT);
-  assertTrue('No error after tmpnetwork ping timed out.', gotError);
+  mockClock.tick(goog.labs.net.webChannel.netUtils.NETWORK_TIMEOUT);
+  assertTrue('No error after network ping timed out.', gotError);
 
   // Make sure no more retry timers are firing.
   mockClock.tick(ALL_DAY_MS);
@@ -951,7 +951,7 @@ function testSetFailFastAtRetryCount() {
 
 
 function testRequestFailedClosesChannel() {
-  stubTmpnetwork();
+  stubNetUtils();
 
   connect();
   requestFailedClosesChannel();
@@ -959,7 +959,7 @@ function testRequestFailedClosesChannel() {
 
 
 function testRequestFailedClosesChannelWithSpdyEnabled() {
-  stubTmpnetwork();
+  stubNetUtils();
 
   connect(undefined, undefined, undefined, true);
   requestFailedClosesChannel();
@@ -975,7 +975,7 @@ function requestFailedClosesChannel() {
   assertEquals('Should be closed immediately after request failed.',
       goog.labs.net.webChannel.WebChannelBase.State.CLOSED, channel.getState());
 
-  mockClock.tick(goog.net.tmpnetwork.GOOGLECOM_TIMEOUT);
+  mockClock.tick(goog.labs.net.webChannel.netUtils.NETWORK_TIMEOUT);
 
   assertEquals('Should remain closed after the ping timeout.',
       goog.labs.net.webChannel.WebChannelBase.State.CLOSED, channel.getState());
@@ -984,7 +984,7 @@ function requestFailedClosesChannel() {
 
 
 function testStatEventReportedOnlyOnce() {
-  stubTmpnetwork();
+  stubNetUtils();
 
   connect();
   sendMap('foo', 'bar');
@@ -997,13 +997,13 @@ function testStatEventReportedOnlyOnce() {
       lastStatEvent);
 
   numStatEvents = 0;
-  mockClock.tick(goog.net.tmpnetwork.GOOGLECOM_TIMEOUT);
+  mockClock.tick(goog.labs.net.webChannel.netUtils.NETWORK_TIMEOUT);
   assertEquals('No new stat events should be reported.', 0, numStatEvents);
 }
 
 
 function testActiveXBlockedEventReportedOnlyOnce() {
-  stubTmpnetwork();
+  stubNetUtils();
 
   connectForwardChannel();
   numStatEvents = 0;
@@ -1014,13 +1014,13 @@ function testActiveXBlockedEventReportedOnlyOnce() {
   assertEquals(goog.labs.net.webChannel.requestStats.Stat.ERROR_OTHER,
       lastStatEvent);
 
-  mockClock.tick(goog.net.tmpnetwork.GOOGLECOM_TIMEOUT);
+  mockClock.tick(goog.labs.net.webChannel.netUtils.NETWORK_TIMEOUT);
   assertEquals('No new stat events should be reported.', 1, numStatEvents);
 }
 
 
 function testStatEventReportedOnlyOnce_onNetworkUp() {
-  stubTmpnetwork();
+  stubNetUtils();
 
   connect();
   sendMap('foo', 'bar');
@@ -1032,7 +1032,7 @@ function testStatEventReportedOnlyOnce_onNetworkUp() {
       0, numStatEvents);
 
   // Let the ping time out.
-  mockClock.tick(goog.net.tmpnetwork.GOOGLECOM_TIMEOUT);
+  mockClock.tick(goog.labs.net.webChannel.netUtils.NETWORK_TIMEOUT);
 
   // Assert we report the correct stat event.
   assertEquals(1, numStatEvents);
@@ -1043,7 +1043,7 @@ function testStatEventReportedOnlyOnce_onNetworkUp() {
 
 
 function testStatEventReportedOnlyOnce_onNetworkDown() {
-  stubTmpnetwork();
+  stubNetUtils();
 
   connect();
   sendMap('foo', 'bar');
@@ -1055,8 +1055,8 @@ function testStatEventReportedOnlyOnce_onNetworkDown() {
       0, numStatEvents);
 
   // Wait half the ping timeout period, and then fake the network being up.
-  mockClock.tick(goog.net.tmpnetwork.GOOGLECOM_TIMEOUT / 2);
-  channel.testGoogleComCallback_(true);
+  mockClock.tick(goog.labs.net.webChannel.netUtils.NETWORK_TIMEOUT / 2);
+  channel.testNetworkCallback_(true);
 
   // Assert we report the correct stat event.
   assertEquals(1, numStatEvents);
@@ -1192,7 +1192,7 @@ function testUndeliveredMaps_serviceUnavailable() {
 
 
 function testUndeliveredMaps_onPingTimeout() {
-  stubTmpnetwork();
+  stubNetUtils();
 
   connect();
 
@@ -1203,7 +1203,7 @@ function testUndeliveredMaps_onPingTimeout() {
   responseRequestFailed();
 
   // Let the ping time out, unsuccessfully.
-  mockClock.tick(goog.net.tmpnetwork.GOOGLECOM_TIMEOUT);
+  mockClock.tick(goog.labs.net.webChannel.netUtils.NETWORK_TIMEOUT);
 
   // Assert channel is closed.
   assertEquals(goog.labs.net.webChannel.WebChannelBase.State.CLOSED,
