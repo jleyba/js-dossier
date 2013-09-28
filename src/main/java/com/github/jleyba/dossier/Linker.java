@@ -21,24 +21,23 @@ import com.google.javascript.rhino.JSDocInfo;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
-import java.util.Iterator;
 
 import javax.annotation.Nullable;
 
 /**
  * Utilities for generating links to {@link Descriptor types} in generated documentation.
  */
-class LinkResolver {
+class Linker {
 
-  private final Path outputDir;
+  private final Config config;
   private final DocRegistry docRegistry;
 
   /**
-   * @param outputDir The base output directory.
+   * @param config The current runtime configuration.
    * @param docRegistry The documented type registry.
    */
-  LinkResolver(Path outputDir, DocRegistry docRegistry) {
-    this.outputDir = checkNotNull(outputDir);
+  Linker(Config config, DocRegistry docRegistry) {
+    this.config = checkNotNull(config);
     this.docRegistry = checkNotNull(docRegistry);
   }
 
@@ -56,17 +55,50 @@ class LinkResolver {
 
   /**
    * Returns the path of the generated document file for the given descriptor. The generated path
-   * will always be relative to this resolver's output directory.
+   * will always be relative to this linker's output directory.
    */
   Path getFilePath(Descriptor descriptor) {
     String name = descriptor.getFullName().replace('.', '_') + ".html";
-    return outputDir.resolve(getTypePrefix(descriptor) + name);
+    return config.getOutput().resolve(getTypePrefix(descriptor) + name);
   }
 
   /**
-   * Returns the relative path from the descriptor managed by this resolver to the referenced
-   * type symbol. If this instance does not have a descriptor, the returned path will be
-   * relative to the output directory.
+   * Computes the URL path, relative to the output directory, for the source file definition of
+   * the given {@code descriptor}.  If the source file for the {@code descriptor} is not known,
+   * this method will return {@code null}.
+   */
+  @Nullable
+  String getSourcePath(Descriptor descriptor) {
+    String strPath = descriptor.getSource();
+    if (strPath == null) {
+      return null;
+    }
+    Path path = config.getOutput().getFileSystem().getPath(strPath).toAbsolutePath().normalize();
+    path = config.getSrcPrefix().relativize(path);
+    path = config.getSourceOutput().resolve(path);
+    path = path.resolveSibling(path.getFileName() + ".src.html");
+    path = config.getOutput().relativize(path);
+
+    int lineNum = descriptor.getLineNum();
+    if (lineNum > 1) {
+      return path + "#l" + (lineNum - 1);
+    }
+    return path.toString();
+  }
+
+  /**
+   * Computes the URL path from one descriptor to the definition of another type. The referenced
+   * type may be specified as:
+   * <ul>
+   *   <li>A fully qualified type: {@code foo.bar.Baz}
+   *   <li>A fully qualified type with property qualified: {@code foo.Bar#baz} or
+   *       {@code foo.Bar$baz} (this method does not differentiate between "#" and "$" being used
+   *       as instance vs. static property qualifiers).
+   * </ul>
+   *
+   * <p>If the referenced type is recognized, the returned path will be relative to the output
+   * directory, or an external URL (if referencing an extern symbol). If the type's definition
+   * could not be found, {@code null} is returned.
    */
   @Nullable
   String getLink(String to) {
@@ -82,16 +114,16 @@ class LinkResolver {
     if (index != -1) {
       String typeName = to.substring(0, index);
       String propertyName = "$" + to.substring(index + 1);
-      path = getTypePath(typeName);
+      path = getTypeFile(typeName);
       if (path != null) {
         fragment = "#" + typeName + propertyName;
       }
     } else {
-      path = getTypePath(to);
+      path = getTypeFile(to);
       if (path == null) {
         index = to.lastIndexOf('.');
         if (index != -1) {
-          path = getTypePath(to.substring(0, index));
+          path = getTypeFile(to.substring(0, index));
           if (path != null) {
             fragment = "#" + to;
           }
@@ -107,7 +139,7 @@ class LinkResolver {
   }
 
   @Nullable
-  private Path getTypePath(String name) {
+  private Path getTypeFile(String name) {
     Descriptor descriptor = docRegistry.getType(name);
     if (descriptor != null) {
       return getFilePath(descriptor).getFileName();
@@ -130,6 +162,16 @@ class LinkResolver {
       "number", MDN_PREFIX + "Global_Objects/Number",
       "boolean", MDN_PREFIX + "Global_Objects/Boolean");
 
+  /**
+   * Attempts to find a link to an extern type definition. Primitive types (null, undefined,
+   * string, number, boolean) will be linked to their definitions on the
+   * <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/">Mozilla Developer
+   * Network</a>. For all other symbols, this method will scan the jsdoc annotations for an
+   * {@literal @see} annotation containing a valid URI.
+   *
+   * @param name The name of the extern to find a link for.
+   * @return A link to the extern's type definition, or {@code null} if one could not be found.
+   */
   @Nullable
   String getExternLink(String name) {
     if (PRIMITIVES_TO_MDN_LINK.containsKey(name)) {

@@ -20,7 +20,6 @@ import com.google.common.base.Charsets;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Ordering;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.JSTypeExpression;
@@ -38,15 +37,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedWriter;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.PrintStream;
 import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.nio.file.StandardOpenOption;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -63,15 +59,15 @@ class HtmlDocWriter implements DocWriter {
 
   private final Config config;
   private final DocRegistry docRegistry;
-  private final LinkResolver resolver;
+  private final Linker linker;
   private SoyTofu tofu;
   private Iterable<Descriptor> sortedTypes;
   private Iterable<Path> sortedFiles;
 
-  HtmlDocWriter(Config config, DocRegistry registry, LinkResolver resolver) {
+  HtmlDocWriter(Config config, DocRegistry registry) {
     this.config = checkNotNull(config);
     this.docRegistry = checkNotNull(registry);
-    this.resolver = checkNotNull(resolver);
+    this.linker = new Linker(config, registry);
   }
 
   @Override
@@ -98,7 +94,7 @@ class HtmlDocWriter implements DocWriter {
   }
 
   private void generateDocs(Descriptor descriptor, JSTypeRegistry registry) throws IOException {
-    Path output = resolver.getFilePath(descriptor);
+    Path output = linker.getFilePath(descriptor);
     Files.createDirectories(output.getParent());
 
     SoyMapData sideNavData = buildSideNavData(output);
@@ -107,8 +103,8 @@ class HtmlDocWriter implements DocWriter {
         "isClass", descriptor.isConstructor(),
         "isInterface", descriptor.isInterface(),
         "isEnum", descriptor.isEnum(),
-        "sourceLink", getSourcePath(descriptor),
-        "descriptionHtml", CommentUtil.getBlockDescription(resolver, descriptor.getInfo()),
+        "sourceLink", linker.getSourcePath(descriptor),
+        "descriptionHtml", CommentUtil.getBlockDescription(linker, descriptor.getInfo()),
         "typedefs", getTypeDefs(descriptor),
         "nested", new SoyMapData(
             "interfaces", getNestedTypeSummaries(descriptor, isInterface()),
@@ -120,12 +116,12 @@ class HtmlDocWriter implements DocWriter {
     if (descriptor.isDeprecated()) {
       desc.put("isDeprecated", true);
       desc.put("deprecationHtml", CommentUtil.formatCommentText(
-          resolver, descriptor.getDeprecationReason()));
+          linker, descriptor.getDeprecationReason()));
     }
 
     if (descriptor.isEnum() && descriptor.getInfo() != null) {
       JSDocInfo info = descriptor.getInfo();
-      String type = CommentUtil.formatTypeExpression(info.getEnumParameterType(), resolver);
+      String type = CommentUtil.formatTypeExpression(info.getEnumParameterType(), linker);
       desc.put("enumType", type);
     }
 
@@ -240,31 +236,12 @@ class HtmlDocWriter implements DocWriter {
     }
 
     for (Descriptor type : sortedTypes) {
-      Path typePath = resolver.getFilePath(type);
+      Path typePath = linker.getFilePath(type);
       Path pathToType = Paths.getRelativePath(path, typePath);
       data.addType(type.getFullName(), pathToType, type.isInterface());
     }
 
     return data.toSoy();
-  }
-
-  @Nullable
-  private String getSourcePath(Descriptor descriptor) {
-    String strPath = descriptor.getSource();
-    if (strPath == null) {
-      return null;
-    }
-    Path path = config.getOutput().getFileSystem().getPath(strPath).toAbsolutePath().normalize();
-    path = config.getSrcPrefix().relativize(path);
-    path = config.getSourceOutput().resolve(path);
-    path = path.resolveSibling(path.getFileName() + ".src.html");
-    path = config.getOutput().relativize(path);
-
-    int lineNum = descriptor.getLineNum();
-    if (lineNum > 1) {
-      return path + "#l" + (lineNum - 1);
-    }
-    return path.toString();
   }
 
   private Path getPathToOutputDir(Path from) {
@@ -335,16 +312,16 @@ class HtmlDocWriter implements DocWriter {
         if (info.isDeprecated()) {
           data.put("isDeprecated", true);
           data.put("deprecationHtml", CommentUtil.formatCommentText(
-              resolver, info.getDeprecationReason()));
+              linker, info.getDeprecationReason()));
         }
-        data.put("descriptionHtml", CommentUtil.getBlockDescription(resolver, info));
+        data.put("descriptionHtml", CommentUtil.getBlockDescription(linker, info));
       }
     }
     return values;
   }
 
   private String getTypeLink(String type) {
-    String path = resolver.getLink(type);
+    String path = linker.getLink(type);
     if (path == null) {
       return type;
     }
@@ -362,14 +339,14 @@ class HtmlDocWriter implements DocWriter {
 
       SoyMapData typedefData = new SoyMapData(
           "name", typedef.getFullName(),
-          "typeHtml", CommentUtil.formatTypeExpression(info.getTypedefType(), resolver),
-          "href", getSourcePath(typedef),
-          "descriptionHtml", CommentUtil.getBlockDescription(resolver, info));
+          "typeHtml", CommentUtil.formatTypeExpression(info.getTypedefType(), linker),
+          "href", linker.getSourcePath(typedef),
+          "descriptionHtml", CommentUtil.getBlockDescription(linker, info));
       typedefList.add(typedefData);
 
       if (typedef.isDeprecated()) {
         typedefData.put("isDeprecated", typedef.isDeprecated());
-        typedefData.put("deprecationHtml", CommentUtil.formatCommentText(resolver,
+        typedefData.put("deprecationHtml", CommentUtil.formatCommentText(linker,
             typedef.getDeprecationReason()));
       }
     }
@@ -384,11 +361,11 @@ class HtmlDocWriter implements DocWriter {
     SoyListData types = new SoyListData();
     for (Descriptor child : children) {
       JSDocInfo info = checkNotNull(child.getInfo());
-      String comment = CommentUtil.getBlockDescription(resolver, info);
+      String comment = CommentUtil.getBlockDescription(linker, info);
       String summary = CommentUtil.getSummary(comment);
       types.add(new SoyMapData(
           "name", child.getFullName(),
-          "href", resolver.getFilePath(child).getFileName().toString(),
+          "href", linker.getFilePath(child).getFileName().toString(),
           "summaryHtml", summary));
     }
     return types;
@@ -430,7 +407,7 @@ class HtmlDocWriter implements DocWriter {
           "properties", props);
       prototypes.add(propertySet);
       if (typeDescriptor != descriptor) {
-        propertySet.put("href", resolver.getLink(typeDescriptor.getFullName()));
+        propertySet.put("href", linker.getLink(typeDescriptor.getFullName()));
       }
 
       for (Descriptor property : properties) {
@@ -450,21 +427,21 @@ class HtmlDocWriter implements DocWriter {
     SoyMapData data = new SoyMapData(
         "fullName", property.getFullName(),
         "name", property.getName(),
-        "href", getSourcePath(property),
+        "href", linker.getSourcePath(property),
         "frag", useFullName ? property.getFullName() : property.getFullName()
             .replace("." + property.getName(), "$" + property.getName()));
 
     if (property.isDeprecated()) {
       data.put("isDeprecated", true);
       data.put("deprecationHtml", CommentUtil.formatCommentText(
-          resolver, property.getDeprecationReason()));
+          linker, property.getDeprecationReason()));
     }
 
     JSDocInfo info = property.getInfo();
     if (info != null) {
-      data.put("descriptionHtml", CommentUtil.getBlockDescription(resolver, info));
+      data.put("descriptionHtml", CommentUtil.getBlockDescription(linker, info));
       if (info.getType() != null) {
-        data.put("typeHtml", CommentUtil.formatTypeExpression(info.getType(), resolver));
+        data.put("typeHtml", CommentUtil.formatTypeExpression(info.getType(), linker));
       }
     } else if (property.getType() != null) {
       Descriptor propertyTypeDescriptor =
@@ -475,7 +452,7 @@ class HtmlDocWriter implements DocWriter {
 
       if (propertyTypeDescriptor != null) {
         data.put("typeHtml", String.format("<a href=\"%s\">%s</a>",
-            resolver.getLink(propertyTypeDescriptor.getFullName()),
+            linker.getLink(propertyTypeDescriptor.getFullName()),
             propertyTypeDescriptor.getFullName()));
       } else {
         data.put("typeHtml", property.getType().toString());
@@ -508,7 +485,7 @@ class HtmlDocWriter implements DocWriter {
     return new SoyMapData(
         "name", name,
         "typeHtml", typeHtml,
-        "descriptionHtml", CommentUtil.formatCommentText(resolver, rawText));
+        "descriptionHtml", CommentUtil.formatCommentText(linker, rawText));
   }
 
   private SoyListData buildThrowsData(JSDocInfo info) {
@@ -525,7 +502,7 @@ class HtmlDocWriter implements DocWriter {
       if (marker.getType() != null) {
         JSTypeExpression expr = new JSTypeExpression(
             marker.getType().getItem(), info.getSourceName());
-        thrownType = CommentUtil.formatTypeExpression(expr, resolver);
+        thrownType = CommentUtil.formatTypeExpression(expr, linker);
       }
 
       if (marker.getDescription() != null) {
@@ -541,7 +518,7 @@ class HtmlDocWriter implements DocWriter {
     SoyMapData data = new SoyMapData(
         "fullName", function.getFullName(),
         "name", function.getName(),
-        "href", getSourcePath(function),
+        "href", linker.getSourcePath(function),
         "frag", useFullName ? function.getFullName()
             : function.getFullName().replace(
                 "." + function.getName(),
@@ -556,7 +533,7 @@ class HtmlDocWriter implements DocWriter {
     }
 
     if (info != null) {
-      data.put("descriptionHtml", CommentUtil.getBlockDescription(resolver, info));
+      data.put("descriptionHtml", CommentUtil.getBlockDescription(linker, info));
       data.put("throws", buildThrowsData(info));
       if (!function.isConstructor()) {
         data.put("templateNames", info.getTemplateTypeNames());
@@ -566,7 +543,7 @@ class HtmlDocWriter implements DocWriter {
     if (function.isDeprecated()) {
       data.put("isDeprecated", true);
       data.put("deprecationHtml", CommentUtil.formatCommentText(
-          resolver, function.getDeprecationReason()));
+          linker, function.getDeprecationReason()));
     }
 
     data.put("args", transform(function.getArgs(), new Function<ArgDescriptor, SoyMapData>() {
@@ -575,7 +552,7 @@ class HtmlDocWriter implements DocWriter {
         return buildFunctionDetail(
             arg.getName(),
             arg.getType() == null ? null
-                : CommentUtil.formatTypeExpression(arg.getType(), resolver),
+                : CommentUtil.formatTypeExpression(arg.getType(), linker),
             arg.getDescription());
       }
     }));
@@ -589,7 +566,7 @@ class HtmlDocWriter implements DocWriter {
     if (info != null) {
       JSTypeExpression expr = info.getReturnType();
       if (expr != null) {
-        return CommentUtil.formatTypeExpression(expr, resolver);
+        return CommentUtil.formatTypeExpression(expr, linker);
       }
     }
     JSType type = ((FunctionType) function.toObjectType()).getReturnType();

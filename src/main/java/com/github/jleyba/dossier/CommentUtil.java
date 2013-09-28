@@ -27,7 +27,6 @@ import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.Token;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -58,7 +57,7 @@ class CommentUtil {
   /**
    * Extracts the block comment string from the given {@link JSDocInfo} object.
    */
-  static String getBlockDescription(LinkResolver resolver, @Nullable JSDocInfo info) {
+  static String getBlockDescription(Linker resolver, @Nullable JSDocInfo info) {
     if (info == null) {
       return "";
     }
@@ -116,25 +115,25 @@ class CommentUtil {
    * Formats a comment string, converting all inline tags to their HTML constructs (e.g.
    * {@code {@code hi}} to {@code <code>hi</code>}.
    */
-  static String formatCommentText(LinkResolver resolver, String text) {
+  static String formatCommentText(Linker linker, String text) {
     if (Strings.isNullOrEmpty(text)) {
       return Strings.nullToEmpty(text);
     }
 
-    List<CommentNode> nodes = new LinkedList<>();
+    StringBuilder formattedComment = new StringBuilder();
     int start = 0;
     while (true) {
       int tagletStart = findInlineTagStart(text, start);
       if (tagletStart == -1) {
-        nodes.add(new TextNode(text.substring(start)));
+        formattedComment.append(text.substring(start));
         break;
       } else if (tagletStart > start) {
-        nodes.add(new TextNode(text.substring(start, tagletStart)));
+        formattedComment.append(text.substring(start, tagletStart));
       }
 
       int tagletEnd = findInlineTagEnd(text, tagletStart + 1);
       if (tagletEnd == -1) {
-        nodes.add(new TextNode(text.substring(start)));
+        formattedComment.append(text.substring(start));
         break;
       }
 
@@ -142,22 +141,54 @@ class CommentUtil {
       String tagletPrefix = "{@" + tagletName + " ";
       String tagletText = text.substring(tagletStart + tagletPrefix.length(), tagletEnd);
       switch (tagletName) {
-        case CodeNode.NAME:
-          nodes.add(new CodeNode(tagletText));
+        case "code":
+          formattedComment
+              .append("<code>")
+              .append(formatLiteralText(tagletText))
+              .append("</code>");
           break;
-        case LinkNode.NAME:
-          nodes.add(new LinkNode(resolver, tagletText));
+
+        case "link":
+        case "linkplain":
+          LinkInfo info = LinkInfo.fromText(tagletText);
+          tagletText = formatLink(linker, info, "link".equals(tagletName));
+
+          if ("link".equals(tagletName)) {
+            formattedComment.append("<code>")
+                .append(tagletText)
+                .append("</code>");
+          } else {
+            formattedComment.append(tagletText);
+          }
           break;
-        case LiteralNode.NAME:
-          nodes.add(new LiteralNode(tagletText));
+
+        case "literal":
+          formattedComment.append(formatLiteralText(tagletText));
           break;
+
         default:
-          nodes.add(new TextNode(tagletText));
+          formattedComment.append(tagletText);
       }
       start = tagletEnd + 1;
     }
 
-    return Joiner.on("").join(nodes);
+    return formattedComment.toString();
+  }
+
+  private static String formatLink(Linker linker, LinkInfo info, boolean isLiteral) {
+    String text = isLiteral ? formatLiteralText(info.text) : info.text;
+    @Nullable String link = linker.getLink(info.type);
+    if (link == null) {
+      return "<a class=\"unresolved\">" + text + "</a>";
+    } else {
+      return "<a href=\"" + link + "\">" + text + "</a>";
+    }
+  }
+
+  private static String formatLiteralText(String text) {
+    return text.replace("&", "&amp;")
+        .replace("<", "&lt;")
+        .replace(">", "&gt;");
   }
 
   private static int findInlineTagStart(String text, int start) {
@@ -195,14 +226,14 @@ class CommentUtil {
     return end;
   }
 
-  static String formatTypeExpression(JSTypeExpression expression, LinkResolver resolver) {
+  static String formatTypeExpression(JSTypeExpression expression, Linker resolver) {
     // If we use JSTypeExpression#evaluate(), all typedefs will be resolved to their native
     // types, which produces very verbose expressions.  Keep things simply and rebuild the type
     // expression ourselves. This has the added benefit of letting us resolve type links as we go.
     return formatTypeExpression(resolver, expression.getRoot());
   }
 
-  private static String formatTypeExpression(LinkResolver resolver, Node node) {
+  private static String formatTypeExpression(Linker resolver, Node node) {
     switch (node.getType()) {
       case Token.LC:     // Record type.
         return formatRecordType(resolver, node.getFirstChild());
@@ -255,7 +286,7 @@ class CommentUtil {
     }
   }
 
-  private static String formatTypeString(LinkResolver resolver, Node node) {
+  private static String formatTypeString(Linker resolver, Node node) {
     String namedType = node.getString();
     @Nullable String path = resolver.getLink(namedType);
 
@@ -282,7 +313,7 @@ class CommentUtil {
     return builder.build();
   }
 
-  private static String formatFunctionType(LinkResolver resolver, Node node) {
+  private static String formatFunctionType(Linker resolver, Node node) {
     List<String> parts = new ArrayList<>();
 
     Node current = node.getFirstChild();
@@ -325,7 +356,7 @@ class CommentUtil {
     return builder.toString();
   }
 
-  private static String formatRecordType(LinkResolver resolver, Node node) {
+  private static String formatRecordType(Linker resolver, Node node) {
     StringBuilder builder = new StringBuilder();
 
     for (Node fieldTypeNode = node.getFirstChild(); fieldTypeNode != null;
@@ -363,85 +394,25 @@ class CommentUtil {
     return "{" + builder + "}";
   }
 
-  private interface CommentNode {
-    @Override
-    String toString();
-  }
+  private static class LinkInfo {
 
-  private static class TextNode implements CommentNode {
-
+    private final String type;
     private final String text;
 
-    private TextNode(String text) {
+    private LinkInfo(String type, String text) {
+      this.type = type;
       this.text = text;
     }
 
-    @Override
-    public String toString() {
-      return text;
-    }
-  }
-
-  private static class LiteralNode extends TextNode {
-
-    private static final String NAME = "literal";
-
-    private LiteralNode(String text) {
-      super(text);
-    }
-
-    @Override
-    public String toString() {
-      return super.toString()
-          .replace("&", "&amp;")
-          .replace("<", "&lt;")
-          .replace(">", "&gt;");
-    }
-  }
-
-  private static class CodeNode extends LiteralNode {
-
-    private static final String NAME = "code";
-
-    private CodeNode(String text) {
-      super(text);
-    }
-
-    @Override
-    public String toString() {
-      return "<code>" + super.toString() + "</code>";
-    }
-  }
-
-  private static class LinkNode implements CommentNode {
-
-    private static final String NAME = "link";
-
-    private final LinkResolver resolver;
-    private final String text;
-
-    private LinkNode(LinkResolver resolver, String text) {
-      this.text = text;
-      this.resolver = resolver;
-    }
-
-    @Override
-    public String toString() {
+    static LinkInfo fromText(String text) {
       String linkedType = text;
       String linkText = text;
       int index = text.indexOf(' ');
       if (index != -1) {
         linkedType = text.substring(0, index);
-        linkText = text.substring(index + 1);
+        linkText= text.substring(index + 1);
       }
-
-      CodeNode linkContent = new CodeNode(linkText);
-      String link = resolver.getLink(linkedType);
-      if (link == null) {
-        return "<a class=\"unresolved\">" + linkContent + "</a>";
-      } else {
-        return "<a href=\"" + link + "\">" + linkContent + "</a>";
-      }
+      return new LinkInfo(linkedType, linkText);
     }
   }
 }

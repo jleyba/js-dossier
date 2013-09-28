@@ -120,8 +120,7 @@ public class Main extends CommandLineRunner {
       System.exit(result);
     }
 
-    LinkResolver linkResolver = new LinkResolver(config.getOutput(), docRegistry);
-    DocWriter writer = new DocWriterFactory(linkResolver).createDocWriter(config, docRegistry);
+    DocWriter writer = new HtmlDocWriter(config, docRegistry);
     try {
       writer.generateDocs(getCompiler().getTypeRegistry());
     } catch (IOException e) {
