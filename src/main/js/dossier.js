@@ -34,10 +34,17 @@ goog.require('goog.ui.ac');
 
 
 /**
- * @typedef {{classes: !Array.<string>,
- *            enums: !Array.<string>,
- *            interfaces: !Array.<string>,
- *            namespaces: !Array.<string>}}
+ * @typedef {({name: string, href: string, isInterface: boolean}|
+ *            {name: string, href: string, isTypedef: boolean}|
+ *            {name: string, href: string})}
+ * @private
+ */
+dossier.Descriptor_;
+
+
+/**
+ * @typedef {{types: !Array.<dossier.Descriptor_>,
+ *            files: !Array.<dossier.Descriptor_>}}
  * @private
  */
 dossier.TypeInfo_;
@@ -51,7 +58,6 @@ dossier.init = function() {
   dossier.initNavList_(typeInfo);
   setTimeout(goog.partial(dossier.initSearchBox_, typeInfo), 0);
   setTimeout(dossier.polyFillDetailsElements_, 0);
-  setTimeout(dossier.initFocusHandlers_, 0);
 };
 goog.exportSymbol('init', dossier.init);
 
@@ -79,50 +85,33 @@ dossier.BASE_PATH_ = (function() {
 
 
 /**
- * Builds a link path from the page hosting this script to another
- * {@code type}.
- * @param {string} prefix The link prefix.
- * @param {string} type Name of the type to link to.
- * @return {string} Path to use when linking to {@code type}.
- * @private
- */
-dossier.getLinkPath_ = function(prefix, type) {
-  return dossier.BASE_PATH_ + prefix + type.replace(/\./g, '_') + '.html';
-};
-
-
-/**
  * Initializes the auto-complete for the top navigation bar's search box.
  * @param {dossier.TypeInfo_} typeInfo The types to link to from the current
  *     page.
  * @private
  */
 dossier.initSearchBox_ = function(typeInfo) {
+  var nameToHref = {};
+  var descToName = function(descriptor) {
+    nameToHref[descriptor['name']] = descriptor['href'];
+    return descriptor['name'];
+  };
+
   var allTerms = goog.array.concat(
-      typeInfo['classes'], typeInfo['enums'],
-      typeInfo['interfaces'], typeInfo['namespaces']);
+      goog.array.map(typeInfo['files'], descToName),
+      goog.array.map(typeInfo['types'], descToName));
 
   var searchForm = goog.dom.getElement('searchbox');
   var input = searchForm.getElementsByTagName('input')[0];
-  goog.ui.ac.createSimpleAutoComplete(allTerms, input, false, true);
+  var ac = goog.ui.ac.createSimpleAutoComplete(allTerms, input, false, true);
+  ac.setMaxMatches(100);
   goog.events.listen(searchForm, goog.events.EventType.SUBMIT, function(e) {
     e.preventDefault();
     e.stopPropagation();
 
-    var value = input.value;
-    var linkPrefix;
-    if (goog.array.indexOf(typeInfo['classes'], value) >= 0) {
-      linkPrefix = 'class_';
-    } else if (goog.array.indexOf(typeInfo['enums'], value) >= 0) {
-      linkPrefix = 'enum_';
-    } else if (goog.array.indexOf(typeInfo['interfaces'], value) >= 0) {
-      linkPrefix = 'interface_';
-    } else if (goog.array.indexOf(typeInfo['namespaces'], value) >= 0) {
-      linkPrefix = 'namespace_';
-    }
-
-    if (linkPrefix) {
-      window.location.href = dossier.getLinkPath_(linkPrefix, value);
+    var href = nameToHref[input.value];
+    if (href) {
+      window.location.href = dossier.BASE_PATH_ + href;
     }
 
     return false;
@@ -137,88 +126,79 @@ dossier.initSearchBox_ = function(typeInfo) {
  * @private
  */
 dossier.initNavList_ = function(typeInfo) {
-  var nav = goog.dom.getElement('left');
-  if (!nav) {
-    return;  // The current page does not have a left nav pane.
+  if (!goog.dom.getElement('sidenav')) {
+    return;  // The current page does not have a side nav pane.
   }
 
-  var sections = [];
-  if (typeInfo['classes'].length) {
-    sections.push(dossier.createNavList_(
-        'Classes', 'class_', typeInfo['classes']));
-  }
-  if (typeInfo['enums'].length) {
-    sections.push(dossier.createNavList_(
-        'Enums', 'enum_', typeInfo['enums']));
-  }
-  if (typeInfo['interfaces'].length) {
-    sections.push(dossier.createNavList_(
-        'Interfaces', 'interface_', typeInfo['interfaces']));
-  }
-  if (typeInfo['namespaces'].length) {
-    sections.push(dossier.createNavList_(
-        'Namespaces', 'namespace_', typeInfo['namespaces']));
-  }
+  // Now that everything is built, configure the controls to expand and
+  // collapse the very portions of the navigation menu. We can't do this
+  // through CSS because we effectively want to toggle between
+  // height: 0 and height: auto, but height: auto cannot be animated.
+  var typesControl = goog.dom.getElement('sidenav-types-ctrl');
+  var typesList = dossier.createNavList_('sidenav-types', typeInfo['types']);
 
-  goog.dom.removeChildren(nav);
-  goog.array.forEach(sections, function(section) {
-    goog.dom.appendChild(nav, section);
+  var filesControl = goog.dom.getElement('sidenav-files-ctrl');
+  var filesList = dossier.createNavList_('sidenav-files', typeInfo['files']);
+
+  // Compute sizes in terms of the root font-size, so things scale properly.
+  var rootFontSize = goog.style.getFontSize(document.documentElement);
+  var typesHeight =
+      (goog.style.getSize(typesList).height / rootFontSize) + 'rem';
+  var filesHeight =
+      (goog.style.getSize(filesList).height / rootFontSize) + 'rem';
+
+  // Initialize heights to 0.
+  goog.style.setHeight(typesList, 0);
+  goog.style.setHeight(filesList, 0);
+
+  goog.events.listen(typesControl, goog.events.EventType.CHANGE, function() {
+    goog.style.setHeight(typesList, typesControl.checked ? typesHeight : 0);
+  });
+  goog.events.listen(filesControl, goog.events.EventType.CHANGE, function() {
+    goog.style.setHeight(filesList, filesControl.checked ? filesHeight : 0);
   });
 };
 
 
 /**
- * Builds a list of type links for the left navigation pane.
- * @param {string} header The section header to display.
- * @param {string} linkPrefix A prefix to apply to each link.
- * @param {!Array.<string>} types The types to build links for.
- * @return {!Element} The root element for the newly created link section.
+ * Builds a list of type links for the side navigation pane.
+ * @param {string} id ID for the section to attach the created list to.
+ * @param {!Array.<dossier.Descriptor_>} descriptors The descriptors to build
+ *     links for.
+ * @return {!Element} The configured nav list display element.
  * @private
  */
-dossier.createNavList_ = function(header, linkPrefix, types) {
-  var details = goog.dom.createDom(goog.dom.TagName.DETAILS, null,
-      goog.dom.createDom(goog.dom.TagName.SUMMARY, null, header));
+dossier.createNavList_ = function(id, descriptors) {
+  var container = goog.dom.getElement(id);
+  var noDataPlaceholder =
+      /** @type {!Element} */ (container.querySelector('i'));
+
+  if (!descriptors.length) {
+    return noDataPlaceholder;
+  }
+
+  goog.dom.removeNode(noDataPlaceholder);
+
   var list = goog.dom.createElement(goog.dom.TagName.UL);
-  goog.dom.appendChild(details, list);
-  goog.array.forEach(types, function(type) {
+  goog.array.forEach(descriptors, function(descriptor) {
+    if (descriptor['isTypedef']) {
+      return;  // Do not include typedefs in the side index.
+    }
+
+    var listItem = descriptor['name'];
+    if (descriptor['isInterface']) {
+      listItem = goog.dom.createDom(goog.dom.TagName.I, null, listItem);
+    }
+
     goog.dom.appendChild(list,
         goog.dom.createDom(goog.dom.TagName.LI, null,
             goog.dom.createDom(goog.dom.TagName.A, {
-              'href': dossier.getLinkPath_(linkPrefix, type)
-            }, type)));
+              'href': dossier.BASE_PATH_ + descriptor['href']
+            }, listItem)));
   });
-  return details;
-};
+  goog.dom.appendChild(container, list);
 
-
-/**
- * Sets up focus handlers so when a summary element is focused, its parent
- * details element is outlined instead of the summary. This helps the
- * outline keep a consistent shape when the details element is expanded.
- * @private
- */
-dossier.initFocusHandlers_ = function() {
-  goog.events.listen(
-      goog.dom.getDocument().body,
-      [goog.events.EventType.FOCUSIN, goog.events.EventType.FOCUSOUT],
-      function(e) {
-        var details = getDetailParent(e.target);
-        if (details) {
-          if (e.type === goog.events.EventType.FOCUSIN) {
-            goog.dom.classes.add(details, 'focused');
-          } else {
-            goog.dom.classes.remove(details, 'focused');
-          }
-        }
-      });
-
-  function getDetailParent(node) {
-    if (node.nodeType === goog.dom.NodeType.ELEMENT &&
-        node.tagName.toUpperCase() === goog.dom.TagName.SUMMARY) {
-      return goog.dom.getParentElement(node);
-    }
-    return null;
-  }
+  return list;
 };
 
 

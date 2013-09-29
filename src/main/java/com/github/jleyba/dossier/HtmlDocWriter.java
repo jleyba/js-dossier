@@ -97,7 +97,6 @@ class HtmlDocWriter implements DocWriter {
     Path output = linker.getFilePath(descriptor);
     Files.createDirectories(output.getParent());
 
-    SoyMapData sideNavData = buildSideNavData(output);
     SoyMapData desc = new SoyMapData(
         "name", descriptor.getFullName(),
         "isClass", descriptor.isConstructor(),
@@ -162,8 +161,7 @@ class HtmlDocWriter implements DocWriter {
               "title", descriptor.getFullName(),
               "styleSheets", new SoyListData("dossier.css"),
               "scripts", new SoyListData("types.js", "dossier.js"),
-              "descriptor", desc,
-              "index", sideNavData))
+              "descriptor", desc))
           .render(writer);
     }
   }
@@ -182,66 +180,52 @@ class HtmlDocWriter implements DocWriter {
   }
 
   private void writeTypesJson() throws IOException {
-    JSONArray classes = new JSONArray();
-    JSONArray enums = new JSONArray();
-    JSONArray interfaces = new JSONArray();
-    JSONArray namespaces = new JSONArray();
-
-    for (Descriptor descriptor : sortedTypes) {
-      String name = descriptor.getFullName();
-      if (descriptor.isConstructor()) {
-        classes.put(name);
-      } else if (descriptor.isInterface()) {
-        interfaces.put(name);
-      } else if (descriptor.isEnum()) {
-        enums.put(name);
-      } else {
-        namespaces.put(name);
-      }
-    }
-
     try {
+      JSONArray files = new JSONArray();
+      Path fileDir = config.getSourceOutput();
+      for (Path source : sortedFiles) {
+        Path simpleSource = config.getSrcPrefix().relativize(source);
+        Path dest = fileDir.resolve(simpleSource.toString() + ".src.html");
+        dest = config.getOutput().relativize(dest);
+
+        files.put(new JSONObject()
+            .put("name", simpleSource.toString())
+            .put("href", dest.toString()));
+      }
+
+      JSONArray types = new JSONArray();
+      for (Descriptor descriptor : sortedTypes) {
+        String dest = config.getOutput().relativize(
+            linker.getFilePath(descriptor)).toString();
+        types.put(new JSONObject()
+            .put("name", descriptor.getFullName())
+            .put("href", dest)
+            .put("isInterface", descriptor.isInterface()));
+
+        // Also include typedefs. These will not be included in the main
+        // index, but will be searchable.
+        List<Descriptor> typedefs = FluentIterable.from(descriptor.getProperties())
+            .filter(isTypedef())
+            .toSortedList(DescriptorNameComparator.INSTANCE);
+        for (Descriptor typedef : typedefs) {
+          types.put(new JSONObject()
+              .put("name", typedef.getFullName())
+              .put("href", linker.getLink(typedef.getFullName()))
+              .put("isTypedef", true));
+        }
+      }
+
       JSONObject json = new JSONObject()
-          .put("classes", classes)
-          .put("interfaces", interfaces)
-          .put("enums", enums)
-          .put("namespaces", namespaces);
+          .put("files", files)
+          .put("types", types);
 
       String content = "var TYPES = " + json + ";";
 
       Path outputPath = config.getOutput().resolve("types.js");
-
-      if (Files.exists(outputPath)) {
-        Files.delete(outputPath);
-      }
       Files.write(outputPath, content.getBytes(Charsets.UTF_8));
     } catch (JSONException e) {
       throw new IOException(e);
     }
-  }
-
-  /**
-   * Builds the SoyMapData for the side navigation pane.
-   *
-   * @param path Path to the file under the output directory that all navigation paths
-   *     should be relative to.
-   */
-  private SoyMapData buildSideNavData(Path path) {
-    SideNavData data = new SideNavData();
-    for (Path source : sortedFiles) {
-      Path displayPath = config.getSrcPrefix().relativize(source);
-      Path sourcePath = config.getSourceOutput().resolve(displayPath.toString() + ".src.html");
-      Path pathToSource = Paths.getRelativePath(path, sourcePath);
-      data.addFile(displayPath.toString(), pathToSource);
-    }
-
-    for (Descriptor type : sortedTypes) {
-      Path typePath = linker.getFilePath(type);
-      Path pathToType = Paths.getRelativePath(path, typePath);
-      data.addType(type.getFullName(), pathToType, type.isInterface());
-    }
-
-    return data.toSoy();
   }
 
   private Path getPathToOutputDir(Path from) {
@@ -273,7 +257,6 @@ class HtmlDocWriter implements DocWriter {
                 "title", source.getFileName().toString(),
                 "styleSheets", new SoyListData(toDossierCss.toString()),
                 "displayPath", simpleSource.toString(),
-                "index", buildSideNavData(dest),
                 "lines", new SoyListData(Files.readAllLines(source, Charsets.UTF_8)),
                 "scripts", new SoyListData(toTypesJs.toString(), toDossierJs.toString())))
             .render(writer);

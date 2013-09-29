@@ -156,6 +156,7 @@ main {
   margin-top: 4.4rem;
   padding-bottom: 2.5rem;
   padding-left: 2rem;
+  width: -webkit-calc(74.5% - 2rem);
   width: calc(74.5% - 2rem);
   float: left;
 }
@@ -244,14 +245,40 @@ table.srcfile {
 
 
 #sidenav {
+  width: 24%;
   margin-top: 4.4rem;
-  margin-right: 2rem;
-  width: calc(24.5% - 2rem);
   float: right;
-  overflow: auto;
+  overflow: hidden;
+  line-height: 1.5;
+  font-size: 1.2rem;
+  background: #fff;
 }
+#sidenav input { display: none; }
+#sidenav h4 {
+  color: #fff;
+  width: 100%;
+  font-size: 1.5rem;
+  font-weight: 500;
+  padding: .5rem 1.2rem 0;
+  height: 3rem;
+  margin: 0;
+  background: #4a4d4e;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+}
+#sidenav h4:hover { background: #5a5d5e; }
 #sidenav li { list-style: none; }
-#sidenav ul { padding-left: 1rem; }
+#sidenav li:hover { background: rgba(57, 60, 61, 0.1); }
+#sidenav ul {
+  margin: 0;
+  padding: 0 0 0 1rem;
+  overflow: hidden;
+  -webkit-transition: height .25s ease;
+  -moz-transition: height .25s ease;
+  -o-transition: height .25s ease;
+  -ms-transition: height .25s ease;
+  transition: height .25s ease;
+}
 
 
 footer {
@@ -260,6 +287,7 @@ footer {
   font-size: 1rem;
   background: #4a4d4e;
   padding: .5rem 0 .5rem 2.25rem;
+  width: -webkit-calc(100% - 2.25rem);
   width: calc(100% - 2.25rem);
 }
 footer,

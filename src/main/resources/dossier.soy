@@ -30,7 +30,7 @@
   <nav id="topnav">
     <div>
       <div id="menubutton"><label for="sidenav-toggle">Menu</label></div>
-      <div id="searchbox"><input type="search" placeholder="Search"></div>
+      <form id="searchbox"><input type="search" placeholder="Search"></form>
     </div>
   </nav>
 {/template}
@@ -46,28 +46,24 @@
 
 /**
  * Generates the place holder for the side navigation pane.
- *
- * @param index The index.
  */
 {template .sideNav}
   <nav id="sidenav">
-    <ul>
-      <li>Home
-      <li>Type Index
-      {foreach $type in $index.types}
-        <li><a href="{$type.href}">
-        {if $type.isInterface}
-          <i>{$type.name}</i>
-        {else}
-          {$type.name}
-        {/if}
-        </a>
-      {/foreach}
-      <li>File Index
-      {foreach $file in $index.files}
-        <li><a href="{$file.href}">{$file.name}</a>
-      {/foreach}
-    </ul>
+    <input type="checkbox" id="sidenav-types-ctrl" />
+    <input type="checkbox" id="sidenav-files-ctrl" />
+
+    /** The sidenav is filled in at runtime by dossier.js */
+    <div id="sidenav-overview">
+      <h4>Overview</h4>
+    </div>
+    <div id="sidenav-types">
+      <label for="sidenav-types-ctrl"><h4>Types</h4></label>
+      <i>No data</i>
+    </div>
+    <div id="sidenav-files">
+      <label for="sidenav-files-ctrl"><h4>Files</h4></label>
+      <i>No data</i>
+    </div>
   </nav>
 {/template}
 
@@ -581,7 +577,6 @@
  * @param styleSheets The stylesheets to include in the page.
  * @param descriptor The type descriptor. (TODO: more documentation here).
  * @param scripts The scripts to include in the page.
- * @param index The index for the side navigation pane.
  */
 {template .typefile}
   {call .pageHeader}
@@ -636,9 +631,7 @@
     </main>
 
     {call .topNav /}
-    {call .sideNav}
-      {param index: $index /}
-    {/call}
+    {call .sideNav /}
 
     {call .footer}
       {param scripts: $scripts /}
@@ -656,7 +649,6 @@
  * @param displayPath The path to display for the displayed file.
  * @param lines The individual lines for the displayed file.
  * @param scripts The scripts to include in the page.
- * @param index The index for the side navigation pane.
  */
 {template .srcfile}
   {call .pageHeader}
@@ -682,9 +674,7 @@
     </main>
 
     {call .topNav /}
-    {call .sideNav}
-      {param index: $index /}
-    {/call}
+    {call .sideNav /}
 
     {call .footer}
       {param scripts: $scripts /}
