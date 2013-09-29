@@ -92,14 +92,16 @@ dossier.BASE_PATH_ = (function() {
  */
 dossier.initSearchBox_ = function(typeInfo) {
   var nameToHref = {};
-  var descToName = function(descriptor) {
-    nameToHref[descriptor['name']] = descriptor['href'];
-    return descriptor['name'];
-  };
-
   var allTerms = goog.array.concat(
-      goog.array.map(typeInfo['files'], descToName),
-      goog.array.map(typeInfo['types'], descToName));
+      goog.array.map(typeInfo['files'], function(descriptor) {
+        var name = 'file://' + descriptor['name'];
+        nameToHref[name] = descriptor['href'];
+        return name;
+      }),
+      goog.array.map(typeInfo['types'], function(descriptor) {
+        nameToHref[descriptor['name']] = descriptor['href'];
+        return descriptor['name'];
+      }));
 
   var searchForm = goog.dom.getElement('searchbox');
   var input = searchForm.getElementsByTagName('input')[0];
