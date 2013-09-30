@@ -140,7 +140,8 @@ dossier.initNavList_ = function(typeInfo) {
   var typesList = dossier.createNavList_('sidenav-types', typeInfo['types']);
 
   var filesControl = goog.dom.getElement('sidenav-files-ctrl');
-  var filesList = dossier.createNavList_('sidenav-files', typeInfo['files']);
+  var filesList = dossier.createFileNavList_(
+      'sidenav-files', typeInfo['files']);
 
   // Compute sizes in terms of the root font-size, so things scale properly.
   var rootFontSize = goog.style.getFontSize(document.documentElement);
@@ -159,6 +160,128 @@ dossier.initNavList_ = function(typeInfo) {
   goog.events.listen(filesControl, goog.events.EventType.CHANGE, function() {
     goog.style.setHeight(filesList, filesControl.checked ? filesHeight : 0);
   });
+};
+
+
+/**
+ * Abstract representation of a documented file.
+ * @param {string} name The file name.
+ * @param {string=} opt_href Link to the file; may be omitted if this instance
+ *     represents a directory.
+ * @constructor
+ * @private
+ */
+dossier.File_ = function(name, opt_href) {
+
+  /** @type {string} */
+  this.name = name;
+
+  /** @type {string} */
+  this.href = opt_href || '';
+
+  /** @type {!Array.<!dossier.File_>} */
+  this.children = [];
+};
+
+
+/**
+ * @param {!Array.<dossier.Descriptor_>} files The file descriptors to
+ *     build a tree structure from.
+ * @returns {dossier.File_} The root file.
+ * @private
+ */
+dossier.buildFileTree_ = function(files) {
+  var root = new dossier.File_('');
+
+  goog.array.forEach(files, function(file) {
+    var parts = file['name'].split(/[\/\\]/);
+
+    var current = root;
+    goog.array.forEach(parts, function(part, index) {
+      if (!part) return;
+
+      if (index === parts.length - 1) {
+        current.children.push(new dossier.File_(part, file['href']));
+      } else {
+        var next = goog.array.find(current.children, function(dir) {
+          return dir.name === part;
+        });
+        if (!next) {
+          next = new dossier.File_(part);
+          current.children.push(next);
+        }
+        current = next;
+      }
+    });
+  });
+
+  collapseDirs(root);
+  return root;
+
+  function collapseDirs(file) {
+    goog.array.forEach(file.children, collapseDirs);
+
+    if (!file.href && file.children.length === 1) {
+      var name = file.name ? file.name + '/' : '';
+      file.name = name + file.children[0].name;
+      file.href = file.children[0].href;
+      file.children = file.children[0].children;
+    }
+  }
+};
+
+
+/**
+ * Builds a list of file links for the side navigation pane.
+ * @param {string} id ID for the section to attach the created list to.
+ * @param {!Array.<dossier.Descriptor_>} files The descriptors to build
+ *     links for.
+ * @return {!Element} The configured nav list display element.
+ * @private
+ */
+dossier.createFileNavList_ = function(id, files) {
+  var container = goog.dom.getElement(id);
+  var noDataPlaceholder =
+      /** @type {!Element} */ (container.querySelector('i'));
+
+  if (!files.length) {
+    return noDataPlaceholder;
+  }
+
+  goog.dom.removeNode(noDataPlaceholder);
+  var rootEl = goog.dom.createElement(goog.dom.TagName.UL);
+  goog.dom.appendChild(container, rootEl);
+
+  var rootFile = dossier.buildFileTree_(files);
+  processTreeNode(rootFile, rootEl);
+  return rootEl;
+
+  /**
+   * @param {dossier.File_} file .
+   * @param {!Element} parentEl .
+   */
+  function processTreeNode(file, parentEl) {
+    var isDirectory = !!file.children.length;
+    if (!isDirectory) {
+      goog.dom.appendChild(
+          parentEl,
+          goog.dom.createDom(
+              goog.dom.TagName.LI, 'link',
+              goog.dom.createDom(goog.dom.TagName.A, {
+                'href': dossier.BASE_PATH_ + file.href
+              }, file.name)));
+      return;
+    }
+
+    var name = file.name ? file.name + '/' : '';
+    var list = goog.dom.createElement(goog.dom.TagName.UL);
+    goog.dom.appendChild(
+        parentEl,
+        goog.dom.createDom(goog.dom.TagName.LI, null, name, list));
+    goog.array.forEach(file.children, function(child) {
+      processTreeNode(child, list);
+    });
+  }
 };
 
 
@@ -193,7 +316,7 @@ dossier.createNavList_ = function(id, descriptors) {
     }
 
     goog.dom.appendChild(list,
-        goog.dom.createDom(goog.dom.TagName.LI, null,
+        goog.dom.createDom(goog.dom.TagName.LI, 'link',
             goog.dom.createDom(goog.dom.TagName.A, {
               'href': dossier.BASE_PATH_ + descriptor['href']
             }, listItem)));

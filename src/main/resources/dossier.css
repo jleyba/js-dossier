@@ -268,7 +268,7 @@ table.srcfile {
 }
 #sidenav h4:hover { background: #5a5d5e; }
 #sidenav li { list-style: none; }
-#sidenav li:hover { background: rgba(57, 60, 61, 0.1); }
+#sidenav li.link:hover { background: rgba(57, 60, 61, 0.1); }
 #sidenav ul {
   margin: 0;
   padding: 0 0 0 1rem;
