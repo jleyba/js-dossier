@@ -38,8 +38,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import javax.annotation.Nullable;
-
 /**
  * Describes the runtime configuration for the app.
  */
@@ -111,9 +109,9 @@ class Config {
    * Loads a new runtime configuration from the provided command line flags.
    */
   static Config load(Flags flags) throws IOException {
-    Predicate<Path> excluded = excluded(flags.excludes);
+    Predicate<Path> notExcluded = notExcluded(flags.excludes);
     Iterable<Path> filteredRawSources = FluentIterable.from(flags.srcs)
-        .filter(excluded);
+        .filter(notExcluded);
 
     Predicate<Path> regexFilter = excludePatterns(flags.filter);
 
@@ -121,7 +119,7 @@ class Config {
     for (Path source : filteredRawSources) {
       if (Files.isDirectory(source)) {
         srcBuilder.addAll(FluentIterable
-            .from(Paths.expandDir(source, unhiddenJsFilesAndNot(excluded)))
+            .from(Paths.expandDir(source, unhiddenJsFilesAnd(notExcluded)))
             .filter(regexFilter));
       } else if (regexFilter.apply(source)) {
         srcBuilder.add(source);
@@ -168,8 +166,8 @@ class Config {
         errorManager);
 
     String rawDeps = generator.computeDependencyCalls();
-    if (errorManager.getErrorCount() > 0) {
-      errorManager.generateReport();
+    errorManager.generateReport();
+    if (rawDeps == null) {
       throw new RuntimeException("Encountered Closure dependency conflicts");
     }
 
@@ -236,7 +234,7 @@ class Config {
     };
   }
 
-  private static Predicate<Path> excluded(final List<Path> excludes) {
+  private static Predicate<Path> notExcluded(final List<Path> excludes) {
     return new Predicate<Path>() {
       @Override
       public boolean apply(Path input) {
@@ -250,12 +248,12 @@ class Config {
     };
   }
 
-  private static DirectoryStream.Filter<Path> unhiddenJsFilesAndNot(
-      final Predicate<Path> excluded) {
+  private static DirectoryStream.Filter<Path> unhiddenJsFilesAnd(
+      final Predicate<Path> notExcluded) {
     return new DirectoryStream.Filter<Path>() {
       @Override
       public boolean accept(Path entry) throws IOException {
-        return !excluded.apply(entry)
+        return notExcluded.apply(entry)
             && !Files.isHidden(entry)
             && (Files.isDirectory(entry) || entry.toString().endsWith(".js"));
       }
