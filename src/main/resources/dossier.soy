@@ -585,7 +585,7 @@
     {param styleSheets: $styleSheets /}
   {/call}
 
-  <div class="wrapper">
+  <div id="main-wrapper">
     {call .sideNavToggle /}
     <main>
       {call .typeHeader}
@@ -633,11 +633,12 @@
 
     {call .topNav /}
     {call .sideNav /}
-
-    {call .footer}
-      {param scripts: $scripts /}
-    {/call}
+    <div id="push-footer"></div>
   </div>
+
+  {call .footer}
+    {param scripts: $scripts /}
+  {/call}
 {/template}
 
 
@@ -659,7 +660,7 @@
 
   {let $className: 'srcfile' /}
 
-  <div class="wrapper">
+  <div id="main-wrapper">
     {call .sideNavToggle /}
     <main>
       <header><h1>{$displayPath}</h1></header>
@@ -676,10 +677,11 @@
 
     {call .topNav /}
     {call .sideNav /}
-
-    {call .footer}
-      {param scripts: $scripts /}
-      {param footerClass: $className /}
-    {/call}
+    <div id="push-footer"></div>
   </div>
+
+  {call .footer}
+    {param scripts: $scripts /}
+    {param footerClass: $className /}
+  {/call}
 {/template}
