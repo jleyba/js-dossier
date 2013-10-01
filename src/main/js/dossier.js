@@ -221,7 +221,11 @@ dossier.buildFileTree_ = function(files) {
   function collapseDirs(file) {
     goog.array.forEach(file.children, collapseDirs);
 
-    if (!file.href && file.children.length === 1) {
+    // Collapse files if the file is a directory whose only child is
+    // also a directory.
+    if (!file.href
+        && file.children.length === 1
+        && file.children[0].children.length) {
       var name = file.name ? file.name + '/' : '';
       file.name = name + file.children[0].name;
       file.href = file.children[0].href;
