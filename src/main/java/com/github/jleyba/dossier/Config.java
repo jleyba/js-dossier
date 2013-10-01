@@ -166,7 +166,13 @@ class Config {
         DepsGenerator.InclusionStrategy.ALWAYS,
         closureBase.toAbsolutePath().toString(),
         errorManager);
+
     String rawDeps = generator.computeDependencyCalls();
+    if (errorManager.getErrorCount() > 0) {
+      errorManager.generateReport();
+      throw new RuntimeException("Encountered Closure dependency conflicts");
+    }
+
     List<DependencyInfo> allDeps = new DepsFileParser(errorManager)
         .parseFile("*generated-deps*", rawDeps);
 
