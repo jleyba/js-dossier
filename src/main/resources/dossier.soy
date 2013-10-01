@@ -473,8 +473,9 @@
       {call .deprecationNotice}
         {param descriptor: $prop /}
       {/call}
+      <p>
       {if $prop.descriptionHtml}
-        <p>{$prop.descriptionHtml |noAutoescape}
+        {$prop.descriptionHtml |noAutoescape}
       {/if}
     </summary>
     {if $isFunction}

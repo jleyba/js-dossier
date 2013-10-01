@@ -81,6 +81,9 @@ dd { margin-left: 1.25rem; }
 dt { font-weight: bold; }
 dd + dt { margin-top: .5rem; }
 
+td > dl { margin-left: 1rem; }
+.type-summary td > dl { margin-left: 0; }
+
 .args {
   color: #808080;
   font-weight: normal;
