@@ -111,17 +111,18 @@ class Config {
    * Loads a new runtime configuration from the provided command line flags.
    */
   static Config load(Flags flags) throws IOException {
+    Predicate<Path> excluded = excluded(flags.excludes);
     Iterable<Path> filteredRawSources = FluentIterable.from(flags.srcs)
-        .filter(excluded(flags.excludes));
+        .filter(excluded);
 
     Predicate<Path> regexFilter = excludePatterns(flags.filter);
 
     ImmutableSet.Builder<Path> srcBuilder = ImmutableSet.builder();
     for (Path source : filteredRawSources) {
       if (Files.isDirectory(source)) {
-        srcBuilder.addAll(
-            FluentIterable.from(Paths.expandDir(source, unhiddenJsFiles()))
-                .filter(regexFilter));
+        srcBuilder.addAll(FluentIterable
+            .from(Paths.expandDir(source, unhiddenJsFilesAndNot(excluded)))
+            .filter(regexFilter));
       } else if (regexFilter.apply(source)) {
         srcBuilder.add(source);
       }
@@ -234,7 +235,7 @@ class Config {
       @Override
       public boolean apply(Path input) {
         for (Path exclude : excludes) {
-          if (input.startsWith(exclude)) {
+          if (input.equals(exclude)) {
             return false;
           }
         }
@@ -243,11 +244,13 @@ class Config {
     };
   }
 
-  private static DirectoryStream.Filter<Path> unhiddenJsFiles() {
+  private static DirectoryStream.Filter<Path> unhiddenJsFilesAndNot(
+      final Predicate<Path> excluded) {
     return new DirectoryStream.Filter<Path>() {
       @Override
       public boolean accept(Path entry) throws IOException {
-        return !Files.isHidden(entry)
+        return !excluded.apply(entry)
+            && !Files.isHidden(entry)
             && (Files.isDirectory(entry) || entry.toString().endsWith(".js"));
       }
     };

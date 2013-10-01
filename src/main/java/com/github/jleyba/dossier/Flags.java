@@ -74,11 +74,11 @@ class Flags {
   List<Path> excludes = new LinkedList<>();
 
   @Option(
-      name = "--filter", aliases = "-f",
+      name = "--exclude_filter", aliases = "-f",
       handler = PatternHandler.class,
-      usage = "Defines an exclusive regular expression to apply to the input sources; those " +
-          "sources matching this expression will be excluded from processing. More than one " +
-          "filter may be defined.")
+      usage = "Defines a regular expression to apply to the input sources; those sources " +
+          "matching this expression will be exclued from processing. More than one filter may " +
+          "be defined.")
   List<Pattern> filter = new LinkedList<>();
 
   @Option(
@@ -110,6 +110,11 @@ class Flags {
       parser.parseArgument(preprocessedArgs);
     } catch (CmdLineException e) {
       System.err.println(e.getMessage());
+      isConfigValid = false;
+    }
+
+    if (!flags.closureDepsFile.isEmpty() && !flags.closureLibraryDir.isPresent()) {
+      System.err.println("--closure_deps requires --closure_library to be set");
       isConfigValid = false;
     }
 
