@@ -196,6 +196,9 @@ dossier.Namespace_ = function(name, opt_href) {
 
   /** @type {!Array.<!dossier.Namespace_>} */
   this.children = [];
+
+  /** @type {boolean} */
+  this.isInterface = false;
 };
 
 
@@ -225,6 +228,7 @@ dossier.Namespace_.fromRawTypeInfo = function(descriptors) {
 
       if (index === parts.length - 1) {
         current.href = descriptor['href'];
+        current.isInterface = descriptor['isInterface'];
       }
     });
   });
@@ -239,6 +243,7 @@ dossier.Namespace_.fromRawTypeInfo = function(descriptors) {
       namespace.name = name + namespace.children[0].name;
       namespace.href = namespace.children[0].href;
       namespace.children = namespace.children[0].children;
+      namespace.isInterface = namespace.children[0].isInterface;
     }
   }
 };
@@ -357,15 +362,20 @@ dossier.createNamespaceNavList_ = function(id, namespaces) {
       return;
     }
 
+    var nameNode = goog.dom.createTextNode(ns.name);
+    if (ns.isInterface) {
+      nameNode = goog.dom.createDom(goog.dom.TagName.I, null, nameNode);
+    }
+
     var li;
     if (ns.href) {
       li = goog.dom.createDom(
           goog.dom.TagName.LI, 'link',
           goog.dom.createDom(goog.dom.TagName.A, {
             'href': dossier.BASE_PATH_ + ns.href
-          }, ns.name));
+          }, nameNode));
     } else {
-      li = goog.dom.createDom(goog.dom.TagName.LI, null, ns.name);
+      li = goog.dom.createDom(goog.dom.TagName.LI, null, nameNode);
     }
     goog.dom.appendChild(parentEl, li);
 
