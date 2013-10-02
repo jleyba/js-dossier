@@ -56,6 +56,7 @@ dossier.TypeInfo_;
 dossier.init = function() {
   var typeInfo = /** @type {dossier.TypeInfo_} */(goog.global['TYPES']);
   dossier.initNavList_(typeInfo);
+  dossier.initIndex_(typeInfo);
   setTimeout(goog.partial(dossier.initSearchBox_, typeInfo), 0);
   setTimeout(dossier.polyFillDetailsElements_, 0);
 };
@@ -122,6 +123,22 @@ dossier.initSearchBox_ = function(typeInfo) {
 
 
 /**
+ * Builds the list of links for the main index page.
+ * @param {dossier.TypeInfo_} typeInfo The types to link to.
+ * @private
+ */
+dossier.initIndex_ = function(typeInfo) {
+  if (!goog.dom.getElement('type-index') ||
+      !goog.dom.getElement('file-index')) {
+    return;  // The current page is not the main index.
+  }
+
+  dossier.createFileNavList_('file-index', typeInfo['files']);
+  dossier.createNamespaceNavList_('type-index', typeInfo['types']);
+};
+
+
+/**
  * Builds the navigation side bar.
  * @param {dossier.TypeInfo_} typeInfo The types to link to from the current
  *     page.
@@ -160,6 +177,70 @@ dossier.initNavList_ = function(typeInfo) {
   goog.events.listen(filesControl, goog.events.EventType.CHANGE, function() {
     goog.style.setHeight(filesList, filesControl.checked ? filesHeight : 0);
   });
+};
+
+
+/**
+ * Abstract representation of a documented namespace like object.
+ * @param {string} name The namespace name.
+ * @param {string=} opt_href The namespace href.
+ * @constructor
+ * @private
+ */
+dossier.Namespace_ = function(name, opt_href) {
+  /** @type {string} */
+  this.name = name;
+
+  /** @type {string} */
+  this.href = opt_href || '';
+
+  /** @type {!Array.<!dossier.Namespace_>} */
+  this.children = [];
+};
+
+
+/**
+ * @param {!Array.<dossier.Descriptor_>} descriptors The descriptors to
+ *     build a tree structure from.
+ * @returns {dossier.Namespace_} The root namespace.
+ * @private
+ */
+dossier.Namespace_.fromRawTypeInfo = function(descriptors) {
+  var root = new dossier.Namespace_('');
+  goog.array.forEach(descriptors, function(descriptor) {
+    var parts = descriptor['name'].split('.');
+    var current = root;
+    goog.array.forEach(parts, function(part, index) {
+      if (!part) return;
+
+      var next = goog.array.find(current.children, function(ns) {
+        return ns.name === part;
+      });
+
+      if (!next) {
+        next = new dossier.Namespace_(part);
+        current.children.push(next);
+      }
+      current = next;
+
+      if (index === parts.length - 1) {
+        current.href = descriptor['href'];
+      }
+    });
+  });
+
+  collapse(root);
+  return root;
+
+  function collapse(namespace) {
+    goog.array.forEach(namespace.children, collapse);
+    if (!namespace.href && namespace.children.length === 1) {
+      var name = namespace.name ? namespace.name + '.' : '';
+      namespace.name = name + namespace.children[0].name;
+      namespace.href = namespace.children[0].href;
+      namespace.children = namespace.children[0].children;
+    }
+  }
 };
 
 
@@ -236,7 +317,72 @@ dossier.buildFileTree_ = function(files) {
 
 
 /**
- * Builds a list of file links for the side navigation pane.
+ * Builds a heirarchical list of namespace links.
+ * @param {string} id ID for the section to attach the created list to.
+ * @param {!Array.<dossier.Descriptor_>} namespaces The descriptors to build
+ *     links for.
+ * @return {!Element} The configured list display element.
+ * @private
+ */
+dossier.createNamespaceNavList_ = function(id, namespaces) {
+  var container = goog.dom.getElement(id);
+  var noDataPlaceholder = /** @type {!Element} */ (
+      container.querySelector('i'));
+
+  if (!namespaces.length) {
+    return noDataPlaceholder;
+  }
+
+  goog.dom.removeNode(noDataPlaceholder);
+  var rootEl = /** @type {!HTMLUListElement} */(
+      goog.dom.createElement(goog.dom.TagName.UL));
+  goog.dom.appendChild(container, rootEl);
+
+  var rootNamespace = dossier.Namespace_.fromRawTypeInfo(namespaces);
+  processTreeNode(rootNamespace, rootEl);
+  return rootEl;
+
+  /**
+   * @param {dossier.Namespace_} ns .
+   * @param {!HTMLUListElement} parentEl .
+   */
+  function processTreeNode(ns, parentEl) {
+    // If the name is empty, then we are at the root and
+    // can add children directly to the parent element without adding
+    // a new list.
+    if (!ns.name) {
+      goog.array.forEach(ns.children, function(child) {
+        processTreeNode(child, parentEl);
+      });
+      return;
+    }
+
+    var li;
+    if (ns.href) {
+      li = goog.dom.createDom(
+          goog.dom.TagName.LI, 'link',
+          goog.dom.createDom(goog.dom.TagName.A, {
+            'href': dossier.BASE_PATH_ + ns.href
+          }, ns.name));
+    } else {
+      li = goog.dom.createDom(goog.dom.TagName.LI, null, ns.name);
+    }
+    goog.dom.appendChild(parentEl, li);
+
+    if (ns.children.length) {
+      var list = /** @type {!HTMLUListElement} */(
+          goog.dom.createElement(goog.dom.TagName.UL));
+      goog.dom.appendChild(li, list);
+      goog.array.forEach(ns.children, function(child) {
+        processTreeNode(child, list);
+      });
+    }
+  }
+};
+
+
+/**
+ * Builds a heirarchical list of file links.
  * @param {string} id ID for the section to attach the created list to.
  * @param {!Array.<dossier.Descriptor_>} files The descriptors to build
  *     links for.
@@ -253,7 +399,8 @@ dossier.createFileNavList_ = function(id, files) {
   }
 
   goog.dom.removeNode(noDataPlaceholder);
-  var rootEl = goog.dom.createElement(goog.dom.TagName.UL);
+  var rootEl = /** @type {!HTMLUListElement} */(
+      goog.dom.createElement(goog.dom.TagName.UL));
   goog.dom.appendChild(container, rootEl);
 
   var rootFile = dossier.buildFileTree_(files);
@@ -262,7 +409,7 @@ dossier.createFileNavList_ = function(id, files) {
 
   /**
    * @param {dossier.File_} file .
-   * @param {!Element} parentEl .
+   * @param {!HTMLUListElement} parentEl .
    */
   function processTreeNode(file, parentEl) {
     var isDirectory = !!file.children.length;
@@ -277,11 +424,21 @@ dossier.createFileNavList_ = function(id, files) {
       return;
     }
 
-    var name = file.name ? file.name + '/' : '';
-    var list = goog.dom.createElement(goog.dom.TagName.UL);
+    // If the name is empty, then we are at the root and can add
+    // children directly to the parent element without adding a
+    // new list.
+    if (!file.name) {
+      goog.array.forEach(file.children, function(child) {
+        processTreeNode(child, parentEl);
+      });
+      return;
+    }
+
+    var list = /** @type {!HTMLUListElement} */(
+        goog.dom.createElement(goog.dom.TagName.UL));
     goog.dom.appendChild(
         parentEl,
-        goog.dom.createDom(goog.dom.TagName.LI, null, name, list));
+        goog.dom.createDom(goog.dom.TagName.LI, null, file.name + '/', list));
     goog.array.forEach(file.children, function(child) {
       processTreeNode(child, list);
     });

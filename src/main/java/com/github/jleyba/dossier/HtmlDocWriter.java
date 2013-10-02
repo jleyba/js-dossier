@@ -85,12 +85,24 @@ class HtmlDocWriter implements DocWriter {
     Files.createDirectories(config.getOutput());
     copyResources();
     copySourceFiles();
+    generateIndex();
 
     for (Descriptor descriptor : sortedTypes) {
       generateDocs(descriptor, registry);
     }
 
     writeTypesJson();
+  }
+
+  private void generateIndex() throws IOException {
+    Path index = config.getOutput().resolve("index.html");
+    try (BufferedWriter writer = Files.newBufferedWriter(index, Charsets.UTF_8)) {
+      tofu.newRenderer("dossier.indexFile")
+          .setData(new SoyMapData(
+              "styleSheets", new SoyListData("dossier.css"),
+              "scripts", new SoyListData("types.js", "dossier.js")))
+          .render(writer);
+    }
   }
 
   private void generateDocs(Descriptor descriptor, JSTypeRegistry registry) throws IOException {

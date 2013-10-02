@@ -644,6 +644,42 @@
 
 
 /**
+ * Generates the main index.
+ *
+ * @param styleSheets The stylesheets to include in the page.
+ * @param scripts The scripts to include in the page.
+ */
+{template .indexFile}
+  {call .pageHeader}
+    /* TODO(jleyba): title should be configurable. */
+    {param title: 'Index' /}
+    {param styleSheets: $styleSheets /}
+  {/call}
+
+  <div id="main-wrapper">
+    <main id="index">
+      <section id="type-index">
+        <h2>Namespaces / Types</h2>
+        <i>No data</i>
+      </section>
+
+      <section id="file-index">
+        <h2>Files</h2>
+        <i>No data</i>
+      </section>
+    </main>
+
+    {call .topNav /}
+    <div id="push-footer"></div>
+  </div>
+
+  {call .footer}
+    {param scripts: $scripts /}
+  {/call}
+{/template}
+
+
+/**
  * Generates an HTML page for displaying the contents of a JavaScript source
  * file.
  *
