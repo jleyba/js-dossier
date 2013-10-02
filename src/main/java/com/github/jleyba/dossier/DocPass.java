@@ -141,18 +141,15 @@ class DocPass  implements CompilerPass {
         // var Foo = function() {};
         // var FooAlias = Foo;
         if (registry.getType(descriptor.getFullName()) == null) {
-          System.out.println("SKIPPING " + descriptor.getFullName());
           return;
         }
 
-        System.out.println("Found type: " + descriptor.getFullName());
         docRegistry.addType(descriptor);
 
       } else if (!descriptor.isObject() && !descriptor.isFunction()) {
         return;
       }
 
-      System.out.println("------- scanning " + descriptor.getFullName());
       ObjectType obj = descriptor.toObjectType();
       for (String prop : obj.getOwnPropertyNames()) {
         Node node = obj.getPropertyNode(prop);
@@ -197,7 +194,6 @@ class DocPass  implements CompilerPass {
 
       if (!docRegistry.isKnownType(descriptor.getFullName())
           && (registry.hasNamespace(descriptor.getFullName()) || descriptor.isNamespace())) {
-        System.out.println("Found namespace: " + descriptor.getFullName());
         docRegistry.addType(descriptor);
       }
     }
