@@ -32,6 +32,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.annotation.Nullable;
+
 /**
  * Describes the runtime configuration for the app.
  */
@@ -86,6 +88,13 @@ class Flags {
       handler = SimplePathHandler.class,
       usage = "Defines an externs file to pass to the Closure compiler.")
   List<Path> externs = new LinkedList<>();
+
+  @Option(
+      name = "--license",
+      handler = SimplePathHandler.class,
+      usage = "Defines the path to the license file to include with the generated documentation.")
+  @Nullable
+  Path license = null;
 
   @Option(
       name = "--output", aliases = "-o",

@@ -224,12 +224,15 @@ span.deprecation-reason {
 }
 
 
-table.srcfile {
+table.srcfile,
+table.licensefile {
   border: 1px solid #a8a8a8;
   font-size: 1.2rem;
 }
+.licensefile td,
 .srcfile td,
 .srcfile a { color: #454545; }
+.licensefile td,
 .srcfile td {
   padding: .15rem 1rem;
   background-color: #e8e8e8;

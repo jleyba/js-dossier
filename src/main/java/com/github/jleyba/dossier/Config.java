@@ -18,6 +18,7 @@ import static com.google.common.collect.Iterables.transform;
 import static com.google.common.collect.Sets.intersection;
 
 import com.google.common.base.Function;
+import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableSet;
@@ -47,6 +48,7 @@ class Config {
   private final ImmutableSet<Path> externs;
   private final Path srcPrefix;
   private final Path output;
+  private final Optional<Path> license;
 
   /**
    * Creates a new runtime configuration.
@@ -54,10 +56,12 @@ class Config {
    * @param srcs The list of compiler input sources.
    * @param externs The list of extern files for the Closure compiler.
    * @param output Path to the output directory.
+   * @param license Path to a license file to include with the generated documentation.
    * @throws IllegalStateException If the source and extern lists intersect, or if the output
    *     path is not a directory.
    */
-  private Config(ImmutableSet<Path> srcs, ImmutableSet<Path> externs, Path output) {
+  private Config(
+      ImmutableSet<Path> srcs, ImmutableSet<Path> externs, Path output, Optional<Path> license) {
     checkArgument(intersection(srcs, externs).isEmpty(),
         "The sources and externs inputs must be disjoint:\n  sources: %s\n  externs: %s",
         srcs, externs);
@@ -68,6 +72,7 @@ class Config {
     this.srcPrefix = Paths.getCommonPrefix(srcs);
     this.externs = externs;
     this.output = output;
+    this.license = license;
   }
 
   /**
@@ -103,6 +108,13 @@ class Config {
    */
   Path getSourceOutput() {
     return output.resolve("source");
+  }
+
+  /**
+   * Returns the path to a license file to include with the generated documentation.
+   */
+  Optional<Path> getLicense() {
+    return license;
   }
 
   /**
@@ -144,7 +156,8 @@ class Config {
     return new Config(
         sources,
         ImmutableSet.copyOf(flags.externs),
-        flags.outputDir);
+        flags.outputDir,
+        Optional.fromNullable(flags.license));
   }
 
   private static ImmutableSet<Path> processClosureSources(

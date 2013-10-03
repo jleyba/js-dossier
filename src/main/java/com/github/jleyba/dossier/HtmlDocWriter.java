@@ -18,6 +18,7 @@ import static com.google.common.collect.Iterables.transform;
 
 import com.google.common.base.Charsets;
 import com.google.common.base.Function;
+import com.google.common.base.Joiner;
 import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Ordering;
@@ -86,6 +87,7 @@ class HtmlDocWriter implements DocWriter {
     copyResources();
     copySourceFiles();
     generateIndex();
+    generateLicense();
 
     for (Descriptor descriptor : sortedTypes) {
       generateDocs(descriptor, registry);
@@ -100,7 +102,25 @@ class HtmlDocWriter implements DocWriter {
       tofu.newRenderer("dossier.indexFile")
           .setData(new SoyMapData(
               "styleSheets", new SoyListData("dossier.css"),
-              "scripts", new SoyListData("types.js", "dossier.js")))
+              "scripts", new SoyListData("types.js", "dossier.js"),
+              "hasLicense", config.getLicense().isPresent()))
+          .render(writer);
+    }
+  }
+
+  private void generateLicense() throws IOException {
+    if (!config.getLicense().isPresent()) {
+      return;
+    }
+    Path license = config.getOutput().resolve("license.html");
+    try (BufferedWriter writer = Files.newBufferedWriter(license, Charsets.UTF_8)) {
+      List<String> lines = Files.readAllLines(config.getLicense().get(), Charsets.UTF_8);
+      String text = Joiner.on('\n').join(lines);
+      tofu.newRenderer("dossier.licenseFile")
+          .setData(new SoyMapData(
+              "styleSheets", new SoyListData("dossier.css"),
+              "scripts", new SoyListData("types.js", "dossier.js"),
+              "licenseText", text))
           .render(writer);
     }
   }
@@ -173,7 +193,8 @@ class HtmlDocWriter implements DocWriter {
               "title", descriptor.getFullName(),
               "styleSheets", new SoyListData("dossier.css"),
               "scripts", new SoyListData("types.js", "dossier.js"),
-              "descriptor", desc))
+              "descriptor", desc,
+              "hasLicense", config.getLicense().isPresent()))
           .render(writer);
     }
   }
@@ -261,6 +282,9 @@ class HtmlDocWriter implements DocWriter {
       Path toDossierCss = relativePath.resolve("dossier.css");
       Path toTypesJs = relativePath.resolve("types.js");
       Path toDossierJs = relativePath.resolve("dossier.js");
+      String toLicense = config.getLicense().isPresent()
+          ? relativePath.resolve("license.html").toString()
+          : null;
 
       Files.createDirectories(dest.getParent());
       try (BufferedWriter writer = Files.newBufferedWriter(dest, Charsets.UTF_8)) {
@@ -270,7 +294,8 @@ class HtmlDocWriter implements DocWriter {
                 "styleSheets", new SoyListData(toDossierCss.toString()),
                 "displayPath", simpleSource.toString(),
                 "lines", new SoyListData(Files.readAllLines(source, Charsets.UTF_8)),
-                "scripts", new SoyListData(toTypesJs.toString(), toDossierJs.toString())))
+                "scripts", new SoyListData(toTypesJs.toString(), toDossierJs.toString()),
+                "licensePath", toLicense))
             .render(writer);
       }
     }
