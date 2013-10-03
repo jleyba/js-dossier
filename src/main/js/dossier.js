@@ -149,6 +149,9 @@ dossier.initNavList_ = function(typeInfo) {
     return;  // The current page does not have a side nav pane.
   }
 
+  var overview = goog.dom.getElement('sidenav-overview');
+  overview.href = dossier.BASE_PATH_ + 'index.html';
+
   // Now that everything is built, configure the controls to expand and
   // collapse the very portions of the navigation menu. We can't do this
   // through CSS because we effectively want to toggle between

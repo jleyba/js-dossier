@@ -257,6 +257,7 @@ table.srcfile {
   background: #fff;
 }
 #sidenav input { display: none; }
+#sidenav > a[href] { color: #fff; }
 #sidenav h4 {
   color: #fff;
   width: 100%;
