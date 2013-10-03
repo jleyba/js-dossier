@@ -31,6 +31,7 @@ goog.require('goog.dom.TagName');
 goog.require('goog.dom.classes');
 goog.require('goog.style');
 goog.require('goog.ui.ac');
+goog.require('goog.ui.ac.AutoComplete.EventType');
 
 
 /**
@@ -105,20 +106,25 @@ dossier.initSearchBox_ = function(typeInfo) {
       }));
 
   var searchForm = goog.dom.getElement('searchbox');
-  var input = searchForm.getElementsByTagName('input')[0];
-  var ac = goog.ui.ac.createSimpleAutoComplete(allTerms, input, false, true);
-  ac.setMaxMatches(100);
   goog.events.listen(searchForm, goog.events.EventType.SUBMIT, function(e) {
     e.preventDefault();
     e.stopPropagation();
+    navigatePage();
+    return false;
+  });
 
+  var input = searchForm.getElementsByTagName('input')[0];
+  var ac = goog.ui.ac.createSimpleAutoComplete(allTerms, input, false, true);
+  ac.setMaxMatches(15);
+  goog.events.listen(ac,
+      goog.ui.ac.AutoComplete.EventType.UPDATE, navigatePage);
+
+  function navigatePage() {
     var href = nameToHref[input.value];
     if (href) {
       window.location.href = dossier.BASE_PATH_ + href;
     }
-
-    return false;
-  });
+  }
 };
 
 
