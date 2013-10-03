@@ -36,6 +36,7 @@ import com.google.template.soy.tofu.SoyTofu;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import com.github.rjeschke.txtmark.Processor;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -97,13 +98,22 @@ class HtmlDocWriter implements DocWriter {
   }
 
   private void generateIndex() throws IOException {
+    String readmeHtml = "";
+    if (config.getReadme().isPresent()) {
+      String text = new String(Files.readAllBytes(config.getReadme().get()), Charsets.UTF_8);
+      readmeHtml = Processor.process(text);
+      // One more pass to process any inline taglets (e.g. {@code} or {@link}).
+      readmeHtml = CommentUtil.formatCommentText(linker, readmeHtml);
+    }
+
     Path index = config.getOutput().resolve("index.html");
     try (BufferedWriter writer = Files.newBufferedWriter(index, Charsets.UTF_8)) {
       tofu.newRenderer("dossier.indexFile")
           .setData(new SoyMapData(
               "styleSheets", new SoyListData("dossier.css"),
               "scripts", new SoyListData("types.js", "dossier.js"),
-              "hasLicense", config.getLicense().isPresent()))
+              "hasLicense", config.getLicense().isPresent(),
+              "readmeHtml", readmeHtml))
           .render(writer);
     }
   }
@@ -114,8 +124,7 @@ class HtmlDocWriter implements DocWriter {
     }
     Path license = config.getOutput().resolve("license.html");
     try (BufferedWriter writer = Files.newBufferedWriter(license, Charsets.UTF_8)) {
-      List<String> lines = Files.readAllLines(config.getLicense().get(), Charsets.UTF_8);
-      String text = Joiner.on('\n').join(lines);
+      String text = new String(Files.readAllBytes(config.getLicense().get()), Charsets.UTF_8);
       tofu.newRenderer("dossier.licenseFile")
           .setData(new SoyMapData(
               "styleSheets", new SoyListData("dossier.css"),

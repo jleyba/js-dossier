@@ -145,6 +145,11 @@
       <artifactId>easymock</artifactId>
       <version>2.2</version>
     </dependency>
+    <dependency>
+      <groupId>com.github.rjeschke</groupId>
+      <artifactId>txtmark</artifactId>
+      <version>0.8</version>
+    </dependency>
   </dependencies>
 
 

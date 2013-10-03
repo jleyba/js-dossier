@@ -93,8 +93,14 @@ class Flags {
       name = "--license",
       handler = SimplePathHandler.class,
       usage = "Defines the path to the license file to include with the generated documentation.")
-  @Nullable
   Path license = null;
+
+  @Option(
+      name = "--readme",
+      handler = SimplePathHandler.class,
+      usage = "Defines the path to a readme file to include in the main index. This file should " +
+          "use markdown syntax.")
+  Path readme = null;
 
   @Option(
       name = "--output", aliases = "-o",

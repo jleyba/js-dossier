@@ -49,6 +49,7 @@ class Config {
   private final Path srcPrefix;
   private final Path output;
   private final Optional<Path> license;
+  private final Optional<Path> readme;
 
   /**
    * Creates a new runtime configuration.
@@ -57,22 +58,29 @@ class Config {
    * @param externs The list of extern files for the Closure compiler.
    * @param output Path to the output directory.
    * @param license Path to a license file to include with the generated documentation.
+   * @param readme Path to a markdown file to include in the main index.
    * @throws IllegalStateException If the source and extern lists intersect, or if the output
    *     path is not a directory.
    */
   private Config(
-      ImmutableSet<Path> srcs, ImmutableSet<Path> externs, Path output, Optional<Path> license) {
+      ImmutableSet<Path> srcs, ImmutableSet<Path> externs, Path output,
+      Optional<Path> license, Optional<Path> readme) {
     checkArgument(intersection(srcs, externs).isEmpty(),
         "The sources and externs inputs must be disjoint:\n  sources: %s\n  externs: %s",
         srcs, externs);
     checkArgument(!Files.exists(output) || Files.isDirectory(output),
         "Output path, %s, is not a directory", output);
+    checkArgument(!license.isPresent() || Files.exists(license.get()),
+        "LICENSE path, %s, does not exist", license.orNull());
+    checkArgument(!readme.isPresent() || Files.exists(readme.get()),
+        "README path, %s, does not exist", readme.orNull());
 
     this.srcs = srcs;
     this.srcPrefix = Paths.getCommonPrefix(srcs);
     this.externs = externs;
     this.output = output;
     this.license = license;
+    this.readme = readme;
   }
 
   /**
@@ -118,6 +126,13 @@ class Config {
   }
 
   /**
+   * Returns the path to the readme markdown file, if any, to include in the main index.
+   */
+  Optional<Path> getReadme() {
+    return readme;
+  }
+
+  /**
    * Loads a new runtime configuration from the provided command line flags.
    */
   static Config load(Flags flags) throws IOException {
@@ -157,7 +172,8 @@ class Config {
         sources,
         ImmutableSet.copyOf(flags.externs),
         flags.outputDir,
-        Optional.fromNullable(flags.license));
+        Optional.fromNullable(flags.license),
+        Optional.fromNullable(flags.readme));
   }
 
   private static ImmutableSet<Path> processClosureSources(

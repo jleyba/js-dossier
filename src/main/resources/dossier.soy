@@ -657,6 +657,9 @@
  * @param styleSheets The stylesheets to include in the page.
  * @param scripts The scripts to include in the page.
  * @param hasLicense Whether to generate a link to a license file.
+ * @param readmeHtml HTML content for the main readme to include
+ *     in the page. If empty, the type and file indices will be
+ *     rendered as placeholders.
  */
 {template .indexFile}
   {call .pageHeader}
@@ -666,16 +669,20 @@
   {/call}
 
   <div id="main-wrapper">
-    <main id="index">
-      <section id="type-index">
-        <h2>Namespaces / Types</h2>
-        <i>No data</i>
-      </section>
+    <main>
+      {if $readmeHtml}
+        {$readmeHtml |noAutoescape}
+      {else}
+        <section id="type-index">
+          <h2>Namespaces / Types</h2>
+          <i>No data</i>
+        </section>
 
-      <section id="file-index">
-        <h2>Files</h2>
-        <i>No data</i>
-      </section>
+        <section id="file-index">
+          <h2>Files</h2>
+          <i>No data</i>
+        </section>
+      {/if}
     </main>
 
     {call .topNav /}
