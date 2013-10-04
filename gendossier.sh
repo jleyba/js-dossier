@@ -34,3 +34,7 @@ python ./closure_library/closure/bin/calcdeps.py \
     -f "--third_party=false" \
     -f "--output_wrapper=\"(function(){%output%;init();})();\"" \
     --output_file=./src/main/resources/dossier.js
+
+lessc --yui-compress \
+    src/main/js/dossier.less \
+    src/main/resources/dossier.css

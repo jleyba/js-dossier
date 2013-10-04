@@ -8,9 +8,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/main/resources" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
-      <excludeFolder url="file://$MODULE_DIR$/target/archive-tmp" />
       <excludeFolder url="file://$MODULE_DIR$/target/classes" />
-      <excludeFolder url="file://$MODULE_DIR$/target/docs" />
       <excludeFolder url="file://$MODULE_DIR$/target/maven-status" />
       <excludeFolder url="file://$MODULE_DIR$/target/surefire" />
       <excludeFolder url="file://$MODULE_DIR$/target/surefire-reports" />
@@ -25,7 +23,7 @@
     <orderEntry type="library" name="Maven: aopalliance:aopalliance:1.0" level="project" />
     <orderEntry type="library" name="Maven: com.google.inject.extensions:guice-assistedinject:3.0" level="project" />
     <orderEntry type="library" name="Maven: com.google.inject.extensions:guice-multibindings:3.0" level="project" />
-    <orderEntry type="library" name="Maven: com.google.javascript:closure-compiler:v20130722" level="project" />
+    <orderEntry type="library" name="Maven: com.google.javascript:closure-compiler:v20130823" level="project" />
     <orderEntry type="library" name="Maven: args4j:args4j:2.0.16" level="project" />
     <orderEntry type="library" name="Maven: com.google.protobuf:protobuf-java:2.4.1" level="project" />
     <orderEntry type="library" name="Maven: org.json:json:20090211" level="project" />
@@ -38,6 +36,7 @@
     <orderEntry type="library" scope="TEST" name="Maven: rhino:js:1.7R1" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.easymock:easymock:2.2" level="project" />
     <orderEntry type="library" name="Maven: com.github.rjeschke:txtmark:0.8" level="project" />
+    <orderEntry type="library" name="com.google.javascript:closure-compiler:v20130823" level="project" />
   </component>
 </module>
 
