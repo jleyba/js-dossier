@@ -13,14 +13,31 @@
 // limitations under the License.
 package com.github.jleyba.dossier;
 
+import static com.github.jleyba.dossier.proto.Dossier.BaseProperty;
+import static com.github.jleyba.dossier.proto.Dossier.Deprecation;
+import static com.github.jleyba.dossier.proto.Dossier.IndexFileRenderSpec;
+import static com.github.jleyba.dossier.proto.Dossier.JsType;
+import static com.github.jleyba.dossier.proto.Dossier.JsTypeRenderSpec;
+import static com.github.jleyba.dossier.proto.Dossier.License;
+import static com.github.jleyba.dossier.proto.Dossier.LicenseRenderSpec;
+import static com.github.jleyba.dossier.proto.Dossier.Property;
+import static com.github.jleyba.dossier.proto.Dossier.Prototype;
+import static com.github.jleyba.dossier.proto.Dossier.Resources;
+import static com.github.jleyba.dossier.proto.Dossier.SourceFile;
+import static com.github.jleyba.dossier.proto.Dossier.Enumeration;
+import static com.github.jleyba.dossier.proto.Dossier.SourceFileRenderSpec;
+import static com.github.jleyba.dossier.proto.Dossier.TypeLink;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Iterables.transform;
 
+import com.github.jleyba.dossier.proto.Dossier;
+import com.github.rjeschke.txtmark.Processor;
 import com.google.common.base.Charsets;
 import com.google.common.base.Function;
-import com.google.common.base.Joiner;
 import com.google.common.base.Predicate;
+import com.google.common.base.Strings;
 import com.google.common.collect.FluentIterable;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.JSTypeExpression;
@@ -29,16 +46,11 @@ import com.google.javascript.rhino.jstype.FunctionType;
 import com.google.javascript.rhino.jstype.JSType;
 import com.google.javascript.rhino.jstype.JSTypeRegistry;
 import com.google.javascript.rhino.jstype.ObjectType;
-import com.google.template.soy.SoyFileSet;
-import com.google.template.soy.data.SoyListData;
-import com.google.template.soy.data.SoyMapData;
-import com.google.template.soy.tofu.SoyTofu;
+import com.google.template.soy.tofu.SoyTofuException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import com.github.rjeschke.txtmark.Processor;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.FileSystem;
@@ -62,7 +74,9 @@ class HtmlDocWriter implements DocWriter {
   private final Config config;
   private final DocRegistry docRegistry;
   private final Linker linker;
-  private SoyTofu tofu;
+
+  private final Renderer renderer = new Renderer();
+
   private Iterable<Descriptor> sortedTypes;
   private Iterable<Path> sortedFiles;
 
@@ -74,11 +88,6 @@ class HtmlDocWriter implements DocWriter {
 
   @Override
   public void generateDocs(final JSTypeRegistry registry) throws IOException {
-    tofu = new SoyFileSet.Builder()
-        .add(HtmlDocWriter.class.getResource("/dossier.soy"))
-        .build()
-        .compileToTofu();
-
     sortedTypes = FluentIterable.from(docRegistry.getTypes())
         .toSortedList(DescriptorNameComparator.INSTANCE);
     sortedFiles = FluentIterable.from(config.getSources())
@@ -107,105 +116,79 @@ class HtmlDocWriter implements DocWriter {
     }
 
     Path index = config.getOutput().resolve("index.html");
-    try (BufferedWriter writer = Files.newBufferedWriter(index, Charsets.UTF_8)) {
-      tofu.newRenderer("dossier.indexFile")
-          .setData(new SoyMapData(
-              "styleSheets", new SoyListData("dossier.css"),
-              "scripts", new SoyListData("types.js", "dossier.js"),
-              "hasLicense", config.getLicense().isPresent(),
-              "readmeHtml", readmeHtml))
-          .render(writer);
-    }
+    renderer.render(index, IndexFileRenderSpec.newBuilder()
+        .setResources(Resources.newBuilder()
+            .addCss("dossier.css")
+            .addScript("types.js")
+            .addScript("dossier.js")
+            .build())
+        .setHasLicense(config.getLicense().isPresent())
+        .setReadmeHtml(readmeHtml)
+        .build());
   }
 
   private void generateLicense() throws IOException {
     if (!config.getLicense().isPresent()) {
       return;
     }
+
     Path license = config.getOutput().resolve("license.html");
-    try (BufferedWriter writer = Files.newBufferedWriter(license, Charsets.UTF_8)) {
-      String text = new String(Files.readAllBytes(config.getLicense().get()), Charsets.UTF_8);
-      tofu.newRenderer("dossier.licenseFile")
-          .setData(new SoyMapData(
-              "styleSheets", new SoyListData("dossier.css"),
-              "scripts", new SoyListData("types.js", "dossier.js"),
-              "licenseText", text))
-          .render(writer);
-    }
+    String text = new String(Files.readAllBytes(config.getLicense().get()), Charsets.UTF_8);
+
+    renderer.render(
+        license,
+        LicenseRenderSpec.newBuilder()
+            .setLicense(License.newBuilder().setText(text).build())
+            .setResources(Resources.newBuilder()
+                .addCss("dossier.css")
+                .addScript("types.js")
+                .addScript("dossier.js")
+                .build())
+            .build());
   }
 
   private void generateDocs(Descriptor descriptor, JSTypeRegistry registry) throws IOException {
     Path output = linker.getFilePath(descriptor);
     Files.createDirectories(output.getParent());
 
-    SoyMapData desc = new SoyMapData(
-        "name", descriptor.getFullName(),
-        "isClass", descriptor.isConstructor(),
-        "isInterface", descriptor.isInterface(),
-        "isEnum", descriptor.isEnum(),
-        "sourceLink", linker.getSourcePath(descriptor),
-        "descriptionHtml", CommentUtil.getBlockDescription(linker, descriptor.getInfo()),
-        "typedefs", getTypeDefs(descriptor),
-        "nested", new SoyMapData(
-            "interfaces", getNestedTypeSummaries(descriptor, isInterface()),
-            "classes", getNestedTypeSummaries(descriptor, isClass()),
-            "enums", getNestedTypeSummaries(descriptor, isEnum())),
-        "prototype", getPrototypeData(descriptor, registry),
-        "static", getStaticData(descriptor));
+    String source = linker.getSourcePath(descriptor);
+
+    JsType.Builder jsTypeBuilder = JsType.newBuilder()
+        .setName(descriptor.getFullName())
+        .setNested(getNestedTypes(descriptor))
+        .setSource(Strings.nullToEmpty(source))
+        .setDescriptionHtml(CommentUtil.getBlockDescription(linker, descriptor.getInfo()))
+        .addAllTypeDef(getTypeDefs(descriptor))
+        .addAllExtendedType(getInheritedTypes(descriptor, registry))
+        .addAllImplementedType(getImplementedTypes(descriptor, registry))
+        .setIsInterface(descriptor.isInterface());
+
+    getStaticData(jsTypeBuilder, descriptor);
+    getPrototypeData(jsTypeBuilder, descriptor, registry);
 
     if (descriptor.isDeprecated()) {
-      desc.put("isDeprecated", true);
-      desc.put("deprecationHtml", CommentUtil.formatCommentText(
-          linker, descriptor.getDeprecationReason()));
-    }
-
-    if (descriptor.isEnum() && descriptor.getInfo() != null) {
-      JSDocInfo info = descriptor.getInfo();
-      String type = CommentUtil.formatTypeExpression(info.getEnumParameterType(), linker);
-      desc.put("enumType", type);
-    }
-
-    desc.put("inheritedTypes", getInheritedTypes(descriptor, registry));
-
-    Set<String> interfaces = descriptor.isInterface()
-        ? descriptor.getExtendedInterfaces(registry)
-        : descriptor.getImplementedInterfaces(registry);
-    desc.put("interfaces", transform(Ordering.natural().sortedCopy(interfaces),
-        new Function<String, String>() {
-          @Override
-          public String apply(String input) {
-            return new StringBuilder("<code>")
-                .append(getTypeLink(input))
-                .append("</code>")
-                .toString();
-          }
-        }));
-
-    if (descriptor.isConstructor()) {
-      desc.put("ctor", getFunctionData(descriptor, true));
-    }
-
-    if (descriptor.isConstructor() || descriptor.isInterface()) {
-      JSDocInfo info = descriptor.getInfo();
-      if (info != null) {
-        desc.put("templateNames", info.getTemplateTypeNames());
-      }
+      jsTypeBuilder.setDeprecation(getDeprecation(descriptor));
     }
 
     if (descriptor.isEnum()) {
-      desc.put("enumValues", getEnumData(descriptor));
+      extractEnumData(descriptor, jsTypeBuilder);
     }
 
-    try (BufferedWriter writer = Files.newBufferedWriter(output, Charsets.UTF_8)) {
-      tofu.newRenderer("dossier.typefile")
-          .setData(new SoyMapData(
-              "title", descriptor.getFullName(),
-              "styleSheets", new SoyListData("dossier.css"),
-              "scripts", new SoyListData("types.js", "dossier.js"),
-              "descriptor", desc,
-              "hasLicense", config.getLicense().isPresent()))
-          .render(writer);
+    if (descriptor.isConstructor() || descriptor.isInterface()) {
+      jsTypeBuilder.setConstructor(getFunctionData(descriptor));
     }
+
+    renderer.render(
+        output,
+        JsTypeRenderSpec.newBuilder()
+            .setResources(Resources.newBuilder()
+                .addCss("dossier.css")
+                .addScript("types.js")
+                .addScript("dossier.js")
+                .build())
+            .setHasLicense(config.getLicense().isPresent())
+            .setType(jsTypeBuilder.build())
+            .build());
   }
 
   private void copyResources() throws IOException {
@@ -291,121 +274,168 @@ class HtmlDocWriter implements DocWriter {
       Path toDossierCss = relativePath.resolve("dossier.css");
       Path toTypesJs = relativePath.resolve("types.js");
       Path toDossierJs = relativePath.resolve("dossier.js");
-      String toLicense = config.getLicense().isPresent()
-          ? relativePath.resolve("license.html").toString()
-          : null;
 
-      Files.createDirectories(dest.getParent());
-      try (BufferedWriter writer = Files.newBufferedWriter(dest, Charsets.UTF_8)) {
-        tofu.newRenderer("dossier.srcfile")
-            .setData(new SoyMapData(
-                "title", source.getFileName().toString(),
-                "styleSheets", new SoyListData(toDossierCss.toString()),
-                "displayPath", simpleSource.toString(),
-                "lines", new SoyListData(Files.readAllLines(source, Charsets.UTF_8)),
-                "scripts", new SoyListData(toTypesJs.toString(), toDossierJs.toString()),
-                "licensePath", toLicense))
-            .render(writer);
-      }
+      Resources resources = Resources.newBuilder()
+          .addCss(toDossierCss.toString())
+          .addScript(toTypesJs.toString())
+          .addScript(toDossierJs.toString())
+          .build();
+
+      SourceFile file = SourceFile.newBuilder()
+          .setBaseName(source.getFileName().toString())
+          .setPath(simpleSource.toString())
+          .addAllLines(Files.readAllLines(source, Charsets.UTF_8))
+          .build();
+
+      renderer.render(dest,
+          SourceFileRenderSpec.newBuilder()
+              .setFile(file)
+              .setResources(resources)
+              .setHasLicense(config.getLicense().isPresent())
+              .build());
     }
   }
 
-  private SoyListData getInheritedTypes(Descriptor descriptor, JSTypeRegistry registry) {
+  private List<TypeLink> getInheritedTypes(
+      Descriptor descriptor, JSTypeRegistry registry) {
     Stack<String> types = descriptor.getAllTypes(registry);
-    SoyListData inheritedTypes = new SoyListData();
+    List<TypeLink> list = Lists.newArrayListWithExpectedSize(
+        types.size());
     while (!types.isEmpty()) {
       String type = types.pop();
-      inheritedTypes.add(types.isEmpty() ? type : getTypeLink(type));
+      list.add(TypeLink.newBuilder()
+          .setText(type)
+          .setHref(linker.getLink(type))
+          .build());
     }
-    return inheritedTypes;
+    return list;
   }
 
-  private SoyListData getEnumData(Descriptor descriptor) {
-    SoyListData values = new SoyListData();
+  private Iterable<TypeLink> getImplementedTypes(
+      Descriptor descriptor, JSTypeRegistry registry) {
+    Set<String> interfaces = descriptor.isInterface()
+        ? descriptor.getExtendedInterfaces(registry)
+        : descriptor.getImplementedInterfaces(registry);
+    return transform(Ordering.natural().sortedCopy(interfaces),
+        new Function<String, TypeLink>() {
+          @Override
+          public TypeLink apply(String input) {
+            return TypeLink.newBuilder()
+                .setText(input)
+                .setHref(linker.getLink(input))
+                .build();
+          }
+        });
+  }
+
+  private void extractEnumData(Descriptor descriptor, JsType.Builder builder) {
+    if (!descriptor.isEnum()) {
+      return;
+    }
+    JSDocInfo info = checkNotNull(descriptor.getInfo(),
+        "Should never happen; check for used to statisfy static analysis tools: %s",
+        descriptor.getFullName());
+
+    Enumeration.Builder enumBuilder = Dossier.Enumeration.newBuilder()
+        .setTypeHtml(CommentUtil.formatTypeExpression(info.getEnumParameterType(), linker));
+
     ObjectType object = descriptor.toObjectType();
     for (String name : object.getOwnPropertyNames()) {
       JSType type = object.getPropertyType(name);
       if (type.isEnumElementType()) {
         Node node = object.getPropertyNode(name);
-        JSDocInfo info = node == null ? null : node.getJSDocInfo();
+        JSDocInfo valueInfo = node == null ? null : node.getJSDocInfo();
 
-        SoyMapData data = new SoyMapData(
-            "name", name,
-            "fullName", descriptor.getFullName() + "." + name);
-        values.add(data);
+        Enumeration.Value.Builder valueBuilder = Enumeration.Value.newBuilder()
+            .setName(name)
+            .setDescriptionHtml(CommentUtil.getBlockDescription(linker, info));
 
-        if (node == null || info == null) {
-          continue;
+        if (valueInfo != null && valueInfo.isDeprecated()) {
+          valueBuilder.setDeprecation(Deprecation.newBuilder()
+              .setNoticeHtml(CommentUtil.formatCommentText(
+                  linker, valueInfo.getDeprecationReason()))
+              .build());
         }
 
-        if (info.isDeprecated()) {
-          data.put("isDeprecated", true);
-          data.put("deprecationHtml", CommentUtil.formatCommentText(
-              linker, info.getDeprecationReason()));
-        }
-        data.put("descriptionHtml", CommentUtil.getBlockDescription(linker, info));
+        enumBuilder.addValue(valueBuilder);
       }
     }
-    return values;
+
+    builder.setEnumeration(enumBuilder);
   }
 
-  private String getTypeLink(String type) {
-    String path = linker.getLink(type);
-    if (path == null) {
-      return type;
-    }
-    return String.format("<a href=\"%s\">%s</a>", path, type);
-  }
-
-  private SoyListData getTypeDefs(Descriptor descriptor) {
-    List<Descriptor> typedefs = FluentIterable.from(descriptor.getProperties())
+  private List<JsType.TypeDef> getTypeDefs(Descriptor descriptor) {
+    return FluentIterable.from(descriptor.getProperties())
         .filter(isTypedef())
-        .toSortedList(DescriptorNameComparator.INSTANCE);
+        .transform(new Function<Descriptor, JsType.TypeDef>() {
+          @Override
+          public JsType.TypeDef apply(Descriptor typedef) {
+            JSDocInfo info = checkNotNull(typedef.getInfo());
+            JsType.TypeDef.Builder builder = JsType.TypeDef.newBuilder()
+                .setName(typedef.getFullName())
+                .setTypeHtml(CommentUtil.formatTypeExpression(info.getTypedefType(), linker))
+                .setHref(linker.getSourcePath(typedef))
+                .setDescriptionHtml(CommentUtil.getBlockDescription(linker, info));
 
-    SoyListData typedefList = new SoyListData();
-    for (Descriptor typedef : typedefs) {
-      JSDocInfo info = checkNotNull(typedef.getInfo());
+            if (typedef.isDeprecated()) {
+              builder.setDeprecation(getDeprecation(typedef));
+            }
 
-      SoyMapData typedefData = new SoyMapData(
-          "name", typedef.getFullName(),
-          "typeHtml", CommentUtil.formatTypeExpression(info.getTypedefType(), linker),
-          "href", linker.getSourcePath(typedef),
-          "descriptionHtml", CommentUtil.getBlockDescription(linker, info));
-      typedefList.add(typedefData);
-
-      if (typedef.isDeprecated()) {
-        typedefData.put("isDeprecated", typedef.isDeprecated());
-        typedefData.put("deprecationHtml", CommentUtil.formatCommentText(linker,
-            typedef.getDeprecationReason()));
-      }
-    }
-    return typedefList;
+            return builder.build();
+          }
+        })
+        .toSortedList(new Comparator<JsType.TypeDef>() {
+          @Override
+          public int compare(JsType.TypeDef a, JsType.TypeDef b) {
+            return a.getName().compareTo(b.getName());
+          }
+        });
   }
 
-  private SoyListData getNestedTypeSummaries(Descriptor descriptor, Predicate<Descriptor> predicate) {
+  private Deprecation getDeprecation(Descriptor descriptor) {
+    return Deprecation.newBuilder()
+        .setNoticeHtml(CommentUtil.formatCommentText(linker,
+            descriptor.getDeprecationReason()))
+        .build();
+  }
+
+  private JsType.NestedTypes.Builder getNestedTypes(Descriptor descriptor) {
     List<Descriptor> children = FluentIterable.from(descriptor.getProperties())
-        .filter(predicate)
         .toSortedList(DescriptorNameComparator.INSTANCE);
 
-    SoyListData types = new SoyListData();
+    JsType.NestedTypes.Builder builder = JsType.NestedTypes.newBuilder();
+
     for (Descriptor child : children) {
+      if (!child.isConstructor() && !child.isEnum() && !child.isInterface()) {
+        continue;
+      }
+
       JSDocInfo info = checkNotNull(child.getInfo());
       String comment = CommentUtil.getBlockDescription(linker, info);
       String summary = CommentUtil.getSummary(comment);
-      types.add(new SoyMapData(
-          "name", child.getFullName(),
-          "href", linker.getFilePath(child).getFileName().toString(),
-          "summaryHtml", summary));
+
+      JsType.NestedTypes.TypeSummary.Builder typeSummary =
+          JsType.NestedTypes.TypeSummary.newBuilder()
+              .setHref(linker.getFilePath(child).getFileName().toString())
+              .setSummaryHtml(summary)
+              .setName(child.getFullName());
+
+      if (child.isEnum()) {
+        builder.addEnums(typeSummary);
+      } else if (child.isInterface()) {
+        builder.addInterfaces(typeSummary);
+      } else if (child.isConstructor()) {
+        builder.addClasses(typeSummary);
+      }
     }
-    return types;
+
+    return builder;
   }
 
-  private SoyMapData getPrototypeData(Descriptor descriptor, JSTypeRegistry registry) {
-    SoyListData prototypes = new SoyListData();
-    SoyMapData prototypeData = new SoyMapData("chain", prototypes);
-
+  private void getPrototypeData(
+      JsType.Builder jsTypeBuilder, Descriptor descriptor, JSTypeRegistry registry) {
     if (!descriptor.isConstructor() && !descriptor.isInterface()) {
-      return prototypeData;
+      return;
     }
 
     List<Descriptor> seen = new LinkedList<>();
@@ -428,50 +458,61 @@ class HtmlDocWriter implements DocWriter {
         continue;
       }
 
-      SoyListData props = new SoyListData();
-      SoyListData methods = new SoyListData();
-      SoyMapData propertySet = new SoyMapData(
-          "name", typeDescriptor.getFullName(),
-          "methods", methods,
-          "properties", props);
-      prototypes.add(propertySet);
+      Prototype.Builder protoBuilder = Prototype.newBuilder()
+          .setName(typeDescriptor.getFullName());
       if (typeDescriptor != descriptor) {
-        propertySet.put("href", linker.getLink(typeDescriptor.getFullName()));
+        protoBuilder.setHref(linker.getLink(typeDescriptor.getFullName()));
       }
 
       for (Descriptor property : properties) {
         if (isProperty(property)) {
-          prototypeData.put("hasProperties", true);
-          props.add(getPropertyData(property, false));
+          protoBuilder.addProperty(getPropertyData(property));
+          jsTypeBuilder.setHasInstanceProperties(true);
         } else if (isFunction(property)) {
-          prototypeData.put("hasMethods", true);
-          methods.add(getFunctionData(property, false));
+          protoBuilder.addFunction(getFunctionData(property));
+          jsTypeBuilder.setHasInstanceMethods(true);
         }
       }
+      jsTypeBuilder.addPrototype(protoBuilder);
     }
-    return prototypeData;
   }
 
-  private SoyMapData getPropertyData(Descriptor property, boolean useFullName) {
-    SoyMapData data = new SoyMapData(
-        "fullName", property.getFullName(),
-        "name", property.getName(),
-        "href", linker.getSourcePath(property),
-        "frag", useFullName ? property.getFullName() : property.getFullName()
-            .replace("." + property.getName(), "$" + property.getName()));
+  private void getStaticData(JsType.Builder jsTypeBuilder, Descriptor descriptor) {
+    List<Descriptor> props = FluentIterable.from(descriptor.getProperties())
+        .toSortedList(DescriptorNameComparator.INSTANCE);
+    for (Descriptor property : props) {
+      if (isProperty(property)) {
+        jsTypeBuilder.addStaticProperty(getPropertyData(property));
+      } else if (isFunction(property)) {
+        jsTypeBuilder.addStaticFunction(getFunctionData(property));
+      }
+    }
+  }
+
+  private BaseProperty getBasePropertyDetails(Descriptor property) {
+    String name = property.isConstructor() || property.isInterface()
+        ? property.getFullName()
+        : property.getName();
+
+    BaseProperty.Builder builder = BaseProperty.newBuilder()
+        .setName(name)
+        .setSource(Strings.nullToEmpty(linker.getSourcePath(property)))
+        .setDescriptionHtml(CommentUtil.getBlockDescription(linker, property.getInfo()));
 
     if (property.isDeprecated()) {
-      data.put("isDeprecated", true);
-      data.put("deprecationHtml", CommentUtil.formatCommentText(
-          linker, property.getDeprecationReason()));
+      builder.setDeprecation(getDeprecation(property));
     }
 
+    return builder.build();
+  }
+
+  private Property getPropertyData(Descriptor property) {
+    Property.Builder builder = Property.newBuilder()
+        .setBase(getBasePropertyDetails(property));
+
     JSDocInfo info = property.getInfo();
-    if (info != null) {
-      data.put("descriptionHtml", CommentUtil.getBlockDescription(linker, info));
-      if (info.getType() != null) {
-        data.put("typeHtml", CommentUtil.formatTypeExpression(info.getType(), linker));
-      }
+    if (info != null && info.getType() != null) {
+      builder.setTypeHtml(CommentUtil.formatTypeExpression(info.getType(), linker));
     } else if (property.getType() != null) {
       Descriptor propertyTypeDescriptor =
           docRegistry.getType(property.getType().toString());
@@ -480,45 +521,55 @@ class HtmlDocWriter implements DocWriter {
       }
 
       if (propertyTypeDescriptor != null) {
-        data.put("typeHtml", String.format("<a href=\"%s\">%s</a>",
+        builder.setTypeHtml(String.format("<a href=\"%s\">%s</a>",
             linker.getLink(propertyTypeDescriptor.getFullName()),
             propertyTypeDescriptor.getFullName()));
       } else {
-        data.put("typeHtml", property.getType().toString());
+        builder.setTypeHtml(property.getType().toString());
       }
     }
 
-    return data;
+    return builder.build();
   }
 
-  private SoyMapData getStaticData(Descriptor descriptor) {
-    SoyListData functions = new SoyListData();
-    SoyListData properties = new SoyListData();
+  private Dossier.Function getFunctionData(Descriptor function) {
+    Dossier.Function.Builder builder = Dossier.Function.newBuilder()
+        .setBase(getBasePropertyDetails(function));
 
-    List<Descriptor> props = FluentIterable.from(descriptor.getProperties())
-        .toSortedList(DescriptorNameComparator.INSTANCE);
-    for (Descriptor property : props) {
-      if (isProperty(property)) {
-        properties.add(getPropertyData(property, true));
-      } else if (isFunction(property)) {
-        functions.add(getFunctionData(property, true));
+    JSDocInfo info = function.getInfo();
+    if (!function.isConstructor()) {
+      Dossier.Function.Detail.Builder detail = Dossier.Function.Detail.newBuilder();
+      detail.setTypeHtml(getReturnType(function));
+      if (info != null) {
+        detail.setDescriptionHtml(
+            CommentUtil.formatCommentText(linker, info.getReturnDescription()));
       }
+      builder.setReturn(detail);
     }
-    return new SoyMapData(
-        "functions", functions,
-        "properties", properties);
+
+    if (info != null) {
+      builder.addAllTemplateName(info.getTemplateTypeNames())
+          .addAllThrown(buildThrowsData(info));
+    }
+
+    builder.addAllParameter(transform(function.getArgs(),
+        new Function<ArgDescriptor, Dossier.Function.Detail>() {
+      @Override
+      public Dossier.Function.Detail apply(ArgDescriptor arg) {
+        return Dossier.Function.Detail.newBuilder()
+            .setName(arg.getName())
+            .setTypeHtml(arg.getType() == null ? "" :
+                CommentUtil.formatTypeExpression(arg.getType(), linker))
+            .setDescriptionHtml(arg.getDescription())
+            .build();
+      }
+    }));
+
+    return builder.build();
   }
 
-  private SoyMapData buildFunctionDetail(
-      @Nullable String name, @Nullable String typeHtml, @Nullable String rawText) {
-    return new SoyMapData(
-        "name", name,
-        "typeHtml", typeHtml,
-        "descriptionHtml", CommentUtil.formatCommentText(linker, rawText));
-  }
-
-  private SoyListData buildThrowsData(JSDocInfo info) {
-    SoyListData throwsData = new SoyListData();
+  private List<Dossier.Function.Detail> buildThrowsData(JSDocInfo info) {
+    List<Dossier.Function.Detail> throwsData = new LinkedList<>();
     // Manually scan the function markers so we can associated thrown types with the
     // document description for why that type would be thrown.
     for (JSDocInfo.Marker marker : info.getMarkers()) {
@@ -538,55 +589,12 @@ class HtmlDocWriter implements DocWriter {
         thrownDescription = marker.getDescription().getItem();
       }
 
-      throwsData.add(buildFunctionDetail(null, thrownType, thrownDescription));
+      throwsData.add(Dossier.Function.Detail.newBuilder()
+          .setTypeHtml(thrownType)
+          .setDescriptionHtml(thrownDescription)
+          .build());
     }
     return throwsData;
-  }
-
-  private SoyMapData getFunctionData(Descriptor function, boolean useFullName) {
-    SoyMapData data = new SoyMapData(
-        "fullName", function.getFullName(),
-        "name", function.getName(),
-        "href", linker.getSourcePath(function),
-        "frag", useFullName ? function.getFullName()
-            : function.getFullName().replace(
-                "." + function.getName(),
-                "$" + function.getName()));
-
-    JSDocInfo info = function.getInfo();
-
-    if (!function.isConstructor()) {
-      data.put("returns", buildFunctionDetail(null,
-          getReturnType(function),
-          info == null ? null : info.getReturnDescription()));
-    }
-
-    if (info != null) {
-      data.put("descriptionHtml", CommentUtil.getBlockDescription(linker, info));
-      data.put("throws", buildThrowsData(info));
-      if (!function.isConstructor()) {
-        data.put("templateNames", info.getTemplateTypeNames());
-      }
-    }
-
-    if (function.isDeprecated()) {
-      data.put("isDeprecated", true);
-      data.put("deprecationHtml", CommentUtil.formatCommentText(
-          linker, function.getDeprecationReason()));
-    }
-
-    data.put("args", transform(function.getArgs(), new Function<ArgDescriptor, SoyMapData>() {
-      @Override
-      public SoyMapData apply(ArgDescriptor arg) {
-        return buildFunctionDetail(
-            arg.getName(),
-            arg.getType() == null ? null
-                : CommentUtil.formatTypeExpression(arg.getType(), linker),
-            arg.getDescription());
-      }
-    }));
-
-    return data;
   }
 
   @Nullable
@@ -607,33 +615,6 @@ class HtmlDocWriter implements DocWriter {
       @Override
       public boolean apply(Descriptor input) {
         return input.getInfo() != null && input.getInfo().getTypedefType() != null;
-      }
-    };
-  }
-
-  private static Predicate<Descriptor> isClass() {
-    return new Predicate<Descriptor>() {
-      @Override
-      public boolean apply(Descriptor input) {
-        return input.isConstructor();
-      }
-    };
-  }
-
-  private static Predicate<Descriptor> isInterface() {
-    return new Predicate<Descriptor>() {
-      @Override
-      public boolean apply(Descriptor input) {
-        return input.isInterface();
-      }
-    };
-  }
-
-  private static Predicate<Descriptor> isEnum() {
-    return new Predicate<Descriptor>() {
-      @Override
-      public boolean apply(Descriptor input) {
-        return input.isEnum();
       }
     };
   }

@@ -1,0 +1,213 @@
+option java_package = "com.github.jleyba.dossier.proto";
+
+// Describes a documented source file.
+message SourceFile {
+  // The file's base name.
+  required string base_name = 1;
+  // The path to the file; may be relative to some unspecified directory.
+  required string path = 2;
+  // The individual lines in the file. Each line should not be HTML escaped.
+  repeated string lines = 3;
+}
+
+
+// Describes the resources to include in a generated HTML page.
+message Resources {
+  // Paths to stylesheets to link to in the generated page.
+  repeated string css = 1;
+  // Paths to JavaScript files to include in the generated page.
+  repeated string script = 2;
+}
+
+
+// Represents a license file.
+message License {
+  required string text = 1;
+}
+
+
+// Describes a type to link to.
+message TypeLink {
+  // The link display text.
+  required string text = 1;
+  // The link href.
+  required string href = 2;
+}
+
+
+// Describes a deprecation notice.
+message Deprecation {
+  optional string notice_html = 1;
+}
+
+
+// Describes the basic properties for a documented JavaScript property.
+message BaseProperty {
+  // The property's name; this should not be the fully qualified name.
+  required string name = 1;
+  // Link to the location in the source file where this property is defined.
+  required string source = 2;
+  // A pre-formatted HTML snippet describing the property.
+  required string description_html = 3;
+  // Whether this property is deprecated.
+  optional Deprecation deprecation = 4;
+}
+
+
+// Describes a non-function JavaScript property.
+message Property {
+  required BaseProperty base = 1;
+  // HTML snippet declaring the property type. May be omitted if the type is
+  // unknown.
+  optional string type_html = 2;
+}
+
+
+// Describes a function JavaScript property.
+message Function {
+  message Detail {
+    optional string name = 1;
+    optional string type_html = 2;
+    optional string description_html = 3;
+  }
+
+  required BaseProperty base = 1;
+  repeated string template_name = 2;
+  optional bool is_constructor = 3;
+  repeated Detail parameter = 4;
+  optional Detail return = 5;
+  repeated Detail thrown = 6;
+}
+
+
+// Describes the properties and functions defined on a prototype object.
+message Prototype {
+  // The name of the class/interface this prototype belongs to.
+  required string name = 1;
+  // A link to the class/interface documentation (if available).
+  optional string href = 2;
+
+  repeated Function function = 3;
+  repeated Property property = 4;
+}
+
+
+// Describes an enumeration.
+message Enumeration {
+  message Value {
+    required string name = 1;
+    optional string description_html = 2;
+    optional Deprecation deprecation = 3;
+  }
+
+  required string type_html = 1;
+  repeated Value value = 2;
+}
+
+
+// Describes a JavaScript type to generate documentation for. Each |JsType|
+// message describes a class, enum, interface, or namespace.
+message JsType {
+
+  // Aggregates the types defined within this |JsType|.
+  message NestedTypes {
+    message TypeSummary {
+      required string name = 1;  // The type name.
+      required string href = 2;  // The hyperlink for the actual type.
+      required string summary_html = 3;  // The formatted HTML summary.
+    }
+
+    repeated TypeSummary interfaces = 1;
+    repeated TypeSummary classes = 2;
+    repeated TypeSummary enums = 3;
+  }
+
+  // Describes a typedef defined within this type.
+  message TypeDef {
+    required string name = 1;
+    required string type_html = 2;
+    required string href = 3;
+    required string description_html = 4;
+    optional Deprecation deprecation = 5;
+  }
+
+  required string name = 1;
+  required string source = 5;
+  required NestedTypes nested = 6;
+  required string description_html = 7;
+  optional Deprecation deprecation = 8;
+  repeated TypeDef type_def = 9;
+
+  optional Enumeration enumeration = 10;
+
+  repeated Function static_function = 11;
+  repeated Property static_property = 12;
+
+  // Describes the constructor for this type, if it is a class.
+  optional Function constructor = 13;
+
+  // Designates this type as an interface.
+  optional bool is_interface = 14;
+
+  // The prototype descriptors for this type (if it is a class or interface).
+  // Prototypes should be specified in reverse order, from the current class
+  // to the root. The presence of this field designates this type as a
+  // class or interface.
+  repeated Prototype prototype = 15;
+
+  // Hacks needed for the soy templates to know whether the prototype chain
+  // has any methods or properties to render.
+  optional bool has_instance_methods = 16;
+  optional bool has_instance_properties = 17;
+
+  // List of inherited types for a class. This should be empty if |is_class|
+  // is false. Classes should be listed in order, with the root type first.
+  repeated TypeLink extended_type = 18;
+
+  // The interfaces implemented by a class/extended by an interface. This
+  // list should be empty if |is_class| and |is_interface| are false.
+  repeated TypeLink implemented_type = 19;
+}
+
+
+
+// Describes how to render the main index.
+message IndexFileRenderSpec {
+  // The resources to include.
+  required Resources resources = 1;
+  // Whether to generate a link to the license page.
+  optional bool has_license = 2;
+  // The readme to display on the main page, if any.
+  optional string readme_html = 3;
+}
+
+
+// Describes how to render the license file.
+message LicenseRenderSpec {
+  // The resources to include.
+  required Resources resources = 1;
+  // The license file to render.
+  required License license = 2;
+}
+
+
+// Describes how to render a source file.
+message SourceFileRenderSpec {
+  // The resources to include.
+  required Resources resources = 1;
+  // The file to render.
+  required SourceFile file = 2;
+  // Whether to link to the license file.
+  optional bool has_license = 3;
+}
+
+
+// Describes how to render documentation for a JavaScript type.
+message JsTypeRenderSpec {
+  // The type to generate documentation for.
+  required JsType type = 1;
+  // The resources to include.
+  required Resources resources = 2;
+  // Whether to link to the license file.
+  optional bool has_license = 3;
+}
