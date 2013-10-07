@@ -348,7 +348,7 @@ class HtmlDocWriter implements DocWriter {
 
         Enumeration.Value.Builder valueBuilder = Enumeration.Value.newBuilder()
             .setName(name)
-            .setDescriptionHtml(CommentUtil.getBlockDescription(linker, info));
+            .setDescriptionHtml(CommentUtil.getBlockDescription(linker, valueInfo));
 
         if (valueInfo != null && valueInfo.isDeprecated()) {
           valueBuilder.setDeprecation(Deprecation.newBuilder()
