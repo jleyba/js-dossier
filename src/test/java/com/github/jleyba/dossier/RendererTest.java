@@ -501,8 +501,8 @@ public class RendererTest {
         ImmutableMap.of("name", "foo.Bar", "enumeration", toMap(e)));
 
     assertThat(querySelector(document, "h2").toString(), is("<h2>Values and Descriptions</h2>"));
-    assertThat(querySelector(document, "table dl").toString(), isHtml(
-        "<dl>",
+    assertThat(querySelector(document, "div.type-summary dl").toString(), isHtml(
+        "<dl class=\"public\">",
         "<dt><a class=\"enum member\" name=\"foo.Bar.ONE\">ONE</a></dt>",
         "<dt><a class=\"enum member\" name=\"foo.Bar.TWO\">TWO</a></dt>",
         "<dt><a class=\"enum member\" name=\"foo.Bar.RED\">RED</a></dt>",
@@ -558,6 +558,7 @@ public class RendererTest {
         "<dt><a href=\"bar-link\">Bar</a></dt><dd>",
         "<strong>bar summary <i>has html</i></strong></dd>",
         "<dt><a href=\"baz-link\">Baz</a></dt>",
+        "<dd>No Description.</dd>",
         "</dl></td></tr></tbody></table>",
         "</div>"));
   }
@@ -610,6 +611,7 @@ public class RendererTest {
         "<div><a class=\"source\" href=\"bim-source\">code &raquo;</a>",
         "<a class=\"member deprecation-notice\" name=\"foo.Bim\">foo.Bim</a> : ",
         "<code class=\"type\">Object.&lt;<i>string</i>&gt;</code></div>",
+        "<div>No description.</div>",
         "</summary>"));
     assertThat(elements.get(2).toString(), isHtml(
         "<summary>",
@@ -1103,7 +1105,6 @@ public class RendererTest {
         "<a class=\"source\" href=\"bar.link\">code &raquo;</a>",
         "<span class=\"member\" name=\"foo.Bar\">",
         "foo.Bar <span class=\"args\">(a)</span></span></div>",
-        "<p></p>",
         "</summary>"));
 
     assertThat(document.select("details.function > summary + div.info").size(), is(1));

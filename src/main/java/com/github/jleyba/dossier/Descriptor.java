@@ -193,6 +193,14 @@ class Descriptor {
     return (info != null && info.isDeprecated());
   }
 
+  JSDocInfo.Visibility getVisibility() {
+    // TODO(jleyba): Properly handle Visibility.INHERITED
+    if (info == null || info.getVisibility() == JSDocInfo.Visibility.INHERITED) {
+      return JSDocInfo.Visibility.PUBLIC;
+    }
+    return info.getVisibility();
+  }
+
   @Nullable
   String getDeprecationReason() {
     checkState(isDeprecated(), "%s is not deprecated", getFullName());

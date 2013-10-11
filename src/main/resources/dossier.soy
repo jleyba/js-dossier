@@ -234,8 +234,11 @@
 {template .enumValues}
   <h2>Values and Descriptions</h2>
   <div class="type-summary">
-    <table><tbody>
-      <tr><td><dl>
+    {switch $enumeration.visibility}
+      {case 'PUBLIC'}<dl class="public">
+      {case 'PROTECTED'}<dl class="protected">
+      {case 'PRIVATE'}<dl class="private">
+    {/switch}
       {foreach $value in $enumeration.value}
         <dt>
           <a class="enum member{if $value.deprecation} deprecation-notice{/if}"
@@ -249,8 +252,7 @@
             {$value.descriptionHtml |noAutoescape}
           {/if}
       {/foreach}
-      </dl>
-    </table>
+    </dl>
   </div>
 {/template}
 
@@ -265,22 +267,32 @@
     <section>
       <h2>Type Definitions</h2>
       {foreach $typedef in $typeDefs}
-        <details>
-          <summary>
-            <div>
-              <a class="source" href="{$typedef.href}">code &raquo;</a>
-              <a class="member{if $typedef.deprecation} deprecation-notice{/if}"
-                 name="{$typedef.name}">{$typedef.name}</a> :{sp}
-              <code class="type">{$typedef.typeHtml |noAutoescape}</code>
-              {call .deprecationNotice}
-                {param deprecation: $typedef.deprecation /}
-              {/call}
-            </div>
-            {if $typedef.descriptionHtml}
-              <div>{$typedef.descriptionHtml |noAutoescape}</div>
-            {/if}
-          </summary>
-        </details>
+        <div class="wrap-details">
+            {switch $typedef.visibility}
+              {case 'PUBLIC'}<div class="public">
+              {case 'PROTECTED'}<div class="protected">
+              {case 'PRIVATE'}<div class="private">
+            {/switch}
+            <details>
+              <summary>
+                <div>
+                  <a class="source" href="{$typedef.href}">code &raquo;</a>
+                  <a class="member{if $typedef.deprecation} deprecation-notice{/if}"
+                     name="{$typedef.name}">{$typedef.name}</a> :{sp}
+                  <code class="type">{$typedef.typeHtml |noAutoescape}</code>
+                  {call .deprecationNotice}
+                    {param deprecation: $typedef.deprecation /}
+                  {/call}
+                </div>
+                {if $typedef.descriptionHtml}
+                  <div>{$typedef.descriptionHtml |noAutoescape}</div>
+                {else}
+                  <div>No description.</div>
+                {/if}
+              </summary>
+            </details>
+          </div>
+        </div>
       {/foreach}
     </section>
   {/if}
@@ -302,9 +314,12 @@
         <table><tbody><tr><td><dl>
           {foreach $type in $types}
             <dt><a href="{$type.href}">{$type.name}</a>
-            {if $type.summaryHtml}
-              <dd>{$type.summaryHtml |noAutoescape}
-            {/if}
+            <dd>
+              {if $type.summaryHtml}
+                {$type.summaryHtml |noAutoescape}
+              {else}
+                No Description.
+              {/if}
           {/foreach}
         </dl></table>
       </div>
@@ -452,14 +467,22 @@
  */
 {template .ctor}
   <h2>Constructor</h2>
-  <div>
-    {call .memberSignature}
-      {param member: $fn /}
-    {/call}
+  <div class="wrap-details">
+    {switch $fn.base.visibility}
+      {case 'PUBLIC'}<div class="public ctor">
+      {case 'PROTECTED'}<div class="protected ctor">
+      {case 'PRIVATE'}<div class="private ctor">
+    {/switch}
+      <div>
+        {call .memberSignature}
+          {param member: $fn /}
+        {/call}
+      </div>
+      {call .fnDetails}
+        {param fn: $fn /}
+      {/call}
+    </div>
   </div>
-  {call .fnDetails}
-    {param fn: $fn /}
-  {/call}
 {/template}
 
 
@@ -473,38 +496,38 @@
 {template .printProperty}
   {let $isFunction: isNonnull($prop.parameter) /}
 
-  <details{if $isFunction} class="function"{/if}>
-    <summary>
-      <div>
-        {call .sourceLink}
-          {param href: $prop.base.source /}
-        {/call}
-        {call .memberSignature}
-          {param member: $prop /}
-          {param parentName: $parentName /}
-        {/call}
-      </div>
-      {call .deprecationNotice}
-        {param deprecation: $prop.base.deprecation /}
-      {/call}
-      <p>
-      {if $prop.base.descriptionHtml}
-        {$prop.base.descriptionHtml |noAutoescape}
-      {/if}
-    </summary>
-    {if $isFunction}
-      {call .fnDetails}
-        {param fn: $prop /}
-      {/call}
-    {/if}
-  </details>
-{/template}
-
-
-
-/**
- * Renders the
-{template .instanceMethods}
+  <div class="wrap-details">
+    {switch $prop.base.visibility}
+      {case 'PUBLIC'}<div class="public">
+      {case 'PROTECTED'}<div class="protected">
+      {case 'PRIVATE'}<div class="private">
+    {/switch}
+      <details{if $isFunction} class="function"{/if}>
+        <summary>
+          <div>
+            {call .sourceLink}
+              {param href: $prop.base.source /}
+            {/call}
+            {call .memberSignature}
+              {param member: $prop /}
+              {param parentName: $parentName /}
+            {/call}
+          </div>
+          {call .deprecationNotice}
+            {param deprecation: $prop.base.deprecation /}
+          {/call}
+          {if $prop.base.descriptionHtml}
+            <p>{$prop.base.descriptionHtml |noAutoescape}
+          {/if}
+        </summary>
+        {if $isFunction}
+          {call .fnDetails}
+            {param fn: $prop /}
+          {/call}
+        {/if}
+      </details>
+    </div>
+  </div>
 {/template}
 
 
@@ -640,9 +663,6 @@
         {/if}
       </section>
 
-      {call .typedefs}
-        {param typeDefs: $spec.type.typeDef /}
-      {/call}
       {call .nestedTypeSummaries}
         {param title: 'Interfaces' /}
         {param types: $spec.type.nested.interfaces /}
@@ -654,6 +674,10 @@
       {call .nestedTypeSummaries}
         {param title: 'Enumerations' /}
         {param types: $spec.type.nested.enums /}
+      {/call}
+
+      {call .typedefs}
+        {param typeDefs: $spec.type.typeDef /}
       {/call}
 
       {call .prototype}

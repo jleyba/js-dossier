@@ -8,6 +8,78 @@ public final class Dossier {
   public static void registerAllExtensions(
       com.google.protobuf.ExtensionRegistry registry) {
   }
+  public enum Visibility
+      implements com.google.protobuf.ProtocolMessageEnum {
+    PUBLIC(0, 0),
+    PROTECTED(1, 1),
+    PRIVATE(2, 2),
+    ;
+    
+    public static final int PUBLIC_VALUE = 0;
+    public static final int PROTECTED_VALUE = 1;
+    public static final int PRIVATE_VALUE = 2;
+    
+    
+    public final int getNumber() { return value; }
+    
+    public static Visibility valueOf(int value) {
+      switch (value) {
+        case 0: return PUBLIC;
+        case 1: return PROTECTED;
+        case 2: return PRIVATE;
+        default: return null;
+      }
+    }
+    
+    public static com.google.protobuf.Internal.EnumLiteMap<Visibility>
+        internalGetValueMap() {
+      return internalValueMap;
+    }
+    private static com.google.protobuf.Internal.EnumLiteMap<Visibility>
+        internalValueMap =
+          new com.google.protobuf.Internal.EnumLiteMap<Visibility>() {
+            public Visibility findValueByNumber(int number) {
+              return Visibility.valueOf(number);
+            }
+          };
+    
+    public final com.google.protobuf.Descriptors.EnumValueDescriptor
+        getValueDescriptor() {
+      return getDescriptor().getValues().get(index);
+    }
+    public final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptorForType() {
+      return getDescriptor();
+    }
+    public static final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptor() {
+      return com.github.jleyba.dossier.proto.Dossier.getDescriptor().getEnumTypes().get(0);
+    }
+    
+    private static final Visibility[] VALUES = {
+      PUBLIC, PROTECTED, PRIVATE, 
+    };
+    
+    public static Visibility valueOf(
+        com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+      if (desc.getType() != getDescriptor()) {
+        throw new java.lang.IllegalArgumentException(
+          "EnumValueDescriptor is not for this type.");
+      }
+      return VALUES[desc.getIndex()];
+    }
+    
+    private final int index;
+    private final int value;
+    
+    private Visibility(int index, int value) {
+      this.index = index;
+      this.value = value;
+    }
+    
+    // @@protoc_insertion_point(enum_scope:Visibility)
+  }
+  
   public interface SourceFileOrBuilder
       extends com.google.protobuf.MessageOrBuilder {
     
@@ -2366,6 +2438,10 @@ public final class Dossier {
     boolean hasDeprecation();
     com.github.jleyba.dossier.proto.Dossier.Deprecation getDeprecation();
     com.github.jleyba.dossier.proto.Dossier.DeprecationOrBuilder getDeprecationOrBuilder();
+    
+    // optional .Visibility visibility = 5 [default = PUBLIC];
+    boolean hasVisibility();
+    com.github.jleyba.dossier.proto.Dossier.Visibility getVisibility();
   }
   public static final class BaseProperty extends
       com.google.protobuf.GeneratedMessage
@@ -2505,11 +2581,22 @@ public final class Dossier {
       return deprecation_;
     }
     
+    // optional .Visibility visibility = 5 [default = PUBLIC];
+    public static final int VISIBILITY_FIELD_NUMBER = 5;
+    private com.github.jleyba.dossier.proto.Dossier.Visibility visibility_;
+    public boolean hasVisibility() {
+      return ((bitField0_ & 0x00000010) == 0x00000010);
+    }
+    public com.github.jleyba.dossier.proto.Dossier.Visibility getVisibility() {
+      return visibility_;
+    }
+    
     private void initFields() {
       name_ = "";
       source_ = "";
       descriptionHtml_ = "";
       deprecation_ = com.github.jleyba.dossier.proto.Dossier.Deprecation.getDefaultInstance();
+      visibility_ = com.github.jleyba.dossier.proto.Dossier.Visibility.PUBLIC;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -2547,6 +2634,9 @@ public final class Dossier {
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
         output.writeMessage(4, deprecation_);
       }
+      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+        output.writeEnum(5, visibility_.getNumber());
+      }
       getUnknownFields().writeTo(output);
     }
     
@@ -2571,6 +2661,10 @@ public final class Dossier {
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(4, deprecation_);
+      }
+      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeEnumSize(5, visibility_.getNumber());
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -2709,6 +2803,8 @@ public final class Dossier {
           deprecationBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000008);
+        visibility_ = com.github.jleyba.dossier.proto.Dossier.Visibility.PUBLIC;
+        bitField0_ = (bitField0_ & ~0x00000010);
         return this;
       }
       
@@ -2767,6 +2863,10 @@ public final class Dossier {
         } else {
           result.deprecation_ = deprecationBuilder_.build();
         }
+        if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
+          to_bitField0_ |= 0x00000010;
+        }
+        result.visibility_ = visibility_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -2794,6 +2894,9 @@ public final class Dossier {
         }
         if (other.hasDeprecation()) {
           mergeDeprecation(other.getDeprecation());
+        }
+        if (other.hasVisibility()) {
+          setVisibility(other.getVisibility());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -2860,6 +2963,17 @@ public final class Dossier {
               }
               input.readMessage(subBuilder, extensionRegistry);
               setDeprecation(subBuilder.buildPartial());
+              break;
+            }
+            case 40: {
+              int rawValue = input.readEnum();
+              com.github.jleyba.dossier.proto.Dossier.Visibility value = com.github.jleyba.dossier.proto.Dossier.Visibility.valueOf(rawValue);
+              if (value == null) {
+                unknownFields.mergeVarintField(5, rawValue);
+              } else {
+                bitField0_ |= 0x00000010;
+                visibility_ = value;
+              }
               break;
             }
           }
@@ -3064,6 +3178,30 @@ public final class Dossier {
           deprecation_ = null;
         }
         return deprecationBuilder_;
+      }
+      
+      // optional .Visibility visibility = 5 [default = PUBLIC];
+      private com.github.jleyba.dossier.proto.Dossier.Visibility visibility_ = com.github.jleyba.dossier.proto.Dossier.Visibility.PUBLIC;
+      public boolean hasVisibility() {
+        return ((bitField0_ & 0x00000010) == 0x00000010);
+      }
+      public com.github.jleyba.dossier.proto.Dossier.Visibility getVisibility() {
+        return visibility_;
+      }
+      public Builder setVisibility(com.github.jleyba.dossier.proto.Dossier.Visibility value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        bitField0_ |= 0x00000010;
+        visibility_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearVisibility() {
+        bitField0_ = (bitField0_ & ~0x00000010);
+        visibility_ = com.github.jleyba.dossier.proto.Dossier.Visibility.PUBLIC;
+        onChanged();
+        return this;
       }
       
       // @@protoc_insertion_point(builder_scope:BaseProperty)
@@ -6534,6 +6672,10 @@ public final class Dossier {
         getValueOrBuilderList();
     com.github.jleyba.dossier.proto.Dossier.Enumeration.ValueOrBuilder getValueOrBuilder(
         int index);
+    
+    // optional .Visibility visibility = 3 [default = PUBLIC];
+    boolean hasVisibility();
+    com.github.jleyba.dossier.proto.Dossier.Visibility getVisibility();
   }
   public static final class Enumeration extends
       com.google.protobuf.GeneratedMessage
@@ -7237,9 +7379,20 @@ public final class Dossier {
       return value_.get(index);
     }
     
+    // optional .Visibility visibility = 3 [default = PUBLIC];
+    public static final int VISIBILITY_FIELD_NUMBER = 3;
+    private com.github.jleyba.dossier.proto.Dossier.Visibility visibility_;
+    public boolean hasVisibility() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    public com.github.jleyba.dossier.proto.Dossier.Visibility getVisibility() {
+      return visibility_;
+    }
+    
     private void initFields() {
       typeHtml_ = "";
       value_ = java.util.Collections.emptyList();
+      visibility_ = com.github.jleyba.dossier.proto.Dossier.Visibility.PUBLIC;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -7269,6 +7422,9 @@ public final class Dossier {
       for (int i = 0; i < value_.size(); i++) {
         output.writeMessage(2, value_.get(i));
       }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeEnum(3, visibility_.getNumber());
+      }
       getUnknownFields().writeTo(output);
     }
     
@@ -7285,6 +7441,10 @@ public final class Dossier {
       for (int i = 0; i < value_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(2, value_.get(i));
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeEnumSize(3, visibility_.getNumber());
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -7419,6 +7579,8 @@ public final class Dossier {
         } else {
           valueBuilder_.clear();
         }
+        visibility_ = com.github.jleyba.dossier.proto.Dossier.Visibility.PUBLIC;
+        bitField0_ = (bitField0_ & ~0x00000004);
         return this;
       }
       
@@ -7470,6 +7632,10 @@ public final class Dossier {
         } else {
           result.value_ = valueBuilder_.build();
         }
+        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        result.visibility_ = visibility_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -7514,6 +7680,9 @@ public final class Dossier {
               valueBuilder_.addAllMessages(other.value_);
             }
           }
+        }
+        if (other.hasVisibility()) {
+          setVisibility(other.getVisibility());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -7565,6 +7734,17 @@ public final class Dossier {
               com.github.jleyba.dossier.proto.Dossier.Enumeration.Value.Builder subBuilder = com.github.jleyba.dossier.proto.Dossier.Enumeration.Value.newBuilder();
               input.readMessage(subBuilder, extensionRegistry);
               addValue(subBuilder.buildPartial());
+              break;
+            }
+            case 24: {
+              int rawValue = input.readEnum();
+              com.github.jleyba.dossier.proto.Dossier.Visibility value = com.github.jleyba.dossier.proto.Dossier.Visibility.valueOf(rawValue);
+              if (value == null) {
+                unknownFields.mergeVarintField(3, rawValue);
+              } else {
+                bitField0_ |= 0x00000004;
+                visibility_ = value;
+              }
               break;
             }
           }
@@ -7793,6 +7973,30 @@ public final class Dossier {
           value_ = null;
         }
         return valueBuilder_;
+      }
+      
+      // optional .Visibility visibility = 3 [default = PUBLIC];
+      private com.github.jleyba.dossier.proto.Dossier.Visibility visibility_ = com.github.jleyba.dossier.proto.Dossier.Visibility.PUBLIC;
+      public boolean hasVisibility() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      public com.github.jleyba.dossier.proto.Dossier.Visibility getVisibility() {
+        return visibility_;
+      }
+      public Builder setVisibility(com.github.jleyba.dossier.proto.Dossier.Visibility value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        bitField0_ |= 0x00000004;
+        visibility_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearVisibility() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        visibility_ = com.github.jleyba.dossier.proto.Dossier.Visibility.PUBLIC;
+        onChanged();
+        return this;
       }
       
       // @@protoc_insertion_point(builder_scope:Enumeration)
@@ -9684,6 +9888,10 @@ public final class Dossier {
       boolean hasDeprecation();
       com.github.jleyba.dossier.proto.Dossier.Deprecation getDeprecation();
       com.github.jleyba.dossier.proto.Dossier.DeprecationOrBuilder getDeprecationOrBuilder();
+      
+      // optional .Visibility visibility = 6 [default = PUBLIC];
+      boolean hasVisibility();
+      com.github.jleyba.dossier.proto.Dossier.Visibility getVisibility();
     }
     public static final class TypeDef extends
         com.google.protobuf.GeneratedMessage
@@ -9855,12 +10063,23 @@ public final class Dossier {
         return deprecation_;
       }
       
+      // optional .Visibility visibility = 6 [default = PUBLIC];
+      public static final int VISIBILITY_FIELD_NUMBER = 6;
+      private com.github.jleyba.dossier.proto.Dossier.Visibility visibility_;
+      public boolean hasVisibility() {
+        return ((bitField0_ & 0x00000020) == 0x00000020);
+      }
+      public com.github.jleyba.dossier.proto.Dossier.Visibility getVisibility() {
+        return visibility_;
+      }
+      
       private void initFields() {
         name_ = "";
         typeHtml_ = "";
         href_ = "";
         descriptionHtml_ = "";
         deprecation_ = com.github.jleyba.dossier.proto.Dossier.Deprecation.getDefaultInstance();
+        visibility_ = com.github.jleyba.dossier.proto.Dossier.Visibility.PUBLIC;
       }
       private byte memoizedIsInitialized = -1;
       public final boolean isInitialized() {
@@ -9905,6 +10124,9 @@ public final class Dossier {
         if (((bitField0_ & 0x00000010) == 0x00000010)) {
           output.writeMessage(5, deprecation_);
         }
+        if (((bitField0_ & 0x00000020) == 0x00000020)) {
+          output.writeEnum(6, visibility_.getNumber());
+        }
         getUnknownFields().writeTo(output);
       }
       
@@ -9933,6 +10155,10 @@ public final class Dossier {
         if (((bitField0_ & 0x00000010) == 0x00000010)) {
           size += com.google.protobuf.CodedOutputStream
             .computeMessageSize(5, deprecation_);
+        }
+        if (((bitField0_ & 0x00000020) == 0x00000020)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeEnumSize(6, visibility_.getNumber());
         }
         size += getUnknownFields().getSerializedSize();
         memoizedSerializedSize = size;
@@ -10073,6 +10299,8 @@ public final class Dossier {
             deprecationBuilder_.clear();
           }
           bitField0_ = (bitField0_ & ~0x00000010);
+          visibility_ = com.github.jleyba.dossier.proto.Dossier.Visibility.PUBLIC;
+          bitField0_ = (bitField0_ & ~0x00000020);
           return this;
         }
         
@@ -10135,6 +10363,10 @@ public final class Dossier {
           } else {
             result.deprecation_ = deprecationBuilder_.build();
           }
+          if (((from_bitField0_ & 0x00000020) == 0x00000020)) {
+            to_bitField0_ |= 0x00000020;
+          }
+          result.visibility_ = visibility_;
           result.bitField0_ = to_bitField0_;
           onBuilt();
           return result;
@@ -10165,6 +10397,9 @@ public final class Dossier {
           }
           if (other.hasDeprecation()) {
             mergeDeprecation(other.getDeprecation());
+          }
+          if (other.hasVisibility()) {
+            setVisibility(other.getVisibility());
           }
           this.mergeUnknownFields(other.getUnknownFields());
           return this;
@@ -10240,6 +10475,17 @@ public final class Dossier {
                 }
                 input.readMessage(subBuilder, extensionRegistry);
                 setDeprecation(subBuilder.buildPartial());
+                break;
+              }
+              case 48: {
+                int rawValue = input.readEnum();
+                com.github.jleyba.dossier.proto.Dossier.Visibility value = com.github.jleyba.dossier.proto.Dossier.Visibility.valueOf(rawValue);
+                if (value == null) {
+                  unknownFields.mergeVarintField(6, rawValue);
+                } else {
+                  bitField0_ |= 0x00000020;
+                  visibility_ = value;
+                }
                 break;
               }
             }
@@ -10480,6 +10726,30 @@ public final class Dossier {
             deprecation_ = null;
           }
           return deprecationBuilder_;
+        }
+        
+        // optional .Visibility visibility = 6 [default = PUBLIC];
+        private com.github.jleyba.dossier.proto.Dossier.Visibility visibility_ = com.github.jleyba.dossier.proto.Dossier.Visibility.PUBLIC;
+        public boolean hasVisibility() {
+          return ((bitField0_ & 0x00000020) == 0x00000020);
+        }
+        public com.github.jleyba.dossier.proto.Dossier.Visibility getVisibility() {
+          return visibility_;
+        }
+        public Builder setVisibility(com.github.jleyba.dossier.proto.Dossier.Visibility value) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          bitField0_ |= 0x00000020;
+          visibility_ = value;
+          onChanged();
+          return this;
+        }
+        public Builder clearVisibility() {
+          bitField0_ = (bitField0_ & ~0x00000020);
+          visibility_ = com.github.jleyba.dossier.proto.Dossier.Visibility.PUBLIC;
+          onChanged();
+          return this;
         }
         
         // @@protoc_insertion_point(builder_scope:JsType.TypeDef)
@@ -16022,56 +16292,60 @@ public final class Dossier {
       "\005lines\030\003 \003(\t\"(\n\tResources\022\013\n\003css\030\001 \003(\t\022\016" +
       "\n\006script\030\002 \003(\t\"\027\n\007License\022\014\n\004text\030\001 \002(\t\"" +
       "&\n\010TypeLink\022\014\n\004text\030\001 \002(\t\022\014\n\004href\030\002 \002(\t\"" +
-      "\"\n\013Deprecation\022\023\n\013notice_html\030\001 \001(\t\"i\n\014B" +
-      "aseProperty\022\014\n\004name\030\001 \002(\t\022\016\n\006source\030\002 \002(" +
-      "\t\022\030\n\020description_html\030\003 \002(\t\022!\n\013deprecati" +
-      "on\030\004 \001(\0132\014.Deprecation\":\n\010Property\022\033\n\004ba" +
-      "se\030\001 \002(\0132\r.BaseProperty\022\021\n\ttype_html\030\002 \001",
-      "(\t\"\204\002\n\010Function\022\033\n\004base\030\001 \002(\0132\r.BaseProp" +
-      "erty\022\025\n\rtemplate_name\030\002 \003(\t\022\026\n\016is_constr" +
-      "uctor\030\003 \001(\010\022#\n\tparameter\030\004 \003(\0132\020.Functio" +
-      "n.Detail\022 \n\006return\030\005 \001(\0132\020.Function.Deta" +
-      "il\022 \n\006thrown\030\006 \003(\0132\020.Function.Detail\032C\n\006" +
-      "Detail\022\014\n\004name\030\001 \001(\t\022\021\n\ttype_html\030\002 \001(\t\022" +
-      "\030\n\020description_html\030\003 \001(\t\"a\n\tPrototype\022\014" +
-      "\n\004name\030\001 \002(\t\022\014\n\004href\030\002 \001(\t\022\033\n\010function\030\003" +
-      " \003(\0132\t.Function\022\033\n\010property\030\004 \003(\0132\t.Prop" +
-      "erty\"\227\001\n\013Enumeration\022\021\n\ttype_html\030\001 \002(\t\022",
-      "!\n\005value\030\002 \003(\0132\022.Enumeration.Value\032R\n\005Va" +
-      "lue\022\014\n\004name\030\001 \002(\t\022\030\n\020description_html\030\002 " +
-      "\001(\t\022!\n\013deprecation\030\003 \001(\0132\014.Deprecation\"\320" +
-      "\006\n\006JsType\022\014\n\004name\030\001 \002(\t\022\016\n\006source\030\005 \002(\t\022" +
-      "#\n\006nested\030\006 \002(\0132\023.JsType.NestedTypes\022\030\n\020" +
-      "description_html\030\007 \002(\t\022!\n\013deprecation\030\010 " +
-      "\001(\0132\014.Deprecation\022!\n\010type_def\030\t \003(\0132\017.Js" +
-      "Type.TypeDef\022!\n\013enumeration\030\n \001(\0132\014.Enum" +
-      "eration\022\"\n\017static_function\030\013 \003(\0132\t.Funct" +
-      "ion\022\"\n\017static_property\030\014 \003(\0132\t.Property\022",
-      "\036\n\013constructor\030\r \001(\0132\t.Function\022\024\n\014is_in" +
-      "terface\030\016 \001(\010\022\035\n\tprototype\030\017 \003(\0132\n.Proto" +
-      "type\022\034\n\024has_instance_methods\030\020 \001(\010\022\037\n\027ha" +
-      "s_instance_properties\030\021 \001(\010\022 \n\rextended_" +
-      "type\030\022 \003(\0132\t.TypeLink\022#\n\020implemented_typ" +
-      "e\030\023 \003(\0132\t.TypeLink\032\345\001\n\013NestedTypes\0223\n\nin" +
-      "terfaces\030\001 \003(\0132\037.JsType.NestedTypes.Type" +
-      "Summary\0220\n\007classes\030\002 \003(\0132\037.JsType.Nested" +
-      "Types.TypeSummary\022.\n\005enums\030\003 \003(\0132\037.JsTyp" +
-      "e.NestedTypes.TypeSummary\032?\n\013TypeSummary",
-      "\022\014\n\004name\030\001 \002(\t\022\014\n\004href\030\002 \002(\t\022\024\n\014summary_" +
-      "html\030\003 \002(\t\032u\n\007TypeDef\022\014\n\004name\030\001 \002(\t\022\021\n\tt" +
-      "ype_html\030\002 \002(\t\022\014\n\004href\030\003 \002(\t\022\030\n\020descript" +
-      "ion_html\030\004 \002(\t\022!\n\013deprecation\030\005 \001(\0132\014.De" +
-      "precation\"^\n\023IndexFileRenderSpec\022\035\n\treso" +
-      "urces\030\001 \002(\0132\n.Resources\022\023\n\013has_license\030\002" +
-      " \001(\010\022\023\n\013readme_html\030\003 \001(\t\"M\n\021LicenseRend" +
-      "erSpec\022\035\n\tresources\030\001 \002(\0132\n.Resources\022\031\n" +
-      "\007license\030\002 \002(\0132\010.License\"e\n\024SourceFileRe" +
-      "nderSpec\022\035\n\tresources\030\001 \002(\0132\n.Resources\022",
-      "\031\n\004file\030\002 \002(\0132\013.SourceFile\022\023\n\013has_licens" +
-      "e\030\003 \001(\010\"]\n\020JsTypeRenderSpec\022\025\n\004type\030\001 \002(" +
-      "\0132\007.JsType\022\035\n\tresources\030\002 \002(\0132\n.Resource" +
-      "s\022\023\n\013has_license\030\003 \001(\010B!\n\037com.github.jle" +
-      "yba.dossier.proto"
+      "\"\n\013Deprecation\022\023\n\013notice_html\030\001 \001(\t\"\222\001\n\014" +
+      "BaseProperty\022\014\n\004name\030\001 \002(\t\022\016\n\006source\030\002 \002" +
+      "(\t\022\030\n\020description_html\030\003 \002(\t\022!\n\013deprecat" +
+      "ion\030\004 \001(\0132\014.Deprecation\022\'\n\nvisibility\030\005 " +
+      "\001(\0162\013.Visibility:\006PUBLIC\":\n\010Property\022\033\n\004",
+      "base\030\001 \002(\0132\r.BaseProperty\022\021\n\ttype_html\030\002" +
+      " \001(\t\"\204\002\n\010Function\022\033\n\004base\030\001 \002(\0132\r.BasePr" +
+      "operty\022\025\n\rtemplate_name\030\002 \003(\t\022\026\n\016is_cons" +
+      "tructor\030\003 \001(\010\022#\n\tparameter\030\004 \003(\0132\020.Funct" +
+      "ion.Detail\022 \n\006return\030\005 \001(\0132\020.Function.De" +
+      "tail\022 \n\006thrown\030\006 \003(\0132\020.Function.Detail\032C" +
+      "\n\006Detail\022\014\n\004name\030\001 \001(\t\022\021\n\ttype_html\030\002 \001(" +
+      "\t\022\030\n\020description_html\030\003 \001(\t\"a\n\tPrototype" +
+      "\022\014\n\004name\030\001 \002(\t\022\014\n\004href\030\002 \001(\t\022\033\n\010function" +
+      "\030\003 \003(\0132\t.Function\022\033\n\010property\030\004 \003(\0132\t.Pr",
+      "operty\"\300\001\n\013Enumeration\022\021\n\ttype_html\030\001 \002(" +
+      "\t\022!\n\005value\030\002 \003(\0132\022.Enumeration.Value\022\'\n\n" +
+      "visibility\030\003 \001(\0162\013.Visibility:\006PUBLIC\032R\n" +
+      "\005Value\022\014\n\004name\030\001 \002(\t\022\030\n\020description_html" +
+      "\030\002 \001(\t\022!\n\013deprecation\030\003 \001(\0132\014.Deprecatio" +
+      "n\"\372\006\n\006JsType\022\014\n\004name\030\001 \002(\t\022\016\n\006source\030\005 \002" +
+      "(\t\022#\n\006nested\030\006 \002(\0132\023.JsType.NestedTypes\022" +
+      "\030\n\020description_html\030\007 \002(\t\022!\n\013deprecation" +
+      "\030\010 \001(\0132\014.Deprecation\022!\n\010type_def\030\t \003(\0132\017" +
+      ".JsType.TypeDef\022!\n\013enumeration\030\n \001(\0132\014.E",
+      "numeration\022\"\n\017static_function\030\013 \003(\0132\t.Fu" +
+      "nction\022\"\n\017static_property\030\014 \003(\0132\t.Proper" +
+      "ty\022\036\n\013constructor\030\r \001(\0132\t.Function\022\024\n\014is" +
+      "_interface\030\016 \001(\010\022\035\n\tprototype\030\017 \003(\0132\n.Pr" +
+      "ototype\022\034\n\024has_instance_methods\030\020 \001(\010\022\037\n" +
+      "\027has_instance_properties\030\021 \001(\010\022 \n\rextend" +
+      "ed_type\030\022 \003(\0132\t.TypeLink\022#\n\020implemented_" +
+      "type\030\023 \003(\0132\t.TypeLink\032\345\001\n\013NestedTypes\0223\n" +
+      "\ninterfaces\030\001 \003(\0132\037.JsType.NestedTypes.T" +
+      "ypeSummary\0220\n\007classes\030\002 \003(\0132\037.JsType.Nes",
+      "tedTypes.TypeSummary\022.\n\005enums\030\003 \003(\0132\037.Js" +
+      "Type.NestedTypes.TypeSummary\032?\n\013TypeSumm" +
+      "ary\022\014\n\004name\030\001 \002(\t\022\014\n\004href\030\002 \002(\t\022\024\n\014summa" +
+      "ry_html\030\003 \002(\t\032\236\001\n\007TypeDef\022\014\n\004name\030\001 \002(\t\022" +
+      "\021\n\ttype_html\030\002 \002(\t\022\014\n\004href\030\003 \002(\t\022\030\n\020desc" +
+      "ription_html\030\004 \002(\t\022!\n\013deprecation\030\005 \001(\0132" +
+      "\014.Deprecation\022\'\n\nvisibility\030\006 \001(\0162\013.Visi" +
+      "bility:\006PUBLIC\"^\n\023IndexFileRenderSpec\022\035\n" +
+      "\tresources\030\001 \002(\0132\n.Resources\022\023\n\013has_lice" +
+      "nse\030\002 \001(\010\022\023\n\013readme_html\030\003 \001(\t\"M\n\021Licens",
+      "eRenderSpec\022\035\n\tresources\030\001 \002(\0132\n.Resourc" +
+      "es\022\031\n\007license\030\002 \002(\0132\010.License\"e\n\024SourceF" +
+      "ileRenderSpec\022\035\n\tresources\030\001 \002(\0132\n.Resou" +
+      "rces\022\031\n\004file\030\002 \002(\0132\013.SourceFile\022\023\n\013has_l" +
+      "icense\030\003 \001(\010\"]\n\020JsTypeRenderSpec\022\025\n\004type" +
+      "\030\001 \002(\0132\007.JsType\022\035\n\tresources\030\002 \002(\0132\n.Res" +
+      "ources\022\023\n\013has_license\030\003 \001(\010*4\n\nVisibilit" +
+      "y\022\n\n\006PUBLIC\020\000\022\r\n\tPROTECTED\020\001\022\013\n\007PRIVATE\020" +
+      "\002B!\n\037com.github.jleyba.dossier.proto"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -16123,7 +16397,7 @@ public final class Dossier {
           internal_static_BaseProperty_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_BaseProperty_descriptor,
-              new java.lang.String[] { "Name", "Source", "DescriptionHtml", "Deprecation", },
+              new java.lang.String[] { "Name", "Source", "DescriptionHtml", "Deprecation", "Visibility", },
               com.github.jleyba.dossier.proto.Dossier.BaseProperty.class,
               com.github.jleyba.dossier.proto.Dossier.BaseProperty.Builder.class);
           internal_static_Property_descriptor =
@@ -16163,7 +16437,7 @@ public final class Dossier {
           internal_static_Enumeration_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_Enumeration_descriptor,
-              new java.lang.String[] { "TypeHtml", "Value", },
+              new java.lang.String[] { "TypeHtml", "Value", "Visibility", },
               com.github.jleyba.dossier.proto.Dossier.Enumeration.class,
               com.github.jleyba.dossier.proto.Dossier.Enumeration.Builder.class);
           internal_static_Enumeration_Value_descriptor =
@@ -16203,7 +16477,7 @@ public final class Dossier {
           internal_static_JsType_TypeDef_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_JsType_TypeDef_descriptor,
-              new java.lang.String[] { "Name", "TypeHtml", "Href", "DescriptionHtml", "Deprecation", },
+              new java.lang.String[] { "Name", "TypeHtml", "Href", "DescriptionHtml", "Deprecation", "Visibility", },
               com.github.jleyba.dossier.proto.Dossier.JsType.TypeDef.class,
               com.github.jleyba.dossier.proto.Dossier.JsType.TypeDef.Builder.class);
           internal_static_IndexFileRenderSpec_descriptor =

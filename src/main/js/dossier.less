@@ -25,11 +25,14 @@ summary {
 }
 
 @dark_gray: #424242;
-@border_color: lighten(@dark_gray, 40%);
+@border_color: lighten(@dark_gray, 30%);
 @topnav_height: 4.4rem;
 @main_width: 75%;
 @sidenav_width: (100% - @main_width) - 1%;
 
+@public_visibility_color: fade(forestgreen, 60%);
+@protected_visibility_color: fade(goldenrod, 60%);
+@private_visibility_color: fade(red, 50%);
 
 /*
  * General page styles.
@@ -132,7 +135,15 @@ dd {
   }
 }
 
-.type-summary td > dl { margin-left: 0; }
+.type-summary {
+  border-top: 1px solid @border_color;
+  border-left: 1px solid @border_color;
+
+  dl {
+    padding: .5rem 0 0 1.5rem;
+    margin-left: 0;
+  }
+}
 
 
 .member {
@@ -219,20 +230,38 @@ main {
   width: ~'calc(@{main_width} - @{pad_left})';
   float: left;
 }
+
 header * { margin-top: .33rem; }
 
-details {
+.wrap-details {
   border-top: 1px solid @border_color;
   border-left: 1px solid @border_color;
+  margin-bottom: 1px;
+}
 
-  & + & { margin-top: .5rem; }
+.public    { border-left: .7rem solid @public_visibility_color; }
+.protected { border-left: .7rem solid @protected_visibility_color; }
+.private   { border-left: .7rem solid @private_visibility_color; }
+.ctor { padding: .5rem 0 .5rem .5rem; }
+
+details {
   & > summary {
-    margin-top: .5rem;
+    padding-top: .5rem;
     margin-left: 1.5rem;
+    padding-bottom: .5rem;
 
-    & > div + p {
+    p {
       margin-top: .5rem;
+      margin-bottom: 0;
     }
+
+    pre:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  .info {
+    margin-top: .5rem;
   }
 
   &.function {
@@ -242,8 +271,9 @@ details {
       margin-left: -1rem;
     }
 
-    &[open] > summary:before {
-      content: '\2212';
+    &[open] {
+      & > summary:before { content: '\2212'; }
+      & > :last-child { padding-bottom: .5rem; }
     }
   }
 }
@@ -264,11 +294,6 @@ section {
   }
 
   & + & { margin-top: 3rem; }
-  & > .type-summary {
-    border-top: 1px solid @border_color;
-    border-left: 1px solid @border_color;
-    padding: .5rem 0 0 1.5rem;
-  }
 }
 
 div.deprecation-notice {

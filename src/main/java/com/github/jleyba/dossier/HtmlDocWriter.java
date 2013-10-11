@@ -15,6 +15,7 @@ package com.github.jleyba.dossier;
 
 import static com.github.jleyba.dossier.proto.Dossier.BaseProperty;
 import static com.github.jleyba.dossier.proto.Dossier.Deprecation;
+import static com.github.jleyba.dossier.proto.Dossier.Enumeration;
 import static com.github.jleyba.dossier.proto.Dossier.IndexFileRenderSpec;
 import static com.github.jleyba.dossier.proto.Dossier.JsType;
 import static com.github.jleyba.dossier.proto.Dossier.JsTypeRenderSpec;
@@ -24,7 +25,6 @@ import static com.github.jleyba.dossier.proto.Dossier.Property;
 import static com.github.jleyba.dossier.proto.Dossier.Prototype;
 import static com.github.jleyba.dossier.proto.Dossier.Resources;
 import static com.github.jleyba.dossier.proto.Dossier.SourceFile;
-import static com.github.jleyba.dossier.proto.Dossier.Enumeration;
 import static com.github.jleyba.dossier.proto.Dossier.SourceFileRenderSpec;
 import static com.github.jleyba.dossier.proto.Dossier.TypeLink;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -46,7 +46,6 @@ import com.google.javascript.rhino.jstype.FunctionType;
 import com.google.javascript.rhino.jstype.JSType;
 import com.google.javascript.rhino.jstype.JSTypeRegistry;
 import com.google.javascript.rhino.jstype.ObjectType;
-import com.google.template.soy.tofu.SoyTofuException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -337,7 +336,8 @@ class HtmlDocWriter implements DocWriter {
         descriptor.getFullName());
 
     Enumeration.Builder enumBuilder = Dossier.Enumeration.newBuilder()
-        .setTypeHtml(CommentUtil.formatTypeExpression(info.getEnumParameterType(), linker));
+        .setTypeHtml(CommentUtil.formatTypeExpression(info.getEnumParameterType(), linker))
+        .setVisibility(Dossier.Visibility.valueOf(descriptor.getVisibility().name()));
 
     ObjectType object = descriptor.toObjectType();
     for (String name : object.getOwnPropertyNames()) {
@@ -375,7 +375,8 @@ class HtmlDocWriter implements DocWriter {
                 .setName(typedef.getFullName())
                 .setTypeHtml(CommentUtil.formatTypeExpression(info.getTypedefType(), linker))
                 .setHref(linker.getSourcePath(typedef))
-                .setDescriptionHtml(CommentUtil.getBlockDescription(linker, info));
+                .setDescriptionHtml(CommentUtil.getBlockDescription(linker, info))
+                .setVisibility(Dossier.Visibility.valueOf(typedef.getVisibility().name()));
 
             if (typedef.isDeprecated()) {
               builder.setDeprecation(getDeprecation(typedef));
@@ -497,7 +498,8 @@ class HtmlDocWriter implements DocWriter {
     BaseProperty.Builder builder = BaseProperty.newBuilder()
         .setName(name)
         .setSource(Strings.nullToEmpty(linker.getSourcePath(property)))
-        .setDescriptionHtml(CommentUtil.getBlockDescription(linker, property.getInfo()));
+        .setDescriptionHtml(CommentUtil.getBlockDescription(linker, property.getInfo()))
+        .setVisibility(Dossier.Visibility.valueOf(property.getVisibility().name()));
 
     if (property.isDeprecated()) {
       builder.setDeprecation(getDeprecation(property));

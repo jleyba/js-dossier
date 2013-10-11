@@ -41,6 +41,17 @@ message Deprecation {
 }
 
 
+// Describes a type/property's visibility.
+enum Visibility {
+  // The type is globally accessible.
+  PUBLIC = 0;
+  // The type may only be used by subclasses or other code in the same file.
+  PROTECTED = 1;
+  // The type may only be used by other code in the same file.
+  PRIVATE = 2;
+}
+
+
 // Describes the basic properties for a documented JavaScript property.
 message BaseProperty {
   // The property's name; this should not be the fully qualified name.
@@ -51,6 +62,7 @@ message BaseProperty {
   required string description_html = 3;
   // Whether this property is deprecated.
   optional Deprecation deprecation = 4;
+  optional Visibility visibility = 5 [default = PUBLIC];
 }
 
 
@@ -102,6 +114,7 @@ message Enumeration {
 
   required string type_html = 1;
   repeated Value value = 2;
+  optional Visibility visibility = 3 [default = PUBLIC];
 }
 
 
@@ -129,6 +142,7 @@ message JsType {
     required string href = 3;
     required string description_html = 4;
     optional Deprecation deprecation = 5;
+    optional Visibility visibility = 6 [default = PUBLIC];
   }
 
   required string name = 1;
