@@ -26,7 +26,7 @@ summary {
 
 @dark_gray: #424242;
 @border_color: lighten(@dark_gray, 30%);
-@topnav_height: 4.4rem;
+@topnav_height: 4rem;
 @main_width: 75%;
 @sidenav_width: (100% - @main_width) - 1%;
 
@@ -43,7 +43,7 @@ html, body { height: 100%; }
 body {
   margin: 0;
   padding: 0;
-  font-size: 1.4rem;
+  font-size: 1.2rem;
   font-family: sans-serif;
   background: #fff;
   color: @dark_gray;
@@ -67,6 +67,9 @@ code {
   }
 }
 
+pre,
+p { margin: 1rem 0; }
+
 .lighter-text() {
   color: lighten(@dark_gray, 25%);
   font-weight: normal;
@@ -78,8 +81,8 @@ code {
 
 h1 {
   border-bottom: 1px solid @border_color;
-  margin-bottom: 1rem;
-  padding: .5rem 0 .25rem;
+  margin: .2rem 0 0 0;
+  padding: .5rem 0 .1rem;
   font-size: 2.5rem;
 
   code {
@@ -124,7 +127,10 @@ summary {
 }
 
 a.source { float: right; }
-header + * { clear: right; }
+header {
+  & > dl { margin-left: 0; }
+  & + * { clear: right; }
+}
 
 dl { margin: 0 0 0 1.25rem; }
 dt { font-weight: bold; }
@@ -140,7 +146,7 @@ dd {
   border-left: 1px solid @border_color;
 
   dl {
-    padding: .5rem 0 0 1.5rem;
+    padding: .5rem 0 0 1rem;
     margin-left: 0;
   }
 }
@@ -231,8 +237,6 @@ main {
   float: left;
 }
 
-header * { margin-top: .33rem; }
-
 .wrap-details {
   border-top: 1px solid @border_color;
   border-left: 1px solid @border_color;
@@ -247,7 +251,7 @@ header * { margin-top: .33rem; }
 details {
   & > summary {
     padding-top: .5rem;
-    margin-left: 1.5rem;
+    margin-left: 1.25rem;
     padding-bottom: .5rem;
 
     p {
@@ -258,10 +262,6 @@ details {
     pre:last-child {
       margin-bottom: 0;
     }
-  }
-
-  .info {
-    margin-top: .5rem;
   }
 
   &.function {
@@ -282,18 +282,18 @@ header div.deprecation-notice {
 }
 
 h2 {
-  font-size: 2rem;
+  font-size: 1.8rem;
   margin-top: 1.25rem;
-  margin-bottom: .25rem;
+  margin-bottom: .15rem;
 }
 
 section {
   h3 {
-    margin: 1rem 0 .5rem;
-    font-size: 1.5rem;
+    margin: .75rem 0 .25rem;
+    font-size: 1.4rem;
   }
 
-  & + & { margin-top: 3rem; }
+  & + & { margin-top: 1.75rem; }
 }
 
 div.deprecation-notice {
@@ -306,13 +306,17 @@ span.deprecation-reason {
   font-style: italic;
 }
 .info {
-  padding: 0 1.5rem;
+  padding: 0 1.25rem;
 }
 
 table.srcfile,
 table.licensefile {
   border: 1px solid @border_color;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
+  width: auto;
+
+  tr:first-child td { padding-top: .5rem; }
+  tr:last-child td { padding-bottom: .5rem; }
 }
 
 .licensefile td,
@@ -326,6 +330,7 @@ table.licensefile {
 /* line number column */
 .srcfile td:first-child {
   text-align: right;
+  padding: 0 .5rem 0 1rem;
   border-right: 1px solid @border_color;
   -webkit-touch-callout: none;
   -webkit-user-select: none;
@@ -351,7 +356,7 @@ table.licensefile {
   h4 {
     color: #fff;
     width: 100%;
-    font-size: 1.5rem;
+    font-size: 1.4rem;
     font-weight: 500;
     padding: .5rem 1.2rem 0;
     height: 3rem;

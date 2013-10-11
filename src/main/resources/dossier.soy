@@ -543,13 +543,15 @@
       <h2>Instance Methods</h2>
       {foreach $proto in $type.prototype}
         {if length($proto.function)}
-          <h3>Defined in <code class="type">
-            {if $proto.href}
-              <a href="{$proto.href}">{$proto.name}</a>
-            {else}
-              {$proto.name}
-            {/if}
-          </code></h3>
+          {if not (isFirst($proto) and isLast($proto))}
+            <h3>Defined in <code class="type">
+              {if $proto.href}
+                <a href="{$proto.href}">{$proto.name}</a>
+              {else}
+                {$proto.name}
+              {/if}
+            </code></h3>
+          {/if}
           {foreach $function in $proto.function}
             {call .printProperty}
               {param prop: $function /}
@@ -565,13 +567,15 @@
       <h2>Instance Properties</h2>
       {foreach $proto in $type.prototype}
         {if length($proto.property)}
-          <h3>Defined in <code class="type">
-            {if $proto.href}
-              <a href="{$proto.href}">{$proto.name}</a>
-            {else}
-              {$proto.name}
-            {/if}
-          </code></h3>
+          {if not (isFirst($proto) and isLast($proto))}
+            <h3>Defined in <code class="type">
+              {if $proto.href}
+                <a href="{$proto.href}">{$proto.name}</a>
+              {else}
+                {$proto.name}
+              {/if}
+            </code></h3>
+          {/if}
           {foreach $prop in $proto.property}
             {call .printProperty}
               {param prop: $prop /}
