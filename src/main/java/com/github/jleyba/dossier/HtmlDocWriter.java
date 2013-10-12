@@ -105,12 +105,12 @@ class HtmlDocWriter implements DocWriter {
   }
 
   private void generateIndex() throws IOException {
-    String readmeHtml = "";
+    Dossier.Comment readme = Dossier.Comment.getDefaultInstance();
     if (config.getReadme().isPresent()) {
       String text = new String(Files.readAllBytes(config.getReadme().get()), Charsets.UTF_8);
-      readmeHtml = Processor.process(text);
+      String readmeHtml = Processor.process(text);
       // One more pass to process any inline taglets (e.g. {@code} or {@link}).
-      readmeHtml = CommentUtil.formatCommentText(linker, readmeHtml);
+      readme = CommentUtil.parseComment(readmeHtml, linker);
     }
 
     Path index = config.getOutput().resolve("index.html");
@@ -121,7 +121,7 @@ class HtmlDocWriter implements DocWriter {
             .addScript("dossier.js")
             .build())
         .setHasLicense(config.getLicense().isPresent())
-        .setReadmeHtml(readmeHtml)
+        .setReadme(readme)
         .build());
   }
 
@@ -155,7 +155,7 @@ class HtmlDocWriter implements DocWriter {
         .setName(descriptor.getFullName())
         .setNested(getNestedTypes(descriptor))
         .setSource(Strings.nullToEmpty(source))
-        .setDescriptionHtml(CommentUtil.getBlockDescription(linker, descriptor.getInfo()))
+        .setDescription(CommentUtil.getBlockDescription(linker, descriptor.getInfo()))
         .addAllTypeDef(getTypeDefs(descriptor))
         .addAllExtendedType(getInheritedTypes(descriptor, registry))
         .addAllImplementedType(getImplementedTypes(descriptor, registry))
@@ -328,12 +328,11 @@ class HtmlDocWriter implements DocWriter {
 
         Enumeration.Value.Builder valueBuilder = Enumeration.Value.newBuilder()
             .setName(name)
-            .setDescriptionHtml(CommentUtil.getBlockDescription(linker, valueInfo));
+            .setDescription(CommentUtil.getBlockDescription(linker, valueInfo));
 
         if (valueInfo != null && valueInfo.isDeprecated()) {
           valueBuilder.setDeprecation(Deprecation.newBuilder()
-              .setNoticeHtml(CommentUtil.formatCommentText(
-                  linker, valueInfo.getDeprecationReason()))
+              .setNotice(CommentUtil.parseComment(valueInfo.getDeprecationReason(), linker))
               .build());
         }
 
@@ -355,7 +354,7 @@ class HtmlDocWriter implements DocWriter {
                 .setName(typedef.getFullName())
                 .setTypeHtml(CommentUtil.formatTypeExpression(info.getTypedefType(), linker))
                 .setHref(linker.getSourcePath(typedef))
-                .setDescriptionHtml(CommentUtil.getBlockDescription(linker, info))
+                .setDescription(CommentUtil.getBlockDescription(linker, info))
                 .setVisibility(Dossier.Visibility.valueOf(typedef.getVisibility().name()));
 
             if (typedef.isDeprecated()) {
@@ -375,8 +374,7 @@ class HtmlDocWriter implements DocWriter {
 
   private Deprecation getDeprecation(Descriptor descriptor) {
     return Deprecation.newBuilder()
-        .setNoticeHtml(CommentUtil.formatCommentText(linker,
-            descriptor.getDeprecationReason()))
+        .setNotice(CommentUtil.parseComment(descriptor.getDeprecationReason(), linker))
         .build();
   }
 
@@ -392,8 +390,7 @@ class HtmlDocWriter implements DocWriter {
       }
 
       JSDocInfo info = checkNotNull(child.getInfo());
-      String comment = CommentUtil.getBlockDescription(linker, info);
-      String summary = CommentUtil.getSummary(comment);
+      String summary = CommentUtil.getSummary(info);
 
       JsType.NestedTypes.TypeSummary.Builder typeSummary =
           JsType.NestedTypes.TypeSummary.newBuilder()
@@ -479,7 +476,7 @@ class HtmlDocWriter implements DocWriter {
     BaseProperty.Builder builder = BaseProperty.newBuilder()
         .setName(name)
         .setSource(Strings.nullToEmpty(linker.getSourcePath(property)))
-        .setDescriptionHtml(CommentUtil.getBlockDescription(linker, property.getInfo()))
+        .setDescription(CommentUtil.getBlockDescription(linker, property.getInfo()))
         .setVisibility(Dossier.Visibility.valueOf(property.getVisibility().name()));
 
     if (property.isDeprecated()) {
@@ -528,8 +525,7 @@ class HtmlDocWriter implements DocWriter {
       Dossier.Function.Detail.Builder detail = Dossier.Function.Detail.newBuilder();
       detail.setTypeHtml(getReturnType(function));
       if (info != null) {
-        detail.setDescriptionHtml(
-            CommentUtil.formatCommentText(linker, info.getReturnDescription()));
+        detail.setDescription(CommentUtil.parseComment(info.getReturnDescription(), linker));
       }
       builder.setReturn(detail);
     }
@@ -547,7 +543,7 @@ class HtmlDocWriter implements DocWriter {
             .setName(arg.getName())
             .setTypeHtml(arg.getType() == null ? "" :
                 CommentUtil.formatTypeExpression(arg.getType(), linker))
-            .setDescriptionHtml(arg.getDescription())
+            .setDescription(CommentUtil.parseComment(arg.getDescription(), linker))
             .build();
       }
     }));
@@ -578,7 +574,7 @@ class HtmlDocWriter implements DocWriter {
 
       throwsData.add(Dossier.Function.Detail.newBuilder()
           .setTypeHtml(Strings.nullToEmpty(thrownType))
-          .setDescriptionHtml(thrownDescription)
+          .setDescription(CommentUtil.parseComment(thrownDescription, linker))
           .build());
     }
     return throwsData;

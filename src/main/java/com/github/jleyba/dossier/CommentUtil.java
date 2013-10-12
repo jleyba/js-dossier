@@ -16,6 +16,7 @@ package com.github.jleyba.dossier;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
+import com.github.jleyba.dossier.proto.Dossier;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
@@ -55,24 +56,44 @@ class CommentUtil {
   }
 
   /**
+   * Extracts hte summary sentence from the block comment of the given {@link JSDocInfo} object.
+   * @see #getSummary(String)
+   */
+  static String getSummary(@Nullable JSDocInfo info) {
+    if (info == null) {
+      return "";
+    }
+    return getSummary(extractCommentString(info.getOriginalCommentString()));
+  }
+
+  /**
    * Extracts the block comment string from the given {@link JSDocInfo} object.
    */
-  static String getBlockDescription(Linker resolver, @Nullable JSDocInfo info) {
+  static Dossier.Comment getBlockDescription(Linker linker, @Nullable JSDocInfo info) {
     if (info == null) {
+      return Dossier.Comment.getDefaultInstance();
+    }
+
+    String comment = extractCommentString(info.getOriginalCommentString());
+    if (comment.isEmpty()) {
+      return Dossier.Comment.getDefaultInstance();
+    }
+
+    return parseComment(comment, linker);
+  }
+
+  private static String extractCommentString(@Nullable String originalCommentString) {
+    if (Strings.isNullOrEmpty(originalCommentString)) {
       return "";
     }
 
     // The Closure compiler trims whitespace from each line of the block comment string, which
     // ruins formatting on <pre> blocks, so we have to do a quick and dirty re-parse.
-    String comment = Strings.nullToEmpty(info.getOriginalCommentString());
-    if (comment.isEmpty()) {
-      return comment;
-    }
 
     // Trim the opening \** and closing \*
-    comment = comment
-        .substring(0, comment.lastIndexOf("*/"))
-        .substring(comment.indexOf("/**") + 3)
+    String comment = originalCommentString
+        .substring(0, originalCommentString.lastIndexOf("*/"))
+        .substring(originalCommentString.indexOf("/**") + 3)
         .trim();
 
     StringBuilder builder = new StringBuilder();
@@ -108,32 +129,37 @@ class CommentUtil {
       }
       builder.append(line).append("\n");
     }
-    return formatCommentText(resolver, builder.toString().trim());
+    return builder.toString();
+  }
+
+  private static Dossier.Comment.Token.Builder newToken(String text) {
+    return Dossier.Comment.Token.newBuilder().setText(text);
   }
 
   /**
-   * Formats a comment string, converting all inline tags to their HTML constructs (e.g.
-   * {@code {@code hi}} to {@code <code>hi</code>}.
+   * Parses the {@code text} of a JSDoc block comment.
    */
-  static String formatCommentText(Linker linker, String text) {
+  static Dossier.Comment parseComment(String text, Linker linker) {
+    Dossier.Comment.Builder builder = Dossier.Comment.newBuilder();
     if (Strings.isNullOrEmpty(text)) {
-      return Strings.nullToEmpty(text);
+      return builder.build();
     }
 
-    StringBuilder formattedComment = new StringBuilder();
     int start = 0;
     while (true) {
       int tagletStart = findInlineTagStart(text, start);
       if (tagletStart == -1) {
-        formattedComment.append(text.substring(start));
+        if (start < text.length()) {
+          builder.addToken(newToken(text.substring(start)));
+        }
         break;
       } else if (tagletStart > start) {
-        formattedComment.append(text.substring(start, tagletStart));
+        builder.addToken(newToken(text.substring(start, tagletStart)));
       }
 
       int tagletEnd = findInlineTagEnd(text, tagletStart + 1);
       if (tagletEnd == -1) {
-        formattedComment.append(text.substring(start));
+        builder.addToken(newToken(text.substring(start)));
         break;
       }
 
@@ -142,53 +168,34 @@ class CommentUtil {
       String tagletText = text.substring(tagletStart + tagletPrefix.length(), tagletEnd);
       switch (tagletName) {
         case "code":
-          formattedComment
-              .append("<code>")
-              .append(formatLiteralText(tagletText))
-              .append("</code>");
+          builder.addToken(newToken(tagletText).setIsCode(true));
           break;
 
         case "link":
         case "linkplain":
           LinkInfo info = LinkInfo.fromText(tagletText);
-          tagletText = formatLink(linker, info, "link".equals(tagletName));
+          @Nullable String link = linker.getLink(info.type);
 
-          if ("link".equals(tagletName)) {
-            formattedComment.append("<code>")
-                .append(tagletText)
-                .append("</code>");
-          } else {
-            formattedComment.append(tagletText);
+          Dossier.Comment.Token.Builder token = newToken(info.text)
+              .setIsCode("link".equals(tagletName))
+              .setUnresolvedLink(link == null);
+          if (link != null) {
+            token.setHref(link);
           }
+          builder.addToken(token);
           break;
 
         case "literal":
-          formattedComment.append(formatLiteralText(tagletText));
+          builder.addToken(newToken(tagletText).setIsLiteral(true));
           break;
 
         default:
-          formattedComment.append(tagletText);
+          builder.addToken(newToken(tagletText));
       }
       start = tagletEnd + 1;
     }
 
-    return formattedComment.toString();
-  }
-
-  private static String formatLink(Linker linker, LinkInfo info, boolean isLiteral) {
-    String text = isLiteral ? formatLiteralText(info.text) : info.text;
-    @Nullable String link = linker.getLink(info.type);
-    if (link == null) {
-      return "<a class=\"unresolved\">" + text + "</a>";
-    } else {
-      return "<a href=\"" + link + "\">" + text + "</a>";
-    }
-  }
-
-  private static String formatLiteralText(String text) {
-    return text.replace("&", "&amp;")
-        .replace("<", "&lt;")
-        .replace(">", "&gt;");
+    return builder.build();
   }
 
   private static int findInlineTagStart(String text, int start) {

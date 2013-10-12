@@ -2044,12 +2044,1224 @@ public final class Dossier {
     // @@protoc_insertion_point(class_scope:TypeLink)
   }
   
+  public interface CommentOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
+    
+    // repeated .Comment.Token token = 1;
+    java.util.List<com.github.jleyba.dossier.proto.Dossier.Comment.Token> 
+        getTokenList();
+    com.github.jleyba.dossier.proto.Dossier.Comment.Token getToken(int index);
+    int getTokenCount();
+    java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.Comment.TokenOrBuilder> 
+        getTokenOrBuilderList();
+    com.github.jleyba.dossier.proto.Dossier.Comment.TokenOrBuilder getTokenOrBuilder(
+        int index);
+  }
+  public static final class Comment extends
+      com.google.protobuf.GeneratedMessage
+      implements CommentOrBuilder {
+    // Use Comment.newBuilder() to construct.
+    private Comment(Builder builder) {
+      super(builder);
+    }
+    private Comment(boolean noInit) {}
+    
+    private static final Comment defaultInstance;
+    public static Comment getDefaultInstance() {
+      return defaultInstance;
+    }
+    
+    public Comment getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+    
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.github.jleyba.dossier.proto.Dossier.internal_static_Comment_descriptor;
+    }
+    
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.github.jleyba.dossier.proto.Dossier.internal_static_Comment_fieldAccessorTable;
+    }
+    
+    public interface TokenOrBuilder
+        extends com.google.protobuf.MessageOrBuilder {
+      
+      // required string text = 1;
+      boolean hasText();
+      String getText();
+      
+      // optional bool is_literal = 2;
+      boolean hasIsLiteral();
+      boolean getIsLiteral();
+      
+      // optional bool is_code = 3;
+      boolean hasIsCode();
+      boolean getIsCode();
+      
+      // optional string href = 4;
+      boolean hasHref();
+      String getHref();
+      
+      // optional bool unresolved_link = 5;
+      boolean hasUnresolvedLink();
+      boolean getUnresolvedLink();
+    }
+    public static final class Token extends
+        com.google.protobuf.GeneratedMessage
+        implements TokenOrBuilder {
+      // Use Token.newBuilder() to construct.
+      private Token(Builder builder) {
+        super(builder);
+      }
+      private Token(boolean noInit) {}
+      
+      private static final Token defaultInstance;
+      public static Token getDefaultInstance() {
+        return defaultInstance;
+      }
+      
+      public Token getDefaultInstanceForType() {
+        return defaultInstance;
+      }
+      
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.github.jleyba.dossier.proto.Dossier.internal_static_Comment_Token_descriptor;
+      }
+      
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.github.jleyba.dossier.proto.Dossier.internal_static_Comment_Token_fieldAccessorTable;
+      }
+      
+      private int bitField0_;
+      // required string text = 1;
+      public static final int TEXT_FIELD_NUMBER = 1;
+      private java.lang.Object text_;
+      public boolean hasText() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      public String getText() {
+        java.lang.Object ref = text_;
+        if (ref instanceof String) {
+          return (String) ref;
+        } else {
+          com.google.protobuf.ByteString bs = 
+              (com.google.protobuf.ByteString) ref;
+          String s = bs.toStringUtf8();
+          if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+            text_ = s;
+          }
+          return s;
+        }
+      }
+      private com.google.protobuf.ByteString getTextBytes() {
+        java.lang.Object ref = text_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+          text_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      
+      // optional bool is_literal = 2;
+      public static final int IS_LITERAL_FIELD_NUMBER = 2;
+      private boolean isLiteral_;
+      public boolean hasIsLiteral() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      public boolean getIsLiteral() {
+        return isLiteral_;
+      }
+      
+      // optional bool is_code = 3;
+      public static final int IS_CODE_FIELD_NUMBER = 3;
+      private boolean isCode_;
+      public boolean hasIsCode() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      public boolean getIsCode() {
+        return isCode_;
+      }
+      
+      // optional string href = 4;
+      public static final int HREF_FIELD_NUMBER = 4;
+      private java.lang.Object href_;
+      public boolean hasHref() {
+        return ((bitField0_ & 0x00000008) == 0x00000008);
+      }
+      public String getHref() {
+        java.lang.Object ref = href_;
+        if (ref instanceof String) {
+          return (String) ref;
+        } else {
+          com.google.protobuf.ByteString bs = 
+              (com.google.protobuf.ByteString) ref;
+          String s = bs.toStringUtf8();
+          if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+            href_ = s;
+          }
+          return s;
+        }
+      }
+      private com.google.protobuf.ByteString getHrefBytes() {
+        java.lang.Object ref = href_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+          href_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      
+      // optional bool unresolved_link = 5;
+      public static final int UNRESOLVED_LINK_FIELD_NUMBER = 5;
+      private boolean unresolvedLink_;
+      public boolean hasUnresolvedLink() {
+        return ((bitField0_ & 0x00000010) == 0x00000010);
+      }
+      public boolean getUnresolvedLink() {
+        return unresolvedLink_;
+      }
+      
+      private void initFields() {
+        text_ = "";
+        isLiteral_ = false;
+        isCode_ = false;
+        href_ = "";
+        unresolvedLink_ = false;
+      }
+      private byte memoizedIsInitialized = -1;
+      public final boolean isInitialized() {
+        byte isInitialized = memoizedIsInitialized;
+        if (isInitialized != -1) return isInitialized == 1;
+        
+        if (!hasText()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+        memoizedIsInitialized = 1;
+        return true;
+      }
+      
+      public void writeTo(com.google.protobuf.CodedOutputStream output)
+                          throws java.io.IOException {
+        getSerializedSize();
+        if (((bitField0_ & 0x00000001) == 0x00000001)) {
+          output.writeBytes(1, getTextBytes());
+        }
+        if (((bitField0_ & 0x00000002) == 0x00000002)) {
+          output.writeBool(2, isLiteral_);
+        }
+        if (((bitField0_ & 0x00000004) == 0x00000004)) {
+          output.writeBool(3, isCode_);
+        }
+        if (((bitField0_ & 0x00000008) == 0x00000008)) {
+          output.writeBytes(4, getHrefBytes());
+        }
+        if (((bitField0_ & 0x00000010) == 0x00000010)) {
+          output.writeBool(5, unresolvedLink_);
+        }
+        getUnknownFields().writeTo(output);
+      }
+      
+      private int memoizedSerializedSize = -1;
+      public int getSerializedSize() {
+        int size = memoizedSerializedSize;
+        if (size != -1) return size;
+      
+        size = 0;
+        if (((bitField0_ & 0x00000001) == 0x00000001)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeBytesSize(1, getTextBytes());
+        }
+        if (((bitField0_ & 0x00000002) == 0x00000002)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeBoolSize(2, isLiteral_);
+        }
+        if (((bitField0_ & 0x00000004) == 0x00000004)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeBoolSize(3, isCode_);
+        }
+        if (((bitField0_ & 0x00000008) == 0x00000008)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeBytesSize(4, getHrefBytes());
+        }
+        if (((bitField0_ & 0x00000010) == 0x00000010)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeBoolSize(5, unresolvedLink_);
+        }
+        size += getUnknownFields().getSerializedSize();
+        memoizedSerializedSize = size;
+        return size;
+      }
+      
+      private static final long serialVersionUID = 0L;
+      @java.lang.Override
+      protected java.lang.Object writeReplace()
+          throws java.io.ObjectStreamException {
+        return super.writeReplace();
+      }
+      
+      public static com.github.jleyba.dossier.proto.Dossier.Comment.Token parseFrom(
+          com.google.protobuf.ByteString data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return newBuilder().mergeFrom(data).buildParsed();
+      }
+      public static com.github.jleyba.dossier.proto.Dossier.Comment.Token parseFrom(
+          com.google.protobuf.ByteString data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return newBuilder().mergeFrom(data, extensionRegistry)
+                 .buildParsed();
+      }
+      public static com.github.jleyba.dossier.proto.Dossier.Comment.Token parseFrom(byte[] data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return newBuilder().mergeFrom(data).buildParsed();
+      }
+      public static com.github.jleyba.dossier.proto.Dossier.Comment.Token parseFrom(
+          byte[] data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return newBuilder().mergeFrom(data, extensionRegistry)
+                 .buildParsed();
+      }
+      public static com.github.jleyba.dossier.proto.Dossier.Comment.Token parseFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return newBuilder().mergeFrom(input).buildParsed();
+      }
+      public static com.github.jleyba.dossier.proto.Dossier.Comment.Token parseFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return newBuilder().mergeFrom(input, extensionRegistry)
+                 .buildParsed();
+      }
+      public static com.github.jleyba.dossier.proto.Dossier.Comment.Token parseDelimitedFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        Builder builder = newBuilder();
+        if (builder.mergeDelimitedFrom(input)) {
+          return builder.buildParsed();
+        } else {
+          return null;
+        }
+      }
+      public static com.github.jleyba.dossier.proto.Dossier.Comment.Token parseDelimitedFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        Builder builder = newBuilder();
+        if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
+          return builder.buildParsed();
+        } else {
+          return null;
+        }
+      }
+      public static com.github.jleyba.dossier.proto.Dossier.Comment.Token parseFrom(
+          com.google.protobuf.CodedInputStream input)
+          throws java.io.IOException {
+        return newBuilder().mergeFrom(input).buildParsed();
+      }
+      public static com.github.jleyba.dossier.proto.Dossier.Comment.Token parseFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return newBuilder().mergeFrom(input, extensionRegistry)
+                 .buildParsed();
+      }
+      
+      public static Builder newBuilder() { return Builder.create(); }
+      public Builder newBuilderForType() { return newBuilder(); }
+      public static Builder newBuilder(com.github.jleyba.dossier.proto.Dossier.Comment.Token prototype) {
+        return newBuilder().mergeFrom(prototype);
+      }
+      public Builder toBuilder() { return newBuilder(this); }
+      
+      @java.lang.Override
+      protected Builder newBuilderForType(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        Builder builder = new Builder(parent);
+        return builder;
+      }
+      public static final class Builder extends
+          com.google.protobuf.GeneratedMessage.Builder<Builder>
+         implements com.github.jleyba.dossier.proto.Dossier.Comment.TokenOrBuilder {
+        public static final com.google.protobuf.Descriptors.Descriptor
+            getDescriptor() {
+          return com.github.jleyba.dossier.proto.Dossier.internal_static_Comment_Token_descriptor;
+        }
+        
+        protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+            internalGetFieldAccessorTable() {
+          return com.github.jleyba.dossier.proto.Dossier.internal_static_Comment_Token_fieldAccessorTable;
+        }
+        
+        // Construct using com.github.jleyba.dossier.proto.Dossier.Comment.Token.newBuilder()
+        private Builder() {
+          maybeForceBuilderInitialization();
+        }
+        
+        private Builder(BuilderParent parent) {
+          super(parent);
+          maybeForceBuilderInitialization();
+        }
+        private void maybeForceBuilderInitialization() {
+          if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+          }
+        }
+        private static Builder create() {
+          return new Builder();
+        }
+        
+        public Builder clear() {
+          super.clear();
+          text_ = "";
+          bitField0_ = (bitField0_ & ~0x00000001);
+          isLiteral_ = false;
+          bitField0_ = (bitField0_ & ~0x00000002);
+          isCode_ = false;
+          bitField0_ = (bitField0_ & ~0x00000004);
+          href_ = "";
+          bitField0_ = (bitField0_ & ~0x00000008);
+          unresolvedLink_ = false;
+          bitField0_ = (bitField0_ & ~0x00000010);
+          return this;
+        }
+        
+        public Builder clone() {
+          return create().mergeFrom(buildPartial());
+        }
+        
+        public com.google.protobuf.Descriptors.Descriptor
+            getDescriptorForType() {
+          return com.github.jleyba.dossier.proto.Dossier.Comment.Token.getDescriptor();
+        }
+        
+        public com.github.jleyba.dossier.proto.Dossier.Comment.Token getDefaultInstanceForType() {
+          return com.github.jleyba.dossier.proto.Dossier.Comment.Token.getDefaultInstance();
+        }
+        
+        public com.github.jleyba.dossier.proto.Dossier.Comment.Token build() {
+          com.github.jleyba.dossier.proto.Dossier.Comment.Token result = buildPartial();
+          if (!result.isInitialized()) {
+            throw newUninitializedMessageException(result);
+          }
+          return result;
+        }
+        
+        private com.github.jleyba.dossier.proto.Dossier.Comment.Token buildParsed()
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          com.github.jleyba.dossier.proto.Dossier.Comment.Token result = buildPartial();
+          if (!result.isInitialized()) {
+            throw newUninitializedMessageException(
+              result).asInvalidProtocolBufferException();
+          }
+          return result;
+        }
+        
+        public com.github.jleyba.dossier.proto.Dossier.Comment.Token buildPartial() {
+          com.github.jleyba.dossier.proto.Dossier.Comment.Token result = new com.github.jleyba.dossier.proto.Dossier.Comment.Token(this);
+          int from_bitField0_ = bitField0_;
+          int to_bitField0_ = 0;
+          if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+            to_bitField0_ |= 0x00000001;
+          }
+          result.text_ = text_;
+          if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+            to_bitField0_ |= 0x00000002;
+          }
+          result.isLiteral_ = isLiteral_;
+          if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+            to_bitField0_ |= 0x00000004;
+          }
+          result.isCode_ = isCode_;
+          if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
+            to_bitField0_ |= 0x00000008;
+          }
+          result.href_ = href_;
+          if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
+            to_bitField0_ |= 0x00000010;
+          }
+          result.unresolvedLink_ = unresolvedLink_;
+          result.bitField0_ = to_bitField0_;
+          onBuilt();
+          return result;
+        }
+        
+        public Builder mergeFrom(com.google.protobuf.Message other) {
+          if (other instanceof com.github.jleyba.dossier.proto.Dossier.Comment.Token) {
+            return mergeFrom((com.github.jleyba.dossier.proto.Dossier.Comment.Token)other);
+          } else {
+            super.mergeFrom(other);
+            return this;
+          }
+        }
+        
+        public Builder mergeFrom(com.github.jleyba.dossier.proto.Dossier.Comment.Token other) {
+          if (other == com.github.jleyba.dossier.proto.Dossier.Comment.Token.getDefaultInstance()) return this;
+          if (other.hasText()) {
+            setText(other.getText());
+          }
+          if (other.hasIsLiteral()) {
+            setIsLiteral(other.getIsLiteral());
+          }
+          if (other.hasIsCode()) {
+            setIsCode(other.getIsCode());
+          }
+          if (other.hasHref()) {
+            setHref(other.getHref());
+          }
+          if (other.hasUnresolvedLink()) {
+            setUnresolvedLink(other.getUnresolvedLink());
+          }
+          this.mergeUnknownFields(other.getUnknownFields());
+          return this;
+        }
+        
+        public final boolean isInitialized() {
+          if (!hasText()) {
+            
+            return false;
+          }
+          return true;
+        }
+        
+        public Builder mergeFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+            com.google.protobuf.UnknownFieldSet.newBuilder(
+              this.getUnknownFields());
+          while (true) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                this.setUnknownFields(unknownFields.build());
+                onChanged();
+                return this;
+              default: {
+                if (!parseUnknownField(input, unknownFields,
+                                       extensionRegistry, tag)) {
+                  this.setUnknownFields(unknownFields.build());
+                  onChanged();
+                  return this;
+                }
+                break;
+              }
+              case 10: {
+                bitField0_ |= 0x00000001;
+                text_ = input.readBytes();
+                break;
+              }
+              case 16: {
+                bitField0_ |= 0x00000002;
+                isLiteral_ = input.readBool();
+                break;
+              }
+              case 24: {
+                bitField0_ |= 0x00000004;
+                isCode_ = input.readBool();
+                break;
+              }
+              case 34: {
+                bitField0_ |= 0x00000008;
+                href_ = input.readBytes();
+                break;
+              }
+              case 40: {
+                bitField0_ |= 0x00000010;
+                unresolvedLink_ = input.readBool();
+                break;
+              }
+            }
+          }
+        }
+        
+        private int bitField0_;
+        
+        // required string text = 1;
+        private java.lang.Object text_ = "";
+        public boolean hasText() {
+          return ((bitField0_ & 0x00000001) == 0x00000001);
+        }
+        public String getText() {
+          java.lang.Object ref = text_;
+          if (!(ref instanceof String)) {
+            String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+            text_ = s;
+            return s;
+          } else {
+            return (String) ref;
+          }
+        }
+        public Builder setText(String value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+          text_ = value;
+          onChanged();
+          return this;
+        }
+        public Builder clearText() {
+          bitField0_ = (bitField0_ & ~0x00000001);
+          text_ = getDefaultInstance().getText();
+          onChanged();
+          return this;
+        }
+        void setText(com.google.protobuf.ByteString value) {
+          bitField0_ |= 0x00000001;
+          text_ = value;
+          onChanged();
+        }
+        
+        // optional bool is_literal = 2;
+        private boolean isLiteral_ ;
+        public boolean hasIsLiteral() {
+          return ((bitField0_ & 0x00000002) == 0x00000002);
+        }
+        public boolean getIsLiteral() {
+          return isLiteral_;
+        }
+        public Builder setIsLiteral(boolean value) {
+          bitField0_ |= 0x00000002;
+          isLiteral_ = value;
+          onChanged();
+          return this;
+        }
+        public Builder clearIsLiteral() {
+          bitField0_ = (bitField0_ & ~0x00000002);
+          isLiteral_ = false;
+          onChanged();
+          return this;
+        }
+        
+        // optional bool is_code = 3;
+        private boolean isCode_ ;
+        public boolean hasIsCode() {
+          return ((bitField0_ & 0x00000004) == 0x00000004);
+        }
+        public boolean getIsCode() {
+          return isCode_;
+        }
+        public Builder setIsCode(boolean value) {
+          bitField0_ |= 0x00000004;
+          isCode_ = value;
+          onChanged();
+          return this;
+        }
+        public Builder clearIsCode() {
+          bitField0_ = (bitField0_ & ~0x00000004);
+          isCode_ = false;
+          onChanged();
+          return this;
+        }
+        
+        // optional string href = 4;
+        private java.lang.Object href_ = "";
+        public boolean hasHref() {
+          return ((bitField0_ & 0x00000008) == 0x00000008);
+        }
+        public String getHref() {
+          java.lang.Object ref = href_;
+          if (!(ref instanceof String)) {
+            String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+            href_ = s;
+            return s;
+          } else {
+            return (String) ref;
+          }
+        }
+        public Builder setHref(String value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000008;
+          href_ = value;
+          onChanged();
+          return this;
+        }
+        public Builder clearHref() {
+          bitField0_ = (bitField0_ & ~0x00000008);
+          href_ = getDefaultInstance().getHref();
+          onChanged();
+          return this;
+        }
+        void setHref(com.google.protobuf.ByteString value) {
+          bitField0_ |= 0x00000008;
+          href_ = value;
+          onChanged();
+        }
+        
+        // optional bool unresolved_link = 5;
+        private boolean unresolvedLink_ ;
+        public boolean hasUnresolvedLink() {
+          return ((bitField0_ & 0x00000010) == 0x00000010);
+        }
+        public boolean getUnresolvedLink() {
+          return unresolvedLink_;
+        }
+        public Builder setUnresolvedLink(boolean value) {
+          bitField0_ |= 0x00000010;
+          unresolvedLink_ = value;
+          onChanged();
+          return this;
+        }
+        public Builder clearUnresolvedLink() {
+          bitField0_ = (bitField0_ & ~0x00000010);
+          unresolvedLink_ = false;
+          onChanged();
+          return this;
+        }
+        
+        // @@protoc_insertion_point(builder_scope:Comment.Token)
+      }
+      
+      static {
+        defaultInstance = new Token(true);
+        defaultInstance.initFields();
+      }
+      
+      // @@protoc_insertion_point(class_scope:Comment.Token)
+    }
+    
+    // repeated .Comment.Token token = 1;
+    public static final int TOKEN_FIELD_NUMBER = 1;
+    private java.util.List<com.github.jleyba.dossier.proto.Dossier.Comment.Token> token_;
+    public java.util.List<com.github.jleyba.dossier.proto.Dossier.Comment.Token> getTokenList() {
+      return token_;
+    }
+    public java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.Comment.TokenOrBuilder> 
+        getTokenOrBuilderList() {
+      return token_;
+    }
+    public int getTokenCount() {
+      return token_.size();
+    }
+    public com.github.jleyba.dossier.proto.Dossier.Comment.Token getToken(int index) {
+      return token_.get(index);
+    }
+    public com.github.jleyba.dossier.proto.Dossier.Comment.TokenOrBuilder getTokenOrBuilder(
+        int index) {
+      return token_.get(index);
+    }
+    
+    private void initFields() {
+      token_ = java.util.Collections.emptyList();
+    }
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized != -1) return isInitialized == 1;
+      
+      for (int i = 0; i < getTokenCount(); i++) {
+        if (!getToken(i).isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+      }
+      memoizedIsInitialized = 1;
+      return true;
+    }
+    
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      for (int i = 0; i < token_.size(); i++) {
+        output.writeMessage(1, token_.get(i));
+      }
+      getUnknownFields().writeTo(output);
+    }
+    
+    private int memoizedSerializedSize = -1;
+    public int getSerializedSize() {
+      int size = memoizedSerializedSize;
+      if (size != -1) return size;
+    
+      size = 0;
+      for (int i = 0; i < token_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, token_.get(i));
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
+      return size;
+    }
+    
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
+    }
+    
+    public static com.github.jleyba.dossier.proto.Dossier.Comment parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static com.github.jleyba.dossier.proto.Dossier.Comment parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.github.jleyba.dossier.proto.Dossier.Comment parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static com.github.jleyba.dossier.proto.Dossier.Comment parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.github.jleyba.dossier.proto.Dossier.Comment parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static com.github.jleyba.dossier.proto.Dossier.Comment parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.github.jleyba.dossier.proto.Dossier.Comment parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static com.github.jleyba.dossier.proto.Dossier.Comment parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static com.github.jleyba.dossier.proto.Dossier.Comment parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static com.github.jleyba.dossier.proto.Dossier.Comment parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    
+    public static Builder newBuilder() { return Builder.create(); }
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder(com.github.jleyba.dossier.proto.Dossier.Comment prototype) {
+      return newBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() { return newBuilder(this); }
+    
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.github.jleyba.dossier.proto.Dossier.internal_static_Comment_descriptor;
+      }
+      
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.github.jleyba.dossier.proto.Dossier.internal_static_Comment_fieldAccessorTable;
+      }
+      
+      // Construct using com.github.jleyba.dossier.proto.Dossier.Comment.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+      
+      private Builder(BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+          getTokenFieldBuilder();
+        }
+      }
+      private static Builder create() {
+        return new Builder();
+      }
+      
+      public Builder clear() {
+        super.clear();
+        if (tokenBuilder_ == null) {
+          token_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+        } else {
+          tokenBuilder_.clear();
+        }
+        return this;
+      }
+      
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
+      }
+      
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.github.jleyba.dossier.proto.Dossier.Comment.getDescriptor();
+      }
+      
+      public com.github.jleyba.dossier.proto.Dossier.Comment getDefaultInstanceForType() {
+        return com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance();
+      }
+      
+      public com.github.jleyba.dossier.proto.Dossier.Comment build() {
+        com.github.jleyba.dossier.proto.Dossier.Comment result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+      
+      private com.github.jleyba.dossier.proto.Dossier.Comment buildParsed()
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        com.github.jleyba.dossier.proto.Dossier.Comment result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(
+            result).asInvalidProtocolBufferException();
+        }
+        return result;
+      }
+      
+      public com.github.jleyba.dossier.proto.Dossier.Comment buildPartial() {
+        com.github.jleyba.dossier.proto.Dossier.Comment result = new com.github.jleyba.dossier.proto.Dossier.Comment(this);
+        int from_bitField0_ = bitField0_;
+        if (tokenBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) == 0x00000001)) {
+            token_ = java.util.Collections.unmodifiableList(token_);
+            bitField0_ = (bitField0_ & ~0x00000001);
+          }
+          result.token_ = token_;
+        } else {
+          result.token_ = tokenBuilder_.build();
+        }
+        onBuilt();
+        return result;
+      }
+      
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.github.jleyba.dossier.proto.Dossier.Comment) {
+          return mergeFrom((com.github.jleyba.dossier.proto.Dossier.Comment)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+      
+      public Builder mergeFrom(com.github.jleyba.dossier.proto.Dossier.Comment other) {
+        if (other == com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance()) return this;
+        if (tokenBuilder_ == null) {
+          if (!other.token_.isEmpty()) {
+            if (token_.isEmpty()) {
+              token_ = other.token_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+            } else {
+              ensureTokenIsMutable();
+              token_.addAll(other.token_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.token_.isEmpty()) {
+            if (tokenBuilder_.isEmpty()) {
+              tokenBuilder_.dispose();
+              tokenBuilder_ = null;
+              token_ = other.token_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+              tokenBuilder_ = 
+                com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+                   getTokenFieldBuilder() : null;
+            } else {
+              tokenBuilder_.addAllMessages(other.token_);
+            }
+          }
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        return this;
+      }
+      
+      public final boolean isInitialized() {
+        for (int i = 0; i < getTokenCount(); i++) {
+          if (!getToken(i).isInitialized()) {
+            
+            return false;
+          }
+        }
+        return true;
+      }
+      
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder(
+            this.getUnknownFields());
+        while (true) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              this.setUnknownFields(unknownFields.build());
+              onChanged();
+              return this;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                this.setUnknownFields(unknownFields.build());
+                onChanged();
+                return this;
+              }
+              break;
+            }
+            case 10: {
+              com.github.jleyba.dossier.proto.Dossier.Comment.Token.Builder subBuilder = com.github.jleyba.dossier.proto.Dossier.Comment.Token.newBuilder();
+              input.readMessage(subBuilder, extensionRegistry);
+              addToken(subBuilder.buildPartial());
+              break;
+            }
+          }
+        }
+      }
+      
+      private int bitField0_;
+      
+      // repeated .Comment.Token token = 1;
+      private java.util.List<com.github.jleyba.dossier.proto.Dossier.Comment.Token> token_ =
+        java.util.Collections.emptyList();
+      private void ensureTokenIsMutable() {
+        if (!((bitField0_ & 0x00000001) == 0x00000001)) {
+          token_ = new java.util.ArrayList<com.github.jleyba.dossier.proto.Dossier.Comment.Token>(token_);
+          bitField0_ |= 0x00000001;
+         }
+      }
+      
+      private com.google.protobuf.RepeatedFieldBuilder<
+          com.github.jleyba.dossier.proto.Dossier.Comment.Token, com.github.jleyba.dossier.proto.Dossier.Comment.Token.Builder, com.github.jleyba.dossier.proto.Dossier.Comment.TokenOrBuilder> tokenBuilder_;
+      
+      public java.util.List<com.github.jleyba.dossier.proto.Dossier.Comment.Token> getTokenList() {
+        if (tokenBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(token_);
+        } else {
+          return tokenBuilder_.getMessageList();
+        }
+      }
+      public int getTokenCount() {
+        if (tokenBuilder_ == null) {
+          return token_.size();
+        } else {
+          return tokenBuilder_.getCount();
+        }
+      }
+      public com.github.jleyba.dossier.proto.Dossier.Comment.Token getToken(int index) {
+        if (tokenBuilder_ == null) {
+          return token_.get(index);
+        } else {
+          return tokenBuilder_.getMessage(index);
+        }
+      }
+      public Builder setToken(
+          int index, com.github.jleyba.dossier.proto.Dossier.Comment.Token value) {
+        if (tokenBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureTokenIsMutable();
+          token_.set(index, value);
+          onChanged();
+        } else {
+          tokenBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      public Builder setToken(
+          int index, com.github.jleyba.dossier.proto.Dossier.Comment.Token.Builder builderForValue) {
+        if (tokenBuilder_ == null) {
+          ensureTokenIsMutable();
+          token_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          tokenBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      public Builder addToken(com.github.jleyba.dossier.proto.Dossier.Comment.Token value) {
+        if (tokenBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureTokenIsMutable();
+          token_.add(value);
+          onChanged();
+        } else {
+          tokenBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      public Builder addToken(
+          int index, com.github.jleyba.dossier.proto.Dossier.Comment.Token value) {
+        if (tokenBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureTokenIsMutable();
+          token_.add(index, value);
+          onChanged();
+        } else {
+          tokenBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      public Builder addToken(
+          com.github.jleyba.dossier.proto.Dossier.Comment.Token.Builder builderForValue) {
+        if (tokenBuilder_ == null) {
+          ensureTokenIsMutable();
+          token_.add(builderForValue.build());
+          onChanged();
+        } else {
+          tokenBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      public Builder addToken(
+          int index, com.github.jleyba.dossier.proto.Dossier.Comment.Token.Builder builderForValue) {
+        if (tokenBuilder_ == null) {
+          ensureTokenIsMutable();
+          token_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          tokenBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      public Builder addAllToken(
+          java.lang.Iterable<? extends com.github.jleyba.dossier.proto.Dossier.Comment.Token> values) {
+        if (tokenBuilder_ == null) {
+          ensureTokenIsMutable();
+          super.addAll(values, token_);
+          onChanged();
+        } else {
+          tokenBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      public Builder clearToken() {
+        if (tokenBuilder_ == null) {
+          token_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+          onChanged();
+        } else {
+          tokenBuilder_.clear();
+        }
+        return this;
+      }
+      public Builder removeToken(int index) {
+        if (tokenBuilder_ == null) {
+          ensureTokenIsMutable();
+          token_.remove(index);
+          onChanged();
+        } else {
+          tokenBuilder_.remove(index);
+        }
+        return this;
+      }
+      public com.github.jleyba.dossier.proto.Dossier.Comment.Token.Builder getTokenBuilder(
+          int index) {
+        return getTokenFieldBuilder().getBuilder(index);
+      }
+      public com.github.jleyba.dossier.proto.Dossier.Comment.TokenOrBuilder getTokenOrBuilder(
+          int index) {
+        if (tokenBuilder_ == null) {
+          return token_.get(index);  } else {
+          return tokenBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      public java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.Comment.TokenOrBuilder> 
+           getTokenOrBuilderList() {
+        if (tokenBuilder_ != null) {
+          return tokenBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(token_);
+        }
+      }
+      public com.github.jleyba.dossier.proto.Dossier.Comment.Token.Builder addTokenBuilder() {
+        return getTokenFieldBuilder().addBuilder(
+            com.github.jleyba.dossier.proto.Dossier.Comment.Token.getDefaultInstance());
+      }
+      public com.github.jleyba.dossier.proto.Dossier.Comment.Token.Builder addTokenBuilder(
+          int index) {
+        return getTokenFieldBuilder().addBuilder(
+            index, com.github.jleyba.dossier.proto.Dossier.Comment.Token.getDefaultInstance());
+      }
+      public java.util.List<com.github.jleyba.dossier.proto.Dossier.Comment.Token.Builder> 
+           getTokenBuilderList() {
+        return getTokenFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilder<
+          com.github.jleyba.dossier.proto.Dossier.Comment.Token, com.github.jleyba.dossier.proto.Dossier.Comment.Token.Builder, com.github.jleyba.dossier.proto.Dossier.Comment.TokenOrBuilder> 
+          getTokenFieldBuilder() {
+        if (tokenBuilder_ == null) {
+          tokenBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+              com.github.jleyba.dossier.proto.Dossier.Comment.Token, com.github.jleyba.dossier.proto.Dossier.Comment.Token.Builder, com.github.jleyba.dossier.proto.Dossier.Comment.TokenOrBuilder>(
+                  token_,
+                  ((bitField0_ & 0x00000001) == 0x00000001),
+                  getParentForChildren(),
+                  isClean());
+          token_ = null;
+        }
+        return tokenBuilder_;
+      }
+      
+      // @@protoc_insertion_point(builder_scope:Comment)
+    }
+    
+    static {
+      defaultInstance = new Comment(true);
+      defaultInstance.initFields();
+    }
+    
+    // @@protoc_insertion_point(class_scope:Comment)
+  }
+  
   public interface DeprecationOrBuilder
       extends com.google.protobuf.MessageOrBuilder {
     
-    // optional string notice_html = 1;
-    boolean hasNoticeHtml();
-    String getNoticeHtml();
+    // optional .Comment notice = 1;
+    boolean hasNotice();
+    com.github.jleyba.dossier.proto.Dossier.Comment getNotice();
+    com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder getNoticeOrBuilder();
   }
   public static final class Deprecation extends
       com.google.protobuf.GeneratedMessage
@@ -2080,46 +3292,33 @@ public final class Dossier {
     }
     
     private int bitField0_;
-    // optional string notice_html = 1;
-    public static final int NOTICE_HTML_FIELD_NUMBER = 1;
-    private java.lang.Object noticeHtml_;
-    public boolean hasNoticeHtml() {
+    // optional .Comment notice = 1;
+    public static final int NOTICE_FIELD_NUMBER = 1;
+    private com.github.jleyba.dossier.proto.Dossier.Comment notice_;
+    public boolean hasNotice() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
-    public String getNoticeHtml() {
-      java.lang.Object ref = noticeHtml_;
-      if (ref instanceof String) {
-        return (String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        String s = bs.toStringUtf8();
-        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
-          noticeHtml_ = s;
-        }
-        return s;
-      }
+    public com.github.jleyba.dossier.proto.Dossier.Comment getNotice() {
+      return notice_;
     }
-    private com.google.protobuf.ByteString getNoticeHtmlBytes() {
-      java.lang.Object ref = noticeHtml_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
-        noticeHtml_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
+    public com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder getNoticeOrBuilder() {
+      return notice_;
     }
     
     private void initFields() {
-      noticeHtml_ = "";
+      notice_ = com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized != -1) return isInitialized == 1;
       
+      if (hasNotice()) {
+        if (!getNotice().isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+      }
       memoizedIsInitialized = 1;
       return true;
     }
@@ -2128,7 +3327,7 @@ public final class Dossier {
                         throws java.io.IOException {
       getSerializedSize();
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        output.writeBytes(1, getNoticeHtmlBytes());
+        output.writeMessage(1, notice_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -2141,7 +3340,7 @@ public final class Dossier {
       size = 0;
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(1, getNoticeHtmlBytes());
+          .computeMessageSize(1, notice_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -2259,6 +3458,7 @@ public final class Dossier {
       }
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+          getNoticeFieldBuilder();
         }
       }
       private static Builder create() {
@@ -2267,7 +3467,11 @@ public final class Dossier {
       
       public Builder clear() {
         super.clear();
-        noticeHtml_ = "";
+        if (noticeBuilder_ == null) {
+          notice_ = com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance();
+        } else {
+          noticeBuilder_.clear();
+        }
         bitField0_ = (bitField0_ & ~0x00000001);
         return this;
       }
@@ -2310,7 +3514,11 @@ public final class Dossier {
         if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
           to_bitField0_ |= 0x00000001;
         }
-        result.noticeHtml_ = noticeHtml_;
+        if (noticeBuilder_ == null) {
+          result.notice_ = notice_;
+        } else {
+          result.notice_ = noticeBuilder_.build();
+        }
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -2327,14 +3535,20 @@ public final class Dossier {
       
       public Builder mergeFrom(com.github.jleyba.dossier.proto.Dossier.Deprecation other) {
         if (other == com.github.jleyba.dossier.proto.Dossier.Deprecation.getDefaultInstance()) return this;
-        if (other.hasNoticeHtml()) {
-          setNoticeHtml(other.getNoticeHtml());
+        if (other.hasNotice()) {
+          mergeNotice(other.getNotice());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
       
       public final boolean isInitialized() {
+        if (hasNotice()) {
+          if (!getNotice().isInitialized()) {
+            
+            return false;
+          }
+        }
         return true;
       }
       
@@ -2362,8 +3576,12 @@ public final class Dossier {
               break;
             }
             case 10: {
-              bitField0_ |= 0x00000001;
-              noticeHtml_ = input.readBytes();
+              com.github.jleyba.dossier.proto.Dossier.Comment.Builder subBuilder = com.github.jleyba.dossier.proto.Dossier.Comment.newBuilder();
+              if (hasNotice()) {
+                subBuilder.mergeFrom(getNotice());
+              }
+              input.readMessage(subBuilder, extensionRegistry);
+              setNotice(subBuilder.buildPartial());
               break;
             }
           }
@@ -2372,40 +3590,94 @@ public final class Dossier {
       
       private int bitField0_;
       
-      // optional string notice_html = 1;
-      private java.lang.Object noticeHtml_ = "";
-      public boolean hasNoticeHtml() {
+      // optional .Comment notice = 1;
+      private com.github.jleyba.dossier.proto.Dossier.Comment notice_ = com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          com.github.jleyba.dossier.proto.Dossier.Comment, com.github.jleyba.dossier.proto.Dossier.Comment.Builder, com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder> noticeBuilder_;
+      public boolean hasNotice() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
-      public String getNoticeHtml() {
-        java.lang.Object ref = noticeHtml_;
-        if (!(ref instanceof String)) {
-          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
-          noticeHtml_ = s;
-          return s;
+      public com.github.jleyba.dossier.proto.Dossier.Comment getNotice() {
+        if (noticeBuilder_ == null) {
+          return notice_;
         } else {
-          return (String) ref;
+          return noticeBuilder_.getMessage();
         }
       }
-      public Builder setNoticeHtml(String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000001;
-        noticeHtml_ = value;
-        onChanged();
-        return this;
-      }
-      public Builder clearNoticeHtml() {
-        bitField0_ = (bitField0_ & ~0x00000001);
-        noticeHtml_ = getDefaultInstance().getNoticeHtml();
-        onChanged();
-        return this;
-      }
-      void setNoticeHtml(com.google.protobuf.ByteString value) {
+      public Builder setNotice(com.github.jleyba.dossier.proto.Dossier.Comment value) {
+        if (noticeBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          notice_ = value;
+          onChanged();
+        } else {
+          noticeBuilder_.setMessage(value);
+        }
         bitField0_ |= 0x00000001;
-        noticeHtml_ = value;
+        return this;
+      }
+      public Builder setNotice(
+          com.github.jleyba.dossier.proto.Dossier.Comment.Builder builderForValue) {
+        if (noticeBuilder_ == null) {
+          notice_ = builderForValue.build();
+          onChanged();
+        } else {
+          noticeBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000001;
+        return this;
+      }
+      public Builder mergeNotice(com.github.jleyba.dossier.proto.Dossier.Comment value) {
+        if (noticeBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) == 0x00000001) &&
+              notice_ != com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance()) {
+            notice_ =
+              com.github.jleyba.dossier.proto.Dossier.Comment.newBuilder(notice_).mergeFrom(value).buildPartial();
+          } else {
+            notice_ = value;
+          }
+          onChanged();
+        } else {
+          noticeBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000001;
+        return this;
+      }
+      public Builder clearNotice() {
+        if (noticeBuilder_ == null) {
+          notice_ = com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance();
+          onChanged();
+        } else {
+          noticeBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000001);
+        return this;
+      }
+      public com.github.jleyba.dossier.proto.Dossier.Comment.Builder getNoticeBuilder() {
+        bitField0_ |= 0x00000001;
         onChanged();
+        return getNoticeFieldBuilder().getBuilder();
+      }
+      public com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder getNoticeOrBuilder() {
+        if (noticeBuilder_ != null) {
+          return noticeBuilder_.getMessageOrBuilder();
+        } else {
+          return notice_;
+        }
+      }
+      private com.google.protobuf.SingleFieldBuilder<
+          com.github.jleyba.dossier.proto.Dossier.Comment, com.github.jleyba.dossier.proto.Dossier.Comment.Builder, com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder> 
+          getNoticeFieldBuilder() {
+        if (noticeBuilder_ == null) {
+          noticeBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              com.github.jleyba.dossier.proto.Dossier.Comment, com.github.jleyba.dossier.proto.Dossier.Comment.Builder, com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder>(
+                  notice_,
+                  getParentForChildren(),
+                  isClean());
+          notice_ = null;
+        }
+        return noticeBuilder_;
       }
       
       // @@protoc_insertion_point(builder_scope:Deprecation)
@@ -2430,9 +3702,10 @@ public final class Dossier {
     boolean hasSource();
     String getSource();
     
-    // required string description_html = 3;
-    boolean hasDescriptionHtml();
-    String getDescriptionHtml();
+    // required .Comment description = 3;
+    boolean hasDescription();
+    com.github.jleyba.dossier.proto.Dossier.Comment getDescription();
+    com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder getDescriptionOrBuilder();
     
     // optional .Deprecation deprecation = 4;
     boolean hasDeprecation();
@@ -2536,36 +3809,17 @@ public final class Dossier {
       }
     }
     
-    // required string description_html = 3;
-    public static final int DESCRIPTION_HTML_FIELD_NUMBER = 3;
-    private java.lang.Object descriptionHtml_;
-    public boolean hasDescriptionHtml() {
+    // required .Comment description = 3;
+    public static final int DESCRIPTION_FIELD_NUMBER = 3;
+    private com.github.jleyba.dossier.proto.Dossier.Comment description_;
+    public boolean hasDescription() {
       return ((bitField0_ & 0x00000004) == 0x00000004);
     }
-    public String getDescriptionHtml() {
-      java.lang.Object ref = descriptionHtml_;
-      if (ref instanceof String) {
-        return (String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        String s = bs.toStringUtf8();
-        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
-          descriptionHtml_ = s;
-        }
-        return s;
-      }
+    public com.github.jleyba.dossier.proto.Dossier.Comment getDescription() {
+      return description_;
     }
-    private com.google.protobuf.ByteString getDescriptionHtmlBytes() {
-      java.lang.Object ref = descriptionHtml_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
-        descriptionHtml_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
+    public com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder getDescriptionOrBuilder() {
+      return description_;
     }
     
     // optional .Deprecation deprecation = 4;
@@ -2594,7 +3848,7 @@ public final class Dossier {
     private void initFields() {
       name_ = "";
       source_ = "";
-      descriptionHtml_ = "";
+      description_ = com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance();
       deprecation_ = com.github.jleyba.dossier.proto.Dossier.Deprecation.getDefaultInstance();
       visibility_ = com.github.jleyba.dossier.proto.Dossier.Visibility.PUBLIC;
     }
@@ -2611,9 +3865,19 @@ public final class Dossier {
         memoizedIsInitialized = 0;
         return false;
       }
-      if (!hasDescriptionHtml()) {
+      if (!hasDescription()) {
         memoizedIsInitialized = 0;
         return false;
+      }
+      if (!getDescription().isInitialized()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (hasDeprecation()) {
+        if (!getDeprecation().isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
       }
       memoizedIsInitialized = 1;
       return true;
@@ -2629,7 +3893,7 @@ public final class Dossier {
         output.writeBytes(2, getSourceBytes());
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        output.writeBytes(3, getDescriptionHtmlBytes());
+        output.writeMessage(3, description_);
       }
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
         output.writeMessage(4, deprecation_);
@@ -2656,7 +3920,7 @@ public final class Dossier {
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(3, getDescriptionHtmlBytes());
+          .computeMessageSize(3, description_);
       }
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
         size += com.google.protobuf.CodedOutputStream
@@ -2782,6 +4046,7 @@ public final class Dossier {
       }
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+          getDescriptionFieldBuilder();
           getDeprecationFieldBuilder();
         }
       }
@@ -2795,7 +4060,11 @@ public final class Dossier {
         bitField0_ = (bitField0_ & ~0x00000001);
         source_ = "";
         bitField0_ = (bitField0_ & ~0x00000002);
-        descriptionHtml_ = "";
+        if (descriptionBuilder_ == null) {
+          description_ = com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance();
+        } else {
+          descriptionBuilder_.clear();
+        }
         bitField0_ = (bitField0_ & ~0x00000004);
         if (deprecationBuilder_ == null) {
           deprecation_ = com.github.jleyba.dossier.proto.Dossier.Deprecation.getDefaultInstance();
@@ -2854,7 +4123,11 @@ public final class Dossier {
         if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
           to_bitField0_ |= 0x00000004;
         }
-        result.descriptionHtml_ = descriptionHtml_;
+        if (descriptionBuilder_ == null) {
+          result.description_ = description_;
+        } else {
+          result.description_ = descriptionBuilder_.build();
+        }
         if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
           to_bitField0_ |= 0x00000008;
         }
@@ -2889,8 +4162,8 @@ public final class Dossier {
         if (other.hasSource()) {
           setSource(other.getSource());
         }
-        if (other.hasDescriptionHtml()) {
-          setDescriptionHtml(other.getDescriptionHtml());
+        if (other.hasDescription()) {
+          mergeDescription(other.getDescription());
         }
         if (other.hasDeprecation()) {
           mergeDeprecation(other.getDeprecation());
@@ -2911,9 +4184,19 @@ public final class Dossier {
           
           return false;
         }
-        if (!hasDescriptionHtml()) {
+        if (!hasDescription()) {
           
           return false;
+        }
+        if (!getDescription().isInitialized()) {
+          
+          return false;
+        }
+        if (hasDeprecation()) {
+          if (!getDeprecation().isInitialized()) {
+            
+            return false;
+          }
         }
         return true;
       }
@@ -2952,8 +4235,12 @@ public final class Dossier {
               break;
             }
             case 26: {
-              bitField0_ |= 0x00000004;
-              descriptionHtml_ = input.readBytes();
+              com.github.jleyba.dossier.proto.Dossier.Comment.Builder subBuilder = com.github.jleyba.dossier.proto.Dossier.Comment.newBuilder();
+              if (hasDescription()) {
+                subBuilder.mergeFrom(getDescription());
+              }
+              input.readMessage(subBuilder, extensionRegistry);
+              setDescription(subBuilder.buildPartial());
               break;
             }
             case 34: {
@@ -3054,40 +4341,94 @@ public final class Dossier {
         onChanged();
       }
       
-      // required string description_html = 3;
-      private java.lang.Object descriptionHtml_ = "";
-      public boolean hasDescriptionHtml() {
+      // required .Comment description = 3;
+      private com.github.jleyba.dossier.proto.Dossier.Comment description_ = com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          com.github.jleyba.dossier.proto.Dossier.Comment, com.github.jleyba.dossier.proto.Dossier.Comment.Builder, com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder> descriptionBuilder_;
+      public boolean hasDescription() {
         return ((bitField0_ & 0x00000004) == 0x00000004);
       }
-      public String getDescriptionHtml() {
-        java.lang.Object ref = descriptionHtml_;
-        if (!(ref instanceof String)) {
-          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
-          descriptionHtml_ = s;
-          return s;
+      public com.github.jleyba.dossier.proto.Dossier.Comment getDescription() {
+        if (descriptionBuilder_ == null) {
+          return description_;
         } else {
-          return (String) ref;
+          return descriptionBuilder_.getMessage();
         }
       }
-      public Builder setDescriptionHtml(String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000004;
-        descriptionHtml_ = value;
-        onChanged();
-        return this;
-      }
-      public Builder clearDescriptionHtml() {
-        bitField0_ = (bitField0_ & ~0x00000004);
-        descriptionHtml_ = getDefaultInstance().getDescriptionHtml();
-        onChanged();
-        return this;
-      }
-      void setDescriptionHtml(com.google.protobuf.ByteString value) {
+      public Builder setDescription(com.github.jleyba.dossier.proto.Dossier.Comment value) {
+        if (descriptionBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          description_ = value;
+          onChanged();
+        } else {
+          descriptionBuilder_.setMessage(value);
+        }
         bitField0_ |= 0x00000004;
-        descriptionHtml_ = value;
+        return this;
+      }
+      public Builder setDescription(
+          com.github.jleyba.dossier.proto.Dossier.Comment.Builder builderForValue) {
+        if (descriptionBuilder_ == null) {
+          description_ = builderForValue.build();
+          onChanged();
+        } else {
+          descriptionBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000004;
+        return this;
+      }
+      public Builder mergeDescription(com.github.jleyba.dossier.proto.Dossier.Comment value) {
+        if (descriptionBuilder_ == null) {
+          if (((bitField0_ & 0x00000004) == 0x00000004) &&
+              description_ != com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance()) {
+            description_ =
+              com.github.jleyba.dossier.proto.Dossier.Comment.newBuilder(description_).mergeFrom(value).buildPartial();
+          } else {
+            description_ = value;
+          }
+          onChanged();
+        } else {
+          descriptionBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000004;
+        return this;
+      }
+      public Builder clearDescription() {
+        if (descriptionBuilder_ == null) {
+          description_ = com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance();
+          onChanged();
+        } else {
+          descriptionBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000004);
+        return this;
+      }
+      public com.github.jleyba.dossier.proto.Dossier.Comment.Builder getDescriptionBuilder() {
+        bitField0_ |= 0x00000004;
         onChanged();
+        return getDescriptionFieldBuilder().getBuilder();
+      }
+      public com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder getDescriptionOrBuilder() {
+        if (descriptionBuilder_ != null) {
+          return descriptionBuilder_.getMessageOrBuilder();
+        } else {
+          return description_;
+        }
+      }
+      private com.google.protobuf.SingleFieldBuilder<
+          com.github.jleyba.dossier.proto.Dossier.Comment, com.github.jleyba.dossier.proto.Dossier.Comment.Builder, com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder> 
+          getDescriptionFieldBuilder() {
+        if (descriptionBuilder_ == null) {
+          descriptionBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              com.github.jleyba.dossier.proto.Dossier.Comment, com.github.jleyba.dossier.proto.Dossier.Comment.Builder, com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder>(
+                  description_,
+                  getParentForChildren(),
+                  isClean());
+          description_ = null;
+        }
+        return descriptionBuilder_;
       }
       
       // optional .Deprecation deprecation = 4;
@@ -3830,9 +5171,10 @@ public final class Dossier {
       boolean hasTypeHtml();
       String getTypeHtml();
       
-      // optional string description_html = 3;
-      boolean hasDescriptionHtml();
-      String getDescriptionHtml();
+      // optional .Comment description = 3;
+      boolean hasDescription();
+      com.github.jleyba.dossier.proto.Dossier.Comment getDescription();
+      com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder getDescriptionOrBuilder();
     }
     public static final class Detail extends
         com.google.protobuf.GeneratedMessage
@@ -3927,48 +5269,35 @@ public final class Dossier {
         }
       }
       
-      // optional string description_html = 3;
-      public static final int DESCRIPTION_HTML_FIELD_NUMBER = 3;
-      private java.lang.Object descriptionHtml_;
-      public boolean hasDescriptionHtml() {
+      // optional .Comment description = 3;
+      public static final int DESCRIPTION_FIELD_NUMBER = 3;
+      private com.github.jleyba.dossier.proto.Dossier.Comment description_;
+      public boolean hasDescription() {
         return ((bitField0_ & 0x00000004) == 0x00000004);
       }
-      public String getDescriptionHtml() {
-        java.lang.Object ref = descriptionHtml_;
-        if (ref instanceof String) {
-          return (String) ref;
-        } else {
-          com.google.protobuf.ByteString bs = 
-              (com.google.protobuf.ByteString) ref;
-          String s = bs.toStringUtf8();
-          if (com.google.protobuf.Internal.isValidUtf8(bs)) {
-            descriptionHtml_ = s;
-          }
-          return s;
-        }
+      public com.github.jleyba.dossier.proto.Dossier.Comment getDescription() {
+        return description_;
       }
-      private com.google.protobuf.ByteString getDescriptionHtmlBytes() {
-        java.lang.Object ref = descriptionHtml_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8((String) ref);
-          descriptionHtml_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
+      public com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder getDescriptionOrBuilder() {
+        return description_;
       }
       
       private void initFields() {
         name_ = "";
         typeHtml_ = "";
-        descriptionHtml_ = "";
+        description_ = com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance();
       }
       private byte memoizedIsInitialized = -1;
       public final boolean isInitialized() {
         byte isInitialized = memoizedIsInitialized;
         if (isInitialized != -1) return isInitialized == 1;
         
+        if (hasDescription()) {
+          if (!getDescription().isInitialized()) {
+            memoizedIsInitialized = 0;
+            return false;
+          }
+        }
         memoizedIsInitialized = 1;
         return true;
       }
@@ -3983,7 +5312,7 @@ public final class Dossier {
           output.writeBytes(2, getTypeHtmlBytes());
         }
         if (((bitField0_ & 0x00000004) == 0x00000004)) {
-          output.writeBytes(3, getDescriptionHtmlBytes());
+          output.writeMessage(3, description_);
         }
         getUnknownFields().writeTo(output);
       }
@@ -4004,7 +5333,7 @@ public final class Dossier {
         }
         if (((bitField0_ & 0x00000004) == 0x00000004)) {
           size += com.google.protobuf.CodedOutputStream
-            .computeBytesSize(3, getDescriptionHtmlBytes());
+            .computeMessageSize(3, description_);
         }
         size += getUnknownFields().getSerializedSize();
         memoizedSerializedSize = size;
@@ -4122,6 +5451,7 @@ public final class Dossier {
         }
         private void maybeForceBuilderInitialization() {
           if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+            getDescriptionFieldBuilder();
           }
         }
         private static Builder create() {
@@ -4134,7 +5464,11 @@ public final class Dossier {
           bitField0_ = (bitField0_ & ~0x00000001);
           typeHtml_ = "";
           bitField0_ = (bitField0_ & ~0x00000002);
-          descriptionHtml_ = "";
+          if (descriptionBuilder_ == null) {
+            description_ = com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance();
+          } else {
+            descriptionBuilder_.clear();
+          }
           bitField0_ = (bitField0_ & ~0x00000004);
           return this;
         }
@@ -4185,7 +5519,11 @@ public final class Dossier {
           if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
             to_bitField0_ |= 0x00000004;
           }
-          result.descriptionHtml_ = descriptionHtml_;
+          if (descriptionBuilder_ == null) {
+            result.description_ = description_;
+          } else {
+            result.description_ = descriptionBuilder_.build();
+          }
           result.bitField0_ = to_bitField0_;
           onBuilt();
           return result;
@@ -4208,14 +5546,20 @@ public final class Dossier {
           if (other.hasTypeHtml()) {
             setTypeHtml(other.getTypeHtml());
           }
-          if (other.hasDescriptionHtml()) {
-            setDescriptionHtml(other.getDescriptionHtml());
+          if (other.hasDescription()) {
+            mergeDescription(other.getDescription());
           }
           this.mergeUnknownFields(other.getUnknownFields());
           return this;
         }
         
         public final boolean isInitialized() {
+          if (hasDescription()) {
+            if (!getDescription().isInitialized()) {
+              
+              return false;
+            }
+          }
           return true;
         }
         
@@ -4253,8 +5597,12 @@ public final class Dossier {
                 break;
               }
               case 26: {
-                bitField0_ |= 0x00000004;
-                descriptionHtml_ = input.readBytes();
+                com.github.jleyba.dossier.proto.Dossier.Comment.Builder subBuilder = com.github.jleyba.dossier.proto.Dossier.Comment.newBuilder();
+                if (hasDescription()) {
+                  subBuilder.mergeFrom(getDescription());
+                }
+                input.readMessage(subBuilder, extensionRegistry);
+                setDescription(subBuilder.buildPartial());
                 break;
               }
             }
@@ -4335,40 +5683,94 @@ public final class Dossier {
           onChanged();
         }
         
-        // optional string description_html = 3;
-        private java.lang.Object descriptionHtml_ = "";
-        public boolean hasDescriptionHtml() {
+        // optional .Comment description = 3;
+        private com.github.jleyba.dossier.proto.Dossier.Comment description_ = com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance();
+        private com.google.protobuf.SingleFieldBuilder<
+            com.github.jleyba.dossier.proto.Dossier.Comment, com.github.jleyba.dossier.proto.Dossier.Comment.Builder, com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder> descriptionBuilder_;
+        public boolean hasDescription() {
           return ((bitField0_ & 0x00000004) == 0x00000004);
         }
-        public String getDescriptionHtml() {
-          java.lang.Object ref = descriptionHtml_;
-          if (!(ref instanceof String)) {
-            String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
-            descriptionHtml_ = s;
-            return s;
+        public com.github.jleyba.dossier.proto.Dossier.Comment getDescription() {
+          if (descriptionBuilder_ == null) {
+            return description_;
           } else {
-            return (String) ref;
+            return descriptionBuilder_.getMessage();
           }
         }
-        public Builder setDescriptionHtml(String value) {
-          if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000004;
-          descriptionHtml_ = value;
-          onChanged();
-          return this;
-        }
-        public Builder clearDescriptionHtml() {
-          bitField0_ = (bitField0_ & ~0x00000004);
-          descriptionHtml_ = getDefaultInstance().getDescriptionHtml();
-          onChanged();
-          return this;
-        }
-        void setDescriptionHtml(com.google.protobuf.ByteString value) {
+        public Builder setDescription(com.github.jleyba.dossier.proto.Dossier.Comment value) {
+          if (descriptionBuilder_ == null) {
+            if (value == null) {
+              throw new NullPointerException();
+            }
+            description_ = value;
+            onChanged();
+          } else {
+            descriptionBuilder_.setMessage(value);
+          }
           bitField0_ |= 0x00000004;
-          descriptionHtml_ = value;
+          return this;
+        }
+        public Builder setDescription(
+            com.github.jleyba.dossier.proto.Dossier.Comment.Builder builderForValue) {
+          if (descriptionBuilder_ == null) {
+            description_ = builderForValue.build();
+            onChanged();
+          } else {
+            descriptionBuilder_.setMessage(builderForValue.build());
+          }
+          bitField0_ |= 0x00000004;
+          return this;
+        }
+        public Builder mergeDescription(com.github.jleyba.dossier.proto.Dossier.Comment value) {
+          if (descriptionBuilder_ == null) {
+            if (((bitField0_ & 0x00000004) == 0x00000004) &&
+                description_ != com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance()) {
+              description_ =
+                com.github.jleyba.dossier.proto.Dossier.Comment.newBuilder(description_).mergeFrom(value).buildPartial();
+            } else {
+              description_ = value;
+            }
+            onChanged();
+          } else {
+            descriptionBuilder_.mergeFrom(value);
+          }
+          bitField0_ |= 0x00000004;
+          return this;
+        }
+        public Builder clearDescription() {
+          if (descriptionBuilder_ == null) {
+            description_ = com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance();
+            onChanged();
+          } else {
+            descriptionBuilder_.clear();
+          }
+          bitField0_ = (bitField0_ & ~0x00000004);
+          return this;
+        }
+        public com.github.jleyba.dossier.proto.Dossier.Comment.Builder getDescriptionBuilder() {
+          bitField0_ |= 0x00000004;
           onChanged();
+          return getDescriptionFieldBuilder().getBuilder();
+        }
+        public com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder getDescriptionOrBuilder() {
+          if (descriptionBuilder_ != null) {
+            return descriptionBuilder_.getMessageOrBuilder();
+          } else {
+            return description_;
+          }
+        }
+        private com.google.protobuf.SingleFieldBuilder<
+            com.github.jleyba.dossier.proto.Dossier.Comment, com.github.jleyba.dossier.proto.Dossier.Comment.Builder, com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder> 
+            getDescriptionFieldBuilder() {
+          if (descriptionBuilder_ == null) {
+            descriptionBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+                com.github.jleyba.dossier.proto.Dossier.Comment, com.github.jleyba.dossier.proto.Dossier.Comment.Builder, com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder>(
+                    description_,
+                    getParentForChildren(),
+                    isClean());
+            description_ = null;
+          }
+          return descriptionBuilder_;
         }
         
         // @@protoc_insertion_point(builder_scope:Function.Detail)
@@ -4495,6 +5897,24 @@ public final class Dossier {
       if (!getBase().isInitialized()) {
         memoizedIsInitialized = 0;
         return false;
+      }
+      for (int i = 0; i < getParameterCount(); i++) {
+        if (!getParameter(i).isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+      }
+      if (hasReturn()) {
+        if (!getReturn().isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+      }
+      for (int i = 0; i < getThrownCount(); i++) {
+        if (!getThrown(i).isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
       }
       memoizedIsInitialized = 1;
       return true;
@@ -4896,6 +6316,24 @@ public final class Dossier {
         if (!getBase().isInitialized()) {
           
           return false;
+        }
+        for (int i = 0; i < getParameterCount(); i++) {
+          if (!getParameter(i).isInitialized()) {
+            
+            return false;
+          }
+        }
+        if (hasReturn()) {
+          if (!getReturn().isInitialized()) {
+            
+            return false;
+          }
+        }
+        for (int i = 0; i < getThrownCount(); i++) {
+          if (!getThrown(i).isInitialized()) {
+            
+            return false;
+          }
         }
         return true;
       }
@@ -6712,9 +8150,10 @@ public final class Dossier {
       boolean hasName();
       String getName();
       
-      // optional string description_html = 2;
-      boolean hasDescriptionHtml();
-      String getDescriptionHtml();
+      // optional .Comment description = 2;
+      boolean hasDescription();
+      com.github.jleyba.dossier.proto.Dossier.Comment getDescription();
+      com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder getDescriptionOrBuilder();
       
       // optional .Deprecation deprecation = 3;
       boolean hasDeprecation();
@@ -6782,36 +8221,17 @@ public final class Dossier {
         }
       }
       
-      // optional string description_html = 2;
-      public static final int DESCRIPTION_HTML_FIELD_NUMBER = 2;
-      private java.lang.Object descriptionHtml_;
-      public boolean hasDescriptionHtml() {
+      // optional .Comment description = 2;
+      public static final int DESCRIPTION_FIELD_NUMBER = 2;
+      private com.github.jleyba.dossier.proto.Dossier.Comment description_;
+      public boolean hasDescription() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
       }
-      public String getDescriptionHtml() {
-        java.lang.Object ref = descriptionHtml_;
-        if (ref instanceof String) {
-          return (String) ref;
-        } else {
-          com.google.protobuf.ByteString bs = 
-              (com.google.protobuf.ByteString) ref;
-          String s = bs.toStringUtf8();
-          if (com.google.protobuf.Internal.isValidUtf8(bs)) {
-            descriptionHtml_ = s;
-          }
-          return s;
-        }
+      public com.github.jleyba.dossier.proto.Dossier.Comment getDescription() {
+        return description_;
       }
-      private com.google.protobuf.ByteString getDescriptionHtmlBytes() {
-        java.lang.Object ref = descriptionHtml_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8((String) ref);
-          descriptionHtml_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
+      public com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder getDescriptionOrBuilder() {
+        return description_;
       }
       
       // optional .Deprecation deprecation = 3;
@@ -6829,7 +8249,7 @@ public final class Dossier {
       
       private void initFields() {
         name_ = "";
-        descriptionHtml_ = "";
+        description_ = com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance();
         deprecation_ = com.github.jleyba.dossier.proto.Dossier.Deprecation.getDefaultInstance();
       }
       private byte memoizedIsInitialized = -1;
@@ -6840,6 +8260,18 @@ public final class Dossier {
         if (!hasName()) {
           memoizedIsInitialized = 0;
           return false;
+        }
+        if (hasDescription()) {
+          if (!getDescription().isInitialized()) {
+            memoizedIsInitialized = 0;
+            return false;
+          }
+        }
+        if (hasDeprecation()) {
+          if (!getDeprecation().isInitialized()) {
+            memoizedIsInitialized = 0;
+            return false;
+          }
         }
         memoizedIsInitialized = 1;
         return true;
@@ -6852,7 +8284,7 @@ public final class Dossier {
           output.writeBytes(1, getNameBytes());
         }
         if (((bitField0_ & 0x00000002) == 0x00000002)) {
-          output.writeBytes(2, getDescriptionHtmlBytes());
+          output.writeMessage(2, description_);
         }
         if (((bitField0_ & 0x00000004) == 0x00000004)) {
           output.writeMessage(3, deprecation_);
@@ -6872,7 +8304,7 @@ public final class Dossier {
         }
         if (((bitField0_ & 0x00000002) == 0x00000002)) {
           size += com.google.protobuf.CodedOutputStream
-            .computeBytesSize(2, getDescriptionHtmlBytes());
+            .computeMessageSize(2, description_);
         }
         if (((bitField0_ & 0x00000004) == 0x00000004)) {
           size += com.google.protobuf.CodedOutputStream
@@ -6994,6 +8426,7 @@ public final class Dossier {
         }
         private void maybeForceBuilderInitialization() {
           if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+            getDescriptionFieldBuilder();
             getDeprecationFieldBuilder();
           }
         }
@@ -7005,7 +8438,11 @@ public final class Dossier {
           super.clear();
           name_ = "";
           bitField0_ = (bitField0_ & ~0x00000001);
-          descriptionHtml_ = "";
+          if (descriptionBuilder_ == null) {
+            description_ = com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance();
+          } else {
+            descriptionBuilder_.clear();
+          }
           bitField0_ = (bitField0_ & ~0x00000002);
           if (deprecationBuilder_ == null) {
             deprecation_ = com.github.jleyba.dossier.proto.Dossier.Deprecation.getDefaultInstance();
@@ -7058,7 +8495,11 @@ public final class Dossier {
           if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
             to_bitField0_ |= 0x00000002;
           }
-          result.descriptionHtml_ = descriptionHtml_;
+          if (descriptionBuilder_ == null) {
+            result.description_ = description_;
+          } else {
+            result.description_ = descriptionBuilder_.build();
+          }
           if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
             to_bitField0_ |= 0x00000004;
           }
@@ -7086,8 +8527,8 @@ public final class Dossier {
           if (other.hasName()) {
             setName(other.getName());
           }
-          if (other.hasDescriptionHtml()) {
-            setDescriptionHtml(other.getDescriptionHtml());
+          if (other.hasDescription()) {
+            mergeDescription(other.getDescription());
           }
           if (other.hasDeprecation()) {
             mergeDeprecation(other.getDeprecation());
@@ -7100,6 +8541,18 @@ public final class Dossier {
           if (!hasName()) {
             
             return false;
+          }
+          if (hasDescription()) {
+            if (!getDescription().isInitialized()) {
+              
+              return false;
+            }
+          }
+          if (hasDeprecation()) {
+            if (!getDeprecation().isInitialized()) {
+              
+              return false;
+            }
           }
           return true;
         }
@@ -7133,8 +8586,12 @@ public final class Dossier {
                 break;
               }
               case 18: {
-                bitField0_ |= 0x00000002;
-                descriptionHtml_ = input.readBytes();
+                com.github.jleyba.dossier.proto.Dossier.Comment.Builder subBuilder = com.github.jleyba.dossier.proto.Dossier.Comment.newBuilder();
+                if (hasDescription()) {
+                  subBuilder.mergeFrom(getDescription());
+                }
+                input.readMessage(subBuilder, extensionRegistry);
+                setDescription(subBuilder.buildPartial());
                 break;
               }
               case 26: {
@@ -7188,40 +8645,94 @@ public final class Dossier {
           onChanged();
         }
         
-        // optional string description_html = 2;
-        private java.lang.Object descriptionHtml_ = "";
-        public boolean hasDescriptionHtml() {
+        // optional .Comment description = 2;
+        private com.github.jleyba.dossier.proto.Dossier.Comment description_ = com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance();
+        private com.google.protobuf.SingleFieldBuilder<
+            com.github.jleyba.dossier.proto.Dossier.Comment, com.github.jleyba.dossier.proto.Dossier.Comment.Builder, com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder> descriptionBuilder_;
+        public boolean hasDescription() {
           return ((bitField0_ & 0x00000002) == 0x00000002);
         }
-        public String getDescriptionHtml() {
-          java.lang.Object ref = descriptionHtml_;
-          if (!(ref instanceof String)) {
-            String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
-            descriptionHtml_ = s;
-            return s;
+        public com.github.jleyba.dossier.proto.Dossier.Comment getDescription() {
+          if (descriptionBuilder_ == null) {
+            return description_;
           } else {
-            return (String) ref;
+            return descriptionBuilder_.getMessage();
           }
         }
-        public Builder setDescriptionHtml(String value) {
-          if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000002;
-          descriptionHtml_ = value;
-          onChanged();
-          return this;
-        }
-        public Builder clearDescriptionHtml() {
-          bitField0_ = (bitField0_ & ~0x00000002);
-          descriptionHtml_ = getDefaultInstance().getDescriptionHtml();
-          onChanged();
-          return this;
-        }
-        void setDescriptionHtml(com.google.protobuf.ByteString value) {
+        public Builder setDescription(com.github.jleyba.dossier.proto.Dossier.Comment value) {
+          if (descriptionBuilder_ == null) {
+            if (value == null) {
+              throw new NullPointerException();
+            }
+            description_ = value;
+            onChanged();
+          } else {
+            descriptionBuilder_.setMessage(value);
+          }
           bitField0_ |= 0x00000002;
-          descriptionHtml_ = value;
+          return this;
+        }
+        public Builder setDescription(
+            com.github.jleyba.dossier.proto.Dossier.Comment.Builder builderForValue) {
+          if (descriptionBuilder_ == null) {
+            description_ = builderForValue.build();
+            onChanged();
+          } else {
+            descriptionBuilder_.setMessage(builderForValue.build());
+          }
+          bitField0_ |= 0x00000002;
+          return this;
+        }
+        public Builder mergeDescription(com.github.jleyba.dossier.proto.Dossier.Comment value) {
+          if (descriptionBuilder_ == null) {
+            if (((bitField0_ & 0x00000002) == 0x00000002) &&
+                description_ != com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance()) {
+              description_ =
+                com.github.jleyba.dossier.proto.Dossier.Comment.newBuilder(description_).mergeFrom(value).buildPartial();
+            } else {
+              description_ = value;
+            }
+            onChanged();
+          } else {
+            descriptionBuilder_.mergeFrom(value);
+          }
+          bitField0_ |= 0x00000002;
+          return this;
+        }
+        public Builder clearDescription() {
+          if (descriptionBuilder_ == null) {
+            description_ = com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance();
+            onChanged();
+          } else {
+            descriptionBuilder_.clear();
+          }
+          bitField0_ = (bitField0_ & ~0x00000002);
+          return this;
+        }
+        public com.github.jleyba.dossier.proto.Dossier.Comment.Builder getDescriptionBuilder() {
+          bitField0_ |= 0x00000002;
           onChanged();
+          return getDescriptionFieldBuilder().getBuilder();
+        }
+        public com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder getDescriptionOrBuilder() {
+          if (descriptionBuilder_ != null) {
+            return descriptionBuilder_.getMessageOrBuilder();
+          } else {
+            return description_;
+          }
+        }
+        private com.google.protobuf.SingleFieldBuilder<
+            com.github.jleyba.dossier.proto.Dossier.Comment, com.github.jleyba.dossier.proto.Dossier.Comment.Builder, com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder> 
+            getDescriptionFieldBuilder() {
+          if (descriptionBuilder_ == null) {
+            descriptionBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+                com.github.jleyba.dossier.proto.Dossier.Comment, com.github.jleyba.dossier.proto.Dossier.Comment.Builder, com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder>(
+                    description_,
+                    getParentForChildren(),
+                    isClean());
+            description_ = null;
+          }
+          return descriptionBuilder_;
         }
         
         // optional .Deprecation deprecation = 3;
@@ -8026,9 +9537,10 @@ public final class Dossier {
     com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes getNested();
     com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypesOrBuilder getNestedOrBuilder();
     
-    // required string description_html = 7;
-    boolean hasDescriptionHtml();
-    String getDescriptionHtml();
+    // required .Comment description = 7;
+    boolean hasDescription();
+    com.github.jleyba.dossier.proto.Dossier.Comment getDescription();
+    com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder getDescriptionOrBuilder();
     
     // optional .Deprecation deprecation = 8;
     boolean hasDeprecation();
@@ -9880,9 +11392,10 @@ public final class Dossier {
       boolean hasHref();
       String getHref();
       
-      // required string description_html = 4;
-      boolean hasDescriptionHtml();
-      String getDescriptionHtml();
+      // required .Comment description = 4;
+      boolean hasDescription();
+      com.github.jleyba.dossier.proto.Dossier.Comment getDescription();
+      com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder getDescriptionOrBuilder();
       
       // optional .Deprecation deprecation = 5;
       boolean hasDeprecation();
@@ -10018,36 +11531,17 @@ public final class Dossier {
         }
       }
       
-      // required string description_html = 4;
-      public static final int DESCRIPTION_HTML_FIELD_NUMBER = 4;
-      private java.lang.Object descriptionHtml_;
-      public boolean hasDescriptionHtml() {
+      // required .Comment description = 4;
+      public static final int DESCRIPTION_FIELD_NUMBER = 4;
+      private com.github.jleyba.dossier.proto.Dossier.Comment description_;
+      public boolean hasDescription() {
         return ((bitField0_ & 0x00000008) == 0x00000008);
       }
-      public String getDescriptionHtml() {
-        java.lang.Object ref = descriptionHtml_;
-        if (ref instanceof String) {
-          return (String) ref;
-        } else {
-          com.google.protobuf.ByteString bs = 
-              (com.google.protobuf.ByteString) ref;
-          String s = bs.toStringUtf8();
-          if (com.google.protobuf.Internal.isValidUtf8(bs)) {
-            descriptionHtml_ = s;
-          }
-          return s;
-        }
+      public com.github.jleyba.dossier.proto.Dossier.Comment getDescription() {
+        return description_;
       }
-      private com.google.protobuf.ByteString getDescriptionHtmlBytes() {
-        java.lang.Object ref = descriptionHtml_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8((String) ref);
-          descriptionHtml_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
+      public com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder getDescriptionOrBuilder() {
+        return description_;
       }
       
       // optional .Deprecation deprecation = 5;
@@ -10077,7 +11571,7 @@ public final class Dossier {
         name_ = "";
         typeHtml_ = "";
         href_ = "";
-        descriptionHtml_ = "";
+        description_ = com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance();
         deprecation_ = com.github.jleyba.dossier.proto.Dossier.Deprecation.getDefaultInstance();
         visibility_ = com.github.jleyba.dossier.proto.Dossier.Visibility.PUBLIC;
       }
@@ -10098,9 +11592,19 @@ public final class Dossier {
           memoizedIsInitialized = 0;
           return false;
         }
-        if (!hasDescriptionHtml()) {
+        if (!hasDescription()) {
           memoizedIsInitialized = 0;
           return false;
+        }
+        if (!getDescription().isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+        if (hasDeprecation()) {
+          if (!getDeprecation().isInitialized()) {
+            memoizedIsInitialized = 0;
+            return false;
+          }
         }
         memoizedIsInitialized = 1;
         return true;
@@ -10119,7 +11623,7 @@ public final class Dossier {
           output.writeBytes(3, getHrefBytes());
         }
         if (((bitField0_ & 0x00000008) == 0x00000008)) {
-          output.writeBytes(4, getDescriptionHtmlBytes());
+          output.writeMessage(4, description_);
         }
         if (((bitField0_ & 0x00000010) == 0x00000010)) {
           output.writeMessage(5, deprecation_);
@@ -10150,7 +11654,7 @@ public final class Dossier {
         }
         if (((bitField0_ & 0x00000008) == 0x00000008)) {
           size += com.google.protobuf.CodedOutputStream
-            .computeBytesSize(4, getDescriptionHtmlBytes());
+            .computeMessageSize(4, description_);
         }
         if (((bitField0_ & 0x00000010) == 0x00000010)) {
           size += com.google.protobuf.CodedOutputStream
@@ -10276,6 +11780,7 @@ public final class Dossier {
         }
         private void maybeForceBuilderInitialization() {
           if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+            getDescriptionFieldBuilder();
             getDeprecationFieldBuilder();
           }
         }
@@ -10291,7 +11796,11 @@ public final class Dossier {
           bitField0_ = (bitField0_ & ~0x00000002);
           href_ = "";
           bitField0_ = (bitField0_ & ~0x00000004);
-          descriptionHtml_ = "";
+          if (descriptionBuilder_ == null) {
+            description_ = com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance();
+          } else {
+            descriptionBuilder_.clear();
+          }
           bitField0_ = (bitField0_ & ~0x00000008);
           if (deprecationBuilder_ == null) {
             deprecation_ = com.github.jleyba.dossier.proto.Dossier.Deprecation.getDefaultInstance();
@@ -10354,7 +11863,11 @@ public final class Dossier {
           if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
             to_bitField0_ |= 0x00000008;
           }
-          result.descriptionHtml_ = descriptionHtml_;
+          if (descriptionBuilder_ == null) {
+            result.description_ = description_;
+          } else {
+            result.description_ = descriptionBuilder_.build();
+          }
           if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
             to_bitField0_ |= 0x00000010;
           }
@@ -10392,8 +11905,8 @@ public final class Dossier {
           if (other.hasHref()) {
             setHref(other.getHref());
           }
-          if (other.hasDescriptionHtml()) {
-            setDescriptionHtml(other.getDescriptionHtml());
+          if (other.hasDescription()) {
+            mergeDescription(other.getDescription());
           }
           if (other.hasDeprecation()) {
             mergeDeprecation(other.getDeprecation());
@@ -10418,9 +11931,19 @@ public final class Dossier {
             
             return false;
           }
-          if (!hasDescriptionHtml()) {
+          if (!hasDescription()) {
             
             return false;
+          }
+          if (!getDescription().isInitialized()) {
+            
+            return false;
+          }
+          if (hasDeprecation()) {
+            if (!getDeprecation().isInitialized()) {
+              
+              return false;
+            }
           }
           return true;
         }
@@ -10464,8 +11987,12 @@ public final class Dossier {
                 break;
               }
               case 34: {
-                bitField0_ |= 0x00000008;
-                descriptionHtml_ = input.readBytes();
+                com.github.jleyba.dossier.proto.Dossier.Comment.Builder subBuilder = com.github.jleyba.dossier.proto.Dossier.Comment.newBuilder();
+                if (hasDescription()) {
+                  subBuilder.mergeFrom(getDescription());
+                }
+                input.readMessage(subBuilder, extensionRegistry);
+                setDescription(subBuilder.buildPartial());
                 break;
               }
               case 42: {
@@ -10602,40 +12129,94 @@ public final class Dossier {
           onChanged();
         }
         
-        // required string description_html = 4;
-        private java.lang.Object descriptionHtml_ = "";
-        public boolean hasDescriptionHtml() {
+        // required .Comment description = 4;
+        private com.github.jleyba.dossier.proto.Dossier.Comment description_ = com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance();
+        private com.google.protobuf.SingleFieldBuilder<
+            com.github.jleyba.dossier.proto.Dossier.Comment, com.github.jleyba.dossier.proto.Dossier.Comment.Builder, com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder> descriptionBuilder_;
+        public boolean hasDescription() {
           return ((bitField0_ & 0x00000008) == 0x00000008);
         }
-        public String getDescriptionHtml() {
-          java.lang.Object ref = descriptionHtml_;
-          if (!(ref instanceof String)) {
-            String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
-            descriptionHtml_ = s;
-            return s;
+        public com.github.jleyba.dossier.proto.Dossier.Comment getDescription() {
+          if (descriptionBuilder_ == null) {
+            return description_;
           } else {
-            return (String) ref;
+            return descriptionBuilder_.getMessage();
           }
         }
-        public Builder setDescriptionHtml(String value) {
-          if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000008;
-          descriptionHtml_ = value;
-          onChanged();
-          return this;
-        }
-        public Builder clearDescriptionHtml() {
-          bitField0_ = (bitField0_ & ~0x00000008);
-          descriptionHtml_ = getDefaultInstance().getDescriptionHtml();
-          onChanged();
-          return this;
-        }
-        void setDescriptionHtml(com.google.protobuf.ByteString value) {
+        public Builder setDescription(com.github.jleyba.dossier.proto.Dossier.Comment value) {
+          if (descriptionBuilder_ == null) {
+            if (value == null) {
+              throw new NullPointerException();
+            }
+            description_ = value;
+            onChanged();
+          } else {
+            descriptionBuilder_.setMessage(value);
+          }
           bitField0_ |= 0x00000008;
-          descriptionHtml_ = value;
+          return this;
+        }
+        public Builder setDescription(
+            com.github.jleyba.dossier.proto.Dossier.Comment.Builder builderForValue) {
+          if (descriptionBuilder_ == null) {
+            description_ = builderForValue.build();
+            onChanged();
+          } else {
+            descriptionBuilder_.setMessage(builderForValue.build());
+          }
+          bitField0_ |= 0x00000008;
+          return this;
+        }
+        public Builder mergeDescription(com.github.jleyba.dossier.proto.Dossier.Comment value) {
+          if (descriptionBuilder_ == null) {
+            if (((bitField0_ & 0x00000008) == 0x00000008) &&
+                description_ != com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance()) {
+              description_ =
+                com.github.jleyba.dossier.proto.Dossier.Comment.newBuilder(description_).mergeFrom(value).buildPartial();
+            } else {
+              description_ = value;
+            }
+            onChanged();
+          } else {
+            descriptionBuilder_.mergeFrom(value);
+          }
+          bitField0_ |= 0x00000008;
+          return this;
+        }
+        public Builder clearDescription() {
+          if (descriptionBuilder_ == null) {
+            description_ = com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance();
+            onChanged();
+          } else {
+            descriptionBuilder_.clear();
+          }
+          bitField0_ = (bitField0_ & ~0x00000008);
+          return this;
+        }
+        public com.github.jleyba.dossier.proto.Dossier.Comment.Builder getDescriptionBuilder() {
+          bitField0_ |= 0x00000008;
           onChanged();
+          return getDescriptionFieldBuilder().getBuilder();
+        }
+        public com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder getDescriptionOrBuilder() {
+          if (descriptionBuilder_ != null) {
+            return descriptionBuilder_.getMessageOrBuilder();
+          } else {
+            return description_;
+          }
+        }
+        private com.google.protobuf.SingleFieldBuilder<
+            com.github.jleyba.dossier.proto.Dossier.Comment, com.github.jleyba.dossier.proto.Dossier.Comment.Builder, com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder> 
+            getDescriptionFieldBuilder() {
+          if (descriptionBuilder_ == null) {
+            descriptionBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+                com.github.jleyba.dossier.proto.Dossier.Comment, com.github.jleyba.dossier.proto.Dossier.Comment.Builder, com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder>(
+                    description_,
+                    getParentForChildren(),
+                    isClean());
+            description_ = null;
+          }
+          return descriptionBuilder_;
         }
         
         // optional .Deprecation deprecation = 5;
@@ -10841,36 +12422,17 @@ public final class Dossier {
       return nested_;
     }
     
-    // required string description_html = 7;
-    public static final int DESCRIPTION_HTML_FIELD_NUMBER = 7;
-    private java.lang.Object descriptionHtml_;
-    public boolean hasDescriptionHtml() {
+    // required .Comment description = 7;
+    public static final int DESCRIPTION_FIELD_NUMBER = 7;
+    private com.github.jleyba.dossier.proto.Dossier.Comment description_;
+    public boolean hasDescription() {
       return ((bitField0_ & 0x00000008) == 0x00000008);
     }
-    public String getDescriptionHtml() {
-      java.lang.Object ref = descriptionHtml_;
-      if (ref instanceof String) {
-        return (String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        String s = bs.toStringUtf8();
-        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
-          descriptionHtml_ = s;
-        }
-        return s;
-      }
+    public com.github.jleyba.dossier.proto.Dossier.Comment getDescription() {
+      return description_;
     }
-    private com.google.protobuf.ByteString getDescriptionHtmlBytes() {
-      java.lang.Object ref = descriptionHtml_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
-        descriptionHtml_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
+    public com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder getDescriptionOrBuilder() {
+      return description_;
     }
     
     // optional .Deprecation deprecation = 8;
@@ -11072,7 +12634,7 @@ public final class Dossier {
       name_ = "";
       source_ = "";
       nested_ = com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.getDefaultInstance();
-      descriptionHtml_ = "";
+      description_ = com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance();
       deprecation_ = com.github.jleyba.dossier.proto.Dossier.Deprecation.getDefaultInstance();
       typeDef_ = java.util.Collections.emptyList();
       enumeration_ = com.github.jleyba.dossier.proto.Dossier.Enumeration.getDefaultInstance();
@@ -11103,13 +12665,23 @@ public final class Dossier {
         memoizedIsInitialized = 0;
         return false;
       }
-      if (!hasDescriptionHtml()) {
+      if (!hasDescription()) {
         memoizedIsInitialized = 0;
         return false;
       }
       if (!getNested().isInitialized()) {
         memoizedIsInitialized = 0;
         return false;
+      }
+      if (!getDescription().isInitialized()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (hasDeprecation()) {
+        if (!getDeprecation().isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
       }
       for (int i = 0; i < getTypeDefCount(); i++) {
         if (!getTypeDef(i).isInitialized()) {
@@ -11176,7 +12748,7 @@ public final class Dossier {
         output.writeMessage(6, nested_);
       }
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        output.writeBytes(7, getDescriptionHtmlBytes());
+        output.writeMessage(7, description_);
       }
       if (((bitField0_ & 0x00000010) == 0x00000010)) {
         output.writeMessage(8, deprecation_);
@@ -11237,7 +12809,7 @@ public final class Dossier {
       }
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(7, getDescriptionHtmlBytes());
+          .computeMessageSize(7, description_);
       }
       if (((bitField0_ & 0x00000010) == 0x00000010)) {
         size += com.google.protobuf.CodedOutputStream
@@ -11404,6 +12976,7 @@ public final class Dossier {
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
           getNestedFieldBuilder();
+          getDescriptionFieldBuilder();
           getDeprecationFieldBuilder();
           getTypeDefFieldBuilder();
           getEnumerationFieldBuilder();
@@ -11431,7 +13004,11 @@ public final class Dossier {
           nestedBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000004);
-        descriptionHtml_ = "";
+        if (descriptionBuilder_ == null) {
+          description_ = com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance();
+        } else {
+          descriptionBuilder_.clear();
+        }
         bitField0_ = (bitField0_ & ~0x00000008);
         if (deprecationBuilder_ == null) {
           deprecation_ = com.github.jleyba.dossier.proto.Dossier.Deprecation.getDefaultInstance();
@@ -11550,7 +13127,11 @@ public final class Dossier {
         if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
           to_bitField0_ |= 0x00000008;
         }
-        result.descriptionHtml_ = descriptionHtml_;
+        if (descriptionBuilder_ == null) {
+          result.description_ = description_;
+        } else {
+          result.description_ = descriptionBuilder_.build();
+        }
         if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
           to_bitField0_ |= 0x00000010;
         }
@@ -11666,8 +13247,8 @@ public final class Dossier {
         if (other.hasNested()) {
           mergeNested(other.getNested());
         }
-        if (other.hasDescriptionHtml()) {
-          setDescriptionHtml(other.getDescriptionHtml());
+        if (other.hasDescription()) {
+          mergeDescription(other.getDescription());
         }
         if (other.hasDeprecation()) {
           mergeDeprecation(other.getDeprecation());
@@ -11860,13 +13441,23 @@ public final class Dossier {
           
           return false;
         }
-        if (!hasDescriptionHtml()) {
+        if (!hasDescription()) {
           
           return false;
         }
         if (!getNested().isInitialized()) {
           
           return false;
+        }
+        if (!getDescription().isInitialized()) {
+          
+          return false;
+        }
+        if (hasDeprecation()) {
+          if (!getDeprecation().isInitialized()) {
+            
+            return false;
+          }
         }
         for (int i = 0; i < getTypeDefCount(); i++) {
           if (!getTypeDef(i).isInitialized()) {
@@ -11962,8 +13553,12 @@ public final class Dossier {
               break;
             }
             case 58: {
-              bitField0_ |= 0x00000008;
-              descriptionHtml_ = input.readBytes();
+              com.github.jleyba.dossier.proto.Dossier.Comment.Builder subBuilder = com.github.jleyba.dossier.proto.Dossier.Comment.newBuilder();
+              if (hasDescription()) {
+                subBuilder.mergeFrom(getDescription());
+              }
+              input.readMessage(subBuilder, extensionRegistry);
+              setDescription(subBuilder.buildPartial());
               break;
             }
             case 66: {
@@ -12212,40 +13807,94 @@ public final class Dossier {
         return nestedBuilder_;
       }
       
-      // required string description_html = 7;
-      private java.lang.Object descriptionHtml_ = "";
-      public boolean hasDescriptionHtml() {
+      // required .Comment description = 7;
+      private com.github.jleyba.dossier.proto.Dossier.Comment description_ = com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          com.github.jleyba.dossier.proto.Dossier.Comment, com.github.jleyba.dossier.proto.Dossier.Comment.Builder, com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder> descriptionBuilder_;
+      public boolean hasDescription() {
         return ((bitField0_ & 0x00000008) == 0x00000008);
       }
-      public String getDescriptionHtml() {
-        java.lang.Object ref = descriptionHtml_;
-        if (!(ref instanceof String)) {
-          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
-          descriptionHtml_ = s;
-          return s;
+      public com.github.jleyba.dossier.proto.Dossier.Comment getDescription() {
+        if (descriptionBuilder_ == null) {
+          return description_;
         } else {
-          return (String) ref;
+          return descriptionBuilder_.getMessage();
         }
       }
-      public Builder setDescriptionHtml(String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000008;
-        descriptionHtml_ = value;
-        onChanged();
-        return this;
-      }
-      public Builder clearDescriptionHtml() {
-        bitField0_ = (bitField0_ & ~0x00000008);
-        descriptionHtml_ = getDefaultInstance().getDescriptionHtml();
-        onChanged();
-        return this;
-      }
-      void setDescriptionHtml(com.google.protobuf.ByteString value) {
+      public Builder setDescription(com.github.jleyba.dossier.proto.Dossier.Comment value) {
+        if (descriptionBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          description_ = value;
+          onChanged();
+        } else {
+          descriptionBuilder_.setMessage(value);
+        }
         bitField0_ |= 0x00000008;
-        descriptionHtml_ = value;
+        return this;
+      }
+      public Builder setDescription(
+          com.github.jleyba.dossier.proto.Dossier.Comment.Builder builderForValue) {
+        if (descriptionBuilder_ == null) {
+          description_ = builderForValue.build();
+          onChanged();
+        } else {
+          descriptionBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000008;
+        return this;
+      }
+      public Builder mergeDescription(com.github.jleyba.dossier.proto.Dossier.Comment value) {
+        if (descriptionBuilder_ == null) {
+          if (((bitField0_ & 0x00000008) == 0x00000008) &&
+              description_ != com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance()) {
+            description_ =
+              com.github.jleyba.dossier.proto.Dossier.Comment.newBuilder(description_).mergeFrom(value).buildPartial();
+          } else {
+            description_ = value;
+          }
+          onChanged();
+        } else {
+          descriptionBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000008;
+        return this;
+      }
+      public Builder clearDescription() {
+        if (descriptionBuilder_ == null) {
+          description_ = com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance();
+          onChanged();
+        } else {
+          descriptionBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000008);
+        return this;
+      }
+      public com.github.jleyba.dossier.proto.Dossier.Comment.Builder getDescriptionBuilder() {
+        bitField0_ |= 0x00000008;
         onChanged();
+        return getDescriptionFieldBuilder().getBuilder();
+      }
+      public com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder getDescriptionOrBuilder() {
+        if (descriptionBuilder_ != null) {
+          return descriptionBuilder_.getMessageOrBuilder();
+        } else {
+          return description_;
+        }
+      }
+      private com.google.protobuf.SingleFieldBuilder<
+          com.github.jleyba.dossier.proto.Dossier.Comment, com.github.jleyba.dossier.proto.Dossier.Comment.Builder, com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder> 
+          getDescriptionFieldBuilder() {
+        if (descriptionBuilder_ == null) {
+          descriptionBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              com.github.jleyba.dossier.proto.Dossier.Comment, com.github.jleyba.dossier.proto.Dossier.Comment.Builder, com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder>(
+                  description_,
+                  getParentForChildren(),
+                  isClean());
+          description_ = null;
+        }
+        return descriptionBuilder_;
       }
       
       // optional .Deprecation deprecation = 8;
@@ -13720,9 +15369,10 @@ public final class Dossier {
     boolean hasHasLicense();
     boolean getHasLicense();
     
-    // optional string readme_html = 3;
-    boolean hasReadmeHtml();
-    String getReadmeHtml();
+    // optional .Comment readme = 3;
+    boolean hasReadme();
+    com.github.jleyba.dossier.proto.Dossier.Comment getReadme();
+    com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder getReadmeOrBuilder();
   }
   public static final class IndexFileRenderSpec extends
       com.google.protobuf.GeneratedMessage
@@ -13776,42 +15426,23 @@ public final class Dossier {
       return hasLicense_;
     }
     
-    // optional string readme_html = 3;
-    public static final int README_HTML_FIELD_NUMBER = 3;
-    private java.lang.Object readmeHtml_;
-    public boolean hasReadmeHtml() {
+    // optional .Comment readme = 3;
+    public static final int README_FIELD_NUMBER = 3;
+    private com.github.jleyba.dossier.proto.Dossier.Comment readme_;
+    public boolean hasReadme() {
       return ((bitField0_ & 0x00000004) == 0x00000004);
     }
-    public String getReadmeHtml() {
-      java.lang.Object ref = readmeHtml_;
-      if (ref instanceof String) {
-        return (String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        String s = bs.toStringUtf8();
-        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
-          readmeHtml_ = s;
-        }
-        return s;
-      }
+    public com.github.jleyba.dossier.proto.Dossier.Comment getReadme() {
+      return readme_;
     }
-    private com.google.protobuf.ByteString getReadmeHtmlBytes() {
-      java.lang.Object ref = readmeHtml_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
-        readmeHtml_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
+    public com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder getReadmeOrBuilder() {
+      return readme_;
     }
     
     private void initFields() {
       resources_ = com.github.jleyba.dossier.proto.Dossier.Resources.getDefaultInstance();
       hasLicense_ = false;
-      readmeHtml_ = "";
+      readme_ = com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -13821,6 +15452,12 @@ public final class Dossier {
       if (!hasResources()) {
         memoizedIsInitialized = 0;
         return false;
+      }
+      if (hasReadme()) {
+        if (!getReadme().isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
       }
       memoizedIsInitialized = 1;
       return true;
@@ -13836,7 +15473,7 @@ public final class Dossier {
         output.writeBool(2, hasLicense_);
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        output.writeBytes(3, getReadmeHtmlBytes());
+        output.writeMessage(3, readme_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -13857,7 +15494,7 @@ public final class Dossier {
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(3, getReadmeHtmlBytes());
+          .computeMessageSize(3, readme_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -13976,6 +15613,7 @@ public final class Dossier {
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
           getResourcesFieldBuilder();
+          getReadmeFieldBuilder();
         }
       }
       private static Builder create() {
@@ -13992,7 +15630,11 @@ public final class Dossier {
         bitField0_ = (bitField0_ & ~0x00000001);
         hasLicense_ = false;
         bitField0_ = (bitField0_ & ~0x00000002);
-        readmeHtml_ = "";
+        if (readmeBuilder_ == null) {
+          readme_ = com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance();
+        } else {
+          readmeBuilder_.clear();
+        }
         bitField0_ = (bitField0_ & ~0x00000004);
         return this;
       }
@@ -14047,7 +15689,11 @@ public final class Dossier {
         if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
           to_bitField0_ |= 0x00000004;
         }
-        result.readmeHtml_ = readmeHtml_;
+        if (readmeBuilder_ == null) {
+          result.readme_ = readme_;
+        } else {
+          result.readme_ = readmeBuilder_.build();
+        }
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -14070,8 +15716,8 @@ public final class Dossier {
         if (other.hasHasLicense()) {
           setHasLicense(other.getHasLicense());
         }
-        if (other.hasReadmeHtml()) {
-          setReadmeHtml(other.getReadmeHtml());
+        if (other.hasReadme()) {
+          mergeReadme(other.getReadme());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -14081,6 +15727,12 @@ public final class Dossier {
         if (!hasResources()) {
           
           return false;
+        }
+        if (hasReadme()) {
+          if (!getReadme().isInitialized()) {
+            
+            return false;
+          }
         }
         return true;
       }
@@ -14123,8 +15775,12 @@ public final class Dossier {
               break;
             }
             case 26: {
-              bitField0_ |= 0x00000004;
-              readmeHtml_ = input.readBytes();
+              com.github.jleyba.dossier.proto.Dossier.Comment.Builder subBuilder = com.github.jleyba.dossier.proto.Dossier.Comment.newBuilder();
+              if (hasReadme()) {
+                subBuilder.mergeFrom(getReadme());
+              }
+              input.readMessage(subBuilder, extensionRegistry);
+              setReadme(subBuilder.buildPartial());
               break;
             }
           }
@@ -14244,40 +15900,94 @@ public final class Dossier {
         return this;
       }
       
-      // optional string readme_html = 3;
-      private java.lang.Object readmeHtml_ = "";
-      public boolean hasReadmeHtml() {
+      // optional .Comment readme = 3;
+      private com.github.jleyba.dossier.proto.Dossier.Comment readme_ = com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          com.github.jleyba.dossier.proto.Dossier.Comment, com.github.jleyba.dossier.proto.Dossier.Comment.Builder, com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder> readmeBuilder_;
+      public boolean hasReadme() {
         return ((bitField0_ & 0x00000004) == 0x00000004);
       }
-      public String getReadmeHtml() {
-        java.lang.Object ref = readmeHtml_;
-        if (!(ref instanceof String)) {
-          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
-          readmeHtml_ = s;
-          return s;
+      public com.github.jleyba.dossier.proto.Dossier.Comment getReadme() {
+        if (readmeBuilder_ == null) {
+          return readme_;
         } else {
-          return (String) ref;
+          return readmeBuilder_.getMessage();
         }
       }
-      public Builder setReadmeHtml(String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000004;
-        readmeHtml_ = value;
-        onChanged();
-        return this;
-      }
-      public Builder clearReadmeHtml() {
-        bitField0_ = (bitField0_ & ~0x00000004);
-        readmeHtml_ = getDefaultInstance().getReadmeHtml();
-        onChanged();
-        return this;
-      }
-      void setReadmeHtml(com.google.protobuf.ByteString value) {
+      public Builder setReadme(com.github.jleyba.dossier.proto.Dossier.Comment value) {
+        if (readmeBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          readme_ = value;
+          onChanged();
+        } else {
+          readmeBuilder_.setMessage(value);
+        }
         bitField0_ |= 0x00000004;
-        readmeHtml_ = value;
+        return this;
+      }
+      public Builder setReadme(
+          com.github.jleyba.dossier.proto.Dossier.Comment.Builder builderForValue) {
+        if (readmeBuilder_ == null) {
+          readme_ = builderForValue.build();
+          onChanged();
+        } else {
+          readmeBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000004;
+        return this;
+      }
+      public Builder mergeReadme(com.github.jleyba.dossier.proto.Dossier.Comment value) {
+        if (readmeBuilder_ == null) {
+          if (((bitField0_ & 0x00000004) == 0x00000004) &&
+              readme_ != com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance()) {
+            readme_ =
+              com.github.jleyba.dossier.proto.Dossier.Comment.newBuilder(readme_).mergeFrom(value).buildPartial();
+          } else {
+            readme_ = value;
+          }
+          onChanged();
+        } else {
+          readmeBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000004;
+        return this;
+      }
+      public Builder clearReadme() {
+        if (readmeBuilder_ == null) {
+          readme_ = com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance();
+          onChanged();
+        } else {
+          readmeBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000004);
+        return this;
+      }
+      public com.github.jleyba.dossier.proto.Dossier.Comment.Builder getReadmeBuilder() {
+        bitField0_ |= 0x00000004;
         onChanged();
+        return getReadmeFieldBuilder().getBuilder();
+      }
+      public com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder getReadmeOrBuilder() {
+        if (readmeBuilder_ != null) {
+          return readmeBuilder_.getMessageOrBuilder();
+        } else {
+          return readme_;
+        }
+      }
+      private com.google.protobuf.SingleFieldBuilder<
+          com.github.jleyba.dossier.proto.Dossier.Comment, com.github.jleyba.dossier.proto.Dossier.Comment.Builder, com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder> 
+          getReadmeFieldBuilder() {
+        if (readmeBuilder_ == null) {
+          readmeBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              com.github.jleyba.dossier.proto.Dossier.Comment, com.github.jleyba.dossier.proto.Dossier.Comment.Builder, com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder>(
+                  readme_,
+                  getParentForChildren(),
+                  isClean());
+          readme_ = null;
+        }
+        return readmeBuilder_;
       }
       
       // @@protoc_insertion_point(builder_scope:IndexFileRenderSpec)
@@ -16199,6 +17909,16 @@ public final class Dossier {
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_TypeLink_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_Comment_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_Comment_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_Comment_Token_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_Comment_Token_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
     internal_static_Deprecation_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
@@ -16292,60 +18012,65 @@ public final class Dossier {
       "\005lines\030\003 \003(\t\"(\n\tResources\022\013\n\003css\030\001 \003(\t\022\016" +
       "\n\006script\030\002 \003(\t\"\027\n\007License\022\014\n\004text\030\001 \002(\t\"" +
       "&\n\010TypeLink\022\014\n\004text\030\001 \002(\t\022\014\n\004href\030\002 \002(\t\"" +
-      "\"\n\013Deprecation\022\023\n\013notice_html\030\001 \001(\t\"\222\001\n\014" +
-      "BaseProperty\022\014\n\004name\030\001 \002(\t\022\016\n\006source\030\002 \002" +
-      "(\t\022\030\n\020description_html\030\003 \002(\t\022!\n\013deprecat" +
-      "ion\030\004 \001(\0132\014.Deprecation\022\'\n\nvisibility\030\005 " +
-      "\001(\0162\013.Visibility:\006PUBLIC\":\n\010Property\022\033\n\004",
-      "base\030\001 \002(\0132\r.BaseProperty\022\021\n\ttype_html\030\002" +
-      " \001(\t\"\204\002\n\010Function\022\033\n\004base\030\001 \002(\0132\r.BasePr" +
-      "operty\022\025\n\rtemplate_name\030\002 \003(\t\022\026\n\016is_cons" +
-      "tructor\030\003 \001(\010\022#\n\tparameter\030\004 \003(\0132\020.Funct" +
-      "ion.Detail\022 \n\006return\030\005 \001(\0132\020.Function.De" +
-      "tail\022 \n\006thrown\030\006 \003(\0132\020.Function.Detail\032C" +
-      "\n\006Detail\022\014\n\004name\030\001 \001(\t\022\021\n\ttype_html\030\002 \001(" +
-      "\t\022\030\n\020description_html\030\003 \001(\t\"a\n\tPrototype" +
-      "\022\014\n\004name\030\001 \002(\t\022\014\n\004href\030\002 \001(\t\022\033\n\010function" +
-      "\030\003 \003(\0132\t.Function\022\033\n\010property\030\004 \003(\0132\t.Pr",
-      "operty\"\300\001\n\013Enumeration\022\021\n\ttype_html\030\001 \002(" +
-      "\t\022!\n\005value\030\002 \003(\0132\022.Enumeration.Value\022\'\n\n" +
-      "visibility\030\003 \001(\0162\013.Visibility:\006PUBLIC\032R\n" +
-      "\005Value\022\014\n\004name\030\001 \002(\t\022\030\n\020description_html" +
-      "\030\002 \001(\t\022!\n\013deprecation\030\003 \001(\0132\014.Deprecatio" +
-      "n\"\372\006\n\006JsType\022\014\n\004name\030\001 \002(\t\022\016\n\006source\030\005 \002" +
-      "(\t\022#\n\006nested\030\006 \002(\0132\023.JsType.NestedTypes\022" +
-      "\030\n\020description_html\030\007 \002(\t\022!\n\013deprecation" +
-      "\030\010 \001(\0132\014.Deprecation\022!\n\010type_def\030\t \003(\0132\017" +
-      ".JsType.TypeDef\022!\n\013enumeration\030\n \001(\0132\014.E",
-      "numeration\022\"\n\017static_function\030\013 \003(\0132\t.Fu" +
-      "nction\022\"\n\017static_property\030\014 \003(\0132\t.Proper" +
-      "ty\022\036\n\013constructor\030\r \001(\0132\t.Function\022\024\n\014is" +
-      "_interface\030\016 \001(\010\022\035\n\tprototype\030\017 \003(\0132\n.Pr" +
-      "ototype\022\034\n\024has_instance_methods\030\020 \001(\010\022\037\n" +
-      "\027has_instance_properties\030\021 \001(\010\022 \n\rextend" +
-      "ed_type\030\022 \003(\0132\t.TypeLink\022#\n\020implemented_" +
-      "type\030\023 \003(\0132\t.TypeLink\032\345\001\n\013NestedTypes\0223\n" +
-      "\ninterfaces\030\001 \003(\0132\037.JsType.NestedTypes.T" +
-      "ypeSummary\0220\n\007classes\030\002 \003(\0132\037.JsType.Nes",
-      "tedTypes.TypeSummary\022.\n\005enums\030\003 \003(\0132\037.Js" +
-      "Type.NestedTypes.TypeSummary\032?\n\013TypeSumm" +
-      "ary\022\014\n\004name\030\001 \002(\t\022\014\n\004href\030\002 \002(\t\022\024\n\014summa" +
-      "ry_html\030\003 \002(\t\032\236\001\n\007TypeDef\022\014\n\004name\030\001 \002(\t\022" +
-      "\021\n\ttype_html\030\002 \002(\t\022\014\n\004href\030\003 \002(\t\022\030\n\020desc" +
-      "ription_html\030\004 \002(\t\022!\n\013deprecation\030\005 \001(\0132" +
-      "\014.Deprecation\022\'\n\nvisibility\030\006 \001(\0162\013.Visi" +
-      "bility:\006PUBLIC\"^\n\023IndexFileRenderSpec\022\035\n" +
-      "\tresources\030\001 \002(\0132\n.Resources\022\023\n\013has_lice" +
-      "nse\030\002 \001(\010\022\023\n\013readme_html\030\003 \001(\t\"M\n\021Licens",
-      "eRenderSpec\022\035\n\tresources\030\001 \002(\0132\n.Resourc" +
-      "es\022\031\n\007license\030\002 \002(\0132\010.License\"e\n\024SourceF" +
-      "ileRenderSpec\022\035\n\tresources\030\001 \002(\0132\n.Resou" +
-      "rces\022\031\n\004file\030\002 \002(\0132\013.SourceFile\022\023\n\013has_l" +
-      "icense\030\003 \001(\010\"]\n\020JsTypeRenderSpec\022\025\n\004type" +
-      "\030\001 \002(\0132\007.JsType\022\035\n\tresources\030\002 \002(\0132\n.Res" +
-      "ources\022\023\n\013has_license\030\003 \001(\010*4\n\nVisibilit" +
-      "y\022\n\n\006PUBLIC\020\000\022\r\n\tPROTECTED\020\001\022\013\n\007PRIVATE\020" +
-      "\002B!\n\037com.github.jleyba.dossier.proto"
+      "\213\001\n\007Comment\022\035\n\005token\030\001 \003(\0132\016.Comment.Tok" +
+      "en\032a\n\005Token\022\014\n\004text\030\001 \002(\t\022\022\n\nis_literal\030" +
+      "\002 \001(\010\022\017\n\007is_code\030\003 \001(\010\022\014\n\004href\030\004 \001(\t\022\027\n\017" +
+      "unresolved_link\030\005 \001(\010\"\'\n\013Deprecation\022\030\n\006" +
+      "notice\030\001 \001(\0132\010.Comment\"\227\001\n\014BaseProperty\022",
+      "\014\n\004name\030\001 \002(\t\022\016\n\006source\030\002 \002(\t\022\035\n\013descrip" +
+      "tion\030\003 \002(\0132\010.Comment\022!\n\013deprecation\030\004 \001(" +
+      "\0132\014.Deprecation\022\'\n\nvisibility\030\005 \001(\0162\013.Vi" +
+      "sibility:\006PUBLIC\":\n\010Property\022\033\n\004base\030\001 \002" +
+      "(\0132\r.BaseProperty\022\021\n\ttype_html\030\002 \001(\t\"\211\002\n" +
+      "\010Function\022\033\n\004base\030\001 \002(\0132\r.BaseProperty\022\025" +
+      "\n\rtemplate_name\030\002 \003(\t\022\026\n\016is_constructor\030" +
+      "\003 \001(\010\022#\n\tparameter\030\004 \003(\0132\020.Function.Deta" +
+      "il\022 \n\006return\030\005 \001(\0132\020.Function.Detail\022 \n\006" +
+      "thrown\030\006 \003(\0132\020.Function.Detail\032H\n\006Detail",
+      "\022\014\n\004name\030\001 \001(\t\022\021\n\ttype_html\030\002 \001(\t\022\035\n\013des" +
+      "cription\030\003 \001(\0132\010.Comment\"a\n\tPrototype\022\014\n" +
+      "\004name\030\001 \002(\t\022\014\n\004href\030\002 \001(\t\022\033\n\010function\030\003 " +
+      "\003(\0132\t.Function\022\033\n\010property\030\004 \003(\0132\t.Prope" +
+      "rty\"\305\001\n\013Enumeration\022\021\n\ttype_html\030\001 \002(\t\022!" +
+      "\n\005value\030\002 \003(\0132\022.Enumeration.Value\022\'\n\nvis" +
+      "ibility\030\003 \001(\0162\013.Visibility:\006PUBLIC\032W\n\005Va" +
+      "lue\022\014\n\004name\030\001 \002(\t\022\035\n\013description\030\002 \001(\0132\010" +
+      ".Comment\022!\n\013deprecation\030\003 \001(\0132\014.Deprecat" +
+      "ion\"\204\007\n\006JsType\022\014\n\004name\030\001 \002(\t\022\016\n\006source\030\005",
+      " \002(\t\022#\n\006nested\030\006 \002(\0132\023.JsType.NestedType" +
+      "s\022\035\n\013description\030\007 \002(\0132\010.Comment\022!\n\013depr" +
+      "ecation\030\010 \001(\0132\014.Deprecation\022!\n\010type_def\030" +
+      "\t \003(\0132\017.JsType.TypeDef\022!\n\013enumeration\030\n " +
+      "\001(\0132\014.Enumeration\022\"\n\017static_function\030\013 \003" +
+      "(\0132\t.Function\022\"\n\017static_property\030\014 \003(\0132\t" +
+      ".Property\022\036\n\013constructor\030\r \001(\0132\t.Functio" +
+      "n\022\024\n\014is_interface\030\016 \001(\010\022\035\n\tprototype\030\017 \003" +
+      "(\0132\n.Prototype\022\034\n\024has_instance_methods\030\020" +
+      " \001(\010\022\037\n\027has_instance_properties\030\021 \001(\010\022 \n",
+      "\rextended_type\030\022 \003(\0132\t.TypeLink\022#\n\020imple" +
+      "mented_type\030\023 \003(\0132\t.TypeLink\032\345\001\n\013NestedT" +
+      "ypes\0223\n\ninterfaces\030\001 \003(\0132\037.JsType.Nested" +
+      "Types.TypeSummary\0220\n\007classes\030\002 \003(\0132\037.JsT" +
+      "ype.NestedTypes.TypeSummary\022.\n\005enums\030\003 \003" +
+      "(\0132\037.JsType.NestedTypes.TypeSummary\032?\n\013T" +
+      "ypeSummary\022\014\n\004name\030\001 \002(\t\022\014\n\004href\030\002 \002(\t\022\024" +
+      "\n\014summary_html\030\003 \002(\t\032\243\001\n\007TypeDef\022\014\n\004name" +
+      "\030\001 \002(\t\022\021\n\ttype_html\030\002 \002(\t\022\014\n\004href\030\003 \002(\t\022" +
+      "\035\n\013description\030\004 \002(\0132\010.Comment\022!\n\013deprec",
+      "ation\030\005 \001(\0132\014.Deprecation\022\'\n\nvisibility\030" +
+      "\006 \001(\0162\013.Visibility:\006PUBLIC\"c\n\023IndexFileR" +
+      "enderSpec\022\035\n\tresources\030\001 \002(\0132\n.Resources" +
+      "\022\023\n\013has_license\030\002 \001(\010\022\030\n\006readme\030\003 \001(\0132\010." +
+      "Comment\"M\n\021LicenseRenderSpec\022\035\n\tresource" +
+      "s\030\001 \002(\0132\n.Resources\022\031\n\007license\030\002 \002(\0132\010.L" +
+      "icense\"e\n\024SourceFileRenderSpec\022\035\n\tresour" +
+      "ces\030\001 \002(\0132\n.Resources\022\031\n\004file\030\002 \002(\0132\013.So" +
+      "urceFile\022\023\n\013has_license\030\003 \001(\010\"]\n\020JsTypeR" +
+      "enderSpec\022\025\n\004type\030\001 \002(\0132\007.JsType\022\035\n\treso",
+      "urces\030\002 \002(\0132\n.Resources\022\023\n\013has_license\030\003" +
+      " \001(\010*4\n\nVisibility\022\n\n\006PUBLIC\020\000\022\r\n\tPROTEC" +
+      "TED\020\001\022\013\n\007PRIVATE\020\002B!\n\037com.github.jleyba." +
+      "dossier.proto"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -16384,24 +18109,40 @@ public final class Dossier {
               new java.lang.String[] { "Text", "Href", },
               com.github.jleyba.dossier.proto.Dossier.TypeLink.class,
               com.github.jleyba.dossier.proto.Dossier.TypeLink.Builder.class);
-          internal_static_Deprecation_descriptor =
+          internal_static_Comment_descriptor =
             getDescriptor().getMessageTypes().get(4);
+          internal_static_Comment_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_Comment_descriptor,
+              new java.lang.String[] { "Token", },
+              com.github.jleyba.dossier.proto.Dossier.Comment.class,
+              com.github.jleyba.dossier.proto.Dossier.Comment.Builder.class);
+          internal_static_Comment_Token_descriptor =
+            internal_static_Comment_descriptor.getNestedTypes().get(0);
+          internal_static_Comment_Token_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_Comment_Token_descriptor,
+              new java.lang.String[] { "Text", "IsLiteral", "IsCode", "Href", "UnresolvedLink", },
+              com.github.jleyba.dossier.proto.Dossier.Comment.Token.class,
+              com.github.jleyba.dossier.proto.Dossier.Comment.Token.Builder.class);
+          internal_static_Deprecation_descriptor =
+            getDescriptor().getMessageTypes().get(5);
           internal_static_Deprecation_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_Deprecation_descriptor,
-              new java.lang.String[] { "NoticeHtml", },
+              new java.lang.String[] { "Notice", },
               com.github.jleyba.dossier.proto.Dossier.Deprecation.class,
               com.github.jleyba.dossier.proto.Dossier.Deprecation.Builder.class);
           internal_static_BaseProperty_descriptor =
-            getDescriptor().getMessageTypes().get(5);
+            getDescriptor().getMessageTypes().get(6);
           internal_static_BaseProperty_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_BaseProperty_descriptor,
-              new java.lang.String[] { "Name", "Source", "DescriptionHtml", "Deprecation", "Visibility", },
+              new java.lang.String[] { "Name", "Source", "Description", "Deprecation", "Visibility", },
               com.github.jleyba.dossier.proto.Dossier.BaseProperty.class,
               com.github.jleyba.dossier.proto.Dossier.BaseProperty.Builder.class);
           internal_static_Property_descriptor =
-            getDescriptor().getMessageTypes().get(6);
+            getDescriptor().getMessageTypes().get(7);
           internal_static_Property_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_Property_descriptor,
@@ -16409,7 +18150,7 @@ public final class Dossier {
               com.github.jleyba.dossier.proto.Dossier.Property.class,
               com.github.jleyba.dossier.proto.Dossier.Property.Builder.class);
           internal_static_Function_descriptor =
-            getDescriptor().getMessageTypes().get(7);
+            getDescriptor().getMessageTypes().get(8);
           internal_static_Function_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_Function_descriptor,
@@ -16421,11 +18162,11 @@ public final class Dossier {
           internal_static_Function_Detail_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_Function_Detail_descriptor,
-              new java.lang.String[] { "Name", "TypeHtml", "DescriptionHtml", },
+              new java.lang.String[] { "Name", "TypeHtml", "Description", },
               com.github.jleyba.dossier.proto.Dossier.Function.Detail.class,
               com.github.jleyba.dossier.proto.Dossier.Function.Detail.Builder.class);
           internal_static_Prototype_descriptor =
-            getDescriptor().getMessageTypes().get(8);
+            getDescriptor().getMessageTypes().get(9);
           internal_static_Prototype_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_Prototype_descriptor,
@@ -16433,7 +18174,7 @@ public final class Dossier {
               com.github.jleyba.dossier.proto.Dossier.Prototype.class,
               com.github.jleyba.dossier.proto.Dossier.Prototype.Builder.class);
           internal_static_Enumeration_descriptor =
-            getDescriptor().getMessageTypes().get(9);
+            getDescriptor().getMessageTypes().get(10);
           internal_static_Enumeration_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_Enumeration_descriptor,
@@ -16445,15 +18186,15 @@ public final class Dossier {
           internal_static_Enumeration_Value_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_Enumeration_Value_descriptor,
-              new java.lang.String[] { "Name", "DescriptionHtml", "Deprecation", },
+              new java.lang.String[] { "Name", "Description", "Deprecation", },
               com.github.jleyba.dossier.proto.Dossier.Enumeration.Value.class,
               com.github.jleyba.dossier.proto.Dossier.Enumeration.Value.Builder.class);
           internal_static_JsType_descriptor =
-            getDescriptor().getMessageTypes().get(10);
+            getDescriptor().getMessageTypes().get(11);
           internal_static_JsType_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_JsType_descriptor,
-              new java.lang.String[] { "Name", "Source", "Nested", "DescriptionHtml", "Deprecation", "TypeDef", "Enumeration", "StaticFunction", "StaticProperty", "Constructor", "IsInterface", "Prototype", "HasInstanceMethods", "HasInstanceProperties", "ExtendedType", "ImplementedType", },
+              new java.lang.String[] { "Name", "Source", "Nested", "Description", "Deprecation", "TypeDef", "Enumeration", "StaticFunction", "StaticProperty", "Constructor", "IsInterface", "Prototype", "HasInstanceMethods", "HasInstanceProperties", "ExtendedType", "ImplementedType", },
               com.github.jleyba.dossier.proto.Dossier.JsType.class,
               com.github.jleyba.dossier.proto.Dossier.JsType.Builder.class);
           internal_static_JsType_NestedTypes_descriptor =
@@ -16477,19 +18218,19 @@ public final class Dossier {
           internal_static_JsType_TypeDef_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_JsType_TypeDef_descriptor,
-              new java.lang.String[] { "Name", "TypeHtml", "Href", "DescriptionHtml", "Deprecation", "Visibility", },
+              new java.lang.String[] { "Name", "TypeHtml", "Href", "Description", "Deprecation", "Visibility", },
               com.github.jleyba.dossier.proto.Dossier.JsType.TypeDef.class,
               com.github.jleyba.dossier.proto.Dossier.JsType.TypeDef.Builder.class);
           internal_static_IndexFileRenderSpec_descriptor =
-            getDescriptor().getMessageTypes().get(11);
+            getDescriptor().getMessageTypes().get(12);
           internal_static_IndexFileRenderSpec_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_IndexFileRenderSpec_descriptor,
-              new java.lang.String[] { "Resources", "HasLicense", "ReadmeHtml", },
+              new java.lang.String[] { "Resources", "HasLicense", "Readme", },
               com.github.jleyba.dossier.proto.Dossier.IndexFileRenderSpec.class,
               com.github.jleyba.dossier.proto.Dossier.IndexFileRenderSpec.Builder.class);
           internal_static_LicenseRenderSpec_descriptor =
-            getDescriptor().getMessageTypes().get(12);
+            getDescriptor().getMessageTypes().get(13);
           internal_static_LicenseRenderSpec_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_LicenseRenderSpec_descriptor,
@@ -16497,7 +18238,7 @@ public final class Dossier {
               com.github.jleyba.dossier.proto.Dossier.LicenseRenderSpec.class,
               com.github.jleyba.dossier.proto.Dossier.LicenseRenderSpec.Builder.class);
           internal_static_SourceFileRenderSpec_descriptor =
-            getDescriptor().getMessageTypes().get(13);
+            getDescriptor().getMessageTypes().get(14);
           internal_static_SourceFileRenderSpec_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_SourceFileRenderSpec_descriptor,
@@ -16505,7 +18246,7 @@ public final class Dossier {
               com.github.jleyba.dossier.proto.Dossier.SourceFileRenderSpec.class,
               com.github.jleyba.dossier.proto.Dossier.SourceFileRenderSpec.Builder.class);
           internal_static_JsTypeRenderSpec_descriptor =
-            getDescriptor().getMessageTypes().get(14);
+            getDescriptor().getMessageTypes().get(15);
           internal_static_JsTypeRenderSpec_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_JsTypeRenderSpec_descriptor,

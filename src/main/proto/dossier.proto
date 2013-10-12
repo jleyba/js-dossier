@@ -35,9 +35,37 @@ message TypeLink {
 }
 
 
+// Represents a tokenized JSDoc comment string. Each token represents pre-formatted
+// HTML, literal text, a link, or a link of literal text.
+message Comment {
+
+  message Token {
+    // The text content for this token.
+    required string text = 1;
+
+    // Whether to render this token as a literal, escaping all
+    // HTML content.
+    optional bool is_literal = 2;
+
+    // Whether this token should be rendered using code formatting;
+    // This option implies |is_literal| is true.
+    optional bool is_code = 3;
+
+    // If set, this token will be rendered as a hyperlink.
+    optional string href = 4;
+
+    // Whether this token represents a linked type that could not be resolved.
+    optional bool unresolved_link = 5;
+  }
+
+  // The tokens that comprise this comment.
+  repeated Token token = 1;
+}
+
+
 // Describes a deprecation notice.
 message Deprecation {
-  optional string notice_html = 1;
+  optional Comment notice = 1;
 }
 
 
@@ -58,8 +86,8 @@ message BaseProperty {
   required string name = 1;
   // Link to the location in the source file where this property is defined.
   required string source = 2;
-  // A pre-formatted HTML snippet describing the property.
-  required string description_html = 3;
+  // The property's block comment.
+  required Comment description = 3;
   // Whether this property is deprecated.
   optional Deprecation deprecation = 4;
   optional Visibility visibility = 5 [default = PUBLIC];
@@ -80,7 +108,7 @@ message Function {
   message Detail {
     optional string name = 1;
     optional string type_html = 2;
-    optional string description_html = 3;
+    optional Comment description = 3;
   }
 
   required BaseProperty base = 1;
@@ -108,7 +136,7 @@ message Prototype {
 message Enumeration {
   message Value {
     required string name = 1;
-    optional string description_html = 2;
+    optional Comment description = 2;
     optional Deprecation deprecation = 3;
   }
 
@@ -140,7 +168,7 @@ message JsType {
     required string name = 1;
     required string type_html = 2;
     required string href = 3;
-    required string description_html = 4;
+    required Comment description = 4;
     optional Deprecation deprecation = 5;
     optional Visibility visibility = 6 [default = PUBLIC];
   }
@@ -148,7 +176,7 @@ message JsType {
   required string name = 1;
   required string source = 5;
   required NestedTypes nested = 6;
-  required string description_html = 7;
+  required Comment description = 7;
   optional Deprecation deprecation = 8;
   repeated TypeDef type_def = 9;
 
@@ -192,7 +220,7 @@ message IndexFileRenderSpec {
   // Whether to generate a link to the license page.
   optional bool has_license = 2;
   // The readme to display on the main page, if any.
-  optional string readme_html = 3;
+  optional Comment readme = 3;
 }
 
 

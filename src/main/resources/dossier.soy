@@ -91,6 +91,36 @@
 
 
 /**
+ * Renders a block comment.
+ *
+ * @param comment A dossier.Comment object.
+ * @param? omitLeadingTag Whether to omit the leading P tag.
+ */
+{template .comment}
+  {if $comment and length($comment.token)}
+    {if not $omitLeadingTag}<p>{/if}
+    {foreach $token in $comment.token}
+      {if $token.isCode}
+        <code {if $token.href or $token.unresolvedLink} class="type"{/if}>
+      {/if}
+      {if $token.href}
+        <a href="{$token.href}">
+      {elseif $token.unresolvedLink}
+        <a class="unresolved-link">
+      {/if}
+      {if $token.isCode or $token.isLiteral}
+        {$token.text}
+      {else}
+        {$token.text |noAutoescape}
+      {/if}
+      {if $token.unresolvedLink or $token.href}</a>{/if}
+      {if $token.isCode}</code>{/if}
+    {/foreach}
+  {/if}
+{/template}
+
+
+/**
  * Prints the hyperlink to a source file. This template will not print anything
  * if the source file's href is unknown.
  *
@@ -165,10 +195,13 @@
  * @param deprecation A Deprecation message.
  */
 {template .deprecationNotice}
-  {if $deprecation and $deprecation.noticeHtml}
+  {if $deprecation and $deprecation.notice and length($deprecation.notice.token)}
     <div class="deprecation-notice">Deprecated:{sp}
       <span class="deprecation-reason">
-        {$deprecation.noticeHtml |noAutoescape}
+        {call .comment}
+          {param comment: $deprecation.notice /}
+          {param omitLeadingTag: true /}
+        {/call}
       </span>
     </div>
   {/if}
@@ -243,13 +276,18 @@
         <dt>
           <a class="enum member{if $value.deprecation} deprecation-notice{/if}"
              name="{$name + '.' + $value.name}">{$value.name}</a>
-          {if $value.descriptionHtml or
-              ($value.deprecation and $value.deprecation.noticeHtml)}
+          {if ($value.description and length($value.description.token)) or
+              ($value.deprecation
+               and $value.deprecation.notice
+               and length($value.deprecation.notice.token))}
             <dd>
             {call .deprecationNotice}
               {param deprecation: $value.deprecation /}
             {/call}
-            {$value.descriptionHtml |noAutoescape}
+            {call .comment}
+              {param comment: $value.description /}
+              {param omitLeadingTag: true /}
+            {/call}
           {/if}
       {/foreach}
     </dl>
@@ -284,11 +322,16 @@
                     {param deprecation: $typedef.deprecation /}
                   {/call}
                 </div>
-                {if $typedef.descriptionHtml}
-                  <div>{$typedef.descriptionHtml |noAutoescape}</div>
-                {else}
-                  <div>No description.</div>
-                {/if}
+                <div>
+                  {if $typedef.description and length($typedef.description.token)}
+                    {call .comment}
+                      {param comment: $typedef.description /}
+                      {param omitLeadingTag: true /}
+                    {/call}
+                  {else}
+                    No description.
+                  {/if}
+                </div>
               </summary>
             </details>
           </div>
@@ -334,9 +377,14 @@
  * @param details A Dossier.Function.Detail object.
  */
 {template .returnDetails}
-  {if $details and $details.descriptionHtml}
+  {if $details and $details.description and length($details.description.token)}
     <tr><th>Returns
-    <tr><td><dl>{$details.descriptionHtml |noAutoescape}</dl>
+    <tr><td><dl>
+      {call .comment}
+        {param comment: $details.description /}
+        {param omitLeadingTag: true /}
+      {/call}
+    </dl>
   {/if}
 {/template}
 
@@ -360,8 +408,12 @@
           {if $detail.name}:{sp}{/if}
           <code class="type">{$detail.typeHtml |noAutoescape}</code>
         {/if}
-        {if $detail.descriptionHtml}
-          <dd>{$detail.descriptionHtml |noAutoescape}
+        {if $detail.description and length($detail.description.token)}
+          <dd>
+            {call .comment}
+              {param comment: $detail.description /}
+              {param omitLeadingTag: true /}
+            {/call}
         {/if}
       {/foreach}
     </dl>
@@ -379,7 +431,10 @@
   // Only generate the table if there is data to actually display.
   {if length($fn.parameter)
       or length($fn.thrown)
-      or ($fn.return and $fn.return.descriptionHtml and not $fn.isConstructor)}
+      or ($fn.return
+          and $fn.return.description
+          and length($fn.return.description.token)
+          and not $fn.isConstructor)}
     <div class="info">
       <table><tbody>
         {call .typeDetails}
@@ -516,9 +571,9 @@
           {call .deprecationNotice}
             {param deprecation: $prop.base.deprecation /}
           {/call}
-          {if $prop.base.descriptionHtml}
-            <p>{$prop.base.descriptionHtml |noAutoescape}
-          {/if}
+          {call .comment}
+            {param comment: $prop.base.description /}
+          {/call}
         </summary>
         {if $isFunction}
           {call .fnDetails}
@@ -651,9 +706,9 @@
         {param type: $spec.type /}
       {/call}
       <section>
-        {if $spec.type.descriptionHtml}
-          <p>{$spec.type.descriptionHtml |noAutoescape}
-        {/if}
+        {call .comment}
+          {param comment: $spec.type.description /}
+        {/call}
         {if $spec.type.constructor and not $spec.type.isInterface}
           {call .ctor}
             {param fn: $spec.type.constructor /}
@@ -719,8 +774,10 @@
 
   <div id="main-wrapper">
     <main>
-      {if $spec.readmeHtml}
-        {$spec.readmeHtml |noAutoescape}
+      {if $spec.readme and length($spec.readme.token)}
+        {call .comment}
+          {param comment: $spec.readme /}
+        {/call}
       {else}
         <section id="type-index">
           <h2>Namespaces / Types</h2>

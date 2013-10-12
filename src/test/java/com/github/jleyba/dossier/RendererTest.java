@@ -7,24 +7,24 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import com.github.jleyba.dossier.proto.Dossier;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.protobuf.GeneratedMessage;
-import org.hamcrest.CoreMatchers;
 import org.hamcrest.Matcher;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -40,7 +40,12 @@ import javax.annotation.Nullable;
 @RunWith(JUnit4.class)
 public class RendererTest {
 
-  private Renderer renderer = new Renderer();
+  private Linker mockLinker;
+
+  @Before
+  public void setUpMocks() {
+    mockLinker = mock(Linker.class);
+  }
 
   @Test
   public void convertResourceMessageToMap() {
@@ -118,13 +123,12 @@ public class RendererTest {
   @Test
   public void usesFalseyValuesForOmittedOptionalFieldsInConvertedMap() {
     Map<String, Object> data = toMap(Dossier.Deprecation.newBuilder().build());
-    assertThat(data.get("noticeHtml"),
-        CoreMatchers.either(is(nullValue())).or(is((Object) "")));
+    assertThat(data.get("notice"), is(nullValue()));
 
     data = toMap(Dossier.BaseProperty.newBuilder()
         .setName("name")
         .setSource("source")
-        .setDescriptionHtml("description")
+        .setDescription(parseComment("description"))
         .build());
     assertThat(data.get("deprecation"), is(nullValue()));
   }
@@ -136,7 +140,7 @@ public class RendererTest {
     assertEquals("", render("dossier.deprecationNotice", null));
     assertEquals("", render("dossier.deprecationNotice", new HashMap<String, Object>()));
 
-    builder.setNoticeHtml("Hello, world!");
+    builder.setNotice(parseComment("Hello, world!"));
     assertThat(
         render("dossier.deprecationNotice", ImmutableMap.of(
             "deprecation", toMap(builder.build()))),
@@ -145,7 +149,7 @@ public class RendererTest {
             "<span class=\"deprecation-reason\">Hello, world!</span>",
             "</div>"));
 
-    builder.setNoticeHtml("<strong>Hello, world!</strong>");
+    builder.setNotice(parseComment("<strong>Hello, world!</strong>"));
     assertThat(
         render("dossier.deprecationNotice", ImmutableMap.of(
             "deprecation", toMap(builder.build()))),
@@ -224,7 +228,7 @@ public class RendererTest {
     Dossier.JsType type = Dossier.JsType.newBuilder()
         .setName("name")
         .setSource("source")
-        .setDescriptionHtml("description")
+        .setDescription(parseComment("description"))
         .setNested(Dossier.JsType.NestedTypes.getDefaultInstance())
         .build();
 
@@ -236,7 +240,7 @@ public class RendererTest {
     Dossier.JsType type = Dossier.JsType.newBuilder()
         .setName("name")
         .setSource("source")
-        .setDescriptionHtml("description")
+        .setDescription(parseComment("description"))
         .setNested(Dossier.JsType.NestedTypes.getDefaultInstance())
         .setIsInterface(true)
         .addImplementedType(Dossier.TypeLink.newBuilder()
@@ -260,13 +264,13 @@ public class RendererTest {
     Dossier.JsType type = Dossier.JsType.newBuilder()
         .setName("name")
         .setSource("source")
-        .setDescriptionHtml("description")
+        .setDescription(parseComment("description"))
         .setNested(Dossier.JsType.NestedTypes.getDefaultInstance())
         .setConstructor(Dossier.Function.newBuilder()
             .setBase(Dossier.BaseProperty.newBuilder()
                 .setName("ctor-name")
                 .setSource("ctor-source")
-                .setDescriptionHtml("ctor-description")))
+                .setDescription(parseComment("ctor-description"))))
         .addImplementedType(Dossier.TypeLink.newBuilder()
             .setHref("type-one")
             .setText("Hello"))
@@ -288,7 +292,7 @@ public class RendererTest {
     Dossier.JsType type = Dossier.JsType.newBuilder()
         .setName("Foo")
         .setSource("source")
-        .setDescriptionHtml("description")
+        .setDescription(parseComment("description"))
         .setIsInterface(true)
         .setNested(Dossier.JsType.NestedTypes.getDefaultInstance())
         .addImplementedType(Dossier.TypeLink.newBuilder()
@@ -313,7 +317,7 @@ public class RendererTest {
     Dossier.JsType type = Dossier.JsType.newBuilder()
         .setName("Foo")
         .setSource("source")
-        .setDescriptionHtml("description")
+        .setDescription(parseComment("description"))
         .setIsInterface(true)
         .setNested(Dossier.JsType.NestedTypes.getDefaultInstance())
         .setDeprecation(Dossier.Deprecation.newBuilder())
@@ -332,11 +336,11 @@ public class RendererTest {
     Dossier.JsType type = Dossier.JsType.newBuilder()
         .setName("Foo")
         .setSource("source")
-        .setDescriptionHtml("description")
+        .setDescription(parseComment("description"))
         .setIsInterface(true)
         .setNested(Dossier.JsType.NestedTypes.getDefaultInstance())
         .setDeprecation(Dossier.Deprecation.newBuilder()
-            .setNoticeHtml("<i>Goodbye</i>, world!"))
+            .setNotice(parseComment("<i>Goodbye</i>, world!")))
         .build();
 
     Document document = renderDocument("dossier.typeHeader", "type", type);
@@ -353,7 +357,7 @@ public class RendererTest {
     Dossier.JsType type = Dossier.JsType.newBuilder()
         .setName("Foo")
         .setSource("source")
-        .setDescriptionHtml("description")
+        .setDescription(parseComment("description"))
         .setIsInterface(true)
         .setNested(Dossier.JsType.NestedTypes.getDefaultInstance())
         .setConstructor(Dossier.Function.newBuilder()
@@ -362,7 +366,7 @@ public class RendererTest {
             .setBase(Dossier.BaseProperty.newBuilder()
                 .setName("ctor-name")
                 .setSource("ctor-source")
-                .setDescriptionHtml("ctor-description")))
+                .setDescription(parseComment("ctor-description"))))
         .build();
 
     Document document = renderDocument("dossier.typeHeader", "type", type);
@@ -376,7 +380,7 @@ public class RendererTest {
     Dossier.JsType type = Dossier.JsType.newBuilder()
         .setName("Foo")
         .setSource("source")
-        .setDescriptionHtml("description")
+        .setDescription(parseComment("description"))
         .setNested(Dossier.JsType.NestedTypes.getDefaultInstance())
         .setConstructor(Dossier.Function.newBuilder()
             .addTemplateName("K")
@@ -384,7 +388,7 @@ public class RendererTest {
             .setBase(Dossier.BaseProperty.newBuilder()
                 .setName("ctor-name")
                 .setSource("ctor-source")
-                .setDescriptionHtml("ctor-description")))
+                .setDescription(parseComment("ctor-description"))))
         .build();
 
     Document document = renderDocument("dossier.typeHeader", "type", type);
@@ -398,13 +402,13 @@ public class RendererTest {
     Dossier.JsType type = Dossier.JsType.newBuilder()
         .setName("Foo")
         .setSource("source-file")
-        .setDescriptionHtml("description")
+        .setDescription(parseComment("description"))
         .setNested(Dossier.JsType.NestedTypes.getDefaultInstance())
         .setConstructor(Dossier.Function.newBuilder()
             .setBase(Dossier.BaseProperty.newBuilder()
                 .setName("ctor-name")
                 .setSource("ctor-source")
-                .setDescriptionHtml("ctor-description"))
+                .setDescription(parseComment("ctor-description")))
             .addTemplateName("T"))
         .addExtendedType(Dossier.TypeLink.newBuilder()
             .setHref("super-one")
@@ -444,7 +448,7 @@ public class RendererTest {
     Dossier.JsType type = Dossier.JsType.newBuilder()
         .setName("Foo")
         .setSource("source-file")
-        .setDescriptionHtml("description")
+        .setDescription(parseComment("description"))
         .setNested(Dossier.JsType.NestedTypes.getDefaultInstance())
         .build();
 
@@ -462,7 +466,7 @@ public class RendererTest {
     Dossier.JsType type = Dossier.JsType.newBuilder()
         .setName("Foo")
         .setSource("source")
-        .setDescriptionHtml("description")
+        .setDescription(parseComment("description"))
         .setNested(Dossier.JsType.NestedTypes.getDefaultInstance())
         .setEnumeration(Dossier.Enumeration.newBuilder()
             .setTypeHtml("{color: string}"))
@@ -483,18 +487,18 @@ public class RendererTest {
             .setName("ONE"))
         .addValue(Dossier.Enumeration.Value.newBuilder()
             .setName("TWO")
-            .setDescriptionHtml(""))  // Empty description.
+            .setDescription(parseComment("")))  // Empty description.
         .addValue(Dossier.Enumeration.Value.newBuilder()
             .setName("RED")
-            .setDescriptionHtml("<strong>the color red</strong>"))
+            .setDescription(parseComment("<strong>the color red</strong>")))
         .addValue(Dossier.Enumeration.Value.newBuilder()
             .setName("GREEN")
             .setDeprecation(Dossier.Deprecation.newBuilder())  // No deprecation text.
-            .setDescriptionHtml("<i>the color green</i>"))
+            .setDescription(parseComment("<i>the color green</i>")))
         .addValue(Dossier.Enumeration.Value.newBuilder()
             .setName("BLUE")
             .setDeprecation(Dossier.Deprecation.newBuilder()
-                .setNoticeHtml("This value is deprecated")))
+                .setNotice(parseComment("This value is deprecated"))))
         .build();
 
     Document document = renderDocument("dossier.enumValues",
@@ -577,22 +581,22 @@ public class RendererTest {
             .setName("foo.Bar")
             .setTypeHtml("Array")
             .setHref("bar-source")
-            .setDescriptionHtml("Bar is an <i>Array</i>")
+            .setDescription(parseComment("Bar is an <i>Array</i>"))
             .build(),
         Dossier.JsType.TypeDef.newBuilder()
             .setName("foo.Bim")
             .setHref("bim-source")
             .setTypeHtml("Object.&lt;<i>string</i>&gt;")
-            .setDescriptionHtml("")
+            .setDescription(parseComment(""))
             .setDeprecation(Dossier.Deprecation.getDefaultInstance())
             .build(),
         Dossier.JsType.TypeDef.newBuilder()
             .setName("foo.Baz")
             .setTypeHtml("string")
             .setHref("baz-source")
-            .setDescriptionHtml("description text")
+            .setDescription(parseComment("description text"))
             .setDeprecation(Dossier.Deprecation.newBuilder()
-                .setNoticeHtml("<strong>deprecated!</strong>"))
+                .setNotice(parseComment("<strong>deprecated!</strong>")))
             .build());
 
     Document document = renderDocument("dossier.typedefs", "typeDefs", typedefs);
@@ -631,7 +635,7 @@ public class RendererTest {
         .setBase(Dossier.BaseProperty.newBuilder()
             .setName("Foo")
             .setSource("")
-            .setDescriptionHtml(""))
+            .setDescription(parseComment("")))
         .setTypeHtml("string")
         .build();
 
@@ -647,7 +651,7 @@ public class RendererTest {
         .setBase(Dossier.BaseProperty.newBuilder()
             .setName("Baz")
             .setSource("")
-            .setDescriptionHtml(""))
+            .setDescription(parseComment("")))
         .setTypeHtml("string")
         .build();
 
@@ -668,7 +672,7 @@ public class RendererTest {
         .setBase(Dossier.BaseProperty.newBuilder()
             .setName("Baz")
             .setSource("")
-            .setDescriptionHtml("")
+            .setDescription(parseComment(""))
             .setDeprecation(Dossier.Deprecation.getDefaultInstance()))
         .setTypeHtml("string")
         .build();
@@ -690,7 +694,7 @@ public class RendererTest {
         .setBase(Dossier.BaseProperty.newBuilder()
             .setName("Baz")
             .setSource("")
-            .setDescriptionHtml(""))
+            .setDescription(parseComment("")))
         .setTypeHtml("")
         .build();
 
@@ -710,7 +714,7 @@ public class RendererTest {
         .setBase(Dossier.BaseProperty.newBuilder()
             .setName("foo")
             .setSource("")
-            .setDescriptionHtml(""))
+            .setDescription(parseComment("")))
         .setTypeHtml("string")
         .build();
 
@@ -726,7 +730,7 @@ public class RendererTest {
         .setBase(Dossier.BaseProperty.newBuilder()
             .setName("baz")
             .setSource("")
-            .setDescriptionHtml(""))
+            .setDescription(parseComment("")))
         .setReturn(Dossier.Function.Detail.newBuilder()
             .setTypeHtml("<a href=\"#\">Foo</a>"))
         .build();
@@ -750,7 +754,7 @@ public class RendererTest {
         .setBase(Dossier.BaseProperty.newBuilder()
             .setName("baz")
             .setSource("")
-            .setDescriptionHtml(""))
+            .setDescription(parseComment("")))
         .build();
 
     ImmutableMap<String, Object> data = ImmutableMap.of(
@@ -770,7 +774,7 @@ public class RendererTest {
         .setBase(Dossier.BaseProperty.newBuilder()
             .setName("baz")
             .setSource("")
-            .setDescriptionHtml(""))
+            .setDescription(parseComment("")))
         .setReturn(Dossier.Function.Detail.newBuilder()
             .setTypeHtml("?"))
         .build();
@@ -792,7 +796,7 @@ public class RendererTest {
         .setBase(Dossier.BaseProperty.newBuilder()
             .setName("baz")
             .setSource("")
-            .setDescriptionHtml(""))
+            .setDescription(parseComment("")))
         .setReturn(Dossier.Function.Detail.newBuilder()
             .setTypeHtml("undefined"))
         .build();
@@ -814,7 +818,7 @@ public class RendererTest {
         .setBase(Dossier.BaseProperty.newBuilder()
             .setName("baz")
             .setSource("")
-            .setDescriptionHtml(""))
+            .setDescription(parseComment("")))
         .addParameter(Dossier.Function.Detail.newBuilder()
             .setName("a"))
         .addParameter(Dossier.Function.Detail.newBuilder()
@@ -838,7 +842,7 @@ public class RendererTest {
         .setBase(Dossier.BaseProperty.newBuilder()
             .setName("foo.Bar")
             .setSource("")
-            .setDescriptionHtml(""))
+            .setDescription(parseComment("")))
         .setIsConstructor(true)
         .addParameter(Dossier.Function.Detail.newBuilder()
             .setName("a"))
@@ -862,7 +866,7 @@ public class RendererTest {
         .setBase(Dossier.BaseProperty.newBuilder()
             .setName("foo.Bar")
             .setSource("")
-            .setDescriptionHtml(""))
+            .setDescription(parseComment("")))
         .setIsConstructor(true)
         // Template names should be excluded from the rendered constructor signature.
         .addTemplateName("K")
@@ -885,7 +889,7 @@ public class RendererTest {
         .setBase(Dossier.BaseProperty.newBuilder()
             .setName("foo.Bar")
             .setSource("")
-            .setDescriptionHtml(""))
+            .setDescription(parseComment("")))
          // Template names should be excluded from the rendered constructor signature.
         .addTemplateName("K")
         .addTemplateName("V")
@@ -911,7 +915,7 @@ public class RendererTest {
         .setBase(Dossier.BaseProperty.newBuilder()
             .setName("foo.Bar")
             .setSource("")
-            .setDescriptionHtml(""))
+            .setDescription(parseComment("")))
         .build();
     assertThat("No details to render",
         render("dossier.fnDetails", "fn", function), is(""));
@@ -923,20 +927,20 @@ public class RendererTest {
         .setBase(Dossier.BaseProperty.newBuilder()
             .setName("foo.Bar")
             .setSource("")
-            .setDescriptionHtml(""))
+            .setDescription(parseComment("")))
         .addParameter(Dossier.Function.Detail.newBuilder().setName("a"))
         .addParameter(Dossier.Function.Detail.newBuilder()
             .setName("b")
-            .setDescriptionHtml("<i>b</i> awesome"))
+            .setDescription(parseComment("<i>b</i> awesome")))
         .addParameter(Dossier.Function.Detail.newBuilder()
             .setName("c")
             .setTypeHtml("<b>Object</b>"))
         .addParameter(Dossier.Function.Detail.newBuilder()
             .setName("d")
             .setTypeHtml("Error")
-            .setDescriptionHtml("goodbye"))
+            .setDescription(parseComment("goodbye")))
         .addParameter(Dossier.Function.Detail.newBuilder()
-            .setDescriptionHtml("who am i"))
+            .setDescription(parseComment("who am i")))
         .build();
 
     Document document = renderDocument("dossier.fnDetails", "fn", function);
@@ -963,9 +967,10 @@ public class RendererTest {
         .setBase(Dossier.BaseProperty.newBuilder()
             .setName("foo.Bar")
             .setSource("")
-            .setDescriptionHtml(""))
+            .setDescription(parseComment("")))
         .addThrown(Dossier.Function.Detail.newBuilder().setName("Error"))
-        .addThrown(Dossier.Function.Detail.newBuilder().setDescriptionHtml("randomly"))
+        .addThrown(Dossier.Function.Detail.newBuilder()
+            .setDescription(parseComment("randomly")))
         .build();
 
     Document document = renderDocument("dossier.fnDetails", "fn", function);
@@ -987,7 +992,7 @@ public class RendererTest {
         .setBase(Dossier.BaseProperty.newBuilder()
             .setName("foo.Bar")
             .setSource("")
-            .setDescriptionHtml(""))
+            .setDescription(parseComment("")))
         .setReturn(Dossier.Function.Detail.newBuilder())
         .build();
 
@@ -1001,8 +1006,9 @@ public class RendererTest {
         .setBase(Dossier.BaseProperty.newBuilder()
             .setName("foo.Bar")
             .setSource("")
-            .setDescriptionHtml(""))
-        .setReturn(Dossier.Function.Detail.newBuilder().setDescriptionHtml("randomly"))
+            .setDescription(parseComment("")))
+        .setReturn(Dossier.Function.Detail.newBuilder()
+            .setDescription(parseComment("randomly")))
         .build();
 
     Document document = renderDocument("dossier.fnDetails", "fn", function);
@@ -1020,10 +1026,11 @@ public class RendererTest {
         .setBase(Dossier.BaseProperty.newBuilder()
             .setName("foo.Bar")
             .setSource("")
-            .setDescriptionHtml(""))
+            .setDescription(parseComment("")))
         .setIsConstructor(true)
         .addParameter(Dossier.Function.Detail.newBuilder().setName("a"))
-        .setReturn(Dossier.Function.Detail.newBuilder().setDescriptionHtml("randomly"))
+        .setReturn(Dossier.Function.Detail.newBuilder()
+            .setDescription(parseComment("randomly")))
         .build();
 
     Document document = renderDocument("dossier.fnDetails", "fn", function);
@@ -1040,24 +1047,25 @@ public class RendererTest {
         .setBase(Dossier.BaseProperty.newBuilder()
             .setName("foo.Bar")
             .setSource("")
-            .setDescriptionHtml(""))
+            .setDescription(parseComment("")))
         .addParameter(Dossier.Function.Detail.newBuilder().setName("a"))
         .addParameter(Dossier.Function.Detail.newBuilder()
             .setName("b")
-            .setDescriptionHtml("<i>b</i> awesome"))
+            .setDescription(parseComment("<i>b</i> awesome")))
         .addParameter(Dossier.Function.Detail.newBuilder()
             .setName("c")
             .setTypeHtml("<b>Object</b>"))
         .addParameter(Dossier.Function.Detail.newBuilder()
             .setName("d")
             .setTypeHtml("Error")
-            .setDescriptionHtml("goodbye"))
+            .setDescription(parseComment("goodbye")))
         .addParameter(Dossier.Function.Detail.newBuilder()
-            .setDescriptionHtml("who am i"))
+            .setDescription(parseComment("who am i")))
         .addThrown(Dossier.Function.Detail.newBuilder()
             .setName("Error")
-            .setDescriptionHtml("randomly"))
-        .setReturn(Dossier.Function.Detail.newBuilder().setDescriptionHtml("something"))
+            .setDescription(parseComment("randomly")))
+        .setReturn(Dossier.Function.Detail.newBuilder()
+            .setDescription(parseComment("something")))
         .build();
 
     Document document = renderDocument("dossier.fnDetails", "fn", function);
@@ -1091,7 +1099,7 @@ public class RendererTest {
         .setBase(Dossier.BaseProperty.newBuilder()
             .setName("Bar")
             .setSource("bar.link")
-            .setDescriptionHtml(""))
+            .setDescription(parseComment("")))
         .addParameter(Dossier.Function.Detail.newBuilder().setName("a"))
         .build();
 
@@ -1116,8 +1124,9 @@ public class RendererTest {
         .setBase(Dossier.BaseProperty.newBuilder()
             .setName("Bar")
             .setSource("bar.link")
-            .setDescriptionHtml("description here\n<p>second paragraph")
-            .setDeprecation(Dossier.Deprecation.newBuilder().setNoticeHtml("is old")))
+            .setDescription(parseComment("description here\n<p>second paragraph"))
+            .setDeprecation(Dossier.Deprecation.newBuilder()
+                .setNotice(parseComment("is old"))))
         .addParameter(Dossier.Function.Detail.newBuilder().setName("a"))
         .build();
 
@@ -1146,7 +1155,7 @@ public class RendererTest {
         .setBase(Dossier.BaseProperty.newBuilder()
             .setName("foo")
             .setSource("foo-source")
-            .setDescriptionHtml("foo description"))
+            .setDescription(parseComment("foo description")))
         .setTypeHtml("string")
         .build();
 
@@ -1162,6 +1171,140 @@ public class RendererTest {
         "</div>",
         "<p>foo description</p>",
         "</summary>"));
+  }
+
+  @Test
+  public void renderComment_unterminatedInlineTaglet() {
+    Dossier.Comment comment = parseComment("Hello {@code world");
+
+    Document document = renderDocument("dossier.comment", "comment", comment);
+    assertThat(document.body().toString(),
+        isHtml("<body><p>Hello {@code world</p></body>"));
+  }
+
+  @Test
+  public void renderComment_withCodeTaglet() {
+    Dossier.Comment comment = parseComment("Hello, {@code world}!");
+
+    Document document = renderDocument("dossier.comment", "comment", comment);
+    assertThat(document.body().toString(),
+        isHtml("<body><p>Hello, <code>world</code>!</p></body>"));
+  }
+
+  @Test
+  public void renderComment_withAdjacentInlineCodeTaglets() {
+    Dossier.Comment comment = parseComment("{@code hello}{@code world}");
+
+    Document document = renderDocument("dossier.comment", "comment", comment);
+    assertThat(document.body().toString(),
+        isHtml("<body><p><code>hello</code><code>world</code></p></body>"));
+  }
+
+  @Test
+  public void renderComment_codeTagletsAreHtmlEscaped() {
+    Dossier.Comment comment = parseComment("{@code 1 < 2 && 4 > 3}");
+
+    Document document = renderDocument("dossier.comment", "comment", comment);
+    assertThat(document.body().toString(), isHtml(
+        "<body><p>",
+        "<code>1 &lt; 2 &amp;&amp; 4 &gt; 3</code>",
+        "</p></body>"));
+  }
+
+  @Test
+  public void renderComment_literalTagletsAreHtmlEscaped() {
+    Dossier.Comment comment = parseComment("{@literal 1 < 2 && 4 > 3}");
+
+    Document document = renderDocument("dossier.comment", "comment", comment);
+    assertThat(document.body().toString(), isHtml(
+        "<body><p>1 &lt; 2 &amp;&amp; 4 &gt; 3</p></body>"));
+  }
+
+  @Test
+  public void renderComment_unresolvedLink() {
+    Dossier.Comment comment = parseComment("An {@link Foo unknown} type");
+
+    Document document = renderDocument("dossier.comment", "comment", comment);
+    assertThat(document.body().toString(), isHtml(
+        "<body><p>",
+        "An <code class=\"type\"><a class=\"unresolved-link\">unknown</a></code>",
+        " type</p></body>"));
+  }
+
+  @Test
+  public void renderComment_resolvedLink() {
+    when(mockLinker.getLink("foo.Bar")).thenReturn("/path/to/foo");
+
+    Dossier.Comment comment = parseComment(
+        "A {@link foo.Bar milk & cookies} snack");
+
+    Document document = renderDocument("dossier.comment", "comment", comment);
+    assertThat(document.body().toString(), isHtml(
+        "<body><p>",
+        "A <code class=\"type\">",
+        "<a href=\"/path/to/foo\">milk &amp; cookies</a></code>",
+        " snack</p></body>"));
+  }
+
+  @Test
+  public void renderComment_plainLink() {
+    when(mockLinker.getLink("foo.Bar")).thenReturn("/path/to/foo");
+
+    Dossier.Comment comment = parseComment(
+        "A {@linkplain foo.Bar milk & cookies} snack");
+
+    Document document = renderDocument("dossier.comment", "comment", comment);
+    assertThat(document.body().toString(), isHtml(
+        "<body><p>",
+        "A <a href=\"/path/to/foo\">milk &amp; cookies</a> snack",
+        "</p></body>"));
+  }
+
+  @Test
+  public void renderComment_doesNotEscapePlainTextContent() {
+    Dossier.Comment comment = parseComment(
+        "A <strong>strongly</strong> worded letter");
+
+    Document document = renderDocument("dossier.comment", "comment", comment);
+    assertThat(document.body().toString(), isHtml(
+        "<body><p>A <strong>strongly</strong> worded letter</p></body>"));
+  }
+
+  @Test
+  public void renderComment_omittingLeadingParagraphTag() {
+    Dossier.Comment comment = parseComment(
+        "A <strong>strongly</strong> worded letter");
+
+    Document document = renderDocument("dossier.comment",
+        ImmutableMap.of("comment", toMap(comment), "omitLeadingTag", true));
+    assertThat(document.body().toString(), isHtml(
+        "<body>A <strong>strongly</strong> worded letter</body>"));
+  }
+
+  @Test
+  public void renderComment_emptyComment() {
+    Dossier.Comment comment = parseComment("");
+    Document document = renderDocument("dossier.comment", "comment", comment);
+    assertThat(document.body().toString(), isHtml("<body></body>"));
+  }
+
+  @Test
+  public void renderComment_nullComment() {
+    Dossier.Comment comment = parseComment(null);
+    Document document = renderDocument("dossier.comment", "comment", comment);
+    assertThat(document.body().toString(), isHtml("<body></body>"));
+  }
+
+  @Test
+  public void renderComment_nullCommentMessage() {
+    Document document = renderDocument("dossier.comment", new HashMap<String, Object>() {{
+      put("comment", null);
+    }});
+    assertThat(document.body().toString(), isHtml("<body></body>"));
+  }
+
+  private Dossier.Comment parseComment(String comment) {
+    return CommentUtil.parseComment(comment, mockLinker);
   }
 
   private static Element querySelector(Document document, String selector) {
