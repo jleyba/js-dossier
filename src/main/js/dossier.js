@@ -176,16 +176,34 @@ dossier.initNavList_ = function(typeInfo) {
   var filesHeight =
       (goog.style.getSize(filesList).height / rootFontSize) + 'rem';
 
-  // Initialize heights to 0.
-  goog.style.setHeight(typesList, 0);
-  goog.style.setHeight(filesList, 0);
+  // Initialize heights.
+  typesControl.checked = loadCheckedState('dossier.typesList');
+  filesControl.checked = loadCheckedState('dossier.filesList');
+  goog.style.setHeight(typesList, typesControl.checked ? typesHeight : 0);
+  goog.style.setHeight(filesList, filesControl.checked ? filesHeight : 0);
 
   goog.events.listen(typesControl, goog.events.EventType.CHANGE, function() {
     goog.style.setHeight(typesList, typesControl.checked ? typesHeight : 0);
+    storeCheckedState('dossier.typesList', typesControl);
   });
   goog.events.listen(filesControl, goog.events.EventType.CHANGE, function() {
     goog.style.setHeight(filesList, filesControl.checked ? filesHeight : 0);
+    storeCheckedState('dossier.filesList', filesControl);
   });
+
+  function storeCheckedState(key, el) {
+    if (window.localStorage) {
+      if (el.checked) {
+        window.localStorage.setItem(key, '1');
+      } else {
+        window.localStorage.removeItem(key);
+      }
+    }
+  }
+
+  function loadCheckedState(key) {
+    return window.localStorage ? !!window.localStorage.getItem(key) : false;
+  }
 };
 
 
