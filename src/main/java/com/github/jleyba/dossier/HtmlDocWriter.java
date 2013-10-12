@@ -231,7 +231,7 @@ class HtmlDocWriter implements DocWriter {
         for (Descriptor typedef : typedefs) {
           types.put(new JSONObject()
               .put("name", typedef.getFullName())
-              .put("href", linker.getLink(typedef.getFullName()))
+              .put("href", Strings.nullToEmpty(linker.getLink(typedef.getFullName())))
               .put("isTypedef", true));
         }
       }
@@ -284,7 +284,7 @@ class HtmlDocWriter implements DocWriter {
       String type = types.pop();
       list.add(TypeLink.newBuilder()
           .setText(type)
-          .setHref(linker.getLink(type))
+          .setHref(Strings.nullToEmpty(linker.getLink(type)))
           .build());
     }
     return list;
@@ -301,7 +301,7 @@ class HtmlDocWriter implements DocWriter {
           public TypeLink apply(String input) {
             return TypeLink.newBuilder()
                 .setText(input)
-                .setHref(linker.getLink(input))
+                .setHref(Strings.nullToEmpty(linker.getLink(input)))
                 .build();
           }
         });
@@ -442,7 +442,8 @@ class HtmlDocWriter implements DocWriter {
       Prototype.Builder protoBuilder = Prototype.newBuilder()
           .setName(typeDescriptor.getFullName());
       if (typeDescriptor != descriptor) {
-        protoBuilder.setHref(linker.getLink(typeDescriptor.getFullName()));
+        protoBuilder.setHref(
+            Strings.nullToEmpty(linker.getLink(typeDescriptor.getFullName())));
       }
 
       for (Descriptor property : properties) {
@@ -503,9 +504,13 @@ class HtmlDocWriter implements DocWriter {
       }
 
       if (propertyTypeDescriptor != null) {
-        builder.setTypeHtml(String.format("<a href=\"%s\">%s</a>",
-            linker.getLink(propertyTypeDescriptor.getFullName()),
-            propertyTypeDescriptor.getFullName()));
+        String link = linker.getLink(propertyTypeDescriptor.getFullName());
+        if (Strings.isNullOrEmpty(link)) {
+          builder.setTypeHtml("");
+        } else {
+          builder.setTypeHtml(String.format("<a href=\"%s\">%s</a>",
+              link, propertyTypeDescriptor.getFullName()));
+        }
       } else {
         builder.setTypeHtml(property.getType().toString());
       }
@@ -572,7 +577,7 @@ class HtmlDocWriter implements DocWriter {
       }
 
       throwsData.add(Dossier.Function.Detail.newBuilder()
-          .setTypeHtml(thrownType)
+          .setTypeHtml(Strings.nullToEmpty(thrownType))
           .setDescriptionHtml(thrownDescription)
           .build());
     }
