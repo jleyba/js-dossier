@@ -51,7 +51,7 @@
 /**
  * Generates the place holder for the side navigation pane.
  *
- * @param? licensePath Path to the license file, if any.
+ * @param? hasLicense Whether to link to the license file.
  */
 {template .sideNav}
   <nav id="sidenav">
@@ -68,8 +68,8 @@
       <label for="sidenav-files-ctrl"><h4>Files</h4></label>
       <i>No data</i>
     </div>
-    {if $licensePath}
-    <a href="{$licensePath}"><div><h4>License</h4></div></a>
+    {if $hasLicense}
+    <a href="license.html"><div><h4>License</h4></div></a>
     {/if}
   </nav>
 {/template}
@@ -694,7 +694,7 @@
 
     {call .topNav /}
     {call .sideNav}
-      {param licensePath: $spec.hasLicense ? 'license.html' : '' /}
+      {param hasLicense: $spec.hasLicense /}
     {/call}
     <div id="push-footer"></div>
   </div>
@@ -736,7 +736,7 @@
 
     {call .topNav /}
     {call .sideNav}
-      {param licensePath: $spec.hasLicense ? 'license.html' : '' /}
+      {param hasLicense: $spec.hasLicense /}
     {/call}
     <div id="push-footer"></div>
   </div>
@@ -771,7 +771,7 @@
 
     {call .topNav /}
     {call .sideNav}
-      {param licensePath: '#' /}
+      {param hasLicense: true /}
     {/call}
     <div id="push-footer"></div>
   </div>
@@ -811,7 +811,7 @@
 
     {call .topNav /}
     {call .sideNav}
-      {param licensePath: $spec.hasLicense ? '#' : '' /}
+      {param hasLicense: $spec.hasLicense /}
     {/call}
     <div id="push-footer"></div>
   </div>

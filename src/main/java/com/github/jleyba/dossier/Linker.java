@@ -13,14 +13,17 @@
 // limitations under the License.
 package com.github.jleyba.dossier;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableMap;
 import com.google.javascript.rhino.JSDocInfo;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
+import java.util.Iterator;
 
 import javax.annotation.Nullable;
 
@@ -63,6 +66,25 @@ class Linker {
   }
 
   /**
+   * Returns the path of the generated documentation for the given source file. The generated path
+   * will always be relative to this instance's output directory.
+   */
+  Path getFilePath(Path sourceFile) {
+    Iterator<Path> parts = config.getSrcPrefix()
+        .relativize(sourceFile.toAbsolutePath().normalize())
+        .iterator();
+    String name = "source_" + Joiner.on('_').join(parts) + ".src.html";
+    return config.getOutput().resolve(name);
+  }
+
+  /**
+   * @see #getFilePath(Path)
+   */
+  Path getFilePath(String sourceFile) {
+    return getFilePath(config.getOutput().getFileSystem().getPath(sourceFile));
+  }
+
+  /**
    * Computes the URL path, relative to the output directory, for the source file definition of
    * the given {@code descriptor}.  If the source file for the {@code descriptor} is not known,
    * this method will return {@code null}.
@@ -73,17 +95,17 @@ class Linker {
     if (strPath == null) {
       return null;
     }
-    Path path = config.getOutput().getFileSystem().getPath(strPath).toAbsolutePath().normalize();
-    path = config.getSrcPrefix().relativize(path);
-    path = config.getSourceOutput().resolve(path);
-    path = path.resolveSibling(path.getFileName() + ".src.html");
-    path = config.getOutput().relativize(path);
+
+    Iterator<Path> parts = config.getOutput()
+        .relativize(getFilePath(strPath))
+        .iterator();
+    strPath = Joiner.on('/').join(parts);
 
     int lineNum = descriptor.getLineNum();
     if (lineNum > 1) {
-      return path + "#l" + (lineNum - 1);
+      return strPath + "#l" + (lineNum - 1);
     }
-    return path.toString();
+    return strPath;
   }
 
   /**
@@ -109,7 +131,7 @@ class Linker {
     }
 
     String fragment = "";
-    Path path;
+    String path;
     index = to.indexOf("#");
     if (index != -1) {
       String typeName = to.substring(0, index);
@@ -139,10 +161,10 @@ class Linker {
   }
 
   @Nullable
-  private Path getTypeFile(String name) {
+  private String getTypeFile(String name) {
     Descriptor descriptor = docRegistry.getType(name);
     if (descriptor != null) {
-      return getFilePath(descriptor).getFileName();
+      return getFilePath(descriptor).getFileName().toString();
     }
     return null;
   }

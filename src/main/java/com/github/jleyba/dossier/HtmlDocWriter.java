@@ -57,7 +57,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -206,15 +205,13 @@ class HtmlDocWriter implements DocWriter {
   private void writeTypesJson() throws IOException {
     try {
       JSONArray files = new JSONArray();
-      Path fileDir = config.getSourceOutput();
       for (Path source : sortedFiles) {
-        Path simpleSource = config.getSrcPrefix().relativize(source);
-        Path dest = fileDir.resolve(simpleSource.toString() + ".src.html");
-        dest = config.getOutput().relativize(dest);
-
+        Path displayPath = config.getSrcPrefix().relativize(source);
+        String dest = config.getOutput().relativize(
+            linker.getFilePath(source)).toString();
         files.put(new JSONObject()
-            .put("name", simpleSource.toString())
-            .put("href", dest.toString()));
+            .put("name", displayPath.toString())
+            .put("href", dest));
       }
 
       JSONArray types = new JSONArray();
@@ -252,41 +249,24 @@ class HtmlDocWriter implements DocWriter {
     }
   }
 
-  private Path getPathToOutputDir(Path from) {
-    if (!Files.isDirectory(from)) {
-      from = from.getParent();
-    }
-    Path path = from.getFileSystem().getPath("..");
-    for (Iterator<Path> it = from.iterator(); it.hasNext(); it.next()) {
-      path = path.resolve("..");
-    }
-    return path;
-  }
-
   private void copySourceFiles() throws IOException {
-    Path fileDir = config.getSourceOutput();
     for (Path source : config.getSources()) {
-      Path simpleSource = config.getSrcPrefix().relativize(source);
-      Path dest = fileDir.resolve(simpleSource.toString() + ".src.html");
-
-      Path relativePath = getPathToOutputDir(simpleSource);
-      Path toDossierCss = relativePath.resolve("dossier.css");
-      Path toTypesJs = relativePath.resolve("types.js");
-      Path toDossierJs = relativePath.resolve("dossier.js");
+      Path displayPath = config.getSrcPrefix().relativize(source);
 
       Resources resources = Resources.newBuilder()
-          .addCss(toDossierCss.toString())
-          .addScript(toTypesJs.toString())
-          .addScript(toDossierJs.toString())
+          .addCss("dossier.css")
+          .addScript("types.js")
+          .addScript("dossier.js")
           .build();
 
       SourceFile file = SourceFile.newBuilder()
           .setBaseName(source.getFileName().toString())
-          .setPath(simpleSource.toString())
+          .setPath(displayPath.toString())
           .addAllLines(Files.readAllLines(source, Charsets.UTF_8))
           .build();
 
-      renderer.render(dest,
+      renderer.render(
+          linker.getFilePath(source),
           SourceFileRenderSpec.newBuilder()
               .setFile(file)
               .setResources(resources)
