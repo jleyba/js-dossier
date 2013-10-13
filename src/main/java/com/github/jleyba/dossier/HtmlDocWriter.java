@@ -28,6 +28,7 @@ import static com.github.jleyba.dossier.proto.Dossier.SourceFile;
 import static com.github.jleyba.dossier.proto.Dossier.SourceFileRenderSpec;
 import static com.github.jleyba.dossier.proto.Dossier.TypeLink;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.collect.Iterables.transform;
 
 import com.github.jleyba.dossier.proto.Dossier;
@@ -494,22 +495,44 @@ class HtmlDocWriter implements DocWriter {
     if (info != null && info.getType() != null) {
       builder.setTypeHtml(CommentUtil.formatTypeExpression(info.getType(), linker));
     } else if (property.getType() != null) {
-      Descriptor propertyTypeDescriptor =
-          docRegistry.getType(property.getType().toString());
-      if (propertyTypeDescriptor == null) {
-        propertyTypeDescriptor = docRegistry.getType(property.getType().toString());
+      JSType propertyType = property.getType();
+
+      // Since we don't document prototype objects, if the property refers to a prototype,
+      // try to link to the owner function.
+      boolean isPrototype = propertyType.isFunctionPrototypeType();
+      if (isPrototype) {
+        propertyType = ObjectType.cast(propertyType).getOwnerFunction();
+
+        // If the owner function is a constructor, the propertyType will be of the form
+        // "function(new: Type)".  We want to link to "Type".
+        if (propertyType.isConstructor()) {
+          propertyType = propertyType.toObjectType().getTypeOfThis();
+        }
       }
 
+      Descriptor propertyTypeDescriptor = docRegistry.getType(propertyType.toString());
       if (propertyTypeDescriptor != null) {
         String link = linker.getLink(propertyTypeDescriptor.getFullName());
-        if (Strings.isNullOrEmpty(link)) {
-          builder.setTypeHtml("");
-        } else {
-          builder.setTypeHtml(String.format("<a href=\"%s\">%s</a>",
-              link, propertyTypeDescriptor.getFullName()));
+        checkState(!Strings.isNullOrEmpty(link),
+            "Unable to compute link to %s; this should never happen since %s was previously" +
+                " found in the type registry.", propertyTypeDescriptor.getFullName());
+        String fullName = propertyTypeDescriptor.getFullName();
+        if (isPrototype) {
+          fullName += ".prototype";
         }
+        builder.setTypeHtml(String.format("<a href=\"%s\">%s</a>", link, fullName));
       } else {
-        builder.setTypeHtml(property.getType().toString());
+        String typeName = propertyType.toString();
+        if (isPrototype) {
+          typeName += ".prototype";
+        }
+
+        String link = linker.getLink(propertyType.toString());
+        if (link == null) {
+          builder.setTypeHtml(typeName);
+        } else {
+          builder.setTypeHtml(String.format("<a href=\"%s\">%s</a>", link, typeName));
+        }
       }
     }
 
@@ -631,8 +654,7 @@ class HtmlDocWriter implements DocWriter {
     if (type == null) {
       return true;
     }
-    return !type.isFunctionPrototypeType()
-        && !type.isEnumType()
+    return !type.isEnumType()
         && !type.isEnumElementType()
         && !type.isFunctionType()
         && !type.isConstructor()

@@ -130,6 +130,11 @@ class Linker {
       to = to.substring(0, index);
     }
 
+    // We don't explicitly document class prototypes, so link to the main type.
+    if (to.endsWith(".prototype")) {
+      to = to.substring(0, to.length() - ".prototype".length());
+    }
+
     String fragment = "";
     String path;
     index = to.indexOf("#");

@@ -360,16 +360,7 @@ class Descriptor {
         continue;
       }
 
-      Node node = obj.getPropertyNode(prop);
-      if (null == node) {
-        continue;
-      }
-
-      JSDocInfo info = node.getJSDocInfo();
-      if (null == info && null != node.getParent() && node.getParent().isAssign()) {
-        info = node.getParent().getJSDocInfo();
-      }
-
+      JSDocInfo info = obj.getOwnPropertyJSDocInfo(prop);
       properties.add(new Descriptor(prop, obj.getPropertyType(prop), info, this));
     }
 

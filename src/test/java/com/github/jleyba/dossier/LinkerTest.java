@@ -93,6 +93,8 @@ public class LinkerTest {
     assertEquals("namespace_goog_Foo.html#goog.Foo.bar", linker.getLink("goog.Foo.bar()"));
     assertEquals("namespace_goog_Foo.html#goog.Foo$bar", linker.getLink("goog.Foo#bar"));
     assertEquals("namespace_goog_Foo.html#goog.Foo$bar", linker.getLink("goog.Foo#bar()"));
+
+    assertEquals("namespace_goog_Foo.html", linker.getLink("goog.Foo.prototype"));
   }
 
   @Test
