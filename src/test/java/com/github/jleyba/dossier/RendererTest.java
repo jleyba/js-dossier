@@ -537,17 +537,17 @@ public class RendererTest {
         Dossier.JsType.NestedTypes.TypeSummary.newBuilder()
             .setName("Foo")
             .setHref("foo-link")
-            .setSummaryHtml("foo summary")
+            .setSummary("foo summary")
             .build(),
         Dossier.JsType.NestedTypes.TypeSummary.newBuilder()
             .setName("Bar")
             .setHref("bar-link")
-            .setSummaryHtml("<strong>bar summary <i>has html</i></strong>")
+            .setSummary("<strong>bar summary <i>has html</i></strong>")
             .build(),
         Dossier.JsType.NestedTypes.TypeSummary.newBuilder()
             .setName("Baz")
             .setHref("baz-link")
-            .setSummaryHtml("")
+            .setSummary("")
             .build());
 
     Document document = renderDocument("dossier.nestedTypeSummaries",
@@ -560,7 +560,7 @@ public class RendererTest {
         "<table><tbody><tr><td><dl>",
         "<dt><a href=\"foo-link\">Foo</a></dt><dd>foo summary</dd>",
         "<dt><a href=\"bar-link\">Bar</a></dt><dd>",
-        "<strong>bar summary <i>has html</i></strong></dd>",
+        "&lt;strong&gt;bar summary &lt;i&gt;has html&lt;/i&gt;&lt;/strong&gt;</dd>",
         "<dt><a href=\"baz-link\">Baz</a></dt>",
         "<dd>No Description.</dd>",
         "</dl></td></tr></tbody></table>",

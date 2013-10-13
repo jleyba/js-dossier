@@ -358,8 +358,8 @@
           {foreach $type in $types}
             <dt><a href="{$type.href}">{$type.name}</a>
             <dd>
-              {if $type.summaryHtml}
-                {$type.summaryHtml |noAutoescape}
+              {if $type.summary}
+                {$type.summary}
               {else}
                 No Description.
               {/if}

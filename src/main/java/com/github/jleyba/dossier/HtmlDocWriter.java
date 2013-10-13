@@ -396,7 +396,7 @@ class HtmlDocWriter implements DocWriter {
       JsType.NestedTypes.TypeSummary.Builder typeSummary =
           JsType.NestedTypes.TypeSummary.newBuilder()
               .setHref(linker.getFilePath(child).getFileName().toString())
-              .setSummaryHtml(summary)
+              .setSummary(summary)
               .setName(child.getFullName());
 
       if (child.isEnum()) {

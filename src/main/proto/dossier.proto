@@ -155,7 +155,7 @@ message JsType {
     message TypeSummary {
       required string name = 1;  // The type name.
       required string href = 2;  // The hyperlink for the actual type.
-      required string summary_html = 3;  // The formatted HTML summary.
+      required string summary = 3;  // The summary sentence for this type.
     }
 
     repeated TypeSummary interfaces = 1;

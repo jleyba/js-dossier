@@ -9739,9 +9739,9 @@ public final class Dossier {
         boolean hasHref();
         String getHref();
         
-        // required string summary_html = 3;
-        boolean hasSummaryHtml();
-        String getSummaryHtml();
+        // required string summary = 3;
+        boolean hasSummary();
+        String getSummary();
       }
       public static final class TypeSummary extends
           com.google.protobuf.GeneratedMessage
@@ -9836,14 +9836,14 @@ public final class Dossier {
           }
         }
         
-        // required string summary_html = 3;
-        public static final int SUMMARY_HTML_FIELD_NUMBER = 3;
-        private java.lang.Object summaryHtml_;
-        public boolean hasSummaryHtml() {
+        // required string summary = 3;
+        public static final int SUMMARY_FIELD_NUMBER = 3;
+        private java.lang.Object summary_;
+        public boolean hasSummary() {
           return ((bitField0_ & 0x00000004) == 0x00000004);
         }
-        public String getSummaryHtml() {
-          java.lang.Object ref = summaryHtml_;
+        public String getSummary() {
+          java.lang.Object ref = summary_;
           if (ref instanceof String) {
             return (String) ref;
           } else {
@@ -9851,17 +9851,17 @@ public final class Dossier {
                 (com.google.protobuf.ByteString) ref;
             String s = bs.toStringUtf8();
             if (com.google.protobuf.Internal.isValidUtf8(bs)) {
-              summaryHtml_ = s;
+              summary_ = s;
             }
             return s;
           }
         }
-        private com.google.protobuf.ByteString getSummaryHtmlBytes() {
-          java.lang.Object ref = summaryHtml_;
+        private com.google.protobuf.ByteString getSummaryBytes() {
+          java.lang.Object ref = summary_;
           if (ref instanceof String) {
             com.google.protobuf.ByteString b = 
                 com.google.protobuf.ByteString.copyFromUtf8((String) ref);
-            summaryHtml_ = b;
+            summary_ = b;
             return b;
           } else {
             return (com.google.protobuf.ByteString) ref;
@@ -9871,7 +9871,7 @@ public final class Dossier {
         private void initFields() {
           name_ = "";
           href_ = "";
-          summaryHtml_ = "";
+          summary_ = "";
         }
         private byte memoizedIsInitialized = -1;
         public final boolean isInitialized() {
@@ -9886,7 +9886,7 @@ public final class Dossier {
             memoizedIsInitialized = 0;
             return false;
           }
-          if (!hasSummaryHtml()) {
+          if (!hasSummary()) {
             memoizedIsInitialized = 0;
             return false;
           }
@@ -9904,7 +9904,7 @@ public final class Dossier {
             output.writeBytes(2, getHrefBytes());
           }
           if (((bitField0_ & 0x00000004) == 0x00000004)) {
-            output.writeBytes(3, getSummaryHtmlBytes());
+            output.writeBytes(3, getSummaryBytes());
           }
           getUnknownFields().writeTo(output);
         }
@@ -9925,7 +9925,7 @@ public final class Dossier {
           }
           if (((bitField0_ & 0x00000004) == 0x00000004)) {
             size += com.google.protobuf.CodedOutputStream
-              .computeBytesSize(3, getSummaryHtmlBytes());
+              .computeBytesSize(3, getSummaryBytes());
           }
           size += getUnknownFields().getSerializedSize();
           memoizedSerializedSize = size;
@@ -10055,7 +10055,7 @@ public final class Dossier {
             bitField0_ = (bitField0_ & ~0x00000001);
             href_ = "";
             bitField0_ = (bitField0_ & ~0x00000002);
-            summaryHtml_ = "";
+            summary_ = "";
             bitField0_ = (bitField0_ & ~0x00000004);
             return this;
           }
@@ -10106,7 +10106,7 @@ public final class Dossier {
             if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
               to_bitField0_ |= 0x00000004;
             }
-            result.summaryHtml_ = summaryHtml_;
+            result.summary_ = summary_;
             result.bitField0_ = to_bitField0_;
             onBuilt();
             return result;
@@ -10129,8 +10129,8 @@ public final class Dossier {
             if (other.hasHref()) {
               setHref(other.getHref());
             }
-            if (other.hasSummaryHtml()) {
-              setSummaryHtml(other.getSummaryHtml());
+            if (other.hasSummary()) {
+              setSummary(other.getSummary());
             }
             this.mergeUnknownFields(other.getUnknownFields());
             return this;
@@ -10145,7 +10145,7 @@ public final class Dossier {
               
               return false;
             }
-            if (!hasSummaryHtml()) {
+            if (!hasSummary()) {
               
               return false;
             }
@@ -10187,7 +10187,7 @@ public final class Dossier {
                 }
                 case 26: {
                   bitField0_ |= 0x00000004;
-                  summaryHtml_ = input.readBytes();
+                  summary_ = input.readBytes();
                   break;
                 }
               }
@@ -10268,39 +10268,39 @@ public final class Dossier {
             onChanged();
           }
           
-          // required string summary_html = 3;
-          private java.lang.Object summaryHtml_ = "";
-          public boolean hasSummaryHtml() {
+          // required string summary = 3;
+          private java.lang.Object summary_ = "";
+          public boolean hasSummary() {
             return ((bitField0_ & 0x00000004) == 0x00000004);
           }
-          public String getSummaryHtml() {
-            java.lang.Object ref = summaryHtml_;
+          public String getSummary() {
+            java.lang.Object ref = summary_;
             if (!(ref instanceof String)) {
               String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
-              summaryHtml_ = s;
+              summary_ = s;
               return s;
             } else {
               return (String) ref;
             }
           }
-          public Builder setSummaryHtml(String value) {
+          public Builder setSummary(String value) {
             if (value == null) {
     throw new NullPointerException();
   }
   bitField0_ |= 0x00000004;
-            summaryHtml_ = value;
+            summary_ = value;
             onChanged();
             return this;
           }
-          public Builder clearSummaryHtml() {
+          public Builder clearSummary() {
             bitField0_ = (bitField0_ & ~0x00000004);
-            summaryHtml_ = getDefaultInstance().getSummaryHtml();
+            summary_ = getDefaultInstance().getSummary();
             onChanged();
             return this;
           }
-          void setSummaryHtml(com.google.protobuf.ByteString value) {
+          void setSummary(com.google.protobuf.ByteString value) {
             bitField0_ |= 0x00000004;
-            summaryHtml_ = value;
+            summary_ = value;
             onChanged();
           }
           
@@ -18321,7 +18321,7 @@ public final class Dossier {
       "ibility\030\003 \001(\0162\013.Visibility:\006PUBLIC\032W\n\005Va" +
       "lue\022\014\n\004name\030\001 \002(\t\022\035\n\013description\030\002 \001(\0132\010" +
       ".Comment\022!\n\013deprecation\030\003 \001(\0132\014.Deprecat" +
-      "ion\"\252\007\n\006JsType\022\014\n\004name\030\001 \002(\t\022\016\n\006source\030\005",
+      "ion\"\245\007\n\006JsType\022\014\n\004name\030\001 \002(\t\022\016\n\006source\030\005",
       " \002(\t\022#\n\006nested\030\006 \002(\0132\023.JsType.NestedType" +
       "s\022\035\n\013description\030\007 \002(\0132\010.Comment\022!\n\013depr" +
       "ecation\030\010 \001(\0132\014.Deprecation\022!\n\010type_def\030" +
@@ -18334,29 +18334,29 @@ public final class Dossier {
       " \001(\010\022\037\n\027has_instance_properties\030\021 \001(\010\022 \n",
       "\rextended_type\030\022 \003(\0132\t.TypeLink\022#\n\020imple" +
       "mented_type\030\023 \003(\0132\t.TypeLink\022$\n\021compiler" +
-      "_constant\030\024 \003(\0132\t.Property\032\345\001\n\013NestedTyp" +
+      "_constant\030\024 \003(\0132\t.Property\032\340\001\n\013NestedTyp" +
       "es\0223\n\ninterfaces\030\001 \003(\0132\037.JsType.NestedTy" +
       "pes.TypeSummary\0220\n\007classes\030\002 \003(\0132\037.JsTyp" +
       "e.NestedTypes.TypeSummary\022.\n\005enums\030\003 \003(\013" +
-      "2\037.JsType.NestedTypes.TypeSummary\032?\n\013Typ" +
-      "eSummary\022\014\n\004name\030\001 \002(\t\022\014\n\004href\030\002 \002(\t\022\024\n\014" +
-      "summary_html\030\003 \002(\t\032\243\001\n\007TypeDef\022\014\n\004name\030\001" +
-      " \002(\t\022\021\n\ttype_html\030\002 \002(\t\022\014\n\004href\030\003 \002(\t\022\035\n",
-      "\013description\030\004 \002(\0132\010.Comment\022!\n\013deprecat" +
-      "ion\030\005 \001(\0132\014.Deprecation\022\'\n\nvisibility\030\006 " +
-      "\001(\0162\013.Visibility:\006PUBLIC\"c\n\023IndexFileRen" +
-      "derSpec\022\035\n\tresources\030\001 \002(\0132\n.Resources\022\023" +
-      "\n\013has_license\030\002 \001(\010\022\030\n\006readme\030\003 \001(\0132\010.Co" +
-      "mment\"M\n\021LicenseRenderSpec\022\035\n\tresources\030" +
-      "\001 \002(\0132\n.Resources\022\031\n\007license\030\002 \002(\0132\010.Lic" +
-      "ense\"e\n\024SourceFileRenderSpec\022\035\n\tresource" +
-      "s\030\001 \002(\0132\n.Resources\022\031\n\004file\030\002 \002(\0132\013.Sour" +
-      "ceFile\022\023\n\013has_license\030\003 \001(\010\"]\n\020JsTypeRen",
-      "derSpec\022\025\n\004type\030\001 \002(\0132\007.JsType\022\035\n\tresour" +
-      "ces\030\002 \002(\0132\n.Resources\022\023\n\013has_license\030\003 \001" +
-      "(\010*4\n\nVisibility\022\n\n\006PUBLIC\020\000\022\r\n\tPROTECTE" +
-      "D\020\001\022\013\n\007PRIVATE\020\002B!\n\037com.github.jleyba.do" +
-      "ssier.proto"
+      "2\037.JsType.NestedTypes.TypeSummary\032:\n\013Typ" +
+      "eSummary\022\014\n\004name\030\001 \002(\t\022\014\n\004href\030\002 \002(\t\022\017\n\007" +
+      "summary\030\003 \002(\t\032\243\001\n\007TypeDef\022\014\n\004name\030\001 \002(\t\022" +
+      "\021\n\ttype_html\030\002 \002(\t\022\014\n\004href\030\003 \002(\t\022\035\n\013desc",
+      "ription\030\004 \002(\0132\010.Comment\022!\n\013deprecation\030\005" +
+      " \001(\0132\014.Deprecation\022\'\n\nvisibility\030\006 \001(\0162\013" +
+      ".Visibility:\006PUBLIC\"c\n\023IndexFileRenderSp" +
+      "ec\022\035\n\tresources\030\001 \002(\0132\n.Resources\022\023\n\013has" +
+      "_license\030\002 \001(\010\022\030\n\006readme\030\003 \001(\0132\010.Comment" +
+      "\"M\n\021LicenseRenderSpec\022\035\n\tresources\030\001 \002(\013" +
+      "2\n.Resources\022\031\n\007license\030\002 \002(\0132\010.License\"" +
+      "e\n\024SourceFileRenderSpec\022\035\n\tresources\030\001 \002" +
+      "(\0132\n.Resources\022\031\n\004file\030\002 \002(\0132\013.SourceFil" +
+      "e\022\023\n\013has_license\030\003 \001(\010\"]\n\020JsTypeRenderSp",
+      "ec\022\025\n\004type\030\001 \002(\0132\007.JsType\022\035\n\tresources\030\002" +
+      " \002(\0132\n.Resources\022\023\n\013has_license\030\003 \001(\010*4\n" +
+      "\nVisibility\022\n\n\006PUBLIC\020\000\022\r\n\tPROTECTED\020\001\022\013" +
+      "\n\007PRIVATE\020\002B!\n\037com.github.jleyba.dossier" +
+      ".proto"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -18496,7 +18496,7 @@ public final class Dossier {
           internal_static_JsType_NestedTypes_TypeSummary_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_JsType_NestedTypes_TypeSummary_descriptor,
-              new java.lang.String[] { "Name", "Href", "SummaryHtml", },
+              new java.lang.String[] { "Name", "Href", "Summary", },
               com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary.class,
               com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary.Builder.class);
           internal_static_JsType_TypeDef_descriptor =
