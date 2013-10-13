@@ -61,9 +61,15 @@ a {
 code {
   font-size: 1.2rem;
 
-  &.type, &.type a[href] {
+  &.type,
+  &.type a[href],
+  &.type a.unresolved-link {
     font-weight: normal;
     color: #080;
+  }
+
+  &.type a.unresolved-link {
+    border-bottom: 1px dotted #080;
   }
 }
 
