@@ -461,7 +461,9 @@ class HtmlDocWriter implements DocWriter {
     List<Descriptor> props = FluentIterable.from(descriptor.getProperties())
         .toSortedList(DescriptorNameComparator.INSTANCE);
     for (Descriptor property : props) {
-      if (isProperty(property)) {
+      if (property.isCompilerConstant()) {
+        jsTypeBuilder.addCompilerConstant(getPropertyData(property));
+      } else if (isProperty(property)) {
         jsTypeBuilder.addStaticProperty(getPropertyData(property));
       } else if (isFunction(property)) {
         jsTypeBuilder.addStaticFunction(getFunctionData(property));

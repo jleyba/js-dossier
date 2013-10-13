@@ -9628,6 +9628,16 @@ public final class Dossier {
         getImplementedTypeOrBuilderList();
     com.github.jleyba.dossier.proto.Dossier.TypeLinkOrBuilder getImplementedTypeOrBuilder(
         int index);
+    
+    // repeated .Property compiler_constant = 20;
+    java.util.List<com.github.jleyba.dossier.proto.Dossier.Property> 
+        getCompilerConstantList();
+    com.github.jleyba.dossier.proto.Dossier.Property getCompilerConstant(int index);
+    int getCompilerConstantCount();
+    java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.PropertyOrBuilder> 
+        getCompilerConstantOrBuilderList();
+    com.github.jleyba.dossier.proto.Dossier.PropertyOrBuilder getCompilerConstantOrBuilder(
+        int index);
   }
   public static final class JsType extends
       com.google.protobuf.GeneratedMessage
@@ -12630,6 +12640,27 @@ public final class Dossier {
       return implementedType_.get(index);
     }
     
+    // repeated .Property compiler_constant = 20;
+    public static final int COMPILER_CONSTANT_FIELD_NUMBER = 20;
+    private java.util.List<com.github.jleyba.dossier.proto.Dossier.Property> compilerConstant_;
+    public java.util.List<com.github.jleyba.dossier.proto.Dossier.Property> getCompilerConstantList() {
+      return compilerConstant_;
+    }
+    public java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.PropertyOrBuilder> 
+        getCompilerConstantOrBuilderList() {
+      return compilerConstant_;
+    }
+    public int getCompilerConstantCount() {
+      return compilerConstant_.size();
+    }
+    public com.github.jleyba.dossier.proto.Dossier.Property getCompilerConstant(int index) {
+      return compilerConstant_.get(index);
+    }
+    public com.github.jleyba.dossier.proto.Dossier.PropertyOrBuilder getCompilerConstantOrBuilder(
+        int index) {
+      return compilerConstant_.get(index);
+    }
+    
     private void initFields() {
       name_ = "";
       source_ = "";
@@ -12647,6 +12678,7 @@ public final class Dossier {
       hasInstanceProperties_ = false;
       extendedType_ = java.util.Collections.emptyList();
       implementedType_ = java.util.Collections.emptyList();
+      compilerConstant_ = java.util.Collections.emptyList();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -12731,6 +12763,12 @@ public final class Dossier {
           return false;
         }
       }
+      for (int i = 0; i < getCompilerConstantCount(); i++) {
+        if (!getCompilerConstant(i).isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+      }
       memoizedIsInitialized = 1;
       return true;
     }
@@ -12785,6 +12823,9 @@ public final class Dossier {
       }
       for (int i = 0; i < implementedType_.size(); i++) {
         output.writeMessage(19, implementedType_.get(i));
+      }
+      for (int i = 0; i < compilerConstant_.size(); i++) {
+        output.writeMessage(20, compilerConstant_.get(i));
       }
       getUnknownFields().writeTo(output);
     }
@@ -12858,6 +12899,10 @@ public final class Dossier {
       for (int i = 0; i < implementedType_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(19, implementedType_.get(i));
+      }
+      for (int i = 0; i < compilerConstant_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(20, compilerConstant_.get(i));
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -12986,6 +13031,7 @@ public final class Dossier {
           getPrototypeFieldBuilder();
           getExtendedTypeFieldBuilder();
           getImplementedTypeFieldBuilder();
+          getCompilerConstantFieldBuilder();
         }
       }
       private static Builder create() {
@@ -13069,6 +13115,12 @@ public final class Dossier {
           bitField0_ = (bitField0_ & ~0x00008000);
         } else {
           implementedTypeBuilder_.clear();
+        }
+        if (compilerConstantBuilder_ == null) {
+          compilerConstant_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00010000);
+        } else {
+          compilerConstantBuilder_.clear();
         }
         return this;
       }
@@ -13221,6 +13273,15 @@ public final class Dossier {
           result.implementedType_ = implementedType_;
         } else {
           result.implementedType_ = implementedTypeBuilder_.build();
+        }
+        if (compilerConstantBuilder_ == null) {
+          if (((bitField0_ & 0x00010000) == 0x00010000)) {
+            compilerConstant_ = java.util.Collections.unmodifiableList(compilerConstant_);
+            bitField0_ = (bitField0_ & ~0x00010000);
+          }
+          result.compilerConstant_ = compilerConstant_;
+        } else {
+          result.compilerConstant_ = compilerConstantBuilder_.build();
         }
         result.bitField0_ = to_bitField0_;
         onBuilt();
@@ -13424,6 +13485,32 @@ public final class Dossier {
             }
           }
         }
+        if (compilerConstantBuilder_ == null) {
+          if (!other.compilerConstant_.isEmpty()) {
+            if (compilerConstant_.isEmpty()) {
+              compilerConstant_ = other.compilerConstant_;
+              bitField0_ = (bitField0_ & ~0x00010000);
+            } else {
+              ensureCompilerConstantIsMutable();
+              compilerConstant_.addAll(other.compilerConstant_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.compilerConstant_.isEmpty()) {
+            if (compilerConstantBuilder_.isEmpty()) {
+              compilerConstantBuilder_.dispose();
+              compilerConstantBuilder_ = null;
+              compilerConstant_ = other.compilerConstant_;
+              bitField0_ = (bitField0_ & ~0x00010000);
+              compilerConstantBuilder_ = 
+                com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+                   getCompilerConstantFieldBuilder() : null;
+            } else {
+              compilerConstantBuilder_.addAllMessages(other.compilerConstant_);
+            }
+          }
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
@@ -13503,6 +13590,12 @@ public final class Dossier {
         }
         for (int i = 0; i < getImplementedTypeCount(); i++) {
           if (!getImplementedType(i).isInitialized()) {
+            
+            return false;
+          }
+        }
+        for (int i = 0; i < getCompilerConstantCount(); i++) {
+          if (!getCompilerConstant(i).isInitialized()) {
             
             return false;
           }
@@ -13637,6 +13730,12 @@ public final class Dossier {
               com.github.jleyba.dossier.proto.Dossier.TypeLink.Builder subBuilder = com.github.jleyba.dossier.proto.Dossier.TypeLink.newBuilder();
               input.readMessage(subBuilder, extensionRegistry);
               addImplementedType(subBuilder.buildPartial());
+              break;
+            }
+            case 162: {
+              com.github.jleyba.dossier.proto.Dossier.Property.Builder subBuilder = com.github.jleyba.dossier.proto.Dossier.Property.newBuilder();
+              input.readMessage(subBuilder, extensionRegistry);
+              addCompilerConstant(subBuilder.buildPartial());
               break;
             }
           }
@@ -15344,6 +15443,192 @@ public final class Dossier {
           implementedType_ = null;
         }
         return implementedTypeBuilder_;
+      }
+      
+      // repeated .Property compiler_constant = 20;
+      private java.util.List<com.github.jleyba.dossier.proto.Dossier.Property> compilerConstant_ =
+        java.util.Collections.emptyList();
+      private void ensureCompilerConstantIsMutable() {
+        if (!((bitField0_ & 0x00010000) == 0x00010000)) {
+          compilerConstant_ = new java.util.ArrayList<com.github.jleyba.dossier.proto.Dossier.Property>(compilerConstant_);
+          bitField0_ |= 0x00010000;
+         }
+      }
+      
+      private com.google.protobuf.RepeatedFieldBuilder<
+          com.github.jleyba.dossier.proto.Dossier.Property, com.github.jleyba.dossier.proto.Dossier.Property.Builder, com.github.jleyba.dossier.proto.Dossier.PropertyOrBuilder> compilerConstantBuilder_;
+      
+      public java.util.List<com.github.jleyba.dossier.proto.Dossier.Property> getCompilerConstantList() {
+        if (compilerConstantBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(compilerConstant_);
+        } else {
+          return compilerConstantBuilder_.getMessageList();
+        }
+      }
+      public int getCompilerConstantCount() {
+        if (compilerConstantBuilder_ == null) {
+          return compilerConstant_.size();
+        } else {
+          return compilerConstantBuilder_.getCount();
+        }
+      }
+      public com.github.jleyba.dossier.proto.Dossier.Property getCompilerConstant(int index) {
+        if (compilerConstantBuilder_ == null) {
+          return compilerConstant_.get(index);
+        } else {
+          return compilerConstantBuilder_.getMessage(index);
+        }
+      }
+      public Builder setCompilerConstant(
+          int index, com.github.jleyba.dossier.proto.Dossier.Property value) {
+        if (compilerConstantBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureCompilerConstantIsMutable();
+          compilerConstant_.set(index, value);
+          onChanged();
+        } else {
+          compilerConstantBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      public Builder setCompilerConstant(
+          int index, com.github.jleyba.dossier.proto.Dossier.Property.Builder builderForValue) {
+        if (compilerConstantBuilder_ == null) {
+          ensureCompilerConstantIsMutable();
+          compilerConstant_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          compilerConstantBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      public Builder addCompilerConstant(com.github.jleyba.dossier.proto.Dossier.Property value) {
+        if (compilerConstantBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureCompilerConstantIsMutable();
+          compilerConstant_.add(value);
+          onChanged();
+        } else {
+          compilerConstantBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      public Builder addCompilerConstant(
+          int index, com.github.jleyba.dossier.proto.Dossier.Property value) {
+        if (compilerConstantBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureCompilerConstantIsMutable();
+          compilerConstant_.add(index, value);
+          onChanged();
+        } else {
+          compilerConstantBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      public Builder addCompilerConstant(
+          com.github.jleyba.dossier.proto.Dossier.Property.Builder builderForValue) {
+        if (compilerConstantBuilder_ == null) {
+          ensureCompilerConstantIsMutable();
+          compilerConstant_.add(builderForValue.build());
+          onChanged();
+        } else {
+          compilerConstantBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      public Builder addCompilerConstant(
+          int index, com.github.jleyba.dossier.proto.Dossier.Property.Builder builderForValue) {
+        if (compilerConstantBuilder_ == null) {
+          ensureCompilerConstantIsMutable();
+          compilerConstant_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          compilerConstantBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      public Builder addAllCompilerConstant(
+          java.lang.Iterable<? extends com.github.jleyba.dossier.proto.Dossier.Property> values) {
+        if (compilerConstantBuilder_ == null) {
+          ensureCompilerConstantIsMutable();
+          super.addAll(values, compilerConstant_);
+          onChanged();
+        } else {
+          compilerConstantBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      public Builder clearCompilerConstant() {
+        if (compilerConstantBuilder_ == null) {
+          compilerConstant_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00010000);
+          onChanged();
+        } else {
+          compilerConstantBuilder_.clear();
+        }
+        return this;
+      }
+      public Builder removeCompilerConstant(int index) {
+        if (compilerConstantBuilder_ == null) {
+          ensureCompilerConstantIsMutable();
+          compilerConstant_.remove(index);
+          onChanged();
+        } else {
+          compilerConstantBuilder_.remove(index);
+        }
+        return this;
+      }
+      public com.github.jleyba.dossier.proto.Dossier.Property.Builder getCompilerConstantBuilder(
+          int index) {
+        return getCompilerConstantFieldBuilder().getBuilder(index);
+      }
+      public com.github.jleyba.dossier.proto.Dossier.PropertyOrBuilder getCompilerConstantOrBuilder(
+          int index) {
+        if (compilerConstantBuilder_ == null) {
+          return compilerConstant_.get(index);  } else {
+          return compilerConstantBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      public java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.PropertyOrBuilder> 
+           getCompilerConstantOrBuilderList() {
+        if (compilerConstantBuilder_ != null) {
+          return compilerConstantBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(compilerConstant_);
+        }
+      }
+      public com.github.jleyba.dossier.proto.Dossier.Property.Builder addCompilerConstantBuilder() {
+        return getCompilerConstantFieldBuilder().addBuilder(
+            com.github.jleyba.dossier.proto.Dossier.Property.getDefaultInstance());
+      }
+      public com.github.jleyba.dossier.proto.Dossier.Property.Builder addCompilerConstantBuilder(
+          int index) {
+        return getCompilerConstantFieldBuilder().addBuilder(
+            index, com.github.jleyba.dossier.proto.Dossier.Property.getDefaultInstance());
+      }
+      public java.util.List<com.github.jleyba.dossier.proto.Dossier.Property.Builder> 
+           getCompilerConstantBuilderList() {
+        return getCompilerConstantFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilder<
+          com.github.jleyba.dossier.proto.Dossier.Property, com.github.jleyba.dossier.proto.Dossier.Property.Builder, com.github.jleyba.dossier.proto.Dossier.PropertyOrBuilder> 
+          getCompilerConstantFieldBuilder() {
+        if (compilerConstantBuilder_ == null) {
+          compilerConstantBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+              com.github.jleyba.dossier.proto.Dossier.Property, com.github.jleyba.dossier.proto.Dossier.Property.Builder, com.github.jleyba.dossier.proto.Dossier.PropertyOrBuilder>(
+                  compilerConstant_,
+                  ((bitField0_ & 0x00010000) == 0x00010000),
+                  getParentForChildren(),
+                  isClean());
+          compilerConstant_ = null;
+        }
+        return compilerConstantBuilder_;
       }
       
       // @@protoc_insertion_point(builder_scope:JsType)
@@ -18036,7 +18321,7 @@ public final class Dossier {
       "ibility\030\003 \001(\0162\013.Visibility:\006PUBLIC\032W\n\005Va" +
       "lue\022\014\n\004name\030\001 \002(\t\022\035\n\013description\030\002 \001(\0132\010" +
       ".Comment\022!\n\013deprecation\030\003 \001(\0132\014.Deprecat" +
-      "ion\"\204\007\n\006JsType\022\014\n\004name\030\001 \002(\t\022\016\n\006source\030\005",
+      "ion\"\252\007\n\006JsType\022\014\n\004name\030\001 \002(\t\022\016\n\006source\030\005",
       " \002(\t\022#\n\006nested\030\006 \002(\0132\023.JsType.NestedType" +
       "s\022\035\n\013description\030\007 \002(\0132\010.Comment\022!\n\013depr" +
       "ecation\030\010 \001(\0132\014.Deprecation\022!\n\010type_def\030" +
@@ -18048,29 +18333,30 @@ public final class Dossier {
       "(\0132\n.Prototype\022\034\n\024has_instance_methods\030\020" +
       " \001(\010\022\037\n\027has_instance_properties\030\021 \001(\010\022 \n",
       "\rextended_type\030\022 \003(\0132\t.TypeLink\022#\n\020imple" +
-      "mented_type\030\023 \003(\0132\t.TypeLink\032\345\001\n\013NestedT" +
-      "ypes\0223\n\ninterfaces\030\001 \003(\0132\037.JsType.Nested" +
-      "Types.TypeSummary\0220\n\007classes\030\002 \003(\0132\037.JsT" +
-      "ype.NestedTypes.TypeSummary\022.\n\005enums\030\003 \003" +
-      "(\0132\037.JsType.NestedTypes.TypeSummary\032?\n\013T" +
-      "ypeSummary\022\014\n\004name\030\001 \002(\t\022\014\n\004href\030\002 \002(\t\022\024" +
-      "\n\014summary_html\030\003 \002(\t\032\243\001\n\007TypeDef\022\014\n\004name" +
-      "\030\001 \002(\t\022\021\n\ttype_html\030\002 \002(\t\022\014\n\004href\030\003 \002(\t\022" +
-      "\035\n\013description\030\004 \002(\0132\010.Comment\022!\n\013deprec",
-      "ation\030\005 \001(\0132\014.Deprecation\022\'\n\nvisibility\030" +
-      "\006 \001(\0162\013.Visibility:\006PUBLIC\"c\n\023IndexFileR" +
-      "enderSpec\022\035\n\tresources\030\001 \002(\0132\n.Resources" +
-      "\022\023\n\013has_license\030\002 \001(\010\022\030\n\006readme\030\003 \001(\0132\010." +
-      "Comment\"M\n\021LicenseRenderSpec\022\035\n\tresource" +
-      "s\030\001 \002(\0132\n.Resources\022\031\n\007license\030\002 \002(\0132\010.L" +
-      "icense\"e\n\024SourceFileRenderSpec\022\035\n\tresour" +
-      "ces\030\001 \002(\0132\n.Resources\022\031\n\004file\030\002 \002(\0132\013.So" +
-      "urceFile\022\023\n\013has_license\030\003 \001(\010\"]\n\020JsTypeR" +
-      "enderSpec\022\025\n\004type\030\001 \002(\0132\007.JsType\022\035\n\treso",
-      "urces\030\002 \002(\0132\n.Resources\022\023\n\013has_license\030\003" +
-      " \001(\010*4\n\nVisibility\022\n\n\006PUBLIC\020\000\022\r\n\tPROTEC" +
-      "TED\020\001\022\013\n\007PRIVATE\020\002B!\n\037com.github.jleyba." +
-      "dossier.proto"
+      "mented_type\030\023 \003(\0132\t.TypeLink\022$\n\021compiler" +
+      "_constant\030\024 \003(\0132\t.Property\032\345\001\n\013NestedTyp" +
+      "es\0223\n\ninterfaces\030\001 \003(\0132\037.JsType.NestedTy" +
+      "pes.TypeSummary\0220\n\007classes\030\002 \003(\0132\037.JsTyp" +
+      "e.NestedTypes.TypeSummary\022.\n\005enums\030\003 \003(\013" +
+      "2\037.JsType.NestedTypes.TypeSummary\032?\n\013Typ" +
+      "eSummary\022\014\n\004name\030\001 \002(\t\022\014\n\004href\030\002 \002(\t\022\024\n\014" +
+      "summary_html\030\003 \002(\t\032\243\001\n\007TypeDef\022\014\n\004name\030\001" +
+      " \002(\t\022\021\n\ttype_html\030\002 \002(\t\022\014\n\004href\030\003 \002(\t\022\035\n",
+      "\013description\030\004 \002(\0132\010.Comment\022!\n\013deprecat" +
+      "ion\030\005 \001(\0132\014.Deprecation\022\'\n\nvisibility\030\006 " +
+      "\001(\0162\013.Visibility:\006PUBLIC\"c\n\023IndexFileRen" +
+      "derSpec\022\035\n\tresources\030\001 \002(\0132\n.Resources\022\023" +
+      "\n\013has_license\030\002 \001(\010\022\030\n\006readme\030\003 \001(\0132\010.Co" +
+      "mment\"M\n\021LicenseRenderSpec\022\035\n\tresources\030" +
+      "\001 \002(\0132\n.Resources\022\031\n\007license\030\002 \002(\0132\010.Lic" +
+      "ense\"e\n\024SourceFileRenderSpec\022\035\n\tresource" +
+      "s\030\001 \002(\0132\n.Resources\022\031\n\004file\030\002 \002(\0132\013.Sour" +
+      "ceFile\022\023\n\013has_license\030\003 \001(\010\"]\n\020JsTypeRen",
+      "derSpec\022\025\n\004type\030\001 \002(\0132\007.JsType\022\035\n\tresour" +
+      "ces\030\002 \002(\0132\n.Resources\022\023\n\013has_license\030\003 \001" +
+      "(\010*4\n\nVisibility\022\n\n\006PUBLIC\020\000\022\r\n\tPROTECTE" +
+      "D\020\001\022\013\n\007PRIVATE\020\002B!\n\037com.github.jleyba.do" +
+      "ssier.proto"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -18194,7 +18480,7 @@ public final class Dossier {
           internal_static_JsType_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_JsType_descriptor,
-              new java.lang.String[] { "Name", "Source", "Nested", "Description", "Deprecation", "TypeDef", "Enumeration", "StaticFunction", "StaticProperty", "Constructor", "IsInterface", "Prototype", "HasInstanceMethods", "HasInstanceProperties", "ExtendedType", "ImplementedType", },
+              new java.lang.String[] { "Name", "Source", "Nested", "Description", "Deprecation", "TypeDef", "Enumeration", "StaticFunction", "StaticProperty", "Constructor", "IsInterface", "Prototype", "HasInstanceMethods", "HasInstanceProperties", "ExtendedType", "ImplementedType", "CompilerConstant", },
               com.github.jleyba.dossier.proto.Dossier.JsType.class,
               com.github.jleyba.dossier.proto.Dossier.JsType.Builder.class);
           internal_static_JsType_NestedTypes_descriptor =

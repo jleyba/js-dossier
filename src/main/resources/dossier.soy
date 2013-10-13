@@ -684,6 +684,18 @@
       {/foreach}
     </section>
   {/if}
+
+  {if length($type.compilerConstant)}
+    <section>
+      <h2>Compiler Constants</h2>
+      {foreach $prop in $type.compilerConstant}
+        {call .printProperty}
+          {param prop: $prop /}
+          {param parentName: $type.name /}
+        {/call}
+      {/foreach}
+    </section>
+  {/if}
 {/template}
 
 

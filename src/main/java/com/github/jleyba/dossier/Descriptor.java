@@ -193,6 +193,10 @@ class Descriptor {
     return (info != null && info.isDeprecated());
   }
 
+  boolean isCompilerConstant() {
+    return (info != null && info.isDefine());
+  }
+
   JSDocInfo.Visibility getVisibility() {
     // TODO(jleyba): Properly handle Visibility.INHERITED
     if (info == null || info.getVisibility() == JSDocInfo.Visibility.INHERITED) {

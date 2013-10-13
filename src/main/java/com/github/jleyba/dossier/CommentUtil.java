@@ -74,8 +74,28 @@ class CommentUtil {
       return Dossier.Comment.getDefaultInstance();
     }
 
-    String comment = extractCommentString(info.getOriginalCommentString());
-    if (comment.isEmpty()) {
+    String comment = info.getBlockDescription();
+    if (!Strings.isNullOrEmpty(comment)) {
+      // The Closure compiler trims each line in a block description, which can throw off
+      // the formatting in the comment (e.g. <pre> tags). To avoid this, we re-parse the
+      // comment.
+      comment = extractCommentString(info.getOriginalCommentString());
+    } else if (info.isDefine()) {
+      // The comment may be of the form:
+      // \**
+      //  * @define {type} Comment text.
+      //  *\
+      for (JSDocInfo.Marker marker : info.getMarkers()) {
+        if ("define".equals(marker.getAnnotation().getItem())) {
+          if (marker.getDescription() != null) {
+            comment = marker.getDescription().getItem();
+          }
+          break;  // Only one @define annotation is allowed.
+        }
+      }
+    }
+
+    if (Strings.isNullOrEmpty(comment)) {
       return Dossier.Comment.getDefaultInstance();
     }
 
