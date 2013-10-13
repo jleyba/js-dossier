@@ -17,6 +17,7 @@ package com.github.jleyba.dossier;
 import static com.google.common.base.Preconditions.checkArgument;
 
 import com.github.jleyba.dossier.proto.Dossier;
+import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
@@ -313,19 +314,30 @@ class CommentUtil {
     }
   }
 
-  private static String formatTypeString(Linker resolver, Node node) {
-    String namedType = node.getString();
-    @Nullable String path = resolver.getLink(namedType);
+  private static String formatTypeString(final Linker linker, Node node) {
+    String output = node.getString();
 
-    ImmutableList<String> templateNames = getTemplateTypeNames(node);
-    if (!templateNames.isEmpty()) {
-      namedType += ".&lt;" + Joiner.on(", ").join(templateNames) + "&gt;";
-    }
-
+    @Nullable String path = linker.getLink(output);
     if (path != null) {
-      return String.format("<a href=\"%s\">%s</a>", path, namedType);
+      output = String.format("<a href=\"%s\">%s</a>", path, output);
     }
-    return namedType;
+
+    List<String> templateNames = getTemplateTypeNames(node);
+    if (!templateNames.isEmpty()) {
+      templateNames = Lists.transform(templateNames, new Function<String, String>() {
+        @Override
+        public String apply(String input) {
+          @Nullable String path = linker.getLink(input);
+          if (path == null) {
+            return input;
+          }
+          return String.format("<a href=\"%s\">%s</a>", path, input);
+        }
+      });
+      output += ".&lt;" + Joiner.on(", ").join(templateNames) + "&gt;";
+    }
+
+    return output;
   }
 
   private static ImmutableList<String> getTemplateTypeNames(Node node) {
