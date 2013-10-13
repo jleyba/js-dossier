@@ -17,6 +17,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.base.Joiner;
+import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableMap;
 import com.google.javascript.rhino.JSDocInfo;
 
@@ -113,9 +114,8 @@ class Linker {
    * type may be specified as:
    * <ul>
    *   <li>A fully qualified type: {@code foo.bar.Baz}
-   *   <li>A fully qualified type with property qualified: {@code foo.Bar#baz} or
-   *       {@code foo.Bar$baz} (this method does not differentiate between "#" and "$" being used
-   *       as instance vs. static property qualifiers).
+   *   <li>A fully qualified type with instance property qualifier: {@code foo.Bar#baz}. This is
+   *       treated the same as {@code foo.Bar.prototype.baz}.
    * </ul>
    *
    * <p>If the referenced type is recognized, the returned path will be relative to the output
@@ -135,34 +135,59 @@ class Linker {
       to = to.substring(0, to.length() - ".prototype".length());
     }
 
-    String fragment = "";
-    String path;
-    index = to.indexOf("#");
-    if (index != -1) {
-      String typeName = to.substring(0, index);
-      String propertyName = "$" + to.substring(index + 1);
-      path = getTypeFile(typeName);
-      if (path != null) {
-        fragment = "#" + typeName + propertyName;
+    // foo.Bar#baz
+    if ((index = to.indexOf("#")) != -1) {
+      String link = getInstancePropertyLink(
+          to.substring(0, index), to.substring(index + 1));
+      if (link != null) {
+        return link;
       }
+
+    // foo.Bar.prototype.baz
+    } else if ((index = to.lastIndexOf(".prototype.")) != -1) {
+      String link = getInstancePropertyLink(
+          to.substring(0, index),
+          to.substring(index + ".prototype.".length()));
+      if (link != null) {
+        return link;
+      }
+
+    // foor.Bar.baz
     } else {
-      path = getTypeFile(to);
-      if (path == null) {
-        index = to.lastIndexOf('.');
-        if (index != -1) {
-          path = getTypeFile(to.substring(0, index));
-          if (path != null) {
-            fragment = "#" + to;
-          }
+      // Check if the fully qualified name refers directly to a type.
+      String link = getTypeFile(to);
+      if (link != null) {
+        return link;
+      }
+
+      // Ok, strip the last segment of the name and see if we have a type.
+      // if we do, treat the full name as the fully qualified name of a
+      // static property on the type.
+      if ((index = to.lastIndexOf('.')) != -1) {
+        link = getTypeFile(to.substring(0, index));
+        if (link != null) {
+          return link + "#" + to;
         }
       }
     }
 
-    if (path == null) {
-      return getExternLink(to);
-    }
+    // If we get here, make one last attempt to resolve the referenced path
+    // by checking for an extern type.
+    return getExternLink(to);
+  }
 
-    return path + fragment;
+  /**
+   * Generates the link to the documentation for a property defined on a class or interface's
+   * prototype. This method will verify that the main type exists, but will not verify if the
+   * property exists.
+   */
+  @Nullable
+  private String getInstancePropertyLink(String typeName, String propertyName) {
+    String typeLink = getTypeFile(typeName);
+    if (typeLink != null) {
+      return typeLink + "#" + propertyName;
+    }
+    return null;
   }
 
   @Nullable

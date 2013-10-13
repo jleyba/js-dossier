@@ -490,9 +490,12 @@
   {let $name: $parentName ? $parentName + '.' + $member.base.name
                           : $member.base.name /}
 
-  <span class="member{if $member.base.deprecation} deprecation-notice{/if}"
-        {if not $member.isConstructor}name="{$name}"{/if}>
-    {$name}
+  <span class="member{if $member.base.deprecation} deprecation-notice{/if}">
+    {if not $member.isConstructor}
+      <a name="{$name}">{$name}</a>
+    {else}
+      {$name}
+    {/if}
     {if $member.parameter}  // if is a function.
       {sp}<span class="args">(
         {foreach $parameter in $member.parameter}

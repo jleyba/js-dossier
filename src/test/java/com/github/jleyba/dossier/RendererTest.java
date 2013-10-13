@@ -642,7 +642,8 @@ public class RendererTest {
     Document document = renderDocument("dossier.memberSignature", "member", property);
     assertThat(document.body().children().size(), is(1));
     assertThat(document.body().child(0).toString(), isHtml(
-        "<span class=\"member\" name=\"Foo\">Foo : <code class=\"type\">string</code></span>"));
+        "<span class=\"member\">",
+        "<a name=\"Foo\">Foo</a> : <code class=\"type\">string</code></span>"));
   }
 
   @Test
@@ -662,8 +663,8 @@ public class RendererTest {
     Document document = renderDocument("dossier.memberSignature", data);
     assertThat(document.body().children().size(), is(1));
     assertThat(document.body().child(0).toString(), isHtml(
-        "<span class=\"member\" name=\"foo.Bar.Baz\">",
-        "foo.Bar.Baz : <code class=\"type\">string</code></span>"));
+        "<span class=\"member\">",
+        "<a name=\"foo.Bar.Baz\">foo.Bar.Baz</a> : <code class=\"type\">string</code></span>"));
   }
 
   @Test
@@ -684,8 +685,8 @@ public class RendererTest {
     Document document = renderDocument("dossier.memberSignature", data);
     assertThat(document.body().children().size(), is(1));
     assertThat(document.body().child(0).toString(), isHtml(
-        "<span class=\"member deprecation-notice\" name=\"foo.bar.Baz\">",
-        "foo.bar.Baz : <code class=\"type\">string</code></span>"));
+        "<span class=\"member deprecation-notice\">",
+        "<a name=\"foo.bar.Baz\">foo.bar.Baz</a> : <code class=\"type\">string</code></span>"));
   }
 
   @Test
@@ -705,7 +706,7 @@ public class RendererTest {
     Document document = renderDocument("dossier.memberSignature", data);
     assertThat(document.body().children().size(), is(1));
     assertThat(document.body().child(0).toString(), isHtml(
-        "<span class=\"member\" name=\"foo.bar.Baz\">foo.bar.Baz</span>"));
+        "<span class=\"member\"><a name=\"foo.bar.Baz\">foo.bar.Baz</a></span>"));
   }
 
   @Test
@@ -721,7 +722,8 @@ public class RendererTest {
     Document document = renderDocument("dossier.memberSignature", "member", property);
     assertThat(document.body().children().size(), is(1));
     assertThat(document.body().child(0).toString(), isHtml(
-        "<span class=\"member\" name=\"foo\">foo : <code class=\"type\">string</code></span>"));
+        "<span class=\"member\"><a name=\"foo\">foo</a>",
+        " : <code class=\"type\">string</code></span>"));
   }
 
   @Test
@@ -742,8 +744,8 @@ public class RendererTest {
     Document document = renderDocument("dossier.memberSignature", data);
     assertThat(document.body().children().size(), is(1));
     assertThat(document.body().child(0).toString(), isHtml(
-        "<span class=\"member\" name=\"foo.bar.baz\">",
-        "foo.bar.baz <span class=\"args\">()</span> \u21d2 ",
+        "<span class=\"member\">",
+        "<a name=\"foo.bar.baz\">foo.bar.baz</a> <span class=\"args\">()</span> \u21d2 ",
         "<code class=\"type\"><a href=\"#\">Foo</a></code>",
         "</span>"));
   }
@@ -764,8 +766,8 @@ public class RendererTest {
     Document document = renderDocument("dossier.memberSignature", data);
     assertThat(document.body().children().size(), is(1));
     assertThat(document.body().child(0).toString(), isHtml(
-        "<span class=\"member\" name=\"foo.bar.baz\">",
-        "foo.bar.baz <span class=\"args\">()</span></span>"));
+        "<span class=\"member\">",
+        "<a name=\"foo.bar.baz\">foo.bar.baz</a> <span class=\"args\">()</span></span>"));
   }
 
   @Test
@@ -786,8 +788,9 @@ public class RendererTest {
     Document document = renderDocument("dossier.memberSignature", data);
     assertThat(document.body().children().size(), is(1));
     assertThat(document.body().child(0).toString(), isHtml(
-        "<span class=\"member\" name=\"foo.bar.baz\">",
-        "foo.bar.baz <span class=\"args\">()</span></span>"));
+        "<span class=\"member\">",
+        "<a name=\"foo.bar.baz\">foo.bar.baz</a>",
+        " <span class=\"args\">()</span></span>"));
   }
 
   @Test
@@ -808,8 +811,8 @@ public class RendererTest {
     Document document = renderDocument("dossier.memberSignature", data);
     assertThat(document.body().children().size(), is(1));
     assertThat(document.body().child(0).toString(), isHtml(
-        "<span class=\"member\" name=\"foo.bar.baz\">",
-        "foo.bar.baz <span class=\"args\">()</span></span>"));
+        "<span class=\"member\">",
+        "<a name=\"foo.bar.baz\">foo.bar.baz</a> <span class=\"args\">()</span></span>"));
   }
 
   @Test
@@ -832,8 +835,8 @@ public class RendererTest {
     Document document = renderDocument("dossier.memberSignature", data);
     assertThat(document.body().children().size(), is(1));
     assertThat(document.body().child(0).toString(), isHtml(
-        "<span class=\"member\" name=\"foo.bar.baz\">",
-        "foo.bar.baz <span class=\"args\">(a, b)</span></span>"));
+        "<span class=\"member\">",
+        "<a name=\"foo.bar.baz\">foo.bar.baz</a> <span class=\"args\">(a, b)</span></span>"));
   }
 
   @Test
@@ -903,7 +906,7 @@ public class RendererTest {
     assertThat(document.body().toString(), isHtml(
         "<body>",
         "<code class=\"type\">&lt;K, V&gt;</code> ",
-        "<span class=\"member\" name=\"foo.Bar\">foo.Bar <span class=\"args\">()</span>",
+        "<span class=\"member\"><a name=\"foo.Bar\">foo.Bar</a> <span class=\"args\">()</span>",
         " \u21d2 <code class=\"type\">string</code>",
         "</span>",
         "</body>"));
@@ -1111,8 +1114,8 @@ public class RendererTest {
     assertThat(querySelector(document, "details.function > summary").toString(), isHtml(
         "<summary><div>",
         "<a class=\"source\" href=\"bar.link\">code &raquo;</a>",
-        "<span class=\"member\" name=\"foo.Bar\">",
-        "foo.Bar <span class=\"args\">(a)</span></span></div>",
+        "<span class=\"member\">",
+        "<a name=\"foo.Bar\">foo.Bar</a> <span class=\"args\">(a)</span></span></div>",
         "</summary>"));
 
     assertThat(document.select("details.function > summary + div.info").size(), is(1));
@@ -1138,8 +1141,8 @@ public class RendererTest {
     assertThat(querySelector(document, "details.function > summary").toString(), isHtml(
         "<summary><div>",
         "<a class=\"source\" href=\"bar.link\">code &raquo;</a>",
-        "<span class=\"member deprecation-notice\" name=\"foo.Bar\">",
-        "foo.Bar <span class=\"args\">(a)</span></span></div>",
+        "<span class=\"member deprecation-notice\">",
+        "<a name=\"foo.Bar\">foo.Bar</a> <span class=\"args\">(a)</span></span></div>",
         "<div class=\"deprecation-notice\">Deprecated: ",
         "<span class=\"deprecation-reason\">is old</span>",
         "</div>",
@@ -1167,7 +1170,8 @@ public class RendererTest {
         "<summary>",
         "<div>",
         "<a class=\"source\" href=\"foo-source\">code &raquo;</a>",
-        "<span class=\"member\" name=\"foo\">foo : <code class=\"type\">string</code></span>",
+        "<span class=\"member\"><a name=\"foo\">foo</a>",
+        " : <code class=\"type\">string</code></span>",
         "</div>",
         "<p>foo description</p>",
         "</summary>"));

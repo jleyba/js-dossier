@@ -91,10 +91,59 @@ public class LinkerTest {
 
     assertEquals("namespace_goog_Foo.html#goog.Foo.bar", linker.getLink("goog.Foo.bar"));
     assertEquals("namespace_goog_Foo.html#goog.Foo.bar", linker.getLink("goog.Foo.bar()"));
-    assertEquals("namespace_goog_Foo.html#goog.Foo$bar", linker.getLink("goog.Foo#bar"));
-    assertEquals("namespace_goog_Foo.html#goog.Foo$bar", linker.getLink("goog.Foo#bar()"));
+  }
 
-    assertEquals("namespace_goog_Foo.html", linker.getLink("goog.Foo.prototype"));
+  @Test
+  public void testGetLink_global() {
+    Config mockConfig = mock(Config.class);
+    when(mockConfig.getOutput()).thenReturn(Paths.get(""));
+
+    Descriptor mockGoogFoo = mock(Descriptor.class);
+    when(mockGoogFoo.getFullName()).thenReturn("goog");
+
+    DocRegistry mockRegistry = mock(DocRegistry.class);
+    when(mockRegistry.getType("goog")).thenReturn(mockGoogFoo);
+
+    Linker linker = new Linker(mockConfig, mockRegistry);
+
+    assertEquals("namespace_goog.html", linker.getLink("goog"));
+    assertEquals("namespace_goog.html#goog.Foo", linker.getLink("goog.Foo"));
+    assertNull(linker.getLink("goog.Foo.bar"));
+  }
+
+  @Test
+  public void testGetLink_externs() {
+    Config mockConfig = mock(Config.class);
+    when(mockConfig.getOutput()).thenReturn(Paths.get(""));
+
+    DocRegistry mockRegistry = mock(DocRegistry.class);
+    Linker linker = new Linker(mockConfig, mockRegistry);
+
+    assertEquals(
+        "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String",
+        linker.getLink("string"));
+  }
+
+  @Test
+  public void testGetLink_prototype() {
+    Config mockConfig = mock(Config.class);
+    when(mockConfig.getOutput()).thenReturn(Paths.get(""));
+
+    Descriptor mockGoogFoo = mock(Descriptor.class);
+    when(mockGoogFoo.getFullName()).thenReturn("goog.Foo");
+    when(mockGoogFoo.isConstructor()).thenReturn(true);
+
+    DocRegistry mockRegistry = mock(DocRegistry.class);
+    when(mockRegistry.getType("goog.Foo")).thenReturn(mockGoogFoo);
+
+    Linker linker = new Linker(mockConfig, mockRegistry);
+
+    assertEquals("class_goog_Foo.html", linker.getLink("goog.Foo"));
+    assertEquals("class_goog_Foo.html", linker.getLink("goog.Foo.prototype"));
+    assertEquals("class_goog_Foo.html#bar", linker.getLink("goog.Foo#bar"));
+    assertEquals("class_goog_Foo.html#bar", linker.getLink("goog.Foo#bar()"));
+    assertEquals("class_goog_Foo.html#bar", linker.getLink("goog.Foo.prototype.bar"));
+    assertEquals("class_goog_Foo.html#bar", linker.getLink("goog.Foo.prototype.bar()"));
   }
 
   @Test
