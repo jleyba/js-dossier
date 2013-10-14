@@ -42,7 +42,6 @@ class Descriptor {
 
   private final String name;
   @Nullable private final JSType type;
-  @Nullable private final Descriptor parent;
   @Nullable private final JSDocInfo info;
 
   private boolean namespace = false;
@@ -50,16 +49,9 @@ class Descriptor {
   private final Set<Descriptor> children = new HashSet<>();
 
   Descriptor(String name, @Nullable JSType type, @Nullable JSDocInfo info) {
-    this(name, type, info, null);
-  }
-
-  Descriptor(
-      String name, @Nullable JSType type, @Nullable JSDocInfo info,
-      @Nullable Descriptor parent) {
     this.name = name;
     this.type = type;
     this.info = info;
-    this.parent = parent;
   }
 
   @Override
@@ -69,7 +61,7 @@ class Descriptor {
 
   @Override
   public int hashCode() {
-    return Objects.hash(name, type, parent);
+    return Objects.hash(name, type);
   }
 
   @Override
@@ -77,8 +69,7 @@ class Descriptor {
     if (o instanceof Descriptor) {
       Descriptor that = (Descriptor) o;
       return this.name.equals(that.name)
-          && Objects.equals(this.type, that.type)
-          && Objects.equals(this.parent, that.parent);
+          && Objects.equals(this.type, that.type);
     }
     return false;
   }
@@ -88,6 +79,10 @@ class Descriptor {
    * fully qualified name.
    */
   String getSimpleName() {
+    int index = name.lastIndexOf('.');
+    if (index != -1) {
+      return name.substring(index + 1);
+    }
     return name;
   }
 
@@ -95,9 +90,6 @@ class Descriptor {
    * Returns the described type's fully qualified name (using dot-notation).
    */
   String getFullName() {
-    if (parent != null) {
-      return parent.getFullName() + "." + name;
-    }
     return name;
   }
 
@@ -372,7 +364,7 @@ class Descriptor {
       }
 
       JSDocInfo info = obj.getOwnPropertyJSDocInfo(prop);
-      properties.add(new Descriptor(prop, obj.getPropertyType(prop), info, this));
+      properties.add(new Descriptor(getFullName() + "." + prop, obj.getPropertyType(prop), info));
     }
 
     return properties;
@@ -392,8 +384,6 @@ class Descriptor {
       obj = obj.getConstructor();
     }
 
-    Descriptor protoDescriptor = new Descriptor("prototype", null, null, this);
-
     ObjectType instance = ((FunctionType) obj).getInstanceType();
     for (String prop : instance.getOwnPropertyNames()) {
       Node node = instance.getPropertyNode(prop);
@@ -406,7 +396,8 @@ class Descriptor {
         info = node.getParent().getJSDocInfo();
       }
 
-      properties.add(new Descriptor(prop, instance.getPropertyType(prop), info, protoDescriptor));
+      properties.add(new Descriptor(
+          getFullName() + ".prototype." + prop, instance.getPropertyType(prop), info));
     }
 
     ObjectType proto = ((FunctionType) obj).getPrototype();
@@ -425,7 +416,8 @@ class Descriptor {
         info = node.getParent().getJSDocInfo();
       }
 
-      properties.add(new Descriptor(prop, proto.getPropertyType(prop), info, protoDescriptor));
+      properties.add(new Descriptor(
+          getFullName() + ".prototype." + prop, proto.getPropertyType(prop), info));
     }
 
     return properties;

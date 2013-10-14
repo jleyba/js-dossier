@@ -115,7 +115,7 @@ class DocPass  implements CompilerPass {
           info = type.getJSDocInfo();
         }
 
-        Descriptor descriptor = new Descriptor(name, type, info, null);
+        Descriptor descriptor = new Descriptor(name, type, info);
         traverseType(descriptor, registry);
       }
     }
@@ -183,7 +183,8 @@ class DocPass  implements CompilerPass {
           continue;
         }
 
-        Descriptor propDescriptor = new Descriptor(prop, propType, info, descriptor);
+        Descriptor propDescriptor = new Descriptor(
+            descriptor.getFullName() + "." + prop, propType, info);
         traverseType(propDescriptor, registry);
         if (propDescriptor.isFunction()
             || propDescriptor.isNamespace()
