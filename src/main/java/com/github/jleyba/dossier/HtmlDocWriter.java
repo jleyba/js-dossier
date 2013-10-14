@@ -474,7 +474,7 @@ class HtmlDocWriter implements DocWriter {
   private BaseProperty getBasePropertyDetails(Descriptor property) {
     String name = property.isConstructor() || property.isInterface()
         ? property.getFullName()
-        : property.getName();
+        : property.getSimpleName();
 
     BaseProperty.Builder builder = BaseProperty.newBuilder()
         .setName(name)
@@ -638,7 +638,7 @@ class HtmlDocWriter implements DocWriter {
       @Override
       public boolean apply(Descriptor input) {
         for (Descriptor descriptor : descriptors) {
-          if (descriptor.hasOwnInstanceProprety(input.getName())) {
+          if (descriptor.hasOwnInstanceProprety(input.getSimpleName())) {
             return false;
           }
         }

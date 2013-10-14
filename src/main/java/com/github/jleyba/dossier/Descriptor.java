@@ -83,10 +83,17 @@ class Descriptor {
     return false;
   }
 
-  String getName() {
+  /**
+   * Returns the described type's "simple" name - that is, the last segment of its dot-separated
+   * fully qualified name.
+   */
+  String getSimpleName() {
     return name;
   }
 
+  /**
+   * Returns the described type's fully qualified name (using dot-notation).
+   */
   String getFullName() {
     if (parent != null) {
       return parent.getFullName() + "." + name;
