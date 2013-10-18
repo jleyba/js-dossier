@@ -19,6 +19,7 @@ import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Ordering;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.JSTypeExpression;
 import com.google.javascript.rhino.Node;
@@ -29,6 +30,7 @@ import com.google.javascript.rhino.jstype.ObjectType;
 import com.google.javascript.rhino.jstype.UnionType;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -52,6 +54,15 @@ class Descriptor {
     this.name = name;
     this.type = type;
     this.info = info;
+  }
+
+  public static ImmutableList<Descriptor> sortByName(Iterable<Descriptor> descriptors) {
+    return Ordering.from(new Comparator<Descriptor>() {
+      @Override
+      public int compare(Descriptor a, Descriptor b) {
+        return a.getFullName().compareTo(b.getFullName());
+      }
+    }).immutableSortedCopy(descriptors);
   }
 
   @Override
@@ -131,14 +142,6 @@ class Descriptor {
       }
     }
     return 0;
-  }
-
-  boolean isNamespace() {
-    return namespace;
-  }
-
-  void setIsNamespace(boolean isNamespace) {
-    namespace = isNamespace;
   }
 
   Iterable<Descriptor> getChildren() {

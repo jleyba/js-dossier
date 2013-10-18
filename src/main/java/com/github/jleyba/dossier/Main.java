@@ -24,6 +24,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
 import com.google.common.io.ByteStreams;
+import com.google.javascript.jscomp.AbstractCompiler;
 import com.google.javascript.jscomp.ClosureCodingConvention;
 import com.google.javascript.jscomp.CommandLineRunner;
 import com.google.javascript.jscomp.CompilationLevel;
@@ -74,6 +75,11 @@ public class Main extends CommandLineRunner {
 
   @Override
   protected CompilerOptions createOptions() {
+    return createOptions(getCompiler(), docRegistry);
+  }
+
+  @VisibleForTesting
+  static CompilerOptions createOptions(AbstractCompiler compiler, DocRegistry docRegistry) {
     CompilerOptions options = new CompilerOptions();
 
     options.setCodingConvention(new ClosureCodingConvention());
@@ -93,8 +99,11 @@ public class Main extends CommandLineRunner {
           }
         });
 
+    ProvidedSymbolsCollectionPass providedNamespacesPass =
+        new ProvidedSymbolsCollectionPass(compiler);
+    customPasses.put(CustomPassExecutionTime.BEFORE_CHECKS, providedNamespacesPass);
     customPasses.put(CustomPassExecutionTime.BEFORE_OPTIMIZATIONS,
-        new DocPass(getCompiler(), docRegistry));
+        new DocPass(compiler, docRegistry, providedNamespacesPass.getSymbols()));
 
     options.setCustomPasses(customPasses);
     return options;

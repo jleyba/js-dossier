@@ -20,23 +20,19 @@ class CompilerUtil {
 
   private static final List<SourceFile> NO_EXTERNS = ImmutableList.of();
 
-  private final com.google.javascript.jscomp.Compiler compiler;
+  private final Compiler compiler;
   private final CompilerOptions options;
 
-
-  CompilerUtil() throws IOException {
-    Flags flags = Flags.parse(new String[] {"-o", "."});
-    Main main = new Main(new String[0],
+  CompilerUtil(Config config) {
+    this(new Compiler(), new Main(new String[0],
         new PrintStream(ByteStreams.nullOutputStream()),
         new PrintStream(ByteStreams.nullOutputStream()),
-        Config.load(flags));
-
-    compiler = new Compiler();
-    options = main.createOptions();
+        config).createOptions());
   }
 
-  void compile(String path, String... lines) {
-    compile(FileSystems.getDefault().getPath(path), lines);
+  CompilerUtil(Compiler compiler, CompilerOptions options) {
+    this.compiler = compiler;
+    this.options = options;
   }
 
   void compile(Path path, String... lines) {

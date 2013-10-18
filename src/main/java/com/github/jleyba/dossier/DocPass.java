@@ -13,6 +13,8 @@
 // limitations under the License.
 package com.github.jleyba.dossier;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import com.google.javascript.jscomp.AbstractCompiler;
 import com.google.javascript.jscomp.CompilerPass;
 import com.google.javascript.jscomp.NodeTraversal;
@@ -23,14 +25,21 @@ import com.google.javascript.rhino.jstype.JSType;
 import com.google.javascript.rhino.jstype.JSTypeRegistry;
 import com.google.javascript.rhino.jstype.ObjectType;
 
+import java.util.Set;
+
+/**
+ * A {@link CompilerPass} that collects the symbols the symbols to generate documentation for.
+ */
 class DocPass  implements CompilerPass {
 
   private final AbstractCompiler compiler;
   private final DocRegistry docRegistry;
+  private final Set<String> providedSymbols;
 
-  DocPass(AbstractCompiler compiler, DocRegistry docRegistry) {
+  DocPass(AbstractCompiler compiler, DocRegistry docRegistry, Set<String> providedSymbols) {
     this.compiler = compiler;
     this.docRegistry = docRegistry;
+    this.providedSymbols = providedSymbols;
   }
 
   @Override
@@ -38,24 +47,6 @@ class DocPass  implements CompilerPass {
     NodeTraversal.traverse(compiler, externs, new ExternCollector());
     NodeTraversal.traverse(compiler, root, new TypeCollector());
   }
-
-//
-//  /**
-//   * Traverses the AST, collecting {@code {@literal @}fileoverview} and
-//   * {@code {@literal @}license} information.
-//   */
-//  private class FileOverviewCollector extends NodeTraversal.AbstractShallowStatementCallback {
-//
-//    @Override
-//    public void visit(NodeTraversal nodeTraversal, Node node, Node parent) {
-//      JSDocInfo info = node.getJSDocInfo();
-//      if (node.isScript() && node.getSourceFileName() != null
-//          && info != null && info.getFileOverview() != null) {
-//        File file = new File(node.getSourceFileName());
-////        docRoot.addFileNamespace(new FileNamespace(file, info));
-//      }
-//    }
-//  }
 
   /**
    * Traverses the root of the extern tree to gather all external type definitions.
@@ -86,6 +77,9 @@ class DocPass  implements CompilerPass {
    * Traverses the object graph collecting all type definitions.
    */
   private class TypeCollector implements NodeTraversal.ScopedCallback {
+    @Override public void exitScope(NodeTraversal t) {}
+    @Override public boolean shouldTraverse(NodeTraversal t, Node n, Node parent) { return false; }
+    @Override public void visit(NodeTraversal t, Node n, Node parent) {}
 
     @Override
     public void enterScope(NodeTraversal t) {
@@ -115,89 +109,94 @@ class DocPass  implements CompilerPass {
           info = type.getJSDocInfo();
         }
 
+        if (null == type || (null == info && !type.isFunctionType())) {
+          continue;
+        }
+
         Descriptor descriptor = new Descriptor(name, type, info);
         traverseType(descriptor, registry);
       }
     }
 
-    @Override public void exitScope(NodeTraversal t) {}
-    @Override public boolean shouldTraverse(NodeTraversal t, Node n, Node parent) { return false; }
-    @Override public void visit(NodeTraversal t, Node n, Node parent) {}
-
     private void traverseType(Descriptor descriptor, JSTypeRegistry registry) {
-      // TODO(jleyba): Convert JSTypeExprssion back into original string.
-      JSType type = descriptor.getType();
-      if (null == type || !type.isObject() || type.isGlobalThisType()) {
+      JSType type = checkNotNull(descriptor.getType(), "Null type: %s", descriptor.getFullName());
+      ObjectType obj = ObjectType.cast(type);
+      if (obj == null) {
         return;
       }
 
-      if (descriptor.isConstructor()
-          || descriptor.isInterface()
-          || descriptor.isEnum()) {
-
-        // This descriptor might be an alias for another type, so avoid documenting it twice:
-        // TODO(jleyba): do we really want to do this? Should we just alias it?
-        // \** @constructor */
-        // var Foo = function() {};
-        // var FooAlias = Foo;
-        if (registry.getType(descriptor.getFullName()) == null) {
-          return;
-        }
-
-        docRegistry.addType(descriptor);
-
-      } else if (!descriptor.isObject() && !descriptor.isFunction()) {
-        return;
-      }
-
-      ObjectType obj = descriptor.toObjectType();
+      docRegistry.addType(descriptor);
       for (String prop : obj.getOwnPropertyNames()) {
-        Node node = obj.getPropertyNode(prop);
-        if (null == node) {
+        String propName = descriptor.getFullName() + "." + prop;
+        if (shouldSkipProperty(obj, prop)) {
           continue;
         }
 
-        JSDocInfo info = node.getJSDocInfo();
-        if (null == info && null != node.getParent() && node.getParent().isAssign()) {
-          info = node.getParent().getJSDocInfo();
-        }
-
-        // Sometimes the JSCompiler picks up the builtin call and apply functions off of a
-        // function object.  We should always skip these.
-        if (type.isFunctionType() && ("apply".equals(prop) || "call".equals(prop))) {
-          continue;
-        }
-
-        // We're building an index of types, so do not traverse prototypes or enum values.
         JSType propType = obj.getPropertyType(prop);
-        if (propType.isFunctionPrototypeType() || propType.isEnumElementType()) {
-          continue;
-        }
+        JSDocInfo propInfo  = obj.getOwnPropertyJSDocInfo(prop);
 
-        // Don't bother collecting type info from properties that are new instances of other types.
-        if (node.isGetProp()
-            && node.getParent() != null
-            && node.getParent().isAssign()
-            && node.getNext() != null
-            && node.getNext().isNew()) {
-          continue;
+        if (registry.hasNamespace(propName)
+            || isDocumentableType(propInfo)
+            || isDocumentableType(propType)
+            || isProvidedSymbol(propName)) {
+          traverseType(new Descriptor(propName, propType, propInfo), registry);
         }
-
-        Descriptor propDescriptor = new Descriptor(
-            descriptor.getFullName() + "." + prop, propType, info);
-        traverseType(propDescriptor, registry);
-        if (propDescriptor.isFunction()
-            || propDescriptor.isNamespace()
-            || docRegistry.isKnownType(propDescriptor.getFullName())) {
-          descriptor.setIsNamespace(true);
-        }
-      }
-
-      if (!docRegistry.isKnownType(descriptor.getFullName())
-          && (registry.hasNamespace(descriptor.getFullName()) || descriptor.isNamespace())) {
-        docRegistry.addType(descriptor);
       }
     }
   }
 
+  private static boolean isDocumentableType(JSDocInfo info) {
+    return info != null && (info.isConstructor() || info.isInterface()
+        || info.getEnumParameterType() != null);
+  }
+
+  private static boolean isDocumentableType(JSType type) {
+    return type != null
+        && (type.isConstructor() || type.isInterface() || type.isEnumType());
+  }
+
+  private boolean shouldSkipProperty(ObjectType object, String prop) {
+    // Skip node-less properties and properties that are just new instances of other types.
+    Node node = object.getPropertyNode(prop);
+    if (node == null
+        || (node.isGetProp()
+        && node.getParent() != null
+        && node.getParent().isAssign()
+        && node.getNext() != null
+        && node.getNext().isNew())) {
+      return true;
+    }
+
+    // Skip unknown types. Also skip prototypes and enum values (this info is collected
+    // separately).
+    JSType propType = object.getPropertyType(prop);
+    if (propType == null || propType.isFunctionPrototypeType() || propType.isEnumElementType()) {
+      return true;
+    }
+
+    // Sometimes the JSCompiler picks up the builtin call and apply functions off of a
+    // function object.  We should always skip these.
+    if (object.isFunctionType() && propType.isFunctionType()
+        && ("apply".equals(prop) || "bind".equals(prop) || "call".equals(prop))) {
+      return true;
+    }
+
+    return propType.isGlobalThisType() || isPrimitive(propType);
+  }
+
+  private boolean isProvidedSymbol(String name) {
+    return providedSymbols.contains(name);
+  }
+
+  private static boolean isPrimitive(JSType type) {
+    return type.isBooleanValueType()
+        || type.isBooleanObjectType()
+        || type.isNumber()
+        || type.isNumberValueType()
+        || type.isNumberObjectType()
+        || type.isString()
+        || type.isStringObjectType()
+        || type.isStringValueType()
+        || type.isArrayType();
+  }
 }
