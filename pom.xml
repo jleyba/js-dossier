@@ -91,7 +91,7 @@
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>14.0.1</version>
+      <version>15.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.inject</groupId>
@@ -112,7 +112,7 @@
     <dependency>
       <groupId>com.google.javascript</groupId>
       <artifactId>closure-compiler</artifactId>
-      <version>v20130823</version>
+      <version>v20131014</version>
     </dependency>
     <dependency>
       <groupId>com.ibm.icu</groupId>
