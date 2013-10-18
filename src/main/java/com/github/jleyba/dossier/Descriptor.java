@@ -46,10 +46,6 @@ class Descriptor {
   @Nullable private final JSType type;
   @Nullable private final JSDocInfo info;
 
-  private boolean namespace = false;
-
-  private final Set<Descriptor> children = new HashSet<>();
-
   Descriptor(String name, @Nullable JSType type, @Nullable JSDocInfo info) {
     this.name = name;
     this.type = type;
@@ -116,18 +112,7 @@ class Descriptor {
     if (info != null) {
       return info.getSourceName();
     }
-
-    // If this descriptor doesn't have an explicit source, but all of its children share
-    // a source, then we can use that. This will be the case for goog.provide'd namespaces.
-    Set<String> sources = new HashSet<>();
-    for (Descriptor child : children) {
-      if (child.info != null && child.info.getSourceName() != null) {
-        if (sources.add(child.info.getSourceName()) && sources.size() > 1) {
-          return null;  // Children are distributed amongst multiple files.
-        }
-      }
-    }
-    return sources.isEmpty() ? null : sources.iterator().next();
+    return null;
   }
 
   /**
@@ -142,10 +127,6 @@ class Descriptor {
       }
     }
     return 0;
-  }
-
-  Iterable<Descriptor> getChildren() {
-    return Iterables.unmodifiableIterable(children);
   }
 
   ObjectType toObjectType() {
