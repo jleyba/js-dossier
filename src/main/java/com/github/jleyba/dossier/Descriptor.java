@@ -172,6 +172,13 @@ class Descriptor {
         || (info != null && info.getEnumParameterType() != null);
   }
 
+  boolean isEmptyNamespace() {
+    return !isConstructor()
+        && !isInterface()
+        && !isEnum()
+        && getProperties().isEmpty();
+  }
+
   boolean isDeprecated() {
     return (info != null && info.isDeprecated());
   }
@@ -343,7 +350,7 @@ class Descriptor {
       // Sometimes the JSCompiler picks up the builtin call and apply functions off of a
       // function object.  We should always skip these.
       if (type != null && type.isFunctionType()
-          && ("apply".equals(prop) || "call".equals(prop))) {
+          && ("apply".equals(prop) || "bind".equals(prop) || "call".equals(prop))) {
         continue;
       }
 

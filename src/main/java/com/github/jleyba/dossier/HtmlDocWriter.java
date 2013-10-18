@@ -99,6 +99,9 @@ class HtmlDocWriter implements DocWriter {
     generateLicense();
 
     for (Descriptor descriptor : sortedTypes) {
+      if (descriptor.isEmptyNamespace()) {
+        continue;
+      }
       generateDocs(descriptor, registry);
     }
 
@@ -217,6 +220,10 @@ class HtmlDocWriter implements DocWriter {
 
       JSONArray types = new JSONArray();
       for (Descriptor descriptor : sortedTypes) {
+        if (descriptor.isEmptyNamespace()) {
+          continue;
+        }
+
         String dest = config.getOutput().relativize(
             linker.getFilePath(descriptor)).toString();
         types.put(new JSONObject()
