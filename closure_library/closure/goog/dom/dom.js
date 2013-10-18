@@ -153,7 +153,7 @@ goog.dom.getRequiredElement = function(id) {
 goog.dom.getRequiredElementHelper_ = function(doc, id) {
   // To prevent users passing in Elements as is permitted in getElement().
   goog.asserts.assertString(id);
-  var element = goog.dom.getElement(id);
+  var element = goog.dom.getElementHelper_(doc, id);
   element = goog.asserts.assertElement(element,
       'No element found with id: ' + id);
   return element;
@@ -1516,26 +1516,30 @@ goog.dom.getFrameContentWindow = function(frame) {
 
 
 /**
- * Cross-browser function for setting the text content of an element.
- * @param {Element} element The element to change the text content of.
- * @param {string|number} text The string that should replace the current
- *     element content.
+ * Sets the text content of a node, with cross-browser support.
+ * @param {Node} node The node to change the text content of.
+ * @param {string|number} text The value that should replace the node's content.
  */
-goog.dom.setTextContent = function(element, text) {
-  if ('textContent' in element) {
-    element.textContent = text;
-  } else if (element.firstChild &&
-             element.firstChild.nodeType == goog.dom.NodeType.TEXT) {
+goog.dom.setTextContent = function(node, text) {
+  goog.asserts.assert(node != null,
+      'goog.dom.setTextContent expects a non-null value for node');
+
+  if ('textContent' in node) {
+    node.textContent = text;
+  } else if (node.nodeType == goog.dom.NodeType.TEXT) {
+    node.data = text;
+  } else if (node.firstChild &&
+             node.firstChild.nodeType == goog.dom.NodeType.TEXT) {
     // If the first child is a text node we just change its data and remove the
     // rest of the children.
-    while (element.lastChild != element.firstChild) {
-      element.removeChild(element.lastChild);
+    while (node.lastChild != node.firstChild) {
+      node.removeChild(node.lastChild);
     }
-    element.firstChild.data = text;
+    node.firstChild.data = text;
   } else {
-    goog.dom.removeChildren(element);
-    var doc = goog.dom.getOwnerDocument(element);
-    element.appendChild(doc.createTextNode(String(text)));
+    goog.dom.removeChildren(node);
+    var doc = goog.dom.getOwnerDocument(node);
+    node.appendChild(doc.createTextNode(String(text)));
   }
 };
 
@@ -1653,7 +1657,7 @@ goog.dom.PREDEFINED_TAG_VALUES_ = {'IMG': ' ', 'BR': '\n'};
 
 /**
  * Returns true if the element has a tab index that allows it to receive
- * keyboard focus (tabIndex >= 0), false otherwise.  Note that form elements
+ * keyboard focus (tabIndex >= 0), false otherwise.  Note that some elements
  * natively support keyboard focus, even if they have no tab index.
  * @param {Element} element Element to check.
  * @return {boolean} Whether the element has a tab index that allows keyboard
@@ -1691,15 +1695,15 @@ goog.dom.setFocusableTabIndex = function(element, enable) {
 
 /**
  * Returns true if the element can be focused, i.e. it has a tab index that
- * allows it to receive keyboard focus (tabIndex >= 0), or it is a form element
+ * allows it to receive keyboard focus (tabIndex >= 0), or it is an element
  * that natively supports keyboard focus.
  * @param {Element} element Element to check.
  * @return {boolean} Whether the element allows keyboard focus.
  */
 goog.dom.isFocusable = function(element) {
   var focusable;
-  // Form elements can have unspecified tab index.
-  if (goog.dom.isFormElement_(element)) {
+  // Some elements can have unspecified tab index and still receive focus.
+  if (goog.dom.nativelySupportsFocus_(element)) {
     // Make sure the element is not disabled ...
     focusable = !element.disabled &&
         // ... and if a tab index is specified, it allows focus.
@@ -1744,13 +1748,14 @@ goog.dom.isTabIndexFocusable_ = function(element) {
 
 
 /**
- * Returns true if the element is a form element.
+ * Returns true if the element is focusable even when tabIndex is not set.
  * @param {Element} element Element to check.
- * @return {boolean} Whether the element is a form element.
+ * @return {boolean} Whether the element natively supports focus.
  * @private
  */
-goog.dom.isFormElement_ = function(element) {
-  return element.tagName == goog.dom.TagName.INPUT ||
+goog.dom.nativelySupportsFocus_ = function(element) {
+  return element.tagName == goog.dom.TagName.A ||
+         element.tagName == goog.dom.TagName.INPUT ||
          element.tagName == goog.dom.TagName.TEXTAREA ||
          element.tagName == goog.dom.TagName.SELECT ||
          element.tagName == goog.dom.TagName.BUTTON;
@@ -2684,10 +2689,9 @@ goog.dom.DomHelper.prototype.getFrameContentWindow =
 
 
 /**
- * Cross browser function for setting the text content of an element.
- * @param {Element} element The element to change the text content of.
- * @param {string} text The string that should replace the current element
- *     content with.
+ * Sets the text content of a node, with cross-browser support.
+ * @param {Node} node The node to change the text content of.
+ * @param {string|number} text The value that should replace the node's content.
  */
 goog.dom.DomHelper.prototype.setTextContent = goog.dom.setTextContent;
 
@@ -2723,7 +2727,7 @@ goog.dom.DomHelper.prototype.findNodes = goog.dom.findNodes;
 
 /**
  * Returns true if the element has a tab index that allows it to receive
- * keyboard focus (tabIndex >= 0), false otherwise.  Note that form elements
+ * keyboard focus (tabIndex >= 0), false otherwise.  Note that some elements
  * natively support keyboard focus, even if they have no tab index.
  * @param {Element} element Element to check.
  * @return {boolean} Whether the element has a tab index that allows keyboard
@@ -2747,7 +2751,7 @@ goog.dom.DomHelper.prototype.setFocusableTabIndex =
 
 /**
  * Returns true if the element can be focused, i.e. it has a tab index that
- * allows it to receive keyboard focus (tabIndex >= 0), or it is a form element
+ * allows it to receive keyboard focus (tabIndex >= 0), or it is an element
  * that natively supports keyboard focus.
  * @param {Element} element Element to check.
  * @return {boolean} Whether the element allows keyboard focus.

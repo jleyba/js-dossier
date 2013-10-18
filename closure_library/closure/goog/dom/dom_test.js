@@ -891,6 +891,22 @@ function testSetTextContent() {
       p1.childNodes.length);
   assertEquals(s, p1.firstChild.data);
 
+  // Text/CharacterData
+  p1.innerHTML = 'before';
+  s = 'after';
+  goog.dom.setTextContent(p1.firstChild, s);
+  assertEquals('We should have one childNode after setTextContent', 1,
+      p1.childNodes.length);
+  assertEquals(s, p1.firstChild.data);
+
+  // DocumentFragment
+  var df = document.createDocumentFragment();
+  s = 'hello world';
+  goog.dom.setTextContent(df, s);
+  assertEquals('We should have one childNode after setTextContent', 1,
+      df.childNodes.length);
+  assertEquals(s, df.firstChild.data);
+
   // clean up
   p1.innerHTML = '';
 }
@@ -985,6 +1001,9 @@ function testSetFocusableTabIndex() {
 
 function testIsFocusable() {
   // Test all types of form elements with no tab index specified are focusable.
+  assertTrue('isFocusable() must be true for anchor elements with ' +
+      'no tab index',
+      goog.dom.isFocusable(goog.dom.getElement('noTabIndexAnchor')));
   assertTrue('isFocusable() must be true for input elements with ' +
       'no tab index',
       goog.dom.isFocusable(goog.dom.getElement('noTabIndexInput')));
