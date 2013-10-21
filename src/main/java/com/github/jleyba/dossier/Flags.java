@@ -46,47 +46,50 @@ class Flags {
 
   @Option(name = "--closure_library",
       handler = ClosurePathHandler.class,
-      usage = "Path to the base directory of the Closure library (which must contain base.js " +
-          "and deps.js. When provided, Closure's deps.js, and all of the --closure_deps, will " +
-          "be parsed for dependency info.  Any symbols goog.required'd by a --src file will " +
-          "automatically be included as an input for the compiler. All dependencies will be " +
-          "sorted so that a file that goog.provides symbol X will always come before a file " +
-          "that goog.requires symbol X.")
+      usage = "Path to the base directory of the Closure library (which must contain base.js and " +
+          "deps.js). When this option is specified, Closure's deps.js and all of the files " +
+          "specified by --closure_deps will be parsed for calls to goog.addDependency. The " +
+          "resulting dependency map will be used to automatically expand the set of --src input " +
+          "files any time a symbol is goog.require'd with the file that goog.provides that " +
+          "symbol along with its transitive dependencies.")
   Optional<Path> closureLibraryDir = Optional.absent();
 
   @Option(name = "--closure_deps",
       handler = SimplePathHandler.class,
-      usage = "List of files that should be parsed for Closure dependency mappings.")
+      usage = "Path to a file to parse for calls to goog.addDependency. This option requires " +
+          "also specifying --closure_library. You may specify this option multiple times.")
   List<Path> closureDepsFile = new LinkedList<>();
 
   @Option(
       name = "--src", aliases = "-s",
       handler = SimplePathHandler.class,
       required = true,
-      usage = "List of sources to include as input to the Closure compiler. If a source path " +
-          "refers to a directory, all .js files under that directory will be included.")
+      usage = "A .js file to generate API documentation for. If this path refers to a directory, " +
+          "all .js files under the directory will be included as sources. This option may be " +
+          "specified multiple times.")
   List<Path> srcs = new LinkedList<>();
 
   @Option(
       name = "--exclude", aliases = "-x",
       handler = SimplePathHandler.class,
-      usage = "List of source files to exclude; may be specified as the path to a specific " +
-          "file or directory. If a directory is specified, all of its descendants will be " +
-          "excluded.")
+      usage = "Path to a .js file to exclude from processing. If a directory is specified, all " +
+          "its descendants will be excluded. This option may be specified multiple times.")
   List<Path> excludes = new LinkedList<>();
 
   @Option(
       name = "--exclude_filter", aliases = "-f",
       handler = PatternHandler.class,
-      usage = "Defines a regular expression to apply to the input sources; those sources " +
-          "matching this expression will be exclued from processing. More than one filter may " +
-          "be defined.")
+      usage = "Defines a regular expression to apply to all of the input sources; those sources " +
+          "matching this expression will be excluded from processing. This option may be " +
+          "specified multiple times.")
   List<Pattern> filter = new LinkedList<>();
 
   @Option(
       name = "--extern", aliases = "-e",
       handler = SimplePathHandler.class,
-      usage = "Defines an externs file to pass to the Closure compiler.")
+      usage = "Path to a .js file to include as an extern file for the Closure compiler. These " +
+          "files are used to satisfy references to external types, but are excluded when " +
+          "generating API documentation. This option may be specified multiple times.")
   List<Path> externs = new LinkedList<>();
 
   @Option(
@@ -98,8 +101,8 @@ class Flags {
   @Option(
       name = "--readme",
       handler = SimplePathHandler.class,
-      usage = "Defines the path to a readme file to include in the main index. This file should " +
-          "use markdown syntax.")
+      usage = "Path to a README file to include in the generated documentation. This file, which " +
+          "should use markdown syntax will be included as the content of the main index page.")
   Path readme = null;
 
   @Option(
