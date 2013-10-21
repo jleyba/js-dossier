@@ -32,6 +32,7 @@ import com.google.javascript.jscomp.deps.DepsGenerator;
 import com.google.javascript.jscomp.deps.SortedDependencies;
 
 import java.io.IOException;
+import java.io.PrintStream;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -50,21 +51,27 @@ class Config {
   private final Path output;
   private final Optional<Path> license;
   private final Optional<Path> readme;
+  private final PrintStream outputStream;
+  private final PrintStream errorStream;
 
   /**
    * Creates a new runtime configuration.
+   *
    *
    * @param srcs The list of compiler input sources.
    * @param externs The list of extern files for the Closure compiler.
    * @param output Path to the output directory.
    * @param license Path to a license file to include with the generated documentation.
    * @param readme Path to a markdown file to include in the main index.
+   * @param outputStream The stream to use for standard output.
+   * @param errorStream The stream to use for error output.
    * @throws IllegalStateException If the source and extern lists intersect, or if the output
    *     path is not a directory.
    */
   private Config(
       ImmutableSet<Path> srcs, ImmutableSet<Path> externs, Path output,
-      Optional<Path> license, Optional<Path> readme) {
+      Optional<Path> license, Optional<Path> readme, PrintStream outputStream,
+      PrintStream errorStream) {
     checkArgument(intersection(srcs, externs).isEmpty(),
         "The sources and externs inputs must be disjoint:\n  sources: %s\n  externs: %s",
         srcs, externs);
@@ -81,6 +88,8 @@ class Config {
     this.output = output;
     this.license = license;
     this.readme = readme;
+    this.outputStream = outputStream;
+    this.errorStream = errorStream;
   }
 
   /**
@@ -112,13 +121,6 @@ class Config {
   }
 
   /**
-   * Returns the path to the base directory to copy source files to.
-   */
-  Path getSourceOutput() {
-    return output.resolve("source");
-  }
-
-  /**
    * Returns the path to a license file to include with the generated documentation.
    */
   Optional<Path> getLicense() {
@@ -130,6 +132,20 @@ class Config {
    */
   Optional<Path> getReadme() {
     return readme;
+  }
+
+  /**
+   * Returns the stream to use as stdout.
+   */
+  PrintStream getOutputStream() {
+    return outputStream;
+  }
+
+  /**
+   * Returns the stream to use as stderr.
+   */
+  PrintStream getErrorStream() {
+    return errorStream;
   }
 
   /**
@@ -173,7 +189,9 @@ class Config {
         ImmutableSet.copyOf(flags.externs),
         flags.outputDir,
         Optional.fromNullable(flags.license),
-        Optional.fromNullable(flags.readme));
+        Optional.fromNullable(flags.readme),
+        System.out,
+        System.err);
   }
 
   private static ImmutableSet<Path> processClosureSources(

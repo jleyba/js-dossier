@@ -31,6 +31,9 @@ import com.google.javascript.jscomp.CompilationLevel;
 import com.google.javascript.jscomp.CompilerOptions;
 import com.google.javascript.jscomp.CompilerPass;
 import com.google.javascript.jscomp.CustomPassExecutionTime;
+import org.joda.time.Instant;
+import org.joda.time.Period;
+import org.joda.time.format.PeriodFormatterBuilder;
 
 import java.io.IOException;
 import java.io.PrintStream;
@@ -114,6 +117,9 @@ public class Main extends CommandLineRunner {
       System.exit(-1);
     }
 
+    Instant start = Instant.now();
+    config.getOutputStream().println("Generating documentation...");
+
     int result = 0;
     try {
       result = doRun();
@@ -136,6 +142,18 @@ public class Main extends CommandLineRunner {
       e.printStackTrace(System.err);
       System.exit(-3);
     }
+
+    Instant stop = Instant.now();
+    String output = new PeriodFormatterBuilder()
+        .appendHours().appendSuffix("h")  // I hope not...
+        .appendSeparator(" ")
+        .appendMinutes().appendSuffix("m")
+        .appendSeparator(" ")
+        .appendSecondsWithOptionalMillis().appendSuffix("s")
+        .toFormatter()
+        .print(new Period(start, stop));
+
+    config.getOutputStream().println("Finished in " + output);
   }
 
   private static Function<Path, String> toFlag(final String flagPrefix) {
