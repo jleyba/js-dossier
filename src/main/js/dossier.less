@@ -44,6 +44,12 @@ body {
   margin: 0;
   padding: 0;
   font-size: 1.2rem;
+  /*
+   * As a work-around to http://crbug.com/296380, specify the body's
+   * font-size in terms of em instead of rem. Since the parent is the
+   * root, we end up with the same size.
+   */
+  font-size: 1.2em;
   font-family: sans-serif;
   background: #fff;
   color: @dark_gray;

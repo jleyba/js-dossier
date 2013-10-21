@@ -174,7 +174,6 @@ public class RendererTest {
             "<!DOCTYPE html>",
             "<meta charset=\"UTF-8\">",
             "<title>Foo.Bar</title>",
-            "<style>html { font-size: 10px; }</style>",
             "<link href=\"apples\" rel=\"stylesheet\" type=\"text/css\">",
             "<link href=\"oranges\" rel=\"stylesheet\" type=\"text/css\">"));
   }

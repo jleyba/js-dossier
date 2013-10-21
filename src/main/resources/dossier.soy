@@ -11,12 +11,6 @@
   <!DOCTYPE html>
   <meta charset="UTF-8">
   <title>{$title}</title>
-  // In Chrome, if the root element's font-size is changed in an external
-  // stylesheet, it will not be applied before the body element's styles.
-  // We can work around this by embedding the root font-size before linking
-  // to our stylesheet.
-  // See http://crbug.com/296380
-  <style>html {lb} font-size: 10px; {rb}</style>
   {foreach $styleSheet in $resources.css}
     <link href="{$styleSheet}" rel="stylesheet" type="text/css">
   {/foreach}
