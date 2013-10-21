@@ -24,7 +24,7 @@ top of the [Closure Compiler](https://developers.google.com/closure/compiler/?cs
     to all of the input sources; those sources matching this expression will be
     excluded from processing. This option may be specified multiple times.<p/>
 
- * `--extern PATH`, `-e PATH`  Path to a .js file to include as an extern file
+ * `--externs PATH`, `-e PATH`  Path to a .js file to include as an extern file
    for the Closure compiler. These files are used to define references to
    external types, but are excluded when generating API documentation. This
    option may be specified multiple times.<p/>

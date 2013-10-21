@@ -85,7 +85,7 @@ class Flags {
   List<Pattern> filter = new LinkedList<>();
 
   @Option(
-      name = "--extern", aliases = "-e",
+      name = "--externs", aliases = "-e",
       handler = SimplePathHandler.class,
       usage = "Path to a .js file to include as an extern file for the Closure compiler. These " +
           "files are used to satisfy references to external types, but are excluded when " +
