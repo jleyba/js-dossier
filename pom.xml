@@ -20,6 +20,7 @@
   </pluginRepositories>
 
   <build>
+    <finalName>dossier-${project.version}</finalName>
     <plugins>
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
