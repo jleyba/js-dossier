@@ -66,11 +66,14 @@ top of the [Closure Compiler](https://developers.google.com/closure/compiler/?cs
    <p/>
 
  * `--license PATH`  Path to a license file to include with the generated
-   documentation.
+   documentation.<p/>
 
  * `--readme PATH`  Path to a README file to include in the generated
    documentation. This file, which should use markdown syntax, will be included
-   as the content of the main index page.
+   as the content of the main index page.<p/>
+
+ * `--language [ES3 | ES5 | ES5_STRICT]`  Specifies which version of EcmaScript
+   the input sources conform to. Defaults to `ES3`.
 
 ## LICENSE
 

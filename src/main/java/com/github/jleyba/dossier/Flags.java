@@ -23,7 +23,6 @@ import org.kohsuke.args4j.spi.OptionHandler;
 import org.kohsuke.args4j.spi.Parameters;
 import org.kohsuke.args4j.spi.Setter;
 
-import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -31,8 +30,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import javax.annotation.Nullable;
 
 /**
  * Describes the runtime configuration for the app.
@@ -112,6 +109,28 @@ class Flags {
       required = true)
   Path outputDir;
 
+  @Option(
+      name = "--language",
+      usage = "Sets what language spec that input sources should conform to." +
+          " Defaults to ES3")
+  Language language = Language.ES3;
+
+  static enum Language {
+    ES3("ECMASCRIPT3"),
+    ES5("ECMASCRIPT5"),
+    ES5_STRICT("ECHMASCRIPT5_STRICT");
+
+    private final String fullName;
+
+    Language(String fullName) {
+      this.fullName = fullName;
+    }
+
+    public String getName() {
+      return fullName;
+    }
+  }
+
   private Flags() {}
 
   /**
@@ -121,6 +140,7 @@ class Flags {
   static Flags parse(String[] args) {
     Flags flags = new Flags();
     CmdLineParser parser = new CmdLineParser(flags);
+    parser.setUsageWidth(80);
 
     boolean isConfigValid = true;
     List<String> preprocessedArgs = preprocessArgs(args);

@@ -178,6 +178,7 @@ public class Main extends CommandLineRunner {
     ImmutableList<String> compilerFlags = ImmutableList.<String>builder()
         .addAll(transform(config.getSources(), toFlag("--js=")))
         .addAll(transform(config.getExterns(), toFlag("--externs=")))
+        .add("--language_in=" + flags.language.getName())
         .addAll(STANDARD_FLAGS)
         .build();
 
