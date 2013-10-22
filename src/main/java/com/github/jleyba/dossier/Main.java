@@ -19,6 +19,7 @@ import static com.google.common.collect.Lists.newLinkedList;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Function;
 import com.google.common.base.Supplier;
+import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
@@ -41,31 +42,9 @@ import java.nio.file.Path;
 import java.util.Collection;
 import java.util.List;
 
-public class Main extends CommandLineRunner {
+import javax.annotation.Nullable;
 
-  private static final List<String> STANDARD_FLAGS = ImmutableList.of(
-      "--jscomp_warning=accessControls",
-      "--jscomp_warning=ambiguousFunctionDecl",
-      "--jscomp_warning=checkRegExp",
-      "--jscomp_warning=checkTypes",
-      "--jscomp_warning=checkVars",
-      "--jscomp_warning=constantProperty",
-      "--jscomp_warning=deprecated",
-      "--jscomp_warning=duplicateMessage",
-      "--jscomp_warning=es5Strict",
-      "--jscomp_warning=externsValidation",
-      "--jscomp_warning=fileoverviewTags",
-      "--jscomp_warning=globalThis",
-      "--jscomp_warning=invalidCasts",
-      "--jscomp_warning=missingProperties",
-      "--jscomp_warning=nonStandardJsDocs",
-      "--jscomp_warning=strictModuleDepCheck",
-      "--jscomp_warning=typeInvalidation",
-      "--jscomp_warning=undefinedVars",
-      "--jscomp_warning=unknownDefines",
-      "--jscomp_warning=uselessCode",
-      "--jscomp_warning=visibility",
-      "--third_party=false");
+public class Main extends CommandLineRunner {
 
   private final Config config;
   private final DocRegistry docRegistry = new DocRegistry();
@@ -165,6 +144,30 @@ public class Main extends CommandLineRunner {
     };
   }
 
+  private static final List<String> STANDARD_FLAGS = ImmutableList.of(
+      "--jscomp_warning=accessControls",
+      "--jscomp_warning=ambiguousFunctionDecl",
+      "--jscomp_warning=checkRegExp",
+      "--jscomp_warning=checkTypes",
+      "--jscomp_warning=checkVars",
+      "--jscomp_warning=constantProperty",
+      "--jscomp_warning=deprecated",
+      "--jscomp_warning=duplicateMessage",
+      "--jscomp_warning=es5Strict",
+      "--jscomp_warning=externsValidation",
+      "--jscomp_warning=fileoverviewTags",
+      "--jscomp_warning=globalThis",
+      "--jscomp_warning=invalidCasts",
+      "--jscomp_warning=missingProperties",
+      "--jscomp_warning=nonStandardJsDocs",
+      "--jscomp_warning=strictModuleDepCheck",
+      "--jscomp_warning=typeInvalidation",
+      "--jscomp_warning=undefinedVars",
+      "--jscomp_warning=unknownDefines",
+      "--jscomp_warning=uselessCode",
+      "--jscomp_warning=visibility",
+      "--third_party=false");
+
   public static void main(String[] args) {
     Flags flags = Flags.parse(args);
     Config config = null;
@@ -175,11 +178,21 @@ public class Main extends CommandLineRunner {
       System.exit(-1);
     }
 
+    Iterable<String> standardFlags = STANDARD_FLAGS;
+    if (flags.strict) {
+      standardFlags = transform(standardFlags, new Function<String, String>() {
+        @Override
+        public String apply(String input) {
+          return input.replace("--jscomp_warning", "--jscomp_error");
+        }
+      });
+    }
+
     ImmutableList<String> compilerFlags = ImmutableList.<String>builder()
         .addAll(transform(config.getSources(), toFlag("--js=")))
         .addAll(transform(config.getExterns(), toFlag("--externs=")))
         .add("--language_in=" + flags.language.getName())
-        .addAll(STANDARD_FLAGS)
+        .addAll(standardFlags)
         .build();
 
     PrintStream nullStream = new PrintStream(ByteStreams.nullOutputStream());

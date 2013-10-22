@@ -115,6 +115,11 @@ class Flags {
           " Defaults to ES3")
   Language language = Language.ES3;
 
+  @Option(
+      name = "--strict",
+      usage = "Whether to run with all type checking flags enabled.")
+  boolean strict = false;
+
   static enum Language {
     ES3("ECMASCRIPT3"),
     ES5("ECMASCRIPT5"),
