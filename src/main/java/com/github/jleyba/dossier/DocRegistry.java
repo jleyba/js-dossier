@@ -13,8 +13,6 @@
 // limitations under the License.
 package com.github.jleyba.dossier;
 
-import com.google.common.base.Supplier;
-import com.google.common.base.Suppliers;
 import com.google.common.collect.Iterables;
 
 import java.util.HashMap;
