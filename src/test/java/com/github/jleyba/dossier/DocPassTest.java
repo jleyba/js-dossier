@@ -52,6 +52,7 @@ public class DocPassTest {
     Descriptor descriptor = Iterables.getOnlyElement(docRegistry.getTypes());
     assertEquals("Foo", descriptor.getFullName());
     assertConstructor(descriptor);
+    assertTrue(descriptor.getArgs().isEmpty());
   }
 
   @Test
@@ -62,6 +63,7 @@ public class DocPassTest {
     Descriptor descriptor = Iterables.getOnlyElement(docRegistry.getTypes());
     assertEquals("Foo", descriptor.getFullName());
     assertInterface(descriptor);
+    assertTrue(descriptor.getArgs().isEmpty());
   }
 
   @Test
@@ -155,6 +157,77 @@ public class DocPassTest {
     assertNamespace(descriptors.get(0));
     assertConstructor(descriptors.get(1));
     assertNamespace(descriptors.get(2));
+  }
+
+  @Test
+  public void canGetConstructorArgs_functionExpression_undocumented() {
+    util.compile(path("foo/bar.js"),
+        "/** @constructor */",
+        "function Foo(a, b) {}");
+    Descriptor descriptor = Iterables.getOnlyElement(docRegistry.getTypes());
+    assertEquals("Foo", descriptor.getFullName());
+    assertConstructor(descriptor);
+
+    List<ArgDescriptor> args = descriptor.getArgs();
+    assertEquals(2, args.size());
+    assertArg(args.get(0), "a", "");
+    assertArg(args.get(1), "b", "");
+  }
+
+  @Test
+  public void canGetConstructorArgs_functionExpression_documented() {
+    util.compile(path("foo/bar.js"),
+        "/**",
+        " * @param {string} a is for apples.",
+        " * @param {string} b is for bananas.",
+        " * @constructor */",
+        "function Foo(a, b) {}");
+    Descriptor descriptor = Iterables.getOnlyElement(docRegistry.getTypes());
+    assertEquals("Foo", descriptor.getFullName());
+    assertConstructor(descriptor);
+
+    List<ArgDescriptor> args = descriptor.getArgs();
+    assertEquals(2, args.size());
+    assertArg(args.get(0), "a", "is for apples.");
+    assertArg(args.get(1), "b", "is for bananas.");
+  }
+
+  @Test
+  public void canGetInterfaceArgs_functionExpression_undocumented() {
+    util.compile(path("foo/bar.js"),
+        "/** @interface */",
+        "function Foo(a, b) {}");
+    Descriptor descriptor = Iterables.getOnlyElement(docRegistry.getTypes());
+    assertEquals("Foo", descriptor.getFullName());
+    assertInterface(descriptor);
+
+    List<ArgDescriptor> args = descriptor.getArgs();
+    assertEquals(2, args.size());
+    assertArg(args.get(0), "a", "");
+    assertArg(args.get(1), "b", "");
+  }
+
+  @Test
+  public void canGetInterfaceArgs_functionExpression_documented() {
+    util.compile(path("foo/bar.js"),
+        "/**",
+        " * @param {string} a is for apples.",
+        " * @param {string} b is for bananas.",
+        " * @interface */",
+        "function Foo(a, b) {}");
+    Descriptor descriptor = Iterables.getOnlyElement(docRegistry.getTypes());
+    assertEquals("Foo", descriptor.getFullName());
+    assertInterface(descriptor);
+
+    List<ArgDescriptor> args = descriptor.getArgs();
+    assertEquals(2, args.size());
+    assertArg(args.get(0), "a", "is for apples.");
+    assertArg(args.get(1), "b", "is for bananas.");
+  }
+
+  private void assertArg(ArgDescriptor arg, String name, String description) {
+    assertEquals(name, arg.getName());
+    assertEquals(description, arg.getDescription());
   }
 
   private static void assertConstructor(Descriptor descriptor) {

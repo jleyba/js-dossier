@@ -553,7 +553,7 @@ class HtmlDocWriter implements DocWriter {
         .setBase(getBasePropertyDetails(function));
 
     JSDocInfo info = function.getInfo();
-    if (!function.isConstructor()) {
+    if (!function.isConstructor() && !function.isInterface()) {
       Dossier.Function.Detail.Builder detail = Dossier.Function.Detail.newBuilder();
       detail.setTypeHtml(getReturnType(function));
       if (info != null) {

@@ -13,6 +13,7 @@
 // limitations under the License.
 package com.github.jleyba.dossier;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
 import com.google.common.base.Function;
@@ -281,10 +282,11 @@ class Descriptor {
    * @throws IllegalStateException If this instance does not describe a function.
    */
   List<ArgDescriptor> getArgs() {
-    checkState(isConstructor() || isFunction(), "%s is not a function!", getFullName());
+    checkState(isConstructor() || isInterface() || isFunction(),
+        "%s is not a function!", getFullName());
     ObjectType obj = toObjectType();
-    if (isConstructor() && obj.getConstructor() != null) {
-      obj = obj.getConstructor();
+    if (!(obj instanceof FunctionType)) {
+      obj = checkNotNull(obj.getConstructor());
     }
 
     Node source = ((FunctionType) obj).getSource();
