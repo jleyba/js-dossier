@@ -584,6 +584,23 @@
 
 
 /**
+ * Print a list of properties or functions.
+ *
+ * @param properties A list of Dossier.Property or Dossier.Function objects.
+ * @param? parentName Name of the namespace/enum/class/interface that owns
+ *     this property.
+ */
+{template .printProperties}
+  {foreach $property in $properties}
+    {call .printProperty}
+      {param prop: $property /}
+      {param parentName: $parentName /}
+    {/call}
+  {/foreach}
+{/template}
+
+
+/**
  * Renders documentation for properties defined on the given type's
  * prototype chain.
  *
@@ -604,11 +621,9 @@
               {/if}
             </code></h3>
           {/if}
-          {foreach $function in $proto.function}
-            {call .printProperty}
-              {param prop: $function /}
-            {/call}
-          {/foreach}
+          {call .printProperties}
+            {param properties: $proto.function /}
+          {/call}
         {/if}
       {/foreach}
     </section>
@@ -628,11 +643,9 @@
               {/if}
             </code></h3>
           {/if}
-          {foreach $prop in $proto.property}
-            {call .printProperty}
-              {param prop: $prop /}
-            {/call}
-          {/foreach}
+          {call .printProperties}
+            {param properties: $proto.property /}
+          {/call}
         {/if}
       {/foreach}
     </section>
@@ -655,12 +668,10 @@
           Global Functions
         {/if}
       </h2>
-      {foreach $fn in $type.staticFunction}
-        {call .printProperty}
-          {param prop: $fn /}
+      {call .printProperties}
+        {param properties: $type.staticFunction /}
           {param parentName: $type.name /}
-        {/call}
-      {/foreach}
+      {/call}
     </section>
   {/if}
 
@@ -673,24 +684,20 @@
           Global Properties
         {/if}
       </h2>
-      {foreach $prop in $type.staticProperty}
-        {call .printProperty}
-          {param prop: $prop /}
+      {call .printProperties}
+        {param properties: $type.staticProperty /}
           {param parentName: $type.name /}
-        {/call}
-      {/foreach}
+      {/call}
     </section>
   {/if}
 
   {if length($type.compilerConstant)}
     <section>
       <h2>Compiler Constants</h2>
-      {foreach $prop in $type.compilerConstant}
-        {call .printProperty}
-          {param prop: $prop /}
+      {call .printProperties}
+        {param properties: $type.compilerConstant /}
           {param parentName: $type.name /}
-        {/call}
-      {/foreach}
+      {/call}
     </section>
   {/if}
 {/template}
