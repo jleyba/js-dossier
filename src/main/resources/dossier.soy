@@ -752,6 +752,89 @@
 
 
 /**
+ * Template for a list of links to documented types.
+ * @param types A list of object literals describing the types in the nav
+ *     list. Each object should have the following structure:
+ *     {name: string, isTypedef: boolean, isInterface: boolean, href: string}
+ * @param basePath The base path for each link.
+ */
+{template .navlist}
+  {if length($types)}
+    <ul>
+      {foreach $type in $types}
+        {if not $type.isTypedef}
+          <li class="link"><a href="{$basePath}{$type.href}">
+          {if $type.isInterface}
+            <i>{$type.name}</i>
+          {else}
+            {$type.name}
+          {/if}
+          </a>
+        {/if}
+      {/foreach}
+    </ul>
+  {/if}
+{/template}
+
+
+/**
+ * @param file A dossier.File_ object.
+ * @param basePath The base path for any links.
+ * @param? parent The parent file. Should be omitted if file is the root of
+ *     the entire tree.
+ */
+{template .fileNavlist}
+  {let $isDirectory: length($file.children) > 0 /}
+  {if not $parent}<ul>{/if}
+  {if $isDirectory}
+    {if $file.name}
+      <li>{$file.name}/<ul>
+    {/if}
+    {foreach $child in $file.children}
+      {call .fileNavlist}
+        {param file: $child /}
+        {param basePath: $basePath /}
+        {param parent: $file /}
+      {/call}
+    {/foreach}
+    {if $file.name}</ul>{/if}
+  {elseif $file.name}
+    <li class="link"><a href="{$basePath}{$file.href}">{$file.name}</a>
+  {/if}
+  {if not $parent}</ul>{/if}
+{/template}
+
+
+/**
+ * @param ns A dossier.Namespace_ object.
+ * @param basePath The base path for any links.
+ */
+{template .namespaceNavlist}
+  {if $ns.name}
+    <li {if $ns.href}class="link"{/if}>
+    {if $ns.href}<a href="{$basePath}{$ns.href}">{/if}
+    {if $ns.isInterface}
+      <i>{$ns.name}</i>
+    {else}
+      {$ns.name}
+    {/if}
+    {if $ns.href}</a>{/if}
+  {/if}
+
+  {if length($ns.children)}
+    <ul>
+    {foreach $child in $ns.children}
+      {call .namespaceNavlist}
+        {param ns: $child /}
+        {param basePath: $basePath /}
+      {/call}
+    {/foreach}
+    </ul>
+  {/if}
+{/template}
+
+
+/**
  * Generates an HTML page for displaying the documentation about a single
  * JavaScript type or namespace.
  *

@@ -501,6 +501,77 @@ dossier.soy.hiddenVisibility = function(opt_data, opt_ignored) {
  * @return {string}
  * @notypecheck
  */
+dossier.soy.navlist = function(opt_data, opt_ignored) {
+  var output = '';
+  if (opt_data.types.length) {
+    output += '<ul>';
+    var typeList504 = opt_data.types;
+    var typeListLen504 = typeList504.length;
+    for (var typeIndex504 = 0; typeIndex504 < typeListLen504; typeIndex504++) {
+      var typeData504 = typeList504[typeIndex504];
+      output += (! typeData504.isTypedef) ? '<li class="link"><a href="' + soy.$$escapeHtml(opt_data.basePath) + soy.$$escapeHtml(typeData504.href) + '">' + ((typeData504.isInterface) ? '<i>' + soy.$$escapeHtml(typeData504.name) + '</i>' : soy.$$escapeHtml(typeData504.name)) + '</a>' : '';
+    }
+    output += '</ul>';
+  }
+  return output;
+};
+
+
+/**
+ * @param {Object.<string, *>=} opt_data
+ * @param {(null|undefined)=} opt_ignored
+ * @return {string}
+ * @notypecheck
+ */
+dossier.soy.fileNavlist = function(opt_data, opt_ignored) {
+  var output = '';
+  var isDirectory__soy522 = opt_data.file.children.length > 0;
+  output += (! opt_data.parent) ? '<ul>' : '';
+  if (isDirectory__soy522) {
+    output += (opt_data.file.name) ? '<li>' + soy.$$escapeHtml(opt_data.file.name) + '/<ul>' : '';
+    var childList533 = opt_data.file.children;
+    var childListLen533 = childList533.length;
+    for (var childIndex533 = 0; childIndex533 < childListLen533; childIndex533++) {
+      var childData533 = childList533[childIndex533];
+      output += dossier.soy.fileNavlist({file: childData533, basePath: opt_data.basePath, parent: opt_data.file});
+    }
+    output += (opt_data.file.name) ? '</ul>' : '';
+  } else if (opt_data.file.name) {
+    output += '<li class="link"><a href="' + soy.$$escapeHtml(opt_data.basePath) + soy.$$escapeHtml(opt_data.file.href) + '">' + soy.$$escapeHtml(opt_data.file.name) + '</a>';
+  }
+  output += (! opt_data.parent) ? '</ul>' : '';
+  return output;
+};
+
+
+/**
+ * @param {Object.<string, *>=} opt_data
+ * @param {(null|undefined)=} opt_ignored
+ * @return {string}
+ * @notypecheck
+ */
+dossier.soy.namespaceNavlist = function(opt_data, opt_ignored) {
+  var output = (opt_data.ns.name) ? '<li ' + ((opt_data.ns.href) ? 'class="link"' : '') + '>' + ((opt_data.ns.href) ? '<a href="' + soy.$$escapeHtml(opt_data.basePath) + soy.$$escapeHtml(opt_data.ns.href) + '">' : '') + ((opt_data.ns.isInterface) ? '<i>' + soy.$$escapeHtml(opt_data.ns.name) + '</i>' : soy.$$escapeHtml(opt_data.ns.name)) + ((opt_data.ns.href) ? '</a>' : '') : '';
+  if (opt_data.ns.children.length) {
+    output += '<ul>';
+    var childList579 = opt_data.ns.children;
+    var childListLen579 = childList579.length;
+    for (var childIndex579 = 0; childIndex579 < childListLen579; childIndex579++) {
+      var childData579 = childList579[childIndex579];
+      output += dossier.soy.namespaceNavlist({ns: childData579, basePath: opt_data.basePath});
+    }
+    output += '</ul>';
+  }
+  return output;
+};
+
+
+/**
+ * @param {Object.<string, *>=} opt_data
+ * @param {(null|undefined)=} opt_ignored
+ * @return {string}
+ * @notypecheck
+ */
 dossier.soy.typefile = function(opt_data, opt_ignored) {
   return dossier.soy.pageHeader({title: opt_data.spec.type.name, resources: opt_data.spec.resources}) + '<div id="main-wrapper">' + dossier.soy.sideNavToggle(null) + '<main>' + dossier.soy.typeHeader({type: opt_data.spec.type}) + '<section>' + dossier.soy.comment({comment: opt_data.spec.type.description}) + ((opt_data.spec.type.constructor && ! opt_data.spec.type.isInterface) ? dossier.soy.ctor({fn: opt_data.spec.type.constructor}) : '') + ((opt_data.spec.type.enumeration) ? dossier.soy.enumValues({name: opt_data.spec.type.name, enumeration: opt_data.spec.type.enumeration}) : '') + '</section>' + dossier.soy.nestedTypeSummaries({title: 'Interfaces', types: opt_data.spec.type.nested.interfaces}) + dossier.soy.nestedTypeSummaries({title: 'Classes', types: opt_data.spec.type.nested.classes}) + dossier.soy.nestedTypeSummaries({title: 'Enumerations', types: opt_data.spec.type.nested.enums}) + dossier.soy.visibilityControls(null) + dossier.soy.typedefs({typeDefs: opt_data.spec.type.typeDef}) + dossier.soy.prototype({type: opt_data.spec.type}) + dossier.soy.static({type: opt_data.spec.type}) + '</main>' + dossier.soy.topNav(null) + dossier.soy.sideNav({hasLicense: opt_data.spec.hasLicense}) + '<div id="push-footer"></div></div>' + dossier.soy.footer({scripts: opt_data.spec.resources.script});
 };
@@ -536,13 +607,13 @@ dossier.soy.licenseFile = function(opt_data, opt_ignored) {
  */
 dossier.soy.srcfile = function(opt_data, opt_ignored) {
   var output = dossier.soy.pageHeader({title: opt_data.spec.file.baseName, resources: opt_data.spec.resources}) + '<div id="main-wrapper">' + dossier.soy.sideNavToggle(null) + '<main><header><h1>' + soy.$$escapeHtml(opt_data.spec.file.path) + '</h1></header><pre><table class="srcfile"><tbody>';
-  var count__soy588 = 1;
-  var lineList589 = opt_data.spec.file.lines;
-  var lineListLen589 = lineList589.length;
-  for (var lineIndex589 = 0; lineIndex589 < lineListLen589; lineIndex589++) {
-    var lineData589 = lineList589[lineIndex589];
-    output += '<tr><td><a name="l' + soy.$$escapeHtml(count__soy588) + '" href="#l' + soy.$$escapeHtml(count__soy588) + '">' + soy.$$escapeHtml(count__soy588) + '</a><td>' + soy.$$escapeHtml(lineData589);
-    var count__soy598 = count__soy588 + 1;
+  var count__soy673 = 1;
+  var lineList674 = opt_data.spec.file.lines;
+  var lineListLen674 = lineList674.length;
+  for (var lineIndex674 = 0; lineIndex674 < lineListLen674; lineIndex674++) {
+    var lineData674 = lineList674[lineIndex674];
+    output += '<tr><td><a name="l' + soy.$$escapeHtml(count__soy673) + '" href="#l' + soy.$$escapeHtml(count__soy673) + '">' + soy.$$escapeHtml(count__soy673) + '</a><td>' + soy.$$escapeHtml(lineData674);
+    var count__soy683 = count__soy673 + 1;
   }
   output += '</table></pre></main>' + dossier.soy.topNav(null) + dossier.soy.sideNav({hasLicense: opt_data.spec.hasLicense}) + '<div id="push-footer"></div></div>' + dossier.soy.footer({scripts: opt_data.spec.resources.script});
   return output;

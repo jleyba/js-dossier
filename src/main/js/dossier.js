@@ -368,56 +368,15 @@ dossier.createNamespaceNavList_ = function(id, namespaces) {
     return noDataPlaceholder;
   }
 
-  goog.dom.removeNode(noDataPlaceholder);
-  var rootEl = /** @type {!HTMLUListElement} */(
-      goog.dom.createElement(goog.dom.TagName.UL));
-  goog.dom.appendChild(container, rootEl);
-
   var rootNamespace = dossier.Namespace_.fromRawTypeInfo(namespaces);
-  processTreeNode(rootNamespace, rootEl);
+  var rootEl = /** @type {!HTMLUListElement} */(
+      goog.soy.renderAsFragment(dossier.soy.namespaceNavlist, {
+        ns: rootNamespace,
+        basePath: dossier.BASE_PATH_
+      }));
+  goog.dom.removeNode(noDataPlaceholder);
+  goog.dom.appendChild(container, rootEl);
   return rootEl;
-
-  /**
-   * @param {dossier.Namespace_} ns .
-   * @param {!HTMLUListElement} parentEl .
-   */
-  function processTreeNode(ns, parentEl) {
-    // If the name is empty, then we are at the root and
-    // can add children directly to the parent element without adding
-    // a new list.
-    if (!ns.name) {
-      goog.array.forEach(ns.children, function(child) {
-        processTreeNode(child, parentEl);
-      });
-      return;
-    }
-
-    var nameNode = goog.dom.createTextNode(ns.name);
-    if (ns.isInterface) {
-      nameNode = goog.dom.createDom(goog.dom.TagName.I, null, nameNode);
-    }
-
-    var li;
-    if (ns.href) {
-      li = goog.dom.createDom(
-          goog.dom.TagName.LI, 'link',
-          goog.dom.createDom(goog.dom.TagName.A, {
-            'href': dossier.BASE_PATH_ + ns.href
-          }, nameNode));
-    } else {
-      li = goog.dom.createDom(goog.dom.TagName.LI, null, nameNode);
-    }
-    goog.dom.appendChild(parentEl, li);
-
-    if (ns.children.length) {
-      var list = /** @type {!HTMLUListElement} */(
-          goog.dom.createElement(goog.dom.TagName.UL));
-      goog.dom.appendChild(li, list);
-      goog.array.forEach(ns.children, function(child) {
-        processTreeNode(child, list);
-      });
-    }
-  }
 };
 
 
@@ -438,51 +397,14 @@ dossier.createFileNavList_ = function(id, files) {
     return noDataPlaceholder;
   }
 
-  goog.dom.removeNode(noDataPlaceholder);
-  var rootEl = /** @type {!HTMLUListElement} */(
-      goog.dom.createElement(goog.dom.TagName.UL));
-  goog.dom.appendChild(container, rootEl);
-
   var rootFile = dossier.buildFileTree_(files);
-  processTreeNode(rootFile, rootEl);
-  return rootEl;
-
-  /**
-   * @param {dossier.File_} file .
-   * @param {!HTMLUListElement} parentEl .
-   */
-  function processTreeNode(file, parentEl) {
-    var isDirectory = !!file.children.length;
-    if (!isDirectory) {
-      goog.dom.appendChild(
-          parentEl,
-          goog.dom.createDom(
-              goog.dom.TagName.LI, 'link',
-              goog.dom.createDom(goog.dom.TagName.A, {
-                'href': dossier.BASE_PATH_ + file.href
-              }, file.name)));
-      return;
-    }
-
-    // If the name is empty, then we are at the root and can add
-    // children directly to the parent element without adding a
-    // new list.
-    if (!file.name) {
-      goog.array.forEach(file.children, function(child) {
-        processTreeNode(child, parentEl);
-      });
-      return;
-    }
-
-    var list = /** @type {!HTMLUListElement} */(
-        goog.dom.createElement(goog.dom.TagName.UL));
-    goog.dom.appendChild(
-        parentEl,
-        goog.dom.createDom(goog.dom.TagName.LI, null, file.name + '/', list));
-    goog.array.forEach(file.children, function(child) {
-      processTreeNode(child, list);
-    });
-  }
+  var list = goog.soy.renderAsFragment(dossier.soy.fileNavlist, {
+    file: rootFile,
+    basePath: dossier.BASE_PATH_
+  });
+  goog.dom.removeNode(noDataPlaceholder);
+  goog.dom.appendChild(container, /** @type {!Element} */(list));
+  return /** @type {!Element} */(list);
 };
 
 
@@ -499,32 +421,18 @@ dossier.createNavList_ = function(id, descriptors) {
   var noDataPlaceholder =
       /** @type {!Element} */ (container.querySelector('i'));
 
-  if (!descriptors.length) {
+  var list = goog.soy.renderAsFragment(dossier.soy.navlist, {
+    types: descriptors,
+    basePath: dossier.BASE_PATH_
+  });
+
+  if (list && list.childNodes.length) {
+    goog.dom.removeNode(noDataPlaceholder);
+    goog.dom.appendChild(container, list);
+    return /** @type {!Element} */(list);
+  } else {
     return noDataPlaceholder;
   }
-
-  goog.dom.removeNode(noDataPlaceholder);
-
-  var list = goog.dom.createElement(goog.dom.TagName.UL);
-  goog.array.forEach(descriptors, function(descriptor) {
-    if (descriptor['isTypedef']) {
-      return;  // Do not include typedefs in the side index.
-    }
-
-    var listItem = descriptor['name'];
-    if (descriptor['isInterface']) {
-      listItem = goog.dom.createDom(goog.dom.TagName.I, null, listItem);
-    }
-
-    goog.dom.appendChild(list,
-        goog.dom.createDom(goog.dom.TagName.LI, 'link',
-            goog.dom.createDom(goog.dom.TagName.A, {
-              'href': dossier.BASE_PATH_ + descriptor['href']
-            }, listItem)));
-  });
-  goog.dom.appendChild(container, list);
-
-  return list;
 };
 
 
