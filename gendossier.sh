@@ -23,7 +23,13 @@ EOF
 
 
 run_jsc() {
+  mvn exec:java \
+      -Dexec.mainClass=com.google.template.soy.SoyToJsSrcCompiler \
+      -Dexec.args='--shouldGenerateJsdoc --shouldProvideRequireSoyNamespaces --outputPathFormat src/main/js/dossier_soy.js --srcs src/main/resources/dossier.soy'
+
   python ./closure_library/closure/bin/calcdeps.py \
+      -i ./src/main/js/soyutils_usegoog.js \
+      -i ./src/main/js/dossier_soy.js \
       -i ./src/main/js/dossier.js \
       -i ./src/main/js/deps.js \
       -d ./closure_library/closure/goog/deps.js \
@@ -52,6 +58,7 @@ run_jsc() {
       -f "--jscomp_error=unknownDefines" \
       -f "--jscomp_error=uselessCode" \
       -f "--jscomp_error=visibility" \
+      -f "--language_in=ES5" \
       -f "--third_party=false" \
       -f "--output_wrapper=\"(function(){%output%;init();})();\"" \
       --output_file=./src/main/resources/dossier.js

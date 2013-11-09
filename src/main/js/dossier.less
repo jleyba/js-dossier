@@ -30,9 +30,12 @@ summary {
 @main_width: 75%;
 @sidenav_width: (100% - @main_width) - 1%;
 
-@public_visibility_color: fade(forestgreen, 60%);
-@protected_visibility_color: fade(goldenrod, 60%);
-@private_visibility_color: fade(red, 50%);
+@public_base_color: forestgreen;
+@protected_base_color: goldenrod;
+@private_base_color: red;
+@public_color: fade(@public_base_color, 60%);
+@protected_color: fade(@protected_base_color, 60%);
+@private_color: fade(@private_base_color, 50%);
 
 /*
  * General page styles.
@@ -252,16 +255,81 @@ main {
   float: left;
 }
 
+.ctor { padding: .5rem 0 .5rem .5rem; }
+
+
+.visibility-border(@color) { border-left: .7rem solid @color; }
+
+dl {
+  &.public { .visibility-border(@public_color); }
+  &.protected { .visibility-border(@protected_color); }
+  &.private { .visibility-border(@private_color); }
+}
+
 .wrap-details {
   border-top: 1px solid @border_color;
   border-left: 1px solid @border_color;
   margin-bottom: 1px;
+  display: none;
+
+  &.ctor {
+    padding: 0;
+    display: block;
+  }
+
+  main.public &.public,
+  main.protected &.protected,
+  main.private &.private { display: block; }
+
+  .visibility-marker (@color) {
+    & > div:first-child { .visibility-border(@color); }
+  }
+
+  &.public { .visibility-marker(@public_color); }
+  &.protected { .visibility-marker(@protected_color); }
+  &.private { .visibility-marker(@private_color); }
+
+  &.inv {
+    display: block;
+
+    main.public &.public,
+    main.protected &.protected,
+    main.private &.private { display: none; }
+
+    .marker (@color) {
+      .lighter-text();
+      .visibility-marker(fade(@color, 40%));
+    }
+    &.public { .marker(@public_color); }
+    &.protected { .marker(@protected_color); }
+    &.private { .marker(@private_color); }
+  }
 }
 
-.public    { border-left: .7rem solid @public_visibility_color; }
-.protected { border-left: .7rem solid @protected_visibility_color; }
-.private   { border-left: .7rem solid @private_visibility_color; }
-.ctor { padding: .5rem 0 .5rem .5rem; }
+#visibility-controls { float: right; }
+
+label {
+  cursor: pointer;
+
+  .visibility-control (@border_color, @background_color) {
+    & > span {
+      border: 1px outset @border_color;
+      border-radius: 5px;
+      background: @background_color;
+      margin: 0 .3rem;
+    }
+  }
+
+  &[for=show-public] {
+    .visibility-control(@public_base_color, @public_color);
+  }
+  &[for=show-protected] {
+    .visibility-control(@protected_base_color, @protected_color);
+  }
+  &[for=show-private] {
+    .visibility-control(@private_base_color, @private_color);
+  }
+}
 
 details {
   & > summary {

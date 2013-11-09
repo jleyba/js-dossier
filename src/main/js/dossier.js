@@ -22,13 +22,15 @@
 
 goog.provide('dossier');
 
+goog.require('dossier.soy');
 goog.require('goog.array');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('goog.dom');
 goog.require('goog.dom.NodeType');
 goog.require('goog.dom.TagName');
-goog.require('goog.dom.classes');
+goog.require('goog.dom.classlist');
+goog.require('goog.soy');
 goog.require('goog.style');
 goog.require('goog.ui.ac');
 goog.require('goog.ui.ac.AutoComplete.EventType');
@@ -58,6 +60,7 @@ dossier.init = function() {
   var typeInfo = /** @type {dossier.TypeInfo_} */(goog.global['TYPES']);
   dossier.initNavList_(typeInfo);
   dossier.initIndex_(typeInfo);
+  dossier.initVisibilityControls_();
   setTimeout(goog.partial(dossier.initSearchBox_, typeInfo), 0);
   setTimeout(dossier.polyFillDetailsElements_, 0);
 };
@@ -560,4 +563,107 @@ dossier.polyFillDetailsElements_ = function() {
     goog.events.listen(el, goog.events.EventType.CLICK, onclick);
     onclick();  // Start in a cloesd state.
   });
+};
+
+
+/**
+ * @private
+ */
+dossier.initVisibilityControls_ = function() {
+  if (!document.getElementById('show-public')) return;
+
+  var main = document.getElementsByTagName('main')[0];
+  var total = {public: 0, protected: 0, private: 0};
+
+  initControl('show-public', 'public');
+  initControl('show-protected', 'protected');
+  initControl('show-private', 'private');
+  insertPlaceholders(document.getElementById('typedefs'));
+  insertPlaceholders(document.getElementById('instance-methods'));
+  insertPlaceholders(document.getElementById('instance-properties'));
+  insertPlaceholders(document.getElementById('static-functions'));
+  insertPlaceholders(document.getElementById('static-properties'));
+  insertPlaceholders(document.getElementById('compiler-constants'));
+  goog.style.setElementShown(
+      document.getElementById('visibility-controls'),
+      total.public || total.protected || total.private);
+
+  function initControl(id, className) {
+    var control = document.getElementById(id);
+    if (control) {
+      onChange(control, className);
+      goog.events.listen(control, goog.events.EventType.CHANGE, function() {
+        onChange(control, className);
+      });
+    }
+  }
+
+  function onChange(control, className) {
+    if (control.checked) {
+      goog.dom.classlist.add(main, className);
+    } else {
+      goog.dom.classlist.remove(main, className);
+    }
+  }
+
+  function insertPlaceholders(section) {
+    if (!section) {
+      return;
+    }
+    var details = goog.array.toArray(
+        section.querySelectorAll('.wrap-details, h3'));
+    var numPublic = 0;
+    var numProtected = 0;
+    var numPrivate = 0;
+
+    do {
+      goog.array.forEach(resetCount(), function(el) {
+        if (goog.dom.classlist.contains(el, 'public') && numPublic) {
+          goog.dom.insertSiblingAfter(
+              createPlaceholder('public', numPublic), el);
+          numPublic = 0;
+        } else if (
+            goog.dom.classlist.contains(el, 'protected') && numProtected) {
+          goog.dom.insertSiblingAfter(
+              createPlaceholder('protected', numProtected), el);
+          numProtected = 0;
+        } else if (
+            goog.dom.classlist.contains(el, 'private') && numPrivate) {
+          goog.dom.insertSiblingAfter(
+              createPlaceholder('private', numPrivate), el);
+          numPrivate = 0;
+        }
+      });
+    } while (details.length);
+
+    function resetCount() {
+      var tmp = [];
+      numPublic = numProtected = numPrivate = 0;
+      for (var i = 0, n = details.length; i < n; ++i) {
+        var el = details.shift();
+        if (el.tagName === goog.dom.TagName.H3) {
+          break;
+        }
+        tmp.push(el);
+        if (goog.dom.classlist.contains(el, 'public')) {
+          numPublic++;
+          total.public++;
+        } else if (goog.dom.classlist.contains(el, 'protected')) {
+          numProtected++;
+          total.protected++;
+        } else if (goog.dom.classlist.contains(el, 'private')) {
+          numPrivate++;
+          total.private++;
+        }
+      }
+      return tmp;
+    }
+  }
+
+  function createPlaceholder(className, count) {
+    return goog.soy.renderAsFragment(dossier.soy.hiddenVisibility, {
+      visibility: className,
+      count: count
+    });
+  }
 };

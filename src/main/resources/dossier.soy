@@ -1,4 +1,4 @@
-{namespace dossier}
+{namespace dossier.soy}
 
 /**
  * The main page header; responsible for setting the doctype, title, and
@@ -296,15 +296,16 @@
  */
 {template .typedefs}
   {if length($typeDefs) > 0}
-    <section>
+    <section id="typedefs">
       <h2>Type Definitions</h2>
       {foreach $typedef in $typeDefs}
-        <div class="wrap-details">
-            {switch $typedef.visibility}
-              {case 'PUBLIC'}<div class="public">
-              {case 'PROTECTED'}<div class="protected">
-              {case 'PRIVATE'}<div class="private">
-            {/switch}
+        <div class="wrap-details
+          {switch $typedef.visibility}
+            {case 'PUBLIC'}{sp}public
+            {case 'PROTECTED'}{sp}protected
+            {case 'PRIVATE'}{sp}private
+          {/switch}
+        "><div>
             <details>
               <summary>
                 <div>
@@ -519,13 +520,14 @@
  */
 {template .ctor}
   <h2>Constructor</h2>
-  <div class="wrap-details">
+  <div class="ctor wrap-details
     {switch $fn.base.visibility}
-      {case 'PUBLIC'}<div class="public ctor">
-      {case 'PROTECTED'}<div class="protected ctor">
-      {case 'PRIVATE'}<div class="private ctor">
+      {case 'PUBLIC'}{sp}public
+      {case 'PROTECTED'}{sp}protected
+      {case 'PRIVATE'}{sp}private
     {/switch}
-      <div>
+  "><div>
+      <div class="ctor">
         {call .memberSignature}
           {param member: $fn /}
         {/call}
@@ -548,12 +550,13 @@
 {template .printProperty}
   {let $isFunction: isNonnull($prop.parameter) /}
 
-  <div class="wrap-details">
+  <div class="wrap-details
     {switch $prop.base.visibility}
-      {case 'PUBLIC'}<div class="public">
-      {case 'PROTECTED'}<div class="protected">
-      {case 'PRIVATE'}<div class="private">
+      {case 'PUBLIC'}{sp}public
+      {case 'PROTECTED'}{sp}protected
+      {case 'PRIVATE'}{sp}private
     {/switch}
+  "><div>
       <details{if $isFunction} class="function"{/if}>
         <summary>
           <div>
@@ -608,7 +611,7 @@
  */
 {template .prototype}
   {if $type.hasInstanceMethods}
-    <section>
+    <section id="instance-methods">
       <h2>Instance Methods</h2>
       {foreach $proto in $type.prototype}
         {if length($proto.function)}
@@ -630,7 +633,7 @@
   {/if}
 
   {if $type.hasInstanceProperties}
-    <section>
+    <section id="instance-properties">
       <h2>Instance Properties</h2>
       {foreach $proto in $type.prototype}
         {if length($proto.property)}
@@ -660,7 +663,7 @@
  */
 {template .static}
   {if length($type.staticFunction)}
-    <section>
+    <section id="static-functions">
       <h2>
         {if $type.constructor}
           Static Functions
@@ -676,7 +679,7 @@
   {/if}
 
   {if length($type.staticProperty)}
-    <section>
+    <section id="static-properties">
       <h2>
         {if $type.constructor}
           Static Properties
@@ -692,7 +695,7 @@
   {/if}
 
   {if length($type.compilerConstant)}
-    <section>
+    <section id="compiler-constants">
       <h2>Compiler Constants</h2>
       {call .printProperties}
         {param properties: $type.compilerConstant /}
@@ -700,6 +703,51 @@
       {/call}
     </section>
   {/if}
+{/template}
+
+
+/**
+ * Renders the controls for toggling whether to show properties with public,
+ * protected, or private visibility.
+ */
+{template .visibilityControls}
+  <div id="visibility-controls">
+    <b>Show:</b>
+    <label for="show-public">
+      <span><input type="checkbox" id="show-public" checked/></span>
+      Public
+    </label>
+    <label for="show-protected">
+      <span><input type="checkbox" id="show-protected"/></span>
+      Protected
+    </label>
+    <label for="show-private">
+      <span><input type="checkbox" id="show-private"/></span>
+      Private
+    </label>
+  </div>
+{/template}
+
+
+/**
+ * Renders a summary of how many items are currently hidden for a particular
+ * visibility level.
+ *
+ * @param visibility The visibility label.
+ * @param count The hidden item count.
+ */
+{template .hiddenVisibility}
+  <div class="wrap-details inv {$visibility}">
+    <div>
+      <details>
+        <summary>
+          <label for="show-{$visibility}">
+            Show {$count} hidden item{if $count > 1}s{/if}
+          </label>
+        </summary>
+      </details>
+    </div>
+  </div>
 {/template}
 
 
@@ -751,10 +799,10 @@
         {param types: $spec.type.nested.enums /}
       {/call}
 
+      {call .visibilityControls /}
       {call .typedefs}
         {param typeDefs: $spec.type.typeDef /}
       {/call}
-
       {call .prototype}
         {param type: $spec.type /}
       {/call}

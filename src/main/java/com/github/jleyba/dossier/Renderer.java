@@ -33,19 +33,19 @@ import javax.annotation.Nullable;
 class Renderer {
 
   void render(Path output, Dossier.IndexFileRenderSpec spec) throws IOException {
-    render(output, "dossier.indexFile", spec);
+    render(output, "dossier.soy.indexFile", spec);
   }
 
   void render(Path output, Dossier.LicenseRenderSpec spec) throws IOException {
-    render(output, "dossier.licenseFile", spec);
+    render(output, "dossier.soy.licenseFile", spec);
   }
 
   void render(Path output, Dossier.SourceFileRenderSpec spec) throws IOException {
-    render(output, "dossier.srcfile", spec);
+    render(output, "dossier.soy.srcfile", spec);
   }
 
   void render(Path output, Dossier.JsTypeRenderSpec spec) throws IOException {
-    render(output, "dossier.typefile", spec);
+    render(output, "dossier.soy.typefile", spec);
   }
 
   private void render(Path output, String templateName, GeneratedMessage message)
