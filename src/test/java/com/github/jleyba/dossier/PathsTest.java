@@ -6,12 +6,14 @@ import static com.github.jleyba.dossier.Paths.getRelativePath;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Sets.newHashSet;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import org.junit.Test;
@@ -42,6 +44,12 @@ import java.util.Set;
 public class PathsTest {
 
   private static final FileSystem FILE_SYSTEM = FileSystems.getDefault();
+
+  @Test
+  public void returnsRootIfNoPathsGiven() {
+    Path root = FILE_SYSTEM.getPath("foo");
+    assertSame(root, getCommonPrefix(root, ImmutableList.<Path>of()));
+  }
 
   @Test
   public void returnsTheRootPathIfAllPathsAreUnderDifferentSubtrees() {

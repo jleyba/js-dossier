@@ -2,12 +2,14 @@ package com.github.jleyba.dossier;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.collect.Iterables.all;
+import static com.google.common.collect.Iterables.isEmpty;
 import static com.google.common.collect.Iterables.transform;
 import static com.google.common.collect.Lists.newArrayList;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
 
@@ -62,6 +64,9 @@ class Paths {
    * <p>If all of the provided {@code paths} do not designate
    */
   static Path getCommonPrefix(Path root, Iterable<Path> paths) {
+    if (isEmpty(paths)) {
+      return root;
+    }
     root = root.toFile().getAbsoluteFile().toPath();
     paths = transform(paths, normalizeRelativeTo(root));
 
