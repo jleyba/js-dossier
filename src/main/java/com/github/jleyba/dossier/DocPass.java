@@ -27,6 +27,8 @@ import com.google.javascript.rhino.jstype.ObjectType;
 
 import java.util.Set;
 
+import javax.annotation.Nullable;
+
 /**
  * A {@link CompilerPass} that collects the symbols the symbols to generate documentation for.
  */
@@ -48,6 +50,32 @@ class DocPass  implements CompilerPass {
     NodeTraversal.traverse(compiler, root, new TypeCollector());
   }
 
+  @Nullable
+  private static JSType getJSType(Scope scope, Scope.Var var, JSTypeRegistry registry) {
+    @Nullable JSType type = var.getType();
+    if (null == type) {
+      JSDocInfo info = var.getJSDocInfo();
+      type = registry.getType(var.getName());
+      if (null == type && null != info && null != info.getType()) {
+        type = info.getType().evaluate(scope, registry);
+      }
+
+      if (null == type && null != var.getInitialValue()) {
+        type = var.getInitialValue().getJSType();
+      }
+    }
+    return type;
+  }
+
+  @Nullable
+  private static JSDocInfo getJSDocInfo(Scope.Var var, @Nullable JSType type) {
+    @Nullable JSDocInfo info = var.getJSDocInfo();
+    if (null == info && null != type) {
+      info = type.getJSDocInfo();
+    }
+    return info;
+  }
+
   /**
    * Traverses the root of the extern tree to gather all external type definitions.
    */
@@ -57,7 +85,9 @@ class DocPass  implements CompilerPass {
     public void enterScope(NodeTraversal t) {
       Scope scope = t.getScope();
       for (Scope.Var var : scope.getAllSymbols()) {
-        docRegistry.addExtern(new Descriptor(var.getName(), var.getType(), var.getJSDocInfo()));
+        @Nullable JSType type = getJSType(scope, var, t.getCompiler().getTypeRegistry());
+        @Nullable JSDocInfo info = getJSDocInfo(var, type);
+        docRegistry.addExtern(new Descriptor(var.getName(), type, info));
       }
     }
 
@@ -92,22 +122,8 @@ class DocPass  implements CompilerPass {
           continue;
         }
 
-        JSDocInfo info = var.getJSDocInfo();
-        JSType type = var.getType();
-        if (null == type) {
-          type = registry.getType(name);
-          if (null == type && null != info && null != info.getType()) {
-            type = info.getType().evaluate(scope, registry);
-          }
-
-          if (null == type && null != var.getInitialValue()) {
-            type = var.getInitialValue().getJSType();
-          }
-        }
-
-        if (null == info && null != type) {
-          info = type.getJSDocInfo();
-        }
+        @Nullable JSType type = getJSType(scope, var, registry);
+        @Nullable JSDocInfo info = getJSDocInfo(var, type);
 
         if (null == type || (null == info && !type.isFunctionType())) {
           continue;
