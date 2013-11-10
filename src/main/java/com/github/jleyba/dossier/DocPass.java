@@ -46,6 +46,9 @@ class DocPass  implements CompilerPass {
 
   @Override
   public void process(Node externs, Node root) {
+    if (compiler.getErrorManager().getErrorCount() > 0) {
+      return;
+    }
     NodeTraversal.traverse(compiler, externs, new ExternCollector());
     NodeTraversal.traverse(compiler, root, new TypeCollector());
   }
