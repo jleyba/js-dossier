@@ -144,7 +144,7 @@ class DocPass  implements CompilerPass {
         @Nullable JSType type = getJSType(scope, var, registry);
         @Nullable JSDocInfo info = getJSDocInfo(var, type);
 
-        if (null == type || (null == info && !type.isFunctionType())) {
+        if (null == type || type.isGlobalThisType() || isPrimitive(type)) {
           continue;
         }
 
@@ -224,7 +224,8 @@ class DocPass  implements CompilerPass {
   }
 
   private static boolean isPrimitive(JSType type) {
-    return type.isBooleanValueType()
+    return !type.isEnumElementType()
+        && (type.isBooleanValueType()
         || type.isBooleanObjectType()
         || type.isNumber()
         || type.isNumberValueType()
@@ -232,6 +233,6 @@ class DocPass  implements CompilerPass {
         || type.isString()
         || type.isStringObjectType()
         || type.isStringValueType()
-        || type.isArrayType();
+        || type.isArrayType());
   }
 }

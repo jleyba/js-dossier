@@ -273,6 +273,10 @@ public class DocPassTest {
     Descriptor descriptor = Iterables.getOnlyElement(docRegistry.getTypes());
     assertEquals("foo", descriptor.getFullName());
     assertNamespace(descriptor);
+
+    descriptor = Iterables.getOnlyElement(descriptor.getProperties());
+    assertEquals("foo.bar", descriptor.getFullName());
+    assertTrue(descriptor.isFunction());
   }
 
   private void assertArg(ArgDescriptor arg, String name, String description) {
