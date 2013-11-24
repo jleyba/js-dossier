@@ -1,20 +1,24 @@
 package com.github.jleyba.dossier;
 
+import static com.github.jleyba.dossier.CompilerUtil.createSourceFile;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import com.google.common.base.Function;
+import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.javascript.jscomp.Compiler;
 import com.google.javascript.jscomp.CompilerOptions;
+import com.google.javascript.jscomp.SourceFile;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.List;
@@ -39,13 +43,41 @@ public class DocPassTest {
   }
 
   @Test
+  public void recordsFileOverviewComments() throws IOException {
+    SourceFile bar = createSourceFile(path("foo/bar.js"),
+        "/** @fileoverview This is a file overview",
+        " *     It is on multiple lines.",
+        " *Here is a pre tag:",
+        " *<pre>",
+        " *    adfadfafd",
+        " *       </pre>",
+        " * @see another widget",
+        " */",
+        "function Foo() {}");
+    SourceFile baz = createSourceFile(path("foo/baz.js"),
+        "/** @fileoverview Single line overview. */",
+        "function doWork(){}");
+
+    util.compile(bar, baz);
+
+    assertEquals(Joiner.on('\n').join(
+        "This is a file overview",
+        "     It is on multiple lines.",
+        "Here is a pre tag:",
+        "<pre>",
+        "    adfadfafd",
+        "      </pre>"), docRegistry.getFileOverview(path("foo/bar.js")));
+    assertEquals("Single line overview. ", docRegistry.getFileOverview(path("foo/baz.js")));
+  }
+
+  @Test
   public void ignoresUndocumentedFunctions() {
     util.compile(path("foo/bar.js"), "function Foo() {}");
     assertFalse(Iterables.isEmpty(docRegistry.getTypes()));
   }
 
   @Test
-  public void recordsGlobalConstructors() {
+  public void recordsGlobalConstructors() throws IOException {
     util.compile(path("foo/bar.js"),
         "/** @constructor */",
         "function Foo() {}");
@@ -178,7 +210,8 @@ public class DocPassTest {
   public void canGetConstructorArgs_functionExpression_documented() {
     util.compile(path("foo/bar.js"),
         "/**",
-        " * @param {string} a is for apples.",
+        " * @param {string} a is for",
+        " *     apples.",
         " * @param {string} b is for bananas.",
         " * @constructor */",
         "function Foo(a, b) {}");
@@ -188,7 +221,7 @@ public class DocPassTest {
 
     List<ArgDescriptor> args = descriptor.getArgs();
     assertEquals(2, args.size());
-    assertArg(args.get(0), "a", "is for apples.");
+    assertArg(args.get(0), "a", "is for\n    apples.");
     assertArg(args.get(1), "b", "is for bananas.");
   }
 

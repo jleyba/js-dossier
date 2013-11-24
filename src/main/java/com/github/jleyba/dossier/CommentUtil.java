@@ -22,6 +22,7 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.JSTypeExpression;
@@ -103,6 +104,52 @@ class CommentUtil {
     return parseComment(comment, linker);
   }
 
+  static String getMarkerDescription(JSDocInfo info, String annotation) {
+    for (JSDocInfo.Marker marker : info.getMarkers()) {
+      if (annotation.equals(marker.getAnnotation().getItem())) {
+        return extractCommentString(info.getOriginalCommentString(), marker);
+      }
+    }
+    return "";
+  }
+
+  static String extractCommentString(String originalCommentString, JSDocInfo.Marker marker) {
+    int startLine = marker.getDescription().getStartLine();
+    int endLine = marker.getDescription().getEndLine();
+
+    Iterable<String> lines = Splitter.on('\n').split(originalCommentString);
+    lines = Iterables.skip(lines, startLine - 1);
+    if (startLine != endLine) {
+      lines = Iterables.limit(lines, endLine - startLine);
+    }
+
+    ArrayList<String> lineList = Lists.newArrayList(lines);
+    for (int i = 0; i < lineList.size(); ++i) {
+      String line = lineList.get(i);
+      if (i == 0) {
+        // Offset index by 1 to skip space after the annotation.
+        int index = marker.getDescription().getPositionOnStartLine() + 1;
+        line = line.substring(index);
+
+      } else if (i == lineList.size() - 1) {
+        int index = marker.getDescription().getPositionOnEndLine();
+        line = line.substring(index);
+
+      } else {
+        line = leftTrimCommentLine(line);
+      }
+
+      int index = line.indexOf("*/");
+      if (index != -1) {
+        line = line.substring(0, index);
+      }
+
+      lineList.set(i, line);
+    }
+
+    return Joiner.on('\n').join(lineList);
+  }
+
   private static String extractCommentString(@Nullable String originalCommentString) {
     if (Strings.isNullOrEmpty(originalCommentString)) {
       return "";
@@ -112,25 +159,19 @@ class CommentUtil {
     // ruins formatting on <pre> blocks, so we have to do a quick and dirty re-parse.
 
     // Trim the opening \** and closing \*
-    String comment = originalCommentString
-        .substring(0, originalCommentString.lastIndexOf("*/"))
-        .substring(originalCommentString.indexOf("/**") + 3)
-        .trim();
+    String comment = originalCommentString;
+    int index = comment.lastIndexOf("*/");
+    if (index != -1) {
+      comment = comment.substring(0, index);
+    }
+    index = comment.indexOf("/**");
+    if (index != -1) {
+      comment = comment.substring(index + 3);
+    }
 
     StringBuilder builder = new StringBuilder();
     for (String line : Splitter.on('\n').split(comment)) {
-      // Trim the leading whitespace and * characters from the line.
-      for (int i = 0; i < line.length(); ++i) {
-        char c = line.charAt(i);
-        if ('*' == c) {
-          line = line.substring(i + 1);
-          break;
-        }
-
-        if (!Character.isWhitespace(c)) {
-          break;
-        }
-      }
+      line = leftTrimCommentLine(line);
 
       // Check for an annotation (@foo) by scanning ahead for the first non-whitespace
       // character on the line. This indicates we have reached the end of the block comment.
@@ -151,6 +192,21 @@ class CommentUtil {
       builder.append(line).append("\n");
     }
     return builder.toString();
+  }
+
+  private static String leftTrimCommentLine(String line) {
+    for (int i = 0; i < line.length(); ++i) {
+      char c = line.charAt(i);
+      if ('*' == c) {
+        line = line.substring(i + 1);
+        break;
+      }
+
+      if (!Character.isWhitespace(c)) {
+        break;
+      }
+    }
+    return line;
   }
 
   private static Dossier.Comment.Token.Builder newToken(String text) {

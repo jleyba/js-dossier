@@ -13,8 +13,12 @@
 // limitations under the License.
 package com.github.jleyba.dossier;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
+import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
 
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,8 +29,18 @@ import javax.annotation.Nullable;
  */
 class DocRegistry {
 
+  private final Map<Path, String> fileOverviews = new HashMap<>();
   private final Map<String, Descriptor> externs = new HashMap<>();
   private final Map<String, Descriptor> types = new HashMap<>();
+
+  void addFileOverview(Path path, @Nullable String overview) {
+    fileOverviews.put(checkNotNull(path, "null path"), Strings.nullToEmpty(overview));
+  }
+
+  @Nullable
+  String getFileOverview(Path path) {
+    return fileOverviews.get(path);
+  }
 
   void addExtern(Descriptor descriptor) {
     externs.put(descriptor.getFullName(), descriptor);

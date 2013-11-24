@@ -35,6 +35,10 @@ class CompilerUtil {
     this.options = options;
   }
 
+  void printTree(Appendable appendable) throws IOException {
+    compiler.getRoot().appendStringTree(appendable);
+  }
+
   void compile(Path path, String... lines) {
     compile(createSourceFile(path, lines));
   }

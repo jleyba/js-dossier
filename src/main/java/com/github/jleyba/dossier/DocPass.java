@@ -25,6 +25,8 @@ import com.google.javascript.rhino.jstype.JSType;
 import com.google.javascript.rhino.jstype.JSTypeRegistry;
 import com.google.javascript.rhino.jstype.ObjectType;
 
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
 import java.util.Set;
 
 import javax.annotation.Nullable;
@@ -110,8 +112,22 @@ class DocPass  implements CompilerPass {
    * Traverses the object graph collecting all type definitions.
    */
   private class TypeCollector implements NodeTraversal.ScopedCallback {
+    @Override public boolean shouldTraverse(NodeTraversal t, Node n, @Nullable Node parent) {
+      if (null == parent && n.isBlock()) {
+        return true;
+      }
+
+      if (n.isScript() && null != parent && parent.isBlock()) {
+        if (null != n.getJSDocInfo()) {
+          Path path = FileSystems.getDefault().getPath(n.getSourceFileName());
+          String comment = CommentUtil.getMarkerDescription(n.getJSDocInfo(), "fileoverview");
+          docRegistry.addFileOverview(path, comment);
+        }
+      }
+      return false;
+    }
+
     @Override public void exitScope(NodeTraversal t) {}
-    @Override public boolean shouldTraverse(NodeTraversal t, Node n, Node parent) { return false; }
     @Override public void visit(NodeTraversal t, Node n, Node parent) {}
 
     @Override

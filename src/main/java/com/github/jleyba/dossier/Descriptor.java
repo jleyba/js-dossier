@@ -13,10 +13,12 @@
 // limitations under the License.
 package com.github.jleyba.dossier;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
 import com.google.common.base.Function;
+import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -46,11 +48,31 @@ class Descriptor {
   private final String name;
   @Nullable private final JSType type;
   @Nullable private final JSDocInfo info;
+  private final Optional<Descriptor> parent;
 
   Descriptor(String name, @Nullable JSType type, @Nullable JSDocInfo info) {
     this.name = name;
     this.type = type;
     this.info = info;
+    this.parent = Optional.absent();
+  }
+
+  /**
+   * Creates a new descriptor for an instance property.
+   *
+   * @param parent the descriptor for the object this property is defined on.
+   * @param name the fully qualified name of this property.
+   * @param type this property's type.
+   * @param info this property's JSDoc info.
+   * @throws IllegalArgumentException if {@code parent} is not a constructor or interface
+   *     descriptor.
+   */
+  Descriptor(Descriptor parent, String name, @Nullable JSType type, @Nullable JSDocInfo info) {
+    checkArgument(null != parent && (parent.isConstructor() || parent.isInterface()));
+    this.name = name;
+    this.type = type;
+    this.info = info;
+    this.parent = Optional.of(parent);
   }
 
   public static ImmutableList<Descriptor> sortByName(Iterable<Descriptor> descriptors) {
@@ -80,6 +102,10 @@ class Descriptor {
           && Objects.equals(this.type, that.type);
     }
     return false;
+  }
+
+  public Optional<Descriptor> getParent() {
+    return parent;
   }
 
   /**
@@ -297,10 +323,9 @@ class Descriptor {
         for (JSDocInfo.Marker marker : info.getMarkers()) {
           if ("param".equals(marker.getAnnotation().getItem())) {
             String name = marker.getNameNode().getItem().getString();
-            args.add(new ArgDescriptor(
-                name,
-                info.getParameterType(name),
-                info.getDescriptionForParameter(name)));
+            String description = CommentUtil.extractCommentString(
+                info.getOriginalCommentString(), marker);
+            args.add(new ArgDescriptor(name, info.getParameterType(name), description));
           }
         }
         return args;
@@ -325,9 +350,19 @@ class Descriptor {
           return new ArgDescriptor(name, null, "");
         }
         return new ArgDescriptor(
-            name, info.getParameterType(name), info.getDescriptionForParameter(name));
+            name, info.getParameterType(name), getDescriptionForParameter(info, name));
       }
     });
+  }
+
+  private static String getDescriptionForParameter(JSDocInfo info, String name) {
+    for (JSDocInfo.Marker marker : info.getMarkers()) {
+      if ("param".equals(marker.getAnnotation().getItem())
+          && name.equals(marker.getNameNode().getItem().getString())) {
+        return CommentUtil.extractCommentString(info.getOriginalCommentString(), marker);
+      }
+    }
+    return "";
   }
 
   /**
@@ -390,7 +425,7 @@ class Descriptor {
       }
 
       properties.add(new Descriptor(
-          getFullName() + ".prototype." + prop, instance.getPropertyType(prop), info));
+          this, getFullName() + ".prototype." + prop, instance.getPropertyType(prop), info));
     }
 
     ObjectType proto = ((FunctionType) obj).getPrototype();
@@ -410,7 +445,7 @@ class Descriptor {
       }
 
       properties.add(new Descriptor(
-          getFullName() + ".prototype." + prop, proto.getPropertyType(prop), info));
+          this, getFullName() + ".prototype." + prop, proto.getPropertyType(prop), info));
     }
 
     return properties;
