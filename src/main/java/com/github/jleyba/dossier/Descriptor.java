@@ -50,6 +50,10 @@ class Descriptor {
   @Nullable private final JSDocInfo info;
   private final Optional<Descriptor> parent;
 
+  private List<ArgDescriptor> args;
+  private List<Descriptor> properties;
+  private Set<Descriptor> instanceProperties;
+
   Descriptor(String name, @Nullable JSType type, @Nullable JSDocInfo info) {
     this.name = name;
     this.type = type;
@@ -159,7 +163,7 @@ class Descriptor {
   ObjectType toObjectType() {
     checkState(isObject());
     ObjectType obj = ObjectType.cast(type);
-    if (obj == null && type.isUnionType()) {
+    if (obj == null && type != null && type.isUnionType()) {
       for (JSType t : ((UnionType) type).getAlternates()) {
         obj = ObjectType.cast(t);
         if (obj != null) {
@@ -310,6 +314,11 @@ class Descriptor {
   List<ArgDescriptor> getArgs() {
     checkState(isConstructor() || isInterface() || isFunction(),
         "%s is not a function!", getFullName());
+
+    if (null != args) {
+      return args;
+    }
+
     ObjectType obj = toObjectType();
     if (!(obj instanceof FunctionType)) {
       obj = checkNotNull(obj.getConstructor());
@@ -317,22 +326,32 @@ class Descriptor {
 
     Node source = ((FunctionType) obj).getSource();
     if (source == null) {
+      // If we don't have access to the function node, assume the JSDocInfo has the correct info.
+      args = new ArrayList<>();
       if (info != null) {
-        // If we don't have access to the function node, assume the JSDocInfo has the correct info.
-        List<ArgDescriptor> args = new LinkedList<>();
-        for (JSDocInfo.Marker marker : info.getMarkers()) {
-          if ("param".equals(marker.getAnnotation().getItem())) {
-            String name = marker.getNameNode().getItem().getString();
-            String description = CommentUtil.extractCommentString(
-                info.getOriginalCommentString(), marker);
-            args.add(new ArgDescriptor(name, info.getParameterType(name), description));
-          }
-        }
-        return args;
+        args = getArgs(info);
       }
-      return new ArrayList<>();
+    } else {
+      args = getArgs(source, info);
     }
 
+    return args;
+  }
+
+  private static List<ArgDescriptor> getArgs(JSDocInfo info) {
+    List<ArgDescriptor> args = new LinkedList<>();
+    for (JSDocInfo.Marker marker : info.getMarkers()) {
+      if ("param".equals(marker.getAnnotation().getItem())) {
+        String name = marker.getNameNode().getItem().getString();
+        String description = CommentUtil.extractCommentString(
+            info.getOriginalCommentString(), marker);
+        args.add(new ArgDescriptor(name, info.getParameterType(name), description));
+      }
+    }
+    return args;
+  }
+
+  private static List<ArgDescriptor> getArgs(Node source, @Nullable final JSDocInfo info) {
     // JSDocInfo does not guarantee parameter names will be returned in the order declared,
     // so we have to parse the function declaration.
     Node paramList = source  // function node
@@ -369,7 +388,11 @@ class Descriptor {
    * Returns the list of (static) properties defined on this type.
    */
   List<Descriptor> getProperties() {
-    List<Descriptor> properties = new LinkedList<>();
+    if (null != properties) {
+      return properties;
+    }
+
+    properties = new LinkedList<>();
     if (!isObject()) {
       return properties;
     }
@@ -402,39 +425,34 @@ class Descriptor {
    * Returns the instance properties defined on this type.
    */
   Set<Descriptor> getInstanceProperties() {
-    Set<Descriptor> properties = new HashSet<>();
-    if (!isConstructor() && !isInterface()) {
-      return properties;
-    }
-
-    ObjectType obj = toObjectType();
-    if ((isConstructor() || isInterface()) && obj.getConstructor() != null) {
-      obj = obj.getConstructor();
-    }
-
-    ObjectType instance = ((FunctionType) obj).getInstanceType();
-    for (String prop : instance.getOwnPropertyNames()) {
-      Node node = instance.getPropertyNode(prop);
-      if (null == node) {
-        continue;
+    if (null == instanceProperties) {
+      instanceProperties = new HashSet<>();
+      if (!isConstructor() && !isInterface()) {
+        return instanceProperties;
       }
 
-      JSDocInfo info = node.getJSDocInfo();
-      if (null == info && null != node.getParent() && node.getParent().isAssign()) {
-        info = node.getParent().getJSDocInfo();
+      ObjectType obj = toObjectType();
+      if ((isConstructor() || isInterface()) && obj.getConstructor() != null) {
+        obj = obj.getConstructor();
       }
 
-      properties.add(new Descriptor(
-          this, getFullName() + ".prototype." + prop, instance.getPropertyType(prop), info));
-    }
+      ObjectType instance = ((FunctionType) obj).getInstanceType();
+      instanceProperties.addAll(getInstanceProperties(this, instance));
 
-    ObjectType proto = ((FunctionType) obj).getPrototype();
-    for (String prop : proto.getOwnPropertyNames()) {
+      ObjectType proto = ((FunctionType) obj).getPrototype();
+      instanceProperties.addAll(getInstanceProperties(this, proto));
+    }
+    return instanceProperties;
+  }
+
+  private static List<Descriptor> getInstanceProperties(Descriptor parent, ObjectType obj) {
+    List<Descriptor> properties = new LinkedList<>();
+    for (String prop : obj.getOwnPropertyNames()) {
       if ("constructor".equals(prop) || "prototype".equals(prop)) {
         continue;
       }
 
-      Node node = proto.getPropertyNode(prop);
+      Node node = obj.getPropertyNode(prop);
       if (null == node) {
         continue;
       }
@@ -444,10 +462,9 @@ class Descriptor {
         info = node.getParent().getJSDocInfo();
       }
 
-      properties.add(new Descriptor(
-          this, getFullName() + ".prototype." + prop, proto.getPropertyType(prop), info));
+      String name = parent.getFullName() + ".prototype." + prop;
+      properties.add(new Descriptor(parent, name, obj.getPropertyType(prop), info));
     }
-
     return properties;
   }
 
