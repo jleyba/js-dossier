@@ -180,12 +180,12 @@ class DocPass  implements CompilerPass {
     }
   }
 
-  private static boolean isDocumentableType(JSDocInfo info) {
+  private static boolean isDocumentableType(@Nullable JSDocInfo info) {
     return info != null && (info.isConstructor() || info.isInterface()
         || info.getEnumParameterType() != null);
   }
 
-  private static boolean isDocumentableType(JSType type) {
+  private static boolean isDocumentableType(@Nullable JSType type) {
     return type != null
         && (type.isConstructor() || type.isInterface() || type.isEnumType());
   }

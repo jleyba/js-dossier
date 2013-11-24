@@ -344,7 +344,7 @@ class Descriptor {
       if ("param".equals(marker.getAnnotation().getItem())) {
         String name = marker.getNameNode().getItem().getString();
         String description = CommentUtil.extractCommentString(
-            info.getOriginalCommentString(), marker);
+            info.getOriginalCommentString(), marker.getDescription());
         args.add(new ArgDescriptor(name, info.getParameterType(name), description));
       }
     }
@@ -378,7 +378,8 @@ class Descriptor {
     for (JSDocInfo.Marker marker : info.getMarkers()) {
       if ("param".equals(marker.getAnnotation().getItem())
           && name.equals(marker.getNameNode().getItem().getString())) {
-        return CommentUtil.extractCommentString(info.getOriginalCommentString(), marker);
+        return CommentUtil.extractCommentString(
+            info.getOriginalCommentString(), marker.getDescription());
       }
     }
     return "";

@@ -107,15 +107,21 @@ class CommentUtil {
   static String getMarkerDescription(JSDocInfo info, String annotation) {
     for (JSDocInfo.Marker marker : info.getMarkers()) {
       if (annotation.equals(marker.getAnnotation().getItem())) {
-        return extractCommentString(info.getOriginalCommentString(), marker);
+        return extractCommentString(
+            info.getOriginalCommentString(), marker.getDescription());
       }
     }
     return "";
   }
 
-  static String extractCommentString(String originalCommentString, JSDocInfo.Marker marker) {
-    int startLine = marker.getDescription().getStartLine();
-    int endLine = marker.getDescription().getEndLine();
+  static String extractCommentString(String originalCommentString,
+      @Nullable JSDocInfo.StringPosition position) {
+    if (null == position) {
+      return "";
+    }
+
+    int startLine = position.getStartLine();
+    int endLine = position.getEndLine();
 
     Iterable<String> lines = Splitter.on('\n').split(originalCommentString);
     lines = Iterables.skip(lines, startLine - 1);
@@ -128,11 +134,13 @@ class CommentUtil {
       String line = lineList.get(i);
       if (i == 0) {
         // Offset index by 1 to skip space after the annotation.
-        int index = marker.getDescription().getPositionOnStartLine() + 1;
-        line = line.substring(index);
+        int index = position.getPositionOnStartLine() + 1;
+        if (index < line.length()) {
+          line = line.substring(index);
+        }
 
       } else if (i == lineList.size() - 1) {
-        int index = marker.getDescription().getPositionOnEndLine();
+        int index = position.getPositionOnEndLine();
         line = line.substring(index);
 
       } else {

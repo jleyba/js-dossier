@@ -258,6 +258,23 @@ public class DocPassTest {
     assertArg(args.get(1), "b", "is for bananas.");
   }
 
+  @Test
+  public void documentsClassDefinedInAnonymousFunction() {
+    util.compile(path("foo.js"),
+        "var foo = foo || {};",
+        "(function(foo) {",
+        "  /**",
+        "   * @param {string} a .",
+        "   * @param {string} b .",
+        "   */",
+        "  foo.bar = function(a, b) {};",
+        "})(foo);");
+
+    Descriptor descriptor = Iterables.getOnlyElement(docRegistry.getTypes());
+    assertEquals("foo", descriptor.getFullName());
+    assertNamespace(descriptor);
+  }
+
   private void assertArg(ArgDescriptor arg, String name, String description) {
     assertEquals(name, arg.getName());
     assertEquals(description, arg.getDescription());
