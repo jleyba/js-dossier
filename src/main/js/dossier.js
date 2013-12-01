@@ -180,33 +180,19 @@ dossier.initNavList_ = function(typeInfo) {
       (goog.style.getSize(filesList).height / rootFontSize) + 'rem';
 
   // Initialize heights.
-  typesControl.checked = loadCheckedState('dossier.typesList');
-  filesControl.checked = loadCheckedState('dossier.filesList');
+  typesControl.checked = dossier.loadCheckedState_('dossier.typesList');
+  filesControl.checked = dossier.loadCheckedState_('dossier.filesList');
   goog.style.setHeight(typesList, typesControl.checked ? typesHeight : 0);
   goog.style.setHeight(filesList, filesControl.checked ? filesHeight : 0);
 
   goog.events.listen(typesControl, goog.events.EventType.CHANGE, function() {
     goog.style.setHeight(typesList, typesControl.checked ? typesHeight : 0);
-    storeCheckedState('dossier.typesList', typesControl);
+    dossier.storeCheckedState_('dossier.typesList', typesControl);
   });
   goog.events.listen(filesControl, goog.events.EventType.CHANGE, function() {
     goog.style.setHeight(filesList, filesControl.checked ? filesHeight : 0);
-    storeCheckedState('dossier.filesList', filesControl);
+    dossier.storeCheckedState_('dossier.filesList', filesControl);
   });
-
-  function storeCheckedState(key, el) {
-    if (window.localStorage) {
-      if (el.checked) {
-        window.localStorage.setItem(key, '1');
-      } else {
-        window.localStorage.removeItem(key);
-      }
-    }
-  }
-
-  function loadCheckedState(key) {
-    return window.localStorage ? !!window.localStorage.getItem(key) : false;
-  }
 };
 
 
@@ -475,6 +461,62 @@ dossier.polyFillDetailsElements_ = function() {
 
 
 /**
+ * Stores whether an element is currently checked.
+ * @param {string} key The local storage item key to use.
+ * @param {!Element} el The element whose checked state to store.
+ * @private
+ */
+dossier.storeCheckedState_ = function(key, el) {
+  if (window.localStorage) {
+    if (el.checked) {
+      window.localStorage.setItem(key, '1');
+    } else {
+      window.localStorage.removeItem(key);
+    }
+  }
+};
+
+
+/**
+ * Loads whether a key is set in local storage.
+ * @param {string} key The key to check.
+ * @return {boolean} Whether the key is set.
+ * @private
+ */
+dossier.loadCheckedState_ = function(key) {
+  return window.localStorage ? !!window.localStorage.getItem(key) : false;
+};
+
+
+/**
+ * @enum {string}
+ */
+dossier.Visibility = {
+  PUBLIC: 'public',
+  PROTECTED: 'protected',
+  PRIVATE: 'private'
+};
+
+
+/**
+ * @private {string}
+ * @const
+ */
+dossier.VISIBILITY_STORAGE_NAMESPACE_ = 'dossier.visibility';
+
+
+/**
+ * Computes the key used for a visibility key in local storage.
+ * @param {dossier.Visibility} visibility .
+ * @return {string} .
+ * @private
+ */
+dossier.getVisibilityKey_ = function(visibility) {
+  return dossier.VISIBILITY_STORAGE_NAMESPACE_ + '.' + visibility;
+};
+
+
+/**
  * @private
  */
 dossier.initVisibilityControls_ = function() {
@@ -483,29 +525,54 @@ dossier.initVisibilityControls_ = function() {
   var main = document.getElementsByTagName('main')[0];
   var total = {public: 0, protected: 0, private: 0};
 
-  initControl('show-public', 'public');
-  initControl('show-protected', 'protected');
-  initControl('show-private', 'private');
+  initControlStates();
+  initControl('show-public', dossier.Visibility.PUBLIC);
+  initControl('show-protected', dossier.Visibility.PROTECTED);
+  initControl('show-private', dossier.Visibility.PRIVATE);
+
   insertPlaceholders(document.getElementById('typedefs'));
   insertPlaceholders(document.getElementById('instance-methods'));
   insertPlaceholders(document.getElementById('instance-properties'));
   insertPlaceholders(document.getElementById('static-functions'));
   insertPlaceholders(document.getElementById('static-properties'));
   insertPlaceholders(document.getElementById('compiler-constants'));
+
   goog.style.setElementShown(
       document.getElementById('visibility-controls'),
       total.public || total.protected || total.private);
 
-  function initControl(id, className) {
+  function initControlStates() {
+    var ls = window.localStorage;
+    if (ls && !ls.getItem(dossier.VISIBILITY_STORAGE_NAMESPACE_)) {
+      ls.setItem(dossier.VISIBILITY_STORAGE_NAMESPACE_, '1');
+      ls.setItem(dossier.getVisibilityKey_(dossier.Visibility.PUBLIC), '1');
+      ls.removeItem(dossier.getVisibilityKey_(dossier.Visibility.PROTECTED));
+      ls.removeItem(dossier.getVisibilityKey_(dossier.Visibility.PRIVATE));
+    }
+  }
+
+  /**
+   * @param {string} id Element id.
+   * @param {dossier.Visibility} visibility The visibility the element controls.
+   */
+  function initControl(id, visibility) {
     var control = document.getElementById(id);
     if (control) {
-      onChange(control, className);
+      var key = dossier.getVisibilityKey_(visibility);
+      control.checked = dossier.loadCheckedState_(key);
+      onChange(/** @type {!Element} */(control), visibility);
       goog.events.listen(control, goog.events.EventType.CHANGE, function() {
-        onChange(control, className);
+        dossier.storeCheckedState_(key, /** @type {!Element} */ (control));
+        onChange(/** @type {!Element} */(control), visibility);
       });
     }
   }
 
+  /**
+   * @param {!Element} control The element.
+   * @param {dossier.Visibility} className The visibility class name to add or
+   *     remove based on whether the control element is checked.
+   */
   function onChange(control, className) {
     if (control.checked) {
       goog.dom.classlist.add(main, className);
