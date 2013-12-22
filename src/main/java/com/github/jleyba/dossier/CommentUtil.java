@@ -15,7 +15,6 @@
 package com.github.jleyba.dossier;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.github.jleyba.dossier.proto.Dossier;
 import com.google.common.base.Function;
@@ -50,23 +49,12 @@ class CommentUtil {
    * Extracts summary sentence from the provided comment text. This is the substring up to the
    * first period (.) followed by a blank, tab, or newline.
    */
-  static String getSummary(String text) {
+  static Dossier.Comment getSummary(String text, Linker linker) {
     Matcher matcher = SUMMARY_REGEX.matcher(text);
     if (matcher.find()) {
-      return matcher.group(1);
+      return parseComment(matcher.group(1), linker);
     }
-    return text;
-  }
-
-  /**
-   * Extracts hte summary sentence from the block comment of the given {@link JSDocInfo} object.
-   * @see #getSummary(String)
-   */
-  static String getSummary(@Nullable JSDocInfo info) {
-    if (info == null) {
-      return "";
-    }
-    return getSummary(extractCommentString(info.getOriginalCommentString()));
+    return parseComment(text, linker);
   }
 
   /**
@@ -87,10 +75,6 @@ class CommentUtil {
       }
     }
     return "";
-  }
-
-  private static boolean isAlpha(char c) {
-    return ('A' <= c && c <= 'Z') || ('a' <= c && c <= 'z');
   }
 
   static String extractCommentString(String originalCommentString,
@@ -135,51 +119,6 @@ class CommentUtil {
     }
 
     return Joiner.on('\n').join(lineList);
-  }
-
-  private static String extractCommentString(@Nullable String originalCommentString) {
-    if (Strings.isNullOrEmpty(originalCommentString)) {
-      return "";
-    }
-
-    // The Closure compiler trims whitespace from each line of the block comment string, which
-    // ruins formatting on <pre> blocks, so we have to do a quick and dirty re-parse.
-
-    // Trim the opening \** and closing \*
-    String comment = checkNotNull(originalCommentString,
-        "Should never happen; used to silence IDE checks");
-    int index = comment.lastIndexOf("*/");
-    if (index != -1) {
-      comment = comment.substring(0, index);
-    }
-    index = comment.indexOf("/**");
-    if (index != -1) {
-      comment = comment.substring(index + 3);
-    }
-
-    StringBuilder builder = new StringBuilder();
-    for (String line : Splitter.on('\n').split(comment)) {
-      line = leftTrimCommentLine(line);
-
-      // Check for an annotation (@foo) by scanning ahead for the first non-whitespace
-      // character on the line. This indicates we have reached the end of the block comment.
-      boolean annotation = false;
-      for (int i = 0; i < line.length() && !annotation; ++i) {
-        char c = line.charAt(i);
-        if ('@' == c && (i + 1 < line.length())) {
-          c = line.charAt(i + 1);
-          annotation = isAlpha(c);
-        } else if (!Character.isWhitespace(c)) {
-          break;
-        }
-      }
-
-      if (annotation) {
-        break;
-      }
-      builder.append(line).append("\n");
-    }
-    return builder.toString();
   }
 
   private static String leftTrimCommentLine(String line) {

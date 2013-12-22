@@ -45,17 +45,17 @@ message Comment {
 
     // Whether to render this token as a literal, escaping all
     // HTML content.
-    optional bool is_literal = 2;
+    optional bool is_literal = 2 [default = false];
 
     // Whether this token should be rendered using code formatting;
     // This option implies |is_literal| is true.
-    optional bool is_code = 3;
+    optional bool is_code = 3 [default = false];
 
     // If set, this token will be rendered as a hyperlink.
     optional string href = 4;
 
     // Whether this token represents a linked type that could not be resolved.
-    optional bool unresolved_link = 5;
+    optional bool unresolved_link = 5 [default = false];
   }
 
   // The tokens that comprise this comment.
@@ -113,7 +113,7 @@ message Function {
 
   required BaseProperty base = 1;
   repeated string template_name = 2;
-  optional bool is_constructor = 3;
+  optional bool is_constructor = 3 [default = false];
   repeated Detail parameter = 4;
   optional Detail return = 5;
   repeated Detail thrown = 6;
@@ -153,9 +153,9 @@ message JsType {
   // Aggregates the types defined within this |JsType|.
   message NestedTypes {
     message TypeSummary {
-      required string name = 1;  // The type name.
-      required string href = 2;  // The hyperlink for the actual type.
-      required string summary = 3;  // The summary sentence for this type.
+      required string name = 1;      // The type name.
+      required string href = 2;      // The hyperlink for the actual type.
+      required Comment summary = 3;  // The summary sentence for this type.
     }
 
     repeated TypeSummary interfaces = 1;
@@ -199,8 +199,8 @@ message JsType {
 
   // Hacks needed for the soy templates to know whether the prototype chain
   // has any methods or properties to render.
-  optional bool has_instance_methods = 16;
-  optional bool has_instance_properties = 17;
+  optional bool has_instance_methods = 16 [default = false];
+  optional bool has_instance_properties = 17 [default = false];
 
   // List of inherited types for a class. This should be empty if |is_class|
   // is false. Classes should be listed in order, with the root type first.
@@ -220,7 +220,7 @@ message IndexFileRenderSpec {
   // The resources to include.
   required Resources resources = 1;
   // Whether to generate a link to the license page.
-  optional bool has_license = 2;
+  optional bool has_license = 2 [default = false];
   // The readme to display on the main page, if any.
   optional Comment readme = 3;
 }
@@ -242,7 +242,7 @@ message SourceFileRenderSpec {
   // The file to render.
   required SourceFile file = 2;
   // Whether to link to the license file.
-  optional bool has_license = 3;
+  optional bool has_license = 3 [default = false];
 }
 
 
@@ -253,5 +253,5 @@ message JsTypeRenderSpec {
   // The resources to include.
   required Resources resources = 2;
   // Whether to link to the license file.
-  optional bool has_license = 3;
+  optional bool has_license = 3 [default = false];
 }

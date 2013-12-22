@@ -353,8 +353,11 @@
           {foreach $type in $types}
             <dt><a href="{$type.href}">{$type.name}</a>
             <dd>
-              {if $type.summary}
-                {$type.summary}
+              {if $type.summary and length($type.summary.token)}
+                {call .comment}
+                  {param comment: $type.summary /}
+                  {param omitLeadingTag: true /}
+                {/call}
               {else}
                 No Description.
               {/if}

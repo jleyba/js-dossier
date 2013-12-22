@@ -27,33 +27,52 @@ public class CommentUtilTest {
   }
 
   @Test
-  public void getSummaryWhenEntireCommentIsSummary() {
-    String comment = "hello, world.";
-    assertEquals(comment, getSummary(comment));
+  public void getSummaryWhenEntireCommentIsSummary_sullSentence() {
+    String original = "hello, world.";
+    Comment comment = getSummary(original, mockLinker);
+    assertEquals(1, comment.getTokenCount());
+    assertPlainText(comment.getToken(0), original);
 
-    comment = "nothing left";
-    assertEquals(comment, getSummary(comment));
+    original = "nothing left";
+    comment = getSummary(original, mockLinker);
+    assertEquals(1, comment.getTokenCount());
+    assertPlainText(comment.getToken(0), original);
+  }
+
+  @Test
+  public void getSummaryWhenEntireCommentIsSummary_sentenceFragment() {
+    String original = "nothing left";
+    Comment comment = getSummary(original, mockLinker);
+    assertEquals(1, comment.getTokenCount());
+    assertPlainText(comment.getToken(0), original);
   }
 
   @Test
   public void getSummaryFromMultipleSentences() {
-    assertEquals("Hello, world.", getSummary("Hello, world. Goodbye, world."));
+    Comment comment = getSummary("Hello, world. Goodbye, world.", mockLinker);
+    assertEquals(1, comment.getTokenCount());
+    assertPlainText(comment.getToken(0), "Hello, world.");
   }
 
   @Test
   public void getSummaryFromMultipleLines() {
-    assertEquals("Hello, world.", getSummary("Hello, world.\nGoodbye, world."));
+    Comment comment = getSummary("Hello, world.\nGoodbye, world.", mockLinker);
+    assertEquals(1, comment.getTokenCount());
+    assertPlainText(comment.getToken(0), "Hello, world.");
   }
 
   @Test
   public void getSummaryFromMultipleTabs() {
-    assertEquals("Hello, world.", getSummary("Hello, world.\tGoodbye, world."));
+    Comment comment = getSummary("Hello, world.\tGoodbye, world.", mockLinker);
+    assertEquals(1, comment.getTokenCount());
+    assertPlainText(comment.getToken(0), "Hello, world.");
   }
 
   @Test
   public void getSummaryWithInlineTag() {
-    assertEquals("Hello, {@code world.",
-        getSummary("Hello, {@code world. }Goodbye, world."));
+    Comment comment = getSummary("Hello, {@code world. }Goodbye, world.", mockLinker);
+    assertEquals(1, comment.getTokenCount());
+    assertPlainText(comment.getToken(0), "Hello, {@code world.");
   }
 
   @Test

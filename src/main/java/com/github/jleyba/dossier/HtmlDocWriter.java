@@ -15,6 +15,7 @@ package com.github.jleyba.dossier;
 
 import static com.github.jleyba.dossier.CommentUtil.formatTypeExpression;
 import static com.github.jleyba.dossier.CommentUtil.getBlockDescription;
+import static com.github.jleyba.dossier.CommentUtil.getSummary;
 import static com.github.jleyba.dossier.CommentUtil.parseComment;
 import static com.github.jleyba.dossier.proto.Dossier.BaseProperty;
 import static com.github.jleyba.dossier.proto.Dossier.Deprecation;
@@ -404,7 +405,7 @@ class HtmlDocWriter implements DocWriter {
       }
 
       JsDoc jsdoc = checkNotNull(child.getJsDoc());
-      String summary = CommentUtil.getSummary(jsdoc.getBlockComment());
+      Dossier.Comment summary = getSummary(jsdoc.getBlockComment(), linker);
 
       JsType.NestedTypes.TypeSummary.Builder typeSummary =
           JsType.NestedTypes.TypeSummary.newBuilder()
