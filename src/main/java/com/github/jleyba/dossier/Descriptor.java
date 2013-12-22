@@ -47,7 +47,7 @@ class Descriptor {
 
   private final String name;
   @Nullable private final JSType type;
-  @Nullable private final JSDocInfo info;
+  @Nullable private final JsDoc info;
   private final Optional<Descriptor> parent;
 
   private List<ArgDescriptor> args;
@@ -57,7 +57,7 @@ class Descriptor {
   Descriptor(String name, @Nullable JSType type, @Nullable JSDocInfo info) {
     this.name = name;
     this.type = type;
-    this.info = info;
+    this.info = info == null ? null : new JsDoc(info); // TODO: fix me.
     this.parent = Optional.absent();
   }
 
@@ -75,7 +75,7 @@ class Descriptor {
     checkArgument(null != parent && (parent.isConstructor() || parent.isInterface()));
     this.name = name;
     this.type = type;
-    this.info = info;
+    this.info = info == null ? null : new JsDoc(info); // TODO: fix me.
     this.parent = Optional.of(parent);
   }
 
@@ -135,13 +135,13 @@ class Descriptor {
     return type;
   }
 
-  @Nullable JSDocInfo getInfo() {
+  @Nullable JsDoc getJsDoc() {
     return info;
   }
 
   @Nullable String getSource() {
     if (info != null) {
-      return info.getSourceName();
+      return info.getSource();
     }
     return null;
   }
@@ -152,10 +152,7 @@ class Descriptor {
    */
   int getLineNum() {
     if (info != null) {
-      Node node = info.getAssociatedNode();
-      if (node != null) {
-        return Math.max(node.getLineno(), 0);
-      }
+      return info.getLineNum();
     }
     return 0;
   }
@@ -200,7 +197,7 @@ class Descriptor {
 
   boolean isEnum() {
     return (type != null && type.isEnumType())
-        || (info != null && info.getEnumParameterType() != null);
+        || (info != null && info.isEnum());
   }
 
   boolean isEmptyNamespace() {
@@ -219,11 +216,10 @@ class Descriptor {
   }
 
   JSDocInfo.Visibility getVisibility() {
-    // TODO(jleyba): Properly handle Visibility.INHERITED
-    if (info == null || info.getVisibility() == JSDocInfo.Visibility.INHERITED) {
-      return JSDocInfo.Visibility.PUBLIC;
+    if (info != null) {
+      return info.getVisibility();
     }
-    return info.getVisibility();
+    return JSDocInfo.Visibility.PUBLIC;
   }
 
   @Nullable
@@ -327,10 +323,7 @@ class Descriptor {
     Node source = ((FunctionType) obj).getSource();
     if (source == null) {
       // If we don't have access to the function node, assume the JSDocInfo has the correct info.
-      args = new ArrayList<>();
-      if (info != null) {
-        args = getArgs(info);
-      }
+      args = info != null ? info.getParameters() : ImmutableList.<ArgDescriptor>of();
     } else {
       args = getArgs(source, info);
     }
@@ -338,20 +331,7 @@ class Descriptor {
     return args;
   }
 
-  private static List<ArgDescriptor> getArgs(JSDocInfo info) {
-    List<ArgDescriptor> args = new LinkedList<>();
-    for (JSDocInfo.Marker marker : info.getMarkers()) {
-      if ("param".equals(marker.getAnnotation().getItem())) {
-        String name = marker.getNameNode().getItem().getString();
-        String description = CommentUtil.extractCommentString(
-            info.getOriginalCommentString(), marker.getDescription());
-        args.add(new ArgDescriptor(name, info.getParameterType(name), description));
-      }
-    }
-    return args;
-  }
-
-  private static List<ArgDescriptor> getArgs(Node source, @Nullable final JSDocInfo info) {
+  private static List<ArgDescriptor> getArgs(Node source, @Nullable final JsDoc info) {
     // JSDocInfo does not guarantee parameter names will be returned in the order declared,
     // so we have to parse the function declaration.
     Node paramList = source  // function node
@@ -365,24 +345,17 @@ class Descriptor {
     return Lists.transform(names, new Function<String, ArgDescriptor>() {
       @Override
       public ArgDescriptor apply(String name) {
-        if (info == null) {
-          return new ArgDescriptor(name, null, "");
+        if (info != null) {
+          try {
+            return info.getParameter(name);
+          } catch (IllegalArgumentException ignored) {
+            // Do nothing; undocumented parameter.
+          }
         }
-        return new ArgDescriptor(
-            name, info.getParameterType(name), getDescriptionForParameter(info, name));
+        // Undocumented parameter.
+        return new ArgDescriptor(name, null, "");
       }
     });
-  }
-
-  private static String getDescriptionForParameter(JSDocInfo info, String name) {
-    for (JSDocInfo.Marker marker : info.getMarkers()) {
-      if ("param".equals(marker.getAnnotation().getItem())
-          && name.equals(marker.getNameNode().getItem().getString())) {
-        return CommentUtil.extractCommentString(
-            info.getOriginalCommentString(), marker.getDescription());
-      }
-    }
-    return "";
   }
 
   /**
@@ -482,16 +455,15 @@ class Descriptor {
         || ctor.getPrototype().hasOwnProperty(name);
   }
 
-  private static Set<String> getExtendedInterfaces(JSDocInfo info, JSTypeRegistry registry) {
+  private static Set<String> getExtendedInterfaces(JsDoc info, JSTypeRegistry registry) {
     Set<String> interfaces = new HashSet<>();
-    if (info == null) {
-      return interfaces;
-    }
-
     for (JSTypeExpression expression : info.getExtendedInterfaces()) {
       JSType type = expression.evaluate(null, registry);
       if (interfaces.add(type.toString())) {
-        interfaces.addAll(getExtendedInterfaces(type.getJSDocInfo(), registry));
+        JSDocInfo docInfo = type.getJSDocInfo();
+        if (docInfo != null) {
+          interfaces.addAll(getExtendedInterfaces(new JsDoc(docInfo), registry));
+        }
       }
     }
 

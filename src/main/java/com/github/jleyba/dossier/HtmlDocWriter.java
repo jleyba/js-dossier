@@ -13,6 +13,9 @@
 // limitations under the License.
 package com.github.jleyba.dossier;
 
+import static com.github.jleyba.dossier.CommentUtil.formatTypeExpression;
+import static com.github.jleyba.dossier.CommentUtil.getBlockDescription;
+import static com.github.jleyba.dossier.CommentUtil.parseComment;
 import static com.github.jleyba.dossier.proto.Dossier.BaseProperty;
 import static com.github.jleyba.dossier.proto.Dossier.Deprecation;
 import static com.github.jleyba.dossier.proto.Dossier.Enumeration;
@@ -114,7 +117,7 @@ class HtmlDocWriter implements DocWriter {
       String text = new String(Files.readAllBytes(config.getReadme().get()), Charsets.UTF_8);
       String readmeHtml = Processor.process(text);
       // One more pass to process any inline taglets (e.g. {@code} or {@link}).
-      readme = CommentUtil.parseComment(readmeHtml, linker);
+      readme = parseComment(readmeHtml, linker);
     }
 
     Path index = config.getOutput().resolve("index.html");
@@ -159,7 +162,7 @@ class HtmlDocWriter implements DocWriter {
         .setName(descriptor.getFullName())
         .setNested(getNestedTypes(descriptor))
         .setSource(Strings.nullToEmpty(source))
-        .setDescription(CommentUtil.getBlockDescription(linker, descriptor.getInfo()))
+        .setDescription(getBlockDescription(linker, descriptor.getJsDoc()))
         .addAllTypeDef(getTypeDefs(descriptor))
         .addAllExtendedType(getInheritedTypes(descriptor, registry))
         .addAllImplementedType(getImplementedTypes(descriptor, registry))
@@ -319,12 +322,11 @@ class HtmlDocWriter implements DocWriter {
     if (!descriptor.isEnum()) {
       return;
     }
-    JSDocInfo info = checkNotNull(descriptor.getInfo(),
-        "Should never happen; check for used to statisfy static analysis tools: %s",
-        descriptor.getFullName());
+    JsDoc jsdoc = checkNotNull(descriptor.getJsDoc(),
+        "No jsdoc for enum %s; this should never happen!", descriptor.getFullName());
 
     Enumeration.Builder enumBuilder = Dossier.Enumeration.newBuilder()
-        .setTypeHtml(CommentUtil.formatTypeExpression(info.getEnumParameterType(), linker))
+        .setTypeHtml(formatTypeExpression(jsdoc.getType(), linker))
         .setVisibility(Dossier.Visibility.valueOf(descriptor.getVisibility().name()));
 
     ObjectType object = descriptor.toObjectType();
@@ -335,13 +337,17 @@ class HtmlDocWriter implements DocWriter {
         JSDocInfo valueInfo = node == null ? null : node.getJSDocInfo();
 
         Enumeration.Value.Builder valueBuilder = Enumeration.Value.newBuilder()
-            .setName(name)
-            .setDescription(CommentUtil.getBlockDescription(linker, valueInfo));
+            .setName(name);
 
-        if (valueInfo != null && valueInfo.isDeprecated()) {
-          valueBuilder.setDeprecation(Deprecation.newBuilder()
-              .setNotice(CommentUtil.parseComment(valueInfo.getDeprecationReason(), linker))
-              .build());
+        if (valueInfo != null) {
+          JsDoc valueJsDoc = new JsDoc(valueInfo);
+          valueBuilder.setDescription(parseComment(valueJsDoc.getBlockComment(), linker));
+
+          if (valueJsDoc.isDeprecated()) {
+            valueBuilder.setDeprecation(Deprecation.newBuilder()
+                .setNotice(parseComment(valueJsDoc.getDeprecationReason(), linker))
+                .build());
+          }
         }
 
         enumBuilder.addValue(valueBuilder);
@@ -357,12 +363,12 @@ class HtmlDocWriter implements DocWriter {
         .transform(new Function<Descriptor, JsType.TypeDef>() {
           @Override
           public JsType.TypeDef apply(Descriptor typedef) {
-            JSDocInfo info = checkNotNull(typedef.getInfo());
+            JsDoc jsdoc = checkNotNull(typedef.getJsDoc());
             JsType.TypeDef.Builder builder = JsType.TypeDef.newBuilder()
                 .setName(typedef.getFullName())
-                .setTypeHtml(CommentUtil.formatTypeExpression(info.getTypedefType(), linker))
+                .setTypeHtml(formatTypeExpression(jsdoc.getType(), linker))
                 .setHref(linker.getSourcePath(typedef))
-                .setDescription(CommentUtil.getBlockDescription(linker, info))
+                .setDescription(getBlockDescription(linker, jsdoc))
                 .setVisibility(Dossier.Visibility.valueOf(typedef.getVisibility().name()));
 
             if (typedef.isDeprecated()) {
@@ -382,7 +388,7 @@ class HtmlDocWriter implements DocWriter {
 
   private Deprecation getDeprecation(Descriptor descriptor) {
     return Deprecation.newBuilder()
-        .setNotice(CommentUtil.parseComment(descriptor.getDeprecationReason(), linker))
+        .setNotice(parseComment(descriptor.getDeprecationReason(), linker))
         .build();
   }
 
@@ -397,8 +403,8 @@ class HtmlDocWriter implements DocWriter {
         continue;
       }
 
-      JSDocInfo info = checkNotNull(child.getInfo());
-      String summary = CommentUtil.getSummary(info);
+      JsDoc jsdoc = checkNotNull(child.getJsDoc());
+      String summary = CommentUtil.getSummary(jsdoc.getBlockComment());
 
       JsType.NestedTypes.TypeSummary.Builder typeSummary =
           JsType.NestedTypes.TypeSummary.newBuilder()
@@ -486,7 +492,7 @@ class HtmlDocWriter implements DocWriter {
     BaseProperty.Builder builder = BaseProperty.newBuilder()
         .setName(name)
         .setSource(Strings.nullToEmpty(linker.getSourcePath(property)))
-        .setDescription(CommentUtil.getBlockDescription(linker, property.getInfo()))
+        .setDescription(getBlockDescription(linker, property.getJsDoc()))
         .setVisibility(Dossier.Visibility.valueOf(property.getVisibility().name()));
 
     if (property.isDeprecated()) {
@@ -500,9 +506,9 @@ class HtmlDocWriter implements DocWriter {
     Property.Builder builder = Property.newBuilder()
         .setBase(getBasePropertyDetails(property));
 
-    JSDocInfo info = property.getInfo();
-    if (info != null && info.getType() != null) {
-      builder.setTypeHtml(CommentUtil.formatTypeExpression(info.getType(), linker));
+    JsDoc jsDoc = property.getJsDoc();
+    if (jsDoc != null && jsDoc.getType() != null) {
+      builder.setTypeHtml(formatTypeExpression(jsDoc.getType(), linker));
     } else if (property.getType() != null) {
       JSType propertyType = property.getType();
 
@@ -552,19 +558,19 @@ class HtmlDocWriter implements DocWriter {
     Dossier.Function.Builder builder = Dossier.Function.newBuilder()
         .setBase(getBasePropertyDetails(function));
 
-    JSDocInfo info = function.getInfo();
+    JsDoc jsDoc = function.getJsDoc();
     if (!function.isConstructor() && !function.isInterface()) {
       Dossier.Function.Detail.Builder detail = Dossier.Function.Detail.newBuilder();
       detail.setTypeHtml(getReturnType(function));
-      if (info != null) {
-        detail.setDescription(CommentUtil.parseComment(info.getReturnDescription(), linker));
+      if (jsDoc != null) {
+        detail.setDescription(parseComment(jsDoc.getReturnDescription(), linker));
       }
       builder.setReturn(detail);
     }
 
-    if (info != null) {
-      builder.addAllTemplateName(info.getTemplateTypeNames())
-          .addAllThrown(buildThrowsData(info));
+    if (jsDoc != null) {
+      builder.addAllTemplateName(jsDoc.getTemplateTypeNames())
+          .addAllThrown(buildThrowsData(jsDoc));
     }
 
     builder.addAllParameter(transform(function.getArgs(),
@@ -574,8 +580,8 @@ class HtmlDocWriter implements DocWriter {
         return Dossier.Function.Detail.newBuilder()
             .setName(arg.getName())
             .setTypeHtml(arg.getType() == null ? "" :
-                CommentUtil.formatTypeExpression(arg.getType(), linker))
-            .setDescription(CommentUtil.parseComment(arg.getDescription(), linker))
+                formatTypeExpression(arg.getType(), linker))
+            .setDescription(parseComment(arg.getDescription(), linker))
             .build();
       }
     }));
@@ -583,42 +589,30 @@ class HtmlDocWriter implements DocWriter {
     return builder.build();
   }
 
-  private List<Dossier.Function.Detail> buildThrowsData(JSDocInfo info) {
-    List<Dossier.Function.Detail> throwsData = new LinkedList<>();
-    // Manually scan the function markers so we can associated thrown types with the
-    // document description for why that type would be thrown.
-    for (JSDocInfo.Marker marker : info.getMarkers()) {
-      if (!"throws".equals(marker.getAnnotation().getItem())) {
-        continue;
-      }
-
-      @Nullable String thrownType = null;
-      @Nullable String thrownDescription = null;
-      if (marker.getType() != null) {
-        JSTypeExpression expr = new JSTypeExpression(
-            marker.getType().getItem(), info.getSourceName());
-        thrownType = CommentUtil.formatTypeExpression(expr, linker);
-      }
-
-      if (marker.getDescription() != null) {
-        thrownDescription = marker.getDescription().getItem();
-      }
-
-      throwsData.add(Dossier.Function.Detail.newBuilder()
-          .setTypeHtml(Strings.nullToEmpty(thrownType))
-          .setDescription(CommentUtil.parseComment(thrownDescription, linker))
-          .build());
-    }
-    return throwsData;
+  private Iterable<Dossier.Function.Detail> buildThrowsData(JsDoc jsDoc) {
+    return transform(jsDoc.getThrowsClauses(),
+        new Function<JsDoc.ThrowsClause, Dossier.Function.Detail>() {
+          @Override
+          public Dossier.Function.Detail apply(JsDoc.ThrowsClause input) {
+            String thrownType = "";
+            if (input.getType().isPresent()) {
+              thrownType = formatTypeExpression(input.getType().get(), linker);
+            }
+            return Dossier.Function.Detail.newBuilder()
+                .setTypeHtml(thrownType)
+                .setDescription(parseComment(input.getDescription(), linker))
+                .build();
+          }
+        });
   }
 
   @Nullable
   private String getReturnType(Descriptor function) {
-    JSDocInfo info = function.getInfo();
-    if (info != null) {
-      JSTypeExpression expr = info.getReturnType();
+    JsDoc jsdoc = function.getJsDoc();
+    if (jsdoc != null) {
+      JSTypeExpression expr = jsdoc.getReturnType();
       if (expr != null) {
-        return CommentUtil.formatTypeExpression(expr, linker);
+        return formatTypeExpression(expr, linker);
       }
     }
     JSType type = ((FunctionType) function.toObjectType()).getReturnType();
@@ -629,7 +623,7 @@ class HtmlDocWriter implements DocWriter {
     return new Predicate<Descriptor>() {
       @Override
       public boolean apply(Descriptor input) {
-        return input.getInfo() != null && input.getInfo().getTypedefType() != null;
+        return input.getJsDoc() != null && input.getJsDoc().isTypedef();
       }
     };
   }

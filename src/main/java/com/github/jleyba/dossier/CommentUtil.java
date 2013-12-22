@@ -15,6 +15,7 @@
 package com.github.jleyba.dossier;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.github.jleyba.dossier.proto.Dossier;
 import com.google.common.base.Function;
@@ -69,39 +70,13 @@ class CommentUtil {
   }
 
   /**
-   * Extracts the block comment string from the given {@link JSDocInfo} object.
+   * Extracts the block comment string from the given {@link JsDoc} object.
    */
-  static Dossier.Comment getBlockDescription(Linker linker, @Nullable JSDocInfo info) {
-    if (info == null) {
+  static Dossier.Comment getBlockDescription(Linker linker, @Nullable JsDoc jsdoc) {
+    if (jsdoc == null) {
       return Dossier.Comment.getDefaultInstance();
     }
-
-    String comment = info.getBlockDescription();
-    if (!Strings.isNullOrEmpty(comment)) {
-      // The Closure compiler trims each line in a block description, which can throw off
-      // the formatting in the comment (e.g. <pre> tags). To avoid this, we re-parse the
-      // comment.
-      comment = extractCommentString(info.getOriginalCommentString());
-    } else if (info.isDefine()) {
-      // The comment may be of the form:
-      // \**
-      //  * @define {type} Comment text.
-      //  *\
-      for (JSDocInfo.Marker marker : info.getMarkers()) {
-        if ("define".equals(marker.getAnnotation().getItem())) {
-          if (marker.getDescription() != null) {
-            comment = marker.getDescription().getItem();
-          }
-          break;  // Only one @define annotation is allowed.
-        }
-      }
-    }
-
-    if (Strings.isNullOrEmpty(comment)) {
-      return Dossier.Comment.getDefaultInstance();
-    }
-
-    return parseComment(comment, linker);
+    return parseComment(jsdoc.getBlockComment(), linker);
   }
 
   static String getMarkerDescription(JSDocInfo info, String annotation) {
@@ -112,6 +87,10 @@ class CommentUtil {
       }
     }
     return "";
+  }
+
+  private static boolean isAlpha(char c) {
+    return ('A' <= c && c <= 'Z') || ('a' <= c && c <= 'z');
   }
 
   static String extractCommentString(String originalCommentString,
@@ -167,7 +146,8 @@ class CommentUtil {
     // ruins formatting on <pre> blocks, so we have to do a quick and dirty re-parse.
 
     // Trim the opening \** and closing \*
-    String comment = originalCommentString;
+    String comment = checkNotNull(originalCommentString,
+        "Should never happen; used to silence IDE checks");
     int index = comment.lastIndexOf("*/");
     if (index != -1) {
       comment = comment.substring(0, index);
@@ -188,7 +168,7 @@ class CommentUtil {
         char c = line.charAt(i);
         if ('@' == c && (i + 1 < line.length())) {
           c = line.charAt(i + 1);
-          annotation = ('A' <= c && c <= 'Z') || ('a' <= c && c <= 'z');
+          annotation = isAlpha(c);
         } else if (!Character.isWhitespace(c)) {
           break;
         }

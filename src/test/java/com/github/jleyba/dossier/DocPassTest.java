@@ -213,15 +213,17 @@ public class DocPassTest {
         " * @param {string} a is for",
         " *     apples.",
         " * @param {string} b is for bananas.",
+        " * @param {(string|Object)=} opt_c is for an optional",
+        " *     parameter.",
         " * @constructor */",
-        "function Foo(a, b) {}");
+        "function Foo(a, b, opt_c) {}");
     Descriptor descriptor = Iterables.getOnlyElement(docRegistry.getTypes());
     assertEquals("Foo", descriptor.getFullName());
     assertConstructor(descriptor);
 
     List<ArgDescriptor> args = descriptor.getArgs();
-    assertEquals(2, args.size());
-    assertArg(args.get(0), "a", "is for\n    apples.");
+    assertEquals(3, args.size());
+    assertArg(args.get(0), "a", "is for\n     apples.");
     assertArg(args.get(1), "b", "is for bananas.");
   }
 

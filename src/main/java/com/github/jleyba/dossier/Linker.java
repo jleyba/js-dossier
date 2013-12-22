@@ -13,13 +13,10 @@
 // limitations under the License.
 package com.github.jleyba.dossier;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.base.Joiner;
-import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableMap;
-import com.google.javascript.rhino.JSDocInfo;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -232,15 +229,13 @@ class Linker {
 
     Descriptor descriptor = docRegistry.getExtern(name);
     if (descriptor != null) {
-      JSDocInfo info = descriptor.getInfo();
-      if (info != null) {
-        for (JSDocInfo.Marker marker : info.getMarkers()) {
-          if ("see".equals(marker.getAnnotation().getItem())) {
-            try {
-              return new URI(marker.getDescription().getItem()).toString();
-            } catch (URISyntaxException e) {
-              continue;
-            }
+      JsDoc jsDoc = descriptor.getJsDoc();
+      if (jsDoc != null) {
+        for (String see : jsDoc.getSeeClauses()) {
+          try {
+            return new URI(see).toString();
+          } catch (URISyntaxException e) {
+            continue;
           }
         }
       }
