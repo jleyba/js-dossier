@@ -16,7 +16,7 @@ import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.List;
 
-class CompilerUtil {
+public class CompilerUtil {
 
   private static final List<SourceFile> NO_EXTERNS = ImmutableList.of();
 
@@ -30,21 +30,29 @@ class CompilerUtil {
         config).createOptions());
   }
 
-  CompilerUtil(Compiler compiler, CompilerOptions options) {
+  public CompilerUtil(Compiler compiler, CompilerOptions options) {
     this.compiler = compiler;
     this.options = options;
+  }
+
+  public String toSource() {
+    return compiler.toSource();
   }
 
   void printTree(Appendable appendable) throws IOException {
     compiler.getRoot().appendStringTree(appendable);
   }
 
-  void compile(Path path, String... lines) {
+  public void compile(Path path, String... lines) {
     compile(createSourceFile(path, lines));
   }
 
-  void compile(SourceFile... sourceFiles) {
-    Result result = compiler.compile(NO_EXTERNS, Lists.newArrayList(sourceFiles), options);
+  public void compile(SourceFile... sourceFiles) {
+    compile(NO_EXTERNS, Lists.newArrayList(sourceFiles));
+  }
+
+  public void compile(List<SourceFile> externs, List<SourceFile> inputs) {
+    Result result = compiler.compile(externs, inputs, options);
     assertCompiled(result);
   }
 
@@ -71,7 +79,7 @@ class CompilerUtil {
     }
   }
 
-  static SourceFile createSourceFile(Path path, String... lines) {
+  public static SourceFile createSourceFile(Path path, String... lines) {
     return SourceFile.fromCode(path.toString(), Joiner.on("\n").join(lines));
   }
 }
