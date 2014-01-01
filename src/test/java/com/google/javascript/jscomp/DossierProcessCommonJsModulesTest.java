@@ -30,22 +30,56 @@ public class DossierProcessCommonJsModulesTest {
   }
 
   @Test
-  public void wrapsCommonJsModules() {
+  public void setsUpCommonJsModulePrimitives() {
     CompilerUtil compiler = createCompiler(path("foo/bar.js"));
 
-    compiler.compile(path("foo/bar.js"), "var x = 123;");
+    compiler.compile(path("foo/bar.js"), "");
     assertEquals(
-        module("dossier$$module__foo$bar", "  var x = 123;"),
+        module("dossier$$module__foo$bar"),
         compiler.toSource().trim());
   }
 
   @Test
-  public void replacesAllGlobalThisReferencesWithinModuleWithExportReferences() {
+  public void renamesModuleGlobalVars() {
     CompilerUtil compiler = createCompiler(path("foo/bar.js"));
 
-    compiler.compile(path("foo/bar.js"), "this.name = 'Bob';");
+    compiler.compile(path("foo/bar.js"), "var x = 123;");
     assertEquals(
-        module("dossier$$module__foo$bar", "  exports.name = \"Bob\";"),
+        module("dossier$$module__foo$bar",
+            "var x$$_dossier$$module__foo$bar = 123;"),
+        compiler.toSource().trim());
+  }
+
+  @Test
+  public void doesNotRenameNonGlobalVars() {
+    CompilerUtil compiler = createCompiler(path("foo/bar.js"));
+
+    compiler.compile(path("foo/bar.js"), "function x() { var x = 123; }");
+    assertEquals(
+        module("dossier$$module__foo$bar",
+            "function x$$_dossier$$module__foo$bar() {\n  var x = 123;\n}\n;"),
+        compiler.toSource().trim());
+  }
+
+  @Test
+  public void renamesModuleGlobalFunctionDeclarations() {
+    CompilerUtil compiler = createCompiler(path("foo/bar.js"));
+
+    compiler.compile(path("foo/bar.js"), "function foo(){}");
+    assertEquals(
+        module("dossier$$module__foo$bar",
+            "function foo$$_dossier$$module__foo$bar() {\n}\n;"),
+        compiler.toSource().trim());
+  }
+
+  @Test
+  public void renamesModuleGlobalFunctionExpressions() {
+    CompilerUtil compiler = createCompiler(path("foo/bar.js"));
+
+    compiler.compile(path("foo/bar.js"), "var foo = function(){}");
+    assertEquals(
+        module("dossier$$module__foo$bar",
+            "var foo$$_dossier$$module__foo$bar = function() {\n};"),
         compiler.toSource().trim());
   }
 
@@ -61,7 +95,7 @@ public class DossierProcessCommonJsModulesTest {
     assertEquals(
         lines(
             module("dossier$$module__foo$root"),
-            module("dossier$$module__foo$leaf", "  dossier$$module__foo$root.exports;")),
+            module("dossier$$module__foo$leaf", "dossier$$module__foo$root.exports;")),
         compiler.toSource().trim());
   }
 
@@ -79,8 +113,8 @@ public class DossierProcessCommonJsModulesTest {
         lines(
             module("dossier$$module__foo$root"),
             module("dossier$$module__foo$leaf", lines(
-                "  var foo = dossier$$module__foo$root.exports;",
-                "  var bar = dossier$$module__foo$root.exports.bar;"))),
+                "var foo$$_dossier$$module__foo$leaf = dossier$$module__foo$root.exports;",
+                "var bar$$_dossier$$module__foo$leaf = dossier$$module__foo$root.exports.bar;"))),
         compiler.toSource().trim());
   }
 
@@ -98,8 +132,8 @@ public class DossierProcessCommonJsModulesTest {
         lines(
             module("dossier$$module__foo$root"),
             module("dossier$$module__foo$leaf",
-                "  var foo = dossier$$module__foo$root.exports, " +
-                    "bar = dossier$$module__foo$root.exports.bar;")),
+                "var foo$$_dossier$$module__foo$leaf = dossier$$module__foo$root.exports, " +
+                    "bar$$_dossier$$module__foo$leaf = dossier$$module__foo$root.exports.bar;")),
         compiler.toSource().trim());
   }
 
@@ -115,7 +149,7 @@ public class DossierProcessCommonJsModulesTest {
         lines(
             module("dossier$$module__foo$bar$two"),
             module("dossier$$module__foo$one",
-                "  dossier$$module__foo$bar$two.exports;")),
+                "dossier$$module__foo$bar$two.exports;")),
         compiler.toSource().trim());
   }
 
@@ -131,7 +165,7 @@ public class DossierProcessCommonJsModulesTest {
         lines(
             module("dossier$$module__foo$one"),
             module("dossier$$module__foo$bar$two",
-                "  dossier$$module__foo$one.exports;")),
+                "dossier$$module__foo$one.exports;")),
         compiler.toSource().trim());
   }
 
@@ -148,7 +182,7 @@ public class DossierProcessCommonJsModulesTest {
         lines(
             module("dossier$$module__foo$baz$one"),
             module("dossier$$module__foo$bar$two",
-                "  dossier$$module__foo$baz$one.exports;")),
+                "dossier$$module__foo$baz$one.exports;")),
         compiler.toSource().trim());
   }
 
@@ -165,8 +199,114 @@ public class DossierProcessCommonJsModulesTest {
         lines(
             module("dossier$$module__$absolute$foo$baz$one"),
             module("dossier$$module__foo$bar$two",
-                "  dossier$$module__$absolute$foo$baz$one.exports;")),
+                "dossier$$module__$absolute$foo$baz$one.exports;")),
         compiler.toSource().trim());
+  }
+
+  @Test
+  public void handlesReferencesToFilenameAndDirnameFreeVariables() {
+    CompilerUtil compiler = createCompiler(path("foo/bar.js"));
+
+    compiler.compile(path("foo/bar.js"),
+        "var x = __filename;",
+        "var y = __dirname;",
+        "var z = module.filename");
+
+    assertEquals(
+        module("dossier$$module__foo$bar", lines(
+            "var x$$_dossier$$module__foo$bar = dossier$$module__foo$bar.__filename;",
+            "var y$$_dossier$$module__foo$bar = dossier$$module__foo$bar.__dirname;",
+            "var z$$_dossier$$module__foo$bar = dossier$$module__foo$bar.filename;")),
+        compiler.toSource().trim());
+  }
+
+  @Test
+  public void maintainsInternalTypeCheckingConsistency() {
+    CompilerUtil compiler = createCompiler(path("foo/bar.js"));
+
+    compiler.compile(path("foo/bar.js"),
+        "/** @constructor */",
+        "var Bar = function() {};",
+        "",
+        "/** @constructor */",
+        "Bar.Baz = function() {};",
+        "",
+        "/** @type {!Bar} */",
+        "var x = new Bar();",
+        "",
+        "/** @type {!Bar.Baz} */",
+        "var y = new Bar.Baz();",
+        "");
+
+    assertEquals(
+        module("dossier$$module__foo$bar", lines(
+            "var Bar$$_dossier$$module__foo$bar = function() {",
+            "};",
+            "Bar$$_dossier$$module__foo$bar.Baz = function() {",
+            "};",
+            "var x$$_dossier$$module__foo$bar = new Bar$$_dossier$$module__foo$bar;",
+            "var y$$_dossier$$module__foo$bar = new Bar$$_dossier$$module__foo$bar.Baz;")),
+        compiler.toSource().trim());
+  }
+
+  @Test
+  public void canReferenceRequiredModuleTypesUsingImportAlias() {
+    CompilerUtil compiler = createCompiler(
+        path("foo/bar.js"), path("foo/baz.js"));
+
+    compiler.compile(
+        createSourceFile(path("foo/bar.js"),
+            "/** @constructor */",
+            "exports.Bar = function(){};"),
+        createSourceFile(path("foo/baz.js"),
+            "var bar = require('./bar');",
+            "var Bar = require('./bar').Bar;",
+            "var x = {y: {}};",
+            "x.Bar = require('./bar').Bar;",
+            "x.y.Bar = require('./bar').Bar;",
+            "",
+            "/** @type {!bar.Bar} */",
+            "var one = new bar.Bar();",
+            "",
+            "/** @type {!Bar} */",
+            "var two = new Bar();",
+            "",
+            "/** @type {!x.Bar} */",
+            "var three = new x.Bar();",
+            "",
+            "/** @type {!x.y.Bar} */",
+            "var four = new x.y.Bar();",
+            ""));
+    // OK if compiles without error.
+  }
+
+  @Test
+  public void canReferenceCastedTypeThroughModuleImportAlias() {
+    CompilerUtil compiler = createCompiler(
+        path("foo/bar.js"), path("foo/baz.js"));
+
+    compiler.compile(
+        createSourceFile(path("index.js"),
+            "/**",
+            " * @param {number} a .",
+            " * @constructor",
+            " */",
+            "function NotACommonJsModuleCtor(a) {};"),
+        createSourceFile(path("foo/bar.js"),
+            "/** @constructor */",
+            "exports.NotACommonJsModuleCtor = NotACommonJsModuleCtor;",
+            "/** @constructor */",
+            "exports.Bar = NotACommonJsModuleCtor;"),
+        createSourceFile(path("foo/baz.js"),
+            "var bar = require('./bar');",
+            "",
+            "/** @type {!bar.NotACommonJsModuleCtor} */",
+            "var one = new bar.NotACommonJsModuleCtor(1);",
+            "",
+            "/** @type {!bar.Bar} */",
+            "var two = new bar.Bar(2);",
+            ""));
+    // OK if compiles without error.
   }
 
   @Test
@@ -185,13 +325,12 @@ public class DossierProcessCommonJsModulesTest {
     ImmutableList.Builder<String> builder = ImmutableList.<String>builder().add(
         "var " + name + " = {};",
         name + ".exports = {};",
-        "(function(module, exports, require, __filename, __dirname) {");
+        name + ".filename = \"\";",
+        name + ".__dirname = \"\";",
+        name + ".__filename = \"\";");
     if (contents.isPresent()) {
       builder.add(contents.get());
     }
-    builder.add(
-        "})(" + name + ", " + name + ".exports, function() {",
-        "}, \"\", \"\");");
     return Joiner.on("\n").join(builder.build());
   }
 
@@ -201,6 +340,10 @@ public class DossierProcessCommonJsModulesTest {
     options.setIdeMode(true);
     options.setClosurePass(true);
     options.setPrettyPrint(true);
+    options.setCheckTypes(true);
+    options.setCheckSymbols(true);
+    options.setIdeMode(true);
+    options.setAggressiveVarCheck(CheckLevel.ERROR);
     CompilationLevel.ADVANCED_OPTIMIZATIONS.setOptionsForCompilationLevel(options);
     CompilationLevel.ADVANCED_OPTIMIZATIONS.setTypeBasedOptimizationOptions(options);
 

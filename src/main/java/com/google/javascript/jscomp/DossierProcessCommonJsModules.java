@@ -1,17 +1,23 @@
 package com.google.javascript.jscomp;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 import com.github.jleyba.dossier.Descriptor;
 import com.google.common.base.Functions;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import com.google.javascript.rhino.IR;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.Node;
-import com.google.javascript.rhino.Token;
 
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Processes all files flagged as CommonJS modules by wrapping them in an anonymous class and
@@ -72,7 +78,7 @@ class DossierProcessCommonJsModules implements CompilerPass {
 
   @Override
   public void process(Node externs, Node root) {
-    NodeTraversal.traverse(compiler, root, new WrapCommonJsModuleCallback());
+    NodeTraversal.traverse(compiler, root, new CommonJsModuleCallback());
   }
 
   /**
@@ -99,7 +105,16 @@ class DossierProcessCommonJsModules implements CompilerPass {
    * invalid character and can never occur in valid JS, guaranteeing our generated code does not
    * conflict with existing code.
    */
-  private class WrapCommonJsModuleCallback extends NodeTraversal.AbstractPostOrderCallback {
+  private class CommonJsModuleCallback extends NodeTraversal.AbstractPostOrderCallback {
+
+    /**
+     * List of require calls found within a module. This list will be translated to a list
+     * of goog.require calls when the module's SCRIPT node is visited.
+     */
+    private final List<Node> requiredModules = new LinkedList<>();
+
+    private final Map<String, String> renamedVars = new HashMap<>();
+    private final Map<String, String> aliasedVars = new HashMap<>();
 
     @Override
     public void visit(NodeTraversal t, Node n, Node parent) {
@@ -112,6 +127,21 @@ class DossierProcessCommonJsModules implements CompilerPass {
           && n.getChildAtIndex(1).isString()) {
         visitRequireCall(t, n, parent);
       }
+
+      if (n.isName() && "module".equals(n.getQualifiedName())
+          && (parent.isExprResult() || parent.isGetProp())) {
+        visitModule(t, n);
+      }
+
+      if (n.isName() && "exports".equals(n.getQualifiedName())
+          && (parent.isExprResult() || parent.isGetProp())) {
+        visitExports(t, n);
+      }
+
+      if (n.isName() && ("__filename".equals(n.getQualifiedName())
+          || "__dirname".equals(n.getQualifiedName()))) {
+        visitFilenameOrDirnameFreeVariables(t, n);
+      }
     }
 
     private void visitScript(NodeTraversal t, Node script) {
@@ -119,24 +149,60 @@ class DossierProcessCommonJsModules implements CompilerPass {
         return;
       }
 
-      Path scriptPath = FileSystems.getDefault().getPath(script.getSourceFileName());
-      String moduleName = Descriptor.getModuleName(scriptPath);
+      String moduleName = getModuleName(t);
 
       t.getInput().addProvide(moduleName);
-
-      // First things first: replace all global THIS references under the script with
-      // references to the export object. This is necessary so we can properly wrap
-      NodeTraversal.traverse(t.getCompiler(), script, new ReplaceGlobalThisCallback());
 
       // Node generate our module wrapper.
       Node wrappedContents = script.removeChildren();
 
-      script.addChildrenToFront(
-          generateModuleDeclaration(moduleName).copyInformationFromForTree(script));
+      generateModuleDeclaration(script, moduleName, requiredModules);
+      requiredModules.clear();
 
-      generateModuleWrapper(moduleName, script, wrappedContents);
+      if (wrappedContents != null) {
+        script.addChildrenToBack(wrappedContents);
+      }
+
+      NodeTraversal.traverse(
+          t.getCompiler(), script, new SuffixVarsCallback(renamedVars, moduleName));
+      NodeTraversal.traverse(t.getCompiler(), script, new TypeCleanup(renamedVars, aliasedVars));
+      renamedVars.clear();
+      aliasedVars.clear();
 
       t.getCompiler().reportCodeChange();
+    }
+
+    private void visitModule(NodeTraversal t, Node node) {
+      checkArgument(node.isName());
+
+      String moduleName = getModuleName(t);
+      changeName(node, moduleName);
+    }
+
+    private void visitExports(NodeTraversal t, Node node) {
+      checkArgument(node.isName());
+
+      String moduleName = getModuleName(t);
+      Node moduleExports = IR.getprop(IR.name(moduleName), IR.string("exports"));
+      moduleExports.copyInformationFromForTree(node);
+
+      node.getParent().replaceChild(node, moduleExports);
+    }
+
+    private void visitFilenameOrDirnameFreeVariables(NodeTraversal t, Node node) {
+      checkArgument(node.isName());
+
+      String moduleName = getModuleName(t);
+      Node propAccessor = IR.getprop(IR.name(moduleName), IR.string(node.getString()));
+      propAccessor.copyInformationFromForTree(node);
+
+      node.getParent().replaceChild(node, propAccessor);
+    }
+
+    private void changeName(Node node, String newName) {
+      checkArgument(node.isName());
+      node.putProp(Node.ORIGINALNAME_PROP, node.getString());
+      node.setString(newName);
     }
 
     private void visitRequireCall(NodeTraversal t, Node require, Node parent) {
@@ -153,225 +219,152 @@ class DossierProcessCommonJsModules implements CompilerPass {
       Node moduleRef = IR.getprop(IR.name(moduleName), IR.string("exports")).srcrefTree(require);
       parent.replaceChild(require, moduleRef);
 
-      Node script = getCurrentScriptNode(parent);
-      script.addChildToFront(IR.exprResult(
+      while (parent.isGetProp()) {
+        parent = parent.getParent();
+      }
+      if (parent.isName()) {
+        aliasedVars.put(parent.getString(), parent.getFirstChild().getQualifiedName());
+      } else if (parent.isAssign()) {
+        aliasedVars.put(parent.getFirstChild().getQualifiedName(),
+            parent.getFirstChild().getNext().getQualifiedName());
+      }
+
+      requiredModules.add(IR.exprResult(
           IR.call(IR.getprop(IR.name("goog"), IR.string("require")),
               IR.string(moduleName))).copyInformationFromForTree(require));
+
       compiler.reportCodeChange();
     }
 
-    private Node getCurrentScriptNode(Node n) {
-      while (true) {
-        if (n.isScript()) {
-          return n;
+    private String getModuleName(NodeTraversal t) {
+      FileSystem fileSystem = FileSystems.getDefault();
+      Path modulePath = fileSystem.getPath(t.getSourceName().replaceAll("\\.js$", ""));
+      return Descriptor.getModuleName(modulePath);
+    }
+  }
+
+  /**
+   * Traverses a node tree and appends a suffix to all global variable names.
+   */
+  private static class SuffixVarsCallback extends NodeTraversal.AbstractPostOrderCallback {
+
+    private final Map<String, String> renamedVars;
+    private final String suffix;
+
+    private SuffixVarsCallback(Map<String, String> renamedVars, String suffix) {
+      this.renamedVars = renamedVars;
+      this.suffix = suffix;
+    }
+
+    @Override
+    public void visit(NodeTraversal t, Node n, Node parent) {
+      if (n.isName()) {
+        String name = n.getString();
+        Scope.Var var = t.getScope().getVar(name);
+        if (var != null && var.isGlobal()) {
+          n.putProp(Node.ORIGINALNAME_PROP, name);
+          n.setString(name + "$$_" + suffix);
+          renamedVars.put(name, n.getString());
         }
-        n = n.getParent();
       }
     }
   }
 
-  static void generateModuleWrapper(String moduleName, Node script, Node contents) {
-    Node block = IR.block();
+  private static class TypeCleanup extends NodeTraversal.AbstractPostOrderCallback {
 
-    Node moduleNameArg = IR.name(moduleName);
-    Node moduleExportsArg = IR.getprop(
-        IR.name(moduleName),
-        IR.string("exports"));
+    private final Map<String, String> renamedVars;
+    private final Map<String, String> aliasedVars;
 
-    Node requireArg = IR.function(IR.name(""), IR.paramList(), IR.block());
-    Node filenameArg = IR.string("");
-    Node dirnameArg = IR.string("");
-
-    Node callNode = IR.call(
-        IR.function(
-            IR.name(""),
-            IR.paramList(
-                IR.name("module"),
-                IR.name("exports"),
-                IR.name("require"),
-                IR.name("__filename"),
-                IR.name("__dirname")),
-            block),
-        moduleNameArg,
-        moduleExportsArg,
-        requireArg,
-        filenameArg,
-        dirnameArg);
-    callNode.putBooleanProp(Node.FREE_CALL, true);
-
-    Node newContents = IR.exprResult(callNode);
-    newContents.copyInformationFromForTree(script);
-
-    if (contents != null) {
-      block.addChildrenToBack(contents);
+    private TypeCleanup(Map<String, String> renamedVars, Map<String, String> aliasedVars) {
+      this.renamedVars = renamedVars;
+      this.aliasedVars = aliasedVars;
     }
-    script.addChildrenToBack(newContents);
+
+    @Override
+    public void visit(NodeTraversal t, Node n, Node parent) {
+      JSDocInfo info = n.getJSDocInfo();
+      if (info != null) {
+        for (Node node : info.getTypeNodes()) {
+          fixTypeNode(node);
+        }
+      }
+    }
+
+    private void fixTypeNode(Node typeNode) {
+      if (typeNode.isString() && !fixAliasedType(typeNode)) {
+        String name = typeNode.getString();
+        int endIndex = name.indexOf('.');
+        if (endIndex == -1) {
+          endIndex = name.length();
+        }
+
+        String baseName = name.substring(0, endIndex);
+        if (renamedVars.containsKey(baseName)) {
+          typeNode.setString(
+              renamedVars.get(baseName) + typeNode.getString().substring(endIndex));
+        }
+      }
+
+      for (Node child = typeNode.getFirstChild(); child != null; child = child.getNext()) {
+        fixTypeNode(child);
+      }
+    }
+
+    private boolean fixAliasedType(Node typeNode) {
+      String name = typeNode.getString();
+      int endIndex = -1;
+      while (endIndex != name.length()) {
+        endIndex = name.indexOf('.', endIndex + 1);
+        if (endIndex == -1) {
+          endIndex = name.length();
+        }
+
+        String baseName = name.substring(0, endIndex);
+        if (aliasedVars.containsKey(baseName)) {
+          typeNode.setString(aliasedVars.get(baseName) + typeNode.getString().substring(endIndex));
+          return true;
+        }
+      }
+      return false;
+    }
   }
 
-  static Node generateModuleDeclaration(String name) {
-    Node exportsProp = IR.stringKey("exports");
-    exportsProp.addChildToFront(IR.objectlit());
+  private static void generateModuleDeclaration(
+      Node script, String name, List<Node> requiredModules) {
+    checkArgument(script.isScript());
 
     Node provide = IR.exprResult(IR.call(
         IR.getprop(IR.name("goog"), IR.string("provide")),
         IR.string(name)));
-    Node exportsDecl = IR.exprResult(
-        IR.assign(
-            IR.getprop(IR.name(name), IR.string("exports")),
-            IR.objectlit()));
+    provide.copyInformationFromForTree(script);
+    script.addChildrenToFront(provide);
 
-    return IR.script(provide, exportsDecl).removeChildren();
+    List<Node> children = Lists.newArrayList(
+        // Define __filename and __dirname free variables off our module object to satisfy
+        // the type checker.
+        propAssign(name, "__filename", IR.string("")),
+        propAssign(name, "__dirname", IR.string("")),
+        // Module.filename from Node
+        propAssign(name, "filename", IR.string("")),
+        // The exported API object literal.
+        propAssign(name, "exports", IR.objectlit()));
+    for (Node child : children) {
+      child.copyInformationFromForTree(script);
+      script.addChildAfter(child, provide);
+    }
 
-//    Node module = IR.var(
-//        IR.name(name),
-//        IR.objectlit(exportsProp));
-//
-//    return module;
+    for (Node require : requiredModules) {
+      // Source information for each require node is set when the require() call
+      // is encountered. Even though we are placing the require call at the top of
+      // the script tree, we do not adjust the source location information.
+      script.addChildAfter(require, provide);
+    }
   }
 
-  /**
-   * Callback used to replace all references to global {@code this} with a reference to the
-   * {@code exports} object for the current CommonJS module.
-   *
-   * <p>This class is a variation of  {@link com.google.javascript.jscomp.CheckGlobalThis}, which
-   * does the same traversal, but reports usages of global {@code this} as errors.
-   */
-  private static class ReplaceGlobalThisCallback implements NodeTraversal.Callback {
-
-    private Node assignLhsChild = null;
-
-    @Override
-    public boolean shouldTraverse(NodeTraversal nodeTraversal, Node n, Node parent) {
-
-      if (n.isFunction()) {
-        // Don't traverse functions that are constructors or have the @this
-        // or @override annotation.
-        JSDocInfo jsDoc = getFunctionJsDocInfo(n);
-        if (jsDoc != null &&
-            (jsDoc.isConstructor() ||
-                jsDoc.isInterface() ||
-                jsDoc.hasThisType() ||
-                jsDoc.isOverride())) {
-          return false;
-        }
-
-        // Don't traverse functions unless they would normally
-        // be able to have a @this annotation associated with them. e.g.,
-        // var a = function() { }; // or
-        // function a() {} // or
-        // a.x = function() {}; // or
-        // var a = {x: function() {}};
-        int pType = parent.getType();
-        if (!(pType == Token.BLOCK ||
-            pType == Token.SCRIPT ||
-            pType == Token.NAME ||
-            pType == Token.ASSIGN ||
-
-            // object literal keys
-            pType == Token.STRING_KEY)) {
-          return false;
-        }
-
-        // Don't traverse functions that are getting lent to a prototype.
-        Node gramps = parent.getParent();
-        if (parent.getType() == Token.STRING_KEY
-            || parent.getType() == Token.GETTER_DEF
-            || parent.getType() == Token.SETTER_DEF) {
-          JSDocInfo maybeLends = gramps.getJSDocInfo();
-          if (maybeLends != null &&
-              maybeLends.getLendsName() != null &&
-              maybeLends.getLendsName().endsWith(".prototype")) {
-            return false;
-          }
-        }
-      }
-
-      if (parent != null && parent.isAssign()) {
-        Node lhs = parent.getFirstChild();
-
-        if (n == lhs) {
-          // Always traverse the left side of the assignment. To handle
-          // nested assignments properly (e.g., (a = this).property = c;),
-          // assignLhsChild should not be overridden.
-          if (assignLhsChild == null) {
-            assignLhsChild = lhs;
-          }
-        } else {
-          // Only traverse the right side if it's not an assignment to a prototype
-          // property or subproperty.
-          if (n.isGetProp() || n.isGetElem()) {
-            if (lhs.isGetProp() &&
-                lhs.getLastChild().getString().equals("prototype")) {
-              return false;
-            }
-            Node llhs = lhs.getFirstChild();
-            if (llhs.isGetProp() &&
-                llhs.getLastChild().getString().equals("prototype")) {
-              return false;
-            }
-          }
-        }
-      }
-
-      return true;    }
-
-    @Override
-    public void visit(NodeTraversal t, Node n, Node parent) {
-      if (n.isThis() && shouldReplace(n)) {
-        Node exports = IR.name("exports");
-
-        Node children = n.removeChildren();
-        if (children != null) {
-          exports.addChildrenToFront(children);
-        }
-
-        parent.replaceChild(n, exports);
-      }
-
-      if (n == assignLhsChild) {
-        assignLhsChild = null;
-      }
-    }
-
-    private boolean shouldReplace(Node n) {
-      Node parent = n.getParent();
-      if (assignLhsChild != null) {
-        return true;  // Always replace THIS on the left side of an assign.
-      }
-      // Also replace THIS with a property access.
-      return parent != null && (parent.isGetElem() || parent.isGetProp());
-    }
-
-    /**
-     * Gets a function's JSDoc information, if it has any. Checks for a few
-     * patterns (ellipses show where JSDoc would be):
-     * <pre>
-     * ... function() {}
-     * ... x = function() {};
-     * var ... x = function() {};
-     * ... var x = function() {};
-     * </pre>
-     *
-     * <p>This method copied from
-     * {@link com.google.javascript.jscomp.CheckGlobalThis#getFunctionJsDocInfo(
-     *     com.google.javascript.rhino.Node)}.
-     */
-    private JSDocInfo getFunctionJsDocInfo(Node n) {
-      JSDocInfo jsDoc = n.getJSDocInfo();
-      Node parent = n.getParent();
-      if (jsDoc == null) {
-        int parentType = parent.getType();
-        if (parentType == Token.NAME || parentType == Token.ASSIGN) {
-          jsDoc = parent.getJSDocInfo();
-          if (jsDoc == null && parentType == Token.NAME) {
-            Node gramps = parent.getParent();
-            if (gramps.isVar()) {
-              jsDoc = gramps.getJSDocInfo();
-            }
-          }
-        }
-      }
-      return jsDoc;
-    }
+  private static Node propAssign(String parentName, String propName, Node propValue) {
+    return IR.exprResult(
+        IR.assign(
+            IR.getprop(IR.name(parentName), IR.string(propName)),
+            propValue));
   }
 }
