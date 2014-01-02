@@ -13,13 +13,13 @@
 // limitations under the License.
 package com.github.jleyba.dossier;
 
+import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.collect.Iterables.transform;
 import static com.google.common.collect.Lists.newLinkedList;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Function;
 import com.google.common.base.Supplier;
-import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
@@ -32,6 +32,8 @@ import com.google.javascript.jscomp.CompilationLevel;
 import com.google.javascript.jscomp.CompilerOptions;
 import com.google.javascript.jscomp.CompilerPass;
 import com.google.javascript.jscomp.CustomPassExecutionTime;
+import com.google.javascript.jscomp.DossierCompiler;
+import com.google.javascript.jscomp.DossierModuleRegistry;
 import org.joda.time.Instant;
 import org.joda.time.Period;
 import org.joda.time.format.PeriodFormatterBuilder;
@@ -41,8 +43,6 @@ import java.io.PrintStream;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.List;
-
-import javax.annotation.Nullable;
 
 public class Main extends CommandLineRunner {
 
@@ -56,12 +56,20 @@ public class Main extends CommandLineRunner {
   }
 
   @Override
+  protected com.google.javascript.jscomp.Compiler createCompiler() {
+    return new DossierCompiler(getErrorPrintStream(), config.getModules());
+  }
+
+  @Override
+  @SuppressWarnings("unchecked")
   protected CompilerOptions createOptions() {
-    return createOptions(getCompiler(), docRegistry);
+    AbstractCompiler compiler = getCompiler();
+    checkState(compiler instanceof DossierCompiler, "Should never happen");
+    return createOptions((DossierCompiler) compiler, docRegistry);
   }
 
   @VisibleForTesting
-  static CompilerOptions createOptions(AbstractCompiler compiler, DocRegistry docRegistry) {
+  static CompilerOptions createOptions(DossierCompiler compiler, DocRegistry docRegistry) {
     CompilerOptions options = new CompilerOptions();
 
     options.setCodingConvention(new ClosureCodingConvention());
@@ -70,6 +78,9 @@ public class Main extends CommandLineRunner {
 
     // IDE mode must be enabled or all of the jsdoc info will be stripped from the AST.
     options.setIdeMode(true);
+
+    // For easier debugging.
+    options.setPrettyPrint(true);
 
     Multimap<CustomPassExecutionTime, CompilerPass> customPasses;
     customPasses = Multimaps.newListMultimap(
@@ -190,6 +201,7 @@ public class Main extends CommandLineRunner {
 
     ImmutableList<String> compilerFlags = ImmutableList.<String>builder()
         .addAll(transform(config.getSources(), toFlag("--js=")))
+        .addAll(transform(config.getModules(), toFlag("--js=")))
         .addAll(transform(config.getExterns(), toFlag("--externs=")))
         .add("--language_in=" + flags.language.getName())
         .addAll(standardFlags)

@@ -60,11 +60,19 @@ class Flags {
   @Option(
       name = "--src", aliases = "-s",
       handler = SimplePathHandler.class,
-      required = true,
       usage = "A .js file to generate API documentation for. If this path refers to a directory, " +
           "all .js files under the directory will be included as sources. This option may be " +
           "specified multiple times.")
   List<Path> srcs = new LinkedList<>();
+
+  @Option(
+      name = "--module", aliases = "-m",
+      handler = SimplePathHandler.class,
+      usage = "A .js file to generate API document for. The referenced file will be treated as " +
+          "CommonJS module and only its exported API will be documented. If this path refers to" +
+          " a directory, all .js files under the directory will be included as modules. This " +
+          "option may be specified multiple times.")
+  List<Path> modules = new LinkedList<>();
 
   @Option(
       name = "--exclude", aliases = "-x",
@@ -153,6 +161,11 @@ class Flags {
       parser.parseArgument(preprocessedArgs);
     } catch (CmdLineException e) {
       System.err.println(e.getMessage());
+      isConfigValid = false;
+    }
+
+    if (flags.srcs.isEmpty() && flags.modules.isEmpty()) {
+      System.err.println("Must specify at least one --src or --module");
       isConfigValid = false;
     }
 

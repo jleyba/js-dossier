@@ -15,8 +15,12 @@ package com.github.jleyba.dossier;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import com.google.common.collect.ImmutableSet;
 import com.google.javascript.jscomp.AbstractCompiler;
 import com.google.javascript.jscomp.CompilerPass;
+import com.google.javascript.jscomp.DossierCompiler;
+import com.google.javascript.jscomp.DossierModule;
+import com.google.javascript.jscomp.DossierModuleRegistry;
 import com.google.javascript.jscomp.NodeTraversal;
 import com.google.javascript.jscomp.Scope;
 import com.google.javascript.rhino.JSDocInfo;
@@ -39,11 +43,13 @@ class DocPass  implements CompilerPass {
   private final AbstractCompiler compiler;
   private final DocRegistry docRegistry;
   private final Set<String> providedSymbols;
+  private final DossierModuleRegistry moduleRegistry;
 
-  DocPass(AbstractCompiler compiler, DocRegistry docRegistry, Set<String> providedSymbols) {
+  DocPass(DossierCompiler compiler, DocRegistry docRegistry, Set<String> providedSymbols) {
     this.compiler = compiler;
     this.docRegistry = docRegistry;
     this.providedSymbols = providedSymbols;
+    this.moduleRegistry = compiler.getModuleRegistry();
   }
 
   @Override
@@ -132,12 +138,22 @@ class DocPass  implements CompilerPass {
 
     @Override
     public void enterScope(NodeTraversal t) {
+      if (!t.getScope().isGlobal()) {
+        return;
+      }
+
+      ImmutableSet.Builder<Scope.Var> builder = ImmutableSet.builder();
+      for (DossierModule module : moduleRegistry.getModules()) {
+        builder.addAll(module.getInternalVars());
+      }
+      ImmutableSet<Scope.Var> allInternalVars = builder.build();
+
       JSTypeRegistry registry = t.getCompiler().getTypeRegistry();
 
       Scope scope = t.getScope();
       for (Scope.Var var : scope.getAllSymbols()) {
         String name = var.getName();
-        if (docRegistry.isExtern(name)) {
+        if (docRegistry.isExtern(name) || allInternalVars.contains(var)) {
           continue;
         }
 
@@ -146,6 +162,16 @@ class DocPass  implements CompilerPass {
 
         if (null == type || type.isGlobalThisType() || isPrimitive(type)) {
           continue;
+        }
+
+        // We only want to document the exported API of each module, so short-circuit the
+        // object graph traversal here.
+        if (moduleRegistry.hasModuleNamed(var.getName())) {
+          name += ".exports";
+          ObjectType obj = ObjectType.cast(type);
+          type = checkNotNull(obj.getPropertyType("exports"),
+              "Lost type info for module: %s", var.getName());
+          info = obj.getOwnPropertyJSDocInfo("exports");
         }
 
         Descriptor descriptor = new Descriptor(name, type, info);
@@ -161,6 +187,7 @@ class DocPass  implements CompilerPass {
       }
 
       docRegistry.addType(descriptor);
+
       for (String prop : obj.getOwnPropertyNames()) {
         String propName = descriptor.getFullName() + "." + prop;
         if (shouldSkipProperty(obj, prop)) {

@@ -46,6 +46,7 @@ import java.util.regex.Pattern;
 class Config {
 
   private final ImmutableSet<Path> srcs;
+  private final ImmutableSet<Path> modules;
   private final ImmutableSet<Path> externs;
   private final Path srcPrefix;
   private final Path output;
@@ -59,22 +60,29 @@ class Config {
    *
    *
    * @param srcs The list of compiler input sources.
+   * @param modules The list of CommonJS compiler input sources.
    * @param externs The list of extern files for the Closure compiler.
    * @param output Path to the output directory.
    * @param license Path to a license file to include with the generated documentation.
    * @param readme Path to a markdown file to include in the main index.
    * @param outputStream The stream to use for standard output.
    * @param errorStream The stream to use for error output.
-   * @throws IllegalStateException If the source and extern lists intersect, or if the output
-   *     path is not a directory.
+   * @throws IllegalStateException If any of source, moudle, and extern sets intersect, or if the
+   *     output path is not a directory.
    */
   private Config(
-      ImmutableSet<Path> srcs, ImmutableSet<Path> externs, Path output,
+      ImmutableSet<Path> srcs, ImmutableSet<Path> modules, ImmutableSet<Path> externs, Path output,
       Optional<Path> license, Optional<Path> readme, PrintStream outputStream,
       PrintStream errorStream) {
     checkArgument(intersection(srcs, externs).isEmpty(),
         "The sources and externs inputs must be disjoint:\n  sources: %s\n  externs: %s",
         srcs, externs);
+    checkArgument(intersection(srcs, modules).isEmpty(),
+        "The sources and modules inputs must be disjoint:\n  sources: %s\n  modules: %s",
+        srcs, modules);
+    checkArgument(intersection(modules, externs).isEmpty(),
+        "The sources and modules inputs must be disjoint:\n  modules: %s\n  externs: %s",
+        modules, externs);
     checkArgument(!Files.exists(output) || Files.isDirectory(output),
         "Output path, %s, is not a directory", output);
     checkArgument(!license.isPresent() || Files.exists(license.get()),
@@ -83,6 +91,7 @@ class Config {
         "README path, %s, does not exist", readme.orNull());
 
     this.srcs = srcs;
+    this.modules = modules;
     this.srcPrefix = Paths.getCommonPrefix(srcs);
     this.externs = externs;
     this.output = output;
@@ -97,6 +106,13 @@ class Config {
    */
   ImmutableSet<Path> getSources() {
     return srcs;
+  }
+
+  /**
+   * Returns the set of CommonJS input sources for the compiler.
+   */
+  ImmutableSet<Path> getModules() {
+    return modules;
   }
 
   /**
@@ -155,6 +171,8 @@ class Config {
     Predicate<Path> notExcluded = notExcluded(flags.excludes);
     Iterable<Path> filteredRawSources = FluentIterable.from(flags.srcs)
         .filter(notExcluded);
+    Iterable<Path> filteredRawModules = FluentIterable.from(flags.modules)
+        .filter(notExcluded);
 
     Predicate<Path> regexFilter = excludePatterns(flags.filter);
 
@@ -184,8 +202,20 @@ class Config {
       }
     }
 
+    ImmutableSet.Builder<Path> modules = ImmutableSet.builder();
+    for (Path module : filteredRawModules) {
+      if (Files.isDirectory(module)) {
+        modules.addAll(FluentIterable
+            .from(Paths.expandDir(module, unhiddenJsFilesAnd(notExcluded)))
+            .filter(regexFilter));
+      } else if (regexFilter.apply(module)) {
+        modules.add(module);
+      }
+    }
+
     return new Config(
         sources,
+        modules.build(),
         ImmutableSet.copyOf(flags.externs),
         flags.outputDir,
         Optional.fromNullable(flags.license),

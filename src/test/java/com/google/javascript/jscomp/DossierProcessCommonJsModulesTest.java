@@ -347,8 +347,7 @@ public class DossierProcessCommonJsModulesTest {
     CompilationLevel.ADVANCED_OPTIMIZATIONS.setOptionsForCompilationLevel(options);
     CompilationLevel.ADVANCED_OPTIMIZATIONS.setTypeBasedOptimizationOptions(options);
 
-    Compiler compiler = new DossierCompiler(System.err, ImmutableSet.copyOf(commonJsModules),
-        new DossierModuleRegistry());
+    Compiler compiler = new DossierCompiler(System.err, ImmutableSet.copyOf(commonJsModules));
 
     return new CompilerUtil(compiler, options);
   }

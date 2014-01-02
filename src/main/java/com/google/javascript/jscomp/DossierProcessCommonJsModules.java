@@ -71,13 +71,11 @@ class DossierProcessCommonJsModules implements CompilerPass {
   private final ImmutableSet<String> commonJsModules;
   private final DossierModuleRegistry moduleRegistry;
 
-  DossierProcessCommonJsModules(
-      AbstractCompiler compiler, Iterable<Path> commonJsModules,
-      DossierModuleRegistry moduleRegistry) {
+  DossierProcessCommonJsModules(DossierCompiler compiler, Iterable<Path> commonJsModules) {
     this.compiler = compiler;
     this.commonJsModules = ImmutableSet.copyOf(
         Iterables.transform(commonJsModules, Functions.toStringFunction()));
-    this.moduleRegistry = moduleRegistry;
+    this.moduleRegistry = compiler.getModuleRegistry();
   }
 
   @Override

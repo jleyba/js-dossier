@@ -7,10 +7,9 @@ import static org.junit.Assert.assertTrue;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
-import com.google.javascript.jscomp.*;
-import com.google.javascript.jscomp.Compiler;
+import com.google.javascript.jscomp.CompilerOptions;
+import com.google.javascript.jscomp.DossierCompiler;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.JSTypeExpression;
 import org.junit.Before;
@@ -21,7 +20,6 @@ import org.junit.runners.JUnit4;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.Iterator;
-import java.util.List;
 
 /**
  * Tests for {@link JsDoc}.
@@ -36,7 +34,7 @@ public class JsDocTest {
   public void setUp() {
     docRegistry = new DocRegistry();
 
-    Compiler compiler = new Compiler(System.err);
+    DossierCompiler compiler = new DossierCompiler(System.err, ImmutableList.<Path>of());
     CompilerOptions options = Main.createOptions(compiler, docRegistry);
 
     util = new CompilerUtil(compiler, options);

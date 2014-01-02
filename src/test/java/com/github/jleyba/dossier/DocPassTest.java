@@ -10,8 +10,8 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import com.google.javascript.jscomp.Compiler;
 import com.google.javascript.jscomp.CompilerOptions;
+import com.google.javascript.jscomp.DossierCompiler;
 import com.google.javascript.jscomp.SourceFile;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,7 +36,7 @@ public class DocPassTest {
   public void setUp() {
     docRegistry = new DocRegistry();
 
-    Compiler compiler = new Compiler(System.err);
+    DossierCompiler compiler = new DossierCompiler(System.err, ImmutableList.<Path>of());
     CompilerOptions options = Main.createOptions(compiler, docRegistry);
 
     util = new CompilerUtil(compiler, options);

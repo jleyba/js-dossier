@@ -655,14 +655,12 @@ class HtmlDocWriter implements DocWriter {
     }
 
     JSType type = descriptor.getType();
-    if (type == null) {
-      return true;
-    }
-    return !type.isEnumType()
+    return type == null
+        || (!type.isEnumType()
         && !type.isEnumElementType()
         && !type.isFunctionType()
         && !type.isConstructor()
-        && !type.isInterface();
+        && !type.isInterface());
   }
 
   private static enum DescriptorNameComparator implements Comparator<Descriptor> {

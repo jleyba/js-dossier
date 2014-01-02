@@ -4,6 +4,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.base.Joiner;
+import com.google.common.collect.Iterables;
 import com.google.common.io.Files;
 import com.google.javascript.rhino.Node;
 
@@ -52,6 +53,10 @@ public class DossierModule {
 
   public Path getModulePath() {
     return modulePath;
+  }
+
+  public Iterable<Scope.Var> getInternalVars() {
+    return Iterables.unmodifiableIterable(internalVars);
   }
 
   public boolean isInternalVar(Scope.Var var) {

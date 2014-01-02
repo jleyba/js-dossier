@@ -23,13 +23,15 @@ public class DossierCompiler extends Compiler {
    *
    * @param stream the output stream.
    * @param commonJsModules the inputs that should be parsed as CommonJS modules.
-   * @param moduleRegistry the script registry to use.
    */
-  public DossierCompiler(PrintStream stream, Iterable<Path> commonJsModules,
-      DossierModuleRegistry moduleRegistry) {
+  public DossierCompiler(PrintStream stream, Iterable<Path> commonJsModules) {
     super(stream);
-    this.moduleRegistry = moduleRegistry;
+    this.moduleRegistry = new DossierModuleRegistry();
     this.commonJsModules = ImmutableSet.copyOf(commonJsModules);
+  }
+
+  public DossierModuleRegistry getModuleRegistry() {
+    return moduleRegistry;
   }
 
   @Override
@@ -43,8 +45,7 @@ public class DossierCompiler extends Compiler {
     // based on the goog.provide/require statements we generate for the modules. This is necessary
     // since the compiler does its final input ordering before invoking any custom passes
     // (otherwise, we could just process the modules as a custom pass).
-    DossierProcessCommonJsModules cjs = new DossierProcessCommonJsModules(
-        this, commonJsModules, moduleRegistry);
+    DossierProcessCommonJsModules cjs = new DossierProcessCommonJsModules(this, commonJsModules);
     // TODO(jleyba): processCommonJsModules(cjs, getExternsInOrder());
     processCommonJsModules(cjs, getInputsInOrder());
 

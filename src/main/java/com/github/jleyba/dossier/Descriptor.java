@@ -18,14 +18,12 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
 import com.google.common.base.Function;
-import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
-import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
-import com.google.common.io.Files;
+import com.google.javascript.jscomp.DossierModule;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.JSTypeExpression;
 import com.google.javascript.rhino.Node;
@@ -35,8 +33,6 @@ import com.google.javascript.rhino.jstype.JSTypeRegistry;
 import com.google.javascript.rhino.jstype.ObjectType;
 import com.google.javascript.rhino.jstype.UnionType;
 
-import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -49,16 +45,10 @@ import javax.annotation.Nullable;
 
 public class Descriptor {
 
-  /**
-   * Separator used to generate a unique name for each CommonJS module. This separator
-   * is intentionally set to a non-valid JS identifier token.
-   */
-  private static final String COMMON_JS_MODULE_PATH_SEPARATOR = "$";
-  private static final String COMMON_JS_PREFIX = "dossier$$module__";
-
   private final String name;
   @Nullable private final JSType type;
   @Nullable private final JsDoc info;
+  private final Optional<DossierModule> module;
   private final Optional<Descriptor> parent;
 
   private List<ArgDescriptor> args;
@@ -69,6 +59,15 @@ public class Descriptor {
     this.name = name;
     this.type = type;
     this.info = info == null ? null : new JsDoc(info); // TODO: fix me.
+    this.parent = Optional.absent();
+    this.module = Optional.absent();
+  }
+
+  Descriptor(String name, DossierModule module, @Nullable JSType type) {
+    this.name = name;
+    this.type = type;
+    this.info = null;  // TODO: fix me.
+    this.module = Optional.of(module);
     this.parent = Optional.absent();
   }
 
@@ -88,27 +87,7 @@ public class Descriptor {
     this.type = type;
     this.info = info == null ? null : new JsDoc(info); // TODO: fix me.
     this.parent = Optional.of(parent);
-  }
-
-  public static String getModuleName(Path path) {
-    String baseName = Files.getNameWithoutExtension(path.getFileName().toString());
-    return COMMON_JS_PREFIX +
-        (path.isAbsolute() ? COMMON_JS_MODULE_PATH_SEPARATOR : "") +
-        Joiner.on(COMMON_JS_MODULE_PATH_SEPARATOR)
-            .join(path.resolveSibling(baseName).iterator());
-  }
-
-  public static boolean isModule(String name) {
-    return name.startsWith(COMMON_JS_PREFIX);
-  }
-
-  public static String getPrettyModuleName(String name) {
-    if (!isModule(name)) {
-      return name;
-    }
-    return Joiner.on('/').join(Splitter.on(COMMON_JS_MODULE_PATH_SEPARATOR)
-        .omitEmptyStrings()
-        .split(name.substring(COMMON_JS_PREFIX.length())));
+    this.module = Optional.absent();
   }
 
   public static ImmutableList<Descriptor> sortByName(Iterable<Descriptor> descriptors) {
@@ -150,10 +129,6 @@ public class Descriptor {
    */
   String getSimpleName() {
     int index = name.lastIndexOf('.');
-    if (index != -1) {
-      return name.substring(index + 1);
-    }
-    index = name.lastIndexOf(COMMON_JS_MODULE_PATH_SEPARATOR);
     if (index != -1) {
       return name.substring(index + 1);
     }
