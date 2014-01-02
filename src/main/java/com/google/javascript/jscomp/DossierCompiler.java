@@ -14,7 +14,6 @@ import java.nio.file.Path;
  */
 public class DossierCompiler extends Compiler {
 
-  private final ImmutableSet<Path> commonJsModules;
   private final DossierModuleRegistry moduleRegistry;
   private boolean hasParsed = false;
 
@@ -26,8 +25,7 @@ public class DossierCompiler extends Compiler {
    */
   public DossierCompiler(PrintStream stream, Iterable<Path> commonJsModules) {
     super(stream);
-    this.moduleRegistry = new DossierModuleRegistry();
-    this.commonJsModules = ImmutableSet.copyOf(commonJsModules);
+    this.moduleRegistry = new DossierModuleRegistry(commonJsModules);
   }
 
   public DossierModuleRegistry getModuleRegistry() {
@@ -45,7 +43,7 @@ public class DossierCompiler extends Compiler {
     // based on the goog.provide/require statements we generate for the modules. This is necessary
     // since the compiler does its final input ordering before invoking any custom passes
     // (otherwise, we could just process the modules as a custom pass).
-    DossierProcessCommonJsModules cjs = new DossierProcessCommonJsModules(this, commonJsModules);
+    DossierProcessCommonJsModules cjs = new DossierProcessCommonJsModules(this);
     // TODO(jleyba): processCommonJsModules(cjs, getExternsInOrder());
     processCommonJsModules(cjs, getInputsInOrder());
 

@@ -3,9 +3,6 @@ package com.google.javascript.jscomp;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
 
-import com.google.common.base.Functions;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.javascript.rhino.IR;
 import com.google.javascript.rhino.JSDocInfo;
@@ -20,11 +17,11 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Processes all files flagged as CommonJS modules by wrapping them in an anonymous class and
- * generating {@code goog.provide} statements for each module.  This pass will also replace all
- * calls to {@code require} with a direct reference to the required module's {@code exports}
- * object. Finally, all references to global {@code this} will be replaced with reference's to the
- * current module's {@code exports} object.
+ * Processes all files flagged as CommonJS modules by renaming all variables so they may be
+ * safely inserted into the global scope to be processed along with all other files. This pass
+ * will also generate {@code goog.provide} statements for each module and replace all calls to
+ * {@code require} with a direct reference to the required module's {@code exports}
+ * object.
  *
  * <p>For instance, suppose we had two modules, foo.js and bar.js:
  * <pre><code>
@@ -32,7 +29,7 @@ import java.util.Map;
  *   exports.sayHi = function() {
  *     console.log('hello, world!');
  *   };
- *   this.sayBye = function() {
+ *   exports.sayBye = function() {
  *     console.log('goodbye, world!');
  *   };
  *
@@ -43,23 +40,17 @@ import java.util.Map;
  *
  * <p>Given the code above, this pass would produce:
  * <pre><code>
- *   var module__$foo = {};
- *   module__$foo.exports = {};
- *   (function(module, exports, require, __dirname, __filename) {
- *     exports.sayHi = function() {
- *       console.log('hello, world!');
- *     };
- *     exports.sayBye = function() {
- *       console.log('goodbye, world!');
- *     };
- *   })(module__$foo, module__$foo.exports, function(){}, '', '');
+ *   var dossier$$module__foo = {exports: {}};
+ *   dossier$$module__foo.exports.sayHi = function() {
+ *     console.log('hello, world!');
+ *   };
+ *   dossier$$module__foo.exports.sayBye = function() {
+ *     console.log('hello, world!');
+ *   };
  *
- *   var module__$bar = {};
- *   module__$bar.exports = {};
- *   (function(module, exports, require, __dirname, __filename) {
- *     var foo = module__$foo.exports;
- *     foo.sayHi();
- *   })(module__$bar, module__$bar.exports, function(){}, '', '');
+ *   var dossier$$module__bar = {exports: {}};
+ *   var foo$$__dossier$$module__bar = dossier$$module__foo.exports;
+ *   foo$$__dossier$$module__bar.sayHi();
  * </code></pre>
  *
  * <p>Note this pass generates stub values for Node.js' {@code require}, {@code __dirname} and
@@ -68,13 +59,10 @@ import java.util.Map;
 class DossierProcessCommonJsModules implements CompilerPass {
 
   private final AbstractCompiler compiler;
-  private final ImmutableSet<String> commonJsModules;
   private final DossierModuleRegistry moduleRegistry;
 
-  DossierProcessCommonJsModules(DossierCompiler compiler, Iterable<Path> commonJsModules) {
+  DossierProcessCommonJsModules(DossierCompiler compiler) {
     this.compiler = compiler;
-    this.commonJsModules = ImmutableSet.copyOf(
-        Iterables.transform(commonJsModules, Functions.toStringFunction()));
     this.moduleRegistry = compiler.getModuleRegistry();
   }
 
@@ -84,28 +72,7 @@ class DossierProcessCommonJsModules implements CompilerPass {
   }
 
   /**
-   * Wraps the contents of a CommonJS script in an anonymous function, so only the top exported
-   * variables are exposed to the global scope. For example, given the following for module
-   * {@code foo}:
-   * <pre><code>
-   *   exports.helloWorld = function() {
-   *     console.log('Hello, world!');
-   *   };
-   * </code></pre>
-   *
-   * <p>This callback would produce:
-   * <pre><code>
-   *   var module%foo = {exports: {}};
-   *   (function(exports, module) {
-   *     exports.helloWorld = function() {
-   *       console.log('Hello, world!');
-   *     };
-   *   })(module%foo.exports, module%foo);
-   * </code></pre>
-   *
-   * <p>Note that "%" is used as a separated in the generated variables names since that is an
-   * invalid character and can never occur in valid JS, guaranteeing our generated code does not
-   * conflict with existing code.
+   * Main traversal callback for processing the AST of a CommonJS module.
    */
   private class CommonJsModuleCallback implements NodeTraversal.Callback {
 
@@ -124,8 +91,8 @@ class DossierProcessCommonJsModules implements CompilerPass {
     public boolean shouldTraverse(NodeTraversal t, Node n, Node parent) {
       if (n.isScript()) {
         checkState(currentModule == null);
-        if (commonJsModules.contains(n.getSourceFileName())) {
-          currentModule = moduleRegistry.register(n);
+        if (moduleRegistry.hasModuleWithPath(n.getSourceFileName())) {
+          currentModule = moduleRegistry.registerScriptForModule(n);
         }
       }
       return true;
