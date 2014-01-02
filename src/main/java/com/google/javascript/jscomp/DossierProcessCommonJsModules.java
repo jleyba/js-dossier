@@ -1,8 +1,8 @@
 package com.google.javascript.jscomp;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkState;
 
-import com.github.jleyba.dossier.Descriptor;
 import com.google.common.base.Functions;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
@@ -69,11 +69,15 @@ class DossierProcessCommonJsModules implements CompilerPass {
 
   private final AbstractCompiler compiler;
   private final ImmutableSet<String> commonJsModules;
+  private final DossierModuleRegistry moduleRegistry;
 
-  DossierProcessCommonJsModules(AbstractCompiler compiler, Iterable<Path> commonJsModules) {
+  DossierProcessCommonJsModules(
+      AbstractCompiler compiler, Iterable<Path> commonJsModules,
+      DossierModuleRegistry moduleRegistry) {
     this.compiler = compiler;
     this.commonJsModules = ImmutableSet.copyOf(
         Iterables.transform(commonJsModules, Functions.toStringFunction()));
+    this.moduleRegistry = moduleRegistry;
   }
 
   @Override
@@ -105,7 +109,7 @@ class DossierProcessCommonJsModules implements CompilerPass {
    * invalid character and can never occur in valid JS, guaranteeing our generated code does not
    * conflict with existing code.
    */
-  private class CommonJsModuleCallback extends NodeTraversal.AbstractPostOrderCallback {
+  private class CommonJsModuleCallback implements NodeTraversal.Callback {
 
     /**
      * List of require calls found within a module. This list will be translated to a list
@@ -115,6 +119,19 @@ class DossierProcessCommonJsModules implements CompilerPass {
 
     private final Map<String, String> renamedVars = new HashMap<>();
     private final Map<String, String> aliasedVars = new HashMap<>();
+
+    private DossierModule currentModule;
+
+    @Override
+    public boolean shouldTraverse(NodeTraversal t, Node n, Node parent) {
+      if (n.isScript()) {
+        checkState(currentModule == null);
+        if (commonJsModules.contains(n.getSourceFileName())) {
+          currentModule = moduleRegistry.register(n);
+        }
+      }
+      return true;
+    }
 
     @Override
     public void visit(NodeTraversal t, Node n, Node parent) {
@@ -130,33 +147,31 @@ class DossierProcessCommonJsModules implements CompilerPass {
 
       if (n.isName() && "module".equals(n.getQualifiedName())
           && (parent.isExprResult() || parent.isGetProp())) {
-        visitModule(t, n);
+        visitModule(n);
       }
 
       if (n.isName() && "exports".equals(n.getQualifiedName())
           && (parent.isExprResult() || parent.isGetProp())) {
-        visitExports(t, n);
+        visitExports(n);
       }
 
       if (n.isName() && ("__filename".equals(n.getQualifiedName())
           || "__dirname".equals(n.getQualifiedName()))) {
-        visitFilenameOrDirnameFreeVariables(t, n);
+        visitFilenameOrDirnameFreeVariables(n);
       }
     }
 
     private void visitScript(NodeTraversal t, Node script) {
-      if (!commonJsModules.contains(script.getSourceFileName())) {
+      if (currentModule == null) {
         return;
       }
 
-      String moduleName = getModuleName(t);
-
-      t.getInput().addProvide(moduleName);
+      t.getInput().addProvide(currentModule.getVarName());
 
       // Node generate our module wrapper.
       Node wrappedContents = script.removeChildren();
 
-      generateModuleDeclaration(script, moduleName, requiredModules);
+      generateModuleDeclaration(script, currentModule.getVarName(), requiredModules);
       requiredModules.clear();
 
       if (wrappedContents != null) {
@@ -164,7 +179,7 @@ class DossierProcessCommonJsModules implements CompilerPass {
       }
 
       NodeTraversal.traverse(
-          t.getCompiler(), script, new SuffixVarsCallback(renamedVars, moduleName));
+          t.getCompiler(), script, new SuffixVarsCallback(renamedVars, currentModule));
       NodeTraversal.traverse(t.getCompiler(), script, new TypeCleanup(renamedVars, aliasedVars));
       renamedVars.clear();
       aliasedVars.clear();
@@ -172,27 +187,27 @@ class DossierProcessCommonJsModules implements CompilerPass {
       t.getCompiler().reportCodeChange();
     }
 
-    private void visitModule(NodeTraversal t, Node node) {
+    private void visitModule(Node node) {
       checkArgument(node.isName());
 
-      String moduleName = getModuleName(t);
+      String moduleName = currentModule.getVarName();
       changeName(node, moduleName);
     }
 
-    private void visitExports(NodeTraversal t, Node node) {
+    private void visitExports(Node node) {
       checkArgument(node.isName());
 
-      String moduleName = getModuleName(t);
+      String moduleName = currentModule.getVarName();
       Node moduleExports = IR.getprop(IR.name(moduleName), IR.string("exports"));
       moduleExports.copyInformationFromForTree(node);
 
       node.getParent().replaceChild(node, moduleExports);
     }
 
-    private void visitFilenameOrDirnameFreeVariables(NodeTraversal t, Node node) {
+    private void visitFilenameOrDirnameFreeVariables(Node node) {
       checkArgument(node.isName());
 
-      String moduleName = getModuleName(t);
+      String moduleName = currentModule.getVarName();
       Node propAccessor = IR.getprop(IR.name(moduleName), IR.string(node.getString()));
       propAccessor.copyInformationFromForTree(node);
 
@@ -208,11 +223,11 @@ class DossierProcessCommonJsModules implements CompilerPass {
     private void visitRequireCall(NodeTraversal t, Node require, Node parent) {
       FileSystem fileSystem = FileSystems.getDefault();
 
-      Path currentFile = fileSystem.getPath(t.getSourceName().replaceAll("\\.js$", ""));
+      Path currentFile = fileSystem.getPath(t.getSourceName());
 
-      String modulePath = require.getChildAtIndex(1).getString().replaceAll("\\.js$", "");
+      String modulePath = require.getChildAtIndex(1).getString();
       Path moduleFile = currentFile.getParent().resolve(modulePath).normalize();
-      String moduleName = Descriptor.getModuleName(moduleFile);
+      String moduleName = DossierModule.guessModuleName(moduleFile);
 
       t.getInput().addRequire(moduleName);
 
@@ -235,25 +250,19 @@ class DossierProcessCommonJsModules implements CompilerPass {
 
       compiler.reportCodeChange();
     }
-
-    private String getModuleName(NodeTraversal t) {
-      FileSystem fileSystem = FileSystems.getDefault();
-      Path modulePath = fileSystem.getPath(t.getSourceName().replaceAll("\\.js$", ""));
-      return Descriptor.getModuleName(modulePath);
-    }
   }
 
   /**
    * Traverses a node tree and appends a suffix to all global variable names.
    */
-  private static class SuffixVarsCallback extends NodeTraversal.AbstractPostOrderCallback {
+  private class SuffixVarsCallback extends NodeTraversal.AbstractPostOrderCallback {
 
     private final Map<String, String> renamedVars;
-    private final String suffix;
+    private final DossierModule currentModule;
 
-    private SuffixVarsCallback(Map<String, String> renamedVars, String suffix) {
+    private SuffixVarsCallback(Map<String, String> renamedVars, DossierModule currentModule) {
       this.renamedVars = renamedVars;
-      this.suffix = suffix;
+      this.currentModule = currentModule;
     }
 
     @Override
@@ -261,9 +270,11 @@ class DossierProcessCommonJsModules implements CompilerPass {
       if (n.isName()) {
         String name = n.getString();
         Scope.Var var = t.getScope().getVar(name);
-        if (var != null && var.isGlobal()) {
-          n.putProp(Node.ORIGINALNAME_PROP, name);
-          n.setString(name + "$$_" + suffix);
+
+        if (var != null && var.isGlobal() && currentModule.registerInternalVar(var)) {
+          Node nameNode = var.getNameNode();
+          n.putProp(Node.ORIGINALNAME_PROP, nameNode.getProp(Node.ORIGINALNAME_PROP));
+          n.setString(nameNode.getString());
           renamedVars.put(name, n.getString());
         }
       }
@@ -338,6 +349,11 @@ class DossierProcessCommonJsModules implements CompilerPass {
         IR.string(name)));
     provide.copyInformationFromForTree(script);
     script.addChildrenToFront(provide);
+
+    Node nameNode = IR.name(name);
+    nameNode.setIsSyntheticBlock(true);
+    nameNode.addChildToFront(IR.objectlit());
+    nameNode.copyInformationFromForTree(script);
 
     List<Node> children = Lists.newArrayList(
         // Define __filename and __dirname free variables off our module object to satisfy
