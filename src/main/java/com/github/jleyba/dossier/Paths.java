@@ -4,24 +4,18 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.collect.Iterables.all;
 import static com.google.common.collect.Iterables.isEmpty;
 import static com.google.common.collect.Iterables.transform;
-import static com.google.common.collect.Lists.newArrayList;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
-import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -52,7 +46,7 @@ class Paths {
    * directory before computing a common prefix.
    */
   static Path getCommonPrefix(Iterable<Path> paths) {
-    Path pwd = new File(".").getAbsoluteFile().toPath();
+    Path pwd = FileSystems.getDefault().getPath("").toAbsolutePath();
     return getCommonPrefix(pwd, paths);
   }
 
@@ -67,14 +61,13 @@ class Paths {
     if (isEmpty(paths)) {
       return root;
     }
-    root = root.toFile().getAbsoluteFile().toPath();
+    root = root.toAbsolutePath();
     paths = transform(paths, normalizeRelativeTo(root));
 
     Path prefix = root.getRoot();
     Path shortest = Ordering.from(length()).min(paths);
-    Iterator<Path> parts = shortest.iterator();
-    while (parts.hasNext()) {
-      Path possiblePrefix = prefix.resolve(parts.next());
+    for (Path part : shortest) {
+      Path possiblePrefix = prefix.resolve(part);
       if (all(paths, startsWith(possiblePrefix))) {
         prefix = possiblePrefix;
       } else {
