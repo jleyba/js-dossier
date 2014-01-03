@@ -264,7 +264,7 @@ dossier.soy.nestedTypeSummaries = function(opt_data, opt_ignored) {
     var typeListLen236 = typeList236.length;
     for (var typeIndex236 = 0; typeIndex236 < typeListLen236; typeIndex236++) {
       var typeData236 = typeList236[typeIndex236];
-      output += '<dt><a href="' + soy.$$escapeHtml(typeData236.href) + '">' + soy.$$escapeHtml(typeData236.name) + '</a><dd>' + ((typeData236.summary) ? soy.$$escapeHtml(typeData236.summary) : 'No Description.');
+      output += '<dt><a href="' + soy.$$escapeHtml(typeData236.href) + '">' + soy.$$escapeHtml(typeData236.name) + '</a><dd>' + ((typeData236.summary && typeData236.summary.token.length) ? dossier.soy.comment({comment: typeData236.summary, omitLeadingTag: true}) : 'No Description.');
     }
     output += '</dl></table></div></section>';
   }
@@ -293,11 +293,11 @@ dossier.soy.typeDetails = function(opt_data, opt_ignored) {
   var output = '';
   if (opt_data.details && opt_data.details.length > 0) {
     output += '<tr><th>' + soy.$$escapeHtml(opt_data.header) + '<tr><td><dl>';
-    var detailList263 = opt_data.details;
-    var detailListLen263 = detailList263.length;
-    for (var detailIndex263 = 0; detailIndex263 < detailListLen263; detailIndex263++) {
-      var detailData263 = detailList263[detailIndex263];
-      output += '<dt>' + ((detailData263.name) ? soy.$$escapeHtml(detailData263.name) : '') + ((detailData263.typeHtml) ? ((detailData263.name) ? ': ' : '') + '<code class="type">' + soy.$$filterNoAutoescape(detailData263.typeHtml) + '</code>' : '') + ((detailData263.description && detailData263.description.token.length) ? '<dd>' + dossier.soy.comment({comment: detailData263.description, omitLeadingTag: true}) : '');
+    var detailList265 = opt_data.details;
+    var detailListLen265 = detailList265.length;
+    for (var detailIndex265 = 0; detailIndex265 < detailListLen265; detailIndex265++) {
+      var detailData265 = detailList265[detailIndex265];
+      output += '<dt>' + ((detailData265.name) ? soy.$$escapeHtml(detailData265.name) : '') + ((detailData265.typeHtml) ? ((detailData265.name) ? ': ' : '') + '<code class="type">' + soy.$$filterNoAutoescape(detailData265.typeHtml) + '</code>' : '') + ((detailData265.description && detailData265.description.token.length) ? '<dd>' + dossier.soy.comment({comment: detailData265.description, omitLeadingTag: true}) : '');
     }
     output += '</dl>';
   }
@@ -324,11 +324,11 @@ dossier.soy.fnDetails = function(opt_data, opt_ignored) {
  */
 dossier.soy.printTemplateNames = function(opt_data, opt_ignored) {
   var output = '<code class="type">&lt;';
-  var nameList302 = opt_data.names;
-  var nameListLen302 = nameList302.length;
-  for (var nameIndex302 = 0; nameIndex302 < nameListLen302; nameIndex302++) {
-    var nameData302 = nameList302[nameIndex302];
-    output += soy.$$escapeHtml(nameData302) + ((! (nameIndex302 == nameListLen302 - 1)) ? ', ' : '');
+  var nameList304 = opt_data.names;
+  var nameListLen304 = nameList304.length;
+  for (var nameIndex304 = 0; nameIndex304 < nameListLen304; nameIndex304++) {
+    var nameData304 = nameList304[nameIndex304];
+    output += soy.$$escapeHtml(nameData304) + ((! (nameIndex304 == nameListLen304 - 1)) ? ', ' : '');
   }
   output += '&gt;</code>';
   return output;
@@ -343,15 +343,15 @@ dossier.soy.printTemplateNames = function(opt_data, opt_ignored) {
  */
 dossier.soy.memberSignature = function(opt_data, opt_ignored) {
   var output = (! opt_data.member.isConstructor && opt_data.member.templateName && opt_data.member.templateName.length) ? dossier.soy.printTemplateNames({names: opt_data.member.templateName}) + ' ' : '';
-  var name__soy315 = opt_data.parentName ? opt_data.parentName + '.' + opt_data.member.base.name : opt_data.member.base.name;
-  output += '<span class="member' + ((opt_data.member.base.deprecation) ? ' deprecation-notice' : '') + '">' + ((! opt_data.member.isConstructor) ? '<a name="' + soy.$$escapeHtml(name__soy315) + '">' + soy.$$escapeHtml(name__soy315) + '</a>' : soy.$$escapeHtml(name__soy315));
+  var name__soy317 = opt_data.parentName ? opt_data.parentName + '.' + opt_data.member.base.name : opt_data.member.base.name;
+  output += '<span class="member' + ((opt_data.member.base.deprecation) ? ' deprecation-notice' : '') + '">' + ((! opt_data.member.isConstructor) ? '<a name="' + soy.$$escapeHtml(name__soy317) + '">' + soy.$$escapeHtml(name__soy317) + '</a>' : soy.$$escapeHtml(name__soy317));
   if (opt_data.member.parameter) {
     output += ' <span class="args">(';
-    var parameterList333 = opt_data.member.parameter;
-    var parameterListLen333 = parameterList333.length;
-    for (var parameterIndex333 = 0; parameterIndex333 < parameterListLen333; parameterIndex333++) {
-      var parameterData333 = parameterList333[parameterIndex333];
-      output += soy.$$escapeHtml(parameterData333.name) + ((! (parameterIndex333 == parameterListLen333 - 1)) ? ', ' : '');
+    var parameterList335 = opt_data.member.parameter;
+    var parameterListLen335 = parameterList335.length;
+    for (var parameterIndex335 = 0; parameterIndex335 < parameterListLen335; parameterIndex335++) {
+      var parameterData335 = parameterList335[parameterIndex335];
+      output += soy.$$escapeHtml(parameterData335.name) + ((! (parameterIndex335 == parameterListLen335 - 1)) ? ', ' : '');
     }
     output += ')</span>' + ((! opt_data.member.isConstructor && opt_data.member['return'] && opt_data.member['return'].typeHtml && opt_data.member['return'].typeHtml != 'undefined' && opt_data.member['return'].typeHtml != '?') ? ' &rArr; <code class="type">' + soy.$$filterNoAutoescape(opt_data.member['return'].typeHtml) + '</code>' : '');
   } else if (opt_data.member.typeHtml) {
@@ -394,7 +394,7 @@ dossier.soy.ctor = function(opt_data, opt_ignored) {
  */
 dossier.soy.printProperty = function(opt_data, opt_ignored) {
   var output = '';
-  var isFunction__soy369 = opt_data.prop.parameter != null;
+  var isFunction__soy371 = opt_data.prop.parameter != null;
   output += '<div class="wrap-details';
   switch (opt_data.prop.base.visibility) {
     case 'PUBLIC':
@@ -407,7 +407,7 @@ dossier.soy.printProperty = function(opt_data, opt_ignored) {
       output += ' private';
       break;
   }
-  output += '"><div><details' + ((isFunction__soy369) ? ' class="function"' : '') + '><summary><div>' + dossier.soy.sourceLink({href: opt_data.prop.base.source}) + dossier.soy.memberSignature({member: opt_data.prop, parentName: opt_data.parentName}) + '</div>' + dossier.soy.deprecationNotice({deprecation: opt_data.prop.base.deprecation}) + dossier.soy.comment({comment: opt_data.prop.base.description}) + '</summary>' + ((isFunction__soy369) ? dossier.soy.fnDetails({fn: opt_data.prop}) : '') + '</details></div></div>';
+  output += '"><div><details' + ((isFunction__soy371) ? ' class="function"' : '') + '><summary><div>' + dossier.soy.sourceLink({href: opt_data.prop.base.source}) + dossier.soy.memberSignature({member: opt_data.prop, parentName: opt_data.parentName}) + '</div>' + dossier.soy.deprecationNotice({deprecation: opt_data.prop.base.deprecation}) + dossier.soy.comment({comment: opt_data.prop.base.description}) + '</summary>' + ((isFunction__soy371) ? dossier.soy.fnDetails({fn: opt_data.prop}) : '') + '</details></div></div>';
   return output;
 };
 
@@ -420,11 +420,11 @@ dossier.soy.printProperty = function(opt_data, opt_ignored) {
  */
 dossier.soy.printProperties = function(opt_data, opt_ignored) {
   var output = '';
-  var propertyList400 = opt_data.properties;
-  var propertyListLen400 = propertyList400.length;
-  for (var propertyIndex400 = 0; propertyIndex400 < propertyListLen400; propertyIndex400++) {
-    var propertyData400 = propertyList400[propertyIndex400];
-    output += dossier.soy.printProperty({prop: propertyData400, parentName: opt_data.parentName});
+  var propertyList402 = opt_data.properties;
+  var propertyListLen402 = propertyList402.length;
+  for (var propertyIndex402 = 0; propertyIndex402 < propertyListLen402; propertyIndex402++) {
+    var propertyData402 = propertyList402[propertyIndex402];
+    output += dossier.soy.printProperty({prop: propertyData402, parentName: opt_data.parentName});
   }
   return output;
 };
@@ -440,21 +440,21 @@ dossier.soy.prototype = function(opt_data, opt_ignored) {
   var output = '';
   if (opt_data.type.hasInstanceMethods) {
     output += '<section id="instance-methods"><h2>Instance Methods</h2>';
-    var protoList409 = opt_data.type.prototype;
-    var protoListLen409 = protoList409.length;
-    for (var protoIndex409 = 0; protoIndex409 < protoListLen409; protoIndex409++) {
-      var protoData409 = protoList409[protoIndex409];
-      output += (protoData409['function'].length) ? ((! (protoIndex409 == 0 && protoIndex409 == protoListLen409 - 1)) ? '<h3>Defined in <code class="type">' + ((protoData409.href) ? '<a href="' + soy.$$escapeHtml(protoData409.href) + '">' + soy.$$escapeHtml(protoData409.name) + '</a>' : soy.$$escapeHtml(protoData409.name)) + '</code></h3>' : '') + dossier.soy.printProperties({properties: protoData409['function']}) : '';
+    var protoList411 = opt_data.type.prototype;
+    var protoListLen411 = protoList411.length;
+    for (var protoIndex411 = 0; protoIndex411 < protoListLen411; protoIndex411++) {
+      var protoData411 = protoList411[protoIndex411];
+      output += (protoData411['function'].length) ? ((! (protoIndex411 == 0 && protoIndex411 == protoListLen411 - 1)) ? '<h3>Defined in <code class="type">' + ((protoData411.href) ? '<a href="' + soy.$$escapeHtml(protoData411.href) + '">' + soy.$$escapeHtml(protoData411.name) + '</a>' : soy.$$escapeHtml(protoData411.name)) + '</code></h3>' : '') + dossier.soy.printProperties({properties: protoData411['function']}) : '';
     }
     output += '</section>';
   }
   if (opt_data.type.hasInstanceProperties) {
     output += '<section id="instance-properties"><h2>Instance Properties</h2>';
-    var protoList432 = opt_data.type.prototype;
-    var protoListLen432 = protoList432.length;
-    for (var protoIndex432 = 0; protoIndex432 < protoListLen432; protoIndex432++) {
-      var protoData432 = protoList432[protoIndex432];
-      output += (protoData432.property.length) ? ((! (protoIndex432 == 0 && protoIndex432 == protoListLen432 - 1)) ? '<h3>Defined in <code class="type">' + ((protoData432.href) ? '<a href="' + soy.$$escapeHtml(protoData432.href) + '">' + soy.$$escapeHtml(protoData432.name) + '</a>' : soy.$$escapeHtml(protoData432.name)) + '</code></h3>' : '') + dossier.soy.printProperties({properties: protoData432.property}) : '';
+    var protoList434 = opt_data.type.prototype;
+    var protoListLen434 = protoList434.length;
+    for (var protoIndex434 = 0; protoIndex434 < protoListLen434; protoIndex434++) {
+      var protoData434 = protoList434[protoIndex434];
+      output += (protoData434.property.length) ? ((! (protoIndex434 == 0 && protoIndex434 == protoListLen434 - 1)) ? '<h3>Defined in <code class="type">' + ((protoData434.href) ? '<a href="' + soy.$$escapeHtml(protoData434.href) + '">' + soy.$$escapeHtml(protoData434.name) + '</a>' : soy.$$escapeHtml(protoData434.name)) + '</code></h3>' : '') + dossier.soy.printProperties({properties: protoData434.property}) : '';
     }
     output += '</section>';
   }
@@ -505,11 +505,11 @@ dossier.soy.navlist = function(opt_data, opt_ignored) {
   var output = '';
   if (opt_data.types.length) {
     output += '<ul>';
-    var typeList504 = opt_data.types;
-    var typeListLen504 = typeList504.length;
-    for (var typeIndex504 = 0; typeIndex504 < typeListLen504; typeIndex504++) {
-      var typeData504 = typeList504[typeIndex504];
-      output += (! typeData504.isTypedef) ? '<li class="link"><a href="' + soy.$$escapeHtml(opt_data.basePath) + soy.$$escapeHtml(typeData504.href) + '">' + ((typeData504.isInterface) ? '<i>' + soy.$$escapeHtml(typeData504.name) + '</i>' : soy.$$escapeHtml(typeData504.name)) + '</a>' : '';
+    var typeList506 = opt_data.types;
+    var typeListLen506 = typeList506.length;
+    for (var typeIndex506 = 0; typeIndex506 < typeListLen506; typeIndex506++) {
+      var typeData506 = typeList506[typeIndex506];
+      output += (! typeData506.isTypedef) ? '<li class="link"><a href="' + soy.$$escapeHtml(opt_data.basePath) + soy.$$escapeHtml(typeData506.href) + '">' + ((typeData506.isInterface) ? '<i>' + soy.$$escapeHtml(typeData506.name) + '</i>' : soy.$$escapeHtml(typeData506.name)) + '</a>' : '';
     }
     output += '</ul>';
   }
@@ -525,15 +525,15 @@ dossier.soy.navlist = function(opt_data, opt_ignored) {
  */
 dossier.soy.fileNavlist = function(opt_data, opt_ignored) {
   var output = '';
-  var isDirectory__soy522 = opt_data.file.children.length > 0;
+  var isDirectory__soy524 = opt_data.file.children.length > 0;
   output += (! opt_data.parent) ? '<ul>' : '';
-  if (isDirectory__soy522) {
+  if (isDirectory__soy524) {
     output += (opt_data.file.name) ? '<li>' + soy.$$escapeHtml(opt_data.file.name) + '/<ul>' : '';
-    var childList533 = opt_data.file.children;
-    var childListLen533 = childList533.length;
-    for (var childIndex533 = 0; childIndex533 < childListLen533; childIndex533++) {
-      var childData533 = childList533[childIndex533];
-      output += dossier.soy.fileNavlist({file: childData533, basePath: opt_data.basePath, parent: opt_data.file});
+    var childList535 = opt_data.file.children;
+    var childListLen535 = childList535.length;
+    for (var childIndex535 = 0; childIndex535 < childListLen535; childIndex535++) {
+      var childData535 = childList535[childIndex535];
+      output += dossier.soy.fileNavlist({file: childData535, basePath: opt_data.basePath, parent: opt_data.file});
     }
     output += (opt_data.file.name) ? '</ul>' : '';
   } else if (opt_data.file.name) {
@@ -554,11 +554,11 @@ dossier.soy.namespaceNavlist = function(opt_data, opt_ignored) {
   var output = (opt_data.ns.name) ? '<li ' + ((opt_data.ns.href) ? 'class="link"' : '') + '>' + ((opt_data.ns.href) ? '<a href="' + soy.$$escapeHtml(opt_data.basePath) + soy.$$escapeHtml(opt_data.ns.href) + '">' : '') + ((opt_data.ns.isInterface) ? '<i>' + soy.$$escapeHtml(opt_data.ns.name) + '</i>' : soy.$$escapeHtml(opt_data.ns.name)) + ((opt_data.ns.href) ? '</a>' : '') : '';
   if (opt_data.ns.children.length) {
     output += '<ul>';
-    var childList579 = opt_data.ns.children;
-    var childListLen579 = childList579.length;
-    for (var childIndex579 = 0; childIndex579 < childListLen579; childIndex579++) {
-      var childData579 = childList579[childIndex579];
-      output += dossier.soy.namespaceNavlist({ns: childData579, basePath: opt_data.basePath});
+    var childList581 = opt_data.ns.children;
+    var childListLen581 = childList581.length;
+    for (var childIndex581 = 0; childIndex581 < childListLen581; childIndex581++) {
+      var childData581 = childList581[childIndex581];
+      output += dossier.soy.namespaceNavlist({ns: childData581, basePath: opt_data.basePath});
     }
     output += '</ul>';
   }
@@ -607,13 +607,13 @@ dossier.soy.licenseFile = function(opt_data, opt_ignored) {
  */
 dossier.soy.srcfile = function(opt_data, opt_ignored) {
   var output = dossier.soy.pageHeader({title: opt_data.spec.file.baseName, resources: opt_data.spec.resources}) + '<div id="main-wrapper">' + dossier.soy.sideNavToggle(null) + '<main><header><h1>' + soy.$$escapeHtml(opt_data.spec.file.path) + '</h1></header><pre><table class="srcfile"><tbody>';
-  var count__soy673 = 1;
-  var lineList674 = opt_data.spec.file.lines;
-  var lineListLen674 = lineList674.length;
-  for (var lineIndex674 = 0; lineIndex674 < lineListLen674; lineIndex674++) {
-    var lineData674 = lineList674[lineIndex674];
-    output += '<tr><td><a name="l' + soy.$$escapeHtml(count__soy673) + '" href="#l' + soy.$$escapeHtml(count__soy673) + '">' + soy.$$escapeHtml(count__soy673) + '</a><td>' + soy.$$escapeHtml(lineData674);
-    var count__soy683 = count__soy673 + 1;
+  var count__soy675 = 1;
+  var lineList676 = opt_data.spec.file.lines;
+  var lineListLen676 = lineList676.length;
+  for (var lineIndex676 = 0; lineIndex676 < lineListLen676; lineIndex676++) {
+    var lineData676 = lineList676[lineIndex676];
+    output += '<tr><td><a name="l' + soy.$$escapeHtml(count__soy675) + '" href="#l' + soy.$$escapeHtml(count__soy675) + '">' + soy.$$escapeHtml(count__soy675) + '</a><td>' + soy.$$escapeHtml(lineData676);
+    var count__soy685 = count__soy675 + 1;
   }
   output += '</table></pre></main>' + dossier.soy.topNav(null) + dossier.soy.sideNav({hasLicense: opt_data.spec.hasLicense}) + '<div id="push-footer"></div></div>' + dossier.soy.footer({scripts: opt_data.spec.resources.script});
   return output;

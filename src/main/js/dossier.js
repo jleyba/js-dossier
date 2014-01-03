@@ -221,7 +221,7 @@ dossier.Namespace_ = function(name, opt_href) {
 /**
  * @param {!Array.<dossier.Descriptor_>} descriptors The descriptors to
  *     build a tree structure from.
- * @returns {dossier.Namespace_} The root namespace.
+ * @return {dossier.Namespace_} The root namespace.
  * @private
  */
 dossier.Namespace_.fromRawTypeInfo = function(descriptors) {
@@ -256,10 +256,11 @@ dossier.Namespace_.fromRawTypeInfo = function(descriptors) {
     goog.array.forEach(namespace.children, collapse);
     if (!namespace.href && namespace.children.length === 1) {
       var name = namespace.name ? namespace.name + '.' : '';
-      namespace.name = name + namespace.children[0].name;
-      namespace.href = namespace.children[0].href;
-      namespace.children = namespace.children[0].children;
-      namespace.isInterface = namespace.children[0].isInterface;
+      var firstChild = namespace.children[0];
+      namespace.name = name + firstChild.name;
+      namespace.href = firstChild.href;
+      namespace.children = firstChild.children;
+      namespace.isInterface = firstChild.isInterface;
     }
   }
 };
