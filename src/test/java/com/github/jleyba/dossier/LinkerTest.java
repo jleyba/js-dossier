@@ -93,7 +93,7 @@ public class LinkerTest {
     Linker linker = new Linker(mockConfig, mockRegistry);
 
     assertEquals(
-        outputDir.resolve("source_one_two_three.js.src.html"),
+        outputDir.resolve("source/one/two/three.js.src.html"),
         linker.getFilePath(srcPrefix.resolve("one/two/three.js")));
   }
 
@@ -198,7 +198,7 @@ public class LinkerTest {
 
     Linker linker = new Linker(mockConfig, mock(DocRegistry.class));
     assertEquals(
-        "source_a_b_c.src.html",
+        "source/a/b/c.src.html",
         linker.getSourcePath(mockDescriptor));
   }
 
@@ -217,7 +217,7 @@ public class LinkerTest {
 
     Linker linker = new Linker(mockConfig, mock(DocRegistry.class));
     assertEquals(
-        "source_a_b_c.src.html#l122",
+        "source/a/b/c.src.html#l122",
         linker.getSourcePath(mockDescriptor));
   }
 }

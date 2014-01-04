@@ -92,11 +92,10 @@ class Linker {
    * will always be relative to this instance's output directory.
    */
   Path getFilePath(Path sourceFile) {
-    Iterator<Path> parts = config.getSrcPrefix()
+    Path path = config.getSrcPrefix()
         .relativize(sourceFile.toAbsolutePath().normalize())
-        .iterator();
-    String name = "source_" + Joiner.on('_').join(parts) + ".src.html";
-    return config.getOutput().resolve(name);
+        .resolveSibling(sourceFile.getFileName() + ".src.html");
+    return config.getOutput().resolve("source").resolve(path);
   }
 
   /**

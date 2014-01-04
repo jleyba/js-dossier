@@ -268,11 +268,17 @@ class HtmlDocWriter implements DocWriter {
   private void copySourceFiles() throws IOException {
     for (Path source : Iterables.concat(config.getSources(), config.getModules())) {
       Path displayPath = config.getSrcPrefix().relativize(source);
+      Path renderPath = linker.getFilePath(source);
+
+      Path pathToRoot = config.getOutput()
+          .resolve(renderPath)
+          .getParent()
+          .relativize(config.getOutput());
 
       Resources resources = Resources.newBuilder()
-          .addCss("dossier.css")
-          .addScript("types.js")
-          .addScript("dossier.js")
+          .addCss(pathToRoot.resolve("dossier.css").toString())
+          .addScript(pathToRoot.resolve("types.js").toString())
+          .addScript(pathToRoot.resolve("dossier.js").toString())
           .build();
 
       SourceFile file = SourceFile.newBuilder()
@@ -282,7 +288,7 @@ class HtmlDocWriter implements DocWriter {
           .build();
 
       renderer.render(
-          linker.getFilePath(source),
+          renderPath,
           SourceFileRenderSpec.newBuilder()
               .setFile(file)
               .setResources(resources)
