@@ -117,6 +117,29 @@ public class DossierProcessCommonJsModulesTest {
   }
 
   @Test
+  public void sortsWithTwoModuleDeps() {
+    CompilerUtil compiler = createCompiler(
+        path("foo/one.js"), path("foo/two.js"), path("foo/three.js"));
+
+    SourceFile one = createSourceFile(path("foo/one.js"), "");
+    SourceFile two = createSourceFile(path("foo/two.js"),
+        "require('./one');",
+        "require('./three');");
+    SourceFile three = createSourceFile(path("foo/three.js"));
+
+    compiler.compile(two, one, three);  // Should properly reorder inputs.
+
+    assertEquals(
+        lines(
+            module("dossier$$module__foo$one"),
+            module("dossier$$module__foo$three"),
+            module("dossier$$module__foo$two", lines(
+                "dossier$$module__foo$one.exports;",
+                "dossier$$module__foo$three.exports;"))),
+        compiler.toSource().trim());
+  }
+
+  @Test
   public void rewritesRequireStatementToDirectlyReferenceExportsObject() {
     CompilerUtil compiler = createCompiler(path("foo/leaf.js"), path("foo/root.js"));
 
@@ -323,11 +346,7 @@ public class DossierProcessCommonJsModulesTest {
 
   private static String module(String name, Optional<String> contents) {
     ImmutableList.Builder<String> builder = ImmutableList.<String>builder().add(
-        "var " + name + " = {};",
-        name + ".exports = {};",
-        name + ".filename = \"\";",
-        name + ".__dirname = \"\";",
-        name + ".__filename = \"\";");
+        "var " + name + " = {__filename:\"\", __dirname:\"\", filename:\"\", exports:{}};");
     if (contents.isPresent()) {
       builder.add(contents.get());
     }

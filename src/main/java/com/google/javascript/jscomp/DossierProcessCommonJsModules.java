@@ -3,7 +3,6 @@ package com.google.javascript.jscomp;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
 
-import com.google.common.collect.Lists;
 import com.google.javascript.rhino.IR;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.Node;
@@ -12,8 +11,6 @@ import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -76,12 +73,6 @@ class DossierProcessCommonJsModules implements CompilerPass {
    */
   private class CommonJsModuleCallback implements NodeTraversal.Callback {
 
-    /**
-     * List of require calls found within a module. This list will be translated to a list
-     * of goog.require calls when the module's SCRIPT node is visited.
-     */
-    private final List<Node> requiredModules = new LinkedList<>();
-
     private final Map<String, String> renamedVars = new HashMap<>();
     private final Map<String, String> aliasedVars = new HashMap<>();
 
@@ -133,18 +124,10 @@ class DossierProcessCommonJsModules implements CompilerPass {
 
       t.getInput().addProvide(currentModule.getVarName());
 
-      // Node generate our module wrapper.
-      Node wrappedContents = script.removeChildren();
+      Node moduleDecl = generateModuleDeclaration(script, currentModule.getVarName());
 
-      generateModuleDeclaration(script, currentModule.getVarName(), requiredModules);
-      requiredModules.clear();
-
-      if (wrappedContents != null) {
-        script.addChildrenToBack(wrappedContents);
-      }
-
-      NodeTraversal.traverse(
-          t.getCompiler(), script, new SuffixVarsCallback(renamedVars, currentModule));
+      NodeTraversal.traverse(t.getCompiler(), script, new SuffixVarsCallback(
+          renamedVars, currentModule, moduleDecl));
       NodeTraversal.traverse(t.getCompiler(), script, new TypeCleanup(renamedVars, aliasedVars));
       renamedVars.clear();
       aliasedVars.clear();
@@ -209,10 +192,6 @@ class DossierProcessCommonJsModules implements CompilerPass {
             parent.getFirstChild().getNext().getQualifiedName());
       }
 
-      requiredModules.add(IR.exprResult(
-          IR.call(IR.getprop(IR.name("goog"), IR.string("require")),
-              IR.string(moduleName))).copyInformationFromForTree(require));
-
       compiler.reportCodeChange();
     }
   }
@@ -224,10 +203,13 @@ class DossierProcessCommonJsModules implements CompilerPass {
 
     private final Map<String, String> renamedVars;
     private final DossierModule currentModule;
+    private final Node moduleDecl;
 
-    private SuffixVarsCallback(Map<String, String> renamedVars, DossierModule currentModule) {
+    private SuffixVarsCallback(
+        Map<String, String> renamedVars, DossierModule currentModule, Node moduleDecl) {
       this.renamedVars = renamedVars;
       this.currentModule = currentModule;
+      this.moduleDecl = moduleDecl;
     }
 
     @Override
@@ -236,7 +218,9 @@ class DossierProcessCommonJsModules implements CompilerPass {
         String name = n.getString();
         Scope.Var var = t.getScope().getVar(name);
 
-        if (var != null && var.isGlobal() && currentModule.registerInternalVar(var)) {
+        if (var != null && var.isGlobal()
+            && !moduleDecl.equals(var.getNameNode().getParent())
+            && currentModule.registerInternalVar(var)) {
           Node nameNode = var.getNameNode();
           n.putProp(Node.ORIGINALNAME_PROP, nameNode.getProp(Node.ORIGINALNAME_PROP));
           n.setString(nameNode.getString());
@@ -305,47 +289,24 @@ class DossierProcessCommonJsModules implements CompilerPass {
     }
   }
 
-  private static void generateModuleDeclaration(
-      Node script, String name, List<Node> requiredModules) {
+  private static Node generateModuleDeclaration(Node script, String name) {
     checkArgument(script.isScript());
 
-    Node provide = IR.exprResult(IR.call(
-        IR.getprop(IR.name("goog"), IR.string("provide")),
-        IR.string(name)));
-    provide.copyInformationFromForTree(script);
-    script.addChildrenToFront(provide);
+    Node decl = IR.var(
+        IR.name(name),
+        IR.objectlit(
+            // Define __filename and __dirname free variables off our module object to satisfy
+            // the type checker.
+            IR.propdef(IR.stringKey("__filename"), IR.string("")),
+            IR.propdef(IR.stringKey("__dirname"), IR.string("")),
+            // module.filename from Node
+            IR.propdef(IR.stringKey("filename"), IR.string("")),
+            // The exported API object literal.
+            IR.propdef(IR.stringKey("exports"), IR.objectlit())
+        ));
+    decl.copyInformationFromForTree(script);
+    script.addChildrenToFront(decl);
 
-    Node nameNode = IR.name(name);
-    nameNode.setIsSyntheticBlock(true);
-    nameNode.addChildToFront(IR.objectlit());
-    nameNode.copyInformationFromForTree(script);
-
-    List<Node> children = Lists.newArrayList(
-        // Define __filename and __dirname free variables off our module object to satisfy
-        // the type checker.
-        propAssign(name, "__filename", IR.string("")),
-        propAssign(name, "__dirname", IR.string("")),
-        // Module.filename from Node
-        propAssign(name, "filename", IR.string("")),
-        // The exported API object literal.
-        propAssign(name, "exports", IR.objectlit()));
-    for (Node child : children) {
-      child.copyInformationFromForTree(script);
-      script.addChildAfter(child, provide);
-    }
-
-    for (Node require : requiredModules) {
-      // Source information for each require node is set when the require() call
-      // is encountered. Even though we are placing the require call at the top of
-      // the script tree, we do not adjust the source location information.
-      script.addChildAfter(require, provide);
-    }
-  }
-
-  private static Node propAssign(String parentName, String propName, Node propValue) {
-    return IR.exprResult(
-        IR.assign(
-            IR.getprop(IR.name(parentName), IR.string(propName)),
-            propValue));
+    return decl;
   }
 }
