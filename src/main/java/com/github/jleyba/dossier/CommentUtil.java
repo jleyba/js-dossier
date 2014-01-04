@@ -58,6 +58,16 @@ class CommentUtil {
   }
 
   /**
+   * Extracs the fileoverview comment string from the given {@link JsDoc} object.
+   */
+  static Dossier.Comment getFileoverview(Linker linker, @Nullable JsDoc jsdoc) {
+    if (jsdoc == null) {
+      return Dossier.Comment.getDefaultInstance();
+    }
+    return parseComment(jsdoc.getFileoverview(), linker);
+  }
+
+  /**
    * Extracts the block comment string from the given {@link JsDoc} object.
    */
   static Dossier.Comment getBlockDescription(Linker linker, @Nullable JsDoc jsdoc) {

@@ -1,5 +1,6 @@
 package com.github.jleyba.dossier;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
@@ -12,6 +13,7 @@ import com.google.javascript.jscomp.CompilerOptions;
 import com.google.javascript.jscomp.DossierCompiler;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.JSTypeExpression;
+import com.google.javascript.rhino.Node;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -334,6 +336,32 @@ public class JsDocTest {
     assertEquals("is for an optional\n     parameter.", param.getDescription());
 
     assertFalse(parameters.hasNext());
+  }
+
+  @Test
+  public void parsesFileoverviewComments() {
+    Node script = getScriptNode(
+        "",
+        "/**",
+        " * @fileoverview line one",
+        " * line two",
+        " * line three",
+        " */",
+        "",
+        "var x = {};");
+
+    JsDoc doc = new JsDoc(script.getJSDocInfo());
+    assertEquals(
+        "line one\n line two\n line three",
+        doc.getFileoverview());
+  }
+
+  private Node getScriptNode(String... lines) {
+    util.compile(path("foo/bar.js"), lines);
+    return util.getCompiler().getRoot()
+        .getFirstChild()  // Synthetic extern block.
+        .getNext()        // Input sources synthetic block.
+        .getFirstChild();
   }
 
   private JsDoc getClassJsDoc(String... lines) {

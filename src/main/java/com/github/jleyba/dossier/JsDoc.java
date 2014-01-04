@@ -43,6 +43,7 @@ class JsDoc {
   private String blockComment = "";
   private String returnDescription = "";
   private String deprecationReason = "";
+  private String fileoverview = "";
   private boolean parsed = false;
 
   JsDoc(JSDocInfo info) {
@@ -109,6 +110,11 @@ class JsDoc {
 
   List<JSTypeExpression> getExtendedInterfaces() {
     return info.getExtendedInterfaces();
+  }
+
+  String getFileoverview() {
+    parse();
+    return fileoverview;
   }
 
   String getBlockComment() {
@@ -206,6 +212,9 @@ class JsDoc {
       switch (annotation.get()) {
         case DEPRECATED:
           deprecationReason = processDescriptionLines(descriptionLines, description);
+          break;
+        case FILEOVERVIEW:
+          fileoverview = processDescriptionLines(descriptionLines, description);
           break;
         case PARAM:
           String name = marker.getNameNode().getItem().getString();
@@ -321,6 +330,7 @@ class JsDoc {
   static enum Annotation {
     DEFINE("define"),
     DEPRECATED("deprecated"),
+    FILEOVERVIEW("fileoverview"),
     PARAM("param"),
     RETURN("return"),
     SEE("see"),

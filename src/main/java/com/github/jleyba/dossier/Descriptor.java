@@ -66,7 +66,8 @@ public class Descriptor {
   Descriptor(String name, DossierModule module, @Nullable JSType type) {
     this.name = name;
     this.type = type;
-    this.info = null;  // TODO: fix me.
+    this.info = module.getScriptNode().getJSDocInfo() == null ? null :
+        new JsDoc(module.getScriptNode().getJSDocInfo());
     this.module = Optional.of(module);
     this.parent = Optional.absent();
   }
@@ -156,6 +157,9 @@ public class Descriptor {
   }
 
   @Nullable String getSource() {
+    if (module.isPresent()) {
+      return module.get().getScriptNode().getSourceFileName();
+    }
     if (info != null) {
       return info.getSource();
     }
@@ -167,6 +171,9 @@ public class Descriptor {
    * will trivially return 0 if this line number cannot be determined.
    */
   int getLineNum() {
+    if (module.isPresent()) {
+      return module.get().getScriptNode().getLineno();
+    }
     if (info != null) {
       return info.getLineNum();
     }

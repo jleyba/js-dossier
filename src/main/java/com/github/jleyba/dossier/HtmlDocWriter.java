@@ -15,6 +15,7 @@ package com.github.jleyba.dossier;
 
 import static com.github.jleyba.dossier.CommentUtil.formatTypeExpression;
 import static com.github.jleyba.dossier.CommentUtil.getBlockDescription;
+import static com.github.jleyba.dossier.CommentUtil.getFileoverview;
 import static com.github.jleyba.dossier.CommentUtil.getSummary;
 import static com.github.jleyba.dossier.CommentUtil.parseComment;
 import static com.github.jleyba.dossier.proto.Dossier.BaseProperty;
@@ -159,12 +160,15 @@ class HtmlDocWriter implements DocWriter {
     Files.createDirectories(output.getParent());
 
     String source = linker.getSourcePath(descriptor);
+    Dossier.Comment description = descriptor.isModule()
+        ? getFileoverview(linker, descriptor.getJsDoc())
+        : getBlockDescription(linker, descriptor.getJsDoc());
 
     JsType.Builder jsTypeBuilder = JsType.newBuilder()
         .setName(linker.getDisplayName(descriptor))
         .setNested(getNestedTypes(descriptor))
         .setSource(Strings.nullToEmpty(source))
-        .setDescription(getBlockDescription(linker, descriptor.getJsDoc()))
+        .setDescription(description)
         .addAllTypeDef(getTypeDefs(descriptor))
         .addAllExtendedType(getInheritedTypes(descriptor, registry))
         .addAllImplementedType(getImplementedTypes(descriptor, registry))

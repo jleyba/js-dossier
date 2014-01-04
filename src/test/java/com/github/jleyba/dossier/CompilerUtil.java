@@ -35,6 +35,10 @@ public class CompilerUtil {
     this.options = options;
   }
 
+  Compiler getCompiler() {
+    return compiler;
+  }
+
   public String toSource() {
     return compiler.toSource();
   }
