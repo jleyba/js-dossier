@@ -33,7 +33,7 @@ public class DossierModule {
    *
    * @param script the SCRIPT node for the module.
    */
-  public DossierModule(Node script) {
+  DossierModule(Node script) {
     checkArgument(script.isScript());
     checkArgument(script.getSourceFileName() != null);
 
@@ -87,14 +87,26 @@ public class DossierModule {
     return node;
   }
 
-  public static String guessModuleName(String sourceName) {
+  /**
+   * Guesses the name of the global variable to use with Closure's type system for a module
+   * with the given source path.
+   */
+  static String guessModuleName(String sourceName) {
     Path path = FileSystems.getDefault().getPath(sourceName);
     return guessModuleName(path);
   }
 
-  public static String guessModuleName(Path modulePath) {
+  /**
+   * Guesses the name of the global variable to use with Closure's type system for a module
+   * with the given source path.
+   */
+  static String guessModuleName(Path modulePath) {
     String baseName = Files.getNameWithoutExtension(modulePath.getFileName().toString());
     Path pseudoPath = modulePath.resolveSibling(baseName);
+    if (modulePath.getFileName().toString().equals("index.js")
+        && pseudoPath.getParent() != null) {
+      pseudoPath = pseudoPath.getParent();
+    }
     String name = PREFIX +
         (modulePath.isAbsolute() ? PATH_SEPARATOR : "") +
         Joiner.on(PATH_SEPARATOR).join(pseudoPath.iterator());

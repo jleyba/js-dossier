@@ -49,9 +49,33 @@ class Linker {
       return "class_";
     } else if (descriptor.isEnum()) {
       return "enum_";
+    } else if (descriptor.isModule()) {
+      return "module_";
     } else {
       return "namespace_";
     }
+  }
+
+  /**
+   * Returns the display name for the given {@code descriptor}. If the descriptor is for a CommonJS
+   * module, this will be the path to the module's source file.
+   */
+  String getDisplayName(Descriptor descriptor) {
+    if (descriptor.isModule()) {
+      Path modulePath = descriptor.getModule().getModulePath();
+      modulePath = modulePath.resolveSibling(
+          com.google.common.io.Files.getNameWithoutExtension(modulePath.toString()));
+
+      Path displayPath = config.getModulePrefix().relativize(modulePath);
+      if (displayPath.getFileName().toString().equals("index")
+          && displayPath.getParent() != null) {
+        displayPath = displayPath.getParent();
+      }
+
+      return displayPath.toString()
+          .replace(modulePath.getFileSystem().getSeparator(), "/");  // Oh windows...
+    }
+    return descriptor.getFullName();
   }
 
   /**
@@ -59,7 +83,7 @@ class Linker {
    * will always be relative to this linker's output directory.
    */
   Path getFilePath(Descriptor descriptor) {
-    String name = descriptor.getFullName().replace('.', '_') + ".html";
+    String name = getDisplayName(descriptor).replace('/', '_').replace('.', '_') + ".html";
     return config.getOutput().resolve(getTypePrefix(descriptor) + name);
   }
 

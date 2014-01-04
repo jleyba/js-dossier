@@ -123,6 +123,11 @@ public class Descriptor {
     return parent;
   }
 
+  public DossierModule getModule() {
+    checkState(module.isPresent(), "Not a module: %s", getFullName());
+    return module.get();
+  }
+
   /**
    * Returns the described type's "simple" name - that is, the last segment of its dot-separated
    * fully qualified name.
@@ -209,6 +214,10 @@ public class Descriptor {
   boolean isEnum() {
     return (type != null && type.isEnumType())
         || (info != null && info.isEnum());
+  }
+
+  boolean isModule() {
+    return module.isPresent();
   }
 
   boolean isEmptyNamespace() {

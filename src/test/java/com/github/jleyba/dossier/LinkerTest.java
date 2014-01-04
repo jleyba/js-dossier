@@ -6,6 +6,7 @@ import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import com.google.javascript.jscomp.DossierModule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -47,6 +48,35 @@ public class LinkerTest {
     when(descriptor.isEnum()).thenReturn(false);
     assertEquals(
         Paths.get("output/namespace_foo_Bar.html"),
+        linker.getFilePath(descriptor));
+  }
+
+  @Test
+  public void testGetFilePath_module() {
+    Path modulePrefix = Paths.get("src/foo");
+    Path outputDir = Paths.get("output");
+
+    Config mockConfig = mock(Config.class);
+    when(mockConfig.getOutput()).thenReturn(outputDir);
+    when(mockConfig.getModulePrefix()).thenReturn(modulePrefix);
+
+    DocRegistry mockRegistry = mock(DocRegistry.class);
+    Linker linker = new Linker(mockConfig, mockRegistry);
+
+    DossierModule mockModule = mock(DossierModule.class);
+
+    Descriptor descriptor = mock(Descriptor.class);
+    when(descriptor.isModule()).thenReturn(true);
+    when(descriptor.getModule()).thenReturn(mockModule);
+
+    when(mockModule.getModulePath()).thenReturn(modulePrefix.resolve("bar/baz.js"));
+    assertEquals(
+        Paths.get("output/module_bar_baz.html"),
+        linker.getFilePath(descriptor));
+
+    when(mockModule.getModulePath()).thenReturn(modulePrefix.resolve("bar/baz/index.js"));
+    assertEquals(
+        Paths.get("output/module_bar_baz.html"),
         linker.getFilePath(descriptor));
   }
 

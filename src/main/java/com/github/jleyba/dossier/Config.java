@@ -18,6 +18,7 @@ import static com.google.common.collect.Iterables.transform;
 import static com.google.common.collect.Sets.intersection;
 
 import com.google.common.base.Function;
+import com.google.common.base.Objects;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
@@ -49,6 +50,7 @@ class Config {
   private final ImmutableSet<Path> modules;
   private final ImmutableSet<Path> externs;
   private final Path srcPrefix;
+  private final Path modulePrefix;
   private final Path output;
   private final Optional<Path> license;
   private final Optional<Path> readme;
@@ -65,6 +67,7 @@ class Config {
    * @param output Path to the output directory.
    * @param license Path to a license file to include with the generated documentation.
    * @param readme Path to a markdown file to include in the main index.
+   * @param modulePrefix Prefix to strip from each module path when rendering documentation.
    * @param outputStream The stream to use for standard output.
    * @param errorStream The stream to use for error output.
    * @throws IllegalStateException If any of source, moudle, and extern sets intersect, or if the
@@ -72,8 +75,8 @@ class Config {
    */
   private Config(
       ImmutableSet<Path> srcs, ImmutableSet<Path> modules, ImmutableSet<Path> externs, Path output,
-      Optional<Path> license, Optional<Path> readme, PrintStream outputStream,
-      PrintStream errorStream) {
+      Optional<Path> license, Optional<Path> readme, Optional<Path> modulePrefix,
+      PrintStream outputStream, PrintStream errorStream) {
     checkArgument(intersection(srcs, externs).isEmpty(),
         "The sources and externs inputs must be disjoint:\n  sources: %s\n  externs: %s",
         srcs, externs);
@@ -93,6 +96,7 @@ class Config {
     this.srcs = srcs;
     this.modules = modules;
     this.srcPrefix = Paths.getCommonPrefix(srcs);
+    this.modulePrefix = getModulePreixPath(modulePrefix, modules);
     this.externs = externs;
     this.output = output;
     this.license = license;
@@ -120,6 +124,13 @@ class Config {
    */
   Path getSrcPrefix() {
     return srcPrefix;
+  }
+
+  /**
+   * Returns the common path prefix for all of the input modules.
+   */
+  Path getModulePrefix() {
+    return modulePrefix;
   }
 
   /**
@@ -162,6 +173,29 @@ class Config {
    */
   PrintStream getErrorStream() {
     return errorStream;
+  }
+
+  private static Path getModulePreixPath(Optional<Path> userSupplierPath, Iterable<Path> modules) {
+    Path path;
+    if (userSupplierPath.isPresent()) {
+      path = userSupplierPath.get();
+      checkArgument(Files.isDirectory(path), "Module prefix must be a directory: %s", path);
+      for (Path module : modules) {
+        checkArgument(module.startsWith(path),
+            "Module prefix <%s> is not an ancestor of module %s", path, module);
+      }
+    } else {
+      path = Paths.getCommonPrefix(modules);
+    }
+
+    // Always display at least one parent directory, if possible.
+    for (Path module : modules) {
+      if (path.equals(module.getParent())) {
+        return Objects.firstNonNull(path.getParent(), path);
+      }
+    }
+
+    return path;
   }
 
   /**
@@ -220,6 +254,7 @@ class Config {
         flags.outputDir,
         Optional.fromNullable(flags.license),
         Optional.fromNullable(flags.readme),
+        Optional.fromNullable(flags.stripModulePrefix),
         System.out,
         System.err);
   }

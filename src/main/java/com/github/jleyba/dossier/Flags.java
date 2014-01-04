@@ -75,6 +75,16 @@ class Flags {
   List<Path> modules = new LinkedList<>();
 
   @Option(
+      name = "--strip_module_prefix",
+      handler = SimplePathHandler.class,
+      usage = "A prefix to strip from every module's path when generating documentation. This " +
+          "will only impact how the documentation is rendered and not its internal processing." +
+          " The specified path must be a directory and must be an ancestor of every file " +
+          "specified by the --module flag. Note: if this flag is omitted, the closest common " +
+          "ancestor for all module files will be selected as the default.")
+  Path stripModulePrefix = null;
+
+  @Option(
       name = "--exclude", aliases = "-x",
       handler = SimplePathHandler.class,
       usage = "Path to a .js file to exclude from processing. If a directory is specified, all " +

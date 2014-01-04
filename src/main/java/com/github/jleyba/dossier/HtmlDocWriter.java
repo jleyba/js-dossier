@@ -42,6 +42,7 @@ import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
 import com.google.common.collect.FluentIterable;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
 import com.google.javascript.rhino.JSDocInfo;
@@ -92,8 +93,8 @@ class HtmlDocWriter implements DocWriter {
   @Override
   public void generateDocs(final JSTypeRegistry registry) throws IOException {
     sortedTypes = FluentIterable.from(docRegistry.getTypes())
-        .toSortedList(DescriptorNameComparator.INSTANCE);
-    sortedFiles = FluentIterable.from(config.getSources())
+        .toSortedList(new DescriptorNameComparator());
+    sortedFiles = FluentIterable.from(Iterables.concat(config.getSources(), config.getModules()))
         .toSortedList(PathComparator.INSTANCE);
 
     Files.createDirectories(config.getOutput());
@@ -160,7 +161,7 @@ class HtmlDocWriter implements DocWriter {
     String source = linker.getSourcePath(descriptor);
 
     JsType.Builder jsTypeBuilder = JsType.newBuilder()
-        .setName(descriptor.getFullName())
+        .setName(linker.getDisplayName(descriptor))
         .setNested(getNestedTypes(descriptor))
         .setSource(Strings.nullToEmpty(source))
         .setDescription(getBlockDescription(linker, descriptor.getJsDoc()))
@@ -231,7 +232,7 @@ class HtmlDocWriter implements DocWriter {
         String dest = config.getOutput().relativize(
             linker.getFilePath(descriptor)).toString();
         types.put(new JSONObject()
-            .put("name", descriptor.getFullName())
+            .put("name", linker.getDisplayName(descriptor))
             .put("href", dest)
             .put("isInterface", descriptor.isInterface()));
 
@@ -239,7 +240,7 @@ class HtmlDocWriter implements DocWriter {
         // index, but will be searchable.
         List<Descriptor> typedefs = FluentIterable.from(descriptor.getProperties())
             .filter(isTypedef())
-            .toSortedList(DescriptorNameComparator.INSTANCE);
+            .toSortedList(new DescriptorNameComparator());
         for (Descriptor typedef : typedefs) {
           types.put(new JSONObject()
               .put("name", typedef.getFullName())
@@ -252,6 +253,9 @@ class HtmlDocWriter implements DocWriter {
           .put("files", files)
           .put("types", types);
 
+      // NOTE: JSON is not actually a subset of JavaScript, but in our case we know we only
+      // have valid JavaScript input, so we can use JSONObject#toString() as a quick-and-dirty
+      // formatting mechanism.
       String content = "var TYPES = " + json + ";";
 
       Path outputPath = config.getOutput().resolve("types.js");
@@ -262,7 +266,7 @@ class HtmlDocWriter implements DocWriter {
   }
 
   private void copySourceFiles() throws IOException {
-    for (Path source : config.getSources()) {
+    for (Path source : Iterables.concat(config.getSources(), config.getModules())) {
       Path displayPath = config.getSrcPrefix().relativize(source);
 
       Resources resources = Resources.newBuilder()
@@ -395,7 +399,7 @@ class HtmlDocWriter implements DocWriter {
 
   private JsType.NestedTypes.Builder getNestedTypes(Descriptor descriptor) {
     List<Descriptor> children = FluentIterable.from(descriptor.getProperties())
-        .toSortedList(DescriptorNameComparator.INSTANCE);
+        .toSortedList(new DescriptorNameComparator());
 
     JsType.NestedTypes.Builder builder = JsType.NestedTypes.newBuilder();
 
@@ -445,7 +449,7 @@ class HtmlDocWriter implements DocWriter {
         unsorted = unsorted.filter(notOwnPropertyOf(seen));
       }
 
-      List<Descriptor> properties = unsorted.toSortedList(DescriptorNameComparator.INSTANCE);
+      List<Descriptor> properties = unsorted.toSortedList(new DescriptorNameComparator());
       seen.add(typeDescriptor);
       if (properties.isEmpty()) {
         continue;
@@ -473,7 +477,7 @@ class HtmlDocWriter implements DocWriter {
 
   private void getStaticData(JsType.Builder jsTypeBuilder, Descriptor descriptor) {
     List<Descriptor> props = FluentIterable.from(descriptor.getProperties())
-        .toSortedList(DescriptorNameComparator.INSTANCE);
+        .toSortedList(new DescriptorNameComparator());
     for (Descriptor property : props) {
       if (property.isCompilerConstant()) {
         jsTypeBuilder.addCompilerConstant(getPropertyData(property));
@@ -663,12 +667,11 @@ class HtmlDocWriter implements DocWriter {
         && !type.isInterface());
   }
 
-  private static enum DescriptorNameComparator implements Comparator<Descriptor> {
-    INSTANCE;
+  private class DescriptorNameComparator implements Comparator<Descriptor> {
 
     @Override
     public int compare(Descriptor a, Descriptor b) {
-      return a.getFullName().compareTo(b.getFullName());
+      return linker.getDisplayName(a).compareTo(linker.getDisplayName(b));
     }
   }
 

@@ -42,6 +42,16 @@ public class DossierModuleRegistry {
   }
 
   /**
+   * Returns the module with the given {@code name}.
+   *
+   * @throws IllegalArgumentException if there is no match module.
+   */
+  public DossierModule getModuleNamed(String name) {
+    checkArgument(hasModuleNamed(name), "No such module: %s", name);
+    return nameToModule.get(name);
+  }
+
+  /**
    * Returns whether there is a known CommonJS module with the given source file {@code path}.
    */
   boolean hasModuleWithPath(String path) {
