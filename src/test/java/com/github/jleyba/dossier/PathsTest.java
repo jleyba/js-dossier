@@ -72,6 +72,16 @@ public class PathsTest {
   }
 
   @Test
+  public void returnsSingletonInput() {
+    Path root = FILE_SYSTEM.getPath("/one/two/three");
+    Path file = root.resolve("foo");
+
+    List<Path> paths = newArrayList();
+    paths.add(file);
+    assertEquals(file, getCommonPrefix(root, paths));
+  }
+
+  @Test
   public void normalizesPathsBeforeComputingLongest() {
     Path root = FILE_SYSTEM.getPath("/root/and/then/some");
 

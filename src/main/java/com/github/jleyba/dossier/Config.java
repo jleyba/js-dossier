@@ -23,6 +23,7 @@ import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.javascript.jscomp.ErrorManager;
 import com.google.javascript.jscomp.PrintStreamErrorManager;
@@ -95,7 +96,7 @@ class Config {
 
     this.srcs = srcs;
     this.modules = modules;
-    this.srcPrefix = Paths.getCommonPrefix(srcs);
+    this.srcPrefix = getSourcePrefixPath(srcs, modules);
     this.modulePrefix = getModulePreixPath(modulePrefix, modules);
     this.externs = externs;
     this.output = output;
@@ -175,7 +176,16 @@ class Config {
     return errorStream;
   }
 
-  private static Path getModulePreixPath(Optional<Path> userSupplierPath, Iterable<Path> modules) {
+  private static Path getSourcePrefixPath(ImmutableSet<Path> sources, ImmutableSet<Path> modules) {
+    Path prefix = Paths.getCommonPrefix(Iterables.concat(sources, modules));
+    if (sources.contains(prefix) || modules.contains(prefix)) {
+      prefix = prefix.getParent();
+    }
+    return prefix;
+  }
+
+  private static Path getModulePreixPath(
+      Optional<Path> userSupplierPath, ImmutableSet<Path> modules) {
     Path path;
     if (userSupplierPath.isPresent()) {
       path = userSupplierPath.get();
@@ -186,6 +196,9 @@ class Config {
       }
     } else {
       path = Paths.getCommonPrefix(modules);
+      if (modules.contains(path) && path.getParent() != null) {
+        path = path.getParent();
+      }
     }
 
     // Always display at least one parent directory, if possible.
