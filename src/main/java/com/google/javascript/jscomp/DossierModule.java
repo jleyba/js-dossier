@@ -4,13 +4,19 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.base.Joiner;
+import com.google.common.base.Objects;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import com.google.common.collect.Iterables;
 import com.google.common.io.Files;
 import com.google.javascript.rhino.Node;
 
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Nullable;
@@ -26,6 +32,8 @@ public class DossierModule {
   private final Node scriptNode;
   private final Path modulePath;
   private final String varName;
+  private final Map<String, String> typeToAlias = new HashMap<>();
+  private final Map<String, String> aliasToType = new HashMap<>();
   private final Set<Scope.Var> internalVars = new HashSet<>();
 
   /**
@@ -63,6 +71,10 @@ public class DossierModule {
     return internalVars.contains(var);
   }
 
+  /**
+   * Registers a global variable under this module's script node as internal to the module
+   * itself. These variables should be not documented.
+   */
   public boolean registerInternalVar(Scope.Var var) {
     checkArgument(var.isGlobal(), "Not a global var: %s", var.getName());
     if (isInternalVar(var)) {
@@ -77,6 +89,50 @@ public class DossierModule {
       internalVars.add(var);
     }
     return false;
+  }
+
+  /**
+   * Registers a type aliased within this module. An alias is defined when a global type
+   * is assigned to a module's internal variable: {@code var Foo = global.Foo}, or when
+   * a type exported by another module is assigned to a module's internal variable:
+   * {@code var Foo = require('othermodule').Foo}.
+   *
+   * @param name the original type name.
+   * @param alias the alias name.
+   */
+  public void defineAlias(String name, String alias) {
+    System.out.println("In " + getModulePath());
+    System.out.println("alias " + alias + " = " + name);
+    typeToAlias.put(checkNotNull(name, "null name"), checkNotNull(alias, "null alias"));
+    aliasToType.put(alias, name);
+  }
+
+  /**
+   * Returns whether this module defines an alias for the given type {@code name}.
+   */
+  public boolean hasAlias(String name) {
+    return typeToAlias.containsKey(name);
+  }
+
+  /**
+   * Returns this module's alias for the given type. If this module does not define an alias
+   * for the type, this method will return the type itself.
+   */
+  public String getAlias(String typeName) {
+    return typeToAlias.containsKey(typeName)
+        ? typeToAlias.get(typeName)
+        : typeName;
+  }
+
+  /**
+   * Resolves an alias defined when this module. If the given name is <i>not</i> an alias,
+   * this method will trivially return that name.
+   */
+  public String resolveAlias(String alias) {
+    while (aliasToType.containsKey(alias)) {
+      alias = aliasToType.get(alias);
+    }
+    return alias;
   }
 
   @Nullable

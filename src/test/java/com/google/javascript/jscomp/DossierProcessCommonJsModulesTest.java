@@ -333,7 +333,26 @@ public class DossierProcessCommonJsModulesTest {
   }
 
   @Test
-  public void handlesRequiringExternModule() {
+  public void canReferenceTypeExportedAsAlias() {
+    CompilerUtil compiler = createCompiler(path("foo/bar.js"), path("foo/baz.js"));
+
+    compiler.compile(
+        createSourceFile(path("foo/bar.js"),
+            "/**",
+            " * @param {number} a .",
+            " * @constructor",
+            " */",
+            "var Greeter = function(a) {};",
+            "",
+            "/** @constructor */",
+            "exports.Bar = Greeter;"),
+        createSourceFile(path("foo/baz.js"),
+            "var bar = require('./bar');",
+            "",
+            "/** @type {!bar.Bar} */",
+            "var b = new bar.Bar(1);",
+            ""));
+    // OK if compiles without error.
   }
 
   private static String module(String name) {

@@ -58,6 +58,8 @@ class DossierProcessCommonJsModules implements CompilerPass {
   private final AbstractCompiler compiler;
   private final DossierModuleRegistry moduleRegistry;
 
+  private DossierModule currentModule;
+
   DossierProcessCommonJsModules(DossierCompiler compiler) {
     this.compiler = compiler;
     this.moduleRegistry = compiler.getModuleRegistry();
@@ -74,9 +76,6 @@ class DossierProcessCommonJsModules implements CompilerPass {
   private class CommonJsModuleCallback implements NodeTraversal.Callback {
 
     private final Map<String, String> renamedVars = new HashMap<>();
-    private final Map<String, String> aliasedVars = new HashMap<>();
-
-    private DossierModule currentModule;
 
     @Override
     public boolean shouldTraverse(NodeTraversal t, Node n, Node parent) {
@@ -127,10 +126,11 @@ class DossierProcessCommonJsModules implements CompilerPass {
       Node moduleDecl = generateModuleDeclaration(script, currentModule.getVarName());
 
       NodeTraversal.traverse(t.getCompiler(), script, new SuffixVarsCallback(
-          renamedVars, currentModule, moduleDecl));
-      NodeTraversal.traverse(t.getCompiler(), script, new TypeCleanup(renamedVars, aliasedVars));
+          renamedVars, moduleDecl));
+      NodeTraversal.traverse(t.getCompiler(), script, new TypeCleanup(renamedVars));
+
       renamedVars.clear();
-      aliasedVars.clear();
+      currentModule = null;
 
       t.getCompiler().reportCodeChange();
     }
@@ -186,9 +186,12 @@ class DossierProcessCommonJsModules implements CompilerPass {
         parent = parent.getParent();
       }
       if (parent.isName()) {
-        aliasedVars.put(parent.getString(), parent.getFirstChild().getQualifiedName());
+        currentModule.defineAlias(
+            parent.getString(),
+            parent.getFirstChild().getQualifiedName());
       } else if (parent.isAssign()) {
-        aliasedVars.put(parent.getFirstChild().getQualifiedName(),
+        currentModule.defineAlias(
+            parent.getFirstChild().getQualifiedName(),
             parent.getFirstChild().getNext().getQualifiedName());
       }
 
@@ -202,13 +205,10 @@ class DossierProcessCommonJsModules implements CompilerPass {
   private class SuffixVarsCallback extends NodeTraversal.AbstractPostOrderCallback {
 
     private final Map<String, String> renamedVars;
-    private final DossierModule currentModule;
     private final Node moduleDecl;
 
-    private SuffixVarsCallback(
-        Map<String, String> renamedVars, DossierModule currentModule, Node moduleDecl) {
+    private SuffixVarsCallback(Map<String, String> renamedVars, Node moduleDecl) {
       this.renamedVars = renamedVars;
-      this.currentModule = currentModule;
       this.moduleDecl = moduleDecl;
     }
 
@@ -230,14 +230,12 @@ class DossierProcessCommonJsModules implements CompilerPass {
     }
   }
 
-  private static class TypeCleanup extends NodeTraversal.AbstractPostOrderCallback {
+  private class TypeCleanup extends NodeTraversal.AbstractPostOrderCallback {
 
     private final Map<String, String> renamedVars;
-    private final Map<String, String> aliasedVars;
 
-    private TypeCleanup(Map<String, String> renamedVars, Map<String, String> aliasedVars) {
+    private TypeCleanup(Map<String, String> renamedVars) {
       this.renamedVars = renamedVars;
-      this.aliasedVars = aliasedVars;
     }
 
     @Override
@@ -280,8 +278,9 @@ class DossierProcessCommonJsModules implements CompilerPass {
         }
 
         String baseName = name.substring(0, endIndex);
-        if (aliasedVars.containsKey(baseName)) {
-          typeNode.setString(aliasedVars.get(baseName) + typeNode.getString().substring(endIndex));
+        if (currentModule.hasAlias(baseName)) {
+          typeNode.setString(
+              currentModule.getAlias(baseName) + typeNode.getString().substring(endIndex));
           return true;
         }
       }
