@@ -173,6 +173,7 @@ public class RendererTest {
         isHtml(
             "<!DOCTYPE html>",
             "<meta charset=\"UTF-8\">",
+            "<meta http-equiv=\"Content-Language\" content=\"en\" />",
             "<title>Foo.Bar</title>",
             "<link href=\"apples\" rel=\"stylesheet\" type=\"text/css\">",
             "<link href=\"oranges\" rel=\"stylesheet\" type=\"text/css\">"));

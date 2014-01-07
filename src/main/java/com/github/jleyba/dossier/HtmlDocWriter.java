@@ -34,6 +34,7 @@ import static com.github.jleyba.dossier.proto.Dossier.SourceFileRenderSpec;
 import static com.github.jleyba.dossier.proto.Dossier.TypeLink;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.base.Strings.nullToEmpty;
 import static com.google.common.collect.Iterables.transform;
 
 import com.github.jleyba.dossier.proto.Dossier;
@@ -84,6 +85,7 @@ class HtmlDocWriter implements DocWriter {
 
   private Iterable<Descriptor> sortedTypes;
   private Iterable<Path> sortedFiles;
+  private Iterable<ModuleDescriptor> sortedModules;
 
   HtmlDocWriter(Config config, DocRegistry registry) {
     this.config = checkNotNull(config);
@@ -94,9 +96,11 @@ class HtmlDocWriter implements DocWriter {
   @Override
   public void generateDocs(final JSTypeRegistry registry) throws IOException {
     sortedTypes = FluentIterable.from(docRegistry.getTypes())
-        .toSortedList(new DescriptorNameComparator());
+        .toSortedList(DescriptorNameComparator.INSTANCE);
     sortedFiles = FluentIterable.from(Iterables.concat(config.getSources(), config.getModules()))
         .toSortedList(PathComparator.INSTANCE);
+    sortedModules = FluentIterable.from(docRegistry.getModules())
+        .toSortedList(new ModueDisplayPathComparator());
 
     Files.createDirectories(config.getOutput());
     copyResources();
@@ -109,6 +113,10 @@ class HtmlDocWriter implements DocWriter {
         continue;
       }
       generateDocs(descriptor, registry);
+    }
+
+    for (ModuleDescriptor descriptor : sortedModules) {
+      generateModuleDocs(descriptor, registry);
     }
 
     writeTypesJson();
@@ -125,11 +133,7 @@ class HtmlDocWriter implements DocWriter {
 
     Path index = config.getOutput().resolve("index.html");
     renderer.render(index, IndexFileRenderSpec.newBuilder()
-        .setResources(Resources.newBuilder()
-            .addCss("dossier.css")
-            .addScript("types.js")
-            .addScript("dossier.js")
-            .build())
+        .setResources(getResources(index))
         .setHasLicense(config.getLicense().isPresent())
         .setReadme(readme)
         .build());
@@ -147,34 +151,74 @@ class HtmlDocWriter implements DocWriter {
         license,
         LicenseRenderSpec.newBuilder()
             .setLicense(License.newBuilder().setText(text).build())
-            .setResources(Resources.newBuilder()
-                .addCss("dossier.css")
-                .addScript("types.js")
-                .addScript("dossier.js")
-                .build())
+            .setResources(getResources(license))
             .build());
+  }
+
+  private void generateModuleDocs(ModuleDescriptor module, JSTypeRegistry registry)
+      throws IOException {
+    Path output = linker.getFilePath(module);
+    Files.createDirectories(output.getParent());
+
+    JsType.Builder jsTypeBuilder = JsType.newBuilder()
+        .setName(linker.getDisplayName(module))
+        .setSource(linker.getSourcePath(module))
+        .setDescription(getFileoverview(linker, module.getJsDoc()))
+        .setNested(getNestedTypeInfo(module.getExportedProperties()))
+        .addAllTypeDef(getTypeDefInfo(module.getExportedProperties()))
+// TODO: handle module that is an exported constructor.
+//        .addAllExtendedType(getInheritedTypes(descriptor, registry))
+//        .addAllImplementedType(getImplementedTypes(descriptor, registry))
+        ;
+
+    // TODO: exported API for static data.
+    getStaticData(jsTypeBuilder, module.getDescriptor().getProperties());
+    // TODO: exported prototype data for exported constructor
+//    getPrototypeData(jsTypeBuilder, descriptor, registry);
+//
+    // TODO: deprecation on script node or exported constructor.
+//    if (descriptor.isDeprecated()) {
+//      jsTypeBuilder.setDeprecation(getDeprecation(descriptor));
+//    }
+//
+    // TODO: exported enum
+//    if (descriptor.isEnum()) {
+//      extractEnumData(descriptor, jsTypeBuilder);
+//    }
+//
+    // TODO: exported constructor
+//    if (descriptor.isConstructor() || descriptor.isInterface()) {
+//      jsTypeBuilder.setConstructor(getFunctionData(descriptor));
+//    }
+
+    renderer.render(
+        output,
+        JsTypeRenderSpec.newBuilder()
+            .setResources(getResources(output))
+            .setHasLicense(config.getLicense().isPresent())
+            .setType(jsTypeBuilder.build())
+            .build());
+
+    for (Descriptor descriptor : module.getExportedProperties()) {
+      generateDocs(descriptor, registry);
+    }
   }
 
   private void generateDocs(Descriptor descriptor, JSTypeRegistry registry) throws IOException {
     Path output = linker.getFilePath(descriptor);
     Files.createDirectories(output.getParent());
 
-    String source = linker.getSourcePath(descriptor);
-    Dossier.Comment description = descriptor.isModule()
-        ? getFileoverview(linker, descriptor.getJsDoc())
-        : getBlockDescription(linker, descriptor.getJsDoc());
-
     JsType.Builder jsTypeBuilder = JsType.newBuilder()
-        .setName(linker.getDisplayName(descriptor))
-        .setNested(getNestedTypes(descriptor))
-        .setSource(Strings.nullToEmpty(source))
-        .setDescription(description)
-        .addAllTypeDef(getTypeDefs(descriptor))
+        .setName(descriptor.getFullName())
+        .setNested(getNestedTypeInfo(descriptor.getProperties()))
+        .setSource(nullToEmpty(linker.getSourcePath(descriptor)))
+        .setDescription(getBlockDescription(linker, descriptor.getJsDoc()))
+        .addAllTypeDef(getTypeDefInfo(descriptor.getProperties()))
         .addAllExtendedType(getInheritedTypes(descriptor, registry))
         .addAllImplementedType(getImplementedTypes(descriptor, registry))
         .setIsInterface(descriptor.isInterface());
 
-    getStaticData(jsTypeBuilder, descriptor);
+    getStaticData(jsTypeBuilder, descriptor.getProperties());
     getPrototypeData(jsTypeBuilder, descriptor, registry);
 
     if (descriptor.isDeprecated()) {
@@ -192,11 +236,7 @@ class HtmlDocWriter implements DocWriter {
     renderer.render(
         output,
         JsTypeRenderSpec.newBuilder()
-            .setResources(Resources.newBuilder()
-                .addCss("dossier.css")
-                .addScript("types.js")
-                .addScript("dossier.js")
-                .build())
+            .setResources(getResources(output))
             .setHasLicense(config.getLicense().isPresent())
             .setType(jsTypeBuilder.build())
             .build());
@@ -227,35 +267,18 @@ class HtmlDocWriter implements DocWriter {
             .put("href", dest));
       }
 
-      JSONArray types = new JSONArray();
-      for (Descriptor descriptor : sortedTypes) {
-        if (descriptor.isEmptyNamespace()) {
-          continue;
-        }
-
-        String dest = config.getOutput().relativize(
-            linker.getFilePath(descriptor)).toString();
-        types.put(new JSONObject()
-            .put("name", linker.getDisplayName(descriptor))
-            .put("href", dest)
-            .put("isInterface", descriptor.isInterface()));
-
-        // Also include typedefs. These will not be included in the main
-        // index, but will be searchable.
-        List<Descriptor> typedefs = FluentIterable.from(descriptor.getProperties())
-            .filter(isTypedef())
-            .toSortedList(new DescriptorNameComparator());
-        for (Descriptor typedef : typedefs) {
-          types.put(new JSONObject()
-              .put("name", typedef.getFullName())
-              .put("href", Strings.nullToEmpty(linker.getLink(typedef.getFullName())))
-              .put("isTypedef", true));
-        }
+      JSONArray modules = new JSONArray();
+      for (ModuleDescriptor module : sortedModules) {
+        String dest = config.getOutput().relativize(linker.getFilePath(module)).toString();
+        modules.put(new JSONObject()
+            .put("name", linker.getDisplayName(module))
+            .put("href", dest));
       }
 
       JSONObject json = new JSONObject()
           .put("files", files)
-          .put("types", types);
+          .put("modules", modules)
+          .put("types", getTypeInfo(sortedTypes));
 
       // NOTE: JSON is not actually a subset of JavaScript, but in our case we know we only
       // have valid JavaScript input, so we can use JSONObject#toString() as a quick-and-dirty
@@ -269,21 +292,50 @@ class HtmlDocWriter implements DocWriter {
     }
   }
 
+  private JSONArray getTypeInfo(Iterable<Descriptor> types) throws JSONException {
+    JSONArray array = new JSONArray();
+    for (Descriptor descriptor : types) {
+      if (descriptor.isEmptyNamespace()) {
+        continue;
+      }
+
+      String dest = config.getOutput().relativize(linker.getFilePath(descriptor)).toString();
+      array.put(new JSONObject()
+          .put("name", descriptor.getFullName())
+          .put("href", dest)
+          .put("isInterface", descriptor.isInterface()));
+
+      // Also include typedefs. These will not be included in the main
+      // index, but will be searchable.
+      List<Descriptor> typedefs = FluentIterable.from(descriptor.getProperties())
+          .filter(isTypedef())
+          .toSortedList(DescriptorNameComparator.INSTANCE);
+      for (Descriptor typedef : typedefs) {
+        array.put(new JSONObject()
+            .put("name", typedef.getFullName())
+            .put("href", nullToEmpty(linker.getLink(typedef.getFullName())))
+            .put("isTypedef", true));
+      }
+    }
+    return array;
+  }
+
+  private Resources getResources(Path forPathFromRoot) {
+    Path pathToRoot = config.getOutput()
+        .resolve(forPathFromRoot)
+        .getParent()
+        .relativize(config.getOutput());
+    return Resources.newBuilder()
+        .addCss(pathToRoot.resolve("dossier.css").toString())
+        .addScript(pathToRoot.resolve("types.js").toString())
+        .addScript(pathToRoot.resolve("dossier.js").toString())
+        .build();
+  }
+
   private void copySourceFiles() throws IOException {
     for (Path source : Iterables.concat(config.getSources(), config.getModules())) {
       Path displayPath = config.getSrcPrefix().relativize(source);
       Path renderPath = linker.getFilePath(source);
-
-      Path pathToRoot = config.getOutput()
-          .resolve(renderPath)
-          .getParent()
-          .relativize(config.getOutput());
-
-      Resources resources = Resources.newBuilder()
-          .addCss(pathToRoot.resolve("dossier.css").toString())
-          .addScript(pathToRoot.resolve("types.js").toString())
-          .addScript(pathToRoot.resolve("dossier.js").toString())
-          .build();
 
       SourceFile file = SourceFile.newBuilder()
           .setBaseName(source.getFileName().toString())
@@ -295,7 +347,7 @@ class HtmlDocWriter implements DocWriter {
           renderPath,
           SourceFileRenderSpec.newBuilder()
               .setFile(file)
-              .setResources(resources)
+              .setResources(getResources(renderPath))
               .setHasLicense(config.getLicense().isPresent())
               .build());
     }
@@ -310,7 +362,7 @@ class HtmlDocWriter implements DocWriter {
       String type = types.pop();
       list.add(TypeLink.newBuilder()
           .setText(type)
-          .setHref(Strings.nullToEmpty(linker.getLink(type)))
+          .setHref(nullToEmpty(linker.getLink(type)))
           .build());
     }
     return list;
@@ -327,7 +379,7 @@ class HtmlDocWriter implements DocWriter {
           public TypeLink apply(String input) {
             return TypeLink.newBuilder()
                 .setText(input)
-                .setHref(Strings.nullToEmpty(linker.getLink(input)))
+                .setHref(nullToEmpty(linker.getLink(input)))
                 .build();
           }
         });
@@ -372,8 +424,8 @@ class HtmlDocWriter implements DocWriter {
     builder.setEnumeration(enumBuilder);
   }
 
-  private List<JsType.TypeDef> getTypeDefs(Descriptor descriptor) {
-    return FluentIterable.from(descriptor.getProperties())
+  private List<JsType.TypeDef> getTypeDefInfo(Iterable<Descriptor> properties) {
+    return FluentIterable.from(properties)
         .filter(isTypedef())
         .transform(new Function<Descriptor, JsType.TypeDef>() {
           @Override
@@ -407,9 +459,9 @@ class HtmlDocWriter implements DocWriter {
         .build();
   }
 
-  private JsType.NestedTypes.Builder getNestedTypes(Descriptor descriptor) {
-    List<Descriptor> children = FluentIterable.from(descriptor.getProperties())
-        .toSortedList(new DescriptorNameComparator());
+  private JsType.NestedTypes.Builder getNestedTypeInfo(Iterable<Descriptor> properties) {
+    List<Descriptor> children = FluentIterable.from(properties)
+        .toSortedList(DescriptorNameComparator.INSTANCE);
 
     JsType.NestedTypes.Builder builder = JsType.NestedTypes.newBuilder();
 
@@ -418,8 +470,8 @@ class HtmlDocWriter implements DocWriter {
         continue;
       }
 
-      JsDoc jsdoc = checkNotNull(child.getJsDoc());
-      Dossier.Comment summary = getSummary(jsdoc.getBlockComment(), linker);
+      JsDoc jsdoc = checkNotNull(child.getJsDoc(), "No js docs for %s", child.getFullName());
+      Dossier.Comment summary =  getSummary(jsdoc.getBlockComment(), linker);
 
       JsType.NestedTypes.TypeSummary.Builder typeSummary =
           JsType.NestedTypes.TypeSummary.newBuilder()
@@ -459,7 +511,7 @@ class HtmlDocWriter implements DocWriter {
         unsorted = unsorted.filter(notOwnPropertyOf(seen));
       }
 
-      List<Descriptor> properties = unsorted.toSortedList(new DescriptorNameComparator());
+      List<Descriptor> properties = unsorted.toSortedList(DescriptorNameComparator.INSTANCE);
       seen.add(typeDescriptor);
       if (properties.isEmpty()) {
         continue;
@@ -469,7 +521,7 @@ class HtmlDocWriter implements DocWriter {
           .setName(typeDescriptor.getFullName());
       if (typeDescriptor != descriptor) {
         protoBuilder.setHref(
-            Strings.nullToEmpty(linker.getLink(typeDescriptor.getFullName())));
+            nullToEmpty(linker.getLink(typeDescriptor.getFullName())));
       }
 
       for (Descriptor property : properties) {
@@ -485,9 +537,10 @@ class HtmlDocWriter implements DocWriter {
     }
   }
 
-  private void getStaticData(JsType.Builder jsTypeBuilder, Descriptor descriptor) {
-    List<Descriptor> props = FluentIterable.from(descriptor.getProperties())
-        .toSortedList(new DescriptorNameComparator());
+  private void getStaticData(
+      JsType.Builder jsTypeBuilder, Iterable<Descriptor> properties) {
+    List<Descriptor> props = FluentIterable.from(properties)
+        .toSortedList(DescriptorNameComparator.INSTANCE);
     for (Descriptor property : props) {
       if (property.isCompilerConstant()) {
         jsTypeBuilder.addCompilerConstant(getPropertyData(property));
@@ -506,7 +559,7 @@ class HtmlDocWriter implements DocWriter {
 
     BaseProperty.Builder builder = BaseProperty.newBuilder()
         .setName(name)
-        .setSource(Strings.nullToEmpty(linker.getSourcePath(property)))
+        .setSource(nullToEmpty(linker.getSourcePath(property)))
         .setDescription(getBlockDescription(linker, property.getJsDoc()))
         .setVisibility(Dossier.Visibility.valueOf(property.getVisibility().name()));
 
@@ -677,11 +730,12 @@ class HtmlDocWriter implements DocWriter {
         && !type.isInterface());
   }
 
-  private class DescriptorNameComparator implements Comparator<Descriptor> {
+  private static enum DescriptorNameComparator implements Comparator<Descriptor> {
+    INSTANCE;
 
     @Override
     public int compare(Descriptor a, Descriptor b) {
-      return linker.getDisplayName(a).compareTo(linker.getDisplayName(b));
+      return a.getFullName().compareTo(b.getFullName());
     }
   }
 
@@ -691,6 +745,14 @@ class HtmlDocWriter implements DocWriter {
     @Override
     public int compare(Path o1, Path o2) {
       return o1.toString().compareTo(o2.toString());
+    }
+  }
+
+  private class ModueDisplayPathComparator implements Comparator<ModuleDescriptor> {
+
+    @Override
+    public int compare(ModuleDescriptor o1, ModuleDescriptor o2) {
+      return linker.getDisplayName(o1).compareTo(linker.getDisplayName(o2));
     }
   }
 }

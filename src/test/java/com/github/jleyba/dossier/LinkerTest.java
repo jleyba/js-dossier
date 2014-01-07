@@ -6,6 +6,7 @@ import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import com.google.common.base.Optional;
 import com.google.javascript.jscomp.DossierModule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,6 +19,8 @@ import java.nio.file.Paths;
 @RunWith(JUnit4.class)
 public class LinkerTest {
 
+  private static final Optional<ModuleDescriptor> NO_MODULE = Optional.absent();
+
   @Test
   public void testFilePath_descriptor() {
     Path outputDir = Paths.get("output");
@@ -27,6 +30,7 @@ public class LinkerTest {
     Linker linker = new Linker(mockConfig, mockRegistry);
 
     Descriptor descriptor = mock(Descriptor.class);
+    when(descriptor.getModule()).thenReturn(NO_MODULE);
     when(descriptor.getFullName()).thenReturn("foo.Bar");
     when(descriptor.isInterface()).thenReturn(true);
     assertEquals(
@@ -63,21 +67,17 @@ public class LinkerTest {
     DocRegistry mockRegistry = mock(DocRegistry.class);
     Linker linker = new Linker(mockConfig, mockRegistry);
 
-    DossierModule mockModule = mock(DossierModule.class);
+    ModuleDescriptor mockModule = mock(ModuleDescriptor.class);
 
-    Descriptor descriptor = mock(Descriptor.class);
-    when(descriptor.isModule()).thenReturn(true);
-    when(descriptor.getModule()).thenReturn(mockModule);
-
-    when(mockModule.getModulePath()).thenReturn(modulePrefix.resolve("bar/baz.js"));
+    when(mockModule.getPath()).thenReturn(modulePrefix.resolve("bar/baz.js"));
     assertEquals(
         Paths.get("output/module_bar_baz.html"),
-        linker.getFilePath(descriptor));
+        linker.getFilePath(mockModule));
 
-    when(mockModule.getModulePath()).thenReturn(modulePrefix.resolve("bar/baz/index.js"));
+    when(mockModule.getPath()).thenReturn(modulePrefix.resolve("bar/baz/index.js"));
     assertEquals(
         Paths.get("output/module_bar_baz.html"),
-        linker.getFilePath(descriptor));
+        linker.getFilePath(mockModule));
   }
 
   @Test
@@ -98,6 +98,33 @@ public class LinkerTest {
   }
 
   @Test
+  public void testGetFilePath_exportedDescriptor() {
+    Path srcPrefix = Paths.get("/root/src");
+    Path modulePrefix = srcPrefix.resolve("foo");
+    Path outputDir = Paths.get("/root/output");
+
+    Config mockConfig = mock(Config.class);
+    when(mockConfig.getOutput()).thenReturn(outputDir);
+    when(mockConfig.getSrcPrefix()).thenReturn(srcPrefix);
+    when(mockConfig.getModulePrefix()).thenReturn(modulePrefix);
+
+    DocRegistry mockRegistry = mock(DocRegistry.class);
+    Linker linker = new Linker(mockConfig, mockRegistry);
+
+    ModuleDescriptor module = mock(ModuleDescriptor.class);
+    when(module.getPath()).thenReturn(modulePrefix.resolve("bar/baz.js"));
+
+    Descriptor descriptor = mock(Descriptor.class);
+    when(descriptor.getFullName()).thenReturn("foo.Bar");
+    when(descriptor.isConstructor()).thenReturn(true);
+    when(descriptor.getModule()).thenReturn(Optional.of(module));
+
+    assertEquals(
+        Paths.get("/root/output/module_bar_baz_class_foo_Bar.html"),
+        linker.getFilePath(descriptor));
+  }
+
+  @Test
   public void testGetLink() {
     Path outputDir = Paths.get("");
     Config mockConfig = mock(Config.class);
@@ -108,12 +135,14 @@ public class LinkerTest {
     assertNull("No types are known", linker.getLink("goog.Foo"));
 
     Descriptor mockGoog = mock(Descriptor.class);
+    when(mockGoog.getModule()).thenReturn(NO_MODULE);
     when(mockRegistry.getType("goog")).thenReturn(mockGoog);
     when(mockGoog.getFullName()).thenReturn("goog");
     assertEquals("namespace_goog.html#goog.Foo", linker.getLink("goog.Foo"));
     assertEquals("namespace_goog.html#goog.Foo", linker.getLink("goog.Foo()"));
 
     Descriptor mockGoogFoo = mock(Descriptor.class);
+    when(mockGoogFoo.getModule()).thenReturn(NO_MODULE);
     when(mockRegistry.getType("goog.Foo")).thenReturn(mockGoogFoo);
     when(mockGoogFoo.getFullName()).thenReturn("goog.Foo");
     assertEquals("namespace_goog_Foo.html", linker.getLink("goog.Foo"));
@@ -129,6 +158,7 @@ public class LinkerTest {
     when(mockConfig.getOutput()).thenReturn(Paths.get(""));
 
     Descriptor mockGoogFoo = mock(Descriptor.class);
+    when(mockGoogFoo.getModule()).thenReturn(NO_MODULE);
     when(mockGoogFoo.getFullName()).thenReturn("goog");
 
     DocRegistry mockRegistry = mock(DocRegistry.class);
@@ -160,6 +190,7 @@ public class LinkerTest {
     when(mockConfig.getOutput()).thenReturn(Paths.get(""));
 
     Descriptor mockGoogFoo = mock(Descriptor.class);
+    when(mockGoogFoo.getModule()).thenReturn(NO_MODULE);
     when(mockGoogFoo.getFullName()).thenReturn("goog.Foo");
     when(mockGoogFoo.isConstructor()).thenReturn(true);
 

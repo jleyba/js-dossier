@@ -25,6 +25,7 @@ import com.google.javascript.jscomp.NodeTraversal;
 import com.google.javascript.jscomp.Scope;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.Node;
+import com.google.javascript.rhino.jstype.FunctionType;
 import com.google.javascript.rhino.jstype.JSType;
 import com.google.javascript.rhino.jstype.JSTypeRegistry;
 import com.google.javascript.rhino.jstype.ObjectType;
@@ -164,6 +165,7 @@ class DocPass  implements CompilerPass {
           continue;
         }
 
+        ModuleDescriptor moduleDescriptor = null;
         Descriptor descriptor = new Descriptor(name, type, info);
 
         // We only want to document the exported API of each module, so short-circuit the
@@ -173,36 +175,48 @@ class DocPass  implements CompilerPass {
           ObjectType obj = ObjectType.cast(type);
           type = checkNotNull(obj.getPropertyType("exports"),
               "Lost type info for module: %s", var.getName());
-          descriptor = new Descriptor(name, moduleRegistry.getModuleNamed(var.getName()), type);
+          info = obj.getOwnPropertyJSDocInfo("exports");
+          descriptor = new Descriptor(name, type, info);
+          moduleDescriptor = new ModuleDescriptor(
+              descriptor, moduleRegistry.getModuleNamed(var.getName()));
+          docRegistry.addModule(moduleDescriptor);
         }
 
-        traverseType(descriptor, registry);
+        traverseType(moduleDescriptor, descriptor, registry);
       }
     }
 
-    private void traverseType(Descriptor descriptor, JSTypeRegistry registry) {
+    private void traverseType(
+        @Nullable ModuleDescriptor module, Descriptor descriptor, JSTypeRegistry registry) {
       JSType type = checkNotNull(descriptor.getType(), "Null type: %s", descriptor.getFullName());
       ObjectType obj = ObjectType.cast(type);
       if (obj == null) {
         return;
       }
 
-      docRegistry.addType(descriptor);
+      if (module == null) {
+        docRegistry.addType(descriptor);
+      }
 
+      boolean exportingApi = module != null && module.getDescriptor() == descriptor;
       for (String prop : obj.getOwnPropertyNames()) {
-        String propName = descriptor.getFullName() + "." + prop;
         if (shouldSkipProperty(obj, prop)) {
           continue;
         }
 
-        JSType propType = obj.getPropertyType(prop);
+        String propName = exportingApi ? prop : descriptor.getFullName() + "." + prop;
+          JSType propType = obj.getPropertyType(prop);
         JSDocInfo propInfo  = obj.getOwnPropertyJSDocInfo(prop);
 
         if (registry.hasNamespace(propName)
             || isDocumentableType(propInfo)
             || isDocumentableType(propType)
             || isProvidedSymbol(propName)) {
-          traverseType(new Descriptor(propName, propType, propInfo), registry);
+          Descriptor propDescriptor = new Descriptor(propName, propType, propInfo);
+          if (module != null) {
+            module.addExportedProperty(propDescriptor);
+          }
+          traverseType(module, propDescriptor, registry);
         }
       }
     }

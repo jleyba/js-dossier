@@ -31,6 +31,7 @@ import javax.annotation.Nullable;
 class Linker {
 
   private final Config config;
+  private final Path outputRoot;
   private final DocRegistry docRegistry;
 
   /**
@@ -39,6 +40,7 @@ class Linker {
    */
   Linker(Config config, DocRegistry docRegistry) {
     this.config = checkNotNull(config);
+    this.outputRoot = config.getOutput();
     this.docRegistry = checkNotNull(docRegistry);
   }
 
@@ -49,60 +51,84 @@ class Linker {
       return "class_";
     } else if (descriptor.isEnum()) {
       return "enum_";
-    } else if (descriptor.isModule()) {
-      return "module_";
     } else {
       return "namespace_";
     }
   }
 
   /**
-   * Returns the display name for the given {@code descriptor}. If the descriptor is for a CommonJS
-   * module, this will be the path to the module's source file.
+   * Returns the display name for the given {@code descriptor}.
    */
-  String getDisplayName(Descriptor descriptor) {
-    if (descriptor.isModule()) {
-      Path modulePath = descriptor.getModule().getModulePath();
-      modulePath = modulePath.resolveSibling(
-          com.google.common.io.Files.getNameWithoutExtension(modulePath.toString()));
-
-      Path displayPath = config.getModulePrefix().relativize(modulePath);
-      if (displayPath.getFileName().toString().equals("index")
-          && displayPath.getParent() != null) {
-        displayPath = displayPath.getParent();
-      }
-
-      return displayPath.toString()
-          .replace(modulePath.getFileSystem().getSeparator(), "/");  // Oh windows...
+  String getDisplayName(ModuleDescriptor descriptor) {
+    if (descriptor.getAttribute("displayName") != null) {
+      return descriptor.getAttribute("displayName");
     }
-    return descriptor.getFullName();
+
+    Path modulePath = descriptor.getPath();
+    modulePath = modulePath.resolveSibling(
+        com.google.common.io.Files.getNameWithoutExtension(modulePath.toString()));
+
+    Path displayPath = config.getModulePrefix().relativize(modulePath);
+    if (displayPath.getFileName().toString().equals("index")
+        && displayPath.getParent() != null) {
+      displayPath = displayPath.getParent();
+    }
+
+    String displayName = displayPath.toString()
+        .replace(modulePath.getFileSystem().getSeparator(), "/");  // Oh windows...
+
+    descriptor.setAttribute("displayName", displayName);
+    return displayName;
   }
 
   /**
-   * Returns the path of the generated document file for the given descriptor. The generated path
-   * will always be relative to this linker's output directory.
+   * Returns the path of the generated document file for the given module.
+   */
+  Path getFilePath(ModuleDescriptor module) {
+    String name = getDisplayName(module).replace('/', '_') + ".html";
+    return outputRoot.resolve("module_" + name);
+  }
+
+  /**
+   * Returns the path of the generated document file for the given descriptor.
    */
   Path getFilePath(Descriptor descriptor) {
-    String name = getDisplayName(descriptor).replace('/', '_').replace('.', '_') + ".html";
-    return config.getOutput().resolve(getTypePrefix(descriptor) + name);
+    String name = descriptor.getFullName().replace('.', '_') + ".html";
+    name = getTypePrefix(descriptor) + name;
+
+    if (descriptor.getModule().isPresent()) {
+      ModuleDescriptor module = descriptor.getModule().get();
+      String moduleFileName = getFilePath(module).getFileName().toString();
+      name = com.google.common.io.Files.getNameWithoutExtension(moduleFileName)
+          + "_" + name;
+    }
+
+    return outputRoot.resolve(name);
   }
 
   /**
-   * Returns the path of the generated documentation for the given source file. The generated path
-   * will always be relative to this instance's output directory.
+   * Returns the path of the generated documentation for the given source file.
    */
   Path getFilePath(Path sourceFile) {
     Path path = config.getSrcPrefix()
         .relativize(sourceFile.toAbsolutePath().normalize())
         .resolveSibling(sourceFile.getFileName() + ".src.html");
-    return config.getOutput().resolve("source").resolve(path);
+    return outputRoot.resolve("source").resolve(path);
   }
 
   /**
    * @see #getFilePath(Path)
    */
   Path getFilePath(String sourceFile) {
-    return getFilePath(config.getOutput().getFileSystem().getPath(sourceFile));
+    return getFilePath(outputRoot.getFileSystem().getPath(sourceFile));
+  }
+
+  /**
+   * Computes the path from the given module's {@link #getFilePath(ModuleDescriptor) file} to the
+   * rendered source file.
+   */
+  String getSourcePath(ModuleDescriptor descriptor) {
+    return getFilePath(descriptor.getSource()).toString();
   }
 
   /**
@@ -257,8 +283,8 @@ class Linker {
         for (String see : jsDoc.getSeeClauses()) {
           try {
             return new URI(see).toString();
-          } catch (URISyntaxException e) {
-            continue;
+          } catch (URISyntaxException ignored) {
+            // Do nothing.
           }
         }
       }

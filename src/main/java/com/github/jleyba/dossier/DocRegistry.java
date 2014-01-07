@@ -20,7 +20,9 @@ import com.google.common.collect.Iterables;
 
 import java.nio.file.Path;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Nullable;
 
@@ -32,6 +34,7 @@ class DocRegistry {
   private final Map<Path, String> fileOverviews = new HashMap<>();
   private final Map<String, Descriptor> externs = new HashMap<>();
   private final Map<String, Descriptor> types = new HashMap<>();
+  private final Set<ModuleDescriptor> modules = new HashSet<>();
 
   void addFileOverview(Path path, @Nullable String overview) {
     fileOverviews.put(checkNotNull(path, "null path"), Strings.nullToEmpty(overview));
@@ -70,5 +73,13 @@ class DocRegistry {
 
   Iterable<Descriptor> getTypes() {
     return Iterables.unmodifiableIterable(types.values());
+  }
+
+  void addModule(ModuleDescriptor module) {
+    modules.add(module);
+  }
+
+  Iterable<ModuleDescriptor> getModules() {
+    return Iterables.unmodifiableIterable(modules);
   }
 }

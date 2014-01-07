@@ -23,7 +23,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
-import com.google.javascript.jscomp.DossierModule;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.JSTypeExpression;
 import com.google.javascript.rhino.Node;
@@ -48,27 +47,18 @@ public class Descriptor {
   private final String name;
   @Nullable private final JSType type;
   @Nullable private final JsDoc info;
-  private final Optional<DossierModule> module;
   private final Optional<Descriptor> parent;
 
   private List<ArgDescriptor> args;
   private List<Descriptor> properties;
   private Set<Descriptor> instanceProperties;
 
+  private Optional<ModuleDescriptor> module = Optional.absent();
+
   Descriptor(String name, @Nullable JSType type, @Nullable JSDocInfo info) {
     this.name = name;
     this.type = type;
     this.info = info == null ? null : new JsDoc(info); // TODO: fix me.
-    this.parent = Optional.absent();
-    this.module = Optional.absent();
-  }
-
-  Descriptor(String name, DossierModule module, @Nullable JSType type) {
-    this.name = name;
-    this.type = type;
-    this.info = module.getScriptNode().getJSDocInfo() == null ? null :
-        new JsDoc(module.getScriptNode().getJSDocInfo());
-    this.module = Optional.of(module);
     this.parent = Optional.absent();
   }
 
@@ -88,7 +78,6 @@ public class Descriptor {
     this.type = type;
     this.info = info == null ? null : new JsDoc(info); // TODO: fix me.
     this.parent = Optional.of(parent);
-    this.module = Optional.absent();
   }
 
   public static ImmutableList<Descriptor> sortByName(Iterable<Descriptor> descriptors) {
@@ -124,9 +113,13 @@ public class Descriptor {
     return parent;
   }
 
-  public DossierModule getModule() {
-    checkState(module.isPresent(), "Not a module: %s", getFullName());
-    return module.get();
+  Optional<ModuleDescriptor> getModule() {
+    return module;
+  }
+
+  void setModule(ModuleDescriptor module) {
+    checkState(!this.module.isPresent());
+    this.module = Optional.of(module);
   }
 
   /**
@@ -157,9 +150,6 @@ public class Descriptor {
   }
 
   @Nullable String getSource() {
-    if (module.isPresent()) {
-      return module.get().getScriptNode().getSourceFileName();
-    }
     if (info != null) {
       return info.getSource();
     }
@@ -171,9 +161,6 @@ public class Descriptor {
    * will trivially return 0 if this line number cannot be determined.
    */
   int getLineNum() {
-    if (module.isPresent()) {
-      return module.get().getScriptNode().getLineno();
-    }
     if (info != null) {
       return info.getLineNum();
     }
@@ -221,10 +208,6 @@ public class Descriptor {
   boolean isEnum() {
     return (type != null && type.isEnumType())
         || (info != null && info.isEnum());
-  }
-
-  boolean isModule() {
-    return module.isPresent();
   }
 
   boolean isEmptyNamespace() {

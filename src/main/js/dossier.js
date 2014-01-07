@@ -47,6 +47,7 @@ dossier.Descriptor_;
 
 /**
  * @typedef {{types: !Array.<dossier.Descriptor_>,
+ *            modules: !Array.<dossier.Descriptor_>,
  *            files: !Array.<dossier.Descriptor_>}}
  * @private
  */
@@ -138,12 +139,14 @@ dossier.initSearchBox_ = function(typeInfo) {
  */
 dossier.initIndex_ = function(typeInfo) {
   if (!goog.dom.getElement('type-index') ||
-      !goog.dom.getElement('file-index')) {
+      !goog.dom.getElement('file-index') ||
+      !goog.dom.getElement('module-index')) {
     return;  // The current page is not the main index.
   }
 
   dossier.createFileNavList_('file-index', typeInfo['files']);
   dossier.createNamespaceNavList_('type-index', typeInfo['types']);
+  dossier.createNamespaceNavList_('module-index', typeInfo['modules']);
 };
 
 
@@ -168,6 +171,10 @@ dossier.initNavList_ = function(typeInfo) {
   var typesControl = goog.dom.getElement('sidenav-types-ctrl');
   var typesList = dossier.createNavList_('sidenav-types', typeInfo['types']);
 
+  var modulesControl = goog.dom.getElement('sidenav-modules-ctrl');
+  var modulesList = dossier.createNavList_(
+      'sidenav-modules', typeInfo['modules']);
+
   var filesControl = goog.dom.getElement('sidenav-files-ctrl');
   var filesList = dossier.createFileNavList_(
       'sidenav-files', typeInfo['files']);
@@ -178,21 +185,33 @@ dossier.initNavList_ = function(typeInfo) {
       (goog.style.getSize(typesList).height / rootFontSize) + 'rem';
   var filesHeight =
       (goog.style.getSize(filesList).height / rootFontSize) + 'rem';
+  var modulesHeight =
+      (goog.style.getSize(modulesList).height / rootFontSize) + 'rem';
 
   // Initialize heights.
   typesControl.checked = dossier.loadCheckedState_('dossier.typesList');
   filesControl.checked = dossier.loadCheckedState_('dossier.filesList');
+  modulesControl.checked = dossier.loadCheckedState_('dossier.modulesList');
   goog.style.setHeight(typesList, typesControl.checked ? typesHeight : 0);
   goog.style.setHeight(filesList, filesControl.checked ? filesHeight : 0);
+  goog.style.setHeight(modulesList, modulesControl.checked ? modulesHeight : 0);
 
-  goog.events.listen(typesControl, goog.events.EventType.CHANGE, function() {
-    goog.style.setHeight(typesList, typesControl.checked ? typesHeight : 0);
-    dossier.storeCheckedState_('dossier.typesList', typesControl);
-  });
-  goog.events.listen(filesControl, goog.events.EventType.CHANGE, function() {
-    goog.style.setHeight(filesList, filesControl.checked ? filesHeight : 0);
-    dossier.storeCheckedState_('dossier.filesList', filesControl);
-  });
+  initChangeHandler(typesControl, typesList, typesHeight, 'dossier.typesList');
+  initChangeHandler(filesControl, filesList, filesHeight, 'dossier.filesList');
+  initChangeHandler(modulesControl, modulesList, modulesHeight, 'dossier.modulesList');
+
+  /**
+   * @param {!Element} controlEl .
+   * @param {!Element} listEl .
+   * @param {string} expandedHeight .
+   * @param {string} storageKey .
+   */
+  function initChangeHandler(controlEl, listEl, expandedHeight, storageKey) {
+    goog.events.listen(controlEl, goog.events.EventType.CHANGE, function() {
+      goog.style.setHeight(listEl, controlEl.checked ? expandedHeight : 0);
+      dossier.storeCheckedState_(storageKey, controlEl);
+    });
+  }
 };
 
 

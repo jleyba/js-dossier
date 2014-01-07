@@ -101,8 +101,6 @@ public class DossierModule {
    * @param alias the alias name.
    */
   public void defineAlias(String name, String alias) {
-    System.out.println("In " + getModulePath());
-    System.out.println("alias " + alias + " = " + name);
     typeToAlias.put(checkNotNull(name, "null name"), checkNotNull(alias, "null alias"));
     aliasToType.put(alias, name);
   }

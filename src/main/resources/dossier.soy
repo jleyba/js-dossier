@@ -10,6 +10,7 @@
 {template .pageHeader}
   <!DOCTYPE html>
   <meta charset="UTF-8">
+  <meta http-equiv="Content-Language" content="en" />
   <title>{$title}</title>
   {foreach $styleSheet in $resources.css}
     <link href="{$styleSheet}" rel="stylesheet" type="text/css">
@@ -51,11 +52,16 @@
   <nav id="sidenav">
     <input type="checkbox" id="sidenav-types-ctrl" />
     <input type="checkbox" id="sidenav-files-ctrl" />
+    <input type="checkbox" id="sidenav-modules-ctrl" />
 
     /** The sidenav is filled in at runtime by dossier.js */
     <a id="sidenav-overview"><div><h4>Overview</h4></div></a>
     <div id="sidenav-types">
       <label for="sidenav-types-ctrl"><h4>Types</h4></label>
+      <i>No data</i>
+    </div>
+    <div id="sidenav-modules">
+      <label for="sidenav-modules-ctrl"><h4>Modules</h4></label>
       <i>No data</i>
     </div>
     <div id="sidenav-files">
@@ -931,6 +937,11 @@
       {else}
         <section id="type-index">
           <h2>Namespaces / Types</h2>
+          <i>No data</i>
+        </section>
+
+        <section id="module-index">
+          <h2>Modules</h2>
           <i>No data</i>
         </section>
 
