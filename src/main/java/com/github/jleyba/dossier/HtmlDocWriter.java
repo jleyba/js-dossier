@@ -68,7 +68,6 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import java.util.Stack;
 
 import javax.annotation.Nullable;
 
@@ -355,11 +354,10 @@ class HtmlDocWriter implements DocWriter {
 
   private List<TypeLink> getInheritedTypes(
       Descriptor descriptor, JSTypeRegistry registry) {
-    Stack<String> types = descriptor.getAllTypes(registry);
-    List<TypeLink> list = Lists.newArrayListWithExpectedSize(
-        types.size());
+    LinkedList<JSType> types = descriptor.getAllTypes(registry);
+    List<TypeLink> list = Lists.newArrayListWithExpectedSize(types.size());
     while (!types.isEmpty()) {
-      String type = types.pop();
+      String type = types.pop().toString();
       list.add(TypeLink.newBuilder()
           .setText(type)
           .setHref(nullToEmpty(linker.getLink(type)))
@@ -370,16 +368,16 @@ class HtmlDocWriter implements DocWriter {
 
   private Iterable<TypeLink> getImplementedTypes(
       Descriptor descriptor, JSTypeRegistry registry) {
-    Set<String> interfaces = descriptor.isInterface()
+    Set<JSType> interfaces = descriptor.isInterface()
         ? descriptor.getExtendedInterfaces(registry)
         : descriptor.getImplementedInterfaces(registry);
-    return transform(Ordering.natural().sortedCopy(interfaces),
-        new Function<String, TypeLink>() {
+    return transform(Ordering.usingToString().sortedCopy(interfaces),
+        new Function<JSType, TypeLink>() {
           @Override
-          public TypeLink apply(String input) {
+          public TypeLink apply(JSType input) {
             return TypeLink.newBuilder()
-                .setText(input)
-                .setHref(nullToEmpty(linker.getLink(input)))
+                .setText(input.toString())
+                .setHref(nullToEmpty(linker.getLink(input.toString())))
                 .build();
           }
         });
@@ -498,10 +496,12 @@ class HtmlDocWriter implements DocWriter {
     }
 
     List<Descriptor> seen = new LinkedList<>();
-    for (String type : descriptor.getAssignableTypes(registry)) {
+    Iterable<JSType> assignableTypes =
+        Lists.reverse(descriptor.getAssignableTypes(registry));
+    for (JSType type : assignableTypes) {
       Descriptor typeDescriptor = docRegistry.getType(type);
       if (typeDescriptor == null) {
-        continue;
+        typeDescriptor = new Descriptor(type.toString(), type, type.getJSDocInfo());
       }
 
       FluentIterable<Descriptor> unsorted = FluentIterable

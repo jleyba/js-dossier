@@ -17,6 +17,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
+import com.google.javascript.rhino.jstype.JSType;
 
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -34,6 +35,7 @@ class DocRegistry {
   private final Map<Path, String> fileOverviews = new HashMap<>();
   private final Map<String, Descriptor> externs = new HashMap<>();
   private final Map<String, Descriptor> types = new HashMap<>();
+  private final Map<JSType, Descriptor> jsTypeToDescriptor = new HashMap<>();
   private final Set<ModuleDescriptor> modules = new HashSet<>();
 
   void addFileOverview(Path path, @Nullable String overview) {
@@ -47,6 +49,7 @@ class DocRegistry {
 
   void addExtern(Descriptor descriptor) {
     externs.put(descriptor.getFullName(), descriptor);
+    jsTypeToDescriptor.put(descriptor.getType(), descriptor);
   }
 
   boolean isExtern(String name) {
@@ -60,11 +63,17 @@ class DocRegistry {
 
   void addType(Descriptor descriptor) {
     types.put(descriptor.getFullName(), descriptor);
+    jsTypeToDescriptor.put(descriptor.getType(), descriptor);
   }
 
   @Nullable
   Descriptor getType(String name) {
     return types.get(name);
+  }
+
+  @Nullable
+  Descriptor getType(JSType type) {
+    return jsTypeToDescriptor.get(type);
   }
 
   boolean isKnownType(String name) {

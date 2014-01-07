@@ -20,7 +20,6 @@ import static com.google.common.base.Preconditions.checkState;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
 import com.google.javascript.rhino.JSDocInfo;
@@ -38,7 +37,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.Stack;
 
 import javax.annotation.Nullable;
 
@@ -57,7 +55,7 @@ public class Descriptor {
 
   Descriptor(String name, JSType type, @Nullable JSDocInfo info) {
     this.name = name;
-    this.type = checkNotNull(type, "no type: %s", name);
+    this.type = normalizeType(name, type);
     this.info = info == null ? null : new JsDoc(info); // TODO: fix me.
     this.parent = Optional.absent();
   }
@@ -75,9 +73,17 @@ public class Descriptor {
   Descriptor(Descriptor parent, String name, JSType type, @Nullable JSDocInfo info) {
     checkArgument(null != parent && (parent.isConstructor() || parent.isInterface()));
     this.name = name;
-    this.type = checkNotNull(type, "null type: %s", name);
+    this.type = normalizeType(name, type);
     this.info = info == null ? null : new JsDoc(info); // TODO: fix me.
     this.parent = Optional.of(parent);
+  }
+
+  private static JSType normalizeType(String name, JSType type) {
+    checkNotNull(type, "null type: %s", name);
+    if (type.isConstructor()) {
+      return type.toObjectType().getTypeOfThis();
+    }
+    return type;
   }
 
   public static ImmutableList<Descriptor> sortByName(Iterable<Descriptor> descriptors) {
@@ -141,7 +147,7 @@ public class Descriptor {
     return name;
   }
 
-  @Nullable JSType getType() {
+  JSType getType() {
     return type;
   }
 
@@ -245,15 +251,15 @@ public class Descriptor {
    *
    * <p>The returned stack will be empty if this descriptor is not for a class.
    */
-  Stack<String> getAllTypes(JSTypeRegistry registry) {
-    Stack<String> stack = new Stack<>();
+  LinkedList<JSType> getAllTypes(JSTypeRegistry registry) {
+    LinkedList<JSType> stack = new LinkedList<>();
     if (!isConstructor()) {
       return stack;
     }
-    stack.push(getFullName());
-    for (String type = getBaseType(getFullName(), registry);
-         type != null;
-         type = getBaseType(type, registry)) {
+    stack.push(type);
+    for (JSType type = getBaseType(this.type, registry);
+        type != null;
+        type = getBaseType(type, registry)) {
       stack.push(type);
     }
     return stack;
@@ -263,20 +269,19 @@ public class Descriptor {
    * Returns all of the interfaces that this type implements. The returned set will be empty if
    * this descriptor is not for a class.
    */
-  Set<String> getImplementedInterfaces(JSTypeRegistry registry) {
-    Set<String> interfaces = new HashSet<>();
+  Set<JSType> getImplementedInterfaces(JSTypeRegistry registry) {
+    Set<JSType> interfaces = new HashSet<>();
     if (!isConstructor()) {
       return interfaces;
     }
 
-    Stack<String> allTypes = getAllTypes(registry);
+    LinkedList<JSType> allTypes = getAllTypes(registry);
     while (!allTypes.isEmpty()) {
-      String name = allTypes.pop();
-      JSType type = registry.getType(name);
+      JSType type = allTypes.pop();
       if (type != null) {
         JSDocInfo info = type.getJSDocInfo();
         for (JSTypeExpression expr : info.getImplementedInterfaces()) {
-          interfaces.add(expr.evaluate(null, registry).toString());
+          interfaces.add(expr.evaluate(null, registry));
         }
       }
     }
@@ -288,7 +293,7 @@ public class Descriptor {
    * Returns the interfaces extended by this type. If this descriptor is not for an interface,
    * the returned set will be empty.
    */
-  Set<String> getExtendedInterfaces(JSTypeRegistry registry) {
+  Set<JSType> getExtendedInterfaces(JSTypeRegistry registry) {
     if (!isInterface()) {
       return new HashSet<>();
     }
@@ -300,13 +305,14 @@ public class Descriptor {
    * an instance of class {@code X}, which extends {@code Y} and implements {@code Z},
    * {@code x} may be assigned to {@code X}, {@code Y}, or {@code Z}.
    */
-  Iterable<String> getAssignableTypes(JSTypeRegistry registry) {
+  List<JSType> getAssignableTypes(JSTypeRegistry registry) {
     if (isConstructor()) {
       return getAllTypes(registry);
     } else if (isInterface()) {
-      return Iterables.concat(
-          Lists.newArrayList(getFullName()),
-          getExtendedInterfaces(registry));
+      List<JSType> types = Lists.newLinkedList();
+      types.add(type);
+      types.addAll(getExtendedInterfaces(registry));
+      return types;
     } else {
       return ImmutableList.of();
     }
@@ -465,11 +471,11 @@ public class Descriptor {
         || ctor.getPrototype().hasOwnProperty(name);
   }
 
-  private static Set<String> getExtendedInterfaces(JsDoc info, JSTypeRegistry registry) {
-    Set<String> interfaces = new HashSet<>();
+  private static Set<JSType> getExtendedInterfaces(JsDoc info, JSTypeRegistry registry) {
+    Set<JSType> interfaces = new HashSet<>();
     for (JSTypeExpression expression : info.getExtendedInterfaces()) {
       JSType type = expression.evaluate(null, registry);
-      if (interfaces.add(type.toString())) {
+      if (interfaces.add(type)) {
         JSDocInfo docInfo = type.getJSDocInfo();
         if (docInfo != null) {
           interfaces.addAll(getExtendedInterfaces(new JsDoc(docInfo), registry));
@@ -481,12 +487,7 @@ public class Descriptor {
   }
 
   @Nullable
-  private static String getBaseType(String name, JSTypeRegistry registry) {
-    JSType type = registry.getType(name);
-    if (type == null) {
-      return null;
-    }
-
+  private static JSType getBaseType(JSType type, JSTypeRegistry registry) {
     JSDocInfo info = type.getJSDocInfo();
     if (info == null) {
       return null;
@@ -497,6 +498,6 @@ public class Descriptor {
       return null;
     }
 
-    return baseType.evaluate(null, registry).toString();
+    return baseType.evaluate(null, registry);
   }
 }
