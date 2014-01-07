@@ -150,7 +150,7 @@ class Linker {
 
     int lineNum = descriptor.getLineNum();
     if (lineNum > 1) {
-      return strPath + "#l" + (lineNum - 1);
+      return strPath + "#l" + lineNum;
     }
     return strPath;
   }

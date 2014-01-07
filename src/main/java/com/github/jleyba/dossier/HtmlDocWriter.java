@@ -54,6 +54,7 @@ import com.google.javascript.rhino.jstype.FunctionType;
 import com.google.javascript.rhino.jstype.JSType;
 import com.google.javascript.rhino.jstype.JSTypeRegistry;
 import com.google.javascript.rhino.jstype.ObjectType;
+import com.google.javascript.rhino.jstype.StaticScope;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -501,7 +502,12 @@ class HtmlDocWriter implements DocWriter {
     for (JSType type : assignableTypes) {
       Descriptor typeDescriptor = docRegistry.getType(type);
       if (typeDescriptor == null) {
-        typeDescriptor = new Descriptor(type.toString(), type, type.getJSDocInfo());
+        Node typeNode = null;
+        if (type instanceof StaticScope) {
+          typeNode = ((StaticScope<?>) type).getRootNode();
+        }
+        typeDescriptor = new Descriptor(
+            type.toString(), typeNode, type, type.getJSDocInfo());
       }
 
       FluentIterable<Descriptor> unsorted = FluentIterable

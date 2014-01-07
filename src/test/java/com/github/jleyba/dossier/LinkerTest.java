@@ -248,7 +248,7 @@ public class LinkerTest {
 
     Linker linker = new Linker(mockConfig, mock(DocRegistry.class));
     assertEquals(
-        "source/a/b/c.src.html#l122",
+        "source/a/b/c.src.html#l123",
         linker.getSourcePath(mockDescriptor));
   }
 }

@@ -43,6 +43,7 @@ import javax.annotation.Nullable;
 public class Descriptor {
 
   private final String name;
+  @Nullable private final Node srcNode;
   private final JSType type;
   @Nullable private final JsDoc info;
   private final Optional<Descriptor> parent;
@@ -53,8 +54,9 @@ public class Descriptor {
 
   private Optional<ModuleDescriptor> module = Optional.absent();
 
-  Descriptor(String name, JSType type, @Nullable JSDocInfo info) {
+  Descriptor(String name, @Nullable Node srcNode, JSType type, @Nullable JSDocInfo info) {
     this.name = name;
+    this.srcNode = srcNode;
     this.type = normalizeType(name, type);
     this.info = getJsDoc(info, type);
     this.parent = Optional.absent();
@@ -65,14 +67,17 @@ public class Descriptor {
    *
    * @param parent the descriptor for the object this property is defined on.
    * @param name the fully qualified name of this property.
+   * @param srcNode node in the AST where the property was defined.
    * @param type this property's type.
    * @param info this property's JSDoc info.
    * @throws IllegalArgumentException if {@code parent} is not a constructor or interface
    *     descriptor.
    */
-  Descriptor(Descriptor parent, String name, JSType type, @Nullable JSDocInfo info) {
+  Descriptor(Descriptor parent, String name, @Nullable Node srcNode, JSType type,
+      @Nullable JSDocInfo info) {
     checkArgument(null != parent && (parent.isConstructor() || parent.isInterface()));
     this.name = name;
+    this.srcNode = srcNode;
     this.type = normalizeType(name, type);
     this.info = getJsDoc(info, type);
     this.parent = Optional.of(parent);
@@ -166,6 +171,9 @@ public class Descriptor {
   }
 
   @Nullable String getSource() {
+    if (srcNode != null) {
+      return srcNode.getSourceFileName();
+    }
     if (info != null) {
       return info.getSource();
     }
@@ -177,6 +185,9 @@ public class Descriptor {
    * will trivially return 0 if this line number cannot be determined.
    */
   int getLineNum() {
+    if (srcNode != null) {
+      return srcNode.getLineno();
+    }
     if (info != null) {
       return info.getLineNum();
     }
@@ -415,7 +426,9 @@ public class Descriptor {
       }
 
       JSDocInfo info = obj.getOwnPropertyJSDocInfo(prop);
-      properties.add(new Descriptor(getFullName() + "." + prop, obj.getPropertyType(prop), info));
+      Node srcNode  = obj.getPropertyNode(prop);
+      properties.add(new Descriptor(
+          getFullName() + "." + prop, srcNode, obj.getPropertyType(prop), info));
     }
 
     return properties;
@@ -463,7 +476,8 @@ public class Descriptor {
       }
 
       String name = parent.getFullName() + ".prototype." + prop;
-      properties.add(new Descriptor(parent, name, obj.getPropertyType(prop), info));
+      properties.add(new Descriptor(
+          parent, name, obj.getPropertyNode(prop), obj.getPropertyType(prop), info));
     }
     return properties;
   }

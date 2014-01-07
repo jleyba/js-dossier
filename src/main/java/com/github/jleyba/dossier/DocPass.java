@@ -25,7 +25,6 @@ import com.google.javascript.jscomp.NodeTraversal;
 import com.google.javascript.jscomp.Scope;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.Node;
-import com.google.javascript.rhino.jstype.FunctionType;
 import com.google.javascript.rhino.jstype.JSType;
 import com.google.javascript.rhino.jstype.JSTypeRegistry;
 import com.google.javascript.rhino.jstype.ObjectType;
@@ -103,7 +102,7 @@ class DocPass  implements CompilerPass {
       for (Scope.Var var : scope.getAllSymbols()) {
         @Nullable JSType type = getJSType(scope, var, t.getCompiler().getTypeRegistry());
         @Nullable JSDocInfo info = getJSDocInfo(var, type);
-        docRegistry.addExtern(new Descriptor(var.getName(), type, info));
+        docRegistry.addExtern(new Descriptor(var.getName(), var.getNameNode(), type, info));
       }
     }
 
@@ -170,7 +169,7 @@ class DocPass  implements CompilerPass {
         }
 
         ModuleDescriptor moduleDescriptor = null;
-        Descriptor descriptor = new Descriptor(name, type, info);
+        Descriptor descriptor = new Descriptor(name, var.getNameNode(), type, info);
 
         // We only want to document the exported API of each module, so short-circuit the
         // object graph traversal here.
@@ -180,7 +179,7 @@ class DocPass  implements CompilerPass {
           type = checkNotNull(obj.getPropertyType("exports"),
               "Lost type info for module: %s", var.getName());
           info = obj.getOwnPropertyJSDocInfo("exports");
-          descriptor = new Descriptor(name, type, info);
+          descriptor = new Descriptor(name, obj.getPropertyNode("exports"), type, info);
           moduleDescriptor = new ModuleDescriptor(
               descriptor, moduleRegistry.getModuleNamed(var.getName()));
           docRegistry.addModule(moduleDescriptor);
@@ -219,7 +218,8 @@ class DocPass  implements CompilerPass {
             || isDocumentableType(propInfo)
             || isDocumentableType(propType)
             || isProvidedSymbol(propName)) {
-          Descriptor propDescriptor = new Descriptor(propName, propType, propInfo);
+          Descriptor propDescriptor = new Descriptor(
+              propName, obj.getPropertyNode(prop), propType, propInfo);
           if (module != null) {
             module.addExportedProperty(propDescriptor);
           }
