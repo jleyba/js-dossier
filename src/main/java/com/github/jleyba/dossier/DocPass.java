@@ -201,6 +201,10 @@ class DocPass  implements CompilerPass {
         docRegistry.addType(descriptor);
       }
 
+      if (obj.isInstanceType()) {
+        obj = obj.getConstructor();
+      }
+
       boolean exportingApi = module != null && module.getDescriptor() == descriptor;
       for (String prop : obj.getOwnPropertyNames()) {
         if (shouldSkipProperty(obj, prop)) {
