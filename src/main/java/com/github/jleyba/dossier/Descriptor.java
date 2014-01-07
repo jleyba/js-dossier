@@ -56,7 +56,7 @@ public class Descriptor {
   Descriptor(String name, JSType type, @Nullable JSDocInfo info) {
     this.name = name;
     this.type = normalizeType(name, type);
-    this.info = info == null ? null : new JsDoc(info); // TODO: fix me.
+    this.info = getJsDoc(info, type);
     this.parent = Optional.absent();
   }
 
@@ -74,13 +74,23 @@ public class Descriptor {
     checkArgument(null != parent && (parent.isConstructor() || parent.isInterface()));
     this.name = name;
     this.type = normalizeType(name, type);
-    this.info = info == null ? null : new JsDoc(info); // TODO: fix me.
+    this.info = getJsDoc(info, type);
     this.parent = Optional.of(parent);
+  }
+
+  private static JsDoc getJsDoc(@Nullable JSDocInfo info, JSType type) {
+    if (info == null) {
+      // TODO: we should only do this for constructors, interfaces, and enums.
+      // TODO: must preserve original source location.
+      info = type.getJSDocInfo();
+    }
+    return info == null ? null : new JsDoc(info);
   }
 
   private static JSType normalizeType(String name, JSType type) {
     checkNotNull(type, "null type: %s", name);
     if (type.isConstructor()) {
+      // TODO: preserve location info?
       return type.toObjectType().getTypeOfThis();
     }
     return type;
