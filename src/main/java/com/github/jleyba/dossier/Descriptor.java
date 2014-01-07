@@ -57,7 +57,7 @@ public class Descriptor {
   Descriptor(String name, @Nullable Node srcNode, JSType type, @Nullable JSDocInfo info) {
     this.name = name;
     this.srcNode = srcNode;
-    this.type = normalizeType(name, type);
+    this.type = checkNotNull(type, "null type: %s", name);
     this.info = getJsDoc(info, type);
     this.parent = Optional.absent();
   }
@@ -78,7 +78,7 @@ public class Descriptor {
     checkArgument(null != parent && (parent.isConstructor() || parent.isInterface()));
     this.name = name;
     this.srcNode = srcNode;
-    this.type = normalizeType(name, type);
+    this.type = checkNotNull(type, "null type: %s", name);
     this.info = getJsDoc(info, type);
     this.parent = Optional.of(parent);
   }
@@ -90,15 +90,6 @@ public class Descriptor {
       info = type.getJSDocInfo();
     }
     return info == null ? null : new JsDoc(info);
-  }
-
-  private static JSType normalizeType(String name, JSType type) {
-    checkNotNull(type, "null type: %s", name);
-    if (type.isConstructor()) {
-      // TODO: preserve location info?
-      return type.toObjectType().getTypeOfThis();
-    }
-    return type;
   }
 
   public static ImmutableList<Descriptor> sortByName(Iterable<Descriptor> descriptors) {
@@ -277,11 +268,8 @@ public class Descriptor {
     if (!isConstructor()) {
       return stack;
     }
-    stack.push(type);
-    for (JSType type = getBaseType(this.type, registry);
-        type != null;
-        type = getBaseType(type, registry)) {
-      stack.push(type);
+    for (JSType type = this.type; type != null; type = getBaseType(type, registry)) {
+      stack.push(normalizeType(type));
     }
     return stack;
   }
@@ -299,7 +287,7 @@ public class Descriptor {
     LinkedList<JSType> allTypes = getAllTypes(registry);
     while (!allTypes.isEmpty()) {
       JSType type = allTypes.pop();
-      if (type != null) {
+      if (type != null && type.getJSDocInfo() != null) {
         JSDocInfo info = type.getJSDocInfo();
         for (JSTypeExpression expr : info.getImplementedInterfaces()) {
           interfaces.add(expr.evaluate(null, registry));
@@ -331,7 +319,7 @@ public class Descriptor {
       return getAllTypes(registry);
     } else if (isInterface()) {
       List<JSType> types = Lists.newLinkedList();
-      types.add(type);
+      types.add(normalizeType(type));
       types.addAll(getExtendedInterfaces(registry));
       return types;
     } else {
@@ -499,7 +487,7 @@ public class Descriptor {
     Set<JSType> interfaces = new HashSet<>();
     for (JSTypeExpression expression : info.getExtendedInterfaces()) {
       JSType type = expression.evaluate(null, registry);
-      if (interfaces.add(type)) {
+      if (interfaces.add(normalizeType(type))) {
         JSDocInfo docInfo = type.getJSDocInfo();
         if (docInfo != null) {
           interfaces.addAll(getExtendedInterfaces(new JsDoc(docInfo), registry));
@@ -508,6 +496,17 @@ public class Descriptor {
     }
 
     return interfaces;
+  }
+
+  /**
+   * Normalizes constructor type references to reference the constructed type, not the
+   * constructor <i>function</i>.
+   */
+  private static JSType normalizeType(JSType type) {
+    if (type.isConstructor()) {
+      return type.toObjectType().getTypeOfThis();
+    }
+    return type;
   }
 
   @Nullable

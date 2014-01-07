@@ -469,8 +469,11 @@ class HtmlDocWriter implements DocWriter {
         continue;
       }
 
-      JsDoc jsdoc = checkNotNull(child.getJsDoc(), "No js docs for %s", child.getFullName());
-      Dossier.Comment summary =  getSummary(jsdoc.getBlockComment(), linker);
+      Dossier.Comment summary = getSummary("No description.", linker);
+      JsDoc jsdoc = child.getJsDoc();
+      if (jsdoc != null) {
+        summary =  getSummary(jsdoc.getBlockComment(), linker);
+      }
 
       JsType.NestedTypes.TypeSummary.Builder typeSummary =
           JsType.NestedTypes.TypeSummary.newBuilder()
