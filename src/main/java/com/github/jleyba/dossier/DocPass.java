@@ -75,6 +75,10 @@ class DocPass  implements CompilerPass {
       if (null == type && null != var.getInitialValue()) {
         type = var.getInitialValue().getJSType();
       }
+
+      if (null == type) {
+        type = var.getNameNode().getJSType();
+      }
     }
     return type;
   }
@@ -205,8 +209,11 @@ class DocPass  implements CompilerPass {
         }
 
         String propName = exportingApi ? prop : descriptor.getFullName() + "." + prop;
-          JSType propType = obj.getPropertyType(prop);
+        JSType propType = obj.getPropertyType(prop);
         JSDocInfo propInfo  = obj.getOwnPropertyJSDocInfo(prop);
+        if (propInfo == null) {
+          propInfo = propType.getJSDocInfo();
+        }
 
         if (registry.hasNamespace(propName)
             || isDocumentableType(propInfo)

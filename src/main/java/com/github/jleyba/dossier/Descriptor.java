@@ -45,7 +45,7 @@ import javax.annotation.Nullable;
 public class Descriptor {
 
   private final String name;
-  @Nullable private final JSType type;
+  private final JSType type;
   @Nullable private final JsDoc info;
   private final Optional<Descriptor> parent;
 
@@ -55,9 +55,9 @@ public class Descriptor {
 
   private Optional<ModuleDescriptor> module = Optional.absent();
 
-  Descriptor(String name, @Nullable JSType type, @Nullable JSDocInfo info) {
+  Descriptor(String name, JSType type, @Nullable JSDocInfo info) {
     this.name = name;
-    this.type = type;
+    this.type = checkNotNull(type, "no type: %s", name);
     this.info = info == null ? null : new JsDoc(info); // TODO: fix me.
     this.parent = Optional.absent();
   }
@@ -72,10 +72,10 @@ public class Descriptor {
    * @throws IllegalArgumentException if {@code parent} is not a constructor or interface
    *     descriptor.
    */
-  Descriptor(Descriptor parent, String name, @Nullable JSType type, @Nullable JSDocInfo info) {
+  Descriptor(Descriptor parent, String name, JSType type, @Nullable JSDocInfo info) {
     checkArgument(null != parent && (parent.isConstructor() || parent.isInterface()));
     this.name = name;
-    this.type = type;
+    this.type = checkNotNull(type, "null type: %s", name);
     this.info = info == null ? null : new JsDoc(info); // TODO: fix me.
     this.parent = Optional.of(parent);
   }
