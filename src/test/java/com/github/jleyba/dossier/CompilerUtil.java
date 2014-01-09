@@ -9,6 +9,7 @@ import com.google.common.collect.Multimap;
 import com.google.common.io.ByteStreams;
 import com.google.javascript.jscomp.*;
 import com.google.javascript.jscomp.Compiler;
+import com.google.javascript.rhino.Node;
 
 import java.io.IOException;
 import java.io.PrintStream;
@@ -35,8 +36,12 @@ public class CompilerUtil {
     this.options = options;
   }
 
-  Compiler getCompiler() {
+  public Compiler getCompiler() {
     return compiler;
+  }
+
+  public Node getRoot() {
+    return compiler.getRoot();
   }
 
   public String toSource() {

@@ -2,12 +2,20 @@ package com.google.javascript.jscomp;
 
 import static com.github.jleyba.dossier.CompilerUtil.createSourceFile;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import com.github.jleyba.dossier.CompilerUtil;
 import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Iterables;
+import com.google.javascript.rhino.JSDocInfo;
+import com.google.javascript.rhino.Node;
+import com.google.javascript.rhino.Token;
+import com.google.javascript.rhino.jstype.JSType;
+import com.google.javascript.rhino.jstype.ObjectType;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -355,6 +363,98 @@ public class DossierProcessCommonJsModulesTest {
     // OK if compiles without error.
   }
 
+  @Test
+  public void exportedInternalVarInheritsJsDocInfo() {
+    CompilerUtil compiler = createCompiler(path("foo.js"));
+
+    compiler.compile(
+        createSourceFile(path("foo.js"),
+            "/**",
+            " * @constructor",
+            " */",
+            "var Greeter = function(){};",
+            "/**",
+            " * @param {string} name .",
+            " * @return {string} .",
+            " */",
+            "Greeter.prototype.sayHi = function(name) {",
+            "  return 'Hello, ' + name;",
+            "};",
+            "",
+            "exports.Greeter = Greeter"));
+
+    JSType greeterType = compiler.getCompiler()
+        .getTypeRegistry()
+        .getType("Greeter$$_dossier$$module__foo");
+    assertNotNull(greeterType);
+
+    JSDocInfo greeterInfo = greeterType.getJSDocInfo();
+    assertNotNull(greeterInfo);
+
+    ObjectType exportsObj = compiler.getCompiler().getTopScope()
+        .getVar("dossier$$module__foo.exports")
+        .getType()
+        .toObjectType();
+    assertNotNull(exportsObj);
+
+    JSType exportedGreeter = exportsObj.getPropertyType("Greeter");
+    assertTrue(exportedGreeter.isConstructor());
+    assertEquals(greeterType, exportedGreeter.toObjectType().getTypeOfThis());
+    assertEquals(greeterInfo, exportedGreeter.getJSDocInfo());
+  }
+
+  @Test
+  public void savesOriginalTypeNameInJsDoc() {
+    CompilerUtil compiler = createCompiler(path("foo.js"));
+
+    compiler.compile(
+        createSourceFile(path("foo.js"),
+            "/** @constructor */",
+            "var Builder = function(){};",
+            "/** @return {!Builder} . */",
+            "Builder.prototype.returnThis = function() { return this; };",
+            "exports.Builder = Builder"));
+
+    Scope scope = compiler.getCompiler().getTopScope();
+    Scope.Var var = scope.getVar("dossier$$module__foo");
+    ObjectType module = var.getType().toObjectType();
+    ObjectType exports = module.getPropertyType("exports").toObjectType();
+
+    JSType type = exports.getPropertyType("Builder");
+    assertTrue(type.isConstructor());
+
+    type = type.toObjectType().getTypeOfThis();
+    assertEquals("Builder$$_dossier$$module__foo", type.toString());
+
+    type = type.toObjectType().getPropertyType("returnThis");
+    assertTrue(type.toString(), type.isFunctionType());
+
+    JSDocInfo info = type.getJSDocInfo();
+    assertNotNull(info);
+
+    Node node = Iterables.getOnlyElement(info.getTypeNodes());
+    assertEquals(Token.BANG, node.getType());
+
+    node = node.getFirstChild();
+    assertTrue(node.isString());
+    assertEquals("Builder$$_dossier$$module__foo", node.getString());
+    assertEquals("Builder", node.getProp(Node.ORIGINALNAME_PROP));
+  }
+
+  @Test
+  public void savesOriginalVarNameOnNameNode() {
+    CompilerUtil compiler = createCompiler(path("foo.js"));
+
+    compiler.compile(
+        createSourceFile(path("foo.js"),
+            "var Foo = 1;"));
+
+    Scope scope = compiler.getCompiler().getTopScope();
+    Scope.Var var = scope.getVar("Foo$$_dossier$$module__foo");
+    Node nameNode = var.getNameNode();
+    assertEquals("Foo", nameNode.getProp(Node.ORIGINALNAME_PROP));
+  }
+
   private static String module(String name) {
     return module(name, Optional.<String>absent());
   }
@@ -380,7 +480,6 @@ public class DossierProcessCommonJsModulesTest {
     options.setPrettyPrint(true);
     options.setCheckTypes(true);
     options.setCheckSymbols(true);
-    options.setIdeMode(true);
     options.setAggressiveVarCheck(CheckLevel.ERROR);
     CompilationLevel.ADVANCED_OPTIMIZATIONS.setOptionsForCompilationLevel(options);
     CompilationLevel.ADVANCED_OPTIMIZATIONS.setTypeBasedOptimizationOptions(options);

@@ -258,8 +258,9 @@ class DossierProcessCommonJsModules implements CompilerPass {
 
         String baseName = name.substring(0, endIndex);
         if (renamedVars.containsKey(baseName)) {
-          typeNode.setString(
-              renamedVars.get(baseName) + typeNode.getString().substring(endIndex));
+          String alias = renamedVars.get(baseName) + typeNode.getString().substring(endIndex);
+          typeNode.putProp(Node.ORIGINALNAME_PROP, name);
+          typeNode.setString(alias);
         }
       }
 
@@ -279,8 +280,9 @@ class DossierProcessCommonJsModules implements CompilerPass {
 
         String baseName = name.substring(0, endIndex);
         if (currentModule.hasAlias(baseName)) {
-          typeNode.setString(
-              currentModule.getAlias(baseName) + typeNode.getString().substring(endIndex));
+          String aliasName = currentModule.getAlias(baseName);
+          typeNode.putProp(Node.ORIGINALNAME_PROP, name);
+          typeNode.setString(aliasName + typeNode.getString().substring(endIndex));
           return true;
         }
       }

@@ -308,7 +308,7 @@ class CommentUtil {
   }
 
   private static String formatTypeString(final Linker linker, Node node) {
-    String output = node.getString();
+    String output = getOriginalName(node);
 
     @Nullable String path = linker.getLink(output);
     if (path != null) {
@@ -339,7 +339,7 @@ class CommentUtil {
     if (node.getFirstChild() != null && node.getFirstChild().isBlock()) {
       for (Node name = node.getFirstChild().getFirstChild();
           name != null && name.isString(); name = name.getNext()) {
-        builder.add(name.getString());
+        builder.add(getOriginalName(name));
       }
     }
     return builder.build();
@@ -402,7 +402,7 @@ class CommentUtil {
         hasType = true;
       }
 
-      String fieldName = fieldNameNode.getString();
+      String fieldName = getOriginalName(fieldNameNode);
       if (fieldName.startsWith("'") || fieldName.startsWith("\"")) {
         fieldName = fieldName.substring(1, fieldName.length() - 1);
       }
@@ -424,6 +424,14 @@ class CommentUtil {
     }
 
     return "{" + builder + "}";
+  }
+
+  private static String getOriginalName(Node node) {
+    Object value = node.getProp(Node.ORIGINALNAME_PROP);
+    if (value instanceof String) {
+      return (String) value;
+    }
+    return node.getString();
   }
 
   private static class LinkInfo {
