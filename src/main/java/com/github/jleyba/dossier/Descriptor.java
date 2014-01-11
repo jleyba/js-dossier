@@ -83,8 +83,20 @@ public class Descriptor {
     this.parent = Optional.of(parent);
   }
 
+  /**
+   * Returns whether the given {@code type} is a reference to the "Object" type.
+   */
+  public static boolean isTheObjectType(JSType type) {
+    if (!type.isInstanceType()) {
+      return false;
+    }
+    ObjectType obj = type.toObjectType();
+    return obj.getConstructor().isNativeObjectType()
+        && "Object".equals(obj.getConstructor().getReferenceName());
+  }
+
   private static JsDoc getJsDoc(@Nullable JSDocInfo info, JSType type) {
-    if (info == null) {
+    if (info == null && !isTheObjectType(type)) {
       // TODO: we should only do this for constructors, interfaces, and enums.
       // TODO: must preserve original source location.
       info = type.getJSDocInfo();

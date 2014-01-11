@@ -13,6 +13,7 @@
 // limitations under the License.
 package com.github.jleyba.dossier;
 
+import static com.github.jleyba.dossier.Descriptor.isTheObjectType;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.collect.ImmutableSet;
@@ -214,7 +215,7 @@ class DocPass  implements CompilerPass {
         String propName = exportingApi ? prop : descriptor.getFullName() + "." + prop;
         JSType propType = obj.getPropertyType(prop);
         JSDocInfo propInfo  = obj.getOwnPropertyJSDocInfo(prop);
-        if (propInfo == null) {
+        if (propInfo == null && !isTheObjectType(propType)) {
           propInfo = propType.getJSDocInfo();
         }
 
