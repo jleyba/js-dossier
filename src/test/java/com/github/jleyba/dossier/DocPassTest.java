@@ -174,24 +174,6 @@ public class DocPassTest {
   }
 
   @Test
-  public void factoriesAreNotDocumentedAsConstructors() {
-    util.compile(path("foo/bar.js"),
-        "goog.provide('foo');",
-        "/** @constructor */",
-        "foo.Bar = function() {};",
-        "/** @type {function(new: foo.Bar)} */",
-        "foo.createBar = function() { return new foo.Bar(); };");
-
-    List<Descriptor> descriptors = getDescriptors();
-    assertEquals(
-        ImmutableList.of("foo", "foo.Bar", "foo.createBar"),
-        getNames(descriptors));
-    assertNamespace(descriptors.get(0));
-    assertConstructor(descriptors.get(1));
-    assertNamespace(descriptors.get(2));
-  }
-
-  @Test
   public void canGetConstructorArgs_functionExpression_undocumented() {
     util.compile(path("foo/bar.js"),
         "/** @constructor */",

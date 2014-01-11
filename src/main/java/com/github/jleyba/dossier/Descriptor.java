@@ -95,6 +95,18 @@ public class Descriptor {
         && "Object".equals(obj.getConstructor().getReferenceName());
   }
 
+  /**
+   * Returns whether the given {@code type} is a reference to the "Function" type.
+   */
+  public static boolean isTheFunctionType(JSType type) {
+    if (!type.isInstanceType()) {
+      return false;
+    }
+    ObjectType obj = type.toObjectType();
+    return obj.getConstructor().isNativeObjectType()
+        && "Function".equals(obj.getConstructor().getReferenceName());
+  }
+
   private static JsDoc getJsDoc(@Nullable JSDocInfo info, JSType type) {
     if (info == null && !isTheObjectType(type)) {
       // TODO: we should only do this for constructors, interfaces, and enums.
@@ -221,11 +233,11 @@ public class Descriptor {
   }
 
   boolean isConstructor() {
-    if (info != null) {
-      return info.isConstructor();
-    }
-
-    return !isInterface() && type != null && type.isConstructor();
+    return info != null && info.isConstructor()
+        || ((info == null || !info.isTypedef())
+        && !isInterface()
+        && !isTheFunctionType(type)
+        && type != null && type.isConstructor());
   }
 
   boolean isInterface() {
