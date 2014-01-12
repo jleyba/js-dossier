@@ -455,6 +455,39 @@ public class DossierProcessCommonJsModulesTest {
     assertEquals("Foo", nameNode.getProp(Node.ORIGINALNAME_PROP));
   }
 
+  @Test
+  public void canUseModuleInternalTypedefsInJsDoc() {
+    CompilerUtil compiler = createCompiler(path("foo.js"));
+
+    compiler.compile(
+        createSourceFile(path("foo.js"),
+            "/** @typedef {{x: number}} */",
+            "var Variable;",
+            "",
+            "/**",
+            " * @param {Variable} a .",
+            " * @param {Variable} b .",
+            " * @return {Variable} .",
+            " */",
+            "exports.add = function(a, b) {",
+            "  return {x: a.x + b.x};",
+            "};"));
+
+    Scope scope = compiler.getCompiler().getTopScope();
+    Scope.Var var = scope.getVar("dossier$$module__foo");
+    JSType type = var.getType().toObjectType()
+        .getPropertyType("exports")
+        .toObjectType()
+        .getPropertyType("add");
+    assertTrue(type.isFunctionType());
+
+    JSDocInfo info = type.getJSDocInfo();
+    Node node = info.getTypeNodes().iterator().next();
+    assertTrue(node.isString());
+    assertEquals("Variable$$_dossier$$module__foo", node.getString());
+    assertEquals("Variable", node.getProp(Node.ORIGINALNAME_PROP));
+  }
+
   private static String module(String name) {
     return module(name, Optional.<String>absent());
   }

@@ -160,12 +160,19 @@ class HtmlDocWriter implements DocWriter {
     Path output = linker.getFilePath(module);
     Files.createDirectories(output.getParent());
 
+    // Always generate documentation for both the internal and external typedefs since
+    // they're most likely used in other jsdoc type annotations.
+    // TODO: handle this in a cleaner way.
+    Iterable<? extends JsType.TypeDef> typeDefs = Iterables.concat(
+        getTypeDefInfo(module.getExportedProperties()),
+        getTypeDefInfo(module.getInternalTypeDefs()));
+
     JsType.Builder jsTypeBuilder = JsType.newBuilder()
         .setName(linker.getDisplayName(module))
         .setSource(linker.getSourcePath(module))
         .setDescription(getFileoverview(linker, module.getJsDoc()))
         .setNested(getNestedTypeInfo(module.getExportedProperties()))
-        .addAllTypeDef(getTypeDefInfo(module.getExportedProperties()))
+        .addAllTypeDef(typeDefs)
 // TODO: handle module that is an exported constructor.
 //        .addAllExtendedType(getInheritedTypes(descriptor, registry))
 //        .addAllImplementedType(getImplementedTypes(descriptor, registry))

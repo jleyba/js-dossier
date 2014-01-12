@@ -184,9 +184,23 @@ class DocPass  implements CompilerPass {
           moduleDescriptor = new ModuleDescriptor(
               descriptor, moduleRegistry.getModuleNamed(var.getName()));
           docRegistry.addModule(moduleDescriptor);
+          recordTypedefs(moduleDescriptor, t.getScope(), registry);
         }
 
         traverseType(moduleDescriptor, descriptor, registry);
+      }
+    }
+
+    private void recordTypedefs(
+        ModuleDescriptor module, Scope scope, JSTypeRegistry registry) {
+      for (Scope.Var var : module.getInternalVars()) {
+        if (var.getJSDocInfo() != null
+            && var.getJSDocInfo().getTypedefType() != null) {
+          JSType type = var.getJSDocInfo().getTypedefType()
+              .evaluate(scope,registry);
+          module.addTypedef(new Descriptor(
+              var.getName(), var.getNameNode(), type, var.getJSDocInfo()));
+        }
       }
     }
 

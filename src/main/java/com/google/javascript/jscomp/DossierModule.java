@@ -4,9 +4,6 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.base.Joiner;
-import com.google.common.base.Objects;
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
 import com.google.common.collect.Iterables;
 import com.google.common.io.Files;
 import com.google.javascript.rhino.Node;
@@ -15,7 +12,6 @@ import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -87,6 +83,7 @@ public class DossierModule {
       var.getNameNode().putProp(Node.ORIGINALNAME_PROP, name);
       var.getNameNode().setString(name + "$$_" + varName);
       internalVars.add(var);
+      return true;
     }
     return false;
   }

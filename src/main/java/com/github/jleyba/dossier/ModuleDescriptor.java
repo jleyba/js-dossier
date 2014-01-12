@@ -2,8 +2,10 @@ package com.github.jleyba.dossier;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
+import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import com.google.javascript.jscomp.DossierModule;
+import com.google.javascript.jscomp.Scope;
 
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -26,6 +28,11 @@ class ModuleDescriptor {
    * Descriptors for this module's exported API.
    */
   private final List<Descriptor> exportedProperties = new LinkedList<>();
+
+  /**
+   * Type definitions defined within the module but not on an exported property.
+   */
+  private final List<Descriptor> internalTypeDefs = new LinkedList<>();
 
   private final Map<String, Object> attributes = new HashMap<>();
 
@@ -55,6 +62,10 @@ class ModuleDescriptor {
     return Objects.hash(descriptor, module);
   }
 
+  public Iterable<Scope.Var> getInternalVars() {
+    return module.getInternalVars();
+  }
+
   public Descriptor getDescriptor() {
     return descriptor;
   }
@@ -80,6 +91,15 @@ class ModuleDescriptor {
 
   Iterable<Descriptor> getExportedProperties() {
     return Iterables.unmodifiableIterable(exportedProperties);
+  }
+
+  void addTypedef(Descriptor descriptor) {
+    descriptor.setModule(this);
+    internalTypeDefs.add(descriptor);
+  }
+
+  Iterable<Descriptor> getInternalTypeDefs() {
+    return Iterables.unmodifiableIterable(internalTypeDefs);
   }
 
   public void setAttribute(String key, Object value) {
