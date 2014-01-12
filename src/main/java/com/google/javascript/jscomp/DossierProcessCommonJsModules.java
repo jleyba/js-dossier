@@ -177,7 +177,15 @@ class DossierProcessCommonJsModules implements CompilerPass {
       Path moduleFile = currentFile.getParent().resolve(modulePath).normalize();
       String moduleName = DossierModule.guessModuleName(moduleFile);
 
-      t.getInput().addRequire(moduleName);
+      // Only register the require statement on this module if it occurs at the global
+      // scope. Assume other require statements are not declared at the global scope to
+      // avoid create a circular dependency. While node can handle these, by returning
+      // a partial definition of the required module, the cycle would be an error for
+      // the compiler. For more information on how Node handles cycles, see:
+      //     http://www.nodejs.org/api/modules.html#modules_cycles
+      if (t.getScope().isGlobal()) {
+        t.getInput().addRequire(moduleName);
+      }
 
       Node moduleRef = IR.getprop(IR.name(moduleName), IR.string("exports")).srcrefTree(require);
       parent.replaceChild(require, moduleRef);

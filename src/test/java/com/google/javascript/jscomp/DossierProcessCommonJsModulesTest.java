@@ -252,6 +252,34 @@ public class DossierProcessCommonJsModulesTest {
   }
 
   @Test
+  public void nonGlobalRequireCallsAreNotRegisteredAsInputRequirements() {
+    CompilerUtil compiler = createCompiler(
+        path("foo/one.js"), path("foo/two.js"), path("foo/three.js"));
+
+    compiler.compile(
+        createSourceFile(path("foo/one.js"),
+            "var x = require('./two');"),
+        createSourceFile(path("foo/two.js"),
+            "var go = function() {",
+            "  var x = require('./three');",
+            "};"),
+        createSourceFile(path("foo/three.js"),
+            "var x = require('./one');"));
+
+    assertEquals(
+        lines(
+            module("dossier$$module__foo$two", lines(
+                "var go$$_dossier$$module__foo$two = function() {",
+                "  var x = dossier$$module__foo$three.exports;",
+                "};")),
+            module("dossier$$module__foo$one",
+                "var x$$_dossier$$module__foo$one = dossier$$module__foo$two.exports;"),
+            module("dossier$$module__foo$three",
+                "var x$$_dossier$$module__foo$three = dossier$$module__foo$one.exports;")),
+        compiler.toSource().trim());
+  }
+
+  @Test
   public void maintainsInternalTypeCheckingConsistency() {
     CompilerUtil compiler = createCompiler(path("foo/bar.js"));
 
