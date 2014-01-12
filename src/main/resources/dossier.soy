@@ -155,7 +155,7 @@
         {/if}
         &#x2514;{sp}
       {/if}
-      {if isLast($type)}
+      {if isLast($type) or not $type.href}
         {$type.text}
       {else}
         <a href="{$type.href}">{$type.text}</a>

@@ -221,6 +221,22 @@ public class RendererTest {
             "\n  &#x2514; <a href=\"bar.link\">Bar</a>",
             "\n      &#x2514; Baz",
             "</code></pre>"));
+
+    types.add(toMap(Dossier.TypeLink.newBuilder()
+        .setHref("").setText("NoLink")
+        .build()));
+    types.add(toMap(Dossier.TypeLink.newBuilder()
+        .setHref("quux.link").setText("Quux")
+        .build()));
+    assertThat(render("dossier.soy.classInheritance", ImmutableMap.of("types", types)),
+        isHtml(
+            "<pre><code>",
+            "<a href=\"foo.link\">Foo</a>",
+            "\n  &#x2514; <a href=\"bar.link\">Bar</a>",
+            "\n      &#x2514; <a href=\"baz.link\">Baz</a>",
+            "\n          &#x2514; NoLink",
+            "\n              &#x2514; Quux",
+            "</code></pre>"));
   }
 
   @Test
