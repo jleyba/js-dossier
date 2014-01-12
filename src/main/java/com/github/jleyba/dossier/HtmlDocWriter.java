@@ -41,6 +41,7 @@ import com.github.jleyba.dossier.proto.Dossier;
 import com.github.rjeschke.txtmark.Processor;
 import com.google.common.base.Charsets;
 import com.google.common.base.Function;
+import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
 import com.google.common.collect.FluentIterable;
@@ -207,6 +208,11 @@ class HtmlDocWriter implements DocWriter {
             .build());
 
     for (Descriptor descriptor : module.getExportedProperties()) {
+      // If the exported descriptor is an alias for another documented type, there is no
+      // need to generate an additional set of docs as we can just link to the original.
+      if (descriptor != resolveTypeAlias(descriptor)) {
+        continue;
+      }
       generateDocs(descriptor, registry);
     }
   }
@@ -465,6 +471,32 @@ class HtmlDocWriter implements DocWriter {
         .build();
   }
 
+  /**
+   * If the given {@code descriptor} is a constructor alias for a known type, this method will
+   * return the aliased type. Otherwise, this method will return the original descriptor. A type
+   * alias would occur as:
+   * <pre><code>
+   *   \** @constructor *\ var Foo = function(){};
+   *   \** @type {function(new: Foo)} *\ var Bar = Foo;
+   * </code></pre>
+   */
+  private Descriptor resolveTypeAlias(Descriptor descriptor) {
+    JSType type = descriptor.getType();
+    if (type.isConstructor()) {
+      JSType constructedType = ((FunctionType) type).getTypeOfThis();
+
+      Descriptor alias = docRegistry.getType(constructedType);
+      if (alias == null) {
+        alias = docRegistry.getType(constructedType.toString());
+      }
+
+      if (alias != null) {
+        return alias;
+      }
+    }
+    return descriptor;
+  }
+
   private JsType.NestedTypes.Builder getNestedTypeInfo(Iterable<Descriptor> properties) {
     List<Descriptor> children = FluentIterable.from(properties)
         .toSortedList(DescriptorNameComparator.INSTANCE);
@@ -476,15 +508,26 @@ class HtmlDocWriter implements DocWriter {
         continue;
       }
 
+      // If our child property is an alias for another type, just link to that:
+      //   --- one.js
+      //   /** @constructor */ exports.Bar = function(){};
+      //   -- two.js
+      //   var one = require('./one');
+      //   /** @type {function(new: one.Bar)} */ exports.Bar = one.Bar;
+      Descriptor resolvedType = resolveTypeAlias(child);
+      Path filename = linker.getFilePath(resolvedType).getFileName();
+
       Dossier.Comment summary = getSummary("No description.", linker);
-      JsDoc jsdoc = child.getJsDoc();
+      JsDoc jsdoc = Optional.fromNullable(resolvedType.getJsDoc())
+          .or(Optional.fromNullable(child.getJsDoc()))
+          .orNull();
       if (jsdoc != null) {
         summary =  getSummary(jsdoc.getBlockComment(), linker);
       }
 
       JsType.NestedTypes.TypeSummary.Builder typeSummary =
           JsType.NestedTypes.TypeSummary.newBuilder()
-              .setHref(linker.getFilePath(child).getFileName().toString())
+              .setHref(filename.toString())
               .setSummary(summary)
               .setName(child.getFullName());
 

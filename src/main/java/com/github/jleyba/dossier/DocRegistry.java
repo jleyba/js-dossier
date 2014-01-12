@@ -80,6 +80,10 @@ class DocRegistry {
     return types.containsKey(name) || isExtern(name);
   }
 
+  boolean isKnownType(JSType type) {
+    return jsTypeToDescriptor.containsKey(type);
+  }
+
   Iterable<Descriptor> getTypes() {
     return Iterables.unmodifiableIterable(types.values());
   }
