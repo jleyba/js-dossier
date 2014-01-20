@@ -588,6 +588,27 @@ public class DossierProcessCommonJsModulesTest {
     assertEquals("Variable", node.getProp(Node.ORIGINALNAME_PROP));
   }
 
+  @Test
+  public void renamesExportsOnWhenUsedAsParameter() {
+    CompilerUtil compiler = createCompiler(path("foo/bar.js"));
+
+    compiler.compile(
+        createSourceFile(path("foo/bar.js"),
+            "function go(e) {}",
+            "go(exports);",
+            "go(module);",
+            "go(module.exports);"));
+
+    assertEquals(
+        module("dossier$$module__foo$bar", lines(
+            "function go$$_dossier$$module__foo$bar(e) {",
+            "}",
+            "go$$_dossier$$module__foo$bar(dossier$$module__foo$bar.exports);",
+            "go$$_dossier$$module__foo$bar(dossier$$module__foo$bar);",
+            "go$$_dossier$$module__foo$bar(dossier$$module__foo$bar.exports);")),
+        compiler.toSource().trim());
+  }
+
   private static String module(String name) {
     return module(name, Optional.<String>absent());
   }

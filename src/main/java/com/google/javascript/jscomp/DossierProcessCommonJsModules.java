@@ -101,12 +101,12 @@ class DossierProcessCommonJsModules implements CompilerPass {
       }
 
       if (n.isName() && "module".equals(n.getQualifiedName())
-          && (parent.isExprResult() || parent.isGetProp())) {
+          && (parent.isExprResult() || parent.isGetProp() || parent.isCall())) {
         visitModule(n);
       }
 
       if (n.isName() && "exports".equals(n.getQualifiedName())
-          && (parent.isExprResult() || parent.isGetProp())) {
+          && (parent.isExprResult() || parent.isGetProp() || parent.isCall())) {
         visitExports(n);
       }
 
