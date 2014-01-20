@@ -439,8 +439,11 @@ public class Descriptor {
 
       JSDocInfo info = obj.getOwnPropertyJSDocInfo(prop);
       Node srcNode  = obj.getPropertyNode(prop);
-      properties.add(new Descriptor(
-          getFullName() + "." + prop, srcNode, obj.getPropertyType(prop), info));
+      Descriptor property = new Descriptor(
+          getFullName() + "." + prop, srcNode, obj.getPropertyType(prop), info);
+      property.module = module;
+
+      properties.add(property);
     }
 
     return properties;

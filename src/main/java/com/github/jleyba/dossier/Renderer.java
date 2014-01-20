@@ -17,15 +17,10 @@ import com.google.template.soy.tofu.SoyTofu;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
-
-import javax.annotation.Nullable;
 
 /**
  * Renders soy templates.

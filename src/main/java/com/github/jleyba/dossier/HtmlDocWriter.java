@@ -41,6 +41,7 @@ import com.github.jleyba.dossier.proto.Dossier;
 import com.github.rjeschke.txtmark.Processor;
 import com.google.common.base.Charsets;
 import com.google.common.base.Function;
+import com.google.common.base.Objects;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
@@ -210,10 +211,9 @@ class HtmlDocWriter implements DocWriter {
     for (Descriptor descriptor : module.getExportedProperties()) {
       // If the exported descriptor is an alias for another documented type, there is no
       // need to generate an additional set of docs as we can just link to the original.
-      if (descriptor != resolveTypeAlias(descriptor)) {
-        continue;
+      if (descriptor == resolveTypeAlias(descriptor)) {
+        generateDocs(descriptor, registry);
       }
-      generateDocs(descriptor, registry);
     }
   }
 
@@ -371,11 +371,7 @@ class HtmlDocWriter implements DocWriter {
     LinkedList<JSType> types = descriptor.getAllTypes(registry);
     List<TypeLink> list = Lists.newArrayListWithExpectedSize(types.size());
     while (!types.isEmpty()) {
-      String type = types.pop().toString();
-      list.add(TypeLink.newBuilder()
-          .setText(type)
-          .setHref(nullToEmpty(linker.getLink(type)))
-          .build());
+      list.add(getTypeLink(types.pop()));
     }
     return list;
   }
@@ -389,12 +385,42 @@ class HtmlDocWriter implements DocWriter {
         new Function<JSType, TypeLink>() {
           @Override
           public TypeLink apply(JSType input) {
-            return TypeLink.newBuilder()
-                .setText(input.toString())
-                .setHref(nullToEmpty(linker.getLink(input.toString())))
-                .build();
+            return getTypeLink(input);
           }
         });
+  }
+
+  private TypeLink getTypeLink(JSType type) {
+    String typeName = getTypeName(type);
+    String link;
+    Descriptor descriptor = docRegistry.resolve(typeName);
+    if (descriptor != null) {
+      typeName = descriptor.getFullName();
+      link = linker.getLink(descriptor);
+    } else {
+      link = linker.getLink(typeName);
+    }
+    return TypeLink.newBuilder()
+        .setText(typeName)
+        .setHref(nullToEmpty(link))
+        .build();
+  }
+
+  private String getTypeName(JSType type) {
+    String typeName = type.toString();
+    if (type.getJSDocInfo() != null) {
+      JSDocInfo info = type.getJSDocInfo();
+      if (info.getAssociatedNode() != null) {
+        Node node = info.getAssociatedNode();
+        if (node.isVar()) {
+          checkState(node.getFirstChild().isName());
+          typeName = Objects.firstNonNull(
+              (String) node.getFirstChild().getProp(Node.ORIGINALNAME_PROP),
+              typeName);
+        }
+      }
+    }
+    return typeName;
   }
 
   private void extractEnumData(Descriptor descriptor, JsType.Builder builder) {
@@ -552,15 +578,17 @@ class HtmlDocWriter implements DocWriter {
     List<Descriptor> seen = new LinkedList<>();
     Iterable<JSType> assignableTypes =
         Lists.reverse(descriptor.getAssignableTypes(registry));
+
     for (JSType type : assignableTypes) {
-      Descriptor typeDescriptor = docRegistry.getType(type);
+      String assignableTypeName = getTypeName(type);
+      Descriptor typeDescriptor = docRegistry.resolve(assignableTypeName);
       if (typeDescriptor == null) {
         Node typeNode = null;
         if (type instanceof StaticScope) {
           typeNode = ((StaticScope<?>) type).getRootNode();
         }
         typeDescriptor = new Descriptor(
-            type.toString(), typeNode, type, type.getJSDocInfo());
+            assignableTypeName, typeNode, type, type.getJSDocInfo());
       }
 
       FluentIterable<Descriptor> unsorted = FluentIterable
@@ -579,8 +607,7 @@ class HtmlDocWriter implements DocWriter {
       Prototype.Builder protoBuilder = Prototype.newBuilder()
           .setName(typeDescriptor.getFullName());
       if (typeDescriptor != descriptor) {
-        protoBuilder.setHref(
-            nullToEmpty(linker.getLink(typeDescriptor.getFullName())));
+        protoBuilder.setHref(nullToEmpty(linker.getLink(typeDescriptor)));
       }
 
       for (Descriptor property : properties) {

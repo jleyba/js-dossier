@@ -13,6 +13,7 @@
 // limitations under the License.
 package com.github.jleyba.dossier;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.base.Joiner;
@@ -176,45 +177,9 @@ class Linker {
       to = to.substring(0, index);
     }
 
-    // We don't explicitly document class prototypes, so link to the main type.
-    if (to.endsWith(".prototype")) {
-      to = to.substring(0, to.length() - ".prototype".length());
-    }
-
-    // foo.Bar#baz
-    if ((index = to.indexOf("#")) != -1) {
-      String link = getInstancePropertyLink(
-          to.substring(0, index), to.substring(index + 1));
-      if (link != null) {
-        return link;
-      }
-
-    // foo.Bar.prototype.baz
-    } else if ((index = to.lastIndexOf(".prototype.")) != -1) {
-      String link = getInstancePropertyLink(
-          to.substring(0, index),
-          to.substring(index + ".prototype.".length()));
-      if (link != null) {
-        return link;
-      }
-
-    // foor.Bar.baz
-    } else {
-      // Check if the fully qualified name refers directly to a type.
-      String link = getTypeFile(to);
-      if (link != null) {
-        return link;
-      }
-
-      // Ok, strip the last segment of the name and see if we have a type.
-      // if we do, treat the full name as the fully qualified name of a
-      // static property on the type.
-      if ((index = to.lastIndexOf('.')) != -1) {
-        link = getTypeFile(to.substring(0, index));
-        if (link != null) {
-          return link + "#" + to;
-        }
-      }
+    Descriptor descriptor = docRegistry.resolve(to);
+    if (descriptor != null && !docRegistry.isExtern(descriptor.getFullName())) {
+      return getLink(descriptor);
     }
 
     // If we get here, make one last attempt to resolve the referenced path
@@ -222,25 +187,50 @@ class Linker {
     return getExternLink(to);
   }
 
-  /**
-   * Generates the link to the documentation for a property defined on a class or interface's
-   * prototype. This method will verify that the main type exists, but will not verify if the
-   * property exists.
-   */
   @Nullable
-  private String getInstancePropertyLink(String typeName, String propertyName) {
-    String typeLink = getTypeFile(typeName);
-    if (typeLink != null) {
-      return typeLink + "#" + propertyName;
+  String getLink(Descriptor descriptor) {
+    if (!docRegistry.isDocumentedType(descriptor)) {
+      return null;
     }
-    return null;
+
+    if (descriptor.getFullName().contains(".prototype.")) {
+      return getPrototypeLink(descriptor);
+    }
+
+    if (descriptor.getModule().isPresent()
+        && descriptor == descriptor.getModule().get().getDescriptor()) {
+      return getFilePath(descriptor.getModule().get()).getFileName().toString();
+    }
+
+    String filePath = getFilePath(descriptor).getFileName().toString();
+
+    // Check if the fully qualified name refers directly to a type.
+    if (docRegistry.isKnownType(descriptor.getFullName())) {
+      return filePath;
+    }
+
+    int index = descriptor.getFullName().lastIndexOf('.');
+    if (index != -1) {
+      filePath = getLink(descriptor.getFullName().substring(0, index));
+      if (filePath != null) {
+        return filePath + "#" + descriptor.getFullName();
+      }
+    }
+
+    return filePath;
   }
 
   @Nullable
-  private String getTypeFile(String name) {
-    Descriptor descriptor = docRegistry.getType(name);
-    if (descriptor != null) {
-      return getFilePath(descriptor).getFileName().toString();
+  private String getPrototypeLink(Descriptor descriptor) {
+    checkArgument(descriptor.getFullName().contains(".prototype."));
+
+    String parentName = descriptor.getFullName()
+        .substring(0, descriptor.getFullName().indexOf(".prototype."));
+    String name = descriptor.getSimpleName();
+
+    Descriptor parent = docRegistry.resolve(parentName);
+    if (parent != null) {
+      return getFilePath(parent).getFileName().toString() + "#" + name;
     }
     return null;
   }
@@ -253,12 +243,19 @@ class Linker {
    * compiler does not provide predefined externs for these types (it does have the object
    * equivalents (e.g. number vs Number).
    */
-  private static final ImmutableMap<String, String> PRIMITIVES_TO_MDN_LINK = ImmutableMap.of(
-      "null", MDN_PREFIX + "Global_Objects/Null",
-      "undefined", MDN_PREFIX + "Global_Objects/Undefined",
-      "string", MDN_PREFIX + "Global_Objects/String",
-      "number", MDN_PREFIX + "Global_Objects/Number",
-      "boolean", MDN_PREFIX + "Global_Objects/Boolean");
+  private static final ImmutableMap<String, String> PRIMITIVES_TO_MDN_LINK =
+      ImmutableMap.<String, String>builder()
+      .put("null", MDN_PREFIX + "Global_Objects/Null")
+      .put("undefined", MDN_PREFIX + "Global_Objects/Undefined")
+      .put("string", MDN_PREFIX + "Global_Objects/String")
+      .put("String", MDN_PREFIX + "Global_Objects/String")
+      .put("number", MDN_PREFIX + "Global_Objects/Number")
+      .put("Number", MDN_PREFIX + "Global_Objects/Number")
+      .put("boolean", MDN_PREFIX + "Global_Objects/Boolean")
+      .put("Boolean", MDN_PREFIX + "Global_Objects/Boolean")
+      .put("Function", MDN_PREFIX + "Global_Objects/Function")
+      .put("Object", MDN_PREFIX + "Global_Objects/Object")
+      .build();
 
   /**
    * Attempts to find a link to an extern type definition. Primitive types (null, undefined,

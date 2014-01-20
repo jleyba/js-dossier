@@ -309,6 +309,78 @@ public class DossierProcessCommonJsModulesTest {
   }
 
   @Test
+  public void canReferenceTypesDefinedOnOwnModuleExports() {
+    CompilerUtil compiler = createCompiler(path("foo/bar.js"));
+
+    compiler.compile(path("foo/bar.js"),
+        "/** @constructor */",
+        "var One = function() {};",
+        "",
+        "/**",
+        " * @constructor",
+        " * @extends {One}",
+        " */",
+        "exports.Two = function() {};",
+        "",
+        "/**",
+        " * @constructor",
+        " * @extends {exports.Two}",
+        " */",
+        "exports.Three = function() {};",
+        "",
+        // Assignment tests.
+        "/** @type {!One} */",
+        "var testOne = new One();",
+        "testOne = new exports.Two();",
+        "testOne = new exports.Three();",
+        "",
+        "/** @type {!exports.Two} */",
+        "var testTwo = new exports.Two();",
+        "testTwo = new exports.Three();",
+        "",
+        "/** @type {!exports.Three} */",
+        "var testThree = new exports.Three();",
+        "");
+    // OK if compiles without error.
+  }
+
+  @Test
+  public void canReferenceTypesDefinedOnModuleExports() {
+    CompilerUtil compiler = createCompiler(path("foo/bar.js"));
+
+    compiler.compile(path("foo/bar.js"),
+        "/** @constructor */",
+        "var One = function() {};",
+        "",
+        "/**",
+        " * @constructor",
+        " * @extends {One}",
+        " */",
+        "exports.Two = function() {};",
+        "",
+        "/**",
+        " * @constructor",
+        " * @extends {module.exports.Two}",
+        " */",
+        "exports.Three = function() {};",
+        "",
+        // Assignment tests.
+        "/** @type {!One} */",
+        "var testOne = new One();",
+        "testOne = new exports.Two();",
+        "testOne = new exports.Three();",
+        "",
+        "/** @type {!module.exports.Two} */",
+        "var testTwo = new exports.Two();",
+        "testTwo = new exports.Three();",
+        "",
+        "/** @type {!module.exports.Three} */",
+        "var testThree = new exports.Three();",
+        "");
+    // OK if compiles without error.
+  }
+
+  @Test
   public void canReferenceRequiredModuleTypesUsingImportAlias() {
     CompilerUtil compiler = createCompiler(
         path("foo/bar.js"), path("foo/baz.js"));

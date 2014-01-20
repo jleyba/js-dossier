@@ -2,12 +2,10 @@ package com.github.jleyba.dossier;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import com.google.common.base.Optional;
-import com.google.javascript.jscomp.DossierModule;
+import com.google.common.collect.ImmutableList;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -19,37 +17,35 @@ import java.nio.file.Paths;
 @RunWith(JUnit4.class)
 public class LinkerTest {
 
-  private static final Optional<ModuleDescriptor> NO_MODULE = Optional.absent();
-
   @Test
   public void testFilePath_descriptor() {
     Path outputDir = Paths.get("output");
     Config mockConfig = mock(Config.class);
     when(mockConfig.getOutput()).thenReturn(outputDir);
-    DocRegistry mockRegistry = mock(DocRegistry.class);
-    Linker linker = new Linker(mockConfig, mockRegistry);
+    Linker linker = new Linker(mockConfig, new DocRegistry());
 
-    Descriptor descriptor = mock(Descriptor.class);
-    when(descriptor.getModule()).thenReturn(NO_MODULE);
-    when(descriptor.getFullName()).thenReturn("foo.Bar");
-    when(descriptor.isInterface()).thenReturn(true);
+    Descriptor descriptor = object("foo.Bar")
+        .setType(TestDescriptorBuilder.Type.INTERFACE)
+        .build();
     assertEquals(
         Paths.get("output/interface_foo_Bar.html"),
         linker.getFilePath(descriptor));
 
-    when(descriptor.isInterface()).thenReturn(false);
-    when(descriptor.isConstructor()).thenReturn(true);
+    descriptor = object("foo.Bar")
+        .setType(TestDescriptorBuilder.Type.CLASS)
+        .build();
     assertEquals(
         Paths.get("output/class_foo_Bar.html"),
         linker.getFilePath(descriptor));
 
-    when(descriptor.isConstructor()).thenReturn(false);
-    when(descriptor.isEnum()).thenReturn(true);
+    descriptor = object("foo.Bar")
+        .setType(TestDescriptorBuilder.Type.ENUM)
+        .build();
     assertEquals(
         Paths.get("output/enum_foo_Bar.html"),
         linker.getFilePath(descriptor));
 
-    when(descriptor.isEnum()).thenReturn(false);
+    descriptor = object("foo.Bar").build();
     assertEquals(
         Paths.get("output/namespace_foo_Bar.html"),
         linker.getFilePath(descriptor));
@@ -64,8 +60,7 @@ public class LinkerTest {
     when(mockConfig.getOutput()).thenReturn(outputDir);
     when(mockConfig.getModulePrefix()).thenReturn(modulePrefix);
 
-    DocRegistry mockRegistry = mock(DocRegistry.class);
-    Linker linker = new Linker(mockConfig, mockRegistry);
+    Linker linker = new Linker(mockConfig, new DocRegistry());
 
     ModuleDescriptor mockModule = mock(ModuleDescriptor.class);
 
@@ -89,8 +84,7 @@ public class LinkerTest {
     when(mockConfig.getOutput()).thenReturn(outputDir);
     when(mockConfig.getSrcPrefix()).thenReturn(srcPrefix);
 
-    DocRegistry mockRegistry = mock(DocRegistry.class);
-    Linker linker = new Linker(mockConfig, mockRegistry);
+    Linker linker = new Linker(mockConfig, new DocRegistry());
 
     assertEquals(
         outputDir.resolve("source/one/two/three.js.src.html"),
@@ -108,16 +102,15 @@ public class LinkerTest {
     when(mockConfig.getSrcPrefix()).thenReturn(srcPrefix);
     when(mockConfig.getModulePrefix()).thenReturn(modulePrefix);
 
-    DocRegistry mockRegistry = mock(DocRegistry.class);
-    Linker linker = new Linker(mockConfig, mockRegistry);
+    Linker linker = new Linker(mockConfig, new DocRegistry());
 
     ModuleDescriptor module = mock(ModuleDescriptor.class);
     when(module.getPath()).thenReturn(modulePrefix.resolve("bar/baz.js"));
 
-    Descriptor descriptor = mock(Descriptor.class);
-    when(descriptor.getFullName()).thenReturn("foo.Bar");
-    when(descriptor.isConstructor()).thenReturn(true);
-    when(descriptor.getModule()).thenReturn(Optional.of(module));
+    Descriptor descriptor = object("foo.Bar")
+        .setType(TestDescriptorBuilder.Type.CLASS)
+        .setModule(module)
+        .build();
 
     assertEquals(
         Paths.get("/root/output/module_bar_baz_class_foo_Bar.html"),
@@ -129,22 +122,21 @@ public class LinkerTest {
     Path outputDir = Paths.get("");
     Config mockConfig = mock(Config.class);
     when(mockConfig.getOutput()).thenReturn(outputDir);
-    DocRegistry mockRegistry = mock(DocRegistry.class);
-    Linker linker = new Linker(mockConfig, mockRegistry);
+    DocRegistry registry = new DocRegistry();
+    Linker linker = new Linker(mockConfig, registry);
 
     assertNull("No types are known", linker.getLink("goog.Foo"));
 
-    Descriptor mockGoog = mock(Descriptor.class);
-    when(mockGoog.getModule()).thenReturn(NO_MODULE);
-    when(mockRegistry.getType("goog")).thenReturn(mockGoog);
-    when(mockGoog.getFullName()).thenReturn("goog");
+    Descriptor googFoo = object("goog.Foo")
+        .addStaticProperty(object("goog.Foo.bar"))
+        .build();
+    Descriptor goog = object("goog").addStaticProperty(googFoo).build();
+
+    registry.addType(goog);
     assertEquals("namespace_goog.html#goog.Foo", linker.getLink("goog.Foo"));
     assertEquals("namespace_goog.html#goog.Foo", linker.getLink("goog.Foo()"));
 
-    Descriptor mockGoogFoo = mock(Descriptor.class);
-    when(mockGoogFoo.getModule()).thenReturn(NO_MODULE);
-    when(mockRegistry.getType("goog.Foo")).thenReturn(mockGoogFoo);
-    when(mockGoogFoo.getFullName()).thenReturn("goog.Foo");
+    registry.addType(googFoo);
     assertEquals("namespace_goog_Foo.html", linker.getLink("goog.Foo"));
     assertEquals("namespace_goog_Foo.html", linker.getLink("goog.Foo()"));
 
@@ -157,14 +149,13 @@ public class LinkerTest {
     Config mockConfig = mock(Config.class);
     when(mockConfig.getOutput()).thenReturn(Paths.get(""));
 
-    Descriptor mockGoogFoo = mock(Descriptor.class);
-    when(mockGoogFoo.getModule()).thenReturn(NO_MODULE);
-    when(mockGoogFoo.getFullName()).thenReturn("goog");
+    DocRegistry registry = new DocRegistry();
+    Linker linker = new Linker(mockConfig, registry);
 
-    DocRegistry mockRegistry = mock(DocRegistry.class);
-    when(mockRegistry.getType("goog")).thenReturn(mockGoogFoo);
-
-    Linker linker = new Linker(mockConfig, mockRegistry);
+    Descriptor goog = object("goog")
+        .addStaticProperty(object("goog.Foo"))
+        .build();
+    registry.addType(goog);
 
     assertEquals("namespace_goog.html", linker.getLink("goog"));
     assertEquals("namespace_goog.html#goog.Foo", linker.getLink("goog.Foo"));
@@ -176,12 +167,20 @@ public class LinkerTest {
     Config mockConfig = mock(Config.class);
     when(mockConfig.getOutput()).thenReturn(Paths.get(""));
 
-    DocRegistry mockRegistry = mock(DocRegistry.class);
-    Linker linker = new Linker(mockConfig, mockRegistry);
+    DocRegistry registry = new DocRegistry();
+    Linker linker = new Linker(mockConfig, registry);
+
+    Descriptor element = object("Element")
+        .addInstanceProperty(object("Element.prototype.nodeType"))
+        .build();
+    registry.addExtern(element);
 
     assertEquals(
         "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String",
         linker.getLink("string"));
+    assertNull(linker.getLink("Element"));
+    assertNull(linker.getLink("Element.prototype.nodeType"));
+    assertNull(linker.getLink("Element#nodeType"));
   }
 
   @Test
@@ -189,15 +188,15 @@ public class LinkerTest {
     Config mockConfig = mock(Config.class);
     when(mockConfig.getOutput()).thenReturn(Paths.get(""));
 
-    Descriptor mockGoogFoo = mock(Descriptor.class);
-    when(mockGoogFoo.getModule()).thenReturn(NO_MODULE);
-    when(mockGoogFoo.getFullName()).thenReturn("goog.Foo");
-    when(mockGoogFoo.isConstructor()).thenReturn(true);
+    Descriptor googFoo = object("goog.Foo")
+        .setType(TestDescriptorBuilder.Type.CLASS)
+        .addInstanceProperty(object("goog.Foo.prototype.bar"))
+        .build();
 
-    DocRegistry mockRegistry = mock(DocRegistry.class);
-    when(mockRegistry.getType("goog.Foo")).thenReturn(mockGoogFoo);
+    DocRegistry registry = new DocRegistry();
+    registry.addType(googFoo);
 
-    Linker linker = new Linker(mockConfig, mockRegistry);
+    Linker linker = new Linker(mockConfig, registry);
 
     assertEquals("class_goog_Foo.html", linker.getLink("goog.Foo"));
     assertEquals("class_goog_Foo.html", linker.getLink("goog.Foo.prototype"));
@@ -208,8 +207,47 @@ public class LinkerTest {
   }
 
   @Test
+  public void testGetLink_module() {
+    Config mockConfig = mock(Config.class);
+    when(mockConfig.getOutput()).thenReturn(Paths.get(""));
+    when(mockConfig.getModulePrefix()).thenReturn(Paths.get(""));
+
+    ModuleDescriptor module = object("foo.bar.exports")
+        .setSource("foo/bar.js")
+        .buildModule();
+    DocRegistry registry = new DocRegistry();
+    registry.addModule(module);
+
+    Linker linker = new Linker(mockConfig, registry);
+    assertEquals("module_foo_bar.html", linker.getLink("foo.bar.exports"));
+    assertEquals("module_foo_bar.html", linker.getLink("foo.bar"));
+  }
+
+  @Test
+  public void testGetLink_moduleExportedClass() {
+    Config mockConfig = mock(Config.class);
+    when(mockConfig.getOutput()).thenReturn(Paths.get(""));
+    when(mockConfig.getModulePrefix()).thenReturn(Paths.get(""));
+
+    ModuleDescriptor module = object("foo.bar.exports")
+        .setSource("foo/bar.js")
+        .buildModule();
+    module.addExportedProperty(object("SomeClass")
+        .setType(TestDescriptorBuilder.Type.CLASS)
+        .build());
+
+    DocRegistry registry = new DocRegistry();
+    registry.addModule(module);
+
+    Linker linker = new Linker(mockConfig, registry);
+    assertEquals("module_foo_bar_class_SomeClass.html",
+        linker.getLink("foo.bar.exports.SomeClass"));
+    assertEquals("module_foo_bar_class_SomeClass.html", linker.getLink("foo.bar.SomeClass"));
+  }
+
+  @Test
   public void testGetSourcePath_sourceInfoNotFound() {
-    Linker linker = new Linker(mock(Config.class), mock(DocRegistry.class));
+    Linker linker = new Linker(mock(Config.class), new DocRegistry());
 
     Descriptor mockDescriptor = mock(Descriptor.class);
     assertNull(linker.getSourcePath(mockDescriptor));
@@ -224,13 +262,12 @@ public class LinkerTest {
     when(mockConfig.getOutput()).thenReturn(output);
     when(mockConfig.getSrcPrefix()).thenReturn(srcPrefix);
 
-    Descriptor mockDescriptor = mock(Descriptor.class);
-    when(mockDescriptor.getSource()).thenReturn("/alphabet/soup/a/b/c");
+    Descriptor descriptor = object("Foo")
+        .setSource("/alphabet/soup/a/b/c")
+        .build();
 
-    Linker linker = new Linker(mockConfig, mock(DocRegistry.class));
-    assertEquals(
-        "source/a/b/c.src.html",
-        linker.getSourcePath(mockDescriptor));
+    Linker linker = new Linker(mockConfig, new DocRegistry());
+    assertEquals("source/a/b/c.src.html", linker.getSourcePath(descriptor));
   }
 
   @Test
@@ -242,13 +279,59 @@ public class LinkerTest {
     when(mockConfig.getOutput()).thenReturn(output);
     when(mockConfig.getSrcPrefix()).thenReturn(srcPrefix);
 
-    Descriptor mockDescriptor = mock(Descriptor.class);
-    when(mockDescriptor.getSource()).thenReturn("/alphabet/soup/a/b/c");
-    when(mockDescriptor.getLineNum()).thenReturn(123);
+    Descriptor descriptor = object("foo")
+        .setSource("/alphabet/soup/a/b/c")
+        .setLineNum(123)
+        .build();
 
-    Linker linker = new Linker(mockConfig, mock(DocRegistry.class));
+    Linker linker = new Linker(mockConfig, new DocRegistry());
+    assertEquals("source/a/b/c.src.html#l123", linker.getSourcePath(descriptor));
+  }
+
+  @Test
+  public void getExternLink_primitiveType() {
+    Linker linker = new Linker(mock(Config.class), new DocRegistry());
     assertEquals(
-        "source/a/b/c.src.html#l123",
-        linker.getSourcePath(mockDescriptor));
+        "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String",
+        linker.getExternLink("string"));
+    assertEquals(
+        "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String",
+        linker.getExternLink("String"));
+    assertEquals(
+        "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Null",
+        linker.getExternLink("null"));
+  }
+
+  @Test
+  public void getExternLink_noSeeTags() {
+    Descriptor descriptor = object("Foo").build();
+
+    DocRegistry registry = new DocRegistry();
+    registry.addExtern(descriptor);
+
+    Linker linker = new Linker(mock(Config.class), registry);
+
+    assertNull(linker.getExternLink("Foo"));
+  }
+
+  @Test
+  public void getExternLink() {
+    JsDoc jsDoc = mock(JsDoc.class);
+    when(jsDoc.getSeeClauses()).thenReturn(ImmutableList.of(
+        "not a valid URL",
+        "http://www.example.com"));
+
+    Descriptor descriptor = object("Foo").setJsDoc(jsDoc).build();
+
+    DocRegistry registry = new DocRegistry();
+    registry.addExtern(descriptor);
+
+    Linker linker = new Linker(mock(Config.class), registry);
+
+    assertEquals("http://www.example.com", linker.getExternLink("Foo"));
+  }
+
+  private static TestDescriptorBuilder object(String name) {
+    return new TestDescriptorBuilder(name);
   }
 }

@@ -1,6 +1,5 @@
 package com.github.jleyba.dossier;
 
-import com.google.common.collect.ImmutableSet;
 import com.google.javascript.jscomp.AbstractCompiler;
 import com.google.javascript.jscomp.CodingConvention;
 import com.google.javascript.jscomp.CompilerPass;

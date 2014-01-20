@@ -1,8 +1,5 @@
 package com.github.jleyba.dossier;
 
-import static com.google.common.base.Preconditions.checkArgument;
-
-import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import com.google.javascript.jscomp.DossierModule;
 import com.google.javascript.jscomp.Scope;
@@ -27,7 +24,7 @@ class ModuleDescriptor {
   /**
    * Descriptors for this module's exported API.
    */
-  private final List<Descriptor> exportedProperties = new LinkedList<>();
+  private final Map<String, Descriptor> exportedProperties = new HashMap<>();
 
   /**
    * Type definitions defined within the module but not on an exported property.
@@ -45,6 +42,7 @@ class ModuleDescriptor {
   ModuleDescriptor(Descriptor descriptor, DossierModule module) {
     this.descriptor = descriptor;
     this.module = module;
+    this.descriptor.setModule(this);
   }
 
   @Override
@@ -60,6 +58,10 @@ class ModuleDescriptor {
   @Override
   public int hashCode() {
     return Objects.hash(descriptor, module);
+  }
+
+  public String getName() {
+    return module.getVarName();
   }
 
   public Iterable<Scope.Var> getInternalVars() {
@@ -86,13 +88,25 @@ class ModuleDescriptor {
 
   public void addExportedProperty(Descriptor descriptor) {
     descriptor.setModule(this);
-    exportedProperties.add(descriptor);
+    exportedProperties.put(descriptor.getFullName(), descriptor);
   }
 
   Iterable<Descriptor> getExportedProperties() {
-    return Iterables.unmodifiableIterable(exportedProperties);
+    return Iterables.unmodifiableIterable(exportedProperties.values());
   }
 
+  boolean exportsProperty(String name) {
+    for (Descriptor descriptor : Iterables.concat(exportedProperties.values(), internalTypeDefs)) {
+      if (descriptor.getFullName().equals(name)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+//  Descriptor getExportedProperty(String qualifiedName) {
+//  }
+//
   void addTypedef(Descriptor descriptor) {
     descriptor.setModule(this);
     internalTypeDefs.add(descriptor);

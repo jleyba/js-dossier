@@ -45,6 +45,10 @@ public class DossierModule {
     this.modulePath = FileSystems.getDefault().getPath(
         script.getSourceFileName());
     this.varName = guessModuleName(scriptNode.getSourceFileName());
+
+    // Define automatic aliases.
+    this.typeToAlias.put("module", varName);
+    this.typeToAlias.put("exports", varName + ".exports");
   }
 
   public Node getScriptNode() {
