@@ -189,6 +189,10 @@ class Linker {
 
   @Nullable
   String getLink(Descriptor descriptor) {
+    if (docRegistry.isExtern(descriptor.getFullName())) {
+      return getExternLink(descriptor);
+    }
+
     if (!docRegistry.isDocumentedType(descriptor)) {
       return null;
     }
@@ -268,21 +272,34 @@ class Linker {
    * @return A link to the extern's type definition, or {@code null} if one could not be found.
    */
   @Nullable
-  String getExternLink(String name) {
+  private String getExternLink(String name) {
     if (PRIMITIVES_TO_MDN_LINK.containsKey(name)) {
       return PRIMITIVES_TO_MDN_LINK.get(name);
     }
 
     Descriptor descriptor = docRegistry.getExtern(name);
     if (descriptor != null) {
-      JsDoc jsDoc = descriptor.getJsDoc();
-      if (jsDoc != null) {
-        for (String see : jsDoc.getSeeClauses()) {
-          try {
-            return new URI(see).toString();
-          } catch (URISyntaxException ignored) {
-            // Do nothing.
-          }
+      return getExternLink(descriptor);
+    }
+    return null;
+  }
+
+  /**
+   * @see #getExternLink(String)
+   */
+  @Nullable
+  private String getExternLink(Descriptor descriptor) {
+    if (PRIMITIVES_TO_MDN_LINK.containsKey(descriptor.getFullName())) {
+      return PRIMITIVES_TO_MDN_LINK.get(descriptor.getFullName());
+    }
+
+    JsDoc jsDoc = descriptor.getJsDoc();
+    if (jsDoc != null) {
+      for (String see : jsDoc.getSeeClauses()) {
+        try {
+          return new URI(see).toString();
+        } catch (URISyntaxException ignored) {
+          // Do nothing.
         }
       }
     }

@@ -110,7 +110,7 @@ class DocRegistry {
         break;
       }
     }
-    return isKnownType(name) && !isExtern(name);
+    return isKnownType(name);
   }
 
   Iterable<Descriptor> getTypes() {

@@ -184,6 +184,22 @@ public class LinkerTest {
   }
 
   @Test
+  public void testGetLink_byDescriptor() {
+    Config mockConfig = mock(Config.class);
+    when(mockConfig.getOutput()).thenReturn(Paths.get(""));
+
+    DocRegistry registry = new DocRegistry();
+    Linker linker = new Linker(mockConfig, registry);
+
+    Descriptor str = object("String").build();
+    registry.addExtern(str);
+
+    assertEquals(
+        "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String",
+        linker.getLink(str));
+  }
+
+  @Test
   public void testGetLink_prototype() {
     Config mockConfig = mock(Config.class);
     when(mockConfig.getOutput()).thenReturn(Paths.get(""));
@@ -293,13 +309,13 @@ public class LinkerTest {
     Linker linker = new Linker(mock(Config.class), new DocRegistry());
     assertEquals(
         "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String",
-        linker.getExternLink("string"));
+        linker.getLink("string"));
     assertEquals(
         "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String",
-        linker.getExternLink("String"));
+        linker.getLink("String"));
     assertEquals(
         "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Null",
-        linker.getExternLink("null"));
+        linker.getLink("null"));
   }
 
   @Test
@@ -311,7 +327,7 @@ public class LinkerTest {
 
     Linker linker = new Linker(mock(Config.class), registry);
 
-    assertNull(linker.getExternLink("Foo"));
+    assertNull(linker.getLink("Foo"));
   }
 
   @Test
@@ -328,7 +344,7 @@ public class LinkerTest {
 
     Linker linker = new Linker(mock(Config.class), registry);
 
-    assertEquals("http://www.example.com", linker.getExternLink("Foo"));
+    assertEquals("http://www.example.com", linker.getLink("Foo"));
   }
 
   private static TestDescriptorBuilder object(String name) {
