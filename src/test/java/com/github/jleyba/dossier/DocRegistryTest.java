@@ -176,6 +176,37 @@ public class DocRegistryTest {
   }
 
   @Test
+  public void resolvesNamespaceReferences() {
+    Descriptor oneTwoThree = object("one.two.three").build();
+    Descriptor oneTwo = object("one.two")
+        .addStaticProperty(oneTwoThree)
+        .build();
+    Descriptor one = object("one")
+        .addStaticProperty(oneTwo)
+        .build();
+    registry.addType(one);
+    registry.addType(oneTwo);
+
+    Descriptor ab = object("a.b").build();
+    Descriptor a = object("a").addStaticProperty(ab).build();
+    ModuleDescriptor module = object("module.exports").buildModule();
+    module.addExportedProperty(a);
+    module.addExportedProperty(ab);
+    registry.addModule(module);
+
+    assertSame(oneTwoThree, registry.resolve("one.two.three."));
+    assertSame(oneTwo, registry.resolve("one.two."));
+    assertSame(one, registry.resolve("one."));
+
+    assertSame(ab, registry.resolve("module.exports.a.b."));
+    assertSame(a, registry.resolve("module.exports.a."));
+    assertSame(module.getDescriptor(), registry.resolve("module.exports."));
+    assertSame(module.getDescriptor(), registry.resolve("module."));
+    assertSame(ab, registry.resolve("a.b.", module));
+    assertSame(a, registry.resolve("a.", module));
+  }
+
+  @Test
   public void canIdentifyKnownTypes() {
     Descriptor fooBar = object("foo.bar").build();
     Descriptor foo = object("foo").addStaticProperty(fooBar).build();

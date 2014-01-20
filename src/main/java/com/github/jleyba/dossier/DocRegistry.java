@@ -152,6 +152,10 @@ class DocRegistry {
       typeName = typeName.substring(0, typeName.length() - ".prototype".length());
     }
 
+    if (typeName.endsWith(".")) {
+      typeName = typeName.substring(0, typeName.length() - 1);
+    }
+
     if (relativeTo != null) {
       Descriptor descriptor = relativeTo.getExportedProperty(typeName);
       if (descriptor != null) {
