@@ -138,9 +138,30 @@ class DocRegistry {
    */
   @Nullable
   Descriptor resolve(String typeName) {
+    return resolve(typeName, null);
+  }
+
+  /**
+   * Resolves the given type, first against the exported API of the specified module, and
+   * then against all global types.
+   *
+   * @param typeName The qualified typename to search for.
+   * @param relativeTo If non-null, will attempt to resolve the given type name against the
+   *     module's exported API before checking the global scope.
+   * @return The resolved descriptor, or {@code null}.
+   */
+  @Nullable
+  Descriptor resolve(String typeName, @Nullable ModuleDescriptor relativeTo) {
     typeName = typeName.replace("#", ".prototype.");
     if (typeName.endsWith(".prototype")) {
       typeName = typeName.substring(0, typeName.length() - ".prototype".length());
+    }
+
+    if (relativeTo != null) {
+      Descriptor descriptor = relativeTo.getExportedProperty(typeName);
+      if (descriptor != null) {
+        return descriptor;
+      }
     }
 
     if (externs.containsKey(typeName)) {
@@ -159,7 +180,7 @@ class DocRegistry {
     if (index != -1 && index + 1 < typeName.length()) {
       String parentName = typeName.substring(0, index);
       String name = typeName.substring(index + 1);
-      Descriptor parent = resolve(parentName);
+      Descriptor parent = resolve(parentName, relativeTo);
       if (parent != null) {
         if (parentName.endsWith(".prototype")) {
           return findProperty(parent.getInstanceProperties(), name);

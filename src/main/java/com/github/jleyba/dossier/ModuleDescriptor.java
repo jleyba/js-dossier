@@ -96,17 +96,19 @@ class ModuleDescriptor {
   }
 
   boolean exportsProperty(String name) {
-    for (Descriptor descriptor : Iterables.concat(exportedProperties.values(), internalTypeDefs)) {
-      if (descriptor.getFullName().equals(name)) {
-        return true;
-      }
-    }
-    return false;
+    return getExportedProperty(name) != null;
   }
 
-//  Descriptor getExportedProperty(String qualifiedName) {
-//  }
-//
+  @Nullable
+  Descriptor getExportedProperty(String name) {
+    for (Descriptor descriptor : Iterables.concat(exportedProperties.values(), internalTypeDefs)) {
+      if (descriptor.getFullName().equals(name)) {
+        return descriptor;
+      }
+    }
+    return null;
+  }
+
   void addTypedef(Descriptor descriptor) {
     descriptor.setModule(this);
     internalTypeDefs.add(descriptor);

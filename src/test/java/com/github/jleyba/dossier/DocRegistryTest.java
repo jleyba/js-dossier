@@ -155,6 +155,27 @@ public class DocRegistryTest {
   }
 
   @Test
+  public void resolveUnqualifiedExportedModuleApi() {
+    ModuleDescriptor module = object("foo.bar.exports").buildModule();
+    registry.addModule(module);
+
+    Descriptor one = object("Baz.one").build();
+    Descriptor two = object("Baz.prototype.two").build();
+
+    Descriptor baz = object("Baz")
+        .addStaticProperty(one)
+        .addInstanceProperty(two)
+        .build();
+    module.addExportedProperty(baz);
+
+    assertNull("Not given relative module", registry.resolve("Baz"));
+    assertSame(baz, registry.resolve("Baz", module));
+    assertSame(one, registry.resolve("Baz.one", module));
+    assertSame(two, registry.resolve("Baz.prototype.two", module));
+    assertSame(two, registry.resolve("Baz#two", module));
+  }
+
+  @Test
   public void canIdentifyKnownTypes() {
     Descriptor fooBar = object("foo.bar").build();
     Descriptor foo = object("foo").addStaticProperty(fooBar).build();

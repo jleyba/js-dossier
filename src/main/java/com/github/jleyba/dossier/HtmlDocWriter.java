@@ -89,6 +89,8 @@ class HtmlDocWriter implements DocWriter {
   private Iterable<Path> sortedFiles;
   private Iterable<ModuleDescriptor> sortedModules;
 
+  private ModuleDescriptor currentModule;
+
   HtmlDocWriter(Config config, DocRegistry registry) {
     this.config = checkNotNull(config);
     this.docRegistry = checkNotNull(registry);
@@ -208,6 +210,7 @@ class HtmlDocWriter implements DocWriter {
             .setType(jsTypeBuilder.build())
             .build());
 
+    currentModule = module;
     for (Descriptor descriptor : module.getExportedProperties()) {
       // If the exported descriptor is an alias for another documented type, there is no
       // need to generate an additional set of docs as we can just link to the original.
@@ -215,6 +218,7 @@ class HtmlDocWriter implements DocWriter {
         generateDocs(descriptor, registry);
       }
     }
+    currentModule = null;
   }
 
   private void generateDocs(Descriptor descriptor, JSTypeRegistry registry) throws IOException {
@@ -393,7 +397,7 @@ class HtmlDocWriter implements DocWriter {
   private TypeLink getTypeLink(JSType type) {
     String typeName = getTypeName(type);
     String link;
-    Descriptor descriptor = docRegistry.resolve(typeName);
+    Descriptor descriptor = docRegistry.resolve(typeName, currentModule);
     if (descriptor != null) {
       typeName = descriptor.getFullName();
       link = linker.getLink(descriptor);
@@ -412,7 +416,7 @@ class HtmlDocWriter implements DocWriter {
       JSDocInfo info = type.getJSDocInfo();
       if (info.getAssociatedNode() != null) {
         Node node = info.getAssociatedNode();
-        if (node.isVar()) {
+        if (node.isVar() || node.isFunction()) {
           checkState(node.getFirstChild().isName());
           typeName = Objects.firstNonNull(
               (String) node.getFirstChild().getProp(Node.ORIGINALNAME_PROP),
@@ -581,7 +585,7 @@ class HtmlDocWriter implements DocWriter {
 
     for (JSType type : assignableTypes) {
       String assignableTypeName = getTypeName(type);
-      Descriptor typeDescriptor = docRegistry.resolve(assignableTypeName);
+      Descriptor typeDescriptor = docRegistry.resolve(assignableTypeName, currentModule);
       if (typeDescriptor == null) {
         Node typeNode = null;
         if (type instanceof StaticScope) {
