@@ -513,17 +513,16 @@ class HtmlDocWriter implements DocWriter {
   private Descriptor resolveTypeAlias(Descriptor descriptor) {
     JSType type = descriptor.getType();
     if (type.isConstructor()) {
-      JSType constructedType = ((FunctionType) type).getTypeOfThis();
+      type = ((FunctionType) type).getTypeOfThis();
+    }
+    Descriptor alias = docRegistry.getType(type);
+    if (alias == null) {
+      String name = getTypeName(type);
+      alias = docRegistry.resolve(name, currentModule);
+    }
 
-      Descriptor alias = docRegistry.getType(constructedType);
-      if (alias == null) {
-        String name = getTypeName(constructedType);
-        alias = docRegistry.resolve(name, currentModule);
-      }
-
-      if (alias != null) {
-        return alias;
-      }
+    if (alias != null) {
+      return alias;
     }
     return descriptor;
   }

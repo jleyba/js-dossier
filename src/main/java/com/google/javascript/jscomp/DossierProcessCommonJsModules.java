@@ -3,14 +3,17 @@ package com.google.javascript.jscomp;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
 
+import com.google.common.base.Splitter;
 import com.google.javascript.rhino.IR;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.Node;
+import com.google.javascript.rhino.jstype.JSType;
 
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -94,7 +97,8 @@ class DossierProcessCommonJsModules implements CompilerPass {
         visitScript(t, n);
       }
 
-      if (n.isCall() && n.getChildCount() == 2
+      if (n.isCall()
+          && n.getChildCount() == 2
           && "require".equals(n.getFirstChild().getQualifiedName())
           && n.getChildAtIndex(1).isString()) {
         visitRequireCall(t, n, parent);
@@ -113,6 +117,15 @@ class DossierProcessCommonJsModules implements CompilerPass {
       if (n.isName() && ("__filename".equals(n.getQualifiedName())
           || "__dirname".equals(n.getQualifiedName()))) {
         visitFilenameOrDirnameFreeVariables(n);
+      }
+
+      if (n.isAssign()) {
+        visitNamespaceAssignment(t, n);
+      }
+
+      if (n.isExprResult() && n.getFirstChild().isGetProp()
+          && n.getFirstChild() == n.getLastChild()) {
+        visitNamespacePropDeclarations(t, n);
       }
     }
 
@@ -204,6 +217,87 @@ class DossierProcessCommonJsModules implements CompilerPass {
       }
 
       compiler.reportCodeChange();
+    }
+
+    /**
+     * Modifies any assignments of a namespace type to be a direct reference to the indicated
+     * namespace object. This is required since the Closure Compiler's type system does not fully
+     * support namespace type references yet.
+     *
+     * TODO(jleyba): Remove this when Closure supports namespace type references.
+     */
+    private void visitNamespaceAssignment(NodeTraversal t, Node node) {
+      checkArgument(node.isAssign());
+      JSDocInfo info = node.getJSDocInfo();
+      if (info == null || info.getType() == null) {
+        return;
+      }
+
+      JSType type = info.getType().evaluate(t.getScope(), t.getCompiler().getTypeRegistry());
+      if (type == null || type.getDisplayName() == null) {
+        return;
+      }
+
+      if (type.getDisplayName().endsWith(".")) {
+        String namespace = type.getDisplayName().substring(0, type.getDisplayName().length() - 1);
+        if (t.getScope().isGlobal()) {
+          t.getInput().addRequire(namespace);
+        }
+        node.setJSDocInfo(null);
+
+        Iterator<String> names = Splitter.on('.')
+            .omitEmptyStrings()
+            .split(type.getDisplayName())
+            .iterator();
+        checkState(names.hasNext());
+
+        Node current = IR.name(names.next());
+        while (names.hasNext()) {
+          current = IR.getprop(current, IR.string(names.next()));
+        }
+
+        current.copyInformationFromForTree(node.getLastChild());
+        node.replaceChild(node.getLastChild(), current);
+      }
+    }
+
+    private void visitNamespacePropDeclarations(NodeTraversal t, Node node) {
+      checkArgument(node.isExprResult() && node.getFirstChild().isGetProp());
+
+      Node getProp = node.getFirstChild();
+      JSDocInfo info = getProp.getJSDocInfo();
+      if (info == null || info.getType() == null) {
+        return;
+      }
+
+      JSType type = info.getType().evaluate(t.getScope(), t.getCompiler().getTypeRegistry());
+      if (type == null || type.getDisplayName() == null) {
+        return;
+      }
+
+      if (type.getDisplayName().endsWith(".")) {
+        String namespace = type.getDisplayName().substring(0, type.getDisplayName().length() - 1);
+        if (t.getScope().isGlobal()) {
+          t.getInput().addRequire(namespace);
+        }
+        getProp.setJSDocInfo(null);
+
+        Iterator<String> names = Splitter.on('.')
+            .omitEmptyStrings()
+            .split(type.getDisplayName())
+            .iterator();
+        checkState(names.hasNext());
+
+        Node current = IR.name(names.next());
+        while (names.hasNext()) {
+          current = IR.getprop(current, IR.string(names.next()));
+        }
+
+        node.removeChildren();
+        current = IR.assign(getProp, current);
+        current.copyInformationFromForTree(getProp);
+        node.addChildrenToFront(current);
+      }
     }
   }
 

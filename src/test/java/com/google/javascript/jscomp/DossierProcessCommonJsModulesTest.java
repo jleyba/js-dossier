@@ -609,6 +609,42 @@ public class DossierProcessCommonJsModulesTest {
         compiler.toSource().trim());
   }
 
+  @Test
+  public void rewritesNamespaceAssignments() {
+    CompilerUtil compiler = createCompiler(path("foo/bar.js"));
+
+    compiler.compile(
+        createSourceFile(path("foo/bar.js"),
+            "/** @type {foo.} */",
+            "exports.foo = {};"),
+        createSourceFile(path("foo.js"),
+            "goog.provide('foo');"));
+
+    assertEquals(
+        lines(
+            "var foo = {};",
+            module("dossier$$module__foo$bar", "dossier$$module__foo$bar.exports.foo = foo;")),
+        compiler.toSource().trim());
+  }
+
+  @Test
+  public void rewritesNamespaceTypeDeclarations() {
+    CompilerUtil compiler = createCompiler(path("foo/bar.js"));
+
+    compiler.compile(
+        createSourceFile(path("foo/bar.js"),
+            "/** @type {foo.} */",
+            "exports.bar;"),
+        createSourceFile(path("foo.js"),
+            "goog.provide('foo');"));
+
+    assertEquals(
+        lines(
+            "var foo = {};",
+            module("dossier$$module__foo$bar", "dossier$$module__foo$bar.exports.bar = foo;")),
+        compiler.toSource().trim());
+  }
+
   private static String module(String name) {
     return module(name, Optional.<String>absent());
   }
