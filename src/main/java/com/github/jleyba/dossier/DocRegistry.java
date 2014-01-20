@@ -75,11 +75,6 @@ class DocRegistry {
   }
 
   @Nullable
-  Descriptor getType(String name) {
-    return types.get(name);
-  }
-
-  @Nullable
   Descriptor getType(JSType type) {
     return jsTypeToDescriptor.get(type);
   }

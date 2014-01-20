@@ -517,7 +517,8 @@ class HtmlDocWriter implements DocWriter {
 
       Descriptor alias = docRegistry.getType(constructedType);
       if (alias == null) {
-        alias = docRegistry.getType(constructedType.toString());
+        String name = getTypeName(constructedType);
+        alias = docRegistry.resolve(name, currentModule);
       }
 
       if (alias != null) {
@@ -683,9 +684,14 @@ class HtmlDocWriter implements DocWriter {
         }
       }
 
-      Descriptor propertyTypeDescriptor = docRegistry.getType(propertyType.toString());
+      Descriptor propertyTypeDescriptor = docRegistry.getType(propertyType);
+      if (propertyTypeDescriptor == null) {
+        String name = getTypeName(propertyType);
+        propertyTypeDescriptor = docRegistry.resolve(name, currentModule);
+      }
+
       if (propertyTypeDescriptor != null) {
-        String link = linker.getLink(propertyTypeDescriptor.getFullName());
+        String link = linker.getLink(propertyTypeDescriptor);
         checkState(!Strings.isNullOrEmpty(link),
             "Unable to compute link to %s; this should never happen since %s was previously" +
                 " found in the type registry.", propertyTypeDescriptor.getFullName());
