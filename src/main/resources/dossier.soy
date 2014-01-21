@@ -216,7 +216,9 @@
 {template .typeHeader}
   <header>
     <h1>
-      {if $type.isInterface}
+      {if $type.isModule}
+        Module {$type.name}
+      {elseif $type.isInterface}
         Interface {$type.name}
       {elseif $type.constructor}
         Class {$type.name}
@@ -671,18 +673,22 @@
  * @param type A Dossier.JsType object.
  */
 {template .static}
+  {let $parentName: $type.isModule ? '' : $type.name /}
+
   {if length($type.staticFunction)}
     <section id="static-functions">
       <h2>
         {if $type.constructor}
           Static Functions
+        {elseif $type.isModule}
+          Functions
         {else}
           Global Functions
         {/if}
       </h2>
       {call .printProperties}
         {param properties: $type.staticFunction /}
-          {param parentName: $type.name /}
+        {param parentName: $parentName /}
       {/call}
     </section>
   {/if}
@@ -692,13 +698,15 @@
       <h2>
         {if $type.constructor}
           Static Properties
+        {elseif $type.isModule}
+          Properties
         {else}
           Global Properties
         {/if}
       </h2>
       {call .printProperties}
         {param properties: $type.staticProperty /}
-          {param parentName: $type.name /}
+        {param parentName: $parentName /}
       {/call}
     </section>
   {/if}
@@ -708,7 +716,7 @@
       <h2>Compiler Constants</h2>
       {call .printProperties}
         {param properties: $type.compilerConstant /}
-          {param parentName: $type.name /}
+        {param parentName: $parentName /}
       {/call}
     </section>
   {/if}

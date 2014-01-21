@@ -304,6 +304,25 @@ public class RendererTest {
   }
 
   @Test
+  public void renderTypeHeader_simpleModule() {
+    Dossier.JsType type = Dossier.JsType.newBuilder()
+        .setName("Foo")
+        .setIsModule(true)
+        .setSource("source-file")
+        .setDescription(parseComment("description"))
+        .setNested(Dossier.JsType.NestedTypes.getDefaultInstance())
+        .build();
+
+    Document document = renderDocument("dossier.soy.typeHeader", "type", type);
+
+    assertThat(querySelector(document, "header").toString(), isHtml(
+        "<header>",
+        "<h1>Module Foo</h1>",
+        "<a class=\"source\" href=\"source-file\">code &raquo;</a>",
+        "</header>"));
+  }
+
+  @Test
   public void renderTypeHeader_interface() {
     Dossier.JsType type = Dossier.JsType.newBuilder()
         .setName("Foo")
@@ -447,6 +466,53 @@ public class RendererTest {
     assertThat(querySelector(document, "header").toString(), isHtml(
         "<header>",
         "<h1>Class Foo.<code class=\"type\">&lt;T&gt;</code></h1>",
+        "<a class=\"source\" href=\"source-file\">code &raquo;</a>",
+        "<pre><code>",
+        "<a href=\"super-one\">SuperClass1</a>",
+        "\n  \u2514 <a href=\"super-two\">SuperClass2</a>",
+        "\n      \u2514 Foo",
+        "</code></pre>",
+        "<dl><dt>All implemented interfaces:</dt><dd>",
+        "<code><a href=\"type-one\">Hello</a></code>, ",
+        "<code><a href=\"type-two\">Goodbye</a></code>",
+        "</dd></dl></header>"));
+  }
+
+  @Test
+  public void renderTypeHeader_classAsModuleExports() {
+    Dossier.JsType type = Dossier.JsType.newBuilder()
+        .setIsModule(true)
+        .setName("Foo")
+        .setSource("source-file")
+        .setDescription(parseComment("description"))
+        .setNested(Dossier.JsType.NestedTypes.getDefaultInstance())
+        .setConstructor(Dossier.Function.newBuilder()
+            .setBase(Dossier.BaseProperty.newBuilder()
+                .setName("ctor-name")
+                .setSource("ctor-source")
+                .setDescription(parseComment("ctor-description")))
+            .addTemplateName("T"))
+        .addExtendedType(Dossier.TypeLink.newBuilder()
+            .setHref("super-one")
+            .setText("SuperClass1"))
+        .addExtendedType(Dossier.TypeLink.newBuilder()
+            .setHref("super-two")
+            .setText("SuperClass2"))
+        .addExtendedType(Dossier.TypeLink.newBuilder()
+            .setHref("#")
+            .setText("Foo"))
+        .addImplementedType(Dossier.TypeLink.newBuilder()
+            .setHref("type-one")
+            .setText("Hello"))
+        .addImplementedType(Dossier.TypeLink.newBuilder()
+            .setHref("type-two")
+            .setText("Goodbye"))
+        .build();
+
+    Document document = renderDocument("dossier.soy.typeHeader", "type", type);
+    assertThat(querySelector(document, "header").toString(), isHtml(
+        "<header>",
+        "<h1>Module Foo.<code class=\"type\">&lt;T&gt;</code></h1>",
         "<a class=\"source\" href=\"source-file\">code &raquo;</a>",
         "<pre><code>",
         "<a href=\"super-one\">SuperClass1</a>",

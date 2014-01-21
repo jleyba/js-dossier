@@ -2092,11 +2092,11 @@ public final class Dossier {
       boolean hasText();
       String getText();
       
-      // optional bool is_literal = 2;
+      // optional bool is_literal = 2 [default = false];
       boolean hasIsLiteral();
       boolean getIsLiteral();
       
-      // optional bool is_code = 3;
+      // optional bool is_code = 3 [default = false];
       boolean hasIsCode();
       boolean getIsCode();
       
@@ -2104,7 +2104,7 @@ public final class Dossier {
       boolean hasHref();
       String getHref();
       
-      // optional bool unresolved_link = 5;
+      // optional bool unresolved_link = 5 [default = false];
       boolean hasUnresolvedLink();
       boolean getUnresolvedLink();
     }
@@ -2169,7 +2169,7 @@ public final class Dossier {
         }
       }
       
-      // optional bool is_literal = 2;
+      // optional bool is_literal = 2 [default = false];
       public static final int IS_LITERAL_FIELD_NUMBER = 2;
       private boolean isLiteral_;
       public boolean hasIsLiteral() {
@@ -2179,7 +2179,7 @@ public final class Dossier {
         return isLiteral_;
       }
       
-      // optional bool is_code = 3;
+      // optional bool is_code = 3 [default = false];
       public static final int IS_CODE_FIELD_NUMBER = 3;
       private boolean isCode_;
       public boolean hasIsCode() {
@@ -2221,7 +2221,7 @@ public final class Dossier {
         }
       }
       
-      // optional bool unresolved_link = 5;
+      // optional bool unresolved_link = 5 [default = false];
       public static final int UNRESOLVED_LINK_FIELD_NUMBER = 5;
       private boolean unresolvedLink_;
       public boolean hasUnresolvedLink() {
@@ -2623,7 +2623,7 @@ public final class Dossier {
           onChanged();
         }
         
-        // optional bool is_literal = 2;
+        // optional bool is_literal = 2 [default = false];
         private boolean isLiteral_ ;
         public boolean hasIsLiteral() {
           return ((bitField0_ & 0x00000002) == 0x00000002);
@@ -2644,7 +2644,7 @@ public final class Dossier {
           return this;
         }
         
-        // optional bool is_code = 3;
+        // optional bool is_code = 3 [default = false];
         private boolean isCode_ ;
         public boolean hasIsCode() {
           return ((bitField0_ & 0x00000004) == 0x00000004);
@@ -2701,7 +2701,7 @@ public final class Dossier {
           onChanged();
         }
         
-        // optional bool unresolved_link = 5;
+        // optional bool unresolved_link = 5 [default = false];
         private boolean unresolvedLink_ ;
         public boolean hasUnresolvedLink() {
           return ((bitField0_ & 0x00000010) == 0x00000010);
@@ -5103,7 +5103,7 @@ public final class Dossier {
     int getTemplateNameCount();
     String getTemplateName(int index);
     
-    // optional bool is_constructor = 3;
+    // optional bool is_constructor = 3 [default = false];
     boolean hasIsConstructor();
     boolean getIsConstructor();
     
@@ -5812,7 +5812,7 @@ public final class Dossier {
       return templateName_.get(index);
     }
     
-    // optional bool is_constructor = 3;
+    // optional bool is_constructor = 3 [default = false];
     public static final int IS_CONSTRUCTOR_FIELD_NUMBER = 3;
     private boolean isConstructor_;
     public boolean hasIsConstructor() {
@@ -6553,7 +6553,7 @@ public final class Dossier {
         onChanged();
       }
       
-      // optional bool is_constructor = 3;
+      // optional bool is_constructor = 3 [default = false];
       private boolean isConstructor_ ;
       public boolean hasIsConstructor() {
         return ((bitField0_ & 0x00000004) == 0x00000004);
@@ -9601,11 +9601,11 @@ public final class Dossier {
     com.github.jleyba.dossier.proto.Dossier.PrototypeOrBuilder getPrototypeOrBuilder(
         int index);
     
-    // optional bool has_instance_methods = 16;
+    // optional bool has_instance_methods = 16 [default = false];
     boolean hasHasInstanceMethods();
     boolean getHasInstanceMethods();
     
-    // optional bool has_instance_properties = 17;
+    // optional bool has_instance_properties = 17 [default = false];
     boolean hasHasInstanceProperties();
     boolean getHasInstanceProperties();
     
@@ -9638,6 +9638,10 @@ public final class Dossier {
         getCompilerConstantOrBuilderList();
     com.github.jleyba.dossier.proto.Dossier.PropertyOrBuilder getCompilerConstantOrBuilder(
         int index);
+    
+    // optional bool is_module = 21;
+    boolean hasIsModule();
+    boolean getIsModule();
   }
   public static final class JsType extends
       com.google.protobuf.GeneratedMessage
@@ -12635,7 +12639,7 @@ public final class Dossier {
       return prototype_.get(index);
     }
     
-    // optional bool has_instance_methods = 16;
+    // optional bool has_instance_methods = 16 [default = false];
     public static final int HAS_INSTANCE_METHODS_FIELD_NUMBER = 16;
     private boolean hasInstanceMethods_;
     public boolean hasHasInstanceMethods() {
@@ -12645,7 +12649,7 @@ public final class Dossier {
       return hasInstanceMethods_;
     }
     
-    // optional bool has_instance_properties = 17;
+    // optional bool has_instance_properties = 17 [default = false];
     public static final int HAS_INSTANCE_PROPERTIES_FIELD_NUMBER = 17;
     private boolean hasInstanceProperties_;
     public boolean hasHasInstanceProperties() {
@@ -12718,6 +12722,16 @@ public final class Dossier {
       return compilerConstant_.get(index);
     }
     
+    // optional bool is_module = 21;
+    public static final int IS_MODULE_FIELD_NUMBER = 21;
+    private boolean isModule_;
+    public boolean hasIsModule() {
+      return ((bitField0_ & 0x00000400) == 0x00000400);
+    }
+    public boolean getIsModule() {
+      return isModule_;
+    }
+    
     private void initFields() {
       name_ = "";
       source_ = "";
@@ -12736,6 +12750,7 @@ public final class Dossier {
       extendedType_ = java.util.Collections.emptyList();
       implementedType_ = java.util.Collections.emptyList();
       compilerConstant_ = java.util.Collections.emptyList();
+      isModule_ = false;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -12884,6 +12899,9 @@ public final class Dossier {
       for (int i = 0; i < compilerConstant_.size(); i++) {
         output.writeMessage(20, compilerConstant_.get(i));
       }
+      if (((bitField0_ & 0x00000400) == 0x00000400)) {
+        output.writeBool(21, isModule_);
+      }
       getUnknownFields().writeTo(output);
     }
     
@@ -12960,6 +12978,10 @@ public final class Dossier {
       for (int i = 0; i < compilerConstant_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(20, compilerConstant_.get(i));
+      }
+      if (((bitField0_ & 0x00000400) == 0x00000400)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(21, isModule_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -13179,6 +13201,8 @@ public final class Dossier {
         } else {
           compilerConstantBuilder_.clear();
         }
+        isModule_ = false;
+        bitField0_ = (bitField0_ & ~0x00020000);
         return this;
       }
       
@@ -13340,6 +13364,10 @@ public final class Dossier {
         } else {
           result.compilerConstant_ = compilerConstantBuilder_.build();
         }
+        if (((from_bitField0_ & 0x00020000) == 0x00020000)) {
+          to_bitField0_ |= 0x00000400;
+        }
+        result.isModule_ = isModule_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -13568,6 +13596,9 @@ public final class Dossier {
             }
           }
         }
+        if (other.hasIsModule()) {
+          setIsModule(other.getIsModule());
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
@@ -13793,6 +13824,11 @@ public final class Dossier {
               com.github.jleyba.dossier.proto.Dossier.Property.Builder subBuilder = com.github.jleyba.dossier.proto.Dossier.Property.newBuilder();
               input.readMessage(subBuilder, extensionRegistry);
               addCompilerConstant(subBuilder.buildPartial());
+              break;
+            }
+            case 168: {
+              bitField0_ |= 0x00020000;
+              isModule_ = input.readBool();
               break;
             }
           }
@@ -15088,7 +15124,7 @@ public final class Dossier {
         return prototypeBuilder_;
       }
       
-      // optional bool has_instance_methods = 16;
+      // optional bool has_instance_methods = 16 [default = false];
       private boolean hasInstanceMethods_ ;
       public boolean hasHasInstanceMethods() {
         return ((bitField0_ & 0x00001000) == 0x00001000);
@@ -15109,7 +15145,7 @@ public final class Dossier {
         return this;
       }
       
-      // optional bool has_instance_properties = 17;
+      // optional bool has_instance_properties = 17 [default = false];
       private boolean hasInstanceProperties_ ;
       public boolean hasHasInstanceProperties() {
         return ((bitField0_ & 0x00002000) == 0x00002000);
@@ -15688,6 +15724,27 @@ public final class Dossier {
         return compilerConstantBuilder_;
       }
       
+      // optional bool is_module = 21;
+      private boolean isModule_ ;
+      public boolean hasIsModule() {
+        return ((bitField0_ & 0x00020000) == 0x00020000);
+      }
+      public boolean getIsModule() {
+        return isModule_;
+      }
+      public Builder setIsModule(boolean value) {
+        bitField0_ |= 0x00020000;
+        isModule_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearIsModule() {
+        bitField0_ = (bitField0_ & ~0x00020000);
+        isModule_ = false;
+        onChanged();
+        return this;
+      }
+      
       // @@protoc_insertion_point(builder_scope:JsType)
     }
     
@@ -15707,7 +15764,7 @@ public final class Dossier {
     com.github.jleyba.dossier.proto.Dossier.Resources getResources();
     com.github.jleyba.dossier.proto.Dossier.ResourcesOrBuilder getResourcesOrBuilder();
     
-    // optional bool has_license = 2;
+    // optional bool has_license = 2 [default = false];
     boolean hasHasLicense();
     boolean getHasLicense();
     
@@ -15758,7 +15815,7 @@ public final class Dossier {
       return resources_;
     }
     
-    // optional bool has_license = 2;
+    // optional bool has_license = 2 [default = false];
     public static final int HAS_LICENSE_FIELD_NUMBER = 2;
     private boolean hasLicense_;
     public boolean hasHasLicense() {
@@ -16221,7 +16278,7 @@ public final class Dossier {
         return resourcesBuilder_;
       }
       
-      // optional bool has_license = 2;
+      // optional bool has_license = 2 [default = false];
       private boolean hasLicense_ ;
       public boolean hasHasLicense() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
@@ -16947,7 +17004,7 @@ public final class Dossier {
     com.github.jleyba.dossier.proto.Dossier.SourceFile getFile();
     com.github.jleyba.dossier.proto.Dossier.SourceFileOrBuilder getFileOrBuilder();
     
-    // optional bool has_license = 3;
+    // optional bool has_license = 3 [default = false];
     boolean hasHasLicense();
     boolean getHasLicense();
   }
@@ -17006,7 +17063,7 @@ public final class Dossier {
       return file_;
     }
     
-    // optional bool has_license = 3;
+    // optional bool has_license = 3 [default = false];
     public static final int HAS_LICENSE_FIELD_NUMBER = 3;
     private boolean hasLicense_;
     public boolean hasHasLicense() {
@@ -17550,7 +17607,7 @@ public final class Dossier {
         return fileBuilder_;
       }
       
-      // optional bool has_license = 3;
+      // optional bool has_license = 3 [default = false];
       private boolean hasLicense_ ;
       public boolean hasHasLicense() {
         return ((bitField0_ & 0x00000004) == 0x00000004);
@@ -17595,7 +17652,7 @@ public final class Dossier {
     com.github.jleyba.dossier.proto.Dossier.Resources getResources();
     com.github.jleyba.dossier.proto.Dossier.ResourcesOrBuilder getResourcesOrBuilder();
     
-    // optional bool has_license = 3;
+    // optional bool has_license = 3 [default = false];
     boolean hasHasLicense();
     boolean getHasLicense();
   }
@@ -17654,7 +17711,7 @@ public final class Dossier {
       return resources_;
     }
     
-    // optional bool has_license = 3;
+    // optional bool has_license = 3 [default = false];
     public static final int HAS_LICENSE_FIELD_NUMBER = 3;
     private boolean hasLicense_;
     public boolean hasHasLicense() {
@@ -18198,7 +18255,7 @@ public final class Dossier {
         return resourcesBuilder_;
       }
       
-      // optional bool has_license = 3;
+      // optional bool has_license = 3 [default = false];
       private boolean hasLicense_ ;
       public boolean hasHasLicense() {
         return ((bitField0_ & 0x00000004) == 0x00000004);
@@ -18354,66 +18411,68 @@ public final class Dossier {
       "\005lines\030\003 \003(\t\"(\n\tResources\022\013\n\003css\030\001 \003(\t\022\016" +
       "\n\006script\030\002 \003(\t\"\027\n\007License\022\014\n\004text\030\001 \002(\t\"" +
       "&\n\010TypeLink\022\014\n\004text\030\001 \002(\t\022\014\n\004href\030\002 \002(\t\"" +
-      "\213\001\n\007Comment\022\035\n\005token\030\001 \003(\0132\016.Comment.Tok" +
-      "en\032a\n\005Token\022\014\n\004text\030\001 \002(\t\022\022\n\nis_literal\030" +
-      "\002 \001(\010\022\017\n\007is_code\030\003 \001(\010\022\014\n\004href\030\004 \001(\t\022\027\n\017" +
-      "unresolved_link\030\005 \001(\010\"\'\n\013Deprecation\022\030\n\006" +
-      "notice\030\001 \001(\0132\010.Comment\"\227\001\n\014BaseProperty\022",
-      "\014\n\004name\030\001 \002(\t\022\016\n\006source\030\002 \002(\t\022\035\n\013descrip" +
-      "tion\030\003 \002(\0132\010.Comment\022!\n\013deprecation\030\004 \001(" +
-      "\0132\014.Deprecation\022\'\n\nvisibility\030\005 \001(\0162\013.Vi" +
-      "sibility:\006PUBLIC\":\n\010Property\022\033\n\004base\030\001 \002" +
-      "(\0132\r.BaseProperty\022\021\n\ttype_html\030\002 \001(\t\"\211\002\n" +
-      "\010Function\022\033\n\004base\030\001 \002(\0132\r.BaseProperty\022\025" +
-      "\n\rtemplate_name\030\002 \003(\t\022\026\n\016is_constructor\030" +
-      "\003 \001(\010\022#\n\tparameter\030\004 \003(\0132\020.Function.Deta" +
-      "il\022 \n\006return\030\005 \001(\0132\020.Function.Detail\022 \n\006" +
-      "thrown\030\006 \003(\0132\020.Function.Detail\032H\n\006Detail",
-      "\022\014\n\004name\030\001 \001(\t\022\021\n\ttype_html\030\002 \001(\t\022\035\n\013des" +
-      "cription\030\003 \001(\0132\010.Comment\"a\n\tPrototype\022\014\n" +
-      "\004name\030\001 \002(\t\022\014\n\004href\030\002 \001(\t\022\033\n\010function\030\003 " +
-      "\003(\0132\t.Function\022\033\n\010property\030\004 \003(\0132\t.Prope" +
-      "rty\"\305\001\n\013Enumeration\022\021\n\ttype_html\030\001 \002(\t\022!" +
-      "\n\005value\030\002 \003(\0132\022.Enumeration.Value\022\'\n\nvis" +
-      "ibility\030\003 \001(\0162\013.Visibility:\006PUBLIC\032W\n\005Va" +
-      "lue\022\014\n\004name\030\001 \002(\t\022\035\n\013description\030\002 \001(\0132\010" +
-      ".Comment\022!\n\013deprecation\030\003 \001(\0132\014.Deprecat" +
-      "ion\"\257\007\n\006JsType\022\014\n\004name\030\001 \002(\t\022\016\n\006source\030\005",
-      " \002(\t\022#\n\006nested\030\006 \002(\0132\023.JsType.NestedType" +
-      "s\022\035\n\013description\030\007 \002(\0132\010.Comment\022!\n\013depr" +
-      "ecation\030\010 \001(\0132\014.Deprecation\022!\n\010type_def\030" +
-      "\t \003(\0132\017.JsType.TypeDef\022!\n\013enumeration\030\n " +
-      "\001(\0132\014.Enumeration\022\"\n\017static_function\030\013 \003" +
-      "(\0132\t.Function\022\"\n\017static_property\030\014 \003(\0132\t" +
-      ".Property\022\036\n\013constructor\030\r \001(\0132\t.Functio" +
-      "n\022\024\n\014is_interface\030\016 \001(\010\022\035\n\tprototype\030\017 \003" +
-      "(\0132\n.Prototype\022\034\n\024has_instance_methods\030\020" +
-      " \001(\010\022\037\n\027has_instance_properties\030\021 \001(\010\022 \n",
-      "\rextended_type\030\022 \003(\0132\t.TypeLink\022#\n\020imple" +
-      "mented_type\030\023 \003(\0132\t.TypeLink\022$\n\021compiler" +
-      "_constant\030\024 \003(\0132\t.Property\032\352\001\n\013NestedTyp" +
-      "es\0223\n\ninterfaces\030\001 \003(\0132\037.JsType.NestedTy" +
-      "pes.TypeSummary\0220\n\007classes\030\002 \003(\0132\037.JsTyp" +
-      "e.NestedTypes.TypeSummary\022.\n\005enums\030\003 \003(\013" +
-      "2\037.JsType.NestedTypes.TypeSummary\032D\n\013Typ" +
-      "eSummary\022\014\n\004name\030\001 \002(\t\022\014\n\004href\030\002 \002(\t\022\031\n\007" +
-      "summary\030\003 \002(\0132\010.Comment\032\243\001\n\007TypeDef\022\014\n\004n" +
-      "ame\030\001 \002(\t\022\021\n\ttype_html\030\002 \002(\t\022\014\n\004href\030\003 \002",
-      "(\t\022\035\n\013description\030\004 \002(\0132\010.Comment\022!\n\013dep" +
-      "recation\030\005 \001(\0132\014.Deprecation\022\'\n\nvisibili" +
-      "ty\030\006 \001(\0162\013.Visibility:\006PUBLIC\"c\n\023IndexFi" +
-      "leRenderSpec\022\035\n\tresources\030\001 \002(\0132\n.Resour" +
-      "ces\022\023\n\013has_license\030\002 \001(\010\022\030\n\006readme\030\003 \001(\013" +
-      "2\010.Comment\"M\n\021LicenseRenderSpec\022\035\n\tresou" +
-      "rces\030\001 \002(\0132\n.Resources\022\031\n\007license\030\002 \002(\0132" +
-      "\010.License\"e\n\024SourceFileRenderSpec\022\035\n\tres" +
-      "ources\030\001 \002(\0132\n.Resources\022\031\n\004file\030\002 \002(\0132\013" +
-      ".SourceFile\022\023\n\013has_license\030\003 \001(\010\"]\n\020JsTy",
-      "peRenderSpec\022\025\n\004type\030\001 \002(\0132\007.JsType\022\035\n\tr" +
-      "esources\030\002 \002(\0132\n.Resources\022\023\n\013has_licens" +
-      "e\030\003 \001(\010*4\n\nVisibility\022\n\n\006PUBLIC\020\000\022\r\n\tPRO" +
-      "TECTED\020\001\022\013\n\007PRIVATE\020\002B!\n\037com.github.jley" +
-      "ba.dossier.proto"
+      "\240\001\n\007Comment\022\035\n\005token\030\001 \003(\0132\016.Comment.Tok" +
+      "en\032v\n\005Token\022\014\n\004text\030\001 \002(\t\022\031\n\nis_literal\030" +
+      "\002 \001(\010:\005false\022\026\n\007is_code\030\003 \001(\010:\005false\022\014\n\004" +
+      "href\030\004 \001(\t\022\036\n\017unresolved_link\030\005 \001(\010:\005fal" +
+      "se\"\'\n\013Deprecation\022\030\n\006notice\030\001 \001(\0132\010.Comm",
+      "ent\"\227\001\n\014BaseProperty\022\014\n\004name\030\001 \002(\t\022\016\n\006so" +
+      "urce\030\002 \002(\t\022\035\n\013description\030\003 \002(\0132\010.Commen" +
+      "t\022!\n\013deprecation\030\004 \001(\0132\014.Deprecation\022\'\n\n" +
+      "visibility\030\005 \001(\0162\013.Visibility:\006PUBLIC\":\n" +
+      "\010Property\022\033\n\004base\030\001 \002(\0132\r.BaseProperty\022\021" +
+      "\n\ttype_html\030\002 \001(\t\"\220\002\n\010Function\022\033\n\004base\030\001" +
+      " \002(\0132\r.BaseProperty\022\025\n\rtemplate_name\030\002 \003" +
+      "(\t\022\035\n\016is_constructor\030\003 \001(\010:\005false\022#\n\tpar" +
+      "ameter\030\004 \003(\0132\020.Function.Detail\022 \n\006return" +
+      "\030\005 \001(\0132\020.Function.Detail\022 \n\006thrown\030\006 \003(\013",
+      "2\020.Function.Detail\032H\n\006Detail\022\014\n\004name\030\001 \001" +
+      "(\t\022\021\n\ttype_html\030\002 \001(\t\022\035\n\013description\030\003 \001" +
+      "(\0132\010.Comment\"a\n\tPrototype\022\014\n\004name\030\001 \002(\t\022" +
+      "\014\n\004href\030\002 \001(\t\022\033\n\010function\030\003 \003(\0132\t.Functi" +
+      "on\022\033\n\010property\030\004 \003(\0132\t.Property\"\305\001\n\013Enum" +
+      "eration\022\021\n\ttype_html\030\001 \002(\t\022!\n\005value\030\002 \003(" +
+      "\0132\022.Enumeration.Value\022\'\n\nvisibility\030\003 \001(" +
+      "\0162\013.Visibility:\006PUBLIC\032W\n\005Value\022\014\n\004name\030" +
+      "\001 \002(\t\022\035\n\013description\030\002 \001(\0132\010.Comment\022!\n\013" +
+      "deprecation\030\003 \001(\0132\014.Deprecation\"\320\007\n\006JsTy",
+      "pe\022\014\n\004name\030\001 \002(\t\022\016\n\006source\030\005 \002(\t\022#\n\006nest" +
+      "ed\030\006 \002(\0132\023.JsType.NestedTypes\022\035\n\013descrip" +
+      "tion\030\007 \002(\0132\010.Comment\022!\n\013deprecation\030\010 \001(" +
+      "\0132\014.Deprecation\022!\n\010type_def\030\t \003(\0132\017.JsTy" +
+      "pe.TypeDef\022!\n\013enumeration\030\n \001(\0132\014.Enumer" +
+      "ation\022\"\n\017static_function\030\013 \003(\0132\t.Functio" +
+      "n\022\"\n\017static_property\030\014 \003(\0132\t.Property\022\036\n" +
+      "\013constructor\030\r \001(\0132\t.Function\022\024\n\014is_inte" +
+      "rface\030\016 \001(\010\022\035\n\tprototype\030\017 \003(\0132\n.Prototy" +
+      "pe\022#\n\024has_instance_methods\030\020 \001(\010:\005false\022",
+      "&\n\027has_instance_properties\030\021 \001(\010:\005false\022" +
+      " \n\rextended_type\030\022 \003(\0132\t.TypeLink\022#\n\020imp" +
+      "lemented_type\030\023 \003(\0132\t.TypeLink\022$\n\021compil" +
+      "er_constant\030\024 \003(\0132\t.Property\022\021\n\tis_modul" +
+      "e\030\025 \001(\010\032\352\001\n\013NestedTypes\0223\n\ninterfaces\030\001 " +
+      "\003(\0132\037.JsType.NestedTypes.TypeSummary\0220\n\007" +
+      "classes\030\002 \003(\0132\037.JsType.NestedTypes.TypeS" +
+      "ummary\022.\n\005enums\030\003 \003(\0132\037.JsType.NestedTyp" +
+      "es.TypeSummary\032D\n\013TypeSummary\022\014\n\004name\030\001 " +
+      "\002(\t\022\014\n\004href\030\002 \002(\t\022\031\n\007summary\030\003 \002(\0132\010.Com",
+      "ment\032\243\001\n\007TypeDef\022\014\n\004name\030\001 \002(\t\022\021\n\ttype_h" +
+      "tml\030\002 \002(\t\022\014\n\004href\030\003 \002(\t\022\035\n\013description\030\004" +
+      " \002(\0132\010.Comment\022!\n\013deprecation\030\005 \001(\0132\014.De" +
+      "precation\022\'\n\nvisibility\030\006 \001(\0162\013.Visibili" +
+      "ty:\006PUBLIC\"j\n\023IndexFileRenderSpec\022\035\n\tres" +
+      "ources\030\001 \002(\0132\n.Resources\022\032\n\013has_license\030" +
+      "\002 \001(\010:\005false\022\030\n\006readme\030\003 \001(\0132\010.Comment\"M" +
+      "\n\021LicenseRenderSpec\022\035\n\tresources\030\001 \002(\0132\n" +
+      ".Resources\022\031\n\007license\030\002 \002(\0132\010.License\"l\n" +
+      "\024SourceFileRenderSpec\022\035\n\tresources\030\001 \002(\013",
+      "2\n.Resources\022\031\n\004file\030\002 \002(\0132\013.SourceFile\022" +
+      "\032\n\013has_license\030\003 \001(\010:\005false\"d\n\020JsTypeRen" +
+      "derSpec\022\025\n\004type\030\001 \002(\0132\007.JsType\022\035\n\tresour" +
+      "ces\030\002 \002(\0132\n.Resources\022\032\n\013has_license\030\003 \001" +
+      "(\010:\005false*4\n\nVisibility\022\n\n\006PUBLIC\020\000\022\r\n\tP" +
+      "ROTECTED\020\001\022\013\n\007PRIVATE\020\002B!\n\037com.github.jl" +
+      "eyba.dossier.proto"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -18537,7 +18596,7 @@ public final class Dossier {
           internal_static_JsType_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_JsType_descriptor,
-              new java.lang.String[] { "Name", "Source", "Nested", "Description", "Deprecation", "TypeDef", "Enumeration", "StaticFunction", "StaticProperty", "Constructor", "IsInterface", "Prototype", "HasInstanceMethods", "HasInstanceProperties", "ExtendedType", "ImplementedType", "CompilerConstant", },
+              new java.lang.String[] { "Name", "Source", "Nested", "Description", "Deprecation", "TypeDef", "Enumeration", "StaticFunction", "StaticProperty", "Constructor", "IsInterface", "Prototype", "HasInstanceMethods", "HasInstanceProperties", "ExtendedType", "ImplementedType", "CompilerConstant", "IsModule", },
               com.github.jleyba.dossier.proto.Dossier.JsType.class,
               com.github.jleyba.dossier.proto.Dossier.JsType.Builder.class);
           internal_static_JsType_NestedTypes_descriptor =

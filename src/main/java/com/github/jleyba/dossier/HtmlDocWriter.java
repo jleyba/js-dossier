@@ -173,6 +173,7 @@ class HtmlDocWriter implements DocWriter {
 
     Descriptor descriptor = module.getDescriptor();
     JsType.Builder jsTypeBuilder = JsType.newBuilder()
+        .setIsModule(true)
         .setName(linker.getDisplayName(module))
         .setSource(linker.getSourcePath(module))
         .setDescription(getFileoverview(linker, module.getJsDoc()))

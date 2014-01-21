@@ -211,6 +211,9 @@ message JsType {
   repeated TypeLink implemented_type = 19;
 
   repeated Property compiler_constant = 20;
+
+  // Designates this type as the exported API of a module.
+  optional bool is_module = 21;
 }
 
 
