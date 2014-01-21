@@ -556,6 +556,31 @@ public class DossierProcessCommonJsModulesTest {
   }
 
   @Test
+  public void canReferenceConstructorExportedByAnotherModule() {
+    CompilerUtil compiler = createCompiler(path("x/foo.js"), path("x/bar.js"));
+
+    compiler.compile(
+        createSourceFile(path("x/foo.js"),
+            "/** @constructor */",
+            "exports.Foo = function(){};"),
+        createSourceFile(path("x/bar.js"),
+            "var foo = require('./foo');",
+            "/** @type {function(new: foo.Foo)} */",
+            "exports.Foo = foo.Foo;"));
+
+    Scope scope = compiler.getCompiler().getTopScope();
+    Scope.Var var = scope.getVar("dossier$$module__x$bar");
+    ObjectType module = var.getType().toObjectType();
+    ObjectType exports = module.getPropertyType("exports").toObjectType();
+
+    JSType type = exports.getPropertyType("Foo");
+    assertTrue(type.isConstructor());
+
+    type = type.toObjectType().getTypeOfThis();
+    assertEquals("dossier$$module__x$foo.exports.Foo", type.toString());
+  }
+
+  @Test
   public void canUseModuleInternalTypedefsInJsDoc() {
     CompilerUtil compiler = createCompiler(path("foo.js"));
 

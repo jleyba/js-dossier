@@ -84,9 +84,10 @@ class DossierProcessCommonJsModules implements CompilerPass {
     public boolean shouldTraverse(NodeTraversal t, Node n, Node parent) {
       if (n.isScript()) {
         checkState(currentModule == null);
-        if (moduleRegistry.hasModuleWithPath(n.getSourceFileName())) {
-          currentModule = moduleRegistry.registerScriptForModule(n);
+        if (!moduleRegistry.hasModuleWithPath(n.getSourceFileName())) {
+          return false;
         }
+        currentModule = moduleRegistry.registerScriptForModule(n);
       }
       return true;
     }
