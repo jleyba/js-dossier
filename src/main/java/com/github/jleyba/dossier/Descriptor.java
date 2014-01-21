@@ -267,6 +267,10 @@ public class Descriptor {
     return (info != null && info.isDefine());
   }
 
+  boolean isModuleExports() {
+    return module.isPresent() && module.get().getDescriptor() == this;
+  }
+
   JSDocInfo.Visibility getVisibility() {
     if (info != null) {
       return info.getVisibility();

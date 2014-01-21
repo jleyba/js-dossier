@@ -118,6 +118,7 @@ class DocRegistry {
   }
 
   void addModule(ModuleDescriptor module) {
+    jsTypeToDescriptor.put(module.getDescriptor().getType(), module.getDescriptor());
     modules.put(module.getName(), module);
   }
 
@@ -183,7 +184,7 @@ class DocRegistry {
       if (parent != null) {
         if (parentName.endsWith(".prototype")) {
           return findProperty(parent.getInstanceProperties(), name);
-        } else if (isModuleExports(parent)) {
+        } else if (parent.isModuleExports()) {
           return resolveModuleDescriptor(parent, name);
         } else {
           return findProperty(parent.getProperties(), name);
@@ -194,18 +195,9 @@ class DocRegistry {
     return null;
   }
 
-  private boolean isModuleExports(Descriptor descriptor) {
-    if (descriptor.getFullName().endsWith(".exports")) {
-      Optional<ModuleDescriptor> module = descriptor.getModule();
-      return module.isPresent() && descriptor == module.get().getDescriptor();
-    }
-    return false;
-  }
-
   @Nullable
   private Descriptor resolveModuleDescriptor(Descriptor moduleExports, String typeName) {
-    checkArgument(moduleExports.getModule().isPresent()
-        && moduleExports == moduleExports.getModule().get().getDescriptor());
+    checkArgument(moduleExports.isModuleExports());
 
     // Reference to the module as a namespace.
     if ("exports".equals(typeName)) {

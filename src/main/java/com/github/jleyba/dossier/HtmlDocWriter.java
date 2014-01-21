@@ -691,11 +691,12 @@ class HtmlDocWriter implements DocWriter {
         checkState(!Strings.isNullOrEmpty(link),
             "Unable to compute link to %s; this should never happen since %s was previously" +
                 " found in the type registry.", propertyTypeDescriptor.getFullName());
-        String fullName = propertyTypeDescriptor.getFullName();
+        String fullName = linker.getDisplayName(propertyTypeDescriptor);
         if (isPrototype) {
           fullName += ".prototype";
         }
         builder.setTypeHtml(String.format("<a href=\"%s\">%s</a>", link, fullName));
+
       } else {
         String typeName = propertyType.toString();
         if (isPrototype) {

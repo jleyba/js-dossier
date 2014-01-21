@@ -83,6 +83,19 @@ class Linker {
   }
 
   /**
+   * Returns the display name for the given {@code descriptor}. If this is the descriptor for the
+   * {@link Descriptor#isModuleExports() exported API} of a CommonJS module, this will return
+   * that module's {@link #getDisplayName(ModuleDescriptor) display name}. Otherwise, this simply
+   * returns the descriptor's {@link Descriptor#getFullName() fully qualified name}.
+   */
+  String getDisplayName(Descriptor descriptor) {
+    if (descriptor.isModuleExports()) {
+      return getDisplayName(descriptor.getModule().get());
+    }
+    return descriptor.getFullName();
+  }
+
+  /**
    * Returns the path of the generated document file for the given module.
    */
   Path getFilePath(ModuleDescriptor module) {
@@ -201,8 +214,7 @@ class Linker {
       return getPrototypeLink(descriptor);
     }
 
-    if (descriptor.getModule().isPresent()
-        && descriptor == descriptor.getModule().get().getDescriptor()) {
+    if (descriptor.isModuleExports()) {
       return getFilePath(descriptor.getModule().get()).getFileName().toString();
     }
 
