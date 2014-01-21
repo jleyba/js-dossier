@@ -127,6 +127,16 @@ class DossierProcessCommonJsModules implements CompilerPass {
           && n.getFirstChild() == n.getLastChild()) {
         visitNamespacePropDeclarations(t, n);
       }
+
+      if (n.isExprResult()
+          && n.getFirstChild().isCast()
+          && n.getFirstChild().getFirstChild().isCall()
+          && n.getFirstChild().getFirstChild().getFirstChild().isGetProp()) {
+        String name = n.getFirstChild().getFirstChild().getFirstChild().getQualifiedName();
+        if (name.endsWith(".__defineGetter__")) {
+          visitNamespaceGetter(t, n);
+        }
+      }
     }
 
     private void visitScript(NodeTraversal t, Node script) {
@@ -245,19 +255,9 @@ class DossierProcessCommonJsModules implements CompilerPass {
         }
         node.setJSDocInfo(null);
 
-        Iterator<String> names = Splitter.on('.')
-            .omitEmptyStrings()
-            .split(type.getDisplayName())
-            .iterator();
-        checkState(names.hasNext());
-
-        Node current = IR.name(names.next());
-        while (names.hasNext()) {
-          current = IR.getprop(current, IR.string(names.next()));
-        }
-
-        current.copyInformationFromForTree(node.getLastChild());
-        node.replaceChild(node.getLastChild(), current);
+        Node prop = buildProp(namespace);
+        prop.copyInformationFromForTree(node.getLastChild());
+        node.replaceChild(node.getLastChild(), prop);
       }
     }
 
@@ -282,22 +282,62 @@ class DossierProcessCommonJsModules implements CompilerPass {
         }
         getProp.setJSDocInfo(null);
 
-        Iterator<String> names = Splitter.on('.')
-            .omitEmptyStrings()
-            .split(type.getDisplayName())
-            .iterator();
-        checkState(names.hasNext());
+        node.removeChildren();
+        Node prop = IR.assign(getProp, buildProp(namespace));
+        prop.copyInformationFromForTree(getProp);
+        node.addChildrenToFront(prop);
+      }
+    }
 
-        Node current = IR.name(names.next());
-        while (names.hasNext()) {
-          current = IR.getprop(current, IR.string(names.next()));
+    private void visitNamespaceGetter(NodeTraversal t, Node node) {
+      checkArgument(node.isExprResult()
+          && node.getFirstChild().isCast()
+          && node.getFirstChild().getFirstChild().isCall()
+          && node.getFirstChild().getFirstChild().getFirstChild().isGetProp());
+
+      Node call = node.getFirstChild().getFirstChild();
+      Node getProp = call.getFirstChild();
+      Node name = getProp.getNext();
+      checkArgument(name.isString());
+
+      JSDocInfo info = node.getFirstChild().getJSDocInfo();
+      if (info == null || info.getType() == null) {
+        return;
+      }
+
+      JSType type = info.getType().evaluate(t.getScope(), t.getCompiler().getTypeRegistry());
+      if (type == null || type.getDisplayName() == null) {
+        return;
+      }
+
+      if (type.getDisplayName().endsWith(".")) {
+        String namespace = type.getDisplayName().substring(0, type.getDisplayName().length() - 1);
+        if (t.getScope().isGlobal()) {
+          t.getInput().addRequire(namespace);
         }
 
         node.removeChildren();
-        current = IR.assign(getProp, current);
-        current.copyInformationFromForTree(getProp);
-        node.addChildrenToFront(current);
+        getProp = getProp.cloneTree();
+        getProp.replaceChild(getProp.getLastChild(), name.cloneNode());
+        Node prop = IR.assign(getProp.cloneTree(), buildProp(namespace));
+        prop.copyInformationFromForTree(getProp);
+        node.addChildrenToFront(prop);
       }
+    }
+
+    private Node buildProp(String namespace) {
+      Iterator<String> names = Splitter.on('.')
+          .omitEmptyStrings()
+          .split(namespace)
+          .iterator();
+      checkArgument(names.hasNext());
+
+      Node current = IR.name(names.next());
+      while (names.hasNext()) {
+        current = IR.getprop(current, IR.string(names.next()));
+      }
+
+      return current;
     }
   }
 

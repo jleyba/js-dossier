@@ -158,7 +158,8 @@ public class DossierModule {
   static String guessModuleName(Path modulePath) {
     String baseName = Files.getNameWithoutExtension(modulePath.getFileName().toString());
     Path pseudoPath = modulePath.resolveSibling(baseName);
-    if (modulePath.getFileName().toString().equals("index.js")
+    String fileName = modulePath.getFileName().toString();
+    if ((fileName.equals("index.js") || fileName.equals("index"))
         && pseudoPath.getParent() != null) {
       pseudoPath = pseudoPath.getParent();
     }

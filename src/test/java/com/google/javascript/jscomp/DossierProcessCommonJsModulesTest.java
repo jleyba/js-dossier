@@ -645,6 +645,43 @@ public class DossierProcessCommonJsModulesTest {
         compiler.toSource().trim());
   }
 
+  @Test
+  public void rewritesNamespaceTypeGetters() {
+    CompilerUtil compiler = createCompiler(path("foo/bar.js"));
+
+    compiler.compile(
+        createSourceFile(path("foo/bar.js"),
+            "/** @type {foo.} */",
+            "(exports.__defineGetter__('bar', function(){}));",
+            "/** @type {foo.} */",
+            "(exports.bar.__defineGetter__('baz', function(){}));"),
+        createSourceFile(path("foo.js"),
+            "goog.provide('foo');"));
+
+    assertEquals(
+        lines(
+            "var foo = {};",
+            module("dossier$$module__foo$bar", lines(
+                "dossier$$module__foo$bar.exports.bar = foo;",
+                "dossier$$module__foo$bar.exports.bar.baz = foo;"))),
+        compiler.toSource().trim());
+  }
+
+  @Test
+  public void rewritesCompoundVarDeclarations() {
+    CompilerUtil compiler = createCompiler(path("foo/bar.js"));
+
+    compiler.compile(
+        createSourceFile(path("foo/bar.js"),
+            "var x = 1,",
+            "    y = 2;"));
+
+    assertEquals(
+        module("dossier$$module__foo$bar",
+            "var x$$_dossier$$module__foo$bar = 1, y$$_dossier$$module__foo$bar = 2;"),
+        compiler.toSource().trim());
+  }
+
   private static String module(String name) {
     return module(name, Optional.<String>absent());
   }

@@ -20,7 +20,7 @@ public class DossierModuleTest {
     assertEquals("dossier$$module__foo$bar$baz", guessModuleName("foo/bar/baz.js"));
     assertEquals("dossier$$module__$absolute$path$file", guessModuleName("/absolute/path/file.js"));
     assertEquals("dossier$$module__$absolute$path", guessModuleName("/absolute/path/index.js"));
-    assertEquals("dossier$$module__foo$index", guessModuleName("foo/index"));
+    assertEquals("dossier$$module__foo", guessModuleName("foo/index"));
     assertEquals("dossier$$module__index", guessModuleName("index"));
   }
 }
