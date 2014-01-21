@@ -171,36 +171,30 @@ class HtmlDocWriter implements DocWriter {
         getTypeDefInfo(module.getExportedProperties()),
         getTypeDefInfo(module.getInternalTypeDefs()));
 
+    Descriptor descriptor = module.getDescriptor();
     JsType.Builder jsTypeBuilder = JsType.newBuilder()
         .setName(linker.getDisplayName(module))
         .setSource(linker.getSourcePath(module))
         .setDescription(getFileoverview(linker, module.getJsDoc()))
         .setNested(getNestedTypeInfo(module.getExportedProperties()))
         .addAllTypeDef(typeDefs)
-// TODO: handle module that is an exported constructor.
-//        .addAllExtendedType(getInheritedTypes(descriptor, registry))
-//        .addAllImplementedType(getImplementedTypes(descriptor, registry))
-        ;
+        .addAllExtendedType(getInheritedTypes(descriptor, registry))
+        .addAllImplementedType(getImplementedTypes(descriptor, registry));
 
-    // TODO: exported API for static data.
-    getStaticData(jsTypeBuilder, module.getDescriptor().getProperties());
-    // TODO: exported prototype data for exported constructor
-//    getPrototypeData(jsTypeBuilder, descriptor, registry);
-//
-    // TODO: deprecation on script node or exported constructor.
-//    if (descriptor.isDeprecated()) {
-//      jsTypeBuilder.setDeprecation(getDeprecation(descriptor));
-//    }
-//
-    // TODO: exported enum
-//    if (descriptor.isEnum()) {
-//      extractEnumData(descriptor, jsTypeBuilder);
-//    }
-//
-    // TODO: exported constructor
-//    if (descriptor.isConstructor() || descriptor.isInterface()) {
-//      jsTypeBuilder.setConstructor(getFunctionData(descriptor));
-//    }
+    getStaticData(jsTypeBuilder, descriptor.getProperties());
+    getPrototypeData(jsTypeBuilder, descriptor, registry);
+
+    if (module.getDescriptor().isDeprecated()) {
+      jsTypeBuilder.setDeprecation(getDeprecation(module.getDescriptor()));
+    }
+
+    if (descriptor.isEnum()) {
+      extractEnumData(descriptor, jsTypeBuilder);
+    }
+
+    if (descriptor.isConstructor() || descriptor.isInterface()) {
+      jsTypeBuilder.setConstructor(getFunctionData(descriptor));
+    }
 
     renderer.render(
         output,
@@ -211,11 +205,11 @@ class HtmlDocWriter implements DocWriter {
             .build());
 
     currentModule = module;
-    for (Descriptor descriptor : module.getExportedProperties()) {
+    for (Descriptor property : module.getExportedProperties()) {
       // If the exported descriptor is an alias for another documented type, there is no
       // need to generate an additional set of docs as we can just link to the original.
-      if (descriptor == resolveTypeAlias(descriptor)) {
-        generateDocs(descriptor, registry);
+      if (property == resolveTypeAlias(property)) {
+        generateDocs(property, registry);
       }
     }
     currentModule = null;
@@ -683,10 +677,13 @@ class HtmlDocWriter implements DocWriter {
         }
       }
 
-      Descriptor propertyTypeDescriptor = docRegistry.getType(propertyType);
-      if (propertyTypeDescriptor == null) {
-        String name = getTypeName(propertyType);
-        propertyTypeDescriptor = docRegistry.resolve(name, currentModule);
+      Descriptor propertyTypeDescriptor = null;
+      if (!propertyType.isUnknownType()) {
+        propertyTypeDescriptor = docRegistry.getType(propertyType);
+        if (propertyTypeDescriptor == null) {
+          String name = getTypeName(propertyType);
+          propertyTypeDescriptor = docRegistry.resolve(name, currentModule);
+        }
       }
 
       if (propertyTypeDescriptor != null) {
