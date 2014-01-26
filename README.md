@@ -5,75 +5,94 @@ top of the [Closure Compiler](https://developers.google.com/closure/compiler/?cs
 
 ## Usage
 
-    java -jar dossier.jar [options]
+    java -jar dossier.jar -c config.json
 
-**Options**
+Where `config.json` is a configuration file with the options listed below.
 
- * `--output PATH`, `-o PATH` Path to the directory to write all generated
-   documentation to.<p/>
+**Configuration Options**
 
- * `--src PATH`, `-s PATH`  A .js file to generate API documentation for. If
-   this path refers to a directory, all .js files under the directory will be
-   included as sources. This option may be specified multiple times.<p/>
+ * `output` Path to the directory to write all generated documentation to.
 
- * `--exclude PATH`, `-x PATH`  Path to a .js file to exclude from processing.
-   If a directory is specified, all of its descendants will be excluded. This
-   option may be specified multiple times.<p/>
-
- * `--exclude_filter REGEX`, `-f REGEX`  Defines a regular expression to apply
-    to all of the input sources; those sources matching this expression will be
-    excluded from processing. This option may be specified multiple times.<p/>
-
- * `--externs PATH`, `-e PATH`  Path to a .js file to include as an extern file
-   for the Closure compiler. These files are used to define references to
-   external types, but are excluded when generating API documentation. This
-   option may be specified multiple times.<p/>
-
- * `--closure_library PATH`  Path to the base directory of the Closure library
-   (which must contain base.js and deps.js). When this option is specified,
-   Closure's deps.js and all of the files specified by `--closure_deps` will be
-   parsed for calls to `goog.addDependency`.  The resulting map will be used to
-   automatically expand the set of `--src` input files any time a symbol is
-   goog.require'd with the file that goog.provides that symbol along with its
-   transitive dependencies.
-
+ * `closureLibraryDir` Path to the base directory of the Closure library (which
+    must contain base.js and depsjs). When this option is specified, Closure's
+    deps.js and all of the files specified by `closureDepsFile` will be parsed
+    for calls to `goog.addDependency`. The resulting map will be used to
+    automatically expand the set of `sources` any time a symbol is
+    goog.require'd with the ile that goog.provides that symbol, along with all
+    of its transitive dependencies.
+   
     For example, suppose you have one source file, `foo.js`:
-
+   
         goog.require('goog.array');
         // ...
-
-    and you invoke Dossier with:
-
-        java -jar dossier.jar -o docs/ -s foo.js --closure_library closure/goog
-
-    due to the dependencies of goog.array declared in closure/goog/deps.js, this
-    is equivalent to invoking Dossier with:
-
-        java -jar dossier.jar -o docs \
-            -s closure/goog/base.js \
-            -s closure/goog/debug/error.js \
-            -s closure/goog/string/string.js \
-            -s closure/goog/asserts/asserts.js \
-            -s closure/goog/array/array.js \
-            -s foo.js
-
-    Notice specifying `--closure_library` instructs Dossier to sort the input
-    files so a file that goog.provides symbol X comes before any file that
+   
+    and your configuration includes:
+   
+        "sources": ["foo.js"],
+        "closureLibraryDir": "closure/goog"
+   
+    due to the dependencies of goog.array declared in closure/goog/deps.js,
+    this is equivalent to the following configuration:
+   
+        "sources": [
+            "closure/goog/base.js",
+            "closure/goog/debug/error.js",
+            "closure/goog/string/string.js",
+            "closure/goog/asserts/asserts.js",
+            "closure/goog/array/array.js",
+            "foo.js"
+        ]
+   
+    Notice specifying `closureLibraryDir` instructs Dossier to sort the input
+    files so a a file that goog.provides symbol X comes before any file that
     goog.requires X.
 
- * `--closure_deps PATH`  Path to a file to parse for calls to
-   `goog.addDependency`. This option requires also setting `--closure_library`.
-   <p/>
+ * `closureDepsFile` Path to a file to parse for calls to `goog.addDependency`.
+    This option requires also setting `closureLibraryDir`.
 
- * `--license PATH`  Path to a license file to include with the generated
-   documentation.<p/>
+ * `sources` A list of .js files to extract API documentation from. If a glob
+    pattern is specified, every .js file under the current working directory
+    matching that pattern will be included. Specifying the path to a directory,
+    `foo`, is the same as using the glob pattern `foo/**.js`. The set of paths
+    specified by this option *must* be disjoint from those specified by
+    `modules`.
 
- * `--readme PATH`  Path to a README file to include in the generated
-   documentation. This file, which should use markdown syntax, will be included
-   as the content of the main index page.<p/>
+ * `modules` A list of .js files to extract API documentation from. Each file
+    will be processed as a CommonJS module, with only its exported API included
+    in the generated output. If a glob pattern is specified, every .js file
+    under the current directory matching that pattern will be included.
+    Specifying the path to a directory, `foo`, is the same as the glob pattern
+    `foo/**.js`. The set of paths specified by this option *mut* be disjoint
+    from those specified by `sources`.
 
- * `--language [ES3 | ES5 | ES5_STRICT]`  Specifies which version of EcmaScript
-   the input sources conform to. Defaults to `ES3`.
+ * `stripModulePrefix` A prefix to strip from every module's path when
+    generating documentation. The specified path must be a directory that is an
+    ancestor of every file specified in `modules`. Note: if this option is
+    omitted, the closest common ancestor for all module files will be selected
+    as the default.
+
+ * `excludes` A list of .js files to exclude from processing. If a directory is
+    specified, all of the .js files under that directory will be excluded. A
+    glob pattern may also be specified to exclude all of the paths under the
+    current working directory that match the provided pattern.
+
+ * `externs` A list of .js files to include as an extern file for the Closure
+    compiler. These files are used to satisfy references to external types, but
+    are excluded when generating API documentation.
+
+ * `license` Path to a license file to include with the generated
+    documentation. If specified, a link to the license will be included on
+    every page.
+
+ * `readme` Path to a README file to include as the main landing page for the
+    generated documentation. This file should use markdown syntax.
+
+ * `strict` Whether to run with all type checking flags enabled.
+
+ * `language` Specifies which version EcmaScrit the input sources conform to.
+    Defaults to ES5.
+
+
 
 ## LICENSE
 

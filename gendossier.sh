@@ -13,6 +13,7 @@ all steps will be executed.
 
 OPTIONS:
   -h       Print this help message and exit
+  -d       Refresh the project's readme documentation
   -j       Run the Closure Compiler on dossier.js
   -l       Run lessc on dossier.less
   -p       Run protoc on dossier.proto
@@ -88,20 +89,60 @@ build_sample() {
       --output target/docs
 }
 
+update_readme() {
+  cat > README.md <<EOF
+# Dossier
+
+Dossier is a [JSDoc](http://en.wikipedia.org/wiki/JSDoc) parsing tool built on
+top of the [Closure Compiler](https://developers.google.com/closure/compiler/?csw=1).
+
+## Usage
+
+    java -jar dossier.jar -c config.json
+
+Where \`config.json\` is a configuration file with the options listed below.
+
+EOF
+  mvn exec:java -Dexec.mainClass=com.github.jleyba.dossier.Config 2>> README.md
+
+  cat >> README.md <<EOF
+
+## LICENSE
+
+Copyright 2013 Jason Leyba
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+ http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+EOF
+}
+
 main() {
   local all=1
   local js=0
   local less=0
   local proto=0
+  local readme=0
   local release=0
   local sample=0
 
-  while getopts "hjlpr" option
+  while getopts "dhjlpr" option
   do
     case $option in
       h)
         usage
         exit 0
+        ;;
+      d)
+        all=0; readme=1
         ;;
       j)
         all=0; js=1
@@ -127,6 +168,10 @@ main() {
     proto=1
     release=1
     sample=1
+  fi
+
+  if (( $readme )); then
+    update_readme
   fi
 
   if (( $js )); then

@@ -13,8 +13,6 @@
 // limitations under the License.
 package com.github.jleyba.dossier;
 
-import com.google.common.base.Optional;
-import com.google.common.collect.Lists;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
@@ -26,10 +24,6 @@ import org.kohsuke.args4j.spi.Setter;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Describes the runtime configuration for the app.
@@ -41,118 +35,12 @@ class Flags {
       usage = "Print this help message and exit.")
   boolean displayHelp;
 
-  @Option(name = "--closure_library",
-      handler = ClosurePathHandler.class,
-      usage = "Path to the base directory of the Closure library (which must contain base.js and " +
-          "deps.js). When this option is specified, Closure's deps.js and all of the files " +
-          "specified by --closure_deps will be parsed for calls to goog.addDependency. The " +
-          "resulting dependency map will be used to automatically expand the set of --src input " +
-          "files any time a symbol is goog.require'd with the file that goog.provides that " +
-          "symbol along with its transitive dependencies.")
-  Optional<Path> closureLibraryDir = Optional.absent();
-
-  @Option(name = "--closure_deps",
+  @Option(
+      name = "--config", aliases = "-c",
       handler = SimplePathHandler.class,
-      usage = "Path to a file to parse for calls to goog.addDependency. This option requires " +
-          "also specifying --closure_library. You may specify this option multiple times.")
-  List<Path> closureDepsFile = new LinkedList<>();
-
-  @Option(
-      name = "--src", aliases = "-s",
-      handler = SimplePathHandler.class,
-      usage = "A .js file to generate API documentation for. If this path refers to a directory, " +
-          "all .js files under the directory will be included as sources. This option may be " +
-          "specified multiple times.")
-  List<Path> srcs = new LinkedList<>();
-
-  @Option(
-      name = "--module", aliases = "-m",
-      handler = SimplePathHandler.class,
-      usage = "A .js file to generate API document for. The referenced file will be treated as " +
-          "CommonJS module and only its exported API will be documented. If this path refers to" +
-          " a directory, all .js files under the directory will be included as modules. This " +
-          "option may be specified multiple times.")
-  List<Path> modules = new LinkedList<>();
-
-  @Option(
-      name = "--strip_module_prefix",
-      handler = SimplePathHandler.class,
-      usage = "A prefix to strip from every module's path when generating documentation. This " +
-          "will only impact how the documentation is rendered and not its internal processing." +
-          " The specified path must be a directory and must be an ancestor of every file " +
-          "specified by the --module flag. Note: if this flag is omitted, the closest common " +
-          "ancestor for all module files will be selected as the default.")
-  Path stripModulePrefix = null;
-
-  @Option(
-      name = "--exclude", aliases = "-x",
-      handler = SimplePathHandler.class,
-      usage = "Path to a .js file to exclude from processing. If a directory is specified, all " +
-          "its descendants will be excluded. This option may be specified multiple times.")
-  List<Path> excludes = new LinkedList<>();
-
-  @Option(
-      name = "--exclude_filter", aliases = "-f",
-      handler = PatternHandler.class,
-      usage = "Defines a regular expression to apply to all of the input sources; those sources " +
-          "matching this expression will be excluded from processing. This option may be " +
-          "specified multiple times.")
-  List<Pattern> filter = new LinkedList<>();
-
-  @Option(
-      name = "--externs", aliases = "-e",
-      handler = SimplePathHandler.class,
-      usage = "Path to a .js file to include as an extern file for the Closure compiler. These " +
-          "files are used to satisfy references to external types, but are excluded when " +
-          "generating API documentation. This option may be specified multiple times.")
-  List<Path> externs = new LinkedList<>();
-
-  @Option(
-      name = "--license",
-      handler = SimplePathHandler.class,
-      usage = "Defines the path to the license file to include with the generated documentation.")
-  Path license = null;
-
-  @Option(
-      name = "--readme",
-      handler = SimplePathHandler.class,
-      usage = "Path to a README file to include in the generated documentation. This file, which " +
-          "should use markdown syntax will be included as the content of the main index page.")
-  Path readme = null;
-
-  @Option(
-      name = "--output", aliases = "-o",
-      handler = OutputDirPathHandler.class,
-      usage = "Path to the directory to write all generated documentation to.",
-      required = true)
-  Path outputDir;
-
-  @Option(
-      name = "--language",
-      usage = "Sets what language spec that input sources should conform to." +
-          " Defaults to ES3")
-  Language language = Language.ES3;
-
-  @Option(
-      name = "--strict",
-      usage = "Whether to run with all type checking flags enabled.")
-  boolean strict = false;
-
-  static enum Language {
-    ES3("ECMASCRIPT3"),
-    ES5("ECMASCRIPT5"),
-    ES5_STRICT("ECHMASCRIPT5_STRICT");
-
-    private final String fullName;
-
-    Language(String fullName) {
-      this.fullName = fullName;
-    }
-
-    public String getName() {
-      return fullName;
-    }
-  }
+      required = true,
+      usage = "Path to the JSON configuration file to use.")
+  Path config = null;
 
   private Flags() {}
 
@@ -163,24 +51,13 @@ class Flags {
   static Flags parse(String[] args) {
     Flags flags = new Flags();
     CmdLineParser parser = new CmdLineParser(flags);
-    parser.setUsageWidth(80);
+    parser.setUsageWidth(79);
 
     boolean isConfigValid = true;
-    List<String> preprocessedArgs = preprocessArgs(args);
     try {
-      parser.parseArgument(preprocessedArgs);
+      parser.parseArgument(args);
     } catch (CmdLineException e) {
       System.err.println(e.getMessage());
-      isConfigValid = false;
-    }
-
-    if (flags.srcs.isEmpty() && flags.modules.isEmpty()) {
-      System.err.println("Must specify at least one --src or --module");
-      isConfigValid = false;
-    }
-
-    if (!flags.closureDepsFile.isEmpty() && !flags.closureLibraryDir.isPresent()) {
-      System.err.println("--closure_deps requires --closure_library to be set");
       isConfigValid = false;
     }
 
@@ -192,77 +69,11 @@ class Flags {
     return flags;
   }
 
-  private static List<String> preprocessArgs(String[] args) {
-    Pattern argPattern = Pattern.compile("(--[a-zA-Z_]+)=(.*)");
-    Pattern quotesPattern = Pattern.compile("^['\"](.*)['\"]$");
-    List<String> processedArgs = Lists.newArrayList();
-    for (String arg : args) {
-      Matcher matcher = argPattern.matcher(arg);
-      if (matcher.matches()) {
-        processedArgs.add(matcher.group(1));
-
-        String value = matcher.group(2);
-        Matcher quotesMatcher = quotesPattern.matcher(value);
-        if (quotesMatcher.matches()) {
-          processedArgs.add(quotesMatcher.group(1));
-        } else {
-          processedArgs.add(value);
-        }
-      } else {
-        processedArgs.add(arg);
-      }
-    }
-
-    return processedArgs;
-  }
-
   private static Path getPath(String path) {
     return FileSystems.getDefault()
         .getPath(path)
         .toAbsolutePath()
         .normalize();
-  }
-
-  public static class PatternHandler extends OptionHandler<Pattern> {
-
-    public PatternHandler(
-        CmdLineParser parser, OptionDef option, Setter<? super Pattern> setter) {
-      super(parser, option, setter);
-    }
-
-    @Override
-    public int parseArguments(Parameters params) throws CmdLineException {
-      setter.addValue(Pattern.compile(params.getParameter(0)));
-      return 1;
-    }
-
-    @Override
-    public String getDefaultMetaVariable() {
-      return "REGEX";
-    }
-  }
-
-  public static class OutputDirPathHandler extends OptionHandler<Path> {
-
-    public OutputDirPathHandler(
-        CmdLineParser parser, OptionDef option, Setter<? super Path> setter) {
-      super(parser, option, setter);
-    }
-
-    @Override
-    public int parseArguments(Parameters params) throws CmdLineException {
-      Path path = getPath(params.getParameter(0));
-      if (Files.exists(path) && !Files.isDirectory(path)) {
-        throw new CmdLineException(owner, "Path must be a directory: " + path);
-      }
-      setter.addValue(path);
-      return 1;
-    }
-
-    @Override
-    public String getDefaultMetaVariable() {
-      return "PATH";
-    }
   }
 
   public static class SimplePathHandler extends OptionHandler<Path> {
@@ -289,38 +100,6 @@ class Flags {
     @Override
     public String getDefaultMetaVariable() {
       return "PATH";
-    }
-  }
-
-  public static class ClosurePathHandler extends OptionHandler<Optional<Path>> {
-    public ClosurePathHandler(
-        CmdLineParser parser, OptionDef option, Setter<? super Optional<Path>> setter) {
-      super(parser, option, setter);
-    }
-
-    @Override
-    public int parseArguments(Parameters params) throws CmdLineException {
-      Path path = getPath(params.getParameter(0));
-      if (Files.exists(path) && !Files.isDirectory(path)) {
-        throw new CmdLineException(owner, "Path must be a directory: " + path);
-      }
-      checkExists(path.resolve("base.js"));
-      checkExists(path.resolve("deps.js"));
-      setter.addValue(Optional.of(path));
-      return 1;
-    }
-
-    @Override
-    public String getDefaultMetaVariable() {
-      return "PATH";
-    }
-
-    private void checkExists(Path p) throws CmdLineException {
-      if (!Files.exists(p) || !Files.isReadable(p)) {
-        throw new CmdLineException(owner, String.format(
-            "%s must exist in the specified directory: %s",
-            p.getFileName(), p.getParent()));
-      }
     }
   }
 }

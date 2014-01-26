@@ -38,7 +38,9 @@ import org.joda.time.Period;
 import org.joda.time.format.PeriodFormatterBuilder;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.List;
@@ -181,15 +183,15 @@ public class Main extends CommandLineRunner {
   public static void main(String[] args) {
     Flags flags = Flags.parse(args);
     Config config = null;
-    try {
-      config = Config.load(flags);
+    try (InputStream stream = Files.newInputStream(flags.config)) {
+      config = Config.load(stream);
     } catch (IOException e) {
       e.printStackTrace(System.err);
       System.exit(-1);
     }
 
     Iterable<String> standardFlags = STANDARD_FLAGS;
-    if (flags.strict) {
+    if (config.isStrict()) {
       standardFlags = transform(standardFlags, new Function<String, String>() {
         @Override
         public String apply(String input) {
@@ -202,7 +204,7 @@ public class Main extends CommandLineRunner {
         .addAll(transform(config.getSources(), toFlag("--js=")))
         .addAll(transform(config.getModules(), toFlag("--js=")))
         .addAll(transform(config.getExterns(), toFlag("--externs=")))
-        .add("--language_in=" + flags.language.getName())
+        .add("--language_in=" + config.getLanguage().getName())
         .addAll(standardFlags)
         .build();
 
