@@ -16,9 +16,12 @@ package com.github.jleyba.dossier;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import com.github.jleyba.dossier.proto.Dossier;
 import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
+import com.google.javascript.jscomp.DossierModule;
+import com.google.javascript.jscomp.Scope;
 import com.google.javascript.rhino.jstype.JSType;
 
 import java.nio.file.Path;
@@ -32,11 +35,49 @@ import javax.annotation.Nullable;
  */
 class DocRegistry {
 
+  /**
+   * Map of source path to the fileoverview string for that source.
+   */
   private final Map<Path, String> fileOverviews = new HashMap<>();
+
+  /**
+   * Map of qualified extern name to the descriptor for that type.
+   */
   private final Map<String, Descriptor> externs = new HashMap<>();
+
+  /**
+   * Map of qualified names to the descriptor for that type.
+   */
   private final Map<String, Descriptor> types = new HashMap<>();
+
+  /**
+   * Map of {@link JSType} to the descriptor for that type.
+   */
   private final Map<JSType, Descriptor> jsTypeToDescriptor = new HashMap<>();
+
+  /**
+   * Map of qualified module name to the descriptor for that module. Here, the qualified name is
+   * taken from the managed name when merging the descriptor into the global scope and <i>not</i>
+   * the name that other CommonJS modules would use to reference the module.
+   *
+   * @see com.google.javascript.jscomp.DossierModule
+   */
   private final Map<String, ModuleDescriptor> modules = new HashMap<>();
+
+  /**
+   * Map of global variable names to the module that variable was declared in. Each variable name
+   * references a variable that is "internal" to the module, but pushed into global scope for
+   * static analysis.
+   *
+   * <p>When another module has a reference to one of these variables through the type system, it
+   * must be through the declaring module's exported; this map is used to find the declaring
+   * module so the variable name can be {@link #resolve(String, ModuleDescriptor) resolved} to the
+   * descriptor it was exported as.
+   *
+   * @see com.google.javascript.jscomp.DossierModule
+   */
+  private final Map<Scope.Var, ModuleDescriptor> internalVarToModule = new HashMap<>();
+  private final Map<String, Scope.Var> nameToInternalVar = new HashMap<>();
 
   void addFileOverview(Path path, @Nullable String overview) {
     fileOverviews.put(checkNotNull(path, "null path"), Strings.nullToEmpty(overview));
@@ -120,6 +161,11 @@ class DocRegistry {
   void addModule(ModuleDescriptor module) {
     jsTypeToDescriptor.put(module.getDescriptor().getType(), module.getDescriptor());
     modules.put(module.getName(), module);
+
+    for (Scope.Var var : module.getInternalVars()) {
+      internalVarToModule.put(var, module);
+      nameToInternalVar.put(var.getNameNode().getString(), var);
+    }
   }
 
   Iterable<ModuleDescriptor> getModules() {
@@ -161,6 +207,17 @@ class DocRegistry {
       Descriptor descriptor = relativeTo.getExportedProperty(typeName);
       if (descriptor != null) {
         return descriptor;
+      }
+
+      // Check if the type name refers to a module's internal variable. If so, query that
+      // module for which property exports that variables type.
+      Scope.Var var = nameToInternalVar.get(typeName);
+      if (var != null) {
+        ModuleDescriptor module = internalVarToModule.get(var);
+        descriptor = module.findExportedVar(var);
+        if (descriptor != null) {
+          return descriptor;
+        }
       }
     }
 

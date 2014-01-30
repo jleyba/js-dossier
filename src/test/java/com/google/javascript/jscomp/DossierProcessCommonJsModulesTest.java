@@ -707,6 +707,42 @@ public class DossierProcessCommonJsModulesTest {
         compiler.toSource().trim());
   }
 
+  @Test
+  public void canReferenceExportedTypeReferences() {
+    CompilerUtil compiler = createCompiler(path("foo/bar.js"), path("foo/baz.js"));
+
+    compiler.compile(
+        createSourceFile(path("foo/bar.js"),
+            "/** @constructor */",
+            "var foo = function(){}",
+            "exports.foo = foo;",
+            "exports.bar = exports.foo;"),
+        createSourceFile(path("foo/baz.js"),
+            "var bar = require('./bar');",
+            "/** @type {!bar.foo} */",
+            "var f = new bar.foo();",
+            "/** @type {!bar.bar} */",
+            "var b = new bar.bar();"));
+
+    assertEquals(
+        lines(
+            module("dossier$$module__foo$bar", lines(
+                "var foo$$_dossier$$module__foo$bar = function() {\n};",
+                "dossier$$module__foo$bar.exports.foo = foo$$_dossier$$module__foo$bar;",
+                "dossier$$module__foo$bar.exports.bar = dossier$$module__foo$bar.exports.foo;")),
+            module("dossier$$module__foo$baz", lines(
+                "var bar$$_dossier$$module__foo$baz = dossier$$module__foo$bar.exports;",
+                "var f$$_dossier$$module__foo$baz = new bar$$_dossier$$module__foo$baz.foo;",
+                "var b$$_dossier$$module__foo$baz = new bar$$_dossier$$module__foo$baz.bar;"))),
+        compiler.toSource().trim());
+
+    Scope.Var f = compiler.getCompiler().getTopScope().getVar("f$$_dossier$$module__foo$baz");
+    assertEquals("foo$$_dossier$$module__foo$bar", f.getType().getDisplayName());
+
+    Scope.Var b = compiler.getCompiler().getTopScope().getVar("b$$_dossier$$module__foo$baz");
+    assertEquals("foo$$_dossier$$module__foo$bar", b.getType().getDisplayName());
+  }
+
   private static String module(String name) {
     return module(name, Optional.<String>absent());
   }

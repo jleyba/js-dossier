@@ -7,7 +7,10 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableSet;
 import com.google.javascript.jscomp.DossierModule;
+import com.google.javascript.jscomp.Scope;
+import com.google.javascript.rhino.IR;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.jstype.JSType;
@@ -31,6 +34,7 @@ class TestDescriptorBuilder {
   private final String name;
   private final List<Descriptor> staticProperties = new LinkedList<>();
   private final Set<Descriptor> instanceProperties = new HashSet<>();
+  private final List<Scope.Var> internalVars = new LinkedList<>();
 
   private Type type = Type.NAMESPACE;
   private Optional<ModuleDescriptor> module = Optional.absent();
@@ -87,6 +91,14 @@ class TestDescriptorBuilder {
     return addInstanceProperty(propertyBuilder.build());
   }
 
+  TestDescriptorBuilder addInternalVar(String name) {
+    Node node = IR.name(name);
+    Scope.Var var = mock(Scope.Var.class);
+    when(var.getNameNode()).thenReturn(node);
+    internalVars.add(var);
+    return this;
+  }
+
   Descriptor build() {
     Descriptor d = Mockito.spy(new Descriptor(name, SRC_NODE, JS_TYPE, JS_DOC));
     doReturn(staticProperties).when(d).getProperties();
@@ -127,6 +139,7 @@ class TestDescriptorBuilder {
     when(module.getVarName()).thenReturn(moduleName);
     when(module.getModulePath()).thenReturn(
         source == null ? null : FileSystems.getDefault().getPath(source));
+    when(module.getInternalVars()).thenReturn(internalVars);
 
     return new ModuleDescriptor(build(), module);
   }

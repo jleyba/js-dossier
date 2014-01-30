@@ -171,6 +171,7 @@ class HtmlDocWriter implements DocWriter {
         getTypeDefInfo(module.getExportedProperties()),
         getTypeDefInfo(module.getInternalTypeDefs()));
 
+    currentModule = module;
     Descriptor descriptor = module.getDescriptor();
     JsType.Builder jsTypeBuilder = JsType.newBuilder()
         .setIsModule(true)
@@ -205,7 +206,6 @@ class HtmlDocWriter implements DocWriter {
             .setType(jsTypeBuilder.build())
             .build());
 
-    currentModule = module;
     for (Descriptor property : module.getExportedProperties()) {
       // If the exported descriptor is an alias for another documented type, there is no
       // need to generate an additional set of docs as we can just link to the original.
@@ -514,12 +514,24 @@ class HtmlDocWriter implements DocWriter {
     if (alias == null) {
       String name = getTypeName(type);
       alias = docRegistry.resolve(name, currentModule);
+
+      // The descriptor might just be forwarding the declaration from another module:
+      //
+      //     [foo.js]
+      //     /** @constructor */
+      //     var Original = function() {};
+      //     exports.Original = Original;
+      //
+      //     [bar.js]
+      //     exports.Original = require('./foo').Original;
+      //
+      // Check for this by trying to resolve the descriptor's literal type name.
+      if (alias == descriptor && currentModule != null) {
+        alias = docRegistry.resolve(type.toString(), currentModule);
+      }
     }
 
-    if (alias != null) {
-      return alias;
-    }
-    return descriptor;
+    return Objects.firstNonNull(alias, descriptor);
   }
 
   private JsType.NestedTypes.Builder getNestedTypeInfo(Iterable<Descriptor> properties) {

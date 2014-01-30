@@ -4,7 +4,10 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
+import com.google.javascript.rhino.jstype.JSType;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -234,6 +237,29 @@ public class DocRegistryTest {
     assertTrue(registry.isKnownType("module.exports"));
     assertTrue(registry.isKnownType("a"));
     assertTrue(registry.isKnownType("a.b"));
+  }
+
+  @Test
+  public void canResolveReferenceToAnotherModulesInternalVarThroughItsExportedApi() {
+    JSType fakeType = mock(JSType.class);
+    when(fakeType.toString()).thenReturn("InternalFoo");
+
+    Descriptor foo = object("Foo").build();
+    when(foo.getType()).thenReturn(fakeType);
+
+    ModuleDescriptor module = object("module.exports")
+        .addInternalVar(fakeType.toString())
+        .buildModule();
+    module.addExportedProperty(foo);
+
+    ModuleDescriptor otherModule = object("mod2.exports").buildModule();
+
+    registry.addModule(module);
+    registry.addModule(otherModule);
+
+    assertSame(foo, registry.resolve("InternalFoo", otherModule));
+    assertSame(foo, registry.resolve("InternalFoo", module));
+    assertNull(registry.resolve("InternalFoo"));
   }
 
   private static TestDescriptorBuilder object(String name) {

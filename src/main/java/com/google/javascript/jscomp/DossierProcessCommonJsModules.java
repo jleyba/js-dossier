@@ -61,6 +61,29 @@ class DossierProcessCommonJsModules implements CompilerPass {
   private final AbstractCompiler compiler;
   private final DossierModuleRegistry moduleRegistry;
 
+  /**
+   * Tracks names that are exported by a module without any attached jsdoc:
+   *
+   *     // In foo.js
+   *     \** @constructor *\
+   *     var Foo = function() {};
+   *     exports.Foo = Foo;
+   *
+   * In the snippet above, the compiler does not register exports.Foo as an alias of Foo.
+   * Furthermore, since there is no jsdoc attached to exports.Foo, it cannot be referred to as
+   * a type. We track that exports.Foo is an alias for Foo so that if we see a type refernece
+   * too exports.Foo in another module, we can map it back to Foo:
+   *
+   *     // In bar.js
+   *     var foo = require('./foo');
+   *     \** @type {!foo.Foo} *\
+   *     var f = new foo.Foo;
+   *
+   * TODO(jleyba): This may be unnecessary with the new type inference system under development
+   * in the compiler.
+   */
+  private final Map<String, String> exportedNames = new HashMap<>();
+
   private DossierModule currentModule;
 
   DossierProcessCommonJsModules(DossierCompiler compiler) {
@@ -151,6 +174,7 @@ class DossierProcessCommonJsModules implements CompilerPass {
 
       NodeTraversal.traverse(t.getCompiler(), script, new SuffixVarsCallback(
           renamedVars, moduleDecl));
+      NodeTraversal.traverse(t.getCompiler(), script, new FindExportedNames());
       NodeTraversal.traverse(t.getCompiler(), script, new TypeCleanup(renamedVars));
 
       renamedVars.clear();
@@ -373,6 +397,25 @@ class DossierProcessCommonJsModules implements CompilerPass {
     }
   }
 
+  private class FindExportedNames extends NodeTraversal.AbstractPostOrderCallback {
+
+    @Override
+    public void visit(NodeTraversal t, Node n, Node parent) {
+      if (!n.isAssign()
+          || n.getJSDocInfo() != null
+          || !n.getFirstChild().isGetProp()
+          || (!n.getLastChild().isGetProp() && !n.getLastChild().isName())) {
+        return;
+      }
+
+      String lhs = n.getFirstChild().getQualifiedName();
+      String rhs = n.getLastChild().getQualifiedName();
+      if (lhs.startsWith(currentModule.getVarName() + ".exports")) {
+        exportedNames.put(lhs, rhs);
+      }
+    }
+  }
+
   private class TypeCleanup extends NodeTraversal.AbstractPostOrderCallback {
 
     private final Map<String, String> renamedVars;
@@ -424,8 +467,15 @@ class DossierProcessCommonJsModules implements CompilerPass {
         String baseName = name.substring(0, endIndex);
         if (currentModule.hasAlias(baseName)) {
           String aliasName = currentModule.getAlias(baseName);
+          String newName = aliasName + typeNode.getString().substring(endIndex);
+
+          // Check if this is just an exported reference to another module's internal type.
+          while (exportedNames.containsKey(newName)) {
+            newName = exportedNames.get(newName);
+          }
+
           typeNode.putProp(Node.ORIGINALNAME_PROP, name);
-          typeNode.setString(aliasName + typeNode.getString().substring(endIndex));
+          typeNode.setString(newName);
           return true;
         }
       }
