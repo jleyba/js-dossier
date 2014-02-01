@@ -92,23 +92,6 @@ public class DossierProcessCommonJsModulesTest {
   }
 
   @Test
-  public void handlesReferencesToFilenameAndDirnameFreeVariables() {
-    CompilerUtil compiler = createCompiler(path("foo/bar.js"));
-
-    compiler.compile(path("foo/bar.js"),
-        "var x = __filename;",
-        "var y = __dirname;",
-        "var z = module.filename");
-
-    assertEquals(
-        module("dossier$$module__foo$bar", lines(
-            "var x$$_dossier$$module__foo$bar = dossier$$module__foo$bar.__filename;",
-            "var y$$_dossier$$module__foo$bar = dossier$$module__foo$bar.__dirname;",
-            "var z$$_dossier$$module__foo$bar = dossier$$module__foo$bar.filename;")),
-        compiler.toSource().trim());
-  }
-
-  @Test
   public void sortsSingleModuleDep() {
     CompilerUtil compiler = createCompiler(path("foo/leaf.js"), path("foo/root.js"));
 

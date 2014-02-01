@@ -52,9 +52,6 @@ import java.util.Map;
  *   var foo$$__dossier$$module__bar = dossier$$module__foo.exports;
  *   foo$$__dossier$$module__bar.sayHi();
  * </code></pre>
- *
- * <p>Note this pass generates stub values for Node.js' {@code require}, {@code __dirname} and
- * {@code __filename} to avoid type-checking errors from the compiler.
  */
 class DossierProcessCommonJsModules implements CompilerPass {
 
@@ -138,11 +135,6 @@ class DossierProcessCommonJsModules implements CompilerPass {
         visitExports(n);
       }
 
-      if (n.isName() && ("__filename".equals(n.getQualifiedName())
-          || "__dirname".equals(n.getQualifiedName()))) {
-        visitFilenameOrDirnameFreeVariables(n);
-      }
-
       if (n.isAssign()) {
         visitNamespaceAssignment(t, n);
       }
@@ -198,16 +190,6 @@ class DossierProcessCommonJsModules implements CompilerPass {
       moduleExports.copyInformationFromForTree(node);
 
       node.getParent().replaceChild(node, moduleExports);
-    }
-
-    private void visitFilenameOrDirnameFreeVariables(Node node) {
-      checkArgument(node.isName());
-
-      String moduleName = currentModule.getVarName();
-      Node propAccessor = IR.getprop(IR.name(moduleName), IR.string(node.getString()));
-      propAccessor.copyInformationFromForTree(node);
-
-      node.getParent().replaceChild(node, propAccessor);
     }
 
     private void changeName(Node node, String newName) {
