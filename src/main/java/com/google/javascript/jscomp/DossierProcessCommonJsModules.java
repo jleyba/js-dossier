@@ -4,8 +4,10 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
 
 import com.google.common.base.Splitter;
+import com.google.common.collect.Iterables;
 import com.google.javascript.rhino.IR;
 import com.google.javascript.rhino.JSDocInfo;
+import com.google.javascript.rhino.JSDocInfoBuilder;
 import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.jstype.JSType;
 
@@ -14,7 +16,11 @@ import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
+
+import javax.annotation.Nullable;
 
 /**
  * Processes all files flagged as CommonJS modules by renaming all variables so they may be
@@ -99,6 +105,9 @@ class DossierProcessCommonJsModules implements CompilerPass {
   private class CommonJsModuleCallback implements NodeTraversal.Callback {
 
     private final Map<String, String> renamedVars = new HashMap<>();
+    private final List<Node> moduleRefs = new LinkedList<>();
+    private final List<Node> moduleExportsRefs = new LinkedList<>();
+    private final List<Node> exportsRefs = new LinkedList<>();
 
     @Override
     public boolean shouldTraverse(NodeTraversal t, Node n, Node parent) {
@@ -108,6 +117,9 @@ class DossierProcessCommonJsModules implements CompilerPass {
           return false;
         }
         currentModule = moduleRegistry.registerScriptForModule(n);
+
+        // Process all namespace references before module.exports and exports references.
+        NodeTraversal.traverse(t.getCompiler(), n, new ProcessNamespaceReferences());
       }
       return true;
     }
@@ -125,32 +137,21 @@ class DossierProcessCommonJsModules implements CompilerPass {
         visitRequireCall(t, n, parent);
       }
 
-      if (n.isName() && "module".equals(n.getQualifiedName())
-          && (parent.isExprResult() || parent.isGetProp() || parent.isCall())) {
-        visitModule(n);
+      if (n.isGetProp() && "module.exports".equals(n.getQualifiedName())) {
+        moduleExportsRefs.add(n);
       }
 
-      if (n.isName() && "exports".equals(n.getQualifiedName())
-          && (parent.isExprResult() || parent.isGetProp() || parent.isCall())) {
-        visitExports(n);
+      if (n.isName() && "exports".equals(n.getQualifiedName())) {
+        Scope.Var var = t.getScope().getVar(n.getString());
+        if (var == null) {
+          exportsRefs.add(n);
+        }
       }
 
-      if (n.isAssign()) {
-        visitNamespaceAssignment(t, n);
-      }
-
-      if (n.isExprResult() && n.getFirstChild().isGetProp()
-          && n.getFirstChild() == n.getLastChild()) {
-        visitNamespacePropDeclarations(t, n);
-      }
-
-      if (n.isExprResult()
-          && n.getFirstChild().isCast()
-          && n.getFirstChild().getFirstChild().isCall()
-          && n.getFirstChild().getFirstChild().getFirstChild().isGetProp()) {
-        String name = n.getFirstChild().getFirstChild().getFirstChild().getQualifiedName();
-        if (name.endsWith(".__defineGetter__")) {
-          visitNamespaceGetter(t, n);
+      if (n.isName() && "module".equals(n.getQualifiedName())) {
+        Scope.Var var = t.getScope().getVar(n.getString());
+        if (var == null) {
+          moduleRefs.add(n);
         }
       }
     }
@@ -162,7 +163,7 @@ class DossierProcessCommonJsModules implements CompilerPass {
 
       t.getInput().addProvide(currentModule.getVarName());
 
-      Node moduleDecl = generateModuleDeclaration(script, currentModule.getVarName());
+      Node moduleDecl = processModuleAndExportReferences(t.getScope(), script);
 
       NodeTraversal.traverse(t.getCompiler(), script, new SuffixVarsCallback(
           renamedVars, moduleDecl));
@@ -170,26 +171,135 @@ class DossierProcessCommonJsModules implements CompilerPass {
       NodeTraversal.traverse(t.getCompiler(), script, new TypeCleanup(renamedVars));
 
       renamedVars.clear();
+      moduleExportsRefs.clear();
+      exportsRefs.clear();
+      moduleRefs.clear();
       currentModule = null;
 
       t.getCompiler().reportCodeChange();
     }
 
-    private void visitModule(Node node) {
-      checkArgument(node.isName());
-
+    /**
+     * Process all references to the "module" and "exports" free variables. Handles the following
+     * cases:
+     *
+     * Case 1: A single top-level assignment to module.exports:
+     *     module.exports = ...;
+     *
+     * Case 2: There are no LValue references to module.exports or exports.
+     *
+     * Case 3: module.exports is implicitly defined as an object literal and exports is a variable
+     * initialized to that literal:
+     *     module.exports = {};
+     *     var exports = module.exports;
+     *     // Module code...
+     *
+     * @param scope The script's global scope.
+     * @param script The script node.
+     * @return The module object declaration node.
+     */
+    private Node processModuleAndExportReferences(Scope scope, Node script) {
       String moduleName = currentModule.getVarName();
-      changeName(node, moduleName);
+
+      // Define:
+      // /** @const */ var moduleName = {};
+      Node moduleDecl = IR.var(IR.name(moduleName), IR.objectlit());
+      moduleDecl.setJSDocInfo(createConstantJsDoc());
+      moduleDecl.copyInformationFromForTree(script);
+      script.addChildToFront(moduleDecl);
+
+      for (Node moduleRef : moduleRefs) {
+        changeName(moduleRef, moduleName);
+      }
+
+      if (scope.getVar("module") == null) {
+        currentModule.defineAlias("module", moduleName);
+      }
+
+      // Case 1:
+      if (hasOneTopLevelModuleExportsAssign()) {
+        // Single module.exports assignment, module.exports = ...
+        // Transform to moduleName.exports = ...
+        Node ref = Iterables.getOnlyElement(moduleExportsRefs);
+        Node getprop = IR.getprop(IR.name(moduleName), IR.string("exports"));
+        getprop.copyInformationFromForTree(ref);
+
+        Node assign = ref.getParent();
+        assign.replaceChild(ref, getprop);
+
+        return moduleDecl;
+      }
+
+      // Case 2:
+      if (!hasExportLValues()) {
+        // Update module declaration to include exports object.
+        Node moduleObject = moduleDecl.getFirstChild().getFirstChild();
+        moduleObject.addChildToFront(
+            IR.propdef(IR.stringKey("exports"), IR.objectlit())
+                .copyInformationFromForTree(moduleObject));
+
+        // Transform all module.exports and exports references to reference
+        //     moduleName.exports.
+        for (Node ref : Iterables.concat(moduleExportsRefs, exportsRefs)) {
+          Node newRef = IR.getprop(IR.name(moduleName), IR.string("exports"));
+          newRef.copyInformationFromForTree(ref);
+          ref.getParent().replaceChild(ref, newRef);
+        }
+
+        currentModule.defineAlias("exports", moduleName + ".exports");
+        return moduleDecl;
+      }
+
+      if (needsModuleExportsDefinition()) {
+        Node moduleObject = moduleDecl.getFirstChild().getFirstChild();
+        moduleObject.addChildToFront(
+            IR.propdef(IR.stringKey("exports"), IR.objectlit())
+                .copyInformationFromForTree(moduleObject));
+      }
+
+      if (!exportsRefs.isEmpty()) {
+        Node exports = IR.var(IR.name("exports"),
+            IR.getprop(IR.name(moduleName), IR.string("exports")));
+        exports.copyInformationFromForTree(script);
+        script.addChildrenAfter(exports, moduleDecl);
+      }
+
+      return moduleDecl;
     }
 
-    private void visitExports(Node node) {
-      checkArgument(node.isName());
+    private boolean needsModuleExportsDefinition() {
+      return moduleExportsRefs.isEmpty()
+          || !isTopLevelAssignLhs(moduleExportsRefs.get(0));
+    }
 
-      String moduleName = currentModule.getVarName();
-      Node moduleExports = IR.getprop(IR.name(moduleName), IR.string("exports"));
-      moduleExports.copyInformationFromForTree(node);
+    /**
+     * Returns whether the current module has any LValue references to module.exports or exports.
+     */
+    private boolean hasExportLValues() {
+      for (Node ref : Iterables.concat(moduleExportsRefs, exportsRefs)) {
+        if (NodeUtil.isLValue(ref)) {
+          return true;
+        }
+      }
+      return false;
+    }
 
-      node.getParent().replaceChild(node, moduleExports);
+    /**
+     * Returns whether the current module has exactly one top-level assignment to module.exports;
+     * this implies there are no references to the exports free variable.
+     */
+    private boolean hasOneTopLevelModuleExportsAssign() {
+      return moduleExportsRefs.size() == 1
+          && exportsRefs.isEmpty()
+          && isTopLevelAssignLhs(moduleExportsRefs.get(0));
+    }
+
+    private boolean isTopLevelAssignLhs(Node node) {
+      Node parent = node.getParent();
+      return parent.isAssign()
+          && node == parent.getFirstChild()
+          && parent.getParent().isExprResult()
+          && parent.getParent().getParent().isScript();
     }
 
     private void changeName(Node node, String newName) {
@@ -235,116 +345,127 @@ class DossierProcessCommonJsModules implements CompilerPass {
 
       compiler.reportCodeChange();
     }
+  }
+
+  private class ProcessNamespaceReferences extends NodeTraversal.AbstractPostOrderCallback {
+
+    @Override
+    public void visit(NodeTraversal t, Node n, Node parent) {
+      if (n.isAssign()) {
+        processAssignment(t, n);
+      }
+
+      // Handle simple property references: foo.bar;
+      if (n.isExprResult()
+          && n.getFirstChild().isGetProp()
+          && n.getFirstChild() == n.getLastChild()) {
+        processPropertyDeclaration(t, n);
+      }
+
+      // Handle obj.__defineGetter__(...);
+      if (n.isExprResult()
+          && n.getFirstChild().isCast()
+          && n.getFirstChild().getFirstChild().isCall()
+          && n.getFirstChild().getFirstChild().getFirstChild().isGetProp()) {
+        String name = n.getFirstChild().getFirstChild().getFirstChild().getQualifiedName();
+        if (name.endsWith(".__defineGetter__")) {
+          procesPropertyGetter(t, n);
+        }
+      }
+    }
 
     /**
-     * Modifies any assignments of a namespace type to be a direct reference to the indicated
-     * namespace object. This is required since the Closure Compiler's type system does not fully
-     * support namespace type references yet.
+     * Modifies any assignments whose type is declared as a reference to another namespace to be a
+     * direct reference to the indicated namespace object. This is required since the Closure
+     * Compiler's type system does not fully support namespace type references yet.
      *
      * TODO(jleyba): Remove this when Closure supports namespace type references.
      */
-    private void visitNamespaceAssignment(NodeTraversal t, Node node) {
-      checkArgument(node.isAssign());
-      JSDocInfo info = node.getJSDocInfo();
-      if (info == null || info.getType() == null) {
+    private void processAssignment(NodeTraversal t, Node node) {
+      JSType type = getNamespaceType(t, node);
+      if (type == null) {
         return;
       }
 
-      JSType type = info.getType().evaluate(t.getScope(), t.getCompiler().getTypeRegistry());
-      if (type == null || type.getDisplayName() == null) {
-        return;
+      String namespace = type.getDisplayName().substring(0, type.getDisplayName().length() - 1);
+      if (t.getScope().isGlobal()) {
+        t.getInput().addRequire(namespace);
       }
+      node.setJSDocInfo(null);
 
-      if (type.getDisplayName().endsWith(".")) {
-        String namespace = type.getDisplayName().substring(0, type.getDisplayName().length() - 1);
-        if (t.getScope().isGlobal()) {
-          t.getInput().addRequire(namespace);
-        }
-        node.setJSDocInfo(null);
-
-        Node prop = buildProp(namespace);
-        prop.copyInformationFromForTree(node.getLastChild());
-        node.replaceChild(node.getLastChild(), prop);
-      }
+      Node prop = buildProp(namespace);
+      prop.copyInformationFromForTree(node.getLastChild());
+      node.replaceChild(node.getLastChild(), prop);
     }
 
-    private void visitNamespacePropDeclarations(NodeTraversal t, Node node) {
-      checkArgument(node.isExprResult() && node.getFirstChild().isGetProp());
-
+    /**
+     * Modifies any property declarations whose declared type is a namespace to be a direct
+     * reference to the indicated namespace object.
+     */
+    private void processPropertyDeclaration(NodeTraversal t, Node node) {
       Node getProp = node.getFirstChild();
-      JSDocInfo info = getProp.getJSDocInfo();
-      if (info == null || info.getType() == null) {
+      JSType type = getNamespaceType(t, getProp);
+      if (type == null) {
         return;
       }
 
-      JSType type = info.getType().evaluate(t.getScope(), t.getCompiler().getTypeRegistry());
-      if (type == null || type.getDisplayName() == null) {
-        return;
+      String namespace = type.getDisplayName().substring(0, type.getDisplayName().length() - 1);
+      if (t.getScope().isGlobal()) {
+        t.getInput().addRequire(namespace);
       }
+      getProp.setJSDocInfo(null);
 
-      if (type.getDisplayName().endsWith(".")) {
-        String namespace = type.getDisplayName().substring(0, type.getDisplayName().length() - 1);
-        if (t.getScope().isGlobal()) {
-          t.getInput().addRequire(namespace);
-        }
-        getProp.setJSDocInfo(null);
-
-        node.removeChildren();
-        Node prop = IR.assign(getProp, buildProp(namespace));
-        prop.copyInformationFromForTree(getProp);
-        node.addChildrenToFront(prop);
-      }
+      node.removeChildren();
+      Node prop = IR.assign(getProp, buildProp(namespace));
+      prop.copyInformationFromForTree(getProp);
+      node.addChildrenToFront(prop);
     }
 
-    private void visitNamespaceGetter(NodeTraversal t, Node node) {
-      checkArgument(node.isExprResult()
-          && node.getFirstChild().isCast()
-          && node.getFirstChild().getFirstChild().isCall()
-          && node.getFirstChild().getFirstChild().getFirstChild().isGetProp());
+    /**
+     * Modifies any property getters whose declared type is a namespace to be a direct
+     * reference to the indicated namespace object.
+     */
+    private void procesPropertyGetter(NodeTraversal t, Node node) {
+      JSType type = getNamespaceType(t, node.getFirstChild());
+      if (type == null) {
+        return;
+      }
 
       Node call = node.getFirstChild().getFirstChild();
       Node getProp = call.getFirstChild();
       Node name = getProp.getNext();
       checkArgument(name.isString());
 
-      JSDocInfo info = node.getFirstChild().getJSDocInfo();
+      String namespace = type.getDisplayName().substring(0, type.getDisplayName().length() - 1);
+      if (t.getScope().isGlobal()) {
+        t.getInput().addRequire(namespace);
+      }
+
+      node.removeChildren();
+      getProp = getProp.cloneTree();
+      getProp.replaceChild(getProp.getLastChild(), name.cloneNode());
+      Node prop = IR.assign(getProp.cloneTree(), buildProp(namespace));
+      prop.copyInformationFromForTree(getProp);
+      node.addChildrenToFront(prop);
+    }
+
+    @Nullable
+    private JSType getNamespaceType(NodeTraversal t, Node node) {
+      JSDocInfo info = node.getJSDocInfo();
       if (info == null || info.getType() == null) {
-        return;
+        return null;
       }
 
       JSType type = info.getType().evaluate(t.getScope(), t.getCompiler().getTypeRegistry());
       if (type == null || type.getDisplayName() == null) {
-        return;
+        return null;
       }
 
       if (type.getDisplayName().endsWith(".")) {
-        String namespace = type.getDisplayName().substring(0, type.getDisplayName().length() - 1);
-        if (t.getScope().isGlobal()) {
-          t.getInput().addRequire(namespace);
-        }
-
-        node.removeChildren();
-        getProp = getProp.cloneTree();
-        getProp.replaceChild(getProp.getLastChild(), name.cloneNode());
-        Node prop = IR.assign(getProp.cloneTree(), buildProp(namespace));
-        prop.copyInformationFromForTree(getProp);
-        node.addChildrenToFront(prop);
-      }
-    }
-
-    private Node buildProp(String namespace) {
-      Iterator<String> names = Splitter.on('.')
-          .omitEmptyStrings()
-          .split(namespace)
-          .iterator();
-      checkArgument(names.hasNext());
-
-      Node current = IR.name(names.next());
-      while (names.hasNext()) {
-        current = IR.getprop(current, IR.string(names.next()));
+        return type;
       }
 
-      return current;
+      return null;
     }
   }
 
@@ -465,24 +586,24 @@ class DossierProcessCommonJsModules implements CompilerPass {
     }
   }
 
-  private static Node generateModuleDeclaration(Node script, String name) {
-    checkArgument(script.isScript());
+  private static Node buildProp(String namespace) {
+    Iterator<String> names = Splitter.on('.')
+        .omitEmptyStrings()
+        .split(namespace)
+        .iterator();
+    checkArgument(names.hasNext());
 
-    Node decl = IR.var(
-        IR.name(name),
-        IR.objectlit(
-            // Define __filename and __dirname free variables off our module object to satisfy
-            // the type checker.
-            IR.propdef(IR.stringKey("__filename"), IR.string("")),
-            IR.propdef(IR.stringKey("__dirname"), IR.string("")),
-            // module.filename from Node
-            IR.propdef(IR.stringKey("filename"), IR.string("")),
-            // The exported API object literal.
-            IR.propdef(IR.stringKey("exports"), IR.objectlit())
-        ));
-    decl.copyInformationFromForTree(script);
-    script.addChildrenToFront(decl);
+    Node current = IR.name(names.next());
+    while (names.hasNext()) {
+      current = IR.getprop(current, IR.string(names.next()));
+    }
 
-    return decl;
+    return current;
+  }
+
+  private static JSDocInfo createConstantJsDoc() {
+    JSDocInfoBuilder builder = new JSDocInfoBuilder(false);
+    builder.recordConstancy();
+    return builder.build(null);
   }
 }

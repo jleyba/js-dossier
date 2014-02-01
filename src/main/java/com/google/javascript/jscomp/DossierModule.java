@@ -29,7 +29,6 @@ public class DossierModule {
   private final Path modulePath;
   private final String varName;
   private final Map<String, String> typeToAlias = new HashMap<>();
-  private final Map<String, String> aliasToType = new HashMap<>();
   private final Set<Scope.Var> internalVars = new HashSet<>();
 
   /**
@@ -45,10 +44,6 @@ public class DossierModule {
     this.modulePath = FileSystems.getDefault().getPath(
         script.getSourceFileName());
     this.varName = guessModuleName(scriptNode.getSourceFileName());
-
-    // Define automatic aliases.
-    this.typeToAlias.put("module", varName);
-    this.typeToAlias.put("exports", varName + ".exports");
   }
 
   public Node getScriptNode() {
@@ -103,7 +98,6 @@ public class DossierModule {
    */
   public void defineAlias(String name, String alias) {
     typeToAlias.put(checkNotNull(name, "null name"), checkNotNull(alias, "null alias"));
-    aliasToType.put(alias, name);
   }
 
   /**
@@ -121,17 +115,6 @@ public class DossierModule {
     return typeToAlias.containsKey(typeName)
         ? typeToAlias.get(typeName)
         : typeName;
-  }
-
-  /**
-   * Resolves an alias defined when this module. If the given name is <i>not</i> an alias,
-   * this method will trivially return that name.
-   */
-  public String resolveAlias(String alias) {
-    while (aliasToType.containsKey(alias)) {
-      alias = aliasToType.get(alias);
-    }
-    return alias;
   }
 
   @Nullable
