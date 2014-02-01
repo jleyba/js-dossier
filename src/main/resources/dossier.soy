@@ -503,10 +503,11 @@
       {$name}
     {/if}
     {if $member.parameter}  // if is a function.
-      {sp}<span class="args">(
+      {sp}<span class="args">({sp}
         {foreach $parameter in $member.parameter}
           {$parameter.name}
-          {if not isLast($parameter)},{sp}{/if}
+          {if not isLast($parameter)},{/if}
+          {sp}
         {/foreach}
       )</span>
       {if not $member.isConstructor

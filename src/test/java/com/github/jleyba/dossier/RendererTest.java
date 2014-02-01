@@ -827,7 +827,7 @@ public class RendererTest {
     assertThat(document.body().children().size(), is(1));
     assertThat(document.body().child(0).toString(), isHtml(
         "<span class=\"member\">",
-        "<a name=\"foo.bar.baz\">foo.bar.baz</a> <span class=\"args\">()</span> \u21d2 ",
+        "<a name=\"foo.bar.baz\">foo.bar.baz</a> <span class=\"args\">( )</span> \u21d2 ",
         "<code class=\"type\"><a href=\"#\">Foo</a></code>",
         "</span>"));
   }
@@ -849,7 +849,7 @@ public class RendererTest {
     assertThat(document.body().children().size(), is(1));
     assertThat(document.body().child(0).toString(), isHtml(
         "<span class=\"member\">",
-        "<a name=\"foo.bar.baz\">foo.bar.baz</a> <span class=\"args\">()</span></span>"));
+        "<a name=\"foo.bar.baz\">foo.bar.baz</a> <span class=\"args\">( )</span></span>"));
   }
 
   @Test
@@ -872,7 +872,7 @@ public class RendererTest {
     assertThat(document.body().child(0).toString(), isHtml(
         "<span class=\"member\">",
         "<a name=\"foo.bar.baz\">foo.bar.baz</a>",
-        " <span class=\"args\">()</span></span>"));
+        " <span class=\"args\">( )</span></span>"));
   }
 
   @Test
@@ -894,7 +894,7 @@ public class RendererTest {
     assertThat(document.body().children().size(), is(1));
     assertThat(document.body().child(0).toString(), isHtml(
         "<span class=\"member\">",
-        "<a name=\"foo.bar.baz\">foo.bar.baz</a> <span class=\"args\">()</span></span>"));
+        "<a name=\"foo.bar.baz\">foo.bar.baz</a> <span class=\"args\">( )</span></span>"));
   }
 
   @Test
@@ -918,7 +918,7 @@ public class RendererTest {
     assertThat(document.body().children().size(), is(1));
     assertThat(document.body().child(0).toString(), isHtml(
         "<span class=\"member\">",
-        "<a name=\"foo.bar.baz\">foo.bar.baz</a> <span class=\"args\">(a, b)</span></span>"));
+        "<a name=\"foo.bar.baz\">foo.bar.baz</a> <span class=\"args\">( a, b )</span></span>"));
   }
 
   @Test
@@ -942,7 +942,7 @@ public class RendererTest {
     Document document = renderDocument("dossier.soy.memberSignature", "member", function);
     assertThat(document.body().children().size(), is(1));
     assertThat(document.body().child(0).toString(), isHtml(
-        "<span class=\"member\">foo.Bar <span class=\"args\">(a, b)</span></span>"));
+        "<span class=\"member\">foo.Bar <span class=\"args\">( a, b )</span></span>"));
   }
 
   @Test
@@ -965,7 +965,7 @@ public class RendererTest {
     Document document = renderDocument("dossier.soy.memberSignature", "member", function);
     assertThat(document.body().children().size(), is(1));
     assertThat(document.body().child(0).toString(), isHtml(
-        "<span class=\"member\">foo.Bar <span class=\"args\">()</span></span>"));
+        "<span class=\"member\">foo.Bar <span class=\"args\">( )</span></span>"));
   }
 
   @Test
@@ -988,7 +988,7 @@ public class RendererTest {
     assertThat(document.body().toString(), isHtml(
         "<body>",
         "<code class=\"type\">&lt;K, V&gt;</code> ",
-        "<span class=\"member\"><a name=\"foo.Bar\">foo.Bar</a> <span class=\"args\">()</span>",
+        "<span class=\"member\"><a name=\"foo.Bar\">foo.Bar</a> <span class=\"args\">( )</span>",
         " \u21d2 <code class=\"type\">string</code>",
         "</span>",
         "</body>"));
@@ -1197,7 +1197,7 @@ public class RendererTest {
         "<summary><div>",
         "<a class=\"source\" href=\"bar.link\">code &raquo;</a>",
         "<span class=\"member\">",
-        "<a name=\"foo.Bar\">foo.Bar</a> <span class=\"args\">(a)</span></span></div>",
+        "<a name=\"foo.Bar\">foo.Bar</a> <span class=\"args\">( a )</span></span></div>",
         "</summary>"));
 
     assertThat(document.select("details.function > summary + div.info").size(), is(1));
@@ -1224,7 +1224,7 @@ public class RendererTest {
         "<summary><div>",
         "<a class=\"source\" href=\"bar.link\">code &raquo;</a>",
         "<span class=\"member deprecation-notice\">",
-        "<a name=\"foo.Bar\">foo.Bar</a> <span class=\"args\">(a)</span></span></div>",
+        "<a name=\"foo.Bar\">foo.Bar</a> <span class=\"args\">( a )</span></span></div>",
         "<div class=\"deprecation-notice\">Deprecated: ",
         "<span class=\"deprecation-reason\">is old</span>",
         "</div>",
