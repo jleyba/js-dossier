@@ -194,8 +194,8 @@ class HtmlDocWriter implements DocWriter {
       extractEnumData(descriptor, jsTypeBuilder);
     }
 
-    if (descriptor.isConstructor() || descriptor.isInterface()) {
-      jsTypeBuilder.setConstructor(getFunctionData(descriptor));
+    if (descriptor.isFunction()) {
+      jsTypeBuilder.setMainFunction(getFunctionData(descriptor));
     }
 
     renderer.render(
@@ -241,8 +241,8 @@ class HtmlDocWriter implements DocWriter {
       extractEnumData(descriptor, jsTypeBuilder);
     }
 
-    if (descriptor.isConstructor() || descriptor.isInterface()) {
-      jsTypeBuilder.setConstructor(getFunctionData(descriptor));
+    if (descriptor.isFunction()) {
+      jsTypeBuilder.setMainFunction(getFunctionData(descriptor));
     }
 
     renderer.render(
@@ -654,6 +654,14 @@ class HtmlDocWriter implements DocWriter {
         ? property.getFullName()
         : property.getSimpleName();
 
+    if (currentModule != null && currentModule.getDescriptor() == property) {
+      name = linker.getDisplayName(currentModule);
+      int index = name.lastIndexOf("/");
+      if (index != -1) {
+        name = name.substring(index + 1);
+      }
+    }
+
     BaseProperty.Builder builder = BaseProperty.newBuilder()
         .setName(name)
         .setSource(nullToEmpty(linker.getSourcePath(property)))
@@ -730,7 +738,8 @@ class HtmlDocWriter implements DocWriter {
 
   private Dossier.Function getFunctionData(Descriptor function) {
     Dossier.Function.Builder builder = Dossier.Function.newBuilder()
-        .setBase(getBasePropertyDetails(function));
+        .setBase(getBasePropertyDetails(function))
+        .setIsConstructor(function.isConstructor());
 
     JsDoc jsDoc = function.getJsDoc();
     if (!function.isConstructor() && !function.isInterface()) {

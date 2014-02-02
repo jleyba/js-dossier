@@ -9582,10 +9582,10 @@ public final class Dossier {
     com.github.jleyba.dossier.proto.Dossier.PropertyOrBuilder getStaticPropertyOrBuilder(
         int index);
     
-    // optional .Function constructor = 13;
-    boolean hasConstructor();
-    com.github.jleyba.dossier.proto.Dossier.Function getConstructor();
-    com.github.jleyba.dossier.proto.Dossier.FunctionOrBuilder getConstructorOrBuilder();
+    // optional .Function main_function = 13;
+    boolean hasMainFunction();
+    com.github.jleyba.dossier.proto.Dossier.Function getMainFunction();
+    com.github.jleyba.dossier.proto.Dossier.FunctionOrBuilder getMainFunctionOrBuilder();
     
     // optional bool is_interface = 14;
     boolean hasIsInterface();
@@ -12595,17 +12595,17 @@ public final class Dossier {
       return staticProperty_.get(index);
     }
     
-    // optional .Function constructor = 13;
-    public static final int CONSTRUCTOR_FIELD_NUMBER = 13;
-    private com.github.jleyba.dossier.proto.Dossier.Function constructor_;
-    public boolean hasConstructor() {
+    // optional .Function main_function = 13;
+    public static final int MAIN_FUNCTION_FIELD_NUMBER = 13;
+    private com.github.jleyba.dossier.proto.Dossier.Function mainFunction_;
+    public boolean hasMainFunction() {
       return ((bitField0_ & 0x00000040) == 0x00000040);
     }
-    public com.github.jleyba.dossier.proto.Dossier.Function getConstructor() {
-      return constructor_;
+    public com.github.jleyba.dossier.proto.Dossier.Function getMainFunction() {
+      return mainFunction_;
     }
-    public com.github.jleyba.dossier.proto.Dossier.FunctionOrBuilder getConstructorOrBuilder() {
-      return constructor_;
+    public com.github.jleyba.dossier.proto.Dossier.FunctionOrBuilder getMainFunctionOrBuilder() {
+      return mainFunction_;
     }
     
     // optional bool is_interface = 14;
@@ -12742,7 +12742,7 @@ public final class Dossier {
       enumeration_ = com.github.jleyba.dossier.proto.Dossier.Enumeration.getDefaultInstance();
       staticFunction_ = java.util.Collections.emptyList();
       staticProperty_ = java.util.Collections.emptyList();
-      constructor_ = com.github.jleyba.dossier.proto.Dossier.Function.getDefaultInstance();
+      mainFunction_ = com.github.jleyba.dossier.proto.Dossier.Function.getDefaultInstance();
       isInterface_ = false;
       prototype_ = java.util.Collections.emptyList();
       hasInstanceMethods_ = false;
@@ -12811,8 +12811,8 @@ public final class Dossier {
           return false;
         }
       }
-      if (hasConstructor()) {
-        if (!getConstructor().isInitialized()) {
+      if (hasMainFunction()) {
+        if (!getMainFunction().isInitialized()) {
           memoizedIsInitialized = 0;
           return false;
         }
@@ -12876,7 +12876,7 @@ public final class Dossier {
         output.writeMessage(12, staticProperty_.get(i));
       }
       if (((bitField0_ & 0x00000040) == 0x00000040)) {
-        output.writeMessage(13, constructor_);
+        output.writeMessage(13, mainFunction_);
       }
       if (((bitField0_ & 0x00000080) == 0x00000080)) {
         output.writeBool(14, isInterface_);
@@ -12949,7 +12949,7 @@ public final class Dossier {
       }
       if (((bitField0_ & 0x00000040) == 0x00000040)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(13, constructor_);
+          .computeMessageSize(13, mainFunction_);
       }
       if (((bitField0_ & 0x00000080) == 0x00000080)) {
         size += com.google.protobuf.CodedOutputStream
@@ -13106,7 +13106,7 @@ public final class Dossier {
           getEnumerationFieldBuilder();
           getStaticFunctionFieldBuilder();
           getStaticPropertyFieldBuilder();
-          getConstructorFieldBuilder();
+          getMainFunctionFieldBuilder();
           getPrototypeFieldBuilder();
           getExtendedTypeFieldBuilder();
           getImplementedTypeFieldBuilder();
@@ -13165,10 +13165,10 @@ public final class Dossier {
         } else {
           staticPropertyBuilder_.clear();
         }
-        if (constructorBuilder_ == null) {
-          constructor_ = com.github.jleyba.dossier.proto.Dossier.Function.getDefaultInstance();
+        if (mainFunctionBuilder_ == null) {
+          mainFunction_ = com.github.jleyba.dossier.proto.Dossier.Function.getDefaultInstance();
         } else {
-          constructorBuilder_.clear();
+          mainFunctionBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000200);
         isInterface_ = false;
@@ -13311,10 +13311,10 @@ public final class Dossier {
         if (((from_bitField0_ & 0x00000200) == 0x00000200)) {
           to_bitField0_ |= 0x00000040;
         }
-        if (constructorBuilder_ == null) {
-          result.constructor_ = constructor_;
+        if (mainFunctionBuilder_ == null) {
+          result.mainFunction_ = mainFunction_;
         } else {
-          result.constructor_ = constructorBuilder_.build();
+          result.mainFunction_ = mainFunctionBuilder_.build();
         }
         if (((from_bitField0_ & 0x00000400) == 0x00000400)) {
           to_bitField0_ |= 0x00000080;
@@ -13480,8 +13480,8 @@ public final class Dossier {
             }
           }
         }
-        if (other.hasConstructor()) {
-          mergeConstructor(other.getConstructor());
+        if (other.hasMainFunction()) {
+          mergeMainFunction(other.getMainFunction());
         }
         if (other.hasIsInterface()) {
           setIsInterface(other.getIsInterface());
@@ -13658,8 +13658,8 @@ public final class Dossier {
             return false;
           }
         }
-        if (hasConstructor()) {
-          if (!getConstructor().isInitialized()) {
+        if (hasMainFunction()) {
+          if (!getMainFunction().isInitialized()) {
             
             return false;
           }
@@ -13780,11 +13780,11 @@ public final class Dossier {
             }
             case 106: {
               com.github.jleyba.dossier.proto.Dossier.Function.Builder subBuilder = com.github.jleyba.dossier.proto.Dossier.Function.newBuilder();
-              if (hasConstructor()) {
-                subBuilder.mergeFrom(getConstructor());
+              if (hasMainFunction()) {
+                subBuilder.mergeFrom(getMainFunction());
               }
               input.readMessage(subBuilder, extensionRegistry);
-              setConstructor(subBuilder.buildPartial());
+              setMainFunction(subBuilder.buildPartial());
               break;
             }
             case 112: {
@@ -14827,94 +14827,94 @@ public final class Dossier {
         return staticPropertyBuilder_;
       }
       
-      // optional .Function constructor = 13;
-      private com.github.jleyba.dossier.proto.Dossier.Function constructor_ = com.github.jleyba.dossier.proto.Dossier.Function.getDefaultInstance();
+      // optional .Function main_function = 13;
+      private com.github.jleyba.dossier.proto.Dossier.Function mainFunction_ = com.github.jleyba.dossier.proto.Dossier.Function.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
-          com.github.jleyba.dossier.proto.Dossier.Function, com.github.jleyba.dossier.proto.Dossier.Function.Builder, com.github.jleyba.dossier.proto.Dossier.FunctionOrBuilder> constructorBuilder_;
-      public boolean hasConstructor() {
+          com.github.jleyba.dossier.proto.Dossier.Function, com.github.jleyba.dossier.proto.Dossier.Function.Builder, com.github.jleyba.dossier.proto.Dossier.FunctionOrBuilder> mainFunctionBuilder_;
+      public boolean hasMainFunction() {
         return ((bitField0_ & 0x00000200) == 0x00000200);
       }
-      public com.github.jleyba.dossier.proto.Dossier.Function getConstructor() {
-        if (constructorBuilder_ == null) {
-          return constructor_;
+      public com.github.jleyba.dossier.proto.Dossier.Function getMainFunction() {
+        if (mainFunctionBuilder_ == null) {
+          return mainFunction_;
         } else {
-          return constructorBuilder_.getMessage();
+          return mainFunctionBuilder_.getMessage();
         }
       }
-      public Builder setConstructor(com.github.jleyba.dossier.proto.Dossier.Function value) {
-        if (constructorBuilder_ == null) {
+      public Builder setMainFunction(com.github.jleyba.dossier.proto.Dossier.Function value) {
+        if (mainFunctionBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
           }
-          constructor_ = value;
+          mainFunction_ = value;
           onChanged();
         } else {
-          constructorBuilder_.setMessage(value);
+          mainFunctionBuilder_.setMessage(value);
         }
         bitField0_ |= 0x00000200;
         return this;
       }
-      public Builder setConstructor(
+      public Builder setMainFunction(
           com.github.jleyba.dossier.proto.Dossier.Function.Builder builderForValue) {
-        if (constructorBuilder_ == null) {
-          constructor_ = builderForValue.build();
+        if (mainFunctionBuilder_ == null) {
+          mainFunction_ = builderForValue.build();
           onChanged();
         } else {
-          constructorBuilder_.setMessage(builderForValue.build());
+          mainFunctionBuilder_.setMessage(builderForValue.build());
         }
         bitField0_ |= 0x00000200;
         return this;
       }
-      public Builder mergeConstructor(com.github.jleyba.dossier.proto.Dossier.Function value) {
-        if (constructorBuilder_ == null) {
+      public Builder mergeMainFunction(com.github.jleyba.dossier.proto.Dossier.Function value) {
+        if (mainFunctionBuilder_ == null) {
           if (((bitField0_ & 0x00000200) == 0x00000200) &&
-              constructor_ != com.github.jleyba.dossier.proto.Dossier.Function.getDefaultInstance()) {
-            constructor_ =
-              com.github.jleyba.dossier.proto.Dossier.Function.newBuilder(constructor_).mergeFrom(value).buildPartial();
+              mainFunction_ != com.github.jleyba.dossier.proto.Dossier.Function.getDefaultInstance()) {
+            mainFunction_ =
+              com.github.jleyba.dossier.proto.Dossier.Function.newBuilder(mainFunction_).mergeFrom(value).buildPartial();
           } else {
-            constructor_ = value;
+            mainFunction_ = value;
           }
           onChanged();
         } else {
-          constructorBuilder_.mergeFrom(value);
+          mainFunctionBuilder_.mergeFrom(value);
         }
         bitField0_ |= 0x00000200;
         return this;
       }
-      public Builder clearConstructor() {
-        if (constructorBuilder_ == null) {
-          constructor_ = com.github.jleyba.dossier.proto.Dossier.Function.getDefaultInstance();
+      public Builder clearMainFunction() {
+        if (mainFunctionBuilder_ == null) {
+          mainFunction_ = com.github.jleyba.dossier.proto.Dossier.Function.getDefaultInstance();
           onChanged();
         } else {
-          constructorBuilder_.clear();
+          mainFunctionBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000200);
         return this;
       }
-      public com.github.jleyba.dossier.proto.Dossier.Function.Builder getConstructorBuilder() {
+      public com.github.jleyba.dossier.proto.Dossier.Function.Builder getMainFunctionBuilder() {
         bitField0_ |= 0x00000200;
         onChanged();
-        return getConstructorFieldBuilder().getBuilder();
+        return getMainFunctionFieldBuilder().getBuilder();
       }
-      public com.github.jleyba.dossier.proto.Dossier.FunctionOrBuilder getConstructorOrBuilder() {
-        if (constructorBuilder_ != null) {
-          return constructorBuilder_.getMessageOrBuilder();
+      public com.github.jleyba.dossier.proto.Dossier.FunctionOrBuilder getMainFunctionOrBuilder() {
+        if (mainFunctionBuilder_ != null) {
+          return mainFunctionBuilder_.getMessageOrBuilder();
         } else {
-          return constructor_;
+          return mainFunction_;
         }
       }
       private com.google.protobuf.SingleFieldBuilder<
           com.github.jleyba.dossier.proto.Dossier.Function, com.github.jleyba.dossier.proto.Dossier.Function.Builder, com.github.jleyba.dossier.proto.Dossier.FunctionOrBuilder> 
-          getConstructorFieldBuilder() {
-        if (constructorBuilder_ == null) {
-          constructorBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+          getMainFunctionFieldBuilder() {
+        if (mainFunctionBuilder_ == null) {
+          mainFunctionBuilder_ = new com.google.protobuf.SingleFieldBuilder<
               com.github.jleyba.dossier.proto.Dossier.Function, com.github.jleyba.dossier.proto.Dossier.Function.Builder, com.github.jleyba.dossier.proto.Dossier.FunctionOrBuilder>(
-                  constructor_,
+                  mainFunction_,
                   getParentForChildren(),
                   isClean());
-          constructor_ = null;
+          mainFunction_ = null;
         }
-        return constructorBuilder_;
+        return mainFunctionBuilder_;
       }
       
       // optional bool is_interface = 14;
@@ -18435,44 +18435,44 @@ public final class Dossier {
       "\0132\022.Enumeration.Value\022\'\n\nvisibility\030\003 \001(" +
       "\0162\013.Visibility:\006PUBLIC\032W\n\005Value\022\014\n\004name\030" +
       "\001 \002(\t\022\035\n\013description\030\002 \001(\0132\010.Comment\022!\n\013" +
-      "deprecation\030\003 \001(\0132\014.Deprecation\"\320\007\n\006JsTy",
+      "deprecation\030\003 \001(\0132\014.Deprecation\"\322\007\n\006JsTy",
       "pe\022\014\n\004name\030\001 \002(\t\022\016\n\006source\030\005 \002(\t\022#\n\006nest" +
       "ed\030\006 \002(\0132\023.JsType.NestedTypes\022\035\n\013descrip" +
       "tion\030\007 \002(\0132\010.Comment\022!\n\013deprecation\030\010 \001(" +
       "\0132\014.Deprecation\022!\n\010type_def\030\t \003(\0132\017.JsTy" +
       "pe.TypeDef\022!\n\013enumeration\030\n \001(\0132\014.Enumer" +
       "ation\022\"\n\017static_function\030\013 \003(\0132\t.Functio" +
-      "n\022\"\n\017static_property\030\014 \003(\0132\t.Property\022\036\n" +
-      "\013constructor\030\r \001(\0132\t.Function\022\024\n\014is_inte" +
-      "rface\030\016 \001(\010\022\035\n\tprototype\030\017 \003(\0132\n.Prototy" +
-      "pe\022#\n\024has_instance_methods\030\020 \001(\010:\005false\022",
-      "&\n\027has_instance_properties\030\021 \001(\010:\005false\022" +
-      " \n\rextended_type\030\022 \003(\0132\t.TypeLink\022#\n\020imp" +
-      "lemented_type\030\023 \003(\0132\t.TypeLink\022$\n\021compil" +
-      "er_constant\030\024 \003(\0132\t.Property\022\021\n\tis_modul" +
-      "e\030\025 \001(\010\032\352\001\n\013NestedTypes\0223\n\ninterfaces\030\001 " +
-      "\003(\0132\037.JsType.NestedTypes.TypeSummary\0220\n\007" +
-      "classes\030\002 \003(\0132\037.JsType.NestedTypes.TypeS" +
-      "ummary\022.\n\005enums\030\003 \003(\0132\037.JsType.NestedTyp" +
-      "es.TypeSummary\032D\n\013TypeSummary\022\014\n\004name\030\001 " +
-      "\002(\t\022\014\n\004href\030\002 \002(\t\022\031\n\007summary\030\003 \002(\0132\010.Com",
-      "ment\032\243\001\n\007TypeDef\022\014\n\004name\030\001 \002(\t\022\021\n\ttype_h" +
-      "tml\030\002 \002(\t\022\014\n\004href\030\003 \002(\t\022\035\n\013description\030\004" +
-      " \002(\0132\010.Comment\022!\n\013deprecation\030\005 \001(\0132\014.De" +
-      "precation\022\'\n\nvisibility\030\006 \001(\0162\013.Visibili" +
-      "ty:\006PUBLIC\"j\n\023IndexFileRenderSpec\022\035\n\tres" +
-      "ources\030\001 \002(\0132\n.Resources\022\032\n\013has_license\030" +
-      "\002 \001(\010:\005false\022\030\n\006readme\030\003 \001(\0132\010.Comment\"M" +
-      "\n\021LicenseRenderSpec\022\035\n\tresources\030\001 \002(\0132\n" +
-      ".Resources\022\031\n\007license\030\002 \002(\0132\010.License\"l\n" +
-      "\024SourceFileRenderSpec\022\035\n\tresources\030\001 \002(\013",
-      "2\n.Resources\022\031\n\004file\030\002 \002(\0132\013.SourceFile\022" +
-      "\032\n\013has_license\030\003 \001(\010:\005false\"d\n\020JsTypeRen" +
-      "derSpec\022\025\n\004type\030\001 \002(\0132\007.JsType\022\035\n\tresour" +
-      "ces\030\002 \002(\0132\n.Resources\022\032\n\013has_license\030\003 \001" +
-      "(\010:\005false*4\n\nVisibility\022\n\n\006PUBLIC\020\000\022\r\n\tP" +
-      "ROTECTED\020\001\022\013\n\007PRIVATE\020\002B!\n\037com.github.jl" +
-      "eyba.dossier.proto"
+      "n\022\"\n\017static_property\030\014 \003(\0132\t.Property\022 \n" +
+      "\rmain_function\030\r \001(\0132\t.Function\022\024\n\014is_in" +
+      "terface\030\016 \001(\010\022\035\n\tprototype\030\017 \003(\0132\n.Proto" +
+      "type\022#\n\024has_instance_methods\030\020 \001(\010:\005fals",
+      "e\022&\n\027has_instance_properties\030\021 \001(\010:\005fals" +
+      "e\022 \n\rextended_type\030\022 \003(\0132\t.TypeLink\022#\n\020i" +
+      "mplemented_type\030\023 \003(\0132\t.TypeLink\022$\n\021comp" +
+      "iler_constant\030\024 \003(\0132\t.Property\022\021\n\tis_mod" +
+      "ule\030\025 \001(\010\032\352\001\n\013NestedTypes\0223\n\ninterfaces\030" +
+      "\001 \003(\0132\037.JsType.NestedTypes.TypeSummary\0220" +
+      "\n\007classes\030\002 \003(\0132\037.JsType.NestedTypes.Typ" +
+      "eSummary\022.\n\005enums\030\003 \003(\0132\037.JsType.NestedT" +
+      "ypes.TypeSummary\032D\n\013TypeSummary\022\014\n\004name\030" +
+      "\001 \002(\t\022\014\n\004href\030\002 \002(\t\022\031\n\007summary\030\003 \002(\0132\010.C",
+      "omment\032\243\001\n\007TypeDef\022\014\n\004name\030\001 \002(\t\022\021\n\ttype" +
+      "_html\030\002 \002(\t\022\014\n\004href\030\003 \002(\t\022\035\n\013description" +
+      "\030\004 \002(\0132\010.Comment\022!\n\013deprecation\030\005 \001(\0132\014." +
+      "Deprecation\022\'\n\nvisibility\030\006 \001(\0162\013.Visibi" +
+      "lity:\006PUBLIC\"j\n\023IndexFileRenderSpec\022\035\n\tr" +
+      "esources\030\001 \002(\0132\n.Resources\022\032\n\013has_licens" +
+      "e\030\002 \001(\010:\005false\022\030\n\006readme\030\003 \001(\0132\010.Comment" +
+      "\"M\n\021LicenseRenderSpec\022\035\n\tresources\030\001 \002(\013" +
+      "2\n.Resources\022\031\n\007license\030\002 \002(\0132\010.License\"" +
+      "l\n\024SourceFileRenderSpec\022\035\n\tresources\030\001 \002",
+      "(\0132\n.Resources\022\031\n\004file\030\002 \002(\0132\013.SourceFil" +
+      "e\022\032\n\013has_license\030\003 \001(\010:\005false\"d\n\020JsTypeR" +
+      "enderSpec\022\025\n\004type\030\001 \002(\0132\007.JsType\022\035\n\treso" +
+      "urces\030\002 \002(\0132\n.Resources\022\032\n\013has_license\030\003" +
+      " \001(\010:\005false*4\n\nVisibility\022\n\n\006PUBLIC\020\000\022\r\n" +
+      "\tPROTECTED\020\001\022\013\n\007PRIVATE\020\002B!\n\037com.github." +
+      "jleyba.dossier.proto"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -18596,7 +18596,7 @@ public final class Dossier {
           internal_static_JsType_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_JsType_descriptor,
-              new java.lang.String[] { "Name", "Source", "Nested", "Description", "Deprecation", "TypeDef", "Enumeration", "StaticFunction", "StaticProperty", "Constructor", "IsInterface", "Prototype", "HasInstanceMethods", "HasInstanceProperties", "ExtendedType", "ImplementedType", "CompilerConstant", "IsModule", },
+              new java.lang.String[] { "Name", "Source", "Nested", "Description", "Deprecation", "TypeDef", "Enumeration", "StaticFunction", "StaticProperty", "MainFunction", "IsInterface", "Prototype", "HasInstanceMethods", "HasInstanceProperties", "ExtendedType", "ImplementedType", "CompilerConstant", "IsModule", },
               com.github.jleyba.dossier.proto.Dossier.JsType.class,
               com.github.jleyba.dossier.proto.Dossier.JsType.Builder.class);
           internal_static_JsType_NestedTypes_descriptor =

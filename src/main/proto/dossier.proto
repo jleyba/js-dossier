@@ -185,8 +185,10 @@ message JsType {
   repeated Function static_function = 11;
   repeated Property static_property = 12;
 
-  // Describes the constructor for this type, if it is a class.
-  optional Function constructor = 13;
+  // Describes the main function for this type. This is typically a class
+  // constructor, but may also be the main function for a namespace (which
+  // all other properties are hung off of).
+  optional Function main_function = 13;
 
   // Designates this type as an interface.
   optional bool is_interface = 14;

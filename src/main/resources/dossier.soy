@@ -220,16 +220,16 @@
         Module {$type.name}
       {elseif $type.isInterface}
         Interface {$type.name}
-      {elseif $type.constructor}
+      {elseif $type.mainFunction and $type.mainFunction.isConstructor}
         Class {$type.name}
       {elseif $type.enumeration}
         Enum {$type.name}
       {else}
         Namespace {$type.name}
       {/if}
-      {if $type.constructor and length($type.constructor.templateName)}
+      {if $type.mainFunction and length($type.mainFunction.templateName)}
         .{call .printTemplateNames}
-          {param names: $type.constructor.templateName /}
+          {param names: $type.mainFunction.templateName /}
         {/call}
       {/if}
       {if $type.deprecation}
@@ -483,6 +483,7 @@
  * @param member Either a Dossier.Function or Dossier.Property object.
  * @param? parentName Name of the namespace/enum/class/interface that defines
  *     this member.
+ * @param? omitLink Whether to omit a type anchor.
  */
 {template .memberSignature}
   {if not $member.isConstructor and
@@ -497,7 +498,7 @@
                           : $member.base.name /}
 
   <span class="member{if $member.base.deprecation} deprecation-notice{/if}">
-    {if not $member.isConstructor}
+    {if not $member.isConstructor and not $omitLink}
       <a name="{$name}">{$name}</a>
     {else}
       {$name}
@@ -526,12 +527,20 @@
 {/template}
 
 /**
- * Generates the HTML for a class constructor.
+ * Generates the HTML for a type descriptor's main function (which is either
+ * a constructor or the primary function in a namespace/module which all other
+ * properties are hung off of).
  *
  * @param fn A Dossier.Function object.
  */
-{template .ctor}
-  <h2>Constructor</h2>
+{template .mainFunction}
+  <h2>
+  {if $fn.isConstructor}
+    Constructor
+  {else}
+    Main
+  {/if}
+  </h2>
   <div class="ctor wrap-details
     {switch $fn.base.visibility}
       {case 'PUBLIC'}{sp}public
@@ -542,6 +551,7 @@
       <div class="ctor">
         {call .memberSignature}
           {param member: $fn /}
+          {param omitLink: true /}
         {/call}
       </div>
       {call .fnDetails}
@@ -679,7 +689,7 @@
   {if length($type.staticFunction)}
     <section id="static-functions">
       <h2>
-        {if $type.constructor}
+        {if $type.mainFunction and $type.mainFunction.isConstructor}
           Static Functions
         {elseif $type.isModule}
           Functions
@@ -697,7 +707,7 @@
   {if length($type.staticProperty)}
     <section id="static-properties">
       <h2>
-        {if $type.constructor}
+        {if $type.mainFunction and $type.mainFunction.isConstructor}
           Static Properties
         {elseif $type.isModule}
           Properties
@@ -874,9 +884,9 @@
         {call .comment}
           {param comment: $spec.type.description /}
         {/call}
-        {if $spec.type.constructor and not $spec.type.isInterface}
-          {call .ctor}
-            {param fn: $spec.type.constructor /}
+        {if not $spec.type.isInterface and $spec.type.mainFunction}
+          {call .mainFunction}
+            {param fn: $spec.type.mainFunction /}
           {/call}
         {/if}
         {if $spec.type.enumeration}

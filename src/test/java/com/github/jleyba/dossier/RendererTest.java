@@ -282,7 +282,7 @@ public class RendererTest {
         .setSource("source")
         .setDescription(parseComment("description"))
         .setNested(Dossier.JsType.NestedTypes.getDefaultInstance())
-        .setConstructor(Dossier.Function.newBuilder()
+        .setMainFunction(Dossier.Function.newBuilder()
             .setBase(Dossier.BaseProperty.newBuilder()
                 .setName("ctor-name")
                 .setSource("ctor-source")
@@ -395,7 +395,7 @@ public class RendererTest {
         .setDescription(parseComment("description"))
         .setIsInterface(true)
         .setNested(Dossier.JsType.NestedTypes.getDefaultInstance())
-        .setConstructor(Dossier.Function.newBuilder()
+        .setMainFunction(Dossier.Function.newBuilder()
             .addTemplateName("K")
             .addTemplateName("V")
             .setBase(Dossier.BaseProperty.newBuilder()
@@ -417,7 +417,8 @@ public class RendererTest {
         .setSource("source")
         .setDescription(parseComment("description"))
         .setNested(Dossier.JsType.NestedTypes.getDefaultInstance())
-        .setConstructor(Dossier.Function.newBuilder()
+        .setMainFunction(Dossier.Function.newBuilder()
+            .setIsConstructor(true)
             .addTemplateName("K")
             .addTemplateName("V")
             .setBase(Dossier.BaseProperty.newBuilder()
@@ -439,7 +440,8 @@ public class RendererTest {
         .setSource("source-file")
         .setDescription(parseComment("description"))
         .setNested(Dossier.JsType.NestedTypes.getDefaultInstance())
-        .setConstructor(Dossier.Function.newBuilder()
+        .setMainFunction(Dossier.Function.newBuilder()
+            .setIsConstructor(true)
             .setBase(Dossier.BaseProperty.newBuilder()
                 .setName("ctor-name")
                 .setSource("ctor-source")
@@ -486,7 +488,7 @@ public class RendererTest {
         .setSource("source-file")
         .setDescription(parseComment("description"))
         .setNested(Dossier.JsType.NestedTypes.getDefaultInstance())
-        .setConstructor(Dossier.Function.newBuilder()
+        .setMainFunction(Dossier.Function.newBuilder()
             .setBase(Dossier.BaseProperty.newBuilder()
                 .setName("ctor-name")
                 .setSource("ctor-source")
@@ -1176,6 +1178,72 @@ public class RendererTest {
         "<dd>randomly</dd>",
         "</dl></td></tr>",
         "</tbody></table></div>"));
+  }
+
+  @Test
+  public void renderMainFunction_hasReturn() {
+    Dossier.Function function = Dossier.Function.newBuilder()
+        .setBase(Dossier.BaseProperty.newBuilder()
+            .setName("foo.Bar")
+            .setSource("")
+            .setDescription(parseComment("")))
+        .addParameter(Dossier.Function.Detail.newBuilder().setName("a"))
+        .addParameter(Dossier.Function.Detail.newBuilder().setName("b"))
+        .setReturn(Dossier.Function.Detail.newBuilder()
+            .setTypeHtml("<a href=\"#\">Foo</a>"))
+        .build();
+
+    Document document = renderDocument("dossier.soy.mainFunction", "fn", function);
+    assertThat(document.body().children().size(), is(2));
+    assertThat(document.body().child(0).toString(), isHtml("<h2>Main</h2>"));
+
+    Element signature = querySelector(document, "div.ctor > span.member");
+    assertThat(signature.toString(), isHtml(
+        "<span class=\"member\">",
+        "foo.Bar <span class=\"args\">( a, b )</span> \u21d2 ",
+        "<code class=\"type\"><a href=\"#\">Foo</a></code>",
+        "</span>"));
+  }
+
+  @Test
+  public void renderMainFunction_noReturn() {
+    Dossier.Function function = Dossier.Function.newBuilder()
+        .setBase(Dossier.BaseProperty.newBuilder()
+            .setName("foo.Bar")
+            .setSource("")
+            .setDescription(parseComment("")))
+        .addParameter(Dossier.Function.Detail.newBuilder().setName("a"))
+        .addParameter(Dossier.Function.Detail.newBuilder().setName("b"))
+        .build();
+
+    Document document = renderDocument("dossier.soy.mainFunction", "fn", function);
+    assertThat(document.body().children().size(), is(2));
+    assertThat(document.body().child(0).toString(), isHtml("<h2>Main</h2>"));
+
+    Element signature = querySelector(document, "div.ctor > span.member");
+    assertThat(signature.toString(), isHtml(
+        "<span class=\"member\">foo.Bar <span class=\"args\">( a, b )</span></span>"));
+  }
+
+  @Test
+  public void renderMainFunction_constructor() {
+    Dossier.Function function = Dossier.Function.newBuilder()
+        .setBase(Dossier.BaseProperty.newBuilder()
+            .setName("foo.Bar")
+            .setSource("")
+            .setDescription(parseComment("")))
+        .setIsConstructor(true)
+        .addParameter(Dossier.Function.Detail.newBuilder().setName("a"))
+        .addParameter(Dossier.Function.Detail.newBuilder().setName("b"))
+        .build();
+
+    Document document = renderDocument("dossier.soy.mainFunction", "fn", function);
+    assertThat(document.body().children().size(), is(2));
+    assertThat(document.body().child(0).toString(), isHtml("<h2>Constructor</h2>"));
+
+    Element signature = querySelector(document, "div.ctor > span.member");
+    assertThat(signature.toString(), isHtml(
+        "<span class=\"member\">foo.Bar <span class=\"args\">( a, b )</span></span>"));
   }
 
   @Test
