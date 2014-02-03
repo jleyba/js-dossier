@@ -267,6 +267,10 @@ public class Descriptor {
     return (info != null && info.isDefine());
   }
 
+  boolean isTypedef() {
+    return (info != null && info.isTypedef());
+  }
+
   boolean isModuleExports() {
     return module.isPresent() && module.get().getDescriptor() == this;
   }

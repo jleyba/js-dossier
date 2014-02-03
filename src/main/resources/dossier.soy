@@ -785,6 +785,7 @@
  *     list. Each object should have the following structure:
  *     {name: string, isTypedef: boolean, isInterface: boolean, href: string}
  * @param basePath The base path for each link.
+ * @param? includeSubTypes Whether to include links to any subtypes.
  */
 {template .navlist}
   {if length($types)}
@@ -798,6 +799,13 @@
             {$type.name}
           {/if}
           </a>
+        {/if}
+        {if $includeSubTypes and $type.types and length($type.types)}
+          {call .navlist}
+            {param types: $type.types /}
+            {param basePath: $basePath /}
+            {param includeSubTypes: $includeSubTypes /}
+          {/call}
         {/if}
       {/foreach}
     </ul>
@@ -830,35 +838,6 @@
     <li class="link"><a href="{$basePath}{$file.href}">{$file.name}</a>
   {/if}
   {if not $parent}</ul>{/if}
-{/template}
-
-
-/**
- * @param ns A dossier.Namespace_ object.
- * @param basePath The base path for any links.
- */
-{template .namespaceNavlist}
-  {if $ns.name}
-    <li {if $ns.href}class="link"{/if}>
-    {if $ns.href}<a href="{$basePath}{$ns.href}">{/if}
-    {if $ns.isInterface}
-      <i>{$ns.name}</i>
-    {else}
-      {$ns.name}
-    {/if}
-    {if $ns.href}</a>{/if}
-  {/if}
-
-  {if length($ns.children)}
-    <ul>
-    {foreach $child in $ns.children}
-      {call .namespaceNavlist}
-        {param ns: $child /}
-        {param basePath: $basePath /}
-      {/call}
-    {/foreach}
-    </ul>
-  {/if}
 {/template}
 
 

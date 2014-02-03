@@ -35,6 +35,7 @@ import static com.github.jleyba.dossier.proto.Dossier.TypeLink;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.base.Strings.nullToEmpty;
+import static com.google.common.collect.Iterables.concat;
 import static com.google.common.collect.Iterables.transform;
 
 import com.github.jleyba.dossier.proto.Dossier;
@@ -101,7 +102,7 @@ class HtmlDocWriter implements DocWriter {
   public void generateDocs(final JSTypeRegistry registry) throws IOException {
     sortedTypes = FluentIterable.from(docRegistry.getTypes())
         .toSortedList(DescriptorNameComparator.INSTANCE);
-    sortedFiles = FluentIterable.from(Iterables.concat(config.getSources(), config.getModules()))
+    sortedFiles = FluentIterable.from(concat(config.getSources(), config.getModules()))
         .toSortedList(PathComparator.INSTANCE);
     sortedModules = FluentIterable.from(docRegistry.getModules())
         .toSortedList(new ModueDisplayPathComparator());
@@ -167,7 +168,7 @@ class HtmlDocWriter implements DocWriter {
     // Always generate documentation for both the internal and external typedefs since
     // they're most likely used in other jsdoc type annotations.
     // TODO: handle this in a cleaner way.
-    Iterable<? extends JsType.TypeDef> typeDefs = Iterables.concat(
+    Iterable<? extends JsType.TypeDef> typeDefs = concat(
         getTypeDefInfo(module.getExportedProperties()),
         getTypeDefInfo(module.getInternalTypeDefs()));
 
@@ -284,6 +285,9 @@ class HtmlDocWriter implements DocWriter {
         String dest = config.getOutput().relativize(linker.getFilePath(module)).toString();
         modules.put(new JSONObject()
             .put("name", linker.getDisplayName(module))
+            .put("types", getTypeInfo(concat(
+                module.getExportedProperties(),
+                module.getInternalTypeDefs())))
             .put("href", dest));
       }
 
@@ -311,15 +315,17 @@ class HtmlDocWriter implements DocWriter {
         continue;
       }
 
-      String dest = config.getOutput().relativize(linker.getFilePath(descriptor)).toString();
+      Descriptor resolvedType = resolveTypeAlias(descriptor);
+      String dest = config.getOutput().relativize(linker.getFilePath(resolvedType)).toString();
       array.put(new JSONObject()
           .put("name", descriptor.getFullName())
           .put("href", dest)
-          .put("isInterface", descriptor.isInterface()));
+          .put("isInterface", descriptor.isInterface())
+          .put("isTypedef", descriptor.isTypedef()));
 
       // Also include typedefs. These will not be included in the main
       // index, but will be searchable.
-      List<Descriptor> typedefs = FluentIterable.from(descriptor.getProperties())
+      List<Descriptor> typedefs = FluentIterable.from(resolvedType.getProperties())
           .filter(isTypedef())
           .toSortedList(DescriptorNameComparator.INSTANCE);
       for (Descriptor typedef : typedefs) {
@@ -345,7 +351,7 @@ class HtmlDocWriter implements DocWriter {
   }
 
   private void copySourceFiles() throws IOException {
-    for (Path source : Iterables.concat(config.getSources(), config.getModules())) {
+    for (Path source : concat(config.getSources(), config.getModules())) {
       Path displayPath = config.getSrcPrefix().relativize(source);
       Path renderPath = linker.getFilePath(source);
 
@@ -654,7 +660,7 @@ class HtmlDocWriter implements DocWriter {
         ? property.getFullName()
         : property.getSimpleName();
 
-    if (currentModule != null && currentModule.getDescriptor() == property) {
+    if (property.isModuleExports()) {
       name = linker.getDisplayName(currentModule);
       int index = name.lastIndexOf("/");
       if (index != -1) {
@@ -806,7 +812,7 @@ class HtmlDocWriter implements DocWriter {
     return new Predicate<Descriptor>() {
       @Override
       public boolean apply(Descriptor input) {
-        return input.getJsDoc() != null && input.getJsDoc().isTypedef();
+        return input.isTypedef();
       }
     };
   }

@@ -37,9 +37,11 @@ goog.require('goog.ui.ac.AutoComplete.EventType');
 
 
 /**
- * @typedef {({name: string, href: string, isInterface: boolean}|
- *            {name: string, href: string, isTypedef: boolean}|
- *            {name: string, href: string})}
+ * @typedef {{name: string,
+ *            href: string,
+ *            isInterface: boolean,
+ *            isTypedef: boolean,
+ *            types: Array.<dossier.Descriptor_>}}
  * @private
  */
 dossier.Descriptor_;
@@ -109,6 +111,18 @@ dossier.initSearchBox_ = function(typeInfo) {
         return descriptor['name'];
       }));
 
+  goog.array.forEach(typeInfo['modules'], function(module) {
+    nameToHref[module['name']] = module['href'];
+    allTerms = goog.array.concat(
+        allTerms,
+        module['name'],
+        goog.array.map(module['types'] || [], function(type) {
+          var displayName = module['name'] + '.' + type['name'];
+          nameToHref[displayName] = type['href'];
+          return displayName;
+        }));
+  });
+
   var searchForm = goog.dom.getElement('searchbox');
   goog.events.listen(searchForm, goog.events.EventType.SUBMIT, function(e) {
     e.preventDefault();
@@ -145,8 +159,8 @@ dossier.initIndex_ = function(typeInfo) {
   }
 
   dossier.createFileNavList_('file-index', typeInfo['files']);
-  dossier.createNamespaceNavList_('type-index', typeInfo['types']);
-  dossier.createNamespaceNavList_('module-index', typeInfo['modules']);
+  dossier.createNavList_('type-index', typeInfo['types']);
+  dossier.createNavList_('module-index', typeInfo['modules'], true);
 };
 
 
@@ -211,76 +225,6 @@ dossier.initNavList_ = function(typeInfo) {
       goog.style.setHeight(listEl, controlEl.checked ? expandedHeight : 0);
       dossier.storeCheckedState_(storageKey, controlEl);
     });
-  }
-};
-
-
-/**
- * Abstract representation of a documented namespace like object.
- * @param {string} name The namespace name.
- * @param {string=} opt_href The namespace href.
- * @constructor
- * @private
- */
-dossier.Namespace_ = function(name, opt_href) {
-  /** @type {string} */
-  this.name = name;
-
-  /** @type {string} */
-  this.href = opt_href || '';
-
-  /** @type {!Array.<!dossier.Namespace_>} */
-  this.children = [];
-
-  /** @type {boolean} */
-  this.isInterface = false;
-};
-
-
-/**
- * @param {!Array.<dossier.Descriptor_>} descriptors The descriptors to
- *     build a tree structure from.
- * @return {dossier.Namespace_} The root namespace.
- * @private
- */
-dossier.Namespace_.fromRawTypeInfo = function(descriptors) {
-  var root = new dossier.Namespace_('');
-  goog.array.forEach(descriptors, function(descriptor) {
-    var parts = descriptor['name'].split('.');
-    var current = root;
-    goog.array.forEach(parts, function(part, index) {
-      if (!part) return;
-
-      var next = goog.array.find(current.children, function(ns) {
-        return ns.name === part;
-      });
-
-      if (!next) {
-        next = new dossier.Namespace_(part);
-        current.children.push(next);
-      }
-      current = next;
-
-      if (index === parts.length - 1) {
-        current.href = descriptor['href'];
-        current.isInterface = descriptor['isInterface'];
-      }
-    });
-  });
-
-  collapse(root);
-  return root;
-
-  function collapse(namespace) {
-    goog.array.forEach(namespace.children, collapse);
-    if (!namespace.href && namespace.children.length === 1) {
-      var name = namespace.name ? namespace.name + '.' : '';
-      var firstChild = namespace.children[0];
-      namespace.name = name + firstChild.name;
-      namespace.href = firstChild.href;
-      namespace.children = firstChild.children;
-      namespace.isInterface = firstChild.isInterface;
-    }
   }
 };
 
@@ -358,35 +302,6 @@ dossier.buildFileTree_ = function(files) {
 
 
 /**
- * Builds a heirarchical list of namespace links.
- * @param {string} id ID for the section to attach the created list to.
- * @param {!Array.<dossier.Descriptor_>} namespaces The descriptors to build
- *     links for.
- * @return {!Element} The configured list display element.
- * @private
- */
-dossier.createNamespaceNavList_ = function(id, namespaces) {
-  var container = goog.dom.getElement(id);
-  var noDataPlaceholder = /** @type {!Element} */ (
-      container.querySelector('i'));
-
-  if (!namespaces.length) {
-    return noDataPlaceholder;
-  }
-
-  var rootNamespace = dossier.Namespace_.fromRawTypeInfo(namespaces);
-  var rootEl = /** @type {!HTMLUListElement} */(
-      goog.soy.renderAsFragment(dossier.soy.namespaceNavlist, {
-        ns: rootNamespace,
-        basePath: dossier.BASE_PATH_
-      }));
-  goog.dom.removeNode(noDataPlaceholder);
-  goog.dom.appendChild(container, rootEl);
-  return rootEl;
-};
-
-
-/**
  * Builds a heirarchical list of file links.
  * @param {string} id ID for the section to attach the created list to.
  * @param {!Array.<dossier.Descriptor_>} files The descriptors to build
@@ -419,17 +334,19 @@ dossier.createFileNavList_ = function(id, files) {
  * @param {string} id ID for the section to attach the created list to.
  * @param {!Array.<dossier.Descriptor_>} descriptors The descriptors to build
  *     links for.
+ * @param {boolean=} opt_includeSubTypes Whether to include links to subtypes.
  * @return {!Element} The configured nav list display element.
  * @private
  */
-dossier.createNavList_ = function(id, descriptors) {
+dossier.createNavList_ = function(id, descriptors, opt_includeSubTypes) {
   var container = goog.dom.getElement(id);
   var noDataPlaceholder =
       /** @type {!Element} */ (container.querySelector('i'));
 
   var list = goog.soy.renderAsFragment(dossier.soy.navlist, {
     types: descriptors,
-    basePath: dossier.BASE_PATH_
+    basePath: dossier.BASE_PATH_,
+    includeSubTypes: !!opt_includeSubTypes
   });
 
   if (list && list.childNodes.length) {
