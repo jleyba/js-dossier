@@ -13,6 +13,7 @@
 // limitations under the License.
 package com.github.jleyba.dossier;
 
+import static com.google.common.base.Objects.firstNonNull;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.collect.FluentIterable.from;
 import static com.google.common.collect.Iterables.transform;
@@ -249,7 +250,7 @@ class Config {
     // Always display at least one parent directory, if possible.
     for (Path module : modules) {
       if (path.equals(module.getParent())) {
-        return Objects.firstNonNull(path.getParent(), path);
+        return firstNonNull(path.getParent(), path);
       }
     }
 
@@ -301,7 +302,7 @@ class Config {
         System.err);
   }
 
-  private static Iterable<Path> resolve(Iterable<PathSpec> specs) {
+  private static ImmutableSet<Path> resolve(Iterable<PathSpec> specs) {
     Iterable<List<Path>> paths = from(specs)
         .transform(new Function<PathSpec, List<Path>>() {
           @Override
@@ -313,7 +314,7 @@ class Config {
             }
           }
         });
-    return Iterables.concat(paths);
+    return ImmutableSet.copyOf(Iterables.concat(paths));
   }
 
   private static ImmutableSet<Path> processClosureSources(
@@ -440,7 +441,7 @@ class Config {
         return ImmutableList.of(path);
       }
 
-      return collectFiles(baseDir, spec);
+      return collectFiles(firstNonNull(path.getParent(), baseDir), path.getFileName().toString());
     }
 
     List<Path> collectFiles(final Path baseDir, String glob) throws IOException {

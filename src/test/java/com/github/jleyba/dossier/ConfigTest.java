@@ -37,12 +37,19 @@ public class ConfigTest {
     Path quux = baseDir.resolve("a/b/c/quux.js");
     Path quot = baseDir.resolve("a/b/c/quot.js");
 
+    Path otherDir = temporaryFolder.newFolder().toPath();
+    Path otherFooTest = otherDir.resolve("a/b/foo_test.js");
+    Path otherBarTest = otherDir.resolve("a/bar_test.js");
+
     Files.createDirectories(quux.getParent());
+    Files.createDirectories(otherFooTest.getParent());
     Files.createFile(foo);
     Files.createFile(bar);
     Files.createFile(baz);
     Files.createFile(quux);
     Files.createFile(quot);
+    Files.createFile(otherFooTest);
+    Files.createFile(otherBarTest);
 
     assertContentsAnyOrder(getPaths(baseDir, ""), foo, bar, baz, quux, quot);
     assertContentsAnyOrder(getPaths(baseDir, "foo.js"), foo);
@@ -55,6 +62,10 @@ public class ConfigTest {
     assertContentsAnyOrder(getPaths(baseDir, "a/b/c/*.js"), quux, quot);
     assertContentsAnyOrder(getPaths(baseDir, "**.js"), foo, bar, baz, quux, quot);
     assertContentsAnyOrder(getPaths(baseDir, "a/**.js"), bar, baz, quux, quot);
+
+    assertContentsAnyOrder(getPaths(baseDir, otherDir + "/a/*.js"), otherBarTest);
+    assertContentsAnyOrder(getPaths(baseDir, otherDir + "/a/**_test.js"),
+        otherBarTest, otherFooTest);
   }
 
   @SafeVarargs
