@@ -112,7 +112,7 @@ class CommentUtil {
           line = line.substring(index);
         }
 
-      } else if (i == lineList.size() - 1) {
+      } else if (i == lineList.size() - 1 && position.getPositionOnEndLine() < line.length()) {
         int index = position.getPositionOnEndLine();
         line = line.substring(index);
 
