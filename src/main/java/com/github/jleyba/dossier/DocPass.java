@@ -277,6 +277,15 @@ class DocPass  implements CompilerPass {
       return true;
     }
 
+    // Skip recursive type references (encountered when processing singletons):
+    //     /** @constructor */
+    //     function Foo() {};
+    //     /** @type {Foo} */
+    //     Foo.instance_ = null;
+    if (object.isConstructor() && object.getTypeOfThis() == propType) {
+      return true;
+    }
+
     // Sometimes the JSCompiler picks up the builtin call and apply functions off of a
     // function object.  We should always skip these.
     if (object.isFunctionType() && propType.isFunctionType()
