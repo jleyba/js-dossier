@@ -439,28 +439,32 @@ class HtmlDocWriter implements DocWriter {
         .setTypeHtml(formatTypeExpression(jsdoc.getType(), linker))
         .setVisibility(Dossier.Visibility.valueOf(descriptor.getVisibility().name()));
 
-    ObjectType object = descriptor.toObjectType();
-    for (String name : object.getOwnPropertyNames()) {
-      JSType type = object.getPropertyType(name);
-      if (type.isEnumElementType()) {
-        Node node = object.getPropertyNode(name);
-        JSDocInfo valueInfo = node == null ? null : node.getJSDocInfo();
+    // Type may be documented as an enum without an associated object literal for us to analyze:
+    //     /** @enum {string} */ namespace.foo;
+    if (descriptor.isObject()) {
+      ObjectType object = descriptor.toObjectType();
+      for (String name : object.getOwnPropertyNames()) {
+        JSType type = object.getPropertyType(name);
+        if (type.isEnumElementType()) {
+          Node node = object.getPropertyNode(name);
+          JSDocInfo valueInfo = node == null ? null : node.getJSDocInfo();
 
-        Enumeration.Value.Builder valueBuilder = Enumeration.Value.newBuilder()
-            .setName(name);
+          Enumeration.Value.Builder valueBuilder = Enumeration.Value.newBuilder()
+              .setName(name);
 
-        if (valueInfo != null) {
-          JsDoc valueJsDoc = new JsDoc(valueInfo);
-          valueBuilder.setDescription(parseComment(valueJsDoc.getBlockComment(), linker));
+          if (valueInfo != null) {
+            JsDoc valueJsDoc = new JsDoc(valueInfo);
+            valueBuilder.setDescription(parseComment(valueJsDoc.getBlockComment(), linker));
 
-          if (valueJsDoc.isDeprecated()) {
-            valueBuilder.setDeprecation(Deprecation.newBuilder()
-                .setNotice(parseComment(valueJsDoc.getDeprecationReason(), linker))
-                .build());
+            if (valueJsDoc.isDeprecated()) {
+              valueBuilder.setDeprecation(Deprecation.newBuilder()
+                  .setNotice(parseComment(valueJsDoc.getDeprecationReason(), linker))
+                  .build());
+            }
           }
-        }
 
-        enumBuilder.addValue(valueBuilder);
+          enumBuilder.addValue(valueBuilder);
+        }
       }
     }
 

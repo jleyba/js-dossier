@@ -10,9 +10,11 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.javascript.rhino.JSDocInfo;
+import com.google.javascript.rhino.JSDocInfo.Marker;
 import com.google.javascript.rhino.JSTypeExpression;
 import com.google.javascript.rhino.Node;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -179,7 +181,7 @@ class JsDoc {
     Iterable<String> lines = Splitter.on(EOL_PATTERN).split(original);
     int firstAnnotation = findFirstAnnotationLine(lines);
     int annotationOffset = 0;
-    if (firstAnnotation != -1) {
+    if (firstAnnotation != -1 && !info.getMarkers().isEmpty()) {
       blockComment = processBlockCommentLines(
           Iterables.limit(lines, firstAnnotation)
       );
