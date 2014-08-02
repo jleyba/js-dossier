@@ -20,6 +20,7 @@ import static com.google.common.base.Preconditions.checkState;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
 import com.google.javascript.rhino.JSDocInfo;
@@ -31,14 +32,13 @@ import com.google.javascript.rhino.jstype.JSTypeRegistry;
 import com.google.javascript.rhino.jstype.ObjectType;
 import com.google.javascript.rhino.jstype.UnionType;
 
+import javax.annotation.Nullable;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-
-import javax.annotation.Nullable;
 
 public class Descriptor {
 
@@ -48,9 +48,9 @@ public class Descriptor {
   @Nullable private final JsDoc info;
   private final Optional<Descriptor> parent;
 
-  private List<ArgDescriptor> args;
-  private List<Descriptor> properties;
-  private Set<Descriptor> instanceProperties;
+  private ImmutableList<ArgDescriptor> args;
+  private ImmutableList<Descriptor> properties;
+  private ImmutableSet<Descriptor> instanceProperties;
 
   private Optional<ModuleDescriptor> module = Optional.absent();
 
@@ -382,7 +382,7 @@ public class Descriptor {
       // If we don't have access to the function node, assume the JSDocInfo has the correct info.
       args = info != null ? info.getParameters() : ImmutableList.<ArgDescriptor>of();
     } else {
-      args = getArgs(source, info);
+      args = ImmutableList.copyOf(getArgs(source, info));
     }
 
     return args;
@@ -418,16 +418,16 @@ public class Descriptor {
   /**
    * Returns the list of (static) properties defined on this type.
    */
-  List<Descriptor> getProperties() {
+  ImmutableList<Descriptor> getProperties() {
     if (null != properties) {
       return properties;
     }
 
-    properties = new LinkedList<>();
     if (!isObject()) {
-      return properties;
+      return this.properties = ImmutableList.of();
     }
 
+    List<Descriptor> properties = new LinkedList<>();
     ObjectType obj = toObjectType();
     if (isConstructor() && obj.getConstructor() != null) {
       obj = obj.getConstructor();
@@ -454,16 +454,18 @@ public class Descriptor {
       properties.add(property);
     }
 
-    return properties;
+    this.properties = ImmutableList.copyOf(properties);
+    return this.properties;
   }
 
   /**
    * Returns the instance properties defined on this type.
    */
-  Set<Descriptor> getInstanceProperties() {
+  ImmutableSet<Descriptor> getInstanceProperties() {
     if (null == instanceProperties) {
-      instanceProperties = new HashSet<>();
+      ImmutableSet.Builder<Descriptor> properties = ImmutableSet.builder();
       if (!isConstructor() && !isInterface()) {
+        instanceProperties = properties.build();
         return instanceProperties;
       }
 
@@ -473,10 +475,12 @@ public class Descriptor {
       }
 
       ObjectType instance = ((FunctionType) obj).getInstanceType();
-      instanceProperties.addAll(getInstanceProperties(this, instance));
+      properties.addAll(getInstanceProperties(this, instance));
 
       ObjectType proto = ((FunctionType) obj).getPrototype();
-      instanceProperties.addAll(getInstanceProperties(this, proto));
+      properties.addAll(getInstanceProperties(this, proto));
+
+      instanceProperties = properties.build();
     }
     return instanceProperties;
   }
@@ -513,9 +517,12 @@ public class Descriptor {
     if (isConstructor() && obj.getConstructor() != null) {
       obj = obj.getConstructor();
     }
-    FunctionType ctor = (FunctionType) obj;
-    return ctor.getInstanceType().hasOwnProperty(name)
-        || ctor.getPrototype().hasOwnProperty(name);
+    if (obj instanceof FunctionType) {
+      FunctionType ctor = (FunctionType) obj;
+      return ctor.getInstanceType().hasOwnProperty(name)
+          || ctor.getPrototype().hasOwnProperty(name);
+    }
+    return false;
   }
 
   private static Set<JSType> getExtendedInterfaces(JsDoc info, JSTypeRegistry registry) {
