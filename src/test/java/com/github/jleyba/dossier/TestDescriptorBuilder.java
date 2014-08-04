@@ -7,6 +7,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.javascript.jscomp.DossierModule;
 import com.google.javascript.jscomp.Scope;
@@ -101,8 +102,8 @@ class TestDescriptorBuilder {
 
   Descriptor build() {
     Descriptor d = Mockito.spy(new Descriptor(name, SRC_NODE, JS_TYPE, JS_DOC));
-    doReturn(staticProperties).when(d).getProperties();
-    doReturn(instanceProperties).when(d).getInstanceProperties();
+    doReturn(ImmutableList.copyOf(staticProperties)).when(d).getProperties();
+    doReturn(ImmutableSet.copyOf(instanceProperties)).when(d).getInstanceProperties();
     doReturn(source).when(d).getSource();
     doReturn(lineNum).when(d).getLineNum();
     doReturn(jsDoc.orNull()).when(d).getJsDoc();
