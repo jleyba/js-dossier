@@ -340,7 +340,7 @@ dossier.createFileNavList_ = function(id, files) {
  */
 dossier.createNavList_ = function(id, descriptors, opt_includeSubTypes) {
   var container = goog.dom.getElement(id);
-  var noDataPlaceholder =
+  var placeHolder =
       /** @type {!Element} */ (container.querySelector('i'));
 
   var list = goog.soy.renderAsFragment(dossier.soy.navlist, {
@@ -350,11 +350,12 @@ dossier.createNavList_ = function(id, descriptors, opt_includeSubTypes) {
   });
 
   if (list && list.childNodes.length) {
-    goog.dom.removeNode(noDataPlaceholder);
+    goog.dom.removeNode(placeHolder);
     goog.dom.appendChild(container, list);
     return /** @type {!Element} */(list);
   } else {
-    return noDataPlaceholder;
+    goog.style.setElementShown(container, false);
+    return placeHolder;
   }
 };
 

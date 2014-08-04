@@ -55,7 +55,7 @@ dossier.soy.sideNavToggle = function(opt_data, opt_ignored) {
  */
 dossier.soy.sideNav = function(opt_data, opt_ignored) {
   opt_data = opt_data || {};
-  return '<nav id="sidenav"><input type="checkbox" id="sidenav-types-ctrl" /><input type="checkbox" id="sidenav-files-ctrl" /><input type="checkbox" id="sidenav-modules-ctrl" /><a id="sidenav-overview"><div><h4>Overview</h4></div></a><div id="sidenav-types"><label for="sidenav-types-ctrl"><h4>Types</h4></label><i>No data</i></div><div id="sidenav-modules"><label for="sidenav-modules-ctrl"><h4>Modules</h4></label><i>No data</i></div><div id="sidenav-files"><label for="sidenav-files-ctrl"><h4>Files</h4></label><i>No data</i></div>' + ((opt_data.hasLicense) ? '<a href="license.html"><div><h4>License</h4></div></a>' : '') + '</nav>';
+  return '<nav id="sidenav"><input type="checkbox" id="sidenav-types-ctrl" /><input type="checkbox" id="sidenav-files-ctrl" /><input type="checkbox" id="sidenav-modules-ctrl" /><a id="sidenav-overview"><div><h4>Overview</h4></div></a><div id="sidenav-types"><label for="sidenav-types-ctrl"><h4>Types</h4></label><i>Loading</i></div><div id="sidenav-modules"><label for="sidenav-modules-ctrl"><h4>Modules</h4></label><i>Loading</i></div><div id="sidenav-files"><label for="sidenav-files-ctrl"><h4>Files</h4></label><i>Loading</i></div>' + ((opt_data.hasLicense) ? '<a href="license.html"><div><h4>License</h4></div></a>' : '') + '</nav>';
 };
 
 
@@ -565,7 +565,7 @@ dossier.soy.typefile = function(opt_data, opt_ignored) {
  * @notypecheck
  */
 dossier.soy.indexFile = function(opt_data, opt_ignored) {
-  return dossier.soy.pageHeader({title: 'Index', resources: opt_data.spec.resources}) + '<div id="main-wrapper"><main>' + ((opt_data.spec.readme && opt_data.spec.readme.token.length) ? dossier.soy.comment({comment: opt_data.spec.readme}) : '<section id="type-index"><h2>Namespaces / Types</h2><i>No data</i></section><section id="module-index"><h2>Modules</h2><i>No data</i></section><section id="file-index"><h2>Files</h2><i>No data</i></section>') + '</main>' + dossier.soy.topNav(null) + dossier.soy.sideNav({hasLicense: opt_data.spec.hasLicense}) + '<div id="push-footer"></div></div>' + dossier.soy.footer({scripts: opt_data.spec.resources.script});
+  return dossier.soy.pageHeader({title: 'Index', resources: opt_data.spec.resources}) + '<div id="main-wrapper"><main>' + ((opt_data.spec.readme && opt_data.spec.readme.token.length) ? dossier.soy.comment({comment: opt_data.spec.readme}) : '<section id="type-index"><h2>Namespaces / Types</h2><i>Loading</i></section><section id="module-index"><h2>Modules</h2><i>Loading</i></section><section id="file-index"><h2>Files</h2><i>Loading</i></section>') + '</main>' + dossier.soy.topNav(null) + dossier.soy.sideNav({hasLicense: opt_data.spec.hasLicense}) + '<div id="push-footer"></div></div>' + dossier.soy.footer({scripts: opt_data.spec.resources.script});
 };
 
 
