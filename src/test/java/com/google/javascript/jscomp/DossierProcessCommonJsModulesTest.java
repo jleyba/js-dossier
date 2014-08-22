@@ -872,6 +872,16 @@ public class DossierProcessCommonJsModulesTest {
     assertSame(exportsType, internalFooType);
   }
 
+  @Test
+  public void doesNotNpeOnScriptThatAccessesPropertyOfReturnValue() {
+    CompilerUtil util = createCompiler(path("foo/bar.js"));
+
+    util.compile(path("foo/bar.js"),
+        "function createCallback() {",
+        " return function(y) { this.doIt().x = y; };",
+        "}");
+  }
+
   private static CompilerUtil createCompiler(final Path... commonJsModules) {
     CompilerOptions options = new CompilerOptions();
     options.setCodingConvention(new ClosureCodingConvention());

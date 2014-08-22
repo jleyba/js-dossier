@@ -2,6 +2,7 @@ package com.google.javascript.jscomp;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.base.Strings.nullToEmpty;
 
 import com.google.common.base.Splitter;
 import com.google.common.collect.Iterables;
@@ -511,8 +512,8 @@ class DossierProcessCommonJsModules implements CompilerPass {
         return;
       }
 
-      String lhs = n.getFirstChild().getQualifiedName();
-      String rhs = n.getLastChild().getQualifiedName();
+      String lhs = nullToEmpty(n.getFirstChild().getQualifiedName());
+      String rhs = nullToEmpty(n.getLastChild().getQualifiedName());
       if (lhs.startsWith(currentModule.getVarName() + ".exports")) {
         exportedNames.put(lhs, rhs);
       }
