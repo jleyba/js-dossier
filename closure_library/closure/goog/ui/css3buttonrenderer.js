@@ -30,6 +30,7 @@
 
 goog.provide('goog.ui.Css3ButtonRenderer');
 
+goog.require('goog.asserts');
 goog.require('goog.dom.TagName');
 goog.require('goog.dom.classlist');
 goog.require('goog.ui.Button');
@@ -47,6 +48,7 @@ goog.require('goog.ui.registry');
  *
  * @constructor
  * @extends {goog.ui.ButtonRenderer}
+ * @final
  */
 goog.ui.Css3ButtonRenderer = function() {
   goog.ui.ButtonRenderer.call(this);
@@ -84,7 +86,7 @@ goog.ui.Css3ButtonRenderer.prototype.getContentElement = function(element) {
  *    </div>
  * Overrides {@link goog.ui.ButtonRenderer#createDom}.
  * @param {goog.ui.Control} control goog.ui.Button to render.
- * @return {Element} Root element for the button.
+ * @return {!Element} Root element for the button.
  * @override
  */
 goog.ui.Css3ButtonRenderer.prototype.createDom = function(control) {
@@ -113,8 +115,9 @@ goog.ui.Css3ButtonRenderer.prototype.canDecorate = function(element) {
 
 /** @override */
 goog.ui.Css3ButtonRenderer.prototype.decorate = function(button, element) {
-  goog.dom.classlist.addAll(element, [goog.ui.INLINE_BLOCK_CLASSNAME,
-      this.getCssClass()]);
+  goog.asserts.assert(element);
+  goog.dom.classlist.addAll(element,
+      [goog.ui.INLINE_BLOCK_CLASSNAME, this.getCssClass()]);
   return goog.ui.Css3ButtonRenderer.superClass_.decorate.call(this, button,
       element);
 };

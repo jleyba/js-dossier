@@ -18,11 +18,20 @@
 
 goog.provide('goog.labs.userAgent.utilTest');
 
+goog.require('goog.functions');
 goog.require('goog.labs.userAgent.testAgents');
 goog.require('goog.labs.userAgent.util');
+goog.require('goog.testing.PropertyReplacer');
 goog.require('goog.testing.jsunit');
 
 goog.setTestOnly('goog.labs.userAgent.utilTest');
+
+
+var stubs = new goog.testing.PropertyReplacer();
+
+function tearDown() {
+  stubs.reset();
+}
 
 
 /**
@@ -64,5 +73,33 @@ function testSetUserAgent() {
   goog.labs.userAgent.util.setUserAgent(ua);
   assertEquals(ua, goog.labs.userAgent.util.getUserAgent());
   assertTrue(goog.labs.userAgent.util.matchUserAgent('Punch'));
+  assertFalse(goog.labs.userAgent.util.matchUserAgent('punch'));
   assertFalse(goog.labs.userAgent.util.matchUserAgent('Mozilla'));
+}
+
+function testSetUserAgentIgnoreCase() {
+  var ua = 'Five Finger Death Punch';
+  goog.labs.userAgent.util.setUserAgent(ua);
+  assertEquals(ua, goog.labs.userAgent.util.getUserAgent());
+  assertTrue(goog.labs.userAgent.util.matchUserAgentIgnoreCase('Punch'));
+  assertTrue(goog.labs.userAgent.util.matchUserAgentIgnoreCase('punch'));
+  assertFalse(goog.labs.userAgent.util.matchUserAgentIgnoreCase('Mozilla'));
+}
+
+function testNoNavigator() {
+  stubs.set(goog.labs.userAgent.util, 'getNavigator_',
+            goog.functions.constant(undefined));
+  assertEquals('', goog.labs.userAgent.util.getNativeUserAgentString_());
+}
+
+function testNavigatorWithNoUserAgent() {
+  stubs.set(goog.labs.userAgent.util, 'getNavigator_',
+            goog.functions.constant(undefined));
+  assertEquals('', goog.labs.userAgent.util.getNativeUserAgentString_());
+}
+
+function testNavigatorWithUserAgent() {
+  stubs.set(goog.labs.userAgent.util, 'getNavigator_',
+            goog.functions.constant({'userAgent': 'moose'}));
+  assertEquals('moose', goog.labs.userAgent.util.getNativeUserAgentString_());
 }

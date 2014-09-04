@@ -16,7 +16,7 @@
  * @fileoverview Provides a utility for tracing and debugging WebChannel
  *     requests.
  *
- * @visibility {//visibility:private}
+ * @visibility {:internal}
  */
 
 
@@ -32,6 +32,7 @@ goog.require('goog.log');
  *
  * @constructor
  * @struct
+ * @final
  */
 goog.labs.net.webChannel.WebChannelDebug = function() {
   /**

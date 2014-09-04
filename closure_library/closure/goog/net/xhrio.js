@@ -58,6 +58,8 @@ goog.require('goog.structs.Map');
 goog.require('goog.uri.utils');
 goog.require('goog.userAgent');
 
+goog.forwardDeclare('goog.Uri');
+
 
 
 /**
@@ -68,7 +70,7 @@ goog.require('goog.userAgent');
  * @extends {goog.events.EventTarget}
  */
 goog.net.XhrIo = function(opt_xmlHttpFactory) {
-  goog.base(this);
+  goog.net.XhrIo.base(this, 'constructor');
 
   /**
    * Map of default headers to add to every request, use:
@@ -93,7 +95,7 @@ goog.net.XhrIo = function(opt_xmlHttpFactory) {
 
   /**
    * The XMLHttpRequest object that is being used for the transfer.
-   * @private {XMLHttpRequest|GearsHttpRequest}
+   * @private {?goog.net.XhrLike.OrNative}
    */
   this.xhr_ = null;
 
@@ -290,14 +292,15 @@ goog.net.XhrIo.sendInstances_ = [];
  * @param {Function=} opt_callback Callback function for when request is
  *     complete.
  * @param {string=} opt_method Send method, default: GET.
- * @param {ArrayBuffer|Blob|Document|FormData|GearsBlob|string=} opt_content
- *     Body data.
+ * @param {ArrayBuffer|ArrayBufferView|Blob|Document|FormData|string=}
+ *     opt_content Body data.
  * @param {Object|goog.structs.Map=} opt_headers Map of headers to add to the
  *     request.
  * @param {number=} opt_timeoutInterval Number of milliseconds after which an
  *     incomplete request will be aborted; 0 means no timeout is set.
  * @param {boolean=} opt_withCredentials Whether to send credentials with the
  *     request. Default to false. See {@link goog.net.XhrIo#setWithCredentials}.
+ * @return {!goog.net.XhrIo} The sent XhrIo.
  */
 goog.net.XhrIo.send = function(url, opt_callback, opt_method, opt_content,
                                opt_headers, opt_timeoutInterval,
@@ -315,6 +318,7 @@ goog.net.XhrIo.send = function(url, opt_callback, opt_method, opt_content,
     x.setWithCredentials(opt_withCredentials);
   }
   x.send(url, opt_method, opt_content, opt_headers);
+  return x;
 };
 
 
@@ -441,8 +445,8 @@ goog.net.XhrIo.prototype.getWithCredentials = function() {
  * Instance send that actually uses XMLHttpRequest to make a server call.
  * @param {string|goog.Uri} url Uri to make request to.
  * @param {string=} opt_method Send method, default: GET.
- * @param {ArrayBuffer|Blob|Document|FormData|GearsBlob|string=} opt_content
- *     Body data.
+ * @param {ArrayBuffer|ArrayBufferView|Blob|Document|FormData|string=}
+ *     opt_content Body data.
  * @param {Object|goog.structs.Map=} opt_headers Map of headers to add to the
  *     request.
  */
@@ -478,7 +482,7 @@ goog.net.XhrIo.prototype.send = function(url, opt_method, opt_content,
   try {
     goog.log.fine(this.logger_, this.formatMsg_('Opening Xhr'));
     this.inOpen_ = true;
-    this.xhr_.open(method, url, true);  // Always async!
+    this.xhr_.open(method, String(url), true);  // Always async!
     this.inOpen_ = false;
   } catch (err) {
     goog.log.fine(this.logger_,
@@ -520,7 +524,7 @@ goog.net.XhrIo.prototype.send = function(url, opt_method, opt_content,
   }
 
   // Add the headers to the Xhr object
-  goog.structs.forEach(headers, function(value, key) {
+  headers.forEach(function(value, key) {
     this.xhr_.setRequestHeader(key, value);
   }, this);
 
@@ -575,7 +579,7 @@ goog.net.XhrIo.prototype.send = function(url, opt_method, opt_content,
  * @see http://www.w3.org/TR/XMLHttpRequest/#the-timeout-attribute
  * @see https://bugzilla.mozilla.org/show_bug.cgi?id=525816
  *
- * @param {!XMLHttpRequest|!GearsHttpRequest} xhr The request.
+ * @param {!goog.net.XhrLike.OrNative} xhr The request.
  * @return {boolean} True if the request supports level 2 timeout.
  * @private
  */
@@ -601,7 +605,7 @@ goog.net.XhrIo.isContentTypeHeader_ = function(header) {
 
 /**
  * Creates a new XHR object.
- * @return {XMLHttpRequest|GearsHttpRequest} The newly created XHR object.
+ * @return {!goog.net.XhrLike.OrNative} The newly created XHR object.
  * @protected
  */
 goog.net.XhrIo.prototype.createXhr = function() {
@@ -706,7 +710,7 @@ goog.net.XhrIo.prototype.disposeInternal = function() {
     this.cleanUpXhr_(true);
   }
 
-  goog.base(this, 'disposeInternal');
+  goog.net.XhrIo.base(this, 'disposeInternal');
 };
 
 
@@ -926,7 +930,7 @@ goog.net.XhrIo.prototype.getReadyState = function() {
 goog.net.XhrIo.prototype.getStatus = function() {
   /**
    * IE doesn't like you checking status until the readystate is greater than 2
-   * (i.e. it is recieving or complete).  The try/catch is used for when the
+   * (i.e. it is receiving or complete).  The try/catch is used for when the
    * page is unloading and an ERROR_NOT_AVAILABLE may occur when accessing xhr_.
    * @preserveTry
    */
@@ -934,7 +938,6 @@ goog.net.XhrIo.prototype.getStatus = function() {
     return this.getReadyState() > goog.net.XmlHttp.ReadyState.LOADED ?
         this.xhr_.status : -1;
   } catch (e) {
-    goog.log.warning(this.logger_, 'Can not get status: ' + e.message);
     return -1;
   }
 };
@@ -983,7 +986,7 @@ goog.net.XhrIo.prototype.getResponseText = function() {
   } catch (e) {
     // http://www.w3.org/TR/XMLHttpRequest/#the-responsetext-attribute
     // states that responseText should return '' (and responseXML null)
-    // when the state is not LOADING or DONE. Instead, IE and Gears can
+    // when the state is not LOADING or DONE. Instead, IE can
     // throw unexpected exceptions, for example when a request is aborted
     // or no data is available yet.
     goog.log.fine(this.logger_, 'Can not get responseText: ' + e.message);

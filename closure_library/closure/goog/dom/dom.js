@@ -37,8 +37,6 @@ goog.require('goog.asserts');
 goog.require('goog.dom.BrowserFeature');
 goog.require('goog.dom.NodeType');
 goog.require('goog.dom.TagName');
-goog.require('goog.dom.classes');
-goog.require('goog.functions');
 goog.require('goog.math.Coordinate');
 goog.require('goog.math.Size');
 goog.require('goog.object');
@@ -180,6 +178,12 @@ goog.dom.$ = goog.dom.getElement;
  * need is particular tags belonging to a single class, this function
  * is fast and sleek.
  *
+ * Note that tag names are case sensitive in the SVG namespace, and this
+ * function converts opt_tag to uppercase for comparisons. For queries in the
+ * SVG namespace you should use querySelector or querySelectorAll instead.
+ * https://bugzilla.mozilla.org/show_bug.cgi?id=963870
+ * https://bugs.webkit.org/show_bug.cgi?id=83438
+ *
  * @see {goog.dom.query}
  *
  * @param {?string=} opt_tag Element tag name.
@@ -195,7 +199,8 @@ goog.dom.getElementsByTagNameAndClass = function(opt_tag, opt_class, opt_el) {
 
 
 /**
- * Returns an array of all the elements with the provided className.
+ * Returns a static, array-like list of the elements with the provided
+ * className.
  * @see {goog.dom.query}
  * @param {string} className the name of the class to look for.
  * @param {(Document|Element)=} opt_el Optional element to look in.
@@ -205,8 +210,6 @@ goog.dom.getElementsByClass = function(className, opt_el) {
   var parent = opt_el || document;
   if (goog.dom.canUseQuerySelector_(parent)) {
     return parent.querySelectorAll('.' + className);
-  } else if (parent.getElementsByClassName) {
-    return parent.getElementsByClassName(className);
   }
   return goog.dom.getElementsByTagNameAndClass_(
       document, '*', className, opt_el);
@@ -226,9 +229,27 @@ goog.dom.getElementByClass = function(className, opt_el) {
   if (goog.dom.canUseQuerySelector_(parent)) {
     retVal = parent.querySelector('.' + className);
   } else {
-    retVal = goog.dom.getElementsByClass(className, opt_el)[0];
+    retVal = goog.dom.getElementsByTagNameAndClass_(
+        document, '*', className, opt_el)[0];
   }
   return retVal || null;
+};
+
+
+/**
+ * Ensures an element with the given className exists, and then returns the
+ * first element with the provided className.
+ * @see {goog.dom.query}
+ * @param {string} className the name of the class to look for.
+ * @param {!Element|!Document=} opt_root Optional element or document to look
+ *     in.
+ * @return {!Element} The first item with the class name provided.
+ * @throws {goog.asserts.AssertionError} Thrown if no element is found.
+ */
+goog.dom.getRequiredElementByClass = function(className, opt_root) {
+  var retValue = goog.dom.getElementByClass(className, opt_root);
+  return goog.asserts.assert(retValue,
+      'No element found with className: ' + className);
 };
 
 
@@ -492,10 +513,14 @@ goog.dom.getDocumentHeight_ = function(win) {
     // But there are patterns.  It just takes a lot of time and persistence
     // to figure out.
 
-    // Get the height of the viewport
-    var vh = goog.dom.getViewportSize_(win).height;
     var body = doc.body;
     var docEl = doc.documentElement;
+    if (!(docEl && body)) {
+      return 0;
+    }
+
+    // Get the height of the viewport
+    var vh = goog.dom.getViewportSize_(win).height;
     if (goog.dom.isCss1CompatMode_(doc) && docEl.scrollHeight) {
       // In Strict mode:
       // The inner content height is contained in either:
@@ -585,7 +610,7 @@ goog.dom.getDocumentScroll_ = function(doc) {
 
 /**
  * Gets the document scroll element.
- * @return {Element} Scrolling element.
+ * @return {!Element} Scrolling element.
  */
 goog.dom.getDocumentScrollElement = function() {
   return goog.dom.getDocumentScrollElement_(document);
@@ -595,7 +620,7 @@ goog.dom.getDocumentScrollElement = function() {
 /**
  * Helper for {@code getDocumentScrollElement}.
  * @param {!Document} doc The document to get the scroll element for.
- * @return {Element} Scrolling element.
+ * @return {!Element} Scrolling element.
  * @private
  */
 goog.dom.getDocumentScrollElement_ = function(doc) {
@@ -704,7 +729,7 @@ goog.dom.createDom_ = function(doc, args) {
     if (goog.isString(attributes)) {
       element.className = attributes;
     } else if (goog.isArray(attributes)) {
-      goog.dom.classes.add.apply(null, [element].concat(attributes));
+      element.className = attributes.join(' ');
     } else {
       goog.dom.setProperties(element, attributes);
     }
@@ -1228,7 +1253,7 @@ goog.dom.getPreviousNode = function(node) {
 
 /**
  * Whether the object looks like a DOM node.
- * @param {*} obj The object being tested for node likeness.
+ * @param {?} obj The object being tested for node likeness.
  * @return {boolean} Whether the object looks like a DOM node.
  */
 goog.dom.isNodeLike = function(obj) {
@@ -1238,7 +1263,7 @@ goog.dom.isNodeLike = function(obj) {
 
 /**
  * Whether the object looks like an Element.
- * @param {*} obj The object being tested for Element likeness.
+ * @param {?} obj The object being tested for Element likeness.
  * @return {boolean} Whether the object looks like an Element.
  */
 goog.dom.isElement = function(obj) {
@@ -1249,7 +1274,7 @@ goog.dom.isElement = function(obj) {
 /**
  * Returns true if the specified value is a Window object. This includes the
  * global window for HTML pages, and iframe windows.
- * @param {*} obj Variable to test.
+ * @param {?} obj Variable to test.
  * @return {boolean} Whether the variable is a window.
  */
 goog.dom.isWindow = function(obj) {
@@ -1263,6 +1288,7 @@ goog.dom.isWindow = function(obj) {
  * @return {Element} The parent, or null if not an Element.
  */
 goog.dom.getParentElement = function(element) {
+  var parent;
   if (goog.dom.BrowserFeature.CAN_USE_PARENT_ELEMENT_PROPERTY) {
     var isIe9 = goog.userAgent.IE &&
         goog.userAgent.isVersionOrHigher('9') &&
@@ -1271,10 +1297,13 @@ goog.dom.getParentElement = function(element) {
     // goog.global['SVGElement'] is not defined in IE9 quirks mode.
     if (!(isIe9 && goog.global['SVGElement'] &&
         element instanceof goog.global['SVGElement'])) {
-      return element.parentElement;
+      parent = element.parentElement;
+      if (parent) {
+        return parent;
+      }
     }
   }
-  var parent = element.parentNode;
+  parent = element.parentNode;
   return goog.dom.isElement(parent) ? /** @type {!Element} */ (parent) : null;
 };
 
@@ -1485,8 +1514,8 @@ goog.dom.findCommonAncestor = function(var_args) {
  * @return {!Document} The document owning the node.
  */
 goog.dom.getOwnerDocument = function(node) {
-  // TODO(arv): Remove IE5 code.
-  // IE5 uses document instead of ownerDocument
+  // TODO(nnaze): Update param signature to be non-nullable.
+  goog.asserts.assert(node, 'Node cannot be null or undefined.');
   return /** @type {!Document} */ (
       node.nodeType == goog.dom.NodeType.DOCUMENT ? node :
       node.ownerDocument || node.document);
@@ -1992,7 +2021,8 @@ goog.dom.getAncestorByTagNameAndClass = function(element, opt_tag, opt_class) {
   return /** @type {Element} */ (goog.dom.getAncestor(element,
       function(node) {
         return (!tagName || node.nodeName == tagName) &&
-               (!opt_class || goog.dom.classes.has(node, opt_class));
+               (!opt_class || goog.isString(node.className) &&
+                   goog.array.contains(node.className.split(/\s+/), opt_class));
       }, true));
 };
 
@@ -2067,24 +2097,20 @@ goog.dom.getActiveElement = function(doc) {
 
 
 /**
- * @private {number} Cached version of the devicePixelRatio.
- */
-goog.dom.devicePixelRatio_;
-
-
-/**
- * Gives the devicePixelRatio, or attempts to determine if not present.
+ * Gives the current devicePixelRatio.
  *
- * By default, this is the same value given by window.devicePixelRatio. If
- * devicePixelRatio is not defined, the ratio is calculated with
+ * By default, this is the value of window.devicePixelRatio (which should be
+ * preferred if present).
+ *
+ * If window.devicePixelRatio is not present, the ratio is calculated with
  * window.matchMedia, if present. Otherwise, gives 1.0.
  *
- * This function is cached so that the pixel ratio is calculated only once
- * and only calculated when first requested.
+ * Some browsers (including Chrome) consider the browser zoom level in the pixel
+ * ratio, so the value may change across multiple calls.
  *
  * @return {number} The number of actual pixels per virtual pixel.
  */
-goog.dom.getPixelRatio = goog.functions.cacheReturnValue(function() {
+goog.dom.getPixelRatio = function() {
   var win = goog.dom.getWindow();
 
   // devicePixelRatio does not work on Mobile firefox.
@@ -2101,7 +2127,7 @@ goog.dom.getPixelRatio = goog.functions.cacheReturnValue(function() {
            goog.dom.matchesPixelRatio_(3) || 1;
   }
   return 1;
-});
+};
 
 
 /**
@@ -2242,6 +2268,23 @@ goog.dom.DomHelper.prototype.getElementsByClass = function(className, opt_el) {
 goog.dom.DomHelper.prototype.getElementByClass = function(className, opt_el) {
   var doc = opt_el || this.document_;
   return goog.dom.getElementByClass(className, doc);
+};
+
+
+/**
+ * Ensures an element with the given className exists, and then returns the
+ * first element with the provided className.
+ * @see {goog.dom.query}
+ * @param {string} className the name of the class to look for.
+ * @param {(!Element|!Document)=} opt_root Optional element or document to look
+ *     in.
+ * @return {!Element} The first item found with the class name provided.
+ * @throws {goog.asserts.AssertionError} Thrown if no element is found.
+ */
+goog.dom.DomHelper.prototype.getRequiredElementByClass = function(className,
+                                                                  opt_root) {
+  var root = opt_root || this.document_;
+  return goog.dom.getRequiredElementByClass(className, root);
 };
 
 
@@ -2413,7 +2456,7 @@ goog.dom.DomHelper.prototype.getWindow = function() {
 
 /**
  * Gets the document scroll element.
- * @return {Element} Scrolling element.
+ * @return {!Element} Scrolling element.
  */
 goog.dom.DomHelper.prototype.getDocumentScrollElement = function() {
   return goog.dom.getDocumentScrollElement_(this.document_);
@@ -2597,7 +2640,7 @@ goog.dom.DomHelper.prototype.getPreviousNode = goog.dom.getPreviousNode;
 
 /**
  * Whether the object looks like a DOM node.
- * @param {*} obj The object being tested for node likeness.
+ * @param {?} obj The object being tested for node likeness.
  * @return {boolean} Whether the object looks like a DOM node.
  */
 goog.dom.DomHelper.prototype.isNodeLike = goog.dom.isNodeLike;
@@ -2605,7 +2648,7 @@ goog.dom.DomHelper.prototype.isNodeLike = goog.dom.isNodeLike;
 
 /**
  * Whether the object looks like an Element.
- * @param {*} obj The object being tested for Element likeness.
+ * @param {?} obj The object being tested for Element likeness.
  * @return {boolean} Whether the object looks like an Element.
  */
 goog.dom.DomHelper.prototype.isElement = goog.dom.isElement;
@@ -2614,7 +2657,7 @@ goog.dom.DomHelper.prototype.isElement = goog.dom.isElement;
 /**
  * Returns true if the specified value is a Window object. This includes the
  * global window for HTML pages, and iframe windows.
- * @param {*} obj Variable to test.
+ * @param {?} obj Variable to test.
  * @return {boolean} Whether the variable is a window.
  */
 goog.dom.DomHelper.prototype.isWindow = goog.dom.isWindow;

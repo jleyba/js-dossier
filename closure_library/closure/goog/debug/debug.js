@@ -141,11 +141,11 @@ goog.debug.expose = function(obj, opt_showFn) {
  * @return {string} A string representation of {@code obj}.
  */
 goog.debug.deepExpose = function(obj, opt_showFn) {
-  var previous = new goog.structs.Set();
   var str = [];
 
-  var helper = function(obj, space) {
+  var helper = function(obj, space, parentSeen) {
     var nestspace = space + '  ';
+    var seen = new goog.structs.Set(parentSeen);
 
     var indentMultiline = function(str) {
       return str.replace(/\n/g, '\n' + space);
@@ -162,12 +162,10 @@ goog.debug.deepExpose = function(obj, opt_showFn) {
       } else if (goog.isFunction(obj)) {
         str.push(indentMultiline(String(obj)));
       } else if (goog.isObject(obj)) {
-        if (previous.contains(obj)) {
-          // TODO(user): This is a bug; it falsely detects non-loops as loops
-          // when the reference tree contains two references to the same object.
+        if (seen.contains(obj)) {
           str.push('*** reference loop detected ***');
         } else {
-          previous.add(obj);
+          seen.add(obj);
           str.push('{');
           for (var x in obj) {
             if (!opt_showFn && goog.isFunction(obj[x])) {
@@ -176,7 +174,7 @@ goog.debug.deepExpose = function(obj, opt_showFn) {
             str.push('\n');
             str.push(nestspace);
             str.push(x + ' = ');
-            helper(obj[x], nestspace);
+            helper(obj[x], nestspace, seen);
           }
           str.push('\n' + space + '}');
         }
@@ -188,7 +186,7 @@ goog.debug.deepExpose = function(obj, opt_showFn) {
     }
   };
 
-  helper(obj, '');
+  helper(obj, '', new goog.structs.Set());
   return str.join('');
 };
 
@@ -240,7 +238,7 @@ goog.debug.exposeException = function(err, opt_fn) {
 /**
  * Normalizes the error/exception object between browsers.
  * @param {Object} err Raw error object.
- * @return {Object} Normalized error object.
+ * @return {!Object} Normalized error object.
  */
 goog.debug.normalizeErrorObject = function(err) {
   var href = goog.getObjectByName('window.location.href');
@@ -302,14 +300,24 @@ goog.debug.normalizeErrorObject = function(err) {
  * @param {Error|string} err  the original thrown object or string.
  * @param {string=} opt_message  optional additional message to add to the
  *     error.
- * @return {Error} If err is a string, it is used to create a new Error,
+ * @return {!Error} If err is a string, it is used to create a new Error,
  *     which is enhanced and returned.  Otherwise err itself is enhanced
  *     and returned.
  */
 goog.debug.enhanceError = function(err, opt_message) {
-  var error = typeof err == 'string' ? Error(err) : err;
+  var error;
+  if (typeof err == 'string') {
+    error = Error(err);
+    if (Error.captureStackTrace) {
+      // Trim this function off the call stack, if we can.
+      Error.captureStackTrace(error, goog.debug.enhanceError);
+    }
+  } else {
+    error = err;
+  }
+
   if (!error.stack) {
-    error.stack = goog.debug.getStacktrace(arguments.callee.caller);
+    error.stack = goog.debug.getStacktrace(goog.debug.enhanceError);
   }
   if (opt_message) {
     // find the first unoccupied 'messageX' property
@@ -329,8 +337,18 @@ goog.debug.enhanceError = function(err, opt_message) {
  * @param {number=} opt_depth Optional maximum depth to trace back to.
  * @return {string} A string with the function names of all functions in the
  *     stack, separated by \n.
+ * @suppress {es5Strict}
  */
 goog.debug.getStacktraceSimple = function(opt_depth) {
+  if (goog.STRICT_MODE_COMPATIBLE) {
+    var stack = goog.debug.getNativeStackTrace_(goog.debug.getStacktraceSimple);
+    if (stack) {
+      return stack;
+    }
+    // NOTE: browsers that have strict mode support also have native "stack"
+    // properties.  Fall-through for legacy browser support.
+  }
+
   var sb = [];
   var fn = arguments.callee.caller;
   var depth = 0;
@@ -369,14 +387,53 @@ goog.debug.MAX_STACK_DEPTH = 50;
 
 
 /**
+ * @param {Function} fn The function to start getting the trace from.
+ * @return {?string}
+ * @private
+ */
+goog.debug.getNativeStackTrace_ = function(fn) {
+  var tempErr = new Error();
+  if (Error.captureStackTrace) {
+    Error.captureStackTrace(tempErr, fn);
+    return String(tempErr.stack);
+  } else {
+    // IE10, only adds stack traces when an exception is thrown.
+    try {
+      throw tempErr;
+    } catch (e) {
+      tempErr = e;
+    }
+    var stack = tempErr.stack;
+    if (stack) {
+      return String(stack);
+    }
+  }
+  return null;
+};
+
+
+/**
  * Gets the current stack trace, either starting from the caller or starting
  * from a specified function that's currently on the call stack.
  * @param {Function=} opt_fn Optional function to start getting the trace from.
  *     If not provided, defaults to the function that called this.
  * @return {string} Stack trace.
+ * @suppress {es5Strict}
  */
 goog.debug.getStacktrace = function(opt_fn) {
-  return goog.debug.getStacktraceHelper_(opt_fn || arguments.callee.caller, []);
+  var stack;
+  if (goog.STRICT_MODE_COMPATIBLE) {
+    // Try to get the stack trace from the environment if it is available.
+    var contextFn = opt_fn || goog.debug.getStacktrace;
+    stack = goog.debug.getNativeStackTrace_(contextFn);
+  }
+  if (!stack) {
+    // NOTE: browsers that have strict mode support also have native "stack"
+    // properties. This function will throw in strict mode.
+    stack = goog.debug.getStacktraceHelper_(
+        opt_fn || arguments.callee.caller, []);
+  }
+  return stack;
 };
 
 
@@ -385,6 +442,7 @@ goog.debug.getStacktrace = function(opt_fn) {
  * @param {Function} fn Function to start getting the trace from.
  * @param {Array} visited List of functions visited so far.
  * @return {string} Stack trace starting from function fn.
+ * @suppress {es5Strict}
  * @private
  */
 goog.debug.getStacktraceHelper_ = function(fn, visited) {
@@ -399,7 +457,8 @@ goog.debug.getStacktraceHelper_ = function(fn, visited) {
   } else if (fn && visited.length < goog.debug.MAX_STACK_DEPTH) {
     sb.push(goog.debug.getFunctionName(fn) + '(');
     var args = fn.arguments;
-    for (var i = 0; i < args.length; i++) {
+    // Args may be null for some special functions such as host objects or eval.
+    for (var i = 0; args && i < args.length; i++) {
       if (i > 0) {
         sb.push(', ');
       }

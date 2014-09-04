@@ -46,6 +46,7 @@ goog.require('goog.ui.GaugeTheme');
  * @param {number} toValue The range end (maximal) value.
  * @param {string} backgroundColor Color to fill the range background with.
  * @constructor
+ * @final
  */
 goog.ui.GaugeColoredRange = function(fromValue, toValue, backgroundColor) {
 
@@ -85,6 +86,7 @@ goog.ui.GaugeColoredRange = function(fromValue, toValue, backgroundColor) {
  *     document we want to render in.
  * @constructor
  * @extends {goog.ui.Component}
+ * @final
  */
 goog.ui.Gauge = function(width, height, opt_domHelper) {
   goog.ui.Component.call(this, opt_domHelper);
@@ -790,7 +792,6 @@ goog.ui.Gauge.prototype.draw_ = function() {
   // Draw the needle and the value label. Stop animation when doing
   // full redraw and jump to the final value position.
   this.stopAnimation_();
-  this.valuePosition_ = this.valueToRangePosition_(this.value);
   this.needleRadius_ = r;
   this.drawValue_();
 };

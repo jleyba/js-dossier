@@ -64,7 +64,7 @@ goog.ui.IframeMask = function(opt_domHelper, opt_iframePool) {
 
   /**
    * An event handler for listening to popups and the like.
-   * @type {goog.events.EventHandler|undefined}
+   * @type {goog.events.EventHandler.<!goog.ui.IframeMask>}
    * @private
    */
   this.handler_ = new goog.events.EventHandler(this);
@@ -77,6 +77,7 @@ goog.ui.IframeMask = function(opt_domHelper, opt_iframePool) {
   this.iframePool_ = opt_iframePool;
 };
 goog.inherits(goog.ui.IframeMask, goog.Disposable);
+goog.tagUnsealableClass(goog.ui.IframeMask);
 
 
 /**
@@ -151,7 +152,7 @@ goog.ui.IframeMask.prototype.hideMask = function() {
 /**
  * Gets the iframe to use as a mask. Creates a new one if one has not been
  * created yet.
- * @return {HTMLIFrameElement} The iframe.
+ * @return {!HTMLIFrameElement} The iframe.
  * @private
  */
 goog.ui.IframeMask.prototype.getIframe_ = function() {

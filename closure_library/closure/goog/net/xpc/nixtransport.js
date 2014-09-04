@@ -33,9 +33,12 @@
 
 goog.provide('goog.net.xpc.NixTransport');
 
+goog.require('goog.log');
 goog.require('goog.net.xpc');
+goog.require('goog.net.xpc.CfgFields');
 goog.require('goog.net.xpc.CrossPageChannelRole');
 goog.require('goog.net.xpc.Transport');
+goog.require('goog.net.xpc.TransportTypes');
 goog.require('goog.reflect');
 
 
@@ -51,9 +54,10 @@ goog.require('goog.reflect');
  *     the correct window.
  * @constructor
  * @extends {goog.net.xpc.Transport}
+ * @final
  */
 goog.net.xpc.NixTransport = function(channel, opt_domHelper) {
-  goog.base(this, opt_domHelper);
+  goog.net.xpc.NixTransport.base(this, 'constructor', opt_domHelper);
 
   /**
    * The channel this transport belongs to.
@@ -474,6 +478,6 @@ goog.net.xpc.NixTransport.prototype.send = function(service, payload) {
 
 /** @override */
 goog.net.xpc.NixTransport.prototype.disposeInternal = function() {
-  goog.base(this, 'disposeInternal');
+  goog.net.xpc.NixTransport.base(this, 'disposeInternal');
   this.nixChannel_ = null;
 };

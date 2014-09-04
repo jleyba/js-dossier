@@ -105,14 +105,27 @@ goog.math.nearlyEquals = function(a, b, opt_tolerance) {
 };
 
 
+// TODO(user): Rename to normalizeAngle, retaining old name as deprecated
+// alias.
 /**
- * Standardizes an angle to be in range [0-360). Negative angles become
- * positive, and values greater than 360 are returned modulo 360.
+ * Normalizes an angle to be in range [0-360). Angles outside this range will
+ * be normalized to be the equivalent angle with that range.
  * @param {number} angle Angle in degrees.
  * @return {number} Standardized angle.
  */
 goog.math.standardAngle = function(angle) {
   return goog.math.modulo(angle, 360);
+};
+
+
+/**
+ * Normalizes an angle to be in range [0-2*PI). Angles outside this range will
+ * be normalized to be the equivalent angle with that range.
+ * @param {number} angle Angle in radians.
+ * @return {number} Standardized angle.
+ */
+goog.math.standardAngleInRadians = function(angle) {
+  return goog.math.modulo(angle, 2 * Math.PI);
 };
 
 
@@ -226,7 +239,7 @@ goog.math.sign = function(x) {
  *     as a result subsequence. It accepts 2 arguments: index of common element
  *     in the first array and index in the second. The default function returns
  *     element from the first array.
- * @return {Array.<Object>} A list of objects that are common to both arrays
+ * @return {!Array.<Object>} A list of objects that are common to both arrays
  *     such that there is no common subsequence with size greater than the
  *     length of the list.
  */
@@ -366,6 +379,28 @@ goog.math.isInt = function(num) {
  */
 goog.math.isFiniteNumber = function(num) {
   return isFinite(num) && !isNaN(num);
+};
+
+
+/**
+ * Returns the precise value of floor(log10(num)).
+ * Simpler implementations didn't work because of floating point rounding
+ * errors. For example
+ * <ul>
+ * <li>Math.floor(Math.log(num) / Math.LN10) is off by one for num == 1e+3.
+ * <li>Math.floor(Math.log(num) * Math.LOG10E) is off by one for num == 1e+15.
+ * <li>Math.floor(Math.log10(num)) is off by one for num == 1e+15 - 1.
+ * </ul>
+ * @param {number} num A floating point number.
+ * @return {number} Its logarithm to base 10 rounded down to the nearest
+ *     integer if num > 0. -Infinity if num == 0. NaN if num < 0.
+ */
+goog.math.log10Floor = function(num) {
+  if (num > 0) {
+    var x = Math.round(Math.log(num) * Math.LOG10E);
+    return x - (parseFloat('1e' + x) > num);
+  }
+  return num == 0 ? -Infinity : NaN;
 };
 
 

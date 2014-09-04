@@ -14,7 +14,7 @@
 
 /**
  * @fileoverview Utilities for creating functions. Loosely inspired by the
- * java classes: http://go/functions.java and http://go/predicate.java.
+ * java classes: http://goo.gl/GM0Hmu and http://goo.gl/6k7nI8.
  *
  * @author nicksantos@google.com (Nick Santos)
  */
@@ -251,7 +251,10 @@ goog.functions.not = function(f) {
  * @return {!Object} A new instance of the class given in {@code constructor}.
  */
 goog.functions.create = function(constructor, var_args) {
-  /** @constructor */
+  /**
+ * @constructor
+ * @final
+ */
   var temp = function() {};
   temp.prototype = constructor.prototype;
 
@@ -290,17 +293,17 @@ goog.define('goog.functions.CACHE_RETURN_VALUE', true);
  * @template T
  */
 goog.functions.cacheReturnValue = function(fn) {
-  var called = false;
+  var fn2 = fn; // prevents a type error later when we set it to undefined
   var value;
 
   return function() {
     if (!goog.functions.CACHE_RETURN_VALUE) {
-      return fn();
+      return fn2();
     }
 
-    if (!called) {
-      value = fn();
-      called = true;
+    if (fn2) {
+      value = fn2();
+      fn2 = undefined; // free memory
     }
 
     return value;

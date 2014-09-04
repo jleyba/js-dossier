@@ -43,9 +43,10 @@ goog.require('goog.object');
  *     channel to use as transport for the virtual channels.
  * @constructor
  * @extends {goog.Disposable}
+ * @final
  */
 goog.messaging.MultiChannel = function(underlyingChannel) {
-  goog.base(this);
+  goog.messaging.MultiChannel.base(this, 'constructor');
 
   /**
    * The underlying channel across which all requests are sent.
@@ -172,9 +173,10 @@ goog.messaging.MultiChannel.prototype.disposeInternal = function() {
  * @constructor
  * @implements {goog.messaging.MessageChannel}
  * @extends {goog.Disposable}
+ * @final
  */
 goog.messaging.MultiChannel.VirtualChannel = function(parent, name) {
-  goog.base(this);
+  goog.messaging.MultiChannel.VirtualChannel.base(this, 'constructor');
 
   /**
    * The MultiChannel containing the underlying transport channel.

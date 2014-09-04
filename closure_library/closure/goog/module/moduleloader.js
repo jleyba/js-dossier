@@ -51,11 +51,11 @@ goog.require('goog.userAgent.product');
  * @implements {goog.module.AbstractModuleLoader}
  */
 goog.module.ModuleLoader = function() {
-  goog.base(this);
+  goog.module.ModuleLoader.base(this, 'constructor');
 
   /**
    * Event handler for managing handling events.
-   * @type {goog.events.EventHandler}
+   * @type {goog.events.EventHandler.<!goog.module.ModuleLoader>}
    * @private
    */
   this.eventHandler_ = new goog.events.EventHandler(this);
@@ -317,15 +317,11 @@ goog.module.ModuleLoader.prototype.downloadModules_ = function(
     eventHandler.listen(
         bulkLoader,
         goog.net.EventType.SUCCESS,
-        goog.bind(this.handleSuccess_, this, bulkLoader, ids),
-        false,
-        null);
+        goog.bind(this.handleSuccess_, this, bulkLoader, ids));
     eventHandler.listen(
         bulkLoader,
         goog.net.EventType.ERROR,
-        goog.bind(this.handleError_, this, bulkLoader, ids),
-        false,
-        null);
+        goog.bind(this.handleError_, this, bulkLoader, ids));
     bulkLoader.load();
   }
 };
@@ -410,9 +406,10 @@ goog.module.ModuleLoader.EventType = {
  * @param {Array.<string>} moduleIds The ids of the modules being evaluated.
  * @constructor
  * @extends {goog.events.Event}
+ * @final
  */
 goog.module.ModuleLoader.Event = function(type, moduleIds) {
-  goog.base(this, type);
+  goog.module.ModuleLoader.Event.base(this, 'constructor', type);
 
   /**
    * @type {Array.<string>}
@@ -427,6 +424,7 @@ goog.inherits(goog.module.ModuleLoader.Event, goog.events.Event);
  * A class that keeps the state of the module during the loading process. It is
  * used to save loading information between modules download and evaluation.
  * @constructor
+ * @final
  */
 goog.module.ModuleLoader.LoadStatus = function() {
   /**

@@ -60,6 +60,7 @@ goog.ui.ColorPalette = function(opt_colors, opt_renderer, opt_domHelper) {
   this.setColors(this.colors_);
 };
 goog.inherits(goog.ui.ColorPalette, goog.ui.Palette);
+goog.tagUnsealableClass(goog.ui.ColorPalette);
 
 
 /**
@@ -135,7 +136,7 @@ goog.ui.ColorPalette.prototype.setSelectedColor = function(color) {
 
 
 /**
- * @return {Array.<Node>} An array of DOM nodes for each color.
+ * @return {!Array.<!Node>} An array of DOM nodes for each color.
  * @protected
  */
 goog.ui.ColorPalette.prototype.createColorNodes = function() {

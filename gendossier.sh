@@ -81,12 +81,21 @@ build_release() {
 }
 
 build_sample() {
-  java -jar target/dossier-0.1.1-jar-with-dependencies.jar \
-      --src src/main/js/dossier.js \
-      --closure_library closure_library/closure/goog \
-      --license LICENSE \
-      --readme README.md \
-      --output target/docs
+  cat > target/sample_config.json <<EOF
+{
+  "output": "target/docs",
+  "closureLibraryDir": "closure_library/closure/goog",
+  "readme": "README.md",
+  "license": "LICENSE",
+  "sources": [
+    "src/main/js/dossier.js",
+    "src/main/js/dossier_soy.js",
+    "src/main/js/soyutils_usegoog.js"
+  ]
+}
+EOF
+  java -jar target/dossier-0.4.0-jar-with-dependencies.jar \
+      --config target/sample_config.json
 }
 
 update_readme() {
@@ -134,7 +143,7 @@ main() {
   local release=0
   local sample=0
 
-  while getopts "dhjlpr" option
+  while getopts "dhjlprs" option
   do
     case $option in
       h)

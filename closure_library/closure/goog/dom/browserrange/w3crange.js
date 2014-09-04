@@ -25,11 +25,13 @@
 
 goog.provide('goog.dom.browserrange.W3cRange');
 
+goog.require('goog.array');
 goog.require('goog.dom');
 goog.require('goog.dom.NodeType');
 goog.require('goog.dom.RangeEndpoint');
 goog.require('goog.dom.browserrange.AbstractRange');
 goog.require('goog.string');
+goog.require('goog.userAgent');
 
 
 
@@ -49,7 +51,7 @@ goog.inherits(goog.dom.browserrange.W3cRange,
 /**
  * Returns a browser range spanning the given node's contents.
  * @param {Node} node The node to select.
- * @return {Range} A browser range spanning the node's contents.
+ * @return {!Range} A browser range spanning the node's contents.
  * @protected
  */
 goog.dom.browserrange.W3cRange.getBrowserRangeForNode = function(node) {
@@ -59,6 +61,7 @@ goog.dom.browserrange.W3cRange.getBrowserRangeForNode = function(node) {
     nodeRange.setStart(node, 0);
     nodeRange.setEnd(node, node.length);
   } else {
+    /** @suppress {missingRequire} */
     if (!goog.dom.browserrange.canContainRangeEndpoint(node)) {
       var rangeParent = node.parentNode;
       var rangeStartOffset = goog.array.indexOf(rangeParent.childNodes, node);
@@ -67,6 +70,7 @@ goog.dom.browserrange.W3cRange.getBrowserRangeForNode = function(node) {
     } else {
       var tempNode, leaf = node;
       while ((tempNode = leaf.firstChild) &&
+          /** @suppress {missingRequire} */
           goog.dom.browserrange.canContainRangeEndpoint(tempNode)) {
         leaf = tempNode;
       }
@@ -74,6 +78,7 @@ goog.dom.browserrange.W3cRange.getBrowserRangeForNode = function(node) {
 
       leaf = node;
       while ((tempNode = leaf.lastChild) &&
+          /** @suppress {missingRequire} */
           goog.dom.browserrange.canContainRangeEndpoint(tempNode)) {
         leaf = tempNode;
       }
@@ -92,7 +97,7 @@ goog.dom.browserrange.W3cRange.getBrowserRangeForNode = function(node) {
  * @param {number} startOffset The offset within the start node.
  * @param {Node} endNode The node to end with - should not be a BR.
  * @param {number} endOffset The offset within the end node.
- * @return {Range} A browser range spanning the node's contents.
+ * @return {!Range} A browser range spanning the node's contents.
  * @protected
  */
 goog.dom.browserrange.W3cRange.getBrowserRangeForNodes = function(startNode,
@@ -108,7 +113,7 @@ goog.dom.browserrange.W3cRange.getBrowserRangeForNodes = function(startNode,
 /**
  * Creates a range object that selects the given node's text.
  * @param {Node} node The node to select.
- * @return {goog.dom.browserrange.W3cRange} A Gecko range wrapper object.
+ * @return {!goog.dom.browserrange.W3cRange} A Gecko range wrapper object.
  */
 goog.dom.browserrange.W3cRange.createFromNodeContents = function(node) {
   return new goog.dom.browserrange.W3cRange(
@@ -122,7 +127,7 @@ goog.dom.browserrange.W3cRange.createFromNodeContents = function(node) {
  * @param {number} startOffset The offset within the start node.
  * @param {Node} endNode The node to end with.
  * @param {number} endOffset The offset within the end node.
- * @return {goog.dom.browserrange.W3cRange} A wrapper object.
+ * @return {!goog.dom.browserrange.W3cRange} A wrapper object.
  */
 goog.dom.browserrange.W3cRange.createFromNodes = function(startNode,
     startOffset, endNode, endOffset) {
@@ -133,7 +138,7 @@ goog.dom.browserrange.W3cRange.createFromNodes = function(startNode,
 
 
 /**
- * @return {goog.dom.browserrange.W3cRange} A clone of this range.
+ * @return {!goog.dom.browserrange.W3cRange} A clone of this range.
  * @override
  */
 goog.dom.browserrange.W3cRange.prototype.clone = function() {
@@ -276,6 +281,30 @@ goog.dom.browserrange.W3cRange.prototype.removeContents = function() {
       }
     }
   }
+
+  if (goog.userAgent.IE) {
+    // Unfortunately, when deleting a portion of a single text node, IE creates
+    // an extra text node instead of modifying the nodeValue of the start node.
+    // We normalize for that behavior here, similar to code in
+    // goog.dom.browserrange.IeRange#removeContents
+    // See https://connect.microsoft.com/IE/feedback/details/746591
+    var startNode = this.getStartNode();
+    var startOffset = this.getStartOffset();
+    var endNode = this.getEndNode();
+    var endOffset = this.getEndOffset();
+    var sibling = startNode.nextSibling;
+    if (startNode == endNode && startNode.parentNode &&
+        startNode.nodeType == goog.dom.NodeType.TEXT &&
+        sibling && sibling.nodeType == goog.dom.NodeType.TEXT) {
+      startNode.nodeValue += sibling.nodeValue;
+      goog.dom.removeNode(sibling);
+
+      // Modifying the node value clears the range offsets. Reselect the
+      // position in the modified start node.
+      range.setStart(startNode, startOffset);
+      range.setEnd(endNode, endOffset);
+    }
+  }
 };
 
 
@@ -302,6 +331,7 @@ goog.dom.browserrange.W3cRange.prototype.surroundWithNodes = function(
     startNode, endNode) {
   var win = goog.dom.getWindow(
       goog.dom.getOwnerDocument(this.getStartNode()));
+  /** @suppress {missingRequire} */
   var selectionRange = goog.dom.Range.createFromWindow(win);
   if (selectionRange) {
     var sNode = selectionRange.getStartNode();
@@ -352,6 +382,7 @@ goog.dom.browserrange.W3cRange.prototype.surroundWithNodes = function(
       }
     }
 
+    /** @suppress {missingRequire} */
     goog.dom.Range.createFromNodes(
         sNode, /** @type {number} */ (sOffset),
         eNode, /** @type {number} */ (eOffset)).select();

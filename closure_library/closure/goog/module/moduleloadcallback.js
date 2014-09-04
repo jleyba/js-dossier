@@ -22,6 +22,8 @@ goog.provide('goog.module.ModuleLoadCallback');
 
 goog.require('goog.debug.entryPointRegistry');
 goog.require('goog.debug.errorHandlerWeakDep');
+/** @suppress {extraRequire} */
+goog.require('goog.module');
 
 
 
@@ -31,6 +33,7 @@ goog.require('goog.debug.errorHandlerWeakDep');
  * @param {Object=} opt_handler Optional handler under whose scope to execute
  *     the callback.
  * @constructor
+ * @final
  */
 goog.module.ModuleLoadCallback = function(fn, opt_handler) {
   /**

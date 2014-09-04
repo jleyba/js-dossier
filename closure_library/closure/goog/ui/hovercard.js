@@ -118,6 +118,7 @@ goog.ui.HoverCard = function(isAnchor, opt_checkDescendants, opt_domHelper,
                      this.handleTriggerMouseOver_, false, this);
 };
 goog.inherits(goog.ui.HoverCard, goog.ui.AdvancedTooltip);
+goog.tagUnsealableClass(goog.ui.HoverCard);
 
 
 /**
@@ -437,6 +438,7 @@ goog.ui.HoverCard.prototype.setMaxSearchSteps = function(maxSearchSteps) {
  * @param {Object=} opt_data Optional data to be available in the TRIGGER event.
  * @constructor
  * @extends {goog.events.Event}
+ * @final
  */
 goog.ui.HoverCard.TriggerEvent = function(type, target, anchor, opt_data) {
   goog.events.Event.call(this, type, target);

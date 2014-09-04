@@ -58,6 +58,7 @@ goog.ui.InputDatePicker = function(
   this.popupDatePicker_.setAllowAutoFocus(false);
 };
 goog.inherits(goog.ui.InputDatePicker, goog.ui.Component);
+goog.tagUnsealableClass(goog.ui.InputDatePicker);
 
 
 /**
@@ -101,6 +102,16 @@ goog.ui.InputDatePicker.prototype.popupParentElement_ = null;
  */
 goog.ui.InputDatePicker.prototype.getDatePicker = function() {
   return this.popupDatePicker_.getDatePicker();
+};
+
+
+/**
+ * Returns the PopupDatePicker instance.
+ *
+ * @return {goog.ui.PopupDatePicker} Popup instance.
+ */
+goog.ui.InputDatePicker.prototype.getPopupDatePicker = function() {
+  return this.popupDatePicker_;
 };
 
 
@@ -173,6 +184,17 @@ goog.ui.InputDatePicker.prototype.getInputValue = function() {
 
 
 /**
+ * Sets the value of the input element from date object.
+ *
+ * @param {?goog.date.Date} date The value to set.
+ * @private
+ */
+goog.ui.InputDatePicker.prototype.setInputValueAsDate_ = function(date) {
+  this.setInputValue(date ? this.dateTimeFormatter_.format(date) : '');
+};
+
+
+/**
  * Gets the input element value and attempts to parse it as a date.
  *
  * @return {goog.date.Date?} The date object is returned if the parse
@@ -186,6 +208,13 @@ goog.ui.InputDatePicker.prototype.getInputValueAsDate_ = function() {
     // DateTime needed as parse assumes it can call getHours(), getMinutes(),
     // etc, on the date if hours and minutes aren't defined.
     if (this.dateTimeParser_.strictParse(value, date) > 0) {
+      // Parser with YYYY format string will interpret 1 as year 1 A.D.
+      // However, datepicker.setDate() method will change it into 1901.
+      // Same is true for any other pattern when number entered by user is
+      // different from number of digits in the pattern. (YY and 1 will be 1AD).
+      // See i18n/datetimeparse.js
+      // Conversion happens in goog.date.Date/DateTime constructor
+      // when it calls new Date(year...). See ui/datepicker.js.
       return date;
     }
   }
@@ -290,7 +319,12 @@ goog.ui.InputDatePicker.prototype.hidePopup = function() {
  * @private
  */
 goog.ui.InputDatePicker.prototype.onPopup_ = function(e) {
-  this.setDate(this.getInputValueAsDate_());
+  var inputValueAsDate = this.getInputValueAsDate_();
+  this.setDate(inputValueAsDate);
+  // don't overwrite the input value with empty date if input is not valid
+  if (inputValueAsDate) {
+    this.setInputValueAsDate_(this.getDatePicker().getDate());
+  }
 };
 
 
@@ -301,5 +335,5 @@ goog.ui.InputDatePicker.prototype.onPopup_ = function(e) {
  * @private
  */
 goog.ui.InputDatePicker.prototype.onDateChanged_ = function(e) {
-  this.setInputValue(e.date ? this.dateTimeFormatter_.format(e.date) : '');
+  this.setInputValueAsDate_(e.date);
 };

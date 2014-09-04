@@ -92,7 +92,10 @@ goog.graphics.CanvasGraphics.prototype.setElementStroke = function(
 
 
 /**
- * Set the transformation of an element.
+ * Set the translation and rotation of an element.
+ *
+ * If a more general affine transform is needed than this provides
+ * (e.g. skew and scale) then use setElementAffineTransform.
  * @param {goog.graphics.Element} element The element wrapper.
  * @param {number} x The x coordinate of the translation transform.
  * @param {number} y The y coordinate of the translation transform.
@@ -103,6 +106,22 @@ goog.graphics.CanvasGraphics.prototype.setElementStroke = function(
  */
 goog.graphics.CanvasGraphics.prototype.setElementTransform = function(element,
     x, y, angle, centerX, centerY) {
+  this.redraw();
+};
+
+
+/**
+ * Set the transformation of an element.
+ *
+ * Note that in this implementation this method just calls this.redraw()
+ * and the affineTransform param is unused.
+ * @param {!goog.graphics.Element} element The element wrapper.
+ * @param {!goog.graphics.AffineTransform} affineTransform The
+ *     transformation applied to this element.
+ * @override
+ */
+goog.graphics.CanvasGraphics.prototype.setElementAffineTransform =
+    function(element, affineTransform) {
   this.redraw();
 };
 
@@ -447,7 +466,7 @@ goog.graphics.CanvasGraphics.prototype.append = function(element, group) {
  * @param {goog.graphics.GroupElement=} opt_group The group wrapper
  *     element to append to.  If not specified, appends to the main canvas.
  *
- * @return {goog.graphics.EllipseElement} The newly created element.
+ * @return {!goog.graphics.EllipseElement} The newly created element.
  * @override
  */
 goog.graphics.CanvasGraphics.prototype.drawEllipse = function(cx, cy, rx, ry,
@@ -472,7 +491,7 @@ goog.graphics.CanvasGraphics.prototype.drawEllipse = function(cx, cy, rx, ry,
  * @param {goog.graphics.GroupElement=} opt_group The group wrapper
  *     element to append to. If not specified, appends to the main canvas.
  *
- * @return {goog.graphics.RectElement} The newly created element.
+ * @return {!goog.graphics.RectElement} The newly created element.
  * @override
  */
 goog.graphics.CanvasGraphics.prototype.drawRect = function(x, y, width, height,
@@ -495,7 +514,7 @@ goog.graphics.CanvasGraphics.prototype.drawRect = function(x, y, width, height,
  * @param {goog.graphics.GroupElement=} opt_group The group wrapper
  *     element to append to. If not specified, appends to the main canvas.
  *
- * @return {goog.graphics.ImageElement} The newly created element.
+ * @return {!goog.graphics.ImageElement} The newly created element.
  */
 goog.graphics.CanvasGraphics.prototype.drawImage = function(x, y, width, height,
     src, opt_group) {
@@ -521,7 +540,7 @@ goog.graphics.CanvasGraphics.prototype.drawImage = function(x, y, width, height,
  * @param {goog.graphics.GroupElement=} opt_group The group wrapper
  *     element to append to. If not specified, appends to the main canvas.
  *
- * @return {goog.graphics.TextElement} The newly created element.
+ * @return {!goog.graphics.TextElement} The newly created element.
  * @override
  */
 goog.graphics.CanvasGraphics.prototype.drawTextOnLine = function(
@@ -542,7 +561,7 @@ goog.graphics.CanvasGraphics.prototype.drawTextOnLine = function(
  * @param {goog.graphics.GroupElement=} opt_group The group wrapper
  *     element to append to. If not specified, appends to the main canvas.
  *
- * @return {goog.graphics.PathElement} The newly created element.
+ * @return {!goog.graphics.PathElement} The newly created element.
  * @override
  */
 goog.graphics.CanvasGraphics.prototype.drawPath = function(path, stroke, fill,
@@ -582,7 +601,7 @@ goog.graphics.CanvasGraphics.prototype.isRedrawRequired = function(group) {
  * @param {goog.graphics.GroupElement=} opt_group The group wrapper
  *     element to append to. If not specified, appends to the main canvas.
  *
- * @return {goog.graphics.CanvasGroupElement} The newly created group.
+ * @return {!goog.graphics.CanvasGroupElement} The newly created group.
  * @override
  */
 goog.graphics.CanvasGraphics.prototype.createGroup = function(opt_group) {

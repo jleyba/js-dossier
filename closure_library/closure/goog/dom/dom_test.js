@@ -111,7 +111,19 @@ function testGetRequiredElementDomHelper() {
   assertTrue(goog.isDefAndNotNull(el));
   assertEquals('testEl', el.id);
   assertThrows(function() {
-    domHelper.getRequiredElement('does_not_exist');
+    goog.dom.getRequiredElementByClass('does_not_exist', container);
+  });
+}
+
+function testGetRequiredElementByClassDomHelper() {
+  var domHelper = new goog.dom.DomHelper();
+  assertNotNull(domHelper.getRequiredElementByClass('test1'));
+  assertNotNull(domHelper.getRequiredElementByClass('test2'));
+
+  var container = domHelper.getElement('span-container');
+  assertNotNull(domHelper.getElementByClass('test1', container));
+  assertThrows(function() {
+    domHelper.getRequiredElementByClass('does_not_exist', container);
   });
 }
 
@@ -382,9 +394,6 @@ function testCreateDomWithTypeAttribute() {
 function testCreateDomWithClassList() {
   var el = goog.dom.createDom('div', ['foo', 'bar']);
   assertEquals('foo bar', el.className);
-
-  el = goog.dom.createDom('div', ['foo', 'foo']);
-  assertEquals('foo', el.className);
 }
 
 function testContains() {
@@ -668,6 +677,15 @@ function testGetOwnerDocument() {
   assertEquals(goog.dom.getOwnerDocument($('p1')), document);
   assertEquals(goog.dom.getOwnerDocument(document.body), document);
   assertEquals(goog.dom.getOwnerDocument(document.documentElement), document);
+}
+
+// Tests the breakages resulting in rollback cl/64715474
+function testGetOwnerDocumentNonNodeInput() {
+  // We should fail on null.
+  assertThrows(function() {
+    goog.dom.getOwnerDocument(null);
+  });
+  assertEquals(document, goog.dom.getOwnerDocument(window));
 }
 
 function testDomHelper() {
@@ -1519,8 +1537,11 @@ function testParentElement() {
   var detachedHasNoParent = goog.dom.getParentElement(detachedEl);
   assertNull(detachedHasNoParent);
 
-  if (goog.userAgent.IE && !goog.userAgent.isVersionOrHigher('9')) {
-    // svg is not supported in IE8 and below.
+  // svg is not supported in IE8 and below or in IE9 quirks mode
+  var supported = !goog.userAgent.IE ||
+      goog.userAgent.isDocumentModeOrHigher(10) ||
+      (goog.dom.isCss1CompatMode() && goog.userAgent.isDocumentModeOrHigher(9));
+  if (!supported) {
     return;
   }
 

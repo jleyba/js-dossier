@@ -72,7 +72,7 @@ See the COPYING file for details.
     assertElementsEquals([4, 5], v1);
     assertElementsEquals([-3, -3], v2);
 
-    goog.vec.vec2d.setFromValues(v2, 0, 0, 0);
+    goog.vec.vec2d.setFromValues(v2, 0, 0);
     goog.vec.vec2d.subtract(v1, v0, v2);
     assertElementsEquals([3, 3], v2);
 
@@ -82,6 +82,42 @@ See the COPYING file for details.
 
     goog.vec.vec2d.subtract(goog.vec.vec2d.subtract(v1, v0, v2), v0, v2);
     assertElementsEquals([2, 1], v2);
+  }
+
+  function testMultiply() {
+    var v0 = goog.vec.vec2d.setFromArray(goog.vec.vec2d.create(), [1, 2]);
+    var v1 = goog.vec.vec2d.setFromArray(goog.vec.vec2d.create(), [4, 5]);
+    var v2 = goog.vec.vec2d.setFromVec2d(goog.vec.vec2d.create(), v0);
+
+    goog.vec.vec2d.componentMultiply(v2, v1, v2);
+    assertElementsEquals([1, 2], v0);
+    assertElementsEquals([4, 5], v1);
+    assertElementsEquals([4, 10], v2);
+
+    goog.vec.vec2d.componentMultiply(goog.vec.vec2d.componentMultiply(v0, v1, v2), v0, v2);
+    assertElementsEquals([4, 20], v2);
+  }
+
+  function testDivide() {
+    var v0 = goog.vec.vec2d.setFromArray(goog.vec.vec2d.create(), [1, 2]);
+    var v1 = goog.vec.vec2d.setFromArray(goog.vec.vec2d.create(), [4, 5]);
+    var v2 = goog.vec.vec2d.setFromVec2d(goog.vec.vec2d.create(), v0);
+
+    goog.vec.vec2d.componentDivide(v2, v1, v2);
+    assertElementsRoughlyEqual([1, 2], v0, 10e-5);
+    assertElementsRoughlyEqual([4, 5], v1, 10e-5);
+    assertElementsRoughlyEqual([.25, .4], v2, 10e-5);
+
+    goog.vec.vec2d.setFromValues(v2, 0, 0);
+    goog.vec.vec2d.componentDivide(v1, v0, v2);
+    assertElementsRoughlyEqual([4, 2.5], v2, 10e-5);
+
+    v2 = goog.vec.vec2d.setFromVec2d(goog.vec.vec2d.create(), v0);
+    goog.vec.vec2d.componentDivide(v2, v1, v2);
+    assertElementsRoughlyEqual([.25, .4], v2, 10e-5);
+
+    goog.vec.vec2d.componentDivide(goog.vec.vec2d.componentDivide(v1, v0, v2), v0, v2);
+    assertElementsRoughlyEqual([4, 1.25], v2, 10e-5);
   }
 
   function testNegate() {
@@ -94,6 +130,18 @@ See the COPYING file for details.
 
     goog.vec.vec2d.negate(v0, v0);
     assertElementsEquals([-1, -2], v0);
+  }
+
+  function testAbs() {
+    var v0 = goog.vec.vec2d.setFromArray(goog.vec.vec2d.create(), [-1, -2]);
+    var v1 = goog.vec.vec2d.create();
+
+    goog.vec.vec2d.abs(v0, v1);
+    assertElementsEquals([1, 2], v1);
+    assertElementsEquals([-1, -2], v0);
+
+    goog.vec.vec2d.abs(v0, v0);
+    assertElementsEquals([1, 2], v0);
   }
 
   function testScale() {
@@ -189,6 +237,32 @@ See the COPYING file for details.
     assertElementsEquals([10, 20], v2);
     goog.vec.vec2d.lerp(v0, v1, .5, v2);
     assertElementsEquals([5.5, 11], v2);
+  }
+
+  function testMax() {
+    var v0 = goog.vec.vec2d.setFromValues(goog.vec.vec2d.create(), 10, 20);
+    var v1 = goog.vec.vec2d.setFromValues(goog.vec.vec2d.create(), 5, 25);
+    var v2 = goog.vec.vec2d.create();
+
+    goog.vec.vec2d.max(v0, v1, v2);
+    assertElementsEquals([10, 25], v2);
+    goog.vec.vec2d.max(v1, v0, v1);
+    assertElementsEquals([10, 25], v1);
+    goog.vec.vec2d.max(v2, 20, v2);
+    assertElementsEquals([20, 25], v2);
+  }
+
+  function testMin() {
+    var v0 = goog.vec.vec2d.setFromValues(goog.vec.vec2d.create(), 10, 20);
+    var v1 = goog.vec.vec2d.setFromValues(goog.vec.vec2d.create(), 5, 25);
+    var v2 = goog.vec.vec2d.create();
+
+    goog.vec.vec2d.min(v0, v1, v2);
+    assertElementsEquals([5, 20], v2);
+    goog.vec.vec2d.min(v1, v0, v1);
+    assertElementsEquals([5, 20], v1);
+    goog.vec.vec2d.min(v2, 10, v2);
+    assertElementsEquals([5, 10], v2);
   }
 
   function testEquals() {

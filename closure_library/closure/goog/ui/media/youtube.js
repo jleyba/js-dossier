@@ -104,6 +104,7 @@ goog.require('goog.ui.media.MediaRenderer');
  *
  * @constructor
  * @extends {goog.ui.media.MediaRenderer}
+ * @final
  */
 goog.ui.media.Youtube = function() {
   goog.ui.media.MediaRenderer.call(this);
@@ -122,7 +123,7 @@ goog.addSingletonGetter(goog.ui.media.Youtube);
  * @param {goog.ui.media.YoutubeModel} youtubeModel The youtube data model.
  * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper, used for
  *     document interaction.
- * @return {goog.ui.media.Media} A Control binded to the youtube renderer.
+ * @return {!goog.ui.media.Media} A Control binded to the youtube renderer.
  */
 goog.ui.media.Youtube.newControl = function(youtubeModel, opt_domHelper) {
   var control = new goog.ui.media.Media(
@@ -207,6 +208,7 @@ goog.ui.media.Youtube.prototype.getCssClass = function() {
  *     video.
  * @constructor
  * @extends {goog.ui.media.MediaModel}
+ * @final
  */
 goog.ui.media.YoutubeModel = function(videoId, opt_caption, opt_description) {
   goog.ui.media.MediaModel.call(
@@ -245,11 +247,11 @@ goog.inherits(goog.ui.media.YoutubeModel, goog.ui.media.MediaModel);
 // character and not create a character range like "[a-f]".
 goog.ui.media.YoutubeModel.MATCHER_ = new RegExp(
     // Lead in.
-    'https?://(?:[a-zA-Z]{2,3}\\.)?' +
+    'https?://(?:[a-zA-Z]{1,3}\\.)?' +
     // Watch URL prefix.  This should handle new URLs of the form:
     // http://www.youtube.com/watch#!v=jqxENMKaeCU&feature=related
     // where the parameters appear after "#!" instead of "?".
-    '(?:youtube\\.com/watch)' +
+    '(?:youtube\\.com/watch|youtu\\.be/watch)' +
     // Get the video id:
     // The video ID is a parameter v=[videoid] either right after the "?"
     // or after some other parameters.
@@ -278,7 +280,7 @@ goog.ui.media.YoutubeModel.MATCHER_ = new RegExp(
  * @param {string=} opt_caption An optional caption of the youtube video.
  * @param {string=} opt_description An optional description of the youtube
  *     video.
- * @return {goog.ui.media.YoutubeModel} The data model that represents the
+ * @return {!goog.ui.media.YoutubeModel} The data model that represents the
  *     youtube URL.
  * @see goog.ui.media.YoutubeModel.getVideoId()
  * @throws Error in case the parsing fails.

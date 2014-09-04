@@ -83,6 +83,11 @@ function testTrident() {
   assertFalse(goog.labs.userAgent.engine.isGecko());
   assertVersion('7.0');
   assertLowAndHighVersions('6.0', '8.0');
+
+  goog.labs.userAgent.util.setUserAgent(
+      goog.labs.userAgent.testAgents.IE_10_MOBILE);
+  assertTrue(goog.labs.userAgent.engine.isTrident());
+  assertVersion('6.0');
 }
 
 function testWebKit() {
@@ -91,6 +96,12 @@ function testWebKit() {
   assertFalse(goog.labs.userAgent.engine.isGecko());
   assertVersion('533.1');
   assertLowAndHighVersions('533.0', '534.0');
+
+  goog.labs.userAgent.util.setUserAgent(testAgents.ANDROID_BROWSER_403_ALT);
+  assertTrue(goog.labs.userAgent.engine.isWebKit());
+  assertFalse(goog.labs.userAgent.engine.isGecko());
+  assertVersion('534.30');
+  assertLowAndHighVersions('533.0', '535.0');
 
   goog.labs.userAgent.util.setUserAgent(testAgents.CHROME_25);
   assertTrue(goog.labs.userAgent.engine.isWebKit());

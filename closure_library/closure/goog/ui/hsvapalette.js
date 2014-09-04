@@ -25,7 +25,6 @@ goog.provide('goog.ui.HsvaPalette');
 
 goog.require('goog.array');
 goog.require('goog.color.alpha');
-goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
@@ -46,9 +45,11 @@ goog.require('goog.ui.HsvPalette');
  *     'goog-hsva-palette').
  * @extends {goog.ui.HsvPalette}
  * @constructor
+ * @final
  */
 goog.ui.HsvaPalette = function(opt_domHelper, opt_color, opt_alpha, opt_class) {
-  goog.base(this, opt_domHelper, opt_color, opt_class);
+  goog.ui.HsvaPalette.base(
+      this, 'constructor', opt_domHelper, opt_color, opt_class);
 
   /**
    * Alpha transparency of the currently selected color, in [0, 1]. When
@@ -63,14 +64,6 @@ goog.ui.HsvaPalette = function(opt_domHelper, opt_color, opt_alpha, opt_class) {
    * @override
    */
   this.className = opt_class || goog.getCssName('goog-hsva-palette');
-
-  /**
-   * The document which is being listened to.
-   * type {HTMLDocument}
-   * @private
-   */
-  this.document_ = opt_domHelper ? opt_domHelper.getDocument() :
-      goog.dom.getDomHelper().getDocument();
 };
 goog.inherits(goog.ui.HsvaPalette, goog.ui.HsvPalette);
 
@@ -111,7 +104,7 @@ goog.ui.HsvaPalette.prototype.getAlpha = function() {
  * @param {number} alpha The selected alpha value, in [0, 1].
  */
 goog.ui.HsvaPalette.prototype.setAlpha = function(alpha) {
-  this.setColorAlphaHelper_(this.color_, alpha);
+  this.setColorAlphaHelper_(this.color, alpha);
 };
 
 
@@ -133,7 +126,7 @@ goog.ui.HsvaPalette.prototype.setColor = function(color) {
  */
 goog.ui.HsvaPalette.prototype.getColorRgbaHex = function() {
   var alphaHex = Math.floor(this.alpha_ * 255).toString(16);
-  return this.color_ + (alphaHex.length == 1 ? '0' + alphaHex : alphaHex);
+  return this.color + (alphaHex.length == 1 ? '0' + alphaHex : alphaHex);
 };
 
 
@@ -156,13 +149,13 @@ goog.ui.HsvaPalette.prototype.setColorRgbaHex = function(color) {
  * @private
  */
 goog.ui.HsvaPalette.prototype.setColorAlphaHelper_ = function(color, alpha) {
-  var colorChange = this.color_ != color;
+  var colorChange = this.color != color;
   var alphaChange = this.alpha_ != alpha;
   this.alpha_ = alpha;
-  this.color_ = color;
+  this.color = color;
   if (colorChange) {
     // This is to prevent multiple event dispatches.
-    goog.ui.HsvaPalette.superClass_.setColor_.call(this, color);
+    this.setColorInternal(color);
   }
   if (colorChange || alphaChange) {
     this.updateUi();
@@ -173,7 +166,7 @@ goog.ui.HsvaPalette.prototype.setColorAlphaHelper_ = function(color, alpha) {
 
 /** @override */
 goog.ui.HsvaPalette.prototype.createDom = function() {
-  goog.ui.HsvaPalette.superClass_.createDom.call(this);
+  goog.ui.HsvaPalette.base(this, 'createDom');
 
   var dom = this.getDomHelper();
   this.aImageEl_ = dom.createDom(
@@ -182,15 +175,16 @@ goog.ui.HsvaPalette.prototype.createDom = function() {
       goog.dom.TagName.DIV, goog.getCssName(this.className, 'a-handle'));
   this.swatchBackdropEl_ = dom.createDom(
       goog.dom.TagName.DIV, goog.getCssName(this.className, 'swatch-backdrop'));
-  dom.appendChild(this.element_, this.aImageEl_);
-  dom.appendChild(this.element_, this.aHandleEl_);
-  dom.appendChild(this.element_, this.swatchBackdropEl_);
+  var element = this.getElement();
+  dom.appendChild(element, this.aImageEl_);
+  dom.appendChild(element, this.aHandleEl_);
+  dom.appendChild(element, this.swatchBackdropEl_);
 };
 
 
 /** @override */
 goog.ui.HsvaPalette.prototype.disposeInternal = function() {
-  goog.ui.HsvaPalette.superClass_.disposeInternal.call(this);
+  goog.ui.HsvaPalette.base(this, 'disposeInternal');
 
   delete this.aImageEl_;
   delete this.aHandleEl_;
@@ -200,14 +194,14 @@ goog.ui.HsvaPalette.prototype.disposeInternal = function() {
 
 /** @override */
 goog.ui.HsvaPalette.prototype.updateUi = function() {
-  goog.base(this, 'updateUi');
+  goog.ui.HsvaPalette.base(this, 'updateUi');
   if (this.isInDocument()) {
     var a = this.alpha_ * 255;
     var top = this.aImageEl_.offsetTop -
         Math.floor(this.aHandleEl_.offsetHeight / 2) +
         this.aImageEl_.offsetHeight * ((255 - a) / 255);
     this.aHandleEl_.style.top = top + 'px';
-    this.aImageEl_.style.backgroundColor = this.color_;
+    this.aImageEl_.style.backgroundColor = this.color;
     goog.style.setOpacity(this.swatchElement, a / 255);
   }
 };
@@ -215,7 +209,7 @@ goog.ui.HsvaPalette.prototype.updateUi = function() {
 
 /** @override */
 goog.ui.HsvaPalette.prototype.updateInput = function() {
-  if (!goog.array.equals([this.color_, this.alpha_],
+  if (!goog.array.equals([this.color, this.alpha_],
       goog.ui.HsvaPalette.parseUserInput_(this.inputElement.value))) {
     this.inputElement.value = this.getColorRgbaHex();
   }
@@ -224,15 +218,17 @@ goog.ui.HsvaPalette.prototype.updateInput = function() {
 
 /** @override */
 goog.ui.HsvaPalette.prototype.handleMouseDown = function(e) {
-  goog.base(this, 'handleMouseDown', e);
+  goog.ui.HsvaPalette.base(this, 'handleMouseDown', e);
   if (e.target == this.aImageEl_ || e.target == this.aHandleEl_) {
     // Setup value change listeners
     var b = goog.style.getBounds(this.valueBackgroundImageElement);
     this.handleMouseMoveA_(b, e);
-    this.mouseMoveListener_ = goog.events.listen(this.document_,
+    this.mouseMoveListener = goog.events.listen(
+        this.getDomHelper().getDocument(),
         goog.events.EventType.MOUSEMOVE,
         goog.bind(this.handleMouseMoveA_, this, b));
-    this.mouseUpListener_ = goog.events.listen(this.document_,
+    this.mouseUpListener = goog.events.listen(
+        this.getDomHelper().getDocument(),
         goog.events.EventType.MOUSEUP, this.handleMouseUp, false, this);
   }
 };
@@ -273,9 +269,9 @@ goog.ui.HsvaPalette.prototype.handleInput = function(e) {
  * @private
  */
 goog.ui.HsvaPalette.parseUserInput_ = function(value) {
-  if (/^#[0-9a-f]{8}$/i.test(value)) {
+  if (/^#?[0-9a-f]{8}$/i.test(value)) {
     return goog.ui.HsvaPalette.parseColorRgbaHex_(value);
-  } else if (/^#[0-9a-f]{6}$/i.test(value)) {
+  } else if (/^#?[0-9a-f]{6}$/i.test(value)) {
     return [value, 1];
   }
   return null;
@@ -285,7 +281,7 @@ goog.ui.HsvaPalette.parseUserInput_ = function(value) {
 /**
  * Parses a #rrggbbaa color string.
  * @param {string} color The color and alpha in #rrggbbaa format.
- * @return {Array} A two element array [color, alpha], where color is #rrggbb
+ * @return {!Array} A two element array [color, alpha], where color is #rrggbb
  *     and alpha is in [0, 1].
  * @private
  */

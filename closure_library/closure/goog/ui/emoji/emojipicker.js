@@ -130,6 +130,14 @@ goog.ui.emoji.EmojiPicker.DEFAULT_TAB_LOCATION =
     goog.ui.TabPane.TabLocation.TOP;
 
 
+/** @private {goog.ui.emoji.Emoji} */
+goog.ui.emoji.EmojiPicker.prototype.selectedEmoji_;
+
+
+/** @private {goog.ui.emoji.EmojiPaletteRenderer} */
+goog.ui.emoji.EmojiPicker.prototype.renderer_;
+
+
 /**
  * Number of rows per grid of emoji.
  *
@@ -544,7 +552,7 @@ goog.ui.emoji.EmojiPicker.prototype.createEmojiPage_ = function(emoji, index) {
  * default img URL. Used for delayed loading.
  *
  * @param {Array.<Array.<string>>} emoji Original emoji array.
- * @return {Array.<Array.<string>>} emoji array with all emoji pointing to the
+ * @return {!Array.<!Array.<string>>} emoji array with all emoji pointing to the
  *     default img.
  * @private
  */
@@ -565,7 +573,7 @@ goog.ui.emoji.EmojiPicker.prototype.getPlaceholderEmoji_ = function(emoji) {
  *
  * @param {Array.<Array.<string>>} emoji Emoji for this page. See
  *     {@link addEmojiGroup} for more details.
- * @return {goog.ui.emoji.EmojiPalette} the emoji page.
+ * @return {!goog.ui.emoji.EmojiPalette} the emoji page.
  * @private
  */
 goog.ui.emoji.EmojiPicker.prototype.createPlaceholderEmojiPage_ =

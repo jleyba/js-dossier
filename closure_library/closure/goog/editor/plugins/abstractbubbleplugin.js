@@ -18,10 +18,12 @@
 
 goog.provide('goog.editor.plugins.AbstractBubblePlugin');
 
+goog.require('goog.array');
 goog.require('goog.dom');
 goog.require('goog.dom.NodeType');
 goog.require('goog.dom.Range');
 goog.require('goog.dom.TagName');
+goog.require('goog.dom.classlist');
 goog.require('goog.editor.Plugin');
 goog.require('goog.editor.style');
 goog.require('goog.events');
@@ -32,7 +34,6 @@ goog.require('goog.events.actionEventWrapper');
 goog.require('goog.functions');
 goog.require('goog.string.Unicode');
 goog.require('goog.ui.Component');
-goog.require('goog.ui.Component.EventType');
 goog.require('goog.ui.editor.Bubble');
 goog.require('goog.userAgent');
 
@@ -54,14 +55,25 @@ goog.require('goog.userAgent');
  * @extends {goog.editor.Plugin}
  */
 goog.editor.plugins.AbstractBubblePlugin = function() {
-  goog.base(this);
+  goog.editor.plugins.AbstractBubblePlugin.base(this, 'constructor');
 
   /**
    * Place to register events the plugin listens to.
-   * @type {goog.events.EventHandler}
+   * @type {goog.events.EventHandler.<
+   *     !goog.editor.plugins.AbstractBubblePlugin>}
    * @protected
    */
   this.eventRegister = new goog.events.EventHandler(this);
+
+  /**
+   * Instance factory function that creates a bubble UI component.  If set to a
+   * non-null value, this function will be used to create a bubble instead of
+   * the global factory function.  It takes as parameters the bubble parent
+   * element and the z index to draw the bubble at.
+   * @type {?function(!Element, number): !goog.ui.editor.Bubble}
+   * @private
+   */
+  this.bubbleFactory_ = null;
 };
 goog.inherits(goog.editor.plugins.AbstractBubblePlugin, goog.editor.Plugin);
 
@@ -82,6 +94,15 @@ goog.editor.plugins.AbstractBubblePlugin.OPTION_LINK_CLASSNAME_ =
  */
 goog.editor.plugins.AbstractBubblePlugin.LINK_CLASSNAME_ =
     goog.getCssName('tr_bubble_link');
+
+
+/**
+ * A class name to mark elements that should be reachable by keyboard tabbing.
+ * @type {string}
+ * @private
+ */
+goog.editor.plugins.AbstractBubblePlugin.TABBABLE_CLASSNAME_ =
+    goog.getCssName('tr_bubble_tabbable');
 
 
 /**
@@ -107,30 +128,30 @@ goog.editor.plugins.AbstractBubblePlugin.defaultBubbleFactory_ = function(
 
 
 /**
- * Factory function that creates a bubble UI component. It takes as parameters
- * the bubble parent element and the z index to draw the bubble at.
+ * Global factory function that creates a bubble UI component. It takes as
+ * parameters the bubble parent element and the z index to draw the bubble at.
  * @type {function(!Element, number): !goog.ui.editor.Bubble}
  * @private
  */
-goog.editor.plugins.AbstractBubblePlugin.bubbleFactory_ =
+goog.editor.plugins.AbstractBubblePlugin.globalBubbleFactory_ =
     goog.editor.plugins.AbstractBubblePlugin.defaultBubbleFactory_;
 
 
 /**
- * Sets the bubble factory function.
+ * Sets the global bubble factory function.
  * @param {function(!Element, number): !goog.ui.editor.Bubble}
  *     bubbleFactory Function that creates a bubble for the given bubble parent
  *     element and z index.
  */
 goog.editor.plugins.AbstractBubblePlugin.setBubbleFactory = function(
     bubbleFactory) {
-  goog.editor.plugins.AbstractBubblePlugin.bubbleFactory_ = bubbleFactory;
+  goog.editor.plugins.AbstractBubblePlugin.globalBubbleFactory_ = bubbleFactory;
 };
 
 
 /**
  * Map from field id to shared bubble object.
- * @type {Object.<goog.ui.editor.Bubble>}
+ * @type {!Object.<goog.ui.editor.Bubble>}
  * @private
  */
 goog.editor.plugins.AbstractBubblePlugin.bubbleMap_ = {};
@@ -156,7 +177,7 @@ goog.editor.plugins.AbstractBubblePlugin.prototype.panelId_ = null;
 
 
 /**
- * Whether this bubble should support tabbing through the link elements. False
+ * Whether this bubble should support tabbing through elements. False
  * by default.
  * @type {boolean}
  * @private
@@ -166,9 +187,22 @@ goog.editor.plugins.AbstractBubblePlugin.prototype.keyboardNavigationEnabled_ =
 
 
 /**
- * Sets whether the bubble should support tabbing through the link elements.
- * @param {boolean} keyboardNavigationEnabled Whether the bubble should support
- *     tabbing through the link elements.
+ * Sets the instance bubble factory function.  If set to a non-null value, this
+ * function will be used to create a bubble instead of the global factory
+ * function.
+ * @param {?function(!Element, number): !goog.ui.editor.Bubble} bubbleFactory
+ *     Function that creates a bubble for the given bubble parent element and z
+ *     index.  Null to reset the factory function.
+ */
+goog.editor.plugins.AbstractBubblePlugin.prototype.setBubbleFactory = function(
+    bubbleFactory) {
+  this.bubbleFactory_ = bubbleFactory;
+};
+
+
+/**
+ * Sets whether the bubble should support tabbing through elements.
+ * @param {boolean} keyboardNavigationEnabled
  */
 goog.editor.plugins.AbstractBubblePlugin.prototype.enableKeyboardNavigation =
     function(keyboardNavigationEnabled) {
@@ -185,6 +219,16 @@ goog.editor.plugins.AbstractBubblePlugin.prototype.enableKeyboardNavigation =
 goog.editor.plugins.AbstractBubblePlugin.prototype.setBubbleParent = function(
     bubbleParent) {
   this.bubbleParent_ = bubbleParent;
+};
+
+
+/**
+ * Returns the bubble map.  Subclasses may override to use a separate map.
+ * @return {!Object.<goog.ui.editor.Bubble>}
+ * @protected
+ */
+goog.editor.plugins.AbstractBubblePlugin.prototype.getBubbleMap = function() {
+  return goog.editor.plugins.AbstractBubblePlugin.bubbleMap_;
 };
 
 
@@ -313,17 +357,18 @@ goog.editor.plugins.AbstractBubblePlugin.prototype.disable = function(field) {
   // because the next time the field is made editable again it may be in
   // a different document / iframe.
   if (field.isUneditable()) {
-    var bubble = goog.editor.plugins.AbstractBubblePlugin.bubbleMap_[field.id];
+    var bubbleMap = this.getBubbleMap();
+    var bubble = bubbleMap[field.id];
     if (bubble) {
       bubble.dispose();
-      delete goog.editor.plugins.AbstractBubblePlugin.bubbleMap_[field.id];
+      delete bubbleMap[field.id];
     }
   }
 };
 
 
 /**
- * @return {goog.ui.editor.Bubble} The shared bubble object for the field this
+ * @return {!goog.ui.editor.Bubble} The shared bubble object for the field this
  *     plugin is registered on.  Creates it if necessary.
  * @private
  */
@@ -333,14 +378,14 @@ goog.editor.plugins.AbstractBubblePlugin.prototype.getSharedBubble_ =
       this.getFieldObject().getAppWindow().document.body);
   this.dom_ = goog.dom.getDomHelper(bubbleParent);
 
-  var bubble = goog.editor.plugins.AbstractBubblePlugin.bubbleMap_[
-      this.getFieldObject().id];
+  var bubbleMap = this.getBubbleMap();
+  var bubble = bubbleMap[this.getFieldObject().id];
   if (!bubble) {
-    bubble = goog.editor.plugins.AbstractBubblePlugin.bubbleFactory_.call(null,
-        bubbleParent,
+    var factory = this.bubbleFactory_ ||
+        goog.editor.plugins.AbstractBubblePlugin.globalBubbleFactory_;
+    bubble = factory.call(null, bubbleParent,
         this.getFieldObject().getBaseZindex());
-    goog.editor.plugins.AbstractBubblePlugin.bubbleMap_[
-        this.getFieldObject().id] = bubble;
+    bubbleMap[this.getFieldObject().id] = bubble;
   }
   return bubble;
 };
@@ -483,9 +528,8 @@ goog.editor.plugins.AbstractBubblePlugin.prototype.handlePanelClosed_ =
 
 
 /**
- * In case the keyboard navigation is enabled, this will focus to the first link
- * element in the bubble when TAB is clicked. The user could still go through
- * the rest of tabbable UI elements using shift + TAB.
+ * In case the keyboard navigation is enabled, this will set focus on the first
+ * tabbable element in the bubble when TAB is clicked.
  * @override
  */
 goog.editor.plugins.AbstractBubblePlugin.prototype.handleKeyDown = function(e) {
@@ -493,10 +537,10 @@ goog.editor.plugins.AbstractBubblePlugin.prototype.handleKeyDown = function(e) {
       this.isVisible() &&
       e.keyCode == goog.events.KeyCodes.TAB && !e.shiftKey) {
     var bubbleEl = this.getSharedBubble_().getContentElement();
-    var linkEl = goog.dom.getElementByClass(
-        goog.editor.plugins.AbstractBubblePlugin.LINK_CLASSNAME_, bubbleEl);
-    if (linkEl) {
-      linkEl.focus();
+    var tabbable = goog.dom.getElementByClass(
+        goog.editor.plugins.AbstractBubblePlugin.TABBABLE_CLASSNAME_, bubbleEl);
+    if (tabbable) {
+      tabbable.focus();
       e.preventDefault();
       return true;
     }
@@ -507,8 +551,8 @@ goog.editor.plugins.AbstractBubblePlugin.prototype.handleKeyDown = function(e) {
 
 /**
  * Handles a key event on the bubble. This ensures that the focus loops through
- * the link elements found in the bubble and then the focus is got by the field
- * element.
+ * the tabbable elements found in the bubble and then the focus is got by the
+ * field element.
  * @param {goog.events.BrowserEvent} e The event.
  * @private
  */
@@ -516,11 +560,10 @@ goog.editor.plugins.AbstractBubblePlugin.prototype.onBubbleKey_ = function(e) {
   if (this.isVisible() &&
       e.keyCode == goog.events.KeyCodes.TAB) {
     var bubbleEl = this.getSharedBubble_().getContentElement();
-    var links = goog.dom.getElementsByClass(
-        goog.editor.plugins.AbstractBubblePlugin.LINK_CLASSNAME_, bubbleEl);
-    var tabbingOutOfBubble = e.shiftKey ?
-        links[0] == e.target :
-        links.length && links[links.length - 1] == e.target;
+    var tabbables = goog.dom.getElementsByClass(
+        goog.editor.plugins.AbstractBubblePlugin.TABBABLE_CLASSNAME_, bubbleEl);
+    var tabbable = e.shiftKey ? tabbables[0] : goog.array.peek(tabbables);
+    var tabbingOutOfBubble = tabbable == e.target;
     if (tabbingOutOfBubble) {
       this.getFieldObject().focus();
       e.preventDefault();
@@ -569,8 +612,9 @@ goog.editor.plugins.AbstractBubblePlugin.prototype.createLinkOption = function(
 
 
 /**
- * Helper method that creates a link with text set to linkText and optionaly
- * wires up a listener for the CLICK event or the link.
+ * Helper method that creates a link with text set to linkText and optionally
+ * wires up a listener for the CLICK event or the link. The link is navigable by
+ * tabs if {@code enableKeyboardNavigation(true)} was called.
  * @param {string} linkId The id of the link.
  * @param {string} linkText Text of the link.
  * @param {Function=} opt_onClick Optional function to call when the link is
@@ -591,7 +635,8 @@ goog.editor.plugins.AbstractBubblePlugin.prototype.createLink = function(
 
 
 /**
- * Helper method to create a link to insert into the bubble.
+ * Helper method to create a link to insert into the bubble. The link is
+ * navigable by tabs if {@code enableKeyboardNavigation(true)} was called.
  * @param {string} linkId The id of the link.
  * @param {string} linkText Text of the link.
  * @param {boolean} isAnchor Set to true to create an actual anchor tag
@@ -609,12 +654,34 @@ goog.editor.plugins.AbstractBubblePlugin.prototype.createLinkHelper = function(
       {className: goog.editor.plugins.AbstractBubblePlugin.LINK_CLASSNAME_},
       linkText);
   if (this.keyboardNavigationEnabled_) {
-    link.setAttribute('tabindex', 0);
+    this.setTabbable(link);
   }
   link.setAttribute('role', 'link');
   this.setupLink(link, linkId, opt_container);
   goog.editor.style.makeUnselectable(link, this.eventRegister);
   return link;
+};
+
+
+/**
+ * Makes the given element tabbable.
+ *
+ * <p>Elements created by createLink[Helper] are tabbable even without
+ * calling this method. Call it for other elements if needed.
+ *
+ * <p>If tabindex is not already set in the element, this function sets it to 0.
+ * You'll usually want to also call {@code enableKeyboardNavigation(true)}.
+ *
+ * @param {!Element} element
+ * @protected
+ */
+goog.editor.plugins.AbstractBubblePlugin.prototype.setTabbable =
+    function(element) {
+  if (!element.hasAttribute('tabindex')) {
+    element.setAttribute('tabindex', 0);
+  }
+  goog.dom.classlist.add(element,
+      goog.editor.plugins.AbstractBubblePlugin.TABBABLE_CLASSNAME_);
 };
 
 

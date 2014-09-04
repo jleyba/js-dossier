@@ -16,13 +16,14 @@
  * @fileoverview A pool of forward channel requests to enable real-time
  * messaging from the client to server.
  *
- * @visibility {//visibility:private}
+ * @visibility {:internal}
  */
 
 
 goog.provide('goog.labs.net.webChannel.ForwardChannelRequestPool');
 
-goog.require('goog.structs');
+goog.require('goog.array');
+goog.require('goog.string');
 goog.require('goog.structs.Set');
 
 goog.scope(function() {
@@ -37,28 +38,33 @@ var ChannelRequest = goog.labs.net.webChannel.ChannelRequest;
  * @param {number=} opt_maxPoolSize The maximum pool size.
  *
  * @constructor
+ * @final
  */
 goog.labs.net.webChannel.ForwardChannelRequestPool = function(opt_maxPoolSize) {
   /**
+   * THe max pool size as configured.
+   *
+   * @private {number}
+   */
+  this.maxPoolSizeConfigured_ = opt_maxPoolSize ||
+          goog.labs.net.webChannel.ForwardChannelRequestPool.MAX_POOL_SIZE_;
+
+  /**
    * The current size limit of the request pool. This limit is meant to be
-   * read-only for an existing channel.
+   * read-only after the channel is fully opened.
    *
-   * When SPDY is enabled, set it to the max pool size, which will
-   * be made configurable too.
+   * If SPDY is enabled, set it to the max pool size, which is also
+   * configurable.
    *
-   * @type {number}
-   * @private
-   * @const
+   * @private {number}
    */
   this.maxSize_ = ForwardChannelRequestPool.isSpdyEnabled_() ?
-      (opt_maxPoolSize ? opt_maxPoolSize :
-          goog.labs.net.webChannel.ForwardChannelRequestPool.MAX_POOL_SIZE_) :
-      1;
+      this.maxPoolSizeConfigured_ : 1;
 
   /**
    * The container for all the pending request objects.
    *
-   * @private {goog.structs.Set}
+   * @private {goog.structs.Set.<ChannelRequest>}
    */
   this.requestPool_ = null;
 
@@ -87,12 +93,38 @@ ForwardChannelRequestPool.MAX_POOL_SIZE_ = 10;
 
 
 /**
- * @return {boolean} True if SPDY is enabled for the current page.
+ * @return {boolean} True if SPDY is enabled for the current page using
+ *     chrome specific APIs.
  * @private
  */
 ForwardChannelRequestPool.isSpdyEnabled_ = function() {
   return !!(window.chrome && window.chrome.loadTimes &&
       window.chrome.loadTimes() && window.chrome.loadTimes().wasFetchedViaSpdy);
+};
+
+
+/**
+ * Once we know the client protocol (from the handshake), check if we need
+ * enable the request pool accordingly. This is more robust than using
+ * browser-internal APIs (specific to Chrome).
+ *
+ * @param {string} clientProtocol The client protocol
+ */
+ForwardChannelRequestPool.prototype.applyClientProtocol = function(
+    clientProtocol) {
+  if (this.requestPool_) {
+    return;
+  }
+
+  if (goog.string.contains(clientProtocol, 'spdy') ||
+      goog.string.contains(clientProtocol, 'quic')) {
+    this.maxSize_ = this.maxPoolSizeConfigured_;
+    this.requestPool_ = new goog.structs.Set();
+    if (this.request_) {
+      this.addRequest(this.request_);
+      this.request_ = null;
+    }
+  }
 };
 
 
@@ -199,7 +231,7 @@ ForwardChannelRequestPool.prototype.cancel = function() {
   }
 
   if (this.requestPool_ && !this.requestPool_.isEmpty()) {
-    goog.structs.forEach(this.requestPool_, function(val, key, col) {
+    goog.array.forEach(this.requestPool_.getValues(), function(val) {
       val.cancel();
     });
     this.requestPool_.clear();
@@ -222,7 +254,7 @@ ForwardChannelRequestPool.prototype.hasPendingRequest = function() {
  * Need go through the standard onRequestComplete logic to expose the max-retry
  * failure in the standard way.
  *
- * @param {!function(ChannelRequest)} onComplete The completion callback.
+ * @param {!function(!ChannelRequest)} onComplete The completion callback.
  * @return {boolean} true if any request has been forced to complete.
  */
 ForwardChannelRequestPool.prototype.forceComplete = function(onComplete) {
@@ -233,8 +265,8 @@ ForwardChannelRequestPool.prototype.forceComplete = function(onComplete) {
   }
 
   if (this.requestPool_ && !this.requestPool_.isEmpty()) {
-    goog.structs.forEach(this.requestPool_,
-        function(/** !ChannelRequest */ val, key, col) {
+    goog.array.forEach(this.requestPool_.getValues(),
+        function(val) {
           val.cancel();
           onComplete(val);
         });

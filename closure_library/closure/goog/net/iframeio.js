@@ -137,6 +137,7 @@ goog.provide('goog.net.IframeIo.IncrementalDataEvent');
 
 goog.require('goog.Timer');
 goog.require('goog.Uri');
+goog.require('goog.asserts');
 goog.require('goog.debug');
 goog.require('goog.dom');
 goog.require('goog.events');
@@ -145,6 +146,7 @@ goog.require('goog.events.EventTarget');
 goog.require('goog.events.EventType');
 goog.require('goog.json');
 goog.require('goog.log');
+goog.require('goog.log.Level');
 goog.require('goog.net.ErrorCode');
 goog.require('goog.net.EventType');
 goog.require('goog.reflect');
@@ -160,7 +162,7 @@ goog.require('goog.userAgent');
  * @extends {goog.events.EventTarget}
  */
 goog.net.IframeIo = function() {
-  goog.base(this);
+  goog.net.IframeIo.base(this, 'constructor');
 
   /**
    * Name for this IframeIo and frame
@@ -298,7 +300,8 @@ goog.net.IframeIo.handleIncrementalData = function(win, data) {
   if (iframeIo && iframeName == iframeIo.iframeName_) {
     iframeIo.handleIncrementalData_(data);
   } else {
-    goog.log.getLogger('goog.net.IframeIo').info(
+    var logger = goog.log.getLogger('goog.net.IframeIo');
+    goog.log.info(logger,
         'Incremental iframe data routed for unknown iframe');
   }
 };
@@ -316,7 +319,7 @@ goog.net.IframeIo.getNextName_ = function() {
 /**
  * Gets a static form, one for all instances of IframeIo since IE6 leaks form
  * nodes that are created/removed from the document.
- * @return {HTMLFormElement} The static form.
+ * @return {!HTMLFormElement} The static form.
  * @private
  */
 goog.net.IframeIo.getForm_ = function() {
@@ -352,6 +355,16 @@ goog.net.IframeIo.addFormInputs_ = function(form, data) {
         {'type': 'hidden', 'name': key, 'value': value});
     form.appendChild(inp);
   });
+};
+
+
+/**
+ * @return {boolean} Whether we can use readyState to monitor iframe loading.
+ * @private
+ */
+goog.net.IframeIo.useIeReadyStateCodePath_ = function() {
+  // ReadyState is only available on iframes up to IE10.
+  return goog.userAgent.IE && !goog.userAgent.isVersionOrHigher('11');
 };
 
 
@@ -447,15 +460,6 @@ goog.net.IframeIo.prototype.lastErrorCode_ = goog.net.ErrorCode.NO_ERROR;
 
 
 /**
- * Number of milliseconds after which an incomplete request will be aborted and
- * a {@link goog.net.EventType.TIMEOUT} event raised; 0 means no timeout is set.
- * @type {number}
- * @private
- */
-goog.net.IframeIo.prototype.timeoutInterval_ = 0;
-
-
-/**
  * Window timeout ID used to cancel the timeout event handler if the request
  * completes successfully.
  * @type {?number}
@@ -496,6 +500,18 @@ goog.net.IframeIo.prototype.errorHandled_;
  * @private
  */
 goog.net.IframeIo.prototype.ignoreResponse_ = false;
+
+
+/** @private {Function} */
+goog.net.IframeIo.prototype.errorChecker_;
+
+
+/** @private {Object} */
+goog.net.IframeIo.prototype.lastCustomError_;
+
+
+/** @private {?string} */
+goog.net.IframeIo.prototype.lastContentHtml_;
 
 
 /**
@@ -608,7 +624,9 @@ goog.net.IframeIo.prototype.sendFromForm = function(form, opt_uri,
 goog.net.IframeIo.prototype.abort = function(opt_failureCode) {
   if (this.active_) {
     goog.log.info(this.logger_, 'Request aborted');
-    goog.events.removeAll(this.getRequestIframe());
+    var requestIframe = this.getRequestIframe();
+    goog.asserts.assert(requestIframe);
+    goog.events.removeAll(requestIframe);
     this.complete_ = false;
     this.active_ = false;
     this.success_ = false;
@@ -779,28 +797,6 @@ goog.net.IframeIo.prototype.getErrorChecker = function() {
 
 
 /**
- * Returns the number of milliseconds after which an incomplete request will be
- * aborted, or 0 if no timeout is set.
- * @return {number} Timeout interval in milliseconds.
- */
-goog.net.IframeIo.prototype.getTimeoutInterval = function() {
-  return this.timeoutInterval_;
-};
-
-
-/**
- * Sets the number of milliseconds after which an incomplete request will be
- * aborted and a {@link goog.net.EventType.TIMEOUT} event raised; 0 means no
- * timeout is set.
- * @param {number} ms Timeout interval in milliseconds; 0 means none.
- */
-goog.net.IframeIo.prototype.setTimeoutInterval = function(ms) {
-  // TODO (pupius) - never used - doesn't look like timeouts were implemented
-  this.timeoutInterval_ = Math.max(0, ms);
-};
-
-
-/**
  * @return {boolean} Whether the server response is being ignored.
  */
 goog.net.IframeIo.prototype.isIgnoringResponse = function() {
@@ -834,9 +830,10 @@ goog.net.IframeIo.prototype.sendFormInternal_ = function() {
   // Make Iframe
   this.createIframe_();
 
-  if (goog.userAgent.IE) {
-    // In IE we simply create the frame, wait until it is ready, then post the
-    // form to the iframe and wait for the readystate to change to 'complete'
+  if (goog.net.IframeIo.useIeReadyStateCodePath_()) {
+    // In IE<11 we simply create the frame, wait until it is ready, then post
+    // the form to the iframe and wait for the readystate to change to
+    // 'complete'
 
     // Set the target to the iframe's name
     this.form_.target = this.iframeName_ || '';
@@ -934,7 +931,7 @@ goog.net.IframeIo.prototype.sendFormInternal_ = function() {
       }
     }
 
-    // Some versions of Firefox (1.5 - 1.5.07?) fail to clone the value
+    // IE and some versions of Firefox (1.5 - 1.5.07?) fail to clone the value
     // attribute for <input type="file"> nodes, which results in an empty
     // upload if the clone is submitted.  Check, and if the clone failed, submit
     // using the original form instead.
@@ -1034,7 +1031,11 @@ goog.net.IframeIo.prototype.onIframeLoaded_ = function(e) {
   }
   goog.events.unlisten(this.getRequestIframe(),
       goog.events.EventType.LOAD, this.onIframeLoaded_, false, this);
-  this.handleLoad_(this.getContentDocument_());
+  try {
+    this.handleLoad_(this.getContentDocument_());
+  } catch (ex) {
+    this.handleError_(goog.net.ErrorCode.ACCESS_DENIED);
+  }
 };
 
 
@@ -1110,6 +1111,7 @@ goog.net.IframeIo.prototype.handleError_ = function(errorCode,
     this.complete_ = true;
     this.lastErrorCode_ = errorCode;
     if (errorCode == goog.net.ErrorCode.CUSTOM_ERROR) {
+      goog.asserts.assert(goog.isDef(opt_customError));
       this.lastCustomError_ = opt_customError;
     }
     this.dispatchEvent(goog.net.EventType.COMPLETE);
@@ -1305,9 +1307,11 @@ goog.net.IframeIo.prototype.getContentDocument_ = function() {
  */
 goog.net.IframeIo.prototype.getRequestIframe = function() {
   if (this.iframe_) {
-    return /** @type {HTMLIFrameElement} */(goog.userAgent.IE ? this.iframe_ :
-        goog.dom.getFrameContentDocument(this.iframe_).getElementById(
-            this.iframeName_ + goog.net.IframeIo.INNER_FRAME_SUFFIX));
+    return /** @type {HTMLIFrameElement} */(
+        goog.net.IframeIo.useIeReadyStateCodePath_() ?
+            this.iframe_ :
+            goog.dom.getFrameContentDocument(this.iframe_).getElementById(
+                this.iframeName_ + goog.net.IframeIo.INNER_FRAME_SUFFIX));
   }
   return null;
 };
@@ -1354,6 +1358,7 @@ goog.net.IframeIo.prototype.testForFirefoxSilentError_ = function() {
  * @param {Object} data The data associated with the event.
  * @extends {goog.events.Event}
  * @constructor
+ * @final
  */
 goog.net.IframeIo.IncrementalDataEvent = function(data) {
   goog.events.Event.call(this, goog.net.EventType.INCREMENTAL_DATA);

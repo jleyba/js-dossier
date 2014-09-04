@@ -23,16 +23,21 @@
 
 goog.provide('goog.ui.FilteredMenu');
 
+goog.require('goog.a11y.aria');
+goog.require('goog.a11y.aria.AutoCompleteValues');
+goog.require('goog.a11y.aria.State');
 goog.require('goog.dom');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('goog.events.InputHandler');
 goog.require('goog.events.KeyCodes');
+goog.require('goog.object');
 goog.require('goog.string');
 goog.require('goog.style');
 goog.require('goog.ui.Component');
 goog.require('goog.ui.FilterObservingMenuItem');
 goog.require('goog.ui.Menu');
+goog.require('goog.ui.MenuItem');
 goog.require('goog.userAgent');
 
 
@@ -49,6 +54,7 @@ goog.ui.FilteredMenu = function(opt_renderer, opt_domHelper) {
   goog.ui.Menu.call(this, opt_domHelper, opt_renderer);
 };
 goog.inherits(goog.ui.FilteredMenu, goog.ui.Menu);
+goog.tagUnsealableClass(goog.ui.FilteredMenu);
 
 
 /**
@@ -58,6 +64,16 @@ goog.inherits(goog.ui.FilteredMenu, goog.ui.Menu);
 goog.ui.FilteredMenu.EventType = {
   /** Dispatched after the component filter criteria has been changed. */
   FILTER_CHANGED: 'filterchange'
+};
+
+
+/**
+ * Filter menu element ids.
+ * @enum {string}
+ * @private
+ */
+goog.ui.FilteredMenu.Id_ = {
+  CONTENT_ELEMENT: 'content-el'
 };
 
 
@@ -135,6 +151,12 @@ goog.ui.FilteredMenu.prototype.filterStr_;
 
 
 /**
+ * @private {Element}
+ */
+goog.ui.FilteredMenu.prototype.contentElement_;
+
+
+/**
  * Map of child nodes that shouldn't be affected by filtering.
  * @type {Object|undefined}
  * @private
@@ -153,11 +175,20 @@ goog.ui.FilteredMenu.prototype.createDom = function() {
       this.filterInput_ = dom.createDom('input', {'type': 'text'}));
   var element = this.getElement();
   dom.appendChild(element, el);
-  this.contentElement_ = dom.createDom('div',
-      goog.getCssName(this.getRenderer().getCssClass(), 'content'));
+  var contentElementId = this.makeId(goog.ui.FilteredMenu.Id_.CONTENT_ELEMENT);
+  this.contentElement_ = dom.createDom('div', goog.object.create(
+      'class', goog.getCssName(this.getRenderer().getCssClass(), 'content'),
+      'id', contentElementId));
   dom.appendChild(element, this.contentElement_);
 
   this.initFilterInput_();
+
+  goog.a11y.aria.setState(this.filterInput_, goog.a11y.aria.State.AUTOCOMPLETE,
+      goog.a11y.aria.AutoCompleteValues.LIST);
+  goog.a11y.aria.setState(this.filterInput_, goog.a11y.aria.State.OWNS,
+      contentElementId);
+  goog.a11y.aria.setState(this.filterInput_, goog.a11y.aria.State.EXPANDED,
+      true);
 };
 
 
@@ -310,7 +341,7 @@ goog.ui.FilteredMenu.prototype.getFilterFromIndex = function() {
 
 /**
  * Gets a list of items entered in the search box.
- * @return {Array.<string>} The entered items.
+ * @return {!Array.<string>} The entered items.
  */
 goog.ui.FilteredMenu.prototype.getEnteredItems = function() {
   return this.enteredItems_ || [];
@@ -444,17 +475,7 @@ goog.ui.FilteredMenu.prototype.filterItems_ = function(str) {
           if (pos) {
             pos++;
           }
-
-          if (str == '') {
-            child.setContent(caption);
-          } else {
-            child.setContent(this.getDomHelper().createDom('span', null,
-                caption.substr(0, pos),
-                this.getDomHelper().createDom(
-                    'b', null, caption.substr(pos, str.length)),
-                caption.substr(pos + str.length,
-                    caption.length - str.length - pos)));
-          }
+          this.boldContent_(child, pos, str.length);
         } else {
           child.setVisible(false);
         }
@@ -467,6 +488,40 @@ goog.ui.FilteredMenu.prototype.filterItems_ = function(str) {
     }
   }
   this.filterStr_ = str;
+};
+
+
+/**
+ * Updates the content of the given menu item, bolding the part of its caption
+ * from start and through the next len characters.
+ * @param {!goog.ui.Control} child The control to bold content on.
+ * @param {number} start The index at which to start bolding.
+ * @param {number} len How many characters to bold.
+ * @private
+ */
+goog.ui.FilteredMenu.prototype.boldContent_ = function(child, start, len) {
+  var caption = child.getCaption();
+  var boldedCaption;
+  if (len == 0) {
+    boldedCaption = this.getDomHelper().createTextNode(caption);
+  } else {
+    var preMatch = caption.substr(0, start);
+    var match = caption.substr(start, len);
+    var postMatch = caption.substr(start + len);
+    boldedCaption = this.getDomHelper().createDom(
+        'span',
+        null,
+        preMatch,
+        this.getDomHelper().createDom('b', null, match),
+        postMatch);
+  }
+  var accelerator = child.getAccelerator && child.getAccelerator();
+  if (accelerator) {
+    child.setContent([boldedCaption, this.getDomHelper().createDom('span',
+        goog.ui.MenuItem.ACCELERATOR_CLASS, accelerator)]);
+  } else {
+    child.setContent(boldedCaption);
+  }
 };
 
 
@@ -506,6 +561,9 @@ goog.ui.FilteredMenu.prototype.setHighlightedIndex = function(index) {
   goog.ui.FilteredMenu.superClass_.setHighlightedIndex.call(this, index);
   var contentEl = this.getContentElement();
   var el = this.getHighlighted() ? this.getHighlighted().getElement() : null;
+  if (this.filterInput_) {
+    goog.a11y.aria.setActiveDescendant(this.filterInput_, el);
+  }
 
   if (el && goog.dom.contains(contentEl, el)) {
     var contentTop = goog.userAgent.IE && !goog.userAgent.isVersionOrHigher(8) ?

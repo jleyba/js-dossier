@@ -92,7 +92,7 @@
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>15.0</version>
+      <version>17.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.inject</groupId>
@@ -113,7 +113,7 @@
     <dependency>
       <groupId>com.google.javascript</groupId>
       <artifactId>closure-compiler</artifactId>
-      <version>v20131014</version>
+      <version>v20140814</version>
     </dependency>
     <dependency>
       <groupId>com.ibm.icu</groupId>
@@ -134,7 +134,7 @@
     <dependency>
       <groupId>com.google.protobuf</groupId>
       <artifactId>protobuf-java</artifactId>
-      <version>2.4.1</version>
+      <version>2.5.0</version>
     </dependency>
     <dependency>
       <groupId>com.github.rjeschke</groupId>

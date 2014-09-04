@@ -21,10 +21,15 @@ goog.setTestOnly('goog.dom.classlist_test');
 
 goog.require('goog.dom');
 goog.require('goog.dom.classlist');
+goog.require('goog.testing.ExpectedFailures');
 goog.require('goog.testing.jsunit');
 
-
+var expectedFailures = new goog.testing.ExpectedFailures();
 var classlist = goog.dom.classlist;
+
+function tearDown() {
+  expectedFailures.handleTearDown();
+}
 
 function testGet() {
   var el = document.createElement('div');
@@ -184,6 +189,30 @@ function testEnableNotAddingMultiples() {
   assertEquals('A B', el.className);
 }
 
+function testEnableAllRemove() {
+  var elem = document.createElement('div');
+  elem.className = 'foo bar baz';
+
+  // Test removing some classes (some not present).
+  goog.dom.classlist.enableAll(elem, ['a', 'bar'], false /* enable */);
+  assertTrue(goog.dom.classlist.contains(elem, 'foo'));
+  assertFalse(goog.dom.classlist.contains(elem, 'bar'));
+  assertTrue(goog.dom.classlist.contains(elem, 'baz'));
+  assertFalse(goog.dom.classlist.contains(elem, 'a'));
+}
+
+function testEnableAllAdd() {
+  var elem = document.createElement('div');
+  elem.className = 'foo bar';
+
+  // Test adding some classes (some duplicate).
+  goog.dom.classlist.enableAll(elem, ['a', 'bar', 'baz'], true /* enable */);
+  assertTrue(goog.dom.classlist.contains(elem, 'foo'));
+  assertTrue(goog.dom.classlist.contains(elem, 'bar'));
+  assertTrue(goog.dom.classlist.contains(elem, 'baz'));
+  assertTrue(goog.dom.classlist.contains(elem, 'a'));
+}
+
 function testSwap() {
   var el = goog.dom.getElement('p1');
   classlist.set(el, 'SOMECLASS FIRST');
@@ -210,18 +239,21 @@ function testToggle() {
   classlist.set(el, 'SOMECLASS FIRST');
 
   assertTrue('Should have FIRST class', classlist.contains(el, 'FIRST'));
-  assertTrue('Should have SOMECLASS class', classlist.contains(el, 'SOMECLASS'));
+  assertTrue('Should have SOMECLASS class',
+      classlist.contains(el, 'SOMECLASS'));
 
   var ret = classlist.toggle(el, 'FIRST');
 
   assertFalse('Should not have FIRST class', classlist.contains(el, 'FIRST'));
-  assertTrue('Should have SOMECLASS class', classlist.contains(el, 'SOMECLASS'));
+  assertTrue('Should have SOMECLASS class',
+      classlist.contains(el, 'SOMECLASS'));
   assertFalse('Return value should have been false', ret);
 
   ret = classlist.toggle(el, 'FIRST');
 
   assertTrue('Should have FIRST class', classlist.contains(el, 'FIRST'));
-  assertTrue('Should have SOMECLASS class', classlist.contains(el, 'SOMECLASS'));
+  assertTrue('Should have SOMECLASS class',
+      classlist.contains(el, 'SOMECLASS'));
   assertTrue('Return value should have been true', ret);
 }
 
@@ -241,4 +273,3 @@ function testAddRemoveString() {
   classlist.addRemove(el, 'D', 'B');
   assertEquals('B', el.className);
 }
-

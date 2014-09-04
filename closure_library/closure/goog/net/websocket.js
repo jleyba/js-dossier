@@ -65,7 +65,7 @@ goog.require('goog.log');
  * @extends {goog.events.EventTarget}
  */
 goog.net.WebSocket = function(opt_autoReconnect, opt_getNextReconnect) {
-  goog.base(this);
+  goog.net.WebSocket.base(this, 'constructor');
 
   /**
    * True if the web socket should automatically reconnect or not.
@@ -136,6 +136,10 @@ goog.net.WebSocket.prototype.closeExpected_ = false;
  * @private
  */
 goog.net.WebSocket.prototype.reconnectAttempt_ = 0;
+
+
+/** @private {?number} */
+goog.net.WebSocket.prototype.reconnectTimer_ = null;
 
 
 /**
@@ -403,11 +407,11 @@ goog.net.WebSocket.prototype.onClose_ = function(event) {
 /**
  * Called when a new message arrives from the server.
  *
- * @param {MessageEvent} event The web socket message event.
+ * @param {MessageEvent.<string>} event The web socket message event.
  * @private
  */
 goog.net.WebSocket.prototype.onMessage_ = function(event) {
-  var message = /** @type {string} */ (event.data);
+  var message = event.data;
   this.dispatchEvent(new goog.net.WebSocket.MessageEvent(message));
 };
 
@@ -440,7 +444,7 @@ goog.net.WebSocket.prototype.clearReconnectTimer_ = function() {
 
 /** @override */
 goog.net.WebSocket.prototype.disposeInternal = function() {
-  goog.base(this, 'disposeInternal');
+  goog.net.WebSocket.base(this, 'disposeInternal');
   this.close();
 };
 
@@ -452,9 +456,11 @@ goog.net.WebSocket.prototype.disposeInternal = function() {
  * @param {string} message The raw message coming from the web socket.
  * @extends {goog.events.Event}
  * @constructor
+ * @final
  */
 goog.net.WebSocket.MessageEvent = function(message) {
-  goog.base(this, goog.net.WebSocket.EventType.MESSAGE);
+  goog.net.WebSocket.MessageEvent.base(
+      this, 'constructor', goog.net.WebSocket.EventType.MESSAGE);
 
   /**
    * The new message from the web socket.
@@ -473,9 +479,11 @@ goog.inherits(goog.net.WebSocket.MessageEvent, goog.events.Event);
  * @param {string} data The error data.
  * @extends {goog.events.Event}
  * @constructor
+ * @final
  */
 goog.net.WebSocket.ErrorEvent = function(data) {
-  goog.base(this, goog.net.WebSocket.EventType.ERROR);
+  goog.net.WebSocket.ErrorEvent.base(
+      this, 'constructor', goog.net.WebSocket.EventType.ERROR);
 
   /**
    * The error data coming from the web socket.

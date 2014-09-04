@@ -169,6 +169,7 @@ goog.require('goog.events.EventTarget');
 goog.require('goog.events.EventType');
 goog.require('goog.history.Event');
 goog.require('goog.history.EventType');
+goog.require('goog.labs.userAgent.device');
 goog.require('goog.memoize');
 goog.require('goog.string');
 goog.require('goog.userAgent');
@@ -287,7 +288,7 @@ goog.History = function(opt_invisible, opt_blankPageUrl, opt_input,
 
   /**
    * An object to keep track of the history event listeners.
-   * @type {goog.events.EventHandler}
+   * @type {goog.events.EventHandler.<!goog.History>}
    * @private
    */
   this.eventHandler_ = new goog.events.EventHandler(this);
@@ -488,7 +489,8 @@ goog.History.prototype.setEnabled = function(enable) {
           this.window_, goog.events.EventType.HASHCHANGE, this.onHashChange_);
       this.enabled_ = true;
       this.dispatchEvent(new goog.history.Event(this.getToken(), false));
-    } else if (!goog.userAgent.IE || this.documentLoaded) {
+    } else if (!(goog.userAgent.IE && !goog.labs.userAgent.device.isMobile()) ||
+               this.documentLoaded) {
       // Start dispatching history events if all necessary loading has
       // completed (always true for browsers other than IE.)
       this.eventHandler_.listen(this.timer_, goog.Timer.TICK,
@@ -647,7 +649,7 @@ goog.History.prototype.setHistoryState_ = function(token, replace, opt_title) {
       this.setHash_(token, replace);
 
       if (!goog.History.isOnHashChangeSupported()) {
-        if (goog.userAgent.IE) {
+        if (goog.userAgent.IE && !goog.labs.userAgent.device.isMobile()) {
           // IE must save state using the iframe.
           this.setIframeToken_(token, replace, opt_title);
         }
@@ -994,5 +996,6 @@ goog.History.EventType = goog.history.EventType;
  * @extends {goog.events.Event}
  * @constructor
  * @deprecated Use goog.history.Event.
+ * @final
  */
 goog.History.Event = goog.history.Event;

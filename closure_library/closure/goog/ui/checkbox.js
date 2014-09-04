@@ -63,6 +63,7 @@ goog.ui.Checkbox = function(opt_checked, opt_domHelper, opt_renderer) {
       opt_checked : goog.ui.Checkbox.State.UNCHECKED;
 };
 goog.inherits(goog.ui.Checkbox, goog.ui.Control);
+goog.tagUnsealableClass(goog.ui.Checkbox);
 
 
 /**
@@ -177,7 +178,7 @@ goog.ui.Checkbox.prototype.toggle = function() {
 
 /** @override */
 goog.ui.Checkbox.prototype.enterDocument = function() {
-  goog.base(this, 'enterDocument');
+  goog.ui.Checkbox.base(this, 'enterDocument');
   if (this.isHandleMouseEvents()) {
     var handler = this.getHandler();
     // Listen to the label, if it was set.
@@ -225,7 +226,7 @@ goog.ui.Checkbox.prototype.enterDocument = function() {
  * @override
  */
 goog.ui.Checkbox.prototype.setEnabled = function(enabled) {
-  goog.base(this, 'setEnabled', enabled);
+  goog.ui.Checkbox.base(this, 'setEnabled', enabled);
   var el = this.getElement();
   if (el) {
     el.tabIndex = this.isEnabled() ? 0 : -1;
@@ -242,7 +243,7 @@ goog.ui.Checkbox.prototype.handleClickOrSpace_ = function(e) {
   e.stopPropagation();
   var eventType = this.checked_ ? goog.ui.Component.EventType.UNCHECK :
       goog.ui.Component.EventType.CHECK;
-  if (this.isEnabled() && this.dispatchEvent(eventType)) {
+  if (this.isEnabled() && !e.target.href && this.dispatchEvent(eventType)) {
     e.preventDefault();  // Prevent scrolling in Chrome if SPACE is pressed.
     this.toggle();
     this.dispatchEvent(goog.ui.Component.EventType.CHANGE);

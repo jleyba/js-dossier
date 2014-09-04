@@ -23,9 +23,13 @@ goog.provide('goog.net.xpc.IframePollingTransport.Sender');
 
 goog.require('goog.array');
 goog.require('goog.dom');
+goog.require('goog.log');
+goog.require('goog.log.Level');
 goog.require('goog.net.xpc');
+goog.require('goog.net.xpc.CfgFields');
 goog.require('goog.net.xpc.CrossPageChannelRole');
 goog.require('goog.net.xpc.Transport');
+goog.require('goog.net.xpc.TransportTypes');
 goog.require('goog.userAgent');
 
 
@@ -44,9 +48,10 @@ goog.require('goog.userAgent');
  *     the correct window.
  * @constructor
  * @extends {goog.net.xpc.Transport}
+ * @final
  */
 goog.net.xpc.IframePollingTransport = function(channel, opt_domHelper) {
-  goog.base(this, opt_domHelper);
+  goog.net.xpc.IframePollingTransport.base(this, 'constructor', opt_domHelper);
 
   /**
    * The channel this transport belongs to.
@@ -133,6 +138,62 @@ goog.net.xpc.IframePollingTransport.prototype.initialized_ = false;
 goog.net.xpc.IframePollingTransport.prototype.reconnectFrame_ = null;
 
 
+/** @private {goog.net.xpc.IframePollingTransport.Receiver} */
+goog.net.xpc.IframePollingTransport.prototype.ackReceiver_;
+
+
+/** @private {goog.net.xpc.IframePollingTransport.Sender} */
+goog.net.xpc.IframePollingTransport.prototype.ackSender_;
+
+
+/** @private */
+goog.net.xpc.IframePollingTransport.prototype.ackIframeElm_;
+
+
+/** @private */
+goog.net.xpc.IframePollingTransport.prototype.ackWinObj_;
+
+
+/** @private */
+goog.net.xpc.IframePollingTransport.prototype.checkLocalFramesPresentCb_;
+
+
+/** @private */
+goog.net.xpc.IframePollingTransport.prototype.deliveryQueue_;
+
+
+/** @private */
+goog.net.xpc.IframePollingTransport.prototype.msgIframeElm_;
+
+
+/** @private */
+goog.net.xpc.IframePollingTransport.prototype.msgReceiver_;
+
+
+/** @private */
+goog.net.xpc.IframePollingTransport.prototype.msgSender_;
+
+
+/** @private */
+goog.net.xpc.IframePollingTransport.prototype.msgWinObj_;
+
+
+/** @private */
+goog.net.xpc.IframePollingTransport.prototype.rcvdConnectionSetupAck_;
+
+
+/** @private */
+goog.net.xpc.IframePollingTransport.prototype.sentConnectionSetupAck_;
+
+
+/** @private {boolean} */
+goog.net.xpc.IframePollingTransport.prototype.sentConnectionSetup_;
+
+
+/** @private */
+goog.net.xpc.IframePollingTransport.prototype.parts_;
+
+
 /**
  * The string used to prefix all iframe names and IDs.
  * @type {string}
@@ -195,7 +256,7 @@ goog.net.xpc.IframePollingTransport.prototype.getPeerFrames_ = function() {
 /**
  * Safely retrieves the peer frame with the specified name.
  * @param {string} frameName The name of the peer frame to retrieve.
- * @return {Window} The peer frame with the specified name.
+ * @return {!Window} The peer frame with the specified name.
  * @private
  */
 goog.net.xpc.IframePollingTransport.prototype.getPeerFrame_ = function(
@@ -246,7 +307,7 @@ goog.net.xpc.IframePollingTransport.prototype.constructSenderFrames_ =
 /**
  * Constructs a sending frame the the given id.
  * @param {string} id The id.
- * @return {Element} The constructed frame.
+ * @return {!Element} The constructed frame.
  * @private
  */
 goog.net.xpc.IframePollingTransport.prototype.constructSenderFrame_ =
@@ -286,7 +347,7 @@ goog.net.xpc.IframePollingTransport.prototype.maybeInnerPeerReconnect_ =
 
   goog.log.log(goog.net.xpc.logger, goog.log.Level.FINEST,
       'Inner peer reconnect triggered.');
-  this.channel_.name = goog.net.xpc.getRandomString(10);
+  this.channel_.updateChannelNameAndCatalog(goog.net.xpc.getRandomString(10));
   goog.log.log(goog.net.xpc.logger, goog.log.Level.FINEST,
       'switching channels: ' + this.channel_.name);
   this.deconstructSenderFrames_();
@@ -686,7 +747,7 @@ goog.net.xpc.IframePollingTransport.prototype.send =
 
 /** @override */
 goog.net.xpc.IframePollingTransport.prototype.disposeInternal = function() {
-  goog.base(this, 'disposeInternal');
+  goog.net.xpc.IframePollingTransport.base(this, 'disposeInternal');
 
   var receivers = goog.net.xpc.IframePollingTransport.receivers_;
   goog.array.remove(receivers, this.msgReceiver_);
@@ -812,6 +873,7 @@ goog.net.xpc.IframePollingTransport.startRcvTimer_ = function() {
  * @constructor
  * @param {string} url The url the other document will use for polling.
  * @param {Object} windowObj The frame used for sending information to.
+ * @final
  */
 goog.net.xpc.IframePollingTransport.Sender = function(url, windowObj) {
   /**
@@ -880,6 +942,7 @@ goog.net.xpc.IframePollingTransport.Sender.prototype.send = function(payload) {
  * @param {Object} windowObj The window-object to poll for location-changes.
  * @param {Function} callback The callback-function to be called when
  *     location has changed.
+ * @final
  */
 goog.net.xpc.IframePollingTransport.Receiver = function(transport,
                                                         windowObj,

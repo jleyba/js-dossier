@@ -16,7 +16,13 @@
  * @fileoverview Utilities used by goog.labs.userAgent tools. These functions
  * should not be used outside of goog.labs.userAgent.*.
  *
- * @visibility {//visibility:private}
+ * @visibility {//closure/goog/bin/sizetests:__pkg__}
+ * @visibility {//closure/goog/dom:__subpackages__}
+ * @visibility {//closure/goog/style:__pkg__}
+ * @visibility {//closure/goog/testing:__pkg__}
+ * @visibility {//closure/goog/useragent:__subpackages__}
+ * @visibility {//testing/puppet/modules:__pkg__} *
+ *
  * @author nnaze@google.com (Nathan Naze)
  */
 
@@ -26,23 +32,53 @@ goog.require('goog.string');
 
 
 /**
+ * Gets the native userAgent string from navigator if it exists.
+ * If navigator or navigator.userAgent string is missing, returns an empty
+ * string.
+ * @return {string}
+ * @private
+ */
+goog.labs.userAgent.util.getNativeUserAgentString_ = function() {
+  var navigator = goog.labs.userAgent.util.getNavigator_();
+  if (navigator) {
+    var userAgent = navigator.userAgent;
+    if (userAgent) {
+      return userAgent;
+    }
+  }
+  return '';
+};
+
+
+/**
+ * Getter for the native navigator.
+ * This is a separate function so it can be stubbed out in testing.
+ * @return {Navigator}
+ * @private
+ */
+goog.labs.userAgent.util.getNavigator_ = function() {
+  return goog.global.navigator;
+};
+
+
+/**
  * A possible override for applications which wish to not check
  * navigator.userAgent but use a specified value for detection instead.
  * @private {string}
  */
 goog.labs.userAgent.util.userAgent_ =
-    goog.global['navigator'] ? goog.global['navigator'].userAgent : '';
+    goog.labs.userAgent.util.getNativeUserAgentString_();
 
 
 /**
  * Applications may override browser detection on the built in
  * navigator.userAgent object by setting this string. Set to null to use the
  * browser object instead.
- * @param {?string} userAgent the User-Agent override
+ * @param {?string=} opt_userAgent The User-Agent override.
  */
-goog.labs.userAgent.util.setUserAgent = function(userAgent) {
-  goog.labs.userAgent.util.userAgent_ = userAgent ||
-      (goog.global['navigator'] ? goog.global['navigator'].userAgent : '');
+goog.labs.userAgent.util.setUserAgent = function(opt_userAgent) {
+  goog.labs.userAgent.util.userAgent_ = opt_userAgent ||
+      goog.labs.userAgent.util.getNativeUserAgentString_();
 };
 
 
@@ -56,11 +92,22 @@ goog.labs.userAgent.util.getUserAgent = function() {
 
 /**
  * @param {string} str
- * @return {boolean} Whether the user agent contains the given string.
+ * @return {boolean} Whether the user agent contains the given string, ignoring
+ *     case.
  */
 goog.labs.userAgent.util.matchUserAgent = function(str) {
   var userAgent = goog.labs.userAgent.util.getUserAgent();
   return goog.string.contains(userAgent, str);
+};
+
+
+/**
+ * @param {string} str
+ * @return {boolean} Whether the user agent contains the given string.
+ */
+goog.labs.userAgent.util.matchUserAgentIgnoreCase = function(str) {
+  var userAgent = goog.labs.userAgent.util.getUserAgent();
+  return goog.string.caseInsensitiveContains(userAgent, str);
 };
 
 

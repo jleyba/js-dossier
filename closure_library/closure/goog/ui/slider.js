@@ -17,12 +17,16 @@
  * range by dragging a thumb. The selected value is exposed through getValue().
  *
  * To decorate, the slider should be bound to an element with the class name
- * 'goog-slider-[vertical / horizontal]' containing a child with the classname
- * 'goog-slider-thumb', whose position is set to relative.
+ * 'goog-slider' containing a child with the class name 'goog-slider-thumb',
+ * whose position is set to relative.
  * Note that you won't be able to see these elements unless they are styled.
  *
+ * Slider orientation is horizontal by default.
+ * Use setOrientation(goog.ui.Slider.Orientation.VERTICAL) for a vertical
+ * slider.
+ *
  * Decorate Example:
- * <div id="slider" class="goog-slider-horizontal">
+ * <div id="slider" class="goog-slider">
  *   <div class="goog-slider-thumb"></div>
  * </div>
  *
@@ -52,14 +56,17 @@ goog.require('goog.ui.SliderBase');
 /**
  * This creates a slider object.
  * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper.
+ * @param {(function(number):?string)=} opt_labelFn An optional function mapping
+ *     slider values to a description of the value.
  * @constructor
  * @extends {goog.ui.SliderBase}
  */
-goog.ui.Slider = function(opt_domHelper) {
-  goog.ui.SliderBase.call(this, opt_domHelper);
+goog.ui.Slider = function(opt_domHelper, opt_labelFn) {
+  goog.ui.SliderBase.call(this, opt_domHelper, opt_labelFn);
   this.rangeModel.setExtent(0);
 };
 goog.inherits(goog.ui.Slider, goog.ui.SliderBase);
+goog.tagUnsealableClass(goog.ui.Slider);
 
 
 /**

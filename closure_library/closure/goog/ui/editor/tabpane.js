@@ -21,6 +21,7 @@
 
 goog.provide('goog.ui.editor.TabPane');
 
+goog.require('goog.asserts');
 goog.require('goog.dom.TagName');
 goog.require('goog.dom.classlist');
 goog.require('goog.events.EventHandler');
@@ -40,13 +41,14 @@ goog.require('goog.ui.TabBar');
  * @param {string=} opt_caption Optional caption of the tab pane.
  * @constructor
  * @extends {goog.ui.Component}
+ * @final
  */
 goog.ui.editor.TabPane = function(dom, opt_caption) {
-  goog.base(this, dom);
+  goog.ui.editor.TabPane.base(this, 'constructor', dom);
 
   /**
    * The event handler used to register events.
-   * @type {goog.events.EventHandler}
+   * @type {goog.events.EventHandler.<!goog.ui.editor.TabPane>}
    * @private
    */
   this.eventHandler_ = new goog.events.EventHandler(this);
@@ -152,10 +154,11 @@ goog.ui.editor.TabPane.prototype.addTab = function(id, caption, tooltip,
 
 /** @override */
 goog.ui.editor.TabPane.prototype.enterDocument = function() {
-  goog.base(this, 'enterDocument');
+  goog.ui.editor.TabPane.base(this, 'enterDocument');
 
   // Get the root element and add a class name to it.
   var root = this.getElement();
+  goog.asserts.assert(root);
   goog.dom.classlist.add(root, goog.getCssName('tr-tabpane'));
 
   // Add the tabs.

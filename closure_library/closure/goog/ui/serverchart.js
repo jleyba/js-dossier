@@ -62,6 +62,7 @@ goog.require('goog.ui.Component');
  *
  * @deprecated Google Chart Server has been deprecated. See
  *     https://developers.google.com/chart/image/ for details.
+ * @final
  */
 goog.ui.ServerChart = function(type, opt_width, opt_height, opt_domHelper,
     opt_uri) {
@@ -638,7 +639,7 @@ goog.ui.ServerChart.prototype.setBackgroundFill = function(fill) {
 /**
  * Returns the background fill.
  *
- * @return {Array.<Object>} An array of background fill specifications.
+ * @return {!Array.<Object>} An array of background fill specifications.
  *     If the fill specification string is in an unsupported format, the method
  *    returns an empty array.
  */
@@ -720,7 +721,7 @@ goog.ui.ServerChart.prototype.setSize = function(opt_width, opt_height) {
 /**
  * Returns the chart size.
  *
- * @return {Array.<string>} [Width, Height].
+ * @return {!Array.<string>} [Width, Height].
  */
 goog.ui.ServerChart.prototype.getSize = function() {
   var sizeStr = this.uri_.getParameterValue(goog.ui.ServerChart.UriParam.SIZE);
@@ -1668,7 +1669,7 @@ goog.ui.ServerChart.EXTENDED_UPPER_BOUND =
  * Converts a single number to an encoded data value suitable for ChartServer.
  * The TEXT encoding is the number in decimal; the SIMPLE encoding is a single
  * character, and the EXTENDED encoding is two characters.  See
- * http://code.google.com/apis/chart/docs/data_formats.html for the detailed
+ * https://developers.google.com/chart/image/docs/data_formats for the detailed
  * specification of these encoding formats.
  *
  * @private
@@ -1824,6 +1825,7 @@ goog.ui.ServerChart.Event = {
  * @constructor
  * @param {string} uri The overly-long URI string.
  * @extends {goog.events.Event}
+ * @final
  */
 goog.ui.ServerChart.UriTooLongEvent = function(uri) {
   goog.events.Event.call(this, goog.ui.ServerChart.Event.URI_TOO_LONG);

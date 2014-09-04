@@ -18,6 +18,8 @@
 
 goog.provide('goog.object');
 
+goog.require('goog.array');
+
 
 /**
  * Calls a function for each element in an object/map/hash.
@@ -434,6 +436,27 @@ goog.object.setIfUndefined = function(obj, key, value) {
 
 
 /**
+ * Compares two objects for equality using === on the values.
+ *
+ * @param {!Object.<K,V>} a
+ * @param {!Object.<K,V>} b
+ * @return {boolean}
+ * @template K,V
+ */
+goog.object.equals = function(a, b) {
+  if (!goog.array.equals(goog.object.getKeys(a), goog.object.getKeys(b))) {
+    return false;
+  }
+  for (var k in a) {
+    if (a[k] !== b[k]) {
+      return false;
+    }
+  }
+  return true;
+};
+
+
+/**
  * Does a flat clone of the object.
  *
  * @param {Object.<K,V>} obj Object to clone.
@@ -525,10 +548,12 @@ goog.object.PROTOTYPE_FIELDS_ = [
  * var o = {};
  * goog.object.extend(o, {a: 0, b: 1});
  * o; // {a: 0, b: 1}
- * goog.object.extend(o, {c: 2});
- * o; // {a: 0, b: 1, c: 2}
+ * goog.object.extend(o, {b: 2, c: 3});
+ * o; // {a: 0, b: 2, c: 3}
  *
- * @param {Object} target  The object to modify.
+ * @param {Object} target The object to modify. Existing properties will be
+ *     overwritten if they are also present in one of the objects in
+ *     {@code var_args}.
  * @param {...Object} var_args The objects from which values will be copied.
  */
 goog.object.extend = function(target, var_args) {

@@ -48,6 +48,7 @@ goog.require('goog.events.EventType');
 goog.require('goog.events.KeyCodes');
 goog.require('goog.functions');
 goog.require('goog.log');
+goog.require('goog.log.Level');
 goog.require('goog.string');
 goog.require('goog.string.Unicode');
 goog.require('goog.style');
@@ -153,7 +154,7 @@ goog.editor.Field = function(id, opt_doc) {
   }
 
   /**
-   * @type {goog.events.EventHandler}
+   * @type {goog.events.EventHandler.<!goog.editor.Field>}
    * @protected
    */
   this.eventRegister = new goog.events.EventHandler(this);
@@ -176,6 +177,12 @@ goog.editor.Field = function(id, opt_doc) {
    * @protected
    */
   this.originalElement = this.originalDomHelper.getElement(this.id);
+
+  /**
+   * @private {boolean}
+   */
+  this.followLinkInNewWindow_ =
+      goog.editor.BrowserFeature.FOLLOWS_EDITABLE_LINKS;
 
   // Default to the same window as the field is in.
   this.appWindow_ = this.originalDomHelper.getWindow();
@@ -459,7 +466,12 @@ goog.editor.Field.prototype.addListener = function(type, listener, opt_capture,
       this.usesIframe()) {
     elem = elem.ownerDocument;
   }
-  this.eventRegister.listen(elem, type, listener, opt_capture, opt_handler);
+  if (opt_handler) {
+    this.eventRegister.listenWithScope(
+        elem, type, listener, opt_capture, opt_handler);
+  } else {
+    this.eventRegister.listen(elem, type, listener, opt_capture);
+  }
 };
 
 
@@ -875,7 +887,7 @@ goog.editor.Field.prototype.setupChangeListeners_ = function() {
       new goog.async.Delay(this.handleSelectionChangeTimer_,
                            goog.editor.Field.SELECTION_CHANGE_FREQUENCY_, this);
 
-  if (goog.editor.BrowserFeature.FOLLOWS_EDITABLE_LINKS) {
+  if (this.followLinkInNewWindow_) {
     this.addListener(
         goog.events.EventType.CLICK, goog.editor.Field.cancelLinkClick_);
   }
@@ -1006,6 +1018,17 @@ goog.editor.Field.prototype.removeAllWrappers = function() {
 
 
 /**
+ * Sets whether activating a hyperlink in this editable field will open a new
+ *     window or not.
+ * @param {boolean} followLinkInNewWindow
+ */
+goog.editor.Field.prototype.setFollowLinkInNewWindow =
+    function(followLinkInNewWindow) {
+  this.followLinkInNewWindow_ = followLinkInNewWindow;
+};
+
+
+/**
  * List of mutation events in Gecko browsers.
  * @type {Array.<string>}
  * @protected
@@ -1063,8 +1086,9 @@ goog.editor.Field.prototype.handleBeforeChangeKeyEvent_ = function(e) {
       // #2: to block a Firefox-specific bug where Macs try to navigate
       // back a page when you hit command+left arrow or comamnd-right arrow.
       // See https://bugzilla.mozilla.org/show_bug.cgi?id=341886
-      // TODO(nicksantos): Get Firefox to fix this.
+      // This was fixed in Firefox 29, but still exists in older versions.
       (goog.userAgent.GECKO && e.metaKey &&
+       !goog.userAgent.isVersionOrHigher(29) &&
        (e.keyCode == goog.events.KeyCodes.LEFT ||
         e.keyCode == goog.events.KeyCodes.RIGHT));
 
@@ -2066,7 +2090,7 @@ goog.editor.Field.prototype.getCleanContents = function() {
 /**
  * Get the copy of the editable field element, which has the innerHTML set
  * correctly.
- * @return {Element} The copy of the editable field.
+ * @return {!Element} The copy of the editable field.
  * @protected
  */
 goog.editor.Field.prototype.getFieldCopy = function() {
@@ -2287,7 +2311,7 @@ goog.editor.Field.prototype.focusAndPlaceCursorAtStart = function() {
   // TODO(user): Refactor the code using this and related methods. We should
   // only mess with the selection in the case where there is not an existing
   // selection in the field.
-  if (goog.editor.BrowserFeature.HAS_IE_RANGES || goog.userAgent.WEBKIT) {
+  if (goog.editor.BrowserFeature.HAS_IE_RANGES || !goog.userAgent.GECKO) {
     this.placeCursorAtStart();
   }
   this.focus();
@@ -2615,8 +2639,8 @@ goog.editor.Field.prototype.attachIframe = function(iframe) {
 
 /**
  * @param {Object} extraStyles A map of extra styles.
- * @return {goog.editor.icontent.FieldFormatInfo} The FieldFormatInfo object for
- *     this field's configuration.
+ * @return {!goog.editor.icontent.FieldFormatInfo} The FieldFormatInfo
+ *     object for this field's configuration.
  * @protected
  */
 goog.editor.Field.prototype.getFieldFormatInfo = function(extraStyles) {
@@ -2701,7 +2725,7 @@ goog.editor.Field.prototype.clearFieldLoadListener_ = function() {
 
 
 /**
- * @return {Object} Get the HTML attributes for this field's iframe.
+ * @return {!Object} Get the HTML attributes for this field's iframe.
  * @protected
  */
 goog.editor.Field.prototype.getIframeAttributes = function() {

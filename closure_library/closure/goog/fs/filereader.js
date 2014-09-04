@@ -34,9 +34,10 @@ goog.require('goog.fs.ProgressEvent');
  *
  * @constructor
  * @extends {goog.events.EventTarget}
+ * @final
  */
 goog.fs.FileReader = function() {
-  goog.base(this);
+  goog.fs.FileReader.base(this, 'constructor');
 
   /**
    * The underlying FileReader object.
@@ -122,7 +123,7 @@ goog.fs.FileReader.prototype.abort = function() {
   try {
     this.reader_.abort();
   } catch (e) {
-    throw new goog.fs.Error(e.code, 'aborting read');
+    throw new goog.fs.Error(e, 'aborting read');
   }
 };
 
@@ -148,7 +149,7 @@ goog.fs.FileReader.prototype.getResult = function() {
  */
 goog.fs.FileReader.prototype.getError = function() {
   return this.reader_.error &&
-      new goog.fs.Error(this.reader_.error.code, 'reading file');
+      new goog.fs.Error(this.reader_.error, 'reading file');
 };
 
 
@@ -165,7 +166,7 @@ goog.fs.FileReader.prototype.dispatchProgressEvent_ = function(event) {
 
 /** @override */
 goog.fs.FileReader.prototype.disposeInternal = function() {
-  goog.base(this, 'disposeInternal');
+  goog.fs.FileReader.base(this, 'disposeInternal');
   delete this.reader_;
 };
 

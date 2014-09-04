@@ -22,15 +22,24 @@ goog.provide('goog.stringTest');
 goog.require('goog.functions');
 goog.require('goog.object');
 goog.require('goog.string');
+goog.require('goog.string.Unicode');
+goog.require('goog.testing.MockControl');
 goog.require('goog.testing.PropertyReplacer');
 goog.require('goog.testing.jsunit');
 
 goog.setTestOnly('goog.stringTest');
 
-var stubs = new goog.testing.PropertyReplacer();
+var stubs;
+var mockControl;
+
+function setUp() {
+  stubs = new goog.testing.PropertyReplacer();
+  mockControl = new goog.testing.MockControl();
+}
 
 function tearDown() {
   stubs.reset();
+  mockControl.$tearDown();
 }
 
 
@@ -198,7 +207,7 @@ function testCanonicalizeNewlines() {
 
 
 // === tests for goog.string.normalizeWhitespace ===
-function testWhitespace() {
+function testNormalizeWhitespace() {
   assertEquals('All whitespace chars should be replaced with a normal space',
                goog.string.normalizeWhitespace('\xa0 \n\t \xa0 \n\t'),
                '         ');
@@ -455,21 +464,37 @@ function testNewLineToBr() {
 
 // === tests for goog.string.htmlEscape and .unescapeEntities ===
 function testHtmlEscapeAndUnescapeEntities() {
-  var text = '"x1 < x2 && y2 > y1"';
-  var html = '&quot;x1 &lt; x2 &amp;&amp; y2 &gt; y1&quot;';
+  var text = '\'"x1 < x2 && y2 > y1"\'';
+  var html = '&#39;&quot;x1 &lt; x2 &amp;&amp; y2 &gt; y1&quot;&#39;';
 
-  assertEquals('Testing htmlEscape', goog.string.htmlEscape(text), html);
-  assertEquals('Testing htmlEscape', goog.string.htmlEscape(text, false), html);
-  assertEquals('Testing htmlEscape', goog.string.htmlEscape(text, true), html);
-  assertEquals('Testing unescapeEntities',
-               goog.string.unescapeEntities(html), text);
+  assertEquals('Testing htmlEscape', html, goog.string.htmlEscape(text));
+  assertEquals('Testing htmlEscape', html, goog.string.htmlEscape(text, false));
+  assertEquals('Testing htmlEscape', html, goog.string.htmlEscape(text, true));
+  assertEquals('Testing unescapeEntities', text,
+               goog.string.unescapeEntities(html));
 
-  assertEquals('escape -> unescape',
-               goog.string.unescapeEntities(goog.string.htmlEscape(text)),
-               text);
-  assertEquals('unescape -> escape',
-               goog.string.htmlEscape(goog.string.unescapeEntities(html)),
-               html);
+  assertEquals('escape -> unescape', text,
+               goog.string.unescapeEntities(goog.string.htmlEscape(text)));
+  assertEquals('unescape -> escape', html,
+               goog.string.htmlEscape(goog.string.unescapeEntities(html)));
+}
+
+function testHtmlUnescapeEntitiesWithDocument() {
+  var documentMock = {
+    createElement: mockControl.createFunctionMock('createElement')
+  };
+  var divMock = document.createElement('div');
+  documentMock.createElement('div').$returns(divMock);
+  mockControl.$replayAll();
+
+  var html = '&lt;a&b&gt;';
+  var text = '<a&b>';
+
+  assertEquals('wrong unescaped value',
+      text, goog.string.unescapeEntitiesWithDocument(html, documentMock));
+  assertNotEquals('divMock.innerHTML should have been used', '',
+      divMock.innerHTML);
+  mockControl.$verifyAll();
 }
 
 function testHtmlEscapeAndUnescapeEntitiesUsingDom() {
@@ -506,6 +531,19 @@ function testHtmlEscapeAndUnescapePureXmlEntities_() {
   assertEquals('unescape -> escape',
                goog.string.htmlEscape(
                    goog.string.unescapePureXmlEntities_(html)), html);
+}
+
+function testHtmlEscapeDetectDoubleEscaping() {
+  stubs.set(goog.string, 'DETECT_DOUBLE_ESCAPING', true);
+  assertEquals('&#101; &lt; pi', goog.string.htmlEscape('e < pi'));
+  assertEquals('&#101; &lt; pi', goog.string.htmlEscape('e < pi', true));
+}
+
+function testHtmlEscapeNullByte() {
+  assertEquals('&#0;', goog.string.htmlEscape('\x00'));
+  assertEquals('&#0;', goog.string.htmlEscape('\x00', true));
+  assertEquals('\\x00', goog.string.htmlEscape('\\x00'));
+  assertEquals('\\x00', goog.string.htmlEscape('\\x00', true));
 }
 
 var globalXssVar = 0;
@@ -586,12 +624,27 @@ function testUnescapeEntitiesPreservesWhitespace() {
 
 
 // === tests for goog.string.whitespaceEscape ===
-function testWhiteSpaceEscape() {
+function testWhitespaceEscape() {
   assertEquals('Should be the same',
       goog.string.whitespaceEscape('one two  three   four    five     '),
       'one two &#160;three &#160; four &#160; &#160;five &#160; &#160; ');
 }
 
+
+// === tests for goog.string.preserveSpaces ===
+function testPreserveSpaces() {
+  var nbsp = goog.string.Unicode.NBSP;
+  assertEquals('', goog.string.preserveSpaces(''));
+  assertEquals(nbsp + 'a', goog.string.preserveSpaces(' a'));
+  assertEquals(nbsp + ' a', goog.string.preserveSpaces('  a'));
+  assertEquals(nbsp + ' ' + nbsp + 'a', goog.string.preserveSpaces('   a'));
+  assertEquals('a ' + nbsp + 'b', goog.string.preserveSpaces('a  b'));
+  assertEquals('a\n' + nbsp + 'b', goog.string.preserveSpaces('a\n b'));
+
+  // We don't care about trailing spaces.
+  assertEquals('a ', goog.string.preserveSpaces('a '));
+  assertEquals('a \n' + nbsp + 'b', goog.string.preserveSpaces('a \n b'));
+}
 
 
 // === tests for goog.string.stripQuotes ===
@@ -1171,3 +1224,16 @@ function testSplitLimit() {
       goog.string.splitLimit('bababaababaaabb', '', 10));
 }
 
+function testContains() {
+  assertTrue(goog.string.contains('moot', 'moo'));
+  assertFalse(goog.string.contains('moo', 'moot'));
+  assertFalse(goog.string.contains('Moot', 'moo'));
+  assertTrue(goog.string.contains('moo', 'moo'));
+}
+
+function testCaseInsensitiveContains() {
+  assertTrue(goog.string.caseInsensitiveContains('moot', 'moo'));
+  assertFalse(goog.string.caseInsensitiveContains('moo', 'moot'));
+  assertTrue(goog.string.caseInsensitiveContains('Moot', 'moo'));
+  assertTrue(goog.string.caseInsensitiveContains('moo', 'moo'));
+}

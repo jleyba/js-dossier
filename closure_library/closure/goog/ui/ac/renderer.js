@@ -25,6 +25,7 @@ goog.require('goog.a11y.aria');
 goog.require('goog.a11y.aria.Role');
 goog.require('goog.a11y.aria.State');
 goog.require('goog.array');
+goog.require('goog.asserts');
 goog.require('goog.dispose');
 goog.require('goog.dom');
 goog.require('goog.dom.NodeType');
@@ -63,7 +64,7 @@ goog.require('goog.ui.ac.AutoComplete');
  */
 goog.ui.ac.Renderer = function(opt_parentNode, opt_customRenderer,
     opt_rightAlign, opt_useStandardHighlighting) {
-  goog.base(this);
+  goog.ui.ac.Renderer.base(this, 'constructor');
 
   /**
    * Reference to the parent element that will hold the autocomplete elements
@@ -232,6 +233,14 @@ goog.ui.ac.Renderer = function(opt_parentNode, opt_customRenderer,
   this.menuFadeDuration_ = 0;
 
   /**
+   * Whether we should limit the dropdown from extending past the bottom of the
+   * screen and instead show a scrollbar on the dropdown.
+   * @type {boolean}
+   * @private
+   */
+  this.showScrollbarsIfTooLarge_ = false;
+
+  /**
    * Animation in progress, if any.
    * @type {goog.fx.Animation|undefined}
    */
@@ -254,6 +263,13 @@ goog.ui.ac.Renderer.prototype.anchorElement_;
  * @private
  */
 goog.ui.ac.Renderer.prototype.widthProvider_;
+
+
+/**
+ * A flag used to make sure we highlight only one match in the rendered row.
+ * @private {boolean}
+ */
+goog.ui.ac.Renderer.prototype.wasHighlightedAtLeastOnce_;
 
 
 /**
@@ -315,6 +331,16 @@ goog.ui.ac.Renderer.prototype.setRightAlign = function(align) {
  */
 goog.ui.ac.Renderer.prototype.getRightAlign = function() {
   return this.rightAlign_;
+};
+
+
+/**
+ * @param {boolean} show Whether we should limit the dropdown from extending
+ *     past the bottom of the screen and instead show a scrollbar on the
+ *     dropdown.
+ */
+goog.ui.ac.Renderer.prototype.setShowScrollbarsIfTooLarge = function(show) {
+  this.showScrollbarsIfTooLarge_ = show;
 };
 
 
@@ -487,7 +513,7 @@ goog.ui.ac.Renderer.prototype.hiliteRow = function(index) {
     this.hilitedRow_ = index;
     if (rowDiv) {
       goog.dom.classlist.addAll(rowDiv, [this.activeClassName,
-          this.legacyActiveClassName_]);
+        this.legacyActiveClassName_]);
       if (this.target_) {
         goog.a11y.aria.setActiveDescendant(this.target_, rowDiv);
       }
@@ -502,7 +528,8 @@ goog.ui.ac.Renderer.prototype.hiliteRow = function(index) {
  */
 goog.ui.ac.Renderer.prototype.hiliteNone = function() {
   if (this.hilitedRow_ >= 0) {
-    goog.dom.classlist.removeAll(this.rowDivs_[this.hilitedRow_],
+    goog.dom.classlist.removeAll(
+        goog.asserts.assert(this.rowDivs_[this.hilitedRow_]),
         [this.activeClassName, this.legacyActiveClassName_]);
   }
 };
@@ -530,13 +557,14 @@ goog.ui.ac.Renderer.prototype.hiliteId = function(id) {
 /**
  * Sets CSS classes on autocomplete conatainer element.
  *
- * @param {Element} elt The container element.
+ * @param {Element} elem The container element.
  * @private
  */
-goog.ui.ac.Renderer.prototype.setMenuClasses_ = function(elt) {
+goog.ui.ac.Renderer.prototype.setMenuClasses_ = function(elem) {
+  goog.asserts.assert(elem);
   // Legacy clients may set the renderer's className to a space-separated list
   // or even have a trailing space.
-  goog.dom.classlist.addAll(elt, goog.string.trim(this.className).split(' '));
+  goog.dom.classlist.addAll(elem, goog.string.trim(this.className).split(' '));
 };
 
 
@@ -549,6 +577,11 @@ goog.ui.ac.Renderer.prototype.maybeCreateElement_ = function() {
   if (!this.element_) {
     // Make element and add it to the parent
     var el = this.dom_.createDom('div', {style: 'display:none'});
+    if (this.showScrollbarsIfTooLarge_) {
+      // Make sure that the dropdown will get scrollbars if it isn't large
+      // enough to show all rows.
+      el.style.overflowY = 'auto';
+    }
     this.element_ = el;
     this.setMenuClasses_(el);
     goog.a11y.aria.setRole(el, goog.a11y.aria.Role.LISTBOX);
@@ -650,10 +683,23 @@ goog.ui.ac.Renderer.prototype.reposition = function() {
     var anchorElement = this.anchorElement_ || this.target_;
     var anchorCorner = this.getAnchorCorner();
 
+    var overflowMode = goog.positioning.Overflow.ADJUST_X_EXCEPT_OFFSCREEN;
+    if (this.showScrollbarsIfTooLarge_) {
+      // positionAtAnchor will set the height of this.element_ when it runs
+      // (because of RESIZE_HEIGHT), and it will never increase it relative to
+      // its current value when it runs again. But if the user scrolls their
+      // page, then we might actually want a bigger height when the dropdown is
+      // displayed next time. So we clear the height before calling
+      // positionAtAnchor, so it is free to set the height as large as it
+      // chooses.
+      this.element_.style.height = '';
+      overflowMode |= goog.positioning.Overflow.RESIZE_HEIGHT;
+    }
+
     goog.positioning.positionAtAnchor(
         anchorElement, anchorCorner,
         this.element_, goog.positioning.flipCornerVertical(anchorCorner),
-        null, null, goog.positioning.Overflow.ADJUST_X_EXCEPT_OFFSCREEN);
+        null, null, overflowMode);
 
     if (this.topAlign_) {
       // This flickers, but is better than the alternative of positioning
@@ -713,7 +759,7 @@ goog.ui.ac.Renderer.prototype.disposeInternal = function() {
   goog.dispose(this.animation_);
   this.parent_ = null;
 
-  goog.base(this, 'disposeInternal');
+  goog.ui.ac.Renderer.base(this, 'disposeInternal');
 };
 
 
@@ -730,13 +776,15 @@ goog.ui.ac.Renderer.prototype.disposeInternal = function() {
  */
 goog.ui.ac.Renderer.prototype.renderRowContents_ =
     function(row, token, node) {
-  node.innerHTML = goog.string.htmlEscape(row.data.toString());
+  goog.dom.setTextContent(node, row.data.toString());
 };
 
 
 /**
  * Goes through a node and all of its child nodes, replacing HTML text that
  * matches a token with <b>token</b>.
+ * The replacement will happen on the first match or all matches depending on
+ * this.highlightAllTokens_ value.
  *
  * @param {Node} node Node to match.
  * @param {string|Array.<string>} tokenOrArray Token to match or array of tokens
@@ -745,10 +793,26 @@ goog.ui.ac.Renderer.prototype.renderRowContents_ =
  *     word, in whatever order and however many times, will be highlighted.
  * @private
  */
+goog.ui.ac.Renderer.prototype.startHiliteMatchingText_ =
+    function(node, tokenOrArray) {
+  this.wasHighlightedAtLeastOnce_ = false;
+  this.hiliteMatchingText_(node, tokenOrArray);
+};
+
+
+/**
+ * @param {Node} node Node to match.
+ * @param {string|Array.<string>} tokenOrArray Token to match or array of tokens
+ *     to match.
+ * @private
+ */
 goog.ui.ac.Renderer.prototype.hiliteMatchingText_ =
     function(node, tokenOrArray) {
-  if (node.nodeType == goog.dom.NodeType.TEXT) {
+  if (!this.highlightAllTokens_ && this.wasHighlightedAtLeastOnce_) {
+    return;
+  }
 
+  if (node.nodeType == goog.dom.NodeType.TEXT) {
     var rest = null;
     if (goog.isArray(tokenOrArray) &&
         tokenOrArray.length > 1 &&
@@ -818,6 +882,8 @@ goog.ui.ac.Renderer.prototype.hiliteMatchingText_ =
       // Append the remaining text nodes to the end.
       var remainingTextNodes = goog.array.slice(textNodes, maxNumToBold * 2);
       node.nodeValue = remainingTextNodes.join('');
+
+      this.wasHighlightedAtLeastOnce_ = true;
     } else if (rest) {
       this.hiliteMatchingText_(node, rest);
     }
@@ -898,7 +964,7 @@ goog.ui.ac.Renderer.prototype.getTokenRegExp_ = function(tokenOrArray) {
  *
  * @param {Object} row Object representing row.
  * @param {string} token Token to highlight.
- * @return {Element} An element with the rendered HTML.
+ * @return {!Element} An element with the rendered HTML.
  */
 goog.ui.ac.Renderer.prototype.renderRowHtml = function(row, token) {
   // Create and return the element.
@@ -914,7 +980,7 @@ goog.ui.ac.Renderer.prototype.renderRowHtml = function(row, token) {
   }
 
   if (token && this.useStandardHighlighting_) {
-    this.hiliteMatchingText_(elem, token);
+    this.startHiliteMatchingText_(elem, token);
   }
 
   goog.dom.classlist.add(elem, this.rowClassName);
@@ -1005,13 +1071,18 @@ goog.ui.ac.Renderer.CustomRenderer = function() {
 
 /**
  * Renders the autocomplete box. May be set to null.
+ *
+ * Because of the type, this function cannot be documented with param JSDoc.
+ *
+ * The function expects the following parameters:
+ *
+ * renderer, goog.ui.ac.Renderer: The autocomplete renderer.
+ * element, Element: The main element that controls the rendered autocomplete.
+ * rows, Array: The current set of rows being displayed.
+ * token, string: The current token that has been entered. *
+ *
  * @type {function(goog.ui.ac.Renderer, Element, Array, string)|
  *        null|undefined}
- * param {goog.ui.ac.Renderer} renderer The autocomplete renderer.
- * param {Element} element The main element that controls the rendered
- *     autocomplete.
- * param {Array} rows The current set of rows being displayed.
- * param {string} token The current token that has been entered.
  */
 goog.ui.ac.Renderer.CustomRenderer.prototype.render = function(
     renderer, element, rows, token) {

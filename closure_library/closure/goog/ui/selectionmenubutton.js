@@ -47,7 +47,7 @@ goog.require('goog.ui.registry');
  *     decorate the menu button; defaults to {@link goog.ui.MenuButtonRenderer}.
  * @param {goog.ui.MenuItemRenderer=} opt_itemRenderer Optional menu item
  *     renderer.
- * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM hepler, used for
+ * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper, used for
  *     document interaction.
  * @constructor
  * @extends {goog.ui.MenuButton}
@@ -63,6 +63,7 @@ goog.ui.SelectionMenuButton = function(opt_renderer,
   this.initialItemRenderer_ = opt_itemRenderer || null;
 };
 goog.inherits(goog.ui.SelectionMenuButton, goog.ui.MenuButton);
+goog.tagUnsealableClass(goog.ui.SelectionMenuButton);
 
 
 /**
@@ -99,7 +100,7 @@ goog.ui.SelectionMenuButton.prototype.initialItemRenderer_;
  * @override
  */
 goog.ui.SelectionMenuButton.prototype.setEnabled = function(enable) {
-  goog.base(this, 'setEnabled', enable);
+  goog.ui.SelectionMenuButton.base(this, 'setEnabled', enable);
   this.setCheckboxEnabled(enable);
 };
 

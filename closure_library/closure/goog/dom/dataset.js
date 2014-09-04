@@ -61,6 +61,11 @@ goog.dom.dataset.set = function(element, key, value) {
  */
 goog.dom.dataset.get = function(element, key) {
   if (element.dataset) {
+    // Android browser (non-chrome) returns the empty string for
+    // element.dataset['doesNotExist'].
+    if (!(key in element.dataset)) {
+      return null;
+    }
     return element.dataset[key];
   } else {
     return element.getAttribute(goog.dom.dataset.PREFIX_ +
@@ -91,7 +96,7 @@ goog.dom.dataset.remove = function(element, key) {
  *
  * @param {Element} element DOM node to get the custom data attribute from.
  * @param {string} key Key for the custom data attribute.
- * @return {boolean} Whether the attibute exists.
+ * @return {boolean} Whether the attribute exists.
  */
 goog.dom.dataset.has = function(element, key) {
   if (element.dataset) {

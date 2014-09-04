@@ -21,6 +21,8 @@ goog.provide('goog.module.ModuleInfo');
 
 goog.require('goog.Disposable');
 goog.require('goog.functions');
+/** @suppress {extraRequire} */
+goog.require('goog.module');
 goog.require('goog.module.BaseModule');
 goog.require('goog.module.ModuleLoadCallback');
 
@@ -36,6 +38,7 @@ goog.require('goog.module.ModuleLoadCallback');
  * @param {string} id The module's ID.
  * @constructor
  * @extends {goog.Disposable}
+ * @final
  */
 goog.module.ModuleInfo = function(deps, id) {
   goog.Disposable.call(this);
@@ -165,7 +168,7 @@ goog.module.ModuleInfo.prototype.setModuleConstructor = function(
  *    is the module context.
  * @param {Object=} opt_handler Optional handler under whose scope to execute
  *     the callback.
- * @return {goog.module.ModuleLoadCallback} Reference to the callback
+ * @return {!goog.module.ModuleLoadCallback} Reference to the callback
  *     object.
  */
 goog.module.ModuleInfo.prototype.registerEarlyCallback = function(
@@ -180,7 +183,7 @@ goog.module.ModuleInfo.prototype.registerEarlyCallback = function(
  *    is the module context.
  * @param {Object=} opt_handler Optional handler under whose scope to execute
  *     the callback.
- * @return {goog.module.ModuleLoadCallback} Reference to the callback
+ * @return {!goog.module.ModuleLoadCallback} Reference to the callback
  *     object.
  */
 goog.module.ModuleInfo.prototype.registerCallback = function(
@@ -195,7 +198,7 @@ goog.module.ModuleInfo.prototype.registerCallback = function(
  *    is the failure type.
  * @param {Object=} opt_handler Optional handler under whose scope to execute
  *     the callback.
- * @return {goog.module.ModuleLoadCallback} Reference to the callback
+ * @return {!goog.module.ModuleLoadCallback} Reference to the callback
  *     object.
  */
 goog.module.ModuleInfo.prototype.registerErrback = function(
@@ -212,7 +215,7 @@ goog.module.ModuleInfo.prototype.registerErrback = function(
  *     is the module context.
  * @param {Object=} opt_handler Optional handler under whose scope to execute
  *     the callback.
- * @return {goog.module.ModuleLoadCallback} Reference to the callback
+ * @return {!goog.module.ModuleLoadCallback} Reference to the callback
  *     object.
  * @private
  */

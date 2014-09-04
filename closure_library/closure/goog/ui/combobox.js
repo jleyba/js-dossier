@@ -23,6 +23,7 @@ goog.provide('goog.ui.ComboBox');
 goog.provide('goog.ui.ComboBoxItem');
 
 goog.require('goog.Timer');
+goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.classlist');
 goog.require('goog.events.EventType');
@@ -48,14 +49,17 @@ goog.require('goog.userAgent');
 /**
  * A ComboBox control.
  * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper.
- * @param {goog.ui.Menu=} opt_menu Optional menu.
+ * @param {goog.ui.Menu=} opt_menu Optional menu component.
+ *     This menu is disposed of by this control.
+ * @param {goog.ui.LabelInput=} opt_labelInput Optional label input.
+ *     This label input is disposed of by this control.
  * @extends {goog.ui.Component}
  * @constructor
  */
-goog.ui.ComboBox = function(opt_domHelper, opt_menu) {
+goog.ui.ComboBox = function(opt_domHelper, opt_menu, opt_labelInput) {
   goog.ui.Component.call(this, opt_domHelper);
 
-  this.labelInput_ = new goog.ui.LabelInput();
+  this.labelInput_ = opt_labelInput || new goog.ui.LabelInput();
   this.enabled_ = true;
 
   // TODO(user): Allow lazy creation of menus/menu items
@@ -63,6 +67,7 @@ goog.ui.ComboBox = function(opt_domHelper, opt_menu) {
   this.setupMenu_();
 };
 goog.inherits(goog.ui.ComboBox, goog.ui.Component);
+goog.tagUnsealableClass(goog.ui.ComboBox);
 
 
 /**
@@ -208,7 +213,7 @@ goog.ui.ComboBox.prototype.createDom = function() {
   this.setElementInternal(this.getDomHelper().createDom('span',
       goog.getCssName('goog-combobox'), this.input_, this.button_));
   if (this.useDropdownArrow_) {
-    this.button_.innerHTML = '&#x25BC;';
+    goog.dom.setTextContent(this.button_, '\u25BC');
     goog.style.setUnselectable(this.button_, true /* unselectable */);
   }
   this.input_.setAttribute('label', this.defaultText_);
@@ -228,8 +233,17 @@ goog.ui.ComboBox.prototype.createDom = function() {
 goog.ui.ComboBox.prototype.setEnabled = function(enabled) {
   this.enabled_ = enabled;
   this.labelInput_.setEnabled(enabled);
-  goog.dom.classlist.enable(this.getElement(),
+  goog.dom.classlist.enable(
+      goog.asserts.assert(this.getElement()),
       goog.getCssName('goog-combobox-disabled'), !enabled);
+};
+
+
+/**
+ * @return {boolean} Whether the menu item is enabled.
+ */
+goog.ui.ComboBox.prototype.isEnabled = function() {
+  return this.enabled_;
 };
 
 
@@ -603,7 +617,8 @@ goog.ui.ComboBox.prototype.positionMenu = function() {
  */
 goog.ui.ComboBox.prototype.showMenu_ = function() {
   this.menu_.setVisible(true);
-  goog.dom.classlist.add(this.getElement(),
+  goog.dom.classlist.add(
+      goog.asserts.assert(this.getElement()),
       goog.getCssName('goog-combobox-active'));
 };
 
@@ -614,7 +629,8 @@ goog.ui.ComboBox.prototype.showMenu_ = function() {
  */
 goog.ui.ComboBox.prototype.hideMenu_ = function() {
   this.menu_.setVisible(false);
-  goog.dom.classlist.remove(this.getElement(),
+  goog.dom.classlist.remove(
+      goog.asserts.assert(this.getElement()),
       goog.getCssName('goog-combobox-active'));
 };
 
@@ -914,6 +930,7 @@ goog.ui.ComboBoxItem = function(content, opt_data, opt_domHelper,
   goog.ui.MenuItem.call(this, content, opt_data, opt_domHelper, opt_renderer);
 };
 goog.inherits(goog.ui.ComboBoxItem, goog.ui.MenuItem);
+goog.tagUnsealableClass(goog.ui.ComboBoxItem);
 
 
 // Register a decorator factory function for goog.ui.ComboBoxItems.

@@ -56,7 +56,7 @@ goog.labs.testing.Matcher.prototype.describe =
  *
  * @param {!Function} matchesFunction The ‘matches’ function.
  * @param {Function=} opt_describeFunction The ‘describe’ function.
- * @return {Function} The custom matcher.
+ * @return {!Function} The custom matcher.
  */
 goog.labs.testing.Matcher.makeMatcher =
     function(matchesFunction, opt_describeFunction) {
@@ -64,6 +64,7 @@ goog.labs.testing.Matcher.makeMatcher =
   /**
    * @constructor
    * @implements {goog.labs.testing.Matcher}
+   * @final
    */
   var matcherConstructor = function() {};
 

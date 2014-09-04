@@ -36,6 +36,7 @@ goog.require('goog.math');
  * the {@code transform} method.
  *
  * @constructor
+ * @final
  */
 goog.math.Path = function() {
   /**
@@ -116,6 +117,40 @@ goog.math.Path.segmentArgCounts_ = (function() {
 
 
 /**
+ * Returns an array of the segment types in this path, in the order of their
+ * appearance. Adjacent segments of the same type are collapsed into a single
+ * entry in the array. The returned array is a copy; modifications are not
+ * reflected in the Path object.
+ * @return {!Array.<number>}
+ */
+goog.math.Path.prototype.getSegmentTypes = function() {
+  return this.segments_.concat();
+};
+
+
+/**
+ * Returns an array of the number of times each segment type repeats in this
+ * path, in order. The returned array is a copy; modifications are not reflected
+ * in the Path object.
+ * @return {!Array.<number>}
+ */
+goog.math.Path.prototype.getSegmentCounts = function() {
+  return this.count_.concat();
+};
+
+
+/**
+ * Returns an array of all arguments for the segments of this path object, in
+ * order. The returned array is a copy; modifications are not reflected in the
+ * Path object.
+ * @return {!Array.<number>}
+ */
+goog.math.Path.prototype.getSegmentArgs = function() {
+  return this.arguments_.concat();
+};
+
+
+/**
  * Returns the number of points for a segment type.
  *
  * @param {number} segment The segment type.
@@ -190,6 +225,31 @@ goog.math.Path.prototype.moveTo = function(x, y) {
  * @return {!goog.math.Path} The path itself.
  */
 goog.math.Path.prototype.lineTo = function(var_args) {
+  return this.lineTo_(arguments);
+};
+
+
+/**
+ * Adds points to the path by drawing a straight line to each point.
+ *
+ * @param {!Array.<number>} coordinates The coordinates of each
+ *     destination point as x, y value pairs.
+ * @return {!goog.math.Path} The path itself.
+ */
+goog.math.Path.prototype.lineToFromArray = function(coordinates) {
+  return this.lineTo_(coordinates);
+};
+
+
+/**
+ * Adds points to the path by drawing a straight line to each point.
+ *
+ * @param {!Array.<number>|Arguments} coordinates The coordinates of each
+ *     destination point as x, y value pairs.
+ * @return {!goog.math.Path} The path itself.
+ * @private
+ */
+goog.math.Path.prototype.lineTo_ = function(coordinates) {
   var lastSegment = goog.array.peek(this.segments_);
   if (lastSegment == null) {
     throw Error('Path cannot start with lineTo');
@@ -198,9 +258,9 @@ goog.math.Path.prototype.lineTo = function(var_args) {
     this.segments_.push(goog.math.Path.Segment.LINETO);
     this.count_.push(0);
   }
-  for (var i = 0; i < arguments.length; i += 2) {
-    var x = arguments[i];
-    var y = arguments[i + 1];
+  for (var i = 0; i < coordinates.length; i += 2) {
+    var x = coordinates[i];
+    var y = coordinates[i + 1];
     this.arguments_.push(x, y);
   }
   this.count_[this.count_.length - 1] += i / 2;
@@ -220,6 +280,39 @@ goog.math.Path.prototype.lineTo = function(var_args) {
  * @return {!goog.math.Path} The path itself.
  */
 goog.math.Path.prototype.curveTo = function(var_args) {
+  return this.curveTo_(arguments);
+};
+
+
+/**
+ * Adds points to the path by drawing cubic Bezier curves. Each curve is
+ * specified using 3 points (6 coordinates) - two control points and the end
+ * point of the curve.
+ *
+ * @param {!Array.<number>} coordinates The coordinates specifiying
+ *     each curve in sets of 6 points: {@code [x1, y1]} the first control point,
+ *     {@code [x2, y2]} the second control point and {@code [x, y]} the end
+ *     point.
+ * @return {!goog.math.Path} The path itself.
+ */
+goog.math.Path.prototype.curveToFromArray = function(coordinates) {
+  return this.curveTo_(coordinates);
+};
+
+
+/**
+ * Adds points to the path by drawing cubic Bezier curves. Each curve is
+ * specified using 3 points (6 coordinates) - two control points and the end
+ * point of the curve.
+ *
+ * @param {!Array.<number>|Arguments} coordinates The coordinates specifiying
+ *     each curve in sets of 6 points: {@code [x1, y1]} the first control point,
+ *     {@code [x2, y2]} the second control point and {@code [x, y]} the end
+ *     point.
+ * @return {!goog.math.Path} The path itself.
+ * @private
+ */
+goog.math.Path.prototype.curveTo_ = function(coordinates) {
   var lastSegment = goog.array.peek(this.segments_);
   if (lastSegment == null) {
     throw Error('Path cannot start with curve');
@@ -228,11 +321,11 @@ goog.math.Path.prototype.curveTo = function(var_args) {
     this.segments_.push(goog.math.Path.Segment.CURVETO);
     this.count_.push(0);
   }
-  for (var i = 0; i < arguments.length; i += 6) {
-    var x = arguments[i + 4];
-    var y = arguments[i + 5];
-    this.arguments_.push(arguments[i], arguments[i + 1],
-        arguments[i + 2], arguments[i + 3], x, y);
+  for (var i = 0; i < coordinates.length; i += 6) {
+    var x = coordinates[i + 4];
+    var y = coordinates[i + 5];
+    this.arguments_.push(coordinates[i], coordinates[i + 1],
+        coordinates[i + 2], coordinates[i + 3], x, y);
   }
   this.count_[this.count_.length - 1] += i / 6;
   this.currentPoint_ = [x, y];

@@ -20,6 +20,7 @@
 goog.provide('goog.fx.css3.Transition');
 
 goog.require('goog.Timer');
+goog.require('goog.asserts');
 goog.require('goog.fx.TransitionBase');
 goog.require('goog.style');
 goog.require('goog.style.transition');
@@ -66,7 +67,7 @@ goog.require('goog.style.transition');
  */
 goog.fx.css3.Transition = function(
     element, duration, initialStyle, finalStyle, transitions) {
-  goog.base(this);
+  goog.fx.css3.Transition.base(this, 'constructor');
 
   /**
    * @type {Element}
@@ -139,6 +140,9 @@ goog.fx.css3.Transition.prototype.play = function() {
  * @private
  */
 goog.fx.css3.Transition.prototype.play_ = function() {
+  // This measurement of the DOM element causes the browser to recalculate its
+  // initial state before the transition starts.
+  goog.style.getSize(this.element_);
   goog.style.transition.set(this.element_, this.transitions_);
   goog.style.setStyle(this.element_, this.finalStyle_);
   this.timerId_ = goog.Timer.callOnce(
@@ -183,7 +187,7 @@ goog.fx.css3.Transition.prototype.stop_ = function(stopped) {
 /** @override */
 goog.fx.css3.Transition.prototype.disposeInternal = function() {
   this.stop();
-  goog.base(this, 'disposeInternal');
+  goog.fx.css3.Transition.base(this, 'disposeInternal');
 };
 
 

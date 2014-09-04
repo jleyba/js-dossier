@@ -84,7 +84,7 @@ goog.editor.range.narrow = function(range, el) {
  * nodes as the foo text node, return the li.
  * @param {goog.dom.AbstractRange} range The range.
  * @param {Node=} opt_stopNode Optional node to stop expanding past.
- * @return {goog.dom.AbstractRange} The expanded range.
+ * @return {!goog.dom.AbstractRange} The expanded range.
  */
 goog.editor.range.expand = function(range, opt_stopNode) {
   // Expand the start out to the common container.
@@ -126,7 +126,7 @@ goog.editor.range.expand = function(range, opt_stopNode) {
  * @param {goog.dom.AbstractRange} range The range to expand.
  * @param {goog.dom.RangeEndpoint} endpoint The endpoint to expand.
  * @param {Node=} opt_stopNode Optional node to stop expanding past.
- * @return {goog.dom.AbstractRange} The expanded range.
+ * @return {!goog.dom.AbstractRange} The expanded range.
  * @private
  */
 goog.editor.range.expandEndPointToContainer_ = function(range, endpoint,
@@ -180,7 +180,7 @@ goog.editor.range.selectNodeStart = function(node) {
  * Bug: http://bugs.webkit.org/show_bug.cgi?id=17697
  * @param {Node} node The node to position the cursor relative to.
  * @param {boolean} toLeft True to place it to the left, false to the right.
- * @return {goog.dom.AbstractRange} The newly selected range.
+ * @return {!goog.dom.AbstractRange} The newly selected range.
  */
 goog.editor.range.placeCursorNextTo = function(node, toLeft) {
   var parent = node.parentNode;
@@ -296,7 +296,7 @@ goog.editor.range.rangePreservingNormalize = function(node, range) {
  *
  * @param {goog.dom.AbstractRange} range A range.
  * @param {boolean} atStart True for the start point, false for the end point.
- * @return {goog.editor.range.Point} The end point, expressed as a node
+ * @return {!goog.editor.range.Point} The end point, expressed as a node
  *    and an offset.
  */
 goog.editor.range.getDeepEndPoint = function(range, atStart) {
@@ -392,7 +392,7 @@ goog.editor.range.normalize = function(range) {
  * See the comments on goog.editor.range.normalize for more context.
  *
  * @param {goog.editor.range.Point} point A point in the document.
- * @return {goog.editor.range.Point} The same point, for easy chaining.
+ * @return {!goog.editor.range.Point} The same point, for easy chaining.
  * @private
  */
 goog.editor.range.normalizePoint_ = function(point) {
@@ -467,6 +467,7 @@ goog.editor.range.intersectsTag = function(range, tagName) {
  * @param {Node} node The node containing the point.
  * @param {number} offset The offset of the point into the node.
  * @constructor
+ * @final
  */
 goog.editor.range.Point = function(node, offset) {
   /**
@@ -485,7 +486,7 @@ goog.editor.range.Point = function(node, offset) {
 
 /**
  * Gets the point of this point's node in the DOM.
- * @return {goog.editor.range.Point} The node's point.
+ * @return {!goog.editor.range.Point} The node's point.
  */
 goog.editor.range.Point.prototype.getParentPoint = function() {
   var parent = this.node.parentNode;
@@ -507,7 +508,7 @@ goog.editor.range.Point.prototype.getParentPoint = function() {
  * @param {boolean=} opt_stopOnChildlessElement If true, and we encounter
  *     a Node which is an Element that cannot have children, we return a Point
  *     based on its parent rather than that Node itself.
- * @return {goog.editor.range.Point} A new point.
+ * @return {!goog.editor.range.Point} A new point.
  */
 goog.editor.range.Point.createDeepestPoint =
     function(node, offset, opt_trendLeft, opt_stopOnChildlessElement) {
@@ -564,7 +565,7 @@ goog.editor.range.Point.isTerminalElement_ = function(node) {
 /**
  * Construct a point at the very end of the given node.
  * @param {Node} node The node to create a point for.
- * @return {goog.editor.range.Point} A new point.
+ * @return {!goog.editor.range.Point} A new point.
  */
 goog.editor.range.Point.getPointAtEndOfNode = function(node) {
   return new goog.editor.range.Point(node, goog.editor.node.getLength(node));
@@ -579,7 +580,7 @@ goog.editor.range.Point.getPointAtEndOfNode = function(node) {
  * contentEditable regions right.
  *
  * @param {goog.dom.AbstractRange} range The abstract range object.
- * @return {goog.dom.SavedCaretRange} A saved caret range that normalizes
+ * @return {!goog.dom.SavedCaretRange} A saved caret range that normalizes
  *     text nodes.
  */
 goog.editor.range.saveUsingNormalizedCarets = function(range) {

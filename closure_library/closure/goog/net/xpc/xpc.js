@@ -49,7 +49,6 @@ goog.provide('goog.net.xpc.UriCfgFields');
 goog.require('goog.log');
 
 
-
 /**
  * Enum used to identify transport types.
  * @enum {number}
@@ -60,7 +59,8 @@ goog.net.xpc.TransportTypes = {
   IFRAME_RELAY: 3,
   IFRAME_POLLING: 4,
   FLASH: 5,
-  NIX: 6
+  NIX: 6,
+  DIRECT: 7
 };
 
 
@@ -75,7 +75,8 @@ goog.net.xpc.TransportNames = {
   '3': 'IframeRelayTransport',
   '4': 'IframePollingTransport',
   '5': 'FlashTransport',
-  '6': 'NixTransport'
+  '6': 'NixTransport',
+  '7': 'DirectTransport'
 };
 
 
@@ -187,7 +188,14 @@ goog.net.xpc.CfgFields = {
    * starts out with V2 at both ends, and one of the ends reconnects as a V1.
    * All other initial startup and reconnection scenarios are supported.
    */
-  NATIVE_TRANSPORT_PROTOCOL_VERSION: 'nativeProtocolVersion'
+  NATIVE_TRANSPORT_PROTOCOL_VERSION: 'nativeProtocolVersion',
+  /**
+   * Whether the direct transport runs in synchronous mode. The default is to
+   * emulate the other transports and run asyncronously but there are some
+   * circumstances where syncronous calls are required. If this property is
+   * set to true, the transport will send the messages synchronously.
+   */
+  DIRECT_TRANSPORT_SYNC_MODE: 'directSyncMode'
 };
 
 
@@ -253,9 +261,8 @@ goog.net.xpc.SETUP_ACK_NTPV2 = 'SETUP_ACK_NTPV2';
 
 /**
  * Object holding active channels.
- * Package private. Do not call from outside goog.net.xpc.
  *
- * @type {Object.<string, goog.net.xpc.CrossPageChannel>}
+ * @package {Object.<string, goog.net.xpc.CrossPageChannel>}
  */
 goog.net.xpc.channels = {};
 

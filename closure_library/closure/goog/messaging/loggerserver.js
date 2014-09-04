@@ -38,9 +38,10 @@ goog.require('goog.log');
  *     distinguish this client's messages.
  * @constructor
  * @extends {goog.Disposable}
+ * @final
  */
 goog.messaging.LoggerServer = function(channel, serviceName, opt_channelName) {
-  goog.base(this);
+  goog.messaging.LoggerServer.base(this, 'constructor');
 
   /**
    * The channel that is sending the log messages.
@@ -78,7 +79,7 @@ goog.inherits(goog.messaging.LoggerServer, goog.Disposable);
 goog.messaging.LoggerServer.prototype.log_ = function(message) {
   var args =
       /**
-       * @type {!{level: number, message: string,
+       * @type {{level: number, message: string,
        *           name: string, exception: Object}}
        */ (message);
   var level = goog.log.Level.getPredefinedLevelByValue(args['level']);
@@ -92,7 +93,7 @@ goog.messaging.LoggerServer.prototype.log_ = function(message) {
 
 /** @override */
 goog.messaging.LoggerServer.prototype.disposeInternal = function() {
-  goog.base(this, 'disposeInternal');
+  goog.messaging.LoggerServer.base(this, 'disposeInternal');
   this.channel_.registerService(this.serviceName_, goog.nullFunction, true);
   delete this.channel_;
 };
