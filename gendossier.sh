@@ -66,7 +66,7 @@ run_jsc() {
 }
 
 run_lessc() {
-  lessc --yui-compress \
+  lessc --compress \
       src/main/js/dossier.less \
       src/main/resources/dossier.css
 }
