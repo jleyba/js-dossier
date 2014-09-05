@@ -36,7 +36,6 @@ summary {
 @public_color: fade(@public_base_color, 60%);
 @protected_color: fade(@protected_base_color, 60%);
 @private_color: fade(@private_base_color, 50%);
-@code_background: lighten(@dark_gray, 70%);
 
 /*
  * General page styles.
@@ -85,14 +84,6 @@ code {
 
 pre,
 p { margin: 1rem 0; }
-
-pre {
-  padding: .15rem 1rem;
-  background: @code_background;
-  border: 1px solid lighten(@border_color, 30%);
-  border-radius: 3px;
-  line-height: 1.3;
-}
 
 .lighter-text() {
   color: lighten(@dark_gray, 25%);
@@ -181,7 +172,6 @@ dd {
 
 .member {
   font-weight: bold;
-  font-size: 1.3rem;
   &.deprecation-notice { text-decoration: line-through; }
 }
 
@@ -347,11 +337,6 @@ details {
     margin-left: 1.25rem;
     padding-bottom: .5rem;
 
-    div:first-child {
-      padding-left: 2.2rem;
-      text-indent: -2.2rem;
-    }
-
     p {
       margin-top: .5rem;
       margin-bottom: 0;
@@ -423,7 +408,7 @@ table.licensefile {
 .licensefile td,
 .srcfile td {
   padding: .15rem 1rem;
-  background-color: @code_background;
+  background-color: lighten(@dark_gray, 70%);
 }
 /* line number column */
 .srcfile td:first-child {
