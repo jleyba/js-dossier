@@ -60,7 +60,7 @@ goog.ui.ac.AutoComplete = function(matcher, renderer, selectionHandler) {
   /**
    * A data-source which provides autocomplete suggestions.
    *
-   * TODO(user): Tighten the type to !goog.ui.ac.AutoComplete.Matcher.
+   * TODO(user): Tighten the type to !Object.
    *
    * @type {Object}
    * @protected
@@ -246,15 +246,6 @@ goog.ui.ac.AutoComplete.EventType = {
 
 
 /**
- * @typedef {{
- *   requestMatchingRows:(!Function|undefined),
- *   isRowDisabled:(!Function|undefined)
- * }}
- */
-goog.ui.ac.AutoComplete.Matcher;
-
-
-/**
  * @return {!Object} The data source providing the `autocomplete
  *     suggestions.
  */
@@ -388,8 +379,6 @@ goog.ui.ac.AutoComplete.prototype.setHighlightedIdInternal = function(id) {
  * @param {goog.events.Event} e Event Object.
  */
 goog.ui.ac.AutoComplete.prototype.handleEvent = function(e) {
-  var matcher = /** @type {?goog.ui.ac.AutoComplete.Matcher} */ (this.matcher_);
-
   if (e.target == this.renderer_) {
     switch (e.type) {
       case goog.ui.ac.AutoComplete.EventType.HILITE:
@@ -397,21 +386,17 @@ goog.ui.ac.AutoComplete.prototype.handleEvent = function(e) {
         break;
 
       case goog.ui.ac.AutoComplete.EventType.SELECT:
-        var rowDisabled = false;
+        // e.row can be either a valid row number or empty.
+        var rowId = /** @type {number} */ (e.row);
+        var index = this.getIndexOfId(rowId);
+        var row = this.rows_[index];
 
-        // e.row can be either a valid row id or empty.
-        if (goog.isNumber(e.row)) {
-          var rowId = e.row;
-          var index = this.getIndexOfId(rowId);
-          var row = this.rows_[index];
-
-          // Make sure the row selected is not a disabled row.
-          rowDisabled = !!row && matcher.isRowDisabled &&
-              matcher.isRowDisabled(row);
-          if (row && !rowDisabled && this.hiliteId_ != rowId) {
-            // Event target row not currently highlighted - fix the mismatch.
-            this.hiliteId(rowId);
-          }
+        // Make sure the row selected is not a disabled row.
+        var rowDisabled = !!row && this.matcher_.isRowDisabled &&
+            this.matcher_.isRowDisabled(row);
+        if (rowId && row && !rowDisabled && this.hiliteId_ != rowId) {
+          // Event target row not currently highlighted - fix the mismatch.
+          this.hiliteId(rowId);
         }
         if (!rowDisabled) {
           // Note that rowDisabled can be false even if e.row does not
@@ -662,8 +647,7 @@ goog.ui.ac.AutoComplete.prototype.selectHilited = function() {
     if (!suppressUpdate) {
       this.dispatchEvent({
         type: goog.ui.ac.AutoComplete.EventType.UPDATE,
-        row: selectedRow,
-        index: index
+        row: selectedRow
       });
       if (this.triggerSuggestionsOnUpdate_) {
         this.selectionHandler_.update(true);
@@ -675,8 +659,7 @@ goog.ui.ac.AutoComplete.prototype.selectHilited = function() {
     this.dispatchEvent(
         {
           type: goog.ui.ac.AutoComplete.EventType.UPDATE,
-          row: null,
-          index: null
+          row: null
         });
     return false;
   }

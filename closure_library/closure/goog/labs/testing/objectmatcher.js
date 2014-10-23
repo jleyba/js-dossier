@@ -40,7 +40,6 @@ goog.require('goog.string');
  * @constructor
  * @struct
  * @implements {goog.labs.testing.Matcher}
- * @final
  */
 goog.labs.testing.ObjectEqualsMatcher = function(expectedObject) {
   /**
@@ -80,7 +79,6 @@ goog.labs.testing.ObjectEqualsMatcher.prototype.describe =
  * @constructor
  * @struct
  * @implements {goog.labs.testing.Matcher}
- * @final
  */
 goog.labs.testing.HasPropertyMatcher = function(property) {
   /**
@@ -120,7 +118,6 @@ goog.labs.testing.HasPropertyMatcher.prototype.describe =
  * @constructor
  * @struct
  * @implements {goog.labs.testing.Matcher}
- * @final
  */
 goog.labs.testing.InstanceOfMatcher = function(object) {
   /**
@@ -158,7 +155,6 @@ goog.labs.testing.InstanceOfMatcher.prototype.describe =
  * @constructor
  * @struct
  * @implements {goog.labs.testing.Matcher}
- * @final
  */
 goog.labs.testing.IsNullOrUndefinedMatcher = function() {};
 
@@ -190,7 +186,6 @@ goog.labs.testing.IsNullOrUndefinedMatcher.prototype.describe =
  * @constructor
  * @struct
  * @implements {goog.labs.testing.Matcher}
- * @final
  */
 goog.labs.testing.IsNullMatcher = function() {};
 
@@ -222,7 +217,6 @@ goog.labs.testing.IsNullMatcher.prototype.describe =
  * @constructor
  * @struct
  * @implements {goog.labs.testing.Matcher}
- * @final
  */
 goog.labs.testing.IsUndefinedMatcher = function() {};
 

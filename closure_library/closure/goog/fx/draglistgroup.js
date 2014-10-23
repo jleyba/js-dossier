@@ -28,13 +28,14 @@ goog.provide('goog.fx.DragListGroupEvent');
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.dom');
+goog.require('goog.dom.NodeType');
 goog.require('goog.dom.classlist');
-goog.require('goog.events');
 goog.require('goog.events.Event');
 goog.require('goog.events.EventHandler');
 goog.require('goog.events.EventTarget');
 goog.require('goog.events.EventType');
 goog.require('goog.fx.Dragger');
+goog.require('goog.fx.Dragger.EventType');
 goog.require('goog.math.Coordinate');
 goog.require('goog.string');
 goog.require('goog.style');
@@ -84,7 +85,7 @@ goog.fx.DragListGroup = function() {
 
   /**
    * The event handler for this instance.
-   * @type {goog.events.EventHandler.<!goog.fx.DragListGroup>}
+   * @type {goog.events.EventHandler}
    * @private
    */
   this.eventHandler_ = new goog.events.EventHandler(this);
@@ -536,11 +537,10 @@ goog.fx.DragListGroup.prototype.handlePotentialDragStart_ = function(e) {
   var uid = goog.getUid(/** @type {Node} */ (e.currentTarget));
   this.currDragItem_ = /** @type {Element} */ (this.dragItemForHandle_[uid]);
 
-  this.draggerEl_ = this.createDragElementInternal(this.currDragItem_);
+  this.draggerEl_ = this.cloneNode_(this.currDragItem_);
   if (this.draggerElClasses_) {
     // Add CSS class for the clone, if any.
-    goog.dom.classlist.addAll(
-        goog.asserts.assert(this.draggerEl_), this.draggerElClasses_ || []);
+    goog.dom.classlist.addAll(this.draggerEl_, this.draggerElClasses_ || []);
   }
 
   // Place the clone (i.e. draggerEl) at the same position as the actual
@@ -579,36 +579,6 @@ goog.fx.DragListGroup.prototype.handlePotentialDragStart_ = function(e) {
 
 
 /**
- * Creates copy of node being dragged.
- *
- * @param {Element} sourceEl Element to copy.
- * @return {!Element} The clone of {@code sourceEl}.
- * @deprecated Use goog.fx.Dragger.cloneNode().
- * @private
- */
-goog.fx.DragListGroup.prototype.cloneNode_ = function(sourceEl) {
-  return goog.fx.Dragger.cloneNode(sourceEl);
-};
-
-
-/**
- * Generates an element to follow the cursor during dragging, given a drag
- * source element.  The default behavior is simply to clone the source element,
- * but this may be overridden in subclasses.  This method is called by
- * {@code createDragElement()} before the drag class is added.
- *
- * @param {Element} sourceEl Drag source element.
- * @return {!Element} The new drag element.
- * @protected
- * @suppress {deprecated}
- */
-goog.fx.DragListGroup.prototype.createDragElementInternal =
-    function(sourceEl) {
-  return this.cloneNode_(sourceEl);
-};
-
-
-/**
  * Handles the start of a drag action.
  * @param {!goog.fx.DragEvent} e goog.fx.Dragger.EventType.START event.
  * @private
@@ -632,8 +602,7 @@ goog.fx.DragListGroup.prototype.handleDragStart_ = function(e) {
   // If there's a CSS class specified for the current drag item, add it.
   // Otherwise, make the actual current drag item hidden (takes up space).
   if (this.currDragItemClasses_) {
-    goog.dom.classlist.addAll(
-        goog.asserts.assert(this.currDragItem_),
+    goog.dom.classlist.addAll(this.currDragItem_,
         this.currDragItemClasses_ || []);
   } else {
     this.currDragItem_.style.visibility = 'hidden';
@@ -710,8 +679,7 @@ goog.fx.DragListGroup.prototype.handleDragMove_ = function(dragEvent) {
     this.currDragItem_.style.display = '';
     // Add drag list's hover class (if any).
     if (hoverList.dlgDragHoverClass_) {
-      goog.dom.classlist.add(
-          goog.asserts.assert(hoverList), hoverList.dlgDragHoverClass_);
+      goog.dom.classlist.add(hoverList, hoverList.dlgDragHoverClass_);
     }
 
   } else {
@@ -725,8 +693,7 @@ goog.fx.DragListGroup.prototype.handleDragMove_ = function(dragEvent) {
     for (var i = 0, n = this.dragLists_.length; i < n; i++) {
       var dragList = this.dragLists_[i];
       if (dragList.dlgDragHoverClass_) {
-        goog.dom.classlist.remove(
-            goog.asserts.assert(dragList), dragList.dlgDragHoverClass_);
+        goog.dom.classlist.remove(dragList, dragList.dlgDragHoverClass_);
       }
     }
   }
@@ -840,8 +807,7 @@ goog.fx.DragListGroup.prototype.cleanupDragDom_ = function() {
   // If there's a CSS class specified for the current drag item, remove it.
   // Otherwise, make the current drag item visible (instead of empty space).
   if (this.currDragItemClasses_ && this.currDragItem_) {
-    goog.dom.classlist.removeAll(
-        goog.asserts.assert(this.currDragItem_),
+    goog.dom.classlist.removeAll(this.currDragItem_,
         this.currDragItemClasses_ || []);
   } else if (this.currDragItem_) {
     this.currDragItem_.style.visibility = 'visible';
@@ -851,8 +817,7 @@ goog.fx.DragListGroup.prototype.cleanupDragDom_ = function() {
   for (var i = 0, n = this.dragLists_.length; i < n; i++) {
     var dragList = this.dragLists_[i];
     if (dragList.dlgDragHoverClass_) {
-      goog.dom.classlist.remove(
-          goog.asserts.assert(dragList), dragList.dlgDragHoverClass_);
+      goog.dom.classlist.remove(dragList, dragList.dlgDragHoverClass_);
     }
   }
 };
@@ -1218,6 +1183,31 @@ goog.fx.DragListGroup.prototype.insertCurrDragItem_ = function(
     // The current drag item is not in the correct location, so we move it.
     // Note: hoverNextItem may be null, but insertBefore() still works.
     hoverList.insertBefore(this.currDragItem_, hoverNextItem);
+  }
+};
+
+
+/**
+ * Note: Copied from abstractdragdrop.js. TODO(user): consolidate.
+ * Creates copy of node being dragged.
+ *
+ * @param {Element} sourceEl Element to copy.
+ * @return {Element} The clone of {@code sourceEl}.
+ * @private
+ */
+goog.fx.DragListGroup.prototype.cloneNode_ = function(sourceEl) {
+  var clonedEl = /** @type {Element} */ (sourceEl.cloneNode(true));
+  switch (sourceEl.tagName.toLowerCase()) {
+    case 'tr':
+      return goog.dom.createDom(
+          'table', null, goog.dom.createDom('tbody', null, clonedEl));
+    case 'td':
+    case 'th':
+      return goog.dom.createDom(
+          'table', null, goog.dom.createDom('tbody', null, goog.dom.createDom(
+          'tr', null, clonedEl)));
+    default:
+      return clonedEl;
   }
 };
 

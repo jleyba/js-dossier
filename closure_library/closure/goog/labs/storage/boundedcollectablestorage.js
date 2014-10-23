@@ -47,10 +47,9 @@ var storage = goog.labs.storage;
  * @param {number} maxItems Maximum number of items in storage.
  * @constructor
  * @extends {goog.storage.CollectableStorage}
- * @final
  */
 storage.BoundedCollectableStorage = function(mechanism, maxItems) {
-  storage.BoundedCollectableStorage.base(this, 'constructor', mechanism);
+  goog.base(this, mechanism);
 
   /**
    * A maximum number of items that should be stored.
@@ -73,7 +72,7 @@ storage.BoundedCollectableStorage.KEY_LIST_KEY_ = 'bounded-collectable-storage';
 /**
  * Recreates a list of keys in order of creation.
  *
- * @return {!Array.<string>} a list of unexpired keys.
+ * @return {Array.<string>} a list of unexpired keys.
  * @private
  */
 storage.BoundedCollectableStorage.prototype.rebuildIndex_ = function() {
@@ -247,8 +246,7 @@ storage.BoundedCollectableStorage.prototype.collectOversize =
  */
 storage.BoundedCollectableStorage.prototype.set =
     function(key, value, opt_expiration) {
-  storage.BoundedCollectableStorage.base(
-      this, 'set', key, value, opt_expiration);
+  goog.base(this, 'set', key, value, opt_expiration);
   var keys = this.getKeys_(true);
   goog.array.remove(keys, key);
 
@@ -272,7 +270,7 @@ storage.BoundedCollectableStorage.prototype.set =
  * @override
  */
 storage.BoundedCollectableStorage.prototype.remove = function(key) {
-  storage.BoundedCollectableStorage.base(this, 'remove', key);
+  goog.base(this, 'remove', key);
 
   var keys = this.getKeys_(false);
   if (goog.isDef(keys)) {

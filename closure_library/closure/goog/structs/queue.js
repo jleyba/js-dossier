@@ -18,30 +18,6 @@
  *
  * This file provides the implementation of a FIFO Queue structure.
  * API is similar to that of com.google.common.collect.IntQueue
- *
- * The implementation is a classic 2-stack queue.
- * There's a "front" stack and a "back" stack.
- * Items are pushed onto "back" and popped from "front".
- * When "front" is empty, we replace "front" with reverse(back).
- *
- * Example:
- * front                         back            op
- * []                            []              enqueue 1
- * []                            [1]             enqueue 2
- * []                            [1,2]           enqueue 3
- * []                            [1,2,3]         dequeue -> ...
- * [3,2,1]                       []              ... -> 1
- * [3,2]                         []              enqueue 4
- * [3,2]                         [4]             dequeue -> 2
- * [3]                           [4]
- *
- * Front and back are simple javascript arrays. We rely on
- * Array.push and Array.pop being O(1) amortized.
- *
- * Note: In V8, queues, up to a certain size, can be implemented
- * just fine using Array.push and Array.shift, but other JavaScript
- * engines do not have the optimization of Array.shift.
- *
  */
 
 goog.provide('goog.structs.Queue');
@@ -58,28 +34,22 @@ goog.require('goog.array');
  */
 goog.structs.Queue = function() {
   /**
-   * @private {!Array.<T>} Front stack. Items are pop()'ed from here.
+   * The index of the next element to be removed from the queue.
+   * @private {number}
    */
-  this.front_ = [];
+  this.head_ = 0;
+
   /**
-   * @private {!Array.<T>} Back stack. Items are push()'ed here.
+   * The index at which the next element would be added to the queue.
+   * @private {number}
    */
-  this.back_ = [];
-};
+  this.tail_ = 0;
 
-
-/**
- * Flips the back stack onto the front stack if front is empty,
- * to prepare for peek() or dequeue().
- *
- * @private
- */
-goog.structs.Queue.prototype.maybeFlip_ = function() {
-  if (goog.array.isEmpty(this.front_)) {
-    this.front_ = this.back_;
-    this.front_.reverse();
-    this.back_ = [];
-  }
+  /**
+   * @const
+   * @private {!Array.<T>}
+   */
+  this.elements_ = [];
 };
 
 
@@ -88,7 +58,7 @@ goog.structs.Queue.prototype.maybeFlip_ = function() {
  * @param {T} element The element to be added to the queue.
  */
 goog.structs.Queue.prototype.enqueue = function(element) {
-  this.back_.push(element);
+  this.elements_[this.tail_++] = element;
 };
 
 
@@ -98,8 +68,13 @@ goog.structs.Queue.prototype.enqueue = function(element) {
  *     queue is empty.
  */
 goog.structs.Queue.prototype.dequeue = function() {
-  this.maybeFlip_();
-  return this.front_.pop();
+  if (this.head_ == this.tail_) {
+    return undefined;
+  }
+  var result = this.elements_[this.head_];
+  delete this.elements_[this.head_];
+  this.head_++;
+  return result;
 };
 
 
@@ -109,8 +84,10 @@ goog.structs.Queue.prototype.dequeue = function() {
  *     queue is empty.
  */
 goog.structs.Queue.prototype.peek = function() {
-  this.maybeFlip_();
-  return goog.array.peek(this.front_);
+  if (this.head_ == this.tail_) {
+    return undefined;
+  }
+  return this.elements_[this.head_];
 };
 
 
@@ -119,7 +96,7 @@ goog.structs.Queue.prototype.peek = function() {
  * @return {number} The number of elements in this queue.
  */
 goog.structs.Queue.prototype.getCount = function() {
-  return this.front_.length + this.back_.length;
+  return this.tail_ - this.head_;
 };
 
 
@@ -128,8 +105,7 @@ goog.structs.Queue.prototype.getCount = function() {
  * @return {boolean} true if this queue contains no elements.
  */
 goog.structs.Queue.prototype.isEmpty = function() {
-  return goog.array.isEmpty(this.front_) &&
-         goog.array.isEmpty(this.back_);
+  return this.tail_ - this.head_ == 0;
 };
 
 
@@ -137,8 +113,9 @@ goog.structs.Queue.prototype.isEmpty = function() {
  * Removes all elements from the queue.
  */
 goog.structs.Queue.prototype.clear = function() {
-  this.front_ = [];
-  this.back_ = [];
+  this.elements_.length = 0;
+  this.head_ = 0;
+  this.tail_ = 0;
 };
 
 
@@ -148,8 +125,7 @@ goog.structs.Queue.prototype.clear = function() {
  * @return {boolean} Whether the object is in the queue.
  */
 goog.structs.Queue.prototype.contains = function(obj) {
-  return goog.array.contains(this.front_, obj) ||
-         goog.array.contains(this.back_, obj);
+  return goog.array.contains(this.elements_, obj);
 };
 
 
@@ -159,29 +135,24 @@ goog.structs.Queue.prototype.contains = function(obj) {
  * @return {boolean} True if an element was removed.
  */
 goog.structs.Queue.prototype.remove = function(obj) {
-  // TODO(user): Implement goog.array.removeLast() and use it here.
-  var index = goog.array.lastIndexOf(this.front_, obj);
+  var index = goog.array.indexOf(this.elements_, obj);
   if (index < 0) {
-    return goog.array.remove(this.back_, obj);
+    return false;
   }
-  goog.array.removeAt(this.front_, index);
+  if (index == this.head_) {
+    this.dequeue();
+  } else {
+    goog.array.removeAt(this.elements_, index);
+    this.tail_--;
+  }
   return true;
 };
 
 
 /**
  * Returns all the values in the queue.
- * @return {!Array.<T>} An array of the values in the queue.
+ * @return {Array.<T>} An array of the values in the queue.
  */
 goog.structs.Queue.prototype.getValues = function() {
-  var res = [];
-  // Add the front array in reverse, then the back array.
-  for (var i = this.front_.length - 1; i >= 0; --i) {
-    res.push(this.front_[i]);
-  }
-  var len = this.back_.length;
-  for (var i = 0; i < len; ++i) {
-    res.push(this.back_[i]);
-  }
-  return res;
+  return this.elements_.slice(this.head_, this.tail_);
 };

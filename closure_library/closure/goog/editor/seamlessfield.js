@@ -734,5 +734,5 @@ goog.editor.SeamlessField.prototype.clearListeners = function() {
   goog.events.unlistenByKey(this.listenForDragOverEventKey_);
   goog.events.unlistenByKey(this.listenForIframeLoadEventKey_);
 
-  goog.editor.SeamlessField.base(this, 'clearListeners');
+  goog.base(this, 'clearListeners');
 };

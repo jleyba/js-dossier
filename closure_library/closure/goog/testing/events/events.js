@@ -261,14 +261,15 @@ goog.testing.events.fireNonAsciiKeySequence = function(
   }
 
   // Fire keydown, keypress, and keyup. Note that if the keydown is
-  // prevent-defaulted, then the keypress will not fire.
+  // prevent-defaulted, then the keypress will not fire on IE.
   var result = true;
   if (!goog.testing.events.isBrokenGeckoMacActionKey_(keydown)) {
     result = goog.testing.events.fireBrowserEvent(keydown);
   }
   if (goog.events.KeyCodes.firesKeyPressEvent(
       keyCode, undefined, keydown.shiftKey, keydown.ctrlKey,
-      keydown.altKey) && result) {
+      keydown.altKey) &&
+      !(goog.userAgent.IE && !result)) {
     result &= goog.testing.events.fireBrowserEvent(keypress);
   }
   return !!(result & goog.testing.events.fireBrowserEvent(keyup));

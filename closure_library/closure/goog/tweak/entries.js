@@ -464,7 +464,6 @@ goog.tweak.BasePrimitiveSetting.prototype.getNewValueEncoded = function() {
  * @param {string} description A description of what the setting does.
  * @constructor
  * @extends {goog.tweak.BasePrimitiveSetting}
- * @final
  */
 goog.tweak.StringSetting = function(id, description) {
   goog.tweak.BasePrimitiveSetting.call(this, id, description, '');
@@ -589,7 +588,6 @@ goog.tweak.StringSetting.prototype.initialize = function(value) {
  * @param {string} description A description of what the setting does.
  * @constructor
  * @extends {goog.tweak.BasePrimitiveSetting}
- * @final
  */
 goog.tweak.NumericSetting = function(id, description) {
   goog.tweak.BasePrimitiveSetting.call(this, id, description, 0);
@@ -795,7 +793,6 @@ goog.tweak.BooleanSetting.prototype.initialize = function(value) {
  *     to.
  * @constructor
  * @extends {goog.tweak.BooleanSetting}
- * @final
  */
 goog.tweak.BooleanInGroupSetting = function(id, description, group) {
   goog.tweak.BooleanSetting.call(this, id, description);
@@ -876,7 +873,6 @@ goog.tweak.BooleanInGroupSetting.prototype.getGroup = function() {
  * @param {string} description A description of what the setting does.
  * @constructor
  * @extends {goog.tweak.BaseSetting}
- * @final
  */
 goog.tweak.BooleanGroup = function(id, description) {
   goog.tweak.BaseSetting.call(this, id, description);
@@ -991,7 +987,6 @@ goog.tweak.BooleanGroup.prototype.getNewValueEncoded = function() {
  * @param {!Function} callback Function to call when the button is clicked.
  * @constructor
  * @extends {goog.tweak.BaseEntry}
- * @final
  */
 goog.tweak.ButtonAction = function(id, description, callback) {
   goog.tweak.BaseEntry.call(this, id, description);

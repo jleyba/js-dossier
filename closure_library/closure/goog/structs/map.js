@@ -282,10 +282,10 @@ goog.structs.Map.prototype.cleanupKeysArray_ = function() {
  * Returns the value for the given key.  If the key is not found and the default
  * value is not given this will return {@code undefined}.
  * @param {*} key The key to get the value for.
- * @param {DEFAULT=} opt_val The value to return if no item is found for the
- *     given key, defaults to undefined.
- * @return {V|DEFAULT} The value for the given key.
- * @template DEFAULT
+ * @param {(T|V)=} opt_val The value to return if no item is found for the given
+ *     key, defaults to undefined.
+ * @return {V} The value for the given key.
+ * @template T
  */
 goog.structs.Map.prototype.get = function(key, opt_val) {
   if (goog.structs.Map.hasKey_(this.map_, key)) {
@@ -329,22 +329,6 @@ goog.structs.Map.prototype.addAll = function(map) {
   // dependency just for this.
   for (var i = 0; i < keys.length; i++) {
     this.set(keys[i], values[i]);
-  }
-};
-
-
-/**
- * Calls the given function on each entry in the map.
- * @param {function(this:T, V, K, goog.structs.Map.<K,V>)} f
- * @param {T=} opt_obj The value of "this" inside f.
- * @template T
- */
-goog.structs.Map.prototype.forEach = function(f, opt_obj) {
-  var keys = this.getKeys();
-  for (var i = 0; i < keys.length; i++) {
-    var key = keys[i];
-    var value = this.get(key);
-    f.call(opt_obj, value, key, this);
   }
 };
 

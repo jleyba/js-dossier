@@ -51,7 +51,6 @@ goog.labs.format.csv.ENABLE_VERBOSE_DEBUGGING = goog.DEBUG;
  * @param {string=} opt_message A description of the violated parse expectation.
  * @constructor
  * @extends {goog.debug.Error}
- * @final
  */
 goog.labs.format.csv.ParseError = function(text, index, opt_message) {
 
@@ -83,7 +82,7 @@ goog.labs.format.csv.ParseError = function(text, index, opt_message) {
     }
   }
 
-  goog.labs.format.csv.ParseError.base(this, 'constructor', message);
+  goog.base(this, message);
 };
 goog.inherits(goog.labs.format.csv.ParseError, goog.debug.Error);
 
@@ -255,14 +254,7 @@ goog.labs.format.csv.parse = function(text, opt_ignoreErrors) {
           // Fall back to reading the rest of this field as unquoted.
           // Note: the rest is guaranteed not start with ", as that case is
           // eliminated above.
-          var prefix = '"' + text.substring(start, index);
-          var suffix = readField();
-          if (suffix == EOR) {
-            pushBack(NEWLINE);
-            return prefix;
-          } else {
-            return prefix + suffix;
-          }
+          return text.substring(start, index) + readField();
         }
       }
     }

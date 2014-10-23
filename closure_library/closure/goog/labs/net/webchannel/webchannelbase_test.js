@@ -31,7 +31,6 @@ goog.require('goog.labs.net.webChannel.ForwardChannelRequestPool');
 goog.require('goog.labs.net.webChannel.WebChannelBase');
 goog.require('goog.labs.net.webChannel.WebChannelBaseTransport');
 goog.require('goog.labs.net.webChannel.WebChannelDebug');
-goog.require('goog.labs.net.webChannel.Wire');
 goog.require('goog.labs.net.webChannel.netUtils');
 goog.require('goog.labs.net.webChannel.requestStats');
 goog.require('goog.labs.net.webChannel.requestStats.Stat');
@@ -40,6 +39,7 @@ goog.require('goog.testing.MockClock');
 goog.require('goog.testing.PropertyReplacer');
 goog.require('goog.testing.asserts');
 goog.require('goog.testing.jsunit');
+goog.require('goog.testing.recordFunction');
 
 goog.setTestOnly('goog.labs.net.webChannel.webChannelBaseTest');
 
@@ -118,7 +118,6 @@ function stubSpdyCheck(spdyEnabled) {
  * Mock ChannelRequest.
  * @constructor
  * @struct
- * @final
  */
 var MockChannelRequest = function(channel, channelDebug, opt_sessionId,
     opt_requestId, opt_retryId) {
@@ -200,10 +199,6 @@ MockChannelRequest.prototype.getPostData = function() {
 
 MockChannelRequest.prototype.getRequestStartTime = function() {
   return this.requestStartTime_;
-};
-
-MockChannelRequest.prototype.getXhr = function() {
-  return null;
 };
 
 
@@ -338,21 +333,21 @@ function testFormatArrayOfMaps() {
 
   // One map.
   var a = [];
-  a.push(new goog.labs.net.webChannel.Wire.QueuedMap(0, map1));
+  a.push(new goog.labs.net.webChannel.WebChannelBase.QueuedMap(0, map1));
   assertEquals('k1:v1, k2:v2',
       formatArrayOfMaps(a));
 
   // Many maps.
   var b = [];
-  b.push(new goog.labs.net.webChannel.Wire.QueuedMap(0, map1));
-  b.push(new goog.labs.net.webChannel.Wire.QueuedMap(0, map2));
-  b.push(new goog.labs.net.webChannel.Wire.QueuedMap(0, map3));
+  b.push(new goog.labs.net.webChannel.WebChannelBase.QueuedMap(0, map1));
+  b.push(new goog.labs.net.webChannel.WebChannelBase.QueuedMap(0, map2));
+  b.push(new goog.labs.net.webChannel.WebChannelBase.QueuedMap(0, map3));
   assertEquals('k1:v1, k2:v2, k3:v3, k4:v4, k5:v5, k6:v6',
       formatArrayOfMaps(b));
 
   // One map with a context.
   var c = [];
-  c.push(new goog.labs.net.webChannel.Wire.QueuedMap(
+  c.push(new goog.labs.net.webChannel.WebChannelBase.QueuedMap(
       0, map1, new String('c1')));
   assertEquals('k1:v1:c1, k2:v2:c1',
       formatArrayOfMaps(c));
@@ -406,17 +401,17 @@ function completeTestConnection() {
 
 function completeForwardTestConnection() {
   channel.connectionTest_.onRequestData(
-      channel.connectionTest_.request_,
+      channel.connectionTest_,
       '["b"]');
   channel.connectionTest_.onRequestComplete(
-      channel.connectionTest_.request_);
+      channel.connectionTest_);
   mockClock.tick(0);
 }
 
 
 function completeBackTestConnection() {
   channel.connectionTest_.onRequestData(
-      channel.connectionTest_.request_,
+      channel.connectionTest_,
       '11111');
   mockClock.tick(0);
 }
@@ -588,7 +583,7 @@ function testConnect() {
   assertEquals(goog.labs.net.webChannel.WebChannelBase.State.OPENED,
       channel.getState());
   // If the server specifies no version, the client assumes the latest version
-  assertEquals(goog.labs.net.webChannel.Wire.LATEST_CHANNEL_VERSION,
+  assertEquals(goog.labs.net.webChannel.WebChannelBase.LATEST_CHANNEL_VERSION,
                channel.channelVersion_);
   assertFalse(channel.isBuffered());
 }
@@ -1486,27 +1481,47 @@ function testCreateXhrIo() {
   assertTrue(xhr.getWithCredentials());
 }
 
+function testSetParser() {
+  var recordUnsafeParse = goog.testing.recordFunction(goog.json.unsafeParse);
+  var parser = {};
+  parser.parse = recordUnsafeParse;
+  channel.setParser(parser);
+
+  connect();
+  assertEquals(3, recordUnsafeParse.getCallCount());
+
+  var call3 = recordUnsafeParse.popLastCall();
+  var call2 = recordUnsafeParse.popLastCall();
+  var call1 = recordUnsafeParse.popLastCall();
+
+  assertEquals(1, call1.getArguments().length);
+  assertEquals('["b"]', call1.getArgument(0));
+
+  assertEquals(1, call2.getArguments().length);
+  assertEquals('[[0,["c","1234567890ABCDEF",null]]]', call2.getArgument(0));
+
+  assertEquals(1, call3.getArguments().length);
+  assertEquals('[[1,["foo"]]]', call3.getArgument(0));
+}
+
 function testSpdyLimitOption() {
   var webChannelTransport =
       new goog.labs.net.webChannel.WebChannelBaseTransport();
   stubSpdyCheck(true);
   var webChannelDefault = webChannelTransport.createWebChannel('/foo');
   assertEquals(10,
-      webChannelDefault.getRuntimeProperties().getConcurrentRequestLimit());
-  assertTrue(webChannelDefault.getRuntimeProperties().isSpdyEnabled());
+      webChannelDefault.getRuntimeProperties().getSpdyRequestLimit());
 
-  var options = {'concurrentRequestLimit': 100};
+  var options = {'spdyRequestLimit': 100};
 
   stubSpdyCheck(false);
   var webChannelDisabled = webChannelTransport.createWebChannel(
       '/foo', options);
   assertEquals(1,
-      webChannelDisabled.getRuntimeProperties().getConcurrentRequestLimit());
-  assertFalse(webChannelDisabled.getRuntimeProperties().isSpdyEnabled());
+      webChannelDisabled.getRuntimeProperties().getSpdyRequestLimit());
 
   stubSpdyCheck(true);
   var webChannelEnabled = webChannelTransport.createWebChannel('/foo', options);
   assertEquals(100,
-      webChannelEnabled.getRuntimeProperties().getConcurrentRequestLimit());
-  assertTrue(webChannelEnabled.getRuntimeProperties().isSpdyEnabled());
+      webChannelEnabled.getRuntimeProperties().getSpdyRequestLimit());
 }

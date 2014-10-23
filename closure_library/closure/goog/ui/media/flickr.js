@@ -89,7 +89,6 @@ goog.require('goog.ui.media.MediaRenderer');
  *
  * @constructor
  * @extends {goog.ui.media.MediaRenderer}
- * @final
  */
 goog.ui.media.FlickrSet = function() {
   goog.ui.media.MediaRenderer.call(this);
@@ -128,7 +127,7 @@ goog.ui.media.FlickrSet.flashUrl_ =
  * @param {goog.ui.media.FlickrSetModel} dataModel The Flickr Set data model.
  * @param {goog.dom.DomHelper=} opt_domHelper Optional DOM helper, used for
  *     document interaction.
- * @return {!goog.ui.media.Media} A Control binded to the FlickrSet renderer.
+ * @return {goog.ui.media.Media} A Control binded to the FlickrSet renderer.
  * @throws exception in case {@code flickrSetUrl} is an invalid flickr set URL.
  * TODO(user): use {@link goog.ui.media.MediaModel} once it is checked in.
  */
@@ -156,7 +155,7 @@ goog.ui.media.FlickrSet.setFlashUrl = function(flashUrl) {
  * the flash object pointing to a flickr set player.
  *
  * @param {goog.ui.Control} c The media control.
- * @return {!Element} The DOM structure that represents this control.
+ * @return {Element} The DOM structure that represents this control.
  * @override
  */
 goog.ui.media.FlickrSet.prototype.createDom = function(c) {
@@ -201,7 +200,6 @@ goog.ui.media.FlickrSet.prototype.getCssClass = function() {
  * @param {string=} opt_description An optional description of the flickr set.
  * @constructor
  * @extends {goog.ui.media.MediaModel}
- * @final
  */
 goog.ui.media.FlickrSetModel = function(userId,
                                         setId,
@@ -264,7 +262,7 @@ goog.ui.media.FlickrSetModel.MATCHER_ =
  * @param {string} flickrSetUrl A Flickr set URL.
  * @param {string=} opt_caption An optional caption of the flickr set.
  * @param {string=} opt_description An optional description of the flickr set.
- * @return {!goog.ui.media.FlickrSetModel} The data model that represents the
+ * @return {goog.ui.media.FlickrSetModel} The data model that represents the
  *     Flickr set.
  * @throws exception in case the parsing fails
  */

@@ -38,7 +38,6 @@ goog.require('goog.ui.Component');
  *
  * @extends {goog.ui.Component}
  * @constructor
- * @final
  */
 goog.demos.SampleComponent = function(opt_label, opt_domHelper) {
   goog.base(this, opt_domHelper);

@@ -60,7 +60,6 @@ goog.require('goog.userAgent');
  * @deprecated goog.graphics is deprecated. It existed to abstract over browser
  *     differences before the canvas tag was widely supported.  See
  *     http://en.wikipedia.org/wiki/Canvas_element for details.
- * @final
  */
 goog.graphics.SvgGraphics = function(width, height,
                                      opt_coordWidth, opt_coordHeight,
@@ -91,7 +90,7 @@ goog.graphics.SvgGraphics = function(width, height,
 
   /**
    * Event handler.
-   * @type {goog.events.EventHandler.<!goog.graphics.SvgGraphics>}
+   * @type {goog.events.EventHandler}
    * @private
    */
   this.handler_ = new goog.events.EventHandler(this);
@@ -137,7 +136,7 @@ goog.graphics.SvgGraphics.prototype.defsElement_;
  * Creates an SVG element. Used internally and by different SVG classes.
  * @param {string} tagName The type of element to create.
  * @param {Object=} opt_attributes Map of name-value pairs for attributes.
- * @return {!Element} The created element.
+ * @return {Element} The created element.
  * @private
  */
 goog.graphics.SvgGraphics.prototype.createSvgElement_ = function(tagName,
@@ -261,7 +260,6 @@ goog.graphics.SvgGraphics.prototype.setElementStroke = function(element,
   var svgElement = element.getElement();
   if (stroke) {
     svgElement.setAttribute('stroke', stroke.getColor());
-    svgElement.setAttribute('stroke-opacity', stroke.getOpacity());
 
     var width = stroke.getWidth();
     if (goog.isString(width) && width.indexOf('px') != -1) {
@@ -277,10 +275,7 @@ goog.graphics.SvgGraphics.prototype.setElementStroke = function(element,
 
 
 /**
- * Set the translation and rotation of an element.
- *
- * If a more general affine transform is needed than this provides
- * (e.g. skew and scale) then use setElementAffineTransform.
+ * Set the transformation of an element.
  * @param {goog.graphics.Element} element The element wrapper.
  * @param {number} x The x coordinate of the translation transform.
  * @param {number} y The y coordinate of the translation transform.
@@ -293,22 +288,6 @@ goog.graphics.SvgGraphics.prototype.setElementTransform = function(element, x,
     y, angle, centerX, centerY) {
   element.getElement().setAttribute('transform', 'translate(' + x + ',' + y +
       ') rotate(' + angle + ' ' + centerX + ' ' + centerY + ')');
-};
-
-
-/**
- * Set the transformation of an element.
- * @param {goog.graphics.Element} element The element wrapper.
- * @param {!goog.graphics.AffineTransform} affineTransform The
- *     transformation applied to this element.
- * @override
- */
-goog.graphics.SvgGraphics.prototype.setElementAffineTransform = function(
-    element, affineTransform) {
-  var t = affineTransform;
-  var substr = [t.getScaleX(), t.getShearY(), t.getShearX(), t.getScaleY(),
-                t.getTranslateX(), t.getTranslateY()].join(',');
-  element.getElement().setAttribute('transform', 'matrix(' + substr + ')');
 };
 
 
@@ -444,7 +423,7 @@ goog.graphics.SvgGraphics.prototype.getPixelSize = function() {
   if (!goog.userAgent.GECKO) {
     return this.isInDocument() ?
         goog.style.getSize(this.getElement()) :
-        goog.graphics.SvgGraphics.base(this, 'getPixelSize');
+        goog.base(this, 'getPixelSize');
   }
 
   // In Gecko, goog.style.getSize does not work for SVG elements.  We have to
@@ -503,7 +482,7 @@ goog.graphics.SvgGraphics.prototype.clear = function() {
  * @param {goog.graphics.GroupElement=} opt_group The group wrapper element
  *     to append to. If not specified, appends to the main canvas.
  *
- * @return {!goog.graphics.EllipseElement} The newly created element.
+ * @return {goog.graphics.EllipseElement} The newly created element.
  * @override
  */
 goog.graphics.SvgGraphics.prototype.drawEllipse = function(
@@ -530,7 +509,7 @@ goog.graphics.SvgGraphics.prototype.drawEllipse = function(
  * @param {goog.graphics.GroupElement=} opt_group The group wrapper element
  *     to append to. If not specified, appends to the main canvas.
  *
- * @return {!goog.graphics.RectElement} The newly created element.
+ * @return {goog.graphics.RectElement} The newly created element.
  * @override
  */
 goog.graphics.SvgGraphics.prototype.drawRect = function(x, y, width, height,
@@ -554,7 +533,7 @@ goog.graphics.SvgGraphics.prototype.drawRect = function(x, y, width, height,
  * @param {goog.graphics.GroupElement=} opt_group The group wrapper element
  *     to append to. If not specified, appends to the main canvas.
  *
- * @return {!goog.graphics.ImageElement} The newly created image wrapped in a
+ * @return {goog.graphics.ImageElement} The newly created image wrapped in a
  *     rectangle element.
  */
 goog.graphics.SvgGraphics.prototype.drawImage = function(x, y, width, height,
@@ -590,7 +569,7 @@ goog.graphics.SvgGraphics.prototype.drawImage = function(x, y, width, height,
  * @param {goog.graphics.GroupElement=} opt_group The group wrapper element
  *     to append to. If not specified, appends to the main canvas.
  *
- * @return {!goog.graphics.TextElement} The newly created element.
+ * @return {goog.graphics.TextElement} The newly created element.
  * @override
  */
 goog.graphics.SvgGraphics.prototype.drawTextOnLine = function(
@@ -656,7 +635,7 @@ goog.graphics.SvgGraphics.prototype.drawTextOnLine = function(
  * @param {goog.graphics.GroupElement=} opt_group The group wrapper element
  *     to append to. If not specified, appends to the main canvas.
  *
- * @return {!goog.graphics.PathElement} The newly created element.
+ * @return {goog.graphics.PathElement} The newly created element.
  * @override
  */
 goog.graphics.SvgGraphics.prototype.drawPath = function(
@@ -716,7 +695,7 @@ goog.graphics.SvgGraphics.getSvgPath = function(path) {
  * @param {goog.graphics.GroupElement=} opt_group The group wrapper element
  *     to append to. If not specified, appends to the main canvas.
  *
- * @return {!goog.graphics.GroupElement} The newly created group.
+ * @return {goog.graphics.GroupElement} The newly created group.
  * @override
  */
 goog.graphics.SvgGraphics.prototype.createGroup = function(opt_group) {

@@ -42,7 +42,6 @@ goog.require('goog.string');
  * @constructor
  * @struct
  * @implements {goog.labs.testing.Matcher}
- * @final
  */
 goog.labs.testing.ContainsStringMatcher = function(value) {
   /**
@@ -83,7 +82,6 @@ goog.labs.testing.ContainsStringMatcher.prototype.describe =
  * @constructor
  * @struct
  * @implements {goog.labs.testing.Matcher}
- * @final
  */
 goog.labs.testing.EndsWithMatcher = function(value) {
   /**
@@ -123,7 +121,6 @@ goog.labs.testing.EndsWithMatcher.prototype.describe =
  * @constructor
  * @struct
  * @implements {goog.labs.testing.Matcher}
- * @final
  */
 goog.labs.testing.EqualToIgnoringWhitespaceMatcher = function(value) {
   /**
@@ -166,7 +163,6 @@ goog.labs.testing.EqualToIgnoringWhitespaceMatcher.prototype.describe =
  * @constructor
  * @struct
  * @implements {goog.labs.testing.Matcher}
- * @final
  */
 goog.labs.testing.EqualsMatcher = function(value) {
   /**
@@ -206,7 +202,6 @@ goog.labs.testing.EqualsMatcher.prototype.describe =
  * @constructor
  * @struct
  * @implements {goog.labs.testing.Matcher}
- * @final
  */
 goog.labs.testing.RegexMatcher = function(regex) {
   /**
@@ -247,7 +242,6 @@ goog.labs.testing.RegexMatcher.prototype.describe =
  * @constructor
  * @struct
  * @implements {goog.labs.testing.Matcher}
- * @final
  */
 goog.labs.testing.StartsWithMatcher = function(value) {
   /**
@@ -287,7 +281,6 @@ goog.labs.testing.StartsWithMatcher.prototype.describe =
  * @constructor
  * @struct
  * @implements {goog.labs.testing.Matcher}
- * @final
  */
 goog.labs.testing.StringContainsInOrderMatcher = function(values) {
   /**

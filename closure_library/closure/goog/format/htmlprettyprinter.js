@@ -32,7 +32,6 @@ goog.require('goog.string.StringBuffer');
  *     this time is exceeded, return partially formatted. 0 or negative number
  *     indicates no timeout.
  * @constructor
- * @final
  */
 goog.format.HtmlPrettyPrinter = function(opt_timeOutMillis) {
   /**
@@ -55,7 +54,7 @@ goog.format.HtmlPrettyPrinter.instance_ = null;
 
 /**
  * Singleton lazy initializer.
- * @return {!goog.format.HtmlPrettyPrinter} Singleton.
+ * @return {goog.format.HtmlPrettyPrinter} Singleton.
  * @private
  */
 goog.format.HtmlPrettyPrinter.getInstance_ = function() {
@@ -318,7 +317,6 @@ goog.format.HtmlPrettyPrinter.prototype.format = function(html) {
  * This class is a buffer to which we push our output. It tracks line breaks to
  * make sure we don't add unnecessary ones.
  * @constructor
- * @final
  */
 goog.format.HtmlPrettyPrinter.Buffer = function() {
   /**

@@ -39,7 +39,6 @@ goog.require('goog.uri.utils');
  * @param {!Object.<string|number|boolean>} compilerOverrides Default value
  *     overrides set by the compiler.
  * @constructor
- * @final
  */
 goog.tweak.Registry = function(queryParams, compilerOverrides) {
   /**

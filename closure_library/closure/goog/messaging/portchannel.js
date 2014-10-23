@@ -40,7 +40,6 @@ goog.require('goog.messaging.AbstractChannel');
 goog.require('goog.messaging.DeferredChannel');
 goog.require('goog.object');
 goog.require('goog.string');
-goog.require('goog.userAgent');
 
 
 
@@ -60,10 +59,9 @@ goog.require('goog.userAgent');
  *     worker or removing it from the DOM if it's an iframe.
  * @constructor
  * @extends {goog.messaging.AbstractChannel}
- * @final
  */
 goog.messaging.PortChannel = function(underlyingPort) {
-  goog.messaging.PortChannel.base(this, 'constructor');
+  goog.base(this);
 
   /**
    * The wrapped message-passing entity.
@@ -141,7 +139,7 @@ goog.messaging.PortChannel.forEmbeddedWindow = function(
 
     var msg = {};
     msg[goog.messaging.PortChannel.FLAG] = true;
-    window.postMessage(msg, peerOrigin, [channel.port2]);
+    window.postMessage(msg, [channel.port2], peerOrigin);
   });
 
   return new goog.messaging.DeferredChannel(deferred);
@@ -399,5 +397,5 @@ goog.messaging.PortChannel.prototype.disposeInternal = function() {
     this.port_.terminate();
   }
   delete this.port_;
-  goog.messaging.PortChannel.base(this, 'disposeInternal');
+  goog.base(this, 'disposeInternal');
 };

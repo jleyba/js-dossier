@@ -36,16 +36,6 @@
  * Client-to-client messaging via WebRTC based transport may also be support
  * via the same WebChannel API in future.
  *
- * Note that we have no immediate plan to move this API out of labs. While
- * the implementation is production ready, the API is subject to change
- * (addition):
- * 1. Completely new W3C APIs for Web messaging may emerge in near future.
- * 2. New programming models for cloud (on the server-side) may require
- *    new APIs to be defined.
- * 3. WebRTC DataChannel alignment
- * Lastly, we also want to white-list all internal use cases. As a general rule,
- * we expect most applications to rely on stateless/RPC services.
- *
  */
 
 goog.provide('goog.net.WebChannel');
@@ -76,31 +66,25 @@ goog.net.WebChannel = function() {};
  * {@link WebChannelTransport}. The configuration parameters are specified
  * when a new instance of WebChannel is created via {@link WebChannelTransport}.
  *
- * messageHeaders: custom headers to be added to every message sent to the
- * server.
- *
- * messageUrlParams: custom url query parameters to be added to every message
- * sent to the server.
- *
- * concurrentRequestLimit: the maximum number of in-flight HTTP requests allowed
- * when SPDY is enabled. Currently we only detect SPDY in Chrome.
- * This parameter defaults to 10. When SPDY is not enabled, this parameter
- * will have no effect.
- *
- * supportsCrossDomainXhr: setting this to true to allow the use of sub-domains
- * (as configured by the server) to send XHRs with the CORS withCredentials
- * bit set to true.
+ * spdyRequestLimit: the maximum number of in-flight HTTP requests allowed
+ *                   when SPDY is enabled. Currently we only detect SPDY
+ *                   in Chrome. This parameter defaults to 10. When SPDY is
+ *                   not enabled, this parameter will have no effect.
  *
  * testUrl: the test URL for detecting connectivity during the initial
- * handshake. This parameter defaults to "/<channel_url>/test".
+ *          handshake. This parameter defaults to "/<channel_url>/test".
  *
+ * messageHeaders: custom headers to be added to every message sent to the
+ *                 server.
+ *
+ * messageUrlParams: custom url query parameters to be added to every message
+ *                   sent to the server.
  *
  * @typedef {{
+ *   spdyRequestLimit: (number|undefined),
+ *   testUrl: (string|undefined),
  *   messageHeaders: (!Object.<string, string>|undefined),
- *   messageUrlParams: (!Object.<string, string>|undefined),
- *   concurrentRequestLimit: (number|undefined),
- *   supportsCrossDomainXhr: (boolean|undefined),
- *   testUrl: (string|undefined)
+ *   messageUrlParams: (!Object.<string, string>|undefined)
  * }}
  */
 goog.net.WebChannel.Options;
@@ -162,8 +146,7 @@ goog.net.WebChannel.EventType = {
  * @extends {goog.events.Event}
  */
 goog.net.WebChannel.MessageEvent = function() {
-  goog.net.WebChannel.MessageEvent.base(
-      this, 'constructor', goog.net.WebChannel.EventType.MESSAGE);
+  goog.base(this, goog.net.WebChannel.EventType.MESSAGE);
 };
 goog.inherits(goog.net.WebChannel.MessageEvent, goog.events.Event);
 
@@ -200,8 +183,7 @@ goog.net.WebChannel.ErrorStatus = {
  * @extends {goog.events.Event}
  */
 goog.net.WebChannel.ErrorEvent = function() {
-  goog.net.WebChannel.ErrorEvent.base(
-      this, 'constructor', goog.net.WebChannel.EventType.ERROR);
+  goog.base(this, goog.net.WebChannel.EventType.ERROR);
 };
 goog.inherits(goog.net.WebChannel.ErrorEvent, goog.events.Event);
 
@@ -234,47 +216,7 @@ goog.net.WebChannel.RuntimeProperties = function() {};
 
 
 /**
- * @return {number} The effective limit for the number of concurrent HTTP
- * requests that are allowed to be made for sending messages from the client
- * to the server. When SPDY is not enabled, this limit will be one.
+ * @return {number} The effective request limit for the channel.
  */
-goog.net.WebChannel.RuntimeProperties.prototype.getConcurrentRequestLimit =
-    goog.abstractMethod;
-
-
-/**
- * For applications that need support multiple channels (e.g. from
- * different tabs) to the same origin, use this method to decide if SPDY is
- * enabled and therefore it is safe to open multiple channels.
- *
- * If SPDY is disabled, the application may choose to limit the number of active
- * channels to one or use other means such as sub-domains to work around
- * the browser connection limit.
- *
- * @return {boolean} Whether SPDY is enabled for the origin against which
- * the channel is created.
- */
-goog.net.WebChannel.RuntimeProperties.prototype.isSpdyEnabled =
-    goog.abstractMethod;
-
-
-/**
- * This method may be used by the application to stop ack of received messages
- * as a means of enabling or disabling flow-control on the server-side.
- *
- * @param {boolean} enabled If true, enable flow-control behavior on the
- * server side. Setting it to false will cancel ay previous enabling action.
- */
-goog.net.WebChannel.RuntimeProperties.prototype.setServerFlowControl =
-    goog.abstractMethod;
-
-
-/**
- * This method may be used by the application to throttle the rate of outgoing
- * messages, as a means of sender initiated flow-control.
- *
- * @return {number} The total number of messages that have not received
- * ack from the server and therefore remain in the buffer.
- */
-goog.net.WebChannel.RuntimeProperties.prototype.getNonAckedMessageCount =
+goog.net.WebChannel.RuntimeProperties.prototype.getSpdyRequestLimit =
     goog.abstractMethod;

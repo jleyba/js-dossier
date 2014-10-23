@@ -77,7 +77,6 @@ goog.ui.TableSorter = function(opt_domHelper) {
   this.sortFunctions_ = [];
 };
 goog.inherits(goog.ui.TableSorter, goog.ui.Component);
-goog.tagUnsealableClass(goog.ui.TableSorter);
 
 
 /**

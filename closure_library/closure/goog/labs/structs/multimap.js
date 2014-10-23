@@ -33,7 +33,6 @@ goog.require('goog.labs.structs.Map');
  * Creates a new multimap.
  * @constructor
  * @struct
- * @final
  */
 goog.labs.structs.Multimap = function() {
   this.clear();

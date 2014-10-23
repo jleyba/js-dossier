@@ -42,7 +42,6 @@ goog.ui.RangeModel = function() {
   goog.events.EventTarget.call(this);
 };
 goog.inherits(goog.ui.RangeModel, goog.events.EventTarget);
-goog.tagUnsealableClass(goog.ui.RangeModel);
 
 
 /**

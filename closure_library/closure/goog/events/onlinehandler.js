@@ -40,6 +40,7 @@ goog.require('goog.events.EventHandler');
 goog.require('goog.events.EventTarget');
 goog.require('goog.events.EventType');
 goog.require('goog.net.NetworkStatusMonitor');
+goog.require('goog.userAgent');
 
 
 
@@ -50,10 +51,10 @@ goog.require('goog.net.NetworkStatusMonitor');
  * @implements {goog.net.NetworkStatusMonitor}
  */
 goog.events.OnlineHandler = function() {
-  goog.events.OnlineHandler.base(this, 'constructor');
+  goog.base(this);
 
   /**
-   * @private {goog.events.EventHandler.<!goog.events.OnlineHandler>}
+   * @private {goog.events.EventHandler}
    */
   this.eventHandler_ = new goog.events.EventHandler(this);
 
@@ -123,13 +124,14 @@ goog.events.OnlineHandler.prototype.isOnline = function() {
 /**
  * Called every time the timer ticks to see if the state has changed and when
  * the online state changes the method handleChange_ is called.
+ * @param {goog.events.Event} e The event object.
  * @private
  */
-goog.events.OnlineHandler.prototype.handleTick_ = function() {
+goog.events.OnlineHandler.prototype.handleTick_ = function(e) {
   var online = this.isOnline();
   if (online != this.online_) {
     this.online_ = online;
-    this.handleChange_();
+    this.handleChange_(e);
   }
 };
 
@@ -137,9 +139,10 @@ goog.events.OnlineHandler.prototype.handleTick_ = function() {
 /**
  * Called when the online state changes.  This dispatches the
  * {@code ONLINE} and {@code OFFLINE} events respectively.
+ * @param {goog.events.Event} e The event object.
  * @private
  */
-goog.events.OnlineHandler.prototype.handleChange_ = function() {
+goog.events.OnlineHandler.prototype.handleChange_ = function(e) {
   var type = this.isOnline() ?
       goog.net.NetworkStatusMonitor.EventType.ONLINE :
       goog.net.NetworkStatusMonitor.EventType.OFFLINE;
@@ -149,7 +152,7 @@ goog.events.OnlineHandler.prototype.handleChange_ = function() {
 
 /** @override */
 goog.events.OnlineHandler.prototype.disposeInternal = function() {
-  goog.events.OnlineHandler.base(this, 'disposeInternal');
+  goog.base(this, 'disposeInternal');
   this.eventHandler_.dispose();
   this.eventHandler_ = null;
   if (this.timer_) {

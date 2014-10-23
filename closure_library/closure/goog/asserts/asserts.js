@@ -54,7 +54,6 @@ goog.define('goog.asserts.ENABLE_ASSERTS', goog.DEBUG);
  * @param {!Array.<*>} messageArgs The items to substitute into the pattern.
  * @constructor
  * @extends {goog.debug.Error}
- * @final
  */
 goog.asserts.AssertionError = function(messagePattern, messageArgs) {
   messageArgs.unshift(messagePattern);
@@ -75,20 +74,6 @@ goog.inherits(goog.asserts.AssertionError, goog.debug.Error);
 
 /** @override */
 goog.asserts.AssertionError.prototype.name = 'AssertionError';
-
-
-/**
- * The default error handler.
- * @param {!goog.asserts.AssertionError} e The exception to be handled.
- */
-goog.asserts.DEFAULT_ERROR_HANDLER = function(e) { throw e; };
-
-
-/**
- * The handler responsible for throwing or logging assertion errors.
- * @private {function(!goog.asserts.AssertionError)}
- */
-goog.asserts.errorHandler_ = goog.asserts.DEFAULT_ERROR_HANDLER;
 
 
 /**
@@ -115,32 +100,17 @@ goog.asserts.doAssertFailure_ =
   // a stack trace is added to var message above. With this, a stack trace is
   // not added until this line (it causes the extra garbage to be added after
   // the assertion message instead of in the middle of it).
-  var e = new goog.asserts.AssertionError('' + message, args || []);
-  goog.asserts.errorHandler_(e);
-};
-
-
-/**
- * Sets a custom error handler that can be used to customize the behavior of
- * assertion failures, for example by turning all assertion failures into log
- * messages.
- * @param {function(goog.asserts.AssertionError)} errorHandler
- */
-goog.asserts.setErrorHandler = function(errorHandler) {
-  if (goog.asserts.ENABLE_ASSERTS) {
-    goog.asserts.errorHandler_ = errorHandler;
-  }
+  throw new goog.asserts.AssertionError('' + message, args || []);
 };
 
 
 /**
  * Checks if the condition evaluates to true if goog.asserts.ENABLE_ASSERTS is
  * true.
- * @template T
- * @param {T} condition The condition to check.
+ * @param {*} condition The condition to check.
  * @param {string=} opt_message Error message in case of failure.
  * @param {...*} var_args The items to substitute into the failure message.
- * @return {T} The value of the condition.
+ * @return {*} The value of the condition.
  * @throws {goog.asserts.AssertionError} When the condition evaluates to false.
  */
 goog.asserts.assert = function(condition, opt_message, var_args) {
@@ -172,9 +142,9 @@ goog.asserts.assert = function(condition, opt_message, var_args) {
  */
 goog.asserts.fail = function(opt_message, var_args) {
   if (goog.asserts.ENABLE_ASSERTS) {
-    goog.asserts.errorHandler_(new goog.asserts.AssertionError(
+    throw new goog.asserts.AssertionError(
         'Failure' + (opt_message ? ': ' + opt_message : ''),
-        Array.prototype.slice.call(arguments, 1)));
+        Array.prototype.slice.call(arguments, 1));
   }
 };
 

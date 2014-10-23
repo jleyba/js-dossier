@@ -45,7 +45,6 @@ goog.proto2.Metadata;
  *      message described by this descriptor.
  *
  * @constructor
- * @final
  */
 goog.proto2.Descriptor = function(messageType, metadata, fields) {
 

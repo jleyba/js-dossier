@@ -39,7 +39,6 @@ goog.require('goog.labs.testing.Matcher');
  * @constructor
  * @struct
  * @implements {goog.labs.testing.Matcher}
- * @final
  */
 goog.labs.testing.GreaterThanMatcher = function(value) {
   /**
@@ -80,7 +79,6 @@ goog.labs.testing.GreaterThanMatcher.prototype.describe =
  * @constructor
  * @struct
  * @implements {goog.labs.testing.Matcher}
- * @final
  */
 goog.labs.testing.LessThanMatcher = function(value) {
   /**
@@ -121,7 +119,6 @@ goog.labs.testing.LessThanMatcher.prototype.describe =
  * @constructor
  * @struct
  * @implements {goog.labs.testing.Matcher}
- * @final
  */
 goog.labs.testing.GreaterThanEqualToMatcher = function(value) {
   /**
@@ -163,7 +160,6 @@ goog.labs.testing.GreaterThanEqualToMatcher.prototype.describe =
  * @constructor
  * @struct
  * @implements {goog.labs.testing.Matcher}
- * @final
  */
 goog.labs.testing.LessThanEqualToMatcher = function(value) {
   /**
@@ -205,7 +201,6 @@ goog.labs.testing.LessThanEqualToMatcher.prototype.describe =
  * @constructor
  * @struct
  * @implements {goog.labs.testing.Matcher}
- * @final
  */
 goog.labs.testing.EqualToMatcher = function(value) {
   /**
@@ -247,7 +242,6 @@ goog.labs.testing.EqualToMatcher.prototype.describe =
  * @constructor
  * @struct
  * @implements {goog.labs.testing.Matcher}
- * @final
  */
 goog.labs.testing.CloseToMatcher = function(value, range) {
   /**

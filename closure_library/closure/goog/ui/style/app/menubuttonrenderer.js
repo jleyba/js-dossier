@@ -38,7 +38,6 @@ goog.require('goog.ui.style.app.ButtonRenderer');
  * dropdown element into the content element after the specified content.
  * @constructor
  * @extends {goog.ui.style.app.ButtonRenderer}
- * @final
  */
 goog.ui.style.app.MenuButtonRenderer = function() {
   goog.ui.style.app.ButtonRenderer.call(this);

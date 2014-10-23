@@ -43,14 +43,13 @@ goog.require('goog.log');
  *     area outside the {@code element}. Default false.
  * @constructor
  * @extends {goog.events.EventTarget}
- * @final
  */
 goog.events.FileDropHandler = function(element, opt_preventDropOutside) {
   goog.events.EventTarget.call(this);
 
   /**
    * Handler for drag/drop events.
-   * @type {!goog.events.EventHandler.<!goog.events.FileDropHandler>}
+   * @type {!goog.events.EventHandler}
    * @private
    */
   this.eventHandler_ = new goog.events.EventHandler(this);

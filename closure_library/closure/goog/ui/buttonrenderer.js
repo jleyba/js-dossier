@@ -95,8 +95,7 @@ goog.ui.ButtonRenderer.prototype.updateAriaState = function(element, state,
     default:
     case goog.ui.Component.State.OPENED:
     case goog.ui.Component.State.DISABLED:
-      goog.ui.ButtonRenderer.base(
-          this, 'updateAriaState', element, state, enable);
+      goog.base(this, 'updateAriaState', element, state, enable);
       break;
   }
 };
@@ -104,7 +103,7 @@ goog.ui.ButtonRenderer.prototype.updateAriaState = function(element, state,
 
 /** @override */
 goog.ui.ButtonRenderer.prototype.createDom = function(button) {
-  var element = goog.ui.ButtonRenderer.base(this, 'createDom', button);
+  var element = goog.base(this, 'createDom', button);
   this.setTooltip(element, button.getTooltip());
 
   var value = button.getValue();
@@ -178,14 +177,10 @@ goog.ui.ButtonRenderer.prototype.getTooltip = function(element) {
  * @protected
  */
 goog.ui.ButtonRenderer.prototype.setTooltip = function(element, tooltip) {
-  if (element) {
-    // Don't set a title attribute if there isn't a tooltip. Blank title
-    // attributes can be interpreted incorrectly by screen readers.
-    if (tooltip) {
-      element.title = tooltip;
-    } else {
-      element.removeAttribute('title');
-    }
+  // Don't set a title attribute if there isn't a tooltip. Blank title
+  // attributes can be interpreted incorrectly by screen readers.
+  if (element && tooltip) {
+    element.title = tooltip;
   }
 };
 

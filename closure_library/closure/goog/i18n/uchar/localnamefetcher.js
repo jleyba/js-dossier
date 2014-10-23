@@ -34,7 +34,6 @@ goog.require('goog.log');
  *
  * @constructor
  * @implements {goog.i18n.uChar.NameFetcher}
- * @final
  */
 goog.i18n.uChar.LocalNameFetcher = function() {
 };

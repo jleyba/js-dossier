@@ -25,8 +25,6 @@ goog.provide('goog.events.ListenerMapTest');
 goog.setTestOnly('goog.events.ListenerMapTest');
 
 goog.require('goog.dispose');
-goog.require('goog.events');
-goog.require('goog.events.EventId');
 goog.require('goog.events.EventTarget');
 goog.require('goog.events.ListenerMap');
 goog.require('goog.testing.jsunit');
@@ -36,7 +34,8 @@ var et, map;
 var handler1 = function() {};
 var handler2 = function() {};
 var handler3 = function() {};
-var CLICK_EVENT_ID = new goog.events.EventId(goog.events.getUniqueId('click'));
+var handler4 = function() {};
+var handler5 = function() {};
 
 
 function setUp() {
@@ -58,19 +57,9 @@ function testGetTypeCount() {
   map.remove('click', handler1);
   assertEquals(0, map.getTypeCount());
 
-  map.add(CLICK_EVENT_ID, handler1, false);
-  assertEquals(1, map.getTypeCount());
-  map.remove(CLICK_EVENT_ID, handler1);
-  assertEquals(0, map.getTypeCount());
-
   map.add('click', handler1, false, true);
   assertEquals(1, map.getTypeCount());
   map.remove('click', handler1, true);
-  assertEquals(0, map.getTypeCount());
-
-  map.add(CLICK_EVENT_ID, handler1, false, true);
-  assertEquals(1, map.getTypeCount());
-  map.remove(CLICK_EVENT_ID, handler1, true);
   assertEquals(0, map.getTypeCount());
 
   map.add('click', handler1, false);
@@ -81,19 +70,8 @@ function testGetTypeCount() {
   map.remove('click', handler1, true);
   assertEquals(0, map.getTypeCount());
 
-  map.add(CLICK_EVENT_ID, handler1, false);
-  map.add(CLICK_EVENT_ID, handler1, false, true);
-  assertEquals(1, map.getTypeCount());
-  map.remove(CLICK_EVENT_ID, handler1);
-  assertEquals(1, map.getTypeCount());
-  map.remove(CLICK_EVENT_ID, handler1, true);
-  assertEquals(0, map.getTypeCount());
-
   map.add('click', handler1, false);
   map.add('touchstart', handler2, false);
-  map.add(CLICK_EVENT_ID, handler3, false);
-  assertEquals(3, map.getTypeCount());
-  map.remove(CLICK_EVENT_ID, handler3);
   assertEquals(2, map.getTypeCount());
   map.remove('touchstart', handler2);
   assertEquals(1, map.getTypeCount());
@@ -110,19 +88,9 @@ function testGetListenerCount() {
   map.remove('click', handler1);
   assertEquals(0, map.getListenerCount());
 
-  map.add(CLICK_EVENT_ID, handler1, false);
-  assertEquals(1, map.getListenerCount());
-  map.remove(CLICK_EVENT_ID, handler1);
-  assertEquals(0, map.getListenerCount());
-
   map.add('click', handler1, false, true);
   assertEquals(1, map.getListenerCount());
   map.remove('click', handler1, true);
-  assertEquals(0, map.getListenerCount());
-
-  map.add(CLICK_EVENT_ID, handler1, false, true);
-  assertEquals(1, map.getListenerCount());
-  map.remove(CLICK_EVENT_ID, handler1, true);
   assertEquals(0, map.getListenerCount());
 
   map.add('click', handler1, false);
@@ -132,18 +100,9 @@ function testGetListenerCount() {
   map.remove('click', handler1, true);
   assertEquals(0, map.getListenerCount());
 
-  map.add(CLICK_EVENT_ID, handler1, false);
-  map.add(CLICK_EVENT_ID, handler1, false, true);
-  assertEquals(2, map.getListenerCount());
-  map.remove(CLICK_EVENT_ID, handler1);
-  map.remove(CLICK_EVENT_ID, handler1, true);
-  assertEquals(0, map.getListenerCount());
-
   map.add('click', handler1, false);
   map.add('touchstart', handler2, false);
-  map.add(CLICK_EVENT_ID, handler3, false);
-  assertEquals(3, map.getListenerCount());
-  map.remove(CLICK_EVENT_ID, handler3);
+  assertEquals(2, map.getListenerCount());
   map.remove('touchstart', handler2);
   map.remove('click', handler1);
   assertEquals(0, map.getListenerCount());
@@ -153,9 +112,5 @@ function testGetListenerCount() {
 function testListenerSourceIsSetCorrectly() {
   map.add('click', handler1, false);
   var listener = map.getListener('click', handler1);
-  assertEquals(et, listener.src);
-
-  map.add(CLICK_EVENT_ID, handler2, false);
-  listener = map.getListener(CLICK_EVENT_ID, handler2);
   assertEquals(et, listener.src);
 }

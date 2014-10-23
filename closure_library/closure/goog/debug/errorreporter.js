@@ -55,7 +55,7 @@ goog.require('goog.userAgent');
  */
 goog.debug.ErrorReporter = function(
     handlerUrl, opt_contextProvider, opt_noAutoProtect) {
-  goog.debug.ErrorReporter.base(this, 'constructor');
+  goog.base(this);
 
   /**
    * Context provider, if one was provided.
@@ -76,6 +76,12 @@ goog.debug.ErrorReporter = function(
    * @private {?number}
    */
   this.truncationLimit_ = null;
+
+  /**
+   * If true, will prepend POST body size (bytes) to POST query data.
+   * @private {boolean}
+   */
+  this.enablePostBodySizeReporting_ = false;
 
   /**
    * Additional arguments to append to URL before sending XHR.
@@ -137,7 +143,6 @@ goog.define('goog.debug.ErrorReporter.ALLOW_AUTO_PROTECT', true);
  *     server alongside this error.
  * @constructor
  * @extends {goog.events.Event}
- * @final
  */
 goog.debug.ErrorReporter.ExceptionEvent = function(error, context) {
   goog.events.Event.call(this, goog.debug.ErrorReporter.ExceptionEvent.TYPE);
@@ -196,7 +201,7 @@ goog.debug.ErrorReporter.logger_ =
  *     onerror and to protect entry points.  If apps have other error reporting
  *     facilities, it may make sense for them to set these up themselves and use
  *     the ErrorReporter just for transmission of reports.
- * @return {!goog.debug.ErrorReporter} The error reporter.
+ * @return {goog.debug.ErrorReporter} The error reporter.
  */
 goog.debug.ErrorReporter.install = function(
     loggingUrl, opt_contextProvider, opt_noAutoProtect) {
@@ -256,7 +261,7 @@ if (goog.debug.ErrorReporter.ALLOW_AUTO_PROTECT) {
    * @private
    */
   goog.debug.ErrorReporter.prototype.setup_ = function() {
-    if (goog.userAgent.IE && !goog.userAgent.isVersionOrHigher('10')) {
+    if (goog.userAgent.IE) {
       // Use "onerror" because caught exceptions in IE don't provide line
       // number.
       goog.debug.catchErrors(
@@ -268,7 +273,6 @@ if (goog.debug.ErrorReporter.ALLOW_AUTO_PROTECT) {
 
       this.errorHandler_.protectWindowSetTimeout();
       this.errorHandler_.protectWindowSetInterval();
-      this.errorHandler_.protectWindowRequestAnimationFrame();
       goog.debug.entryPointRegistry.monitorAll(this.errorHandler_);
     }
   };
@@ -372,6 +376,11 @@ goog.debug.ErrorReporter.prototype.sendErrorReport =
     // Copy query data map into request.
     var queryData = goog.uri.utils.buildQueryDataFromMap(queryMap);
 
+    // Prepend "size" so it is guaranteed to appear first in the query string.
+    if (this.enablePostBodySizeReporting_) {
+      queryData = 'size=' + queryData.length + '&' + queryData;
+    }
+
     // Truncate if truncationLimit set.
     if (goog.isNumber(this.truncationLimit_)) {
       queryData = queryData.substring(0, this.truncationLimit_);
@@ -420,10 +429,20 @@ goog.debug.ErrorReporter.prototype.setAdditionalArguments = function(urlArgs) {
 };
 
 
+/**
+ * @param {boolean} enablePostBodySizeReporting Whether to include POST body
+ * size in POST request query params.
+ */
+goog.debug.ErrorReporter.prototype.setEnablePostBodySizeReporting =
+    function(enablePostBodySizeReporting) {
+  this.enablePostBodySizeReporting_ = enablePostBodySizeReporting;
+};
+
+
 /** @override */
 goog.debug.ErrorReporter.prototype.disposeInternal = function() {
   if (goog.debug.ErrorReporter.ALLOW_AUTO_PROTECT) {
     goog.dispose(this.errorHandler_);
   }
-  goog.debug.ErrorReporter.base(this, 'disposeInternal');
+  goog.base(this, 'disposeInternal');
 };

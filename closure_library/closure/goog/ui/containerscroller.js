@@ -45,7 +45,6 @@ goog.require('goog.ui.Container');
  * @param {!goog.ui.Container} container The container to attach behavior to.
  * @constructor
  * @extends {goog.Disposable}
- * @final
  */
 goog.ui.ContainerScroller = function(container) {
   goog.Disposable.call(this);
@@ -59,7 +58,7 @@ goog.ui.ContainerScroller = function(container) {
 
   /**
    * Event handler for this object.
-   * @type {!goog.events.EventHandler.<!goog.ui.ContainerScroller>}
+   * @type {!goog.events.EventHandler}
    * @private
    */
   this.eventHandler_ = new goog.events.EventHandler(this);

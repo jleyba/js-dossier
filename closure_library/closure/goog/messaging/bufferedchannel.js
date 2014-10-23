@@ -43,7 +43,6 @@ goog.require('goog.messaging.MultiChannel');
  * @constructor
  * @extends {goog.Disposable}
  * @implements {goog.messaging.MessageChannel};
- * @final
  */
 goog.messaging.BufferedChannel = function(messageChannel, opt_interval) {
   goog.Disposable.call(this);
@@ -284,5 +283,5 @@ goog.messaging.BufferedChannel.prototype.setPeerReady_ = function(
 goog.messaging.BufferedChannel.prototype.disposeInternal = function() {
   goog.dispose(this.multiChannel_);
   goog.dispose(this.timer_);
-  goog.messaging.BufferedChannel.base(this, 'disposeInternal');
+  goog.base(this, 'disposeInternal');
 };

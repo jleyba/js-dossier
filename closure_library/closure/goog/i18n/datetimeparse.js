@@ -126,7 +126,6 @@ goog.require('goog.i18n.DateTimeSymbols');
  * Construct a DateTimeParse based on current locale.
  * @param {string|number} pattern pattern specification or pattern type.
  * @constructor
- * @final
  */
 goog.i18n.DateTimeParse = function(pattern) {
   this.patternParts_ = [];
@@ -518,10 +517,7 @@ goog.i18n.DateTimeParse.prototype.subParse_ =
 
   switch (ch) {
     case 'G': // ERA
-      value = this.matchString_(text, pos, goog.i18n.DateTimeSymbols.ERAS);
-      if (value >= 0) {
-        cal.era = value;
-      }
+      cal.era = this.matchString_(text, pos, goog.i18n.DateTimeSymbols.ERAS);
       return true;
     case 'M': // MONTH
     case 'L': // STANDALONEMONTH
@@ -529,19 +525,14 @@ goog.i18n.DateTimeParse.prototype.subParse_ =
     case 'E':
       return this.subParseDayOfWeek_(text, pos, cal);
     case 'a': // AM_PM
-      value = this.matchString_(text, pos, goog.i18n.DateTimeSymbols.AMPMS);
-      if (value >= 0) {
-        cal.ampm = value;
-      }
+      cal.ampm = this.matchString_(text, pos, goog.i18n.DateTimeSymbols.AMPMS);
       return true;
     case 'y': // YEAR
       return this.subParseYear_(text, pos, start, value, part, cal);
     case 'Q': // QUARTER
       return this.subParseQuarter_(text, pos, cal, value);
     case 'd': // DATE
-      if (value >= 0) {
-        cal.day = value;
-      }
+      cal.day = value;
       return true;
     case 'S': // FRACTIONAL_SECOND
       return this.subParseFractionalSeconds_(value, pos, start, cal);
@@ -552,19 +543,13 @@ goog.i18n.DateTimeParse.prototype.subParse_ =
     case 'K': // HOUR (0..11)
     case 'H': // HOUR_OF_DAY (0..23)
     case 'k': // HOUR_OF_DAY (1..24)
-      if (value >= 0) {
-        cal.hours = value;
-      }
+      cal.hours = value;
       return true;
     case 'm': // MINUTE
-      if (value >= 0) {
-        cal.minutes = value;
-      }
+      cal.minutes = value;
       return true;
     case 's': // SECOND
-      if (value >= 0) {
-        cal.seconds = value;
-      }
+      cal.seconds = value;
       return true;
 
     case 'z': // ZONE_OFFSET

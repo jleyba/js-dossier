@@ -39,10 +39,9 @@ goog.require('goog.object');
  * @constructor
  * @extends {goog.Disposable}
  * @implements {goog.messaging.PortNetwork}
- * @final
  */
 goog.messaging.PortOperator = function(name) {
-  goog.messaging.PortOperator.base(this, 'constructor');
+  goog.base(this);
 
   /**
    * The collection of channels for communicating with other contexts in the
@@ -194,5 +193,5 @@ goog.messaging.PortOperator.prototype.disposeInternal = function() {
   goog.object.forEach(this.connections_, goog.dispose);
   delete this.switchboard_;
   delete this.connections_;
-  goog.messaging.PortOperator.base(this, 'disposeInternal');
+  goog.base(this, 'disposeInternal');
 };

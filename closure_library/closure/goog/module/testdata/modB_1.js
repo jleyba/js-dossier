@@ -19,8 +19,6 @@
 
 goog.provide('goog.module.testdata.modB_1');
 
-goog.setTestOnly('goog.module.testdata.modB_1');
-
 goog.require('goog.module.ModuleManager');
 
 function throwErrorInModuleB() {

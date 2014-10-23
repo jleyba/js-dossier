@@ -58,7 +58,7 @@ goog.require('goog.style');
  */
 goog.ui.Zippy = function(header, opt_content, opt_expanded,
     opt_expandedHeader, opt_domHelper) {
-  goog.ui.Zippy.base(this, 'constructor');
+  goog.base(this);
 
   /**
    * DomHelper used to interact with the document, allowing components to be
@@ -107,14 +107,14 @@ goog.ui.Zippy = function(header, opt_content, opt_expanded,
 
   /**
    * A keyboard events handler. If there are two headers it is shared for both.
-   * @type {goog.events.EventHandler.<!goog.ui.Zippy>}
+   * @type {goog.events.EventHandler}
    * @private
    */
   this.keyboardEventHandler_ = new goog.events.EventHandler(this);
 
   /**
    * A mouse events handler. If there are two headers it is shared for both.
-   * @type {goog.events.EventHandler.<!goog.ui.Zippy>}
+   * @type {goog.events.EventHandler}
    * @private
    */
   this.mouseEventHandler_ = new goog.events.EventHandler(this);
@@ -136,7 +136,6 @@ goog.ui.Zippy = function(header, opt_content, opt_expanded,
   this.setExpanded(this.expanded_);
 };
 goog.inherits(goog.ui.Zippy, goog.events.EventTarget);
-goog.tagUnsealableClass(goog.ui.Zippy);
 
 
 /**
@@ -172,7 +171,7 @@ goog.ui.Zippy.prototype.handleKeyEvents_ = true;
 
 /** @override */
 goog.ui.Zippy.prototype.disposeInternal = function() {
-  goog.ui.Zippy.base(this, 'disposeInternal');
+  goog.base(this, 'disposeInternal');
   goog.dispose(this.keyboardEventHandler_);
   goog.dispose(this.mouseEventHandler_);
 };
@@ -433,10 +432,9 @@ goog.ui.Zippy.prototype.dispatchActionEvent_ = function() {
  * @param {boolean} expanded Expanded state.
  * @extends {goog.events.Event}
  * @constructor
- * @final
  */
 goog.ui.ZippyEvent = function(type, target, expanded) {
-  goog.ui.ZippyEvent.base(this, 'constructor', type, target);
+  goog.base(this, type, target);
 
   /**
    * The expanded state.

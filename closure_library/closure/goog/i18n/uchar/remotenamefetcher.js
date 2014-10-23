@@ -50,10 +50,9 @@ goog.require('goog.structs.Map');
  * @constructor
  * @implements {goog.i18n.uChar.NameFetcher}
  * @extends {goog.Disposable}
- * @final
  */
 goog.i18n.uChar.RemoteNameFetcher = function(dataSourceUri) {
-  goog.i18n.uChar.RemoteNameFetcher.base(this, 'constructor');
+  goog.base(this);
 
   /**
    * XHRIo object for prefetch() asynchronous calls.
@@ -122,7 +121,7 @@ goog.i18n.uChar.RemoteNameFetcher.logger_ =
 
 /** @override */
 goog.i18n.uChar.RemoteNameFetcher.prototype.disposeInternal = function() {
-  goog.i18n.uChar.RemoteNameFetcher.base(this, 'disposeInternal');
+  goog.base(this, 'disposeInternal');
   this.prefetchXhrIo_.dispose();
   this.getNameXhrIo_.dispose();
 };

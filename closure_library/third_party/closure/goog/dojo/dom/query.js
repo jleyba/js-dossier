@@ -207,8 +207,6 @@ goog.dom.query = (function() {
                      ((goog.dom.getDocument().compatMode) == 'BackCompat')
                    );
 
-  var legacyIE = goog.userAgent.IE && !goog.userAgent.isVersionOrHigher('9');
-
   // On browsers that support the "children" collection we can avoid a lot of
   // iteration on chaff (non-element) nodes.
   var childNodesName = !!goog.dom.getDocument().firstChild['children'] ?
@@ -848,7 +846,7 @@ goog.dom.query = (function() {
     }
   };
 
-  var defaultGetter = (legacyIE) ? function(cond) {
+  var defaultGetter = (goog.userAgent.IE) ? function(cond) {
     var clc = cond.toLowerCase();
     if (clc == 'class') {
       cond = 'className';
@@ -1309,7 +1307,7 @@ goog.dom.query = (function() {
       //    http://www.w3.org/TR/css3-selectors/#w3cselgrammar
       (specials.indexOf(qcz) == -1) &&
       // IE's QSA impl sucks on pseudos
-      (!legacyIE || (query.indexOf(':') == -1)) &&
+      (!goog.userAgent.IE || (query.indexOf(':') == -1)) &&
 
       (!(cssCaseBug && (query.indexOf('.') >= 0))) &&
 
@@ -1350,7 +1348,7 @@ goog.dom.query = (function() {
           // the zipping function into 'remove' comments mode instead of the
           // normal 'skip it' which every other QSA-clued browser enjoys
           // skip expensive duplication checks and just wrap in an array.
-          if (legacyIE) {
+          if (goog.userAgent.IE) {
             r.commentStrip = true;
           } else {
             r.nozip = true;
@@ -1390,7 +1388,7 @@ goog.dom.query = (function() {
   // NOTE:
   //    this function is Moo inspired, but our own impl to deal correctly
   //    with XML in IE
-  var _nodeUID = legacyIE ? function(node) {
+  var _nodeUID = goog.userAgent.IE ? function(node) {
     if (caseSensitive) {
       // XML docs don't have uniqueID on their nodes
       return node.getAttribute('_uid') ||
@@ -1442,7 +1440,7 @@ goog.dom.query = (function() {
 
     // we have to fork here for IE and XML docs because we can't set
     // expandos on their nodes (apparently). *sigh*
-    if (legacyIE && caseSensitive) {
+    if (goog.userAgent.IE && caseSensitive) {
       var szidx = _zipIdx + '';
       arr[0].setAttribute(_zipIdxName, szidx);
       for (var x = 1, te; te = arr[x]; x++) {
@@ -1451,7 +1449,7 @@ goog.dom.query = (function() {
         }
         te.setAttribute(_zipIdxName, szidx);
       }
-    } else if (legacyIE && arr.commentStrip) {
+    } else if (goog.userAgent.IE && arr.commentStrip) {
       try {
         for (var x = 1, te; te = arr[x]; x++) {
           if (isElement(te)) {
@@ -1518,7 +1516,7 @@ goog.dom.query = (function() {
         goog.userAgent.OPERA &&
           (root.doctype || od.toString() == '[object XMLDocument]') ||
         !!od &&
-        (legacyIE ? od.xml : (root.xmlVersion || od.xmlVersion));
+        (goog.userAgent.IE ? od.xml : (root.xmlVersion || od.xmlVersion));
 
     // NOTE:
     //    adding 'true' as the 2nd argument to getQueryFunc is useful for

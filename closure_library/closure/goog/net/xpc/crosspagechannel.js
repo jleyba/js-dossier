@@ -21,31 +21,24 @@
 
 goog.provide('goog.net.xpc.CrossPageChannel');
 
+goog.require('goog.Disposable');
 goog.require('goog.Uri');
 goog.require('goog.async.Deferred');
 goog.require('goog.async.Delay');
-goog.require('goog.dispose');
 goog.require('goog.dom');
 goog.require('goog.events');
 goog.require('goog.events.EventHandler');
 goog.require('goog.events.EventType');
 goog.require('goog.json');
-goog.require('goog.log');
 goog.require('goog.messaging.AbstractChannel');
 goog.require('goog.net.xpc');
-goog.require('goog.net.xpc.CfgFields');
-goog.require('goog.net.xpc.ChannelStates');
 goog.require('goog.net.xpc.CrossPageChannelRole');
-goog.require('goog.net.xpc.DirectTransport');
 goog.require('goog.net.xpc.FrameElementMethodTransport');
 goog.require('goog.net.xpc.IframePollingTransport');
 goog.require('goog.net.xpc.IframeRelayTransport');
 goog.require('goog.net.xpc.NativeMessagingTransport');
 goog.require('goog.net.xpc.NixTransport');
-goog.require('goog.net.xpc.TransportTypes');
-goog.require('goog.net.xpc.UriCfgFields');
-goog.require('goog.string');
-goog.require('goog.uri.utils');
+goog.require('goog.net.xpc.Transport');
 goog.require('goog.userAgent');
 
 
@@ -61,7 +54,7 @@ goog.require('goog.userAgent');
  * @extends {goog.messaging.AbstractChannel}
  */
 goog.net.xpc.CrossPageChannel = function(cfg, opt_domHelper) {
-  goog.net.xpc.CrossPageChannel.base(this, 'constructor');
+  goog.base(this);
 
   for (var i = 0, uriField; uriField = goog.net.xpc.UriCfgFields[i]; i++) {
     if (uriField in cfg && !/^https?:\/\//.test(cfg[uriField])) {
@@ -77,9 +70,7 @@ goog.net.xpc.CrossPageChannel = function(cfg, opt_domHelper) {
   this.cfg_ = cfg;
 
   /**
-   * The name of the channel. Please use
-   * <code>updateChannelNameAndCatalog</code> to change this from the transports
-   * vs changing the property directly.
+   * The name of the channel.
    * @type {string}
    */
   this.name = this.cfg_[goog.net.xpc.CfgFields.CHANNEL_NAME] ||
@@ -102,7 +93,7 @@ goog.net.xpc.CrossPageChannel = function(cfg, opt_domHelper) {
 
   /**
    * An event handler used to listen for load events on peer iframes.
-   * @type {!goog.events.EventHandler.<!goog.net.xpc.CrossPageChannel>}
+   * @type {!goog.events.EventHandler}
    * @private
    */
   this.peerLoadHandler_ = new goog.events.EventHandler(this);
@@ -247,9 +238,9 @@ goog.net.xpc.CrossPageChannel.prototype.setPeerWindowObject =
 
 /**
  * Returns the window object the foreign document resides in.
+ * Package private. Do not call from outside goog.net.xpc.
  *
  * @return {Object} The window object of the peer.
- * @package
  */
 goog.net.xpc.CrossPageChannel.prototype.getPeerWindowObject = function() {
   return this.peerWindowObject_;
@@ -258,9 +249,9 @@ goog.net.xpc.CrossPageChannel.prototype.getPeerWindowObject = function() {
 
 /**
  * Determines whether the peer window is available (e.g. not closed).
+ * Package private. Do not call from outside goog.net.xpc.
  *
  * @return {boolean} Whether the peer window is available.
- * @package
  */
 goog.net.xpc.CrossPageChannel.prototype.isPeerAvailable = function() {
   // NOTE(user): This check is not reliable in IE, where a document in an
@@ -319,23 +310,20 @@ goog.net.xpc.CrossPageChannel.prototype.createTransport_ = function() {
     return;
   }
 
-  // TODO(user): Use goog.scope.
-  var CfgFields = goog.net.xpc.CfgFields;
-
-  if (!this.cfg_[CfgFields.TRANSPORT]) {
-    this.cfg_[CfgFields.TRANSPORT] =
+  if (!this.cfg_[goog.net.xpc.CfgFields.TRANSPORT]) {
+    this.cfg_[goog.net.xpc.CfgFields.TRANSPORT] =
         this.determineTransportType_();
   }
 
-  switch (this.cfg_[CfgFields.TRANSPORT]) {
+  switch (this.cfg_[goog.net.xpc.CfgFields.TRANSPORT]) {
     case goog.net.xpc.TransportTypes.NATIVE_MESSAGING:
       var protocolVersion = this.cfg_[
-          CfgFields.NATIVE_TRANSPORT_PROTOCOL_VERSION] || 2;
+          goog.net.xpc.CfgFields.NATIVE_TRANSPORT_PROTOCOL_VERSION] || 2;
       this.transport_ = new goog.net.xpc.NativeMessagingTransport(
           this,
-          this.cfg_[CfgFields.PEER_HOSTNAME],
+          this.cfg_[goog.net.xpc.CfgFields.PEER_HOSTNAME],
           this.domHelper_,
-          !!this.cfg_[CfgFields.ONE_SIDED_HANDSHAKE],
+          !!this.cfg_[goog.net.xpc.CfgFields.ONE_SIDED_HANDSHAKE],
           protocolVersion);
       break;
     case goog.net.xpc.TransportTypes.NIX:
@@ -352,19 +340,6 @@ goog.net.xpc.CrossPageChannel.prototype.createTransport_ = function() {
     case goog.net.xpc.TransportTypes.IFRAME_POLLING:
       this.transport_ =
           new goog.net.xpc.IframePollingTransport(this, this.domHelper_);
-      break;
-    case goog.net.xpc.TransportTypes.DIRECT:
-      if (this.peerWindowObject_ &&
-          goog.net.xpc.DirectTransport.isSupported(/** @type {!Window} */ (
-              this.peerWindowObject_))) {
-        this.transport_ =
-            new goog.net.xpc.DirectTransport(this, this.domHelper_);
-      } else {
-        goog.log.info(
-            goog.net.xpc.logger,
-            'DirectTransport not supported for this window, peer window in' +
-            ' different security context or not set yet.');
-      }
       break;
   }
 
@@ -396,7 +371,7 @@ goog.net.xpc.CrossPageChannel.prototype.getTransportName = function() {
 
 
 /**
- * @return {!Object} Configuration-object to be used by the peer to
+ * @return {Object} Configuration-object to be used by the peer to
  *     initialize the channel.
  */
 goog.net.xpc.CrossPageChannel.prototype.getPeerConfiguration = function() {
@@ -472,7 +447,7 @@ goog.net.xpc.CrossPageChannel.prototype.createPeerIframe = function(
   this.peerWindowDeferred_ =
       new goog.async.Deferred(undefined, this);
   var peerUri = this.getPeerUri(opt_addCfgParam);
-  this.peerLoadHandler_.listenOnceWithScope(iframeElm, 'load',
+  this.peerLoadHandler_.listenOnce(iframeElm, 'load',
       this.peerWindowDeferred_.callback, false, this.peerWindowDeferred_);
 
   if (goog.userAgent.GECKO || goog.userAgent.WEBKIT) {
@@ -548,13 +523,6 @@ goog.net.xpc.CrossPageChannel.prototype.getPeerUri = function(opt_addCfgParam) {
  */
 goog.net.xpc.CrossPageChannel.prototype.connect = function(opt_connectCb) {
   this.connectCb_ = opt_connectCb || goog.nullFunction;
-
-  // If this channel was previously closed, transition back to the NOT_CONNECTED
-  // state to ensure that the connection can proceed (xpcDeliver blocks
-  // transport messages while the connection state is CLOSED).
-  if (this.state_ == goog.net.xpc.ChannelStates.CLOSED) {
-    this.state_ = goog.net.xpc.ChannelStates.NOT_CONNECTED;
-  }
 
   // If we know of a peer window whose creation has been requested but is not
   // complete, peerWindowDeferred_ will be non-null, and we should block on it.
@@ -640,7 +608,7 @@ goog.net.xpc.CrossPageChannel.prototype.notifyConnected = function(opt_delay) {
   this.state_ = goog.net.xpc.ChannelStates.CONNECTED;
   goog.log.info(goog.net.xpc.logger, 'Channel "' + this.name + '" connected');
   goog.dispose(this.connectionDelay_);
-  if (goog.isDef(opt_delay)) {
+  if (opt_delay) {
     this.connectionDelay_ =
         new goog.async.Delay(this.connectCb_, opt_delay);
     this.connectionDelay_.start();
@@ -697,13 +665,14 @@ goog.net.xpc.CrossPageChannel.prototype.send = function(serviceName, payload) {
  * avoid name conflict with {@code deliver} function in superclass
  * goog.messaging.AbstractChannel.
  *
+ * Package private. Do not call from outside goog.net.xpc.
+ *
  * @param {string} serviceName The name of the port.
  * @param {string} payload The payload.
  * @param {string=} opt_origin An optional origin for the message, where the
  *     underlying transport makes that available.  If this is specified, and
  *     the PEER_HOSTNAME parameter was provided, they must match or the message
  *     will be rejected.
- * @package
  */
 goog.net.xpc.CrossPageChannel.prototype.xpcDeliver = function(
     serviceName, payload, opt_origin) {
@@ -727,15 +696,9 @@ goog.net.xpc.CrossPageChannel.prototype.xpcDeliver = function(
     return;
   }
 
-  // If there is another channel still open, the native transport's global
-  // postMessage listener will still be active.  This will mean that messages
-  // being sent to the now-closed channel will still be received and delivered,
-  // such as transport service traffic from its previous correspondent in the
-  // other frame.  Ensure these messages don't cause exceptions.
-  // Example: http://b/12419303
-  if (this.isDisposed() || this.state_ == goog.net.xpc.ChannelStates.CLOSED) {
+  if (this.isDisposed()) {
     goog.log.warning(goog.net.xpc.logger,
-        'CrossPageChannel::xpcDeliver(): Channel closed.');
+        'CrossPageChannel::xpcDeliver(): Disposed.');
   } else if (!serviceName ||
       serviceName == goog.net.xpc.TRANSPORT_SERVICE_) {
     this.transport_.transportServiceHandler(payload);
@@ -806,20 +769,6 @@ goog.net.xpc.CrossPageChannel.prototype.getRole = function() {
 
 
 /**
- * Sets the channel name. Note, this doesn't establish a unique channel to
- * communicate on.
- * @param {string} name The new channel name.
- */
-goog.net.xpc.CrossPageChannel.prototype.updateChannelNameAndCatalog = function(
-    name) {
-  goog.log.fine(goog.net.xpc.logger, 'changing channel name to ' + name);
-  delete goog.net.xpc.channels[this.name];
-  this.name = name;
-  goog.net.xpc.channels[name] = this;
-};
-
-
-/**
  * Returns whether an incoming message with the given origin is acceptable.
  * If an incoming request comes with a specified (non-empty) origin, and the
  * PEER_HOSTNAME config parameter has also been provided, the two must match,
@@ -846,7 +795,7 @@ goog.net.xpc.CrossPageChannel.prototype.disposeInternal = function() {
   delete goog.net.xpc.channels[this.name];
   goog.dispose(this.peerLoadHandler_);
   delete this.peerLoadHandler_;
-  goog.net.xpc.CrossPageChannel.base(this, 'disposeInternal');
+  goog.base(this, 'disposeInternal');
 };
 
 
@@ -859,3 +808,4 @@ goog.net.xpc.CrossPageChannel.disposeAll_ = function() {
     goog.dispose(goog.net.xpc.channels[name]);
   }
 };
+

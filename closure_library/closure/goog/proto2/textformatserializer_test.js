@@ -20,7 +20,6 @@
 /** @suppress {extraProvide} */
 goog.provide('goog.proto2.TextFormatSerializerTest');
 
-goog.require('goog.proto2.ObjectSerializer');
 goog.require('goog.proto2.TextFormatSerializer');
 goog.require('goog.testing.jsunit');
 goog.require('proto2.TestAllTypes');
@@ -118,44 +117,8 @@ function testSerializationOfUnknown() {
       '  repeated_int32: 301\n' +
       '  repeated_int32: 302\n' +
       '  2000: 401\n' +
-      '}\n';
+      '}';
 
-  assertEquals(expected, simplified);
-}
-
-function testSerializationOfUnknownParsedFromObject() {
-  // Construct the object-serialized representation of the message constructed
-  // programmatically in the test above.
-  var serialized = {
-    1: 101,
-    31: [201, 202],
-    1000: 301,
-    1001: 302,
-    1002: {
-      31: [301, 302],
-      2000: 401
-    }
-  };
-
-  // Deserialize that representation into a TestAllTypes message.
-  var objectSerializer = new goog.proto2.ObjectSerializer();
-  var message = new proto2.TestAllTypes();
-  objectSerializer.deserializeTo(message, serialized);
-
-  // Check that the text format matches what we expect.
-  var simplified = new goog.proto2.TextFormatSerializer().serialize(message);
-  var expected = (
-      'optional_int32: 101\n' +
-      'repeated_int32: 201\n' +
-      'repeated_int32: 202\n' +
-      '1000: 301\n' +
-      '1001: 302\n' +
-      '1002 {\n' +
-      '  31: 301\n' +
-      '  31: 302\n' +
-      '  2000: 401\n' +
-      '}\n'
-      );
   assertEquals(expected, simplified);
 }
 
@@ -366,54 +329,6 @@ function testDeserializationOfZeroFalseAndEmptyString() {
   assertEquals('', message.getOptionalString());
 }
 
-function testDeserializationOfConcatenatedString() {
-  var message = new proto2.TestAllTypes();
-  var value = 'optional_int32: 123\n' +
-      'optional_string:\n' +
-      '    "FirstLine"\n' +
-      '    "SecondLine"\n' +
-      'optional_float: 456.7';
-
-  new goog.proto2.TextFormatSerializer().deserializeTo(message, value);
-
-  assertEquals(123, message.getOptionalInt32());
-  assertEquals('FirstLineSecondLine', message.getOptionalString());
-  assertEquals(456.7, message.getOptionalFloat());
-}
-
-function testDeserializationSkipComment() {
-  var message = new proto2.TestAllTypes();
-  var value = 'optional_int32: 101\n' +
-      'repeated_int32: 201\n' +
-      '# Some comment.\n' +
-      'repeated_int32: 202\n' +
-      'optional_float: 123.4';
-
-  var parser = new goog.proto2.TextFormatSerializer.Parser();
-  assertTrue(parser.parse(message, value));
-
-  assertEquals(101, message.getOptionalInt32());
-  assertEquals(201, message.getRepeatedInt32(0));
-  assertEquals(202, message.getRepeatedInt32(1));
-  assertEquals(123.4, message.getOptionalFloat());
-}
-
-function testDeserializationSkipTrailingComment() {
-  var message = new proto2.TestAllTypes();
-  var value = 'optional_int32: 101\n' +
-      'repeated_int32: 201\n' +
-      'repeated_int32: 202  # Some trailing comment.\n' +
-      'optional_float: 123.4';
-
-  var parser = new goog.proto2.TextFormatSerializer.Parser();
-  assertTrue(parser.parse(message, value));
-
-  assertEquals(101, message.getOptionalInt32());
-  assertEquals(201, message.getRepeatedInt32(0));
-  assertEquals(202, message.getRepeatedInt32(1));
-  assertEquals(123.4, message.getOptionalFloat());
-}
-
 function testDeserializationSkipUnknown() {
   var message = new proto2.TestAllTypes();
   var value = 'optional_int32: 101\n' +
@@ -533,19 +448,6 @@ function testDeserializationVariedNumbers() {
   assertEquals(123.0, message.getRepeatedFloat(0));
   assertEquals(-3.27, message.getRepeatedFloat(1));
   assertEquals(-35.5, message.getRepeatedFloat(2));
-}
-
-function testDeserializationScientificNotation() {
-  var message = new proto2.TestAllTypes();
-  var value = 'repeated_float: 1.1e5\n' +
-      'repeated_float: 1.1e-5\n' +
-      'repeated_double: 1.1e5\n' +
-      'repeated_double: 1.1e-5\n';
-  new goog.proto2.TextFormatSerializer().deserializeTo(message, value);
-  assertEquals(1.1e5, message.getRepeatedFloat(0));
-  assertEquals(1.1e-5, message.getRepeatedFloat(1));
-  assertEquals(1.1e5, message.getRepeatedDouble(0));
-  assertEquals(1.1e-5, message.getRepeatedDouble(1));
 }
 
 function testParseNumericalConstant() {
@@ -708,6 +610,7 @@ function testBidirectional() {
   assertTrue(copy.equals(message));
 }
 
+
 function testBidirectional64BitNumber() {
   var message = new proto2.TestAllTypes();
   message.setOptionalInt64Number(10000000);
@@ -723,23 +626,4 @@ function testBidirectional64BitNumber() {
 
   // Assert that the messages are structurally equivalent.
   assertTrue(copy.equals(message));
-}
-
-function testUseEnumValues() {
-  var message = new proto2.TestAllTypes();
-  message.setOptionalNestedEnum(proto2.TestAllTypes.NestedEnum.FOO);
-
-  var serializer = new goog.proto2.TextFormatSerializer(false, true);
-  var textform = serializer.serialize(message);
-
-  var expected = 'optional_nested_enum: 0\n';
-
-  assertEquals(expected, textform);
-
-  var deserializedMessage = new proto2.TestAllTypes();
-  serializer.deserializeTo(deserializedMessage, textform);
-
-  assertEquals(
-      proto2.TestAllTypes.NestedEnum.FOO,
-      deserializedMessage.getOptionalNestedEnum());
 }

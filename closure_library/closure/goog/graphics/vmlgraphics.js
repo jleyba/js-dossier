@@ -61,7 +61,6 @@ goog.require('goog.style');
  * @deprecated goog.graphics is deprecated. It existed to abstract over browser
  *     differences before the canvas tag was widely supported.  See
  *     http://en.wikipedia.org/wiki/Canvas_element for details.
- * @final
  */
 goog.graphics.VmlGraphics = function(width, height,
                                      opt_coordWidth, opt_coordHeight,
@@ -217,7 +216,7 @@ goog.graphics.VmlGraphics.prototype.handler_;
 /**
  * Creates a VML element. Used internally and by different VML classes.
  * @param {string} tagName The type of element to create.
- * @return {!Element} The created element.
+ * @return {Element} The created element.
  */
 goog.graphics.VmlGraphics.prototype.createVmlElement = function(tagName) {
   var element =
@@ -275,7 +274,7 @@ goog.graphics.VmlGraphics.prototype.append_ = function(element, opt_group) {
  */
 goog.graphics.VmlGraphics.prototype.setElementFill = function(element, fill) {
   var vmlElement = element.getElement();
-  goog.graphics.VmlGraphics.removeFill_(vmlElement);
+  this.removeFill(vmlElement);
   if (fill instanceof goog.graphics.SolidFill) {
     // NOTE(arv): VML does not understand 'transparent' so hard code support
     // for it.
@@ -339,13 +338,19 @@ goog.graphics.VmlGraphics.prototype.setElementStroke = function(element,
     }
 
     var strokeElement = vmlElement.getElementsByTagName('stroke')[0];
-    if (!strokeElement) {
+    if (width < 1) {
       strokeElement = strokeElement || this.createVmlElement('stroke');
+      strokeElement.opacity = width;
+      strokeElement.weight = '1px';
+      strokeElement.color = stroke.getColor();
       vmlElement.appendChild(strokeElement);
+    } else {
+      if (strokeElement) {
+        vmlElement.removeChild(strokeElement);
+      }
+      vmlElement.strokecolor = stroke.getColor();
+      vmlElement.strokeweight = width + 'px';
     }
-    strokeElement.opacity = stroke.getOpacity();
-    strokeElement.weight = width + 'px';
-    strokeElement.color = stroke.getColor();
   } else {
     vmlElement.stroked = false;
   }
@@ -354,10 +359,8 @@ goog.graphics.VmlGraphics.prototype.setElementStroke = function(element,
 
 
 /**
- * Set the translation and rotation of an element.
- *
- * If a more general affine transform is needed than this provides
- * (e.g. skew and scale) then use setElementAffineTransform.
+ * Set the transformation of an element.
+ * @param {goog.graphics.Element} element The element wrapper.
  * @param {number} x The x coordinate of the translation transform.
  * @param {number} y The y coordinate of the translation transform.
  * @param {number} angle The angle of the rotation transform.
@@ -380,61 +383,18 @@ goog.graphics.VmlGraphics.prototype.setElementTransform = function(element, x,
 
 
 /**
- * Set the transformation of an element.
- * @param {!goog.graphics.Element} element The element wrapper.
- * @param {!goog.graphics.AffineTransform} affineTransform The
- *     transformation applied to this element.
- * @override
- */
-goog.graphics.VmlGraphics.prototype.setElementAffineTransform = function(
-    element, affineTransform) {
-  var t = affineTransform;
-  var vmlElement = element.getElement();
-  goog.graphics.VmlGraphics.removeSkew_(vmlElement);
-  var skewNode = this.createVmlElement('skew');
-  skewNode.on = 'true';
-  // Move the transform origin to 0px,0px of the graphics.
-  // In VML, 0,0 means the center of the element, -0.5,-0.5 left top conner of
-  // it.
-  skewNode.origin =
-      (-vmlElement.style.pixelLeft / vmlElement.style.pixelWidth - 0.5) + ',' +
-      (-vmlElement.style.pixelTop / vmlElement.style.pixelHeight - 0.5);
-  skewNode.offset = t.getTranslateX().toFixed(1) + 'px,' +
-                    t.getTranslateY().toFixed(1) + 'px';
-  skewNode.matrix = [t.getScaleX().toFixed(6), t.getShearX().toFixed(6),
-                     t.getShearY().toFixed(6), t.getScaleY().toFixed(6),
-                     0, 0].join(',');
-  vmlElement.appendChild(skewNode);
-  this.updateGraphics_();
-};
-
-
-/**
- * Removes the skew information from a dom element.
- * @param {Element} element DOM element.
- * @private
- */
-goog.graphics.VmlGraphics.removeSkew_ = function(element) {
-  goog.array.forEach(element.childNodes, function(child) {
-    if (child.tagName == 'skew') {
-      element.removeChild(child);
-    }
-  });
-};
-
-
-/**
  * Removes the fill information from a dom element.
  * @param {Element} element DOM element.
- * @private
  */
-goog.graphics.VmlGraphics.removeFill_ = function(element) {
+goog.graphics.VmlGraphics.prototype.removeFill = function(element) {
   element.fillcolor = '';
-  goog.array.forEach(element.childNodes, function(child) {
+  var v = element.childNodes.length;
+  for (var i = 0; i < element.childNodes.length; i++) {
+    var child = element.childNodes[i];
     if (child.tagName == 'fill') {
       element.removeChild(child);
     }
-  });
+  }
 };
 
 
@@ -469,7 +429,7 @@ goog.graphics.VmlGraphics.setPositionAndSize = function(
  * Creates an element spanning the surface.
  *
  * @param {string} type The type of element to create.
- * @return {!Element} The created, positioned, and sized element.
+ * @return {Element} The created, positioned, and sized element.
  * @private
  */
 goog.graphics.VmlGraphics.prototype.createFullSizeElement_ = function(type) {
@@ -651,8 +611,7 @@ goog.graphics.VmlGraphics.prototype.setSize = function(pixelWidth,
 
 
 /**
- * @return {!goog.math.Size} Returns the number of pixels spanned by the
- *     surface.
+ * @return {goog.math.Size} Returns the number of pixels spanned by the surface.
  * @override
  */
 goog.graphics.VmlGraphics.prototype.getPixelSize = function() {
@@ -685,7 +644,7 @@ goog.graphics.VmlGraphics.prototype.clear = function() {
  * @param {goog.graphics.GroupElement=} opt_group The group wrapper element
  *     to append to. If not specified, appends to the main canvas.
  *
- * @return {!goog.graphics.EllipseElement} The newly created element.
+ * @return {goog.graphics.EllipseElement} The newly created element.
  * @override
  */
 goog.graphics.VmlGraphics.prototype.drawEllipse = function(cx, cy, rx, ry,
@@ -713,7 +672,7 @@ goog.graphics.VmlGraphics.prototype.drawEllipse = function(cx, cy, rx, ry,
  * @param {goog.graphics.GroupElement=} opt_group The group wrapper element
  *     to append to. If not specified, appends to the main canvas.
  *
- * @return {!goog.graphics.RectElement} The newly created element.
+ * @return {goog.graphics.RectElement} The newly created element.
  * @override
  */
 goog.graphics.VmlGraphics.prototype.drawRect = function(x, y, width, height,
@@ -737,7 +696,7 @@ goog.graphics.VmlGraphics.prototype.drawRect = function(x, y, width, height,
  * @param {goog.graphics.GroupElement=} opt_group The group wrapper element
  *     to append to. If not specified, appends to the main canvas.
  *
- * @return {!goog.graphics.ImageElement} The newly created element.
+ * @return {goog.graphics.ImageElement} The newly created element.
  */
 goog.graphics.VmlGraphics.prototype.drawImage = function(x, y, width, height,
     src, opt_group) {
@@ -765,7 +724,7 @@ goog.graphics.VmlGraphics.prototype.drawImage = function(x, y, width, height,
  * @param {goog.graphics.GroupElement=} opt_group The group wrapper element
  *     to append to. If not specified, appends to the main canvas.
  *
- * @return {!goog.graphics.TextElement} The newly created element.
+ * @return {goog.graphics.TextElement} The newly created element.
  * @override
  */
 goog.graphics.VmlGraphics.prototype.drawTextOnLine = function(
@@ -813,7 +772,7 @@ goog.graphics.VmlGraphics.prototype.drawTextOnLine = function(
  * @param {goog.graphics.GroupElement=} opt_group The group wrapper element
  *     to append to. If not specified, appends to the main canvas.
  *
- * @return {!goog.graphics.PathElement} The newly created element.
+ * @return {goog.graphics.PathElement} The newly created element.
  * @override
  */
 goog.graphics.VmlGraphics.prototype.drawPath = function(path, stroke, fill,
@@ -884,7 +843,7 @@ goog.graphics.VmlGraphics.getVmlPath = function(path) {
  * @param {goog.graphics.GroupElement=} opt_group The group wrapper element
  *     to append to. If not specified, appends to the main canvas.
  *
- * @return {!goog.graphics.GroupElement} The newly created group.
+ * @return {goog.graphics.GroupElement} The newly created group.
  * @override
  */
 goog.graphics.VmlGraphics.prototype.createGroup = function(opt_group) {

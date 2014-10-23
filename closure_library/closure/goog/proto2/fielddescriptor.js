@@ -33,7 +33,6 @@ goog.require('goog.string');
  *     to construct this descriptor.
  *
  * @constructor
- * @final
  */
 goog.proto2.FieldDescriptor = function(messageType, tag, metadata) {
   /**
@@ -200,14 +199,9 @@ goog.proto2.FieldDescriptor.prototype.getDefaultValue = function() {
     } else if (nativeType === Number) {
       this.defaultValue_ = 0;
     } else if (nativeType === String) {
-      if (this.deserializationConversionPermitted_) {
-        // This field is a 64 bit integer represented as a string.
-        this.defaultValue_ = '0';
-      } else {
-        this.defaultValue_ = '';
-      }
+      this.defaultValue_ = '';
     } else {
-      return new nativeType;
+      this.defaultValue_ = new nativeType;
     }
   }
 

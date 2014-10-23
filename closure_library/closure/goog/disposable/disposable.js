@@ -44,9 +44,6 @@ goog.Disposable = function() {
     }
     goog.Disposable.instances_[goog.getUid(this)] = this;
   }
-  // Support sealing
-  this.disposed_ = this.disposed_;
-  this.onDisposeCallbacks_ = this.onDisposeCallbacks_;
 };
 
 
@@ -142,7 +139,7 @@ goog.Disposable.prototype.onDisposeCallbacks_;
 /**
  * If monitoring the goog.Disposable instances is enabled, stores the creation
  * stack trace of the Disposable instance.
- * @const {string}
+ * @type {string}
  */
 goog.Disposable.prototype.creationStack;
 
@@ -215,9 +212,7 @@ goog.Disposable.prototype.addOnDisposeCallback = function(callback, opt_scope) {
   if (!this.onDisposeCallbacks_) {
     this.onDisposeCallbacks_ = [];
   }
-
-  this.onDisposeCallbacks_.push(
-      goog.isDef(opt_scope) ? goog.bind(callback, opt_scope) : callback);
+  this.onDisposeCallbacks_.push(goog.bind(callback, opt_scope));
 };
 
 
@@ -231,7 +226,7 @@ goog.Disposable.prototype.addOnDisposeCallback = function(callback, opt_scope) {
  * For example:
  * <pre>
  *   mypackage.MyClass = function() {
- *     mypackage.MyClass.base(this, 'constructor');
+ *     goog.base(this);
  *     // Constructor logic specific to MyClass.
  *     ...
  *   };
@@ -242,7 +237,7 @@ goog.Disposable.prototype.addOnDisposeCallback = function(callback, opt_scope) {
  *     ...
  *     // Call superclass's disposeInternal at the end of the subclass's, like
  *     // in C++, to avoid hard-to-catch issues.
- *     mypackage.MyClass.base(this, 'disposeInternal');
+ *     goog.base(this, 'disposeInternal');
  *   };
  * </pre>
  * @protected

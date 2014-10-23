@@ -528,7 +528,7 @@ goog.result.cancelParentResults = function(dependentResult) {
  * @private
  */
 goog.result.DependentResultImpl_ = function(parentResults) {
-  goog.result.DependentResultImpl_.base(this, 'constructor');
+  goog.base(this);
   /**
    * A list of Results that will affect the eventual value of this Result.
    * @type {!Array.<!goog.result.Result>}

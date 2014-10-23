@@ -145,7 +145,7 @@ goog.inherits(soydata.SanitizedJsStrChars, goog.soy.data.SanitizedContent);
 
 /** @override */
 soydata.SanitizedJsStrChars.prototype.contentKind =
-    soydata.SanitizedContentKind.JS;
+    soydata.SanitizedContentKind.JS_STR_CHARS;
 
 
 /**
@@ -922,7 +922,7 @@ soy.$$escapeJs = function(value) {
  */
 soy.$$escapeJsString = function(value) {
   if (value &&
-      value.contentKind === goog.soy.data.SanitizedContentKind.JS) {
+      value.contentKind === goog.soy.data.SanitizedContentKind.JS_STR_CHARS) {
     // TODO: It might still be worthwhile to normalize it to remove
     // unescaped quotes, null, etc: replace(/(?:^|[^\])['"]/g, '\\$
     goog.asserts.assert(value.constructor ===

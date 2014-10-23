@@ -30,37 +30,12 @@ goog.require('goog.json');
 
 
 /**
- * Attempts to serialize the JSON string natively, falling back to
- * {@code goog.json.serialize} if unsuccessful.
- * @param {!Object} obj JavaScript object to serialize to JSON.
- * @return {string} Resulting JSON string.
- */
-goog.json.hybrid.stringify = goog.json.USE_NATIVE_JSON ?
-    goog.global['JSON']['stringify'] :
-    function(obj) {
-      if (goog.global.JSON) {
-        try {
-          return goog.global.JSON.stringify(obj);
-        } catch (e) {
-          // Native serialization failed.  Fall through to retry with
-          // goog.json.serialize.
-        }
-      }
-
-      return goog.json.serialize(obj);
-    };
-
-
-/**
  * Attempts to parse the JSON string natively, falling back to
- * the supplied {@code fallbackParser} if unsuccessful.
+ * {@code goog.json.unsafeParse} if unsuccessful.
  * @param {string} jsonString JSON string to parse.
- * @param {function(string):Object} fallbackParser Fallback JSON parser used
- *     if native
  * @return {!Object} Resulting JSON object.
- * @private
  */
-goog.json.hybrid.parse_ = function(jsonString, fallbackParser) {
+goog.json.hybrid.parse = function(jsonString) {
   if (goog.global.JSON) {
     try {
       var obj = goog.global.JSON.parse(jsonString);
@@ -71,33 +46,27 @@ goog.json.hybrid.parse_ = function(jsonString, fallbackParser) {
     }
   }
 
-  var obj = fallbackParser(jsonString);
+  var obj = goog.json.unsafeParse(jsonString);
   goog.asserts.assert(obj);
   return obj;
 };
 
 
 /**
- * Attempts to parse the JSON string natively, falling back to
- * {@code goog.json.parse} if unsuccessful.
- * @param {string} jsonString JSON string to parse.
- * @return {!Object} Resulting JSON object.
+ * Attempts to serialize the JSON string natively, falling back to
+ * {@code goog.json.serialize} if unsuccessful.
+ * @param {!Object} obj JavaScript object to serialize to JSON.
+ * @return {string} Resulting JSON string.
  */
-goog.json.hybrid.parse = goog.json.USE_NATIVE_JSON ?
-    goog.global['JSON']['parse'] :
-    function(jsonString) {
-      return goog.json.hybrid.parse_(jsonString, goog.json.parse);
-    };
+goog.json.hybrid.stringify = function(obj) {
+  if (goog.global.JSON) {
+    try {
+      return goog.global.JSON.stringify(obj);
+    } catch (e) {
+      // Native serialization failed.  Fall through to retry with
+      // goog.json.serialize.
+    }
+  }
 
-
-/**
- * Attempts to parse the JSON string natively, falling back to
- * {@code goog.json.unsafeParse} if unsuccessful.
- * @param {string} jsonString JSON string to parse.
- * @return {!Object} Resulting JSON object.
- */
-goog.json.hybrid.unsafeParse = goog.json.USE_NATIVE_JSON ?
-    goog.global['JSON']['parse'] :
-    function(jsonString) {
-      return goog.json.hybrid.parse_(jsonString, goog.json.unsafeParse);
-    };
+  return goog.json.serialize(obj);
+};

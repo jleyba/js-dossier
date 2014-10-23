@@ -44,9 +44,6 @@ goog.require('goog.userAgent');
 goog.ui.ProgressBar = function(opt_domHelper) {
   goog.ui.Component.call(this, opt_domHelper);
 
-  /** @type {?HTMLDivElement} */
-  this.thumbElement_;
-
   /**
    * The underlying data model for the progress bar.
    * @type {goog.ui.RangeModel}
@@ -57,7 +54,6 @@ goog.ui.ProgressBar = function(opt_domHelper) {
                      this.handleChange_, false, this);
 };
 goog.inherits(goog.ui.ProgressBar, goog.ui.Component);
-goog.tagUnsealableClass(goog.ui.ProgressBar);
 
 
 /**
@@ -167,9 +163,8 @@ goog.ui.ProgressBar.prototype.detachEvents_ = function() {
  */
 goog.ui.ProgressBar.prototype.decorateInternal = function(element) {
   goog.ui.ProgressBar.superClass_.decorateInternal.call(this, element);
-  goog.dom.classlist.add(
-      goog.asserts.assert(this.getElement()),
-      goog.ui.ProgressBar.ORIENTATION_TO_CSS_NAME_[this.orientation_]);
+  goog.dom.classlist.add(this.getElement(), goog.ui.ProgressBar.
+      ORIENTATION_TO_CSS_NAME_[this.orientation_]);
 
   // find thumb
   var thumb = goog.dom.getElementsByTagNameAndClass(
@@ -361,9 +356,8 @@ goog.ui.ProgressBar.prototype.setOrientation = function(orient) {
     this.orientation_ = orient;
 
     // Update the DOM
-    var element = this.getElement();
-    if (element) {
-      goog.dom.classlist.swap(element, oldCss, newCss);
+    if (this.getElement()) {
+      goog.dom.classlist.swap(this.getElement(), oldCss, newCss);
       this.initializeUi_();
       this.updateUi_();
     }

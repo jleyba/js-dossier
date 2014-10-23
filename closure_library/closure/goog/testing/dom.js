@@ -37,23 +37,11 @@ goog.require('goog.userAgent');
 
 
 /**
- * @return {!Node} A DIV node with a unique ID identifying the
- *     {@code END_TAG_MARKER_}.
+ * A unique object to use as an end tag marker.
+ * @type {Object}
  * @private
  */
-goog.testing.dom.createEndTagMarker_ = function() {
-  var marker = goog.dom.createElement(goog.dom.TagName.DIV);
-  marker.id = goog.getUid(marker);
-  return marker;
-};
-
-
-/**
- * A unique object to use as an end tag marker.
- * @private {!Node}
- * @const
- */
-goog.testing.dom.END_TAG_MARKER_ = goog.testing.dom.createEndTagMarker_();
+goog.testing.dom.END_TAG_MARKER_ = {};
 
 
 /**
@@ -172,8 +160,8 @@ goog.testing.dom.checkUserAgents_ = function(userAgents) {
  * Map function that converts end tags to a specific object.
  * @param {Node} node The node to map.
  * @param {undefined} ignore Always undefined.
- * @param {!goog.iter.Iterator.<Node>} iterator The iterator.
- * @return {Node} The resulting iteration item.
+ * @param {goog.dom.TagIterator} iterator The iterator.
+ * @return {Node|Object} The resulting iteration item.
  * @private
  */
 goog.testing.dom.endTagMap_ = function(node, ignore, iterator) {
@@ -249,7 +237,7 @@ goog.testing.dom.describeNode_ = function(node) {
  * expected to show up in that user agent and expected not to show up in
  * others.
  * @param {string} htmlPattern The pattern to match.
- * @param {!Node} actual The element to check: its contents are matched
+ * @param {!Element} actual The element to check: its contents are matched
  *     against the HTML pattern.
  * @param {boolean=} opt_strictAttributes If false, attributes that appear in
  *     htmlPattern must be in actual, but actual can have attributes not

@@ -43,7 +43,6 @@ goog.require('goog.ui.ac.RenderOptions');
  * @constructor
  * @param {!Object} baseMatcher The underlying matcher to use. Must implement
  *     requestMatchingRows.
- * @final
  */
 goog.ui.ac.CachingMatcher = function(baseMatcher) {
   /** @private {!Array.<!Object>}} The cache. */

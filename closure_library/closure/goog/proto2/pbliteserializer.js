@@ -133,15 +133,13 @@ goog.proto2.PbLiteSerializer.prototype.deserializeField =
   if (value == null) {
     // Since value double-equals null, it may be either null or undefined.
     // Ensure we return the same one, since they have different meanings.
-    // TODO(user): If the field is repeated, this method should probably
-    // return [] instead of null.
     return value;
   }
 
   if (field.isRepeated()) {
     var data = [];
 
-    goog.asserts.assert(goog.isArray(value), 'Value must be array: %s', value);
+    goog.asserts.assert(goog.isArray(value));
 
     for (var i = 0; i < value.length; i++) {
       data[i] = this.getDeserializedValue(field, value[i]);
@@ -194,6 +192,5 @@ goog.proto2.PbLiteSerializer.prototype.deserialize =
       toConvert[parseInt(key, 10) + 1] = data[key];
     }
   }
-  return goog.proto2.PbLiteSerializer.base(
-      this, 'deserialize', descriptor, toConvert);
+  return goog.base(this, 'deserialize', descriptor, toConvert);
 };

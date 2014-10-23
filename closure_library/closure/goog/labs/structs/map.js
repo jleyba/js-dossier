@@ -35,7 +35,6 @@ goog.require('goog.object');
  * Creates a new map.
  * @constructor
  * @struct
- * @final
  */
 goog.labs.structs.Map = function() {
   // clear() initializes the map to the empty state.

@@ -34,7 +34,6 @@ goog.require('goog.proto2.Message');
  * Message TestAllTypes.
  * @constructor
  * @extends {goog.proto2.Message}
- * @final
  */
 proto2.TestAllTypes = function() {
   goog.proto2.Message.apply(this);
@@ -2326,7 +2325,6 @@ proto2.TestAllTypes.NestedEnum = {
  * Message NestedMessage.
  * @constructor
  * @extends {goog.proto2.Message}
- * @final
  */
 proto2.TestAllTypes.NestedMessage = function() {
   goog.proto2.Message.apply(this);
@@ -2449,7 +2447,6 @@ proto2.TestAllTypes.NestedMessage.prototype.clearC = function() {
  * Message OptionalGroup.
  * @constructor
  * @extends {goog.proto2.Message}
- * @final
  */
 proto2.TestAllTypes.OptionalGroup = function() {
   goog.proto2.Message.apply(this);
@@ -2521,7 +2518,6 @@ proto2.TestAllTypes.OptionalGroup.prototype.clearA = function() {
  * Message RepeatedGroup.
  * @constructor
  * @extends {goog.proto2.Message}
- * @final
  */
 proto2.TestAllTypes.RepeatedGroup = function() {
   goog.proto2.Message.apply(this);
@@ -2604,7 +2600,6 @@ proto2.TestAllTypes.RepeatedGroup.prototype.clearA = function() {
  * Message TestDefaultParent.
  * @constructor
  * @extends {goog.proto2.Message}
- * @final
  */
 proto2.TestDefaultParent = function() {
   goog.proto2.Message.apply(this);
@@ -2676,7 +2671,6 @@ proto2.TestDefaultParent.prototype.clearChild = function() {
  * Message TestDefaultChild.
  * @constructor
  * @extends {goog.proto2.Message}
- * @final
  */
 proto2.TestDefaultChild = function() {
   goog.proto2.Message.apply(this);

@@ -20,6 +20,7 @@
 
 goog.provide('goog.labs.net.webChannel.BaseTestChannel');
 
+goog.require('goog.json.EvalJsonProcessor');
 goog.require('goog.labs.net.webChannel.Channel');
 goog.require('goog.labs.net.webChannel.ChannelRequest');
 goog.require('goog.labs.net.webChannel.requestStats');
@@ -54,71 +55,11 @@ goog.labs.net.webChannel.BaseTestChannel = function(channel, channelDebug) {
   this.channelDebug_ = channelDebug;
 
   /**
-   * Extra HTTP headers to add to all the requests sent to the server.
-   * @private {Object}
+   * Parser for a response payload. Defaults to use
+   * {@code goog.json.unsafeParse}. The parser should return an array.
+   * @private {goog.string.Parser}
    */
-  this.extraHeaders_ = null;
-
-  /**
-   * The test request.
-   * @private {goog.labs.net.webChannel.ChannelRequest}
-   */
-  this.request_ = null;
-
-  /**
-   * Whether we have received the first result as an intermediate result. This
-   * helps us determine whether we're behind a buffering proxy.
-   * @private {boolean}
-   */
-  this.receivedIntermediateResult_ = false;
-
-  /**
-   * The time when the test request was started. We use timing in IE as
-   * a heuristic for whether we're behind a buffering proxy.
-   * @private {?number}
-   */
-  this.startTime_ = null;
-
-  /**
-   * The time for of the first result part. We use timing in IE as a
-   * heuristic for whether we're behind a buffering proxy.
-   * @private {?number}
-   */
-  this.firstTime_ = null;
-
-  /**
-   * The time for of the last result part. We use timing in IE as a
-   * heuristic for whether we're behind a buffering proxy.
-   * @private {?number}
-   */
-  this.lastTime_ = null;
-
-  /**
-   * The relative path for test requests.
-   * @private {?string}
-   */
-  this.path_ = null;
-
-  /**
-   * The last status code received.
-   * @private {number}
-   */
-  this.lastStatusCode_ = -1;
-
-  /**
-   * A subdomain prefix for using a subdomain in IE for the backchannel
-   * requests.
-   * @private {?string}
-   */
-  this.hostPrefix_ = null;
-
-  /**
-   * The effective client protocol as indicated by the initial handshake
-   * response via the x-client-wire-protocol header.
-   *
-   * @private {?string}
-   */
-  this.clientProtocol_ = null;
+  this.parser_ = new goog.json.EvalJsonProcessor(null, true);
 };
 
 
@@ -128,6 +69,92 @@ var WebChannelDebug = goog.labs.net.webChannel.WebChannelDebug;
 var ChannelRequest = goog.labs.net.webChannel.ChannelRequest;
 var requestStats = goog.labs.net.webChannel.requestStats;
 var Channel = goog.labs.net.webChannel.Channel;
+
+
+/**
+ * Extra HTTP headers to add to all the requests sent to the server.
+ * @type {Object}
+ * @private
+ */
+BaseTestChannel.prototype.extraHeaders_ = null;
+
+
+/**
+ * The test request.
+ * @type {ChannelRequest}
+ * @private
+ */
+BaseTestChannel.prototype.request_ = null;
+
+
+/**
+ * Whether we have received the first result as an intermediate result. This
+ * helps us determine whether we're behind a buffering proxy.
+ * @type {boolean}
+ * @private
+ */
+BaseTestChannel.prototype.receivedIntermediateResult_ = false;
+
+
+/**
+ * The time when the test request was started. We use timing in IE as
+ * a heuristic for whether we're behind a buffering proxy.
+ * @type {?number}
+ * @private
+ */
+BaseTestChannel.prototype.startTime_ = null;
+
+
+/**
+ * The time for of the first result part. We use timing in IE as a
+ * heuristic for whether we're behind a buffering proxy.
+ * @type {?number}
+ * @private
+ */
+BaseTestChannel.prototype.firstTime_ = null;
+
+
+/**
+ * The time for of the last result part. We use timing in IE as a
+ * heuristic for whether we're behind a buffering proxy.
+ * @type {?number}
+ * @private
+ */
+BaseTestChannel.prototype.lastTime_ = null;
+
+
+/**
+ * The relative path for test requests.
+ * @type {?string}
+ * @private
+ */
+BaseTestChannel.prototype.path_ = null;
+
+
+/**
+ * The state of the state machine for this object.
+ *
+ * @type {?number}
+ * @private
+ */
+BaseTestChannel.prototype.state_ = null;
+
+
+/**
+ * The last status code received.
+ * @type {number}
+ * @private
+ */
+BaseTestChannel.prototype.lastStatusCode_ = -1;
+
+
+/**
+ * A subdomain prefix for using a subdomain in IE for the backchannel
+ * requests.
+ * @type {?string}
+ * @private
+ */
+BaseTestChannel.prototype.hostPrefix_ = null;
 
 
 /**
@@ -151,14 +178,6 @@ BaseTestChannel.State_ = {
 
 
 /**
- * The state of the state machine for this object.
- *
- * @private {?BaseTestChannel.State_}
- */
-BaseTestChannel.prototype.state_ = null;
-
-
-/**
  * Time between chunks in the test connection that indicates that we
  * are not behind a buffering proxy. This value should be less than or
  * equals to the time between chunks sent from the server.
@@ -175,6 +194,17 @@ BaseTestChannel.MIN_TIME_EXPECTED_BETWEEN_DATA_ = 500;
  */
 BaseTestChannel.prototype.setExtraHeaders = function(extraHeaders) {
   this.extraHeaders_ = extraHeaders;
+};
+
+
+/**
+ * Sets a new parser for the response payload. A custom parser may be set to
+ * avoid using eval(), for example.
+ * By default, the parser uses {@code goog.json.unsafeParse}.
+ * @param {!goog.string.Parser} parser Parser.
+ */
+BaseTestChannel.prototype.setParser = function(parser) {
+  this.parser_ = parser;
 };
 
 
@@ -305,7 +335,7 @@ BaseTestChannel.prototype.onRequestData = function(req, responseText) {
     }
     /** @preserveTry */
     try {
-      var respArray = this.channel_.getWireCodec().decodeMessage(responseText);
+      var respArray = this.parser_.parse(responseText);
     } catch (e) {
       this.channelDebug_.dumpException(e);
       this.channel_.testConnectionFailure(this, ChannelRequest.Error.BAD_DATA);
@@ -347,7 +377,7 @@ BaseTestChannel.prototype.onRequestData = function(req, responseText) {
 /**
  * Callback from ChannelRequest that indicates a request has completed.
  *
- * @param {!ChannelRequest} req The request object.
+ * @param {ChannelRequest} req The request object.
  * @override
  */
 BaseTestChannel.prototype.onRequestComplete = function(req) {
@@ -367,12 +397,9 @@ BaseTestChannel.prototype.onRequestComplete = function(req) {
   }
 
   if (this.state_ == BaseTestChannel.State_.INIT) {
-    this.recordClientProtocol_(req);
-    this.state_ = BaseTestChannel.State_.CONNECTION_TESTING;
-
     this.channelDebug_.debug(
         'TestConnection: request complete for initial check');
-
+    this.state_ = BaseTestChannel.State_.CONNECTION_TESTING;
     this.checkBufferingProxy_();
   } else if (this.state_ == BaseTestChannel.State_.CONNECTION_TESTING) {
     this.channelDebug_.debug('TestConnection: request complete for stage 2');
@@ -405,30 +432,6 @@ BaseTestChannel.prototype.onRequestComplete = function(req) {
       this.channel_.testConnectionFinished(this, false);
     }
   }
-};
-
-
-/**
- * Record the client protocol header from the initial handshake response.
- *
- * @param {!ChannelRequest} req The request object.
- * @private
- */
-BaseTestChannel.prototype.recordClientProtocol_ = function(req) {
-  var xmlHttp = req.getXhr();
-  if (xmlHttp) {
-    var protocolHeader = xmlHttp.getResponseHeader('x-client-wire-protocol');
-    this.clientProtocol_ = protocolHeader ? protocolHeader : null;
-  }
-};
-
-
-/**
- * @return {?string} The client protocol as recorded with the init handshake
- *     request.
- */
-BaseTestChannel.prototype.getClientProtocol = function() {
-  return this.clientProtocol_;
 };
 
 

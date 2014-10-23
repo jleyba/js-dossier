@@ -29,8 +29,6 @@ goog.require('goog.debug.Trace');
 /** @suppress {extraRequire} */
 goog.require('goog.dispose');
 goog.require('goog.log');
-/** @suppress {extraRequire} */
-goog.require('goog.module');
 goog.require('goog.module.ModuleInfo');
 goog.require('goog.module.ModuleLoadCallback');
 goog.require('goog.object');
@@ -489,7 +487,7 @@ goog.module.ModuleManager.prototype.dispatchActiveIdleChangeIfNeeded_ =
  * @param {number=} opt_timeout The number of ms to wait before adding the
  *     module id to the loading queue (defaults to 0 ms). Note that the module
  *     will be loaded asynchronously regardless of the value of this parameter.
- * @return {!goog.async.Deferred} A deferred object.
+ * @return {goog.async.Deferred} A deferred object.
  */
 goog.module.ModuleManager.prototype.preloadModule = function(
     id, opt_timeout) {
@@ -553,8 +551,8 @@ goog.module.ModuleManager.prototype.addLoadModule_ = function(id, d) {
  *
  * @param {Array.<string>} ids The id of the module to load.
  * @param {boolean=} opt_userInitiated If the load is a result of a user action.
- * @return {!Object.<string, !goog.async.Deferred>} A mapping from id (String)
- *     to deferred objects that will callback or errback when the load for that
+ * @return {Object.<!goog.async.Deferred>} A mapping from id (String) to
+ *     deferred objects that will callback or errback when the load for that
  *     id is finished.
  * @private
  */
@@ -567,9 +565,7 @@ goog.module.ModuleManager.prototype.loadModulesOrEnqueueIfNotLoadedOrLoading_ =
   for (var i = 0; i < uniqueIds.length; i++) {
     var id = uniqueIds[i];
     var moduleInfo = this.getModuleInfo(id);
-    if (!moduleInfo) {
-      throw new Error('Unknown module: ' + id);
-    }
+    goog.asserts.assertObject(moduleInfo, 'Unknown module: ' + id);
     var d = new goog.async.Deferred();
     deferredMap[id] = d;
     if (moduleInfo.isLoaded()) {
@@ -740,7 +736,7 @@ goog.module.ModuleManager.prototype.loadModules_ = function(
  * if batch mode is not enabled. Returns the list of ids that should be loaded.
  *
  * @param {Array.<string>} ids The ids that need to be loaded.
- * @return {!Array.<string>} The ids to load, including dependencies.
+ * @return {Array.<string>} The ids to load, including dependencies.
  * @throws {Error} If the module is already loaded.
  * @private
  */
@@ -785,7 +781,7 @@ goog.module.ModuleManager.prototype.processModulesForLoad_ = function(ids) {
  * module transitively depends on, including itself.
  *
  * @param {string} id The id of a not-yet-loaded module.
- * @return {!Array.<string>} An array of module ids in dependency order that's
+ * @return {Array.<string>} An array of module ids in dependency order that's
  *     guaranteed to end with the provided module id.
  * @private
  */
@@ -981,8 +977,8 @@ goog.module.ModuleManager.prototype.load = function(
  *
  * @param {Array.<string>} moduleIds A list of module ids.
  * @param {boolean=} opt_userInitiated If the load is a result of a user action.
- * @return {!Object.<string, !goog.async.Deferred>} A mapping from id (String)
- *     to deferred objects that will callback or errback when the load for that
+ * @return {Object.<!goog.async.Deferred>} A mapping from id (String) to
+ *     deferred objects that will callback or errback when the load for that
  *     id is finished.
  */
 goog.module.ModuleManager.prototype.loadMultiple = function(

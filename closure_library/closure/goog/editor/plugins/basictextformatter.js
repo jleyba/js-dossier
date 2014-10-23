@@ -138,7 +138,7 @@ goog.editor.plugins.BasicTextFormatter.prototype.getRange_ = function() {
 
 
 /**
- * @return {!Document} The document object associated with the currently active
+ * @return {Document} The document object associated with the currently active
  *     field.
  * @private
  */
@@ -960,8 +960,7 @@ goog.editor.plugins.BasicTextFormatter.prototype.toggleLink_ = function(
  *     current selection.
  * @param {string} url The url to link to.
  * @param {string=} opt_target Target for the link.
- * @return {goog.editor.Link?} The newly created link, or null if the link
- *     couldn't be created.
+ * @return {goog.editor.Link?} The newly created link.
  * @private
  */
 goog.editor.plugins.BasicTextFormatter.prototype.createLink_ = function(range,
@@ -975,13 +974,7 @@ goog.editor.plugins.BasicTextFormatter.prototype.createLink_ = function(range,
   if (parent && parent.tagName == goog.dom.TagName.IMG) {
     return null;
   }
-  // If range is not present, the editable field doesn't have focus, abort
-  // creating a link.
-  if (!range) {
-    return null;
-  }
-
-  if (range.isCollapsed()) {
+  if (range && range.isCollapsed()) {
     var textRange = range.getTextRange(0).getBrowserRangeObject();
     if (goog.editor.BrowserFeature.HAS_W3C_RANGES) {
       anchor = this.getFieldDomHelper().createElement(goog.dom.TagName.A);
@@ -1134,7 +1127,7 @@ goog.editor.plugins.BasicTextFormatter.prototype.removeFontSizeFromStyleAttrs_ =
 /**
  * Apply pre-execCommand fixes for IE.
  * @param {string} command The command to execute.
- * @return {!Array.<Node>} Array of nodes to be removed after the execCommand.
+ * @return {Array.<Node>} Array of nodes to be removed after the execCommand.
  *     Will never be longer than 2 elements.
  * @private
  */
@@ -1410,7 +1403,7 @@ goog.editor.plugins.BasicTextFormatter.hangingExecCommandWebkit_ = {
 /**
  * Apply pre-execCommand fixes for Safari.
  * @param {string} command The command to execute.
- * @return {!Element|undefined} The div added to the field.
+ * @return {Element|undefined} The div added to the field.
  * @private
  */
 goog.editor.plugins.BasicTextFormatter.prototype.applyExecCommandSafariFixes_ =

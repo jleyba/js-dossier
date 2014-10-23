@@ -29,7 +29,7 @@ goog.net.XhrLike = function() {};
 
 /**
  * Typedef that refers to either native or custom-implemented XHR objects.
- * @typedef {!goog.net.XhrLike|!XMLHttpRequest}
+ * @type {!goog.net.XhrLike|!XMLHttpRequest}
  */
 goog.net.XhrLike.OrNative;
 

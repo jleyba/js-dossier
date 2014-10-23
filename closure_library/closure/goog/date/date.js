@@ -134,13 +134,6 @@ goog.date.splitDurationRegex_ = new RegExp(
 
 
 /**
- * Number of milliseconds in a day.
- * @type {number}
- */
-goog.date.MS_PER_DAY = 24 * 60 * 60 * 1000;
-
-
-/**
  * Returns whether the given year is a leap year.
  *
  * @param {number} year Year part of date.
@@ -249,6 +242,9 @@ goog.date.getWeekNumber = function(year, month, date, opt_weekDay,
   // Default to Monday for first day of the week as per ISO 8601.
   var firstday = opt_firstDayOfWeek || goog.date.weekDay.MON;
 
+  // 1 day in milliseconds.
+  var ONE_DAY = 24 * 60 * 60 * 1000;
+
   // The d.getDay() has to be converted first to ISO weekday (Monday=0).
   var isoday = (d.getDay() + 6) % 7;
 
@@ -261,15 +257,13 @@ goog.date.getWeekNumber = function(year, month, date, opt_weekDay,
   // Unix timestamp of the midnight of the cutoff day in the week of 'd'.
   // There might be +-1 hour shift in the result due to the daylight saving,
   // but it doesn't affect the year.
-  var cutoffSameWeek = d.valueOf() +
-      (cutoffpos - daypos) * goog.date.MS_PER_DAY;
+  var cutoffSameWeek = d.valueOf() + (cutoffpos - daypos) * ONE_DAY;
 
   // Unix timestamp of January 1 in the year of 'cutoffSameWeek'.
   var jan1 = new Date(new Date(cutoffSameWeek).getFullYear(), 0, 1).valueOf();
 
   // Number of week. The round() eliminates the effect of daylight saving.
-  return Math.floor(Math.round(
-      (cutoffSameWeek - jan1) / goog.date.MS_PER_DAY) / 7) + 1;
+  return Math.floor(Math.round((cutoffSameWeek - jan1) / ONE_DAY) / 7) + 1;
 };
 
 
@@ -478,7 +472,6 @@ goog.date.setIso8601TimeOnly_ = function(d, formatted) {
  * @param {number=} opt_minutes Minutes.
  * @param {number=} opt_seconds Seconds.
  * @constructor
- * @final
  */
 goog.date.Interval = function(opt_years, opt_months, opt_days, opt_hours,
                               opt_minutes, opt_seconds) {
@@ -756,10 +749,10 @@ goog.date.Date = function(opt_year, opt_month, opt_date) {
   this.date;
   // goog.date.DateTime assumes that only this.date is added in this ctor.
   if (goog.isNumber(opt_year)) {
-    this.date = this.buildDate_(opt_year, opt_month || 0, opt_date || 1);
+    this.date = new Date(opt_year, opt_month || 0, opt_date || 1);
     this.maybeFixDst_(opt_date || 1);
   } else if (goog.isObject(opt_year)) {
-    this.date = this.buildDate_(opt_year.getFullYear(), opt_year.getMonth(),
+    this.date = new Date(opt_year.getFullYear(), opt_year.getMonth(),
         opt_year.getDate());
     this.maybeFixDst_(opt_year.getDate());
   } else {
@@ -769,27 +762,6 @@ goog.date.Date = function(opt_year, opt_month, opt_date) {
     this.date.setSeconds(0);
     this.date.setMilliseconds(0);
   }
-};
-
-
-/**
- * new Date(y, m, d) treats years in the interval [0, 100) as two digit years,
- * adding 1900 to them. This method ensures that calling the date constructor
- * as a copy constructor returns a value that is equal to the passed in
- * date value by explicitly setting the full year.
- * @private
- * @param {number} fullYear The full year (including century).
- * @param {number} month The month, from 0-11.
- * @param {number} date The day of the month.
- * @return {!Date} The constructed Date object.
- */
-goog.date.Date.prototype.buildDate_ = function(fullYear, month, date) {
-  var d = new Date(fullYear, month, date);
-  if (fullYear >= 0 && fullYear < 100) {
-    // Can't just setFullYear as new Date() can flip over for e.g. month = 13.
-    d.setFullYear(d.getFullYear() - 1900);
-  }
-  return d;
 };
 
 
@@ -1342,17 +1314,6 @@ goog.date.DateTime = function(opt_year, opt_month, opt_date, opt_hours,
   }
 };
 goog.inherits(goog.date.DateTime, goog.date.Date);
-
-
-/**
- * @param {number} timestamp Number of milliseconds since Epoch.
- * @return {!goog.date.DateTime}
- */
-goog.date.DateTime.fromTimestamp = function(timestamp) {
-  var date = new goog.date.DateTime();
-  date.setTime(timestamp);
-  return date;
-};
 
 
 /**

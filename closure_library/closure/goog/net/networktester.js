@@ -32,8 +32,7 @@ goog.require('goog.log');
  *     was reachable, false indicates it wasn't.
  * @param {Object=} opt_handler Handler object for the callback.
  * @param {goog.Uri=} opt_uri URI to use for testing.
- * @constructor @struct
- * @final
+ * @constructor
  */
 goog.net.NetworkTester = function(callback, opt_handler, opt_uri) {
   /**
@@ -141,10 +140,6 @@ goog.net.NetworkTester.prototype.timeoutTimer_ = null;
  * @private
  */
 goog.net.NetworkTester.prototype.pauseTimer_ = null;
-
-
-/** @private {?Image} */
-goog.net.NetworkTester.prototype.image_;
 
 
 /**

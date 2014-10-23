@@ -19,24 +19,11 @@
  */
 
 goog.provide('goog.dom.annotate');
-goog.provide('goog.dom.annotate.AnnotateFn');
 
 goog.require('goog.array');
-goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.NodeType');
-goog.require('goog.dom.safe');
-goog.require('goog.html.SafeHtml');
-
-
-/**
- * A function that takes:
- *   (1) the number of the term that is "hit",
- *   (2) the HTML (search term) to be annotated,
- * and returns the annotated term as an HTML.
- * @typedef {function(number, !goog.html.SafeHtml): !goog.html.SafeHtml}
- */
-goog.dom.annotate.AnnotateFn;
+goog.require('goog.string');
 
 
 /**
@@ -48,7 +35,10 @@ goog.dom.annotate.AnnotateFn;
  *   The matchWholeWordOnly value is a per-term attribute because some terms
  *   may be CJK, while others are not. (For correctness, matchWholeWordOnly
  *   should always be false for CJK terms.).
- * @param {goog.dom.annotate.AnnotateFn} annotateFn
+ * @param {Function} annotateFn  A function that takes
+ *   (1) the number of the term that is "hit",
+ *   (2) the HTML string (search term) to be annotated,
+ *   and returns the annotated term as an HTML string.
  * @param {*=} opt_ignoreCase  Whether to ignore the case of the query
  *   terms when looking for matches.
  * @param {Array.<string>=} opt_classesToSkip  Nodes with one of these CSS class
@@ -98,7 +88,11 @@ goog.dom.annotate.NODES_TO_SKIP_ = ['SCRIPT', 'STYLE', 'TEXTAREA'];
  *     The matchWholeWordOnly value is a per-term attribute because some terms
  *     may be CJK, while others are not. (For correctness, matchWholeWordOnly
  *     should always be false for CJK terms.).
- * @param {goog.dom.annotate.AnnotateFn} annotateFn
+ * @param {Function} annotateFn  function(number, string) : string  A function
+ *     that takes :
+ *     (1) the number of the term that is "hit",
+ *     (2) the HTML string (search term) to be annotated,
+ *     and returns the annotated term as an HTML string.
  * @param {*} ignoreCase  Whether to ignore the case of the query terms
  *     when looking for matches.
  * @param {Array.<string>} classesToSkip  Nodes with one of these CSS class
@@ -128,7 +122,7 @@ goog.dom.annotate.annotateTermsInNode_ =
       // element as a side effect, we'll only actually use the temporary node's
       // children.
       var tempNode = goog.dom.getOwnerDocument(node).createElement('SPAN');
-      goog.dom.safe.setInnerHtml(tempNode, html);
+      tempNode.innerHTML = html;
 
       var parentNode = node.parentNode;
       var nodeToInsert;
@@ -196,10 +190,14 @@ goog.dom.annotate.NONWORD_RE_ = /\W/;
  *   The matchWholeWordOnly value is a per-term attribute because some terms
  *   may be CJK, while others are not. (For correctness, matchWholeWordOnly
  *   should always be false for CJK terms.).
- * @param {goog.dom.annotate.AnnotateFn} annotateFn
+ * @param {Function} annotateFn {function(number, string) : string} A function
+ *   that takes
+ *   (1) the number of the term that is "hit",
+ *   (2) the HTML string (search term) to be annotated,
+ *   and returns the annotated term as an HTML string.
  * @param {*=} opt_ignoreCase  Whether to ignore the case of the query
  *   terms when looking for matches.
- * @return {goog.html.SafeHtml} The HTML equivalent of {@code text} with terms
+ * @return {?string} The HTML equivalent of {@code text} with terms
  *   annotated, or null if the text did not contain any of the terms.
  */
 goog.dom.annotate.annotateText = function(text, terms, annotateFn,
@@ -225,10 +223,14 @@ goog.dom.annotate.annotateText = function(text, terms, annotateFn,
  *   The matchWholeWordOnly value is a per-term attribute because some terms
  *   may be CJK, while others are not. (For correctness, matchWholeWordOnly
  *   should always be false for CJK terms.).
- * @param {goog.dom.annotate.AnnotateFn} annotateFn
+ * @param {Function} annotateFn {function(number, string) : string} A function
+ *   that takes
+ *   (1) the number of the term that is "hit",
+ *   (2) the HTML string (search term) to be annotated,
+ *   and returns the annotated term as an HTML string.
  * @param {*} ignoreCase  Whether to ignore the case of the query terms
  *   when looking for matches.
- * @return {goog.html.SafeHtml} The HTML equivalent of {@code text} with terms
+ * @return {?string} The HTML equivalent of {@code text} with terms
  *   annotated, or null if the text did not contain any of the terms.
  * @private
  */
@@ -315,21 +317,19 @@ goog.dom.annotate.helpAnnotateText_ = function(text, terms, annotateFn,
       termHits[termIndexOfNextHit].shift();
 
       // Append everything from the end of the last hit up to this one.
-      html.push(text.substr(pos, posOfNextHit - pos));
+      html.push(goog.string.htmlEscape(text.substr(pos, posOfNextHit - pos)));
 
       // Append the annotated term.
       var termLen = terms[termIndexOfNextHit][0].length;
-      var termHtml = goog.html.SafeHtml.htmlEscape(
-          text.substr(posOfNextHit, termLen));
-      html.push(
-          annotateFn(goog.asserts.assertNumber(termIndexOfNextHit), termHtml));
+      var termHtml = goog.string.htmlEscape(text.substr(posOfNextHit, termLen));
+      html.push(annotateFn(termIndexOfNextHit, termHtml));
 
       pos = posOfNextHit + termLen;
     }
 
     // Append everything after the last hit.
-    html.push(text.substr(pos));
-    return goog.html.SafeHtml.concat(html);
+    html.push(goog.string.htmlEscape(text.substr(pos)));
+    return html.join('');
   } else {
     return null;
   }
@@ -341,7 +341,7 @@ goog.dom.annotate.helpAnnotateText_ = function(text, terms, annotateFn,
  *
  * @param {Array} terms  An array of
  *   [{string} searchTerm, {boolean} matchWholeWordOnly] tuples.
- * @return {!Array}  An array of
+ * @return {Array}  An array of
  *   [{string} searchTerm, {boolean} matchWholeWordOnly] tuples.
  * @private
  */

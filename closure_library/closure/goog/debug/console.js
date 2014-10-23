@@ -43,8 +43,6 @@ goog.debug.Console = function() {
   this.formatter_ = new goog.debug.TextFormatter();
   this.formatter_.showAbsoluteTime = false;
   this.formatter_.showExceptionText = false;
-  // The console logging methods automatically append a newline.
-  this.formatter_.appendNewline = false;
 
   this.isCapturing_ = false;
   this.logBuffer_ = '';
@@ -116,6 +114,10 @@ goog.debug.Console.prototype.addLogRecord = function(logRecord) {
         goog.debug.Console.logToConsole_(console, 'debug', record);
         break;
     }
+  } else if (window.opera) {
+    // window.opera.postError is considered an undefined property reference
+    // by JSCompiler, so it has to be referenced using array notation instead.
+    window.opera['postError'](record);
   } else {
     this.logBuffer_ += record;
   }
@@ -149,12 +151,11 @@ goog.debug.Console.instance = null;
 
 /**
  * The console to which to log.  This is a property so it can be mocked out in
- * this unit test for goog.debug.Console. Using goog.global, as console might be
- * used in window-less contexts.
+ * this unit test for goog.debug.Console.
  * @type {Object}
  * @private
  */
-goog.debug.Console.console_ = goog.global['console'];
+goog.debug.Console.console_ = window.console;
 
 
 /**
@@ -174,8 +175,7 @@ goog.debug.Console.autoInstall = function() {
     goog.debug.Console.instance = new goog.debug.Console();
   }
 
-  if (goog.global.location &&
-      goog.global.location.href.indexOf('Debug=true') != -1) {
+  if (window.location.href.indexOf('Debug=true') != -1) {
     goog.debug.Console.instance.setCapturing(true);
   }
 };

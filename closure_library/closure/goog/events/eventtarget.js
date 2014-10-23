@@ -26,6 +26,7 @@
 goog.provide('goog.events.EventTarget');
 
 goog.require('goog.Disposable');
+goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('goog.events.Event');
@@ -82,17 +83,6 @@ goog.events.EventTarget = function() {
    * @private {!Object}
    */
   this.actualEventTarget_ = this;
-
-  /**
-   * Parent event target, used during event bubbling.
-   *
-   * TODO(user): Change this to goog.events.Listenable. This
-   * currently breaks people who expect getParentEventTarget to return
-   * goog.events.EventTarget.
-   *
-   * @private {goog.events.EventTarget}
-   */
-  this.parentEventTarget_ = null;
 };
 goog.inherits(goog.events.EventTarget, goog.Disposable);
 goog.events.Listenable.addImplementation(goog.events.EventTarget);
@@ -105,6 +95,19 @@ goog.events.Listenable.addImplementation(goog.events.EventTarget);
  * @private
  */
 goog.events.EventTarget.MAX_ANCESTORS_ = 1000;
+
+
+/**
+ * Parent event target, used during event bubbling.
+ *
+ * TODO(user): Change this to goog.events.Listenable. This
+ * currently breaks people who expect getParentEventTarget to return
+ * goog.events.EventTarget.
+ *
+ * @type {goog.events.EventTarget}
+ * @private
+ */
+goog.events.EventTarget.prototype.parentEventTarget_ = null;
 
 
 /**
@@ -136,9 +139,9 @@ goog.events.EventTarget.prototype.setParentEventTarget = function(parent) {
  * dispatched.
  *
  * @param {string} type The type of the event to listen for.
- * @param {function(?):?|{handleEvent:function(?):?}|null} handler The function
- *     to handle the event. The handler can also be an object that implements
- *     the handleEvent method which takes the event object as argument.
+ * @param {Function|Object} handler The function to handle the event. The
+ *     handler can also be an object that implements the handleEvent method
+ *     which takes the event object as argument.
  * @param {boolean=} opt_capture In DOM-compliant browsers, this determines
  *     whether the listener is fired during the capture or bubble phase
  *     of the event.
@@ -160,9 +163,9 @@ goog.events.EventTarget.prototype.addEventListener = function(
  * nothing is done.
  *
  * @param {string} type The type of the event to listen for.
- * @param {function(?):?|{handleEvent:function(?):?}|null} handler The function
- *     to handle the event. The handler can also be an object that implements
- *     the handleEvent method which takes the event object as argument.
+ * @param {Function|Object} handler The function to handle the event. The
+ *     handler can also be an object that implements the handleEvent method
+ *     which takes the event object as argument.
  * @param {boolean=} opt_capture In DOM-compliant browsers, this determines
  *     whether the listener is fired during the capture or bubble phase
  *     of the event.
@@ -269,7 +272,7 @@ goog.events.EventTarget.prototype.fireListeners = function(
   if (!listenerArray) {
     return true;
   }
-  listenerArray = listenerArray.concat();
+  listenerArray = goog.array.clone(listenerArray);
 
   var rv = true;
   for (var i = 0; i < listenerArray.length; ++i) {

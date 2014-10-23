@@ -74,7 +74,7 @@ goog.editor.ClickToEditWrapper = function(fieldObj) {
 
   /**
    * Event handler for field related events.
-   * @type {!goog.events.EventHandler.<!goog.editor.ClickToEditWrapper>}
+   * @type {!goog.events.EventHandler}
    * @private
    */
   this.fieldEventHandler_ = new goog.events.EventHandler(this);
@@ -88,7 +88,7 @@ goog.editor.ClickToEditWrapper = function(fieldObj) {
 
   /**
    * Event handler for mouse events.
-   * @type {!goog.events.EventHandler.<!goog.editor.ClickToEditWrapper>}
+   * @type {!goog.events.EventHandler}
    * @private
    */
   this.mouseEventHandler_ = new goog.events.EventHandler(this);
@@ -136,7 +136,7 @@ goog.editor.ClickToEditWrapper.prototype.getOriginalDomHelper = function() {
 
 /** @override */
 goog.editor.ClickToEditWrapper.prototype.disposeInternal = function() {
-  goog.editor.ClickToEditWrapper.base(this, 'disposeInternal');
+  goog.base(this, 'disposeInternal');
   this.exitDocument();
 
   if (this.savedCaretRange_) {
