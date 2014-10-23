@@ -1,7 +1,6 @@
 package com.github.jleyba.dossier;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.collect.Iterables.getOnlyElement;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
@@ -75,20 +74,6 @@ public class JsDocTest {
   }
 
   @Test
-  public void canExtractBlockComment_multiLineIndented() {
-    JsDoc doc = getClassJsDoc(
-        "  /**",
-        "   * Hello, world!",
-        "   * Goodbye, world!",
-        "   * @constructor",
-        "   */",
-        "  function Foo(){}");
-    assertEquals(
-        "Hello, world!\n Goodbye, world!",
-        doc.getBlockComment());
-  }
-
-  @Test
   public void blockCommentRequiresAnnotationsToBeOnOwnLine() {
     JsDoc doc = getClassJsDoc(
         "/**",
@@ -140,27 +125,6 @@ public class JsDocTest {
   }
 
   @Test
-  public void parsesParamDescriptions_singleLineComment() {
-    JsDoc doc = getFunctionJsDoc(
-        "/** @param {string} x a name. */",
-        "function foo(x) {}");
-    ArgDescriptor param = getOnlyElement(doc.getParameters());
-    assertEquals("x", param.getName());
-    assertEquals("a name.", param.getDescription());
-  }
-
-
-  @Test
-  public void parsesParamDescriptions_indentedSingleLineComment() {
-    JsDoc doc = getFunctionJsDoc(
-        "  /** @param {string} x a name. */",
-        "  function foo(x) {}");
-    ArgDescriptor param = getOnlyElement(doc.getParameters());
-    assertEquals("x", param.getName());
-    assertEquals("a name.", param.getDescription());
-  }
-
-  @Test
   public void parsesDeprecationReason_singleLine() {
     JsDoc doc = getClassJsDoc(
         "/**",
@@ -205,8 +169,8 @@ public class JsDocTest {
         "var foo = {};",
         "/** @return nothing. */",
         "foo.bar = function() { return ''; };");
-    Descriptor foo = getOnlyElement(docRegistry.getTypes());
-    Descriptor bar = getOnlyElement(foo.getProperties());
+    Descriptor foo = Iterables.getOnlyElement(docRegistry.getTypes());
+    Descriptor bar = Iterables.getOnlyElement(foo.getProperties());
     assertEquals("foo.bar", bar.getFullName());
     assertTrue(bar.isFunction());
     assertEquals("nothing.", bar.getJsDoc().getReturnDescription());
@@ -220,8 +184,8 @@ public class JsDocTest {
         " * @return nothing.",
         " */",
         "foo.bar = function() { return ''; };");
-    Descriptor foo = getOnlyElement(docRegistry.getTypes());
-    Descriptor bar = getOnlyElement(foo.getProperties());
+    Descriptor foo = Iterables.getOnlyElement(docRegistry.getTypes());
+    Descriptor bar = Iterables.getOnlyElement(foo.getProperties());
     assertEquals("foo.bar", bar.getFullName());
     assertTrue(bar.isFunction());
     assertEquals("nothing.", bar.getJsDoc().getReturnDescription());
@@ -236,8 +200,8 @@ public class JsDocTest {
         " *     two lines.",
         " */",
         "foo.bar = function() { return ''; };");
-    Descriptor foo = getOnlyElement(docRegistry.getTypes());
-    Descriptor bar = getOnlyElement(foo.getProperties());
+    Descriptor foo = Iterables.getOnlyElement(docRegistry.getTypes());
+    Descriptor bar = Iterables.getOnlyElement(foo.getProperties());
     assertEquals("foo.bar", bar.getFullName());
     assertTrue(bar.isFunction());
     assertEquals("nothing over\n     two lines.", bar.getJsDoc().getReturnDescription());
@@ -253,8 +217,8 @@ public class JsDocTest {
         " *     lines.",
         " */",
         "foo.bar = function() { return ''; };");
-    Descriptor foo = getOnlyElement(docRegistry.getTypes());
-    Descriptor bar = getOnlyElement(foo.getProperties());
+    Descriptor foo = Iterables.getOnlyElement(docRegistry.getTypes());
+    Descriptor bar = Iterables.getOnlyElement(foo.getProperties());
     assertEquals("foo.bar", bar.getFullName());
     assertTrue(bar.isFunction());
     assertEquals("nothing over\n     many\n     lines.", bar.getJsDoc().getReturnDescription());
@@ -266,8 +230,8 @@ public class JsDocTest {
         "var foo = {};",
         "/** @see other. */",
         "foo.bar = function() { return ''; };");
-    Descriptor foo = getOnlyElement(docRegistry.getTypes());
-    Descriptor bar = getOnlyElement(foo.getProperties());
+    Descriptor foo = Iterables.getOnlyElement(docRegistry.getTypes());
+    Descriptor bar = Iterables.getOnlyElement(foo.getProperties());
     assertEquals("foo.bar", bar.getFullName());
     assertTrue(bar.isFunction());
     assertEquals(ImmutableList.of("other."), bar.getJsDoc().getSeeClauses());
@@ -295,7 +259,7 @@ public class JsDocTest {
         " * @constructor",
         " */",
         "function Foo(){}");
-    JsDoc.ThrowsClause tc = getOnlyElement(doc.getThrowsClauses());
+    JsDoc.ThrowsClause tc = Iterables.getOnlyElement(doc.getThrowsClauses());
     assertEquals("Hello.", tc.getDescription());
     assertTrue(tc.getType().isPresent());
   }
@@ -309,7 +273,7 @@ public class JsDocTest {
         " * @constructor",
         " */",
         "function Foo(){}");
-    JsDoc.ThrowsClause tc = getOnlyElement(doc.getThrowsClauses());
+    JsDoc.ThrowsClause tc = Iterables.getOnlyElement(doc.getThrowsClauses());
     assertEquals("Hello.\n     Goodbye.", tc.getDescription());
     assertTrue(tc.getType().isPresent());
   }
@@ -402,15 +366,8 @@ public class JsDocTest {
 
   private JsDoc getClassJsDoc(String... lines) {
     util.compile(path("foo/bar.js"), lines);
-    Descriptor descriptor = getOnlyElement(docRegistry.getTypes());
+    Descriptor descriptor = Iterables.getOnlyElement(docRegistry.getTypes());
     assertTrue(descriptor.isConstructor());
-    return descriptor.getJsDoc();
-  }
-
-  private JsDoc getFunctionJsDoc(String... lines) {
-    util.compile(path("foo/bar.js"), lines);
-    Descriptor descriptor = getOnlyElement(docRegistry.getTypes());
-    assertTrue(descriptor.isFunction());
     return descriptor.getJsDoc();
   }
 
