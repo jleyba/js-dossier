@@ -142,7 +142,10 @@ class Linker {
    * rendered source file.
    */
   String getSourcePath(ModuleDescriptor descriptor) {
-    return getFilePath(descriptor.getSource()).toString();
+    Iterator<Path> parts = config.getOutput()
+        .relativize(getFilePath(descriptor.getSource()))
+        .iterator();
+    return Joiner.on('/').join(parts);
   }
 
   /**
