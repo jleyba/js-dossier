@@ -412,6 +412,7 @@ class HtmlDocWriter implements DocWriter {
     String link;
     Descriptor descriptor = docRegistry.resolve(typeName, currentModule);
     if (descriptor != null) {
+      descriptor = resolveTypeAlias(descriptor);
       typeName = descriptor.getFullName();
       link = linker.getLink(descriptor);
     } else {
