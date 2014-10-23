@@ -226,8 +226,14 @@ class HtmlDocWriter implements DocWriter {
     Path output = linker.getFilePath(descriptor);
     Files.createDirectories(output.getParent());
 
+    String name = descriptor.getFullName();
+    if (descriptor.getModule().isPresent()
+        && !linker.getDisplayName(descriptor.getModule().get()).equals(name)) {
+      name = linker.getDisplayName(descriptor.getModule().get()) + "." + name;
+    }
+
     JsType.Builder jsTypeBuilder = JsType.newBuilder()
-        .setName(descriptor.getFullName())
+        .setName(name)
         .setNested(getNestedTypeInfo(descriptor.getProperties()))
         .setSource(nullToEmpty(linker.getSourcePath(descriptor)))
         .setDescription(getBlockDescription(linker, descriptor.getJsDoc()))
