@@ -224,8 +224,8 @@ message JsType {
 message IndexFileRenderSpec {
   // The resources to include.
   required Resources resources = 1;
-  // Whether to generate a link to the license page.
-  optional bool has_license = 2 [default = false];
+  // Path to the license page, if any.
+  optional string license_path = 2;
   // The readme to display on the main page, if any.
   optional Comment readme = 3;
 }
@@ -246,8 +246,8 @@ message SourceFileRenderSpec {
   required Resources resources = 1;
   // The file to render.
   required SourceFile file = 2;
-  // Whether to link to the license file.
-  optional bool has_license = 3 [default = false];
+  // Path to the license page, if any.
+  optional string license_path = 3;
 }
 
 
@@ -257,6 +257,6 @@ message JsTypeRenderSpec {
   required JsType type = 1;
   // The resources to include.
   required Resources resources = 2;
-  // Whether to link to the license file.
-  optional bool has_license = 3 [default = false];
+  // Path to the license page, if any.
+  optional string license_path = 3;
 }

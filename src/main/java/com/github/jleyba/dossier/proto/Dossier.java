@@ -15764,9 +15764,9 @@ public final class Dossier {
     com.github.jleyba.dossier.proto.Dossier.Resources getResources();
     com.github.jleyba.dossier.proto.Dossier.ResourcesOrBuilder getResourcesOrBuilder();
     
-    // optional bool has_license = 2 [default = false];
-    boolean hasHasLicense();
-    boolean getHasLicense();
+    // optional string license_path = 2;
+    boolean hasLicensePath();
+    String getLicensePath();
     
     // optional .Comment readme = 3;
     boolean hasReadme();
@@ -15815,14 +15815,36 @@ public final class Dossier {
       return resources_;
     }
     
-    // optional bool has_license = 2 [default = false];
-    public static final int HAS_LICENSE_FIELD_NUMBER = 2;
-    private boolean hasLicense_;
-    public boolean hasHasLicense() {
+    // optional string license_path = 2;
+    public static final int LICENSE_PATH_FIELD_NUMBER = 2;
+    private java.lang.Object licensePath_;
+    public boolean hasLicensePath() {
       return ((bitField0_ & 0x00000002) == 0x00000002);
     }
-    public boolean getHasLicense() {
-      return hasLicense_;
+    public String getLicensePath() {
+      java.lang.Object ref = licensePath_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+          licensePath_ = s;
+        }
+        return s;
+      }
+    }
+    private com.google.protobuf.ByteString getLicensePathBytes() {
+      java.lang.Object ref = licensePath_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+        licensePath_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
     }
     
     // optional .Comment readme = 3;
@@ -15840,7 +15862,7 @@ public final class Dossier {
     
     private void initFields() {
       resources_ = com.github.jleyba.dossier.proto.Dossier.Resources.getDefaultInstance();
-      hasLicense_ = false;
+      licensePath_ = "";
       readme_ = com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance();
     }
     private byte memoizedIsInitialized = -1;
@@ -15869,7 +15891,7 @@ public final class Dossier {
         output.writeMessage(1, resources_);
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        output.writeBool(2, hasLicense_);
+        output.writeBytes(2, getLicensePathBytes());
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         output.writeMessage(3, readme_);
@@ -15889,7 +15911,7 @@ public final class Dossier {
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(2, hasLicense_);
+          .computeBytesSize(2, getLicensePathBytes());
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
@@ -16027,7 +16049,7 @@ public final class Dossier {
           resourcesBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000001);
-        hasLicense_ = false;
+        licensePath_ = "";
         bitField0_ = (bitField0_ & ~0x00000002);
         if (readmeBuilder_ == null) {
           readme_ = com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance();
@@ -16084,7 +16106,7 @@ public final class Dossier {
         if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
           to_bitField0_ |= 0x00000002;
         }
-        result.hasLicense_ = hasLicense_;
+        result.licensePath_ = licensePath_;
         if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
           to_bitField0_ |= 0x00000004;
         }
@@ -16112,8 +16134,8 @@ public final class Dossier {
         if (other.hasResources()) {
           mergeResources(other.getResources());
         }
-        if (other.hasHasLicense()) {
-          setHasLicense(other.getHasLicense());
+        if (other.hasLicensePath()) {
+          setLicensePath(other.getLicensePath());
         }
         if (other.hasReadme()) {
           mergeReadme(other.getReadme());
@@ -16168,9 +16190,9 @@ public final class Dossier {
               setResources(subBuilder.buildPartial());
               break;
             }
-            case 16: {
+            case 18: {
               bitField0_ |= 0x00000002;
-              hasLicense_ = input.readBool();
+              licensePath_ = input.readBytes();
               break;
             }
             case 26: {
@@ -16278,25 +16300,40 @@ public final class Dossier {
         return resourcesBuilder_;
       }
       
-      // optional bool has_license = 2 [default = false];
-      private boolean hasLicense_ ;
-      public boolean hasHasLicense() {
+      // optional string license_path = 2;
+      private java.lang.Object licensePath_ = "";
+      public boolean hasLicensePath() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
       }
-      public boolean getHasLicense() {
-        return hasLicense_;
+      public String getLicensePath() {
+        java.lang.Object ref = licensePath_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+          licensePath_ = s;
+          return s;
+        } else {
+          return (String) ref;
+        }
       }
-      public Builder setHasLicense(boolean value) {
-        bitField0_ |= 0x00000002;
-        hasLicense_ = value;
+      public Builder setLicensePath(String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000002;
+        licensePath_ = value;
         onChanged();
         return this;
       }
-      public Builder clearHasLicense() {
+      public Builder clearLicensePath() {
         bitField0_ = (bitField0_ & ~0x00000002);
-        hasLicense_ = false;
+        licensePath_ = getDefaultInstance().getLicensePath();
         onChanged();
         return this;
+      }
+      void setLicensePath(com.google.protobuf.ByteString value) {
+        bitField0_ |= 0x00000002;
+        licensePath_ = value;
+        onChanged();
       }
       
       // optional .Comment readme = 3;
@@ -17004,9 +17041,9 @@ public final class Dossier {
     com.github.jleyba.dossier.proto.Dossier.SourceFile getFile();
     com.github.jleyba.dossier.proto.Dossier.SourceFileOrBuilder getFileOrBuilder();
     
-    // optional bool has_license = 3 [default = false];
-    boolean hasHasLicense();
-    boolean getHasLicense();
+    // optional string license_path = 3;
+    boolean hasLicensePath();
+    String getLicensePath();
   }
   public static final class SourceFileRenderSpec extends
       com.google.protobuf.GeneratedMessage
@@ -17063,20 +17100,42 @@ public final class Dossier {
       return file_;
     }
     
-    // optional bool has_license = 3 [default = false];
-    public static final int HAS_LICENSE_FIELD_NUMBER = 3;
-    private boolean hasLicense_;
-    public boolean hasHasLicense() {
+    // optional string license_path = 3;
+    public static final int LICENSE_PATH_FIELD_NUMBER = 3;
+    private java.lang.Object licensePath_;
+    public boolean hasLicensePath() {
       return ((bitField0_ & 0x00000004) == 0x00000004);
     }
-    public boolean getHasLicense() {
-      return hasLicense_;
+    public String getLicensePath() {
+      java.lang.Object ref = licensePath_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+          licensePath_ = s;
+        }
+        return s;
+      }
+    }
+    private com.google.protobuf.ByteString getLicensePathBytes() {
+      java.lang.Object ref = licensePath_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+        licensePath_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
     }
     
     private void initFields() {
       resources_ = com.github.jleyba.dossier.proto.Dossier.Resources.getDefaultInstance();
       file_ = com.github.jleyba.dossier.proto.Dossier.SourceFile.getDefaultInstance();
-      hasLicense_ = false;
+      licensePath_ = "";
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -17109,7 +17168,7 @@ public final class Dossier {
         output.writeMessage(2, file_);
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        output.writeBool(3, hasLicense_);
+        output.writeBytes(3, getLicensePathBytes());
       }
       getUnknownFields().writeTo(output);
     }
@@ -17130,7 +17189,7 @@ public final class Dossier {
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(3, hasLicense_);
+          .computeBytesSize(3, getLicensePathBytes());
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -17270,7 +17329,7 @@ public final class Dossier {
           fileBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000002);
-        hasLicense_ = false;
+        licensePath_ = "";
         bitField0_ = (bitField0_ & ~0x00000004);
         return this;
       }
@@ -17329,7 +17388,7 @@ public final class Dossier {
         if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
           to_bitField0_ |= 0x00000004;
         }
-        result.hasLicense_ = hasLicense_;
+        result.licensePath_ = licensePath_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -17352,8 +17411,8 @@ public final class Dossier {
         if (other.hasFile()) {
           mergeFile(other.getFile());
         }
-        if (other.hasHasLicense()) {
-          setHasLicense(other.getHasLicense());
+        if (other.hasLicensePath()) {
+          setLicensePath(other.getLicensePath());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -17416,9 +17475,9 @@ public final class Dossier {
               setFile(subBuilder.buildPartial());
               break;
             }
-            case 24: {
+            case 26: {
               bitField0_ |= 0x00000004;
-              hasLicense_ = input.readBool();
+              licensePath_ = input.readBytes();
               break;
             }
           }
@@ -17607,25 +17666,40 @@ public final class Dossier {
         return fileBuilder_;
       }
       
-      // optional bool has_license = 3 [default = false];
-      private boolean hasLicense_ ;
-      public boolean hasHasLicense() {
+      // optional string license_path = 3;
+      private java.lang.Object licensePath_ = "";
+      public boolean hasLicensePath() {
         return ((bitField0_ & 0x00000004) == 0x00000004);
       }
-      public boolean getHasLicense() {
-        return hasLicense_;
+      public String getLicensePath() {
+        java.lang.Object ref = licensePath_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+          licensePath_ = s;
+          return s;
+        } else {
+          return (String) ref;
+        }
       }
-      public Builder setHasLicense(boolean value) {
-        bitField0_ |= 0x00000004;
-        hasLicense_ = value;
+      public Builder setLicensePath(String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000004;
+        licensePath_ = value;
         onChanged();
         return this;
       }
-      public Builder clearHasLicense() {
+      public Builder clearLicensePath() {
         bitField0_ = (bitField0_ & ~0x00000004);
-        hasLicense_ = false;
+        licensePath_ = getDefaultInstance().getLicensePath();
         onChanged();
         return this;
+      }
+      void setLicensePath(com.google.protobuf.ByteString value) {
+        bitField0_ |= 0x00000004;
+        licensePath_ = value;
+        onChanged();
       }
       
       // @@protoc_insertion_point(builder_scope:SourceFileRenderSpec)
@@ -17652,9 +17726,9 @@ public final class Dossier {
     com.github.jleyba.dossier.proto.Dossier.Resources getResources();
     com.github.jleyba.dossier.proto.Dossier.ResourcesOrBuilder getResourcesOrBuilder();
     
-    // optional bool has_license = 3 [default = false];
-    boolean hasHasLicense();
-    boolean getHasLicense();
+    // optional string license_path = 3;
+    boolean hasLicensePath();
+    String getLicensePath();
   }
   public static final class JsTypeRenderSpec extends
       com.google.protobuf.GeneratedMessage
@@ -17711,20 +17785,42 @@ public final class Dossier {
       return resources_;
     }
     
-    // optional bool has_license = 3 [default = false];
-    public static final int HAS_LICENSE_FIELD_NUMBER = 3;
-    private boolean hasLicense_;
-    public boolean hasHasLicense() {
+    // optional string license_path = 3;
+    public static final int LICENSE_PATH_FIELD_NUMBER = 3;
+    private java.lang.Object licensePath_;
+    public boolean hasLicensePath() {
       return ((bitField0_ & 0x00000004) == 0x00000004);
     }
-    public boolean getHasLicense() {
-      return hasLicense_;
+    public String getLicensePath() {
+      java.lang.Object ref = licensePath_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+          licensePath_ = s;
+        }
+        return s;
+      }
+    }
+    private com.google.protobuf.ByteString getLicensePathBytes() {
+      java.lang.Object ref = licensePath_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+        licensePath_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
     }
     
     private void initFields() {
       type_ = com.github.jleyba.dossier.proto.Dossier.JsType.getDefaultInstance();
       resources_ = com.github.jleyba.dossier.proto.Dossier.Resources.getDefaultInstance();
-      hasLicense_ = false;
+      licensePath_ = "";
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -17757,7 +17853,7 @@ public final class Dossier {
         output.writeMessage(2, resources_);
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        output.writeBool(3, hasLicense_);
+        output.writeBytes(3, getLicensePathBytes());
       }
       getUnknownFields().writeTo(output);
     }
@@ -17778,7 +17874,7 @@ public final class Dossier {
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(3, hasLicense_);
+          .computeBytesSize(3, getLicensePathBytes());
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -17918,7 +18014,7 @@ public final class Dossier {
           resourcesBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000002);
-        hasLicense_ = false;
+        licensePath_ = "";
         bitField0_ = (bitField0_ & ~0x00000004);
         return this;
       }
@@ -17977,7 +18073,7 @@ public final class Dossier {
         if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
           to_bitField0_ |= 0x00000004;
         }
-        result.hasLicense_ = hasLicense_;
+        result.licensePath_ = licensePath_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -18000,8 +18096,8 @@ public final class Dossier {
         if (other.hasResources()) {
           mergeResources(other.getResources());
         }
-        if (other.hasHasLicense()) {
-          setHasLicense(other.getHasLicense());
+        if (other.hasLicensePath()) {
+          setLicensePath(other.getLicensePath());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -18064,9 +18160,9 @@ public final class Dossier {
               setResources(subBuilder.buildPartial());
               break;
             }
-            case 24: {
+            case 26: {
               bitField0_ |= 0x00000004;
-              hasLicense_ = input.readBool();
+              licensePath_ = input.readBytes();
               break;
             }
           }
@@ -18255,25 +18351,40 @@ public final class Dossier {
         return resourcesBuilder_;
       }
       
-      // optional bool has_license = 3 [default = false];
-      private boolean hasLicense_ ;
-      public boolean hasHasLicense() {
+      // optional string license_path = 3;
+      private java.lang.Object licensePath_ = "";
+      public boolean hasLicensePath() {
         return ((bitField0_ & 0x00000004) == 0x00000004);
       }
-      public boolean getHasLicense() {
-        return hasLicense_;
+      public String getLicensePath() {
+        java.lang.Object ref = licensePath_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+          licensePath_ = s;
+          return s;
+        } else {
+          return (String) ref;
+        }
       }
-      public Builder setHasLicense(boolean value) {
-        bitField0_ |= 0x00000004;
-        hasLicense_ = value;
+      public Builder setLicensePath(String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000004;
+        licensePath_ = value;
         onChanged();
         return this;
       }
-      public Builder clearHasLicense() {
+      public Builder clearLicensePath() {
         bitField0_ = (bitField0_ & ~0x00000004);
-        hasLicense_ = false;
+        licensePath_ = getDefaultInstance().getLicensePath();
         onChanged();
         return this;
+      }
+      void setLicensePath(com.google.protobuf.ByteString value) {
+        bitField0_ |= 0x00000004;
+        licensePath_ = value;
+        onChanged();
       }
       
       // @@protoc_insertion_point(builder_scope:JsTypeRenderSpec)
@@ -18460,19 +18571,19 @@ public final class Dossier {
       "_html\030\002 \002(\t\022\014\n\004href\030\003 \002(\t\022\035\n\013description" +
       "\030\004 \002(\0132\010.Comment\022!\n\013deprecation\030\005 \001(\0132\014." +
       "Deprecation\022\'\n\nvisibility\030\006 \001(\0162\013.Visibi" +
-      "lity:\006PUBLIC\"j\n\023IndexFileRenderSpec\022\035\n\tr" +
-      "esources\030\001 \002(\0132\n.Resources\022\032\n\013has_licens" +
-      "e\030\002 \001(\010:\005false\022\030\n\006readme\030\003 \001(\0132\010.Comment" +
-      "\"M\n\021LicenseRenderSpec\022\035\n\tresources\030\001 \002(\013" +
-      "2\n.Resources\022\031\n\007license\030\002 \002(\0132\010.License\"" +
-      "l\n\024SourceFileRenderSpec\022\035\n\tresources\030\001 \002",
-      "(\0132\n.Resources\022\031\n\004file\030\002 \002(\0132\013.SourceFil" +
-      "e\022\032\n\013has_license\030\003 \001(\010:\005false\"d\n\020JsTypeR" +
-      "enderSpec\022\025\n\004type\030\001 \002(\0132\007.JsType\022\035\n\treso" +
-      "urces\030\002 \002(\0132\n.Resources\022\032\n\013has_license\030\003" +
-      " \001(\010:\005false*4\n\nVisibility\022\n\n\006PUBLIC\020\000\022\r\n" +
-      "\tPROTECTED\020\001\022\013\n\007PRIVATE\020\002B!\n\037com.github." +
-      "jleyba.dossier.proto"
+      "lity:\006PUBLIC\"d\n\023IndexFileRenderSpec\022\035\n\tr" +
+      "esources\030\001 \002(\0132\n.Resources\022\024\n\014license_pa" +
+      "th\030\002 \001(\t\022\030\n\006readme\030\003 \001(\0132\010.Comment\"M\n\021Li" +
+      "censeRenderSpec\022\035\n\tresources\030\001 \002(\0132\n.Res" +
+      "ources\022\031\n\007license\030\002 \002(\0132\010.License\"f\n\024Sou" +
+      "rceFileRenderSpec\022\035\n\tresources\030\001 \002(\0132\n.R",
+      "esources\022\031\n\004file\030\002 \002(\0132\013.SourceFile\022\024\n\014l" +
+      "icense_path\030\003 \001(\t\"^\n\020JsTypeRenderSpec\022\025\n" +
+      "\004type\030\001 \002(\0132\007.JsType\022\035\n\tresources\030\002 \002(\0132" +
+      "\n.Resources\022\024\n\014license_path\030\003 \001(\t*4\n\nVis" +
+      "ibility\022\n\n\006PUBLIC\020\000\022\r\n\tPROTECTED\020\001\022\013\n\007PR" +
+      "IVATE\020\002B!\n\037com.github.jleyba.dossier.pro" +
+      "to"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -18628,7 +18739,7 @@ public final class Dossier {
           internal_static_IndexFileRenderSpec_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_IndexFileRenderSpec_descriptor,
-              new java.lang.String[] { "Resources", "HasLicense", "Readme", },
+              new java.lang.String[] { "Resources", "LicensePath", "Readme", },
               com.github.jleyba.dossier.proto.Dossier.IndexFileRenderSpec.class,
               com.github.jleyba.dossier.proto.Dossier.IndexFileRenderSpec.Builder.class);
           internal_static_LicenseRenderSpec_descriptor =
@@ -18644,7 +18755,7 @@ public final class Dossier {
           internal_static_SourceFileRenderSpec_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_SourceFileRenderSpec_descriptor,
-              new java.lang.String[] { "Resources", "File", "HasLicense", },
+              new java.lang.String[] { "Resources", "File", "LicensePath", },
               com.github.jleyba.dossier.proto.Dossier.SourceFileRenderSpec.class,
               com.github.jleyba.dossier.proto.Dossier.SourceFileRenderSpec.Builder.class);
           internal_static_JsTypeRenderSpec_descriptor =
@@ -18652,7 +18763,7 @@ public final class Dossier {
           internal_static_JsTypeRenderSpec_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_JsTypeRenderSpec_descriptor,
-              new java.lang.String[] { "Type", "Resources", "HasLicense", },
+              new java.lang.String[] { "Type", "Resources", "LicensePath", },
               com.github.jleyba.dossier.proto.Dossier.JsTypeRenderSpec.class,
               com.github.jleyba.dossier.proto.Dossier.JsTypeRenderSpec.Builder.class);
           return null;

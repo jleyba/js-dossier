@@ -42,6 +42,7 @@ import com.github.jleyba.dossier.proto.Dossier;
 import com.github.rjeschke.txtmark.Processor;
 import com.google.common.base.Charsets;
 import com.google.common.base.Function;
+import com.google.common.base.Joiner;
 import com.google.common.base.Objects;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
@@ -79,6 +80,8 @@ import javax.annotation.Nullable;
  * Generates HTML documentation.
  */
 class HtmlDocWriter implements DocWriter {
+
+  private static final String LICENSE_FILE = "license.html";
 
   private final Config config;
   private final DocRegistry docRegistry;
@@ -137,11 +140,13 @@ class HtmlDocWriter implements DocWriter {
     }
 
     Path index = config.getOutput().resolve("index.html");
-    renderer.render(index, IndexFileRenderSpec.newBuilder()
+    IndexFileRenderSpec.Builder spec = IndexFileRenderSpec.newBuilder()
         .setResources(getResources(index))
-        .setHasLicense(config.getLicense().isPresent())
-        .setReadme(readme)
-        .build());
+        .setReadme(readme);
+    if (config.getLicense().isPresent()) {
+      spec.setLicensePath(LICENSE_FILE);
+    }
+    renderer.render(index, spec.build());
   }
 
   private void generateLicense() throws IOException {
@@ -149,7 +154,7 @@ class HtmlDocWriter implements DocWriter {
       return;
     }
 
-    Path license = config.getOutput().resolve("license.html");
+    Path license = config.getOutput().resolve(LICENSE_FILE);
     String text = new String(Files.readAllBytes(config.getLicense().get()), Charsets.UTF_8);
 
     renderer.render(
@@ -199,13 +204,13 @@ class HtmlDocWriter implements DocWriter {
       jsTypeBuilder.setMainFunction(getFunctionData(descriptor));
     }
 
-    renderer.render(
-        output,
-        JsTypeRenderSpec.newBuilder()
-            .setResources(getResources(output))
-            .setHasLicense(config.getLicense().isPresent())
-            .setType(jsTypeBuilder.build())
-            .build());
+    JsTypeRenderSpec.Builder spec = JsTypeRenderSpec.newBuilder()
+        .setResources(getResources(output))
+        .setType(jsTypeBuilder.build());
+    if (config.getLicense().isPresent()) {
+      spec.setLicensePath(LICENSE_FILE);
+    }
+    renderer.render(output, spec.build());
 
     for (Descriptor property : module.getExportedProperties()) {
       // If the exported descriptor is an alias for another documented type, there is no
@@ -246,13 +251,13 @@ class HtmlDocWriter implements DocWriter {
       jsTypeBuilder.setMainFunction(getFunctionData(descriptor));
     }
 
-    renderer.render(
-        output,
-        JsTypeRenderSpec.newBuilder()
-            .setResources(getResources(output))
-            .setHasLicense(config.getLicense().isPresent())
-            .setType(jsTypeBuilder.build())
-            .build());
+    JsTypeRenderSpec.Builder spec = JsTypeRenderSpec.newBuilder()
+        .setResources(getResources(output))
+        .setType(jsTypeBuilder.build());
+    if (config.getLicense().isPresent()) {
+      spec.setLicensePath(LICENSE_FILE);
+    }
+    renderer.render(output, spec.build());
   }
 
   private void copyResources() throws IOException {
@@ -354,6 +359,7 @@ class HtmlDocWriter implements DocWriter {
     for (Path source : concat(config.getSources(), config.getModules())) {
       Path displayPath = config.getSrcPrefix().relativize(source);
       Path renderPath = linker.getFilePath(source);
+      Path toRoot = renderPath.getParent().relativize(config.getOutput()).resolve(LICENSE_FILE);
 
       SourceFile file = SourceFile.newBuilder()
           .setBaseName(source.getFileName().toString())
@@ -361,13 +367,13 @@ class HtmlDocWriter implements DocWriter {
           .addAllLines(Files.readAllLines(source, Charsets.UTF_8))
           .build();
 
-      renderer.render(
-          renderPath,
-          SourceFileRenderSpec.newBuilder()
-              .setFile(file)
-              .setResources(getResources(renderPath))
-              .setHasLicense(config.getLicense().isPresent())
-              .build());
+      SourceFileRenderSpec.Builder spec = SourceFileRenderSpec.newBuilder()
+          .setFile(file)
+          .setResources(getResources(renderPath));
+      if (config.getLicense().isPresent()) {
+        spec.setLicensePath(Joiner.on('/').join(toRoot.iterator()));
+      }
+      renderer.render(renderPath, spec.build());
     }
   }
 
