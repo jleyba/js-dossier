@@ -59,17 +59,6 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/third_party/java/guava/guava-15.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="jar://$MODULE_DIR$/third_party/java/guava/guava-15.0-src.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
           <root url="jar://$MODULE_DIR$/third_party/java/guice/guice-3.0.jar!/" />
           <root url="jar://$MODULE_DIR$/third_party/java/guice/guice-assistedinject-3.0.jar!/" />
           <root url="jar://$MODULE_DIR$/third_party/java/guice/guice-multibindings-3.0.jar!/" />
@@ -90,17 +79,6 @@
         <JAVADOC />
         <SOURCES>
           <root url="jar://$MODULE_DIR$/third_party/java/hamcrest/hamcrest-core-1.3-src.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" scope="RUNTIME">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/third_party/java/icu4j/icu4j-4.8.1.1.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="jar://$MODULE_DIR$/third_party/java/icu4j/icu4j-4.8.1.1-src.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
@@ -208,6 +186,28 @@
         <JAVADOC />
         <SOURCES>
           <root url="jar://$MODULE_DIR$/third_party/java/txtmark/txtmark-0.8-src.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/third_party/java/guava/guava-18.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/third_party/java/guava/guava-18.0-src.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/third_party/java/icu4j/icu4j-51.1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/third_party/java/icu4j/icu4j-51.1-src.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>

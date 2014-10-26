@@ -1,0 +1,6 @@
+URL: https://github.com/google/closure-templates/tarball/aac4fd30a73114cdf11cace696985c7d24d08ac7
+
+Build:
+ant jar-excluding-deps
+cp build/soy-excluding-deps.jar $dossier/third_party/java/soy/
+

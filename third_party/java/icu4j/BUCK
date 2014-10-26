@@ -1,6 +1,6 @@
 prebuilt_jar(
   name = "icu4j",
-  binary_jar = "icu4j-4.8.1.1.jar",
-  source_jar = "icu4j-4.8.1.1-src.jar",
+  binary_jar = "icu4j-51.1.jar",
+  source_jar = "icu4j-51.1-src.jar",
   visibility = ["PUBLIC"],
 )
