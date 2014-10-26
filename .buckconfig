@@ -1,0 +1,6 @@
+[alias]
+  app     = //src/main/java/com/github/jleyba/dossier:dossier
+  apptest = //src/test/java/com/github/jleyba/dossier:tests
+
+[java]
+  src_roots = /src/main/java/, /src/test/java/

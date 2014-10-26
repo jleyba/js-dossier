@@ -1,0 +1,6 @@
+prebuilt_jar(
+  name = "aopalliance",
+  binary_jar = "aopalliance-1.0.jar",
+  source_jar = "aopalliance-1.0-src.jar",
+  visibility = ["PUBLIC"],
+)

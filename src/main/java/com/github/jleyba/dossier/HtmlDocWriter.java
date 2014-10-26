@@ -268,8 +268,8 @@ class HtmlDocWriter implements DocWriter {
 
   private void copyResources() throws IOException {
     FileSystem fs = config.getOutput().getFileSystem();
-    copyResource(fs.getPath("/dossier.css"), config.getOutput());
-    copyResource(fs.getPath("/dossier.js"), config.getOutput());
+    copyResource(fs.getPath("resources/dossier.css"), config.getOutput());
+    copyResource(fs.getPath("resources/dossier.js"), config.getOutput());
   }
 
   private static void copyResource(Path resourcePath, Path outputDir) throws IOException {

@@ -1,0 +1,33 @@
+java_library(
+  name = "lib",
+  srcs = glob(["**/*.java"]),
+  resources = glob(["resources/*"]),
+  deps = [
+    "//src/main/java/com/google/javascript/jscomp:jscomp",
+    "//third_party/java/args4j:args4j",
+    "//third_party/java/closure_compiler:closure_compiler",
+    "//third_party/java/gson:gson",
+    "//third_party/java/guava:guava",
+    "//third_party/java/joda_time:joda_time",
+    "//third_party/java/json:json",
+    "//third_party/java/jsr305:jsr305",
+    "//third_party/java/protobuf:protobuf",
+    "//third_party/java/soy:soy",
+    "//third_party/java/txtmark:txtmark",
+  ],
+  visibility = [
+    "//src/test/java/com/github/jleyba/dossier/...",
+  ],
+)
+
+java_binary(
+  name = "dossier",
+  deps = [":lib"],
+  main_class = "com.github.jleyba.dossier.Main",
+)
+
+java_binary(
+  name = "Config",
+  deps = [":lib"],
+  main_class = "com.github.jleyba.dossier.Config",
+)

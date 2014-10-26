@@ -1,0 +1,32 @@
+java_library(
+  name = "util",
+  srcs = ["CompilerUtil.java"],
+  deps = [
+    "//src/main/java/com/github/jleyba/dossier:lib",
+    "//third_party/java/closure_compiler:closure_compiler",
+    "//third_party/java/guava:guava",
+    "//third_party/java/junit:junit",
+  ],
+  visibility = [
+    "//src/test/java/com/google/javascript/jscomp/...",
+  ],
+)
+
+java_test(
+  name = "tests",
+  srcs = glob(["*.java"], excludes = ["CompilerUtil.java"]),
+  deps = [
+    ":util",
+    "//src/main/java/com/github/jleyba/dossier:lib",
+    "//src/main/java/com/google/javascript/jscomp:jscomp",
+    "//third_party/java/closure_compiler:closure_compiler",
+    "//third_party/java/gson:gson",
+    "//third_party/java/guava:guava",
+    "//third_party/java/jsoup:jsoup",
+    "//third_party/java/jsr305:jsr305",
+    "//third_party/java/junit:junit",
+    "//third_party/java/mockito:mockito",
+    "//third_party/java/protobuf:protobuf",
+    "//third_party/java/soy:soy",
+  ],
+)

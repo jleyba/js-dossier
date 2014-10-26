@@ -27,6 +27,7 @@ import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.base.Splitter;
+import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
@@ -67,6 +68,8 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Collection;
 import java.util.List;
+
+import javax.annotation.Nullable;
 
 /**
  * Describes the runtime configuration for the app.
@@ -360,11 +363,22 @@ class Config {
   private static Predicate<DependencyInfo> isInSources(
       final Iterable<Path> sources, Path closureBaseDir) {
     final Function<DependencyInfo, Path> pathTransform = toPath(closureBaseDir);
-    final ImmutableSet<Path> sourcesSet = ImmutableSet.copyOf(sources);
+    final ImmutableSet<Path> sourcesSet = FluentIterable.from(sources)
+        .transform(toAbsolutePath())
+        .toSet();
     return new Predicate<DependencyInfo>() {
       @Override
       public boolean apply(DependencyInfo input) {
         return sourcesSet.contains(pathTransform.apply(input));
+      }
+    };
+  }
+
+  private static Function<Path, Path> toAbsolutePath() {
+    return new Function<Path, Path>() {
+      @Override
+      public Path apply(Path input) {
+        return input.toAbsolutePath();
       }
     };
   }
@@ -551,7 +565,7 @@ class Config {
     private final Optional<Path> closureLibraryDir = Optional.absent();
 
     @Description("Path to a file to parse for calls to `goog.addDependency`. This option " +
-        "requires  also setting `closureLibraryDir`.")
+        "requires also setting `closureLibraryDir`.")
     private final List<Path> closureDepsFile = ImmutableList.of();
 
     @Description("A list of .js files to extract API documentation from. If a glob pattern " +
@@ -597,7 +611,7 @@ class Config {
     @Description("Whether to run with all type checking flags enabled.")
     private final boolean strict = false;
 
-    @Description("Specifies which version EcmaScript the input sources conform to. Defaults " +
+    @Description("Specifies which version of EcmaScript the input sources conform to. Defaults " +
         "to ES5.")
     private final Language language = Language.ES5;
 
@@ -619,7 +633,7 @@ class Config {
   static enum Language {
     ES3("ECMASCRIPT3"),
     ES5("ECMASCRIPT5"),
-    ES5_STRICT("ECHMASCRIPT5_STRICT");
+    ES5_STRICT("ECMASCRIPT5_STRICT");
 
     private final String fullName;
 

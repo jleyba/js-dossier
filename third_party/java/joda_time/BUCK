@@ -1,0 +1,6 @@
+prebuilt_jar(
+  name = "joda_time",
+  binary_jar = "joda-time-2.3.jar",
+  source_jar = "joda-time-2.3-src.jar",
+  visibility = ["PUBLIC"],
+)

@@ -4,6 +4,8 @@
 
 set -e
 
+readonly RESOURCES="src/main/java/com/github/jleyba/dossier/resources"
+
 usage() {
   cat <<EOF
 usage $0 [...options]
@@ -24,9 +26,15 @@ EOF
 
 
 run_jsc() {
-  mvn exec:java \
-      -Dexec.mainClass=com.google.template.soy.SoyToJsSrcCompiler \
-      -Dexec.args='--shouldGenerateJsdoc --shouldProvideRequireSoyNamespaces --outputPathFormat src/main/js/dossier_soy.js --srcs src/main/resources/dossier.soy'
+  buck build \
+      //third_party/java/soy:SoyToJsSrcCompiler \
+      //third_party/java/closure_compiler:compiler
+
+  java -jar buck-out/gen/third_party/java/soy/SoyToJsSrcCompiler.jar \
+      --shouldGenerateJsdoc \
+      --shouldProvideRequireSoyNamespaces \
+      --outputPathFormat src/main/js/dossier_soy.js \
+      --srcs $RESOURCES/dossier.soy
 
   python ./closure_library/closure/bin/calcdeps.py \
       -i ./src/main/js/soyutils_usegoog.js \
@@ -35,7 +43,7 @@ run_jsc() {
       -i ./src/main/js/deps.js \
       -d ./closure_library/closure/goog/deps.js \
       -o compiled \
-      -c ./closure_compiler/compiler.jar \
+      -c ./buck-out/gen/third_party/java/closure_compiler/compiler.jar \
       -f "--compilation_level=ADVANCED_OPTIMIZATIONS" \
       -f "--define=goog.DEBUG=false" \
       -f "--jscomp_error=accessControls" \
@@ -62,13 +70,13 @@ run_jsc() {
       -f "--language_in=ES5" \
       -f "--third_party=false" \
       -f "--output_wrapper=\"(function(){%output%;init();})();\"" \
-      --output_file=./src/main/resources/dossier.js
+      --output_file=$RESOURCES/dossier.js
 }
 
 run_lessc() {
   lessc --compress \
       src/main/js/dossier.less \
-      src/main/resources/dossier.css
+      $RESOURCES/dossier.css
 }
 
 run_protoc() {
@@ -77,19 +85,19 @@ run_protoc() {
 }
 
 build_release() {
-  mvn clean test assembly:single
+  buck clean
+  buck build app || \
+      echo "Release built: buck-out/gen/src/main/java/com/github/jleyba/dossier/dossier.jar"
 }
 
 build_sample() {
-  java -jar target/dossier-0.1.1-jar-with-dependencies.jar \
-      --src src/main/js/dossier.js \
-      --closure_library closure_library/closure/goog \
-      --license LICENSE \
-      --readme README.md \
-      --output target/docs
+  buck build app
+  java -jar buck-out/gen/src/main/java/com/github/jleyba/dossier/dossier.jar \
+      --config sample_config.json
 }
 
 update_readme() {
+  buck build //src/main/java/com/github/jleyba/dossier:Config
   cat > README.md <<EOF
 # Dossier
 
@@ -103,9 +111,16 @@ top of the [Closure Compiler](https://developers.google.com/closure/compiler/?cs
 Where \`config.json\` is a configuration file with the options listed below.
 
 EOF
-  mvn exec:java -Dexec.mainClass=com.github.jleyba.dossier.Config 2>> README.md
+  java -jar buck-out/gen/src/main/java/com/github/jleyba/dossier/Config.jar 2>> README.md
 
   cat >> README.md <<EOF
+## Building
+
+Dossier is built using [Facebook's Buck](http://facebook.github.io/buck/). Once
+you have [installed Buck](http://facebook.github.io/buck/setup/quick_start.html),
+you can use the \`gendossier.sh\` script to complete various actions:
+
+    ./gendossier.sh -h
 
 ## LICENSE
 
@@ -133,8 +148,9 @@ main() {
   local readme=0
   local release=0
   local sample=0
+  local test=0
 
-  while getopts "dhjlpr" option
+  while getopts "dhjlprst" option
   do
     case $option in
       h)
@@ -158,6 +174,9 @@ main() {
         ;;
       s)
         all=0; sample=1
+        ;;
+      t)
+        all=0; test=1
         ;;
     esac
   done
@@ -184,6 +203,10 @@ main() {
 
   if (( $proto )); then
     run_protoc
+  fi
+
+  if (( $test )); then
+    buck test
   fi
 
   if (( $release )); then

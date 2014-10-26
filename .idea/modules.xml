@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/js-dossier.iml" filepath="$PROJECT_DIR$/js-dossier.iml" />
+      <module fileurl="file://$PROJECT_DIR$/dossier.iml" filepath="$PROJECT_DIR$/dossier.iml" />
     </modules>
   </component>
 </project>

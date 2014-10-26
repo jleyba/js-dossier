@@ -1,0 +1,6 @@
+prebuilt_jar(
+  name = "inject",
+  binary_jar = "javax.inject-1.jar",
+  source_jar = "javax.inject-1-src.jar",
+  visibility = ["PUBLIC"],
+)

@@ -1,0 +1,6 @@
+prebuilt_jar(
+  name = "txtmark",
+  binary_jar = "txtmark-0.8.jar",
+  source_jar = "txtmark-0.8-src.jar",
+  visibility = ["PUBLIC"],
+)

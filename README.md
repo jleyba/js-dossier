@@ -11,7 +11,8 @@ Where `config.json` is a configuration file with the options listed below.
 
 **Configuration Options**
 
- * `output` Path to the directory to write all generated documentation to.
+ * `output` Path to the directory to write all generated documentation to. This
+    field is required.
 
  * `closureLibraryDir` Path to the base directory of the Closure library (which
     must contain base.js and depsjs). When this option is specified, Closure's
@@ -74,11 +75,11 @@ Where `config.json` is a configuration file with the options listed below.
  * `excludes` A list of .js files to exclude from processing. If a directory is
     specified, all of the .js files under that directory will be excluded. A
     glob pattern may also be specified to exclude all of the paths under the
-    current working directory that match the provided pattern.
+    current working directory that match  the provided pattern.
 
  * `externs` A list of .js files to include as an extern file for the Closure
-    compiler. These files are used to satisfy references to external types, but
-    are excluded when generating API documentation.
+    compiler. These  files are used to satisfy references to external types,
+    but are excluded when generating  API documentation.
 
  * `license` Path to a license file to include with the generated
     documentation. If specified, a link to the license will be included on
@@ -89,10 +90,17 @@ Where `config.json` is a configuration file with the options listed below.
 
  * `strict` Whether to run with all type checking flags enabled.
 
- * `language` Specifies which version EcmaScrit the input sources conform to.
-    Defaults to ES5.
+ * `language` Specifies which version of EcmaScript the input sources conform
+    to. Defaults to ES5.
 
 
+## Building
+
+Dossier is built using [Facebook's Buck](http://facebook.github.io/buck/). Once
+you have [installed Buck](http://facebook.github.io/buck/setup/quick_start.html),
+you can use the `gendossier.sh` script to complete various actions:
+
+    ./gendossier.sh -h
 
 ## LICENSE
 

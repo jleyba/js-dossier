@@ -1,0 +1,12 @@
+{
+  "output": "out/sample",
+  "closureLibraryDir": "closure_library/closure/goog",
+  "license": "LICENSE",
+  "readme": "README.md",
+  "language": "ES5_STRICT",
+  "sources": [
+    "src/main/js/dossier.js",
+    "src/main/js/dossier_soy.js",
+    "src/main/js/soyutils_usegoog.js"
+  ]
+}

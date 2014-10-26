@@ -1,0 +1,6 @@
+prebuilt_jar(
+  name = "json",
+  binary_jar = "json-20090211.jar",
+  source_jar = "json-20090211-src.jar",
+  visibility = ["PUBLIC"],
+)
