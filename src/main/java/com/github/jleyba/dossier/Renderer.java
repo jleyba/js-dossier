@@ -127,7 +127,7 @@ class Renderer {
   }
 
   @VisibleForTesting static class Tofu {
-    static final SoyTofu INSTANCE = new SoyFileSet.Builder()
+    static final SoyTofu INSTANCE = SoyFileSet.builder()
         .add(Renderer.class.getResource("resources/dossier.soy"))
         .build()
         .compileToTofu();
