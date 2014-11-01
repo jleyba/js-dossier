@@ -9,7 +9,6 @@ java_library(
     "//third_party/java/gson:gson",
     "//third_party/java/guava:guava",
     "//third_party/java/joda_time:joda_time",
-    "//third_party/java/json:json",
     "//third_party/java/jsr305:jsr305",
     "//third_party/java/protobuf:protobuf",
     "//third_party/java/soy:soy",

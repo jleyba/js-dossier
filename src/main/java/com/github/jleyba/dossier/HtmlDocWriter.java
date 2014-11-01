@@ -51,6 +51,8 @@ import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.JSTypeExpression;
 import com.google.javascript.rhino.Node;
@@ -59,9 +61,6 @@ import com.google.javascript.rhino.jstype.JSType;
 import com.google.javascript.rhino.jstype.JSTypeRegistry;
 import com.google.javascript.rhino.jstype.ObjectType;
 import com.google.javascript.rhino.jstype.StaticScope;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -280,47 +279,48 @@ class HtmlDocWriter implements DocWriter {
   }
 
   private void writeTypesJson() throws IOException {
-    try {
-      JSONArray files = new JSONArray();
-      for (Path source : sortedFiles) {
-        Path displayPath = config.getSrcPrefix().relativize(source);
-        String dest = config.getOutput().relativize(
-            linker.getFilePath(source)).toString();
-        files.put(new JSONObject()
-            .put("name", displayPath.toString())
-            .put("href", dest));
-      }
+    JsonArray files = new JsonArray();
+    for (Path source : sortedFiles) {
+      Path displayPath = config.getSrcPrefix().relativize(source);
+      String dest = config.getOutput().relativize(
+          linker.getFilePath(source)).toString();
 
-      JSONArray modules = new JSONArray();
-      for (ModuleDescriptor module : sortedModules) {
-        String dest = config.getOutput().relativize(linker.getFilePath(module)).toString();
-        modules.put(new JSONObject()
-            .put("name", linker.getDisplayName(module))
-            .put("types", getTypeInfo(concat(
-                module.getExportedProperties(),
-                module.getInternalTypeDefs())))
-            .put("href", dest));
-      }
+      JsonObject obj = new JsonObject();
+      obj.addProperty("name", displayPath.toString());
+      obj.addProperty("href", dest);
 
-      JSONObject json = new JSONObject()
-          .put("files", files)
-          .put("modules", modules)
-          .put("types", getTypeInfo(sortedTypes));
-
-      // NOTE: JSON is not actually a subset of JavaScript, but in our case we know we only
-      // have valid JavaScript input, so we can use JSONObject#toString() as a quick-and-dirty
-      // formatting mechanism.
-      String content = "var TYPES = " + json + ";";
-
-      Path outputPath = config.getOutput().resolve("types.js");
-      Files.write(outputPath, content.getBytes(Charsets.UTF_8));
-    } catch (JSONException e) {
-      throw new IOException(e);
+      files.add(obj);
     }
+
+    JsonArray modules = new JsonArray();
+    for (ModuleDescriptor module : sortedModules) {
+      String dest = config.getOutput().relativize(linker.getFilePath(module)).toString();
+
+      JsonObject obj = new JsonObject();
+      obj.addProperty("name", linker.getDisplayName(module));
+      obj.addProperty("href", dest);
+      obj.add("types", getTypeInfo(concat(
+          module.getExportedProperties(),
+          module.getInternalTypeDefs())));
+      modules.add(obj);
+    }
+
+    JsonObject json = new JsonObject();
+    json.add("files", files);
+    json.add("modules", modules);
+    json.add("types", getTypeInfo(sortedTypes));
+
+    // NOTE: JSON is not actually a subset of JavaScript, but in our case we know we only
+    // have valid JavaScript input, so we can use JSONObject#toString() as a quick-and-dirty
+    // formatting mechanism.
+    String content = "var TYPES = " + json + ";";
+
+    Path outputPath = config.getOutput().resolve("types.js");
+    Files.write(outputPath, content.getBytes(Charsets.UTF_8));
   }
 
-  private JSONArray getTypeInfo(Iterable<Descriptor> types) throws JSONException {
-    JSONArray array = new JSONArray();
+  private JsonArray getTypeInfo(Iterable<Descriptor> types) {
+    JsonArray array = new JsonArray();
     for (Descriptor descriptor : types) {
       if (descriptor.isEmptyNamespace()) {
         continue;
@@ -328,11 +328,13 @@ class HtmlDocWriter implements DocWriter {
 
       Descriptor resolvedType = resolveTypeAlias(descriptor);
       String dest = config.getOutput().relativize(linker.getFilePath(resolvedType)).toString();
-      array.put(new JSONObject()
-          .put("name", descriptor.getFullName())
-          .put("href", dest)
-          .put("isInterface", descriptor.isInterface())
-          .put("isTypedef", descriptor.isTypedef()));
+
+      JsonObject details = new JsonObject();
+      details.addProperty("name", descriptor.getFullName());
+      details.addProperty("href", dest);
+      details.addProperty("isInterface", descriptor.isInterface());
+      details.addProperty("isTypedef", descriptor.isTypedef());
+      array.add(details);
 
       // Also include typedefs. These will not be included in the main
       // index, but will be searchable.
@@ -340,10 +342,11 @@ class HtmlDocWriter implements DocWriter {
           .filter(isTypedef())
           .toSortedList(DescriptorNameComparator.INSTANCE);
       for (Descriptor typedef : typedefs) {
-        array.put(new JSONObject()
-            .put("name", typedef.getFullName())
-            .put("href", nullToEmpty(linker.getLink(typedef.getFullName())))
-            .put("isTypedef", true));
+        JsonObject typedefDetails = new JsonObject();
+        typedefDetails.addProperty("name", typedef.getFullName());
+        typedefDetails.addProperty("href", nullToEmpty(linker.getLink(typedef.getFullName())));
+        typedefDetails.addProperty("isTypedef", true);
+        array.add(typedefDetails);
       }
     }
     return array;
