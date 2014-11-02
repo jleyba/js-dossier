@@ -37,17 +37,6 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/third_party/java/closure_compiler/closure-compiler-v20131014.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="jar://$MODULE_DIR$/third_party/java/closure_compiler/closure-compiler-v20131014-src.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
           <root url="jar://$MODULE_DIR$/third_party/java/gson/gson-2.2.4.jar!/" />
         </CLASSES>
         <JAVADOC />
@@ -161,17 +150,6 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/third_party/java/protobuf/protobuf-java-2.4.1.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="jar://$MODULE_DIR$/third_party/java/protobuf/protobuf-java-2.4.1-src.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
           <root url="jar://$MODULE_DIR$/third_party/java/soy/soy-excluding-deps.jar!/" />
         </CLASSES>
         <JAVADOC />
@@ -219,6 +197,30 @@
         <JAVADOC />
         <SOURCES>
           <root url="jar://$MODULE_DIR$/third_party/java/jimfs/jimfs-1.0-src.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/third_party/java/closure_compiler/closure-compiler-v20141023.jar!/" />
+          <root url="jar://$MODULE_DIR$/third_party/java/closure_compiler/closure-compiler-externs-v20141023.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/third_party/java/closure_compiler/closure-compiler-v20141023-src.jar!/" />
+          <root url="jar://$MODULE_DIR$/third_party/java/closure_compiler/closure-compiler-externs-v20141023-src.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/third_party/java/protobuf/protobuf-java-2.5.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/third_party/java/protobuf/protobuf-java-2.5.0-src.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>

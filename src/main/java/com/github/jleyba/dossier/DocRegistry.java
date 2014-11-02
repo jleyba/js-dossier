@@ -51,9 +51,11 @@ class DocRegistry {
   private final Map<String, Descriptor> types = new HashMap<>();
 
   /**
-   * Map of {@link JSType} to the descriptor for that type.
+   * Map of {@link JSType} to the descriptor for that type. Since JSType object equality is based
+   * on the equivalence of the represented type (which is not what we want), types are keyed off of
+   * their string representations.
    */
-  private final Map<JSType, Descriptor> jsTypeToDescriptor = new HashMap<>();
+  private final Map<String, Descriptor> jsTypeToDescriptor = new HashMap<>();
 
   /**
    * Map of qualified module name to the descriptor for that module. Here, the qualified name is
@@ -90,7 +92,7 @@ class DocRegistry {
 
   void addExtern(Descriptor descriptor) {
     externs.put(descriptor.getFullName(), descriptor);
-    jsTypeToDescriptor.put(descriptor.getType(), descriptor);
+    jsTypeToDescriptor.put(descriptor.getType().toAnnotationString(), descriptor);
   }
 
   boolean isExtern(String name) {
@@ -112,7 +114,7 @@ class DocRegistry {
 
   void addType(Descriptor descriptor) {
     types.put(descriptor.getFullName(), descriptor);
-    jsTypeToDescriptor.put(descriptor.getType(), descriptor);
+    jsTypeToDescriptor.put(descriptor.getType().toAnnotationString(), descriptor);
   }
 
   @Nullable
@@ -159,7 +161,9 @@ class DocRegistry {
   }
 
   void addModule(ModuleDescriptor module) {
-    jsTypeToDescriptor.put(module.getDescriptor().getType(), module.getDescriptor());
+    jsTypeToDescriptor.put(
+        module.getDescriptor().getType().toAnnotationString(),
+        module.getDescriptor());
     modules.put(module.getName(), module);
 
     for (Scope.Var var : module.getInternalVars()) {

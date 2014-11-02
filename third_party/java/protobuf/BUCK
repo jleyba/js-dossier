@@ -1,6 +1,6 @@
 prebuilt_jar(
   name = "protobuf",
-  binary_jar = "protobuf-java-2.4.1.jar",
-  source_jar = "protobuf-java-2.4.1-src.jar",
+  binary_jar = "protobuf-java-2.5.0.jar",
+  source_jar = "protobuf-java-2.5.0-src.jar",
   visibility = ["PUBLIC"],
 )

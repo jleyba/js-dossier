@@ -1,11 +1,18 @@
 prebuilt_jar(
+  name = "closure_compiler_externs",
+  binary_jar = "closure-compiler-externs-v20141023.jar",
+  source_jar = "closure-compiler-externs-v20141023-src.jar",
+)
+
+prebuilt_jar(
   name = "closure_compiler",
-  binary_jar = "closure-compiler-v20131014.jar",
-  source_jar = "closure-compiler-v20131014-src.jar",
+  binary_jar = "closure-compiler-v20141023.jar",
+  source_jar = "closure-compiler-v20141023-src.jar",
   deps = [
+    ":closure_compiler_externs",
     "//third_party/java/args4j:args4j",
+    "//third_party/java/gson:gson",
     "//third_party/java/guava:guava",
-    "//third_party/java/json:json",
     "//third_party/java/jsr305:jsr305",
     "//third_party/java/protobuf:protobuf",
   ],
