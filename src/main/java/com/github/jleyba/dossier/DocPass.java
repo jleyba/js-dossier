@@ -30,7 +30,7 @@ import com.google.javascript.rhino.jstype.JSType;
 import com.google.javascript.rhino.jstype.JSTypeRegistry;
 import com.google.javascript.rhino.jstype.ObjectType;
 
-import java.nio.file.FileSystems;
+import java.nio.file.FileSystem;
 import java.nio.file.Path;
 import java.util.Set;
 
@@ -45,12 +45,15 @@ class DocPass  implements CompilerPass {
   private final DocRegistry docRegistry;
   private final Set<String> providedSymbols;
   private final DossierModuleRegistry moduleRegistry;
+  private final FileSystem fileSystem;
 
-  DocPass(DossierCompiler compiler, DocRegistry docRegistry, Set<String> providedSymbols) {
+  DocPass(DossierCompiler compiler, DocRegistry docRegistry, Set<String> providedSymbols,
+      FileSystem fileSystem) {
     this.compiler = compiler;
     this.docRegistry = docRegistry;
     this.providedSymbols = providedSymbols;
     this.moduleRegistry = compiler.getModuleRegistry();
+    this.fileSystem = fileSystem;
   }
 
   @Override
@@ -130,7 +133,7 @@ class DocPass  implements CompilerPass {
 
       if (n.isScript() && null != parent && parent.isBlock()) {
         if (null != n.getJSDocInfo()) {
-          Path path = FileSystems.getDefault().getPath(n.getSourceFileName());
+          Path path = fileSystem.getPath(n.getSourceFileName());
           String comment = CommentUtil.getMarkerDescription(n.getJSDocInfo(), "fileoverview");
           docRegistry.addFileOverview(path, comment);
         }

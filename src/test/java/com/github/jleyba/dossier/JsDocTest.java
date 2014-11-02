@@ -9,6 +9,7 @@ import static org.junit.Assert.assertTrue;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
+import com.google.common.jimfs.Jimfs;
 import com.google.javascript.jscomp.CompilerOptions;
 import com.google.javascript.jscomp.DossierCompiler;
 import com.google.javascript.rhino.JSDocInfo;
@@ -37,7 +38,7 @@ public class JsDocTest {
     docRegistry = new DocRegistry();
 
     DossierCompiler compiler = new DossierCompiler(System.err, ImmutableList.<Path>of());
-    CompilerOptions options = Main.createOptions(compiler, docRegistry);
+    CompilerOptions options = Main.createOptions(Jimfs.newFileSystem(), compiler, docRegistry);
 
     util = new CompilerUtil(compiler, options);
   }

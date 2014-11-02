@@ -13,7 +13,7 @@
 // limitations under the License.
 package com.github.jleyba.dossier;
 
-import static com.google.common.base.Objects.firstNonNull;
+import static com.google.common.base.MoreObjects.firstNonNull;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.collect.FluentIterable.from;
 import static com.google.common.collect.Iterables.transform;
@@ -59,7 +59,7 @@ import java.lang.annotation.Target;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.FileSystems;
+import java.nio.file.FileSystem;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -68,8 +68,6 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Collection;
 import java.util.List;
-
-import javax.annotation.Nullable;
 
 /**
  * Describes the runtime configuration for the app.
@@ -88,6 +86,7 @@ class Config {
   private final Language language;
   private final PrintStream outputStream;
   private final PrintStream errorStream;
+  private final FileSystem fileSystem;
 
   /**
    * Creates a new runtime configuration.
@@ -110,7 +109,10 @@ class Config {
   private Config(
       ImmutableSet<Path> srcs, ImmutableSet<Path> modules, ImmutableSet<Path> externs, Path output,
       Optional<Path> license, Optional<Path> readme, Optional<Path> modulePrefix,
-      boolean strict, Language language, PrintStream outputStream, PrintStream errorStream) {
+      boolean strict, Language language, PrintStream outputStream, PrintStream errorStream,
+      FileSystem fileSystem) {
+    checkArgument(!srcs.isEmpty() || !modules.isEmpty(),
+        "There must be at least one input source or module");
     checkArgument(intersection(srcs, externs).isEmpty(),
         "The sources and externs inputs must be disjoint:\n  sources: %s\n  externs: %s",
         srcs, externs);
@@ -129,8 +131,8 @@ class Config {
 
     this.srcs = srcs;
     this.modules = modules;
-    this.srcPrefix = getSourcePrefixPath(srcs, modules);
-    this.modulePrefix = getModulePreixPath(modulePrefix, modules);
+    this.srcPrefix = getSourcePrefixPath(fileSystem, srcs, modules);
+    this.modulePrefix = getModulePreixPath(fileSystem, modulePrefix, modules);
     this.externs = externs;
     this.output = output;
     this.license = license;
@@ -139,6 +141,7 @@ class Config {
     this.language = language;
     this.outputStream = outputStream;
     this.errorStream = errorStream;
+    this.fileSystem = fileSystem;
   }
 
   /**
@@ -225,8 +228,17 @@ class Config {
     return errorStream;
   }
 
-  private static Path getSourcePrefixPath(ImmutableSet<Path> sources, ImmutableSet<Path> modules) {
-    Path prefix = Paths.getCommonPrefix(Iterables.concat(sources, modules));
+  /**
+   * Returns the file system used in this configuration.
+   */
+  FileSystem getFileSystem() {
+    return fileSystem;
+  }
+
+  private static Path getSourcePrefixPath(
+      FileSystem fileSystem, ImmutableSet<Path> sources, ImmutableSet<Path> modules) {
+    Path prefix = Paths.getCommonPrefix(fileSystem.getPath("").toAbsolutePath(),
+        Iterables.concat(sources, modules));
     if (sources.contains(prefix) || modules.contains(prefix)) {
       prefix = prefix.getParent();
     }
@@ -234,7 +246,7 @@ class Config {
   }
 
   private static Path getModulePreixPath(
-      Optional<Path> userSupplierPath, ImmutableSet<Path> modules) {
+      FileSystem fileSystem, Optional<Path> userSupplierPath, ImmutableSet<Path> modules) {
     Path path;
     if (userSupplierPath.isPresent()) {
       path = userSupplierPath.get();
@@ -244,7 +256,7 @@ class Config {
             "Module prefix <%s> is not an ancestor of module %s", path, module);
       }
     } else {
-      path = Paths.getCommonPrefix(modules);
+      path = Paths.getCommonPrefix(fileSystem.getPath("").toAbsolutePath(), modules);
       if (modules.contains(path) && path.getParent() != null) {
         path = path.getParent();
       }
@@ -263,8 +275,8 @@ class Config {
   /**
    * Loads a new runtime configuration from the provided input stream.
    */
-  static Config load(InputStream stream) {
-    ConfigSpec spec = ConfigSpec.load(stream);
+  static Config load(InputStream stream, FileSystem fileSystem) {
+    ConfigSpec spec = ConfigSpec.load(stream, fileSystem);
     checkArgument(spec.output != null, "Output not specified");
     checkArgument(!Files.exists(spec.output) || Files.isDirectory(spec.output),
         "Output path exists, but is not a directory: %s", spec.output);
@@ -302,7 +314,8 @@ class Config {
         spec.strict,
         spec.language,
         System.out,
-        System.err);
+        System.err,
+        fileSystem);
   }
 
   private static ImmutableSet<Path> resolve(Iterable<PathSpec> specs) {
@@ -435,11 +448,6 @@ class Config {
     private final Path baseDir;
     private final String spec;
 
-    PathSpec(String spec) {
-      this(FileSystems.getDefault().getPath(""), spec);
-    }
-
-    @VisibleForTesting
     PathSpec(Path baseDir, String spec) {
       this.baseDir = baseDir;
       this.spec = spec;
@@ -615,10 +623,11 @@ class Config {
         "to ES5.")
     private final Language language = Language.ES5;
 
-    static ConfigSpec load(InputStream stream) {
+    static ConfigSpec load(InputStream stream, FileSystem fileSystem) {
+      Path pwd = fileSystem.getPath("").toAbsolutePath().normalize();
       Gson gson = new GsonBuilder()
-          .registerTypeAdapter(Path.class, new PathDeserializer())
-          .registerTypeAdapter(PathSpec.class, new PathSpecDeserializer())
+          .registerTypeAdapter(Path.class, new PathDeserializer(fileSystem))
+          .registerTypeAdapter(PathSpec.class, new PathSpecDeserializer(pwd))
           .registerTypeAdapter(
               new TypeToken<Optional<Path>>(){}.getType(),
               new OptionalDeserializer<>(Path.class))
@@ -668,10 +677,16 @@ class Config {
 
   private static class PathDeserializer implements JsonDeserializer<Path> {
 
+    private final FileSystem fileSystem;
+
+    public PathDeserializer(FileSystem fileSystem) {
+      this.fileSystem = fileSystem;
+    }
+
     @Override
     public Path deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext context)
         throws JsonParseException {
-      return FileSystems.getDefault().getPath(jsonElement.getAsString())
+      return fileSystem.getPath(jsonElement.getAsString())
           .toAbsolutePath()
           .normalize();
     }
@@ -679,11 +694,18 @@ class Config {
 
   private static class PathSpecDeserializer implements JsonDeserializer<PathSpec> {
 
+    private final Path baseDir;
+
+    public PathSpecDeserializer(Path baseDir) {
+      this.baseDir = baseDir;
+    }
+
+
     @Override
     public PathSpec deserialize(
         JsonElement jsonElement, Type type, JsonDeserializationContext context)
         throws JsonParseException {
-      return new PathSpec(jsonElement.getAsString());
+      return new PathSpec(baseDir, jsonElement.getAsString());
     }
   }
 

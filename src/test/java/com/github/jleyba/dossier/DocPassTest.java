@@ -10,6 +10,7 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import com.google.common.jimfs.Jimfs;
 import com.google.javascript.jscomp.CompilerOptions;
 import com.google.javascript.jscomp.DossierCompiler;
 import com.google.javascript.jscomp.SourceFile;
@@ -19,7 +20,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import java.io.IOException;
-import java.nio.file.FileSystems;
+import java.nio.file.FileSystem;
 import java.nio.file.Path;
 import java.util.List;
 
@@ -29,15 +30,17 @@ import java.util.List;
 @RunWith(JUnit4.class)
 public class DocPassTest {
 
+  private FileSystem fs;
   private DocRegistry docRegistry;
   private CompilerUtil util;
 
   @Before
   public void setUp() {
+    fs = Jimfs.newFileSystem();
     docRegistry = new DocRegistry();
 
     DossierCompiler compiler = new DossierCompiler(System.err, ImmutableList.<Path>of());
-    CompilerOptions options = Main.createOptions(compiler, docRegistry);
+    CompilerOptions options = Main.createOptions(fs, compiler, docRegistry);
 
     util = new CompilerUtil(compiler, options);
   }
@@ -268,6 +271,10 @@ public class DocPassTest {
     assertEquals(description, arg.getDescription());
   }
 
+  private Path path(String first, String... remaining) {
+    return fs.getPath(first, remaining);
+  }
+
   private static void assertConstructor(Descriptor descriptor) {
     assertTrue(descriptor.isConstructor());
     assertFalse(descriptor.isInterface());
@@ -303,9 +310,5 @@ public class DocPassTest {
         return input.getFullName();
       }
     });
-  }
-
-  private static Path path(String first, String... remaining) {
-    return FileSystems.getDefault().getPath(first, remaining);
   }
 }

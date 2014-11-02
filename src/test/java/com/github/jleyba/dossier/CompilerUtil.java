@@ -24,13 +24,6 @@ public class CompilerUtil {
   private final Compiler compiler;
   private final CompilerOptions options;
 
-  CompilerUtil(Config config) {
-    this(new Compiler(), new Main(new String[0],
-        new PrintStream(ByteStreams.nullOutputStream()),
-        new PrintStream(ByteStreams.nullOutputStream()),
-        config).createOptions());
-  }
-
   public CompilerUtil(Compiler compiler, CompilerOptions options) {
     this.compiler = compiler;
     this.options = options;

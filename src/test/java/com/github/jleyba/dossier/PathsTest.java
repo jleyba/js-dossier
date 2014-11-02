@@ -7,34 +7,21 @@ import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Sets.newHashSet;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Matchers.isA;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Sets;
+import com.google.common.jimfs.Jimfs;
 import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.mockito.Mockito;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.FileSystem;
-import java.nio.file.FileSystems;
 import java.nio.file.Files;
-import java.nio.file.LinkOption;
 import java.nio.file.Path;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.nio.file.spi.FileSystemProvider;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -43,7 +30,7 @@ import java.util.Set;
 @RunWith(JUnit4.class)
 public class PathsTest {
 
-  private static final FileSystem FILE_SYSTEM = FileSystems.getDefault();
+  private static final FileSystem FILE_SYSTEM = Jimfs.newFileSystem();
 
   @Test
   public void returnsRootIfNoPathsGiven() {
@@ -56,7 +43,7 @@ public class PathsTest {
     Path a = FILE_SYSTEM.getPath("/a/path");
     Path b = FILE_SYSTEM.getPath("/b/happy");
     Path c = FILE_SYSTEM.getPath("/c/is/for/cookie");
-    assertEquals(FILE_SYSTEM.getPath("/"), getCommonPrefix(newArrayList(a, b, c)));
+    assertEquals(FILE_SYSTEM.getPath("/"), getCommonPrefix(a.getRoot(), newArrayList(a, b, c)));
   }
 
   @Test
@@ -67,8 +54,8 @@ public class PathsTest {
     Path c = FILE_SYSTEM.getPath("/one/two/three/here/we/go/again/down/the/rabbit/hole");
     Path d = FILE_SYSTEM.getPath("/one/two/three/a/b/c");
 
-    assertEquals(a, getCommonPrefix(newArrayList(a, b, c)));
-    assertEquals(root, getCommonPrefix(newArrayList(a, b, c, d)));
+    assertEquals(a, getCommonPrefix(a.getRoot(), newArrayList(a, b, c)));
+    assertEquals(root, getCommonPrefix(a.getRoot(), newArrayList(a, b, c, d)));
   }
 
   @Test

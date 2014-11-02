@@ -33,21 +33,11 @@ class Paths {
     from = from.toAbsolutePath().getParent();
     to = to.toAbsolutePath();
 
-    Path root = getCommonPrefix(ImmutableSet.<Path>of(from, to));
+    Path root = getCommonPrefix(from.getRoot(), ImmutableSet.of(from, to));
     Path pathToRoot = from.relativize(root);
     Path pathFromRoot = root.relativize(to);
 
     return pathToRoot.resolve(pathFromRoot).normalize();
-  }
-
-  /**
-   * Returns the {@link Path} that represents the longest common prefix for the provided
-   * {@code paths}. All paths will be resolved and normalized relative to the current working
-   * directory before computing a common prefix.
-   */
-  static Path getCommonPrefix(Iterable<Path> paths) {
-    Path pwd = FileSystems.getDefault().getPath("").toAbsolutePath();
-    return getCommonPrefix(pwd, paths);
   }
 
   /**

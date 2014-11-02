@@ -1,0 +1,10 @@
+prebuilt_jar(
+  name = "jimfs",
+  binary_jar = "jimfs-1.0.jar",
+  source_jar = "jimfs-1.0-src.jar",
+  deps = [
+    "//third_party/java/guava:guava",
+    "//third_party/java/icu4j:icu4j",
+  ],
+  visibility = ["//src/test/..."],
+)

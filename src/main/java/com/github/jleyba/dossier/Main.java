@@ -40,6 +40,8 @@ import org.joda.time.format.PeriodFormatterBuilder;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
@@ -66,11 +68,12 @@ public class Main extends CommandLineRunner {
   protected CompilerOptions createOptions() {
     AbstractCompiler compiler = getCompiler();
     checkState(compiler instanceof DossierCompiler, "Should never happen");
-    return createOptions((DossierCompiler) compiler, docRegistry);
+    return createOptions(config.getFileSystem(), (DossierCompiler) compiler, docRegistry);
   }
 
   @VisibleForTesting
-  static CompilerOptions createOptions(DossierCompiler compiler, DocRegistry docRegistry) {
+  static CompilerOptions createOptions(
+      FileSystem fileSystem, DossierCompiler compiler, DocRegistry docRegistry) {
     CompilerOptions options = new CompilerOptions();
 
     options.setCodingConvention(new ClosureCodingConvention());
@@ -97,7 +100,7 @@ public class Main extends CommandLineRunner {
         new ProvidedSymbolsCollectionPass(compiler);
     customPasses.put(CustomPassExecutionTime.BEFORE_CHECKS, providedNamespacesPass);
     customPasses.put(CustomPassExecutionTime.BEFORE_OPTIMIZATIONS,
-        new DocPass(compiler, docRegistry, providedNamespacesPass.getSymbols()));
+        new DocPass(compiler, docRegistry, providedNamespacesPass.getSymbols(), fileSystem));
 
     options.setCustomPasses(customPasses);
     return options;
@@ -184,7 +187,7 @@ public class Main extends CommandLineRunner {
     Flags flags = Flags.parse(args);
     Config config = null;
     try (InputStream stream = Files.newInputStream(flags.config)) {
-      config = Config.load(stream);
+      config = Config.load(stream, FileSystems.getDefault());
     } catch (IOException e) {
       e.printStackTrace(System.err);
       System.exit(-1);
