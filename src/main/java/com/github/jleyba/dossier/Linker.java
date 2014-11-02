@@ -65,9 +65,7 @@ class Linker {
       return descriptor.getAttribute("displayName");
     }
 
-    Path modulePath = descriptor.getPath();
-    modulePath = modulePath.resolveSibling(
-        com.google.common.io.Files.getNameWithoutExtension(modulePath.toString()));
+    Path modulePath = stripExtension(descriptor.getPath());
 
     Path displayPath = config.getModulePrefix().relativize(modulePath);
     if (displayPath.getFileName().toString().equals("index")
@@ -80,6 +78,12 @@ class Linker {
 
     descriptor.setAttribute("displayName", displayName);
     return displayName;
+  }
+
+  private static Path stripExtension(Path path) {
+    String name = path.getFileName().toString();
+    int index = name.lastIndexOf('.');
+    return index == -1 ? path : path.resolveSibling(name.substring(0, index));
   }
 
   /**
@@ -112,9 +116,7 @@ class Linker {
 
     if (descriptor.getModule().isPresent()) {
       ModuleDescriptor module = descriptor.getModule().get();
-      String moduleFileName = getFilePath(module).getFileName().toString();
-      name = com.google.common.io.Files.getNameWithoutExtension(moduleFileName)
-          + "_" + name;
+      name = stripExtension(getFilePath(module)).getFileName().toString() + "_" + name;
     }
 
     return outputRoot.resolve(name);
