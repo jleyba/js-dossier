@@ -1,6 +1,6 @@
 {
   "output": "out/sample",
-  "closureLibraryDir": "closure_library/closure/goog",
+  "closureLibraryDir": "third_party/js/closure_library/closure/goog",
   "license": "LICENSE",
   "readme": "README.md",
   "language": "ES5_STRICT",

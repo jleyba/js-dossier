@@ -36,12 +36,12 @@ run_jsc() {
       --outputPathFormat src/main/js/dossier_soy.js \
       --srcs $RESOURCES/dossier.soy
 
-  python ./closure_library/closure/bin/calcdeps.py \
+  python ./third_party/js/closure_library/closure/bin/calcdeps.py \
       -i ./src/main/js/soyutils_usegoog.js \
       -i ./src/main/js/dossier_soy.js \
       -i ./src/main/js/dossier.js \
       -i ./src/main/js/deps.js \
-      -d ./closure_library/closure/goog/deps.js \
+      -d ./third_party/js/closure_library/closure/goog/deps.js \
       -o compiled \
       -c ./buck-out/gen/third_party/java/closure_compiler/compiler.jar \
       -f "--compilation_level=ADVANCED_OPTIMIZATIONS" \
