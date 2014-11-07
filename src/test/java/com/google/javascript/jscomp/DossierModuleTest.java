@@ -1,17 +1,21 @@
 package com.google.javascript.jscomp;
 
-import static com.google.javascript.jscomp.DossierModule.guessModuleName;
 import static org.junit.Assert.assertEquals;
 
+import com.google.common.jimfs.Jimfs;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+
+import java.nio.file.FileSystem;
 
 /**
  * Tests for {@link DossierModule}.
  */
 @RunWith(JUnit4.class)
 public class DossierModuleTest {
+
+  private final FileSystem fileSystem = Jimfs.newFileSystem();
 
   @Test
   public void canGuessModuleName() {
@@ -22,5 +26,9 @@ public class DossierModuleTest {
     assertEquals("dossier$$module__$absolute$path", guessModuleName("/absolute/path/index.js"));
     assertEquals("dossier$$module__foo", guessModuleName("foo/index"));
     assertEquals("dossier$$module__index", guessModuleName("index"));
+  }
+
+  private String guessModuleName(String path) {
+    return DossierModule.guessModuleName(fileSystem.getPath(path));
   }
 }

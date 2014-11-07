@@ -6,20 +6,23 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.jimfs.Jimfs;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 @RunWith(JUnit4.class)
 public class LinkerTest {
 
+  private final FileSystem fileSystem = Jimfs.newFileSystem();
+
   @Test
   public void testFilePath_descriptor() {
-    Path outputDir = Paths.get("output");
+    Path outputDir = fileSystem.getPath("output");
     Config mockConfig = mock(Config.class);
     when(mockConfig.getOutput()).thenReturn(outputDir);
     Linker linker = new Linker(mockConfig, new DocRegistry());
@@ -28,33 +31,33 @@ public class LinkerTest {
         .setType(TestDescriptorBuilder.Type.INTERFACE)
         .build();
     assertEquals(
-        Paths.get("output/interface_foo_Bar.html"),
+        fileSystem.getPath("output/interface_foo_Bar.html"),
         linker.getFilePath(descriptor));
 
     descriptor = object("foo.Bar")
         .setType(TestDescriptorBuilder.Type.CLASS)
         .build();
     assertEquals(
-        Paths.get("output/class_foo_Bar.html"),
+        fileSystem.getPath("output/class_foo_Bar.html"),
         linker.getFilePath(descriptor));
 
     descriptor = object("foo.Bar")
         .setType(TestDescriptorBuilder.Type.ENUM)
         .build();
     assertEquals(
-        Paths.get("output/enum_foo_Bar.html"),
+        fileSystem.getPath("output/enum_foo_Bar.html"),
         linker.getFilePath(descriptor));
 
     descriptor = object("foo.Bar").build();
     assertEquals(
-        Paths.get("output/namespace_foo_Bar.html"),
+        fileSystem.getPath("output/namespace_foo_Bar.html"),
         linker.getFilePath(descriptor));
   }
 
   @Test
   public void testGetFilePath_module() {
-    Path modulePrefix = Paths.get("src/foo");
-    Path outputDir = Paths.get("output");
+    Path modulePrefix = fileSystem.getPath("src/foo");
+    Path outputDir = fileSystem.getPath("output");
 
     Config mockConfig = mock(Config.class);
     when(mockConfig.getOutput()).thenReturn(outputDir);
@@ -66,19 +69,19 @@ public class LinkerTest {
 
     when(mockModule.getPath()).thenReturn(modulePrefix.resolve("bar/baz.js"));
     assertEquals(
-        Paths.get("output/module_bar_baz.html"),
+        fileSystem.getPath("output/module_bar_baz.html"),
         linker.getFilePath(mockModule));
 
     when(mockModule.getPath()).thenReturn(modulePrefix.resolve("bar/baz/index.js"));
     assertEquals(
-        Paths.get("output/module_bar_baz.html"),
+        fileSystem.getPath("output/module_bar_baz.html"),
         linker.getFilePath(mockModule));
   }
 
   @Test
   public void testGetFilePath_source() {
-    Path outputDir = Paths.get("output");
-    Path srcPrefix = Paths.get("/apples/oranges");
+    Path outputDir = fileSystem.getPath("output");
+    Path srcPrefix = fileSystem.getPath("/apples/oranges");
 
     Config mockConfig = mock(Config.class);
     when(mockConfig.getOutput()).thenReturn(outputDir);
@@ -93,9 +96,9 @@ public class LinkerTest {
 
   @Test
   public void testGetFilePath_exportedDescriptor() {
-    Path srcPrefix = Paths.get("/root/src");
+    Path srcPrefix = fileSystem.getPath("/root/src");
     Path modulePrefix = srcPrefix.resolve("foo");
-    Path outputDir = Paths.get("/root/output");
+    Path outputDir = fileSystem.getPath("/root/output");
 
     Config mockConfig = mock(Config.class);
     when(mockConfig.getOutput()).thenReturn(outputDir);
@@ -113,13 +116,13 @@ public class LinkerTest {
         .build();
 
     assertEquals(
-        Paths.get("/root/output/module_bar_baz_class_foo_Bar.html"),
+        fileSystem.getPath("/root/output/module_bar_baz_class_foo_Bar.html"),
         linker.getFilePath(descriptor));
   }
 
   @Test
   public void testGetLink() {
-    Path outputDir = Paths.get("");
+    Path outputDir = fileSystem.getPath("");
     Config mockConfig = mock(Config.class);
     when(mockConfig.getOutput()).thenReturn(outputDir);
     DocRegistry registry = new DocRegistry();
@@ -147,7 +150,7 @@ public class LinkerTest {
   @Test
   public void testGetLink_global() {
     Config mockConfig = mock(Config.class);
-    when(mockConfig.getOutput()).thenReturn(Paths.get(""));
+    when(mockConfig.getOutput()).thenReturn(fileSystem.getPath(""));
 
     DocRegistry registry = new DocRegistry();
     Linker linker = new Linker(mockConfig, registry);
@@ -165,7 +168,7 @@ public class LinkerTest {
   @Test
   public void testGetLink_externs() {
     Config mockConfig = mock(Config.class);
-    when(mockConfig.getOutput()).thenReturn(Paths.get(""));
+    when(mockConfig.getOutput()).thenReturn(fileSystem.getPath(""));
 
     DocRegistry registry = new DocRegistry();
     Linker linker = new Linker(mockConfig, registry);
@@ -186,7 +189,7 @@ public class LinkerTest {
   @Test
   public void testGetLink_byDescriptor() {
     Config mockConfig = mock(Config.class);
-    when(mockConfig.getOutput()).thenReturn(Paths.get(""));
+    when(mockConfig.getOutput()).thenReturn(fileSystem.getPath(""));
 
     DocRegistry registry = new DocRegistry();
     Linker linker = new Linker(mockConfig, registry);
@@ -202,7 +205,7 @@ public class LinkerTest {
   @Test
   public void testGetLink_prototype() {
     Config mockConfig = mock(Config.class);
-    when(mockConfig.getOutput()).thenReturn(Paths.get(""));
+    when(mockConfig.getOutput()).thenReturn(fileSystem.getPath(""));
 
     Descriptor googFoo = object("goog.Foo")
         .setType(TestDescriptorBuilder.Type.CLASS)
@@ -225,27 +228,26 @@ public class LinkerTest {
   @Test
   public void testGetLink_module() {
     Config mockConfig = mock(Config.class);
-    when(mockConfig.getOutput()).thenReturn(Paths.get(""));
-    when(mockConfig.getModulePrefix()).thenReturn(Paths.get(""));
+    when(mockConfig.getOutput()).thenReturn(fileSystem.getPath(""));
+    when(mockConfig.getModulePrefix()).thenReturn(fileSystem.getPath(""));
 
-    ModuleDescriptor module = object("foo.bar.exports")
+    ModuleDescriptor module = object("foo.bar")
         .setSource("foo/bar.js")
         .buildModule();
     DocRegistry registry = new DocRegistry();
     registry.addModule(module);
 
     Linker linker = new Linker(mockConfig, registry);
-    assertEquals("module_foo_bar.html", linker.getLink("foo.bar.exports"));
     assertEquals("module_foo_bar.html", linker.getLink("foo.bar"));
   }
 
   @Test
   public void testGetLink_moduleExportedClass() {
     Config mockConfig = mock(Config.class);
-    when(mockConfig.getOutput()).thenReturn(Paths.get(""));
-    when(mockConfig.getModulePrefix()).thenReturn(Paths.get(""));
+    when(mockConfig.getOutput()).thenReturn(fileSystem.getPath(""));
+    when(mockConfig.getModulePrefix()).thenReturn(fileSystem.getPath(""));
 
-    ModuleDescriptor module = object("foo.bar.exports")
+    ModuleDescriptor module = object("foo.bar")
         .setSource("foo/bar.js")
         .buildModule();
     module.addExportedProperty(object("SomeClass")
@@ -256,8 +258,6 @@ public class LinkerTest {
     registry.addModule(module);
 
     Linker linker = new Linker(mockConfig, registry);
-    assertEquals("module_foo_bar_class_SomeClass.html",
-        linker.getLink("foo.bar.exports.SomeClass"));
     assertEquals("module_foo_bar_class_SomeClass.html", linker.getLink("foo.bar.SomeClass"));
   }
 
@@ -347,7 +347,7 @@ public class LinkerTest {
     assertEquals("http://www.example.com", linker.getLink("Foo"));
   }
 
-  private static TestDescriptorBuilder object(String name) {
-    return new TestDescriptorBuilder(name);
+  private TestDescriptorBuilder object(String name) {
+    return new TestDescriptorBuilder(name, fileSystem);
   }
 }

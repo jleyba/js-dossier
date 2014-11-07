@@ -1,21 +1,12 @@
 package com.google.javascript.jscomp;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.base.Joiner;
-import com.google.common.collect.Iterables;
 import com.google.common.io.Files;
 import com.google.javascript.rhino.Node;
 
-import java.nio.file.FileSystems;
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
-import javax.annotation.Nullable;
 
 /**
  * Describes a CommonJS module.
@@ -28,22 +19,20 @@ public class DossierModule {
   private final Node scriptNode;
   private final Path modulePath;
   private final String varName;
-  private final Map<String, String> typeToAlias = new HashMap<>();
-  private final Set<Scope.Var> internalVars = new HashSet<>();
 
   /**
    * Creates a new module descriptor.
    *
    * @param script the SCRIPT node for the module.
+   * @param modulePath path to this module's source file.
    */
-  DossierModule(Node script) {
+  DossierModule(Node script, Path modulePath) {
     checkArgument(script.isScript());
     checkArgument(script.getSourceFileName() != null);
 
     this.scriptNode = script;
-    this.modulePath = FileSystems.getDefault().getPath(
-        script.getSourceFileName());
-    this.varName = guessModuleName(scriptNode.getSourceFileName());
+    this.modulePath = modulePath;
+    this.varName = guessModuleName(modulePath);
   }
 
   public Node getScriptNode() {
@@ -56,82 +45,6 @@ public class DossierModule {
 
   public Path getModulePath() {
     return modulePath;
-  }
-
-  public Iterable<Scope.Var> getInternalVars() {
-    return Iterables.unmodifiableIterable(internalVars);
-  }
-
-  public boolean isInternalVar(Scope.Var var) {
-    return internalVars.contains(var);
-  }
-
-  /**
-   * Registers a global variable under this module's script node as internal to the module
-   * itself. These variables should be not documented.
-   */
-  public boolean registerInternalVar(Scope.Var var) {
-    checkArgument(var.isGlobal(), "Not a global var: %s", var.getName());
-    if (isInternalVar(var)) {
-      return true;
-    }
-
-    Node script = getScriptNode(var.getNameNode());
-    if (script == this.scriptNode) {
-      String name = var.getName();
-      var.getNameNode().putProp(Node.ORIGINALNAME_PROP, name);
-      var.getNameNode().setString(name + "$$_" + varName);
-      internalVars.add(var);
-      return true;
-    }
-    return false;
-  }
-
-  /**
-   * Registers a type aliased within this module. An alias is defined when a global type
-   * is assigned to a module's internal variable: {@code var Foo = global.Foo}, or when
-   * a type exported by another module is assigned to a module's internal variable:
-   * {@code var Foo = require('othermodule').Foo}.
-   *
-   * @param name the original type name.
-   * @param alias the alias name.
-   */
-  public void defineAlias(String name, String alias) {
-    typeToAlias.put(checkNotNull(name, "null name"), checkNotNull(alias, "null alias"));
-  }
-
-  /**
-   * Returns whether this module defines an alias for the given type {@code name}.
-   */
-  public boolean hasAlias(String name) {
-    return typeToAlias.containsKey(name);
-  }
-
-  /**
-   * Returns this module's alias for the given type. If this module does not define an alias
-   * for the type, this method will return the type itself.
-   */
-  public String getAlias(String typeName) {
-    return typeToAlias.containsKey(typeName)
-        ? typeToAlias.get(typeName)
-        : typeName;
-  }
-
-  @Nullable
-  private static Node getScriptNode(Node node) {
-    while (node != null && !node.isScript()) {
-      node = node.getParent();
-    }
-    return node;
-  }
-
-  /**
-   * Guesses the name of the global variable to use with Closure's type system for a module
-   * with the given source path.
-   */
-  static String guessModuleName(String sourceName) {
-    Path path = FileSystems.getDefault().getPath(sourceName);
-    return guessModuleName(path);
   }
 
   /**

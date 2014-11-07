@@ -16,11 +16,9 @@ package com.github.jleyba.dossier;
 import static com.github.jleyba.dossier.Descriptor.isTheObjectType;
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import com.google.common.collect.ImmutableSet;
 import com.google.javascript.jscomp.AbstractCompiler;
 import com.google.javascript.jscomp.CompilerPass;
 import com.google.javascript.jscomp.DossierCompiler;
-import com.google.javascript.jscomp.DossierModule;
 import com.google.javascript.jscomp.DossierModuleRegistry;
 import com.google.javascript.jscomp.NodeTraversal;
 import com.google.javascript.jscomp.Scope;
@@ -40,6 +38,8 @@ import javax.annotation.Nullable;
  * A {@link CompilerPass} that collects the symbols the symbols to generate documentation for.
  */
 class DocPass  implements CompilerPass {
+
+  private static final String INTERNAL_NAMESPACE_VAR = "$jscomp";
 
   private final AbstractCompiler compiler;
   private final DocRegistry docRegistry;
@@ -105,6 +105,9 @@ class DocPass  implements CompilerPass {
       Scope scope = t.getScope();
       for (Scope.Var var : scope.getAllSymbols()) {
         @Nullable JSType type = getJSType(scope, var, t.getCompiler().getTypeRegistry());
+        if (type == null) {
+          continue;
+        }
         @Nullable JSDocInfo info = getJSDocInfo(var, type);
         docRegistry.addExtern(new Descriptor(var.getName(), var.getNameNode(), type, info));
       }
@@ -150,18 +153,13 @@ class DocPass  implements CompilerPass {
         return;
       }
 
-      ImmutableSet.Builder<Scope.Var> builder = ImmutableSet.builder();
-      for (DossierModule module : moduleRegistry.getModules()) {
-        builder.addAll(module.getInternalVars());
-      }
-      ImmutableSet<Scope.Var> allInternalVars = builder.build();
-
       JSTypeRegistry registry = t.getCompiler().getTypeRegistry();
 
       Scope scope = t.getScope();
       for (Scope.Var var : scope.getAllSymbols()) {
         String name = var.getName();
-        if (docRegistry.isExtern(name) || allInternalVars.contains(var)) {
+        if (name.startsWith(INTERNAL_NAMESPACE_VAR)
+            || docRegistry.isExtern(name)) {
           continue;
         }
 
@@ -187,23 +185,9 @@ class DocPass  implements CompilerPass {
           moduleDescriptor = new ModuleDescriptor(
               descriptor, moduleRegistry.getModuleNamed(var.getName()));
           docRegistry.addModule(moduleDescriptor);
-          recordTypedefs(moduleDescriptor, t.getScope(), registry);
         }
 
         traverseType(moduleDescriptor, descriptor, registry);
-      }
-    }
-
-    private void recordTypedefs(
-        ModuleDescriptor module, Scope scope, JSTypeRegistry registry) {
-      for (Scope.Var var : module.getInternalVars()) {
-        if (var.getJSDocInfo() != null
-            && var.getJSDocInfo().getTypedefType() != null) {
-          JSType type = var.getJSDocInfo().getTypedefType()
-              .evaluate(scope,registry);
-          module.addTypedef(new Descriptor(
-              var.getName(), var.getNameNode(), type, var.getJSDocInfo()));
-        }
       }
     }
 
@@ -291,12 +275,14 @@ class DocPass  implements CompilerPass {
 
     // Sometimes the JSCompiler picks up the builtin call and apply functions off of a
     // function object.  We should always skip these.
-    if (object.isFunctionType() && propType.isFunctionType()
-        && ("apply".equals(prop) || "bind".equals(prop) || "call".equals(prop))) {
-      return true;
-    }
+    return object.isFunctionType()
+        && propType.isFunctionType()
+        && ("apply".equals(prop)
+        || "bind".equals(prop)
+        || "call".equals(prop))
+        || propType.isGlobalThisType()
+        || isPrimitive(propType);
 
-    return propType.isGlobalThisType() || isPrimitive(propType);
   }
 
   private boolean isProvidedSymbol(String name) {

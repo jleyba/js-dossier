@@ -1,22 +1,29 @@
 package com.google.javascript.jscomp;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
 
 import com.google.common.base.Functions;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Iterables;
 import com.google.javascript.rhino.Node;
 
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+
+import javax.annotation.Nullable;
 
 /**
  * Tracks which source files should be treated as CommonJS modules during a compiler run.
  */
 public class DossierModuleRegistry {
 
+  private final FileSystem fileSystem;
   private final Set<String> commonJsModulePaths;
 
   private final Map<Node, DossierModule> scriptToModule = new HashMap<>();
@@ -32,6 +39,13 @@ public class DossierModuleRegistry {
     this.commonJsModulePaths = FluentIterable.from(commonJsModulePaths)
         .transform(Functions.toStringFunction())
         .toSet();
+    this.fileSystem = commonJsModulePaths.iterator().hasNext()
+        ? commonJsModulePaths.iterator().next().getFileSystem()
+        : FileSystems.getDefault();
+  }
+
+  FileSystem getFileSystem() {
+    return fileSystem;
   }
 
   /**
@@ -69,7 +83,7 @@ public class DossierModuleRegistry {
 
     DossierModule module = scriptToModule.get(script);
     if (module == null) {
-      module = new DossierModule(script);
+      module = new DossierModule(script, fileSystem.getPath(script.getSourceFileName()));
       scriptToModule.put(script, module);
       nameToModule.put(module.getVarName(), module);
     } else {

@@ -121,7 +121,7 @@ public class DocRegistryTest {
 
   @Test
   public void resolveModuleByModuleName() {
-    ModuleDescriptor module = object("foo.bar.exports").buildModule();
+    ModuleDescriptor module = object("foo.bar").buildModule();
 
     registry.addModule(module);
 
@@ -192,7 +192,7 @@ public class DocRegistryTest {
 
     Descriptor ab = object("a.b").build();
     Descriptor a = object("a").addStaticProperty(ab).build();
-    ModuleDescriptor module = object("module.exports").buildModule();
+    ModuleDescriptor module = object("module").buildModule();
     module.addExportedProperty(a);
     module.addExportedProperty(ab);
     registry.addModule(module);
@@ -201,9 +201,8 @@ public class DocRegistryTest {
     assertSame(oneTwo, registry.resolve("one.two."));
     assertSame(one, registry.resolve("one."));
 
-    assertSame(ab, registry.resolve("module.exports.a.b."));
-    assertSame(a, registry.resolve("module.exports.a."));
-    assertSame(module.getDescriptor(), registry.resolve("module.exports."));
+    assertSame(ab, registry.resolve("module.a.b."));
+    assertSame(a, registry.resolve("module.a."));
     assertSame(module.getDescriptor(), registry.resolve("module."));
     assertSame(ab, registry.resolve("a.b.", module));
     assertSame(a, registry.resolve("a.", module));
@@ -223,7 +222,7 @@ public class DocRegistryTest {
 
     Descriptor ab = object("a.b").build();
     Descriptor a = object("a").addStaticProperty(ab).build();
-    ModuleDescriptor module = object("module.exports").buildModule();
+    ModuleDescriptor module = object("module").buildModule();
     module.addExportedProperty(a);
     module.addExportedProperty(ab);
     registry.addModule(module);
@@ -234,32 +233,8 @@ public class DocRegistryTest {
     assertTrue(registry.isKnownType("one"));
     assertTrue(registry.isKnownType("one.two"));
     assertTrue(registry.isKnownType("module"));
-    assertTrue(registry.isKnownType("module.exports"));
     assertTrue(registry.isKnownType("a"));
     assertTrue(registry.isKnownType("a.b"));
-  }
-
-  @Test
-  public void canResolveReferenceToAnotherModulesInternalVarThroughItsExportedApi() {
-    JSType fakeType = mock(JSType.class);
-    when(fakeType.toString()).thenReturn("InternalFoo");
-
-    Descriptor foo = object("Foo").build();
-    when(foo.getType()).thenReturn(fakeType);
-
-    ModuleDescriptor module = object("module.exports")
-        .addInternalVar(fakeType.toString())
-        .buildModule();
-    module.addExportedProperty(foo);
-
-    ModuleDescriptor otherModule = object("mod2.exports").buildModule();
-
-    registry.addModule(module);
-    registry.addModule(otherModule);
-
-    assertSame(foo, registry.resolve("InternalFoo", otherModule));
-    assertSame(foo, registry.resolve("InternalFoo", module));
-    assertNull(registry.resolve("InternalFoo"));
   }
 
   private static TestDescriptorBuilder object(String name) {

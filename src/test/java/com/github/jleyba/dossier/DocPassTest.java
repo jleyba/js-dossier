@@ -1,6 +1,8 @@
 package com.github.jleyba.dossier;
 
 import static com.github.jleyba.dossier.CompilerUtil.createSourceFile;
+import static com.google.common.collect.Iterables.get;
+import static com.google.common.collect.Iterables.getOnlyElement;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -84,7 +86,7 @@ public class DocPassTest {
     util.compile(path("foo/bar.js"),
         "/** @constructor */",
         "function Foo() {}");
-    Descriptor descriptor = Iterables.getOnlyElement(docRegistry.getTypes());
+    Descriptor descriptor = getOnlyElement(docRegistry.getTypes());
     assertEquals("Foo", descriptor.getFullName());
     assertConstructor(descriptor);
     assertTrue(descriptor.getArgs().isEmpty());
@@ -95,7 +97,7 @@ public class DocPassTest {
     util.compile(path("foo/bar.js"),
         "/** @interface */",
         "function Foo() {}");
-    Descriptor descriptor = Iterables.getOnlyElement(docRegistry.getTypes());
+    Descriptor descriptor = getOnlyElement(docRegistry.getTypes());
     assertEquals("Foo", descriptor.getFullName());
     assertInterface(descriptor);
     assertTrue(descriptor.getArgs().isEmpty());
@@ -106,7 +108,7 @@ public class DocPassTest {
     util.compile(path("foo/bar.js"),
         "/** @enum */",
         "var Foo = {};");
-    Descriptor descriptor = Iterables.getOnlyElement(docRegistry.getTypes());
+    Descriptor descriptor = getOnlyElement(docRegistry.getTypes());
     assertEquals("Foo", descriptor.getFullName());
     assertEnum(descriptor);
   }
@@ -181,7 +183,7 @@ public class DocPassTest {
     util.compile(path("foo/bar.js"),
         "/** @constructor */",
         "function Foo(a, b) {}");
-    Descriptor descriptor = Iterables.getOnlyElement(docRegistry.getTypes());
+    Descriptor descriptor = getOnlyElement(docRegistry.getTypes());
     assertEquals("Foo", descriptor.getFullName());
     assertConstructor(descriptor);
 
@@ -202,7 +204,7 @@ public class DocPassTest {
         " *     parameter.",
         " * @constructor */",
         "function Foo(a, b, opt_c) {}");
-    Descriptor descriptor = Iterables.getOnlyElement(docRegistry.getTypes());
+    Descriptor descriptor = getOnlyElement(docRegistry.getTypes());
     assertEquals("Foo", descriptor.getFullName());
     assertConstructor(descriptor);
 
@@ -217,7 +219,7 @@ public class DocPassTest {
     util.compile(path("foo/bar.js"),
         "/** @interface */",
         "function Foo(a, b) {}");
-    Descriptor descriptor = Iterables.getOnlyElement(docRegistry.getTypes());
+    Descriptor descriptor = getOnlyElement(docRegistry.getTypes());
     assertEquals("Foo", descriptor.getFullName());
     assertInterface(descriptor);
 
@@ -235,7 +237,7 @@ public class DocPassTest {
         " * @param {string} b is for bananas.",
         " * @interface */",
         "function Foo(a, b) {}");
-    Descriptor descriptor = Iterables.getOnlyElement(docRegistry.getTypes());
+    Descriptor descriptor = getOnlyElement(docRegistry.getTypes());
     assertEquals("Foo", descriptor.getFullName());
     assertInterface(descriptor);
 
@@ -257,13 +259,32 @@ public class DocPassTest {
         "  foo.bar = function(a, b) {};",
         "})(foo);");
 
-    Descriptor descriptor = Iterables.getOnlyElement(docRegistry.getTypes());
+    Descriptor descriptor = getOnlyElement(docRegistry.getTypes());
     assertEquals("foo", descriptor.getFullName());
     assertNamespace(descriptor);
 
-    descriptor = Iterables.getOnlyElement(descriptor.getProperties());
+    descriptor = getOnlyElement(descriptor.getProperties());
     assertEquals("foo.bar", descriptor.getFullName());
     assertTrue(descriptor.isFunction());
+  }
+
+  @Test
+  public void onlyDocumentsAModulesExportedClass() {
+    util.compile(path("foo.js"),
+        "goog.module('foo');",
+        "",
+        "/** @constructor */",
+        "function InternalClass() {}",
+        "",
+        "/** @constructor */",
+        "exports.Foo = function() {};");
+
+    List<Descriptor> descriptors = getDescriptors();
+    assertEquals(
+        ImmutableList.of("foo", "foo.Foo"),
+        getNames(descriptors));
+    assertNamespace(descriptors.get(0));
+    assertConstructor(descriptors.get(1));
   }
 
   private void assertArg(ArgDescriptor arg, String name, String description) {

@@ -9,6 +9,7 @@ import static org.mockito.Mockito.when;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.jimfs.Jimfs;
 import com.google.javascript.jscomp.DossierModule;
 import com.google.javascript.jscomp.Scope;
 import com.google.javascript.rhino.IR;
@@ -17,6 +18,7 @@ import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.jstype.JSType;
 import org.mockito.Mockito;
 
+import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -37,6 +39,8 @@ class TestDescriptorBuilder {
   private final Set<Descriptor> instanceProperties = new HashSet<>();
   private final List<Scope.Var> internalVars = new LinkedList<>();
 
+  private final FileSystem fileSystem;
+
   private Type type = Type.NAMESPACE;
   private Optional<ModuleDescriptor> module = Optional.absent();
   private Optional<JsDoc> jsDoc = Optional.absent();
@@ -44,7 +48,12 @@ class TestDescriptorBuilder {
   private int lineNum = -1;
 
   TestDescriptorBuilder(String name) {
+    this(name, Jimfs.newFileSystem());
+  }
+
+  TestDescriptorBuilder(String name, FileSystem fileSystem) {
     this.name = name;
+    this.fileSystem = fileSystem;
   }
 
   TestDescriptorBuilder setType(Type type) {
@@ -132,15 +141,11 @@ class TestDescriptorBuilder {
   }
 
   ModuleDescriptor buildModule() {
-    checkState(name.endsWith(".exports"));
     checkState(!module.isPresent());
 
-    String moduleName = name.substring(0, name.length() - ".exports".length());
     DossierModule module = mock(DossierModule.class);
-    when(module.getVarName()).thenReturn(moduleName);
-    when(module.getModulePath()).thenReturn(
-        source == null ? null : FileSystems.getDefault().getPath(source));
-    when(module.getInternalVars()).thenReturn(internalVars);
+    when(module.getVarName()).thenReturn(name);
+    when(module.getModulePath()).thenReturn(source == null ? null : fileSystem.getPath(source));
 
     return new ModuleDescriptor(build(), module);
   }

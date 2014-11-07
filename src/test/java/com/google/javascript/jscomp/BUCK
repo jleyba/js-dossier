@@ -6,6 +6,7 @@ java_test(
     "//src/test/java/com/github/jleyba/dossier:util",
     "//third_party/java/closure_compiler:closure_compiler",
     "//third_party/java/guava:guava",
+    "//third_party/java/jimfs:jimfs",
     "//third_party/java/junit:junit",
   ],
 )

@@ -18,6 +18,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.io.Files;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -82,8 +83,7 @@ class Linker {
 
   private static Path stripExtension(Path path) {
     String name = path.getFileName().toString();
-    int index = name.lastIndexOf('.');
-    return index == -1 ? path : path.resolveSibling(name.substring(0, index));
+    return path.resolveSibling(Files.getNameWithoutExtension(name));
   }
 
   /**

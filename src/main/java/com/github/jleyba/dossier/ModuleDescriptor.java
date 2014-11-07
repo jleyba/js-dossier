@@ -2,9 +2,6 @@ package com.github.jleyba.dossier;
 
 import com.google.common.collect.Iterables;
 import com.google.javascript.jscomp.DossierModule;
-import com.google.javascript.jscomp.Scope;
-import com.google.javascript.rhino.jstype.FunctionType;
-import com.google.javascript.rhino.jstype.JSType;
 
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -27,11 +24,6 @@ class ModuleDescriptor {
    * Descriptors for this module's exported API.
    */
   private final Map<String, Descriptor> exportedProperties = new HashMap<>();
-
-  /**
-   * Tracks this module's exported API by type (name) reference.
-   */
-  private final Map<String, Descriptor> exportsByTypeName = new HashMap<>();
 
   /**
    * Type definitions defined within the module but not on an exported property.
@@ -71,10 +63,6 @@ class ModuleDescriptor {
     return module.getVarName();
   }
 
-  public Iterable<Scope.Var> getInternalVars() {
-    return module.getInternalVars();
-  }
-
   public Descriptor getDescriptor() {
     return descriptor;
   }
@@ -96,13 +84,6 @@ class ModuleDescriptor {
   public void addExportedProperty(Descriptor descriptor) {
     descriptor.setModule(this);
     exportedProperties.put(descriptor.getFullName(), descriptor);
-    JSType type = descriptor.getType();
-    if (type != null && !type.isUnknownType()) {
-      if (type.isConstructor()) {
-        type = ((FunctionType) type).getTypeOfThis();
-      }
-      exportsByTypeName.put(type.toString(), descriptor);
-    }
   }
 
   Iterable<Descriptor> getExportedProperties() {
@@ -121,23 +102,6 @@ class ModuleDescriptor {
       }
     }
     return null;
-  }
-
-  /**
-   * Finds the exported descriptor for the given variable. This method will return null if the
-   * variable was not declared in this module, or the variable's type cannot be found in this
-   * module's exported API. If the variable's type is exported by multiple properties, no
-   * guarantees are made for which property descriptor will be returned (or even if the return
-   * value will be stable).
-   */
-  @Nullable
-  Descriptor findExportedVar(Scope.Var var) {
-    Descriptor descriptor = null;
-    if (Iterables.contains(getInternalVars(), var)) {
-      String typeName = var.getNameNode().getString();
-      descriptor = exportsByTypeName.get(typeName);
-    }
-    return descriptor;
   }
 
   void addTypedef(Descriptor descriptor) {
