@@ -8,7 +8,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src/main/java/com/github/jleyba/dossier/resources" type="java-resource" />
       <excludeFolder url="file://$MODULE_DIR$/.idea" />
       <excludeFolder url="file://$MODULE_DIR$/buck-out" />
-      <excludeFolder url="file://$MODULE_DIR$/third_party" />
+      <excludeFolder url="file://$MODULE_DIR$/third_party/java" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
