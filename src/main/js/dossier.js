@@ -368,7 +368,7 @@ dossier.createNavList_ = function(id, descriptors, opt_includeSubTypes) {
 dossier.polyFillDetailsElements_ = function() {
   var doc = goog.dom.getDocument();
   var details = doc.getElementsByTagName(goog.dom.TagName.DETAILS);
-  if (!details.length || details[0].hasOwnProperty('open')) {
+  if (details.length && goog.isBoolean(details[0].open)) {
     return;  // polyfill not needed.
   }
 
@@ -393,7 +393,7 @@ dossier.polyFillDetailsElements_ = function() {
     };
 
     goog.events.listen(el, goog.events.EventType.CLICK, onclick);
-    onclick();  // Start in a cloesd state.
+    onclick();  // Start in a closed state.
   });
 };
 

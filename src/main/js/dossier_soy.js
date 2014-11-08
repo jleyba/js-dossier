@@ -184,7 +184,7 @@ dossier.soy.printInterfaces = function(opt_data, opt_ignored) {
     var interfaceListLen105 = interfaceList105.length;
     for (var interfaceIndex105 = 0; interfaceIndex105 < interfaceListLen105; interfaceIndex105++) {
       var interfaceData105 = interfaceList105[interfaceIndex105];
-      output += '<code><a href="' + soy.$$escapeHtml(interfaceData105.href) + '">' + soy.$$escapeHtml(interfaceData105.text) + '</a></code>' + ((! (interfaceIndex105 == interfaceListLen105 - 1)) ? ', ' : '');
+      output += '<code>' + ((interfaceData105.href) ? '<a href="' + soy.$$escapeHtml(interfaceData105.href) + '">' + soy.$$escapeHtml(interfaceData105.text) + '</a>' : soy.$$escapeHtml(interfaceData105.text)) + '</code>' + ((! (interfaceIndex105 == interfaceListLen105 - 1)) ? ', ' : '');
     }
     output += '</dl>';
   }
@@ -242,11 +242,11 @@ dossier.soy.enumValues = function(opt_data, opt_ignored) {
       output += '<dl class="private">';
       break;
   }
-  var valueList175 = opt_data.enumeration.value;
-  var valueListLen175 = valueList175.length;
-  for (var valueIndex175 = 0; valueIndex175 < valueListLen175; valueIndex175++) {
-    var valueData175 = valueList175[valueIndex175];
-    output += '<dt><a class="enum member' + ((valueData175.deprecation) ? ' deprecation-notice' : '') + '" name="' + soy.$$escapeHtml(opt_data.name + '.' + valueData175.name) + '">' + soy.$$escapeHtml(valueData175.name) + '</a>' + ((valueData175.description && valueData175.description.token.length || valueData175.deprecation && valueData175.deprecation.notice && valueData175.deprecation.notice.token.length) ? '<dd>' + dossier.soy.deprecationNotice({deprecation: valueData175.deprecation}) + dossier.soy.comment({comment: valueData175.description, omitLeadingTag: true}) : '');
+  var valueList181 = opt_data.enumeration.value;
+  var valueListLen181 = valueList181.length;
+  for (var valueIndex181 = 0; valueIndex181 < valueListLen181; valueIndex181++) {
+    var valueData181 = valueList181[valueIndex181];
+    output += '<dt><a class="enum member' + ((valueData181.deprecation) ? ' deprecation-notice' : '') + '" name="' + soy.$$escapeHtml(opt_data.name + '.' + valueData181.name) + '">' + soy.$$escapeHtml(valueData181.name) + '</a>' + ((valueData181.description && valueData181.description.token.length || valueData181.deprecation && valueData181.deprecation.notice && valueData181.deprecation.notice.token.length) ? '<dd>' + dossier.soy.deprecationNotice({deprecation: valueData181.deprecation}) + dossier.soy.comment({comment: valueData181.description, omitLeadingTag: true}) : '');
   }
   output += '</dl></div>';
   return output;
@@ -266,12 +266,12 @@ dossier.soy.typedefs = function(opt_data, opt_ignored) {
   var output = '';
   if (opt_data.typeDefs.length > 0) {
     output += '<section id="typedefs"><h2>Type Definitions</h2>';
-    var typedefList199 = opt_data.typeDefs;
-    var typedefListLen199 = typedefList199.length;
-    for (var typedefIndex199 = 0; typedefIndex199 < typedefListLen199; typedefIndex199++) {
-      var typedefData199 = typedefList199[typedefIndex199];
+    var typedefList205 = opt_data.typeDefs;
+    var typedefListLen205 = typedefList205.length;
+    for (var typedefIndex205 = 0; typedefIndex205 < typedefListLen205; typedefIndex205++) {
+      var typedefData205 = typedefList205[typedefIndex205];
       output += '<div class="wrap-details';
-      switch (typedefData199.visibility) {
+      switch (typedefData205.visibility) {
         case 'PUBLIC':
           output += ' public';
           break;
@@ -282,7 +282,7 @@ dossier.soy.typedefs = function(opt_data, opt_ignored) {
           output += ' private';
           break;
       }
-      output += '"><div><details><summary><div><a class="source" href="' + soy.$$escapeHtml(typedefData199.href) + '">code &raquo;</a><a class="member' + ((typedefData199.deprecation) ? ' deprecation-notice' : '') + '" name="' + soy.$$escapeHtml(typedefData199.name) + '">' + soy.$$escapeHtml(typedefData199.name) + '</a> : <code class="type">' + soy.$$filterNoAutoescape(typedefData199.typeHtml) + '</code>' + dossier.soy.deprecationNotice({deprecation: typedefData199.deprecation}) + '</div><div>' + ((typedefData199.description && typedefData199.description.token.length) ? dossier.soy.comment({comment: typedefData199.description, omitLeadingTag: true}) : 'No description.') + '</div></summary></details></div></div>';
+      output += '"><div><details><summary><div><a class="source" href="' + soy.$$escapeHtml(typedefData205.href) + '">code &raquo;</a><a class="member' + ((typedefData205.deprecation) ? ' deprecation-notice' : '') + '" name="' + soy.$$escapeHtml(typedefData205.name) + '">' + soy.$$escapeHtml(typedefData205.name) + '</a> : <code class="type">' + soy.$$filterNoAutoescape(typedefData205.typeHtml) + '</code>' + dossier.soy.deprecationNotice({deprecation: typedefData205.deprecation}) + '</div><div>' + ((typedefData205.description && typedefData205.description.token.length) ? dossier.soy.comment({comment: typedefData205.description, omitLeadingTag: true}) : 'No description.') + '</div></summary></details></div></div>';
     }
     output += '</section>';
   }
@@ -303,11 +303,11 @@ dossier.soy.nestedTypeSummaries = function(opt_data, opt_ignored) {
   var output = '';
   if (opt_data.types.length > 0) {
     output += '<section><h2>' + soy.$$escapeHtml(opt_data.title) + '</h2><div class="type-summary"><table><tbody><tr><td><dl>';
-    var typeList241 = opt_data.types;
-    var typeListLen241 = typeList241.length;
-    for (var typeIndex241 = 0; typeIndex241 < typeListLen241; typeIndex241++) {
-      var typeData241 = typeList241[typeIndex241];
-      output += '<dt><a href="' + soy.$$escapeHtml(typeData241.href) + '">' + soy.$$escapeHtml(typeData241.name) + '</a><dd>' + ((typeData241.summary && typeData241.summary.token.length) ? dossier.soy.comment({comment: typeData241.summary, omitLeadingTag: true}) : 'No Description.');
+    var typeList247 = opt_data.types;
+    var typeListLen247 = typeList247.length;
+    for (var typeIndex247 = 0; typeIndex247 < typeListLen247; typeIndex247++) {
+      var typeData247 = typeList247[typeIndex247];
+      output += '<dt><a href="' + soy.$$escapeHtml(typeData247.href) + '">' + soy.$$escapeHtml(typeData247.name) + '</a><dd>' + ((typeData247.summary && typeData247.summary.token.length) ? dossier.soy.comment({comment: typeData247.summary, omitLeadingTag: true}) : 'No Description.');
     }
     output += '</dl></table></div></section>';
   }
@@ -342,11 +342,11 @@ dossier.soy.typeDetails = function(opt_data, opt_ignored) {
   var output = '';
   if (opt_data.details && opt_data.details.length > 0) {
     output += '<tr><th>' + soy.$$escapeHtml(opt_data.header) + '<tr><td><dl>';
-    var detailList270 = opt_data.details;
-    var detailListLen270 = detailList270.length;
-    for (var detailIndex270 = 0; detailIndex270 < detailListLen270; detailIndex270++) {
-      var detailData270 = detailList270[detailIndex270];
-      output += '<dt>' + ((detailData270.name) ? soy.$$escapeHtml(detailData270.name) : '') + ((detailData270.typeHtml) ? ((detailData270.name) ? ': ' : '') + '<code class="type">' + soy.$$filterNoAutoescape(detailData270.typeHtml) + '</code>' : '') + ((detailData270.description && detailData270.description.token.length) ? '<dd>' + dossier.soy.comment({comment: detailData270.description, omitLeadingTag: true}) : '');
+    var detailList276 = opt_data.details;
+    var detailListLen276 = detailList276.length;
+    for (var detailIndex276 = 0; detailIndex276 < detailListLen276; detailIndex276++) {
+      var detailData276 = detailList276[detailIndex276];
+      output += '<dt>' + ((detailData276.name) ? soy.$$escapeHtml(detailData276.name) : '') + ((detailData276.typeHtml) ? ((detailData276.name) ? ': ' : '') + '<code class="type">' + soy.$$filterNoAutoescape(detailData276.typeHtml) + '</code>' : '') + ((detailData276.description && detailData276.description.token.length) ? '<dd>' + dossier.soy.comment({comment: detailData276.description, omitLeadingTag: true}) : '');
     }
     output += '</dl>';
   }
@@ -379,11 +379,11 @@ if (goog.DEBUG) {
  */
 dossier.soy.printTemplateNames = function(opt_data, opt_ignored) {
   var output = '<code class="type">&lt;';
-  var nameList309 = opt_data.names;
-  var nameListLen309 = nameList309.length;
-  for (var nameIndex309 = 0; nameIndex309 < nameListLen309; nameIndex309++) {
-    var nameData309 = nameList309[nameIndex309];
-    output += soy.$$escapeHtml(nameData309) + ((! (nameIndex309 == nameListLen309 - 1)) ? ', ' : '');
+  var nameList315 = opt_data.names;
+  var nameListLen315 = nameList315.length;
+  for (var nameIndex315 = 0; nameIndex315 < nameListLen315; nameIndex315++) {
+    var nameData315 = nameList315[nameIndex315];
+    output += soy.$$escapeHtml(nameData315) + ((! (nameIndex315 == nameListLen315 - 1)) ? ', ' : '');
   }
   output += '&gt;</code>';
   return output;
@@ -401,15 +401,15 @@ if (goog.DEBUG) {
  */
 dossier.soy.memberSignature = function(opt_data, opt_ignored) {
   var output = '' + ((! opt_data.member.isConstructor && opt_data.member.templateName && opt_data.member.templateName.length) ? dossier.soy.printTemplateNames({names: opt_data.member.templateName}) + ' ' : '');
-  var name__soy322 = opt_data.parentName ? opt_data.parentName + '.' + opt_data.member.base.name : opt_data.member.base.name;
-  output += '<span class="member' + ((opt_data.member.base.deprecation) ? ' deprecation-notice' : '') + '">' + ((! opt_data.member.isConstructor && ! opt_data.omitLink) ? '<a name="' + soy.$$escapeHtml(name__soy322) + '">' + soy.$$escapeHtml(name__soy322) + '</a>' : soy.$$escapeHtml(name__soy322));
+  var name__soy328 = opt_data.parentName ? opt_data.parentName + '.' + opt_data.member.base.name : opt_data.member.base.name;
+  output += '<span class="member' + ((opt_data.member.base.deprecation) ? ' deprecation-notice' : '') + '">' + ((! opt_data.member.isConstructor && ! opt_data.omitLink) ? '<a name="' + soy.$$escapeHtml(name__soy328) + '">' + soy.$$escapeHtml(name__soy328) + '</a>' : soy.$$escapeHtml(name__soy328));
   if (opt_data.member.parameter) {
     output += ' <span class="args">( ';
-    var parameterList340 = opt_data.member.parameter;
-    var parameterListLen340 = parameterList340.length;
-    for (var parameterIndex340 = 0; parameterIndex340 < parameterListLen340; parameterIndex340++) {
-      var parameterData340 = parameterList340[parameterIndex340];
-      output += soy.$$escapeHtml(parameterData340.name) + ((! (parameterIndex340 == parameterListLen340 - 1)) ? ',' : '') + ' ';
+    var parameterList346 = opt_data.member.parameter;
+    var parameterListLen346 = parameterList346.length;
+    for (var parameterIndex346 = 0; parameterIndex346 < parameterListLen346; parameterIndex346++) {
+      var parameterData346 = parameterList346[parameterIndex346];
+      output += soy.$$escapeHtml(parameterData346.name) + ((! (parameterIndex346 == parameterListLen346 - 1)) ? ',' : '') + ' ';
     }
     output += ')</span>' + ((! opt_data.member.isConstructor && opt_data.member['return'] && opt_data.member['return'].typeHtml && opt_data.member['return'].typeHtml != 'undefined' && opt_data.member['return'].typeHtml != '?') ? ' &rArr; <code class="type">' + soy.$$filterNoAutoescape(opt_data.member['return'].typeHtml) + '</code>' : '');
   } else if (opt_data.member.typeHtml) {
@@ -458,7 +458,7 @@ if (goog.DEBUG) {
  */
 dossier.soy.printProperty = function(opt_data, opt_ignored) {
   var output = '';
-  var isFunction__soy384 = opt_data.prop.parameter != null;
+  var isFunction__soy390 = opt_data.prop.parameter != null;
   output += '<div class="wrap-details';
   switch (opt_data.prop.base.visibility) {
     case 'PUBLIC':
@@ -471,7 +471,7 @@ dossier.soy.printProperty = function(opt_data, opt_ignored) {
       output += ' private';
       break;
   }
-  output += '"><div><details' + ((isFunction__soy384) ? ' class="function"' : '') + '><summary><div>' + dossier.soy.sourceLink({href: opt_data.prop.base.source}) + dossier.soy.memberSignature({member: opt_data.prop, parentName: opt_data.parentName}) + '</div>' + dossier.soy.deprecationNotice({deprecation: opt_data.prop.base.deprecation}) + dossier.soy.comment({comment: opt_data.prop.base.description}) + '</summary>' + ((isFunction__soy384) ? dossier.soy.fnDetails({fn: opt_data.prop}) : '') + '</details></div></div>';
+  output += '"><div><details' + ((isFunction__soy390) ? ' class="function"' : '') + '><summary><div>' + dossier.soy.sourceLink({href: opt_data.prop.base.source}) + dossier.soy.memberSignature({member: opt_data.prop, parentName: opt_data.parentName}) + '</div>' + dossier.soy.deprecationNotice({deprecation: opt_data.prop.base.deprecation}) + dossier.soy.comment({comment: opt_data.prop.base.description}) + '</summary>' + ((isFunction__soy390) ? dossier.soy.fnDetails({fn: opt_data.prop}) : '') + '</details></div></div>';
   return output;
 };
 if (goog.DEBUG) {
@@ -487,11 +487,11 @@ if (goog.DEBUG) {
  */
 dossier.soy.printProperties = function(opt_data, opt_ignored) {
   var output = '';
-  var propertyList415 = opt_data.properties;
-  var propertyListLen415 = propertyList415.length;
-  for (var propertyIndex415 = 0; propertyIndex415 < propertyListLen415; propertyIndex415++) {
-    var propertyData415 = propertyList415[propertyIndex415];
-    output += dossier.soy.printProperty({prop: propertyData415, parentName: opt_data.parentName});
+  var propertyList421 = opt_data.properties;
+  var propertyListLen421 = propertyList421.length;
+  for (var propertyIndex421 = 0; propertyIndex421 < propertyListLen421; propertyIndex421++) {
+    var propertyData421 = propertyList421[propertyIndex421];
+    output += dossier.soy.printProperty({prop: propertyData421, parentName: opt_data.parentName});
   }
   return output;
 };
@@ -510,21 +510,21 @@ dossier.soy.prototype = function(opt_data, opt_ignored) {
   var output = '';
   if (opt_data.type.hasInstanceMethods) {
     output += '<section id="instance-methods"><h2>Instance Methods</h2>';
-    var protoList424 = opt_data.type.prototype;
-    var protoListLen424 = protoList424.length;
-    for (var protoIndex424 = 0; protoIndex424 < protoListLen424; protoIndex424++) {
-      var protoData424 = protoList424[protoIndex424];
-      output += (protoData424['function'].length) ? ((! (protoIndex424 == 0 && protoIndex424 == protoListLen424 - 1)) ? '<h3>Defined in <code class="type">' + ((protoData424.href) ? '<a href="' + soy.$$escapeHtml(protoData424.href) + '">' + soy.$$escapeHtml(protoData424.name) + '</a>' : soy.$$escapeHtml(protoData424.name)) + '</code></h3>' : '') + dossier.soy.printProperties({properties: protoData424['function']}) : '';
+    var protoList430 = opt_data.type.prototype;
+    var protoListLen430 = protoList430.length;
+    for (var protoIndex430 = 0; protoIndex430 < protoListLen430; protoIndex430++) {
+      var protoData430 = protoList430[protoIndex430];
+      output += (protoData430['function'].length) ? ((! (protoIndex430 == 0 && protoIndex430 == protoListLen430 - 1)) ? '<h3>Defined in <code class="type">' + ((protoData430.href) ? '<a href="' + soy.$$escapeHtml(protoData430.href) + '">' + soy.$$escapeHtml(protoData430.name) + '</a>' : soy.$$escapeHtml(protoData430.name)) + '</code></h3>' : '') + dossier.soy.printProperties({properties: protoData430['function']}) : '';
     }
     output += '</section>';
   }
   if (opt_data.type.hasInstanceProperties) {
     output += '<section id="instance-properties"><h2>Instance Properties</h2>';
-    var protoList447 = opt_data.type.prototype;
-    var protoListLen447 = protoList447.length;
-    for (var protoIndex447 = 0; protoIndex447 < protoListLen447; protoIndex447++) {
-      var protoData447 = protoList447[protoIndex447];
-      output += (protoData447.property.length) ? ((! (protoIndex447 == 0 && protoIndex447 == protoListLen447 - 1)) ? '<h3>Defined in <code class="type">' + ((protoData447.href) ? '<a href="' + soy.$$escapeHtml(protoData447.href) + '">' + soy.$$escapeHtml(protoData447.name) + '</a>' : soy.$$escapeHtml(protoData447.name)) + '</code></h3>' : '') + dossier.soy.printProperties({properties: protoData447.property}) : '';
+    var protoList453 = opt_data.type.prototype;
+    var protoListLen453 = protoList453.length;
+    for (var protoIndex453 = 0; protoIndex453 < protoListLen453; protoIndex453++) {
+      var protoData453 = protoList453[protoIndex453];
+      output += (protoData453.property.length) ? ((! (protoIndex453 == 0 && protoIndex453 == protoListLen453 - 1)) ? '<h3>Defined in <code class="type">' + ((protoData453.href) ? '<a href="' + soy.$$escapeHtml(protoData453.href) + '">' + soy.$$escapeHtml(protoData453.name) + '</a>' : soy.$$escapeHtml(protoData453.name)) + '</code></h3>' : '') + dossier.soy.printProperties({properties: protoData453.property}) : '';
     }
     output += '</section>';
   }
@@ -543,8 +543,8 @@ if (goog.DEBUG) {
  */
 dossier.soy.static = function(opt_data, opt_ignored) {
   var output = '';
-  var parentName__soy468 = opt_data.type.isModule ? '' : opt_data.type.name;
-  output += ((opt_data.type.staticFunction.length) ? '<section id="static-functions"><h2>' + ((opt_data.type.mainFunction && opt_data.type.mainFunction.isConstructor) ? 'Static Functions' : (opt_data.type.isModule) ? 'Functions' : 'Global Functions') + '</h2>' + dossier.soy.printProperties({properties: opt_data.type.staticFunction, parentName: parentName__soy468}) + '</section>' : '') + ((opt_data.type.staticProperty.length) ? '<section id="static-properties"><h2>' + ((opt_data.type.mainFunction && opt_data.type.mainFunction.isConstructor) ? 'Static Properties' : (opt_data.type.isModule) ? 'Properties' : 'Global Properties') + '</h2>' + dossier.soy.printProperties({properties: opt_data.type.staticProperty, parentName: parentName__soy468}) + '</section>' : '') + ((opt_data.type.compilerConstant.length) ? '<section id="compiler-constants"><h2>Compiler Constants</h2>' + dossier.soy.printProperties({properties: opt_data.type.compilerConstant, parentName: parentName__soy468}) + '</section>' : '');
+  var parentName__soy474 = opt_data.type.isModule ? '' : opt_data.type.name;
+  output += ((opt_data.type.staticFunction.length) ? '<section id="static-functions"><h2>' + ((opt_data.type.mainFunction && opt_data.type.mainFunction.isConstructor) ? 'Static Functions' : (opt_data.type.isModule) ? 'Functions' : 'Global Functions') + '</h2>' + dossier.soy.printProperties({properties: opt_data.type.staticFunction, parentName: parentName__soy474}) + '</section>' : '') + ((opt_data.type.staticProperty.length) ? '<section id="static-properties"><h2>' + ((opt_data.type.mainFunction && opt_data.type.mainFunction.isConstructor) ? 'Static Properties' : (opt_data.type.isModule) ? 'Properties' : 'Global Properties') + '</h2>' + dossier.soy.printProperties({properties: opt_data.type.staticProperty, parentName: parentName__soy474}) + '</section>' : '') + ((opt_data.type.compilerConstant.length) ? '<section id="compiler-constants"><h2>Compiler Constants</h2>' + dossier.soy.printProperties({properties: opt_data.type.compilerConstant, parentName: parentName__soy474}) + '</section>' : '');
   return output;
 };
 if (goog.DEBUG) {
@@ -590,11 +590,11 @@ dossier.soy.navlist = function(opt_data, opt_ignored) {
   var output = '';
   if (opt_data.types.length) {
     output += '<ul>';
-    var typeList524 = opt_data.types;
-    var typeListLen524 = typeList524.length;
-    for (var typeIndex524 = 0; typeIndex524 < typeListLen524; typeIndex524++) {
-      var typeData524 = typeList524[typeIndex524];
-      output += ((! typeData524.isTypedef) ? '<li class="link"><a href="' + soy.$$escapeHtml(opt_data.basePath) + soy.$$escapeHtml(typeData524.href) + '">' + ((typeData524.isInterface) ? '<i>' + soy.$$escapeHtml(typeData524.name) + '</i>' : soy.$$escapeHtml(typeData524.name)) + '</a>' : '') + ((opt_data.includeSubTypes && typeData524.types && typeData524.types.length) ? dossier.soy.navlist({types: typeData524.types, basePath: opt_data.basePath, includeSubTypes: opt_data.includeSubTypes}) : '');
+    var typeList530 = opt_data.types;
+    var typeListLen530 = typeList530.length;
+    for (var typeIndex530 = 0; typeIndex530 < typeListLen530; typeIndex530++) {
+      var typeData530 = typeList530[typeIndex530];
+      output += ((! typeData530.isTypedef) ? '<li class="link"><a href="' + soy.$$escapeHtml(opt_data.basePath) + soy.$$escapeHtml(typeData530.href) + '">' + ((typeData530.isInterface) ? '<i>' + soy.$$escapeHtml(typeData530.name) + '</i>' : soy.$$escapeHtml(typeData530.name)) + '</a>' : '') + ((opt_data.includeSubTypes && typeData530.types && typeData530.types.length) ? dossier.soy.navlist({types: typeData530.types, basePath: opt_data.basePath, includeSubTypes: opt_data.includeSubTypes}) : '');
     }
     output += '</ul>';
   }
@@ -613,15 +613,15 @@ if (goog.DEBUG) {
  */
 dossier.soy.fileNavlist = function(opt_data, opt_ignored) {
   var output = '';
-  var isDirectory__soy548 = opt_data.file.children.length > 0;
+  var isDirectory__soy554 = opt_data.file.children.length > 0;
   output += (! opt_data.parent) ? '<ul>' : '';
-  if (isDirectory__soy548) {
+  if (isDirectory__soy554) {
     output += (opt_data.file.name) ? '<li>' + soy.$$escapeHtml(opt_data.file.name) + '/<ul>' : '';
-    var childList559 = opt_data.file.children;
-    var childListLen559 = childList559.length;
-    for (var childIndex559 = 0; childIndex559 < childListLen559; childIndex559++) {
-      var childData559 = childList559[childIndex559];
-      output += dossier.soy.fileNavlist({file: childData559, basePath: opt_data.basePath, parent: opt_data.file});
+    var childList565 = opt_data.file.children;
+    var childListLen565 = childList565.length;
+    for (var childIndex565 = 0; childIndex565 < childListLen565; childIndex565++) {
+      var childData565 = childList565[childIndex565];
+      output += dossier.soy.fileNavlist({file: childData565, basePath: opt_data.basePath, parent: opt_data.file});
     }
     output += (opt_data.file.name) ? '</ul>' : '';
   } else if (opt_data.file.name) {
@@ -685,13 +685,13 @@ if (goog.DEBUG) {
  */
 dossier.soy.srcfile = function(opt_data, opt_ignored) {
   var output = dossier.soy.pageHeader({title: opt_data.spec.file.baseName, resources: opt_data.spec.resources}) + '<div id="main-wrapper">' + dossier.soy.sideNavToggle(null) + '<main><header><h1>' + soy.$$escapeHtml(opt_data.spec.file.path) + '</h1></header><pre><table class="srcfile"><tbody>';
-  var count__soy666 = 1;
-  var lineList667 = opt_data.spec.file.lines;
-  var lineListLen667 = lineList667.length;
-  for (var lineIndex667 = 0; lineIndex667 < lineListLen667; lineIndex667++) {
-    var lineData667 = lineList667[lineIndex667];
-    output += '<tr><td><a name="l' + soy.$$escapeHtml(count__soy666) + '" href="#l' + soy.$$escapeHtml(count__soy666) + '">' + soy.$$escapeHtml(count__soy666) + '</a><td>' + soy.$$escapeHtml(lineData667);
-    var count__soy676 = count__soy666 + 1;
+  var count__soy672 = 1;
+  var lineList673 = opt_data.spec.file.lines;
+  var lineListLen673 = lineList673.length;
+  for (var lineIndex673 = 0; lineIndex673 < lineListLen673; lineIndex673++) {
+    var lineData673 = lineList673[lineIndex673];
+    output += '<tr><td><a name="l' + soy.$$escapeHtml(count__soy672) + '" href="#l' + soy.$$escapeHtml(count__soy672) + '">' + soy.$$escapeHtml(count__soy672) + '</a><td>' + soy.$$escapeHtml(lineData673);
+    var count__soy682 = count__soy672 + 1;
   }
   output += '</table></pre></main>' + dossier.soy.topNav(null) + dossier.soy.sideNav({licensePath: opt_data.spec.licensePath}) + '<div id="push-footer"></div></div>' + dossier.soy.footer({scripts: opt_data.spec.resources.script});
   return output;
