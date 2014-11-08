@@ -427,7 +427,7 @@ public class RendererTest {
     Document document = renderDocument("dossier.soy.typeHeader", "type", type);
 
     assertThat(querySelector(document, "header > h1").toString(), isHtml(
-        "<h1>Interface Foo.<code class=\"type\">&lt;K, V&gt;</code></h1>"));
+        "<h1>Interface Foo&lt;K, V&gt;</h1>"));
   }
 
   @Test
@@ -450,7 +450,7 @@ public class RendererTest {
     Document document = renderDocument("dossier.soy.typeHeader", "type", type);
 
     assertThat(querySelector(document, "header > h1").toString(), isHtml(
-        "<h1>Class Foo.<code class=\"type\">&lt;K, V&gt;</code></h1>"));
+        "<h1>Class Foo&lt;K, V&gt;</h1>"));
   }
 
   @Test
@@ -487,7 +487,7 @@ public class RendererTest {
     Document document = renderDocument("dossier.soy.typeHeader", "type", type);
     assertThat(querySelector(document, "header").toString(), isHtml(
         "<header>",
-        "<h1>Class Foo.<code class=\"type\">&lt;T&gt;</code></h1>",
+        "<h1>Class Foo&lt;T&gt;</h1>",
         "<a class=\"source\" href=\"source-file\">code &raquo;</a>",
         "<pre><code>",
         "<a href=\"super-one\">SuperClass1</a>",
@@ -534,7 +534,7 @@ public class RendererTest {
     Document document = renderDocument("dossier.soy.typeHeader", "type", type);
     assertThat(querySelector(document, "header").toString(), isHtml(
         "<header>",
-        "<h1>Module Foo.<code class=\"type\">&lt;T&gt;</code></h1>",
+        "<h1>Module Foo&lt;T&gt;</h1>",
         "<a class=\"source\" href=\"source-file\">code &raquo;</a>",
         "<pre><code>",
         "<a href=\"super-one\">SuperClass1</a>",

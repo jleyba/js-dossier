@@ -234,7 +234,7 @@
         Namespace {$type.name}
       {/if}
       {if $type.mainFunction and length($type.mainFunction.templateName)}
-        .{call .printTemplateNames}
+        {call .printTemplateNames}
           {param names: $type.mainFunction.templateName /}
         {/call}
       {/if}
@@ -474,12 +474,12 @@
  * @param names The list of template type names.
  */
 {template .printTemplateNames}
-  <code class="type">&lt;
+  &lt;
   {foreach $name in $names}
     {$name}
     {if not isLast($name)},{sp}{/if}
   {/foreach}
-  &gt;</code>
+  &gt;
 {/template}
 
 
@@ -494,9 +494,11 @@
 {template .memberSignature}
   {if not $member.isConstructor and
       $member.templateName and length($member.templateName)}
-    {call .printTemplateNames}
-      {param names: $member.templateName /}
-    {/call}
+    <code class="type">
+      {call .printTemplateNames}
+        {param names: $member.templateName /}
+      {/call}
+    </code>
     {sp}
   {/if}
 
