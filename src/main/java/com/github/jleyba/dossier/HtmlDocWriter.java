@@ -37,9 +37,11 @@ import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.base.Strings.nullToEmpty;
 import static com.google.common.collect.Iterables.concat;
 import static com.google.common.collect.Iterables.transform;
+import static java.nio.file.Files.createDirectories;
 
 import com.github.jleyba.dossier.proto.Dossier;
 import com.github.rjeschke.txtmark.Processor;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Charsets;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
@@ -48,7 +50,6 @@ import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
 import com.google.common.collect.FluentIterable;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
 import com.google.gson.JsonArray;
@@ -109,7 +110,7 @@ class HtmlDocWriter implements DocWriter {
     sortedModules = FluentIterable.from(docRegistry.getModules())
         .toSortedList(new ModueDisplayPathComparator());
 
-    Files.createDirectories(config.getOutput());
+    createDirectories(config.getOutput());
     copyResources();
     copySourceFiles();
     generateIndex();
@@ -167,7 +168,7 @@ class HtmlDocWriter implements DocWriter {
   private void generateModuleDocs(ModuleDescriptor module, JSTypeRegistry registry)
       throws IOException {
     Path output = linker.getFilePath(module);
-    Files.createDirectories(output.getParent());
+    createDirectories(output.getParent());
 
     // Always generate documentation for both the internal and external typedefs since
     // they're most likely used in other jsdoc type annotations.
@@ -223,7 +224,7 @@ class HtmlDocWriter implements DocWriter {
 
   private void generateDocs(Descriptor descriptor, JSTypeRegistry registry) throws IOException {
     Path output = linker.getFilePath(descriptor);
-    Files.createDirectories(output.getParent());
+    createDirectories(output.getParent());
 
     String name = descriptor.getFullName();
     if (descriptor.getModule().isPresent()
@@ -252,7 +253,7 @@ class HtmlDocWriter implements DocWriter {
       extractEnumData(descriptor, jsTypeBuilder);
     }
 
-    if (descriptor.isFunction()) {
+    if (descriptor.isFunction() || descriptor.isConstructor()) {
       jsTypeBuilder.setMainFunction(getFunctionData(descriptor));
     }
 
@@ -410,13 +411,18 @@ class HtmlDocWriter implements DocWriter {
         });
   }
 
-  private TypeLink getTypeLink(JSType type) {
+  @VisibleForTesting TypeLink getTypeLink(JSType type) {
     String typeName = getTypeName(type);
     String link;
     Descriptor descriptor = docRegistry.resolve(typeName, currentModule);
     if (descriptor != null) {
       descriptor = resolveTypeAlias(descriptor);
-      typeName = descriptor.getFullName();
+      String template = "";
+      int index = typeName.indexOf("<");
+      if (index != -1) {
+        template = typeName.substring(index);
+      }
+      typeName = descriptor.getFullName() + template;
       link = linker.getLink(descriptor);
     } else {
       link = linker.getLink(typeName);

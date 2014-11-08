@@ -24,7 +24,6 @@ import com.google.javascript.rhino.jstype.JSType;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 import javax.annotation.Nullable;
 
@@ -93,7 +92,12 @@ class DocRegistry {
 
   @Nullable
   Descriptor getType(JSType type) {
-    return types.get(getDisplayName(type));
+    return getType(getDisplayName(type));
+  }
+
+  @Nullable
+  Descriptor getType(String type) {
+    return types.get(type);
   }
 
   boolean isKnownType(String name) {
