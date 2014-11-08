@@ -327,14 +327,6 @@ class DossierProcessCommonJsModules implements CompilerPass {
     }
 
     private void fixTypeNode(Node typeNode) {
-      StringWriter sw = new StringWriter();
-      try {
-        typeNode.appendStringTree(sw);
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-      System.err.println("TYPE NODE:_____" + sw);
-
       if (typeNode.isString()) {
         typeNode.putProp(Node.ORIGINALNAME_PROP, typeNode.getString());
 
