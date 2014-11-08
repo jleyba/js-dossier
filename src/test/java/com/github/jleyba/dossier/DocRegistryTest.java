@@ -4,10 +4,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
-import com.google.javascript.rhino.jstype.JSType;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -34,11 +31,59 @@ public class DocRegistryTest {
   }
 
   @Test
+  public void resolveExternWithTemplateType() {
+    Descriptor extern = object("IThenable").build();
+    registry.addExtern(extern);
+
+    assertSame(extern, registry.resolve("IThenable.<string>"));
+  }
+
+  @Test
+  public void resolveExternWithUndottedTemplateType() {
+    Descriptor extern = object("IThenable").build();
+    registry.addExtern(extern);
+
+    assertSame(extern, registry.resolve("IThenable<string>"));
+  }
+
+  @Test
+  public void resolveExternWithNestedTemplateType() {
+    Descriptor extern = object("IThenable").build();
+    registry.addExtern(extern);
+
+    assertSame(extern, registry.resolve("IThenable.<Array.<string>>"));
+  }
+
+  @Test
   public void resolveType() {
     Descriptor type = object("Element").build();
     registry.addType(type);
 
     assertSame(type, registry.resolve("Element"));
+  }
+
+  @Test
+  public void resolveTypeWithTemplateType() {
+    Descriptor type = object("IThenable").build();
+    registry.addType(type);
+
+    assertSame(type, registry.resolve("IThenable.<boolean>"));
+  }
+
+  @Test
+  public void resolveTypeWithUndottedTemplateType() {
+    Descriptor type = object("IThenable").build();
+    registry.addType(type);
+
+    assertSame(type, registry.resolve("IThenable<boolean>"));
+  }
+
+  @Test
+  public void resolveTypeWithNestedTemplateType() {
+    Descriptor type = object("IThenable").build();
+    registry.addType(type);
+
+    assertSame(type, registry.resolve("IThenable.<Array.<string>>"));
   }
 
   @Test

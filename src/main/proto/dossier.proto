@@ -77,6 +77,9 @@ enum Visibility {
   PROTECTED = 1;
   // The type may only be used by other code in the same file.
   PRIVATE = 2;
+  // The type may only be used by subclasses, or other code in the same
+  // package.
+  PACKAGE = 3;
 }
 
 

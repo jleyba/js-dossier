@@ -15,6 +15,7 @@ package com.github.jleyba.dossier;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Strings.isNullOrEmpty;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
@@ -23,6 +24,7 @@ import com.google.javascript.rhino.jstype.JSType;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import javax.annotation.Nullable;
 
@@ -47,13 +49,6 @@ class DocRegistry {
   private final Map<String, Descriptor> types = new HashMap<>();
 
   /**
-   * Map of {@link JSType} to the descriptor for that type. Since JSType object equality is based
-   * on the equivalence of the represented type (which is not what we want), types are keyed off of
-   * their string representations.
-   */
-  private final Map<String, Descriptor> jsTypeToDescriptor = new HashMap<>();
-
-  /**
    * Map of qualified module name to the descriptor for that module. Here, the qualified name is
    * taken from the managed name when merging the descriptor into the global scope and <i>not</i>
    * the name that other CommonJS modules would use to reference the module.
@@ -73,7 +68,6 @@ class DocRegistry {
 
   void addExtern(Descriptor descriptor) {
     externs.put(descriptor.getFullName(), descriptor);
-    jsTypeToDescriptor.put(descriptor.getType().toAnnotationString(), descriptor);
   }
 
   boolean isExtern(String name) {
@@ -95,12 +89,11 @@ class DocRegistry {
 
   void addType(Descriptor descriptor) {
     types.put(descriptor.getFullName(), descriptor);
-    jsTypeToDescriptor.put(descriptor.getType().toAnnotationString(), descriptor);
   }
 
   @Nullable
   Descriptor getType(JSType type) {
-    return jsTypeToDescriptor.get(type.toAnnotationString());
+    return types.get(getDisplayName(type));
   }
 
   boolean isKnownType(String name) {
@@ -142,9 +135,7 @@ class DocRegistry {
   }
 
   void addModule(ModuleDescriptor module) {
-    jsTypeToDescriptor.put(
-        module.getDescriptor().getType().toAnnotationString(),
-        module.getDescriptor());
+    types.put(module.getDescriptor().getFullName(), module.getDescriptor());
     modules.put(module.getName(), module);
   }
 
@@ -174,6 +165,7 @@ class DocRegistry {
    */
   @Nullable
   Descriptor resolve(String typeName, @Nullable ModuleDescriptor relativeTo) {
+    typeName = typeName.replaceAll("\\.?<.*>$", "");
     typeName = typeName.replace("#", ".prototype.");
     if (typeName.endsWith(".prototype")) {
       typeName = typeName.substring(0, typeName.length() - ".prototype".length());
@@ -242,5 +234,12 @@ class DocRegistry {
       }
     }
     return null;
+  }
+
+  private String getDisplayName(JSType type) {
+    if (isNullOrEmpty(type.getDisplayName())) {
+      return type.toString();
+    }
+    return type.getDisplayName();
   }
 }

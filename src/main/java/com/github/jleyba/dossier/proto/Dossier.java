@@ -41,6 +41,15 @@ public final class Dossier {
      * </pre>
      */
     PRIVATE(2, 2),
+    /**
+     * <code>PACKAGE = 3;</code>
+     *
+     * <pre>
+     * The type may only be used by subclasses, or other code in the same
+     * package.
+     * </pre>
+     */
+    PACKAGE(3, 3),
     ;
 
     /**
@@ -67,6 +76,15 @@ public final class Dossier {
      * </pre>
      */
     public static final int PRIVATE_VALUE = 2;
+    /**
+     * <code>PACKAGE = 3;</code>
+     *
+     * <pre>
+     * The type may only be used by subclasses, or other code in the same
+     * package.
+     * </pre>
+     */
+    public static final int PACKAGE_VALUE = 3;
 
 
     public final int getNumber() { return value; }
@@ -76,6 +94,7 @@ public final class Dossier {
         case 0: return PUBLIC;
         case 1: return PROTECTED;
         case 2: return PRIVATE;
+        case 3: return PACKAGE;
         default: return null;
       }
     }
@@ -26882,10 +26901,10 @@ public final class Dossier {
       "esources\022\031\n\004file\030\002 \002(\0132\013.SourceFile\022\024\n\014l" +
       "icense_path\030\003 \001(\t\"^\n\020JsTypeRenderSpec\022\025\n" +
       "\004type\030\001 \002(\0132\007.JsType\022\035\n\tresources\030\002 \002(\0132" +
-      "\n.Resources\022\024\n\014license_path\030\003 \001(\t*4\n\nVis" +
+      "\n.Resources\022\024\n\014license_path\030\003 \001(\t*A\n\nVis" +
       "ibility\022\n\n\006PUBLIC\020\000\022\r\n\tPROTECTED\020\001\022\013\n\007PR" +
-      "IVATE\020\002B!\n\037com.github.jleyba.dossier.pro" +
-      "to"
+      "IVATE\020\002\022\013\n\007PACKAGE\020\003B!\n\037com.github.jleyb" +
+      "a.dossier.proto"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
