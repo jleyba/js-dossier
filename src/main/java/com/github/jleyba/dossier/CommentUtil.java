@@ -327,7 +327,7 @@ class CommentUtil {
           return String.format("<a href=\"%s\">%s</a>", path, input);
         }
       });
-      output += ".&lt;" + Joiner.on(", ").join(templateNames) + "&gt;";
+      output += "&lt;" + Joiner.on(", ").join(templateNames) + "&gt;";
     }
 
     return output;
@@ -366,11 +366,7 @@ class CommentUtil {
             parts.add(formatTypeExpression(resolver, arg.getFirstChild()));
           }
         } else {
-          String type = formatTypeExpression(resolver, arg);
-          if (arg.getType() == Token.EQUALS) {
-            type += "=";
-          }
-          parts.add(type);
+          parts.add(formatTypeExpression(resolver, arg));
         }
       }
       current = current.getNext();
