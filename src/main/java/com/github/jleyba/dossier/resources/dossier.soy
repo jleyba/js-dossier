@@ -181,7 +181,13 @@
       All {if $type.isInterface}extended{else}implemented{/if} interfaces:
       <dd>
       {foreach $interface in $type.implementedType}
-        <code><a href="{$interface.href}">{$interface.text}</a></code>
+        <code>
+          {if $interface.href}
+            <a href="{$interface.href}">{$interface.text}</a>
+          {else}
+            {$interface.text}
+          {/if}
+        </code>
         {if not isLast($interface)},{sp}{/if}
       {/foreach}
     </dl>

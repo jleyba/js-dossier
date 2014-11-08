@@ -304,6 +304,26 @@ public class RendererTest {
   }
 
   @Test
+  public void printInterfaces_missingHref() {
+    Dossier.JsType type = Dossier.JsType.newBuilder()
+        .setName("name")
+        .setSource("source")
+        .setDescription(parseComment("description"))
+        .setNested(Dossier.JsType.NestedTypes.getDefaultInstance())
+        .setIsInterface(true)
+        .addImplementedType(Dossier.TypeLink.newBuilder()
+            .setHref("")
+            .setText("Hello"))
+        .build();
+
+    assertThat(render("dossier.soy.printInterfaces", "type", type),
+        isHtml(
+            "<dl><dt>All extended interfaces:<dd>",
+            "<code>Hello</code>",
+            "</dl>"));
+  }
+
+  @Test
   public void renderTypeHeader_simpleModule() {
     Dossier.JsType type = Dossier.JsType.newBuilder()
         .setName("Foo")
