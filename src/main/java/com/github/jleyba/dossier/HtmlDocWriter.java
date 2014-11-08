@@ -104,6 +104,7 @@ class HtmlDocWriter implements DocWriter {
   @Override
   public void generateDocs(final JSTypeRegistry registry) throws IOException {
     sortedTypes = FluentIterable.from(docRegistry.getTypes())
+        .filter(isNotModule())
         .toSortedList(DescriptorNameComparator.INSTANCE);
     sortedFiles = FluentIterable.from(concat(config.getSources(), config.getModules()))
         .toSortedList(PathComparator.INSTANCE);
@@ -859,6 +860,16 @@ class HtmlDocWriter implements DocWriter {
           }
         }
         return true;
+      }
+    };
+  }
+
+  private static Predicate<Descriptor> isNotModule() {
+    return new Predicate<Descriptor>() {
+      @Override
+      public boolean apply(@Nullable Descriptor input) {
+        return input != null
+            && !input.getModule().isPresent();
       }
     };
   }

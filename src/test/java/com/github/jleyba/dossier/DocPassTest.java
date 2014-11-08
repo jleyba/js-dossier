@@ -1,14 +1,16 @@
 package com.github.jleyba.dossier;
 
 import static com.github.jleyba.dossier.CompilerUtil.createSourceFile;
-import static com.google.common.collect.Iterables.get;
 import static com.google.common.collect.Iterables.getOnlyElement;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
+import com.google.common.base.Predicate;
+import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -25,6 +27,8 @@ import java.io.IOException;
 import java.nio.file.FileSystem;
 import java.nio.file.Path;
 import java.util.List;
+
+import javax.annotation.Nullable;
 
 /**
  * Tests for {@link DocPass}.
@@ -287,6 +291,31 @@ public class DocPassTest {
     assertConstructor(descriptors.get(1));
   }
 
+  @Test
+  public void documentsFunctionExportedByCommonJsModule() {
+    createCompiler(ImmutableList.of(path("module.js")));
+    util.compile(path("module.js"),
+        "/**",
+        " * @param {string} name a name.",
+        " * @return {string} a greeting.",
+        " */",
+        "exports.greet = function(name) { return 'hello, ' + name; };");
+
+    ModuleDescriptor module = getOnlyElement(docRegistry.getModules());
+
+    Descriptor greet = getOnlyElement(module.getExportedProperties());
+    assertEquals("greet", greet.getFullName());
+    assertTrue(greet.isFunction());
+
+    ArgDescriptor arg = getOnlyElement(greet.getArgs());
+    assertEquals("name", arg.getName());
+    assertEquals("a name.", arg.getDescription());
+
+    JsDoc jsdoc = greet.getJsDoc();
+    assertNotNull(jsdoc);
+    assertEquals("a greeting.", jsdoc.getReturnDescription());
+  }
+
   private void assertArg(ArgDescriptor arg, String name, String description) {
     assertEquals(name, arg.getName());
     assertEquals(description, arg.getDescription());
@@ -294,6 +323,30 @@ public class DocPassTest {
 
   private Path path(String first, String... remaining) {
     return fs.getPath(first, remaining);
+  }
+
+  private void createCompiler(Iterable<Path> modules) {
+    DossierCompiler compiler = new DossierCompiler(System.err, modules);
+    CompilerOptions options = Main.createOptions(fs, compiler, docRegistry);
+
+    util = new CompilerUtil(compiler, options);
+  }
+
+  private List<String> getGlobalTypes() {
+    return FluentIterable.from(docRegistry.getTypes())
+        .filter(new Predicate<Descriptor>() {
+          @Override
+          public boolean apply(Descriptor input) {
+            return docRegistry.isExtern(input.getFullName());
+          }
+        })
+        .transform(new Function<Descriptor, String>() {
+          @Override
+          public String apply(Descriptor input) {
+            return input.getFullName();
+          }
+        })
+        .toList();
   }
 
   private static void assertConstructor(Descriptor descriptor) {

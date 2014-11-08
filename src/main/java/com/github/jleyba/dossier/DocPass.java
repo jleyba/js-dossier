@@ -173,15 +173,7 @@ class DocPass  implements CompilerPass {
         ModuleDescriptor moduleDescriptor = null;
         Descriptor descriptor = new Descriptor(name, var.getNameNode(), type, info);
 
-        // We only want to document the exported API of each module, so short-circuit the
-        // object graph traversal here.
         if (moduleRegistry.hasModuleNamed(var.getName())) {
-          name += ".exports";
-          ObjectType obj = ObjectType.cast(type);
-          type = checkNotNull(obj.getPropertyType("exports"),
-              "Lost type info for module: %s", var.getName());
-          info = obj.getOwnPropertyJSDocInfo("exports");
-          descriptor = new Descriptor(name, obj.getPropertyNode("exports"), type, info);
           moduleDescriptor = new ModuleDescriptor(
               descriptor, moduleRegistry.getModuleNamed(var.getName()));
           docRegistry.addModule(moduleDescriptor);
@@ -220,7 +212,8 @@ class DocPass  implements CompilerPass {
           propInfo = propType.getJSDocInfo();
         }
 
-        if (registry.hasNamespace(propName)
+        if (exportingApi
+            || registry.hasNamespace(propName)
             || isDocumentableType(propInfo)
             || isDocumentableType(propType)
             || isProvidedSymbol(propName)) {
