@@ -68,7 +68,7 @@ public class CompilerUtil {
       errors.add("Compiler warnings");
       appendErrors(errors, result.warnings);
 
-      fail(Joiner.on("\n").join(errors));
+      throw new CompileFailureException(Joiner.on("\n").join(errors));
     }
   }
 
@@ -83,5 +83,12 @@ public class CompilerUtil {
 
   public static SourceFile createSourceFile(Path path, String... lines) {
     return SourceFile.fromCode(path.toString(), Joiner.on("\n").join(lines));
+  }
+
+  public static class CompileFailureException extends RuntimeException {
+
+    public CompileFailureException(String message) {
+      super(message);
+    }
   }
 }

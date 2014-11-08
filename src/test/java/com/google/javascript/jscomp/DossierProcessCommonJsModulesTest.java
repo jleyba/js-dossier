@@ -4,6 +4,7 @@ import static com.github.jleyba.dossier.CompilerUtil.createSourceFile;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -762,6 +763,107 @@ public class DossierProcessCommonJsModulesTest {
         "function createCallback() {",
         " return function(y) { this.doIt().x = y; };",
         "}");
+  }
+
+  @Test
+  public void multipleModuleExportAssignmentsAreNotPermitted() {
+    CompilerUtil util = createCompiler(path("module.js"));
+
+    try {
+      util.compile(path("module.js"),
+          "module.exports = 1;",
+          "module.exports = 2;");
+      fail();
+    } catch (CompilerUtil.CompileFailureException expected) {
+      assertTrue(expected.getMessage(),
+          expected.getMessage().contains(
+              "Multiple assignments to module.exports are not permitted"));
+    }
+  }
+
+  @Test
+  public void moduleExportAssignmentMustBeOnlyModuleExportReference() {
+    CompilerUtil util = createCompiler(path("module.js"));
+
+    try {
+      util.compile(path("module.js"),
+          "module.exports.x = 1234;",
+          "module.exports = 1;");
+      fail();
+    } catch (CompilerUtil.CompileFailureException expected) {
+      assertTrue(expected.getMessage(), expected.getMessage().contains(
+          "module.exports assignment must be only module.export reference module.js"));
+    }
+  }
+
+  @Test
+  public void rewritesModuleExportAssignments() {
+    CompilerUtil util = createCompiler(path("module.js"));
+
+    util.compile(path("module.js"), "module.exports = 1234;");
+
+    assertEquals(
+        "var dossier$$module__module = 1234;",
+        util.toSource().trim());
+  }
+
+  @Test
+  public void ignoresLocalModuleExportReferences() {
+    CompilerUtil util = createCompiler(path("module.js"));
+
+    util.compile(path("module.js"),
+        "function x() {",
+        "  var module = {};",
+        "  module.exports = 1234;",
+        "}",
+        "module.exports = {};");
+
+    assertEquals(
+        lines(
+            "var $jscomp = {};",
+            "$jscomp.scope = {};",
+            "$jscomp.scope.x = function() {",
+            "  var module = {};",
+            "  module.exports = 1234;",
+            "};",
+            "var dossier$$module__module = {};"),
+        util.toSource().trim());
+  }
+
+  @Test
+  public void ignoresModuleVarReferencesWhenDefinedAsTopLevelOfModule() {
+    CompilerUtil util = createCompiler(path("module.js"));
+
+    util.compile(path("module.js"),
+        "var module = {};",
+        "module.exports = {};",
+        "module.exports.x = function() {};");
+
+    assertEquals(
+        lines(
+            "var $jscomp = {};",
+            "$jscomp.scope = {};",
+            "var dossier$$module__module = {};",
+            "$jscomp.scope.module = {};",
+            "$jscomp.scope.module.exports = {};",
+            "$jscomp.scope.module.exports.x = function() {",
+            "};"),
+        util.toSource().trim());
+  }
+
+  @Test
+  public void rewritesModuleExportReferences() {
+    CompilerUtil util = createCompiler(path("module.js"));
+
+    util.compile(path("module.js"),
+        "module.exports.x = function() {};");
+
+    assertEquals(
+        lines(
+            "var dossier$$module__module = {};",
+            "dossier$$module__module.x = function() {",
+            "};"),
+        util.toSource().trim());
   }
 
   private static CompilerUtil createCompiler(final Path... commonJsModules) {

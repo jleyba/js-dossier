@@ -316,6 +316,68 @@ public class DocPassTest {
     assertEquals("a greeting.", jsdoc.getReturnDescription());
   }
 
+  @Test
+  public void documentsTypesAfterModuleExportsAssignment_assignedToFunction() {
+    createCompiler(ImmutableList.of(path("module.js")));
+    util.compile(path("module.js"),
+        "/**",
+        " * @param {string} name a name.",
+        " * @return {string} a greeting.",
+        " */",
+        "module.exports = function(name) { return 'hello, ' + name; };");
+
+    ModuleDescriptor module = getOnlyElement(docRegistry.getModules());
+    Descriptor descriptor = module.getDescriptor();
+    assertTrue(descriptor.isFunction());
+
+    ArgDescriptor arg = getOnlyElement(descriptor.getArgs());
+    assertEquals("name", arg.getName());
+    assertEquals("a name.", arg.getDescription());
+
+    JsDoc jsdoc = descriptor.getJsDoc();
+    assertNotNull(jsdoc);
+    assertEquals("a greeting.", jsdoc.getReturnDescription());
+  }
+
+  @Test
+  public void documentsTypesAfterModuleExportsAssignment_assignedToFunctionVar() {
+    createCompiler(ImmutableList.of(path("module.js")));
+    util.compile(path("module.js"),
+        "/**",
+        " * @param {string} name a name.",
+        " * @return {string} a greeting.",
+        " */",
+        "var greet = function(name) { return 'hello, ' + name; };",
+        "",
+        "/**",
+        " * A number.",
+        " * @type {number}",
+        " */",
+        "greet.x = 1234;",
+        "",
+        "module.exports = greet;");
+
+    ModuleDescriptor module = getOnlyElement(docRegistry.getModules());
+
+    Descriptor descriptor = module.getDescriptor();
+    assertTrue(descriptor.isFunction());
+
+    ArgDescriptor arg = getOnlyElement(descriptor.getArgs());
+    assertEquals("name", arg.getName());
+    assertEquals("a name.", arg.getDescription());
+
+    JsDoc jsdoc = descriptor.getJsDoc();
+    assertNotNull(jsdoc);
+    assertEquals("a greeting.", jsdoc.getReturnDescription());
+
+    Descriptor x = getOnlyElement(descriptor.getProperties());
+    assertEquals("dossier$$module__module.x", x.getFullName());
+
+    jsdoc = x.getJsDoc();
+    assertNotNull(jsdoc);
+    assertEquals("A number.", jsdoc.getBlockComment());
+  }
+
   private void assertArg(ArgDescriptor arg, String name, String description) {
     assertEquals(name, arg.getName());
     assertEquals(description, arg.getDescription());

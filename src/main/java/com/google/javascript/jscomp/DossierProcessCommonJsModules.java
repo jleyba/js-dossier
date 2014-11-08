@@ -18,8 +18,10 @@ import com.google.javascript.rhino.jstype.JSType;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Nullable;
@@ -63,6 +65,25 @@ import javax.annotation.Nullable;
  */
 class DossierProcessCommonJsModules implements CompilerPass {
 
+  // NB: The following errors are forbid situations that complicate type checking.
+
+  /**
+   * Error reported when an assignment to module.exports is not the only reference
+   * to module.exports.
+   */
+  private static DiagnosticType INVALID_MODULE_EXPORTS_REFERENCE =
+      DiagnosticType.error(
+          "DOSSIER_INVALID_MODULE_EXPORTS_REFERENCE",
+          "module.exports assignment must be only module.export reference");
+
+  /**
+   * Reported when there are multiple assignments to module.exports.
+   */
+  private static DiagnosticType MULTIPLE_ASSIGNMENTS_TO_MODULE_EXPORTS =
+      DiagnosticType.error(
+          "DOSSIER_INVALID_MODULE_EXPORTS_ASSIGNMENT",
+          "Multiple assignments to module.exports are not permitted");
+
   private final AbstractCompiler compiler;
   private final DossierModuleRegistry moduleRegistry;
 
@@ -94,6 +115,7 @@ class DossierProcessCommonJsModules implements CompilerPass {
   private class CommonJsModuleCallback implements NodeTraversal.Callback {
 
     private final Map<String, String> typeAliases = new HashMap<>();
+    private List<Node> moduleExportRefs = new ArrayList<>();
 
     @Override
     public boolean shouldTraverse(NodeTraversal t, Node n, Node parent) {
@@ -118,15 +140,16 @@ class DossierProcessCommonJsModules implements CompilerPass {
 
       if (n.isCall()
           && n.getChildCount() == 2
-          && "require".equals(n.getFirstChild().getQualifiedName())
+          && n.getFirstChild().matchesQualifiedName("require")
           && n.getChildAtIndex(1).isString()) {
         visitRequireCall(t, n, parent);
       }
 
-      if (n.isGetProp() &&
-          n.getFirstChild().isName() &&
-          n.getFirstChild().getQualifiedName().equals("exports")) {
-        changeName(n.getFirstChild(), currentModule.getVarName());
+      if (n.isGetProp()
+          && "module.exports".equals(n.getQualifiedName())) {
+        if (t.getScope().getVar("module") == null) {
+          moduleExportRefs.add(n);
+        }
       }
     }
 
@@ -134,6 +157,8 @@ class DossierProcessCommonJsModules implements CompilerPass {
       if (currentModule == null) {
         return;
       }
+
+      processModuleExportRefs(t);
 
       Node googModule = exprResult(call(
           getprop(
@@ -151,6 +176,41 @@ class DossierProcessCommonJsModules implements CompilerPass {
       currentModule = null;
 
       t.getCompiler().reportCodeChange();
+    }
+
+    private void processModuleExportRefs(NodeTraversal t) {
+      Node moduleExportsAssignment = null;
+      Node nonAssignmentModuleExport = null;
+      for (Node ref : moduleExportRefs) {
+        if (isTopLevelAssignLhs(ref)) {
+          if (moduleExportsAssignment != null) {
+            t.report(ref, MULTIPLE_ASSIGNMENTS_TO_MODULE_EXPORTS);
+            return;
+          } else {
+            moduleExportsAssignment = ref;
+          }
+        } else {
+          nonAssignmentModuleExport = ref;
+        }
+      }
+
+      if (moduleExportsAssignment != null && nonAssignmentModuleExport != null) {
+        t.report(nonAssignmentModuleExport, INVALID_MODULE_EXPORTS_REFERENCE);
+        return;
+      }
+
+      for (Node ref : moduleExportRefs) {
+        ref.getParent().replaceChild(
+            ref,
+            name("exports").srcrefTree(ref));
+      }
+    }
+
+    private boolean isTopLevelAssignLhs(Node n) {
+      Node parent = n.getParent();
+      return parent.isAssign() && n == parent.getFirstChild() &&
+          parent.getParent().isExprResult() &&
+          parent.getParent().getParent().isScript();
     }
 
     private void changeName(Node node, String newName) {
