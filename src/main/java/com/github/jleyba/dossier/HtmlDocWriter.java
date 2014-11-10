@@ -32,6 +32,7 @@ import static com.github.jleyba.dossier.proto.Dossier.Resources;
 import static com.github.jleyba.dossier.proto.Dossier.SourceFile;
 import static com.github.jleyba.dossier.proto.Dossier.SourceFileRenderSpec;
 import static com.github.jleyba.dossier.proto.Dossier.TypeLink;
+import static com.google.common.base.MoreObjects.firstNonNull;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.base.Strings.nullToEmpty;
@@ -45,7 +46,6 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Charsets;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
-import com.google.common.base.Objects;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
@@ -452,7 +452,7 @@ class HtmlDocWriter implements DocWriter {
         Node node = info.getAssociatedNode();
         if (node.isVar() || node.isFunction()) {
           checkState(node.getFirstChild().isName());
-          typeName = Objects.firstNonNull(
+          typeName = firstNonNull(
               (String) node.getFirstChild().getProp(Node.ORIGINALNAME_PROP),
               typeName);
         }
@@ -574,7 +574,7 @@ class HtmlDocWriter implements DocWriter {
       }
     }
 
-    return Objects.firstNonNull(alias, descriptor);
+    return firstNonNull(alias, descriptor);
   }
 
   private JsType.NestedTypes.Builder getNestedTypeInfo(Iterable<Descriptor> properties) {
