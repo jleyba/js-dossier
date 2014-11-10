@@ -81,7 +81,7 @@ public class DocPassTest {
   @Test
   public void ignoresUndocumentedFunctions() {
     util.compile(path("foo/bar.js"), "function Foo() {}");
-    assertFalse(Iterables.isEmpty(docRegistry.getTypes()));
+    assertTrue(Iterables.isEmpty(docRegistry.getTypes()));
   }
 
   @Test
@@ -160,13 +160,7 @@ public class DocPassTest {
         "/** @type {!Function} */",
         "foo.baz = function() {};");
 
-    List<Descriptor> descriptors = getDescriptors();
-    assertEquals(
-        ImmutableList.of("foo", "foo.bar", "foo.baz"),
-        getNames(descriptors));
-    assertNamespace(descriptors.get(0));
-    assertNamespace(descriptors.get(1));
-    assertNamespace(descriptors.get(2));
+    assertTrue(getDescriptors().isEmpty());
   }
 
   @Test
@@ -176,9 +170,7 @@ public class DocPassTest {
         "/** @type {!Function} */",
         "var foo = Function;");
 
-    List<Descriptor> descriptors = getDescriptors();
-    assertEquals(ImmutableList.of("foo"), getNames(descriptors));
-    assertNamespace(descriptors.get(0));
+    assertTrue(getDescriptors().isEmpty());
   }
 
   @Test
@@ -248,27 +240,6 @@ public class DocPassTest {
     assertEquals(2, args.size());
     assertArg(args.get(0), "a", "is for apples.");
     assertArg(args.get(1), "b", "is for bananas.");
-  }
-
-  @Test
-  public void documentsClassDefinedInAnonymousFunction() {
-    util.compile(path("foo.js"),
-        "var foo = foo || {};",
-        "(function(foo) {",
-        "  /**",
-        "   * @param {string} a .",
-        "   * @param {string} b .",
-        "   */",
-        "  foo.bar = function(a, b) {};",
-        "})(foo);");
-
-    Descriptor descriptor = getOnlyElement(docRegistry.getTypes());
-    assertEquals("foo", descriptor.getFullName());
-    assertNamespace(descriptor);
-
-    descriptor = getOnlyElement(descriptor.getProperties());
-    assertEquals("foo.bar", descriptor.getFullName());
-    assertTrue(descriptor.isFunction());
   }
 
   @Test

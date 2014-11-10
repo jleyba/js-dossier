@@ -191,7 +191,11 @@ class DocPass  implements CompilerPass {
         return;
       }
 
-      if (module == null) {
+      if (module == null
+          && (descriptor.isConstructor()
+          || descriptor.isInterface()
+          || descriptor.isEnum()
+          || registry.hasNamespace(descriptor.getFullName()))) {
         docRegistry.addType(descriptor);
       }
 

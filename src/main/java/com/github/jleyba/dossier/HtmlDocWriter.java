@@ -122,7 +122,7 @@ class HtmlDocWriter implements DocWriter {
       if (descriptor.isEmptyNamespace()) {
         continue;
       }
-      generateDocs(descriptor, registry);
+      generateDocs(descriptor);
     }
 
     for (ModuleDescriptor descriptor : sortedModules) {
@@ -217,14 +217,17 @@ class HtmlDocWriter implements DocWriter {
     for (Descriptor property : module.getExportedProperties()) {
       // If the exported descriptor is an alias for another documented type, there is no
       // need to generate an additional set of docs as we can just link to the original.
-      if (property == resolveTypeAlias(property)) {
-        generateDocs(property, registry);
+      if (property == resolveTypeAlias(property)
+          && (property.isConstructor()
+          || property.isInterface()
+          || property.isEnum())) {
+        generateDocs(property);
       }
     }
     currentModule = null;
   }
 
-  private void generateDocs(Descriptor descriptor, JSTypeRegistry registry) throws IOException {
+  private void generateDocs(Descriptor descriptor) throws IOException {
     Path output = linker.getFilePath(descriptor);
     createDirectories(output.getParent());
 
