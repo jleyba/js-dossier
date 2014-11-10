@@ -28,17 +28,17 @@ import com.google.javascript.rhino.JSTypeExpression;
 import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.jstype.FunctionType;
 import com.google.javascript.rhino.jstype.JSType;
-import com.google.javascript.rhino.jstype.JSTypeRegistry;
 import com.google.javascript.rhino.jstype.ObjectType;
 import com.google.javascript.rhino.jstype.UnionType;
 
-import javax.annotation.Nullable;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+
+import javax.annotation.Nullable;
 
 public class Descriptor {
 
@@ -295,7 +295,7 @@ public class Descriptor {
    *
    * <p>The returned stack will be empty if this descriptor is not for a class.
    */
-  LinkedList<JSType> getAllTypes(JSTypeRegistry registry) {
+  LinkedList<JSType> getAllTypes(DocRegistry registry) {
     LinkedList<JSType> stack = new LinkedList<>();
     if (!isConstructor()) {
       return stack;
@@ -310,7 +310,7 @@ public class Descriptor {
    * Returns all of the interfaces that this type implements. The returned set will be empty if
    * this descriptor is not for a class.
    */
-  Set<JSType> getImplementedInterfaces(JSTypeRegistry registry) {
+  Set<JSType> getImplementedInterfaces(DocRegistry registry) {
     Set<JSType> interfaces = new HashSet<>();
     if (!isConstructor()) {
       return interfaces;
@@ -322,7 +322,7 @@ public class Descriptor {
       if (type != null && type.getJSDocInfo() != null) {
         JSDocInfo info = type.getJSDocInfo();
         for (JSTypeExpression expr : info.getImplementedInterfaces()) {
-          interfaces.add(expr.evaluate(null, registry));
+          interfaces.add(registry.evaluate(expr));
         }
       }
     }
@@ -334,7 +334,7 @@ public class Descriptor {
    * Returns the interfaces extended by this type. If this descriptor is not for an interface,
    * the returned set will be empty.
    */
-  Set<JSType> getExtendedInterfaces(JSTypeRegistry registry) {
+  Set<JSType> getExtendedInterfaces(DocRegistry registry) {
     if (!isInterface()) {
       return new HashSet<>();
     }
@@ -346,7 +346,7 @@ public class Descriptor {
    * an instance of class {@code X}, which extends {@code Y} and implements {@code Z},
    * {@code x} may be assigned to {@code X}, {@code Y}, or {@code Z}.
    */
-  List<JSType> getAssignableTypes(JSTypeRegistry registry) {
+  List<JSType> getAssignableTypes(DocRegistry registry) {
     if (isConstructor()) {
       return getAllTypes(registry);
     } else if (isInterface()) {
@@ -525,10 +525,10 @@ public class Descriptor {
     return false;
   }
 
-  private static Set<JSType> getExtendedInterfaces(JsDoc info, JSTypeRegistry registry) {
+  private static Set<JSType> getExtendedInterfaces(JsDoc info, DocRegistry registry) {
     Set<JSType> interfaces = new HashSet<>();
     for (JSTypeExpression expression : info.getExtendedInterfaces()) {
-      JSType type = expression.evaluate(null, registry);
+      JSType type = registry.evaluate(expression);
       if (interfaces.add(normalizeType(type))) {
         JSDocInfo docInfo = type.getJSDocInfo();
         if (docInfo != null) {
@@ -552,7 +552,7 @@ public class Descriptor {
   }
 
   @Nullable
-  private static JSType getBaseType(JSType type, JSTypeRegistry registry) {
+  private static JSType getBaseType(JSType type, DocRegistry registry) {
     JSDocInfo info = type.getJSDocInfo();
     if (info == null) {
       return null;
@@ -563,6 +563,6 @@ public class Descriptor {
       return null;
     }
 
-    return baseType.evaluate(null, registry);
+    return registry.evaluate(baseType);
   }
 }

@@ -1,6 +1,5 @@
 package com.github.jleyba.dossier;
 
-import static com.google.common.base.Preconditions.checkNotNull;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
@@ -35,9 +34,8 @@ public class JsDocTest {
 
   @Before
   public void setUp() {
-    docRegistry = new DocRegistry();
-
     DossierCompiler compiler = new DossierCompiler(System.err, ImmutableList.<Path>of());
+    docRegistry = new DocRegistry(compiler.getTypeRegistry());
     CompilerOptions options = Main.createOptions(Jimfs.newFileSystem(), compiler, docRegistry);
 
     util = new CompilerUtil(compiler, options);

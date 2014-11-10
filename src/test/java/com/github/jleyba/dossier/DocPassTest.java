@@ -28,8 +28,6 @@ import java.nio.file.FileSystem;
 import java.nio.file.Path;
 import java.util.List;
 
-import javax.annotation.Nullable;
-
 /**
  * Tests for {@link DocPass}.
  */
@@ -43,9 +41,9 @@ public class DocPassTest {
   @Before
   public void setUp() {
     fs = Jimfs.newFileSystem();
-    docRegistry = new DocRegistry();
 
     DossierCompiler compiler = new DossierCompiler(System.err, ImmutableList.<Path>of());
+    docRegistry = new DocRegistry(compiler.getTypeRegistry());
     CompilerOptions options = Main.createOptions(fs, compiler, docRegistry);
 
     util = new CompilerUtil(compiler, options);
@@ -54,7 +52,8 @@ public class DocPassTest {
   @Test
   public void recordsFileOverviewComments() throws IOException {
     SourceFile bar = createSourceFile(path("foo/bar.js"),
-        "/** @fileoverview This is a file overview",
+        "/** @" +
+            "fileoverview This is a file overview",
         " *     It is on multiple lines.",
         " *Here is a pre tag:",
         " *<pre>",

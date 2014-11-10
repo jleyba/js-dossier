@@ -13,7 +13,6 @@
 // limitations under the License.
 package com.github.jleyba.dossier;
 
-import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.collect.Iterables.transform;
 import static com.google.common.collect.Lists.newLinkedList;
 
@@ -50,7 +49,8 @@ import java.util.List;
 public class Main extends CommandLineRunner {
 
   private final Config config;
-  private final DocRegistry docRegistry = new DocRegistry();
+
+  private DocRegistry docRegistry;
 
   @VisibleForTesting
   Main(String[] args, PrintStream out, PrintStream err, Config config) {
@@ -67,7 +67,10 @@ public class Main extends CommandLineRunner {
   @SuppressWarnings("unchecked")
   protected CompilerOptions createOptions() {
     AbstractCompiler compiler = getCompiler();
-    checkState(compiler instanceof DossierCompiler, "Should never happen");
+    if (!(compiler instanceof DossierCompiler)) {
+      throw new AssertionError();
+    }
+    docRegistry = new DocRegistry(compiler.getTypeRegistry());
     return createOptions(config.getFileSystem(), (DossierCompiler) compiler, docRegistry);
   }
 

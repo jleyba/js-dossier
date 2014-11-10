@@ -188,11 +188,11 @@ class HtmlDocWriter implements DocWriter {
         .setDescription(getFileoverview(linker, module.getJsDoc()))
         .setNested(getNestedTypeInfo(module.getExportedProperties()))
         .addAllTypeDef(typeDefs)
-        .addAllExtendedType(getInheritedTypes(descriptor, registry))
-        .addAllImplementedType(getImplementedTypes(descriptor, registry));
+        .addAllExtendedType(getInheritedTypes(descriptor))
+        .addAllImplementedType(getImplementedTypes(descriptor));
 
     getStaticData(jsTypeBuilder, descriptor.getProperties());
-    getPrototypeData(jsTypeBuilder, descriptor, registry);
+    getPrototypeData(jsTypeBuilder, descriptor);
 
     if (module.getDescriptor().isDeprecated()) {
       jsTypeBuilder.setDeprecation(getDeprecation(module.getDescriptor()));
@@ -235,8 +235,8 @@ class HtmlDocWriter implements DocWriter {
         .setSource(nullToEmpty(linker.getSourcePath(descriptor)))
         .setDescription(getBlockDescription(linker, descriptor.getJsDoc()))
         .addAllTypeDef(getTypeDefInfo(descriptor.getProperties()))
-        .addAllExtendedType(getInheritedTypes(descriptor, registry))
-        .addAllImplementedType(getImplementedTypes(descriptor, registry))
+        .addAllExtendedType(getInheritedTypes(descriptor))
+        .addAllImplementedType(getImplementedTypes(descriptor))
         .setIsInterface(descriptor.isInterface());
 
     if (descriptor.getModule().isPresent()
@@ -247,7 +247,7 @@ class HtmlDocWriter implements DocWriter {
     }
 
     getStaticData(jsTypeBuilder, descriptor.getProperties());
-    getPrototypeData(jsTypeBuilder, descriptor, registry);
+    getPrototypeData(jsTypeBuilder, descriptor);
 
     if (descriptor.isDeprecated()) {
       jsTypeBuilder.setDeprecation(getDeprecation(descriptor));
@@ -391,13 +391,12 @@ class HtmlDocWriter implements DocWriter {
     }
   }
 
-  private List<TypeLink> getInheritedTypes(
-      Descriptor descriptor, JSTypeRegistry registry) {
+  private List<TypeLink> getInheritedTypes(Descriptor descriptor) {
     if (!descriptor.isConstructor()) {
       return ImmutableList.of();
     }
 
-    LinkedList<JSType> types = descriptor.getAllTypes(registry);
+    LinkedList<JSType> types = descriptor.getAllTypes(docRegistry);
     List<TypeLink> list = Lists.newArrayListWithExpectedSize(types.size());
     // Skip bottom of stack (type of this). Handled specially below.
     while (types.size() > 1) {
@@ -410,11 +409,10 @@ class HtmlDocWriter implements DocWriter {
     return list;
   }
 
-  private Iterable<TypeLink> getImplementedTypes(
-      Descriptor descriptor, JSTypeRegistry registry) {
+  private Iterable<TypeLink> getImplementedTypes(Descriptor descriptor) {
     Set<JSType> interfaces = descriptor.isInterface()
-        ? descriptor.getExtendedInterfaces(registry)
-        : descriptor.getImplementedInterfaces(registry);
+        ? descriptor.getExtendedInterfaces(docRegistry)
+        : descriptor.getImplementedInterfaces(docRegistry);
     return transform(Ordering.usingToString().sortedCopy(interfaces),
         new Function<JSType, TypeLink>() {
           @Override
@@ -625,15 +623,14 @@ class HtmlDocWriter implements DocWriter {
     return builder;
   }
 
-  private void getPrototypeData(
-      JsType.Builder jsTypeBuilder, Descriptor descriptor, JSTypeRegistry registry) {
+  private void getPrototypeData(JsType.Builder jsTypeBuilder, Descriptor descriptor) {
     if (!descriptor.isConstructor() && !descriptor.isInterface()) {
       return;
     }
 
     List<Descriptor> seen = new LinkedList<>();
     Iterable<JSType> assignableTypes =
-        Lists.reverse(descriptor.getAssignableTypes(registry));
+        Lists.reverse(descriptor.getAssignableTypes(docRegistry));
 
     for (JSType type : assignableTypes) {
       String assignableTypeName = getTypeName(type);

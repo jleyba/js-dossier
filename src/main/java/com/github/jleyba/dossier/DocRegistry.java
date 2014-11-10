@@ -19,7 +19,9 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
+import com.google.javascript.rhino.JSTypeExpression;
 import com.google.javascript.rhino.jstype.JSType;
+import com.google.javascript.rhino.jstype.JSTypeRegistry;
 
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -55,6 +57,16 @@ class DocRegistry {
    * @see com.google.javascript.jscomp.DossierModule
    */
   private final Map<String, ModuleDescriptor> modules = new HashMap<>();
+
+  private final JSTypeRegistry typeRegistry;
+
+  DocRegistry(JSTypeRegistry typeRegistry) {
+    this.typeRegistry = typeRegistry;
+  }
+
+  JSType evaluate(JSTypeExpression expression) {
+    return expression.evaluate(null, typeRegistry);
+  }
 
   void addFileOverview(Path path, @Nullable String overview) {
     fileOverviews.put(checkNotNull(path, "null path"), Strings.nullToEmpty(overview));

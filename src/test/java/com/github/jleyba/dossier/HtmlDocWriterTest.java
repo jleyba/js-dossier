@@ -5,22 +5,16 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.readAllBytes;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import com.google.common.base.Joiner;
-import com.google.common.base.MoreObjects;
-import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.jimfs.Jimfs;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import com.google.gson.TypeAdapter;
-import com.google.gson.reflect.TypeToken;
 import com.google.javascript.jscomp.CompilerOptions;
 import com.google.javascript.jscomp.DossierCompiler;
 import com.google.javascript.jscomp.SourceFile;
@@ -34,8 +28,6 @@ import java.io.IOException;
 import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
-import java.util.Objects;
 
 /**
  * Tests for {@link HtmlDocWriter}.
@@ -105,7 +97,8 @@ public class HtmlDocWriterTest {
                 .put("types", new JsonArray())
                 .put("href", "module_work_module.html"))
             .build(),
-        json.getAsJsonArray("modules"));
+        json.getAsJsonArray("modules")
+    );
   }
 
   private JsonObject readTypesJs() throws IOException {
@@ -163,7 +156,7 @@ public class HtmlDocWriterTest {
 
     void generateDocs() throws IOException {
       DossierCompiler compiler = new DossierCompiler(System.err, modulePaths.build());
-      DocRegistry docRegistry = new DocRegistry();
+      DocRegistry docRegistry = new DocRegistry(compiler.getTypeRegistry());
       CompilerOptions options = Main.createOptions(fs, compiler, docRegistry);
       CompilerUtil util = new CompilerUtil(compiler, options);
 
