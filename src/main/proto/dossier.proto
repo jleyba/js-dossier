@@ -219,6 +219,9 @@ message JsType {
 
   // Designates this type as the exported API of a module.
   optional bool is_module = 21;
+
+  // Link to the module this type belongs to.
+  optional TypeLink module = 22;
 }
 
 

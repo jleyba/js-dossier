@@ -454,6 +454,36 @@ public class RendererTest {
   }
 
   @Test
+  public void renderTypeHeader_classInModule() {
+    Dossier.JsType type = Dossier.JsType.newBuilder()
+        .setName("Foo")
+        .setSource("source")
+        .setDescription(parseComment("description"))
+        .setNested(Dossier.JsType.NestedTypes.getDefaultInstance())
+        .setMainFunction(Dossier.Function.newBuilder()
+            .setIsConstructor(true)
+            .setBase(Dossier.BaseProperty.newBuilder()
+                .setName("ctor-name")
+                .setSource("ctor-source")
+                .setDescription(parseComment("ctor-description"))))
+        .setModule(Dossier.TypeLink.newBuilder()
+            .setText("path/to/module")
+            .setHref("module-source"))
+        .build();
+
+    Document document = renderDocument("dossier.soy.typeHeader", "type", type);
+
+    assertThat(querySelector(document, "header").toString(), isHtml(
+        "<header>",
+        "<p><b>Module</b> ",
+        "<code><a href=\"module-source\">path/to/module</a></code>",
+        "</p>",
+        "<h1>Class Foo</h1>",
+        "<a class=\"source\" href=\"source\">code &raquo;</a>",
+        "</header>"));
+  }
+
+  @Test
   public void renderTypeHeader_complexClass() {
     Dossier.JsType type = Dossier.JsType.newBuilder()
         .setName("Foo")

@@ -229,11 +229,6 @@ class HtmlDocWriter implements DocWriter {
     createDirectories(output.getParent());
 
     String name = descriptor.getFullName();
-    if (descriptor.getModule().isPresent()
-        && !linker.getDisplayName(descriptor.getModule().get()).equals(name)) {
-      name = linker.getDisplayName(descriptor.getModule().get()) + "." + name;
-    }
-
     JsType.Builder jsTypeBuilder = JsType.newBuilder()
         .setName(name)
         .setNested(getNestedTypeInfo(descriptor.getProperties()))
@@ -243,6 +238,13 @@ class HtmlDocWriter implements DocWriter {
         .addAllExtendedType(getInheritedTypes(descriptor, registry))
         .addAllImplementedType(getImplementedTypes(descriptor, registry))
         .setIsInterface(descriptor.isInterface());
+
+    if (descriptor.getModule().isPresent()
+        && !linker.getDisplayName(descriptor.getModule().get()).equals(name)) {
+      jsTypeBuilder.setModule(TypeLink.newBuilder()
+          .setText(linker.getDisplayName(descriptor.getModule().get()))
+          .setHref(linker.getLink(descriptor.getModule().get().getDescriptor())));
+    }
 
     getStaticData(jsTypeBuilder, descriptor.getProperties());
     getPrototypeData(jsTypeBuilder, descriptor, registry);

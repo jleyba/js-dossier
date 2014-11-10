@@ -221,6 +221,18 @@
  */
 {template .typeHeader}
   <header>
+    {if $type.module}
+      <p>
+        <b>Module</b>{sp}
+        <code>
+          {if $type.module.href}
+            <a href="{$type.module.href}">{$type.module.text}</a>
+          {else}
+            {$type.module.text}
+          {/if}
+        </code>
+      </p>
+    {/if}
     <h1>
       {if $type.isModule}
         Module {$type.name}
