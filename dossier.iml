@@ -216,11 +216,11 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/third_party/java/protobuf/protobuf-java-2.5.0.jar!/" />
+          <root url="jar://$MODULE_DIR$/third_party/java/protobuf/protobuf-java-2.6.1.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$MODULE_DIR$/third_party/java/protobuf/protobuf-java-2.5.0-src.jar!/" />
+          <root url="jar://$MODULE_DIR$/third_party/java/protobuf/protobuf-java-2.6.1-src.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>

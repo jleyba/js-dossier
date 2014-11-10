@@ -146,10 +146,10 @@ public final class Dossier {
     // @@protoc_insertion_point(enum_scope:Visibility)
   }
 
-  public interface SourceFileOrBuilder
-      extends com.google.protobuf.MessageOrBuilder {
+  public interface SourceFileOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:SourceFile)
+      com.google.protobuf.MessageOrBuilder {
 
-    // required string base_name = 1;
     /**
      * <code>required string base_name = 1;</code>
      *
@@ -176,7 +176,6 @@ public final class Dossier {
     com.google.protobuf.ByteString
         getBaseNameBytes();
 
-    // required string path = 2;
     /**
      * <code>required string path = 2;</code>
      *
@@ -203,7 +202,6 @@ public final class Dossier {
     com.google.protobuf.ByteString
         getPathBytes();
 
-    // repeated string lines = 3;
     /**
      * <code>repeated string lines = 3;</code>
      *
@@ -211,8 +209,8 @@ public final class Dossier {
      * The individual lines in the file. Each line should not be HTML escaped.
      * </pre>
      */
-    java.util.List<java.lang.String>
-    getLinesList();
+    com.google.protobuf.ProtocolStringList
+        getLinesList();
     /**
      * <code>repeated string lines = 3;</code>
      *
@@ -247,8 +245,9 @@ public final class Dossier {
    * </pre>
    */
   public static final class SourceFile extends
-      com.google.protobuf.GeneratedMessage
-      implements SourceFileOrBuilder {
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:SourceFile)
+      SourceFileOrBuilder {
     // Use SourceFile.newBuilder() to construct.
     private SourceFile(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
@@ -295,21 +294,24 @@ public final class Dossier {
               break;
             }
             case 10: {
+              com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000001;
-              baseName_ = input.readBytes();
+              baseName_ = bs;
               break;
             }
             case 18: {
+              com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000002;
-              path_ = input.readBytes();
+              path_ = bs;
               break;
             }
             case 26: {
+              com.google.protobuf.ByteString bs = input.readBytes();
               if (!((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
                 lines_ = new com.google.protobuf.LazyStringArrayList();
                 mutable_bitField0_ |= 0x00000004;
               }
-              lines_.add(input.readBytes());
+              lines_.add(bs);
               break;
             }
           }
@@ -321,7 +323,7 @@ public final class Dossier {
             e.getMessage()).setUnfinishedMessage(this);
       } finally {
         if (((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
-          lines_ = new com.google.protobuf.UnmodifiableLazyStringList(lines_);
+          lines_ = lines_.getUnmodifiableView();
         }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
@@ -355,7 +357,6 @@ public final class Dossier {
     }
 
     private int bitField0_;
-    // required string base_name = 1;
     public static final int BASE_NAME_FIELD_NUMBER = 1;
     private java.lang.Object baseName_;
     /**
@@ -410,7 +411,6 @@ public final class Dossier {
       }
     }
 
-    // required string path = 2;
     public static final int PATH_FIELD_NUMBER = 2;
     private java.lang.Object path_;
     /**
@@ -465,7 +465,6 @@ public final class Dossier {
       }
     }
 
-    // repeated string lines = 3;
     public static final int LINES_FIELD_NUMBER = 3;
     private com.google.protobuf.LazyStringList lines_;
     /**
@@ -475,7 +474,7 @@ public final class Dossier {
      * The individual lines in the file. Each line should not be HTML escaped.
      * </pre>
      */
-    public java.util.List<java.lang.String>
+    public com.google.protobuf.ProtocolStringList
         getLinesList() {
       return lines_;
     }
@@ -519,7 +518,8 @@ public final class Dossier {
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized != -1) return isInitialized == 1;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
 
       if (!hasBaseName()) {
         memoizedIsInitialized = 0;
@@ -657,8 +657,9 @@ public final class Dossier {
      * </pre>
      */
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder>
-       implements com.github.jleyba.dossier.proto.Dossier.SourceFileOrBuilder {
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:SourceFile)
+        com.github.jleyba.dossier.proto.Dossier.SourceFileOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
         return com.github.jleyba.dossier.proto.Dossier.internal_static_SourceFile_descriptor;
@@ -734,8 +735,7 @@ public final class Dossier {
         }
         result.path_ = path_;
         if (((bitField0_ & 0x00000004) == 0x00000004)) {
-          lines_ = new com.google.protobuf.UnmodifiableLazyStringList(
-              lines_);
+          lines_ = lines_.getUnmodifiableView();
           bitField0_ = (bitField0_ & ~0x00000004);
         }
         result.lines_ = lines_;
@@ -810,7 +810,6 @@ public final class Dossier {
       }
       private int bitField0_;
 
-      // required string base_name = 1;
       private java.lang.Object baseName_ = "";
       /**
        * <code>required string base_name = 1;</code>
@@ -832,9 +831,12 @@ public final class Dossier {
       public java.lang.String getBaseName() {
         java.lang.Object ref = baseName_;
         if (!(ref instanceof java.lang.String)) {
-          java.lang.String s = ((com.google.protobuf.ByteString) ref)
-              .toStringUtf8();
-          baseName_ = s;
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            baseName_ = s;
+          }
           return s;
         } else {
           return (java.lang.String) ref;
@@ -908,7 +910,6 @@ public final class Dossier {
         return this;
       }
 
-      // required string path = 2;
       private java.lang.Object path_ = "";
       /**
        * <code>required string path = 2;</code>
@@ -930,9 +931,12 @@ public final class Dossier {
       public java.lang.String getPath() {
         java.lang.Object ref = path_;
         if (!(ref instanceof java.lang.String)) {
-          java.lang.String s = ((com.google.protobuf.ByteString) ref)
-              .toStringUtf8();
-          path_ = s;
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            path_ = s;
+          }
           return s;
         } else {
           return (java.lang.String) ref;
@@ -1006,7 +1010,6 @@ public final class Dossier {
         return this;
       }
 
-      // repeated string lines = 3;
       private com.google.protobuf.LazyStringList lines_ = com.google.protobuf.LazyStringArrayList.EMPTY;
       private void ensureLinesIsMutable() {
         if (!((bitField0_ & 0x00000004) == 0x00000004)) {
@@ -1021,9 +1024,9 @@ public final class Dossier {
        * The individual lines in the file. Each line should not be HTML escaped.
        * </pre>
        */
-      public java.util.List<java.lang.String>
+      public com.google.protobuf.ProtocolStringList
           getLinesList() {
-        return java.util.Collections.unmodifiableList(lines_);
+        return lines_.getUnmodifiableView();
       }
       /**
        * <code>repeated string lines = 3;</code>
@@ -1100,7 +1103,8 @@ public final class Dossier {
       public Builder addAllLines(
           java.lang.Iterable<java.lang.String> values) {
         ensureLinesIsMutable();
-        super.addAll(values, lines_);
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, lines_);
         onChanged();
         return this;
       }
@@ -1146,10 +1150,10 @@ public final class Dossier {
     // @@protoc_insertion_point(class_scope:SourceFile)
   }
 
-  public interface ResourcesOrBuilder
-      extends com.google.protobuf.MessageOrBuilder {
+  public interface ResourcesOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Resources)
+      com.google.protobuf.MessageOrBuilder {
 
-    // repeated string css = 1;
     /**
      * <code>repeated string css = 1;</code>
      *
@@ -1157,8 +1161,8 @@ public final class Dossier {
      * Paths to stylesheets to link to in the generated page.
      * </pre>
      */
-    java.util.List<java.lang.String>
-    getCssList();
+    com.google.protobuf.ProtocolStringList
+        getCssList();
     /**
      * <code>repeated string css = 1;</code>
      *
@@ -1185,7 +1189,6 @@ public final class Dossier {
     com.google.protobuf.ByteString
         getCssBytes(int index);
 
-    // repeated string script = 2;
     /**
      * <code>repeated string script = 2;</code>
      *
@@ -1193,8 +1196,8 @@ public final class Dossier {
      * Paths to JavaScript files to include in the generated page.
      * </pre>
      */
-    java.util.List<java.lang.String>
-    getScriptList();
+    com.google.protobuf.ProtocolStringList
+        getScriptList();
     /**
      * <code>repeated string script = 2;</code>
      *
@@ -1229,8 +1232,9 @@ public final class Dossier {
    * </pre>
    */
   public static final class Resources extends
-      com.google.protobuf.GeneratedMessage
-      implements ResourcesOrBuilder {
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:Resources)
+      ResourcesOrBuilder {
     // Use Resources.newBuilder() to construct.
     private Resources(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
@@ -1277,19 +1281,21 @@ public final class Dossier {
               break;
             }
             case 10: {
+              com.google.protobuf.ByteString bs = input.readBytes();
               if (!((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
                 css_ = new com.google.protobuf.LazyStringArrayList();
                 mutable_bitField0_ |= 0x00000001;
               }
-              css_.add(input.readBytes());
+              css_.add(bs);
               break;
             }
             case 18: {
+              com.google.protobuf.ByteString bs = input.readBytes();
               if (!((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
                 script_ = new com.google.protobuf.LazyStringArrayList();
                 mutable_bitField0_ |= 0x00000002;
               }
-              script_.add(input.readBytes());
+              script_.add(bs);
               break;
             }
           }
@@ -1301,10 +1307,10 @@ public final class Dossier {
             e.getMessage()).setUnfinishedMessage(this);
       } finally {
         if (((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
-          css_ = new com.google.protobuf.UnmodifiableLazyStringList(css_);
+          css_ = css_.getUnmodifiableView();
         }
         if (((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
-          script_ = new com.google.protobuf.UnmodifiableLazyStringList(script_);
+          script_ = script_.getUnmodifiableView();
         }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
@@ -1337,7 +1343,6 @@ public final class Dossier {
       return PARSER;
     }
 
-    // repeated string css = 1;
     public static final int CSS_FIELD_NUMBER = 1;
     private com.google.protobuf.LazyStringList css_;
     /**
@@ -1347,7 +1352,7 @@ public final class Dossier {
      * Paths to stylesheets to link to in the generated page.
      * </pre>
      */
-    public java.util.List<java.lang.String>
+    public com.google.protobuf.ProtocolStringList
         getCssList() {
       return css_;
     }
@@ -1383,7 +1388,6 @@ public final class Dossier {
       return css_.getByteString(index);
     }
 
-    // repeated string script = 2;
     public static final int SCRIPT_FIELD_NUMBER = 2;
     private com.google.protobuf.LazyStringList script_;
     /**
@@ -1393,7 +1397,7 @@ public final class Dossier {
      * Paths to JavaScript files to include in the generated page.
      * </pre>
      */
-    public java.util.List<java.lang.String>
+    public com.google.protobuf.ProtocolStringList
         getScriptList() {
       return script_;
     }
@@ -1436,7 +1440,8 @@ public final class Dossier {
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized != -1) return isInitialized == 1;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
 
       memoizedIsInitialized = 1;
       return true;
@@ -1564,8 +1569,9 @@ public final class Dossier {
      * </pre>
      */
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder>
-       implements com.github.jleyba.dossier.proto.Dossier.ResourcesOrBuilder {
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:Resources)
+        com.github.jleyba.dossier.proto.Dossier.ResourcesOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
         return com.github.jleyba.dossier.proto.Dossier.internal_static_Resources_descriptor;
@@ -1630,14 +1636,12 @@ public final class Dossier {
         com.github.jleyba.dossier.proto.Dossier.Resources result = new com.github.jleyba.dossier.proto.Dossier.Resources(this);
         int from_bitField0_ = bitField0_;
         if (((bitField0_ & 0x00000001) == 0x00000001)) {
-          css_ = new com.google.protobuf.UnmodifiableLazyStringList(
-              css_);
+          css_ = css_.getUnmodifiableView();
           bitField0_ = (bitField0_ & ~0x00000001);
         }
         result.css_ = css_;
         if (((bitField0_ & 0x00000002) == 0x00000002)) {
-          script_ = new com.google.protobuf.UnmodifiableLazyStringList(
-              script_);
+          script_ = script_.getUnmodifiableView();
           bitField0_ = (bitField0_ & ~0x00000002);
         }
         result.script_ = script_;
@@ -1703,7 +1707,6 @@ public final class Dossier {
       }
       private int bitField0_;
 
-      // repeated string css = 1;
       private com.google.protobuf.LazyStringList css_ = com.google.protobuf.LazyStringArrayList.EMPTY;
       private void ensureCssIsMutable() {
         if (!((bitField0_ & 0x00000001) == 0x00000001)) {
@@ -1718,9 +1721,9 @@ public final class Dossier {
        * Paths to stylesheets to link to in the generated page.
        * </pre>
        */
-      public java.util.List<java.lang.String>
+      public com.google.protobuf.ProtocolStringList
           getCssList() {
-        return java.util.Collections.unmodifiableList(css_);
+        return css_.getUnmodifiableView();
       }
       /**
        * <code>repeated string css = 1;</code>
@@ -1797,7 +1800,8 @@ public final class Dossier {
       public Builder addAllCss(
           java.lang.Iterable<java.lang.String> values) {
         ensureCssIsMutable();
-        super.addAll(values, css_);
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, css_);
         onChanged();
         return this;
       }
@@ -1832,7 +1836,6 @@ public final class Dossier {
         return this;
       }
 
-      // repeated string script = 2;
       private com.google.protobuf.LazyStringList script_ = com.google.protobuf.LazyStringArrayList.EMPTY;
       private void ensureScriptIsMutable() {
         if (!((bitField0_ & 0x00000002) == 0x00000002)) {
@@ -1847,9 +1850,9 @@ public final class Dossier {
        * Paths to JavaScript files to include in the generated page.
        * </pre>
        */
-      public java.util.List<java.lang.String>
+      public com.google.protobuf.ProtocolStringList
           getScriptList() {
-        return java.util.Collections.unmodifiableList(script_);
+        return script_.getUnmodifiableView();
       }
       /**
        * <code>repeated string script = 2;</code>
@@ -1926,7 +1929,8 @@ public final class Dossier {
       public Builder addAllScript(
           java.lang.Iterable<java.lang.String> values) {
         ensureScriptIsMutable();
-        super.addAll(values, script_);
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, script_);
         onChanged();
         return this;
       }
@@ -1972,10 +1976,10 @@ public final class Dossier {
     // @@protoc_insertion_point(class_scope:Resources)
   }
 
-  public interface LicenseOrBuilder
-      extends com.google.protobuf.MessageOrBuilder {
+  public interface LicenseOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:License)
+      com.google.protobuf.MessageOrBuilder {
 
-    // required string text = 1;
     /**
      * <code>required string text = 1;</code>
      */
@@ -1998,8 +2002,9 @@ public final class Dossier {
    * </pre>
    */
   public static final class License extends
-      com.google.protobuf.GeneratedMessage
-      implements LicenseOrBuilder {
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:License)
+      LicenseOrBuilder {
     // Use License.newBuilder() to construct.
     private License(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
@@ -2046,8 +2051,9 @@ public final class Dossier {
               break;
             }
             case 10: {
+              com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000001;
-              text_ = input.readBytes();
+              text_ = bs;
               break;
             }
           }
@@ -2090,7 +2096,6 @@ public final class Dossier {
     }
 
     private int bitField0_;
-    // required string text = 1;
     public static final int TEXT_FIELD_NUMBER = 1;
     private java.lang.Object text_;
     /**
@@ -2139,7 +2144,8 @@ public final class Dossier {
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized != -1) return isInitialized == 1;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
 
       if (!hasText()) {
         memoizedIsInitialized = 0;
@@ -2254,8 +2260,9 @@ public final class Dossier {
      * </pre>
      */
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder>
-       implements com.github.jleyba.dossier.proto.Dossier.LicenseOrBuilder {
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:License)
+        com.github.jleyba.dossier.proto.Dossier.LicenseOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
         return com.github.jleyba.dossier.proto.Dossier.internal_static_License_descriptor;
@@ -2374,7 +2381,6 @@ public final class Dossier {
       }
       private int bitField0_;
 
-      // required string text = 1;
       private java.lang.Object text_ = "";
       /**
        * <code>required string text = 1;</code>
@@ -2388,9 +2394,12 @@ public final class Dossier {
       public java.lang.String getText() {
         java.lang.Object ref = text_;
         if (!(ref instanceof java.lang.String)) {
-          java.lang.String s = ((com.google.protobuf.ByteString) ref)
-              .toStringUtf8();
-          text_ = s;
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            text_ = s;
+          }
           return s;
         } else {
           return (java.lang.String) ref;
@@ -2459,10 +2468,10 @@ public final class Dossier {
     // @@protoc_insertion_point(class_scope:License)
   }
 
-  public interface TypeLinkOrBuilder
-      extends com.google.protobuf.MessageOrBuilder {
+  public interface TypeLinkOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:TypeLink)
+      com.google.protobuf.MessageOrBuilder {
 
-    // required string text = 1;
     /**
      * <code>required string text = 1;</code>
      *
@@ -2489,7 +2498,6 @@ public final class Dossier {
     com.google.protobuf.ByteString
         getTextBytes();
 
-    // required string href = 2;
     /**
      * <code>required string href = 2;</code>
      *
@@ -2524,8 +2532,9 @@ public final class Dossier {
    * </pre>
    */
   public static final class TypeLink extends
-      com.google.protobuf.GeneratedMessage
-      implements TypeLinkOrBuilder {
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:TypeLink)
+      TypeLinkOrBuilder {
     // Use TypeLink.newBuilder() to construct.
     private TypeLink(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
@@ -2572,13 +2581,15 @@ public final class Dossier {
               break;
             }
             case 10: {
+              com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000001;
-              text_ = input.readBytes();
+              text_ = bs;
               break;
             }
             case 18: {
+              com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000002;
-              href_ = input.readBytes();
+              href_ = bs;
               break;
             }
           }
@@ -2621,7 +2632,6 @@ public final class Dossier {
     }
 
     private int bitField0_;
-    // required string text = 1;
     public static final int TEXT_FIELD_NUMBER = 1;
     private java.lang.Object text_;
     /**
@@ -2676,7 +2686,6 @@ public final class Dossier {
       }
     }
 
-    // required string href = 2;
     public static final int HREF_FIELD_NUMBER = 2;
     private java.lang.Object href_;
     /**
@@ -2738,7 +2747,8 @@ public final class Dossier {
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized != -1) return isInitialized == 1;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
 
       if (!hasText()) {
         memoizedIsInitialized = 0;
@@ -2864,8 +2874,9 @@ public final class Dossier {
      * </pre>
      */
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder>
-       implements com.github.jleyba.dossier.proto.Dossier.TypeLinkOrBuilder {
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:TypeLink)
+        com.github.jleyba.dossier.proto.Dossier.TypeLinkOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
         return com.github.jleyba.dossier.proto.Dossier.internal_static_TypeLink_descriptor;
@@ -2999,7 +3010,6 @@ public final class Dossier {
       }
       private int bitField0_;
 
-      // required string text = 1;
       private java.lang.Object text_ = "";
       /**
        * <code>required string text = 1;</code>
@@ -3021,9 +3031,12 @@ public final class Dossier {
       public java.lang.String getText() {
         java.lang.Object ref = text_;
         if (!(ref instanceof java.lang.String)) {
-          java.lang.String s = ((com.google.protobuf.ByteString) ref)
-              .toStringUtf8();
-          text_ = s;
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            text_ = s;
+          }
           return s;
         } else {
           return (java.lang.String) ref;
@@ -3097,7 +3110,6 @@ public final class Dossier {
         return this;
       }
 
-      // required string href = 2;
       private java.lang.Object href_ = "";
       /**
        * <code>required string href = 2;</code>
@@ -3119,9 +3131,12 @@ public final class Dossier {
       public java.lang.String getHref() {
         java.lang.Object ref = href_;
         if (!(ref instanceof java.lang.String)) {
-          java.lang.String s = ((com.google.protobuf.ByteString) ref)
-              .toStringUtf8();
-          href_ = s;
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            href_ = s;
+          }
           return s;
         } else {
           return (java.lang.String) ref;
@@ -3206,10 +3221,10 @@ public final class Dossier {
     // @@protoc_insertion_point(class_scope:TypeLink)
   }
 
-  public interface CommentOrBuilder
-      extends com.google.protobuf.MessageOrBuilder {
+  public interface CommentOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Comment)
+      com.google.protobuf.MessageOrBuilder {
 
-    // repeated .Comment.Token token = 1;
     /**
      * <code>repeated .Comment.Token token = 1;</code>
      *
@@ -3263,8 +3278,9 @@ public final class Dossier {
    * </pre>
    */
   public static final class Comment extends
-      com.google.protobuf.GeneratedMessage
-      implements CommentOrBuilder {
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:Comment)
+      CommentOrBuilder {
     // Use Comment.newBuilder() to construct.
     private Comment(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
@@ -3360,10 +3376,10 @@ public final class Dossier {
       return PARSER;
     }
 
-    public interface TokenOrBuilder
-        extends com.google.protobuf.MessageOrBuilder {
+    public interface TokenOrBuilder extends
+        // @@protoc_insertion_point(interface_extends:Comment.Token)
+        com.google.protobuf.MessageOrBuilder {
 
-      // required string text = 1;
       /**
        * <code>required string text = 1;</code>
        *
@@ -3390,7 +3406,6 @@ public final class Dossier {
       com.google.protobuf.ByteString
           getTextBytes();
 
-      // optional bool is_literal = 2 [default = false];
       /**
        * <code>optional bool is_literal = 2 [default = false];</code>
        *
@@ -3410,7 +3425,6 @@ public final class Dossier {
        */
       boolean getIsLiteral();
 
-      // optional bool is_code = 3 [default = false];
       /**
        * <code>optional bool is_code = 3 [default = false];</code>
        *
@@ -3430,7 +3444,6 @@ public final class Dossier {
        */
       boolean getIsCode();
 
-      // optional string href = 4;
       /**
        * <code>optional string href = 4;</code>
        *
@@ -3457,7 +3470,6 @@ public final class Dossier {
       com.google.protobuf.ByteString
           getHrefBytes();
 
-      // optional bool unresolved_link = 5 [default = false];
       /**
        * <code>optional bool unresolved_link = 5 [default = false];</code>
        *
@@ -3479,8 +3491,9 @@ public final class Dossier {
      * Protobuf type {@code Comment.Token}
      */
     public static final class Token extends
-        com.google.protobuf.GeneratedMessage
-        implements TokenOrBuilder {
+        com.google.protobuf.GeneratedMessage implements
+        // @@protoc_insertion_point(message_implements:Comment.Token)
+        TokenOrBuilder {
       // Use Token.newBuilder() to construct.
       private Token(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
         super(builder);
@@ -3527,8 +3540,9 @@ public final class Dossier {
                 break;
               }
               case 10: {
+                com.google.protobuf.ByteString bs = input.readBytes();
                 bitField0_ |= 0x00000001;
-                text_ = input.readBytes();
+                text_ = bs;
                 break;
               }
               case 16: {
@@ -3542,8 +3556,9 @@ public final class Dossier {
                 break;
               }
               case 34: {
+                com.google.protobuf.ByteString bs = input.readBytes();
                 bitField0_ |= 0x00000008;
-                href_ = input.readBytes();
+                href_ = bs;
                 break;
               }
               case 40: {
@@ -3591,7 +3606,6 @@ public final class Dossier {
       }
 
       private int bitField0_;
-      // required string text = 1;
       public static final int TEXT_FIELD_NUMBER = 1;
       private java.lang.Object text_;
       /**
@@ -3646,7 +3660,6 @@ public final class Dossier {
         }
       }
 
-      // optional bool is_literal = 2 [default = false];
       public static final int IS_LITERAL_FIELD_NUMBER = 2;
       private boolean isLiteral_;
       /**
@@ -3672,7 +3685,6 @@ public final class Dossier {
         return isLiteral_;
       }
 
-      // optional bool is_code = 3 [default = false];
       public static final int IS_CODE_FIELD_NUMBER = 3;
       private boolean isCode_;
       /**
@@ -3698,7 +3710,6 @@ public final class Dossier {
         return isCode_;
       }
 
-      // optional string href = 4;
       public static final int HREF_FIELD_NUMBER = 4;
       private java.lang.Object href_;
       /**
@@ -3753,7 +3764,6 @@ public final class Dossier {
         }
       }
 
-      // optional bool unresolved_link = 5 [default = false];
       public static final int UNRESOLVED_LINK_FIELD_NUMBER = 5;
       private boolean unresolvedLink_;
       /**
@@ -3787,7 +3797,8 @@ public final class Dossier {
       private byte memoizedIsInitialized = -1;
       public final boolean isInitialized() {
         byte isInitialized = memoizedIsInitialized;
-        if (isInitialized != -1) return isInitialized == 1;
+        if (isInitialized == 1) return true;
+        if (isInitialized == 0) return false;
 
         if (!hasText()) {
           memoizedIsInitialized = 0;
@@ -3926,8 +3937,9 @@ public final class Dossier {
        * Protobuf type {@code Comment.Token}
        */
       public static final class Builder extends
-          com.google.protobuf.GeneratedMessage.Builder<Builder>
-         implements com.github.jleyba.dossier.proto.Dossier.Comment.TokenOrBuilder {
+          com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+          // @@protoc_insertion_point(builder_implements:Comment.Token)
+          com.github.jleyba.dossier.proto.Dossier.Comment.TokenOrBuilder {
         public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
           return com.github.jleyba.dossier.proto.Dossier.internal_static_Comment_Token_descriptor;
@@ -4084,7 +4096,6 @@ public final class Dossier {
         }
         private int bitField0_;
 
-        // required string text = 1;
         private java.lang.Object text_ = "";
         /**
          * <code>required string text = 1;</code>
@@ -4106,9 +4117,12 @@ public final class Dossier {
         public java.lang.String getText() {
           java.lang.Object ref = text_;
           if (!(ref instanceof java.lang.String)) {
-            java.lang.String s = ((com.google.protobuf.ByteString) ref)
-                .toStringUtf8();
-            text_ = s;
+            com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+            java.lang.String s = bs.toStringUtf8();
+            if (bs.isValidUtf8()) {
+              text_ = s;
+            }
             return s;
           } else {
             return (java.lang.String) ref;
@@ -4182,7 +4196,6 @@ public final class Dossier {
           return this;
         }
 
-        // optional bool is_literal = 2 [default = false];
         private boolean isLiteral_ ;
         /**
          * <code>optional bool is_literal = 2 [default = false];</code>
@@ -4235,7 +4248,6 @@ public final class Dossier {
           return this;
         }
 
-        // optional bool is_code = 3 [default = false];
         private boolean isCode_ ;
         /**
          * <code>optional bool is_code = 3 [default = false];</code>
@@ -4288,7 +4300,6 @@ public final class Dossier {
           return this;
         }
 
-        // optional string href = 4;
         private java.lang.Object href_ = "";
         /**
          * <code>optional string href = 4;</code>
@@ -4310,9 +4321,12 @@ public final class Dossier {
         public java.lang.String getHref() {
           java.lang.Object ref = href_;
           if (!(ref instanceof java.lang.String)) {
-            java.lang.String s = ((com.google.protobuf.ByteString) ref)
-                .toStringUtf8();
-            href_ = s;
+            com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+            java.lang.String s = bs.toStringUtf8();
+            if (bs.isValidUtf8()) {
+              href_ = s;
+            }
             return s;
           } else {
             return (java.lang.String) ref;
@@ -4386,7 +4400,6 @@ public final class Dossier {
           return this;
         }
 
-        // optional bool unresolved_link = 5 [default = false];
         private boolean unresolvedLink_ ;
         /**
          * <code>optional bool unresolved_link = 5 [default = false];</code>
@@ -4446,7 +4459,6 @@ public final class Dossier {
       // @@protoc_insertion_point(class_scope:Comment.Token)
     }
 
-    // repeated .Comment.Token token = 1;
     public static final int TOKEN_FIELD_NUMBER = 1;
     private java.util.List<com.github.jleyba.dossier.proto.Dossier.Comment.Token> token_;
     /**
@@ -4508,7 +4520,8 @@ public final class Dossier {
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized != -1) return isInitialized == 1;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
 
       for (int i = 0; i < getTokenCount(); i++) {
         if (!getToken(i).isInitialized()) {
@@ -4626,8 +4639,9 @@ public final class Dossier {
      * </pre>
      */
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder>
-       implements com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder {
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:Comment)
+        com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
         return com.github.jleyba.dossier.proto.Dossier.internal_static_Comment_descriptor;
@@ -4777,7 +4791,6 @@ public final class Dossier {
       }
       private int bitField0_;
 
-      // repeated .Comment.Token token = 1;
       private java.util.List<com.github.jleyba.dossier.proto.Dossier.Comment.Token> token_ =
         java.util.Collections.emptyList();
       private void ensureTokenIsMutable() {
@@ -4959,7 +4972,8 @@ public final class Dossier {
           java.lang.Iterable<? extends com.github.jleyba.dossier.proto.Dossier.Comment.Token> values) {
         if (tokenBuilder_ == null) {
           ensureTokenIsMutable();
-          super.addAll(values, token_);
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, token_);
           onChanged();
         } else {
           tokenBuilder_.addAllMessages(values);
@@ -5100,10 +5114,10 @@ public final class Dossier {
     // @@protoc_insertion_point(class_scope:Comment)
   }
 
-  public interface DeprecationOrBuilder
-      extends com.google.protobuf.MessageOrBuilder {
+  public interface DeprecationOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Deprecation)
+      com.google.protobuf.MessageOrBuilder {
 
-    // optional .Comment notice = 1;
     /**
      * <code>optional .Comment notice = 1;</code>
      */
@@ -5125,8 +5139,9 @@ public final class Dossier {
    * </pre>
    */
   public static final class Deprecation extends
-      com.google.protobuf.GeneratedMessage
-      implements DeprecationOrBuilder {
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:Deprecation)
+      DeprecationOrBuilder {
     // Use Deprecation.newBuilder() to construct.
     private Deprecation(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
@@ -5225,7 +5240,6 @@ public final class Dossier {
     }
 
     private int bitField0_;
-    // optional .Comment notice = 1;
     public static final int NOTICE_FIELD_NUMBER = 1;
     private com.github.jleyba.dossier.proto.Dossier.Comment notice_;
     /**
@@ -5253,7 +5267,8 @@ public final class Dossier {
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized != -1) return isInitialized == 1;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
 
       if (hasNotice()) {
         if (!getNotice().isInitialized()) {
@@ -5370,8 +5385,9 @@ public final class Dossier {
      * </pre>
      */
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder>
-       implements com.github.jleyba.dossier.proto.Dossier.DeprecationOrBuilder {
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:Deprecation)
+        com.github.jleyba.dossier.proto.Dossier.DeprecationOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
         return com.github.jleyba.dossier.proto.Dossier.internal_static_Deprecation_descriptor;
@@ -5499,7 +5515,6 @@ public final class Dossier {
       }
       private int bitField0_;
 
-      // optional .Comment notice = 1;
       private com.github.jleyba.dossier.proto.Dossier.Comment notice_ = com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           com.github.jleyba.dossier.proto.Dossier.Comment, com.github.jleyba.dossier.proto.Dossier.Comment.Builder, com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder> noticeBuilder_;
@@ -5608,7 +5623,7 @@ public final class Dossier {
         if (noticeBuilder_ == null) {
           noticeBuilder_ = new com.google.protobuf.SingleFieldBuilder<
               com.github.jleyba.dossier.proto.Dossier.Comment, com.github.jleyba.dossier.proto.Dossier.Comment.Builder, com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder>(
-                  notice_,
+                  getNotice(),
                   getParentForChildren(),
                   isClean());
           notice_ = null;
@@ -5627,10 +5642,10 @@ public final class Dossier {
     // @@protoc_insertion_point(class_scope:Deprecation)
   }
 
-  public interface BasePropertyOrBuilder
-      extends com.google.protobuf.MessageOrBuilder {
+  public interface BasePropertyOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:BaseProperty)
+      com.google.protobuf.MessageOrBuilder {
 
-    // required string name = 1;
     /**
      * <code>required string name = 1;</code>
      *
@@ -5657,7 +5672,6 @@ public final class Dossier {
     com.google.protobuf.ByteString
         getNameBytes();
 
-    // required string source = 2;
     /**
      * <code>required string source = 2;</code>
      *
@@ -5684,7 +5698,6 @@ public final class Dossier {
     com.google.protobuf.ByteString
         getSourceBytes();
 
-    // required .Comment description = 3;
     /**
      * <code>required .Comment description = 3;</code>
      *
@@ -5710,7 +5723,6 @@ public final class Dossier {
      */
     com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder getDescriptionOrBuilder();
 
-    // optional .Deprecation deprecation = 4;
     /**
      * <code>optional .Deprecation deprecation = 4;</code>
      *
@@ -5736,7 +5748,6 @@ public final class Dossier {
      */
     com.github.jleyba.dossier.proto.Dossier.DeprecationOrBuilder getDeprecationOrBuilder();
 
-    // optional .Visibility visibility = 5 [default = PUBLIC];
     /**
      * <code>optional .Visibility visibility = 5 [default = PUBLIC];</code>
      */
@@ -5754,8 +5765,9 @@ public final class Dossier {
    * </pre>
    */
   public static final class BaseProperty extends
-      com.google.protobuf.GeneratedMessage
-      implements BasePropertyOrBuilder {
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:BaseProperty)
+      BasePropertyOrBuilder {
     // Use BaseProperty.newBuilder() to construct.
     private BaseProperty(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
@@ -5802,13 +5814,15 @@ public final class Dossier {
               break;
             }
             case 10: {
+              com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000001;
-              name_ = input.readBytes();
+              name_ = bs;
               break;
             }
             case 18: {
+              com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000002;
-              source_ = input.readBytes();
+              source_ = bs;
               break;
             }
             case 26: {
@@ -5888,7 +5902,6 @@ public final class Dossier {
     }
 
     private int bitField0_;
-    // required string name = 1;
     public static final int NAME_FIELD_NUMBER = 1;
     private java.lang.Object name_;
     /**
@@ -5943,7 +5956,6 @@ public final class Dossier {
       }
     }
 
-    // required string source = 2;
     public static final int SOURCE_FIELD_NUMBER = 2;
     private java.lang.Object source_;
     /**
@@ -5998,7 +6010,6 @@ public final class Dossier {
       }
     }
 
-    // required .Comment description = 3;
     public static final int DESCRIPTION_FIELD_NUMBER = 3;
     private com.github.jleyba.dossier.proto.Dossier.Comment description_;
     /**
@@ -6032,7 +6043,6 @@ public final class Dossier {
       return description_;
     }
 
-    // optional .Deprecation deprecation = 4;
     public static final int DEPRECATION_FIELD_NUMBER = 4;
     private com.github.jleyba.dossier.proto.Dossier.Deprecation deprecation_;
     /**
@@ -6066,7 +6076,6 @@ public final class Dossier {
       return deprecation_;
     }
 
-    // optional .Visibility visibility = 5 [default = PUBLIC];
     public static final int VISIBILITY_FIELD_NUMBER = 5;
     private com.github.jleyba.dossier.proto.Dossier.Visibility visibility_;
     /**
@@ -6092,7 +6101,8 @@ public final class Dossier {
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized != -1) return isInitialized == 1;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
 
       if (!hasName()) {
         memoizedIsInitialized = 0;
@@ -6253,8 +6263,9 @@ public final class Dossier {
      * </pre>
      */
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder>
-       implements com.github.jleyba.dossier.proto.Dossier.BasePropertyOrBuilder {
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:BaseProperty)
+        com.github.jleyba.dossier.proto.Dossier.BasePropertyOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
         return com.github.jleyba.dossier.proto.Dossier.internal_static_BaseProperty_descriptor;
@@ -6447,7 +6458,6 @@ public final class Dossier {
       }
       private int bitField0_;
 
-      // required string name = 1;
       private java.lang.Object name_ = "";
       /**
        * <code>required string name = 1;</code>
@@ -6469,9 +6479,12 @@ public final class Dossier {
       public java.lang.String getName() {
         java.lang.Object ref = name_;
         if (!(ref instanceof java.lang.String)) {
-          java.lang.String s = ((com.google.protobuf.ByteString) ref)
-              .toStringUtf8();
-          name_ = s;
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            name_ = s;
+          }
           return s;
         } else {
           return (java.lang.String) ref;
@@ -6545,7 +6558,6 @@ public final class Dossier {
         return this;
       }
 
-      // required string source = 2;
       private java.lang.Object source_ = "";
       /**
        * <code>required string source = 2;</code>
@@ -6567,9 +6579,12 @@ public final class Dossier {
       public java.lang.String getSource() {
         java.lang.Object ref = source_;
         if (!(ref instanceof java.lang.String)) {
-          java.lang.String s = ((com.google.protobuf.ByteString) ref)
-              .toStringUtf8();
-          source_ = s;
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            source_ = s;
+          }
           return s;
         } else {
           return (java.lang.String) ref;
@@ -6643,7 +6658,6 @@ public final class Dossier {
         return this;
       }
 
-      // required .Comment description = 3;
       private com.github.jleyba.dossier.proto.Dossier.Comment description_ = com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           com.github.jleyba.dossier.proto.Dossier.Comment, com.github.jleyba.dossier.proto.Dossier.Comment.Builder, com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder> descriptionBuilder_;
@@ -6788,7 +6802,7 @@ public final class Dossier {
         if (descriptionBuilder_ == null) {
           descriptionBuilder_ = new com.google.protobuf.SingleFieldBuilder<
               com.github.jleyba.dossier.proto.Dossier.Comment, com.github.jleyba.dossier.proto.Dossier.Comment.Builder, com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder>(
-                  description_,
+                  getDescription(),
                   getParentForChildren(),
                   isClean());
           description_ = null;
@@ -6796,7 +6810,6 @@ public final class Dossier {
         return descriptionBuilder_;
       }
 
-      // optional .Deprecation deprecation = 4;
       private com.github.jleyba.dossier.proto.Dossier.Deprecation deprecation_ = com.github.jleyba.dossier.proto.Dossier.Deprecation.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           com.github.jleyba.dossier.proto.Dossier.Deprecation, com.github.jleyba.dossier.proto.Dossier.Deprecation.Builder, com.github.jleyba.dossier.proto.Dossier.DeprecationOrBuilder> deprecationBuilder_;
@@ -6941,7 +6954,7 @@ public final class Dossier {
         if (deprecationBuilder_ == null) {
           deprecationBuilder_ = new com.google.protobuf.SingleFieldBuilder<
               com.github.jleyba.dossier.proto.Dossier.Deprecation, com.github.jleyba.dossier.proto.Dossier.Deprecation.Builder, com.github.jleyba.dossier.proto.Dossier.DeprecationOrBuilder>(
-                  deprecation_,
+                  getDeprecation(),
                   getParentForChildren(),
                   isClean());
           deprecation_ = null;
@@ -6949,7 +6962,6 @@ public final class Dossier {
         return deprecationBuilder_;
       }
 
-      // optional .Visibility visibility = 5 [default = PUBLIC];
       private com.github.jleyba.dossier.proto.Dossier.Visibility visibility_ = com.github.jleyba.dossier.proto.Dossier.Visibility.PUBLIC;
       /**
        * <code>optional .Visibility visibility = 5 [default = PUBLIC];</code>
@@ -6996,10 +7008,10 @@ public final class Dossier {
     // @@protoc_insertion_point(class_scope:BaseProperty)
   }
 
-  public interface PropertyOrBuilder
-      extends com.google.protobuf.MessageOrBuilder {
+  public interface PropertyOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Property)
+      com.google.protobuf.MessageOrBuilder {
 
-    // required .BaseProperty base = 1;
     /**
      * <code>required .BaseProperty base = 1;</code>
      */
@@ -7013,7 +7025,6 @@ public final class Dossier {
      */
     com.github.jleyba.dossier.proto.Dossier.BasePropertyOrBuilder getBaseOrBuilder();
 
-    // optional string type_html = 2;
     /**
      * <code>optional string type_html = 2;</code>
      *
@@ -7051,8 +7062,9 @@ public final class Dossier {
    * </pre>
    */
   public static final class Property extends
-      com.google.protobuf.GeneratedMessage
-      implements PropertyOrBuilder {
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:Property)
+      PropertyOrBuilder {
     // Use Property.newBuilder() to construct.
     private Property(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
@@ -7112,8 +7124,9 @@ public final class Dossier {
               break;
             }
             case 18: {
+              com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000002;
-              typeHtml_ = input.readBytes();
+              typeHtml_ = bs;
               break;
             }
           }
@@ -7156,7 +7169,6 @@ public final class Dossier {
     }
 
     private int bitField0_;
-    // required .BaseProperty base = 1;
     public static final int BASE_FIELD_NUMBER = 1;
     private com.github.jleyba.dossier.proto.Dossier.BaseProperty base_;
     /**
@@ -7178,7 +7190,6 @@ public final class Dossier {
       return base_;
     }
 
-    // optional string type_html = 2;
     public static final int TYPE_HTML_FIELD_NUMBER = 2;
     private java.lang.Object typeHtml_;
     /**
@@ -7243,7 +7254,8 @@ public final class Dossier {
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized != -1) return isInitialized == 1;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
 
       if (!hasBase()) {
         memoizedIsInitialized = 0;
@@ -7369,8 +7381,9 @@ public final class Dossier {
      * </pre>
      */
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder>
-       implements com.github.jleyba.dossier.proto.Dossier.PropertyOrBuilder {
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:Property)
+        com.github.jleyba.dossier.proto.Dossier.PropertyOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
         return com.github.jleyba.dossier.proto.Dossier.internal_static_Property_descriptor;
@@ -7511,7 +7524,6 @@ public final class Dossier {
       }
       private int bitField0_;
 
-      // required .BaseProperty base = 1;
       private com.github.jleyba.dossier.proto.Dossier.BaseProperty base_ = com.github.jleyba.dossier.proto.Dossier.BaseProperty.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           com.github.jleyba.dossier.proto.Dossier.BaseProperty, com.github.jleyba.dossier.proto.Dossier.BaseProperty.Builder, com.github.jleyba.dossier.proto.Dossier.BasePropertyOrBuilder> baseBuilder_;
@@ -7620,7 +7632,7 @@ public final class Dossier {
         if (baseBuilder_ == null) {
           baseBuilder_ = new com.google.protobuf.SingleFieldBuilder<
               com.github.jleyba.dossier.proto.Dossier.BaseProperty, com.github.jleyba.dossier.proto.Dossier.BaseProperty.Builder, com.github.jleyba.dossier.proto.Dossier.BasePropertyOrBuilder>(
-                  base_,
+                  getBase(),
                   getParentForChildren(),
                   isClean());
           base_ = null;
@@ -7628,7 +7640,6 @@ public final class Dossier {
         return baseBuilder_;
       }
 
-      // optional string type_html = 2;
       private java.lang.Object typeHtml_ = "";
       /**
        * <code>optional string type_html = 2;</code>
@@ -7652,9 +7663,12 @@ public final class Dossier {
       public java.lang.String getTypeHtml() {
         java.lang.Object ref = typeHtml_;
         if (!(ref instanceof java.lang.String)) {
-          java.lang.String s = ((com.google.protobuf.ByteString) ref)
-              .toStringUtf8();
-          typeHtml_ = s;
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            typeHtml_ = s;
+          }
           return s;
         } else {
           return (java.lang.String) ref;
@@ -7743,10 +7757,10 @@ public final class Dossier {
     // @@protoc_insertion_point(class_scope:Property)
   }
 
-  public interface FunctionOrBuilder
-      extends com.google.protobuf.MessageOrBuilder {
+  public interface FunctionOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Function)
+      com.google.protobuf.MessageOrBuilder {
 
-    // required .BaseProperty base = 1;
     /**
      * <code>required .BaseProperty base = 1;</code>
      */
@@ -7760,12 +7774,11 @@ public final class Dossier {
      */
     com.github.jleyba.dossier.proto.Dossier.BasePropertyOrBuilder getBaseOrBuilder();
 
-    // repeated string template_name = 2;
     /**
      * <code>repeated string template_name = 2;</code>
      */
-    java.util.List<java.lang.String>
-    getTemplateNameList();
+    com.google.protobuf.ProtocolStringList
+        getTemplateNameList();
     /**
      * <code>repeated string template_name = 2;</code>
      */
@@ -7780,7 +7793,6 @@ public final class Dossier {
     com.google.protobuf.ByteString
         getTemplateNameBytes(int index);
 
-    // optional bool is_constructor = 3 [default = false];
     /**
      * <code>optional bool is_constructor = 3 [default = false];</code>
      */
@@ -7790,7 +7802,6 @@ public final class Dossier {
      */
     boolean getIsConstructor();
 
-    // repeated .Function.Detail parameter = 4;
     /**
      * <code>repeated .Function.Detail parameter = 4;</code>
      */
@@ -7815,7 +7826,6 @@ public final class Dossier {
     com.github.jleyba.dossier.proto.Dossier.Function.DetailOrBuilder getParameterOrBuilder(
         int index);
 
-    // optional .Function.Detail return = 5;
     /**
      * <code>optional .Function.Detail return = 5;</code>
      */
@@ -7829,7 +7839,6 @@ public final class Dossier {
      */
     com.github.jleyba.dossier.proto.Dossier.Function.DetailOrBuilder getReturnOrBuilder();
 
-    // repeated .Function.Detail thrown = 6;
     /**
      * <code>repeated .Function.Detail thrown = 6;</code>
      */
@@ -7862,8 +7871,9 @@ public final class Dossier {
    * </pre>
    */
   public static final class Function extends
-      com.google.protobuf.GeneratedMessage
-      implements FunctionOrBuilder {
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:Function)
+      FunctionOrBuilder {
     // Use Function.newBuilder() to construct.
     private Function(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
@@ -7923,11 +7933,12 @@ public final class Dossier {
               break;
             }
             case 18: {
+              com.google.protobuf.ByteString bs = input.readBytes();
               if (!((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
                 templateName_ = new com.google.protobuf.LazyStringArrayList();
                 mutable_bitField0_ |= 0x00000002;
               }
-              templateName_.add(input.readBytes());
+              templateName_.add(bs);
               break;
             }
             case 24: {
@@ -7973,7 +7984,7 @@ public final class Dossier {
             e.getMessage()).setUnfinishedMessage(this);
       } finally {
         if (((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
-          templateName_ = new com.google.protobuf.UnmodifiableLazyStringList(templateName_);
+          templateName_ = templateName_.getUnmodifiableView();
         }
         if (((mutable_bitField0_ & 0x00000008) == 0x00000008)) {
           parameter_ = java.util.Collections.unmodifiableList(parameter_);
@@ -8012,10 +8023,10 @@ public final class Dossier {
       return PARSER;
     }
 
-    public interface DetailOrBuilder
-        extends com.google.protobuf.MessageOrBuilder {
+    public interface DetailOrBuilder extends
+        // @@protoc_insertion_point(interface_extends:Function.Detail)
+        com.google.protobuf.MessageOrBuilder {
 
-      // optional string name = 1;
       /**
        * <code>optional string name = 1;</code>
        */
@@ -8030,7 +8041,6 @@ public final class Dossier {
       com.google.protobuf.ByteString
           getNameBytes();
 
-      // optional string type_html = 2;
       /**
        * <code>optional string type_html = 2;</code>
        */
@@ -8045,7 +8055,6 @@ public final class Dossier {
       com.google.protobuf.ByteString
           getTypeHtmlBytes();
 
-      // optional .Comment description = 3;
       /**
        * <code>optional .Comment description = 3;</code>
        */
@@ -8063,8 +8072,9 @@ public final class Dossier {
      * Protobuf type {@code Function.Detail}
      */
     public static final class Detail extends
-        com.google.protobuf.GeneratedMessage
-        implements DetailOrBuilder {
+        com.google.protobuf.GeneratedMessage implements
+        // @@protoc_insertion_point(message_implements:Function.Detail)
+        DetailOrBuilder {
       // Use Detail.newBuilder() to construct.
       private Detail(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
         super(builder);
@@ -8111,13 +8121,15 @@ public final class Dossier {
                 break;
               }
               case 10: {
+                com.google.protobuf.ByteString bs = input.readBytes();
                 bitField0_ |= 0x00000001;
-                name_ = input.readBytes();
+                name_ = bs;
                 break;
               }
               case 18: {
+                com.google.protobuf.ByteString bs = input.readBytes();
                 bitField0_ |= 0x00000002;
-                typeHtml_ = input.readBytes();
+                typeHtml_ = bs;
                 break;
               }
               case 26: {
@@ -8173,7 +8185,6 @@ public final class Dossier {
       }
 
       private int bitField0_;
-      // optional string name = 1;
       public static final int NAME_FIELD_NUMBER = 1;
       private java.lang.Object name_;
       /**
@@ -8216,7 +8227,6 @@ public final class Dossier {
         }
       }
 
-      // optional string type_html = 2;
       public static final int TYPE_HTML_FIELD_NUMBER = 2;
       private java.lang.Object typeHtml_;
       /**
@@ -8259,7 +8269,6 @@ public final class Dossier {
         }
       }
 
-      // optional .Comment description = 3;
       public static final int DESCRIPTION_FIELD_NUMBER = 3;
       private com.github.jleyba.dossier.proto.Dossier.Comment description_;
       /**
@@ -8289,7 +8298,8 @@ public final class Dossier {
       private byte memoizedIsInitialized = -1;
       public final boolean isInitialized() {
         byte isInitialized = memoizedIsInitialized;
-        if (isInitialized != -1) return isInitialized == 1;
+        if (isInitialized == 1) return true;
+        if (isInitialized == 0) return false;
 
         if (hasDescription()) {
           if (!getDescription().isInitialized()) {
@@ -8416,8 +8426,9 @@ public final class Dossier {
        * Protobuf type {@code Function.Detail}
        */
       public static final class Builder extends
-          com.google.protobuf.GeneratedMessage.Builder<Builder>
-         implements com.github.jleyba.dossier.proto.Dossier.Function.DetailOrBuilder {
+          com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+          // @@protoc_insertion_point(builder_implements:Function.Detail)
+          com.github.jleyba.dossier.proto.Dossier.Function.DetailOrBuilder {
         public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
           return com.github.jleyba.dossier.proto.Dossier.internal_static_Function_Detail_descriptor;
@@ -8567,7 +8578,6 @@ public final class Dossier {
         }
         private int bitField0_;
 
-        // optional string name = 1;
         private java.lang.Object name_ = "";
         /**
          * <code>optional string name = 1;</code>
@@ -8581,9 +8591,12 @@ public final class Dossier {
         public java.lang.String getName() {
           java.lang.Object ref = name_;
           if (!(ref instanceof java.lang.String)) {
-            java.lang.String s = ((com.google.protobuf.ByteString) ref)
-                .toStringUtf8();
-            name_ = s;
+            com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+            java.lang.String s = bs.toStringUtf8();
+            if (bs.isValidUtf8()) {
+              name_ = s;
+            }
             return s;
           } else {
             return (java.lang.String) ref;
@@ -8641,7 +8654,6 @@ public final class Dossier {
           return this;
         }
 
-        // optional string type_html = 2;
         private java.lang.Object typeHtml_ = "";
         /**
          * <code>optional string type_html = 2;</code>
@@ -8655,9 +8667,12 @@ public final class Dossier {
         public java.lang.String getTypeHtml() {
           java.lang.Object ref = typeHtml_;
           if (!(ref instanceof java.lang.String)) {
-            java.lang.String s = ((com.google.protobuf.ByteString) ref)
-                .toStringUtf8();
-            typeHtml_ = s;
+            com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+            java.lang.String s = bs.toStringUtf8();
+            if (bs.isValidUtf8()) {
+              typeHtml_ = s;
+            }
             return s;
           } else {
             return (java.lang.String) ref;
@@ -8715,7 +8730,6 @@ public final class Dossier {
           return this;
         }
 
-        // optional .Comment description = 3;
         private com.github.jleyba.dossier.proto.Dossier.Comment description_ = com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance();
         private com.google.protobuf.SingleFieldBuilder<
             com.github.jleyba.dossier.proto.Dossier.Comment, com.github.jleyba.dossier.proto.Dossier.Comment.Builder, com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder> descriptionBuilder_;
@@ -8824,7 +8838,7 @@ public final class Dossier {
           if (descriptionBuilder_ == null) {
             descriptionBuilder_ = new com.google.protobuf.SingleFieldBuilder<
                 com.github.jleyba.dossier.proto.Dossier.Comment, com.github.jleyba.dossier.proto.Dossier.Comment.Builder, com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder>(
-                    description_,
+                    getDescription(),
                     getParentForChildren(),
                     isClean());
             description_ = null;
@@ -8844,7 +8858,6 @@ public final class Dossier {
     }
 
     private int bitField0_;
-    // required .BaseProperty base = 1;
     public static final int BASE_FIELD_NUMBER = 1;
     private com.github.jleyba.dossier.proto.Dossier.BaseProperty base_;
     /**
@@ -8866,13 +8879,12 @@ public final class Dossier {
       return base_;
     }
 
-    // repeated string template_name = 2;
     public static final int TEMPLATE_NAME_FIELD_NUMBER = 2;
     private com.google.protobuf.LazyStringList templateName_;
     /**
      * <code>repeated string template_name = 2;</code>
      */
-    public java.util.List<java.lang.String>
+    public com.google.protobuf.ProtocolStringList
         getTemplateNameList() {
       return templateName_;
     }
@@ -8896,7 +8908,6 @@ public final class Dossier {
       return templateName_.getByteString(index);
     }
 
-    // optional bool is_constructor = 3 [default = false];
     public static final int IS_CONSTRUCTOR_FIELD_NUMBER = 3;
     private boolean isConstructor_;
     /**
@@ -8912,7 +8923,6 @@ public final class Dossier {
       return isConstructor_;
     }
 
-    // repeated .Function.Detail parameter = 4;
     public static final int PARAMETER_FIELD_NUMBER = 4;
     private java.util.List<com.github.jleyba.dossier.proto.Dossier.Function.Detail> parameter_;
     /**
@@ -8948,7 +8958,6 @@ public final class Dossier {
       return parameter_.get(index);
     }
 
-    // optional .Function.Detail return = 5;
     public static final int RETURN_FIELD_NUMBER = 5;
     private com.github.jleyba.dossier.proto.Dossier.Function.Detail return_;
     /**
@@ -8970,7 +8979,6 @@ public final class Dossier {
       return return_;
     }
 
-    // repeated .Function.Detail thrown = 6;
     public static final int THROWN_FIELD_NUMBER = 6;
     private java.util.List<com.github.jleyba.dossier.proto.Dossier.Function.Detail> thrown_;
     /**
@@ -9017,7 +9025,8 @@ public final class Dossier {
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized != -1) return isInitialized == 1;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
 
       if (!hasBase()) {
         memoizedIsInitialized = 0;
@@ -9194,8 +9203,9 @@ public final class Dossier {
      * </pre>
      */
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder>
-       implements com.github.jleyba.dossier.proto.Dossier.FunctionOrBuilder {
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:Function)
+        com.github.jleyba.dossier.proto.Dossier.FunctionOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
         return com.github.jleyba.dossier.proto.Dossier.internal_static_Function_descriptor;
@@ -9297,8 +9307,7 @@ public final class Dossier {
           result.base_ = baseBuilder_.build();
         }
         if (((bitField0_ & 0x00000002) == 0x00000002)) {
-          templateName_ = new com.google.protobuf.UnmodifiableLazyStringList(
-              templateName_);
+          templateName_ = templateName_.getUnmodifiableView();
           bitField0_ = (bitField0_ & ~0x00000002);
         }
         result.templateName_ = templateName_;
@@ -9472,7 +9481,6 @@ public final class Dossier {
       }
       private int bitField0_;
 
-      // required .BaseProperty base = 1;
       private com.github.jleyba.dossier.proto.Dossier.BaseProperty base_ = com.github.jleyba.dossier.proto.Dossier.BaseProperty.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           com.github.jleyba.dossier.proto.Dossier.BaseProperty, com.github.jleyba.dossier.proto.Dossier.BaseProperty.Builder, com.github.jleyba.dossier.proto.Dossier.BasePropertyOrBuilder> baseBuilder_;
@@ -9581,7 +9589,7 @@ public final class Dossier {
         if (baseBuilder_ == null) {
           baseBuilder_ = new com.google.protobuf.SingleFieldBuilder<
               com.github.jleyba.dossier.proto.Dossier.BaseProperty, com.github.jleyba.dossier.proto.Dossier.BaseProperty.Builder, com.github.jleyba.dossier.proto.Dossier.BasePropertyOrBuilder>(
-                  base_,
+                  getBase(),
                   getParentForChildren(),
                   isClean());
           base_ = null;
@@ -9589,7 +9597,6 @@ public final class Dossier {
         return baseBuilder_;
       }
 
-      // repeated string template_name = 2;
       private com.google.protobuf.LazyStringList templateName_ = com.google.protobuf.LazyStringArrayList.EMPTY;
       private void ensureTemplateNameIsMutable() {
         if (!((bitField0_ & 0x00000002) == 0x00000002)) {
@@ -9600,9 +9607,9 @@ public final class Dossier {
       /**
        * <code>repeated string template_name = 2;</code>
        */
-      public java.util.List<java.lang.String>
+      public com.google.protobuf.ProtocolStringList
           getTemplateNameList() {
-        return java.util.Collections.unmodifiableList(templateName_);
+        return templateName_.getUnmodifiableView();
       }
       /**
        * <code>repeated string template_name = 2;</code>
@@ -9655,7 +9662,8 @@ public final class Dossier {
       public Builder addAllTemplateName(
           java.lang.Iterable<java.lang.String> values) {
         ensureTemplateNameIsMutable();
-        super.addAll(values, templateName_);
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, templateName_);
         onChanged();
         return this;
       }
@@ -9682,7 +9690,6 @@ public final class Dossier {
         return this;
       }
 
-      // optional bool is_constructor = 3 [default = false];
       private boolean isConstructor_ ;
       /**
        * <code>optional bool is_constructor = 3 [default = false];</code>
@@ -9715,7 +9722,6 @@ public final class Dossier {
         return this;
       }
 
-      // repeated .Function.Detail parameter = 4;
       private java.util.List<com.github.jleyba.dossier.proto.Dossier.Function.Detail> parameter_ =
         java.util.Collections.emptyList();
       private void ensureParameterIsMutable() {
@@ -9857,7 +9863,8 @@ public final class Dossier {
           java.lang.Iterable<? extends com.github.jleyba.dossier.proto.Dossier.Function.Detail> values) {
         if (parameterBuilder_ == null) {
           ensureParameterIsMutable();
-          super.addAll(values, parameter_);
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, parameter_);
           onChanged();
         } else {
           parameterBuilder_.addAllMessages(values);
@@ -9955,7 +9962,6 @@ public final class Dossier {
         return parameterBuilder_;
       }
 
-      // optional .Function.Detail return = 5;
       private com.github.jleyba.dossier.proto.Dossier.Function.Detail return_ = com.github.jleyba.dossier.proto.Dossier.Function.Detail.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           com.github.jleyba.dossier.proto.Dossier.Function.Detail, com.github.jleyba.dossier.proto.Dossier.Function.Detail.Builder, com.github.jleyba.dossier.proto.Dossier.Function.DetailOrBuilder> returnBuilder_;
@@ -10064,7 +10070,7 @@ public final class Dossier {
         if (returnBuilder_ == null) {
           returnBuilder_ = new com.google.protobuf.SingleFieldBuilder<
               com.github.jleyba.dossier.proto.Dossier.Function.Detail, com.github.jleyba.dossier.proto.Dossier.Function.Detail.Builder, com.github.jleyba.dossier.proto.Dossier.Function.DetailOrBuilder>(
-                  return_,
+                  getReturn(),
                   getParentForChildren(),
                   isClean());
           return_ = null;
@@ -10072,7 +10078,6 @@ public final class Dossier {
         return returnBuilder_;
       }
 
-      // repeated .Function.Detail thrown = 6;
       private java.util.List<com.github.jleyba.dossier.proto.Dossier.Function.Detail> thrown_ =
         java.util.Collections.emptyList();
       private void ensureThrownIsMutable() {
@@ -10214,7 +10219,8 @@ public final class Dossier {
           java.lang.Iterable<? extends com.github.jleyba.dossier.proto.Dossier.Function.Detail> values) {
         if (thrownBuilder_ == null) {
           ensureThrownIsMutable();
-          super.addAll(values, thrown_);
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, thrown_);
           onChanged();
         } else {
           thrownBuilder_.addAllMessages(values);
@@ -10323,10 +10329,10 @@ public final class Dossier {
     // @@protoc_insertion_point(class_scope:Function)
   }
 
-  public interface PrototypeOrBuilder
-      extends com.google.protobuf.MessageOrBuilder {
+  public interface PrototypeOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Prototype)
+      com.google.protobuf.MessageOrBuilder {
 
-    // required string name = 1;
     /**
      * <code>required string name = 1;</code>
      *
@@ -10353,7 +10359,6 @@ public final class Dossier {
     com.google.protobuf.ByteString
         getNameBytes();
 
-    // optional string href = 2;
     /**
      * <code>optional string href = 2;</code>
      *
@@ -10380,7 +10385,6 @@ public final class Dossier {
     com.google.protobuf.ByteString
         getHrefBytes();
 
-    // repeated .Function function = 3;
     /**
      * <code>repeated .Function function = 3;</code>
      */
@@ -10405,7 +10409,6 @@ public final class Dossier {
     com.github.jleyba.dossier.proto.Dossier.FunctionOrBuilder getFunctionOrBuilder(
         int index);
 
-    // repeated .Property property = 4;
     /**
      * <code>repeated .Property property = 4;</code>
      */
@@ -10438,8 +10441,9 @@ public final class Dossier {
    * </pre>
    */
   public static final class Prototype extends
-      com.google.protobuf.GeneratedMessage
-      implements PrototypeOrBuilder {
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:Prototype)
+      PrototypeOrBuilder {
     // Use Prototype.newBuilder() to construct.
     private Prototype(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
@@ -10486,13 +10490,15 @@ public final class Dossier {
               break;
             }
             case 10: {
+              com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000001;
-              name_ = input.readBytes();
+              name_ = bs;
               break;
             }
             case 18: {
+              com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000002;
-              href_ = input.readBytes();
+              href_ = bs;
               break;
             }
             case 26: {
@@ -10557,7 +10563,6 @@ public final class Dossier {
     }
 
     private int bitField0_;
-    // required string name = 1;
     public static final int NAME_FIELD_NUMBER = 1;
     private java.lang.Object name_;
     /**
@@ -10612,7 +10617,6 @@ public final class Dossier {
       }
     }
 
-    // optional string href = 2;
     public static final int HREF_FIELD_NUMBER = 2;
     private java.lang.Object href_;
     /**
@@ -10667,7 +10671,6 @@ public final class Dossier {
       }
     }
 
-    // repeated .Function function = 3;
     public static final int FUNCTION_FIELD_NUMBER = 3;
     private java.util.List<com.github.jleyba.dossier.proto.Dossier.Function> function_;
     /**
@@ -10703,7 +10706,6 @@ public final class Dossier {
       return function_.get(index);
     }
 
-    // repeated .Property property = 4;
     public static final int PROPERTY_FIELD_NUMBER = 4;
     private java.util.List<com.github.jleyba.dossier.proto.Dossier.Property> property_;
     /**
@@ -10748,7 +10750,8 @@ public final class Dossier {
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized != -1) return isInitialized == 1;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
 
       if (!hasName()) {
         memoizedIsInitialized = 0;
@@ -10896,8 +10899,9 @@ public final class Dossier {
      * </pre>
      */
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder>
-       implements com.github.jleyba.dossier.proto.Dossier.PrototypeOrBuilder {
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:Prototype)
+        com.github.jleyba.dossier.proto.Dossier.PrototypeOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
         return com.github.jleyba.dossier.proto.Dossier.internal_static_Prototype_descriptor;
@@ -11123,7 +11127,6 @@ public final class Dossier {
       }
       private int bitField0_;
 
-      // required string name = 1;
       private java.lang.Object name_ = "";
       /**
        * <code>required string name = 1;</code>
@@ -11145,9 +11148,12 @@ public final class Dossier {
       public java.lang.String getName() {
         java.lang.Object ref = name_;
         if (!(ref instanceof java.lang.String)) {
-          java.lang.String s = ((com.google.protobuf.ByteString) ref)
-              .toStringUtf8();
-          name_ = s;
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            name_ = s;
+          }
           return s;
         } else {
           return (java.lang.String) ref;
@@ -11221,7 +11227,6 @@ public final class Dossier {
         return this;
       }
 
-      // optional string href = 2;
       private java.lang.Object href_ = "";
       /**
        * <code>optional string href = 2;</code>
@@ -11243,9 +11248,12 @@ public final class Dossier {
       public java.lang.String getHref() {
         java.lang.Object ref = href_;
         if (!(ref instanceof java.lang.String)) {
-          java.lang.String s = ((com.google.protobuf.ByteString) ref)
-              .toStringUtf8();
-          href_ = s;
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            href_ = s;
+          }
           return s;
         } else {
           return (java.lang.String) ref;
@@ -11319,7 +11327,6 @@ public final class Dossier {
         return this;
       }
 
-      // repeated .Function function = 3;
       private java.util.List<com.github.jleyba.dossier.proto.Dossier.Function> function_ =
         java.util.Collections.emptyList();
       private void ensureFunctionIsMutable() {
@@ -11461,7 +11468,8 @@ public final class Dossier {
           java.lang.Iterable<? extends com.github.jleyba.dossier.proto.Dossier.Function> values) {
         if (functionBuilder_ == null) {
           ensureFunctionIsMutable();
-          super.addAll(values, function_);
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, function_);
           onChanged();
         } else {
           functionBuilder_.addAllMessages(values);
@@ -11559,7 +11567,6 @@ public final class Dossier {
         return functionBuilder_;
       }
 
-      // repeated .Property property = 4;
       private java.util.List<com.github.jleyba.dossier.proto.Dossier.Property> property_ =
         java.util.Collections.emptyList();
       private void ensurePropertyIsMutable() {
@@ -11701,7 +11708,8 @@ public final class Dossier {
           java.lang.Iterable<? extends com.github.jleyba.dossier.proto.Dossier.Property> values) {
         if (propertyBuilder_ == null) {
           ensurePropertyIsMutable();
-          super.addAll(values, property_);
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, property_);
           onChanged();
         } else {
           propertyBuilder_.addAllMessages(values);
@@ -11810,10 +11818,10 @@ public final class Dossier {
     // @@protoc_insertion_point(class_scope:Prototype)
   }
 
-  public interface EnumerationOrBuilder
-      extends com.google.protobuf.MessageOrBuilder {
+  public interface EnumerationOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:Enumeration)
+      com.google.protobuf.MessageOrBuilder {
 
-    // required string type_html = 1;
     /**
      * <code>required string type_html = 1;</code>
      */
@@ -11828,7 +11836,6 @@ public final class Dossier {
     com.google.protobuf.ByteString
         getTypeHtmlBytes();
 
-    // repeated .Enumeration.Value value = 2;
     /**
      * <code>repeated .Enumeration.Value value = 2;</code>
      */
@@ -11853,7 +11860,6 @@ public final class Dossier {
     com.github.jleyba.dossier.proto.Dossier.Enumeration.ValueOrBuilder getValueOrBuilder(
         int index);
 
-    // optional .Visibility visibility = 3 [default = PUBLIC];
     /**
      * <code>optional .Visibility visibility = 3 [default = PUBLIC];</code>
      */
@@ -11871,8 +11877,9 @@ public final class Dossier {
    * </pre>
    */
   public static final class Enumeration extends
-      com.google.protobuf.GeneratedMessage
-      implements EnumerationOrBuilder {
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:Enumeration)
+      EnumerationOrBuilder {
     // Use Enumeration.newBuilder() to construct.
     private Enumeration(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
@@ -11919,8 +11926,9 @@ public final class Dossier {
               break;
             }
             case 10: {
+              com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000001;
-              typeHtml_ = input.readBytes();
+              typeHtml_ = bs;
               break;
             }
             case 18: {
@@ -11984,10 +11992,10 @@ public final class Dossier {
       return PARSER;
     }
 
-    public interface ValueOrBuilder
-        extends com.google.protobuf.MessageOrBuilder {
+    public interface ValueOrBuilder extends
+        // @@protoc_insertion_point(interface_extends:Enumeration.Value)
+        com.google.protobuf.MessageOrBuilder {
 
-      // required string name = 1;
       /**
        * <code>required string name = 1;</code>
        */
@@ -12002,7 +12010,6 @@ public final class Dossier {
       com.google.protobuf.ByteString
           getNameBytes();
 
-      // optional .Comment description = 2;
       /**
        * <code>optional .Comment description = 2;</code>
        */
@@ -12016,7 +12023,6 @@ public final class Dossier {
        */
       com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder getDescriptionOrBuilder();
 
-      // optional .Deprecation deprecation = 3;
       /**
        * <code>optional .Deprecation deprecation = 3;</code>
        */
@@ -12034,8 +12040,9 @@ public final class Dossier {
      * Protobuf type {@code Enumeration.Value}
      */
     public static final class Value extends
-        com.google.protobuf.GeneratedMessage
-        implements ValueOrBuilder {
+        com.google.protobuf.GeneratedMessage implements
+        // @@protoc_insertion_point(message_implements:Enumeration.Value)
+        ValueOrBuilder {
       // Use Value.newBuilder() to construct.
       private Value(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
         super(builder);
@@ -12082,8 +12089,9 @@ public final class Dossier {
                 break;
               }
               case 10: {
+                com.google.protobuf.ByteString bs = input.readBytes();
                 bitField0_ |= 0x00000001;
-                name_ = input.readBytes();
+                name_ = bs;
                 break;
               }
               case 18: {
@@ -12152,7 +12160,6 @@ public final class Dossier {
       }
 
       private int bitField0_;
-      // required string name = 1;
       public static final int NAME_FIELD_NUMBER = 1;
       private java.lang.Object name_;
       /**
@@ -12195,7 +12202,6 @@ public final class Dossier {
         }
       }
 
-      // optional .Comment description = 2;
       public static final int DESCRIPTION_FIELD_NUMBER = 2;
       private com.github.jleyba.dossier.proto.Dossier.Comment description_;
       /**
@@ -12217,7 +12223,6 @@ public final class Dossier {
         return description_;
       }
 
-      // optional .Deprecation deprecation = 3;
       public static final int DEPRECATION_FIELD_NUMBER = 3;
       private com.github.jleyba.dossier.proto.Dossier.Deprecation deprecation_;
       /**
@@ -12247,7 +12252,8 @@ public final class Dossier {
       private byte memoizedIsInitialized = -1;
       public final boolean isInitialized() {
         byte isInitialized = memoizedIsInitialized;
-        if (isInitialized != -1) return isInitialized == 1;
+        if (isInitialized == 1) return true;
+        if (isInitialized == 0) return false;
 
         if (!hasName()) {
           memoizedIsInitialized = 0;
@@ -12384,8 +12390,9 @@ public final class Dossier {
        * Protobuf type {@code Enumeration.Value}
        */
       public static final class Builder extends
-          com.google.protobuf.GeneratedMessage.Builder<Builder>
-         implements com.github.jleyba.dossier.proto.Dossier.Enumeration.ValueOrBuilder {
+          com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+          // @@protoc_insertion_point(builder_implements:Enumeration.Value)
+          com.github.jleyba.dossier.proto.Dossier.Enumeration.ValueOrBuilder {
         public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
           return com.github.jleyba.dossier.proto.Dossier.internal_static_Enumeration_Value_descriptor;
@@ -12552,7 +12559,6 @@ public final class Dossier {
         }
         private int bitField0_;
 
-        // required string name = 1;
         private java.lang.Object name_ = "";
         /**
          * <code>required string name = 1;</code>
@@ -12566,9 +12572,12 @@ public final class Dossier {
         public java.lang.String getName() {
           java.lang.Object ref = name_;
           if (!(ref instanceof java.lang.String)) {
-            java.lang.String s = ((com.google.protobuf.ByteString) ref)
-                .toStringUtf8();
-            name_ = s;
+            com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+            java.lang.String s = bs.toStringUtf8();
+            if (bs.isValidUtf8()) {
+              name_ = s;
+            }
             return s;
           } else {
             return (java.lang.String) ref;
@@ -12626,7 +12635,6 @@ public final class Dossier {
           return this;
         }
 
-        // optional .Comment description = 2;
         private com.github.jleyba.dossier.proto.Dossier.Comment description_ = com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance();
         private com.google.protobuf.SingleFieldBuilder<
             com.github.jleyba.dossier.proto.Dossier.Comment, com.github.jleyba.dossier.proto.Dossier.Comment.Builder, com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder> descriptionBuilder_;
@@ -12735,7 +12743,7 @@ public final class Dossier {
           if (descriptionBuilder_ == null) {
             descriptionBuilder_ = new com.google.protobuf.SingleFieldBuilder<
                 com.github.jleyba.dossier.proto.Dossier.Comment, com.github.jleyba.dossier.proto.Dossier.Comment.Builder, com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder>(
-                    description_,
+                    getDescription(),
                     getParentForChildren(),
                     isClean());
             description_ = null;
@@ -12743,7 +12751,6 @@ public final class Dossier {
           return descriptionBuilder_;
         }
 
-        // optional .Deprecation deprecation = 3;
         private com.github.jleyba.dossier.proto.Dossier.Deprecation deprecation_ = com.github.jleyba.dossier.proto.Dossier.Deprecation.getDefaultInstance();
         private com.google.protobuf.SingleFieldBuilder<
             com.github.jleyba.dossier.proto.Dossier.Deprecation, com.github.jleyba.dossier.proto.Dossier.Deprecation.Builder, com.github.jleyba.dossier.proto.Dossier.DeprecationOrBuilder> deprecationBuilder_;
@@ -12852,7 +12859,7 @@ public final class Dossier {
           if (deprecationBuilder_ == null) {
             deprecationBuilder_ = new com.google.protobuf.SingleFieldBuilder<
                 com.github.jleyba.dossier.proto.Dossier.Deprecation, com.github.jleyba.dossier.proto.Dossier.Deprecation.Builder, com.github.jleyba.dossier.proto.Dossier.DeprecationOrBuilder>(
-                    deprecation_,
+                    getDeprecation(),
                     getParentForChildren(),
                     isClean());
             deprecation_ = null;
@@ -12872,7 +12879,6 @@ public final class Dossier {
     }
 
     private int bitField0_;
-    // required string type_html = 1;
     public static final int TYPE_HTML_FIELD_NUMBER = 1;
     private java.lang.Object typeHtml_;
     /**
@@ -12915,7 +12921,6 @@ public final class Dossier {
       }
     }
 
-    // repeated .Enumeration.Value value = 2;
     public static final int VALUE_FIELD_NUMBER = 2;
     private java.util.List<com.github.jleyba.dossier.proto.Dossier.Enumeration.Value> value_;
     /**
@@ -12951,7 +12956,6 @@ public final class Dossier {
       return value_.get(index);
     }
 
-    // optional .Visibility visibility = 3 [default = PUBLIC];
     public static final int VISIBILITY_FIELD_NUMBER = 3;
     private com.github.jleyba.dossier.proto.Dossier.Visibility visibility_;
     /**
@@ -12975,7 +12979,8 @@ public final class Dossier {
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized != -1) return isInitialized == 1;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
 
       if (!hasTypeHtml()) {
         memoizedIsInitialized = 0;
@@ -13110,8 +13115,9 @@ public final class Dossier {
      * </pre>
      */
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder>
-       implements com.github.jleyba.dossier.proto.Dossier.EnumerationOrBuilder {
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:Enumeration)
+        com.github.jleyba.dossier.proto.Dossier.EnumerationOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
         return com.github.jleyba.dossier.proto.Dossier.internal_static_Enumeration_descriptor;
@@ -13287,7 +13293,6 @@ public final class Dossier {
       }
       private int bitField0_;
 
-      // required string type_html = 1;
       private java.lang.Object typeHtml_ = "";
       /**
        * <code>required string type_html = 1;</code>
@@ -13301,9 +13306,12 @@ public final class Dossier {
       public java.lang.String getTypeHtml() {
         java.lang.Object ref = typeHtml_;
         if (!(ref instanceof java.lang.String)) {
-          java.lang.String s = ((com.google.protobuf.ByteString) ref)
-              .toStringUtf8();
-          typeHtml_ = s;
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            typeHtml_ = s;
+          }
           return s;
         } else {
           return (java.lang.String) ref;
@@ -13361,7 +13369,6 @@ public final class Dossier {
         return this;
       }
 
-      // repeated .Enumeration.Value value = 2;
       private java.util.List<com.github.jleyba.dossier.proto.Dossier.Enumeration.Value> value_ =
         java.util.Collections.emptyList();
       private void ensureValueIsMutable() {
@@ -13503,7 +13510,8 @@ public final class Dossier {
           java.lang.Iterable<? extends com.github.jleyba.dossier.proto.Dossier.Enumeration.Value> values) {
         if (valueBuilder_ == null) {
           ensureValueIsMutable();
-          super.addAll(values, value_);
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, value_);
           onChanged();
         } else {
           valueBuilder_.addAllMessages(values);
@@ -13601,7 +13609,6 @@ public final class Dossier {
         return valueBuilder_;
       }
 
-      // optional .Visibility visibility = 3 [default = PUBLIC];
       private com.github.jleyba.dossier.proto.Dossier.Visibility visibility_ = com.github.jleyba.dossier.proto.Dossier.Visibility.PUBLIC;
       /**
        * <code>optional .Visibility visibility = 3 [default = PUBLIC];</code>
@@ -13648,10 +13655,10 @@ public final class Dossier {
     // @@protoc_insertion_point(class_scope:Enumeration)
   }
 
-  public interface JsTypeOrBuilder
-      extends com.google.protobuf.MessageOrBuilder {
+  public interface JsTypeOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:JsType)
+      com.google.protobuf.MessageOrBuilder {
 
-    // required string name = 1;
     /**
      * <code>required string name = 1;</code>
      */
@@ -13666,7 +13673,6 @@ public final class Dossier {
     com.google.protobuf.ByteString
         getNameBytes();
 
-    // required string source = 5;
     /**
      * <code>required string source = 5;</code>
      */
@@ -13681,7 +13687,6 @@ public final class Dossier {
     com.google.protobuf.ByteString
         getSourceBytes();
 
-    // required .JsType.NestedTypes nested = 6;
     /**
      * <code>required .JsType.NestedTypes nested = 6;</code>
      */
@@ -13695,7 +13700,6 @@ public final class Dossier {
      */
     com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypesOrBuilder getNestedOrBuilder();
 
-    // required .Comment description = 7;
     /**
      * <code>required .Comment description = 7;</code>
      */
@@ -13709,7 +13713,6 @@ public final class Dossier {
      */
     com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder getDescriptionOrBuilder();
 
-    // optional .Deprecation deprecation = 8;
     /**
      * <code>optional .Deprecation deprecation = 8;</code>
      */
@@ -13723,7 +13726,6 @@ public final class Dossier {
      */
     com.github.jleyba.dossier.proto.Dossier.DeprecationOrBuilder getDeprecationOrBuilder();
 
-    // repeated .JsType.TypeDef type_def = 9;
     /**
      * <code>repeated .JsType.TypeDef type_def = 9;</code>
      */
@@ -13748,7 +13750,6 @@ public final class Dossier {
     com.github.jleyba.dossier.proto.Dossier.JsType.TypeDefOrBuilder getTypeDefOrBuilder(
         int index);
 
-    // optional .Enumeration enumeration = 10;
     /**
      * <code>optional .Enumeration enumeration = 10;</code>
      */
@@ -13762,7 +13763,6 @@ public final class Dossier {
      */
     com.github.jleyba.dossier.proto.Dossier.EnumerationOrBuilder getEnumerationOrBuilder();
 
-    // repeated .Function static_function = 11;
     /**
      * <code>repeated .Function static_function = 11;</code>
      */
@@ -13787,7 +13787,6 @@ public final class Dossier {
     com.github.jleyba.dossier.proto.Dossier.FunctionOrBuilder getStaticFunctionOrBuilder(
         int index);
 
-    // repeated .Property static_property = 12;
     /**
      * <code>repeated .Property static_property = 12;</code>
      */
@@ -13812,7 +13811,6 @@ public final class Dossier {
     com.github.jleyba.dossier.proto.Dossier.PropertyOrBuilder getStaticPropertyOrBuilder(
         int index);
 
-    // optional .Function main_function = 13;
     /**
      * <code>optional .Function main_function = 13;</code>
      *
@@ -13844,7 +13842,6 @@ public final class Dossier {
      */
     com.github.jleyba.dossier.proto.Dossier.FunctionOrBuilder getMainFunctionOrBuilder();
 
-    // optional bool is_interface = 14;
     /**
      * <code>optional bool is_interface = 14;</code>
      *
@@ -13862,7 +13859,6 @@ public final class Dossier {
      */
     boolean getIsInterface();
 
-    // repeated .Prototype prototype = 15;
     /**
      * <code>repeated .Prototype prototype = 15;</code>
      *
@@ -13922,7 +13918,6 @@ public final class Dossier {
     com.github.jleyba.dossier.proto.Dossier.PrototypeOrBuilder getPrototypeOrBuilder(
         int index);
 
-    // optional bool has_instance_methods = 16 [default = false];
     /**
      * <code>optional bool has_instance_methods = 16 [default = false];</code>
      *
@@ -13942,7 +13937,6 @@ public final class Dossier {
      */
     boolean getHasInstanceMethods();
 
-    // optional bool has_instance_properties = 17 [default = false];
     /**
      * <code>optional bool has_instance_properties = 17 [default = false];</code>
      */
@@ -13952,7 +13946,6 @@ public final class Dossier {
      */
     boolean getHasInstanceProperties();
 
-    // repeated .TypeLink extended_type = 18;
     /**
      * <code>repeated .TypeLink extended_type = 18;</code>
      *
@@ -14002,7 +13995,6 @@ public final class Dossier {
     com.github.jleyba.dossier.proto.Dossier.TypeLinkOrBuilder getExtendedTypeOrBuilder(
         int index);
 
-    // repeated .TypeLink implemented_type = 19;
     /**
      * <code>repeated .TypeLink implemented_type = 19;</code>
      *
@@ -14052,7 +14044,6 @@ public final class Dossier {
     com.github.jleyba.dossier.proto.Dossier.TypeLinkOrBuilder getImplementedTypeOrBuilder(
         int index);
 
-    // repeated .Property compiler_constant = 20;
     /**
      * <code>repeated .Property compiler_constant = 20;</code>
      */
@@ -14077,7 +14068,6 @@ public final class Dossier {
     com.github.jleyba.dossier.proto.Dossier.PropertyOrBuilder getCompilerConstantOrBuilder(
         int index);
 
-    // optional bool is_module = 21;
     /**
      * <code>optional bool is_module = 21;</code>
      *
@@ -14095,7 +14085,6 @@ public final class Dossier {
      */
     boolean getIsModule();
 
-    // optional .TypeLink module = 22;
     /**
      * <code>optional .TypeLink module = 22;</code>
      *
@@ -14130,8 +14119,9 @@ public final class Dossier {
    * </pre>
    */
   public static final class JsType extends
-      com.google.protobuf.GeneratedMessage
-      implements JsTypeOrBuilder {
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:JsType)
+      JsTypeOrBuilder {
     // Use JsType.newBuilder() to construct.
     private JsType(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
@@ -14178,13 +14168,15 @@ public final class Dossier {
               break;
             }
             case 10: {
+              com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000001;
-              name_ = input.readBytes();
+              name_ = bs;
               break;
             }
             case 42: {
+              com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000002;
-              source_ = input.readBytes();
+              source_ = bs;
               break;
             }
             case 50: {
@@ -14401,10 +14393,10 @@ public final class Dossier {
       return PARSER;
     }
 
-    public interface NestedTypesOrBuilder
-        extends com.google.protobuf.MessageOrBuilder {
+    public interface NestedTypesOrBuilder extends
+        // @@protoc_insertion_point(interface_extends:JsType.NestedTypes)
+        com.google.protobuf.MessageOrBuilder {
 
-      // repeated .JsType.NestedTypes.TypeSummary interfaces = 1;
       /**
        * <code>repeated .JsType.NestedTypes.TypeSummary interfaces = 1;</code>
        */
@@ -14429,7 +14421,6 @@ public final class Dossier {
       com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummaryOrBuilder getInterfacesOrBuilder(
           int index);
 
-      // repeated .JsType.NestedTypes.TypeSummary classes = 2;
       /**
        * <code>repeated .JsType.NestedTypes.TypeSummary classes = 2;</code>
        */
@@ -14454,7 +14445,6 @@ public final class Dossier {
       com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummaryOrBuilder getClassesOrBuilder(
           int index);
 
-      // repeated .JsType.NestedTypes.TypeSummary enums = 3;
       /**
        * <code>repeated .JsType.NestedTypes.TypeSummary enums = 3;</code>
        */
@@ -14487,8 +14477,9 @@ public final class Dossier {
      * </pre>
      */
     public static final class NestedTypes extends
-        com.google.protobuf.GeneratedMessage
-        implements NestedTypesOrBuilder {
+        com.google.protobuf.GeneratedMessage implements
+        // @@protoc_insertion_point(message_implements:JsType.NestedTypes)
+        NestedTypesOrBuilder {
       // Use NestedTypes.newBuilder() to construct.
       private NestedTypes(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
         super(builder);
@@ -14606,10 +14597,10 @@ public final class Dossier {
         return PARSER;
       }
 
-      public interface TypeSummaryOrBuilder
-          extends com.google.protobuf.MessageOrBuilder {
+      public interface TypeSummaryOrBuilder extends
+          // @@protoc_insertion_point(interface_extends:JsType.NestedTypes.TypeSummary)
+          com.google.protobuf.MessageOrBuilder {
 
-        // required string name = 1;
         /**
          * <code>required string name = 1;</code>
          *
@@ -14636,7 +14627,6 @@ public final class Dossier {
         com.google.protobuf.ByteString
             getNameBytes();
 
-        // required string href = 2;
         /**
          * <code>required string href = 2;</code>
          *
@@ -14663,7 +14653,6 @@ public final class Dossier {
         com.google.protobuf.ByteString
             getHrefBytes();
 
-        // required .Comment summary = 3;
         /**
          * <code>required .Comment summary = 3;</code>
          *
@@ -14693,8 +14682,9 @@ public final class Dossier {
        * Protobuf type {@code JsType.NestedTypes.TypeSummary}
        */
       public static final class TypeSummary extends
-          com.google.protobuf.GeneratedMessage
-          implements TypeSummaryOrBuilder {
+          com.google.protobuf.GeneratedMessage implements
+          // @@protoc_insertion_point(message_implements:JsType.NestedTypes.TypeSummary)
+          TypeSummaryOrBuilder {
         // Use TypeSummary.newBuilder() to construct.
         private TypeSummary(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
           super(builder);
@@ -14741,13 +14731,15 @@ public final class Dossier {
                   break;
                 }
                 case 10: {
+                  com.google.protobuf.ByteString bs = input.readBytes();
                   bitField0_ |= 0x00000001;
-                  name_ = input.readBytes();
+                  name_ = bs;
                   break;
                 }
                 case 18: {
+                  com.google.protobuf.ByteString bs = input.readBytes();
                   bitField0_ |= 0x00000002;
-                  href_ = input.readBytes();
+                  href_ = bs;
                   break;
                 }
                 case 26: {
@@ -14803,7 +14795,6 @@ public final class Dossier {
         }
 
         private int bitField0_;
-        // required string name = 1;
         public static final int NAME_FIELD_NUMBER = 1;
         private java.lang.Object name_;
         /**
@@ -14858,7 +14849,6 @@ public final class Dossier {
           }
         }
 
-        // required string href = 2;
         public static final int HREF_FIELD_NUMBER = 2;
         private java.lang.Object href_;
         /**
@@ -14913,7 +14903,6 @@ public final class Dossier {
           }
         }
 
-        // required .Comment summary = 3;
         public static final int SUMMARY_FIELD_NUMBER = 3;
         private com.github.jleyba.dossier.proto.Dossier.Comment summary_;
         /**
@@ -14955,7 +14944,8 @@ public final class Dossier {
         private byte memoizedIsInitialized = -1;
         public final boolean isInitialized() {
           byte isInitialized = memoizedIsInitialized;
-          if (isInitialized != -1) return isInitialized == 1;
+          if (isInitialized == 1) return true;
+          if (isInitialized == 0) return false;
 
           if (!hasName()) {
             memoizedIsInitialized = 0;
@@ -15092,8 +15082,9 @@ public final class Dossier {
          * Protobuf type {@code JsType.NestedTypes.TypeSummary}
          */
         public static final class Builder extends
-            com.google.protobuf.GeneratedMessage.Builder<Builder>
-           implements com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummaryOrBuilder {
+            com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+            // @@protoc_insertion_point(builder_implements:JsType.NestedTypes.TypeSummary)
+            com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummaryOrBuilder {
           public static final com.google.protobuf.Descriptors.Descriptor
               getDescriptor() {
             return com.github.jleyba.dossier.proto.Dossier.internal_static_JsType_NestedTypes_TypeSummary_descriptor;
@@ -15253,7 +15244,6 @@ public final class Dossier {
           }
           private int bitField0_;
 
-          // required string name = 1;
           private java.lang.Object name_ = "";
           /**
            * <code>required string name = 1;</code>
@@ -15275,9 +15265,12 @@ public final class Dossier {
           public java.lang.String getName() {
             java.lang.Object ref = name_;
             if (!(ref instanceof java.lang.String)) {
-              java.lang.String s = ((com.google.protobuf.ByteString) ref)
-                  .toStringUtf8();
-              name_ = s;
+              com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+              java.lang.String s = bs.toStringUtf8();
+              if (bs.isValidUtf8()) {
+                name_ = s;
+              }
               return s;
             } else {
               return (java.lang.String) ref;
@@ -15351,7 +15344,6 @@ public final class Dossier {
             return this;
           }
 
-          // required string href = 2;
           private java.lang.Object href_ = "";
           /**
            * <code>required string href = 2;</code>
@@ -15373,9 +15365,12 @@ public final class Dossier {
           public java.lang.String getHref() {
             java.lang.Object ref = href_;
             if (!(ref instanceof java.lang.String)) {
-              java.lang.String s = ((com.google.protobuf.ByteString) ref)
-                  .toStringUtf8();
-              href_ = s;
+              com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+              java.lang.String s = bs.toStringUtf8();
+              if (bs.isValidUtf8()) {
+                href_ = s;
+              }
               return s;
             } else {
               return (java.lang.String) ref;
@@ -15449,7 +15444,6 @@ public final class Dossier {
             return this;
           }
 
-          // required .Comment summary = 3;
           private com.github.jleyba.dossier.proto.Dossier.Comment summary_ = com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance();
           private com.google.protobuf.SingleFieldBuilder<
               com.github.jleyba.dossier.proto.Dossier.Comment, com.github.jleyba.dossier.proto.Dossier.Comment.Builder, com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder> summaryBuilder_;
@@ -15594,7 +15588,7 @@ public final class Dossier {
             if (summaryBuilder_ == null) {
               summaryBuilder_ = new com.google.protobuf.SingleFieldBuilder<
                   com.github.jleyba.dossier.proto.Dossier.Comment, com.github.jleyba.dossier.proto.Dossier.Comment.Builder, com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder>(
-                      summary_,
+                      getSummary(),
                       getParentForChildren(),
                       isClean());
               summary_ = null;
@@ -15613,7 +15607,6 @@ public final class Dossier {
         // @@protoc_insertion_point(class_scope:JsType.NestedTypes.TypeSummary)
       }
 
-      // repeated .JsType.NestedTypes.TypeSummary interfaces = 1;
       public static final int INTERFACES_FIELD_NUMBER = 1;
       private java.util.List<com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary> interfaces_;
       /**
@@ -15649,7 +15642,6 @@ public final class Dossier {
         return interfaces_.get(index);
       }
 
-      // repeated .JsType.NestedTypes.TypeSummary classes = 2;
       public static final int CLASSES_FIELD_NUMBER = 2;
       private java.util.List<com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary> classes_;
       /**
@@ -15685,7 +15677,6 @@ public final class Dossier {
         return classes_.get(index);
       }
 
-      // repeated .JsType.NestedTypes.TypeSummary enums = 3;
       public static final int ENUMS_FIELD_NUMBER = 3;
       private java.util.List<com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary> enums_;
       /**
@@ -15729,7 +15720,8 @@ public final class Dossier {
       private byte memoizedIsInitialized = -1;
       public final boolean isInitialized() {
         byte isInitialized = memoizedIsInitialized;
-        if (isInitialized != -1) return isInitialized == 1;
+        if (isInitialized == 1) return true;
+        if (isInitialized == 0) return false;
 
         for (int i = 0; i < getInterfacesCount(); i++) {
           if (!getInterfaces(i).isInitialized()) {
@@ -15872,8 +15864,9 @@ public final class Dossier {
        * </pre>
        */
       public static final class Builder extends
-          com.google.protobuf.GeneratedMessage.Builder<Builder>
-         implements com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypesOrBuilder {
+          com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+          // @@protoc_insertion_point(builder_implements:JsType.NestedTypes)
+          com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypesOrBuilder {
         public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
           return com.github.jleyba.dossier.proto.Dossier.internal_static_JsType_NestedTypes_descriptor;
@@ -16119,7 +16112,6 @@ public final class Dossier {
         }
         private int bitField0_;
 
-        // repeated .JsType.NestedTypes.TypeSummary interfaces = 1;
         private java.util.List<com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary> interfaces_ =
           java.util.Collections.emptyList();
         private void ensureInterfacesIsMutable() {
@@ -16261,7 +16253,8 @@ public final class Dossier {
             java.lang.Iterable<? extends com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary> values) {
           if (interfacesBuilder_ == null) {
             ensureInterfacesIsMutable();
-            super.addAll(values, interfaces_);
+            com.google.protobuf.AbstractMessageLite.Builder.addAll(
+                values, interfaces_);
             onChanged();
           } else {
             interfacesBuilder_.addAllMessages(values);
@@ -16359,7 +16352,6 @@ public final class Dossier {
           return interfacesBuilder_;
         }
 
-        // repeated .JsType.NestedTypes.TypeSummary classes = 2;
         private java.util.List<com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary> classes_ =
           java.util.Collections.emptyList();
         private void ensureClassesIsMutable() {
@@ -16501,7 +16493,8 @@ public final class Dossier {
             java.lang.Iterable<? extends com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary> values) {
           if (classesBuilder_ == null) {
             ensureClassesIsMutable();
-            super.addAll(values, classes_);
+            com.google.protobuf.AbstractMessageLite.Builder.addAll(
+                values, classes_);
             onChanged();
           } else {
             classesBuilder_.addAllMessages(values);
@@ -16599,7 +16592,6 @@ public final class Dossier {
           return classesBuilder_;
         }
 
-        // repeated .JsType.NestedTypes.TypeSummary enums = 3;
         private java.util.List<com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary> enums_ =
           java.util.Collections.emptyList();
         private void ensureEnumsIsMutable() {
@@ -16741,7 +16733,8 @@ public final class Dossier {
             java.lang.Iterable<? extends com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary> values) {
           if (enumsBuilder_ == null) {
             ensureEnumsIsMutable();
-            super.addAll(values, enums_);
+            com.google.protobuf.AbstractMessageLite.Builder.addAll(
+                values, enums_);
             onChanged();
           } else {
             enumsBuilder_.addAllMessages(values);
@@ -16850,10 +16843,10 @@ public final class Dossier {
       // @@protoc_insertion_point(class_scope:JsType.NestedTypes)
     }
 
-    public interface TypeDefOrBuilder
-        extends com.google.protobuf.MessageOrBuilder {
+    public interface TypeDefOrBuilder extends
+        // @@protoc_insertion_point(interface_extends:JsType.TypeDef)
+        com.google.protobuf.MessageOrBuilder {
 
-      // required string name = 1;
       /**
        * <code>required string name = 1;</code>
        */
@@ -16868,7 +16861,6 @@ public final class Dossier {
       com.google.protobuf.ByteString
           getNameBytes();
 
-      // required string type_html = 2;
       /**
        * <code>required string type_html = 2;</code>
        */
@@ -16883,7 +16875,6 @@ public final class Dossier {
       com.google.protobuf.ByteString
           getTypeHtmlBytes();
 
-      // required string href = 3;
       /**
        * <code>required string href = 3;</code>
        */
@@ -16898,7 +16889,6 @@ public final class Dossier {
       com.google.protobuf.ByteString
           getHrefBytes();
 
-      // required .Comment description = 4;
       /**
        * <code>required .Comment description = 4;</code>
        */
@@ -16912,7 +16902,6 @@ public final class Dossier {
        */
       com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder getDescriptionOrBuilder();
 
-      // optional .Deprecation deprecation = 5;
       /**
        * <code>optional .Deprecation deprecation = 5;</code>
        */
@@ -16926,7 +16915,6 @@ public final class Dossier {
        */
       com.github.jleyba.dossier.proto.Dossier.DeprecationOrBuilder getDeprecationOrBuilder();
 
-      // optional .Visibility visibility = 6 [default = PUBLIC];
       /**
        * <code>optional .Visibility visibility = 6 [default = PUBLIC];</code>
        */
@@ -16944,8 +16932,9 @@ public final class Dossier {
      * </pre>
      */
     public static final class TypeDef extends
-        com.google.protobuf.GeneratedMessage
-        implements TypeDefOrBuilder {
+        com.google.protobuf.GeneratedMessage implements
+        // @@protoc_insertion_point(message_implements:JsType.TypeDef)
+        TypeDefOrBuilder {
       // Use TypeDef.newBuilder() to construct.
       private TypeDef(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
         super(builder);
@@ -16992,18 +16981,21 @@ public final class Dossier {
                 break;
               }
               case 10: {
+                com.google.protobuf.ByteString bs = input.readBytes();
                 bitField0_ |= 0x00000001;
-                name_ = input.readBytes();
+                name_ = bs;
                 break;
               }
               case 18: {
+                com.google.protobuf.ByteString bs = input.readBytes();
                 bitField0_ |= 0x00000002;
-                typeHtml_ = input.readBytes();
+                typeHtml_ = bs;
                 break;
               }
               case 26: {
+                com.google.protobuf.ByteString bs = input.readBytes();
                 bitField0_ |= 0x00000004;
-                href_ = input.readBytes();
+                href_ = bs;
                 break;
               }
               case 34: {
@@ -17083,7 +17075,6 @@ public final class Dossier {
       }
 
       private int bitField0_;
-      // required string name = 1;
       public static final int NAME_FIELD_NUMBER = 1;
       private java.lang.Object name_;
       /**
@@ -17126,7 +17117,6 @@ public final class Dossier {
         }
       }
 
-      // required string type_html = 2;
       public static final int TYPE_HTML_FIELD_NUMBER = 2;
       private java.lang.Object typeHtml_;
       /**
@@ -17169,7 +17159,6 @@ public final class Dossier {
         }
       }
 
-      // required string href = 3;
       public static final int HREF_FIELD_NUMBER = 3;
       private java.lang.Object href_;
       /**
@@ -17212,7 +17201,6 @@ public final class Dossier {
         }
       }
 
-      // required .Comment description = 4;
       public static final int DESCRIPTION_FIELD_NUMBER = 4;
       private com.github.jleyba.dossier.proto.Dossier.Comment description_;
       /**
@@ -17234,7 +17222,6 @@ public final class Dossier {
         return description_;
       }
 
-      // optional .Deprecation deprecation = 5;
       public static final int DEPRECATION_FIELD_NUMBER = 5;
       private com.github.jleyba.dossier.proto.Dossier.Deprecation deprecation_;
       /**
@@ -17256,7 +17243,6 @@ public final class Dossier {
         return deprecation_;
       }
 
-      // optional .Visibility visibility = 6 [default = PUBLIC];
       public static final int VISIBILITY_FIELD_NUMBER = 6;
       private com.github.jleyba.dossier.proto.Dossier.Visibility visibility_;
       /**
@@ -17283,7 +17269,8 @@ public final class Dossier {
       private byte memoizedIsInitialized = -1;
       public final boolean isInitialized() {
         byte isInitialized = memoizedIsInitialized;
-        if (isInitialized != -1) return isInitialized == 1;
+        if (isInitialized == 1) return true;
+        if (isInitialized == 0) return false;
 
         if (!hasName()) {
           memoizedIsInitialized = 0;
@@ -17455,8 +17442,9 @@ public final class Dossier {
        * </pre>
        */
       public static final class Builder extends
-          com.google.protobuf.GeneratedMessage.Builder<Builder>
-         implements com.github.jleyba.dossier.proto.Dossier.JsType.TypeDefOrBuilder {
+          com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+          // @@protoc_insertion_point(builder_implements:JsType.TypeDef)
+          com.github.jleyba.dossier.proto.Dossier.JsType.TypeDefOrBuilder {
         public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
           return com.github.jleyba.dossier.proto.Dossier.internal_static_JsType_TypeDef_descriptor;
@@ -17664,7 +17652,6 @@ public final class Dossier {
         }
         private int bitField0_;
 
-        // required string name = 1;
         private java.lang.Object name_ = "";
         /**
          * <code>required string name = 1;</code>
@@ -17678,9 +17665,12 @@ public final class Dossier {
         public java.lang.String getName() {
           java.lang.Object ref = name_;
           if (!(ref instanceof java.lang.String)) {
-            java.lang.String s = ((com.google.protobuf.ByteString) ref)
-                .toStringUtf8();
-            name_ = s;
+            com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+            java.lang.String s = bs.toStringUtf8();
+            if (bs.isValidUtf8()) {
+              name_ = s;
+            }
             return s;
           } else {
             return (java.lang.String) ref;
@@ -17738,7 +17728,6 @@ public final class Dossier {
           return this;
         }
 
-        // required string type_html = 2;
         private java.lang.Object typeHtml_ = "";
         /**
          * <code>required string type_html = 2;</code>
@@ -17752,9 +17741,12 @@ public final class Dossier {
         public java.lang.String getTypeHtml() {
           java.lang.Object ref = typeHtml_;
           if (!(ref instanceof java.lang.String)) {
-            java.lang.String s = ((com.google.protobuf.ByteString) ref)
-                .toStringUtf8();
-            typeHtml_ = s;
+            com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+            java.lang.String s = bs.toStringUtf8();
+            if (bs.isValidUtf8()) {
+              typeHtml_ = s;
+            }
             return s;
           } else {
             return (java.lang.String) ref;
@@ -17812,7 +17804,6 @@ public final class Dossier {
           return this;
         }
 
-        // required string href = 3;
         private java.lang.Object href_ = "";
         /**
          * <code>required string href = 3;</code>
@@ -17826,9 +17817,12 @@ public final class Dossier {
         public java.lang.String getHref() {
           java.lang.Object ref = href_;
           if (!(ref instanceof java.lang.String)) {
-            java.lang.String s = ((com.google.protobuf.ByteString) ref)
-                .toStringUtf8();
-            href_ = s;
+            com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+            java.lang.String s = bs.toStringUtf8();
+            if (bs.isValidUtf8()) {
+              href_ = s;
+            }
             return s;
           } else {
             return (java.lang.String) ref;
@@ -17886,7 +17880,6 @@ public final class Dossier {
           return this;
         }
 
-        // required .Comment description = 4;
         private com.github.jleyba.dossier.proto.Dossier.Comment description_ = com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance();
         private com.google.protobuf.SingleFieldBuilder<
             com.github.jleyba.dossier.proto.Dossier.Comment, com.github.jleyba.dossier.proto.Dossier.Comment.Builder, com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder> descriptionBuilder_;
@@ -17995,7 +17988,7 @@ public final class Dossier {
           if (descriptionBuilder_ == null) {
             descriptionBuilder_ = new com.google.protobuf.SingleFieldBuilder<
                 com.github.jleyba.dossier.proto.Dossier.Comment, com.github.jleyba.dossier.proto.Dossier.Comment.Builder, com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder>(
-                    description_,
+                    getDescription(),
                     getParentForChildren(),
                     isClean());
             description_ = null;
@@ -18003,7 +17996,6 @@ public final class Dossier {
           return descriptionBuilder_;
         }
 
-        // optional .Deprecation deprecation = 5;
         private com.github.jleyba.dossier.proto.Dossier.Deprecation deprecation_ = com.github.jleyba.dossier.proto.Dossier.Deprecation.getDefaultInstance();
         private com.google.protobuf.SingleFieldBuilder<
             com.github.jleyba.dossier.proto.Dossier.Deprecation, com.github.jleyba.dossier.proto.Dossier.Deprecation.Builder, com.github.jleyba.dossier.proto.Dossier.DeprecationOrBuilder> deprecationBuilder_;
@@ -18112,7 +18104,7 @@ public final class Dossier {
           if (deprecationBuilder_ == null) {
             deprecationBuilder_ = new com.google.protobuf.SingleFieldBuilder<
                 com.github.jleyba.dossier.proto.Dossier.Deprecation, com.github.jleyba.dossier.proto.Dossier.Deprecation.Builder, com.github.jleyba.dossier.proto.Dossier.DeprecationOrBuilder>(
-                    deprecation_,
+                    getDeprecation(),
                     getParentForChildren(),
                     isClean());
             deprecation_ = null;
@@ -18120,7 +18112,6 @@ public final class Dossier {
           return deprecationBuilder_;
         }
 
-        // optional .Visibility visibility = 6 [default = PUBLIC];
         private com.github.jleyba.dossier.proto.Dossier.Visibility visibility_ = com.github.jleyba.dossier.proto.Dossier.Visibility.PUBLIC;
         /**
          * <code>optional .Visibility visibility = 6 [default = PUBLIC];</code>
@@ -18168,7 +18159,6 @@ public final class Dossier {
     }
 
     private int bitField0_;
-    // required string name = 1;
     public static final int NAME_FIELD_NUMBER = 1;
     private java.lang.Object name_;
     /**
@@ -18211,7 +18201,6 @@ public final class Dossier {
       }
     }
 
-    // required string source = 5;
     public static final int SOURCE_FIELD_NUMBER = 5;
     private java.lang.Object source_;
     /**
@@ -18254,7 +18243,6 @@ public final class Dossier {
       }
     }
 
-    // required .JsType.NestedTypes nested = 6;
     public static final int NESTED_FIELD_NUMBER = 6;
     private com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes nested_;
     /**
@@ -18276,7 +18264,6 @@ public final class Dossier {
       return nested_;
     }
 
-    // required .Comment description = 7;
     public static final int DESCRIPTION_FIELD_NUMBER = 7;
     private com.github.jleyba.dossier.proto.Dossier.Comment description_;
     /**
@@ -18298,7 +18285,6 @@ public final class Dossier {
       return description_;
     }
 
-    // optional .Deprecation deprecation = 8;
     public static final int DEPRECATION_FIELD_NUMBER = 8;
     private com.github.jleyba.dossier.proto.Dossier.Deprecation deprecation_;
     /**
@@ -18320,7 +18306,6 @@ public final class Dossier {
       return deprecation_;
     }
 
-    // repeated .JsType.TypeDef type_def = 9;
     public static final int TYPE_DEF_FIELD_NUMBER = 9;
     private java.util.List<com.github.jleyba.dossier.proto.Dossier.JsType.TypeDef> typeDef_;
     /**
@@ -18356,7 +18341,6 @@ public final class Dossier {
       return typeDef_.get(index);
     }
 
-    // optional .Enumeration enumeration = 10;
     public static final int ENUMERATION_FIELD_NUMBER = 10;
     private com.github.jleyba.dossier.proto.Dossier.Enumeration enumeration_;
     /**
@@ -18378,7 +18362,6 @@ public final class Dossier {
       return enumeration_;
     }
 
-    // repeated .Function static_function = 11;
     public static final int STATIC_FUNCTION_FIELD_NUMBER = 11;
     private java.util.List<com.github.jleyba.dossier.proto.Dossier.Function> staticFunction_;
     /**
@@ -18414,7 +18397,6 @@ public final class Dossier {
       return staticFunction_.get(index);
     }
 
-    // repeated .Property static_property = 12;
     public static final int STATIC_PROPERTY_FIELD_NUMBER = 12;
     private java.util.List<com.github.jleyba.dossier.proto.Dossier.Property> staticProperty_;
     /**
@@ -18450,7 +18432,6 @@ public final class Dossier {
       return staticProperty_.get(index);
     }
 
-    // optional .Function main_function = 13;
     public static final int MAIN_FUNCTION_FIELD_NUMBER = 13;
     private com.github.jleyba.dossier.proto.Dossier.Function mainFunction_;
     /**
@@ -18490,7 +18471,6 @@ public final class Dossier {
       return mainFunction_;
     }
 
-    // optional bool is_interface = 14;
     public static final int IS_INTERFACE_FIELD_NUMBER = 14;
     private boolean isInterface_;
     /**
@@ -18514,7 +18494,6 @@ public final class Dossier {
       return isInterface_;
     }
 
-    // repeated .Prototype prototype = 15;
     public static final int PROTOTYPE_FIELD_NUMBER = 15;
     private java.util.List<com.github.jleyba.dossier.proto.Dossier.Prototype> prototype_;
     /**
@@ -18585,7 +18564,6 @@ public final class Dossier {
       return prototype_.get(index);
     }
 
-    // optional bool has_instance_methods = 16 [default = false];
     public static final int HAS_INSTANCE_METHODS_FIELD_NUMBER = 16;
     private boolean hasInstanceMethods_;
     /**
@@ -18611,7 +18589,6 @@ public final class Dossier {
       return hasInstanceMethods_;
     }
 
-    // optional bool has_instance_properties = 17 [default = false];
     public static final int HAS_INSTANCE_PROPERTIES_FIELD_NUMBER = 17;
     private boolean hasInstanceProperties_;
     /**
@@ -18627,7 +18604,6 @@ public final class Dossier {
       return hasInstanceProperties_;
     }
 
-    // repeated .TypeLink extended_type = 18;
     public static final int EXTENDED_TYPE_FIELD_NUMBER = 18;
     private java.util.List<com.github.jleyba.dossier.proto.Dossier.TypeLink> extendedType_;
     /**
@@ -18688,7 +18664,6 @@ public final class Dossier {
       return extendedType_.get(index);
     }
 
-    // repeated .TypeLink implemented_type = 19;
     public static final int IMPLEMENTED_TYPE_FIELD_NUMBER = 19;
     private java.util.List<com.github.jleyba.dossier.proto.Dossier.TypeLink> implementedType_;
     /**
@@ -18749,7 +18724,6 @@ public final class Dossier {
       return implementedType_.get(index);
     }
 
-    // repeated .Property compiler_constant = 20;
     public static final int COMPILER_CONSTANT_FIELD_NUMBER = 20;
     private java.util.List<com.github.jleyba.dossier.proto.Dossier.Property> compilerConstant_;
     /**
@@ -18785,7 +18759,6 @@ public final class Dossier {
       return compilerConstant_.get(index);
     }
 
-    // optional bool is_module = 21;
     public static final int IS_MODULE_FIELD_NUMBER = 21;
     private boolean isModule_;
     /**
@@ -18809,7 +18782,6 @@ public final class Dossier {
       return isModule_;
     }
 
-    // optional .TypeLink module = 22;
     public static final int MODULE_FIELD_NUMBER = 22;
     private com.github.jleyba.dossier.proto.Dossier.TypeLink module_;
     /**
@@ -18867,7 +18839,8 @@ public final class Dossier {
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized != -1) return isInitialized == 1;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
 
       if (!hasName()) {
         memoizedIsInitialized = 0;
@@ -19195,8 +19168,9 @@ public final class Dossier {
      * </pre>
      */
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder>
-       implements com.github.jleyba.dossier.proto.Dossier.JsTypeOrBuilder {
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:JsType)
+        com.github.jleyba.dossier.proto.Dossier.JsTypeOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
         return com.github.jleyba.dossier.proto.Dossier.internal_static_JsType_descriptor;
@@ -19850,7 +19824,6 @@ public final class Dossier {
       }
       private int bitField0_;
 
-      // required string name = 1;
       private java.lang.Object name_ = "";
       /**
        * <code>required string name = 1;</code>
@@ -19864,9 +19837,12 @@ public final class Dossier {
       public java.lang.String getName() {
         java.lang.Object ref = name_;
         if (!(ref instanceof java.lang.String)) {
-          java.lang.String s = ((com.google.protobuf.ByteString) ref)
-              .toStringUtf8();
-          name_ = s;
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            name_ = s;
+          }
           return s;
         } else {
           return (java.lang.String) ref;
@@ -19924,7 +19900,6 @@ public final class Dossier {
         return this;
       }
 
-      // required string source = 5;
       private java.lang.Object source_ = "";
       /**
        * <code>required string source = 5;</code>
@@ -19938,9 +19913,12 @@ public final class Dossier {
       public java.lang.String getSource() {
         java.lang.Object ref = source_;
         if (!(ref instanceof java.lang.String)) {
-          java.lang.String s = ((com.google.protobuf.ByteString) ref)
-              .toStringUtf8();
-          source_ = s;
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            source_ = s;
+          }
           return s;
         } else {
           return (java.lang.String) ref;
@@ -19998,7 +19976,6 @@ public final class Dossier {
         return this;
       }
 
-      // required .JsType.NestedTypes nested = 6;
       private com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes nested_ = com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes, com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.Builder, com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypesOrBuilder> nestedBuilder_;
@@ -20107,7 +20084,7 @@ public final class Dossier {
         if (nestedBuilder_ == null) {
           nestedBuilder_ = new com.google.protobuf.SingleFieldBuilder<
               com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes, com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.Builder, com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypesOrBuilder>(
-                  nested_,
+                  getNested(),
                   getParentForChildren(),
                   isClean());
           nested_ = null;
@@ -20115,7 +20092,6 @@ public final class Dossier {
         return nestedBuilder_;
       }
 
-      // required .Comment description = 7;
       private com.github.jleyba.dossier.proto.Dossier.Comment description_ = com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           com.github.jleyba.dossier.proto.Dossier.Comment, com.github.jleyba.dossier.proto.Dossier.Comment.Builder, com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder> descriptionBuilder_;
@@ -20224,7 +20200,7 @@ public final class Dossier {
         if (descriptionBuilder_ == null) {
           descriptionBuilder_ = new com.google.protobuf.SingleFieldBuilder<
               com.github.jleyba.dossier.proto.Dossier.Comment, com.github.jleyba.dossier.proto.Dossier.Comment.Builder, com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder>(
-                  description_,
+                  getDescription(),
                   getParentForChildren(),
                   isClean());
           description_ = null;
@@ -20232,7 +20208,6 @@ public final class Dossier {
         return descriptionBuilder_;
       }
 
-      // optional .Deprecation deprecation = 8;
       private com.github.jleyba.dossier.proto.Dossier.Deprecation deprecation_ = com.github.jleyba.dossier.proto.Dossier.Deprecation.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           com.github.jleyba.dossier.proto.Dossier.Deprecation, com.github.jleyba.dossier.proto.Dossier.Deprecation.Builder, com.github.jleyba.dossier.proto.Dossier.DeprecationOrBuilder> deprecationBuilder_;
@@ -20341,7 +20316,7 @@ public final class Dossier {
         if (deprecationBuilder_ == null) {
           deprecationBuilder_ = new com.google.protobuf.SingleFieldBuilder<
               com.github.jleyba.dossier.proto.Dossier.Deprecation, com.github.jleyba.dossier.proto.Dossier.Deprecation.Builder, com.github.jleyba.dossier.proto.Dossier.DeprecationOrBuilder>(
-                  deprecation_,
+                  getDeprecation(),
                   getParentForChildren(),
                   isClean());
           deprecation_ = null;
@@ -20349,7 +20324,6 @@ public final class Dossier {
         return deprecationBuilder_;
       }
 
-      // repeated .JsType.TypeDef type_def = 9;
       private java.util.List<com.github.jleyba.dossier.proto.Dossier.JsType.TypeDef> typeDef_ =
         java.util.Collections.emptyList();
       private void ensureTypeDefIsMutable() {
@@ -20491,7 +20465,8 @@ public final class Dossier {
           java.lang.Iterable<? extends com.github.jleyba.dossier.proto.Dossier.JsType.TypeDef> values) {
         if (typeDefBuilder_ == null) {
           ensureTypeDefIsMutable();
-          super.addAll(values, typeDef_);
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, typeDef_);
           onChanged();
         } else {
           typeDefBuilder_.addAllMessages(values);
@@ -20589,7 +20564,6 @@ public final class Dossier {
         return typeDefBuilder_;
       }
 
-      // optional .Enumeration enumeration = 10;
       private com.github.jleyba.dossier.proto.Dossier.Enumeration enumeration_ = com.github.jleyba.dossier.proto.Dossier.Enumeration.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           com.github.jleyba.dossier.proto.Dossier.Enumeration, com.github.jleyba.dossier.proto.Dossier.Enumeration.Builder, com.github.jleyba.dossier.proto.Dossier.EnumerationOrBuilder> enumerationBuilder_;
@@ -20698,7 +20672,7 @@ public final class Dossier {
         if (enumerationBuilder_ == null) {
           enumerationBuilder_ = new com.google.protobuf.SingleFieldBuilder<
               com.github.jleyba.dossier.proto.Dossier.Enumeration, com.github.jleyba.dossier.proto.Dossier.Enumeration.Builder, com.github.jleyba.dossier.proto.Dossier.EnumerationOrBuilder>(
-                  enumeration_,
+                  getEnumeration(),
                   getParentForChildren(),
                   isClean());
           enumeration_ = null;
@@ -20706,7 +20680,6 @@ public final class Dossier {
         return enumerationBuilder_;
       }
 
-      // repeated .Function static_function = 11;
       private java.util.List<com.github.jleyba.dossier.proto.Dossier.Function> staticFunction_ =
         java.util.Collections.emptyList();
       private void ensureStaticFunctionIsMutable() {
@@ -20848,7 +20821,8 @@ public final class Dossier {
           java.lang.Iterable<? extends com.github.jleyba.dossier.proto.Dossier.Function> values) {
         if (staticFunctionBuilder_ == null) {
           ensureStaticFunctionIsMutable();
-          super.addAll(values, staticFunction_);
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, staticFunction_);
           onChanged();
         } else {
           staticFunctionBuilder_.addAllMessages(values);
@@ -20946,7 +20920,6 @@ public final class Dossier {
         return staticFunctionBuilder_;
       }
 
-      // repeated .Property static_property = 12;
       private java.util.List<com.github.jleyba.dossier.proto.Dossier.Property> staticProperty_ =
         java.util.Collections.emptyList();
       private void ensureStaticPropertyIsMutable() {
@@ -21088,7 +21061,8 @@ public final class Dossier {
           java.lang.Iterable<? extends com.github.jleyba.dossier.proto.Dossier.Property> values) {
         if (staticPropertyBuilder_ == null) {
           ensureStaticPropertyIsMutable();
-          super.addAll(values, staticProperty_);
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, staticProperty_);
           onChanged();
         } else {
           staticPropertyBuilder_.addAllMessages(values);
@@ -21186,7 +21160,6 @@ public final class Dossier {
         return staticPropertyBuilder_;
       }
 
-      // optional .Function main_function = 13;
       private com.github.jleyba.dossier.proto.Dossier.Function mainFunction_ = com.github.jleyba.dossier.proto.Dossier.Function.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           com.github.jleyba.dossier.proto.Dossier.Function, com.github.jleyba.dossier.proto.Dossier.Function.Builder, com.github.jleyba.dossier.proto.Dossier.FunctionOrBuilder> mainFunctionBuilder_;
@@ -21349,7 +21322,7 @@ public final class Dossier {
         if (mainFunctionBuilder_ == null) {
           mainFunctionBuilder_ = new com.google.protobuf.SingleFieldBuilder<
               com.github.jleyba.dossier.proto.Dossier.Function, com.github.jleyba.dossier.proto.Dossier.Function.Builder, com.github.jleyba.dossier.proto.Dossier.FunctionOrBuilder>(
-                  mainFunction_,
+                  getMainFunction(),
                   getParentForChildren(),
                   isClean());
           mainFunction_ = null;
@@ -21357,7 +21330,6 @@ public final class Dossier {
         return mainFunctionBuilder_;
       }
 
-      // optional bool is_interface = 14;
       private boolean isInterface_ ;
       /**
        * <code>optional bool is_interface = 14;</code>
@@ -21406,7 +21378,6 @@ public final class Dossier {
         return this;
       }
 
-      // repeated .Prototype prototype = 15;
       private java.util.List<com.github.jleyba.dossier.proto.Dossier.Prototype> prototype_ =
         java.util.Collections.emptyList();
       private void ensurePrototypeIsMutable() {
@@ -21618,7 +21589,8 @@ public final class Dossier {
           java.lang.Iterable<? extends com.github.jleyba.dossier.proto.Dossier.Prototype> values) {
         if (prototypeBuilder_ == null) {
           ensurePrototypeIsMutable();
-          super.addAll(values, prototype_);
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, prototype_);
           onChanged();
         } else {
           prototypeBuilder_.addAllMessages(values);
@@ -21772,7 +21744,6 @@ public final class Dossier {
         return prototypeBuilder_;
       }
 
-      // optional bool has_instance_methods = 16 [default = false];
       private boolean hasInstanceMethods_ ;
       /**
        * <code>optional bool has_instance_methods = 16 [default = false];</code>
@@ -21825,7 +21796,6 @@ public final class Dossier {
         return this;
       }
 
-      // optional bool has_instance_properties = 17 [default = false];
       private boolean hasInstanceProperties_ ;
       /**
        * <code>optional bool has_instance_properties = 17 [default = false];</code>
@@ -21858,7 +21828,6 @@ public final class Dossier {
         return this;
       }
 
-      // repeated .TypeLink extended_type = 18;
       private java.util.List<com.github.jleyba.dossier.proto.Dossier.TypeLink> extendedType_ =
         java.util.Collections.emptyList();
       private void ensureExtendedTypeIsMutable() {
@@ -22050,7 +22019,8 @@ public final class Dossier {
           java.lang.Iterable<? extends com.github.jleyba.dossier.proto.Dossier.TypeLink> values) {
         if (extendedTypeBuilder_ == null) {
           ensureExtendedTypeIsMutable();
-          super.addAll(values, extendedType_);
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, extendedType_);
           onChanged();
         } else {
           extendedTypeBuilder_.addAllMessages(values);
@@ -22188,7 +22158,6 @@ public final class Dossier {
         return extendedTypeBuilder_;
       }
 
-      // repeated .TypeLink implemented_type = 19;
       private java.util.List<com.github.jleyba.dossier.proto.Dossier.TypeLink> implementedType_ =
         java.util.Collections.emptyList();
       private void ensureImplementedTypeIsMutable() {
@@ -22380,7 +22349,8 @@ public final class Dossier {
           java.lang.Iterable<? extends com.github.jleyba.dossier.proto.Dossier.TypeLink> values) {
         if (implementedTypeBuilder_ == null) {
           ensureImplementedTypeIsMutable();
-          super.addAll(values, implementedType_);
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, implementedType_);
           onChanged();
         } else {
           implementedTypeBuilder_.addAllMessages(values);
@@ -22518,7 +22488,6 @@ public final class Dossier {
         return implementedTypeBuilder_;
       }
 
-      // repeated .Property compiler_constant = 20;
       private java.util.List<com.github.jleyba.dossier.proto.Dossier.Property> compilerConstant_ =
         java.util.Collections.emptyList();
       private void ensureCompilerConstantIsMutable() {
@@ -22660,7 +22629,8 @@ public final class Dossier {
           java.lang.Iterable<? extends com.github.jleyba.dossier.proto.Dossier.Property> values) {
         if (compilerConstantBuilder_ == null) {
           ensureCompilerConstantIsMutable();
-          super.addAll(values, compilerConstant_);
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, compilerConstant_);
           onChanged();
         } else {
           compilerConstantBuilder_.addAllMessages(values);
@@ -22758,7 +22728,6 @@ public final class Dossier {
         return compilerConstantBuilder_;
       }
 
-      // optional bool is_module = 21;
       private boolean isModule_ ;
       /**
        * <code>optional bool is_module = 21;</code>
@@ -22807,7 +22776,6 @@ public final class Dossier {
         return this;
       }
 
-      // optional .TypeLink module = 22;
       private com.github.jleyba.dossier.proto.Dossier.TypeLink module_ = com.github.jleyba.dossier.proto.Dossier.TypeLink.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           com.github.jleyba.dossier.proto.Dossier.TypeLink, com.github.jleyba.dossier.proto.Dossier.TypeLink.Builder, com.github.jleyba.dossier.proto.Dossier.TypeLinkOrBuilder> moduleBuilder_;
@@ -22952,7 +22920,7 @@ public final class Dossier {
         if (moduleBuilder_ == null) {
           moduleBuilder_ = new com.google.protobuf.SingleFieldBuilder<
               com.github.jleyba.dossier.proto.Dossier.TypeLink, com.github.jleyba.dossier.proto.Dossier.TypeLink.Builder, com.github.jleyba.dossier.proto.Dossier.TypeLinkOrBuilder>(
-                  module_,
+                  getModule(),
                   getParentForChildren(),
                   isClean());
           module_ = null;
@@ -22971,10 +22939,10 @@ public final class Dossier {
     // @@protoc_insertion_point(class_scope:JsType)
   }
 
-  public interface IndexFileRenderSpecOrBuilder
-      extends com.google.protobuf.MessageOrBuilder {
+  public interface IndexFileRenderSpecOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:IndexFileRenderSpec)
+      com.google.protobuf.MessageOrBuilder {
 
-    // required .Resources resources = 1;
     /**
      * <code>required .Resources resources = 1;</code>
      *
@@ -23000,7 +22968,6 @@ public final class Dossier {
      */
     com.github.jleyba.dossier.proto.Dossier.ResourcesOrBuilder getResourcesOrBuilder();
 
-    // optional string license_path = 2;
     /**
      * <code>optional string license_path = 2;</code>
      *
@@ -23027,7 +22994,6 @@ public final class Dossier {
     com.google.protobuf.ByteString
         getLicensePathBytes();
 
-    // optional .Comment readme = 3;
     /**
      * <code>optional .Comment readme = 3;</code>
      *
@@ -23061,8 +23027,9 @@ public final class Dossier {
    * </pre>
    */
   public static final class IndexFileRenderSpec extends
-      com.google.protobuf.GeneratedMessage
-      implements IndexFileRenderSpecOrBuilder {
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:IndexFileRenderSpec)
+      IndexFileRenderSpecOrBuilder {
     // Use IndexFileRenderSpec.newBuilder() to construct.
     private IndexFileRenderSpec(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
@@ -23122,8 +23089,9 @@ public final class Dossier {
               break;
             }
             case 18: {
+              com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000002;
-              licensePath_ = input.readBytes();
+              licensePath_ = bs;
               break;
             }
             case 26: {
@@ -23179,7 +23147,6 @@ public final class Dossier {
     }
 
     private int bitField0_;
-    // required .Resources resources = 1;
     public static final int RESOURCES_FIELD_NUMBER = 1;
     private com.github.jleyba.dossier.proto.Dossier.Resources resources_;
     /**
@@ -23213,7 +23180,6 @@ public final class Dossier {
       return resources_;
     }
 
-    // optional string license_path = 2;
     public static final int LICENSE_PATH_FIELD_NUMBER = 2;
     private java.lang.Object licensePath_;
     /**
@@ -23268,7 +23234,6 @@ public final class Dossier {
       }
     }
 
-    // optional .Comment readme = 3;
     public static final int README_FIELD_NUMBER = 3;
     private com.github.jleyba.dossier.proto.Dossier.Comment readme_;
     /**
@@ -23310,7 +23275,8 @@ public final class Dossier {
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized != -1) return isInitialized == 1;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
 
       if (!hasResources()) {
         memoizedIsInitialized = 0;
@@ -23445,8 +23411,9 @@ public final class Dossier {
      * </pre>
      */
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder>
-       implements com.github.jleyba.dossier.proto.Dossier.IndexFileRenderSpecOrBuilder {
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:IndexFileRenderSpec)
+        com.github.jleyba.dossier.proto.Dossier.IndexFileRenderSpecOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
         return com.github.jleyba.dossier.proto.Dossier.internal_static_IndexFileRenderSpec_descriptor;
@@ -23607,7 +23574,6 @@ public final class Dossier {
       }
       private int bitField0_;
 
-      // required .Resources resources = 1;
       private com.github.jleyba.dossier.proto.Dossier.Resources resources_ = com.github.jleyba.dossier.proto.Dossier.Resources.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           com.github.jleyba.dossier.proto.Dossier.Resources, com.github.jleyba.dossier.proto.Dossier.Resources.Builder, com.github.jleyba.dossier.proto.Dossier.ResourcesOrBuilder> resourcesBuilder_;
@@ -23752,7 +23718,7 @@ public final class Dossier {
         if (resourcesBuilder_ == null) {
           resourcesBuilder_ = new com.google.protobuf.SingleFieldBuilder<
               com.github.jleyba.dossier.proto.Dossier.Resources, com.github.jleyba.dossier.proto.Dossier.Resources.Builder, com.github.jleyba.dossier.proto.Dossier.ResourcesOrBuilder>(
-                  resources_,
+                  getResources(),
                   getParentForChildren(),
                   isClean());
           resources_ = null;
@@ -23760,7 +23726,6 @@ public final class Dossier {
         return resourcesBuilder_;
       }
 
-      // optional string license_path = 2;
       private java.lang.Object licensePath_ = "";
       /**
        * <code>optional string license_path = 2;</code>
@@ -23782,9 +23747,12 @@ public final class Dossier {
       public java.lang.String getLicensePath() {
         java.lang.Object ref = licensePath_;
         if (!(ref instanceof java.lang.String)) {
-          java.lang.String s = ((com.google.protobuf.ByteString) ref)
-              .toStringUtf8();
-          licensePath_ = s;
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            licensePath_ = s;
+          }
           return s;
         } else {
           return (java.lang.String) ref;
@@ -23858,7 +23826,6 @@ public final class Dossier {
         return this;
       }
 
-      // optional .Comment readme = 3;
       private com.github.jleyba.dossier.proto.Dossier.Comment readme_ = com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           com.github.jleyba.dossier.proto.Dossier.Comment, com.github.jleyba.dossier.proto.Dossier.Comment.Builder, com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder> readmeBuilder_;
@@ -24003,7 +23970,7 @@ public final class Dossier {
         if (readmeBuilder_ == null) {
           readmeBuilder_ = new com.google.protobuf.SingleFieldBuilder<
               com.github.jleyba.dossier.proto.Dossier.Comment, com.github.jleyba.dossier.proto.Dossier.Comment.Builder, com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder>(
-                  readme_,
+                  getReadme(),
                   getParentForChildren(),
                   isClean());
           readme_ = null;
@@ -24022,10 +23989,10 @@ public final class Dossier {
     // @@protoc_insertion_point(class_scope:IndexFileRenderSpec)
   }
 
-  public interface LicenseRenderSpecOrBuilder
-      extends com.google.protobuf.MessageOrBuilder {
+  public interface LicenseRenderSpecOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:LicenseRenderSpec)
+      com.google.protobuf.MessageOrBuilder {
 
-    // required .Resources resources = 1;
     /**
      * <code>required .Resources resources = 1;</code>
      *
@@ -24051,7 +24018,6 @@ public final class Dossier {
      */
     com.github.jleyba.dossier.proto.Dossier.ResourcesOrBuilder getResourcesOrBuilder();
 
-    // required .License license = 2;
     /**
      * <code>required .License license = 2;</code>
      *
@@ -24085,8 +24051,9 @@ public final class Dossier {
    * </pre>
    */
   public static final class LicenseRenderSpec extends
-      com.google.protobuf.GeneratedMessage
-      implements LicenseRenderSpecOrBuilder {
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:LicenseRenderSpec)
+      LicenseRenderSpecOrBuilder {
     // Use LicenseRenderSpec.newBuilder() to construct.
     private LicenseRenderSpec(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
@@ -24198,7 +24165,6 @@ public final class Dossier {
     }
 
     private int bitField0_;
-    // required .Resources resources = 1;
     public static final int RESOURCES_FIELD_NUMBER = 1;
     private com.github.jleyba.dossier.proto.Dossier.Resources resources_;
     /**
@@ -24232,7 +24198,6 @@ public final class Dossier {
       return resources_;
     }
 
-    // required .License license = 2;
     public static final int LICENSE_FIELD_NUMBER = 2;
     private com.github.jleyba.dossier.proto.Dossier.License license_;
     /**
@@ -24273,7 +24238,8 @@ public final class Dossier {
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized != -1) return isInitialized == 1;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
 
       if (!hasResources()) {
         memoizedIsInitialized = 0;
@@ -24403,8 +24369,9 @@ public final class Dossier {
      * </pre>
      */
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder>
-       implements com.github.jleyba.dossier.proto.Dossier.LicenseRenderSpecOrBuilder {
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:LicenseRenderSpec)
+        com.github.jleyba.dossier.proto.Dossier.LicenseRenderSpecOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
         return com.github.jleyba.dossier.proto.Dossier.internal_static_LicenseRenderSpec_descriptor;
@@ -24556,7 +24523,6 @@ public final class Dossier {
       }
       private int bitField0_;
 
-      // required .Resources resources = 1;
       private com.github.jleyba.dossier.proto.Dossier.Resources resources_ = com.github.jleyba.dossier.proto.Dossier.Resources.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           com.github.jleyba.dossier.proto.Dossier.Resources, com.github.jleyba.dossier.proto.Dossier.Resources.Builder, com.github.jleyba.dossier.proto.Dossier.ResourcesOrBuilder> resourcesBuilder_;
@@ -24701,7 +24667,7 @@ public final class Dossier {
         if (resourcesBuilder_ == null) {
           resourcesBuilder_ = new com.google.protobuf.SingleFieldBuilder<
               com.github.jleyba.dossier.proto.Dossier.Resources, com.github.jleyba.dossier.proto.Dossier.Resources.Builder, com.github.jleyba.dossier.proto.Dossier.ResourcesOrBuilder>(
-                  resources_,
+                  getResources(),
                   getParentForChildren(),
                   isClean());
           resources_ = null;
@@ -24709,7 +24675,6 @@ public final class Dossier {
         return resourcesBuilder_;
       }
 
-      // required .License license = 2;
       private com.github.jleyba.dossier.proto.Dossier.License license_ = com.github.jleyba.dossier.proto.Dossier.License.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           com.github.jleyba.dossier.proto.Dossier.License, com.github.jleyba.dossier.proto.Dossier.License.Builder, com.github.jleyba.dossier.proto.Dossier.LicenseOrBuilder> licenseBuilder_;
@@ -24854,7 +24819,7 @@ public final class Dossier {
         if (licenseBuilder_ == null) {
           licenseBuilder_ = new com.google.protobuf.SingleFieldBuilder<
               com.github.jleyba.dossier.proto.Dossier.License, com.github.jleyba.dossier.proto.Dossier.License.Builder, com.github.jleyba.dossier.proto.Dossier.LicenseOrBuilder>(
-                  license_,
+                  getLicense(),
                   getParentForChildren(),
                   isClean());
           license_ = null;
@@ -24873,10 +24838,10 @@ public final class Dossier {
     // @@protoc_insertion_point(class_scope:LicenseRenderSpec)
   }
 
-  public interface SourceFileRenderSpecOrBuilder
-      extends com.google.protobuf.MessageOrBuilder {
+  public interface SourceFileRenderSpecOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:SourceFileRenderSpec)
+      com.google.protobuf.MessageOrBuilder {
 
-    // required .Resources resources = 1;
     /**
      * <code>required .Resources resources = 1;</code>
      *
@@ -24902,7 +24867,6 @@ public final class Dossier {
      */
     com.github.jleyba.dossier.proto.Dossier.ResourcesOrBuilder getResourcesOrBuilder();
 
-    // required .SourceFile file = 2;
     /**
      * <code>required .SourceFile file = 2;</code>
      *
@@ -24928,7 +24892,6 @@ public final class Dossier {
      */
     com.github.jleyba.dossier.proto.Dossier.SourceFileOrBuilder getFileOrBuilder();
 
-    // optional string license_path = 3;
     /**
      * <code>optional string license_path = 3;</code>
      *
@@ -24963,8 +24926,9 @@ public final class Dossier {
    * </pre>
    */
   public static final class SourceFileRenderSpec extends
-      com.google.protobuf.GeneratedMessage
-      implements SourceFileRenderSpecOrBuilder {
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:SourceFileRenderSpec)
+      SourceFileRenderSpecOrBuilder {
     // Use SourceFileRenderSpec.newBuilder() to construct.
     private SourceFileRenderSpec(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
@@ -25037,8 +25001,9 @@ public final class Dossier {
               break;
             }
             case 26: {
+              com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000004;
-              licensePath_ = input.readBytes();
+              licensePath_ = bs;
               break;
             }
           }
@@ -25081,7 +25046,6 @@ public final class Dossier {
     }
 
     private int bitField0_;
-    // required .Resources resources = 1;
     public static final int RESOURCES_FIELD_NUMBER = 1;
     private com.github.jleyba.dossier.proto.Dossier.Resources resources_;
     /**
@@ -25115,7 +25079,6 @@ public final class Dossier {
       return resources_;
     }
 
-    // required .SourceFile file = 2;
     public static final int FILE_FIELD_NUMBER = 2;
     private com.github.jleyba.dossier.proto.Dossier.SourceFile file_;
     /**
@@ -25149,7 +25112,6 @@ public final class Dossier {
       return file_;
     }
 
-    // optional string license_path = 3;
     public static final int LICENSE_PATH_FIELD_NUMBER = 3;
     private java.lang.Object licensePath_;
     /**
@@ -25212,7 +25174,8 @@ public final class Dossier {
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized != -1) return isInitialized == 1;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
 
       if (!hasResources()) {
         memoizedIsInitialized = 0;
@@ -25349,8 +25312,9 @@ public final class Dossier {
      * </pre>
      */
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder>
-       implements com.github.jleyba.dossier.proto.Dossier.SourceFileRenderSpecOrBuilder {
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:SourceFileRenderSpec)
+        com.github.jleyba.dossier.proto.Dossier.SourceFileRenderSpecOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
         return com.github.jleyba.dossier.proto.Dossier.internal_static_SourceFileRenderSpec_descriptor;
@@ -25513,7 +25477,6 @@ public final class Dossier {
       }
       private int bitField0_;
 
-      // required .Resources resources = 1;
       private com.github.jleyba.dossier.proto.Dossier.Resources resources_ = com.github.jleyba.dossier.proto.Dossier.Resources.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           com.github.jleyba.dossier.proto.Dossier.Resources, com.github.jleyba.dossier.proto.Dossier.Resources.Builder, com.github.jleyba.dossier.proto.Dossier.ResourcesOrBuilder> resourcesBuilder_;
@@ -25658,7 +25621,7 @@ public final class Dossier {
         if (resourcesBuilder_ == null) {
           resourcesBuilder_ = new com.google.protobuf.SingleFieldBuilder<
               com.github.jleyba.dossier.proto.Dossier.Resources, com.github.jleyba.dossier.proto.Dossier.Resources.Builder, com.github.jleyba.dossier.proto.Dossier.ResourcesOrBuilder>(
-                  resources_,
+                  getResources(),
                   getParentForChildren(),
                   isClean());
           resources_ = null;
@@ -25666,7 +25629,6 @@ public final class Dossier {
         return resourcesBuilder_;
       }
 
-      // required .SourceFile file = 2;
       private com.github.jleyba.dossier.proto.Dossier.SourceFile file_ = com.github.jleyba.dossier.proto.Dossier.SourceFile.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           com.github.jleyba.dossier.proto.Dossier.SourceFile, com.github.jleyba.dossier.proto.Dossier.SourceFile.Builder, com.github.jleyba.dossier.proto.Dossier.SourceFileOrBuilder> fileBuilder_;
@@ -25811,7 +25773,7 @@ public final class Dossier {
         if (fileBuilder_ == null) {
           fileBuilder_ = new com.google.protobuf.SingleFieldBuilder<
               com.github.jleyba.dossier.proto.Dossier.SourceFile, com.github.jleyba.dossier.proto.Dossier.SourceFile.Builder, com.github.jleyba.dossier.proto.Dossier.SourceFileOrBuilder>(
-                  file_,
+                  getFile(),
                   getParentForChildren(),
                   isClean());
           file_ = null;
@@ -25819,7 +25781,6 @@ public final class Dossier {
         return fileBuilder_;
       }
 
-      // optional string license_path = 3;
       private java.lang.Object licensePath_ = "";
       /**
        * <code>optional string license_path = 3;</code>
@@ -25841,9 +25802,12 @@ public final class Dossier {
       public java.lang.String getLicensePath() {
         java.lang.Object ref = licensePath_;
         if (!(ref instanceof java.lang.String)) {
-          java.lang.String s = ((com.google.protobuf.ByteString) ref)
-              .toStringUtf8();
-          licensePath_ = s;
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            licensePath_ = s;
+          }
           return s;
         } else {
           return (java.lang.String) ref;
@@ -25928,10 +25892,10 @@ public final class Dossier {
     // @@protoc_insertion_point(class_scope:SourceFileRenderSpec)
   }
 
-  public interface JsTypeRenderSpecOrBuilder
-      extends com.google.protobuf.MessageOrBuilder {
+  public interface JsTypeRenderSpecOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:JsTypeRenderSpec)
+      com.google.protobuf.MessageOrBuilder {
 
-    // required .JsType type = 1;
     /**
      * <code>required .JsType type = 1;</code>
      *
@@ -25957,7 +25921,6 @@ public final class Dossier {
      */
     com.github.jleyba.dossier.proto.Dossier.JsTypeOrBuilder getTypeOrBuilder();
 
-    // required .Resources resources = 2;
     /**
      * <code>required .Resources resources = 2;</code>
      *
@@ -25983,7 +25946,6 @@ public final class Dossier {
      */
     com.github.jleyba.dossier.proto.Dossier.ResourcesOrBuilder getResourcesOrBuilder();
 
-    // optional string license_path = 3;
     /**
      * <code>optional string license_path = 3;</code>
      *
@@ -26018,8 +25980,9 @@ public final class Dossier {
    * </pre>
    */
   public static final class JsTypeRenderSpec extends
-      com.google.protobuf.GeneratedMessage
-      implements JsTypeRenderSpecOrBuilder {
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:JsTypeRenderSpec)
+      JsTypeRenderSpecOrBuilder {
     // Use JsTypeRenderSpec.newBuilder() to construct.
     private JsTypeRenderSpec(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
@@ -26092,8 +26055,9 @@ public final class Dossier {
               break;
             }
             case 26: {
+              com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000004;
-              licensePath_ = input.readBytes();
+              licensePath_ = bs;
               break;
             }
           }
@@ -26136,7 +26100,6 @@ public final class Dossier {
     }
 
     private int bitField0_;
-    // required .JsType type = 1;
     public static final int TYPE_FIELD_NUMBER = 1;
     private com.github.jleyba.dossier.proto.Dossier.JsType type_;
     /**
@@ -26170,7 +26133,6 @@ public final class Dossier {
       return type_;
     }
 
-    // required .Resources resources = 2;
     public static final int RESOURCES_FIELD_NUMBER = 2;
     private com.github.jleyba.dossier.proto.Dossier.Resources resources_;
     /**
@@ -26204,7 +26166,6 @@ public final class Dossier {
       return resources_;
     }
 
-    // optional string license_path = 3;
     public static final int LICENSE_PATH_FIELD_NUMBER = 3;
     private java.lang.Object licensePath_;
     /**
@@ -26267,7 +26228,8 @@ public final class Dossier {
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized != -1) return isInitialized == 1;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
 
       if (!hasType()) {
         memoizedIsInitialized = 0;
@@ -26404,8 +26366,9 @@ public final class Dossier {
      * </pre>
      */
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder>
-       implements com.github.jleyba.dossier.proto.Dossier.JsTypeRenderSpecOrBuilder {
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:JsTypeRenderSpec)
+        com.github.jleyba.dossier.proto.Dossier.JsTypeRenderSpecOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
         return com.github.jleyba.dossier.proto.Dossier.internal_static_JsTypeRenderSpec_descriptor;
@@ -26568,7 +26531,6 @@ public final class Dossier {
       }
       private int bitField0_;
 
-      // required .JsType type = 1;
       private com.github.jleyba.dossier.proto.Dossier.JsType type_ = com.github.jleyba.dossier.proto.Dossier.JsType.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           com.github.jleyba.dossier.proto.Dossier.JsType, com.github.jleyba.dossier.proto.Dossier.JsType.Builder, com.github.jleyba.dossier.proto.Dossier.JsTypeOrBuilder> typeBuilder_;
@@ -26713,7 +26675,7 @@ public final class Dossier {
         if (typeBuilder_ == null) {
           typeBuilder_ = new com.google.protobuf.SingleFieldBuilder<
               com.github.jleyba.dossier.proto.Dossier.JsType, com.github.jleyba.dossier.proto.Dossier.JsType.Builder, com.github.jleyba.dossier.proto.Dossier.JsTypeOrBuilder>(
-                  type_,
+                  getType(),
                   getParentForChildren(),
                   isClean());
           type_ = null;
@@ -26721,7 +26683,6 @@ public final class Dossier {
         return typeBuilder_;
       }
 
-      // required .Resources resources = 2;
       private com.github.jleyba.dossier.proto.Dossier.Resources resources_ = com.github.jleyba.dossier.proto.Dossier.Resources.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           com.github.jleyba.dossier.proto.Dossier.Resources, com.github.jleyba.dossier.proto.Dossier.Resources.Builder, com.github.jleyba.dossier.proto.Dossier.ResourcesOrBuilder> resourcesBuilder_;
@@ -26866,7 +26827,7 @@ public final class Dossier {
         if (resourcesBuilder_ == null) {
           resourcesBuilder_ = new com.google.protobuf.SingleFieldBuilder<
               com.github.jleyba.dossier.proto.Dossier.Resources, com.github.jleyba.dossier.proto.Dossier.Resources.Builder, com.github.jleyba.dossier.proto.Dossier.ResourcesOrBuilder>(
-                  resources_,
+                  getResources(),
                   getParentForChildren(),
                   isClean());
           resources_ = null;
@@ -26874,7 +26835,6 @@ public final class Dossier {
         return resourcesBuilder_;
       }
 
-      // optional string license_path = 3;
       private java.lang.Object licensePath_ = "";
       /**
        * <code>optional string license_path = 3;</code>
@@ -26896,9 +26856,12 @@ public final class Dossier {
       public java.lang.String getLicensePath() {
         java.lang.Object ref = licensePath_;
         if (!(ref instanceof java.lang.String)) {
-          java.lang.String s = ((com.google.protobuf.ByteString) ref)
-              .toStringUtf8();
-          licensePath_ = s;
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            licensePath_ = s;
+          }
           return s;
         } else {
           return (java.lang.String) ref;
@@ -26983,112 +26946,112 @@ public final class Dossier {
     // @@protoc_insertion_point(class_scope:JsTypeRenderSpec)
   }
 
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_SourceFile_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_SourceFile_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_Resources_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_Resources_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_License_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_License_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_TypeLink_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_TypeLink_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_Comment_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_Comment_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_Comment_Token_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_Comment_Token_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_Deprecation_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_Deprecation_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_BaseProperty_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_BaseProperty_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_Property_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_Property_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_Function_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_Function_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_Function_Detail_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_Function_Detail_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_Prototype_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_Prototype_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_Enumeration_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_Enumeration_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_Enumeration_Value_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_Enumeration_Value_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_JsType_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_JsType_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_JsType_NestedTypes_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_JsType_NestedTypes_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_JsType_NestedTypes_TypeSummary_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_JsType_NestedTypes_TypeSummary_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_JsType_TypeDef_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_JsType_TypeDef_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_IndexFileRenderSpec_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_IndexFileRenderSpec_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_LicenseRenderSpec_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_LicenseRenderSpec_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_SourceFileRenderSpec_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_SourceFileRenderSpec_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_JsTypeRenderSpec_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
@@ -27172,149 +27135,149 @@ public final class Dossier {
       "to"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
-      new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
-        public com.google.protobuf.ExtensionRegistry assignDescriptors(
-            com.google.protobuf.Descriptors.FileDescriptor root) {
-          descriptor = root;
-          internal_static_SourceFile_descriptor =
-            getDescriptor().getMessageTypes().get(0);
-          internal_static_SourceFile_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_SourceFile_descriptor,
-              new java.lang.String[] { "BaseName", "Path", "Lines", });
-          internal_static_Resources_descriptor =
-            getDescriptor().getMessageTypes().get(1);
-          internal_static_Resources_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_Resources_descriptor,
-              new java.lang.String[] { "Css", "Script", });
-          internal_static_License_descriptor =
-            getDescriptor().getMessageTypes().get(2);
-          internal_static_License_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_License_descriptor,
-              new java.lang.String[] { "Text", });
-          internal_static_TypeLink_descriptor =
-            getDescriptor().getMessageTypes().get(3);
-          internal_static_TypeLink_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_TypeLink_descriptor,
-              new java.lang.String[] { "Text", "Href", });
-          internal_static_Comment_descriptor =
-            getDescriptor().getMessageTypes().get(4);
-          internal_static_Comment_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_Comment_descriptor,
-              new java.lang.String[] { "Token", });
-          internal_static_Comment_Token_descriptor =
-            internal_static_Comment_descriptor.getNestedTypes().get(0);
-          internal_static_Comment_Token_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_Comment_Token_descriptor,
-              new java.lang.String[] { "Text", "IsLiteral", "IsCode", "Href", "UnresolvedLink", });
-          internal_static_Deprecation_descriptor =
-            getDescriptor().getMessageTypes().get(5);
-          internal_static_Deprecation_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_Deprecation_descriptor,
-              new java.lang.String[] { "Notice", });
-          internal_static_BaseProperty_descriptor =
-            getDescriptor().getMessageTypes().get(6);
-          internal_static_BaseProperty_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_BaseProperty_descriptor,
-              new java.lang.String[] { "Name", "Source", "Description", "Deprecation", "Visibility", });
-          internal_static_Property_descriptor =
-            getDescriptor().getMessageTypes().get(7);
-          internal_static_Property_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_Property_descriptor,
-              new java.lang.String[] { "Base", "TypeHtml", });
-          internal_static_Function_descriptor =
-            getDescriptor().getMessageTypes().get(8);
-          internal_static_Function_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_Function_descriptor,
-              new java.lang.String[] { "Base", "TemplateName", "IsConstructor", "Parameter", "Return", "Thrown", });
-          internal_static_Function_Detail_descriptor =
-            internal_static_Function_descriptor.getNestedTypes().get(0);
-          internal_static_Function_Detail_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_Function_Detail_descriptor,
-              new java.lang.String[] { "Name", "TypeHtml", "Description", });
-          internal_static_Prototype_descriptor =
-            getDescriptor().getMessageTypes().get(9);
-          internal_static_Prototype_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_Prototype_descriptor,
-              new java.lang.String[] { "Name", "Href", "Function", "Property", });
-          internal_static_Enumeration_descriptor =
-            getDescriptor().getMessageTypes().get(10);
-          internal_static_Enumeration_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_Enumeration_descriptor,
-              new java.lang.String[] { "TypeHtml", "Value", "Visibility", });
-          internal_static_Enumeration_Value_descriptor =
-            internal_static_Enumeration_descriptor.getNestedTypes().get(0);
-          internal_static_Enumeration_Value_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_Enumeration_Value_descriptor,
-              new java.lang.String[] { "Name", "Description", "Deprecation", });
-          internal_static_JsType_descriptor =
-            getDescriptor().getMessageTypes().get(11);
-          internal_static_JsType_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_JsType_descriptor,
-              new java.lang.String[] { "Name", "Source", "Nested", "Description", "Deprecation", "TypeDef", "Enumeration", "StaticFunction", "StaticProperty", "MainFunction", "IsInterface", "Prototype", "HasInstanceMethods", "HasInstanceProperties", "ExtendedType", "ImplementedType", "CompilerConstant", "IsModule", "Module", });
-          internal_static_JsType_NestedTypes_descriptor =
-            internal_static_JsType_descriptor.getNestedTypes().get(0);
-          internal_static_JsType_NestedTypes_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_JsType_NestedTypes_descriptor,
-              new java.lang.String[] { "Interfaces", "Classes", "Enums", });
-          internal_static_JsType_NestedTypes_TypeSummary_descriptor =
-            internal_static_JsType_NestedTypes_descriptor.getNestedTypes().get(0);
-          internal_static_JsType_NestedTypes_TypeSummary_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_JsType_NestedTypes_TypeSummary_descriptor,
-              new java.lang.String[] { "Name", "Href", "Summary", });
-          internal_static_JsType_TypeDef_descriptor =
-            internal_static_JsType_descriptor.getNestedTypes().get(1);
-          internal_static_JsType_TypeDef_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_JsType_TypeDef_descriptor,
-              new java.lang.String[] { "Name", "TypeHtml", "Href", "Description", "Deprecation", "Visibility", });
-          internal_static_IndexFileRenderSpec_descriptor =
-            getDescriptor().getMessageTypes().get(12);
-          internal_static_IndexFileRenderSpec_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_IndexFileRenderSpec_descriptor,
-              new java.lang.String[] { "Resources", "LicensePath", "Readme", });
-          internal_static_LicenseRenderSpec_descriptor =
-            getDescriptor().getMessageTypes().get(13);
-          internal_static_LicenseRenderSpec_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_LicenseRenderSpec_descriptor,
-              new java.lang.String[] { "Resources", "License", });
-          internal_static_SourceFileRenderSpec_descriptor =
-            getDescriptor().getMessageTypes().get(14);
-          internal_static_SourceFileRenderSpec_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_SourceFileRenderSpec_descriptor,
-              new java.lang.String[] { "Resources", "File", "LicensePath", });
-          internal_static_JsTypeRenderSpec_descriptor =
-            getDescriptor().getMessageTypes().get(15);
-          internal_static_JsTypeRenderSpec_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_JsTypeRenderSpec_descriptor,
-              new java.lang.String[] { "Type", "Resources", "LicensePath", });
-          return null;
-        }
-      };
+        new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
+          public com.google.protobuf.ExtensionRegistry assignDescriptors(
+              com.google.protobuf.Descriptors.FileDescriptor root) {
+            descriptor = root;
+            return null;
+          }
+        };
     com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
         }, assigner);
+    internal_static_SourceFile_descriptor =
+      getDescriptor().getMessageTypes().get(0);
+    internal_static_SourceFile_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_SourceFile_descriptor,
+        new java.lang.String[] { "BaseName", "Path", "Lines", });
+    internal_static_Resources_descriptor =
+      getDescriptor().getMessageTypes().get(1);
+    internal_static_Resources_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_Resources_descriptor,
+        new java.lang.String[] { "Css", "Script", });
+    internal_static_License_descriptor =
+      getDescriptor().getMessageTypes().get(2);
+    internal_static_License_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_License_descriptor,
+        new java.lang.String[] { "Text", });
+    internal_static_TypeLink_descriptor =
+      getDescriptor().getMessageTypes().get(3);
+    internal_static_TypeLink_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_TypeLink_descriptor,
+        new java.lang.String[] { "Text", "Href", });
+    internal_static_Comment_descriptor =
+      getDescriptor().getMessageTypes().get(4);
+    internal_static_Comment_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_Comment_descriptor,
+        new java.lang.String[] { "Token", });
+    internal_static_Comment_Token_descriptor =
+      internal_static_Comment_descriptor.getNestedTypes().get(0);
+    internal_static_Comment_Token_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_Comment_Token_descriptor,
+        new java.lang.String[] { "Text", "IsLiteral", "IsCode", "Href", "UnresolvedLink", });
+    internal_static_Deprecation_descriptor =
+      getDescriptor().getMessageTypes().get(5);
+    internal_static_Deprecation_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_Deprecation_descriptor,
+        new java.lang.String[] { "Notice", });
+    internal_static_BaseProperty_descriptor =
+      getDescriptor().getMessageTypes().get(6);
+    internal_static_BaseProperty_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_BaseProperty_descriptor,
+        new java.lang.String[] { "Name", "Source", "Description", "Deprecation", "Visibility", });
+    internal_static_Property_descriptor =
+      getDescriptor().getMessageTypes().get(7);
+    internal_static_Property_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_Property_descriptor,
+        new java.lang.String[] { "Base", "TypeHtml", });
+    internal_static_Function_descriptor =
+      getDescriptor().getMessageTypes().get(8);
+    internal_static_Function_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_Function_descriptor,
+        new java.lang.String[] { "Base", "TemplateName", "IsConstructor", "Parameter", "Return", "Thrown", });
+    internal_static_Function_Detail_descriptor =
+      internal_static_Function_descriptor.getNestedTypes().get(0);
+    internal_static_Function_Detail_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_Function_Detail_descriptor,
+        new java.lang.String[] { "Name", "TypeHtml", "Description", });
+    internal_static_Prototype_descriptor =
+      getDescriptor().getMessageTypes().get(9);
+    internal_static_Prototype_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_Prototype_descriptor,
+        new java.lang.String[] { "Name", "Href", "Function", "Property", });
+    internal_static_Enumeration_descriptor =
+      getDescriptor().getMessageTypes().get(10);
+    internal_static_Enumeration_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_Enumeration_descriptor,
+        new java.lang.String[] { "TypeHtml", "Value", "Visibility", });
+    internal_static_Enumeration_Value_descriptor =
+      internal_static_Enumeration_descriptor.getNestedTypes().get(0);
+    internal_static_Enumeration_Value_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_Enumeration_Value_descriptor,
+        new java.lang.String[] { "Name", "Description", "Deprecation", });
+    internal_static_JsType_descriptor =
+      getDescriptor().getMessageTypes().get(11);
+    internal_static_JsType_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_JsType_descriptor,
+        new java.lang.String[] { "Name", "Source", "Nested", "Description", "Deprecation", "TypeDef", "Enumeration", "StaticFunction", "StaticProperty", "MainFunction", "IsInterface", "Prototype", "HasInstanceMethods", "HasInstanceProperties", "ExtendedType", "ImplementedType", "CompilerConstant", "IsModule", "Module", });
+    internal_static_JsType_NestedTypes_descriptor =
+      internal_static_JsType_descriptor.getNestedTypes().get(0);
+    internal_static_JsType_NestedTypes_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_JsType_NestedTypes_descriptor,
+        new java.lang.String[] { "Interfaces", "Classes", "Enums", });
+    internal_static_JsType_NestedTypes_TypeSummary_descriptor =
+      internal_static_JsType_NestedTypes_descriptor.getNestedTypes().get(0);
+    internal_static_JsType_NestedTypes_TypeSummary_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_JsType_NestedTypes_TypeSummary_descriptor,
+        new java.lang.String[] { "Name", "Href", "Summary", });
+    internal_static_JsType_TypeDef_descriptor =
+      internal_static_JsType_descriptor.getNestedTypes().get(1);
+    internal_static_JsType_TypeDef_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_JsType_TypeDef_descriptor,
+        new java.lang.String[] { "Name", "TypeHtml", "Href", "Description", "Deprecation", "Visibility", });
+    internal_static_IndexFileRenderSpec_descriptor =
+      getDescriptor().getMessageTypes().get(12);
+    internal_static_IndexFileRenderSpec_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_IndexFileRenderSpec_descriptor,
+        new java.lang.String[] { "Resources", "LicensePath", "Readme", });
+    internal_static_LicenseRenderSpec_descriptor =
+      getDescriptor().getMessageTypes().get(13);
+    internal_static_LicenseRenderSpec_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_LicenseRenderSpec_descriptor,
+        new java.lang.String[] { "Resources", "License", });
+    internal_static_SourceFileRenderSpec_descriptor =
+      getDescriptor().getMessageTypes().get(14);
+    internal_static_SourceFileRenderSpec_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_SourceFileRenderSpec_descriptor,
+        new java.lang.String[] { "Resources", "File", "LicensePath", });
+    internal_static_JsTypeRenderSpec_descriptor =
+      getDescriptor().getMessageTypes().get(15);
+    internal_static_JsTypeRenderSpec_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_JsTypeRenderSpec_descriptor,
+        new java.lang.String[] { "Type", "Resources", "LicensePath", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)
