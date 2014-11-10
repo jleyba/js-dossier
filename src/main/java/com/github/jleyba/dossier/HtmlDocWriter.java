@@ -50,6 +50,7 @@ import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
 import com.google.common.collect.FluentIterable;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
 import com.google.gson.JsonArray;
@@ -390,11 +391,20 @@ class HtmlDocWriter implements DocWriter {
 
   private List<TypeLink> getInheritedTypes(
       Descriptor descriptor, JSTypeRegistry registry) {
+    if (!descriptor.isConstructor()) {
+      return ImmutableList.of();
+    }
+
     LinkedList<JSType> types = descriptor.getAllTypes(registry);
     List<TypeLink> list = Lists.newArrayListWithExpectedSize(types.size());
-    while (!types.isEmpty()) {
+    // Skip bottom of stack (type of this). Handled specially below.
+    while (types.size() > 1) {
       list.add(getTypeLink(types.pop()));
     }
+    list.add(TypeLink.newBuilder()
+        .setText(linker.getDisplayName(descriptor))
+        .setHref("")
+        .build());
     return list;
   }
 
