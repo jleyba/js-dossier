@@ -1,6 +1,6 @@
 prebuilt_jar(
   name = "args4j",
-  binary_jar = "args4j-2.0.16.jar",
-  source_jar = "args4j-2.0.16-src.jar",
+  binary_jar = "args4j-2.0.26.jar",
+  source_jar = "args4j-2.0.26-src.jar",
   visibility = ["PUBLIC"],
 )
