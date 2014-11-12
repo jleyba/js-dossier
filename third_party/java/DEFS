@@ -1,0 +1,20 @@
+def prebuilt_jar_with_license(
+    name=None,
+    binary_jar=None,
+    source_jar=None,
+    deps=None,
+    visibility=None):
+
+  prebuilt_jar(
+      name = name + "_internal",
+      binary_jar = binary_jar,
+      source_jar = source_jar,
+      deps = deps,
+  )
+
+  java_library(
+      name = name,
+      exported_deps = [":" + name + "_internal"],
+      resources = ["LICENSE"],
+      visibility = visibility,
+  )

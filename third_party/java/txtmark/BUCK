@@ -1,4 +1,6 @@
-prebuilt_jar(
+include_defs("//third_party/java/DEFS")
+
+prebuilt_jar_with_license(
   name = "txtmark",
   binary_jar = "txtmark-0.8.jar",
   source_jar = "txtmark-0.8-src.jar",

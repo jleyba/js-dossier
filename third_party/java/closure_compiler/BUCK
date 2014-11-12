@@ -1,10 +1,12 @@
-prebuilt_jar(
+include_defs("//third_party/java/DEFS")
+
+prebuilt_jar_with_license(
   name = "closure_compiler_externs",
   binary_jar = "closure-compiler-externs-v20141023.jar",
   source_jar = "closure-compiler-externs-v20141023-src.jar",
 )
 
-prebuilt_jar(
+prebuilt_jar_with_license(
   name = "closure_compiler",
   binary_jar = "closure-compiler-v20141023.jar",
   source_jar = "closure-compiler-v20141023-src.jar",

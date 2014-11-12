@@ -1,4 +1,6 @@
-prebuilt_jar(
+include_defs("//third_party/java/DEFS")
+
+prebuilt_jar_with_license(
   name = "guice",
   binary_jar = "guice-3.0.jar",
   source_jar = "guice-3.0-src.jar",
@@ -9,7 +11,7 @@ prebuilt_jar(
   visibility = ["PUBLIC"],
 )
 
-prebuilt_jar(
+prebuilt_jar_with_license(
   name = "assistedinject",
   binary_jar = "guice-assistedinject-3.0.jar",
   source_jar = "guice-assistedinject-3.0-src.jar",
@@ -19,7 +21,7 @@ prebuilt_jar(
   visibility = ["PUBLIC"],
 )
 
-prebuilt_jar(
+prebuilt_jar_with_license(
   name = "multibindings",
   binary_jar = "guice-multibindings-3.0.jar",
   source_jar = "guice-multibindings-3.0-src.jar",
