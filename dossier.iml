@@ -26,17 +26,6 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/third_party/java/args4j/args4j-2.0.16.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="jar://$MODULE_DIR$/third_party/java/args4j/args4j-2.0.16-src.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
           <root url="jar://$MODULE_DIR$/third_party/java/gson/gson-2.2.4.jar!/" />
         </CLASSES>
         <JAVADOC />
@@ -91,15 +80,6 @@
         <SOURCES>
           <root url="jar://$MODULE_DIR$/third_party/java/joda_time/joda-time-2.3-src.jar!/" />
         </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/third_party/java/json/json-20090211.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
       </library>
     </orderEntry>
     <orderEntry type="module-library" scope="TEST">
@@ -178,7 +158,7 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" scope="RUNTIME">
       <library>
         <CLASSES>
           <root url="jar://$MODULE_DIR$/third_party/java/icu4j/icu4j-51.1.jar!/" />
@@ -221,6 +201,17 @@
         <JAVADOC />
         <SOURCES>
           <root url="jar://$MODULE_DIR$/third_party/java/protobuf/protobuf-java-2.6.1-src.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/third_party/java/args4j/args4j-2.0.26.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/third_party/java/args4j/args4j-2.0.26-src.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
