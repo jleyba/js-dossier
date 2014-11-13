@@ -260,23 +260,36 @@ class Linker {
       "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/";
 
   /**
-   * Maps primitives to a link to their definition on the Mozilla Develper Network. The Closure
-   * compiler does not provide predefined externs for these types (it does have the object
-   * equivalents (e.g. number vs Number).
+   * Maps built-in objects to a link to their definition on the Mozilla Develper Network.
+   * The Closure compiler's externs do not provide links for these types in its externs.
    */
-  private static final ImmutableMap<String, String> PRIMITIVES_TO_MDN_LINK =
+  private static final ImmutableMap<String, String> BUILTIN_TO_MDN_LINK =
       ImmutableMap.<String, String>builder()
-      .put("null", MDN_PREFIX + "Global_Objects/Null")
-      .put("undefined", MDN_PREFIX + "Global_Objects/Undefined")
-      .put("string", MDN_PREFIX + "Global_Objects/String")
-      .put("String", MDN_PREFIX + "Global_Objects/String")
-      .put("number", MDN_PREFIX + "Global_Objects/Number")
-      .put("Number", MDN_PREFIX + "Global_Objects/Number")
-      .put("boolean", MDN_PREFIX + "Global_Objects/Boolean")
-      .put("Boolean", MDN_PREFIX + "Global_Objects/Boolean")
-      .put("Function", MDN_PREFIX + "Global_Objects/Function")
-      .put("Object", MDN_PREFIX + "Global_Objects/Object")
-      .build();
+          .put("Arguments", MDN_PREFIX + "Functions/arguments")
+          .put("Array", MDN_PREFIX + "Global_Objects/Array")
+          .put("Boolean", MDN_PREFIX + "Global_Objects/Boolean")
+          .put("Date", MDN_PREFIX + "Global_Objects/Date")
+          .put("Error", MDN_PREFIX + "Global_Objects/Error")
+          .put("Function", MDN_PREFIX + "Global_Objects/Function")
+          .put("Infinity", MDN_PREFIX + "Global_Objects/Infinity")
+          .put("Math", MDN_PREFIX + "Global_Objects/Math")
+          .put("NaN", MDN_PREFIX + "Global_Objects/NaN")
+          .put("Number", MDN_PREFIX + "Global_Objects/Number")
+          .put("Object", MDN_PREFIX + "Global_Objects/Object")
+          .put("RangeError", MDN_PREFIX + "Global_Objects/RangeError")
+          .put("ReferenceError", MDN_PREFIX + "Global_Objects/ReferenceError")
+          .put("RegExp", MDN_PREFIX + "Global_Objects/RegExp")
+          .put("String", MDN_PREFIX + "Global_Objects/String")
+          .put("SyntaxError", MDN_PREFIX + "Global_Objects/SyntaxError")
+          .put("TypeError", MDN_PREFIX + "Global_Objects/TypeError")
+          .put("URIError", MDN_PREFIX + "Global_Objects/URIError")
+          .put("arguments", MDN_PREFIX + "Functions/arguments")
+          .put("boolean", MDN_PREFIX + "Global_Objects/Boolean")
+          .put("null", MDN_PREFIX + "Global_Objects/Null")
+          .put("number", MDN_PREFIX + "Global_Objects/Number")
+          .put("string", MDN_PREFIX + "Global_Objects/String")
+          .put("undefined", MDN_PREFIX + "Global_Objects/Undefined")
+          .build();
 
   /**
    * Attempts to find a link to an extern type definition. Primitive types (null, undefined,
@@ -290,8 +303,8 @@ class Linker {
    */
   @Nullable
   private String getExternLink(String name) {
-    if (PRIMITIVES_TO_MDN_LINK.containsKey(name)) {
-      return PRIMITIVES_TO_MDN_LINK.get(name);
+    if (BUILTIN_TO_MDN_LINK.containsKey(name)) {
+      return BUILTIN_TO_MDN_LINK.get(name);
     }
 
     Descriptor descriptor = docRegistry.getExtern(name);
@@ -306,8 +319,8 @@ class Linker {
    */
   @Nullable
   private String getExternLink(Descriptor descriptor) {
-    if (PRIMITIVES_TO_MDN_LINK.containsKey(descriptor.getFullName())) {
-      return PRIMITIVES_TO_MDN_LINK.get(descriptor.getFullName());
+    if (BUILTIN_TO_MDN_LINK.containsKey(descriptor.getFullName())) {
+      return BUILTIN_TO_MDN_LINK.get(descriptor.getFullName());
     }
 
     JsDoc jsDoc = descriptor.getJsDoc();
