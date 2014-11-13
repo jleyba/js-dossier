@@ -176,10 +176,9 @@
   // Note: if type is itself an interface, it will not be included in the
   // |implemented_type| list.
   {if length($type.implementedType)}
-    <dl>
-      <dt>
+    <dt>
       All {if $type.isInterface}extended{else}implemented{/if} interfaces:
-      <dd>
+    <dd>
       {foreach $interface in $type.implementedType}
         <code>
           {if $interface.href}
@@ -190,7 +189,26 @@
         </code>
         {if not isLast($interface)},{sp}{/if}
       {/foreach}
-    </dl>
+  {/if}
+{/template}
+
+
+/**
+ * Prints a link to another descriptor that the given type is an alias
+ * for.
+ *
+ * @param type A JsType object.
+ */
+{template .printAliasLink}
+  {if $type.aliasedType}
+    <dt>Alias for:{sp}
+      <code class="type">
+        {if $type.aliasedType.href}
+          <a href="{$type.aliasedType.href}">{$type.aliasedType.text}</a>
+        {else}
+          {$type.aliasedType.text}
+        {/if}
+      </code>
   {/if}
 {/template}
 
@@ -259,7 +277,7 @@
       {param href: $type.source /}
     {/call}
 
-    {if $type.enumeration}
+    {if $type.enumeration and $type.enumeration.typeHtml}
       <dl><dt>Type: <code class="type">
         {$type.enumeration.typeHtml |noAutoescape}
       </code></dl>
@@ -268,9 +286,16 @@
     {call .classInheritance}
       {param types: $type.extendedType /}
     {/call}
-    {call .printInterfaces}
-      {param type: $type /}
-    {/call}
+    {if $type.aliasedType or length($type.implementedType)}
+      <dl>
+        {call .printAliasLink}
+          {param type: $type /}
+        {/call}
+        {call .printInterfaces}
+          {param type: $type /}
+        {/call}
+      </dl>
+    {/if}
     {call .deprecationNotice}
       {param deprecation: $type.deprecation /}
     {/call}

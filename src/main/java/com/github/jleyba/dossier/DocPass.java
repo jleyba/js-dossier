@@ -225,8 +225,9 @@ class DocPass  implements CompilerPass {
               propName, obj.getPropertyNode(prop), propType, propInfo);
           if (module != null) {
             module.addExportedProperty(propDescriptor);
+          } else {
+            traverseType(module, propDescriptor, registry);
           }
-          traverseType(module, propDescriptor, registry);
         }
       }
     }

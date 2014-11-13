@@ -222,6 +222,9 @@ message JsType {
 
   // Link to the module this type belongs to.
   optional TypeLink module = 22;
+
+  // Link to another type that this type is an alias of.
+  optional TypeLink aliased_type = 23;
 }
 
 

@@ -49,6 +49,8 @@ class DocRegistry {
    */
   private final Map<String, Descriptor> types = new HashMap<>();
 
+  private final Map<JSType, Descriptor> declaredTypes = new HashMap<>();
+
   /**
    * Map of qualified module name to the descriptor for that module. Here, the qualified name is
    * taken from the managed name when merging the descriptor into the global scope and <i>not</i>
@@ -100,11 +102,18 @@ class DocRegistry {
 
   void addType(Descriptor descriptor) {
     types.put(descriptor.getFullName(), descriptor);
+    if (descriptor.getType() != null) {
+      declaredTypes.put(descriptor.getType(), descriptor);
+    }
   }
 
   @Nullable
   Descriptor getType(JSType type) {
-    return getType(getDisplayName(type));
+    String name = getDisplayName(type);
+    if (types.containsKey(name)) {
+      return types.get(name);
+    }
+    return declaredTypes.get(type);
   }
 
   @Nullable

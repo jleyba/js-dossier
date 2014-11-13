@@ -14109,6 +14109,31 @@ public final class Dossier {
      * </pre>
      */
     com.github.jleyba.dossier.proto.Dossier.TypeLinkOrBuilder getModuleOrBuilder();
+
+    /**
+     * <code>optional .TypeLink aliased_type = 23;</code>
+     *
+     * <pre>
+     * Link to another type that this type is an alias of.
+     * </pre>
+     */
+    boolean hasAliasedType();
+    /**
+     * <code>optional .TypeLink aliased_type = 23;</code>
+     *
+     * <pre>
+     * Link to another type that this type is an alias of.
+     * </pre>
+     */
+    com.github.jleyba.dossier.proto.Dossier.TypeLink getAliasedType();
+    /**
+     * <code>optional .TypeLink aliased_type = 23;</code>
+     *
+     * <pre>
+     * Link to another type that this type is an alias of.
+     * </pre>
+     */
+    com.github.jleyba.dossier.proto.Dossier.TypeLinkOrBuilder getAliasedTypeOrBuilder();
   }
   /**
    * Protobuf type {@code JsType}
@@ -14331,6 +14356,19 @@ public final class Dossier {
                 module_ = subBuilder.buildPartial();
               }
               bitField0_ |= 0x00000800;
+              break;
+            }
+            case 186: {
+              com.github.jleyba.dossier.proto.Dossier.TypeLink.Builder subBuilder = null;
+              if (((bitField0_ & 0x00001000) == 0x00001000)) {
+                subBuilder = aliasedType_.toBuilder();
+              }
+              aliasedType_ = input.readMessage(com.github.jleyba.dossier.proto.Dossier.TypeLink.PARSER, extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(aliasedType_);
+                aliasedType_ = subBuilder.buildPartial();
+              }
+              bitField0_ |= 0x00001000;
               break;
             }
           }
@@ -18815,6 +18853,39 @@ public final class Dossier {
       return module_;
     }
 
+    public static final int ALIASED_TYPE_FIELD_NUMBER = 23;
+    private com.github.jleyba.dossier.proto.Dossier.TypeLink aliasedType_;
+    /**
+     * <code>optional .TypeLink aliased_type = 23;</code>
+     *
+     * <pre>
+     * Link to another type that this type is an alias of.
+     * </pre>
+     */
+    public boolean hasAliasedType() {
+      return ((bitField0_ & 0x00001000) == 0x00001000);
+    }
+    /**
+     * <code>optional .TypeLink aliased_type = 23;</code>
+     *
+     * <pre>
+     * Link to another type that this type is an alias of.
+     * </pre>
+     */
+    public com.github.jleyba.dossier.proto.Dossier.TypeLink getAliasedType() {
+      return aliasedType_;
+    }
+    /**
+     * <code>optional .TypeLink aliased_type = 23;</code>
+     *
+     * <pre>
+     * Link to another type that this type is an alias of.
+     * </pre>
+     */
+    public com.github.jleyba.dossier.proto.Dossier.TypeLinkOrBuilder getAliasedTypeOrBuilder() {
+      return aliasedType_;
+    }
+
     private void initFields() {
       name_ = "";
       source_ = "";
@@ -18835,6 +18906,7 @@ public final class Dossier {
       compilerConstant_ = java.util.Collections.emptyList();
       isModule_ = false;
       module_ = com.github.jleyba.dossier.proto.Dossier.TypeLink.getDefaultInstance();
+      aliasedType_ = com.github.jleyba.dossier.proto.Dossier.TypeLink.getDefaultInstance();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -18932,6 +19004,12 @@ public final class Dossier {
           return false;
         }
       }
+      if (hasAliasedType()) {
+        if (!getAliasedType().isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+      }
       memoizedIsInitialized = 1;
       return true;
     }
@@ -18995,6 +19073,9 @@ public final class Dossier {
       }
       if (((bitField0_ & 0x00000800) == 0x00000800)) {
         output.writeMessage(22, module_);
+      }
+      if (((bitField0_ & 0x00001000) == 0x00001000)) {
+        output.writeMessage(23, aliasedType_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -19080,6 +19161,10 @@ public final class Dossier {
       if (((bitField0_ & 0x00000800) == 0x00000800)) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(22, module_);
+      }
+      if (((bitField0_ & 0x00001000) == 0x00001000)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(23, aliasedType_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -19208,6 +19293,7 @@ public final class Dossier {
           getImplementedTypeFieldBuilder();
           getCompilerConstantFieldBuilder();
           getModuleFieldBuilder();
+          getAliasedTypeFieldBuilder();
         }
       }
       private static Builder create() {
@@ -19306,6 +19392,12 @@ public final class Dossier {
           moduleBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00040000);
+        if (aliasedTypeBuilder_ == null) {
+          aliasedType_ = com.github.jleyba.dossier.proto.Dossier.TypeLink.getDefaultInstance();
+        } else {
+          aliasedTypeBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00080000);
         return this;
       }
 
@@ -19468,6 +19560,14 @@ public final class Dossier {
           result.module_ = module_;
         } else {
           result.module_ = moduleBuilder_.build();
+        }
+        if (((from_bitField0_ & 0x00080000) == 0x00080000)) {
+          to_bitField0_ |= 0x00001000;
+        }
+        if (aliasedTypeBuilder_ == null) {
+          result.aliasedType_ = aliasedType_;
+        } else {
+          result.aliasedType_ = aliasedTypeBuilder_.build();
         }
         result.bitField0_ = to_bitField0_;
         onBuilt();
@@ -19707,6 +19807,9 @@ public final class Dossier {
         if (other.hasModule()) {
           mergeModule(other.getModule());
         }
+        if (other.hasAliasedType()) {
+          mergeAliasedType(other.getAliasedType());
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
@@ -19798,6 +19901,12 @@ public final class Dossier {
         }
         if (hasModule()) {
           if (!getModule().isInitialized()) {
+            
+            return false;
+          }
+        }
+        if (hasAliasedType()) {
+          if (!getAliasedType().isInitialized()) {
             
             return false;
           }
@@ -22926,6 +23035,158 @@ public final class Dossier {
           module_ = null;
         }
         return moduleBuilder_;
+      }
+
+      private com.github.jleyba.dossier.proto.Dossier.TypeLink aliasedType_ = com.github.jleyba.dossier.proto.Dossier.TypeLink.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          com.github.jleyba.dossier.proto.Dossier.TypeLink, com.github.jleyba.dossier.proto.Dossier.TypeLink.Builder, com.github.jleyba.dossier.proto.Dossier.TypeLinkOrBuilder> aliasedTypeBuilder_;
+      /**
+       * <code>optional .TypeLink aliased_type = 23;</code>
+       *
+       * <pre>
+       * Link to another type that this type is an alias of.
+       * </pre>
+       */
+      public boolean hasAliasedType() {
+        return ((bitField0_ & 0x00080000) == 0x00080000);
+      }
+      /**
+       * <code>optional .TypeLink aliased_type = 23;</code>
+       *
+       * <pre>
+       * Link to another type that this type is an alias of.
+       * </pre>
+       */
+      public com.github.jleyba.dossier.proto.Dossier.TypeLink getAliasedType() {
+        if (aliasedTypeBuilder_ == null) {
+          return aliasedType_;
+        } else {
+          return aliasedTypeBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>optional .TypeLink aliased_type = 23;</code>
+       *
+       * <pre>
+       * Link to another type that this type is an alias of.
+       * </pre>
+       */
+      public Builder setAliasedType(com.github.jleyba.dossier.proto.Dossier.TypeLink value) {
+        if (aliasedTypeBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          aliasedType_ = value;
+          onChanged();
+        } else {
+          aliasedTypeBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00080000;
+        return this;
+      }
+      /**
+       * <code>optional .TypeLink aliased_type = 23;</code>
+       *
+       * <pre>
+       * Link to another type that this type is an alias of.
+       * </pre>
+       */
+      public Builder setAliasedType(
+          com.github.jleyba.dossier.proto.Dossier.TypeLink.Builder builderForValue) {
+        if (aliasedTypeBuilder_ == null) {
+          aliasedType_ = builderForValue.build();
+          onChanged();
+        } else {
+          aliasedTypeBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00080000;
+        return this;
+      }
+      /**
+       * <code>optional .TypeLink aliased_type = 23;</code>
+       *
+       * <pre>
+       * Link to another type that this type is an alias of.
+       * </pre>
+       */
+      public Builder mergeAliasedType(com.github.jleyba.dossier.proto.Dossier.TypeLink value) {
+        if (aliasedTypeBuilder_ == null) {
+          if (((bitField0_ & 0x00080000) == 0x00080000) &&
+              aliasedType_ != com.github.jleyba.dossier.proto.Dossier.TypeLink.getDefaultInstance()) {
+            aliasedType_ =
+              com.github.jleyba.dossier.proto.Dossier.TypeLink.newBuilder(aliasedType_).mergeFrom(value).buildPartial();
+          } else {
+            aliasedType_ = value;
+          }
+          onChanged();
+        } else {
+          aliasedTypeBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00080000;
+        return this;
+      }
+      /**
+       * <code>optional .TypeLink aliased_type = 23;</code>
+       *
+       * <pre>
+       * Link to another type that this type is an alias of.
+       * </pre>
+       */
+      public Builder clearAliasedType() {
+        if (aliasedTypeBuilder_ == null) {
+          aliasedType_ = com.github.jleyba.dossier.proto.Dossier.TypeLink.getDefaultInstance();
+          onChanged();
+        } else {
+          aliasedTypeBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00080000);
+        return this;
+      }
+      /**
+       * <code>optional .TypeLink aliased_type = 23;</code>
+       *
+       * <pre>
+       * Link to another type that this type is an alias of.
+       * </pre>
+       */
+      public com.github.jleyba.dossier.proto.Dossier.TypeLink.Builder getAliasedTypeBuilder() {
+        bitField0_ |= 0x00080000;
+        onChanged();
+        return getAliasedTypeFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>optional .TypeLink aliased_type = 23;</code>
+       *
+       * <pre>
+       * Link to another type that this type is an alias of.
+       * </pre>
+       */
+      public com.github.jleyba.dossier.proto.Dossier.TypeLinkOrBuilder getAliasedTypeOrBuilder() {
+        if (aliasedTypeBuilder_ != null) {
+          return aliasedTypeBuilder_.getMessageOrBuilder();
+        } else {
+          return aliasedType_;
+        }
+      }
+      /**
+       * <code>optional .TypeLink aliased_type = 23;</code>
+       *
+       * <pre>
+       * Link to another type that this type is an alias of.
+       * </pre>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          com.github.jleyba.dossier.proto.Dossier.TypeLink, com.github.jleyba.dossier.proto.Dossier.TypeLink.Builder, com.github.jleyba.dossier.proto.Dossier.TypeLinkOrBuilder> 
+          getAliasedTypeFieldBuilder() {
+        if (aliasedTypeBuilder_ == null) {
+          aliasedTypeBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              com.github.jleyba.dossier.proto.Dossier.TypeLink, com.github.jleyba.dossier.proto.Dossier.TypeLink.Builder, com.github.jleyba.dossier.proto.Dossier.TypeLinkOrBuilder>(
+                  getAliasedType(),
+                  getParentForChildren(),
+                  isClean());
+          aliasedType_ = null;
+        }
+        return aliasedTypeBuilder_;
       }
 
       // @@protoc_insertion_point(builder_scope:JsType)
@@ -27094,7 +27355,7 @@ public final class Dossier {
       "\0132\022.Enumeration.Value\022\'\n\nvisibility\030\003 \001(" +
       "\0162\013.Visibility:\006PUBLIC\032W\n\005Value\022\014\n\004name\030" +
       "\001 \002(\t\022\035\n\013description\030\002 \001(\0132\010.Comment\022!\n\013" +
-      "deprecation\030\003 \001(\0132\014.Deprecation\"\355\007\n\006JsTy",
+      "deprecation\030\003 \001(\0132\014.Deprecation\"\216\010\n\006JsTy",
       "pe\022\014\n\004name\030\001 \002(\t\022\016\n\006source\030\005 \002(\t\022#\n\006nest" +
       "ed\030\006 \002(\0132\023.JsType.NestedTypes\022\035\n\013descrip" +
       "tion\030\007 \002(\0132\010.Comment\022!\n\013deprecation\030\010 \001(" +
@@ -27109,30 +27370,30 @@ public final class Dossier {
       "e\022 \n\rextended_type\030\022 \003(\0132\t.TypeLink\022#\n\020i" +
       "mplemented_type\030\023 \003(\0132\t.TypeLink\022$\n\021comp" +
       "iler_constant\030\024 \003(\0132\t.Property\022\021\n\tis_mod" +
-      "ule\030\025 \001(\010\022\031\n\006module\030\026 \001(\0132\t.TypeLink\032\352\001\n" +
-      "\013NestedTypes\0223\n\ninterfaces\030\001 \003(\0132\037.JsTyp" +
-      "e.NestedTypes.TypeSummary\0220\n\007classes\030\002 \003" +
-      "(\0132\037.JsType.NestedTypes.TypeSummary\022.\n\005e" +
-      "nums\030\003 \003(\0132\037.JsType.NestedTypes.TypeSumm" +
-      "ary\032D\n\013TypeSummary\022\014\n\004name\030\001 \002(\t\022\014\n\004href",
-      "\030\002 \002(\t\022\031\n\007summary\030\003 \002(\0132\010.Comment\032\243\001\n\007Ty" +
-      "peDef\022\014\n\004name\030\001 \002(\t\022\021\n\ttype_html\030\002 \002(\t\022\014" +
-      "\n\004href\030\003 \002(\t\022\035\n\013description\030\004 \002(\0132\010.Comm" +
-      "ent\022!\n\013deprecation\030\005 \001(\0132\014.Deprecation\022\'" +
-      "\n\nvisibility\030\006 \001(\0162\013.Visibility:\006PUBLIC\"" +
-      "d\n\023IndexFileRenderSpec\022\035\n\tresources\030\001 \002(" +
-      "\0132\n.Resources\022\024\n\014license_path\030\002 \001(\t\022\030\n\006r" +
-      "eadme\030\003 \001(\0132\010.Comment\"M\n\021LicenseRenderSp" +
-      "ec\022\035\n\tresources\030\001 \002(\0132\n.Resources\022\031\n\007lic" +
-      "ense\030\002 \002(\0132\010.License\"f\n\024SourceFileRender",
-      "Spec\022\035\n\tresources\030\001 \002(\0132\n.Resources\022\031\n\004f" +
-      "ile\030\002 \002(\0132\013.SourceFile\022\024\n\014license_path\030\003" +
-      " \001(\t\"^\n\020JsTypeRenderSpec\022\025\n\004type\030\001 \002(\0132\007" +
-      ".JsType\022\035\n\tresources\030\002 \002(\0132\n.Resources\022\024" +
-      "\n\014license_path\030\003 \001(\t*A\n\nVisibility\022\n\n\006PU" +
-      "BLIC\020\000\022\r\n\tPROTECTED\020\001\022\013\n\007PRIVATE\020\002\022\013\n\007PA" +
-      "CKAGE\020\003B!\n\037com.github.jleyba.dossier.pro" +
-      "to"
+      "ule\030\025 \001(\010\022\031\n\006module\030\026 \001(\0132\t.TypeLink\022\037\n\014" +
+      "aliased_type\030\027 \001(\0132\t.TypeLink\032\352\001\n\013Nested" +
+      "Types\0223\n\ninterfaces\030\001 \003(\0132\037.JsType.Neste" +
+      "dTypes.TypeSummary\0220\n\007classes\030\002 \003(\0132\037.Js" +
+      "Type.NestedTypes.TypeSummary\022.\n\005enums\030\003 " +
+      "\003(\0132\037.JsType.NestedTypes.TypeSummary\032D\n\013",
+      "TypeSummary\022\014\n\004name\030\001 \002(\t\022\014\n\004href\030\002 \002(\t\022" +
+      "\031\n\007summary\030\003 \002(\0132\010.Comment\032\243\001\n\007TypeDef\022\014" +
+      "\n\004name\030\001 \002(\t\022\021\n\ttype_html\030\002 \002(\t\022\014\n\004href\030" +
+      "\003 \002(\t\022\035\n\013description\030\004 \002(\0132\010.Comment\022!\n\013" +
+      "deprecation\030\005 \001(\0132\014.Deprecation\022\'\n\nvisib" +
+      "ility\030\006 \001(\0162\013.Visibility:\006PUBLIC\"d\n\023Inde" +
+      "xFileRenderSpec\022\035\n\tresources\030\001 \002(\0132\n.Res" +
+      "ources\022\024\n\014license_path\030\002 \001(\t\022\030\n\006readme\030\003" +
+      " \001(\0132\010.Comment\"M\n\021LicenseRenderSpec\022\035\n\tr" +
+      "esources\030\001 \002(\0132\n.Resources\022\031\n\007license\030\002 ",
+      "\002(\0132\010.License\"f\n\024SourceFileRenderSpec\022\035\n" +
+      "\tresources\030\001 \002(\0132\n.Resources\022\031\n\004file\030\002 \002" +
+      "(\0132\013.SourceFile\022\024\n\014license_path\030\003 \001(\t\"^\n" +
+      "\020JsTypeRenderSpec\022\025\n\004type\030\001 \002(\0132\007.JsType" +
+      "\022\035\n\tresources\030\002 \002(\0132\n.Resources\022\024\n\014licen" +
+      "se_path\030\003 \001(\t*A\n\nVisibility\022\n\n\006PUBLIC\020\000\022" +
+      "\r\n\tPROTECTED\020\001\022\013\n\007PRIVATE\020\002\022\013\n\007PACKAGE\020\003" +
+      "B!\n\037com.github.jleyba.dossier.proto"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -27235,7 +27496,7 @@ public final class Dossier {
     internal_static_JsType_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_JsType_descriptor,
-        new java.lang.String[] { "Name", "Source", "Nested", "Description", "Deprecation", "TypeDef", "Enumeration", "StaticFunction", "StaticProperty", "MainFunction", "IsInterface", "Prototype", "HasInstanceMethods", "HasInstanceProperties", "ExtendedType", "ImplementedType", "CompilerConstant", "IsModule", "Module", });
+        new java.lang.String[] { "Name", "Source", "Nested", "Description", "Deprecation", "TypeDef", "Enumeration", "StaticFunction", "StaticProperty", "MainFunction", "IsInterface", "Prototype", "HasInstanceMethods", "HasInstanceProperties", "ExtendedType", "ImplementedType", "CompilerConstant", "IsModule", "Module", "AliasedType", });
     internal_static_JsType_NestedTypes_descriptor =
       internal_static_JsType_descriptor.getNestedTypes().get(0);
     internal_static_JsType_NestedTypes_fieldAccessorTable = new

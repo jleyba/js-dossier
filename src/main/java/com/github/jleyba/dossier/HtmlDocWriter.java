@@ -35,6 +35,7 @@ import static com.github.jleyba.dossier.proto.Dossier.TypeLink;
 import static com.google.common.base.MoreObjects.firstNonNull;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.base.Strings.nullToEmpty;
 import static com.google.common.collect.Iterables.concat;
 import static com.google.common.collect.Iterables.transform;
@@ -215,12 +216,9 @@ class HtmlDocWriter implements DocWriter {
     renderer.render(output, spec.build());
 
     for (Descriptor property : module.getExportedProperties()) {
-      // If the exported descriptor is an alias for another documented type, there is no
-      // need to generate an additional set of docs as we can just link to the original.
-      if (property == resolveTypeAlias(property)
-          && (property.isConstructor()
+      if (property.isConstructor()
           || property.isInterface()
-          || property.isEnum())) {
+          || property.isEnum()) {
         generateDocs(property);
       }
     }
@@ -233,14 +231,7 @@ class HtmlDocWriter implements DocWriter {
 
     String name = descriptor.getFullName();
     JsType.Builder jsTypeBuilder = JsType.newBuilder()
-        .setName(name)
-        .setNested(getNestedTypeInfo(descriptor.getProperties()))
-        .setSource(nullToEmpty(linker.getSourcePath(descriptor)))
-        .setDescription(getBlockDescription(linker, descriptor.getJsDoc()))
-        .addAllTypeDef(getTypeDefInfo(descriptor.getProperties()))
-        .addAllExtendedType(getInheritedTypes(descriptor))
-        .addAllImplementedType(getImplementedTypes(descriptor))
-        .setIsInterface(descriptor.isInterface());
+        .setName(name);
 
     if (descriptor.getModule().isPresent()
         && !linker.getDisplayName(descriptor.getModule().get()).equals(name)) {
@@ -248,6 +239,24 @@ class HtmlDocWriter implements DocWriter {
           .setText(linker.getDisplayName(descriptor.getModule().get()))
           .setHref(linker.getLink(descriptor.getModule().get().getDescriptor())));
     }
+
+    Descriptor aliased = resolveTypeAlias(descriptor);
+    if (aliased != descriptor) {
+      jsTypeBuilder.setAliasedType(TypeLink.newBuilder()
+          .setText(aliased.getFullName())
+          .setHref(nullToEmpty(linker.getLink(aliased)))
+          .build());
+      descriptor = aliased;
+    }
+
+    jsTypeBuilder
+        .setNested(getNestedTypeInfo(descriptor.getProperties()))
+        .setSource(nullToEmpty(linker.getSourcePath(descriptor)))
+        .setDescription(getBlockDescription(linker, descriptor.getJsDoc()))
+        .addAllTypeDef(getTypeDefInfo(descriptor.getProperties()))
+        .addAllExtendedType(getInheritedTypes(descriptor))
+        .addAllImplementedType(getImplementedTypes(descriptor))
+        .setIsInterface(descriptor.isInterface());
 
     getStaticData(jsTypeBuilder, descriptor.getProperties());
     getPrototypeData(jsTypeBuilder, descriptor);
@@ -430,7 +439,6 @@ class HtmlDocWriter implements DocWriter {
     String link;
     Descriptor descriptor = docRegistry.resolve(typeName, currentModule);
     if (descriptor != null) {
-      descriptor = resolveTypeAlias(descriptor);
       String template = "";
       int index = typeName.indexOf("<");
       if (index != -1) {
@@ -468,12 +476,19 @@ class HtmlDocWriter implements DocWriter {
     if (!descriptor.isEnum()) {
       return;
     }
-    JsDoc jsdoc = checkNotNull(descriptor.getJsDoc(),
-        "No jsdoc for enum %s; this should never happen!", descriptor.getFullName());
 
     Enumeration.Builder enumBuilder = Dossier.Enumeration.newBuilder()
-        .setTypeHtml(formatTypeExpression(jsdoc.getType(), linker))
         .setVisibility(Dossier.Visibility.valueOf(descriptor.getVisibility().name()));
+
+    JsDoc jsdoc = descriptor.getJsDoc();
+    if (jsdoc != null) {
+      enumBuilder.setTypeHtml(formatTypeExpression(jsdoc.getType(), linker));
+    } else {
+      jsdoc = resolveTypeAlias(descriptor).getJsDoc();
+      if (jsdoc != null) {
+        enumBuilder.setTypeHtml(formatTypeExpression(jsdoc.getType(), linker));
+      }
+    }
 
     // Type may be documented as an enum without an associated object literal for us to analyze:
     //     /** @enum {string} */ namespace.foo;
@@ -591,14 +606,8 @@ class HtmlDocWriter implements DocWriter {
         continue;
       }
 
-      // If our child property is an alias for another type, just link to that:
-      //   --- one.js
-      //   /** @constructor */ exports.Bar = function(){};
-      //   -- two.js
-      //   var one = require('./one');
-      //   /** @type {function(new: one.Bar)} */ exports.Bar = one.Bar;
+      Path filename = linker.getFilePath(child).getFileName();
       Descriptor resolvedType = resolveTypeAlias(child);
-      Path filename = linker.getFilePath(resolvedType).getFileName();
 
       Dossier.Comment summary = getSummary("No description.", linker);
       JsDoc jsdoc = Optional.fromNullable(resolvedType.getJsDoc())
@@ -753,15 +762,16 @@ class HtmlDocWriter implements DocWriter {
       }
 
       if (propertyTypeDescriptor != null) {
-        String link = linker.getLink(propertyTypeDescriptor);
-        checkState(!Strings.isNullOrEmpty(link),
-            "Unable to compute link to %s; this should never happen since %s was previously" +
-                " found in the type registry.", propertyTypeDescriptor.getFullName());
         String fullName = linker.getDisplayName(propertyTypeDescriptor);
         if (isPrototype) {
           fullName += ".prototype";
         }
-        builder.setTypeHtml(String.format("<a href=\"%s\">%s</a>", link, fullName));
+        String link = linker.getLink(propertyTypeDescriptor);
+        if (isNullOrEmpty(link)) {
+          builder.setTypeHtml(fullName);
+        } else {
+          builder.setTypeHtml(String.format("<a href=\"%s\">%s</a>", link, fullName));
+        }
 
       } else {
         String typeName = propertyType.toString();
