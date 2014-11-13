@@ -172,9 +172,16 @@ class JsDoc {
     }
     parsed = true;
 
-    String original = Strings.nullToEmpty(info.getOriginalCommentString()).trim();
+    String original = Strings.nullToEmpty(info.getOriginalCommentString());
     if (original.isEmpty()) {
       return;
+    }
+    if (info.getStaticSourceFile() != null && info.getOriginalCommentPosition() > 0) {
+      int offset = info.getOriginalCommentPosition();
+      int column = info.getStaticSourceFile().getColumnOfOffset(offset);
+      if (column > 0) {
+        original = Strings.repeat(" ", column) + original;
+      }
     }
     original = original.substring(0, original.length() - 2);  // subtract closing */
 
