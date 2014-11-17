@@ -14,7 +14,10 @@ java_library(
 
 java_test(
   name = "tests",
-  srcs = glob(["*.java"], excludes = ["CompilerUtil.java"]),
+  srcs = glob([
+      "*.java",
+      "soy/*.java",
+  ], excludes = ["CompilerUtil.java"]),
   deps = [
     ":util",
     "//src/main/java/com/github/jleyba/dossier:lib",

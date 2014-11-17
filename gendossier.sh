@@ -82,6 +82,8 @@ run_lessc() {
 run_protoc() {
   protoc --java_out=src/main/java \
       src/main/proto/dossier.proto
+  protoc --java_out=src/test/java \
+      src/test/java/com/github/jleyba/dossier/soy/test_proto.proto
 }
 
 build_release() {

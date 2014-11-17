@@ -39,7 +39,7 @@ import javax.annotation.Nullable;
 /**
  * Utility class for working with JSDoc comments.
  */
-class CommentUtil {
+public class CommentUtil {
   private CommentUtil() {}  // Utility class.
 
   private static Pattern SUMMARY_REGEX = Pattern.compile("(.*?\\.)[\\s$]", Pattern.DOTALL);
@@ -49,7 +49,7 @@ class CommentUtil {
    * Extracts summary sentence from the provided comment text. This is the substring up to the
    * first period (.) followed by a blank, tab, or newline.
    */
-  static Dossier.Comment getSummary(String text, Linker linker) {
+  public static Dossier.Comment getSummary(String text, Linker linker) {
     Matcher matcher = SUMMARY_REGEX.matcher(text);
     if (matcher.find()) {
       return parseComment(matcher.group(1), linker);
@@ -60,7 +60,7 @@ class CommentUtil {
   /**
    * Extracs the fileoverview comment string from the given {@link JsDoc} object.
    */
-  static Dossier.Comment getFileoverview(Linker linker, @Nullable JsDoc jsdoc) {
+  public static Dossier.Comment getFileoverview(Linker linker, @Nullable JsDoc jsdoc) {
     if (jsdoc == null) {
       return Dossier.Comment.getDefaultInstance();
     }
@@ -70,14 +70,14 @@ class CommentUtil {
   /**
    * Extracts the block comment string from the given {@link JsDoc} object.
    */
-  static Dossier.Comment getBlockDescription(Linker linker, @Nullable JsDoc jsdoc) {
+  public static Dossier.Comment getBlockDescription(Linker linker, @Nullable JsDoc jsdoc) {
     if (jsdoc == null) {
       return Dossier.Comment.getDefaultInstance();
     }
     return parseComment(jsdoc.getBlockComment(), linker);
   }
 
-  static String getMarkerDescription(JSDocInfo info, String annotation) {
+  public static String getMarkerDescription(JSDocInfo info, String annotation) {
     for (JSDocInfo.Marker marker : info.getMarkers()) {
       if (annotation.equals(marker.getAnnotation().getItem())) {
         return extractCommentString(
@@ -87,7 +87,7 @@ class CommentUtil {
     return "";
   }
 
-  static String extractCommentString(String originalCommentString,
+  public static String extractCommentString(String originalCommentString,
       @Nullable JSDocInfo.StringPosition position) {
     if (null == position) {
       return "";
@@ -153,7 +153,7 @@ class CommentUtil {
   /**
    * Parses the {@code text} of a JSDoc block comment.
    */
-  static Dossier.Comment parseComment(String text, Linker linker) {
+  public static Dossier.Comment parseComment(String text, Linker linker) {
     Dossier.Comment.Builder builder = Dossier.Comment.newBuilder();
     if (Strings.isNullOrEmpty(text)) {
       return builder.build();
@@ -247,7 +247,7 @@ class CommentUtil {
     return end;
   }
 
-  static String formatTypeExpression(JSTypeExpression expression, Linker resolver) {
+  public static String formatTypeExpression(JSTypeExpression expression, Linker resolver) {
     // If we use JSTypeExpression#evaluate(), all typedefs will be resolved to their native
     // types, which produces very verbose expressions.  Keep things simply and rebuild the type
     // expression ourselves. This has the added benefit of letting us resolve type links as we go.

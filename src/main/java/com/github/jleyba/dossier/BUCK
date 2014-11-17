@@ -1,7 +1,10 @@
 java_library(
   name = "lib",
   srcs = glob(["**/*.java"]),
-  resources = glob(["resources/*"]),
+  resources = glob([
+    "resources/*",
+    "soy/resources/*"
+  ]),
   deps = [
     "//src/main/java/com/google/javascript/jscomp:jscomp",
     "//third_party/java/args4j:args4j",

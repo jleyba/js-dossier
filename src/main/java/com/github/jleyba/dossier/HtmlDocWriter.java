@@ -42,6 +42,7 @@ import static com.google.common.collect.Iterables.transform;
 import static java.nio.file.Files.createDirectories;
 
 import com.github.jleyba.dossier.proto.Dossier;
+import com.github.jleyba.dossier.soy.Renderer;
 import com.github.rjeschke.txtmark.Processor;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Charsets;
@@ -49,7 +50,6 @@ import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
-import com.google.common.base.Strings;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;

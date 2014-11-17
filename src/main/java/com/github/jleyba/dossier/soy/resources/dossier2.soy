@@ -1,0 +1,37 @@
+{namespace dossier.soy autoescape="deprecated-noncontextual"}
+
+/**
+ * The main page header; responsible for setting the doctype, title, and
+ * linking in any necessary stylesheets.
+ */
+{template .pageHeader}
+  {@param title: string}
+  {@param resources: dossier.Resources}
+
+  <!DOCTYPE html>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Language" content="en" />
+  <title>{$title}</title>
+  {foreach $styleSheet in $resources.css}
+    <link href="{$styleSheet}" rel="stylesheet" type="text/css">
+  {/foreach}
+{/template}
+
+
+/**
+ * Prints a notification that a descriptor is deprecated.
+ */
+{template .deprecationNotice}
+  {@param deprecation: dossier.Deprecation}  /* A deprecation message. */
+
+  {if $deprecation and $deprecation.notice and length($deprecation.notice.token)}
+    <div class="deprecation-notice">Deprecated:{sp}
+      <span class="deprecation-reason">
+        {call .comment}
+          {param comment: $deprecation.notice /}
+          {param omitLeadingTag: true /}
+        {/call}
+      </span>
+    </div>
+  {/if}
+{/template}

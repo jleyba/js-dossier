@@ -1,0 +1,37 @@
+option java_package = "com.github.jleyba.dossier.soy";
+
+package test;
+
+enum Color {
+  RED = 0;
+  BLUE = 1;
+  GREEN = 2;
+}
+
+enum Fruit {
+  APPLE = 1;
+  ORANGE = 2;
+}
+
+message Order {
+  optional bool bool_field = 1;
+  optional int32 int_field = 2;
+  optional string string_field = 3;
+  optional Fruit fruit = 4;
+  optional Color color = 5;
+  repeated int32 repeated_int = 6;
+  repeated Color repeated_color = 7;
+}
+
+message Top {
+  enum NestedEnum {
+    VALUE = 0;
+  }
+
+  message NestedMessage {
+    optional bool item = 1;
+  }
+
+  optional NestedEnum nested_enum = 1;
+  repeated Order order = 2;
+}

@@ -1,5 +1,7 @@
 option java_package = "com.github.jleyba.dossier.proto";
 
+package dossier;
+
 // Describes a documented source file.
 message SourceFile {
   // The file's base name.

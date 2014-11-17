@@ -30,7 +30,7 @@ import javax.annotation.Nullable;
 /**
  * Utilities for generating links to {@link Descriptor types} in generated documentation.
  */
-class Linker {
+public class Linker {
 
   private final Config config;
   private final Path outputRoot;
@@ -40,7 +40,7 @@ class Linker {
    * @param config The current runtime configuration.
    * @param docRegistry The documented type registry.
    */
-  Linker(Config config, DocRegistry docRegistry) {
+  public Linker(Config config, DocRegistry docRegistry) {
     this.config = checkNotNull(config);
     this.outputRoot = config.getOutput();
     this.docRegistry = checkNotNull(docRegistry);
@@ -61,7 +61,7 @@ class Linker {
   /**
    * Returns the display name for the given {@code descriptor}.
    */
-  String getDisplayName(ModuleDescriptor descriptor) {
+  public String getDisplayName(ModuleDescriptor descriptor) {
     if (descriptor.getAttribute("displayName") != null) {
       return descriptor.getAttribute("displayName");
     }
@@ -92,7 +92,7 @@ class Linker {
    * that module's {@link #getDisplayName(ModuleDescriptor) display name}. Otherwise, this simply
    * returns the descriptor's {@link Descriptor#getFullName() fully qualified name}.
    */
-  String getDisplayName(Descriptor descriptor) {
+  public String getDisplayName(Descriptor descriptor) {
     if (descriptor.isModuleExports()) {
       return getDisplayName(descriptor.getModule().get());
     }
@@ -102,7 +102,7 @@ class Linker {
   /**
    * Returns the path of the generated document file for the given module.
    */
-  Path getFilePath(ModuleDescriptor module) {
+  public Path getFilePath(ModuleDescriptor module) {
     String name = getDisplayName(module).replace('/', '_') + ".html";
     return outputRoot.resolve("module_" + name);
   }
@@ -110,7 +110,7 @@ class Linker {
   /**
    * Returns the path of the generated document file for the given descriptor.
    */
-  Path getFilePath(Descriptor descriptor) {
+  public Path getFilePath(Descriptor descriptor) {
     String name = descriptor.getFullName().replace('.', '_') + ".html";
     name = getTypePrefix(descriptor) + name;
 
@@ -125,7 +125,7 @@ class Linker {
   /**
    * Returns the path of the generated documentation for the given source file.
    */
-  Path getFilePath(Path sourceFile) {
+  public Path getFilePath(Path sourceFile) {
     Path path = config.getSrcPrefix()
         .relativize(sourceFile.toAbsolutePath().normalize())
         .resolveSibling(sourceFile.getFileName() + ".src.html");
@@ -135,7 +135,7 @@ class Linker {
   /**
    * @see #getFilePath(Path)
    */
-  Path getFilePath(String sourceFile) {
+  public Path getFilePath(String sourceFile) {
     return getFilePath(outputRoot.getFileSystem().getPath(sourceFile));
   }
 
@@ -143,7 +143,7 @@ class Linker {
    * Computes the path from the given module's {@link #getFilePath(ModuleDescriptor) file} to the
    * rendered source file.
    */
-  String getSourcePath(ModuleDescriptor descriptor) {
+  public String getSourcePath(ModuleDescriptor descriptor) {
     Iterator<Path> parts = config.getOutput()
         .relativize(getFilePath(descriptor.getSource()))
         .iterator();
@@ -156,7 +156,7 @@ class Linker {
    * this method will return {@code null}.
    */
   @Nullable
-  String getSourcePath(Descriptor descriptor) {
+  public String getSourcePath(Descriptor descriptor) {
     String strPath = descriptor.getSource();
     if (strPath == null) {
       return null;
@@ -188,7 +188,7 @@ class Linker {
    * could not be found, {@code null} is returned.
    */
   @Nullable
-  String getLink(String to) {
+  public String getLink(String to) {
     // Trim down the target symbol to something that would be indexable.
     int index = to.indexOf("(");
     if (index != -1) {
@@ -206,7 +206,7 @@ class Linker {
   }
 
   @Nullable
-  String getLink(Descriptor descriptor) {
+  public String getLink(Descriptor descriptor) {
     if (docRegistry.isExtern(descriptor.getFullName())) {
       return getExternLink(descriptor);
     }

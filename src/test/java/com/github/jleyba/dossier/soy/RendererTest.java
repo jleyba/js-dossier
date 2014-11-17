@@ -1,30 +1,33 @@
-package com.github.jleyba.dossier;
+package com.github.jleyba.dossier.soy;
 
-import static com.github.jleyba.dossier.Renderer.toMap;
-import static com.google.common.collect.Lists.transform;
+import static com.github.jleyba.dossier.soy.ProtoMessageSoyType.toSoyValue;
+import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.collect.Maps.transformValues;
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import com.github.jleyba.dossier.CommentUtil;
+import com.github.jleyba.dossier.Linker;
 import com.github.jleyba.dossier.proto.Dossier;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 import com.google.protobuf.GeneratedMessage;
+import com.google.template.soy.data.SoyValue;
+import com.google.template.soy.tofu.SoyTofu;
 import org.hamcrest.Matcher;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -40,97 +43,18 @@ import javax.annotation.Nullable;
 @RunWith(JUnit4.class)
 public class RendererTest {
 
+  private static SoyTofu tofu;
+
   private Linker mockLinker;
+
+  @BeforeClass
+  public static void createTofu() {
+    tofu = new Renderer().getTofu();
+  }
 
   @Before
   public void setUpMocks() {
     mockLinker = mock(Linker.class);
-  }
-
-  @Test
-  public void convertResourceMessageToMap() {
-    Dossier.Resources resources = Dossier.Resources.newBuilder()
-        .addScript("foo")
-        .addScript("bar")
-        .addCss("baz")
-        .build();
-
-    Map<String, Object> data = toMap(resources);
-    assertEquals(
-        Sets.newHashSet("script", "css"),
-        data.keySet());
-
-    assertEquals(Lists.newArrayList("foo", "bar"), data.get("script"));
-    assertEquals(Lists.newArrayList("baz"), data.get("css"));
-  }
-
-  @Test
-  public void convertSourceFileToMap() {
-    Dossier.SourceFile sourceFile = Dossier.SourceFile.newBuilder()
-        .setBaseName("baz.txt")
-        .setPath("foo/bar/baz.txt")
-        .addLines("one")
-        .addLines("two")
-        .build();
-
-    Map<String, Object> data = toMap(sourceFile);
-    assertEquals(
-        Sets.newHashSet("baseName", "path", "lines"),
-        data.keySet());
-
-    assertEquals("baz.txt", data.get("baseName"));
-    assertEquals("foo/bar/baz.txt", data.get("path"));
-    assertEquals(Lists.newArrayList("one", "two"), data.get("lines"));
-  }
-
-  @Test
-  public void convertLicenseFile() {
-    Dossier.License message = Dossier.License.newBuilder()
-        .setText("foo bar baz")
-        .build();
-
-    Map<String, Object> data = toMap(message);
-    assertEquals(Sets.newHashSet("text"), data.keySet());
-    assertEquals("foo bar baz", data.get("text"));
-  }
-
-  @Test
-  public void convertingLicenseRenderSpec() {
-    GeneratedMessage message = Dossier.LicenseRenderSpec.newBuilder()
-        .setLicense(Dossier.License.newBuilder()
-            .setText("foo bar baz")
-            .build())
-        .setResources(Dossier.Resources.newBuilder()
-            .addScript("foo")
-            .addScript("bar")
-            .addCss("baz")
-            .build())
-        .build();
-
-    Map<String, Object> data = toMap(message);
-    assertEquals(Sets.newHashSet("resources", "license"), data.keySet());
-
-    @SuppressWarnings("unchecked")
-    Map<String, Object> resources = (Map<String, Object>) data.get("resources");
-    assertEquals(Lists.newArrayList("foo", "bar"), resources.get("script"));
-    assertEquals(Lists.newArrayList("baz"), resources.get("css"));
-
-    @SuppressWarnings("unchecked")
-    Map<String, Object> license = (Map<String, Object>) data.get("license");
-    assertEquals("foo bar baz", license.get("text"));
-  }
-
-  @Test
-  public void usesFalseyValuesForOmittedOptionalFieldsInConvertedMap() {
-    Map<String, Object> data = toMap(Dossier.Deprecation.newBuilder().build());
-    assertThat(data.get("notice"), is(nullValue()));
-
-    data = toMap(Dossier.BaseProperty.newBuilder()
-        .setName("name")
-        .setSource("source")
-        .setDescription(parseComment("description"))
-        .build());
-    assertThat(data.get("deprecation"), is(nullValue()));
   }
 
   @Test
@@ -142,8 +66,8 @@ public class RendererTest {
 
     builder.setNotice(parseComment("Hello, world!"));
     assertThat(
-        render("dossier.soy.deprecationNotice", ImmutableMap.of(
-            "deprecation", toMap(builder.build()))),
+        render("dossier.soy.deprecationNotice",
+            "deprecation", toSoyValue(builder.build())),
         isHtml(
             "<div class=\"deprecation-notice\">Deprecated: ",
             "<span class=\"deprecation-reason\">Hello, world!</span>",
@@ -152,7 +76,7 @@ public class RendererTest {
     builder.setNotice(parseComment("<strong>Hello, world!</strong>"));
     assertThat(
         render("dossier.soy.deprecationNotice", ImmutableMap.of(
-            "deprecation", toMap(builder.build()))),
+            "deprecation", toSoyValue(builder.build()))),
         isHtml(
             "<div class=\"deprecation-notice\">Deprecated: ",
             "<span class=\"deprecation-reason\"><strong>Hello, world!</strong></span>",
@@ -164,12 +88,12 @@ public class RendererTest {
     assertThat(
         render("dossier.soy.pageHeader", ImmutableMap.of(
             "title", "Foo.Bar",
-            "resources", toMap(Dossier.Resources.newBuilder()
-            .addScript("one")
-            .addScript("two")
-            .addCss("apples")
-            .addCss("oranges")
-            .build()))),
+            "resources", Dossier.Resources.newBuilder()
+                .addScript("one")
+                .addScript("two")
+                .addCss("apples")
+                .addCss("oranges")
+                .build())),
         isHtml(
             "<!DOCTYPE html>",
             "<meta charset=\"UTF-8\">",
@@ -191,30 +115,30 @@ public class RendererTest {
 
   @Test
   public void renderClassInheritance() {
-    List<Map<String, ?>> types = new LinkedList<>();
+    List<Dossier.TypeLink> types = new LinkedList<>();
     assertThat(render("dossier.soy.classInheritance", ImmutableMap.of("types", types)),
         is(""));
 
-    types.add(toMap(Dossier.TypeLink.newBuilder()
+    types.add(Dossier.TypeLink.newBuilder()
         .setHref("foo.link").setText("Foo")
-        .build()));
+        .build());
     assertThat(render("dossier.soy.classInheritance", ImmutableMap.of("types", types)),
         is(""));
 
-    types.add(toMap(Dossier.TypeLink.newBuilder()
+    types.add(Dossier.TypeLink.newBuilder()
         .setHref("bar.link").setText("Bar")
-        .build()));
-    assertThat(render("dossier.soy.classInheritance", ImmutableMap.of("types", types)),
+        .build());
+    assertThat(render("dossier.soy.classInheritance", "types", types),
         isHtml(
             "<pre><code>",
             "<a href=\"foo.link\">Foo</a>",
             "\n  &#x2514; Bar",
             "</code></pre>"));
 
-    types.add(toMap(Dossier.TypeLink.newBuilder()
+    types.add(Dossier.TypeLink.newBuilder()
         .setHref("baz.link").setText("Baz")
-        .build()));
-    assertThat(render("dossier.soy.classInheritance", ImmutableMap.of("types", types)),
+        .build());
+    assertThat(render("dossier.soy.classInheritance", "types", types),
         isHtml(
             "<pre><code>",
             "<a href=\"foo.link\">Foo</a>",
@@ -222,13 +146,13 @@ public class RendererTest {
             "\n      &#x2514; Baz",
             "</code></pre>"));
 
-    types.add(toMap(Dossier.TypeLink.newBuilder()
+    types.add(Dossier.TypeLink.newBuilder()
         .setHref("").setText("NoLink")
-        .build()));
-    types.add(toMap(Dossier.TypeLink.newBuilder()
+        .build());
+    types.add(Dossier.TypeLink.newBuilder()
         .setHref("quux.link").setText("Quux")
-        .build()));
-    assertThat(render("dossier.soy.classInheritance", ImmutableMap.of("types", types)),
+        .build());
+    assertThat(render("dossier.soy.classInheritance", "types", types),
         isHtml(
             "<pre><code>",
             "<a href=\"foo.link\">Foo</a>",
@@ -269,10 +193,9 @@ public class RendererTest {
 
     assertThat(render("dossier.soy.printInterfaces", "type", type),
         isHtml(
-            "<dl><dt>All extended interfaces:<dd>",
+            "<dt>All extended interfaces:<dd>",
             "<code><a href=\"type-one\">Hello</a></code>, ",
-            "<code><a href=\"type-two\">Goodbye</a></code>",
-            "</dl>"));
+            "<code><a href=\"type-two\">Goodbye</a></code>"));
   }
 
   @Test
@@ -297,10 +220,9 @@ public class RendererTest {
 
     assertThat(render("dossier.soy.printInterfaces", "type", type),
         isHtml(
-            "<dl><dt>All implemented interfaces:<dd>",
+            "<dt>All implemented interfaces:<dd>",
             "<code><a href=\"type-one\">Hello</a></code>, ",
-            "<code><a href=\"type-two\">Goodbye</a></code>",
-            "</dl>"));
+            "<code><a href=\"type-two\">Goodbye</a></code>"));
   }
 
   @Test
@@ -318,9 +240,8 @@ public class RendererTest {
 
     assertThat(render("dossier.soy.printInterfaces", "type", type),
         isHtml(
-            "<dl><dt>All extended interfaces:<dd>",
-            "<code>Hello</code>",
-            "</dl>"));
+            "<dt>All extended interfaces:<dd>",
+            "<code>Hello</code>"));
   }
 
   @Test
@@ -636,7 +557,7 @@ public class RendererTest {
         .build();
 
     Document document = renderDocument("dossier.soy.enumValues",
-        ImmutableMap.of("name", "foo.Bar", "enumeration", toMap(e)));
+        ImmutableMap.of("name", "foo.Bar", "enumeration", e));
 
     assertThat(querySelector(document, "h2").toString(), is("<h2>Values and Descriptions</h2>"));
     assertThat(querySelector(document, "div.type-summary dl").toString(), isHtml(
@@ -661,7 +582,8 @@ public class RendererTest {
     Document document = renderDocument("dossier.soy.nestedTypeSummaries",
         ImmutableMap.<String, Object>of(
             "title", "Interfaces",
-            "types", ImmutableList.of()));
+            "types", ImmutableList.of())
+    );
     assertTrue(document.select("section").isEmpty());
   }
 
@@ -682,12 +604,13 @@ public class RendererTest {
             .setName("Baz")
             .setHref("baz-link")
             .setSummary(parseComment(""))
-            .build());
+            .build()
+    );
 
     Document document = renderDocument("dossier.soy.nestedTypeSummaries",
-        ImmutableMap.<String, Object>of(
+        ImmutableMap.of(
             "title", "Interfaces",
-            "types", transform(types, msgToMap())));
+            "types", toSoyValue(types)));
     assertThat(querySelector(document, "section > h2").toString(), is("<h2>Interfaces</h2>"));
     assertThat(querySelector(document, "section > h2 + .type-summary").toString(), isHtml(
         "<div class=\"type-summary\">",
@@ -790,8 +713,8 @@ public class RendererTest {
         .setTypeHtml("string")
         .build();
 
-    ImmutableMap<String, Object> data = ImmutableMap.of(
-        "member", toMap(property),
+    ImmutableMap<String, ?> data = ImmutableMap.of(
+        "member", property,
         "parentName", "foo.Bar");
 
     Document document = renderDocument("dossier.soy.memberSignature", data);
@@ -812,8 +735,8 @@ public class RendererTest {
         .setTypeHtml("string")
         .build();
 
-    ImmutableMap<String, Object> data = ImmutableMap.of(
-        "member", toMap(property),
+    ImmutableMap<String, ?> data = ImmutableMap.of(
+        "member", property,
         "parentName", "foo.bar");
 
     Document document = renderDocument("dossier.soy.memberSignature", data);
@@ -833,8 +756,8 @@ public class RendererTest {
         .setTypeHtml("")
         .build();
 
-    ImmutableMap<String, Object> data = ImmutableMap.of(
-        "member", toMap(property),
+    ImmutableMap<String, ?> data = ImmutableMap.of(
+        "member", property,
         "parentName", "foo.bar");
 
     Document document = renderDocument("dossier.soy.memberSignature", data);
@@ -871,11 +794,11 @@ public class RendererTest {
             .setTypeHtml("<a href=\"#\">Foo</a>"))
         .build();
 
-    ImmutableMap<String, Object> data = ImmutableMap.of(
-        "member", toMap(function),
+    ImmutableMap<String, ?> data = ImmutableMap.of(
+        "fn", function,
         "parentName", "foo.bar");
 
-    Document document = renderDocument("dossier.soy.memberSignature", data);
+    Document document = renderDocument("dossier.soy.functionSignature", data);
     assertThat(document.body().children().size(), is(1));
     assertThat(document.body().child(0).toString(), isHtml(
         "<span class=\"member\">",
@@ -893,11 +816,11 @@ public class RendererTest {
             .setDescription(parseComment("")))
         .build();
 
-    ImmutableMap<String, Object> data = ImmutableMap.of(
-        "member", toMap(function),
+    ImmutableMap<String, ?> data = ImmutableMap.of(
+        "fn", function,
         "parentName", "foo.bar");
 
-    Document document = renderDocument("dossier.soy.memberSignature", data);
+    Document document = renderDocument("dossier.soy.functionSignature", data);
     assertThat(document.body().children().size(), is(1));
     assertThat(document.body().child(0).toString(), isHtml(
         "<span class=\"member\">",
@@ -915,11 +838,11 @@ public class RendererTest {
             .setTypeHtml("?"))
         .build();
 
-    ImmutableMap<String, Object> data = ImmutableMap.of(
-        "member", toMap(function),
+    ImmutableMap<String, ?> data = ImmutableMap.of(
+        "fn", function,
         "parentName", "foo.bar");
 
-    Document document = renderDocument("dossier.soy.memberSignature", data);
+    Document document = renderDocument("dossier.soy.functionSignature", data);
     assertThat(document.body().children().size(), is(1));
     assertThat(document.body().child(0).toString(), isHtml(
         "<span class=\"member\">",
@@ -938,11 +861,11 @@ public class RendererTest {
             .setTypeHtml("undefined"))
         .build();
 
-    ImmutableMap<String, Object> data = ImmutableMap.of(
-        "member", toMap(function),
+    ImmutableMap<String, ?> data = ImmutableMap.of(
+        "fn", function,
         "parentName", "foo.bar");
 
-    Document document = renderDocument("dossier.soy.memberSignature", data);
+    Document document = renderDocument("dossier.soy.functionSignature", data);
     assertThat(document.body().children().size(), is(1));
     assertThat(document.body().child(0).toString(), isHtml(
         "<span class=\"member\">",
@@ -962,11 +885,11 @@ public class RendererTest {
             .setName("b"))
         .build();
 
-    ImmutableMap<String, Object> data = ImmutableMap.of(
-        "member", toMap(function),
+    ImmutableMap<String, ?> data = ImmutableMap.of(
+        "fn", function,
         "parentName", "foo.bar");
 
-    Document document = renderDocument("dossier.soy.memberSignature", data);
+    Document document = renderDocument("dossier.soy.functionSignature", data);
     assertThat(document.body().children().size(), is(1));
     assertThat(document.body().child(0).toString(), isHtml(
         "<span class=\"member\">",
@@ -991,7 +914,7 @@ public class RendererTest {
             .setTypeHtml("string"))
         .build();
 
-    Document document = renderDocument("dossier.soy.memberSignature", "member", function);
+    Document document = renderDocument("dossier.soy.functionSignature", "fn", function);
     assertThat(document.body().children().size(), is(1));
     assertThat(document.body().child(0).toString(), isHtml(
         "<span class=\"member\">foo.Bar <span class=\"args\">( a, b )</span></span>"));
@@ -1014,7 +937,7 @@ public class RendererTest {
             .setTypeHtml("string"))
         .build();
 
-    Document document = renderDocument("dossier.soy.memberSignature", "member", function);
+    Document document = renderDocument("dossier.soy.functionSignature", "fn", function);
     assertThat(document.body().children().size(), is(1));
     assertThat(document.body().child(0).toString(), isHtml(
         "<span class=\"member\">foo.Bar <span class=\"args\">( )</span></span>"));
@@ -1036,7 +959,8 @@ public class RendererTest {
             .setTypeHtml("string"))
         .build();
 
-    Document document = renderDocument("dossier.soy.memberSignature", "member", function);
+    Document document = renderDocument(
+        "dossier.soy.functionSignature", "fn", function);
     assertThat(document.body().toString(), isHtml(
         "<body>",
         "<code class=\"type\">&lt;K, V&gt;</code> ",
@@ -1306,11 +1230,11 @@ public class RendererTest {
         .addParameter(Dossier.Function.Detail.newBuilder().setName("a"))
         .build();
 
-    ImmutableMap<String, Object> data = ImmutableMap.of(
-        "prop", toMap(function),
+    ImmutableMap<String, ?> data = ImmutableMap.of(
+        "prop", function,
         "parentName", "foo");
 
-    Document document = renderDocument("dossier.soy.printProperty", data);
+    Document document = renderDocument("dossier.soy.printFunction", data);
     assertThat(querySelector(document, "details.function > summary").toString(), isHtml(
         "<summary><div>",
         "<a class=\"source\" href=\"bar.link\">code &raquo;</a>",
@@ -1333,11 +1257,11 @@ public class RendererTest {
         .addParameter(Dossier.Function.Detail.newBuilder().setName("a"))
         .build();
 
-    ImmutableMap<String, Object> data = ImmutableMap.of(
-        "prop", toMap(function),
+    ImmutableMap<String, ?> data = ImmutableMap.of(
+        "prop", function,
         "parentName", "foo");
 
-    Document document = renderDocument("dossier.soy.printProperty", data);
+    Document document = renderDocument("dossier.soy.printFunction", data);
     assertThat(querySelector(document, "details.function > summary").toString(), isHtml(
         "<summary><div>",
         "<a class=\"source\" href=\"bar.link\">code &raquo;</a>",
@@ -1480,7 +1404,7 @@ public class RendererTest {
         "A <strong>strongly</strong> worded letter");
 
     Document document = renderDocument("dossier.soy.comment",
-        ImmutableMap.of("comment", toMap(comment), "omitLeadingTag", true));
+        ImmutableMap.of("comment", comment, "omitLeadingTag", true));
     assertThat(document.body().toString(), isHtml(
         "<body>A <strong>strongly</strong> worded letter</body>"));
   }
@@ -1513,19 +1437,20 @@ public class RendererTest {
 
   private static Element querySelector(Document document, String selector) {
     Elements elements = document.select(selector);
+    checkState(!elements.isEmpty(),
+        "Selector %s not found in %s", selector, document);
     return Iterables.getOnlyElement(elements);
   }
 
   private Document renderDocument(String template, String key, GeneratedMessage value) {
-    return renderDocument(template, ImmutableMap.<String, Object>of(key, toMap(value)));
+    return renderDocument(template, ImmutableMap.of(key, value));
   }
 
   private Document renderDocument(String template, String key, List<GeneratedMessage> value) {
-    return renderDocument(template,
-        ImmutableMap.<String, Object>of(key, transform(value, msgToMap())));
+    return renderDocument(template, ImmutableMap.of(key, toSoyValue(value)));
   }
 
-  private Document renderDocument(String template, Map<String, Object> data) {
+  private Document renderDocument(String template, Map<String, ?> data) {
     String html = render(template, data);
     Document document = Jsoup.parse(html);
     document.outputSettings()
@@ -1535,24 +1460,32 @@ public class RendererTest {
   }
 
   private String render(String template, String key, GeneratedMessage value) {
-    return render(template, ImmutableMap.of(key, toMap(value)));
+    return render(template, ImmutableMap.of(key, value));
+  }
+
+  private String render(String template, String key, Iterable<? extends GeneratedMessage> value) {
+    return render(template, ImmutableMap.of(key, toSoyValue(value)));
+  }
+
+  private String render(String template, String key, SoyValue value) {
+    return render(template, ImmutableMap.of(key, value));
   }
 
   private String render(String template, @Nullable Map<String, ?> data) {
     StringWriter sw = new StringWriter();
-    Renderer.Tofu.INSTANCE.newRenderer(template)
-        .setData(data)
+    tofu.newRenderer(template)
+        .setData(data == null ? null : transformValues(data, new Function<Object, Object>() {
+          @Nullable
+          @Override
+          public Object apply(@Nullable Object input) {
+            if (input instanceof GeneratedMessage) {
+              return toSoyValue((GeneratedMessage) input);
+            }
+            return input;
+          }
+        }))
         .render(sw);
     return sw.toString();
-  }
-
-  private static Function<GeneratedMessage, Map<String, Object>> msgToMap() {
-    return new Function<GeneratedMessage, Map<String, Object>>() {
-      @Override
-      public Map<String, Object> apply(GeneratedMessage input) {
-        return toMap(input);
-      }
-    };
   }
 
   private Matcher<String> isHtml(String... lines) {

@@ -9,7 +9,7 @@ public final class Dossier {
       com.google.protobuf.ExtensionRegistry registry) {
   }
   /**
-   * Protobuf enum {@code Visibility}
+   * Protobuf enum {@code dossier.Visibility}
    *
    * <pre>
    * Describes a type/property's visibility.
@@ -143,11 +143,11 @@ public final class Dossier {
       this.value = value;
     }
 
-    // @@protoc_insertion_point(enum_scope:Visibility)
+    // @@protoc_insertion_point(enum_scope:dossier.Visibility)
   }
 
   public interface SourceFileOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:SourceFile)
+      // @@protoc_insertion_point(interface_extends:dossier.SourceFile)
       com.google.protobuf.MessageOrBuilder {
 
     /**
@@ -238,7 +238,7 @@ public final class Dossier {
         getLinesBytes(int index);
   }
   /**
-   * Protobuf type {@code SourceFile}
+   * Protobuf type {@code dossier.SourceFile}
    *
    * <pre>
    * Describes a documented source file.
@@ -246,7 +246,7 @@ public final class Dossier {
    */
   public static final class SourceFile extends
       com.google.protobuf.GeneratedMessage implements
-      // @@protoc_insertion_point(message_implements:SourceFile)
+      // @@protoc_insertion_point(message_implements:dossier.SourceFile)
       SourceFileOrBuilder {
     // Use SourceFile.newBuilder() to construct.
     private SourceFile(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
@@ -331,12 +331,12 @@ public final class Dossier {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.github.jleyba.dossier.proto.Dossier.internal_static_SourceFile_descriptor;
+      return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_SourceFile_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.github.jleyba.dossier.proto.Dossier.internal_static_SourceFile_fieldAccessorTable
+      return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_SourceFile_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               com.github.jleyba.dossier.proto.Dossier.SourceFile.class, com.github.jleyba.dossier.proto.Dossier.SourceFile.Builder.class);
     }
@@ -650,7 +650,7 @@ public final class Dossier {
       return builder;
     }
     /**
-     * Protobuf type {@code SourceFile}
+     * Protobuf type {@code dossier.SourceFile}
      *
      * <pre>
      * Describes a documented source file.
@@ -658,16 +658,16 @@ public final class Dossier {
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessage.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:SourceFile)
+        // @@protoc_insertion_point(builder_implements:dossier.SourceFile)
         com.github.jleyba.dossier.proto.Dossier.SourceFileOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.github.jleyba.dossier.proto.Dossier.internal_static_SourceFile_descriptor;
+        return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_SourceFile_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.github.jleyba.dossier.proto.Dossier.internal_static_SourceFile_fieldAccessorTable
+        return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_SourceFile_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 com.github.jleyba.dossier.proto.Dossier.SourceFile.class, com.github.jleyba.dossier.proto.Dossier.SourceFile.Builder.class);
       }
@@ -707,7 +707,7 @@ public final class Dossier {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.github.jleyba.dossier.proto.Dossier.internal_static_SourceFile_descriptor;
+        return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_SourceFile_descriptor;
       }
 
       public com.github.jleyba.dossier.proto.Dossier.SourceFile getDefaultInstanceForType() {
@@ -1139,7 +1139,7 @@ public final class Dossier {
         return this;
       }
 
-      // @@protoc_insertion_point(builder_scope:SourceFile)
+      // @@protoc_insertion_point(builder_scope:dossier.SourceFile)
     }
 
     static {
@@ -1147,11 +1147,11 @@ public final class Dossier {
       defaultInstance.initFields();
     }
 
-    // @@protoc_insertion_point(class_scope:SourceFile)
+    // @@protoc_insertion_point(class_scope:dossier.SourceFile)
   }
 
   public interface ResourcesOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:Resources)
+      // @@protoc_insertion_point(interface_extends:dossier.Resources)
       com.google.protobuf.MessageOrBuilder {
 
     /**
@@ -1225,7 +1225,7 @@ public final class Dossier {
         getScriptBytes(int index);
   }
   /**
-   * Protobuf type {@code Resources}
+   * Protobuf type {@code dossier.Resources}
    *
    * <pre>
    * Describes the resources to include in a generated HTML page.
@@ -1233,7 +1233,7 @@ public final class Dossier {
    */
   public static final class Resources extends
       com.google.protobuf.GeneratedMessage implements
-      // @@protoc_insertion_point(message_implements:Resources)
+      // @@protoc_insertion_point(message_implements:dossier.Resources)
       ResourcesOrBuilder {
     // Use Resources.newBuilder() to construct.
     private Resources(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
@@ -1318,12 +1318,12 @@ public final class Dossier {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.github.jleyba.dossier.proto.Dossier.internal_static_Resources_descriptor;
+      return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_Resources_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.github.jleyba.dossier.proto.Dossier.internal_static_Resources_fieldAccessorTable
+      return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_Resources_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               com.github.jleyba.dossier.proto.Dossier.Resources.class, com.github.jleyba.dossier.proto.Dossier.Resources.Builder.class);
     }
@@ -1562,7 +1562,7 @@ public final class Dossier {
       return builder;
     }
     /**
-     * Protobuf type {@code Resources}
+     * Protobuf type {@code dossier.Resources}
      *
      * <pre>
      * Describes the resources to include in a generated HTML page.
@@ -1570,16 +1570,16 @@ public final class Dossier {
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessage.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:Resources)
+        // @@protoc_insertion_point(builder_implements:dossier.Resources)
         com.github.jleyba.dossier.proto.Dossier.ResourcesOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.github.jleyba.dossier.proto.Dossier.internal_static_Resources_descriptor;
+        return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_Resources_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.github.jleyba.dossier.proto.Dossier.internal_static_Resources_fieldAccessorTable
+        return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_Resources_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 com.github.jleyba.dossier.proto.Dossier.Resources.class, com.github.jleyba.dossier.proto.Dossier.Resources.Builder.class);
       }
@@ -1617,7 +1617,7 @@ public final class Dossier {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.github.jleyba.dossier.proto.Dossier.internal_static_Resources_descriptor;
+        return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_Resources_descriptor;
       }
 
       public com.github.jleyba.dossier.proto.Dossier.Resources getDefaultInstanceForType() {
@@ -1965,7 +1965,7 @@ public final class Dossier {
         return this;
       }
 
-      // @@protoc_insertion_point(builder_scope:Resources)
+      // @@protoc_insertion_point(builder_scope:dossier.Resources)
     }
 
     static {
@@ -1973,11 +1973,11 @@ public final class Dossier {
       defaultInstance.initFields();
     }
 
-    // @@protoc_insertion_point(class_scope:Resources)
+    // @@protoc_insertion_point(class_scope:dossier.Resources)
   }
 
   public interface LicenseOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:License)
+      // @@protoc_insertion_point(interface_extends:dossier.License)
       com.google.protobuf.MessageOrBuilder {
 
     /**
@@ -1995,7 +1995,7 @@ public final class Dossier {
         getTextBytes();
   }
   /**
-   * Protobuf type {@code License}
+   * Protobuf type {@code dossier.License}
    *
    * <pre>
    * Represents a license file.
@@ -2003,7 +2003,7 @@ public final class Dossier {
    */
   public static final class License extends
       com.google.protobuf.GeneratedMessage implements
-      // @@protoc_insertion_point(message_implements:License)
+      // @@protoc_insertion_point(message_implements:dossier.License)
       LicenseOrBuilder {
     // Use License.newBuilder() to construct.
     private License(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
@@ -2070,12 +2070,12 @@ public final class Dossier {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.github.jleyba.dossier.proto.Dossier.internal_static_License_descriptor;
+      return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_License_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.github.jleyba.dossier.proto.Dossier.internal_static_License_fieldAccessorTable
+      return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_License_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               com.github.jleyba.dossier.proto.Dossier.License.class, com.github.jleyba.dossier.proto.Dossier.License.Builder.class);
     }
@@ -2253,7 +2253,7 @@ public final class Dossier {
       return builder;
     }
     /**
-     * Protobuf type {@code License}
+     * Protobuf type {@code dossier.License}
      *
      * <pre>
      * Represents a license file.
@@ -2261,16 +2261,16 @@ public final class Dossier {
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessage.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:License)
+        // @@protoc_insertion_point(builder_implements:dossier.License)
         com.github.jleyba.dossier.proto.Dossier.LicenseOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.github.jleyba.dossier.proto.Dossier.internal_static_License_descriptor;
+        return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_License_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.github.jleyba.dossier.proto.Dossier.internal_static_License_fieldAccessorTable
+        return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_License_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 com.github.jleyba.dossier.proto.Dossier.License.class, com.github.jleyba.dossier.proto.Dossier.License.Builder.class);
       }
@@ -2306,7 +2306,7 @@ public final class Dossier {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.github.jleyba.dossier.proto.Dossier.internal_static_License_descriptor;
+        return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_License_descriptor;
       }
 
       public com.github.jleyba.dossier.proto.Dossier.License getDefaultInstanceForType() {
@@ -2457,7 +2457,7 @@ public final class Dossier {
         return this;
       }
 
-      // @@protoc_insertion_point(builder_scope:License)
+      // @@protoc_insertion_point(builder_scope:dossier.License)
     }
 
     static {
@@ -2465,11 +2465,11 @@ public final class Dossier {
       defaultInstance.initFields();
     }
 
-    // @@protoc_insertion_point(class_scope:License)
+    // @@protoc_insertion_point(class_scope:dossier.License)
   }
 
   public interface TypeLinkOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:TypeLink)
+      // @@protoc_insertion_point(interface_extends:dossier.TypeLink)
       com.google.protobuf.MessageOrBuilder {
 
     /**
@@ -2525,7 +2525,7 @@ public final class Dossier {
         getHrefBytes();
   }
   /**
-   * Protobuf type {@code TypeLink}
+   * Protobuf type {@code dossier.TypeLink}
    *
    * <pre>
    * Describes a type to link to.
@@ -2533,7 +2533,7 @@ public final class Dossier {
    */
   public static final class TypeLink extends
       com.google.protobuf.GeneratedMessage implements
-      // @@protoc_insertion_point(message_implements:TypeLink)
+      // @@protoc_insertion_point(message_implements:dossier.TypeLink)
       TypeLinkOrBuilder {
     // Use TypeLink.newBuilder() to construct.
     private TypeLink(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
@@ -2606,12 +2606,12 @@ public final class Dossier {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.github.jleyba.dossier.proto.Dossier.internal_static_TypeLink_descriptor;
+      return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_TypeLink_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.github.jleyba.dossier.proto.Dossier.internal_static_TypeLink_fieldAccessorTable
+      return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_TypeLink_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               com.github.jleyba.dossier.proto.Dossier.TypeLink.class, com.github.jleyba.dossier.proto.Dossier.TypeLink.Builder.class);
     }
@@ -2867,7 +2867,7 @@ public final class Dossier {
       return builder;
     }
     /**
-     * Protobuf type {@code TypeLink}
+     * Protobuf type {@code dossier.TypeLink}
      *
      * <pre>
      * Describes a type to link to.
@@ -2875,16 +2875,16 @@ public final class Dossier {
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessage.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:TypeLink)
+        // @@protoc_insertion_point(builder_implements:dossier.TypeLink)
         com.github.jleyba.dossier.proto.Dossier.TypeLinkOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.github.jleyba.dossier.proto.Dossier.internal_static_TypeLink_descriptor;
+        return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_TypeLink_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.github.jleyba.dossier.proto.Dossier.internal_static_TypeLink_fieldAccessorTable
+        return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_TypeLink_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 com.github.jleyba.dossier.proto.Dossier.TypeLink.class, com.github.jleyba.dossier.proto.Dossier.TypeLink.Builder.class);
       }
@@ -2922,7 +2922,7 @@ public final class Dossier {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.github.jleyba.dossier.proto.Dossier.internal_static_TypeLink_descriptor;
+        return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_TypeLink_descriptor;
       }
 
       public com.github.jleyba.dossier.proto.Dossier.TypeLink getDefaultInstanceForType() {
@@ -3210,7 +3210,7 @@ public final class Dossier {
         return this;
       }
 
-      // @@protoc_insertion_point(builder_scope:TypeLink)
+      // @@protoc_insertion_point(builder_scope:dossier.TypeLink)
     }
 
     static {
@@ -3218,15 +3218,15 @@ public final class Dossier {
       defaultInstance.initFields();
     }
 
-    // @@protoc_insertion_point(class_scope:TypeLink)
+    // @@protoc_insertion_point(class_scope:dossier.TypeLink)
   }
 
   public interface CommentOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:Comment)
+      // @@protoc_insertion_point(interface_extends:dossier.Comment)
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>repeated .Comment.Token token = 1;</code>
+     * <code>repeated .dossier.Comment.Token token = 1;</code>
      *
      * <pre>
      * The tokens that comprise this comment.
@@ -3235,7 +3235,7 @@ public final class Dossier {
     java.util.List<com.github.jleyba.dossier.proto.Dossier.Comment.Token> 
         getTokenList();
     /**
-     * <code>repeated .Comment.Token token = 1;</code>
+     * <code>repeated .dossier.Comment.Token token = 1;</code>
      *
      * <pre>
      * The tokens that comprise this comment.
@@ -3243,7 +3243,7 @@ public final class Dossier {
      */
     com.github.jleyba.dossier.proto.Dossier.Comment.Token getToken(int index);
     /**
-     * <code>repeated .Comment.Token token = 1;</code>
+     * <code>repeated .dossier.Comment.Token token = 1;</code>
      *
      * <pre>
      * The tokens that comprise this comment.
@@ -3251,7 +3251,7 @@ public final class Dossier {
      */
     int getTokenCount();
     /**
-     * <code>repeated .Comment.Token token = 1;</code>
+     * <code>repeated .dossier.Comment.Token token = 1;</code>
      *
      * <pre>
      * The tokens that comprise this comment.
@@ -3260,7 +3260,7 @@ public final class Dossier {
     java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.Comment.TokenOrBuilder> 
         getTokenOrBuilderList();
     /**
-     * <code>repeated .Comment.Token token = 1;</code>
+     * <code>repeated .dossier.Comment.Token token = 1;</code>
      *
      * <pre>
      * The tokens that comprise this comment.
@@ -3270,7 +3270,7 @@ public final class Dossier {
         int index);
   }
   /**
-   * Protobuf type {@code Comment}
+   * Protobuf type {@code dossier.Comment}
    *
    * <pre>
    * Represents a tokenized JSDoc comment string. Each token represents pre-formatted
@@ -3279,7 +3279,7 @@ public final class Dossier {
    */
   public static final class Comment extends
       com.google.protobuf.GeneratedMessage implements
-      // @@protoc_insertion_point(message_implements:Comment)
+      // @@protoc_insertion_point(message_implements:dossier.Comment)
       CommentOrBuilder {
     // Use Comment.newBuilder() to construct.
     private Comment(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
@@ -3351,12 +3351,12 @@ public final class Dossier {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.github.jleyba.dossier.proto.Dossier.internal_static_Comment_descriptor;
+      return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_Comment_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.github.jleyba.dossier.proto.Dossier.internal_static_Comment_fieldAccessorTable
+      return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_Comment_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               com.github.jleyba.dossier.proto.Dossier.Comment.class, com.github.jleyba.dossier.proto.Dossier.Comment.Builder.class);
     }
@@ -3377,7 +3377,7 @@ public final class Dossier {
     }
 
     public interface TokenOrBuilder extends
-        // @@protoc_insertion_point(interface_extends:Comment.Token)
+        // @@protoc_insertion_point(interface_extends:dossier.Comment.Token)
         com.google.protobuf.MessageOrBuilder {
 
       /**
@@ -3488,11 +3488,11 @@ public final class Dossier {
       boolean getUnresolvedLink();
     }
     /**
-     * Protobuf type {@code Comment.Token}
+     * Protobuf type {@code dossier.Comment.Token}
      */
     public static final class Token extends
         com.google.protobuf.GeneratedMessage implements
-        // @@protoc_insertion_point(message_implements:Comment.Token)
+        // @@protoc_insertion_point(message_implements:dossier.Comment.Token)
         TokenOrBuilder {
       // Use Token.newBuilder() to construct.
       private Token(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
@@ -3580,12 +3580,12 @@ public final class Dossier {
       }
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.github.jleyba.dossier.proto.Dossier.internal_static_Comment_Token_descriptor;
+        return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_Comment_Token_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.github.jleyba.dossier.proto.Dossier.internal_static_Comment_Token_fieldAccessorTable
+        return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_Comment_Token_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 com.github.jleyba.dossier.proto.Dossier.Comment.Token.class, com.github.jleyba.dossier.proto.Dossier.Comment.Token.Builder.class);
       }
@@ -3934,20 +3934,20 @@ public final class Dossier {
         return builder;
       }
       /**
-       * Protobuf type {@code Comment.Token}
+       * Protobuf type {@code dossier.Comment.Token}
        */
       public static final class Builder extends
           com.google.protobuf.GeneratedMessage.Builder<Builder> implements
-          // @@protoc_insertion_point(builder_implements:Comment.Token)
+          // @@protoc_insertion_point(builder_implements:dossier.Comment.Token)
           com.github.jleyba.dossier.proto.Dossier.Comment.TokenOrBuilder {
         public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
-          return com.github.jleyba.dossier.proto.Dossier.internal_static_Comment_Token_descriptor;
+          return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_Comment_Token_descriptor;
         }
 
         protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
             internalGetFieldAccessorTable() {
-          return com.github.jleyba.dossier.proto.Dossier.internal_static_Comment_Token_fieldAccessorTable
+          return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_Comment_Token_fieldAccessorTable
               .ensureFieldAccessorsInitialized(
                   com.github.jleyba.dossier.proto.Dossier.Comment.Token.class, com.github.jleyba.dossier.proto.Dossier.Comment.Token.Builder.class);
         }
@@ -3991,7 +3991,7 @@ public final class Dossier {
 
         public com.google.protobuf.Descriptors.Descriptor
             getDescriptorForType() {
-          return com.github.jleyba.dossier.proto.Dossier.internal_static_Comment_Token_descriptor;
+          return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_Comment_Token_descriptor;
         }
 
         public com.github.jleyba.dossier.proto.Dossier.Comment.Token getDefaultInstanceForType() {
@@ -4448,7 +4448,7 @@ public final class Dossier {
           return this;
         }
 
-        // @@protoc_insertion_point(builder_scope:Comment.Token)
+        // @@protoc_insertion_point(builder_scope:dossier.Comment.Token)
       }
 
       static {
@@ -4456,13 +4456,13 @@ public final class Dossier {
         defaultInstance.initFields();
       }
 
-      // @@protoc_insertion_point(class_scope:Comment.Token)
+      // @@protoc_insertion_point(class_scope:dossier.Comment.Token)
     }
 
     public static final int TOKEN_FIELD_NUMBER = 1;
     private java.util.List<com.github.jleyba.dossier.proto.Dossier.Comment.Token> token_;
     /**
-     * <code>repeated .Comment.Token token = 1;</code>
+     * <code>repeated .dossier.Comment.Token token = 1;</code>
      *
      * <pre>
      * The tokens that comprise this comment.
@@ -4472,7 +4472,7 @@ public final class Dossier {
       return token_;
     }
     /**
-     * <code>repeated .Comment.Token token = 1;</code>
+     * <code>repeated .dossier.Comment.Token token = 1;</code>
      *
      * <pre>
      * The tokens that comprise this comment.
@@ -4483,7 +4483,7 @@ public final class Dossier {
       return token_;
     }
     /**
-     * <code>repeated .Comment.Token token = 1;</code>
+     * <code>repeated .dossier.Comment.Token token = 1;</code>
      *
      * <pre>
      * The tokens that comprise this comment.
@@ -4493,7 +4493,7 @@ public final class Dossier {
       return token_.size();
     }
     /**
-     * <code>repeated .Comment.Token token = 1;</code>
+     * <code>repeated .dossier.Comment.Token token = 1;</code>
      *
      * <pre>
      * The tokens that comprise this comment.
@@ -4503,7 +4503,7 @@ public final class Dossier {
       return token_.get(index);
     }
     /**
-     * <code>repeated .Comment.Token token = 1;</code>
+     * <code>repeated .dossier.Comment.Token token = 1;</code>
      *
      * <pre>
      * The tokens that comprise this comment.
@@ -4631,7 +4631,7 @@ public final class Dossier {
       return builder;
     }
     /**
-     * Protobuf type {@code Comment}
+     * Protobuf type {@code dossier.Comment}
      *
      * <pre>
      * Represents a tokenized JSDoc comment string. Each token represents pre-formatted
@@ -4640,16 +4640,16 @@ public final class Dossier {
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessage.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:Comment)
+        // @@protoc_insertion_point(builder_implements:dossier.Comment)
         com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.github.jleyba.dossier.proto.Dossier.internal_static_Comment_descriptor;
+        return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_Comment_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.github.jleyba.dossier.proto.Dossier.internal_static_Comment_fieldAccessorTable
+        return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_Comment_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 com.github.jleyba.dossier.proto.Dossier.Comment.class, com.github.jleyba.dossier.proto.Dossier.Comment.Builder.class);
       }
@@ -4690,7 +4690,7 @@ public final class Dossier {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.github.jleyba.dossier.proto.Dossier.internal_static_Comment_descriptor;
+        return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_Comment_descriptor;
       }
 
       public com.github.jleyba.dossier.proto.Dossier.Comment getDefaultInstanceForType() {
@@ -4804,7 +4804,7 @@ public final class Dossier {
           com.github.jleyba.dossier.proto.Dossier.Comment.Token, com.github.jleyba.dossier.proto.Dossier.Comment.Token.Builder, com.github.jleyba.dossier.proto.Dossier.Comment.TokenOrBuilder> tokenBuilder_;
 
       /**
-       * <code>repeated .Comment.Token token = 1;</code>
+       * <code>repeated .dossier.Comment.Token token = 1;</code>
        *
        * <pre>
        * The tokens that comprise this comment.
@@ -4818,7 +4818,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .Comment.Token token = 1;</code>
+       * <code>repeated .dossier.Comment.Token token = 1;</code>
        *
        * <pre>
        * The tokens that comprise this comment.
@@ -4832,7 +4832,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .Comment.Token token = 1;</code>
+       * <code>repeated .dossier.Comment.Token token = 1;</code>
        *
        * <pre>
        * The tokens that comprise this comment.
@@ -4846,7 +4846,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .Comment.Token token = 1;</code>
+       * <code>repeated .dossier.Comment.Token token = 1;</code>
        *
        * <pre>
        * The tokens that comprise this comment.
@@ -4867,7 +4867,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Comment.Token token = 1;</code>
+       * <code>repeated .dossier.Comment.Token token = 1;</code>
        *
        * <pre>
        * The tokens that comprise this comment.
@@ -4885,7 +4885,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Comment.Token token = 1;</code>
+       * <code>repeated .dossier.Comment.Token token = 1;</code>
        *
        * <pre>
        * The tokens that comprise this comment.
@@ -4905,7 +4905,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Comment.Token token = 1;</code>
+       * <code>repeated .dossier.Comment.Token token = 1;</code>
        *
        * <pre>
        * The tokens that comprise this comment.
@@ -4926,7 +4926,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Comment.Token token = 1;</code>
+       * <code>repeated .dossier.Comment.Token token = 1;</code>
        *
        * <pre>
        * The tokens that comprise this comment.
@@ -4944,7 +4944,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Comment.Token token = 1;</code>
+       * <code>repeated .dossier.Comment.Token token = 1;</code>
        *
        * <pre>
        * The tokens that comprise this comment.
@@ -4962,7 +4962,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Comment.Token token = 1;</code>
+       * <code>repeated .dossier.Comment.Token token = 1;</code>
        *
        * <pre>
        * The tokens that comprise this comment.
@@ -4981,7 +4981,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Comment.Token token = 1;</code>
+       * <code>repeated .dossier.Comment.Token token = 1;</code>
        *
        * <pre>
        * The tokens that comprise this comment.
@@ -4998,7 +4998,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Comment.Token token = 1;</code>
+       * <code>repeated .dossier.Comment.Token token = 1;</code>
        *
        * <pre>
        * The tokens that comprise this comment.
@@ -5015,7 +5015,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Comment.Token token = 1;</code>
+       * <code>repeated .dossier.Comment.Token token = 1;</code>
        *
        * <pre>
        * The tokens that comprise this comment.
@@ -5026,7 +5026,7 @@ public final class Dossier {
         return getTokenFieldBuilder().getBuilder(index);
       }
       /**
-       * <code>repeated .Comment.Token token = 1;</code>
+       * <code>repeated .dossier.Comment.Token token = 1;</code>
        *
        * <pre>
        * The tokens that comprise this comment.
@@ -5040,7 +5040,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .Comment.Token token = 1;</code>
+       * <code>repeated .dossier.Comment.Token token = 1;</code>
        *
        * <pre>
        * The tokens that comprise this comment.
@@ -5055,7 +5055,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .Comment.Token token = 1;</code>
+       * <code>repeated .dossier.Comment.Token token = 1;</code>
        *
        * <pre>
        * The tokens that comprise this comment.
@@ -5066,7 +5066,7 @@ public final class Dossier {
             com.github.jleyba.dossier.proto.Dossier.Comment.Token.getDefaultInstance());
       }
       /**
-       * <code>repeated .Comment.Token token = 1;</code>
+       * <code>repeated .dossier.Comment.Token token = 1;</code>
        *
        * <pre>
        * The tokens that comprise this comment.
@@ -5078,7 +5078,7 @@ public final class Dossier {
             index, com.github.jleyba.dossier.proto.Dossier.Comment.Token.getDefaultInstance());
       }
       /**
-       * <code>repeated .Comment.Token token = 1;</code>
+       * <code>repeated .dossier.Comment.Token token = 1;</code>
        *
        * <pre>
        * The tokens that comprise this comment.
@@ -5103,7 +5103,7 @@ public final class Dossier {
         return tokenBuilder_;
       }
 
-      // @@protoc_insertion_point(builder_scope:Comment)
+      // @@protoc_insertion_point(builder_scope:dossier.Comment)
     }
 
     static {
@@ -5111,28 +5111,28 @@ public final class Dossier {
       defaultInstance.initFields();
     }
 
-    // @@protoc_insertion_point(class_scope:Comment)
+    // @@protoc_insertion_point(class_scope:dossier.Comment)
   }
 
   public interface DeprecationOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:Deprecation)
+      // @@protoc_insertion_point(interface_extends:dossier.Deprecation)
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>optional .Comment notice = 1;</code>
+     * <code>optional .dossier.Comment notice = 1;</code>
      */
     boolean hasNotice();
     /**
-     * <code>optional .Comment notice = 1;</code>
+     * <code>optional .dossier.Comment notice = 1;</code>
      */
     com.github.jleyba.dossier.proto.Dossier.Comment getNotice();
     /**
-     * <code>optional .Comment notice = 1;</code>
+     * <code>optional .dossier.Comment notice = 1;</code>
      */
     com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder getNoticeOrBuilder();
   }
   /**
-   * Protobuf type {@code Deprecation}
+   * Protobuf type {@code dossier.Deprecation}
    *
    * <pre>
    * Describes a deprecation notice.
@@ -5140,7 +5140,7 @@ public final class Dossier {
    */
   public static final class Deprecation extends
       com.google.protobuf.GeneratedMessage implements
-      // @@protoc_insertion_point(message_implements:Deprecation)
+      // @@protoc_insertion_point(message_implements:dossier.Deprecation)
       DeprecationOrBuilder {
     // Use Deprecation.newBuilder() to construct.
     private Deprecation(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
@@ -5214,12 +5214,12 @@ public final class Dossier {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.github.jleyba.dossier.proto.Dossier.internal_static_Deprecation_descriptor;
+      return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_Deprecation_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.github.jleyba.dossier.proto.Dossier.internal_static_Deprecation_fieldAccessorTable
+      return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_Deprecation_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               com.github.jleyba.dossier.proto.Dossier.Deprecation.class, com.github.jleyba.dossier.proto.Dossier.Deprecation.Builder.class);
     }
@@ -5243,19 +5243,19 @@ public final class Dossier {
     public static final int NOTICE_FIELD_NUMBER = 1;
     private com.github.jleyba.dossier.proto.Dossier.Comment notice_;
     /**
-     * <code>optional .Comment notice = 1;</code>
+     * <code>optional .dossier.Comment notice = 1;</code>
      */
     public boolean hasNotice() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
     /**
-     * <code>optional .Comment notice = 1;</code>
+     * <code>optional .dossier.Comment notice = 1;</code>
      */
     public com.github.jleyba.dossier.proto.Dossier.Comment getNotice() {
       return notice_;
     }
     /**
-     * <code>optional .Comment notice = 1;</code>
+     * <code>optional .dossier.Comment notice = 1;</code>
      */
     public com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder getNoticeOrBuilder() {
       return notice_;
@@ -5378,7 +5378,7 @@ public final class Dossier {
       return builder;
     }
     /**
-     * Protobuf type {@code Deprecation}
+     * Protobuf type {@code dossier.Deprecation}
      *
      * <pre>
      * Describes a deprecation notice.
@@ -5386,16 +5386,16 @@ public final class Dossier {
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessage.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:Deprecation)
+        // @@protoc_insertion_point(builder_implements:dossier.Deprecation)
         com.github.jleyba.dossier.proto.Dossier.DeprecationOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.github.jleyba.dossier.proto.Dossier.internal_static_Deprecation_descriptor;
+        return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_Deprecation_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.github.jleyba.dossier.proto.Dossier.internal_static_Deprecation_fieldAccessorTable
+        return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_Deprecation_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 com.github.jleyba.dossier.proto.Dossier.Deprecation.class, com.github.jleyba.dossier.proto.Dossier.Deprecation.Builder.class);
       }
@@ -5436,7 +5436,7 @@ public final class Dossier {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.github.jleyba.dossier.proto.Dossier.internal_static_Deprecation_descriptor;
+        return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_Deprecation_descriptor;
       }
 
       public com.github.jleyba.dossier.proto.Dossier.Deprecation getDefaultInstanceForType() {
@@ -5519,13 +5519,13 @@ public final class Dossier {
       private com.google.protobuf.SingleFieldBuilder<
           com.github.jleyba.dossier.proto.Dossier.Comment, com.github.jleyba.dossier.proto.Dossier.Comment.Builder, com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder> noticeBuilder_;
       /**
-       * <code>optional .Comment notice = 1;</code>
+       * <code>optional .dossier.Comment notice = 1;</code>
        */
       public boolean hasNotice() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       /**
-       * <code>optional .Comment notice = 1;</code>
+       * <code>optional .dossier.Comment notice = 1;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.Comment getNotice() {
         if (noticeBuilder_ == null) {
@@ -5535,7 +5535,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>optional .Comment notice = 1;</code>
+       * <code>optional .dossier.Comment notice = 1;</code>
        */
       public Builder setNotice(com.github.jleyba.dossier.proto.Dossier.Comment value) {
         if (noticeBuilder_ == null) {
@@ -5551,7 +5551,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>optional .Comment notice = 1;</code>
+       * <code>optional .dossier.Comment notice = 1;</code>
        */
       public Builder setNotice(
           com.github.jleyba.dossier.proto.Dossier.Comment.Builder builderForValue) {
@@ -5565,7 +5565,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>optional .Comment notice = 1;</code>
+       * <code>optional .dossier.Comment notice = 1;</code>
        */
       public Builder mergeNotice(com.github.jleyba.dossier.proto.Dossier.Comment value) {
         if (noticeBuilder_ == null) {
@@ -5584,7 +5584,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>optional .Comment notice = 1;</code>
+       * <code>optional .dossier.Comment notice = 1;</code>
        */
       public Builder clearNotice() {
         if (noticeBuilder_ == null) {
@@ -5597,7 +5597,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>optional .Comment notice = 1;</code>
+       * <code>optional .dossier.Comment notice = 1;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.Comment.Builder getNoticeBuilder() {
         bitField0_ |= 0x00000001;
@@ -5605,7 +5605,7 @@ public final class Dossier {
         return getNoticeFieldBuilder().getBuilder();
       }
       /**
-       * <code>optional .Comment notice = 1;</code>
+       * <code>optional .dossier.Comment notice = 1;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder getNoticeOrBuilder() {
         if (noticeBuilder_ != null) {
@@ -5615,7 +5615,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>optional .Comment notice = 1;</code>
+       * <code>optional .dossier.Comment notice = 1;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
           com.github.jleyba.dossier.proto.Dossier.Comment, com.github.jleyba.dossier.proto.Dossier.Comment.Builder, com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder> 
@@ -5631,7 +5631,7 @@ public final class Dossier {
         return noticeBuilder_;
       }
 
-      // @@protoc_insertion_point(builder_scope:Deprecation)
+      // @@protoc_insertion_point(builder_scope:dossier.Deprecation)
     }
 
     static {
@@ -5639,11 +5639,11 @@ public final class Dossier {
       defaultInstance.initFields();
     }
 
-    // @@protoc_insertion_point(class_scope:Deprecation)
+    // @@protoc_insertion_point(class_scope:dossier.Deprecation)
   }
 
   public interface BasePropertyOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:BaseProperty)
+      // @@protoc_insertion_point(interface_extends:dossier.BaseProperty)
       com.google.protobuf.MessageOrBuilder {
 
     /**
@@ -5699,7 +5699,7 @@ public final class Dossier {
         getSourceBytes();
 
     /**
-     * <code>required .Comment description = 3;</code>
+     * <code>required .dossier.Comment description = 3;</code>
      *
      * <pre>
      * The property's block comment.
@@ -5707,7 +5707,7 @@ public final class Dossier {
      */
     boolean hasDescription();
     /**
-     * <code>required .Comment description = 3;</code>
+     * <code>required .dossier.Comment description = 3;</code>
      *
      * <pre>
      * The property's block comment.
@@ -5715,7 +5715,7 @@ public final class Dossier {
      */
     com.github.jleyba.dossier.proto.Dossier.Comment getDescription();
     /**
-     * <code>required .Comment description = 3;</code>
+     * <code>required .dossier.Comment description = 3;</code>
      *
      * <pre>
      * The property's block comment.
@@ -5724,7 +5724,7 @@ public final class Dossier {
     com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder getDescriptionOrBuilder();
 
     /**
-     * <code>optional .Deprecation deprecation = 4;</code>
+     * <code>optional .dossier.Deprecation deprecation = 4;</code>
      *
      * <pre>
      * Whether this property is deprecated.
@@ -5732,7 +5732,7 @@ public final class Dossier {
      */
     boolean hasDeprecation();
     /**
-     * <code>optional .Deprecation deprecation = 4;</code>
+     * <code>optional .dossier.Deprecation deprecation = 4;</code>
      *
      * <pre>
      * Whether this property is deprecated.
@@ -5740,7 +5740,7 @@ public final class Dossier {
      */
     com.github.jleyba.dossier.proto.Dossier.Deprecation getDeprecation();
     /**
-     * <code>optional .Deprecation deprecation = 4;</code>
+     * <code>optional .dossier.Deprecation deprecation = 4;</code>
      *
      * <pre>
      * Whether this property is deprecated.
@@ -5749,16 +5749,16 @@ public final class Dossier {
     com.github.jleyba.dossier.proto.Dossier.DeprecationOrBuilder getDeprecationOrBuilder();
 
     /**
-     * <code>optional .Visibility visibility = 5 [default = PUBLIC];</code>
+     * <code>optional .dossier.Visibility visibility = 5 [default = PUBLIC];</code>
      */
     boolean hasVisibility();
     /**
-     * <code>optional .Visibility visibility = 5 [default = PUBLIC];</code>
+     * <code>optional .dossier.Visibility visibility = 5 [default = PUBLIC];</code>
      */
     com.github.jleyba.dossier.proto.Dossier.Visibility getVisibility();
   }
   /**
-   * Protobuf type {@code BaseProperty}
+   * Protobuf type {@code dossier.BaseProperty}
    *
    * <pre>
    * Describes the basic properties for a documented JavaScript property.
@@ -5766,7 +5766,7 @@ public final class Dossier {
    */
   public static final class BaseProperty extends
       com.google.protobuf.GeneratedMessage implements
-      // @@protoc_insertion_point(message_implements:BaseProperty)
+      // @@protoc_insertion_point(message_implements:dossier.BaseProperty)
       BasePropertyOrBuilder {
     // Use BaseProperty.newBuilder() to construct.
     private BaseProperty(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
@@ -5876,12 +5876,12 @@ public final class Dossier {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.github.jleyba.dossier.proto.Dossier.internal_static_BaseProperty_descriptor;
+      return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_BaseProperty_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.github.jleyba.dossier.proto.Dossier.internal_static_BaseProperty_fieldAccessorTable
+      return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_BaseProperty_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               com.github.jleyba.dossier.proto.Dossier.BaseProperty.class, com.github.jleyba.dossier.proto.Dossier.BaseProperty.Builder.class);
     }
@@ -6013,7 +6013,7 @@ public final class Dossier {
     public static final int DESCRIPTION_FIELD_NUMBER = 3;
     private com.github.jleyba.dossier.proto.Dossier.Comment description_;
     /**
-     * <code>required .Comment description = 3;</code>
+     * <code>required .dossier.Comment description = 3;</code>
      *
      * <pre>
      * The property's block comment.
@@ -6023,7 +6023,7 @@ public final class Dossier {
       return ((bitField0_ & 0x00000004) == 0x00000004);
     }
     /**
-     * <code>required .Comment description = 3;</code>
+     * <code>required .dossier.Comment description = 3;</code>
      *
      * <pre>
      * The property's block comment.
@@ -6033,7 +6033,7 @@ public final class Dossier {
       return description_;
     }
     /**
-     * <code>required .Comment description = 3;</code>
+     * <code>required .dossier.Comment description = 3;</code>
      *
      * <pre>
      * The property's block comment.
@@ -6046,7 +6046,7 @@ public final class Dossier {
     public static final int DEPRECATION_FIELD_NUMBER = 4;
     private com.github.jleyba.dossier.proto.Dossier.Deprecation deprecation_;
     /**
-     * <code>optional .Deprecation deprecation = 4;</code>
+     * <code>optional .dossier.Deprecation deprecation = 4;</code>
      *
      * <pre>
      * Whether this property is deprecated.
@@ -6056,7 +6056,7 @@ public final class Dossier {
       return ((bitField0_ & 0x00000008) == 0x00000008);
     }
     /**
-     * <code>optional .Deprecation deprecation = 4;</code>
+     * <code>optional .dossier.Deprecation deprecation = 4;</code>
      *
      * <pre>
      * Whether this property is deprecated.
@@ -6066,7 +6066,7 @@ public final class Dossier {
       return deprecation_;
     }
     /**
-     * <code>optional .Deprecation deprecation = 4;</code>
+     * <code>optional .dossier.Deprecation deprecation = 4;</code>
      *
      * <pre>
      * Whether this property is deprecated.
@@ -6079,13 +6079,13 @@ public final class Dossier {
     public static final int VISIBILITY_FIELD_NUMBER = 5;
     private com.github.jleyba.dossier.proto.Dossier.Visibility visibility_;
     /**
-     * <code>optional .Visibility visibility = 5 [default = PUBLIC];</code>
+     * <code>optional .dossier.Visibility visibility = 5 [default = PUBLIC];</code>
      */
     public boolean hasVisibility() {
       return ((bitField0_ & 0x00000010) == 0x00000010);
     }
     /**
-     * <code>optional .Visibility visibility = 5 [default = PUBLIC];</code>
+     * <code>optional .dossier.Visibility visibility = 5 [default = PUBLIC];</code>
      */
     public com.github.jleyba.dossier.proto.Dossier.Visibility getVisibility() {
       return visibility_;
@@ -6256,7 +6256,7 @@ public final class Dossier {
       return builder;
     }
     /**
-     * Protobuf type {@code BaseProperty}
+     * Protobuf type {@code dossier.BaseProperty}
      *
      * <pre>
      * Describes the basic properties for a documented JavaScript property.
@@ -6264,16 +6264,16 @@ public final class Dossier {
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessage.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:BaseProperty)
+        // @@protoc_insertion_point(builder_implements:dossier.BaseProperty)
         com.github.jleyba.dossier.proto.Dossier.BasePropertyOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.github.jleyba.dossier.proto.Dossier.internal_static_BaseProperty_descriptor;
+        return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_BaseProperty_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.github.jleyba.dossier.proto.Dossier.internal_static_BaseProperty_fieldAccessorTable
+        return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_BaseProperty_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 com.github.jleyba.dossier.proto.Dossier.BaseProperty.class, com.github.jleyba.dossier.proto.Dossier.BaseProperty.Builder.class);
       }
@@ -6327,7 +6327,7 @@ public final class Dossier {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.github.jleyba.dossier.proto.Dossier.internal_static_BaseProperty_descriptor;
+        return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_BaseProperty_descriptor;
       }
 
       public com.github.jleyba.dossier.proto.Dossier.BaseProperty getDefaultInstanceForType() {
@@ -6662,7 +6662,7 @@ public final class Dossier {
       private com.google.protobuf.SingleFieldBuilder<
           com.github.jleyba.dossier.proto.Dossier.Comment, com.github.jleyba.dossier.proto.Dossier.Comment.Builder, com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder> descriptionBuilder_;
       /**
-       * <code>required .Comment description = 3;</code>
+       * <code>required .dossier.Comment description = 3;</code>
        *
        * <pre>
        * The property's block comment.
@@ -6672,7 +6672,7 @@ public final class Dossier {
         return ((bitField0_ & 0x00000004) == 0x00000004);
       }
       /**
-       * <code>required .Comment description = 3;</code>
+       * <code>required .dossier.Comment description = 3;</code>
        *
        * <pre>
        * The property's block comment.
@@ -6686,7 +6686,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>required .Comment description = 3;</code>
+       * <code>required .dossier.Comment description = 3;</code>
        *
        * <pre>
        * The property's block comment.
@@ -6706,7 +6706,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>required .Comment description = 3;</code>
+       * <code>required .dossier.Comment description = 3;</code>
        *
        * <pre>
        * The property's block comment.
@@ -6724,7 +6724,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>required .Comment description = 3;</code>
+       * <code>required .dossier.Comment description = 3;</code>
        *
        * <pre>
        * The property's block comment.
@@ -6747,7 +6747,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>required .Comment description = 3;</code>
+       * <code>required .dossier.Comment description = 3;</code>
        *
        * <pre>
        * The property's block comment.
@@ -6764,7 +6764,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>required .Comment description = 3;</code>
+       * <code>required .dossier.Comment description = 3;</code>
        *
        * <pre>
        * The property's block comment.
@@ -6776,7 +6776,7 @@ public final class Dossier {
         return getDescriptionFieldBuilder().getBuilder();
       }
       /**
-       * <code>required .Comment description = 3;</code>
+       * <code>required .dossier.Comment description = 3;</code>
        *
        * <pre>
        * The property's block comment.
@@ -6790,7 +6790,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>required .Comment description = 3;</code>
+       * <code>required .dossier.Comment description = 3;</code>
        *
        * <pre>
        * The property's block comment.
@@ -6814,7 +6814,7 @@ public final class Dossier {
       private com.google.protobuf.SingleFieldBuilder<
           com.github.jleyba.dossier.proto.Dossier.Deprecation, com.github.jleyba.dossier.proto.Dossier.Deprecation.Builder, com.github.jleyba.dossier.proto.Dossier.DeprecationOrBuilder> deprecationBuilder_;
       /**
-       * <code>optional .Deprecation deprecation = 4;</code>
+       * <code>optional .dossier.Deprecation deprecation = 4;</code>
        *
        * <pre>
        * Whether this property is deprecated.
@@ -6824,7 +6824,7 @@ public final class Dossier {
         return ((bitField0_ & 0x00000008) == 0x00000008);
       }
       /**
-       * <code>optional .Deprecation deprecation = 4;</code>
+       * <code>optional .dossier.Deprecation deprecation = 4;</code>
        *
        * <pre>
        * Whether this property is deprecated.
@@ -6838,7 +6838,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>optional .Deprecation deprecation = 4;</code>
+       * <code>optional .dossier.Deprecation deprecation = 4;</code>
        *
        * <pre>
        * Whether this property is deprecated.
@@ -6858,7 +6858,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>optional .Deprecation deprecation = 4;</code>
+       * <code>optional .dossier.Deprecation deprecation = 4;</code>
        *
        * <pre>
        * Whether this property is deprecated.
@@ -6876,7 +6876,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>optional .Deprecation deprecation = 4;</code>
+       * <code>optional .dossier.Deprecation deprecation = 4;</code>
        *
        * <pre>
        * Whether this property is deprecated.
@@ -6899,7 +6899,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>optional .Deprecation deprecation = 4;</code>
+       * <code>optional .dossier.Deprecation deprecation = 4;</code>
        *
        * <pre>
        * Whether this property is deprecated.
@@ -6916,7 +6916,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>optional .Deprecation deprecation = 4;</code>
+       * <code>optional .dossier.Deprecation deprecation = 4;</code>
        *
        * <pre>
        * Whether this property is deprecated.
@@ -6928,7 +6928,7 @@ public final class Dossier {
         return getDeprecationFieldBuilder().getBuilder();
       }
       /**
-       * <code>optional .Deprecation deprecation = 4;</code>
+       * <code>optional .dossier.Deprecation deprecation = 4;</code>
        *
        * <pre>
        * Whether this property is deprecated.
@@ -6942,7 +6942,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>optional .Deprecation deprecation = 4;</code>
+       * <code>optional .dossier.Deprecation deprecation = 4;</code>
        *
        * <pre>
        * Whether this property is deprecated.
@@ -6964,19 +6964,19 @@ public final class Dossier {
 
       private com.github.jleyba.dossier.proto.Dossier.Visibility visibility_ = com.github.jleyba.dossier.proto.Dossier.Visibility.PUBLIC;
       /**
-       * <code>optional .Visibility visibility = 5 [default = PUBLIC];</code>
+       * <code>optional .dossier.Visibility visibility = 5 [default = PUBLIC];</code>
        */
       public boolean hasVisibility() {
         return ((bitField0_ & 0x00000010) == 0x00000010);
       }
       /**
-       * <code>optional .Visibility visibility = 5 [default = PUBLIC];</code>
+       * <code>optional .dossier.Visibility visibility = 5 [default = PUBLIC];</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.Visibility getVisibility() {
         return visibility_;
       }
       /**
-       * <code>optional .Visibility visibility = 5 [default = PUBLIC];</code>
+       * <code>optional .dossier.Visibility visibility = 5 [default = PUBLIC];</code>
        */
       public Builder setVisibility(com.github.jleyba.dossier.proto.Dossier.Visibility value) {
         if (value == null) {
@@ -6988,7 +6988,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>optional .Visibility visibility = 5 [default = PUBLIC];</code>
+       * <code>optional .dossier.Visibility visibility = 5 [default = PUBLIC];</code>
        */
       public Builder clearVisibility() {
         bitField0_ = (bitField0_ & ~0x00000010);
@@ -6997,7 +6997,7 @@ public final class Dossier {
         return this;
       }
 
-      // @@protoc_insertion_point(builder_scope:BaseProperty)
+      // @@protoc_insertion_point(builder_scope:dossier.BaseProperty)
     }
 
     static {
@@ -7005,23 +7005,23 @@ public final class Dossier {
       defaultInstance.initFields();
     }
 
-    // @@protoc_insertion_point(class_scope:BaseProperty)
+    // @@protoc_insertion_point(class_scope:dossier.BaseProperty)
   }
 
   public interface PropertyOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:Property)
+      // @@protoc_insertion_point(interface_extends:dossier.Property)
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>required .BaseProperty base = 1;</code>
+     * <code>required .dossier.BaseProperty base = 1;</code>
      */
     boolean hasBase();
     /**
-     * <code>required .BaseProperty base = 1;</code>
+     * <code>required .dossier.BaseProperty base = 1;</code>
      */
     com.github.jleyba.dossier.proto.Dossier.BaseProperty getBase();
     /**
-     * <code>required .BaseProperty base = 1;</code>
+     * <code>required .dossier.BaseProperty base = 1;</code>
      */
     com.github.jleyba.dossier.proto.Dossier.BasePropertyOrBuilder getBaseOrBuilder();
 
@@ -7055,7 +7055,7 @@ public final class Dossier {
         getTypeHtmlBytes();
   }
   /**
-   * Protobuf type {@code Property}
+   * Protobuf type {@code dossier.Property}
    *
    * <pre>
    * Describes a non-function JavaScript property.
@@ -7063,7 +7063,7 @@ public final class Dossier {
    */
   public static final class Property extends
       com.google.protobuf.GeneratedMessage implements
-      // @@protoc_insertion_point(message_implements:Property)
+      // @@protoc_insertion_point(message_implements:dossier.Property)
       PropertyOrBuilder {
     // Use Property.newBuilder() to construct.
     private Property(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
@@ -7143,12 +7143,12 @@ public final class Dossier {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.github.jleyba.dossier.proto.Dossier.internal_static_Property_descriptor;
+      return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_Property_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.github.jleyba.dossier.proto.Dossier.internal_static_Property_fieldAccessorTable
+      return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_Property_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               com.github.jleyba.dossier.proto.Dossier.Property.class, com.github.jleyba.dossier.proto.Dossier.Property.Builder.class);
     }
@@ -7172,19 +7172,19 @@ public final class Dossier {
     public static final int BASE_FIELD_NUMBER = 1;
     private com.github.jleyba.dossier.proto.Dossier.BaseProperty base_;
     /**
-     * <code>required .BaseProperty base = 1;</code>
+     * <code>required .dossier.BaseProperty base = 1;</code>
      */
     public boolean hasBase() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
     /**
-     * <code>required .BaseProperty base = 1;</code>
+     * <code>required .dossier.BaseProperty base = 1;</code>
      */
     public com.github.jleyba.dossier.proto.Dossier.BaseProperty getBase() {
       return base_;
     }
     /**
-     * <code>required .BaseProperty base = 1;</code>
+     * <code>required .dossier.BaseProperty base = 1;</code>
      */
     public com.github.jleyba.dossier.proto.Dossier.BasePropertyOrBuilder getBaseOrBuilder() {
       return base_;
@@ -7374,7 +7374,7 @@ public final class Dossier {
       return builder;
     }
     /**
-     * Protobuf type {@code Property}
+     * Protobuf type {@code dossier.Property}
      *
      * <pre>
      * Describes a non-function JavaScript property.
@@ -7382,16 +7382,16 @@ public final class Dossier {
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessage.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:Property)
+        // @@protoc_insertion_point(builder_implements:dossier.Property)
         com.github.jleyba.dossier.proto.Dossier.PropertyOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.github.jleyba.dossier.proto.Dossier.internal_static_Property_descriptor;
+        return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_Property_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.github.jleyba.dossier.proto.Dossier.internal_static_Property_fieldAccessorTable
+        return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_Property_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 com.github.jleyba.dossier.proto.Dossier.Property.class, com.github.jleyba.dossier.proto.Dossier.Property.Builder.class);
       }
@@ -7434,7 +7434,7 @@ public final class Dossier {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.github.jleyba.dossier.proto.Dossier.internal_static_Property_descriptor;
+        return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_Property_descriptor;
       }
 
       public com.github.jleyba.dossier.proto.Dossier.Property getDefaultInstanceForType() {
@@ -7528,13 +7528,13 @@ public final class Dossier {
       private com.google.protobuf.SingleFieldBuilder<
           com.github.jleyba.dossier.proto.Dossier.BaseProperty, com.github.jleyba.dossier.proto.Dossier.BaseProperty.Builder, com.github.jleyba.dossier.proto.Dossier.BasePropertyOrBuilder> baseBuilder_;
       /**
-       * <code>required .BaseProperty base = 1;</code>
+       * <code>required .dossier.BaseProperty base = 1;</code>
        */
       public boolean hasBase() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       /**
-       * <code>required .BaseProperty base = 1;</code>
+       * <code>required .dossier.BaseProperty base = 1;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.BaseProperty getBase() {
         if (baseBuilder_ == null) {
@@ -7544,7 +7544,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>required .BaseProperty base = 1;</code>
+       * <code>required .dossier.BaseProperty base = 1;</code>
        */
       public Builder setBase(com.github.jleyba.dossier.proto.Dossier.BaseProperty value) {
         if (baseBuilder_ == null) {
@@ -7560,7 +7560,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>required .BaseProperty base = 1;</code>
+       * <code>required .dossier.BaseProperty base = 1;</code>
        */
       public Builder setBase(
           com.github.jleyba.dossier.proto.Dossier.BaseProperty.Builder builderForValue) {
@@ -7574,7 +7574,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>required .BaseProperty base = 1;</code>
+       * <code>required .dossier.BaseProperty base = 1;</code>
        */
       public Builder mergeBase(com.github.jleyba.dossier.proto.Dossier.BaseProperty value) {
         if (baseBuilder_ == null) {
@@ -7593,7 +7593,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>required .BaseProperty base = 1;</code>
+       * <code>required .dossier.BaseProperty base = 1;</code>
        */
       public Builder clearBase() {
         if (baseBuilder_ == null) {
@@ -7606,7 +7606,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>required .BaseProperty base = 1;</code>
+       * <code>required .dossier.BaseProperty base = 1;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.BaseProperty.Builder getBaseBuilder() {
         bitField0_ |= 0x00000001;
@@ -7614,7 +7614,7 @@ public final class Dossier {
         return getBaseFieldBuilder().getBuilder();
       }
       /**
-       * <code>required .BaseProperty base = 1;</code>
+       * <code>required .dossier.BaseProperty base = 1;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.BasePropertyOrBuilder getBaseOrBuilder() {
         if (baseBuilder_ != null) {
@@ -7624,7 +7624,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>required .BaseProperty base = 1;</code>
+       * <code>required .dossier.BaseProperty base = 1;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
           com.github.jleyba.dossier.proto.Dossier.BaseProperty, com.github.jleyba.dossier.proto.Dossier.BaseProperty.Builder, com.github.jleyba.dossier.proto.Dossier.BasePropertyOrBuilder> 
@@ -7746,7 +7746,7 @@ public final class Dossier {
         return this;
       }
 
-      // @@protoc_insertion_point(builder_scope:Property)
+      // @@protoc_insertion_point(builder_scope:dossier.Property)
     }
 
     static {
@@ -7754,23 +7754,23 @@ public final class Dossier {
       defaultInstance.initFields();
     }
 
-    // @@protoc_insertion_point(class_scope:Property)
+    // @@protoc_insertion_point(class_scope:dossier.Property)
   }
 
   public interface FunctionOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:Function)
+      // @@protoc_insertion_point(interface_extends:dossier.Function)
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>required .BaseProperty base = 1;</code>
+     * <code>required .dossier.BaseProperty base = 1;</code>
      */
     boolean hasBase();
     /**
-     * <code>required .BaseProperty base = 1;</code>
+     * <code>required .dossier.BaseProperty base = 1;</code>
      */
     com.github.jleyba.dossier.proto.Dossier.BaseProperty getBase();
     /**
-     * <code>required .BaseProperty base = 1;</code>
+     * <code>required .dossier.BaseProperty base = 1;</code>
      */
     com.github.jleyba.dossier.proto.Dossier.BasePropertyOrBuilder getBaseOrBuilder();
 
@@ -7803,68 +7803,68 @@ public final class Dossier {
     boolean getIsConstructor();
 
     /**
-     * <code>repeated .Function.Detail parameter = 4;</code>
+     * <code>repeated .dossier.Function.Detail parameter = 4;</code>
      */
     java.util.List<com.github.jleyba.dossier.proto.Dossier.Function.Detail> 
         getParameterList();
     /**
-     * <code>repeated .Function.Detail parameter = 4;</code>
+     * <code>repeated .dossier.Function.Detail parameter = 4;</code>
      */
     com.github.jleyba.dossier.proto.Dossier.Function.Detail getParameter(int index);
     /**
-     * <code>repeated .Function.Detail parameter = 4;</code>
+     * <code>repeated .dossier.Function.Detail parameter = 4;</code>
      */
     int getParameterCount();
     /**
-     * <code>repeated .Function.Detail parameter = 4;</code>
+     * <code>repeated .dossier.Function.Detail parameter = 4;</code>
      */
     java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.Function.DetailOrBuilder> 
         getParameterOrBuilderList();
     /**
-     * <code>repeated .Function.Detail parameter = 4;</code>
+     * <code>repeated .dossier.Function.Detail parameter = 4;</code>
      */
     com.github.jleyba.dossier.proto.Dossier.Function.DetailOrBuilder getParameterOrBuilder(
         int index);
 
     /**
-     * <code>optional .Function.Detail return = 5;</code>
+     * <code>optional .dossier.Function.Detail return = 5;</code>
      */
     boolean hasReturn();
     /**
-     * <code>optional .Function.Detail return = 5;</code>
+     * <code>optional .dossier.Function.Detail return = 5;</code>
      */
     com.github.jleyba.dossier.proto.Dossier.Function.Detail getReturn();
     /**
-     * <code>optional .Function.Detail return = 5;</code>
+     * <code>optional .dossier.Function.Detail return = 5;</code>
      */
     com.github.jleyba.dossier.proto.Dossier.Function.DetailOrBuilder getReturnOrBuilder();
 
     /**
-     * <code>repeated .Function.Detail thrown = 6;</code>
+     * <code>repeated .dossier.Function.Detail thrown = 6;</code>
      */
     java.util.List<com.github.jleyba.dossier.proto.Dossier.Function.Detail> 
         getThrownList();
     /**
-     * <code>repeated .Function.Detail thrown = 6;</code>
+     * <code>repeated .dossier.Function.Detail thrown = 6;</code>
      */
     com.github.jleyba.dossier.proto.Dossier.Function.Detail getThrown(int index);
     /**
-     * <code>repeated .Function.Detail thrown = 6;</code>
+     * <code>repeated .dossier.Function.Detail thrown = 6;</code>
      */
     int getThrownCount();
     /**
-     * <code>repeated .Function.Detail thrown = 6;</code>
+     * <code>repeated .dossier.Function.Detail thrown = 6;</code>
      */
     java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.Function.DetailOrBuilder> 
         getThrownOrBuilderList();
     /**
-     * <code>repeated .Function.Detail thrown = 6;</code>
+     * <code>repeated .dossier.Function.Detail thrown = 6;</code>
      */
     com.github.jleyba.dossier.proto.Dossier.Function.DetailOrBuilder getThrownOrBuilder(
         int index);
   }
   /**
-   * Protobuf type {@code Function}
+   * Protobuf type {@code dossier.Function}
    *
    * <pre>
    * Describes a function JavaScript property.
@@ -7872,7 +7872,7 @@ public final class Dossier {
    */
   public static final class Function extends
       com.google.protobuf.GeneratedMessage implements
-      // @@protoc_insertion_point(message_implements:Function)
+      // @@protoc_insertion_point(message_implements:dossier.Function)
       FunctionOrBuilder {
     // Use Function.newBuilder() to construct.
     private Function(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
@@ -7998,12 +7998,12 @@ public final class Dossier {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.github.jleyba.dossier.proto.Dossier.internal_static_Function_descriptor;
+      return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_Function_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.github.jleyba.dossier.proto.Dossier.internal_static_Function_fieldAccessorTable
+      return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_Function_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               com.github.jleyba.dossier.proto.Dossier.Function.class, com.github.jleyba.dossier.proto.Dossier.Function.Builder.class);
     }
@@ -8024,7 +8024,7 @@ public final class Dossier {
     }
 
     public interface DetailOrBuilder extends
-        // @@protoc_insertion_point(interface_extends:Function.Detail)
+        // @@protoc_insertion_point(interface_extends:dossier.Function.Detail)
         com.google.protobuf.MessageOrBuilder {
 
       /**
@@ -8056,24 +8056,24 @@ public final class Dossier {
           getTypeHtmlBytes();
 
       /**
-       * <code>optional .Comment description = 3;</code>
+       * <code>optional .dossier.Comment description = 3;</code>
        */
       boolean hasDescription();
       /**
-       * <code>optional .Comment description = 3;</code>
+       * <code>optional .dossier.Comment description = 3;</code>
        */
       com.github.jleyba.dossier.proto.Dossier.Comment getDescription();
       /**
-       * <code>optional .Comment description = 3;</code>
+       * <code>optional .dossier.Comment description = 3;</code>
        */
       com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder getDescriptionOrBuilder();
     }
     /**
-     * Protobuf type {@code Function.Detail}
+     * Protobuf type {@code dossier.Function.Detail}
      */
     public static final class Detail extends
         com.google.protobuf.GeneratedMessage implements
-        // @@protoc_insertion_point(message_implements:Function.Detail)
+        // @@protoc_insertion_point(message_implements:dossier.Function.Detail)
         DetailOrBuilder {
       // Use Detail.newBuilder() to construct.
       private Detail(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
@@ -8159,12 +8159,12 @@ public final class Dossier {
       }
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.github.jleyba.dossier.proto.Dossier.internal_static_Function_Detail_descriptor;
+        return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_Function_Detail_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.github.jleyba.dossier.proto.Dossier.internal_static_Function_Detail_fieldAccessorTable
+        return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_Function_Detail_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 com.github.jleyba.dossier.proto.Dossier.Function.Detail.class, com.github.jleyba.dossier.proto.Dossier.Function.Detail.Builder.class);
       }
@@ -8272,19 +8272,19 @@ public final class Dossier {
       public static final int DESCRIPTION_FIELD_NUMBER = 3;
       private com.github.jleyba.dossier.proto.Dossier.Comment description_;
       /**
-       * <code>optional .Comment description = 3;</code>
+       * <code>optional .dossier.Comment description = 3;</code>
        */
       public boolean hasDescription() {
         return ((bitField0_ & 0x00000004) == 0x00000004);
       }
       /**
-       * <code>optional .Comment description = 3;</code>
+       * <code>optional .dossier.Comment description = 3;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.Comment getDescription() {
         return description_;
       }
       /**
-       * <code>optional .Comment description = 3;</code>
+       * <code>optional .dossier.Comment description = 3;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder getDescriptionOrBuilder() {
         return description_;
@@ -8423,20 +8423,20 @@ public final class Dossier {
         return builder;
       }
       /**
-       * Protobuf type {@code Function.Detail}
+       * Protobuf type {@code dossier.Function.Detail}
        */
       public static final class Builder extends
           com.google.protobuf.GeneratedMessage.Builder<Builder> implements
-          // @@protoc_insertion_point(builder_implements:Function.Detail)
+          // @@protoc_insertion_point(builder_implements:dossier.Function.Detail)
           com.github.jleyba.dossier.proto.Dossier.Function.DetailOrBuilder {
         public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
-          return com.github.jleyba.dossier.proto.Dossier.internal_static_Function_Detail_descriptor;
+          return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_Function_Detail_descriptor;
         }
 
         protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
             internalGetFieldAccessorTable() {
-          return com.github.jleyba.dossier.proto.Dossier.internal_static_Function_Detail_fieldAccessorTable
+          return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_Function_Detail_fieldAccessorTable
               .ensureFieldAccessorsInitialized(
                   com.github.jleyba.dossier.proto.Dossier.Function.Detail.class, com.github.jleyba.dossier.proto.Dossier.Function.Detail.Builder.class);
         }
@@ -8481,7 +8481,7 @@ public final class Dossier {
 
         public com.google.protobuf.Descriptors.Descriptor
             getDescriptorForType() {
-          return com.github.jleyba.dossier.proto.Dossier.internal_static_Function_Detail_descriptor;
+          return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_Function_Detail_descriptor;
         }
 
         public com.github.jleyba.dossier.proto.Dossier.Function.Detail getDefaultInstanceForType() {
@@ -8734,13 +8734,13 @@ public final class Dossier {
         private com.google.protobuf.SingleFieldBuilder<
             com.github.jleyba.dossier.proto.Dossier.Comment, com.github.jleyba.dossier.proto.Dossier.Comment.Builder, com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder> descriptionBuilder_;
         /**
-         * <code>optional .Comment description = 3;</code>
+         * <code>optional .dossier.Comment description = 3;</code>
          */
         public boolean hasDescription() {
           return ((bitField0_ & 0x00000004) == 0x00000004);
         }
         /**
-         * <code>optional .Comment description = 3;</code>
+         * <code>optional .dossier.Comment description = 3;</code>
          */
         public com.github.jleyba.dossier.proto.Dossier.Comment getDescription() {
           if (descriptionBuilder_ == null) {
@@ -8750,7 +8750,7 @@ public final class Dossier {
           }
         }
         /**
-         * <code>optional .Comment description = 3;</code>
+         * <code>optional .dossier.Comment description = 3;</code>
          */
         public Builder setDescription(com.github.jleyba.dossier.proto.Dossier.Comment value) {
           if (descriptionBuilder_ == null) {
@@ -8766,7 +8766,7 @@ public final class Dossier {
           return this;
         }
         /**
-         * <code>optional .Comment description = 3;</code>
+         * <code>optional .dossier.Comment description = 3;</code>
          */
         public Builder setDescription(
             com.github.jleyba.dossier.proto.Dossier.Comment.Builder builderForValue) {
@@ -8780,7 +8780,7 @@ public final class Dossier {
           return this;
         }
         /**
-         * <code>optional .Comment description = 3;</code>
+         * <code>optional .dossier.Comment description = 3;</code>
          */
         public Builder mergeDescription(com.github.jleyba.dossier.proto.Dossier.Comment value) {
           if (descriptionBuilder_ == null) {
@@ -8799,7 +8799,7 @@ public final class Dossier {
           return this;
         }
         /**
-         * <code>optional .Comment description = 3;</code>
+         * <code>optional .dossier.Comment description = 3;</code>
          */
         public Builder clearDescription() {
           if (descriptionBuilder_ == null) {
@@ -8812,7 +8812,7 @@ public final class Dossier {
           return this;
         }
         /**
-         * <code>optional .Comment description = 3;</code>
+         * <code>optional .dossier.Comment description = 3;</code>
          */
         public com.github.jleyba.dossier.proto.Dossier.Comment.Builder getDescriptionBuilder() {
           bitField0_ |= 0x00000004;
@@ -8820,7 +8820,7 @@ public final class Dossier {
           return getDescriptionFieldBuilder().getBuilder();
         }
         /**
-         * <code>optional .Comment description = 3;</code>
+         * <code>optional .dossier.Comment description = 3;</code>
          */
         public com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder getDescriptionOrBuilder() {
           if (descriptionBuilder_ != null) {
@@ -8830,7 +8830,7 @@ public final class Dossier {
           }
         }
         /**
-         * <code>optional .Comment description = 3;</code>
+         * <code>optional .dossier.Comment description = 3;</code>
          */
         private com.google.protobuf.SingleFieldBuilder<
             com.github.jleyba.dossier.proto.Dossier.Comment, com.github.jleyba.dossier.proto.Dossier.Comment.Builder, com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder> 
@@ -8846,7 +8846,7 @@ public final class Dossier {
           return descriptionBuilder_;
         }
 
-        // @@protoc_insertion_point(builder_scope:Function.Detail)
+        // @@protoc_insertion_point(builder_scope:dossier.Function.Detail)
       }
 
       static {
@@ -8854,26 +8854,26 @@ public final class Dossier {
         defaultInstance.initFields();
       }
 
-      // @@protoc_insertion_point(class_scope:Function.Detail)
+      // @@protoc_insertion_point(class_scope:dossier.Function.Detail)
     }
 
     private int bitField0_;
     public static final int BASE_FIELD_NUMBER = 1;
     private com.github.jleyba.dossier.proto.Dossier.BaseProperty base_;
     /**
-     * <code>required .BaseProperty base = 1;</code>
+     * <code>required .dossier.BaseProperty base = 1;</code>
      */
     public boolean hasBase() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
     /**
-     * <code>required .BaseProperty base = 1;</code>
+     * <code>required .dossier.BaseProperty base = 1;</code>
      */
     public com.github.jleyba.dossier.proto.Dossier.BaseProperty getBase() {
       return base_;
     }
     /**
-     * <code>required .BaseProperty base = 1;</code>
+     * <code>required .dossier.BaseProperty base = 1;</code>
      */
     public com.github.jleyba.dossier.proto.Dossier.BasePropertyOrBuilder getBaseOrBuilder() {
       return base_;
@@ -8926,32 +8926,32 @@ public final class Dossier {
     public static final int PARAMETER_FIELD_NUMBER = 4;
     private java.util.List<com.github.jleyba.dossier.proto.Dossier.Function.Detail> parameter_;
     /**
-     * <code>repeated .Function.Detail parameter = 4;</code>
+     * <code>repeated .dossier.Function.Detail parameter = 4;</code>
      */
     public java.util.List<com.github.jleyba.dossier.proto.Dossier.Function.Detail> getParameterList() {
       return parameter_;
     }
     /**
-     * <code>repeated .Function.Detail parameter = 4;</code>
+     * <code>repeated .dossier.Function.Detail parameter = 4;</code>
      */
     public java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.Function.DetailOrBuilder> 
         getParameterOrBuilderList() {
       return parameter_;
     }
     /**
-     * <code>repeated .Function.Detail parameter = 4;</code>
+     * <code>repeated .dossier.Function.Detail parameter = 4;</code>
      */
     public int getParameterCount() {
       return parameter_.size();
     }
     /**
-     * <code>repeated .Function.Detail parameter = 4;</code>
+     * <code>repeated .dossier.Function.Detail parameter = 4;</code>
      */
     public com.github.jleyba.dossier.proto.Dossier.Function.Detail getParameter(int index) {
       return parameter_.get(index);
     }
     /**
-     * <code>repeated .Function.Detail parameter = 4;</code>
+     * <code>repeated .dossier.Function.Detail parameter = 4;</code>
      */
     public com.github.jleyba.dossier.proto.Dossier.Function.DetailOrBuilder getParameterOrBuilder(
         int index) {
@@ -8961,19 +8961,19 @@ public final class Dossier {
     public static final int RETURN_FIELD_NUMBER = 5;
     private com.github.jleyba.dossier.proto.Dossier.Function.Detail return_;
     /**
-     * <code>optional .Function.Detail return = 5;</code>
+     * <code>optional .dossier.Function.Detail return = 5;</code>
      */
     public boolean hasReturn() {
       return ((bitField0_ & 0x00000004) == 0x00000004);
     }
     /**
-     * <code>optional .Function.Detail return = 5;</code>
+     * <code>optional .dossier.Function.Detail return = 5;</code>
      */
     public com.github.jleyba.dossier.proto.Dossier.Function.Detail getReturn() {
       return return_;
     }
     /**
-     * <code>optional .Function.Detail return = 5;</code>
+     * <code>optional .dossier.Function.Detail return = 5;</code>
      */
     public com.github.jleyba.dossier.proto.Dossier.Function.DetailOrBuilder getReturnOrBuilder() {
       return return_;
@@ -8982,32 +8982,32 @@ public final class Dossier {
     public static final int THROWN_FIELD_NUMBER = 6;
     private java.util.List<com.github.jleyba.dossier.proto.Dossier.Function.Detail> thrown_;
     /**
-     * <code>repeated .Function.Detail thrown = 6;</code>
+     * <code>repeated .dossier.Function.Detail thrown = 6;</code>
      */
     public java.util.List<com.github.jleyba.dossier.proto.Dossier.Function.Detail> getThrownList() {
       return thrown_;
     }
     /**
-     * <code>repeated .Function.Detail thrown = 6;</code>
+     * <code>repeated .dossier.Function.Detail thrown = 6;</code>
      */
     public java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.Function.DetailOrBuilder> 
         getThrownOrBuilderList() {
       return thrown_;
     }
     /**
-     * <code>repeated .Function.Detail thrown = 6;</code>
+     * <code>repeated .dossier.Function.Detail thrown = 6;</code>
      */
     public int getThrownCount() {
       return thrown_.size();
     }
     /**
-     * <code>repeated .Function.Detail thrown = 6;</code>
+     * <code>repeated .dossier.Function.Detail thrown = 6;</code>
      */
     public com.github.jleyba.dossier.proto.Dossier.Function.Detail getThrown(int index) {
       return thrown_.get(index);
     }
     /**
-     * <code>repeated .Function.Detail thrown = 6;</code>
+     * <code>repeated .dossier.Function.Detail thrown = 6;</code>
      */
     public com.github.jleyba.dossier.proto.Dossier.Function.DetailOrBuilder getThrownOrBuilder(
         int index) {
@@ -9196,7 +9196,7 @@ public final class Dossier {
       return builder;
     }
     /**
-     * Protobuf type {@code Function}
+     * Protobuf type {@code dossier.Function}
      *
      * <pre>
      * Describes a function JavaScript property.
@@ -9204,16 +9204,16 @@ public final class Dossier {
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessage.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:Function)
+        // @@protoc_insertion_point(builder_implements:dossier.Function)
         com.github.jleyba.dossier.proto.Dossier.FunctionOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.github.jleyba.dossier.proto.Dossier.internal_static_Function_descriptor;
+        return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_Function_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.github.jleyba.dossier.proto.Dossier.internal_static_Function_fieldAccessorTable
+        return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_Function_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 com.github.jleyba.dossier.proto.Dossier.Function.class, com.github.jleyba.dossier.proto.Dossier.Function.Builder.class);
       }
@@ -9279,7 +9279,7 @@ public final class Dossier {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.github.jleyba.dossier.proto.Dossier.internal_static_Function_descriptor;
+        return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_Function_descriptor;
       }
 
       public com.github.jleyba.dossier.proto.Dossier.Function getDefaultInstanceForType() {
@@ -9485,13 +9485,13 @@ public final class Dossier {
       private com.google.protobuf.SingleFieldBuilder<
           com.github.jleyba.dossier.proto.Dossier.BaseProperty, com.github.jleyba.dossier.proto.Dossier.BaseProperty.Builder, com.github.jleyba.dossier.proto.Dossier.BasePropertyOrBuilder> baseBuilder_;
       /**
-       * <code>required .BaseProperty base = 1;</code>
+       * <code>required .dossier.BaseProperty base = 1;</code>
        */
       public boolean hasBase() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       /**
-       * <code>required .BaseProperty base = 1;</code>
+       * <code>required .dossier.BaseProperty base = 1;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.BaseProperty getBase() {
         if (baseBuilder_ == null) {
@@ -9501,7 +9501,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>required .BaseProperty base = 1;</code>
+       * <code>required .dossier.BaseProperty base = 1;</code>
        */
       public Builder setBase(com.github.jleyba.dossier.proto.Dossier.BaseProperty value) {
         if (baseBuilder_ == null) {
@@ -9517,7 +9517,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>required .BaseProperty base = 1;</code>
+       * <code>required .dossier.BaseProperty base = 1;</code>
        */
       public Builder setBase(
           com.github.jleyba.dossier.proto.Dossier.BaseProperty.Builder builderForValue) {
@@ -9531,7 +9531,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>required .BaseProperty base = 1;</code>
+       * <code>required .dossier.BaseProperty base = 1;</code>
        */
       public Builder mergeBase(com.github.jleyba.dossier.proto.Dossier.BaseProperty value) {
         if (baseBuilder_ == null) {
@@ -9550,7 +9550,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>required .BaseProperty base = 1;</code>
+       * <code>required .dossier.BaseProperty base = 1;</code>
        */
       public Builder clearBase() {
         if (baseBuilder_ == null) {
@@ -9563,7 +9563,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>required .BaseProperty base = 1;</code>
+       * <code>required .dossier.BaseProperty base = 1;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.BaseProperty.Builder getBaseBuilder() {
         bitField0_ |= 0x00000001;
@@ -9571,7 +9571,7 @@ public final class Dossier {
         return getBaseFieldBuilder().getBuilder();
       }
       /**
-       * <code>required .BaseProperty base = 1;</code>
+       * <code>required .dossier.BaseProperty base = 1;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.BasePropertyOrBuilder getBaseOrBuilder() {
         if (baseBuilder_ != null) {
@@ -9581,7 +9581,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>required .BaseProperty base = 1;</code>
+       * <code>required .dossier.BaseProperty base = 1;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
           com.github.jleyba.dossier.proto.Dossier.BaseProperty, com.github.jleyba.dossier.proto.Dossier.BaseProperty.Builder, com.github.jleyba.dossier.proto.Dossier.BasePropertyOrBuilder> 
@@ -9735,7 +9735,7 @@ public final class Dossier {
           com.github.jleyba.dossier.proto.Dossier.Function.Detail, com.github.jleyba.dossier.proto.Dossier.Function.Detail.Builder, com.github.jleyba.dossier.proto.Dossier.Function.DetailOrBuilder> parameterBuilder_;
 
       /**
-       * <code>repeated .Function.Detail parameter = 4;</code>
+       * <code>repeated .dossier.Function.Detail parameter = 4;</code>
        */
       public java.util.List<com.github.jleyba.dossier.proto.Dossier.Function.Detail> getParameterList() {
         if (parameterBuilder_ == null) {
@@ -9745,7 +9745,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .Function.Detail parameter = 4;</code>
+       * <code>repeated .dossier.Function.Detail parameter = 4;</code>
        */
       public int getParameterCount() {
         if (parameterBuilder_ == null) {
@@ -9755,7 +9755,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .Function.Detail parameter = 4;</code>
+       * <code>repeated .dossier.Function.Detail parameter = 4;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.Function.Detail getParameter(int index) {
         if (parameterBuilder_ == null) {
@@ -9765,7 +9765,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .Function.Detail parameter = 4;</code>
+       * <code>repeated .dossier.Function.Detail parameter = 4;</code>
        */
       public Builder setParameter(
           int index, com.github.jleyba.dossier.proto.Dossier.Function.Detail value) {
@@ -9782,7 +9782,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Function.Detail parameter = 4;</code>
+       * <code>repeated .dossier.Function.Detail parameter = 4;</code>
        */
       public Builder setParameter(
           int index, com.github.jleyba.dossier.proto.Dossier.Function.Detail.Builder builderForValue) {
@@ -9796,7 +9796,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Function.Detail parameter = 4;</code>
+       * <code>repeated .dossier.Function.Detail parameter = 4;</code>
        */
       public Builder addParameter(com.github.jleyba.dossier.proto.Dossier.Function.Detail value) {
         if (parameterBuilder_ == null) {
@@ -9812,7 +9812,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Function.Detail parameter = 4;</code>
+       * <code>repeated .dossier.Function.Detail parameter = 4;</code>
        */
       public Builder addParameter(
           int index, com.github.jleyba.dossier.proto.Dossier.Function.Detail value) {
@@ -9829,7 +9829,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Function.Detail parameter = 4;</code>
+       * <code>repeated .dossier.Function.Detail parameter = 4;</code>
        */
       public Builder addParameter(
           com.github.jleyba.dossier.proto.Dossier.Function.Detail.Builder builderForValue) {
@@ -9843,7 +9843,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Function.Detail parameter = 4;</code>
+       * <code>repeated .dossier.Function.Detail parameter = 4;</code>
        */
       public Builder addParameter(
           int index, com.github.jleyba.dossier.proto.Dossier.Function.Detail.Builder builderForValue) {
@@ -9857,7 +9857,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Function.Detail parameter = 4;</code>
+       * <code>repeated .dossier.Function.Detail parameter = 4;</code>
        */
       public Builder addAllParameter(
           java.lang.Iterable<? extends com.github.jleyba.dossier.proto.Dossier.Function.Detail> values) {
@@ -9872,7 +9872,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Function.Detail parameter = 4;</code>
+       * <code>repeated .dossier.Function.Detail parameter = 4;</code>
        */
       public Builder clearParameter() {
         if (parameterBuilder_ == null) {
@@ -9885,7 +9885,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Function.Detail parameter = 4;</code>
+       * <code>repeated .dossier.Function.Detail parameter = 4;</code>
        */
       public Builder removeParameter(int index) {
         if (parameterBuilder_ == null) {
@@ -9898,14 +9898,14 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Function.Detail parameter = 4;</code>
+       * <code>repeated .dossier.Function.Detail parameter = 4;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.Function.Detail.Builder getParameterBuilder(
           int index) {
         return getParameterFieldBuilder().getBuilder(index);
       }
       /**
-       * <code>repeated .Function.Detail parameter = 4;</code>
+       * <code>repeated .dossier.Function.Detail parameter = 4;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.Function.DetailOrBuilder getParameterOrBuilder(
           int index) {
@@ -9915,7 +9915,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .Function.Detail parameter = 4;</code>
+       * <code>repeated .dossier.Function.Detail parameter = 4;</code>
        */
       public java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.Function.DetailOrBuilder> 
            getParameterOrBuilderList() {
@@ -9926,14 +9926,14 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .Function.Detail parameter = 4;</code>
+       * <code>repeated .dossier.Function.Detail parameter = 4;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.Function.Detail.Builder addParameterBuilder() {
         return getParameterFieldBuilder().addBuilder(
             com.github.jleyba.dossier.proto.Dossier.Function.Detail.getDefaultInstance());
       }
       /**
-       * <code>repeated .Function.Detail parameter = 4;</code>
+       * <code>repeated .dossier.Function.Detail parameter = 4;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.Function.Detail.Builder addParameterBuilder(
           int index) {
@@ -9941,7 +9941,7 @@ public final class Dossier {
             index, com.github.jleyba.dossier.proto.Dossier.Function.Detail.getDefaultInstance());
       }
       /**
-       * <code>repeated .Function.Detail parameter = 4;</code>
+       * <code>repeated .dossier.Function.Detail parameter = 4;</code>
        */
       public java.util.List<com.github.jleyba.dossier.proto.Dossier.Function.Detail.Builder> 
            getParameterBuilderList() {
@@ -9966,13 +9966,13 @@ public final class Dossier {
       private com.google.protobuf.SingleFieldBuilder<
           com.github.jleyba.dossier.proto.Dossier.Function.Detail, com.github.jleyba.dossier.proto.Dossier.Function.Detail.Builder, com.github.jleyba.dossier.proto.Dossier.Function.DetailOrBuilder> returnBuilder_;
       /**
-       * <code>optional .Function.Detail return = 5;</code>
+       * <code>optional .dossier.Function.Detail return = 5;</code>
        */
       public boolean hasReturn() {
         return ((bitField0_ & 0x00000010) == 0x00000010);
       }
       /**
-       * <code>optional .Function.Detail return = 5;</code>
+       * <code>optional .dossier.Function.Detail return = 5;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.Function.Detail getReturn() {
         if (returnBuilder_ == null) {
@@ -9982,7 +9982,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>optional .Function.Detail return = 5;</code>
+       * <code>optional .dossier.Function.Detail return = 5;</code>
        */
       public Builder setReturn(com.github.jleyba.dossier.proto.Dossier.Function.Detail value) {
         if (returnBuilder_ == null) {
@@ -9998,7 +9998,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>optional .Function.Detail return = 5;</code>
+       * <code>optional .dossier.Function.Detail return = 5;</code>
        */
       public Builder setReturn(
           com.github.jleyba.dossier.proto.Dossier.Function.Detail.Builder builderForValue) {
@@ -10012,7 +10012,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>optional .Function.Detail return = 5;</code>
+       * <code>optional .dossier.Function.Detail return = 5;</code>
        */
       public Builder mergeReturn(com.github.jleyba.dossier.proto.Dossier.Function.Detail value) {
         if (returnBuilder_ == null) {
@@ -10031,7 +10031,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>optional .Function.Detail return = 5;</code>
+       * <code>optional .dossier.Function.Detail return = 5;</code>
        */
       public Builder clearReturn() {
         if (returnBuilder_ == null) {
@@ -10044,7 +10044,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>optional .Function.Detail return = 5;</code>
+       * <code>optional .dossier.Function.Detail return = 5;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.Function.Detail.Builder getReturnBuilder() {
         bitField0_ |= 0x00000010;
@@ -10052,7 +10052,7 @@ public final class Dossier {
         return getReturnFieldBuilder().getBuilder();
       }
       /**
-       * <code>optional .Function.Detail return = 5;</code>
+       * <code>optional .dossier.Function.Detail return = 5;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.Function.DetailOrBuilder getReturnOrBuilder() {
         if (returnBuilder_ != null) {
@@ -10062,7 +10062,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>optional .Function.Detail return = 5;</code>
+       * <code>optional .dossier.Function.Detail return = 5;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
           com.github.jleyba.dossier.proto.Dossier.Function.Detail, com.github.jleyba.dossier.proto.Dossier.Function.Detail.Builder, com.github.jleyba.dossier.proto.Dossier.Function.DetailOrBuilder> 
@@ -10091,7 +10091,7 @@ public final class Dossier {
           com.github.jleyba.dossier.proto.Dossier.Function.Detail, com.github.jleyba.dossier.proto.Dossier.Function.Detail.Builder, com.github.jleyba.dossier.proto.Dossier.Function.DetailOrBuilder> thrownBuilder_;
 
       /**
-       * <code>repeated .Function.Detail thrown = 6;</code>
+       * <code>repeated .dossier.Function.Detail thrown = 6;</code>
        */
       public java.util.List<com.github.jleyba.dossier.proto.Dossier.Function.Detail> getThrownList() {
         if (thrownBuilder_ == null) {
@@ -10101,7 +10101,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .Function.Detail thrown = 6;</code>
+       * <code>repeated .dossier.Function.Detail thrown = 6;</code>
        */
       public int getThrownCount() {
         if (thrownBuilder_ == null) {
@@ -10111,7 +10111,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .Function.Detail thrown = 6;</code>
+       * <code>repeated .dossier.Function.Detail thrown = 6;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.Function.Detail getThrown(int index) {
         if (thrownBuilder_ == null) {
@@ -10121,7 +10121,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .Function.Detail thrown = 6;</code>
+       * <code>repeated .dossier.Function.Detail thrown = 6;</code>
        */
       public Builder setThrown(
           int index, com.github.jleyba.dossier.proto.Dossier.Function.Detail value) {
@@ -10138,7 +10138,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Function.Detail thrown = 6;</code>
+       * <code>repeated .dossier.Function.Detail thrown = 6;</code>
        */
       public Builder setThrown(
           int index, com.github.jleyba.dossier.proto.Dossier.Function.Detail.Builder builderForValue) {
@@ -10152,7 +10152,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Function.Detail thrown = 6;</code>
+       * <code>repeated .dossier.Function.Detail thrown = 6;</code>
        */
       public Builder addThrown(com.github.jleyba.dossier.proto.Dossier.Function.Detail value) {
         if (thrownBuilder_ == null) {
@@ -10168,7 +10168,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Function.Detail thrown = 6;</code>
+       * <code>repeated .dossier.Function.Detail thrown = 6;</code>
        */
       public Builder addThrown(
           int index, com.github.jleyba.dossier.proto.Dossier.Function.Detail value) {
@@ -10185,7 +10185,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Function.Detail thrown = 6;</code>
+       * <code>repeated .dossier.Function.Detail thrown = 6;</code>
        */
       public Builder addThrown(
           com.github.jleyba.dossier.proto.Dossier.Function.Detail.Builder builderForValue) {
@@ -10199,7 +10199,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Function.Detail thrown = 6;</code>
+       * <code>repeated .dossier.Function.Detail thrown = 6;</code>
        */
       public Builder addThrown(
           int index, com.github.jleyba.dossier.proto.Dossier.Function.Detail.Builder builderForValue) {
@@ -10213,7 +10213,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Function.Detail thrown = 6;</code>
+       * <code>repeated .dossier.Function.Detail thrown = 6;</code>
        */
       public Builder addAllThrown(
           java.lang.Iterable<? extends com.github.jleyba.dossier.proto.Dossier.Function.Detail> values) {
@@ -10228,7 +10228,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Function.Detail thrown = 6;</code>
+       * <code>repeated .dossier.Function.Detail thrown = 6;</code>
        */
       public Builder clearThrown() {
         if (thrownBuilder_ == null) {
@@ -10241,7 +10241,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Function.Detail thrown = 6;</code>
+       * <code>repeated .dossier.Function.Detail thrown = 6;</code>
        */
       public Builder removeThrown(int index) {
         if (thrownBuilder_ == null) {
@@ -10254,14 +10254,14 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Function.Detail thrown = 6;</code>
+       * <code>repeated .dossier.Function.Detail thrown = 6;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.Function.Detail.Builder getThrownBuilder(
           int index) {
         return getThrownFieldBuilder().getBuilder(index);
       }
       /**
-       * <code>repeated .Function.Detail thrown = 6;</code>
+       * <code>repeated .dossier.Function.Detail thrown = 6;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.Function.DetailOrBuilder getThrownOrBuilder(
           int index) {
@@ -10271,7 +10271,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .Function.Detail thrown = 6;</code>
+       * <code>repeated .dossier.Function.Detail thrown = 6;</code>
        */
       public java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.Function.DetailOrBuilder> 
            getThrownOrBuilderList() {
@@ -10282,14 +10282,14 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .Function.Detail thrown = 6;</code>
+       * <code>repeated .dossier.Function.Detail thrown = 6;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.Function.Detail.Builder addThrownBuilder() {
         return getThrownFieldBuilder().addBuilder(
             com.github.jleyba.dossier.proto.Dossier.Function.Detail.getDefaultInstance());
       }
       /**
-       * <code>repeated .Function.Detail thrown = 6;</code>
+       * <code>repeated .dossier.Function.Detail thrown = 6;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.Function.Detail.Builder addThrownBuilder(
           int index) {
@@ -10297,7 +10297,7 @@ public final class Dossier {
             index, com.github.jleyba.dossier.proto.Dossier.Function.Detail.getDefaultInstance());
       }
       /**
-       * <code>repeated .Function.Detail thrown = 6;</code>
+       * <code>repeated .dossier.Function.Detail thrown = 6;</code>
        */
       public java.util.List<com.github.jleyba.dossier.proto.Dossier.Function.Detail.Builder> 
            getThrownBuilderList() {
@@ -10318,7 +10318,7 @@ public final class Dossier {
         return thrownBuilder_;
       }
 
-      // @@protoc_insertion_point(builder_scope:Function)
+      // @@protoc_insertion_point(builder_scope:dossier.Function)
     }
 
     static {
@@ -10326,11 +10326,11 @@ public final class Dossier {
       defaultInstance.initFields();
     }
 
-    // @@protoc_insertion_point(class_scope:Function)
+    // @@protoc_insertion_point(class_scope:dossier.Function)
   }
 
   public interface PrototypeOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:Prototype)
+      // @@protoc_insertion_point(interface_extends:dossier.Prototype)
       com.google.protobuf.MessageOrBuilder {
 
     /**
@@ -10386,55 +10386,55 @@ public final class Dossier {
         getHrefBytes();
 
     /**
-     * <code>repeated .Function function = 3;</code>
+     * <code>repeated .dossier.Function function = 3;</code>
      */
     java.util.List<com.github.jleyba.dossier.proto.Dossier.Function> 
         getFunctionList();
     /**
-     * <code>repeated .Function function = 3;</code>
+     * <code>repeated .dossier.Function function = 3;</code>
      */
     com.github.jleyba.dossier.proto.Dossier.Function getFunction(int index);
     /**
-     * <code>repeated .Function function = 3;</code>
+     * <code>repeated .dossier.Function function = 3;</code>
      */
     int getFunctionCount();
     /**
-     * <code>repeated .Function function = 3;</code>
+     * <code>repeated .dossier.Function function = 3;</code>
      */
     java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.FunctionOrBuilder> 
         getFunctionOrBuilderList();
     /**
-     * <code>repeated .Function function = 3;</code>
+     * <code>repeated .dossier.Function function = 3;</code>
      */
     com.github.jleyba.dossier.proto.Dossier.FunctionOrBuilder getFunctionOrBuilder(
         int index);
 
     /**
-     * <code>repeated .Property property = 4;</code>
+     * <code>repeated .dossier.Property property = 4;</code>
      */
     java.util.List<com.github.jleyba.dossier.proto.Dossier.Property> 
         getPropertyList();
     /**
-     * <code>repeated .Property property = 4;</code>
+     * <code>repeated .dossier.Property property = 4;</code>
      */
     com.github.jleyba.dossier.proto.Dossier.Property getProperty(int index);
     /**
-     * <code>repeated .Property property = 4;</code>
+     * <code>repeated .dossier.Property property = 4;</code>
      */
     int getPropertyCount();
     /**
-     * <code>repeated .Property property = 4;</code>
+     * <code>repeated .dossier.Property property = 4;</code>
      */
     java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.PropertyOrBuilder> 
         getPropertyOrBuilderList();
     /**
-     * <code>repeated .Property property = 4;</code>
+     * <code>repeated .dossier.Property property = 4;</code>
      */
     com.github.jleyba.dossier.proto.Dossier.PropertyOrBuilder getPropertyOrBuilder(
         int index);
   }
   /**
-   * Protobuf type {@code Prototype}
+   * Protobuf type {@code dossier.Prototype}
    *
    * <pre>
    * Describes the properties and functions defined on a prototype object.
@@ -10442,7 +10442,7 @@ public final class Dossier {
    */
   public static final class Prototype extends
       com.google.protobuf.GeneratedMessage implements
-      // @@protoc_insertion_point(message_implements:Prototype)
+      // @@protoc_insertion_point(message_implements:dossier.Prototype)
       PrototypeOrBuilder {
     // Use Prototype.newBuilder() to construct.
     private Prototype(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
@@ -10537,12 +10537,12 @@ public final class Dossier {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.github.jleyba.dossier.proto.Dossier.internal_static_Prototype_descriptor;
+      return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_Prototype_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.github.jleyba.dossier.proto.Dossier.internal_static_Prototype_fieldAccessorTable
+      return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_Prototype_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               com.github.jleyba.dossier.proto.Dossier.Prototype.class, com.github.jleyba.dossier.proto.Dossier.Prototype.Builder.class);
     }
@@ -10674,32 +10674,32 @@ public final class Dossier {
     public static final int FUNCTION_FIELD_NUMBER = 3;
     private java.util.List<com.github.jleyba.dossier.proto.Dossier.Function> function_;
     /**
-     * <code>repeated .Function function = 3;</code>
+     * <code>repeated .dossier.Function function = 3;</code>
      */
     public java.util.List<com.github.jleyba.dossier.proto.Dossier.Function> getFunctionList() {
       return function_;
     }
     /**
-     * <code>repeated .Function function = 3;</code>
+     * <code>repeated .dossier.Function function = 3;</code>
      */
     public java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.FunctionOrBuilder> 
         getFunctionOrBuilderList() {
       return function_;
     }
     /**
-     * <code>repeated .Function function = 3;</code>
+     * <code>repeated .dossier.Function function = 3;</code>
      */
     public int getFunctionCount() {
       return function_.size();
     }
     /**
-     * <code>repeated .Function function = 3;</code>
+     * <code>repeated .dossier.Function function = 3;</code>
      */
     public com.github.jleyba.dossier.proto.Dossier.Function getFunction(int index) {
       return function_.get(index);
     }
     /**
-     * <code>repeated .Function function = 3;</code>
+     * <code>repeated .dossier.Function function = 3;</code>
      */
     public com.github.jleyba.dossier.proto.Dossier.FunctionOrBuilder getFunctionOrBuilder(
         int index) {
@@ -10709,32 +10709,32 @@ public final class Dossier {
     public static final int PROPERTY_FIELD_NUMBER = 4;
     private java.util.List<com.github.jleyba.dossier.proto.Dossier.Property> property_;
     /**
-     * <code>repeated .Property property = 4;</code>
+     * <code>repeated .dossier.Property property = 4;</code>
      */
     public java.util.List<com.github.jleyba.dossier.proto.Dossier.Property> getPropertyList() {
       return property_;
     }
     /**
-     * <code>repeated .Property property = 4;</code>
+     * <code>repeated .dossier.Property property = 4;</code>
      */
     public java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.PropertyOrBuilder> 
         getPropertyOrBuilderList() {
       return property_;
     }
     /**
-     * <code>repeated .Property property = 4;</code>
+     * <code>repeated .dossier.Property property = 4;</code>
      */
     public int getPropertyCount() {
       return property_.size();
     }
     /**
-     * <code>repeated .Property property = 4;</code>
+     * <code>repeated .dossier.Property property = 4;</code>
      */
     public com.github.jleyba.dossier.proto.Dossier.Property getProperty(int index) {
       return property_.get(index);
     }
     /**
-     * <code>repeated .Property property = 4;</code>
+     * <code>repeated .dossier.Property property = 4;</code>
      */
     public com.github.jleyba.dossier.proto.Dossier.PropertyOrBuilder getPropertyOrBuilder(
         int index) {
@@ -10892,7 +10892,7 @@ public final class Dossier {
       return builder;
     }
     /**
-     * Protobuf type {@code Prototype}
+     * Protobuf type {@code dossier.Prototype}
      *
      * <pre>
      * Describes the properties and functions defined on a prototype object.
@@ -10900,16 +10900,16 @@ public final class Dossier {
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessage.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:Prototype)
+        // @@protoc_insertion_point(builder_implements:dossier.Prototype)
         com.github.jleyba.dossier.proto.Dossier.PrototypeOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.github.jleyba.dossier.proto.Dossier.internal_static_Prototype_descriptor;
+        return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_Prototype_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.github.jleyba.dossier.proto.Dossier.internal_static_Prototype_fieldAccessorTable
+        return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_Prototype_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 com.github.jleyba.dossier.proto.Dossier.Prototype.class, com.github.jleyba.dossier.proto.Dossier.Prototype.Builder.class);
       }
@@ -10961,7 +10961,7 @@ public final class Dossier {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.github.jleyba.dossier.proto.Dossier.internal_static_Prototype_descriptor;
+        return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_Prototype_descriptor;
       }
 
       public com.github.jleyba.dossier.proto.Dossier.Prototype getDefaultInstanceForType() {
@@ -11340,7 +11340,7 @@ public final class Dossier {
           com.github.jleyba.dossier.proto.Dossier.Function, com.github.jleyba.dossier.proto.Dossier.Function.Builder, com.github.jleyba.dossier.proto.Dossier.FunctionOrBuilder> functionBuilder_;
 
       /**
-       * <code>repeated .Function function = 3;</code>
+       * <code>repeated .dossier.Function function = 3;</code>
        */
       public java.util.List<com.github.jleyba.dossier.proto.Dossier.Function> getFunctionList() {
         if (functionBuilder_ == null) {
@@ -11350,7 +11350,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .Function function = 3;</code>
+       * <code>repeated .dossier.Function function = 3;</code>
        */
       public int getFunctionCount() {
         if (functionBuilder_ == null) {
@@ -11360,7 +11360,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .Function function = 3;</code>
+       * <code>repeated .dossier.Function function = 3;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.Function getFunction(int index) {
         if (functionBuilder_ == null) {
@@ -11370,7 +11370,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .Function function = 3;</code>
+       * <code>repeated .dossier.Function function = 3;</code>
        */
       public Builder setFunction(
           int index, com.github.jleyba.dossier.proto.Dossier.Function value) {
@@ -11387,7 +11387,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Function function = 3;</code>
+       * <code>repeated .dossier.Function function = 3;</code>
        */
       public Builder setFunction(
           int index, com.github.jleyba.dossier.proto.Dossier.Function.Builder builderForValue) {
@@ -11401,7 +11401,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Function function = 3;</code>
+       * <code>repeated .dossier.Function function = 3;</code>
        */
       public Builder addFunction(com.github.jleyba.dossier.proto.Dossier.Function value) {
         if (functionBuilder_ == null) {
@@ -11417,7 +11417,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Function function = 3;</code>
+       * <code>repeated .dossier.Function function = 3;</code>
        */
       public Builder addFunction(
           int index, com.github.jleyba.dossier.proto.Dossier.Function value) {
@@ -11434,7 +11434,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Function function = 3;</code>
+       * <code>repeated .dossier.Function function = 3;</code>
        */
       public Builder addFunction(
           com.github.jleyba.dossier.proto.Dossier.Function.Builder builderForValue) {
@@ -11448,7 +11448,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Function function = 3;</code>
+       * <code>repeated .dossier.Function function = 3;</code>
        */
       public Builder addFunction(
           int index, com.github.jleyba.dossier.proto.Dossier.Function.Builder builderForValue) {
@@ -11462,7 +11462,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Function function = 3;</code>
+       * <code>repeated .dossier.Function function = 3;</code>
        */
       public Builder addAllFunction(
           java.lang.Iterable<? extends com.github.jleyba.dossier.proto.Dossier.Function> values) {
@@ -11477,7 +11477,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Function function = 3;</code>
+       * <code>repeated .dossier.Function function = 3;</code>
        */
       public Builder clearFunction() {
         if (functionBuilder_ == null) {
@@ -11490,7 +11490,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Function function = 3;</code>
+       * <code>repeated .dossier.Function function = 3;</code>
        */
       public Builder removeFunction(int index) {
         if (functionBuilder_ == null) {
@@ -11503,14 +11503,14 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Function function = 3;</code>
+       * <code>repeated .dossier.Function function = 3;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.Function.Builder getFunctionBuilder(
           int index) {
         return getFunctionFieldBuilder().getBuilder(index);
       }
       /**
-       * <code>repeated .Function function = 3;</code>
+       * <code>repeated .dossier.Function function = 3;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.FunctionOrBuilder getFunctionOrBuilder(
           int index) {
@@ -11520,7 +11520,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .Function function = 3;</code>
+       * <code>repeated .dossier.Function function = 3;</code>
        */
       public java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.FunctionOrBuilder> 
            getFunctionOrBuilderList() {
@@ -11531,14 +11531,14 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .Function function = 3;</code>
+       * <code>repeated .dossier.Function function = 3;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.Function.Builder addFunctionBuilder() {
         return getFunctionFieldBuilder().addBuilder(
             com.github.jleyba.dossier.proto.Dossier.Function.getDefaultInstance());
       }
       /**
-       * <code>repeated .Function function = 3;</code>
+       * <code>repeated .dossier.Function function = 3;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.Function.Builder addFunctionBuilder(
           int index) {
@@ -11546,7 +11546,7 @@ public final class Dossier {
             index, com.github.jleyba.dossier.proto.Dossier.Function.getDefaultInstance());
       }
       /**
-       * <code>repeated .Function function = 3;</code>
+       * <code>repeated .dossier.Function function = 3;</code>
        */
       public java.util.List<com.github.jleyba.dossier.proto.Dossier.Function.Builder> 
            getFunctionBuilderList() {
@@ -11580,7 +11580,7 @@ public final class Dossier {
           com.github.jleyba.dossier.proto.Dossier.Property, com.github.jleyba.dossier.proto.Dossier.Property.Builder, com.github.jleyba.dossier.proto.Dossier.PropertyOrBuilder> propertyBuilder_;
 
       /**
-       * <code>repeated .Property property = 4;</code>
+       * <code>repeated .dossier.Property property = 4;</code>
        */
       public java.util.List<com.github.jleyba.dossier.proto.Dossier.Property> getPropertyList() {
         if (propertyBuilder_ == null) {
@@ -11590,7 +11590,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .Property property = 4;</code>
+       * <code>repeated .dossier.Property property = 4;</code>
        */
       public int getPropertyCount() {
         if (propertyBuilder_ == null) {
@@ -11600,7 +11600,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .Property property = 4;</code>
+       * <code>repeated .dossier.Property property = 4;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.Property getProperty(int index) {
         if (propertyBuilder_ == null) {
@@ -11610,7 +11610,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .Property property = 4;</code>
+       * <code>repeated .dossier.Property property = 4;</code>
        */
       public Builder setProperty(
           int index, com.github.jleyba.dossier.proto.Dossier.Property value) {
@@ -11627,7 +11627,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Property property = 4;</code>
+       * <code>repeated .dossier.Property property = 4;</code>
        */
       public Builder setProperty(
           int index, com.github.jleyba.dossier.proto.Dossier.Property.Builder builderForValue) {
@@ -11641,7 +11641,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Property property = 4;</code>
+       * <code>repeated .dossier.Property property = 4;</code>
        */
       public Builder addProperty(com.github.jleyba.dossier.proto.Dossier.Property value) {
         if (propertyBuilder_ == null) {
@@ -11657,7 +11657,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Property property = 4;</code>
+       * <code>repeated .dossier.Property property = 4;</code>
        */
       public Builder addProperty(
           int index, com.github.jleyba.dossier.proto.Dossier.Property value) {
@@ -11674,7 +11674,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Property property = 4;</code>
+       * <code>repeated .dossier.Property property = 4;</code>
        */
       public Builder addProperty(
           com.github.jleyba.dossier.proto.Dossier.Property.Builder builderForValue) {
@@ -11688,7 +11688,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Property property = 4;</code>
+       * <code>repeated .dossier.Property property = 4;</code>
        */
       public Builder addProperty(
           int index, com.github.jleyba.dossier.proto.Dossier.Property.Builder builderForValue) {
@@ -11702,7 +11702,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Property property = 4;</code>
+       * <code>repeated .dossier.Property property = 4;</code>
        */
       public Builder addAllProperty(
           java.lang.Iterable<? extends com.github.jleyba.dossier.proto.Dossier.Property> values) {
@@ -11717,7 +11717,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Property property = 4;</code>
+       * <code>repeated .dossier.Property property = 4;</code>
        */
       public Builder clearProperty() {
         if (propertyBuilder_ == null) {
@@ -11730,7 +11730,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Property property = 4;</code>
+       * <code>repeated .dossier.Property property = 4;</code>
        */
       public Builder removeProperty(int index) {
         if (propertyBuilder_ == null) {
@@ -11743,14 +11743,14 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Property property = 4;</code>
+       * <code>repeated .dossier.Property property = 4;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.Property.Builder getPropertyBuilder(
           int index) {
         return getPropertyFieldBuilder().getBuilder(index);
       }
       /**
-       * <code>repeated .Property property = 4;</code>
+       * <code>repeated .dossier.Property property = 4;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.PropertyOrBuilder getPropertyOrBuilder(
           int index) {
@@ -11760,7 +11760,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .Property property = 4;</code>
+       * <code>repeated .dossier.Property property = 4;</code>
        */
       public java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.PropertyOrBuilder> 
            getPropertyOrBuilderList() {
@@ -11771,14 +11771,14 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .Property property = 4;</code>
+       * <code>repeated .dossier.Property property = 4;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.Property.Builder addPropertyBuilder() {
         return getPropertyFieldBuilder().addBuilder(
             com.github.jleyba.dossier.proto.Dossier.Property.getDefaultInstance());
       }
       /**
-       * <code>repeated .Property property = 4;</code>
+       * <code>repeated .dossier.Property property = 4;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.Property.Builder addPropertyBuilder(
           int index) {
@@ -11786,7 +11786,7 @@ public final class Dossier {
             index, com.github.jleyba.dossier.proto.Dossier.Property.getDefaultInstance());
       }
       /**
-       * <code>repeated .Property property = 4;</code>
+       * <code>repeated .dossier.Property property = 4;</code>
        */
       public java.util.List<com.github.jleyba.dossier.proto.Dossier.Property.Builder> 
            getPropertyBuilderList() {
@@ -11807,7 +11807,7 @@ public final class Dossier {
         return propertyBuilder_;
       }
 
-      // @@protoc_insertion_point(builder_scope:Prototype)
+      // @@protoc_insertion_point(builder_scope:dossier.Prototype)
     }
 
     static {
@@ -11815,11 +11815,11 @@ public final class Dossier {
       defaultInstance.initFields();
     }
 
-    // @@protoc_insertion_point(class_scope:Prototype)
+    // @@protoc_insertion_point(class_scope:dossier.Prototype)
   }
 
   public interface EnumerationOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:Enumeration)
+      // @@protoc_insertion_point(interface_extends:dossier.Enumeration)
       com.google.protobuf.MessageOrBuilder {
 
     /**
@@ -11837,40 +11837,40 @@ public final class Dossier {
         getTypeHtmlBytes();
 
     /**
-     * <code>repeated .Enumeration.Value value = 2;</code>
+     * <code>repeated .dossier.Enumeration.Value value = 2;</code>
      */
     java.util.List<com.github.jleyba.dossier.proto.Dossier.Enumeration.Value> 
         getValueList();
     /**
-     * <code>repeated .Enumeration.Value value = 2;</code>
+     * <code>repeated .dossier.Enumeration.Value value = 2;</code>
      */
     com.github.jleyba.dossier.proto.Dossier.Enumeration.Value getValue(int index);
     /**
-     * <code>repeated .Enumeration.Value value = 2;</code>
+     * <code>repeated .dossier.Enumeration.Value value = 2;</code>
      */
     int getValueCount();
     /**
-     * <code>repeated .Enumeration.Value value = 2;</code>
+     * <code>repeated .dossier.Enumeration.Value value = 2;</code>
      */
     java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.Enumeration.ValueOrBuilder> 
         getValueOrBuilderList();
     /**
-     * <code>repeated .Enumeration.Value value = 2;</code>
+     * <code>repeated .dossier.Enumeration.Value value = 2;</code>
      */
     com.github.jleyba.dossier.proto.Dossier.Enumeration.ValueOrBuilder getValueOrBuilder(
         int index);
 
     /**
-     * <code>optional .Visibility visibility = 3 [default = PUBLIC];</code>
+     * <code>optional .dossier.Visibility visibility = 3 [default = PUBLIC];</code>
      */
     boolean hasVisibility();
     /**
-     * <code>optional .Visibility visibility = 3 [default = PUBLIC];</code>
+     * <code>optional .dossier.Visibility visibility = 3 [default = PUBLIC];</code>
      */
     com.github.jleyba.dossier.proto.Dossier.Visibility getVisibility();
   }
   /**
-   * Protobuf type {@code Enumeration}
+   * Protobuf type {@code dossier.Enumeration}
    *
    * <pre>
    * Describes an enumeration.
@@ -11878,7 +11878,7 @@ public final class Dossier {
    */
   public static final class Enumeration extends
       com.google.protobuf.GeneratedMessage implements
-      // @@protoc_insertion_point(message_implements:Enumeration)
+      // @@protoc_insertion_point(message_implements:dossier.Enumeration)
       EnumerationOrBuilder {
     // Use Enumeration.newBuilder() to construct.
     private Enumeration(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
@@ -11967,12 +11967,12 @@ public final class Dossier {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.github.jleyba.dossier.proto.Dossier.internal_static_Enumeration_descriptor;
+      return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_Enumeration_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.github.jleyba.dossier.proto.Dossier.internal_static_Enumeration_fieldAccessorTable
+      return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_Enumeration_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               com.github.jleyba.dossier.proto.Dossier.Enumeration.class, com.github.jleyba.dossier.proto.Dossier.Enumeration.Builder.class);
     }
@@ -11993,7 +11993,7 @@ public final class Dossier {
     }
 
     public interface ValueOrBuilder extends
-        // @@protoc_insertion_point(interface_extends:Enumeration.Value)
+        // @@protoc_insertion_point(interface_extends:dossier.Enumeration.Value)
         com.google.protobuf.MessageOrBuilder {
 
       /**
@@ -12011,37 +12011,37 @@ public final class Dossier {
           getNameBytes();
 
       /**
-       * <code>optional .Comment description = 2;</code>
+       * <code>optional .dossier.Comment description = 2;</code>
        */
       boolean hasDescription();
       /**
-       * <code>optional .Comment description = 2;</code>
+       * <code>optional .dossier.Comment description = 2;</code>
        */
       com.github.jleyba.dossier.proto.Dossier.Comment getDescription();
       /**
-       * <code>optional .Comment description = 2;</code>
+       * <code>optional .dossier.Comment description = 2;</code>
        */
       com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder getDescriptionOrBuilder();
 
       /**
-       * <code>optional .Deprecation deprecation = 3;</code>
+       * <code>optional .dossier.Deprecation deprecation = 3;</code>
        */
       boolean hasDeprecation();
       /**
-       * <code>optional .Deprecation deprecation = 3;</code>
+       * <code>optional .dossier.Deprecation deprecation = 3;</code>
        */
       com.github.jleyba.dossier.proto.Dossier.Deprecation getDeprecation();
       /**
-       * <code>optional .Deprecation deprecation = 3;</code>
+       * <code>optional .dossier.Deprecation deprecation = 3;</code>
        */
       com.github.jleyba.dossier.proto.Dossier.DeprecationOrBuilder getDeprecationOrBuilder();
     }
     /**
-     * Protobuf type {@code Enumeration.Value}
+     * Protobuf type {@code dossier.Enumeration.Value}
      */
     public static final class Value extends
         com.google.protobuf.GeneratedMessage implements
-        // @@protoc_insertion_point(message_implements:Enumeration.Value)
+        // @@protoc_insertion_point(message_implements:dossier.Enumeration.Value)
         ValueOrBuilder {
       // Use Value.newBuilder() to construct.
       private Value(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
@@ -12134,12 +12134,12 @@ public final class Dossier {
       }
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.github.jleyba.dossier.proto.Dossier.internal_static_Enumeration_Value_descriptor;
+        return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_Enumeration_Value_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.github.jleyba.dossier.proto.Dossier.internal_static_Enumeration_Value_fieldAccessorTable
+        return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_Enumeration_Value_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 com.github.jleyba.dossier.proto.Dossier.Enumeration.Value.class, com.github.jleyba.dossier.proto.Dossier.Enumeration.Value.Builder.class);
       }
@@ -12205,19 +12205,19 @@ public final class Dossier {
       public static final int DESCRIPTION_FIELD_NUMBER = 2;
       private com.github.jleyba.dossier.proto.Dossier.Comment description_;
       /**
-       * <code>optional .Comment description = 2;</code>
+       * <code>optional .dossier.Comment description = 2;</code>
        */
       public boolean hasDescription() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
       }
       /**
-       * <code>optional .Comment description = 2;</code>
+       * <code>optional .dossier.Comment description = 2;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.Comment getDescription() {
         return description_;
       }
       /**
-       * <code>optional .Comment description = 2;</code>
+       * <code>optional .dossier.Comment description = 2;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder getDescriptionOrBuilder() {
         return description_;
@@ -12226,19 +12226,19 @@ public final class Dossier {
       public static final int DEPRECATION_FIELD_NUMBER = 3;
       private com.github.jleyba.dossier.proto.Dossier.Deprecation deprecation_;
       /**
-       * <code>optional .Deprecation deprecation = 3;</code>
+       * <code>optional .dossier.Deprecation deprecation = 3;</code>
        */
       public boolean hasDeprecation() {
         return ((bitField0_ & 0x00000004) == 0x00000004);
       }
       /**
-       * <code>optional .Deprecation deprecation = 3;</code>
+       * <code>optional .dossier.Deprecation deprecation = 3;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.Deprecation getDeprecation() {
         return deprecation_;
       }
       /**
-       * <code>optional .Deprecation deprecation = 3;</code>
+       * <code>optional .dossier.Deprecation deprecation = 3;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.DeprecationOrBuilder getDeprecationOrBuilder() {
         return deprecation_;
@@ -12387,20 +12387,20 @@ public final class Dossier {
         return builder;
       }
       /**
-       * Protobuf type {@code Enumeration.Value}
+       * Protobuf type {@code dossier.Enumeration.Value}
        */
       public static final class Builder extends
           com.google.protobuf.GeneratedMessage.Builder<Builder> implements
-          // @@protoc_insertion_point(builder_implements:Enumeration.Value)
+          // @@protoc_insertion_point(builder_implements:dossier.Enumeration.Value)
           com.github.jleyba.dossier.proto.Dossier.Enumeration.ValueOrBuilder {
         public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
-          return com.github.jleyba.dossier.proto.Dossier.internal_static_Enumeration_Value_descriptor;
+          return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_Enumeration_Value_descriptor;
         }
 
         protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
             internalGetFieldAccessorTable() {
-          return com.github.jleyba.dossier.proto.Dossier.internal_static_Enumeration_Value_fieldAccessorTable
+          return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_Enumeration_Value_fieldAccessorTable
               .ensureFieldAccessorsInitialized(
                   com.github.jleyba.dossier.proto.Dossier.Enumeration.Value.class, com.github.jleyba.dossier.proto.Dossier.Enumeration.Value.Builder.class);
         }
@@ -12450,7 +12450,7 @@ public final class Dossier {
 
         public com.google.protobuf.Descriptors.Descriptor
             getDescriptorForType() {
-          return com.github.jleyba.dossier.proto.Dossier.internal_static_Enumeration_Value_descriptor;
+          return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_Enumeration_Value_descriptor;
         }
 
         public com.github.jleyba.dossier.proto.Dossier.Enumeration.Value getDefaultInstanceForType() {
@@ -12639,13 +12639,13 @@ public final class Dossier {
         private com.google.protobuf.SingleFieldBuilder<
             com.github.jleyba.dossier.proto.Dossier.Comment, com.github.jleyba.dossier.proto.Dossier.Comment.Builder, com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder> descriptionBuilder_;
         /**
-         * <code>optional .Comment description = 2;</code>
+         * <code>optional .dossier.Comment description = 2;</code>
          */
         public boolean hasDescription() {
           return ((bitField0_ & 0x00000002) == 0x00000002);
         }
         /**
-         * <code>optional .Comment description = 2;</code>
+         * <code>optional .dossier.Comment description = 2;</code>
          */
         public com.github.jleyba.dossier.proto.Dossier.Comment getDescription() {
           if (descriptionBuilder_ == null) {
@@ -12655,7 +12655,7 @@ public final class Dossier {
           }
         }
         /**
-         * <code>optional .Comment description = 2;</code>
+         * <code>optional .dossier.Comment description = 2;</code>
          */
         public Builder setDescription(com.github.jleyba.dossier.proto.Dossier.Comment value) {
           if (descriptionBuilder_ == null) {
@@ -12671,7 +12671,7 @@ public final class Dossier {
           return this;
         }
         /**
-         * <code>optional .Comment description = 2;</code>
+         * <code>optional .dossier.Comment description = 2;</code>
          */
         public Builder setDescription(
             com.github.jleyba.dossier.proto.Dossier.Comment.Builder builderForValue) {
@@ -12685,7 +12685,7 @@ public final class Dossier {
           return this;
         }
         /**
-         * <code>optional .Comment description = 2;</code>
+         * <code>optional .dossier.Comment description = 2;</code>
          */
         public Builder mergeDescription(com.github.jleyba.dossier.proto.Dossier.Comment value) {
           if (descriptionBuilder_ == null) {
@@ -12704,7 +12704,7 @@ public final class Dossier {
           return this;
         }
         /**
-         * <code>optional .Comment description = 2;</code>
+         * <code>optional .dossier.Comment description = 2;</code>
          */
         public Builder clearDescription() {
           if (descriptionBuilder_ == null) {
@@ -12717,7 +12717,7 @@ public final class Dossier {
           return this;
         }
         /**
-         * <code>optional .Comment description = 2;</code>
+         * <code>optional .dossier.Comment description = 2;</code>
          */
         public com.github.jleyba.dossier.proto.Dossier.Comment.Builder getDescriptionBuilder() {
           bitField0_ |= 0x00000002;
@@ -12725,7 +12725,7 @@ public final class Dossier {
           return getDescriptionFieldBuilder().getBuilder();
         }
         /**
-         * <code>optional .Comment description = 2;</code>
+         * <code>optional .dossier.Comment description = 2;</code>
          */
         public com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder getDescriptionOrBuilder() {
           if (descriptionBuilder_ != null) {
@@ -12735,7 +12735,7 @@ public final class Dossier {
           }
         }
         /**
-         * <code>optional .Comment description = 2;</code>
+         * <code>optional .dossier.Comment description = 2;</code>
          */
         private com.google.protobuf.SingleFieldBuilder<
             com.github.jleyba.dossier.proto.Dossier.Comment, com.github.jleyba.dossier.proto.Dossier.Comment.Builder, com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder> 
@@ -12755,13 +12755,13 @@ public final class Dossier {
         private com.google.protobuf.SingleFieldBuilder<
             com.github.jleyba.dossier.proto.Dossier.Deprecation, com.github.jleyba.dossier.proto.Dossier.Deprecation.Builder, com.github.jleyba.dossier.proto.Dossier.DeprecationOrBuilder> deprecationBuilder_;
         /**
-         * <code>optional .Deprecation deprecation = 3;</code>
+         * <code>optional .dossier.Deprecation deprecation = 3;</code>
          */
         public boolean hasDeprecation() {
           return ((bitField0_ & 0x00000004) == 0x00000004);
         }
         /**
-         * <code>optional .Deprecation deprecation = 3;</code>
+         * <code>optional .dossier.Deprecation deprecation = 3;</code>
          */
         public com.github.jleyba.dossier.proto.Dossier.Deprecation getDeprecation() {
           if (deprecationBuilder_ == null) {
@@ -12771,7 +12771,7 @@ public final class Dossier {
           }
         }
         /**
-         * <code>optional .Deprecation deprecation = 3;</code>
+         * <code>optional .dossier.Deprecation deprecation = 3;</code>
          */
         public Builder setDeprecation(com.github.jleyba.dossier.proto.Dossier.Deprecation value) {
           if (deprecationBuilder_ == null) {
@@ -12787,7 +12787,7 @@ public final class Dossier {
           return this;
         }
         /**
-         * <code>optional .Deprecation deprecation = 3;</code>
+         * <code>optional .dossier.Deprecation deprecation = 3;</code>
          */
         public Builder setDeprecation(
             com.github.jleyba.dossier.proto.Dossier.Deprecation.Builder builderForValue) {
@@ -12801,7 +12801,7 @@ public final class Dossier {
           return this;
         }
         /**
-         * <code>optional .Deprecation deprecation = 3;</code>
+         * <code>optional .dossier.Deprecation deprecation = 3;</code>
          */
         public Builder mergeDeprecation(com.github.jleyba.dossier.proto.Dossier.Deprecation value) {
           if (deprecationBuilder_ == null) {
@@ -12820,7 +12820,7 @@ public final class Dossier {
           return this;
         }
         /**
-         * <code>optional .Deprecation deprecation = 3;</code>
+         * <code>optional .dossier.Deprecation deprecation = 3;</code>
          */
         public Builder clearDeprecation() {
           if (deprecationBuilder_ == null) {
@@ -12833,7 +12833,7 @@ public final class Dossier {
           return this;
         }
         /**
-         * <code>optional .Deprecation deprecation = 3;</code>
+         * <code>optional .dossier.Deprecation deprecation = 3;</code>
          */
         public com.github.jleyba.dossier.proto.Dossier.Deprecation.Builder getDeprecationBuilder() {
           bitField0_ |= 0x00000004;
@@ -12841,7 +12841,7 @@ public final class Dossier {
           return getDeprecationFieldBuilder().getBuilder();
         }
         /**
-         * <code>optional .Deprecation deprecation = 3;</code>
+         * <code>optional .dossier.Deprecation deprecation = 3;</code>
          */
         public com.github.jleyba.dossier.proto.Dossier.DeprecationOrBuilder getDeprecationOrBuilder() {
           if (deprecationBuilder_ != null) {
@@ -12851,7 +12851,7 @@ public final class Dossier {
           }
         }
         /**
-         * <code>optional .Deprecation deprecation = 3;</code>
+         * <code>optional .dossier.Deprecation deprecation = 3;</code>
          */
         private com.google.protobuf.SingleFieldBuilder<
             com.github.jleyba.dossier.proto.Dossier.Deprecation, com.github.jleyba.dossier.proto.Dossier.Deprecation.Builder, com.github.jleyba.dossier.proto.Dossier.DeprecationOrBuilder> 
@@ -12867,7 +12867,7 @@ public final class Dossier {
           return deprecationBuilder_;
         }
 
-        // @@protoc_insertion_point(builder_scope:Enumeration.Value)
+        // @@protoc_insertion_point(builder_scope:dossier.Enumeration.Value)
       }
 
       static {
@@ -12875,7 +12875,7 @@ public final class Dossier {
         defaultInstance.initFields();
       }
 
-      // @@protoc_insertion_point(class_scope:Enumeration.Value)
+      // @@protoc_insertion_point(class_scope:dossier.Enumeration.Value)
     }
 
     private int bitField0_;
@@ -12924,32 +12924,32 @@ public final class Dossier {
     public static final int VALUE_FIELD_NUMBER = 2;
     private java.util.List<com.github.jleyba.dossier.proto.Dossier.Enumeration.Value> value_;
     /**
-     * <code>repeated .Enumeration.Value value = 2;</code>
+     * <code>repeated .dossier.Enumeration.Value value = 2;</code>
      */
     public java.util.List<com.github.jleyba.dossier.proto.Dossier.Enumeration.Value> getValueList() {
       return value_;
     }
     /**
-     * <code>repeated .Enumeration.Value value = 2;</code>
+     * <code>repeated .dossier.Enumeration.Value value = 2;</code>
      */
     public java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.Enumeration.ValueOrBuilder> 
         getValueOrBuilderList() {
       return value_;
     }
     /**
-     * <code>repeated .Enumeration.Value value = 2;</code>
+     * <code>repeated .dossier.Enumeration.Value value = 2;</code>
      */
     public int getValueCount() {
       return value_.size();
     }
     /**
-     * <code>repeated .Enumeration.Value value = 2;</code>
+     * <code>repeated .dossier.Enumeration.Value value = 2;</code>
      */
     public com.github.jleyba.dossier.proto.Dossier.Enumeration.Value getValue(int index) {
       return value_.get(index);
     }
     /**
-     * <code>repeated .Enumeration.Value value = 2;</code>
+     * <code>repeated .dossier.Enumeration.Value value = 2;</code>
      */
     public com.github.jleyba.dossier.proto.Dossier.Enumeration.ValueOrBuilder getValueOrBuilder(
         int index) {
@@ -12959,13 +12959,13 @@ public final class Dossier {
     public static final int VISIBILITY_FIELD_NUMBER = 3;
     private com.github.jleyba.dossier.proto.Dossier.Visibility visibility_;
     /**
-     * <code>optional .Visibility visibility = 3 [default = PUBLIC];</code>
+     * <code>optional .dossier.Visibility visibility = 3 [default = PUBLIC];</code>
      */
     public boolean hasVisibility() {
       return ((bitField0_ & 0x00000002) == 0x00000002);
     }
     /**
-     * <code>optional .Visibility visibility = 3 [default = PUBLIC];</code>
+     * <code>optional .dossier.Visibility visibility = 3 [default = PUBLIC];</code>
      */
     public com.github.jleyba.dossier.proto.Dossier.Visibility getVisibility() {
       return visibility_;
@@ -13108,7 +13108,7 @@ public final class Dossier {
       return builder;
     }
     /**
-     * Protobuf type {@code Enumeration}
+     * Protobuf type {@code dossier.Enumeration}
      *
      * <pre>
      * Describes an enumeration.
@@ -13116,16 +13116,16 @@ public final class Dossier {
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessage.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:Enumeration)
+        // @@protoc_insertion_point(builder_implements:dossier.Enumeration)
         com.github.jleyba.dossier.proto.Dossier.EnumerationOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.github.jleyba.dossier.proto.Dossier.internal_static_Enumeration_descriptor;
+        return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_Enumeration_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.github.jleyba.dossier.proto.Dossier.internal_static_Enumeration_fieldAccessorTable
+        return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_Enumeration_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 com.github.jleyba.dossier.proto.Dossier.Enumeration.class, com.github.jleyba.dossier.proto.Dossier.Enumeration.Builder.class);
       }
@@ -13170,7 +13170,7 @@ public final class Dossier {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.github.jleyba.dossier.proto.Dossier.internal_static_Enumeration_descriptor;
+        return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_Enumeration_descriptor;
       }
 
       public com.github.jleyba.dossier.proto.Dossier.Enumeration getDefaultInstanceForType() {
@@ -13382,7 +13382,7 @@ public final class Dossier {
           com.github.jleyba.dossier.proto.Dossier.Enumeration.Value, com.github.jleyba.dossier.proto.Dossier.Enumeration.Value.Builder, com.github.jleyba.dossier.proto.Dossier.Enumeration.ValueOrBuilder> valueBuilder_;
 
       /**
-       * <code>repeated .Enumeration.Value value = 2;</code>
+       * <code>repeated .dossier.Enumeration.Value value = 2;</code>
        */
       public java.util.List<com.github.jleyba.dossier.proto.Dossier.Enumeration.Value> getValueList() {
         if (valueBuilder_ == null) {
@@ -13392,7 +13392,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .Enumeration.Value value = 2;</code>
+       * <code>repeated .dossier.Enumeration.Value value = 2;</code>
        */
       public int getValueCount() {
         if (valueBuilder_ == null) {
@@ -13402,7 +13402,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .Enumeration.Value value = 2;</code>
+       * <code>repeated .dossier.Enumeration.Value value = 2;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.Enumeration.Value getValue(int index) {
         if (valueBuilder_ == null) {
@@ -13412,7 +13412,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .Enumeration.Value value = 2;</code>
+       * <code>repeated .dossier.Enumeration.Value value = 2;</code>
        */
       public Builder setValue(
           int index, com.github.jleyba.dossier.proto.Dossier.Enumeration.Value value) {
@@ -13429,7 +13429,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Enumeration.Value value = 2;</code>
+       * <code>repeated .dossier.Enumeration.Value value = 2;</code>
        */
       public Builder setValue(
           int index, com.github.jleyba.dossier.proto.Dossier.Enumeration.Value.Builder builderForValue) {
@@ -13443,7 +13443,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Enumeration.Value value = 2;</code>
+       * <code>repeated .dossier.Enumeration.Value value = 2;</code>
        */
       public Builder addValue(com.github.jleyba.dossier.proto.Dossier.Enumeration.Value value) {
         if (valueBuilder_ == null) {
@@ -13459,7 +13459,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Enumeration.Value value = 2;</code>
+       * <code>repeated .dossier.Enumeration.Value value = 2;</code>
        */
       public Builder addValue(
           int index, com.github.jleyba.dossier.proto.Dossier.Enumeration.Value value) {
@@ -13476,7 +13476,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Enumeration.Value value = 2;</code>
+       * <code>repeated .dossier.Enumeration.Value value = 2;</code>
        */
       public Builder addValue(
           com.github.jleyba.dossier.proto.Dossier.Enumeration.Value.Builder builderForValue) {
@@ -13490,7 +13490,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Enumeration.Value value = 2;</code>
+       * <code>repeated .dossier.Enumeration.Value value = 2;</code>
        */
       public Builder addValue(
           int index, com.github.jleyba.dossier.proto.Dossier.Enumeration.Value.Builder builderForValue) {
@@ -13504,7 +13504,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Enumeration.Value value = 2;</code>
+       * <code>repeated .dossier.Enumeration.Value value = 2;</code>
        */
       public Builder addAllValue(
           java.lang.Iterable<? extends com.github.jleyba.dossier.proto.Dossier.Enumeration.Value> values) {
@@ -13519,7 +13519,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Enumeration.Value value = 2;</code>
+       * <code>repeated .dossier.Enumeration.Value value = 2;</code>
        */
       public Builder clearValue() {
         if (valueBuilder_ == null) {
@@ -13532,7 +13532,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Enumeration.Value value = 2;</code>
+       * <code>repeated .dossier.Enumeration.Value value = 2;</code>
        */
       public Builder removeValue(int index) {
         if (valueBuilder_ == null) {
@@ -13545,14 +13545,14 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Enumeration.Value value = 2;</code>
+       * <code>repeated .dossier.Enumeration.Value value = 2;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.Enumeration.Value.Builder getValueBuilder(
           int index) {
         return getValueFieldBuilder().getBuilder(index);
       }
       /**
-       * <code>repeated .Enumeration.Value value = 2;</code>
+       * <code>repeated .dossier.Enumeration.Value value = 2;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.Enumeration.ValueOrBuilder getValueOrBuilder(
           int index) {
@@ -13562,7 +13562,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .Enumeration.Value value = 2;</code>
+       * <code>repeated .dossier.Enumeration.Value value = 2;</code>
        */
       public java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.Enumeration.ValueOrBuilder> 
            getValueOrBuilderList() {
@@ -13573,14 +13573,14 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .Enumeration.Value value = 2;</code>
+       * <code>repeated .dossier.Enumeration.Value value = 2;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.Enumeration.Value.Builder addValueBuilder() {
         return getValueFieldBuilder().addBuilder(
             com.github.jleyba.dossier.proto.Dossier.Enumeration.Value.getDefaultInstance());
       }
       /**
-       * <code>repeated .Enumeration.Value value = 2;</code>
+       * <code>repeated .dossier.Enumeration.Value value = 2;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.Enumeration.Value.Builder addValueBuilder(
           int index) {
@@ -13588,7 +13588,7 @@ public final class Dossier {
             index, com.github.jleyba.dossier.proto.Dossier.Enumeration.Value.getDefaultInstance());
       }
       /**
-       * <code>repeated .Enumeration.Value value = 2;</code>
+       * <code>repeated .dossier.Enumeration.Value value = 2;</code>
        */
       public java.util.List<com.github.jleyba.dossier.proto.Dossier.Enumeration.Value.Builder> 
            getValueBuilderList() {
@@ -13611,19 +13611,19 @@ public final class Dossier {
 
       private com.github.jleyba.dossier.proto.Dossier.Visibility visibility_ = com.github.jleyba.dossier.proto.Dossier.Visibility.PUBLIC;
       /**
-       * <code>optional .Visibility visibility = 3 [default = PUBLIC];</code>
+       * <code>optional .dossier.Visibility visibility = 3 [default = PUBLIC];</code>
        */
       public boolean hasVisibility() {
         return ((bitField0_ & 0x00000004) == 0x00000004);
       }
       /**
-       * <code>optional .Visibility visibility = 3 [default = PUBLIC];</code>
+       * <code>optional .dossier.Visibility visibility = 3 [default = PUBLIC];</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.Visibility getVisibility() {
         return visibility_;
       }
       /**
-       * <code>optional .Visibility visibility = 3 [default = PUBLIC];</code>
+       * <code>optional .dossier.Visibility visibility = 3 [default = PUBLIC];</code>
        */
       public Builder setVisibility(com.github.jleyba.dossier.proto.Dossier.Visibility value) {
         if (value == null) {
@@ -13635,7 +13635,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>optional .Visibility visibility = 3 [default = PUBLIC];</code>
+       * <code>optional .dossier.Visibility visibility = 3 [default = PUBLIC];</code>
        */
       public Builder clearVisibility() {
         bitField0_ = (bitField0_ & ~0x00000004);
@@ -13644,7 +13644,7 @@ public final class Dossier {
         return this;
       }
 
-      // @@protoc_insertion_point(builder_scope:Enumeration)
+      // @@protoc_insertion_point(builder_scope:dossier.Enumeration)
     }
 
     static {
@@ -13652,11 +13652,11 @@ public final class Dossier {
       defaultInstance.initFields();
     }
 
-    // @@protoc_insertion_point(class_scope:Enumeration)
+    // @@protoc_insertion_point(class_scope:dossier.Enumeration)
   }
 
   public interface JsTypeOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:JsType)
+      // @@protoc_insertion_point(interface_extends:dossier.JsType)
       com.google.protobuf.MessageOrBuilder {
 
     /**
@@ -13688,131 +13688,131 @@ public final class Dossier {
         getSourceBytes();
 
     /**
-     * <code>required .JsType.NestedTypes nested = 6;</code>
+     * <code>required .dossier.JsType.NestedTypes nested = 6;</code>
      */
     boolean hasNested();
     /**
-     * <code>required .JsType.NestedTypes nested = 6;</code>
+     * <code>required .dossier.JsType.NestedTypes nested = 6;</code>
      */
     com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes getNested();
     /**
-     * <code>required .JsType.NestedTypes nested = 6;</code>
+     * <code>required .dossier.JsType.NestedTypes nested = 6;</code>
      */
     com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypesOrBuilder getNestedOrBuilder();
 
     /**
-     * <code>required .Comment description = 7;</code>
+     * <code>required .dossier.Comment description = 7;</code>
      */
     boolean hasDescription();
     /**
-     * <code>required .Comment description = 7;</code>
+     * <code>required .dossier.Comment description = 7;</code>
      */
     com.github.jleyba.dossier.proto.Dossier.Comment getDescription();
     /**
-     * <code>required .Comment description = 7;</code>
+     * <code>required .dossier.Comment description = 7;</code>
      */
     com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder getDescriptionOrBuilder();
 
     /**
-     * <code>optional .Deprecation deprecation = 8;</code>
+     * <code>optional .dossier.Deprecation deprecation = 8;</code>
      */
     boolean hasDeprecation();
     /**
-     * <code>optional .Deprecation deprecation = 8;</code>
+     * <code>optional .dossier.Deprecation deprecation = 8;</code>
      */
     com.github.jleyba.dossier.proto.Dossier.Deprecation getDeprecation();
     /**
-     * <code>optional .Deprecation deprecation = 8;</code>
+     * <code>optional .dossier.Deprecation deprecation = 8;</code>
      */
     com.github.jleyba.dossier.proto.Dossier.DeprecationOrBuilder getDeprecationOrBuilder();
 
     /**
-     * <code>repeated .JsType.TypeDef type_def = 9;</code>
+     * <code>repeated .dossier.JsType.TypeDef type_def = 9;</code>
      */
     java.util.List<com.github.jleyba.dossier.proto.Dossier.JsType.TypeDef> 
         getTypeDefList();
     /**
-     * <code>repeated .JsType.TypeDef type_def = 9;</code>
+     * <code>repeated .dossier.JsType.TypeDef type_def = 9;</code>
      */
     com.github.jleyba.dossier.proto.Dossier.JsType.TypeDef getTypeDef(int index);
     /**
-     * <code>repeated .JsType.TypeDef type_def = 9;</code>
+     * <code>repeated .dossier.JsType.TypeDef type_def = 9;</code>
      */
     int getTypeDefCount();
     /**
-     * <code>repeated .JsType.TypeDef type_def = 9;</code>
+     * <code>repeated .dossier.JsType.TypeDef type_def = 9;</code>
      */
     java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.JsType.TypeDefOrBuilder> 
         getTypeDefOrBuilderList();
     /**
-     * <code>repeated .JsType.TypeDef type_def = 9;</code>
+     * <code>repeated .dossier.JsType.TypeDef type_def = 9;</code>
      */
     com.github.jleyba.dossier.proto.Dossier.JsType.TypeDefOrBuilder getTypeDefOrBuilder(
         int index);
 
     /**
-     * <code>optional .Enumeration enumeration = 10;</code>
+     * <code>optional .dossier.Enumeration enumeration = 10;</code>
      */
     boolean hasEnumeration();
     /**
-     * <code>optional .Enumeration enumeration = 10;</code>
+     * <code>optional .dossier.Enumeration enumeration = 10;</code>
      */
     com.github.jleyba.dossier.proto.Dossier.Enumeration getEnumeration();
     /**
-     * <code>optional .Enumeration enumeration = 10;</code>
+     * <code>optional .dossier.Enumeration enumeration = 10;</code>
      */
     com.github.jleyba.dossier.proto.Dossier.EnumerationOrBuilder getEnumerationOrBuilder();
 
     /**
-     * <code>repeated .Function static_function = 11;</code>
+     * <code>repeated .dossier.Function static_function = 11;</code>
      */
     java.util.List<com.github.jleyba.dossier.proto.Dossier.Function> 
         getStaticFunctionList();
     /**
-     * <code>repeated .Function static_function = 11;</code>
+     * <code>repeated .dossier.Function static_function = 11;</code>
      */
     com.github.jleyba.dossier.proto.Dossier.Function getStaticFunction(int index);
     /**
-     * <code>repeated .Function static_function = 11;</code>
+     * <code>repeated .dossier.Function static_function = 11;</code>
      */
     int getStaticFunctionCount();
     /**
-     * <code>repeated .Function static_function = 11;</code>
+     * <code>repeated .dossier.Function static_function = 11;</code>
      */
     java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.FunctionOrBuilder> 
         getStaticFunctionOrBuilderList();
     /**
-     * <code>repeated .Function static_function = 11;</code>
+     * <code>repeated .dossier.Function static_function = 11;</code>
      */
     com.github.jleyba.dossier.proto.Dossier.FunctionOrBuilder getStaticFunctionOrBuilder(
         int index);
 
     /**
-     * <code>repeated .Property static_property = 12;</code>
+     * <code>repeated .dossier.Property static_property = 12;</code>
      */
     java.util.List<com.github.jleyba.dossier.proto.Dossier.Property> 
         getStaticPropertyList();
     /**
-     * <code>repeated .Property static_property = 12;</code>
+     * <code>repeated .dossier.Property static_property = 12;</code>
      */
     com.github.jleyba.dossier.proto.Dossier.Property getStaticProperty(int index);
     /**
-     * <code>repeated .Property static_property = 12;</code>
+     * <code>repeated .dossier.Property static_property = 12;</code>
      */
     int getStaticPropertyCount();
     /**
-     * <code>repeated .Property static_property = 12;</code>
+     * <code>repeated .dossier.Property static_property = 12;</code>
      */
     java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.PropertyOrBuilder> 
         getStaticPropertyOrBuilderList();
     /**
-     * <code>repeated .Property static_property = 12;</code>
+     * <code>repeated .dossier.Property static_property = 12;</code>
      */
     com.github.jleyba.dossier.proto.Dossier.PropertyOrBuilder getStaticPropertyOrBuilder(
         int index);
 
     /**
-     * <code>optional .Function main_function = 13;</code>
+     * <code>optional .dossier.Function main_function = 13;</code>
      *
      * <pre>
      * Describes the main function for this type. This is typically a class
@@ -13822,7 +13822,7 @@ public final class Dossier {
      */
     boolean hasMainFunction();
     /**
-     * <code>optional .Function main_function = 13;</code>
+     * <code>optional .dossier.Function main_function = 13;</code>
      *
      * <pre>
      * Describes the main function for this type. This is typically a class
@@ -13832,7 +13832,7 @@ public final class Dossier {
      */
     com.github.jleyba.dossier.proto.Dossier.Function getMainFunction();
     /**
-     * <code>optional .Function main_function = 13;</code>
+     * <code>optional .dossier.Function main_function = 13;</code>
      *
      * <pre>
      * Describes the main function for this type. This is typically a class
@@ -13860,7 +13860,7 @@ public final class Dossier {
     boolean getIsInterface();
 
     /**
-     * <code>repeated .Prototype prototype = 15;</code>
+     * <code>repeated .dossier.Prototype prototype = 15;</code>
      *
      * <pre>
      * The prototype descriptors for this type (if it is a class or interface).
@@ -13872,7 +13872,7 @@ public final class Dossier {
     java.util.List<com.github.jleyba.dossier.proto.Dossier.Prototype> 
         getPrototypeList();
     /**
-     * <code>repeated .Prototype prototype = 15;</code>
+     * <code>repeated .dossier.Prototype prototype = 15;</code>
      *
      * <pre>
      * The prototype descriptors for this type (if it is a class or interface).
@@ -13883,7 +13883,7 @@ public final class Dossier {
      */
     com.github.jleyba.dossier.proto.Dossier.Prototype getPrototype(int index);
     /**
-     * <code>repeated .Prototype prototype = 15;</code>
+     * <code>repeated .dossier.Prototype prototype = 15;</code>
      *
      * <pre>
      * The prototype descriptors for this type (if it is a class or interface).
@@ -13894,7 +13894,7 @@ public final class Dossier {
      */
     int getPrototypeCount();
     /**
-     * <code>repeated .Prototype prototype = 15;</code>
+     * <code>repeated .dossier.Prototype prototype = 15;</code>
      *
      * <pre>
      * The prototype descriptors for this type (if it is a class or interface).
@@ -13906,7 +13906,7 @@ public final class Dossier {
     java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.PrototypeOrBuilder> 
         getPrototypeOrBuilderList();
     /**
-     * <code>repeated .Prototype prototype = 15;</code>
+     * <code>repeated .dossier.Prototype prototype = 15;</code>
      *
      * <pre>
      * The prototype descriptors for this type (if it is a class or interface).
@@ -13947,7 +13947,7 @@ public final class Dossier {
     boolean getHasInstanceProperties();
 
     /**
-     * <code>repeated .TypeLink extended_type = 18;</code>
+     * <code>repeated .dossier.TypeLink extended_type = 18;</code>
      *
      * <pre>
      * List of inherited types for a class. This should be empty if |is_class|
@@ -13957,7 +13957,7 @@ public final class Dossier {
     java.util.List<com.github.jleyba.dossier.proto.Dossier.TypeLink> 
         getExtendedTypeList();
     /**
-     * <code>repeated .TypeLink extended_type = 18;</code>
+     * <code>repeated .dossier.TypeLink extended_type = 18;</code>
      *
      * <pre>
      * List of inherited types for a class. This should be empty if |is_class|
@@ -13966,7 +13966,7 @@ public final class Dossier {
      */
     com.github.jleyba.dossier.proto.Dossier.TypeLink getExtendedType(int index);
     /**
-     * <code>repeated .TypeLink extended_type = 18;</code>
+     * <code>repeated .dossier.TypeLink extended_type = 18;</code>
      *
      * <pre>
      * List of inherited types for a class. This should be empty if |is_class|
@@ -13975,7 +13975,7 @@ public final class Dossier {
      */
     int getExtendedTypeCount();
     /**
-     * <code>repeated .TypeLink extended_type = 18;</code>
+     * <code>repeated .dossier.TypeLink extended_type = 18;</code>
      *
      * <pre>
      * List of inherited types for a class. This should be empty if |is_class|
@@ -13985,7 +13985,7 @@ public final class Dossier {
     java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.TypeLinkOrBuilder> 
         getExtendedTypeOrBuilderList();
     /**
-     * <code>repeated .TypeLink extended_type = 18;</code>
+     * <code>repeated .dossier.TypeLink extended_type = 18;</code>
      *
      * <pre>
      * List of inherited types for a class. This should be empty if |is_class|
@@ -13996,7 +13996,7 @@ public final class Dossier {
         int index);
 
     /**
-     * <code>repeated .TypeLink implemented_type = 19;</code>
+     * <code>repeated .dossier.TypeLink implemented_type = 19;</code>
      *
      * <pre>
      * The interfaces implemented by a class/extended by an interface. This
@@ -14006,7 +14006,7 @@ public final class Dossier {
     java.util.List<com.github.jleyba.dossier.proto.Dossier.TypeLink> 
         getImplementedTypeList();
     /**
-     * <code>repeated .TypeLink implemented_type = 19;</code>
+     * <code>repeated .dossier.TypeLink implemented_type = 19;</code>
      *
      * <pre>
      * The interfaces implemented by a class/extended by an interface. This
@@ -14015,7 +14015,7 @@ public final class Dossier {
      */
     com.github.jleyba.dossier.proto.Dossier.TypeLink getImplementedType(int index);
     /**
-     * <code>repeated .TypeLink implemented_type = 19;</code>
+     * <code>repeated .dossier.TypeLink implemented_type = 19;</code>
      *
      * <pre>
      * The interfaces implemented by a class/extended by an interface. This
@@ -14024,7 +14024,7 @@ public final class Dossier {
      */
     int getImplementedTypeCount();
     /**
-     * <code>repeated .TypeLink implemented_type = 19;</code>
+     * <code>repeated .dossier.TypeLink implemented_type = 19;</code>
      *
      * <pre>
      * The interfaces implemented by a class/extended by an interface. This
@@ -14034,7 +14034,7 @@ public final class Dossier {
     java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.TypeLinkOrBuilder> 
         getImplementedTypeOrBuilderList();
     /**
-     * <code>repeated .TypeLink implemented_type = 19;</code>
+     * <code>repeated .dossier.TypeLink implemented_type = 19;</code>
      *
      * <pre>
      * The interfaces implemented by a class/extended by an interface. This
@@ -14045,25 +14045,25 @@ public final class Dossier {
         int index);
 
     /**
-     * <code>repeated .Property compiler_constant = 20;</code>
+     * <code>repeated .dossier.Property compiler_constant = 20;</code>
      */
     java.util.List<com.github.jleyba.dossier.proto.Dossier.Property> 
         getCompilerConstantList();
     /**
-     * <code>repeated .Property compiler_constant = 20;</code>
+     * <code>repeated .dossier.Property compiler_constant = 20;</code>
      */
     com.github.jleyba.dossier.proto.Dossier.Property getCompilerConstant(int index);
     /**
-     * <code>repeated .Property compiler_constant = 20;</code>
+     * <code>repeated .dossier.Property compiler_constant = 20;</code>
      */
     int getCompilerConstantCount();
     /**
-     * <code>repeated .Property compiler_constant = 20;</code>
+     * <code>repeated .dossier.Property compiler_constant = 20;</code>
      */
     java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.PropertyOrBuilder> 
         getCompilerConstantOrBuilderList();
     /**
-     * <code>repeated .Property compiler_constant = 20;</code>
+     * <code>repeated .dossier.Property compiler_constant = 20;</code>
      */
     com.github.jleyba.dossier.proto.Dossier.PropertyOrBuilder getCompilerConstantOrBuilder(
         int index);
@@ -14086,7 +14086,7 @@ public final class Dossier {
     boolean getIsModule();
 
     /**
-     * <code>optional .TypeLink module = 22;</code>
+     * <code>optional .dossier.TypeLink module = 22;</code>
      *
      * <pre>
      * Link to the module this type belongs to.
@@ -14094,7 +14094,7 @@ public final class Dossier {
      */
     boolean hasModule();
     /**
-     * <code>optional .TypeLink module = 22;</code>
+     * <code>optional .dossier.TypeLink module = 22;</code>
      *
      * <pre>
      * Link to the module this type belongs to.
@@ -14102,7 +14102,7 @@ public final class Dossier {
      */
     com.github.jleyba.dossier.proto.Dossier.TypeLink getModule();
     /**
-     * <code>optional .TypeLink module = 22;</code>
+     * <code>optional .dossier.TypeLink module = 22;</code>
      *
      * <pre>
      * Link to the module this type belongs to.
@@ -14111,7 +14111,7 @@ public final class Dossier {
     com.github.jleyba.dossier.proto.Dossier.TypeLinkOrBuilder getModuleOrBuilder();
 
     /**
-     * <code>optional .TypeLink aliased_type = 23;</code>
+     * <code>optional .dossier.TypeLink aliased_type = 23;</code>
      *
      * <pre>
      * Link to another type that this type is an alias of.
@@ -14119,7 +14119,7 @@ public final class Dossier {
      */
     boolean hasAliasedType();
     /**
-     * <code>optional .TypeLink aliased_type = 23;</code>
+     * <code>optional .dossier.TypeLink aliased_type = 23;</code>
      *
      * <pre>
      * Link to another type that this type is an alias of.
@@ -14127,7 +14127,7 @@ public final class Dossier {
      */
     com.github.jleyba.dossier.proto.Dossier.TypeLink getAliasedType();
     /**
-     * <code>optional .TypeLink aliased_type = 23;</code>
+     * <code>optional .dossier.TypeLink aliased_type = 23;</code>
      *
      * <pre>
      * Link to another type that this type is an alias of.
@@ -14136,7 +14136,7 @@ public final class Dossier {
     com.github.jleyba.dossier.proto.Dossier.TypeLinkOrBuilder getAliasedTypeOrBuilder();
   }
   /**
-   * Protobuf type {@code JsType}
+   * Protobuf type {@code dossier.JsType}
    *
    * <pre>
    * Describes a JavaScript type to generate documentation for. Each |JsType|
@@ -14145,7 +14145,7 @@ public final class Dossier {
    */
   public static final class JsType extends
       com.google.protobuf.GeneratedMessage implements
-      // @@protoc_insertion_point(message_implements:JsType)
+      // @@protoc_insertion_point(message_implements:dossier.JsType)
       JsTypeOrBuilder {
     // Use JsType.newBuilder() to construct.
     private JsType(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
@@ -14406,12 +14406,12 @@ public final class Dossier {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.github.jleyba.dossier.proto.Dossier.internal_static_JsType_descriptor;
+      return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_JsType_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.github.jleyba.dossier.proto.Dossier.internal_static_JsType_fieldAccessorTable
+      return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_JsType_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               com.github.jleyba.dossier.proto.Dossier.JsType.class, com.github.jleyba.dossier.proto.Dossier.JsType.Builder.class);
     }
@@ -14432,83 +14432,83 @@ public final class Dossier {
     }
 
     public interface NestedTypesOrBuilder extends
-        // @@protoc_insertion_point(interface_extends:JsType.NestedTypes)
+        // @@protoc_insertion_point(interface_extends:dossier.JsType.NestedTypes)
         com.google.protobuf.MessageOrBuilder {
 
       /**
-       * <code>repeated .JsType.NestedTypes.TypeSummary interfaces = 1;</code>
+       * <code>repeated .dossier.JsType.NestedTypes.TypeSummary interfaces = 1;</code>
        */
       java.util.List<com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary> 
           getInterfacesList();
       /**
-       * <code>repeated .JsType.NestedTypes.TypeSummary interfaces = 1;</code>
+       * <code>repeated .dossier.JsType.NestedTypes.TypeSummary interfaces = 1;</code>
        */
       com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary getInterfaces(int index);
       /**
-       * <code>repeated .JsType.NestedTypes.TypeSummary interfaces = 1;</code>
+       * <code>repeated .dossier.JsType.NestedTypes.TypeSummary interfaces = 1;</code>
        */
       int getInterfacesCount();
       /**
-       * <code>repeated .JsType.NestedTypes.TypeSummary interfaces = 1;</code>
+       * <code>repeated .dossier.JsType.NestedTypes.TypeSummary interfaces = 1;</code>
        */
       java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummaryOrBuilder> 
           getInterfacesOrBuilderList();
       /**
-       * <code>repeated .JsType.NestedTypes.TypeSummary interfaces = 1;</code>
+       * <code>repeated .dossier.JsType.NestedTypes.TypeSummary interfaces = 1;</code>
        */
       com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummaryOrBuilder getInterfacesOrBuilder(
           int index);
 
       /**
-       * <code>repeated .JsType.NestedTypes.TypeSummary classes = 2;</code>
+       * <code>repeated .dossier.JsType.NestedTypes.TypeSummary classes = 2;</code>
        */
       java.util.List<com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary> 
           getClassesList();
       /**
-       * <code>repeated .JsType.NestedTypes.TypeSummary classes = 2;</code>
+       * <code>repeated .dossier.JsType.NestedTypes.TypeSummary classes = 2;</code>
        */
       com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary getClasses(int index);
       /**
-       * <code>repeated .JsType.NestedTypes.TypeSummary classes = 2;</code>
+       * <code>repeated .dossier.JsType.NestedTypes.TypeSummary classes = 2;</code>
        */
       int getClassesCount();
       /**
-       * <code>repeated .JsType.NestedTypes.TypeSummary classes = 2;</code>
+       * <code>repeated .dossier.JsType.NestedTypes.TypeSummary classes = 2;</code>
        */
       java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummaryOrBuilder> 
           getClassesOrBuilderList();
       /**
-       * <code>repeated .JsType.NestedTypes.TypeSummary classes = 2;</code>
+       * <code>repeated .dossier.JsType.NestedTypes.TypeSummary classes = 2;</code>
        */
       com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummaryOrBuilder getClassesOrBuilder(
           int index);
 
       /**
-       * <code>repeated .JsType.NestedTypes.TypeSummary enums = 3;</code>
+       * <code>repeated .dossier.JsType.NestedTypes.TypeSummary enums = 3;</code>
        */
       java.util.List<com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary> 
           getEnumsList();
       /**
-       * <code>repeated .JsType.NestedTypes.TypeSummary enums = 3;</code>
+       * <code>repeated .dossier.JsType.NestedTypes.TypeSummary enums = 3;</code>
        */
       com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary getEnums(int index);
       /**
-       * <code>repeated .JsType.NestedTypes.TypeSummary enums = 3;</code>
+       * <code>repeated .dossier.JsType.NestedTypes.TypeSummary enums = 3;</code>
        */
       int getEnumsCount();
       /**
-       * <code>repeated .JsType.NestedTypes.TypeSummary enums = 3;</code>
+       * <code>repeated .dossier.JsType.NestedTypes.TypeSummary enums = 3;</code>
        */
       java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummaryOrBuilder> 
           getEnumsOrBuilderList();
       /**
-       * <code>repeated .JsType.NestedTypes.TypeSummary enums = 3;</code>
+       * <code>repeated .dossier.JsType.NestedTypes.TypeSummary enums = 3;</code>
        */
       com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummaryOrBuilder getEnumsOrBuilder(
           int index);
     }
     /**
-     * Protobuf type {@code JsType.NestedTypes}
+     * Protobuf type {@code dossier.JsType.NestedTypes}
      *
      * <pre>
      * Aggregates the types defined within this |JsType|.
@@ -14516,7 +14516,7 @@ public final class Dossier {
      */
     public static final class NestedTypes extends
         com.google.protobuf.GeneratedMessage implements
-        // @@protoc_insertion_point(message_implements:JsType.NestedTypes)
+        // @@protoc_insertion_point(message_implements:dossier.JsType.NestedTypes)
         NestedTypesOrBuilder {
       // Use NestedTypes.newBuilder() to construct.
       private NestedTypes(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
@@ -14610,12 +14610,12 @@ public final class Dossier {
       }
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.github.jleyba.dossier.proto.Dossier.internal_static_JsType_NestedTypes_descriptor;
+        return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_JsType_NestedTypes_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.github.jleyba.dossier.proto.Dossier.internal_static_JsType_NestedTypes_fieldAccessorTable
+        return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_JsType_NestedTypes_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.class, com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.Builder.class);
       }
@@ -14636,7 +14636,7 @@ public final class Dossier {
       }
 
       public interface TypeSummaryOrBuilder extends
-          // @@protoc_insertion_point(interface_extends:JsType.NestedTypes.TypeSummary)
+          // @@protoc_insertion_point(interface_extends:dossier.JsType.NestedTypes.TypeSummary)
           com.google.protobuf.MessageOrBuilder {
 
         /**
@@ -14692,7 +14692,7 @@ public final class Dossier {
             getHrefBytes();
 
         /**
-         * <code>required .Comment summary = 3;</code>
+         * <code>required .dossier.Comment summary = 3;</code>
          *
          * <pre>
          * The summary sentence for this type.
@@ -14700,7 +14700,7 @@ public final class Dossier {
          */
         boolean hasSummary();
         /**
-         * <code>required .Comment summary = 3;</code>
+         * <code>required .dossier.Comment summary = 3;</code>
          *
          * <pre>
          * The summary sentence for this type.
@@ -14708,7 +14708,7 @@ public final class Dossier {
          */
         com.github.jleyba.dossier.proto.Dossier.Comment getSummary();
         /**
-         * <code>required .Comment summary = 3;</code>
+         * <code>required .dossier.Comment summary = 3;</code>
          *
          * <pre>
          * The summary sentence for this type.
@@ -14717,11 +14717,11 @@ public final class Dossier {
         com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder getSummaryOrBuilder();
       }
       /**
-       * Protobuf type {@code JsType.NestedTypes.TypeSummary}
+       * Protobuf type {@code dossier.JsType.NestedTypes.TypeSummary}
        */
       public static final class TypeSummary extends
           com.google.protobuf.GeneratedMessage implements
-          // @@protoc_insertion_point(message_implements:JsType.NestedTypes.TypeSummary)
+          // @@protoc_insertion_point(message_implements:dossier.JsType.NestedTypes.TypeSummary)
           TypeSummaryOrBuilder {
         // Use TypeSummary.newBuilder() to construct.
         private TypeSummary(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
@@ -14807,12 +14807,12 @@ public final class Dossier {
         }
         public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
-          return com.github.jleyba.dossier.proto.Dossier.internal_static_JsType_NestedTypes_TypeSummary_descriptor;
+          return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_JsType_NestedTypes_TypeSummary_descriptor;
         }
 
         protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
             internalGetFieldAccessorTable() {
-          return com.github.jleyba.dossier.proto.Dossier.internal_static_JsType_NestedTypes_TypeSummary_fieldAccessorTable
+          return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_JsType_NestedTypes_TypeSummary_fieldAccessorTable
               .ensureFieldAccessorsInitialized(
                   com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary.class, com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary.Builder.class);
         }
@@ -14944,7 +14944,7 @@ public final class Dossier {
         public static final int SUMMARY_FIELD_NUMBER = 3;
         private com.github.jleyba.dossier.proto.Dossier.Comment summary_;
         /**
-         * <code>required .Comment summary = 3;</code>
+         * <code>required .dossier.Comment summary = 3;</code>
          *
          * <pre>
          * The summary sentence for this type.
@@ -14954,7 +14954,7 @@ public final class Dossier {
           return ((bitField0_ & 0x00000004) == 0x00000004);
         }
         /**
-         * <code>required .Comment summary = 3;</code>
+         * <code>required .dossier.Comment summary = 3;</code>
          *
          * <pre>
          * The summary sentence for this type.
@@ -14964,7 +14964,7 @@ public final class Dossier {
           return summary_;
         }
         /**
-         * <code>required .Comment summary = 3;</code>
+         * <code>required .dossier.Comment summary = 3;</code>
          *
          * <pre>
          * The summary sentence for this type.
@@ -15117,20 +15117,20 @@ public final class Dossier {
           return builder;
         }
         /**
-         * Protobuf type {@code JsType.NestedTypes.TypeSummary}
+         * Protobuf type {@code dossier.JsType.NestedTypes.TypeSummary}
          */
         public static final class Builder extends
             com.google.protobuf.GeneratedMessage.Builder<Builder> implements
-            // @@protoc_insertion_point(builder_implements:JsType.NestedTypes.TypeSummary)
+            // @@protoc_insertion_point(builder_implements:dossier.JsType.NestedTypes.TypeSummary)
             com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummaryOrBuilder {
           public static final com.google.protobuf.Descriptors.Descriptor
               getDescriptor() {
-            return com.github.jleyba.dossier.proto.Dossier.internal_static_JsType_NestedTypes_TypeSummary_descriptor;
+            return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_JsType_NestedTypes_TypeSummary_descriptor;
           }
 
           protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
               internalGetFieldAccessorTable() {
-            return com.github.jleyba.dossier.proto.Dossier.internal_static_JsType_NestedTypes_TypeSummary_fieldAccessorTable
+            return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_JsType_NestedTypes_TypeSummary_fieldAccessorTable
                 .ensureFieldAccessorsInitialized(
                     com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary.class, com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary.Builder.class);
           }
@@ -15175,7 +15175,7 @@ public final class Dossier {
 
           public com.google.protobuf.Descriptors.Descriptor
               getDescriptorForType() {
-            return com.github.jleyba.dossier.proto.Dossier.internal_static_JsType_NestedTypes_TypeSummary_descriptor;
+            return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_JsType_NestedTypes_TypeSummary_descriptor;
           }
 
           public com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary getDefaultInstanceForType() {
@@ -15486,7 +15486,7 @@ public final class Dossier {
           private com.google.protobuf.SingleFieldBuilder<
               com.github.jleyba.dossier.proto.Dossier.Comment, com.github.jleyba.dossier.proto.Dossier.Comment.Builder, com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder> summaryBuilder_;
           /**
-           * <code>required .Comment summary = 3;</code>
+           * <code>required .dossier.Comment summary = 3;</code>
            *
            * <pre>
            * The summary sentence for this type.
@@ -15496,7 +15496,7 @@ public final class Dossier {
             return ((bitField0_ & 0x00000004) == 0x00000004);
           }
           /**
-           * <code>required .Comment summary = 3;</code>
+           * <code>required .dossier.Comment summary = 3;</code>
            *
            * <pre>
            * The summary sentence for this type.
@@ -15510,7 +15510,7 @@ public final class Dossier {
             }
           }
           /**
-           * <code>required .Comment summary = 3;</code>
+           * <code>required .dossier.Comment summary = 3;</code>
            *
            * <pre>
            * The summary sentence for this type.
@@ -15530,7 +15530,7 @@ public final class Dossier {
             return this;
           }
           /**
-           * <code>required .Comment summary = 3;</code>
+           * <code>required .dossier.Comment summary = 3;</code>
            *
            * <pre>
            * The summary sentence for this type.
@@ -15548,7 +15548,7 @@ public final class Dossier {
             return this;
           }
           /**
-           * <code>required .Comment summary = 3;</code>
+           * <code>required .dossier.Comment summary = 3;</code>
            *
            * <pre>
            * The summary sentence for this type.
@@ -15571,7 +15571,7 @@ public final class Dossier {
             return this;
           }
           /**
-           * <code>required .Comment summary = 3;</code>
+           * <code>required .dossier.Comment summary = 3;</code>
            *
            * <pre>
            * The summary sentence for this type.
@@ -15588,7 +15588,7 @@ public final class Dossier {
             return this;
           }
           /**
-           * <code>required .Comment summary = 3;</code>
+           * <code>required .dossier.Comment summary = 3;</code>
            *
            * <pre>
            * The summary sentence for this type.
@@ -15600,7 +15600,7 @@ public final class Dossier {
             return getSummaryFieldBuilder().getBuilder();
           }
           /**
-           * <code>required .Comment summary = 3;</code>
+           * <code>required .dossier.Comment summary = 3;</code>
            *
            * <pre>
            * The summary sentence for this type.
@@ -15614,7 +15614,7 @@ public final class Dossier {
             }
           }
           /**
-           * <code>required .Comment summary = 3;</code>
+           * <code>required .dossier.Comment summary = 3;</code>
            *
            * <pre>
            * The summary sentence for this type.
@@ -15634,7 +15634,7 @@ public final class Dossier {
             return summaryBuilder_;
           }
 
-          // @@protoc_insertion_point(builder_scope:JsType.NestedTypes.TypeSummary)
+          // @@protoc_insertion_point(builder_scope:dossier.JsType.NestedTypes.TypeSummary)
         }
 
         static {
@@ -15642,38 +15642,38 @@ public final class Dossier {
           defaultInstance.initFields();
         }
 
-        // @@protoc_insertion_point(class_scope:JsType.NestedTypes.TypeSummary)
+        // @@protoc_insertion_point(class_scope:dossier.JsType.NestedTypes.TypeSummary)
       }
 
       public static final int INTERFACES_FIELD_NUMBER = 1;
       private java.util.List<com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary> interfaces_;
       /**
-       * <code>repeated .JsType.NestedTypes.TypeSummary interfaces = 1;</code>
+       * <code>repeated .dossier.JsType.NestedTypes.TypeSummary interfaces = 1;</code>
        */
       public java.util.List<com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary> getInterfacesList() {
         return interfaces_;
       }
       /**
-       * <code>repeated .JsType.NestedTypes.TypeSummary interfaces = 1;</code>
+       * <code>repeated .dossier.JsType.NestedTypes.TypeSummary interfaces = 1;</code>
        */
       public java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummaryOrBuilder> 
           getInterfacesOrBuilderList() {
         return interfaces_;
       }
       /**
-       * <code>repeated .JsType.NestedTypes.TypeSummary interfaces = 1;</code>
+       * <code>repeated .dossier.JsType.NestedTypes.TypeSummary interfaces = 1;</code>
        */
       public int getInterfacesCount() {
         return interfaces_.size();
       }
       /**
-       * <code>repeated .JsType.NestedTypes.TypeSummary interfaces = 1;</code>
+       * <code>repeated .dossier.JsType.NestedTypes.TypeSummary interfaces = 1;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary getInterfaces(int index) {
         return interfaces_.get(index);
       }
       /**
-       * <code>repeated .JsType.NestedTypes.TypeSummary interfaces = 1;</code>
+       * <code>repeated .dossier.JsType.NestedTypes.TypeSummary interfaces = 1;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummaryOrBuilder getInterfacesOrBuilder(
           int index) {
@@ -15683,32 +15683,32 @@ public final class Dossier {
       public static final int CLASSES_FIELD_NUMBER = 2;
       private java.util.List<com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary> classes_;
       /**
-       * <code>repeated .JsType.NestedTypes.TypeSummary classes = 2;</code>
+       * <code>repeated .dossier.JsType.NestedTypes.TypeSummary classes = 2;</code>
        */
       public java.util.List<com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary> getClassesList() {
         return classes_;
       }
       /**
-       * <code>repeated .JsType.NestedTypes.TypeSummary classes = 2;</code>
+       * <code>repeated .dossier.JsType.NestedTypes.TypeSummary classes = 2;</code>
        */
       public java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummaryOrBuilder> 
           getClassesOrBuilderList() {
         return classes_;
       }
       /**
-       * <code>repeated .JsType.NestedTypes.TypeSummary classes = 2;</code>
+       * <code>repeated .dossier.JsType.NestedTypes.TypeSummary classes = 2;</code>
        */
       public int getClassesCount() {
         return classes_.size();
       }
       /**
-       * <code>repeated .JsType.NestedTypes.TypeSummary classes = 2;</code>
+       * <code>repeated .dossier.JsType.NestedTypes.TypeSummary classes = 2;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary getClasses(int index) {
         return classes_.get(index);
       }
       /**
-       * <code>repeated .JsType.NestedTypes.TypeSummary classes = 2;</code>
+       * <code>repeated .dossier.JsType.NestedTypes.TypeSummary classes = 2;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummaryOrBuilder getClassesOrBuilder(
           int index) {
@@ -15718,32 +15718,32 @@ public final class Dossier {
       public static final int ENUMS_FIELD_NUMBER = 3;
       private java.util.List<com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary> enums_;
       /**
-       * <code>repeated .JsType.NestedTypes.TypeSummary enums = 3;</code>
+       * <code>repeated .dossier.JsType.NestedTypes.TypeSummary enums = 3;</code>
        */
       public java.util.List<com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary> getEnumsList() {
         return enums_;
       }
       /**
-       * <code>repeated .JsType.NestedTypes.TypeSummary enums = 3;</code>
+       * <code>repeated .dossier.JsType.NestedTypes.TypeSummary enums = 3;</code>
        */
       public java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummaryOrBuilder> 
           getEnumsOrBuilderList() {
         return enums_;
       }
       /**
-       * <code>repeated .JsType.NestedTypes.TypeSummary enums = 3;</code>
+       * <code>repeated .dossier.JsType.NestedTypes.TypeSummary enums = 3;</code>
        */
       public int getEnumsCount() {
         return enums_.size();
       }
       /**
-       * <code>repeated .JsType.NestedTypes.TypeSummary enums = 3;</code>
+       * <code>repeated .dossier.JsType.NestedTypes.TypeSummary enums = 3;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary getEnums(int index) {
         return enums_.get(index);
       }
       /**
-       * <code>repeated .JsType.NestedTypes.TypeSummary enums = 3;</code>
+       * <code>repeated .dossier.JsType.NestedTypes.TypeSummary enums = 3;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummaryOrBuilder getEnumsOrBuilder(
           int index) {
@@ -15895,7 +15895,7 @@ public final class Dossier {
         return builder;
       }
       /**
-       * Protobuf type {@code JsType.NestedTypes}
+       * Protobuf type {@code dossier.JsType.NestedTypes}
        *
        * <pre>
        * Aggregates the types defined within this |JsType|.
@@ -15903,16 +15903,16 @@ public final class Dossier {
        */
       public static final class Builder extends
           com.google.protobuf.GeneratedMessage.Builder<Builder> implements
-          // @@protoc_insertion_point(builder_implements:JsType.NestedTypes)
+          // @@protoc_insertion_point(builder_implements:dossier.JsType.NestedTypes)
           com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypesOrBuilder {
         public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
-          return com.github.jleyba.dossier.proto.Dossier.internal_static_JsType_NestedTypes_descriptor;
+          return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_JsType_NestedTypes_descriptor;
         }
 
         protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
             internalGetFieldAccessorTable() {
-          return com.github.jleyba.dossier.proto.Dossier.internal_static_JsType_NestedTypes_fieldAccessorTable
+          return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_JsType_NestedTypes_fieldAccessorTable
               .ensureFieldAccessorsInitialized(
                   com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.class, com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.Builder.class);
         }
@@ -15967,7 +15967,7 @@ public final class Dossier {
 
         public com.google.protobuf.Descriptors.Descriptor
             getDescriptorForType() {
-          return com.github.jleyba.dossier.proto.Dossier.internal_static_JsType_NestedTypes_descriptor;
+          return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_JsType_NestedTypes_descriptor;
         }
 
         public com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes getDefaultInstanceForType() {
@@ -16163,7 +16163,7 @@ public final class Dossier {
             com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary, com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary.Builder, com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummaryOrBuilder> interfacesBuilder_;
 
         /**
-         * <code>repeated .JsType.NestedTypes.TypeSummary interfaces = 1;</code>
+         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary interfaces = 1;</code>
          */
         public java.util.List<com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary> getInterfacesList() {
           if (interfacesBuilder_ == null) {
@@ -16173,7 +16173,7 @@ public final class Dossier {
           }
         }
         /**
-         * <code>repeated .JsType.NestedTypes.TypeSummary interfaces = 1;</code>
+         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary interfaces = 1;</code>
          */
         public int getInterfacesCount() {
           if (interfacesBuilder_ == null) {
@@ -16183,7 +16183,7 @@ public final class Dossier {
           }
         }
         /**
-         * <code>repeated .JsType.NestedTypes.TypeSummary interfaces = 1;</code>
+         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary interfaces = 1;</code>
          */
         public com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary getInterfaces(int index) {
           if (interfacesBuilder_ == null) {
@@ -16193,7 +16193,7 @@ public final class Dossier {
           }
         }
         /**
-         * <code>repeated .JsType.NestedTypes.TypeSummary interfaces = 1;</code>
+         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary interfaces = 1;</code>
          */
         public Builder setInterfaces(
             int index, com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary value) {
@@ -16210,7 +16210,7 @@ public final class Dossier {
           return this;
         }
         /**
-         * <code>repeated .JsType.NestedTypes.TypeSummary interfaces = 1;</code>
+         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary interfaces = 1;</code>
          */
         public Builder setInterfaces(
             int index, com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary.Builder builderForValue) {
@@ -16224,7 +16224,7 @@ public final class Dossier {
           return this;
         }
         /**
-         * <code>repeated .JsType.NestedTypes.TypeSummary interfaces = 1;</code>
+         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary interfaces = 1;</code>
          */
         public Builder addInterfaces(com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary value) {
           if (interfacesBuilder_ == null) {
@@ -16240,7 +16240,7 @@ public final class Dossier {
           return this;
         }
         /**
-         * <code>repeated .JsType.NestedTypes.TypeSummary interfaces = 1;</code>
+         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary interfaces = 1;</code>
          */
         public Builder addInterfaces(
             int index, com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary value) {
@@ -16257,7 +16257,7 @@ public final class Dossier {
           return this;
         }
         /**
-         * <code>repeated .JsType.NestedTypes.TypeSummary interfaces = 1;</code>
+         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary interfaces = 1;</code>
          */
         public Builder addInterfaces(
             com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary.Builder builderForValue) {
@@ -16271,7 +16271,7 @@ public final class Dossier {
           return this;
         }
         /**
-         * <code>repeated .JsType.NestedTypes.TypeSummary interfaces = 1;</code>
+         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary interfaces = 1;</code>
          */
         public Builder addInterfaces(
             int index, com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary.Builder builderForValue) {
@@ -16285,7 +16285,7 @@ public final class Dossier {
           return this;
         }
         /**
-         * <code>repeated .JsType.NestedTypes.TypeSummary interfaces = 1;</code>
+         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary interfaces = 1;</code>
          */
         public Builder addAllInterfaces(
             java.lang.Iterable<? extends com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary> values) {
@@ -16300,7 +16300,7 @@ public final class Dossier {
           return this;
         }
         /**
-         * <code>repeated .JsType.NestedTypes.TypeSummary interfaces = 1;</code>
+         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary interfaces = 1;</code>
          */
         public Builder clearInterfaces() {
           if (interfacesBuilder_ == null) {
@@ -16313,7 +16313,7 @@ public final class Dossier {
           return this;
         }
         /**
-         * <code>repeated .JsType.NestedTypes.TypeSummary interfaces = 1;</code>
+         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary interfaces = 1;</code>
          */
         public Builder removeInterfaces(int index) {
           if (interfacesBuilder_ == null) {
@@ -16326,14 +16326,14 @@ public final class Dossier {
           return this;
         }
         /**
-         * <code>repeated .JsType.NestedTypes.TypeSummary interfaces = 1;</code>
+         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary interfaces = 1;</code>
          */
         public com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary.Builder getInterfacesBuilder(
             int index) {
           return getInterfacesFieldBuilder().getBuilder(index);
         }
         /**
-         * <code>repeated .JsType.NestedTypes.TypeSummary interfaces = 1;</code>
+         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary interfaces = 1;</code>
          */
         public com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummaryOrBuilder getInterfacesOrBuilder(
             int index) {
@@ -16343,7 +16343,7 @@ public final class Dossier {
           }
         }
         /**
-         * <code>repeated .JsType.NestedTypes.TypeSummary interfaces = 1;</code>
+         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary interfaces = 1;</code>
          */
         public java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummaryOrBuilder> 
              getInterfacesOrBuilderList() {
@@ -16354,14 +16354,14 @@ public final class Dossier {
           }
         }
         /**
-         * <code>repeated .JsType.NestedTypes.TypeSummary interfaces = 1;</code>
+         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary interfaces = 1;</code>
          */
         public com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary.Builder addInterfacesBuilder() {
           return getInterfacesFieldBuilder().addBuilder(
               com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary.getDefaultInstance());
         }
         /**
-         * <code>repeated .JsType.NestedTypes.TypeSummary interfaces = 1;</code>
+         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary interfaces = 1;</code>
          */
         public com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary.Builder addInterfacesBuilder(
             int index) {
@@ -16369,7 +16369,7 @@ public final class Dossier {
               index, com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary.getDefaultInstance());
         }
         /**
-         * <code>repeated .JsType.NestedTypes.TypeSummary interfaces = 1;</code>
+         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary interfaces = 1;</code>
          */
         public java.util.List<com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary.Builder> 
              getInterfacesBuilderList() {
@@ -16403,7 +16403,7 @@ public final class Dossier {
             com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary, com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary.Builder, com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummaryOrBuilder> classesBuilder_;
 
         /**
-         * <code>repeated .JsType.NestedTypes.TypeSummary classes = 2;</code>
+         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary classes = 2;</code>
          */
         public java.util.List<com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary> getClassesList() {
           if (classesBuilder_ == null) {
@@ -16413,7 +16413,7 @@ public final class Dossier {
           }
         }
         /**
-         * <code>repeated .JsType.NestedTypes.TypeSummary classes = 2;</code>
+         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary classes = 2;</code>
          */
         public int getClassesCount() {
           if (classesBuilder_ == null) {
@@ -16423,7 +16423,7 @@ public final class Dossier {
           }
         }
         /**
-         * <code>repeated .JsType.NestedTypes.TypeSummary classes = 2;</code>
+         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary classes = 2;</code>
          */
         public com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary getClasses(int index) {
           if (classesBuilder_ == null) {
@@ -16433,7 +16433,7 @@ public final class Dossier {
           }
         }
         /**
-         * <code>repeated .JsType.NestedTypes.TypeSummary classes = 2;</code>
+         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary classes = 2;</code>
          */
         public Builder setClasses(
             int index, com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary value) {
@@ -16450,7 +16450,7 @@ public final class Dossier {
           return this;
         }
         /**
-         * <code>repeated .JsType.NestedTypes.TypeSummary classes = 2;</code>
+         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary classes = 2;</code>
          */
         public Builder setClasses(
             int index, com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary.Builder builderForValue) {
@@ -16464,7 +16464,7 @@ public final class Dossier {
           return this;
         }
         /**
-         * <code>repeated .JsType.NestedTypes.TypeSummary classes = 2;</code>
+         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary classes = 2;</code>
          */
         public Builder addClasses(com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary value) {
           if (classesBuilder_ == null) {
@@ -16480,7 +16480,7 @@ public final class Dossier {
           return this;
         }
         /**
-         * <code>repeated .JsType.NestedTypes.TypeSummary classes = 2;</code>
+         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary classes = 2;</code>
          */
         public Builder addClasses(
             int index, com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary value) {
@@ -16497,7 +16497,7 @@ public final class Dossier {
           return this;
         }
         /**
-         * <code>repeated .JsType.NestedTypes.TypeSummary classes = 2;</code>
+         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary classes = 2;</code>
          */
         public Builder addClasses(
             com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary.Builder builderForValue) {
@@ -16511,7 +16511,7 @@ public final class Dossier {
           return this;
         }
         /**
-         * <code>repeated .JsType.NestedTypes.TypeSummary classes = 2;</code>
+         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary classes = 2;</code>
          */
         public Builder addClasses(
             int index, com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary.Builder builderForValue) {
@@ -16525,7 +16525,7 @@ public final class Dossier {
           return this;
         }
         /**
-         * <code>repeated .JsType.NestedTypes.TypeSummary classes = 2;</code>
+         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary classes = 2;</code>
          */
         public Builder addAllClasses(
             java.lang.Iterable<? extends com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary> values) {
@@ -16540,7 +16540,7 @@ public final class Dossier {
           return this;
         }
         /**
-         * <code>repeated .JsType.NestedTypes.TypeSummary classes = 2;</code>
+         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary classes = 2;</code>
          */
         public Builder clearClasses() {
           if (classesBuilder_ == null) {
@@ -16553,7 +16553,7 @@ public final class Dossier {
           return this;
         }
         /**
-         * <code>repeated .JsType.NestedTypes.TypeSummary classes = 2;</code>
+         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary classes = 2;</code>
          */
         public Builder removeClasses(int index) {
           if (classesBuilder_ == null) {
@@ -16566,14 +16566,14 @@ public final class Dossier {
           return this;
         }
         /**
-         * <code>repeated .JsType.NestedTypes.TypeSummary classes = 2;</code>
+         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary classes = 2;</code>
          */
         public com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary.Builder getClassesBuilder(
             int index) {
           return getClassesFieldBuilder().getBuilder(index);
         }
         /**
-         * <code>repeated .JsType.NestedTypes.TypeSummary classes = 2;</code>
+         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary classes = 2;</code>
          */
         public com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummaryOrBuilder getClassesOrBuilder(
             int index) {
@@ -16583,7 +16583,7 @@ public final class Dossier {
           }
         }
         /**
-         * <code>repeated .JsType.NestedTypes.TypeSummary classes = 2;</code>
+         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary classes = 2;</code>
          */
         public java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummaryOrBuilder> 
              getClassesOrBuilderList() {
@@ -16594,14 +16594,14 @@ public final class Dossier {
           }
         }
         /**
-         * <code>repeated .JsType.NestedTypes.TypeSummary classes = 2;</code>
+         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary classes = 2;</code>
          */
         public com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary.Builder addClassesBuilder() {
           return getClassesFieldBuilder().addBuilder(
               com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary.getDefaultInstance());
         }
         /**
-         * <code>repeated .JsType.NestedTypes.TypeSummary classes = 2;</code>
+         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary classes = 2;</code>
          */
         public com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary.Builder addClassesBuilder(
             int index) {
@@ -16609,7 +16609,7 @@ public final class Dossier {
               index, com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary.getDefaultInstance());
         }
         /**
-         * <code>repeated .JsType.NestedTypes.TypeSummary classes = 2;</code>
+         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary classes = 2;</code>
          */
         public java.util.List<com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary.Builder> 
              getClassesBuilderList() {
@@ -16643,7 +16643,7 @@ public final class Dossier {
             com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary, com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary.Builder, com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummaryOrBuilder> enumsBuilder_;
 
         /**
-         * <code>repeated .JsType.NestedTypes.TypeSummary enums = 3;</code>
+         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary enums = 3;</code>
          */
         public java.util.List<com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary> getEnumsList() {
           if (enumsBuilder_ == null) {
@@ -16653,7 +16653,7 @@ public final class Dossier {
           }
         }
         /**
-         * <code>repeated .JsType.NestedTypes.TypeSummary enums = 3;</code>
+         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary enums = 3;</code>
          */
         public int getEnumsCount() {
           if (enumsBuilder_ == null) {
@@ -16663,7 +16663,7 @@ public final class Dossier {
           }
         }
         /**
-         * <code>repeated .JsType.NestedTypes.TypeSummary enums = 3;</code>
+         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary enums = 3;</code>
          */
         public com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary getEnums(int index) {
           if (enumsBuilder_ == null) {
@@ -16673,7 +16673,7 @@ public final class Dossier {
           }
         }
         /**
-         * <code>repeated .JsType.NestedTypes.TypeSummary enums = 3;</code>
+         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary enums = 3;</code>
          */
         public Builder setEnums(
             int index, com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary value) {
@@ -16690,7 +16690,7 @@ public final class Dossier {
           return this;
         }
         /**
-         * <code>repeated .JsType.NestedTypes.TypeSummary enums = 3;</code>
+         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary enums = 3;</code>
          */
         public Builder setEnums(
             int index, com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary.Builder builderForValue) {
@@ -16704,7 +16704,7 @@ public final class Dossier {
           return this;
         }
         /**
-         * <code>repeated .JsType.NestedTypes.TypeSummary enums = 3;</code>
+         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary enums = 3;</code>
          */
         public Builder addEnums(com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary value) {
           if (enumsBuilder_ == null) {
@@ -16720,7 +16720,7 @@ public final class Dossier {
           return this;
         }
         /**
-         * <code>repeated .JsType.NestedTypes.TypeSummary enums = 3;</code>
+         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary enums = 3;</code>
          */
         public Builder addEnums(
             int index, com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary value) {
@@ -16737,7 +16737,7 @@ public final class Dossier {
           return this;
         }
         /**
-         * <code>repeated .JsType.NestedTypes.TypeSummary enums = 3;</code>
+         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary enums = 3;</code>
          */
         public Builder addEnums(
             com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary.Builder builderForValue) {
@@ -16751,7 +16751,7 @@ public final class Dossier {
           return this;
         }
         /**
-         * <code>repeated .JsType.NestedTypes.TypeSummary enums = 3;</code>
+         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary enums = 3;</code>
          */
         public Builder addEnums(
             int index, com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary.Builder builderForValue) {
@@ -16765,7 +16765,7 @@ public final class Dossier {
           return this;
         }
         /**
-         * <code>repeated .JsType.NestedTypes.TypeSummary enums = 3;</code>
+         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary enums = 3;</code>
          */
         public Builder addAllEnums(
             java.lang.Iterable<? extends com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary> values) {
@@ -16780,7 +16780,7 @@ public final class Dossier {
           return this;
         }
         /**
-         * <code>repeated .JsType.NestedTypes.TypeSummary enums = 3;</code>
+         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary enums = 3;</code>
          */
         public Builder clearEnums() {
           if (enumsBuilder_ == null) {
@@ -16793,7 +16793,7 @@ public final class Dossier {
           return this;
         }
         /**
-         * <code>repeated .JsType.NestedTypes.TypeSummary enums = 3;</code>
+         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary enums = 3;</code>
          */
         public Builder removeEnums(int index) {
           if (enumsBuilder_ == null) {
@@ -16806,14 +16806,14 @@ public final class Dossier {
           return this;
         }
         /**
-         * <code>repeated .JsType.NestedTypes.TypeSummary enums = 3;</code>
+         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary enums = 3;</code>
          */
         public com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary.Builder getEnumsBuilder(
             int index) {
           return getEnumsFieldBuilder().getBuilder(index);
         }
         /**
-         * <code>repeated .JsType.NestedTypes.TypeSummary enums = 3;</code>
+         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary enums = 3;</code>
          */
         public com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummaryOrBuilder getEnumsOrBuilder(
             int index) {
@@ -16823,7 +16823,7 @@ public final class Dossier {
           }
         }
         /**
-         * <code>repeated .JsType.NestedTypes.TypeSummary enums = 3;</code>
+         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary enums = 3;</code>
          */
         public java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummaryOrBuilder> 
              getEnumsOrBuilderList() {
@@ -16834,14 +16834,14 @@ public final class Dossier {
           }
         }
         /**
-         * <code>repeated .JsType.NestedTypes.TypeSummary enums = 3;</code>
+         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary enums = 3;</code>
          */
         public com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary.Builder addEnumsBuilder() {
           return getEnumsFieldBuilder().addBuilder(
               com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary.getDefaultInstance());
         }
         /**
-         * <code>repeated .JsType.NestedTypes.TypeSummary enums = 3;</code>
+         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary enums = 3;</code>
          */
         public com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary.Builder addEnumsBuilder(
             int index) {
@@ -16849,7 +16849,7 @@ public final class Dossier {
               index, com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary.getDefaultInstance());
         }
         /**
-         * <code>repeated .JsType.NestedTypes.TypeSummary enums = 3;</code>
+         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary enums = 3;</code>
          */
         public java.util.List<com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary.Builder> 
              getEnumsBuilderList() {
@@ -16870,7 +16870,7 @@ public final class Dossier {
           return enumsBuilder_;
         }
 
-        // @@protoc_insertion_point(builder_scope:JsType.NestedTypes)
+        // @@protoc_insertion_point(builder_scope:dossier.JsType.NestedTypes)
       }
 
       static {
@@ -16878,11 +16878,11 @@ public final class Dossier {
         defaultInstance.initFields();
       }
 
-      // @@protoc_insertion_point(class_scope:JsType.NestedTypes)
+      // @@protoc_insertion_point(class_scope:dossier.JsType.NestedTypes)
     }
 
     public interface TypeDefOrBuilder extends
-        // @@protoc_insertion_point(interface_extends:JsType.TypeDef)
+        // @@protoc_insertion_point(interface_extends:dossier.JsType.TypeDef)
         com.google.protobuf.MessageOrBuilder {
 
       /**
@@ -16928,42 +16928,42 @@ public final class Dossier {
           getHrefBytes();
 
       /**
-       * <code>required .Comment description = 4;</code>
+       * <code>required .dossier.Comment description = 4;</code>
        */
       boolean hasDescription();
       /**
-       * <code>required .Comment description = 4;</code>
+       * <code>required .dossier.Comment description = 4;</code>
        */
       com.github.jleyba.dossier.proto.Dossier.Comment getDescription();
       /**
-       * <code>required .Comment description = 4;</code>
+       * <code>required .dossier.Comment description = 4;</code>
        */
       com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder getDescriptionOrBuilder();
 
       /**
-       * <code>optional .Deprecation deprecation = 5;</code>
+       * <code>optional .dossier.Deprecation deprecation = 5;</code>
        */
       boolean hasDeprecation();
       /**
-       * <code>optional .Deprecation deprecation = 5;</code>
+       * <code>optional .dossier.Deprecation deprecation = 5;</code>
        */
       com.github.jleyba.dossier.proto.Dossier.Deprecation getDeprecation();
       /**
-       * <code>optional .Deprecation deprecation = 5;</code>
+       * <code>optional .dossier.Deprecation deprecation = 5;</code>
        */
       com.github.jleyba.dossier.proto.Dossier.DeprecationOrBuilder getDeprecationOrBuilder();
 
       /**
-       * <code>optional .Visibility visibility = 6 [default = PUBLIC];</code>
+       * <code>optional .dossier.Visibility visibility = 6 [default = PUBLIC];</code>
        */
       boolean hasVisibility();
       /**
-       * <code>optional .Visibility visibility = 6 [default = PUBLIC];</code>
+       * <code>optional .dossier.Visibility visibility = 6 [default = PUBLIC];</code>
        */
       com.github.jleyba.dossier.proto.Dossier.Visibility getVisibility();
     }
     /**
-     * Protobuf type {@code JsType.TypeDef}
+     * Protobuf type {@code dossier.JsType.TypeDef}
      *
      * <pre>
      * Describes a typedef defined within this type.
@@ -16971,7 +16971,7 @@ public final class Dossier {
      */
     public static final class TypeDef extends
         com.google.protobuf.GeneratedMessage implements
-        // @@protoc_insertion_point(message_implements:JsType.TypeDef)
+        // @@protoc_insertion_point(message_implements:dossier.JsType.TypeDef)
         TypeDefOrBuilder {
       // Use TypeDef.newBuilder() to construct.
       private TypeDef(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
@@ -17087,12 +17087,12 @@ public final class Dossier {
       }
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.github.jleyba.dossier.proto.Dossier.internal_static_JsType_TypeDef_descriptor;
+        return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_JsType_TypeDef_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.github.jleyba.dossier.proto.Dossier.internal_static_JsType_TypeDef_fieldAccessorTable
+        return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_JsType_TypeDef_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 com.github.jleyba.dossier.proto.Dossier.JsType.TypeDef.class, com.github.jleyba.dossier.proto.Dossier.JsType.TypeDef.Builder.class);
       }
@@ -17242,19 +17242,19 @@ public final class Dossier {
       public static final int DESCRIPTION_FIELD_NUMBER = 4;
       private com.github.jleyba.dossier.proto.Dossier.Comment description_;
       /**
-       * <code>required .Comment description = 4;</code>
+       * <code>required .dossier.Comment description = 4;</code>
        */
       public boolean hasDescription() {
         return ((bitField0_ & 0x00000008) == 0x00000008);
       }
       /**
-       * <code>required .Comment description = 4;</code>
+       * <code>required .dossier.Comment description = 4;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.Comment getDescription() {
         return description_;
       }
       /**
-       * <code>required .Comment description = 4;</code>
+       * <code>required .dossier.Comment description = 4;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder getDescriptionOrBuilder() {
         return description_;
@@ -17263,19 +17263,19 @@ public final class Dossier {
       public static final int DEPRECATION_FIELD_NUMBER = 5;
       private com.github.jleyba.dossier.proto.Dossier.Deprecation deprecation_;
       /**
-       * <code>optional .Deprecation deprecation = 5;</code>
+       * <code>optional .dossier.Deprecation deprecation = 5;</code>
        */
       public boolean hasDeprecation() {
         return ((bitField0_ & 0x00000010) == 0x00000010);
       }
       /**
-       * <code>optional .Deprecation deprecation = 5;</code>
+       * <code>optional .dossier.Deprecation deprecation = 5;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.Deprecation getDeprecation() {
         return deprecation_;
       }
       /**
-       * <code>optional .Deprecation deprecation = 5;</code>
+       * <code>optional .dossier.Deprecation deprecation = 5;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.DeprecationOrBuilder getDeprecationOrBuilder() {
         return deprecation_;
@@ -17284,13 +17284,13 @@ public final class Dossier {
       public static final int VISIBILITY_FIELD_NUMBER = 6;
       private com.github.jleyba.dossier.proto.Dossier.Visibility visibility_;
       /**
-       * <code>optional .Visibility visibility = 6 [default = PUBLIC];</code>
+       * <code>optional .dossier.Visibility visibility = 6 [default = PUBLIC];</code>
        */
       public boolean hasVisibility() {
         return ((bitField0_ & 0x00000020) == 0x00000020);
       }
       /**
-       * <code>optional .Visibility visibility = 6 [default = PUBLIC];</code>
+       * <code>optional .dossier.Visibility visibility = 6 [default = PUBLIC];</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.Visibility getVisibility() {
         return visibility_;
@@ -17473,7 +17473,7 @@ public final class Dossier {
         return builder;
       }
       /**
-       * Protobuf type {@code JsType.TypeDef}
+       * Protobuf type {@code dossier.JsType.TypeDef}
        *
        * <pre>
        * Describes a typedef defined within this type.
@@ -17481,16 +17481,16 @@ public final class Dossier {
        */
       public static final class Builder extends
           com.google.protobuf.GeneratedMessage.Builder<Builder> implements
-          // @@protoc_insertion_point(builder_implements:JsType.TypeDef)
+          // @@protoc_insertion_point(builder_implements:dossier.JsType.TypeDef)
           com.github.jleyba.dossier.proto.Dossier.JsType.TypeDefOrBuilder {
         public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
-          return com.github.jleyba.dossier.proto.Dossier.internal_static_JsType_TypeDef_descriptor;
+          return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_JsType_TypeDef_descriptor;
         }
 
         protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
             internalGetFieldAccessorTable() {
-          return com.github.jleyba.dossier.proto.Dossier.internal_static_JsType_TypeDef_fieldAccessorTable
+          return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_JsType_TypeDef_fieldAccessorTable
               .ensureFieldAccessorsInitialized(
                   com.github.jleyba.dossier.proto.Dossier.JsType.TypeDef.class, com.github.jleyba.dossier.proto.Dossier.JsType.TypeDef.Builder.class);
         }
@@ -17546,7 +17546,7 @@ public final class Dossier {
 
         public com.google.protobuf.Descriptors.Descriptor
             getDescriptorForType() {
-          return com.github.jleyba.dossier.proto.Dossier.internal_static_JsType_TypeDef_descriptor;
+          return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_JsType_TypeDef_descriptor;
         }
 
         public com.github.jleyba.dossier.proto.Dossier.JsType.TypeDef getDefaultInstanceForType() {
@@ -17922,13 +17922,13 @@ public final class Dossier {
         private com.google.protobuf.SingleFieldBuilder<
             com.github.jleyba.dossier.proto.Dossier.Comment, com.github.jleyba.dossier.proto.Dossier.Comment.Builder, com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder> descriptionBuilder_;
         /**
-         * <code>required .Comment description = 4;</code>
+         * <code>required .dossier.Comment description = 4;</code>
          */
         public boolean hasDescription() {
           return ((bitField0_ & 0x00000008) == 0x00000008);
         }
         /**
-         * <code>required .Comment description = 4;</code>
+         * <code>required .dossier.Comment description = 4;</code>
          */
         public com.github.jleyba.dossier.proto.Dossier.Comment getDescription() {
           if (descriptionBuilder_ == null) {
@@ -17938,7 +17938,7 @@ public final class Dossier {
           }
         }
         /**
-         * <code>required .Comment description = 4;</code>
+         * <code>required .dossier.Comment description = 4;</code>
          */
         public Builder setDescription(com.github.jleyba.dossier.proto.Dossier.Comment value) {
           if (descriptionBuilder_ == null) {
@@ -17954,7 +17954,7 @@ public final class Dossier {
           return this;
         }
         /**
-         * <code>required .Comment description = 4;</code>
+         * <code>required .dossier.Comment description = 4;</code>
          */
         public Builder setDescription(
             com.github.jleyba.dossier.proto.Dossier.Comment.Builder builderForValue) {
@@ -17968,7 +17968,7 @@ public final class Dossier {
           return this;
         }
         /**
-         * <code>required .Comment description = 4;</code>
+         * <code>required .dossier.Comment description = 4;</code>
          */
         public Builder mergeDescription(com.github.jleyba.dossier.proto.Dossier.Comment value) {
           if (descriptionBuilder_ == null) {
@@ -17987,7 +17987,7 @@ public final class Dossier {
           return this;
         }
         /**
-         * <code>required .Comment description = 4;</code>
+         * <code>required .dossier.Comment description = 4;</code>
          */
         public Builder clearDescription() {
           if (descriptionBuilder_ == null) {
@@ -18000,7 +18000,7 @@ public final class Dossier {
           return this;
         }
         /**
-         * <code>required .Comment description = 4;</code>
+         * <code>required .dossier.Comment description = 4;</code>
          */
         public com.github.jleyba.dossier.proto.Dossier.Comment.Builder getDescriptionBuilder() {
           bitField0_ |= 0x00000008;
@@ -18008,7 +18008,7 @@ public final class Dossier {
           return getDescriptionFieldBuilder().getBuilder();
         }
         /**
-         * <code>required .Comment description = 4;</code>
+         * <code>required .dossier.Comment description = 4;</code>
          */
         public com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder getDescriptionOrBuilder() {
           if (descriptionBuilder_ != null) {
@@ -18018,7 +18018,7 @@ public final class Dossier {
           }
         }
         /**
-         * <code>required .Comment description = 4;</code>
+         * <code>required .dossier.Comment description = 4;</code>
          */
         private com.google.protobuf.SingleFieldBuilder<
             com.github.jleyba.dossier.proto.Dossier.Comment, com.github.jleyba.dossier.proto.Dossier.Comment.Builder, com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder> 
@@ -18038,13 +18038,13 @@ public final class Dossier {
         private com.google.protobuf.SingleFieldBuilder<
             com.github.jleyba.dossier.proto.Dossier.Deprecation, com.github.jleyba.dossier.proto.Dossier.Deprecation.Builder, com.github.jleyba.dossier.proto.Dossier.DeprecationOrBuilder> deprecationBuilder_;
         /**
-         * <code>optional .Deprecation deprecation = 5;</code>
+         * <code>optional .dossier.Deprecation deprecation = 5;</code>
          */
         public boolean hasDeprecation() {
           return ((bitField0_ & 0x00000010) == 0x00000010);
         }
         /**
-         * <code>optional .Deprecation deprecation = 5;</code>
+         * <code>optional .dossier.Deprecation deprecation = 5;</code>
          */
         public com.github.jleyba.dossier.proto.Dossier.Deprecation getDeprecation() {
           if (deprecationBuilder_ == null) {
@@ -18054,7 +18054,7 @@ public final class Dossier {
           }
         }
         /**
-         * <code>optional .Deprecation deprecation = 5;</code>
+         * <code>optional .dossier.Deprecation deprecation = 5;</code>
          */
         public Builder setDeprecation(com.github.jleyba.dossier.proto.Dossier.Deprecation value) {
           if (deprecationBuilder_ == null) {
@@ -18070,7 +18070,7 @@ public final class Dossier {
           return this;
         }
         /**
-         * <code>optional .Deprecation deprecation = 5;</code>
+         * <code>optional .dossier.Deprecation deprecation = 5;</code>
          */
         public Builder setDeprecation(
             com.github.jleyba.dossier.proto.Dossier.Deprecation.Builder builderForValue) {
@@ -18084,7 +18084,7 @@ public final class Dossier {
           return this;
         }
         /**
-         * <code>optional .Deprecation deprecation = 5;</code>
+         * <code>optional .dossier.Deprecation deprecation = 5;</code>
          */
         public Builder mergeDeprecation(com.github.jleyba.dossier.proto.Dossier.Deprecation value) {
           if (deprecationBuilder_ == null) {
@@ -18103,7 +18103,7 @@ public final class Dossier {
           return this;
         }
         /**
-         * <code>optional .Deprecation deprecation = 5;</code>
+         * <code>optional .dossier.Deprecation deprecation = 5;</code>
          */
         public Builder clearDeprecation() {
           if (deprecationBuilder_ == null) {
@@ -18116,7 +18116,7 @@ public final class Dossier {
           return this;
         }
         /**
-         * <code>optional .Deprecation deprecation = 5;</code>
+         * <code>optional .dossier.Deprecation deprecation = 5;</code>
          */
         public com.github.jleyba.dossier.proto.Dossier.Deprecation.Builder getDeprecationBuilder() {
           bitField0_ |= 0x00000010;
@@ -18124,7 +18124,7 @@ public final class Dossier {
           return getDeprecationFieldBuilder().getBuilder();
         }
         /**
-         * <code>optional .Deprecation deprecation = 5;</code>
+         * <code>optional .dossier.Deprecation deprecation = 5;</code>
          */
         public com.github.jleyba.dossier.proto.Dossier.DeprecationOrBuilder getDeprecationOrBuilder() {
           if (deprecationBuilder_ != null) {
@@ -18134,7 +18134,7 @@ public final class Dossier {
           }
         }
         /**
-         * <code>optional .Deprecation deprecation = 5;</code>
+         * <code>optional .dossier.Deprecation deprecation = 5;</code>
          */
         private com.google.protobuf.SingleFieldBuilder<
             com.github.jleyba.dossier.proto.Dossier.Deprecation, com.github.jleyba.dossier.proto.Dossier.Deprecation.Builder, com.github.jleyba.dossier.proto.Dossier.DeprecationOrBuilder> 
@@ -18152,19 +18152,19 @@ public final class Dossier {
 
         private com.github.jleyba.dossier.proto.Dossier.Visibility visibility_ = com.github.jleyba.dossier.proto.Dossier.Visibility.PUBLIC;
         /**
-         * <code>optional .Visibility visibility = 6 [default = PUBLIC];</code>
+         * <code>optional .dossier.Visibility visibility = 6 [default = PUBLIC];</code>
          */
         public boolean hasVisibility() {
           return ((bitField0_ & 0x00000020) == 0x00000020);
         }
         /**
-         * <code>optional .Visibility visibility = 6 [default = PUBLIC];</code>
+         * <code>optional .dossier.Visibility visibility = 6 [default = PUBLIC];</code>
          */
         public com.github.jleyba.dossier.proto.Dossier.Visibility getVisibility() {
           return visibility_;
         }
         /**
-         * <code>optional .Visibility visibility = 6 [default = PUBLIC];</code>
+         * <code>optional .dossier.Visibility visibility = 6 [default = PUBLIC];</code>
          */
         public Builder setVisibility(com.github.jleyba.dossier.proto.Dossier.Visibility value) {
           if (value == null) {
@@ -18176,7 +18176,7 @@ public final class Dossier {
           return this;
         }
         /**
-         * <code>optional .Visibility visibility = 6 [default = PUBLIC];</code>
+         * <code>optional .dossier.Visibility visibility = 6 [default = PUBLIC];</code>
          */
         public Builder clearVisibility() {
           bitField0_ = (bitField0_ & ~0x00000020);
@@ -18185,7 +18185,7 @@ public final class Dossier {
           return this;
         }
 
-        // @@protoc_insertion_point(builder_scope:JsType.TypeDef)
+        // @@protoc_insertion_point(builder_scope:dossier.JsType.TypeDef)
       }
 
       static {
@@ -18193,7 +18193,7 @@ public final class Dossier {
         defaultInstance.initFields();
       }
 
-      // @@protoc_insertion_point(class_scope:JsType.TypeDef)
+      // @@protoc_insertion_point(class_scope:dossier.JsType.TypeDef)
     }
 
     private int bitField0_;
@@ -18284,19 +18284,19 @@ public final class Dossier {
     public static final int NESTED_FIELD_NUMBER = 6;
     private com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes nested_;
     /**
-     * <code>required .JsType.NestedTypes nested = 6;</code>
+     * <code>required .dossier.JsType.NestedTypes nested = 6;</code>
      */
     public boolean hasNested() {
       return ((bitField0_ & 0x00000004) == 0x00000004);
     }
     /**
-     * <code>required .JsType.NestedTypes nested = 6;</code>
+     * <code>required .dossier.JsType.NestedTypes nested = 6;</code>
      */
     public com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes getNested() {
       return nested_;
     }
     /**
-     * <code>required .JsType.NestedTypes nested = 6;</code>
+     * <code>required .dossier.JsType.NestedTypes nested = 6;</code>
      */
     public com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypesOrBuilder getNestedOrBuilder() {
       return nested_;
@@ -18305,19 +18305,19 @@ public final class Dossier {
     public static final int DESCRIPTION_FIELD_NUMBER = 7;
     private com.github.jleyba.dossier.proto.Dossier.Comment description_;
     /**
-     * <code>required .Comment description = 7;</code>
+     * <code>required .dossier.Comment description = 7;</code>
      */
     public boolean hasDescription() {
       return ((bitField0_ & 0x00000008) == 0x00000008);
     }
     /**
-     * <code>required .Comment description = 7;</code>
+     * <code>required .dossier.Comment description = 7;</code>
      */
     public com.github.jleyba.dossier.proto.Dossier.Comment getDescription() {
       return description_;
     }
     /**
-     * <code>required .Comment description = 7;</code>
+     * <code>required .dossier.Comment description = 7;</code>
      */
     public com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder getDescriptionOrBuilder() {
       return description_;
@@ -18326,19 +18326,19 @@ public final class Dossier {
     public static final int DEPRECATION_FIELD_NUMBER = 8;
     private com.github.jleyba.dossier.proto.Dossier.Deprecation deprecation_;
     /**
-     * <code>optional .Deprecation deprecation = 8;</code>
+     * <code>optional .dossier.Deprecation deprecation = 8;</code>
      */
     public boolean hasDeprecation() {
       return ((bitField0_ & 0x00000010) == 0x00000010);
     }
     /**
-     * <code>optional .Deprecation deprecation = 8;</code>
+     * <code>optional .dossier.Deprecation deprecation = 8;</code>
      */
     public com.github.jleyba.dossier.proto.Dossier.Deprecation getDeprecation() {
       return deprecation_;
     }
     /**
-     * <code>optional .Deprecation deprecation = 8;</code>
+     * <code>optional .dossier.Deprecation deprecation = 8;</code>
      */
     public com.github.jleyba.dossier.proto.Dossier.DeprecationOrBuilder getDeprecationOrBuilder() {
       return deprecation_;
@@ -18347,32 +18347,32 @@ public final class Dossier {
     public static final int TYPE_DEF_FIELD_NUMBER = 9;
     private java.util.List<com.github.jleyba.dossier.proto.Dossier.JsType.TypeDef> typeDef_;
     /**
-     * <code>repeated .JsType.TypeDef type_def = 9;</code>
+     * <code>repeated .dossier.JsType.TypeDef type_def = 9;</code>
      */
     public java.util.List<com.github.jleyba.dossier.proto.Dossier.JsType.TypeDef> getTypeDefList() {
       return typeDef_;
     }
     /**
-     * <code>repeated .JsType.TypeDef type_def = 9;</code>
+     * <code>repeated .dossier.JsType.TypeDef type_def = 9;</code>
      */
     public java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.JsType.TypeDefOrBuilder> 
         getTypeDefOrBuilderList() {
       return typeDef_;
     }
     /**
-     * <code>repeated .JsType.TypeDef type_def = 9;</code>
+     * <code>repeated .dossier.JsType.TypeDef type_def = 9;</code>
      */
     public int getTypeDefCount() {
       return typeDef_.size();
     }
     /**
-     * <code>repeated .JsType.TypeDef type_def = 9;</code>
+     * <code>repeated .dossier.JsType.TypeDef type_def = 9;</code>
      */
     public com.github.jleyba.dossier.proto.Dossier.JsType.TypeDef getTypeDef(int index) {
       return typeDef_.get(index);
     }
     /**
-     * <code>repeated .JsType.TypeDef type_def = 9;</code>
+     * <code>repeated .dossier.JsType.TypeDef type_def = 9;</code>
      */
     public com.github.jleyba.dossier.proto.Dossier.JsType.TypeDefOrBuilder getTypeDefOrBuilder(
         int index) {
@@ -18382,19 +18382,19 @@ public final class Dossier {
     public static final int ENUMERATION_FIELD_NUMBER = 10;
     private com.github.jleyba.dossier.proto.Dossier.Enumeration enumeration_;
     /**
-     * <code>optional .Enumeration enumeration = 10;</code>
+     * <code>optional .dossier.Enumeration enumeration = 10;</code>
      */
     public boolean hasEnumeration() {
       return ((bitField0_ & 0x00000020) == 0x00000020);
     }
     /**
-     * <code>optional .Enumeration enumeration = 10;</code>
+     * <code>optional .dossier.Enumeration enumeration = 10;</code>
      */
     public com.github.jleyba.dossier.proto.Dossier.Enumeration getEnumeration() {
       return enumeration_;
     }
     /**
-     * <code>optional .Enumeration enumeration = 10;</code>
+     * <code>optional .dossier.Enumeration enumeration = 10;</code>
      */
     public com.github.jleyba.dossier.proto.Dossier.EnumerationOrBuilder getEnumerationOrBuilder() {
       return enumeration_;
@@ -18403,32 +18403,32 @@ public final class Dossier {
     public static final int STATIC_FUNCTION_FIELD_NUMBER = 11;
     private java.util.List<com.github.jleyba.dossier.proto.Dossier.Function> staticFunction_;
     /**
-     * <code>repeated .Function static_function = 11;</code>
+     * <code>repeated .dossier.Function static_function = 11;</code>
      */
     public java.util.List<com.github.jleyba.dossier.proto.Dossier.Function> getStaticFunctionList() {
       return staticFunction_;
     }
     /**
-     * <code>repeated .Function static_function = 11;</code>
+     * <code>repeated .dossier.Function static_function = 11;</code>
      */
     public java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.FunctionOrBuilder> 
         getStaticFunctionOrBuilderList() {
       return staticFunction_;
     }
     /**
-     * <code>repeated .Function static_function = 11;</code>
+     * <code>repeated .dossier.Function static_function = 11;</code>
      */
     public int getStaticFunctionCount() {
       return staticFunction_.size();
     }
     /**
-     * <code>repeated .Function static_function = 11;</code>
+     * <code>repeated .dossier.Function static_function = 11;</code>
      */
     public com.github.jleyba.dossier.proto.Dossier.Function getStaticFunction(int index) {
       return staticFunction_.get(index);
     }
     /**
-     * <code>repeated .Function static_function = 11;</code>
+     * <code>repeated .dossier.Function static_function = 11;</code>
      */
     public com.github.jleyba.dossier.proto.Dossier.FunctionOrBuilder getStaticFunctionOrBuilder(
         int index) {
@@ -18438,32 +18438,32 @@ public final class Dossier {
     public static final int STATIC_PROPERTY_FIELD_NUMBER = 12;
     private java.util.List<com.github.jleyba.dossier.proto.Dossier.Property> staticProperty_;
     /**
-     * <code>repeated .Property static_property = 12;</code>
+     * <code>repeated .dossier.Property static_property = 12;</code>
      */
     public java.util.List<com.github.jleyba.dossier.proto.Dossier.Property> getStaticPropertyList() {
       return staticProperty_;
     }
     /**
-     * <code>repeated .Property static_property = 12;</code>
+     * <code>repeated .dossier.Property static_property = 12;</code>
      */
     public java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.PropertyOrBuilder> 
         getStaticPropertyOrBuilderList() {
       return staticProperty_;
     }
     /**
-     * <code>repeated .Property static_property = 12;</code>
+     * <code>repeated .dossier.Property static_property = 12;</code>
      */
     public int getStaticPropertyCount() {
       return staticProperty_.size();
     }
     /**
-     * <code>repeated .Property static_property = 12;</code>
+     * <code>repeated .dossier.Property static_property = 12;</code>
      */
     public com.github.jleyba.dossier.proto.Dossier.Property getStaticProperty(int index) {
       return staticProperty_.get(index);
     }
     /**
-     * <code>repeated .Property static_property = 12;</code>
+     * <code>repeated .dossier.Property static_property = 12;</code>
      */
     public com.github.jleyba.dossier.proto.Dossier.PropertyOrBuilder getStaticPropertyOrBuilder(
         int index) {
@@ -18473,7 +18473,7 @@ public final class Dossier {
     public static final int MAIN_FUNCTION_FIELD_NUMBER = 13;
     private com.github.jleyba.dossier.proto.Dossier.Function mainFunction_;
     /**
-     * <code>optional .Function main_function = 13;</code>
+     * <code>optional .dossier.Function main_function = 13;</code>
      *
      * <pre>
      * Describes the main function for this type. This is typically a class
@@ -18485,7 +18485,7 @@ public final class Dossier {
       return ((bitField0_ & 0x00000040) == 0x00000040);
     }
     /**
-     * <code>optional .Function main_function = 13;</code>
+     * <code>optional .dossier.Function main_function = 13;</code>
      *
      * <pre>
      * Describes the main function for this type. This is typically a class
@@ -18497,7 +18497,7 @@ public final class Dossier {
       return mainFunction_;
     }
     /**
-     * <code>optional .Function main_function = 13;</code>
+     * <code>optional .dossier.Function main_function = 13;</code>
      *
      * <pre>
      * Describes the main function for this type. This is typically a class
@@ -18535,7 +18535,7 @@ public final class Dossier {
     public static final int PROTOTYPE_FIELD_NUMBER = 15;
     private java.util.List<com.github.jleyba.dossier.proto.Dossier.Prototype> prototype_;
     /**
-     * <code>repeated .Prototype prototype = 15;</code>
+     * <code>repeated .dossier.Prototype prototype = 15;</code>
      *
      * <pre>
      * The prototype descriptors for this type (if it is a class or interface).
@@ -18548,7 +18548,7 @@ public final class Dossier {
       return prototype_;
     }
     /**
-     * <code>repeated .Prototype prototype = 15;</code>
+     * <code>repeated .dossier.Prototype prototype = 15;</code>
      *
      * <pre>
      * The prototype descriptors for this type (if it is a class or interface).
@@ -18562,7 +18562,7 @@ public final class Dossier {
       return prototype_;
     }
     /**
-     * <code>repeated .Prototype prototype = 15;</code>
+     * <code>repeated .dossier.Prototype prototype = 15;</code>
      *
      * <pre>
      * The prototype descriptors for this type (if it is a class or interface).
@@ -18575,7 +18575,7 @@ public final class Dossier {
       return prototype_.size();
     }
     /**
-     * <code>repeated .Prototype prototype = 15;</code>
+     * <code>repeated .dossier.Prototype prototype = 15;</code>
      *
      * <pre>
      * The prototype descriptors for this type (if it is a class or interface).
@@ -18588,7 +18588,7 @@ public final class Dossier {
       return prototype_.get(index);
     }
     /**
-     * <code>repeated .Prototype prototype = 15;</code>
+     * <code>repeated .dossier.Prototype prototype = 15;</code>
      *
      * <pre>
      * The prototype descriptors for this type (if it is a class or interface).
@@ -18645,7 +18645,7 @@ public final class Dossier {
     public static final int EXTENDED_TYPE_FIELD_NUMBER = 18;
     private java.util.List<com.github.jleyba.dossier.proto.Dossier.TypeLink> extendedType_;
     /**
-     * <code>repeated .TypeLink extended_type = 18;</code>
+     * <code>repeated .dossier.TypeLink extended_type = 18;</code>
      *
      * <pre>
      * List of inherited types for a class. This should be empty if |is_class|
@@ -18656,7 +18656,7 @@ public final class Dossier {
       return extendedType_;
     }
     /**
-     * <code>repeated .TypeLink extended_type = 18;</code>
+     * <code>repeated .dossier.TypeLink extended_type = 18;</code>
      *
      * <pre>
      * List of inherited types for a class. This should be empty if |is_class|
@@ -18668,7 +18668,7 @@ public final class Dossier {
       return extendedType_;
     }
     /**
-     * <code>repeated .TypeLink extended_type = 18;</code>
+     * <code>repeated .dossier.TypeLink extended_type = 18;</code>
      *
      * <pre>
      * List of inherited types for a class. This should be empty if |is_class|
@@ -18679,7 +18679,7 @@ public final class Dossier {
       return extendedType_.size();
     }
     /**
-     * <code>repeated .TypeLink extended_type = 18;</code>
+     * <code>repeated .dossier.TypeLink extended_type = 18;</code>
      *
      * <pre>
      * List of inherited types for a class. This should be empty if |is_class|
@@ -18690,7 +18690,7 @@ public final class Dossier {
       return extendedType_.get(index);
     }
     /**
-     * <code>repeated .TypeLink extended_type = 18;</code>
+     * <code>repeated .dossier.TypeLink extended_type = 18;</code>
      *
      * <pre>
      * List of inherited types for a class. This should be empty if |is_class|
@@ -18705,7 +18705,7 @@ public final class Dossier {
     public static final int IMPLEMENTED_TYPE_FIELD_NUMBER = 19;
     private java.util.List<com.github.jleyba.dossier.proto.Dossier.TypeLink> implementedType_;
     /**
-     * <code>repeated .TypeLink implemented_type = 19;</code>
+     * <code>repeated .dossier.TypeLink implemented_type = 19;</code>
      *
      * <pre>
      * The interfaces implemented by a class/extended by an interface. This
@@ -18716,7 +18716,7 @@ public final class Dossier {
       return implementedType_;
     }
     /**
-     * <code>repeated .TypeLink implemented_type = 19;</code>
+     * <code>repeated .dossier.TypeLink implemented_type = 19;</code>
      *
      * <pre>
      * The interfaces implemented by a class/extended by an interface. This
@@ -18728,7 +18728,7 @@ public final class Dossier {
       return implementedType_;
     }
     /**
-     * <code>repeated .TypeLink implemented_type = 19;</code>
+     * <code>repeated .dossier.TypeLink implemented_type = 19;</code>
      *
      * <pre>
      * The interfaces implemented by a class/extended by an interface. This
@@ -18739,7 +18739,7 @@ public final class Dossier {
       return implementedType_.size();
     }
     /**
-     * <code>repeated .TypeLink implemented_type = 19;</code>
+     * <code>repeated .dossier.TypeLink implemented_type = 19;</code>
      *
      * <pre>
      * The interfaces implemented by a class/extended by an interface. This
@@ -18750,7 +18750,7 @@ public final class Dossier {
       return implementedType_.get(index);
     }
     /**
-     * <code>repeated .TypeLink implemented_type = 19;</code>
+     * <code>repeated .dossier.TypeLink implemented_type = 19;</code>
      *
      * <pre>
      * The interfaces implemented by a class/extended by an interface. This
@@ -18765,32 +18765,32 @@ public final class Dossier {
     public static final int COMPILER_CONSTANT_FIELD_NUMBER = 20;
     private java.util.List<com.github.jleyba.dossier.proto.Dossier.Property> compilerConstant_;
     /**
-     * <code>repeated .Property compiler_constant = 20;</code>
+     * <code>repeated .dossier.Property compiler_constant = 20;</code>
      */
     public java.util.List<com.github.jleyba.dossier.proto.Dossier.Property> getCompilerConstantList() {
       return compilerConstant_;
     }
     /**
-     * <code>repeated .Property compiler_constant = 20;</code>
+     * <code>repeated .dossier.Property compiler_constant = 20;</code>
      */
     public java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.PropertyOrBuilder> 
         getCompilerConstantOrBuilderList() {
       return compilerConstant_;
     }
     /**
-     * <code>repeated .Property compiler_constant = 20;</code>
+     * <code>repeated .dossier.Property compiler_constant = 20;</code>
      */
     public int getCompilerConstantCount() {
       return compilerConstant_.size();
     }
     /**
-     * <code>repeated .Property compiler_constant = 20;</code>
+     * <code>repeated .dossier.Property compiler_constant = 20;</code>
      */
     public com.github.jleyba.dossier.proto.Dossier.Property getCompilerConstant(int index) {
       return compilerConstant_.get(index);
     }
     /**
-     * <code>repeated .Property compiler_constant = 20;</code>
+     * <code>repeated .dossier.Property compiler_constant = 20;</code>
      */
     public com.github.jleyba.dossier.proto.Dossier.PropertyOrBuilder getCompilerConstantOrBuilder(
         int index) {
@@ -18823,7 +18823,7 @@ public final class Dossier {
     public static final int MODULE_FIELD_NUMBER = 22;
     private com.github.jleyba.dossier.proto.Dossier.TypeLink module_;
     /**
-     * <code>optional .TypeLink module = 22;</code>
+     * <code>optional .dossier.TypeLink module = 22;</code>
      *
      * <pre>
      * Link to the module this type belongs to.
@@ -18833,7 +18833,7 @@ public final class Dossier {
       return ((bitField0_ & 0x00000800) == 0x00000800);
     }
     /**
-     * <code>optional .TypeLink module = 22;</code>
+     * <code>optional .dossier.TypeLink module = 22;</code>
      *
      * <pre>
      * Link to the module this type belongs to.
@@ -18843,7 +18843,7 @@ public final class Dossier {
       return module_;
     }
     /**
-     * <code>optional .TypeLink module = 22;</code>
+     * <code>optional .dossier.TypeLink module = 22;</code>
      *
      * <pre>
      * Link to the module this type belongs to.
@@ -18856,7 +18856,7 @@ public final class Dossier {
     public static final int ALIASED_TYPE_FIELD_NUMBER = 23;
     private com.github.jleyba.dossier.proto.Dossier.TypeLink aliasedType_;
     /**
-     * <code>optional .TypeLink aliased_type = 23;</code>
+     * <code>optional .dossier.TypeLink aliased_type = 23;</code>
      *
      * <pre>
      * Link to another type that this type is an alias of.
@@ -18866,7 +18866,7 @@ public final class Dossier {
       return ((bitField0_ & 0x00001000) == 0x00001000);
     }
     /**
-     * <code>optional .TypeLink aliased_type = 23;</code>
+     * <code>optional .dossier.TypeLink aliased_type = 23;</code>
      *
      * <pre>
      * Link to another type that this type is an alias of.
@@ -18876,7 +18876,7 @@ public final class Dossier {
       return aliasedType_;
     }
     /**
-     * <code>optional .TypeLink aliased_type = 23;</code>
+     * <code>optional .dossier.TypeLink aliased_type = 23;</code>
      *
      * <pre>
      * Link to another type that this type is an alias of.
@@ -19245,7 +19245,7 @@ public final class Dossier {
       return builder;
     }
     /**
-     * Protobuf type {@code JsType}
+     * Protobuf type {@code dossier.JsType}
      *
      * <pre>
      * Describes a JavaScript type to generate documentation for. Each |JsType|
@@ -19254,16 +19254,16 @@ public final class Dossier {
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessage.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:JsType)
+        // @@protoc_insertion_point(builder_implements:dossier.JsType)
         com.github.jleyba.dossier.proto.Dossier.JsTypeOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.github.jleyba.dossier.proto.Dossier.internal_static_JsType_descriptor;
+        return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_JsType_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.github.jleyba.dossier.proto.Dossier.internal_static_JsType_fieldAccessorTable
+        return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_JsType_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 com.github.jleyba.dossier.proto.Dossier.JsType.class, com.github.jleyba.dossier.proto.Dossier.JsType.Builder.class);
       }
@@ -19407,7 +19407,7 @@ public final class Dossier {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.github.jleyba.dossier.proto.Dossier.internal_static_JsType_descriptor;
+        return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_JsType_descriptor;
       }
 
       public com.github.jleyba.dossier.proto.Dossier.JsType getDefaultInstanceForType() {
@@ -20089,13 +20089,13 @@ public final class Dossier {
       private com.google.protobuf.SingleFieldBuilder<
           com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes, com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.Builder, com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypesOrBuilder> nestedBuilder_;
       /**
-       * <code>required .JsType.NestedTypes nested = 6;</code>
+       * <code>required .dossier.JsType.NestedTypes nested = 6;</code>
        */
       public boolean hasNested() {
         return ((bitField0_ & 0x00000004) == 0x00000004);
       }
       /**
-       * <code>required .JsType.NestedTypes nested = 6;</code>
+       * <code>required .dossier.JsType.NestedTypes nested = 6;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes getNested() {
         if (nestedBuilder_ == null) {
@@ -20105,7 +20105,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>required .JsType.NestedTypes nested = 6;</code>
+       * <code>required .dossier.JsType.NestedTypes nested = 6;</code>
        */
       public Builder setNested(com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes value) {
         if (nestedBuilder_ == null) {
@@ -20121,7 +20121,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>required .JsType.NestedTypes nested = 6;</code>
+       * <code>required .dossier.JsType.NestedTypes nested = 6;</code>
        */
       public Builder setNested(
           com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.Builder builderForValue) {
@@ -20135,7 +20135,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>required .JsType.NestedTypes nested = 6;</code>
+       * <code>required .dossier.JsType.NestedTypes nested = 6;</code>
        */
       public Builder mergeNested(com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes value) {
         if (nestedBuilder_ == null) {
@@ -20154,7 +20154,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>required .JsType.NestedTypes nested = 6;</code>
+       * <code>required .dossier.JsType.NestedTypes nested = 6;</code>
        */
       public Builder clearNested() {
         if (nestedBuilder_ == null) {
@@ -20167,7 +20167,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>required .JsType.NestedTypes nested = 6;</code>
+       * <code>required .dossier.JsType.NestedTypes nested = 6;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.Builder getNestedBuilder() {
         bitField0_ |= 0x00000004;
@@ -20175,7 +20175,7 @@ public final class Dossier {
         return getNestedFieldBuilder().getBuilder();
       }
       /**
-       * <code>required .JsType.NestedTypes nested = 6;</code>
+       * <code>required .dossier.JsType.NestedTypes nested = 6;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypesOrBuilder getNestedOrBuilder() {
         if (nestedBuilder_ != null) {
@@ -20185,7 +20185,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>required .JsType.NestedTypes nested = 6;</code>
+       * <code>required .dossier.JsType.NestedTypes nested = 6;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
           com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes, com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.Builder, com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypesOrBuilder> 
@@ -20205,13 +20205,13 @@ public final class Dossier {
       private com.google.protobuf.SingleFieldBuilder<
           com.github.jleyba.dossier.proto.Dossier.Comment, com.github.jleyba.dossier.proto.Dossier.Comment.Builder, com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder> descriptionBuilder_;
       /**
-       * <code>required .Comment description = 7;</code>
+       * <code>required .dossier.Comment description = 7;</code>
        */
       public boolean hasDescription() {
         return ((bitField0_ & 0x00000008) == 0x00000008);
       }
       /**
-       * <code>required .Comment description = 7;</code>
+       * <code>required .dossier.Comment description = 7;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.Comment getDescription() {
         if (descriptionBuilder_ == null) {
@@ -20221,7 +20221,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>required .Comment description = 7;</code>
+       * <code>required .dossier.Comment description = 7;</code>
        */
       public Builder setDescription(com.github.jleyba.dossier.proto.Dossier.Comment value) {
         if (descriptionBuilder_ == null) {
@@ -20237,7 +20237,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>required .Comment description = 7;</code>
+       * <code>required .dossier.Comment description = 7;</code>
        */
       public Builder setDescription(
           com.github.jleyba.dossier.proto.Dossier.Comment.Builder builderForValue) {
@@ -20251,7 +20251,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>required .Comment description = 7;</code>
+       * <code>required .dossier.Comment description = 7;</code>
        */
       public Builder mergeDescription(com.github.jleyba.dossier.proto.Dossier.Comment value) {
         if (descriptionBuilder_ == null) {
@@ -20270,7 +20270,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>required .Comment description = 7;</code>
+       * <code>required .dossier.Comment description = 7;</code>
        */
       public Builder clearDescription() {
         if (descriptionBuilder_ == null) {
@@ -20283,7 +20283,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>required .Comment description = 7;</code>
+       * <code>required .dossier.Comment description = 7;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.Comment.Builder getDescriptionBuilder() {
         bitField0_ |= 0x00000008;
@@ -20291,7 +20291,7 @@ public final class Dossier {
         return getDescriptionFieldBuilder().getBuilder();
       }
       /**
-       * <code>required .Comment description = 7;</code>
+       * <code>required .dossier.Comment description = 7;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder getDescriptionOrBuilder() {
         if (descriptionBuilder_ != null) {
@@ -20301,7 +20301,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>required .Comment description = 7;</code>
+       * <code>required .dossier.Comment description = 7;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
           com.github.jleyba.dossier.proto.Dossier.Comment, com.github.jleyba.dossier.proto.Dossier.Comment.Builder, com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder> 
@@ -20321,13 +20321,13 @@ public final class Dossier {
       private com.google.protobuf.SingleFieldBuilder<
           com.github.jleyba.dossier.proto.Dossier.Deprecation, com.github.jleyba.dossier.proto.Dossier.Deprecation.Builder, com.github.jleyba.dossier.proto.Dossier.DeprecationOrBuilder> deprecationBuilder_;
       /**
-       * <code>optional .Deprecation deprecation = 8;</code>
+       * <code>optional .dossier.Deprecation deprecation = 8;</code>
        */
       public boolean hasDeprecation() {
         return ((bitField0_ & 0x00000010) == 0x00000010);
       }
       /**
-       * <code>optional .Deprecation deprecation = 8;</code>
+       * <code>optional .dossier.Deprecation deprecation = 8;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.Deprecation getDeprecation() {
         if (deprecationBuilder_ == null) {
@@ -20337,7 +20337,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>optional .Deprecation deprecation = 8;</code>
+       * <code>optional .dossier.Deprecation deprecation = 8;</code>
        */
       public Builder setDeprecation(com.github.jleyba.dossier.proto.Dossier.Deprecation value) {
         if (deprecationBuilder_ == null) {
@@ -20353,7 +20353,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>optional .Deprecation deprecation = 8;</code>
+       * <code>optional .dossier.Deprecation deprecation = 8;</code>
        */
       public Builder setDeprecation(
           com.github.jleyba.dossier.proto.Dossier.Deprecation.Builder builderForValue) {
@@ -20367,7 +20367,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>optional .Deprecation deprecation = 8;</code>
+       * <code>optional .dossier.Deprecation deprecation = 8;</code>
        */
       public Builder mergeDeprecation(com.github.jleyba.dossier.proto.Dossier.Deprecation value) {
         if (deprecationBuilder_ == null) {
@@ -20386,7 +20386,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>optional .Deprecation deprecation = 8;</code>
+       * <code>optional .dossier.Deprecation deprecation = 8;</code>
        */
       public Builder clearDeprecation() {
         if (deprecationBuilder_ == null) {
@@ -20399,7 +20399,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>optional .Deprecation deprecation = 8;</code>
+       * <code>optional .dossier.Deprecation deprecation = 8;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.Deprecation.Builder getDeprecationBuilder() {
         bitField0_ |= 0x00000010;
@@ -20407,7 +20407,7 @@ public final class Dossier {
         return getDeprecationFieldBuilder().getBuilder();
       }
       /**
-       * <code>optional .Deprecation deprecation = 8;</code>
+       * <code>optional .dossier.Deprecation deprecation = 8;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.DeprecationOrBuilder getDeprecationOrBuilder() {
         if (deprecationBuilder_ != null) {
@@ -20417,7 +20417,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>optional .Deprecation deprecation = 8;</code>
+       * <code>optional .dossier.Deprecation deprecation = 8;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
           com.github.jleyba.dossier.proto.Dossier.Deprecation, com.github.jleyba.dossier.proto.Dossier.Deprecation.Builder, com.github.jleyba.dossier.proto.Dossier.DeprecationOrBuilder> 
@@ -20446,7 +20446,7 @@ public final class Dossier {
           com.github.jleyba.dossier.proto.Dossier.JsType.TypeDef, com.github.jleyba.dossier.proto.Dossier.JsType.TypeDef.Builder, com.github.jleyba.dossier.proto.Dossier.JsType.TypeDefOrBuilder> typeDefBuilder_;
 
       /**
-       * <code>repeated .JsType.TypeDef type_def = 9;</code>
+       * <code>repeated .dossier.JsType.TypeDef type_def = 9;</code>
        */
       public java.util.List<com.github.jleyba.dossier.proto.Dossier.JsType.TypeDef> getTypeDefList() {
         if (typeDefBuilder_ == null) {
@@ -20456,7 +20456,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .JsType.TypeDef type_def = 9;</code>
+       * <code>repeated .dossier.JsType.TypeDef type_def = 9;</code>
        */
       public int getTypeDefCount() {
         if (typeDefBuilder_ == null) {
@@ -20466,7 +20466,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .JsType.TypeDef type_def = 9;</code>
+       * <code>repeated .dossier.JsType.TypeDef type_def = 9;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.JsType.TypeDef getTypeDef(int index) {
         if (typeDefBuilder_ == null) {
@@ -20476,7 +20476,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .JsType.TypeDef type_def = 9;</code>
+       * <code>repeated .dossier.JsType.TypeDef type_def = 9;</code>
        */
       public Builder setTypeDef(
           int index, com.github.jleyba.dossier.proto.Dossier.JsType.TypeDef value) {
@@ -20493,7 +20493,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .JsType.TypeDef type_def = 9;</code>
+       * <code>repeated .dossier.JsType.TypeDef type_def = 9;</code>
        */
       public Builder setTypeDef(
           int index, com.github.jleyba.dossier.proto.Dossier.JsType.TypeDef.Builder builderForValue) {
@@ -20507,7 +20507,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .JsType.TypeDef type_def = 9;</code>
+       * <code>repeated .dossier.JsType.TypeDef type_def = 9;</code>
        */
       public Builder addTypeDef(com.github.jleyba.dossier.proto.Dossier.JsType.TypeDef value) {
         if (typeDefBuilder_ == null) {
@@ -20523,7 +20523,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .JsType.TypeDef type_def = 9;</code>
+       * <code>repeated .dossier.JsType.TypeDef type_def = 9;</code>
        */
       public Builder addTypeDef(
           int index, com.github.jleyba.dossier.proto.Dossier.JsType.TypeDef value) {
@@ -20540,7 +20540,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .JsType.TypeDef type_def = 9;</code>
+       * <code>repeated .dossier.JsType.TypeDef type_def = 9;</code>
        */
       public Builder addTypeDef(
           com.github.jleyba.dossier.proto.Dossier.JsType.TypeDef.Builder builderForValue) {
@@ -20554,7 +20554,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .JsType.TypeDef type_def = 9;</code>
+       * <code>repeated .dossier.JsType.TypeDef type_def = 9;</code>
        */
       public Builder addTypeDef(
           int index, com.github.jleyba.dossier.proto.Dossier.JsType.TypeDef.Builder builderForValue) {
@@ -20568,7 +20568,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .JsType.TypeDef type_def = 9;</code>
+       * <code>repeated .dossier.JsType.TypeDef type_def = 9;</code>
        */
       public Builder addAllTypeDef(
           java.lang.Iterable<? extends com.github.jleyba.dossier.proto.Dossier.JsType.TypeDef> values) {
@@ -20583,7 +20583,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .JsType.TypeDef type_def = 9;</code>
+       * <code>repeated .dossier.JsType.TypeDef type_def = 9;</code>
        */
       public Builder clearTypeDef() {
         if (typeDefBuilder_ == null) {
@@ -20596,7 +20596,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .JsType.TypeDef type_def = 9;</code>
+       * <code>repeated .dossier.JsType.TypeDef type_def = 9;</code>
        */
       public Builder removeTypeDef(int index) {
         if (typeDefBuilder_ == null) {
@@ -20609,14 +20609,14 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .JsType.TypeDef type_def = 9;</code>
+       * <code>repeated .dossier.JsType.TypeDef type_def = 9;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.JsType.TypeDef.Builder getTypeDefBuilder(
           int index) {
         return getTypeDefFieldBuilder().getBuilder(index);
       }
       /**
-       * <code>repeated .JsType.TypeDef type_def = 9;</code>
+       * <code>repeated .dossier.JsType.TypeDef type_def = 9;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.JsType.TypeDefOrBuilder getTypeDefOrBuilder(
           int index) {
@@ -20626,7 +20626,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .JsType.TypeDef type_def = 9;</code>
+       * <code>repeated .dossier.JsType.TypeDef type_def = 9;</code>
        */
       public java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.JsType.TypeDefOrBuilder> 
            getTypeDefOrBuilderList() {
@@ -20637,14 +20637,14 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .JsType.TypeDef type_def = 9;</code>
+       * <code>repeated .dossier.JsType.TypeDef type_def = 9;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.JsType.TypeDef.Builder addTypeDefBuilder() {
         return getTypeDefFieldBuilder().addBuilder(
             com.github.jleyba.dossier.proto.Dossier.JsType.TypeDef.getDefaultInstance());
       }
       /**
-       * <code>repeated .JsType.TypeDef type_def = 9;</code>
+       * <code>repeated .dossier.JsType.TypeDef type_def = 9;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.JsType.TypeDef.Builder addTypeDefBuilder(
           int index) {
@@ -20652,7 +20652,7 @@ public final class Dossier {
             index, com.github.jleyba.dossier.proto.Dossier.JsType.TypeDef.getDefaultInstance());
       }
       /**
-       * <code>repeated .JsType.TypeDef type_def = 9;</code>
+       * <code>repeated .dossier.JsType.TypeDef type_def = 9;</code>
        */
       public java.util.List<com.github.jleyba.dossier.proto.Dossier.JsType.TypeDef.Builder> 
            getTypeDefBuilderList() {
@@ -20677,13 +20677,13 @@ public final class Dossier {
       private com.google.protobuf.SingleFieldBuilder<
           com.github.jleyba.dossier.proto.Dossier.Enumeration, com.github.jleyba.dossier.proto.Dossier.Enumeration.Builder, com.github.jleyba.dossier.proto.Dossier.EnumerationOrBuilder> enumerationBuilder_;
       /**
-       * <code>optional .Enumeration enumeration = 10;</code>
+       * <code>optional .dossier.Enumeration enumeration = 10;</code>
        */
       public boolean hasEnumeration() {
         return ((bitField0_ & 0x00000040) == 0x00000040);
       }
       /**
-       * <code>optional .Enumeration enumeration = 10;</code>
+       * <code>optional .dossier.Enumeration enumeration = 10;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.Enumeration getEnumeration() {
         if (enumerationBuilder_ == null) {
@@ -20693,7 +20693,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>optional .Enumeration enumeration = 10;</code>
+       * <code>optional .dossier.Enumeration enumeration = 10;</code>
        */
       public Builder setEnumeration(com.github.jleyba.dossier.proto.Dossier.Enumeration value) {
         if (enumerationBuilder_ == null) {
@@ -20709,7 +20709,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>optional .Enumeration enumeration = 10;</code>
+       * <code>optional .dossier.Enumeration enumeration = 10;</code>
        */
       public Builder setEnumeration(
           com.github.jleyba.dossier.proto.Dossier.Enumeration.Builder builderForValue) {
@@ -20723,7 +20723,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>optional .Enumeration enumeration = 10;</code>
+       * <code>optional .dossier.Enumeration enumeration = 10;</code>
        */
       public Builder mergeEnumeration(com.github.jleyba.dossier.proto.Dossier.Enumeration value) {
         if (enumerationBuilder_ == null) {
@@ -20742,7 +20742,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>optional .Enumeration enumeration = 10;</code>
+       * <code>optional .dossier.Enumeration enumeration = 10;</code>
        */
       public Builder clearEnumeration() {
         if (enumerationBuilder_ == null) {
@@ -20755,7 +20755,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>optional .Enumeration enumeration = 10;</code>
+       * <code>optional .dossier.Enumeration enumeration = 10;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.Enumeration.Builder getEnumerationBuilder() {
         bitField0_ |= 0x00000040;
@@ -20763,7 +20763,7 @@ public final class Dossier {
         return getEnumerationFieldBuilder().getBuilder();
       }
       /**
-       * <code>optional .Enumeration enumeration = 10;</code>
+       * <code>optional .dossier.Enumeration enumeration = 10;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.EnumerationOrBuilder getEnumerationOrBuilder() {
         if (enumerationBuilder_ != null) {
@@ -20773,7 +20773,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>optional .Enumeration enumeration = 10;</code>
+       * <code>optional .dossier.Enumeration enumeration = 10;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
           com.github.jleyba.dossier.proto.Dossier.Enumeration, com.github.jleyba.dossier.proto.Dossier.Enumeration.Builder, com.github.jleyba.dossier.proto.Dossier.EnumerationOrBuilder> 
@@ -20802,7 +20802,7 @@ public final class Dossier {
           com.github.jleyba.dossier.proto.Dossier.Function, com.github.jleyba.dossier.proto.Dossier.Function.Builder, com.github.jleyba.dossier.proto.Dossier.FunctionOrBuilder> staticFunctionBuilder_;
 
       /**
-       * <code>repeated .Function static_function = 11;</code>
+       * <code>repeated .dossier.Function static_function = 11;</code>
        */
       public java.util.List<com.github.jleyba.dossier.proto.Dossier.Function> getStaticFunctionList() {
         if (staticFunctionBuilder_ == null) {
@@ -20812,7 +20812,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .Function static_function = 11;</code>
+       * <code>repeated .dossier.Function static_function = 11;</code>
        */
       public int getStaticFunctionCount() {
         if (staticFunctionBuilder_ == null) {
@@ -20822,7 +20822,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .Function static_function = 11;</code>
+       * <code>repeated .dossier.Function static_function = 11;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.Function getStaticFunction(int index) {
         if (staticFunctionBuilder_ == null) {
@@ -20832,7 +20832,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .Function static_function = 11;</code>
+       * <code>repeated .dossier.Function static_function = 11;</code>
        */
       public Builder setStaticFunction(
           int index, com.github.jleyba.dossier.proto.Dossier.Function value) {
@@ -20849,7 +20849,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Function static_function = 11;</code>
+       * <code>repeated .dossier.Function static_function = 11;</code>
        */
       public Builder setStaticFunction(
           int index, com.github.jleyba.dossier.proto.Dossier.Function.Builder builderForValue) {
@@ -20863,7 +20863,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Function static_function = 11;</code>
+       * <code>repeated .dossier.Function static_function = 11;</code>
        */
       public Builder addStaticFunction(com.github.jleyba.dossier.proto.Dossier.Function value) {
         if (staticFunctionBuilder_ == null) {
@@ -20879,7 +20879,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Function static_function = 11;</code>
+       * <code>repeated .dossier.Function static_function = 11;</code>
        */
       public Builder addStaticFunction(
           int index, com.github.jleyba.dossier.proto.Dossier.Function value) {
@@ -20896,7 +20896,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Function static_function = 11;</code>
+       * <code>repeated .dossier.Function static_function = 11;</code>
        */
       public Builder addStaticFunction(
           com.github.jleyba.dossier.proto.Dossier.Function.Builder builderForValue) {
@@ -20910,7 +20910,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Function static_function = 11;</code>
+       * <code>repeated .dossier.Function static_function = 11;</code>
        */
       public Builder addStaticFunction(
           int index, com.github.jleyba.dossier.proto.Dossier.Function.Builder builderForValue) {
@@ -20924,7 +20924,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Function static_function = 11;</code>
+       * <code>repeated .dossier.Function static_function = 11;</code>
        */
       public Builder addAllStaticFunction(
           java.lang.Iterable<? extends com.github.jleyba.dossier.proto.Dossier.Function> values) {
@@ -20939,7 +20939,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Function static_function = 11;</code>
+       * <code>repeated .dossier.Function static_function = 11;</code>
        */
       public Builder clearStaticFunction() {
         if (staticFunctionBuilder_ == null) {
@@ -20952,7 +20952,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Function static_function = 11;</code>
+       * <code>repeated .dossier.Function static_function = 11;</code>
        */
       public Builder removeStaticFunction(int index) {
         if (staticFunctionBuilder_ == null) {
@@ -20965,14 +20965,14 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Function static_function = 11;</code>
+       * <code>repeated .dossier.Function static_function = 11;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.Function.Builder getStaticFunctionBuilder(
           int index) {
         return getStaticFunctionFieldBuilder().getBuilder(index);
       }
       /**
-       * <code>repeated .Function static_function = 11;</code>
+       * <code>repeated .dossier.Function static_function = 11;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.FunctionOrBuilder getStaticFunctionOrBuilder(
           int index) {
@@ -20982,7 +20982,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .Function static_function = 11;</code>
+       * <code>repeated .dossier.Function static_function = 11;</code>
        */
       public java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.FunctionOrBuilder> 
            getStaticFunctionOrBuilderList() {
@@ -20993,14 +20993,14 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .Function static_function = 11;</code>
+       * <code>repeated .dossier.Function static_function = 11;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.Function.Builder addStaticFunctionBuilder() {
         return getStaticFunctionFieldBuilder().addBuilder(
             com.github.jleyba.dossier.proto.Dossier.Function.getDefaultInstance());
       }
       /**
-       * <code>repeated .Function static_function = 11;</code>
+       * <code>repeated .dossier.Function static_function = 11;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.Function.Builder addStaticFunctionBuilder(
           int index) {
@@ -21008,7 +21008,7 @@ public final class Dossier {
             index, com.github.jleyba.dossier.proto.Dossier.Function.getDefaultInstance());
       }
       /**
-       * <code>repeated .Function static_function = 11;</code>
+       * <code>repeated .dossier.Function static_function = 11;</code>
        */
       public java.util.List<com.github.jleyba.dossier.proto.Dossier.Function.Builder> 
            getStaticFunctionBuilderList() {
@@ -21042,7 +21042,7 @@ public final class Dossier {
           com.github.jleyba.dossier.proto.Dossier.Property, com.github.jleyba.dossier.proto.Dossier.Property.Builder, com.github.jleyba.dossier.proto.Dossier.PropertyOrBuilder> staticPropertyBuilder_;
 
       /**
-       * <code>repeated .Property static_property = 12;</code>
+       * <code>repeated .dossier.Property static_property = 12;</code>
        */
       public java.util.List<com.github.jleyba.dossier.proto.Dossier.Property> getStaticPropertyList() {
         if (staticPropertyBuilder_ == null) {
@@ -21052,7 +21052,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .Property static_property = 12;</code>
+       * <code>repeated .dossier.Property static_property = 12;</code>
        */
       public int getStaticPropertyCount() {
         if (staticPropertyBuilder_ == null) {
@@ -21062,7 +21062,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .Property static_property = 12;</code>
+       * <code>repeated .dossier.Property static_property = 12;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.Property getStaticProperty(int index) {
         if (staticPropertyBuilder_ == null) {
@@ -21072,7 +21072,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .Property static_property = 12;</code>
+       * <code>repeated .dossier.Property static_property = 12;</code>
        */
       public Builder setStaticProperty(
           int index, com.github.jleyba.dossier.proto.Dossier.Property value) {
@@ -21089,7 +21089,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Property static_property = 12;</code>
+       * <code>repeated .dossier.Property static_property = 12;</code>
        */
       public Builder setStaticProperty(
           int index, com.github.jleyba.dossier.proto.Dossier.Property.Builder builderForValue) {
@@ -21103,7 +21103,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Property static_property = 12;</code>
+       * <code>repeated .dossier.Property static_property = 12;</code>
        */
       public Builder addStaticProperty(com.github.jleyba.dossier.proto.Dossier.Property value) {
         if (staticPropertyBuilder_ == null) {
@@ -21119,7 +21119,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Property static_property = 12;</code>
+       * <code>repeated .dossier.Property static_property = 12;</code>
        */
       public Builder addStaticProperty(
           int index, com.github.jleyba.dossier.proto.Dossier.Property value) {
@@ -21136,7 +21136,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Property static_property = 12;</code>
+       * <code>repeated .dossier.Property static_property = 12;</code>
        */
       public Builder addStaticProperty(
           com.github.jleyba.dossier.proto.Dossier.Property.Builder builderForValue) {
@@ -21150,7 +21150,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Property static_property = 12;</code>
+       * <code>repeated .dossier.Property static_property = 12;</code>
        */
       public Builder addStaticProperty(
           int index, com.github.jleyba.dossier.proto.Dossier.Property.Builder builderForValue) {
@@ -21164,7 +21164,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Property static_property = 12;</code>
+       * <code>repeated .dossier.Property static_property = 12;</code>
        */
       public Builder addAllStaticProperty(
           java.lang.Iterable<? extends com.github.jleyba.dossier.proto.Dossier.Property> values) {
@@ -21179,7 +21179,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Property static_property = 12;</code>
+       * <code>repeated .dossier.Property static_property = 12;</code>
        */
       public Builder clearStaticProperty() {
         if (staticPropertyBuilder_ == null) {
@@ -21192,7 +21192,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Property static_property = 12;</code>
+       * <code>repeated .dossier.Property static_property = 12;</code>
        */
       public Builder removeStaticProperty(int index) {
         if (staticPropertyBuilder_ == null) {
@@ -21205,14 +21205,14 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Property static_property = 12;</code>
+       * <code>repeated .dossier.Property static_property = 12;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.Property.Builder getStaticPropertyBuilder(
           int index) {
         return getStaticPropertyFieldBuilder().getBuilder(index);
       }
       /**
-       * <code>repeated .Property static_property = 12;</code>
+       * <code>repeated .dossier.Property static_property = 12;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.PropertyOrBuilder getStaticPropertyOrBuilder(
           int index) {
@@ -21222,7 +21222,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .Property static_property = 12;</code>
+       * <code>repeated .dossier.Property static_property = 12;</code>
        */
       public java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.PropertyOrBuilder> 
            getStaticPropertyOrBuilderList() {
@@ -21233,14 +21233,14 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .Property static_property = 12;</code>
+       * <code>repeated .dossier.Property static_property = 12;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.Property.Builder addStaticPropertyBuilder() {
         return getStaticPropertyFieldBuilder().addBuilder(
             com.github.jleyba.dossier.proto.Dossier.Property.getDefaultInstance());
       }
       /**
-       * <code>repeated .Property static_property = 12;</code>
+       * <code>repeated .dossier.Property static_property = 12;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.Property.Builder addStaticPropertyBuilder(
           int index) {
@@ -21248,7 +21248,7 @@ public final class Dossier {
             index, com.github.jleyba.dossier.proto.Dossier.Property.getDefaultInstance());
       }
       /**
-       * <code>repeated .Property static_property = 12;</code>
+       * <code>repeated .dossier.Property static_property = 12;</code>
        */
       public java.util.List<com.github.jleyba.dossier.proto.Dossier.Property.Builder> 
            getStaticPropertyBuilderList() {
@@ -21273,7 +21273,7 @@ public final class Dossier {
       private com.google.protobuf.SingleFieldBuilder<
           com.github.jleyba.dossier.proto.Dossier.Function, com.github.jleyba.dossier.proto.Dossier.Function.Builder, com.github.jleyba.dossier.proto.Dossier.FunctionOrBuilder> mainFunctionBuilder_;
       /**
-       * <code>optional .Function main_function = 13;</code>
+       * <code>optional .dossier.Function main_function = 13;</code>
        *
        * <pre>
        * Describes the main function for this type. This is typically a class
@@ -21285,7 +21285,7 @@ public final class Dossier {
         return ((bitField0_ & 0x00000200) == 0x00000200);
       }
       /**
-       * <code>optional .Function main_function = 13;</code>
+       * <code>optional .dossier.Function main_function = 13;</code>
        *
        * <pre>
        * Describes the main function for this type. This is typically a class
@@ -21301,7 +21301,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>optional .Function main_function = 13;</code>
+       * <code>optional .dossier.Function main_function = 13;</code>
        *
        * <pre>
        * Describes the main function for this type. This is typically a class
@@ -21323,7 +21323,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>optional .Function main_function = 13;</code>
+       * <code>optional .dossier.Function main_function = 13;</code>
        *
        * <pre>
        * Describes the main function for this type. This is typically a class
@@ -21343,7 +21343,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>optional .Function main_function = 13;</code>
+       * <code>optional .dossier.Function main_function = 13;</code>
        *
        * <pre>
        * Describes the main function for this type. This is typically a class
@@ -21368,7 +21368,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>optional .Function main_function = 13;</code>
+       * <code>optional .dossier.Function main_function = 13;</code>
        *
        * <pre>
        * Describes the main function for this type. This is typically a class
@@ -21387,7 +21387,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>optional .Function main_function = 13;</code>
+       * <code>optional .dossier.Function main_function = 13;</code>
        *
        * <pre>
        * Describes the main function for this type. This is typically a class
@@ -21401,7 +21401,7 @@ public final class Dossier {
         return getMainFunctionFieldBuilder().getBuilder();
       }
       /**
-       * <code>optional .Function main_function = 13;</code>
+       * <code>optional .dossier.Function main_function = 13;</code>
        *
        * <pre>
        * Describes the main function for this type. This is typically a class
@@ -21417,7 +21417,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>optional .Function main_function = 13;</code>
+       * <code>optional .dossier.Function main_function = 13;</code>
        *
        * <pre>
        * Describes the main function for this type. This is typically a class
@@ -21500,7 +21500,7 @@ public final class Dossier {
           com.github.jleyba.dossier.proto.Dossier.Prototype, com.github.jleyba.dossier.proto.Dossier.Prototype.Builder, com.github.jleyba.dossier.proto.Dossier.PrototypeOrBuilder> prototypeBuilder_;
 
       /**
-       * <code>repeated .Prototype prototype = 15;</code>
+       * <code>repeated .dossier.Prototype prototype = 15;</code>
        *
        * <pre>
        * The prototype descriptors for this type (if it is a class or interface).
@@ -21517,7 +21517,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .Prototype prototype = 15;</code>
+       * <code>repeated .dossier.Prototype prototype = 15;</code>
        *
        * <pre>
        * The prototype descriptors for this type (if it is a class or interface).
@@ -21534,7 +21534,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .Prototype prototype = 15;</code>
+       * <code>repeated .dossier.Prototype prototype = 15;</code>
        *
        * <pre>
        * The prototype descriptors for this type (if it is a class or interface).
@@ -21551,7 +21551,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .Prototype prototype = 15;</code>
+       * <code>repeated .dossier.Prototype prototype = 15;</code>
        *
        * <pre>
        * The prototype descriptors for this type (if it is a class or interface).
@@ -21575,7 +21575,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Prototype prototype = 15;</code>
+       * <code>repeated .dossier.Prototype prototype = 15;</code>
        *
        * <pre>
        * The prototype descriptors for this type (if it is a class or interface).
@@ -21596,7 +21596,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Prototype prototype = 15;</code>
+       * <code>repeated .dossier.Prototype prototype = 15;</code>
        *
        * <pre>
        * The prototype descriptors for this type (if it is a class or interface).
@@ -21619,7 +21619,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Prototype prototype = 15;</code>
+       * <code>repeated .dossier.Prototype prototype = 15;</code>
        *
        * <pre>
        * The prototype descriptors for this type (if it is a class or interface).
@@ -21643,7 +21643,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Prototype prototype = 15;</code>
+       * <code>repeated .dossier.Prototype prototype = 15;</code>
        *
        * <pre>
        * The prototype descriptors for this type (if it is a class or interface).
@@ -21664,7 +21664,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Prototype prototype = 15;</code>
+       * <code>repeated .dossier.Prototype prototype = 15;</code>
        *
        * <pre>
        * The prototype descriptors for this type (if it is a class or interface).
@@ -21685,7 +21685,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Prototype prototype = 15;</code>
+       * <code>repeated .dossier.Prototype prototype = 15;</code>
        *
        * <pre>
        * The prototype descriptors for this type (if it is a class or interface).
@@ -21707,7 +21707,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Prototype prototype = 15;</code>
+       * <code>repeated .dossier.Prototype prototype = 15;</code>
        *
        * <pre>
        * The prototype descriptors for this type (if it is a class or interface).
@@ -21727,7 +21727,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Prototype prototype = 15;</code>
+       * <code>repeated .dossier.Prototype prototype = 15;</code>
        *
        * <pre>
        * The prototype descriptors for this type (if it is a class or interface).
@@ -21747,7 +21747,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Prototype prototype = 15;</code>
+       * <code>repeated .dossier.Prototype prototype = 15;</code>
        *
        * <pre>
        * The prototype descriptors for this type (if it is a class or interface).
@@ -21761,7 +21761,7 @@ public final class Dossier {
         return getPrototypeFieldBuilder().getBuilder(index);
       }
       /**
-       * <code>repeated .Prototype prototype = 15;</code>
+       * <code>repeated .dossier.Prototype prototype = 15;</code>
        *
        * <pre>
        * The prototype descriptors for this type (if it is a class or interface).
@@ -21778,7 +21778,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .Prototype prototype = 15;</code>
+       * <code>repeated .dossier.Prototype prototype = 15;</code>
        *
        * <pre>
        * The prototype descriptors for this type (if it is a class or interface).
@@ -21796,7 +21796,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .Prototype prototype = 15;</code>
+       * <code>repeated .dossier.Prototype prototype = 15;</code>
        *
        * <pre>
        * The prototype descriptors for this type (if it is a class or interface).
@@ -21810,7 +21810,7 @@ public final class Dossier {
             com.github.jleyba.dossier.proto.Dossier.Prototype.getDefaultInstance());
       }
       /**
-       * <code>repeated .Prototype prototype = 15;</code>
+       * <code>repeated .dossier.Prototype prototype = 15;</code>
        *
        * <pre>
        * The prototype descriptors for this type (if it is a class or interface).
@@ -21825,7 +21825,7 @@ public final class Dossier {
             index, com.github.jleyba.dossier.proto.Dossier.Prototype.getDefaultInstance());
       }
       /**
-       * <code>repeated .Prototype prototype = 15;</code>
+       * <code>repeated .dossier.Prototype prototype = 15;</code>
        *
        * <pre>
        * The prototype descriptors for this type (if it is a class or interface).
@@ -21950,7 +21950,7 @@ public final class Dossier {
           com.github.jleyba.dossier.proto.Dossier.TypeLink, com.github.jleyba.dossier.proto.Dossier.TypeLink.Builder, com.github.jleyba.dossier.proto.Dossier.TypeLinkOrBuilder> extendedTypeBuilder_;
 
       /**
-       * <code>repeated .TypeLink extended_type = 18;</code>
+       * <code>repeated .dossier.TypeLink extended_type = 18;</code>
        *
        * <pre>
        * List of inherited types for a class. This should be empty if |is_class|
@@ -21965,7 +21965,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .TypeLink extended_type = 18;</code>
+       * <code>repeated .dossier.TypeLink extended_type = 18;</code>
        *
        * <pre>
        * List of inherited types for a class. This should be empty if |is_class|
@@ -21980,7 +21980,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .TypeLink extended_type = 18;</code>
+       * <code>repeated .dossier.TypeLink extended_type = 18;</code>
        *
        * <pre>
        * List of inherited types for a class. This should be empty if |is_class|
@@ -21995,7 +21995,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .TypeLink extended_type = 18;</code>
+       * <code>repeated .dossier.TypeLink extended_type = 18;</code>
        *
        * <pre>
        * List of inherited types for a class. This should be empty if |is_class|
@@ -22017,7 +22017,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .TypeLink extended_type = 18;</code>
+       * <code>repeated .dossier.TypeLink extended_type = 18;</code>
        *
        * <pre>
        * List of inherited types for a class. This should be empty if |is_class|
@@ -22036,7 +22036,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .TypeLink extended_type = 18;</code>
+       * <code>repeated .dossier.TypeLink extended_type = 18;</code>
        *
        * <pre>
        * List of inherited types for a class. This should be empty if |is_class|
@@ -22057,7 +22057,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .TypeLink extended_type = 18;</code>
+       * <code>repeated .dossier.TypeLink extended_type = 18;</code>
        *
        * <pre>
        * List of inherited types for a class. This should be empty if |is_class|
@@ -22079,7 +22079,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .TypeLink extended_type = 18;</code>
+       * <code>repeated .dossier.TypeLink extended_type = 18;</code>
        *
        * <pre>
        * List of inherited types for a class. This should be empty if |is_class|
@@ -22098,7 +22098,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .TypeLink extended_type = 18;</code>
+       * <code>repeated .dossier.TypeLink extended_type = 18;</code>
        *
        * <pre>
        * List of inherited types for a class. This should be empty if |is_class|
@@ -22117,7 +22117,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .TypeLink extended_type = 18;</code>
+       * <code>repeated .dossier.TypeLink extended_type = 18;</code>
        *
        * <pre>
        * List of inherited types for a class. This should be empty if |is_class|
@@ -22137,7 +22137,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .TypeLink extended_type = 18;</code>
+       * <code>repeated .dossier.TypeLink extended_type = 18;</code>
        *
        * <pre>
        * List of inherited types for a class. This should be empty if |is_class|
@@ -22155,7 +22155,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .TypeLink extended_type = 18;</code>
+       * <code>repeated .dossier.TypeLink extended_type = 18;</code>
        *
        * <pre>
        * List of inherited types for a class. This should be empty if |is_class|
@@ -22173,7 +22173,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .TypeLink extended_type = 18;</code>
+       * <code>repeated .dossier.TypeLink extended_type = 18;</code>
        *
        * <pre>
        * List of inherited types for a class. This should be empty if |is_class|
@@ -22185,7 +22185,7 @@ public final class Dossier {
         return getExtendedTypeFieldBuilder().getBuilder(index);
       }
       /**
-       * <code>repeated .TypeLink extended_type = 18;</code>
+       * <code>repeated .dossier.TypeLink extended_type = 18;</code>
        *
        * <pre>
        * List of inherited types for a class. This should be empty if |is_class|
@@ -22200,7 +22200,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .TypeLink extended_type = 18;</code>
+       * <code>repeated .dossier.TypeLink extended_type = 18;</code>
        *
        * <pre>
        * List of inherited types for a class. This should be empty if |is_class|
@@ -22216,7 +22216,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .TypeLink extended_type = 18;</code>
+       * <code>repeated .dossier.TypeLink extended_type = 18;</code>
        *
        * <pre>
        * List of inherited types for a class. This should be empty if |is_class|
@@ -22228,7 +22228,7 @@ public final class Dossier {
             com.github.jleyba.dossier.proto.Dossier.TypeLink.getDefaultInstance());
       }
       /**
-       * <code>repeated .TypeLink extended_type = 18;</code>
+       * <code>repeated .dossier.TypeLink extended_type = 18;</code>
        *
        * <pre>
        * List of inherited types for a class. This should be empty if |is_class|
@@ -22241,7 +22241,7 @@ public final class Dossier {
             index, com.github.jleyba.dossier.proto.Dossier.TypeLink.getDefaultInstance());
       }
       /**
-       * <code>repeated .TypeLink extended_type = 18;</code>
+       * <code>repeated .dossier.TypeLink extended_type = 18;</code>
        *
        * <pre>
        * List of inherited types for a class. This should be empty if |is_class|
@@ -22280,7 +22280,7 @@ public final class Dossier {
           com.github.jleyba.dossier.proto.Dossier.TypeLink, com.github.jleyba.dossier.proto.Dossier.TypeLink.Builder, com.github.jleyba.dossier.proto.Dossier.TypeLinkOrBuilder> implementedTypeBuilder_;
 
       /**
-       * <code>repeated .TypeLink implemented_type = 19;</code>
+       * <code>repeated .dossier.TypeLink implemented_type = 19;</code>
        *
        * <pre>
        * The interfaces implemented by a class/extended by an interface. This
@@ -22295,7 +22295,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .TypeLink implemented_type = 19;</code>
+       * <code>repeated .dossier.TypeLink implemented_type = 19;</code>
        *
        * <pre>
        * The interfaces implemented by a class/extended by an interface. This
@@ -22310,7 +22310,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .TypeLink implemented_type = 19;</code>
+       * <code>repeated .dossier.TypeLink implemented_type = 19;</code>
        *
        * <pre>
        * The interfaces implemented by a class/extended by an interface. This
@@ -22325,7 +22325,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .TypeLink implemented_type = 19;</code>
+       * <code>repeated .dossier.TypeLink implemented_type = 19;</code>
        *
        * <pre>
        * The interfaces implemented by a class/extended by an interface. This
@@ -22347,7 +22347,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .TypeLink implemented_type = 19;</code>
+       * <code>repeated .dossier.TypeLink implemented_type = 19;</code>
        *
        * <pre>
        * The interfaces implemented by a class/extended by an interface. This
@@ -22366,7 +22366,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .TypeLink implemented_type = 19;</code>
+       * <code>repeated .dossier.TypeLink implemented_type = 19;</code>
        *
        * <pre>
        * The interfaces implemented by a class/extended by an interface. This
@@ -22387,7 +22387,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .TypeLink implemented_type = 19;</code>
+       * <code>repeated .dossier.TypeLink implemented_type = 19;</code>
        *
        * <pre>
        * The interfaces implemented by a class/extended by an interface. This
@@ -22409,7 +22409,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .TypeLink implemented_type = 19;</code>
+       * <code>repeated .dossier.TypeLink implemented_type = 19;</code>
        *
        * <pre>
        * The interfaces implemented by a class/extended by an interface. This
@@ -22428,7 +22428,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .TypeLink implemented_type = 19;</code>
+       * <code>repeated .dossier.TypeLink implemented_type = 19;</code>
        *
        * <pre>
        * The interfaces implemented by a class/extended by an interface. This
@@ -22447,7 +22447,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .TypeLink implemented_type = 19;</code>
+       * <code>repeated .dossier.TypeLink implemented_type = 19;</code>
        *
        * <pre>
        * The interfaces implemented by a class/extended by an interface. This
@@ -22467,7 +22467,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .TypeLink implemented_type = 19;</code>
+       * <code>repeated .dossier.TypeLink implemented_type = 19;</code>
        *
        * <pre>
        * The interfaces implemented by a class/extended by an interface. This
@@ -22485,7 +22485,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .TypeLink implemented_type = 19;</code>
+       * <code>repeated .dossier.TypeLink implemented_type = 19;</code>
        *
        * <pre>
        * The interfaces implemented by a class/extended by an interface. This
@@ -22503,7 +22503,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .TypeLink implemented_type = 19;</code>
+       * <code>repeated .dossier.TypeLink implemented_type = 19;</code>
        *
        * <pre>
        * The interfaces implemented by a class/extended by an interface. This
@@ -22515,7 +22515,7 @@ public final class Dossier {
         return getImplementedTypeFieldBuilder().getBuilder(index);
       }
       /**
-       * <code>repeated .TypeLink implemented_type = 19;</code>
+       * <code>repeated .dossier.TypeLink implemented_type = 19;</code>
        *
        * <pre>
        * The interfaces implemented by a class/extended by an interface. This
@@ -22530,7 +22530,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .TypeLink implemented_type = 19;</code>
+       * <code>repeated .dossier.TypeLink implemented_type = 19;</code>
        *
        * <pre>
        * The interfaces implemented by a class/extended by an interface. This
@@ -22546,7 +22546,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .TypeLink implemented_type = 19;</code>
+       * <code>repeated .dossier.TypeLink implemented_type = 19;</code>
        *
        * <pre>
        * The interfaces implemented by a class/extended by an interface. This
@@ -22558,7 +22558,7 @@ public final class Dossier {
             com.github.jleyba.dossier.proto.Dossier.TypeLink.getDefaultInstance());
       }
       /**
-       * <code>repeated .TypeLink implemented_type = 19;</code>
+       * <code>repeated .dossier.TypeLink implemented_type = 19;</code>
        *
        * <pre>
        * The interfaces implemented by a class/extended by an interface. This
@@ -22571,7 +22571,7 @@ public final class Dossier {
             index, com.github.jleyba.dossier.proto.Dossier.TypeLink.getDefaultInstance());
       }
       /**
-       * <code>repeated .TypeLink implemented_type = 19;</code>
+       * <code>repeated .dossier.TypeLink implemented_type = 19;</code>
        *
        * <pre>
        * The interfaces implemented by a class/extended by an interface. This
@@ -22610,7 +22610,7 @@ public final class Dossier {
           com.github.jleyba.dossier.proto.Dossier.Property, com.github.jleyba.dossier.proto.Dossier.Property.Builder, com.github.jleyba.dossier.proto.Dossier.PropertyOrBuilder> compilerConstantBuilder_;
 
       /**
-       * <code>repeated .Property compiler_constant = 20;</code>
+       * <code>repeated .dossier.Property compiler_constant = 20;</code>
        */
       public java.util.List<com.github.jleyba.dossier.proto.Dossier.Property> getCompilerConstantList() {
         if (compilerConstantBuilder_ == null) {
@@ -22620,7 +22620,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .Property compiler_constant = 20;</code>
+       * <code>repeated .dossier.Property compiler_constant = 20;</code>
        */
       public int getCompilerConstantCount() {
         if (compilerConstantBuilder_ == null) {
@@ -22630,7 +22630,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .Property compiler_constant = 20;</code>
+       * <code>repeated .dossier.Property compiler_constant = 20;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.Property getCompilerConstant(int index) {
         if (compilerConstantBuilder_ == null) {
@@ -22640,7 +22640,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .Property compiler_constant = 20;</code>
+       * <code>repeated .dossier.Property compiler_constant = 20;</code>
        */
       public Builder setCompilerConstant(
           int index, com.github.jleyba.dossier.proto.Dossier.Property value) {
@@ -22657,7 +22657,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Property compiler_constant = 20;</code>
+       * <code>repeated .dossier.Property compiler_constant = 20;</code>
        */
       public Builder setCompilerConstant(
           int index, com.github.jleyba.dossier.proto.Dossier.Property.Builder builderForValue) {
@@ -22671,7 +22671,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Property compiler_constant = 20;</code>
+       * <code>repeated .dossier.Property compiler_constant = 20;</code>
        */
       public Builder addCompilerConstant(com.github.jleyba.dossier.proto.Dossier.Property value) {
         if (compilerConstantBuilder_ == null) {
@@ -22687,7 +22687,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Property compiler_constant = 20;</code>
+       * <code>repeated .dossier.Property compiler_constant = 20;</code>
        */
       public Builder addCompilerConstant(
           int index, com.github.jleyba.dossier.proto.Dossier.Property value) {
@@ -22704,7 +22704,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Property compiler_constant = 20;</code>
+       * <code>repeated .dossier.Property compiler_constant = 20;</code>
        */
       public Builder addCompilerConstant(
           com.github.jleyba.dossier.proto.Dossier.Property.Builder builderForValue) {
@@ -22718,7 +22718,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Property compiler_constant = 20;</code>
+       * <code>repeated .dossier.Property compiler_constant = 20;</code>
        */
       public Builder addCompilerConstant(
           int index, com.github.jleyba.dossier.proto.Dossier.Property.Builder builderForValue) {
@@ -22732,7 +22732,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Property compiler_constant = 20;</code>
+       * <code>repeated .dossier.Property compiler_constant = 20;</code>
        */
       public Builder addAllCompilerConstant(
           java.lang.Iterable<? extends com.github.jleyba.dossier.proto.Dossier.Property> values) {
@@ -22747,7 +22747,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Property compiler_constant = 20;</code>
+       * <code>repeated .dossier.Property compiler_constant = 20;</code>
        */
       public Builder clearCompilerConstant() {
         if (compilerConstantBuilder_ == null) {
@@ -22760,7 +22760,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Property compiler_constant = 20;</code>
+       * <code>repeated .dossier.Property compiler_constant = 20;</code>
        */
       public Builder removeCompilerConstant(int index) {
         if (compilerConstantBuilder_ == null) {
@@ -22773,14 +22773,14 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .Property compiler_constant = 20;</code>
+       * <code>repeated .dossier.Property compiler_constant = 20;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.Property.Builder getCompilerConstantBuilder(
           int index) {
         return getCompilerConstantFieldBuilder().getBuilder(index);
       }
       /**
-       * <code>repeated .Property compiler_constant = 20;</code>
+       * <code>repeated .dossier.Property compiler_constant = 20;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.PropertyOrBuilder getCompilerConstantOrBuilder(
           int index) {
@@ -22790,7 +22790,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .Property compiler_constant = 20;</code>
+       * <code>repeated .dossier.Property compiler_constant = 20;</code>
        */
       public java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.PropertyOrBuilder> 
            getCompilerConstantOrBuilderList() {
@@ -22801,14 +22801,14 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .Property compiler_constant = 20;</code>
+       * <code>repeated .dossier.Property compiler_constant = 20;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.Property.Builder addCompilerConstantBuilder() {
         return getCompilerConstantFieldBuilder().addBuilder(
             com.github.jleyba.dossier.proto.Dossier.Property.getDefaultInstance());
       }
       /**
-       * <code>repeated .Property compiler_constant = 20;</code>
+       * <code>repeated .dossier.Property compiler_constant = 20;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.Property.Builder addCompilerConstantBuilder(
           int index) {
@@ -22816,7 +22816,7 @@ public final class Dossier {
             index, com.github.jleyba.dossier.proto.Dossier.Property.getDefaultInstance());
       }
       /**
-       * <code>repeated .Property compiler_constant = 20;</code>
+       * <code>repeated .dossier.Property compiler_constant = 20;</code>
        */
       public java.util.List<com.github.jleyba.dossier.proto.Dossier.Property.Builder> 
            getCompilerConstantBuilderList() {
@@ -22889,7 +22889,7 @@ public final class Dossier {
       private com.google.protobuf.SingleFieldBuilder<
           com.github.jleyba.dossier.proto.Dossier.TypeLink, com.github.jleyba.dossier.proto.Dossier.TypeLink.Builder, com.github.jleyba.dossier.proto.Dossier.TypeLinkOrBuilder> moduleBuilder_;
       /**
-       * <code>optional .TypeLink module = 22;</code>
+       * <code>optional .dossier.TypeLink module = 22;</code>
        *
        * <pre>
        * Link to the module this type belongs to.
@@ -22899,7 +22899,7 @@ public final class Dossier {
         return ((bitField0_ & 0x00040000) == 0x00040000);
       }
       /**
-       * <code>optional .TypeLink module = 22;</code>
+       * <code>optional .dossier.TypeLink module = 22;</code>
        *
        * <pre>
        * Link to the module this type belongs to.
@@ -22913,7 +22913,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>optional .TypeLink module = 22;</code>
+       * <code>optional .dossier.TypeLink module = 22;</code>
        *
        * <pre>
        * Link to the module this type belongs to.
@@ -22933,7 +22933,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>optional .TypeLink module = 22;</code>
+       * <code>optional .dossier.TypeLink module = 22;</code>
        *
        * <pre>
        * Link to the module this type belongs to.
@@ -22951,7 +22951,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>optional .TypeLink module = 22;</code>
+       * <code>optional .dossier.TypeLink module = 22;</code>
        *
        * <pre>
        * Link to the module this type belongs to.
@@ -22974,7 +22974,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>optional .TypeLink module = 22;</code>
+       * <code>optional .dossier.TypeLink module = 22;</code>
        *
        * <pre>
        * Link to the module this type belongs to.
@@ -22991,7 +22991,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>optional .TypeLink module = 22;</code>
+       * <code>optional .dossier.TypeLink module = 22;</code>
        *
        * <pre>
        * Link to the module this type belongs to.
@@ -23003,7 +23003,7 @@ public final class Dossier {
         return getModuleFieldBuilder().getBuilder();
       }
       /**
-       * <code>optional .TypeLink module = 22;</code>
+       * <code>optional .dossier.TypeLink module = 22;</code>
        *
        * <pre>
        * Link to the module this type belongs to.
@@ -23017,7 +23017,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>optional .TypeLink module = 22;</code>
+       * <code>optional .dossier.TypeLink module = 22;</code>
        *
        * <pre>
        * Link to the module this type belongs to.
@@ -23041,7 +23041,7 @@ public final class Dossier {
       private com.google.protobuf.SingleFieldBuilder<
           com.github.jleyba.dossier.proto.Dossier.TypeLink, com.github.jleyba.dossier.proto.Dossier.TypeLink.Builder, com.github.jleyba.dossier.proto.Dossier.TypeLinkOrBuilder> aliasedTypeBuilder_;
       /**
-       * <code>optional .TypeLink aliased_type = 23;</code>
+       * <code>optional .dossier.TypeLink aliased_type = 23;</code>
        *
        * <pre>
        * Link to another type that this type is an alias of.
@@ -23051,7 +23051,7 @@ public final class Dossier {
         return ((bitField0_ & 0x00080000) == 0x00080000);
       }
       /**
-       * <code>optional .TypeLink aliased_type = 23;</code>
+       * <code>optional .dossier.TypeLink aliased_type = 23;</code>
        *
        * <pre>
        * Link to another type that this type is an alias of.
@@ -23065,7 +23065,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>optional .TypeLink aliased_type = 23;</code>
+       * <code>optional .dossier.TypeLink aliased_type = 23;</code>
        *
        * <pre>
        * Link to another type that this type is an alias of.
@@ -23085,7 +23085,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>optional .TypeLink aliased_type = 23;</code>
+       * <code>optional .dossier.TypeLink aliased_type = 23;</code>
        *
        * <pre>
        * Link to another type that this type is an alias of.
@@ -23103,7 +23103,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>optional .TypeLink aliased_type = 23;</code>
+       * <code>optional .dossier.TypeLink aliased_type = 23;</code>
        *
        * <pre>
        * Link to another type that this type is an alias of.
@@ -23126,7 +23126,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>optional .TypeLink aliased_type = 23;</code>
+       * <code>optional .dossier.TypeLink aliased_type = 23;</code>
        *
        * <pre>
        * Link to another type that this type is an alias of.
@@ -23143,7 +23143,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>optional .TypeLink aliased_type = 23;</code>
+       * <code>optional .dossier.TypeLink aliased_type = 23;</code>
        *
        * <pre>
        * Link to another type that this type is an alias of.
@@ -23155,7 +23155,7 @@ public final class Dossier {
         return getAliasedTypeFieldBuilder().getBuilder();
       }
       /**
-       * <code>optional .TypeLink aliased_type = 23;</code>
+       * <code>optional .dossier.TypeLink aliased_type = 23;</code>
        *
        * <pre>
        * Link to another type that this type is an alias of.
@@ -23169,7 +23169,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>optional .TypeLink aliased_type = 23;</code>
+       * <code>optional .dossier.TypeLink aliased_type = 23;</code>
        *
        * <pre>
        * Link to another type that this type is an alias of.
@@ -23189,7 +23189,7 @@ public final class Dossier {
         return aliasedTypeBuilder_;
       }
 
-      // @@protoc_insertion_point(builder_scope:JsType)
+      // @@protoc_insertion_point(builder_scope:dossier.JsType)
     }
 
     static {
@@ -23197,15 +23197,15 @@ public final class Dossier {
       defaultInstance.initFields();
     }
 
-    // @@protoc_insertion_point(class_scope:JsType)
+    // @@protoc_insertion_point(class_scope:dossier.JsType)
   }
 
   public interface IndexFileRenderSpecOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:IndexFileRenderSpec)
+      // @@protoc_insertion_point(interface_extends:dossier.IndexFileRenderSpec)
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>required .Resources resources = 1;</code>
+     * <code>required .dossier.Resources resources = 1;</code>
      *
      * <pre>
      * The resources to include.
@@ -23213,7 +23213,7 @@ public final class Dossier {
      */
     boolean hasResources();
     /**
-     * <code>required .Resources resources = 1;</code>
+     * <code>required .dossier.Resources resources = 1;</code>
      *
      * <pre>
      * The resources to include.
@@ -23221,7 +23221,7 @@ public final class Dossier {
      */
     com.github.jleyba.dossier.proto.Dossier.Resources getResources();
     /**
-     * <code>required .Resources resources = 1;</code>
+     * <code>required .dossier.Resources resources = 1;</code>
      *
      * <pre>
      * The resources to include.
@@ -23256,7 +23256,7 @@ public final class Dossier {
         getLicensePathBytes();
 
     /**
-     * <code>optional .Comment readme = 3;</code>
+     * <code>optional .dossier.Comment readme = 3;</code>
      *
      * <pre>
      * The readme to display on the main page, if any.
@@ -23264,7 +23264,7 @@ public final class Dossier {
      */
     boolean hasReadme();
     /**
-     * <code>optional .Comment readme = 3;</code>
+     * <code>optional .dossier.Comment readme = 3;</code>
      *
      * <pre>
      * The readme to display on the main page, if any.
@@ -23272,7 +23272,7 @@ public final class Dossier {
      */
     com.github.jleyba.dossier.proto.Dossier.Comment getReadme();
     /**
-     * <code>optional .Comment readme = 3;</code>
+     * <code>optional .dossier.Comment readme = 3;</code>
      *
      * <pre>
      * The readme to display on the main page, if any.
@@ -23281,7 +23281,7 @@ public final class Dossier {
     com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder getReadmeOrBuilder();
   }
   /**
-   * Protobuf type {@code IndexFileRenderSpec}
+   * Protobuf type {@code dossier.IndexFileRenderSpec}
    *
    * <pre>
    * Describes how to render the main index.
@@ -23289,7 +23289,7 @@ public final class Dossier {
    */
   public static final class IndexFileRenderSpec extends
       com.google.protobuf.GeneratedMessage implements
-      // @@protoc_insertion_point(message_implements:IndexFileRenderSpec)
+      // @@protoc_insertion_point(message_implements:dossier.IndexFileRenderSpec)
       IndexFileRenderSpecOrBuilder {
     // Use IndexFileRenderSpec.newBuilder() to construct.
     private IndexFileRenderSpec(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
@@ -23382,12 +23382,12 @@ public final class Dossier {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.github.jleyba.dossier.proto.Dossier.internal_static_IndexFileRenderSpec_descriptor;
+      return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_IndexFileRenderSpec_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.github.jleyba.dossier.proto.Dossier.internal_static_IndexFileRenderSpec_fieldAccessorTable
+      return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_IndexFileRenderSpec_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               com.github.jleyba.dossier.proto.Dossier.IndexFileRenderSpec.class, com.github.jleyba.dossier.proto.Dossier.IndexFileRenderSpec.Builder.class);
     }
@@ -23411,7 +23411,7 @@ public final class Dossier {
     public static final int RESOURCES_FIELD_NUMBER = 1;
     private com.github.jleyba.dossier.proto.Dossier.Resources resources_;
     /**
-     * <code>required .Resources resources = 1;</code>
+     * <code>required .dossier.Resources resources = 1;</code>
      *
      * <pre>
      * The resources to include.
@@ -23421,7 +23421,7 @@ public final class Dossier {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
     /**
-     * <code>required .Resources resources = 1;</code>
+     * <code>required .dossier.Resources resources = 1;</code>
      *
      * <pre>
      * The resources to include.
@@ -23431,7 +23431,7 @@ public final class Dossier {
       return resources_;
     }
     /**
-     * <code>required .Resources resources = 1;</code>
+     * <code>required .dossier.Resources resources = 1;</code>
      *
      * <pre>
      * The resources to include.
@@ -23498,7 +23498,7 @@ public final class Dossier {
     public static final int README_FIELD_NUMBER = 3;
     private com.github.jleyba.dossier.proto.Dossier.Comment readme_;
     /**
-     * <code>optional .Comment readme = 3;</code>
+     * <code>optional .dossier.Comment readme = 3;</code>
      *
      * <pre>
      * The readme to display on the main page, if any.
@@ -23508,7 +23508,7 @@ public final class Dossier {
       return ((bitField0_ & 0x00000004) == 0x00000004);
     }
     /**
-     * <code>optional .Comment readme = 3;</code>
+     * <code>optional .dossier.Comment readme = 3;</code>
      *
      * <pre>
      * The readme to display on the main page, if any.
@@ -23518,7 +23518,7 @@ public final class Dossier {
       return readme_;
     }
     /**
-     * <code>optional .Comment readme = 3;</code>
+     * <code>optional .dossier.Comment readme = 3;</code>
      *
      * <pre>
      * The readme to display on the main page, if any.
@@ -23665,7 +23665,7 @@ public final class Dossier {
       return builder;
     }
     /**
-     * Protobuf type {@code IndexFileRenderSpec}
+     * Protobuf type {@code dossier.IndexFileRenderSpec}
      *
      * <pre>
      * Describes how to render the main index.
@@ -23673,16 +23673,16 @@ public final class Dossier {
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessage.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:IndexFileRenderSpec)
+        // @@protoc_insertion_point(builder_implements:dossier.IndexFileRenderSpec)
         com.github.jleyba.dossier.proto.Dossier.IndexFileRenderSpecOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.github.jleyba.dossier.proto.Dossier.internal_static_IndexFileRenderSpec_descriptor;
+        return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_IndexFileRenderSpec_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.github.jleyba.dossier.proto.Dossier.internal_static_IndexFileRenderSpec_fieldAccessorTable
+        return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_IndexFileRenderSpec_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 com.github.jleyba.dossier.proto.Dossier.IndexFileRenderSpec.class, com.github.jleyba.dossier.proto.Dossier.IndexFileRenderSpec.Builder.class);
       }
@@ -23732,7 +23732,7 @@ public final class Dossier {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.github.jleyba.dossier.proto.Dossier.internal_static_IndexFileRenderSpec_descriptor;
+        return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_IndexFileRenderSpec_descriptor;
       }
 
       public com.github.jleyba.dossier.proto.Dossier.IndexFileRenderSpec getDefaultInstanceForType() {
@@ -23839,7 +23839,7 @@ public final class Dossier {
       private com.google.protobuf.SingleFieldBuilder<
           com.github.jleyba.dossier.proto.Dossier.Resources, com.github.jleyba.dossier.proto.Dossier.Resources.Builder, com.github.jleyba.dossier.proto.Dossier.ResourcesOrBuilder> resourcesBuilder_;
       /**
-       * <code>required .Resources resources = 1;</code>
+       * <code>required .dossier.Resources resources = 1;</code>
        *
        * <pre>
        * The resources to include.
@@ -23849,7 +23849,7 @@ public final class Dossier {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       /**
-       * <code>required .Resources resources = 1;</code>
+       * <code>required .dossier.Resources resources = 1;</code>
        *
        * <pre>
        * The resources to include.
@@ -23863,7 +23863,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>required .Resources resources = 1;</code>
+       * <code>required .dossier.Resources resources = 1;</code>
        *
        * <pre>
        * The resources to include.
@@ -23883,7 +23883,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>required .Resources resources = 1;</code>
+       * <code>required .dossier.Resources resources = 1;</code>
        *
        * <pre>
        * The resources to include.
@@ -23901,7 +23901,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>required .Resources resources = 1;</code>
+       * <code>required .dossier.Resources resources = 1;</code>
        *
        * <pre>
        * The resources to include.
@@ -23924,7 +23924,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>required .Resources resources = 1;</code>
+       * <code>required .dossier.Resources resources = 1;</code>
        *
        * <pre>
        * The resources to include.
@@ -23941,7 +23941,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>required .Resources resources = 1;</code>
+       * <code>required .dossier.Resources resources = 1;</code>
        *
        * <pre>
        * The resources to include.
@@ -23953,7 +23953,7 @@ public final class Dossier {
         return getResourcesFieldBuilder().getBuilder();
       }
       /**
-       * <code>required .Resources resources = 1;</code>
+       * <code>required .dossier.Resources resources = 1;</code>
        *
        * <pre>
        * The resources to include.
@@ -23967,7 +23967,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>required .Resources resources = 1;</code>
+       * <code>required .dossier.Resources resources = 1;</code>
        *
        * <pre>
        * The resources to include.
@@ -24091,7 +24091,7 @@ public final class Dossier {
       private com.google.protobuf.SingleFieldBuilder<
           com.github.jleyba.dossier.proto.Dossier.Comment, com.github.jleyba.dossier.proto.Dossier.Comment.Builder, com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder> readmeBuilder_;
       /**
-       * <code>optional .Comment readme = 3;</code>
+       * <code>optional .dossier.Comment readme = 3;</code>
        *
        * <pre>
        * The readme to display on the main page, if any.
@@ -24101,7 +24101,7 @@ public final class Dossier {
         return ((bitField0_ & 0x00000004) == 0x00000004);
       }
       /**
-       * <code>optional .Comment readme = 3;</code>
+       * <code>optional .dossier.Comment readme = 3;</code>
        *
        * <pre>
        * The readme to display on the main page, if any.
@@ -24115,7 +24115,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>optional .Comment readme = 3;</code>
+       * <code>optional .dossier.Comment readme = 3;</code>
        *
        * <pre>
        * The readme to display on the main page, if any.
@@ -24135,7 +24135,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>optional .Comment readme = 3;</code>
+       * <code>optional .dossier.Comment readme = 3;</code>
        *
        * <pre>
        * The readme to display on the main page, if any.
@@ -24153,7 +24153,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>optional .Comment readme = 3;</code>
+       * <code>optional .dossier.Comment readme = 3;</code>
        *
        * <pre>
        * The readme to display on the main page, if any.
@@ -24176,7 +24176,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>optional .Comment readme = 3;</code>
+       * <code>optional .dossier.Comment readme = 3;</code>
        *
        * <pre>
        * The readme to display on the main page, if any.
@@ -24193,7 +24193,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>optional .Comment readme = 3;</code>
+       * <code>optional .dossier.Comment readme = 3;</code>
        *
        * <pre>
        * The readme to display on the main page, if any.
@@ -24205,7 +24205,7 @@ public final class Dossier {
         return getReadmeFieldBuilder().getBuilder();
       }
       /**
-       * <code>optional .Comment readme = 3;</code>
+       * <code>optional .dossier.Comment readme = 3;</code>
        *
        * <pre>
        * The readme to display on the main page, if any.
@@ -24219,7 +24219,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>optional .Comment readme = 3;</code>
+       * <code>optional .dossier.Comment readme = 3;</code>
        *
        * <pre>
        * The readme to display on the main page, if any.
@@ -24239,7 +24239,7 @@ public final class Dossier {
         return readmeBuilder_;
       }
 
-      // @@protoc_insertion_point(builder_scope:IndexFileRenderSpec)
+      // @@protoc_insertion_point(builder_scope:dossier.IndexFileRenderSpec)
     }
 
     static {
@@ -24247,15 +24247,15 @@ public final class Dossier {
       defaultInstance.initFields();
     }
 
-    // @@protoc_insertion_point(class_scope:IndexFileRenderSpec)
+    // @@protoc_insertion_point(class_scope:dossier.IndexFileRenderSpec)
   }
 
   public interface LicenseRenderSpecOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:LicenseRenderSpec)
+      // @@protoc_insertion_point(interface_extends:dossier.LicenseRenderSpec)
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>required .Resources resources = 1;</code>
+     * <code>required .dossier.Resources resources = 1;</code>
      *
      * <pre>
      * The resources to include.
@@ -24263,7 +24263,7 @@ public final class Dossier {
      */
     boolean hasResources();
     /**
-     * <code>required .Resources resources = 1;</code>
+     * <code>required .dossier.Resources resources = 1;</code>
      *
      * <pre>
      * The resources to include.
@@ -24271,7 +24271,7 @@ public final class Dossier {
      */
     com.github.jleyba.dossier.proto.Dossier.Resources getResources();
     /**
-     * <code>required .Resources resources = 1;</code>
+     * <code>required .dossier.Resources resources = 1;</code>
      *
      * <pre>
      * The resources to include.
@@ -24280,7 +24280,7 @@ public final class Dossier {
     com.github.jleyba.dossier.proto.Dossier.ResourcesOrBuilder getResourcesOrBuilder();
 
     /**
-     * <code>required .License license = 2;</code>
+     * <code>required .dossier.License license = 2;</code>
      *
      * <pre>
      * The license file to render.
@@ -24288,7 +24288,7 @@ public final class Dossier {
      */
     boolean hasLicense();
     /**
-     * <code>required .License license = 2;</code>
+     * <code>required .dossier.License license = 2;</code>
      *
      * <pre>
      * The license file to render.
@@ -24296,7 +24296,7 @@ public final class Dossier {
      */
     com.github.jleyba.dossier.proto.Dossier.License getLicense();
     /**
-     * <code>required .License license = 2;</code>
+     * <code>required .dossier.License license = 2;</code>
      *
      * <pre>
      * The license file to render.
@@ -24305,7 +24305,7 @@ public final class Dossier {
     com.github.jleyba.dossier.proto.Dossier.LicenseOrBuilder getLicenseOrBuilder();
   }
   /**
-   * Protobuf type {@code LicenseRenderSpec}
+   * Protobuf type {@code dossier.LicenseRenderSpec}
    *
    * <pre>
    * Describes how to render the license file.
@@ -24313,7 +24313,7 @@ public final class Dossier {
    */
   public static final class LicenseRenderSpec extends
       com.google.protobuf.GeneratedMessage implements
-      // @@protoc_insertion_point(message_implements:LicenseRenderSpec)
+      // @@protoc_insertion_point(message_implements:dossier.LicenseRenderSpec)
       LicenseRenderSpecOrBuilder {
     // Use LicenseRenderSpec.newBuilder() to construct.
     private LicenseRenderSpec(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
@@ -24400,12 +24400,12 @@ public final class Dossier {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.github.jleyba.dossier.proto.Dossier.internal_static_LicenseRenderSpec_descriptor;
+      return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_LicenseRenderSpec_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.github.jleyba.dossier.proto.Dossier.internal_static_LicenseRenderSpec_fieldAccessorTable
+      return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_LicenseRenderSpec_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               com.github.jleyba.dossier.proto.Dossier.LicenseRenderSpec.class, com.github.jleyba.dossier.proto.Dossier.LicenseRenderSpec.Builder.class);
     }
@@ -24429,7 +24429,7 @@ public final class Dossier {
     public static final int RESOURCES_FIELD_NUMBER = 1;
     private com.github.jleyba.dossier.proto.Dossier.Resources resources_;
     /**
-     * <code>required .Resources resources = 1;</code>
+     * <code>required .dossier.Resources resources = 1;</code>
      *
      * <pre>
      * The resources to include.
@@ -24439,7 +24439,7 @@ public final class Dossier {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
     /**
-     * <code>required .Resources resources = 1;</code>
+     * <code>required .dossier.Resources resources = 1;</code>
      *
      * <pre>
      * The resources to include.
@@ -24449,7 +24449,7 @@ public final class Dossier {
       return resources_;
     }
     /**
-     * <code>required .Resources resources = 1;</code>
+     * <code>required .dossier.Resources resources = 1;</code>
      *
      * <pre>
      * The resources to include.
@@ -24462,7 +24462,7 @@ public final class Dossier {
     public static final int LICENSE_FIELD_NUMBER = 2;
     private com.github.jleyba.dossier.proto.Dossier.License license_;
     /**
-     * <code>required .License license = 2;</code>
+     * <code>required .dossier.License license = 2;</code>
      *
      * <pre>
      * The license file to render.
@@ -24472,7 +24472,7 @@ public final class Dossier {
       return ((bitField0_ & 0x00000002) == 0x00000002);
     }
     /**
-     * <code>required .License license = 2;</code>
+     * <code>required .dossier.License license = 2;</code>
      *
      * <pre>
      * The license file to render.
@@ -24482,7 +24482,7 @@ public final class Dossier {
       return license_;
     }
     /**
-     * <code>required .License license = 2;</code>
+     * <code>required .dossier.License license = 2;</code>
      *
      * <pre>
      * The license file to render.
@@ -24623,7 +24623,7 @@ public final class Dossier {
       return builder;
     }
     /**
-     * Protobuf type {@code LicenseRenderSpec}
+     * Protobuf type {@code dossier.LicenseRenderSpec}
      *
      * <pre>
      * Describes how to render the license file.
@@ -24631,16 +24631,16 @@ public final class Dossier {
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessage.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:LicenseRenderSpec)
+        // @@protoc_insertion_point(builder_implements:dossier.LicenseRenderSpec)
         com.github.jleyba.dossier.proto.Dossier.LicenseRenderSpecOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.github.jleyba.dossier.proto.Dossier.internal_static_LicenseRenderSpec_descriptor;
+        return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_LicenseRenderSpec_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.github.jleyba.dossier.proto.Dossier.internal_static_LicenseRenderSpec_fieldAccessorTable
+        return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_LicenseRenderSpec_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 com.github.jleyba.dossier.proto.Dossier.LicenseRenderSpec.class, com.github.jleyba.dossier.proto.Dossier.LicenseRenderSpec.Builder.class);
       }
@@ -24688,7 +24688,7 @@ public final class Dossier {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.github.jleyba.dossier.proto.Dossier.internal_static_LicenseRenderSpec_descriptor;
+        return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_LicenseRenderSpec_descriptor;
       }
 
       public com.github.jleyba.dossier.proto.Dossier.LicenseRenderSpec getDefaultInstanceForType() {
@@ -24788,7 +24788,7 @@ public final class Dossier {
       private com.google.protobuf.SingleFieldBuilder<
           com.github.jleyba.dossier.proto.Dossier.Resources, com.github.jleyba.dossier.proto.Dossier.Resources.Builder, com.github.jleyba.dossier.proto.Dossier.ResourcesOrBuilder> resourcesBuilder_;
       /**
-       * <code>required .Resources resources = 1;</code>
+       * <code>required .dossier.Resources resources = 1;</code>
        *
        * <pre>
        * The resources to include.
@@ -24798,7 +24798,7 @@ public final class Dossier {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       /**
-       * <code>required .Resources resources = 1;</code>
+       * <code>required .dossier.Resources resources = 1;</code>
        *
        * <pre>
        * The resources to include.
@@ -24812,7 +24812,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>required .Resources resources = 1;</code>
+       * <code>required .dossier.Resources resources = 1;</code>
        *
        * <pre>
        * The resources to include.
@@ -24832,7 +24832,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>required .Resources resources = 1;</code>
+       * <code>required .dossier.Resources resources = 1;</code>
        *
        * <pre>
        * The resources to include.
@@ -24850,7 +24850,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>required .Resources resources = 1;</code>
+       * <code>required .dossier.Resources resources = 1;</code>
        *
        * <pre>
        * The resources to include.
@@ -24873,7 +24873,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>required .Resources resources = 1;</code>
+       * <code>required .dossier.Resources resources = 1;</code>
        *
        * <pre>
        * The resources to include.
@@ -24890,7 +24890,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>required .Resources resources = 1;</code>
+       * <code>required .dossier.Resources resources = 1;</code>
        *
        * <pre>
        * The resources to include.
@@ -24902,7 +24902,7 @@ public final class Dossier {
         return getResourcesFieldBuilder().getBuilder();
       }
       /**
-       * <code>required .Resources resources = 1;</code>
+       * <code>required .dossier.Resources resources = 1;</code>
        *
        * <pre>
        * The resources to include.
@@ -24916,7 +24916,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>required .Resources resources = 1;</code>
+       * <code>required .dossier.Resources resources = 1;</code>
        *
        * <pre>
        * The resources to include.
@@ -24940,7 +24940,7 @@ public final class Dossier {
       private com.google.protobuf.SingleFieldBuilder<
           com.github.jleyba.dossier.proto.Dossier.License, com.github.jleyba.dossier.proto.Dossier.License.Builder, com.github.jleyba.dossier.proto.Dossier.LicenseOrBuilder> licenseBuilder_;
       /**
-       * <code>required .License license = 2;</code>
+       * <code>required .dossier.License license = 2;</code>
        *
        * <pre>
        * The license file to render.
@@ -24950,7 +24950,7 @@ public final class Dossier {
         return ((bitField0_ & 0x00000002) == 0x00000002);
       }
       /**
-       * <code>required .License license = 2;</code>
+       * <code>required .dossier.License license = 2;</code>
        *
        * <pre>
        * The license file to render.
@@ -24964,7 +24964,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>required .License license = 2;</code>
+       * <code>required .dossier.License license = 2;</code>
        *
        * <pre>
        * The license file to render.
@@ -24984,7 +24984,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>required .License license = 2;</code>
+       * <code>required .dossier.License license = 2;</code>
        *
        * <pre>
        * The license file to render.
@@ -25002,7 +25002,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>required .License license = 2;</code>
+       * <code>required .dossier.License license = 2;</code>
        *
        * <pre>
        * The license file to render.
@@ -25025,7 +25025,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>required .License license = 2;</code>
+       * <code>required .dossier.License license = 2;</code>
        *
        * <pre>
        * The license file to render.
@@ -25042,7 +25042,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>required .License license = 2;</code>
+       * <code>required .dossier.License license = 2;</code>
        *
        * <pre>
        * The license file to render.
@@ -25054,7 +25054,7 @@ public final class Dossier {
         return getLicenseFieldBuilder().getBuilder();
       }
       /**
-       * <code>required .License license = 2;</code>
+       * <code>required .dossier.License license = 2;</code>
        *
        * <pre>
        * The license file to render.
@@ -25068,7 +25068,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>required .License license = 2;</code>
+       * <code>required .dossier.License license = 2;</code>
        *
        * <pre>
        * The license file to render.
@@ -25088,7 +25088,7 @@ public final class Dossier {
         return licenseBuilder_;
       }
 
-      // @@protoc_insertion_point(builder_scope:LicenseRenderSpec)
+      // @@protoc_insertion_point(builder_scope:dossier.LicenseRenderSpec)
     }
 
     static {
@@ -25096,15 +25096,15 @@ public final class Dossier {
       defaultInstance.initFields();
     }
 
-    // @@protoc_insertion_point(class_scope:LicenseRenderSpec)
+    // @@protoc_insertion_point(class_scope:dossier.LicenseRenderSpec)
   }
 
   public interface SourceFileRenderSpecOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:SourceFileRenderSpec)
+      // @@protoc_insertion_point(interface_extends:dossier.SourceFileRenderSpec)
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>required .Resources resources = 1;</code>
+     * <code>required .dossier.Resources resources = 1;</code>
      *
      * <pre>
      * The resources to include.
@@ -25112,7 +25112,7 @@ public final class Dossier {
      */
     boolean hasResources();
     /**
-     * <code>required .Resources resources = 1;</code>
+     * <code>required .dossier.Resources resources = 1;</code>
      *
      * <pre>
      * The resources to include.
@@ -25120,7 +25120,7 @@ public final class Dossier {
      */
     com.github.jleyba.dossier.proto.Dossier.Resources getResources();
     /**
-     * <code>required .Resources resources = 1;</code>
+     * <code>required .dossier.Resources resources = 1;</code>
      *
      * <pre>
      * The resources to include.
@@ -25129,7 +25129,7 @@ public final class Dossier {
     com.github.jleyba.dossier.proto.Dossier.ResourcesOrBuilder getResourcesOrBuilder();
 
     /**
-     * <code>required .SourceFile file = 2;</code>
+     * <code>required .dossier.SourceFile file = 2;</code>
      *
      * <pre>
      * The file to render.
@@ -25137,7 +25137,7 @@ public final class Dossier {
      */
     boolean hasFile();
     /**
-     * <code>required .SourceFile file = 2;</code>
+     * <code>required .dossier.SourceFile file = 2;</code>
      *
      * <pre>
      * The file to render.
@@ -25145,7 +25145,7 @@ public final class Dossier {
      */
     com.github.jleyba.dossier.proto.Dossier.SourceFile getFile();
     /**
-     * <code>required .SourceFile file = 2;</code>
+     * <code>required .dossier.SourceFile file = 2;</code>
      *
      * <pre>
      * The file to render.
@@ -25180,7 +25180,7 @@ public final class Dossier {
         getLicensePathBytes();
   }
   /**
-   * Protobuf type {@code SourceFileRenderSpec}
+   * Protobuf type {@code dossier.SourceFileRenderSpec}
    *
    * <pre>
    * Describes how to render a source file.
@@ -25188,7 +25188,7 @@ public final class Dossier {
    */
   public static final class SourceFileRenderSpec extends
       com.google.protobuf.GeneratedMessage implements
-      // @@protoc_insertion_point(message_implements:SourceFileRenderSpec)
+      // @@protoc_insertion_point(message_implements:dossier.SourceFileRenderSpec)
       SourceFileRenderSpecOrBuilder {
     // Use SourceFileRenderSpec.newBuilder() to construct.
     private SourceFileRenderSpec(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
@@ -25281,12 +25281,12 @@ public final class Dossier {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.github.jleyba.dossier.proto.Dossier.internal_static_SourceFileRenderSpec_descriptor;
+      return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_SourceFileRenderSpec_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.github.jleyba.dossier.proto.Dossier.internal_static_SourceFileRenderSpec_fieldAccessorTable
+      return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_SourceFileRenderSpec_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               com.github.jleyba.dossier.proto.Dossier.SourceFileRenderSpec.class, com.github.jleyba.dossier.proto.Dossier.SourceFileRenderSpec.Builder.class);
     }
@@ -25310,7 +25310,7 @@ public final class Dossier {
     public static final int RESOURCES_FIELD_NUMBER = 1;
     private com.github.jleyba.dossier.proto.Dossier.Resources resources_;
     /**
-     * <code>required .Resources resources = 1;</code>
+     * <code>required .dossier.Resources resources = 1;</code>
      *
      * <pre>
      * The resources to include.
@@ -25320,7 +25320,7 @@ public final class Dossier {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
     /**
-     * <code>required .Resources resources = 1;</code>
+     * <code>required .dossier.Resources resources = 1;</code>
      *
      * <pre>
      * The resources to include.
@@ -25330,7 +25330,7 @@ public final class Dossier {
       return resources_;
     }
     /**
-     * <code>required .Resources resources = 1;</code>
+     * <code>required .dossier.Resources resources = 1;</code>
      *
      * <pre>
      * The resources to include.
@@ -25343,7 +25343,7 @@ public final class Dossier {
     public static final int FILE_FIELD_NUMBER = 2;
     private com.github.jleyba.dossier.proto.Dossier.SourceFile file_;
     /**
-     * <code>required .SourceFile file = 2;</code>
+     * <code>required .dossier.SourceFile file = 2;</code>
      *
      * <pre>
      * The file to render.
@@ -25353,7 +25353,7 @@ public final class Dossier {
       return ((bitField0_ & 0x00000002) == 0x00000002);
     }
     /**
-     * <code>required .SourceFile file = 2;</code>
+     * <code>required .dossier.SourceFile file = 2;</code>
      *
      * <pre>
      * The file to render.
@@ -25363,7 +25363,7 @@ public final class Dossier {
       return file_;
     }
     /**
-     * <code>required .SourceFile file = 2;</code>
+     * <code>required .dossier.SourceFile file = 2;</code>
      *
      * <pre>
      * The file to render.
@@ -25566,7 +25566,7 @@ public final class Dossier {
       return builder;
     }
     /**
-     * Protobuf type {@code SourceFileRenderSpec}
+     * Protobuf type {@code dossier.SourceFileRenderSpec}
      *
      * <pre>
      * Describes how to render a source file.
@@ -25574,16 +25574,16 @@ public final class Dossier {
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessage.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:SourceFileRenderSpec)
+        // @@protoc_insertion_point(builder_implements:dossier.SourceFileRenderSpec)
         com.github.jleyba.dossier.proto.Dossier.SourceFileRenderSpecOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.github.jleyba.dossier.proto.Dossier.internal_static_SourceFileRenderSpec_descriptor;
+        return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_SourceFileRenderSpec_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.github.jleyba.dossier.proto.Dossier.internal_static_SourceFileRenderSpec_fieldAccessorTable
+        return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_SourceFileRenderSpec_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 com.github.jleyba.dossier.proto.Dossier.SourceFileRenderSpec.class, com.github.jleyba.dossier.proto.Dossier.SourceFileRenderSpec.Builder.class);
       }
@@ -25633,7 +25633,7 @@ public final class Dossier {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.github.jleyba.dossier.proto.Dossier.internal_static_SourceFileRenderSpec_descriptor;
+        return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_SourceFileRenderSpec_descriptor;
       }
 
       public com.github.jleyba.dossier.proto.Dossier.SourceFileRenderSpec getDefaultInstanceForType() {
@@ -25742,7 +25742,7 @@ public final class Dossier {
       private com.google.protobuf.SingleFieldBuilder<
           com.github.jleyba.dossier.proto.Dossier.Resources, com.github.jleyba.dossier.proto.Dossier.Resources.Builder, com.github.jleyba.dossier.proto.Dossier.ResourcesOrBuilder> resourcesBuilder_;
       /**
-       * <code>required .Resources resources = 1;</code>
+       * <code>required .dossier.Resources resources = 1;</code>
        *
        * <pre>
        * The resources to include.
@@ -25752,7 +25752,7 @@ public final class Dossier {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       /**
-       * <code>required .Resources resources = 1;</code>
+       * <code>required .dossier.Resources resources = 1;</code>
        *
        * <pre>
        * The resources to include.
@@ -25766,7 +25766,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>required .Resources resources = 1;</code>
+       * <code>required .dossier.Resources resources = 1;</code>
        *
        * <pre>
        * The resources to include.
@@ -25786,7 +25786,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>required .Resources resources = 1;</code>
+       * <code>required .dossier.Resources resources = 1;</code>
        *
        * <pre>
        * The resources to include.
@@ -25804,7 +25804,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>required .Resources resources = 1;</code>
+       * <code>required .dossier.Resources resources = 1;</code>
        *
        * <pre>
        * The resources to include.
@@ -25827,7 +25827,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>required .Resources resources = 1;</code>
+       * <code>required .dossier.Resources resources = 1;</code>
        *
        * <pre>
        * The resources to include.
@@ -25844,7 +25844,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>required .Resources resources = 1;</code>
+       * <code>required .dossier.Resources resources = 1;</code>
        *
        * <pre>
        * The resources to include.
@@ -25856,7 +25856,7 @@ public final class Dossier {
         return getResourcesFieldBuilder().getBuilder();
       }
       /**
-       * <code>required .Resources resources = 1;</code>
+       * <code>required .dossier.Resources resources = 1;</code>
        *
        * <pre>
        * The resources to include.
@@ -25870,7 +25870,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>required .Resources resources = 1;</code>
+       * <code>required .dossier.Resources resources = 1;</code>
        *
        * <pre>
        * The resources to include.
@@ -25894,7 +25894,7 @@ public final class Dossier {
       private com.google.protobuf.SingleFieldBuilder<
           com.github.jleyba.dossier.proto.Dossier.SourceFile, com.github.jleyba.dossier.proto.Dossier.SourceFile.Builder, com.github.jleyba.dossier.proto.Dossier.SourceFileOrBuilder> fileBuilder_;
       /**
-       * <code>required .SourceFile file = 2;</code>
+       * <code>required .dossier.SourceFile file = 2;</code>
        *
        * <pre>
        * The file to render.
@@ -25904,7 +25904,7 @@ public final class Dossier {
         return ((bitField0_ & 0x00000002) == 0x00000002);
       }
       /**
-       * <code>required .SourceFile file = 2;</code>
+       * <code>required .dossier.SourceFile file = 2;</code>
        *
        * <pre>
        * The file to render.
@@ -25918,7 +25918,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>required .SourceFile file = 2;</code>
+       * <code>required .dossier.SourceFile file = 2;</code>
        *
        * <pre>
        * The file to render.
@@ -25938,7 +25938,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>required .SourceFile file = 2;</code>
+       * <code>required .dossier.SourceFile file = 2;</code>
        *
        * <pre>
        * The file to render.
@@ -25956,7 +25956,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>required .SourceFile file = 2;</code>
+       * <code>required .dossier.SourceFile file = 2;</code>
        *
        * <pre>
        * The file to render.
@@ -25979,7 +25979,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>required .SourceFile file = 2;</code>
+       * <code>required .dossier.SourceFile file = 2;</code>
        *
        * <pre>
        * The file to render.
@@ -25996,7 +25996,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>required .SourceFile file = 2;</code>
+       * <code>required .dossier.SourceFile file = 2;</code>
        *
        * <pre>
        * The file to render.
@@ -26008,7 +26008,7 @@ public final class Dossier {
         return getFileFieldBuilder().getBuilder();
       }
       /**
-       * <code>required .SourceFile file = 2;</code>
+       * <code>required .dossier.SourceFile file = 2;</code>
        *
        * <pre>
        * The file to render.
@@ -26022,7 +26022,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>required .SourceFile file = 2;</code>
+       * <code>required .dossier.SourceFile file = 2;</code>
        *
        * <pre>
        * The file to render.
@@ -26142,7 +26142,7 @@ public final class Dossier {
         return this;
       }
 
-      // @@protoc_insertion_point(builder_scope:SourceFileRenderSpec)
+      // @@protoc_insertion_point(builder_scope:dossier.SourceFileRenderSpec)
     }
 
     static {
@@ -26150,15 +26150,15 @@ public final class Dossier {
       defaultInstance.initFields();
     }
 
-    // @@protoc_insertion_point(class_scope:SourceFileRenderSpec)
+    // @@protoc_insertion_point(class_scope:dossier.SourceFileRenderSpec)
   }
 
   public interface JsTypeRenderSpecOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:JsTypeRenderSpec)
+      // @@protoc_insertion_point(interface_extends:dossier.JsTypeRenderSpec)
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>required .JsType type = 1;</code>
+     * <code>required .dossier.JsType type = 1;</code>
      *
      * <pre>
      * The type to generate documentation for.
@@ -26166,7 +26166,7 @@ public final class Dossier {
      */
     boolean hasType();
     /**
-     * <code>required .JsType type = 1;</code>
+     * <code>required .dossier.JsType type = 1;</code>
      *
      * <pre>
      * The type to generate documentation for.
@@ -26174,7 +26174,7 @@ public final class Dossier {
      */
     com.github.jleyba.dossier.proto.Dossier.JsType getType();
     /**
-     * <code>required .JsType type = 1;</code>
+     * <code>required .dossier.JsType type = 1;</code>
      *
      * <pre>
      * The type to generate documentation for.
@@ -26183,7 +26183,7 @@ public final class Dossier {
     com.github.jleyba.dossier.proto.Dossier.JsTypeOrBuilder getTypeOrBuilder();
 
     /**
-     * <code>required .Resources resources = 2;</code>
+     * <code>required .dossier.Resources resources = 2;</code>
      *
      * <pre>
      * The resources to include.
@@ -26191,7 +26191,7 @@ public final class Dossier {
      */
     boolean hasResources();
     /**
-     * <code>required .Resources resources = 2;</code>
+     * <code>required .dossier.Resources resources = 2;</code>
      *
      * <pre>
      * The resources to include.
@@ -26199,7 +26199,7 @@ public final class Dossier {
      */
     com.github.jleyba.dossier.proto.Dossier.Resources getResources();
     /**
-     * <code>required .Resources resources = 2;</code>
+     * <code>required .dossier.Resources resources = 2;</code>
      *
      * <pre>
      * The resources to include.
@@ -26234,7 +26234,7 @@ public final class Dossier {
         getLicensePathBytes();
   }
   /**
-   * Protobuf type {@code JsTypeRenderSpec}
+   * Protobuf type {@code dossier.JsTypeRenderSpec}
    *
    * <pre>
    * Describes how to render documentation for a JavaScript type.
@@ -26242,7 +26242,7 @@ public final class Dossier {
    */
   public static final class JsTypeRenderSpec extends
       com.google.protobuf.GeneratedMessage implements
-      // @@protoc_insertion_point(message_implements:JsTypeRenderSpec)
+      // @@protoc_insertion_point(message_implements:dossier.JsTypeRenderSpec)
       JsTypeRenderSpecOrBuilder {
     // Use JsTypeRenderSpec.newBuilder() to construct.
     private JsTypeRenderSpec(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
@@ -26335,12 +26335,12 @@ public final class Dossier {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.github.jleyba.dossier.proto.Dossier.internal_static_JsTypeRenderSpec_descriptor;
+      return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_JsTypeRenderSpec_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.github.jleyba.dossier.proto.Dossier.internal_static_JsTypeRenderSpec_fieldAccessorTable
+      return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_JsTypeRenderSpec_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               com.github.jleyba.dossier.proto.Dossier.JsTypeRenderSpec.class, com.github.jleyba.dossier.proto.Dossier.JsTypeRenderSpec.Builder.class);
     }
@@ -26364,7 +26364,7 @@ public final class Dossier {
     public static final int TYPE_FIELD_NUMBER = 1;
     private com.github.jleyba.dossier.proto.Dossier.JsType type_;
     /**
-     * <code>required .JsType type = 1;</code>
+     * <code>required .dossier.JsType type = 1;</code>
      *
      * <pre>
      * The type to generate documentation for.
@@ -26374,7 +26374,7 @@ public final class Dossier {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
     /**
-     * <code>required .JsType type = 1;</code>
+     * <code>required .dossier.JsType type = 1;</code>
      *
      * <pre>
      * The type to generate documentation for.
@@ -26384,7 +26384,7 @@ public final class Dossier {
       return type_;
     }
     /**
-     * <code>required .JsType type = 1;</code>
+     * <code>required .dossier.JsType type = 1;</code>
      *
      * <pre>
      * The type to generate documentation for.
@@ -26397,7 +26397,7 @@ public final class Dossier {
     public static final int RESOURCES_FIELD_NUMBER = 2;
     private com.github.jleyba.dossier.proto.Dossier.Resources resources_;
     /**
-     * <code>required .Resources resources = 2;</code>
+     * <code>required .dossier.Resources resources = 2;</code>
      *
      * <pre>
      * The resources to include.
@@ -26407,7 +26407,7 @@ public final class Dossier {
       return ((bitField0_ & 0x00000002) == 0x00000002);
     }
     /**
-     * <code>required .Resources resources = 2;</code>
+     * <code>required .dossier.Resources resources = 2;</code>
      *
      * <pre>
      * The resources to include.
@@ -26417,7 +26417,7 @@ public final class Dossier {
       return resources_;
     }
     /**
-     * <code>required .Resources resources = 2;</code>
+     * <code>required .dossier.Resources resources = 2;</code>
      *
      * <pre>
      * The resources to include.
@@ -26620,7 +26620,7 @@ public final class Dossier {
       return builder;
     }
     /**
-     * Protobuf type {@code JsTypeRenderSpec}
+     * Protobuf type {@code dossier.JsTypeRenderSpec}
      *
      * <pre>
      * Describes how to render documentation for a JavaScript type.
@@ -26628,16 +26628,16 @@ public final class Dossier {
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessage.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:JsTypeRenderSpec)
+        // @@protoc_insertion_point(builder_implements:dossier.JsTypeRenderSpec)
         com.github.jleyba.dossier.proto.Dossier.JsTypeRenderSpecOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.github.jleyba.dossier.proto.Dossier.internal_static_JsTypeRenderSpec_descriptor;
+        return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_JsTypeRenderSpec_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.github.jleyba.dossier.proto.Dossier.internal_static_JsTypeRenderSpec_fieldAccessorTable
+        return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_JsTypeRenderSpec_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 com.github.jleyba.dossier.proto.Dossier.JsTypeRenderSpec.class, com.github.jleyba.dossier.proto.Dossier.JsTypeRenderSpec.Builder.class);
       }
@@ -26687,7 +26687,7 @@ public final class Dossier {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.github.jleyba.dossier.proto.Dossier.internal_static_JsTypeRenderSpec_descriptor;
+        return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_JsTypeRenderSpec_descriptor;
       }
 
       public com.github.jleyba.dossier.proto.Dossier.JsTypeRenderSpec getDefaultInstanceForType() {
@@ -26796,7 +26796,7 @@ public final class Dossier {
       private com.google.protobuf.SingleFieldBuilder<
           com.github.jleyba.dossier.proto.Dossier.JsType, com.github.jleyba.dossier.proto.Dossier.JsType.Builder, com.github.jleyba.dossier.proto.Dossier.JsTypeOrBuilder> typeBuilder_;
       /**
-       * <code>required .JsType type = 1;</code>
+       * <code>required .dossier.JsType type = 1;</code>
        *
        * <pre>
        * The type to generate documentation for.
@@ -26806,7 +26806,7 @@ public final class Dossier {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       /**
-       * <code>required .JsType type = 1;</code>
+       * <code>required .dossier.JsType type = 1;</code>
        *
        * <pre>
        * The type to generate documentation for.
@@ -26820,7 +26820,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>required .JsType type = 1;</code>
+       * <code>required .dossier.JsType type = 1;</code>
        *
        * <pre>
        * The type to generate documentation for.
@@ -26840,7 +26840,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>required .JsType type = 1;</code>
+       * <code>required .dossier.JsType type = 1;</code>
        *
        * <pre>
        * The type to generate documentation for.
@@ -26858,7 +26858,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>required .JsType type = 1;</code>
+       * <code>required .dossier.JsType type = 1;</code>
        *
        * <pre>
        * The type to generate documentation for.
@@ -26881,7 +26881,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>required .JsType type = 1;</code>
+       * <code>required .dossier.JsType type = 1;</code>
        *
        * <pre>
        * The type to generate documentation for.
@@ -26898,7 +26898,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>required .JsType type = 1;</code>
+       * <code>required .dossier.JsType type = 1;</code>
        *
        * <pre>
        * The type to generate documentation for.
@@ -26910,7 +26910,7 @@ public final class Dossier {
         return getTypeFieldBuilder().getBuilder();
       }
       /**
-       * <code>required .JsType type = 1;</code>
+       * <code>required .dossier.JsType type = 1;</code>
        *
        * <pre>
        * The type to generate documentation for.
@@ -26924,7 +26924,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>required .JsType type = 1;</code>
+       * <code>required .dossier.JsType type = 1;</code>
        *
        * <pre>
        * The type to generate documentation for.
@@ -26948,7 +26948,7 @@ public final class Dossier {
       private com.google.protobuf.SingleFieldBuilder<
           com.github.jleyba.dossier.proto.Dossier.Resources, com.github.jleyba.dossier.proto.Dossier.Resources.Builder, com.github.jleyba.dossier.proto.Dossier.ResourcesOrBuilder> resourcesBuilder_;
       /**
-       * <code>required .Resources resources = 2;</code>
+       * <code>required .dossier.Resources resources = 2;</code>
        *
        * <pre>
        * The resources to include.
@@ -26958,7 +26958,7 @@ public final class Dossier {
         return ((bitField0_ & 0x00000002) == 0x00000002);
       }
       /**
-       * <code>required .Resources resources = 2;</code>
+       * <code>required .dossier.Resources resources = 2;</code>
        *
        * <pre>
        * The resources to include.
@@ -26972,7 +26972,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>required .Resources resources = 2;</code>
+       * <code>required .dossier.Resources resources = 2;</code>
        *
        * <pre>
        * The resources to include.
@@ -26992,7 +26992,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>required .Resources resources = 2;</code>
+       * <code>required .dossier.Resources resources = 2;</code>
        *
        * <pre>
        * The resources to include.
@@ -27010,7 +27010,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>required .Resources resources = 2;</code>
+       * <code>required .dossier.Resources resources = 2;</code>
        *
        * <pre>
        * The resources to include.
@@ -27033,7 +27033,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>required .Resources resources = 2;</code>
+       * <code>required .dossier.Resources resources = 2;</code>
        *
        * <pre>
        * The resources to include.
@@ -27050,7 +27050,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>required .Resources resources = 2;</code>
+       * <code>required .dossier.Resources resources = 2;</code>
        *
        * <pre>
        * The resources to include.
@@ -27062,7 +27062,7 @@ public final class Dossier {
         return getResourcesFieldBuilder().getBuilder();
       }
       /**
-       * <code>required .Resources resources = 2;</code>
+       * <code>required .dossier.Resources resources = 2;</code>
        *
        * <pre>
        * The resources to include.
@@ -27076,7 +27076,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>required .Resources resources = 2;</code>
+       * <code>required .dossier.Resources resources = 2;</code>
        *
        * <pre>
        * The resources to include.
@@ -27196,7 +27196,7 @@ public final class Dossier {
         return this;
       }
 
-      // @@protoc_insertion_point(builder_scope:JsTypeRenderSpec)
+      // @@protoc_insertion_point(builder_scope:dossier.JsTypeRenderSpec)
     }
 
     static {
@@ -27204,119 +27204,119 @@ public final class Dossier {
       defaultInstance.initFields();
     }
 
-    // @@protoc_insertion_point(class_scope:JsTypeRenderSpec)
+    // @@protoc_insertion_point(class_scope:dossier.JsTypeRenderSpec)
   }
 
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_SourceFile_descriptor;
+    internal_static_dossier_SourceFile_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_SourceFile_fieldAccessorTable;
+      internal_static_dossier_SourceFile_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_Resources_descriptor;
+    internal_static_dossier_Resources_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_Resources_fieldAccessorTable;
+      internal_static_dossier_Resources_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_License_descriptor;
+    internal_static_dossier_License_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_License_fieldAccessorTable;
+      internal_static_dossier_License_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_TypeLink_descriptor;
+    internal_static_dossier_TypeLink_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_TypeLink_fieldAccessorTable;
+      internal_static_dossier_TypeLink_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_Comment_descriptor;
+    internal_static_dossier_Comment_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_Comment_fieldAccessorTable;
+      internal_static_dossier_Comment_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_Comment_Token_descriptor;
+    internal_static_dossier_Comment_Token_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_Comment_Token_fieldAccessorTable;
+      internal_static_dossier_Comment_Token_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_Deprecation_descriptor;
+    internal_static_dossier_Deprecation_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_Deprecation_fieldAccessorTable;
+      internal_static_dossier_Deprecation_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_BaseProperty_descriptor;
+    internal_static_dossier_BaseProperty_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_BaseProperty_fieldAccessorTable;
+      internal_static_dossier_BaseProperty_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_Property_descriptor;
+    internal_static_dossier_Property_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_Property_fieldAccessorTable;
+      internal_static_dossier_Property_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_Function_descriptor;
+    internal_static_dossier_Function_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_Function_fieldAccessorTable;
+      internal_static_dossier_Function_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_Function_Detail_descriptor;
+    internal_static_dossier_Function_Detail_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_Function_Detail_fieldAccessorTable;
+      internal_static_dossier_Function_Detail_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_Prototype_descriptor;
+    internal_static_dossier_Prototype_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_Prototype_fieldAccessorTable;
+      internal_static_dossier_Prototype_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_Enumeration_descriptor;
+    internal_static_dossier_Enumeration_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_Enumeration_fieldAccessorTable;
+      internal_static_dossier_Enumeration_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_Enumeration_Value_descriptor;
+    internal_static_dossier_Enumeration_Value_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_Enumeration_Value_fieldAccessorTable;
+      internal_static_dossier_Enumeration_Value_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_JsType_descriptor;
+    internal_static_dossier_JsType_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_JsType_fieldAccessorTable;
+      internal_static_dossier_JsType_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_JsType_NestedTypes_descriptor;
+    internal_static_dossier_JsType_NestedTypes_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_JsType_NestedTypes_fieldAccessorTable;
+      internal_static_dossier_JsType_NestedTypes_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_JsType_NestedTypes_TypeSummary_descriptor;
+    internal_static_dossier_JsType_NestedTypes_TypeSummary_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_JsType_NestedTypes_TypeSummary_fieldAccessorTable;
+      internal_static_dossier_JsType_NestedTypes_TypeSummary_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_JsType_TypeDef_descriptor;
+    internal_static_dossier_JsType_TypeDef_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_JsType_TypeDef_fieldAccessorTable;
+      internal_static_dossier_JsType_TypeDef_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_IndexFileRenderSpec_descriptor;
+    internal_static_dossier_IndexFileRenderSpec_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_IndexFileRenderSpec_fieldAccessorTable;
+      internal_static_dossier_IndexFileRenderSpec_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_LicenseRenderSpec_descriptor;
+    internal_static_dossier_LicenseRenderSpec_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_LicenseRenderSpec_fieldAccessorTable;
+      internal_static_dossier_LicenseRenderSpec_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_SourceFileRenderSpec_descriptor;
+    internal_static_dossier_SourceFileRenderSpec_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_SourceFileRenderSpec_fieldAccessorTable;
+      internal_static_dossier_SourceFileRenderSpec_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_JsTypeRenderSpec_descriptor;
+    internal_static_dossier_JsTypeRenderSpec_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_JsTypeRenderSpec_fieldAccessorTable;
+      internal_static_dossier_JsTypeRenderSpec_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -27326,74 +27326,84 @@ public final class Dossier {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\034src/main/proto/dossier.proto\"<\n\nSource" +
-      "File\022\021\n\tbase_name\030\001 \002(\t\022\014\n\004path\030\002 \002(\t\022\r\n" +
-      "\005lines\030\003 \003(\t\"(\n\tResources\022\013\n\003css\030\001 \003(\t\022\016" +
-      "\n\006script\030\002 \003(\t\"\027\n\007License\022\014\n\004text\030\001 \002(\t\"" +
-      "&\n\010TypeLink\022\014\n\004text\030\001 \002(\t\022\014\n\004href\030\002 \002(\t\"" +
-      "\240\001\n\007Comment\022\035\n\005token\030\001 \003(\0132\016.Comment.Tok" +
-      "en\032v\n\005Token\022\014\n\004text\030\001 \002(\t\022\031\n\nis_literal\030" +
-      "\002 \001(\010:\005false\022\026\n\007is_code\030\003 \001(\010:\005false\022\014\n\004" +
-      "href\030\004 \001(\t\022\036\n\017unresolved_link\030\005 \001(\010:\005fal" +
-      "se\"\'\n\013Deprecation\022\030\n\006notice\030\001 \001(\0132\010.Comm",
-      "ent\"\227\001\n\014BaseProperty\022\014\n\004name\030\001 \002(\t\022\016\n\006so" +
-      "urce\030\002 \002(\t\022\035\n\013description\030\003 \002(\0132\010.Commen" +
-      "t\022!\n\013deprecation\030\004 \001(\0132\014.Deprecation\022\'\n\n" +
-      "visibility\030\005 \001(\0162\013.Visibility:\006PUBLIC\":\n" +
-      "\010Property\022\033\n\004base\030\001 \002(\0132\r.BaseProperty\022\021" +
-      "\n\ttype_html\030\002 \001(\t\"\220\002\n\010Function\022\033\n\004base\030\001" +
-      " \002(\0132\r.BaseProperty\022\025\n\rtemplate_name\030\002 \003" +
-      "(\t\022\035\n\016is_constructor\030\003 \001(\010:\005false\022#\n\tpar" +
-      "ameter\030\004 \003(\0132\020.Function.Detail\022 \n\006return" +
-      "\030\005 \001(\0132\020.Function.Detail\022 \n\006thrown\030\006 \003(\013",
-      "2\020.Function.Detail\032H\n\006Detail\022\014\n\004name\030\001 \001" +
-      "(\t\022\021\n\ttype_html\030\002 \001(\t\022\035\n\013description\030\003 \001" +
-      "(\0132\010.Comment\"a\n\tPrototype\022\014\n\004name\030\001 \002(\t\022" +
-      "\014\n\004href\030\002 \001(\t\022\033\n\010function\030\003 \003(\0132\t.Functi" +
-      "on\022\033\n\010property\030\004 \003(\0132\t.Property\"\305\001\n\013Enum" +
-      "eration\022\021\n\ttype_html\030\001 \002(\t\022!\n\005value\030\002 \003(" +
-      "\0132\022.Enumeration.Value\022\'\n\nvisibility\030\003 \001(" +
-      "\0162\013.Visibility:\006PUBLIC\032W\n\005Value\022\014\n\004name\030" +
-      "\001 \002(\t\022\035\n\013description\030\002 \001(\0132\010.Comment\022!\n\013" +
-      "deprecation\030\003 \001(\0132\014.Deprecation\"\216\010\n\006JsTy",
-      "pe\022\014\n\004name\030\001 \002(\t\022\016\n\006source\030\005 \002(\t\022#\n\006nest" +
-      "ed\030\006 \002(\0132\023.JsType.NestedTypes\022\035\n\013descrip" +
-      "tion\030\007 \002(\0132\010.Comment\022!\n\013deprecation\030\010 \001(" +
-      "\0132\014.Deprecation\022!\n\010type_def\030\t \003(\0132\017.JsTy" +
-      "pe.TypeDef\022!\n\013enumeration\030\n \001(\0132\014.Enumer" +
-      "ation\022\"\n\017static_function\030\013 \003(\0132\t.Functio" +
-      "n\022\"\n\017static_property\030\014 \003(\0132\t.Property\022 \n" +
-      "\rmain_function\030\r \001(\0132\t.Function\022\024\n\014is_in" +
-      "terface\030\016 \001(\010\022\035\n\tprototype\030\017 \003(\0132\n.Proto" +
-      "type\022#\n\024has_instance_methods\030\020 \001(\010:\005fals",
-      "e\022&\n\027has_instance_properties\030\021 \001(\010:\005fals" +
-      "e\022 \n\rextended_type\030\022 \003(\0132\t.TypeLink\022#\n\020i" +
-      "mplemented_type\030\023 \003(\0132\t.TypeLink\022$\n\021comp" +
-      "iler_constant\030\024 \003(\0132\t.Property\022\021\n\tis_mod" +
-      "ule\030\025 \001(\010\022\031\n\006module\030\026 \001(\0132\t.TypeLink\022\037\n\014" +
-      "aliased_type\030\027 \001(\0132\t.TypeLink\032\352\001\n\013Nested" +
-      "Types\0223\n\ninterfaces\030\001 \003(\0132\037.JsType.Neste" +
-      "dTypes.TypeSummary\0220\n\007classes\030\002 \003(\0132\037.Js" +
-      "Type.NestedTypes.TypeSummary\022.\n\005enums\030\003 " +
-      "\003(\0132\037.JsType.NestedTypes.TypeSummary\032D\n\013",
-      "TypeSummary\022\014\n\004name\030\001 \002(\t\022\014\n\004href\030\002 \002(\t\022" +
-      "\031\n\007summary\030\003 \002(\0132\010.Comment\032\243\001\n\007TypeDef\022\014" +
-      "\n\004name\030\001 \002(\t\022\021\n\ttype_html\030\002 \002(\t\022\014\n\004href\030" +
-      "\003 \002(\t\022\035\n\013description\030\004 \002(\0132\010.Comment\022!\n\013" +
-      "deprecation\030\005 \001(\0132\014.Deprecation\022\'\n\nvisib" +
-      "ility\030\006 \001(\0162\013.Visibility:\006PUBLIC\"d\n\023Inde" +
-      "xFileRenderSpec\022\035\n\tresources\030\001 \002(\0132\n.Res" +
-      "ources\022\024\n\014license_path\030\002 \001(\t\022\030\n\006readme\030\003" +
-      " \001(\0132\010.Comment\"M\n\021LicenseRenderSpec\022\035\n\tr" +
-      "esources\030\001 \002(\0132\n.Resources\022\031\n\007license\030\002 ",
-      "\002(\0132\010.License\"f\n\024SourceFileRenderSpec\022\035\n" +
-      "\tresources\030\001 \002(\0132\n.Resources\022\031\n\004file\030\002 \002" +
-      "(\0132\013.SourceFile\022\024\n\014license_path\030\003 \001(\t\"^\n" +
-      "\020JsTypeRenderSpec\022\025\n\004type\030\001 \002(\0132\007.JsType" +
-      "\022\035\n\tresources\030\002 \002(\0132\n.Resources\022\024\n\014licen" +
-      "se_path\030\003 \001(\t*A\n\nVisibility\022\n\n\006PUBLIC\020\000\022" +
-      "\r\n\tPROTECTED\020\001\022\013\n\007PRIVATE\020\002\022\013\n\007PACKAGE\020\003" +
-      "B!\n\037com.github.jleyba.dossier.proto"
+      "\n\034src/main/proto/dossier.proto\022\007dossier\"" +
+      "<\n\nSourceFile\022\021\n\tbase_name\030\001 \002(\t\022\014\n\004path" +
+      "\030\002 \002(\t\022\r\n\005lines\030\003 \003(\t\"(\n\tResources\022\013\n\003cs" +
+      "s\030\001 \003(\t\022\016\n\006script\030\002 \003(\t\"\027\n\007License\022\014\n\004te" +
+      "xt\030\001 \002(\t\"&\n\010TypeLink\022\014\n\004text\030\001 \002(\t\022\014\n\004hr" +
+      "ef\030\002 \002(\t\"\250\001\n\007Comment\022%\n\005token\030\001 \003(\0132\026.do" +
+      "ssier.Comment.Token\032v\n\005Token\022\014\n\004text\030\001 \002" +
+      "(\t\022\031\n\nis_literal\030\002 \001(\010:\005false\022\026\n\007is_code" +
+      "\030\003 \001(\010:\005false\022\014\n\004href\030\004 \001(\t\022\036\n\017unresolve" +
+      "d_link\030\005 \001(\010:\005false\"/\n\013Deprecation\022 \n\006no",
+      "tice\030\001 \001(\0132\020.dossier.Comment\"\257\001\n\014BasePro" +
+      "perty\022\014\n\004name\030\001 \002(\t\022\016\n\006source\030\002 \002(\t\022%\n\013d" +
+      "escription\030\003 \002(\0132\020.dossier.Comment\022)\n\013de" +
+      "precation\030\004 \001(\0132\024.dossier.Deprecation\022/\n" +
+      "\nvisibility\030\005 \001(\0162\023.dossier.Visibility:\006" +
+      "PUBLIC\"B\n\010Property\022#\n\004base\030\001 \002(\0132\025.dossi" +
+      "er.BaseProperty\022\021\n\ttype_html\030\002 \001(\t\"\270\002\n\010F" +
+      "unction\022#\n\004base\030\001 \002(\0132\025.dossier.BaseProp" +
+      "erty\022\025\n\rtemplate_name\030\002 \003(\t\022\035\n\016is_constr" +
+      "uctor\030\003 \001(\010:\005false\022+\n\tparameter\030\004 \003(\0132\030.",
+      "dossier.Function.Detail\022(\n\006return\030\005 \001(\0132" +
+      "\030.dossier.Function.Detail\022(\n\006thrown\030\006 \003(" +
+      "\0132\030.dossier.Function.Detail\032P\n\006Detail\022\014\n" +
+      "\004name\030\001 \001(\t\022\021\n\ttype_html\030\002 \001(\t\022%\n\013descri" +
+      "ption\030\003 \001(\0132\020.dossier.Comment\"q\n\tPrototy" +
+      "pe\022\014\n\004name\030\001 \002(\t\022\014\n\004href\030\002 \001(\t\022#\n\010functi" +
+      "on\030\003 \003(\0132\021.dossier.Function\022#\n\010property\030" +
+      "\004 \003(\0132\021.dossier.Property\"\345\001\n\013Enumeration" +
+      "\022\021\n\ttype_html\030\001 \002(\t\022)\n\005value\030\002 \003(\0132\032.dos" +
+      "sier.Enumeration.Value\022/\n\nvisibility\030\003 \001",
+      "(\0162\023.dossier.Visibility:\006PUBLIC\032g\n\005Value" +
+      "\022\014\n\004name\030\001 \002(\t\022%\n\013description\030\002 \001(\0132\020.do" +
+      "ssier.Comment\022)\n\013deprecation\030\003 \001(\0132\024.dos" +
+      "sier.Deprecation\"\266\t\n\006JsType\022\014\n\004name\030\001 \002(" +
+      "\t\022\016\n\006source\030\005 \002(\t\022+\n\006nested\030\006 \002(\0132\033.doss" +
+      "ier.JsType.NestedTypes\022%\n\013description\030\007 " +
+      "\002(\0132\020.dossier.Comment\022)\n\013deprecation\030\010 \001" +
+      "(\0132\024.dossier.Deprecation\022)\n\010type_def\030\t \003" +
+      "(\0132\027.dossier.JsType.TypeDef\022)\n\013enumerati" +
+      "on\030\n \001(\0132\024.dossier.Enumeration\022*\n\017static",
+      "_function\030\013 \003(\0132\021.dossier.Function\022*\n\017st" +
+      "atic_property\030\014 \003(\0132\021.dossier.Property\022(" +
+      "\n\rmain_function\030\r \001(\0132\021.dossier.Function" +
+      "\022\024\n\014is_interface\030\016 \001(\010\022%\n\tprototype\030\017 \003(" +
+      "\0132\022.dossier.Prototype\022#\n\024has_instance_me" +
+      "thods\030\020 \001(\010:\005false\022&\n\027has_instance_prope" +
+      "rties\030\021 \001(\010:\005false\022(\n\rextended_type\030\022 \003(" +
+      "\0132\021.dossier.TypeLink\022+\n\020implemented_type" +
+      "\030\023 \003(\0132\021.dossier.TypeLink\022,\n\021compiler_co" +
+      "nstant\030\024 \003(\0132\021.dossier.Property\022\021\n\tis_mo",
+      "dule\030\025 \001(\010\022!\n\006module\030\026 \001(\0132\021.dossier.Typ" +
+      "eLink\022\'\n\014aliased_type\030\027 \001(\0132\021.dossier.Ty" +
+      "peLink\032\212\002\n\013NestedTypes\022;\n\ninterfaces\030\001 \003" +
+      "(\0132\'.dossier.JsType.NestedTypes.TypeSumm" +
+      "ary\0228\n\007classes\030\002 \003(\0132\'.dossier.JsType.Ne" +
+      "stedTypes.TypeSummary\0226\n\005enums\030\003 \003(\0132\'.d" +
+      "ossier.JsType.NestedTypes.TypeSummary\032L\n" +
+      "\013TypeSummary\022\014\n\004name\030\001 \002(\t\022\014\n\004href\030\002 \002(\t" +
+      "\022!\n\007summary\030\003 \002(\0132\020.dossier.Comment\032\273\001\n\007" +
+      "TypeDef\022\014\n\004name\030\001 \002(\t\022\021\n\ttype_html\030\002 \002(\t",
+      "\022\014\n\004href\030\003 \002(\t\022%\n\013description\030\004 \002(\0132\020.do" +
+      "ssier.Comment\022)\n\013deprecation\030\005 \001(\0132\024.dos" +
+      "sier.Deprecation\022/\n\nvisibility\030\006 \001(\0162\023.d" +
+      "ossier.Visibility:\006PUBLIC\"t\n\023IndexFileRe" +
+      "nderSpec\022%\n\tresources\030\001 \002(\0132\022.dossier.Re" +
+      "sources\022\024\n\014license_path\030\002 \001(\t\022 \n\006readme\030" +
+      "\003 \001(\0132\020.dossier.Comment\"]\n\021LicenseRender" +
+      "Spec\022%\n\tresources\030\001 \002(\0132\022.dossier.Resour" +
+      "ces\022!\n\007license\030\002 \002(\0132\020.dossier.License\"v" +
+      "\n\024SourceFileRenderSpec\022%\n\tresources\030\001 \002(",
+      "\0132\022.dossier.Resources\022!\n\004file\030\002 \002(\0132\023.do" +
+      "ssier.SourceFile\022\024\n\014license_path\030\003 \001(\t\"n" +
+      "\n\020JsTypeRenderSpec\022\035\n\004type\030\001 \002(\0132\017.dossi" +
+      "er.JsType\022%\n\tresources\030\002 \002(\0132\022.dossier.R" +
+      "esources\022\024\n\014license_path\030\003 \001(\t*A\n\nVisibi" +
+      "lity\022\n\n\006PUBLIC\020\000\022\r\n\tPROTECTED\020\001\022\013\n\007PRIVA" +
+      "TE\020\002\022\013\n\007PACKAGE\020\003B!\n\037com.github.jleyba.d" +
+      "ossier.proto"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -27407,137 +27417,137 @@ public final class Dossier {
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
         }, assigner);
-    internal_static_SourceFile_descriptor =
+    internal_static_dossier_SourceFile_descriptor =
       getDescriptor().getMessageTypes().get(0);
-    internal_static_SourceFile_fieldAccessorTable = new
+    internal_static_dossier_SourceFile_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-        internal_static_SourceFile_descriptor,
+        internal_static_dossier_SourceFile_descriptor,
         new java.lang.String[] { "BaseName", "Path", "Lines", });
-    internal_static_Resources_descriptor =
+    internal_static_dossier_Resources_descriptor =
       getDescriptor().getMessageTypes().get(1);
-    internal_static_Resources_fieldAccessorTable = new
+    internal_static_dossier_Resources_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-        internal_static_Resources_descriptor,
+        internal_static_dossier_Resources_descriptor,
         new java.lang.String[] { "Css", "Script", });
-    internal_static_License_descriptor =
+    internal_static_dossier_License_descriptor =
       getDescriptor().getMessageTypes().get(2);
-    internal_static_License_fieldAccessorTable = new
+    internal_static_dossier_License_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-        internal_static_License_descriptor,
+        internal_static_dossier_License_descriptor,
         new java.lang.String[] { "Text", });
-    internal_static_TypeLink_descriptor =
+    internal_static_dossier_TypeLink_descriptor =
       getDescriptor().getMessageTypes().get(3);
-    internal_static_TypeLink_fieldAccessorTable = new
+    internal_static_dossier_TypeLink_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-        internal_static_TypeLink_descriptor,
+        internal_static_dossier_TypeLink_descriptor,
         new java.lang.String[] { "Text", "Href", });
-    internal_static_Comment_descriptor =
+    internal_static_dossier_Comment_descriptor =
       getDescriptor().getMessageTypes().get(4);
-    internal_static_Comment_fieldAccessorTable = new
+    internal_static_dossier_Comment_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-        internal_static_Comment_descriptor,
+        internal_static_dossier_Comment_descriptor,
         new java.lang.String[] { "Token", });
-    internal_static_Comment_Token_descriptor =
-      internal_static_Comment_descriptor.getNestedTypes().get(0);
-    internal_static_Comment_Token_fieldAccessorTable = new
+    internal_static_dossier_Comment_Token_descriptor =
+      internal_static_dossier_Comment_descriptor.getNestedTypes().get(0);
+    internal_static_dossier_Comment_Token_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-        internal_static_Comment_Token_descriptor,
+        internal_static_dossier_Comment_Token_descriptor,
         new java.lang.String[] { "Text", "IsLiteral", "IsCode", "Href", "UnresolvedLink", });
-    internal_static_Deprecation_descriptor =
+    internal_static_dossier_Deprecation_descriptor =
       getDescriptor().getMessageTypes().get(5);
-    internal_static_Deprecation_fieldAccessorTable = new
+    internal_static_dossier_Deprecation_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-        internal_static_Deprecation_descriptor,
+        internal_static_dossier_Deprecation_descriptor,
         new java.lang.String[] { "Notice", });
-    internal_static_BaseProperty_descriptor =
+    internal_static_dossier_BaseProperty_descriptor =
       getDescriptor().getMessageTypes().get(6);
-    internal_static_BaseProperty_fieldAccessorTable = new
+    internal_static_dossier_BaseProperty_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-        internal_static_BaseProperty_descriptor,
+        internal_static_dossier_BaseProperty_descriptor,
         new java.lang.String[] { "Name", "Source", "Description", "Deprecation", "Visibility", });
-    internal_static_Property_descriptor =
+    internal_static_dossier_Property_descriptor =
       getDescriptor().getMessageTypes().get(7);
-    internal_static_Property_fieldAccessorTable = new
+    internal_static_dossier_Property_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-        internal_static_Property_descriptor,
+        internal_static_dossier_Property_descriptor,
         new java.lang.String[] { "Base", "TypeHtml", });
-    internal_static_Function_descriptor =
+    internal_static_dossier_Function_descriptor =
       getDescriptor().getMessageTypes().get(8);
-    internal_static_Function_fieldAccessorTable = new
+    internal_static_dossier_Function_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-        internal_static_Function_descriptor,
+        internal_static_dossier_Function_descriptor,
         new java.lang.String[] { "Base", "TemplateName", "IsConstructor", "Parameter", "Return", "Thrown", });
-    internal_static_Function_Detail_descriptor =
-      internal_static_Function_descriptor.getNestedTypes().get(0);
-    internal_static_Function_Detail_fieldAccessorTable = new
+    internal_static_dossier_Function_Detail_descriptor =
+      internal_static_dossier_Function_descriptor.getNestedTypes().get(0);
+    internal_static_dossier_Function_Detail_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-        internal_static_Function_Detail_descriptor,
+        internal_static_dossier_Function_Detail_descriptor,
         new java.lang.String[] { "Name", "TypeHtml", "Description", });
-    internal_static_Prototype_descriptor =
+    internal_static_dossier_Prototype_descriptor =
       getDescriptor().getMessageTypes().get(9);
-    internal_static_Prototype_fieldAccessorTable = new
+    internal_static_dossier_Prototype_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-        internal_static_Prototype_descriptor,
+        internal_static_dossier_Prototype_descriptor,
         new java.lang.String[] { "Name", "Href", "Function", "Property", });
-    internal_static_Enumeration_descriptor =
+    internal_static_dossier_Enumeration_descriptor =
       getDescriptor().getMessageTypes().get(10);
-    internal_static_Enumeration_fieldAccessorTable = new
+    internal_static_dossier_Enumeration_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-        internal_static_Enumeration_descriptor,
+        internal_static_dossier_Enumeration_descriptor,
         new java.lang.String[] { "TypeHtml", "Value", "Visibility", });
-    internal_static_Enumeration_Value_descriptor =
-      internal_static_Enumeration_descriptor.getNestedTypes().get(0);
-    internal_static_Enumeration_Value_fieldAccessorTable = new
+    internal_static_dossier_Enumeration_Value_descriptor =
+      internal_static_dossier_Enumeration_descriptor.getNestedTypes().get(0);
+    internal_static_dossier_Enumeration_Value_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-        internal_static_Enumeration_Value_descriptor,
+        internal_static_dossier_Enumeration_Value_descriptor,
         new java.lang.String[] { "Name", "Description", "Deprecation", });
-    internal_static_JsType_descriptor =
+    internal_static_dossier_JsType_descriptor =
       getDescriptor().getMessageTypes().get(11);
-    internal_static_JsType_fieldAccessorTable = new
+    internal_static_dossier_JsType_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-        internal_static_JsType_descriptor,
+        internal_static_dossier_JsType_descriptor,
         new java.lang.String[] { "Name", "Source", "Nested", "Description", "Deprecation", "TypeDef", "Enumeration", "StaticFunction", "StaticProperty", "MainFunction", "IsInterface", "Prototype", "HasInstanceMethods", "HasInstanceProperties", "ExtendedType", "ImplementedType", "CompilerConstant", "IsModule", "Module", "AliasedType", });
-    internal_static_JsType_NestedTypes_descriptor =
-      internal_static_JsType_descriptor.getNestedTypes().get(0);
-    internal_static_JsType_NestedTypes_fieldAccessorTable = new
+    internal_static_dossier_JsType_NestedTypes_descriptor =
+      internal_static_dossier_JsType_descriptor.getNestedTypes().get(0);
+    internal_static_dossier_JsType_NestedTypes_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-        internal_static_JsType_NestedTypes_descriptor,
+        internal_static_dossier_JsType_NestedTypes_descriptor,
         new java.lang.String[] { "Interfaces", "Classes", "Enums", });
-    internal_static_JsType_NestedTypes_TypeSummary_descriptor =
-      internal_static_JsType_NestedTypes_descriptor.getNestedTypes().get(0);
-    internal_static_JsType_NestedTypes_TypeSummary_fieldAccessorTable = new
+    internal_static_dossier_JsType_NestedTypes_TypeSummary_descriptor =
+      internal_static_dossier_JsType_NestedTypes_descriptor.getNestedTypes().get(0);
+    internal_static_dossier_JsType_NestedTypes_TypeSummary_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-        internal_static_JsType_NestedTypes_TypeSummary_descriptor,
+        internal_static_dossier_JsType_NestedTypes_TypeSummary_descriptor,
         new java.lang.String[] { "Name", "Href", "Summary", });
-    internal_static_JsType_TypeDef_descriptor =
-      internal_static_JsType_descriptor.getNestedTypes().get(1);
-    internal_static_JsType_TypeDef_fieldAccessorTable = new
+    internal_static_dossier_JsType_TypeDef_descriptor =
+      internal_static_dossier_JsType_descriptor.getNestedTypes().get(1);
+    internal_static_dossier_JsType_TypeDef_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-        internal_static_JsType_TypeDef_descriptor,
+        internal_static_dossier_JsType_TypeDef_descriptor,
         new java.lang.String[] { "Name", "TypeHtml", "Href", "Description", "Deprecation", "Visibility", });
-    internal_static_IndexFileRenderSpec_descriptor =
+    internal_static_dossier_IndexFileRenderSpec_descriptor =
       getDescriptor().getMessageTypes().get(12);
-    internal_static_IndexFileRenderSpec_fieldAccessorTable = new
+    internal_static_dossier_IndexFileRenderSpec_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-        internal_static_IndexFileRenderSpec_descriptor,
+        internal_static_dossier_IndexFileRenderSpec_descriptor,
         new java.lang.String[] { "Resources", "LicensePath", "Readme", });
-    internal_static_LicenseRenderSpec_descriptor =
+    internal_static_dossier_LicenseRenderSpec_descriptor =
       getDescriptor().getMessageTypes().get(13);
-    internal_static_LicenseRenderSpec_fieldAccessorTable = new
+    internal_static_dossier_LicenseRenderSpec_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-        internal_static_LicenseRenderSpec_descriptor,
+        internal_static_dossier_LicenseRenderSpec_descriptor,
         new java.lang.String[] { "Resources", "License", });
-    internal_static_SourceFileRenderSpec_descriptor =
+    internal_static_dossier_SourceFileRenderSpec_descriptor =
       getDescriptor().getMessageTypes().get(14);
-    internal_static_SourceFileRenderSpec_fieldAccessorTable = new
+    internal_static_dossier_SourceFileRenderSpec_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-        internal_static_SourceFileRenderSpec_descriptor,
+        internal_static_dossier_SourceFileRenderSpec_descriptor,
         new java.lang.String[] { "Resources", "File", "LicensePath", });
-    internal_static_JsTypeRenderSpec_descriptor =
+    internal_static_dossier_JsTypeRenderSpec_descriptor =
       getDescriptor().getMessageTypes().get(15);
-    internal_static_JsTypeRenderSpec_fieldAccessorTable = new
+    internal_static_dossier_JsTypeRenderSpec_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-        internal_static_JsTypeRenderSpec_descriptor,
+        internal_static_dossier_JsTypeRenderSpec_descriptor,
         new java.lang.String[] { "Type", "Resources", "LicensePath", });
   }
 
