@@ -22,12 +22,6 @@ message Resources {
 }
 
 
-// Represents a license file.
-message License {
-  required string text = 1;
-}
-
-
 // Describes a type to link to.
 message TypeLink {
   // The link display text.
@@ -150,6 +144,23 @@ message Enumeration {
   optional Visibility visibility = 3 [default = PUBLIC];
 }
 
+// Describes how to build the side index for a generated page.
+message Index {
+  message Module {
+    required TypeLink link = 1;
+    repeated TypeLink type = 2;
+  }
+
+  // Defines the href from the current page to the main index.
+  required string home = 1;
+
+  // Links to the global JavaScript types.
+  repeated TypeLink type = 2;
+
+  // Links to JavaScript modules.
+  repeated Module module = 3;
+}
+
 
 // Describes a JavaScript type to generate documentation for. Each |JsType|
 // message describes a class, enum, interface, or namespace.
@@ -235,19 +246,10 @@ message JsType {
 message IndexFileRenderSpec {
   // The resources to include.
   required Resources resources = 1;
-  // Path to the license page, if any.
-  optional string license_path = 2;
   // The readme to display on the main page, if any.
-  optional Comment readme = 3;
-}
-
-
-// Describes how to render the license file.
-message LicenseRenderSpec {
-  // The resources to include.
-  required Resources resources = 1;
-  // The license file to render.
-  required License license = 2;
+  optional Comment readme = 2;
+  // Navigation index.
+  required Index index = 3;
 }
 
 
@@ -257,8 +259,8 @@ message SourceFileRenderSpec {
   required Resources resources = 1;
   // The file to render.
   required SourceFile file = 2;
-  // Path to the license page, if any.
-  optional string license_path = 3;
+  // Navigation index.
+  required Index index = 3;
 }
 
 
@@ -268,6 +270,6 @@ message JsTypeRenderSpec {
   required JsType type = 1;
   // The resources to include.
   required Resources resources = 2;
-  // Path to the license page, if any.
-  optional string license_path = 3;
+  // Navigation index.
+  required Index index = 3;
 }

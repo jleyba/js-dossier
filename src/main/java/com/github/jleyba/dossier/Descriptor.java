@@ -46,12 +46,12 @@ public class Descriptor {
   @Nullable private final Node srcNode;
   private final JSType type;
   @Nullable private final JsDoc info;
-  private final Optional<Descriptor> parent;
 
   private ImmutableList<ArgDescriptor> args;
   private ImmutableList<Descriptor> properties;
   private ImmutableSet<Descriptor> instanceProperties;
 
+  private Optional<Descriptor> parent;
   private Optional<ModuleDescriptor> module = Optional.absent();
 
   Descriptor(String name, @Nullable Node srcNode, JSType type, @Nullable JSDocInfo info) {
@@ -450,6 +450,7 @@ public class Descriptor {
       Descriptor property = new Descriptor(
           getFullName() + "." + prop, srcNode, obj.getPropertyType(prop), info);
       property.module = module;
+      property.parent = Optional.of(this);
 
       properties.add(property);
     }

@@ -27,21 +27,12 @@ EOF
 
 run_jsc() {
   buck build \
-      //third_party/java/soy:SoyToJsSrcCompiler \
       //third_party/java/closure_compiler:compiler
 
-  java -jar buck-out/gen/third_party/java/soy/SoyToJsSrcCompiler.jar \
-      --shouldGenerateJsdoc \
-      --shouldProvideRequireSoyNamespaces \
-      --outputPathFormat src/main/js/dossier_soy.js \
-      --srcs $RESOURCES/dossier.soy
-
   python ./third_party/js/closure_library/closure/bin/calcdeps.py \
-      -i ./src/main/js/soyutils_usegoog.js \
-      -i ./src/main/js/dossier_soy.js \
       -i ./src/main/js/dossier.js \
       -i ./src/main/js/deps.js \
-      -d ./third_party/js/closure_library/closure/goog/deps.js \
+      -p ./third_party/js/closure_library/closure/goog/ \
       -o compiled \
       -c ./buck-out/gen/third_party/java/closure_compiler/compiler.jar \
       -f "--compilation_level=ADVANCED_OPTIMIZATIONS" \

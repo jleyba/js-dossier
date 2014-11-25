@@ -7,26 +7,39 @@ import com.google.template.soy.types.SoyType;
 import com.google.template.soy.types.SoyTypeProvider;
 import com.google.template.soy.types.SoyTypeRegistry;
 
+import java.util.HashMap;
+import java.util.Map;
+
 class DossierSoyTypeProvider implements SoyTypeProvider {
   
   private final ImmutableMap<String, SoyType> types;
 
   DossierSoyTypeProvider() {
-    ImmutableMap.Builder<String, SoyType> builder = ImmutableMap.builder();
+    Map<String, SoyType> map = new HashMap<>();
 
     Descriptors.FileDescriptor fileDescriptor = Dossier.getDescriptor();
 
     for (Descriptors.EnumDescriptor enumDescriptor : fileDescriptor.getEnumTypes()) {
       ProtoEnumSoyType type = ProtoEnumSoyType.get(enumDescriptor);
-      builder.put(type.getName(), type);
+      map.put(type.getName(), type);
     }
 
     for (Descriptors.Descriptor descriptor : fileDescriptor.getMessageTypes()) {
-      ProtoMessageSoyType type = ProtoMessageSoyType.get(descriptor);
-      builder.put(type.getName(), type);
+      registerTypes(map, descriptor);
     }
 
-    types = builder.build();
+    types = ImmutableMap.copyOf(map);
+  }
+
+  private static void registerTypes(Map<String, SoyType> map, Descriptors.Descriptor descriptor) {
+    ProtoMessageSoyType type = ProtoMessageSoyType.get(descriptor);
+    map.put(type.getName(), type);
+
+    for (Descriptors.FieldDescriptor field : descriptor.getFields()) {
+      if (field.getJavaType() == Descriptors.FieldDescriptor.JavaType.MESSAGE) {
+        registerTypes(map, field.getMessageType());
+      }
+    }
   }
 
   @Override

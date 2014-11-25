@@ -24,8 +24,6 @@ import static com.github.jleyba.dossier.proto.Dossier.Enumeration;
 import static com.github.jleyba.dossier.proto.Dossier.IndexFileRenderSpec;
 import static com.github.jleyba.dossier.proto.Dossier.JsType;
 import static com.github.jleyba.dossier.proto.Dossier.JsTypeRenderSpec;
-import static com.github.jleyba.dossier.proto.Dossier.License;
-import static com.github.jleyba.dossier.proto.Dossier.LicenseRenderSpec;
 import static com.github.jleyba.dossier.proto.Dossier.Property;
 import static com.github.jleyba.dossier.proto.Dossier.Prototype;
 import static com.github.jleyba.dossier.proto.Dossier.Resources;
@@ -37,6 +35,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.base.Strings.nullToEmpty;
+import static com.google.common.base.Verify.verify;
 import static com.google.common.collect.Iterables.concat;
 import static com.google.common.collect.Iterables.transform;
 import static java.nio.file.Files.createDirectories;
@@ -83,7 +82,7 @@ import javax.annotation.Nullable;
  */
 class HtmlDocWriter implements DocWriter {
 
-  private static final String LICENSE_FILE = "license.html";
+  private static final String INDEX_FILE_NAME = "index.html";
 
   private final Config config;
   private final DocRegistry docRegistry;
@@ -94,6 +93,8 @@ class HtmlDocWriter implements DocWriter {
   private Iterable<Descriptor> sortedTypes;
   private Iterable<Path> sortedFiles;
   private Iterable<ModuleDescriptor> sortedModules;
+
+  private Dossier.Index masterIndex;
 
   private ModuleDescriptor currentModule;
 
@@ -113,11 +114,12 @@ class HtmlDocWriter implements DocWriter {
     sortedModules = FluentIterable.from(docRegistry.getModules())
         .toSortedList(new ModueDisplayPathComparator());
 
+    masterIndex = generateNavIndex();
+
     createDirectories(config.getOutput());
     copyResources();
     copySourceFiles();
     generateIndex();
-    generateLicense();
 
     for (Descriptor descriptor : sortedTypes) {
       if (descriptor.isEmptyNamespace()) {
@@ -127,10 +129,61 @@ class HtmlDocWriter implements DocWriter {
     }
 
     for (ModuleDescriptor descriptor : sortedModules) {
-      generateModuleDocs(descriptor, registry);
+      generateModuleDocs(descriptor);
     }
 
     writeTypesJson();
+  }
+
+  private Dossier.Index generateNavIndex(Path path) {
+    Dossier.Index.Builder builder = Dossier.Index.newBuilder()
+        .mergeFrom(masterIndex);
+
+    Path toRoot = path.getParent().relativize(config.getOutput());
+
+    builder.setHome(toUrlPath(toRoot.resolve(INDEX_FILE_NAME)));
+
+    for (Dossier.Index.Module.Builder module : builder.getModuleBuilderList()) {
+      module.getLinkBuilder().setHref(
+          toUrlPath(toRoot.resolve(module.getLinkBuilder().getHref())));
+    }
+
+    for (TypeLink.Builder link : builder.getTypeBuilderList()) {
+      link.setHref(toUrlPath(toRoot.resolve(link.getHref())));
+    }
+
+    return builder.build();
+  }
+
+  private static String toUrlPath(Path p) {
+    return Joiner.on('/').join(p.iterator());
+  }
+
+  private Dossier.Index generateNavIndex() {
+    Dossier.Index.Builder builder = Dossier.Index.newBuilder();
+
+    builder.setHome(INDEX_FILE_NAME);
+
+    for (ModuleDescriptor module : sortedModules) {
+      Dossier.Index.Module.Builder moduleBuilder = builder.addModuleBuilder()
+          .setLink(TypeLink.newBuilder()
+          .setHref(toUrlPath(config.getOutput().relativize(linker.getFilePath(module))))
+          .setText(linker.getDisplayName(module)));
+      // TODO: module types.
+    }
+
+    for (Descriptor type : sortedTypes) {
+      if (type.isEmptyNamespace()) {
+        continue;
+      }
+
+      Descriptor resolvedType = resolveTypeAlias(type);
+      builder.addType(TypeLink.newBuilder()
+          .setHref(toUrlPath(config.getOutput().relativize(linker.getFilePath(resolvedType))))
+          .setText(type.getFullName()));
+    }
+
+    return builder.build();
   }
 
   private void generateIndex() throws IOException {
@@ -142,34 +195,15 @@ class HtmlDocWriter implements DocWriter {
       readme = parseComment(readmeHtml, linker);
     }
 
-    Path index = config.getOutput().resolve("index.html");
+    Path index = config.getOutput().resolve(INDEX_FILE_NAME);
     IndexFileRenderSpec.Builder spec = IndexFileRenderSpec.newBuilder()
         .setResources(getResources(index))
+        .setIndex(masterIndex)
         .setReadme(readme);
-    if (config.getLicense().isPresent()) {
-      spec.setLicensePath(LICENSE_FILE);
-    }
     renderer.render(index, spec.build());
   }
 
-  private void generateLicense() throws IOException {
-    if (!config.getLicense().isPresent()) {
-      return;
-    }
-
-    Path license = config.getOutput().resolve(LICENSE_FILE);
-    String text = new String(Files.readAllBytes(config.getLicense().get()), Charsets.UTF_8);
-
-    renderer.render(
-        license,
-        LicenseRenderSpec.newBuilder()
-            .setLicense(License.newBuilder().setText(text).build())
-            .setResources(getResources(license))
-            .build());
-  }
-
-  private void generateModuleDocs(ModuleDescriptor module, JSTypeRegistry registry)
-      throws IOException {
+  private void generateModuleDocs(ModuleDescriptor module) throws IOException {
     Path output = linker.getFilePath(module);
     createDirectories(output.getParent());
 
@@ -209,10 +243,8 @@ class HtmlDocWriter implements DocWriter {
 
     JsTypeRenderSpec.Builder spec = JsTypeRenderSpec.newBuilder()
         .setResources(getResources(output))
-        .setType(jsTypeBuilder.build());
-    if (config.getLicense().isPresent()) {
-      spec.setLicensePath(LICENSE_FILE);
-    }
+        .setType(jsTypeBuilder.build())
+        .setIndex(generateNavIndex(output));
     renderer.render(output, spec.build());
 
     for (Descriptor property : module.getExportedProperties()) {
@@ -275,10 +307,8 @@ class HtmlDocWriter implements DocWriter {
 
     JsTypeRenderSpec.Builder spec = JsTypeRenderSpec.newBuilder()
         .setResources(getResources(output))
-        .setType(jsTypeBuilder.build());
-    if (config.getLicense().isPresent()) {
-      spec.setLicensePath(LICENSE_FILE);
-    }
+        .setType(jsTypeBuilder.build())
+        .setIndex(generateNavIndex(output));
     renderer.render(output, spec.build());
   }
 
@@ -385,7 +415,6 @@ class HtmlDocWriter implements DocWriter {
     for (Path source : concat(config.getSources(), config.getModules())) {
       Path displayPath = config.getSrcPrefix().relativize(source);
       Path renderPath = linker.getFilePath(source);
-      Path toRoot = renderPath.getParent().relativize(config.getOutput()).resolve(LICENSE_FILE);
 
       SourceFile file = SourceFile.newBuilder()
           .setBaseName(source.getFileName().toString())
@@ -395,10 +424,8 @@ class HtmlDocWriter implements DocWriter {
 
       SourceFileRenderSpec.Builder spec = SourceFileRenderSpec.newBuilder()
           .setFile(file)
-          .setResources(getResources(renderPath));
-      if (config.getLicense().isPresent()) {
-        spec.setLicensePath(Joiner.on('/').join(toRoot.iterator()));
-      }
+          .setResources(getResources(renderPath))
+          .setIndex(generateNavIndex(renderPath));
       renderer.render(renderPath, spec.build());
     }
   }
@@ -525,12 +552,22 @@ class HtmlDocWriter implements DocWriter {
   private List<JsType.TypeDef> getTypeDefInfo(Iterable<Descriptor> properties) {
     return FluentIterable.from(properties)
         .filter(isTypedef())
+        .filter(isPublic())
         .transform(new Function<Descriptor, JsType.TypeDef>() {
           @Override
           public JsType.TypeDef apply(Descriptor typedef) {
             JsDoc jsdoc = checkNotNull(typedef.getJsDoc());
+
+            String name = typedef.getFullName();
+
+            verify(typedef.getParent().isPresent());
+            Descriptor parent = typedef.getParent().get();
+            if (parent.isConstructor() || parent.isEnum() || parent.isInterface()) {
+              name = parent.getSimpleName() + "." + typedef.getSimpleName();
+            }
+
             JsType.TypeDef.Builder builder = JsType.TypeDef.newBuilder()
-                .setName(typedef.getFullName())
+                .setName(name)
                 .setTypeHtml(formatTypeExpression(jsdoc.getType(), linker))
                 .setHref(linker.getSourcePath(typedef))
                 .setDescription(getBlockDescription(linker, jsdoc))
@@ -663,7 +700,8 @@ class HtmlDocWriter implements DocWriter {
         unsorted = unsorted.filter(notOwnPropertyOf(seen));
       }
 
-      List<Descriptor> properties = unsorted.toSortedList(DescriptorNameComparator.INSTANCE);
+      List<Descriptor> properties = unsorted.filter(isPublic())
+          .toSortedList(DescriptorNameComparator.INSTANCE);
       seen.add(typeDescriptor);
       if (properties.isEmpty()) {
         continue;
@@ -844,7 +882,6 @@ class HtmlDocWriter implements DocWriter {
         });
   }
 
-  @Nullable
   private String getReturnType(Descriptor function) {
     JsDoc jsdoc = function.getJsDoc();
     if (jsdoc != null) {
@@ -854,7 +891,7 @@ class HtmlDocWriter implements DocWriter {
       }
     }
     JSType type = ((FunctionType) function.toObjectType()).getReturnType();
-    return type == null ? null : type.toString();
+    return type == null ? "" : type.toString();
   }
 
   private static Predicate<Descriptor> isTypedef() {
@@ -862,6 +899,22 @@ class HtmlDocWriter implements DocWriter {
       @Override
       public boolean apply(Descriptor input) {
         return input.isTypedef();
+      }
+    };
+  }
+
+  private static Predicate<Descriptor> isPublic() {
+    return new Predicate<Descriptor>() {
+      @Override
+      public boolean apply(Descriptor input) {
+        if (input.getVisibility() == JSDocInfo.Visibility.PUBLIC) {
+          return true;
+        }
+        if (input.getVisibility() == JSDocInfo.Visibility.INHERITED
+            && input.getParent().isPresent()) {
+          return apply(input.getParent().get());
+        }
+        return false;
       }
     };
   }

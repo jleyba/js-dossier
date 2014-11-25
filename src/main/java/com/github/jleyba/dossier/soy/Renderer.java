@@ -32,10 +32,6 @@ public class Renderer {
     render(output, "dossier.soy.indexFile", spec);
   }
 
-  public void render(Path output, Dossier.LicenseRenderSpec spec) throws IOException {
-    render(output, "dossier.soy.licenseFile", spec);
-  }
-
   public void render(Path output, Dossier.SourceFileRenderSpec spec) throws IOException {
     render(output, "dossier.soy.srcfile", spec);
   }

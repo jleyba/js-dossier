@@ -100,7 +100,10 @@ public class RendererTest {
             "<meta http-equiv=\"Content-Language\" content=\"en\" />",
             "<title>Foo.Bar</title>",
             "<link href=\"apples\" rel=\"stylesheet\" type=\"text/css\">",
-            "<link href=\"oranges\" rel=\"stylesheet\" type=\"text/css\">"));
+            "<link href=\"oranges\" rel=\"stylesheet\" type=\"text/css\">",
+            "<header><div><form><div>",
+            "<input type=\"search\" placeholder=\"Search\">",
+            "</div></form></div></header>"));
   }
 
   @Test
@@ -110,7 +113,7 @@ public class RendererTest {
         is(""));
     assertThat(
         render("dossier.soy.sourceLink", ImmutableMap.<String, Object>of("href", "foo.bar")),
-        is("<a class=\"source\" href=\"foo.bar\">code &raquo;</a>"));
+        is("<div class=\"codelink\"><a href=\"foo.bar\">code &raquo;</a></div>"));
   }
 
   @Test
@@ -130,21 +133,21 @@ public class RendererTest {
         .build());
     assertThat(render("dossier.soy.classInheritance", "types", types),
         isHtml(
-            "<pre><code>",
+            "<pre>",
             "<a href=\"foo.link\">Foo</a>",
             "\n  &#x2514; Bar",
-            "</code></pre>"));
+            "</pre>"));
 
     types.add(Dossier.TypeLink.newBuilder()
         .setHref("baz.link").setText("Baz")
         .build());
     assertThat(render("dossier.soy.classInheritance", "types", types),
         isHtml(
-            "<pre><code>",
+            "<pre>",
             "<a href=\"foo.link\">Foo</a>",
             "\n  &#x2514; <a href=\"bar.link\">Bar</a>",
             "\n      &#x2514; Baz",
-            "</code></pre>"));
+            "</pre>"));
 
     types.add(Dossier.TypeLink.newBuilder()
         .setHref("").setText("NoLink")
@@ -154,13 +157,13 @@ public class RendererTest {
         .build());
     assertThat(render("dossier.soy.classInheritance", "types", types),
         isHtml(
-            "<pre><code>",
+            "<pre>",
             "<a href=\"foo.link\">Foo</a>",
             "\n  &#x2514; <a href=\"bar.link\">Bar</a>",
             "\n      &#x2514; <a href=\"baz.link\">Baz</a>",
             "\n          &#x2514; NoLink",
             "\n              &#x2514; Quux",
-            "</code></pre>"));
+            "</pre>"));
   }
 
   @Test
@@ -256,11 +259,11 @@ public class RendererTest {
 
     Document document = renderDocument("dossier.soy.typeHeader", "type", type);
 
-    assertThat(querySelector(document, "header").toString(), isHtml(
-        "<header>",
-        "<h1>Module Foo</h1>",
-        "<a class=\"source\" href=\"source-file\">code &raquo;</a>",
-        "</header>"));
+    assertThat(querySelector(document, "body").toString(), isHtml(
+        "<body>",
+        "<div class=\"codelink\"><a href=\"source-file\">View Source</a></div>",
+        "<h1>module Foo</h1>",
+        "</body>"));
   }
 
   @Test
@@ -281,8 +284,8 @@ public class RendererTest {
 
     Document document = renderDocument("dossier.soy.typeHeader", "type", type);
 
-    Element h1 = querySelector(document, "header > h1");
-    assertEquals("<h1>Interface Foo</h1>", h1.toString());
+    Element h1 = querySelector(document, "body > h1");
+    assertEquals("<h1>interface Foo</h1>", h1.toString());
     assertThat(querySelector(document, "dl > dt").toString(),
         is("<dt>All extended interfaces:</dt>"));
     assertThat(document.select("div.deprecation-notice").isEmpty(), is(true));
@@ -301,9 +304,8 @@ public class RendererTest {
 
     Document document = renderDocument("dossier.soy.typeHeader", "type", type);
 
-    assertThat(querySelector(document, "header > h1").toString(), isHtml(
-        "<h1>Interface Foo<span class=\"deprecation-notice\"> ",
-        "(deprecated)</span></h1>"));
+    assertThat(querySelector(document, "h1").toString(), isHtml(
+        "<h1 class=\"deprecated\">interface Foo</h1>"));
     assertThat(document.select("div.deprecation-notice").isEmpty(), is(true));
   }
 
@@ -321,9 +323,8 @@ public class RendererTest {
 
     Document document = renderDocument("dossier.soy.typeHeader", "type", type);
 
-    assertThat(querySelector(document, "header > h1").toString(), isHtml(
-        "<h1>Interface Foo<span class=\"deprecation-notice\"> ",
-        "(deprecated)</span></h1>"));
+    assertThat(querySelector(document, "h1").toString(), isHtml(
+        "<h1 class=\"deprecated\">interface Foo</h1>"));
     assertThat(querySelector(document, ".deprecation-reason").toString(), isHtml(
         "<span class=\"deprecation-reason\"><i>Goodbye</i>, world!</span>"));
   }
@@ -347,8 +348,8 @@ public class RendererTest {
 
     Document document = renderDocument("dossier.soy.typeHeader", "type", type);
 
-    assertThat(querySelector(document, "header > h1").toString(), isHtml(
-        "<h1>Interface Foo&lt;K, V&gt;</h1>"));
+    assertThat(querySelector(document, "h1").toString(), isHtml(
+        "<h1>interface Foo&lt;K, V&gt;</h1>"));
   }
 
   @Test
@@ -370,8 +371,8 @@ public class RendererTest {
 
     Document document = renderDocument("dossier.soy.typeHeader", "type", type);
 
-    assertThat(querySelector(document, "header > h1").toString(), isHtml(
-        "<h1>Class Foo&lt;K, V&gt;</h1>"));
+    assertThat(querySelector(document, "h1").toString(), isHtml(
+        "<h1>class Foo&lt;K, V&gt;</h1>"));
   }
 
   @Test
@@ -394,14 +395,13 @@ public class RendererTest {
 
     Document document = renderDocument("dossier.soy.typeHeader", "type", type);
 
-    assertThat(querySelector(document, "header").toString(), isHtml(
-        "<header>",
-        "<p><b>Module</b> ",
-        "<code><a href=\"module-source\">path/to/module</a></code>",
-        "</p>",
-        "<h1>Class Foo</h1>",
-        "<a class=\"source\" href=\"source\">code &raquo;</a>",
-        "</header>"));
+    assertThat(querySelector(document, "body").toString(), isHtml(
+        "<body>",
+        "<div class=\"parentlink\"><b>Module:</b> ",
+        "<a href=\"module-source\">path/to/module</a></div>",
+        "<div class=\"codelink\"><a href=\"source\">View Source</a></div>",
+        "<h1>class Foo</h1>",
+        "</body>"));
   }
 
   @Test
@@ -436,19 +436,20 @@ public class RendererTest {
         .build();
 
     Document document = renderDocument("dossier.soy.typeHeader", "type", type);
-    assertThat(querySelector(document, "header").toString(), isHtml(
-        "<header>",
-        "<h1>Class Foo&lt;T&gt;</h1>",
-        "<a class=\"source\" href=\"source-file\">code &raquo;</a>",
-        "<pre><code>",
+    assertThat(querySelector(document, "body").toString(), isHtml(
+        "<body>",
+        "<div class=\"codelink\"><a href=\"source-file\">View Source</a></div>",
+        "<h1>class Foo&lt;T&gt;</h1>",
+        "<pre>",
         "<a href=\"super-one\">SuperClass1</a>",
         "\n  \u2514 <a href=\"super-two\">SuperClass2</a>",
         "\n      \u2514 Foo",
-        "</code></pre>",
+        "</pre>",
         "<dl><dt>All implemented interfaces:</dt><dd>",
         "<code><a href=\"type-one\">Hello</a></code>, ",
         "<code><a href=\"type-two\">Goodbye</a></code>",
-        "</dd></dl></header>"));
+        "</dd></dl>",
+        "</body>"));
   }
 
   @Test
@@ -483,19 +484,15 @@ public class RendererTest {
         .build();
 
     Document document = renderDocument("dossier.soy.typeHeader", "type", type);
-    assertThat(querySelector(document, "header").toString(), isHtml(
-        "<header>",
-        "<h1>Module Foo&lt;T&gt;</h1>",
-        "<a class=\"source\" href=\"source-file\">code &raquo;</a>",
-        "<pre><code>",
-        "<a href=\"super-one\">SuperClass1</a>",
-        "\n  \u2514 <a href=\"super-two\">SuperClass2</a>",
-        "\n      \u2514 Foo",
-        "</code></pre>",
-        "<dl><dt>All implemented interfaces:</dt><dd>",
-        "<code><a href=\"type-one\">Hello</a></code>, ",
-        "<code><a href=\"type-two\">Goodbye</a></code>",
-        "</dd></dl></header>"));
+    assertThat(querySelector(document, "body").toString(), isHtml(
+        "<body><div class=\"codelink\"><a href=\"source-file\">View Source</a></div>",
+        "<h1>module Foo&lt;T&gt;</h1>",
+        "<pre><a href=\"super-one\">SuperClass1</a>\n",
+        "  └ <a href=\"super-two\">SuperClass2</a>\n",
+        "      └ Foo</pre>",
+        "<dl><dt>All implemented interfaces:</dt>",
+        "<dd><code><a href=\"type-one\">Hello</a></code>, ",
+        "<code><a href=\"type-two\">Goodbye</a></code></dd></dl></body>"));
   }
 
   @Test
@@ -509,11 +506,11 @@ public class RendererTest {
 
     Document document = renderDocument("dossier.soy.typeHeader", "type", type);
 
-    assertThat(querySelector(document, "header").toString(), isHtml(
-        "<header>",
-        "<h1>Namespace Foo</h1>",
-        "<a class=\"source\" href=\"source-file\">code &raquo;</a>",
-        "</header>"));
+    assertThat(querySelector(document, "body").toString(), isHtml(
+        "<body>",
+        "<div class=\"codelink\"><a href=\"source-file\">View Source</a></div>",
+        "<h1>namespace Foo</h1>",
+        "</body>"));
   }
 
   @Test
@@ -529,9 +526,9 @@ public class RendererTest {
 
     Document document = renderDocument("dossier.soy.typeHeader", "type", type);
 
-    assertThat(querySelector(document, "header > h1").toString(), is("<h1>Enum Foo</h1>"));
-    assertThat(querySelector(document, "header > dl").toString(), is(
-        "<dl><dt>Type: <code class=\"type\">{color: string}</code></dt></dl>"));
+    assertThat(querySelector(document, "h1").toString(), is("<h1>enum Foo</h1>"));
+    assertThat(querySelector(document, "dl").toString(), is(
+        "<dl><dt>Type<code>{color: string}</code></dt></dl>"));
   }
 
   @Test
@@ -560,21 +557,24 @@ public class RendererTest {
         ImmutableMap.of("name", "foo.Bar", "enumeration", e));
 
     assertThat(querySelector(document, "h2").toString(), is("<h2>Values and Descriptions</h2>"));
-    assertThat(querySelector(document, "div.type-summary dl").toString(), isHtml(
-        "<dl class=\"public\">",
-        "<dt><a class=\"enum member\" name=\"foo.Bar.ONE\">ONE</a></dt>",
-        "<dt><a class=\"enum member\" name=\"foo.Bar.TWO\">TWO</a></dt>",
-        "<dt><a class=\"enum member\" name=\"foo.Bar.RED\">RED</a></dt>",
+    assertThat(querySelector(document, "body").toString(), isHtml(
+        "<body>",
+        "<h2>Values and Descriptions</h2>",
+        "<dl>",
+        "<dt><a id=\"foo.Bar.ONE\"></a>ONE</dt>",
+        "<dt><a id=\"foo.Bar.TWO\"></a>TWO</dt>",
+        "<dt><a id=\"foo.Bar.RED\"></a>RED</dt>",
         "<dd><strong>the color red</strong></dd>",
-        "<dt><a class=\"enum member deprecation-notice\" name=\"foo.Bar.GREEN\">GREEN</a></dt>",
+        "<dt><a id=\"foo.Bar.GREEN\"></a>GREEN</dt>",
         "<dd><i>the color green</i></dd>",
-        "<dt><a class=\"enum member deprecation-notice\" name=\"foo.Bar.BLUE\">BLUE</a></dt>",
+        "<dt><a id=\"foo.Bar.BLUE\"></a>BLUE</dt>",
         "<dd>",
         "<div class=\"deprecation-notice\">Deprecated: ",
         "<span class=\"deprecation-reason\">This value is deprecated</span>",
         "</div>",
         "</dd>",
-        "</dl>"));
+        "</dl>",
+        "</body>"));
   }
 
   @Test
@@ -625,352 +625,6 @@ public class RendererTest {
   }
 
   @Test
-  public void renderTypeDefs_emptyList() {
-    assertThat(
-        render("dossier.soy.typedefs", ImmutableMap.of("typeDefs", ImmutableList.of())),
-        isHtml(""));
-  }
-
-  @Test
-  public void renderTypeDefs() {
-    List<GeneratedMessage> typedefs = ImmutableList.<GeneratedMessage>of(
-        Dossier.JsType.TypeDef.newBuilder()
-            .setName("foo.Bar")
-            .setTypeHtml("Array")
-            .setHref("bar-source")
-            .setDescription(parseComment("Bar is an <i>Array</i>"))
-            .build(),
-        Dossier.JsType.TypeDef.newBuilder()
-            .setName("foo.Bim")
-            .setHref("bim-source")
-            .setTypeHtml("Object.&lt;<i>string</i>&gt;")
-            .setDescription(parseComment(""))
-            .setDeprecation(Dossier.Deprecation.getDefaultInstance())
-            .build(),
-        Dossier.JsType.TypeDef.newBuilder()
-            .setName("foo.Baz")
-            .setTypeHtml("string")
-            .setHref("baz-source")
-            .setDescription(parseComment("description text"))
-            .setDeprecation(Dossier.Deprecation.newBuilder()
-                .setNotice(parseComment("<strong>deprecated!</strong>")))
-            .build());
-
-    Document document = renderDocument("dossier.soy.typedefs", "typeDefs", typedefs);
-    Elements elements = document.select("summary");
-    assertThat(elements.size(), is(3));
-
-    assertThat(elements.get(0).toString(), isHtml(
-        "<summary>",
-        "<div><a class=\"source\" href=\"bar-source\">code &raquo;</a>",
-        "<a class=\"member\" name=\"foo.Bar\">foo.Bar</a> : ",
-        "<code class=\"type\">Array</code></div>",
-        "<div>Bar is an <i>Array</i></div>",
-        "</summary>"));
-    assertThat(elements.get(1).toString(), isHtml(
-        "<summary>",
-        "<div><a class=\"source\" href=\"bim-source\">code &raquo;</a>",
-        "<a class=\"member deprecation-notice\" name=\"foo.Bim\">foo.Bim</a> : ",
-        "<code class=\"type\">Object.&lt;<i>string</i>&gt;</code></div>",
-        "<div>No description.</div>",
-        "</summary>"));
-    assertThat(elements.get(2).toString(), isHtml(
-        "<summary>",
-        "<div><a class=\"source\" href=\"baz-source\">code &raquo;</a>",
-        "<a class=\"member deprecation-notice\" name=\"foo.Baz\">foo.Baz</a> : ",
-        "<code class=\"type\">string</code>",
-        "<div class=\"deprecation-notice\">Deprecated: ",
-        "<span class=\"deprecation-reason\"><strong>deprecated!</strong></span>",
-        "</div></div>",
-        "<div>description text</div>",
-        "</summary>"));
-  }
-
-  @Test
-  public void renderMemberSignature_globalProperty() {
-    Dossier.Property property = Dossier.Property.newBuilder()
-        .setBase(Dossier.BaseProperty.newBuilder()
-            .setName("Foo")
-            .setSource("")
-            .setDescription(parseComment("")))
-        .setTypeHtml("string")
-        .build();
-
-    Document document = renderDocument("dossier.soy.memberSignature", "member", property);
-    assertThat(document.body().children().size(), is(1));
-    assertThat(document.body().child(0).toString(), isHtml(
-        "<span class=\"member\">",
-        "<a name=\"Foo\">Foo</a> : <code class=\"type\">string</code></span>"));
-  }
-
-  @Test
-  public void renderMemberSignature_staticProperty() {
-    Dossier.Property property = Dossier.Property.newBuilder()
-        .setBase(Dossier.BaseProperty.newBuilder()
-            .setName("Baz")
-            .setSource("")
-            .setDescription(parseComment("")))
-        .setTypeHtml("string")
-        .build();
-
-    ImmutableMap<String, ?> data = ImmutableMap.of(
-        "member", property,
-        "parentName", "foo.Bar");
-
-    Document document = renderDocument("dossier.soy.memberSignature", data);
-    assertThat(document.body().children().size(), is(1));
-    assertThat(document.body().child(0).toString(), isHtml(
-        "<span class=\"member\">",
-        "<a name=\"foo.Bar.Baz\">foo.Bar.Baz</a> : <code class=\"type\">string</code></span>"));
-  }
-
-  @Test
-  public void renderMemberSignature_deprecatedStaticProperty() {
-    Dossier.Property property = Dossier.Property.newBuilder()
-        .setBase(Dossier.BaseProperty.newBuilder()
-            .setName("Baz")
-            .setSource("")
-            .setDescription(parseComment(""))
-            .setDeprecation(Dossier.Deprecation.getDefaultInstance()))
-        .setTypeHtml("string")
-        .build();
-
-    ImmutableMap<String, ?> data = ImmutableMap.of(
-        "member", property,
-        "parentName", "foo.bar");
-
-    Document document = renderDocument("dossier.soy.memberSignature", data);
-    assertThat(document.body().children().size(), is(1));
-    assertThat(document.body().child(0).toString(), isHtml(
-        "<span class=\"member deprecation-notice\">",
-        "<a name=\"foo.bar.Baz\">foo.bar.Baz</a> : <code class=\"type\">string</code></span>"));
-  }
-
-  @Test
-  public void renderMemberSignature_typelessProperty() {
-    Dossier.Property property = Dossier.Property.newBuilder()
-        .setBase(Dossier.BaseProperty.newBuilder()
-            .setName("Baz")
-            .setSource("")
-            .setDescription(parseComment("")))
-        .setTypeHtml("")
-        .build();
-
-    ImmutableMap<String, ?> data = ImmutableMap.of(
-        "member", property,
-        "parentName", "foo.bar");
-
-    Document document = renderDocument("dossier.soy.memberSignature", data);
-    assertThat(document.body().children().size(), is(1));
-    assertThat(document.body().child(0).toString(), isHtml(
-        "<span class=\"member\"><a name=\"foo.bar.Baz\">foo.bar.Baz</a></span>"));
-  }
-
-  @Test
-  public void renderMemberSignature_instanceProperty() {
-    Dossier.Property property = Dossier.Property.newBuilder()
-        .setBase(Dossier.BaseProperty.newBuilder()
-            .setName("foo")
-            .setSource("")
-            .setDescription(parseComment("")))
-        .setTypeHtml("string")
-        .build();
-
-    Document document = renderDocument("dossier.soy.memberSignature", "member", property);
-    assertThat(document.body().children().size(), is(1));
-    assertThat(document.body().child(0).toString(), isHtml(
-        "<span class=\"member\"><a name=\"foo\">foo</a>",
-        " : <code class=\"type\">string</code></span>"));
-  }
-
-  @Test
-  public void renderMemgerSignature_staticFunction() {
-    Dossier.Function function = Dossier.Function.newBuilder()
-        .setBase(Dossier.BaseProperty.newBuilder()
-            .setName("baz")
-            .setSource("")
-            .setDescription(parseComment("")))
-        .setReturn(Dossier.Function.Detail.newBuilder()
-            .setTypeHtml("<a href=\"#\">Foo</a>"))
-        .build();
-
-    ImmutableMap<String, ?> data = ImmutableMap.of(
-        "fn", function,
-        "parentName", "foo.bar");
-
-    Document document = renderDocument("dossier.soy.functionSignature", data);
-    assertThat(document.body().children().size(), is(1));
-    assertThat(document.body().child(0).toString(), isHtml(
-        "<span class=\"member\">",
-        "<a name=\"foo.bar.baz\">foo.bar.baz</a> <span class=\"args\">( )</span> \u21d2 ",
-        "<code class=\"type\"><a href=\"#\">Foo</a></code>",
-        "</span>"));
-  }
-
-  @Test
-  public void renderMemberSignature_staticFunction_returnNotSpecified() {
-    Dossier.Function function = Dossier.Function.newBuilder()
-        .setBase(Dossier.BaseProperty.newBuilder()
-            .setName("baz")
-            .setSource("")
-            .setDescription(parseComment("")))
-        .build();
-
-    ImmutableMap<String, ?> data = ImmutableMap.of(
-        "fn", function,
-        "parentName", "foo.bar");
-
-    Document document = renderDocument("dossier.soy.functionSignature", data);
-    assertThat(document.body().children().size(), is(1));
-    assertThat(document.body().child(0).toString(), isHtml(
-        "<span class=\"member\">",
-        "<a name=\"foo.bar.baz\">foo.bar.baz</a> <span class=\"args\">( )</span></span>"));
-  }
-
-  @Test
-  public void renderMemberSignature_staticFunction_returnTypeUnknown() {
-    Dossier.Function function = Dossier.Function.newBuilder()
-        .setBase(Dossier.BaseProperty.newBuilder()
-            .setName("baz")
-            .setSource("")
-            .setDescription(parseComment("")))
-        .setReturn(Dossier.Function.Detail.newBuilder()
-            .setTypeHtml("?"))
-        .build();
-
-    ImmutableMap<String, ?> data = ImmutableMap.of(
-        "fn", function,
-        "parentName", "foo.bar");
-
-    Document document = renderDocument("dossier.soy.functionSignature", data);
-    assertThat(document.body().children().size(), is(1));
-    assertThat(document.body().child(0).toString(), isHtml(
-        "<span class=\"member\">",
-        "<a name=\"foo.bar.baz\">foo.bar.baz</a>",
-        " <span class=\"args\">( )</span></span>"));
-  }
-
-  @Test
-  public void renderMemberSignature_staticFunction_returnsUndefined() {
-    Dossier.Function function = Dossier.Function.newBuilder()
-        .setBase(Dossier.BaseProperty.newBuilder()
-            .setName("baz")
-            .setSource("")
-            .setDescription(parseComment("")))
-        .setReturn(Dossier.Function.Detail.newBuilder()
-            .setTypeHtml("undefined"))
-        .build();
-
-    ImmutableMap<String, ?> data = ImmutableMap.of(
-        "fn", function,
-        "parentName", "foo.bar");
-
-    Document document = renderDocument("dossier.soy.functionSignature", data);
-    assertThat(document.body().children().size(), is(1));
-    assertThat(document.body().child(0).toString(), isHtml(
-        "<span class=\"member\">",
-        "<a name=\"foo.bar.baz\">foo.bar.baz</a> <span class=\"args\">( )</span></span>"));
-  }
-
-  @Test
-  public void renderMemberSignature_function_hasParameters() {
-    Dossier.Function function = Dossier.Function.newBuilder()
-        .setBase(Dossier.BaseProperty.newBuilder()
-            .setName("baz")
-            .setSource("")
-            .setDescription(parseComment("")))
-        .addParameter(Dossier.Function.Detail.newBuilder()
-            .setName("a"))
-        .addParameter(Dossier.Function.Detail.newBuilder()
-            .setName("b"))
-        .build();
-
-    ImmutableMap<String, ?> data = ImmutableMap.of(
-        "fn", function,
-        "parentName", "foo.bar");
-
-    Document document = renderDocument("dossier.soy.functionSignature", data);
-    assertThat(document.body().children().size(), is(1));
-    assertThat(document.body().child(0).toString(), isHtml(
-        "<span class=\"member\">",
-        "<a name=\"foo.bar.baz\">foo.bar.baz</a> <span class=\"args\">( a, b )</span></span>"));
-  }
-
-  @Test
-  public void renderMemberSignature_constructor() {
-    Dossier.Function function = Dossier.Function.newBuilder()
-        .setBase(Dossier.BaseProperty.newBuilder()
-            .setName("foo.Bar")
-            .setSource("")
-            .setDescription(parseComment("")))
-        .setIsConstructor(true)
-        .addParameter(Dossier.Function.Detail.newBuilder()
-            .setName("a"))
-        .addParameter(Dossier.Function.Detail.newBuilder()
-            .setName("b"))
-        // Constructor's should never have a return type, but even if they do,
-        // it should not be included in the rendered HTML.
-        .setReturn(Dossier.Function.Detail.newBuilder()
-            .setTypeHtml("string"))
-        .build();
-
-    Document document = renderDocument("dossier.soy.functionSignature", "fn", function);
-    assertThat(document.body().children().size(), is(1));
-    assertThat(document.body().child(0).toString(), isHtml(
-        "<span class=\"member\">foo.Bar <span class=\"args\">( a, b )</span></span>"));
-  }
-
-  @Test
-  public void renderMemberSignature_constructor_templateClass() {
-    Dossier.Function function = Dossier.Function.newBuilder()
-        .setBase(Dossier.BaseProperty.newBuilder()
-            .setName("foo.Bar")
-            .setSource("")
-            .setDescription(parseComment("")))
-        .setIsConstructor(true)
-        // Template names should be excluded from the rendered constructor signature.
-        .addTemplateName("K")
-        .addTemplateName("V")
-        // Constructor's should never have a return type, but even if they do,
-        // it should not be included in the rendered HTML.
-        .setReturn(Dossier.Function.Detail.newBuilder()
-            .setTypeHtml("string"))
-        .build();
-
-    Document document = renderDocument("dossier.soy.functionSignature", "fn", function);
-    assertThat(document.body().children().size(), is(1));
-    assertThat(document.body().child(0).toString(), isHtml(
-        "<span class=\"member\">foo.Bar <span class=\"args\">( )</span></span>"));
-  }
-
-  @Test
-  public void renderMemberSignature_templateFunction() {
-    Dossier.Function function = Dossier.Function.newBuilder()
-        .setBase(Dossier.BaseProperty.newBuilder()
-            .setName("foo.Bar")
-            .setSource("")
-            .setDescription(parseComment("")))
-         // Template names should be excluded from the rendered constructor signature.
-        .addTemplateName("K")
-        .addTemplateName("V")
-        // Constructor's should never have a return type, but even if they do,
-        // it should not be included in the rendered HTML.
-        .setReturn(Dossier.Function.Detail.newBuilder()
-            .setTypeHtml("string"))
-        .build();
-
-    Document document = renderDocument(
-        "dossier.soy.functionSignature", "fn", function);
-    assertThat(document.body().toString(), isHtml(
-        "<body>",
-        "<code class=\"type\">&lt;K, V&gt;</code> ",
-        "<span class=\"member\"><a name=\"foo.Bar\">foo.Bar</a> <span class=\"args\">( )</span>",
-        " \u21d2 <code class=\"type\">string</code>",
-        "</span>",
-        "</body>"));
-  }
-
-  @Test
   public void renderFunctionDetails_basicFunction() {
     Dossier.Function function = Dossier.Function.newBuilder()
         .setBase(Dossier.BaseProperty.newBuilder()
@@ -1007,14 +661,14 @@ public class RendererTest {
     Document document = renderDocument("dossier.soy.fnDetails", "fn", function);
     assertThat(document.body().children().size(), is(1));
     assertThat(document.body().child(0).toString(), isHtml(
-        "<div class=\"info\"><table><tbody>",
+        "<div><table><tbody>",
         "<tr><th>Parameters</th></tr>",
         "<tr><td><dl>",
         "<dt>a</dt>",
         "<dt>b</dt>",
         "<dd><i>b</i> awesome</dd>",
-        "<dt>c: <code class=\"type\"><b>Object</b></code></dt>",
-        "<dt>d: <code class=\"type\">Error</code></dt>",
+        "<dt>c<code><b>Object</b></code></dt>",
+        "<dt>d<code>Error</code></dt>",
         "<dd>goodbye</dd>",
         "<dt></dt>",
         "<dd>who am i</dd>",
@@ -1037,7 +691,7 @@ public class RendererTest {
     Document document = renderDocument("dossier.soy.fnDetails", "fn", function);
     assertThat(document.body().children().size(), is(1));
     assertThat(document.body().child(0).toString(), isHtml(
-        "<div class=\"info\"><table><tbody>",
+        "<div><table><tbody>",
         "<tr><th>Throws</th></tr>",
         "<tr><td><dl>",
         "<dt>Error</dt>",
@@ -1075,9 +729,9 @@ public class RendererTest {
     Document document = renderDocument("dossier.soy.fnDetails", "fn", function);
     assertThat(document.body().children().size(), is(1));
     assertThat(document.body().child(0).toString(), isHtml(
-        "<div class=\"info\"><table><tbody>",
+        "<div><table><tbody>",
         "<tr><th>Returns</th></tr>",
-        "<tr><td><dl>randomly</dl></td></tr>",
+        "<tr><td><p>randomly</p></td></tr>",
         "</tbody></table></div>"));
   }
 
@@ -1097,7 +751,7 @@ public class RendererTest {
     Document document = renderDocument("dossier.soy.fnDetails", "fn", function);
     assertThat(document.body().children().size(), is(1));
     assertThat(document.body().child(0).toString(), isHtml(
-        "<div class=\"info\"><table><tbody>",
+        "<div><table><tbody>",
         "<tr><th>Parameters</th></tr>",
         "<tr><td><dl><dt>a</dt></dl></td></tr>",
         "</tbody></table></div>"));  }
@@ -1132,71 +786,17 @@ public class RendererTest {
     Document document = renderDocument("dossier.soy.fnDetails", "fn", function);
     assertThat(document.body().children().size(), is(1));
     assertThat(document.body().child(0).toString(), isHtml(
-        "<div class=\"info\"><table><tbody>",
+        "<div><table><tbody>",
         "<tr><th>Parameters</th></tr>",
         "<tr><td><dl>",
-        "<dt>a</dt>",
-        "<dt>b</dt>",
-        "<dd><i>b</i> awesome</dd>",
-        "<dt>c: <code class=\"type\"><b>Object</b></code></dt>",
-        "<dt>d: <code class=\"type\">Error</code></dt>",
-        "<dd>goodbye</dd>",
-        "<dt></dt>",
-        "<dd>who am i</dd>",
+        "<dt>a</dt><dt>b</dt><dd><i>b</i> awesome</dd>",
+        "<dt>c<code><b>Object</b></code></dt>",
+        "<dt>d<code>Error</code></dt><dd>goodbye</dd>",
+        "<dt></dt><dd>who am i</dd>",
         "</dl></td></tr>",
-        "<tr><th>Returns</th></tr>",
-        "<tr><td><dl>something</dl></td></tr>",
-        "<tr><th>Throws</th></tr>",
-        "<tr><td><dl>",
-        "<dt>Error</dt>",
-        "<dd>randomly</dd>",
-        "</dl></td></tr>",
+        "<tr><th>Returns</th></tr><tr><td><p>something</p></td></tr>",
+        "<tr><th>Throws</th></tr><tr><td><dl><dt>Error</dt><dd>randomly</dd></dl></td></tr>",
         "</tbody></table></div>"));
-  }
-
-  @Test
-  public void renderMainFunction_hasReturn() {
-    Dossier.Function function = Dossier.Function.newBuilder()
-        .setBase(Dossier.BaseProperty.newBuilder()
-            .setName("foo.Bar")
-            .setSource("")
-            .setDescription(parseComment("")))
-        .addParameter(Dossier.Function.Detail.newBuilder().setName("a"))
-        .addParameter(Dossier.Function.Detail.newBuilder().setName("b"))
-        .setReturn(Dossier.Function.Detail.newBuilder()
-            .setTypeHtml("<a href=\"#\">Foo</a>"))
-        .build();
-
-    Document document = renderDocument("dossier.soy.mainFunction", "fn", function);
-    assertThat(document.body().children().size(), is(2));
-    assertThat(document.body().child(0).toString(), isHtml("<h2>Main</h2>"));
-
-    Element signature = querySelector(document, "div.ctor > span.member");
-    assertThat(signature.toString(), isHtml(
-        "<span class=\"member\">",
-        "foo.Bar <span class=\"args\">( a, b )</span> \u21d2 ",
-        "<code class=\"type\"><a href=\"#\">Foo</a></code>",
-        "</span>"));
-  }
-
-  @Test
-  public void renderMainFunction_noReturn() {
-    Dossier.Function function = Dossier.Function.newBuilder()
-        .setBase(Dossier.BaseProperty.newBuilder()
-            .setName("foo.Bar")
-            .setSource("")
-            .setDescription(parseComment("")))
-        .addParameter(Dossier.Function.Detail.newBuilder().setName("a"))
-        .addParameter(Dossier.Function.Detail.newBuilder().setName("b"))
-        .build();
-
-    Document document = renderDocument("dossier.soy.mainFunction", "fn", function);
-    assertThat(document.body().children().size(), is(2));
-    assertThat(document.body().child(0).toString(), isHtml("<h2>Main</h2>"));
-
-    Element signature = querySelector(document, "div.ctor > span.member");
-    assertThat(signature.toString(), isHtml(
-        "<span class=\"member\">foo.Bar <span class=\"args\">( a, b )</span></span>"));
   }
 
   @Test
@@ -1210,39 +810,18 @@ public class RendererTest {
         .addParameter(Dossier.Function.Detail.newBuilder().setName("a"))
         .addParameter(Dossier.Function.Detail.newBuilder().setName("b"))
         .build();
-
-    Document document = renderDocument("dossier.soy.mainFunction", "fn", function);
-    assertThat(document.body().children().size(), is(2));
-    assertThat(document.body().child(0).toString(), isHtml("<h2>Constructor</h2>"));
-
-    Element signature = querySelector(document, "div.ctor > span.member");
-    assertThat(signature.toString(), isHtml(
-        "<span class=\"member\">foo.Bar <span class=\"args\">( a, b )</span></span>"));
-  }
-
-  @Test
-  public void renderFunctionProperty() {
-    Dossier.Function function = Dossier.Function.newBuilder()
-        .setBase(Dossier.BaseProperty.newBuilder()
-            .setName("Bar")
-            .setSource("bar.link")
-            .setDescription(parseComment("")))
-        .addParameter(Dossier.Function.Detail.newBuilder().setName("a"))
+    Dossier.JsType type = Dossier.JsType.newBuilder()
+        .setName("Foo")
+        .setSource("")
+        .setNested(Dossier.JsType.NestedTypes.getDefaultInstance())
+        .setDescription(Dossier.Comment.getDefaultInstance())
+        .setMainFunction(function)
         .build();
 
-    ImmutableMap<String, ?> data = ImmutableMap.of(
-        "prop", function,
-        "parentName", "foo");
-
-    Document document = renderDocument("dossier.soy.printFunction", data);
-    assertThat(querySelector(document, "details.function > summary").toString(), isHtml(
-        "<summary><div>",
-        "<a class=\"source\" href=\"bar.link\">code &raquo;</a>",
-        "<span class=\"member\">",
-        "<a name=\"foo.Bar\">foo.Bar</a> <span class=\"args\">( a )</span></span></div>",
-        "</summary>"));
-
-    assertThat(document.select("details.function > summary + div.info").size(), is(1));
+    Document document = renderDocument("dossier.soy.mainFunction", "type", type);
+    assertThat(document.body().children().size(), is(2));
+    assertThat(document.body().child(0).toString(),
+        isHtml("<h2 class=\"main\">new Foo(a, b)</h2>"));
   }
 
   @Test
@@ -1258,22 +837,23 @@ public class RendererTest {
         .build();
 
     ImmutableMap<String, ?> data = ImmutableMap.of(
-        "prop", function,
+        "fn", function,
         "parentName", "foo");
 
     Document document = renderDocument("dossier.soy.printFunction", data);
-    assertThat(querySelector(document, "details.function > summary").toString(), isHtml(
-        "<summary><div>",
-        "<a class=\"source\" href=\"bar.link\">code &raquo;</a>",
-        "<span class=\"member deprecation-notice\">",
-        "<a name=\"foo.Bar\">foo.Bar</a> <span class=\"args\">( a )</span></span></div>",
-        "<div class=\"deprecation-notice\">Deprecated: ",
-        "<span class=\"deprecation-reason\">is old</span>",
-        "</div>",
-        "<p>description here\n</p><p>second paragraph</p>",
-        "</summary>"));
-
-    assertThat(document.select("details.function > summary + div.info").size(), is(1));
+    assertThat(querySelector(document, "body").toString(), isHtml(
+        "<body>",
+        "<h3>",
+        "<a id=\"foo.Bar\"></a>foo.Bar(a)",
+        "<div class=\"codelink\"><a href=\"bar.link\">code &raquo;</a></div>",
+        "</h3>",
+        "<p>description here\n</p>",
+        "<p>second paragraph</p><div>",
+        "<table><tbody>",
+        "<tr><th>Parameters</th></tr>",
+        "<tr><td><dl><dt>a</dt></dl></td></tr>",
+        "</tbody></table></div>",
+        "</body>"));
   }
 
   @Test
@@ -1287,18 +867,11 @@ public class RendererTest {
         .build();
 
     Document document = renderDocument("dossier.soy.printProperty", "prop", property);
-    Element details = querySelector(document, "details");
+    Element details = querySelector(document, "body");
     assertThat(details.className(), is(""));
 
     assertThat(details.child(0).toString(), isHtml(
-        "<summary>",
-        "<div>",
-        "<a class=\"source\" href=\"foo-source\">code &raquo;</a>",
-        "<span class=\"member\"><a name=\"foo\">foo</a>",
-        " : <code class=\"type\">string</code></span>",
-        "</div>",
-        "<p>foo description</p>",
-        "</summary>"));
+        "<dt><a id=\"foo\"></a><a href=\"foo-source\">foo</a><code>string</code></dt>"));
   }
 
   @Test
@@ -1355,7 +928,7 @@ public class RendererTest {
     Document document = renderDocument("dossier.soy.comment", "comment", comment);
     assertThat(document.body().toString(), isHtml(
         "<body><p>",
-        "An <code class=\"type\"><a class=\"unresolved-link\">unknown</a></code>",
+        "An <code><a class=\"unresolved-link\">unknown</a></code>",
         " type</p></body>"));
   }
 
@@ -1369,7 +942,7 @@ public class RendererTest {
     Document document = renderDocument("dossier.soy.comment", "comment", comment);
     assertThat(document.body().toString(), isHtml(
         "<body><p>",
-        "A <code class=\"type\">",
+        "A <code>",
         "<a href=\"/path/to/foo\">milk &amp; cookies</a></code>",
         " snack</p></body>"));
   }
