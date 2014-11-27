@@ -24,6 +24,8 @@ nav>h3:first-child{border-top:0;padding-top:0;margin-top:0}nav>h3:first-child:be
 h1,h2,h3,h4,h5,h6{margin-top:1.5rem;margin-bottom:1.5rem;line-height:1.1}
 h1,h2,h3{border-bottom:1px solid #8f8f8f;padding-bottom:.3em}
 h1{font-size:3.2rem;margin:.67rem 0;margin-top:3.2rem;margin-bottom:1.6rem}h1 a[id]{padding-top:7.2rem;margin-top:-7.2rem;display:inline-block}
+h1+.tags{margin-top:-1.6rem}
+h1+pre.inheritance{margin-top:-0.8rem}
 h2{font-size:2.4rem;line-height:1.225}h2 a[id]{padding-top:6.4rem;margin-top:-6.4rem;display:inline-block}
 h1+h2,h2.main{border:0}
 h3{font-size:2rem;border-bottom:1px solid #a9a9a9;border:0;margin-bottom:.5rem}h3 a[id]{padding-top:6rem;margin-top:-6rem;display:inline-block}
@@ -34,7 +36,7 @@ h6{font-size:1.2rem}h6 a[id]{padding-top:5.2rem;margin-top:-5.2rem;display:inlin
 p code{background:#f7f7f7;padding:3px;border-radius:3px}
 pre,code{font-size:1.2rem}
 h3 code{font-size:1.6rem}
-pre{padding:1.6rem;overflow:auto;line-height:1.45;word-wrap:normal}h1+pre{margin:0;padding:0;border:0;background:inherit}
+pre{padding:1.6rem;overflow:auto;line-height:1.45;word-wrap:normal}pre.inheritance{margin:0;padding:0;border:0;background:inherit}
 pre,article.srcfile pre{background:#f7f7f7;border-radius:3px}
 pre{border-left:.2rem solid #c4c4c4}
 table{border-collapse:collapse;border-spacing:0;margin:0;padding:0;width:100%}
@@ -44,6 +46,7 @@ dt{font-weight:bold}dt>code{font-weight:normal;color:#66f;padding-left:.5rem}
 .parentlink{float:left}
 .codelink a{float:right}
 .codelink:after{clear:both;content:"";display:table}
+.tags span{background:rgba(102,102,255,0.4);border:1px solid #66f;border-radius:3px;color:#fff;font-size:75%;font-weight:bold;padding:2px 4px;line-height:1.4rem}.tags span+span{margin-left:2px}
 header{position:fixed;height:4rem;top:0;right:0;left:0;background:#424242;color:#fff;font-weight:bold;box-shadow:0 1px 5px #888}header>div{position:relative;height:4rem;width:100%}
 header form{position:absolute;right:3rem;padding-top:.6rem}header form div{display:table-cell;vertical-align:middle;height:2.75rem}
 header form input{width:25rem;height:2.3rem;padding-left:4px;border-radius:15px;border:1px solid #000;-webkit-appearance:none}header form input:focus{outline:0}

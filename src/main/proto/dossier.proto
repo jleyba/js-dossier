@@ -79,6 +79,17 @@ enum Visibility {
 }
 
 
+message Tags {
+  optional bool is_const = 1;
+  optional bool is_deprecated = 2;
+  optional bool is_dict = 3;
+  optional bool is_final = 4;
+  optional bool is_interface = 5;
+  optional bool is_module = 6;
+  optional bool is_struct = 7;
+}
+
+
 // Describes the basic properties for a documented JavaScript property.
 message BaseProperty {
   // The property's name; this should not be the fully qualified name.
@@ -193,21 +204,19 @@ message JsType {
   required string source = 5;
   required NestedTypes nested = 6;
   required Comment description = 7;
-  optional Deprecation deprecation = 8;
-  repeated TypeDef type_def = 9;
+  required Tags tags = 8;
+  optional Deprecation deprecation = 9;
+  repeated TypeDef type_def = 10;
 
-  optional Enumeration enumeration = 10;
+  optional Enumeration enumeration = 11;
 
-  repeated Function static_function = 11;
-  repeated Property static_property = 12;
+  repeated Function static_function = 12;
+  repeated Property static_property = 13;
 
   // Describes the main function for this type. This is typically a class
   // constructor, but may also be the main function for a namespace (which
   // all other properties are hung off of).
-  optional Function main_function = 13;
-
-  // Designates this type as an interface.
-  optional bool is_interface = 14;
+  optional Function main_function = 14;
 
   // The prototype descriptors for this type (if it is a class or interface).
   // Prototypes should be specified in reverse order, from the current class
@@ -230,14 +239,11 @@ message JsType {
 
   repeated Property compiler_constant = 20;
 
-  // Designates this type as the exported API of a module.
-  optional bool is_module = 21;
-
   // Link to the module this type belongs to.
-  optional TypeLink module = 22;
+  optional TypeLink module = 21;
 
   // Link to another type that this type is an alias of.
-  optional TypeLink aliased_type = 23;
+  optional TypeLink aliased_type = 22;
 }
 
 

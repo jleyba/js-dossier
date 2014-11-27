@@ -5150,6 +5150,871 @@ public final class Dossier {
     // @@protoc_insertion_point(class_scope:dossier.Deprecation)
   }
 
+  public interface TagsOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:dossier.Tags)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>optional bool is_const = 1;</code>
+     */
+    boolean hasIsConst();
+    /**
+     * <code>optional bool is_const = 1;</code>
+     */
+    boolean getIsConst();
+
+    /**
+     * <code>optional bool is_deprecated = 2;</code>
+     */
+    boolean hasIsDeprecated();
+    /**
+     * <code>optional bool is_deprecated = 2;</code>
+     */
+    boolean getIsDeprecated();
+
+    /**
+     * <code>optional bool is_dict = 3;</code>
+     */
+    boolean hasIsDict();
+    /**
+     * <code>optional bool is_dict = 3;</code>
+     */
+    boolean getIsDict();
+
+    /**
+     * <code>optional bool is_final = 4;</code>
+     */
+    boolean hasIsFinal();
+    /**
+     * <code>optional bool is_final = 4;</code>
+     */
+    boolean getIsFinal();
+
+    /**
+     * <code>optional bool is_interface = 5;</code>
+     */
+    boolean hasIsInterface();
+    /**
+     * <code>optional bool is_interface = 5;</code>
+     */
+    boolean getIsInterface();
+
+    /**
+     * <code>optional bool is_module = 6;</code>
+     */
+    boolean hasIsModule();
+    /**
+     * <code>optional bool is_module = 6;</code>
+     */
+    boolean getIsModule();
+
+    /**
+     * <code>optional bool is_struct = 7;</code>
+     */
+    boolean hasIsStruct();
+    /**
+     * <code>optional bool is_struct = 7;</code>
+     */
+    boolean getIsStruct();
+  }
+  /**
+   * Protobuf type {@code dossier.Tags}
+   */
+  public static final class Tags extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:dossier.Tags)
+      TagsOrBuilder {
+    // Use Tags.newBuilder() to construct.
+    private Tags(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+      this.unknownFields = builder.getUnknownFields();
+    }
+    private Tags(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+
+    private static final Tags defaultInstance;
+    public static Tags getDefaultInstance() {
+      return defaultInstance;
+    }
+
+    public Tags getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+
+    private final com.google.protobuf.UnknownFieldSet unknownFields;
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+        getUnknownFields() {
+      return this.unknownFields;
+    }
+    private Tags(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      initFields();
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 8: {
+              bitField0_ |= 0x00000001;
+              isConst_ = input.readBool();
+              break;
+            }
+            case 16: {
+              bitField0_ |= 0x00000002;
+              isDeprecated_ = input.readBool();
+              break;
+            }
+            case 24: {
+              bitField0_ |= 0x00000004;
+              isDict_ = input.readBool();
+              break;
+            }
+            case 32: {
+              bitField0_ |= 0x00000008;
+              isFinal_ = input.readBool();
+              break;
+            }
+            case 40: {
+              bitField0_ |= 0x00000010;
+              isInterface_ = input.readBool();
+              break;
+            }
+            case 48: {
+              bitField0_ |= 0x00000020;
+              isModule_ = input.readBool();
+              break;
+            }
+            case 56: {
+              bitField0_ |= 0x00000040;
+              isStruct_ = input.readBool();
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e.getMessage()).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_Tags_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_Tags_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              com.github.jleyba.dossier.proto.Dossier.Tags.class, com.github.jleyba.dossier.proto.Dossier.Tags.Builder.class);
+    }
+
+    public static com.google.protobuf.Parser<Tags> PARSER =
+        new com.google.protobuf.AbstractParser<Tags>() {
+      public Tags parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new Tags(input, extensionRegistry);
+      }
+    };
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<Tags> getParserForType() {
+      return PARSER;
+    }
+
+    private int bitField0_;
+    public static final int IS_CONST_FIELD_NUMBER = 1;
+    private boolean isConst_;
+    /**
+     * <code>optional bool is_const = 1;</code>
+     */
+    public boolean hasIsConst() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    /**
+     * <code>optional bool is_const = 1;</code>
+     */
+    public boolean getIsConst() {
+      return isConst_;
+    }
+
+    public static final int IS_DEPRECATED_FIELD_NUMBER = 2;
+    private boolean isDeprecated_;
+    /**
+     * <code>optional bool is_deprecated = 2;</code>
+     */
+    public boolean hasIsDeprecated() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    /**
+     * <code>optional bool is_deprecated = 2;</code>
+     */
+    public boolean getIsDeprecated() {
+      return isDeprecated_;
+    }
+
+    public static final int IS_DICT_FIELD_NUMBER = 3;
+    private boolean isDict_;
+    /**
+     * <code>optional bool is_dict = 3;</code>
+     */
+    public boolean hasIsDict() {
+      return ((bitField0_ & 0x00000004) == 0x00000004);
+    }
+    /**
+     * <code>optional bool is_dict = 3;</code>
+     */
+    public boolean getIsDict() {
+      return isDict_;
+    }
+
+    public static final int IS_FINAL_FIELD_NUMBER = 4;
+    private boolean isFinal_;
+    /**
+     * <code>optional bool is_final = 4;</code>
+     */
+    public boolean hasIsFinal() {
+      return ((bitField0_ & 0x00000008) == 0x00000008);
+    }
+    /**
+     * <code>optional bool is_final = 4;</code>
+     */
+    public boolean getIsFinal() {
+      return isFinal_;
+    }
+
+    public static final int IS_INTERFACE_FIELD_NUMBER = 5;
+    private boolean isInterface_;
+    /**
+     * <code>optional bool is_interface = 5;</code>
+     */
+    public boolean hasIsInterface() {
+      return ((bitField0_ & 0x00000010) == 0x00000010);
+    }
+    /**
+     * <code>optional bool is_interface = 5;</code>
+     */
+    public boolean getIsInterface() {
+      return isInterface_;
+    }
+
+    public static final int IS_MODULE_FIELD_NUMBER = 6;
+    private boolean isModule_;
+    /**
+     * <code>optional bool is_module = 6;</code>
+     */
+    public boolean hasIsModule() {
+      return ((bitField0_ & 0x00000020) == 0x00000020);
+    }
+    /**
+     * <code>optional bool is_module = 6;</code>
+     */
+    public boolean getIsModule() {
+      return isModule_;
+    }
+
+    public static final int IS_STRUCT_FIELD_NUMBER = 7;
+    private boolean isStruct_;
+    /**
+     * <code>optional bool is_struct = 7;</code>
+     */
+    public boolean hasIsStruct() {
+      return ((bitField0_ & 0x00000040) == 0x00000040);
+    }
+    /**
+     * <code>optional bool is_struct = 7;</code>
+     */
+    public boolean getIsStruct() {
+      return isStruct_;
+    }
+
+    private void initFields() {
+      isConst_ = false;
+      isDeprecated_ = false;
+      isDict_ = false;
+      isFinal_ = false;
+      isInterface_ = false;
+      isModule_ = false;
+      isStruct_ = false;
+    }
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeBool(1, isConst_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeBool(2, isDeprecated_);
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        output.writeBool(3, isDict_);
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        output.writeBool(4, isFinal_);
+      }
+      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+        output.writeBool(5, isInterface_);
+      }
+      if (((bitField0_ & 0x00000020) == 0x00000020)) {
+        output.writeBool(6, isModule_);
+      }
+      if (((bitField0_ & 0x00000040) == 0x00000040)) {
+        output.writeBool(7, isStruct_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    private int memoizedSerializedSize = -1;
+    public int getSerializedSize() {
+      int size = memoizedSerializedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(1, isConst_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(2, isDeprecated_);
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(3, isDict_);
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(4, isFinal_);
+      }
+      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(5, isInterface_);
+      }
+      if (((bitField0_ & 0x00000020) == 0x00000020)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(6, isModule_);
+      }
+      if (((bitField0_ & 0x00000040) == 0x00000040)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(7, isStruct_);
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
+      return size;
+    }
+
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
+    }
+
+    public static com.github.jleyba.dossier.proto.Dossier.Tags parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.github.jleyba.dossier.proto.Dossier.Tags parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.github.jleyba.dossier.proto.Dossier.Tags parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.github.jleyba.dossier.proto.Dossier.Tags parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.github.jleyba.dossier.proto.Dossier.Tags parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input);
+    }
+    public static com.github.jleyba.dossier.proto.Dossier.Tags parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input, extensionRegistry);
+    }
+    public static com.github.jleyba.dossier.proto.Dossier.Tags parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return PARSER.parseDelimitedFrom(input);
+    }
+    public static com.github.jleyba.dossier.proto.Dossier.Tags parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseDelimitedFrom(input, extensionRegistry);
+    }
+    public static com.github.jleyba.dossier.proto.Dossier.Tags parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input);
+    }
+    public static com.github.jleyba.dossier.proto.Dossier.Tags parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input, extensionRegistry);
+    }
+
+    public static Builder newBuilder() { return Builder.create(); }
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder(com.github.jleyba.dossier.proto.Dossier.Tags prototype) {
+      return newBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() { return newBuilder(this); }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code dossier.Tags}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:dossier.Tags)
+        com.github.jleyba.dossier.proto.Dossier.TagsOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_Tags_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_Tags_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.github.jleyba.dossier.proto.Dossier.Tags.class, com.github.jleyba.dossier.proto.Dossier.Tags.Builder.class);
+      }
+
+      // Construct using com.github.jleyba.dossier.proto.Dossier.Tags.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        }
+      }
+      private static Builder create() {
+        return new Builder();
+      }
+
+      public Builder clear() {
+        super.clear();
+        isConst_ = false;
+        bitField0_ = (bitField0_ & ~0x00000001);
+        isDeprecated_ = false;
+        bitField0_ = (bitField0_ & ~0x00000002);
+        isDict_ = false;
+        bitField0_ = (bitField0_ & ~0x00000004);
+        isFinal_ = false;
+        bitField0_ = (bitField0_ & ~0x00000008);
+        isInterface_ = false;
+        bitField0_ = (bitField0_ & ~0x00000010);
+        isModule_ = false;
+        bitField0_ = (bitField0_ & ~0x00000020);
+        isStruct_ = false;
+        bitField0_ = (bitField0_ & ~0x00000040);
+        return this;
+      }
+
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_Tags_descriptor;
+      }
+
+      public com.github.jleyba.dossier.proto.Dossier.Tags getDefaultInstanceForType() {
+        return com.github.jleyba.dossier.proto.Dossier.Tags.getDefaultInstance();
+      }
+
+      public com.github.jleyba.dossier.proto.Dossier.Tags build() {
+        com.github.jleyba.dossier.proto.Dossier.Tags result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public com.github.jleyba.dossier.proto.Dossier.Tags buildPartial() {
+        com.github.jleyba.dossier.proto.Dossier.Tags result = new com.github.jleyba.dossier.proto.Dossier.Tags(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        result.isConst_ = isConst_;
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        result.isDeprecated_ = isDeprecated_;
+        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+          to_bitField0_ |= 0x00000004;
+        }
+        result.isDict_ = isDict_;
+        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
+          to_bitField0_ |= 0x00000008;
+        }
+        result.isFinal_ = isFinal_;
+        if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
+          to_bitField0_ |= 0x00000010;
+        }
+        result.isInterface_ = isInterface_;
+        if (((from_bitField0_ & 0x00000020) == 0x00000020)) {
+          to_bitField0_ |= 0x00000020;
+        }
+        result.isModule_ = isModule_;
+        if (((from_bitField0_ & 0x00000040) == 0x00000040)) {
+          to_bitField0_ |= 0x00000040;
+        }
+        result.isStruct_ = isStruct_;
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.github.jleyba.dossier.proto.Dossier.Tags) {
+          return mergeFrom((com.github.jleyba.dossier.proto.Dossier.Tags)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.github.jleyba.dossier.proto.Dossier.Tags other) {
+        if (other == com.github.jleyba.dossier.proto.Dossier.Tags.getDefaultInstance()) return this;
+        if (other.hasIsConst()) {
+          setIsConst(other.getIsConst());
+        }
+        if (other.hasIsDeprecated()) {
+          setIsDeprecated(other.getIsDeprecated());
+        }
+        if (other.hasIsDict()) {
+          setIsDict(other.getIsDict());
+        }
+        if (other.hasIsFinal()) {
+          setIsFinal(other.getIsFinal());
+        }
+        if (other.hasIsInterface()) {
+          setIsInterface(other.getIsInterface());
+        }
+        if (other.hasIsModule()) {
+          setIsModule(other.getIsModule());
+        }
+        if (other.hasIsStruct()) {
+          setIsStruct(other.getIsStruct());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.github.jleyba.dossier.proto.Dossier.Tags parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (com.github.jleyba.dossier.proto.Dossier.Tags) e.getUnfinishedMessage();
+          throw e;
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private boolean isConst_ ;
+      /**
+       * <code>optional bool is_const = 1;</code>
+       */
+      public boolean hasIsConst() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      /**
+       * <code>optional bool is_const = 1;</code>
+       */
+      public boolean getIsConst() {
+        return isConst_;
+      }
+      /**
+       * <code>optional bool is_const = 1;</code>
+       */
+      public Builder setIsConst(boolean value) {
+        bitField0_ |= 0x00000001;
+        isConst_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional bool is_const = 1;</code>
+       */
+      public Builder clearIsConst() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        isConst_ = false;
+        onChanged();
+        return this;
+      }
+
+      private boolean isDeprecated_ ;
+      /**
+       * <code>optional bool is_deprecated = 2;</code>
+       */
+      public boolean hasIsDeprecated() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      /**
+       * <code>optional bool is_deprecated = 2;</code>
+       */
+      public boolean getIsDeprecated() {
+        return isDeprecated_;
+      }
+      /**
+       * <code>optional bool is_deprecated = 2;</code>
+       */
+      public Builder setIsDeprecated(boolean value) {
+        bitField0_ |= 0x00000002;
+        isDeprecated_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional bool is_deprecated = 2;</code>
+       */
+      public Builder clearIsDeprecated() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        isDeprecated_ = false;
+        onChanged();
+        return this;
+      }
+
+      private boolean isDict_ ;
+      /**
+       * <code>optional bool is_dict = 3;</code>
+       */
+      public boolean hasIsDict() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      /**
+       * <code>optional bool is_dict = 3;</code>
+       */
+      public boolean getIsDict() {
+        return isDict_;
+      }
+      /**
+       * <code>optional bool is_dict = 3;</code>
+       */
+      public Builder setIsDict(boolean value) {
+        bitField0_ |= 0x00000004;
+        isDict_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional bool is_dict = 3;</code>
+       */
+      public Builder clearIsDict() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        isDict_ = false;
+        onChanged();
+        return this;
+      }
+
+      private boolean isFinal_ ;
+      /**
+       * <code>optional bool is_final = 4;</code>
+       */
+      public boolean hasIsFinal() {
+        return ((bitField0_ & 0x00000008) == 0x00000008);
+      }
+      /**
+       * <code>optional bool is_final = 4;</code>
+       */
+      public boolean getIsFinal() {
+        return isFinal_;
+      }
+      /**
+       * <code>optional bool is_final = 4;</code>
+       */
+      public Builder setIsFinal(boolean value) {
+        bitField0_ |= 0x00000008;
+        isFinal_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional bool is_final = 4;</code>
+       */
+      public Builder clearIsFinal() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        isFinal_ = false;
+        onChanged();
+        return this;
+      }
+
+      private boolean isInterface_ ;
+      /**
+       * <code>optional bool is_interface = 5;</code>
+       */
+      public boolean hasIsInterface() {
+        return ((bitField0_ & 0x00000010) == 0x00000010);
+      }
+      /**
+       * <code>optional bool is_interface = 5;</code>
+       */
+      public boolean getIsInterface() {
+        return isInterface_;
+      }
+      /**
+       * <code>optional bool is_interface = 5;</code>
+       */
+      public Builder setIsInterface(boolean value) {
+        bitField0_ |= 0x00000010;
+        isInterface_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional bool is_interface = 5;</code>
+       */
+      public Builder clearIsInterface() {
+        bitField0_ = (bitField0_ & ~0x00000010);
+        isInterface_ = false;
+        onChanged();
+        return this;
+      }
+
+      private boolean isModule_ ;
+      /**
+       * <code>optional bool is_module = 6;</code>
+       */
+      public boolean hasIsModule() {
+        return ((bitField0_ & 0x00000020) == 0x00000020);
+      }
+      /**
+       * <code>optional bool is_module = 6;</code>
+       */
+      public boolean getIsModule() {
+        return isModule_;
+      }
+      /**
+       * <code>optional bool is_module = 6;</code>
+       */
+      public Builder setIsModule(boolean value) {
+        bitField0_ |= 0x00000020;
+        isModule_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional bool is_module = 6;</code>
+       */
+      public Builder clearIsModule() {
+        bitField0_ = (bitField0_ & ~0x00000020);
+        isModule_ = false;
+        onChanged();
+        return this;
+      }
+
+      private boolean isStruct_ ;
+      /**
+       * <code>optional bool is_struct = 7;</code>
+       */
+      public boolean hasIsStruct() {
+        return ((bitField0_ & 0x00000040) == 0x00000040);
+      }
+      /**
+       * <code>optional bool is_struct = 7;</code>
+       */
+      public boolean getIsStruct() {
+        return isStruct_;
+      }
+      /**
+       * <code>optional bool is_struct = 7;</code>
+       */
+      public Builder setIsStruct(boolean value) {
+        bitField0_ |= 0x00000040;
+        isStruct_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional bool is_struct = 7;</code>
+       */
+      public Builder clearIsStruct() {
+        bitField0_ = (bitField0_ & ~0x00000040);
+        isStruct_ = false;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:dossier.Tags)
+    }
+
+    static {
+      defaultInstance = new Tags(true);
+      defaultInstance.initFields();
+    }
+
+    // @@protoc_insertion_point(class_scope:dossier.Tags)
+  }
+
   public interface BasePropertyOrBuilder extends
       // @@protoc_insertion_point(interface_extends:dossier.BaseProperty)
       com.google.protobuf.MessageOrBuilder {
@@ -15626,105 +16491,118 @@ public final class Dossier {
     com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder getDescriptionOrBuilder();
 
     /**
-     * <code>optional .dossier.Deprecation deprecation = 8;</code>
+     * <code>required .dossier.Tags tags = 8;</code>
+     */
+    boolean hasTags();
+    /**
+     * <code>required .dossier.Tags tags = 8;</code>
+     */
+    com.github.jleyba.dossier.proto.Dossier.Tags getTags();
+    /**
+     * <code>required .dossier.Tags tags = 8;</code>
+     */
+    com.github.jleyba.dossier.proto.Dossier.TagsOrBuilder getTagsOrBuilder();
+
+    /**
+     * <code>optional .dossier.Deprecation deprecation = 9;</code>
      */
     boolean hasDeprecation();
     /**
-     * <code>optional .dossier.Deprecation deprecation = 8;</code>
+     * <code>optional .dossier.Deprecation deprecation = 9;</code>
      */
     com.github.jleyba.dossier.proto.Dossier.Deprecation getDeprecation();
     /**
-     * <code>optional .dossier.Deprecation deprecation = 8;</code>
+     * <code>optional .dossier.Deprecation deprecation = 9;</code>
      */
     com.github.jleyba.dossier.proto.Dossier.DeprecationOrBuilder getDeprecationOrBuilder();
 
     /**
-     * <code>repeated .dossier.JsType.TypeDef type_def = 9;</code>
+     * <code>repeated .dossier.JsType.TypeDef type_def = 10;</code>
      */
     java.util.List<com.github.jleyba.dossier.proto.Dossier.JsType.TypeDef> 
         getTypeDefList();
     /**
-     * <code>repeated .dossier.JsType.TypeDef type_def = 9;</code>
+     * <code>repeated .dossier.JsType.TypeDef type_def = 10;</code>
      */
     com.github.jleyba.dossier.proto.Dossier.JsType.TypeDef getTypeDef(int index);
     /**
-     * <code>repeated .dossier.JsType.TypeDef type_def = 9;</code>
+     * <code>repeated .dossier.JsType.TypeDef type_def = 10;</code>
      */
     int getTypeDefCount();
     /**
-     * <code>repeated .dossier.JsType.TypeDef type_def = 9;</code>
+     * <code>repeated .dossier.JsType.TypeDef type_def = 10;</code>
      */
     java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.JsType.TypeDefOrBuilder> 
         getTypeDefOrBuilderList();
     /**
-     * <code>repeated .dossier.JsType.TypeDef type_def = 9;</code>
+     * <code>repeated .dossier.JsType.TypeDef type_def = 10;</code>
      */
     com.github.jleyba.dossier.proto.Dossier.JsType.TypeDefOrBuilder getTypeDefOrBuilder(
         int index);
 
     /**
-     * <code>optional .dossier.Enumeration enumeration = 10;</code>
+     * <code>optional .dossier.Enumeration enumeration = 11;</code>
      */
     boolean hasEnumeration();
     /**
-     * <code>optional .dossier.Enumeration enumeration = 10;</code>
+     * <code>optional .dossier.Enumeration enumeration = 11;</code>
      */
     com.github.jleyba.dossier.proto.Dossier.Enumeration getEnumeration();
     /**
-     * <code>optional .dossier.Enumeration enumeration = 10;</code>
+     * <code>optional .dossier.Enumeration enumeration = 11;</code>
      */
     com.github.jleyba.dossier.proto.Dossier.EnumerationOrBuilder getEnumerationOrBuilder();
 
     /**
-     * <code>repeated .dossier.Function static_function = 11;</code>
+     * <code>repeated .dossier.Function static_function = 12;</code>
      */
     java.util.List<com.github.jleyba.dossier.proto.Dossier.Function> 
         getStaticFunctionList();
     /**
-     * <code>repeated .dossier.Function static_function = 11;</code>
+     * <code>repeated .dossier.Function static_function = 12;</code>
      */
     com.github.jleyba.dossier.proto.Dossier.Function getStaticFunction(int index);
     /**
-     * <code>repeated .dossier.Function static_function = 11;</code>
+     * <code>repeated .dossier.Function static_function = 12;</code>
      */
     int getStaticFunctionCount();
     /**
-     * <code>repeated .dossier.Function static_function = 11;</code>
+     * <code>repeated .dossier.Function static_function = 12;</code>
      */
     java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.FunctionOrBuilder> 
         getStaticFunctionOrBuilderList();
     /**
-     * <code>repeated .dossier.Function static_function = 11;</code>
+     * <code>repeated .dossier.Function static_function = 12;</code>
      */
     com.github.jleyba.dossier.proto.Dossier.FunctionOrBuilder getStaticFunctionOrBuilder(
         int index);
 
     /**
-     * <code>repeated .dossier.Property static_property = 12;</code>
+     * <code>repeated .dossier.Property static_property = 13;</code>
      */
     java.util.List<com.github.jleyba.dossier.proto.Dossier.Property> 
         getStaticPropertyList();
     /**
-     * <code>repeated .dossier.Property static_property = 12;</code>
+     * <code>repeated .dossier.Property static_property = 13;</code>
      */
     com.github.jleyba.dossier.proto.Dossier.Property getStaticProperty(int index);
     /**
-     * <code>repeated .dossier.Property static_property = 12;</code>
+     * <code>repeated .dossier.Property static_property = 13;</code>
      */
     int getStaticPropertyCount();
     /**
-     * <code>repeated .dossier.Property static_property = 12;</code>
+     * <code>repeated .dossier.Property static_property = 13;</code>
      */
     java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.PropertyOrBuilder> 
         getStaticPropertyOrBuilderList();
     /**
-     * <code>repeated .dossier.Property static_property = 12;</code>
+     * <code>repeated .dossier.Property static_property = 13;</code>
      */
     com.github.jleyba.dossier.proto.Dossier.PropertyOrBuilder getStaticPropertyOrBuilder(
         int index);
 
     /**
-     * <code>optional .dossier.Function main_function = 13;</code>
+     * <code>optional .dossier.Function main_function = 14;</code>
      *
      * <pre>
      * Describes the main function for this type. This is typically a class
@@ -15734,7 +16612,7 @@ public final class Dossier {
      */
     boolean hasMainFunction();
     /**
-     * <code>optional .dossier.Function main_function = 13;</code>
+     * <code>optional .dossier.Function main_function = 14;</code>
      *
      * <pre>
      * Describes the main function for this type. This is typically a class
@@ -15744,7 +16622,7 @@ public final class Dossier {
      */
     com.github.jleyba.dossier.proto.Dossier.Function getMainFunction();
     /**
-     * <code>optional .dossier.Function main_function = 13;</code>
+     * <code>optional .dossier.Function main_function = 14;</code>
      *
      * <pre>
      * Describes the main function for this type. This is typically a class
@@ -15753,23 +16631,6 @@ public final class Dossier {
      * </pre>
      */
     com.github.jleyba.dossier.proto.Dossier.FunctionOrBuilder getMainFunctionOrBuilder();
-
-    /**
-     * <code>optional bool is_interface = 14;</code>
-     *
-     * <pre>
-     * Designates this type as an interface.
-     * </pre>
-     */
-    boolean hasIsInterface();
-    /**
-     * <code>optional bool is_interface = 14;</code>
-     *
-     * <pre>
-     * Designates this type as an interface.
-     * </pre>
-     */
-    boolean getIsInterface();
 
     /**
      * <code>repeated .dossier.Prototype prototype = 15;</code>
@@ -15981,24 +16842,7 @@ public final class Dossier {
         int index);
 
     /**
-     * <code>optional bool is_module = 21;</code>
-     *
-     * <pre>
-     * Designates this type as the exported API of a module.
-     * </pre>
-     */
-    boolean hasIsModule();
-    /**
-     * <code>optional bool is_module = 21;</code>
-     *
-     * <pre>
-     * Designates this type as the exported API of a module.
-     * </pre>
-     */
-    boolean getIsModule();
-
-    /**
-     * <code>optional .dossier.TypeLink module = 22;</code>
+     * <code>optional .dossier.TypeLink module = 21;</code>
      *
      * <pre>
      * Link to the module this type belongs to.
@@ -16006,7 +16850,7 @@ public final class Dossier {
      */
     boolean hasModule();
     /**
-     * <code>optional .dossier.TypeLink module = 22;</code>
+     * <code>optional .dossier.TypeLink module = 21;</code>
      *
      * <pre>
      * Link to the module this type belongs to.
@@ -16014,7 +16858,7 @@ public final class Dossier {
      */
     com.github.jleyba.dossier.proto.Dossier.TypeLink getModule();
     /**
-     * <code>optional .dossier.TypeLink module = 22;</code>
+     * <code>optional .dossier.TypeLink module = 21;</code>
      *
      * <pre>
      * Link to the module this type belongs to.
@@ -16023,7 +16867,7 @@ public final class Dossier {
     com.github.jleyba.dossier.proto.Dossier.TypeLinkOrBuilder getModuleOrBuilder();
 
     /**
-     * <code>optional .dossier.TypeLink aliased_type = 23;</code>
+     * <code>optional .dossier.TypeLink aliased_type = 22;</code>
      *
      * <pre>
      * Link to another type that this type is an alias of.
@@ -16031,7 +16875,7 @@ public final class Dossier {
      */
     boolean hasAliasedType();
     /**
-     * <code>optional .dossier.TypeLink aliased_type = 23;</code>
+     * <code>optional .dossier.TypeLink aliased_type = 22;</code>
      *
      * <pre>
      * Link to another type that this type is an alias of.
@@ -16039,7 +16883,7 @@ public final class Dossier {
      */
     com.github.jleyba.dossier.proto.Dossier.TypeLink getAliasedType();
     /**
-     * <code>optional .dossier.TypeLink aliased_type = 23;</code>
+     * <code>optional .dossier.TypeLink aliased_type = 22;</code>
      *
      * <pre>
      * Link to another type that this type is an alias of.
@@ -16143,8 +16987,21 @@ public final class Dossier {
               break;
             }
             case 66: {
-              com.github.jleyba.dossier.proto.Dossier.Deprecation.Builder subBuilder = null;
+              com.github.jleyba.dossier.proto.Dossier.Tags.Builder subBuilder = null;
               if (((bitField0_ & 0x00000010) == 0x00000010)) {
+                subBuilder = tags_.toBuilder();
+              }
+              tags_ = input.readMessage(com.github.jleyba.dossier.proto.Dossier.Tags.PARSER, extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(tags_);
+                tags_ = subBuilder.buildPartial();
+              }
+              bitField0_ |= 0x00000010;
+              break;
+            }
+            case 74: {
+              com.github.jleyba.dossier.proto.Dossier.Deprecation.Builder subBuilder = null;
+              if (((bitField0_ & 0x00000020) == 0x00000020)) {
                 subBuilder = deprecation_.toBuilder();
               }
               deprecation_ = input.readMessage(com.github.jleyba.dossier.proto.Dossier.Deprecation.PARSER, extensionRegistry);
@@ -16152,20 +17009,20 @@ public final class Dossier {
                 subBuilder.mergeFrom(deprecation_);
                 deprecation_ = subBuilder.buildPartial();
               }
-              bitField0_ |= 0x00000010;
+              bitField0_ |= 0x00000020;
               break;
             }
-            case 74: {
-              if (!((mutable_bitField0_ & 0x00000020) == 0x00000020)) {
+            case 82: {
+              if (!((mutable_bitField0_ & 0x00000040) == 0x00000040)) {
                 typeDef_ = new java.util.ArrayList<com.github.jleyba.dossier.proto.Dossier.JsType.TypeDef>();
-                mutable_bitField0_ |= 0x00000020;
+                mutable_bitField0_ |= 0x00000040;
               }
               typeDef_.add(input.readMessage(com.github.jleyba.dossier.proto.Dossier.JsType.TypeDef.PARSER, extensionRegistry));
               break;
             }
-            case 82: {
+            case 90: {
               com.github.jleyba.dossier.proto.Dossier.Enumeration.Builder subBuilder = null;
-              if (((bitField0_ & 0x00000020) == 0x00000020)) {
+              if (((bitField0_ & 0x00000040) == 0x00000040)) {
                 subBuilder = enumeration_.toBuilder();
               }
               enumeration_ = input.readMessage(com.github.jleyba.dossier.proto.Dossier.Enumeration.PARSER, extensionRegistry);
@@ -16173,28 +17030,28 @@ public final class Dossier {
                 subBuilder.mergeFrom(enumeration_);
                 enumeration_ = subBuilder.buildPartial();
               }
-              bitField0_ |= 0x00000020;
-              break;
-            }
-            case 90: {
-              if (!((mutable_bitField0_ & 0x00000080) == 0x00000080)) {
-                staticFunction_ = new java.util.ArrayList<com.github.jleyba.dossier.proto.Dossier.Function>();
-                mutable_bitField0_ |= 0x00000080;
-              }
-              staticFunction_.add(input.readMessage(com.github.jleyba.dossier.proto.Dossier.Function.PARSER, extensionRegistry));
+              bitField0_ |= 0x00000040;
               break;
             }
             case 98: {
               if (!((mutable_bitField0_ & 0x00000100) == 0x00000100)) {
-                staticProperty_ = new java.util.ArrayList<com.github.jleyba.dossier.proto.Dossier.Property>();
+                staticFunction_ = new java.util.ArrayList<com.github.jleyba.dossier.proto.Dossier.Function>();
                 mutable_bitField0_ |= 0x00000100;
+              }
+              staticFunction_.add(input.readMessage(com.github.jleyba.dossier.proto.Dossier.Function.PARSER, extensionRegistry));
+              break;
+            }
+            case 106: {
+              if (!((mutable_bitField0_ & 0x00000200) == 0x00000200)) {
+                staticProperty_ = new java.util.ArrayList<com.github.jleyba.dossier.proto.Dossier.Property>();
+                mutable_bitField0_ |= 0x00000200;
               }
               staticProperty_.add(input.readMessage(com.github.jleyba.dossier.proto.Dossier.Property.PARSER, extensionRegistry));
               break;
             }
-            case 106: {
+            case 114: {
               com.github.jleyba.dossier.proto.Dossier.Function.Builder subBuilder = null;
-              if (((bitField0_ & 0x00000040) == 0x00000040)) {
+              if (((bitField0_ & 0x00000080) == 0x00000080)) {
                 subBuilder = mainFunction_.toBuilder();
               }
               mainFunction_ = input.readMessage(com.github.jleyba.dossier.proto.Dossier.Function.PARSER, extensionRegistry);
@@ -16202,12 +17059,7 @@ public final class Dossier {
                 subBuilder.mergeFrom(mainFunction_);
                 mainFunction_ = subBuilder.buildPartial();
               }
-              bitField0_ |= 0x00000040;
-              break;
-            }
-            case 112: {
               bitField0_ |= 0x00000080;
-              isInterface_ = input.readBool();
               break;
             }
             case 122: {
@@ -16252,14 +17104,9 @@ public final class Dossier {
               compilerConstant_.add(input.readMessage(com.github.jleyba.dossier.proto.Dossier.Property.PARSER, extensionRegistry));
               break;
             }
-            case 168: {
-              bitField0_ |= 0x00000400;
-              isModule_ = input.readBool();
-              break;
-            }
-            case 178: {
+            case 170: {
               com.github.jleyba.dossier.proto.Dossier.TypeLink.Builder subBuilder = null;
-              if (((bitField0_ & 0x00000800) == 0x00000800)) {
+              if (((bitField0_ & 0x00000400) == 0x00000400)) {
                 subBuilder = module_.toBuilder();
               }
               module_ = input.readMessage(com.github.jleyba.dossier.proto.Dossier.TypeLink.PARSER, extensionRegistry);
@@ -16267,12 +17114,12 @@ public final class Dossier {
                 subBuilder.mergeFrom(module_);
                 module_ = subBuilder.buildPartial();
               }
-              bitField0_ |= 0x00000800;
+              bitField0_ |= 0x00000400;
               break;
             }
-            case 186: {
+            case 178: {
               com.github.jleyba.dossier.proto.Dossier.TypeLink.Builder subBuilder = null;
-              if (((bitField0_ & 0x00001000) == 0x00001000)) {
+              if (((bitField0_ & 0x00000800) == 0x00000800)) {
                 subBuilder = aliasedType_.toBuilder();
               }
               aliasedType_ = input.readMessage(com.github.jleyba.dossier.proto.Dossier.TypeLink.PARSER, extensionRegistry);
@@ -16280,7 +17127,7 @@ public final class Dossier {
                 subBuilder.mergeFrom(aliasedType_);
                 aliasedType_ = subBuilder.buildPartial();
               }
-              bitField0_ |= 0x00001000;
+              bitField0_ |= 0x00000800;
               break;
             }
           }
@@ -16291,13 +17138,13 @@ public final class Dossier {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e.getMessage()).setUnfinishedMessage(this);
       } finally {
-        if (((mutable_bitField0_ & 0x00000020) == 0x00000020)) {
+        if (((mutable_bitField0_ & 0x00000040) == 0x00000040)) {
           typeDef_ = java.util.Collections.unmodifiableList(typeDef_);
         }
-        if (((mutable_bitField0_ & 0x00000080) == 0x00000080)) {
+        if (((mutable_bitField0_ & 0x00000100) == 0x00000100)) {
           staticFunction_ = java.util.Collections.unmodifiableList(staticFunction_);
         }
-        if (((mutable_bitField0_ & 0x00000100) == 0x00000100)) {
+        if (((mutable_bitField0_ & 0x00000200) == 0x00000200)) {
           staticProperty_ = java.util.Collections.unmodifiableList(staticProperty_);
         }
         if (((mutable_bitField0_ & 0x00000800) == 0x00000800)) {
@@ -20235,157 +21082,178 @@ public final class Dossier {
       return description_;
     }
 
-    public static final int DEPRECATION_FIELD_NUMBER = 8;
-    private com.github.jleyba.dossier.proto.Dossier.Deprecation deprecation_;
+    public static final int TAGS_FIELD_NUMBER = 8;
+    private com.github.jleyba.dossier.proto.Dossier.Tags tags_;
     /**
-     * <code>optional .dossier.Deprecation deprecation = 8;</code>
+     * <code>required .dossier.Tags tags = 8;</code>
      */
-    public boolean hasDeprecation() {
+    public boolean hasTags() {
       return ((bitField0_ & 0x00000010) == 0x00000010);
     }
     /**
-     * <code>optional .dossier.Deprecation deprecation = 8;</code>
+     * <code>required .dossier.Tags tags = 8;</code>
+     */
+    public com.github.jleyba.dossier.proto.Dossier.Tags getTags() {
+      return tags_;
+    }
+    /**
+     * <code>required .dossier.Tags tags = 8;</code>
+     */
+    public com.github.jleyba.dossier.proto.Dossier.TagsOrBuilder getTagsOrBuilder() {
+      return tags_;
+    }
+
+    public static final int DEPRECATION_FIELD_NUMBER = 9;
+    private com.github.jleyba.dossier.proto.Dossier.Deprecation deprecation_;
+    /**
+     * <code>optional .dossier.Deprecation deprecation = 9;</code>
+     */
+    public boolean hasDeprecation() {
+      return ((bitField0_ & 0x00000020) == 0x00000020);
+    }
+    /**
+     * <code>optional .dossier.Deprecation deprecation = 9;</code>
      */
     public com.github.jleyba.dossier.proto.Dossier.Deprecation getDeprecation() {
       return deprecation_;
     }
     /**
-     * <code>optional .dossier.Deprecation deprecation = 8;</code>
+     * <code>optional .dossier.Deprecation deprecation = 9;</code>
      */
     public com.github.jleyba.dossier.proto.Dossier.DeprecationOrBuilder getDeprecationOrBuilder() {
       return deprecation_;
     }
 
-    public static final int TYPE_DEF_FIELD_NUMBER = 9;
+    public static final int TYPE_DEF_FIELD_NUMBER = 10;
     private java.util.List<com.github.jleyba.dossier.proto.Dossier.JsType.TypeDef> typeDef_;
     /**
-     * <code>repeated .dossier.JsType.TypeDef type_def = 9;</code>
+     * <code>repeated .dossier.JsType.TypeDef type_def = 10;</code>
      */
     public java.util.List<com.github.jleyba.dossier.proto.Dossier.JsType.TypeDef> getTypeDefList() {
       return typeDef_;
     }
     /**
-     * <code>repeated .dossier.JsType.TypeDef type_def = 9;</code>
+     * <code>repeated .dossier.JsType.TypeDef type_def = 10;</code>
      */
     public java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.JsType.TypeDefOrBuilder> 
         getTypeDefOrBuilderList() {
       return typeDef_;
     }
     /**
-     * <code>repeated .dossier.JsType.TypeDef type_def = 9;</code>
+     * <code>repeated .dossier.JsType.TypeDef type_def = 10;</code>
      */
     public int getTypeDefCount() {
       return typeDef_.size();
     }
     /**
-     * <code>repeated .dossier.JsType.TypeDef type_def = 9;</code>
+     * <code>repeated .dossier.JsType.TypeDef type_def = 10;</code>
      */
     public com.github.jleyba.dossier.proto.Dossier.JsType.TypeDef getTypeDef(int index) {
       return typeDef_.get(index);
     }
     /**
-     * <code>repeated .dossier.JsType.TypeDef type_def = 9;</code>
+     * <code>repeated .dossier.JsType.TypeDef type_def = 10;</code>
      */
     public com.github.jleyba.dossier.proto.Dossier.JsType.TypeDefOrBuilder getTypeDefOrBuilder(
         int index) {
       return typeDef_.get(index);
     }
 
-    public static final int ENUMERATION_FIELD_NUMBER = 10;
+    public static final int ENUMERATION_FIELD_NUMBER = 11;
     private com.github.jleyba.dossier.proto.Dossier.Enumeration enumeration_;
     /**
-     * <code>optional .dossier.Enumeration enumeration = 10;</code>
+     * <code>optional .dossier.Enumeration enumeration = 11;</code>
      */
     public boolean hasEnumeration() {
-      return ((bitField0_ & 0x00000020) == 0x00000020);
+      return ((bitField0_ & 0x00000040) == 0x00000040);
     }
     /**
-     * <code>optional .dossier.Enumeration enumeration = 10;</code>
+     * <code>optional .dossier.Enumeration enumeration = 11;</code>
      */
     public com.github.jleyba.dossier.proto.Dossier.Enumeration getEnumeration() {
       return enumeration_;
     }
     /**
-     * <code>optional .dossier.Enumeration enumeration = 10;</code>
+     * <code>optional .dossier.Enumeration enumeration = 11;</code>
      */
     public com.github.jleyba.dossier.proto.Dossier.EnumerationOrBuilder getEnumerationOrBuilder() {
       return enumeration_;
     }
 
-    public static final int STATIC_FUNCTION_FIELD_NUMBER = 11;
+    public static final int STATIC_FUNCTION_FIELD_NUMBER = 12;
     private java.util.List<com.github.jleyba.dossier.proto.Dossier.Function> staticFunction_;
     /**
-     * <code>repeated .dossier.Function static_function = 11;</code>
+     * <code>repeated .dossier.Function static_function = 12;</code>
      */
     public java.util.List<com.github.jleyba.dossier.proto.Dossier.Function> getStaticFunctionList() {
       return staticFunction_;
     }
     /**
-     * <code>repeated .dossier.Function static_function = 11;</code>
+     * <code>repeated .dossier.Function static_function = 12;</code>
      */
     public java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.FunctionOrBuilder> 
         getStaticFunctionOrBuilderList() {
       return staticFunction_;
     }
     /**
-     * <code>repeated .dossier.Function static_function = 11;</code>
+     * <code>repeated .dossier.Function static_function = 12;</code>
      */
     public int getStaticFunctionCount() {
       return staticFunction_.size();
     }
     /**
-     * <code>repeated .dossier.Function static_function = 11;</code>
+     * <code>repeated .dossier.Function static_function = 12;</code>
      */
     public com.github.jleyba.dossier.proto.Dossier.Function getStaticFunction(int index) {
       return staticFunction_.get(index);
     }
     /**
-     * <code>repeated .dossier.Function static_function = 11;</code>
+     * <code>repeated .dossier.Function static_function = 12;</code>
      */
     public com.github.jleyba.dossier.proto.Dossier.FunctionOrBuilder getStaticFunctionOrBuilder(
         int index) {
       return staticFunction_.get(index);
     }
 
-    public static final int STATIC_PROPERTY_FIELD_NUMBER = 12;
+    public static final int STATIC_PROPERTY_FIELD_NUMBER = 13;
     private java.util.List<com.github.jleyba.dossier.proto.Dossier.Property> staticProperty_;
     /**
-     * <code>repeated .dossier.Property static_property = 12;</code>
+     * <code>repeated .dossier.Property static_property = 13;</code>
      */
     public java.util.List<com.github.jleyba.dossier.proto.Dossier.Property> getStaticPropertyList() {
       return staticProperty_;
     }
     /**
-     * <code>repeated .dossier.Property static_property = 12;</code>
+     * <code>repeated .dossier.Property static_property = 13;</code>
      */
     public java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.PropertyOrBuilder> 
         getStaticPropertyOrBuilderList() {
       return staticProperty_;
     }
     /**
-     * <code>repeated .dossier.Property static_property = 12;</code>
+     * <code>repeated .dossier.Property static_property = 13;</code>
      */
     public int getStaticPropertyCount() {
       return staticProperty_.size();
     }
     /**
-     * <code>repeated .dossier.Property static_property = 12;</code>
+     * <code>repeated .dossier.Property static_property = 13;</code>
      */
     public com.github.jleyba.dossier.proto.Dossier.Property getStaticProperty(int index) {
       return staticProperty_.get(index);
     }
     /**
-     * <code>repeated .dossier.Property static_property = 12;</code>
+     * <code>repeated .dossier.Property static_property = 13;</code>
      */
     public com.github.jleyba.dossier.proto.Dossier.PropertyOrBuilder getStaticPropertyOrBuilder(
         int index) {
       return staticProperty_.get(index);
     }
 
-    public static final int MAIN_FUNCTION_FIELD_NUMBER = 13;
+    public static final int MAIN_FUNCTION_FIELD_NUMBER = 14;
     private com.github.jleyba.dossier.proto.Dossier.Function mainFunction_;
     /**
-     * <code>optional .dossier.Function main_function = 13;</code>
+     * <code>optional .dossier.Function main_function = 14;</code>
      *
      * <pre>
      * Describes the main function for this type. This is typically a class
@@ -20394,10 +21262,10 @@ public final class Dossier {
      * </pre>
      */
     public boolean hasMainFunction() {
-      return ((bitField0_ & 0x00000040) == 0x00000040);
+      return ((bitField0_ & 0x00000080) == 0x00000080);
     }
     /**
-     * <code>optional .dossier.Function main_function = 13;</code>
+     * <code>optional .dossier.Function main_function = 14;</code>
      *
      * <pre>
      * Describes the main function for this type. This is typically a class
@@ -20409,7 +21277,7 @@ public final class Dossier {
       return mainFunction_;
     }
     /**
-     * <code>optional .dossier.Function main_function = 13;</code>
+     * <code>optional .dossier.Function main_function = 14;</code>
      *
      * <pre>
      * Describes the main function for this type. This is typically a class
@@ -20419,29 +21287,6 @@ public final class Dossier {
      */
     public com.github.jleyba.dossier.proto.Dossier.FunctionOrBuilder getMainFunctionOrBuilder() {
       return mainFunction_;
-    }
-
-    public static final int IS_INTERFACE_FIELD_NUMBER = 14;
-    private boolean isInterface_;
-    /**
-     * <code>optional bool is_interface = 14;</code>
-     *
-     * <pre>
-     * Designates this type as an interface.
-     * </pre>
-     */
-    public boolean hasIsInterface() {
-      return ((bitField0_ & 0x00000080) == 0x00000080);
-    }
-    /**
-     * <code>optional bool is_interface = 14;</code>
-     *
-     * <pre>
-     * Designates this type as an interface.
-     * </pre>
-     */
-    public boolean getIsInterface() {
-      return isInterface_;
     }
 
     public static final int PROTOTYPE_FIELD_NUMBER = 15;
@@ -20709,43 +21554,20 @@ public final class Dossier {
       return compilerConstant_.get(index);
     }
 
-    public static final int IS_MODULE_FIELD_NUMBER = 21;
-    private boolean isModule_;
-    /**
-     * <code>optional bool is_module = 21;</code>
-     *
-     * <pre>
-     * Designates this type as the exported API of a module.
-     * </pre>
-     */
-    public boolean hasIsModule() {
-      return ((bitField0_ & 0x00000400) == 0x00000400);
-    }
-    /**
-     * <code>optional bool is_module = 21;</code>
-     *
-     * <pre>
-     * Designates this type as the exported API of a module.
-     * </pre>
-     */
-    public boolean getIsModule() {
-      return isModule_;
-    }
-
-    public static final int MODULE_FIELD_NUMBER = 22;
+    public static final int MODULE_FIELD_NUMBER = 21;
     private com.github.jleyba.dossier.proto.Dossier.TypeLink module_;
     /**
-     * <code>optional .dossier.TypeLink module = 22;</code>
+     * <code>optional .dossier.TypeLink module = 21;</code>
      *
      * <pre>
      * Link to the module this type belongs to.
      * </pre>
      */
     public boolean hasModule() {
-      return ((bitField0_ & 0x00000800) == 0x00000800);
+      return ((bitField0_ & 0x00000400) == 0x00000400);
     }
     /**
-     * <code>optional .dossier.TypeLink module = 22;</code>
+     * <code>optional .dossier.TypeLink module = 21;</code>
      *
      * <pre>
      * Link to the module this type belongs to.
@@ -20755,7 +21577,7 @@ public final class Dossier {
       return module_;
     }
     /**
-     * <code>optional .dossier.TypeLink module = 22;</code>
+     * <code>optional .dossier.TypeLink module = 21;</code>
      *
      * <pre>
      * Link to the module this type belongs to.
@@ -20765,20 +21587,20 @@ public final class Dossier {
       return module_;
     }
 
-    public static final int ALIASED_TYPE_FIELD_NUMBER = 23;
+    public static final int ALIASED_TYPE_FIELD_NUMBER = 22;
     private com.github.jleyba.dossier.proto.Dossier.TypeLink aliasedType_;
     /**
-     * <code>optional .dossier.TypeLink aliased_type = 23;</code>
+     * <code>optional .dossier.TypeLink aliased_type = 22;</code>
      *
      * <pre>
      * Link to another type that this type is an alias of.
      * </pre>
      */
     public boolean hasAliasedType() {
-      return ((bitField0_ & 0x00001000) == 0x00001000);
+      return ((bitField0_ & 0x00000800) == 0x00000800);
     }
     /**
-     * <code>optional .dossier.TypeLink aliased_type = 23;</code>
+     * <code>optional .dossier.TypeLink aliased_type = 22;</code>
      *
      * <pre>
      * Link to another type that this type is an alias of.
@@ -20788,7 +21610,7 @@ public final class Dossier {
       return aliasedType_;
     }
     /**
-     * <code>optional .dossier.TypeLink aliased_type = 23;</code>
+     * <code>optional .dossier.TypeLink aliased_type = 22;</code>
      *
      * <pre>
      * Link to another type that this type is an alias of.
@@ -20803,20 +21625,19 @@ public final class Dossier {
       source_ = "";
       nested_ = com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.getDefaultInstance();
       description_ = com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance();
+      tags_ = com.github.jleyba.dossier.proto.Dossier.Tags.getDefaultInstance();
       deprecation_ = com.github.jleyba.dossier.proto.Dossier.Deprecation.getDefaultInstance();
       typeDef_ = java.util.Collections.emptyList();
       enumeration_ = com.github.jleyba.dossier.proto.Dossier.Enumeration.getDefaultInstance();
       staticFunction_ = java.util.Collections.emptyList();
       staticProperty_ = java.util.Collections.emptyList();
       mainFunction_ = com.github.jleyba.dossier.proto.Dossier.Function.getDefaultInstance();
-      isInterface_ = false;
       prototype_ = java.util.Collections.emptyList();
       hasInstanceMethods_ = false;
       hasInstanceProperties_ = false;
       extendedType_ = java.util.Collections.emptyList();
       implementedType_ = java.util.Collections.emptyList();
       compilerConstant_ = java.util.Collections.emptyList();
-      isModule_ = false;
       module_ = com.github.jleyba.dossier.proto.Dossier.TypeLink.getDefaultInstance();
       aliasedType_ = com.github.jleyba.dossier.proto.Dossier.TypeLink.getDefaultInstance();
     }
@@ -20839,6 +21660,10 @@ public final class Dossier {
         return false;
       }
       if (!hasDescription()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasTags()) {
         memoizedIsInitialized = 0;
         return false;
       }
@@ -20942,25 +21767,25 @@ public final class Dossier {
         output.writeMessage(7, description_);
       }
       if (((bitField0_ & 0x00000010) == 0x00000010)) {
-        output.writeMessage(8, deprecation_);
-      }
-      for (int i = 0; i < typeDef_.size(); i++) {
-        output.writeMessage(9, typeDef_.get(i));
+        output.writeMessage(8, tags_);
       }
       if (((bitField0_ & 0x00000020) == 0x00000020)) {
-        output.writeMessage(10, enumeration_);
+        output.writeMessage(9, deprecation_);
       }
-      for (int i = 0; i < staticFunction_.size(); i++) {
-        output.writeMessage(11, staticFunction_.get(i));
-      }
-      for (int i = 0; i < staticProperty_.size(); i++) {
-        output.writeMessage(12, staticProperty_.get(i));
+      for (int i = 0; i < typeDef_.size(); i++) {
+        output.writeMessage(10, typeDef_.get(i));
       }
       if (((bitField0_ & 0x00000040) == 0x00000040)) {
-        output.writeMessage(13, mainFunction_);
+        output.writeMessage(11, enumeration_);
+      }
+      for (int i = 0; i < staticFunction_.size(); i++) {
+        output.writeMessage(12, staticFunction_.get(i));
+      }
+      for (int i = 0; i < staticProperty_.size(); i++) {
+        output.writeMessage(13, staticProperty_.get(i));
       }
       if (((bitField0_ & 0x00000080) == 0x00000080)) {
-        output.writeBool(14, isInterface_);
+        output.writeMessage(14, mainFunction_);
       }
       for (int i = 0; i < prototype_.size(); i++) {
         output.writeMessage(15, prototype_.get(i));
@@ -20981,13 +21806,10 @@ public final class Dossier {
         output.writeMessage(20, compilerConstant_.get(i));
       }
       if (((bitField0_ & 0x00000400) == 0x00000400)) {
-        output.writeBool(21, isModule_);
+        output.writeMessage(21, module_);
       }
       if (((bitField0_ & 0x00000800) == 0x00000800)) {
-        output.writeMessage(22, module_);
-      }
-      if (((bitField0_ & 0x00001000) == 0x00001000)) {
-        output.writeMessage(23, aliasedType_);
+        output.writeMessage(22, aliasedType_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -21016,31 +21838,31 @@ public final class Dossier {
       }
       if (((bitField0_ & 0x00000010) == 0x00000010)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(8, deprecation_);
-      }
-      for (int i = 0; i < typeDef_.size(); i++) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(9, typeDef_.get(i));
+          .computeMessageSize(8, tags_);
       }
       if (((bitField0_ & 0x00000020) == 0x00000020)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(10, enumeration_);
+          .computeMessageSize(9, deprecation_);
       }
-      for (int i = 0; i < staticFunction_.size(); i++) {
+      for (int i = 0; i < typeDef_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(11, staticFunction_.get(i));
-      }
-      for (int i = 0; i < staticProperty_.size(); i++) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(12, staticProperty_.get(i));
+          .computeMessageSize(10, typeDef_.get(i));
       }
       if (((bitField0_ & 0x00000040) == 0x00000040)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(13, mainFunction_);
+          .computeMessageSize(11, enumeration_);
+      }
+      for (int i = 0; i < staticFunction_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(12, staticFunction_.get(i));
+      }
+      for (int i = 0; i < staticProperty_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(13, staticProperty_.get(i));
       }
       if (((bitField0_ & 0x00000080) == 0x00000080)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(14, isInterface_);
+          .computeMessageSize(14, mainFunction_);
       }
       for (int i = 0; i < prototype_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
@@ -21068,15 +21890,11 @@ public final class Dossier {
       }
       if (((bitField0_ & 0x00000400) == 0x00000400)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(21, isModule_);
+          .computeMessageSize(21, module_);
       }
       if (((bitField0_ & 0x00000800) == 0x00000800)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(22, module_);
-      }
-      if (((bitField0_ & 0x00001000) == 0x00001000)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(23, aliasedType_);
+          .computeMessageSize(22, aliasedType_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -21194,6 +22012,7 @@ public final class Dossier {
         if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
           getNestedFieldBuilder();
           getDescriptionFieldBuilder();
+          getTagsFieldBuilder();
           getDeprecationFieldBuilder();
           getTypeDefFieldBuilder();
           getEnumerationFieldBuilder();
@@ -21230,15 +22049,21 @@ public final class Dossier {
           descriptionBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000008);
+        if (tagsBuilder_ == null) {
+          tags_ = com.github.jleyba.dossier.proto.Dossier.Tags.getDefaultInstance();
+        } else {
+          tagsBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000010);
         if (deprecationBuilder_ == null) {
           deprecation_ = com.github.jleyba.dossier.proto.Dossier.Deprecation.getDefaultInstance();
         } else {
           deprecationBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00000010);
+        bitField0_ = (bitField0_ & ~0x00000020);
         if (typeDefBuilder_ == null) {
           typeDef_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000020);
+          bitField0_ = (bitField0_ & ~0x00000040);
         } else {
           typeDefBuilder_.clear();
         }
@@ -21247,16 +22072,16 @@ public final class Dossier {
         } else {
           enumerationBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00000040);
+        bitField0_ = (bitField0_ & ~0x00000080);
         if (staticFunctionBuilder_ == null) {
           staticFunction_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000080);
+          bitField0_ = (bitField0_ & ~0x00000100);
         } else {
           staticFunctionBuilder_.clear();
         }
         if (staticPropertyBuilder_ == null) {
           staticProperty_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000100);
+          bitField0_ = (bitField0_ & ~0x00000200);
         } else {
           staticPropertyBuilder_.clear();
         }
@@ -21265,8 +22090,6 @@ public final class Dossier {
         } else {
           mainFunctionBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00000200);
-        isInterface_ = false;
         bitField0_ = (bitField0_ & ~0x00000400);
         if (prototypeBuilder_ == null) {
           prototype_ = java.util.Collections.emptyList();
@@ -21296,20 +22119,18 @@ public final class Dossier {
         } else {
           compilerConstantBuilder_.clear();
         }
-        isModule_ = false;
-        bitField0_ = (bitField0_ & ~0x00020000);
         if (moduleBuilder_ == null) {
           module_ = com.github.jleyba.dossier.proto.Dossier.TypeLink.getDefaultInstance();
         } else {
           moduleBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00040000);
+        bitField0_ = (bitField0_ & ~0x00020000);
         if (aliasedTypeBuilder_ == null) {
           aliasedType_ = com.github.jleyba.dossier.proto.Dossier.TypeLink.getDefaultInstance();
         } else {
           aliasedTypeBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00080000);
+        bitField0_ = (bitField0_ & ~0x00040000);
         return this;
       }
 
@@ -21365,22 +22186,30 @@ public final class Dossier {
         if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
           to_bitField0_ |= 0x00000010;
         }
+        if (tagsBuilder_ == null) {
+          result.tags_ = tags_;
+        } else {
+          result.tags_ = tagsBuilder_.build();
+        }
+        if (((from_bitField0_ & 0x00000020) == 0x00000020)) {
+          to_bitField0_ |= 0x00000020;
+        }
         if (deprecationBuilder_ == null) {
           result.deprecation_ = deprecation_;
         } else {
           result.deprecation_ = deprecationBuilder_.build();
         }
         if (typeDefBuilder_ == null) {
-          if (((bitField0_ & 0x00000020) == 0x00000020)) {
+          if (((bitField0_ & 0x00000040) == 0x00000040)) {
             typeDef_ = java.util.Collections.unmodifiableList(typeDef_);
-            bitField0_ = (bitField0_ & ~0x00000020);
+            bitField0_ = (bitField0_ & ~0x00000040);
           }
           result.typeDef_ = typeDef_;
         } else {
           result.typeDef_ = typeDefBuilder_.build();
         }
-        if (((from_bitField0_ & 0x00000040) == 0x00000040)) {
-          to_bitField0_ |= 0x00000020;
+        if (((from_bitField0_ & 0x00000080) == 0x00000080)) {
+          to_bitField0_ |= 0x00000040;
         }
         if (enumerationBuilder_ == null) {
           result.enumeration_ = enumeration_;
@@ -21388,35 +22217,31 @@ public final class Dossier {
           result.enumeration_ = enumerationBuilder_.build();
         }
         if (staticFunctionBuilder_ == null) {
-          if (((bitField0_ & 0x00000080) == 0x00000080)) {
+          if (((bitField0_ & 0x00000100) == 0x00000100)) {
             staticFunction_ = java.util.Collections.unmodifiableList(staticFunction_);
-            bitField0_ = (bitField0_ & ~0x00000080);
+            bitField0_ = (bitField0_ & ~0x00000100);
           }
           result.staticFunction_ = staticFunction_;
         } else {
           result.staticFunction_ = staticFunctionBuilder_.build();
         }
         if (staticPropertyBuilder_ == null) {
-          if (((bitField0_ & 0x00000100) == 0x00000100)) {
+          if (((bitField0_ & 0x00000200) == 0x00000200)) {
             staticProperty_ = java.util.Collections.unmodifiableList(staticProperty_);
-            bitField0_ = (bitField0_ & ~0x00000100);
+            bitField0_ = (bitField0_ & ~0x00000200);
           }
           result.staticProperty_ = staticProperty_;
         } else {
           result.staticProperty_ = staticPropertyBuilder_.build();
         }
-        if (((from_bitField0_ & 0x00000200) == 0x00000200)) {
-          to_bitField0_ |= 0x00000040;
+        if (((from_bitField0_ & 0x00000400) == 0x00000400)) {
+          to_bitField0_ |= 0x00000080;
         }
         if (mainFunctionBuilder_ == null) {
           result.mainFunction_ = mainFunction_;
         } else {
           result.mainFunction_ = mainFunctionBuilder_.build();
         }
-        if (((from_bitField0_ & 0x00000400) == 0x00000400)) {
-          to_bitField0_ |= 0x00000080;
-        }
-        result.isInterface_ = isInterface_;
         if (prototypeBuilder_ == null) {
           if (((bitField0_ & 0x00000800) == 0x00000800)) {
             prototype_ = java.util.Collections.unmodifiableList(prototype_);
@@ -21464,17 +22289,13 @@ public final class Dossier {
         if (((from_bitField0_ & 0x00020000) == 0x00020000)) {
           to_bitField0_ |= 0x00000400;
         }
-        result.isModule_ = isModule_;
-        if (((from_bitField0_ & 0x00040000) == 0x00040000)) {
-          to_bitField0_ |= 0x00000800;
-        }
         if (moduleBuilder_ == null) {
           result.module_ = module_;
         } else {
           result.module_ = moduleBuilder_.build();
         }
-        if (((from_bitField0_ & 0x00080000) == 0x00080000)) {
-          to_bitField0_ |= 0x00001000;
+        if (((from_bitField0_ & 0x00040000) == 0x00040000)) {
+          to_bitField0_ |= 0x00000800;
         }
         if (aliasedTypeBuilder_ == null) {
           result.aliasedType_ = aliasedType_;
@@ -21513,6 +22334,9 @@ public final class Dossier {
         if (other.hasDescription()) {
           mergeDescription(other.getDescription());
         }
+        if (other.hasTags()) {
+          mergeTags(other.getTags());
+        }
         if (other.hasDeprecation()) {
           mergeDeprecation(other.getDeprecation());
         }
@@ -21520,7 +22344,7 @@ public final class Dossier {
           if (!other.typeDef_.isEmpty()) {
             if (typeDef_.isEmpty()) {
               typeDef_ = other.typeDef_;
-              bitField0_ = (bitField0_ & ~0x00000020);
+              bitField0_ = (bitField0_ & ~0x00000040);
             } else {
               ensureTypeDefIsMutable();
               typeDef_.addAll(other.typeDef_);
@@ -21533,7 +22357,7 @@ public final class Dossier {
               typeDefBuilder_.dispose();
               typeDefBuilder_ = null;
               typeDef_ = other.typeDef_;
-              bitField0_ = (bitField0_ & ~0x00000020);
+              bitField0_ = (bitField0_ & ~0x00000040);
               typeDefBuilder_ = 
                 com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
                    getTypeDefFieldBuilder() : null;
@@ -21549,7 +22373,7 @@ public final class Dossier {
           if (!other.staticFunction_.isEmpty()) {
             if (staticFunction_.isEmpty()) {
               staticFunction_ = other.staticFunction_;
-              bitField0_ = (bitField0_ & ~0x00000080);
+              bitField0_ = (bitField0_ & ~0x00000100);
             } else {
               ensureStaticFunctionIsMutable();
               staticFunction_.addAll(other.staticFunction_);
@@ -21562,7 +22386,7 @@ public final class Dossier {
               staticFunctionBuilder_.dispose();
               staticFunctionBuilder_ = null;
               staticFunction_ = other.staticFunction_;
-              bitField0_ = (bitField0_ & ~0x00000080);
+              bitField0_ = (bitField0_ & ~0x00000100);
               staticFunctionBuilder_ = 
                 com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
                    getStaticFunctionFieldBuilder() : null;
@@ -21575,7 +22399,7 @@ public final class Dossier {
           if (!other.staticProperty_.isEmpty()) {
             if (staticProperty_.isEmpty()) {
               staticProperty_ = other.staticProperty_;
-              bitField0_ = (bitField0_ & ~0x00000100);
+              bitField0_ = (bitField0_ & ~0x00000200);
             } else {
               ensureStaticPropertyIsMutable();
               staticProperty_.addAll(other.staticProperty_);
@@ -21588,7 +22412,7 @@ public final class Dossier {
               staticPropertyBuilder_.dispose();
               staticPropertyBuilder_ = null;
               staticProperty_ = other.staticProperty_;
-              bitField0_ = (bitField0_ & ~0x00000100);
+              bitField0_ = (bitField0_ & ~0x00000200);
               staticPropertyBuilder_ = 
                 com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
                    getStaticPropertyFieldBuilder() : null;
@@ -21599,9 +22423,6 @@ public final class Dossier {
         }
         if (other.hasMainFunction()) {
           mergeMainFunction(other.getMainFunction());
-        }
-        if (other.hasIsInterface()) {
-          setIsInterface(other.getIsInterface());
         }
         if (prototypeBuilder_ == null) {
           if (!other.prototype_.isEmpty()) {
@@ -21713,9 +22534,6 @@ public final class Dossier {
             }
           }
         }
-        if (other.hasIsModule()) {
-          setIsModule(other.getIsModule());
-        }
         if (other.hasModule()) {
           mergeModule(other.getModule());
         }
@@ -21740,6 +22558,10 @@ public final class Dossier {
           return false;
         }
         if (!hasDescription()) {
+          
+          return false;
+        }
+        if (!hasTags()) {
           
           return false;
         }
@@ -22229,17 +23051,133 @@ public final class Dossier {
         return descriptionBuilder_;
       }
 
+      private com.github.jleyba.dossier.proto.Dossier.Tags tags_ = com.github.jleyba.dossier.proto.Dossier.Tags.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          com.github.jleyba.dossier.proto.Dossier.Tags, com.github.jleyba.dossier.proto.Dossier.Tags.Builder, com.github.jleyba.dossier.proto.Dossier.TagsOrBuilder> tagsBuilder_;
+      /**
+       * <code>required .dossier.Tags tags = 8;</code>
+       */
+      public boolean hasTags() {
+        return ((bitField0_ & 0x00000010) == 0x00000010);
+      }
+      /**
+       * <code>required .dossier.Tags tags = 8;</code>
+       */
+      public com.github.jleyba.dossier.proto.Dossier.Tags getTags() {
+        if (tagsBuilder_ == null) {
+          return tags_;
+        } else {
+          return tagsBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>required .dossier.Tags tags = 8;</code>
+       */
+      public Builder setTags(com.github.jleyba.dossier.proto.Dossier.Tags value) {
+        if (tagsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          tags_ = value;
+          onChanged();
+        } else {
+          tagsBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000010;
+        return this;
+      }
+      /**
+       * <code>required .dossier.Tags tags = 8;</code>
+       */
+      public Builder setTags(
+          com.github.jleyba.dossier.proto.Dossier.Tags.Builder builderForValue) {
+        if (tagsBuilder_ == null) {
+          tags_ = builderForValue.build();
+          onChanged();
+        } else {
+          tagsBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000010;
+        return this;
+      }
+      /**
+       * <code>required .dossier.Tags tags = 8;</code>
+       */
+      public Builder mergeTags(com.github.jleyba.dossier.proto.Dossier.Tags value) {
+        if (tagsBuilder_ == null) {
+          if (((bitField0_ & 0x00000010) == 0x00000010) &&
+              tags_ != com.github.jleyba.dossier.proto.Dossier.Tags.getDefaultInstance()) {
+            tags_ =
+              com.github.jleyba.dossier.proto.Dossier.Tags.newBuilder(tags_).mergeFrom(value).buildPartial();
+          } else {
+            tags_ = value;
+          }
+          onChanged();
+        } else {
+          tagsBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000010;
+        return this;
+      }
+      /**
+       * <code>required .dossier.Tags tags = 8;</code>
+       */
+      public Builder clearTags() {
+        if (tagsBuilder_ == null) {
+          tags_ = com.github.jleyba.dossier.proto.Dossier.Tags.getDefaultInstance();
+          onChanged();
+        } else {
+          tagsBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000010);
+        return this;
+      }
+      /**
+       * <code>required .dossier.Tags tags = 8;</code>
+       */
+      public com.github.jleyba.dossier.proto.Dossier.Tags.Builder getTagsBuilder() {
+        bitField0_ |= 0x00000010;
+        onChanged();
+        return getTagsFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>required .dossier.Tags tags = 8;</code>
+       */
+      public com.github.jleyba.dossier.proto.Dossier.TagsOrBuilder getTagsOrBuilder() {
+        if (tagsBuilder_ != null) {
+          return tagsBuilder_.getMessageOrBuilder();
+        } else {
+          return tags_;
+        }
+      }
+      /**
+       * <code>required .dossier.Tags tags = 8;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          com.github.jleyba.dossier.proto.Dossier.Tags, com.github.jleyba.dossier.proto.Dossier.Tags.Builder, com.github.jleyba.dossier.proto.Dossier.TagsOrBuilder> 
+          getTagsFieldBuilder() {
+        if (tagsBuilder_ == null) {
+          tagsBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              com.github.jleyba.dossier.proto.Dossier.Tags, com.github.jleyba.dossier.proto.Dossier.Tags.Builder, com.github.jleyba.dossier.proto.Dossier.TagsOrBuilder>(
+                  getTags(),
+                  getParentForChildren(),
+                  isClean());
+          tags_ = null;
+        }
+        return tagsBuilder_;
+      }
+
       private com.github.jleyba.dossier.proto.Dossier.Deprecation deprecation_ = com.github.jleyba.dossier.proto.Dossier.Deprecation.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           com.github.jleyba.dossier.proto.Dossier.Deprecation, com.github.jleyba.dossier.proto.Dossier.Deprecation.Builder, com.github.jleyba.dossier.proto.Dossier.DeprecationOrBuilder> deprecationBuilder_;
       /**
-       * <code>optional .dossier.Deprecation deprecation = 8;</code>
+       * <code>optional .dossier.Deprecation deprecation = 9;</code>
        */
       public boolean hasDeprecation() {
-        return ((bitField0_ & 0x00000010) == 0x00000010);
+        return ((bitField0_ & 0x00000020) == 0x00000020);
       }
       /**
-       * <code>optional .dossier.Deprecation deprecation = 8;</code>
+       * <code>optional .dossier.Deprecation deprecation = 9;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.Deprecation getDeprecation() {
         if (deprecationBuilder_ == null) {
@@ -22249,7 +23187,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>optional .dossier.Deprecation deprecation = 8;</code>
+       * <code>optional .dossier.Deprecation deprecation = 9;</code>
        */
       public Builder setDeprecation(com.github.jleyba.dossier.proto.Dossier.Deprecation value) {
         if (deprecationBuilder_ == null) {
@@ -22261,11 +23199,11 @@ public final class Dossier {
         } else {
           deprecationBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00000010;
+        bitField0_ |= 0x00000020;
         return this;
       }
       /**
-       * <code>optional .dossier.Deprecation deprecation = 8;</code>
+       * <code>optional .dossier.Deprecation deprecation = 9;</code>
        */
       public Builder setDeprecation(
           com.github.jleyba.dossier.proto.Dossier.Deprecation.Builder builderForValue) {
@@ -22275,15 +23213,15 @@ public final class Dossier {
         } else {
           deprecationBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00000010;
+        bitField0_ |= 0x00000020;
         return this;
       }
       /**
-       * <code>optional .dossier.Deprecation deprecation = 8;</code>
+       * <code>optional .dossier.Deprecation deprecation = 9;</code>
        */
       public Builder mergeDeprecation(com.github.jleyba.dossier.proto.Dossier.Deprecation value) {
         if (deprecationBuilder_ == null) {
-          if (((bitField0_ & 0x00000010) == 0x00000010) &&
+          if (((bitField0_ & 0x00000020) == 0x00000020) &&
               deprecation_ != com.github.jleyba.dossier.proto.Dossier.Deprecation.getDefaultInstance()) {
             deprecation_ =
               com.github.jleyba.dossier.proto.Dossier.Deprecation.newBuilder(deprecation_).mergeFrom(value).buildPartial();
@@ -22294,11 +23232,11 @@ public final class Dossier {
         } else {
           deprecationBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x00000010;
+        bitField0_ |= 0x00000020;
         return this;
       }
       /**
-       * <code>optional .dossier.Deprecation deprecation = 8;</code>
+       * <code>optional .dossier.Deprecation deprecation = 9;</code>
        */
       public Builder clearDeprecation() {
         if (deprecationBuilder_ == null) {
@@ -22307,19 +23245,19 @@ public final class Dossier {
         } else {
           deprecationBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00000010);
+        bitField0_ = (bitField0_ & ~0x00000020);
         return this;
       }
       /**
-       * <code>optional .dossier.Deprecation deprecation = 8;</code>
+       * <code>optional .dossier.Deprecation deprecation = 9;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.Deprecation.Builder getDeprecationBuilder() {
-        bitField0_ |= 0x00000010;
+        bitField0_ |= 0x00000020;
         onChanged();
         return getDeprecationFieldBuilder().getBuilder();
       }
       /**
-       * <code>optional .dossier.Deprecation deprecation = 8;</code>
+       * <code>optional .dossier.Deprecation deprecation = 9;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.DeprecationOrBuilder getDeprecationOrBuilder() {
         if (deprecationBuilder_ != null) {
@@ -22329,7 +23267,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>optional .dossier.Deprecation deprecation = 8;</code>
+       * <code>optional .dossier.Deprecation deprecation = 9;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
           com.github.jleyba.dossier.proto.Dossier.Deprecation, com.github.jleyba.dossier.proto.Dossier.Deprecation.Builder, com.github.jleyba.dossier.proto.Dossier.DeprecationOrBuilder> 
@@ -22348,9 +23286,9 @@ public final class Dossier {
       private java.util.List<com.github.jleyba.dossier.proto.Dossier.JsType.TypeDef> typeDef_ =
         java.util.Collections.emptyList();
       private void ensureTypeDefIsMutable() {
-        if (!((bitField0_ & 0x00000020) == 0x00000020)) {
+        if (!((bitField0_ & 0x00000040) == 0x00000040)) {
           typeDef_ = new java.util.ArrayList<com.github.jleyba.dossier.proto.Dossier.JsType.TypeDef>(typeDef_);
-          bitField0_ |= 0x00000020;
+          bitField0_ |= 0x00000040;
          }
       }
 
@@ -22358,7 +23296,7 @@ public final class Dossier {
           com.github.jleyba.dossier.proto.Dossier.JsType.TypeDef, com.github.jleyba.dossier.proto.Dossier.JsType.TypeDef.Builder, com.github.jleyba.dossier.proto.Dossier.JsType.TypeDefOrBuilder> typeDefBuilder_;
 
       /**
-       * <code>repeated .dossier.JsType.TypeDef type_def = 9;</code>
+       * <code>repeated .dossier.JsType.TypeDef type_def = 10;</code>
        */
       public java.util.List<com.github.jleyba.dossier.proto.Dossier.JsType.TypeDef> getTypeDefList() {
         if (typeDefBuilder_ == null) {
@@ -22368,7 +23306,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .dossier.JsType.TypeDef type_def = 9;</code>
+       * <code>repeated .dossier.JsType.TypeDef type_def = 10;</code>
        */
       public int getTypeDefCount() {
         if (typeDefBuilder_ == null) {
@@ -22378,7 +23316,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .dossier.JsType.TypeDef type_def = 9;</code>
+       * <code>repeated .dossier.JsType.TypeDef type_def = 10;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.JsType.TypeDef getTypeDef(int index) {
         if (typeDefBuilder_ == null) {
@@ -22388,7 +23326,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .dossier.JsType.TypeDef type_def = 9;</code>
+       * <code>repeated .dossier.JsType.TypeDef type_def = 10;</code>
        */
       public Builder setTypeDef(
           int index, com.github.jleyba.dossier.proto.Dossier.JsType.TypeDef value) {
@@ -22405,7 +23343,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .dossier.JsType.TypeDef type_def = 9;</code>
+       * <code>repeated .dossier.JsType.TypeDef type_def = 10;</code>
        */
       public Builder setTypeDef(
           int index, com.github.jleyba.dossier.proto.Dossier.JsType.TypeDef.Builder builderForValue) {
@@ -22419,7 +23357,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .dossier.JsType.TypeDef type_def = 9;</code>
+       * <code>repeated .dossier.JsType.TypeDef type_def = 10;</code>
        */
       public Builder addTypeDef(com.github.jleyba.dossier.proto.Dossier.JsType.TypeDef value) {
         if (typeDefBuilder_ == null) {
@@ -22435,7 +23373,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .dossier.JsType.TypeDef type_def = 9;</code>
+       * <code>repeated .dossier.JsType.TypeDef type_def = 10;</code>
        */
       public Builder addTypeDef(
           int index, com.github.jleyba.dossier.proto.Dossier.JsType.TypeDef value) {
@@ -22452,7 +23390,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .dossier.JsType.TypeDef type_def = 9;</code>
+       * <code>repeated .dossier.JsType.TypeDef type_def = 10;</code>
        */
       public Builder addTypeDef(
           com.github.jleyba.dossier.proto.Dossier.JsType.TypeDef.Builder builderForValue) {
@@ -22466,7 +23404,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .dossier.JsType.TypeDef type_def = 9;</code>
+       * <code>repeated .dossier.JsType.TypeDef type_def = 10;</code>
        */
       public Builder addTypeDef(
           int index, com.github.jleyba.dossier.proto.Dossier.JsType.TypeDef.Builder builderForValue) {
@@ -22480,7 +23418,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .dossier.JsType.TypeDef type_def = 9;</code>
+       * <code>repeated .dossier.JsType.TypeDef type_def = 10;</code>
        */
       public Builder addAllTypeDef(
           java.lang.Iterable<? extends com.github.jleyba.dossier.proto.Dossier.JsType.TypeDef> values) {
@@ -22495,12 +23433,12 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .dossier.JsType.TypeDef type_def = 9;</code>
+       * <code>repeated .dossier.JsType.TypeDef type_def = 10;</code>
        */
       public Builder clearTypeDef() {
         if (typeDefBuilder_ == null) {
           typeDef_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000020);
+          bitField0_ = (bitField0_ & ~0x00000040);
           onChanged();
         } else {
           typeDefBuilder_.clear();
@@ -22508,7 +23446,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .dossier.JsType.TypeDef type_def = 9;</code>
+       * <code>repeated .dossier.JsType.TypeDef type_def = 10;</code>
        */
       public Builder removeTypeDef(int index) {
         if (typeDefBuilder_ == null) {
@@ -22521,14 +23459,14 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .dossier.JsType.TypeDef type_def = 9;</code>
+       * <code>repeated .dossier.JsType.TypeDef type_def = 10;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.JsType.TypeDef.Builder getTypeDefBuilder(
           int index) {
         return getTypeDefFieldBuilder().getBuilder(index);
       }
       /**
-       * <code>repeated .dossier.JsType.TypeDef type_def = 9;</code>
+       * <code>repeated .dossier.JsType.TypeDef type_def = 10;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.JsType.TypeDefOrBuilder getTypeDefOrBuilder(
           int index) {
@@ -22538,7 +23476,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .dossier.JsType.TypeDef type_def = 9;</code>
+       * <code>repeated .dossier.JsType.TypeDef type_def = 10;</code>
        */
       public java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.JsType.TypeDefOrBuilder> 
            getTypeDefOrBuilderList() {
@@ -22549,14 +23487,14 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .dossier.JsType.TypeDef type_def = 9;</code>
+       * <code>repeated .dossier.JsType.TypeDef type_def = 10;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.JsType.TypeDef.Builder addTypeDefBuilder() {
         return getTypeDefFieldBuilder().addBuilder(
             com.github.jleyba.dossier.proto.Dossier.JsType.TypeDef.getDefaultInstance());
       }
       /**
-       * <code>repeated .dossier.JsType.TypeDef type_def = 9;</code>
+       * <code>repeated .dossier.JsType.TypeDef type_def = 10;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.JsType.TypeDef.Builder addTypeDefBuilder(
           int index) {
@@ -22564,7 +23502,7 @@ public final class Dossier {
             index, com.github.jleyba.dossier.proto.Dossier.JsType.TypeDef.getDefaultInstance());
       }
       /**
-       * <code>repeated .dossier.JsType.TypeDef type_def = 9;</code>
+       * <code>repeated .dossier.JsType.TypeDef type_def = 10;</code>
        */
       public java.util.List<com.github.jleyba.dossier.proto.Dossier.JsType.TypeDef.Builder> 
            getTypeDefBuilderList() {
@@ -22577,7 +23515,7 @@ public final class Dossier {
           typeDefBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
               com.github.jleyba.dossier.proto.Dossier.JsType.TypeDef, com.github.jleyba.dossier.proto.Dossier.JsType.TypeDef.Builder, com.github.jleyba.dossier.proto.Dossier.JsType.TypeDefOrBuilder>(
                   typeDef_,
-                  ((bitField0_ & 0x00000020) == 0x00000020),
+                  ((bitField0_ & 0x00000040) == 0x00000040),
                   getParentForChildren(),
                   isClean());
           typeDef_ = null;
@@ -22589,13 +23527,13 @@ public final class Dossier {
       private com.google.protobuf.SingleFieldBuilder<
           com.github.jleyba.dossier.proto.Dossier.Enumeration, com.github.jleyba.dossier.proto.Dossier.Enumeration.Builder, com.github.jleyba.dossier.proto.Dossier.EnumerationOrBuilder> enumerationBuilder_;
       /**
-       * <code>optional .dossier.Enumeration enumeration = 10;</code>
+       * <code>optional .dossier.Enumeration enumeration = 11;</code>
        */
       public boolean hasEnumeration() {
-        return ((bitField0_ & 0x00000040) == 0x00000040);
+        return ((bitField0_ & 0x00000080) == 0x00000080);
       }
       /**
-       * <code>optional .dossier.Enumeration enumeration = 10;</code>
+       * <code>optional .dossier.Enumeration enumeration = 11;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.Enumeration getEnumeration() {
         if (enumerationBuilder_ == null) {
@@ -22605,7 +23543,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>optional .dossier.Enumeration enumeration = 10;</code>
+       * <code>optional .dossier.Enumeration enumeration = 11;</code>
        */
       public Builder setEnumeration(com.github.jleyba.dossier.proto.Dossier.Enumeration value) {
         if (enumerationBuilder_ == null) {
@@ -22617,11 +23555,11 @@ public final class Dossier {
         } else {
           enumerationBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00000040;
+        bitField0_ |= 0x00000080;
         return this;
       }
       /**
-       * <code>optional .dossier.Enumeration enumeration = 10;</code>
+       * <code>optional .dossier.Enumeration enumeration = 11;</code>
        */
       public Builder setEnumeration(
           com.github.jleyba.dossier.proto.Dossier.Enumeration.Builder builderForValue) {
@@ -22631,15 +23569,15 @@ public final class Dossier {
         } else {
           enumerationBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00000040;
+        bitField0_ |= 0x00000080;
         return this;
       }
       /**
-       * <code>optional .dossier.Enumeration enumeration = 10;</code>
+       * <code>optional .dossier.Enumeration enumeration = 11;</code>
        */
       public Builder mergeEnumeration(com.github.jleyba.dossier.proto.Dossier.Enumeration value) {
         if (enumerationBuilder_ == null) {
-          if (((bitField0_ & 0x00000040) == 0x00000040) &&
+          if (((bitField0_ & 0x00000080) == 0x00000080) &&
               enumeration_ != com.github.jleyba.dossier.proto.Dossier.Enumeration.getDefaultInstance()) {
             enumeration_ =
               com.github.jleyba.dossier.proto.Dossier.Enumeration.newBuilder(enumeration_).mergeFrom(value).buildPartial();
@@ -22650,11 +23588,11 @@ public final class Dossier {
         } else {
           enumerationBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x00000040;
+        bitField0_ |= 0x00000080;
         return this;
       }
       /**
-       * <code>optional .dossier.Enumeration enumeration = 10;</code>
+       * <code>optional .dossier.Enumeration enumeration = 11;</code>
        */
       public Builder clearEnumeration() {
         if (enumerationBuilder_ == null) {
@@ -22663,19 +23601,19 @@ public final class Dossier {
         } else {
           enumerationBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00000040);
+        bitField0_ = (bitField0_ & ~0x00000080);
         return this;
       }
       /**
-       * <code>optional .dossier.Enumeration enumeration = 10;</code>
+       * <code>optional .dossier.Enumeration enumeration = 11;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.Enumeration.Builder getEnumerationBuilder() {
-        bitField0_ |= 0x00000040;
+        bitField0_ |= 0x00000080;
         onChanged();
         return getEnumerationFieldBuilder().getBuilder();
       }
       /**
-       * <code>optional .dossier.Enumeration enumeration = 10;</code>
+       * <code>optional .dossier.Enumeration enumeration = 11;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.EnumerationOrBuilder getEnumerationOrBuilder() {
         if (enumerationBuilder_ != null) {
@@ -22685,7 +23623,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>optional .dossier.Enumeration enumeration = 10;</code>
+       * <code>optional .dossier.Enumeration enumeration = 11;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
           com.github.jleyba.dossier.proto.Dossier.Enumeration, com.github.jleyba.dossier.proto.Dossier.Enumeration.Builder, com.github.jleyba.dossier.proto.Dossier.EnumerationOrBuilder> 
@@ -22704,9 +23642,9 @@ public final class Dossier {
       private java.util.List<com.github.jleyba.dossier.proto.Dossier.Function> staticFunction_ =
         java.util.Collections.emptyList();
       private void ensureStaticFunctionIsMutable() {
-        if (!((bitField0_ & 0x00000080) == 0x00000080)) {
+        if (!((bitField0_ & 0x00000100) == 0x00000100)) {
           staticFunction_ = new java.util.ArrayList<com.github.jleyba.dossier.proto.Dossier.Function>(staticFunction_);
-          bitField0_ |= 0x00000080;
+          bitField0_ |= 0x00000100;
          }
       }
 
@@ -22714,7 +23652,7 @@ public final class Dossier {
           com.github.jleyba.dossier.proto.Dossier.Function, com.github.jleyba.dossier.proto.Dossier.Function.Builder, com.github.jleyba.dossier.proto.Dossier.FunctionOrBuilder> staticFunctionBuilder_;
 
       /**
-       * <code>repeated .dossier.Function static_function = 11;</code>
+       * <code>repeated .dossier.Function static_function = 12;</code>
        */
       public java.util.List<com.github.jleyba.dossier.proto.Dossier.Function> getStaticFunctionList() {
         if (staticFunctionBuilder_ == null) {
@@ -22724,7 +23662,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .dossier.Function static_function = 11;</code>
+       * <code>repeated .dossier.Function static_function = 12;</code>
        */
       public int getStaticFunctionCount() {
         if (staticFunctionBuilder_ == null) {
@@ -22734,7 +23672,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .dossier.Function static_function = 11;</code>
+       * <code>repeated .dossier.Function static_function = 12;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.Function getStaticFunction(int index) {
         if (staticFunctionBuilder_ == null) {
@@ -22744,7 +23682,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .dossier.Function static_function = 11;</code>
+       * <code>repeated .dossier.Function static_function = 12;</code>
        */
       public Builder setStaticFunction(
           int index, com.github.jleyba.dossier.proto.Dossier.Function value) {
@@ -22761,7 +23699,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .dossier.Function static_function = 11;</code>
+       * <code>repeated .dossier.Function static_function = 12;</code>
        */
       public Builder setStaticFunction(
           int index, com.github.jleyba.dossier.proto.Dossier.Function.Builder builderForValue) {
@@ -22775,7 +23713,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .dossier.Function static_function = 11;</code>
+       * <code>repeated .dossier.Function static_function = 12;</code>
        */
       public Builder addStaticFunction(com.github.jleyba.dossier.proto.Dossier.Function value) {
         if (staticFunctionBuilder_ == null) {
@@ -22791,7 +23729,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .dossier.Function static_function = 11;</code>
+       * <code>repeated .dossier.Function static_function = 12;</code>
        */
       public Builder addStaticFunction(
           int index, com.github.jleyba.dossier.proto.Dossier.Function value) {
@@ -22808,7 +23746,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .dossier.Function static_function = 11;</code>
+       * <code>repeated .dossier.Function static_function = 12;</code>
        */
       public Builder addStaticFunction(
           com.github.jleyba.dossier.proto.Dossier.Function.Builder builderForValue) {
@@ -22822,7 +23760,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .dossier.Function static_function = 11;</code>
+       * <code>repeated .dossier.Function static_function = 12;</code>
        */
       public Builder addStaticFunction(
           int index, com.github.jleyba.dossier.proto.Dossier.Function.Builder builderForValue) {
@@ -22836,7 +23774,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .dossier.Function static_function = 11;</code>
+       * <code>repeated .dossier.Function static_function = 12;</code>
        */
       public Builder addAllStaticFunction(
           java.lang.Iterable<? extends com.github.jleyba.dossier.proto.Dossier.Function> values) {
@@ -22851,12 +23789,12 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .dossier.Function static_function = 11;</code>
+       * <code>repeated .dossier.Function static_function = 12;</code>
        */
       public Builder clearStaticFunction() {
         if (staticFunctionBuilder_ == null) {
           staticFunction_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000080);
+          bitField0_ = (bitField0_ & ~0x00000100);
           onChanged();
         } else {
           staticFunctionBuilder_.clear();
@@ -22864,7 +23802,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .dossier.Function static_function = 11;</code>
+       * <code>repeated .dossier.Function static_function = 12;</code>
        */
       public Builder removeStaticFunction(int index) {
         if (staticFunctionBuilder_ == null) {
@@ -22877,14 +23815,14 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .dossier.Function static_function = 11;</code>
+       * <code>repeated .dossier.Function static_function = 12;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.Function.Builder getStaticFunctionBuilder(
           int index) {
         return getStaticFunctionFieldBuilder().getBuilder(index);
       }
       /**
-       * <code>repeated .dossier.Function static_function = 11;</code>
+       * <code>repeated .dossier.Function static_function = 12;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.FunctionOrBuilder getStaticFunctionOrBuilder(
           int index) {
@@ -22894,7 +23832,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .dossier.Function static_function = 11;</code>
+       * <code>repeated .dossier.Function static_function = 12;</code>
        */
       public java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.FunctionOrBuilder> 
            getStaticFunctionOrBuilderList() {
@@ -22905,14 +23843,14 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .dossier.Function static_function = 11;</code>
+       * <code>repeated .dossier.Function static_function = 12;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.Function.Builder addStaticFunctionBuilder() {
         return getStaticFunctionFieldBuilder().addBuilder(
             com.github.jleyba.dossier.proto.Dossier.Function.getDefaultInstance());
       }
       /**
-       * <code>repeated .dossier.Function static_function = 11;</code>
+       * <code>repeated .dossier.Function static_function = 12;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.Function.Builder addStaticFunctionBuilder(
           int index) {
@@ -22920,7 +23858,7 @@ public final class Dossier {
             index, com.github.jleyba.dossier.proto.Dossier.Function.getDefaultInstance());
       }
       /**
-       * <code>repeated .dossier.Function static_function = 11;</code>
+       * <code>repeated .dossier.Function static_function = 12;</code>
        */
       public java.util.List<com.github.jleyba.dossier.proto.Dossier.Function.Builder> 
            getStaticFunctionBuilderList() {
@@ -22933,7 +23871,7 @@ public final class Dossier {
           staticFunctionBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
               com.github.jleyba.dossier.proto.Dossier.Function, com.github.jleyba.dossier.proto.Dossier.Function.Builder, com.github.jleyba.dossier.proto.Dossier.FunctionOrBuilder>(
                   staticFunction_,
-                  ((bitField0_ & 0x00000080) == 0x00000080),
+                  ((bitField0_ & 0x00000100) == 0x00000100),
                   getParentForChildren(),
                   isClean());
           staticFunction_ = null;
@@ -22944,9 +23882,9 @@ public final class Dossier {
       private java.util.List<com.github.jleyba.dossier.proto.Dossier.Property> staticProperty_ =
         java.util.Collections.emptyList();
       private void ensureStaticPropertyIsMutable() {
-        if (!((bitField0_ & 0x00000100) == 0x00000100)) {
+        if (!((bitField0_ & 0x00000200) == 0x00000200)) {
           staticProperty_ = new java.util.ArrayList<com.github.jleyba.dossier.proto.Dossier.Property>(staticProperty_);
-          bitField0_ |= 0x00000100;
+          bitField0_ |= 0x00000200;
          }
       }
 
@@ -22954,7 +23892,7 @@ public final class Dossier {
           com.github.jleyba.dossier.proto.Dossier.Property, com.github.jleyba.dossier.proto.Dossier.Property.Builder, com.github.jleyba.dossier.proto.Dossier.PropertyOrBuilder> staticPropertyBuilder_;
 
       /**
-       * <code>repeated .dossier.Property static_property = 12;</code>
+       * <code>repeated .dossier.Property static_property = 13;</code>
        */
       public java.util.List<com.github.jleyba.dossier.proto.Dossier.Property> getStaticPropertyList() {
         if (staticPropertyBuilder_ == null) {
@@ -22964,7 +23902,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .dossier.Property static_property = 12;</code>
+       * <code>repeated .dossier.Property static_property = 13;</code>
        */
       public int getStaticPropertyCount() {
         if (staticPropertyBuilder_ == null) {
@@ -22974,7 +23912,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .dossier.Property static_property = 12;</code>
+       * <code>repeated .dossier.Property static_property = 13;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.Property getStaticProperty(int index) {
         if (staticPropertyBuilder_ == null) {
@@ -22984,7 +23922,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .dossier.Property static_property = 12;</code>
+       * <code>repeated .dossier.Property static_property = 13;</code>
        */
       public Builder setStaticProperty(
           int index, com.github.jleyba.dossier.proto.Dossier.Property value) {
@@ -23001,7 +23939,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .dossier.Property static_property = 12;</code>
+       * <code>repeated .dossier.Property static_property = 13;</code>
        */
       public Builder setStaticProperty(
           int index, com.github.jleyba.dossier.proto.Dossier.Property.Builder builderForValue) {
@@ -23015,7 +23953,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .dossier.Property static_property = 12;</code>
+       * <code>repeated .dossier.Property static_property = 13;</code>
        */
       public Builder addStaticProperty(com.github.jleyba.dossier.proto.Dossier.Property value) {
         if (staticPropertyBuilder_ == null) {
@@ -23031,7 +23969,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .dossier.Property static_property = 12;</code>
+       * <code>repeated .dossier.Property static_property = 13;</code>
        */
       public Builder addStaticProperty(
           int index, com.github.jleyba.dossier.proto.Dossier.Property value) {
@@ -23048,7 +23986,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .dossier.Property static_property = 12;</code>
+       * <code>repeated .dossier.Property static_property = 13;</code>
        */
       public Builder addStaticProperty(
           com.github.jleyba.dossier.proto.Dossier.Property.Builder builderForValue) {
@@ -23062,7 +24000,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .dossier.Property static_property = 12;</code>
+       * <code>repeated .dossier.Property static_property = 13;</code>
        */
       public Builder addStaticProperty(
           int index, com.github.jleyba.dossier.proto.Dossier.Property.Builder builderForValue) {
@@ -23076,7 +24014,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .dossier.Property static_property = 12;</code>
+       * <code>repeated .dossier.Property static_property = 13;</code>
        */
       public Builder addAllStaticProperty(
           java.lang.Iterable<? extends com.github.jleyba.dossier.proto.Dossier.Property> values) {
@@ -23091,12 +24029,12 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .dossier.Property static_property = 12;</code>
+       * <code>repeated .dossier.Property static_property = 13;</code>
        */
       public Builder clearStaticProperty() {
         if (staticPropertyBuilder_ == null) {
           staticProperty_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000100);
+          bitField0_ = (bitField0_ & ~0x00000200);
           onChanged();
         } else {
           staticPropertyBuilder_.clear();
@@ -23104,7 +24042,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .dossier.Property static_property = 12;</code>
+       * <code>repeated .dossier.Property static_property = 13;</code>
        */
       public Builder removeStaticProperty(int index) {
         if (staticPropertyBuilder_ == null) {
@@ -23117,14 +24055,14 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .dossier.Property static_property = 12;</code>
+       * <code>repeated .dossier.Property static_property = 13;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.Property.Builder getStaticPropertyBuilder(
           int index) {
         return getStaticPropertyFieldBuilder().getBuilder(index);
       }
       /**
-       * <code>repeated .dossier.Property static_property = 12;</code>
+       * <code>repeated .dossier.Property static_property = 13;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.PropertyOrBuilder getStaticPropertyOrBuilder(
           int index) {
@@ -23134,7 +24072,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .dossier.Property static_property = 12;</code>
+       * <code>repeated .dossier.Property static_property = 13;</code>
        */
       public java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.PropertyOrBuilder> 
            getStaticPropertyOrBuilderList() {
@@ -23145,14 +24083,14 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .dossier.Property static_property = 12;</code>
+       * <code>repeated .dossier.Property static_property = 13;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.Property.Builder addStaticPropertyBuilder() {
         return getStaticPropertyFieldBuilder().addBuilder(
             com.github.jleyba.dossier.proto.Dossier.Property.getDefaultInstance());
       }
       /**
-       * <code>repeated .dossier.Property static_property = 12;</code>
+       * <code>repeated .dossier.Property static_property = 13;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.Property.Builder addStaticPropertyBuilder(
           int index) {
@@ -23160,7 +24098,7 @@ public final class Dossier {
             index, com.github.jleyba.dossier.proto.Dossier.Property.getDefaultInstance());
       }
       /**
-       * <code>repeated .dossier.Property static_property = 12;</code>
+       * <code>repeated .dossier.Property static_property = 13;</code>
        */
       public java.util.List<com.github.jleyba.dossier.proto.Dossier.Property.Builder> 
            getStaticPropertyBuilderList() {
@@ -23173,7 +24111,7 @@ public final class Dossier {
           staticPropertyBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
               com.github.jleyba.dossier.proto.Dossier.Property, com.github.jleyba.dossier.proto.Dossier.Property.Builder, com.github.jleyba.dossier.proto.Dossier.PropertyOrBuilder>(
                   staticProperty_,
-                  ((bitField0_ & 0x00000100) == 0x00000100),
+                  ((bitField0_ & 0x00000200) == 0x00000200),
                   getParentForChildren(),
                   isClean());
           staticProperty_ = null;
@@ -23185,7 +24123,7 @@ public final class Dossier {
       private com.google.protobuf.SingleFieldBuilder<
           com.github.jleyba.dossier.proto.Dossier.Function, com.github.jleyba.dossier.proto.Dossier.Function.Builder, com.github.jleyba.dossier.proto.Dossier.FunctionOrBuilder> mainFunctionBuilder_;
       /**
-       * <code>optional .dossier.Function main_function = 13;</code>
+       * <code>optional .dossier.Function main_function = 14;</code>
        *
        * <pre>
        * Describes the main function for this type. This is typically a class
@@ -23194,10 +24132,10 @@ public final class Dossier {
        * </pre>
        */
       public boolean hasMainFunction() {
-        return ((bitField0_ & 0x00000200) == 0x00000200);
+        return ((bitField0_ & 0x00000400) == 0x00000400);
       }
       /**
-       * <code>optional .dossier.Function main_function = 13;</code>
+       * <code>optional .dossier.Function main_function = 14;</code>
        *
        * <pre>
        * Describes the main function for this type. This is typically a class
@@ -23213,7 +24151,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>optional .dossier.Function main_function = 13;</code>
+       * <code>optional .dossier.Function main_function = 14;</code>
        *
        * <pre>
        * Describes the main function for this type. This is typically a class
@@ -23231,11 +24169,11 @@ public final class Dossier {
         } else {
           mainFunctionBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00000200;
+        bitField0_ |= 0x00000400;
         return this;
       }
       /**
-       * <code>optional .dossier.Function main_function = 13;</code>
+       * <code>optional .dossier.Function main_function = 14;</code>
        *
        * <pre>
        * Describes the main function for this type. This is typically a class
@@ -23251,11 +24189,11 @@ public final class Dossier {
         } else {
           mainFunctionBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00000200;
+        bitField0_ |= 0x00000400;
         return this;
       }
       /**
-       * <code>optional .dossier.Function main_function = 13;</code>
+       * <code>optional .dossier.Function main_function = 14;</code>
        *
        * <pre>
        * Describes the main function for this type. This is typically a class
@@ -23265,7 +24203,7 @@ public final class Dossier {
        */
       public Builder mergeMainFunction(com.github.jleyba.dossier.proto.Dossier.Function value) {
         if (mainFunctionBuilder_ == null) {
-          if (((bitField0_ & 0x00000200) == 0x00000200) &&
+          if (((bitField0_ & 0x00000400) == 0x00000400) &&
               mainFunction_ != com.github.jleyba.dossier.proto.Dossier.Function.getDefaultInstance()) {
             mainFunction_ =
               com.github.jleyba.dossier.proto.Dossier.Function.newBuilder(mainFunction_).mergeFrom(value).buildPartial();
@@ -23276,11 +24214,11 @@ public final class Dossier {
         } else {
           mainFunctionBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x00000200;
+        bitField0_ |= 0x00000400;
         return this;
       }
       /**
-       * <code>optional .dossier.Function main_function = 13;</code>
+       * <code>optional .dossier.Function main_function = 14;</code>
        *
        * <pre>
        * Describes the main function for this type. This is typically a class
@@ -23295,11 +24233,11 @@ public final class Dossier {
         } else {
           mainFunctionBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00000200);
+        bitField0_ = (bitField0_ & ~0x00000400);
         return this;
       }
       /**
-       * <code>optional .dossier.Function main_function = 13;</code>
+       * <code>optional .dossier.Function main_function = 14;</code>
        *
        * <pre>
        * Describes the main function for this type. This is typically a class
@@ -23308,12 +24246,12 @@ public final class Dossier {
        * </pre>
        */
       public com.github.jleyba.dossier.proto.Dossier.Function.Builder getMainFunctionBuilder() {
-        bitField0_ |= 0x00000200;
+        bitField0_ |= 0x00000400;
         onChanged();
         return getMainFunctionFieldBuilder().getBuilder();
       }
       /**
-       * <code>optional .dossier.Function main_function = 13;</code>
+       * <code>optional .dossier.Function main_function = 14;</code>
        *
        * <pre>
        * Describes the main function for this type. This is typically a class
@@ -23329,7 +24267,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>optional .dossier.Function main_function = 13;</code>
+       * <code>optional .dossier.Function main_function = 14;</code>
        *
        * <pre>
        * Describes the main function for this type. This is typically a class
@@ -23349,54 +24287,6 @@ public final class Dossier {
           mainFunction_ = null;
         }
         return mainFunctionBuilder_;
-      }
-
-      private boolean isInterface_ ;
-      /**
-       * <code>optional bool is_interface = 14;</code>
-       *
-       * <pre>
-       * Designates this type as an interface.
-       * </pre>
-       */
-      public boolean hasIsInterface() {
-        return ((bitField0_ & 0x00000400) == 0x00000400);
-      }
-      /**
-       * <code>optional bool is_interface = 14;</code>
-       *
-       * <pre>
-       * Designates this type as an interface.
-       * </pre>
-       */
-      public boolean getIsInterface() {
-        return isInterface_;
-      }
-      /**
-       * <code>optional bool is_interface = 14;</code>
-       *
-       * <pre>
-       * Designates this type as an interface.
-       * </pre>
-       */
-      public Builder setIsInterface(boolean value) {
-        bitField0_ |= 0x00000400;
-        isInterface_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional bool is_interface = 14;</code>
-       *
-       * <pre>
-       * Designates this type as an interface.
-       * </pre>
-       */
-      public Builder clearIsInterface() {
-        bitField0_ = (bitField0_ & ~0x00000400);
-        isInterface_ = false;
-        onChanged();
-        return this;
       }
 
       private java.util.List<com.github.jleyba.dossier.proto.Dossier.Prototype> prototype_ =
@@ -24749,69 +25639,21 @@ public final class Dossier {
         return compilerConstantBuilder_;
       }
 
-      private boolean isModule_ ;
-      /**
-       * <code>optional bool is_module = 21;</code>
-       *
-       * <pre>
-       * Designates this type as the exported API of a module.
-       * </pre>
-       */
-      public boolean hasIsModule() {
-        return ((bitField0_ & 0x00020000) == 0x00020000);
-      }
-      /**
-       * <code>optional bool is_module = 21;</code>
-       *
-       * <pre>
-       * Designates this type as the exported API of a module.
-       * </pre>
-       */
-      public boolean getIsModule() {
-        return isModule_;
-      }
-      /**
-       * <code>optional bool is_module = 21;</code>
-       *
-       * <pre>
-       * Designates this type as the exported API of a module.
-       * </pre>
-       */
-      public Builder setIsModule(boolean value) {
-        bitField0_ |= 0x00020000;
-        isModule_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional bool is_module = 21;</code>
-       *
-       * <pre>
-       * Designates this type as the exported API of a module.
-       * </pre>
-       */
-      public Builder clearIsModule() {
-        bitField0_ = (bitField0_ & ~0x00020000);
-        isModule_ = false;
-        onChanged();
-        return this;
-      }
-
       private com.github.jleyba.dossier.proto.Dossier.TypeLink module_ = com.github.jleyba.dossier.proto.Dossier.TypeLink.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           com.github.jleyba.dossier.proto.Dossier.TypeLink, com.github.jleyba.dossier.proto.Dossier.TypeLink.Builder, com.github.jleyba.dossier.proto.Dossier.TypeLinkOrBuilder> moduleBuilder_;
       /**
-       * <code>optional .dossier.TypeLink module = 22;</code>
+       * <code>optional .dossier.TypeLink module = 21;</code>
        *
        * <pre>
        * Link to the module this type belongs to.
        * </pre>
        */
       public boolean hasModule() {
-        return ((bitField0_ & 0x00040000) == 0x00040000);
+        return ((bitField0_ & 0x00020000) == 0x00020000);
       }
       /**
-       * <code>optional .dossier.TypeLink module = 22;</code>
+       * <code>optional .dossier.TypeLink module = 21;</code>
        *
        * <pre>
        * Link to the module this type belongs to.
@@ -24825,7 +25667,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>optional .dossier.TypeLink module = 22;</code>
+       * <code>optional .dossier.TypeLink module = 21;</code>
        *
        * <pre>
        * Link to the module this type belongs to.
@@ -24841,11 +25683,11 @@ public final class Dossier {
         } else {
           moduleBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00040000;
+        bitField0_ |= 0x00020000;
         return this;
       }
       /**
-       * <code>optional .dossier.TypeLink module = 22;</code>
+       * <code>optional .dossier.TypeLink module = 21;</code>
        *
        * <pre>
        * Link to the module this type belongs to.
@@ -24859,11 +25701,11 @@ public final class Dossier {
         } else {
           moduleBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00040000;
+        bitField0_ |= 0x00020000;
         return this;
       }
       /**
-       * <code>optional .dossier.TypeLink module = 22;</code>
+       * <code>optional .dossier.TypeLink module = 21;</code>
        *
        * <pre>
        * Link to the module this type belongs to.
@@ -24871,7 +25713,7 @@ public final class Dossier {
        */
       public Builder mergeModule(com.github.jleyba.dossier.proto.Dossier.TypeLink value) {
         if (moduleBuilder_ == null) {
-          if (((bitField0_ & 0x00040000) == 0x00040000) &&
+          if (((bitField0_ & 0x00020000) == 0x00020000) &&
               module_ != com.github.jleyba.dossier.proto.Dossier.TypeLink.getDefaultInstance()) {
             module_ =
               com.github.jleyba.dossier.proto.Dossier.TypeLink.newBuilder(module_).mergeFrom(value).buildPartial();
@@ -24882,11 +25724,11 @@ public final class Dossier {
         } else {
           moduleBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x00040000;
+        bitField0_ |= 0x00020000;
         return this;
       }
       /**
-       * <code>optional .dossier.TypeLink module = 22;</code>
+       * <code>optional .dossier.TypeLink module = 21;</code>
        *
        * <pre>
        * Link to the module this type belongs to.
@@ -24899,23 +25741,23 @@ public final class Dossier {
         } else {
           moduleBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00040000);
+        bitField0_ = (bitField0_ & ~0x00020000);
         return this;
       }
       /**
-       * <code>optional .dossier.TypeLink module = 22;</code>
+       * <code>optional .dossier.TypeLink module = 21;</code>
        *
        * <pre>
        * Link to the module this type belongs to.
        * </pre>
        */
       public com.github.jleyba.dossier.proto.Dossier.TypeLink.Builder getModuleBuilder() {
-        bitField0_ |= 0x00040000;
+        bitField0_ |= 0x00020000;
         onChanged();
         return getModuleFieldBuilder().getBuilder();
       }
       /**
-       * <code>optional .dossier.TypeLink module = 22;</code>
+       * <code>optional .dossier.TypeLink module = 21;</code>
        *
        * <pre>
        * Link to the module this type belongs to.
@@ -24929,7 +25771,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>optional .dossier.TypeLink module = 22;</code>
+       * <code>optional .dossier.TypeLink module = 21;</code>
        *
        * <pre>
        * Link to the module this type belongs to.
@@ -24953,17 +25795,17 @@ public final class Dossier {
       private com.google.protobuf.SingleFieldBuilder<
           com.github.jleyba.dossier.proto.Dossier.TypeLink, com.github.jleyba.dossier.proto.Dossier.TypeLink.Builder, com.github.jleyba.dossier.proto.Dossier.TypeLinkOrBuilder> aliasedTypeBuilder_;
       /**
-       * <code>optional .dossier.TypeLink aliased_type = 23;</code>
+       * <code>optional .dossier.TypeLink aliased_type = 22;</code>
        *
        * <pre>
        * Link to another type that this type is an alias of.
        * </pre>
        */
       public boolean hasAliasedType() {
-        return ((bitField0_ & 0x00080000) == 0x00080000);
+        return ((bitField0_ & 0x00040000) == 0x00040000);
       }
       /**
-       * <code>optional .dossier.TypeLink aliased_type = 23;</code>
+       * <code>optional .dossier.TypeLink aliased_type = 22;</code>
        *
        * <pre>
        * Link to another type that this type is an alias of.
@@ -24977,7 +25819,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>optional .dossier.TypeLink aliased_type = 23;</code>
+       * <code>optional .dossier.TypeLink aliased_type = 22;</code>
        *
        * <pre>
        * Link to another type that this type is an alias of.
@@ -24993,11 +25835,11 @@ public final class Dossier {
         } else {
           aliasedTypeBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00080000;
+        bitField0_ |= 0x00040000;
         return this;
       }
       /**
-       * <code>optional .dossier.TypeLink aliased_type = 23;</code>
+       * <code>optional .dossier.TypeLink aliased_type = 22;</code>
        *
        * <pre>
        * Link to another type that this type is an alias of.
@@ -25011,11 +25853,11 @@ public final class Dossier {
         } else {
           aliasedTypeBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00080000;
+        bitField0_ |= 0x00040000;
         return this;
       }
       /**
-       * <code>optional .dossier.TypeLink aliased_type = 23;</code>
+       * <code>optional .dossier.TypeLink aliased_type = 22;</code>
        *
        * <pre>
        * Link to another type that this type is an alias of.
@@ -25023,7 +25865,7 @@ public final class Dossier {
        */
       public Builder mergeAliasedType(com.github.jleyba.dossier.proto.Dossier.TypeLink value) {
         if (aliasedTypeBuilder_ == null) {
-          if (((bitField0_ & 0x00080000) == 0x00080000) &&
+          if (((bitField0_ & 0x00040000) == 0x00040000) &&
               aliasedType_ != com.github.jleyba.dossier.proto.Dossier.TypeLink.getDefaultInstance()) {
             aliasedType_ =
               com.github.jleyba.dossier.proto.Dossier.TypeLink.newBuilder(aliasedType_).mergeFrom(value).buildPartial();
@@ -25034,11 +25876,11 @@ public final class Dossier {
         } else {
           aliasedTypeBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x00080000;
+        bitField0_ |= 0x00040000;
         return this;
       }
       /**
-       * <code>optional .dossier.TypeLink aliased_type = 23;</code>
+       * <code>optional .dossier.TypeLink aliased_type = 22;</code>
        *
        * <pre>
        * Link to another type that this type is an alias of.
@@ -25051,23 +25893,23 @@ public final class Dossier {
         } else {
           aliasedTypeBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00080000);
+        bitField0_ = (bitField0_ & ~0x00040000);
         return this;
       }
       /**
-       * <code>optional .dossier.TypeLink aliased_type = 23;</code>
+       * <code>optional .dossier.TypeLink aliased_type = 22;</code>
        *
        * <pre>
        * Link to another type that this type is an alias of.
        * </pre>
        */
       public com.github.jleyba.dossier.proto.Dossier.TypeLink.Builder getAliasedTypeBuilder() {
-        bitField0_ |= 0x00080000;
+        bitField0_ |= 0x00040000;
         onChanged();
         return getAliasedTypeFieldBuilder().getBuilder();
       }
       /**
-       * <code>optional .dossier.TypeLink aliased_type = 23;</code>
+       * <code>optional .dossier.TypeLink aliased_type = 22;</code>
        *
        * <pre>
        * Link to another type that this type is an alias of.
@@ -25081,7 +25923,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>optional .dossier.TypeLink aliased_type = 23;</code>
+       * <code>optional .dossier.TypeLink aliased_type = 22;</code>
        *
        * <pre>
        * Link to another type that this type is an alias of.
@@ -28481,6 +29323,11 @@ public final class Dossier {
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_dossier_Deprecation_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_dossier_Tags_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_dossier_Tags_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_dossier_BaseProperty_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
@@ -28579,76 +29426,79 @@ public final class Dossier {
       "alse\022\026\n\007is_code\030\003 \001(\010:\005false\022\014\n\004href\030\004 \001" +
       "(\t\022\036\n\017unresolved_link\030\005 \001(\010:\005false\"/\n\013De" +
       "precation\022 \n\006notice\030\001 \001(\0132\020.dossier.Comm",
-      "ent\"\257\001\n\014BaseProperty\022\014\n\004name\030\001 \002(\t\022\016\n\006so" +
-      "urce\030\002 \002(\t\022%\n\013description\030\003 \002(\0132\020.dossie" +
-      "r.Comment\022)\n\013deprecation\030\004 \001(\0132\024.dossier" +
-      ".Deprecation\022/\n\nvisibility\030\005 \001(\0162\023.dossi" +
-      "er.Visibility:\006PUBLIC\"B\n\010Property\022#\n\004bas" +
-      "e\030\001 \002(\0132\025.dossier.BaseProperty\022\021\n\ttype_h" +
-      "tml\030\002 \001(\t\"\270\002\n\010Function\022#\n\004base\030\001 \002(\0132\025.d" +
-      "ossier.BaseProperty\022\025\n\rtemplate_name\030\002 \003" +
-      "(\t\022\035\n\016is_constructor\030\003 \001(\010:\005false\022+\n\tpar" +
-      "ameter\030\004 \003(\0132\030.dossier.Function.Detail\022(",
-      "\n\006return\030\005 \001(\0132\030.dossier.Function.Detail" +
-      "\022(\n\006thrown\030\006 \003(\0132\030.dossier.Function.Deta" +
-      "il\032P\n\006Detail\022\014\n\004name\030\001 \001(\t\022\021\n\ttype_html\030" +
-      "\002 \001(\t\022%\n\013description\030\003 \001(\0132\020.dossier.Com" +
-      "ment\"q\n\tPrototype\022\014\n\004name\030\001 \002(\t\022\014\n\004href\030" +
-      "\002 \001(\t\022#\n\010function\030\003 \003(\0132\021.dossier.Functi" +
-      "on\022#\n\010property\030\004 \003(\0132\021.dossier.Property\"" +
-      "\345\001\n\013Enumeration\022\021\n\ttype_html\030\001 \002(\t\022)\n\005va" +
-      "lue\030\002 \003(\0132\032.dossier.Enumeration.Value\022/\n" +
-      "\nvisibility\030\003 \001(\0162\023.dossier.Visibility:\006",
-      "PUBLIC\032g\n\005Value\022\014\n\004name\030\001 \002(\t\022%\n\013descrip" +
-      "tion\030\002 \001(\0132\020.dossier.Comment\022)\n\013deprecat" +
-      "ion\030\003 \001(\0132\024.dossier.Deprecation\"\251\001\n\005Inde" +
-      "x\022\014\n\004home\030\001 \002(\t\022\037\n\004type\030\002 \003(\0132\021.dossier." +
-      "TypeLink\022%\n\006module\030\003 \003(\0132\025.dossier.Index" +
-      ".Module\032J\n\006Module\022\037\n\004link\030\001 \002(\0132\021.dossie" +
-      "r.TypeLink\022\037\n\004type\030\002 \003(\0132\021.dossier.TypeL" +
-      "ink\"\266\t\n\006JsType\022\014\n\004name\030\001 \002(\t\022\016\n\006source\030\005" +
-      " \002(\t\022+\n\006nested\030\006 \002(\0132\033.dossier.JsType.Ne" +
-      "stedTypes\022%\n\013description\030\007 \002(\0132\020.dossier",
-      ".Comment\022)\n\013deprecation\030\010 \001(\0132\024.dossier." +
-      "Deprecation\022)\n\010type_def\030\t \003(\0132\027.dossier." +
-      "JsType.TypeDef\022)\n\013enumeration\030\n \001(\0132\024.do" +
-      "ssier.Enumeration\022*\n\017static_function\030\013 \003" +
-      "(\0132\021.dossier.Function\022*\n\017static_property" +
-      "\030\014 \003(\0132\021.dossier.Property\022(\n\rmain_functi" +
-      "on\030\r \001(\0132\021.dossier.Function\022\024\n\014is_interf" +
-      "ace\030\016 \001(\010\022%\n\tprototype\030\017 \003(\0132\022.dossier.P" +
-      "rototype\022#\n\024has_instance_methods\030\020 \001(\010:\005" +
-      "false\022&\n\027has_instance_properties\030\021 \001(\010:\005",
-      "false\022(\n\rextended_type\030\022 \003(\0132\021.dossier.T" +
-      "ypeLink\022+\n\020implemented_type\030\023 \003(\0132\021.doss" +
-      "ier.TypeLink\022,\n\021compiler_constant\030\024 \003(\0132" +
-      "\021.dossier.Property\022\021\n\tis_module\030\025 \001(\010\022!\n" +
-      "\006module\030\026 \001(\0132\021.dossier.TypeLink\022\'\n\014alia" +
-      "sed_type\030\027 \001(\0132\021.dossier.TypeLink\032\212\002\n\013Ne" +
-      "stedTypes\022;\n\ninterfaces\030\001 \003(\0132\'.dossier." +
-      "JsType.NestedTypes.TypeSummary\0228\n\007classe" +
-      "s\030\002 \003(\0132\'.dossier.JsType.NestedTypes.Typ" +
-      "eSummary\0226\n\005enums\030\003 \003(\0132\'.dossier.JsType",
-      ".NestedTypes.TypeSummary\032L\n\013TypeSummary\022" +
-      "\014\n\004name\030\001 \002(\t\022\014\n\004href\030\002 \002(\t\022!\n\007summary\030\003" +
-      " \002(\0132\020.dossier.Comment\032\273\001\n\007TypeDef\022\014\n\004na" +
-      "me\030\001 \002(\t\022\021\n\ttype_html\030\002 \002(\t\022\014\n\004href\030\003 \002(" +
-      "\t\022%\n\013description\030\004 \002(\0132\020.dossier.Comment" +
-      "\022)\n\013deprecation\030\005 \001(\0132\024.dossier.Deprecat" +
-      "ion\022/\n\nvisibility\030\006 \001(\0162\023.dossier.Visibi" +
-      "lity:\006PUBLIC\"}\n\023IndexFileRenderSpec\022%\n\tr" +
-      "esources\030\001 \002(\0132\022.dossier.Resources\022 \n\006re" +
-      "adme\030\002 \001(\0132\020.dossier.Comment\022\035\n\005index\030\003 ",
-      "\002(\0132\016.dossier.Index\"\177\n\024SourceFileRenderS" +
-      "pec\022%\n\tresources\030\001 \002(\0132\022.dossier.Resourc" +
-      "es\022!\n\004file\030\002 \002(\0132\023.dossier.SourceFile\022\035\n" +
-      "\005index\030\003 \002(\0132\016.dossier.Index\"w\n\020JsTypeRe" +
-      "nderSpec\022\035\n\004type\030\001 \002(\0132\017.dossier.JsType\022" +
-      "%\n\tresources\030\002 \002(\0132\022.dossier.Resources\022\035" +
-      "\n\005index\030\003 \002(\0132\016.dossier.Index*A\n\nVisibil" +
-      "ity\022\n\n\006PUBLIC\020\000\022\r\n\tPROTECTED\020\001\022\013\n\007PRIVAT" +
-      "E\020\002\022\013\n\007PACKAGE\020\003B!\n\037com.github.jleyba.do" +
-      "ssier.proto"
+      "ent\"\216\001\n\004Tags\022\020\n\010is_const\030\001 \001(\010\022\025\n\ris_dep" +
+      "recated\030\002 \001(\010\022\017\n\007is_dict\030\003 \001(\010\022\020\n\010is_fin" +
+      "al\030\004 \001(\010\022\024\n\014is_interface\030\005 \001(\010\022\021\n\tis_mod" +
+      "ule\030\006 \001(\010\022\021\n\tis_struct\030\007 \001(\010\"\257\001\n\014BasePro" +
+      "perty\022\014\n\004name\030\001 \002(\t\022\016\n\006source\030\002 \002(\t\022%\n\013d" +
+      "escription\030\003 \002(\0132\020.dossier.Comment\022)\n\013de" +
+      "precation\030\004 \001(\0132\024.dossier.Deprecation\022/\n" +
+      "\nvisibility\030\005 \001(\0162\023.dossier.Visibility:\006" +
+      "PUBLIC\"B\n\010Property\022#\n\004base\030\001 \002(\0132\025.dossi" +
+      "er.BaseProperty\022\021\n\ttype_html\030\002 \001(\t\"\270\002\n\010F",
+      "unction\022#\n\004base\030\001 \002(\0132\025.dossier.BaseProp" +
+      "erty\022\025\n\rtemplate_name\030\002 \003(\t\022\035\n\016is_constr" +
+      "uctor\030\003 \001(\010:\005false\022+\n\tparameter\030\004 \003(\0132\030." +
+      "dossier.Function.Detail\022(\n\006return\030\005 \001(\0132" +
+      "\030.dossier.Function.Detail\022(\n\006thrown\030\006 \003(" +
+      "\0132\030.dossier.Function.Detail\032P\n\006Detail\022\014\n" +
+      "\004name\030\001 \001(\t\022\021\n\ttype_html\030\002 \001(\t\022%\n\013descri" +
+      "ption\030\003 \001(\0132\020.dossier.Comment\"q\n\tPrototy" +
+      "pe\022\014\n\004name\030\001 \002(\t\022\014\n\004href\030\002 \001(\t\022#\n\010functi" +
+      "on\030\003 \003(\0132\021.dossier.Function\022#\n\010property\030",
+      "\004 \003(\0132\021.dossier.Property\"\345\001\n\013Enumeration" +
+      "\022\021\n\ttype_html\030\001 \002(\t\022)\n\005value\030\002 \003(\0132\032.dos" +
+      "sier.Enumeration.Value\022/\n\nvisibility\030\003 \001" +
+      "(\0162\023.dossier.Visibility:\006PUBLIC\032g\n\005Value" +
+      "\022\014\n\004name\030\001 \002(\t\022%\n\013description\030\002 \001(\0132\020.do" +
+      "ssier.Comment\022)\n\013deprecation\030\003 \001(\0132\024.dos" +
+      "sier.Deprecation\"\251\001\n\005Index\022\014\n\004home\030\001 \002(\t" +
+      "\022\037\n\004type\030\002 \003(\0132\021.dossier.TypeLink\022%\n\006mod" +
+      "ule\030\003 \003(\0132\025.dossier.Index.Module\032J\n\006Modu" +
+      "le\022\037\n\004link\030\001 \002(\0132\021.dossier.TypeLink\022\037\n\004t",
+      "ype\030\002 \003(\0132\021.dossier.TypeLink\"\252\t\n\006JsType\022" +
+      "\014\n\004name\030\001 \002(\t\022\016\n\006source\030\005 \002(\t\022+\n\006nested\030" +
+      "\006 \002(\0132\033.dossier.JsType.NestedTypes\022%\n\013de" +
+      "scription\030\007 \002(\0132\020.dossier.Comment\022\033\n\004tag" +
+      "s\030\010 \002(\0132\r.dossier.Tags\022)\n\013deprecation\030\t " +
+      "\001(\0132\024.dossier.Deprecation\022)\n\010type_def\030\n " +
+      "\003(\0132\027.dossier.JsType.TypeDef\022)\n\013enumerat" +
+      "ion\030\013 \001(\0132\024.dossier.Enumeration\022*\n\017stati" +
+      "c_function\030\014 \003(\0132\021.dossier.Function\022*\n\017s" +
+      "tatic_property\030\r \003(\0132\021.dossier.Property\022",
+      "(\n\rmain_function\030\016 \001(\0132\021.dossier.Functio" +
+      "n\022%\n\tprototype\030\017 \003(\0132\022.dossier.Prototype" +
+      "\022#\n\024has_instance_methods\030\020 \001(\010:\005false\022&\n" +
+      "\027has_instance_properties\030\021 \001(\010:\005false\022(\n" +
+      "\rextended_type\030\022 \003(\0132\021.dossier.TypeLink\022" +
+      "+\n\020implemented_type\030\023 \003(\0132\021.dossier.Type" +
+      "Link\022,\n\021compiler_constant\030\024 \003(\0132\021.dossie" +
+      "r.Property\022!\n\006module\030\025 \001(\0132\021.dossier.Typ" +
+      "eLink\022\'\n\014aliased_type\030\026 \001(\0132\021.dossier.Ty" +
+      "peLink\032\212\002\n\013NestedTypes\022;\n\ninterfaces\030\001 \003",
+      "(\0132\'.dossier.JsType.NestedTypes.TypeSumm" +
+      "ary\0228\n\007classes\030\002 \003(\0132\'.dossier.JsType.Ne" +
+      "stedTypes.TypeSummary\0226\n\005enums\030\003 \003(\0132\'.d" +
+      "ossier.JsType.NestedTypes.TypeSummary\032L\n" +
+      "\013TypeSummary\022\014\n\004name\030\001 \002(\t\022\014\n\004href\030\002 \002(\t" +
+      "\022!\n\007summary\030\003 \002(\0132\020.dossier.Comment\032\273\001\n\007" +
+      "TypeDef\022\014\n\004name\030\001 \002(\t\022\021\n\ttype_html\030\002 \002(\t" +
+      "\022\014\n\004href\030\003 \002(\t\022%\n\013description\030\004 \002(\0132\020.do" +
+      "ssier.Comment\022)\n\013deprecation\030\005 \001(\0132\024.dos" +
+      "sier.Deprecation\022/\n\nvisibility\030\006 \001(\0162\023.d",
+      "ossier.Visibility:\006PUBLIC\"}\n\023IndexFileRe" +
+      "nderSpec\022%\n\tresources\030\001 \002(\0132\022.dossier.Re" +
+      "sources\022 \n\006readme\030\002 \001(\0132\020.dossier.Commen" +
+      "t\022\035\n\005index\030\003 \002(\0132\016.dossier.Index\"\177\n\024Sour" +
+      "ceFileRenderSpec\022%\n\tresources\030\001 \002(\0132\022.do" +
+      "ssier.Resources\022!\n\004file\030\002 \002(\0132\023.dossier." +
+      "SourceFile\022\035\n\005index\030\003 \002(\0132\016.dossier.Inde" +
+      "x\"w\n\020JsTypeRenderSpec\022\035\n\004type\030\001 \002(\0132\017.do" +
+      "ssier.JsType\022%\n\tresources\030\002 \002(\0132\022.dossie" +
+      "r.Resources\022\035\n\005index\030\003 \002(\0132\016.dossier.Ind",
+      "ex*A\n\nVisibility\022\n\n\006PUBLIC\020\000\022\r\n\tPROTECTE" +
+      "D\020\001\022\013\n\007PRIVATE\020\002\022\013\n\007PACKAGE\020\003B!\n\037com.git" +
+      "hub.jleyba.dossier.proto"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -28698,20 +29548,26 @@ public final class Dossier {
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_dossier_Deprecation_descriptor,
         new java.lang.String[] { "Notice", });
-    internal_static_dossier_BaseProperty_descriptor =
+    internal_static_dossier_Tags_descriptor =
       getDescriptor().getMessageTypes().get(5);
+    internal_static_dossier_Tags_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_dossier_Tags_descriptor,
+        new java.lang.String[] { "IsConst", "IsDeprecated", "IsDict", "IsFinal", "IsInterface", "IsModule", "IsStruct", });
+    internal_static_dossier_BaseProperty_descriptor =
+      getDescriptor().getMessageTypes().get(6);
     internal_static_dossier_BaseProperty_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_dossier_BaseProperty_descriptor,
         new java.lang.String[] { "Name", "Source", "Description", "Deprecation", "Visibility", });
     internal_static_dossier_Property_descriptor =
-      getDescriptor().getMessageTypes().get(6);
+      getDescriptor().getMessageTypes().get(7);
     internal_static_dossier_Property_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_dossier_Property_descriptor,
         new java.lang.String[] { "Base", "TypeHtml", });
     internal_static_dossier_Function_descriptor =
-      getDescriptor().getMessageTypes().get(7);
+      getDescriptor().getMessageTypes().get(8);
     internal_static_dossier_Function_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_dossier_Function_descriptor,
@@ -28723,13 +29579,13 @@ public final class Dossier {
         internal_static_dossier_Function_Detail_descriptor,
         new java.lang.String[] { "Name", "TypeHtml", "Description", });
     internal_static_dossier_Prototype_descriptor =
-      getDescriptor().getMessageTypes().get(8);
+      getDescriptor().getMessageTypes().get(9);
     internal_static_dossier_Prototype_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_dossier_Prototype_descriptor,
         new java.lang.String[] { "Name", "Href", "Function", "Property", });
     internal_static_dossier_Enumeration_descriptor =
-      getDescriptor().getMessageTypes().get(9);
+      getDescriptor().getMessageTypes().get(10);
     internal_static_dossier_Enumeration_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_dossier_Enumeration_descriptor,
@@ -28741,7 +29597,7 @@ public final class Dossier {
         internal_static_dossier_Enumeration_Value_descriptor,
         new java.lang.String[] { "Name", "Description", "Deprecation", });
     internal_static_dossier_Index_descriptor =
-      getDescriptor().getMessageTypes().get(10);
+      getDescriptor().getMessageTypes().get(11);
     internal_static_dossier_Index_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_dossier_Index_descriptor,
@@ -28753,11 +29609,11 @@ public final class Dossier {
         internal_static_dossier_Index_Module_descriptor,
         new java.lang.String[] { "Link", "Type", });
     internal_static_dossier_JsType_descriptor =
-      getDescriptor().getMessageTypes().get(11);
+      getDescriptor().getMessageTypes().get(12);
     internal_static_dossier_JsType_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_dossier_JsType_descriptor,
-        new java.lang.String[] { "Name", "Source", "Nested", "Description", "Deprecation", "TypeDef", "Enumeration", "StaticFunction", "StaticProperty", "MainFunction", "IsInterface", "Prototype", "HasInstanceMethods", "HasInstanceProperties", "ExtendedType", "ImplementedType", "CompilerConstant", "IsModule", "Module", "AliasedType", });
+        new java.lang.String[] { "Name", "Source", "Nested", "Description", "Tags", "Deprecation", "TypeDef", "Enumeration", "StaticFunction", "StaticProperty", "MainFunction", "Prototype", "HasInstanceMethods", "HasInstanceProperties", "ExtendedType", "ImplementedType", "CompilerConstant", "Module", "AliasedType", });
     internal_static_dossier_JsType_NestedTypes_descriptor =
       internal_static_dossier_JsType_descriptor.getNestedTypes().get(0);
     internal_static_dossier_JsType_NestedTypes_fieldAccessorTable = new
@@ -28777,19 +29633,19 @@ public final class Dossier {
         internal_static_dossier_JsType_TypeDef_descriptor,
         new java.lang.String[] { "Name", "TypeHtml", "Href", "Description", "Deprecation", "Visibility", });
     internal_static_dossier_IndexFileRenderSpec_descriptor =
-      getDescriptor().getMessageTypes().get(12);
+      getDescriptor().getMessageTypes().get(13);
     internal_static_dossier_IndexFileRenderSpec_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_dossier_IndexFileRenderSpec_descriptor,
         new java.lang.String[] { "Resources", "Readme", "Index", });
     internal_static_dossier_SourceFileRenderSpec_descriptor =
-      getDescriptor().getMessageTypes().get(13);
+      getDescriptor().getMessageTypes().get(14);
     internal_static_dossier_SourceFileRenderSpec_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_dossier_SourceFileRenderSpec_descriptor,
         new java.lang.String[] { "Resources", "File", "Index", });
     internal_static_dossier_JsTypeRenderSpec_descriptor =
-      getDescriptor().getMessageTypes().get(14);
+      getDescriptor().getMessageTypes().get(15);
     internal_static_dossier_JsTypeRenderSpec_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_dossier_JsTypeRenderSpec_descriptor,

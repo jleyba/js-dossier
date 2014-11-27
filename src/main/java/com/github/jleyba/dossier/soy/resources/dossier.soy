@@ -146,7 +146,7 @@
   {@param types: list<dossier.TypeLink>}
 
   {if length($types) >= 2}
-    <pre>
+    <pre class="inheritance">
       {foreach $type in $types}
         {if not isFirst($type)}
           {\n}{print '  '}
@@ -177,7 +177,7 @@
   // |implemented_type| list.
   {if length($type.implementedType)}
     <dt>
-      All {if $type.isInterface}extended{else}implemented{/if} interfaces:
+      All {if $type.tags.isInterface}extended{else}implemented{/if} interfaces:
     <dd>
       {foreach $interface in $type.implementedType}
         <code>
@@ -610,13 +610,13 @@
 {template .static}
   {@param type: dossier.JsType}
 
-  {let $parentName: $type.isModule ? '' : $type.name /}
+  {let $parentName: $type.tags.isModule ? '' : $type.name /}
 
   {if length($type.staticFunction)}
     <h2>
       {if $type.mainFunction and $type.mainFunction.isConstructor}
         Static Functions
-      {elseif $type.isModule}
+      {elseif $type.tags.isModule}
         Functions
       {else}
         Global Functions
@@ -632,7 +632,7 @@
     <h2>
       {if $type.mainFunction and $type.mainFunction.isConstructor}
         Static Properties
-      {elseif $type.isModule}
+      {elseif $type.tags.isModule}
         Properties
       {else}
         Global Properties
@@ -680,9 +680,9 @@
     </div>
   {/if}
   <h1{if $type.deprecation} class="deprecated"{/if}>
-    {if $type.isModule}
+    {if $type.tags.isModule}
       module {$type.name}
-    {elseif $type.isInterface}
+    {elseif $type.tags.isInterface}
       interface {$type.name}
     {elseif $type.mainFunction and $type.mainFunction.isConstructor}
       class {$type.name}
@@ -697,6 +697,9 @@
       {/call}
     {/if}
   </h1>
+  {call .tags}
+    {param tags: $type.tags /}
+  {/call}
 
   {if $type.enumeration and $type.enumeration.typeHtml}
     <dl>
@@ -718,9 +721,39 @@
       {/call}
     </dl>
   {/if}
-  {call .deprecationNotice}
-    {param deprecation: $type.deprecation /}
-  {/call}
+  {if $type.deprecation
+      and $type.deprecation.notice
+      and length($type.deprecation.notice.token)}
+    <p>
+      <b>Deprecated: </b>
+      {call .comment}
+        {param comment: $type.deprecation.notice /}
+        {param omitLeadingTag: true /}
+      {/call}
+    </p>
+  {/if}
+{/template}
+
+
+/**
+ * Renders a list of tags.
+ */
+{template .tags private="true"}
+  {@param tags: dossier.Tags}
+  {@param? span: bool}
+  {if $tags.isDeprecated
+      or $tags.isConst
+      or $tags.isFinal
+      or $tags.isDict
+      or $tags.isStruct}
+    <{if $span}span{else}div{/if} class="tags">
+      {if $tags.isDeprecated}<span>deprecated</span>{/if}
+      {if $tags.isConst}<span>const</span>{/if}
+      {if $tags.isFinal}<span>final</span>{/if}
+      {if $tags.isDict}<span>dict</span>{/if}
+      {if $tags.isStruct}<span>struct</span>{/if}
+    </{if $span}span{else}div{/if}>
+  {/if}
 {/template}
 
 
@@ -744,7 +777,7 @@
       {call .comment}
         {param comment: $spec.type.description /}
       {/call}
-      {if not $spec.type.isInterface and $spec.type.mainFunction}
+      {if not $spec.type.tags.isInterface and $spec.type.mainFunction}
         {call .mainFunction}
           {param type: $spec.type /}
         {/call}

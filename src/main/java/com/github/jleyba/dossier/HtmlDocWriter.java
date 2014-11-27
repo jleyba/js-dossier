@@ -217,7 +217,6 @@ class HtmlDocWriter implements DocWriter {
     currentModule = module;
     Descriptor descriptor = module.getDescriptor();
     JsType.Builder jsTypeBuilder = JsType.newBuilder()
-        .setIsModule(true)
         .setName(linker.getDisplayName(module))
         .setSource(linker.getSourcePath(module))
         .setDescription(getFileoverview(linker, module.getJsDoc()))
@@ -225,6 +224,9 @@ class HtmlDocWriter implements DocWriter {
         .addAllTypeDef(typeDefs)
         .addAllExtendedType(getInheritedTypes(descriptor))
         .addAllImplementedType(getImplementedTypes(descriptor));
+
+    jsTypeBuilder.getTagsBuilder()
+        .setIsModule(true);
 
     getStaticData(jsTypeBuilder, descriptor.getProperties());
     getPrototypeData(jsTypeBuilder, descriptor);
@@ -288,7 +290,12 @@ class HtmlDocWriter implements DocWriter {
         .addAllTypeDef(getTypeDefInfo(descriptor.getProperties()))
         .addAllExtendedType(getInheritedTypes(descriptor))
         .addAllImplementedType(getImplementedTypes(descriptor))
-        .setIsInterface(descriptor.isInterface());
+        .getTagsBuilder()
+        .setIsInterface(descriptor.isInterface())
+        .setIsDeprecated(descriptor.isDeprecated())
+        .setIsFinal(descriptor.isFinal())
+        .setIsDict(descriptor.isDict())
+        .setIsStruct(descriptor.isStruct());
 
     getStaticData(jsTypeBuilder, descriptor.getProperties());
     getPrototypeData(jsTypeBuilder, descriptor);

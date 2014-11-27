@@ -213,7 +213,16 @@ h1 {
   .set-font-size(3.2rem);
   margin: 0.67rem 0;
   margin-top: 3.2rem;
-  margin-bottom: 1.6rem;
+
+  @marginBottom: 1.6rem;
+
+  margin-bottom: @marginBottom;
+  & + .tags {
+    margin-top: -@marginBottom;
+  }
+  & + pre.inheritance {
+    margin-top: @marginBottom * -.5;
+  }
 }
 
 h2 {
@@ -263,7 +272,7 @@ h3 code {
 }
 
 pre {
-  h1 + & {
+  &.inheritance {
     margin: 0;
     padding: 0;
     border: 0;
@@ -318,6 +327,21 @@ dt {
     clear: both;
     content: "";
     display: table;
+  }
+}
+
+.tags span {
+  background: rgba(102, 102, 255, .4);
+  border: 1px solid #66f;
+  border-radius: 3px;
+  color: #fff;
+  font-size: 75%;
+  font-weight: bold;
+  padding: 2px 4px;
+  line-height: 1.4rem;
+
+  & + span {
+    margin-left: 2px;
   }
 }
 

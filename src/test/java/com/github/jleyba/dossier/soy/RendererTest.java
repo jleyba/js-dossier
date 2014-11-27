@@ -93,7 +93,8 @@ public class RendererTest {
                 .addScript("two")
                 .addCss("apples")
                 .addCss("oranges")
-                .build())),
+                .build()
+        )),
         isHtml(
             "<!DOCTYPE html>",
             "<meta charset=\"UTF-8\">",
@@ -133,7 +134,7 @@ public class RendererTest {
         .build());
     assertThat(render("dossier.soy.classInheritance", "types", types),
         isHtml(
-            "<pre>",
+            "<pre class=\"inheritance\">",
             "<a href=\"foo.link\">Foo</a>",
             "\n  &#x2514; Bar",
             "</pre>"));
@@ -143,7 +144,7 @@ public class RendererTest {
         .build());
     assertThat(render("dossier.soy.classInheritance", "types", types),
         isHtml(
-            "<pre>",
+            "<pre class=\"inheritance\">",
             "<a href=\"foo.link\">Foo</a>",
             "\n  &#x2514; <a href=\"bar.link\">Bar</a>",
             "\n      &#x2514; Baz",
@@ -157,7 +158,7 @@ public class RendererTest {
         .build());
     assertThat(render("dossier.soy.classInheritance", "types", types),
         isHtml(
-            "<pre>",
+            "<pre class=\"inheritance\">",
             "<a href=\"foo.link\">Foo</a>",
             "\n  &#x2514; <a href=\"bar.link\">Bar</a>",
             "\n      &#x2514; <a href=\"baz.link\">Baz</a>",
@@ -173,6 +174,7 @@ public class RendererTest {
         .setSource("source")
         .setDescription(parseComment("description"))
         .setNested(Dossier.JsType.NestedTypes.getDefaultInstance())
+        .setTags(Dossier.Tags.getDefaultInstance())
         .build();
 
     assertThat(render("dossier.soy.printInterfaces", "type", type), is(""));
@@ -185,7 +187,7 @@ public class RendererTest {
         .setSource("source")
         .setDescription(parseComment("description"))
         .setNested(Dossier.JsType.NestedTypes.getDefaultInstance())
-        .setIsInterface(true)
+        .setTags(Dossier.Tags.newBuilder().setIsInterface(true))
         .addImplementedType(Dossier.TypeLink.newBuilder()
             .setHref("type-one")
             .setText("Hello"))
@@ -219,6 +221,7 @@ public class RendererTest {
         .addImplementedType(Dossier.TypeLink.newBuilder()
             .setHref("type-two")
             .setText("Goodbye"))
+        .setTags(Dossier.Tags.getDefaultInstance())
         .build();
 
     assertThat(render("dossier.soy.printInterfaces", "type", type),
@@ -235,7 +238,7 @@ public class RendererTest {
         .setSource("source")
         .setDescription(parseComment("description"))
         .setNested(Dossier.JsType.NestedTypes.getDefaultInstance())
-        .setIsInterface(true)
+        .setTags(Dossier.Tags.newBuilder().setIsInterface(true))
         .addImplementedType(Dossier.TypeLink.newBuilder()
             .setHref("")
             .setText("Hello"))
@@ -251,7 +254,7 @@ public class RendererTest {
   public void renderTypeHeader_simpleModule() {
     Dossier.JsType type = Dossier.JsType.newBuilder()
         .setName("Foo")
-        .setIsModule(true)
+        .setTags(Dossier.Tags.newBuilder().setIsModule(true))
         .setSource("source-file")
         .setDescription(parseComment("description"))
         .setNested(Dossier.JsType.NestedTypes.getDefaultInstance())
@@ -272,7 +275,7 @@ public class RendererTest {
         .setName("Foo")
         .setSource("source")
         .setDescription(parseComment("description"))
-        .setIsInterface(true)
+        .setTags(Dossier.Tags.newBuilder().setIsInterface(true))
         .setNested(Dossier.JsType.NestedTypes.getDefaultInstance())
         .addImplementedType(Dossier.TypeLink.newBuilder()
             .setHref("type-one")
@@ -297,7 +300,7 @@ public class RendererTest {
         .setName("Foo")
         .setSource("source")
         .setDescription(parseComment("description"))
-        .setIsInterface(true)
+        .setTags(Dossier.Tags.newBuilder().setIsInterface(true))
         .setNested(Dossier.JsType.NestedTypes.getDefaultInstance())
         .setDeprecation(Dossier.Deprecation.newBuilder())
         .build();
@@ -315,7 +318,7 @@ public class RendererTest {
         .setName("Foo")
         .setSource("source")
         .setDescription(parseComment("description"))
-        .setIsInterface(true)
+        .setTags(Dossier.Tags.newBuilder().setIsInterface(true))
         .setNested(Dossier.JsType.NestedTypes.getDefaultInstance())
         .setDeprecation(Dossier.Deprecation.newBuilder()
             .setNotice(parseComment("<i>Goodbye</i>, world!")))
@@ -325,8 +328,8 @@ public class RendererTest {
 
     assertThat(querySelector(document, "h1").toString(), isHtml(
         "<h1 class=\"deprecated\">interface Foo</h1>"));
-    assertThat(querySelector(document, ".deprecation-reason").toString(), isHtml(
-        "<span class=\"deprecation-reason\"><i>Goodbye</i>, world!</span>"));
+    assertThat(querySelector(document, "h1 + p").toString(), isHtml(
+        "<p><b>Deprecated: </b><i>Goodbye</i>, world!</p>"));
   }
 
   @Test
@@ -335,7 +338,7 @@ public class RendererTest {
         .setName("Foo")
         .setSource("source")
         .setDescription(parseComment("description"))
-        .setIsInterface(true)
+        .setTags(Dossier.Tags.newBuilder().setIsInterface(true))
         .setNested(Dossier.JsType.NestedTypes.getDefaultInstance())
         .setMainFunction(Dossier.Function.newBuilder()
             .addTemplateName("K")
@@ -367,6 +370,7 @@ public class RendererTest {
                 .setName("ctor-name")
                 .setSource("ctor-source")
                 .setDescription(parseComment("ctor-description"))))
+        .setTags(Dossier.Tags.getDefaultInstance())
         .build();
 
     Document document = renderDocument("dossier.soy.typeHeader", "type", type);
@@ -391,6 +395,7 @@ public class RendererTest {
         .setModule(Dossier.TypeLink.newBuilder()
             .setText("path/to/module")
             .setHref("module-source"))
+        .setTags(Dossier.Tags.getDefaultInstance())
         .build();
 
     Document document = renderDocument("dossier.soy.typeHeader", "type", type);
@@ -433,6 +438,7 @@ public class RendererTest {
         .addImplementedType(Dossier.TypeLink.newBuilder()
             .setHref("type-two")
             .setText("Goodbye"))
+        .setTags(Dossier.Tags.getDefaultInstance())
         .build();
 
     Document document = renderDocument("dossier.soy.typeHeader", "type", type);
@@ -440,7 +446,7 @@ public class RendererTest {
         "<body>",
         "<div class=\"codelink\"><a href=\"source-file\">View Source</a></div>",
         "<h1>class Foo&lt;T&gt;</h1>",
-        "<pre>",
+        "<pre class=\"inheritance\">",
         "<a href=\"super-one\">SuperClass1</a>",
         "\n  \u2514 <a href=\"super-two\">SuperClass2</a>",
         "\n      \u2514 Foo",
@@ -455,7 +461,7 @@ public class RendererTest {
   @Test
   public void renderTypeHeader_classAsModuleExports() {
     Dossier.JsType type = Dossier.JsType.newBuilder()
-        .setIsModule(true)
+        .setTags(Dossier.Tags.newBuilder().setIsModule(true))
         .setName("Foo")
         .setSource("source-file")
         .setDescription(parseComment("description"))
@@ -487,7 +493,7 @@ public class RendererTest {
     assertThat(querySelector(document, "body").toString(), isHtml(
         "<body><div class=\"codelink\"><a href=\"source-file\">View Source</a></div>",
         "<h1>module Foo&lt;T&gt;</h1>",
-        "<pre><a href=\"super-one\">SuperClass1</a>\n",
+        "<pre class=\"inheritance\"><a href=\"super-one\">SuperClass1</a>\n",
         "  └ <a href=\"super-two\">SuperClass2</a>\n",
         "      └ Foo</pre>",
         "<dl><dt>All implemented interfaces:</dt>",
@@ -502,6 +508,7 @@ public class RendererTest {
         .setSource("source-file")
         .setDescription(parseComment("description"))
         .setNested(Dossier.JsType.NestedTypes.getDefaultInstance())
+        .setTags(Dossier.Tags.getDefaultInstance())
         .build();
 
     Document document = renderDocument("dossier.soy.typeHeader", "type", type);
@@ -522,6 +529,7 @@ public class RendererTest {
         .setNested(Dossier.JsType.NestedTypes.getDefaultInstance())
         .setEnumeration(Dossier.Enumeration.newBuilder()
             .setTypeHtml("{color: string}"))
+        .setTags(Dossier.Tags.getDefaultInstance())
         .build();
 
     Document document = renderDocument("dossier.soy.typeHeader", "type", type);
@@ -816,6 +824,7 @@ public class RendererTest {
         .setNested(Dossier.JsType.NestedTypes.getDefaultInstance())
         .setDescription(Dossier.Comment.getDefaultInstance())
         .setMainFunction(function)
+        .setTags(Dossier.Tags.getDefaultInstance())
         .build();
 
     Document document = renderDocument("dossier.soy.mainFunction", "type", type);
@@ -1017,10 +1026,6 @@ public class RendererTest {
 
   private Document renderDocument(String template, String key, GeneratedMessage value) {
     return renderDocument(template, ImmutableMap.of(key, value));
-  }
-
-  private Document renderDocument(String template, String key, List<GeneratedMessage> value) {
-    return renderDocument(template, ImmutableMap.of(key, toSoyValue(value)));
   }
 
   private Document renderDocument(String template, Map<String, ?> data) {

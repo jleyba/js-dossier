@@ -263,6 +263,18 @@ public class Descriptor {
     return (info != null && info.isDeprecated());
   }
 
+  boolean isFinal() {
+    return (info != null && info.isFinal());
+  }
+
+  boolean isDict() {
+    return (info != null && info.isDict());
+  }
+
+  boolean isStruct() {
+    return (info != null && info.isStruct());
+  }
+
   boolean isCompilerConstant() {
     return (info != null && info.isDefine());
   }

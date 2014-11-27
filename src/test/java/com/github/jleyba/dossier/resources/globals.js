@@ -46,3 +46,14 @@ GlobalCtor.prototype.protoMethod = function(x, y) {
  */
 var GlobalPrivateCtor = function() {
 };
+
+
+/**
+ * Lorem ipsum blah blah blah.
+ * @deprecated Do not use this deprecated class. Use something else.
+ * @constructor
+ * @final
+ * @struct
+ */
+var DeprecatedFoo = function() {
+};

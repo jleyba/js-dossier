@@ -14,7 +14,6 @@ import com.google.javascript.rhino.JSDocInfo.Marker;
 import com.google.javascript.rhino.JSTypeExpression;
 import com.google.javascript.rhino.Node;
 
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -86,6 +85,22 @@ class JsDoc {
 
   boolean isDefine() {
     return info.isDefine();
+  }
+
+  boolean isConst() {
+    return isDefine() || hasAnnotation(Annotation.CONST);
+  }
+
+  boolean isFinal() {
+    return hasAnnotation(Annotation.FINAL);
+  }
+
+  boolean isDict() {
+    return hasAnnotation(Annotation.DICT);
+  }
+
+  boolean isStruct() {
+    return hasAnnotation(Annotation.STRUCT);
   }
 
   boolean isTypedef() {
@@ -162,6 +177,16 @@ class JsDoc {
 
   ImmutableList<String> getTemplateTypeNames() {
     return info.getTemplateTypeNames();
+  }
+
+  private boolean hasAnnotation(Annotation target) {
+    for (Marker marker : info.getMarkers()) {
+      Optional<Annotation> annotation = Annotation.forMarker(marker);
+      if (target.equals(annotation.orNull())) {
+        return true;
+      }
+    }
+    return false;
   }
 
   private static final Pattern EOL_PATTERN = Pattern.compile("\r?\n");
@@ -296,12 +321,11 @@ class JsDoc {
     return builder.toString().trim();
   }
 
-  private static String processDescriptionLines(Iterable<String> lines, JSDocInfo.StringPosition position) {
+  private static String processDescriptionLines(
+      Iterable<String> lines, JSDocInfo.StringPosition position) {
     StringBuilder builder = new StringBuilder();
     boolean isFirst = true;
-    Iterator<String> it = lines.iterator();
-    while (it.hasNext()) {
-      String line = it.next();
+    for (String line : lines) {
       if (isFirst) {
         isFirst = false;
         line = line.substring(position.getPositionOnStartLine());
@@ -337,12 +361,16 @@ class JsDoc {
   }
 
   static enum Annotation {
+    CONST("const"),
     DEFINE("define"),
     DEPRECATED("deprecated"),
+    DICT("dict"),
     FILEOVERVIEW("fileoverview"),
+    FINAL("final"),
     PARAM("param"),
     RETURN("return"),
     SEE("see"),
+    STRUCT("struct"),
     THROWS("throws")
     ;
 

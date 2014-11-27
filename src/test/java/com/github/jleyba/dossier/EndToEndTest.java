@@ -88,6 +88,14 @@ public class EndToEndTest {
     checkFooter(document);
   }
 
+  @Test
+  public void checkDeprecatedClass() throws IOException {
+    Document document = load(outDir.resolve("class_DeprecatedFoo.html"));
+    compareWithGoldenFile(querySelector(document, "article"), "class_DeprecatedFoo.html");
+    checkHeader(document);
+    checkFooter(document);
+  }
+
   private void checkHeader(Document document) throws IOException {
     compareWithGoldenFile(querySelector(document, "header"), "header.html");
   }
