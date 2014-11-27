@@ -136,12 +136,21 @@ nav {
     text-indent: -1em;
   }
 
+  .rotate(@amount) {
+    -ms-transform: rotate(@amount);
+    -webkit-transform: rotate(@amount);
+    transform: rotate(@amount);
+  }
+
   #nav-modules,
   #nav-types {
     display: none;
 
+    & ~ label h3:before {
+      .rotate(0);
+    }
     &:checked ~ label h3:before {
-      transform: rotate(-90deg);
+      .rotate(-90deg);
     }
 
     &:checked ~ div {
@@ -168,6 +177,9 @@ nav {
       content: '\2335';
       display: inline-block;
       margin-right: 1rem;
+    }
+    &:first-child:before {
+      .rotate(-90deg);
     }
 
     a[href], a[href]:visited {
@@ -244,6 +256,10 @@ p code {
 
 pre, code {
   font-size: 1.2rem;
+}
+
+h3 code {
+  font-size: 1.6rem;
 }
 
 pre {

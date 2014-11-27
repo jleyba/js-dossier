@@ -13,10 +13,12 @@ article.srcfile :target+a{font-weight:bold}
 article.srcfile tr.hilite{background:rgba(102,102,255,0.1)}
 nav{padding:3rem 4rem 3rem 1rem;width:23rem;margin-top:2rem;float:left;font-size:1.1rem;height:100%}nav ul{margin:0;padding:0;padding-left:1rem}
 nav li{list-style:none;padding-left:1em;text-indent:-1em}
-nav #nav-modules,nav #nav-types{display:none}nav #nav-modules:checked~label h3:before,nav #nav-types:checked~label h3:before{transform:rotate(-90deg)}
+nav #nav-modules,nav #nav-types{display:none}nav #nav-modules~label h3:before,nav #nav-types~label h3:before{-ms-transform:rotate(0);-webkit-transform:rotate(0);transform:rotate(0)}
+nav #nav-modules:checked~label h3:before,nav #nav-types:checked~label h3:before{-ms-transform:rotate(-90deg);-webkit-transform:rotate(-90deg);transform:rotate(-90deg)}
 nav #nav-modules:checked~div,nav #nav-types:checked~div{display:none}
 nav label[for="nav-types"],nav label[for="nav-modules"]{-webkit-touch-callout:none;-webkit-user-select:none;-khtml-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}
 nav h3{font-size:2rem;border-top:1px solid #8f8f8f;padding-top:.3em}nav h3:before{content:'\2335';display:inline-block;margin-right:1rem}
+nav h3:first-child:before{-ms-transform:rotate(-90deg);-webkit-transform:rotate(-90deg);transform:rotate(-90deg)}
 nav h3 a[href],nav h3 a[href]:visited{color:#424242}
 nav>h3:first-child{border-top:0;padding-top:0;margin-top:0}nav>h3:first-child:before{transform:rotate(-90deg)}
 h1,h2,h3,h4,h5,h6{margin-top:1.5rem;margin-bottom:1.5rem;line-height:1.1}
@@ -31,6 +33,7 @@ h5{font-size:1.4rem}h5 a[id]{padding-top:5.4rem;margin-top:-5.4rem;display:inlin
 h6{font-size:1.2rem}h6 a[id]{padding-top:5.2rem;margin-top:-5.2rem;display:inline-block}
 p code{background:#f7f7f7;padding:3px;border-radius:3px}
 pre,code{font-size:1.2rem}
+h3 code{font-size:1.6rem}
 pre{padding:1.6rem;overflow:auto;line-height:1.45;word-wrap:normal}h1+pre{margin:0;padding:0;border:0;background:inherit}
 pre,article.srcfile pre{background:#f7f7f7;border-radius:3px}
 pre{border-left:.2rem solid #c4c4c4}
