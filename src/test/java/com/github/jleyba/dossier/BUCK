@@ -18,6 +18,7 @@ java_test(
       "*.java",
       "soy/*.java",
   ], excludes = ["CompilerUtil.java"]),
+  resources = glob(["resources/**"]),
   deps = [
     ":util",
     "//src/main/java/com/github/jleyba/dossier:lib",

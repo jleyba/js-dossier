@@ -845,7 +845,7 @@ public class RendererTest {
         "<body>",
         "<h3>",
         "<a id=\"foo.Bar\"></a>foo.Bar(a)",
-        "<div class=\"codelink\"><a href=\"bar.link\">code &raquo;</a></div>",
+        "<span class=\"codelink\"><a href=\"bar.link\">code &raquo;</a></span>",
         "</h3>",
         "<p>description here\n</p>",
         "<p>second paragraph</p><div>",

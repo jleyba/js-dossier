@@ -124,10 +124,11 @@
  */
 {template .sourceLink private="true"}
   {@param? href: string}
+  {@param? span: bool} /* Whether to use span instead of div */
   {if $href}
-    <div class="codelink">
+    <{if $span}span{else}div{/if} class="codelink">
       <a href="{$href}">code &raquo;</a>
-    </div>
+    </{if $span}span{else}div{/if}>
   {/if}
 {/template}
 
@@ -488,6 +489,7 @@
     )
     {call .sourceLink}
       {param href: $fn.base.source /}
+      {param span: true /}
     {/call}
   </h3>
   {if ($fn.base.description and length($fn.base.description.token))
@@ -825,27 +827,6 @@
                 No description.
               {/if}
             /* TODO: deprecation notice $typedef.deprecation*/
-            /*
-            <h3>
-              <a id="{$typedef.name}"></a>
-              {$typedef.name}
-            </h3>
-            <div class="codelink">
-              <a href="{$typedef.href}">code &raquo;</a>
-            </div>
-            <dl>
-              <dt>Type: <code>{$typedef.typeHtml |noAutoescape}</code>
-              <dd>
-                {if $typedef.description and length($typedef.description.token)}
-                  {call .comment}
-                    {param comment: $typedef.description /}
-                    {param omitLeadingTag: true /}
-                  {/call}
-                {else}
-                  No description.
-                {/if}
-            </dl>
-            */
           {/foreach}
         </dl>
       {/if}
