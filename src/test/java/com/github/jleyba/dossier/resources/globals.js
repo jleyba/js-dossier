@@ -40,6 +40,22 @@ GlobalCtor.prototype.protoMethod = function(x, y) {
 
 
 /**
+ * Method description here.
+ * @return {string} A string.
+ * @deprecated This is a deprecated method.
+ */
+GlobalCtor.prototype.deprecatedMethod = function() {
+};
+
+
+/**
+ * @deprecated Annotation is only detail on method.
+ */
+GlobalCtor.prototype.deprecatedMethod2 = function() {
+};
+
+
+/**
  * This is a global private constructor.
  * @constructor
  * @private

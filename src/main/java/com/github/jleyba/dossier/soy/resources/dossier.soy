@@ -220,14 +220,13 @@
   {@param deprecation: dossier.Deprecation}
 
   {if $deprecation and $deprecation.notice and length($deprecation.notice.token)}
-    <div class="deprecation-notice">Deprecated:{sp}
-      <span class="deprecation-reason">
-        {call .comment}
-          {param comment: $deprecation.notice /}
-          {param omitLeadingTag: true /}
-        {/call}
-      </span>
-    </div>
+    <p>
+      <b>Deprecated: </b>
+      {call .comment}
+        {param comment: $deprecation.notice /}
+        {param omitLeadingTag: true /}
+      {/call}
+    </p>
   {/if}
 {/template}
 
@@ -492,6 +491,10 @@
       {param span: true /}
     {/call}
   </h3>
+  {call .tags}
+    {param tags: $fn.base.tags /}
+  {/call}
+
   {if ($fn.base.description and length($fn.base.description.token))
       or length($fn.parameter)
       or length($fn.thrown)
@@ -501,8 +504,17 @@
     {call .comment}
       {param comment: $fn.base.description /}
     {/call}
+    {call .deprecationNotice}
+      {param deprecation: $fn.base.deprecation /}
+    {/call}
     {call .fnDetails}
       {param fn: $fn /}
+    {/call}
+  {elseif $fn.base.deprecation
+      and $fn.base.deprecation.notice
+      and length($fn.base.deprecation.notice.token)}
+    {call .deprecationNotice}
+      {param deprecation: $fn.base.deprecation /}
     {/call}
   {else}
     <p>No information.</p>
@@ -721,17 +733,9 @@
       {/call}
     </dl>
   {/if}
-  {if $type.deprecation
-      and $type.deprecation.notice
-      and length($type.deprecation.notice.token)}
-    <p>
-      <b>Deprecated: </b>
-      {call .comment}
-        {param comment: $type.deprecation.notice /}
-        {param omitLeadingTag: true /}
-      {/call}
-    </p>
-  {/if}
+  {call .deprecationNotice}
+    {param deprecation: $type.deprecation /}
+  {/call}
 {/template}
 
 

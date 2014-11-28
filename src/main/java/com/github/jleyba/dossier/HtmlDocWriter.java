@@ -771,6 +771,10 @@ class HtmlDocWriter implements DocWriter {
       builder.setDeprecation(getDeprecation(property));
     }
 
+    builder.getTagsBuilder()
+        .setIsDeprecated(property.isDeprecated())
+        .setIsConst(property.isConst() || property.isCompilerConstant());
+
     return builder.build();
   }
 

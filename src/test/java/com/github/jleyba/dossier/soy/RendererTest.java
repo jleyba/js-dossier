@@ -68,19 +68,13 @@ public class RendererTest {
     assertThat(
         render("dossier.soy.deprecationNotice",
             "deprecation", toSoyValue(builder.build())),
-        isHtml(
-            "<div class=\"deprecation-notice\">Deprecated: ",
-            "<span class=\"deprecation-reason\">Hello, world!</span>",
-            "</div>"));
+        isHtml("<p><b>Deprecated: </b>Hello, world!</p>"));
 
     builder.setNotice(parseComment("<strong>Hello, world!</strong>"));
     assertThat(
         render("dossier.soy.deprecationNotice", ImmutableMap.of(
             "deprecation", toSoyValue(builder.build()))),
-        isHtml(
-            "<div class=\"deprecation-notice\">Deprecated: ",
-            "<span class=\"deprecation-reason\"><strong>Hello, world!</strong></span>",
-            "</div>"));
+        isHtml("<p><b>Deprecated: </b><strong>Hello, world!</strong></p>"));
   }
 
   @Test
@@ -577,9 +571,7 @@ public class RendererTest {
         "<dd><i>the color green</i></dd>",
         "<dt><a id=\"foo.Bar.BLUE\"></a>BLUE</dt>",
         "<dd>",
-        "<div class=\"deprecation-notice\">Deprecated: ",
-        "<span class=\"deprecation-reason\">This value is deprecated</span>",
-        "</div>",
+        "<p><b>Deprecated: </b>This value is deprecated</p>",
         "</dd>",
         "</dl>",
         "</body>"));
@@ -857,8 +849,9 @@ public class RendererTest {
         "<span class=\"codelink\"><a href=\"bar.link\">code &raquo;</a></span>",
         "</h3>",
         "<p>description here\n</p>",
-        "<p>second paragraph</p><div>",
-        "<table><tbody>",
+        "<p>second paragraph</p>",
+        "<p><b>Deprecated: </b>is old</p>",
+        "<div><table><tbody>",
         "<tr><th>Parameters</th></tr>",
         "<tr><td><dl><dt>a</dt></dl></td></tr>",
         "</tbody></table></div>",

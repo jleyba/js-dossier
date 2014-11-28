@@ -275,6 +275,10 @@ public class Descriptor {
     return (info != null && info.isStruct());
   }
 
+  boolean isConst() {
+    return (info != null && info.isConst());
+  }
+
   boolean isCompilerConstant() {
     return (info != null && info.isDefine());
   }

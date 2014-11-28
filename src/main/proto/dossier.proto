@@ -101,6 +101,7 @@ message BaseProperty {
   // Whether this property is deprecated.
   optional Deprecation deprecation = 4;
   optional Visibility visibility = 5 [default = PUBLIC];
+  optional Tags tags = 6;
 }
 
 

@@ -6129,6 +6129,19 @@ public final class Dossier {
      * <code>optional .dossier.Visibility visibility = 5 [default = PUBLIC];</code>
      */
     com.github.jleyba.dossier.proto.Dossier.Visibility getVisibility();
+
+    /**
+     * <code>optional .dossier.Tags tags = 6;</code>
+     */
+    boolean hasTags();
+    /**
+     * <code>optional .dossier.Tags tags = 6;</code>
+     */
+    com.github.jleyba.dossier.proto.Dossier.Tags getTags();
+    /**
+     * <code>optional .dossier.Tags tags = 6;</code>
+     */
+    com.github.jleyba.dossier.proto.Dossier.TagsOrBuilder getTagsOrBuilder();
   }
   /**
    * Protobuf type {@code dossier.BaseProperty}
@@ -6233,6 +6246,19 @@ public final class Dossier {
                 bitField0_ |= 0x00000010;
                 visibility_ = value;
               }
+              break;
+            }
+            case 50: {
+              com.github.jleyba.dossier.proto.Dossier.Tags.Builder subBuilder = null;
+              if (((bitField0_ & 0x00000020) == 0x00000020)) {
+                subBuilder = tags_.toBuilder();
+              }
+              tags_ = input.readMessage(com.github.jleyba.dossier.proto.Dossier.Tags.PARSER, extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(tags_);
+                tags_ = subBuilder.buildPartial();
+              }
+              bitField0_ |= 0x00000020;
               break;
             }
           }
@@ -6464,12 +6490,34 @@ public final class Dossier {
       return visibility_;
     }
 
+    public static final int TAGS_FIELD_NUMBER = 6;
+    private com.github.jleyba.dossier.proto.Dossier.Tags tags_;
+    /**
+     * <code>optional .dossier.Tags tags = 6;</code>
+     */
+    public boolean hasTags() {
+      return ((bitField0_ & 0x00000020) == 0x00000020);
+    }
+    /**
+     * <code>optional .dossier.Tags tags = 6;</code>
+     */
+    public com.github.jleyba.dossier.proto.Dossier.Tags getTags() {
+      return tags_;
+    }
+    /**
+     * <code>optional .dossier.Tags tags = 6;</code>
+     */
+    public com.github.jleyba.dossier.proto.Dossier.TagsOrBuilder getTagsOrBuilder() {
+      return tags_;
+    }
+
     private void initFields() {
       name_ = "";
       source_ = "";
       description_ = com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance();
       deprecation_ = com.github.jleyba.dossier.proto.Dossier.Deprecation.getDefaultInstance();
       visibility_ = com.github.jleyba.dossier.proto.Dossier.Visibility.PUBLIC;
+      tags_ = com.github.jleyba.dossier.proto.Dossier.Tags.getDefaultInstance();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -6521,6 +6569,9 @@ public final class Dossier {
       if (((bitField0_ & 0x00000010) == 0x00000010)) {
         output.writeEnum(5, visibility_.getNumber());
       }
+      if (((bitField0_ & 0x00000020) == 0x00000020)) {
+        output.writeMessage(6, tags_);
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -6549,6 +6600,10 @@ public final class Dossier {
       if (((bitField0_ & 0x00000010) == 0x00000010)) {
         size += com.google.protobuf.CodedOutputStream
           .computeEnumSize(5, visibility_.getNumber());
+      }
+      if (((bitField0_ & 0x00000020) == 0x00000020)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(6, tags_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -6665,6 +6720,7 @@ public final class Dossier {
         if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
           getDescriptionFieldBuilder();
           getDeprecationFieldBuilder();
+          getTagsFieldBuilder();
         }
       }
       private static Builder create() {
@@ -6691,6 +6747,12 @@ public final class Dossier {
         bitField0_ = (bitField0_ & ~0x00000008);
         visibility_ = com.github.jleyba.dossier.proto.Dossier.Visibility.PUBLIC;
         bitField0_ = (bitField0_ & ~0x00000010);
+        if (tagsBuilder_ == null) {
+          tags_ = com.github.jleyba.dossier.proto.Dossier.Tags.getDefaultInstance();
+        } else {
+          tagsBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000020);
         return this;
       }
 
@@ -6747,6 +6809,14 @@ public final class Dossier {
           to_bitField0_ |= 0x00000010;
         }
         result.visibility_ = visibility_;
+        if (((from_bitField0_ & 0x00000020) == 0x00000020)) {
+          to_bitField0_ |= 0x00000020;
+        }
+        if (tagsBuilder_ == null) {
+          result.tags_ = tags_;
+        } else {
+          result.tags_ = tagsBuilder_.build();
+        }
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -6781,6 +6851,9 @@ public final class Dossier {
         }
         if (other.hasVisibility()) {
           setVisibility(other.getVisibility());
+        }
+        if (other.hasTags()) {
+          mergeTags(other.getTags());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -7368,6 +7441,122 @@ public final class Dossier {
         visibility_ = com.github.jleyba.dossier.proto.Dossier.Visibility.PUBLIC;
         onChanged();
         return this;
+      }
+
+      private com.github.jleyba.dossier.proto.Dossier.Tags tags_ = com.github.jleyba.dossier.proto.Dossier.Tags.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          com.github.jleyba.dossier.proto.Dossier.Tags, com.github.jleyba.dossier.proto.Dossier.Tags.Builder, com.github.jleyba.dossier.proto.Dossier.TagsOrBuilder> tagsBuilder_;
+      /**
+       * <code>optional .dossier.Tags tags = 6;</code>
+       */
+      public boolean hasTags() {
+        return ((bitField0_ & 0x00000020) == 0x00000020);
+      }
+      /**
+       * <code>optional .dossier.Tags tags = 6;</code>
+       */
+      public com.github.jleyba.dossier.proto.Dossier.Tags getTags() {
+        if (tagsBuilder_ == null) {
+          return tags_;
+        } else {
+          return tagsBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>optional .dossier.Tags tags = 6;</code>
+       */
+      public Builder setTags(com.github.jleyba.dossier.proto.Dossier.Tags value) {
+        if (tagsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          tags_ = value;
+          onChanged();
+        } else {
+          tagsBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000020;
+        return this;
+      }
+      /**
+       * <code>optional .dossier.Tags tags = 6;</code>
+       */
+      public Builder setTags(
+          com.github.jleyba.dossier.proto.Dossier.Tags.Builder builderForValue) {
+        if (tagsBuilder_ == null) {
+          tags_ = builderForValue.build();
+          onChanged();
+        } else {
+          tagsBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000020;
+        return this;
+      }
+      /**
+       * <code>optional .dossier.Tags tags = 6;</code>
+       */
+      public Builder mergeTags(com.github.jleyba.dossier.proto.Dossier.Tags value) {
+        if (tagsBuilder_ == null) {
+          if (((bitField0_ & 0x00000020) == 0x00000020) &&
+              tags_ != com.github.jleyba.dossier.proto.Dossier.Tags.getDefaultInstance()) {
+            tags_ =
+              com.github.jleyba.dossier.proto.Dossier.Tags.newBuilder(tags_).mergeFrom(value).buildPartial();
+          } else {
+            tags_ = value;
+          }
+          onChanged();
+        } else {
+          tagsBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000020;
+        return this;
+      }
+      /**
+       * <code>optional .dossier.Tags tags = 6;</code>
+       */
+      public Builder clearTags() {
+        if (tagsBuilder_ == null) {
+          tags_ = com.github.jleyba.dossier.proto.Dossier.Tags.getDefaultInstance();
+          onChanged();
+        } else {
+          tagsBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000020);
+        return this;
+      }
+      /**
+       * <code>optional .dossier.Tags tags = 6;</code>
+       */
+      public com.github.jleyba.dossier.proto.Dossier.Tags.Builder getTagsBuilder() {
+        bitField0_ |= 0x00000020;
+        onChanged();
+        return getTagsFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>optional .dossier.Tags tags = 6;</code>
+       */
+      public com.github.jleyba.dossier.proto.Dossier.TagsOrBuilder getTagsOrBuilder() {
+        if (tagsBuilder_ != null) {
+          return tagsBuilder_.getMessageOrBuilder();
+        } else {
+          return tags_;
+        }
+      }
+      /**
+       * <code>optional .dossier.Tags tags = 6;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          com.github.jleyba.dossier.proto.Dossier.Tags, com.github.jleyba.dossier.proto.Dossier.Tags.Builder, com.github.jleyba.dossier.proto.Dossier.TagsOrBuilder> 
+          getTagsFieldBuilder() {
+        if (tagsBuilder_ == null) {
+          tagsBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              com.github.jleyba.dossier.proto.Dossier.Tags, com.github.jleyba.dossier.proto.Dossier.Tags.Builder, com.github.jleyba.dossier.proto.Dossier.TagsOrBuilder>(
+                  getTags(),
+                  getParentForChildren(),
+                  isClean());
+          tags_ = null;
+        }
+        return tagsBuilder_;
       }
 
       // @@protoc_insertion_point(builder_scope:dossier.BaseProperty)
@@ -29429,76 +29618,77 @@ public final class Dossier {
       "ent\"\216\001\n\004Tags\022\020\n\010is_const\030\001 \001(\010\022\025\n\ris_dep" +
       "recated\030\002 \001(\010\022\017\n\007is_dict\030\003 \001(\010\022\020\n\010is_fin" +
       "al\030\004 \001(\010\022\024\n\014is_interface\030\005 \001(\010\022\021\n\tis_mod" +
-      "ule\030\006 \001(\010\022\021\n\tis_struct\030\007 \001(\010\"\257\001\n\014BasePro" +
+      "ule\030\006 \001(\010\022\021\n\tis_struct\030\007 \001(\010\"\314\001\n\014BasePro" +
       "perty\022\014\n\004name\030\001 \002(\t\022\016\n\006source\030\002 \002(\t\022%\n\013d" +
       "escription\030\003 \002(\0132\020.dossier.Comment\022)\n\013de" +
       "precation\030\004 \001(\0132\024.dossier.Deprecation\022/\n" +
       "\nvisibility\030\005 \001(\0162\023.dossier.Visibility:\006" +
-      "PUBLIC\"B\n\010Property\022#\n\004base\030\001 \002(\0132\025.dossi" +
-      "er.BaseProperty\022\021\n\ttype_html\030\002 \001(\t\"\270\002\n\010F",
-      "unction\022#\n\004base\030\001 \002(\0132\025.dossier.BaseProp" +
-      "erty\022\025\n\rtemplate_name\030\002 \003(\t\022\035\n\016is_constr" +
-      "uctor\030\003 \001(\010:\005false\022+\n\tparameter\030\004 \003(\0132\030." +
-      "dossier.Function.Detail\022(\n\006return\030\005 \001(\0132" +
-      "\030.dossier.Function.Detail\022(\n\006thrown\030\006 \003(" +
-      "\0132\030.dossier.Function.Detail\032P\n\006Detail\022\014\n" +
-      "\004name\030\001 \001(\t\022\021\n\ttype_html\030\002 \001(\t\022%\n\013descri" +
-      "ption\030\003 \001(\0132\020.dossier.Comment\"q\n\tPrototy" +
-      "pe\022\014\n\004name\030\001 \002(\t\022\014\n\004href\030\002 \001(\t\022#\n\010functi" +
-      "on\030\003 \003(\0132\021.dossier.Function\022#\n\010property\030",
-      "\004 \003(\0132\021.dossier.Property\"\345\001\n\013Enumeration" +
-      "\022\021\n\ttype_html\030\001 \002(\t\022)\n\005value\030\002 \003(\0132\032.dos" +
-      "sier.Enumeration.Value\022/\n\nvisibility\030\003 \001" +
-      "(\0162\023.dossier.Visibility:\006PUBLIC\032g\n\005Value" +
-      "\022\014\n\004name\030\001 \002(\t\022%\n\013description\030\002 \001(\0132\020.do" +
-      "ssier.Comment\022)\n\013deprecation\030\003 \001(\0132\024.dos" +
-      "sier.Deprecation\"\251\001\n\005Index\022\014\n\004home\030\001 \002(\t" +
-      "\022\037\n\004type\030\002 \003(\0132\021.dossier.TypeLink\022%\n\006mod" +
-      "ule\030\003 \003(\0132\025.dossier.Index.Module\032J\n\006Modu" +
-      "le\022\037\n\004link\030\001 \002(\0132\021.dossier.TypeLink\022\037\n\004t",
-      "ype\030\002 \003(\0132\021.dossier.TypeLink\"\252\t\n\006JsType\022" +
-      "\014\n\004name\030\001 \002(\t\022\016\n\006source\030\005 \002(\t\022+\n\006nested\030" +
-      "\006 \002(\0132\033.dossier.JsType.NestedTypes\022%\n\013de" +
-      "scription\030\007 \002(\0132\020.dossier.Comment\022\033\n\004tag" +
-      "s\030\010 \002(\0132\r.dossier.Tags\022)\n\013deprecation\030\t " +
-      "\001(\0132\024.dossier.Deprecation\022)\n\010type_def\030\n " +
-      "\003(\0132\027.dossier.JsType.TypeDef\022)\n\013enumerat" +
-      "ion\030\013 \001(\0132\024.dossier.Enumeration\022*\n\017stati" +
-      "c_function\030\014 \003(\0132\021.dossier.Function\022*\n\017s" +
-      "tatic_property\030\r \003(\0132\021.dossier.Property\022",
-      "(\n\rmain_function\030\016 \001(\0132\021.dossier.Functio" +
-      "n\022%\n\tprototype\030\017 \003(\0132\022.dossier.Prototype" +
-      "\022#\n\024has_instance_methods\030\020 \001(\010:\005false\022&\n" +
-      "\027has_instance_properties\030\021 \001(\010:\005false\022(\n" +
-      "\rextended_type\030\022 \003(\0132\021.dossier.TypeLink\022" +
-      "+\n\020implemented_type\030\023 \003(\0132\021.dossier.Type" +
-      "Link\022,\n\021compiler_constant\030\024 \003(\0132\021.dossie" +
-      "r.Property\022!\n\006module\030\025 \001(\0132\021.dossier.Typ" +
-      "eLink\022\'\n\014aliased_type\030\026 \001(\0132\021.dossier.Ty" +
-      "peLink\032\212\002\n\013NestedTypes\022;\n\ninterfaces\030\001 \003",
-      "(\0132\'.dossier.JsType.NestedTypes.TypeSumm" +
-      "ary\0228\n\007classes\030\002 \003(\0132\'.dossier.JsType.Ne" +
-      "stedTypes.TypeSummary\0226\n\005enums\030\003 \003(\0132\'.d" +
-      "ossier.JsType.NestedTypes.TypeSummary\032L\n" +
-      "\013TypeSummary\022\014\n\004name\030\001 \002(\t\022\014\n\004href\030\002 \002(\t" +
-      "\022!\n\007summary\030\003 \002(\0132\020.dossier.Comment\032\273\001\n\007" +
-      "TypeDef\022\014\n\004name\030\001 \002(\t\022\021\n\ttype_html\030\002 \002(\t" +
-      "\022\014\n\004href\030\003 \002(\t\022%\n\013description\030\004 \002(\0132\020.do" +
-      "ssier.Comment\022)\n\013deprecation\030\005 \001(\0132\024.dos" +
-      "sier.Deprecation\022/\n\nvisibility\030\006 \001(\0162\023.d",
-      "ossier.Visibility:\006PUBLIC\"}\n\023IndexFileRe" +
-      "nderSpec\022%\n\tresources\030\001 \002(\0132\022.dossier.Re" +
-      "sources\022 \n\006readme\030\002 \001(\0132\020.dossier.Commen" +
-      "t\022\035\n\005index\030\003 \002(\0132\016.dossier.Index\"\177\n\024Sour" +
-      "ceFileRenderSpec\022%\n\tresources\030\001 \002(\0132\022.do" +
-      "ssier.Resources\022!\n\004file\030\002 \002(\0132\023.dossier." +
-      "SourceFile\022\035\n\005index\030\003 \002(\0132\016.dossier.Inde" +
-      "x\"w\n\020JsTypeRenderSpec\022\035\n\004type\030\001 \002(\0132\017.do" +
-      "ssier.JsType\022%\n\tresources\030\002 \002(\0132\022.dossie" +
-      "r.Resources\022\035\n\005index\030\003 \002(\0132\016.dossier.Ind",
-      "ex*A\n\nVisibility\022\n\n\006PUBLIC\020\000\022\r\n\tPROTECTE" +
-      "D\020\001\022\013\n\007PRIVATE\020\002\022\013\n\007PACKAGE\020\003B!\n\037com.git" +
-      "hub.jleyba.dossier.proto"
+      "PUBLIC\022\033\n\004tags\030\006 \001(\0132\r.dossier.Tags\"B\n\010P" +
+      "roperty\022#\n\004base\030\001 \002(\0132\025.dossier.BaseProp",
+      "erty\022\021\n\ttype_html\030\002 \001(\t\"\270\002\n\010Function\022#\n\004" +
+      "base\030\001 \002(\0132\025.dossier.BaseProperty\022\025\n\rtem" +
+      "plate_name\030\002 \003(\t\022\035\n\016is_constructor\030\003 \001(\010" +
+      ":\005false\022+\n\tparameter\030\004 \003(\0132\030.dossier.Fun" +
+      "ction.Detail\022(\n\006return\030\005 \001(\0132\030.dossier.F" +
+      "unction.Detail\022(\n\006thrown\030\006 \003(\0132\030.dossier" +
+      ".Function.Detail\032P\n\006Detail\022\014\n\004name\030\001 \001(\t" +
+      "\022\021\n\ttype_html\030\002 \001(\t\022%\n\013description\030\003 \001(\013" +
+      "2\020.dossier.Comment\"q\n\tPrototype\022\014\n\004name\030" +
+      "\001 \002(\t\022\014\n\004href\030\002 \001(\t\022#\n\010function\030\003 \003(\0132\021.",
+      "dossier.Function\022#\n\010property\030\004 \003(\0132\021.dos" +
+      "sier.Property\"\345\001\n\013Enumeration\022\021\n\ttype_ht" +
+      "ml\030\001 \002(\t\022)\n\005value\030\002 \003(\0132\032.dossier.Enumer" +
+      "ation.Value\022/\n\nvisibility\030\003 \001(\0162\023.dossie" +
+      "r.Visibility:\006PUBLIC\032g\n\005Value\022\014\n\004name\030\001 " +
+      "\002(\t\022%\n\013description\030\002 \001(\0132\020.dossier.Comme" +
+      "nt\022)\n\013deprecation\030\003 \001(\0132\024.dossier.Deprec" +
+      "ation\"\251\001\n\005Index\022\014\n\004home\030\001 \002(\t\022\037\n\004type\030\002 " +
+      "\003(\0132\021.dossier.TypeLink\022%\n\006module\030\003 \003(\0132\025" +
+      ".dossier.Index.Module\032J\n\006Module\022\037\n\004link\030",
+      "\001 \002(\0132\021.dossier.TypeLink\022\037\n\004type\030\002 \003(\0132\021" +
+      ".dossier.TypeLink\"\252\t\n\006JsType\022\014\n\004name\030\001 \002" +
+      "(\t\022\016\n\006source\030\005 \002(\t\022+\n\006nested\030\006 \002(\0132\033.dos" +
+      "sier.JsType.NestedTypes\022%\n\013description\030\007" +
+      " \002(\0132\020.dossier.Comment\022\033\n\004tags\030\010 \002(\0132\r.d" +
+      "ossier.Tags\022)\n\013deprecation\030\t \001(\0132\024.dossi" +
+      "er.Deprecation\022)\n\010type_def\030\n \003(\0132\027.dossi" +
+      "er.JsType.TypeDef\022)\n\013enumeration\030\013 \001(\0132\024" +
+      ".dossier.Enumeration\022*\n\017static_function\030" +
+      "\014 \003(\0132\021.dossier.Function\022*\n\017static_prope",
+      "rty\030\r \003(\0132\021.dossier.Property\022(\n\rmain_fun" +
+      "ction\030\016 \001(\0132\021.dossier.Function\022%\n\tprotot" +
+      "ype\030\017 \003(\0132\022.dossier.Prototype\022#\n\024has_ins" +
+      "tance_methods\030\020 \001(\010:\005false\022&\n\027has_instan" +
+      "ce_properties\030\021 \001(\010:\005false\022(\n\rextended_t" +
+      "ype\030\022 \003(\0132\021.dossier.TypeLink\022+\n\020implemen" +
+      "ted_type\030\023 \003(\0132\021.dossier.TypeLink\022,\n\021com" +
+      "piler_constant\030\024 \003(\0132\021.dossier.Property\022" +
+      "!\n\006module\030\025 \001(\0132\021.dossier.TypeLink\022\'\n\014al" +
+      "iased_type\030\026 \001(\0132\021.dossier.TypeLink\032\212\002\n\013",
+      "NestedTypes\022;\n\ninterfaces\030\001 \003(\0132\'.dossie" +
+      "r.JsType.NestedTypes.TypeSummary\0228\n\007clas" +
+      "ses\030\002 \003(\0132\'.dossier.JsType.NestedTypes.T" +
+      "ypeSummary\0226\n\005enums\030\003 \003(\0132\'.dossier.JsTy" +
+      "pe.NestedTypes.TypeSummary\032L\n\013TypeSummar" +
+      "y\022\014\n\004name\030\001 \002(\t\022\014\n\004href\030\002 \002(\t\022!\n\007summary" +
+      "\030\003 \002(\0132\020.dossier.Comment\032\273\001\n\007TypeDef\022\014\n\004" +
+      "name\030\001 \002(\t\022\021\n\ttype_html\030\002 \002(\t\022\014\n\004href\030\003 " +
+      "\002(\t\022%\n\013description\030\004 \002(\0132\020.dossier.Comme" +
+      "nt\022)\n\013deprecation\030\005 \001(\0132\024.dossier.Deprec",
+      "ation\022/\n\nvisibility\030\006 \001(\0162\023.dossier.Visi" +
+      "bility:\006PUBLIC\"}\n\023IndexFileRenderSpec\022%\n" +
+      "\tresources\030\001 \002(\0132\022.dossier.Resources\022 \n\006" +
+      "readme\030\002 \001(\0132\020.dossier.Comment\022\035\n\005index\030" +
+      "\003 \002(\0132\016.dossier.Index\"\177\n\024SourceFileRende" +
+      "rSpec\022%\n\tresources\030\001 \002(\0132\022.dossier.Resou" +
+      "rces\022!\n\004file\030\002 \002(\0132\023.dossier.SourceFile\022" +
+      "\035\n\005index\030\003 \002(\0132\016.dossier.Index\"w\n\020JsType" +
+      "RenderSpec\022\035\n\004type\030\001 \002(\0132\017.dossier.JsTyp" +
+      "e\022%\n\tresources\030\002 \002(\0132\022.dossier.Resources",
+      "\022\035\n\005index\030\003 \002(\0132\016.dossier.Index*A\n\nVisib" +
+      "ility\022\n\n\006PUBLIC\020\000\022\r\n\tPROTECTED\020\001\022\013\n\007PRIV" +
+      "ATE\020\002\022\013\n\007PACKAGE\020\003B!\n\037com.github.jleyba." +
+      "dossier.proto"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -29559,7 +29749,7 @@ public final class Dossier {
     internal_static_dossier_BaseProperty_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_dossier_BaseProperty_descriptor,
-        new java.lang.String[] { "Name", "Source", "Description", "Deprecation", "Visibility", });
+        new java.lang.String[] { "Name", "Source", "Description", "Deprecation", "Visibility", "Tags", });
     internal_static_dossier_Property_descriptor =
       getDescriptor().getMessageTypes().get(7);
     internal_static_dossier_Property_fieldAccessorTable = new
