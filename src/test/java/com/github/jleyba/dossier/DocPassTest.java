@@ -18,6 +18,7 @@ import com.google.common.jimfs.Jimfs;
 import com.google.javascript.jscomp.CompilerOptions;
 import com.google.javascript.jscomp.DossierCompiler;
 import com.google.javascript.jscomp.SourceFile;
+import com.google.protobuf.Descriptors;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -160,7 +161,13 @@ public class DocPassTest {
         "/** @type {!Function} */",
         "foo.baz = function() {};");
 
-    assertTrue(getDescriptors().isEmpty());
+    Descriptor descriptor = getOnlyElement(getDescriptors());
+    assertNamespace(descriptor);
+
+    List<Descriptor> descriptors = Descriptor.sortByName(descriptor.getProperties());
+    assertEquals(2, descriptors.size());
+    assertEquals("foo.bar", descriptors.get(0).getFullName());
+    assertEquals("foo.baz", descriptors.get(1).getFullName());
   }
 
   @Test
@@ -170,7 +177,8 @@ public class DocPassTest {
         "/** @type {!Function} */",
         "var foo = Function;");
 
-    assertTrue(getDescriptors().isEmpty());
+    Descriptor descriptor = getOnlyElement(getDescriptors());
+    assertNamespace(descriptor);
   }
 
   @Test

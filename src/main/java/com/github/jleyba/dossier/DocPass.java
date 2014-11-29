@@ -30,6 +30,7 @@ import com.google.javascript.rhino.jstype.ObjectType;
 
 import java.nio.file.FileSystem;
 import java.nio.file.Path;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.annotation.Nullable;
@@ -44,6 +45,7 @@ class DocPass  implements CompilerPass {
   private final AbstractCompiler compiler;
   private final DocRegistry docRegistry;
   private final Set<String> providedSymbols;
+  private final Set<String> implicitNamespaces;
   private final DossierModuleRegistry moduleRegistry;
   private final FileSystem fileSystem;
 
@@ -51,15 +53,24 @@ class DocPass  implements CompilerPass {
       FileSystem fileSystem) {
     this.compiler = compiler;
     this.docRegistry = docRegistry;
-    this.providedSymbols = providedSymbols;
     this.moduleRegistry = compiler.getModuleRegistry();
     this.fileSystem = fileSystem;
+
+    this.providedSymbols = providedSymbols;
+    this.implicitNamespaces = new HashSet<>(providedSymbols.size());
   }
 
   @Override
   public void process(Node externs, Node root) {
     if (compiler.getErrorManager().getErrorCount() > 0) {
       return;
+    }
+    for (String symbol : providedSymbols) {
+      implicitNamespaces.add(symbol);
+      for (int i = symbol.indexOf('.'); i != -1; i = symbol.indexOf('.')) {
+        symbol = symbol.substring(0, i);
+        implicitNamespaces.add(symbol);
+      }
     }
     NodeTraversal.traverse(compiler, externs, new ExternCollector());
     NodeTraversal.traverse(compiler, root, new TypeCollector());
@@ -195,7 +206,8 @@ class DocPass  implements CompilerPass {
           && (descriptor.isConstructor()
           || descriptor.isInterface()
           || descriptor.isEnum()
-          || registry.hasNamespace(descriptor.getFullName()))) {
+          || registry.hasNamespace(descriptor.getFullName())
+          || providedSymbols.contains(descriptor.getFullName()))) {
         docRegistry.addType(descriptor);
       }
 
@@ -220,7 +232,7 @@ class DocPass  implements CompilerPass {
             || registry.hasNamespace(propName)
             || isDocumentableType(propInfo)
             || isDocumentableType(propType)
-            || isProvidedSymbol(propName)) {
+            || implicitNamespaces.contains(propName)) {
           Descriptor propDescriptor = new Descriptor(
               propName, obj.getPropertyNode(prop), propType, propInfo);
           if (module != null) {
@@ -281,10 +293,6 @@ class DocPass  implements CompilerPass {
         || propType.isGlobalThisType()
         || isPrimitive(propType);
 
-  }
-
-  private boolean isProvidedSymbol(String name) {
-    return providedSymbols.contains(name);
   }
 
   private static boolean isPrimitive(JSType type) {

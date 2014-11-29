@@ -32,10 +32,6 @@ class ProvidedSymbolsCollectionPass implements CompilerPass {
           String name = convention.extractClassNameIfProvide(n, parent);
           if (name != null) {
             symbols.add(name);
-            while (name.indexOf('.') > 0) {
-              name = name.substring(0, name.lastIndexOf('.'));
-              symbols.add(name);
-            }
           }
         }
       }

@@ -61,12 +61,14 @@ public class EndToEndTest {
 
     copyResource("resources/SimpleReadme.md", srcDir.resolve("SimpleReadme.md"));
     copyResource("resources/globals.js", srcDir.resolve("main/globals.js"));
+    copyResource("resources/json.js", srcDir.resolve("main/json.js"));
 
     Path config = createTempFile(tmpDir, "config", ".json");
     writeConfig(config, new Config() {{
       setOutput(outDir);
       setReadme(srcDir.resolve("SimpleReadme.md"));
       addSource(srcDir.resolve("main/globals.js"));
+      addSource(srcDir.resolve("main/json.js"));
     }});
 
     Main.main(new String[] { "-c", config.toAbsolutePath().toString() });
@@ -92,6 +94,14 @@ public class EndToEndTest {
   public void checkDeprecatedClass() throws IOException {
     Document document = load(outDir.resolve("class_DeprecatedFoo.html"));
     compareWithGoldenFile(querySelector(document, "article"), "class_DeprecatedFoo.html");
+    checkHeader(document);
+    checkFooter(document);
+  }
+
+  @Test
+  public void checkFunctionNamespace() throws IOException {
+    Document document = load(outDir.resolve("namespace_sample_json.html"));
+    compareWithGoldenFile(querySelector(document, "article"), "namespace_sample_json.html");
     checkHeader(document);
     checkFooter(document);
   }

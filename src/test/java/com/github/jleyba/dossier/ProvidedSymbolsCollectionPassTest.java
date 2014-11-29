@@ -43,13 +43,8 @@ public class ProvidedSymbolsCollectionPassTest {
     assertEquals(
         ImmutableSet.of(
             "Foo",
-            "foo",
             "foo.Bar",
-            "foo.bar",
             "foo.bar.Baz",
-            "one",
-            "one.two",
-            "one.two.three",
             "one.two.three.Four"),
         pass.getSymbols());
   }
