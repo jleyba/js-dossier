@@ -178,17 +178,11 @@ message Index {
 // message describes a class, enum, interface, or namespace.
 message JsType {
 
-  // Aggregates the types defined within this |JsType|.
-  message NestedTypes {
-    message TypeSummary {
-      required string name = 1;      // The type name.
-      required string href = 2;      // The hyperlink for the actual type.
-      required Comment summary = 3;  // The summary sentence for this type.
-    }
-
-    repeated TypeSummary interfaces = 1;
-    repeated TypeSummary classes = 2;
-    repeated TypeSummary enums = 3;
+  // Short description for a type defined when this |JsType|.
+  message TypeSummary {
+    required string name = 1;      // The type name.
+    required string href = 2;      // The hyperlink for the actual type.
+    required Comment summary = 3;  // The summary sentence for this type.
   }
 
   // Describes a typedef defined within this type.
@@ -203,7 +197,7 @@ message JsType {
 
   required string name = 1;
   required string source = 5;
-  required NestedTypes nested = 6;
+  repeated TypeSummary nested = 6;
   required Comment description = 7;
   required Tags tags = 8;
   optional Deprecation deprecation = 9;

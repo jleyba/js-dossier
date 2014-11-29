@@ -16654,17 +16654,28 @@ public final class Dossier {
         getSourceBytes();
 
     /**
-     * <code>required .dossier.JsType.NestedTypes nested = 6;</code>
+     * <code>repeated .dossier.JsType.TypeSummary nested = 6;</code>
      */
-    boolean hasNested();
+    java.util.List<com.github.jleyba.dossier.proto.Dossier.JsType.TypeSummary> 
+        getNestedList();
     /**
-     * <code>required .dossier.JsType.NestedTypes nested = 6;</code>
+     * <code>repeated .dossier.JsType.TypeSummary nested = 6;</code>
      */
-    com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes getNested();
+    com.github.jleyba.dossier.proto.Dossier.JsType.TypeSummary getNested(int index);
     /**
-     * <code>required .dossier.JsType.NestedTypes nested = 6;</code>
+     * <code>repeated .dossier.JsType.TypeSummary nested = 6;</code>
      */
-    com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypesOrBuilder getNestedOrBuilder();
+    int getNestedCount();
+    /**
+     * <code>repeated .dossier.JsType.TypeSummary nested = 6;</code>
+     */
+    java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.JsType.TypeSummaryOrBuilder> 
+        getNestedOrBuilderList();
+    /**
+     * <code>repeated .dossier.JsType.TypeSummary nested = 6;</code>
+     */
+    com.github.jleyba.dossier.proto.Dossier.JsType.TypeSummaryOrBuilder getNestedOrBuilder(
+        int index);
 
     /**
      * <code>required .dossier.Comment description = 7;</code>
@@ -17150,21 +17161,16 @@ public final class Dossier {
               break;
             }
             case 50: {
-              com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.Builder subBuilder = null;
-              if (((bitField0_ & 0x00000004) == 0x00000004)) {
-                subBuilder = nested_.toBuilder();
+              if (!((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
+                nested_ = new java.util.ArrayList<com.github.jleyba.dossier.proto.Dossier.JsType.TypeSummary>();
+                mutable_bitField0_ |= 0x00000004;
               }
-              nested_ = input.readMessage(com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.PARSER, extensionRegistry);
-              if (subBuilder != null) {
-                subBuilder.mergeFrom(nested_);
-                nested_ = subBuilder.buildPartial();
-              }
-              bitField0_ |= 0x00000004;
+              nested_.add(input.readMessage(com.github.jleyba.dossier.proto.Dossier.JsType.TypeSummary.PARSER, extensionRegistry));
               break;
             }
             case 58: {
               com.github.jleyba.dossier.proto.Dossier.Comment.Builder subBuilder = null;
-              if (((bitField0_ & 0x00000008) == 0x00000008)) {
+              if (((bitField0_ & 0x00000004) == 0x00000004)) {
                 subBuilder = description_.toBuilder();
               }
               description_ = input.readMessage(com.github.jleyba.dossier.proto.Dossier.Comment.PARSER, extensionRegistry);
@@ -17172,12 +17178,12 @@ public final class Dossier {
                 subBuilder.mergeFrom(description_);
                 description_ = subBuilder.buildPartial();
               }
-              bitField0_ |= 0x00000008;
+              bitField0_ |= 0x00000004;
               break;
             }
             case 66: {
               com.github.jleyba.dossier.proto.Dossier.Tags.Builder subBuilder = null;
-              if (((bitField0_ & 0x00000010) == 0x00000010)) {
+              if (((bitField0_ & 0x00000008) == 0x00000008)) {
                 subBuilder = tags_.toBuilder();
               }
               tags_ = input.readMessage(com.github.jleyba.dossier.proto.Dossier.Tags.PARSER, extensionRegistry);
@@ -17185,12 +17191,12 @@ public final class Dossier {
                 subBuilder.mergeFrom(tags_);
                 tags_ = subBuilder.buildPartial();
               }
-              bitField0_ |= 0x00000010;
+              bitField0_ |= 0x00000008;
               break;
             }
             case 74: {
               com.github.jleyba.dossier.proto.Dossier.Deprecation.Builder subBuilder = null;
-              if (((bitField0_ & 0x00000020) == 0x00000020)) {
+              if (((bitField0_ & 0x00000010) == 0x00000010)) {
                 subBuilder = deprecation_.toBuilder();
               }
               deprecation_ = input.readMessage(com.github.jleyba.dossier.proto.Dossier.Deprecation.PARSER, extensionRegistry);
@@ -17198,7 +17204,7 @@ public final class Dossier {
                 subBuilder.mergeFrom(deprecation_);
                 deprecation_ = subBuilder.buildPartial();
               }
-              bitField0_ |= 0x00000020;
+              bitField0_ |= 0x00000010;
               break;
             }
             case 82: {
@@ -17211,7 +17217,7 @@ public final class Dossier {
             }
             case 90: {
               com.github.jleyba.dossier.proto.Dossier.Enumeration.Builder subBuilder = null;
-              if (((bitField0_ & 0x00000040) == 0x00000040)) {
+              if (((bitField0_ & 0x00000020) == 0x00000020)) {
                 subBuilder = enumeration_.toBuilder();
               }
               enumeration_ = input.readMessage(com.github.jleyba.dossier.proto.Dossier.Enumeration.PARSER, extensionRegistry);
@@ -17219,7 +17225,7 @@ public final class Dossier {
                 subBuilder.mergeFrom(enumeration_);
                 enumeration_ = subBuilder.buildPartial();
               }
-              bitField0_ |= 0x00000040;
+              bitField0_ |= 0x00000020;
               break;
             }
             case 98: {
@@ -17240,7 +17246,7 @@ public final class Dossier {
             }
             case 114: {
               com.github.jleyba.dossier.proto.Dossier.Function.Builder subBuilder = null;
-              if (((bitField0_ & 0x00000080) == 0x00000080)) {
+              if (((bitField0_ & 0x00000040) == 0x00000040)) {
                 subBuilder = mainFunction_.toBuilder();
               }
               mainFunction_ = input.readMessage(com.github.jleyba.dossier.proto.Dossier.Function.PARSER, extensionRegistry);
@@ -17248,7 +17254,7 @@ public final class Dossier {
                 subBuilder.mergeFrom(mainFunction_);
                 mainFunction_ = subBuilder.buildPartial();
               }
-              bitField0_ |= 0x00000080;
+              bitField0_ |= 0x00000040;
               break;
             }
             case 122: {
@@ -17260,12 +17266,12 @@ public final class Dossier {
               break;
             }
             case 128: {
-              bitField0_ |= 0x00000100;
+              bitField0_ |= 0x00000080;
               hasInstanceMethods_ = input.readBool();
               break;
             }
             case 136: {
-              bitField0_ |= 0x00000200;
+              bitField0_ |= 0x00000100;
               hasInstanceProperties_ = input.readBool();
               break;
             }
@@ -17295,7 +17301,7 @@ public final class Dossier {
             }
             case 170: {
               com.github.jleyba.dossier.proto.Dossier.TypeLink.Builder subBuilder = null;
-              if (((bitField0_ & 0x00000400) == 0x00000400)) {
+              if (((bitField0_ & 0x00000200) == 0x00000200)) {
                 subBuilder = module_.toBuilder();
               }
               module_ = input.readMessage(com.github.jleyba.dossier.proto.Dossier.TypeLink.PARSER, extensionRegistry);
@@ -17303,12 +17309,12 @@ public final class Dossier {
                 subBuilder.mergeFrom(module_);
                 module_ = subBuilder.buildPartial();
               }
-              bitField0_ |= 0x00000400;
+              bitField0_ |= 0x00000200;
               break;
             }
             case 178: {
               com.github.jleyba.dossier.proto.Dossier.TypeLink.Builder subBuilder = null;
-              if (((bitField0_ & 0x00000800) == 0x00000800)) {
+              if (((bitField0_ & 0x00000400) == 0x00000400)) {
                 subBuilder = aliasedType_.toBuilder();
               }
               aliasedType_ = input.readMessage(com.github.jleyba.dossier.proto.Dossier.TypeLink.PARSER, extensionRegistry);
@@ -17316,7 +17322,7 @@ public final class Dossier {
                 subBuilder.mergeFrom(aliasedType_);
                 aliasedType_ = subBuilder.buildPartial();
               }
-              bitField0_ |= 0x00000800;
+              bitField0_ |= 0x00000400;
               break;
             }
           }
@@ -17327,6 +17333,9 @@ public final class Dossier {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e.getMessage()).setUnfinishedMessage(this);
       } finally {
+        if (((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
+          nested_ = java.util.Collections.unmodifiableList(nested_);
+        }
         if (((mutable_bitField0_ & 0x00000040) == 0x00000040)) {
           typeDef_ = java.util.Collections.unmodifiableList(typeDef_);
         }
@@ -17379,106 +17388,111 @@ public final class Dossier {
       return PARSER;
     }
 
-    public interface NestedTypesOrBuilder extends
-        // @@protoc_insertion_point(interface_extends:dossier.JsType.NestedTypes)
+    public interface TypeSummaryOrBuilder extends
+        // @@protoc_insertion_point(interface_extends:dossier.JsType.TypeSummary)
         com.google.protobuf.MessageOrBuilder {
 
       /**
-       * <code>repeated .dossier.JsType.NestedTypes.TypeSummary interfaces = 1;</code>
+       * <code>required string name = 1;</code>
+       *
+       * <pre>
+       * The type name.
+       * </pre>
        */
-      java.util.List<com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary> 
-          getInterfacesList();
+      boolean hasName();
       /**
-       * <code>repeated .dossier.JsType.NestedTypes.TypeSummary interfaces = 1;</code>
+       * <code>required string name = 1;</code>
+       *
+       * <pre>
+       * The type name.
+       * </pre>
        */
-      com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary getInterfaces(int index);
+      java.lang.String getName();
       /**
-       * <code>repeated .dossier.JsType.NestedTypes.TypeSummary interfaces = 1;</code>
+       * <code>required string name = 1;</code>
+       *
+       * <pre>
+       * The type name.
+       * </pre>
        */
-      int getInterfacesCount();
-      /**
-       * <code>repeated .dossier.JsType.NestedTypes.TypeSummary interfaces = 1;</code>
-       */
-      java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummaryOrBuilder> 
-          getInterfacesOrBuilderList();
-      /**
-       * <code>repeated .dossier.JsType.NestedTypes.TypeSummary interfaces = 1;</code>
-       */
-      com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummaryOrBuilder getInterfacesOrBuilder(
-          int index);
+      com.google.protobuf.ByteString
+          getNameBytes();
 
       /**
-       * <code>repeated .dossier.JsType.NestedTypes.TypeSummary classes = 2;</code>
+       * <code>required string href = 2;</code>
+       *
+       * <pre>
+       * The hyperlink for the actual type.
+       * </pre>
        */
-      java.util.List<com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary> 
-          getClassesList();
+      boolean hasHref();
       /**
-       * <code>repeated .dossier.JsType.NestedTypes.TypeSummary classes = 2;</code>
+       * <code>required string href = 2;</code>
+       *
+       * <pre>
+       * The hyperlink for the actual type.
+       * </pre>
        */
-      com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary getClasses(int index);
+      java.lang.String getHref();
       /**
-       * <code>repeated .dossier.JsType.NestedTypes.TypeSummary classes = 2;</code>
+       * <code>required string href = 2;</code>
+       *
+       * <pre>
+       * The hyperlink for the actual type.
+       * </pre>
        */
-      int getClassesCount();
-      /**
-       * <code>repeated .dossier.JsType.NestedTypes.TypeSummary classes = 2;</code>
-       */
-      java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummaryOrBuilder> 
-          getClassesOrBuilderList();
-      /**
-       * <code>repeated .dossier.JsType.NestedTypes.TypeSummary classes = 2;</code>
-       */
-      com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummaryOrBuilder getClassesOrBuilder(
-          int index);
+      com.google.protobuf.ByteString
+          getHrefBytes();
 
       /**
-       * <code>repeated .dossier.JsType.NestedTypes.TypeSummary enums = 3;</code>
+       * <code>required .dossier.Comment summary = 3;</code>
+       *
+       * <pre>
+       * The summary sentence for this type.
+       * </pre>
        */
-      java.util.List<com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary> 
-          getEnumsList();
+      boolean hasSummary();
       /**
-       * <code>repeated .dossier.JsType.NestedTypes.TypeSummary enums = 3;</code>
+       * <code>required .dossier.Comment summary = 3;</code>
+       *
+       * <pre>
+       * The summary sentence for this type.
+       * </pre>
        */
-      com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary getEnums(int index);
+      com.github.jleyba.dossier.proto.Dossier.Comment getSummary();
       /**
-       * <code>repeated .dossier.JsType.NestedTypes.TypeSummary enums = 3;</code>
+       * <code>required .dossier.Comment summary = 3;</code>
+       *
+       * <pre>
+       * The summary sentence for this type.
+       * </pre>
        */
-      int getEnumsCount();
-      /**
-       * <code>repeated .dossier.JsType.NestedTypes.TypeSummary enums = 3;</code>
-       */
-      java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummaryOrBuilder> 
-          getEnumsOrBuilderList();
-      /**
-       * <code>repeated .dossier.JsType.NestedTypes.TypeSummary enums = 3;</code>
-       */
-      com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummaryOrBuilder getEnumsOrBuilder(
-          int index);
+      com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder getSummaryOrBuilder();
     }
     /**
-     * Protobuf type {@code dossier.JsType.NestedTypes}
+     * Protobuf type {@code dossier.JsType.TypeSummary}
      *
      * <pre>
-     * Aggregates the types defined within this |JsType|.
+     * Short description for a type defined when this |JsType|.
      * </pre>
      */
-    public static final class NestedTypes extends
+    public static final class TypeSummary extends
         com.google.protobuf.GeneratedMessage implements
-        // @@protoc_insertion_point(message_implements:dossier.JsType.NestedTypes)
-        NestedTypesOrBuilder {
-      // Use NestedTypes.newBuilder() to construct.
-      private NestedTypes(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+        // @@protoc_insertion_point(message_implements:dossier.JsType.TypeSummary)
+        TypeSummaryOrBuilder {
+      // Use TypeSummary.newBuilder() to construct.
+      private TypeSummary(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
         super(builder);
         this.unknownFields = builder.getUnknownFields();
       }
-      private NestedTypes(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+      private TypeSummary(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
 
-      private static final NestedTypes defaultInstance;
-      public static NestedTypes getDefaultInstance() {
+      private static final TypeSummary defaultInstance;
+      public static TypeSummary getDefaultInstance() {
         return defaultInstance;
       }
 
-      public NestedTypes getDefaultInstanceForType() {
+      public TypeSummary getDefaultInstanceForType() {
         return defaultInstance;
       }
 
@@ -17488,7 +17502,7 @@ public final class Dossier {
           getUnknownFields() {
         return this.unknownFields;
       }
-      private NestedTypes(
+      private TypeSummary(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
@@ -17512,27 +17526,28 @@ public final class Dossier {
                 break;
               }
               case 10: {
-                if (!((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
-                  interfaces_ = new java.util.ArrayList<com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary>();
-                  mutable_bitField0_ |= 0x00000001;
-                }
-                interfaces_.add(input.readMessage(com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary.PARSER, extensionRegistry));
+                com.google.protobuf.ByteString bs = input.readBytes();
+                bitField0_ |= 0x00000001;
+                name_ = bs;
                 break;
               }
               case 18: {
-                if (!((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
-                  classes_ = new java.util.ArrayList<com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary>();
-                  mutable_bitField0_ |= 0x00000002;
-                }
-                classes_.add(input.readMessage(com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary.PARSER, extensionRegistry));
+                com.google.protobuf.ByteString bs = input.readBytes();
+                bitField0_ |= 0x00000002;
+                href_ = bs;
                 break;
               }
               case 26: {
-                if (!((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
-                  enums_ = new java.util.ArrayList<com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary>();
-                  mutable_bitField0_ |= 0x00000004;
+                com.github.jleyba.dossier.proto.Dossier.Comment.Builder subBuilder = null;
+                if (((bitField0_ & 0x00000004) == 0x00000004)) {
+                  subBuilder = summary_.toBuilder();
                 }
-                enums_.add(input.readMessage(com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary.PARSER, extensionRegistry));
+                summary_ = input.readMessage(com.github.jleyba.dossier.proto.Dossier.Comment.PARSER, extensionRegistry);
+                if (subBuilder != null) {
+                  subBuilder.mergeFrom(summary_);
+                  summary_ = subBuilder.buildPartial();
+                }
+                bitField0_ |= 0x00000004;
                 break;
               }
             }
@@ -17543,246 +17558,492 @@ public final class Dossier {
           throw new com.google.protobuf.InvalidProtocolBufferException(
               e.getMessage()).setUnfinishedMessage(this);
         } finally {
-          if (((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
-            interfaces_ = java.util.Collections.unmodifiableList(interfaces_);
-          }
-          if (((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
-            classes_ = java.util.Collections.unmodifiableList(classes_);
-          }
-          if (((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
-            enums_ = java.util.Collections.unmodifiableList(enums_);
-          }
           this.unknownFields = unknownFields.build();
           makeExtensionsImmutable();
         }
       }
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_JsType_NestedTypes_descriptor;
+        return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_JsType_TypeSummary_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_JsType_NestedTypes_fieldAccessorTable
+        return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_JsType_TypeSummary_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.class, com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.Builder.class);
+                com.github.jleyba.dossier.proto.Dossier.JsType.TypeSummary.class, com.github.jleyba.dossier.proto.Dossier.JsType.TypeSummary.Builder.class);
       }
 
-      public static com.google.protobuf.Parser<NestedTypes> PARSER =
-          new com.google.protobuf.AbstractParser<NestedTypes>() {
-        public NestedTypes parsePartialFrom(
+      public static com.google.protobuf.Parser<TypeSummary> PARSER =
+          new com.google.protobuf.AbstractParser<TypeSummary>() {
+        public TypeSummary parsePartialFrom(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws com.google.protobuf.InvalidProtocolBufferException {
-          return new NestedTypes(input, extensionRegistry);
+          return new TypeSummary(input, extensionRegistry);
         }
       };
 
       @java.lang.Override
-      public com.google.protobuf.Parser<NestedTypes> getParserForType() {
+      public com.google.protobuf.Parser<TypeSummary> getParserForType() {
         return PARSER;
       }
 
-      public interface TypeSummaryOrBuilder extends
-          // @@protoc_insertion_point(interface_extends:dossier.JsType.NestedTypes.TypeSummary)
-          com.google.protobuf.MessageOrBuilder {
-
-        /**
-         * <code>required string name = 1;</code>
-         *
-         * <pre>
-         * The type name.
-         * </pre>
-         */
-        boolean hasName();
-        /**
-         * <code>required string name = 1;</code>
-         *
-         * <pre>
-         * The type name.
-         * </pre>
-         */
-        java.lang.String getName();
-        /**
-         * <code>required string name = 1;</code>
-         *
-         * <pre>
-         * The type name.
-         * </pre>
-         */
-        com.google.protobuf.ByteString
-            getNameBytes();
-
-        /**
-         * <code>required string href = 2;</code>
-         *
-         * <pre>
-         * The hyperlink for the actual type.
-         * </pre>
-         */
-        boolean hasHref();
-        /**
-         * <code>required string href = 2;</code>
-         *
-         * <pre>
-         * The hyperlink for the actual type.
-         * </pre>
-         */
-        java.lang.String getHref();
-        /**
-         * <code>required string href = 2;</code>
-         *
-         * <pre>
-         * The hyperlink for the actual type.
-         * </pre>
-         */
-        com.google.protobuf.ByteString
-            getHrefBytes();
-
-        /**
-         * <code>required .dossier.Comment summary = 3;</code>
-         *
-         * <pre>
-         * The summary sentence for this type.
-         * </pre>
-         */
-        boolean hasSummary();
-        /**
-         * <code>required .dossier.Comment summary = 3;</code>
-         *
-         * <pre>
-         * The summary sentence for this type.
-         * </pre>
-         */
-        com.github.jleyba.dossier.proto.Dossier.Comment getSummary();
-        /**
-         * <code>required .dossier.Comment summary = 3;</code>
-         *
-         * <pre>
-         * The summary sentence for this type.
-         * </pre>
-         */
-        com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder getSummaryOrBuilder();
+      private int bitField0_;
+      public static final int NAME_FIELD_NUMBER = 1;
+      private java.lang.Object name_;
+      /**
+       * <code>required string name = 1;</code>
+       *
+       * <pre>
+       * The type name.
+       * </pre>
+       */
+      public boolean hasName() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       /**
-       * Protobuf type {@code dossier.JsType.NestedTypes.TypeSummary}
+       * <code>required string name = 1;</code>
+       *
+       * <pre>
+       * The type name.
+       * </pre>
        */
-      public static final class TypeSummary extends
-          com.google.protobuf.GeneratedMessage implements
-          // @@protoc_insertion_point(message_implements:dossier.JsType.NestedTypes.TypeSummary)
-          TypeSummaryOrBuilder {
-        // Use TypeSummary.newBuilder() to construct.
-        private TypeSummary(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
-          super(builder);
-          this.unknownFields = builder.getUnknownFields();
-        }
-        private TypeSummary(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
-
-        private static final TypeSummary defaultInstance;
-        public static TypeSummary getDefaultInstance() {
-          return defaultInstance;
-        }
-
-        public TypeSummary getDefaultInstanceForType() {
-          return defaultInstance;
-        }
-
-        private final com.google.protobuf.UnknownFieldSet unknownFields;
-        @java.lang.Override
-        public final com.google.protobuf.UnknownFieldSet
-            getUnknownFields() {
-          return this.unknownFields;
-        }
-        private TypeSummary(
-            com.google.protobuf.CodedInputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws com.google.protobuf.InvalidProtocolBufferException {
-          initFields();
-          int mutable_bitField0_ = 0;
-          com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-              com.google.protobuf.UnknownFieldSet.newBuilder();
-          try {
-            boolean done = false;
-            while (!done) {
-              int tag = input.readTag();
-              switch (tag) {
-                case 0:
-                  done = true;
-                  break;
-                default: {
-                  if (!parseUnknownField(input, unknownFields,
-                                         extensionRegistry, tag)) {
-                    done = true;
-                  }
-                  break;
-                }
-                case 10: {
-                  com.google.protobuf.ByteString bs = input.readBytes();
-                  bitField0_ |= 0x00000001;
-                  name_ = bs;
-                  break;
-                }
-                case 18: {
-                  com.google.protobuf.ByteString bs = input.readBytes();
-                  bitField0_ |= 0x00000002;
-                  href_ = bs;
-                  break;
-                }
-                case 26: {
-                  com.github.jleyba.dossier.proto.Dossier.Comment.Builder subBuilder = null;
-                  if (((bitField0_ & 0x00000004) == 0x00000004)) {
-                    subBuilder = summary_.toBuilder();
-                  }
-                  summary_ = input.readMessage(com.github.jleyba.dossier.proto.Dossier.Comment.PARSER, extensionRegistry);
-                  if (subBuilder != null) {
-                    subBuilder.mergeFrom(summary_);
-                    summary_ = subBuilder.buildPartial();
-                  }
-                  bitField0_ |= 0x00000004;
-                  break;
-                }
-              }
-            }
-          } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-            throw e.setUnfinishedMessage(this);
-          } catch (java.io.IOException e) {
-            throw new com.google.protobuf.InvalidProtocolBufferException(
-                e.getMessage()).setUnfinishedMessage(this);
-          } finally {
-            this.unknownFields = unknownFields.build();
-            makeExtensionsImmutable();
+      public java.lang.String getName() {
+        java.lang.Object ref = name_;
+        if (ref instanceof java.lang.String) {
+          return (java.lang.String) ref;
+        } else {
+          com.google.protobuf.ByteString bs = 
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            name_ = s;
           }
+          return s;
         }
+      }
+      /**
+       * <code>required string name = 1;</code>
+       *
+       * <pre>
+       * The type name.
+       * </pre>
+       */
+      public com.google.protobuf.ByteString
+          getNameBytes() {
+        java.lang.Object ref = name_;
+        if (ref instanceof java.lang.String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          name_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+
+      public static final int HREF_FIELD_NUMBER = 2;
+      private java.lang.Object href_;
+      /**
+       * <code>required string href = 2;</code>
+       *
+       * <pre>
+       * The hyperlink for the actual type.
+       * </pre>
+       */
+      public boolean hasHref() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      /**
+       * <code>required string href = 2;</code>
+       *
+       * <pre>
+       * The hyperlink for the actual type.
+       * </pre>
+       */
+      public java.lang.String getHref() {
+        java.lang.Object ref = href_;
+        if (ref instanceof java.lang.String) {
+          return (java.lang.String) ref;
+        } else {
+          com.google.protobuf.ByteString bs = 
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            href_ = s;
+          }
+          return s;
+        }
+      }
+      /**
+       * <code>required string href = 2;</code>
+       *
+       * <pre>
+       * The hyperlink for the actual type.
+       * </pre>
+       */
+      public com.google.protobuf.ByteString
+          getHrefBytes() {
+        java.lang.Object ref = href_;
+        if (ref instanceof java.lang.String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          href_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+
+      public static final int SUMMARY_FIELD_NUMBER = 3;
+      private com.github.jleyba.dossier.proto.Dossier.Comment summary_;
+      /**
+       * <code>required .dossier.Comment summary = 3;</code>
+       *
+       * <pre>
+       * The summary sentence for this type.
+       * </pre>
+       */
+      public boolean hasSummary() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      /**
+       * <code>required .dossier.Comment summary = 3;</code>
+       *
+       * <pre>
+       * The summary sentence for this type.
+       * </pre>
+       */
+      public com.github.jleyba.dossier.proto.Dossier.Comment getSummary() {
+        return summary_;
+      }
+      /**
+       * <code>required .dossier.Comment summary = 3;</code>
+       *
+       * <pre>
+       * The summary sentence for this type.
+       * </pre>
+       */
+      public com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder getSummaryOrBuilder() {
+        return summary_;
+      }
+
+      private void initFields() {
+        name_ = "";
+        href_ = "";
+        summary_ = com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance();
+      }
+      private byte memoizedIsInitialized = -1;
+      public final boolean isInitialized() {
+        byte isInitialized = memoizedIsInitialized;
+        if (isInitialized == 1) return true;
+        if (isInitialized == 0) return false;
+
+        if (!hasName()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+        if (!hasHref()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+        if (!hasSummary()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+        if (!getSummary().isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+        memoizedIsInitialized = 1;
+        return true;
+      }
+
+      public void writeTo(com.google.protobuf.CodedOutputStream output)
+                          throws java.io.IOException {
+        getSerializedSize();
+        if (((bitField0_ & 0x00000001) == 0x00000001)) {
+          output.writeBytes(1, getNameBytes());
+        }
+        if (((bitField0_ & 0x00000002) == 0x00000002)) {
+          output.writeBytes(2, getHrefBytes());
+        }
+        if (((bitField0_ & 0x00000004) == 0x00000004)) {
+          output.writeMessage(3, summary_);
+        }
+        getUnknownFields().writeTo(output);
+      }
+
+      private int memoizedSerializedSize = -1;
+      public int getSerializedSize() {
+        int size = memoizedSerializedSize;
+        if (size != -1) return size;
+
+        size = 0;
+        if (((bitField0_ & 0x00000001) == 0x00000001)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeBytesSize(1, getNameBytes());
+        }
+        if (((bitField0_ & 0x00000002) == 0x00000002)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeBytesSize(2, getHrefBytes());
+        }
+        if (((bitField0_ & 0x00000004) == 0x00000004)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeMessageSize(3, summary_);
+        }
+        size += getUnknownFields().getSerializedSize();
+        memoizedSerializedSize = size;
+        return size;
+      }
+
+      private static final long serialVersionUID = 0L;
+      @java.lang.Override
+      protected java.lang.Object writeReplace()
+          throws java.io.ObjectStreamException {
+        return super.writeReplace();
+      }
+
+      public static com.github.jleyba.dossier.proto.Dossier.JsType.TypeSummary parseFrom(
+          com.google.protobuf.ByteString data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static com.github.jleyba.dossier.proto.Dossier.JsType.TypeSummary parseFrom(
+          com.google.protobuf.ByteString data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static com.github.jleyba.dossier.proto.Dossier.JsType.TypeSummary parseFrom(byte[] data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static com.github.jleyba.dossier.proto.Dossier.JsType.TypeSummary parseFrom(
+          byte[] data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static com.github.jleyba.dossier.proto.Dossier.JsType.TypeSummary parseFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return PARSER.parseFrom(input);
+      }
+      public static com.github.jleyba.dossier.proto.Dossier.JsType.TypeSummary parseFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return PARSER.parseFrom(input, extensionRegistry);
+      }
+      public static com.github.jleyba.dossier.proto.Dossier.JsType.TypeSummary parseDelimitedFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return PARSER.parseDelimitedFrom(input);
+      }
+      public static com.github.jleyba.dossier.proto.Dossier.JsType.TypeSummary parseDelimitedFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return PARSER.parseDelimitedFrom(input, extensionRegistry);
+      }
+      public static com.github.jleyba.dossier.proto.Dossier.JsType.TypeSummary parseFrom(
+          com.google.protobuf.CodedInputStream input)
+          throws java.io.IOException {
+        return PARSER.parseFrom(input);
+      }
+      public static com.github.jleyba.dossier.proto.Dossier.JsType.TypeSummary parseFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return PARSER.parseFrom(input, extensionRegistry);
+      }
+
+      public static Builder newBuilder() { return Builder.create(); }
+      public Builder newBuilderForType() { return newBuilder(); }
+      public static Builder newBuilder(com.github.jleyba.dossier.proto.Dossier.JsType.TypeSummary prototype) {
+        return newBuilder().mergeFrom(prototype);
+      }
+      public Builder toBuilder() { return newBuilder(this); }
+
+      @java.lang.Override
+      protected Builder newBuilderForType(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        Builder builder = new Builder(parent);
+        return builder;
+      }
+      /**
+       * Protobuf type {@code dossier.JsType.TypeSummary}
+       *
+       * <pre>
+       * Short description for a type defined when this |JsType|.
+       * </pre>
+       */
+      public static final class Builder extends
+          com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+          // @@protoc_insertion_point(builder_implements:dossier.JsType.TypeSummary)
+          com.github.jleyba.dossier.proto.Dossier.JsType.TypeSummaryOrBuilder {
         public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
-          return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_JsType_NestedTypes_TypeSummary_descriptor;
+          return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_JsType_TypeSummary_descriptor;
         }
 
         protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
             internalGetFieldAccessorTable() {
-          return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_JsType_NestedTypes_TypeSummary_fieldAccessorTable
+          return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_JsType_TypeSummary_fieldAccessorTable
               .ensureFieldAccessorsInitialized(
-                  com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary.class, com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary.Builder.class);
+                  com.github.jleyba.dossier.proto.Dossier.JsType.TypeSummary.class, com.github.jleyba.dossier.proto.Dossier.JsType.TypeSummary.Builder.class);
         }
 
-        public static com.google.protobuf.Parser<TypeSummary> PARSER =
-            new com.google.protobuf.AbstractParser<TypeSummary>() {
-          public TypeSummary parsePartialFrom(
-              com.google.protobuf.CodedInputStream input,
-              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-              throws com.google.protobuf.InvalidProtocolBufferException {
-            return new TypeSummary(input, extensionRegistry);
+        // Construct using com.github.jleyba.dossier.proto.Dossier.JsType.TypeSummary.newBuilder()
+        private Builder() {
+          maybeForceBuilderInitialization();
+        }
+
+        private Builder(
+            com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+          super(parent);
+          maybeForceBuilderInitialization();
+        }
+        private void maybeForceBuilderInitialization() {
+          if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+            getSummaryFieldBuilder();
           }
-        };
-
-        @java.lang.Override
-        public com.google.protobuf.Parser<TypeSummary> getParserForType() {
-          return PARSER;
+        }
+        private static Builder create() {
+          return new Builder();
         }
 
+        public Builder clear() {
+          super.clear();
+          name_ = "";
+          bitField0_ = (bitField0_ & ~0x00000001);
+          href_ = "";
+          bitField0_ = (bitField0_ & ~0x00000002);
+          if (summaryBuilder_ == null) {
+            summary_ = com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance();
+          } else {
+            summaryBuilder_.clear();
+          }
+          bitField0_ = (bitField0_ & ~0x00000004);
+          return this;
+        }
+
+        public Builder clone() {
+          return create().mergeFrom(buildPartial());
+        }
+
+        public com.google.protobuf.Descriptors.Descriptor
+            getDescriptorForType() {
+          return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_JsType_TypeSummary_descriptor;
+        }
+
+        public com.github.jleyba.dossier.proto.Dossier.JsType.TypeSummary getDefaultInstanceForType() {
+          return com.github.jleyba.dossier.proto.Dossier.JsType.TypeSummary.getDefaultInstance();
+        }
+
+        public com.github.jleyba.dossier.proto.Dossier.JsType.TypeSummary build() {
+          com.github.jleyba.dossier.proto.Dossier.JsType.TypeSummary result = buildPartial();
+          if (!result.isInitialized()) {
+            throw newUninitializedMessageException(result);
+          }
+          return result;
+        }
+
+        public com.github.jleyba.dossier.proto.Dossier.JsType.TypeSummary buildPartial() {
+          com.github.jleyba.dossier.proto.Dossier.JsType.TypeSummary result = new com.github.jleyba.dossier.proto.Dossier.JsType.TypeSummary(this);
+          int from_bitField0_ = bitField0_;
+          int to_bitField0_ = 0;
+          if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+            to_bitField0_ |= 0x00000001;
+          }
+          result.name_ = name_;
+          if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+            to_bitField0_ |= 0x00000002;
+          }
+          result.href_ = href_;
+          if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+            to_bitField0_ |= 0x00000004;
+          }
+          if (summaryBuilder_ == null) {
+            result.summary_ = summary_;
+          } else {
+            result.summary_ = summaryBuilder_.build();
+          }
+          result.bitField0_ = to_bitField0_;
+          onBuilt();
+          return result;
+        }
+
+        public Builder mergeFrom(com.google.protobuf.Message other) {
+          if (other instanceof com.github.jleyba.dossier.proto.Dossier.JsType.TypeSummary) {
+            return mergeFrom((com.github.jleyba.dossier.proto.Dossier.JsType.TypeSummary)other);
+          } else {
+            super.mergeFrom(other);
+            return this;
+          }
+        }
+
+        public Builder mergeFrom(com.github.jleyba.dossier.proto.Dossier.JsType.TypeSummary other) {
+          if (other == com.github.jleyba.dossier.proto.Dossier.JsType.TypeSummary.getDefaultInstance()) return this;
+          if (other.hasName()) {
+            bitField0_ |= 0x00000001;
+            name_ = other.name_;
+            onChanged();
+          }
+          if (other.hasHref()) {
+            bitField0_ |= 0x00000002;
+            href_ = other.href_;
+            onChanged();
+          }
+          if (other.hasSummary()) {
+            mergeSummary(other.getSummary());
+          }
+          this.mergeUnknownFields(other.getUnknownFields());
+          return this;
+        }
+
+        public final boolean isInitialized() {
+          if (!hasName()) {
+            
+            return false;
+          }
+          if (!hasHref()) {
+            
+            return false;
+          }
+          if (!hasSummary()) {
+            
+            return false;
+          }
+          if (!getSummary().isInitialized()) {
+            
+            return false;
+          }
+          return true;
+        }
+
+        public Builder mergeFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          com.github.jleyba.dossier.proto.Dossier.JsType.TypeSummary parsedMessage = null;
+          try {
+            parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+          } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+            parsedMessage = (com.github.jleyba.dossier.proto.Dossier.JsType.TypeSummary) e.getUnfinishedMessage();
+            throw e;
+          } finally {
+            if (parsedMessage != null) {
+              mergeFrom(parsedMessage);
+            }
+          }
+          return this;
+        }
         private int bitField0_;
-        public static final int NAME_FIELD_NUMBER = 1;
-        private java.lang.Object name_;
+
+        private java.lang.Object name_ = "";
         /**
          * <code>required string name = 1;</code>
          *
@@ -17802,16 +18063,16 @@ public final class Dossier {
          */
         public java.lang.String getName() {
           java.lang.Object ref = name_;
-          if (ref instanceof java.lang.String) {
-            return (java.lang.String) ref;
-          } else {
-            com.google.protobuf.ByteString bs = 
+          if (!(ref instanceof java.lang.String)) {
+            com.google.protobuf.ByteString bs =
                 (com.google.protobuf.ByteString) ref;
             java.lang.String s = bs.toStringUtf8();
             if (bs.isValidUtf8()) {
               name_ = s;
             }
             return s;
+          } else {
+            return (java.lang.String) ref;
           }
         }
         /**
@@ -17824,7 +18085,7 @@ public final class Dossier {
         public com.google.protobuf.ByteString
             getNameBytes() {
           java.lang.Object ref = name_;
-          if (ref instanceof java.lang.String) {
+          if (ref instanceof String) {
             com.google.protobuf.ByteString b = 
                 com.google.protobuf.ByteString.copyFromUtf8(
                     (java.lang.String) ref);
@@ -17834,9 +18095,55 @@ public final class Dossier {
             return (com.google.protobuf.ByteString) ref;
           }
         }
+        /**
+         * <code>required string name = 1;</code>
+         *
+         * <pre>
+         * The type name.
+         * </pre>
+         */
+        public Builder setName(
+            java.lang.String value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+          name_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>required string name = 1;</code>
+         *
+         * <pre>
+         * The type name.
+         * </pre>
+         */
+        public Builder clearName() {
+          bitField0_ = (bitField0_ & ~0x00000001);
+          name_ = getDefaultInstance().getName();
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>required string name = 1;</code>
+         *
+         * <pre>
+         * The type name.
+         * </pre>
+         */
+        public Builder setNameBytes(
+            com.google.protobuf.ByteString value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+          name_ = value;
+          onChanged();
+          return this;
+        }
 
-        public static final int HREF_FIELD_NUMBER = 2;
-        private java.lang.Object href_;
+        private java.lang.Object href_ = "";
         /**
          * <code>required string href = 2;</code>
          *
@@ -17856,16 +18163,16 @@ public final class Dossier {
          */
         public java.lang.String getHref() {
           java.lang.Object ref = href_;
-          if (ref instanceof java.lang.String) {
-            return (java.lang.String) ref;
-          } else {
-            com.google.protobuf.ByteString bs = 
+          if (!(ref instanceof java.lang.String)) {
+            com.google.protobuf.ByteString bs =
                 (com.google.protobuf.ByteString) ref;
             java.lang.String s = bs.toStringUtf8();
             if (bs.isValidUtf8()) {
               href_ = s;
             }
             return s;
+          } else {
+            return (java.lang.String) ref;
           }
         }
         /**
@@ -17878,7 +18185,7 @@ public final class Dossier {
         public com.google.protobuf.ByteString
             getHrefBytes() {
           java.lang.Object ref = href_;
-          if (ref instanceof java.lang.String) {
+          if (ref instanceof String) {
             com.google.protobuf.ByteString b = 
                 com.google.protobuf.ByteString.copyFromUtf8(
                     (java.lang.String) ref);
@@ -17888,9 +18195,57 @@ public final class Dossier {
             return (com.google.protobuf.ByteString) ref;
           }
         }
+        /**
+         * <code>required string href = 2;</code>
+         *
+         * <pre>
+         * The hyperlink for the actual type.
+         * </pre>
+         */
+        public Builder setHref(
+            java.lang.String value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000002;
+          href_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>required string href = 2;</code>
+         *
+         * <pre>
+         * The hyperlink for the actual type.
+         * </pre>
+         */
+        public Builder clearHref() {
+          bitField0_ = (bitField0_ & ~0x00000002);
+          href_ = getDefaultInstance().getHref();
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>required string href = 2;</code>
+         *
+         * <pre>
+         * The hyperlink for the actual type.
+         * </pre>
+         */
+        public Builder setHrefBytes(
+            com.google.protobuf.ByteString value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000002;
+          href_ = value;
+          onChanged();
+          return this;
+        }
 
-        public static final int SUMMARY_FIELD_NUMBER = 3;
-        private com.github.jleyba.dossier.proto.Dossier.Comment summary_;
+        private com.github.jleyba.dossier.proto.Dossier.Comment summary_ = com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance();
+        private com.google.protobuf.SingleFieldBuilder<
+            com.github.jleyba.dossier.proto.Dossier.Comment, com.github.jleyba.dossier.proto.Dossier.Comment.Builder, com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder> summaryBuilder_;
         /**
          * <code>required .dossier.Comment summary = 3;</code>
          *
@@ -17909,7 +18264,101 @@ public final class Dossier {
          * </pre>
          */
         public com.github.jleyba.dossier.proto.Dossier.Comment getSummary() {
-          return summary_;
+          if (summaryBuilder_ == null) {
+            return summary_;
+          } else {
+            return summaryBuilder_.getMessage();
+          }
+        }
+        /**
+         * <code>required .dossier.Comment summary = 3;</code>
+         *
+         * <pre>
+         * The summary sentence for this type.
+         * </pre>
+         */
+        public Builder setSummary(com.github.jleyba.dossier.proto.Dossier.Comment value) {
+          if (summaryBuilder_ == null) {
+            if (value == null) {
+              throw new NullPointerException();
+            }
+            summary_ = value;
+            onChanged();
+          } else {
+            summaryBuilder_.setMessage(value);
+          }
+          bitField0_ |= 0x00000004;
+          return this;
+        }
+        /**
+         * <code>required .dossier.Comment summary = 3;</code>
+         *
+         * <pre>
+         * The summary sentence for this type.
+         * </pre>
+         */
+        public Builder setSummary(
+            com.github.jleyba.dossier.proto.Dossier.Comment.Builder builderForValue) {
+          if (summaryBuilder_ == null) {
+            summary_ = builderForValue.build();
+            onChanged();
+          } else {
+            summaryBuilder_.setMessage(builderForValue.build());
+          }
+          bitField0_ |= 0x00000004;
+          return this;
+        }
+        /**
+         * <code>required .dossier.Comment summary = 3;</code>
+         *
+         * <pre>
+         * The summary sentence for this type.
+         * </pre>
+         */
+        public Builder mergeSummary(com.github.jleyba.dossier.proto.Dossier.Comment value) {
+          if (summaryBuilder_ == null) {
+            if (((bitField0_ & 0x00000004) == 0x00000004) &&
+                summary_ != com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance()) {
+              summary_ =
+                com.github.jleyba.dossier.proto.Dossier.Comment.newBuilder(summary_).mergeFrom(value).buildPartial();
+            } else {
+              summary_ = value;
+            }
+            onChanged();
+          } else {
+            summaryBuilder_.mergeFrom(value);
+          }
+          bitField0_ |= 0x00000004;
+          return this;
+        }
+        /**
+         * <code>required .dossier.Comment summary = 3;</code>
+         *
+         * <pre>
+         * The summary sentence for this type.
+         * </pre>
+         */
+        public Builder clearSummary() {
+          if (summaryBuilder_ == null) {
+            summary_ = com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance();
+            onChanged();
+          } else {
+            summaryBuilder_.clear();
+          }
+          bitField0_ = (bitField0_ & ~0x00000004);
+          return this;
+        }
+        /**
+         * <code>required .dossier.Comment summary = 3;</code>
+         *
+         * <pre>
+         * The summary sentence for this type.
+         * </pre>
+         */
+        public com.github.jleyba.dossier.proto.Dossier.Comment.Builder getSummaryBuilder() {
+          bitField0_ |= 0x00000004;
+          onChanged();
+          return getSummaryFieldBuilder().getBuilder();
         }
         /**
          * <code>required .dossier.Comment summary = 3;</code>
@@ -17919,1914 +18368,42 @@ public final class Dossier {
          * </pre>
          */
         public com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder getSummaryOrBuilder() {
-          return summary_;
-        }
-
-        private void initFields() {
-          name_ = "";
-          href_ = "";
-          summary_ = com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance();
-        }
-        private byte memoizedIsInitialized = -1;
-        public final boolean isInitialized() {
-          byte isInitialized = memoizedIsInitialized;
-          if (isInitialized == 1) return true;
-          if (isInitialized == 0) return false;
-
-          if (!hasName()) {
-            memoizedIsInitialized = 0;
-            return false;
-          }
-          if (!hasHref()) {
-            memoizedIsInitialized = 0;
-            return false;
-          }
-          if (!hasSummary()) {
-            memoizedIsInitialized = 0;
-            return false;
-          }
-          if (!getSummary().isInitialized()) {
-            memoizedIsInitialized = 0;
-            return false;
-          }
-          memoizedIsInitialized = 1;
-          return true;
-        }
-
-        public void writeTo(com.google.protobuf.CodedOutputStream output)
-                            throws java.io.IOException {
-          getSerializedSize();
-          if (((bitField0_ & 0x00000001) == 0x00000001)) {
-            output.writeBytes(1, getNameBytes());
-          }
-          if (((bitField0_ & 0x00000002) == 0x00000002)) {
-            output.writeBytes(2, getHrefBytes());
-          }
-          if (((bitField0_ & 0x00000004) == 0x00000004)) {
-            output.writeMessage(3, summary_);
-          }
-          getUnknownFields().writeTo(output);
-        }
-
-        private int memoizedSerializedSize = -1;
-        public int getSerializedSize() {
-          int size = memoizedSerializedSize;
-          if (size != -1) return size;
-
-          size = 0;
-          if (((bitField0_ & 0x00000001) == 0x00000001)) {
-            size += com.google.protobuf.CodedOutputStream
-              .computeBytesSize(1, getNameBytes());
-          }
-          if (((bitField0_ & 0x00000002) == 0x00000002)) {
-            size += com.google.protobuf.CodedOutputStream
-              .computeBytesSize(2, getHrefBytes());
-          }
-          if (((bitField0_ & 0x00000004) == 0x00000004)) {
-            size += com.google.protobuf.CodedOutputStream
-              .computeMessageSize(3, summary_);
-          }
-          size += getUnknownFields().getSerializedSize();
-          memoizedSerializedSize = size;
-          return size;
-        }
-
-        private static final long serialVersionUID = 0L;
-        @java.lang.Override
-        protected java.lang.Object writeReplace()
-            throws java.io.ObjectStreamException {
-          return super.writeReplace();
-        }
-
-        public static com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary parseFrom(
-            com.google.protobuf.ByteString data)
-            throws com.google.protobuf.InvalidProtocolBufferException {
-          return PARSER.parseFrom(data);
-        }
-        public static com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary parseFrom(
-            com.google.protobuf.ByteString data,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws com.google.protobuf.InvalidProtocolBufferException {
-          return PARSER.parseFrom(data, extensionRegistry);
-        }
-        public static com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary parseFrom(byte[] data)
-            throws com.google.protobuf.InvalidProtocolBufferException {
-          return PARSER.parseFrom(data);
-        }
-        public static com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary parseFrom(
-            byte[] data,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws com.google.protobuf.InvalidProtocolBufferException {
-          return PARSER.parseFrom(data, extensionRegistry);
-        }
-        public static com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary parseFrom(java.io.InputStream input)
-            throws java.io.IOException {
-          return PARSER.parseFrom(input);
-        }
-        public static com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary parseFrom(
-            java.io.InputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
-          return PARSER.parseFrom(input, extensionRegistry);
-        }
-        public static com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary parseDelimitedFrom(java.io.InputStream input)
-            throws java.io.IOException {
-          return PARSER.parseDelimitedFrom(input);
-        }
-        public static com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary parseDelimitedFrom(
-            java.io.InputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
-          return PARSER.parseDelimitedFrom(input, extensionRegistry);
-        }
-        public static com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary parseFrom(
-            com.google.protobuf.CodedInputStream input)
-            throws java.io.IOException {
-          return PARSER.parseFrom(input);
-        }
-        public static com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary parseFrom(
-            com.google.protobuf.CodedInputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
-          return PARSER.parseFrom(input, extensionRegistry);
-        }
-
-        public static Builder newBuilder() { return Builder.create(); }
-        public Builder newBuilderForType() { return newBuilder(); }
-        public static Builder newBuilder(com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary prototype) {
-          return newBuilder().mergeFrom(prototype);
-        }
-        public Builder toBuilder() { return newBuilder(this); }
-
-        @java.lang.Override
-        protected Builder newBuilderForType(
-            com.google.protobuf.GeneratedMessage.BuilderParent parent) {
-          Builder builder = new Builder(parent);
-          return builder;
-        }
-        /**
-         * Protobuf type {@code dossier.JsType.NestedTypes.TypeSummary}
-         */
-        public static final class Builder extends
-            com.google.protobuf.GeneratedMessage.Builder<Builder> implements
-            // @@protoc_insertion_point(builder_implements:dossier.JsType.NestedTypes.TypeSummary)
-            com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummaryOrBuilder {
-          public static final com.google.protobuf.Descriptors.Descriptor
-              getDescriptor() {
-            return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_JsType_NestedTypes_TypeSummary_descriptor;
-          }
-
-          protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
-              internalGetFieldAccessorTable() {
-            return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_JsType_NestedTypes_TypeSummary_fieldAccessorTable
-                .ensureFieldAccessorsInitialized(
-                    com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary.class, com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary.Builder.class);
-          }
-
-          // Construct using com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary.newBuilder()
-          private Builder() {
-            maybeForceBuilderInitialization();
-          }
-
-          private Builder(
-              com.google.protobuf.GeneratedMessage.BuilderParent parent) {
-            super(parent);
-            maybeForceBuilderInitialization();
-          }
-          private void maybeForceBuilderInitialization() {
-            if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
-              getSummaryFieldBuilder();
-            }
-          }
-          private static Builder create() {
-            return new Builder();
-          }
-
-          public Builder clear() {
-            super.clear();
-            name_ = "";
-            bitField0_ = (bitField0_ & ~0x00000001);
-            href_ = "";
-            bitField0_ = (bitField0_ & ~0x00000002);
-            if (summaryBuilder_ == null) {
-              summary_ = com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance();
-            } else {
-              summaryBuilder_.clear();
-            }
-            bitField0_ = (bitField0_ & ~0x00000004);
-            return this;
-          }
-
-          public Builder clone() {
-            return create().mergeFrom(buildPartial());
-          }
-
-          public com.google.protobuf.Descriptors.Descriptor
-              getDescriptorForType() {
-            return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_JsType_NestedTypes_TypeSummary_descriptor;
-          }
-
-          public com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary getDefaultInstanceForType() {
-            return com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary.getDefaultInstance();
-          }
-
-          public com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary build() {
-            com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary result = buildPartial();
-            if (!result.isInitialized()) {
-              throw newUninitializedMessageException(result);
-            }
-            return result;
-          }
-
-          public com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary buildPartial() {
-            com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary result = new com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary(this);
-            int from_bitField0_ = bitField0_;
-            int to_bitField0_ = 0;
-            if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
-              to_bitField0_ |= 0x00000001;
-            }
-            result.name_ = name_;
-            if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
-              to_bitField0_ |= 0x00000002;
-            }
-            result.href_ = href_;
-            if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
-              to_bitField0_ |= 0x00000004;
-            }
-            if (summaryBuilder_ == null) {
-              result.summary_ = summary_;
-            } else {
-              result.summary_ = summaryBuilder_.build();
-            }
-            result.bitField0_ = to_bitField0_;
-            onBuilt();
-            return result;
-          }
-
-          public Builder mergeFrom(com.google.protobuf.Message other) {
-            if (other instanceof com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary) {
-              return mergeFrom((com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary)other);
-            } else {
-              super.mergeFrom(other);
-              return this;
-            }
-          }
-
-          public Builder mergeFrom(com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary other) {
-            if (other == com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary.getDefaultInstance()) return this;
-            if (other.hasName()) {
-              bitField0_ |= 0x00000001;
-              name_ = other.name_;
-              onChanged();
-            }
-            if (other.hasHref()) {
-              bitField0_ |= 0x00000002;
-              href_ = other.href_;
-              onChanged();
-            }
-            if (other.hasSummary()) {
-              mergeSummary(other.getSummary());
-            }
-            this.mergeUnknownFields(other.getUnknownFields());
-            return this;
-          }
-
-          public final boolean isInitialized() {
-            if (!hasName()) {
-              
-              return false;
-            }
-            if (!hasHref()) {
-              
-              return false;
-            }
-            if (!hasSummary()) {
-              
-              return false;
-            }
-            if (!getSummary().isInitialized()) {
-              
-              return false;
-            }
-            return true;
-          }
-
-          public Builder mergeFrom(
-              com.google.protobuf.CodedInputStream input,
-              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-              throws java.io.IOException {
-            com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary parsedMessage = null;
-            try {
-              parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
-            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-              parsedMessage = (com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary) e.getUnfinishedMessage();
-              throw e;
-            } finally {
-              if (parsedMessage != null) {
-                mergeFrom(parsedMessage);
-              }
-            }
-            return this;
-          }
-          private int bitField0_;
-
-          private java.lang.Object name_ = "";
-          /**
-           * <code>required string name = 1;</code>
-           *
-           * <pre>
-           * The type name.
-           * </pre>
-           */
-          public boolean hasName() {
-            return ((bitField0_ & 0x00000001) == 0x00000001);
-          }
-          /**
-           * <code>required string name = 1;</code>
-           *
-           * <pre>
-           * The type name.
-           * </pre>
-           */
-          public java.lang.String getName() {
-            java.lang.Object ref = name_;
-            if (!(ref instanceof java.lang.String)) {
-              com.google.protobuf.ByteString bs =
-                  (com.google.protobuf.ByteString) ref;
-              java.lang.String s = bs.toStringUtf8();
-              if (bs.isValidUtf8()) {
-                name_ = s;
-              }
-              return s;
-            } else {
-              return (java.lang.String) ref;
-            }
-          }
-          /**
-           * <code>required string name = 1;</code>
-           *
-           * <pre>
-           * The type name.
-           * </pre>
-           */
-          public com.google.protobuf.ByteString
-              getNameBytes() {
-            java.lang.Object ref = name_;
-            if (ref instanceof String) {
-              com.google.protobuf.ByteString b = 
-                  com.google.protobuf.ByteString.copyFromUtf8(
-                      (java.lang.String) ref);
-              name_ = b;
-              return b;
-            } else {
-              return (com.google.protobuf.ByteString) ref;
-            }
-          }
-          /**
-           * <code>required string name = 1;</code>
-           *
-           * <pre>
-           * The type name.
-           * </pre>
-           */
-          public Builder setName(
-              java.lang.String value) {
-            if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000001;
-            name_ = value;
-            onChanged();
-            return this;
-          }
-          /**
-           * <code>required string name = 1;</code>
-           *
-           * <pre>
-           * The type name.
-           * </pre>
-           */
-          public Builder clearName() {
-            bitField0_ = (bitField0_ & ~0x00000001);
-            name_ = getDefaultInstance().getName();
-            onChanged();
-            return this;
-          }
-          /**
-           * <code>required string name = 1;</code>
-           *
-           * <pre>
-           * The type name.
-           * </pre>
-           */
-          public Builder setNameBytes(
-              com.google.protobuf.ByteString value) {
-            if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000001;
-            name_ = value;
-            onChanged();
-            return this;
-          }
-
-          private java.lang.Object href_ = "";
-          /**
-           * <code>required string href = 2;</code>
-           *
-           * <pre>
-           * The hyperlink for the actual type.
-           * </pre>
-           */
-          public boolean hasHref() {
-            return ((bitField0_ & 0x00000002) == 0x00000002);
-          }
-          /**
-           * <code>required string href = 2;</code>
-           *
-           * <pre>
-           * The hyperlink for the actual type.
-           * </pre>
-           */
-          public java.lang.String getHref() {
-            java.lang.Object ref = href_;
-            if (!(ref instanceof java.lang.String)) {
-              com.google.protobuf.ByteString bs =
-                  (com.google.protobuf.ByteString) ref;
-              java.lang.String s = bs.toStringUtf8();
-              if (bs.isValidUtf8()) {
-                href_ = s;
-              }
-              return s;
-            } else {
-              return (java.lang.String) ref;
-            }
-          }
-          /**
-           * <code>required string href = 2;</code>
-           *
-           * <pre>
-           * The hyperlink for the actual type.
-           * </pre>
-           */
-          public com.google.protobuf.ByteString
-              getHrefBytes() {
-            java.lang.Object ref = href_;
-            if (ref instanceof String) {
-              com.google.protobuf.ByteString b = 
-                  com.google.protobuf.ByteString.copyFromUtf8(
-                      (java.lang.String) ref);
-              href_ = b;
-              return b;
-            } else {
-              return (com.google.protobuf.ByteString) ref;
-            }
-          }
-          /**
-           * <code>required string href = 2;</code>
-           *
-           * <pre>
-           * The hyperlink for the actual type.
-           * </pre>
-           */
-          public Builder setHref(
-              java.lang.String value) {
-            if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000002;
-            href_ = value;
-            onChanged();
-            return this;
-          }
-          /**
-           * <code>required string href = 2;</code>
-           *
-           * <pre>
-           * The hyperlink for the actual type.
-           * </pre>
-           */
-          public Builder clearHref() {
-            bitField0_ = (bitField0_ & ~0x00000002);
-            href_ = getDefaultInstance().getHref();
-            onChanged();
-            return this;
-          }
-          /**
-           * <code>required string href = 2;</code>
-           *
-           * <pre>
-           * The hyperlink for the actual type.
-           * </pre>
-           */
-          public Builder setHrefBytes(
-              com.google.protobuf.ByteString value) {
-            if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000002;
-            href_ = value;
-            onChanged();
-            return this;
-          }
-
-          private com.github.jleyba.dossier.proto.Dossier.Comment summary_ = com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance();
-          private com.google.protobuf.SingleFieldBuilder<
-              com.github.jleyba.dossier.proto.Dossier.Comment, com.github.jleyba.dossier.proto.Dossier.Comment.Builder, com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder> summaryBuilder_;
-          /**
-           * <code>required .dossier.Comment summary = 3;</code>
-           *
-           * <pre>
-           * The summary sentence for this type.
-           * </pre>
-           */
-          public boolean hasSummary() {
-            return ((bitField0_ & 0x00000004) == 0x00000004);
-          }
-          /**
-           * <code>required .dossier.Comment summary = 3;</code>
-           *
-           * <pre>
-           * The summary sentence for this type.
-           * </pre>
-           */
-          public com.github.jleyba.dossier.proto.Dossier.Comment getSummary() {
-            if (summaryBuilder_ == null) {
-              return summary_;
-            } else {
-              return summaryBuilder_.getMessage();
-            }
-          }
-          /**
-           * <code>required .dossier.Comment summary = 3;</code>
-           *
-           * <pre>
-           * The summary sentence for this type.
-           * </pre>
-           */
-          public Builder setSummary(com.github.jleyba.dossier.proto.Dossier.Comment value) {
-            if (summaryBuilder_ == null) {
-              if (value == null) {
-                throw new NullPointerException();
-              }
-              summary_ = value;
-              onChanged();
-            } else {
-              summaryBuilder_.setMessage(value);
-            }
-            bitField0_ |= 0x00000004;
-            return this;
-          }
-          /**
-           * <code>required .dossier.Comment summary = 3;</code>
-           *
-           * <pre>
-           * The summary sentence for this type.
-           * </pre>
-           */
-          public Builder setSummary(
-              com.github.jleyba.dossier.proto.Dossier.Comment.Builder builderForValue) {
-            if (summaryBuilder_ == null) {
-              summary_ = builderForValue.build();
-              onChanged();
-            } else {
-              summaryBuilder_.setMessage(builderForValue.build());
-            }
-            bitField0_ |= 0x00000004;
-            return this;
-          }
-          /**
-           * <code>required .dossier.Comment summary = 3;</code>
-           *
-           * <pre>
-           * The summary sentence for this type.
-           * </pre>
-           */
-          public Builder mergeSummary(com.github.jleyba.dossier.proto.Dossier.Comment value) {
-            if (summaryBuilder_ == null) {
-              if (((bitField0_ & 0x00000004) == 0x00000004) &&
-                  summary_ != com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance()) {
-                summary_ =
-                  com.github.jleyba.dossier.proto.Dossier.Comment.newBuilder(summary_).mergeFrom(value).buildPartial();
-              } else {
-                summary_ = value;
-              }
-              onChanged();
-            } else {
-              summaryBuilder_.mergeFrom(value);
-            }
-            bitField0_ |= 0x00000004;
-            return this;
-          }
-          /**
-           * <code>required .dossier.Comment summary = 3;</code>
-           *
-           * <pre>
-           * The summary sentence for this type.
-           * </pre>
-           */
-          public Builder clearSummary() {
-            if (summaryBuilder_ == null) {
-              summary_ = com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance();
-              onChanged();
-            } else {
-              summaryBuilder_.clear();
-            }
-            bitField0_ = (bitField0_ & ~0x00000004);
-            return this;
-          }
-          /**
-           * <code>required .dossier.Comment summary = 3;</code>
-           *
-           * <pre>
-           * The summary sentence for this type.
-           * </pre>
-           */
-          public com.github.jleyba.dossier.proto.Dossier.Comment.Builder getSummaryBuilder() {
-            bitField0_ |= 0x00000004;
-            onChanged();
-            return getSummaryFieldBuilder().getBuilder();
-          }
-          /**
-           * <code>required .dossier.Comment summary = 3;</code>
-           *
-           * <pre>
-           * The summary sentence for this type.
-           * </pre>
-           */
-          public com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder getSummaryOrBuilder() {
-            if (summaryBuilder_ != null) {
-              return summaryBuilder_.getMessageOrBuilder();
-            } else {
-              return summary_;
-            }
-          }
-          /**
-           * <code>required .dossier.Comment summary = 3;</code>
-           *
-           * <pre>
-           * The summary sentence for this type.
-           * </pre>
-           */
-          private com.google.protobuf.SingleFieldBuilder<
-              com.github.jleyba.dossier.proto.Dossier.Comment, com.github.jleyba.dossier.proto.Dossier.Comment.Builder, com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder> 
-              getSummaryFieldBuilder() {
-            if (summaryBuilder_ == null) {
-              summaryBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-                  com.github.jleyba.dossier.proto.Dossier.Comment, com.github.jleyba.dossier.proto.Dossier.Comment.Builder, com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder>(
-                      getSummary(),
-                      getParentForChildren(),
-                      isClean());
-              summary_ = null;
-            }
-            return summaryBuilder_;
-          }
-
-          // @@protoc_insertion_point(builder_scope:dossier.JsType.NestedTypes.TypeSummary)
-        }
-
-        static {
-          defaultInstance = new TypeSummary(true);
-          defaultInstance.initFields();
-        }
-
-        // @@protoc_insertion_point(class_scope:dossier.JsType.NestedTypes.TypeSummary)
-      }
-
-      public static final int INTERFACES_FIELD_NUMBER = 1;
-      private java.util.List<com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary> interfaces_;
-      /**
-       * <code>repeated .dossier.JsType.NestedTypes.TypeSummary interfaces = 1;</code>
-       */
-      public java.util.List<com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary> getInterfacesList() {
-        return interfaces_;
-      }
-      /**
-       * <code>repeated .dossier.JsType.NestedTypes.TypeSummary interfaces = 1;</code>
-       */
-      public java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummaryOrBuilder> 
-          getInterfacesOrBuilderList() {
-        return interfaces_;
-      }
-      /**
-       * <code>repeated .dossier.JsType.NestedTypes.TypeSummary interfaces = 1;</code>
-       */
-      public int getInterfacesCount() {
-        return interfaces_.size();
-      }
-      /**
-       * <code>repeated .dossier.JsType.NestedTypes.TypeSummary interfaces = 1;</code>
-       */
-      public com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary getInterfaces(int index) {
-        return interfaces_.get(index);
-      }
-      /**
-       * <code>repeated .dossier.JsType.NestedTypes.TypeSummary interfaces = 1;</code>
-       */
-      public com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummaryOrBuilder getInterfacesOrBuilder(
-          int index) {
-        return interfaces_.get(index);
-      }
-
-      public static final int CLASSES_FIELD_NUMBER = 2;
-      private java.util.List<com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary> classes_;
-      /**
-       * <code>repeated .dossier.JsType.NestedTypes.TypeSummary classes = 2;</code>
-       */
-      public java.util.List<com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary> getClassesList() {
-        return classes_;
-      }
-      /**
-       * <code>repeated .dossier.JsType.NestedTypes.TypeSummary classes = 2;</code>
-       */
-      public java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummaryOrBuilder> 
-          getClassesOrBuilderList() {
-        return classes_;
-      }
-      /**
-       * <code>repeated .dossier.JsType.NestedTypes.TypeSummary classes = 2;</code>
-       */
-      public int getClassesCount() {
-        return classes_.size();
-      }
-      /**
-       * <code>repeated .dossier.JsType.NestedTypes.TypeSummary classes = 2;</code>
-       */
-      public com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary getClasses(int index) {
-        return classes_.get(index);
-      }
-      /**
-       * <code>repeated .dossier.JsType.NestedTypes.TypeSummary classes = 2;</code>
-       */
-      public com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummaryOrBuilder getClassesOrBuilder(
-          int index) {
-        return classes_.get(index);
-      }
-
-      public static final int ENUMS_FIELD_NUMBER = 3;
-      private java.util.List<com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary> enums_;
-      /**
-       * <code>repeated .dossier.JsType.NestedTypes.TypeSummary enums = 3;</code>
-       */
-      public java.util.List<com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary> getEnumsList() {
-        return enums_;
-      }
-      /**
-       * <code>repeated .dossier.JsType.NestedTypes.TypeSummary enums = 3;</code>
-       */
-      public java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummaryOrBuilder> 
-          getEnumsOrBuilderList() {
-        return enums_;
-      }
-      /**
-       * <code>repeated .dossier.JsType.NestedTypes.TypeSummary enums = 3;</code>
-       */
-      public int getEnumsCount() {
-        return enums_.size();
-      }
-      /**
-       * <code>repeated .dossier.JsType.NestedTypes.TypeSummary enums = 3;</code>
-       */
-      public com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary getEnums(int index) {
-        return enums_.get(index);
-      }
-      /**
-       * <code>repeated .dossier.JsType.NestedTypes.TypeSummary enums = 3;</code>
-       */
-      public com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummaryOrBuilder getEnumsOrBuilder(
-          int index) {
-        return enums_.get(index);
-      }
-
-      private void initFields() {
-        interfaces_ = java.util.Collections.emptyList();
-        classes_ = java.util.Collections.emptyList();
-        enums_ = java.util.Collections.emptyList();
-      }
-      private byte memoizedIsInitialized = -1;
-      public final boolean isInitialized() {
-        byte isInitialized = memoizedIsInitialized;
-        if (isInitialized == 1) return true;
-        if (isInitialized == 0) return false;
-
-        for (int i = 0; i < getInterfacesCount(); i++) {
-          if (!getInterfaces(i).isInitialized()) {
-            memoizedIsInitialized = 0;
-            return false;
-          }
-        }
-        for (int i = 0; i < getClassesCount(); i++) {
-          if (!getClasses(i).isInitialized()) {
-            memoizedIsInitialized = 0;
-            return false;
-          }
-        }
-        for (int i = 0; i < getEnumsCount(); i++) {
-          if (!getEnums(i).isInitialized()) {
-            memoizedIsInitialized = 0;
-            return false;
-          }
-        }
-        memoizedIsInitialized = 1;
-        return true;
-      }
-
-      public void writeTo(com.google.protobuf.CodedOutputStream output)
-                          throws java.io.IOException {
-        getSerializedSize();
-        for (int i = 0; i < interfaces_.size(); i++) {
-          output.writeMessage(1, interfaces_.get(i));
-        }
-        for (int i = 0; i < classes_.size(); i++) {
-          output.writeMessage(2, classes_.get(i));
-        }
-        for (int i = 0; i < enums_.size(); i++) {
-          output.writeMessage(3, enums_.get(i));
-        }
-        getUnknownFields().writeTo(output);
-      }
-
-      private int memoizedSerializedSize = -1;
-      public int getSerializedSize() {
-        int size = memoizedSerializedSize;
-        if (size != -1) return size;
-
-        size = 0;
-        for (int i = 0; i < interfaces_.size(); i++) {
-          size += com.google.protobuf.CodedOutputStream
-            .computeMessageSize(1, interfaces_.get(i));
-        }
-        for (int i = 0; i < classes_.size(); i++) {
-          size += com.google.protobuf.CodedOutputStream
-            .computeMessageSize(2, classes_.get(i));
-        }
-        for (int i = 0; i < enums_.size(); i++) {
-          size += com.google.protobuf.CodedOutputStream
-            .computeMessageSize(3, enums_.get(i));
-        }
-        size += getUnknownFields().getSerializedSize();
-        memoizedSerializedSize = size;
-        return size;
-      }
-
-      private static final long serialVersionUID = 0L;
-      @java.lang.Override
-      protected java.lang.Object writeReplace()
-          throws java.io.ObjectStreamException {
-        return super.writeReplace();
-      }
-
-      public static com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes parseFrom(
-          com.google.protobuf.ByteString data)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data);
-      }
-      public static com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes parseFrom(
-          com.google.protobuf.ByteString data,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data, extensionRegistry);
-      }
-      public static com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes parseFrom(byte[] data)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data);
-      }
-      public static com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes parseFrom(
-          byte[] data,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data, extensionRegistry);
-      }
-      public static com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes parseFrom(java.io.InputStream input)
-          throws java.io.IOException {
-        return PARSER.parseFrom(input);
-      }
-      public static com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes parseFrom(
-          java.io.InputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        return PARSER.parseFrom(input, extensionRegistry);
-      }
-      public static com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes parseDelimitedFrom(java.io.InputStream input)
-          throws java.io.IOException {
-        return PARSER.parseDelimitedFrom(input);
-      }
-      public static com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes parseDelimitedFrom(
-          java.io.InputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        return PARSER.parseDelimitedFrom(input, extensionRegistry);
-      }
-      public static com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes parseFrom(
-          com.google.protobuf.CodedInputStream input)
-          throws java.io.IOException {
-        return PARSER.parseFrom(input);
-      }
-      public static com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes parseFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        return PARSER.parseFrom(input, extensionRegistry);
-      }
-
-      public static Builder newBuilder() { return Builder.create(); }
-      public Builder newBuilderForType() { return newBuilder(); }
-      public static Builder newBuilder(com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes prototype) {
-        return newBuilder().mergeFrom(prototype);
-      }
-      public Builder toBuilder() { return newBuilder(this); }
-
-      @java.lang.Override
-      protected Builder newBuilderForType(
-          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
-        Builder builder = new Builder(parent);
-        return builder;
-      }
-      /**
-       * Protobuf type {@code dossier.JsType.NestedTypes}
-       *
-       * <pre>
-       * Aggregates the types defined within this |JsType|.
-       * </pre>
-       */
-      public static final class Builder extends
-          com.google.protobuf.GeneratedMessage.Builder<Builder> implements
-          // @@protoc_insertion_point(builder_implements:dossier.JsType.NestedTypes)
-          com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypesOrBuilder {
-        public static final com.google.protobuf.Descriptors.Descriptor
-            getDescriptor() {
-          return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_JsType_NestedTypes_descriptor;
-        }
-
-        protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
-            internalGetFieldAccessorTable() {
-          return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_JsType_NestedTypes_fieldAccessorTable
-              .ensureFieldAccessorsInitialized(
-                  com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.class, com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.Builder.class);
-        }
-
-        // Construct using com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.newBuilder()
-        private Builder() {
-          maybeForceBuilderInitialization();
-        }
-
-        private Builder(
-            com.google.protobuf.GeneratedMessage.BuilderParent parent) {
-          super(parent);
-          maybeForceBuilderInitialization();
-        }
-        private void maybeForceBuilderInitialization() {
-          if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
-            getInterfacesFieldBuilder();
-            getClassesFieldBuilder();
-            getEnumsFieldBuilder();
-          }
-        }
-        private static Builder create() {
-          return new Builder();
-        }
-
-        public Builder clear() {
-          super.clear();
-          if (interfacesBuilder_ == null) {
-            interfaces_ = java.util.Collections.emptyList();
-            bitField0_ = (bitField0_ & ~0x00000001);
+          if (summaryBuilder_ != null) {
+            return summaryBuilder_.getMessageOrBuilder();
           } else {
-            interfacesBuilder_.clear();
-          }
-          if (classesBuilder_ == null) {
-            classes_ = java.util.Collections.emptyList();
-            bitField0_ = (bitField0_ & ~0x00000002);
-          } else {
-            classesBuilder_.clear();
-          }
-          if (enumsBuilder_ == null) {
-            enums_ = java.util.Collections.emptyList();
-            bitField0_ = (bitField0_ & ~0x00000004);
-          } else {
-            enumsBuilder_.clear();
-          }
-          return this;
-        }
-
-        public Builder clone() {
-          return create().mergeFrom(buildPartial());
-        }
-
-        public com.google.protobuf.Descriptors.Descriptor
-            getDescriptorForType() {
-          return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_JsType_NestedTypes_descriptor;
-        }
-
-        public com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes getDefaultInstanceForType() {
-          return com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.getDefaultInstance();
-        }
-
-        public com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes build() {
-          com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes result = buildPartial();
-          if (!result.isInitialized()) {
-            throw newUninitializedMessageException(result);
-          }
-          return result;
-        }
-
-        public com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes buildPartial() {
-          com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes result = new com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes(this);
-          int from_bitField0_ = bitField0_;
-          if (interfacesBuilder_ == null) {
-            if (((bitField0_ & 0x00000001) == 0x00000001)) {
-              interfaces_ = java.util.Collections.unmodifiableList(interfaces_);
-              bitField0_ = (bitField0_ & ~0x00000001);
-            }
-            result.interfaces_ = interfaces_;
-          } else {
-            result.interfaces_ = interfacesBuilder_.build();
-          }
-          if (classesBuilder_ == null) {
-            if (((bitField0_ & 0x00000002) == 0x00000002)) {
-              classes_ = java.util.Collections.unmodifiableList(classes_);
-              bitField0_ = (bitField0_ & ~0x00000002);
-            }
-            result.classes_ = classes_;
-          } else {
-            result.classes_ = classesBuilder_.build();
-          }
-          if (enumsBuilder_ == null) {
-            if (((bitField0_ & 0x00000004) == 0x00000004)) {
-              enums_ = java.util.Collections.unmodifiableList(enums_);
-              bitField0_ = (bitField0_ & ~0x00000004);
-            }
-            result.enums_ = enums_;
-          } else {
-            result.enums_ = enumsBuilder_.build();
-          }
-          onBuilt();
-          return result;
-        }
-
-        public Builder mergeFrom(com.google.protobuf.Message other) {
-          if (other instanceof com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes) {
-            return mergeFrom((com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes)other);
-          } else {
-            super.mergeFrom(other);
-            return this;
-          }
-        }
-
-        public Builder mergeFrom(com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes other) {
-          if (other == com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.getDefaultInstance()) return this;
-          if (interfacesBuilder_ == null) {
-            if (!other.interfaces_.isEmpty()) {
-              if (interfaces_.isEmpty()) {
-                interfaces_ = other.interfaces_;
-                bitField0_ = (bitField0_ & ~0x00000001);
-              } else {
-                ensureInterfacesIsMutable();
-                interfaces_.addAll(other.interfaces_);
-              }
-              onChanged();
-            }
-          } else {
-            if (!other.interfaces_.isEmpty()) {
-              if (interfacesBuilder_.isEmpty()) {
-                interfacesBuilder_.dispose();
-                interfacesBuilder_ = null;
-                interfaces_ = other.interfaces_;
-                bitField0_ = (bitField0_ & ~0x00000001);
-                interfacesBuilder_ = 
-                  com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
-                     getInterfacesFieldBuilder() : null;
-              } else {
-                interfacesBuilder_.addAllMessages(other.interfaces_);
-              }
-            }
-          }
-          if (classesBuilder_ == null) {
-            if (!other.classes_.isEmpty()) {
-              if (classes_.isEmpty()) {
-                classes_ = other.classes_;
-                bitField0_ = (bitField0_ & ~0x00000002);
-              } else {
-                ensureClassesIsMutable();
-                classes_.addAll(other.classes_);
-              }
-              onChanged();
-            }
-          } else {
-            if (!other.classes_.isEmpty()) {
-              if (classesBuilder_.isEmpty()) {
-                classesBuilder_.dispose();
-                classesBuilder_ = null;
-                classes_ = other.classes_;
-                bitField0_ = (bitField0_ & ~0x00000002);
-                classesBuilder_ = 
-                  com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
-                     getClassesFieldBuilder() : null;
-              } else {
-                classesBuilder_.addAllMessages(other.classes_);
-              }
-            }
-          }
-          if (enumsBuilder_ == null) {
-            if (!other.enums_.isEmpty()) {
-              if (enums_.isEmpty()) {
-                enums_ = other.enums_;
-                bitField0_ = (bitField0_ & ~0x00000004);
-              } else {
-                ensureEnumsIsMutable();
-                enums_.addAll(other.enums_);
-              }
-              onChanged();
-            }
-          } else {
-            if (!other.enums_.isEmpty()) {
-              if (enumsBuilder_.isEmpty()) {
-                enumsBuilder_.dispose();
-                enumsBuilder_ = null;
-                enums_ = other.enums_;
-                bitField0_ = (bitField0_ & ~0x00000004);
-                enumsBuilder_ = 
-                  com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
-                     getEnumsFieldBuilder() : null;
-              } else {
-                enumsBuilder_.addAllMessages(other.enums_);
-              }
-            }
-          }
-          this.mergeUnknownFields(other.getUnknownFields());
-          return this;
-        }
-
-        public final boolean isInitialized() {
-          for (int i = 0; i < getInterfacesCount(); i++) {
-            if (!getInterfaces(i).isInitialized()) {
-              
-              return false;
-            }
-          }
-          for (int i = 0; i < getClassesCount(); i++) {
-            if (!getClasses(i).isInitialized()) {
-              
-              return false;
-            }
-          }
-          for (int i = 0; i < getEnumsCount(); i++) {
-            if (!getEnums(i).isInitialized()) {
-              
-              return false;
-            }
-          }
-          return true;
-        }
-
-        public Builder mergeFrom(
-            com.google.protobuf.CodedInputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
-          com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes parsedMessage = null;
-          try {
-            parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
-          } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-            parsedMessage = (com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes) e.getUnfinishedMessage();
-            throw e;
-          } finally {
-            if (parsedMessage != null) {
-              mergeFrom(parsedMessage);
-            }
-          }
-          return this;
-        }
-        private int bitField0_;
-
-        private java.util.List<com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary> interfaces_ =
-          java.util.Collections.emptyList();
-        private void ensureInterfacesIsMutable() {
-          if (!((bitField0_ & 0x00000001) == 0x00000001)) {
-            interfaces_ = new java.util.ArrayList<com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary>(interfaces_);
-            bitField0_ |= 0x00000001;
-           }
-        }
-
-        private com.google.protobuf.RepeatedFieldBuilder<
-            com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary, com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary.Builder, com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummaryOrBuilder> interfacesBuilder_;
-
-        /**
-         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary interfaces = 1;</code>
-         */
-        public java.util.List<com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary> getInterfacesList() {
-          if (interfacesBuilder_ == null) {
-            return java.util.Collections.unmodifiableList(interfaces_);
-          } else {
-            return interfacesBuilder_.getMessageList();
+            return summary_;
           }
         }
         /**
-         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary interfaces = 1;</code>
+         * <code>required .dossier.Comment summary = 3;</code>
+         *
+         * <pre>
+         * The summary sentence for this type.
+         * </pre>
          */
-        public int getInterfacesCount() {
-          if (interfacesBuilder_ == null) {
-            return interfaces_.size();
-          } else {
-            return interfacesBuilder_.getCount();
-          }
-        }
-        /**
-         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary interfaces = 1;</code>
-         */
-        public com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary getInterfaces(int index) {
-          if (interfacesBuilder_ == null) {
-            return interfaces_.get(index);
-          } else {
-            return interfacesBuilder_.getMessage(index);
-          }
-        }
-        /**
-         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary interfaces = 1;</code>
-         */
-        public Builder setInterfaces(
-            int index, com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary value) {
-          if (interfacesBuilder_ == null) {
-            if (value == null) {
-              throw new NullPointerException();
-            }
-            ensureInterfacesIsMutable();
-            interfaces_.set(index, value);
-            onChanged();
-          } else {
-            interfacesBuilder_.setMessage(index, value);
-          }
-          return this;
-        }
-        /**
-         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary interfaces = 1;</code>
-         */
-        public Builder setInterfaces(
-            int index, com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary.Builder builderForValue) {
-          if (interfacesBuilder_ == null) {
-            ensureInterfacesIsMutable();
-            interfaces_.set(index, builderForValue.build());
-            onChanged();
-          } else {
-            interfacesBuilder_.setMessage(index, builderForValue.build());
-          }
-          return this;
-        }
-        /**
-         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary interfaces = 1;</code>
-         */
-        public Builder addInterfaces(com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary value) {
-          if (interfacesBuilder_ == null) {
-            if (value == null) {
-              throw new NullPointerException();
-            }
-            ensureInterfacesIsMutable();
-            interfaces_.add(value);
-            onChanged();
-          } else {
-            interfacesBuilder_.addMessage(value);
-          }
-          return this;
-        }
-        /**
-         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary interfaces = 1;</code>
-         */
-        public Builder addInterfaces(
-            int index, com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary value) {
-          if (interfacesBuilder_ == null) {
-            if (value == null) {
-              throw new NullPointerException();
-            }
-            ensureInterfacesIsMutable();
-            interfaces_.add(index, value);
-            onChanged();
-          } else {
-            interfacesBuilder_.addMessage(index, value);
-          }
-          return this;
-        }
-        /**
-         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary interfaces = 1;</code>
-         */
-        public Builder addInterfaces(
-            com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary.Builder builderForValue) {
-          if (interfacesBuilder_ == null) {
-            ensureInterfacesIsMutable();
-            interfaces_.add(builderForValue.build());
-            onChanged();
-          } else {
-            interfacesBuilder_.addMessage(builderForValue.build());
-          }
-          return this;
-        }
-        /**
-         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary interfaces = 1;</code>
-         */
-        public Builder addInterfaces(
-            int index, com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary.Builder builderForValue) {
-          if (interfacesBuilder_ == null) {
-            ensureInterfacesIsMutable();
-            interfaces_.add(index, builderForValue.build());
-            onChanged();
-          } else {
-            interfacesBuilder_.addMessage(index, builderForValue.build());
-          }
-          return this;
-        }
-        /**
-         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary interfaces = 1;</code>
-         */
-        public Builder addAllInterfaces(
-            java.lang.Iterable<? extends com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary> values) {
-          if (interfacesBuilder_ == null) {
-            ensureInterfacesIsMutable();
-            com.google.protobuf.AbstractMessageLite.Builder.addAll(
-                values, interfaces_);
-            onChanged();
-          } else {
-            interfacesBuilder_.addAllMessages(values);
-          }
-          return this;
-        }
-        /**
-         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary interfaces = 1;</code>
-         */
-        public Builder clearInterfaces() {
-          if (interfacesBuilder_ == null) {
-            interfaces_ = java.util.Collections.emptyList();
-            bitField0_ = (bitField0_ & ~0x00000001);
-            onChanged();
-          } else {
-            interfacesBuilder_.clear();
-          }
-          return this;
-        }
-        /**
-         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary interfaces = 1;</code>
-         */
-        public Builder removeInterfaces(int index) {
-          if (interfacesBuilder_ == null) {
-            ensureInterfacesIsMutable();
-            interfaces_.remove(index);
-            onChanged();
-          } else {
-            interfacesBuilder_.remove(index);
-          }
-          return this;
-        }
-        /**
-         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary interfaces = 1;</code>
-         */
-        public com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary.Builder getInterfacesBuilder(
-            int index) {
-          return getInterfacesFieldBuilder().getBuilder(index);
-        }
-        /**
-         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary interfaces = 1;</code>
-         */
-        public com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummaryOrBuilder getInterfacesOrBuilder(
-            int index) {
-          if (interfacesBuilder_ == null) {
-            return interfaces_.get(index);  } else {
-            return interfacesBuilder_.getMessageOrBuilder(index);
-          }
-        }
-        /**
-         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary interfaces = 1;</code>
-         */
-        public java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummaryOrBuilder> 
-             getInterfacesOrBuilderList() {
-          if (interfacesBuilder_ != null) {
-            return interfacesBuilder_.getMessageOrBuilderList();
-          } else {
-            return java.util.Collections.unmodifiableList(interfaces_);
-          }
-        }
-        /**
-         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary interfaces = 1;</code>
-         */
-        public com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary.Builder addInterfacesBuilder() {
-          return getInterfacesFieldBuilder().addBuilder(
-              com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary.getDefaultInstance());
-        }
-        /**
-         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary interfaces = 1;</code>
-         */
-        public com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary.Builder addInterfacesBuilder(
-            int index) {
-          return getInterfacesFieldBuilder().addBuilder(
-              index, com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary.getDefaultInstance());
-        }
-        /**
-         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary interfaces = 1;</code>
-         */
-        public java.util.List<com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary.Builder> 
-             getInterfacesBuilderList() {
-          return getInterfacesFieldBuilder().getBuilderList();
-        }
-        private com.google.protobuf.RepeatedFieldBuilder<
-            com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary, com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary.Builder, com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummaryOrBuilder> 
-            getInterfacesFieldBuilder() {
-          if (interfacesBuilder_ == null) {
-            interfacesBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
-                com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary, com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary.Builder, com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummaryOrBuilder>(
-                    interfaces_,
-                    ((bitField0_ & 0x00000001) == 0x00000001),
+        private com.google.protobuf.SingleFieldBuilder<
+            com.github.jleyba.dossier.proto.Dossier.Comment, com.github.jleyba.dossier.proto.Dossier.Comment.Builder, com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder> 
+            getSummaryFieldBuilder() {
+          if (summaryBuilder_ == null) {
+            summaryBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+                com.github.jleyba.dossier.proto.Dossier.Comment, com.github.jleyba.dossier.proto.Dossier.Comment.Builder, com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder>(
+                    getSummary(),
                     getParentForChildren(),
                     isClean());
-            interfaces_ = null;
+            summary_ = null;
           }
-          return interfacesBuilder_;
+          return summaryBuilder_;
         }
 
-        private java.util.List<com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary> classes_ =
-          java.util.Collections.emptyList();
-        private void ensureClassesIsMutable() {
-          if (!((bitField0_ & 0x00000002) == 0x00000002)) {
-            classes_ = new java.util.ArrayList<com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary>(classes_);
-            bitField0_ |= 0x00000002;
-           }
-        }
-
-        private com.google.protobuf.RepeatedFieldBuilder<
-            com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary, com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary.Builder, com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummaryOrBuilder> classesBuilder_;
-
-        /**
-         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary classes = 2;</code>
-         */
-        public java.util.List<com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary> getClassesList() {
-          if (classesBuilder_ == null) {
-            return java.util.Collections.unmodifiableList(classes_);
-          } else {
-            return classesBuilder_.getMessageList();
-          }
-        }
-        /**
-         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary classes = 2;</code>
-         */
-        public int getClassesCount() {
-          if (classesBuilder_ == null) {
-            return classes_.size();
-          } else {
-            return classesBuilder_.getCount();
-          }
-        }
-        /**
-         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary classes = 2;</code>
-         */
-        public com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary getClasses(int index) {
-          if (classesBuilder_ == null) {
-            return classes_.get(index);
-          } else {
-            return classesBuilder_.getMessage(index);
-          }
-        }
-        /**
-         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary classes = 2;</code>
-         */
-        public Builder setClasses(
-            int index, com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary value) {
-          if (classesBuilder_ == null) {
-            if (value == null) {
-              throw new NullPointerException();
-            }
-            ensureClassesIsMutable();
-            classes_.set(index, value);
-            onChanged();
-          } else {
-            classesBuilder_.setMessage(index, value);
-          }
-          return this;
-        }
-        /**
-         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary classes = 2;</code>
-         */
-        public Builder setClasses(
-            int index, com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary.Builder builderForValue) {
-          if (classesBuilder_ == null) {
-            ensureClassesIsMutable();
-            classes_.set(index, builderForValue.build());
-            onChanged();
-          } else {
-            classesBuilder_.setMessage(index, builderForValue.build());
-          }
-          return this;
-        }
-        /**
-         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary classes = 2;</code>
-         */
-        public Builder addClasses(com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary value) {
-          if (classesBuilder_ == null) {
-            if (value == null) {
-              throw new NullPointerException();
-            }
-            ensureClassesIsMutable();
-            classes_.add(value);
-            onChanged();
-          } else {
-            classesBuilder_.addMessage(value);
-          }
-          return this;
-        }
-        /**
-         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary classes = 2;</code>
-         */
-        public Builder addClasses(
-            int index, com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary value) {
-          if (classesBuilder_ == null) {
-            if (value == null) {
-              throw new NullPointerException();
-            }
-            ensureClassesIsMutable();
-            classes_.add(index, value);
-            onChanged();
-          } else {
-            classesBuilder_.addMessage(index, value);
-          }
-          return this;
-        }
-        /**
-         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary classes = 2;</code>
-         */
-        public Builder addClasses(
-            com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary.Builder builderForValue) {
-          if (classesBuilder_ == null) {
-            ensureClassesIsMutable();
-            classes_.add(builderForValue.build());
-            onChanged();
-          } else {
-            classesBuilder_.addMessage(builderForValue.build());
-          }
-          return this;
-        }
-        /**
-         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary classes = 2;</code>
-         */
-        public Builder addClasses(
-            int index, com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary.Builder builderForValue) {
-          if (classesBuilder_ == null) {
-            ensureClassesIsMutable();
-            classes_.add(index, builderForValue.build());
-            onChanged();
-          } else {
-            classesBuilder_.addMessage(index, builderForValue.build());
-          }
-          return this;
-        }
-        /**
-         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary classes = 2;</code>
-         */
-        public Builder addAllClasses(
-            java.lang.Iterable<? extends com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary> values) {
-          if (classesBuilder_ == null) {
-            ensureClassesIsMutable();
-            com.google.protobuf.AbstractMessageLite.Builder.addAll(
-                values, classes_);
-            onChanged();
-          } else {
-            classesBuilder_.addAllMessages(values);
-          }
-          return this;
-        }
-        /**
-         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary classes = 2;</code>
-         */
-        public Builder clearClasses() {
-          if (classesBuilder_ == null) {
-            classes_ = java.util.Collections.emptyList();
-            bitField0_ = (bitField0_ & ~0x00000002);
-            onChanged();
-          } else {
-            classesBuilder_.clear();
-          }
-          return this;
-        }
-        /**
-         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary classes = 2;</code>
-         */
-        public Builder removeClasses(int index) {
-          if (classesBuilder_ == null) {
-            ensureClassesIsMutable();
-            classes_.remove(index);
-            onChanged();
-          } else {
-            classesBuilder_.remove(index);
-          }
-          return this;
-        }
-        /**
-         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary classes = 2;</code>
-         */
-        public com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary.Builder getClassesBuilder(
-            int index) {
-          return getClassesFieldBuilder().getBuilder(index);
-        }
-        /**
-         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary classes = 2;</code>
-         */
-        public com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummaryOrBuilder getClassesOrBuilder(
-            int index) {
-          if (classesBuilder_ == null) {
-            return classes_.get(index);  } else {
-            return classesBuilder_.getMessageOrBuilder(index);
-          }
-        }
-        /**
-         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary classes = 2;</code>
-         */
-        public java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummaryOrBuilder> 
-             getClassesOrBuilderList() {
-          if (classesBuilder_ != null) {
-            return classesBuilder_.getMessageOrBuilderList();
-          } else {
-            return java.util.Collections.unmodifiableList(classes_);
-          }
-        }
-        /**
-         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary classes = 2;</code>
-         */
-        public com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary.Builder addClassesBuilder() {
-          return getClassesFieldBuilder().addBuilder(
-              com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary.getDefaultInstance());
-        }
-        /**
-         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary classes = 2;</code>
-         */
-        public com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary.Builder addClassesBuilder(
-            int index) {
-          return getClassesFieldBuilder().addBuilder(
-              index, com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary.getDefaultInstance());
-        }
-        /**
-         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary classes = 2;</code>
-         */
-        public java.util.List<com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary.Builder> 
-             getClassesBuilderList() {
-          return getClassesFieldBuilder().getBuilderList();
-        }
-        private com.google.protobuf.RepeatedFieldBuilder<
-            com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary, com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary.Builder, com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummaryOrBuilder> 
-            getClassesFieldBuilder() {
-          if (classesBuilder_ == null) {
-            classesBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
-                com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary, com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary.Builder, com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummaryOrBuilder>(
-                    classes_,
-                    ((bitField0_ & 0x00000002) == 0x00000002),
-                    getParentForChildren(),
-                    isClean());
-            classes_ = null;
-          }
-          return classesBuilder_;
-        }
-
-        private java.util.List<com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary> enums_ =
-          java.util.Collections.emptyList();
-        private void ensureEnumsIsMutable() {
-          if (!((bitField0_ & 0x00000004) == 0x00000004)) {
-            enums_ = new java.util.ArrayList<com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary>(enums_);
-            bitField0_ |= 0x00000004;
-           }
-        }
-
-        private com.google.protobuf.RepeatedFieldBuilder<
-            com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary, com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary.Builder, com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummaryOrBuilder> enumsBuilder_;
-
-        /**
-         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary enums = 3;</code>
-         */
-        public java.util.List<com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary> getEnumsList() {
-          if (enumsBuilder_ == null) {
-            return java.util.Collections.unmodifiableList(enums_);
-          } else {
-            return enumsBuilder_.getMessageList();
-          }
-        }
-        /**
-         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary enums = 3;</code>
-         */
-        public int getEnumsCount() {
-          if (enumsBuilder_ == null) {
-            return enums_.size();
-          } else {
-            return enumsBuilder_.getCount();
-          }
-        }
-        /**
-         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary enums = 3;</code>
-         */
-        public com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary getEnums(int index) {
-          if (enumsBuilder_ == null) {
-            return enums_.get(index);
-          } else {
-            return enumsBuilder_.getMessage(index);
-          }
-        }
-        /**
-         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary enums = 3;</code>
-         */
-        public Builder setEnums(
-            int index, com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary value) {
-          if (enumsBuilder_ == null) {
-            if (value == null) {
-              throw new NullPointerException();
-            }
-            ensureEnumsIsMutable();
-            enums_.set(index, value);
-            onChanged();
-          } else {
-            enumsBuilder_.setMessage(index, value);
-          }
-          return this;
-        }
-        /**
-         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary enums = 3;</code>
-         */
-        public Builder setEnums(
-            int index, com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary.Builder builderForValue) {
-          if (enumsBuilder_ == null) {
-            ensureEnumsIsMutable();
-            enums_.set(index, builderForValue.build());
-            onChanged();
-          } else {
-            enumsBuilder_.setMessage(index, builderForValue.build());
-          }
-          return this;
-        }
-        /**
-         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary enums = 3;</code>
-         */
-        public Builder addEnums(com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary value) {
-          if (enumsBuilder_ == null) {
-            if (value == null) {
-              throw new NullPointerException();
-            }
-            ensureEnumsIsMutable();
-            enums_.add(value);
-            onChanged();
-          } else {
-            enumsBuilder_.addMessage(value);
-          }
-          return this;
-        }
-        /**
-         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary enums = 3;</code>
-         */
-        public Builder addEnums(
-            int index, com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary value) {
-          if (enumsBuilder_ == null) {
-            if (value == null) {
-              throw new NullPointerException();
-            }
-            ensureEnumsIsMutable();
-            enums_.add(index, value);
-            onChanged();
-          } else {
-            enumsBuilder_.addMessage(index, value);
-          }
-          return this;
-        }
-        /**
-         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary enums = 3;</code>
-         */
-        public Builder addEnums(
-            com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary.Builder builderForValue) {
-          if (enumsBuilder_ == null) {
-            ensureEnumsIsMutable();
-            enums_.add(builderForValue.build());
-            onChanged();
-          } else {
-            enumsBuilder_.addMessage(builderForValue.build());
-          }
-          return this;
-        }
-        /**
-         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary enums = 3;</code>
-         */
-        public Builder addEnums(
-            int index, com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary.Builder builderForValue) {
-          if (enumsBuilder_ == null) {
-            ensureEnumsIsMutable();
-            enums_.add(index, builderForValue.build());
-            onChanged();
-          } else {
-            enumsBuilder_.addMessage(index, builderForValue.build());
-          }
-          return this;
-        }
-        /**
-         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary enums = 3;</code>
-         */
-        public Builder addAllEnums(
-            java.lang.Iterable<? extends com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary> values) {
-          if (enumsBuilder_ == null) {
-            ensureEnumsIsMutable();
-            com.google.protobuf.AbstractMessageLite.Builder.addAll(
-                values, enums_);
-            onChanged();
-          } else {
-            enumsBuilder_.addAllMessages(values);
-          }
-          return this;
-        }
-        /**
-         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary enums = 3;</code>
-         */
-        public Builder clearEnums() {
-          if (enumsBuilder_ == null) {
-            enums_ = java.util.Collections.emptyList();
-            bitField0_ = (bitField0_ & ~0x00000004);
-            onChanged();
-          } else {
-            enumsBuilder_.clear();
-          }
-          return this;
-        }
-        /**
-         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary enums = 3;</code>
-         */
-        public Builder removeEnums(int index) {
-          if (enumsBuilder_ == null) {
-            ensureEnumsIsMutable();
-            enums_.remove(index);
-            onChanged();
-          } else {
-            enumsBuilder_.remove(index);
-          }
-          return this;
-        }
-        /**
-         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary enums = 3;</code>
-         */
-        public com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary.Builder getEnumsBuilder(
-            int index) {
-          return getEnumsFieldBuilder().getBuilder(index);
-        }
-        /**
-         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary enums = 3;</code>
-         */
-        public com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummaryOrBuilder getEnumsOrBuilder(
-            int index) {
-          if (enumsBuilder_ == null) {
-            return enums_.get(index);  } else {
-            return enumsBuilder_.getMessageOrBuilder(index);
-          }
-        }
-        /**
-         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary enums = 3;</code>
-         */
-        public java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummaryOrBuilder> 
-             getEnumsOrBuilderList() {
-          if (enumsBuilder_ != null) {
-            return enumsBuilder_.getMessageOrBuilderList();
-          } else {
-            return java.util.Collections.unmodifiableList(enums_);
-          }
-        }
-        /**
-         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary enums = 3;</code>
-         */
-        public com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary.Builder addEnumsBuilder() {
-          return getEnumsFieldBuilder().addBuilder(
-              com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary.getDefaultInstance());
-        }
-        /**
-         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary enums = 3;</code>
-         */
-        public com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary.Builder addEnumsBuilder(
-            int index) {
-          return getEnumsFieldBuilder().addBuilder(
-              index, com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary.getDefaultInstance());
-        }
-        /**
-         * <code>repeated .dossier.JsType.NestedTypes.TypeSummary enums = 3;</code>
-         */
-        public java.util.List<com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary.Builder> 
-             getEnumsBuilderList() {
-          return getEnumsFieldBuilder().getBuilderList();
-        }
-        private com.google.protobuf.RepeatedFieldBuilder<
-            com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary, com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary.Builder, com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummaryOrBuilder> 
-            getEnumsFieldBuilder() {
-          if (enumsBuilder_ == null) {
-            enumsBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
-                com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary, com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummary.Builder, com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.TypeSummaryOrBuilder>(
-                    enums_,
-                    ((bitField0_ & 0x00000004) == 0x00000004),
-                    getParentForChildren(),
-                    isClean());
-            enums_ = null;
-          }
-          return enumsBuilder_;
-        }
-
-        // @@protoc_insertion_point(builder_scope:dossier.JsType.NestedTypes)
+        // @@protoc_insertion_point(builder_scope:dossier.JsType.TypeSummary)
       }
 
       static {
-        defaultInstance = new NestedTypes(true);
+        defaultInstance = new TypeSummary(true);
         defaultInstance.initFields();
       }
 
-      // @@protoc_insertion_point(class_scope:dossier.JsType.NestedTypes)
+      // @@protoc_insertion_point(class_scope:dossier.JsType.TypeSummary)
     }
 
     public interface TypeDefOrBuilder extends
@@ -21230,24 +19807,38 @@ public final class Dossier {
     }
 
     public static final int NESTED_FIELD_NUMBER = 6;
-    private com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes nested_;
+    private java.util.List<com.github.jleyba.dossier.proto.Dossier.JsType.TypeSummary> nested_;
     /**
-     * <code>required .dossier.JsType.NestedTypes nested = 6;</code>
+     * <code>repeated .dossier.JsType.TypeSummary nested = 6;</code>
      */
-    public boolean hasNested() {
-      return ((bitField0_ & 0x00000004) == 0x00000004);
-    }
-    /**
-     * <code>required .dossier.JsType.NestedTypes nested = 6;</code>
-     */
-    public com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes getNested() {
+    public java.util.List<com.github.jleyba.dossier.proto.Dossier.JsType.TypeSummary> getNestedList() {
       return nested_;
     }
     /**
-     * <code>required .dossier.JsType.NestedTypes nested = 6;</code>
+     * <code>repeated .dossier.JsType.TypeSummary nested = 6;</code>
      */
-    public com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypesOrBuilder getNestedOrBuilder() {
+    public java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.JsType.TypeSummaryOrBuilder> 
+        getNestedOrBuilderList() {
       return nested_;
+    }
+    /**
+     * <code>repeated .dossier.JsType.TypeSummary nested = 6;</code>
+     */
+    public int getNestedCount() {
+      return nested_.size();
+    }
+    /**
+     * <code>repeated .dossier.JsType.TypeSummary nested = 6;</code>
+     */
+    public com.github.jleyba.dossier.proto.Dossier.JsType.TypeSummary getNested(int index) {
+      return nested_.get(index);
+    }
+    /**
+     * <code>repeated .dossier.JsType.TypeSummary nested = 6;</code>
+     */
+    public com.github.jleyba.dossier.proto.Dossier.JsType.TypeSummaryOrBuilder getNestedOrBuilder(
+        int index) {
+      return nested_.get(index);
     }
 
     public static final int DESCRIPTION_FIELD_NUMBER = 7;
@@ -21256,7 +19847,7 @@ public final class Dossier {
      * <code>required .dossier.Comment description = 7;</code>
      */
     public boolean hasDescription() {
-      return ((bitField0_ & 0x00000008) == 0x00000008);
+      return ((bitField0_ & 0x00000004) == 0x00000004);
     }
     /**
      * <code>required .dossier.Comment description = 7;</code>
@@ -21277,7 +19868,7 @@ public final class Dossier {
      * <code>required .dossier.Tags tags = 8;</code>
      */
     public boolean hasTags() {
-      return ((bitField0_ & 0x00000010) == 0x00000010);
+      return ((bitField0_ & 0x00000008) == 0x00000008);
     }
     /**
      * <code>required .dossier.Tags tags = 8;</code>
@@ -21298,7 +19889,7 @@ public final class Dossier {
      * <code>optional .dossier.Deprecation deprecation = 9;</code>
      */
     public boolean hasDeprecation() {
-      return ((bitField0_ & 0x00000020) == 0x00000020);
+      return ((bitField0_ & 0x00000010) == 0x00000010);
     }
     /**
      * <code>optional .dossier.Deprecation deprecation = 9;</code>
@@ -21354,7 +19945,7 @@ public final class Dossier {
      * <code>optional .dossier.Enumeration enumeration = 11;</code>
      */
     public boolean hasEnumeration() {
-      return ((bitField0_ & 0x00000040) == 0x00000040);
+      return ((bitField0_ & 0x00000020) == 0x00000020);
     }
     /**
      * <code>optional .dossier.Enumeration enumeration = 11;</code>
@@ -21451,7 +20042,7 @@ public final class Dossier {
      * </pre>
      */
     public boolean hasMainFunction() {
-      return ((bitField0_ & 0x00000080) == 0x00000080);
+      return ((bitField0_ & 0x00000040) == 0x00000040);
     }
     /**
      * <code>optional .dossier.Function main_function = 14;</code>
@@ -21559,7 +20150,7 @@ public final class Dossier {
      * </pre>
      */
     public boolean hasHasInstanceMethods() {
-      return ((bitField0_ & 0x00000100) == 0x00000100);
+      return ((bitField0_ & 0x00000080) == 0x00000080);
     }
     /**
      * <code>optional bool has_instance_methods = 16 [default = false];</code>
@@ -21579,7 +20170,7 @@ public final class Dossier {
      * <code>optional bool has_instance_properties = 17 [default = false];</code>
      */
     public boolean hasHasInstanceProperties() {
-      return ((bitField0_ & 0x00000200) == 0x00000200);
+      return ((bitField0_ & 0x00000100) == 0x00000100);
     }
     /**
      * <code>optional bool has_instance_properties = 17 [default = false];</code>
@@ -21753,7 +20344,7 @@ public final class Dossier {
      * </pre>
      */
     public boolean hasModule() {
-      return ((bitField0_ & 0x00000400) == 0x00000400);
+      return ((bitField0_ & 0x00000200) == 0x00000200);
     }
     /**
      * <code>optional .dossier.TypeLink module = 21;</code>
@@ -21786,7 +20377,7 @@ public final class Dossier {
      * </pre>
      */
     public boolean hasAliasedType() {
-      return ((bitField0_ & 0x00000800) == 0x00000800);
+      return ((bitField0_ & 0x00000400) == 0x00000400);
     }
     /**
      * <code>optional .dossier.TypeLink aliased_type = 22;</code>
@@ -21812,7 +20403,7 @@ public final class Dossier {
     private void initFields() {
       name_ = "";
       source_ = "";
-      nested_ = com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.getDefaultInstance();
+      nested_ = java.util.Collections.emptyList();
       description_ = com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance();
       tags_ = com.github.jleyba.dossier.proto.Dossier.Tags.getDefaultInstance();
       deprecation_ = com.github.jleyba.dossier.proto.Dossier.Deprecation.getDefaultInstance();
@@ -21844,10 +20435,6 @@ public final class Dossier {
         memoizedIsInitialized = 0;
         return false;
       }
-      if (!hasNested()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
       if (!hasDescription()) {
         memoizedIsInitialized = 0;
         return false;
@@ -21856,9 +20443,11 @@ public final class Dossier {
         memoizedIsInitialized = 0;
         return false;
       }
-      if (!getNested().isInitialized()) {
-        memoizedIsInitialized = 0;
-        return false;
+      for (int i = 0; i < getNestedCount(); i++) {
+        if (!getNested(i).isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
       }
       if (!getDescription().isInitialized()) {
         memoizedIsInitialized = 0;
@@ -21949,22 +20538,22 @@ public final class Dossier {
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         output.writeBytes(5, getSourceBytes());
       }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        output.writeMessage(6, nested_);
+      for (int i = 0; i < nested_.size(); i++) {
+        output.writeMessage(6, nested_.get(i));
       }
-      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
         output.writeMessage(7, description_);
       }
-      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
         output.writeMessage(8, tags_);
       }
-      if (((bitField0_ & 0x00000020) == 0x00000020)) {
+      if (((bitField0_ & 0x00000010) == 0x00000010)) {
         output.writeMessage(9, deprecation_);
       }
       for (int i = 0; i < typeDef_.size(); i++) {
         output.writeMessage(10, typeDef_.get(i));
       }
-      if (((bitField0_ & 0x00000040) == 0x00000040)) {
+      if (((bitField0_ & 0x00000020) == 0x00000020)) {
         output.writeMessage(11, enumeration_);
       }
       for (int i = 0; i < staticFunction_.size(); i++) {
@@ -21973,16 +20562,16 @@ public final class Dossier {
       for (int i = 0; i < staticProperty_.size(); i++) {
         output.writeMessage(13, staticProperty_.get(i));
       }
-      if (((bitField0_ & 0x00000080) == 0x00000080)) {
+      if (((bitField0_ & 0x00000040) == 0x00000040)) {
         output.writeMessage(14, mainFunction_);
       }
       for (int i = 0; i < prototype_.size(); i++) {
         output.writeMessage(15, prototype_.get(i));
       }
-      if (((bitField0_ & 0x00000100) == 0x00000100)) {
+      if (((bitField0_ & 0x00000080) == 0x00000080)) {
         output.writeBool(16, hasInstanceMethods_);
       }
-      if (((bitField0_ & 0x00000200) == 0x00000200)) {
+      if (((bitField0_ & 0x00000100) == 0x00000100)) {
         output.writeBool(17, hasInstanceProperties_);
       }
       for (int i = 0; i < extendedType_.size(); i++) {
@@ -21994,10 +20583,10 @@ public final class Dossier {
       for (int i = 0; i < compilerConstant_.size(); i++) {
         output.writeMessage(20, compilerConstant_.get(i));
       }
-      if (((bitField0_ & 0x00000400) == 0x00000400)) {
+      if (((bitField0_ & 0x00000200) == 0x00000200)) {
         output.writeMessage(21, module_);
       }
-      if (((bitField0_ & 0x00000800) == 0x00000800)) {
+      if (((bitField0_ & 0x00000400) == 0x00000400)) {
         output.writeMessage(22, aliasedType_);
       }
       getUnknownFields().writeTo(output);
@@ -22017,19 +20606,19 @@ public final class Dossier {
         size += com.google.protobuf.CodedOutputStream
           .computeBytesSize(5, getSourceBytes());
       }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+      for (int i = 0; i < nested_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(6, nested_);
+          .computeMessageSize(6, nested_.get(i));
       }
-      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(7, description_);
       }
-      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(8, tags_);
       }
-      if (((bitField0_ & 0x00000020) == 0x00000020)) {
+      if (((bitField0_ & 0x00000010) == 0x00000010)) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(9, deprecation_);
       }
@@ -22037,7 +20626,7 @@ public final class Dossier {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(10, typeDef_.get(i));
       }
-      if (((bitField0_ & 0x00000040) == 0x00000040)) {
+      if (((bitField0_ & 0x00000020) == 0x00000020)) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(11, enumeration_);
       }
@@ -22049,7 +20638,7 @@ public final class Dossier {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(13, staticProperty_.get(i));
       }
-      if (((bitField0_ & 0x00000080) == 0x00000080)) {
+      if (((bitField0_ & 0x00000040) == 0x00000040)) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(14, mainFunction_);
       }
@@ -22057,11 +20646,11 @@ public final class Dossier {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(15, prototype_.get(i));
       }
-      if (((bitField0_ & 0x00000100) == 0x00000100)) {
+      if (((bitField0_ & 0x00000080) == 0x00000080)) {
         size += com.google.protobuf.CodedOutputStream
           .computeBoolSize(16, hasInstanceMethods_);
       }
-      if (((bitField0_ & 0x00000200) == 0x00000200)) {
+      if (((bitField0_ & 0x00000100) == 0x00000100)) {
         size += com.google.protobuf.CodedOutputStream
           .computeBoolSize(17, hasInstanceProperties_);
       }
@@ -22077,11 +20666,11 @@ public final class Dossier {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(20, compilerConstant_.get(i));
       }
-      if (((bitField0_ & 0x00000400) == 0x00000400)) {
+      if (((bitField0_ & 0x00000200) == 0x00000200)) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(21, module_);
       }
-      if (((bitField0_ & 0x00000800) == 0x00000800)) {
+      if (((bitField0_ & 0x00000400) == 0x00000400)) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(22, aliasedType_);
       }
@@ -22227,11 +20816,11 @@ public final class Dossier {
         source_ = "";
         bitField0_ = (bitField0_ & ~0x00000002);
         if (nestedBuilder_ == null) {
-          nested_ = com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.getDefaultInstance();
+          nested_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000004);
         } else {
           nestedBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00000004);
         if (descriptionBuilder_ == null) {
           description_ = com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance();
         } else {
@@ -22356,16 +20945,17 @@ public final class Dossier {
           to_bitField0_ |= 0x00000002;
         }
         result.source_ = source_;
-        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
-          to_bitField0_ |= 0x00000004;
-        }
         if (nestedBuilder_ == null) {
+          if (((bitField0_ & 0x00000004) == 0x00000004)) {
+            nested_ = java.util.Collections.unmodifiableList(nested_);
+            bitField0_ = (bitField0_ & ~0x00000004);
+          }
           result.nested_ = nested_;
         } else {
           result.nested_ = nestedBuilder_.build();
         }
         if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
-          to_bitField0_ |= 0x00000008;
+          to_bitField0_ |= 0x00000004;
         }
         if (descriptionBuilder_ == null) {
           result.description_ = description_;
@@ -22373,7 +20963,7 @@ public final class Dossier {
           result.description_ = descriptionBuilder_.build();
         }
         if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
-          to_bitField0_ |= 0x00000010;
+          to_bitField0_ |= 0x00000008;
         }
         if (tagsBuilder_ == null) {
           result.tags_ = tags_;
@@ -22381,7 +20971,7 @@ public final class Dossier {
           result.tags_ = tagsBuilder_.build();
         }
         if (((from_bitField0_ & 0x00000020) == 0x00000020)) {
-          to_bitField0_ |= 0x00000020;
+          to_bitField0_ |= 0x00000010;
         }
         if (deprecationBuilder_ == null) {
           result.deprecation_ = deprecation_;
@@ -22398,7 +20988,7 @@ public final class Dossier {
           result.typeDef_ = typeDefBuilder_.build();
         }
         if (((from_bitField0_ & 0x00000080) == 0x00000080)) {
-          to_bitField0_ |= 0x00000040;
+          to_bitField0_ |= 0x00000020;
         }
         if (enumerationBuilder_ == null) {
           result.enumeration_ = enumeration_;
@@ -22424,7 +21014,7 @@ public final class Dossier {
           result.staticProperty_ = staticPropertyBuilder_.build();
         }
         if (((from_bitField0_ & 0x00000400) == 0x00000400)) {
-          to_bitField0_ |= 0x00000080;
+          to_bitField0_ |= 0x00000040;
         }
         if (mainFunctionBuilder_ == null) {
           result.mainFunction_ = mainFunction_;
@@ -22441,11 +21031,11 @@ public final class Dossier {
           result.prototype_ = prototypeBuilder_.build();
         }
         if (((from_bitField0_ & 0x00001000) == 0x00001000)) {
-          to_bitField0_ |= 0x00000100;
+          to_bitField0_ |= 0x00000080;
         }
         result.hasInstanceMethods_ = hasInstanceMethods_;
         if (((from_bitField0_ & 0x00002000) == 0x00002000)) {
-          to_bitField0_ |= 0x00000200;
+          to_bitField0_ |= 0x00000100;
         }
         result.hasInstanceProperties_ = hasInstanceProperties_;
         if (extendedTypeBuilder_ == null) {
@@ -22476,7 +21066,7 @@ public final class Dossier {
           result.compilerConstant_ = compilerConstantBuilder_.build();
         }
         if (((from_bitField0_ & 0x00020000) == 0x00020000)) {
-          to_bitField0_ |= 0x00000400;
+          to_bitField0_ |= 0x00000200;
         }
         if (moduleBuilder_ == null) {
           result.module_ = module_;
@@ -22484,7 +21074,7 @@ public final class Dossier {
           result.module_ = moduleBuilder_.build();
         }
         if (((from_bitField0_ & 0x00040000) == 0x00040000)) {
-          to_bitField0_ |= 0x00000800;
+          to_bitField0_ |= 0x00000400;
         }
         if (aliasedTypeBuilder_ == null) {
           result.aliasedType_ = aliasedType_;
@@ -22517,8 +21107,31 @@ public final class Dossier {
           source_ = other.source_;
           onChanged();
         }
-        if (other.hasNested()) {
-          mergeNested(other.getNested());
+        if (nestedBuilder_ == null) {
+          if (!other.nested_.isEmpty()) {
+            if (nested_.isEmpty()) {
+              nested_ = other.nested_;
+              bitField0_ = (bitField0_ & ~0x00000004);
+            } else {
+              ensureNestedIsMutable();
+              nested_.addAll(other.nested_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.nested_.isEmpty()) {
+            if (nestedBuilder_.isEmpty()) {
+              nestedBuilder_.dispose();
+              nestedBuilder_ = null;
+              nested_ = other.nested_;
+              bitField0_ = (bitField0_ & ~0x00000004);
+              nestedBuilder_ = 
+                com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+                   getNestedFieldBuilder() : null;
+            } else {
+              nestedBuilder_.addAllMessages(other.nested_);
+            }
+          }
         }
         if (other.hasDescription()) {
           mergeDescription(other.getDescription());
@@ -22742,10 +21355,6 @@ public final class Dossier {
           
           return false;
         }
-        if (!hasNested()) {
-          
-          return false;
-        }
         if (!hasDescription()) {
           
           return false;
@@ -22754,9 +21363,11 @@ public final class Dossier {
           
           return false;
         }
-        if (!getNested().isInitialized()) {
-          
-          return false;
+        for (int i = 0; i < getNestedCount(); i++) {
+          if (!getNested(i).isInitialized()) {
+            
+            return false;
+          }
         }
         if (!getDescription().isInitialized()) {
           
@@ -23008,115 +21619,239 @@ public final class Dossier {
         return this;
       }
 
-      private com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes nested_ = com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.getDefaultInstance();
-      private com.google.protobuf.SingleFieldBuilder<
-          com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes, com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.Builder, com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypesOrBuilder> nestedBuilder_;
-      /**
-       * <code>required .dossier.JsType.NestedTypes nested = 6;</code>
-       */
-      public boolean hasNested() {
-        return ((bitField0_ & 0x00000004) == 0x00000004);
+      private java.util.List<com.github.jleyba.dossier.proto.Dossier.JsType.TypeSummary> nested_ =
+        java.util.Collections.emptyList();
+      private void ensureNestedIsMutable() {
+        if (!((bitField0_ & 0x00000004) == 0x00000004)) {
+          nested_ = new java.util.ArrayList<com.github.jleyba.dossier.proto.Dossier.JsType.TypeSummary>(nested_);
+          bitField0_ |= 0x00000004;
+         }
       }
+
+      private com.google.protobuf.RepeatedFieldBuilder<
+          com.github.jleyba.dossier.proto.Dossier.JsType.TypeSummary, com.github.jleyba.dossier.proto.Dossier.JsType.TypeSummary.Builder, com.github.jleyba.dossier.proto.Dossier.JsType.TypeSummaryOrBuilder> nestedBuilder_;
+
       /**
-       * <code>required .dossier.JsType.NestedTypes nested = 6;</code>
+       * <code>repeated .dossier.JsType.TypeSummary nested = 6;</code>
        */
-      public com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes getNested() {
+      public java.util.List<com.github.jleyba.dossier.proto.Dossier.JsType.TypeSummary> getNestedList() {
         if (nestedBuilder_ == null) {
-          return nested_;
+          return java.util.Collections.unmodifiableList(nested_);
         } else {
-          return nestedBuilder_.getMessage();
+          return nestedBuilder_.getMessageList();
         }
       }
       /**
-       * <code>required .dossier.JsType.NestedTypes nested = 6;</code>
+       * <code>repeated .dossier.JsType.TypeSummary nested = 6;</code>
        */
-      public Builder setNested(com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes value) {
+      public int getNestedCount() {
+        if (nestedBuilder_ == null) {
+          return nested_.size();
+        } else {
+          return nestedBuilder_.getCount();
+        }
+      }
+      /**
+       * <code>repeated .dossier.JsType.TypeSummary nested = 6;</code>
+       */
+      public com.github.jleyba.dossier.proto.Dossier.JsType.TypeSummary getNested(int index) {
+        if (nestedBuilder_ == null) {
+          return nested_.get(index);
+        } else {
+          return nestedBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <code>repeated .dossier.JsType.TypeSummary nested = 6;</code>
+       */
+      public Builder setNested(
+          int index, com.github.jleyba.dossier.proto.Dossier.JsType.TypeSummary value) {
         if (nestedBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
           }
-          nested_ = value;
+          ensureNestedIsMutable();
+          nested_.set(index, value);
           onChanged();
         } else {
-          nestedBuilder_.setMessage(value);
+          nestedBuilder_.setMessage(index, value);
         }
-        bitField0_ |= 0x00000004;
         return this;
       }
       /**
-       * <code>required .dossier.JsType.NestedTypes nested = 6;</code>
+       * <code>repeated .dossier.JsType.TypeSummary nested = 6;</code>
        */
       public Builder setNested(
-          com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.Builder builderForValue) {
+          int index, com.github.jleyba.dossier.proto.Dossier.JsType.TypeSummary.Builder builderForValue) {
         if (nestedBuilder_ == null) {
-          nested_ = builderForValue.build();
+          ensureNestedIsMutable();
+          nested_.set(index, builderForValue.build());
           onChanged();
         } else {
-          nestedBuilder_.setMessage(builderForValue.build());
+          nestedBuilder_.setMessage(index, builderForValue.build());
         }
-        bitField0_ |= 0x00000004;
         return this;
       }
       /**
-       * <code>required .dossier.JsType.NestedTypes nested = 6;</code>
+       * <code>repeated .dossier.JsType.TypeSummary nested = 6;</code>
        */
-      public Builder mergeNested(com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes value) {
+      public Builder addNested(com.github.jleyba.dossier.proto.Dossier.JsType.TypeSummary value) {
         if (nestedBuilder_ == null) {
-          if (((bitField0_ & 0x00000004) == 0x00000004) &&
-              nested_ != com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.getDefaultInstance()) {
-            nested_ =
-              com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.newBuilder(nested_).mergeFrom(value).buildPartial();
-          } else {
-            nested_ = value;
+          if (value == null) {
+            throw new NullPointerException();
           }
+          ensureNestedIsMutable();
+          nested_.add(value);
           onChanged();
         } else {
-          nestedBuilder_.mergeFrom(value);
+          nestedBuilder_.addMessage(value);
         }
-        bitField0_ |= 0x00000004;
         return this;
       }
       /**
-       * <code>required .dossier.JsType.NestedTypes nested = 6;</code>
+       * <code>repeated .dossier.JsType.TypeSummary nested = 6;</code>
+       */
+      public Builder addNested(
+          int index, com.github.jleyba.dossier.proto.Dossier.JsType.TypeSummary value) {
+        if (nestedBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureNestedIsMutable();
+          nested_.add(index, value);
+          onChanged();
+        } else {
+          nestedBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .dossier.JsType.TypeSummary nested = 6;</code>
+       */
+      public Builder addNested(
+          com.github.jleyba.dossier.proto.Dossier.JsType.TypeSummary.Builder builderForValue) {
+        if (nestedBuilder_ == null) {
+          ensureNestedIsMutable();
+          nested_.add(builderForValue.build());
+          onChanged();
+        } else {
+          nestedBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .dossier.JsType.TypeSummary nested = 6;</code>
+       */
+      public Builder addNested(
+          int index, com.github.jleyba.dossier.proto.Dossier.JsType.TypeSummary.Builder builderForValue) {
+        if (nestedBuilder_ == null) {
+          ensureNestedIsMutable();
+          nested_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          nestedBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .dossier.JsType.TypeSummary nested = 6;</code>
+       */
+      public Builder addAllNested(
+          java.lang.Iterable<? extends com.github.jleyba.dossier.proto.Dossier.JsType.TypeSummary> values) {
+        if (nestedBuilder_ == null) {
+          ensureNestedIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, nested_);
+          onChanged();
+        } else {
+          nestedBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .dossier.JsType.TypeSummary nested = 6;</code>
        */
       public Builder clearNested() {
         if (nestedBuilder_ == null) {
-          nested_ = com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.getDefaultInstance();
+          nested_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000004);
           onChanged();
         } else {
           nestedBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00000004);
         return this;
       }
       /**
-       * <code>required .dossier.JsType.NestedTypes nested = 6;</code>
+       * <code>repeated .dossier.JsType.TypeSummary nested = 6;</code>
        */
-      public com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.Builder getNestedBuilder() {
-        bitField0_ |= 0x00000004;
-        onChanged();
-        return getNestedFieldBuilder().getBuilder();
+      public Builder removeNested(int index) {
+        if (nestedBuilder_ == null) {
+          ensureNestedIsMutable();
+          nested_.remove(index);
+          onChanged();
+        } else {
+          nestedBuilder_.remove(index);
+        }
+        return this;
       }
       /**
-       * <code>required .dossier.JsType.NestedTypes nested = 6;</code>
+       * <code>repeated .dossier.JsType.TypeSummary nested = 6;</code>
        */
-      public com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypesOrBuilder getNestedOrBuilder() {
-        if (nestedBuilder_ != null) {
-          return nestedBuilder_.getMessageOrBuilder();
-        } else {
-          return nested_;
+      public com.github.jleyba.dossier.proto.Dossier.JsType.TypeSummary.Builder getNestedBuilder(
+          int index) {
+        return getNestedFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <code>repeated .dossier.JsType.TypeSummary nested = 6;</code>
+       */
+      public com.github.jleyba.dossier.proto.Dossier.JsType.TypeSummaryOrBuilder getNestedOrBuilder(
+          int index) {
+        if (nestedBuilder_ == null) {
+          return nested_.get(index);  } else {
+          return nestedBuilder_.getMessageOrBuilder(index);
         }
       }
       /**
-       * <code>required .dossier.JsType.NestedTypes nested = 6;</code>
+       * <code>repeated .dossier.JsType.TypeSummary nested = 6;</code>
        */
-      private com.google.protobuf.SingleFieldBuilder<
-          com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes, com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.Builder, com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypesOrBuilder> 
+      public java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.JsType.TypeSummaryOrBuilder> 
+           getNestedOrBuilderList() {
+        if (nestedBuilder_ != null) {
+          return nestedBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(nested_);
+        }
+      }
+      /**
+       * <code>repeated .dossier.JsType.TypeSummary nested = 6;</code>
+       */
+      public com.github.jleyba.dossier.proto.Dossier.JsType.TypeSummary.Builder addNestedBuilder() {
+        return getNestedFieldBuilder().addBuilder(
+            com.github.jleyba.dossier.proto.Dossier.JsType.TypeSummary.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .dossier.JsType.TypeSummary nested = 6;</code>
+       */
+      public com.github.jleyba.dossier.proto.Dossier.JsType.TypeSummary.Builder addNestedBuilder(
+          int index) {
+        return getNestedFieldBuilder().addBuilder(
+            index, com.github.jleyba.dossier.proto.Dossier.JsType.TypeSummary.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .dossier.JsType.TypeSummary nested = 6;</code>
+       */
+      public java.util.List<com.github.jleyba.dossier.proto.Dossier.JsType.TypeSummary.Builder> 
+           getNestedBuilderList() {
+        return getNestedFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilder<
+          com.github.jleyba.dossier.proto.Dossier.JsType.TypeSummary, com.github.jleyba.dossier.proto.Dossier.JsType.TypeSummary.Builder, com.github.jleyba.dossier.proto.Dossier.JsType.TypeSummaryOrBuilder> 
           getNestedFieldBuilder() {
         if (nestedBuilder_ == null) {
-          nestedBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes, com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypes.Builder, com.github.jleyba.dossier.proto.Dossier.JsType.NestedTypesOrBuilder>(
-                  getNested(),
+          nestedBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+              com.github.jleyba.dossier.proto.Dossier.JsType.TypeSummary, com.github.jleyba.dossier.proto.Dossier.JsType.TypeSummary.Builder, com.github.jleyba.dossier.proto.Dossier.JsType.TypeSummaryOrBuilder>(
+                  nested_,
+                  ((bitField0_ & 0x00000004) == 0x00000004),
                   getParentForChildren(),
                   isClean());
           nested_ = null;
@@ -29567,15 +28302,10 @@ public final class Dossier {
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_dossier_JsType_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_dossier_JsType_NestedTypes_descriptor;
+    internal_static_dossier_JsType_TypeSummary_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_dossier_JsType_NestedTypes_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_dossier_JsType_NestedTypes_TypeSummary_descriptor;
-  private static
-    com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_dossier_JsType_NestedTypes_TypeSummary_fieldAccessorTable;
+      internal_static_dossier_JsType_TypeSummary_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_dossier_JsType_TypeDef_descriptor;
   private static
@@ -29646,9 +28376,9 @@ public final class Dossier {
       "\003(\0132\021.dossier.TypeLink\022%\n\006module\030\003 \003(\0132\025" +
       ".dossier.Index.Module\032J\n\006Module\022\037\n\004link\030",
       "\001 \002(\0132\021.dossier.TypeLink\022\037\n\004type\030\002 \003(\0132\021" +
-      ".dossier.TypeLink\"\252\t\n\006JsType\022\014\n\004name\030\001 \002" +
-      "(\t\022\016\n\006source\030\005 \002(\t\022+\n\006nested\030\006 \002(\0132\033.dos" +
-      "sier.JsType.NestedTypes\022%\n\013description\030\007" +
+      ".dossier.TypeLink\"\353\007\n\006JsType\022\014\n\004name\030\001 \002" +
+      "(\t\022\016\n\006source\030\005 \002(\t\022+\n\006nested\030\006 \003(\0132\033.dos" +
+      "sier.JsType.TypeSummary\022%\n\013description\030\007" +
       " \002(\0132\020.dossier.Comment\022\033\n\004tags\030\010 \002(\0132\r.d" +
       "ossier.Tags\022)\n\013deprecation\030\t \001(\0132\024.dossi" +
       "er.Deprecation\022)\n\010type_def\030\n \003(\0132\027.dossi" +
@@ -29664,31 +28394,26 @@ public final class Dossier {
       "ted_type\030\023 \003(\0132\021.dossier.TypeLink\022,\n\021com" +
       "piler_constant\030\024 \003(\0132\021.dossier.Property\022" +
       "!\n\006module\030\025 \001(\0132\021.dossier.TypeLink\022\'\n\014al" +
-      "iased_type\030\026 \001(\0132\021.dossier.TypeLink\032\212\002\n\013",
-      "NestedTypes\022;\n\ninterfaces\030\001 \003(\0132\'.dossie" +
-      "r.JsType.NestedTypes.TypeSummary\0228\n\007clas" +
-      "ses\030\002 \003(\0132\'.dossier.JsType.NestedTypes.T" +
-      "ypeSummary\0226\n\005enums\030\003 \003(\0132\'.dossier.JsTy" +
-      "pe.NestedTypes.TypeSummary\032L\n\013TypeSummar" +
-      "y\022\014\n\004name\030\001 \002(\t\022\014\n\004href\030\002 \002(\t\022!\n\007summary" +
-      "\030\003 \002(\0132\020.dossier.Comment\032\273\001\n\007TypeDef\022\014\n\004" +
-      "name\030\001 \002(\t\022\021\n\ttype_html\030\002 \002(\t\022\014\n\004href\030\003 " +
-      "\002(\t\022%\n\013description\030\004 \002(\0132\020.dossier.Comme" +
-      "nt\022)\n\013deprecation\030\005 \001(\0132\024.dossier.Deprec",
-      "ation\022/\n\nvisibility\030\006 \001(\0162\023.dossier.Visi" +
-      "bility:\006PUBLIC\"}\n\023IndexFileRenderSpec\022%\n" +
-      "\tresources\030\001 \002(\0132\022.dossier.Resources\022 \n\006" +
-      "readme\030\002 \001(\0132\020.dossier.Comment\022\035\n\005index\030" +
-      "\003 \002(\0132\016.dossier.Index\"\177\n\024SourceFileRende" +
-      "rSpec\022%\n\tresources\030\001 \002(\0132\022.dossier.Resou" +
-      "rces\022!\n\004file\030\002 \002(\0132\023.dossier.SourceFile\022" +
-      "\035\n\005index\030\003 \002(\0132\016.dossier.Index\"w\n\020JsType" +
-      "RenderSpec\022\035\n\004type\030\001 \002(\0132\017.dossier.JsTyp" +
-      "e\022%\n\tresources\030\002 \002(\0132\022.dossier.Resources",
-      "\022\035\n\005index\030\003 \002(\0132\016.dossier.Index*A\n\nVisib" +
-      "ility\022\n\n\006PUBLIC\020\000\022\r\n\tPROTECTED\020\001\022\013\n\007PRIV" +
-      "ATE\020\002\022\013\n\007PACKAGE\020\003B!\n\037com.github.jleyba." +
-      "dossier.proto"
+      "iased_type\030\026 \001(\0132\021.dossier.TypeLink\032L\n\013T",
+      "ypeSummary\022\014\n\004name\030\001 \002(\t\022\014\n\004href\030\002 \002(\t\022!" +
+      "\n\007summary\030\003 \002(\0132\020.dossier.Comment\032\273\001\n\007Ty" +
+      "peDef\022\014\n\004name\030\001 \002(\t\022\021\n\ttype_html\030\002 \002(\t\022\014" +
+      "\n\004href\030\003 \002(\t\022%\n\013description\030\004 \002(\0132\020.doss" +
+      "ier.Comment\022)\n\013deprecation\030\005 \001(\0132\024.dossi" +
+      "er.Deprecation\022/\n\nvisibility\030\006 \001(\0162\023.dos" +
+      "sier.Visibility:\006PUBLIC\"}\n\023IndexFileRend" +
+      "erSpec\022%\n\tresources\030\001 \002(\0132\022.dossier.Reso" +
+      "urces\022 \n\006readme\030\002 \001(\0132\020.dossier.Comment\022" +
+      "\035\n\005index\030\003 \002(\0132\016.dossier.Index\"\177\n\024Source",
+      "FileRenderSpec\022%\n\tresources\030\001 \002(\0132\022.doss" +
+      "ier.Resources\022!\n\004file\030\002 \002(\0132\023.dossier.So" +
+      "urceFile\022\035\n\005index\030\003 \002(\0132\016.dossier.Index\"" +
+      "w\n\020JsTypeRenderSpec\022\035\n\004type\030\001 \002(\0132\017.doss" +
+      "ier.JsType\022%\n\tresources\030\002 \002(\0132\022.dossier." +
+      "Resources\022\035\n\005index\030\003 \002(\0132\016.dossier.Index" +
+      "*A\n\nVisibility\022\n\n\006PUBLIC\020\000\022\r\n\tPROTECTED\020" +
+      "\001\022\013\n\007PRIVATE\020\002\022\013\n\007PACKAGE\020\003B!\n\037com.githu" +
+      "b.jleyba.dossier.proto"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -29804,17 +28529,11 @@ public final class Dossier {
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_dossier_JsType_descriptor,
         new java.lang.String[] { "Name", "Source", "Nested", "Description", "Tags", "Deprecation", "TypeDef", "Enumeration", "StaticFunction", "StaticProperty", "MainFunction", "Prototype", "HasInstanceMethods", "HasInstanceProperties", "ExtendedType", "ImplementedType", "CompilerConstant", "Module", "AliasedType", });
-    internal_static_dossier_JsType_NestedTypes_descriptor =
+    internal_static_dossier_JsType_TypeSummary_descriptor =
       internal_static_dossier_JsType_descriptor.getNestedTypes().get(0);
-    internal_static_dossier_JsType_NestedTypes_fieldAccessorTable = new
+    internal_static_dossier_JsType_TypeSummary_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-        internal_static_dossier_JsType_NestedTypes_descriptor,
-        new java.lang.String[] { "Interfaces", "Classes", "Enums", });
-    internal_static_dossier_JsType_NestedTypes_TypeSummary_descriptor =
-      internal_static_dossier_JsType_NestedTypes_descriptor.getNestedTypes().get(0);
-    internal_static_dossier_JsType_NestedTypes_TypeSummary_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-        internal_static_dossier_JsType_NestedTypes_TypeSummary_descriptor,
+        internal_static_dossier_JsType_TypeSummary_descriptor,
         new java.lang.String[] { "Name", "Href", "Summary", });
     internal_static_dossier_JsType_TypeDef_descriptor =
       internal_static_dossier_JsType_descriptor.getNestedTypes().get(1);

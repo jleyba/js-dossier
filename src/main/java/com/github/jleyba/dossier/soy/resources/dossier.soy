@@ -802,36 +802,10 @@
       {/call}
 
       /* TODO: merged nested types into a flat list, not sorted by category */
-      {if length($spec.type.nested.interfaces) > 0 or
-          length($spec.type.nested.classes) > 0 or
-          length($spec.type.nested.enums) > 0}
+      {if length($spec.type.nested) > 0}
         <h2>Types</h2>
         <dl>
-          {foreach $type in $spec.type.nested.interfaces}
-            <dt><a href="{$type.href}">{$type.name}</a>
-            <dd>
-              {if $type.summary and length($type.summary.token)}
-                {call .comment}
-                  {param comment: $type.summary /}
-                  {param omitLeadingTag: true /}
-                {/call}
-              {else}
-                No Description.
-              {/if}
-          {/foreach}
-          {foreach $type in $spec.type.nested.classes}
-            <dt><a href="{$type.href}">{$type.name}</a>
-            <dd>
-              {if $type.summary and length($type.summary.token)}
-                {call .comment}
-                  {param comment: $type.summary /}
-                  {param omitLeadingTag: true /}
-                {/call}
-              {else}
-                No Description.
-              {/if}
-          {/foreach}
-          {foreach $type in $spec.type.nested.enums}
+          {foreach $type in $spec.type.nested}
             <dt><a href="{$type.href}">{$type.name}</a>
             <dd>
               {if $type.summary and length($type.summary.token)}

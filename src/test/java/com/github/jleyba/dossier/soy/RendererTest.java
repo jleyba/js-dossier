@@ -167,7 +167,6 @@ public class RendererTest {
         .setName("name")
         .setSource("source")
         .setDescription(parseComment("description"))
-        .setNested(Dossier.JsType.NestedTypes.getDefaultInstance())
         .setTags(Dossier.Tags.getDefaultInstance())
         .build();
 
@@ -180,7 +179,6 @@ public class RendererTest {
         .setName("name")
         .setSource("source")
         .setDescription(parseComment("description"))
-        .setNested(Dossier.JsType.NestedTypes.getDefaultInstance())
         .setTags(Dossier.Tags.newBuilder().setIsInterface(true))
         .addImplementedType(Dossier.TypeLink.newBuilder()
             .setHref("type-one")
@@ -203,7 +201,6 @@ public class RendererTest {
         .setName("name")
         .setSource("source")
         .setDescription(parseComment("description"))
-        .setNested(Dossier.JsType.NestedTypes.getDefaultInstance())
         .setMainFunction(Dossier.Function.newBuilder()
             .setBase(Dossier.BaseProperty.newBuilder()
                 .setName("ctor-name")
@@ -231,7 +228,6 @@ public class RendererTest {
         .setName("name")
         .setSource("source")
         .setDescription(parseComment("description"))
-        .setNested(Dossier.JsType.NestedTypes.getDefaultInstance())
         .setTags(Dossier.Tags.newBuilder().setIsInterface(true))
         .addImplementedType(Dossier.TypeLink.newBuilder()
             .setHref("")
@@ -251,7 +247,6 @@ public class RendererTest {
         .setTags(Dossier.Tags.newBuilder().setIsModule(true))
         .setSource("source-file")
         .setDescription(parseComment("description"))
-        .setNested(Dossier.JsType.NestedTypes.getDefaultInstance())
         .build();
 
     Document document = renderDocument("dossier.soy.typeHeader", "type", type);
@@ -270,7 +265,6 @@ public class RendererTest {
         .setSource("source")
         .setDescription(parseComment("description"))
         .setTags(Dossier.Tags.newBuilder().setIsInterface(true))
-        .setNested(Dossier.JsType.NestedTypes.getDefaultInstance())
         .addImplementedType(Dossier.TypeLink.newBuilder()
             .setHref("type-one")
             .setText("Hello"))
@@ -295,7 +289,6 @@ public class RendererTest {
         .setSource("source")
         .setDescription(parseComment("description"))
         .setTags(Dossier.Tags.newBuilder().setIsInterface(true))
-        .setNested(Dossier.JsType.NestedTypes.getDefaultInstance())
         .setDeprecation(Dossier.Deprecation.newBuilder())
         .build();
 
@@ -313,7 +306,6 @@ public class RendererTest {
         .setSource("source")
         .setDescription(parseComment("description"))
         .setTags(Dossier.Tags.newBuilder().setIsInterface(true))
-        .setNested(Dossier.JsType.NestedTypes.getDefaultInstance())
         .setDeprecation(Dossier.Deprecation.newBuilder()
             .setNotice(parseComment("<i>Goodbye</i>, world!")))
         .build();
@@ -333,7 +325,6 @@ public class RendererTest {
         .setSource("source")
         .setDescription(parseComment("description"))
         .setTags(Dossier.Tags.newBuilder().setIsInterface(true))
-        .setNested(Dossier.JsType.NestedTypes.getDefaultInstance())
         .setMainFunction(Dossier.Function.newBuilder()
             .addTemplateName("K")
             .addTemplateName("V")
@@ -355,7 +346,6 @@ public class RendererTest {
         .setName("Foo")
         .setSource("source")
         .setDescription(parseComment("description"))
-        .setNested(Dossier.JsType.NestedTypes.getDefaultInstance())
         .setMainFunction(Dossier.Function.newBuilder()
             .setIsConstructor(true)
             .addTemplateName("K")
@@ -379,7 +369,6 @@ public class RendererTest {
         .setName("Foo")
         .setSource("source")
         .setDescription(parseComment("description"))
-        .setNested(Dossier.JsType.NestedTypes.getDefaultInstance())
         .setMainFunction(Dossier.Function.newBuilder()
             .setIsConstructor(true)
             .setBase(Dossier.BaseProperty.newBuilder()
@@ -409,7 +398,6 @@ public class RendererTest {
         .setName("Foo")
         .setSource("source-file")
         .setDescription(parseComment("description"))
-        .setNested(Dossier.JsType.NestedTypes.getDefaultInstance())
         .setMainFunction(Dossier.Function.newBuilder()
             .setIsConstructor(true)
             .setBase(Dossier.BaseProperty.newBuilder()
@@ -459,7 +447,6 @@ public class RendererTest {
         .setName("Foo")
         .setSource("source-file")
         .setDescription(parseComment("description"))
-        .setNested(Dossier.JsType.NestedTypes.getDefaultInstance())
         .setMainFunction(Dossier.Function.newBuilder()
             .setBase(Dossier.BaseProperty.newBuilder()
                 .setName("ctor-name")
@@ -501,7 +488,6 @@ public class RendererTest {
         .setName("Foo")
         .setSource("source-file")
         .setDescription(parseComment("description"))
-        .setNested(Dossier.JsType.NestedTypes.getDefaultInstance())
         .setTags(Dossier.Tags.getDefaultInstance())
         .build();
 
@@ -520,7 +506,6 @@ public class RendererTest {
         .setName("Foo")
         .setSource("source")
         .setDescription(parseComment("description"))
-        .setNested(Dossier.JsType.NestedTypes.getDefaultInstance())
         .setEnumeration(Dossier.Enumeration.newBuilder()
             .setTypeHtml("{color: string}"))
         .setTags(Dossier.Tags.getDefaultInstance())
@@ -590,17 +575,17 @@ public class RendererTest {
   @Test
   public void renderNestedTypeSummaries() {
     List<GeneratedMessage> types = ImmutableList.<GeneratedMessage>of(
-        Dossier.JsType.NestedTypes.TypeSummary.newBuilder()
+        Dossier.JsType.TypeSummary.newBuilder()
             .setName("Foo")
             .setHref("foo-link")
             .setSummary(parseComment("foo summary"))
             .build(),
-        Dossier.JsType.NestedTypes.TypeSummary.newBuilder()
+        Dossier.JsType.TypeSummary.newBuilder()
             .setName("Bar")
             .setHref("bar-link")
             .setSummary(parseComment("<strong>bar summary <i>has html</i></strong>"))
             .build(),
-        Dossier.JsType.NestedTypes.TypeSummary.newBuilder()
+        Dossier.JsType.TypeSummary.newBuilder()
             .setName("Baz")
             .setHref("baz-link")
             .setSummary(parseComment(""))
@@ -813,7 +798,6 @@ public class RendererTest {
     Dossier.JsType type = Dossier.JsType.newBuilder()
         .setName("Foo")
         .setSource("")
-        .setNested(Dossier.JsType.NestedTypes.getDefaultInstance())
         .setDescription(Dossier.Comment.getDefaultInstance())
         .setMainFunction(function)
         .setTags(Dossier.Tags.getDefaultInstance())

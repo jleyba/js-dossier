@@ -70,6 +70,7 @@ import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
@@ -220,7 +221,7 @@ class HtmlDocWriter implements DocWriter {
         .setName(linker.getDisplayName(module))
         .setSource(linker.getSourcePath(module))
         .setDescription(getFileoverview(linker, module.getJsDoc()))
-        .setNested(getNestedTypeInfo(module.getExportedProperties()))
+        .addAllNested(getNestedTypeInfo(module.getExportedProperties()))
         .addAllTypeDef(typeDefs)
         .addAllExtendedType(getInheritedTypes(descriptor))
         .addAllImplementedType(getImplementedTypes(descriptor));
@@ -284,7 +285,7 @@ class HtmlDocWriter implements DocWriter {
     }
 
     jsTypeBuilder
-        .setNested(getNestedTypeInfo(descriptor.getProperties()))
+        .addAllNested(getNestedTypeInfo(descriptor.getProperties()))
         .setSource(nullToEmpty(linker.getSourcePath(descriptor)))
         .setDescription(getBlockDescription(linker, descriptor.getJsDoc()))
         .addAllTypeDef(getTypeDefInfo(descriptor.getProperties()))
@@ -639,11 +640,11 @@ class HtmlDocWriter implements DocWriter {
     return firstNonNull(alias, descriptor);
   }
 
-  private JsType.NestedTypes.Builder getNestedTypeInfo(Iterable<Descriptor> properties) {
+  private List<JsType.TypeSummary> getNestedTypeInfo(Iterable<Descriptor> properties) {
     List<Descriptor> children = FluentIterable.from(properties)
         .toSortedList(DescriptorNameComparator.INSTANCE);
 
-    JsType.NestedTypes.Builder builder = JsType.NestedTypes.newBuilder();
+    List<JsType.TypeSummary> types = new ArrayList<>();
 
     for (Descriptor child : children) {
       if (!child.isConstructor() && !child.isEnum() && !child.isInterface()) {
@@ -661,22 +662,14 @@ class HtmlDocWriter implements DocWriter {
         summary =  getSummary(jsdoc.getBlockComment(), linker);
       }
 
-      JsType.NestedTypes.TypeSummary.Builder typeSummary =
-          JsType.NestedTypes.TypeSummary.newBuilder()
-              .setHref(filename.toString())
-              .setSummary(summary)
-              .setName(child.getFullName());
-
-      if (child.isEnum()) {
-        builder.addEnums(typeSummary);
-      } else if (child.isInterface()) {
-        builder.addInterfaces(typeSummary);
-      } else if (child.isConstructor()) {
-        builder.addClasses(typeSummary);
-      }
+      types.add(JsType.TypeSummary.newBuilder()
+          .setHref(filename.toString())
+          .setSummary(summary)
+          .setName(child.getFullName())
+          .build());
     }
 
-    return builder;
+    return types;
   }
 
   private void getPrototypeData(JsType.Builder jsTypeBuilder, Descriptor descriptor) {
