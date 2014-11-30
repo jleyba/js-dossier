@@ -207,7 +207,7 @@ public class Linker {
 
   @Nullable
   public String getLink(Descriptor descriptor) {
-    if (docRegistry.isExtern(descriptor.getFullName())) {
+    if (docRegistry.isExtern(descriptor.getFullName()) || docRegistry.isExtern(descriptor)) {
       return getExternLink(descriptor);
     }
 

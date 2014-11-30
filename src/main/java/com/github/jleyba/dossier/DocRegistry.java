@@ -95,6 +95,14 @@ class DocRegistry {
     return externs.containsKey(name);
   }
 
+  boolean isExtern(Descriptor descriptor) {
+    return externs.containsValue(descriptor);
+  }
+
+  boolean isExtern(JSType type) {
+    return externs.containsKey(getDisplayName(type));
+  }
+
   @Nullable
   Descriptor getExtern(String name) {
     return externs.get(name);
@@ -261,7 +269,7 @@ class DocRegistry {
     return null;
   }
 
-  private String getDisplayName(JSType type) {
+  static String getDisplayName(JSType type) {
     if (isNullOrEmpty(type.getDisplayName())) {
       return type.toString();
     }

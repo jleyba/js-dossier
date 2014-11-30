@@ -24,6 +24,7 @@ import com.google.javascript.jscomp.NodeTraversal;
 import com.google.javascript.jscomp.Scope;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.Node;
+import com.google.javascript.rhino.jstype.FunctionType;
 import com.google.javascript.rhino.jstype.JSType;
 import com.google.javascript.rhino.jstype.JSTypeRegistry;
 import com.google.javascript.rhino.jstype.ObjectType;
@@ -203,6 +204,7 @@ class DocPass  implements CompilerPass {
       }
 
       if (module == null
+          && !isExtern(descriptor)
           && (descriptor.isConstructor()
           || descriptor.isInterface()
           || descriptor.isEnum()
@@ -243,6 +245,20 @@ class DocPass  implements CompilerPass {
         }
       }
     }
+  }
+
+  private boolean isExtern(Descriptor descriptor) {
+    if (docRegistry.isExtern(descriptor) || docRegistry.isExtern(descriptor.getFullName())) {
+      return true;
+    }
+    if (descriptor.isConstructor()) {
+      JSType type = descriptor.getType();
+      if (type.isConstructor()) {
+        type = ((FunctionType) type).getTypeOfThis();
+      }
+      return docRegistry.isExtern(type);
+    }
+    return false;
   }
 
   private static boolean isDocumentableType(@Nullable JSDocInfo info) {

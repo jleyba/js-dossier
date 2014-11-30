@@ -10,7 +10,6 @@ import static java.nio.file.Files.createTempFile;
 import static java.nio.file.Files.readAllBytes;
 import static java.nio.file.Files.write;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
@@ -33,7 +32,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
-import java.nio.file.Files;
 import java.nio.file.Path;
 
 @RunWith(JUnit4.class)
@@ -71,7 +69,7 @@ public class EndToEndTest {
       addSource(srcDir.resolve("main/json.js"));
     }});
 
-    Main.main(new String[] { "-c", config.toAbsolutePath().toString() });
+    Main.main(new String[]{"-c", config.toAbsolutePath().toString()});
   }
 
   @Test
@@ -79,6 +77,7 @@ public class EndToEndTest {
     Document document = load(outDir.resolve("index.html"));
     compareWithGoldenFile(querySelector(document, "article.indexfile"), "index.html");
     checkHeader(document);
+    checkNav(document);
     checkFooter(document);
   }
 
@@ -87,6 +86,7 @@ public class EndToEndTest {
     Document document = load(outDir.resolve("class_GlobalCtor.html"));
     compareWithGoldenFile(querySelector(document, "article"), "class_GlobalCtor.html");
     checkHeader(document);
+    checkNav(document);
     checkFooter(document);
   }
 
@@ -95,6 +95,7 @@ public class EndToEndTest {
     Document document = load(outDir.resolve("class_DeprecatedFoo.html"));
     compareWithGoldenFile(querySelector(document, "article"), "class_DeprecatedFoo.html");
     checkHeader(document);
+    checkNav(document);
     checkFooter(document);
   }
 
@@ -103,6 +104,7 @@ public class EndToEndTest {
     Document document = load(outDir.resolve("namespace_sample_json.html"));
     compareWithGoldenFile(querySelector(document, "article"), "namespace_sample_json.html");
     checkHeader(document);
+    checkNav(document);
     checkFooter(document);
   }
 
@@ -112,6 +114,10 @@ public class EndToEndTest {
 
   private void checkFooter(Document document) throws IOException {
     compareWithGoldenFile(querySelectorAll(document, "main ~ *"), "footer.html");
+  }
+
+  private void checkNav(Document document) throws IOException {
+    compareWithGoldenFile(querySelectorAll(document, "nav"), "nav.html");
   }
 
   private void compareWithGoldenFile(Element element, String goldenPath) throws IOException {

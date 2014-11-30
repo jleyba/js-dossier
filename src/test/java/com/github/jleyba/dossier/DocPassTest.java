@@ -356,6 +356,15 @@ public class DocPassTest {
     assertEquals("A number.", jsdoc.getBlockComment());
   }
 
+  @Test
+  public void doesNotRecordExternAliasAsAType() {
+    util.compile(path("script.js"),
+        "/** @type {function(new: Date)} */",
+        "var DateClone = Date;");
+
+    assertFalse(docRegistry.getTypes().iterator().hasNext());
+  }
+
   private void assertArg(ArgDescriptor arg, String name, String description) {
     assertEquals(name, arg.getName());
     assertEquals(description, arg.getDescription());

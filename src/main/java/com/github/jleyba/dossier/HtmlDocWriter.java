@@ -18,6 +18,7 @@ import static com.github.jleyba.dossier.CommentUtil.getBlockDescription;
 import static com.github.jleyba.dossier.CommentUtil.getFileoverview;
 import static com.github.jleyba.dossier.CommentUtil.getSummary;
 import static com.github.jleyba.dossier.CommentUtil.parseComment;
+import static com.github.jleyba.dossier.DocRegistry.getDisplayName;
 import static com.github.jleyba.dossier.proto.Dossier.BaseProperty;
 import static com.github.jleyba.dossier.proto.Dossier.Deprecation;
 import static com.github.jleyba.dossier.proto.Dossier.Enumeration;
@@ -651,19 +652,26 @@ class HtmlDocWriter implements DocWriter {
         continue;
       }
 
-      Path filename = linker.getFilePath(child).getFileName();
       Descriptor resolvedType = resolveTypeAlias(child);
 
+      String href = docRegistry.isExtern(resolvedType)
+          ? linker.getLink(resolvedType)
+          : linker.getFilePath(child).getFileName().toString();
+
       Dossier.Comment summary = getSummary("No description.", linker);
-      JsDoc jsdoc = Optional.fromNullable(resolvedType.getJsDoc())
-          .or(Optional.fromNullable(child.getJsDoc()))
-          .orNull();
-      if (jsdoc != null) {
+
+      JsDoc jsdoc = child.getJsDoc();
+      if (jsdoc != null && !isNullOrEmpty(jsdoc.getBlockComment())) {
         summary =  getSummary(jsdoc.getBlockComment(), linker);
+      } else {
+        jsdoc = resolvedType.getJsDoc();
+        if (jsdoc  != null && !isNullOrEmpty(jsdoc.getBlockComment())) {
+          summary =  getSummary(jsdoc.getBlockComment(), linker);
+        }
       }
 
       types.add(JsType.TypeSummary.newBuilder()
-          .setHref(filename.toString())
+          .setHref(href)
           .setSummary(summary)
           .setName(child.getFullName())
           .build());

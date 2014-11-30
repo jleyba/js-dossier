@@ -24,6 +24,20 @@ GlobalCtor.staticProp = 'hi';
 
 
 /**
+ * This is just an alias for an extern and should be documented as such.
+ * @type {function(new: Date)}
+ */
+GlobalCtor.dateCtor = Date;
+
+
+/**
+ * This is a nested constructor and should be documented as a nested type.
+ * @constructor
+ */
+GlobalCtor.Other = function() {};
+
+
+/**
  * A static function.
  * @return Return statement; no type.
  */
