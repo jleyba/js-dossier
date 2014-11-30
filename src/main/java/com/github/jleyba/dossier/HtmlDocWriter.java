@@ -18,7 +18,6 @@ import static com.github.jleyba.dossier.CommentUtil.getBlockDescription;
 import static com.github.jleyba.dossier.CommentUtil.getFileoverview;
 import static com.github.jleyba.dossier.CommentUtil.getSummary;
 import static com.github.jleyba.dossier.CommentUtil.parseComment;
-import static com.github.jleyba.dossier.DocRegistry.getDisplayName;
 import static com.github.jleyba.dossier.proto.Dossier.BaseProperty;
 import static com.github.jleyba.dossier.proto.Dossier.Deprecation;
 import static com.github.jleyba.dossier.proto.Dossier.Enumeration;
@@ -48,10 +47,11 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Charsets;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
-import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
+import com.google.common.base.Predicates;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
 import com.google.gson.JsonArray;
@@ -95,6 +95,7 @@ class HtmlDocWriter implements DocWriter {
   private Iterable<Descriptor> sortedTypes;
   private Iterable<Path> sortedFiles;
   private Iterable<ModuleDescriptor> sortedModules;
+  private ImmutableSet<Descriptor> namespaces;
 
   private Dossier.Index masterIndex;
 
@@ -116,6 +117,10 @@ class HtmlDocWriter implements DocWriter {
     sortedModules = FluentIterable.from(docRegistry.getModules())
         .toSortedList(new ModueDisplayPathComparator());
 
+    namespaces = FluentIterable.from(sortedTypes)
+        .filter(isNamespace())
+        .toSet();
+
     masterIndex = generateNavIndex();
 
     createDirectories(config.getOutput());
@@ -124,7 +129,7 @@ class HtmlDocWriter implements DocWriter {
     generateIndex();
 
     for (Descriptor descriptor : sortedTypes) {
-      if (descriptor.isEmptyNamespace()) {
+      if (isEmptyNamespace(descriptor)) {
         continue;
       }
       generateDocs(descriptor);
@@ -175,7 +180,7 @@ class HtmlDocWriter implements DocWriter {
     }
 
     for (Descriptor type : sortedTypes) {
-      if (type.isEmptyNamespace()) {
+      if (isEmptyNamespace(type)) {
         continue;
       }
 
@@ -378,7 +383,7 @@ class HtmlDocWriter implements DocWriter {
   private JsonArray getTypeInfo(Iterable<Descriptor> types) {
     JsonArray array = new JsonArray();
     for (Descriptor descriptor : types) {
-      if (descriptor.isEmptyNamespace()) {
+      if (isEmptyNamespace(descriptor)) {
         continue;
       }
 
@@ -467,7 +472,8 @@ class HtmlDocWriter implements DocWriter {
           public TypeLink apply(JSType input) {
             return getTypeLink(input);
           }
-        });
+        }
+    );
   }
 
   @VisibleForTesting TypeLink getTypeLink(JSType type) {
@@ -937,6 +943,16 @@ class HtmlDocWriter implements DocWriter {
         && !descriptor.isInterface();
   }
 
+  private boolean isEmptyNamespace(Descriptor descriptor) {
+    if (descriptor.isConstructor() || descriptor.isEnum() || descriptor.isInterface()) {
+      return false;
+    }
+    return !FluentIterable.from(descriptor.getProperties())
+        .filter(Predicates.not(Predicates.in(namespaces)))
+        .iterator()
+        .hasNext();
+  }
+
   private static Predicate<Descriptor> notOwnPropertyOf(final Iterable<Descriptor> descriptors) {
     return new Predicate<Descriptor>() {
       @Override
@@ -947,6 +963,18 @@ class HtmlDocWriter implements DocWriter {
           }
         }
         return true;
+      }
+    };
+  }
+
+  private static Predicate<Descriptor> isNamespace() {
+    return new Predicate<Descriptor>() {
+      @Override
+      public boolean apply(@Nullable Descriptor input) {
+        return input != null
+            && !input.isConstructor()
+            && !input.isInterface()
+            && !input.isEnum();
       }
     };
   }

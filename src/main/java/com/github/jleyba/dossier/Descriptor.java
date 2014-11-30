@@ -252,13 +252,6 @@ public class Descriptor {
         || (info != null && info.isEnum());
   }
 
-  boolean isEmptyNamespace() {
-    return !isConstructor()
-        && !isInterface()
-        && !isEnum()
-        && getProperties().isEmpty();
-  }
-
   boolean isDeprecated() {
     return (info != null && info.isDeprecated());
   }
