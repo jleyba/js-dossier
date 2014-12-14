@@ -7,7 +7,7 @@ a[href]:hover{text-decoration:underline}
 main{margin:0 auto;width:100rem;background:#fff}main:after{clear:both;content:"";display:table}
 article{padding:3rem;width:66rem;margin-top:2rem;float:right}article.indexfile>h1,article.srcfile>h1{margin-top:0}
 article.srcfile td{padding-left:.4rem}
-article.srcfile td:first-child{text-align:right;padding-right:.4rem;border-right:1px solid #c4c4c4}
+article.srcfile td:first-child{text-align:right;padding:0 .8rem 0 0}
 article.srcfile>pre{padding:1rem .8rem}
 article.srcfile :target+a{font-weight:bold}
 article.srcfile tr.hilite{background:rgba(102,102,255,0.1)}
