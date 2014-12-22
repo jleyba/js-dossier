@@ -1,0 +1,12 @@
+include_defs("//third_party/java/DEFS")
+
+prebuilt_jar_with_license(
+  name = "truth",
+  binary_jar = "truth-0.24.jar",
+  source_jar = "truth-0.24-src.jar",
+  deps = [
+    "//third_party/java/guava:guava",
+    "//third_party/java/jsr305:jsr305",
+  ],
+  visibility = ["PUBLIC"],
+)
