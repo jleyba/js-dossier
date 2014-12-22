@@ -33,5 +33,6 @@ java_test(
     "//third_party/java/mockito:mockito",
     "//third_party/java/protobuf:protobuf",
     "//third_party/java/soy:soy",
+    "//third_party/java/truth:truth",
   ],
 )

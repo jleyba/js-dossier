@@ -14,6 +14,7 @@ import static org.junit.Assert.assertEquals;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.io.Resources;
+import com.google.common.jimfs.Jimfs;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
@@ -37,8 +38,6 @@ import java.nio.file.Path;
 @RunWith(JUnit4.class)
 public class EndToEndTest {
 
-  private static FileSystem fileSystem;
-  private static Path tmpDir;
   private static Path srcDir;
   private static Path outDir;
 
@@ -46,9 +45,17 @@ public class EndToEndTest {
 
   @BeforeClass
   public static void setUpOnce() throws IOException {
-    fileSystem = FileSystems.getDefault();
+    FileSystem fileSystem;
+    Path tmpDir;
+    if (Boolean.getBoolean("dossier.e2e.useDefaultFileSystem")) {
+      fileSystem = FileSystems.getDefault();
+      tmpDir = fileSystem.getPath(System.getProperty("java.io.tmpdir"));
+    } else {
+      fileSystem = Jimfs.newFileSystem();
+      tmpDir = fileSystem.getPath("/tmp");
+      createDirectories(tmpDir);
+    }
 
-    tmpDir = fileSystem.getPath(System.getProperty("java.io.tmpdir"));
     tmpDir = createTempDirectory(tmpDir, "dossier.e2e");
     srcDir = tmpDir.resolve("src");
     outDir = tmpDir.resolve("out");
@@ -69,7 +76,7 @@ public class EndToEndTest {
       addSource(srcDir.resolve("main/json.js"));
     }});
 
-    Main.main(new String[]{"-c", config.toAbsolutePath().toString()});
+    Main.run(new String[]{"-c", config.toAbsolutePath().toString()}, fileSystem);
   }
 
   @Test
@@ -85,6 +92,33 @@ public class EndToEndTest {
   public void checkGlobalClass() throws IOException {
     Document document = load(outDir.resolve("class_GlobalCtor.html"));
     compareWithGoldenFile(querySelector(document, "article"), "class_GlobalCtor.html");
+    checkHeader(document);
+    checkNav(document);
+    checkFooter(document);
+  }
+
+  @Test
+  public void checkGlobalEnum() throws IOException {
+    Document document = load(outDir.resolve("enum_GlobalEnum.html"));
+    compareWithGoldenFile(querySelector(document, "article"), "enum_GlobalEnum.html");
+    checkHeader(document);
+    checkNav(document);
+    checkFooter(document);
+  }
+
+  @Test
+  public void checkEmptyGlobalEnum() throws IOException {
+    Document document = load(outDir.resolve("enum_EmptyEnum.html"));
+    compareWithGoldenFile(querySelector(document, "article"), "enum_EmptyEnum.html");
+    checkHeader(document);
+    checkNav(document);
+    checkFooter(document);
+  }
+
+  @Test
+  public void checkGlobalUndefinedEnum() throws IOException {
+    Document document = load(outDir.resolve("enum_UndefinedEnum.html"));
+    compareWithGoldenFile(querySelector(document, "article"), "enum_UndefinedEnum.html");
     checkHeader(document);
     checkNav(document);
     checkFooter(document);

@@ -2,23 +2,18 @@ package com.github.jleyba.dossier;
 
 import static com.github.jleyba.dossier.CompilerUtil.createSourceFile;
 import static com.google.common.collect.Iterables.getOnlyElement;
+import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import com.google.common.base.Function;
 import com.google.common.base.Joiner;
-import com.google.common.base.Predicate;
-import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
 import com.google.common.jimfs.Jimfs;
 import com.google.javascript.jscomp.CompilerOptions;
 import com.google.javascript.jscomp.DossierCompiler;
 import com.google.javascript.jscomp.SourceFile;
-import com.google.protobuf.Descriptors;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,7 +22,7 @@ import org.junit.runners.JUnit4;
 import java.io.IOException;
 import java.nio.file.FileSystem;
 import java.nio.file.Path;
-import java.util.List;
+import java.util.Map;
 
 /**
  * Tests for {@link DocPass}.
@@ -36,7 +31,7 @@ import java.util.List;
 public class DocPassTest {
 
   private FileSystem fs;
-  private DocRegistry docRegistry;
+  private TypeRegistry typeRegistry;
   private CompilerUtil util;
 
   @Before
@@ -44,8 +39,8 @@ public class DocPassTest {
     fs = Jimfs.newFileSystem();
 
     DossierCompiler compiler = new DossierCompiler(System.err, ImmutableList.<Path>of());
-    docRegistry = new DocRegistry(compiler.getTypeRegistry());
-    CompilerOptions options = Main.createOptions(fs, compiler, docRegistry);
+    typeRegistry = new TypeRegistry(compiler.getTypeRegistry());
+    CompilerOptions options = Main.createOptions(fs, typeRegistry, compiler);
 
     util = new CompilerUtil(compiler, options);
   }
@@ -69,20 +64,24 @@ public class DocPassTest {
 
     util.compile(bar, baz);
 
-    assertEquals(Joiner.on('\n').join(
-        "This is a file overview",
-        "     It is on multiple lines.",
-        "Here is a pre tag:",
-        "<pre>",
-        "    adfadfafd",
-        "      </pre>"), docRegistry.getFileOverview(path("foo/bar.js")));
-    assertEquals("Single line overview. ", docRegistry.getFileOverview(path("foo/baz.js")));
+    assertEquals(
+        Joiner.on('\n').join(
+            "This is a file overview",
+            "     It is on multiple lines.",
+            "Here is a pre tag:",
+            "<pre>",
+            "    adfadfafd",
+            "       </pre>"),
+        typeRegistry.getFileOverview(path("foo/bar.js")).getFileoverview()
+    );
+    assertEquals("Single line overview.",
+        typeRegistry.getFileOverview(path("foo/baz.js")).getFileoverview());
   }
 
   @Test
   public void ignoresUndocumentedFunctions() {
     util.compile(path("foo/bar.js"), "function Foo() {}");
-    assertTrue(Iterables.isEmpty(docRegistry.getTypes()));
+    assertThat(typeRegistry.getNominalTypes()).isEmpty();
   }
 
   @Test
@@ -90,10 +89,9 @@ public class DocPassTest {
     util.compile(path("foo/bar.js"),
         "/** @constructor */",
         "function Foo() {}");
-    Descriptor descriptor = getOnlyElement(docRegistry.getTypes());
-    assertEquals("Foo", descriptor.getFullName());
-    assertConstructor(descriptor);
-    assertTrue(descriptor.getArgs().isEmpty());
+    NominalType type = getOnlyElement(typeRegistry.getNominalTypes());
+    assertEquals("Foo", type.getName());
+    assertConstructor(type);
   }
 
   @Test
@@ -101,10 +99,9 @@ public class DocPassTest {
     util.compile(path("foo/bar.js"),
         "/** @interface */",
         "function Foo() {}");
-    Descriptor descriptor = getOnlyElement(docRegistry.getTypes());
-    assertEquals("Foo", descriptor.getFullName());
-    assertInterface(descriptor);
-    assertTrue(descriptor.getArgs().isEmpty());
+    NominalType type = getOnlyElement(typeRegistry.getNominalTypes());
+    assertEquals("Foo", type.getName());
+    assertInterface(type);
   }
 
   @Test
@@ -112,9 +109,19 @@ public class DocPassTest {
     util.compile(path("foo/bar.js"),
         "/** @enum */",
         "var Foo = {};");
-    Descriptor descriptor = getOnlyElement(docRegistry.getTypes());
-    assertEquals("Foo", descriptor.getFullName());
-    assertEnum(descriptor);
+    NominalType type = getOnlyElement(typeRegistry.getNominalTypes());
+    assertEquals("Foo", type.getName());
+    assertEnum(type);
+  }
+
+  @Test
+  public void recordsGlobalTypedefs() {
+    util.compile(path("foo/bar.js"),
+        "/** @typedef {string} */",
+        "var Foo;");
+    NominalType type = getOnlyElement(typeRegistry.getNominalTypes());
+    assertEquals("Foo", type.getName());
+    assertTypedef(type);
   }
 
   @Test
@@ -124,13 +131,11 @@ public class DocPassTest {
         "/** @constructor */",
         "foo.bar.Baz = function() {};");
 
-    List<Descriptor> descriptors = getDescriptors();
-    assertEquals(
-        ImmutableList.of("foo", "foo.bar", "foo.bar.Baz"),
-        getNames(descriptors));
-    assertNamespace(descriptors.get(0));
-    assertNamespace(descriptors.get(1));
-    assertConstructor(descriptors.get(2));
+    Map<String, NominalType> types = typeRegistry.getNominalTypeMap();
+    assertThat(types.keySet()).containsExactly("foo", "foo.bar", "foo.bar.Baz");
+    assertNamespace(types.get("foo"));
+    assertNamespace(types.get("foo.bar"));
+    assertConstructor(types.get("foo.bar.Baz"));
   }
 
   @Test
@@ -142,14 +147,12 @@ public class DocPassTest {
         "/** @constructor */",
         "foo.bar.Bim.Baz = function() {};");
 
-    List<Descriptor> descriptors = getDescriptors();
-    assertEquals(
-        ImmutableList.of("foo", "foo.bar", "foo.bar.Bim", "foo.bar.Bim.Baz"),
-        getNames(descriptors));
-    assertNamespace(descriptors.get(0));
-    assertNamespace(descriptors.get(1));
-    assertConstructor(descriptors.get(2));
-    assertConstructor(descriptors.get(3));
+    Map<String, NominalType> types = typeRegistry.getNominalTypeMap();
+    assertThat(types.keySet()).containsExactly("foo", "foo.bar", "foo.bar.Bim", "foo.bar.Bim.Baz");
+    assertNamespace(types.get("foo"));
+    assertNamespace(types.get("foo.bar"));
+    assertConstructor(types.get("foo.bar.Bim"));
+    assertConstructor(types.get("foo.bar.Bim.Baz"));
   }
 
   @Test
@@ -161,13 +164,9 @@ public class DocPassTest {
         "/** @type {!Function} */",
         "foo.baz = function() {};");
 
-    Descriptor descriptor = getOnlyElement(getDescriptors());
-    assertNamespace(descriptor);
-
-    List<Descriptor> descriptors = Descriptor.sortByName(descriptor.getProperties());
-    assertEquals(2, descriptors.size());
-    assertEquals("foo.bar", descriptors.get(0).getFullName());
-    assertEquals("foo.baz", descriptors.get(1).getFullName());
+    NominalType type = getOnlyElement(typeRegistry.getNominalTypes());
+    assertNamespace(type);
+    assertEquals("foo", type.getName());
   }
 
   @Test
@@ -175,10 +174,11 @@ public class DocPassTest {
     util.compile(path("foo/bar.js"),
         "goog.provide('foo');",
         "/** @type {!Function} */",
-        "var foo = Function;");
+        "foo.bar = Function;");
 
-    Descriptor descriptor = getOnlyElement(getDescriptors());
-    assertNamespace(descriptor);
+    NominalType type = getOnlyElement(typeRegistry.getNominalTypes());
+    assertNamespace(type);
+    assertEquals("foo", type.getName());
   }
 
   @Test
@@ -186,14 +186,9 @@ public class DocPassTest {
     util.compile(path("foo/bar.js"),
         "/** @constructor */",
         "function Foo(a, b) {}");
-    Descriptor descriptor = getOnlyElement(docRegistry.getTypes());
-    assertEquals("Foo", descriptor.getFullName());
-    assertConstructor(descriptor);
-
-    List<ArgDescriptor> args = descriptor.getArgs();
-    assertEquals(2, args.size());
-    assertArg(args.get(0), "a", "");
-    assertArg(args.get(1), "b", "");
+    NominalType type = getOnlyElement(typeRegistry.getNominalTypes());
+    assertEquals("Foo", type.getName());
+    assertConstructor(type);
   }
 
   @Test
@@ -207,14 +202,9 @@ public class DocPassTest {
         " *     parameter.",
         " * @constructor */",
         "function Foo(a, b, opt_c) {}");
-    Descriptor descriptor = getOnlyElement(docRegistry.getTypes());
-    assertEquals("Foo", descriptor.getFullName());
-    assertConstructor(descriptor);
-
-    List<ArgDescriptor> args = descriptor.getArgs();
-    assertEquals(3, args.size());
-    assertArg(args.get(0), "a", "is for\n     apples.");
-    assertArg(args.get(1), "b", "is for bananas.");
+    NominalType type = getOnlyElement(typeRegistry.getNominalTypes());
+    assertEquals("Foo", type.getName());
+    assertConstructor(type);
   }
 
   @Test
@@ -222,14 +212,9 @@ public class DocPassTest {
     util.compile(path("foo/bar.js"),
         "/** @interface */",
         "function Foo(a, b) {}");
-    Descriptor descriptor = getOnlyElement(docRegistry.getTypes());
-    assertEquals("Foo", descriptor.getFullName());
-    assertInterface(descriptor);
-
-    List<ArgDescriptor> args = descriptor.getArgs();
-    assertEquals(2, args.size());
-    assertArg(args.get(0), "a", "");
-    assertArg(args.get(1), "b", "");
+    NominalType type = getOnlyElement(typeRegistry.getNominalTypes());
+    assertEquals("Foo", type.getName());
+    assertInterface(type);
   }
 
   @Test
@@ -240,14 +225,13 @@ public class DocPassTest {
         " * @param {string} b is for bananas.",
         " * @interface */",
         "function Foo(a, b) {}");
-    Descriptor descriptor = getOnlyElement(docRegistry.getTypes());
-    assertEquals("Foo", descriptor.getFullName());
-    assertInterface(descriptor);
+    NominalType type = getOnlyElement(typeRegistry.getNominalTypes());
+    assertEquals("Foo", type.getName());
+    assertInterface(type);
+  }
 
-    List<ArgDescriptor> args = descriptor.getArgs();
-    assertEquals(2, args.size());
-    assertArg(args.get(0), "a", "is for apples.");
-    assertArg(args.get(1), "b", "is for bananas.");
+  public DocPassTest() {
+    super();
   }
 
   @Test
@@ -261,12 +245,10 @@ public class DocPassTest {
         "/** @constructor */",
         "exports.Foo = function() {};");
 
-    List<Descriptor> descriptors = getDescriptors();
-    assertEquals(
-        ImmutableList.of("foo", "foo.Foo"),
-        getNames(descriptors));
-    assertNamespace(descriptors.get(0));
-    assertConstructor(descriptors.get(1));
+    Map<String, NominalType> types = typeRegistry.getNominalTypeMap();
+    assertThat(types.keySet()).containsExactly("foo", "foo.Foo");
+    assertNamespace(types.get("foo"));
+    assertConstructor(types.get("foo.Foo"));
   }
 
   @Test
@@ -279,19 +261,7 @@ public class DocPassTest {
         " */",
         "exports.greet = function(name) { return 'hello, ' + name; };");
 
-    ModuleDescriptor module = getOnlyElement(docRegistry.getModules());
-
-    Descriptor greet = getOnlyElement(module.getExportedProperties());
-    assertEquals("greet", greet.getFullName());
-    assertTrue(greet.isFunction());
-
-    ArgDescriptor arg = getOnlyElement(greet.getArgs());
-    assertEquals("name", arg.getName());
-    assertEquals("a name.", arg.getDescription());
-
-    JsDoc jsdoc = greet.getJsDoc();
-    assertNotNull(jsdoc);
-    assertEquals("a greeting.", jsdoc.getReturnDescription());
+    assertNamespace(getOnlyElement(typeRegistry.getModules()));
   }
 
   @Test
@@ -304,56 +274,7 @@ public class DocPassTest {
         " */",
         "module.exports = function(name) { return 'hello, ' + name; };");
 
-    ModuleDescriptor module = getOnlyElement(docRegistry.getModules());
-    Descriptor descriptor = module.getDescriptor();
-    assertTrue(descriptor.isFunction());
-
-    ArgDescriptor arg = getOnlyElement(descriptor.getArgs());
-    assertEquals("name", arg.getName());
-    assertEquals("a name.", arg.getDescription());
-
-    JsDoc jsdoc = descriptor.getJsDoc();
-    assertNotNull(jsdoc);
-    assertEquals("a greeting.", jsdoc.getReturnDescription());
-  }
-
-  @Test
-  public void documentsTypesAfterModuleExportsAssignment_assignedToFunctionVar() {
-    createCompiler(ImmutableList.of(path("module.js")));
-    util.compile(path("module.js"),
-        "/**",
-        " * @param {string} name a name.",
-        " * @return {string} a greeting.",
-        " */",
-        "var greet = function(name) { return 'hello, ' + name; };",
-        "",
-        "/**",
-        " * A number.",
-        " * @type {number}",
-        " */",
-        "greet.x = 1234;",
-        "",
-        "module.exports = greet;");
-
-    ModuleDescriptor module = getOnlyElement(docRegistry.getModules());
-
-    Descriptor descriptor = module.getDescriptor();
-    assertTrue(descriptor.isFunction());
-
-    ArgDescriptor arg = getOnlyElement(descriptor.getArgs());
-    assertEquals("name", arg.getName());
-    assertEquals("a name.", arg.getDescription());
-
-    JsDoc jsdoc = descriptor.getJsDoc();
-    assertNotNull(jsdoc);
-    assertEquals("a greeting.", jsdoc.getReturnDescription());
-
-    Descriptor x = getOnlyElement(descriptor.getProperties());
-    assertEquals("dossier$$module__module.x", x.getFullName());
-
-    jsdoc = x.getJsDoc();
-    assertNotNull(jsdoc);
-    assertEquals("A number.", jsdoc.getBlockComment());
+    assertFunction(getOnlyElement(typeRegistry.getModules()));
   }
 
   @Test
@@ -362,13 +283,67 @@ public class DocPassTest {
         "/** @type {function(new: Date)} */",
         "var DateClone = Date;");
 
-    assertFalse(docRegistry.getTypes().iterator().hasNext());
+    assertThat(typeRegistry.getNominalTypes()).isEmpty();
   }
 
-  private void assertArg(ArgDescriptor arg, String name, String description) {
-    assertEquals(name, arg.getName());
-    assertEquals(description, arg.getDescription());
+  @Test
+  public void recordsReferencedExterns() {
+    util.compile(
+        ImmutableList.of(
+            createSourceFile(path("externs.js"),
+                "/** @constructor */",
+                "function GlobalCtor() {}",
+                "",
+                "/** @interface */",
+                "var GlobalIface = function() {};",
+                "",
+                "/** @enum {string} */",
+                "var GlobalEnum = {};",
+                "",
+                "/** @const */",
+                "var ns = {};",
+                "",
+                "/** @constructor */",
+                "ns.Ctor = function(e) {};",
+                "",
+                "/** @enum {number} */",
+                "ns.Enum = {foo:1};")),
+        ImmutableList.of(
+            createSourceFile(path("script.js"),
+                "var x = new GlobalCtor();",
+                "/**",
+                " * @param {GlobalEnum} a .",
+                " * @param {ns.Ctor} b .",
+                " * @param {ns.Enum} c .",
+                " * @constructor",
+                " * @implements {GlobalIface}",
+                " */",
+                "var y = function(a, b, c) {};"
+            )));
+    assertThat(typeRegistry.getExternNames()).containsExactly(
+        "GlobalCtor",
+        "GlobalIface",
+        "GlobalEnum",
+        "ns.Ctor",
+        "ns.Enum");
   }
+
+  @Test
+  public void doesNotTraverseGlobalObjectAsExtern() {
+    util.compile(
+        ImmutableList.of(
+            createSourceFile(path("externs.js"),
+                "/** @const */",
+                "var global = this;")),
+        ImmutableList.of(
+            createSourceFile(path("script.js"),
+                "/** @constructor */",
+                "var x = function() {};",
+                "/** @constructor */",
+                "global.y = function() {};")));
+    assertThat(typeRegistry.getExternNames()).containsExactly("global");
+  }
+
 
   private Path path(String first, String... remaining) {
     return fs.getPath(first, remaining);
@@ -376,62 +351,43 @@ public class DocPassTest {
 
   private void createCompiler(Iterable<Path> modules) {
     DossierCompiler compiler = new DossierCompiler(System.err, modules);
-    CompilerOptions options = Main.createOptions(fs, compiler, docRegistry);
+    CompilerOptions options = Main.createOptions(
+        fs, typeRegistry, compiler);
 
     util = new CompilerUtil(compiler, options);
   }
 
-  private List<String> getGlobalTypes() {
-    return FluentIterable.from(docRegistry.getTypes())
-        .filter(new Predicate<Descriptor>() {
-          @Override
-          public boolean apply(Descriptor input) {
-            return docRegistry.isExtern(input.getFullName());
-          }
-        })
-        .transform(new Function<Descriptor, String>() {
-          @Override
-          public String apply(Descriptor input) {
-            return input.getFullName();
-          }
-        })
-        .toList();
+  private static void assertTypedef(NominalType type) {
+    assertNotNull(type.getJsdoc());
+    assertTrue(type.getJsdoc().isTypedef());
   }
 
-  private static void assertConstructor(Descriptor descriptor) {
-    assertTrue(descriptor.isConstructor());
-    assertFalse(descriptor.isInterface());
-    assertFalse(descriptor.isEnum());
+  private static void assertConstructor(NominalType type) {
+    assertTrue(type.getJsType().isConstructor());
+    assertFalse(type.getJsType().isInterface());
+    assertFalse(type.getJsType().isEnumType());
   }
 
-  private static void assertInterface(Descriptor descriptor) {
-    assertFalse(descriptor.isConstructor());
-    assertTrue(descriptor.isInterface());
-    assertFalse(descriptor.isEnum());
+  private static void assertInterface(NominalType type) {
+    assertFalse(type.getJsType().isConstructor());
+    assertTrue(type.getJsType().isInterface());
+    assertFalse(type.getJsType().isEnumType());
   }
 
-  private static void assertEnum(Descriptor descriptor) {
-    assertFalse(descriptor.isConstructor());
-    assertFalse(descriptor.isInterface());
-    assertTrue(descriptor.isEnum());
+  private static void assertEnum(NominalType type) {
+    assertFalse(type.getJsType().isConstructor());
+    assertFalse(type.getJsType().isInterface());
+    assertTrue(type.getJsType().isEnumType());
   }
 
-  private static void assertNamespace(Descriptor descriptor) {
-    assertFalse(descriptor.isConstructor());
-    assertFalse(descriptor.isInterface());
-    assertFalse(descriptor.isEnum());
+  private static void assertFunction(NominalType type) {
+    assertTrue(type.getJsType().isFunctionType());
   }
 
-  private List<Descriptor> getDescriptors() {
-    return Descriptor.sortByName(docRegistry.getTypes());
-  }
-
-  private static List<String> getNames(List<Descriptor> descriptors) {
-    return Lists.transform(descriptors, new Function<Descriptor, String>() {
-      @Override
-      public String apply(Descriptor input) {
-        return input.getFullName();
-      }
-    });
+  private static void assertNamespace(NominalType type) {
+    assertFalse(type.getJsType().isConstructor());
+    assertFalse(type.getJsType().isInterface());
+    assertFalse(type.getJsType().isEnumType());
+    assertTrue(type.getJsType().isObject());
   }
 }

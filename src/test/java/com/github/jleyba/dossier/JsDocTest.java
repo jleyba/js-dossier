@@ -30,13 +30,16 @@ import java.util.Iterator;
 public class JsDocTest {
 
   private DocRegistry docRegistry;
+  private TypeRegistry typeRegistry;
   private CompilerUtil util;
 
   @Before
   public void setUp() {
     DossierCompiler compiler = new DossierCompiler(System.err, ImmutableList.<Path>of());
     docRegistry = new DocRegistry(compiler.getTypeRegistry());
-    CompilerOptions options = Main.createOptions(Jimfs.newFileSystem(), compiler, docRegistry);
+    typeRegistry = new TypeRegistry(compiler.getTypeRegistry());
+    CompilerOptions options = Main.createOptions(
+        Jimfs.newFileSystem(), typeRegistry, compiler);
 
     util = new CompilerUtil(compiler, options);
   }
@@ -116,9 +119,9 @@ public class JsDocTest {
         " */",
         "function Foo(a, b, c){}");
     JSDocInfo rawInfo = doc.getInfo();
-    Iterator<ArgDescriptor> parameters = doc.getParameters().iterator();
+    Iterator<Parameter> parameters = doc.getParameters().iterator();
 
-    ArgDescriptor param = parameters.next();
+    Parameter param = parameters.next();
     assertEquals("a", param.getName());
     assertEquals("is for apples.", param.getDescription());
     assertSameRootNode(rawInfo.getParameterType("a"), param.getType());
@@ -142,7 +145,7 @@ public class JsDocTest {
     JsDoc doc = getClassJsDoc(
         "/** @constructor @param {string} x a name. */",
         "function foo(x) {}");
-    ArgDescriptor param = getOnlyElement(doc.getParameters());
+    Parameter param = getOnlyElement(doc.getParameters());
     assertEquals("x", param.getName());
     assertEquals("a name.", param.getDescription());
   }
@@ -153,7 +156,7 @@ public class JsDocTest {
     JsDoc doc = getClassJsDoc(
         "  /** @constructor @param {string} x a name. */",
         "  function foo(x) {}");
-    ArgDescriptor param = getOnlyElement(doc.getParameters());
+    Parameter param = getOnlyElement(doc.getParameters());
     assertEquals("x", param.getName());
     assertEquals("a name.", param.getDescription());
   }
@@ -363,9 +366,9 @@ public class JsDocTest {
             "       final line of block comment."),
         doc.getBlockComment());
 
-    Iterator<ArgDescriptor> parameters = doc.getParameters().iterator();
+    Iterator<Parameter> parameters = doc.getParameters().iterator();
 
-    ArgDescriptor param = parameters.next();
+    Parameter param = parameters.next();
     assertEquals("is for\n     apples.", param.getDescription());
 
     param = parameters.next();
@@ -411,7 +414,7 @@ public class JsDocTest {
   }
 
   private static void assertSameRootNode(JSTypeExpression a, JSTypeExpression b) {
-    assertSame(a.getRootNode(), b.getRootNode());
+    assertSame(a.getRoot(), b.getRoot());
   }
 
   private static String lines(String... lines) {

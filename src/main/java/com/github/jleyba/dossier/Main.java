@@ -13,8 +13,11 @@
 // limitations under the License.
 package com.github.jleyba.dossier;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.collect.Iterables.transform;
 import static com.google.common.collect.Lists.newLinkedList;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.nio.file.Files.newInputStream;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Function;
@@ -32,6 +35,7 @@ import com.google.javascript.jscomp.CompilerOptions;
 import com.google.javascript.jscomp.CompilerPass;
 import com.google.javascript.jscomp.CustomPassExecutionTime;
 import com.google.javascript.jscomp.DossierCompiler;
+import com.google.javascript.jscomp.SourceFile;
 import org.joda.time.Instant;
 import org.joda.time.Period;
 import org.joda.time.format.PeriodFormatterBuilder;
@@ -41,16 +45,21 @@ import java.io.InputStream;
 import java.io.PrintStream;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
-import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
+import java.util.logging.Logger;
 
 public class Main extends CommandLineRunner {
 
   private final Config config;
 
   private DocRegistry docRegistry;
+  private TypeRegistry typeRegistry;
 
   @VisibleForTesting
   Main(String[] args, PrintStream out, PrintStream err, Config config) {
@@ -71,12 +80,15 @@ public class Main extends CommandLineRunner {
       throw new AssertionError();
     }
     docRegistry = new DocRegistry(compiler.getTypeRegistry());
-    return createOptions(config.getFileSystem(), (DossierCompiler) compiler, docRegistry);
+    typeRegistry = new TypeRegistry(compiler.getTypeRegistry());
+    return createOptions(config.getFileSystem(), typeRegistry, (DossierCompiler) compiler);
   }
 
   @VisibleForTesting
   static CompilerOptions createOptions(
-      FileSystem fileSystem, DossierCompiler compiler, DocRegistry docRegistry) {
+      FileSystem fileSystem,
+      TypeRegistry typeRegistry,
+      DossierCompiler compiler) {
     CompilerOptions options = new CompilerOptions();
 
     options.setCodingConvention(new ClosureCodingConvention());
@@ -100,13 +112,28 @@ public class Main extends CommandLineRunner {
         });
 
     ProvidedSymbolsCollectionPass providedNamespacesPass =
-        new ProvidedSymbolsCollectionPass(compiler);
+        new ProvidedSymbolsCollectionPass(compiler, typeRegistry);
     customPasses.put(CustomPassExecutionTime.BEFORE_CHECKS, providedNamespacesPass);
     customPasses.put(CustomPassExecutionTime.BEFORE_OPTIMIZATIONS,
-        new DocPass(compiler, docRegistry, providedNamespacesPass.getSymbols(), fileSystem));
+        new DocPass(compiler, typeRegistry, fileSystem));
 
     options.setCustomPasses(customPasses);
     return options;
+  }
+
+  @Override
+  protected List<SourceFile> createInputs(List<String> files, boolean allowStdIn)
+      throws IOException {
+    List<SourceFile> inputs = new ArrayList<>(files.size());
+    for (String filename : files) {
+      checkArgument(!"-".equals(filename), "Reading from stdin not supported");
+      Path path = config.getFileSystem().getPath(filename);
+      try (InputStream inputStream = newInputStream(path)) {
+        SourceFile file = SourceFile.fromInputStream(filename, inputStream, UTF_8);
+        inputs.add(file);
+      }
+    }
+    return inputs;
   }
 
   private void runCompiler() {
@@ -132,7 +159,7 @@ public class Main extends CommandLineRunner {
       System.exit(result);
     }
 
-    DocWriter writer = new HtmlDocWriter(config, docRegistry);
+    DocWriter writer = new HtmlDocWriter(config, typeRegistry, docRegistry);
     try {
       writer.generateDocs(getCompiler().getTypeRegistry());
     } catch (IOException e) {
@@ -186,11 +213,11 @@ public class Main extends CommandLineRunner {
       "--jscomp_warning=visibility",
       "--third_party=false");
 
-  public static void main(String[] args) {
-    Flags flags = Flags.parse(args);
+  @VisibleForTesting static void run(String[] args, FileSystem fileSystem) {
+    Flags flags = Flags.parse(args, fileSystem);
     Config config = null;
-    try (InputStream stream = Files.newInputStream(flags.config)) {
-      config = Config.load(stream, FileSystems.getDefault());
+    try (InputStream stream = newInputStream(flags.config)) {
+      config = Config.load(stream, fileSystem);
     } catch (IOException e) {
       e.printStackTrace(System.err);
       System.exit(-1);
@@ -217,7 +244,27 @@ public class Main extends CommandLineRunner {
     PrintStream nullStream = new PrintStream(ByteStreams.nullOutputStream());
     args = compilerFlags.toArray(new String[compilerFlags.size()]);
 
-    Main main = new Main(args, nullStream, System.err, config);
+    Logger log = Logger.getLogger(Main.class.getPackage().getName());
+    log.setLevel(Level.ALL);
+    log.addHandler(new Handler() {
+      @Override
+      public void publish(LogRecord record) {
+        System.err.printf(
+            "[%s][%s] %s\n",
+            record.getLevel(),
+            record.getLoggerName(),
+            record.getMessage());
+      }
+
+      @Override public void flush() {}
+      @Override public void close() {}
+    });
+
+    Main main = new Main(args, nullStream, nullStream, config);
     main.runCompiler();
+  }
+
+  public static void main(String[] args) {
+    run(args, FileSystems.getDefault());
   }
 }

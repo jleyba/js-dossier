@@ -14,22 +14,31 @@
 
 package com.github.jleyba.dossier;
 
+import static com.google.common.base.Strings.nullToEmpty;
+
 import com.google.common.base.Strings;
 import com.google.javascript.rhino.JSTypeExpression;
 
 import javax.annotation.Nullable;
 
 /**
- * Describes a function argument.
+ * Describes a function parameter.
  */
-class ArgDescriptor {
+class Parameter {
 
   private final String name;
-  private final JSTypeExpression type;
+  @Nullable private final JSTypeExpression type;
   private final String description;
 
-  ArgDescriptor(String name, @Nullable JSTypeExpression type, @Nullable String description) {
-    this.name = name;
+  Parameter(@Nullable String name) {
+    this(name, null, null);
+  }
+
+  Parameter(
+      @Nullable String name,
+      @Nullable JSTypeExpression type,
+      @Nullable String description) {
+    this.name = nullToEmpty(name);
     this.type = type;
     this.description = Strings.nullToEmpty(description);
   }

@@ -1,10 +1,9 @@
 package com.github.jleyba.dossier;
 
 import static com.google.common.collect.Lists.newLinkedList;
-import static org.junit.Assert.assertEquals;
+import static com.google.common.truth.Truth.assertThat;
 
 import com.google.common.base.Supplier;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
@@ -31,7 +30,8 @@ public class ProvidedSymbolsCollectionPassTest {
   @Test
   public void collectsProvidedSymbols() {
     Compiler compiler = new Compiler(System.err);
-    ProvidedSymbolsCollectionPass pass = new ProvidedSymbolsCollectionPass(compiler);
+    TypeRegistry typeRegistry = new TypeRegistry(compiler.getTypeRegistry());
+    ProvidedSymbolsCollectionPass pass = new ProvidedSymbolsCollectionPass(compiler, typeRegistry);
     CompilerUtil util = new CompilerUtil(compiler, createOptions(pass));
 
     util.compile(FileSystems.getDefault().getPath("foo/bar.js"),
@@ -40,13 +40,11 @@ public class ProvidedSymbolsCollectionPassTest {
         "goog.provide('foo.bar.Baz');",
         "goog.provide('one.two.three.Four');");
 
-    assertEquals(
-        ImmutableSet.of(
-            "Foo",
-            "foo.Bar",
-            "foo.bar.Baz",
-            "one.two.three.Four"),
-        pass.getSymbols());
+    assertThat(typeRegistry.getProvidedSymbols()).containsExactly(
+        "Foo", "foo.Bar", "foo.bar.Baz", "one.two.three.Four");
+    assertThat(typeRegistry.getImplicitNamespaces()).containsExactly(
+        "Foo", "foo", "foo.Bar", "foo.bar", "foo.bar.Baz",
+        "one", "one.two", "one.two.three", "one.two.three.Four");
   }
 
   private static CompilerOptions createOptions(CompilerPass pass) {

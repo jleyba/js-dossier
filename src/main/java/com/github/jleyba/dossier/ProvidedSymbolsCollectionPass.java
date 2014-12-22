@@ -6,20 +6,17 @@ import com.google.javascript.jscomp.CompilerPass;
 import com.google.javascript.jscomp.NodeTraversal;
 import com.google.javascript.rhino.Node;
 
-import java.util.HashSet;
-import java.util.Set;
-
 /**
  * A compiler pass that collects all of the provided symbols in the input sources.
  */
 class ProvidedSymbolsCollectionPass implements CompilerPass {
 
-  private final Set<String> symbols = new HashSet<>();
-
+  private final TypeRegistry typeRegistry;
   private final AbstractCompiler compiler;
 
-  ProvidedSymbolsCollectionPass(AbstractCompiler compiler) {
+  ProvidedSymbolsCollectionPass(AbstractCompiler compiler, TypeRegistry typeRegistry) {
     this.compiler = compiler;
+    this.typeRegistry = typeRegistry;
   }
 
   @Override
@@ -31,14 +28,10 @@ class ProvidedSymbolsCollectionPass implements CompilerPass {
         if (n.isCall()) {
           String name = convention.extractClassNameIfProvide(n, parent);
           if (name != null) {
-            symbols.add(name);
+            typeRegistry.recordGoogProvide(name);
           }
         }
       }
     });
-  }
-
-  public Set<String> getSymbols() {
-    return symbols;
   }
 }

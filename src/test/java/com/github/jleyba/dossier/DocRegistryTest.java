@@ -195,9 +195,6 @@ public class DocRegistryTest {
 
   @Test
   public void resolveExportedModuleApi() {
-    ModuleDescriptor module = object("foo.bar.exports").buildModule();
-    registry.addModule(module);
-
     Descriptor one = object("Baz.one").build();
     Descriptor two = object("Baz.prototype.two").build();
 
@@ -205,7 +202,12 @@ public class DocRegistryTest {
         .addStaticProperty(one)
         .addInstanceProperty(two)
         .build();
-    module.addExportedProperty(baz);
+
+    ModuleDescriptor module = object("foo.bar.exports")
+        .addStaticProperty(baz)
+        .buildModule();
+
+    registry.addModule(module);
 
     assertSame(baz, registry.resolve("foo.bar.exports.Baz"));
     assertSame(one, registry.resolve("foo.bar.exports.Baz.one"));
@@ -215,9 +217,6 @@ public class DocRegistryTest {
 
   @Test
   public void resolveUnqualifiedExportedModuleApi() {
-    ModuleDescriptor module = object("foo.bar.exports").buildModule();
-    registry.addModule(module);
-
     Descriptor one = object("Baz.one").build();
     Descriptor two = object("Baz.prototype.two").build();
 
@@ -225,7 +224,12 @@ public class DocRegistryTest {
         .addStaticProperty(one)
         .addInstanceProperty(two)
         .build();
-    module.addExportedProperty(baz);
+
+
+    ModuleDescriptor module = object("foo.bar.exports")
+        .addStaticProperty(baz)
+        .buildModule();
+    registry.addModule(module);
 
     assertNull("Not given relative module", registry.resolve("Baz"));
     assertSame(baz, registry.resolve("Baz", module));
@@ -248,9 +252,9 @@ public class DocRegistryTest {
 
     Descriptor ab = object("a.b").build();
     Descriptor a = object("a").addStaticProperty(ab).build();
-    ModuleDescriptor module = object("module").buildModule();
-    module.addExportedProperty(a);
-    module.addExportedProperty(ab);
+    ModuleDescriptor module = object("module")
+        .addStaticProperty(a)
+        .buildModule();
     registry.addModule(module);
 
     assertSame(oneTwoThree, registry.resolve("one.two.three."));
@@ -276,11 +280,9 @@ public class DocRegistryTest {
     registry.addType(one);
     registry.addType(oneTwo);
 
-    Descriptor ab = object("a.b").build();
-    Descriptor a = object("a").addStaticProperty(ab).build();
-    ModuleDescriptor module = object("module").buildModule();
-    module.addExportedProperty(a);
-    module.addExportedProperty(ab);
+    ModuleDescriptor module = object("module")
+        .addStaticProperty(object("a").build())
+        .buildModule();
     registry.addModule(module);
 
     assertFalse(registry.isKnownType("not.there"));
@@ -290,7 +292,6 @@ public class DocRegistryTest {
     assertTrue(registry.isKnownType("one.two"));
     assertTrue(registry.isKnownType("module"));
     assertTrue(registry.isKnownType("a"));
-    assertTrue(registry.isKnownType("a.b"));
   }
 
   private static TestDescriptorBuilder object(String name) {

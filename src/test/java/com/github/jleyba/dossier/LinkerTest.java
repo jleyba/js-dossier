@@ -217,10 +217,10 @@ public class LinkerTest {
 
     ModuleDescriptor module = object("foo.bar")
         .setSource("foo/bar.js")
+        .addStaticProperty(object("SomeClass")
+            .setType(TestDescriptorBuilder.Type.CLASS)
+            .build())
         .buildModule();
-    module.addExportedProperty(object("SomeClass")
-        .setType(TestDescriptorBuilder.Type.CLASS)
-        .build());
 
     docRegistry.addModule(module);
 

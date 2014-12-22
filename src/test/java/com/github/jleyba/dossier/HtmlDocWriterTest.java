@@ -90,15 +90,13 @@ public class HtmlDocWriterTest {
 
     assertEquals(new JsonArray(), json.getAsJsonArray("types"));
 
-    assertEquals(
-        new JsonArrayBuilder()
-            .add(new JsonObjectBuilder()
-                .put("name", "work/module")
-                .put("types", new JsonArray())
-                .put("href", "module_work_module.html"))
-            .build(),
-        json.getAsJsonArray("modules")
-    );
+    JsonArray modules = json.getAsJsonArray("modules");
+    assertEquals(1, modules.size());
+
+    JsonObject module = modules.get(0).getAsJsonObject();
+    assertEquals("work/module", module.get("name").getAsString());
+    assertEquals(new JsonArray(), module.get("types").getAsJsonArray());
+    assertEquals("module_work_module.html", module.get("href").getAsString());
   }
 
   private JsonObject readTypesJs() throws IOException {
@@ -157,7 +155,8 @@ public class HtmlDocWriterTest {
     void generateDocs() throws IOException {
       DossierCompiler compiler = new DossierCompiler(System.err, modulePaths.build());
       DocRegistry docRegistry = new DocRegistry(compiler.getTypeRegistry());
-      CompilerOptions options = Main.createOptions(fs, compiler, docRegistry);
+      TypeRegistry typeRegistry = new TypeRegistry(compiler.getTypeRegistry());
+      CompilerOptions options = Main.createOptions(fs, typeRegistry, compiler);
       CompilerUtil util = new CompilerUtil(compiler, options);
 
       Config config = Config.load(
@@ -169,7 +168,7 @@ public class HtmlDocWriterTest {
           ImmutableList.copyOf(
               Iterables.concat(sources.build(), modules.build())));
 
-      HtmlDocWriter writer = new HtmlDocWriter(config, docRegistry);
+      HtmlDocWriter writer = new HtmlDocWriter(config, typeRegistry, docRegistry);
       writer.generateDocs(util.getCompiler().getTypeRegistry());
     }
   }

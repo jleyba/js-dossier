@@ -47,7 +47,7 @@ public class Descriptor {
   private final JSType type;
   @Nullable private final JsDoc info;
 
-  private ImmutableList<ArgDescriptor> args;
+  private ImmutableList<Parameter> args;
   private ImmutableList<Descriptor> properties;
   private ImmutableSet<Descriptor> instanceProperties;
 
@@ -373,7 +373,7 @@ public class Descriptor {
    *
    * @throws IllegalStateException If this instance does not describe a function.
    */
-  List<ArgDescriptor> getArgs() {
+  List<Parameter> getArgs() {
     checkState(isConstructor() || isInterface() || isFunction(),
         "%s is not a function!", getFullName());
 
@@ -389,7 +389,7 @@ public class Descriptor {
     Node source = ((FunctionType) obj).getSource();
     if (source == null) {
       // If we don't have access to the function node, assume the JSDocInfo has the correct info.
-      args = info != null ? info.getParameters() : ImmutableList.<ArgDescriptor>of();
+      args = info != null ? info.getParameters() : ImmutableList.<Parameter>of();
     } else {
       args = ImmutableList.copyOf(getArgs(source, info));
     }
@@ -397,7 +397,7 @@ public class Descriptor {
     return args;
   }
 
-  private static List<ArgDescriptor> getArgs(Node source, @Nullable final JsDoc info) {
+  private static List<Parameter> getArgs(Node source, @Nullable final JsDoc info) {
     // JSDocInfo does not guarantee parameter names will be returned in the order declared,
     // so we have to parse the function declaration.
     Node paramList = source  // function node
@@ -408,9 +408,9 @@ public class Descriptor {
     for (Node paramName = paramList.getFirstChild(); paramName != null; paramName = paramName.getNext()) {
       names.add(paramName.getString());
     }
-    return Lists.transform(names, new Function<String, ArgDescriptor>() {
+    return Lists.transform(names, new Function<String, Parameter>() {
       @Override
-      public ArgDescriptor apply(String name) {
+      public Parameter apply(String name) {
         if (info != null) {
           try {
             return info.getParameter(name);
@@ -419,7 +419,7 @@ public class Descriptor {
           }
         }
         // Undocumented parameter.
-        return new ArgDescriptor(name, null, "");
+        return new Parameter(name, null, "");
       }
     });
   }

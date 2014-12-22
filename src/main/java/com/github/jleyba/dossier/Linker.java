@@ -19,6 +19,9 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.io.Files;
+import com.google.javascript.jscomp.DossierModule;
+import com.google.javascript.rhino.Node;
+import com.google.javascript.rhino.jstype.JSType;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -56,6 +59,42 @@ public class Linker {
     } else {
       return "namespace_";
     }
+  }
+
+  private static String getTypePrefix(JSType type) {
+    if (type.isInterface()) {
+      return "interface_";
+    } else if (type.isConstructor()) {
+      return "class_";
+    } else if (type.isEnumType()) {
+      return "enum_";
+    } else {
+      return "namespace_";
+    }
+  }
+
+  /**
+   * Returns the display name for the given type.
+   */
+  public String getDisplayName(NominalType type) {
+    if (!type.isModuleExports()) {
+      return type.getQualifiedName();
+    }
+    String displayName = getDisplayName(type.getModule());
+    type.setAttribute("displayName", displayName);
+    return displayName;
+  }
+
+  public String getDisplayName(DossierModule module) {
+    Path modulePath = stripExtension(module.getModulePath());
+
+    Path displayPath = config.getModulePrefix().relativize(modulePath);
+    if (displayPath.getFileName().toString().equals("index")
+        && displayPath.getParent() != null) {
+      displayPath = displayPath.getParent();
+    }
+    return displayPath.toString()
+        .replace(modulePath.getFileSystem().getSeparator(), "/");  // Oh windows...
   }
 
   /**
@@ -97,6 +136,20 @@ public class Linker {
       return getDisplayName(descriptor.getModule().get());
     }
     return descriptor.getFullName();
+  }
+
+  /**
+   * Returns the path of the generated document file for the given type.
+   */
+  public Path getFilePath(NominalType type) {
+    String name = "";
+    if (type.getModule() != null) {
+      name = "module_" + getDisplayName(type.getModule()).replace('/', '_');
+    }
+    if (!type.isModuleExports()) {
+      name += getTypePrefix(type.getJsType()) + getDisplayName(type).replace('.', '_');
+    }
+    return outputRoot.resolve(name + ".html");
   }
 
   /**
@@ -148,6 +201,20 @@ public class Linker {
         .relativize(getFilePath(descriptor.getSource()))
         .iterator();
     return Joiner.on('/').join(parts);
+  }
+
+  public String getSourcePath(@Nullable Node node) {
+    if (node == null || node.isFromExterns()) {
+      return "";
+    }
+    Iterator<Path> parts = config.getOutput()
+        .relativize(getFilePath(node.getSourceFileName()))
+        .iterator();
+    String strPath = Joiner.on('/').join(parts);
+    if (node.getLineno() > 1) {
+      strPath += "#l" + node.getLineno();  // TODO: fragment style should be controlled by soy.
+    }
+    return strPath;
   }
 
   /**

@@ -87,3 +87,28 @@ var GlobalPrivateCtor = function() {
  */
 var DeprecatedFoo = function() {
 };
+
+
+/**
+ * This is a global enumeration of strings.
+ * @enum {string}
+ */
+var GlobalEnum = {
+  FRUIT: 'apple',
+  COLOR: 'red'
+};
+
+
+/**
+ * This is a function defined on a global enumeration.
+ */
+GlobalEnum.doSomething = function() {
+};
+
+
+/** @enum {string} */
+var EmptyEnum = {};
+
+
+/** @enum {string} */
+var UndefinedEnum;

@@ -13,52 +13,64 @@
 // limitations under the License.
 package com.github.jleyba.dossier;
 
-import static com.github.jleyba.dossier.Descriptor.isTheObjectType;
-import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Verify.verify;
 
+import com.google.common.base.Joiner;
 import com.google.javascript.jscomp.AbstractCompiler;
 import com.google.javascript.jscomp.CompilerPass;
 import com.google.javascript.jscomp.DossierCompiler;
+import com.google.javascript.jscomp.DossierModule;
 import com.google.javascript.jscomp.DossierModuleRegistry;
 import com.google.javascript.jscomp.NodeTraversal;
 import com.google.javascript.jscomp.Scope;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.Node;
+import com.google.javascript.rhino.jstype.EnumElementType;
 import com.google.javascript.rhino.jstype.FunctionType;
 import com.google.javascript.rhino.jstype.JSType;
-import com.google.javascript.rhino.jstype.JSTypeRegistry;
+import com.google.javascript.rhino.jstype.NamedType;
+import com.google.javascript.rhino.jstype.NoType;
 import com.google.javascript.rhino.jstype.ObjectType;
+import com.google.javascript.rhino.jstype.Property;
+import com.google.javascript.rhino.jstype.PrototypeObjectType;
+import com.google.javascript.rhino.jstype.ProxyObjectType;
+import com.google.javascript.rhino.jstype.TemplateType;
+import com.google.javascript.rhino.jstype.TemplatizedType;
+import com.google.javascript.rhino.jstype.UnionType;
+import com.google.javascript.rhino.jstype.Visitor;
 
 import java.nio.file.FileSystem;
 import java.nio.file.Path;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.annotation.Nullable;
 
 /**
  * A {@link CompilerPass} that collects the symbols the symbols to generate documentation for.
  */
-class DocPass  implements CompilerPass {
+class DocPass implements CompilerPass {
 
-  private static final String INTERNAL_NAMESPACE_VAR = "$jscomp";
+  private static final Logger log = Logger.getLogger(DocPass.class.getName());
 
   private final AbstractCompiler compiler;
-  private final DocRegistry docRegistry;
-  private final Set<String> providedSymbols;
-  private final Set<String> implicitNamespaces;
   private final DossierModuleRegistry moduleRegistry;
+  private final TypeRegistry typeRegistry;
   private final FileSystem fileSystem;
 
-  DocPass(DossierCompiler compiler, DocRegistry docRegistry, Set<String> providedSymbols,
+  DocPass(
+      DossierCompiler compiler,
+      TypeRegistry typeRegistry,
       FileSystem fileSystem) {
     this.compiler = compiler;
-    this.docRegistry = docRegistry;
     this.moduleRegistry = compiler.getModuleRegistry();
+    this.typeRegistry = typeRegistry;
     this.fileSystem = fileSystem;
-
-    this.providedSymbols = providedSymbols;
-    this.implicitNamespaces = new HashSet<>(providedSymbols.size());
   }
 
   @Override
@@ -66,82 +78,129 @@ class DocPass  implements CompilerPass {
     if (compiler.getErrorManager().getErrorCount() > 0) {
       return;
     }
-    for (String symbol : providedSymbols) {
-      implicitNamespaces.add(symbol);
-      for (int i = symbol.indexOf('.'); i != -1; i = symbol.indexOf('.')) {
-        symbol = symbol.substring(0, i);
-        implicitNamespaces.add(symbol);
-      }
-    }
     NodeTraversal.traverse(compiler, externs, new ExternCollector());
     NodeTraversal.traverse(compiler, root, new TypeCollector());
   }
 
-  @Nullable
-  private static JSType getJSType(Scope scope, Scope.Var var, JSTypeRegistry registry) {
-    @Nullable JSType type = var.getType();
-    if (null == type) {
-      JSDocInfo info = var.getJSDocInfo();
-      type = registry.getType(var.getName());
-      if (null == type && null != info && null != info.getType()) {
-        type = info.getType().evaluate(scope, registry);
-      }
+  private class ExternCollector implements NodeTraversal.Callback, Visitor<Object> {
+    private class Extern {
+      private final String name;
+      private final JSType type;
+      private final List<Extern> children = new ArrayList<>();
 
-      if (null == type && null != var.getInitialValue()) {
-        type = var.getInitialValue().getJSType();
-      }
-
-      if (null == type) {
-        type = var.getNameNode().getJSType();
+      private Extern(String name, JSType type) {
+        this.name = name;
+        this.type = type;
       }
     }
-    return type;
-  }
 
-  @Nullable
-  private static JSDocInfo getJSDocInfo(Scope.Var var, @Nullable JSType type) {
-    @Nullable JSDocInfo info = var.getJSDocInfo();
-    if (null == info && null != type) {
-      info = type.getJSDocInfo();
-    }
-    return info;
-  }
-
-  /**
-   * Traverses the root of the extern tree to gather all external type definitions.
-   */
-  private class ExternCollector implements NodeTraversal.ScopedCallback {
+    private final Joiner joiner = Joiner.on('.');
+    private final Map<JSType, Extern> seen = new HashMap<>();
+    private final LinkedList<String> names = new LinkedList<>();
 
     @Override
-    public void enterScope(NodeTraversal t) {
-      Scope scope = t.getScope();
-      for (Scope.Var var : scope.getAllSymbols()) {
-        @Nullable JSType type = getJSType(scope, var, t.getCompiler().getTypeRegistry());
+    public boolean shouldTraverse(NodeTraversal t, Node n, Node parent) {
+      return n.isBlock() && parent == null;
+    }
+
+    @Override
+    public void visit(NodeTraversal t, Node n, Node parent) {
+      verify(t.getScope().isGlobal());
+      for (Scope.Var var : t.getScope().getAllSymbols()) {
+        @Nullable JSType type = var.getType();
         if (type == null) {
+          type = var.getNameNode().getJSType();
+        }
+        if (type != null) {
+          crawl(var.getName(), type);
+        }
+      }
+    }
+
+    private void crawl(String name, JSType type) {
+      try {
+        names.addLast(name);
+        Extern extern = seen.get(type);
+        if (extern == null) {
+          extern = new Extern(name, type);
+          seen.put(type, extern);
+          type.visit(this);
+        }
+
+        if (type.isNominalType()
+            || type.isNominalConstructor()
+            || type.isEnumType()) {
+          String qualifiedName = joiner.join(names);
+          System.out.println("adding extern " + qualifiedName);
+          typeRegistry.addExtern(qualifiedName, type);
+          registerChildren(qualifiedName, extern);
+        }
+      } finally {
+        names.removeLast();
+      }
+    }
+
+    private void registerChildren(String baseName, Extern extern) {
+      for (Extern child : extern.children) {
+        typeRegistry.addExtern(baseName + "." + child.name, child.type);
+      }
+    }
+
+    @Override
+    public Object caseFunctionType(FunctionType type) {
+      for (String name : type.getOwnPropertyNames()) {
+        if (!"apply".equals(name)
+            && !"bind".equals(name)
+            && !"call".equals(name)
+            && !"prototype".equals(name)) {
+          crawl(name, type.getPropertyType(name));
+        }
+      }
+      return null;
+    }
+
+    @Override
+    public Object caseObjectType(ObjectType type) {
+      if (type.isGlobalThisType()) {
+        return null;
+      }
+
+      for (String name : type.getOwnPropertyNames()) {
+        if (type.getPropertyType(name).isEnumElementType()) {
           continue;
         }
-        @Nullable JSDocInfo info = getJSDocInfo(var, type);
-        docRegistry.addExtern(new Descriptor(var.getName(), var.getNameNode(), type, info));
+        crawl(name, type.getPropertyType(name));
       }
+      return null;
     }
 
-    @Override
-    public void exitScope(NodeTraversal t) {}
-
-    @Override
-    public boolean shouldTraverse(NodeTraversal nodeTraversal, Node n, Node parent) {
-      return false;
-    }
-
-    @Override
-    public void visit(NodeTraversal traversal, Node node, Node parent) {}
+    @Override public Object caseProxyObjectType(ProxyObjectType type) { return null; }
+    @Override public Object caseNoType(NoType type) { return null; }
+    @Override public Object caseEnumElementType(EnumElementType type) { return null; }
+    @Override public Object caseAllType() { return null; }
+    @Override public Object caseBooleanType() { return null; }
+    @Override public Object caseNoObjectType() { return null; }
+    @Override public Object caseUnknownType() { return null; }
+    @Override public Object caseNullType() { return null; }
+    @Override public Object caseNamedType(NamedType type) { return null; }
+    @Override public Object caseNumberType() { return null; }
+    @Override public Object caseStringType() { return null; }
+    @Override public Object caseVoidType() { return null; }
+    @Override public Object caseUnionType(UnionType type) { return null; }
+    @Override public Object caseTemplatizedType(TemplatizedType type) { return null; }
+    @Override public Object caseTemplateType(TemplateType templateType) { return null; }
   }
 
   /**
    * Traverses the object graph collecting all type definitions.
    */
-  private class TypeCollector implements NodeTraversal.ScopedCallback {
-    @Override public boolean shouldTraverse(NodeTraversal t, Node n, @Nullable Node parent) {
+  private class TypeCollector implements NodeTraversal.Callback, Visitor<Object> {
+
+    private final LinkedList<NominalType> types = new LinkedList<>();
+    private final Map<JSType, NominalType.TypeDescriptor> seen = new HashMap<>();
+
+    @Override
+    public boolean shouldTraverse(NodeTraversal t, Node n, @Nullable Node parent) {
       if (null == parent && n.isBlock()) {
         return true;
       }
@@ -149,166 +208,238 @@ class DocPass  implements CompilerPass {
       if (n.isScript() && null != parent && parent.isBlock()) {
         if (null != n.getJSDocInfo()) {
           Path path = fileSystem.getPath(n.getSourceFileName());
-          String comment = CommentUtil.getMarkerDescription(n.getJSDocInfo(), "fileoverview");
-          docRegistry.addFileOverview(path, comment);
+          typeRegistry.recordFileOverview(path, JsDoc.from(n.getJSDocInfo()));
         }
       }
       return false;
     }
 
-    @Override public void exitScope(NodeTraversal t) {}
-    @Override public void visit(NodeTraversal t, Node n, Node parent) {}
-
     @Override
-    public void enterScope(NodeTraversal t) {
+    public void visit(NodeTraversal t, Node n, Node parent) {
       if (!t.getScope().isGlobal()) {
         return;
       }
 
-      JSTypeRegistry registry = t.getCompiler().getTypeRegistry();
-
-      Scope scope = t.getScope();
-      for (Scope.Var var : scope.getAllSymbols()) {
+      for (Scope.Var var : t.getScope().getAllSymbols()) {
         String name = var.getName();
-        if (name.startsWith(INTERNAL_NAMESPACE_VAR)
-            || docRegistry.isExtern(name)) {
+        if (TypeRegistry.isInternalNamespaceVar(name)) {
+          logfmt("Skipping internal compiler namespace %s", name);
           continue;
         }
 
-        @Nullable JSType type = getJSType(scope, var, registry);
-        @Nullable JSDocInfo info = getJSDocInfo(var, type);
+        @Nullable JSType type = var.getType();
+        if (type == null) {
+          type = var.getNameNode().getJSType();
+        }
 
-        if (null == type || type.isGlobalThisType() || isPrimitive(type)) {
+        @Nullable Node node = var.getNameNode();
+        if (node == null) {
+          logfmt("Skipping type without a source node: %s", name);
           continue;
         }
 
-        ModuleDescriptor moduleDescriptor = null;
-        Descriptor descriptor = new Descriptor(name, var.getNameNode(), type, info);
-
-        if (moduleRegistry.hasModuleNamed(var.getName())) {
-          moduleDescriptor = new ModuleDescriptor(
-              descriptor, moduleRegistry.getModuleNamed(var.getName()));
-          docRegistry.addModule(moduleDescriptor);
+        @Nullable JSDocInfo info = var.getJSDocInfo();
+        if (null == info) {
+          info = type.getJSDocInfo();
         }
 
-        traverseType(moduleDescriptor, descriptor, registry);
+        if (type == null) {
+          logfmt("Unable to determine type for %s; skipping type", name);
+          continue;
+        } else if (type.isGlobalThisType()) {
+          logfmt("Skipping global this");
+          continue;
+        } else if (isPrimitive(type) && (info == null || info.getTypedefType() == null)) {
+          logfmt("Skipping primitive type assigned to %s: %s", name, type);
+          continue;
+        }
+
+        @Nullable DossierModule module = moduleRegistry.hasModuleNamed(name)
+            ? moduleRegistry.getModuleNamed(name)
+            : null;
+        crawl(name, info, node, type, module);
       }
     }
 
-    private void traverseType(
-        @Nullable ModuleDescriptor module, Descriptor descriptor, JSTypeRegistry registry) {
-      JSType type = checkNotNull(descriptor.getType(), "Null type: %s", descriptor.getFullName());
-      ObjectType obj = ObjectType.cast(type);
-      if (obj == null) {
+    void crawl(String name, JSDocInfo info, Node node, JSType jsType, DossierModule module) {
+      NominalType.TypeDescriptor descriptor = typeRegistry.getTypeDescriptor(jsType);
+
+      // If we've already crawled the type, we know it's documentable.
+      if (descriptor != null) {
+        NominalType type = new NominalType(null, name, descriptor, node, JsDoc.from(info), module);
+        typeRegistry.addType(type);
+        System.out.println("Found type alias: " + name + " -> " + jsType);
+
+      } else {
+        defineType(new NominalType(
+            types.peek(),
+            name,
+            new NominalType.TypeDescriptor(jsType),
+            node,
+            JsDoc.from(info),
+            module));
+      }
+    }
+
+    private void defineType(NominalType type) {
+      JSType jsType = type.getJsType();
+      if (jsType.isConstructor() && typeRegistry.isExtern(jsType)) {
+        logfmt("Not documenting extern constructor alias: %s -> %s", type.getName(), jsType);
         return;
       }
 
-      if (module == null
-          && !isExtern(descriptor)
-          && (descriptor.isConstructor()
-          || descriptor.isInterface()
-          || descriptor.isEnum()
-          || registry.hasNamespace(descriptor.getFullName())
-          || providedSymbols.contains(descriptor.getFullName()))) {
-        docRegistry.addType(descriptor);
+      // Check if this is a namespace the type registry knows about. Otherwise, the type is likely
+      // an object confused for a namespace.
+      if (!jsType.isConstructor()
+          && !jsType.isInterface()
+          && !jsType.isEnumType()
+          && !typeRegistry.hasNamespace(type.getQualifiedName())) {
+        logfmt("Ignorning undeclared namespace %s", type.getQualifiedName());
+        return;
       }
 
-      if (obj.isInstanceType()) {
-        obj = obj.getConstructor();
+      try {
+        seen.put(type.getJsType(), type.getTypeDescriptor());
+        types.push(type);
+        typeRegistry.addType(type);
+        System.out.println("crawling " + type.getQualifiedName());
+        type.getJsType().visit(this);
+      } finally {
+        types.pop();
+      }
+    }
+
+    private void crawlProperty(Property property) {
+      NominalType parent = types.peek();
+
+      JSDocInfo info = property.getJSDocInfo();
+      if (info == null && !isTheObjectType(property.getType())) {
+        info = property.getType().getJSDocInfo();
+      }
+      JsDoc jsdoc = JsDoc.from(info);
+
+      if (jsdoc != null && jsdoc.isTypedef()) {
+        NominalType child = new NominalType(
+            parent,
+            property.getName(),
+            new NominalType.TypeDescriptor(property.getType()),
+            property.getNode(),
+            jsdoc,
+            null);
+        typeRegistry.addType(child);
+        return;
       }
 
-      boolean exportingApi = module != null && module.getDescriptor() == descriptor;
-      for (String prop : obj.getOwnPropertyNames()) {
-        if (shouldSkipProperty(obj, prop)) {
-          continue;
+      JSType propertyType = property.getType();
+      if (propertyType.isInstanceType() && jsdoc != null && jsdoc.isConstructor()) {
+        JSType ctor = ((PrototypeObjectType) propertyType).getConstructor();
+        if (ctor instanceof FunctionType && parent.getJsType().equals(ctor)) {
+          propertyType = ctor;
+        }
+      }
+
+      if (propertyType.isConstructor()) {
+        // If jsdoc is present and says this is not a constructor, we've found a
+        // constructor reference, which should not be documented as a unique nominal type:
+        // /** @type {function(new: Foo)} */ var x;
+        if (jsdoc == null || jsdoc.isConstructor()) {
+          recordPropertyAsNestedType(property);
+        } else {
+          parent.addProperty(property);
         }
 
-        String propName = exportingApi ? prop : descriptor.getFullName() + "." + prop;
-        JSType propType = obj.getPropertyType(prop);
-        JSDocInfo propInfo  = obj.getOwnPropertyJSDocInfo(prop);
-        if (propInfo == null && !isTheObjectType(propType)) {
-          propInfo = propType.getJSDocInfo();
-        }
+      } else if (propertyType.isInterface() || propertyType.isEnumType()) {
+        recordPropertyAsNestedType(property);
 
-        if (exportingApi
-            || registry.hasNamespace(propName)
-            || isDocumentableType(propInfo)
-            || isDocumentableType(propType)
-            || implicitNamespaces.contains(propName)) {
-          Descriptor propDescriptor = new Descriptor(
-              propName, obj.getPropertyNode(prop), propType, propInfo);
-          if (module != null) {
-            module.addExportedProperty(propDescriptor);
-          } else {
-            traverseType(module, propDescriptor, registry);
-          }
-        }
+      } else if (!propertyType.isInstanceType()
+          && propertyType instanceof PrototypeObjectType
+          && typeRegistry.hasNamespace(parent.getQualifiedName() + "." + property.getName())) {
+        recordPropertyAsNestedType(property);
+      } else {
+        parent.addProperty(property);
       }
     }
-  }
 
-  private boolean isExtern(Descriptor descriptor) {
-    if (docRegistry.isExtern(descriptor) || docRegistry.isExtern(descriptor.getFullName())) {
-      return true;
-    }
-    if (descriptor.isConstructor()) {
-      JSType type = descriptor.getType();
-      if (type.isConstructor()) {
-        type = ((FunctionType) type).getTypeOfThis();
+    private void recordPropertyAsNestedType(Property property) {
+      NominalType.TypeDescriptor descriptor = seen.get(property.getType());
+      if (descriptor != null) {
+        System.out.println("Found type alias as property: " + property.getName() + " -> " + property.getType());
+        NominalType child = new NominalType(
+            types.peek(),
+            property.getName(),
+            descriptor,
+            property.getNode(),
+            JsDoc.from(property.getJSDocInfo()),
+            null);
+        typeRegistry.addType(child);
+        return;
       }
-      return docRegistry.isExtern(type);
+
+      defineType(new NominalType(
+          types.peek(),
+          property.getName(),
+          new NominalType.TypeDescriptor(property.getType()),
+          property.getNode(),
+          JsDoc.from(property.getJSDocInfo()),
+          null));
     }
-    return false;
+
+    @Override
+    public Boolean caseFunctionType(FunctionType type) {
+      for (String name : type.getOwnPropertyNames()) {
+        if (!"apply".equals(name)
+            && !"bind".equals(name)
+            && !"call".equals(name)
+            && !"prototype".equals(name)) {
+          crawlProperty(type.getOwnSlot(name));
+        }
+      }
+      return null;
+    }
+
+    @Override
+    public Boolean caseObjectType(ObjectType type) {
+      if (type.isGlobalThisType()) {
+        return null;
+      }
+      for (String name : type.getOwnPropertyNames()) {
+        if (!"prototype".equals(name)) {
+          crawlProperty(type.getOwnSlot(name));
+        }
+      }
+      return null;
+    }
+
+    @Override public Object caseProxyObjectType(ProxyObjectType type) { return null; }
+    @Override public Object caseNoType(NoType type) { return null; }
+    @Override public Object caseEnumElementType(EnumElementType type) { return null; }
+    @Override public Object caseAllType() { return null; }
+    @Override public Object caseBooleanType() { return null; }
+    @Override public Object caseNoObjectType() { return null; }
+    @Override public Object caseUnknownType() { return null; }
+    @Override public Object caseNullType() { return null; }
+    @Override public Object caseNamedType(NamedType type) { return null; }
+    @Override public Object caseNumberType() { return null; }
+    @Override public Object caseStringType() { return null; }
+    @Override public Object caseVoidType() { return null; }
+    @Override public Object caseUnionType(UnionType type) { return null; }
+    @Override public Object caseTemplatizedType(TemplatizedType type) { return null; }
+    @Override public Object caseTemplateType(TemplateType templateType) { return null; }
   }
 
-  private static boolean isDocumentableType(@Nullable JSDocInfo info) {
-    return info != null && (info.isConstructor() || info.isInterface()
-        || info.getEnumParameterType() != null);
+  private static void logfmt(String msg, Object... args) {
+    if (log.isLoggable(Level.FINE)) {
+      log.fine(String.format(msg, args));
+    }
   }
 
-  private static boolean isDocumentableType(@Nullable JSType type) {
-    return type != null
-        && (type.isConstructor() || type.isInterface() || type.isEnumType());
-  }
-
-  private boolean shouldSkipProperty(ObjectType object, String prop) {
-    // Skip node-less properties and properties that are just new instances of other types.
-    Node node = object.getPropertyNode(prop);
-    if (node == null
-        || (node.isGetProp()
-        && node.getParent() != null
-        && node.getParent().isAssign()
-        && node.getNext() != null
-        && node.getNext().isNew())) {
-      return true;
+  private static boolean isTheObjectType(JSType type) {
+    if (!type.isInstanceType()) {
+      return false;
     }
-
-    // Skip unknown types. Also skip prototypes and enum values (this info is collected
-    // separately).
-    JSType propType = object.getPropertyType(prop);
-    if (propType == null || propType.isFunctionPrototypeType() || propType.isEnumElementType()) {
-      return true;
-    }
-
-    // Skip recursive type references (encountered when processing singletons):
-    //     /** @constructor */
-    //     function Foo() {};
-    //     /** @type {Foo} */
-    //     Foo.instance_ = null;
-    if (object.isConstructor() && object.getTypeOfThis() == propType) {
-      return true;
-    }
-
-    // Sometimes the JSCompiler picks up the builtin call and apply functions off of a
-    // function object.  We should always skip these.
-    return object.isFunctionType()
-        && propType.isFunctionType()
-        && ("apply".equals(prop)
-        || "bind".equals(prop)
-        || "call".equals(prop))
-        || propType.isGlobalThisType()
-        || isPrimitive(propType);
-
+    ObjectType obj = type.toObjectType();
+    return obj.getConstructor().isNativeObjectType()
+        && "Object".equals(obj.getConstructor().getReferenceName());
   }
 
   private static boolean isPrimitive(JSType type) {
@@ -321,6 +452,8 @@ class DocPass  implements CompilerPass {
         || type.isString()
         || type.isStringObjectType()
         || type.isStringValueType()
+        || type.isVoidType()
         || type.isArrayType());
   }
+
 }

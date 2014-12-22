@@ -1,9 +1,9 @@
 package com.github.jleyba.dossier;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
 import com.google.common.base.Optional;
@@ -19,7 +19,6 @@ import com.google.javascript.rhino.jstype.JSType;
 import org.mockito.Mockito;
 
 import java.nio.file.FileSystem;
-import java.nio.file.FileSystems;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -31,7 +30,9 @@ class TestDescriptorBuilder {
 
   // Required variables we don't actuall care about.
   private static final Node SRC_NODE = null;
-  private static final JSType JS_TYPE = mock(JSType.class);
+  private static final JSType JS_TYPE = mock(JSType.class); {{
+    when(JS_TYPE.isObject()).thenReturn(true);
+  }}
   private static final JSDocInfo JS_DOC = mock(JSDocInfo.class);
 
   private final String name;
@@ -82,7 +83,6 @@ class TestDescriptorBuilder {
   }
 
   TestDescriptorBuilder addStaticProperty(Descriptor property) {
-    checkArgument(property.getFullName().startsWith(name + "."));
     staticProperties.add(property);
     return this;
   }
@@ -92,7 +92,6 @@ class TestDescriptorBuilder {
   }
 
   TestDescriptorBuilder addInstanceProperty(Descriptor property) {
-    checkArgument(property.getFullName().startsWith(name + ".prototype."));
     instanceProperties.add(property);
     return this;
   }
@@ -147,7 +146,7 @@ class TestDescriptorBuilder {
     when(module.getVarName()).thenReturn(name);
     when(module.getModulePath()).thenReturn(source == null ? null : fileSystem.getPath(source));
 
-    return new ModuleDescriptor(build(), module);
+    return spy(new ModuleDescriptor(build(), module));
   }
 
   static enum Type {

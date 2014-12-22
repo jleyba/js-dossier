@@ -21,11 +21,6 @@ class ModuleDescriptor {
   private final DossierModule module;
 
   /**
-   * Descriptors for this module's exported API.
-   */
-  private final Map<String, Descriptor> exportedProperties = new HashMap<>();
-
-  /**
    * Type definitions defined within the module but not on an exported property.
    */
   private final List<Descriptor> internalTypeDefs = new LinkedList<>();
@@ -42,6 +37,10 @@ class ModuleDescriptor {
     this.descriptor = descriptor;
     this.module = module;
     this.descriptor.setModule(this);
+
+    for (Descriptor property : descriptor.getProperties()) {
+      property.setModule(this);
+    }
   }
 
   @Override
@@ -81,13 +80,8 @@ class ModuleDescriptor {
         : new JsDoc(module.getScriptNode().getJSDocInfo());
   }
 
-  public void addExportedProperty(Descriptor descriptor) {
-    descriptor.setModule(this);
-    exportedProperties.put(descriptor.getFullName(), descriptor);
-  }
-
   Iterable<Descriptor> getExportedProperties() {
-    return Iterables.unmodifiableIterable(exportedProperties.values());
+    return descriptor.getProperties();
   }
 
   boolean exportsProperty(String name) {
@@ -96,7 +90,7 @@ class ModuleDescriptor {
 
   @Nullable
   Descriptor getExportedProperty(String name) {
-    for (Descriptor descriptor : Iterables.concat(exportedProperties.values(), internalTypeDefs)) {
+    for (Descriptor descriptor : Iterables.concat(getExportedProperties(), internalTypeDefs)) {
       if (descriptor.getFullName().equals(name)) {
         return descriptor;
       }

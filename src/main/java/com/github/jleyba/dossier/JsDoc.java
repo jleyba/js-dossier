@@ -33,11 +33,11 @@ import javax.annotation.Nullable;
  *   <li>preserves whitespace on multi-line comments</li>
  * </ol>
  */
-class JsDoc {
+public class JsDoc {
 
   private final JSDocInfo info;
 
-  private final Map<String, ArgDescriptor> parameters = new LinkedHashMap<>();
+  private final Map<String, Parameter> parameters = new LinkedHashMap<>();
   private final List<ThrowsClause> throwsClauses = new LinkedList<>();
   private final List<String> seeClauses = new LinkedList<>();
 
@@ -47,8 +47,13 @@ class JsDoc {
   private String fileoverview = "";
   private boolean parsed = false;
 
-  JsDoc(JSDocInfo info) {
+  public JsDoc(JSDocInfo info) {
     this.info = checkNotNull(info, "null info");
+  }
+
+  @Nullable
+  public static JsDoc from(@Nullable JSDocInfo info) {
+    return info == null ? null : new JsDoc(info);
   }
 
   JSDocInfo getInfo() {
@@ -79,27 +84,27 @@ class JsDoc {
     return info.getEnumParameterType() != null;
   }
 
-  boolean isDeprecated() {
+  public boolean isDeprecated() {
     return info.isDeprecated();
   }
 
-  boolean isDefine() {
+  public boolean isDefine() {
     return info.isDefine();
   }
 
-  boolean isConst() {
+  public boolean isConst() {
     return isDefine() || hasAnnotation(Annotation.CONST);
   }
 
-  boolean isFinal() {
+  public boolean isFinal() {
     return hasAnnotation(Annotation.FINAL);
   }
 
-  boolean isDict() {
+  public boolean isDict() {
     return hasAnnotation(Annotation.DICT);
   }
 
-  boolean isStruct() {
+  public boolean isStruct() {
     return hasAnnotation(Annotation.STRUCT);
   }
 
@@ -117,7 +122,7 @@ class JsDoc {
     }
   }
 
-  JSDocInfo.Visibility getVisibility() {
+  public JSDocInfo.Visibility getVisibility() {
     // TODO(jleyba): Properly handle Visibility.INHERITED
     if (info.getVisibility() == JSDocInfo.Visibility.INHERITED) {
       return JSDocInfo.Visibility.PUBLIC;
@@ -145,12 +150,12 @@ class JsDoc {
     return deprecationReason;
   }
 
-  ImmutableList<ArgDescriptor> getParameters() {
+  public ImmutableList<Parameter> getParameters() {
     parse();
     return ImmutableList.copyOf(parameters.values());
   }
 
-  ArgDescriptor getParameter(String name) {
+  public Parameter getParameter(String name) {
     parse();
     checkArgument(parameters.containsKey(name), "No parameter named %s", name);
     return parameters.get(name);
@@ -252,7 +257,7 @@ class JsDoc {
           break;
         case PARAM:
           String name = marker.getNameNode().getItem().getString();
-          parameters.put(name, new ArgDescriptor(
+          parameters.put(name, new Parameter(
               name,
               getJsTypeExpression(marker),
               processDescriptionLines(descriptionLines, description)));

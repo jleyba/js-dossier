@@ -185,19 +185,6 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/third_party/java/closure_compiler/closure-compiler-v20141023.jar!/" />
-          <root url="jar://$MODULE_DIR$/third_party/java/closure_compiler/closure-compiler-externs-v20141023.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="jar://$MODULE_DIR$/third_party/java/closure_compiler/closure-compiler-v20141023-src.jar!/" />
-          <root url="jar://$MODULE_DIR$/third_party/java/closure_compiler/closure-compiler-externs-v20141023-src.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
           <root url="jar://$MODULE_DIR$/third_party/java/protobuf/protobuf-java-2.6.1.jar!/" />
         </CLASSES>
         <JAVADOC />
@@ -214,6 +201,30 @@
         <JAVADOC />
         <SOURCES>
           <root url="jar://$MODULE_DIR$/third_party/java/args4j/args4j-2.0.26-src.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="TEST">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/third_party/java/truth/truth-0.24.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/third_party/java/truth/truth-0.24-src.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/third_party/java/closure_compiler/closure-compiler-v20141215.jar!/" />
+          <root url="jar://$MODULE_DIR$/third_party/java/closure_compiler/closure-compiler-externs-v20141215.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/third_party/java/closure_compiler/closure-compiler-v20141215-src.jar!/" />
+          <root url="jar://$MODULE_DIR$/third_party/java/closure_compiler/closure-compiler-externs-v20141215-src.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
