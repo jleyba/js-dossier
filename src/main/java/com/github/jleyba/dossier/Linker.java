@@ -184,7 +184,7 @@ public class Linker {
       instanceProperty = true;
     }
 
-    NominalType type = typeRegistry.getNominalType(typeName);
+    NominalType type = getType(typeName);
 
     // Link might be a qualified path to a property.
     if (type == null && propertyName.isEmpty()) {
@@ -193,7 +193,7 @@ public class Linker {
         instanceProperty = false;
         propertyName = typeName.substring(index + 1);
         typeName = typeName.substring(0, index);
-        type = typeRegistry.getNominalType(typeName);
+        type = getType(typeName);
       }
     }
 
@@ -205,8 +205,10 @@ public class Linker {
 
     String filePath = getFilePath(type).getFileName().toString();
     if (!propertyName.isEmpty()) {
-      if (instanceProperty) {
-        if (type.getJsdoc().isConstructor() || type.getJsdoc().isInterface()) {
+      if (instanceProperty || type.isModuleExports()) {
+        if (type.isModuleExports()
+            || type.getJsdoc().isConstructor()
+            || type.getJsdoc().isInterface()) {
           filePath += "#" + propertyName;
         }
       } else {
@@ -214,6 +216,15 @@ public class Linker {
       }
     }
     return filePath;
+  }
+
+  @Nullable
+  private NominalType getType(String name) {
+    NominalType type = typeRegistry.getNominalType(name);
+    if (type == null) {
+      type = typeRegistry.getModule(name);
+    }
+    return type;
   }
 
   private static final String MDN_PREFIX =

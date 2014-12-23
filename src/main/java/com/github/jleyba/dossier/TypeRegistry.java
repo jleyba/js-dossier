@@ -154,6 +154,11 @@ public class TypeRegistry {
     return nominalTypes.get(name);
   }
 
+  @Nullable
+  public NominalType getModule(String name) {
+    return moduleExports.get(name);
+  }
+
   public Collection<NominalType> getModules() {
     return Collections.unmodifiableCollection(moduleExports.values());
   }

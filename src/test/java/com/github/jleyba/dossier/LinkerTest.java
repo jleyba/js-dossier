@@ -204,6 +204,22 @@ public class LinkerTest {
   }
 
   @Test
+  public void testGetLink_module() {
+    Path module = fileSystem.getPath("/src/module/foo.js");
+
+    when(mockConfig.getModulePrefix()).thenReturn(fileSystem.getPath("/src/module"));
+    DossierCompiler compiler = new DossierCompiler(System.err, ImmutableList.of(module));
+    CompilerOptions options = Main.createOptions(fileSystem, typeRegistry, compiler);
+    util = new CompilerUtil(compiler, options);
+
+    util.compile(module, "exports = {foo: function() {}};");
+    assertThat(typeRegistry.getModules()).isNotEmpty();
+
+    assertEquals("module_foo.html", linker.getLink("dossier$$module__$src$module$foo"));
+    assertEquals("module_foo.html#bar", linker.getLink("dossier$$module__$src$module$foo.bar"));
+  }
+
+  @Test
   public void testGetSourcePath_nullNode() {
     assertEquals(
         Dossier.SourceLink.newBuilder()
