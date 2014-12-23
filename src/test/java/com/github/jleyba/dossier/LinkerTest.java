@@ -1,13 +1,20 @@
 package com.github.jleyba.dossier;
 
+import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.jimfs.Jimfs;
+import com.google.javascript.jscomp.CompilerOptions;
+import com.google.javascript.jscomp.DossierCompiler;
+import com.google.javascript.jscomp.DossierModule;
 import com.google.javascript.rhino.ErrorReporter;
+import com.google.javascript.rhino.Node;
+import com.google.javascript.rhino.jstype.JSType;
 import com.google.javascript.rhino.jstype.JSTypeRegistry;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,12 +28,10 @@ import java.nio.file.Path;
 public class LinkerTest {
 
   private FileSystem fileSystem;
-
   private Path outputDir;
   private Config mockConfig;
-  private DocRegistry docRegistry;
   private TypeRegistry typeRegistry;
-
+  private CompilerUtil util;
   private Linker linker;
 
   @Before
@@ -35,61 +40,95 @@ public class LinkerTest {
     outputDir = fileSystem.getPath("/root/output");
 
     mockConfig = mock(Config.class);
+    when(mockConfig.getModulePrefix()).thenReturn(fileSystem.getPath("/modules"));
     when(mockConfig.getOutput()).thenReturn(outputDir);
 
     ErrorReporter errorReporter = mock(ErrorReporter.class);
     JSTypeRegistry jsTypeRegistry = new JSTypeRegistry(errorReporter);
-    docRegistry = new DocRegistry(jsTypeRegistry);
     typeRegistry = new TypeRegistry(jsTypeRegistry);
 
-    linker = new Linker(mockConfig, docRegistry, typeRegistry);
+    DossierCompiler compiler = new DossierCompiler(System.err, ImmutableList.<Path>of());
+    CompilerOptions options = Main.createOptions(fileSystem, typeRegistry, compiler);
+
+    util = new CompilerUtil(compiler, options);
+
+    linker = new Linker(mockConfig, typeRegistry);
   }
 
   @Test
-  public void testFilePath_descriptor() {
-    Descriptor descriptor = object("foo.Bar")
-        .setType(TestDescriptorBuilder.Type.INTERFACE)
-        .build();
+  public void testGetDisplayName() {
+    NominalType type = createType("foo.bar.Baz");
+    assertThat(linker.getDisplayName(type)).isEqualTo("foo.bar.Baz");
+  }
+
+  @Test
+  public void testGetDisplayName_moduleExports() {
+    NominalType type = createType(
+        "dossier$$module__$modules$foo$bar$baz",
+        createModule(fileSystem.getPath("/modules/foo/bar/baz.js")));
+
+    assertThat(linker.getDisplayName(type)).isEqualTo("foo/bar/baz");
+  }
+
+  @Test
+  public void testGetDisplayName_moduleExportsAsIndexFile() {
+    NominalType type = createType(
+        "dossier$$module__$modules$foo$bar",
+        createModule(fileSystem.getPath("/modules/foo/bar/index.js")));
+
+    assertThat(linker.getDisplayName(type)).isEqualTo("foo/bar");
+  }
+
+  @Test
+  public void testFilePath_nominalType() {
+    JSType jsType = mock(JSType.class);
+    NominalType type = createType("foo.Bar", jsType);
+
+    when(jsType.isInterface()).thenReturn(true);
     assertEquals(
         outputDir.resolve("interface_foo_Bar.html"),
-        linker.getFilePath(descriptor));
+        linker.getFilePath(type));
 
-    descriptor = object("foo.Bar")
-        .setType(TestDescriptorBuilder.Type.CLASS)
-        .build();
+    when(jsType.isInterface()).thenReturn(false);
+    when(jsType.isConstructor()).thenReturn(true);
     assertEquals(
         outputDir.resolve("class_foo_Bar.html"),
-        linker.getFilePath(descriptor));
+        linker.getFilePath(type));
 
-    descriptor = object("foo.Bar")
-        .setType(TestDescriptorBuilder.Type.ENUM)
-        .build();
+    when(jsType.isConstructor()).thenReturn(false);
+    when(jsType.isEnumType()).thenReturn(true);
     assertEquals(
         outputDir.resolve("enum_foo_Bar.html"),
-        linker.getFilePath(descriptor));
+        linker.getFilePath(type));
 
-    descriptor = object("foo.Bar").build();
+    when(jsType.isEnumType()).thenReturn(false);
     assertEquals(
         outputDir.resolve("namespace_foo_Bar.html"),
-        linker.getFilePath(descriptor));
+        linker.getFilePath(type));
   }
 
   @Test
-  public void testGetFilePath_module() {
-    Path modulePrefix = fileSystem.getPath("src/foo");
-    when(mockConfig.getModulePrefix()).thenReturn(modulePrefix);
+  public void testGetFilePath_moduleExports() {
+    NominalType type = createType(
+        "dossier$$module__$modules$foo$bar$baz",
+        createModule(fileSystem.getPath("/modules/foo/bar/baz.js")));
 
-    ModuleDescriptor mockModule = mock(ModuleDescriptor.class);
-
-    when(mockModule.getPath()).thenReturn(modulePrefix.resolve("bar/baz.js"));
     assertEquals(
-        outputDir.resolve("module_bar_baz.html"),
-        linker.getFilePath(mockModule));
+        outputDir.resolve("module_foo_bar_baz.html"),
+        linker.getFilePath(type));
+  }
 
-    when(mockModule.getPath()).thenReturn(modulePrefix.resolve("bar/baz/index.js"));
+  @Test
+  public void testGetFilePath_moduleType() {
+    JSType jsType = mock(JSType.class);
+    when(jsType.isConstructor()).thenReturn(true);
+
+    NominalType type = createType("Baz", jsType,
+        createModule(fileSystem.getPath("/modules/foo/bar/index.js")));
+
     assertEquals(
-        outputDir.resolve("module_bar_baz.html"),
-        linker.getFilePath(mockModule));
+        outputDir.resolve("module_foo_bar_class_Baz.html"),
+        linker.getFilePath(type));
   }
 
   @Test
@@ -103,203 +142,136 @@ public class LinkerTest {
   }
 
   @Test
-  public void testGetFilePath_exportedDescriptor() {
-    Path srcPrefix = fileSystem.getPath("/root/src");
-    Path modulePrefix = srcPrefix.resolve("foo");
-
-    when(mockConfig.getSrcPrefix()).thenReturn(srcPrefix);
-    when(mockConfig.getModulePrefix()).thenReturn(modulePrefix);
-
-    ModuleDescriptor module = mock(ModuleDescriptor.class);
-    when(module.getPath()).thenReturn(modulePrefix.resolve("bar/baz.js"));
-
-    Descriptor descriptor = object("foo.Bar")
-        .setType(TestDescriptorBuilder.Type.CLASS)
-        .setModule(module)
-        .build();
-
-    assertEquals(
-        fileSystem.getPath("/root/output/module_bar_baz_class_foo_Bar.html"),
-        linker.getFilePath(descriptor));
-  }
-
-  @Test
-  public void testGetLink() {
+  public void testGetLink_unknownType() {
     assertNull("No types are known", linker.getLink("goog.Foo"));
-
-    Descriptor googFoo = object("goog.Foo")
-        .addStaticProperty(object("goog.Foo.bar"))
-        .build();
-    Descriptor goog = object("goog").addStaticProperty(googFoo).build();
-
-    docRegistry.addType(goog);
-    assertEquals("namespace_goog.html#goog.Foo", linker.getLink("goog.Foo"));
-    assertEquals("namespace_goog.html#goog.Foo", linker.getLink("goog.Foo()"));
-
-    docRegistry.addType(googFoo);
-    assertEquals("namespace_goog_Foo.html", linker.getLink("goog.Foo"));
-    assertEquals("namespace_goog_Foo.html", linker.getLink("goog.Foo()"));
-
-    assertEquals("namespace_goog_Foo.html#goog.Foo.bar", linker.getLink("goog.Foo.bar"));
-    assertEquals("namespace_goog_Foo.html#goog.Foo.bar", linker.getLink("goog.Foo.bar()"));
   }
 
   @Test
-  public void testGetLink_global() {
-    Descriptor goog = object("goog")
-        .addStaticProperty(object("goog.Foo"))
-        .build();
-    docRegistry.addType(goog);
-
-    assertEquals("namespace_goog.html", linker.getLink("goog"));
-    assertEquals("namespace_goog.html#goog.Foo", linker.getLink("goog.Foo"));
-    assertNull(linker.getLink("goog.Foo.bar"));
+  public void testGetLink_namespace() {
+    NominalType type = createType("foo.bar");
+    typeRegistry.addType(type);
+    assertEquals("namespace_foo_bar.html", linker.getLink("foo.bar"));
   }
 
   @Test
   public void testGetLink_externs() {
-    Descriptor element = object("Element")
-        .addInstanceProperty(object("Element.prototype.nodeType"))
-        .build();
-    docRegistry.addExtern(element);
+    String link =
+        "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String";
 
-    assertEquals(
-        "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String",
-        linker.getLink("string"));
-    assertNull(linker.getLink("Element"));
-    assertNull(linker.getLink("Element.prototype.nodeType"));
-    assertNull(linker.getLink("Element#nodeType"));
+    assertEquals(link, linker.getLink("string"));
+    assertEquals(link, linker.getLink("String"));
+    assertEquals(link, linker.getLink("String.prototype.indexOf"));
+    assertEquals(link, linker.getLink("String#indexOf"));
+    assertEquals(link, linker.getLink("String#"));
+    assertEquals(link, linker.getLink("String.fromCharCode"));
   }
 
   @Test
-  public void testGetLink_byDescriptor() {
-    when(mockConfig.getOutput()).thenReturn(fileSystem.getPath(""));
+  public void testGetLink_staticProperty() {
+    util.compile(
+        fileSystem.getPath("/src/foo/bar.js"),
+        "goog.provide('foo.bar');",
+        "",
+        "foo.bar.baz = function() {};");
 
-    Descriptor str = object("String").build();
-    docRegistry.addExtern(str);
-
-    assertEquals(
-        "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String",
-        linker.getLink(str));
+    assertNotNull(typeRegistry.getNominalType("foo.bar"));
+    assertEquals("namespace_foo_bar.html#bar.baz", linker.getLink("foo.bar.baz"));
+    assertEquals("namespace_foo_bar.html#bar.unknown", linker.getLink("foo.bar.unknown"));
+    assertEquals("namespace_foo_bar.html", linker.getLink("foo.bar.prototype.baz"));
   }
 
   @Test
   public void testGetLink_prototype() {
-    when(mockConfig.getOutput()).thenReturn(fileSystem.getPath(""));
+    util.compile(
+        fileSystem.getPath("/src/foo/bar.js"),
+        "goog.provide('foo.Bar');",
+        "/** @constructor */",
+        "foo.Bar = function() {};",
+        "foo.Bar.baz = function() {};",
+        "foo.Bar.prototype.bar = function() {}");
 
-    Descriptor googFoo = object("goog.Foo")
-        .setType(TestDescriptorBuilder.Type.CLASS)
-        .addInstanceProperty(object("goog.Foo.prototype.bar"))
-        .build();
+    assertNotNull(typeRegistry.getNominalType("foo.Bar"));
 
-    docRegistry.addType(googFoo);
-
-    assertEquals("class_goog_Foo.html", linker.getLink("goog.Foo"));
-    assertEquals("class_goog_Foo.html", linker.getLink("goog.Foo.prototype"));
-    assertEquals("class_goog_Foo.html#bar", linker.getLink("goog.Foo#bar"));
-    assertEquals("class_goog_Foo.html#bar", linker.getLink("goog.Foo#bar()"));
-    assertEquals("class_goog_Foo.html#bar", linker.getLink("goog.Foo.prototype.bar"));
-    assertEquals("class_goog_Foo.html#bar", linker.getLink("goog.Foo.prototype.bar()"));
+    assertEquals("class_foo_Bar.html", linker.getLink("foo.Bar"));
+    assertEquals("class_foo_Bar.html", linker.getLink("foo.Bar#"));
+    assertEquals("class_foo_Bar.html#bar", linker.getLink("foo.Bar#bar"));
+    assertEquals("class_foo_Bar.html#bar", linker.getLink("foo.Bar#bar()"));
+    assertEquals("class_foo_Bar.html", linker.getLink("foo.Bar.prototype"));
+    assertEquals("class_foo_Bar.html#bar", linker.getLink("foo.Bar.prototype.bar"));
+    assertEquals("class_foo_Bar.html#bar", linker.getLink("foo.Bar.prototype.bar()"));
+    assertEquals("class_foo_Bar.html#unknown", linker.getLink("foo.Bar.prototype.unknown()"));
   }
 
   @Test
-  public void testGetLink_module() {
-    when(mockConfig.getModulePrefix()).thenReturn(fileSystem.getPath(""));
-
-    ModuleDescriptor module = object("foo.bar")
-        .setSource("foo/bar.js")
-        .buildModule();
-    docRegistry.addModule(module);
-
-    assertEquals("module_foo_bar.html", linker.getLink("foo.bar"));
+  public void testGetSourcePath_nullNode() {
+    assertEquals("", linker.getSourcePath(null));
   }
 
   @Test
-  public void testGetLink_moduleExportedClass() {
-    when(mockConfig.getModulePrefix()).thenReturn(fileSystem.getPath(""));
-
-    ModuleDescriptor module = object("foo.bar")
-        .setSource("foo/bar.js")
-        .addStaticProperty(object("SomeClass")
-            .setType(TestDescriptorBuilder.Type.CLASS)
-            .build())
-        .buildModule();
-
-    docRegistry.addModule(module);
-
-    assertEquals("module_foo_bar_class_SomeClass.html", linker.getLink("foo.bar.SomeClass"));
-  }
-
-  @Test
-  public void testGetSourcePath_sourceInfoNotFound() {
-    Descriptor mockDescriptor = mock(Descriptor.class);
-    assertNull(linker.getSourcePath(mockDescriptor));
+  public void testGetSourcePath_externNode() {
+    Node node = mock(Node.class);
+    when(node.isFromExterns()).thenReturn(true);
+    assertEquals("", linker.getSourcePath(node));
   }
 
   @Test
   public void testGetSourcePath_noLineNumber() {
     Path srcPrefix = fileSystem.getPath("/alphabet/soup");
-
     when(mockConfig.getSrcPrefix()).thenReturn(srcPrefix);
 
-    Descriptor descriptor = object("Foo")
-        .setSource("/alphabet/soup/a/b/c")
-        .build();
-
-    assertEquals("source/a/b/c.src.html", linker.getSourcePath(descriptor));
+    Node node = mock(Node.class);
+    when(node.getSourceFileName()).thenReturn("/alphabet/soup/a/b/c");
+    assertEquals("source/a/b/c.src.html", linker.getSourcePath(node));
   }
 
   @Test
   public void testGetSourcePath_withLineNumber() {
     Path srcPrefix = fileSystem.getPath("/alphabet/soup");
-
     when(mockConfig.getSrcPrefix()).thenReturn(srcPrefix);
 
-    Descriptor descriptor = object("foo")
-        .setSource("/alphabet/soup/a/b/c")
-        .setLineNum(123)
-        .build();
-
-    assertEquals("source/a/b/c.src.html#l123", linker.getSourcePath(descriptor));
+    Node node = mock(Node.class);
+    when(node.getSourceFileName()).thenReturn("/alphabet/soup/a/b/c");
+    when(node.getLineno()).thenReturn(123);
+    assertEquals("source/a/b/c.src.html#l123", linker.getSourcePath(node));
   }
 
   @Test
-  public void getExternLink_primitiveType() {
-    assertEquals(
-        "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String",
-        linker.getLink("string"));
-    assertEquals(
-        "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String",
-        linker.getLink("String"));
-    assertEquals(
-        "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Null",
-        linker.getLink("null"));
+  public void testGetSourcePath_onLineZero() {
+    Path srcPrefix = fileSystem.getPath("/alphabet/soup");
+    when(mockConfig.getSrcPrefix()).thenReturn(srcPrefix);
+
+    Node node = mock(Node.class);
+    when(node.getSourceFileName()).thenReturn("/alphabet/soup/a/b/c");
+    when(node.getLineno()).thenReturn(0);
+    assertEquals("source/a/b/c.src.html", linker.getSourcePath(node));
   }
 
-  @Test
-  public void getExternLink_noSeeTags() {
-    Descriptor descriptor = object("Foo").build();
-
-    docRegistry.addExtern(descriptor);
-
-    assertNull(linker.getLink("Foo"));
+  private static NominalType createType(String name) {
+    return createType(name, mock(JSType.class), null);
   }
 
-  @Test
-  public void getExternLink() {
-    JsDoc jsDoc = mock(JsDoc.class);
-    when(jsDoc.getSeeClauses()).thenReturn(ImmutableList.of(
-        "not a valid URL",
-        "http://www.example.com"));
-
-    Descriptor descriptor = object("Foo").setJsDoc(jsDoc).build();
-
-    docRegistry.addExtern(descriptor);
-
-    assertEquals("http://www.example.com", linker.getLink("Foo"));
+  private static NominalType createType(String name, DossierModule module) {
+    return createType(name, mock(JSType.class), module);
   }
 
-  private TestDescriptorBuilder object(String name) {
-    return new TestDescriptorBuilder(name, fileSystem);
+  private static NominalType createType(String name, JSType type) {
+    return createType(name, type, null);
+  }
+
+  private static NominalType createType(String name, JSType type, DossierModule module) {
+    return new NominalType(
+        null,
+        name,
+        new NominalType.TypeDescriptor(type),
+        mock(Node.class),
+        null,
+        module);
+  }
+
+  private static DossierModule createModule(Path path) {
+    Node node = mock(Node.class);
+    when(node.isScript()).thenReturn(true);
+    when(node.getSourceFileName()).thenReturn(path.toString());
+    return new DossierModule(node, path);
   }
 }

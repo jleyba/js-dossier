@@ -111,6 +111,13 @@ public final class NominalType {
     return typeDescriptor.properties.get(name);
   }
 
+  /**
+   * Returns whether this type has a known property with the given name.
+   */
+  public boolean hasProperty(String name) {
+    return typeDescriptor.properties.containsKey(name);
+  }
+
   public String getQualifiedName() {
     if (parent != null) {
       return parent.getQualifiedName() + "." + name;

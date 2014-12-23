@@ -26,7 +26,7 @@ public class DossierModule {
    * @param script the SCRIPT node for the module.
    * @param modulePath path to this module's source file.
    */
-  DossierModule(Node script, Path modulePath) {
+  public DossierModule(Node script, Path modulePath) {
     checkArgument(script.isScript());
     checkArgument(script.getSourceFileName() != null);
 

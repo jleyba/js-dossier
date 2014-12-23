@@ -13,7 +13,6 @@
 // limitations under the License.
 package com.github.jleyba.dossier;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.base.Joiner;
@@ -23,8 +22,6 @@ import com.google.javascript.jscomp.DossierModule;
 import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.jstype.JSType;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.util.Iterator;
 
@@ -38,30 +35,15 @@ public class Linker {
   private final Config config;
   private final Path outputRoot;
   private final TypeRegistry typeRegistry;
-  private final DocRegistry docRegistry;
 
   /**
    * @param config The current runtime configuration.
-   * @param docRegistry The documented type registry.
    * @param typeRegistry The type registry.
    */
-  public Linker(Config config, DocRegistry docRegistry, TypeRegistry typeRegistry) {
+  public Linker(Config config, TypeRegistry typeRegistry) {
     this.typeRegistry = typeRegistry;
     this.config = checkNotNull(config);
     this.outputRoot = config.getOutput();
-    this.docRegistry = checkNotNull(docRegistry);
-  }
-
-  private static String getTypePrefix(Descriptor descriptor) {
-    if (descriptor.isInterface()) {
-      return "interface_";
-    } else if (descriptor.isConstructor()) {
-      return "class_";
-    } else if (descriptor.isEnum()) {
-      return "enum_";
-    } else {
-      return "namespace_";
-    }
   }
 
   private static String getTypePrefix(JSType type) {
@@ -88,6 +70,9 @@ public class Linker {
     return displayName;
   }
 
+  /**
+   * Returns the display name for the given module.
+   */
   public String getDisplayName(DossierModule module) {
     Path modulePath = stripExtension(module.getModulePath());
 
@@ -100,45 +85,9 @@ public class Linker {
         .replace(modulePath.getFileSystem().getSeparator(), "/");  // Oh windows...
   }
 
-  /**
-   * Returns the display name for the given {@code descriptor}.
-   */
-  public String getDisplayName(ModuleDescriptor descriptor) {
-    if (descriptor.getAttribute("displayName") != null) {
-      return descriptor.getAttribute("displayName");
-    }
-
-    Path modulePath = stripExtension(descriptor.getPath());
-
-    Path displayPath = config.getModulePrefix().relativize(modulePath);
-    if (displayPath.getFileName().toString().equals("index")
-        && displayPath.getParent() != null) {
-      displayPath = displayPath.getParent();
-    }
-
-    String displayName = displayPath.toString()
-        .replace(modulePath.getFileSystem().getSeparator(), "/");  // Oh windows...
-
-    descriptor.setAttribute("displayName", displayName);
-    return displayName;
-  }
-
   private static Path stripExtension(Path path) {
     String name = path.getFileName().toString();
     return path.resolveSibling(Files.getNameWithoutExtension(name));
-  }
-
-  /**
-   * Returns the display name for the given {@code descriptor}. If this is the descriptor for the
-   * {@link Descriptor#isModuleExports() exported API} of a CommonJS module, this will return
-   * that module's {@link #getDisplayName(ModuleDescriptor) display name}. Otherwise, this simply
-   * returns the descriptor's {@link Descriptor#getFullName() fully qualified name}.
-   */
-  public String getDisplayName(Descriptor descriptor) {
-    if (descriptor.isModuleExports()) {
-      return getDisplayName(descriptor.getModule().get());
-    }
-    return descriptor.getFullName();
   }
 
   /**
@@ -150,32 +99,12 @@ public class Linker {
       name = "module_" + getDisplayName(type.getModule()).replace('/', '_');
     }
     if (!type.isModuleExports()) {
+      if (!name.isEmpty()) {
+        name += "_";
+      }
       name += getTypePrefix(type.getJsType()) + getDisplayName(type).replace('.', '_');
     }
     return outputRoot.resolve(name + ".html");
-  }
-
-  /**
-   * Returns the path of the generated document file for the given module.
-   */
-  public Path getFilePath(ModuleDescriptor module) {
-    String name = getDisplayName(module).replace('/', '_') + ".html";
-    return outputRoot.resolve("module_" + name);
-  }
-
-  /**
-   * Returns the path of the generated document file for the given descriptor.
-   */
-  public Path getFilePath(Descriptor descriptor) {
-    String name = descriptor.getFullName().replace('.', '_') + ".html";
-    name = getTypePrefix(descriptor) + name;
-
-    if (descriptor.getModule().isPresent()) {
-      ModuleDescriptor module = descriptor.getModule().get();
-      name = stripExtension(getFilePath(module)).getFileName().toString() + "_" + name;
-    }
-
-    return outputRoot.resolve(name);
   }
 
   /**
@@ -196,16 +125,8 @@ public class Linker {
   }
 
   /**
-   * Computes the path from the given module's {@link #getFilePath(ModuleDescriptor) file} to the
-   * rendered source file.
+   * Returns the path to the rendered source file for the given node.
    */
-  public String getSourcePath(ModuleDescriptor descriptor) {
-    Iterator<Path> parts = config.getOutput()
-        .relativize(getFilePath(descriptor.getSource()))
-        .iterator();
-    return Joiner.on('/').join(parts);
-  }
-
   public String getSourcePath(@Nullable Node node) {
     if (node == null || node.isFromExterns()) {
       return "";
@@ -214,32 +135,8 @@ public class Linker {
         .relativize(getFilePath(node.getSourceFileName()))
         .iterator();
     String strPath = Joiner.on('/').join(parts);
-    if (node.getLineno() > 1) {
+    if (node.getLineno() > 0) {
       strPath += "#l" + node.getLineno();  // TODO: fragment style should be controlled by soy.
-    }
-    return strPath;
-  }
-
-  /**
-   * Computes the URL path, relative to the output directory, for the source file definition of
-   * the given {@code descriptor}.  If the source file for the {@code descriptor} is not known,
-   * this method will return {@code null}.
-   */
-  @Nullable
-  public String getSourcePath(Descriptor descriptor) {
-    String strPath = descriptor.getSource();
-    if (strPath == null) {
-      return null;
-    }
-
-    Iterator<Path> parts = config.getOutput()
-        .relativize(getFilePath(strPath))
-        .iterator();
-    strPath = Joiner.on('/').join(parts);
-
-    int lineNum = descriptor.getLineNum();
-    if (lineNum > 1) {
-      return strPath + "#l" + lineNum;
     }
     return strPath;
   }
@@ -254,8 +151,7 @@ public class Linker {
    * </ul>
    *
    * <p>If the referenced type is recognized, the returned path will be relative to the output
-   * directory, or an external URL (if referencing an extern symbol). If the type's definition
-   * could not be found, {@code null} is returned.
+   * directory, otherwise {@code null} is returned.
    */
   @Nullable
   public String getLink(String to) {
@@ -265,65 +161,59 @@ public class Linker {
       to = to.substring(0, index);
     }
 
-    Descriptor descriptor = docRegistry.resolve(to);
-    if (descriptor != null && !docRegistry.isExtern(descriptor.getFullName())) {
-      return getLink(descriptor);
+    String typeName = to;
+    String propertyName = "";
+    boolean instanceProperty = false;
+
+    if (to.endsWith("#")) {
+      typeName = to.substring(0, to.length() - 1);
+
+    } else if (to.endsWith(".prototype")) {
+      typeName = to.substring(0, to.length() - ".prototype".length());
+
+    } else if (to.contains("#")) {
+      String[] parts = to.split("#");
+      typeName = parts[0];
+      propertyName = parts[1];
+      instanceProperty = true;
+
+    } else if (to.contains(".prototype.")) {
+      String[] parts = to.split(".prototype.");
+      typeName = parts[0];
+      propertyName = parts[1];
+      instanceProperty = true;
     }
 
-    // If we get here, make one last attempt to resolve the referenced path
-    // by checking for an extern type.
-    return getExternLink(to);
-  }
+    NominalType type = typeRegistry.getNominalType(typeName);
 
-  @Nullable
-  public String getLink(Descriptor descriptor) {
-    if (docRegistry.isExtern(descriptor.getFullName()) || docRegistry.isExtern(descriptor)) {
-      return getExternLink(descriptor);
-    }
-
-    if (!docRegistry.isDocumentedType(descriptor)) {
-      return null;
-    }
-
-    if (descriptor.getFullName().contains(".prototype.")) {
-      return getPrototypeLink(descriptor);
-    }
-
-    if (descriptor.isModuleExports()) {
-      return getFilePath(descriptor.getModule().get()).getFileName().toString();
-    }
-
-    String filePath = getFilePath(descriptor).getFileName().toString();
-
-    // Check if the fully qualified name refers directly to a type.
-    if (docRegistry.isKnownType(descriptor.getFullName())) {
-      return filePath;
-    }
-
-    int index = descriptor.getFullName().lastIndexOf('.');
-    if (index != -1) {
-      filePath = getLink(descriptor.getFullName().substring(0, index));
-      if (filePath != null) {
-        return filePath + "#" + descriptor.getFullName();
+    // Link might be a qualified path to a property.
+    if (type == null && propertyName.isEmpty()) {
+      index = typeName.lastIndexOf(".");
+      if (index != -1) {
+        instanceProperty = false;
+        propertyName = typeName.substring(index + 1);
+        typeName = typeName.substring(0, index);
+        type = typeRegistry.getNominalType(typeName);
       }
     }
 
-    return filePath;
-  }
-
-  @Nullable
-  private String getPrototypeLink(Descriptor descriptor) {
-    checkArgument(descriptor.getFullName().contains(".prototype."));
-
-    String parentName = descriptor.getFullName()
-        .substring(0, descriptor.getFullName().indexOf(".prototype."));
-    String name = descriptor.getSimpleName();
-
-    Descriptor parent = docRegistry.resolve(parentName);
-    if (parent != null) {
-      return getFilePath(parent).getFileName().toString() + "#" + name;
+    if (type == null) {
+      // If we get here, make one last attempt to resolve the referenced path
+      // by checking for an extern type.
+      return getExternLink(typeName);
     }
-    return null;
+
+    String filePath = getFilePath(type).getFileName().toString();
+    if (!propertyName.isEmpty()) {
+      if (instanceProperty) {
+        if (type.getJsdoc().isConstructor() || type.getJsdoc().isInterface()) {
+          filePath += "#" + propertyName;
+        }
+      } else {
+        filePath += "#" + type.getName() + "." + propertyName;
+      }
+    }
+    return filePath;
   }
 
   private static final String MDN_PREFIX =
@@ -362,11 +252,9 @@ public class Linker {
           .build();
 
   /**
-   * Attempts to find a link to an extern type definition. Primitive types (null, undefined,
-   * string, number, boolean) will be linked to their definitions on the
+   * Returns a for one of the builtin extern types to its definition on the
    * <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/">Mozilla Developer
-   * Network</a>. For all other symbols, this method will scan the jsdoc annotations for an
-   * {@literal @see} annotation containing a valid URI.
+   * Network</a>.
    *
    * @param name The name of the extern to find a link for.
    * @return A link to the extern's type definition, or {@code null} if one could not be found.
@@ -375,33 +263,6 @@ public class Linker {
   public String getExternLink(String name) {
     if (BUILTIN_TO_MDN_LINK.containsKey(name)) {
       return BUILTIN_TO_MDN_LINK.get(name);
-    }
-
-    Descriptor descriptor = docRegistry.getExtern(name);
-    if (descriptor != null) {
-      return getExternLink(descriptor);
-    }
-    return null;
-  }
-
-  /**
-   * @see #getExternLink(String)
-   */
-  @Nullable
-  private String getExternLink(Descriptor descriptor) {
-    if (BUILTIN_TO_MDN_LINK.containsKey(descriptor.getFullName())) {
-      return BUILTIN_TO_MDN_LINK.get(descriptor.getFullName());
-    }
-
-    JsDoc jsDoc = descriptor.getJsDoc();
-    if (jsDoc != null) {
-      for (String see : jsDoc.getSeeClauses()) {
-        try {
-          return new URI(see).toString();
-        } catch (URISyntaxException ignored) {
-          // Do nothing.
-        }
-      }
     }
     return null;
   }

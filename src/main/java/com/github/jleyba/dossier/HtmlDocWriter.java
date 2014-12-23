@@ -104,7 +104,7 @@ class HtmlDocWriter implements DocWriter {
   HtmlDocWriter(Config config, TypeRegistry typeRegistry, DocRegistry registry) {
     this.config = checkNotNull(config);
     this.typeRegistry = checkNotNull(typeRegistry);
-    this.linker = new Linker(config, registry, typeRegistry);
+    this.linker = new Linker(config, typeRegistry);
   }
 
   @Override
@@ -444,8 +444,8 @@ class HtmlDocWriter implements DocWriter {
       Path renderPath = config.getOutput()
           .resolve("source")
           .resolve(config.getSrcPrefix()
-          .relativize(source.toAbsolutePath().normalize())
-          .resolveSibling(source.getFileName() + ".src.html"));
+              .relativize(source.toAbsolutePath().normalize())
+              .resolveSibling(source.getFileName() + ".src.html"));
 
       SourceFile file = SourceFile.newBuilder()
           .setBaseName(source.getFileName().toString())
@@ -1058,14 +1058,6 @@ class HtmlDocWriter implements DocWriter {
     @Override
     public int compare(Path o1, Path o2) {
       return o1.toString().compareTo(o2.toString());
-    }
-  }
-
-  private class ModueDisplayPathComparator implements Comparator<ModuleDescriptor> {
-
-    @Override
-    public int compare(ModuleDescriptor o1, ModuleDescriptor o2) {
-      return linker.getDisplayName(o1).compareTo(linker.getDisplayName(o2));
     }
   }
 
