@@ -56,6 +56,7 @@ import com.google.gson.JsonObject;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.JSTypeExpression;
 import com.google.javascript.rhino.Node;
+import com.google.javascript.rhino.jstype.EnumType;
 import com.google.javascript.rhino.jstype.FunctionType;
 import com.google.javascript.rhino.jstype.JSType;
 import com.google.javascript.rhino.jstype.JSTypeRegistry;
@@ -103,7 +104,7 @@ class HtmlDocWriter implements DocWriter {
   HtmlDocWriter(Config config, TypeRegistry typeRegistry, DocRegistry registry) {
     this.config = checkNotNull(config);
     this.typeRegistry = checkNotNull(typeRegistry);
-    this.linker = new Linker(config, registry);
+    this.linker = new Linker(config, registry, typeRegistry);
   }
 
   @Override
@@ -530,23 +531,21 @@ class HtmlDocWriter implements DocWriter {
   }
 
   private void extractEnumData(NominalType type, Enumeration.Builder enumBuilder) {
+    checkArgument(type.getJsType().isEnumType());
+
+    JSType elementType = ((EnumType) type.getJsType()).getElementsType();
+    enumBuilder.setType(formatTypeExpression(elementType, linker));
+
     JsDoc jsdoc = type.getJsdoc();
     if (jsdoc != null) {
       enumBuilder.setVisibility(Dossier.Visibility.valueOf(jsdoc.getVisibility().name()));
-      // TODO: formaat on element type
-      enumBuilder.setTypeHtml("");
-//      enumBuilder.setTypeHtml(formatTypeExpression(jsdoc.getType(), linker));
-    } else {
-      // TODO
-//      jsdoc = resolveTypeAlias(descriptor).getJsDoc();
-      if (jsdoc != null) {
-        enumBuilder.setTypeHtml(formatTypeExpression(jsdoc.getType(), linker));
-      }
     }
 
     // Type may be documented as an enum without an associated object literal for us to analyze:
     //     /** @enum {string} */ namespace.foo;
-    for (Property property : type.getProperties()) {
+    List<Property> properties = FluentIterable.from(type.getProperties())
+        .toSortedList(new PropertyNameComparator());
+    for (Property property : properties) {
       if (!property.getType().isEnumElementType()) {
         continue;
       }

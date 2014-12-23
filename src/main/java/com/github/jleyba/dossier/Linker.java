@@ -37,13 +37,16 @@ public class Linker {
 
   private final Config config;
   private final Path outputRoot;
+  private final TypeRegistry typeRegistry;
   private final DocRegistry docRegistry;
 
   /**
    * @param config The current runtime configuration.
    * @param docRegistry The documented type registry.
+   * @param typeRegistry The type registry.
    */
-  public Linker(Config config, DocRegistry docRegistry) {
+  public Linker(Config config, DocRegistry docRegistry, TypeRegistry typeRegistry) {
+    this.typeRegistry = typeRegistry;
     this.config = checkNotNull(config);
     this.outputRoot = config.getOutput();
     this.docRegistry = checkNotNull(docRegistry);
@@ -369,7 +372,7 @@ public class Linker {
    * @return A link to the extern's type definition, or {@code null} if one could not be found.
    */
   @Nullable
-  private String getExternLink(String name) {
+  public String getExternLink(String name) {
     if (BUILTIN_TO_MDN_LINK.containsKey(name)) {
       return BUILTIN_TO_MDN_LINK.get(name);
     }

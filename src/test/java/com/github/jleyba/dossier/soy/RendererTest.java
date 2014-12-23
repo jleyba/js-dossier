@@ -507,7 +507,9 @@ public class RendererTest {
         .setSource("source")
         .setDescription(parseComment("description"))
         .setEnumeration(Dossier.Enumeration.newBuilder()
-            .setTypeHtml("{color: string}"))
+            .setType(Dossier.Comment.newBuilder()
+                .addToken(Dossier.Comment.Token.newBuilder()
+                    .setText("{color: string}"))))
         .setTags(Dossier.Tags.getDefaultInstance())
         .build();
 
@@ -521,7 +523,9 @@ public class RendererTest {
   @Test
   public void renderEnumValues() {
     Dossier.Enumeration e = Dossier.Enumeration.newBuilder()
-        .setTypeHtml("enum-type")
+        .setType(Dossier.Comment.newBuilder()
+            .addToken(Dossier.Comment.Token.newBuilder()
+                .setText("enum-type")))
         .addValue(Dossier.Enumeration.Value.newBuilder()
             .setName("ONE"))
         .addValue(Dossier.Enumeration.Value.newBuilder()

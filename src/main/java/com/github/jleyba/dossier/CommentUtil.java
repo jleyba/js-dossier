@@ -15,8 +15,10 @@
 package com.github.jleyba.dossier;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.github.jleyba.dossier.proto.Dossier;
+import com.github.jleyba.dossier.proto.Dossier.Comment;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
@@ -28,8 +30,22 @@ import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.JSTypeExpression;
 import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.Token;
+import com.google.javascript.rhino.jstype.EnumElementType;
+import com.google.javascript.rhino.jstype.FunctionType;
+import com.google.javascript.rhino.jstype.JSType;
+import com.google.javascript.rhino.jstype.NamedType;
+import com.google.javascript.rhino.jstype.NoType;
+import com.google.javascript.rhino.jstype.ObjectType;
+import com.google.javascript.rhino.jstype.Property;
+import com.google.javascript.rhino.jstype.ProxyObjectType;
+import com.google.javascript.rhino.jstype.RecordType;
+import com.google.javascript.rhino.jstype.TemplateType;
+import com.google.javascript.rhino.jstype.TemplatizedType;
+import com.google.javascript.rhino.jstype.UnionType;
+import com.google.javascript.rhino.jstype.Visitor;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -247,7 +263,171 @@ public class CommentUtil {
     return end;
   }
 
+  public static Dossier.Comment formatTypeExpression(JSType type, final Linker linker) {
+    return new CommentTypeParser(linker).parse(type);
+  }
+
+  /**
+   * A {@link JSType} visitor that converts the type into a comment type expression.
+   */
+  private static class CommentTypeParser implements Visitor<Void> {
+
+    private final Linker linker;
+    private final Comment.Builder comment = Comment.newBuilder();
+
+    private String currentText = "";
+
+    private CommentTypeParser(Linker linker) {
+      this.linker = linker;
+    }
+
+    Comment parse(JSType type) {
+      comment.clear();
+      currentText = "";
+      type.visit(this);
+      if (!currentText.isEmpty()) {
+        comment.addTokenBuilder().setText(currentText);
+        currentText = "";
+      }
+      return comment.build();
+    }
+
+    private void appendText(String text) {
+      currentText += text;
+    }
+
+    private void appendNativeType(String type) {
+      if (!currentText.isEmpty()) {
+        comment.addTokenBuilder().setText(currentText);
+        currentText = "";
+      }
+      comment.addTokenBuilder()
+          .setText(type)
+          .setHref(checkNotNull(linker.getExternLink(type)));
+    }
+
+    @Override
+    public Void caseNoType(NoType type) {
+      throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Void caseEnumElementType(EnumElementType type) {
+      return type.getPrimitiveType().visit(this);
+    }
+
+    @Override
+    public Void caseAllType() {
+      appendText("*");
+      return null;
+    }
+
+    @Override
+    public Void caseBooleanType() {
+      appendNativeType("boolean");
+      return null;
+    }
+
+    @Override
+    public Void caseNoObjectType() {
+      throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Void caseFunctionType(FunctionType type) {
+      throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Void caseObjectType(ObjectType type) {
+      if (type.isRecordType()) {
+        caseRecordType((RecordType) type);
+      }
+      return null;
+    }
+
+    private void caseRecordType(RecordType type) {
+      appendText("{");
+      Iterator<String> properties = type.getOwnPropertyNames().iterator();
+      while (properties.hasNext()) {
+        Property property = type.getOwnSlot(properties.next());
+        appendText(property.getName() + ": ");
+        property.getType().visit(this);
+        if (properties.hasNext()) {
+          appendText(", ");
+        }
+      }
+      appendText("}");
+    }
+
+    @Override
+    public Void caseUnknownType() {
+      appendText("?");
+      return null;
+    }
+
+    @Override
+    public Void caseNullType() {
+      appendNativeType("null");
+      return null;
+    }
+
+    @Override
+    public Void caseNamedType(NamedType type) {
+      appendText(type.getReferenceName());
+      return null;
+    }
+
+    @Override
+    public Void caseProxyObjectType(ProxyObjectType type) {
+      throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Void caseNumberType() {
+      appendNativeType("number");
+      return null;
+    }
+
+    @Override
+    public Void caseStringType() {
+      appendNativeType("string");
+      return null;
+    }
+
+    @Override
+    public Void caseVoidType() {
+      appendText("void");
+      return null;
+    }
+
+    @Override
+    public Void caseUnionType(UnionType type) {
+      appendText(type.isNullable() ? "(" : "!(");
+      Iterator<JSType> types = type.getAlternates().iterator();
+      while (types.hasNext()) {
+        types.next().visit(this);
+        if (types.hasNext()) {
+          appendText("|");
+        }
+      }
+      appendText(")");
+      return null;
+    }
+
+    @Override
+    public Void caseTemplatizedType(TemplatizedType type) {
+      throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Void caseTemplateType(TemplateType templateType) {
+      throw new UnsupportedOperationException();
+    }
+  }
+
   public static String formatTypeExpression(JSTypeExpression expression, Linker resolver) {
+
     // If we use JSTypeExpression#evaluate(), all typedefs will be resolved to their native
     // types, which produces very verbose expressions.  Keep things simply and rebuild the type
     // expression ourselves. This has the added benefit of letting us resolve type links as we go.

@@ -58,6 +58,16 @@ public class TypeRegistry {
     return name.startsWith(INTERNAL_NAMESPACE_VAR);
   }
 
+  /**
+   * Evaluates a type expression to a JSType.
+   *
+   * @param expression the expression to evaluate.
+   * @return the evaluated type.
+   */
+  public JSType evaluate(JSTypeExpression expression) {
+    return expression.evaluate(null, jsTypeRegistry);
+  }
+
   public void recordGoogProvide(String name) {
     providedSymbols.add(name);
     implicitNamespaces.add(name);

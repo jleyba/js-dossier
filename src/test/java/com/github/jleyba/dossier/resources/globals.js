@@ -95,7 +95,15 @@ var DeprecatedFoo = function() {
  */
 var GlobalEnum = {
   FRUIT: 'apple',
-  COLOR: 'red'
+
+  /** Color description. */
+  COLOR: 'red',
+
+  /**
+   * Day of the week.
+   * @deprecated Do not use this anymore.
+   */
+  DAY: 'Monday'
 };
 
 
@@ -110,5 +118,9 @@ GlobalEnum.doSomething = function() {
 var EmptyEnum = {};
 
 
-/** @enum {string} */
+/**
+ * Even though this enum is just a declared name and has is never assigned a
+ * value, it should still be documented.
+ * @enum {!(string|number|{age: ?number})}
+ */
 var UndefinedEnum;

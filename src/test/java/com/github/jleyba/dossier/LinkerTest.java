@@ -25,6 +25,7 @@ public class LinkerTest {
   private Path outputDir;
   private Config mockConfig;
   private DocRegistry docRegistry;
+  private TypeRegistry typeRegistry;
 
   private Linker linker;
 
@@ -37,9 +38,11 @@ public class LinkerTest {
     when(mockConfig.getOutput()).thenReturn(outputDir);
 
     ErrorReporter errorReporter = mock(ErrorReporter.class);
-    JSTypeRegistry typeRegistry = new JSTypeRegistry(errorReporter);
-    docRegistry = new DocRegistry(typeRegistry);
-    linker = new Linker(mockConfig, docRegistry);
+    JSTypeRegistry jsTypeRegistry = new JSTypeRegistry(errorReporter);
+    docRegistry = new DocRegistry(jsTypeRegistry);
+    typeRegistry = new TypeRegistry(jsTypeRegistry);
+
+    linker = new Linker(mockConfig, docRegistry, typeRegistry);
   }
 
   @Test

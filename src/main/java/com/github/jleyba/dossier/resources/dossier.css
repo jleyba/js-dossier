@@ -42,7 +42,8 @@ pre{border-left:.2rem solid #c4c4c4}
 table{border-collapse:collapse;border-spacing:0;margin:0;padding:0;width:100%}
 th{border-bottom:1px solid #c2c2c2;text-align:left;padding-top:.5em}
 td dl{margin-top:0}
-dt{font-weight:bold}dt>code{font-weight:normal;color:#66f;padding-left:.5rem}
+dt{font-weight:bold}dt.deprecated{text-decoration:line-through}
+dt>code{font-weight:normal;color:#66f;padding-left:.5rem}
 .parentlink{float:left}
 .codelink a{float:right}
 .codelink:after{clear:both;content:"";display:table}

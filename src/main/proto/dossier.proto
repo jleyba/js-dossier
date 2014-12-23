@@ -151,7 +151,7 @@ message Enumeration {
     optional Deprecation deprecation = 3;
   }
 
-  required string type_html = 1;
+  required Comment type = 1;
   repeated Value value = 2;
   optional Visibility visibility = 3 [default = PUBLIC];
 }

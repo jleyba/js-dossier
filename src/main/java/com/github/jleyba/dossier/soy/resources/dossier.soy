@@ -218,15 +218,16 @@
  */
 {template .deprecationNotice private="true"}
   {@param deprecation: dossier.Deprecation}
+  {@param? omitLeadingTag: bool}
 
   {if $deprecation and $deprecation.notice and length($deprecation.notice.token)}
-    <p>
+    {if not $omitLeadingTag}<p>{/if}
       <b>Deprecated: </b>
       {call .comment}
         {param comment: $deprecation.notice /}
         {param omitLeadingTag: true /}
       {/call}
-    </p>
+    {if not $omitLeadingTag}</p>{/if}
   {/if}
 {/template}
 
@@ -238,28 +239,34 @@
   {@param name: string}
   {@param enumeration: dossier.Enumeration}
 
-  <h2>Values and Descriptions</h2>
-  <dl>
-    {foreach $value in $enumeration.value}
-      <dt>
-        <a id="{$name + '.' + $value.name}"></a>
-        /* TODO: deprecation */
-        {$value.name}
-      {if ($value.description and length($value.description.token)) or
-          ($value.deprecation
-           and $value.deprecation.notice
-           and length($value.deprecation.notice.token))}
-        <dd>
-          {call .deprecationNotice}
-            {param deprecation: $value.deprecation /}
-          {/call}
-          {call .comment}
-            {param comment: $value.description /}
-            {param omitLeadingTag: true /}
-          {/call}
-      {/if}
-    {/foreach}
-  </dl>
+  {if length($enumeration.value)}
+    <h2>Values and Descriptions</h2>
+    <dl>
+      {foreach $value in $enumeration.value}
+        <dt{if $value.deprecation.notice and length($value.deprecation.notice.token)} class="deprecated"{/if}>
+          <a id="{$name + '.' + $value.name}"></a>
+          /* TODO: deprecation */
+          {$value.name}
+        {if ($value.description and length($value.description.token)) or
+            ($value.deprecation
+             and $value.deprecation.notice
+             and length($value.deprecation.notice.token))}
+          <dd>
+            {call .comment}
+              {param comment: $value.description /}
+              {param omitLeadingTag: true /}
+            {/call}
+            {if $value.deprecation.notice and length($value.deprecation.notice.token)}
+              <br>
+              {call .deprecationNotice}
+                {param deprecation: $value.deprecation /}
+                {param omitLeadingTag: true /}
+              {/call}
+            {/if}
+        {/if}
+      {/foreach}
+    </dl>
+  {/if}
 {/template}
 
 
@@ -628,10 +635,8 @@
     <h2>
       {if $type.mainFunction and $type.mainFunction.isConstructor}
         Static Functions
-      {elseif $type.tags.isModule}
-        Functions
       {else}
-        Global Functions
+        Functions
       {/if}
     </h2>
     {call .printFunctions}
@@ -644,10 +649,8 @@
     <h2>
       {if $type.mainFunction and $type.mainFunction.isConstructor}
         Static Properties
-      {elseif $type.tags.isModule}
-        Properties
       {else}
-        Global Properties
+        Properties
       {/if}
     </h2>
     <dl>
@@ -713,10 +716,15 @@
     {param tags: $type.tags /}
   {/call}
 
-  {if $type.enumeration and $type.enumeration.typeHtml}
+  {if $type.enumeration and length($type.enumeration.type.token)}
     <dl>
       <dt>Type
-        <code>{$type.enumeration.typeHtml |noAutoescape}</code>
+        <code>
+          {call .comment}
+            {param comment: $type.enumeration.type /}
+            {param omitLeadingTag: true /}
+          {/call}
+        </code>
     </dl>
   {/if}
 
