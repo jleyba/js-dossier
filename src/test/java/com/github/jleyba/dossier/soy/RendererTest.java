@@ -104,11 +104,20 @@ public class RendererTest {
   @Test
   public void renderSourceLink() {
     assertThat(
-        render("dossier.soy.sourceLink", ImmutableMap.<String, Object>of()),
-        is(""));
+        render("dossier.soy.sourceLink", ImmutableMap.of(
+            "text", "foo",
+            "source", Dossier.SourceLink.newBuilder().setPath("").build())),
+        is("foo"));
     assertThat(
-        render("dossier.soy.sourceLink", ImmutableMap.<String, Object>of("href", "foo.bar")),
-        is("<div class=\"codelink\"><a href=\"foo.bar\">code &raquo;</a></div>"));
+        render("dossier.soy.sourceLink", ImmutableMap.of(
+            "text", "foo",
+            "source", Dossier.SourceLink.newBuilder().setPath("foo.bar").build())),
+        is("<a href=\"foo.bar\">foo</a>"));
+    assertThat(
+        render("dossier.soy.sourceLink", ImmutableMap.of(
+            "text", "foo",
+            "source", Dossier.SourceLink.newBuilder().setPath("foo.bar").setLine(123).build())),
+        is("<a href=\"foo.bar#l123\">foo</a>"));
   }
 
   @Test
@@ -165,7 +174,7 @@ public class RendererTest {
   public void printInterfaces_emptyList() {
     Dossier.JsType type = Dossier.JsType.newBuilder()
         .setName("name")
-        .setSource("source")
+        .setSource(Dossier.SourceLink.newBuilder().setPath("source"))
         .setDescription(parseComment("description"))
         .setTags(Dossier.Tags.getDefaultInstance())
         .build();
@@ -177,7 +186,7 @@ public class RendererTest {
   public void printInterfaces_interface() {
     Dossier.JsType type = Dossier.JsType.newBuilder()
         .setName("name")
-        .setSource("source")
+        .setSource(Dossier.SourceLink.newBuilder().setPath("source"))
         .setDescription(parseComment("description"))
         .setTags(Dossier.Tags.newBuilder().setIsInterface(true))
         .addImplementedType(Dossier.TypeLink.newBuilder()
@@ -199,12 +208,12 @@ public class RendererTest {
   public void printInterfaces_class() {
     Dossier.JsType type = Dossier.JsType.newBuilder()
         .setName("name")
-        .setSource("source")
+        .setSource(Dossier.SourceLink.newBuilder().setPath("source"))
         .setDescription(parseComment("description"))
         .setMainFunction(Dossier.Function.newBuilder()
             .setBase(Dossier.BaseProperty.newBuilder()
                 .setName("ctor-name")
-                .setSource("ctor-source")
+                .setSource(Dossier.SourceLink.newBuilder().setPath("ctor-source"))
                 .setDescription(parseComment("ctor-description"))))
         .addImplementedType(Dossier.TypeLink.newBuilder()
             .setHref("type-one")
@@ -226,7 +235,7 @@ public class RendererTest {
   public void printInterfaces_missingHref() {
     Dossier.JsType type = Dossier.JsType.newBuilder()
         .setName("name")
-        .setSource("source")
+        .setSource(Dossier.SourceLink.newBuilder().setPath("source"))
         .setDescription(parseComment("description"))
         .setTags(Dossier.Tags.newBuilder().setIsInterface(true))
         .addImplementedType(Dossier.TypeLink.newBuilder()
@@ -245,7 +254,7 @@ public class RendererTest {
     Dossier.JsType type = Dossier.JsType.newBuilder()
         .setName("Foo")
         .setTags(Dossier.Tags.newBuilder().setIsModule(true))
-        .setSource("source-file")
+        .setSource(Dossier.SourceLink.newBuilder().setPath("source-file"))
         .setDescription(parseComment("description"))
         .build();
 
@@ -262,7 +271,7 @@ public class RendererTest {
   public void renderTypeHeader_interface() {
     Dossier.JsType type = Dossier.JsType.newBuilder()
         .setName("Foo")
-        .setSource("source")
+        .setSource(Dossier.SourceLink.newBuilder().setPath("source"))
         .setDescription(parseComment("description"))
         .setTags(Dossier.Tags.newBuilder().setIsInterface(true))
         .addImplementedType(Dossier.TypeLink.newBuilder()
@@ -286,7 +295,7 @@ public class RendererTest {
   public void renderTypeHeader_deprecatedInterface_noNoticeText() {
     Dossier.JsType type = Dossier.JsType.newBuilder()
         .setName("Foo")
-        .setSource("source")
+        .setSource(Dossier.SourceLink.newBuilder().setPath("source"))
         .setDescription(parseComment("description"))
         .setTags(Dossier.Tags.newBuilder().setIsInterface(true))
         .setDeprecation(Dossier.Deprecation.newBuilder())
@@ -303,7 +312,7 @@ public class RendererTest {
   public void renderTypeHeader_deprecatedInterface_hasNoticeText() {
     Dossier.JsType type = Dossier.JsType.newBuilder()
         .setName("Foo")
-        .setSource("source")
+        .setSource(Dossier.SourceLink.newBuilder().setPath("source"))
         .setDescription(parseComment("description"))
         .setTags(Dossier.Tags.newBuilder().setIsInterface(true))
         .setDeprecation(Dossier.Deprecation.newBuilder()
@@ -322,7 +331,7 @@ public class RendererTest {
   public void renderTypeHeader_interfaceHasTemplateNames() {
     Dossier.JsType type = Dossier.JsType.newBuilder()
         .setName("Foo")
-        .setSource("source")
+        .setSource(Dossier.SourceLink.newBuilder().setPath("source"))
         .setDescription(parseComment("description"))
         .setTags(Dossier.Tags.newBuilder().setIsInterface(true))
         .setMainFunction(Dossier.Function.newBuilder()
@@ -330,7 +339,7 @@ public class RendererTest {
             .addTemplateName("V")
             .setBase(Dossier.BaseProperty.newBuilder()
                 .setName("ctor-name")
-                .setSource("ctor-source")
+                .setSource(Dossier.SourceLink.newBuilder().setPath("ctor-source"))
                 .setDescription(parseComment("ctor-description"))))
         .build();
 
@@ -344,7 +353,7 @@ public class RendererTest {
   public void renderTypeHeader_classHasTemplateNames() {
     Dossier.JsType type = Dossier.JsType.newBuilder()
         .setName("Foo")
-        .setSource("source")
+        .setSource(Dossier.SourceLink.newBuilder().setPath("source"))
         .setDescription(parseComment("description"))
         .setMainFunction(Dossier.Function.newBuilder()
             .setIsConstructor(true)
@@ -352,7 +361,7 @@ public class RendererTest {
             .addTemplateName("V")
             .setBase(Dossier.BaseProperty.newBuilder()
                 .setName("ctor-name")
-                .setSource("ctor-source")
+                .setSource(Dossier.SourceLink.newBuilder().setPath("ctor-source"))
                 .setDescription(parseComment("ctor-description"))))
         .setTags(Dossier.Tags.getDefaultInstance())
         .build();
@@ -367,13 +376,13 @@ public class RendererTest {
   public void renderTypeHeader_classInModule() {
     Dossier.JsType type = Dossier.JsType.newBuilder()
         .setName("Foo")
-        .setSource("source")
+        .setSource(Dossier.SourceLink.newBuilder().setPath("source"))
         .setDescription(parseComment("description"))
         .setMainFunction(Dossier.Function.newBuilder()
             .setIsConstructor(true)
             .setBase(Dossier.BaseProperty.newBuilder()
                 .setName("ctor-name")
-                .setSource("ctor-source")
+                .setSource(Dossier.SourceLink.newBuilder().setPath("ctor-source"))
                 .setDescription(parseComment("ctor-description"))))
         .setModule(Dossier.TypeLink.newBuilder()
             .setText("path/to/module")
@@ -396,13 +405,13 @@ public class RendererTest {
   public void renderTypeHeader_complexClass() {
     Dossier.JsType type = Dossier.JsType.newBuilder()
         .setName("Foo")
-        .setSource("source-file")
+        .setSource(Dossier.SourceLink.newBuilder().setPath("source-file"))
         .setDescription(parseComment("description"))
         .setMainFunction(Dossier.Function.newBuilder()
             .setIsConstructor(true)
             .setBase(Dossier.BaseProperty.newBuilder()
                 .setName("ctor-name")
-                .setSource("ctor-source")
+                .setSource(Dossier.SourceLink.newBuilder().setPath("ctor-source"))
                 .setDescription(parseComment("ctor-description")))
             .addTemplateName("T"))
         .addExtendedType(Dossier.TypeLink.newBuilder()
@@ -445,12 +454,12 @@ public class RendererTest {
     Dossier.JsType type = Dossier.JsType.newBuilder()
         .setTags(Dossier.Tags.newBuilder().setIsModule(true))
         .setName("Foo")
-        .setSource("source-file")
+        .setSource(Dossier.SourceLink.newBuilder().setPath("source-file"))
         .setDescription(parseComment("description"))
         .setMainFunction(Dossier.Function.newBuilder()
             .setBase(Dossier.BaseProperty.newBuilder()
                 .setName("ctor-name")
-                .setSource("ctor-source")
+                .setSource(Dossier.SourceLink.newBuilder().setPath("ctor-file"))
                 .setDescription(parseComment("ctor-description")))
             .addTemplateName("T"))
         .addExtendedType(Dossier.TypeLink.newBuilder()
@@ -486,7 +495,7 @@ public class RendererTest {
   public void renderTypeHeader_namespace() {
     Dossier.JsType type = Dossier.JsType.newBuilder()
         .setName("Foo")
-        .setSource("source-file")
+        .setSource(Dossier.SourceLink.newBuilder().setPath("source-file"))
         .setDescription(parseComment("description"))
         .setTags(Dossier.Tags.getDefaultInstance())
         .build();
@@ -504,7 +513,7 @@ public class RendererTest {
   public void renderTypeHeader_enumeration() {
     Dossier.JsType type = Dossier.JsType.newBuilder()
         .setName("Foo")
-        .setSource("source")
+        .setSource(Dossier.SourceLink.newBuilder().setPath("source"))
         .setDescription(parseComment("description"))
         .setEnumeration(Dossier.Enumeration.newBuilder()
             .setType(Dossier.Comment.newBuilder()
@@ -558,9 +567,9 @@ public class RendererTest {
         "<dd><strong>the color red</strong></dd>",
         "<dt><a id=\"foo.Bar.GREEN\"></a>GREEN</dt>",
         "<dd><i>the color green</i></dd>",
-        "<dt><a id=\"foo.Bar.BLUE\"></a>BLUE</dt>",
+        "<dt class=\"deprecated\"><a id=\"foo.Bar.BLUE\"></a>BLUE</dt>",
         "<dd>",
-        "<p><b>Deprecated: </b>This value is deprecated</p>",
+        "<b>Deprecated: </b>This value is deprecated",
         "</dd>",
         "</dl>",
         "</body>"));
@@ -618,7 +627,7 @@ public class RendererTest {
     Dossier.Function function = Dossier.Function.newBuilder()
         .setBase(Dossier.BaseProperty.newBuilder()
             .setName("foo.Bar")
-            .setSource("")
+            .setSource(Dossier.SourceLink.newBuilder().setPath(""))
             .setDescription(parseComment("")))
         .build();
     assertThat("No details to render",
@@ -630,7 +639,7 @@ public class RendererTest {
     Dossier.Function function = Dossier.Function.newBuilder()
         .setBase(Dossier.BaseProperty.newBuilder()
             .setName("foo.Bar")
-            .setSource("")
+            .setSource(Dossier.SourceLink.newBuilder().setPath(""))
             .setDescription(parseComment("")))
         .addParameter(Dossier.Function.Detail.newBuilder().setName("a"))
         .addParameter(Dossier.Function.Detail.newBuilder()
@@ -670,7 +679,7 @@ public class RendererTest {
     Dossier.Function function = Dossier.Function.newBuilder()
         .setBase(Dossier.BaseProperty.newBuilder()
             .setName("foo.Bar")
-            .setSource("")
+            .setSource(Dossier.SourceLink.newBuilder().setPath(""))
             .setDescription(parseComment("")))
         .addThrown(Dossier.Function.Detail.newBuilder().setName("Error"))
         .addThrown(Dossier.Function.Detail.newBuilder()
@@ -695,7 +704,7 @@ public class RendererTest {
     Dossier.Function function = Dossier.Function.newBuilder()
         .setBase(Dossier.BaseProperty.newBuilder()
             .setName("foo.Bar")
-            .setSource("")
+            .setSource(Dossier.SourceLink.newBuilder().setPath(""))
             .setDescription(parseComment("")))
         .setReturn(Dossier.Function.Detail.newBuilder())
         .build();
@@ -709,7 +718,7 @@ public class RendererTest {
     Dossier.Function function = Dossier.Function.newBuilder()
         .setBase(Dossier.BaseProperty.newBuilder()
             .setName("foo.Bar")
-            .setSource("")
+            .setSource(Dossier.SourceLink.newBuilder().setPath(""))
             .setDescription(parseComment("")))
         .setReturn(Dossier.Function.Detail.newBuilder()
             .setDescription(parseComment("randomly")))
@@ -729,7 +738,7 @@ public class RendererTest {
     Dossier.Function function = Dossier.Function.newBuilder()
         .setBase(Dossier.BaseProperty.newBuilder()
             .setName("foo.Bar")
-            .setSource("")
+            .setSource(Dossier.SourceLink.newBuilder().setPath(""))
             .setDescription(parseComment("")))
         .setIsConstructor(true)
         .addParameter(Dossier.Function.Detail.newBuilder().setName("a"))
@@ -750,7 +759,7 @@ public class RendererTest {
     Dossier.Function function = Dossier.Function.newBuilder()
         .setBase(Dossier.BaseProperty.newBuilder()
             .setName("foo.Bar")
-            .setSource("")
+            .setSource(Dossier.SourceLink.newBuilder().setPath(""))
             .setDescription(parseComment("")))
         .addParameter(Dossier.Function.Detail.newBuilder().setName("a"))
         .addParameter(Dossier.Function.Detail.newBuilder()
@@ -793,7 +802,7 @@ public class RendererTest {
     Dossier.Function function = Dossier.Function.newBuilder()
         .setBase(Dossier.BaseProperty.newBuilder()
             .setName("foo.Bar")
-            .setSource("")
+            .setSource(Dossier.SourceLink.newBuilder().setPath(""))
             .setDescription(parseComment("")))
         .setIsConstructor(true)
         .addParameter(Dossier.Function.Detail.newBuilder().setName("a"))
@@ -801,7 +810,7 @@ public class RendererTest {
         .build();
     Dossier.JsType type = Dossier.JsType.newBuilder()
         .setName("Foo")
-        .setSource("")
+        .setSource(Dossier.SourceLink.newBuilder().setPath(""))
         .setDescription(Dossier.Comment.getDefaultInstance())
         .setMainFunction(function)
         .setTags(Dossier.Tags.getDefaultInstance())
@@ -818,7 +827,7 @@ public class RendererTest {
     Dossier.Function function = Dossier.Function.newBuilder()
         .setBase(Dossier.BaseProperty.newBuilder()
             .setName("Bar")
-            .setSource("bar.link")
+            .setSource(Dossier.SourceLink.newBuilder().setPath("bar.link"))
             .setDescription(parseComment("description here\n<p>second paragraph"))
             .setDeprecation(Dossier.Deprecation.newBuilder()
                 .setNotice(parseComment("is old"))))
@@ -851,7 +860,7 @@ public class RendererTest {
     Dossier.Property property = Dossier.Property.newBuilder()
         .setBase(Dossier.BaseProperty.newBuilder()
             .setName("foo")
-            .setSource("foo-source")
+            .setSource(Dossier.SourceLink.newBuilder().setPath("foo-source"))
             .setDescription(parseComment("foo description")))
         .setTypeHtml("string")
         .build();

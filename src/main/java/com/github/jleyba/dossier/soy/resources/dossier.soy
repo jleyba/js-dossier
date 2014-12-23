@@ -119,19 +119,17 @@
 
 
 /**
- * Prints the hyperlink to a source file. This template will not print anything
- * if the source file's href is unknown.
+ * Renders a source link.
  */
 {template .sourceLink private="true"}
-  {@param? href: string}
-  {@param? span: bool} /* Whether to use span instead of div */
-  {if $href}
-    <{if $span}span{else}div{/if} class="codelink">
-      <a href="{$href}">code &raquo;</a>
-    </{if $span}span{else}div{/if}>
+  {@param text: string}                // The link text.
+  {@param source: dossier.SourceLink}  // The link.
+  {if $source.path}
+    <a href="{$source.path}{if $source.line and $source.line > 0}#l{$source.line}{/if}">{$text}</a>
+  {else}
+    {$text}
   {/if}
 {/template}
-
 
 /**
  * Prints a graphical representation of a class's type inheritance:
@@ -257,7 +255,7 @@
               {param omitLeadingTag: true /}
             {/call}
             {if $value.deprecation.notice and length($value.deprecation.notice.token)}
-              <br>
+              {if ($value.description and length($value.description.token))}<br>{/if}
               {call .deprecationNotice}
                 {param deprecation: $value.deprecation /}
                 {param omitLeadingTag: true /}
@@ -493,10 +491,14 @@
       {if not isLast($parameter)},{sp}{/if}
     {/foreach}
     )
-    {call .sourceLink}
-      {param href: $fn.base.source /}
-      {param span: true /}
-    {/call}
+    {if $fn.base.source.path}
+      <span class="codelink">
+        {call .sourceLink}
+          {param text: 'code »' /}
+          {param source: $fn.base.source /}
+        {/call}
+      </span>
+    {/if}
   </h3>
   {call .tags}
     {param tags: $fn.base.tags /}
@@ -540,11 +542,10 @@
                           : $prop.base.name /}
   <dt>
     <a id="{$name}"></a>
-    {if $prop.base.source}
-      <a href="{$prop.base.source}">{$name}</a>
-    {else}
-      {$name}
-    {/if}
+    {call .sourceLink}
+      {param text: $name /}
+      {param source: $prop.base.source /}
+    {/call}
     /* todo: deprecation */
     {if $prop.typeHtml}
       <code>{$prop.typeHtml |noAutoescape}</code>
@@ -691,7 +692,10 @@
   {/if}
   {if $type.source}
     <div class="codelink">
-      <a href="{$type.source}">View Source</a>
+      {call .sourceLink}
+        {param text: 'View Source' /}
+        {param source: $type.source /}
+      {/call}
     </div>
   {/if}
   <h1{if $type.deprecation} class="deprecated"{/if}>
@@ -834,7 +838,10 @@
           {foreach $typedef in $spec.type.typeDef}
             <dt>
               <a id="{$typedef.name}"></a>
-              <a href="{$typedef.href}">{$typedef.name}</a>
+              {call .sourceLink}
+                {param text: $typedef.name /}
+                {param source: $typedef.source /}
+              {/call}
               <code>{$typedef.typeHtml |noAutoescape}</code>
             <dd>
               {if $typedef.description and length($typedef.description.token)}

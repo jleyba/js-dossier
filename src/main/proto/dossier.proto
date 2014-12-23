@@ -31,6 +31,15 @@ message TypeLink {
 }
 
 
+// Defines a link to a symbol's definition in its rendered source file.
+message SourceLink {
+  // Path from the current file to the rendered source file.
+  required string path = 1;
+  // The line in the source file containing the symbol, if known.
+  optional int32 line = 2;
+}
+
+
 // Represents a tokenized JSDoc comment string. Each token represents pre-formatted
 // HTML, literal text, a link, or a link of literal text.
 message Comment {
@@ -95,7 +104,7 @@ message BaseProperty {
   // The property's name; this should not be the fully qualified name.
   required string name = 1;
   // Link to the location in the source file where this property is defined.
-  required string source = 2;
+  required SourceLink source = 2;
   // The property's block comment.
   required Comment description = 3;
   // Whether this property is deprecated.
@@ -189,14 +198,14 @@ message JsType {
   message TypeDef {
     required string name = 1;
     required string type_html = 2;
-    required string href = 3;
+    required SourceLink source = 3;
     required Comment description = 4;
     optional Deprecation deprecation = 5;
     optional Visibility visibility = 6 [default = PUBLIC];
   }
 
   required string name = 1;
-  required string source = 5;
+  required SourceLink source = 5;
   repeated TypeSummary nested = 6;
   required Comment description = 7;
   required Tags tags = 8;

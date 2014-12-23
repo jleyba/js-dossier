@@ -7,6 +7,7 @@ import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import com.github.jleyba.dossier.proto.Dossier;
 import com.google.common.collect.ImmutableList;
 import com.google.common.jimfs.Jimfs;
 import com.google.javascript.jscomp.CompilerOptions;
@@ -204,46 +205,38 @@ public class LinkerTest {
 
   @Test
   public void testGetSourcePath_nullNode() {
-    assertEquals("", linker.getSourcePath(null));
+    assertEquals(
+        Dossier.SourceLink.newBuilder()
+            .setPath("")
+            .build(),
+        linker.getSourceLink(null));
   }
 
   @Test
   public void testGetSourcePath_externNode() {
     Node node = mock(Node.class);
     when(node.isFromExterns()).thenReturn(true);
-    assertEquals("", linker.getSourcePath(node));
+    assertEquals(
+        Dossier.SourceLink.newBuilder()
+            .setPath("")
+            .build(),
+        linker.getSourceLink(node));
   }
 
   @Test
-  public void testGetSourcePath_noLineNumber() {
-    Path srcPrefix = fileSystem.getPath("/alphabet/soup");
-    when(mockConfig.getSrcPrefix()).thenReturn(srcPrefix);
-
-    Node node = mock(Node.class);
-    when(node.getSourceFileName()).thenReturn("/alphabet/soup/a/b/c");
-    assertEquals("source/a/b/c.src.html", linker.getSourcePath(node));
-  }
-
-  @Test
-  public void testGetSourcePath_withLineNumber() {
+  public void testGetSourcePath() {
     Path srcPrefix = fileSystem.getPath("/alphabet/soup");
     when(mockConfig.getSrcPrefix()).thenReturn(srcPrefix);
 
     Node node = mock(Node.class);
     when(node.getSourceFileName()).thenReturn("/alphabet/soup/a/b/c");
     when(node.getLineno()).thenReturn(123);
-    assertEquals("source/a/b/c.src.html#l123", linker.getSourcePath(node));
-  }
-
-  @Test
-  public void testGetSourcePath_onLineZero() {
-    Path srcPrefix = fileSystem.getPath("/alphabet/soup");
-    when(mockConfig.getSrcPrefix()).thenReturn(srcPrefix);
-
-    Node node = mock(Node.class);
-    when(node.getSourceFileName()).thenReturn("/alphabet/soup/a/b/c");
-    when(node.getLineno()).thenReturn(0);
-    assertEquals("source/a/b/c.src.html", linker.getSourcePath(node));
+    assertEquals(
+        Dossier.SourceLink.newBuilder()
+            .setPath("source/a/b/c.src.html")
+            .setLine(123)
+            .build(),
+        linker.getSourceLink(node));
   }
 
   private static NominalType createType(String name) {

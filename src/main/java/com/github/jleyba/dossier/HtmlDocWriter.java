@@ -229,7 +229,7 @@ class HtmlDocWriter implements DocWriter {
 //    Descriptor descriptor = module.getDescriptor();
 //    JsType.Builder jsTypeBuilder = JsType.newBuilder()
 //        .setName(linker.getDisplayName(module))
-//        .setSource(linker.getSourcePath(module))
+//        .setSource(linker.getSourceLink(module))
 //        .setDescription(getFileoverview(linker, module.getJsDoc()))
 //        .addAllNested(getNestedTypeInfo(module.getDescriptor().getNestedTypes()))
 //        .addAllTypeDef(typeDefs)
@@ -296,7 +296,7 @@ class HtmlDocWriter implements DocWriter {
 
     jsTypeBuilder
         .addAllNested(getNestedTypeInfo(type.getTypes()))
-        .setSource(nullToEmpty(linker.getSourcePath(type.getNode())))
+        .setSource(linker.getSourceLink(type.getNode()))
         .setDescription(getBlockDescription(linker, type.getJsdoc()))
         .addAllTypeDef(getTypeDefInfo(type))
         .addAllExtendedType(getInheritedTypes(type))
@@ -582,7 +582,7 @@ class HtmlDocWriter implements DocWriter {
             JsType.TypeDef.Builder builder = JsType.TypeDef.newBuilder()
                 .setName(name)
                 .setTypeHtml(formatTypeExpression(jsdoc.getType(), linker))
-                .setHref(linker.getSourcePath(typedef.getNode()))
+                .setSource(linker.getSourceLink(typedef.getNode()))
                 .setDescription(getBlockDescription(linker, jsdoc))
                 .setVisibility(Dossier.Visibility.valueOf(jsdoc.getVisibility().name()));
 
@@ -786,7 +786,7 @@ class HtmlDocWriter implements DocWriter {
     Dossier.BaseProperty.Builder builder = Dossier.BaseProperty.newBuilder()
         .setName(name)
         .setDescription(getBlockDescription(linker, jsdoc))
-        .setSource(linker.getSourcePath(node));
+        .setSource(linker.getSourceLink(node));
     if (jsdoc != null) {
       builder.setVisibility(Dossier.Visibility.valueOf(jsdoc.getVisibility().name()))
           .getTagsBuilder()

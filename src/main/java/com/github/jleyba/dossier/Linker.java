@@ -15,6 +15,7 @@ package com.github.jleyba.dossier;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import com.github.jleyba.dossier.proto.Dossier;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.io.Files;
@@ -127,18 +128,17 @@ public class Linker {
   /**
    * Returns the path to the rendered source file for the given node.
    */
-  public String getSourcePath(@Nullable Node node) {
+  public Dossier.SourceLink getSourceLink(@Nullable Node node) {
     if (node == null || node.isFromExterns()) {
-      return "";
+      return Dossier.SourceLink.newBuilder().setPath("").build();
     }
     Iterator<Path> parts = config.getOutput()
         .relativize(getFilePath(node.getSourceFileName()))
         .iterator();
-    String strPath = Joiner.on('/').join(parts);
-    if (node.getLineno() > 0) {
-      strPath += "#l" + node.getLineno();  // TODO: fragment style should be controlled by soy.
-    }
-    return strPath;
+    return Dossier.SourceLink.newBuilder()
+        .setPath(Joiner.on('/').join(parts))
+        .setLine(node.getLineno())
+        .build();
   }
 
   /**

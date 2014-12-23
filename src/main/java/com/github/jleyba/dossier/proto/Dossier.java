@@ -2729,6 +2729,656 @@ public final class Dossier {
     // @@protoc_insertion_point(class_scope:dossier.TypeLink)
   }
 
+  public interface SourceLinkOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:dossier.SourceLink)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>required string path = 1;</code>
+     *
+     * <pre>
+     * Path from the current file to the rendered source file.
+     * </pre>
+     */
+    boolean hasPath();
+    /**
+     * <code>required string path = 1;</code>
+     *
+     * <pre>
+     * Path from the current file to the rendered source file.
+     * </pre>
+     */
+    java.lang.String getPath();
+    /**
+     * <code>required string path = 1;</code>
+     *
+     * <pre>
+     * Path from the current file to the rendered source file.
+     * </pre>
+     */
+    com.google.protobuf.ByteString
+        getPathBytes();
+
+    /**
+     * <code>optional int32 line = 2;</code>
+     *
+     * <pre>
+     * The line in the source file containing the symbol, if known.
+     * </pre>
+     */
+    boolean hasLine();
+    /**
+     * <code>optional int32 line = 2;</code>
+     *
+     * <pre>
+     * The line in the source file containing the symbol, if known.
+     * </pre>
+     */
+    int getLine();
+  }
+  /**
+   * Protobuf type {@code dossier.SourceLink}
+   *
+   * <pre>
+   * Defines a link to a symbol's definition in its rendered source file.
+   * </pre>
+   */
+  public static final class SourceLink extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:dossier.SourceLink)
+      SourceLinkOrBuilder {
+    // Use SourceLink.newBuilder() to construct.
+    private SourceLink(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+      this.unknownFields = builder.getUnknownFields();
+    }
+    private SourceLink(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+
+    private static final SourceLink defaultInstance;
+    public static SourceLink getDefaultInstance() {
+      return defaultInstance;
+    }
+
+    public SourceLink getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+
+    private final com.google.protobuf.UnknownFieldSet unknownFields;
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+        getUnknownFields() {
+      return this.unknownFields;
+    }
+    private SourceLink(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      initFields();
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 10: {
+              com.google.protobuf.ByteString bs = input.readBytes();
+              bitField0_ |= 0x00000001;
+              path_ = bs;
+              break;
+            }
+            case 16: {
+              bitField0_ |= 0x00000002;
+              line_ = input.readInt32();
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e.getMessage()).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_SourceLink_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_SourceLink_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              com.github.jleyba.dossier.proto.Dossier.SourceLink.class, com.github.jleyba.dossier.proto.Dossier.SourceLink.Builder.class);
+    }
+
+    public static com.google.protobuf.Parser<SourceLink> PARSER =
+        new com.google.protobuf.AbstractParser<SourceLink>() {
+      public SourceLink parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new SourceLink(input, extensionRegistry);
+      }
+    };
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<SourceLink> getParserForType() {
+      return PARSER;
+    }
+
+    private int bitField0_;
+    public static final int PATH_FIELD_NUMBER = 1;
+    private java.lang.Object path_;
+    /**
+     * <code>required string path = 1;</code>
+     *
+     * <pre>
+     * Path from the current file to the rendered source file.
+     * </pre>
+     */
+    public boolean hasPath() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    /**
+     * <code>required string path = 1;</code>
+     *
+     * <pre>
+     * Path from the current file to the rendered source file.
+     * </pre>
+     */
+    public java.lang.String getPath() {
+      java.lang.Object ref = path_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          path_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>required string path = 1;</code>
+     *
+     * <pre>
+     * Path from the current file to the rendered source file.
+     * </pre>
+     */
+    public com.google.protobuf.ByteString
+        getPathBytes() {
+      java.lang.Object ref = path_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        path_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int LINE_FIELD_NUMBER = 2;
+    private int line_;
+    /**
+     * <code>optional int32 line = 2;</code>
+     *
+     * <pre>
+     * The line in the source file containing the symbol, if known.
+     * </pre>
+     */
+    public boolean hasLine() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    /**
+     * <code>optional int32 line = 2;</code>
+     *
+     * <pre>
+     * The line in the source file containing the symbol, if known.
+     * </pre>
+     */
+    public int getLine() {
+      return line_;
+    }
+
+    private void initFields() {
+      path_ = "";
+      line_ = 0;
+    }
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      if (!hasPath()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeBytes(1, getPathBytes());
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeInt32(2, line_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    private int memoizedSerializedSize = -1;
+    public int getSerializedSize() {
+      int size = memoizedSerializedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(1, getPathBytes());
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(2, line_);
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
+      return size;
+    }
+
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
+    }
+
+    public static com.github.jleyba.dossier.proto.Dossier.SourceLink parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.github.jleyba.dossier.proto.Dossier.SourceLink parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.github.jleyba.dossier.proto.Dossier.SourceLink parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.github.jleyba.dossier.proto.Dossier.SourceLink parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.github.jleyba.dossier.proto.Dossier.SourceLink parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input);
+    }
+    public static com.github.jleyba.dossier.proto.Dossier.SourceLink parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input, extensionRegistry);
+    }
+    public static com.github.jleyba.dossier.proto.Dossier.SourceLink parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return PARSER.parseDelimitedFrom(input);
+    }
+    public static com.github.jleyba.dossier.proto.Dossier.SourceLink parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseDelimitedFrom(input, extensionRegistry);
+    }
+    public static com.github.jleyba.dossier.proto.Dossier.SourceLink parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input);
+    }
+    public static com.github.jleyba.dossier.proto.Dossier.SourceLink parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input, extensionRegistry);
+    }
+
+    public static Builder newBuilder() { return Builder.create(); }
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder(com.github.jleyba.dossier.proto.Dossier.SourceLink prototype) {
+      return newBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() { return newBuilder(this); }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code dossier.SourceLink}
+     *
+     * <pre>
+     * Defines a link to a symbol's definition in its rendered source file.
+     * </pre>
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:dossier.SourceLink)
+        com.github.jleyba.dossier.proto.Dossier.SourceLinkOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_SourceLink_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_SourceLink_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.github.jleyba.dossier.proto.Dossier.SourceLink.class, com.github.jleyba.dossier.proto.Dossier.SourceLink.Builder.class);
+      }
+
+      // Construct using com.github.jleyba.dossier.proto.Dossier.SourceLink.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        }
+      }
+      private static Builder create() {
+        return new Builder();
+      }
+
+      public Builder clear() {
+        super.clear();
+        path_ = "";
+        bitField0_ = (bitField0_ & ~0x00000001);
+        line_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000002);
+        return this;
+      }
+
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_SourceLink_descriptor;
+      }
+
+      public com.github.jleyba.dossier.proto.Dossier.SourceLink getDefaultInstanceForType() {
+        return com.github.jleyba.dossier.proto.Dossier.SourceLink.getDefaultInstance();
+      }
+
+      public com.github.jleyba.dossier.proto.Dossier.SourceLink build() {
+        com.github.jleyba.dossier.proto.Dossier.SourceLink result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public com.github.jleyba.dossier.proto.Dossier.SourceLink buildPartial() {
+        com.github.jleyba.dossier.proto.Dossier.SourceLink result = new com.github.jleyba.dossier.proto.Dossier.SourceLink(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        result.path_ = path_;
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        result.line_ = line_;
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.github.jleyba.dossier.proto.Dossier.SourceLink) {
+          return mergeFrom((com.github.jleyba.dossier.proto.Dossier.SourceLink)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.github.jleyba.dossier.proto.Dossier.SourceLink other) {
+        if (other == com.github.jleyba.dossier.proto.Dossier.SourceLink.getDefaultInstance()) return this;
+        if (other.hasPath()) {
+          bitField0_ |= 0x00000001;
+          path_ = other.path_;
+          onChanged();
+        }
+        if (other.hasLine()) {
+          setLine(other.getLine());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        if (!hasPath()) {
+          
+          return false;
+        }
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.github.jleyba.dossier.proto.Dossier.SourceLink parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (com.github.jleyba.dossier.proto.Dossier.SourceLink) e.getUnfinishedMessage();
+          throw e;
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object path_ = "";
+      /**
+       * <code>required string path = 1;</code>
+       *
+       * <pre>
+       * Path from the current file to the rendered source file.
+       * </pre>
+       */
+      public boolean hasPath() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      /**
+       * <code>required string path = 1;</code>
+       *
+       * <pre>
+       * Path from the current file to the rendered source file.
+       * </pre>
+       */
+      public java.lang.String getPath() {
+        java.lang.Object ref = path_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            path_ = s;
+          }
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>required string path = 1;</code>
+       *
+       * <pre>
+       * Path from the current file to the rendered source file.
+       * </pre>
+       */
+      public com.google.protobuf.ByteString
+          getPathBytes() {
+        java.lang.Object ref = path_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          path_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>required string path = 1;</code>
+       *
+       * <pre>
+       * Path from the current file to the rendered source file.
+       * </pre>
+       */
+      public Builder setPath(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+        path_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string path = 1;</code>
+       *
+       * <pre>
+       * Path from the current file to the rendered source file.
+       * </pre>
+       */
+      public Builder clearPath() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        path_ = getDefaultInstance().getPath();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string path = 1;</code>
+       *
+       * <pre>
+       * Path from the current file to the rendered source file.
+       * </pre>
+       */
+      public Builder setPathBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+        path_ = value;
+        onChanged();
+        return this;
+      }
+
+      private int line_ ;
+      /**
+       * <code>optional int32 line = 2;</code>
+       *
+       * <pre>
+       * The line in the source file containing the symbol, if known.
+       * </pre>
+       */
+      public boolean hasLine() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      /**
+       * <code>optional int32 line = 2;</code>
+       *
+       * <pre>
+       * The line in the source file containing the symbol, if known.
+       * </pre>
+       */
+      public int getLine() {
+        return line_;
+      }
+      /**
+       * <code>optional int32 line = 2;</code>
+       *
+       * <pre>
+       * The line in the source file containing the symbol, if known.
+       * </pre>
+       */
+      public Builder setLine(int value) {
+        bitField0_ |= 0x00000002;
+        line_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int32 line = 2;</code>
+       *
+       * <pre>
+       * The line in the source file containing the symbol, if known.
+       * </pre>
+       */
+      public Builder clearLine() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        line_ = 0;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:dossier.SourceLink)
+    }
+
+    static {
+      defaultInstance = new SourceLink(true);
+      defaultInstance.initFields();
+    }
+
+    // @@protoc_insertion_point(class_scope:dossier.SourceLink)
+  }
+
   public interface CommentOrBuilder extends
       // @@protoc_insertion_point(interface_extends:dossier.Comment)
       com.google.protobuf.MessageOrBuilder {
@@ -6046,7 +6696,7 @@ public final class Dossier {
         getNameBytes();
 
     /**
-     * <code>required string source = 2;</code>
+     * <code>required .dossier.SourceLink source = 2;</code>
      *
      * <pre>
      * Link to the location in the source file where this property is defined.
@@ -6054,22 +6704,21 @@ public final class Dossier {
      */
     boolean hasSource();
     /**
-     * <code>required string source = 2;</code>
+     * <code>required .dossier.SourceLink source = 2;</code>
      *
      * <pre>
      * Link to the location in the source file where this property is defined.
      * </pre>
      */
-    java.lang.String getSource();
+    com.github.jleyba.dossier.proto.Dossier.SourceLink getSource();
     /**
-     * <code>required string source = 2;</code>
+     * <code>required .dossier.SourceLink source = 2;</code>
      *
      * <pre>
      * Link to the location in the source file where this property is defined.
      * </pre>
      */
-    com.google.protobuf.ByteString
-        getSourceBytes();
+    com.github.jleyba.dossier.proto.Dossier.SourceLinkOrBuilder getSourceOrBuilder();
 
     /**
      * <code>required .dossier.Comment description = 3;</code>
@@ -6206,9 +6855,16 @@ public final class Dossier {
               break;
             }
             case 18: {
-              com.google.protobuf.ByteString bs = input.readBytes();
+              com.github.jleyba.dossier.proto.Dossier.SourceLink.Builder subBuilder = null;
+              if (((bitField0_ & 0x00000002) == 0x00000002)) {
+                subBuilder = source_.toBuilder();
+              }
+              source_ = input.readMessage(com.github.jleyba.dossier.proto.Dossier.SourceLink.PARSER, extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(source_);
+                source_ = subBuilder.buildPartial();
+              }
               bitField0_ |= 0x00000002;
-              source_ = bs;
               break;
             }
             case 26: {
@@ -6356,9 +7012,9 @@ public final class Dossier {
     }
 
     public static final int SOURCE_FIELD_NUMBER = 2;
-    private java.lang.Object source_;
+    private com.github.jleyba.dossier.proto.Dossier.SourceLink source_;
     /**
-     * <code>required string source = 2;</code>
+     * <code>required .dossier.SourceLink source = 2;</code>
      *
      * <pre>
      * Link to the location in the source file where this property is defined.
@@ -6368,45 +7024,24 @@ public final class Dossier {
       return ((bitField0_ & 0x00000002) == 0x00000002);
     }
     /**
-     * <code>required string source = 2;</code>
+     * <code>required .dossier.SourceLink source = 2;</code>
      *
      * <pre>
      * Link to the location in the source file where this property is defined.
      * </pre>
      */
-    public java.lang.String getSource() {
-      java.lang.Object ref = source_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          source_ = s;
-        }
-        return s;
-      }
+    public com.github.jleyba.dossier.proto.Dossier.SourceLink getSource() {
+      return source_;
     }
     /**
-     * <code>required string source = 2;</code>
+     * <code>required .dossier.SourceLink source = 2;</code>
      *
      * <pre>
      * Link to the location in the source file where this property is defined.
      * </pre>
      */
-    public com.google.protobuf.ByteString
-        getSourceBytes() {
-      java.lang.Object ref = source_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        source_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
+    public com.github.jleyba.dossier.proto.Dossier.SourceLinkOrBuilder getSourceOrBuilder() {
+      return source_;
     }
 
     public static final int DESCRIPTION_FIELD_NUMBER = 3;
@@ -6513,7 +7148,7 @@ public final class Dossier {
 
     private void initFields() {
       name_ = "";
-      source_ = "";
+      source_ = com.github.jleyba.dossier.proto.Dossier.SourceLink.getDefaultInstance();
       description_ = com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance();
       deprecation_ = com.github.jleyba.dossier.proto.Dossier.Deprecation.getDefaultInstance();
       visibility_ = com.github.jleyba.dossier.proto.Dossier.Visibility.PUBLIC;
@@ -6534,6 +7169,10 @@ public final class Dossier {
         return false;
       }
       if (!hasDescription()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!getSource().isInitialized()) {
         memoizedIsInitialized = 0;
         return false;
       }
@@ -6558,7 +7197,7 @@ public final class Dossier {
         output.writeBytes(1, getNameBytes());
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        output.writeBytes(2, getSourceBytes());
+        output.writeMessage(2, source_);
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         output.writeMessage(3, description_);
@@ -6587,7 +7226,7 @@ public final class Dossier {
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(2, getSourceBytes());
+          .computeMessageSize(2, source_);
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
@@ -6718,6 +7357,7 @@ public final class Dossier {
       }
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+          getSourceFieldBuilder();
           getDescriptionFieldBuilder();
           getDeprecationFieldBuilder();
           getTagsFieldBuilder();
@@ -6731,7 +7371,11 @@ public final class Dossier {
         super.clear();
         name_ = "";
         bitField0_ = (bitField0_ & ~0x00000001);
-        source_ = "";
+        if (sourceBuilder_ == null) {
+          source_ = com.github.jleyba.dossier.proto.Dossier.SourceLink.getDefaultInstance();
+        } else {
+          sourceBuilder_.clear();
+        }
         bitField0_ = (bitField0_ & ~0x00000002);
         if (descriptionBuilder_ == null) {
           description_ = com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance();
@@ -6788,7 +7432,11 @@ public final class Dossier {
         if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
           to_bitField0_ |= 0x00000002;
         }
-        result.source_ = source_;
+        if (sourceBuilder_ == null) {
+          result.source_ = source_;
+        } else {
+          result.source_ = sourceBuilder_.build();
+        }
         if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
           to_bitField0_ |= 0x00000004;
         }
@@ -6839,9 +7487,7 @@ public final class Dossier {
           onChanged();
         }
         if (other.hasSource()) {
-          bitField0_ |= 0x00000002;
-          source_ = other.source_;
-          onChanged();
+          mergeSource(other.getSource());
         }
         if (other.hasDescription()) {
           mergeDescription(other.getDescription());
@@ -6869,6 +7515,10 @@ public final class Dossier {
           return false;
         }
         if (!hasDescription()) {
+          
+          return false;
+        }
+        if (!getSource().isInitialized()) {
           
           return false;
         }
@@ -7004,9 +7654,11 @@ public final class Dossier {
         return this;
       }
 
-      private java.lang.Object source_ = "";
+      private com.github.jleyba.dossier.proto.Dossier.SourceLink source_ = com.github.jleyba.dossier.proto.Dossier.SourceLink.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          com.github.jleyba.dossier.proto.Dossier.SourceLink, com.github.jleyba.dossier.proto.Dossier.SourceLink.Builder, com.github.jleyba.dossier.proto.Dossier.SourceLinkOrBuilder> sourceBuilder_;
       /**
-       * <code>required string source = 2;</code>
+       * <code>required .dossier.SourceLink source = 2;</code>
        *
        * <pre>
        * Link to the location in the source file where this property is defined.
@@ -7016,92 +7668,142 @@ public final class Dossier {
         return ((bitField0_ & 0x00000002) == 0x00000002);
       }
       /**
-       * <code>required string source = 2;</code>
+       * <code>required .dossier.SourceLink source = 2;</code>
        *
        * <pre>
        * Link to the location in the source file where this property is defined.
        * </pre>
        */
-      public java.lang.String getSource() {
-        java.lang.Object ref = source_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            source_ = s;
+      public com.github.jleyba.dossier.proto.Dossier.SourceLink getSource() {
+        if (sourceBuilder_ == null) {
+          return source_;
+        } else {
+          return sourceBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>required .dossier.SourceLink source = 2;</code>
+       *
+       * <pre>
+       * Link to the location in the source file where this property is defined.
+       * </pre>
+       */
+      public Builder setSource(com.github.jleyba.dossier.proto.Dossier.SourceLink value) {
+        if (sourceBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
           }
-          return s;
+          source_ = value;
+          onChanged();
         } else {
-          return (java.lang.String) ref;
+          sourceBuilder_.setMessage(value);
         }
+        bitField0_ |= 0x00000002;
+        return this;
       }
       /**
-       * <code>required string source = 2;</code>
-       *
-       * <pre>
-       * Link to the location in the source file where this property is defined.
-       * </pre>
-       */
-      public com.google.protobuf.ByteString
-          getSourceBytes() {
-        java.lang.Object ref = source_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          source_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>required string source = 2;</code>
+       * <code>required .dossier.SourceLink source = 2;</code>
        *
        * <pre>
        * Link to the location in the source file where this property is defined.
        * </pre>
        */
       public Builder setSource(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000002;
-        source_ = value;
-        onChanged();
+          com.github.jleyba.dossier.proto.Dossier.SourceLink.Builder builderForValue) {
+        if (sourceBuilder_ == null) {
+          source_ = builderForValue.build();
+          onChanged();
+        } else {
+          sourceBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000002;
         return this;
       }
       /**
-       * <code>required string source = 2;</code>
+       * <code>required .dossier.SourceLink source = 2;</code>
+       *
+       * <pre>
+       * Link to the location in the source file where this property is defined.
+       * </pre>
+       */
+      public Builder mergeSource(com.github.jleyba.dossier.proto.Dossier.SourceLink value) {
+        if (sourceBuilder_ == null) {
+          if (((bitField0_ & 0x00000002) == 0x00000002) &&
+              source_ != com.github.jleyba.dossier.proto.Dossier.SourceLink.getDefaultInstance()) {
+            source_ =
+              com.github.jleyba.dossier.proto.Dossier.SourceLink.newBuilder(source_).mergeFrom(value).buildPartial();
+          } else {
+            source_ = value;
+          }
+          onChanged();
+        } else {
+          sourceBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000002;
+        return this;
+      }
+      /**
+       * <code>required .dossier.SourceLink source = 2;</code>
        *
        * <pre>
        * Link to the location in the source file where this property is defined.
        * </pre>
        */
       public Builder clearSource() {
+        if (sourceBuilder_ == null) {
+          source_ = com.github.jleyba.dossier.proto.Dossier.SourceLink.getDefaultInstance();
+          onChanged();
+        } else {
+          sourceBuilder_.clear();
+        }
         bitField0_ = (bitField0_ & ~0x00000002);
-        source_ = getDefaultInstance().getSource();
-        onChanged();
         return this;
       }
       /**
-       * <code>required string source = 2;</code>
+       * <code>required .dossier.SourceLink source = 2;</code>
        *
        * <pre>
        * Link to the location in the source file where this property is defined.
        * </pre>
        */
-      public Builder setSourceBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000002;
-        source_ = value;
+      public com.github.jleyba.dossier.proto.Dossier.SourceLink.Builder getSourceBuilder() {
+        bitField0_ |= 0x00000002;
         onChanged();
-        return this;
+        return getSourceFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>required .dossier.SourceLink source = 2;</code>
+       *
+       * <pre>
+       * Link to the location in the source file where this property is defined.
+       * </pre>
+       */
+      public com.github.jleyba.dossier.proto.Dossier.SourceLinkOrBuilder getSourceOrBuilder() {
+        if (sourceBuilder_ != null) {
+          return sourceBuilder_.getMessageOrBuilder();
+        } else {
+          return source_;
+        }
+      }
+      /**
+       * <code>required .dossier.SourceLink source = 2;</code>
+       *
+       * <pre>
+       * Link to the location in the source file where this property is defined.
+       * </pre>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          com.github.jleyba.dossier.proto.Dossier.SourceLink, com.github.jleyba.dossier.proto.Dossier.SourceLink.Builder, com.github.jleyba.dossier.proto.Dossier.SourceLinkOrBuilder> 
+          getSourceFieldBuilder() {
+        if (sourceBuilder_ == null) {
+          sourceBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              com.github.jleyba.dossier.proto.Dossier.SourceLink, com.github.jleyba.dossier.proto.Dossier.SourceLink.Builder, com.github.jleyba.dossier.proto.Dossier.SourceLinkOrBuilder>(
+                  getSource(),
+                  getParentForChildren(),
+                  isClean());
+          source_ = null;
+        }
+        return sourceBuilder_;
       }
 
       private com.github.jleyba.dossier.proto.Dossier.Comment description_ = com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance();
@@ -16680,18 +17382,17 @@ public final class Dossier {
         getNameBytes();
 
     /**
-     * <code>required string source = 5;</code>
+     * <code>required .dossier.SourceLink source = 5;</code>
      */
     boolean hasSource();
     /**
-     * <code>required string source = 5;</code>
+     * <code>required .dossier.SourceLink source = 5;</code>
      */
-    java.lang.String getSource();
+    com.github.jleyba.dossier.proto.Dossier.SourceLink getSource();
     /**
-     * <code>required string source = 5;</code>
+     * <code>required .dossier.SourceLink source = 5;</code>
      */
-    com.google.protobuf.ByteString
-        getSourceBytes();
+    com.github.jleyba.dossier.proto.Dossier.SourceLinkOrBuilder getSourceOrBuilder();
 
     /**
      * <code>repeated .dossier.JsType.TypeSummary nested = 6;</code>
@@ -17195,9 +17896,16 @@ public final class Dossier {
               break;
             }
             case 42: {
-              com.google.protobuf.ByteString bs = input.readBytes();
+              com.github.jleyba.dossier.proto.Dossier.SourceLink.Builder subBuilder = null;
+              if (((bitField0_ & 0x00000002) == 0x00000002)) {
+                subBuilder = source_.toBuilder();
+              }
+              source_ = input.readMessage(com.github.jleyba.dossier.proto.Dossier.SourceLink.PARSER, extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(source_);
+                source_ = subBuilder.buildPartial();
+              }
               bitField0_ |= 0x00000002;
-              source_ = bs;
               break;
             }
             case 50: {
@@ -18479,18 +19187,17 @@ public final class Dossier {
           getTypeHtmlBytes();
 
       /**
-       * <code>required string href = 3;</code>
+       * <code>required .dossier.SourceLink source = 3;</code>
        */
-      boolean hasHref();
+      boolean hasSource();
       /**
-       * <code>required string href = 3;</code>
+       * <code>required .dossier.SourceLink source = 3;</code>
        */
-      java.lang.String getHref();
+      com.github.jleyba.dossier.proto.Dossier.SourceLink getSource();
       /**
-       * <code>required string href = 3;</code>
+       * <code>required .dossier.SourceLink source = 3;</code>
        */
-      com.google.protobuf.ByteString
-          getHrefBytes();
+      com.github.jleyba.dossier.proto.Dossier.SourceLinkOrBuilder getSourceOrBuilder();
 
       /**
        * <code>required .dossier.Comment description = 4;</code>
@@ -18596,9 +19303,16 @@ public final class Dossier {
                 break;
               }
               case 26: {
-                com.google.protobuf.ByteString bs = input.readBytes();
+                com.github.jleyba.dossier.proto.Dossier.SourceLink.Builder subBuilder = null;
+                if (((bitField0_ & 0x00000004) == 0x00000004)) {
+                  subBuilder = source_.toBuilder();
+                }
+                source_ = input.readMessage(com.github.jleyba.dossier.proto.Dossier.SourceLink.PARSER, extensionRegistry);
+                if (subBuilder != null) {
+                  subBuilder.mergeFrom(source_);
+                  source_ = subBuilder.buildPartial();
+                }
                 bitField0_ |= 0x00000004;
-                href_ = bs;
                 break;
               }
               case 34: {
@@ -18762,46 +19476,25 @@ public final class Dossier {
         }
       }
 
-      public static final int HREF_FIELD_NUMBER = 3;
-      private java.lang.Object href_;
+      public static final int SOURCE_FIELD_NUMBER = 3;
+      private com.github.jleyba.dossier.proto.Dossier.SourceLink source_;
       /**
-       * <code>required string href = 3;</code>
+       * <code>required .dossier.SourceLink source = 3;</code>
        */
-      public boolean hasHref() {
+      public boolean hasSource() {
         return ((bitField0_ & 0x00000004) == 0x00000004);
       }
       /**
-       * <code>required string href = 3;</code>
+       * <code>required .dossier.SourceLink source = 3;</code>
        */
-      public java.lang.String getHref() {
-        java.lang.Object ref = href_;
-        if (ref instanceof java.lang.String) {
-          return (java.lang.String) ref;
-        } else {
-          com.google.protobuf.ByteString bs = 
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            href_ = s;
-          }
-          return s;
-        }
+      public com.github.jleyba.dossier.proto.Dossier.SourceLink getSource() {
+        return source_;
       }
       /**
-       * <code>required string href = 3;</code>
+       * <code>required .dossier.SourceLink source = 3;</code>
        */
-      public com.google.protobuf.ByteString
-          getHrefBytes() {
-        java.lang.Object ref = href_;
-        if (ref instanceof java.lang.String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          href_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
+      public com.github.jleyba.dossier.proto.Dossier.SourceLinkOrBuilder getSourceOrBuilder() {
+        return source_;
       }
 
       public static final int DESCRIPTION_FIELD_NUMBER = 4;
@@ -18864,7 +19557,7 @@ public final class Dossier {
       private void initFields() {
         name_ = "";
         typeHtml_ = "";
-        href_ = "";
+        source_ = com.github.jleyba.dossier.proto.Dossier.SourceLink.getDefaultInstance();
         description_ = com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance();
         deprecation_ = com.github.jleyba.dossier.proto.Dossier.Deprecation.getDefaultInstance();
         visibility_ = com.github.jleyba.dossier.proto.Dossier.Visibility.PUBLIC;
@@ -18883,11 +19576,15 @@ public final class Dossier {
           memoizedIsInitialized = 0;
           return false;
         }
-        if (!hasHref()) {
+        if (!hasSource()) {
           memoizedIsInitialized = 0;
           return false;
         }
         if (!hasDescription()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+        if (!getSource().isInitialized()) {
           memoizedIsInitialized = 0;
           return false;
         }
@@ -18915,7 +19612,7 @@ public final class Dossier {
           output.writeBytes(2, getTypeHtmlBytes());
         }
         if (((bitField0_ & 0x00000004) == 0x00000004)) {
-          output.writeBytes(3, getHrefBytes());
+          output.writeMessage(3, source_);
         }
         if (((bitField0_ & 0x00000008) == 0x00000008)) {
           output.writeMessage(4, description_);
@@ -18945,7 +19642,7 @@ public final class Dossier {
         }
         if (((bitField0_ & 0x00000004) == 0x00000004)) {
           size += com.google.protobuf.CodedOutputStream
-            .computeBytesSize(3, getHrefBytes());
+            .computeMessageSize(3, source_);
         }
         if (((bitField0_ & 0x00000008) == 0x00000008)) {
           size += com.google.protobuf.CodedOutputStream
@@ -19072,6 +19769,7 @@ public final class Dossier {
         }
         private void maybeForceBuilderInitialization() {
           if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+            getSourceFieldBuilder();
             getDescriptionFieldBuilder();
             getDeprecationFieldBuilder();
           }
@@ -19086,7 +19784,11 @@ public final class Dossier {
           bitField0_ = (bitField0_ & ~0x00000001);
           typeHtml_ = "";
           bitField0_ = (bitField0_ & ~0x00000002);
-          href_ = "";
+          if (sourceBuilder_ == null) {
+            source_ = com.github.jleyba.dossier.proto.Dossier.SourceLink.getDefaultInstance();
+          } else {
+            sourceBuilder_.clear();
+          }
           bitField0_ = (bitField0_ & ~0x00000004);
           if (descriptionBuilder_ == null) {
             description_ = com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance();
@@ -19141,7 +19843,11 @@ public final class Dossier {
           if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
             to_bitField0_ |= 0x00000004;
           }
-          result.href_ = href_;
+          if (sourceBuilder_ == null) {
+            result.source_ = source_;
+          } else {
+            result.source_ = sourceBuilder_.build();
+          }
           if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
             to_bitField0_ |= 0x00000008;
           }
@@ -19188,10 +19894,8 @@ public final class Dossier {
             typeHtml_ = other.typeHtml_;
             onChanged();
           }
-          if (other.hasHref()) {
-            bitField0_ |= 0x00000004;
-            href_ = other.href_;
-            onChanged();
+          if (other.hasSource()) {
+            mergeSource(other.getSource());
           }
           if (other.hasDescription()) {
             mergeDescription(other.getDescription());
@@ -19215,11 +19919,15 @@ public final class Dossier {
             
             return false;
           }
-          if (!hasHref()) {
+          if (!hasSource()) {
             
             return false;
           }
           if (!hasDescription()) {
+            
+            return false;
+          }
+          if (!getSource().isInitialized()) {
             
             return false;
           }
@@ -19407,80 +20115,120 @@ public final class Dossier {
           return this;
         }
 
-        private java.lang.Object href_ = "";
+        private com.github.jleyba.dossier.proto.Dossier.SourceLink source_ = com.github.jleyba.dossier.proto.Dossier.SourceLink.getDefaultInstance();
+        private com.google.protobuf.SingleFieldBuilder<
+            com.github.jleyba.dossier.proto.Dossier.SourceLink, com.github.jleyba.dossier.proto.Dossier.SourceLink.Builder, com.github.jleyba.dossier.proto.Dossier.SourceLinkOrBuilder> sourceBuilder_;
         /**
-         * <code>required string href = 3;</code>
+         * <code>required .dossier.SourceLink source = 3;</code>
          */
-        public boolean hasHref() {
+        public boolean hasSource() {
           return ((bitField0_ & 0x00000004) == 0x00000004);
         }
         /**
-         * <code>required string href = 3;</code>
+         * <code>required .dossier.SourceLink source = 3;</code>
          */
-        public java.lang.String getHref() {
-          java.lang.Object ref = href_;
-          if (!(ref instanceof java.lang.String)) {
-            com.google.protobuf.ByteString bs =
-                (com.google.protobuf.ByteString) ref;
-            java.lang.String s = bs.toStringUtf8();
-            if (bs.isValidUtf8()) {
-              href_ = s;
+        public com.github.jleyba.dossier.proto.Dossier.SourceLink getSource() {
+          if (sourceBuilder_ == null) {
+            return source_;
+          } else {
+            return sourceBuilder_.getMessage();
+          }
+        }
+        /**
+         * <code>required .dossier.SourceLink source = 3;</code>
+         */
+        public Builder setSource(com.github.jleyba.dossier.proto.Dossier.SourceLink value) {
+          if (sourceBuilder_ == null) {
+            if (value == null) {
+              throw new NullPointerException();
             }
-            return s;
+            source_ = value;
+            onChanged();
           } else {
-            return (java.lang.String) ref;
+            sourceBuilder_.setMessage(value);
           }
-        }
-        /**
-         * <code>required string href = 3;</code>
-         */
-        public com.google.protobuf.ByteString
-            getHrefBytes() {
-          java.lang.Object ref = href_;
-          if (ref instanceof String) {
-            com.google.protobuf.ByteString b = 
-                com.google.protobuf.ByteString.copyFromUtf8(
-                    (java.lang.String) ref);
-            href_ = b;
-            return b;
-          } else {
-            return (com.google.protobuf.ByteString) ref;
-          }
-        }
-        /**
-         * <code>required string href = 3;</code>
-         */
-        public Builder setHref(
-            java.lang.String value) {
-          if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000004;
-          href_ = value;
-          onChanged();
+          bitField0_ |= 0x00000004;
           return this;
         }
         /**
-         * <code>required string href = 3;</code>
+         * <code>required .dossier.SourceLink source = 3;</code>
          */
-        public Builder clearHref() {
+        public Builder setSource(
+            com.github.jleyba.dossier.proto.Dossier.SourceLink.Builder builderForValue) {
+          if (sourceBuilder_ == null) {
+            source_ = builderForValue.build();
+            onChanged();
+          } else {
+            sourceBuilder_.setMessage(builderForValue.build());
+          }
+          bitField0_ |= 0x00000004;
+          return this;
+        }
+        /**
+         * <code>required .dossier.SourceLink source = 3;</code>
+         */
+        public Builder mergeSource(com.github.jleyba.dossier.proto.Dossier.SourceLink value) {
+          if (sourceBuilder_ == null) {
+            if (((bitField0_ & 0x00000004) == 0x00000004) &&
+                source_ != com.github.jleyba.dossier.proto.Dossier.SourceLink.getDefaultInstance()) {
+              source_ =
+                com.github.jleyba.dossier.proto.Dossier.SourceLink.newBuilder(source_).mergeFrom(value).buildPartial();
+            } else {
+              source_ = value;
+            }
+            onChanged();
+          } else {
+            sourceBuilder_.mergeFrom(value);
+          }
+          bitField0_ |= 0x00000004;
+          return this;
+        }
+        /**
+         * <code>required .dossier.SourceLink source = 3;</code>
+         */
+        public Builder clearSource() {
+          if (sourceBuilder_ == null) {
+            source_ = com.github.jleyba.dossier.proto.Dossier.SourceLink.getDefaultInstance();
+            onChanged();
+          } else {
+            sourceBuilder_.clear();
+          }
           bitField0_ = (bitField0_ & ~0x00000004);
-          href_ = getDefaultInstance().getHref();
-          onChanged();
           return this;
         }
         /**
-         * <code>required string href = 3;</code>
+         * <code>required .dossier.SourceLink source = 3;</code>
          */
-        public Builder setHrefBytes(
-            com.google.protobuf.ByteString value) {
-          if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000004;
-          href_ = value;
+        public com.github.jleyba.dossier.proto.Dossier.SourceLink.Builder getSourceBuilder() {
+          bitField0_ |= 0x00000004;
           onChanged();
-          return this;
+          return getSourceFieldBuilder().getBuilder();
+        }
+        /**
+         * <code>required .dossier.SourceLink source = 3;</code>
+         */
+        public com.github.jleyba.dossier.proto.Dossier.SourceLinkOrBuilder getSourceOrBuilder() {
+          if (sourceBuilder_ != null) {
+            return sourceBuilder_.getMessageOrBuilder();
+          } else {
+            return source_;
+          }
+        }
+        /**
+         * <code>required .dossier.SourceLink source = 3;</code>
+         */
+        private com.google.protobuf.SingleFieldBuilder<
+            com.github.jleyba.dossier.proto.Dossier.SourceLink, com.github.jleyba.dossier.proto.Dossier.SourceLink.Builder, com.github.jleyba.dossier.proto.Dossier.SourceLinkOrBuilder> 
+            getSourceFieldBuilder() {
+          if (sourceBuilder_ == null) {
+            sourceBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+                com.github.jleyba.dossier.proto.Dossier.SourceLink, com.github.jleyba.dossier.proto.Dossier.SourceLink.Builder, com.github.jleyba.dossier.proto.Dossier.SourceLinkOrBuilder>(
+                    getSource(),
+                    getParentForChildren(),
+                    isClean());
+            source_ = null;
+          }
+          return sourceBuilder_;
         }
 
         private com.github.jleyba.dossier.proto.Dossier.Comment description_ = com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance();
@@ -19805,45 +20553,24 @@ public final class Dossier {
     }
 
     public static final int SOURCE_FIELD_NUMBER = 5;
-    private java.lang.Object source_;
+    private com.github.jleyba.dossier.proto.Dossier.SourceLink source_;
     /**
-     * <code>required string source = 5;</code>
+     * <code>required .dossier.SourceLink source = 5;</code>
      */
     public boolean hasSource() {
       return ((bitField0_ & 0x00000002) == 0x00000002);
     }
     /**
-     * <code>required string source = 5;</code>
+     * <code>required .dossier.SourceLink source = 5;</code>
      */
-    public java.lang.String getSource() {
-      java.lang.Object ref = source_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          source_ = s;
-        }
-        return s;
-      }
+    public com.github.jleyba.dossier.proto.Dossier.SourceLink getSource() {
+      return source_;
     }
     /**
-     * <code>required string source = 5;</code>
+     * <code>required .dossier.SourceLink source = 5;</code>
      */
-    public com.google.protobuf.ByteString
-        getSourceBytes() {
-      java.lang.Object ref = source_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        source_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
+    public com.github.jleyba.dossier.proto.Dossier.SourceLinkOrBuilder getSourceOrBuilder() {
+      return source_;
     }
 
     public static final int NESTED_FIELD_NUMBER = 6;
@@ -20442,7 +21169,7 @@ public final class Dossier {
 
     private void initFields() {
       name_ = "";
-      source_ = "";
+      source_ = com.github.jleyba.dossier.proto.Dossier.SourceLink.getDefaultInstance();
       nested_ = java.util.Collections.emptyList();
       description_ = com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance();
       tags_ = com.github.jleyba.dossier.proto.Dossier.Tags.getDefaultInstance();
@@ -20480,6 +21207,10 @@ public final class Dossier {
         return false;
       }
       if (!hasTags()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!getSource().isInitialized()) {
         memoizedIsInitialized = 0;
         return false;
       }
@@ -20576,7 +21307,7 @@ public final class Dossier {
         output.writeBytes(1, getNameBytes());
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        output.writeBytes(5, getSourceBytes());
+        output.writeMessage(5, source_);
       }
       for (int i = 0; i < nested_.size(); i++) {
         output.writeMessage(6, nested_.get(i));
@@ -20644,7 +21375,7 @@ public final class Dossier {
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(5, getSourceBytes());
+          .computeMessageSize(5, source_);
       }
       for (int i = 0; i < nested_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
@@ -20828,6 +21559,7 @@ public final class Dossier {
       }
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+          getSourceFieldBuilder();
           getNestedFieldBuilder();
           getDescriptionFieldBuilder();
           getTagsFieldBuilder();
@@ -20853,7 +21585,11 @@ public final class Dossier {
         super.clear();
         name_ = "";
         bitField0_ = (bitField0_ & ~0x00000001);
-        source_ = "";
+        if (sourceBuilder_ == null) {
+          source_ = com.github.jleyba.dossier.proto.Dossier.SourceLink.getDefaultInstance();
+        } else {
+          sourceBuilder_.clear();
+        }
         bitField0_ = (bitField0_ & ~0x00000002);
         if (nestedBuilder_ == null) {
           nested_ = java.util.Collections.emptyList();
@@ -20984,7 +21720,11 @@ public final class Dossier {
         if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
           to_bitField0_ |= 0x00000002;
         }
-        result.source_ = source_;
+        if (sourceBuilder_ == null) {
+          result.source_ = source_;
+        } else {
+          result.source_ = sourceBuilder_.build();
+        }
         if (nestedBuilder_ == null) {
           if (((bitField0_ & 0x00000004) == 0x00000004)) {
             nested_ = java.util.Collections.unmodifiableList(nested_);
@@ -21143,9 +21883,7 @@ public final class Dossier {
           onChanged();
         }
         if (other.hasSource()) {
-          bitField0_ |= 0x00000002;
-          source_ = other.source_;
-          onChanged();
+          mergeSource(other.getSource());
         }
         if (nestedBuilder_ == null) {
           if (!other.nested_.isEmpty()) {
@@ -21403,6 +22141,10 @@ public final class Dossier {
           
           return false;
         }
+        if (!getSource().isInitialized()) {
+          
+          return false;
+        }
         for (int i = 0; i < getNestedCount(); i++) {
           if (!getNested(i).isInitialized()) {
             
@@ -21583,80 +22325,120 @@ public final class Dossier {
         return this;
       }
 
-      private java.lang.Object source_ = "";
+      private com.github.jleyba.dossier.proto.Dossier.SourceLink source_ = com.github.jleyba.dossier.proto.Dossier.SourceLink.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          com.github.jleyba.dossier.proto.Dossier.SourceLink, com.github.jleyba.dossier.proto.Dossier.SourceLink.Builder, com.github.jleyba.dossier.proto.Dossier.SourceLinkOrBuilder> sourceBuilder_;
       /**
-       * <code>required string source = 5;</code>
+       * <code>required .dossier.SourceLink source = 5;</code>
        */
       public boolean hasSource() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
       }
       /**
-       * <code>required string source = 5;</code>
+       * <code>required .dossier.SourceLink source = 5;</code>
        */
-      public java.lang.String getSource() {
-        java.lang.Object ref = source_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            source_ = s;
+      public com.github.jleyba.dossier.proto.Dossier.SourceLink getSource() {
+        if (sourceBuilder_ == null) {
+          return source_;
+        } else {
+          return sourceBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>required .dossier.SourceLink source = 5;</code>
+       */
+      public Builder setSource(com.github.jleyba.dossier.proto.Dossier.SourceLink value) {
+        if (sourceBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
           }
-          return s;
+          source_ = value;
+          onChanged();
         } else {
-          return (java.lang.String) ref;
+          sourceBuilder_.setMessage(value);
         }
+        bitField0_ |= 0x00000002;
+        return this;
       }
       /**
-       * <code>required string source = 5;</code>
-       */
-      public com.google.protobuf.ByteString
-          getSourceBytes() {
-        java.lang.Object ref = source_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          source_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>required string source = 5;</code>
+       * <code>required .dossier.SourceLink source = 5;</code>
        */
       public Builder setSource(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000002;
-        source_ = value;
-        onChanged();
+          com.github.jleyba.dossier.proto.Dossier.SourceLink.Builder builderForValue) {
+        if (sourceBuilder_ == null) {
+          source_ = builderForValue.build();
+          onChanged();
+        } else {
+          sourceBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000002;
         return this;
       }
       /**
-       * <code>required string source = 5;</code>
+       * <code>required .dossier.SourceLink source = 5;</code>
+       */
+      public Builder mergeSource(com.github.jleyba.dossier.proto.Dossier.SourceLink value) {
+        if (sourceBuilder_ == null) {
+          if (((bitField0_ & 0x00000002) == 0x00000002) &&
+              source_ != com.github.jleyba.dossier.proto.Dossier.SourceLink.getDefaultInstance()) {
+            source_ =
+              com.github.jleyba.dossier.proto.Dossier.SourceLink.newBuilder(source_).mergeFrom(value).buildPartial();
+          } else {
+            source_ = value;
+          }
+          onChanged();
+        } else {
+          sourceBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000002;
+        return this;
+      }
+      /**
+       * <code>required .dossier.SourceLink source = 5;</code>
        */
       public Builder clearSource() {
+        if (sourceBuilder_ == null) {
+          source_ = com.github.jleyba.dossier.proto.Dossier.SourceLink.getDefaultInstance();
+          onChanged();
+        } else {
+          sourceBuilder_.clear();
+        }
         bitField0_ = (bitField0_ & ~0x00000002);
-        source_ = getDefaultInstance().getSource();
-        onChanged();
         return this;
       }
       /**
-       * <code>required string source = 5;</code>
+       * <code>required .dossier.SourceLink source = 5;</code>
        */
-      public Builder setSourceBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000002;
-        source_ = value;
+      public com.github.jleyba.dossier.proto.Dossier.SourceLink.Builder getSourceBuilder() {
+        bitField0_ |= 0x00000002;
         onChanged();
-        return this;
+        return getSourceFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>required .dossier.SourceLink source = 5;</code>
+       */
+      public com.github.jleyba.dossier.proto.Dossier.SourceLinkOrBuilder getSourceOrBuilder() {
+        if (sourceBuilder_ != null) {
+          return sourceBuilder_.getMessageOrBuilder();
+        } else {
+          return source_;
+        }
+      }
+      /**
+       * <code>required .dossier.SourceLink source = 5;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          com.github.jleyba.dossier.proto.Dossier.SourceLink, com.github.jleyba.dossier.proto.Dossier.SourceLink.Builder, com.github.jleyba.dossier.proto.Dossier.SourceLinkOrBuilder> 
+          getSourceFieldBuilder() {
+        if (sourceBuilder_ == null) {
+          sourceBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              com.github.jleyba.dossier.proto.Dossier.SourceLink, com.github.jleyba.dossier.proto.Dossier.SourceLink.Builder, com.github.jleyba.dossier.proto.Dossier.SourceLinkOrBuilder>(
+                  getSource(),
+                  getParentForChildren(),
+                  isClean());
+          source_ = null;
+        }
+        return sourceBuilder_;
       }
 
       private java.util.List<com.github.jleyba.dossier.proto.Dossier.JsType.TypeSummary> nested_ =
@@ -28272,6 +29054,11 @@ public final class Dossier {
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_dossier_TypeLink_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_dossier_SourceLink_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_dossier_SourceLink_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_dossier_Comment_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
@@ -28379,81 +29166,84 @@ public final class Dossier {
       "<\n\nSourceFile\022\021\n\tbase_name\030\001 \002(\t\022\014\n\004path" +
       "\030\002 \002(\t\022\r\n\005lines\030\003 \003(\t\"(\n\tResources\022\013\n\003cs" +
       "s\030\001 \003(\t\022\016\n\006script\030\002 \003(\t\"&\n\010TypeLink\022\014\n\004t" +
-      "ext\030\001 \002(\t\022\014\n\004href\030\002 \002(\t\"\250\001\n\007Comment\022%\n\005t" +
-      "oken\030\001 \003(\0132\026.dossier.Comment.Token\032v\n\005To" +
-      "ken\022\014\n\004text\030\001 \002(\t\022\031\n\nis_literal\030\002 \001(\010:\005f" +
-      "alse\022\026\n\007is_code\030\003 \001(\010:\005false\022\014\n\004href\030\004 \001" +
-      "(\t\022\036\n\017unresolved_link\030\005 \001(\010:\005false\"/\n\013De" +
-      "precation\022 \n\006notice\030\001 \001(\0132\020.dossier.Comm",
-      "ent\"\216\001\n\004Tags\022\020\n\010is_const\030\001 \001(\010\022\025\n\ris_dep" +
-      "recated\030\002 \001(\010\022\017\n\007is_dict\030\003 \001(\010\022\020\n\010is_fin" +
-      "al\030\004 \001(\010\022\024\n\014is_interface\030\005 \001(\010\022\021\n\tis_mod" +
-      "ule\030\006 \001(\010\022\021\n\tis_struct\030\007 \001(\010\"\314\001\n\014BasePro" +
-      "perty\022\014\n\004name\030\001 \002(\t\022\016\n\006source\030\002 \002(\t\022%\n\013d" +
-      "escription\030\003 \002(\0132\020.dossier.Comment\022)\n\013de" +
-      "precation\030\004 \001(\0132\024.dossier.Deprecation\022/\n" +
-      "\nvisibility\030\005 \001(\0162\023.dossier.Visibility:\006" +
-      "PUBLIC\022\033\n\004tags\030\006 \001(\0132\r.dossier.Tags\"B\n\010P" +
-      "roperty\022#\n\004base\030\001 \002(\0132\025.dossier.BaseProp",
-      "erty\022\021\n\ttype_html\030\002 \001(\t\"\270\002\n\010Function\022#\n\004" +
-      "base\030\001 \002(\0132\025.dossier.BaseProperty\022\025\n\rtem" +
-      "plate_name\030\002 \003(\t\022\035\n\016is_constructor\030\003 \001(\010" +
-      ":\005false\022+\n\tparameter\030\004 \003(\0132\030.dossier.Fun" +
-      "ction.Detail\022(\n\006return\030\005 \001(\0132\030.dossier.F" +
-      "unction.Detail\022(\n\006thrown\030\006 \003(\0132\030.dossier" +
-      ".Function.Detail\032P\n\006Detail\022\014\n\004name\030\001 \001(\t" +
-      "\022\021\n\ttype_html\030\002 \001(\t\022%\n\013description\030\003 \001(\013" +
-      "2\020.dossier.Comment\"q\n\tPrototype\022\014\n\004name\030" +
-      "\001 \002(\t\022\014\n\004href\030\002 \001(\t\022#\n\010function\030\003 \003(\0132\021.",
-      "dossier.Function\022#\n\010property\030\004 \003(\0132\021.dos" +
-      "sier.Property\"\362\001\n\013Enumeration\022\036\n\004type\030\001 " +
-      "\002(\0132\020.dossier.Comment\022)\n\005value\030\002 \003(\0132\032.d" +
-      "ossier.Enumeration.Value\022/\n\nvisibility\030\003" +
-      " \001(\0162\023.dossier.Visibility:\006PUBLIC\032g\n\005Val" +
-      "ue\022\014\n\004name\030\001 \002(\t\022%\n\013description\030\002 \001(\0132\020." +
-      "dossier.Comment\022)\n\013deprecation\030\003 \001(\0132\024.d" +
-      "ossier.Deprecation\"\251\001\n\005Index\022\014\n\004home\030\001 \002" +
-      "(\t\022\037\n\004type\030\002 \003(\0132\021.dossier.TypeLink\022%\n\006m" +
-      "odule\030\003 \003(\0132\025.dossier.Index.Module\032J\n\006Mo",
-      "dule\022\037\n\004link\030\001 \002(\0132\021.dossier.TypeLink\022\037\n" +
-      "\004type\030\002 \003(\0132\021.dossier.TypeLink\"\353\007\n\006JsTyp" +
-      "e\022\014\n\004name\030\001 \002(\t\022\016\n\006source\030\005 \002(\t\022+\n\006neste" +
-      "d\030\006 \003(\0132\033.dossier.JsType.TypeSummary\022%\n\013" +
-      "description\030\007 \002(\0132\020.dossier.Comment\022\033\n\004t" +
-      "ags\030\010 \002(\0132\r.dossier.Tags\022)\n\013deprecation\030" +
-      "\t \001(\0132\024.dossier.Deprecation\022)\n\010type_def\030" +
-      "\n \003(\0132\027.dossier.JsType.TypeDef\022)\n\013enumer" +
-      "ation\030\013 \001(\0132\024.dossier.Enumeration\022*\n\017sta" +
-      "tic_function\030\014 \003(\0132\021.dossier.Function\022*\n",
-      "\017static_property\030\r \003(\0132\021.dossier.Propert" +
-      "y\022(\n\rmain_function\030\016 \001(\0132\021.dossier.Funct" +
-      "ion\022%\n\tprototype\030\017 \003(\0132\022.dossier.Prototy" +
-      "pe\022#\n\024has_instance_methods\030\020 \001(\010:\005false\022" +
-      "&\n\027has_instance_properties\030\021 \001(\010:\005false\022" +
-      "(\n\rextended_type\030\022 \003(\0132\021.dossier.TypeLin" +
-      "k\022+\n\020implemented_type\030\023 \003(\0132\021.dossier.Ty" +
-      "peLink\022,\n\021compiler_constant\030\024 \003(\0132\021.doss" +
-      "ier.Property\022!\n\006module\030\025 \001(\0132\021.dossier.T" +
-      "ypeLink\022\'\n\014aliased_type\030\026 \001(\0132\021.dossier.",
-      "TypeLink\032L\n\013TypeSummary\022\014\n\004name\030\001 \002(\t\022\014\n" +
-      "\004href\030\002 \002(\t\022!\n\007summary\030\003 \002(\0132\020.dossier.C" +
-      "omment\032\273\001\n\007TypeDef\022\014\n\004name\030\001 \002(\t\022\021\n\ttype" +
-      "_html\030\002 \002(\t\022\014\n\004href\030\003 \002(\t\022%\n\013description" +
-      "\030\004 \002(\0132\020.dossier.Comment\022)\n\013deprecation\030" +
-      "\005 \001(\0132\024.dossier.Deprecation\022/\n\nvisibilit" +
-      "y\030\006 \001(\0162\023.dossier.Visibility:\006PUBLIC\"}\n\023" +
-      "IndexFileRenderSpec\022%\n\tresources\030\001 \002(\0132\022" +
-      ".dossier.Resources\022 \n\006readme\030\002 \001(\0132\020.dos" +
-      "sier.Comment\022\035\n\005index\030\003 \002(\0132\016.dossier.In",
-      "dex\"\177\n\024SourceFileRenderSpec\022%\n\tresources" +
-      "\030\001 \002(\0132\022.dossier.Resources\022!\n\004file\030\002 \002(\013" +
-      "2\023.dossier.SourceFile\022\035\n\005index\030\003 \002(\0132\016.d" +
-      "ossier.Index\"w\n\020JsTypeRenderSpec\022\035\n\004type" +
-      "\030\001 \002(\0132\017.dossier.JsType\022%\n\tresources\030\002 \002" +
-      "(\0132\022.dossier.Resources\022\035\n\005index\030\003 \002(\0132\016." +
-      "dossier.Index*A\n\nVisibility\022\n\n\006PUBLIC\020\000\022" +
-      "\r\n\tPROTECTED\020\001\022\013\n\007PRIVATE\020\002\022\013\n\007PACKAGE\020\003" +
-      "B!\n\037com.github.jleyba.dossier.proto"
+      "ext\030\001 \002(\t\022\014\n\004href\030\002 \002(\t\"(\n\nSourceLink\022\014\n" +
+      "\004path\030\001 \002(\t\022\014\n\004line\030\002 \001(\005\"\250\001\n\007Comment\022%\n" +
+      "\005token\030\001 \003(\0132\026.dossier.Comment.Token\032v\n\005" +
+      "Token\022\014\n\004text\030\001 \002(\t\022\031\n\nis_literal\030\002 \001(\010:" +
+      "\005false\022\026\n\007is_code\030\003 \001(\010:\005false\022\014\n\004href\030\004" +
+      " \001(\t\022\036\n\017unresolved_link\030\005 \001(\010:\005false\"/\n\013",
+      "Deprecation\022 \n\006notice\030\001 \001(\0132\020.dossier.Co" +
+      "mment\"\216\001\n\004Tags\022\020\n\010is_const\030\001 \001(\010\022\025\n\ris_d" +
+      "eprecated\030\002 \001(\010\022\017\n\007is_dict\030\003 \001(\010\022\020\n\010is_f" +
+      "inal\030\004 \001(\010\022\024\n\014is_interface\030\005 \001(\010\022\021\n\tis_m" +
+      "odule\030\006 \001(\010\022\021\n\tis_struct\030\007 \001(\010\"\341\001\n\014BaseP" +
+      "roperty\022\014\n\004name\030\001 \002(\t\022#\n\006source\030\002 \002(\0132\023." +
+      "dossier.SourceLink\022%\n\013description\030\003 \002(\0132" +
+      "\020.dossier.Comment\022)\n\013deprecation\030\004 \001(\0132\024" +
+      ".dossier.Deprecation\022/\n\nvisibility\030\005 \001(\016" +
+      "2\023.dossier.Visibility:\006PUBLIC\022\033\n\004tags\030\006 ",
+      "\001(\0132\r.dossier.Tags\"B\n\010Property\022#\n\004base\030\001" +
+      " \002(\0132\025.dossier.BaseProperty\022\021\n\ttype_html" +
+      "\030\002 \001(\t\"\270\002\n\010Function\022#\n\004base\030\001 \002(\0132\025.doss" +
+      "ier.BaseProperty\022\025\n\rtemplate_name\030\002 \003(\t\022" +
+      "\035\n\016is_constructor\030\003 \001(\010:\005false\022+\n\tparame" +
+      "ter\030\004 \003(\0132\030.dossier.Function.Detail\022(\n\006r" +
+      "eturn\030\005 \001(\0132\030.dossier.Function.Detail\022(\n" +
+      "\006thrown\030\006 \003(\0132\030.dossier.Function.Detail\032" +
+      "P\n\006Detail\022\014\n\004name\030\001 \001(\t\022\021\n\ttype_html\030\002 \001" +
+      "(\t\022%\n\013description\030\003 \001(\0132\020.dossier.Commen",
+      "t\"q\n\tPrototype\022\014\n\004name\030\001 \002(\t\022\014\n\004href\030\002 \001" +
+      "(\t\022#\n\010function\030\003 \003(\0132\021.dossier.Function\022" +
+      "#\n\010property\030\004 \003(\0132\021.dossier.Property\"\362\001\n" +
+      "\013Enumeration\022\036\n\004type\030\001 \002(\0132\020.dossier.Com" +
+      "ment\022)\n\005value\030\002 \003(\0132\032.dossier.Enumeratio" +
+      "n.Value\022/\n\nvisibility\030\003 \001(\0162\023.dossier.Vi" +
+      "sibility:\006PUBLIC\032g\n\005Value\022\014\n\004name\030\001 \002(\t\022" +
+      "%\n\013description\030\002 \001(\0132\020.dossier.Comment\022)" +
+      "\n\013deprecation\030\003 \001(\0132\024.dossier.Deprecatio" +
+      "n\"\251\001\n\005Index\022\014\n\004home\030\001 \002(\t\022\037\n\004type\030\002 \003(\0132",
+      "\021.dossier.TypeLink\022%\n\006module\030\003 \003(\0132\025.dos" +
+      "sier.Index.Module\032J\n\006Module\022\037\n\004link\030\001 \002(" +
+      "\0132\021.dossier.TypeLink\022\037\n\004type\030\002 \003(\0132\021.dos" +
+      "sier.TypeLink\"\227\010\n\006JsType\022\014\n\004name\030\001 \002(\t\022#" +
+      "\n\006source\030\005 \002(\0132\023.dossier.SourceLink\022+\n\006n" +
+      "ested\030\006 \003(\0132\033.dossier.JsType.TypeSummary" +
+      "\022%\n\013description\030\007 \002(\0132\020.dossier.Comment\022" +
+      "\033\n\004tags\030\010 \002(\0132\r.dossier.Tags\022)\n\013deprecat" +
+      "ion\030\t \001(\0132\024.dossier.Deprecation\022)\n\010type_" +
+      "def\030\n \003(\0132\027.dossier.JsType.TypeDef\022)\n\013en",
+      "umeration\030\013 \001(\0132\024.dossier.Enumeration\022*\n" +
+      "\017static_function\030\014 \003(\0132\021.dossier.Functio" +
+      "n\022*\n\017static_property\030\r \003(\0132\021.dossier.Pro" +
+      "perty\022(\n\rmain_function\030\016 \001(\0132\021.dossier.F" +
+      "unction\022%\n\tprototype\030\017 \003(\0132\022.dossier.Pro" +
+      "totype\022#\n\024has_instance_methods\030\020 \001(\010:\005fa" +
+      "lse\022&\n\027has_instance_properties\030\021 \001(\010:\005fa" +
+      "lse\022(\n\rextended_type\030\022 \003(\0132\021.dossier.Typ" +
+      "eLink\022+\n\020implemented_type\030\023 \003(\0132\021.dossie" +
+      "r.TypeLink\022,\n\021compiler_constant\030\024 \003(\0132\021.",
+      "dossier.Property\022!\n\006module\030\025 \001(\0132\021.dossi" +
+      "er.TypeLink\022\'\n\014aliased_type\030\026 \001(\0132\021.doss" +
+      "ier.TypeLink\032L\n\013TypeSummary\022\014\n\004name\030\001 \002(" +
+      "\t\022\014\n\004href\030\002 \002(\t\022!\n\007summary\030\003 \002(\0132\020.dossi" +
+      "er.Comment\032\322\001\n\007TypeDef\022\014\n\004name\030\001 \002(\t\022\021\n\t" +
+      "type_html\030\002 \002(\t\022#\n\006source\030\003 \002(\0132\023.dossie" +
+      "r.SourceLink\022%\n\013description\030\004 \002(\0132\020.doss" +
+      "ier.Comment\022)\n\013deprecation\030\005 \001(\0132\024.dossi" +
+      "er.Deprecation\022/\n\nvisibility\030\006 \001(\0162\023.dos" +
+      "sier.Visibility:\006PUBLIC\"}\n\023IndexFileRend",
+      "erSpec\022%\n\tresources\030\001 \002(\0132\022.dossier.Reso" +
+      "urces\022 \n\006readme\030\002 \001(\0132\020.dossier.Comment\022" +
+      "\035\n\005index\030\003 \002(\0132\016.dossier.Index\"\177\n\024Source" +
+      "FileRenderSpec\022%\n\tresources\030\001 \002(\0132\022.doss" +
+      "ier.Resources\022!\n\004file\030\002 \002(\0132\023.dossier.So" +
+      "urceFile\022\035\n\005index\030\003 \002(\0132\016.dossier.Index\"" +
+      "w\n\020JsTypeRenderSpec\022\035\n\004type\030\001 \002(\0132\017.doss" +
+      "ier.JsType\022%\n\tresources\030\002 \002(\0132\022.dossier." +
+      "Resources\022\035\n\005index\030\003 \002(\0132\016.dossier.Index" +
+      "*A\n\nVisibility\022\n\n\006PUBLIC\020\000\022\r\n\tPROTECTED\020",
+      "\001\022\013\n\007PRIVATE\020\002\022\013\n\007PACKAGE\020\003B!\n\037com.githu" +
+      "b.jleyba.dossier.proto"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -28485,8 +29275,14 @@ public final class Dossier {
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_dossier_TypeLink_descriptor,
         new java.lang.String[] { "Text", "Href", });
-    internal_static_dossier_Comment_descriptor =
+    internal_static_dossier_SourceLink_descriptor =
       getDescriptor().getMessageTypes().get(3);
+    internal_static_dossier_SourceLink_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_dossier_SourceLink_descriptor,
+        new java.lang.String[] { "Path", "Line", });
+    internal_static_dossier_Comment_descriptor =
+      getDescriptor().getMessageTypes().get(4);
     internal_static_dossier_Comment_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_dossier_Comment_descriptor,
@@ -28498,31 +29294,31 @@ public final class Dossier {
         internal_static_dossier_Comment_Token_descriptor,
         new java.lang.String[] { "Text", "IsLiteral", "IsCode", "Href", "UnresolvedLink", });
     internal_static_dossier_Deprecation_descriptor =
-      getDescriptor().getMessageTypes().get(4);
+      getDescriptor().getMessageTypes().get(5);
     internal_static_dossier_Deprecation_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_dossier_Deprecation_descriptor,
         new java.lang.String[] { "Notice", });
     internal_static_dossier_Tags_descriptor =
-      getDescriptor().getMessageTypes().get(5);
+      getDescriptor().getMessageTypes().get(6);
     internal_static_dossier_Tags_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_dossier_Tags_descriptor,
         new java.lang.String[] { "IsConst", "IsDeprecated", "IsDict", "IsFinal", "IsInterface", "IsModule", "IsStruct", });
     internal_static_dossier_BaseProperty_descriptor =
-      getDescriptor().getMessageTypes().get(6);
+      getDescriptor().getMessageTypes().get(7);
     internal_static_dossier_BaseProperty_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_dossier_BaseProperty_descriptor,
         new java.lang.String[] { "Name", "Source", "Description", "Deprecation", "Visibility", "Tags", });
     internal_static_dossier_Property_descriptor =
-      getDescriptor().getMessageTypes().get(7);
+      getDescriptor().getMessageTypes().get(8);
     internal_static_dossier_Property_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_dossier_Property_descriptor,
         new java.lang.String[] { "Base", "TypeHtml", });
     internal_static_dossier_Function_descriptor =
-      getDescriptor().getMessageTypes().get(8);
+      getDescriptor().getMessageTypes().get(9);
     internal_static_dossier_Function_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_dossier_Function_descriptor,
@@ -28534,13 +29330,13 @@ public final class Dossier {
         internal_static_dossier_Function_Detail_descriptor,
         new java.lang.String[] { "Name", "TypeHtml", "Description", });
     internal_static_dossier_Prototype_descriptor =
-      getDescriptor().getMessageTypes().get(9);
+      getDescriptor().getMessageTypes().get(10);
     internal_static_dossier_Prototype_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_dossier_Prototype_descriptor,
         new java.lang.String[] { "Name", "Href", "Function", "Property", });
     internal_static_dossier_Enumeration_descriptor =
-      getDescriptor().getMessageTypes().get(10);
+      getDescriptor().getMessageTypes().get(11);
     internal_static_dossier_Enumeration_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_dossier_Enumeration_descriptor,
@@ -28552,7 +29348,7 @@ public final class Dossier {
         internal_static_dossier_Enumeration_Value_descriptor,
         new java.lang.String[] { "Name", "Description", "Deprecation", });
     internal_static_dossier_Index_descriptor =
-      getDescriptor().getMessageTypes().get(11);
+      getDescriptor().getMessageTypes().get(12);
     internal_static_dossier_Index_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_dossier_Index_descriptor,
@@ -28564,7 +29360,7 @@ public final class Dossier {
         internal_static_dossier_Index_Module_descriptor,
         new java.lang.String[] { "Link", "Type", });
     internal_static_dossier_JsType_descriptor =
-      getDescriptor().getMessageTypes().get(12);
+      getDescriptor().getMessageTypes().get(13);
     internal_static_dossier_JsType_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_dossier_JsType_descriptor,
@@ -28580,21 +29376,21 @@ public final class Dossier {
     internal_static_dossier_JsType_TypeDef_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_dossier_JsType_TypeDef_descriptor,
-        new java.lang.String[] { "Name", "TypeHtml", "Href", "Description", "Deprecation", "Visibility", });
+        new java.lang.String[] { "Name", "TypeHtml", "Source", "Description", "Deprecation", "Visibility", });
     internal_static_dossier_IndexFileRenderSpec_descriptor =
-      getDescriptor().getMessageTypes().get(13);
+      getDescriptor().getMessageTypes().get(14);
     internal_static_dossier_IndexFileRenderSpec_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_dossier_IndexFileRenderSpec_descriptor,
         new java.lang.String[] { "Resources", "Readme", "Index", });
     internal_static_dossier_SourceFileRenderSpec_descriptor =
-      getDescriptor().getMessageTypes().get(14);
+      getDescriptor().getMessageTypes().get(15);
     internal_static_dossier_SourceFileRenderSpec_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_dossier_SourceFileRenderSpec_descriptor,
         new java.lang.String[] { "Resources", "File", "Index", });
     internal_static_dossier_JsTypeRenderSpec_descriptor =
-      getDescriptor().getMessageTypes().get(15);
+      getDescriptor().getMessageTypes().get(16);
     internal_static_dossier_JsTypeRenderSpec_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_dossier_JsTypeRenderSpec_descriptor,
