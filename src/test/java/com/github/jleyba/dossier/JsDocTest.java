@@ -1,6 +1,8 @@
 package com.github.jleyba.dossier;
 
 import static com.google.common.collect.Iterables.getOnlyElement;
+import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth.assertWithMessage;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
@@ -14,6 +16,7 @@ import com.google.javascript.jscomp.DossierCompiler;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.JSTypeExpression;
 import com.google.javascript.rhino.Node;
+import com.google.javascript.rhino.jstype.Property;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,17 +32,14 @@ import java.util.Iterator;
 @RunWith(JUnit4.class)
 public class JsDocTest {
 
-  private DocRegistry docRegistry;
   private TypeRegistry typeRegistry;
   private CompilerUtil util;
 
   @Before
   public void setUp() {
     DossierCompiler compiler = new DossierCompiler(System.err, ImmutableList.<Path>of());
-    docRegistry = new DocRegistry(compiler.getTypeRegistry());
     typeRegistry = new TypeRegistry(compiler.getTypeRegistry());
-    CompilerOptions options = Main.createOptions(
-        Jimfs.newFileSystem(), typeRegistry, compiler);
+    CompilerOptions options = Main.createOptions(Jimfs.newFileSystem(), typeRegistry, compiler);
 
     util = new CompilerUtil(compiler, options);
   }
@@ -206,12 +206,12 @@ public class JsDocTest {
         "/** @constructor */",
         "var Foo = function() {};",
         "/** @return nothing. */",
-        "Foo.prototype.bar = function() { return ''; };");
-    Descriptor foo = getOnlyElement(docRegistry.getTypes());
-    Descriptor bar = getOnlyElement(foo.getInstanceProperties());
-    assertEquals("Foo.prototype.bar", bar.getFullName());
-    assertTrue(bar.isFunction());
-    assertEquals("nothing.", bar.getJsDoc().getReturnDescription());
+        "Foo.bar = function() { return ''; };");
+    NominalType foo =  getOnlyElement(typeRegistry.getNominalTypes());
+    Property bar = getOnlyElement(foo.getProperties());
+    assertEquals("bar", bar.getName());
+    assertTrue(bar.getType().isFunctionType());
+    assertEquals("nothing.", JsDoc.from(bar.getJSDocInfo()).getReturnDescription());
   }
 
   @Test
@@ -223,11 +223,11 @@ public class JsDocTest {
         " * @return nothing.",
         " */",
         "Foo.bar = function() { return ''; };");
-    Descriptor foo = getOnlyElement(docRegistry.getTypes());
-    Descriptor bar = getOnlyElement(foo.getProperties());
-    assertEquals("Foo.bar", bar.getFullName());
-    assertTrue(bar.isFunction());
-    assertEquals("nothing.", bar.getJsDoc().getReturnDescription());
+    NominalType foo =  getOnlyElement(typeRegistry.getNominalTypes());
+    Property bar = getOnlyElement(foo.getProperties());
+    assertEquals("bar", bar.getName());
+    assertTrue(bar.getType().isFunctionType());
+    assertEquals("nothing.", JsDoc.from(bar.getJSDocInfo()).getReturnDescription());
   }
 
   @Test
@@ -240,11 +240,12 @@ public class JsDocTest {
         " *     two lines.",
         " */",
         "Foo.bar = function() { return ''; };");
-    Descriptor foo = getOnlyElement(docRegistry.getTypes());
-    Descriptor bar = getOnlyElement(foo.getProperties());
-    assertEquals("Foo.bar", bar.getFullName());
-    assertTrue(bar.isFunction());
-    assertEquals("nothing over\n     two lines.", bar.getJsDoc().getReturnDescription());
+    NominalType foo =  getOnlyElement(typeRegistry.getNominalTypes());
+    Property bar = getOnlyElement(foo.getProperties());
+    assertEquals("bar", bar.getName());
+    assertTrue(bar.getType().isFunctionType());
+    assertEquals("nothing over\n     two lines.",
+        JsDoc.from(bar.getJSDocInfo()).getReturnDescription());
   }
 
   @Test
@@ -258,11 +259,12 @@ public class JsDocTest {
         " *     lines.",
         " */",
         "Foo.bar = function() { return ''; };");
-    Descriptor foo = getOnlyElement(docRegistry.getTypes());
-    Descriptor bar = getOnlyElement(foo.getProperties());
-    assertEquals("Foo.bar", bar.getFullName());
-    assertTrue(bar.isFunction());
-    assertEquals("nothing over\n     many\n     lines.", bar.getJsDoc().getReturnDescription());
+    NominalType foo =  getOnlyElement(typeRegistry.getNominalTypes());
+    Property bar = getOnlyElement(foo.getProperties());
+    assertEquals("bar", bar.getName());
+    assertTrue(bar.getType().isFunctionType());
+    assertEquals("nothing over\n     many\n     lines.",
+        JsDoc.from(bar.getJSDocInfo()).getReturnDescription());
   }
 
   @Test
@@ -273,10 +275,10 @@ public class JsDocTest {
         " * @see other.",
         " */",
         "var foo = function() {};");
-    Descriptor foo = getOnlyElement(docRegistry.getTypes());
-    assertEquals("foo", foo.getFullName());
-    assertTrue(foo.isConstructor());
-    assertEquals(ImmutableList.of("other."), foo.getJsDoc().getSeeClauses());
+    NominalType foo =  getOnlyElement(typeRegistry.getNominalTypes());
+    assertEquals("foo", foo.getQualifiedName());
+    assertTrue(foo.getJsType().isConstructor());
+    assertThat(foo.getJsdoc().getSeeClauses()).containsExactly("other.");
   }
 
   @Test
@@ -288,9 +290,7 @@ public class JsDocTest {
         " * @constructor",
         " */",
         "function Foo(){}");
-    assertEquals(
-        ImmutableList.of("foo.", "bar."),
-        doc.getSeeClauses());
+    assertThat(doc.getSeeClauses()).containsExactly("foo.", "bar.");
   }
 
   @Test
@@ -408,9 +408,10 @@ public class JsDocTest {
 
   private JsDoc getClassJsDoc(String... lines) {
     util.compile(path("foo/bar.js"), lines);
-    Descriptor descriptor = getOnlyElement(docRegistry.getTypes());
-    assertTrue(descriptor.isConstructor());
-    return descriptor.getJsDoc();
+    NominalType type = getOnlyElement(typeRegistry.getNominalTypes());
+    assertWithMessage("Not a constructor: " + type.getQualifiedName())
+        .that(type.getJsType().isConstructor());
+    return type.getJsdoc();
   }
 
   private static void assertSameRootNode(JSTypeExpression a, JSTypeExpression b) {

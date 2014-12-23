@@ -307,7 +307,8 @@ public class DocPassTest {
                 "ns.Ctor = function(e) {};",
                 "",
                 "/** @enum {number} */",
-                "ns.Enum = {foo:1};")),
+                "ns.Enum = {foo:1};")
+        ),
         ImmutableList.of(
             createSourceFile(path("script.js"),
                 "var x = new GlobalCtor();",
@@ -334,16 +335,69 @@ public class DocPassTest {
         ImmutableList.of(
             createSourceFile(path("externs.js"),
                 "/** @const */",
-                "var global = this;")),
+                "var global = this;")
+        ),
         ImmutableList.of(
             createSourceFile(path("script.js"),
                 "/** @constructor */",
                 "var x = function() {};",
                 "/** @constructor */",
-                "global.y = function() {};")));
+                "global.y = function() {};")
+        )
+    );
     assertThat(typeRegistry.getExternNames()).containsExactly("global");
   }
 
+  @Test
+  public void identifiesTypesFromAClosureModule() {
+    util.compile(path("module.js"),
+        "goog.module('foo.bar');",
+        "",
+        "/** @constructor */",
+        "var Internal = function() {};",
+        "",
+        "/** @constructor */",
+        "exports.Foo = function() {};",
+        "exports.Clazz = Internal;");
+    assertThat(typeRegistry.getNominalTypeMap().keySet())
+        .containsExactly("foo", "foo.bar", "foo.bar.Foo", "foo.bar.Clazz");
+  }
+
+  @Test
+  public void doesNotDocumentCtorReferencesAsNestedTypes() {
+    util.compile(path("module.js"),
+        "goog.provide('foo');",
+        "",
+        "/** @constructor */",
+        "foo.Bar = function() {};",
+        "",
+        "/** @type {function(new: foo.Bar)} */",
+        "foo.Baz = foo.Bar",
+        "",
+        "/** @private {function(new: foo.Bar)} */",
+        "foo.PrivateBar = foo.Bar",
+        "",
+        "/** @protected {function(new: foo.Bar)} */",
+        "foo.ProtectedBar = foo.Bar",
+        "",
+        "/** @public {function(new: foo.Bar)} */",
+        "foo.PublicBar = foo.Bar");
+    assertThat(typeRegistry.getNominalTypeMap().keySet()).containsExactly("foo", "foo.Bar");
+  }
+
+  @Test
+  public void doesNotDocumentCtorReferencesAsNestedTypes_closureModule() {
+    util.compile(path("module.js"),
+        "goog.module('foo');",
+        "",
+        "/** @constructor */",
+        "var Internal = function() {};",
+        "",
+        "/** @type {function(new: Internal)} */",
+        "exports.createInternal = Internal;");
+    assertThat(typeRegistry.getNominalTypeMap().keySet()).containsExactly("foo");
+    assertThat(typeRegistry.getNominalType("foo").getProperty("createInternal")).isNotNull();
+  }
 
   private Path path(String first, String... remaining) {
     return fs.getPath(first, remaining);

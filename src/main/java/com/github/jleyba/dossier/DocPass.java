@@ -16,6 +16,7 @@ package com.github.jleyba.dossier;
 import static com.google.common.base.Verify.verify;
 
 import com.google.common.base.Joiner;
+import com.google.common.base.Optional;
 import com.google.javascript.jscomp.AbstractCompiler;
 import com.google.javascript.jscomp.CompilerPass;
 import com.google.javascript.jscomp.DossierCompiler;
@@ -293,7 +294,8 @@ class DocPass implements CompilerPass {
       if (!jsType.isConstructor()
           && !jsType.isInterface()
           && !jsType.isEnumType()
-          && !typeRegistry.hasNamespace(type.getQualifiedName())) {
+          && !typeRegistry.hasNamespace(type.getQualifiedName())
+          && !(type.getJsdoc() != null && type.getJsdoc().isTypedef())) {
         logfmt("Ignorning undeclared namespace %s", type.getQualifiedName());
         return;
       }
@@ -341,8 +343,17 @@ class DocPass implements CompilerPass {
       if (propertyType.isConstructor()) {
         // If jsdoc is present and says this is not a constructor, we've found a
         // constructor reference, which should not be documented as a unique nominal type:
-        // /** @type {function(new: Foo)} */ var x;
-        if (jsdoc == null || jsdoc.isConstructor()) {
+        //     /** @type {function(new: Foo)} */ var x;
+        //     /** @private {function(new: Foo)} */ var x;
+        //
+        // We do not check jsdoc.isConstructor() since the Closure compiler may create a stub
+        // JSDocInfo entry as part of one of its passes, i.e. rewriting a goog.module and an
+        // exported property is an internal class:
+        //     goog.module('foo');
+        //     /** @constructor */
+        //     function Internal() {}
+        //     exports.Public = Internal;
+        if (isConstructorTypeDefinition(propertyType, jsdoc)) {
           recordPropertyAsNestedType(property);
         } else {
           parent.addProperty(property);
@@ -358,6 +369,24 @@ class DocPass implements CompilerPass {
       } else {
         parent.addProperty(property);
       }
+    }
+
+    private boolean isConstructorTypeDefinition(JSType type, JsDoc jsdoc) {
+      if (type.isConstructor()) {
+        if (jsdoc == null || jsdoc.isConstructor()) {
+          return true;
+        }
+        return jsdoc.isConst()
+            && !hasTypeExpression(jsdoc.getMarker(JsDoc.Annotation.TYPE))
+            && !hasTypeExpression(jsdoc.getMarker(JsDoc.Annotation.PUBLIC))
+            && !hasTypeExpression(jsdoc.getMarker(JsDoc.Annotation.PROTECTED))
+            && !hasTypeExpression(jsdoc.getMarker(JsDoc.Annotation.PRIVATE));
+      }
+      return false;
+    }
+
+    private boolean hasTypeExpression(Optional<JSDocInfo.Marker> marker) {
+      return marker.isPresent() && marker.get().getType() != null;
     }
 
     private void recordPropertyAsNestedType(Property property) {

@@ -93,7 +93,7 @@ public class JsDoc {
   }
 
   public boolean isConst() {
-    return isDefine() || hasAnnotation(Annotation.CONST);
+    return info.isConstant();
   }
 
   public boolean isFinal() {
@@ -192,6 +192,16 @@ public class JsDoc {
       }
     }
     return false;
+  }
+
+  public Optional<Marker> getMarker(Annotation target) {
+    for (Marker marker : info.getMarkers()) {
+      Optional<Annotation> annotation = Annotation.forMarker(marker);
+      if (target.equals(annotation.orNull())) {
+        return Optional.of(marker);
+      }
+    }
+    return Optional.absent();
   }
 
   private static final Pattern EOL_PATTERN = Pattern.compile("\r?\n");
@@ -373,10 +383,14 @@ public class JsDoc {
     FILEOVERVIEW("fileoverview"),
     FINAL("final"),
     PARAM("param"),
+    PRIVATE("private"),
+    PROTECTED("protected"),
+    PUBLIC("public"),
     RETURN("return"),
     SEE("see"),
     STRUCT("struct"),
-    THROWS("throws")
+    THROWS("throws"),
+    TYPE("type")
     ;
 
     private final String annotation;
