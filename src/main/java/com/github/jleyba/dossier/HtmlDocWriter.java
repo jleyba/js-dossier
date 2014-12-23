@@ -101,7 +101,7 @@ class HtmlDocWriter implements DocWriter {
   private Dossier.Index masterIndex;
   private NominalType currentModule;
 
-  HtmlDocWriter(Config config, TypeRegistry typeRegistry, DocRegistry registry) {
+  HtmlDocWriter(Config config, TypeRegistry typeRegistry) {
     this.config = checkNotNull(config);
     this.typeRegistry = checkNotNull(typeRegistry);
     this.linker = new Linker(config, typeRegistry);
@@ -601,12 +601,6 @@ class HtmlDocWriter implements DocWriter {
         });
   }
 
-  private Deprecation getDeprecation(Descriptor descriptor) {
-    return Deprecation.newBuilder()
-        .setNotice(parseComment(descriptor.getDeprecationReason(), linker))
-        .build();
-  }
-
   private Deprecation getDeprecation(JsDoc jsdoc) {
     checkArgument(jsdoc != null, "null jsdoc");
     checkArgument(jsdoc.isDeprecated(), "no deprecation in jsdoc");
@@ -807,6 +801,7 @@ class HtmlDocWriter implements DocWriter {
 
     if (jsDoc != null && jsDoc.getType() != null) {
       builder.setTypeHtml(formatTypeExpression(jsDoc.getType(), linker));
+
     } else if (property.getType() != null) {
       JSType propertyType = property.getType();
 

@@ -159,7 +159,7 @@ public class Main extends CommandLineRunner {
       System.exit(result);
     }
 
-    DocWriter writer = new HtmlDocWriter(config, typeRegistry, docRegistry);
+    DocWriter writer = new HtmlDocWriter(config, typeRegistry);
     try {
       writer.generateDocs(getCompiler().getTypeRegistry());
     } catch (IOException e) {

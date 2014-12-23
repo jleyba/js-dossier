@@ -168,7 +168,7 @@ public class HtmlDocWriterTest {
           ImmutableList.copyOf(
               Iterables.concat(sources.build(), modules.build())));
 
-      HtmlDocWriter writer = new HtmlDocWriter(config, typeRegistry, docRegistry);
+      HtmlDocWriter writer = new HtmlDocWriter(config, typeRegistry);
       writer.generateDocs(util.getCompiler().getTypeRegistry());
     }
   }
