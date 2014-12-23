@@ -114,10 +114,6 @@ GlobalEnum.doSomething = function() {
 };
 
 
-/** @enum {string} */
-var EmptyEnum = {};
-
-
 /**
  * Even though this enum is just a declared name and has is never assigned a
  * value, it should still be documented.

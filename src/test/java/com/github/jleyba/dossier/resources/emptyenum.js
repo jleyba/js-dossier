@@ -1,0 +1,2 @@
+/** @enum {string} */
+var EmptyEnum = {};

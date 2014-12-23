@@ -442,6 +442,7 @@ class HtmlDocWriter implements DocWriter {
     for (Path source : concat(config.getSources(), config.getModules())) {
       Path displayPath = config.getSrcPrefix().relativize(source);
       Path renderPath = config.getOutput()
+          .resolve("source")
           .resolve(config.getSrcPrefix()
           .relativize(source.toAbsolutePath().normalize())
           .resolveSibling(source.getFileName() + ".src.html"));
@@ -456,6 +457,7 @@ class HtmlDocWriter implements DocWriter {
           .setFile(file)
           .setResources(getResources(renderPath))
           .setIndex(generateNavIndex(renderPath));
+
       renderer.render(renderPath, spec.build());
     }
   }

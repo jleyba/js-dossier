@@ -2,6 +2,7 @@ package com.github.jleyba.dossier;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.truth.Truth.assertWithMessage;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.copy;
 import static java.nio.file.Files.createDirectories;
@@ -15,6 +16,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.io.Resources;
 import com.google.common.jimfs.Jimfs;
+import com.google.common.truth.Truth;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
@@ -33,6 +35,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
 @RunWith(JUnit4.class)
@@ -62,11 +65,11 @@ public class EndToEndTest {
 
     System.out.println("Generating output in " + outDir);
     createDirectories(outDir);
-    createDirectories(srcDir.resolve("main"));
 
     copyResource("resources/SimpleReadme.md", srcDir.resolve("SimpleReadme.md"));
     copyResource("resources/globals.js", srcDir.resolve("main/globals.js"));
     copyResource("resources/json.js", srcDir.resolve("main/json.js"));
+    copyResource("resources/emptyenum.js", srcDir.resolve("main/subdir/emptyenum.js"));
 
     Path config = createTempFile(tmpDir, "config", ".json");
     writeConfig(config, new Config() {{
@@ -74,9 +77,28 @@ public class EndToEndTest {
       setReadme(srcDir.resolve("SimpleReadme.md"));
       addSource(srcDir.resolve("main/globals.js"));
       addSource(srcDir.resolve("main/json.js"));
+      addSource(srcDir.resolve("main/subdir/emptyenum.js"));
     }});
 
     Main.run(new String[]{"-c", config.toAbsolutePath().toString()}, fileSystem);
+  }
+
+  @Test
+  public void checkCopiesAllSourceFiles() {
+    assertExists(outDir.resolve("source/globals.js.src.html"));
+    assertExists(outDir.resolve("source/json.js.src.html"));
+    assertExists(outDir.resolve("source/subdir/emptyenum.js.src.html"));
+  }
+
+  @Test
+  public void checkSourceFileRendering() throws IOException {
+    Document document = load(outDir.resolve("source/subdir/emptyenum.js.src.html"));
+    compareWithGoldenFile(
+        querySelector(document, "article.srcfile"),
+        "source/subdir/emptyenum.js.src.html");
+    checkHeader(document);
+    compareWithGoldenFile(querySelectorAll(document, "nav"), "source/subdir/nav.html");
+    compareWithGoldenFile(querySelectorAll(document, "main ~ *"), "source/subdir/footer.html");
   }
 
   @Test
@@ -197,9 +219,15 @@ public class EndToEndTest {
   }
 
   private static void copyResource(String from, Path to) throws IOException {
+    createDirectories(to.getParent());
+
     InputStream resource = EndToEndTest.class.getResourceAsStream(from);
     checkNotNull(resource, "Resource not found: %s", from);
     copy(resource, to);
+  }
+
+  private static void assertExists(Path path) {
+    assertWithMessage("Expected to exist: " + path).that(Files.exists(path)).isTrue();
   }
 
   private static class Config {
