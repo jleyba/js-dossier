@@ -98,10 +98,9 @@ dossier.initSourceHilite_ = function() {
 
   var hash = location.hash;
   if (hash) {
-    var target = document.querySelector('tr > td > a' + location.hash);
+    var target = document.querySelector('tr > td a' + location.hash);
     if (target) {
-      var tr = target.parentNode.parentNode;
-      goog.dom.classlist.add(/** @type {!Element} */(tr), 'hilite');
+      highlightRow(target);
     }
   }
 
@@ -109,10 +108,22 @@ dossier.initSourceHilite_ = function() {
     goog.array.forEach(srcTable.querySelectorAll('tr.hilite'), function(tr) {
       goog.dom.classlist.remove(tr, 'hilite');
     });
-    var a = srcTable.querySelector('tr > td > a:target');
-    var tr = a.parentNode.parentNode;
-    goog.dom.classlist.add(/** @type {!Element} */(tr), 'hilite');
+    var a = srcTable.querySelector('tr > td a:target');
+    if (a) {
+      highlightRow(a);
+    }
   });
+
+  /**
+   * Applies the highlight class to the row containing the given link.
+   * @param {!Element} a The element whose row to highlight.
+   */
+  function highlightRow(a) {
+    var tr = /** @type {!Element} */(goog.dom.getAncestor(a, function(node) {
+      return node.nodeName === 'TR';
+    }));
+    goog.dom.classlist.add(tr, 'hilite');
+  }
 };
 
 

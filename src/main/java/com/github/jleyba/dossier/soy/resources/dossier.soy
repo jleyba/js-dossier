@@ -911,21 +911,17 @@
     <article class="srcfile">
     <h1>{$spec.file.path}</h1>
 
-    <pre>
-      <code>
-        <table>
-          {let $count: 1 /}
-          {foreach $line in $spec.file.lines}
-            <tr>
-              <td>
-                <a id="l{$count}"></a>
-                <a href="#l{$count}">{$count}</a>
-              <td>{$line}
-            {let $count: $count + 1 /}
-          {/foreach}
-        </table>
-      </code>
-    </pre>
+    <table>
+      {let $count: 1 /}
+      {foreach $line in $spec.file.lines}
+        <tr>
+          <td>
+            <pre><a id="l{$count}"></a><a href="#l{$count}">{$count}</a></pre>
+          <td>
+            <pre>{$line}</pre>
+        {let $count: $count + 1 /}
+      {/foreach}
+    </table>
 
     </article>
     {call .sideNav}

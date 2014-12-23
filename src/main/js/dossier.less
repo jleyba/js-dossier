@@ -97,16 +97,33 @@ article {
   }
 
   &.srcfile {
+    table {
+      margin: 1.2rem 0;
+
+      tr:first-child td {
+        padding-top: 1rem;
+      }
+      tr:last-child td {
+        padding-bottom: 1rem;
+      }
+
+      pre {
+        margin: 0;
+        padding: 0;
+        border: 0;
+        background: initial;
+        white-space: pre-wrap;
+      }
+    }
+
     td {
-      padding-left: .4rem;
+      padding-left: 0 .8rem 0 .4rem;
     }
 
     td:first-child {
       text-align: right;
-      padding: 0 .8rem 0 0;
+      padding: 0 .8rem;
     }
-
-    & > pre { padding: 1rem .8rem; }
 
     :target + a { font-weight: bold; }
     tr.hilite {
@@ -278,16 +295,15 @@ pre {
     background: inherit;
   }
   padding: 1.6rem;
+}
 
+pre, article.srcfile table {
+  background: #f7f7f7;
+  border-radius: 3px;
+  border-left: .2rem solid #c4c4c4;
   overflow: auto;
   line-height: 1.45;
   word-wrap: normal;
-
-  &, article.srcfile & {
-    background: #f7f7f7;
-    border-radius: 3px;
-  }
-  & { border-left: .2rem solid #c4c4c4; }
 }
 
 
