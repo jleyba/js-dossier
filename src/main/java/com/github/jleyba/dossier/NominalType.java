@@ -119,7 +119,7 @@ public final class NominalType {
   }
 
   public String getQualifiedName() {
-    if (parent != null) {
+    if (parent != null && !parent.isModuleExports()) {
       return parent.getQualifiedName() + "." + name;
     }
     return name;

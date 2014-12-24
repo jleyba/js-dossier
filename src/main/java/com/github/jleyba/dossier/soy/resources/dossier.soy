@@ -309,32 +309,52 @@
 {template .returnDetails}
   {@param details: dossier.Function.Detail}
 
-  {let $nonVacuousReturn: ($details.typeHtml
-                           and $details.typeHtml != 'undefined'
-                           and $details.typeHtml != '?'
-                           and $details.typeHtml != 'void'
-                           and $details.typeHtml != '*') /}
+  /*
+   * Pre-render the return type and comment. If non-empty, these will be
+   * rendered into this template using |noAutoescape - which is safe
+   * since the content will already be sanitized by the .comment template.
+   */
 
-  {if $details
-      and (($details.description and length($details.description.token))
-      or $nonVacuousReturn)}
+  {let $returnType}
+    {if $details}
+      {call .comment}
+        {param comment: $details.type /}
+        {param omitLeadingTag: true /}
+      {/call}
+    {/if}
+  {/let}
+
+  {let $returnComment}
+    {if $details}
+      {call .comment}
+        {param comment: $details.description /}
+        {param omitLeadingTag: true /}
+      {/call}
+    {/if}
+  {/let}
+
+  /*
+   * In Closure code developers will often omit an actual comment
+   * while still satisfying the linter by writing:
+   *     @return {string} .
+   *
+   * We ignore these comments.
+   */
+  {let $hasComment: $returnComment and $returnComment != '.' /}
+
+  {if $returnType or $hasComment}
     <tr><th>Returns</th>
     <tr><td>
-      {if $nonVacuousReturn}
+      {if $returnType}
         <dl>
-          <dt><code>{$details.typeHtml |noAutoescape}</code>
-          {if $details.description and length($details.description.token)}
-            <dd>
-              {call .comment}
-                {param comment: $details.description /}
-                {param omitLeadingTag: true /}
-              {/call}
-          {/if}
+          <dt>
+            <code>{$returnType |noAutoescape}</code>
+            {if $hasComment}
+              <dd>{$returnComment |noAutoescape}
+            {/if}
         </dl>
-      {elseif $details.description and length($details.description.token)}
-        {call .comment}
-          {param comment: $details.description /}
-        {/call}
+      {elseif $hasComment}
+        <p>{$returnComment |noAutoescape}</p>
       {/if}
   {/if}
 {/template}
@@ -344,26 +364,36 @@
  * Generates the table rows that describe some typed details about a function,
  * such as the named parameters or the conditions under which the function will
  * throw.
- *
- * @param header A string detail header.
- * @param details A list of Dossier.Function.Detail objects.
  */
 {template .typeDetails}
+  {@param header: string}
+  {@param details: list<dossier.Function.Detail>}
+
   {if $details and length($details) > 0}
     <tr><th>{$header}
     <tr><td><dl>
       {foreach $detail in $details}
         <dt>
         {if $detail.name}{$detail.name}{/if}
-        {if $detail.typeHtml}
-          <code>{$detail.typeHtml |noAutoescape}</code>
+        {if $detail.type and length($detail.type.token)}
+          <code>
+            {call .comment}
+              {param comment: $detail.type /}
+              {param omitLeadingTag: true /}
+            {/call}
+          </code>
         {/if}
-        {if $detail.description and length($detail.description.token)}
-          <dd>
+
+        {let $detailComment}
+          {if $detail.description}
             {call .comment}
               {param comment: $detail.description /}
               {param omitLeadingTag: true /}
             {/call}
+          {/if}
+        {/let}
+        {if $detailComment and $detailComment != '.'}
+          <dd>{$detailComment |noAutoescape}  /* Already escaped by .comment template */
         {/if}
       {/foreach}
     </dl>
@@ -381,10 +411,9 @@
   // Only generate the table if there is data to actually display.
   {if length($fn.parameter)
       or length($fn.thrown)
-      or ($fn.return
-          and $fn.return.description
-          and length($fn.return.description.token)
-          and not $fn.isConstructor)}
+      or ($fn.return and not $fn.isConstructor
+          and (($fn.return.description and length($fn.return.description.token))
+          or ($fn.return.type and length($fn.return.type.token))))}
     <div>
       <table><tbody>
         {call .typeDetails}
@@ -507,9 +536,9 @@
   {if ($fn.base.description and length($fn.base.description.token))
       or length($fn.parameter)
       or length($fn.thrown)
-      or ($fn.return
-          and $fn.return.description
-          and length($fn.return.description.token))}
+      or ($fn.return and
+          (($fn.return.description and length($fn.return.description.token)) or
+           ($fn.return.type and length($fn.return.type.token))))}
     {call .comment}
       {param comment: $fn.base.description /}
     {/call}

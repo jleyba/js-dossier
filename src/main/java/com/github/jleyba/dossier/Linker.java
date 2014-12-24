@@ -13,11 +13,15 @@
 // limitations under the License.
 package com.github.jleyba.dossier;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.github.jleyba.dossier.proto.Dossier;
 import com.google.common.base.Joiner;
+import com.google.common.base.Predicate;
+import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Iterables;
 import com.google.common.io.Files;
 import com.google.javascript.jscomp.DossierModule;
 import com.google.javascript.rhino.Node;
@@ -216,6 +220,33 @@ public class Linker {
       }
     }
     return filePath;
+  }
+
+  @Nullable
+  public Dossier.TypeLink getLink(final JSType to) {
+    Iterable<NominalType> types = Iterables.concat(
+        typeRegistry.getNominalTypes(),
+        typeRegistry.getModules());
+
+    FluentIterable<NominalType> candidates = FluentIterable.from(types)
+        .filter(new Predicate<NominalType>() {
+          @Override
+          public boolean apply(@Nullable NominalType input) {
+            return input != null && input.getJsType().equals(to);
+          }
+        });
+
+    Iterator<NominalType> it = candidates.iterator();
+    if (!it.hasNext()) {
+      return null;
+    }
+
+    NominalType type = it.next();
+    checkArgument(!it.hasNext(), "Ambiguous type %s resolves to %s", to, candidates);
+    return Dossier.TypeLink.newBuilder()
+        .setText(type.getQualifiedName())
+        .setHref(getFilePath(type).getFileName().toString())
+        .build();
   }
 
   @Nullable

@@ -15,6 +15,7 @@ package com.github.jleyba.dossier;
 
 import static com.github.jleyba.dossier.CommentUtil.formatTypeExpression;
 import static com.github.jleyba.dossier.CommentUtil.getBlockDescription;
+import static com.github.jleyba.dossier.CommentUtil.getFileoverview;
 import static com.github.jleyba.dossier.CommentUtil.getSummary;
 import static com.github.jleyba.dossier.CommentUtil.parseComment;
 import static com.github.jleyba.dossier.proto.Dossier.Deprecation;
@@ -32,7 +33,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.base.Predicates.not;
 import static com.google.common.base.Strings.isNullOrEmpty;
-import static com.google.common.base.Strings.nullToEmpty;
 import static com.google.common.base.Verify.verify;
 import static com.google.common.collect.Iterables.concat;
 import static com.google.common.collect.Iterables.transform;
@@ -226,48 +226,60 @@ class HtmlDocWriter implements DocWriter {
 //        getTypeDefInfo(module.getInternalTypeDefs()));
 //
     currentModule = module;
-//    Descriptor descriptor = module.getDescriptor();
-//    JsType.Builder jsTypeBuilder = JsType.newBuilder()
-//        .setName(linker.getDisplayName(module))
-//        .setSource(linker.getSourceLink(module))
-//        .setDescription(getFileoverview(linker, module.getJsDoc()))
-//        .addAllNested(getNestedTypeInfo(module.getDescriptor().getNestedTypes()))
-//        .addAllTypeDef(typeDefs)
-//        .addAllExtendedType(getInheritedTypes(descriptor))
-//        .addAllImplementedType(getImplementedTypes(descriptor));
-//
-//    jsTypeBuilder.getTagsBuilder()
-//        .setIsModule(true);
-//
-//    getStaticData(jsTypeBuilder, descriptor);
-//    getPrototypeData(jsTypeBuilder, descriptor);
-//
-//    if (module.getDescriptor().isDeprecated()) {
-//      jsTypeBuilder.setDeprecation(getDeprecation(module.getDescriptor()));
-//    }
-//
-//    if (descriptor.isEnum()) {
-//      extractEnumData(descriptor, jsTypeBuilder.getEnumerationBuilder());
-//    }
-//
-//    if (descriptor.isFunction()) {
-////      jsTypeBuilder.setMainFunction(getFunctionData(descriptor.getDelegate()));
-//    }
-//
-//    JsTypeRenderSpec.Builder spec = JsTypeRenderSpec.newBuilder()
-//        .setResources(getResources(output))
-//        .setType(jsTypeBuilder.build())
-//        .setIndex(generateNavIndex(output));
-//    renderer.render(output, spec.build());
-//
-//    for (Descriptor property : module.getExportedProperties()) {
-//      if (property.isConstructor()
-//          || property.isInterface()
-//          || property.isEnum()) {
-//        generateDocs(property);
-//      }
-//    }
-//    currentModule = null;
+    JsType.Builder jsTypeBuilder = JsType.newBuilder()
+        .setName(linker.getDisplayName(module))
+        .setSource(linker.getSourceLink(module.getNode()))
+        .setDescription(getFileoverview(linker,
+            typeRegistry.getFileOverview(module.getModule().getModulePath())))
+        .addAllNested(getNestedTypeInfo(module.getTypes()))
+        .addAllTypeDef(getTypeDefInfo(module))
+        .addAllExtendedType(getInheritedTypes(module))
+        .addAllImplementedType(getImplementedTypes(module));
+
+    JSType jsType = module.getJsType();
+    JsDoc jsdoc = module.getJsdoc();
+
+    jsTypeBuilder.getTagsBuilder()
+        .setIsModule(true)
+        .setIsInterface(jsType.isInterface())
+        .setIsDeprecated(jsdoc != null && jsdoc.isDeprecated())
+        .setIsFinal(jsdoc != null && jsdoc.isFinal())
+        .setIsDict(jsdoc != null && jsdoc.isDict())
+        .setIsStruct(jsdoc != null && jsdoc.isStruct());
+
+    getStaticData(jsTypeBuilder, module);
+    getPrototypeData(jsTypeBuilder, module);
+
+    if (jsdoc != null && jsdoc.isDeprecated()) {
+      jsTypeBuilder.setDeprecation(getDeprecation(jsdoc));
+    }
+
+    if (jsType.isEnumType()) {
+      extractEnumData(module, jsTypeBuilder.getEnumerationBuilder());
+    }
+
+    if (jsType.isFunctionType()) {
+      jsTypeBuilder.setMainFunction(getFunctionData(
+          linker.getDisplayName(module),
+          module.getJsType(),
+          module.getNode(),
+          module.getJsdoc()));
+    }
+
+    JsTypeRenderSpec.Builder spec = JsTypeRenderSpec.newBuilder()
+        .setResources(getResources(output))
+        .setType(jsTypeBuilder.build())
+        .setIndex(generateNavIndex(output));
+    renderer.render(output, spec.build());
+
+    for (NominalType type : module.getTypes()) {
+      if (type.getJsType().isConstructor()
+          || type.getJsType().isInterface()
+          || type.getJsType().isEnumType()) {
+        generateDocs(type);
+      }
+    }
+    currentModule = null;
   }
 
   private void generateDocs(NominalType type) throws IOException {
@@ -277,14 +289,14 @@ class HtmlDocWriter implements DocWriter {
     String name = type.getQualifiedName();
     JsType.Builder jsTypeBuilder = JsType.newBuilder()
         .setName(name);
-//
-//    if (descriptor.getModule().isPresent()
-//        && !linker.getDisplayName(descriptor.getModule().get()).equals(name)) {
-//      jsTypeBuilder.setModule(TypeLink.newBuilder()
-//          .setText(linker.getDisplayName(descriptor.getModule().get()))
-//          .setHref(linker.getLink(descriptor.getModule().get().getDescriptor())));
-//    }
 
+    if (type.getModule() != null && !type.isModuleExports()) {
+      jsTypeBuilder.setModule(TypeLink.newBuilder()
+          .setText(linker.getDisplayName(type.getModule()))
+          .setHref(linker.getLink(type.getModule().getVarName())));
+    }
+
+// TODO: type alias.
 //    Descriptor aliased = resolveTypeAlias(descriptor);
 //    if (aliased != descriptor) {
 //      jsTypeBuilder.setAliasedType(TypeLink.newBuilder()
@@ -494,28 +506,26 @@ class HtmlDocWriter implements DocWriter {
   }
 
   @VisibleForTesting TypeLink getTypeLink(JSType type) {
-    String typeName = getTypeName(type);
-    NominalType nominalType = typeRegistry.getNominalType(typeName);
-
-    String link;
-    if (nominalType != null) {
-      String template = "";
-      int index = typeName.indexOf("<");
-      if (index != -1) {
-        template = typeName.substring(index);
-      }
-      typeName = nominalType.getQualifiedName() + template;
-      link = linker.getFilePath(nominalType).toString();
-    } else {
-      link = linker.getLink(typeName);
+    checkArgument(
+        type.isInstanceType() || type.isConstructor() || type.isInterface(),
+        "Unable to compute link for type %s", type);
+    if (type.isInstanceType()) {
+      type = type.toObjectType().getConstructor();
+    }
+    TypeLink link = linker.getLink(type);
+    if (link != null) {
+      return link;
     }
     return TypeLink.newBuilder()
-        .setText(typeName)
-        .setHref(nullToEmpty(link))
+        .setText(((FunctionType) type).getInstanceType().getReferenceName())
+        .setHref("")
         .build();
   }
 
   private String getTypeName(JSType type) {
+    if (type.isObject() && type.toObjectType().hasReferenceName()) {
+      return type.toObjectType().getReferenceName();
+    }
     String typeName = type.toString();
     if (type.getJSDocInfo() != null) {
       JSDocInfo info = type.getJSDocInfo();
@@ -776,7 +786,7 @@ class HtmlDocWriter implements DocWriter {
   }
 
   private Dossier.BaseProperty getBasePropertyDetails(
-      String name, Node node, @Nullable JsDoc jsdoc) {
+      String name, JSType type, Node node, @Nullable JsDoc jsdoc) {
     Dossier.BaseProperty.Builder builder = Dossier.BaseProperty.newBuilder()
         .setName(name)
         .setDescription(getBlockDescription(linker, jsdoc))
@@ -785,7 +795,7 @@ class HtmlDocWriter implements DocWriter {
       builder.setVisibility(Dossier.Visibility.valueOf(jsdoc.getVisibility().name()))
           .getTagsBuilder()
           .setIsDeprecated(jsdoc.isDeprecated())
-          .setIsConst(jsdoc.isConst() || jsdoc.isDefine());
+          .setIsConst(!type.isFunctionType() && (jsdoc.isConst() || jsdoc.isDefine()));
       if (jsdoc.isDeprecated()) {
         builder.setDeprecation(getDeprecation(jsdoc));
       }
@@ -797,7 +807,8 @@ class HtmlDocWriter implements DocWriter {
     JsDoc jsDoc = JsDoc.from(property.getJSDocInfo());
 
     Dossier.Property.Builder builder = Dossier.Property.newBuilder()
-        .setBase(getBasePropertyDetails(property.getName(), property.getNode(), jsDoc));
+        .setBase(getBasePropertyDetails(
+            property.getName(), property.getType(), property.getNode(), jsDoc));
 
     if (jsDoc != null && jsDoc.getType() != null) {
       builder.setTypeHtml(formatTypeExpression(jsDoc.getType(), linker));
@@ -861,16 +872,17 @@ class HtmlDocWriter implements DocWriter {
   private Dossier.Function getFunctionData(
       String name, JSType type, Node node, @Nullable JsDoc jsDoc) {
     checkArgument(type.isFunctionType());
+
     boolean isConstructor = type.isConstructor() && (jsDoc == null || jsDoc.isConstructor());
     boolean isInterface = !isConstructor && type.isInterface();
 
     Dossier.Function.Builder builder = Dossier.Function.newBuilder()
-        .setBase(getBasePropertyDetails(name, node, jsDoc))
+        .setBase(getBasePropertyDetails(name, type, node, jsDoc))
         .setIsConstructor(isConstructor);
 
     if (!isConstructor && !isInterface) {
       Dossier.Function.Detail.Builder detail = Dossier.Function.Detail.newBuilder();
-      detail.setTypeHtml(getReturnType(jsDoc, type));
+      detail.setType(getReturnType(jsDoc, type));
       if (jsDoc != null) {
         detail.setDescription(parseComment(jsDoc.getReturnDescription(), linker));
       }
@@ -886,10 +898,13 @@ class HtmlDocWriter implements DocWriter {
         new Function<Parameter, Dossier.Function.Detail>() {
           @Override
           public Dossier.Function.Detail apply(@Nullable Parameter param) {
+            Dossier.Comment type = Dossier.Comment.getDefaultInstance();
+            if (param.getType() != null) {
+              type = formatTypeExpression(typeRegistry.evaluate(param.getType()), linker);
+            }
             return Dossier.Function.Detail.newBuilder()
                 .setName(param.getName())
-                .setTypeHtml(param.getType() == null ? "" :
-                    formatTypeExpression(param.getType(), linker))
+                .setType(type)
                 .setDescription(parseComment(param.getDescription(), linker))
                 .build();
           }
@@ -904,12 +919,14 @@ class HtmlDocWriter implements DocWriter {
         new Function<JsDoc.ThrowsClause, Dossier.Function.Detail>() {
           @Override
           public Dossier.Function.Detail apply(JsDoc.ThrowsClause input) {
-            String thrownType = "";
+            Dossier.Comment thrownType = Dossier.Comment.getDefaultInstance();
             if (input.getType().isPresent()) {
-              thrownType = formatTypeExpression(input.getType().get(), linker);
+              thrownType = formatTypeExpression(
+                  typeRegistry.evaluate(input.getType().get()),
+                  linker);
             }
             return Dossier.Function.Detail.newBuilder()
-                .setTypeHtml(thrownType)
+                .setType(thrownType)
                 .setDescription(parseComment(input.getDescription(), linker))
                 .build();
           }
@@ -917,15 +934,23 @@ class HtmlDocWriter implements DocWriter {
     );
   }
 
-  private String getReturnType(@Nullable JsDoc jsdoc, JSType function) {
-    if (jsdoc != null) {
-      JSTypeExpression expr = jsdoc.getReturnType();
-      if (expr != null) {
-        return formatTypeExpression(expr, linker);
-      }
+  private Dossier.Comment getReturnType(@Nullable JsDoc jsdoc, JSType function) {
+    JSType returnType;
+    if (jsdoc != null && jsdoc.getReturnType() != null) {
+      returnType = typeRegistry.evaluate(jsdoc.getReturnType());
+    } else {
+      returnType = ((FunctionType) function).getReturnType();
     }
-    JSType type = ((FunctionType) function.toObjectType()).getReturnType();
-    return type == null ? "" : type.toString();
+    Dossier.Comment comment = formatTypeExpression(returnType, linker);
+    // Ignore vacuous return types.
+    if (comment.getTokenCount() != 1
+        || (!"undefined".equals(comment.getToken(0).getText())
+        && !"void".equals(comment.getToken(0).getText())
+        && !"?".equals(comment.getToken(0).getText())
+        && !"*".equals(comment.getToken(0).getText()))) {
+      return comment;
+    }
+    return Dossier.Comment.getDefaultInstance();
   }
 
   private static Predicate<NominalType> isTypedef() {
@@ -969,13 +994,27 @@ class HtmlDocWriter implements DocWriter {
         && !type.isInterface();
   }
 
+  private static boolean isNamespace(NominalType type) {
+    JSType jsType = type.getJsType();
+    return !jsType.isConstructor()
+        && !jsType.isInterface()
+        && !jsType.isEnumType();
+  }
+
+  /**
+   * Tests if a nominal type is an "empty" namespace. A type is considered empty if it is not
+   * a constructor, interface, enum and has no non-namespace children.
+   */
   private static boolean isEmptyNamespace(NominalType type) {
     if (type.isModuleExports()) {
       return false;
     }
-    JSType jsType = type.getJsType();
-    return !(jsType.isConstructor() || jsType.isInterface() || jsType.isEnumType())
-        && type.getProperties().isEmpty();
+    for (NominalType child : type.getTypes()) {
+      if (!isNamespace(child)) {
+        return false;
+      }
+    }
+    return isNamespace(type) && type.getProperties().isEmpty();
   }
 
   private static Predicate<NominalType> isModuleExports() {
@@ -1056,13 +1095,19 @@ class HtmlDocWriter implements DocWriter {
     }
   }
 
-  private static List<Parameter> getParameters(
-      JSType type, Node node, final @Nullable JsDoc jsdoc) {
+  private static List<Parameter> getParameters(JSType type, Node node, @Nullable JsDoc docs) {
     checkArgument(type.isFunctionType());
+    final JsDoc jsdoc = docs == null && type.getJSDocInfo() != null
+        ? JsDoc.from(type.getJSDocInfo())
+        : docs;
+
     // Parameters may not be documented in the order they actually appear in the function
     // declaration, so we have to parse that directly.
     @Nullable Node paramList = findParamList(node);
     if (paramList == null) {
+      if (jsdoc != null) {
+        return jsdoc.getParameters();
+      }
       return jsdoc != null
           ? jsdoc.getParameters()
           : ImmutableList.<Parameter>of();

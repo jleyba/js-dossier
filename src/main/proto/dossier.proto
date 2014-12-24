@@ -127,7 +127,7 @@ message Property {
 message Function {
   message Detail {
     optional string name = 1;
-    optional string type_html = 2;
+    optional Comment type = 2;
     optional Comment description = 3;
   }
 

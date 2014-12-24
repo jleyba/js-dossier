@@ -301,10 +301,10 @@ class DocPass implements CompilerPass {
       }
 
       try {
+        System.out.println("crawling " + type.getQualifiedName());
         seen.put(type.getJsType(), type.getTypeDescriptor());
         types.push(type);
         typeRegistry.addType(type);
-        System.out.println("crawling " + type.getQualifiedName());
         type.getJsType().visit(this);
       } finally {
         types.pop();
@@ -321,10 +321,11 @@ class DocPass implements CompilerPass {
       JsDoc jsdoc = JsDoc.from(info);
 
       if (jsdoc != null && jsdoc.isTypedef()) {
+        JSType typedefType = typeRegistry.evaluate(jsdoc.getInfo().getTypedefType());
         NominalType child = new NominalType(
             parent,
             property.getName(),
-            new NominalType.TypeDescriptor(property.getType()),
+            new NominalType.TypeDescriptor(typedefType),
             property.getNode(),
             jsdoc,
             null);
@@ -404,12 +405,19 @@ class DocPass implements CompilerPass {
         return;
       }
 
+      JSDocInfo info = property.getJSDocInfo();
+      if (info != null
+          && info.isConstant()
+          && property.getType().getJSDocInfo() != null) {
+        info = property.getType().getJSDocInfo();
+      }
+
       defineType(new NominalType(
           types.peek(),
           property.getName(),
           new NominalType.TypeDescriptor(property.getType()),
           property.getNode(),
-          JsDoc.from(property.getJSDocInfo()),
+          JsDoc.from(info),
           null));
     }
 

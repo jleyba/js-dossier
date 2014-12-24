@@ -2,6 +2,7 @@ package com.github.jleyba.dossier;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.truth.Truth.assertWithMessage;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.copy;
@@ -37,6 +38,7 @@ import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 
 @RunWith(JUnit4.class)
 public class EndToEndTest {
@@ -52,14 +54,21 @@ public class EndToEndTest {
     Path tmpDir;
     if (Boolean.getBoolean("dossier.e2e.useDefaultFileSystem")) {
       fileSystem = FileSystems.getDefault();
-      tmpDir = fileSystem.getPath(System.getProperty("java.io.tmpdir"));
+
+      String customTmpDir = System.getProperty("dossier.e2e.useDir");
+      if (!isNullOrEmpty(customTmpDir)) {
+        tmpDir = fileSystem.getPath(customTmpDir);
+        createDirectories(tmpDir);
+      } else {
+        tmpDir = fileSystem.getPath(System.getProperty("java.io.tmpdir"));
+        tmpDir = createTempDirectory(tmpDir, "dossier.e2e");
+      }
     } else {
       fileSystem = Jimfs.newFileSystem();
       tmpDir = fileSystem.getPath("/tmp");
       createDirectories(tmpDir);
     }
 
-    tmpDir = createTempDirectory(tmpDir, "dossier.e2e");
     srcDir = tmpDir.resolve("src");
     outDir = tmpDir.resolve("out");
 
@@ -67,16 +76,20 @@ public class EndToEndTest {
     createDirectories(outDir);
 
     copyResource("resources/SimpleReadme.md", srcDir.resolve("SimpleReadme.md"));
+    copyResource("resources/closure_module.js", srcDir.resolve("main/closure_module.js"));
     copyResource("resources/globals.js", srcDir.resolve("main/globals.js"));
     copyResource("resources/json.js", srcDir.resolve("main/json.js"));
+    copyResource("resources/inheritance.js", srcDir.resolve("main/inheritance.js"));
     copyResource("resources/emptyenum.js", srcDir.resolve("main/subdir/emptyenum.js"));
 
     Path config = createTempFile(tmpDir, "config", ".json");
     writeConfig(config, new Config() {{
       setOutput(outDir);
       setReadme(srcDir.resolve("SimpleReadme.md"));
+      addSource(srcDir.resolve("main/closure_module.js"));
       addSource(srcDir.resolve("main/globals.js"));
       addSource(srcDir.resolve("main/json.js"));
+      addSource(srcDir.resolve("main/inheritance.js"));
       addSource(srcDir.resolve("main/subdir/emptyenum.js"));
     }});
 
@@ -85,6 +98,7 @@ public class EndToEndTest {
 
   @Test
   public void checkCopiesAllSourceFiles() {
+    assertExists(outDir.resolve("source/closure_module.js.src.html"));
     assertExists(outDir.resolve("source/globals.js.src.html"));
     assertExists(outDir.resolve("source/json.js.src.html"));
     assertExists(outDir.resolve("source/subdir/emptyenum.js.src.html"));
@@ -164,6 +178,43 @@ public class EndToEndTest {
     checkFooter(document);
   }
 
+  @Test
+  public void checkInterfaceThatExtendsOtherInterfaces() throws IOException {
+    Document document = load(outDir.resolve("interface_sample_inheritance_LeafInterface.html"));
+    compareWithGoldenFile(querySelector(document, "article"),
+        "interface_sample_inheritance_LeafInterface.html");
+    checkHeader(document);
+    checkNav(document);
+    checkFooter(document);
+  }
+
+  @Test
+  public void checkExportedApiOfClosureModule() throws IOException {
+    Document document = load(outDir.resolve("namespace_closure_module.html"));
+    compareWithGoldenFile(querySelector(document, "article"), "namespace_closure_module.html");
+    checkHeader(document);
+    checkNav(document);
+    checkFooter(document);
+  }
+
+  @Test
+  public void checkClassDefiendOnClosureModuleExportsObject() throws IOException {
+    Document document = load(outDir.resolve("class_closure_module_Clazz.html"));
+    compareWithGoldenFile(querySelector(document, "article"), "class_closure_module_Clazz.html");
+    checkHeader(document);
+    checkNav(document);
+    checkFooter(document);
+  }
+
+  @Test
+  public void checkClassExportedByClosureModule() throws IOException {
+    Document document = load(outDir.resolve("class_closure_module_PubClass.html"));
+    compareWithGoldenFile(querySelector(document, "article"), "class_closure_module_PubClass.html");
+    checkHeader(document);
+    checkNav(document);
+    checkFooter(document);
+  }
+
   private void checkHeader(Document document) throws IOException {
     compareWithGoldenFile(querySelector(document, "header"), "header.html");
   }
@@ -223,7 +274,7 @@ public class EndToEndTest {
 
     InputStream resource = EndToEndTest.class.getResourceAsStream(from);
     checkNotNull(resource, "Resource not found: %s", from);
-    copy(resource, to);
+    copy(resource, to, StandardCopyOption.REPLACE_EXISTING);
   }
 
   private static void assertExists(Path path) {

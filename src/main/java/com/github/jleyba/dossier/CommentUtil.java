@@ -16,13 +16,16 @@ package com.github.jleyba.dossier;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Strings.isNullOrEmpty;
+import static com.google.common.base.Strings.nullToEmpty;
+import static com.google.common.collect.Iterables.filter;
 
 import com.github.jleyba.dossier.proto.Dossier;
 import com.github.jleyba.dossier.proto.Dossier.Comment;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
+import com.google.common.base.Predicate;
 import com.google.common.base.Splitter;
-import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -171,7 +174,7 @@ public class CommentUtil {
    */
   public static Dossier.Comment parseComment(String text, Linker linker) {
     Dossier.Comment.Builder builder = Dossier.Comment.newBuilder();
-    if (Strings.isNullOrEmpty(text)) {
+    if (isNullOrEmpty(text)) {
       return builder.build();
     }
 
@@ -263,7 +266,10 @@ public class CommentUtil {
     return end;
   }
 
-  public static Dossier.Comment formatTypeExpression(JSType type, final Linker linker) {
+  public static Dossier.Comment formatTypeExpression(@Nullable JSType type, final Linker linker) {
+    if (type == null) {
+      return Dossier.Comment.newBuilder().build();
+    }
     return new CommentTypeParser(linker).parse(type);
   }
 
@@ -286,7 +292,9 @@ public class CommentUtil {
       currentText = "";
       type.visit(this);
       if (!currentText.isEmpty()) {
-        comment.addTokenBuilder().setText(currentText);
+        comment.addTokenBuilder()
+            .setIsLiteral(true)
+            .setText(currentText);
         currentText = "";
       }
       return comment.build();
@@ -297,13 +305,17 @@ public class CommentUtil {
     }
 
     private void appendNativeType(String type) {
+      appendLink(type, checkNotNull(linker.getExternLink(type)));
+    }
+
+    private void appendLink(String text, String href) {
       if (!currentText.isEmpty()) {
-        comment.addTokenBuilder().setText(currentText);
+        comment.addTokenBuilder()
+            .setIsLiteral(true)
+            .setText(currentText);
         currentText = "";
       }
-      comment.addTokenBuilder()
-          .setText(type)
-          .setHref(checkNotNull(linker.getExternLink(type)));
+      comment.addTokenBuilder().setText(text).setHref(href);
     }
 
     @Override
@@ -335,15 +347,77 @@ public class CommentUtil {
 
     @Override
     public Void caseFunctionType(FunctionType type) {
-      throw new UnsupportedOperationException();
+      if ("Function".equals(type.getReferenceName())) {
+        appendText("Function");
+        return null;
+      }
+      appendText("function(");
+
+      if (type.isConstructor()) {
+        appendText("new: ");
+        type.getTypeOfThis().visit(this);
+        if (type.getParameters().iterator().hasNext()) {
+          appendText(", ");
+        }
+      } else if (!type.getTypeOfThis().isUnknownType()
+          || type.getTypeOfThis() instanceof NamedType) {
+        appendText("this: ");
+        type.getTypeOfThis().visit(this);
+        if (type.getParameters().iterator().hasNext()) {
+          appendText(", ");
+        }
+      }
+
+      Iterator<Node> parameters = type.getParameters().iterator();
+      while (parameters.hasNext()) {
+        Node node = parameters.next();
+        if (node.isVarArgs()) {
+          appendText("...");
+        }
+
+        if (node.getJSType().isUnionType()) {
+          caseUnionType((UnionType) node.getJSType(), node.isOptionalArg());
+        } else {
+          node.getJSType().visit(this);
+        }
+
+        if (node.isOptionalArg()) {
+          appendText("=");
+        }
+
+        if (parameters.hasNext()) {
+          appendText(", ");
+        }
+      }
+      appendText(")");
+
+      if (type.getReturnType() != null) {
+        appendText(": ");
+        type.getReturnType().visit(this);
+      }
+      return null;
     }
 
     @Override
     public Void caseObjectType(ObjectType type) {
       if (type.isRecordType()) {
         caseRecordType((RecordType) type);
+      } else if (type.isInstanceType()) {
+        caseInstanceType(type);
+      } else {
+        throw new UnsupportedOperationException();
       }
       return null;
+    }
+
+    private void caseInstanceType(ObjectType type) {
+      Dossier.TypeLink link = linker.getLink(type.getConstructor());
+      if (link == null) {
+        String href = nullToEmpty(linker.getExternLink(type.getReferenceName()));
+        appendLink(type.getReferenceName(), href);
+      } else {
+        appendLink(type.getReferenceName(), link.getHref());
+      }
     }
 
     private void caseRecordType(RecordType type) {
@@ -374,7 +448,12 @@ public class CommentUtil {
 
     @Override
     public Void caseNamedType(NamedType type) {
-      appendText(type.getReferenceName());
+      String link = linker.getLink(type.getReferenceName());
+      if (!isNullOrEmpty(link)) {
+        appendLink(type.getReferenceName(), link);
+      } else {
+        appendText(type.getReferenceName());
+      }
       return null;
     }
 
@@ -397,32 +476,106 @@ public class CommentUtil {
 
     @Override
     public Void caseVoidType() {
-      appendText("void");
+      appendNativeType("undefined");
       return null;
     }
 
     @Override
     public Void caseUnionType(UnionType type) {
-      appendText(type.isNullable() ? "(" : "!(");
-      Iterator<JSType> types = type.getAlternates().iterator();
-      while (types.hasNext()) {
-        types.next().visit(this);
-        if (types.hasNext()) {
-          appendText("|");
-        }
-      }
-      appendText(")");
+      caseUnionType(type, false);
       return null;
+    }
+
+    private void caseUnionType(UnionType type, boolean filterVoid) {
+      int numAlternates = 0;
+      int nullAlternates = 0;
+      int voidAlternates = 0;
+      boolean containsNonNullable = false;
+      for (JSType alternate : type.getAlternates()) {
+        numAlternates += 1;
+        if (alternate.isNullType()) {
+          nullAlternates += 1;
+        }
+        if (alternate.isVoidType() && filterVoid) {
+          voidAlternates += 1;
+        }
+        containsNonNullable = containsNonNullable || alternate.isNullable();
+      }
+
+      Iterable<JSType> alternates = type.getAlternates();
+      if (nullAlternates > 0 || voidAlternates > 0) {
+        System.out.println("Simplifying union: " + type);
+
+        numAlternates -= nullAlternates;
+        numAlternates -= voidAlternates;
+
+        alternates = filter(alternates, new Predicate<JSType>() {
+          @Override
+          public boolean apply(JSType input) {
+            return !input.isNullType() && !input.isVoidType();
+          }
+        });
+      }
+
+      if (containsNonNullable) {
+        appendText("?");
+      }
+
+      if (numAlternates == 1) {
+        alternates.iterator().next().visit(this);
+      } else {
+        appendText("(");
+        Iterator<JSType> types = alternates.iterator();
+        while (types.hasNext()) {
+          types.next().visit(this);
+          if (types.hasNext()) {
+            appendText("|");
+          }
+        }
+        appendText(")");
+      }
+
+//      Iterator<JSType> types = type.getAlternates().iterator();
+//      if (type.getAlternates().size() == 2) {
+//        JSType a = types.next();
+//        JSType b = types.next();
+//        if (a.isNullType() && b.isObject()) {
+//          return b.visit(this);
+//        } else if (a.isObject() && b.isNullType()) {
+//          return a.visit(this);
+//        }
+//        // Reset the iterator.
+//        types = type.getAlternates().iterator();
+//      }
+//      appendText("(");
+//      while (types.hasNext()) {
+//        types.next().visit(this);
+//        if (types.hasNext()) {
+//          appendText("|");
+//        }
+//      }
+//      appendText(")");
     }
 
     @Override
     public Void caseTemplatizedType(TemplatizedType type) {
-      throw new UnsupportedOperationException();
+      type.getReferencedType().visit(this);
+      appendText("<");
+      Iterator<JSType> types = type.getTemplateTypes().iterator();
+      while (types.hasNext()) {
+        types.next().visit(this);
+        if (types.hasNext()) {
+          appendText(", ");
+        }
+      }
+      appendText(">");
+      return null;
     }
 
     @Override
     public Void caseTemplateType(TemplateType templateType) {
-      throw new UnsupportedOperationException();
+      appendText(templateType.getReferenceName());
+      return null;
     }
   }
 
@@ -557,7 +710,7 @@ public class CommentUtil {
         .append(")");
 
     String returnType = formatTypeExpression(resolver, current);
-    if (!Strings.isNullOrEmpty(returnType)) {
+    if (!isNullOrEmpty(returnType)) {
       builder.append(": ").append(returnType);
     }
 

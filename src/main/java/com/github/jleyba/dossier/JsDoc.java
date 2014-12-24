@@ -72,6 +72,10 @@ public class JsDoc {
     return 0;
   }
 
+  String getOriginalCommentString() {
+    return info.getOriginalCommentString();
+  }
+
   boolean isConstructor() {
     return info.isConstructor();
   }
