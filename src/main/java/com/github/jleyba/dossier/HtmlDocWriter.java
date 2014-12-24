@@ -13,7 +13,6 @@
 // limitations under the License.
 package com.github.jleyba.dossier;
 
-import static com.github.jleyba.dossier.CommentUtil.formatTypeExpression;
 import static com.github.jleyba.dossier.CommentUtil.getBlockDescription;
 import static com.github.jleyba.dossier.CommentUtil.getFileoverview;
 import static com.github.jleyba.dossier.CommentUtil.getSummary;
@@ -545,7 +544,7 @@ class HtmlDocWriter implements DocWriter {
     checkArgument(type.getJsType().isEnumType());
 
     JSType elementType = ((EnumType) type.getJsType()).getElementsType();
-    enumBuilder.setType(formatTypeExpression(elementType, linker));
+    enumBuilder.setType(linker.formatTypeExpression(elementType));
 
     JsDoc jsdoc = type.getJsdoc();
     if (jsdoc != null) {
@@ -590,7 +589,7 @@ class HtmlDocWriter implements DocWriter {
 
             JsType.TypeDef.Builder builder = JsType.TypeDef.newBuilder()
                 .setName(name)
-                .setType(formatTypeExpression(typeRegistry.evaluate(jsdoc.getType()), linker))
+                .setType(linker.formatTypeExpression(jsdoc.getType()))
                 .setSource(linker.getSourceLink(typedef.getNode()))
                 .setDescription(getBlockDescription(linker, jsdoc))
                 .setVisibility(Dossier.Visibility.valueOf(jsdoc.getVisibility().name()));
@@ -810,9 +809,9 @@ class HtmlDocWriter implements DocWriter {
             property.getName(), property.getType(), property.getNode(), jsDoc));
 
     if (jsDoc != null && jsDoc.getType() != null) {
-      builder.setType(formatTypeExpression(typeRegistry.evaluate(jsDoc.getType()), linker));
+      builder.setType(linker.formatTypeExpression(jsDoc.getType()));
     } else if (property.getType() != null) {
-      builder.setType(formatTypeExpression(property.getType(), linker));
+      builder.setType(linker.formatTypeExpression(property.getType()));
     }
 
     return builder.build();
@@ -849,7 +848,7 @@ class HtmlDocWriter implements DocWriter {
           public Dossier.Function.Detail apply(@Nullable Parameter param) {
             Dossier.Comment type = Dossier.Comment.getDefaultInstance();
             if (param.getType() != null) {
-              type = formatTypeExpression(typeRegistry.evaluate(param.getType()), linker);
+              type = linker.formatTypeExpression(param.getType());
             }
             return Dossier.Function.Detail.newBuilder()
                 .setName(param.getName())
@@ -870,9 +869,7 @@ class HtmlDocWriter implements DocWriter {
           public Dossier.Function.Detail apply(JsDoc.ThrowsClause input) {
             Dossier.Comment thrownType = Dossier.Comment.getDefaultInstance();
             if (input.getType().isPresent()) {
-              thrownType = formatTypeExpression(
-                  typeRegistry.evaluate(input.getType().get()),
-                  linker);
+              thrownType = linker.formatTypeExpression(input.getType().get());
             }
             return Dossier.Function.Detail.newBuilder()
                 .setType(thrownType)
@@ -890,7 +887,7 @@ class HtmlDocWriter implements DocWriter {
     } else {
       returnType = ((FunctionType) function).getReturnType();
     }
-    Dossier.Comment comment = formatTypeExpression(returnType, linker);
+    Dossier.Comment comment = linker.formatTypeExpression(returnType);
     // Ignore vacuous return types.
     if (comment.getTokenCount() != 1
         || (!"undefined".equals(comment.getToken(0).getText())

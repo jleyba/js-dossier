@@ -15,6 +15,10 @@ package com.github.jleyba.dossier;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Strings.isNullOrEmpty;
+import static com.google.common.base.Strings.nullToEmpty;
+import static com.google.common.base.Verify.verify;
+import static com.google.common.collect.Iterables.filter;
 
 import com.github.jleyba.dossier.proto.Dossier;
 import com.google.common.base.Joiner;
@@ -24,8 +28,22 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
 import com.google.common.io.Files;
 import com.google.javascript.jscomp.DossierModule;
+import com.google.javascript.rhino.JSTypeExpression;
 import com.google.javascript.rhino.Node;
+import com.google.javascript.rhino.jstype.EnumElementType;
+import com.google.javascript.rhino.jstype.FunctionType;
 import com.google.javascript.rhino.jstype.JSType;
+import com.google.javascript.rhino.jstype.NamedType;
+import com.google.javascript.rhino.jstype.NoType;
+import com.google.javascript.rhino.jstype.ObjectType;
+import com.google.javascript.rhino.jstype.Property;
+import com.google.javascript.rhino.jstype.PrototypeObjectType;
+import com.google.javascript.rhino.jstype.ProxyObjectType;
+import com.google.javascript.rhino.jstype.RecordType;
+import com.google.javascript.rhino.jstype.TemplateType;
+import com.google.javascript.rhino.jstype.TemplatizedType;
+import com.google.javascript.rhino.jstype.UnionType;
+import com.google.javascript.rhino.jstype.Visitor;
 
 import java.nio.file.Path;
 import java.util.Iterator;
@@ -224,6 +242,18 @@ public class Linker {
 
   @Nullable
   public Dossier.TypeLink getLink(final JSType to) {
+    NominalType type = resolve(to);
+    if (type == null) {
+      return null;
+    }
+    return Dossier.TypeLink.newBuilder()
+        .setText(type.getQualifiedName())
+        .setHref(getFilePath(type).getFileName().toString())
+        .build();
+  }
+
+  @Nullable
+  private NominalType resolve(final JSType jsType) {
     Iterable<NominalType> types = Iterables.concat(
         typeRegistry.getNominalTypes(),
         typeRegistry.getModules());
@@ -232,7 +262,7 @@ public class Linker {
         .filter(new Predicate<NominalType>() {
           @Override
           public boolean apply(@Nullable NominalType input) {
-            return input != null && input.getJsType().equals(to);
+            return input != null && input.getJsType().equals(jsType);
           }
         });
 
@@ -242,11 +272,8 @@ public class Linker {
     }
 
     NominalType type = it.next();
-    checkArgument(!it.hasNext(), "Ambiguous type %s resolves to %s", to, candidates);
-    return Dossier.TypeLink.newBuilder()
-        .setText(type.getQualifiedName())
-        .setHref(getFilePath(type).getFileName().toString())
-        .build();
+    checkArgument(!it.hasNext(), "Ambiguous type %s resolves to %s", jsType, candidates);
+    return type;
   }
 
   @Nullable
@@ -307,5 +334,327 @@ public class Linker {
       return BUILTIN_TO_MDN_LINK.get(name);
     }
     return null;
+  }
+
+  /**
+   * Parses the type expression into a {@link Dossier.Comment} suitable for injection into a soy
+   * template.
+   */
+  public Dossier.Comment formatTypeExpression(JSTypeExpression expression) {
+    return formatTypeExpression(typeRegistry.evaluate(expression));
+  }
+
+  /**
+   * Parses the type into a {@link Dossier.Comment} suitable for injection into a soy template.
+   */
+  public Dossier.Comment formatTypeExpression(@Nullable JSType type) {
+    if (type == null) {
+      return Dossier.Comment.newBuilder().build();
+    }
+    return new CommentTypeParser().parse(type);
+  }
+
+  /**
+   * A {@link JSType} visitor that converts the type into a comment type expression.
+   */
+  private class CommentTypeParser implements Visitor<Void> {
+
+    private final Dossier.Comment.Builder comment = Dossier.Comment.newBuilder();
+
+    private String currentText = "";
+
+    Dossier.Comment parse(JSType type) {
+      comment.clear();
+      currentText = "";
+      type.visit(this);
+      if (!currentText.isEmpty()) {
+        comment.addTokenBuilder()
+            .setIsLiteral(true)
+            .setText(currentText);
+        currentText = "";
+      }
+      return comment.build();
+    }
+
+    private void appendText(String text) {
+      currentText += text;
+    }
+
+    private void appendNativeType(String type) {
+      appendLink(type, checkNotNull(getExternLink(type)));
+    }
+
+    private void appendLink(String text, String href) {
+      if (!currentText.isEmpty()) {
+        comment.addTokenBuilder()
+            .setIsLiteral(true)
+            .setText(currentText);
+        currentText = "";
+      }
+      comment.addTokenBuilder().setText(text).setHref(href);
+    }
+
+    @Override
+    public Void caseNoType(NoType type) {
+      throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Void caseEnumElementType(EnumElementType type) {
+      return type.getPrimitiveType().visit(this);
+    }
+
+    @Override
+    public Void caseAllType() {
+      appendText("*");
+      return null;
+    }
+
+    @Override
+    public Void caseBooleanType() {
+      appendNativeType("boolean");
+      return null;
+    }
+
+    @Override
+    public Void caseNoObjectType() {
+      throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Void caseFunctionType(FunctionType type) {
+      if ("Function".equals(type.getReferenceName())) {
+        appendText("Function");
+        return null;
+      }
+      appendText("function(");
+
+      if (type.isConstructor()) {
+        appendText("new: ");
+        type.getTypeOfThis().visit(this);
+        if (type.getParameters().iterator().hasNext()) {
+          appendText(", ");
+        }
+      } else if (!type.getTypeOfThis().isUnknownType()
+          || type.getTypeOfThis() instanceof NamedType) {
+        appendText("this: ");
+        type.getTypeOfThis().visit(this);
+        if (type.getParameters().iterator().hasNext()) {
+          appendText(", ");
+        }
+      }
+
+      Iterator<Node> parameters = type.getParameters().iterator();
+      while (parameters.hasNext()) {
+        Node node = parameters.next();
+        if (node.isVarArgs()) {
+          appendText("...");
+        }
+
+        if (node.getJSType().isUnionType()) {
+          caseUnionType((UnionType) node.getJSType(), node.isOptionalArg());
+        } else {
+          node.getJSType().visit(this);
+        }
+
+        if (node.isOptionalArg()) {
+          appendText("=");
+        }
+
+        if (parameters.hasNext()) {
+          appendText(", ");
+        }
+      }
+      appendText(")");
+
+      if (type.getReturnType() != null) {
+        appendText(": ");
+        type.getReturnType().visit(this);
+      }
+      return null;
+    }
+
+    @Override
+    public Void caseObjectType(ObjectType type) {
+      if (type.isRecordType()) {
+        caseRecordType((RecordType) type);
+      } else if (type.isInstanceType()) {
+        caseInstanceType(type);
+      } else if (type instanceof PrototypeObjectType) {
+        casePrototypeObjectType((PrototypeObjectType) type);
+      } else {
+        throw new UnsupportedOperationException();
+      }
+      return null;
+    }
+
+    private void casePrototypeObjectType(PrototypeObjectType type) {
+      if (type.getOwnerFunction() != null) {
+        ObjectType obj = type.getOwnerFunction().getTypeOfThis().toObjectType();
+
+        NominalType nominalType = resolve(obj.getConstructor());
+        if (nominalType != null) {
+          appendLink(
+              nominalType.getQualifiedName() + ".prototype",
+              getFilePath(nominalType).getFileName().toString());
+        } else {
+          caseInstanceType(obj.getReferenceName() + ".prototype", obj);
+        }
+      } else {
+        verify("{}".equals(type.toString()));
+        type.getImplicitPrototype().visit(this);
+      }
+    }
+
+    private void caseInstanceType(ObjectType type) {
+      caseInstanceType(type.getReferenceName(), type);
+    }
+
+    private void caseInstanceType(String displayName, ObjectType type) {
+      Dossier.TypeLink link = getLink(type.getConstructor());
+      if (link == null) {
+        String href = nullToEmpty(getExternLink(type.getReferenceName()));
+        appendLink(displayName, href);
+      } else {
+        appendLink(displayName, link.getHref());
+      }
+    }
+
+    private void caseRecordType(RecordType type) {
+      appendText("{");
+      Iterator<String> properties = type.getOwnPropertyNames().iterator();
+      while (properties.hasNext()) {
+        Property property = type.getOwnSlot(properties.next());
+        appendText(property.getName() + ": ");
+        property.getType().visit(this);
+        if (properties.hasNext()) {
+          appendText(", ");
+        }
+      }
+      appendText("}");
+    }
+
+    @Override
+    public Void caseUnknownType() {
+      appendText("?");
+      return null;
+    }
+
+    @Override
+    public Void caseNullType() {
+      appendNativeType("null");
+      return null;
+    }
+
+    @Override
+    public Void caseNamedType(NamedType type) {
+      String link = getLink(type.getReferenceName());
+      if (!isNullOrEmpty(link)) {
+        appendLink(type.getReferenceName(), link);
+      } else {
+        appendText(type.getReferenceName());
+      }
+      return null;
+    }
+
+    @Override
+    public Void caseProxyObjectType(ProxyObjectType type) {
+      throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Void caseNumberType() {
+      appendNativeType("number");
+      return null;
+    }
+
+    @Override
+    public Void caseStringType() {
+      appendNativeType("string");
+      return null;
+    }
+
+    @Override
+    public Void caseVoidType() {
+      appendNativeType("undefined");
+      return null;
+    }
+
+    @Override
+    public Void caseUnionType(UnionType type) {
+      caseUnionType(type, false);
+      return null;
+    }
+
+    private void caseUnionType(UnionType type, boolean filterVoid) {
+      int numAlternates = 0;
+      int nullAlternates = 0;
+      int voidAlternates = 0;
+      boolean containsNonNullable = false;
+      for (JSType alternate : type.getAlternates()) {
+        numAlternates += 1;
+        if (alternate.isNullType()) {
+          nullAlternates += 1;
+        }
+        if (alternate.isVoidType() && filterVoid) {
+          voidAlternates += 1;
+        }
+        containsNonNullable = containsNonNullable || alternate.isNullable();
+      }
+
+      Iterable<JSType> alternates = type.getAlternates();
+      if (nullAlternates > 0 || voidAlternates > 0) {
+        System.out.println("Simplifying union: " + type);
+
+        numAlternates -= nullAlternates;
+        numAlternates -= voidAlternates;
+
+        alternates = filter(alternates, new Predicate<JSType>() {
+          @Override
+          public boolean apply(JSType input) {
+            return !input.isNullType() && !input.isVoidType();
+          }
+        });
+      }
+
+      if (containsNonNullable) {
+        appendText("?");
+      }
+
+      if (numAlternates == 1) {
+        alternates.iterator().next().visit(this);
+      } else {
+        appendText("(");
+        Iterator<JSType> types = alternates.iterator();
+        while (types.hasNext()) {
+          types.next().visit(this);
+          if (types.hasNext()) {
+            appendText("|");
+          }
+        }
+        appendText(")");
+      }
+    }
+
+    @Override
+    public Void caseTemplatizedType(TemplatizedType type) {
+      type.getReferencedType().visit(this);
+      appendText("<");
+      Iterator<JSType> types = type.getTemplateTypes().iterator();
+      while (types.hasNext()) {
+        types.next().visit(this);
+        if (types.hasNext()) {
+          appendText(", ");
+        }
+      }
+      appendText(">");
+      return null;
+    }
+
+    @Override
+    public Void caseTemplateType(TemplateType templateType) {
+      appendText(templateType.getReferenceName());
+      return null;
+    }
   }
 }
