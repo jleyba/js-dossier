@@ -870,7 +870,8 @@ public class RendererTest {
             .setName("foo")
             .setSource(Dossier.SourceLink.newBuilder().setPath("foo-source"))
             .setDescription(parseComment("foo description")))
-        .setTypeHtml("string")
+        .setType(Dossier.Comment.newBuilder()
+            .addToken(Dossier.Comment.Token.newBuilder().setText("string")))
         .build();
 
     Document document = renderDocument("dossier.soy.printProperty", "prop", property);

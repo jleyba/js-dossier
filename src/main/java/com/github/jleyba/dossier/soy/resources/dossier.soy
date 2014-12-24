@@ -576,8 +576,13 @@
       {param source: $prop.base.source /}
     {/call}
     /* todo: deprecation */
-    {if $prop.typeHtml}
-      <code>{$prop.typeHtml |noAutoescape}</code>
+    {if $prop.type}
+      <code>
+        {call .comment}
+          {param comment: $prop.type /}
+          {param omitLeadingTag: true /}
+        {/call}
+      </code>
     {/if}
   <dd>
     {if $prop.base.description and length($prop.base.description.token)}
@@ -871,7 +876,12 @@
                 {param text: $typedef.name /}
                 {param source: $typedef.source /}
               {/call}
-              <code>{$typedef.typeHtml |noAutoescape}</code>
+              <code>
+                {call .comment}
+                  {param comment: $typedef.type /}
+                  {param omitLeadingTag: true /}
+                {/call}
+              </code>
             <dd>
               {if $typedef.description and length($typedef.description.token)}
                 {call .comment}

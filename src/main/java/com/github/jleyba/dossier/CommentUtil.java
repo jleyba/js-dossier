@@ -18,21 +18,13 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.base.Strings.nullToEmpty;
+import static com.google.common.base.Verify.verify;
 import static com.google.common.collect.Iterables.filter;
 
 import com.github.jleyba.dossier.proto.Dossier;
 import com.github.jleyba.dossier.proto.Dossier.Comment;
-import com.google.common.base.Function;
-import com.google.common.base.Joiner;
 import com.google.common.base.Predicate;
-import com.google.common.base.Splitter;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
-import com.google.javascript.rhino.JSDocInfo;
-import com.google.javascript.rhino.JSTypeExpression;
 import com.google.javascript.rhino.Node;
-import com.google.javascript.rhino.Token;
 import com.google.javascript.rhino.jstype.EnumElementType;
 import com.google.javascript.rhino.jstype.FunctionType;
 import com.google.javascript.rhino.jstype.JSType;
@@ -40,6 +32,7 @@ import com.google.javascript.rhino.jstype.NamedType;
 import com.google.javascript.rhino.jstype.NoType;
 import com.google.javascript.rhino.jstype.ObjectType;
 import com.google.javascript.rhino.jstype.Property;
+import com.google.javascript.rhino.jstype.PrototypeObjectType;
 import com.google.javascript.rhino.jstype.ProxyObjectType;
 import com.google.javascript.rhino.jstype.RecordType;
 import com.google.javascript.rhino.jstype.TemplateType;
@@ -47,9 +40,7 @@ import com.google.javascript.rhino.jstype.TemplatizedType;
 import com.google.javascript.rhino.jstype.UnionType;
 import com.google.javascript.rhino.jstype.Visitor;
 
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -94,75 +85,6 @@ public class CommentUtil {
       return Dossier.Comment.getDefaultInstance();
     }
     return parseComment(jsdoc.getBlockComment(), linker);
-  }
-
-  public static String getMarkerDescription(JSDocInfo info, String annotation) {
-    for (JSDocInfo.Marker marker : info.getMarkers()) {
-      if (annotation.equals(marker.getAnnotation().getItem())) {
-        return extractCommentString(
-            info.getOriginalCommentString(), marker.getDescription());
-      }
-    }
-    return "";
-  }
-
-  public static String extractCommentString(String originalCommentString,
-      @Nullable JSDocInfo.StringPosition position) {
-    if (null == position) {
-      return "";
-    }
-
-    int startLine = position.getStartLine();
-    int endLine = position.getEndLine();
-
-    Iterable<String> lines = Splitter.on('\n').split(originalCommentString);
-    lines = Iterables.skip(lines, startLine - 1);
-    if (startLine != endLine) {
-      lines = Iterables.limit(lines, endLine - startLine);
-    }
-
-    ArrayList<String> lineList = Lists.newArrayList(lines);
-    for (int i = 0; i < lineList.size(); ++i) {
-      String line = lineList.get(i);
-      if (i == 0) {
-        // Offset index by 1 to skip space after the annotation.
-        int index = position.getPositionOnStartLine() + 1;
-        if (index < line.length()) {
-          line = line.substring(index);
-        }
-
-      } else if (i == lineList.size() - 1 && position.getPositionOnEndLine() < line.length()) {
-        int index = position.getPositionOnEndLine();
-        line = line.substring(index);
-
-      } else {
-        line = leftTrimCommentLine(line);
-      }
-
-      int index = line.indexOf("*/");
-      if (index != -1) {
-        line = line.substring(0, index);
-      }
-
-      lineList.set(i, line);
-    }
-
-    return Joiner.on('\n').join(lineList);
-  }
-
-  private static String leftTrimCommentLine(String line) {
-    for (int i = 0; i < line.length(); ++i) {
-      char c = line.charAt(i);
-      if ('*' == c) {
-        line = line.substring(i + 1);
-        break;
-      }
-
-      if (!Character.isWhitespace(c)) {
-        break;
-      }
-    }
-    return line;
   }
 
   private static Dossier.Comment.Token.Builder newToken(String text) {
@@ -404,19 +326,35 @@ public class CommentUtil {
         caseRecordType((RecordType) type);
       } else if (type.isInstanceType()) {
         caseInstanceType(type);
+      } else if (type instanceof PrototypeObjectType) {
+        casePrototypeObjectType((PrototypeObjectType) type);
       } else {
         throw new UnsupportedOperationException();
       }
       return null;
     }
 
+    private void casePrototypeObjectType(PrototypeObjectType type) {
+      if (type.getOwnerFunction() != null) {
+        ObjectType obj = type.getOwnerFunction().getTypeOfThis().toObjectType();
+        caseInstanceType(obj.getReferenceName() + ".prototype", obj);
+      } else {
+        verify("{}".equals(type.toString()));
+        type.getImplicitPrototype().visit(this);
+      }
+    }
+
     private void caseInstanceType(ObjectType type) {
+      caseInstanceType(type.getReferenceName(), type);
+    }
+
+    private void caseInstanceType(String displayName, ObjectType type) {
       Dossier.TypeLink link = linker.getLink(type.getConstructor());
       if (link == null) {
         String href = nullToEmpty(linker.getExternLink(type.getReferenceName()));
-        appendLink(type.getReferenceName(), href);
+        appendLink(displayName, href);
       } else {
-        appendLink(type.getReferenceName(), link.getHref());
+        appendLink(displayName, link.getHref());
       }
     }
 
@@ -534,27 +472,6 @@ public class CommentUtil {
         }
         appendText(")");
       }
-
-//      Iterator<JSType> types = type.getAlternates().iterator();
-//      if (type.getAlternates().size() == 2) {
-//        JSType a = types.next();
-//        JSType b = types.next();
-//        if (a.isNullType() && b.isObject()) {
-//          return b.visit(this);
-//        } else if (a.isObject() && b.isNullType()) {
-//          return a.visit(this);
-//        }
-//        // Reset the iterator.
-//        types = type.getAlternates().iterator();
-//      }
-//      appendText("(");
-//      while (types.hasNext()) {
-//        types.next().visit(this);
-//        if (types.hasNext()) {
-//          appendText("|");
-//        }
-//      }
-//      appendText(")");
     }
 
     @Override
@@ -577,190 +494,6 @@ public class CommentUtil {
       appendText(templateType.getReferenceName());
       return null;
     }
-  }
-
-  public static String formatTypeExpression(JSTypeExpression expression, Linker resolver) {
-
-    // If we use JSTypeExpression#evaluate(), all typedefs will be resolved to their native
-    // types, which produces very verbose expressions.  Keep things simply and rebuild the type
-    // expression ourselves. This has the added benefit of letting us resolve type links as we go.
-    return formatTypeExpression(resolver, expression.getRoot());
-  }
-
-  private static String formatTypeExpression(Linker resolver, Node node) {
-    switch (node.getType()) {
-      case Token.LC:     // Record type.
-        return formatRecordType(resolver, node.getFirstChild());
-
-      case Token.BANG:   // Not nullable.
-        return "!" + formatTypeExpression(resolver, node.getFirstChild());
-
-      case Token.QMARK:  // Nullable or unknown.
-        Node firstChild = node.getFirstChild();
-        if (firstChild != null) {
-          return "?" + formatTypeExpression(resolver, firstChild);
-        } else {
-          return "?";
-        }
-
-      case Token.EQUALS:
-        return formatTypeExpression(resolver, node.getFirstChild()) + "=";
-
-      case Token.ELLIPSIS:
-        return "..." + formatTypeExpression(resolver, node.getFirstChild());
-
-      case Token.STAR:
-        return "*";
-
-      case Token.LB:  // Array type.  Is this really valid?
-        return "[]";
-
-      case Token.PIPE:
-        List<String> types = Lists.newArrayList();
-        for (Node child = node.getFirstChild(); child != null; child = child.getNext()) {
-          types.add(formatTypeExpression(resolver, child));
-        }
-        return "(" + Joiner.on("|").join(types) + ")";
-
-      case Token.EMPTY:  // When the return value of a function is not specified.
-        return "";
-
-      case Token.VOID:
-        return "void";
-
-      case Token.STRING:
-        return formatTypeString(resolver, node);
-
-      case Token.FUNCTION:
-        return formatFunctionType(resolver, node);
-
-      default:
-        throw new IllegalStateException(
-            "Unexpected node in type expression: " + node);
-    }
-  }
-
-  private static String formatTypeString(final Linker linker, Node node) {
-    String output = getOriginalName(node);
-
-    @Nullable String path = linker.getLink(output);
-    if (path != null) {
-      output = String.format("<a href=\"%s\">%s</a>", path, output);
-    }
-
-    List<String> templateNames = getTemplateTypeNames(node);
-    if (!templateNames.isEmpty()) {
-      templateNames = Lists.transform(templateNames, new Function<String, String>() {
-        @Override
-        public String apply(String input) {
-          @Nullable String path = linker.getLink(input);
-          if (path == null) {
-            return input;
-          }
-          return String.format("<a href=\"%s\">%s</a>", path, input);
-        }
-      });
-      output += "&lt;" + Joiner.on(", ").join(templateNames) + "&gt;";
-    }
-
-    return output;
-  }
-
-  private static ImmutableList<String> getTemplateTypeNames(Node node) {
-    checkArgument(node.isString());
-    ImmutableList.Builder<String> builder = ImmutableList.builder();
-    if (node.getFirstChild() != null && node.getFirstChild().isBlock()) {
-      for (Node name = node.getFirstChild().getFirstChild();
-          name != null && name.isString(); name = name.getNext()) {
-        builder.add(getOriginalName(name));
-      }
-    }
-    return builder.build();
-  }
-
-  private static String formatFunctionType(Linker resolver, Node node) {
-    List<String> parts = new ArrayList<>();
-
-    Node current = node.getFirstChild();
-    if (current.getType() == Token.THIS || current.getType() == Token.NEW) {
-      Node context = current.getFirstChild();
-      String contextType = current.getType() == Token.NEW ? "new: " : "this: ";
-      String thisType = formatTypeExpression(resolver, context);
-      parts.add(contextType + thisType);
-      current = current.getNext();
-    }
-
-    if (current.getType() == Token.PARAM_LIST) {
-      for (Node arg = current.getFirstChild(); arg != null; arg = arg.getNext()) {
-        if (arg.getType() == Token.ELLIPSIS) {
-          if (arg.getChildCount() == 0) {
-            parts.add("...");
-          } else {
-            parts.add(formatTypeExpression(resolver, arg.getFirstChild()));
-          }
-        } else {
-          parts.add(formatTypeExpression(resolver, arg));
-        }
-      }
-      current = current.getNext();
-    }
-
-    StringBuilder builder = new StringBuilder("function(")
-        .append(Joiner.on(", ").join(parts))
-        .append(")");
-
-    String returnType = formatTypeExpression(resolver, current);
-    if (!isNullOrEmpty(returnType)) {
-      builder.append(": ").append(returnType);
-    }
-
-    return builder.toString();
-  }
-
-  private static String formatRecordType(Linker resolver, Node node) {
-    StringBuilder builder = new StringBuilder();
-
-    for (Node fieldTypeNode = node.getFirstChild(); fieldTypeNode != null;
-        fieldTypeNode = fieldTypeNode.getNext()) {
-      // Get the property's name.
-      Node fieldNameNode = fieldTypeNode;
-      boolean hasType = false;
-
-      if (fieldTypeNode.getType() == Token.COLON) {
-        fieldNameNode = fieldTypeNode.getFirstChild();
-        hasType = true;
-      }
-
-      String fieldName = getOriginalName(fieldNameNode);
-      if (fieldName.startsWith("'") || fieldName.startsWith("\"")) {
-        fieldName = fieldName.substring(1, fieldName.length() - 1);
-      }
-
-      // Get the property type.
-      String type;
-      if (hasType) {
-        type = formatTypeExpression(resolver, fieldTypeNode.getLastChild());
-      } else {
-        type = "?";
-      }
-
-      if (builder.length() != 0) {
-        builder.append(", ");
-      }
-      builder.append(fieldName)
-          .append(": ")
-          .append(type);
-    }
-
-    return "{" + builder + "}";
-  }
-
-  private static String getOriginalName(Node node) {
-    Object value = node.getProp(Node.ORIGINALNAME_PROP);
-    if (value instanceof String) {
-      return (String) value;
-    }
-    return node.getString();
   }
 
   private static class LinkInfo {

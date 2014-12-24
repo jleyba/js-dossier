@@ -54,7 +54,6 @@ import com.google.common.collect.Ordering;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.javascript.rhino.JSDocInfo;
-import com.google.javascript.rhino.JSTypeExpression;
 import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.jstype.EnumType;
 import com.google.javascript.rhino.jstype.FunctionType;
@@ -591,7 +590,7 @@ class HtmlDocWriter implements DocWriter {
 
             JsType.TypeDef.Builder builder = JsType.TypeDef.newBuilder()
                 .setName(name)
-                .setTypeHtml(formatTypeExpression(jsdoc.getType(), linker))
+                .setType(formatTypeExpression(typeRegistry.evaluate(jsdoc.getType()), linker))
                 .setSource(linker.getSourceLink(typedef.getNode()))
                 .setDescription(getBlockDescription(linker, jsdoc))
                 .setVisibility(Dossier.Visibility.valueOf(jsdoc.getVisibility().name()));
@@ -811,59 +810,9 @@ class HtmlDocWriter implements DocWriter {
             property.getName(), property.getType(), property.getNode(), jsDoc));
 
     if (jsDoc != null && jsDoc.getType() != null) {
-      builder.setTypeHtml(formatTypeExpression(jsDoc.getType(), linker));
-
+      builder.setType(formatTypeExpression(typeRegistry.evaluate(jsDoc.getType()), linker));
     } else if (property.getType() != null) {
-      JSType propertyType = property.getType();
-
-      // Since we don't document prototype objects, if the property refers to a prototype,
-      // try to link to the owner function.
-      boolean isPrototype = propertyType.isFunctionPrototypeType();
-      if (isPrototype) {
-        propertyType = ObjectType.cast(propertyType).getOwnerFunction();
-
-        // If the owner function is a constructor, the propertyType will be of the form
-        // "function(new: Type)".  We want to link to "Type".
-        if (propertyType.isConstructor()) {
-          propertyType = propertyType.toObjectType().getTypeOfThis();
-        }
-      }
-
-      NominalType nominalType = null;
-      if (!propertyType.isUnknownType()) {
-        nominalType = typeRegistry.getNominalType(getDisplayName(propertyType));
-        if (nominalType == null) {
-          nominalType = typeRegistry.getNominalType(getTypeName(propertyType));
-        }
-      }
-
-      if (nominalType != null) {
-        String fullName = linker.getDisplayName(nominalType);
-        if (isPrototype) {
-          fullName += ".prototype";
-        }
-        String link = null;
-        // TODO
-//        String link = linker.getLink(propertyTypeDescriptor);
-        if (isNullOrEmpty(link)) {
-          builder.setTypeHtml(fullName);
-        } else {
-          builder.setTypeHtml(String.format("<a href=\"%s\">%s</a>", link, fullName));
-        }
-
-      } else {
-        String typeName = propertyType.toString();
-        if (isPrototype) {
-          typeName += ".prototype";
-        }
-
-        String link = linker.getLink(propertyType.toString());
-        if (link == null) {
-          builder.setTypeHtml(typeName);
-        } else {
-          builder.setTypeHtml(String.format("<a href=\"%s\">%s</a>", link, typeName));
-        }
-      }
+      builder.setType(formatTypeExpression(property.getType(), linker));
     }
 
     return builder.build();

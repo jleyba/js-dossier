@@ -8290,33 +8290,32 @@ public final class Dossier {
     com.github.jleyba.dossier.proto.Dossier.BasePropertyOrBuilder getBaseOrBuilder();
 
     /**
-     * <code>optional string type_html = 2;</code>
+     * <code>optional .dossier.Comment type = 2;</code>
      *
      * <pre>
      * HTML snippet declaring the property type. May be omitted if the type is
      * unknown.
      * </pre>
      */
-    boolean hasTypeHtml();
+    boolean hasType();
     /**
-     * <code>optional string type_html = 2;</code>
+     * <code>optional .dossier.Comment type = 2;</code>
      *
      * <pre>
      * HTML snippet declaring the property type. May be omitted if the type is
      * unknown.
      * </pre>
      */
-    java.lang.String getTypeHtml();
+    com.github.jleyba.dossier.proto.Dossier.Comment getType();
     /**
-     * <code>optional string type_html = 2;</code>
+     * <code>optional .dossier.Comment type = 2;</code>
      *
      * <pre>
      * HTML snippet declaring the property type. May be omitted if the type is
      * unknown.
      * </pre>
      */
-    com.google.protobuf.ByteString
-        getTypeHtmlBytes();
+    com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder getTypeOrBuilder();
   }
   /**
    * Protobuf type {@code dossier.Property}
@@ -8388,9 +8387,16 @@ public final class Dossier {
               break;
             }
             case 18: {
-              com.google.protobuf.ByteString bs = input.readBytes();
+              com.github.jleyba.dossier.proto.Dossier.Comment.Builder subBuilder = null;
+              if (((bitField0_ & 0x00000002) == 0x00000002)) {
+                subBuilder = type_.toBuilder();
+              }
+              type_ = input.readMessage(com.github.jleyba.dossier.proto.Dossier.Comment.PARSER, extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(type_);
+                type_ = subBuilder.buildPartial();
+              }
               bitField0_ |= 0x00000002;
-              typeHtml_ = bs;
               break;
             }
           }
@@ -8454,66 +8460,45 @@ public final class Dossier {
       return base_;
     }
 
-    public static final int TYPE_HTML_FIELD_NUMBER = 2;
-    private java.lang.Object typeHtml_;
+    public static final int TYPE_FIELD_NUMBER = 2;
+    private com.github.jleyba.dossier.proto.Dossier.Comment type_;
     /**
-     * <code>optional string type_html = 2;</code>
+     * <code>optional .dossier.Comment type = 2;</code>
      *
      * <pre>
      * HTML snippet declaring the property type. May be omitted if the type is
      * unknown.
      * </pre>
      */
-    public boolean hasTypeHtml() {
+    public boolean hasType() {
       return ((bitField0_ & 0x00000002) == 0x00000002);
     }
     /**
-     * <code>optional string type_html = 2;</code>
+     * <code>optional .dossier.Comment type = 2;</code>
      *
      * <pre>
      * HTML snippet declaring the property type. May be omitted if the type is
      * unknown.
      * </pre>
      */
-    public java.lang.String getTypeHtml() {
-      java.lang.Object ref = typeHtml_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          typeHtml_ = s;
-        }
-        return s;
-      }
+    public com.github.jleyba.dossier.proto.Dossier.Comment getType() {
+      return type_;
     }
     /**
-     * <code>optional string type_html = 2;</code>
+     * <code>optional .dossier.Comment type = 2;</code>
      *
      * <pre>
      * HTML snippet declaring the property type. May be omitted if the type is
      * unknown.
      * </pre>
      */
-    public com.google.protobuf.ByteString
-        getTypeHtmlBytes() {
-      java.lang.Object ref = typeHtml_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        typeHtml_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
+    public com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder getTypeOrBuilder() {
+      return type_;
     }
 
     private void initFields() {
       base_ = com.github.jleyba.dossier.proto.Dossier.BaseProperty.getDefaultInstance();
-      typeHtml_ = "";
+      type_ = com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -8529,6 +8514,12 @@ public final class Dossier {
         memoizedIsInitialized = 0;
         return false;
       }
+      if (hasType()) {
+        if (!getType().isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+      }
       memoizedIsInitialized = 1;
       return true;
     }
@@ -8540,7 +8531,7 @@ public final class Dossier {
         output.writeMessage(1, base_);
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        output.writeBytes(2, getTypeHtmlBytes());
+        output.writeMessage(2, type_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -8557,7 +8548,7 @@ public final class Dossier {
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(2, getTypeHtmlBytes());
+          .computeMessageSize(2, type_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -8673,6 +8664,7 @@ public final class Dossier {
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
           getBaseFieldBuilder();
+          getTypeFieldBuilder();
         }
       }
       private static Builder create() {
@@ -8687,7 +8679,11 @@ public final class Dossier {
           baseBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000001);
-        typeHtml_ = "";
+        if (typeBuilder_ == null) {
+          type_ = com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance();
+        } else {
+          typeBuilder_.clear();
+        }
         bitField0_ = (bitField0_ & ~0x00000002);
         return this;
       }
@@ -8728,7 +8724,11 @@ public final class Dossier {
         if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
           to_bitField0_ |= 0x00000002;
         }
-        result.typeHtml_ = typeHtml_;
+        if (typeBuilder_ == null) {
+          result.type_ = type_;
+        } else {
+          result.type_ = typeBuilder_.build();
+        }
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -8748,10 +8748,8 @@ public final class Dossier {
         if (other.hasBase()) {
           mergeBase(other.getBase());
         }
-        if (other.hasTypeHtml()) {
-          bitField0_ |= 0x00000002;
-          typeHtml_ = other.typeHtml_;
-          onChanged();
+        if (other.hasType()) {
+          mergeType(other.getType());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -8765,6 +8763,12 @@ public final class Dossier {
         if (!getBase().isInitialized()) {
           
           return false;
+        }
+        if (hasType()) {
+          if (!getType().isInitialized()) {
+            
+            return false;
+          }
         }
         return true;
       }
@@ -8904,110 +8908,165 @@ public final class Dossier {
         return baseBuilder_;
       }
 
-      private java.lang.Object typeHtml_ = "";
+      private com.github.jleyba.dossier.proto.Dossier.Comment type_ = com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          com.github.jleyba.dossier.proto.Dossier.Comment, com.github.jleyba.dossier.proto.Dossier.Comment.Builder, com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder> typeBuilder_;
       /**
-       * <code>optional string type_html = 2;</code>
+       * <code>optional .dossier.Comment type = 2;</code>
        *
        * <pre>
        * HTML snippet declaring the property type. May be omitted if the type is
        * unknown.
        * </pre>
        */
-      public boolean hasTypeHtml() {
+      public boolean hasType() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
       }
       /**
-       * <code>optional string type_html = 2;</code>
+       * <code>optional .dossier.Comment type = 2;</code>
        *
        * <pre>
        * HTML snippet declaring the property type. May be omitted if the type is
        * unknown.
        * </pre>
        */
-      public java.lang.String getTypeHtml() {
-        java.lang.Object ref = typeHtml_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            typeHtml_ = s;
+      public com.github.jleyba.dossier.proto.Dossier.Comment getType() {
+        if (typeBuilder_ == null) {
+          return type_;
+        } else {
+          return typeBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>optional .dossier.Comment type = 2;</code>
+       *
+       * <pre>
+       * HTML snippet declaring the property type. May be omitted if the type is
+       * unknown.
+       * </pre>
+       */
+      public Builder setType(com.github.jleyba.dossier.proto.Dossier.Comment value) {
+        if (typeBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
           }
-          return s;
+          type_ = value;
+          onChanged();
         } else {
-          return (java.lang.String) ref;
+          typeBuilder_.setMessage(value);
         }
-      }
-      /**
-       * <code>optional string type_html = 2;</code>
-       *
-       * <pre>
-       * HTML snippet declaring the property type. May be omitted if the type is
-       * unknown.
-       * </pre>
-       */
-      public com.google.protobuf.ByteString
-          getTypeHtmlBytes() {
-        java.lang.Object ref = typeHtml_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          typeHtml_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>optional string type_html = 2;</code>
-       *
-       * <pre>
-       * HTML snippet declaring the property type. May be omitted if the type is
-       * unknown.
-       * </pre>
-       */
-      public Builder setTypeHtml(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000002;
-        typeHtml_ = value;
-        onChanged();
+        bitField0_ |= 0x00000002;
         return this;
       }
       /**
-       * <code>optional string type_html = 2;</code>
+       * <code>optional .dossier.Comment type = 2;</code>
        *
        * <pre>
        * HTML snippet declaring the property type. May be omitted if the type is
        * unknown.
        * </pre>
        */
-      public Builder clearTypeHtml() {
+      public Builder setType(
+          com.github.jleyba.dossier.proto.Dossier.Comment.Builder builderForValue) {
+        if (typeBuilder_ == null) {
+          type_ = builderForValue.build();
+          onChanged();
+        } else {
+          typeBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000002;
+        return this;
+      }
+      /**
+       * <code>optional .dossier.Comment type = 2;</code>
+       *
+       * <pre>
+       * HTML snippet declaring the property type. May be omitted if the type is
+       * unknown.
+       * </pre>
+       */
+      public Builder mergeType(com.github.jleyba.dossier.proto.Dossier.Comment value) {
+        if (typeBuilder_ == null) {
+          if (((bitField0_ & 0x00000002) == 0x00000002) &&
+              type_ != com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance()) {
+            type_ =
+              com.github.jleyba.dossier.proto.Dossier.Comment.newBuilder(type_).mergeFrom(value).buildPartial();
+          } else {
+            type_ = value;
+          }
+          onChanged();
+        } else {
+          typeBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000002;
+        return this;
+      }
+      /**
+       * <code>optional .dossier.Comment type = 2;</code>
+       *
+       * <pre>
+       * HTML snippet declaring the property type. May be omitted if the type is
+       * unknown.
+       * </pre>
+       */
+      public Builder clearType() {
+        if (typeBuilder_ == null) {
+          type_ = com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance();
+          onChanged();
+        } else {
+          typeBuilder_.clear();
+        }
         bitField0_ = (bitField0_ & ~0x00000002);
-        typeHtml_ = getDefaultInstance().getTypeHtml();
-        onChanged();
         return this;
       }
       /**
-       * <code>optional string type_html = 2;</code>
+       * <code>optional .dossier.Comment type = 2;</code>
        *
        * <pre>
        * HTML snippet declaring the property type. May be omitted if the type is
        * unknown.
        * </pre>
        */
-      public Builder setTypeHtmlBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000002;
-        typeHtml_ = value;
+      public com.github.jleyba.dossier.proto.Dossier.Comment.Builder getTypeBuilder() {
+        bitField0_ |= 0x00000002;
         onChanged();
-        return this;
+        return getTypeFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>optional .dossier.Comment type = 2;</code>
+       *
+       * <pre>
+       * HTML snippet declaring the property type. May be omitted if the type is
+       * unknown.
+       * </pre>
+       */
+      public com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder getTypeOrBuilder() {
+        if (typeBuilder_ != null) {
+          return typeBuilder_.getMessageOrBuilder();
+        } else {
+          return type_;
+        }
+      }
+      /**
+       * <code>optional .dossier.Comment type = 2;</code>
+       *
+       * <pre>
+       * HTML snippet declaring the property type. May be omitted if the type is
+       * unknown.
+       * </pre>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          com.github.jleyba.dossier.proto.Dossier.Comment, com.github.jleyba.dossier.proto.Dossier.Comment.Builder, com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder> 
+          getTypeFieldBuilder() {
+        if (typeBuilder_ == null) {
+          typeBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              com.github.jleyba.dossier.proto.Dossier.Comment, com.github.jleyba.dossier.proto.Dossier.Comment.Builder, com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder>(
+                  getType(),
+                  getParentForChildren(),
+                  isClean());
+          type_ = null;
+        }
+        return typeBuilder_;
       }
 
       // @@protoc_insertion_point(builder_scope:dossier.Property)
@@ -19217,18 +19276,17 @@ public final class Dossier {
           getNameBytes();
 
       /**
-       * <code>required string type_html = 2;</code>
+       * <code>required .dossier.Comment type = 2;</code>
        */
-      boolean hasTypeHtml();
+      boolean hasType();
       /**
-       * <code>required string type_html = 2;</code>
+       * <code>required .dossier.Comment type = 2;</code>
        */
-      java.lang.String getTypeHtml();
+      com.github.jleyba.dossier.proto.Dossier.Comment getType();
       /**
-       * <code>required string type_html = 2;</code>
+       * <code>required .dossier.Comment type = 2;</code>
        */
-      com.google.protobuf.ByteString
-          getTypeHtmlBytes();
+      com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder getTypeOrBuilder();
 
       /**
        * <code>required .dossier.SourceLink source = 3;</code>
@@ -19341,9 +19399,16 @@ public final class Dossier {
                 break;
               }
               case 18: {
-                com.google.protobuf.ByteString bs = input.readBytes();
+                com.github.jleyba.dossier.proto.Dossier.Comment.Builder subBuilder = null;
+                if (((bitField0_ & 0x00000002) == 0x00000002)) {
+                  subBuilder = type_.toBuilder();
+                }
+                type_ = input.readMessage(com.github.jleyba.dossier.proto.Dossier.Comment.PARSER, extensionRegistry);
+                if (subBuilder != null) {
+                  subBuilder.mergeFrom(type_);
+                  type_ = subBuilder.buildPartial();
+                }
                 bitField0_ |= 0x00000002;
-                typeHtml_ = bs;
                 break;
               }
               case 26: {
@@ -19478,46 +19543,25 @@ public final class Dossier {
         }
       }
 
-      public static final int TYPE_HTML_FIELD_NUMBER = 2;
-      private java.lang.Object typeHtml_;
+      public static final int TYPE_FIELD_NUMBER = 2;
+      private com.github.jleyba.dossier.proto.Dossier.Comment type_;
       /**
-       * <code>required string type_html = 2;</code>
+       * <code>required .dossier.Comment type = 2;</code>
        */
-      public boolean hasTypeHtml() {
+      public boolean hasType() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
       }
       /**
-       * <code>required string type_html = 2;</code>
+       * <code>required .dossier.Comment type = 2;</code>
        */
-      public java.lang.String getTypeHtml() {
-        java.lang.Object ref = typeHtml_;
-        if (ref instanceof java.lang.String) {
-          return (java.lang.String) ref;
-        } else {
-          com.google.protobuf.ByteString bs = 
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            typeHtml_ = s;
-          }
-          return s;
-        }
+      public com.github.jleyba.dossier.proto.Dossier.Comment getType() {
+        return type_;
       }
       /**
-       * <code>required string type_html = 2;</code>
+       * <code>required .dossier.Comment type = 2;</code>
        */
-      public com.google.protobuf.ByteString
-          getTypeHtmlBytes() {
-        java.lang.Object ref = typeHtml_;
-        if (ref instanceof java.lang.String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          typeHtml_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
+      public com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder getTypeOrBuilder() {
+        return type_;
       }
 
       public static final int SOURCE_FIELD_NUMBER = 3;
@@ -19600,7 +19644,7 @@ public final class Dossier {
 
       private void initFields() {
         name_ = "";
-        typeHtml_ = "";
+        type_ = com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance();
         source_ = com.github.jleyba.dossier.proto.Dossier.SourceLink.getDefaultInstance();
         description_ = com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance();
         deprecation_ = com.github.jleyba.dossier.proto.Dossier.Deprecation.getDefaultInstance();
@@ -19616,7 +19660,7 @@ public final class Dossier {
           memoizedIsInitialized = 0;
           return false;
         }
-        if (!hasTypeHtml()) {
+        if (!hasType()) {
           memoizedIsInitialized = 0;
           return false;
         }
@@ -19625,6 +19669,10 @@ public final class Dossier {
           return false;
         }
         if (!hasDescription()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+        if (!getType().isInitialized()) {
           memoizedIsInitialized = 0;
           return false;
         }
@@ -19653,7 +19701,7 @@ public final class Dossier {
           output.writeBytes(1, getNameBytes());
         }
         if (((bitField0_ & 0x00000002) == 0x00000002)) {
-          output.writeBytes(2, getTypeHtmlBytes());
+          output.writeMessage(2, type_);
         }
         if (((bitField0_ & 0x00000004) == 0x00000004)) {
           output.writeMessage(3, source_);
@@ -19682,7 +19730,7 @@ public final class Dossier {
         }
         if (((bitField0_ & 0x00000002) == 0x00000002)) {
           size += com.google.protobuf.CodedOutputStream
-            .computeBytesSize(2, getTypeHtmlBytes());
+            .computeMessageSize(2, type_);
         }
         if (((bitField0_ & 0x00000004) == 0x00000004)) {
           size += com.google.protobuf.CodedOutputStream
@@ -19813,6 +19861,7 @@ public final class Dossier {
         }
         private void maybeForceBuilderInitialization() {
           if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+            getTypeFieldBuilder();
             getSourceFieldBuilder();
             getDescriptionFieldBuilder();
             getDeprecationFieldBuilder();
@@ -19826,7 +19875,11 @@ public final class Dossier {
           super.clear();
           name_ = "";
           bitField0_ = (bitField0_ & ~0x00000001);
-          typeHtml_ = "";
+          if (typeBuilder_ == null) {
+            type_ = com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance();
+          } else {
+            typeBuilder_.clear();
+          }
           bitField0_ = (bitField0_ & ~0x00000002);
           if (sourceBuilder_ == null) {
             source_ = com.github.jleyba.dossier.proto.Dossier.SourceLink.getDefaultInstance();
@@ -19883,7 +19936,11 @@ public final class Dossier {
           if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
             to_bitField0_ |= 0x00000002;
           }
-          result.typeHtml_ = typeHtml_;
+          if (typeBuilder_ == null) {
+            result.type_ = type_;
+          } else {
+            result.type_ = typeBuilder_.build();
+          }
           if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
             to_bitField0_ |= 0x00000004;
           }
@@ -19933,10 +19990,8 @@ public final class Dossier {
             name_ = other.name_;
             onChanged();
           }
-          if (other.hasTypeHtml()) {
-            bitField0_ |= 0x00000002;
-            typeHtml_ = other.typeHtml_;
-            onChanged();
+          if (other.hasType()) {
+            mergeType(other.getType());
           }
           if (other.hasSource()) {
             mergeSource(other.getSource());
@@ -19959,7 +20014,7 @@ public final class Dossier {
             
             return false;
           }
-          if (!hasTypeHtml()) {
+          if (!hasType()) {
             
             return false;
           }
@@ -19968,6 +20023,10 @@ public final class Dossier {
             return false;
           }
           if (!hasDescription()) {
+            
+            return false;
+          }
+          if (!getType().isInitialized()) {
             
             return false;
           }
@@ -20083,80 +20142,120 @@ public final class Dossier {
           return this;
         }
 
-        private java.lang.Object typeHtml_ = "";
+        private com.github.jleyba.dossier.proto.Dossier.Comment type_ = com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance();
+        private com.google.protobuf.SingleFieldBuilder<
+            com.github.jleyba.dossier.proto.Dossier.Comment, com.github.jleyba.dossier.proto.Dossier.Comment.Builder, com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder> typeBuilder_;
         /**
-         * <code>required string type_html = 2;</code>
+         * <code>required .dossier.Comment type = 2;</code>
          */
-        public boolean hasTypeHtml() {
+        public boolean hasType() {
           return ((bitField0_ & 0x00000002) == 0x00000002);
         }
         /**
-         * <code>required string type_html = 2;</code>
+         * <code>required .dossier.Comment type = 2;</code>
          */
-        public java.lang.String getTypeHtml() {
-          java.lang.Object ref = typeHtml_;
-          if (!(ref instanceof java.lang.String)) {
-            com.google.protobuf.ByteString bs =
-                (com.google.protobuf.ByteString) ref;
-            java.lang.String s = bs.toStringUtf8();
-            if (bs.isValidUtf8()) {
-              typeHtml_ = s;
+        public com.github.jleyba.dossier.proto.Dossier.Comment getType() {
+          if (typeBuilder_ == null) {
+            return type_;
+          } else {
+            return typeBuilder_.getMessage();
+          }
+        }
+        /**
+         * <code>required .dossier.Comment type = 2;</code>
+         */
+        public Builder setType(com.github.jleyba.dossier.proto.Dossier.Comment value) {
+          if (typeBuilder_ == null) {
+            if (value == null) {
+              throw new NullPointerException();
             }
-            return s;
+            type_ = value;
+            onChanged();
           } else {
-            return (java.lang.String) ref;
+            typeBuilder_.setMessage(value);
           }
-        }
-        /**
-         * <code>required string type_html = 2;</code>
-         */
-        public com.google.protobuf.ByteString
-            getTypeHtmlBytes() {
-          java.lang.Object ref = typeHtml_;
-          if (ref instanceof String) {
-            com.google.protobuf.ByteString b = 
-                com.google.protobuf.ByteString.copyFromUtf8(
-                    (java.lang.String) ref);
-            typeHtml_ = b;
-            return b;
-          } else {
-            return (com.google.protobuf.ByteString) ref;
-          }
-        }
-        /**
-         * <code>required string type_html = 2;</code>
-         */
-        public Builder setTypeHtml(
-            java.lang.String value) {
-          if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000002;
-          typeHtml_ = value;
-          onChanged();
+          bitField0_ |= 0x00000002;
           return this;
         }
         /**
-         * <code>required string type_html = 2;</code>
+         * <code>required .dossier.Comment type = 2;</code>
          */
-        public Builder clearTypeHtml() {
+        public Builder setType(
+            com.github.jleyba.dossier.proto.Dossier.Comment.Builder builderForValue) {
+          if (typeBuilder_ == null) {
+            type_ = builderForValue.build();
+            onChanged();
+          } else {
+            typeBuilder_.setMessage(builderForValue.build());
+          }
+          bitField0_ |= 0x00000002;
+          return this;
+        }
+        /**
+         * <code>required .dossier.Comment type = 2;</code>
+         */
+        public Builder mergeType(com.github.jleyba.dossier.proto.Dossier.Comment value) {
+          if (typeBuilder_ == null) {
+            if (((bitField0_ & 0x00000002) == 0x00000002) &&
+                type_ != com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance()) {
+              type_ =
+                com.github.jleyba.dossier.proto.Dossier.Comment.newBuilder(type_).mergeFrom(value).buildPartial();
+            } else {
+              type_ = value;
+            }
+            onChanged();
+          } else {
+            typeBuilder_.mergeFrom(value);
+          }
+          bitField0_ |= 0x00000002;
+          return this;
+        }
+        /**
+         * <code>required .dossier.Comment type = 2;</code>
+         */
+        public Builder clearType() {
+          if (typeBuilder_ == null) {
+            type_ = com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance();
+            onChanged();
+          } else {
+            typeBuilder_.clear();
+          }
           bitField0_ = (bitField0_ & ~0x00000002);
-          typeHtml_ = getDefaultInstance().getTypeHtml();
-          onChanged();
           return this;
         }
         /**
-         * <code>required string type_html = 2;</code>
+         * <code>required .dossier.Comment type = 2;</code>
          */
-        public Builder setTypeHtmlBytes(
-            com.google.protobuf.ByteString value) {
-          if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000002;
-          typeHtml_ = value;
+        public com.github.jleyba.dossier.proto.Dossier.Comment.Builder getTypeBuilder() {
+          bitField0_ |= 0x00000002;
           onChanged();
-          return this;
+          return getTypeFieldBuilder().getBuilder();
+        }
+        /**
+         * <code>required .dossier.Comment type = 2;</code>
+         */
+        public com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder getTypeOrBuilder() {
+          if (typeBuilder_ != null) {
+            return typeBuilder_.getMessageOrBuilder();
+          } else {
+            return type_;
+          }
+        }
+        /**
+         * <code>required .dossier.Comment type = 2;</code>
+         */
+        private com.google.protobuf.SingleFieldBuilder<
+            com.github.jleyba.dossier.proto.Dossier.Comment, com.github.jleyba.dossier.proto.Dossier.Comment.Builder, com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder> 
+            getTypeFieldBuilder() {
+          if (typeBuilder_ == null) {
+            typeBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+                com.github.jleyba.dossier.proto.Dossier.Comment, com.github.jleyba.dossier.proto.Dossier.Comment.Builder, com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder>(
+                    getType(),
+                    getParentForChildren(),
+                    isClean());
+            type_ = null;
+          }
+          return typeBuilder_;
         }
 
         private com.github.jleyba.dossier.proto.Dossier.SourceLink source_ = com.github.jleyba.dossier.proto.Dossier.SourceLink.getDefaultInstance();
@@ -29226,68 +29325,69 @@ public final class Dossier {
       "\020.dossier.Comment\022)\n\013deprecation\030\004 \001(\0132\024" +
       ".dossier.Deprecation\022/\n\nvisibility\030\005 \001(\016" +
       "2\023.dossier.Visibility:\006PUBLIC\022\033\n\004tags\030\006 ",
-      "\001(\0132\r.dossier.Tags\"B\n\010Property\022#\n\004base\030\001" +
-      " \002(\0132\025.dossier.BaseProperty\022\021\n\ttype_html" +
-      "\030\002 \001(\t\"\305\002\n\010Function\022#\n\004base\030\001 \002(\0132\025.doss" +
-      "ier.BaseProperty\022\025\n\rtemplate_name\030\002 \003(\t\022" +
-      "\035\n\016is_constructor\030\003 \001(\010:\005false\022+\n\tparame" +
-      "ter\030\004 \003(\0132\030.dossier.Function.Detail\022(\n\006r" +
-      "eturn\030\005 \001(\0132\030.dossier.Function.Detail\022(\n" +
-      "\006thrown\030\006 \003(\0132\030.dossier.Function.Detail\032" +
-      "]\n\006Detail\022\014\n\004name\030\001 \001(\t\022\036\n\004type\030\002 \001(\0132\020." +
-      "dossier.Comment\022%\n\013description\030\003 \001(\0132\020.d",
-      "ossier.Comment\"q\n\tPrototype\022\014\n\004name\030\001 \002(" +
-      "\t\022\014\n\004href\030\002 \001(\t\022#\n\010function\030\003 \003(\0132\021.doss" +
-      "ier.Function\022#\n\010property\030\004 \003(\0132\021.dossier" +
-      ".Property\"\362\001\n\013Enumeration\022\036\n\004type\030\001 \002(\0132" +
-      "\020.dossier.Comment\022)\n\005value\030\002 \003(\0132\032.dossi" +
-      "er.Enumeration.Value\022/\n\nvisibility\030\003 \001(\016" +
-      "2\023.dossier.Visibility:\006PUBLIC\032g\n\005Value\022\014" +
-      "\n\004name\030\001 \002(\t\022%\n\013description\030\002 \001(\0132\020.doss" +
-      "ier.Comment\022)\n\013deprecation\030\003 \001(\0132\024.dossi" +
-      "er.Deprecation\"\251\001\n\005Index\022\014\n\004home\030\001 \002(\t\022\037",
-      "\n\004type\030\002 \003(\0132\021.dossier.TypeLink\022%\n\006modul" +
-      "e\030\003 \003(\0132\025.dossier.Index.Module\032J\n\006Module" +
-      "\022\037\n\004link\030\001 \002(\0132\021.dossier.TypeLink\022\037\n\004typ" +
-      "e\030\002 \003(\0132\021.dossier.TypeLink\"\227\010\n\006JsType\022\014\n" +
-      "\004name\030\001 \002(\t\022#\n\006source\030\005 \002(\0132\023.dossier.So" +
-      "urceLink\022+\n\006nested\030\006 \003(\0132\033.dossier.JsTyp" +
-      "e.TypeSummary\022%\n\013description\030\007 \002(\0132\020.dos" +
-      "sier.Comment\022\033\n\004tags\030\010 \002(\0132\r.dossier.Tag" +
-      "s\022)\n\013deprecation\030\t \001(\0132\024.dossier.Depreca" +
-      "tion\022)\n\010type_def\030\n \003(\0132\027.dossier.JsType.",
-      "TypeDef\022)\n\013enumeration\030\013 \001(\0132\024.dossier.E" +
-      "numeration\022*\n\017static_function\030\014 \003(\0132\021.do" +
-      "ssier.Function\022*\n\017static_property\030\r \003(\0132" +
-      "\021.dossier.Property\022(\n\rmain_function\030\016 \001(" +
-      "\0132\021.dossier.Function\022%\n\tprototype\030\017 \003(\0132" +
-      "\022.dossier.Prototype\022#\n\024has_instance_meth" +
-      "ods\030\020 \001(\010:\005false\022&\n\027has_instance_propert" +
-      "ies\030\021 \001(\010:\005false\022(\n\rextended_type\030\022 \003(\0132" +
-      "\021.dossier.TypeLink\022+\n\020implemented_type\030\023" +
-      " \003(\0132\021.dossier.TypeLink\022,\n\021compiler_cons",
-      "tant\030\024 \003(\0132\021.dossier.Property\022!\n\006module\030" +
-      "\025 \001(\0132\021.dossier.TypeLink\022\'\n\014aliased_type" +
-      "\030\026 \001(\0132\021.dossier.TypeLink\032L\n\013TypeSummary" +
-      "\022\014\n\004name\030\001 \002(\t\022\014\n\004href\030\002 \002(\t\022!\n\007summary\030" +
-      "\003 \002(\0132\020.dossier.Comment\032\322\001\n\007TypeDef\022\014\n\004n" +
-      "ame\030\001 \002(\t\022\021\n\ttype_html\030\002 \002(\t\022#\n\006source\030\003" +
-      " \002(\0132\023.dossier.SourceLink\022%\n\013description" +
-      "\030\004 \002(\0132\020.dossier.Comment\022)\n\013deprecation\030" +
-      "\005 \001(\0132\024.dossier.Deprecation\022/\n\nvisibilit" +
-      "y\030\006 \001(\0162\023.dossier.Visibility:\006PUBLIC\"}\n\023",
-      "IndexFileRenderSpec\022%\n\tresources\030\001 \002(\0132\022" +
-      ".dossier.Resources\022 \n\006readme\030\002 \001(\0132\020.dos" +
-      "sier.Comment\022\035\n\005index\030\003 \002(\0132\016.dossier.In" +
-      "dex\"\177\n\024SourceFileRenderSpec\022%\n\tresources" +
-      "\030\001 \002(\0132\022.dossier.Resources\022!\n\004file\030\002 \002(\013" +
-      "2\023.dossier.SourceFile\022\035\n\005index\030\003 \002(\0132\016.d" +
-      "ossier.Index\"w\n\020JsTypeRenderSpec\022\035\n\004type" +
-      "\030\001 \002(\0132\017.dossier.JsType\022%\n\tresources\030\002 \002" +
-      "(\0132\022.dossier.Resources\022\035\n\005index\030\003 \002(\0132\016." +
-      "dossier.Index*A\n\nVisibility\022\n\n\006PUBLIC\020\000\022",
-      "\r\n\tPROTECTED\020\001\022\013\n\007PRIVATE\020\002\022\013\n\007PACKAGE\020\003" +
-      "B!\n\037com.github.jleyba.dossier.proto"
+      "\001(\0132\r.dossier.Tags\"O\n\010Property\022#\n\004base\030\001" +
+      " \002(\0132\025.dossier.BaseProperty\022\036\n\004type\030\002 \001(" +
+      "\0132\020.dossier.Comment\"\305\002\n\010Function\022#\n\004base" +
+      "\030\001 \002(\0132\025.dossier.BaseProperty\022\025\n\rtemplat" +
+      "e_name\030\002 \003(\t\022\035\n\016is_constructor\030\003 \001(\010:\005fa" +
+      "lse\022+\n\tparameter\030\004 \003(\0132\030.dossier.Functio" +
+      "n.Detail\022(\n\006return\030\005 \001(\0132\030.dossier.Funct" +
+      "ion.Detail\022(\n\006thrown\030\006 \003(\0132\030.dossier.Fun" +
+      "ction.Detail\032]\n\006Detail\022\014\n\004name\030\001 \001(\t\022\036\n\004" +
+      "type\030\002 \001(\0132\020.dossier.Comment\022%\n\013descript",
+      "ion\030\003 \001(\0132\020.dossier.Comment\"q\n\tPrototype" +
+      "\022\014\n\004name\030\001 \002(\t\022\014\n\004href\030\002 \001(\t\022#\n\010function" +
+      "\030\003 \003(\0132\021.dossier.Function\022#\n\010property\030\004 " +
+      "\003(\0132\021.dossier.Property\"\362\001\n\013Enumeration\022\036" +
+      "\n\004type\030\001 \002(\0132\020.dossier.Comment\022)\n\005value\030" +
+      "\002 \003(\0132\032.dossier.Enumeration.Value\022/\n\nvis" +
+      "ibility\030\003 \001(\0162\023.dossier.Visibility:\006PUBL" +
+      "IC\032g\n\005Value\022\014\n\004name\030\001 \002(\t\022%\n\013description" +
+      "\030\002 \001(\0132\020.dossier.Comment\022)\n\013deprecation\030" +
+      "\003 \001(\0132\024.dossier.Deprecation\"\251\001\n\005Index\022\014\n",
+      "\004home\030\001 \002(\t\022\037\n\004type\030\002 \003(\0132\021.dossier.Type" +
+      "Link\022%\n\006module\030\003 \003(\0132\025.dossier.Index.Mod" +
+      "ule\032J\n\006Module\022\037\n\004link\030\001 \002(\0132\021.dossier.Ty" +
+      "peLink\022\037\n\004type\030\002 \003(\0132\021.dossier.TypeLink\"" +
+      "\244\010\n\006JsType\022\014\n\004name\030\001 \002(\t\022#\n\006source\030\005 \002(\013" +
+      "2\023.dossier.SourceLink\022+\n\006nested\030\006 \003(\0132\033." +
+      "dossier.JsType.TypeSummary\022%\n\013descriptio" +
+      "n\030\007 \002(\0132\020.dossier.Comment\022\033\n\004tags\030\010 \002(\0132" +
+      "\r.dossier.Tags\022)\n\013deprecation\030\t \001(\0132\024.do" +
+      "ssier.Deprecation\022)\n\010type_def\030\n \003(\0132\027.do",
+      "ssier.JsType.TypeDef\022)\n\013enumeration\030\013 \001(" +
+      "\0132\024.dossier.Enumeration\022*\n\017static_functi" +
+      "on\030\014 \003(\0132\021.dossier.Function\022*\n\017static_pr" +
+      "operty\030\r \003(\0132\021.dossier.Property\022(\n\rmain_" +
+      "function\030\016 \001(\0132\021.dossier.Function\022%\n\tpro" +
+      "totype\030\017 \003(\0132\022.dossier.Prototype\022#\n\024has_" +
+      "instance_methods\030\020 \001(\010:\005false\022&\n\027has_ins" +
+      "tance_properties\030\021 \001(\010:\005false\022(\n\rextende" +
+      "d_type\030\022 \003(\0132\021.dossier.TypeLink\022+\n\020imple" +
+      "mented_type\030\023 \003(\0132\021.dossier.TypeLink\022,\n\021",
+      "compiler_constant\030\024 \003(\0132\021.dossier.Proper" +
+      "ty\022!\n\006module\030\025 \001(\0132\021.dossier.TypeLink\022\'\n" +
+      "\014aliased_type\030\026 \001(\0132\021.dossier.TypeLink\032L" +
+      "\n\013TypeSummary\022\014\n\004name\030\001 \002(\t\022\014\n\004href\030\002 \002(" +
+      "\t\022!\n\007summary\030\003 \002(\0132\020.dossier.Comment\032\337\001\n" +
+      "\007TypeDef\022\014\n\004name\030\001 \002(\t\022\036\n\004type\030\002 \002(\0132\020.d" +
+      "ossier.Comment\022#\n\006source\030\003 \002(\0132\023.dossier" +
+      ".SourceLink\022%\n\013description\030\004 \002(\0132\020.dossi" +
+      "er.Comment\022)\n\013deprecation\030\005 \001(\0132\024.dossie" +
+      "r.Deprecation\022/\n\nvisibility\030\006 \001(\0162\023.doss",
+      "ier.Visibility:\006PUBLIC\"}\n\023IndexFileRende" +
+      "rSpec\022%\n\tresources\030\001 \002(\0132\022.dossier.Resou" +
+      "rces\022 \n\006readme\030\002 \001(\0132\020.dossier.Comment\022\035" +
+      "\n\005index\030\003 \002(\0132\016.dossier.Index\"\177\n\024SourceF" +
+      "ileRenderSpec\022%\n\tresources\030\001 \002(\0132\022.dossi" +
+      "er.Resources\022!\n\004file\030\002 \002(\0132\023.dossier.Sou" +
+      "rceFile\022\035\n\005index\030\003 \002(\0132\016.dossier.Index\"w" +
+      "\n\020JsTypeRenderSpec\022\035\n\004type\030\001 \002(\0132\017.dossi" +
+      "er.JsType\022%\n\tresources\030\002 \002(\0132\022.dossier.R" +
+      "esources\022\035\n\005index\030\003 \002(\0132\016.dossier.Index*",
+      "A\n\nVisibility\022\n\n\006PUBLIC\020\000\022\r\n\tPROTECTED\020\001" +
+      "\022\013\n\007PRIVATE\020\002\022\013\n\007PACKAGE\020\003B!\n\037com.github" +
+      ".jleyba.dossier.proto"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -29360,7 +29460,7 @@ public final class Dossier {
     internal_static_dossier_Property_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_dossier_Property_descriptor,
-        new java.lang.String[] { "Base", "TypeHtml", });
+        new java.lang.String[] { "Base", "Type", });
     internal_static_dossier_Function_descriptor =
       getDescriptor().getMessageTypes().get(9);
     internal_static_dossier_Function_fieldAccessorTable = new
@@ -29420,7 +29520,7 @@ public final class Dossier {
     internal_static_dossier_JsType_TypeDef_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_dossier_JsType_TypeDef_descriptor,
-        new java.lang.String[] { "Name", "TypeHtml", "Source", "Description", "Deprecation", "Visibility", });
+        new java.lang.String[] { "Name", "Type", "Source", "Description", "Deprecation", "Visibility", });
     internal_static_dossier_IndexFileRenderSpec_descriptor =
       getDescriptor().getMessageTypes().get(14);
     internal_static_dossier_IndexFileRenderSpec_fieldAccessorTable = new

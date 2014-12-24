@@ -41,7 +41,7 @@ exports.PubClass = PublicClass;
 exports.Clazz = function() {
   PublicClass.call(this);
 };
-goog.inherits(PublicClass, exports.Clazz);
+goog.inherits(exports.Clazz, PublicClass);
 
 
 /** Lorem ipsum. */

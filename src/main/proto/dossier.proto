@@ -119,7 +119,7 @@ message Property {
   required BaseProperty base = 1;
   // HTML snippet declaring the property type. May be omitted if the type is
   // unknown.
-  optional string type_html = 2;
+  optional Comment type = 2;
 }
 
 
@@ -197,7 +197,7 @@ message JsType {
   // Describes a typedef defined within this type.
   message TypeDef {
     required string name = 1;
-    required string type_html = 2;
+    required Comment type = 2;
     required SourceLink source = 3;
     required Comment description = 4;
     optional Deprecation deprecation = 5;
