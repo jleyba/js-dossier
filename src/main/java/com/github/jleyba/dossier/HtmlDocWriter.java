@@ -523,26 +523,6 @@ class HtmlDocWriter implements DocWriter {
         .build();
   }
 
-  private String getTypeName(JSType type) {
-    if (type.isObject() && type.toObjectType().hasReferenceName()) {
-      return type.toObjectType().getReferenceName();
-    }
-    String typeName = type.toString();
-    if (type.getJSDocInfo() != null) {
-      JSDocInfo info = type.getJSDocInfo();
-      if (info.getAssociatedNode() != null) {
-        Node node = info.getAssociatedNode();
-        if (node.isVar() || node.isFunction()) {
-          checkState(node.getFirstChild().isName());
-          typeName = firstNonNull(
-              (String) node.getFirstChild().getProp(Node.ORIGINALNAME_PROP),
-              typeName);
-        }
-      }
-    }
-    return typeName;
-  }
-
   private void extractEnumData(NominalType type, Enumeration.Builder enumBuilder) {
     checkArgument(type.getJsType().isEnumType());
 
