@@ -235,7 +235,7 @@ message JsType {
 
   // List of inherited types for a class. This should be empty if |is_class|
   // is false. Classes should be listed in order, with the root type first.
-  repeated TypeLink extended_type = 18;
+  repeated Comment extended_type = 18;
 
   // The interfaces implemented by a class/extended by an interface. This
   // list should be empty if |is_class| and |is_interface| are false.

@@ -179,9 +179,6 @@ public class TypeRegistry {
   public LinkedList<JSType> getTypeHierarchy(JSType type) {
     LinkedList<JSType> stack = new LinkedList<>();
     for (; type != null; type = getBaseType(type)) {
-      if (type.isInstanceType()) {
-        type = ((ObjectType) type).getConstructor();
-      }
       stack.push(type);
     }
     return stack;

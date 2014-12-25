@@ -472,21 +472,23 @@ class HtmlDocWriter implements DocWriter {
     }
   }
 
-  private List<TypeLink> getInheritedTypes(NominalType nominalType) {
+  private List<Dossier.Comment> getInheritedTypes(NominalType nominalType) {
     JSType type = nominalType.getJsType();
     if (!type.isConstructor()) {
       return ImmutableList.of();
     }
 
     LinkedList<JSType> types = typeRegistry.getTypeHierarchy(type);
-    List<TypeLink> list = Lists.newArrayListWithExpectedSize(types.size());
+    List<Dossier.Comment> list = Lists.newArrayListWithExpectedSize(types.size());
     // Skip bottom of stack (type of this). Handled specially below.
     while (types.size() > 1) {
-      list.add(getTypeLink(types.pop()));
+      JSType base = types.pop();
+      verify(base.isInstanceType());
+      list.add(linker.formatTypeExpression(base));
     }
-    list.add(TypeLink.newBuilder()
-        .setText(linker.getDisplayName(nominalType))
-        .setHref("")
+    list.add(Dossier.Comment.newBuilder()
+        .addToken(Dossier.Comment.Token.newBuilder()
+            .setText(linker.getDisplayName(nominalType)))
         .build());
     return list;
   }
@@ -510,6 +512,7 @@ class HtmlDocWriter implements DocWriter {
     if (type.isInstanceType()) {
       type = type.toObjectType().getConstructor();
     }
+
     TypeLink link = linker.getLink(type);
     if (link != null) {
       return link;

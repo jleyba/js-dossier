@@ -122,18 +122,20 @@ public class RendererTest {
 
   @Test
   public void renderClassInheritance() {
-    List<Dossier.TypeLink> types = new LinkedList<>();
+    List<Dossier.Comment> types = new LinkedList<>();
     assertThat(render("dossier.soy.classInheritance", ImmutableMap.of("types", types)),
         is(""));
 
-    types.add(Dossier.TypeLink.newBuilder()
-        .setHref("foo.link").setText("Foo")
+    types.add(Dossier.Comment.newBuilder()
+        .addToken(Dossier.Comment.Token.newBuilder()
+            .setHref("foo.link")
+            .setText("Foo"))
         .build());
     assertThat(render("dossier.soy.classInheritance", ImmutableMap.of("types", types)),
         is(""));
 
-    types.add(Dossier.TypeLink.newBuilder()
-        .setHref("bar.link").setText("Bar")
+    types.add(Dossier.Comment.newBuilder()
+        .addToken(Dossier.Comment.Token.newBuilder().setText("Bar"))
         .build());
     assertThat(render("dossier.soy.classInheritance", "types", types),
         isHtml(
@@ -142,31 +144,29 @@ public class RendererTest {
             "\n  &#x2514; Bar",
             "</pre>"));
 
-    types.add(Dossier.TypeLink.newBuilder()
-        .setHref("baz.link").setText("Baz")
+    types.add(Dossier.Comment.newBuilder()
+        .addToken(Dossier.Comment.Token.newBuilder()
+            .setHref("baz.link")
+            .setText("Baz"))
+        .build());
+    types.add(Dossier.Comment.newBuilder()
+        .addToken(Dossier.Comment.Token.newBuilder()
+            .setHref("")
+            .setText("NoLink"))
+        .build());
+    types.add(Dossier.Comment.newBuilder()
+        .addToken(Dossier.Comment.Token.newBuilder()
+            .setHref("quux.link")
+            .setText("Quux"))
         .build());
     assertThat(render("dossier.soy.classInheritance", "types", types),
         isHtml(
             "<pre class=\"inheritance\">",
             "<a href=\"foo.link\">Foo</a>",
-            "\n  &#x2514; <a href=\"bar.link\">Bar</a>",
-            "\n      &#x2514; Baz",
-            "</pre>"));
-
-    types.add(Dossier.TypeLink.newBuilder()
-        .setHref("").setText("NoLink")
-        .build());
-    types.add(Dossier.TypeLink.newBuilder()
-        .setHref("quux.link").setText("Quux")
-        .build());
-    assertThat(render("dossier.soy.classInheritance", "types", types),
-        isHtml(
-            "<pre class=\"inheritance\">",
-            "<a href=\"foo.link\">Foo</a>",
-            "\n  &#x2514; <a href=\"bar.link\">Bar</a>",
+            "\n  &#x2514; Bar",
             "\n      &#x2514; <a href=\"baz.link\">Baz</a>",
             "\n          &#x2514; NoLink",
-            "\n              &#x2514; Quux",
+            "\n              &#x2514; <a href=\"quux.link\">Quux</a>",
             "</pre>"));
   }
 
@@ -414,15 +414,17 @@ public class RendererTest {
                 .setSource(Dossier.SourceLink.newBuilder().setPath("ctor-source"))
                 .setDescription(parseComment("ctor-description")))
             .addTemplateName("T"))
-        .addExtendedType(Dossier.TypeLink.newBuilder()
-            .setHref("super-one")
-            .setText("SuperClass1"))
-        .addExtendedType(Dossier.TypeLink.newBuilder()
-            .setHref("super-two")
-            .setText("SuperClass2"))
-        .addExtendedType(Dossier.TypeLink.newBuilder()
-            .setHref("#")
-            .setText("Foo"))
+        .addExtendedType(Dossier.Comment.newBuilder()
+            .addToken(Dossier.Comment.Token.newBuilder()
+                .setHref("super-one")
+                .setText("SuperClass1")))
+        .addExtendedType(Dossier.Comment.newBuilder()
+            .addToken(Dossier.Comment.Token.newBuilder()
+                .setHref("super-two")
+                .setText("SuperClass2")))
+        .addExtendedType(Dossier.Comment.newBuilder()
+            .addToken(Dossier.Comment.Token.newBuilder()
+                .setText("Foo")))
         .addImplementedType(Dossier.TypeLink.newBuilder()
             .setHref("type-one")
             .setText("Hello"))
@@ -462,15 +464,17 @@ public class RendererTest {
                 .setSource(Dossier.SourceLink.newBuilder().setPath("ctor-file"))
                 .setDescription(parseComment("ctor-description")))
             .addTemplateName("T"))
-        .addExtendedType(Dossier.TypeLink.newBuilder()
-            .setHref("super-one")
-            .setText("SuperClass1"))
-        .addExtendedType(Dossier.TypeLink.newBuilder()
-            .setHref("super-two")
-            .setText("SuperClass2"))
-        .addExtendedType(Dossier.TypeLink.newBuilder()
-            .setHref("#")
-            .setText("Foo"))
+        .addExtendedType(Dossier.Comment.newBuilder()
+            .addToken(Dossier.Comment.Token.newBuilder()
+                .setHref("super-one")
+                .setText("SuperClass1")))
+        .addExtendedType(Dossier.Comment.newBuilder()
+            .addToken(Dossier.Comment.Token.newBuilder()
+                .setHref("super-two")
+                .setText("SuperClass2")))
+        .addExtendedType(Dossier.Comment.newBuilder()
+            .addToken(Dossier.Comment.Token.newBuilder()
+                .setText("Foo")))
         .addImplementedType(Dossier.TypeLink.newBuilder()
             .setHref("type-one")
             .setText("Hello"))

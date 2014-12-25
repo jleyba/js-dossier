@@ -17764,26 +17764,26 @@ public final class Dossier {
     boolean getHasInstanceProperties();
 
     /**
-     * <code>repeated .dossier.TypeLink extended_type = 18;</code>
+     * <code>repeated .dossier.Comment extended_type = 18;</code>
      *
      * <pre>
      * List of inherited types for a class. This should be empty if |is_class|
      * is false. Classes should be listed in order, with the root type first.
      * </pre>
      */
-    java.util.List<com.github.jleyba.dossier.proto.Dossier.TypeLink> 
+    java.util.List<com.github.jleyba.dossier.proto.Dossier.Comment> 
         getExtendedTypeList();
     /**
-     * <code>repeated .dossier.TypeLink extended_type = 18;</code>
+     * <code>repeated .dossier.Comment extended_type = 18;</code>
      *
      * <pre>
      * List of inherited types for a class. This should be empty if |is_class|
      * is false. Classes should be listed in order, with the root type first.
      * </pre>
      */
-    com.github.jleyba.dossier.proto.Dossier.TypeLink getExtendedType(int index);
+    com.github.jleyba.dossier.proto.Dossier.Comment getExtendedType(int index);
     /**
-     * <code>repeated .dossier.TypeLink extended_type = 18;</code>
+     * <code>repeated .dossier.Comment extended_type = 18;</code>
      *
      * <pre>
      * List of inherited types for a class. This should be empty if |is_class|
@@ -17792,24 +17792,24 @@ public final class Dossier {
      */
     int getExtendedTypeCount();
     /**
-     * <code>repeated .dossier.TypeLink extended_type = 18;</code>
+     * <code>repeated .dossier.Comment extended_type = 18;</code>
      *
      * <pre>
      * List of inherited types for a class. This should be empty if |is_class|
      * is false. Classes should be listed in order, with the root type first.
      * </pre>
      */
-    java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.TypeLinkOrBuilder> 
+    java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder> 
         getExtendedTypeOrBuilderList();
     /**
-     * <code>repeated .dossier.TypeLink extended_type = 18;</code>
+     * <code>repeated .dossier.Comment extended_type = 18;</code>
      *
      * <pre>
      * List of inherited types for a class. This should be empty if |is_class|
      * is false. Classes should be listed in order, with the root type first.
      * </pre>
      */
-    com.github.jleyba.dossier.proto.Dossier.TypeLinkOrBuilder getExtendedTypeOrBuilder(
+    com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder getExtendedTypeOrBuilder(
         int index);
 
     /**
@@ -18128,10 +18128,10 @@ public final class Dossier {
             }
             case 146: {
               if (!((mutable_bitField0_ & 0x00004000) == 0x00004000)) {
-                extendedType_ = new java.util.ArrayList<com.github.jleyba.dossier.proto.Dossier.TypeLink>();
+                extendedType_ = new java.util.ArrayList<com.github.jleyba.dossier.proto.Dossier.Comment>();
                 mutable_bitField0_ |= 0x00004000;
               }
-              extendedType_.add(input.readMessage(com.github.jleyba.dossier.proto.Dossier.TypeLink.PARSER, extensionRegistry));
+              extendedType_.add(input.readMessage(com.github.jleyba.dossier.proto.Dossier.Comment.PARSER, extensionRegistry));
               break;
             }
             case 154: {
@@ -21090,32 +21090,32 @@ public final class Dossier {
     }
 
     public static final int EXTENDED_TYPE_FIELD_NUMBER = 18;
-    private java.util.List<com.github.jleyba.dossier.proto.Dossier.TypeLink> extendedType_;
+    private java.util.List<com.github.jleyba.dossier.proto.Dossier.Comment> extendedType_;
     /**
-     * <code>repeated .dossier.TypeLink extended_type = 18;</code>
+     * <code>repeated .dossier.Comment extended_type = 18;</code>
      *
      * <pre>
      * List of inherited types for a class. This should be empty if |is_class|
      * is false. Classes should be listed in order, with the root type first.
      * </pre>
      */
-    public java.util.List<com.github.jleyba.dossier.proto.Dossier.TypeLink> getExtendedTypeList() {
+    public java.util.List<com.github.jleyba.dossier.proto.Dossier.Comment> getExtendedTypeList() {
       return extendedType_;
     }
     /**
-     * <code>repeated .dossier.TypeLink extended_type = 18;</code>
+     * <code>repeated .dossier.Comment extended_type = 18;</code>
      *
      * <pre>
      * List of inherited types for a class. This should be empty if |is_class|
      * is false. Classes should be listed in order, with the root type first.
      * </pre>
      */
-    public java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.TypeLinkOrBuilder> 
+    public java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder> 
         getExtendedTypeOrBuilderList() {
       return extendedType_;
     }
     /**
-     * <code>repeated .dossier.TypeLink extended_type = 18;</code>
+     * <code>repeated .dossier.Comment extended_type = 18;</code>
      *
      * <pre>
      * List of inherited types for a class. This should be empty if |is_class|
@@ -21126,25 +21126,25 @@ public final class Dossier {
       return extendedType_.size();
     }
     /**
-     * <code>repeated .dossier.TypeLink extended_type = 18;</code>
+     * <code>repeated .dossier.Comment extended_type = 18;</code>
      *
      * <pre>
      * List of inherited types for a class. This should be empty if |is_class|
      * is false. Classes should be listed in order, with the root type first.
      * </pre>
      */
-    public com.github.jleyba.dossier.proto.Dossier.TypeLink getExtendedType(int index) {
+    public com.github.jleyba.dossier.proto.Dossier.Comment getExtendedType(int index) {
       return extendedType_.get(index);
     }
     /**
-     * <code>repeated .dossier.TypeLink extended_type = 18;</code>
+     * <code>repeated .dossier.Comment extended_type = 18;</code>
      *
      * <pre>
      * List of inherited types for a class. This should be empty if |is_class|
      * is false. Classes should be listed in order, with the root type first.
      * </pre>
      */
-    public com.github.jleyba.dossier.proto.Dossier.TypeLinkOrBuilder getExtendedTypeOrBuilder(
+    public com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder getExtendedTypeOrBuilder(
         int index) {
       return extendedType_.get(index);
     }
@@ -24628,27 +24628,27 @@ public final class Dossier {
         return this;
       }
 
-      private java.util.List<com.github.jleyba.dossier.proto.Dossier.TypeLink> extendedType_ =
+      private java.util.List<com.github.jleyba.dossier.proto.Dossier.Comment> extendedType_ =
         java.util.Collections.emptyList();
       private void ensureExtendedTypeIsMutable() {
         if (!((bitField0_ & 0x00004000) == 0x00004000)) {
-          extendedType_ = new java.util.ArrayList<com.github.jleyba.dossier.proto.Dossier.TypeLink>(extendedType_);
+          extendedType_ = new java.util.ArrayList<com.github.jleyba.dossier.proto.Dossier.Comment>(extendedType_);
           bitField0_ |= 0x00004000;
          }
       }
 
       private com.google.protobuf.RepeatedFieldBuilder<
-          com.github.jleyba.dossier.proto.Dossier.TypeLink, com.github.jleyba.dossier.proto.Dossier.TypeLink.Builder, com.github.jleyba.dossier.proto.Dossier.TypeLinkOrBuilder> extendedTypeBuilder_;
+          com.github.jleyba.dossier.proto.Dossier.Comment, com.github.jleyba.dossier.proto.Dossier.Comment.Builder, com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder> extendedTypeBuilder_;
 
       /**
-       * <code>repeated .dossier.TypeLink extended_type = 18;</code>
+       * <code>repeated .dossier.Comment extended_type = 18;</code>
        *
        * <pre>
        * List of inherited types for a class. This should be empty if |is_class|
        * is false. Classes should be listed in order, with the root type first.
        * </pre>
        */
-      public java.util.List<com.github.jleyba.dossier.proto.Dossier.TypeLink> getExtendedTypeList() {
+      public java.util.List<com.github.jleyba.dossier.proto.Dossier.Comment> getExtendedTypeList() {
         if (extendedTypeBuilder_ == null) {
           return java.util.Collections.unmodifiableList(extendedType_);
         } else {
@@ -24656,7 +24656,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .dossier.TypeLink extended_type = 18;</code>
+       * <code>repeated .dossier.Comment extended_type = 18;</code>
        *
        * <pre>
        * List of inherited types for a class. This should be empty if |is_class|
@@ -24671,14 +24671,14 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .dossier.TypeLink extended_type = 18;</code>
+       * <code>repeated .dossier.Comment extended_type = 18;</code>
        *
        * <pre>
        * List of inherited types for a class. This should be empty if |is_class|
        * is false. Classes should be listed in order, with the root type first.
        * </pre>
        */
-      public com.github.jleyba.dossier.proto.Dossier.TypeLink getExtendedType(int index) {
+      public com.github.jleyba.dossier.proto.Dossier.Comment getExtendedType(int index) {
         if (extendedTypeBuilder_ == null) {
           return extendedType_.get(index);
         } else {
@@ -24686,7 +24686,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .dossier.TypeLink extended_type = 18;</code>
+       * <code>repeated .dossier.Comment extended_type = 18;</code>
        *
        * <pre>
        * List of inherited types for a class. This should be empty if |is_class|
@@ -24694,7 +24694,7 @@ public final class Dossier {
        * </pre>
        */
       public Builder setExtendedType(
-          int index, com.github.jleyba.dossier.proto.Dossier.TypeLink value) {
+          int index, com.github.jleyba.dossier.proto.Dossier.Comment value) {
         if (extendedTypeBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -24708,7 +24708,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .dossier.TypeLink extended_type = 18;</code>
+       * <code>repeated .dossier.Comment extended_type = 18;</code>
        *
        * <pre>
        * List of inherited types for a class. This should be empty if |is_class|
@@ -24716,7 +24716,7 @@ public final class Dossier {
        * </pre>
        */
       public Builder setExtendedType(
-          int index, com.github.jleyba.dossier.proto.Dossier.TypeLink.Builder builderForValue) {
+          int index, com.github.jleyba.dossier.proto.Dossier.Comment.Builder builderForValue) {
         if (extendedTypeBuilder_ == null) {
           ensureExtendedTypeIsMutable();
           extendedType_.set(index, builderForValue.build());
@@ -24727,14 +24727,14 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .dossier.TypeLink extended_type = 18;</code>
+       * <code>repeated .dossier.Comment extended_type = 18;</code>
        *
        * <pre>
        * List of inherited types for a class. This should be empty if |is_class|
        * is false. Classes should be listed in order, with the root type first.
        * </pre>
        */
-      public Builder addExtendedType(com.github.jleyba.dossier.proto.Dossier.TypeLink value) {
+      public Builder addExtendedType(com.github.jleyba.dossier.proto.Dossier.Comment value) {
         if (extendedTypeBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -24748,7 +24748,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .dossier.TypeLink extended_type = 18;</code>
+       * <code>repeated .dossier.Comment extended_type = 18;</code>
        *
        * <pre>
        * List of inherited types for a class. This should be empty if |is_class|
@@ -24756,7 +24756,7 @@ public final class Dossier {
        * </pre>
        */
       public Builder addExtendedType(
-          int index, com.github.jleyba.dossier.proto.Dossier.TypeLink value) {
+          int index, com.github.jleyba.dossier.proto.Dossier.Comment value) {
         if (extendedTypeBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -24770,7 +24770,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .dossier.TypeLink extended_type = 18;</code>
+       * <code>repeated .dossier.Comment extended_type = 18;</code>
        *
        * <pre>
        * List of inherited types for a class. This should be empty if |is_class|
@@ -24778,7 +24778,7 @@ public final class Dossier {
        * </pre>
        */
       public Builder addExtendedType(
-          com.github.jleyba.dossier.proto.Dossier.TypeLink.Builder builderForValue) {
+          com.github.jleyba.dossier.proto.Dossier.Comment.Builder builderForValue) {
         if (extendedTypeBuilder_ == null) {
           ensureExtendedTypeIsMutable();
           extendedType_.add(builderForValue.build());
@@ -24789,7 +24789,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .dossier.TypeLink extended_type = 18;</code>
+       * <code>repeated .dossier.Comment extended_type = 18;</code>
        *
        * <pre>
        * List of inherited types for a class. This should be empty if |is_class|
@@ -24797,7 +24797,7 @@ public final class Dossier {
        * </pre>
        */
       public Builder addExtendedType(
-          int index, com.github.jleyba.dossier.proto.Dossier.TypeLink.Builder builderForValue) {
+          int index, com.github.jleyba.dossier.proto.Dossier.Comment.Builder builderForValue) {
         if (extendedTypeBuilder_ == null) {
           ensureExtendedTypeIsMutable();
           extendedType_.add(index, builderForValue.build());
@@ -24808,7 +24808,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .dossier.TypeLink extended_type = 18;</code>
+       * <code>repeated .dossier.Comment extended_type = 18;</code>
        *
        * <pre>
        * List of inherited types for a class. This should be empty if |is_class|
@@ -24816,7 +24816,7 @@ public final class Dossier {
        * </pre>
        */
       public Builder addAllExtendedType(
-          java.lang.Iterable<? extends com.github.jleyba.dossier.proto.Dossier.TypeLink> values) {
+          java.lang.Iterable<? extends com.github.jleyba.dossier.proto.Dossier.Comment> values) {
         if (extendedTypeBuilder_ == null) {
           ensureExtendedTypeIsMutable();
           com.google.protobuf.AbstractMessageLite.Builder.addAll(
@@ -24828,7 +24828,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .dossier.TypeLink extended_type = 18;</code>
+       * <code>repeated .dossier.Comment extended_type = 18;</code>
        *
        * <pre>
        * List of inherited types for a class. This should be empty if |is_class|
@@ -24846,7 +24846,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .dossier.TypeLink extended_type = 18;</code>
+       * <code>repeated .dossier.Comment extended_type = 18;</code>
        *
        * <pre>
        * List of inherited types for a class. This should be empty if |is_class|
@@ -24864,26 +24864,26 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .dossier.TypeLink extended_type = 18;</code>
+       * <code>repeated .dossier.Comment extended_type = 18;</code>
        *
        * <pre>
        * List of inherited types for a class. This should be empty if |is_class|
        * is false. Classes should be listed in order, with the root type first.
        * </pre>
        */
-      public com.github.jleyba.dossier.proto.Dossier.TypeLink.Builder getExtendedTypeBuilder(
+      public com.github.jleyba.dossier.proto.Dossier.Comment.Builder getExtendedTypeBuilder(
           int index) {
         return getExtendedTypeFieldBuilder().getBuilder(index);
       }
       /**
-       * <code>repeated .dossier.TypeLink extended_type = 18;</code>
+       * <code>repeated .dossier.Comment extended_type = 18;</code>
        *
        * <pre>
        * List of inherited types for a class. This should be empty if |is_class|
        * is false. Classes should be listed in order, with the root type first.
        * </pre>
        */
-      public com.github.jleyba.dossier.proto.Dossier.TypeLinkOrBuilder getExtendedTypeOrBuilder(
+      public com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder getExtendedTypeOrBuilder(
           int index) {
         if (extendedTypeBuilder_ == null) {
           return extendedType_.get(index);  } else {
@@ -24891,14 +24891,14 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .dossier.TypeLink extended_type = 18;</code>
+       * <code>repeated .dossier.Comment extended_type = 18;</code>
        *
        * <pre>
        * List of inherited types for a class. This should be empty if |is_class|
        * is false. Classes should be listed in order, with the root type first.
        * </pre>
        */
-      public java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.TypeLinkOrBuilder> 
+      public java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder> 
            getExtendedTypeOrBuilderList() {
         if (extendedTypeBuilder_ != null) {
           return extendedTypeBuilder_.getMessageOrBuilderList();
@@ -24907,48 +24907,48 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .dossier.TypeLink extended_type = 18;</code>
+       * <code>repeated .dossier.Comment extended_type = 18;</code>
        *
        * <pre>
        * List of inherited types for a class. This should be empty if |is_class|
        * is false. Classes should be listed in order, with the root type first.
        * </pre>
        */
-      public com.github.jleyba.dossier.proto.Dossier.TypeLink.Builder addExtendedTypeBuilder() {
+      public com.github.jleyba.dossier.proto.Dossier.Comment.Builder addExtendedTypeBuilder() {
         return getExtendedTypeFieldBuilder().addBuilder(
-            com.github.jleyba.dossier.proto.Dossier.TypeLink.getDefaultInstance());
+            com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance());
       }
       /**
-       * <code>repeated .dossier.TypeLink extended_type = 18;</code>
+       * <code>repeated .dossier.Comment extended_type = 18;</code>
        *
        * <pre>
        * List of inherited types for a class. This should be empty if |is_class|
        * is false. Classes should be listed in order, with the root type first.
        * </pre>
        */
-      public com.github.jleyba.dossier.proto.Dossier.TypeLink.Builder addExtendedTypeBuilder(
+      public com.github.jleyba.dossier.proto.Dossier.Comment.Builder addExtendedTypeBuilder(
           int index) {
         return getExtendedTypeFieldBuilder().addBuilder(
-            index, com.github.jleyba.dossier.proto.Dossier.TypeLink.getDefaultInstance());
+            index, com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance());
       }
       /**
-       * <code>repeated .dossier.TypeLink extended_type = 18;</code>
+       * <code>repeated .dossier.Comment extended_type = 18;</code>
        *
        * <pre>
        * List of inherited types for a class. This should be empty if |is_class|
        * is false. Classes should be listed in order, with the root type first.
        * </pre>
        */
-      public java.util.List<com.github.jleyba.dossier.proto.Dossier.TypeLink.Builder> 
+      public java.util.List<com.github.jleyba.dossier.proto.Dossier.Comment.Builder> 
            getExtendedTypeBuilderList() {
         return getExtendedTypeFieldBuilder().getBuilderList();
       }
       private com.google.protobuf.RepeatedFieldBuilder<
-          com.github.jleyba.dossier.proto.Dossier.TypeLink, com.github.jleyba.dossier.proto.Dossier.TypeLink.Builder, com.github.jleyba.dossier.proto.Dossier.TypeLinkOrBuilder> 
+          com.github.jleyba.dossier.proto.Dossier.Comment, com.github.jleyba.dossier.proto.Dossier.Comment.Builder, com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder> 
           getExtendedTypeFieldBuilder() {
         if (extendedTypeBuilder_ == null) {
           extendedTypeBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
-              com.github.jleyba.dossier.proto.Dossier.TypeLink, com.github.jleyba.dossier.proto.Dossier.TypeLink.Builder, com.github.jleyba.dossier.proto.Dossier.TypeLinkOrBuilder>(
+              com.github.jleyba.dossier.proto.Dossier.Comment, com.github.jleyba.dossier.proto.Dossier.Comment.Builder, com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder>(
                   extendedType_,
                   ((bitField0_ & 0x00004000) == 0x00004000),
                   getParentForChildren(),
@@ -29349,7 +29349,7 @@ public final class Dossier {
       "Link\022%\n\006module\030\003 \003(\0132\025.dossier.Index.Mod" +
       "ule\032J\n\006Module\022\037\n\004link\030\001 \002(\0132\021.dossier.Ty" +
       "peLink\022\037\n\004type\030\002 \003(\0132\021.dossier.TypeLink\"" +
-      "\244\010\n\006JsType\022\014\n\004name\030\001 \002(\t\022#\n\006source\030\005 \002(\013" +
+      "\243\010\n\006JsType\022\014\n\004name\030\001 \002(\t\022#\n\006source\030\005 \002(\013" +
       "2\023.dossier.SourceLink\022+\n\006nested\030\006 \003(\0132\033." +
       "dossier.JsType.TypeSummary\022%\n\013descriptio" +
       "n\030\007 \002(\0132\020.dossier.Comment\022\033\n\004tags\030\010 \002(\0132" +
@@ -29362,32 +29362,32 @@ public final class Dossier {
       "function\030\016 \001(\0132\021.dossier.Function\022%\n\tpro" +
       "totype\030\017 \003(\0132\022.dossier.Prototype\022#\n\024has_" +
       "instance_methods\030\020 \001(\010:\005false\022&\n\027has_ins" +
-      "tance_properties\030\021 \001(\010:\005false\022(\n\rextende" +
-      "d_type\030\022 \003(\0132\021.dossier.TypeLink\022+\n\020imple" +
-      "mented_type\030\023 \003(\0132\021.dossier.TypeLink\022,\n\021",
-      "compiler_constant\030\024 \003(\0132\021.dossier.Proper" +
-      "ty\022!\n\006module\030\025 \001(\0132\021.dossier.TypeLink\022\'\n" +
-      "\014aliased_type\030\026 \001(\0132\021.dossier.TypeLink\032L" +
-      "\n\013TypeSummary\022\014\n\004name\030\001 \002(\t\022\014\n\004href\030\002 \002(" +
-      "\t\022!\n\007summary\030\003 \002(\0132\020.dossier.Comment\032\337\001\n" +
-      "\007TypeDef\022\014\n\004name\030\001 \002(\t\022\036\n\004type\030\002 \002(\0132\020.d" +
-      "ossier.Comment\022#\n\006source\030\003 \002(\0132\023.dossier" +
-      ".SourceLink\022%\n\013description\030\004 \002(\0132\020.dossi" +
-      "er.Comment\022)\n\013deprecation\030\005 \001(\0132\024.dossie" +
-      "r.Deprecation\022/\n\nvisibility\030\006 \001(\0162\023.doss",
-      "ier.Visibility:\006PUBLIC\"}\n\023IndexFileRende" +
-      "rSpec\022%\n\tresources\030\001 \002(\0132\022.dossier.Resou" +
-      "rces\022 \n\006readme\030\002 \001(\0132\020.dossier.Comment\022\035" +
-      "\n\005index\030\003 \002(\0132\016.dossier.Index\"\177\n\024SourceF" +
-      "ileRenderSpec\022%\n\tresources\030\001 \002(\0132\022.dossi" +
-      "er.Resources\022!\n\004file\030\002 \002(\0132\023.dossier.Sou" +
-      "rceFile\022\035\n\005index\030\003 \002(\0132\016.dossier.Index\"w" +
-      "\n\020JsTypeRenderSpec\022\035\n\004type\030\001 \002(\0132\017.dossi" +
-      "er.JsType\022%\n\tresources\030\002 \002(\0132\022.dossier.R" +
-      "esources\022\035\n\005index\030\003 \002(\0132\016.dossier.Index*",
-      "A\n\nVisibility\022\n\n\006PUBLIC\020\000\022\r\n\tPROTECTED\020\001" +
-      "\022\013\n\007PRIVATE\020\002\022\013\n\007PACKAGE\020\003B!\n\037com.github" +
-      ".jleyba.dossier.proto"
+      "tance_properties\030\021 \001(\010:\005false\022\'\n\rextende" +
+      "d_type\030\022 \003(\0132\020.dossier.Comment\022+\n\020implem" +
+      "ented_type\030\023 \003(\0132\021.dossier.TypeLink\022,\n\021c",
+      "ompiler_constant\030\024 \003(\0132\021.dossier.Propert" +
+      "y\022!\n\006module\030\025 \001(\0132\021.dossier.TypeLink\022\'\n\014" +
+      "aliased_type\030\026 \001(\0132\021.dossier.TypeLink\032L\n" +
+      "\013TypeSummary\022\014\n\004name\030\001 \002(\t\022\014\n\004href\030\002 \002(\t" +
+      "\022!\n\007summary\030\003 \002(\0132\020.dossier.Comment\032\337\001\n\007" +
+      "TypeDef\022\014\n\004name\030\001 \002(\t\022\036\n\004type\030\002 \002(\0132\020.do" +
+      "ssier.Comment\022#\n\006source\030\003 \002(\0132\023.dossier." +
+      "SourceLink\022%\n\013description\030\004 \002(\0132\020.dossie" +
+      "r.Comment\022)\n\013deprecation\030\005 \001(\0132\024.dossier" +
+      ".Deprecation\022/\n\nvisibility\030\006 \001(\0162\023.dossi",
+      "er.Visibility:\006PUBLIC\"}\n\023IndexFileRender" +
+      "Spec\022%\n\tresources\030\001 \002(\0132\022.dossier.Resour" +
+      "ces\022 \n\006readme\030\002 \001(\0132\020.dossier.Comment\022\035\n" +
+      "\005index\030\003 \002(\0132\016.dossier.Index\"\177\n\024SourceFi" +
+      "leRenderSpec\022%\n\tresources\030\001 \002(\0132\022.dossie" +
+      "r.Resources\022!\n\004file\030\002 \002(\0132\023.dossier.Sour" +
+      "ceFile\022\035\n\005index\030\003 \002(\0132\016.dossier.Index\"w\n" +
+      "\020JsTypeRenderSpec\022\035\n\004type\030\001 \002(\0132\017.dossie" +
+      "r.JsType\022%\n\tresources\030\002 \002(\0132\022.dossier.Re" +
+      "sources\022\035\n\005index\030\003 \002(\0132\016.dossier.Index*A",
+      "\n\nVisibility\022\n\n\006PUBLIC\020\000\022\r\n\tPROTECTED\020\001\022" +
+      "\013\n\007PRIVATE\020\002\022\013\n\007PACKAGE\020\003B!\n\037com.github." +
+      "jleyba.dossier.proto"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {

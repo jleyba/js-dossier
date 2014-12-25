@@ -538,7 +538,11 @@ public class Linker {
     }
 
     private void caseInstanceType(ObjectType type) {
-      caseInstanceType(type.getReferenceName(), type);
+      NominalType nominalType = resolve(type.getConstructor());
+      String displayName = nominalType == null
+          ? type.getReferenceName()
+          : nominalType.getQualifiedName();
+      caseInstanceType(displayName, type);
     }
 
     private void caseInstanceType(String displayName, ObjectType type) {

@@ -141,7 +141,7 @@
  * This template is a no-op if given a non-class descriptor.
  */
 {template .classInheritance}
-  {@param types: list<dossier.TypeLink>}
+  {@param types: list<dossier.Comment>}
 
   {if length($types) >= 2}
     <pre class="inheritance">
@@ -153,11 +153,10 @@
           {/if}
           &#x2514;{sp}
         {/if}
-        {if isLast($type) or not $type.href}
-          {$type.text}
-        {else}
-          <a href="{$type.href}">{$type.text}</a>
-        {/if}
+        {call .comment}
+          {param comment: $type /}
+          {param omitLeadingTag: true /}
+        {/call}
       {/foreach}
     </pre>
   {/if}
