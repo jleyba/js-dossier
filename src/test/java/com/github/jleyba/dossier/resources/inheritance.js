@@ -57,12 +57,14 @@ sample.inheritance.FinalClass = function() {};
 
 
 /**
- * @param {T} value .
+ * @param {T} value The initial value.
+ * @param {string=} opt_name Class name.
  * @constructor
  * @template T
  */
-sample.inheritance.TemplateClass = function(value) {
+sample.inheritance.TemplateClass = function(value, opt_name) {
   this.value = value;
+  this.name = opt_name || '';
 };
 
 
@@ -78,4 +80,18 @@ sample.inheritance.TemplateClass.prototype.getValue = function() {
  */
 sample.inheritance.NumberClass = function() {
   sample.inheritance.TemplateClass.call(this, 1234);
+};
+
+
+/**
+ * @param {number} n The first number to add.
+ * @param {...number} var_args The remaining numbers to add.
+ * @return {number} The result.
+ */
+sample.inheritance.NumberClass.prototype.add = function(n, var_args) {
+  var result = this.getValue();
+  for (var i = 0; i < arguments.length; i++) {
+    result += arguments[i];
+  }
+  return result;
 };

@@ -215,6 +215,16 @@ public class EndToEndTest {
     checkFooter(document);
   }
 
+  @Test
+  public void checkClassExtendsTemplateClass() throws IOException {
+    Document document = load(outDir.resolve("class_sample_inheritance_NumberClass.html"));
+    compareWithGoldenFile(querySelector(document, "article"),
+        "class_sample_inheritance_NumberClass.html");
+    checkHeader(document);
+    checkNav(document);
+    checkFooter(document);
+  }
+
   private void checkHeader(Document document) throws IOException {
     compareWithGoldenFile(querySelector(document, "header"), "header.html");
   }

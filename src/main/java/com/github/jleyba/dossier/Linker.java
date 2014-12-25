@@ -341,7 +341,9 @@ public class Linker {
    * template.
    */
   public Dossier.Comment formatTypeExpression(JSTypeExpression expression) {
-    return formatTypeExpression(typeRegistry.evaluate(expression));
+    return new CommentTypeParser().parse(
+        typeRegistry.evaluate(expression),
+        ParseModifier.forExpression(expression));
   }
 
   /**
@@ -351,7 +353,22 @@ public class Linker {
     if (type == null) {
       return Dossier.Comment.newBuilder().build();
     }
-    return new CommentTypeParser().parse(type);
+    return new CommentTypeParser().parse(type, ParseModifier.NONE);
+  }
+
+  private static enum ParseModifier {
+    NONE,
+    OPTIONAL_ARG,
+    VAR_ARGS;
+
+    static ParseModifier forExpression(JSTypeExpression expression) {
+      if (expression.isVarArgs()) {
+        return VAR_ARGS;
+      } else if (expression.isOptionalArg()) {
+        return OPTIONAL_ARG;
+      }
+      return NONE;
+    }
   }
 
   /**
@@ -363,10 +380,24 @@ public class Linker {
 
     private String currentText = "";
 
-    Dossier.Comment parse(JSType type) {
+    Dossier.Comment parse(JSType type, ParseModifier modifier) {
       comment.clear();
       currentText = "";
-      type.visit(this);
+
+      if (modifier == ParseModifier.VAR_ARGS) {
+        currentText = "...";
+      }
+
+      if (modifier != ParseModifier.NONE && type.isUnionType()) {
+        caseUnionType((UnionType) type, true);
+      } else {
+        type.visit(this);
+      }
+
+      if (modifier == ParseModifier.OPTIONAL_ARG) {
+        currentText += "=";
+      }
+
       if (!currentText.isEmpty()) {
         comment.addTokenBuilder()
             .setIsLiteral(true)
@@ -599,7 +630,7 @@ public class Linker {
         if (alternate.isVoidType() && filterVoid) {
           voidAlternates += 1;
         }
-        containsNonNullable = containsNonNullable || alternate.isNullable();
+        containsNonNullable = containsNonNullable || !alternate.isNullable();
       }
 
       Iterable<JSType> alternates = type.getAlternates();
@@ -617,7 +648,7 @@ public class Linker {
         });
       }
 
-      if (containsNonNullable) {
+      if (containsNonNullable && nullAlternates > 0) {
         appendText("?");
       }
 
