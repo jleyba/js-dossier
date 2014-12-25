@@ -58,7 +58,6 @@ public class Main extends CommandLineRunner {
 
   private final Config config;
 
-  private DocRegistry docRegistry;
   private TypeRegistry typeRegistry;
 
   @VisibleForTesting
@@ -79,7 +78,6 @@ public class Main extends CommandLineRunner {
     if (!(compiler instanceof DossierCompiler)) {
       throw new AssertionError();
     }
-    docRegistry = new DocRegistry(compiler.getTypeRegistry());
     typeRegistry = new TypeRegistry(compiler.getTypeRegistry());
     return createOptions(config.getFileSystem(), typeRegistry, (DossierCompiler) compiler);
   }

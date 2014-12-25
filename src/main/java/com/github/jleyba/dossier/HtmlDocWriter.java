@@ -26,10 +26,8 @@ import static com.github.jleyba.dossier.proto.Dossier.Resources;
 import static com.github.jleyba.dossier.proto.Dossier.SourceFile;
 import static com.github.jleyba.dossier.proto.Dossier.SourceFileRenderSpec;
 import static com.github.jleyba.dossier.proto.Dossier.TypeLink;
-import static com.google.common.base.MoreObjects.firstNonNull;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.base.Predicates.not;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.base.Verify.verify;
@@ -600,46 +598,6 @@ class HtmlDocWriter implements DocWriter {
         .build();
   }
 
-  /**
-   * If the given {@code descriptor} is a constructor alias for a known type, this method will
-   * return the aliased type. Otherwise, this method will return the original descriptor. A type
-   * alias would occur as:
-   * <pre><code>
-   *   \** @constructor *\ var Foo = function(){};
-   *   \** @type {function(new: Foo)} *\ var Bar = Foo;
-   * </code></pre>
-   */
-  private Descriptor resolveTypeAlias(Descriptor descriptor) {
-    // TODO
-//    JSType type = descriptor.getType();
-//    if (type.isConstructor()) {
-//      type = ((FunctionType) type).getTypeOfThis();
-//    }
-//    Descriptor alias = docRegistry.getType(type);
-//    if (alias == null) {
-//      String name = getTypeName(type);
-//      alias = docRegistry.resolve(name, currentModule);
-//
-//      // The descriptor might just be forwarding the declaration from another module:
-//      //
-//      //     [foo.js]
-//      //     /** @constructor */
-//      //     var Original = function() {};
-//      //     exports.Original = Original;
-//      //
-//      //     [bar.js]
-//      //     exports.Original = require('./foo').Original;
-//      //
-//      // Check for this by trying to resolve the descriptor's literal type name.
-//      if (alias == descriptor && currentModule != null) {
-//        alias = docRegistry.resolve(type.toString(), currentModule);
-//      }
-//    }
-//
-//    return firstNonNull(alias, descriptor);
-    return descriptor;
-  }
-
   private List<JsType.TypeSummary> getNestedTypeInfo(Collection<NominalType> nestedTypes) {
     List<JsType.TypeSummary> types = new ArrayList<>(nestedTypes.size());
 
@@ -960,20 +918,6 @@ class HtmlDocWriter implements DocWriter {
       return type.toString();
     }
     return type.getDisplayName();
-  }
-
-  private static Predicate<Descriptor> notOwnPropertyOf(final Iterable<Descriptor> descriptors) {
-    return new Predicate<Descriptor>() {
-      @Override
-      public boolean apply(Descriptor input) {
-        for (Descriptor descriptor : descriptors) {
-          if (descriptor.hasOwnInstanceProprety(input.getSimpleName())) {
-            return false;
-          }
-        }
-        return true;
-      }
-    };
   }
 
   private static Predicate<NominalType> isNamespace() {

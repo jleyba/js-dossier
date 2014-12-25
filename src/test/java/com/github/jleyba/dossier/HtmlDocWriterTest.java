@@ -154,7 +154,6 @@ public class HtmlDocWriterTest {
 
     void generateDocs() throws IOException {
       DossierCompiler compiler = new DossierCompiler(System.err, modulePaths.build());
-      DocRegistry docRegistry = new DocRegistry(compiler.getTypeRegistry());
       TypeRegistry typeRegistry = new TypeRegistry(compiler.getTypeRegistry());
       CompilerOptions options = Main.createOptions(fs, typeRegistry, compiler);
       CompilerUtil util = new CompilerUtil(compiler, options);
