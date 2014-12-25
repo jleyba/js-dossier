@@ -875,12 +875,6 @@ class HtmlDocWriter implements DocWriter {
     };
   }
 
-  private boolean isFunction(JSType type) {
-    return type.isFunctionType()
-        && !type.isConstructor()
-        && !type.isInterface();
-  }
-
   private static boolean isNamespace(NominalType type) {
     JSType jsType = type.getJsType();
     return !jsType.isConstructor()
@@ -902,22 +896,6 @@ class HtmlDocWriter implements DocWriter {
       }
     }
     return isNamespace(type) && type.getProperties().isEmpty();
-  }
-
-  private static Predicate<NominalType> isModuleExports() {
-    return new Predicate<NominalType>() {
-      @Override
-      public boolean apply(@Nullable NominalType input) {
-        return input.isModuleExports();
-      }
-    };
-  }
-
-  private static String getDisplayName(JSType type) {
-    if (isNullOrEmpty(type.getDisplayName())) {
-      return type.toString();
-    }
-    return type.getDisplayName();
   }
 
   private static Predicate<NominalType> isNamespace() {
