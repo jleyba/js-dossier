@@ -962,7 +962,8 @@ class HtmlDocWriter implements DocWriter {
         parameter = jsdoc.getParameters().get(i);
       }
 
-      Dossier.Function.Detail.Builder detail = Dossier.Function.Detail.newBuilder();
+      Dossier.Function.Detail.Builder detail = Dossier.Function.Detail.newBuilder()
+          .setName("arg" + i);
 
       // If the compiler hasn't determined a type yet, try to map back to the jsdoc.
       Node parameterNode = parameterNodes.get(i);
