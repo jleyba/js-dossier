@@ -656,8 +656,6 @@ public class Linker {
 
       Iterable<JSType> alternates = type.getAlternates();
       if (nullAlternates > 0 || voidAlternates > 0) {
-        System.out.println("Simplifying union: " + type);
-
         numAlternates -= nullAlternates;
         numAlternates -= voidAlternates;
 
