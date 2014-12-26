@@ -56,6 +56,7 @@ import com.google.javascript.rhino.jstype.EnumType;
 import com.google.javascript.rhino.jstype.FunctionType;
 import com.google.javascript.rhino.jstype.JSType;
 import com.google.javascript.rhino.jstype.JSTypeRegistry;
+import com.google.javascript.rhino.jstype.NamedType;
 import com.google.javascript.rhino.jstype.ObjectType;
 import com.google.javascript.rhino.jstype.Property;
 
@@ -481,7 +482,7 @@ class HtmlDocWriter implements DocWriter {
     // Skip bottom of stack (type of this). Handled specially below.
     while (types.size() > 1) {
       JSType base = types.pop();
-      verify(base.isInstanceType());
+      verify(base.isInstanceType() || base instanceof NamedType);
       list.add(linker.formatTypeExpression(base));
     }
     list.add(Dossier.Comment.newBuilder()
@@ -651,13 +652,17 @@ class HtmlDocWriter implements DocWriter {
       if (assignableType.isConstructor() || assignableType.isInterface()) {
         assignableType = ((FunctionType) assignableType).getInstanceType();
       }
-      verify(assignableType.isInstanceType());
+
       ObjectType object = assignableType.toObjectType();
       for (String pname : object.getOwnPropertyNames()) {
         if (!"constructor".equals(pname) && !properties.containsKey(pname)) {
           properties.put(pname, object.getOwnSlot(pname));
           propertyTypes.put(pname, getType(object, object.getOwnSlot(pname)));
         }
+      }
+
+      if (object.getConstructor() == null) {
+        continue;
       }
 
       ObjectType prototype = ObjectType.cast(object.getConstructor().getPropertyType("prototype"));
