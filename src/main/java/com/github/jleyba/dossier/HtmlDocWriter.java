@@ -944,6 +944,8 @@ class HtmlDocWriter implements DocWriter {
         ? JsDoc.from(type.getJSDocInfo())
         : docs;
 
+    // TODO: simplify this mess by adding a check that JSDoc parameter names are consistent with
+    // the param list (order and number)
     List<Node> parameterNodes = Lists.newArrayList(((FunctionType) type).getParameters());
     List<Dossier.Function.Detail> details = new ArrayList<>(parameterNodes.size());
     @Nullable Node paramList = findParamList(node);
