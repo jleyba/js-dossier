@@ -75,6 +75,14 @@ sample.inheritance.TemplateClass.prototype.getValue = function() {
 
 
 /**
+ * @param {T} value The value to add.
+ */
+sample.inheritance.TemplateClass.prototype.add = function(value) {
+  this.value = value;
+};
+
+
+/**
  * @constructor
  * @extends {sample.inheritance.TemplateClass<number>}
  */
@@ -88,7 +96,7 @@ sample.inheritance.NumberClass = function() {
  * @param {...number} var_args The remaining numbers to add.
  * @return {number} The result.
  */
-sample.inheritance.NumberClass.prototype.add = function(n, var_args) {
+sample.inheritance.NumberClass.prototype.addMany = function(n, var_args) {
   var result = this.getValue();
   for (var i = 0; i < arguments.length; i++) {
     result += arguments[i];

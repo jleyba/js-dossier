@@ -58,7 +58,6 @@ import com.google.javascript.rhino.jstype.JSType;
 import com.google.javascript.rhino.jstype.JSTypeRegistry;
 import com.google.javascript.rhino.jstype.ObjectType;
 import com.google.javascript.rhino.jstype.Property;
-import com.google.javascript.rhino.jstype.TemplatizedType;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -69,6 +68,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -646,30 +646,27 @@ class HtmlDocWriter implements DocWriter {
     }
 
     Map<String, Property> properties = new TreeMap<>();
+    Map<String, JSType> propertyTypes = new HashMap<>();
     for (JSType assignableType : assignableTypes) {
-      if (assignableType.isTemplatizedType()) {
-        assignableType = ((TemplatizedType) assignableType).getReferencedType();
+      if (assignableType.isConstructor() || assignableType.isInterface()) {
+        assignableType = ((FunctionType) assignableType).getInstanceType();
       }
-      if (assignableType.isInstanceType()) {
-        assignableType = ((ObjectType) assignableType).getConstructor();
-      }
-      verify(assignableType.isFunctionType(),
-          "%s may be assigned to non function %s", nominalType.getQualifiedName(), assignableType);
-
-      ObjectType object = ((FunctionType) assignableType).getInstanceType();
+      verify(assignableType.isInstanceType());
+      ObjectType object = assignableType.toObjectType();
       for (String pname : object.getOwnPropertyNames()) {
-        if (!properties.containsKey(pname)) {
+        if (!"constructor".equals(pname) && !properties.containsKey(pname)) {
           properties.put(pname, object.getOwnSlot(pname));
+          propertyTypes.put(pname, getType(object, object.getOwnSlot(pname)));
         }
       }
 
-      ObjectType prototype = ObjectType.cast(((FunctionType) assignableType)
-          .getPropertyType("prototype"));
+      ObjectType prototype = ObjectType.cast(object.getConstructor().getPropertyType("prototype"));
       verify(prototype != null);
 
       for (String pname : prototype.getOwnPropertyNames()) {
-        if (!properties.containsKey(pname)) {
+        if (!"constructor".equals(pname) && !properties.containsKey(pname)) {
           properties.put(pname, prototype.getOwnSlot(pname));
+          propertyTypes.put(pname, getType(object, prototype.getOwnSlot(pname)));
         }
       }
     }
@@ -688,10 +685,11 @@ class HtmlDocWriter implements DocWriter {
         continue;
       }
 
-      if (property.getType().isFunctionType()) {
+      JSType propType = propertyTypes.get(property.getName());
+      if (propType.isFunctionType()) {
         protoBuilder.addFunction(getFunctionData(
             property.getName(),
-            property.getType(),
+            propType,
             property.getNode(),
             jsdoc));
         jsTypeBuilder.setHasInstanceMethods(true);
@@ -700,6 +698,14 @@ class HtmlDocWriter implements DocWriter {
         jsTypeBuilder.setHasInstanceProperties(true);
       }
     }
+  }
+
+  private static JSType getType(ObjectType object, Property property) {
+    JSType type = object.getPropertyType(property.getName());
+    if (type.isUnknownType()) {
+      type = property.getType();
+    }
+    return type;
   }
 
   private void getStaticData(JsType.Builder jsTypeBuilder, NominalType type) {
@@ -783,22 +789,7 @@ class HtmlDocWriter implements DocWriter {
           .addAllThrown(buildThrowsData(jsDoc));
     }
 
-    builder.addAllParameter(transform(getParameters(type, node, jsDoc),
-        new Function<Parameter, Dossier.Function.Detail>() {
-          @Override
-          public Dossier.Function.Detail apply(@Nullable Parameter param) {
-            Dossier.Comment type = Dossier.Comment.getDefaultInstance();
-            if (param.getType() != null) {
-              type = linker.formatTypeExpression(param.getType());
-            }
-            return Dossier.Function.Detail.newBuilder()
-                .setName(param.getName())
-                .setType(type)
-                .setDescription(parseComment(param.getDescription(), linker))
-                .build();
-          }
-        }
-    ));
+    builder.addAllParameter(getParameters(type, node, jsDoc));
 
     return builder.build();
   }
@@ -822,22 +813,15 @@ class HtmlDocWriter implements DocWriter {
   }
 
   private Dossier.Comment getReturnType(@Nullable JsDoc jsdoc, JSType function) {
-    JSType returnType;
-    if (jsdoc != null && jsdoc.getReturnType() != null) {
+    JSType returnType = ((FunctionType) function).getReturnType();
+    if (returnType.isUnknownType() && jsdoc != null && jsdoc.getReturnType() != null) {
       returnType = typeRegistry.evaluate(jsdoc.getReturnType());
-    } else {
-      returnType = ((FunctionType) function).getReturnType();
     }
     Dossier.Comment comment = linker.formatTypeExpression(returnType);
-    // Ignore vacuous return types.
-    if (comment.getTokenCount() != 1
-        || (!"undefined".equals(comment.getToken(0).getText())
-        && !"void".equals(comment.getToken(0).getText())
-        && !"?".equals(comment.getToken(0).getText())
-        && !"*".equals(comment.getToken(0).getText()))) {
-      return comment;
+    if (isVacuousTypeComment(comment)) {
+      return Dossier.Comment.getDefaultInstance();
     }
-    return Dossier.Comment.getDefaultInstance();
+    return comment;
   }
 
   private static Predicate<NominalType> isTypedef() {
@@ -898,6 +882,14 @@ class HtmlDocWriter implements DocWriter {
     return isNamespace(type) && type.getProperties().isEmpty();
   }
 
+  private static boolean isVacuousTypeComment(Dossier.Comment comment) {
+    return comment.getTokenCount() == 1
+        && ("undefined".equals(comment.getToken(0).getText())
+        || "void".equals(comment.getToken(0).getText())
+        || "?".equals(comment.getToken(0).getText())
+        || "*".equals(comment.getToken(0).getText()));
+  }
+
   private static Predicate<NominalType> isNamespace() {
     return new Predicate<NominalType>() {
       @Override
@@ -946,42 +938,52 @@ class HtmlDocWriter implements DocWriter {
     }
   }
 
-  private static List<Parameter> getParameters(JSType type, Node node, @Nullable JsDoc docs) {
+  private List<Dossier.Function.Detail> getParameters(JSType type, Node node, @Nullable JsDoc docs) {
     checkArgument(type.isFunctionType());
     final JsDoc jsdoc = docs == null && type.getJSDocInfo() != null
         ? JsDoc.from(type.getJSDocInfo())
         : docs;
 
-    // Parameters may not be documented in the order they actually appear in the function
-    // declaration, so we have to parse that directly.
-    @Nullable Node paramList = findParamList(node);
-    if (paramList == null) {
-      if (jsdoc != null) {
-        return jsdoc.getParameters();
-      }
-      return jsdoc != null
-          ? jsdoc.getParameters()
-          : ImmutableList.<Parameter>of();
+    List<Dossier.Comment> parameterTypes = new ArrayList<>();
+    for (Node parameterNode : ((FunctionType) type).getParameters()) {
+      parameterTypes.add(linker.formatTypeExpression(parameterNode));
     }
-    verify(paramList.isParamList());
 
-    List<String> names = new ArrayList<>(paramList.getChildCount());
-    for (Node name = paramList.getFirstChild(); name != null; name = name.getNext()) {
-      names.add(name.getString());
-    }
-    return Lists.transform(names, new Function<String, Parameter>() {
-      @Override
-      public Parameter apply(String name) {
-        if (jsdoc != null) {
-          try {
-            return jsdoc.getParameter(name);
-          } catch (IllegalArgumentException ignored) {
-            // Do nothing; undocumented parameter.
-          }
-        }
-        return new Parameter(name);
+    Map<String, Dossier.Comment> nameToDescription = new HashMap<>();
+    if (jsdoc != null) {
+      for (Parameter parameter : jsdoc.getParameters()) {
+        nameToDescription.put(
+            parameter.getName(), parseComment(parameter.getDescription(), linker));
       }
-    });
+    }
+
+    @Nullable Node paramList = findParamList(node);
+    List<Dossier.Function.Detail> details = new ArrayList<>(parameterTypes.size());
+    for (int i = 0; i < parameterTypes.size(); i++) {
+      Dossier.Function.Detail.Builder detail = Dossier.Function.Detail.newBuilder();
+      detail.setType(parameterTypes.get(i));
+
+      // Try to match up names from code to type and jsdoc information.
+      if (paramList != null && i < paramList.getChildCount()) {
+        String name = paramList.getChildAtIndex(i).getString();
+        detail.setName(name);
+
+        // If the name matches up with jsdoc, use the description.
+        if (nameToDescription.containsKey(name)) {
+          detail.setDescription(nameToDescription.get(name));
+        }
+
+      // If we don't have a parameter name list, assume jsdoc is in the correct
+      // order and match off index.
+      } else if (jsdoc != null && i < jsdoc.getParameters().size()) {
+        Parameter parameter = jsdoc.getParameters().get(i);
+        detail.setName(parameter.getName());
+        detail.setDescription(nameToDescription.get(parameter.getName()));
+      }
+
+      details.add(detail.build());
+    }
+    return details;
   }
 
   @Nullable
@@ -989,6 +991,14 @@ class HtmlDocWriter implements DocWriter {
     if (src.isName() && src.getParent().isFunction()) {
       verify(src.getNext().isParamList());
       return src.getNext();
+    }
+
+    if (src.isGetProp()
+        && src.getParent().isAssign()
+        && src.getParent().getFirstChild() != null
+        && src.getParent().getFirstChild().getNext().isFunction()) {
+      src = src.getParent().getFirstChild().getNext();
+      return src.getFirstChild().getNext();
     }
 
     if (!src.isFunction()

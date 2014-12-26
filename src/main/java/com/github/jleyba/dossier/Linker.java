@@ -50,9 +50,6 @@ import java.util.Iterator;
 
 import javax.annotation.Nullable;
 
-/**
- * Utilities for generating links to {@link Descriptor types} in generated documentation.
- */
 public class Linker {
 
   private final Config config;
@@ -347,6 +344,17 @@ public class Linker {
   }
 
   /**
+   * Parses the type expression attached to the given node.
+   */
+  public Dossier.Comment formatTypeExpression(Node node) {
+    JSType type = node.getJSType();
+    if (type == null) {
+      return Dossier.Comment.newBuilder().build();
+    }
+    return new CommentTypeParser().parse(type, ParseModifier.forNode(node));
+  }
+
+  /**
    * Parses the type into a {@link Dossier.Comment} suitable for injection into a soy template.
    */
   public Dossier.Comment formatTypeExpression(@Nullable JSType type) {
@@ -360,6 +368,15 @@ public class Linker {
     NONE,
     OPTIONAL_ARG,
     VAR_ARGS;
+
+    static ParseModifier forNode(Node node) {
+      if (node.isVarArgs()) {
+        return VAR_ARGS;
+      } else if (node.isOptionalArg()) {
+        return OPTIONAL_ARG;
+      }
+      return NONE;
+    }
 
     static ParseModifier forExpression(JSTypeExpression expression) {
       if (expression.isVarArgs()) {
