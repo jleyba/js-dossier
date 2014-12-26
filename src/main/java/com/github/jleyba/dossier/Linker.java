@@ -21,6 +21,7 @@ import static com.google.common.base.Verify.verify;
 import static com.google.common.collect.Iterables.filter;
 
 import com.github.jleyba.dossier.proto.Dossier;
+import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
@@ -39,7 +40,6 @@ import com.google.javascript.rhino.jstype.ObjectType;
 import com.google.javascript.rhino.jstype.Property;
 import com.google.javascript.rhino.jstype.PrototypeObjectType;
 import com.google.javascript.rhino.jstype.ProxyObjectType;
-import com.google.javascript.rhino.jstype.RecordType;
 import com.google.javascript.rhino.jstype.TemplateType;
 import com.google.javascript.rhino.jstype.TemplatizedType;
 import com.google.javascript.rhino.jstype.UnionType;
@@ -525,7 +525,7 @@ public class Linker {
     @Override
     public Void caseObjectType(ObjectType type) {
       if (type.isRecordType()) {
-        caseRecordType((RecordType) type);
+        caseRecordType(type);
       } else if (type.isInstanceType()) {
         caseInstanceType(type);
       } else if (type instanceof PrototypeObjectType) {
@@ -548,8 +548,10 @@ public class Linker {
         } else {
           caseInstanceType(obj.getReferenceName() + ".prototype", obj);
         }
+      } else if (!type.getOwnPropertyNames().isEmpty()) {
+        caseRecordType(type);
       } else {
-        verify("{}".equals(type.toString()));
+        verify("{}".equals(type.toString()), "Unexpected type: %s", type);
         type.getImplicitPrototype().visit(this);
       }
     }
@@ -572,11 +574,24 @@ public class Linker {
       }
     }
 
-    private void caseRecordType(RecordType type) {
+    private void caseRecordType(final ObjectType type) {
       appendText("{");
-      Iterator<String> properties = type.getOwnPropertyNames().iterator();
+      Iterator<Property> properties = FluentIterable.from(type.getOwnPropertyNames())
+          .transform(new Function<String, Property>() {
+            @Override
+            public Property apply(String input) {
+              return type.getOwnSlot(input);
+            }
+          })
+          .filter(new Predicate<Property>() {
+            @Override
+            public boolean apply(@Nullable Property input) {
+              return input != null && !input.getType().isNoType();
+            }
+          })
+          .iterator();
       while (properties.hasNext()) {
-        Property property = type.getOwnSlot(properties.next());
+        Property property = properties.next();
         appendText(property.getName() + ": ");
         property.getType().visit(this);
         if (properties.hasNext()) {
