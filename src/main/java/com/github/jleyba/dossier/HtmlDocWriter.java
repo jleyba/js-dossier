@@ -944,41 +944,47 @@ class HtmlDocWriter implements DocWriter {
         ? JsDoc.from(type.getJSDocInfo())
         : docs;
 
-    List<Dossier.Comment> parameterTypes = new ArrayList<>();
-    for (Node parameterNode : ((FunctionType) type).getParameters()) {
-      parameterTypes.add(linker.formatTypeExpression(parameterNode));
-    }
-
-    Map<String, Dossier.Comment> nameToDescription = new HashMap<>();
-    if (jsdoc != null) {
-      for (Parameter parameter : jsdoc.getParameters()) {
-        nameToDescription.put(
-            parameter.getName(), parseComment(parameter.getDescription(), linker));
-      }
-    }
-
+    List<Node> parameterNodes = Lists.newArrayList(((FunctionType) type).getParameters());
+    List<Dossier.Function.Detail> details = new ArrayList<>(parameterNodes.size());
     @Nullable Node paramList = findParamList(node);
-    List<Dossier.Function.Detail> details = new ArrayList<>(parameterTypes.size());
-    for (int i = 0; i < parameterTypes.size(); i++) {
+
+    for (int i = 0; i < parameterNodes.size(); i++) {
+      // Try to find the matching parameter in the jsdoc.
+      Parameter parameter = null;
+      if (paramList != null && i < paramList.getChildCount()) {
+        String name = paramList.getChildAtIndex(i).getString();
+        if (jsdoc != null && jsdoc.hasParameter(name)) {
+          parameter = jsdoc.getParameter(name);
+        }
+      } else if (jsdoc != null && i < jsdoc.getParameters().size()) {
+        parameter = jsdoc.getParameters().get(i);
+      }
+
       Dossier.Function.Detail.Builder detail = Dossier.Function.Detail.newBuilder();
-      detail.setType(parameterTypes.get(i));
+
+      // If the compiler hasn't determined a type yet, try to map back to the jsdoc.
+      Node parameterNode = parameterNodes.get(i);
+      if (parameterNode.getJSType().isNoType() || parameterNode.getJSType().isNoResolvedType()) {
+        if (parameter != null) {
+          detail.setType(linker.formatTypeExpression(parameter.getType()));
+        }
+      } else {
+        detail.setType(linker.formatTypeExpression(parameterNode));
+      }
 
       // Try to match up names from code to type and jsdoc information.
       if (paramList != null && i < paramList.getChildCount()) {
         String name = paramList.getChildAtIndex(i).getString();
         detail.setName(name);
-
-        // If the name matches up with jsdoc, use the description.
-        if (nameToDescription.containsKey(name)) {
-          detail.setDescription(nameToDescription.get(name));
+        if (jsdoc != null && jsdoc.hasParameter(name)) {
+          detail.setDescription(parseComment(
+              jsdoc.getParameter(name).getDescription(),
+              linker));
         }
 
-      // If we don't have a parameter name list, assume jsdoc is in the correct
-      // order and match off index.
-      } else if (jsdoc != null && i < jsdoc.getParameters().size()) {
-        Parameter parameter = jsdoc.getParameters().get(i);
+      } else if (parameter != null) {
         detail.setName(parameter.getName());
-        detail.setDescription(nameToDescription.get(parameter.getName()));
+        detail.setDescription(parseComment(parameter.getDescription(), linker));
       }
 
       details.add(detail.build());

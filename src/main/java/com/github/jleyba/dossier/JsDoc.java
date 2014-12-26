@@ -159,6 +159,11 @@ public class JsDoc {
     return ImmutableList.copyOf(parameters.values());
   }
 
+  public boolean hasParameter(String name) {
+    parse();
+    return parameters.containsKey(name);
+  }
+
   public Parameter getParameter(String name) {
     parse();
     checkArgument(parameters.containsKey(name), "No parameter named %s", name);
