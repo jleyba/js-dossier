@@ -765,21 +765,6 @@ public class DossierProcessCommonJsModulesTest {
   }
 
   @Test
-  public void moduleExportAssignmentMustBeOnlyModuleExportReference() {
-    CompilerUtil util = createCompiler(path("module.js"));
-
-    try {
-      util.compile(path("module.js"),
-          "module.exports.x = 1234;",
-          "module.exports = 1;");
-      fail();
-    } catch (CompilerUtil.CompileFailureException expected) {
-      assertTrue(expected.getMessage(), expected.getMessage().contains(
-          "module.exports assignment must be only module.export reference module.js"));
-    }
-  }
-
-  @Test
   public void rewritesModuleExportAssignments() {
     CompilerUtil util = createCompiler(path("module.js"));
 
@@ -830,6 +815,22 @@ public class DossierProcessCommonJsModulesTest {
             "$jscomp.scope.module = {};",
             "$jscomp.scope.module.exports = {};",
             "$jscomp.scope.module.exports.x = function() {",
+            "};"),
+        util.toSource().trim());
+  }
+
+  @Test
+  public void canAssignAdditionalPropertiesToModuleExports() {
+    CompilerUtil util = createCompiler(path("module.js"));
+
+    util.compile(path("module.js"),
+        "module.exports = {};",
+        "module.exports.x = function() {};");
+
+    assertEquals(
+        lines(
+            "var dossier$$module__module = {};",
+            "dossier$$module__module.x = function() {",
             "};"),
         util.toSource().trim());
   }

@@ -68,15 +68,6 @@ class DossierProcessCommonJsModules implements CompilerPass {
   // NB: The following errors are forbid situations that complicate type checking.
 
   /**
-   * Error reported when an assignment to module.exports is not the only reference
-   * to module.exports.
-   */
-  private static DiagnosticType INVALID_MODULE_EXPORTS_REFERENCE =
-      DiagnosticType.error(
-          "DOSSIER_INVALID_MODULE_EXPORTS_REFERENCE",
-          "module.exports assignment must be only module.export reference");
-
-  /**
    * Reported when there are multiple assignments to module.exports.
    */
   private static DiagnosticType MULTIPLE_ASSIGNMENTS_TO_MODULE_EXPORTS =
@@ -180,7 +171,6 @@ class DossierProcessCommonJsModules implements CompilerPass {
 
     private void processModuleExportRefs(NodeTraversal t) {
       Node moduleExportsAssignment = null;
-      Node nonAssignmentModuleExport = null;
       for (Node ref : moduleExportRefs) {
         if (isTopLevelAssignLhs(ref)) {
           if (moduleExportsAssignment != null) {
@@ -189,14 +179,7 @@ class DossierProcessCommonJsModules implements CompilerPass {
           } else {
             moduleExportsAssignment = ref;
           }
-        } else {
-          nonAssignmentModuleExport = ref;
         }
-      }
-
-      if (moduleExportsAssignment != null && nonAssignmentModuleExport != null) {
-        t.report(nonAssignmentModuleExport, INVALID_MODULE_EXPORTS_REFERENCE);
-        return;
       }
 
       for (Node ref : moduleExportRefs) {
