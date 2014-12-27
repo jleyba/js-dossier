@@ -4,30 +4,27 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Predicate;
+import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Iterators;
 import com.google.javascript.jscomp.DossierModule;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.JSTypeExpression;
-import com.google.javascript.rhino.jstype.EnumElementType;
 import com.google.javascript.rhino.jstype.FunctionType;
 import com.google.javascript.rhino.jstype.JSType;
 import com.google.javascript.rhino.jstype.JSTypeRegistry;
-import com.google.javascript.rhino.jstype.NamedType;
-import com.google.javascript.rhino.jstype.NoType;
-import com.google.javascript.rhino.jstype.ObjectType;
-import com.google.javascript.rhino.jstype.ProxyObjectType;
-import com.google.javascript.rhino.jstype.TemplateType;
-import com.google.javascript.rhino.jstype.TemplatizedType;
-import com.google.javascript.rhino.jstype.UnionType;
-import com.google.javascript.rhino.jstype.Visitor;
 
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -45,6 +42,7 @@ public class TypeRegistry {
   private final Map<String, NominalType> nominalTypes = new HashMap<>();
   private final Map<String, NominalType> moduleExports = new HashMap<>();
   private final Map<DossierModule, NominalType> moduleToExports = new IdentityHashMap<>();
+  private final List<NominalType> moduleTypes = new ArrayList<>();
   private final Map<JSType, NominalType.TypeDescriptor> descriptorsByJsType = new HashMap<>();
 
   private final Map<String, JSType> externsByName = new HashMap<>();
@@ -122,6 +120,10 @@ public class TypeRegistry {
       }
     }
 
+    if (type.getModule() != null) {
+      moduleTypes.add(type);
+    }
+
     if (type.isModuleExports()) {
       checkArgument(!moduleToExports.containsKey(type.getModule()),
           "Module already registerd %s", type.getModule().getVarName());
@@ -133,16 +135,24 @@ public class TypeRegistry {
   }
 
   @Nullable
-  public NominalType.TypeDescriptor getTypeDescriptor(JSType type) {
-    return descriptorsByJsType.get(type);
+  public NominalType.TypeDescriptor findTypeDescriptor(JSType type) {
+    if (descriptorsByJsType.containsKey(type)) {
+      return descriptorsByJsType.get(type);
+    }
+    if (type.isConstructor()) {
+      type = ((FunctionType) type).getInstanceType();
+      for (Map.Entry<JSType, NominalType.TypeDescriptor> entry : descriptorsByJsType.entrySet()) {
+        JSType other = entry.getKey();
+        if (typesEqual(type, other)) {
+          return entry.getValue();
+        }
+      }
+    }
+    return null;
   }
 
   @VisibleForTesting Map<String, NominalType> getNominalTypeMap() {
     return nominalTypes;
-  }
-
-  @VisibleForTesting Map<String, NominalType> getModuleExportsMap() {
-    return moduleExports;
   }
 
   public Collection<NominalType> getNominalTypes() {
@@ -163,13 +173,47 @@ public class TypeRegistry {
     return Collections.unmodifiableCollection(moduleExports.values());
   }
 
+  /**
+   * Returns the first {@link NominalType} whose underlying {@link JSType} is equivalent to the
+   * given type.
+   */
   @Nullable
-  public NominalType resolve(JSType type) {
-    if (type.isConstructor() || type.isInterface()) {
-      String nameOfThis = ((FunctionType) type).getTypeOfThis().toString();
-      return nominalTypes.get(nameOfThis);
+  public NominalType resolve(JSType jsType) {
+    if (jsType.isInstanceType() && jsType.toObjectType().getConstructor() != null) {
+      jsType = jsType.toObjectType().getConstructor();
     }
-    return null;
+
+    FluentIterable<NominalType> candidates = FluentIterable.from(nominalTypes.values())
+        .append(moduleTypes)
+        .filter(hasType(jsType));
+    Iterator<NominalType> it = candidates.iterator();
+    return it.hasNext() ? it.next() : null;
+  }
+
+  private static boolean typesEqual(JSType a, JSType b) {
+    if (a.equals(b)) {
+      return true;
+    }
+    // Sometimes the JSCompiler will generate two version of a constructor:
+    //   function(new: Foo): undefined
+    //   function(new: Foo): ?
+    // We consider these equivalent even though technically they are not
+    // (I'm not sure how the return type of a constructor could be unknown).
+    if (a.isConstructor() && b.isConstructor()) {
+      a = ((FunctionType) a).getInstanceType();
+      b = ((FunctionType) b).getInstanceType();
+      return a.equals(b);
+    }
+    return false;
+  }
+
+  private static Predicate<NominalType> hasType(final JSType jsType) {
+    return new Predicate<NominalType>() {
+      @Override
+      public boolean apply(@Nullable NominalType input) {
+        return input != null && typesEqual(input.getJsType(), jsType);
+      }
+    };
   }
 
   /**
@@ -197,6 +241,10 @@ public class TypeRegistry {
     return baseType.evaluate(null, jsTypeRegistry);
   }
 
+  /**
+   * Returns the interfaces implemented by the given type. If the type is itself an interface, this
+   * will return its super types.
+   */
   public ImmutableSet<JSType> getImplementedTypes(NominalType nominalType) {
     JSType type = nominalType.getJsType();
     ImmutableSet.Builder<JSType> builder = ImmutableSet.builder();
@@ -224,42 +272,5 @@ public class TypeRegistry {
       }
     }
     return interfaces;
-  }
-
-  public static boolean ignoreProperty(ObjectType obj, String propName) {
-    return obj.isFunctionType()
-        && ("apply".equals(propName) || "bind".equals(propName) || "call".equals(propName))
-        || "prototype".equals(propName);
-  }
-
-  public static boolean isTheObjectType(JSType type) {
-    if (!type.isInstanceType()) {
-      return false;
-    }
-    ObjectType obj = type.toObjectType();
-    return obj.getConstructor().isNativeObjectType()
-        && "Object".equals(obj.getConstructor().getReferenceName());
-  }
-
-  private class TypeCrawler implements Visitor<Object> {
-
-    @Override public Object caseFunctionType(FunctionType type) { return null; }
-    @Override public Object caseObjectType(ObjectType type) { return null; }
-    @Override public Object caseProxyObjectType(ProxyObjectType type) { return null; }
-
-    @Override public Object caseNoType(NoType type) { return null; }
-    @Override public Object caseEnumElementType(EnumElementType type) { return null; }
-    @Override public Object caseAllType() { return null; }
-    @Override public Object caseBooleanType() { return null; }
-    @Override public Object caseNoObjectType() { return null; }
-    @Override public Object caseUnknownType() { return null; }
-    @Override public Object caseNullType() { return null; }
-    @Override public Object caseNamedType(NamedType type) { return null; }
-    @Override public Object caseNumberType() { return null; }
-    @Override public Object caseStringType() { return null; }
-    @Override public Object caseVoidType() { return null; }
-    @Override public Object caseUnionType(UnionType type) { return null; }
-    @Override public Object caseTemplatizedType(TemplatizedType type) { return null; }
-    @Override public Object caseTemplateType(TemplateType templateType) { return null; }
   }
 }

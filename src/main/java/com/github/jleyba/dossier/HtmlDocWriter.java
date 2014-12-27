@@ -30,6 +30,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Predicates.not;
 import static com.google.common.base.Strings.isNullOrEmpty;
+import static com.google.common.base.Strings.nullToEmpty;
 import static com.google.common.base.Verify.verify;
 import static com.google.common.collect.Iterables.concat;
 import static com.google.common.collect.Iterables.transform;
@@ -46,6 +47,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
 import com.google.gson.JsonArray;
@@ -183,8 +185,6 @@ class HtmlDocWriter implements DocWriter {
         continue;
       }
 
-      // TODO: resolveTypeAlias.
-//      Descriptor resolvedType = resolveTypeAlias(type);
       Path path = linker.getFilePath(type);
       builder.addType(TypeLink.newBuilder()
           .setHref(toUrlPath(config.getOutput().relativize(path)))
@@ -215,13 +215,6 @@ class HtmlDocWriter implements DocWriter {
     Path output = linker.getFilePath(module);
     createDirectories(output.getParent());
 
-//    // Always generate documentation for both the internal and external typedefs since
-//    // they're most likely used in other jsdoc type annotations.
-//    // TODO: handle this in a cleaner way.
-//    Iterable<? extends JsType.TypeDef> typeDefs = concat(
-//        getTypeDefInfo(module.getExportedProperties()),
-//        getTypeDefInfo(module.getInternalTypeDefs()));
-//
     currentModule = module;
     JsType.Builder jsTypeBuilder = JsType.newBuilder()
         .setName(linker.getDisplayName(module))
@@ -293,14 +286,12 @@ class HtmlDocWriter implements DocWriter {
           .setHref(linker.getLink(type.getModule().getVarName())));
     }
 
-// TODO: type alias.
-//    Descriptor aliased = resolveTypeAlias(descriptor);
-//    if (aliased != descriptor) {
+    // TODO
+//    NominalType aliased = typeRegistry.resolve(type.getJsType());
+//    if (aliased != type) {
 //      jsTypeBuilder.setAliasedType(TypeLink.newBuilder()
-//          .setText(aliased.getFullName())
-//          .setHref(nullToEmpty(linker.getLink(aliased)))
-//          .build());
-//      descriptor = aliased;
+//          .setText(linker.getDisplayName(aliased))
+//          .setHref(linker.getFilePath(aliased).toString());
 //    }
 
     jsTypeBuilder
@@ -406,8 +397,6 @@ class HtmlDocWriter implements DocWriter {
         continue;
       }
 
-      // TODO: resolve
-//      Descriptor resolvedType = resolveTypeAlias(descriptor);
       String dest = config.getOutput().relativize(linker.getFilePath(type)).toString();
 
       JsonObject details = new JsonObject();
@@ -419,15 +408,13 @@ class HtmlDocWriter implements DocWriter {
 
       // Also include typedefs. These will not be included in the main
       // index, but will be searchable.
-      // TODO: resolve
-//      List<Descriptor> typedefs = FluentIterable.from(resolvedType.getProperties())
       List<NominalType> typedefs = FluentIterable.from(type.getTypes())
           .filter(isTypedef())
           .toSortedList(new NameComparator());
       for (NominalType typedef : typedefs) {
         JsonObject typedefDetails = new JsonObject();
         typedefDetails.addProperty("name", typedef.getQualifiedName());
-        typedefDetails.addProperty("href", "");  // TODO: nullToEmpty(linker.getLink(typedef.getFullName())));
+        typedefDetails.addProperty("href", nullToEmpty(linker.getLink(typedef)));
         typedefDetails.addProperty("isTypedef", true);
         array.add(typedefDetails);
       }
@@ -609,8 +596,6 @@ class HtmlDocWriter implements DocWriter {
         continue;
       }
 
-      // TODO: type alias
-//      Descriptor resolvedType = resolveTypeAlias(child);
       String href = linker.getFilePath(child).getFileName().toString();
 
       Dossier.Comment summary = getSummary("No description.", linker);
@@ -619,11 +604,13 @@ class HtmlDocWriter implements DocWriter {
       if (jsdoc != null && !isNullOrEmpty(jsdoc.getBlockComment())) {
         summary =  getSummary(jsdoc.getBlockComment(), linker);
       } else {
-        // TODO: alias
-//        jsdoc = resolvedType.getJsDoc();
-//        if (jsdoc  != null && !isNullOrEmpty(jsdoc.getBlockComment())) {
-//          summary =  getSummary(jsdoc.getBlockComment(), linker);
-//        }
+        NominalType aliased = typeRegistry.resolve(childType);
+        if (aliased != null
+            && aliased != child
+            && aliased.getJsdoc() != null
+            && !isNullOrEmpty(aliased.getJsdoc().getBlockComment())) {
+          summary = getSummary(aliased.getJsdoc().getBlockComment(), linker);
+        }
       }
 
       types.add(JsType.TypeSummary.newBuilder()
@@ -641,7 +628,9 @@ class HtmlDocWriter implements DocWriter {
     if (nominalType.getJsType().isConstructor()) {
       assignableTypes = Lists.reverse(typeRegistry.getTypeHierarchy(nominalType.getJsType()));
     } else if (nominalType.getJsType().isInterface()) {
-      assignableTypes = typeRegistry.getImplementedTypes(nominalType);
+      assignableTypes = Iterables.concat(
+          ImmutableSet.of(nominalType.getJsType()),
+          typeRegistry.getImplementedTypes(nominalType));
     } else {
       return;
     }
@@ -773,7 +762,7 @@ class HtmlDocWriter implements DocWriter {
       String name, JSType type, Node node, @Nullable JsDoc jsDoc) {
     checkArgument(type.isFunctionType());
 
-    boolean isConstructor = type.isConstructor() && (jsDoc == null || jsDoc.isConstructor());
+    boolean isConstructor = type.isConstructor();
     boolean isInterface = !isConstructor && type.isInterface();
 
     Dossier.Function.Builder builder = Dossier.Function.newBuilder()

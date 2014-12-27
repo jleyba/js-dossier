@@ -13,7 +13,6 @@
 // limitations under the License.
 package com.github.jleyba.dossier;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.base.Strings.nullToEmpty;
@@ -26,7 +25,6 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Iterables;
 import com.google.common.io.Files;
 import com.google.javascript.jscomp.DossierModule;
 import com.google.javascript.rhino.JSTypeExpression;
@@ -238,8 +236,20 @@ public class Linker {
   }
 
   @Nullable
+  public String getLink(NominalType type) {
+    if (type.getJsdoc() != null && type.getJsdoc().isTypedef()) {
+      NominalType parent = type.getParent();
+      if (parent == null) {
+        return null;
+      }
+      return getFilePath(parent) + "#" + parent.getName() + "." + type.getName();
+    }
+    return getFilePath(type).toString();
+  }
+
+  @Nullable
   public Dossier.TypeLink getLink(final JSType to) {
-    NominalType type = resolve(to);
+    NominalType type = typeRegistry.resolve(to);
     if (type == null) {
       return null;
     }
@@ -247,30 +257,6 @@ public class Linker {
         .setText(type.getQualifiedName())
         .setHref(getFilePath(type).getFileName().toString())
         .build();
-  }
-
-  @Nullable
-  private NominalType resolve(final JSType jsType) {
-    Iterable<NominalType> types = Iterables.concat(
-        typeRegistry.getNominalTypes(),
-        typeRegistry.getModules());
-
-    FluentIterable<NominalType> candidates = FluentIterable.from(types)
-        .filter(new Predicate<NominalType>() {
-          @Override
-          public boolean apply(@Nullable NominalType input) {
-            return input != null && input.getJsType().equals(jsType);
-          }
-        });
-
-    Iterator<NominalType> it = candidates.iterator();
-    if (!it.hasNext()) {
-      return null;
-    }
-
-    NominalType type = it.next();
-    checkArgument(!it.hasNext(), "Ambiguous type %s resolves to %s", jsType, candidates);
-    return type;
   }
 
   @Nullable
@@ -540,7 +526,7 @@ public class Linker {
       if (type.getOwnerFunction() != null) {
         ObjectType obj = type.getOwnerFunction().getTypeOfThis().toObjectType();
 
-        NominalType nominalType = resolve(obj.getConstructor());
+        NominalType nominalType = typeRegistry.resolve(obj.getConstructor());
         if (nominalType != null) {
           appendLink(
               nominalType.getQualifiedName() + ".prototype",
@@ -557,7 +543,7 @@ public class Linker {
     }
 
     private void caseInstanceType(ObjectType type) {
-      NominalType nominalType = resolve(type.getConstructor());
+      NominalType nominalType = typeRegistry.resolve(type.getConstructor());
       String displayName = nominalType == null
           ? type.getReferenceName()
           : nominalType.getQualifiedName();

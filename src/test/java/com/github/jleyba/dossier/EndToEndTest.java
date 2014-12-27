@@ -17,7 +17,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.io.Resources;
 import com.google.common.jimfs.Jimfs;
-import com.google.common.truth.Truth;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
@@ -81,16 +80,22 @@ public class EndToEndTest {
     copyResource("resources/json.js", srcDir.resolve("main/json.js"));
     copyResource("resources/inheritance.js", srcDir.resolve("main/inheritance.js"));
     copyResource("resources/emptyenum.js", srcDir.resolve("main/subdir/emptyenum.js"));
+    copyResource("resources/module/index.js", srcDir.resolve("main/example/index.js"));
+    copyResource("resources/module/nested.js", srcDir.resolve("main/example/nested.js"));
 
     Path config = createTempFile(tmpDir, "config", ".json");
     writeConfig(config, new Config() {{
       setOutput(outDir);
       setReadme(srcDir.resolve("SimpleReadme.md"));
+
       addSource(srcDir.resolve("main/closure_module.js"));
       addSource(srcDir.resolve("main/globals.js"));
       addSource(srcDir.resolve("main/json.js"));
       addSource(srcDir.resolve("main/inheritance.js"));
       addSource(srcDir.resolve("main/subdir/emptyenum.js"));
+
+      addModule(srcDir.resolve("main/example/index.js"));
+      addModule(srcDir.resolve("main/example/nested.js"));
     }});
 
     Main.run(new String[]{"-c", config.toAbsolutePath().toString()}, fileSystem);
@@ -101,6 +106,7 @@ public class EndToEndTest {
     assertExists(outDir.resolve("source/closure_module.js.src.html"));
     assertExists(outDir.resolve("source/globals.js.src.html"));
     assertExists(outDir.resolve("source/json.js.src.html"));
+    assertExists(outDir.resolve("source/example/index.js.src.html"));
     assertExists(outDir.resolve("source/subdir/emptyenum.js.src.html"));
   }
 
@@ -225,6 +231,34 @@ public class EndToEndTest {
     checkFooter(document);
   }
 
+  @Test
+  public void checkPackageIndexCommonJsModule() throws IOException {
+    Document document = load(outDir.resolve("module_example.html"));
+    compareWithGoldenFile(querySelector(document, "article"), "module_example.html");
+    checkHeader(document);
+    checkNav(document);
+    checkFooter(document);
+  }
+
+  @Test
+  public void checkCommonJsModule() throws IOException {
+    Document document = load(outDir.resolve("module_example_nested.html"));
+    compareWithGoldenFile(querySelector(document, "article"), "module_example_nested.html");
+    checkHeader(document);
+    checkNav(document);
+    checkFooter(document);
+  }
+
+  @Test
+  public void checkCommonJsModuleExportedInterface() throws IOException {
+    Document document = load(outDir.resolve("module_example_nested_interface_IdGenerator.html"));
+    compareWithGoldenFile(querySelector(document, "article"),
+        "module_example_nested_interface_IdGenerator.html");
+    checkHeader(document);
+    checkNav(document);
+    checkFooter(document);
+  }
+
   private void checkHeader(Document document) throws IOException {
     compareWithGoldenFile(querySelector(document, "header"), "header.html");
   }
@@ -294,6 +328,7 @@ public class EndToEndTest {
   private static class Config {
     private final JsonObject json = new JsonObject();
     private final JsonArray sources = new JsonArray();
+    private final JsonArray modules = new JsonArray();
 
     void setOutput(Path path) {
       json.addProperty("output", path.toString());
@@ -306,6 +341,11 @@ public class EndToEndTest {
     void addSource(Path path) {
       sources.add(new JsonPrimitive(path.toString()));
       json.add("sources", sources);
+    }
+
+    void addModule(Path path) {
+      modules.add(new JsonPrimitive(path.toString()));
+      json.add("modules", modules);
     }
 
     @Override

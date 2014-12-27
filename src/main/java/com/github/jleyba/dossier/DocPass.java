@@ -198,7 +198,6 @@ class DocPass implements CompilerPass {
   private class TypeCollector implements NodeTraversal.Callback, Visitor<Object> {
 
     private final LinkedList<NominalType> types = new LinkedList<>();
-    private final Map<JSType, NominalType.TypeDescriptor> seen = new HashMap<>();
 
     @Override
     public boolean shouldTraverse(NodeTraversal t, Node n, @Nullable Node parent) {
@@ -263,7 +262,7 @@ class DocPass implements CompilerPass {
     }
 
     void crawl(String name, JSDocInfo info, Node node, JSType jsType, DossierModule module) {
-      NominalType.TypeDescriptor descriptor = typeRegistry.getTypeDescriptor(jsType);
+      NominalType.TypeDescriptor descriptor = typeRegistry.findTypeDescriptor(jsType);
 
       // If we've already crawled the type, we know it's documentable.
       if (descriptor != null) {
@@ -302,7 +301,6 @@ class DocPass implements CompilerPass {
 
       try {
         System.out.println("crawling " + type.getQualifiedName());
-        seen.put(type.getJsType(), type.getTypeDescriptor());
         types.push(type);
         typeRegistry.addType(type);
         type.getJsType().visit(this);
@@ -354,7 +352,10 @@ class DocPass implements CompilerPass {
         //     /** @constructor */
         //     function Internal() {}
         //     exports.Public = Internal;
-        if (isConstructorTypeDefinition(propertyType, jsdoc)) {
+        //
+        // The exception to the rule is if this property is exporting a constructor as part of
+        // a CommonJS module's public API - then we document the symbol as a type.
+        if (parent.isModuleExports() || isConstructorTypeDefinition(propertyType, jsdoc)) {
           recordPropertyAsNestedType(property);
         } else {
           parent.addProperty(property);
@@ -390,14 +391,18 @@ class DocPass implements CompilerPass {
       return marker.isPresent() && marker.get().getType() != null;
     }
 
+    public TypeCollector() {
+      super();
+    }
+
     private void recordPropertyAsNestedType(Property property) {
-      NominalType.TypeDescriptor descriptor = seen.get(property.getType());
-      if (descriptor != null) {
+      NominalType.TypeDescriptor seen = typeRegistry.findTypeDescriptor(property.getType());
+      if (seen != null) {
         System.out.println("Found type alias as property: " + property.getName() + " -> " + property.getType());
         NominalType child = new NominalType(
             types.peek(),
             property.getName(),
-            descriptor,
+            seen,
             property.getNode(),
             JsDoc.from(property.getJSDocInfo()),
             null);
