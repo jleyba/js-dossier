@@ -281,9 +281,13 @@ class HtmlDocWriter implements DocWriter {
         .setName(name);
 
     if (type.getModule() != null && !type.isModuleExports()) {
+      NominalType module = type.getParent();
+      while (!module.isModuleExports()) {
+        module = module.getParent();
+      }
       jsTypeBuilder.setModule(TypeLink.newBuilder()
-          .setText(linker.getDisplayName(type.getModule()))
-          .setHref(linker.getLink(type.getModule().getVarName())));
+          .setText(linker.getDisplayName(module))
+          .setHref(linker.getLink(module)));
     }
 
     Dossier.Comment description = getBlockDescription(linker, type.getJsdoc());

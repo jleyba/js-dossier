@@ -254,7 +254,7 @@ public class Linker {
       return null;
     }
     return Dossier.TypeLink.newBuilder()
-        .setText(type.getQualifiedName())
+        .setText(getDisplayName(type))
         .setHref(getFilePath(type).getFileName().toString())
         .build();
   }
@@ -553,7 +553,7 @@ public class Linker {
       NominalType nominalType = typeRegistry.resolve(type.getConstructor());
       String displayName = nominalType == null
           ? type.getReferenceName()
-          : nominalType.getQualifiedName();
+          : getDisplayName(nominalType);
       caseInstanceType(displayName, type);
     }
 
