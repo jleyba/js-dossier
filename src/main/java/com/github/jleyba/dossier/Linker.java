@@ -14,8 +14,6 @@
 package com.github.jleyba.dossier;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Strings.isNullOrEmpty;
-import static com.google.common.base.Strings.nullToEmpty;
 import static com.google.common.base.Verify.verify;
 import static com.google.common.collect.Iterables.filter;
 
@@ -23,8 +21,10 @@ import com.github.jleyba.dossier.proto.Dossier;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Predicate;
+import com.google.common.base.Splitter;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Iterables;
 import com.google.common.io.Files;
 import com.google.javascript.jscomp.DossierModule;
 import com.google.javascript.rhino.JSTypeExpression;
@@ -45,6 +45,7 @@ import com.google.javascript.rhino.jstype.Visitor;
 
 import java.nio.file.Path;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.annotation.Nullable;
 
@@ -171,31 +172,31 @@ public class Linker {
    * directory, otherwise {@code null} is returned.
    */
   @Nullable
-  public String getLink(String to) {
+  public Dossier.TypeLink getLink(String symbol) {
     // Trim down the target symbol to something that would be indexable.
-    int index = to.indexOf("(");
+    int index = symbol.indexOf("(");
     if (index != -1) {
-      to = to.substring(0, index);
+      symbol = symbol.substring(0, index);
     }
 
-    String typeName = to;
+    String typeName = symbol;
     String propertyName = "";
     boolean instanceProperty = false;
 
-    if (to.endsWith("#")) {
-      typeName = to.substring(0, to.length() - 1);
+    if (symbol.endsWith("#")) {
+      typeName = symbol.substring(0, symbol.length() - 1);
 
-    } else if (to.endsWith(".prototype")) {
-      typeName = to.substring(0, to.length() - ".prototype".length());
+    } else if (symbol.endsWith(".prototype")) {
+      typeName = symbol.substring(0, symbol.length() - ".prototype".length());
 
-    } else if (to.contains("#")) {
-      String[] parts = to.split("#");
+    } else if (symbol.contains("#")) {
+      String[] parts = symbol.split("#");
       typeName = parts[0];
       propertyName = parts[1];
       instanceProperty = true;
 
-    } else if (to.contains(".prototype.")) {
-      String[] parts = to.split(".prototype.");
+    } else if (symbol.contains(".prototype.")) {
+      String[] parts = symbol.split(".prototype.");
       typeName = parts[0];
       propertyName = parts[1];
       instanceProperty = true;
@@ -220,31 +221,43 @@ public class Linker {
       return getExternLink(typeName);
     }
 
-    String filePath = getFilePath(type).getFileName().toString();
+    Dossier.TypeLink link = checkNotNull(getLink(type), "Failed to build link for %s",
+        type.getQualifiedName());
     if (!propertyName.isEmpty()) {
       if (instanceProperty || type.isModuleExports()) {
         if (type.isModuleExports()
             || type.getJsdoc().isConstructor()
             || type.getJsdoc().isInterface()) {
-          filePath += "#" + propertyName;
+          String joiner = instanceProperty ? "#" : ".";
+          link = link.toBuilder()
+              .setText(link.getText() + joiner + propertyName)
+              .setHref(link.getHref() + "#" + propertyName)
+              .build();
         }
       } else {
-        filePath += "#" + type.getName() + "." + propertyName;
+        link = link.toBuilder()
+            .setHref(link.getHref() + "#" + type.getName() + "." + propertyName)
+            .build();
       }
     }
-    return filePath;
+    return link;
   }
 
   @Nullable
-  public String getLink(NominalType type) {
+  public Dossier.TypeLink getLink(NominalType type) {
+    Dossier.TypeLink.Builder link = Dossier.TypeLink.newBuilder()
+        .setText(getDisplayName(type));
     if (type.getJsdoc() != null && type.getJsdoc().isTypedef()) {
       NominalType parent = type.getParent();
       if (parent == null) {
         return null;
       }
-      return getFilePath(parent).getFileName() + "#" + parent.getName() + "." + type.getName();
+      link.setHref(
+          getFilePath(parent).getFileName() + "#" + parent.getName() + "." + type.getName());
+    } else {
+      link.setHref(getFilePath(type).getFileName().toString());
     }
-    return getFilePath(type).getFileName().toString();
+    return link.build();
   }
 
   @Nullable
@@ -263,7 +276,7 @@ public class Linker {
   private NominalType getType(String name) {
     NominalType type = typeRegistry.getNominalType(name);
     if (type == null) {
-      type = typeRegistry.getModule(name);
+      type = typeRegistry.getModuleType(name);
     }
     return type;
   }
@@ -312,9 +325,12 @@ public class Linker {
    * @return A link to the extern's type definition, or {@code null} if one could not be found.
    */
   @Nullable
-  public String getExternLink(String name) {
+  public Dossier.TypeLink getExternLink(String name) {
     if (BUILTIN_TO_MDN_LINK.containsKey(name)) {
-      return BUILTIN_TO_MDN_LINK.get(name);
+      return Dossier.TypeLink.newBuilder()
+          .setText(name)
+          .setHref(BUILTIN_TO_MDN_LINK.get(name))
+          .build();
     }
     return null;
   }
@@ -415,7 +431,11 @@ public class Linker {
     }
 
     private void appendNativeType(String type) {
-      appendLink(type, checkNotNull(getExternLink(type)));
+      appendLink(checkNotNull(getExternLink(type)));
+    }
+
+    private void appendLink(Dossier.TypeLinkOrBuilder link) {
+      appendLink(link.getText(), link.getHref());
     }
 
     private void appendLink(String text, String href) {
@@ -560,8 +580,8 @@ public class Linker {
     private void caseInstanceType(String displayName, ObjectType type) {
       Dossier.TypeLink link = getLink(type.getConstructor());
       if (link == null) {
-        String href = nullToEmpty(getExternLink(type.getReferenceName()));
-        appendLink(displayName, href);
+        link = getExternLink(type.getReferenceName());
+        appendLink(displayName, link == null ? "" : link.getHref());
       } else {
         appendLink(displayName, link.getHref());
       }
@@ -608,9 +628,9 @@ public class Linker {
 
     @Override
     public Void caseNamedType(NamedType type) {
-      String link = getLink(type.getReferenceName());
-      if (!isNullOrEmpty(link)) {
-        appendLink(type.getReferenceName(), link);
+      Dossier.TypeLink link = getLink(type.getReferenceName());
+      if (link != null) {
+        appendLink(link);
       } else {
         appendText(type.getReferenceName());
       }
@@ -660,7 +680,9 @@ public class Linker {
           voidAlternates += 1;
         }
         containsNonNullable = containsNonNullable
-            || (!alternate.isNullable() && !alternate.isInstanceType());
+            || (!alternate.isNullable()
+            && !alternate.isInstanceType()
+            && !(alternate instanceof NamedType));
       }
 
       Iterable<JSType> alternates = type.getAlternates();

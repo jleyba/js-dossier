@@ -30,7 +30,6 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Predicates.not;
 import static com.google.common.base.Strings.isNullOrEmpty;
-import static com.google.common.base.Strings.nullToEmpty;
 import static com.google.common.base.Verify.verify;
 import static com.google.common.collect.Iterables.concat;
 import static com.google.common.collect.Iterables.transform;
@@ -96,9 +95,7 @@ class HtmlDocWriter implements DocWriter {
   private Iterable<Path> sortedFiles;
   private Iterable<NominalType> sortedTypes;
   private Iterable<NominalType> sortedModules;
-  private ImmutableSet<NominalType> namespaces;
   private Dossier.Index masterIndex;
-  private NominalType currentModule;
 
   HtmlDocWriter(Config config, TypeRegistry typeRegistry) {
     this.config = checkNotNull(config);
@@ -117,10 +114,6 @@ class HtmlDocWriter implements DocWriter {
         .toSortedList(new QualifiedNameComparator());
     sortedModules = FluentIterable.from(typeRegistry.getModules())
         .toSortedList(new DisplayNameComparator());
-
-    namespaces = FluentIterable.from(sortedTypes)
-        .filter(isNamespace())
-        .toSet();
 
     masterIndex = generateNavIndex();
 
@@ -215,7 +208,6 @@ class HtmlDocWriter implements DocWriter {
     Path output = linker.getFilePath(module);
     createDirectories(output.getParent());
 
-    currentModule = module;
     JsType.Builder jsTypeBuilder = JsType.newBuilder()
         .setName(linker.getDisplayName(module))
         .setSource(linker.getSourceLink(module.getNode()))
@@ -269,7 +261,6 @@ class HtmlDocWriter implements DocWriter {
         generateDocs(type);
       }
     }
-    currentModule = null;
   }
 
   private void generateDocs(NominalType type) throws IOException {
@@ -285,9 +276,7 @@ class HtmlDocWriter implements DocWriter {
       while (!module.isModuleExports()) {
         module = module.getParent();
       }
-      jsTypeBuilder.setModule(TypeLink.newBuilder()
-          .setText(linker.getDisplayName(module))
-          .setHref(linker.getLink(module)));
+      jsTypeBuilder.setModule(linker.getLink(module));
     }
 
     Dossier.Comment description = getBlockDescription(linker, type.getJsdoc());
@@ -426,9 +415,13 @@ class HtmlDocWriter implements DocWriter {
           .filter(isTypedef())
           .toSortedList(new NameComparator());
       for (NominalType typedef : typedefs) {
+        TypeLink link = linker.getLink(typedef);
+        if (link == null) {
+          continue;  // TODO: decide what to do with global type links.
+        }
         JsonObject typedefDetails = new JsonObject();
-        typedefDetails.addProperty("name", typedef.getQualifiedName());
-        typedefDetails.addProperty("href", nullToEmpty(linker.getLink(typedef)));
+        typedefDetails.addProperty("name", link.getText());
+        typedefDetails.addProperty("href", link.getHref());
         typedefDetails.addProperty("isTypedef", true);
         array.add(typedefDetails);
       }

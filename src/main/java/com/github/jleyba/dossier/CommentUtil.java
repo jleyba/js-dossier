@@ -15,32 +15,10 @@
 package com.github.jleyba.dossier;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Strings.isNullOrEmpty;
-import static com.google.common.base.Strings.nullToEmpty;
-import static com.google.common.base.Verify.verify;
-import static com.google.common.collect.Iterables.filter;
 
 import com.github.jleyba.dossier.proto.Dossier;
-import com.github.jleyba.dossier.proto.Dossier.Comment;
-import com.google.common.base.Predicate;
-import com.google.javascript.rhino.Node;
-import com.google.javascript.rhino.jstype.EnumElementType;
-import com.google.javascript.rhino.jstype.FunctionType;
-import com.google.javascript.rhino.jstype.JSType;
-import com.google.javascript.rhino.jstype.NamedType;
-import com.google.javascript.rhino.jstype.NoType;
-import com.google.javascript.rhino.jstype.ObjectType;
-import com.google.javascript.rhino.jstype.Property;
-import com.google.javascript.rhino.jstype.PrototypeObjectType;
-import com.google.javascript.rhino.jstype.ProxyObjectType;
-import com.google.javascript.rhino.jstype.RecordType;
-import com.google.javascript.rhino.jstype.TemplateType;
-import com.google.javascript.rhino.jstype.TemplatizedType;
-import com.google.javascript.rhino.jstype.UnionType;
-import com.google.javascript.rhino.jstype.Visitor;
 
-import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -129,13 +107,13 @@ public class CommentUtil {
         case "link":
         case "linkplain":
           LinkInfo info = LinkInfo.fromText(tagletText);
-          @Nullable String link = linker.getLink(info.type);
+          @Nullable Dossier.TypeLink link =linker.getLink(info.type);
 
           Dossier.Comment.Token.Builder token = newToken(info.text)
               .setIsCode("link".equals(tagletName))
               .setUnresolvedLink(link == null);
           if (link != null) {
-            token.setHref(link);
+            token.setHref(link.getHref());
           }
           builder.addToken(token);
           break;

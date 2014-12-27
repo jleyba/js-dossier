@@ -946,7 +946,10 @@ public class RendererTest {
 
   @Test
   public void renderComment_resolvedLink() {
-    when(mockLinker.getLink("foo.Bar")).thenReturn("/path/to/foo");
+    when(mockLinker.getLink("foo.Bar")).thenReturn(
+        Dossier.TypeLink.newBuilder()
+            .setText("")
+            .setHref("/path/to/foo").build());
 
     Dossier.Comment comment = parseComment(
         "A {@link foo.Bar milk & cookies} snack");
@@ -961,7 +964,11 @@ public class RendererTest {
 
   @Test
   public void renderComment_plainLink() {
-    when(mockLinker.getLink("foo.Bar")).thenReturn("/path/to/foo");
+    when(mockLinker.getLink("foo.Bar")).thenReturn(
+        Dossier.TypeLink.newBuilder()
+            .setText("")
+            .setHref("/path/to/foo").build());
+
 
     Dossier.Comment comment = parseComment(
         "A {@linkplain foo.Bar milk & cookies} snack");

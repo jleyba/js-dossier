@@ -2,12 +2,12 @@ package com.github.jleyba.dossier;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Verify.verify;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Iterators;
 import com.google.javascript.jscomp.DossierModule;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.JSTypeExpression;
@@ -16,7 +16,6 @@ import com.google.javascript.rhino.jstype.JSType;
 import com.google.javascript.rhino.jstype.JSTypeRegistry;
 
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -24,7 +23,6 @@ import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -42,7 +40,8 @@ public class TypeRegistry {
   private final Map<String, NominalType> nominalTypes = new HashMap<>();
   private final Map<String, NominalType> moduleExports = new HashMap<>();
   private final Map<DossierModule, NominalType> moduleToExports = new IdentityHashMap<>();
-  private final List<NominalType> moduleTypes = new ArrayList<>();
+  private final Set<NominalType> allTypes = new HashSet<>();
+  private final Map<String, NominalType> nameToModuleTypes = new HashMap<>();
   private final Map<JSType, NominalType.TypeDescriptor> descriptorsByJsType = new HashMap<>();
 
   private final Map<String, JSType> externsByName = new HashMap<>();
@@ -110,10 +109,13 @@ public class TypeRegistry {
   }
 
   public void addType(NominalType type) {
+    if (findTypeDescriptor(type.getJsType()) == null) {
+      verify(allTypes.add(type));
+    }
+
     if (type.getJsdoc() == null || !type.getJsdoc().isTypedef()) {
       NominalType.TypeDescriptor descriptor = type.getTypeDescriptor();
       NominalType.TypeDescriptor replaced =  descriptorsByJsType.put(type.getJsType(), descriptor);
-
       if (replaced != null && replaced != descriptor) {
         throw new AssertionError("Replacing " + replaced + " with " + descriptor
             + " when adding type " + type.getQualifiedName());
@@ -121,7 +123,11 @@ public class TypeRegistry {
     }
 
     if (type.getModule() != null) {
-      moduleTypes.add(type);
+      String qualifiedName = type.getQualifiedName(true);
+      nameToModuleTypes.put(qualifiedName, type);
+
+      // If there are any known subtypes (e.g. |type| is an alias), register them for future lookup.
+      registerModuleTypes(qualifiedName, type.getTypes());
     }
 
     if (type.isModuleExports()) {
@@ -134,13 +140,20 @@ public class TypeRegistry {
     }
   }
 
+  private void registerModuleTypes(String baseName, Iterable<NominalType> types) {
+    for (NominalType type : types) {
+      String name = baseName + "." + type.getName();
+      nameToModuleTypes.put(name, type);
+      registerModuleTypes(name, type.getTypes());
+    }
+  }
+
   @Nullable
   public NominalType.TypeDescriptor findTypeDescriptor(JSType type) {
     if (descriptorsByJsType.containsKey(type)) {
       return descriptorsByJsType.get(type);
     }
     if (type.isConstructor()) {
-      type = ((FunctionType) type).getInstanceType();
       for (Map.Entry<JSType, NominalType.TypeDescriptor> entry : descriptorsByJsType.entrySet()) {
         JSType other = entry.getKey();
         if (typesEqual(type, other)) {
@@ -165,8 +178,8 @@ public class TypeRegistry {
   }
 
   @Nullable
-  public NominalType getModule(String name) {
-    return moduleExports.get(name);
+  public NominalType getModuleType(String name) {
+    return nameToModuleTypes.get(name);
   }
 
   public Collection<NominalType> getModules() {
@@ -183,11 +196,10 @@ public class TypeRegistry {
       jsType = jsType.toObjectType().getConstructor();
     }
 
-    FluentIterable<NominalType> candidates = FluentIterable.from(nominalTypes.values())
-        .append(moduleTypes)
-        .filter(hasType(jsType));
-    Iterator<NominalType> it = candidates.iterator();
-    return it.hasNext() ? it.next() : null;
+    Iterator<NominalType> candidates = FluentIterable.from(allTypes)
+        .filter(hasType(jsType))
+        .iterator();
+    return candidates.hasNext() ? candidates.next() : null;
   }
 
   private static boolean typesEqual(JSType a, JSType b) {

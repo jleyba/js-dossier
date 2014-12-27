@@ -151,20 +151,20 @@ public class LinkerTest {
   public void testGetLink_namespace() {
     NominalType type = createType("foo.bar");
     typeRegistry.addType(type);
-    assertEquals("namespace_foo_bar.html", linker.getLink("foo.bar"));
+    checkLink("foo.bar", "namespace_foo_bar.html", linker.getLink("foo.bar"));
   }
 
   @Test
   public void testGetLink_externs() {
-    String link =
+    String href =
         "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String";
 
-    assertEquals(link, linker.getLink("string"));
-    assertEquals(link, linker.getLink("String"));
-    assertEquals(link, linker.getLink("String.prototype.indexOf"));
-    assertEquals(link, linker.getLink("String#indexOf"));
-    assertEquals(link, linker.getLink("String#"));
-    assertEquals(link, linker.getLink("String.fromCharCode"));
+    checkLink("string", href, linker.getLink("string"));
+    checkLink("String", href, linker.getLink("String"));
+    checkLink("String", href, linker.getLink("String.prototype.indexOf"));
+    checkLink("String", href, linker.getLink("String#indexOf"));
+    checkLink("String", href, linker.getLink("String#"));
+    checkLink("String", href, linker.getLink("String.fromCharCode"));
   }
 
   @Test
@@ -176,9 +176,9 @@ public class LinkerTest {
         "foo.bar.baz = function() {};");
 
     assertNotNull(typeRegistry.getNominalType("foo.bar"));
-    assertEquals("namespace_foo_bar.html#bar.baz", linker.getLink("foo.bar.baz"));
-    assertEquals("namespace_foo_bar.html#bar.unknown", linker.getLink("foo.bar.unknown"));
-    assertEquals("namespace_foo_bar.html", linker.getLink("foo.bar.prototype.baz"));
+    checkLink("foo.bar", "namespace_foo_bar.html#bar.baz", linker.getLink("foo.bar.baz"));
+    checkLink("foo.bar", "namespace_foo_bar.html#bar.unknown", linker.getLink("foo.bar.unknown"));
+    checkLink("foo.bar", "namespace_foo_bar.html", linker.getLink("foo.bar.prototype.baz"));
   }
 
   @Test
@@ -193,14 +193,14 @@ public class LinkerTest {
 
     assertNotNull(typeRegistry.getNominalType("foo.Bar"));
 
-    assertEquals("class_foo_Bar.html", linker.getLink("foo.Bar"));
-    assertEquals("class_foo_Bar.html", linker.getLink("foo.Bar#"));
-    assertEquals("class_foo_Bar.html#bar", linker.getLink("foo.Bar#bar"));
-    assertEquals("class_foo_Bar.html#bar", linker.getLink("foo.Bar#bar()"));
-    assertEquals("class_foo_Bar.html", linker.getLink("foo.Bar.prototype"));
-    assertEquals("class_foo_Bar.html#bar", linker.getLink("foo.Bar.prototype.bar"));
-    assertEquals("class_foo_Bar.html#bar", linker.getLink("foo.Bar.prototype.bar()"));
-    assertEquals("class_foo_Bar.html#unknown", linker.getLink("foo.Bar.prototype.unknown()"));
+    checkLink("foo.Bar", "class_foo_Bar.html", linker.getLink("foo.Bar"));
+    checkLink("foo.Bar", "class_foo_Bar.html", linker.getLink("foo.Bar#"));
+    checkLink("foo.Bar#bar", "class_foo_Bar.html#bar", linker.getLink("foo.Bar#bar"));
+    checkLink("foo.Bar#bar", "class_foo_Bar.html#bar", linker.getLink("foo.Bar#bar()"));
+    checkLink("foo.Bar#bar", "class_foo_Bar.html#bar", linker.getLink("foo.Bar.prototype.bar"));
+    checkLink("foo.Bar#bar", "class_foo_Bar.html#bar", linker.getLink("foo.Bar.prototype.bar()"));
+    checkLink("foo.Bar#unknown", "class_foo_Bar.html#unknown", linker.getLink("foo.Bar.prototype.unknown")
+    );
   }
 
   @Test
@@ -212,11 +212,12 @@ public class LinkerTest {
     CompilerOptions options = Main.createOptions(fileSystem, typeRegistry, compiler);
     util = new CompilerUtil(compiler, options);
 
-    util.compile(module, "exports = {foo: function() {}};");
+    util.compile(module, "exports = {bar: function() {}};");
     assertThat(typeRegistry.getModules()).isNotEmpty();
 
-    assertEquals("module_foo.html", linker.getLink("dossier$$module__$src$module$foo"));
-    assertEquals("module_foo.html#bar", linker.getLink("dossier$$module__$src$module$foo.bar"));
+    checkLink("foo", "module_foo.html", linker.getLink("dossier$$module__$src$module$foo"));
+    checkLink("foo.bar", "module_foo.html#bar",
+        linker.getLink("dossier$$module__$src$module$foo.bar"));
   }
 
   @Test
@@ -253,6 +254,11 @@ public class LinkerTest {
             .setLine(123)
             .build(),
         linker.getSourceLink(node));
+  }
+
+  private static void checkLink(String text, String href, Dossier.TypeLink link) {
+    assertEquals(text, link.getText());
+    assertEquals(href, link.getHref());
   }
 
   private static NominalType createType(String name) {

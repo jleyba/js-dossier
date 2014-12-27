@@ -8,6 +8,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import com.github.jleyba.dossier.proto.Dossier;
 import com.github.jleyba.dossier.proto.Dossier.Comment;
 import com.github.jleyba.dossier.proto.Dossier.Comment.Token;
 import com.google.common.collect.Iterables;
@@ -154,7 +155,10 @@ public class CommentUtilTest {
 
   @Test
   public void parseCommentWithTypeLinks() {
-    when(mockLinker.getLink("foo.Bar")).thenReturn("/path/to/foo");
+    when(mockLinker.getLink("foo.Bar")).thenReturn(Dossier.TypeLink.newBuilder()
+        .setText("")
+        .setHref("/path/to/foo")
+        .build());
 
     Comment comment = parseComment("A link to {@link foo.Bar foo}.", mockLinker);
     assertEquals(3, comment.getTokenCount());
@@ -165,7 +169,10 @@ public class CommentUtilTest {
 
   @Test
   public void parseCommentWithPlainTypeLinks() {
-    when(mockLinker.getLink("foo.Bar")).thenReturn("/path/to/foo");
+    when(mockLinker.getLink("foo.Bar")).thenReturn(Dossier.TypeLink.newBuilder()
+        .setText("")
+        .setHref("/path/to/foo")
+        .build());
 
     Comment comment = parseComment("A link to {@linkplain foo.Bar foo}.", mockLinker);
     assertEquals(3, comment.getTokenCount());

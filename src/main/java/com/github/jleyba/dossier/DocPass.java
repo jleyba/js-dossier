@@ -366,7 +366,8 @@ class DocPass implements CompilerPass {
 
       } else if (!propertyType.isInstanceType()
           && propertyType instanceof PrototypeObjectType
-          && typeRegistry.hasNamespace(parent.getQualifiedName() + "." + property.getName())) {
+          && (typeRegistry.hasNamespace(parent.getQualifiedName() + "." + property.getName())
+          || typeRegistry.findTypeDescriptor(propertyType) != null)) {
         recordPropertyAsNestedType(property);
       } else {
         parent.addProperty(property);
