@@ -14,7 +14,7 @@ article.srcfile td:first-child{text-align:right;padding:0 .8rem}
 article.srcfile :target+a{font-weight:bold}
 article.srcfile tr.hilite{background:rgba(102,102,255,0.1)}
 nav{padding:3rem 4rem 3rem 1rem;width:23rem;margin-top:2rem;float:left;font-size:1.1rem;height:100%}nav ul{margin:0;padding:0;padding-left:1rem}
-nav li{list-style:none;padding-left:1em;text-indent:-1em}
+nav li{list-style:none;padding-left:1em;text-indent:-1em;word-wrap:initial;overflow:hidden;text-overflow:ellipsis}
 nav #nav-modules,nav #nav-types{display:none}nav #nav-modules~label h3:before,nav #nav-types~label h3:before{-ms-transform:rotate(0);-webkit-transform:rotate(0);transform:rotate(0)}
 nav #nav-modules:checked~label h3:before,nav #nav-types:checked~label h3:before{-ms-transform:rotate(-90deg);-webkit-transform:rotate(-90deg);transform:rotate(-90deg)}
 nav #nav-modules:checked~div,nav #nav-types:checked~div{display:none}
