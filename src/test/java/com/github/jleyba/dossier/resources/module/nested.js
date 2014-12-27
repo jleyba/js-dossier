@@ -28,6 +28,7 @@ var IdGenerator = function() {};
 
 /**
  * @return {string} A new ID.
+ * @throws {Error} If an ID could not be generated.
  */
 IdGenerator.prototype.getNext = function() {};
 

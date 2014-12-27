@@ -652,7 +652,8 @@ public class Linker {
         if (alternate.isVoidType() && filterVoid) {
           voidAlternates += 1;
         }
-        containsNonNullable = containsNonNullable || !alternate.isNullable();
+        containsNonNullable = containsNonNullable
+            || (!alternate.isNullable() && !alternate.isInstanceType());
       }
 
       Iterable<JSType> alternates = type.getAlternates();
