@@ -529,13 +529,20 @@ public class Linker {
         NominalType nominalType = typeRegistry.resolve(obj.getConstructor());
         if (nominalType != null) {
           appendLink(
-              nominalType.getQualifiedName() + ".prototype",
+              getDisplayName(nominalType) + ".prototype",
               getFilePath(nominalType).getFileName().toString());
         } else {
           caseInstanceType(obj.getReferenceName() + ".prototype", obj);
         }
       } else if (!type.getOwnPropertyNames().isEmpty()) {
-        caseRecordType(type);
+        NominalType nominalType = typeRegistry.resolve(type);
+        if (nominalType != null) {
+          appendLink(
+              getDisplayName(nominalType),
+              getFilePath(nominalType).getFileName().toString());
+        } else {
+          caseRecordType(type);
+        }
       } else {
         verify("{}".equals(type.toString()), "Unexpected type: %s", type);
         type.getImplicitPrototype().visit(this);
