@@ -259,6 +259,17 @@ public class EndToEndTest {
     checkFooter(document);
   }
 
+  @Test
+  public void checkCommonJsModuleInterfaceImplementation() throws IOException {
+    Document document = load(outDir.resolve(
+        "module_example_nested_class_IncrementingIdGenerator.html"));
+    compareWithGoldenFile(querySelector(document, "article"),
+        "module_example_nested_class_IncrementingIdGenerator.html");
+    checkHeader(document);
+    checkNav(document);
+    checkFooter(document);
+  }
+
   private void checkHeader(Document document) throws IOException {
     compareWithGoldenFile(querySelector(document, "header"), "header.html");
   }
