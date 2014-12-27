@@ -250,6 +250,15 @@ public class EndToEndTest {
   }
 
   @Test
+  public void checkCommonJsModuleClassAlias() throws IOException {
+    Document document = load(outDir.resolve("module_example_class_Greeter.html"));
+    compareWithGoldenFile(querySelector(document, "article"), "module_example_class_Greeter.html");
+    checkHeader(document);
+    checkNav(document);
+    checkFooter(document);
+  }
+
+  @Test
   public void checkCommonJsModuleExportedInterface() throws IOException {
     Document document = load(outDir.resolve("module_example_nested_interface_IdGenerator.html"));
     compareWithGoldenFile(querySelector(document, "article"),

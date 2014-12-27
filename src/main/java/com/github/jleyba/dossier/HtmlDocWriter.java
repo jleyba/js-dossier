@@ -286,18 +286,28 @@ class HtmlDocWriter implements DocWriter {
           .setHref(linker.getLink(type.getModule().getVarName())));
     }
 
-    // TODO
-//    NominalType aliased = typeRegistry.resolve(type.getJsType());
-//    if (aliased != type) {
-//      jsTypeBuilder.setAliasedType(TypeLink.newBuilder()
-//          .setText(linker.getDisplayName(aliased))
-//          .setHref(linker.getFilePath(aliased).toString());
-//    }
+    Dossier.Comment description = getBlockDescription(linker, type.getJsdoc());
+    NominalType aliased = typeRegistry.resolve(type.getJsType());
+
+    if (aliased != type) {
+      String aliasDisplayName = linker.getDisplayName(aliased);
+      if (aliased.getModule() != null) {
+        aliasDisplayName =
+            "module(" + linker.getDisplayName(aliased.getModule()) + ")." + aliasDisplayName;
+      }
+      jsTypeBuilder.setAliasedType(TypeLink.newBuilder()
+          .setText(aliasDisplayName)
+          .setHref(linker.getFilePath(aliased).getFileName().toString()));
+
+      if (description.getTokenCount() == 0) {
+        description = getBlockDescription(linker, aliased.getJsdoc());
+      }
+    }
 
     jsTypeBuilder
         .addAllNested(getNestedTypeInfo(type.getTypes()))
         .setSource(linker.getSourceLink(type.getNode()))
-        .setDescription(getBlockDescription(linker, type.getJsdoc()))
+        .setDescription(description)
         .addAllTypeDef(getTypeDefInfo(type))
         .addAllExtendedType(getInheritedTypes(type))
         .addAllImplementedType(getImplementedTypes(type));
