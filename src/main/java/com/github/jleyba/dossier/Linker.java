@@ -242,9 +242,9 @@ public class Linker {
       if (parent == null) {
         return null;
       }
-      return getFilePath(parent) + "#" + parent.getName() + "." + type.getName();
+      return getFilePath(parent).getFileName() + "#" + parent.getName() + "." + type.getName();
     }
-    return getFilePath(type).toString();
+    return getFilePath(type).getFileName().toString();
   }
 
   @Nullable
