@@ -706,10 +706,8 @@ class HtmlDocWriter implements DocWriter {
       return;
     }
 
-    // TODO: remove prototype chain from generated documentation.
-    // TODO: replace with "defined on" field (specified on for interface).
-    Dossier.Prototype.Builder protoBuilder = jsTypeBuilder.addPrototypeBuilder()
-        .setName("");
+    // TODO: add a "defined on" field (specified on for interface).
+    Dossier.Prototype.Builder protoBuilder = jsTypeBuilder.getPrototypeBuilder();
     for (Property property : properties.values()) {
       JsDoc jsdoc = JsDoc.from(property.getJSDocInfo());
       if (jsdoc != null && jsdoc.getVisibility() == JSDocInfo.Visibility.PRIVATE) {

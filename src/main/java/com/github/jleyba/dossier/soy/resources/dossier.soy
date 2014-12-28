@@ -634,22 +634,18 @@
 
   {if $type.hasInstanceMethods}
     <h2>Instance Methods</h2>
-    {foreach $proto in $type.prototype}
-      {call .printFunctions}
-        {param functions: $proto.function /}
-      {/call}
-    {/foreach}
+    {call .printFunctions}
+      {param functions: $type.prototype.function /}
+    {/call}
   {/if}
 
   {if $type.hasInstanceProperties}
     <h2>Instance Properties</h2>
     <dl>
-      {foreach $proto in $type.prototype}
-        {foreach $property in $proto.property}
-          {call .printProperty}
-            {param prop: $property /}
-          {/call}
-        {/foreach}
+      {foreach $property in $type.prototype.property}
+        {call .printProperty}
+          {param prop: $property /}
+        {/call}
       {/foreach}
     </dl>
   {/if}

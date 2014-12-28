@@ -140,13 +140,10 @@ message Function {
 }
 
 
-// Describes the properties and functions defined on a prototype object.
+// Describes the instance properties and functions for an object.
+// Despite the name, this does not necessarily mean properties defined
+// on the object's prototype.
 message Prototype {
-  // The name of the class/interface this prototype belongs to.
-  required string name = 1;
-  // A link to the class/interface documentation (if available).
-  optional string href = 2;
-
   repeated Function function = 3;
   repeated Property property = 4;
 }
@@ -222,11 +219,9 @@ message JsType {
   // all other properties are hung off of).
   optional Function main_function = 14;
 
-  // The prototype descriptors for this type (if it is a class or interface).
-  // Prototypes should be specified in reverse order, from the current class
-  // to the root. The presence of this field designates this type as a
-  // class or interface.
-  repeated Prototype prototype = 15;
+  // Describes the instance properties and functions for this type.
+  // The presence of this field designates this type as a class or interface.
+  optional Prototype prototype = 15;
 
   // Hacks needed for the soy templates to know whether the prototype chain
   // has any methods or properties to render.

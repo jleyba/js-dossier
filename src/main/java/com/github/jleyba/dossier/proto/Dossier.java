@@ -11701,58 +11701,6 @@ public final class Dossier {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>required string name = 1;</code>
-     *
-     * <pre>
-     * The name of the class/interface this prototype belongs to.
-     * </pre>
-     */
-    boolean hasName();
-    /**
-     * <code>required string name = 1;</code>
-     *
-     * <pre>
-     * The name of the class/interface this prototype belongs to.
-     * </pre>
-     */
-    java.lang.String getName();
-    /**
-     * <code>required string name = 1;</code>
-     *
-     * <pre>
-     * The name of the class/interface this prototype belongs to.
-     * </pre>
-     */
-    com.google.protobuf.ByteString
-        getNameBytes();
-
-    /**
-     * <code>optional string href = 2;</code>
-     *
-     * <pre>
-     * A link to the class/interface documentation (if available).
-     * </pre>
-     */
-    boolean hasHref();
-    /**
-     * <code>optional string href = 2;</code>
-     *
-     * <pre>
-     * A link to the class/interface documentation (if available).
-     * </pre>
-     */
-    java.lang.String getHref();
-    /**
-     * <code>optional string href = 2;</code>
-     *
-     * <pre>
-     * A link to the class/interface documentation (if available).
-     * </pre>
-     */
-    com.google.protobuf.ByteString
-        getHrefBytes();
-
-    /**
      * <code>repeated .dossier.Function function = 3;</code>
      */
     java.util.List<com.github.jleyba.dossier.proto.Dossier.Function> 
@@ -11804,7 +11752,9 @@ public final class Dossier {
    * Protobuf type {@code dossier.Prototype}
    *
    * <pre>
-   * Describes the properties and functions defined on a prototype object.
+   * Describes the instance properties and functions for an object.
+   * Despite the name, this does not necessarily mean properties defined
+   * on the object's prototype.
    * </pre>
    */
   public static final class Prototype extends
@@ -11856,30 +11806,18 @@ public final class Dossier {
               }
               break;
             }
-            case 10: {
-              com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00000001;
-              name_ = bs;
-              break;
-            }
-            case 18: {
-              com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00000002;
-              href_ = bs;
-              break;
-            }
             case 26: {
-              if (!((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
+              if (!((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
                 function_ = new java.util.ArrayList<com.github.jleyba.dossier.proto.Dossier.Function>();
-                mutable_bitField0_ |= 0x00000004;
+                mutable_bitField0_ |= 0x00000001;
               }
               function_.add(input.readMessage(com.github.jleyba.dossier.proto.Dossier.Function.PARSER, extensionRegistry));
               break;
             }
             case 34: {
-              if (!((mutable_bitField0_ & 0x00000008) == 0x00000008)) {
+              if (!((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
                 property_ = new java.util.ArrayList<com.github.jleyba.dossier.proto.Dossier.Property>();
-                mutable_bitField0_ |= 0x00000008;
+                mutable_bitField0_ |= 0x00000002;
               }
               property_.add(input.readMessage(com.github.jleyba.dossier.proto.Dossier.Property.PARSER, extensionRegistry));
               break;
@@ -11892,10 +11830,10 @@ public final class Dossier {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e.getMessage()).setUnfinishedMessage(this);
       } finally {
-        if (((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
+        if (((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
           function_ = java.util.Collections.unmodifiableList(function_);
         }
-        if (((mutable_bitField0_ & 0x00000008) == 0x00000008)) {
+        if (((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
           property_ = java.util.Collections.unmodifiableList(property_);
         }
         this.unknownFields = unknownFields.build();
@@ -11927,115 +11865,6 @@ public final class Dossier {
     @java.lang.Override
     public com.google.protobuf.Parser<Prototype> getParserForType() {
       return PARSER;
-    }
-
-    private int bitField0_;
-    public static final int NAME_FIELD_NUMBER = 1;
-    private java.lang.Object name_;
-    /**
-     * <code>required string name = 1;</code>
-     *
-     * <pre>
-     * The name of the class/interface this prototype belongs to.
-     * </pre>
-     */
-    public boolean hasName() {
-      return ((bitField0_ & 0x00000001) == 0x00000001);
-    }
-    /**
-     * <code>required string name = 1;</code>
-     *
-     * <pre>
-     * The name of the class/interface this prototype belongs to.
-     * </pre>
-     */
-    public java.lang.String getName() {
-      java.lang.Object ref = name_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          name_ = s;
-        }
-        return s;
-      }
-    }
-    /**
-     * <code>required string name = 1;</code>
-     *
-     * <pre>
-     * The name of the class/interface this prototype belongs to.
-     * </pre>
-     */
-    public com.google.protobuf.ByteString
-        getNameBytes() {
-      java.lang.Object ref = name_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        name_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int HREF_FIELD_NUMBER = 2;
-    private java.lang.Object href_;
-    /**
-     * <code>optional string href = 2;</code>
-     *
-     * <pre>
-     * A link to the class/interface documentation (if available).
-     * </pre>
-     */
-    public boolean hasHref() {
-      return ((bitField0_ & 0x00000002) == 0x00000002);
-    }
-    /**
-     * <code>optional string href = 2;</code>
-     *
-     * <pre>
-     * A link to the class/interface documentation (if available).
-     * </pre>
-     */
-    public java.lang.String getHref() {
-      java.lang.Object ref = href_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          href_ = s;
-        }
-        return s;
-      }
-    }
-    /**
-     * <code>optional string href = 2;</code>
-     *
-     * <pre>
-     * A link to the class/interface documentation (if available).
-     * </pre>
-     */
-    public com.google.protobuf.ByteString
-        getHrefBytes() {
-      java.lang.Object ref = href_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        href_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
     }
 
     public static final int FUNCTION_FIELD_NUMBER = 3;
@@ -12109,8 +11938,6 @@ public final class Dossier {
     }
 
     private void initFields() {
-      name_ = "";
-      href_ = "";
       function_ = java.util.Collections.emptyList();
       property_ = java.util.Collections.emptyList();
     }
@@ -12120,10 +11947,6 @@ public final class Dossier {
       if (isInitialized == 1) return true;
       if (isInitialized == 0) return false;
 
-      if (!hasName()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
       for (int i = 0; i < getFunctionCount(); i++) {
         if (!getFunction(i).isInitialized()) {
           memoizedIsInitialized = 0;
@@ -12143,12 +11966,6 @@ public final class Dossier {
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       getSerializedSize();
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        output.writeBytes(1, getNameBytes());
-      }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        output.writeBytes(2, getHrefBytes());
-      }
       for (int i = 0; i < function_.size(); i++) {
         output.writeMessage(3, function_.get(i));
       }
@@ -12164,14 +11981,6 @@ public final class Dossier {
       if (size != -1) return size;
 
       size = 0;
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(1, getNameBytes());
-      }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(2, getHrefBytes());
-      }
       for (int i = 0; i < function_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(3, function_.get(i));
@@ -12262,7 +12071,9 @@ public final class Dossier {
      * Protobuf type {@code dossier.Prototype}
      *
      * <pre>
-     * Describes the properties and functions defined on a prototype object.
+     * Describes the instance properties and functions for an object.
+     * Despite the name, this does not necessarily mean properties defined
+     * on the object's prototype.
      * </pre>
      */
     public static final class Builder extends
@@ -12303,19 +12114,15 @@ public final class Dossier {
 
       public Builder clear() {
         super.clear();
-        name_ = "";
-        bitField0_ = (bitField0_ & ~0x00000001);
-        href_ = "";
-        bitField0_ = (bitField0_ & ~0x00000002);
         if (functionBuilder_ == null) {
           function_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000004);
+          bitField0_ = (bitField0_ & ~0x00000001);
         } else {
           functionBuilder_.clear();
         }
         if (propertyBuilder_ == null) {
           property_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000008);
+          bitField0_ = (bitField0_ & ~0x00000002);
         } else {
           propertyBuilder_.clear();
         }
@@ -12346,34 +12153,24 @@ public final class Dossier {
       public com.github.jleyba.dossier.proto.Dossier.Prototype buildPartial() {
         com.github.jleyba.dossier.proto.Dossier.Prototype result = new com.github.jleyba.dossier.proto.Dossier.Prototype(this);
         int from_bitField0_ = bitField0_;
-        int to_bitField0_ = 0;
-        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
-          to_bitField0_ |= 0x00000001;
-        }
-        result.name_ = name_;
-        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
-          to_bitField0_ |= 0x00000002;
-        }
-        result.href_ = href_;
         if (functionBuilder_ == null) {
-          if (((bitField0_ & 0x00000004) == 0x00000004)) {
+          if (((bitField0_ & 0x00000001) == 0x00000001)) {
             function_ = java.util.Collections.unmodifiableList(function_);
-            bitField0_ = (bitField0_ & ~0x00000004);
+            bitField0_ = (bitField0_ & ~0x00000001);
           }
           result.function_ = function_;
         } else {
           result.function_ = functionBuilder_.build();
         }
         if (propertyBuilder_ == null) {
-          if (((bitField0_ & 0x00000008) == 0x00000008)) {
+          if (((bitField0_ & 0x00000002) == 0x00000002)) {
             property_ = java.util.Collections.unmodifiableList(property_);
-            bitField0_ = (bitField0_ & ~0x00000008);
+            bitField0_ = (bitField0_ & ~0x00000002);
           }
           result.property_ = property_;
         } else {
           result.property_ = propertyBuilder_.build();
         }
-        result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
       }
@@ -12389,21 +12186,11 @@ public final class Dossier {
 
       public Builder mergeFrom(com.github.jleyba.dossier.proto.Dossier.Prototype other) {
         if (other == com.github.jleyba.dossier.proto.Dossier.Prototype.getDefaultInstance()) return this;
-        if (other.hasName()) {
-          bitField0_ |= 0x00000001;
-          name_ = other.name_;
-          onChanged();
-        }
-        if (other.hasHref()) {
-          bitField0_ |= 0x00000002;
-          href_ = other.href_;
-          onChanged();
-        }
         if (functionBuilder_ == null) {
           if (!other.function_.isEmpty()) {
             if (function_.isEmpty()) {
               function_ = other.function_;
-              bitField0_ = (bitField0_ & ~0x00000004);
+              bitField0_ = (bitField0_ & ~0x00000001);
             } else {
               ensureFunctionIsMutable();
               function_.addAll(other.function_);
@@ -12416,7 +12203,7 @@ public final class Dossier {
               functionBuilder_.dispose();
               functionBuilder_ = null;
               function_ = other.function_;
-              bitField0_ = (bitField0_ & ~0x00000004);
+              bitField0_ = (bitField0_ & ~0x00000001);
               functionBuilder_ = 
                 com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
                    getFunctionFieldBuilder() : null;
@@ -12429,7 +12216,7 @@ public final class Dossier {
           if (!other.property_.isEmpty()) {
             if (property_.isEmpty()) {
               property_ = other.property_;
-              bitField0_ = (bitField0_ & ~0x00000008);
+              bitField0_ = (bitField0_ & ~0x00000002);
             } else {
               ensurePropertyIsMutable();
               property_.addAll(other.property_);
@@ -12442,7 +12229,7 @@ public final class Dossier {
               propertyBuilder_.dispose();
               propertyBuilder_ = null;
               property_ = other.property_;
-              bitField0_ = (bitField0_ & ~0x00000008);
+              bitField0_ = (bitField0_ & ~0x00000002);
               propertyBuilder_ = 
                 com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
                    getPropertyFieldBuilder() : null;
@@ -12456,10 +12243,6 @@ public final class Dossier {
       }
 
       public final boolean isInitialized() {
-        if (!hasName()) {
-          
-          return false;
-        }
         for (int i = 0; i < getFunctionCount(); i++) {
           if (!getFunction(i).isInitialized()) {
             
@@ -12494,212 +12277,12 @@ public final class Dossier {
       }
       private int bitField0_;
 
-      private java.lang.Object name_ = "";
-      /**
-       * <code>required string name = 1;</code>
-       *
-       * <pre>
-       * The name of the class/interface this prototype belongs to.
-       * </pre>
-       */
-      public boolean hasName() {
-        return ((bitField0_ & 0x00000001) == 0x00000001);
-      }
-      /**
-       * <code>required string name = 1;</code>
-       *
-       * <pre>
-       * The name of the class/interface this prototype belongs to.
-       * </pre>
-       */
-      public java.lang.String getName() {
-        java.lang.Object ref = name_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            name_ = s;
-          }
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>required string name = 1;</code>
-       *
-       * <pre>
-       * The name of the class/interface this prototype belongs to.
-       * </pre>
-       */
-      public com.google.protobuf.ByteString
-          getNameBytes() {
-        java.lang.Object ref = name_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          name_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>required string name = 1;</code>
-       *
-       * <pre>
-       * The name of the class/interface this prototype belongs to.
-       * </pre>
-       */
-      public Builder setName(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000001;
-        name_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>required string name = 1;</code>
-       *
-       * <pre>
-       * The name of the class/interface this prototype belongs to.
-       * </pre>
-       */
-      public Builder clearName() {
-        bitField0_ = (bitField0_ & ~0x00000001);
-        name_ = getDefaultInstance().getName();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>required string name = 1;</code>
-       *
-       * <pre>
-       * The name of the class/interface this prototype belongs to.
-       * </pre>
-       */
-      public Builder setNameBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000001;
-        name_ = value;
-        onChanged();
-        return this;
-      }
-
-      private java.lang.Object href_ = "";
-      /**
-       * <code>optional string href = 2;</code>
-       *
-       * <pre>
-       * A link to the class/interface documentation (if available).
-       * </pre>
-       */
-      public boolean hasHref() {
-        return ((bitField0_ & 0x00000002) == 0x00000002);
-      }
-      /**
-       * <code>optional string href = 2;</code>
-       *
-       * <pre>
-       * A link to the class/interface documentation (if available).
-       * </pre>
-       */
-      public java.lang.String getHref() {
-        java.lang.Object ref = href_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            href_ = s;
-          }
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>optional string href = 2;</code>
-       *
-       * <pre>
-       * A link to the class/interface documentation (if available).
-       * </pre>
-       */
-      public com.google.protobuf.ByteString
-          getHrefBytes() {
-        java.lang.Object ref = href_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          href_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>optional string href = 2;</code>
-       *
-       * <pre>
-       * A link to the class/interface documentation (if available).
-       * </pre>
-       */
-      public Builder setHref(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000002;
-        href_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string href = 2;</code>
-       *
-       * <pre>
-       * A link to the class/interface documentation (if available).
-       * </pre>
-       */
-      public Builder clearHref() {
-        bitField0_ = (bitField0_ & ~0x00000002);
-        href_ = getDefaultInstance().getHref();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string href = 2;</code>
-       *
-       * <pre>
-       * A link to the class/interface documentation (if available).
-       * </pre>
-       */
-      public Builder setHrefBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000002;
-        href_ = value;
-        onChanged();
-        return this;
-      }
-
       private java.util.List<com.github.jleyba.dossier.proto.Dossier.Function> function_ =
         java.util.Collections.emptyList();
       private void ensureFunctionIsMutable() {
-        if (!((bitField0_ & 0x00000004) == 0x00000004)) {
+        if (!((bitField0_ & 0x00000001) == 0x00000001)) {
           function_ = new java.util.ArrayList<com.github.jleyba.dossier.proto.Dossier.Function>(function_);
-          bitField0_ |= 0x00000004;
+          bitField0_ |= 0x00000001;
          }
       }
 
@@ -12849,7 +12432,7 @@ public final class Dossier {
       public Builder clearFunction() {
         if (functionBuilder_ == null) {
           function_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000004);
+          bitField0_ = (bitField0_ & ~0x00000001);
           onChanged();
         } else {
           functionBuilder_.clear();
@@ -12926,7 +12509,7 @@ public final class Dossier {
           functionBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
               com.github.jleyba.dossier.proto.Dossier.Function, com.github.jleyba.dossier.proto.Dossier.Function.Builder, com.github.jleyba.dossier.proto.Dossier.FunctionOrBuilder>(
                   function_,
-                  ((bitField0_ & 0x00000004) == 0x00000004),
+                  ((bitField0_ & 0x00000001) == 0x00000001),
                   getParentForChildren(),
                   isClean());
           function_ = null;
@@ -12937,9 +12520,9 @@ public final class Dossier {
       private java.util.List<com.github.jleyba.dossier.proto.Dossier.Property> property_ =
         java.util.Collections.emptyList();
       private void ensurePropertyIsMutable() {
-        if (!((bitField0_ & 0x00000008) == 0x00000008)) {
+        if (!((bitField0_ & 0x00000002) == 0x00000002)) {
           property_ = new java.util.ArrayList<com.github.jleyba.dossier.proto.Dossier.Property>(property_);
-          bitField0_ |= 0x00000008;
+          bitField0_ |= 0x00000002;
          }
       }
 
@@ -13089,7 +12672,7 @@ public final class Dossier {
       public Builder clearProperty() {
         if (propertyBuilder_ == null) {
           property_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000008);
+          bitField0_ = (bitField0_ & ~0x00000002);
           onChanged();
         } else {
           propertyBuilder_.clear();
@@ -13166,7 +12749,7 @@ public final class Dossier {
           propertyBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
               com.github.jleyba.dossier.proto.Dossier.Property, com.github.jleyba.dossier.proto.Dossier.Property.Builder, com.github.jleyba.dossier.proto.Dossier.PropertyOrBuilder>(
                   property_,
-                  ((bitField0_ & 0x00000008) == 0x00000008),
+                  ((bitField0_ & 0x00000002) == 0x00000002),
                   getParentForChildren(),
                   isClean());
           property_ = null;
@@ -17677,63 +17260,32 @@ public final class Dossier {
     com.github.jleyba.dossier.proto.Dossier.FunctionOrBuilder getMainFunctionOrBuilder();
 
     /**
-     * <code>repeated .dossier.Prototype prototype = 15;</code>
+     * <code>optional .dossier.Prototype prototype = 15;</code>
      *
      * <pre>
-     * The prototype descriptors for this type (if it is a class or interface).
-     * Prototypes should be specified in reverse order, from the current class
-     * to the root. The presence of this field designates this type as a
-     * class or interface.
+     * Describes the instance properties and functions for this type.
+     * The presence of this field designates this type as a class or interface.
      * </pre>
      */
-    java.util.List<com.github.jleyba.dossier.proto.Dossier.Prototype> 
-        getPrototypeList();
+    boolean hasPrototype();
     /**
-     * <code>repeated .dossier.Prototype prototype = 15;</code>
+     * <code>optional .dossier.Prototype prototype = 15;</code>
      *
      * <pre>
-     * The prototype descriptors for this type (if it is a class or interface).
-     * Prototypes should be specified in reverse order, from the current class
-     * to the root. The presence of this field designates this type as a
-     * class or interface.
+     * Describes the instance properties and functions for this type.
+     * The presence of this field designates this type as a class or interface.
      * </pre>
      */
-    com.github.jleyba.dossier.proto.Dossier.Prototype getPrototype(int index);
+    com.github.jleyba.dossier.proto.Dossier.Prototype getPrototype();
     /**
-     * <code>repeated .dossier.Prototype prototype = 15;</code>
+     * <code>optional .dossier.Prototype prototype = 15;</code>
      *
      * <pre>
-     * The prototype descriptors for this type (if it is a class or interface).
-     * Prototypes should be specified in reverse order, from the current class
-     * to the root. The presence of this field designates this type as a
-     * class or interface.
+     * Describes the instance properties and functions for this type.
+     * The presence of this field designates this type as a class or interface.
      * </pre>
      */
-    int getPrototypeCount();
-    /**
-     * <code>repeated .dossier.Prototype prototype = 15;</code>
-     *
-     * <pre>
-     * The prototype descriptors for this type (if it is a class or interface).
-     * Prototypes should be specified in reverse order, from the current class
-     * to the root. The presence of this field designates this type as a
-     * class or interface.
-     * </pre>
-     */
-    java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.PrototypeOrBuilder> 
-        getPrototypeOrBuilderList();
-    /**
-     * <code>repeated .dossier.Prototype prototype = 15;</code>
-     *
-     * <pre>
-     * The prototype descriptors for this type (if it is a class or interface).
-     * Prototypes should be specified in reverse order, from the current class
-     * to the root. The presence of this field designates this type as a
-     * class or interface.
-     * </pre>
-     */
-    com.github.jleyba.dossier.proto.Dossier.PrototypeOrBuilder getPrototypeOrBuilder(
-        int index);
+    com.github.jleyba.dossier.proto.Dossier.PrototypeOrBuilder getPrototypeOrBuilder();
 
     /**
      * <code>optional bool has_instance_methods = 16 [default = false];</code>
@@ -18097,20 +17649,25 @@ public final class Dossier {
               break;
             }
             case 122: {
-              if (!((mutable_bitField0_ & 0x00000800) == 0x00000800)) {
-                prototype_ = new java.util.ArrayList<com.github.jleyba.dossier.proto.Dossier.Prototype>();
-                mutable_bitField0_ |= 0x00000800;
+              com.github.jleyba.dossier.proto.Dossier.Prototype.Builder subBuilder = null;
+              if (((bitField0_ & 0x00000080) == 0x00000080)) {
+                subBuilder = prototype_.toBuilder();
               }
-              prototype_.add(input.readMessage(com.github.jleyba.dossier.proto.Dossier.Prototype.PARSER, extensionRegistry));
+              prototype_ = input.readMessage(com.github.jleyba.dossier.proto.Dossier.Prototype.PARSER, extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(prototype_);
+                prototype_ = subBuilder.buildPartial();
+              }
+              bitField0_ |= 0x00000080;
               break;
             }
             case 128: {
-              bitField0_ |= 0x00000080;
+              bitField0_ |= 0x00000100;
               hasInstanceMethods_ = input.readBool();
               break;
             }
             case 136: {
-              bitField0_ |= 0x00000100;
+              bitField0_ |= 0x00000200;
               hasInstanceProperties_ = input.readBool();
               break;
             }
@@ -18140,7 +17697,7 @@ public final class Dossier {
             }
             case 170: {
               com.github.jleyba.dossier.proto.Dossier.JsType.ParentLink.Builder subBuilder = null;
-              if (((bitField0_ & 0x00000200) == 0x00000200)) {
+              if (((bitField0_ & 0x00000400) == 0x00000400)) {
                 subBuilder = parent_.toBuilder();
               }
               parent_ = input.readMessage(com.github.jleyba.dossier.proto.Dossier.JsType.ParentLink.PARSER, extensionRegistry);
@@ -18148,12 +17705,12 @@ public final class Dossier {
                 subBuilder.mergeFrom(parent_);
                 parent_ = subBuilder.buildPartial();
               }
-              bitField0_ |= 0x00000200;
+              bitField0_ |= 0x00000400;
               break;
             }
             case 178: {
               com.github.jleyba.dossier.proto.Dossier.TypeLink.Builder subBuilder = null;
-              if (((bitField0_ & 0x00000400) == 0x00000400)) {
+              if (((bitField0_ & 0x00000800) == 0x00000800)) {
                 subBuilder = aliasedType_.toBuilder();
               }
               aliasedType_ = input.readMessage(com.github.jleyba.dossier.proto.Dossier.TypeLink.PARSER, extensionRegistry);
@@ -18161,7 +17718,7 @@ public final class Dossier {
                 subBuilder.mergeFrom(aliasedType_);
                 aliasedType_ = subBuilder.buildPartial();
               }
-              bitField0_ |= 0x00000400;
+              bitField0_ |= 0x00000800;
               break;
             }
           }
@@ -18183,9 +17740,6 @@ public final class Dossier {
         }
         if (((mutable_bitField0_ & 0x00000200) == 0x00000200)) {
           staticProperty_ = java.util.Collections.unmodifiableList(staticProperty_);
-        }
-        if (((mutable_bitField0_ & 0x00000800) == 0x00000800)) {
-          prototype_ = java.util.Collections.unmodifiableList(prototype_);
         }
         if (((mutable_bitField0_ & 0x00004000) == 0x00004000)) {
           extendedType_ = java.util.Collections.unmodifiableList(extendedType_);
@@ -21578,73 +21132,39 @@ public final class Dossier {
     }
 
     public static final int PROTOTYPE_FIELD_NUMBER = 15;
-    private java.util.List<com.github.jleyba.dossier.proto.Dossier.Prototype> prototype_;
+    private com.github.jleyba.dossier.proto.Dossier.Prototype prototype_;
     /**
-     * <code>repeated .dossier.Prototype prototype = 15;</code>
+     * <code>optional .dossier.Prototype prototype = 15;</code>
      *
      * <pre>
-     * The prototype descriptors for this type (if it is a class or interface).
-     * Prototypes should be specified in reverse order, from the current class
-     * to the root. The presence of this field designates this type as a
-     * class or interface.
+     * Describes the instance properties and functions for this type.
+     * The presence of this field designates this type as a class or interface.
      * </pre>
      */
-    public java.util.List<com.github.jleyba.dossier.proto.Dossier.Prototype> getPrototypeList() {
+    public boolean hasPrototype() {
+      return ((bitField0_ & 0x00000080) == 0x00000080);
+    }
+    /**
+     * <code>optional .dossier.Prototype prototype = 15;</code>
+     *
+     * <pre>
+     * Describes the instance properties and functions for this type.
+     * The presence of this field designates this type as a class or interface.
+     * </pre>
+     */
+    public com.github.jleyba.dossier.proto.Dossier.Prototype getPrototype() {
       return prototype_;
     }
     /**
-     * <code>repeated .dossier.Prototype prototype = 15;</code>
+     * <code>optional .dossier.Prototype prototype = 15;</code>
      *
      * <pre>
-     * The prototype descriptors for this type (if it is a class or interface).
-     * Prototypes should be specified in reverse order, from the current class
-     * to the root. The presence of this field designates this type as a
-     * class or interface.
+     * Describes the instance properties and functions for this type.
+     * The presence of this field designates this type as a class or interface.
      * </pre>
      */
-    public java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.PrototypeOrBuilder> 
-        getPrototypeOrBuilderList() {
+    public com.github.jleyba.dossier.proto.Dossier.PrototypeOrBuilder getPrototypeOrBuilder() {
       return prototype_;
-    }
-    /**
-     * <code>repeated .dossier.Prototype prototype = 15;</code>
-     *
-     * <pre>
-     * The prototype descriptors for this type (if it is a class or interface).
-     * Prototypes should be specified in reverse order, from the current class
-     * to the root. The presence of this field designates this type as a
-     * class or interface.
-     * </pre>
-     */
-    public int getPrototypeCount() {
-      return prototype_.size();
-    }
-    /**
-     * <code>repeated .dossier.Prototype prototype = 15;</code>
-     *
-     * <pre>
-     * The prototype descriptors for this type (if it is a class or interface).
-     * Prototypes should be specified in reverse order, from the current class
-     * to the root. The presence of this field designates this type as a
-     * class or interface.
-     * </pre>
-     */
-    public com.github.jleyba.dossier.proto.Dossier.Prototype getPrototype(int index) {
-      return prototype_.get(index);
-    }
-    /**
-     * <code>repeated .dossier.Prototype prototype = 15;</code>
-     *
-     * <pre>
-     * The prototype descriptors for this type (if it is a class or interface).
-     * Prototypes should be specified in reverse order, from the current class
-     * to the root. The presence of this field designates this type as a
-     * class or interface.
-     * </pre>
-     */
-    public com.github.jleyba.dossier.proto.Dossier.PrototypeOrBuilder getPrototypeOrBuilder(
-        int index) {
-      return prototype_.get(index);
     }
 
     public static final int HAS_INSTANCE_METHODS_FIELD_NUMBER = 16;
@@ -21658,7 +21178,7 @@ public final class Dossier {
      * </pre>
      */
     public boolean hasHasInstanceMethods() {
-      return ((bitField0_ & 0x00000080) == 0x00000080);
+      return ((bitField0_ & 0x00000100) == 0x00000100);
     }
     /**
      * <code>optional bool has_instance_methods = 16 [default = false];</code>
@@ -21678,7 +21198,7 @@ public final class Dossier {
      * <code>optional bool has_instance_properties = 17 [default = false];</code>
      */
     public boolean hasHasInstanceProperties() {
-      return ((bitField0_ & 0x00000100) == 0x00000100);
+      return ((bitField0_ & 0x00000200) == 0x00000200);
     }
     /**
      * <code>optional bool has_instance_properties = 17 [default = false];</code>
@@ -21848,7 +21368,7 @@ public final class Dossier {
      * <code>optional .dossier.JsType.ParentLink parent = 21;</code>
      */
     public boolean hasParent() {
-      return ((bitField0_ & 0x00000200) == 0x00000200);
+      return ((bitField0_ & 0x00000400) == 0x00000400);
     }
     /**
      * <code>optional .dossier.JsType.ParentLink parent = 21;</code>
@@ -21873,7 +21393,7 @@ public final class Dossier {
      * </pre>
      */
     public boolean hasAliasedType() {
-      return ((bitField0_ & 0x00000400) == 0x00000400);
+      return ((bitField0_ & 0x00000800) == 0x00000800);
     }
     /**
      * <code>optional .dossier.TypeLink aliased_type = 22;</code>
@@ -21908,7 +21428,7 @@ public final class Dossier {
       staticFunction_ = java.util.Collections.emptyList();
       staticProperty_ = java.util.Collections.emptyList();
       mainFunction_ = com.github.jleyba.dossier.proto.Dossier.Function.getDefaultInstance();
-      prototype_ = java.util.Collections.emptyList();
+      prototype_ = com.github.jleyba.dossier.proto.Dossier.Prototype.getDefaultInstance();
       hasInstanceMethods_ = false;
       hasInstanceProperties_ = false;
       extendedType_ = java.util.Collections.emptyList();
@@ -21989,8 +21509,8 @@ public final class Dossier {
           return false;
         }
       }
-      for (int i = 0; i < getPrototypeCount(); i++) {
-        if (!getPrototype(i).isInitialized()) {
+      if (hasPrototype()) {
+        if (!getPrototype().isInitialized()) {
           memoizedIsInitialized = 0;
           return false;
         }
@@ -22065,13 +21585,13 @@ public final class Dossier {
       if (((bitField0_ & 0x00000040) == 0x00000040)) {
         output.writeMessage(14, mainFunction_);
       }
-      for (int i = 0; i < prototype_.size(); i++) {
-        output.writeMessage(15, prototype_.get(i));
-      }
       if (((bitField0_ & 0x00000080) == 0x00000080)) {
-        output.writeBool(16, hasInstanceMethods_);
+        output.writeMessage(15, prototype_);
       }
       if (((bitField0_ & 0x00000100) == 0x00000100)) {
+        output.writeBool(16, hasInstanceMethods_);
+      }
+      if (((bitField0_ & 0x00000200) == 0x00000200)) {
         output.writeBool(17, hasInstanceProperties_);
       }
       for (int i = 0; i < extendedType_.size(); i++) {
@@ -22083,10 +21603,10 @@ public final class Dossier {
       for (int i = 0; i < compilerConstant_.size(); i++) {
         output.writeMessage(20, compilerConstant_.get(i));
       }
-      if (((bitField0_ & 0x00000200) == 0x00000200)) {
+      if (((bitField0_ & 0x00000400) == 0x00000400)) {
         output.writeMessage(21, parent_);
       }
-      if (((bitField0_ & 0x00000400) == 0x00000400)) {
+      if (((bitField0_ & 0x00000800) == 0x00000800)) {
         output.writeMessage(22, aliasedType_);
       }
       getUnknownFields().writeTo(output);
@@ -22142,15 +21662,15 @@ public final class Dossier {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(14, mainFunction_);
       }
-      for (int i = 0; i < prototype_.size(); i++) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(15, prototype_.get(i));
-      }
       if (((bitField0_ & 0x00000080) == 0x00000080)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(15, prototype_);
+      }
+      if (((bitField0_ & 0x00000100) == 0x00000100)) {
         size += com.google.protobuf.CodedOutputStream
           .computeBoolSize(16, hasInstanceMethods_);
       }
-      if (((bitField0_ & 0x00000100) == 0x00000100)) {
+      if (((bitField0_ & 0x00000200) == 0x00000200)) {
         size += com.google.protobuf.CodedOutputStream
           .computeBoolSize(17, hasInstanceProperties_);
       }
@@ -22166,11 +21686,11 @@ public final class Dossier {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(20, compilerConstant_.get(i));
       }
-      if (((bitField0_ & 0x00000200) == 0x00000200)) {
+      if (((bitField0_ & 0x00000400) == 0x00000400)) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(21, parent_);
       }
-      if (((bitField0_ & 0x00000400) == 0x00000400)) {
+      if (((bitField0_ & 0x00000800) == 0x00000800)) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(22, aliasedType_);
       }
@@ -22375,11 +21895,11 @@ public final class Dossier {
         }
         bitField0_ = (bitField0_ & ~0x00000400);
         if (prototypeBuilder_ == null) {
-          prototype_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000800);
+          prototype_ = com.github.jleyba.dossier.proto.Dossier.Prototype.getDefaultInstance();
         } else {
           prototypeBuilder_.clear();
         }
+        bitField0_ = (bitField0_ & ~0x00000800);
         hasInstanceMethods_ = false;
         bitField0_ = (bitField0_ & ~0x00001000);
         hasInstanceProperties_ = false;
@@ -22530,21 +22050,20 @@ public final class Dossier {
         } else {
           result.mainFunction_ = mainFunctionBuilder_.build();
         }
+        if (((from_bitField0_ & 0x00000800) == 0x00000800)) {
+          to_bitField0_ |= 0x00000080;
+        }
         if (prototypeBuilder_ == null) {
-          if (((bitField0_ & 0x00000800) == 0x00000800)) {
-            prototype_ = java.util.Collections.unmodifiableList(prototype_);
-            bitField0_ = (bitField0_ & ~0x00000800);
-          }
           result.prototype_ = prototype_;
         } else {
           result.prototype_ = prototypeBuilder_.build();
         }
         if (((from_bitField0_ & 0x00001000) == 0x00001000)) {
-          to_bitField0_ |= 0x00000080;
+          to_bitField0_ |= 0x00000100;
         }
         result.hasInstanceMethods_ = hasInstanceMethods_;
         if (((from_bitField0_ & 0x00002000) == 0x00002000)) {
-          to_bitField0_ |= 0x00000100;
+          to_bitField0_ |= 0x00000200;
         }
         result.hasInstanceProperties_ = hasInstanceProperties_;
         if (extendedTypeBuilder_ == null) {
@@ -22575,7 +22094,7 @@ public final class Dossier {
           result.compilerConstant_ = compilerConstantBuilder_.build();
         }
         if (((from_bitField0_ & 0x00020000) == 0x00020000)) {
-          to_bitField0_ |= 0x00000200;
+          to_bitField0_ |= 0x00000400;
         }
         if (parentBuilder_ == null) {
           result.parent_ = parent_;
@@ -22583,7 +22102,7 @@ public final class Dossier {
           result.parent_ = parentBuilder_.build();
         }
         if (((from_bitField0_ & 0x00040000) == 0x00040000)) {
-          to_bitField0_ |= 0x00000400;
+          to_bitField0_ |= 0x00000800;
         }
         if (aliasedTypeBuilder_ == null) {
           result.aliasedType_ = aliasedType_;
@@ -22733,31 +22252,8 @@ public final class Dossier {
         if (other.hasMainFunction()) {
           mergeMainFunction(other.getMainFunction());
         }
-        if (prototypeBuilder_ == null) {
-          if (!other.prototype_.isEmpty()) {
-            if (prototype_.isEmpty()) {
-              prototype_ = other.prototype_;
-              bitField0_ = (bitField0_ & ~0x00000800);
-            } else {
-              ensurePrototypeIsMutable();
-              prototype_.addAll(other.prototype_);
-            }
-            onChanged();
-          }
-        } else {
-          if (!other.prototype_.isEmpty()) {
-            if (prototypeBuilder_.isEmpty()) {
-              prototypeBuilder_.dispose();
-              prototypeBuilder_ = null;
-              prototype_ = other.prototype_;
-              bitField0_ = (bitField0_ & ~0x00000800);
-              prototypeBuilder_ = 
-                com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
-                   getPrototypeFieldBuilder() : null;
-            } else {
-              prototypeBuilder_.addAllMessages(other.prototype_);
-            }
-          }
+        if (other.hasPrototype()) {
+          mergePrototype(other.getPrototype());
         }
         if (other.hasHasInstanceMethods()) {
           setHasInstanceMethods(other.getHasInstanceMethods());
@@ -22920,8 +22416,8 @@ public final class Dossier {
             return false;
           }
         }
-        for (int i = 0; i < getPrototypeCount(); i++) {
-          if (!getPrototype(i).isInitialized()) {
+        if (hasPrototype()) {
+          if (!getPrototype().isInitialized()) {
             
             return false;
           }
@@ -24764,365 +24260,160 @@ public final class Dossier {
         return mainFunctionBuilder_;
       }
 
-      private java.util.List<com.github.jleyba.dossier.proto.Dossier.Prototype> prototype_ =
-        java.util.Collections.emptyList();
-      private void ensurePrototypeIsMutable() {
-        if (!((bitField0_ & 0x00000800) == 0x00000800)) {
-          prototype_ = new java.util.ArrayList<com.github.jleyba.dossier.proto.Dossier.Prototype>(prototype_);
-          bitField0_ |= 0x00000800;
-         }
-      }
-
-      private com.google.protobuf.RepeatedFieldBuilder<
+      private com.github.jleyba.dossier.proto.Dossier.Prototype prototype_ = com.github.jleyba.dossier.proto.Dossier.Prototype.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
           com.github.jleyba.dossier.proto.Dossier.Prototype, com.github.jleyba.dossier.proto.Dossier.Prototype.Builder, com.github.jleyba.dossier.proto.Dossier.PrototypeOrBuilder> prototypeBuilder_;
-
       /**
-       * <code>repeated .dossier.Prototype prototype = 15;</code>
+       * <code>optional .dossier.Prototype prototype = 15;</code>
        *
        * <pre>
-       * The prototype descriptors for this type (if it is a class or interface).
-       * Prototypes should be specified in reverse order, from the current class
-       * to the root. The presence of this field designates this type as a
-       * class or interface.
+       * Describes the instance properties and functions for this type.
+       * The presence of this field designates this type as a class or interface.
        * </pre>
        */
-      public java.util.List<com.github.jleyba.dossier.proto.Dossier.Prototype> getPrototypeList() {
+      public boolean hasPrototype() {
+        return ((bitField0_ & 0x00000800) == 0x00000800);
+      }
+      /**
+       * <code>optional .dossier.Prototype prototype = 15;</code>
+       *
+       * <pre>
+       * Describes the instance properties and functions for this type.
+       * The presence of this field designates this type as a class or interface.
+       * </pre>
+       */
+      public com.github.jleyba.dossier.proto.Dossier.Prototype getPrototype() {
         if (prototypeBuilder_ == null) {
-          return java.util.Collections.unmodifiableList(prototype_);
+          return prototype_;
         } else {
-          return prototypeBuilder_.getMessageList();
+          return prototypeBuilder_.getMessage();
         }
       }
       /**
-       * <code>repeated .dossier.Prototype prototype = 15;</code>
+       * <code>optional .dossier.Prototype prototype = 15;</code>
        *
        * <pre>
-       * The prototype descriptors for this type (if it is a class or interface).
-       * Prototypes should be specified in reverse order, from the current class
-       * to the root. The presence of this field designates this type as a
-       * class or interface.
+       * Describes the instance properties and functions for this type.
+       * The presence of this field designates this type as a class or interface.
        * </pre>
        */
-      public int getPrototypeCount() {
+      public Builder setPrototype(com.github.jleyba.dossier.proto.Dossier.Prototype value) {
         if (prototypeBuilder_ == null) {
-          return prototype_.size();
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          prototype_ = value;
+          onChanged();
         } else {
-          return prototypeBuilder_.getCount();
+          prototypeBuilder_.setMessage(value);
         }
+        bitField0_ |= 0x00000800;
+        return this;
       }
       /**
-       * <code>repeated .dossier.Prototype prototype = 15;</code>
+       * <code>optional .dossier.Prototype prototype = 15;</code>
        *
        * <pre>
-       * The prototype descriptors for this type (if it is a class or interface).
-       * Prototypes should be specified in reverse order, from the current class
-       * to the root. The presence of this field designates this type as a
-       * class or interface.
-       * </pre>
-       */
-      public com.github.jleyba.dossier.proto.Dossier.Prototype getPrototype(int index) {
-        if (prototypeBuilder_ == null) {
-          return prototype_.get(index);
-        } else {
-          return prototypeBuilder_.getMessage(index);
-        }
-      }
-      /**
-       * <code>repeated .dossier.Prototype prototype = 15;</code>
-       *
-       * <pre>
-       * The prototype descriptors for this type (if it is a class or interface).
-       * Prototypes should be specified in reverse order, from the current class
-       * to the root. The presence of this field designates this type as a
-       * class or interface.
+       * Describes the instance properties and functions for this type.
+       * The presence of this field designates this type as a class or interface.
        * </pre>
        */
       public Builder setPrototype(
-          int index, com.github.jleyba.dossier.proto.Dossier.Prototype value) {
-        if (prototypeBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensurePrototypeIsMutable();
-          prototype_.set(index, value);
-          onChanged();
-        } else {
-          prototypeBuilder_.setMessage(index, value);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .dossier.Prototype prototype = 15;</code>
-       *
-       * <pre>
-       * The prototype descriptors for this type (if it is a class or interface).
-       * Prototypes should be specified in reverse order, from the current class
-       * to the root. The presence of this field designates this type as a
-       * class or interface.
-       * </pre>
-       */
-      public Builder setPrototype(
-          int index, com.github.jleyba.dossier.proto.Dossier.Prototype.Builder builderForValue) {
-        if (prototypeBuilder_ == null) {
-          ensurePrototypeIsMutable();
-          prototype_.set(index, builderForValue.build());
-          onChanged();
-        } else {
-          prototypeBuilder_.setMessage(index, builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .dossier.Prototype prototype = 15;</code>
-       *
-       * <pre>
-       * The prototype descriptors for this type (if it is a class or interface).
-       * Prototypes should be specified in reverse order, from the current class
-       * to the root. The presence of this field designates this type as a
-       * class or interface.
-       * </pre>
-       */
-      public Builder addPrototype(com.github.jleyba.dossier.proto.Dossier.Prototype value) {
-        if (prototypeBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensurePrototypeIsMutable();
-          prototype_.add(value);
-          onChanged();
-        } else {
-          prototypeBuilder_.addMessage(value);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .dossier.Prototype prototype = 15;</code>
-       *
-       * <pre>
-       * The prototype descriptors for this type (if it is a class or interface).
-       * Prototypes should be specified in reverse order, from the current class
-       * to the root. The presence of this field designates this type as a
-       * class or interface.
-       * </pre>
-       */
-      public Builder addPrototype(
-          int index, com.github.jleyba.dossier.proto.Dossier.Prototype value) {
-        if (prototypeBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensurePrototypeIsMutable();
-          prototype_.add(index, value);
-          onChanged();
-        } else {
-          prototypeBuilder_.addMessage(index, value);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .dossier.Prototype prototype = 15;</code>
-       *
-       * <pre>
-       * The prototype descriptors for this type (if it is a class or interface).
-       * Prototypes should be specified in reverse order, from the current class
-       * to the root. The presence of this field designates this type as a
-       * class or interface.
-       * </pre>
-       */
-      public Builder addPrototype(
           com.github.jleyba.dossier.proto.Dossier.Prototype.Builder builderForValue) {
         if (prototypeBuilder_ == null) {
-          ensurePrototypeIsMutable();
-          prototype_.add(builderForValue.build());
+          prototype_ = builderForValue.build();
           onChanged();
         } else {
-          prototypeBuilder_.addMessage(builderForValue.build());
+          prototypeBuilder_.setMessage(builderForValue.build());
         }
+        bitField0_ |= 0x00000800;
         return this;
       }
       /**
-       * <code>repeated .dossier.Prototype prototype = 15;</code>
+       * <code>optional .dossier.Prototype prototype = 15;</code>
        *
        * <pre>
-       * The prototype descriptors for this type (if it is a class or interface).
-       * Prototypes should be specified in reverse order, from the current class
-       * to the root. The presence of this field designates this type as a
-       * class or interface.
+       * Describes the instance properties and functions for this type.
+       * The presence of this field designates this type as a class or interface.
        * </pre>
        */
-      public Builder addPrototype(
-          int index, com.github.jleyba.dossier.proto.Dossier.Prototype.Builder builderForValue) {
+      public Builder mergePrototype(com.github.jleyba.dossier.proto.Dossier.Prototype value) {
         if (prototypeBuilder_ == null) {
-          ensurePrototypeIsMutable();
-          prototype_.add(index, builderForValue.build());
+          if (((bitField0_ & 0x00000800) == 0x00000800) &&
+              prototype_ != com.github.jleyba.dossier.proto.Dossier.Prototype.getDefaultInstance()) {
+            prototype_ =
+              com.github.jleyba.dossier.proto.Dossier.Prototype.newBuilder(prototype_).mergeFrom(value).buildPartial();
+          } else {
+            prototype_ = value;
+          }
           onChanged();
         } else {
-          prototypeBuilder_.addMessage(index, builderForValue.build());
+          prototypeBuilder_.mergeFrom(value);
         }
+        bitField0_ |= 0x00000800;
         return this;
       }
       /**
-       * <code>repeated .dossier.Prototype prototype = 15;</code>
+       * <code>optional .dossier.Prototype prototype = 15;</code>
        *
        * <pre>
-       * The prototype descriptors for this type (if it is a class or interface).
-       * Prototypes should be specified in reverse order, from the current class
-       * to the root. The presence of this field designates this type as a
-       * class or interface.
-       * </pre>
-       */
-      public Builder addAllPrototype(
-          java.lang.Iterable<? extends com.github.jleyba.dossier.proto.Dossier.Prototype> values) {
-        if (prototypeBuilder_ == null) {
-          ensurePrototypeIsMutable();
-          com.google.protobuf.AbstractMessageLite.Builder.addAll(
-              values, prototype_);
-          onChanged();
-        } else {
-          prototypeBuilder_.addAllMessages(values);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .dossier.Prototype prototype = 15;</code>
-       *
-       * <pre>
-       * The prototype descriptors for this type (if it is a class or interface).
-       * Prototypes should be specified in reverse order, from the current class
-       * to the root. The presence of this field designates this type as a
-       * class or interface.
+       * Describes the instance properties and functions for this type.
+       * The presence of this field designates this type as a class or interface.
        * </pre>
        */
       public Builder clearPrototype() {
         if (prototypeBuilder_ == null) {
-          prototype_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000800);
+          prototype_ = com.github.jleyba.dossier.proto.Dossier.Prototype.getDefaultInstance();
           onChanged();
         } else {
           prototypeBuilder_.clear();
         }
+        bitField0_ = (bitField0_ & ~0x00000800);
         return this;
       }
       /**
-       * <code>repeated .dossier.Prototype prototype = 15;</code>
+       * <code>optional .dossier.Prototype prototype = 15;</code>
        *
        * <pre>
-       * The prototype descriptors for this type (if it is a class or interface).
-       * Prototypes should be specified in reverse order, from the current class
-       * to the root. The presence of this field designates this type as a
-       * class or interface.
+       * Describes the instance properties and functions for this type.
+       * The presence of this field designates this type as a class or interface.
        * </pre>
        */
-      public Builder removePrototype(int index) {
-        if (prototypeBuilder_ == null) {
-          ensurePrototypeIsMutable();
-          prototype_.remove(index);
-          onChanged();
-        } else {
-          prototypeBuilder_.remove(index);
-        }
-        return this;
+      public com.github.jleyba.dossier.proto.Dossier.Prototype.Builder getPrototypeBuilder() {
+        bitField0_ |= 0x00000800;
+        onChanged();
+        return getPrototypeFieldBuilder().getBuilder();
       }
       /**
-       * <code>repeated .dossier.Prototype prototype = 15;</code>
+       * <code>optional .dossier.Prototype prototype = 15;</code>
        *
        * <pre>
-       * The prototype descriptors for this type (if it is a class or interface).
-       * Prototypes should be specified in reverse order, from the current class
-       * to the root. The presence of this field designates this type as a
-       * class or interface.
+       * Describes the instance properties and functions for this type.
+       * The presence of this field designates this type as a class or interface.
        * </pre>
        */
-      public com.github.jleyba.dossier.proto.Dossier.Prototype.Builder getPrototypeBuilder(
-          int index) {
-        return getPrototypeFieldBuilder().getBuilder(index);
-      }
-      /**
-       * <code>repeated .dossier.Prototype prototype = 15;</code>
-       *
-       * <pre>
-       * The prototype descriptors for this type (if it is a class or interface).
-       * Prototypes should be specified in reverse order, from the current class
-       * to the root. The presence of this field designates this type as a
-       * class or interface.
-       * </pre>
-       */
-      public com.github.jleyba.dossier.proto.Dossier.PrototypeOrBuilder getPrototypeOrBuilder(
-          int index) {
-        if (prototypeBuilder_ == null) {
-          return prototype_.get(index);  } else {
-          return prototypeBuilder_.getMessageOrBuilder(index);
-        }
-      }
-      /**
-       * <code>repeated .dossier.Prototype prototype = 15;</code>
-       *
-       * <pre>
-       * The prototype descriptors for this type (if it is a class or interface).
-       * Prototypes should be specified in reverse order, from the current class
-       * to the root. The presence of this field designates this type as a
-       * class or interface.
-       * </pre>
-       */
-      public java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.PrototypeOrBuilder> 
-           getPrototypeOrBuilderList() {
+      public com.github.jleyba.dossier.proto.Dossier.PrototypeOrBuilder getPrototypeOrBuilder() {
         if (prototypeBuilder_ != null) {
-          return prototypeBuilder_.getMessageOrBuilderList();
+          return prototypeBuilder_.getMessageOrBuilder();
         } else {
-          return java.util.Collections.unmodifiableList(prototype_);
+          return prototype_;
         }
       }
       /**
-       * <code>repeated .dossier.Prototype prototype = 15;</code>
+       * <code>optional .dossier.Prototype prototype = 15;</code>
        *
        * <pre>
-       * The prototype descriptors for this type (if it is a class or interface).
-       * Prototypes should be specified in reverse order, from the current class
-       * to the root. The presence of this field designates this type as a
-       * class or interface.
+       * Describes the instance properties and functions for this type.
+       * The presence of this field designates this type as a class or interface.
        * </pre>
        */
-      public com.github.jleyba.dossier.proto.Dossier.Prototype.Builder addPrototypeBuilder() {
-        return getPrototypeFieldBuilder().addBuilder(
-            com.github.jleyba.dossier.proto.Dossier.Prototype.getDefaultInstance());
-      }
-      /**
-       * <code>repeated .dossier.Prototype prototype = 15;</code>
-       *
-       * <pre>
-       * The prototype descriptors for this type (if it is a class or interface).
-       * Prototypes should be specified in reverse order, from the current class
-       * to the root. The presence of this field designates this type as a
-       * class or interface.
-       * </pre>
-       */
-      public com.github.jleyba.dossier.proto.Dossier.Prototype.Builder addPrototypeBuilder(
-          int index) {
-        return getPrototypeFieldBuilder().addBuilder(
-            index, com.github.jleyba.dossier.proto.Dossier.Prototype.getDefaultInstance());
-      }
-      /**
-       * <code>repeated .dossier.Prototype prototype = 15;</code>
-       *
-       * <pre>
-       * The prototype descriptors for this type (if it is a class or interface).
-       * Prototypes should be specified in reverse order, from the current class
-       * to the root. The presence of this field designates this type as a
-       * class or interface.
-       * </pre>
-       */
-      public java.util.List<com.github.jleyba.dossier.proto.Dossier.Prototype.Builder> 
-           getPrototypeBuilderList() {
-        return getPrototypeFieldBuilder().getBuilderList();
-      }
-      private com.google.protobuf.RepeatedFieldBuilder<
+      private com.google.protobuf.SingleFieldBuilder<
           com.github.jleyba.dossier.proto.Dossier.Prototype, com.github.jleyba.dossier.proto.Dossier.Prototype.Builder, com.github.jleyba.dossier.proto.Dossier.PrototypeOrBuilder> 
           getPrototypeFieldBuilder() {
         if (prototypeBuilder_ == null) {
-          prototypeBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+          prototypeBuilder_ = new com.google.protobuf.SingleFieldBuilder<
               com.github.jleyba.dossier.proto.Dossier.Prototype, com.github.jleyba.dossier.proto.Dossier.Prototype.Builder, com.github.jleyba.dossier.proto.Dossier.PrototypeOrBuilder>(
-                  prototype_,
-                  ((bitField0_ & 0x00000800) == 0x00000800),
+                  getPrototype(),
                   getParentForChildren(),
                   isClean());
           prototype_ = null;
@@ -29890,61 +29181,60 @@ public final class Dossier {
       "ion.Detail\022(\n\006thrown\030\006 \003(\0132\030.dossier.Fun" +
       "ction.Detail\032]\n\006Detail\022\014\n\004name\030\001 \001(\t\022\036\n\004" +
       "type\030\002 \001(\0132\020.dossier.Comment\022%\n\013descript",
-      "ion\030\003 \001(\0132\020.dossier.Comment\"q\n\tPrototype" +
-      "\022\014\n\004name\030\001 \002(\t\022\014\n\004href\030\002 \001(\t\022#\n\010function" +
-      "\030\003 \003(\0132\021.dossier.Function\022#\n\010property\030\004 " +
-      "\003(\0132\021.dossier.Property\"\362\001\n\013Enumeration\022\036" +
-      "\n\004type\030\001 \002(\0132\020.dossier.Comment\022)\n\005value\030" +
-      "\002 \003(\0132\032.dossier.Enumeration.Value\022/\n\nvis" +
-      "ibility\030\003 \001(\0162\023.dossier.Visibility:\006PUBL" +
-      "IC\032g\n\005Value\022\014\n\004name\030\001 \002(\t\022%\n\013description" +
-      "\030\002 \001(\0132\020.dossier.Comment\022)\n\013deprecation\030" +
-      "\003 \001(\0132\024.dossier.Deprecation\"\251\001\n\005Index\022\014\n",
-      "\004home\030\001 \002(\t\022\037\n\004type\030\002 \003(\0132\021.dossier.Type" +
-      "Link\022%\n\006module\030\003 \003(\0132\025.dossier.Index.Mod" +
-      "ule\032J\n\006Module\022\037\n\004link\030\001 \002(\0132\021.dossier.Ty" +
-      "peLink\022\037\n\004type\030\002 \003(\0132\021.dossier.TypeLink\"" +
-      "\355\010\n\006JsType\022\014\n\004name\030\001 \002(\t\022#\n\006source\030\005 \002(\013" +
-      "2\023.dossier.SourceLink\022+\n\006nested\030\006 \003(\0132\033." +
-      "dossier.JsType.TypeSummary\022%\n\013descriptio" +
-      "n\030\007 \002(\0132\020.dossier.Comment\022\033\n\004tags\030\010 \002(\0132" +
-      "\r.dossier.Tags\022)\n\013deprecation\030\t \001(\0132\024.do" +
-      "ssier.Deprecation\022)\n\010type_def\030\n \003(\0132\027.do",
-      "ssier.JsType.TypeDef\022)\n\013enumeration\030\013 \001(" +
-      "\0132\024.dossier.Enumeration\022*\n\017static_functi" +
-      "on\030\014 \003(\0132\021.dossier.Function\022*\n\017static_pr" +
-      "operty\030\r \003(\0132\021.dossier.Property\022(\n\rmain_" +
-      "function\030\016 \001(\0132\021.dossier.Function\022%\n\tpro" +
-      "totype\030\017 \003(\0132\022.dossier.Prototype\022#\n\024has_" +
-      "instance_methods\030\020 \001(\010:\005false\022&\n\027has_ins" +
-      "tance_properties\030\021 \001(\010:\005false\022\'\n\rextende" +
-      "d_type\030\022 \003(\0132\020.dossier.Comment\022*\n\020implem" +
-      "ented_type\030\023 \003(\0132\020.dossier.Comment\022,\n\021co",
-      "mpiler_constant\030\024 \003(\0132\021.dossier.Property" +
-      "\022*\n\006parent\030\025 \001(\0132\032.dossier.JsType.Parent" +
-      "Link\022\'\n\014aliased_type\030\026 \001(\0132\021.dossier.Typ" +
-      "eLink\032L\n\013TypeSummary\022\014\n\004name\030\001 \002(\t\022\014\n\004hr" +
-      "ef\030\002 \002(\t\022!\n\007summary\030\003 \002(\0132\020.dossier.Comm" +
-      "ent\032\337\001\n\007TypeDef\022\014\n\004name\030\001 \002(\t\022\036\n\004type\030\002 " +
-      "\002(\0132\020.dossier.Comment\022#\n\006source\030\003 \002(\0132\023." +
-      "dossier.SourceLink\022%\n\013description\030\004 \002(\0132" +
-      "\020.dossier.Comment\022)\n\013deprecation\030\005 \001(\0132\024" +
-      ".dossier.Deprecation\022/\n\nvisibility\030\006 \001(\016",
-      "2\023.dossier.Visibility:\006PUBLIC\032@\n\nParentL" +
-      "ink\022\037\n\004link\030\001 \002(\0132\021.dossier.TypeLink\022\021\n\t" +
-      "is_module\030\002 \001(\010\"}\n\023IndexFileRenderSpec\022%" +
-      "\n\tresources\030\001 \002(\0132\022.dossier.Resources\022 \n" +
-      "\006readme\030\002 \001(\0132\020.dossier.Comment\022\035\n\005index" +
-      "\030\003 \002(\0132\016.dossier.Index\"\177\n\024SourceFileRend" +
-      "erSpec\022%\n\tresources\030\001 \002(\0132\022.dossier.Reso" +
-      "urces\022!\n\004file\030\002 \002(\0132\023.dossier.SourceFile" +
-      "\022\035\n\005index\030\003 \002(\0132\016.dossier.Index\"w\n\020JsTyp" +
-      "eRenderSpec\022\035\n\004type\030\001 \002(\0132\017.dossier.JsTy",
-      "pe\022%\n\tresources\030\002 \002(\0132\022.dossier.Resource" +
-      "s\022\035\n\005index\030\003 \002(\0132\016.dossier.Index*A\n\nVisi" +
-      "bility\022\n\n\006PUBLIC\020\000\022\r\n\tPROTECTED\020\001\022\013\n\007PRI" +
-      "VATE\020\002\022\013\n\007PACKAGE\020\003B!\n\037com.github.jleyba" +
-      ".dossier.proto"
+      "ion\030\003 \001(\0132\020.dossier.Comment\"U\n\tPrototype" +
+      "\022#\n\010function\030\003 \003(\0132\021.dossier.Function\022#\n" +
+      "\010property\030\004 \003(\0132\021.dossier.Property\"\362\001\n\013E" +
+      "numeration\022\036\n\004type\030\001 \002(\0132\020.dossier.Comme" +
+      "nt\022)\n\005value\030\002 \003(\0132\032.dossier.Enumeration." +
+      "Value\022/\n\nvisibility\030\003 \001(\0162\023.dossier.Visi" +
+      "bility:\006PUBLIC\032g\n\005Value\022\014\n\004name\030\001 \002(\t\022%\n" +
+      "\013description\030\002 \001(\0132\020.dossier.Comment\022)\n\013" +
+      "deprecation\030\003 \001(\0132\024.dossier.Deprecation\"" +
+      "\251\001\n\005Index\022\014\n\004home\030\001 \002(\t\022\037\n\004type\030\002 \003(\0132\021.",
+      "dossier.TypeLink\022%\n\006module\030\003 \003(\0132\025.dossi" +
+      "er.Index.Module\032J\n\006Module\022\037\n\004link\030\001 \002(\0132" +
+      "\021.dossier.TypeLink\022\037\n\004type\030\002 \003(\0132\021.dossi" +
+      "er.TypeLink\"\355\010\n\006JsType\022\014\n\004name\030\001 \002(\t\022#\n\006" +
+      "source\030\005 \002(\0132\023.dossier.SourceLink\022+\n\006nes" +
+      "ted\030\006 \003(\0132\033.dossier.JsType.TypeSummary\022%" +
+      "\n\013description\030\007 \002(\0132\020.dossier.Comment\022\033\n" +
+      "\004tags\030\010 \002(\0132\r.dossier.Tags\022)\n\013deprecatio" +
+      "n\030\t \001(\0132\024.dossier.Deprecation\022)\n\010type_de" +
+      "f\030\n \003(\0132\027.dossier.JsType.TypeDef\022)\n\013enum",
+      "eration\030\013 \001(\0132\024.dossier.Enumeration\022*\n\017s" +
+      "tatic_function\030\014 \003(\0132\021.dossier.Function\022" +
+      "*\n\017static_property\030\r \003(\0132\021.dossier.Prope" +
+      "rty\022(\n\rmain_function\030\016 \001(\0132\021.dossier.Fun" +
+      "ction\022%\n\tprototype\030\017 \001(\0132\022.dossier.Proto" +
+      "type\022#\n\024has_instance_methods\030\020 \001(\010:\005fals" +
+      "e\022&\n\027has_instance_properties\030\021 \001(\010:\005fals" +
+      "e\022\'\n\rextended_type\030\022 \003(\0132\020.dossier.Comme" +
+      "nt\022*\n\020implemented_type\030\023 \003(\0132\020.dossier.C" +
+      "omment\022,\n\021compiler_constant\030\024 \003(\0132\021.doss",
+      "ier.Property\022*\n\006parent\030\025 \001(\0132\032.dossier.J" +
+      "sType.ParentLink\022\'\n\014aliased_type\030\026 \001(\0132\021" +
+      ".dossier.TypeLink\032L\n\013TypeSummary\022\014\n\004name" +
+      "\030\001 \002(\t\022\014\n\004href\030\002 \002(\t\022!\n\007summary\030\003 \002(\0132\020." +
+      "dossier.Comment\032\337\001\n\007TypeDef\022\014\n\004name\030\001 \002(" +
+      "\t\022\036\n\004type\030\002 \002(\0132\020.dossier.Comment\022#\n\006sou" +
+      "rce\030\003 \002(\0132\023.dossier.SourceLink\022%\n\013descri" +
+      "ption\030\004 \002(\0132\020.dossier.Comment\022)\n\013depreca" +
+      "tion\030\005 \001(\0132\024.dossier.Deprecation\022/\n\nvisi" +
+      "bility\030\006 \001(\0162\023.dossier.Visibility:\006PUBLI",
+      "C\032@\n\nParentLink\022\037\n\004link\030\001 \002(\0132\021.dossier." +
+      "TypeLink\022\021\n\tis_module\030\002 \001(\010\"}\n\023IndexFile" +
+      "RenderSpec\022%\n\tresources\030\001 \002(\0132\022.dossier." +
+      "Resources\022 \n\006readme\030\002 \001(\0132\020.dossier.Comm" +
+      "ent\022\035\n\005index\030\003 \002(\0132\016.dossier.Index\"\177\n\024So" +
+      "urceFileRenderSpec\022%\n\tresources\030\001 \002(\0132\022." +
+      "dossier.Resources\022!\n\004file\030\002 \002(\0132\023.dossie" +
+      "r.SourceFile\022\035\n\005index\030\003 \002(\0132\016.dossier.In" +
+      "dex\"w\n\020JsTypeRenderSpec\022\035\n\004type\030\001 \002(\0132\017." +
+      "dossier.JsType\022%\n\tresources\030\002 \002(\0132\022.doss",
+      "ier.Resources\022\035\n\005index\030\003 \002(\0132\016.dossier.I" +
+      "ndex*A\n\nVisibility\022\n\n\006PUBLIC\020\000\022\r\n\tPROTEC" +
+      "TED\020\001\022\013\n\007PRIVATE\020\002\022\013\n\007PACKAGE\020\003B!\n\037com.g" +
+      "ithub.jleyba.dossier.proto"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -30035,7 +29325,7 @@ public final class Dossier {
     internal_static_dossier_Prototype_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_dossier_Prototype_descriptor,
-        new java.lang.String[] { "Name", "Href", "Function", "Property", });
+        new java.lang.String[] { "Function", "Property", });
     internal_static_dossier_Enumeration_descriptor =
       getDescriptor().getMessageTypes().get(11);
     internal_static_dossier_Enumeration_fieldAccessorTable = new
