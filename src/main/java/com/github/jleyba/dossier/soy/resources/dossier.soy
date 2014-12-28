@@ -752,23 +752,22 @@
     {param tags: $type.tags /}
   {/call}
 
-  {if $type.enumeration and length($type.enumeration.type.token)}
-    <dl>
-      <dt>Type
-        <code>
-          {call .comment}
-            {param comment: $type.enumeration.type /}
-            {param omitLeadingTag: true /}
-          {/call}
-        </code>
-    </dl>
-  {/if}
-
   {call .classInheritance}
     {param types: $type.extendedType /}
   {/call}
-  {if $type.aliasedType or length($type.implementedType)}
+  {if $type.aliasedType
+      or length($type.implementedType)
+      or ($type.enumeration and length($type.enumeration.type.token))}
     <dl>
+      {if $type.enumeration and length($type.enumeration.type.token)}
+        <dt>Type
+          <code>
+            {call .comment}
+              {param comment: $type.enumeration.type /}
+              {param omitLeadingTag: true /}
+            {/call}
+          </code>
+      {/if}
       {call .printAliasLink}
         {param type: $type /}
       {/call}
