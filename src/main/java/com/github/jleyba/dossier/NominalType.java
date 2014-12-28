@@ -119,12 +119,18 @@ public final class NominalType {
   }
 
   public String getQualifiedName() {
-    return getQualifiedName(false);
+    return getQualifiedName(getModule() == null);
   }
 
-  public String getQualifiedName(boolean includeModule) {
-    if (parent != null && (includeModule || !parent.isModuleExports())) {
-      return parent.getQualifiedName(includeModule) + "." + name;
+  /**
+   * @param includeNamespace Whether to include the parent namespace/module's name in computed
+   *     name.
+   * @return This type's qualified name, either relative to global scope or its parent namespace.
+   */
+  public String getQualifiedName(boolean includeNamespace) {
+    if (parent != null
+        && (includeNamespace || !(parent.isNamespace() || parent.isModuleExports()))) {
+      return parent.getQualifiedName(includeNamespace) + "." + name;
     }
     return name;
   }
@@ -177,6 +183,12 @@ public final class NominalType {
 
   public boolean isModuleExports() {
     return module != null && name.equals(module.getVarName());
+  }
+
+  public boolean isNamespace() {
+    return !typeDescriptor.type.isConstructor()
+        && !typeDescriptor.type.isInterface()
+        && !typeDescriptor.type.isEnumType();
   }
 
   TypeDescriptor getTypeDescriptor() {

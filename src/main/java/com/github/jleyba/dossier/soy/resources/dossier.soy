@@ -712,13 +712,13 @@
 {template .typeHeader}
   {@param type: dossier.JsType}
 
-  {if $type.module}
+  {if $type.parent}
     <div class="parentlink">
-      <b>Module:</b>{sp}
-      {if $type.module.href}
-        <a href="{$type.module.href}">{$type.module.text}</a>
+      <b>{if $type.parent.isModule}Module{else}Namespace{/if}:</b>{sp}
+      {if $type.parent.link.href}
+        <a href="{$type.parent.link.href}">{$type.parent.link.text}</a>
       {else}
-        {$type.module.text}
+        {$type.parent.link.text}
       {/if}
     </div>
   {/if}

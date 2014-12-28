@@ -390,9 +390,11 @@ public class RendererTest {
                 .setName("ctor-name")
                 .setSource(Dossier.SourceLink.newBuilder().setPath("ctor-source"))
                 .setDescription(parseComment("ctor-description"))))
-        .setModule(Dossier.TypeLink.newBuilder()
-            .setText("path/to/module")
-            .setHref("module-source"))
+        .setParent(Dossier.JsType.ParentLink.newBuilder()
+            .setIsModule(true)
+            .setLink(Dossier.TypeLink.newBuilder()
+                .setText("path/to/module")
+                .setHref("module-source")))
         .setTags(Dossier.Tags.getDefaultInstance())
         .build();
 

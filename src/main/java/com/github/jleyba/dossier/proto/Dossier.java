@@ -17886,29 +17886,17 @@ public final class Dossier {
         int index);
 
     /**
-     * <code>optional .dossier.TypeLink module = 21;</code>
-     *
-     * <pre>
-     * Link to the module this type belongs to.
-     * </pre>
+     * <code>optional .dossier.JsType.ParentLink parent = 21;</code>
      */
-    boolean hasModule();
+    boolean hasParent();
     /**
-     * <code>optional .dossier.TypeLink module = 21;</code>
-     *
-     * <pre>
-     * Link to the module this type belongs to.
-     * </pre>
+     * <code>optional .dossier.JsType.ParentLink parent = 21;</code>
      */
-    com.github.jleyba.dossier.proto.Dossier.TypeLink getModule();
+    com.github.jleyba.dossier.proto.Dossier.JsType.ParentLink getParent();
     /**
-     * <code>optional .dossier.TypeLink module = 21;</code>
-     *
-     * <pre>
-     * Link to the module this type belongs to.
-     * </pre>
+     * <code>optional .dossier.JsType.ParentLink parent = 21;</code>
      */
-    com.github.jleyba.dossier.proto.Dossier.TypeLinkOrBuilder getModuleOrBuilder();
+    com.github.jleyba.dossier.proto.Dossier.JsType.ParentLinkOrBuilder getParentOrBuilder();
 
     /**
      * <code>optional .dossier.TypeLink aliased_type = 22;</code>
@@ -18151,14 +18139,14 @@ public final class Dossier {
               break;
             }
             case 170: {
-              com.github.jleyba.dossier.proto.Dossier.TypeLink.Builder subBuilder = null;
+              com.github.jleyba.dossier.proto.Dossier.JsType.ParentLink.Builder subBuilder = null;
               if (((bitField0_ & 0x00000200) == 0x00000200)) {
-                subBuilder = module_.toBuilder();
+                subBuilder = parent_.toBuilder();
               }
-              module_ = input.readMessage(com.github.jleyba.dossier.proto.Dossier.TypeLink.PARSER, extensionRegistry);
+              parent_ = input.readMessage(com.github.jleyba.dossier.proto.Dossier.JsType.ParentLink.PARSER, extensionRegistry);
               if (subBuilder != null) {
-                subBuilder.mergeFrom(module_);
-                module_ = subBuilder.buildPartial();
+                subBuilder.mergeFrom(parent_);
+                parent_ = subBuilder.buildPartial();
               }
               bitField0_ |= 0x00000200;
               break;
@@ -20652,6 +20640,616 @@ public final class Dossier {
       // @@protoc_insertion_point(class_scope:dossier.JsType.TypeDef)
     }
 
+    public interface ParentLinkOrBuilder extends
+        // @@protoc_insertion_point(interface_extends:dossier.JsType.ParentLink)
+        com.google.protobuf.MessageOrBuilder {
+
+      /**
+       * <code>required .dossier.TypeLink link = 1;</code>
+       */
+      boolean hasLink();
+      /**
+       * <code>required .dossier.TypeLink link = 1;</code>
+       */
+      com.github.jleyba.dossier.proto.Dossier.TypeLink getLink();
+      /**
+       * <code>required .dossier.TypeLink link = 1;</code>
+       */
+      com.github.jleyba.dossier.proto.Dossier.TypeLinkOrBuilder getLinkOrBuilder();
+
+      /**
+       * <code>optional bool is_module = 2;</code>
+       */
+      boolean hasIsModule();
+      /**
+       * <code>optional bool is_module = 2;</code>
+       */
+      boolean getIsModule();
+    }
+    /**
+     * Protobuf type {@code dossier.JsType.ParentLink}
+     *
+     * <pre>
+     * Link to the module or namespace this type belongs to.
+     * </pre>
+     */
+    public static final class ParentLink extends
+        com.google.protobuf.GeneratedMessage implements
+        // @@protoc_insertion_point(message_implements:dossier.JsType.ParentLink)
+        ParentLinkOrBuilder {
+      // Use ParentLink.newBuilder() to construct.
+      private ParentLink(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+        super(builder);
+        this.unknownFields = builder.getUnknownFields();
+      }
+      private ParentLink(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+
+      private static final ParentLink defaultInstance;
+      public static ParentLink getDefaultInstance() {
+        return defaultInstance;
+      }
+
+      public ParentLink getDefaultInstanceForType() {
+        return defaultInstance;
+      }
+
+      private final com.google.protobuf.UnknownFieldSet unknownFields;
+      @java.lang.Override
+      public final com.google.protobuf.UnknownFieldSet
+          getUnknownFields() {
+        return this.unknownFields;
+      }
+      private ParentLink(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        initFields();
+        int mutable_bitField0_ = 0;
+        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+            com.google.protobuf.UnknownFieldSet.newBuilder();
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              default: {
+                if (!parseUnknownField(input, unknownFields,
+                                       extensionRegistry, tag)) {
+                  done = true;
+                }
+                break;
+              }
+              case 10: {
+                com.github.jleyba.dossier.proto.Dossier.TypeLink.Builder subBuilder = null;
+                if (((bitField0_ & 0x00000001) == 0x00000001)) {
+                  subBuilder = link_.toBuilder();
+                }
+                link_ = input.readMessage(com.github.jleyba.dossier.proto.Dossier.TypeLink.PARSER, extensionRegistry);
+                if (subBuilder != null) {
+                  subBuilder.mergeFrom(link_);
+                  link_ = subBuilder.buildPartial();
+                }
+                bitField0_ |= 0x00000001;
+                break;
+              }
+              case 16: {
+                bitField0_ |= 0x00000002;
+                isModule_ = input.readBool();
+                break;
+              }
+            }
+          }
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(this);
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(
+              e.getMessage()).setUnfinishedMessage(this);
+        } finally {
+          this.unknownFields = unknownFields.build();
+          makeExtensionsImmutable();
+        }
+      }
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_JsType_ParentLink_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_JsType_ParentLink_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.github.jleyba.dossier.proto.Dossier.JsType.ParentLink.class, com.github.jleyba.dossier.proto.Dossier.JsType.ParentLink.Builder.class);
+      }
+
+      public static com.google.protobuf.Parser<ParentLink> PARSER =
+          new com.google.protobuf.AbstractParser<ParentLink>() {
+        public ParentLink parsePartialFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          return new ParentLink(input, extensionRegistry);
+        }
+      };
+
+      @java.lang.Override
+      public com.google.protobuf.Parser<ParentLink> getParserForType() {
+        return PARSER;
+      }
+
+      private int bitField0_;
+      public static final int LINK_FIELD_NUMBER = 1;
+      private com.github.jleyba.dossier.proto.Dossier.TypeLink link_;
+      /**
+       * <code>required .dossier.TypeLink link = 1;</code>
+       */
+      public boolean hasLink() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      /**
+       * <code>required .dossier.TypeLink link = 1;</code>
+       */
+      public com.github.jleyba.dossier.proto.Dossier.TypeLink getLink() {
+        return link_;
+      }
+      /**
+       * <code>required .dossier.TypeLink link = 1;</code>
+       */
+      public com.github.jleyba.dossier.proto.Dossier.TypeLinkOrBuilder getLinkOrBuilder() {
+        return link_;
+      }
+
+      public static final int IS_MODULE_FIELD_NUMBER = 2;
+      private boolean isModule_;
+      /**
+       * <code>optional bool is_module = 2;</code>
+       */
+      public boolean hasIsModule() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      /**
+       * <code>optional bool is_module = 2;</code>
+       */
+      public boolean getIsModule() {
+        return isModule_;
+      }
+
+      private void initFields() {
+        link_ = com.github.jleyba.dossier.proto.Dossier.TypeLink.getDefaultInstance();
+        isModule_ = false;
+      }
+      private byte memoizedIsInitialized = -1;
+      public final boolean isInitialized() {
+        byte isInitialized = memoizedIsInitialized;
+        if (isInitialized == 1) return true;
+        if (isInitialized == 0) return false;
+
+        if (!hasLink()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+        if (!getLink().isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+        memoizedIsInitialized = 1;
+        return true;
+      }
+
+      public void writeTo(com.google.protobuf.CodedOutputStream output)
+                          throws java.io.IOException {
+        getSerializedSize();
+        if (((bitField0_ & 0x00000001) == 0x00000001)) {
+          output.writeMessage(1, link_);
+        }
+        if (((bitField0_ & 0x00000002) == 0x00000002)) {
+          output.writeBool(2, isModule_);
+        }
+        getUnknownFields().writeTo(output);
+      }
+
+      private int memoizedSerializedSize = -1;
+      public int getSerializedSize() {
+        int size = memoizedSerializedSize;
+        if (size != -1) return size;
+
+        size = 0;
+        if (((bitField0_ & 0x00000001) == 0x00000001)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeMessageSize(1, link_);
+        }
+        if (((bitField0_ & 0x00000002) == 0x00000002)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeBoolSize(2, isModule_);
+        }
+        size += getUnknownFields().getSerializedSize();
+        memoizedSerializedSize = size;
+        return size;
+      }
+
+      private static final long serialVersionUID = 0L;
+      @java.lang.Override
+      protected java.lang.Object writeReplace()
+          throws java.io.ObjectStreamException {
+        return super.writeReplace();
+      }
+
+      public static com.github.jleyba.dossier.proto.Dossier.JsType.ParentLink parseFrom(
+          com.google.protobuf.ByteString data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static com.github.jleyba.dossier.proto.Dossier.JsType.ParentLink parseFrom(
+          com.google.protobuf.ByteString data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static com.github.jleyba.dossier.proto.Dossier.JsType.ParentLink parseFrom(byte[] data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static com.github.jleyba.dossier.proto.Dossier.JsType.ParentLink parseFrom(
+          byte[] data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static com.github.jleyba.dossier.proto.Dossier.JsType.ParentLink parseFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return PARSER.parseFrom(input);
+      }
+      public static com.github.jleyba.dossier.proto.Dossier.JsType.ParentLink parseFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return PARSER.parseFrom(input, extensionRegistry);
+      }
+      public static com.github.jleyba.dossier.proto.Dossier.JsType.ParentLink parseDelimitedFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return PARSER.parseDelimitedFrom(input);
+      }
+      public static com.github.jleyba.dossier.proto.Dossier.JsType.ParentLink parseDelimitedFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return PARSER.parseDelimitedFrom(input, extensionRegistry);
+      }
+      public static com.github.jleyba.dossier.proto.Dossier.JsType.ParentLink parseFrom(
+          com.google.protobuf.CodedInputStream input)
+          throws java.io.IOException {
+        return PARSER.parseFrom(input);
+      }
+      public static com.github.jleyba.dossier.proto.Dossier.JsType.ParentLink parseFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return PARSER.parseFrom(input, extensionRegistry);
+      }
+
+      public static Builder newBuilder() { return Builder.create(); }
+      public Builder newBuilderForType() { return newBuilder(); }
+      public static Builder newBuilder(com.github.jleyba.dossier.proto.Dossier.JsType.ParentLink prototype) {
+        return newBuilder().mergeFrom(prototype);
+      }
+      public Builder toBuilder() { return newBuilder(this); }
+
+      @java.lang.Override
+      protected Builder newBuilderForType(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        Builder builder = new Builder(parent);
+        return builder;
+      }
+      /**
+       * Protobuf type {@code dossier.JsType.ParentLink}
+       *
+       * <pre>
+       * Link to the module or namespace this type belongs to.
+       * </pre>
+       */
+      public static final class Builder extends
+          com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+          // @@protoc_insertion_point(builder_implements:dossier.JsType.ParentLink)
+          com.github.jleyba.dossier.proto.Dossier.JsType.ParentLinkOrBuilder {
+        public static final com.google.protobuf.Descriptors.Descriptor
+            getDescriptor() {
+          return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_JsType_ParentLink_descriptor;
+        }
+
+        protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+            internalGetFieldAccessorTable() {
+          return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_JsType_ParentLink_fieldAccessorTable
+              .ensureFieldAccessorsInitialized(
+                  com.github.jleyba.dossier.proto.Dossier.JsType.ParentLink.class, com.github.jleyba.dossier.proto.Dossier.JsType.ParentLink.Builder.class);
+        }
+
+        // Construct using com.github.jleyba.dossier.proto.Dossier.JsType.ParentLink.newBuilder()
+        private Builder() {
+          maybeForceBuilderInitialization();
+        }
+
+        private Builder(
+            com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+          super(parent);
+          maybeForceBuilderInitialization();
+        }
+        private void maybeForceBuilderInitialization() {
+          if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+            getLinkFieldBuilder();
+          }
+        }
+        private static Builder create() {
+          return new Builder();
+        }
+
+        public Builder clear() {
+          super.clear();
+          if (linkBuilder_ == null) {
+            link_ = com.github.jleyba.dossier.proto.Dossier.TypeLink.getDefaultInstance();
+          } else {
+            linkBuilder_.clear();
+          }
+          bitField0_ = (bitField0_ & ~0x00000001);
+          isModule_ = false;
+          bitField0_ = (bitField0_ & ~0x00000002);
+          return this;
+        }
+
+        public Builder clone() {
+          return create().mergeFrom(buildPartial());
+        }
+
+        public com.google.protobuf.Descriptors.Descriptor
+            getDescriptorForType() {
+          return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_JsType_ParentLink_descriptor;
+        }
+
+        public com.github.jleyba.dossier.proto.Dossier.JsType.ParentLink getDefaultInstanceForType() {
+          return com.github.jleyba.dossier.proto.Dossier.JsType.ParentLink.getDefaultInstance();
+        }
+
+        public com.github.jleyba.dossier.proto.Dossier.JsType.ParentLink build() {
+          com.github.jleyba.dossier.proto.Dossier.JsType.ParentLink result = buildPartial();
+          if (!result.isInitialized()) {
+            throw newUninitializedMessageException(result);
+          }
+          return result;
+        }
+
+        public com.github.jleyba.dossier.proto.Dossier.JsType.ParentLink buildPartial() {
+          com.github.jleyba.dossier.proto.Dossier.JsType.ParentLink result = new com.github.jleyba.dossier.proto.Dossier.JsType.ParentLink(this);
+          int from_bitField0_ = bitField0_;
+          int to_bitField0_ = 0;
+          if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+            to_bitField0_ |= 0x00000001;
+          }
+          if (linkBuilder_ == null) {
+            result.link_ = link_;
+          } else {
+            result.link_ = linkBuilder_.build();
+          }
+          if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+            to_bitField0_ |= 0x00000002;
+          }
+          result.isModule_ = isModule_;
+          result.bitField0_ = to_bitField0_;
+          onBuilt();
+          return result;
+        }
+
+        public Builder mergeFrom(com.google.protobuf.Message other) {
+          if (other instanceof com.github.jleyba.dossier.proto.Dossier.JsType.ParentLink) {
+            return mergeFrom((com.github.jleyba.dossier.proto.Dossier.JsType.ParentLink)other);
+          } else {
+            super.mergeFrom(other);
+            return this;
+          }
+        }
+
+        public Builder mergeFrom(com.github.jleyba.dossier.proto.Dossier.JsType.ParentLink other) {
+          if (other == com.github.jleyba.dossier.proto.Dossier.JsType.ParentLink.getDefaultInstance()) return this;
+          if (other.hasLink()) {
+            mergeLink(other.getLink());
+          }
+          if (other.hasIsModule()) {
+            setIsModule(other.getIsModule());
+          }
+          this.mergeUnknownFields(other.getUnknownFields());
+          return this;
+        }
+
+        public final boolean isInitialized() {
+          if (!hasLink()) {
+            
+            return false;
+          }
+          if (!getLink().isInitialized()) {
+            
+            return false;
+          }
+          return true;
+        }
+
+        public Builder mergeFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          com.github.jleyba.dossier.proto.Dossier.JsType.ParentLink parsedMessage = null;
+          try {
+            parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+          } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+            parsedMessage = (com.github.jleyba.dossier.proto.Dossier.JsType.ParentLink) e.getUnfinishedMessage();
+            throw e;
+          } finally {
+            if (parsedMessage != null) {
+              mergeFrom(parsedMessage);
+            }
+          }
+          return this;
+        }
+        private int bitField0_;
+
+        private com.github.jleyba.dossier.proto.Dossier.TypeLink link_ = com.github.jleyba.dossier.proto.Dossier.TypeLink.getDefaultInstance();
+        private com.google.protobuf.SingleFieldBuilder<
+            com.github.jleyba.dossier.proto.Dossier.TypeLink, com.github.jleyba.dossier.proto.Dossier.TypeLink.Builder, com.github.jleyba.dossier.proto.Dossier.TypeLinkOrBuilder> linkBuilder_;
+        /**
+         * <code>required .dossier.TypeLink link = 1;</code>
+         */
+        public boolean hasLink() {
+          return ((bitField0_ & 0x00000001) == 0x00000001);
+        }
+        /**
+         * <code>required .dossier.TypeLink link = 1;</code>
+         */
+        public com.github.jleyba.dossier.proto.Dossier.TypeLink getLink() {
+          if (linkBuilder_ == null) {
+            return link_;
+          } else {
+            return linkBuilder_.getMessage();
+          }
+        }
+        /**
+         * <code>required .dossier.TypeLink link = 1;</code>
+         */
+        public Builder setLink(com.github.jleyba.dossier.proto.Dossier.TypeLink value) {
+          if (linkBuilder_ == null) {
+            if (value == null) {
+              throw new NullPointerException();
+            }
+            link_ = value;
+            onChanged();
+          } else {
+            linkBuilder_.setMessage(value);
+          }
+          bitField0_ |= 0x00000001;
+          return this;
+        }
+        /**
+         * <code>required .dossier.TypeLink link = 1;</code>
+         */
+        public Builder setLink(
+            com.github.jleyba.dossier.proto.Dossier.TypeLink.Builder builderForValue) {
+          if (linkBuilder_ == null) {
+            link_ = builderForValue.build();
+            onChanged();
+          } else {
+            linkBuilder_.setMessage(builderForValue.build());
+          }
+          bitField0_ |= 0x00000001;
+          return this;
+        }
+        /**
+         * <code>required .dossier.TypeLink link = 1;</code>
+         */
+        public Builder mergeLink(com.github.jleyba.dossier.proto.Dossier.TypeLink value) {
+          if (linkBuilder_ == null) {
+            if (((bitField0_ & 0x00000001) == 0x00000001) &&
+                link_ != com.github.jleyba.dossier.proto.Dossier.TypeLink.getDefaultInstance()) {
+              link_ =
+                com.github.jleyba.dossier.proto.Dossier.TypeLink.newBuilder(link_).mergeFrom(value).buildPartial();
+            } else {
+              link_ = value;
+            }
+            onChanged();
+          } else {
+            linkBuilder_.mergeFrom(value);
+          }
+          bitField0_ |= 0x00000001;
+          return this;
+        }
+        /**
+         * <code>required .dossier.TypeLink link = 1;</code>
+         */
+        public Builder clearLink() {
+          if (linkBuilder_ == null) {
+            link_ = com.github.jleyba.dossier.proto.Dossier.TypeLink.getDefaultInstance();
+            onChanged();
+          } else {
+            linkBuilder_.clear();
+          }
+          bitField0_ = (bitField0_ & ~0x00000001);
+          return this;
+        }
+        /**
+         * <code>required .dossier.TypeLink link = 1;</code>
+         */
+        public com.github.jleyba.dossier.proto.Dossier.TypeLink.Builder getLinkBuilder() {
+          bitField0_ |= 0x00000001;
+          onChanged();
+          return getLinkFieldBuilder().getBuilder();
+        }
+        /**
+         * <code>required .dossier.TypeLink link = 1;</code>
+         */
+        public com.github.jleyba.dossier.proto.Dossier.TypeLinkOrBuilder getLinkOrBuilder() {
+          if (linkBuilder_ != null) {
+            return linkBuilder_.getMessageOrBuilder();
+          } else {
+            return link_;
+          }
+        }
+        /**
+         * <code>required .dossier.TypeLink link = 1;</code>
+         */
+        private com.google.protobuf.SingleFieldBuilder<
+            com.github.jleyba.dossier.proto.Dossier.TypeLink, com.github.jleyba.dossier.proto.Dossier.TypeLink.Builder, com.github.jleyba.dossier.proto.Dossier.TypeLinkOrBuilder> 
+            getLinkFieldBuilder() {
+          if (linkBuilder_ == null) {
+            linkBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+                com.github.jleyba.dossier.proto.Dossier.TypeLink, com.github.jleyba.dossier.proto.Dossier.TypeLink.Builder, com.github.jleyba.dossier.proto.Dossier.TypeLinkOrBuilder>(
+                    getLink(),
+                    getParentForChildren(),
+                    isClean());
+            link_ = null;
+          }
+          return linkBuilder_;
+        }
+
+        private boolean isModule_ ;
+        /**
+         * <code>optional bool is_module = 2;</code>
+         */
+        public boolean hasIsModule() {
+          return ((bitField0_ & 0x00000002) == 0x00000002);
+        }
+        /**
+         * <code>optional bool is_module = 2;</code>
+         */
+        public boolean getIsModule() {
+          return isModule_;
+        }
+        /**
+         * <code>optional bool is_module = 2;</code>
+         */
+        public Builder setIsModule(boolean value) {
+          bitField0_ |= 0x00000002;
+          isModule_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>optional bool is_module = 2;</code>
+         */
+        public Builder clearIsModule() {
+          bitField0_ = (bitField0_ & ~0x00000002);
+          isModule_ = false;
+          onChanged();
+          return this;
+        }
+
+        // @@protoc_insertion_point(builder_scope:dossier.JsType.ParentLink)
+      }
+
+      static {
+        defaultInstance = new ParentLink(true);
+        defaultInstance.initFields();
+      }
+
+      // @@protoc_insertion_point(class_scope:dossier.JsType.ParentLink)
+    }
+
     private int bitField0_;
     public static final int NAME_FIELD_NUMBER = 1;
     private java.lang.Object name_;
@@ -21244,37 +21842,25 @@ public final class Dossier {
       return compilerConstant_.get(index);
     }
 
-    public static final int MODULE_FIELD_NUMBER = 21;
-    private com.github.jleyba.dossier.proto.Dossier.TypeLink module_;
+    public static final int PARENT_FIELD_NUMBER = 21;
+    private com.github.jleyba.dossier.proto.Dossier.JsType.ParentLink parent_;
     /**
-     * <code>optional .dossier.TypeLink module = 21;</code>
-     *
-     * <pre>
-     * Link to the module this type belongs to.
-     * </pre>
+     * <code>optional .dossier.JsType.ParentLink parent = 21;</code>
      */
-    public boolean hasModule() {
+    public boolean hasParent() {
       return ((bitField0_ & 0x00000200) == 0x00000200);
     }
     /**
-     * <code>optional .dossier.TypeLink module = 21;</code>
-     *
-     * <pre>
-     * Link to the module this type belongs to.
-     * </pre>
+     * <code>optional .dossier.JsType.ParentLink parent = 21;</code>
      */
-    public com.github.jleyba.dossier.proto.Dossier.TypeLink getModule() {
-      return module_;
+    public com.github.jleyba.dossier.proto.Dossier.JsType.ParentLink getParent() {
+      return parent_;
     }
     /**
-     * <code>optional .dossier.TypeLink module = 21;</code>
-     *
-     * <pre>
-     * Link to the module this type belongs to.
-     * </pre>
+     * <code>optional .dossier.JsType.ParentLink parent = 21;</code>
      */
-    public com.github.jleyba.dossier.proto.Dossier.TypeLinkOrBuilder getModuleOrBuilder() {
-      return module_;
+    public com.github.jleyba.dossier.proto.Dossier.JsType.ParentLinkOrBuilder getParentOrBuilder() {
+      return parent_;
     }
 
     public static final int ALIASED_TYPE_FIELD_NUMBER = 22;
@@ -21328,7 +21914,7 @@ public final class Dossier {
       extendedType_ = java.util.Collections.emptyList();
       implementedType_ = java.util.Collections.emptyList();
       compilerConstant_ = java.util.Collections.emptyList();
-      module_ = com.github.jleyba.dossier.proto.Dossier.TypeLink.getDefaultInstance();
+      parent_ = com.github.jleyba.dossier.proto.Dossier.JsType.ParentLink.getDefaultInstance();
       aliasedType_ = com.github.jleyba.dossier.proto.Dossier.TypeLink.getDefaultInstance();
     }
     private byte memoizedIsInitialized = -1;
@@ -21427,8 +22013,8 @@ public final class Dossier {
           return false;
         }
       }
-      if (hasModule()) {
-        if (!getModule().isInitialized()) {
+      if (hasParent()) {
+        if (!getParent().isInitialized()) {
           memoizedIsInitialized = 0;
           return false;
         }
@@ -21498,7 +22084,7 @@ public final class Dossier {
         output.writeMessage(20, compilerConstant_.get(i));
       }
       if (((bitField0_ & 0x00000200) == 0x00000200)) {
-        output.writeMessage(21, module_);
+        output.writeMessage(21, parent_);
       }
       if (((bitField0_ & 0x00000400) == 0x00000400)) {
         output.writeMessage(22, aliasedType_);
@@ -21582,7 +22168,7 @@ public final class Dossier {
       }
       if (((bitField0_ & 0x00000200) == 0x00000200)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(21, module_);
+          .computeMessageSize(21, parent_);
       }
       if (((bitField0_ & 0x00000400) == 0x00000400)) {
         size += com.google.protobuf.CodedOutputStream
@@ -21716,7 +22302,7 @@ public final class Dossier {
           getExtendedTypeFieldBuilder();
           getImplementedTypeFieldBuilder();
           getCompilerConstantFieldBuilder();
-          getModuleFieldBuilder();
+          getParentFieldBuilder();
           getAliasedTypeFieldBuilder();
         }
       }
@@ -21816,10 +22402,10 @@ public final class Dossier {
         } else {
           compilerConstantBuilder_.clear();
         }
-        if (moduleBuilder_ == null) {
-          module_ = com.github.jleyba.dossier.proto.Dossier.TypeLink.getDefaultInstance();
+        if (parentBuilder_ == null) {
+          parent_ = com.github.jleyba.dossier.proto.Dossier.JsType.ParentLink.getDefaultInstance();
         } else {
-          moduleBuilder_.clear();
+          parentBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00020000);
         if (aliasedTypeBuilder_ == null) {
@@ -21991,10 +22577,10 @@ public final class Dossier {
         if (((from_bitField0_ & 0x00020000) == 0x00020000)) {
           to_bitField0_ |= 0x00000200;
         }
-        if (moduleBuilder_ == null) {
-          result.module_ = module_;
+        if (parentBuilder_ == null) {
+          result.parent_ = parent_;
         } else {
-          result.module_ = moduleBuilder_.build();
+          result.parent_ = parentBuilder_.build();
         }
         if (((from_bitField0_ & 0x00040000) == 0x00040000)) {
           to_bitField0_ |= 0x00000400;
@@ -22257,8 +22843,8 @@ public final class Dossier {
             }
           }
         }
-        if (other.hasModule()) {
-          mergeModule(other.getModule());
+        if (other.hasParent()) {
+          mergeParent(other.getParent());
         }
         if (other.hasAliasedType()) {
           mergeAliasedType(other.getAliasedType());
@@ -22358,8 +22944,8 @@ public final class Dossier {
             return false;
           }
         }
-        if (hasModule()) {
-          if (!getModule().isInitialized()) {
+        if (hasParent()) {
+          if (!getParent().isInitialized()) {
             
             return false;
           }
@@ -25528,156 +26114,120 @@ public final class Dossier {
         return compilerConstantBuilder_;
       }
 
-      private com.github.jleyba.dossier.proto.Dossier.TypeLink module_ = com.github.jleyba.dossier.proto.Dossier.TypeLink.getDefaultInstance();
+      private com.github.jleyba.dossier.proto.Dossier.JsType.ParentLink parent_ = com.github.jleyba.dossier.proto.Dossier.JsType.ParentLink.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
-          com.github.jleyba.dossier.proto.Dossier.TypeLink, com.github.jleyba.dossier.proto.Dossier.TypeLink.Builder, com.github.jleyba.dossier.proto.Dossier.TypeLinkOrBuilder> moduleBuilder_;
+          com.github.jleyba.dossier.proto.Dossier.JsType.ParentLink, com.github.jleyba.dossier.proto.Dossier.JsType.ParentLink.Builder, com.github.jleyba.dossier.proto.Dossier.JsType.ParentLinkOrBuilder> parentBuilder_;
       /**
-       * <code>optional .dossier.TypeLink module = 21;</code>
-       *
-       * <pre>
-       * Link to the module this type belongs to.
-       * </pre>
+       * <code>optional .dossier.JsType.ParentLink parent = 21;</code>
        */
-      public boolean hasModule() {
+      public boolean hasParent() {
         return ((bitField0_ & 0x00020000) == 0x00020000);
       }
       /**
-       * <code>optional .dossier.TypeLink module = 21;</code>
-       *
-       * <pre>
-       * Link to the module this type belongs to.
-       * </pre>
+       * <code>optional .dossier.JsType.ParentLink parent = 21;</code>
        */
-      public com.github.jleyba.dossier.proto.Dossier.TypeLink getModule() {
-        if (moduleBuilder_ == null) {
-          return module_;
+      public com.github.jleyba.dossier.proto.Dossier.JsType.ParentLink getParent() {
+        if (parentBuilder_ == null) {
+          return parent_;
         } else {
-          return moduleBuilder_.getMessage();
+          return parentBuilder_.getMessage();
         }
       }
       /**
-       * <code>optional .dossier.TypeLink module = 21;</code>
-       *
-       * <pre>
-       * Link to the module this type belongs to.
-       * </pre>
+       * <code>optional .dossier.JsType.ParentLink parent = 21;</code>
        */
-      public Builder setModule(com.github.jleyba.dossier.proto.Dossier.TypeLink value) {
-        if (moduleBuilder_ == null) {
+      public Builder setParent(com.github.jleyba.dossier.proto.Dossier.JsType.ParentLink value) {
+        if (parentBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
           }
-          module_ = value;
+          parent_ = value;
           onChanged();
         } else {
-          moduleBuilder_.setMessage(value);
+          parentBuilder_.setMessage(value);
         }
         bitField0_ |= 0x00020000;
         return this;
       }
       /**
-       * <code>optional .dossier.TypeLink module = 21;</code>
-       *
-       * <pre>
-       * Link to the module this type belongs to.
-       * </pre>
+       * <code>optional .dossier.JsType.ParentLink parent = 21;</code>
        */
-      public Builder setModule(
-          com.github.jleyba.dossier.proto.Dossier.TypeLink.Builder builderForValue) {
-        if (moduleBuilder_ == null) {
-          module_ = builderForValue.build();
+      public Builder setParent(
+          com.github.jleyba.dossier.proto.Dossier.JsType.ParentLink.Builder builderForValue) {
+        if (parentBuilder_ == null) {
+          parent_ = builderForValue.build();
           onChanged();
         } else {
-          moduleBuilder_.setMessage(builderForValue.build());
+          parentBuilder_.setMessage(builderForValue.build());
         }
         bitField0_ |= 0x00020000;
         return this;
       }
       /**
-       * <code>optional .dossier.TypeLink module = 21;</code>
-       *
-       * <pre>
-       * Link to the module this type belongs to.
-       * </pre>
+       * <code>optional .dossier.JsType.ParentLink parent = 21;</code>
        */
-      public Builder mergeModule(com.github.jleyba.dossier.proto.Dossier.TypeLink value) {
-        if (moduleBuilder_ == null) {
+      public Builder mergeParent(com.github.jleyba.dossier.proto.Dossier.JsType.ParentLink value) {
+        if (parentBuilder_ == null) {
           if (((bitField0_ & 0x00020000) == 0x00020000) &&
-              module_ != com.github.jleyba.dossier.proto.Dossier.TypeLink.getDefaultInstance()) {
-            module_ =
-              com.github.jleyba.dossier.proto.Dossier.TypeLink.newBuilder(module_).mergeFrom(value).buildPartial();
+              parent_ != com.github.jleyba.dossier.proto.Dossier.JsType.ParentLink.getDefaultInstance()) {
+            parent_ =
+              com.github.jleyba.dossier.proto.Dossier.JsType.ParentLink.newBuilder(parent_).mergeFrom(value).buildPartial();
           } else {
-            module_ = value;
+            parent_ = value;
           }
           onChanged();
         } else {
-          moduleBuilder_.mergeFrom(value);
+          parentBuilder_.mergeFrom(value);
         }
         bitField0_ |= 0x00020000;
         return this;
       }
       /**
-       * <code>optional .dossier.TypeLink module = 21;</code>
-       *
-       * <pre>
-       * Link to the module this type belongs to.
-       * </pre>
+       * <code>optional .dossier.JsType.ParentLink parent = 21;</code>
        */
-      public Builder clearModule() {
-        if (moduleBuilder_ == null) {
-          module_ = com.github.jleyba.dossier.proto.Dossier.TypeLink.getDefaultInstance();
+      public Builder clearParent() {
+        if (parentBuilder_ == null) {
+          parent_ = com.github.jleyba.dossier.proto.Dossier.JsType.ParentLink.getDefaultInstance();
           onChanged();
         } else {
-          moduleBuilder_.clear();
+          parentBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00020000);
         return this;
       }
       /**
-       * <code>optional .dossier.TypeLink module = 21;</code>
-       *
-       * <pre>
-       * Link to the module this type belongs to.
-       * </pre>
+       * <code>optional .dossier.JsType.ParentLink parent = 21;</code>
        */
-      public com.github.jleyba.dossier.proto.Dossier.TypeLink.Builder getModuleBuilder() {
+      public com.github.jleyba.dossier.proto.Dossier.JsType.ParentLink.Builder getParentBuilder() {
         bitField0_ |= 0x00020000;
         onChanged();
-        return getModuleFieldBuilder().getBuilder();
+        return getParentFieldBuilder().getBuilder();
       }
       /**
-       * <code>optional .dossier.TypeLink module = 21;</code>
-       *
-       * <pre>
-       * Link to the module this type belongs to.
-       * </pre>
+       * <code>optional .dossier.JsType.ParentLink parent = 21;</code>
        */
-      public com.github.jleyba.dossier.proto.Dossier.TypeLinkOrBuilder getModuleOrBuilder() {
-        if (moduleBuilder_ != null) {
-          return moduleBuilder_.getMessageOrBuilder();
+      public com.github.jleyba.dossier.proto.Dossier.JsType.ParentLinkOrBuilder getParentOrBuilder() {
+        if (parentBuilder_ != null) {
+          return parentBuilder_.getMessageOrBuilder();
         } else {
-          return module_;
+          return parent_;
         }
       }
       /**
-       * <code>optional .dossier.TypeLink module = 21;</code>
-       *
-       * <pre>
-       * Link to the module this type belongs to.
-       * </pre>
+       * <code>optional .dossier.JsType.ParentLink parent = 21;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
-          com.github.jleyba.dossier.proto.Dossier.TypeLink, com.github.jleyba.dossier.proto.Dossier.TypeLink.Builder, com.github.jleyba.dossier.proto.Dossier.TypeLinkOrBuilder> 
-          getModuleFieldBuilder() {
-        if (moduleBuilder_ == null) {
-          moduleBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              com.github.jleyba.dossier.proto.Dossier.TypeLink, com.github.jleyba.dossier.proto.Dossier.TypeLink.Builder, com.github.jleyba.dossier.proto.Dossier.TypeLinkOrBuilder>(
-                  getModule(),
+          com.github.jleyba.dossier.proto.Dossier.JsType.ParentLink, com.github.jleyba.dossier.proto.Dossier.JsType.ParentLink.Builder, com.github.jleyba.dossier.proto.Dossier.JsType.ParentLinkOrBuilder> 
+          getParentFieldBuilder() {
+        if (parentBuilder_ == null) {
+          parentBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              com.github.jleyba.dossier.proto.Dossier.JsType.ParentLink, com.github.jleyba.dossier.proto.Dossier.JsType.ParentLink.Builder, com.github.jleyba.dossier.proto.Dossier.JsType.ParentLinkOrBuilder>(
+                  getParent(),
                   getParentForChildren(),
                   isClean());
-          module_ = null;
+          parent_ = null;
         }
-        return moduleBuilder_;
+        return parentBuilder_;
       }
 
       private com.github.jleyba.dossier.proto.Dossier.TypeLink aliasedType_ = com.github.jleyba.dossier.proto.Dossier.TypeLink.getDefaultInstance();
@@ -29282,6 +29832,11 @@ public final class Dossier {
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_dossier_JsType_TypeDef_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_dossier_JsType_ParentLink_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_dossier_JsType_ParentLink_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_dossier_IndexFileRenderSpec_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
@@ -29349,7 +29904,7 @@ public final class Dossier {
       "Link\022%\n\006module\030\003 \003(\0132\025.dossier.Index.Mod" +
       "ule\032J\n\006Module\022\037\n\004link\030\001 \002(\0132\021.dossier.Ty" +
       "peLink\022\037\n\004type\030\002 \003(\0132\021.dossier.TypeLink\"" +
-      "\242\010\n\006JsType\022\014\n\004name\030\001 \002(\t\022#\n\006source\030\005 \002(\013" +
+      "\355\010\n\006JsType\022\014\n\004name\030\001 \002(\t\022#\n\006source\030\005 \002(\013" +
       "2\023.dossier.SourceLink\022+\n\006nested\030\006 \003(\0132\033." +
       "dossier.JsType.TypeSummary\022%\n\013descriptio" +
       "n\030\007 \002(\0132\020.dossier.Comment\022\033\n\004tags\030\010 \002(\0132" +
@@ -29366,28 +29921,30 @@ public final class Dossier {
       "d_type\030\022 \003(\0132\020.dossier.Comment\022*\n\020implem" +
       "ented_type\030\023 \003(\0132\020.dossier.Comment\022,\n\021co",
       "mpiler_constant\030\024 \003(\0132\021.dossier.Property" +
-      "\022!\n\006module\030\025 \001(\0132\021.dossier.TypeLink\022\'\n\014a" +
-      "liased_type\030\026 \001(\0132\021.dossier.TypeLink\032L\n\013" +
-      "TypeSummary\022\014\n\004name\030\001 \002(\t\022\014\n\004href\030\002 \002(\t\022" +
-      "!\n\007summary\030\003 \002(\0132\020.dossier.Comment\032\337\001\n\007T" +
-      "ypeDef\022\014\n\004name\030\001 \002(\t\022\036\n\004type\030\002 \002(\0132\020.dos" +
-      "sier.Comment\022#\n\006source\030\003 \002(\0132\023.dossier.S" +
-      "ourceLink\022%\n\013description\030\004 \002(\0132\020.dossier" +
-      ".Comment\022)\n\013deprecation\030\005 \001(\0132\024.dossier." +
-      "Deprecation\022/\n\nvisibility\030\006 \001(\0162\023.dossie",
-      "r.Visibility:\006PUBLIC\"}\n\023IndexFileRenderS" +
-      "pec\022%\n\tresources\030\001 \002(\0132\022.dossier.Resourc" +
-      "es\022 \n\006readme\030\002 \001(\0132\020.dossier.Comment\022\035\n\005" +
-      "index\030\003 \002(\0132\016.dossier.Index\"\177\n\024SourceFil" +
-      "eRenderSpec\022%\n\tresources\030\001 \002(\0132\022.dossier" +
-      ".Resources\022!\n\004file\030\002 \002(\0132\023.dossier.Sourc" +
-      "eFile\022\035\n\005index\030\003 \002(\0132\016.dossier.Index\"w\n\020" +
-      "JsTypeRenderSpec\022\035\n\004type\030\001 \002(\0132\017.dossier" +
-      ".JsType\022%\n\tresources\030\002 \002(\0132\022.dossier.Res" +
-      "ources\022\035\n\005index\030\003 \002(\0132\016.dossier.Index*A\n",
-      "\nVisibility\022\n\n\006PUBLIC\020\000\022\r\n\tPROTECTED\020\001\022\013" +
-      "\n\007PRIVATE\020\002\022\013\n\007PACKAGE\020\003B!\n\037com.github.j" +
-      "leyba.dossier.proto"
+      "\022*\n\006parent\030\025 \001(\0132\032.dossier.JsType.Parent" +
+      "Link\022\'\n\014aliased_type\030\026 \001(\0132\021.dossier.Typ" +
+      "eLink\032L\n\013TypeSummary\022\014\n\004name\030\001 \002(\t\022\014\n\004hr" +
+      "ef\030\002 \002(\t\022!\n\007summary\030\003 \002(\0132\020.dossier.Comm" +
+      "ent\032\337\001\n\007TypeDef\022\014\n\004name\030\001 \002(\t\022\036\n\004type\030\002 " +
+      "\002(\0132\020.dossier.Comment\022#\n\006source\030\003 \002(\0132\023." +
+      "dossier.SourceLink\022%\n\013description\030\004 \002(\0132" +
+      "\020.dossier.Comment\022)\n\013deprecation\030\005 \001(\0132\024" +
+      ".dossier.Deprecation\022/\n\nvisibility\030\006 \001(\016",
+      "2\023.dossier.Visibility:\006PUBLIC\032@\n\nParentL" +
+      "ink\022\037\n\004link\030\001 \002(\0132\021.dossier.TypeLink\022\021\n\t" +
+      "is_module\030\002 \001(\010\"}\n\023IndexFileRenderSpec\022%" +
+      "\n\tresources\030\001 \002(\0132\022.dossier.Resources\022 \n" +
+      "\006readme\030\002 \001(\0132\020.dossier.Comment\022\035\n\005index" +
+      "\030\003 \002(\0132\016.dossier.Index\"\177\n\024SourceFileRend" +
+      "erSpec\022%\n\tresources\030\001 \002(\0132\022.dossier.Reso" +
+      "urces\022!\n\004file\030\002 \002(\0132\023.dossier.SourceFile" +
+      "\022\035\n\005index\030\003 \002(\0132\016.dossier.Index\"w\n\020JsTyp" +
+      "eRenderSpec\022\035\n\004type\030\001 \002(\0132\017.dossier.JsTy",
+      "pe\022%\n\tresources\030\002 \002(\0132\022.dossier.Resource" +
+      "s\022\035\n\005index\030\003 \002(\0132\016.dossier.Index*A\n\nVisi" +
+      "bility\022\n\n\006PUBLIC\020\000\022\r\n\tPROTECTED\020\001\022\013\n\007PRI" +
+      "VATE\020\002\022\013\n\007PACKAGE\020\003B!\n\037com.github.jleyba" +
+      ".dossier.proto"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -29508,7 +30065,7 @@ public final class Dossier {
     internal_static_dossier_JsType_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_dossier_JsType_descriptor,
-        new java.lang.String[] { "Name", "Source", "Nested", "Description", "Tags", "Deprecation", "TypeDef", "Enumeration", "StaticFunction", "StaticProperty", "MainFunction", "Prototype", "HasInstanceMethods", "HasInstanceProperties", "ExtendedType", "ImplementedType", "CompilerConstant", "Module", "AliasedType", });
+        new java.lang.String[] { "Name", "Source", "Nested", "Description", "Tags", "Deprecation", "TypeDef", "Enumeration", "StaticFunction", "StaticProperty", "MainFunction", "Prototype", "HasInstanceMethods", "HasInstanceProperties", "ExtendedType", "ImplementedType", "CompilerConstant", "Parent", "AliasedType", });
     internal_static_dossier_JsType_TypeSummary_descriptor =
       internal_static_dossier_JsType_descriptor.getNestedTypes().get(0);
     internal_static_dossier_JsType_TypeSummary_fieldAccessorTable = new
@@ -29521,6 +30078,12 @@ public final class Dossier {
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_dossier_JsType_TypeDef_descriptor,
         new java.lang.String[] { "Name", "Type", "Source", "Description", "Deprecation", "Visibility", });
+    internal_static_dossier_JsType_ParentLink_descriptor =
+      internal_static_dossier_JsType_descriptor.getNestedTypes().get(2);
+    internal_static_dossier_JsType_ParentLink_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_dossier_JsType_ParentLink_descriptor,
+        new java.lang.String[] { "Link", "IsModule", });
     internal_static_dossier_IndexFileRenderSpec_descriptor =
       getDescriptor().getMessageTypes().get(14);
     internal_static_dossier_IndexFileRenderSpec_fieldAccessorTable = new

@@ -32,7 +32,6 @@ import static com.google.common.base.Predicates.not;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.base.Verify.verify;
 import static com.google.common.collect.Iterables.concat;
-import static com.google.common.collect.Iterables.isEmpty;
 import static com.google.common.collect.Iterables.transform;
 import static java.nio.file.Files.createDirectories;
 
@@ -181,7 +180,7 @@ class HtmlDocWriter implements DocWriter {
         Path path = linker.getFilePath(type);
         moduleBuilder.addTypeBuilder()
             .setHref(toUrlPath(config.getOutput().relativize(path)))
-            .setText(type.getQualifiedName());
+            .setText(type.getQualifiedName(false));
       }
     }
 
@@ -277,16 +276,32 @@ class HtmlDocWriter implements DocWriter {
     Path output = linker.getFilePath(type);
     createDirectories(output.getParent());
 
-    String name = type.getQualifiedName();
+    String name = type.getQualifiedName(type.isNamespace());
+    if (type.getModule() != null && name.startsWith(type.getModule().getVarName())) {
+      name = name.substring(type.getModule().getVarName().length() + 1);
+    }
     JsType.Builder jsTypeBuilder = JsType.newBuilder()
         .setName(name);
 
-    if (type.getModule() != null && !type.isModuleExports()) {
-      NominalType module = type.getParent();
-      while (!module.isModuleExports()) {
-        module = module.getParent();
+    if (!type.isModuleExports() && (!type.isNamespace() || type.getModule() != null)) {
+      NominalType parent;
+      if (type.getModule() != null) {
+        parent = type.getParent();
+        while (!parent.isModuleExports()) {
+          parent = parent.getParent();
+        }
+      } else {
+        parent = type.getParent();
+        while (parent != null && !parent.isNamespace()) {
+          parent = parent.getParent();
+        }
       }
-      jsTypeBuilder.setModule(linker.getLink(module));
+
+      if (parent != null) {
+        jsTypeBuilder.getParentBuilder()
+            .setLink(linker.getLink(parent))
+            .setIsModule(parent.isModuleExports());
+      }
     }
 
     Dossier.Comment description = getBlockDescription(linker, type.getJsdoc());
@@ -638,7 +653,7 @@ class HtmlDocWriter implements DocWriter {
       types.add(JsType.TypeSummary.newBuilder()
           .setHref(href)
           .setSummary(summary)
-          .setName(child.getQualifiedName())
+          .setName(child.getQualifiedName(false))
           .build());
     }
 
@@ -875,13 +890,6 @@ class HtmlDocWriter implements DocWriter {
     };
   }
 
-  private static boolean isNamespace(NominalType type) {
-    JSType jsType = type.getJsType();
-    return !jsType.isConstructor()
-        && !jsType.isInterface()
-        && !jsType.isEnumType();
-  }
-
   /**
    * Tests if a nominal type is an "empty" namespace. A type is considered empty if it is not
    * a constructor, interface, enum and has no non-namespace children.
@@ -891,11 +899,11 @@ class HtmlDocWriter implements DocWriter {
       return false;
     }
     for (NominalType child : type.getTypes()) {
-      if (!isNamespace(child)) {
+      if (!child.isNamespace()) {
         return false;
       }
     }
-    return isNamespace(type) && type.getProperties().isEmpty();
+    return type.isNamespace() && type.getProperties().isEmpty();
   }
 
   private static boolean isVacuousTypeComment(Dossier.Comment comment) {

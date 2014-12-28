@@ -134,9 +134,9 @@ public class TypeRegistry {
       checkArgument(!moduleToExports.containsKey(type.getModule()),
           "Module already registerd %s", type.getModule().getVarName());
       moduleToExports.put(type.getModule(), type);
-      moduleExports.put(type.getQualifiedName(), type);
+      moduleExports.put(type.getQualifiedName(false), type);
     } else if (type.getModule() == null) {
-      nominalTypes.put(type.getQualifiedName(), type);
+      nominalTypes.put(type.getQualifiedName(true), type);
     }
   }
 
