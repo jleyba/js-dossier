@@ -32,6 +32,7 @@ import static com.google.common.base.Predicates.not;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.base.Verify.verify;
 import static com.google.common.collect.Iterables.concat;
+import static com.google.common.collect.Iterables.isEmpty;
 import static com.google.common.collect.Iterables.transform;
 import static java.nio.file.Files.createDirectories;
 
@@ -166,11 +167,22 @@ class HtmlDocWriter implements DocWriter {
     builder.setHome(INDEX_FILE_NAME);
 
     for (NominalType module : sortedModules) {
-      builder.addModuleBuilder()
+      Dossier.Index.Module.Builder moduleBuilder = builder.addModuleBuilder()
           .setLink(TypeLink.newBuilder()
           .setHref(toUrlPath(config.getOutput().relativize(linker.getFilePath(module))))
           .setText(linker.getDisplayName(module)));
-      // TODO: module types.
+
+      Iterable<NominalType> types = FluentIterable.from(module.getTypes())
+          .toSortedList(new QualifiedNameComparator());
+      for (NominalType type : types) {
+        if (isEmptyNamespace(type)) {
+          continue;
+        }
+        Path path = linker.getFilePath(type);
+        moduleBuilder.addTypeBuilder()
+            .setHref(toUrlPath(config.getOutput().relativize(path)))
+            .setText(type.getQualifiedName());
+      }
     }
 
     for (NominalType type : sortedTypes) {
@@ -179,9 +191,9 @@ class HtmlDocWriter implements DocWriter {
       }
 
       Path path = linker.getFilePath(type);
-      builder.addType(TypeLink.newBuilder()
+      builder.addTypeBuilder()
           .setHref(toUrlPath(config.getOutput().relativize(path)))
-          .setText(type.getQualifiedName()));
+          .setText(type.getQualifiedName());
     }
 
     return builder.build();
@@ -213,7 +225,7 @@ class HtmlDocWriter implements DocWriter {
         .setSource(linker.getSourceLink(module.getNode()))
         .setDescription(getFileoverview(linker,
             typeRegistry.getFileOverview(module.getModule().getModulePath())))
-        .addAllNested(getNestedTypeInfo(module.getTypes()))
+        .addAllNested(getNestedTypeInfo(module))
         .addAllTypeDef(getTypeDefInfo(module))
         .addAllExtendedType(getInheritedTypes(module))
         .addAllImplementedType(getImplementedTypes(module));
@@ -255,9 +267,7 @@ class HtmlDocWriter implements DocWriter {
     renderer.render(output, spec.build());
 
     for (NominalType type : module.getTypes()) {
-      if (type.getJsType().isConstructor()
-          || type.getJsType().isInterface()
-          || type.getJsType().isEnumType()) {
+      if (!isEmptyNamespace(type)) {
         generateDocs(type);
       }
     }
@@ -284,7 +294,9 @@ class HtmlDocWriter implements DocWriter {
 
     if (aliased != type) {
       String aliasDisplayName = linker.getDisplayName(aliased);
-      if (aliased.getModule() != null) {
+      if (aliased.isModuleExports()) {
+        aliasDisplayName = "module(" + linker.getDisplayName(aliased) + ")";
+      } else if (aliased.getModule() != null) {
         aliasDisplayName =
             "module(" + linker.getDisplayName(aliased.getModule()) + ")." + aliasDisplayName;
       }
@@ -298,7 +310,7 @@ class HtmlDocWriter implements DocWriter {
     }
 
     jsTypeBuilder
-        .addAllNested(getNestedTypeInfo(type.getTypes()))
+        .addAllNested(getNestedTypeInfo(type))
         .setSource(linker.getSourceLink(type.getNode()))
         .setDescription(description)
         .addAllTypeDef(getTypeDefInfo(type))
@@ -593,14 +605,17 @@ class HtmlDocWriter implements DocWriter {
         .build();
   }
 
-  private List<JsType.TypeSummary> getNestedTypeInfo(Collection<NominalType> nestedTypes) {
+  private List<JsType.TypeSummary> getNestedTypeInfo(NominalType parent) {
+    Collection<NominalType> nestedTypes = parent.getTypes();
     List<JsType.TypeSummary> types = new ArrayList<>(nestedTypes.size());
 
     for (NominalType child : FluentIterable.from(nestedTypes).toSortedList(new NameComparator())) {
       JSType childType = child.getJsType();
 
-      if (!childType.isConstructor() && !childType.isEnumType() && !childType.isInterface()) {
-        continue;
+      if (!parent.isModuleExports()) {
+        if (!childType.isConstructor() && !childType.isEnumType() && !childType.isInterface()) {
+          continue;
+        }
       }
 
       String href = linker.getFilePath(child).getFileName().toString();
