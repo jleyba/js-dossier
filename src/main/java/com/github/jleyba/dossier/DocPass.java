@@ -132,7 +132,6 @@ class DocPass implements CompilerPass {
             || type.isNominalConstructor()
             || type.isEnumType()) {
           String qualifiedName = joiner.join(names);
-          System.out.println("adding extern " + qualifiedName);
           typeRegistry.addExtern(qualifiedName, type);
           registerChildren(qualifiedName, extern);
         }
@@ -268,7 +267,7 @@ class DocPass implements CompilerPass {
       if (descriptor != null) {
         NominalType type = new NominalType(null, name, descriptor, node, JsDoc.from(info), module);
         typeRegistry.addType(type);
-        System.out.println("Found type alias: " + name + " -> " + jsType);
+        logfmt("Found type alias: %s -> %s", name, jsType);
 
       } else {
         defineType(new NominalType(
@@ -300,7 +299,6 @@ class DocPass implements CompilerPass {
       }
 
       try {
-        System.out.println("crawling " + type.getQualifiedName());
         types.push(type);
         typeRegistry.addType(type);
         type.getJsType().visit(this);
@@ -399,7 +397,7 @@ class DocPass implements CompilerPass {
     private void recordPropertyAsNestedType(Property property) {
       NominalType.TypeDescriptor seen = typeRegistry.findTypeDescriptor(property.getType());
       if (seen != null) {
-        System.out.println("Found type alias as property: " + property.getName() + " -> " + property.getType());
+        logfmt("Found type alias as property: %s -> %s", property.getName(), property.getType());
         NominalType child = new NominalType(
             types.peek(),
             property.getName(),
