@@ -354,11 +354,15 @@ class HtmlDocWriter implements DocWriter {
     }
 
     if (jsType.isFunctionType()) {
+      JsDoc docs = type.getJsdoc();
+      if (aliased != null && aliased != type && aliased.getJsdoc() != null) {
+        docs = aliased.getJsdoc();
+      }
       jsTypeBuilder.setMainFunction(getFunctionData(
           name,
           type.getJsType(),
           type.getNode(),
-          type.getJsdoc()));
+          docs));
     }
 
     JsTypeRenderSpec.Builder spec = JsTypeRenderSpec.newBuilder()
