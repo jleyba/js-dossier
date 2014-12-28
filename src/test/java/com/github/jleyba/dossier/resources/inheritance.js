@@ -22,6 +22,7 @@ sample.inheritance.SecondInterface = function() {};
 
 /**
  * @interface
+ * @template T
  */
 sample.inheritance.OtherInterface = function() {};
 
@@ -29,7 +30,7 @@ sample.inheritance.OtherInterface = function() {};
 /**
  * @interface
  * @extends {sample.inheritance.SecondInterface}
- * @extends {sample.inheritance.OtherInterface}
+ * @extends {sample.inheritance.OtherInterface<number>}
  */
 sample.inheritance.LeafInterface = function() {};
 

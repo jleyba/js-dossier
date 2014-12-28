@@ -239,7 +239,7 @@ message JsType {
 
   // The interfaces implemented by a class/extended by an interface. This
   // list should be empty if |is_class| and |is_interface| are false.
-  repeated TypeLink implemented_type = 19;
+  repeated Comment implemented_type = 19;
 
   repeated Property compiler_constant = 20;
 

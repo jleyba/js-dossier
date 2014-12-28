@@ -178,11 +178,10 @@
     <dd>
       {foreach $interface in $type.implementedType}
         <code>
-          {if $interface.href}
-            <a href="{$interface.href}">{$interface.text}</a>
-          {else}
-            {$interface.text}
-          {/if}
+          {call .comment}
+            {param comment: $interface /}
+            {param omitLeadingTag: true /}
+          {/call}
         </code>
         {if not isLast($interface)},{sp}{/if}
       {/foreach}

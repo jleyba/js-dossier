@@ -486,13 +486,13 @@ class HtmlDocWriter implements DocWriter {
     return list;
   }
 
-  private Iterable<TypeLink> getImplementedTypes(NominalType nominalType) {
+  private Iterable<Dossier.Comment> getImplementedTypes(NominalType nominalType) {
     Set<JSType> interfaces = typeRegistry.getImplementedTypes(nominalType);
     return transform(Ordering.usingToString().sortedCopy(interfaces),
-        new Function<JSType, TypeLink>() {
+        new Function<JSType, Dossier.Comment>() {
           @Override
-          public TypeLink apply(JSType input) {
-            return getTypeLink(input);
+          public Dossier.Comment apply(JSType input) {
+            return linker.formatTypeExpression(input);
           }
         }
     );

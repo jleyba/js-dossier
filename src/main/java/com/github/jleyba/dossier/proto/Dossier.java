@@ -17813,26 +17813,26 @@ public final class Dossier {
         int index);
 
     /**
-     * <code>repeated .dossier.TypeLink implemented_type = 19;</code>
+     * <code>repeated .dossier.Comment implemented_type = 19;</code>
      *
      * <pre>
      * The interfaces implemented by a class/extended by an interface. This
      * list should be empty if |is_class| and |is_interface| are false.
      * </pre>
      */
-    java.util.List<com.github.jleyba.dossier.proto.Dossier.TypeLink> 
+    java.util.List<com.github.jleyba.dossier.proto.Dossier.Comment> 
         getImplementedTypeList();
     /**
-     * <code>repeated .dossier.TypeLink implemented_type = 19;</code>
+     * <code>repeated .dossier.Comment implemented_type = 19;</code>
      *
      * <pre>
      * The interfaces implemented by a class/extended by an interface. This
      * list should be empty if |is_class| and |is_interface| are false.
      * </pre>
      */
-    com.github.jleyba.dossier.proto.Dossier.TypeLink getImplementedType(int index);
+    com.github.jleyba.dossier.proto.Dossier.Comment getImplementedType(int index);
     /**
-     * <code>repeated .dossier.TypeLink implemented_type = 19;</code>
+     * <code>repeated .dossier.Comment implemented_type = 19;</code>
      *
      * <pre>
      * The interfaces implemented by a class/extended by an interface. This
@@ -17841,24 +17841,24 @@ public final class Dossier {
      */
     int getImplementedTypeCount();
     /**
-     * <code>repeated .dossier.TypeLink implemented_type = 19;</code>
+     * <code>repeated .dossier.Comment implemented_type = 19;</code>
      *
      * <pre>
      * The interfaces implemented by a class/extended by an interface. This
      * list should be empty if |is_class| and |is_interface| are false.
      * </pre>
      */
-    java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.TypeLinkOrBuilder> 
+    java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder> 
         getImplementedTypeOrBuilderList();
     /**
-     * <code>repeated .dossier.TypeLink implemented_type = 19;</code>
+     * <code>repeated .dossier.Comment implemented_type = 19;</code>
      *
      * <pre>
      * The interfaces implemented by a class/extended by an interface. This
      * list should be empty if |is_class| and |is_interface| are false.
      * </pre>
      */
-    com.github.jleyba.dossier.proto.Dossier.TypeLinkOrBuilder getImplementedTypeOrBuilder(
+    com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder getImplementedTypeOrBuilder(
         int index);
 
     /**
@@ -18136,10 +18136,10 @@ public final class Dossier {
             }
             case 154: {
               if (!((mutable_bitField0_ & 0x00008000) == 0x00008000)) {
-                implementedType_ = new java.util.ArrayList<com.github.jleyba.dossier.proto.Dossier.TypeLink>();
+                implementedType_ = new java.util.ArrayList<com.github.jleyba.dossier.proto.Dossier.Comment>();
                 mutable_bitField0_ |= 0x00008000;
               }
-              implementedType_.add(input.readMessage(com.github.jleyba.dossier.proto.Dossier.TypeLink.PARSER, extensionRegistry));
+              implementedType_.add(input.readMessage(com.github.jleyba.dossier.proto.Dossier.Comment.PARSER, extensionRegistry));
               break;
             }
             case 162: {
@@ -21150,32 +21150,32 @@ public final class Dossier {
     }
 
     public static final int IMPLEMENTED_TYPE_FIELD_NUMBER = 19;
-    private java.util.List<com.github.jleyba.dossier.proto.Dossier.TypeLink> implementedType_;
+    private java.util.List<com.github.jleyba.dossier.proto.Dossier.Comment> implementedType_;
     /**
-     * <code>repeated .dossier.TypeLink implemented_type = 19;</code>
+     * <code>repeated .dossier.Comment implemented_type = 19;</code>
      *
      * <pre>
      * The interfaces implemented by a class/extended by an interface. This
      * list should be empty if |is_class| and |is_interface| are false.
      * </pre>
      */
-    public java.util.List<com.github.jleyba.dossier.proto.Dossier.TypeLink> getImplementedTypeList() {
+    public java.util.List<com.github.jleyba.dossier.proto.Dossier.Comment> getImplementedTypeList() {
       return implementedType_;
     }
     /**
-     * <code>repeated .dossier.TypeLink implemented_type = 19;</code>
+     * <code>repeated .dossier.Comment implemented_type = 19;</code>
      *
      * <pre>
      * The interfaces implemented by a class/extended by an interface. This
      * list should be empty if |is_class| and |is_interface| are false.
      * </pre>
      */
-    public java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.TypeLinkOrBuilder> 
+    public java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder> 
         getImplementedTypeOrBuilderList() {
       return implementedType_;
     }
     /**
-     * <code>repeated .dossier.TypeLink implemented_type = 19;</code>
+     * <code>repeated .dossier.Comment implemented_type = 19;</code>
      *
      * <pre>
      * The interfaces implemented by a class/extended by an interface. This
@@ -21186,25 +21186,25 @@ public final class Dossier {
       return implementedType_.size();
     }
     /**
-     * <code>repeated .dossier.TypeLink implemented_type = 19;</code>
+     * <code>repeated .dossier.Comment implemented_type = 19;</code>
      *
      * <pre>
      * The interfaces implemented by a class/extended by an interface. This
      * list should be empty if |is_class| and |is_interface| are false.
      * </pre>
      */
-    public com.github.jleyba.dossier.proto.Dossier.TypeLink getImplementedType(int index) {
+    public com.github.jleyba.dossier.proto.Dossier.Comment getImplementedType(int index) {
       return implementedType_.get(index);
     }
     /**
-     * <code>repeated .dossier.TypeLink implemented_type = 19;</code>
+     * <code>repeated .dossier.Comment implemented_type = 19;</code>
      *
      * <pre>
      * The interfaces implemented by a class/extended by an interface. This
      * list should be empty if |is_class| and |is_interface| are false.
      * </pre>
      */
-    public com.github.jleyba.dossier.proto.Dossier.TypeLinkOrBuilder getImplementedTypeOrBuilder(
+    public com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder getImplementedTypeOrBuilder(
         int index) {
       return implementedType_.get(index);
     }
@@ -24958,27 +24958,27 @@ public final class Dossier {
         return extendedTypeBuilder_;
       }
 
-      private java.util.List<com.github.jleyba.dossier.proto.Dossier.TypeLink> implementedType_ =
+      private java.util.List<com.github.jleyba.dossier.proto.Dossier.Comment> implementedType_ =
         java.util.Collections.emptyList();
       private void ensureImplementedTypeIsMutable() {
         if (!((bitField0_ & 0x00008000) == 0x00008000)) {
-          implementedType_ = new java.util.ArrayList<com.github.jleyba.dossier.proto.Dossier.TypeLink>(implementedType_);
+          implementedType_ = new java.util.ArrayList<com.github.jleyba.dossier.proto.Dossier.Comment>(implementedType_);
           bitField0_ |= 0x00008000;
          }
       }
 
       private com.google.protobuf.RepeatedFieldBuilder<
-          com.github.jleyba.dossier.proto.Dossier.TypeLink, com.github.jleyba.dossier.proto.Dossier.TypeLink.Builder, com.github.jleyba.dossier.proto.Dossier.TypeLinkOrBuilder> implementedTypeBuilder_;
+          com.github.jleyba.dossier.proto.Dossier.Comment, com.github.jleyba.dossier.proto.Dossier.Comment.Builder, com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder> implementedTypeBuilder_;
 
       /**
-       * <code>repeated .dossier.TypeLink implemented_type = 19;</code>
+       * <code>repeated .dossier.Comment implemented_type = 19;</code>
        *
        * <pre>
        * The interfaces implemented by a class/extended by an interface. This
        * list should be empty if |is_class| and |is_interface| are false.
        * </pre>
        */
-      public java.util.List<com.github.jleyba.dossier.proto.Dossier.TypeLink> getImplementedTypeList() {
+      public java.util.List<com.github.jleyba.dossier.proto.Dossier.Comment> getImplementedTypeList() {
         if (implementedTypeBuilder_ == null) {
           return java.util.Collections.unmodifiableList(implementedType_);
         } else {
@@ -24986,7 +24986,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .dossier.TypeLink implemented_type = 19;</code>
+       * <code>repeated .dossier.Comment implemented_type = 19;</code>
        *
        * <pre>
        * The interfaces implemented by a class/extended by an interface. This
@@ -25001,14 +25001,14 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .dossier.TypeLink implemented_type = 19;</code>
+       * <code>repeated .dossier.Comment implemented_type = 19;</code>
        *
        * <pre>
        * The interfaces implemented by a class/extended by an interface. This
        * list should be empty if |is_class| and |is_interface| are false.
        * </pre>
        */
-      public com.github.jleyba.dossier.proto.Dossier.TypeLink getImplementedType(int index) {
+      public com.github.jleyba.dossier.proto.Dossier.Comment getImplementedType(int index) {
         if (implementedTypeBuilder_ == null) {
           return implementedType_.get(index);
         } else {
@@ -25016,7 +25016,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .dossier.TypeLink implemented_type = 19;</code>
+       * <code>repeated .dossier.Comment implemented_type = 19;</code>
        *
        * <pre>
        * The interfaces implemented by a class/extended by an interface. This
@@ -25024,7 +25024,7 @@ public final class Dossier {
        * </pre>
        */
       public Builder setImplementedType(
-          int index, com.github.jleyba.dossier.proto.Dossier.TypeLink value) {
+          int index, com.github.jleyba.dossier.proto.Dossier.Comment value) {
         if (implementedTypeBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -25038,7 +25038,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .dossier.TypeLink implemented_type = 19;</code>
+       * <code>repeated .dossier.Comment implemented_type = 19;</code>
        *
        * <pre>
        * The interfaces implemented by a class/extended by an interface. This
@@ -25046,7 +25046,7 @@ public final class Dossier {
        * </pre>
        */
       public Builder setImplementedType(
-          int index, com.github.jleyba.dossier.proto.Dossier.TypeLink.Builder builderForValue) {
+          int index, com.github.jleyba.dossier.proto.Dossier.Comment.Builder builderForValue) {
         if (implementedTypeBuilder_ == null) {
           ensureImplementedTypeIsMutable();
           implementedType_.set(index, builderForValue.build());
@@ -25057,14 +25057,14 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .dossier.TypeLink implemented_type = 19;</code>
+       * <code>repeated .dossier.Comment implemented_type = 19;</code>
        *
        * <pre>
        * The interfaces implemented by a class/extended by an interface. This
        * list should be empty if |is_class| and |is_interface| are false.
        * </pre>
        */
-      public Builder addImplementedType(com.github.jleyba.dossier.proto.Dossier.TypeLink value) {
+      public Builder addImplementedType(com.github.jleyba.dossier.proto.Dossier.Comment value) {
         if (implementedTypeBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -25078,7 +25078,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .dossier.TypeLink implemented_type = 19;</code>
+       * <code>repeated .dossier.Comment implemented_type = 19;</code>
        *
        * <pre>
        * The interfaces implemented by a class/extended by an interface. This
@@ -25086,7 +25086,7 @@ public final class Dossier {
        * </pre>
        */
       public Builder addImplementedType(
-          int index, com.github.jleyba.dossier.proto.Dossier.TypeLink value) {
+          int index, com.github.jleyba.dossier.proto.Dossier.Comment value) {
         if (implementedTypeBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -25100,7 +25100,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .dossier.TypeLink implemented_type = 19;</code>
+       * <code>repeated .dossier.Comment implemented_type = 19;</code>
        *
        * <pre>
        * The interfaces implemented by a class/extended by an interface. This
@@ -25108,7 +25108,7 @@ public final class Dossier {
        * </pre>
        */
       public Builder addImplementedType(
-          com.github.jleyba.dossier.proto.Dossier.TypeLink.Builder builderForValue) {
+          com.github.jleyba.dossier.proto.Dossier.Comment.Builder builderForValue) {
         if (implementedTypeBuilder_ == null) {
           ensureImplementedTypeIsMutable();
           implementedType_.add(builderForValue.build());
@@ -25119,7 +25119,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .dossier.TypeLink implemented_type = 19;</code>
+       * <code>repeated .dossier.Comment implemented_type = 19;</code>
        *
        * <pre>
        * The interfaces implemented by a class/extended by an interface. This
@@ -25127,7 +25127,7 @@ public final class Dossier {
        * </pre>
        */
       public Builder addImplementedType(
-          int index, com.github.jleyba.dossier.proto.Dossier.TypeLink.Builder builderForValue) {
+          int index, com.github.jleyba.dossier.proto.Dossier.Comment.Builder builderForValue) {
         if (implementedTypeBuilder_ == null) {
           ensureImplementedTypeIsMutable();
           implementedType_.add(index, builderForValue.build());
@@ -25138,7 +25138,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .dossier.TypeLink implemented_type = 19;</code>
+       * <code>repeated .dossier.Comment implemented_type = 19;</code>
        *
        * <pre>
        * The interfaces implemented by a class/extended by an interface. This
@@ -25146,7 +25146,7 @@ public final class Dossier {
        * </pre>
        */
       public Builder addAllImplementedType(
-          java.lang.Iterable<? extends com.github.jleyba.dossier.proto.Dossier.TypeLink> values) {
+          java.lang.Iterable<? extends com.github.jleyba.dossier.proto.Dossier.Comment> values) {
         if (implementedTypeBuilder_ == null) {
           ensureImplementedTypeIsMutable();
           com.google.protobuf.AbstractMessageLite.Builder.addAll(
@@ -25158,7 +25158,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .dossier.TypeLink implemented_type = 19;</code>
+       * <code>repeated .dossier.Comment implemented_type = 19;</code>
        *
        * <pre>
        * The interfaces implemented by a class/extended by an interface. This
@@ -25176,7 +25176,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .dossier.TypeLink implemented_type = 19;</code>
+       * <code>repeated .dossier.Comment implemented_type = 19;</code>
        *
        * <pre>
        * The interfaces implemented by a class/extended by an interface. This
@@ -25194,26 +25194,26 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .dossier.TypeLink implemented_type = 19;</code>
+       * <code>repeated .dossier.Comment implemented_type = 19;</code>
        *
        * <pre>
        * The interfaces implemented by a class/extended by an interface. This
        * list should be empty if |is_class| and |is_interface| are false.
        * </pre>
        */
-      public com.github.jleyba.dossier.proto.Dossier.TypeLink.Builder getImplementedTypeBuilder(
+      public com.github.jleyba.dossier.proto.Dossier.Comment.Builder getImplementedTypeBuilder(
           int index) {
         return getImplementedTypeFieldBuilder().getBuilder(index);
       }
       /**
-       * <code>repeated .dossier.TypeLink implemented_type = 19;</code>
+       * <code>repeated .dossier.Comment implemented_type = 19;</code>
        *
        * <pre>
        * The interfaces implemented by a class/extended by an interface. This
        * list should be empty if |is_class| and |is_interface| are false.
        * </pre>
        */
-      public com.github.jleyba.dossier.proto.Dossier.TypeLinkOrBuilder getImplementedTypeOrBuilder(
+      public com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder getImplementedTypeOrBuilder(
           int index) {
         if (implementedTypeBuilder_ == null) {
           return implementedType_.get(index);  } else {
@@ -25221,14 +25221,14 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .dossier.TypeLink implemented_type = 19;</code>
+       * <code>repeated .dossier.Comment implemented_type = 19;</code>
        *
        * <pre>
        * The interfaces implemented by a class/extended by an interface. This
        * list should be empty if |is_class| and |is_interface| are false.
        * </pre>
        */
-      public java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.TypeLinkOrBuilder> 
+      public java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder> 
            getImplementedTypeOrBuilderList() {
         if (implementedTypeBuilder_ != null) {
           return implementedTypeBuilder_.getMessageOrBuilderList();
@@ -25237,48 +25237,48 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .dossier.TypeLink implemented_type = 19;</code>
+       * <code>repeated .dossier.Comment implemented_type = 19;</code>
        *
        * <pre>
        * The interfaces implemented by a class/extended by an interface. This
        * list should be empty if |is_class| and |is_interface| are false.
        * </pre>
        */
-      public com.github.jleyba.dossier.proto.Dossier.TypeLink.Builder addImplementedTypeBuilder() {
+      public com.github.jleyba.dossier.proto.Dossier.Comment.Builder addImplementedTypeBuilder() {
         return getImplementedTypeFieldBuilder().addBuilder(
-            com.github.jleyba.dossier.proto.Dossier.TypeLink.getDefaultInstance());
+            com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance());
       }
       /**
-       * <code>repeated .dossier.TypeLink implemented_type = 19;</code>
+       * <code>repeated .dossier.Comment implemented_type = 19;</code>
        *
        * <pre>
        * The interfaces implemented by a class/extended by an interface. This
        * list should be empty if |is_class| and |is_interface| are false.
        * </pre>
        */
-      public com.github.jleyba.dossier.proto.Dossier.TypeLink.Builder addImplementedTypeBuilder(
+      public com.github.jleyba.dossier.proto.Dossier.Comment.Builder addImplementedTypeBuilder(
           int index) {
         return getImplementedTypeFieldBuilder().addBuilder(
-            index, com.github.jleyba.dossier.proto.Dossier.TypeLink.getDefaultInstance());
+            index, com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance());
       }
       /**
-       * <code>repeated .dossier.TypeLink implemented_type = 19;</code>
+       * <code>repeated .dossier.Comment implemented_type = 19;</code>
        *
        * <pre>
        * The interfaces implemented by a class/extended by an interface. This
        * list should be empty if |is_class| and |is_interface| are false.
        * </pre>
        */
-      public java.util.List<com.github.jleyba.dossier.proto.Dossier.TypeLink.Builder> 
+      public java.util.List<com.github.jleyba.dossier.proto.Dossier.Comment.Builder> 
            getImplementedTypeBuilderList() {
         return getImplementedTypeFieldBuilder().getBuilderList();
       }
       private com.google.protobuf.RepeatedFieldBuilder<
-          com.github.jleyba.dossier.proto.Dossier.TypeLink, com.github.jleyba.dossier.proto.Dossier.TypeLink.Builder, com.github.jleyba.dossier.proto.Dossier.TypeLinkOrBuilder> 
+          com.github.jleyba.dossier.proto.Dossier.Comment, com.github.jleyba.dossier.proto.Dossier.Comment.Builder, com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder> 
           getImplementedTypeFieldBuilder() {
         if (implementedTypeBuilder_ == null) {
           implementedTypeBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
-              com.github.jleyba.dossier.proto.Dossier.TypeLink, com.github.jleyba.dossier.proto.Dossier.TypeLink.Builder, com.github.jleyba.dossier.proto.Dossier.TypeLinkOrBuilder>(
+              com.github.jleyba.dossier.proto.Dossier.Comment, com.github.jleyba.dossier.proto.Dossier.Comment.Builder, com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder>(
                   implementedType_,
                   ((bitField0_ & 0x00008000) == 0x00008000),
                   getParentForChildren(),
@@ -29349,7 +29349,7 @@ public final class Dossier {
       "Link\022%\n\006module\030\003 \003(\0132\025.dossier.Index.Mod" +
       "ule\032J\n\006Module\022\037\n\004link\030\001 \002(\0132\021.dossier.Ty" +
       "peLink\022\037\n\004type\030\002 \003(\0132\021.dossier.TypeLink\"" +
-      "\243\010\n\006JsType\022\014\n\004name\030\001 \002(\t\022#\n\006source\030\005 \002(\013" +
+      "\242\010\n\006JsType\022\014\n\004name\030\001 \002(\t\022#\n\006source\030\005 \002(\013" +
       "2\023.dossier.SourceLink\022+\n\006nested\030\006 \003(\0132\033." +
       "dossier.JsType.TypeSummary\022%\n\013descriptio" +
       "n\030\007 \002(\0132\020.dossier.Comment\022\033\n\004tags\030\010 \002(\0132" +
@@ -29363,31 +29363,31 @@ public final class Dossier {
       "totype\030\017 \003(\0132\022.dossier.Prototype\022#\n\024has_" +
       "instance_methods\030\020 \001(\010:\005false\022&\n\027has_ins" +
       "tance_properties\030\021 \001(\010:\005false\022\'\n\rextende" +
-      "d_type\030\022 \003(\0132\020.dossier.Comment\022+\n\020implem" +
-      "ented_type\030\023 \003(\0132\021.dossier.TypeLink\022,\n\021c",
-      "ompiler_constant\030\024 \003(\0132\021.dossier.Propert" +
-      "y\022!\n\006module\030\025 \001(\0132\021.dossier.TypeLink\022\'\n\014" +
-      "aliased_type\030\026 \001(\0132\021.dossier.TypeLink\032L\n" +
-      "\013TypeSummary\022\014\n\004name\030\001 \002(\t\022\014\n\004href\030\002 \002(\t" +
-      "\022!\n\007summary\030\003 \002(\0132\020.dossier.Comment\032\337\001\n\007" +
-      "TypeDef\022\014\n\004name\030\001 \002(\t\022\036\n\004type\030\002 \002(\0132\020.do" +
-      "ssier.Comment\022#\n\006source\030\003 \002(\0132\023.dossier." +
-      "SourceLink\022%\n\013description\030\004 \002(\0132\020.dossie" +
-      "r.Comment\022)\n\013deprecation\030\005 \001(\0132\024.dossier" +
-      ".Deprecation\022/\n\nvisibility\030\006 \001(\0162\023.dossi",
-      "er.Visibility:\006PUBLIC\"}\n\023IndexFileRender" +
-      "Spec\022%\n\tresources\030\001 \002(\0132\022.dossier.Resour" +
-      "ces\022 \n\006readme\030\002 \001(\0132\020.dossier.Comment\022\035\n" +
-      "\005index\030\003 \002(\0132\016.dossier.Index\"\177\n\024SourceFi" +
-      "leRenderSpec\022%\n\tresources\030\001 \002(\0132\022.dossie" +
-      "r.Resources\022!\n\004file\030\002 \002(\0132\023.dossier.Sour" +
-      "ceFile\022\035\n\005index\030\003 \002(\0132\016.dossier.Index\"w\n" +
-      "\020JsTypeRenderSpec\022\035\n\004type\030\001 \002(\0132\017.dossie" +
-      "r.JsType\022%\n\tresources\030\002 \002(\0132\022.dossier.Re" +
-      "sources\022\035\n\005index\030\003 \002(\0132\016.dossier.Index*A",
-      "\n\nVisibility\022\n\n\006PUBLIC\020\000\022\r\n\tPROTECTED\020\001\022" +
-      "\013\n\007PRIVATE\020\002\022\013\n\007PACKAGE\020\003B!\n\037com.github." +
-      "jleyba.dossier.proto"
+      "d_type\030\022 \003(\0132\020.dossier.Comment\022*\n\020implem" +
+      "ented_type\030\023 \003(\0132\020.dossier.Comment\022,\n\021co",
+      "mpiler_constant\030\024 \003(\0132\021.dossier.Property" +
+      "\022!\n\006module\030\025 \001(\0132\021.dossier.TypeLink\022\'\n\014a" +
+      "liased_type\030\026 \001(\0132\021.dossier.TypeLink\032L\n\013" +
+      "TypeSummary\022\014\n\004name\030\001 \002(\t\022\014\n\004href\030\002 \002(\t\022" +
+      "!\n\007summary\030\003 \002(\0132\020.dossier.Comment\032\337\001\n\007T" +
+      "ypeDef\022\014\n\004name\030\001 \002(\t\022\036\n\004type\030\002 \002(\0132\020.dos" +
+      "sier.Comment\022#\n\006source\030\003 \002(\0132\023.dossier.S" +
+      "ourceLink\022%\n\013description\030\004 \002(\0132\020.dossier" +
+      ".Comment\022)\n\013deprecation\030\005 \001(\0132\024.dossier." +
+      "Deprecation\022/\n\nvisibility\030\006 \001(\0162\023.dossie",
+      "r.Visibility:\006PUBLIC\"}\n\023IndexFileRenderS" +
+      "pec\022%\n\tresources\030\001 \002(\0132\022.dossier.Resourc" +
+      "es\022 \n\006readme\030\002 \001(\0132\020.dossier.Comment\022\035\n\005" +
+      "index\030\003 \002(\0132\016.dossier.Index\"\177\n\024SourceFil" +
+      "eRenderSpec\022%\n\tresources\030\001 \002(\0132\022.dossier" +
+      ".Resources\022!\n\004file\030\002 \002(\0132\023.dossier.Sourc" +
+      "eFile\022\035\n\005index\030\003 \002(\0132\016.dossier.Index\"w\n\020" +
+      "JsTypeRenderSpec\022\035\n\004type\030\001 \002(\0132\017.dossier" +
+      ".JsType\022%\n\tresources\030\002 \002(\0132\022.dossier.Res" +
+      "ources\022\035\n\005index\030\003 \002(\0132\016.dossier.Index*A\n",
+      "\nVisibility\022\n\n\006PUBLIC\020\000\022\r\n\tPROTECTED\020\001\022\013" +
+      "\n\007PRIVATE\020\002\022\013\n\007PACKAGE\020\003B!\n\037com.github.j" +
+      "leyba.dossier.proto"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
