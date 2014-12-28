@@ -721,7 +721,11 @@ class HtmlDocWriter implements DocWriter {
             property.getNode(),
             jsdoc));
       } else {
-        jsTypeBuilder.addField(getPropertyData(property));
+        jsTypeBuilder.addField(getPropertyData(
+            property.getName(),
+            propType,
+            property.getNode(),
+            jsdoc));
       }
     }
   }
@@ -739,19 +743,32 @@ class HtmlDocWriter implements DocWriter {
         .toSortedList(new PropertyNameComparator());
 
     for (Property property : properties) {
+      String name = property.getName();
+      if (!type.isModuleExports() && !type.isNamespace()) {
+        name = type.getName() + "." + name;
+      }
       JSDocInfo info = property.getJSDocInfo();
+
       if (info != null && info.isDefine()) {
-        jsTypeBuilder.addCompilerConstant(getPropertyData(property));
+        jsTypeBuilder.addCompilerConstant(getPropertyData(
+            name,
+            property.getType(),
+            property.getNode(),
+            JsDoc.from(property.getJSDocInfo())));
 
       } else if (property.getType().isFunctionType()) {
         jsTypeBuilder.addStaticFunction(getFunctionData(
-            property.getName(),
+            name,
             property.getType(),
             property.getNode(),
             JsDoc.from(property.getJSDocInfo())));
 
       } else if (!property.getType().isEnumElementType()) {
-        jsTypeBuilder.addStaticProperty(getPropertyData(property));
+        jsTypeBuilder.addStaticProperty(getPropertyData(
+            name,
+            property.getType(),
+            property.getNode(),
+            JsDoc.from(property.getJSDocInfo())));
       }
     }
   }
@@ -774,17 +791,15 @@ class HtmlDocWriter implements DocWriter {
     return builder.build();
   }
 
-  private Dossier.Property getPropertyData(Property property) {
-    JsDoc jsDoc = JsDoc.from(property.getJSDocInfo());
-
+  private Dossier.Property getPropertyData
+      (String name, JSType type, Node node, @Nullable JsDoc jsDoc) {
     Dossier.Property.Builder builder = Dossier.Property.newBuilder()
-        .setBase(getBasePropertyDetails(
-            property.getName(), property.getType(), property.getNode(), jsDoc));
+        .setBase(getBasePropertyDetails(name, type, node, jsDoc));
 
     if (jsDoc != null && jsDoc.getType() != null) {
       builder.setType(linker.formatTypeExpression(jsDoc.getType()));
-    } else if (property.getType() != null) {
-      builder.setType(linker.formatTypeExpression(property.getType()));
+    } else if (type != null) {
+      builder.setType(linker.formatTypeExpression(type));
     }
 
     return builder.build();

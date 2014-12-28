@@ -858,15 +858,13 @@ public class RendererTest {
         .addParameter(Dossier.Function.Detail.newBuilder().setName("a"))
         .build();
 
-    ImmutableMap<String, ?> data = ImmutableMap.of(
-        "fn", function,
-        "parentName", "foo");
+    ImmutableMap<String, ?> data = ImmutableMap.of("fn", function);
 
     Document document = renderDocument("dossier.soy.printFunction", data);
     assertThat(querySelector(document, "body").toString(), isHtml(
         "<body>",
         "<h3>",
-        "<a id=\"foo.Bar\"></a>foo.Bar(a)",
+        "<a id=\"Bar\"></a>Bar(a)",
         "<span class=\"codelink\"><a href=\"bar.link\">code &raquo;</a></span>",
         "</h3>",
         "<p>description here\n</p>",

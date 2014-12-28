@@ -176,8 +176,8 @@ public class LinkerTest {
         "foo.bar.baz = function() {};");
 
     assertNotNull(typeRegistry.getNominalType("foo.bar"));
-    checkLink("foo.bar", "namespace_foo_bar.html#bar.baz", linker.getLink("foo.bar.baz"));
-    checkLink("foo.bar", "namespace_foo_bar.html#bar.unknown", linker.getLink("foo.bar.unknown"));
+    checkLink("foo.bar.baz", "namespace_foo_bar.html#baz", linker.getLink("foo.bar.baz"));
+    checkLink("foo.bar.unknown", "namespace_foo_bar.html#unknown", linker.getLink("foo.bar.unknown"));
     checkLink("foo.bar", "namespace_foo_bar.html", linker.getLink("foo.bar.prototype.baz"));
   }
 

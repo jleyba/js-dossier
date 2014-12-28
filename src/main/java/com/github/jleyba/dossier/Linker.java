@@ -21,10 +21,8 @@ import com.github.jleyba.dossier.proto.Dossier;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Predicate;
-import com.google.common.base.Splitter;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Iterables;
 import com.google.common.io.Files;
 import com.google.javascript.jscomp.DossierModule;
 import com.google.javascript.rhino.JSTypeExpression;
@@ -45,7 +43,6 @@ import com.google.javascript.rhino.jstype.Visitor;
 
 import java.nio.file.Path;
 import java.util.Iterator;
-import java.util.List;
 
 import javax.annotation.Nullable;
 
@@ -223,22 +220,20 @@ public class Linker {
 
     Dossier.TypeLink link = checkNotNull(getLink(type), "Failed to build link for %s",
         type.getQualifiedName());
-    if (!propertyName.isEmpty()) {
-      if (instanceProperty || type.isModuleExports()) {
-        if (type.isModuleExports()
-            || type.getJsdoc().isConstructor()
-            || type.getJsdoc().isInterface()) {
-          String joiner = instanceProperty ? "#" : ".";
-          link = link.toBuilder()
-              .setText(link.getText() + joiner + propertyName)
-              .setHref(link.getHref() + "#" + propertyName)
-              .build();
-        }
-      } else {
-        link = link.toBuilder()
-            .setHref(link.getHref() + "#" + type.getName() + "." + propertyName)
-            .build();
+    if (!propertyName.isEmpty()
+        && (!instanceProperty
+        || (type.getJsType().isConstructor() || type.getJsType().isInterface()))) {
+
+      String fragment = propertyName;
+      if (!(instanceProperty || type.isModuleExports() || type.isNamespace())) {
+        fragment = type.getName() + "." + fragment;
       }
+      String joiner = instanceProperty ? "#" : ".";
+
+      link = link.toBuilder()
+          .setText(link.getText() + joiner + propertyName)
+          .setHref(link.getHref() + "#" + fragment)
+          .build();
     }
     return link;
   }

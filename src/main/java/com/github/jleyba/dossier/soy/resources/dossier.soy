@@ -495,7 +495,6 @@
  */
 {template .printFunction}
   {@param  fn: dossier.Function}
-  {@param? parentName: string}
 
   <h3>
     {if $fn.templateName and length($fn.templateName)}
@@ -507,11 +506,9 @@
       {sp}
     {/if}
 
-    {let $name: $parentName ? ($parentName + '.' + $fn.base.name) : $fn.base.name /}
-
     /* TODO: deprecation $fn.base.deprecation */
-    <a id="{$name}"></a>
-    {$name}
+    <a id="{$fn.base.name}"></a>
+    {$fn.base.name}
     (
     {foreach $parameter in $fn.parameter}
       {$parameter.name}
@@ -563,14 +560,11 @@
  */
 {template .printProperty}
   {@param prop: dossier.Property}
-  {@param? parentName: string}
 
-  {let $name: $parentName ? $parentName + '.' + $prop.base.name
-                          : $prop.base.name /}
   <dt>
-    <a id="{$name}"></a>
+    <a id="{$prop.base.name}"></a>
     {call .sourceLink}
-      {param text: $name /}
+      {param text: $prop.base.name /}
       {param source: $prop.base.source /}
     {/call}
     /* todo: deprecation */
@@ -659,8 +653,6 @@
 {template .static}
   {@param type: dossier.JsType}
 
-  {let $parentName: $type.tags.isModule ? '' : $type.name /}
-
   {if length($type.staticFunction)}
     <h2>
       {if $type.mainFunction and $type.mainFunction.isConstructor}
@@ -671,7 +663,6 @@
     </h2>
     {call .printFunctions}
       {param functions: $type.staticFunction /}
-      {param parentName: $parentName /}
     {/call}
   {/if}
 
@@ -686,7 +677,6 @@
     <dl>
       {call .printProperties}
         {param properties: $type.staticProperty /}
-        {param parentName: $parentName /}
       {/call}
     </dl>
   {/if}
@@ -696,7 +686,6 @@
     <dl>
       {call .printProperties}
         {param properties: $type.compilerConstant /}
-        {param parentName: $parentName /}
       {/call}
     </dl>
   {/if}
