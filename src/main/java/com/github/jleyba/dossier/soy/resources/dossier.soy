@@ -606,6 +606,7 @@
       {param fn: $fn /}
       {param parentName: $parentName /}
     {/call}
+    {if not isLast($fn)}<hr class="fn-sep">{/if}
   {/foreach}
 {/template}
 

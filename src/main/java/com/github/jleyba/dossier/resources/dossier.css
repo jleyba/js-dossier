@@ -48,6 +48,7 @@ dt>code{font-weight:normal;color:#66f;padding-left:.5rem}
 .parentlink{float:left}
 .codelink a{float:right}
 .codelink:after{clear:both;content:"";display:table}
+hr.fn-sep{border:0;border-top:1px solid #dcdcdc;width:80%}
 .tags span{background:rgba(102,102,255,0.4);border:1px solid #66f;border-radius:3px;color:#fff;font-size:75%;font-weight:bold;padding:2px 4px;line-height:1.4rem}.tags span+span{margin-left:2px}
 header{position:fixed;height:4rem;top:0;right:0;left:0;background:#424242;color:#fff;font-weight:bold;box-shadow:0 1px 5px #888}header>div{position:relative;height:4rem;width:100%}
 header form{position:absolute;right:3rem;padding-top:.6rem}header form div{display:table-cell;vertical-align:middle;height:2.75rem}
