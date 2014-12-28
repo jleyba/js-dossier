@@ -632,17 +632,17 @@
 {template .prototype}
   {@param type: dossier.JsType}
 
-  {if $type.hasInstanceMethods}
+  {if length($type.method)}
     <h2>Instance Methods</h2>
     {call .printFunctions}
-      {param functions: $type.prototype.function /}
+      {param functions: $type.method /}
     {/call}
   {/if}
 
-  {if $type.hasInstanceProperties}
+  {if length($type.field)}
     <h2>Instance Properties</h2>
     <dl>
-      {foreach $property in $type.prototype.property}
+      {foreach $property in $type.field}
         {call .printProperty}
           {param prop: $property /}
         {/call}

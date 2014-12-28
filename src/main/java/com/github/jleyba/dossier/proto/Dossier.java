@@ -11696,1078 +11696,6 @@ public final class Dossier {
     // @@protoc_insertion_point(class_scope:dossier.Function)
   }
 
-  public interface PrototypeOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:dossier.Prototype)
-      com.google.protobuf.MessageOrBuilder {
-
-    /**
-     * <code>repeated .dossier.Function function = 3;</code>
-     */
-    java.util.List<com.github.jleyba.dossier.proto.Dossier.Function> 
-        getFunctionList();
-    /**
-     * <code>repeated .dossier.Function function = 3;</code>
-     */
-    com.github.jleyba.dossier.proto.Dossier.Function getFunction(int index);
-    /**
-     * <code>repeated .dossier.Function function = 3;</code>
-     */
-    int getFunctionCount();
-    /**
-     * <code>repeated .dossier.Function function = 3;</code>
-     */
-    java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.FunctionOrBuilder> 
-        getFunctionOrBuilderList();
-    /**
-     * <code>repeated .dossier.Function function = 3;</code>
-     */
-    com.github.jleyba.dossier.proto.Dossier.FunctionOrBuilder getFunctionOrBuilder(
-        int index);
-
-    /**
-     * <code>repeated .dossier.Property property = 4;</code>
-     */
-    java.util.List<com.github.jleyba.dossier.proto.Dossier.Property> 
-        getPropertyList();
-    /**
-     * <code>repeated .dossier.Property property = 4;</code>
-     */
-    com.github.jleyba.dossier.proto.Dossier.Property getProperty(int index);
-    /**
-     * <code>repeated .dossier.Property property = 4;</code>
-     */
-    int getPropertyCount();
-    /**
-     * <code>repeated .dossier.Property property = 4;</code>
-     */
-    java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.PropertyOrBuilder> 
-        getPropertyOrBuilderList();
-    /**
-     * <code>repeated .dossier.Property property = 4;</code>
-     */
-    com.github.jleyba.dossier.proto.Dossier.PropertyOrBuilder getPropertyOrBuilder(
-        int index);
-  }
-  /**
-   * Protobuf type {@code dossier.Prototype}
-   *
-   * <pre>
-   * Describes the instance properties and functions for an object.
-   * Despite the name, this does not necessarily mean properties defined
-   * on the object's prototype.
-   * </pre>
-   */
-  public static final class Prototype extends
-      com.google.protobuf.GeneratedMessage implements
-      // @@protoc_insertion_point(message_implements:dossier.Prototype)
-      PrototypeOrBuilder {
-    // Use Prototype.newBuilder() to construct.
-    private Prototype(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
-      super(builder);
-      this.unknownFields = builder.getUnknownFields();
-    }
-    private Prototype(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
-
-    private static final Prototype defaultInstance;
-    public static Prototype getDefaultInstance() {
-      return defaultInstance;
-    }
-
-    public Prototype getDefaultInstanceForType() {
-      return defaultInstance;
-    }
-
-    private final com.google.protobuf.UnknownFieldSet unknownFields;
-    @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-        getUnknownFields() {
-      return this.unknownFields;
-    }
-    private Prototype(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      initFields();
-      int mutable_bitField0_ = 0;
-      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder();
-      try {
-        boolean done = false;
-        while (!done) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              done = true;
-              break;
-            default: {
-              if (!parseUnknownField(input, unknownFields,
-                                     extensionRegistry, tag)) {
-                done = true;
-              }
-              break;
-            }
-            case 26: {
-              if (!((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
-                function_ = new java.util.ArrayList<com.github.jleyba.dossier.proto.Dossier.Function>();
-                mutable_bitField0_ |= 0x00000001;
-              }
-              function_.add(input.readMessage(com.github.jleyba.dossier.proto.Dossier.Function.PARSER, extensionRegistry));
-              break;
-            }
-            case 34: {
-              if (!((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
-                property_ = new java.util.ArrayList<com.github.jleyba.dossier.proto.Dossier.Property>();
-                mutable_bitField0_ |= 0x00000002;
-              }
-              property_.add(input.readMessage(com.github.jleyba.dossier.proto.Dossier.Property.PARSER, extensionRegistry));
-              break;
-            }
-          }
-        }
-      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw e.setUnfinishedMessage(this);
-      } catch (java.io.IOException e) {
-        throw new com.google.protobuf.InvalidProtocolBufferException(
-            e.getMessage()).setUnfinishedMessage(this);
-      } finally {
-        if (((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
-          function_ = java.util.Collections.unmodifiableList(function_);
-        }
-        if (((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
-          property_ = java.util.Collections.unmodifiableList(property_);
-        }
-        this.unknownFields = unknownFields.build();
-        makeExtensionsImmutable();
-      }
-    }
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_Prototype_descriptor;
-    }
-
-    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_Prototype_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              com.github.jleyba.dossier.proto.Dossier.Prototype.class, com.github.jleyba.dossier.proto.Dossier.Prototype.Builder.class);
-    }
-
-    public static com.google.protobuf.Parser<Prototype> PARSER =
-        new com.google.protobuf.AbstractParser<Prototype>() {
-      public Prototype parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return new Prototype(input, extensionRegistry);
-      }
-    };
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<Prototype> getParserForType() {
-      return PARSER;
-    }
-
-    public static final int FUNCTION_FIELD_NUMBER = 3;
-    private java.util.List<com.github.jleyba.dossier.proto.Dossier.Function> function_;
-    /**
-     * <code>repeated .dossier.Function function = 3;</code>
-     */
-    public java.util.List<com.github.jleyba.dossier.proto.Dossier.Function> getFunctionList() {
-      return function_;
-    }
-    /**
-     * <code>repeated .dossier.Function function = 3;</code>
-     */
-    public java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.FunctionOrBuilder> 
-        getFunctionOrBuilderList() {
-      return function_;
-    }
-    /**
-     * <code>repeated .dossier.Function function = 3;</code>
-     */
-    public int getFunctionCount() {
-      return function_.size();
-    }
-    /**
-     * <code>repeated .dossier.Function function = 3;</code>
-     */
-    public com.github.jleyba.dossier.proto.Dossier.Function getFunction(int index) {
-      return function_.get(index);
-    }
-    /**
-     * <code>repeated .dossier.Function function = 3;</code>
-     */
-    public com.github.jleyba.dossier.proto.Dossier.FunctionOrBuilder getFunctionOrBuilder(
-        int index) {
-      return function_.get(index);
-    }
-
-    public static final int PROPERTY_FIELD_NUMBER = 4;
-    private java.util.List<com.github.jleyba.dossier.proto.Dossier.Property> property_;
-    /**
-     * <code>repeated .dossier.Property property = 4;</code>
-     */
-    public java.util.List<com.github.jleyba.dossier.proto.Dossier.Property> getPropertyList() {
-      return property_;
-    }
-    /**
-     * <code>repeated .dossier.Property property = 4;</code>
-     */
-    public java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.PropertyOrBuilder> 
-        getPropertyOrBuilderList() {
-      return property_;
-    }
-    /**
-     * <code>repeated .dossier.Property property = 4;</code>
-     */
-    public int getPropertyCount() {
-      return property_.size();
-    }
-    /**
-     * <code>repeated .dossier.Property property = 4;</code>
-     */
-    public com.github.jleyba.dossier.proto.Dossier.Property getProperty(int index) {
-      return property_.get(index);
-    }
-    /**
-     * <code>repeated .dossier.Property property = 4;</code>
-     */
-    public com.github.jleyba.dossier.proto.Dossier.PropertyOrBuilder getPropertyOrBuilder(
-        int index) {
-      return property_.get(index);
-    }
-
-    private void initFields() {
-      function_ = java.util.Collections.emptyList();
-      property_ = java.util.Collections.emptyList();
-    }
-    private byte memoizedIsInitialized = -1;
-    public final boolean isInitialized() {
-      byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
-
-      for (int i = 0; i < getFunctionCount(); i++) {
-        if (!getFunction(i).isInitialized()) {
-          memoizedIsInitialized = 0;
-          return false;
-        }
-      }
-      for (int i = 0; i < getPropertyCount(); i++) {
-        if (!getProperty(i).isInitialized()) {
-          memoizedIsInitialized = 0;
-          return false;
-        }
-      }
-      memoizedIsInitialized = 1;
-      return true;
-    }
-
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      getSerializedSize();
-      for (int i = 0; i < function_.size(); i++) {
-        output.writeMessage(3, function_.get(i));
-      }
-      for (int i = 0; i < property_.size(); i++) {
-        output.writeMessage(4, property_.get(i));
-      }
-      getUnknownFields().writeTo(output);
-    }
-
-    private int memoizedSerializedSize = -1;
-    public int getSerializedSize() {
-      int size = memoizedSerializedSize;
-      if (size != -1) return size;
-
-      size = 0;
-      for (int i = 0; i < function_.size(); i++) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(3, function_.get(i));
-      }
-      for (int i = 0; i < property_.size(); i++) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(4, property_.get(i));
-      }
-      size += getUnknownFields().getSerializedSize();
-      memoizedSerializedSize = size;
-      return size;
-    }
-
-    private static final long serialVersionUID = 0L;
-    @java.lang.Override
-    protected java.lang.Object writeReplace()
-        throws java.io.ObjectStreamException {
-      return super.writeReplace();
-    }
-
-    public static com.github.jleyba.dossier.proto.Dossier.Prototype parseFrom(
-        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static com.github.jleyba.dossier.proto.Dossier.Prototype parseFrom(
-        com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static com.github.jleyba.dossier.proto.Dossier.Prototype parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static com.github.jleyba.dossier.proto.Dossier.Prototype parseFrom(
-        byte[] data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static com.github.jleyba.dossier.proto.Dossier.Prototype parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return PARSER.parseFrom(input);
-    }
-    public static com.github.jleyba.dossier.proto.Dossier.Prototype parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return PARSER.parseFrom(input, extensionRegistry);
-    }
-    public static com.github.jleyba.dossier.proto.Dossier.Prototype parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return PARSER.parseDelimitedFrom(input);
-    }
-    public static com.github.jleyba.dossier.proto.Dossier.Prototype parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return PARSER.parseDelimitedFrom(input, extensionRegistry);
-    }
-    public static com.github.jleyba.dossier.proto.Dossier.Prototype parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return PARSER.parseFrom(input);
-    }
-    public static com.github.jleyba.dossier.proto.Dossier.Prototype parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return PARSER.parseFrom(input, extensionRegistry);
-    }
-
-    public static Builder newBuilder() { return Builder.create(); }
-    public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder(com.github.jleyba.dossier.proto.Dossier.Prototype prototype) {
-      return newBuilder().mergeFrom(prototype);
-    }
-    public Builder toBuilder() { return newBuilder(this); }
-
-    @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
-      Builder builder = new Builder(parent);
-      return builder;
-    }
-    /**
-     * Protobuf type {@code dossier.Prototype}
-     *
-     * <pre>
-     * Describes the instance properties and functions for an object.
-     * Despite the name, this does not necessarily mean properties defined
-     * on the object's prototype.
-     * </pre>
-     */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:dossier.Prototype)
-        com.github.jleyba.dossier.proto.Dossier.PrototypeOrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_Prototype_descriptor;
-      }
-
-      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_Prototype_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                com.github.jleyba.dossier.proto.Dossier.Prototype.class, com.github.jleyba.dossier.proto.Dossier.Prototype.Builder.class);
-      }
-
-      // Construct using com.github.jleyba.dossier.proto.Dossier.Prototype.newBuilder()
-      private Builder() {
-        maybeForceBuilderInitialization();
-      }
-
-      private Builder(
-          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
-        super(parent);
-        maybeForceBuilderInitialization();
-      }
-      private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
-          getFunctionFieldBuilder();
-          getPropertyFieldBuilder();
-        }
-      }
-      private static Builder create() {
-        return new Builder();
-      }
-
-      public Builder clear() {
-        super.clear();
-        if (functionBuilder_ == null) {
-          function_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000001);
-        } else {
-          functionBuilder_.clear();
-        }
-        if (propertyBuilder_ == null) {
-          property_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000002);
-        } else {
-          propertyBuilder_.clear();
-        }
-        return this;
-      }
-
-      public Builder clone() {
-        return create().mergeFrom(buildPartial());
-      }
-
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
-        return com.github.jleyba.dossier.proto.Dossier.internal_static_dossier_Prototype_descriptor;
-      }
-
-      public com.github.jleyba.dossier.proto.Dossier.Prototype getDefaultInstanceForType() {
-        return com.github.jleyba.dossier.proto.Dossier.Prototype.getDefaultInstance();
-      }
-
-      public com.github.jleyba.dossier.proto.Dossier.Prototype build() {
-        com.github.jleyba.dossier.proto.Dossier.Prototype result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return result;
-      }
-
-      public com.github.jleyba.dossier.proto.Dossier.Prototype buildPartial() {
-        com.github.jleyba.dossier.proto.Dossier.Prototype result = new com.github.jleyba.dossier.proto.Dossier.Prototype(this);
-        int from_bitField0_ = bitField0_;
-        if (functionBuilder_ == null) {
-          if (((bitField0_ & 0x00000001) == 0x00000001)) {
-            function_ = java.util.Collections.unmodifiableList(function_);
-            bitField0_ = (bitField0_ & ~0x00000001);
-          }
-          result.function_ = function_;
-        } else {
-          result.function_ = functionBuilder_.build();
-        }
-        if (propertyBuilder_ == null) {
-          if (((bitField0_ & 0x00000002) == 0x00000002)) {
-            property_ = java.util.Collections.unmodifiableList(property_);
-            bitField0_ = (bitField0_ & ~0x00000002);
-          }
-          result.property_ = property_;
-        } else {
-          result.property_ = propertyBuilder_.build();
-        }
-        onBuilt();
-        return result;
-      }
-
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.github.jleyba.dossier.proto.Dossier.Prototype) {
-          return mergeFrom((com.github.jleyba.dossier.proto.Dossier.Prototype)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-
-      public Builder mergeFrom(com.github.jleyba.dossier.proto.Dossier.Prototype other) {
-        if (other == com.github.jleyba.dossier.proto.Dossier.Prototype.getDefaultInstance()) return this;
-        if (functionBuilder_ == null) {
-          if (!other.function_.isEmpty()) {
-            if (function_.isEmpty()) {
-              function_ = other.function_;
-              bitField0_ = (bitField0_ & ~0x00000001);
-            } else {
-              ensureFunctionIsMutable();
-              function_.addAll(other.function_);
-            }
-            onChanged();
-          }
-        } else {
-          if (!other.function_.isEmpty()) {
-            if (functionBuilder_.isEmpty()) {
-              functionBuilder_.dispose();
-              functionBuilder_ = null;
-              function_ = other.function_;
-              bitField0_ = (bitField0_ & ~0x00000001);
-              functionBuilder_ = 
-                com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
-                   getFunctionFieldBuilder() : null;
-            } else {
-              functionBuilder_.addAllMessages(other.function_);
-            }
-          }
-        }
-        if (propertyBuilder_ == null) {
-          if (!other.property_.isEmpty()) {
-            if (property_.isEmpty()) {
-              property_ = other.property_;
-              bitField0_ = (bitField0_ & ~0x00000002);
-            } else {
-              ensurePropertyIsMutable();
-              property_.addAll(other.property_);
-            }
-            onChanged();
-          }
-        } else {
-          if (!other.property_.isEmpty()) {
-            if (propertyBuilder_.isEmpty()) {
-              propertyBuilder_.dispose();
-              propertyBuilder_ = null;
-              property_ = other.property_;
-              bitField0_ = (bitField0_ & ~0x00000002);
-              propertyBuilder_ = 
-                com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
-                   getPropertyFieldBuilder() : null;
-            } else {
-              propertyBuilder_.addAllMessages(other.property_);
-            }
-          }
-        }
-        this.mergeUnknownFields(other.getUnknownFields());
-        return this;
-      }
-
-      public final boolean isInitialized() {
-        for (int i = 0; i < getFunctionCount(); i++) {
-          if (!getFunction(i).isInitialized()) {
-            
-            return false;
-          }
-        }
-        for (int i = 0; i < getPropertyCount(); i++) {
-          if (!getProperty(i).isInitialized()) {
-            
-            return false;
-          }
-        }
-        return true;
-      }
-
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        com.github.jleyba.dossier.proto.Dossier.Prototype parsedMessage = null;
-        try {
-          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (com.github.jleyba.dossier.proto.Dossier.Prototype) e.getUnfinishedMessage();
-          throw e;
-        } finally {
-          if (parsedMessage != null) {
-            mergeFrom(parsedMessage);
-          }
-        }
-        return this;
-      }
-      private int bitField0_;
-
-      private java.util.List<com.github.jleyba.dossier.proto.Dossier.Function> function_ =
-        java.util.Collections.emptyList();
-      private void ensureFunctionIsMutable() {
-        if (!((bitField0_ & 0x00000001) == 0x00000001)) {
-          function_ = new java.util.ArrayList<com.github.jleyba.dossier.proto.Dossier.Function>(function_);
-          bitField0_ |= 0x00000001;
-         }
-      }
-
-      private com.google.protobuf.RepeatedFieldBuilder<
-          com.github.jleyba.dossier.proto.Dossier.Function, com.github.jleyba.dossier.proto.Dossier.Function.Builder, com.github.jleyba.dossier.proto.Dossier.FunctionOrBuilder> functionBuilder_;
-
-      /**
-       * <code>repeated .dossier.Function function = 3;</code>
-       */
-      public java.util.List<com.github.jleyba.dossier.proto.Dossier.Function> getFunctionList() {
-        if (functionBuilder_ == null) {
-          return java.util.Collections.unmodifiableList(function_);
-        } else {
-          return functionBuilder_.getMessageList();
-        }
-      }
-      /**
-       * <code>repeated .dossier.Function function = 3;</code>
-       */
-      public int getFunctionCount() {
-        if (functionBuilder_ == null) {
-          return function_.size();
-        } else {
-          return functionBuilder_.getCount();
-        }
-      }
-      /**
-       * <code>repeated .dossier.Function function = 3;</code>
-       */
-      public com.github.jleyba.dossier.proto.Dossier.Function getFunction(int index) {
-        if (functionBuilder_ == null) {
-          return function_.get(index);
-        } else {
-          return functionBuilder_.getMessage(index);
-        }
-      }
-      /**
-       * <code>repeated .dossier.Function function = 3;</code>
-       */
-      public Builder setFunction(
-          int index, com.github.jleyba.dossier.proto.Dossier.Function value) {
-        if (functionBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureFunctionIsMutable();
-          function_.set(index, value);
-          onChanged();
-        } else {
-          functionBuilder_.setMessage(index, value);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .dossier.Function function = 3;</code>
-       */
-      public Builder setFunction(
-          int index, com.github.jleyba.dossier.proto.Dossier.Function.Builder builderForValue) {
-        if (functionBuilder_ == null) {
-          ensureFunctionIsMutable();
-          function_.set(index, builderForValue.build());
-          onChanged();
-        } else {
-          functionBuilder_.setMessage(index, builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .dossier.Function function = 3;</code>
-       */
-      public Builder addFunction(com.github.jleyba.dossier.proto.Dossier.Function value) {
-        if (functionBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureFunctionIsMutable();
-          function_.add(value);
-          onChanged();
-        } else {
-          functionBuilder_.addMessage(value);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .dossier.Function function = 3;</code>
-       */
-      public Builder addFunction(
-          int index, com.github.jleyba.dossier.proto.Dossier.Function value) {
-        if (functionBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureFunctionIsMutable();
-          function_.add(index, value);
-          onChanged();
-        } else {
-          functionBuilder_.addMessage(index, value);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .dossier.Function function = 3;</code>
-       */
-      public Builder addFunction(
-          com.github.jleyba.dossier.proto.Dossier.Function.Builder builderForValue) {
-        if (functionBuilder_ == null) {
-          ensureFunctionIsMutable();
-          function_.add(builderForValue.build());
-          onChanged();
-        } else {
-          functionBuilder_.addMessage(builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .dossier.Function function = 3;</code>
-       */
-      public Builder addFunction(
-          int index, com.github.jleyba.dossier.proto.Dossier.Function.Builder builderForValue) {
-        if (functionBuilder_ == null) {
-          ensureFunctionIsMutable();
-          function_.add(index, builderForValue.build());
-          onChanged();
-        } else {
-          functionBuilder_.addMessage(index, builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .dossier.Function function = 3;</code>
-       */
-      public Builder addAllFunction(
-          java.lang.Iterable<? extends com.github.jleyba.dossier.proto.Dossier.Function> values) {
-        if (functionBuilder_ == null) {
-          ensureFunctionIsMutable();
-          com.google.protobuf.AbstractMessageLite.Builder.addAll(
-              values, function_);
-          onChanged();
-        } else {
-          functionBuilder_.addAllMessages(values);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .dossier.Function function = 3;</code>
-       */
-      public Builder clearFunction() {
-        if (functionBuilder_ == null) {
-          function_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000001);
-          onChanged();
-        } else {
-          functionBuilder_.clear();
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .dossier.Function function = 3;</code>
-       */
-      public Builder removeFunction(int index) {
-        if (functionBuilder_ == null) {
-          ensureFunctionIsMutable();
-          function_.remove(index);
-          onChanged();
-        } else {
-          functionBuilder_.remove(index);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .dossier.Function function = 3;</code>
-       */
-      public com.github.jleyba.dossier.proto.Dossier.Function.Builder getFunctionBuilder(
-          int index) {
-        return getFunctionFieldBuilder().getBuilder(index);
-      }
-      /**
-       * <code>repeated .dossier.Function function = 3;</code>
-       */
-      public com.github.jleyba.dossier.proto.Dossier.FunctionOrBuilder getFunctionOrBuilder(
-          int index) {
-        if (functionBuilder_ == null) {
-          return function_.get(index);  } else {
-          return functionBuilder_.getMessageOrBuilder(index);
-        }
-      }
-      /**
-       * <code>repeated .dossier.Function function = 3;</code>
-       */
-      public java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.FunctionOrBuilder> 
-           getFunctionOrBuilderList() {
-        if (functionBuilder_ != null) {
-          return functionBuilder_.getMessageOrBuilderList();
-        } else {
-          return java.util.Collections.unmodifiableList(function_);
-        }
-      }
-      /**
-       * <code>repeated .dossier.Function function = 3;</code>
-       */
-      public com.github.jleyba.dossier.proto.Dossier.Function.Builder addFunctionBuilder() {
-        return getFunctionFieldBuilder().addBuilder(
-            com.github.jleyba.dossier.proto.Dossier.Function.getDefaultInstance());
-      }
-      /**
-       * <code>repeated .dossier.Function function = 3;</code>
-       */
-      public com.github.jleyba.dossier.proto.Dossier.Function.Builder addFunctionBuilder(
-          int index) {
-        return getFunctionFieldBuilder().addBuilder(
-            index, com.github.jleyba.dossier.proto.Dossier.Function.getDefaultInstance());
-      }
-      /**
-       * <code>repeated .dossier.Function function = 3;</code>
-       */
-      public java.util.List<com.github.jleyba.dossier.proto.Dossier.Function.Builder> 
-           getFunctionBuilderList() {
-        return getFunctionFieldBuilder().getBuilderList();
-      }
-      private com.google.protobuf.RepeatedFieldBuilder<
-          com.github.jleyba.dossier.proto.Dossier.Function, com.github.jleyba.dossier.proto.Dossier.Function.Builder, com.github.jleyba.dossier.proto.Dossier.FunctionOrBuilder> 
-          getFunctionFieldBuilder() {
-        if (functionBuilder_ == null) {
-          functionBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
-              com.github.jleyba.dossier.proto.Dossier.Function, com.github.jleyba.dossier.proto.Dossier.Function.Builder, com.github.jleyba.dossier.proto.Dossier.FunctionOrBuilder>(
-                  function_,
-                  ((bitField0_ & 0x00000001) == 0x00000001),
-                  getParentForChildren(),
-                  isClean());
-          function_ = null;
-        }
-        return functionBuilder_;
-      }
-
-      private java.util.List<com.github.jleyba.dossier.proto.Dossier.Property> property_ =
-        java.util.Collections.emptyList();
-      private void ensurePropertyIsMutable() {
-        if (!((bitField0_ & 0x00000002) == 0x00000002)) {
-          property_ = new java.util.ArrayList<com.github.jleyba.dossier.proto.Dossier.Property>(property_);
-          bitField0_ |= 0x00000002;
-         }
-      }
-
-      private com.google.protobuf.RepeatedFieldBuilder<
-          com.github.jleyba.dossier.proto.Dossier.Property, com.github.jleyba.dossier.proto.Dossier.Property.Builder, com.github.jleyba.dossier.proto.Dossier.PropertyOrBuilder> propertyBuilder_;
-
-      /**
-       * <code>repeated .dossier.Property property = 4;</code>
-       */
-      public java.util.List<com.github.jleyba.dossier.proto.Dossier.Property> getPropertyList() {
-        if (propertyBuilder_ == null) {
-          return java.util.Collections.unmodifiableList(property_);
-        } else {
-          return propertyBuilder_.getMessageList();
-        }
-      }
-      /**
-       * <code>repeated .dossier.Property property = 4;</code>
-       */
-      public int getPropertyCount() {
-        if (propertyBuilder_ == null) {
-          return property_.size();
-        } else {
-          return propertyBuilder_.getCount();
-        }
-      }
-      /**
-       * <code>repeated .dossier.Property property = 4;</code>
-       */
-      public com.github.jleyba.dossier.proto.Dossier.Property getProperty(int index) {
-        if (propertyBuilder_ == null) {
-          return property_.get(index);
-        } else {
-          return propertyBuilder_.getMessage(index);
-        }
-      }
-      /**
-       * <code>repeated .dossier.Property property = 4;</code>
-       */
-      public Builder setProperty(
-          int index, com.github.jleyba.dossier.proto.Dossier.Property value) {
-        if (propertyBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensurePropertyIsMutable();
-          property_.set(index, value);
-          onChanged();
-        } else {
-          propertyBuilder_.setMessage(index, value);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .dossier.Property property = 4;</code>
-       */
-      public Builder setProperty(
-          int index, com.github.jleyba.dossier.proto.Dossier.Property.Builder builderForValue) {
-        if (propertyBuilder_ == null) {
-          ensurePropertyIsMutable();
-          property_.set(index, builderForValue.build());
-          onChanged();
-        } else {
-          propertyBuilder_.setMessage(index, builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .dossier.Property property = 4;</code>
-       */
-      public Builder addProperty(com.github.jleyba.dossier.proto.Dossier.Property value) {
-        if (propertyBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensurePropertyIsMutable();
-          property_.add(value);
-          onChanged();
-        } else {
-          propertyBuilder_.addMessage(value);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .dossier.Property property = 4;</code>
-       */
-      public Builder addProperty(
-          int index, com.github.jleyba.dossier.proto.Dossier.Property value) {
-        if (propertyBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensurePropertyIsMutable();
-          property_.add(index, value);
-          onChanged();
-        } else {
-          propertyBuilder_.addMessage(index, value);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .dossier.Property property = 4;</code>
-       */
-      public Builder addProperty(
-          com.github.jleyba.dossier.proto.Dossier.Property.Builder builderForValue) {
-        if (propertyBuilder_ == null) {
-          ensurePropertyIsMutable();
-          property_.add(builderForValue.build());
-          onChanged();
-        } else {
-          propertyBuilder_.addMessage(builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .dossier.Property property = 4;</code>
-       */
-      public Builder addProperty(
-          int index, com.github.jleyba.dossier.proto.Dossier.Property.Builder builderForValue) {
-        if (propertyBuilder_ == null) {
-          ensurePropertyIsMutable();
-          property_.add(index, builderForValue.build());
-          onChanged();
-        } else {
-          propertyBuilder_.addMessage(index, builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .dossier.Property property = 4;</code>
-       */
-      public Builder addAllProperty(
-          java.lang.Iterable<? extends com.github.jleyba.dossier.proto.Dossier.Property> values) {
-        if (propertyBuilder_ == null) {
-          ensurePropertyIsMutable();
-          com.google.protobuf.AbstractMessageLite.Builder.addAll(
-              values, property_);
-          onChanged();
-        } else {
-          propertyBuilder_.addAllMessages(values);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .dossier.Property property = 4;</code>
-       */
-      public Builder clearProperty() {
-        if (propertyBuilder_ == null) {
-          property_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000002);
-          onChanged();
-        } else {
-          propertyBuilder_.clear();
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .dossier.Property property = 4;</code>
-       */
-      public Builder removeProperty(int index) {
-        if (propertyBuilder_ == null) {
-          ensurePropertyIsMutable();
-          property_.remove(index);
-          onChanged();
-        } else {
-          propertyBuilder_.remove(index);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .dossier.Property property = 4;</code>
-       */
-      public com.github.jleyba.dossier.proto.Dossier.Property.Builder getPropertyBuilder(
-          int index) {
-        return getPropertyFieldBuilder().getBuilder(index);
-      }
-      /**
-       * <code>repeated .dossier.Property property = 4;</code>
-       */
-      public com.github.jleyba.dossier.proto.Dossier.PropertyOrBuilder getPropertyOrBuilder(
-          int index) {
-        if (propertyBuilder_ == null) {
-          return property_.get(index);  } else {
-          return propertyBuilder_.getMessageOrBuilder(index);
-        }
-      }
-      /**
-       * <code>repeated .dossier.Property property = 4;</code>
-       */
-      public java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.PropertyOrBuilder> 
-           getPropertyOrBuilderList() {
-        if (propertyBuilder_ != null) {
-          return propertyBuilder_.getMessageOrBuilderList();
-        } else {
-          return java.util.Collections.unmodifiableList(property_);
-        }
-      }
-      /**
-       * <code>repeated .dossier.Property property = 4;</code>
-       */
-      public com.github.jleyba.dossier.proto.Dossier.Property.Builder addPropertyBuilder() {
-        return getPropertyFieldBuilder().addBuilder(
-            com.github.jleyba.dossier.proto.Dossier.Property.getDefaultInstance());
-      }
-      /**
-       * <code>repeated .dossier.Property property = 4;</code>
-       */
-      public com.github.jleyba.dossier.proto.Dossier.Property.Builder addPropertyBuilder(
-          int index) {
-        return getPropertyFieldBuilder().addBuilder(
-            index, com.github.jleyba.dossier.proto.Dossier.Property.getDefaultInstance());
-      }
-      /**
-       * <code>repeated .dossier.Property property = 4;</code>
-       */
-      public java.util.List<com.github.jleyba.dossier.proto.Dossier.Property.Builder> 
-           getPropertyBuilderList() {
-        return getPropertyFieldBuilder().getBuilderList();
-      }
-      private com.google.protobuf.RepeatedFieldBuilder<
-          com.github.jleyba.dossier.proto.Dossier.Property, com.github.jleyba.dossier.proto.Dossier.Property.Builder, com.github.jleyba.dossier.proto.Dossier.PropertyOrBuilder> 
-          getPropertyFieldBuilder() {
-        if (propertyBuilder_ == null) {
-          propertyBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
-              com.github.jleyba.dossier.proto.Dossier.Property, com.github.jleyba.dossier.proto.Dossier.Property.Builder, com.github.jleyba.dossier.proto.Dossier.PropertyOrBuilder>(
-                  property_,
-                  ((bitField0_ & 0x00000002) == 0x00000002),
-                  getParentForChildren(),
-                  isClean());
-          property_ = null;
-        }
-        return propertyBuilder_;
-      }
-
-      // @@protoc_insertion_point(builder_scope:dossier.Prototype)
-    }
-
-    static {
-      defaultInstance = new Prototype(true);
-      defaultInstance.initFields();
-    }
-
-    // @@protoc_insertion_point(class_scope:dossier.Prototype)
-  }
-
   public interface EnumerationOrBuilder extends
       // @@protoc_insertion_point(interface_extends:dossier.Enumeration)
       com.google.protobuf.MessageOrBuilder {
@@ -17260,60 +16188,92 @@ public final class Dossier {
     com.github.jleyba.dossier.proto.Dossier.FunctionOrBuilder getMainFunctionOrBuilder();
 
     /**
-     * <code>optional .dossier.Prototype prototype = 15;</code>
+     * <code>repeated .dossier.Function method = 15;</code>
      *
      * <pre>
-     * Describes the instance properties and functions for this type.
-     * The presence of this field designates this type as a class or interface.
+     * Instance methods for this type.
      * </pre>
      */
-    boolean hasPrototype();
+    java.util.List<com.github.jleyba.dossier.proto.Dossier.Function> 
+        getMethodList();
     /**
-     * <code>optional .dossier.Prototype prototype = 15;</code>
+     * <code>repeated .dossier.Function method = 15;</code>
      *
      * <pre>
-     * Describes the instance properties and functions for this type.
-     * The presence of this field designates this type as a class or interface.
+     * Instance methods for this type.
      * </pre>
      */
-    com.github.jleyba.dossier.proto.Dossier.Prototype getPrototype();
+    com.github.jleyba.dossier.proto.Dossier.Function getMethod(int index);
     /**
-     * <code>optional .dossier.Prototype prototype = 15;</code>
+     * <code>repeated .dossier.Function method = 15;</code>
      *
      * <pre>
-     * Describes the instance properties and functions for this type.
-     * The presence of this field designates this type as a class or interface.
+     * Instance methods for this type.
      * </pre>
      */
-    com.github.jleyba.dossier.proto.Dossier.PrototypeOrBuilder getPrototypeOrBuilder();
+    int getMethodCount();
+    /**
+     * <code>repeated .dossier.Function method = 15;</code>
+     *
+     * <pre>
+     * Instance methods for this type.
+     * </pre>
+     */
+    java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.FunctionOrBuilder> 
+        getMethodOrBuilderList();
+    /**
+     * <code>repeated .dossier.Function method = 15;</code>
+     *
+     * <pre>
+     * Instance methods for this type.
+     * </pre>
+     */
+    com.github.jleyba.dossier.proto.Dossier.FunctionOrBuilder getMethodOrBuilder(
+        int index);
 
     /**
-     * <code>optional bool has_instance_methods = 16 [default = false];</code>
+     * <code>repeated .dossier.Property field = 16;</code>
      *
      * <pre>
-     * Hacks needed for the soy templates to know whether the prototype chain
-     * has any methods or properties to render.
+     * Instance properties for this type.
      * </pre>
      */
-    boolean hasHasInstanceMethods();
+    java.util.List<com.github.jleyba.dossier.proto.Dossier.Property> 
+        getFieldList();
     /**
-     * <code>optional bool has_instance_methods = 16 [default = false];</code>
+     * <code>repeated .dossier.Property field = 16;</code>
      *
      * <pre>
-     * Hacks needed for the soy templates to know whether the prototype chain
-     * has any methods or properties to render.
+     * Instance properties for this type.
      * </pre>
      */
-    boolean getHasInstanceMethods();
-
+    com.github.jleyba.dossier.proto.Dossier.Property getField(int index);
     /**
-     * <code>optional bool has_instance_properties = 17 [default = false];</code>
+     * <code>repeated .dossier.Property field = 16;</code>
+     *
+     * <pre>
+     * Instance properties for this type.
+     * </pre>
      */
-    boolean hasHasInstanceProperties();
+    int getFieldCount();
     /**
-     * <code>optional bool has_instance_properties = 17 [default = false];</code>
+     * <code>repeated .dossier.Property field = 16;</code>
+     *
+     * <pre>
+     * Instance properties for this type.
+     * </pre>
      */
-    boolean getHasInstanceProperties();
+    java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.PropertyOrBuilder> 
+        getFieldOrBuilderList();
+    /**
+     * <code>repeated .dossier.Property field = 16;</code>
+     *
+     * <pre>
+     * Instance properties for this type.
+     * </pre>
+     */
+    com.github.jleyba.dossier.proto.Dossier.PropertyOrBuilder getFieldOrBuilder(
+        int index);
 
     /**
      * <code>repeated .dossier.Comment extended_type = 18;</code>
@@ -17649,55 +16609,48 @@ public final class Dossier {
               break;
             }
             case 122: {
-              com.github.jleyba.dossier.proto.Dossier.Prototype.Builder subBuilder = null;
-              if (((bitField0_ & 0x00000080) == 0x00000080)) {
-                subBuilder = prototype_.toBuilder();
+              if (!((mutable_bitField0_ & 0x00000800) == 0x00000800)) {
+                method_ = new java.util.ArrayList<com.github.jleyba.dossier.proto.Dossier.Function>();
+                mutable_bitField0_ |= 0x00000800;
               }
-              prototype_ = input.readMessage(com.github.jleyba.dossier.proto.Dossier.Prototype.PARSER, extensionRegistry);
-              if (subBuilder != null) {
-                subBuilder.mergeFrom(prototype_);
-                prototype_ = subBuilder.buildPartial();
-              }
-              bitField0_ |= 0x00000080;
+              method_.add(input.readMessage(com.github.jleyba.dossier.proto.Dossier.Function.PARSER, extensionRegistry));
               break;
             }
-            case 128: {
-              bitField0_ |= 0x00000100;
-              hasInstanceMethods_ = input.readBool();
-              break;
-            }
-            case 136: {
-              bitField0_ |= 0x00000200;
-              hasInstanceProperties_ = input.readBool();
+            case 130: {
+              if (!((mutable_bitField0_ & 0x00001000) == 0x00001000)) {
+                field_ = new java.util.ArrayList<com.github.jleyba.dossier.proto.Dossier.Property>();
+                mutable_bitField0_ |= 0x00001000;
+              }
+              field_.add(input.readMessage(com.github.jleyba.dossier.proto.Dossier.Property.PARSER, extensionRegistry));
               break;
             }
             case 146: {
-              if (!((mutable_bitField0_ & 0x00004000) == 0x00004000)) {
+              if (!((mutable_bitField0_ & 0x00002000) == 0x00002000)) {
                 extendedType_ = new java.util.ArrayList<com.github.jleyba.dossier.proto.Dossier.Comment>();
-                mutable_bitField0_ |= 0x00004000;
+                mutable_bitField0_ |= 0x00002000;
               }
               extendedType_.add(input.readMessage(com.github.jleyba.dossier.proto.Dossier.Comment.PARSER, extensionRegistry));
               break;
             }
             case 154: {
-              if (!((mutable_bitField0_ & 0x00008000) == 0x00008000)) {
+              if (!((mutable_bitField0_ & 0x00004000) == 0x00004000)) {
                 implementedType_ = new java.util.ArrayList<com.github.jleyba.dossier.proto.Dossier.Comment>();
-                mutable_bitField0_ |= 0x00008000;
+                mutable_bitField0_ |= 0x00004000;
               }
               implementedType_.add(input.readMessage(com.github.jleyba.dossier.proto.Dossier.Comment.PARSER, extensionRegistry));
               break;
             }
             case 162: {
-              if (!((mutable_bitField0_ & 0x00010000) == 0x00010000)) {
+              if (!((mutable_bitField0_ & 0x00008000) == 0x00008000)) {
                 compilerConstant_ = new java.util.ArrayList<com.github.jleyba.dossier.proto.Dossier.Property>();
-                mutable_bitField0_ |= 0x00010000;
+                mutable_bitField0_ |= 0x00008000;
               }
               compilerConstant_.add(input.readMessage(com.github.jleyba.dossier.proto.Dossier.Property.PARSER, extensionRegistry));
               break;
             }
             case 170: {
               com.github.jleyba.dossier.proto.Dossier.JsType.ParentLink.Builder subBuilder = null;
-              if (((bitField0_ & 0x00000400) == 0x00000400)) {
+              if (((bitField0_ & 0x00000080) == 0x00000080)) {
                 subBuilder = parent_.toBuilder();
               }
               parent_ = input.readMessage(com.github.jleyba.dossier.proto.Dossier.JsType.ParentLink.PARSER, extensionRegistry);
@@ -17705,12 +16658,12 @@ public final class Dossier {
                 subBuilder.mergeFrom(parent_);
                 parent_ = subBuilder.buildPartial();
               }
-              bitField0_ |= 0x00000400;
+              bitField0_ |= 0x00000080;
               break;
             }
             case 178: {
               com.github.jleyba.dossier.proto.Dossier.TypeLink.Builder subBuilder = null;
-              if (((bitField0_ & 0x00000800) == 0x00000800)) {
+              if (((bitField0_ & 0x00000100) == 0x00000100)) {
                 subBuilder = aliasedType_.toBuilder();
               }
               aliasedType_ = input.readMessage(com.github.jleyba.dossier.proto.Dossier.TypeLink.PARSER, extensionRegistry);
@@ -17718,7 +16671,7 @@ public final class Dossier {
                 subBuilder.mergeFrom(aliasedType_);
                 aliasedType_ = subBuilder.buildPartial();
               }
-              bitField0_ |= 0x00000800;
+              bitField0_ |= 0x00000100;
               break;
             }
           }
@@ -17741,13 +16694,19 @@ public final class Dossier {
         if (((mutable_bitField0_ & 0x00000200) == 0x00000200)) {
           staticProperty_ = java.util.Collections.unmodifiableList(staticProperty_);
         }
-        if (((mutable_bitField0_ & 0x00004000) == 0x00004000)) {
+        if (((mutable_bitField0_ & 0x00000800) == 0x00000800)) {
+          method_ = java.util.Collections.unmodifiableList(method_);
+        }
+        if (((mutable_bitField0_ & 0x00001000) == 0x00001000)) {
+          field_ = java.util.Collections.unmodifiableList(field_);
+        }
+        if (((mutable_bitField0_ & 0x00002000) == 0x00002000)) {
           extendedType_ = java.util.Collections.unmodifiableList(extendedType_);
         }
-        if (((mutable_bitField0_ & 0x00008000) == 0x00008000)) {
+        if (((mutable_bitField0_ & 0x00004000) == 0x00004000)) {
           implementedType_ = java.util.Collections.unmodifiableList(implementedType_);
         }
-        if (((mutable_bitField0_ & 0x00010000) == 0x00010000)) {
+        if (((mutable_bitField0_ & 0x00008000) == 0x00008000)) {
           compilerConstant_ = java.util.Collections.unmodifiableList(compilerConstant_);
         }
         this.unknownFields = unknownFields.build();
@@ -21131,80 +20090,114 @@ public final class Dossier {
       return mainFunction_;
     }
 
-    public static final int PROTOTYPE_FIELD_NUMBER = 15;
-    private com.github.jleyba.dossier.proto.Dossier.Prototype prototype_;
+    public static final int METHOD_FIELD_NUMBER = 15;
+    private java.util.List<com.github.jleyba.dossier.proto.Dossier.Function> method_;
     /**
-     * <code>optional .dossier.Prototype prototype = 15;</code>
+     * <code>repeated .dossier.Function method = 15;</code>
      *
      * <pre>
-     * Describes the instance properties and functions for this type.
-     * The presence of this field designates this type as a class or interface.
+     * Instance methods for this type.
      * </pre>
      */
-    public boolean hasPrototype() {
-      return ((bitField0_ & 0x00000080) == 0x00000080);
+    public java.util.List<com.github.jleyba.dossier.proto.Dossier.Function> getMethodList() {
+      return method_;
     }
     /**
-     * <code>optional .dossier.Prototype prototype = 15;</code>
+     * <code>repeated .dossier.Function method = 15;</code>
      *
      * <pre>
-     * Describes the instance properties and functions for this type.
-     * The presence of this field designates this type as a class or interface.
+     * Instance methods for this type.
      * </pre>
      */
-    public com.github.jleyba.dossier.proto.Dossier.Prototype getPrototype() {
-      return prototype_;
+    public java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.FunctionOrBuilder> 
+        getMethodOrBuilderList() {
+      return method_;
     }
     /**
-     * <code>optional .dossier.Prototype prototype = 15;</code>
+     * <code>repeated .dossier.Function method = 15;</code>
      *
      * <pre>
-     * Describes the instance properties and functions for this type.
-     * The presence of this field designates this type as a class or interface.
+     * Instance methods for this type.
      * </pre>
      */
-    public com.github.jleyba.dossier.proto.Dossier.PrototypeOrBuilder getPrototypeOrBuilder() {
-      return prototype_;
+    public int getMethodCount() {
+      return method_.size();
+    }
+    /**
+     * <code>repeated .dossier.Function method = 15;</code>
+     *
+     * <pre>
+     * Instance methods for this type.
+     * </pre>
+     */
+    public com.github.jleyba.dossier.proto.Dossier.Function getMethod(int index) {
+      return method_.get(index);
+    }
+    /**
+     * <code>repeated .dossier.Function method = 15;</code>
+     *
+     * <pre>
+     * Instance methods for this type.
+     * </pre>
+     */
+    public com.github.jleyba.dossier.proto.Dossier.FunctionOrBuilder getMethodOrBuilder(
+        int index) {
+      return method_.get(index);
     }
 
-    public static final int HAS_INSTANCE_METHODS_FIELD_NUMBER = 16;
-    private boolean hasInstanceMethods_;
+    public static final int FIELD_FIELD_NUMBER = 16;
+    private java.util.List<com.github.jleyba.dossier.proto.Dossier.Property> field_;
     /**
-     * <code>optional bool has_instance_methods = 16 [default = false];</code>
+     * <code>repeated .dossier.Property field = 16;</code>
      *
      * <pre>
-     * Hacks needed for the soy templates to know whether the prototype chain
-     * has any methods or properties to render.
+     * Instance properties for this type.
      * </pre>
      */
-    public boolean hasHasInstanceMethods() {
-      return ((bitField0_ & 0x00000100) == 0x00000100);
+    public java.util.List<com.github.jleyba.dossier.proto.Dossier.Property> getFieldList() {
+      return field_;
     }
     /**
-     * <code>optional bool has_instance_methods = 16 [default = false];</code>
+     * <code>repeated .dossier.Property field = 16;</code>
      *
      * <pre>
-     * Hacks needed for the soy templates to know whether the prototype chain
-     * has any methods or properties to render.
+     * Instance properties for this type.
      * </pre>
      */
-    public boolean getHasInstanceMethods() {
-      return hasInstanceMethods_;
-    }
-
-    public static final int HAS_INSTANCE_PROPERTIES_FIELD_NUMBER = 17;
-    private boolean hasInstanceProperties_;
-    /**
-     * <code>optional bool has_instance_properties = 17 [default = false];</code>
-     */
-    public boolean hasHasInstanceProperties() {
-      return ((bitField0_ & 0x00000200) == 0x00000200);
+    public java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.PropertyOrBuilder> 
+        getFieldOrBuilderList() {
+      return field_;
     }
     /**
-     * <code>optional bool has_instance_properties = 17 [default = false];</code>
+     * <code>repeated .dossier.Property field = 16;</code>
+     *
+     * <pre>
+     * Instance properties for this type.
+     * </pre>
      */
-    public boolean getHasInstanceProperties() {
-      return hasInstanceProperties_;
+    public int getFieldCount() {
+      return field_.size();
+    }
+    /**
+     * <code>repeated .dossier.Property field = 16;</code>
+     *
+     * <pre>
+     * Instance properties for this type.
+     * </pre>
+     */
+    public com.github.jleyba.dossier.proto.Dossier.Property getField(int index) {
+      return field_.get(index);
+    }
+    /**
+     * <code>repeated .dossier.Property field = 16;</code>
+     *
+     * <pre>
+     * Instance properties for this type.
+     * </pre>
+     */
+    public com.github.jleyba.dossier.proto.Dossier.PropertyOrBuilder getFieldOrBuilder(
+        int index) {
+      return field_.get(index);
     }
 
     public static final int EXTENDED_TYPE_FIELD_NUMBER = 18;
@@ -21368,7 +20361,7 @@ public final class Dossier {
      * <code>optional .dossier.JsType.ParentLink parent = 21;</code>
      */
     public boolean hasParent() {
-      return ((bitField0_ & 0x00000400) == 0x00000400);
+      return ((bitField0_ & 0x00000080) == 0x00000080);
     }
     /**
      * <code>optional .dossier.JsType.ParentLink parent = 21;</code>
@@ -21393,7 +20386,7 @@ public final class Dossier {
      * </pre>
      */
     public boolean hasAliasedType() {
-      return ((bitField0_ & 0x00000800) == 0x00000800);
+      return ((bitField0_ & 0x00000100) == 0x00000100);
     }
     /**
      * <code>optional .dossier.TypeLink aliased_type = 22;</code>
@@ -21428,9 +20421,8 @@ public final class Dossier {
       staticFunction_ = java.util.Collections.emptyList();
       staticProperty_ = java.util.Collections.emptyList();
       mainFunction_ = com.github.jleyba.dossier.proto.Dossier.Function.getDefaultInstance();
-      prototype_ = com.github.jleyba.dossier.proto.Dossier.Prototype.getDefaultInstance();
-      hasInstanceMethods_ = false;
-      hasInstanceProperties_ = false;
+      method_ = java.util.Collections.emptyList();
+      field_ = java.util.Collections.emptyList();
       extendedType_ = java.util.Collections.emptyList();
       implementedType_ = java.util.Collections.emptyList();
       compilerConstant_ = java.util.Collections.emptyList();
@@ -21509,8 +20501,14 @@ public final class Dossier {
           return false;
         }
       }
-      if (hasPrototype()) {
-        if (!getPrototype().isInitialized()) {
+      for (int i = 0; i < getMethodCount(); i++) {
+        if (!getMethod(i).isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+      }
+      for (int i = 0; i < getFieldCount(); i++) {
+        if (!getField(i).isInitialized()) {
           memoizedIsInitialized = 0;
           return false;
         }
@@ -21585,14 +20583,11 @@ public final class Dossier {
       if (((bitField0_ & 0x00000040) == 0x00000040)) {
         output.writeMessage(14, mainFunction_);
       }
-      if (((bitField0_ & 0x00000080) == 0x00000080)) {
-        output.writeMessage(15, prototype_);
+      for (int i = 0; i < method_.size(); i++) {
+        output.writeMessage(15, method_.get(i));
       }
-      if (((bitField0_ & 0x00000100) == 0x00000100)) {
-        output.writeBool(16, hasInstanceMethods_);
-      }
-      if (((bitField0_ & 0x00000200) == 0x00000200)) {
-        output.writeBool(17, hasInstanceProperties_);
+      for (int i = 0; i < field_.size(); i++) {
+        output.writeMessage(16, field_.get(i));
       }
       for (int i = 0; i < extendedType_.size(); i++) {
         output.writeMessage(18, extendedType_.get(i));
@@ -21603,10 +20598,10 @@ public final class Dossier {
       for (int i = 0; i < compilerConstant_.size(); i++) {
         output.writeMessage(20, compilerConstant_.get(i));
       }
-      if (((bitField0_ & 0x00000400) == 0x00000400)) {
+      if (((bitField0_ & 0x00000080) == 0x00000080)) {
         output.writeMessage(21, parent_);
       }
-      if (((bitField0_ & 0x00000800) == 0x00000800)) {
+      if (((bitField0_ & 0x00000100) == 0x00000100)) {
         output.writeMessage(22, aliasedType_);
       }
       getUnknownFields().writeTo(output);
@@ -21662,17 +20657,13 @@ public final class Dossier {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(14, mainFunction_);
       }
-      if (((bitField0_ & 0x00000080) == 0x00000080)) {
+      for (int i = 0; i < method_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(15, prototype_);
+          .computeMessageSize(15, method_.get(i));
       }
-      if (((bitField0_ & 0x00000100) == 0x00000100)) {
+      for (int i = 0; i < field_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(16, hasInstanceMethods_);
-      }
-      if (((bitField0_ & 0x00000200) == 0x00000200)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(17, hasInstanceProperties_);
+          .computeMessageSize(16, field_.get(i));
       }
       for (int i = 0; i < extendedType_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
@@ -21686,11 +20677,11 @@ public final class Dossier {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(20, compilerConstant_.get(i));
       }
-      if (((bitField0_ & 0x00000400) == 0x00000400)) {
+      if (((bitField0_ & 0x00000080) == 0x00000080)) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(21, parent_);
       }
-      if (((bitField0_ & 0x00000800) == 0x00000800)) {
+      if (((bitField0_ & 0x00000100) == 0x00000100)) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(22, aliasedType_);
       }
@@ -21818,7 +20809,8 @@ public final class Dossier {
           getStaticFunctionFieldBuilder();
           getStaticPropertyFieldBuilder();
           getMainFunctionFieldBuilder();
-          getPrototypeFieldBuilder();
+          getMethodFieldBuilder();
+          getFieldFieldBuilder();
           getExtendedTypeFieldBuilder();
           getImplementedTypeFieldBuilder();
           getCompilerConstantFieldBuilder();
@@ -21894,31 +20886,33 @@ public final class Dossier {
           mainFunctionBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000400);
-        if (prototypeBuilder_ == null) {
-          prototype_ = com.github.jleyba.dossier.proto.Dossier.Prototype.getDefaultInstance();
+        if (methodBuilder_ == null) {
+          method_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000800);
         } else {
-          prototypeBuilder_.clear();
+          methodBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00000800);
-        hasInstanceMethods_ = false;
-        bitField0_ = (bitField0_ & ~0x00001000);
-        hasInstanceProperties_ = false;
-        bitField0_ = (bitField0_ & ~0x00002000);
+        if (fieldBuilder_ == null) {
+          field_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00001000);
+        } else {
+          fieldBuilder_.clear();
+        }
         if (extendedTypeBuilder_ == null) {
           extendedType_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00004000);
+          bitField0_ = (bitField0_ & ~0x00002000);
         } else {
           extendedTypeBuilder_.clear();
         }
         if (implementedTypeBuilder_ == null) {
           implementedType_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00008000);
+          bitField0_ = (bitField0_ & ~0x00004000);
         } else {
           implementedTypeBuilder_.clear();
         }
         if (compilerConstantBuilder_ == null) {
           compilerConstant_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00010000);
+          bitField0_ = (bitField0_ & ~0x00008000);
         } else {
           compilerConstantBuilder_.clear();
         }
@@ -21927,13 +20921,13 @@ public final class Dossier {
         } else {
           parentBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00020000);
+        bitField0_ = (bitField0_ & ~0x00010000);
         if (aliasedTypeBuilder_ == null) {
           aliasedType_ = com.github.jleyba.dossier.proto.Dossier.TypeLink.getDefaultInstance();
         } else {
           aliasedTypeBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00040000);
+        bitField0_ = (bitField0_ & ~0x00020000);
         return this;
       }
 
@@ -22050,59 +21044,61 @@ public final class Dossier {
         } else {
           result.mainFunction_ = mainFunctionBuilder_.build();
         }
-        if (((from_bitField0_ & 0x00000800) == 0x00000800)) {
-          to_bitField0_ |= 0x00000080;
-        }
-        if (prototypeBuilder_ == null) {
-          result.prototype_ = prototype_;
+        if (methodBuilder_ == null) {
+          if (((bitField0_ & 0x00000800) == 0x00000800)) {
+            method_ = java.util.Collections.unmodifiableList(method_);
+            bitField0_ = (bitField0_ & ~0x00000800);
+          }
+          result.method_ = method_;
         } else {
-          result.prototype_ = prototypeBuilder_.build();
+          result.method_ = methodBuilder_.build();
         }
-        if (((from_bitField0_ & 0x00001000) == 0x00001000)) {
-          to_bitField0_ |= 0x00000100;
+        if (fieldBuilder_ == null) {
+          if (((bitField0_ & 0x00001000) == 0x00001000)) {
+            field_ = java.util.Collections.unmodifiableList(field_);
+            bitField0_ = (bitField0_ & ~0x00001000);
+          }
+          result.field_ = field_;
+        } else {
+          result.field_ = fieldBuilder_.build();
         }
-        result.hasInstanceMethods_ = hasInstanceMethods_;
-        if (((from_bitField0_ & 0x00002000) == 0x00002000)) {
-          to_bitField0_ |= 0x00000200;
-        }
-        result.hasInstanceProperties_ = hasInstanceProperties_;
         if (extendedTypeBuilder_ == null) {
-          if (((bitField0_ & 0x00004000) == 0x00004000)) {
+          if (((bitField0_ & 0x00002000) == 0x00002000)) {
             extendedType_ = java.util.Collections.unmodifiableList(extendedType_);
-            bitField0_ = (bitField0_ & ~0x00004000);
+            bitField0_ = (bitField0_ & ~0x00002000);
           }
           result.extendedType_ = extendedType_;
         } else {
           result.extendedType_ = extendedTypeBuilder_.build();
         }
         if (implementedTypeBuilder_ == null) {
-          if (((bitField0_ & 0x00008000) == 0x00008000)) {
+          if (((bitField0_ & 0x00004000) == 0x00004000)) {
             implementedType_ = java.util.Collections.unmodifiableList(implementedType_);
-            bitField0_ = (bitField0_ & ~0x00008000);
+            bitField0_ = (bitField0_ & ~0x00004000);
           }
           result.implementedType_ = implementedType_;
         } else {
           result.implementedType_ = implementedTypeBuilder_.build();
         }
         if (compilerConstantBuilder_ == null) {
-          if (((bitField0_ & 0x00010000) == 0x00010000)) {
+          if (((bitField0_ & 0x00008000) == 0x00008000)) {
             compilerConstant_ = java.util.Collections.unmodifiableList(compilerConstant_);
-            bitField0_ = (bitField0_ & ~0x00010000);
+            bitField0_ = (bitField0_ & ~0x00008000);
           }
           result.compilerConstant_ = compilerConstant_;
         } else {
           result.compilerConstant_ = compilerConstantBuilder_.build();
         }
-        if (((from_bitField0_ & 0x00020000) == 0x00020000)) {
-          to_bitField0_ |= 0x00000400;
+        if (((from_bitField0_ & 0x00010000) == 0x00010000)) {
+          to_bitField0_ |= 0x00000080;
         }
         if (parentBuilder_ == null) {
           result.parent_ = parent_;
         } else {
           result.parent_ = parentBuilder_.build();
         }
-        if (((from_bitField0_ & 0x00040000) == 0x00040000)) {
-          to_bitField0_ |= 0x00000800;
+        if (((from_bitField0_ & 0x00020000) == 0x00020000)) {
+          to_bitField0_ |= 0x00000100;
         }
         if (aliasedTypeBuilder_ == null) {
           result.aliasedType_ = aliasedType_;
@@ -22252,20 +21248,63 @@ public final class Dossier {
         if (other.hasMainFunction()) {
           mergeMainFunction(other.getMainFunction());
         }
-        if (other.hasPrototype()) {
-          mergePrototype(other.getPrototype());
+        if (methodBuilder_ == null) {
+          if (!other.method_.isEmpty()) {
+            if (method_.isEmpty()) {
+              method_ = other.method_;
+              bitField0_ = (bitField0_ & ~0x00000800);
+            } else {
+              ensureMethodIsMutable();
+              method_.addAll(other.method_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.method_.isEmpty()) {
+            if (methodBuilder_.isEmpty()) {
+              methodBuilder_.dispose();
+              methodBuilder_ = null;
+              method_ = other.method_;
+              bitField0_ = (bitField0_ & ~0x00000800);
+              methodBuilder_ = 
+                com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+                   getMethodFieldBuilder() : null;
+            } else {
+              methodBuilder_.addAllMessages(other.method_);
+            }
+          }
         }
-        if (other.hasHasInstanceMethods()) {
-          setHasInstanceMethods(other.getHasInstanceMethods());
-        }
-        if (other.hasHasInstanceProperties()) {
-          setHasInstanceProperties(other.getHasInstanceProperties());
+        if (fieldBuilder_ == null) {
+          if (!other.field_.isEmpty()) {
+            if (field_.isEmpty()) {
+              field_ = other.field_;
+              bitField0_ = (bitField0_ & ~0x00001000);
+            } else {
+              ensureFieldIsMutable();
+              field_.addAll(other.field_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.field_.isEmpty()) {
+            if (fieldBuilder_.isEmpty()) {
+              fieldBuilder_.dispose();
+              fieldBuilder_ = null;
+              field_ = other.field_;
+              bitField0_ = (bitField0_ & ~0x00001000);
+              fieldBuilder_ = 
+                com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+                   getFieldFieldBuilder() : null;
+            } else {
+              fieldBuilder_.addAllMessages(other.field_);
+            }
+          }
         }
         if (extendedTypeBuilder_ == null) {
           if (!other.extendedType_.isEmpty()) {
             if (extendedType_.isEmpty()) {
               extendedType_ = other.extendedType_;
-              bitField0_ = (bitField0_ & ~0x00004000);
+              bitField0_ = (bitField0_ & ~0x00002000);
             } else {
               ensureExtendedTypeIsMutable();
               extendedType_.addAll(other.extendedType_);
@@ -22278,7 +21317,7 @@ public final class Dossier {
               extendedTypeBuilder_.dispose();
               extendedTypeBuilder_ = null;
               extendedType_ = other.extendedType_;
-              bitField0_ = (bitField0_ & ~0x00004000);
+              bitField0_ = (bitField0_ & ~0x00002000);
               extendedTypeBuilder_ = 
                 com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
                    getExtendedTypeFieldBuilder() : null;
@@ -22291,7 +21330,7 @@ public final class Dossier {
           if (!other.implementedType_.isEmpty()) {
             if (implementedType_.isEmpty()) {
               implementedType_ = other.implementedType_;
-              bitField0_ = (bitField0_ & ~0x00008000);
+              bitField0_ = (bitField0_ & ~0x00004000);
             } else {
               ensureImplementedTypeIsMutable();
               implementedType_.addAll(other.implementedType_);
@@ -22304,7 +21343,7 @@ public final class Dossier {
               implementedTypeBuilder_.dispose();
               implementedTypeBuilder_ = null;
               implementedType_ = other.implementedType_;
-              bitField0_ = (bitField0_ & ~0x00008000);
+              bitField0_ = (bitField0_ & ~0x00004000);
               implementedTypeBuilder_ = 
                 com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
                    getImplementedTypeFieldBuilder() : null;
@@ -22317,7 +21356,7 @@ public final class Dossier {
           if (!other.compilerConstant_.isEmpty()) {
             if (compilerConstant_.isEmpty()) {
               compilerConstant_ = other.compilerConstant_;
-              bitField0_ = (bitField0_ & ~0x00010000);
+              bitField0_ = (bitField0_ & ~0x00008000);
             } else {
               ensureCompilerConstantIsMutable();
               compilerConstant_.addAll(other.compilerConstant_);
@@ -22330,7 +21369,7 @@ public final class Dossier {
               compilerConstantBuilder_.dispose();
               compilerConstantBuilder_ = null;
               compilerConstant_ = other.compilerConstant_;
-              bitField0_ = (bitField0_ & ~0x00010000);
+              bitField0_ = (bitField0_ & ~0x00008000);
               compilerConstantBuilder_ = 
                 com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
                    getCompilerConstantFieldBuilder() : null;
@@ -22416,8 +21455,14 @@ public final class Dossier {
             return false;
           }
         }
-        if (hasPrototype()) {
-          if (!getPrototype().isInitialized()) {
+        for (int i = 0; i < getMethodCount(); i++) {
+          if (!getMethod(i).isInitialized()) {
+            
+            return false;
+          }
+        }
+        for (int i = 0; i < getFieldCount(); i++) {
+          if (!getField(i).isInitialized()) {
             
             return false;
           }
@@ -24260,257 +23305,636 @@ public final class Dossier {
         return mainFunctionBuilder_;
       }
 
-      private com.github.jleyba.dossier.proto.Dossier.Prototype prototype_ = com.github.jleyba.dossier.proto.Dossier.Prototype.getDefaultInstance();
-      private com.google.protobuf.SingleFieldBuilder<
-          com.github.jleyba.dossier.proto.Dossier.Prototype, com.github.jleyba.dossier.proto.Dossier.Prototype.Builder, com.github.jleyba.dossier.proto.Dossier.PrototypeOrBuilder> prototypeBuilder_;
-      /**
-       * <code>optional .dossier.Prototype prototype = 15;</code>
-       *
-       * <pre>
-       * Describes the instance properties and functions for this type.
-       * The presence of this field designates this type as a class or interface.
-       * </pre>
-       */
-      public boolean hasPrototype() {
-        return ((bitField0_ & 0x00000800) == 0x00000800);
+      private java.util.List<com.github.jleyba.dossier.proto.Dossier.Function> method_ =
+        java.util.Collections.emptyList();
+      private void ensureMethodIsMutable() {
+        if (!((bitField0_ & 0x00000800) == 0x00000800)) {
+          method_ = new java.util.ArrayList<com.github.jleyba.dossier.proto.Dossier.Function>(method_);
+          bitField0_ |= 0x00000800;
+         }
       }
+
+      private com.google.protobuf.RepeatedFieldBuilder<
+          com.github.jleyba.dossier.proto.Dossier.Function, com.github.jleyba.dossier.proto.Dossier.Function.Builder, com.github.jleyba.dossier.proto.Dossier.FunctionOrBuilder> methodBuilder_;
+
       /**
-       * <code>optional .dossier.Prototype prototype = 15;</code>
+       * <code>repeated .dossier.Function method = 15;</code>
        *
        * <pre>
-       * Describes the instance properties and functions for this type.
-       * The presence of this field designates this type as a class or interface.
+       * Instance methods for this type.
        * </pre>
        */
-      public com.github.jleyba.dossier.proto.Dossier.Prototype getPrototype() {
-        if (prototypeBuilder_ == null) {
-          return prototype_;
+      public java.util.List<com.github.jleyba.dossier.proto.Dossier.Function> getMethodList() {
+        if (methodBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(method_);
         } else {
-          return prototypeBuilder_.getMessage();
+          return methodBuilder_.getMessageList();
         }
       }
       /**
-       * <code>optional .dossier.Prototype prototype = 15;</code>
+       * <code>repeated .dossier.Function method = 15;</code>
        *
        * <pre>
-       * Describes the instance properties and functions for this type.
-       * The presence of this field designates this type as a class or interface.
+       * Instance methods for this type.
        * </pre>
        */
-      public Builder setPrototype(com.github.jleyba.dossier.proto.Dossier.Prototype value) {
-        if (prototypeBuilder_ == null) {
+      public int getMethodCount() {
+        if (methodBuilder_ == null) {
+          return method_.size();
+        } else {
+          return methodBuilder_.getCount();
+        }
+      }
+      /**
+       * <code>repeated .dossier.Function method = 15;</code>
+       *
+       * <pre>
+       * Instance methods for this type.
+       * </pre>
+       */
+      public com.github.jleyba.dossier.proto.Dossier.Function getMethod(int index) {
+        if (methodBuilder_ == null) {
+          return method_.get(index);
+        } else {
+          return methodBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <code>repeated .dossier.Function method = 15;</code>
+       *
+       * <pre>
+       * Instance methods for this type.
+       * </pre>
+       */
+      public Builder setMethod(
+          int index, com.github.jleyba.dossier.proto.Dossier.Function value) {
+        if (methodBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
           }
-          prototype_ = value;
+          ensureMethodIsMutable();
+          method_.set(index, value);
           onChanged();
         } else {
-          prototypeBuilder_.setMessage(value);
+          methodBuilder_.setMessage(index, value);
         }
-        bitField0_ |= 0x00000800;
         return this;
       }
       /**
-       * <code>optional .dossier.Prototype prototype = 15;</code>
+       * <code>repeated .dossier.Function method = 15;</code>
        *
        * <pre>
-       * Describes the instance properties and functions for this type.
-       * The presence of this field designates this type as a class or interface.
+       * Instance methods for this type.
        * </pre>
        */
-      public Builder setPrototype(
-          com.github.jleyba.dossier.proto.Dossier.Prototype.Builder builderForValue) {
-        if (prototypeBuilder_ == null) {
-          prototype_ = builderForValue.build();
+      public Builder setMethod(
+          int index, com.github.jleyba.dossier.proto.Dossier.Function.Builder builderForValue) {
+        if (methodBuilder_ == null) {
+          ensureMethodIsMutable();
+          method_.set(index, builderForValue.build());
           onChanged();
         } else {
-          prototypeBuilder_.setMessage(builderForValue.build());
+          methodBuilder_.setMessage(index, builderForValue.build());
         }
-        bitField0_ |= 0x00000800;
         return this;
       }
       /**
-       * <code>optional .dossier.Prototype prototype = 15;</code>
+       * <code>repeated .dossier.Function method = 15;</code>
        *
        * <pre>
-       * Describes the instance properties and functions for this type.
-       * The presence of this field designates this type as a class or interface.
+       * Instance methods for this type.
        * </pre>
        */
-      public Builder mergePrototype(com.github.jleyba.dossier.proto.Dossier.Prototype value) {
-        if (prototypeBuilder_ == null) {
-          if (((bitField0_ & 0x00000800) == 0x00000800) &&
-              prototype_ != com.github.jleyba.dossier.proto.Dossier.Prototype.getDefaultInstance()) {
-            prototype_ =
-              com.github.jleyba.dossier.proto.Dossier.Prototype.newBuilder(prototype_).mergeFrom(value).buildPartial();
-          } else {
-            prototype_ = value;
+      public Builder addMethod(com.github.jleyba.dossier.proto.Dossier.Function value) {
+        if (methodBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
           }
+          ensureMethodIsMutable();
+          method_.add(value);
           onChanged();
         } else {
-          prototypeBuilder_.mergeFrom(value);
+          methodBuilder_.addMessage(value);
         }
-        bitField0_ |= 0x00000800;
         return this;
       }
       /**
-       * <code>optional .dossier.Prototype prototype = 15;</code>
+       * <code>repeated .dossier.Function method = 15;</code>
        *
        * <pre>
-       * Describes the instance properties and functions for this type.
-       * The presence of this field designates this type as a class or interface.
+       * Instance methods for this type.
        * </pre>
        */
-      public Builder clearPrototype() {
-        if (prototypeBuilder_ == null) {
-          prototype_ = com.github.jleyba.dossier.proto.Dossier.Prototype.getDefaultInstance();
+      public Builder addMethod(
+          int index, com.github.jleyba.dossier.proto.Dossier.Function value) {
+        if (methodBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureMethodIsMutable();
+          method_.add(index, value);
           onChanged();
         } else {
-          prototypeBuilder_.clear();
+          methodBuilder_.addMessage(index, value);
         }
-        bitField0_ = (bitField0_ & ~0x00000800);
         return this;
       }
       /**
-       * <code>optional .dossier.Prototype prototype = 15;</code>
+       * <code>repeated .dossier.Function method = 15;</code>
        *
        * <pre>
-       * Describes the instance properties and functions for this type.
-       * The presence of this field designates this type as a class or interface.
+       * Instance methods for this type.
        * </pre>
        */
-      public com.github.jleyba.dossier.proto.Dossier.Prototype.Builder getPrototypeBuilder() {
-        bitField0_ |= 0x00000800;
-        onChanged();
-        return getPrototypeFieldBuilder().getBuilder();
+      public Builder addMethod(
+          com.github.jleyba.dossier.proto.Dossier.Function.Builder builderForValue) {
+        if (methodBuilder_ == null) {
+          ensureMethodIsMutable();
+          method_.add(builderForValue.build());
+          onChanged();
+        } else {
+          methodBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
       }
       /**
-       * <code>optional .dossier.Prototype prototype = 15;</code>
+       * <code>repeated .dossier.Function method = 15;</code>
        *
        * <pre>
-       * Describes the instance properties and functions for this type.
-       * The presence of this field designates this type as a class or interface.
+       * Instance methods for this type.
        * </pre>
        */
-      public com.github.jleyba.dossier.proto.Dossier.PrototypeOrBuilder getPrototypeOrBuilder() {
-        if (prototypeBuilder_ != null) {
-          return prototypeBuilder_.getMessageOrBuilder();
+      public Builder addMethod(
+          int index, com.github.jleyba.dossier.proto.Dossier.Function.Builder builderForValue) {
+        if (methodBuilder_ == null) {
+          ensureMethodIsMutable();
+          method_.add(index, builderForValue.build());
+          onChanged();
         } else {
-          return prototype_;
+          methodBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .dossier.Function method = 15;</code>
+       *
+       * <pre>
+       * Instance methods for this type.
+       * </pre>
+       */
+      public Builder addAllMethod(
+          java.lang.Iterable<? extends com.github.jleyba.dossier.proto.Dossier.Function> values) {
+        if (methodBuilder_ == null) {
+          ensureMethodIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, method_);
+          onChanged();
+        } else {
+          methodBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .dossier.Function method = 15;</code>
+       *
+       * <pre>
+       * Instance methods for this type.
+       * </pre>
+       */
+      public Builder clearMethod() {
+        if (methodBuilder_ == null) {
+          method_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000800);
+          onChanged();
+        } else {
+          methodBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .dossier.Function method = 15;</code>
+       *
+       * <pre>
+       * Instance methods for this type.
+       * </pre>
+       */
+      public Builder removeMethod(int index) {
+        if (methodBuilder_ == null) {
+          ensureMethodIsMutable();
+          method_.remove(index);
+          onChanged();
+        } else {
+          methodBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .dossier.Function method = 15;</code>
+       *
+       * <pre>
+       * Instance methods for this type.
+       * </pre>
+       */
+      public com.github.jleyba.dossier.proto.Dossier.Function.Builder getMethodBuilder(
+          int index) {
+        return getMethodFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <code>repeated .dossier.Function method = 15;</code>
+       *
+       * <pre>
+       * Instance methods for this type.
+       * </pre>
+       */
+      public com.github.jleyba.dossier.proto.Dossier.FunctionOrBuilder getMethodOrBuilder(
+          int index) {
+        if (methodBuilder_ == null) {
+          return method_.get(index);  } else {
+          return methodBuilder_.getMessageOrBuilder(index);
         }
       }
       /**
-       * <code>optional .dossier.Prototype prototype = 15;</code>
+       * <code>repeated .dossier.Function method = 15;</code>
        *
        * <pre>
-       * Describes the instance properties and functions for this type.
-       * The presence of this field designates this type as a class or interface.
+       * Instance methods for this type.
        * </pre>
        */
-      private com.google.protobuf.SingleFieldBuilder<
-          com.github.jleyba.dossier.proto.Dossier.Prototype, com.github.jleyba.dossier.proto.Dossier.Prototype.Builder, com.github.jleyba.dossier.proto.Dossier.PrototypeOrBuilder> 
-          getPrototypeFieldBuilder() {
-        if (prototypeBuilder_ == null) {
-          prototypeBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              com.github.jleyba.dossier.proto.Dossier.Prototype, com.github.jleyba.dossier.proto.Dossier.Prototype.Builder, com.github.jleyba.dossier.proto.Dossier.PrototypeOrBuilder>(
-                  getPrototype(),
+      public java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.FunctionOrBuilder> 
+           getMethodOrBuilderList() {
+        if (methodBuilder_ != null) {
+          return methodBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(method_);
+        }
+      }
+      /**
+       * <code>repeated .dossier.Function method = 15;</code>
+       *
+       * <pre>
+       * Instance methods for this type.
+       * </pre>
+       */
+      public com.github.jleyba.dossier.proto.Dossier.Function.Builder addMethodBuilder() {
+        return getMethodFieldBuilder().addBuilder(
+            com.github.jleyba.dossier.proto.Dossier.Function.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .dossier.Function method = 15;</code>
+       *
+       * <pre>
+       * Instance methods for this type.
+       * </pre>
+       */
+      public com.github.jleyba.dossier.proto.Dossier.Function.Builder addMethodBuilder(
+          int index) {
+        return getMethodFieldBuilder().addBuilder(
+            index, com.github.jleyba.dossier.proto.Dossier.Function.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .dossier.Function method = 15;</code>
+       *
+       * <pre>
+       * Instance methods for this type.
+       * </pre>
+       */
+      public java.util.List<com.github.jleyba.dossier.proto.Dossier.Function.Builder> 
+           getMethodBuilderList() {
+        return getMethodFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilder<
+          com.github.jleyba.dossier.proto.Dossier.Function, com.github.jleyba.dossier.proto.Dossier.Function.Builder, com.github.jleyba.dossier.proto.Dossier.FunctionOrBuilder> 
+          getMethodFieldBuilder() {
+        if (methodBuilder_ == null) {
+          methodBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+              com.github.jleyba.dossier.proto.Dossier.Function, com.github.jleyba.dossier.proto.Dossier.Function.Builder, com.github.jleyba.dossier.proto.Dossier.FunctionOrBuilder>(
+                  method_,
+                  ((bitField0_ & 0x00000800) == 0x00000800),
                   getParentForChildren(),
                   isClean());
-          prototype_ = null;
+          method_ = null;
         }
-        return prototypeBuilder_;
+        return methodBuilder_;
       }
 
-      private boolean hasInstanceMethods_ ;
-      /**
-       * <code>optional bool has_instance_methods = 16 [default = false];</code>
-       *
-       * <pre>
-       * Hacks needed for the soy templates to know whether the prototype chain
-       * has any methods or properties to render.
-       * </pre>
-       */
-      public boolean hasHasInstanceMethods() {
-        return ((bitField0_ & 0x00001000) == 0x00001000);
-      }
-      /**
-       * <code>optional bool has_instance_methods = 16 [default = false];</code>
-       *
-       * <pre>
-       * Hacks needed for the soy templates to know whether the prototype chain
-       * has any methods or properties to render.
-       * </pre>
-       */
-      public boolean getHasInstanceMethods() {
-        return hasInstanceMethods_;
-      }
-      /**
-       * <code>optional bool has_instance_methods = 16 [default = false];</code>
-       *
-       * <pre>
-       * Hacks needed for the soy templates to know whether the prototype chain
-       * has any methods or properties to render.
-       * </pre>
-       */
-      public Builder setHasInstanceMethods(boolean value) {
-        bitField0_ |= 0x00001000;
-        hasInstanceMethods_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional bool has_instance_methods = 16 [default = false];</code>
-       *
-       * <pre>
-       * Hacks needed for the soy templates to know whether the prototype chain
-       * has any methods or properties to render.
-       * </pre>
-       */
-      public Builder clearHasInstanceMethods() {
-        bitField0_ = (bitField0_ & ~0x00001000);
-        hasInstanceMethods_ = false;
-        onChanged();
-        return this;
+      private java.util.List<com.github.jleyba.dossier.proto.Dossier.Property> field_ =
+        java.util.Collections.emptyList();
+      private void ensureFieldIsMutable() {
+        if (!((bitField0_ & 0x00001000) == 0x00001000)) {
+          field_ = new java.util.ArrayList<com.github.jleyba.dossier.proto.Dossier.Property>(field_);
+          bitField0_ |= 0x00001000;
+         }
       }
 
-      private boolean hasInstanceProperties_ ;
+      private com.google.protobuf.RepeatedFieldBuilder<
+          com.github.jleyba.dossier.proto.Dossier.Property, com.github.jleyba.dossier.proto.Dossier.Property.Builder, com.github.jleyba.dossier.proto.Dossier.PropertyOrBuilder> fieldBuilder_;
+
       /**
-       * <code>optional bool has_instance_properties = 17 [default = false];</code>
+       * <code>repeated .dossier.Property field = 16;</code>
+       *
+       * <pre>
+       * Instance properties for this type.
+       * </pre>
        */
-      public boolean hasHasInstanceProperties() {
-        return ((bitField0_ & 0x00002000) == 0x00002000);
+      public java.util.List<com.github.jleyba.dossier.proto.Dossier.Property> getFieldList() {
+        if (fieldBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(field_);
+        } else {
+          return fieldBuilder_.getMessageList();
+        }
       }
       /**
-       * <code>optional bool has_instance_properties = 17 [default = false];</code>
+       * <code>repeated .dossier.Property field = 16;</code>
+       *
+       * <pre>
+       * Instance properties for this type.
+       * </pre>
        */
-      public boolean getHasInstanceProperties() {
-        return hasInstanceProperties_;
+      public int getFieldCount() {
+        if (fieldBuilder_ == null) {
+          return field_.size();
+        } else {
+          return fieldBuilder_.getCount();
+        }
       }
       /**
-       * <code>optional bool has_instance_properties = 17 [default = false];</code>
+       * <code>repeated .dossier.Property field = 16;</code>
+       *
+       * <pre>
+       * Instance properties for this type.
+       * </pre>
        */
-      public Builder setHasInstanceProperties(boolean value) {
-        bitField0_ |= 0x00002000;
-        hasInstanceProperties_ = value;
-        onChanged();
+      public com.github.jleyba.dossier.proto.Dossier.Property getField(int index) {
+        if (fieldBuilder_ == null) {
+          return field_.get(index);
+        } else {
+          return fieldBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <code>repeated .dossier.Property field = 16;</code>
+       *
+       * <pre>
+       * Instance properties for this type.
+       * </pre>
+       */
+      public Builder setField(
+          int index, com.github.jleyba.dossier.proto.Dossier.Property value) {
+        if (fieldBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureFieldIsMutable();
+          field_.set(index, value);
+          onChanged();
+        } else {
+          fieldBuilder_.setMessage(index, value);
+        }
         return this;
       }
       /**
-       * <code>optional bool has_instance_properties = 17 [default = false];</code>
+       * <code>repeated .dossier.Property field = 16;</code>
+       *
+       * <pre>
+       * Instance properties for this type.
+       * </pre>
        */
-      public Builder clearHasInstanceProperties() {
-        bitField0_ = (bitField0_ & ~0x00002000);
-        hasInstanceProperties_ = false;
-        onChanged();
+      public Builder setField(
+          int index, com.github.jleyba.dossier.proto.Dossier.Property.Builder builderForValue) {
+        if (fieldBuilder_ == null) {
+          ensureFieldIsMutable();
+          field_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          fieldBuilder_.setMessage(index, builderForValue.build());
+        }
         return this;
+      }
+      /**
+       * <code>repeated .dossier.Property field = 16;</code>
+       *
+       * <pre>
+       * Instance properties for this type.
+       * </pre>
+       */
+      public Builder addField(com.github.jleyba.dossier.proto.Dossier.Property value) {
+        if (fieldBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureFieldIsMutable();
+          field_.add(value);
+          onChanged();
+        } else {
+          fieldBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .dossier.Property field = 16;</code>
+       *
+       * <pre>
+       * Instance properties for this type.
+       * </pre>
+       */
+      public Builder addField(
+          int index, com.github.jleyba.dossier.proto.Dossier.Property value) {
+        if (fieldBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureFieldIsMutable();
+          field_.add(index, value);
+          onChanged();
+        } else {
+          fieldBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .dossier.Property field = 16;</code>
+       *
+       * <pre>
+       * Instance properties for this type.
+       * </pre>
+       */
+      public Builder addField(
+          com.github.jleyba.dossier.proto.Dossier.Property.Builder builderForValue) {
+        if (fieldBuilder_ == null) {
+          ensureFieldIsMutable();
+          field_.add(builderForValue.build());
+          onChanged();
+        } else {
+          fieldBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .dossier.Property field = 16;</code>
+       *
+       * <pre>
+       * Instance properties for this type.
+       * </pre>
+       */
+      public Builder addField(
+          int index, com.github.jleyba.dossier.proto.Dossier.Property.Builder builderForValue) {
+        if (fieldBuilder_ == null) {
+          ensureFieldIsMutable();
+          field_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          fieldBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .dossier.Property field = 16;</code>
+       *
+       * <pre>
+       * Instance properties for this type.
+       * </pre>
+       */
+      public Builder addAllField(
+          java.lang.Iterable<? extends com.github.jleyba.dossier.proto.Dossier.Property> values) {
+        if (fieldBuilder_ == null) {
+          ensureFieldIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, field_);
+          onChanged();
+        } else {
+          fieldBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .dossier.Property field = 16;</code>
+       *
+       * <pre>
+       * Instance properties for this type.
+       * </pre>
+       */
+      public Builder clearField() {
+        if (fieldBuilder_ == null) {
+          field_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00001000);
+          onChanged();
+        } else {
+          fieldBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .dossier.Property field = 16;</code>
+       *
+       * <pre>
+       * Instance properties for this type.
+       * </pre>
+       */
+      public Builder removeField(int index) {
+        if (fieldBuilder_ == null) {
+          ensureFieldIsMutable();
+          field_.remove(index);
+          onChanged();
+        } else {
+          fieldBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .dossier.Property field = 16;</code>
+       *
+       * <pre>
+       * Instance properties for this type.
+       * </pre>
+       */
+      public com.github.jleyba.dossier.proto.Dossier.Property.Builder getFieldBuilder(
+          int index) {
+        return getFieldFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <code>repeated .dossier.Property field = 16;</code>
+       *
+       * <pre>
+       * Instance properties for this type.
+       * </pre>
+       */
+      public com.github.jleyba.dossier.proto.Dossier.PropertyOrBuilder getFieldOrBuilder(
+          int index) {
+        if (fieldBuilder_ == null) {
+          return field_.get(index);  } else {
+          return fieldBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <code>repeated .dossier.Property field = 16;</code>
+       *
+       * <pre>
+       * Instance properties for this type.
+       * </pre>
+       */
+      public java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.PropertyOrBuilder> 
+           getFieldOrBuilderList() {
+        if (fieldBuilder_ != null) {
+          return fieldBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(field_);
+        }
+      }
+      /**
+       * <code>repeated .dossier.Property field = 16;</code>
+       *
+       * <pre>
+       * Instance properties for this type.
+       * </pre>
+       */
+      public com.github.jleyba.dossier.proto.Dossier.Property.Builder addFieldBuilder() {
+        return getFieldFieldBuilder().addBuilder(
+            com.github.jleyba.dossier.proto.Dossier.Property.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .dossier.Property field = 16;</code>
+       *
+       * <pre>
+       * Instance properties for this type.
+       * </pre>
+       */
+      public com.github.jleyba.dossier.proto.Dossier.Property.Builder addFieldBuilder(
+          int index) {
+        return getFieldFieldBuilder().addBuilder(
+            index, com.github.jleyba.dossier.proto.Dossier.Property.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .dossier.Property field = 16;</code>
+       *
+       * <pre>
+       * Instance properties for this type.
+       * </pre>
+       */
+      public java.util.List<com.github.jleyba.dossier.proto.Dossier.Property.Builder> 
+           getFieldBuilderList() {
+        return getFieldFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilder<
+          com.github.jleyba.dossier.proto.Dossier.Property, com.github.jleyba.dossier.proto.Dossier.Property.Builder, com.github.jleyba.dossier.proto.Dossier.PropertyOrBuilder> 
+          getFieldFieldBuilder() {
+        if (fieldBuilder_ == null) {
+          fieldBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+              com.github.jleyba.dossier.proto.Dossier.Property, com.github.jleyba.dossier.proto.Dossier.Property.Builder, com.github.jleyba.dossier.proto.Dossier.PropertyOrBuilder>(
+                  field_,
+                  ((bitField0_ & 0x00001000) == 0x00001000),
+                  getParentForChildren(),
+                  isClean());
+          field_ = null;
+        }
+        return fieldBuilder_;
       }
 
       private java.util.List<com.github.jleyba.dossier.proto.Dossier.Comment> extendedType_ =
         java.util.Collections.emptyList();
       private void ensureExtendedTypeIsMutable() {
-        if (!((bitField0_ & 0x00004000) == 0x00004000)) {
+        if (!((bitField0_ & 0x00002000) == 0x00002000)) {
           extendedType_ = new java.util.ArrayList<com.github.jleyba.dossier.proto.Dossier.Comment>(extendedType_);
-          bitField0_ |= 0x00004000;
+          bitField0_ |= 0x00002000;
          }
       }
 
@@ -24715,7 +24139,7 @@ public final class Dossier {
       public Builder clearExtendedType() {
         if (extendedTypeBuilder_ == null) {
           extendedType_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00004000);
+          bitField0_ = (bitField0_ & ~0x00002000);
           onChanged();
         } else {
           extendedTypeBuilder_.clear();
@@ -24827,7 +24251,7 @@ public final class Dossier {
           extendedTypeBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
               com.github.jleyba.dossier.proto.Dossier.Comment, com.github.jleyba.dossier.proto.Dossier.Comment.Builder, com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder>(
                   extendedType_,
-                  ((bitField0_ & 0x00004000) == 0x00004000),
+                  ((bitField0_ & 0x00002000) == 0x00002000),
                   getParentForChildren(),
                   isClean());
           extendedType_ = null;
@@ -24838,9 +24262,9 @@ public final class Dossier {
       private java.util.List<com.github.jleyba.dossier.proto.Dossier.Comment> implementedType_ =
         java.util.Collections.emptyList();
       private void ensureImplementedTypeIsMutable() {
-        if (!((bitField0_ & 0x00008000) == 0x00008000)) {
+        if (!((bitField0_ & 0x00004000) == 0x00004000)) {
           implementedType_ = new java.util.ArrayList<com.github.jleyba.dossier.proto.Dossier.Comment>(implementedType_);
-          bitField0_ |= 0x00008000;
+          bitField0_ |= 0x00004000;
          }
       }
 
@@ -25045,7 +24469,7 @@ public final class Dossier {
       public Builder clearImplementedType() {
         if (implementedTypeBuilder_ == null) {
           implementedType_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00008000);
+          bitField0_ = (bitField0_ & ~0x00004000);
           onChanged();
         } else {
           implementedTypeBuilder_.clear();
@@ -25157,7 +24581,7 @@ public final class Dossier {
           implementedTypeBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
               com.github.jleyba.dossier.proto.Dossier.Comment, com.github.jleyba.dossier.proto.Dossier.Comment.Builder, com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder>(
                   implementedType_,
-                  ((bitField0_ & 0x00008000) == 0x00008000),
+                  ((bitField0_ & 0x00004000) == 0x00004000),
                   getParentForChildren(),
                   isClean());
           implementedType_ = null;
@@ -25168,9 +24592,9 @@ public final class Dossier {
       private java.util.List<com.github.jleyba.dossier.proto.Dossier.Property> compilerConstant_ =
         java.util.Collections.emptyList();
       private void ensureCompilerConstantIsMutable() {
-        if (!((bitField0_ & 0x00010000) == 0x00010000)) {
+        if (!((bitField0_ & 0x00008000) == 0x00008000)) {
           compilerConstant_ = new java.util.ArrayList<com.github.jleyba.dossier.proto.Dossier.Property>(compilerConstant_);
-          bitField0_ |= 0x00010000;
+          bitField0_ |= 0x00008000;
          }
       }
 
@@ -25320,7 +24744,7 @@ public final class Dossier {
       public Builder clearCompilerConstant() {
         if (compilerConstantBuilder_ == null) {
           compilerConstant_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00010000);
+          bitField0_ = (bitField0_ & ~0x00008000);
           onChanged();
         } else {
           compilerConstantBuilder_.clear();
@@ -25397,7 +24821,7 @@ public final class Dossier {
           compilerConstantBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
               com.github.jleyba.dossier.proto.Dossier.Property, com.github.jleyba.dossier.proto.Dossier.Property.Builder, com.github.jleyba.dossier.proto.Dossier.PropertyOrBuilder>(
                   compilerConstant_,
-                  ((bitField0_ & 0x00010000) == 0x00010000),
+                  ((bitField0_ & 0x00008000) == 0x00008000),
                   getParentForChildren(),
                   isClean());
           compilerConstant_ = null;
@@ -25412,7 +24836,7 @@ public final class Dossier {
        * <code>optional .dossier.JsType.ParentLink parent = 21;</code>
        */
       public boolean hasParent() {
-        return ((bitField0_ & 0x00020000) == 0x00020000);
+        return ((bitField0_ & 0x00010000) == 0x00010000);
       }
       /**
        * <code>optional .dossier.JsType.ParentLink parent = 21;</code>
@@ -25437,7 +24861,7 @@ public final class Dossier {
         } else {
           parentBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00020000;
+        bitField0_ |= 0x00010000;
         return this;
       }
       /**
@@ -25451,7 +24875,7 @@ public final class Dossier {
         } else {
           parentBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00020000;
+        bitField0_ |= 0x00010000;
         return this;
       }
       /**
@@ -25459,7 +24883,7 @@ public final class Dossier {
        */
       public Builder mergeParent(com.github.jleyba.dossier.proto.Dossier.JsType.ParentLink value) {
         if (parentBuilder_ == null) {
-          if (((bitField0_ & 0x00020000) == 0x00020000) &&
+          if (((bitField0_ & 0x00010000) == 0x00010000) &&
               parent_ != com.github.jleyba.dossier.proto.Dossier.JsType.ParentLink.getDefaultInstance()) {
             parent_ =
               com.github.jleyba.dossier.proto.Dossier.JsType.ParentLink.newBuilder(parent_).mergeFrom(value).buildPartial();
@@ -25470,7 +24894,7 @@ public final class Dossier {
         } else {
           parentBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x00020000;
+        bitField0_ |= 0x00010000;
         return this;
       }
       /**
@@ -25483,14 +24907,14 @@ public final class Dossier {
         } else {
           parentBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00020000);
+        bitField0_ = (bitField0_ & ~0x00010000);
         return this;
       }
       /**
        * <code>optional .dossier.JsType.ParentLink parent = 21;</code>
        */
       public com.github.jleyba.dossier.proto.Dossier.JsType.ParentLink.Builder getParentBuilder() {
-        bitField0_ |= 0x00020000;
+        bitField0_ |= 0x00010000;
         onChanged();
         return getParentFieldBuilder().getBuilder();
       }
@@ -25532,7 +24956,7 @@ public final class Dossier {
        * </pre>
        */
       public boolean hasAliasedType() {
-        return ((bitField0_ & 0x00040000) == 0x00040000);
+        return ((bitField0_ & 0x00020000) == 0x00020000);
       }
       /**
        * <code>optional .dossier.TypeLink aliased_type = 22;</code>
@@ -25565,7 +24989,7 @@ public final class Dossier {
         } else {
           aliasedTypeBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00040000;
+        bitField0_ |= 0x00020000;
         return this;
       }
       /**
@@ -25583,7 +25007,7 @@ public final class Dossier {
         } else {
           aliasedTypeBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00040000;
+        bitField0_ |= 0x00020000;
         return this;
       }
       /**
@@ -25595,7 +25019,7 @@ public final class Dossier {
        */
       public Builder mergeAliasedType(com.github.jleyba.dossier.proto.Dossier.TypeLink value) {
         if (aliasedTypeBuilder_ == null) {
-          if (((bitField0_ & 0x00040000) == 0x00040000) &&
+          if (((bitField0_ & 0x00020000) == 0x00020000) &&
               aliasedType_ != com.github.jleyba.dossier.proto.Dossier.TypeLink.getDefaultInstance()) {
             aliasedType_ =
               com.github.jleyba.dossier.proto.Dossier.TypeLink.newBuilder(aliasedType_).mergeFrom(value).buildPartial();
@@ -25606,7 +25030,7 @@ public final class Dossier {
         } else {
           aliasedTypeBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x00040000;
+        bitField0_ |= 0x00020000;
         return this;
       }
       /**
@@ -25623,7 +25047,7 @@ public final class Dossier {
         } else {
           aliasedTypeBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00040000);
+        bitField0_ = (bitField0_ & ~0x00020000);
         return this;
       }
       /**
@@ -25634,7 +25058,7 @@ public final class Dossier {
        * </pre>
        */
       public com.github.jleyba.dossier.proto.Dossier.TypeLink.Builder getAliasedTypeBuilder() {
-        bitField0_ |= 0x00040000;
+        bitField0_ |= 0x00020000;
         onChanged();
         return getAliasedTypeFieldBuilder().getBuilder();
       }
@@ -29083,11 +28507,6 @@ public final class Dossier {
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_dossier_Function_Detail_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_dossier_Prototype_descriptor;
-  private static
-    com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_dossier_Prototype_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_dossier_Enumeration_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
@@ -29181,60 +28600,57 @@ public final class Dossier {
       "ion.Detail\022(\n\006thrown\030\006 \003(\0132\030.dossier.Fun" +
       "ction.Detail\032]\n\006Detail\022\014\n\004name\030\001 \001(\t\022\036\n\004" +
       "type\030\002 \001(\0132\020.dossier.Comment\022%\n\013descript",
-      "ion\030\003 \001(\0132\020.dossier.Comment\"U\n\tPrototype" +
-      "\022#\n\010function\030\003 \003(\0132\021.dossier.Function\022#\n" +
-      "\010property\030\004 \003(\0132\021.dossier.Property\"\362\001\n\013E" +
-      "numeration\022\036\n\004type\030\001 \002(\0132\020.dossier.Comme" +
-      "nt\022)\n\005value\030\002 \003(\0132\032.dossier.Enumeration." +
-      "Value\022/\n\nvisibility\030\003 \001(\0162\023.dossier.Visi" +
-      "bility:\006PUBLIC\032g\n\005Value\022\014\n\004name\030\001 \002(\t\022%\n" +
-      "\013description\030\002 \001(\0132\020.dossier.Comment\022)\n\013" +
-      "deprecation\030\003 \001(\0132\024.dossier.Deprecation\"" +
-      "\251\001\n\005Index\022\014\n\004home\030\001 \002(\t\022\037\n\004type\030\002 \003(\0132\021.",
-      "dossier.TypeLink\022%\n\006module\030\003 \003(\0132\025.dossi" +
-      "er.Index.Module\032J\n\006Module\022\037\n\004link\030\001 \002(\0132" +
-      "\021.dossier.TypeLink\022\037\n\004type\030\002 \003(\0132\021.dossi" +
-      "er.TypeLink\"\355\010\n\006JsType\022\014\n\004name\030\001 \002(\t\022#\n\006" +
-      "source\030\005 \002(\0132\023.dossier.SourceLink\022+\n\006nes" +
-      "ted\030\006 \003(\0132\033.dossier.JsType.TypeSummary\022%" +
-      "\n\013description\030\007 \002(\0132\020.dossier.Comment\022\033\n" +
-      "\004tags\030\010 \002(\0132\r.dossier.Tags\022)\n\013deprecatio" +
-      "n\030\t \001(\0132\024.dossier.Deprecation\022)\n\010type_de" +
-      "f\030\n \003(\0132\027.dossier.JsType.TypeDef\022)\n\013enum",
-      "eration\030\013 \001(\0132\024.dossier.Enumeration\022*\n\017s" +
-      "tatic_function\030\014 \003(\0132\021.dossier.Function\022" +
-      "*\n\017static_property\030\r \003(\0132\021.dossier.Prope" +
-      "rty\022(\n\rmain_function\030\016 \001(\0132\021.dossier.Fun" +
-      "ction\022%\n\tprototype\030\017 \001(\0132\022.dossier.Proto" +
-      "type\022#\n\024has_instance_methods\030\020 \001(\010:\005fals" +
-      "e\022&\n\027has_instance_properties\030\021 \001(\010:\005fals" +
-      "e\022\'\n\rextended_type\030\022 \003(\0132\020.dossier.Comme" +
-      "nt\022*\n\020implemented_type\030\023 \003(\0132\020.dossier.C" +
-      "omment\022,\n\021compiler_constant\030\024 \003(\0132\021.doss",
-      "ier.Property\022*\n\006parent\030\025 \001(\0132\032.dossier.J" +
-      "sType.ParentLink\022\'\n\014aliased_type\030\026 \001(\0132\021" +
-      ".dossier.TypeLink\032L\n\013TypeSummary\022\014\n\004name" +
-      "\030\001 \002(\t\022\014\n\004href\030\002 \002(\t\022!\n\007summary\030\003 \002(\0132\020." +
-      "dossier.Comment\032\337\001\n\007TypeDef\022\014\n\004name\030\001 \002(" +
-      "\t\022\036\n\004type\030\002 \002(\0132\020.dossier.Comment\022#\n\006sou" +
-      "rce\030\003 \002(\0132\023.dossier.SourceLink\022%\n\013descri" +
-      "ption\030\004 \002(\0132\020.dossier.Comment\022)\n\013depreca" +
-      "tion\030\005 \001(\0132\024.dossier.Deprecation\022/\n\nvisi" +
-      "bility\030\006 \001(\0162\023.dossier.Visibility:\006PUBLI",
-      "C\032@\n\nParentLink\022\037\n\004link\030\001 \002(\0132\021.dossier." +
-      "TypeLink\022\021\n\tis_module\030\002 \001(\010\"}\n\023IndexFile" +
-      "RenderSpec\022%\n\tresources\030\001 \002(\0132\022.dossier." +
-      "Resources\022 \n\006readme\030\002 \001(\0132\020.dossier.Comm" +
-      "ent\022\035\n\005index\030\003 \002(\0132\016.dossier.Index\"\177\n\024So" +
-      "urceFileRenderSpec\022%\n\tresources\030\001 \002(\0132\022." +
-      "dossier.Resources\022!\n\004file\030\002 \002(\0132\023.dossie" +
-      "r.SourceFile\022\035\n\005index\030\003 \002(\0132\016.dossier.In" +
-      "dex\"w\n\020JsTypeRenderSpec\022\035\n\004type\030\001 \002(\0132\017." +
-      "dossier.JsType\022%\n\tresources\030\002 \002(\0132\022.doss",
-      "ier.Resources\022\035\n\005index\030\003 \002(\0132\016.dossier.I" +
-      "ndex*A\n\nVisibility\022\n\n\006PUBLIC\020\000\022\r\n\tPROTEC" +
-      "TED\020\001\022\013\n\007PRIVATE\020\002\022\013\n\007PACKAGE\020\003B!\n\037com.g" +
-      "ithub.jleyba.dossier.proto"
+      "ion\030\003 \001(\0132\020.dossier.Comment\"\362\001\n\013Enumerat" +
+      "ion\022\036\n\004type\030\001 \002(\0132\020.dossier.Comment\022)\n\005v" +
+      "alue\030\002 \003(\0132\032.dossier.Enumeration.Value\022/" +
+      "\n\nvisibility\030\003 \001(\0162\023.dossier.Visibility:" +
+      "\006PUBLIC\032g\n\005Value\022\014\n\004name\030\001 \002(\t\022%\n\013descri" +
+      "ption\030\002 \001(\0132\020.dossier.Comment\022)\n\013depreca" +
+      "tion\030\003 \001(\0132\024.dossier.Deprecation\"\251\001\n\005Ind" +
+      "ex\022\014\n\004home\030\001 \002(\t\022\037\n\004type\030\002 \003(\0132\021.dossier" +
+      ".TypeLink\022%\n\006module\030\003 \003(\0132\025.dossier.Inde" +
+      "x.Module\032J\n\006Module\022\037\n\004link\030\001 \002(\0132\021.dossi",
+      "er.TypeLink\022\037\n\004type\030\002 \003(\0132\021.dossier.Type" +
+      "Link\"\276\010\n\006JsType\022\014\n\004name\030\001 \002(\t\022#\n\006source\030" +
+      "\005 \002(\0132\023.dossier.SourceLink\022+\n\006nested\030\006 \003" +
+      "(\0132\033.dossier.JsType.TypeSummary\022%\n\013descr" +
+      "iption\030\007 \002(\0132\020.dossier.Comment\022\033\n\004tags\030\010" +
+      " \002(\0132\r.dossier.Tags\022)\n\013deprecation\030\t \001(\013" +
+      "2\024.dossier.Deprecation\022)\n\010type_def\030\n \003(\013" +
+      "2\027.dossier.JsType.TypeDef\022)\n\013enumeration" +
+      "\030\013 \001(\0132\024.dossier.Enumeration\022*\n\017static_f" +
+      "unction\030\014 \003(\0132\021.dossier.Function\022*\n\017stat",
+      "ic_property\030\r \003(\0132\021.dossier.Property\022(\n\r" +
+      "main_function\030\016 \001(\0132\021.dossier.Function\022!" +
+      "\n\006method\030\017 \003(\0132\021.dossier.Function\022 \n\005fie" +
+      "ld\030\020 \003(\0132\021.dossier.Property\022\'\n\rextended_" +
+      "type\030\022 \003(\0132\020.dossier.Comment\022*\n\020implemen" +
+      "ted_type\030\023 \003(\0132\020.dossier.Comment\022,\n\021comp" +
+      "iler_constant\030\024 \003(\0132\021.dossier.Property\022*" +
+      "\n\006parent\030\025 \001(\0132\032.dossier.JsType.ParentLi" +
+      "nk\022\'\n\014aliased_type\030\026 \001(\0132\021.dossier.TypeL" +
+      "ink\032L\n\013TypeSummary\022\014\n\004name\030\001 \002(\t\022\014\n\004href",
+      "\030\002 \002(\t\022!\n\007summary\030\003 \002(\0132\020.dossier.Commen" +
+      "t\032\337\001\n\007TypeDef\022\014\n\004name\030\001 \002(\t\022\036\n\004type\030\002 \002(" +
+      "\0132\020.dossier.Comment\022#\n\006source\030\003 \002(\0132\023.do" +
+      "ssier.SourceLink\022%\n\013description\030\004 \002(\0132\020." +
+      "dossier.Comment\022)\n\013deprecation\030\005 \001(\0132\024.d" +
+      "ossier.Deprecation\022/\n\nvisibility\030\006 \001(\0162\023" +
+      ".dossier.Visibility:\006PUBLIC\032@\n\nParentLin" +
+      "k\022\037\n\004link\030\001 \002(\0132\021.dossier.TypeLink\022\021\n\tis" +
+      "_module\030\002 \001(\010\"}\n\023IndexFileRenderSpec\022%\n\t" +
+      "resources\030\001 \002(\0132\022.dossier.Resources\022 \n\006r",
+      "eadme\030\002 \001(\0132\020.dossier.Comment\022\035\n\005index\030\003" +
+      " \002(\0132\016.dossier.Index\"\177\n\024SourceFileRender" +
+      "Spec\022%\n\tresources\030\001 \002(\0132\022.dossier.Resour" +
+      "ces\022!\n\004file\030\002 \002(\0132\023.dossier.SourceFile\022\035" +
+      "\n\005index\030\003 \002(\0132\016.dossier.Index\"w\n\020JsTypeR" +
+      "enderSpec\022\035\n\004type\030\001 \002(\0132\017.dossier.JsType" +
+      "\022%\n\tresources\030\002 \002(\0132\022.dossier.Resources\022" +
+      "\035\n\005index\030\003 \002(\0132\016.dossier.Index*A\n\nVisibi" +
+      "lity\022\n\n\006PUBLIC\020\000\022\r\n\tPROTECTED\020\001\022\013\n\007PRIVA" +
+      "TE\020\002\022\013\n\007PACKAGE\020\003B!\n\037com.github.jleyba.d",
+      "ossier.proto"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -29320,14 +28736,8 @@ public final class Dossier {
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_dossier_Function_Detail_descriptor,
         new java.lang.String[] { "Name", "Type", "Description", });
-    internal_static_dossier_Prototype_descriptor =
-      getDescriptor().getMessageTypes().get(10);
-    internal_static_dossier_Prototype_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-        internal_static_dossier_Prototype_descriptor,
-        new java.lang.String[] { "Function", "Property", });
     internal_static_dossier_Enumeration_descriptor =
-      getDescriptor().getMessageTypes().get(11);
+      getDescriptor().getMessageTypes().get(10);
     internal_static_dossier_Enumeration_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_dossier_Enumeration_descriptor,
@@ -29339,7 +28749,7 @@ public final class Dossier {
         internal_static_dossier_Enumeration_Value_descriptor,
         new java.lang.String[] { "Name", "Description", "Deprecation", });
     internal_static_dossier_Index_descriptor =
-      getDescriptor().getMessageTypes().get(12);
+      getDescriptor().getMessageTypes().get(11);
     internal_static_dossier_Index_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_dossier_Index_descriptor,
@@ -29351,11 +28761,11 @@ public final class Dossier {
         internal_static_dossier_Index_Module_descriptor,
         new java.lang.String[] { "Link", "Type", });
     internal_static_dossier_JsType_descriptor =
-      getDescriptor().getMessageTypes().get(13);
+      getDescriptor().getMessageTypes().get(12);
     internal_static_dossier_JsType_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_dossier_JsType_descriptor,
-        new java.lang.String[] { "Name", "Source", "Nested", "Description", "Tags", "Deprecation", "TypeDef", "Enumeration", "StaticFunction", "StaticProperty", "MainFunction", "Prototype", "HasInstanceMethods", "HasInstanceProperties", "ExtendedType", "ImplementedType", "CompilerConstant", "Parent", "AliasedType", });
+        new java.lang.String[] { "Name", "Source", "Nested", "Description", "Tags", "Deprecation", "TypeDef", "Enumeration", "StaticFunction", "StaticProperty", "MainFunction", "Method", "Field", "ExtendedType", "ImplementedType", "CompilerConstant", "Parent", "AliasedType", });
     internal_static_dossier_JsType_TypeSummary_descriptor =
       internal_static_dossier_JsType_descriptor.getNestedTypes().get(0);
     internal_static_dossier_JsType_TypeSummary_fieldAccessorTable = new
@@ -29375,19 +28785,19 @@ public final class Dossier {
         internal_static_dossier_JsType_ParentLink_descriptor,
         new java.lang.String[] { "Link", "IsModule", });
     internal_static_dossier_IndexFileRenderSpec_descriptor =
-      getDescriptor().getMessageTypes().get(14);
+      getDescriptor().getMessageTypes().get(13);
     internal_static_dossier_IndexFileRenderSpec_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_dossier_IndexFileRenderSpec_descriptor,
         new java.lang.String[] { "Resources", "Readme", "Index", });
     internal_static_dossier_SourceFileRenderSpec_descriptor =
-      getDescriptor().getMessageTypes().get(15);
+      getDescriptor().getMessageTypes().get(14);
     internal_static_dossier_SourceFileRenderSpec_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_dossier_SourceFileRenderSpec_descriptor,
         new java.lang.String[] { "Resources", "File", "Index", });
     internal_static_dossier_JsTypeRenderSpec_descriptor =
-      getDescriptor().getMessageTypes().get(16);
+      getDescriptor().getMessageTypes().get(15);
     internal_static_dossier_JsTypeRenderSpec_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_dossier_JsTypeRenderSpec_descriptor,

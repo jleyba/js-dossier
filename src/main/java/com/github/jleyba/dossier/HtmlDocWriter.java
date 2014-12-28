@@ -707,7 +707,6 @@ class HtmlDocWriter implements DocWriter {
     }
 
     // TODO: add a "defined on" field (specified on for interface).
-    Dossier.Prototype.Builder protoBuilder = jsTypeBuilder.getPrototypeBuilder();
     for (Property property : properties.values()) {
       JsDoc jsdoc = JsDoc.from(property.getJSDocInfo());
       if (jsdoc != null && jsdoc.getVisibility() == JSDocInfo.Visibility.PRIVATE) {
@@ -716,15 +715,13 @@ class HtmlDocWriter implements DocWriter {
 
       JSType propType = propertyTypes.get(property.getName());
       if (propType.isFunctionType()) {
-        protoBuilder.addFunction(getFunctionData(
+        jsTypeBuilder.addMethod(getFunctionData(
             property.getName(),
             propType,
             property.getNode(),
             jsdoc));
-        jsTypeBuilder.setHasInstanceMethods(true);
       } else {
-        protoBuilder.addProperty(getPropertyData(property));
-        jsTypeBuilder.setHasInstanceProperties(true);
+        jsTypeBuilder.addField(getPropertyData(property));
       }
     }
   }

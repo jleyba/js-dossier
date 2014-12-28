@@ -140,15 +140,6 @@ message Function {
 }
 
 
-// Describes the instance properties and functions for an object.
-// Despite the name, this does not necessarily mean properties defined
-// on the object's prototype.
-message Prototype {
-  repeated Function function = 3;
-  repeated Property property = 4;
-}
-
-
 // Describes an enumeration.
 message Enumeration {
   message Value {
@@ -219,14 +210,11 @@ message JsType {
   // all other properties are hung off of).
   optional Function main_function = 14;
 
-  // Describes the instance properties and functions for this type.
-  // The presence of this field designates this type as a class or interface.
-  optional Prototype prototype = 15;
+  // Instance methods for this type.
+  repeated Function method = 15;
 
-  // Hacks needed for the soy templates to know whether the prototype chain
-  // has any methods or properties to render.
-  optional bool has_instance_methods = 16 [default = false];
-  optional bool has_instance_properties = 17 [default = false];
+  // Instance properties for this type.
+  repeated Property field = 16;
 
   // List of inherited types for a class. This should be empty if |is_class|
   // is false. Classes should be listed in order, with the root type first.
