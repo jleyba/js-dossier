@@ -51,6 +51,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.google.javascript.jscomp.DossierModule;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.jstype.EnumType;
@@ -250,11 +251,16 @@ class DocWriter {
     }
 
     if (jsType.isFunctionType()) {
+      JsDoc docs = module.getJsdoc();
+      if (docs == null || isNullOrEmpty(docs.getOriginalCommentString())) {
+        DossierModule internalModule = module.getModule();
+        docs = JsDoc.from(internalModule.getFunctionDocs(module.getName()));
+      }
       jsTypeBuilder.setMainFunction(getFunctionData(
           linker.getDisplayName(module),
           module.getJsType(),
           module.getNode(),
-          module.getJsdoc()));
+          docs));
     }
 
     JsTypeRenderSpec.Builder spec = JsTypeRenderSpec.newBuilder()
@@ -759,11 +765,20 @@ class DocWriter {
             JsDoc.from(property.getJSDocInfo())));
 
       } else if (property.getType().isFunctionType()) {
+        // If this property does not have any docs and is part of a CommonJS module's exported API,
+        // check if the property is a reference to one of the module's internal functions and we
+        // can use those docs instead.
+        JsDoc docs = JsDoc.from(property.getJSDocInfo());
+        if ((docs == null || isNullOrEmpty(docs.getOriginalCommentString()))
+            && type.isModuleExports()) {
+          docs = JsDoc.from(
+              type.getModule().getFunctionDocs(type.getName() + "." + property.getName()));
+        }
         jsTypeBuilder.addStaticFunction(getFunctionData(
             name,
             property.getType(),
             property.getNode(),
-            JsDoc.from(property.getJSDocInfo())));
+            docs));
 
       } else if (!property.getType().isEnumElementType()) {
         jsTypeBuilder.addStaticProperty(getPropertyData(

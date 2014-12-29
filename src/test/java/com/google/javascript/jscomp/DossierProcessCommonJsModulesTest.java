@@ -1,8 +1,11 @@
 package com.google.javascript.jscomp;
 
 import static com.github.jleyba.dossier.CompilerUtil.createSourceFile;
+import static com.google.common.collect.Iterables.getOnlyElement;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -536,7 +539,7 @@ public class DossierProcessCommonJsModulesTest {
     JSDocInfo info = type.getJSDocInfo();
     assertNotNull(info);
 
-    Node node = Iterables.getOnlyElement(info.getTypeNodes());
+    Node node = getOnlyElement(info.getTypeNodes());
     assertEquals(Token.BANG, node.getType());
 
     node = node.getFirstChild();
@@ -696,7 +699,8 @@ public class DossierProcessCommonJsModulesTest {
             "var dossier$$module__foo$bar = {};",
             "$jscomp.scope.x = 1;",
             "$jscomp.scope.y = 2;"),
-        compiler.toSource().trim());
+        compiler.toSource().trim()
+    );
   }
 
   @Test
@@ -848,6 +852,40 @@ public class DossierProcessCommonJsModulesTest {
             "dossier$$module__module.x = function() {",
             "};"),
         util.toSource().trim());
+  }
+
+  @Test
+  public void recordsDocsForInternalFunctionsExportedWithoutJsdoc() {
+    CompilerUtil util = createCompiler(path("module.js"));
+
+    util.compile(path("module.js"),
+        "/** Docs. */",
+        "function x() {}",
+        "",
+        "/** More docs. */",
+        "var y = /** function docs. */function() {};",
+        "",
+        "exports = x;",
+        "/** has docs; should not save reference. */",
+        "module.exports = y;",
+        "module.exports.foo = y;",
+        "exports.publicX = x;",
+        "exports.publicY = y;");
+
+    DossierCompiler compiler = (DossierCompiler) util.getCompiler();
+    DossierModuleRegistry registry = compiler.getModuleRegistry();
+    DossierModule module = getOnlyElement(registry.getModules());
+
+    JSDocInfo xdocs = module.getFunctionDocs(module.getVarName());
+    assertNotNull(xdocs);
+    assertEquals("/** Docs. */", xdocs.getOriginalCommentString());
+
+    JSDocInfo ydocs = module.getFunctionDocs(module.getVarName() + ".foo");
+    assertNotNull(ydocs);
+    assertEquals("/** More docs. */", ydocs.getOriginalCommentString());
+
+    assertSame(xdocs, module.getFunctionDocs(module.getVarName() + ".publicX"));
+    assertSame(ydocs, module.getFunctionDocs(module.getVarName() + ".publicY"));
   }
 
   private static CompilerUtil createCompiler(final Path... commonJsModules) {

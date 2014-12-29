@@ -1,19 +1,16 @@
 package com.github.jleyba.dossier;
 
-import static org.junit.Assert.fail;
-
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Multimap;
-import com.google.common.io.ByteStreams;
-import com.google.javascript.jscomp.*;
 import com.google.javascript.jscomp.Compiler;
+import com.google.javascript.jscomp.CompilerOptions;
+import com.google.javascript.jscomp.JSError;
+import com.google.javascript.jscomp.Result;
+import com.google.javascript.jscomp.SourceFile;
 import com.google.javascript.rhino.Node;
 
 import java.io.IOException;
-import java.io.PrintStream;
-import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.List;
 

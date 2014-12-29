@@ -2,6 +2,8 @@ package com.google.javascript.jscomp;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.base.Strings.isNullOrEmpty;
+import static com.google.common.base.Verify.verify;
 import static com.google.javascript.jscomp.NodeTraversal.traverse;
 import static com.google.javascript.rhino.IR.call;
 import static com.google.javascript.rhino.IR.exprResult;
@@ -9,6 +11,7 @@ import static com.google.javascript.rhino.IR.getprop;
 import static com.google.javascript.rhino.IR.name;
 import static com.google.javascript.rhino.IR.string;
 
+import com.google.common.base.Optional;
 import com.google.common.base.Splitter;
 import com.google.javascript.rhino.IR;
 import com.google.javascript.rhino.JSDocInfo;
@@ -20,9 +23,11 @@ import java.io.StringWriter;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Nullable;
 
@@ -106,7 +111,9 @@ class DossierProcessCommonJsModules implements CompilerPass {
   private class CommonJsModuleCallback implements NodeTraversal.Callback {
 
     private final Map<String, String> typeAliases = new HashMap<>();
-    private List<Node> moduleExportRefs = new ArrayList<>();
+    private final Map<String, JSDocInfo> internalFunctionsToJsdoc = new HashMap<>();
+    private final Set<Node> exportAssignments = new HashSet<>();
+    private final List<Node> moduleExportRefs = new ArrayList<>();
 
     @Override
     public boolean shouldTraverse(NodeTraversal t, Node n, Node parent) {
@@ -142,6 +149,47 @@ class DossierProcessCommonJsModules implements CompilerPass {
           moduleExportRefs.add(n);
         }
       }
+
+      if (n.isFunction() && parent.isScript() && parent.getParent() == null) {
+        verify(n.getFirstChild().isName());
+        String name = n.getFirstChild().getString();
+        JSDocInfo docs = n.getJSDocInfo();
+        if (!"__missing_name__".equals(name) && docs != null) {
+          internalFunctionsToJsdoc.put(name, docs);
+        }
+      }
+
+      if (n.isVar() && parent.isScript() && parent.getParent() == null
+          && n.getFirstChild().getFirstChild() != null
+          && n.getFirstChild().getFirstChild().isFunction()) {
+        verify(n.getFirstChild().isName());
+        String name = n.getFirstChild().getString();
+        JSDocInfo docs = getFunctionExpressionJsDocs(n);
+        if (docs != null) {
+          internalFunctionsToJsdoc.put(name, docs);
+        }
+      }
+
+      if (n.isAssign() && n.getFirstChild().getNext().isName()) {
+        String name = n.getFirstChild().getQualifiedName();
+        if (!isNullOrEmpty(name)) {
+          if ("exports".equals(name)
+              || "module.exports".equals(name)
+              || name.startsWith("exports.")
+              || name.startsWith("module.exports.")) {
+            exportAssignments.add(n);
+          }
+        }
+      }
+    }
+
+    @Nullable
+    private JSDocInfo getFunctionExpressionJsDocs(Node var) {
+      verify(var.isVar());
+      Node fn = var.getFirstChild().getFirstChild();
+      return Optional.fromNullable(var.getJSDocInfo())
+          .or(Optional.fromNullable(fn.getJSDocInfo()))
+          .orNull();
     }
 
     private void visitScript(NodeTraversal t, Node script) {
@@ -149,6 +197,7 @@ class DossierProcessCommonJsModules implements CompilerPass {
         return;
       }
 
+      processInternalFunctionExportsAssignments();
       processModuleExportRefs(t);
 
       Node googModule = exprResult(call(
@@ -164,9 +213,29 @@ class DossierProcessCommonJsModules implements CompilerPass {
       traverse(t.getCompiler(), script, new TypeCleanup());
 
       typeAliases.clear();
+      internalFunctionsToJsdoc.clear();
       currentModule = null;
 
       t.getCompiler().reportCodeChange();
+    }
+
+    /**
+     * Saves a reference to the internal JSDocs for any exported functions that do not have docs
+     * attached to the export statement.
+     */
+    private void processInternalFunctionExportsAssignments() {
+      for (Node ref : exportAssignments) {
+        if (ref.getJSDocInfo() == null && ref.isAssign() && ref.getLastChild().isName()) {
+          String rhsName = ref.getLastChild().getQualifiedName();
+          if (internalFunctionsToJsdoc.containsKey(rhsName)) {
+            String lhsName = ref.getFirstChild().getQualifiedName();
+
+            String prefix = lhsName.startsWith("module.exports") ? "module.exports" : "exports";
+            lhsName = currentModule.getVarName() + lhsName.substring(prefix.length());
+            currentModule.addExportedFunctionDocs(lhsName, internalFunctionsToJsdoc.get(rhsName));
+          }
+        }
+      }
     }
 
     private void processModuleExportRefs(NodeTraversal t) {
@@ -194,12 +263,6 @@ class DossierProcessCommonJsModules implements CompilerPass {
       return parent.isAssign() && n == parent.getFirstChild() &&
           parent.getParent().isExprResult() &&
           parent.getParent().getParent().isScript();
-    }
-
-    private void changeName(Node node, String newName) {
-      checkArgument(node.isName());
-      node.putProp(Node.ORIGINALNAME_PROP, node.getString());
-      node.setString(newName);
     }
 
     private void visitRequireCall(NodeTraversal t, Node require, Node parent) {
