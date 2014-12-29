@@ -464,24 +464,24 @@
 {template .mainFunction}
   {@param type: dossier.JsType}
 
-  <h2 class="main">
-    {if $type.mainFunction.isConstructor}new{sp}{/if}
-    {$type.name}
-    {call .functionArgs}
-      {param fn: $type.mainFunction /}
-    {/call}
-  </h2>
-  {if length($type.mainFunction.parameter)
-      or length($type.mainFunction.thrown)
-      or ($type.mainFunction.return
-          and $type.mainFunction.return.description
-          and length($type.mainFunction.return.description.token)
-          and not $type.mainFunction.isConstructor)}
+  {let $fn: $type.mainFunction /}
+  {let $isNonTrivial: length($fn.parameter)
+                      or length($fn.thrown)
+                      or ($fn.return
+                          and $fn.return.description
+                          and length($fn.return.description.token)
+                          and not $fn.isConstructor) /}
+  {if $isNonTrivial}
+    <h2 class="main">
+      {if $fn.isConstructor}new{sp}{/if}
+      {$type.name}
+      {call .functionArgs}
+        {param fn: $fn /}
+      {/call}
+    </h2>
     {call .fnDetails}
-      {param fn: $type.mainFunction /}
+      {param fn: $fn /}
     {/call}
-  {else}
-    <p>No information.</p>
   {/if}
 {/template}
 
@@ -806,11 +806,13 @@
       {call .comment}
         {param comment: $spec.type.description /}
       {/call}
+
       {if not $spec.type.tags.isInterface and $spec.type.mainFunction}
         {call .mainFunction}
           {param type: $spec.type /}
         {/call}
       {/if}
+
       {if $spec.type.enumeration}
         {call .enumValues}
           {param name: $spec.type.name /}
