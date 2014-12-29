@@ -157,9 +157,9 @@ public class Main extends CommandLineRunner {
       System.exit(result);
     }
 
-    DocWriter writer = new HtmlDocWriter(config, typeRegistry);
+    DocWriter writer = new DocWriter(config, typeRegistry);
     try {
-      writer.generateDocs(getCompiler().getTypeRegistry());
+      writer.generateDocs();
     } catch (IOException e) {
       e.printStackTrace(System.err);
       System.exit(-3);

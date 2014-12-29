@@ -30,10 +30,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 /**
- * Tests for {@link HtmlDocWriter}.
+ * Tests for {@link DocWriter}.
  */
 @RunWith(JUnit4.class)
-public class HtmlDocWriterTest {
+public class DocWriterTest {
 
   private FileSystem fs;
   private Path outputDir;
@@ -167,8 +167,8 @@ public class HtmlDocWriterTest {
           ImmutableList.copyOf(
               Iterables.concat(sources.build(), modules.build())));
 
-      HtmlDocWriter writer = new HtmlDocWriter(config, typeRegistry);
-      writer.generateDocs(util.getCompiler().getTypeRegistry());
+      DocWriter writer = new DocWriter(config, typeRegistry);
+      writer.generateDocs();
     }
   }
 
