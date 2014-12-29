@@ -94,6 +94,12 @@ article {
   &.indexfile > h1,
   &.srcfile > h1 {
     margin-top: 0;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    &:hover {
+      overflow: visible;
+    }
   }
 
   &.srcfile {
