@@ -43,13 +43,6 @@
           <ul>
             {foreach $module in $index.module}
               <li><a href="{$module.link.href}">{$module.link.text}</a>
-                {if length($module.type)}
-                  <ul>
-                    {foreach $link in $module.type}
-                      <li><a href="{$link.href}">{$link.text}</a>
-                    {/foreach}
-                  </ul>
-                {/if}
             {/foreach}
           </ul>
         </div>
