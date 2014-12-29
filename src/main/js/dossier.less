@@ -229,9 +229,11 @@ h1, h2, h3 {
 }
 
 h1 {
-  .set-font-size(3.2rem);
+  @font-size: 3.0rem;
+
+  .set-font-size(@font-size);
   margin: 0.67rem 0;
-  margin-top: 3.2rem;
+  margin-top: @font-size;
 
   @marginBottom: 1.6rem;
 
