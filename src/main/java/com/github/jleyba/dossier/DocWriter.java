@@ -56,7 +56,6 @@ import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.jstype.EnumType;
 import com.google.javascript.rhino.jstype.FunctionType;
 import com.google.javascript.rhino.jstype.JSType;
-import com.google.javascript.rhino.jstype.JSTypeRegistry;
 import com.google.javascript.rhino.jstype.NamedType;
 import com.google.javascript.rhino.jstype.ObjectType;
 import com.google.javascript.rhino.jstype.Property;
@@ -466,8 +465,8 @@ class DocWriter {
         .relativize(config.getOutput());
     return Resources.newBuilder()
         .addCss(pathToRoot.resolve("dossier.css").toString())
-        .addScript(pathToRoot.resolve("types.js").toString())
-        .addScript(pathToRoot.resolve("dossier.js").toString())
+        .addTailScript(pathToRoot.resolve("types.js").toString())
+        .addTailScript(pathToRoot.resolve("dossier.js").toString())
         .build();
   }
 

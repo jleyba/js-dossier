@@ -83,8 +83,8 @@ public class RendererTest {
         render("dossier.soy.pageHeader", ImmutableMap.of(
             "title", "Foo.Bar",
             "resources", Dossier.Resources.newBuilder()
-                .addScript("one")
-                .addScript("two")
+                .addTailScript("one")
+                .addTailScript("two")
                 .addCss("apples")
                 .addCss("oranges")
                 .build()

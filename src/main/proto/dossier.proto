@@ -17,8 +17,11 @@ message SourceFile {
 message Resources {
   // Paths to stylesheets to link to in the generated page.
   repeated string css = 1;
-  // Paths to JavaScript files to include in the generated page.
-  repeated string script = 2;
+  // Paths to JavaScript files to include in the generated page's head.
+  repeated string head_script = 2;
+  // Paths to JavaScript files to include in the generated page after
+  // the DOM has been defined.
+  repeated string tail_script = 3;
 }
 
 

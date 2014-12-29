@@ -1190,39 +1190,78 @@ public final class Dossier {
         getCssBytes(int index);
 
     /**
-     * <code>repeated string script = 2;</code>
+     * <code>repeated string head_script = 2;</code>
      *
      * <pre>
-     * Paths to JavaScript files to include in the generated page.
+     * Paths to JavaScript files to include in the generated page's head.
      * </pre>
      */
     com.google.protobuf.ProtocolStringList
-        getScriptList();
+        getHeadScriptList();
     /**
-     * <code>repeated string script = 2;</code>
+     * <code>repeated string head_script = 2;</code>
      *
      * <pre>
-     * Paths to JavaScript files to include in the generated page.
+     * Paths to JavaScript files to include in the generated page's head.
      * </pre>
      */
-    int getScriptCount();
+    int getHeadScriptCount();
     /**
-     * <code>repeated string script = 2;</code>
+     * <code>repeated string head_script = 2;</code>
      *
      * <pre>
-     * Paths to JavaScript files to include in the generated page.
+     * Paths to JavaScript files to include in the generated page's head.
      * </pre>
      */
-    java.lang.String getScript(int index);
+    java.lang.String getHeadScript(int index);
     /**
-     * <code>repeated string script = 2;</code>
+     * <code>repeated string head_script = 2;</code>
      *
      * <pre>
-     * Paths to JavaScript files to include in the generated page.
+     * Paths to JavaScript files to include in the generated page's head.
      * </pre>
      */
     com.google.protobuf.ByteString
-        getScriptBytes(int index);
+        getHeadScriptBytes(int index);
+
+    /**
+     * <code>repeated string tail_script = 3;</code>
+     *
+     * <pre>
+     * Paths to JavaScript files to include in the generated page after
+     * the DOM has been defined.
+     * </pre>
+     */
+    com.google.protobuf.ProtocolStringList
+        getTailScriptList();
+    /**
+     * <code>repeated string tail_script = 3;</code>
+     *
+     * <pre>
+     * Paths to JavaScript files to include in the generated page after
+     * the DOM has been defined.
+     * </pre>
+     */
+    int getTailScriptCount();
+    /**
+     * <code>repeated string tail_script = 3;</code>
+     *
+     * <pre>
+     * Paths to JavaScript files to include in the generated page after
+     * the DOM has been defined.
+     * </pre>
+     */
+    java.lang.String getTailScript(int index);
+    /**
+     * <code>repeated string tail_script = 3;</code>
+     *
+     * <pre>
+     * Paths to JavaScript files to include in the generated page after
+     * the DOM has been defined.
+     * </pre>
+     */
+    com.google.protobuf.ByteString
+        getTailScriptBytes(int index);
   }
   /**
    * Protobuf type {@code dossier.Resources}
@@ -1292,10 +1331,19 @@ public final class Dossier {
             case 18: {
               com.google.protobuf.ByteString bs = input.readBytes();
               if (!((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
-                script_ = new com.google.protobuf.LazyStringArrayList();
+                headScript_ = new com.google.protobuf.LazyStringArrayList();
                 mutable_bitField0_ |= 0x00000002;
               }
-              script_.add(bs);
+              headScript_.add(bs);
+              break;
+            }
+            case 26: {
+              com.google.protobuf.ByteString bs = input.readBytes();
+              if (!((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
+                tailScript_ = new com.google.protobuf.LazyStringArrayList();
+                mutable_bitField0_ |= 0x00000004;
+              }
+              tailScript_.add(bs);
               break;
             }
           }
@@ -1310,7 +1358,10 @@ public final class Dossier {
           css_ = css_.getUnmodifiableView();
         }
         if (((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
-          script_ = script_.getUnmodifiableView();
+          headScript_ = headScript_.getUnmodifiableView();
+        }
+        if (((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
+          tailScript_ = tailScript_.getUnmodifiableView();
         }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
@@ -1388,54 +1439,104 @@ public final class Dossier {
       return css_.getByteString(index);
     }
 
-    public static final int SCRIPT_FIELD_NUMBER = 2;
-    private com.google.protobuf.LazyStringList script_;
+    public static final int HEAD_SCRIPT_FIELD_NUMBER = 2;
+    private com.google.protobuf.LazyStringList headScript_;
     /**
-     * <code>repeated string script = 2;</code>
+     * <code>repeated string head_script = 2;</code>
      *
      * <pre>
-     * Paths to JavaScript files to include in the generated page.
+     * Paths to JavaScript files to include in the generated page's head.
      * </pre>
      */
     public com.google.protobuf.ProtocolStringList
-        getScriptList() {
-      return script_;
+        getHeadScriptList() {
+      return headScript_;
     }
     /**
-     * <code>repeated string script = 2;</code>
+     * <code>repeated string head_script = 2;</code>
      *
      * <pre>
-     * Paths to JavaScript files to include in the generated page.
+     * Paths to JavaScript files to include in the generated page's head.
      * </pre>
      */
-    public int getScriptCount() {
-      return script_.size();
+    public int getHeadScriptCount() {
+      return headScript_.size();
     }
     /**
-     * <code>repeated string script = 2;</code>
+     * <code>repeated string head_script = 2;</code>
      *
      * <pre>
-     * Paths to JavaScript files to include in the generated page.
+     * Paths to JavaScript files to include in the generated page's head.
      * </pre>
      */
-    public java.lang.String getScript(int index) {
-      return script_.get(index);
+    public java.lang.String getHeadScript(int index) {
+      return headScript_.get(index);
     }
     /**
-     * <code>repeated string script = 2;</code>
+     * <code>repeated string head_script = 2;</code>
      *
      * <pre>
-     * Paths to JavaScript files to include in the generated page.
+     * Paths to JavaScript files to include in the generated page's head.
      * </pre>
      */
     public com.google.protobuf.ByteString
-        getScriptBytes(int index) {
-      return script_.getByteString(index);
+        getHeadScriptBytes(int index) {
+      return headScript_.getByteString(index);
+    }
+
+    public static final int TAIL_SCRIPT_FIELD_NUMBER = 3;
+    private com.google.protobuf.LazyStringList tailScript_;
+    /**
+     * <code>repeated string tail_script = 3;</code>
+     *
+     * <pre>
+     * Paths to JavaScript files to include in the generated page after
+     * the DOM has been defined.
+     * </pre>
+     */
+    public com.google.protobuf.ProtocolStringList
+        getTailScriptList() {
+      return tailScript_;
+    }
+    /**
+     * <code>repeated string tail_script = 3;</code>
+     *
+     * <pre>
+     * Paths to JavaScript files to include in the generated page after
+     * the DOM has been defined.
+     * </pre>
+     */
+    public int getTailScriptCount() {
+      return tailScript_.size();
+    }
+    /**
+     * <code>repeated string tail_script = 3;</code>
+     *
+     * <pre>
+     * Paths to JavaScript files to include in the generated page after
+     * the DOM has been defined.
+     * </pre>
+     */
+    public java.lang.String getTailScript(int index) {
+      return tailScript_.get(index);
+    }
+    /**
+     * <code>repeated string tail_script = 3;</code>
+     *
+     * <pre>
+     * Paths to JavaScript files to include in the generated page after
+     * the DOM has been defined.
+     * </pre>
+     */
+    public com.google.protobuf.ByteString
+        getTailScriptBytes(int index) {
+      return tailScript_.getByteString(index);
     }
 
     private void initFields() {
       css_ = com.google.protobuf.LazyStringArrayList.EMPTY;
-      script_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+      headScript_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+      tailScript_ = com.google.protobuf.LazyStringArrayList.EMPTY;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -1453,8 +1554,11 @@ public final class Dossier {
       for (int i = 0; i < css_.size(); i++) {
         output.writeBytes(1, css_.getByteString(i));
       }
-      for (int i = 0; i < script_.size(); i++) {
-        output.writeBytes(2, script_.getByteString(i));
+      for (int i = 0; i < headScript_.size(); i++) {
+        output.writeBytes(2, headScript_.getByteString(i));
+      }
+      for (int i = 0; i < tailScript_.size(); i++) {
+        output.writeBytes(3, tailScript_.getByteString(i));
       }
       getUnknownFields().writeTo(output);
     }
@@ -1476,12 +1580,21 @@ public final class Dossier {
       }
       {
         int dataSize = 0;
-        for (int i = 0; i < script_.size(); i++) {
+        for (int i = 0; i < headScript_.size(); i++) {
           dataSize += com.google.protobuf.CodedOutputStream
-            .computeBytesSizeNoTag(script_.getByteString(i));
+            .computeBytesSizeNoTag(headScript_.getByteString(i));
         }
         size += dataSize;
-        size += 1 * getScriptList().size();
+        size += 1 * getHeadScriptList().size();
+      }
+      {
+        int dataSize = 0;
+        for (int i = 0; i < tailScript_.size(); i++) {
+          dataSize += com.google.protobuf.CodedOutputStream
+            .computeBytesSizeNoTag(tailScript_.getByteString(i));
+        }
+        size += dataSize;
+        size += 1 * getTailScriptList().size();
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -1606,8 +1719,10 @@ public final class Dossier {
         super.clear();
         css_ = com.google.protobuf.LazyStringArrayList.EMPTY;
         bitField0_ = (bitField0_ & ~0x00000001);
-        script_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+        headScript_ = com.google.protobuf.LazyStringArrayList.EMPTY;
         bitField0_ = (bitField0_ & ~0x00000002);
+        tailScript_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00000004);
         return this;
       }
 
@@ -1641,10 +1756,15 @@ public final class Dossier {
         }
         result.css_ = css_;
         if (((bitField0_ & 0x00000002) == 0x00000002)) {
-          script_ = script_.getUnmodifiableView();
+          headScript_ = headScript_.getUnmodifiableView();
           bitField0_ = (bitField0_ & ~0x00000002);
         }
-        result.script_ = script_;
+        result.headScript_ = headScript_;
+        if (((bitField0_ & 0x00000004) == 0x00000004)) {
+          tailScript_ = tailScript_.getUnmodifiableView();
+          bitField0_ = (bitField0_ & ~0x00000004);
+        }
+        result.tailScript_ = tailScript_;
         onBuilt();
         return result;
       }
@@ -1670,13 +1790,23 @@ public final class Dossier {
           }
           onChanged();
         }
-        if (!other.script_.isEmpty()) {
-          if (script_.isEmpty()) {
-            script_ = other.script_;
+        if (!other.headScript_.isEmpty()) {
+          if (headScript_.isEmpty()) {
+            headScript_ = other.headScript_;
             bitField0_ = (bitField0_ & ~0x00000002);
           } else {
-            ensureScriptIsMutable();
-            script_.addAll(other.script_);
+            ensureHeadScriptIsMutable();
+            headScript_.addAll(other.headScript_);
+          }
+          onChanged();
+        }
+        if (!other.tailScript_.isEmpty()) {
+          if (tailScript_.isEmpty()) {
+            tailScript_ = other.tailScript_;
+            bitField0_ = (bitField0_ & ~0x00000004);
+          } else {
+            ensureTailScriptIsMutable();
+            tailScript_.addAll(other.tailScript_);
           }
           onChanged();
         }
@@ -1836,131 +1966,269 @@ public final class Dossier {
         return this;
       }
 
-      private com.google.protobuf.LazyStringList script_ = com.google.protobuf.LazyStringArrayList.EMPTY;
-      private void ensureScriptIsMutable() {
+      private com.google.protobuf.LazyStringList headScript_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+      private void ensureHeadScriptIsMutable() {
         if (!((bitField0_ & 0x00000002) == 0x00000002)) {
-          script_ = new com.google.protobuf.LazyStringArrayList(script_);
+          headScript_ = new com.google.protobuf.LazyStringArrayList(headScript_);
           bitField0_ |= 0x00000002;
          }
       }
       /**
-       * <code>repeated string script = 2;</code>
+       * <code>repeated string head_script = 2;</code>
        *
        * <pre>
-       * Paths to JavaScript files to include in the generated page.
+       * Paths to JavaScript files to include in the generated page's head.
        * </pre>
        */
       public com.google.protobuf.ProtocolStringList
-          getScriptList() {
-        return script_.getUnmodifiableView();
+          getHeadScriptList() {
+        return headScript_.getUnmodifiableView();
       }
       /**
-       * <code>repeated string script = 2;</code>
+       * <code>repeated string head_script = 2;</code>
        *
        * <pre>
-       * Paths to JavaScript files to include in the generated page.
+       * Paths to JavaScript files to include in the generated page's head.
        * </pre>
        */
-      public int getScriptCount() {
-        return script_.size();
+      public int getHeadScriptCount() {
+        return headScript_.size();
       }
       /**
-       * <code>repeated string script = 2;</code>
+       * <code>repeated string head_script = 2;</code>
        *
        * <pre>
-       * Paths to JavaScript files to include in the generated page.
+       * Paths to JavaScript files to include in the generated page's head.
        * </pre>
        */
-      public java.lang.String getScript(int index) {
-        return script_.get(index);
+      public java.lang.String getHeadScript(int index) {
+        return headScript_.get(index);
       }
       /**
-       * <code>repeated string script = 2;</code>
+       * <code>repeated string head_script = 2;</code>
        *
        * <pre>
-       * Paths to JavaScript files to include in the generated page.
+       * Paths to JavaScript files to include in the generated page's head.
        * </pre>
        */
       public com.google.protobuf.ByteString
-          getScriptBytes(int index) {
-        return script_.getByteString(index);
+          getHeadScriptBytes(int index) {
+        return headScript_.getByteString(index);
       }
       /**
-       * <code>repeated string script = 2;</code>
+       * <code>repeated string head_script = 2;</code>
        *
        * <pre>
-       * Paths to JavaScript files to include in the generated page.
+       * Paths to JavaScript files to include in the generated page's head.
        * </pre>
        */
-      public Builder setScript(
+      public Builder setHeadScript(
           int index, java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  ensureScriptIsMutable();
-        script_.set(index, value);
+  ensureHeadScriptIsMutable();
+        headScript_.set(index, value);
         onChanged();
         return this;
       }
       /**
-       * <code>repeated string script = 2;</code>
+       * <code>repeated string head_script = 2;</code>
        *
        * <pre>
-       * Paths to JavaScript files to include in the generated page.
+       * Paths to JavaScript files to include in the generated page's head.
        * </pre>
        */
-      public Builder addScript(
+      public Builder addHeadScript(
           java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  ensureScriptIsMutable();
-        script_.add(value);
+  ensureHeadScriptIsMutable();
+        headScript_.add(value);
         onChanged();
         return this;
       }
       /**
-       * <code>repeated string script = 2;</code>
+       * <code>repeated string head_script = 2;</code>
        *
        * <pre>
-       * Paths to JavaScript files to include in the generated page.
+       * Paths to JavaScript files to include in the generated page's head.
        * </pre>
        */
-      public Builder addAllScript(
+      public Builder addAllHeadScript(
           java.lang.Iterable<java.lang.String> values) {
-        ensureScriptIsMutable();
+        ensureHeadScriptIsMutable();
         com.google.protobuf.AbstractMessageLite.Builder.addAll(
-            values, script_);
+            values, headScript_);
         onChanged();
         return this;
       }
       /**
-       * <code>repeated string script = 2;</code>
+       * <code>repeated string head_script = 2;</code>
        *
        * <pre>
-       * Paths to JavaScript files to include in the generated page.
+       * Paths to JavaScript files to include in the generated page's head.
        * </pre>
        */
-      public Builder clearScript() {
-        script_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+      public Builder clearHeadScript() {
+        headScript_ = com.google.protobuf.LazyStringArrayList.EMPTY;
         bitField0_ = (bitField0_ & ~0x00000002);
         onChanged();
         return this;
       }
       /**
-       * <code>repeated string script = 2;</code>
+       * <code>repeated string head_script = 2;</code>
        *
        * <pre>
-       * Paths to JavaScript files to include in the generated page.
+       * Paths to JavaScript files to include in the generated page's head.
        * </pre>
        */
-      public Builder addScriptBytes(
+      public Builder addHeadScriptBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  ensureScriptIsMutable();
-        script_.add(value);
+  ensureHeadScriptIsMutable();
+        headScript_.add(value);
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.LazyStringList tailScript_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+      private void ensureTailScriptIsMutable() {
+        if (!((bitField0_ & 0x00000004) == 0x00000004)) {
+          tailScript_ = new com.google.protobuf.LazyStringArrayList(tailScript_);
+          bitField0_ |= 0x00000004;
+         }
+      }
+      /**
+       * <code>repeated string tail_script = 3;</code>
+       *
+       * <pre>
+       * Paths to JavaScript files to include in the generated page after
+       * the DOM has been defined.
+       * </pre>
+       */
+      public com.google.protobuf.ProtocolStringList
+          getTailScriptList() {
+        return tailScript_.getUnmodifiableView();
+      }
+      /**
+       * <code>repeated string tail_script = 3;</code>
+       *
+       * <pre>
+       * Paths to JavaScript files to include in the generated page after
+       * the DOM has been defined.
+       * </pre>
+       */
+      public int getTailScriptCount() {
+        return tailScript_.size();
+      }
+      /**
+       * <code>repeated string tail_script = 3;</code>
+       *
+       * <pre>
+       * Paths to JavaScript files to include in the generated page after
+       * the DOM has been defined.
+       * </pre>
+       */
+      public java.lang.String getTailScript(int index) {
+        return tailScript_.get(index);
+      }
+      /**
+       * <code>repeated string tail_script = 3;</code>
+       *
+       * <pre>
+       * Paths to JavaScript files to include in the generated page after
+       * the DOM has been defined.
+       * </pre>
+       */
+      public com.google.protobuf.ByteString
+          getTailScriptBytes(int index) {
+        return tailScript_.getByteString(index);
+      }
+      /**
+       * <code>repeated string tail_script = 3;</code>
+       *
+       * <pre>
+       * Paths to JavaScript files to include in the generated page after
+       * the DOM has been defined.
+       * </pre>
+       */
+      public Builder setTailScript(
+          int index, java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureTailScriptIsMutable();
+        tailScript_.set(index, value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated string tail_script = 3;</code>
+       *
+       * <pre>
+       * Paths to JavaScript files to include in the generated page after
+       * the DOM has been defined.
+       * </pre>
+       */
+      public Builder addTailScript(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureTailScriptIsMutable();
+        tailScript_.add(value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated string tail_script = 3;</code>
+       *
+       * <pre>
+       * Paths to JavaScript files to include in the generated page after
+       * the DOM has been defined.
+       * </pre>
+       */
+      public Builder addAllTailScript(
+          java.lang.Iterable<java.lang.String> values) {
+        ensureTailScriptIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, tailScript_);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated string tail_script = 3;</code>
+       *
+       * <pre>
+       * Paths to JavaScript files to include in the generated page after
+       * the DOM has been defined.
+       * </pre>
+       */
+      public Builder clearTailScript() {
+        tailScript_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00000004);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated string tail_script = 3;</code>
+       *
+       * <pre>
+       * Paths to JavaScript files to include in the generated page after
+       * the DOM has been defined.
+       * </pre>
+       */
+      public Builder addTailScriptBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureTailScriptIsMutable();
+        tailScript_.add(value);
         onChanged();
         return this;
       }
@@ -28572,85 +28840,85 @@ public final class Dossier {
     java.lang.String[] descriptorData = {
       "\n\034src/main/proto/dossier.proto\022\007dossier\"" +
       "<\n\nSourceFile\022\021\n\tbase_name\030\001 \002(\t\022\014\n\004path" +
-      "\030\002 \002(\t\022\r\n\005lines\030\003 \003(\t\"(\n\tResources\022\013\n\003cs" +
-      "s\030\001 \003(\t\022\016\n\006script\030\002 \003(\t\"&\n\010TypeLink\022\014\n\004t" +
-      "ext\030\001 \002(\t\022\014\n\004href\030\002 \002(\t\"(\n\nSourceLink\022\014\n" +
-      "\004path\030\001 \002(\t\022\014\n\004line\030\002 \001(\005\"\250\001\n\007Comment\022%\n" +
-      "\005token\030\001 \003(\0132\026.dossier.Comment.Token\032v\n\005" +
-      "Token\022\014\n\004text\030\001 \002(\t\022\031\n\nis_literal\030\002 \001(\010:" +
-      "\005false\022\026\n\007is_code\030\003 \001(\010:\005false\022\014\n\004href\030\004" +
-      " \001(\t\022\036\n\017unresolved_link\030\005 \001(\010:\005false\"/\n\013",
-      "Deprecation\022 \n\006notice\030\001 \001(\0132\020.dossier.Co" +
-      "mment\"\216\001\n\004Tags\022\020\n\010is_const\030\001 \001(\010\022\025\n\ris_d" +
-      "eprecated\030\002 \001(\010\022\017\n\007is_dict\030\003 \001(\010\022\020\n\010is_f" +
-      "inal\030\004 \001(\010\022\024\n\014is_interface\030\005 \001(\010\022\021\n\tis_m" +
-      "odule\030\006 \001(\010\022\021\n\tis_struct\030\007 \001(\010\"\341\001\n\014BaseP" +
-      "roperty\022\014\n\004name\030\001 \002(\t\022#\n\006source\030\002 \002(\0132\023." +
-      "dossier.SourceLink\022%\n\013description\030\003 \002(\0132" +
-      "\020.dossier.Comment\022)\n\013deprecation\030\004 \001(\0132\024" +
-      ".dossier.Deprecation\022/\n\nvisibility\030\005 \001(\016" +
-      "2\023.dossier.Visibility:\006PUBLIC\022\033\n\004tags\030\006 ",
-      "\001(\0132\r.dossier.Tags\"O\n\010Property\022#\n\004base\030\001" +
-      " \002(\0132\025.dossier.BaseProperty\022\036\n\004type\030\002 \001(" +
-      "\0132\020.dossier.Comment\"\305\002\n\010Function\022#\n\004base" +
-      "\030\001 \002(\0132\025.dossier.BaseProperty\022\025\n\rtemplat" +
-      "e_name\030\002 \003(\t\022\035\n\016is_constructor\030\003 \001(\010:\005fa" +
-      "lse\022+\n\tparameter\030\004 \003(\0132\030.dossier.Functio" +
-      "n.Detail\022(\n\006return\030\005 \001(\0132\030.dossier.Funct" +
-      "ion.Detail\022(\n\006thrown\030\006 \003(\0132\030.dossier.Fun" +
-      "ction.Detail\032]\n\006Detail\022\014\n\004name\030\001 \001(\t\022\036\n\004" +
-      "type\030\002 \001(\0132\020.dossier.Comment\022%\n\013descript",
-      "ion\030\003 \001(\0132\020.dossier.Comment\"\362\001\n\013Enumerat" +
-      "ion\022\036\n\004type\030\001 \002(\0132\020.dossier.Comment\022)\n\005v" +
-      "alue\030\002 \003(\0132\032.dossier.Enumeration.Value\022/" +
-      "\n\nvisibility\030\003 \001(\0162\023.dossier.Visibility:" +
-      "\006PUBLIC\032g\n\005Value\022\014\n\004name\030\001 \002(\t\022%\n\013descri" +
-      "ption\030\002 \001(\0132\020.dossier.Comment\022)\n\013depreca" +
-      "tion\030\003 \001(\0132\024.dossier.Deprecation\"\251\001\n\005Ind" +
-      "ex\022\014\n\004home\030\001 \002(\t\022\037\n\004type\030\002 \003(\0132\021.dossier" +
-      ".TypeLink\022%\n\006module\030\003 \003(\0132\025.dossier.Inde" +
-      "x.Module\032J\n\006Module\022\037\n\004link\030\001 \002(\0132\021.dossi",
-      "er.TypeLink\022\037\n\004type\030\002 \003(\0132\021.dossier.Type" +
-      "Link\"\276\010\n\006JsType\022\014\n\004name\030\001 \002(\t\022#\n\006source\030" +
-      "\005 \002(\0132\023.dossier.SourceLink\022+\n\006nested\030\006 \003" +
-      "(\0132\033.dossier.JsType.TypeSummary\022%\n\013descr" +
-      "iption\030\007 \002(\0132\020.dossier.Comment\022\033\n\004tags\030\010" +
-      " \002(\0132\r.dossier.Tags\022)\n\013deprecation\030\t \001(\013" +
-      "2\024.dossier.Deprecation\022)\n\010type_def\030\n \003(\013" +
-      "2\027.dossier.JsType.TypeDef\022)\n\013enumeration" +
-      "\030\013 \001(\0132\024.dossier.Enumeration\022*\n\017static_f" +
-      "unction\030\014 \003(\0132\021.dossier.Function\022*\n\017stat",
-      "ic_property\030\r \003(\0132\021.dossier.Property\022(\n\r" +
-      "main_function\030\016 \001(\0132\021.dossier.Function\022!" +
-      "\n\006method\030\017 \003(\0132\021.dossier.Function\022 \n\005fie" +
-      "ld\030\020 \003(\0132\021.dossier.Property\022\'\n\rextended_" +
-      "type\030\022 \003(\0132\020.dossier.Comment\022*\n\020implemen" +
-      "ted_type\030\023 \003(\0132\020.dossier.Comment\022,\n\021comp" +
-      "iler_constant\030\024 \003(\0132\021.dossier.Property\022*" +
-      "\n\006parent\030\025 \001(\0132\032.dossier.JsType.ParentLi" +
-      "nk\022\'\n\014aliased_type\030\026 \001(\0132\021.dossier.TypeL" +
-      "ink\032L\n\013TypeSummary\022\014\n\004name\030\001 \002(\t\022\014\n\004href",
-      "\030\002 \002(\t\022!\n\007summary\030\003 \002(\0132\020.dossier.Commen" +
-      "t\032\337\001\n\007TypeDef\022\014\n\004name\030\001 \002(\t\022\036\n\004type\030\002 \002(" +
-      "\0132\020.dossier.Comment\022#\n\006source\030\003 \002(\0132\023.do" +
-      "ssier.SourceLink\022%\n\013description\030\004 \002(\0132\020." +
-      "dossier.Comment\022)\n\013deprecation\030\005 \001(\0132\024.d" +
-      "ossier.Deprecation\022/\n\nvisibility\030\006 \001(\0162\023" +
-      ".dossier.Visibility:\006PUBLIC\032@\n\nParentLin" +
-      "k\022\037\n\004link\030\001 \002(\0132\021.dossier.TypeLink\022\021\n\tis" +
-      "_module\030\002 \001(\010\"}\n\023IndexFileRenderSpec\022%\n\t" +
-      "resources\030\001 \002(\0132\022.dossier.Resources\022 \n\006r",
-      "eadme\030\002 \001(\0132\020.dossier.Comment\022\035\n\005index\030\003" +
-      " \002(\0132\016.dossier.Index\"\177\n\024SourceFileRender" +
-      "Spec\022%\n\tresources\030\001 \002(\0132\022.dossier.Resour" +
-      "ces\022!\n\004file\030\002 \002(\0132\023.dossier.SourceFile\022\035" +
-      "\n\005index\030\003 \002(\0132\016.dossier.Index\"w\n\020JsTypeR" +
-      "enderSpec\022\035\n\004type\030\001 \002(\0132\017.dossier.JsType" +
-      "\022%\n\tresources\030\002 \002(\0132\022.dossier.Resources\022" +
-      "\035\n\005index\030\003 \002(\0132\016.dossier.Index*A\n\nVisibi" +
-      "lity\022\n\n\006PUBLIC\020\000\022\r\n\tPROTECTED\020\001\022\013\n\007PRIVA" +
-      "TE\020\002\022\013\n\007PACKAGE\020\003B!\n\037com.github.jleyba.d",
-      "ossier.proto"
+      "\030\002 \002(\t\022\r\n\005lines\030\003 \003(\t\"B\n\tResources\022\013\n\003cs" +
+      "s\030\001 \003(\t\022\023\n\013head_script\030\002 \003(\t\022\023\n\013tail_scr" +
+      "ipt\030\003 \003(\t\"&\n\010TypeLink\022\014\n\004text\030\001 \002(\t\022\014\n\004h" +
+      "ref\030\002 \002(\t\"(\n\nSourceLink\022\014\n\004path\030\001 \002(\t\022\014\n" +
+      "\004line\030\002 \001(\005\"\250\001\n\007Comment\022%\n\005token\030\001 \003(\0132\026" +
+      ".dossier.Comment.Token\032v\n\005Token\022\014\n\004text\030" +
+      "\001 \002(\t\022\031\n\nis_literal\030\002 \001(\010:\005false\022\026\n\007is_c" +
+      "ode\030\003 \001(\010:\005false\022\014\n\004href\030\004 \001(\t\022\036\n\017unreso",
+      "lved_link\030\005 \001(\010:\005false\"/\n\013Deprecation\022 \n" +
+      "\006notice\030\001 \001(\0132\020.dossier.Comment\"\216\001\n\004Tags" +
+      "\022\020\n\010is_const\030\001 \001(\010\022\025\n\ris_deprecated\030\002 \001(" +
+      "\010\022\017\n\007is_dict\030\003 \001(\010\022\020\n\010is_final\030\004 \001(\010\022\024\n\014" +
+      "is_interface\030\005 \001(\010\022\021\n\tis_module\030\006 \001(\010\022\021\n" +
+      "\tis_struct\030\007 \001(\010\"\341\001\n\014BaseProperty\022\014\n\004nam" +
+      "e\030\001 \002(\t\022#\n\006source\030\002 \002(\0132\023.dossier.Source" +
+      "Link\022%\n\013description\030\003 \002(\0132\020.dossier.Comm" +
+      "ent\022)\n\013deprecation\030\004 \001(\0132\024.dossier.Depre" +
+      "cation\022/\n\nvisibility\030\005 \001(\0162\023.dossier.Vis",
+      "ibility:\006PUBLIC\022\033\n\004tags\030\006 \001(\0132\r.dossier." +
+      "Tags\"O\n\010Property\022#\n\004base\030\001 \002(\0132\025.dossier" +
+      ".BaseProperty\022\036\n\004type\030\002 \001(\0132\020.dossier.Co" +
+      "mment\"\305\002\n\010Function\022#\n\004base\030\001 \002(\0132\025.dossi" +
+      "er.BaseProperty\022\025\n\rtemplate_name\030\002 \003(\t\022\035" +
+      "\n\016is_constructor\030\003 \001(\010:\005false\022+\n\tparamet" +
+      "er\030\004 \003(\0132\030.dossier.Function.Detail\022(\n\006re" +
+      "turn\030\005 \001(\0132\030.dossier.Function.Detail\022(\n\006" +
+      "thrown\030\006 \003(\0132\030.dossier.Function.Detail\032]" +
+      "\n\006Detail\022\014\n\004name\030\001 \001(\t\022\036\n\004type\030\002 \001(\0132\020.d",
+      "ossier.Comment\022%\n\013description\030\003 \001(\0132\020.do" +
+      "ssier.Comment\"\362\001\n\013Enumeration\022\036\n\004type\030\001 " +
+      "\002(\0132\020.dossier.Comment\022)\n\005value\030\002 \003(\0132\032.d" +
+      "ossier.Enumeration.Value\022/\n\nvisibility\030\003" +
+      " \001(\0162\023.dossier.Visibility:\006PUBLIC\032g\n\005Val" +
+      "ue\022\014\n\004name\030\001 \002(\t\022%\n\013description\030\002 \001(\0132\020." +
+      "dossier.Comment\022)\n\013deprecation\030\003 \001(\0132\024.d" +
+      "ossier.Deprecation\"\251\001\n\005Index\022\014\n\004home\030\001 \002" +
+      "(\t\022\037\n\004type\030\002 \003(\0132\021.dossier.TypeLink\022%\n\006m" +
+      "odule\030\003 \003(\0132\025.dossier.Index.Module\032J\n\006Mo",
+      "dule\022\037\n\004link\030\001 \002(\0132\021.dossier.TypeLink\022\037\n" +
+      "\004type\030\002 \003(\0132\021.dossier.TypeLink\"\276\010\n\006JsTyp" +
+      "e\022\014\n\004name\030\001 \002(\t\022#\n\006source\030\005 \002(\0132\023.dossie" +
+      "r.SourceLink\022+\n\006nested\030\006 \003(\0132\033.dossier.J" +
+      "sType.TypeSummary\022%\n\013description\030\007 \002(\0132\020" +
+      ".dossier.Comment\022\033\n\004tags\030\010 \002(\0132\r.dossier" +
+      ".Tags\022)\n\013deprecation\030\t \001(\0132\024.dossier.Dep" +
+      "recation\022)\n\010type_def\030\n \003(\0132\027.dossier.JsT" +
+      "ype.TypeDef\022)\n\013enumeration\030\013 \001(\0132\024.dossi" +
+      "er.Enumeration\022*\n\017static_function\030\014 \003(\0132",
+      "\021.dossier.Function\022*\n\017static_property\030\r " +
+      "\003(\0132\021.dossier.Property\022(\n\rmain_function\030" +
+      "\016 \001(\0132\021.dossier.Function\022!\n\006method\030\017 \003(\013" +
+      "2\021.dossier.Function\022 \n\005field\030\020 \003(\0132\021.dos" +
+      "sier.Property\022\'\n\rextended_type\030\022 \003(\0132\020.d" +
+      "ossier.Comment\022*\n\020implemented_type\030\023 \003(\013" +
+      "2\020.dossier.Comment\022,\n\021compiler_constant\030" +
+      "\024 \003(\0132\021.dossier.Property\022*\n\006parent\030\025 \001(\013" +
+      "2\032.dossier.JsType.ParentLink\022\'\n\014aliased_" +
+      "type\030\026 \001(\0132\021.dossier.TypeLink\032L\n\013TypeSum",
+      "mary\022\014\n\004name\030\001 \002(\t\022\014\n\004href\030\002 \002(\t\022!\n\007summ" +
+      "ary\030\003 \002(\0132\020.dossier.Comment\032\337\001\n\007TypeDef\022" +
+      "\014\n\004name\030\001 \002(\t\022\036\n\004type\030\002 \002(\0132\020.dossier.Co" +
+      "mment\022#\n\006source\030\003 \002(\0132\023.dossier.SourceLi" +
+      "nk\022%\n\013description\030\004 \002(\0132\020.dossier.Commen" +
+      "t\022)\n\013deprecation\030\005 \001(\0132\024.dossier.Depreca" +
+      "tion\022/\n\nvisibility\030\006 \001(\0162\023.dossier.Visib" +
+      "ility:\006PUBLIC\032@\n\nParentLink\022\037\n\004link\030\001 \002(" +
+      "\0132\021.dossier.TypeLink\022\021\n\tis_module\030\002 \001(\010\"" +
+      "}\n\023IndexFileRenderSpec\022%\n\tresources\030\001 \002(",
+      "\0132\022.dossier.Resources\022 \n\006readme\030\002 \001(\0132\020." +
+      "dossier.Comment\022\035\n\005index\030\003 \002(\0132\016.dossier" +
+      ".Index\"\177\n\024SourceFileRenderSpec\022%\n\tresour" +
+      "ces\030\001 \002(\0132\022.dossier.Resources\022!\n\004file\030\002 " +
+      "\002(\0132\023.dossier.SourceFile\022\035\n\005index\030\003 \002(\0132" +
+      "\016.dossier.Index\"w\n\020JsTypeRenderSpec\022\035\n\004t" +
+      "ype\030\001 \002(\0132\017.dossier.JsType\022%\n\tresources\030" +
+      "\002 \002(\0132\022.dossier.Resources\022\035\n\005index\030\003 \002(\013" +
+      "2\016.dossier.Index*A\n\nVisibility\022\n\n\006PUBLIC" +
+      "\020\000\022\r\n\tPROTECTED\020\001\022\013\n\007PRIVATE\020\002\022\013\n\007PACKAG",
+      "E\020\003B!\n\037com.github.jleyba.dossier.proto"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -28675,7 +28943,7 @@ public final class Dossier {
     internal_static_dossier_Resources_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_dossier_Resources_descriptor,
-        new java.lang.String[] { "Css", "Script", });
+        new java.lang.String[] { "Css", "HeadScript", "TailScript", });
     internal_static_dossier_TypeLink_descriptor =
       getDescriptor().getMessageTypes().get(2);
     internal_static_dossier_TypeLink_fieldAccessorTable = new
