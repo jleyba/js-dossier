@@ -137,11 +137,7 @@ public class TypeRegistry {
     }
 
     if (type.getModule() != null) {
-      String qualifiedName = type.getQualifiedName(true);
-      nameToModuleTypes.put(qualifiedName, type);
-
-      // If there are any known subtypes (e.g. |type| is an alias), register them for future lookup.
-      registerModuleTypes(qualifiedName, type.getTypes());
+      registerModuleExports(type);
     }
 
     if (type.isModuleExports() && type.isCommonJsModule()) {
@@ -152,6 +148,22 @@ public class TypeRegistry {
     } else if (!type.isCommonJsModule()) {
       nominalTypes.put(type.getQualifiedName(true), type);
     }
+  }
+
+  private void registerModuleExports(NominalType type) {
+    String qualifiedName = type.getQualifiedName(true);
+    nameToModuleTypes.put(qualifiedName, type);
+
+    JSType jsType = type.getJsType();
+    if (jsType.isObject() && jsType.toObjectType().hasReferenceName()) {
+      String referenceName = jsType.toObjectType().getReferenceName();
+      if (referenceName.startsWith(INTERNAL_NAMESPACE_VAR)) {
+        nameToModuleTypes.put(referenceName, type);
+      }
+    }
+
+    // If there are any known subtypes (e.g. |type| is an alias), register them for future lookup.
+    registerModuleTypes(qualifiedName, type.getTypes());
   }
 
   private void registerModuleTypes(String baseName, Iterable<NominalType> types) {

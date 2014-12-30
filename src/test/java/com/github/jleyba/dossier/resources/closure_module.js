@@ -50,7 +50,11 @@ exports.Clazz.prototype.method = function() {
 };
 
 
-/** This is an internal function exposed below. */
-function internal() {
+/**
+ * This is an internal function exposed below.
+ * @param {!PublicClass} a Reference to internal class as parameter.
+ * @param {(string|PublicClass)} b Reference to internal class in union.
+ */
+function internal(a, b) {
 }
 exports.publicMethod = internal;
