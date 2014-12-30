@@ -273,7 +273,9 @@ public class Linker {
     }
 
     if (!type.getJsType().toObjectType().getPropertyNames().contains(symbol)) {
-      return null;
+      return link.toBuilder()
+          .setText(link.getText() + "." + symbol)
+          .build();
     }
 
     if (!type.isNamespace()) {

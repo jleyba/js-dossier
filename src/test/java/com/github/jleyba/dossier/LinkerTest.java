@@ -1,7 +1,10 @@
 package com.github.jleyba.dossier;
 
+import static com.github.jleyba.dossier.CompilerUtil.createSourceFile;
+import static com.google.common.collect.Iterables.getOnlyElement;
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.mock;
@@ -14,9 +17,11 @@ import com.google.javascript.jscomp.CompilerOptions;
 import com.google.javascript.jscomp.DossierCompiler;
 import com.google.javascript.jscomp.DossierModule;
 import com.google.javascript.rhino.ErrorReporter;
+import com.google.javascript.rhino.JSTypeExpression;
 import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.jstype.JSType;
 import com.google.javascript.rhino.jstype.JSTypeRegistry;
+import com.google.javascript.rhino.jstype.Property;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -200,7 +205,7 @@ public class LinkerTest {
 
     assertNotNull(typeRegistry.getNominalType("foo.bar"));
     checkLink("foo.bar.baz", "namespace_foo_bar.html#baz", linker.getLink("foo.bar.baz"));
-    assertNull(linker.getLink("foo.bar.unknown"));
+    checkLink("foo.bar.unknown", "namespace_foo_bar.html", linker.getLink("foo.bar.unknown"));
   }
 
   @Test
@@ -221,7 +226,7 @@ public class LinkerTest {
     checkLink("foo.Bar#bar", "class_foo_Bar.html#bar", linker.getLink("foo.Bar#bar()"));
     checkLink("foo.Bar#bar", "class_foo_Bar.html#bar", linker.getLink("foo.Bar.prototype.bar"));
     checkLink("foo.Bar#bar", "class_foo_Bar.html#bar", linker.getLink("foo.Bar.prototype.bar()"));
-    assertNull(linker.getLink("foo.Bar.prototype.unknown"));
+    checkLink("foo.Bar.unknown", "class_foo_Bar.html", linker.getLink("foo.Bar.prototype.unknown"));
   }
 
   @Test
@@ -239,6 +244,22 @@ public class LinkerTest {
     checkLink("foo", "module_foo.html", linker.getLink("dossier$$module__$src$module$foo"));
     checkLink("foo.bar", "module_foo.html#bar",
         linker.getLink("dossier$$module__$src$module$foo.bar"));
+  }
+
+  @Test
+  public void testGetLink_unknownModuleProperty() {
+    Path module = fileSystem.getPath("/src/module/foo.js");
+
+    when(mockConfig.getModulePrefix()).thenReturn(fileSystem.getPath("/src/module"));
+    DossierCompiler compiler = new DossierCompiler(System.err, ImmutableList.of(module));
+    CompilerOptions options = Main.createOptions(fileSystem, typeRegistry, compiler);
+    util = new CompilerUtil(compiler, options);
+
+    util.compile(module, "exports = {bar: function() {}};");
+    assertThat(typeRegistry.getModules()).isNotEmpty();
+
+    checkLink("foo.Name", "module_foo.html",
+        linker.getLink("dossier$$module__$src$module$foo.Name"));
   }
 
   @Test
@@ -395,6 +416,44 @@ public class LinkerTest {
             .build(),
         linker.getSourceLink(node));
   }
+
+  @Test
+  public void formatTypeExpression_moduleContextWillHideGlobalTypeNames() {
+    when(mockConfig.getModulePrefix()).thenReturn(fileSystem.getPath("/src/module"));
+    DossierCompiler compiler = new DossierCompiler(System.err, ImmutableList.of(
+        fileSystem.getPath("/src/module/a.js"),
+        fileSystem.getPath("/src/module/b.js")));
+    CompilerOptions options = Main.createOptions(fileSystem, typeRegistry, compiler);
+    util = new CompilerUtil(compiler, options);
+
+    util.compile(
+        createSourceFile(fileSystem.getPath("/globals.js"),
+            "goog.provide('ns');",
+            "/** @typedef {string} */",
+            "ns.Name;"),
+        createSourceFile(fileSystem.getPath("/src/module/a.js"), ""),
+        createSourceFile(fileSystem.getPath("/src/module/b.js"),
+            "var ns = require('./a');",
+            "/** @param {ns.Name} name The name. */",
+            "exports.greet = function(name) {};"));
+
+    NominalType type = typeRegistry.getModuleType("dossier$$module__$src$module$b");
+    assertNotNull(type);
+
+    Property property = type.getProperty("greet");
+    assertNotNull(property);
+
+    JSTypeExpression expression = property.getJSDocInfo().getParameterType("name");
+    Dossier.Comment comment = linker.formatTypeExpression(expression);
+    Dossier.Comment.Token token = getOnlyElement(comment.getTokenList());
+    assertEquals(
+        "ns is defined as an alias to module/a, so any type reference will hide the global " +
+            "ns variable",
+        "a.Name",
+        token.getText());
+    assertEquals("module_a.html", token.getHref());
+  }
+
 
   private static void checkLink(String text, String href, Dossier.TypeLink link) {
     assertEquals(text, link.getText());
