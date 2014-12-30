@@ -38,7 +38,6 @@ import static java.nio.file.Files.createDirectories;
 import com.github.jleyba.dossier.proto.Dossier;
 import com.github.jleyba.dossier.soy.Renderer;
 import com.github.rjeschke.txtmark.Processor;
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Charsets;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
@@ -548,24 +547,6 @@ class DocWriter {
     );
   }
 
-  @VisibleForTesting TypeLink getTypeLink(JSType type) {
-    checkArgument(
-        type.isInstanceType() || type.isConstructor() || type.isInterface(),
-        "Unable to compute link for type %s", type);
-    if (type.isInstanceType()) {
-      type = type.toObjectType().getConstructor();
-    }
-
-    TypeLink link = linker.getLink(type);
-    if (link != null) {
-      return link;
-    }
-    return TypeLink.newBuilder()
-        .setText(((FunctionType) type).getInstanceType().getReferenceName())
-        .setHref("")
-        .build();
-  }
-
   private void extractEnumData(NominalType type, Enumeration.Builder enumBuilder) {
     checkArgument(type.getJsType().isEnumType());
 
@@ -704,7 +685,6 @@ class DocWriter {
 
       ObjectType object = assignableType.toObjectType();
       FunctionType ctor = object.getConstructor();
-      NominalType ntype = ctor == null ? null : typeRegistry.resolve(ctor);
 
       for (String pname : object.getOwnPropertyNames()) {
         if (!"constructor".equals(pname) && !properties.containsKey(pname)) {
@@ -960,19 +940,6 @@ class DocWriter {
         || "void".equals(comment.getToken(0).getText())
         || "?".equals(comment.getToken(0).getText())
         || "*".equals(comment.getToken(0).getText()));
-  }
-
-  private static Predicate<NominalType> isNamespace() {
-    return new Predicate<NominalType>() {
-      @Override
-      public boolean apply(@Nullable NominalType input) {
-        return input != null
-            && !input.getJsType().isConstructor()
-            && !input.getJsType().isInterface()
-            && !input.getJsType().isEnumType()
-            && (input.getJsdoc() == null || !input.getJsdoc().isTypedef());
-      }
-    };
   }
 
   private static class NameComparator implements Comparator<NominalType> {
