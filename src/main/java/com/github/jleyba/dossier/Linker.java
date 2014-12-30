@@ -13,7 +13,9 @@
 // limitations under the License.
 package com.github.jleyba.dossier;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.base.Verify.verify;
 import static com.google.common.collect.Iterables.filter;
 
@@ -43,6 +45,7 @@ import com.google.javascript.rhino.jstype.Visitor;
 
 import java.nio.file.Path;
 import java.util.Iterator;
+import java.util.Stack;
 
 import javax.annotation.Nullable;
 
@@ -52,6 +55,8 @@ public class Linker {
   private final Path outputRoot;
   private final TypeRegistry typeRegistry;
 
+  private final Stack<NominalType> context = new Stack<>();
+
   /**
    * @param config The current runtime configuration.
    * @param typeRegistry The type registry.
@@ -60,6 +65,14 @@ public class Linker {
     this.typeRegistry = typeRegistry;
     this.config = checkNotNull(config);
     this.outputRoot = config.getOutput();
+  }
+
+  public void pushContext(NominalType type) {
+    context.push(type);
+  }
+
+  public void popContext() {
+    context.pop();
   }
 
   private static String getTypePrefix(JSType type) {
@@ -176,9 +189,15 @@ public class Linker {
       symbol = symbol.substring(0, index);
     }
 
+    if (symbol.startsWith("#")) {
+      Dossier.TypeLink link = getContextLink(symbol);
+      if (link != null) {
+        return link;
+      }
+    }
+
     String typeName = symbol;
     String propertyName = "";
-    boolean instanceProperty = false;
 
     if (symbol.endsWith("#")) {
       typeName = symbol.substring(0, symbol.length() - 1);
@@ -190,25 +209,22 @@ public class Linker {
       String[] parts = symbol.split("#");
       typeName = parts[0];
       propertyName = parts[1];
-      instanceProperty = true;
 
     } else if (symbol.contains(".prototype.")) {
       String[] parts = symbol.split(".prototype.");
       typeName = parts[0];
       propertyName = parts[1];
-      instanceProperty = true;
     }
 
-    NominalType type = getType(typeName);
+    NominalType type = getType(typeName, true);
 
     // Link might be a qualified path to a property.
     if (type == null && propertyName.isEmpty()) {
       index = typeName.lastIndexOf(".");
       if (index != -1) {
-        instanceProperty = false;
         propertyName = typeName.substring(index + 1);
         typeName = typeName.substring(0, index);
-        type = getType(typeName);
+        type = getType(typeName, true);
       }
     }
 
@@ -218,24 +234,57 @@ public class Linker {
       return getExternLink(typeName);
     }
 
+    if (propertyName.isEmpty()) {
+      return checkNotNull(getLink(type),
+          "Failed to build link for %s", type.getQualifiedName());
+    }
+
+    try {
+      pushContext(type);
+      return getContextLink("#" + propertyName);
+    } finally {
+      popContext();
+    }
+  }
+
+  @Nullable
+  private Dossier.TypeLink getContextLink(String symbol) {
+    if (context.isEmpty()) {
+      return null;
+    }
+
+    checkArgument(symbol.startsWith("#"));
+    symbol = symbol.substring(1);
+    NominalType type = context.peek();
+
     Dossier.TypeLink link = checkNotNull(getLink(type), "Failed to build link for %s",
         type.getQualifiedName());
-    if (!propertyName.isEmpty()
-        && (!instanceProperty
-        || (type.getJsType().isConstructor() || type.getJsType().isInterface()))) {
 
-      String fragment = propertyName;
-      if (!(instanceProperty || type.isModuleExports() || type.isNamespace())) {
-        fragment = type.getName() + "." + fragment;
+    String id = symbol;
+
+    // If we have a class/interface, check for a prototype first.
+    if (type.getJsType().isConstructor() || type.getJsType().isInterface()) {
+      ObjectType instanceType = ((FunctionType) type.getJsType()).getInstanceType();
+      if (instanceType.getPropertyNames().contains(symbol)) {
+        return link.toBuilder()
+            .setText(link.getText() + "#" + symbol)
+            .setHref(link.getHref() + "#" + id)
+            .build();
       }
-      String joiner = instanceProperty ? "#" : ".";
-
-      link = link.toBuilder()
-          .setText(link.getText() + joiner + propertyName)
-          .setHref(link.getHref() + "#" + fragment)
-          .build();
     }
-    return link;
+
+    if (!type.getJsType().toObjectType().getPropertyNames().contains(symbol)) {
+      return null;
+    }
+
+    if (!type.isNamespace()) {
+      id = type.getName() + "." + symbol;
+    }
+    // Otherwise, we check for static properties.
+    return link.toBuilder()
+        .setText(link.getText() + "." + symbol)
+        .setHref(link.getHref() + "#" + id)
+        .build();
   }
 
   @Nullable
@@ -268,10 +317,19 @@ public class Linker {
   }
 
   @Nullable
-  private NominalType getType(String name) {
+  private NominalType getType(String name, boolean checkContextModule) {
     NominalType type = typeRegistry.getNominalType(name);
     if (type == null) {
       type = typeRegistry.getModuleType(name);
+    }
+    if (type == null && !context.isEmpty() && checkContextModule) {
+      NominalType t = context.peek();
+      if (t.getModule() != null) {
+        String exportedName = t.getModule().getExportedName(name);
+        if (!isNullOrEmpty(exportedName)) {
+          return getType(exportedName, false);
+        }
+      }
     }
     return type;
   }

@@ -56,6 +56,18 @@ public class CommentUtil {
   }
 
   /**
+   * Extracts the block comment string from the given type.
+   */
+  public static Dossier.Comment getBlockDescription(Linker linker, NominalType type) {
+    try {
+      linker.pushContext(type);
+      return getBlockDescription(linker, type.getJsdoc());
+    } finally {
+      linker.popContext();
+    }
+  }
+
+  /**
    * Extracts the block comment string from the given {@link JsDoc} object.
    */
   public static Dossier.Comment getBlockDescription(Linker linker, @Nullable JsDoc jsdoc) {

@@ -177,8 +177,7 @@ public class LinkerTest {
 
     assertNotNull(typeRegistry.getNominalType("foo.bar"));
     checkLink("foo.bar.baz", "namespace_foo_bar.html#baz", linker.getLink("foo.bar.baz"));
-    checkLink("foo.bar.unknown", "namespace_foo_bar.html#unknown", linker.getLink("foo.bar.unknown"));
-    checkLink("foo.bar", "namespace_foo_bar.html", linker.getLink("foo.bar.prototype.baz"));
+    assertNull(linker.getLink("foo.bar.unknown"));
   }
 
   @Test
@@ -199,8 +198,7 @@ public class LinkerTest {
     checkLink("foo.Bar#bar", "class_foo_Bar.html#bar", linker.getLink("foo.Bar#bar()"));
     checkLink("foo.Bar#bar", "class_foo_Bar.html#bar", linker.getLink("foo.Bar.prototype.bar"));
     checkLink("foo.Bar#bar", "class_foo_Bar.html#bar", linker.getLink("foo.Bar.prototype.bar()"));
-    checkLink("foo.Bar#unknown", "class_foo_Bar.html#unknown", linker.getLink("foo.Bar.prototype.unknown")
-    );
+    assertNull(linker.getLink("foo.Bar.prototype.unknown"));
   }
 
   @Test
@@ -218,6 +216,125 @@ public class LinkerTest {
     checkLink("foo", "module_foo.html", linker.getLink("dossier$$module__$src$module$foo"));
     checkLink("foo.bar", "module_foo.html#bar",
         linker.getLink("dossier$$module__$src$module$foo.bar"));
+  }
+
+  @Test
+  public void testGetLink_contextHash_contextIsClass() {
+    util.compile(
+        fileSystem.getPath("/src/foo/bar.js"),
+        "goog.provide('foo.Bar');",
+        "/** @constructor */",
+        "foo.Bar = function() { this.x = 123; };",
+        "foo.Bar.baz = function() {};",
+        "foo.Bar.prototype.bar = function() {}");
+
+    NominalType context = typeRegistry.getNominalType("foo.Bar");
+    assertNotNull(context);
+    linker.pushContext(context);
+
+    checkLink("foo.Bar#bar", "class_foo_Bar.html#bar", linker.getLink("#bar"));
+    checkLink("foo.Bar#x", "class_foo_Bar.html#x", linker.getLink("#x"));
+    checkLink("foo.Bar.baz", "class_foo_Bar.html#Bar.baz", linker.getLink("#baz"));
+  }
+
+  @Test
+  public void testGetLink_contextHash_contextIsInterface() {
+    util.compile(
+        fileSystem.getPath("/src/foo/bar.js"),
+        "goog.provide('foo.Bar');",
+        "/** @interface */",
+        "foo.Bar = function() {};",
+        "foo.Bar.baz = function() {};",
+        "foo.Bar.prototype.bar = function() {}");
+
+    NominalType context = typeRegistry.getNominalType("foo.Bar");
+    assertNotNull(context);
+    linker.pushContext(context);
+
+    checkLink("foo.Bar#bar", "interface_foo_Bar.html#bar", linker.getLink("#bar"));
+    checkLink("foo.Bar.baz", "interface_foo_Bar.html#Bar.baz", linker.getLink("#baz"));
+  }
+
+  @Test
+  public void testGetLink_contextHash_contextIsEnum() {
+    util.compile(
+        fileSystem.getPath("/src/foo/bar.js"),
+        "goog.provide('foo.Bar');",
+        "/** @enum {number} */",
+        "foo.Bar = {x: 1, y: 2};",
+        "foo.Bar.baz = function() {};");
+
+    NominalType context = typeRegistry.getNominalType("foo.Bar");
+    assertNotNull(context);
+    linker.pushContext(context);
+
+    checkLink("foo.Bar.x", "enum_foo_Bar.html#Bar.x", linker.getLink("#x"));
+    checkLink("foo.Bar.baz", "enum_foo_Bar.html#Bar.baz", linker.getLink("#baz"));
+  }
+
+  @Test
+  public void testGetLink_contextHash_contextIsNamespace() {
+    util.compile(
+        fileSystem.getPath("/src/foo/bar.js"),
+        "goog.provide('foo');",
+        "foo.bar = function() {};");
+
+    NominalType context = typeRegistry.getNominalType("foo");
+    assertNotNull(context);
+    linker.pushContext(context);
+
+    checkLink("foo.bar", "namespace_foo.html#bar", linker.getLink("#bar"));
+  }
+
+  @Test
+  public void testGetLink_contextHash_contextIsModule() {
+    Path module = fileSystem.getPath("/src/module/foo.js");
+
+    when(mockConfig.getModulePrefix()).thenReturn(fileSystem.getPath("/src/module"));
+    DossierCompiler compiler = new DossierCompiler(System.err, ImmutableList.of(module));
+    CompilerOptions options = Main.createOptions(fileSystem, typeRegistry, compiler);
+    util = new CompilerUtil(compiler, options);
+
+    util.compile(module, "exports = {bar: function() {}};");
+    assertThat(typeRegistry.getModules()).isNotEmpty();
+
+    NominalType context = typeRegistry.getModuleType("dossier$$module__$src$module$foo");
+    assertNotNull(context);
+    linker.pushContext(context);
+
+    checkLink("foo.bar", "module_foo.html#bar", linker.getLink("#bar"));
+  }
+
+  @Test
+  public void testGetLink_referenceToContextModuleExportedType() {
+    Path module = fileSystem.getPath("/src/module/foo.js");
+
+    when(mockConfig.getModulePrefix()).thenReturn(fileSystem.getPath("/src/module"));
+    DossierCompiler compiler = new DossierCompiler(System.err, ImmutableList.of(module));
+    CompilerOptions options = Main.createOptions(fileSystem, typeRegistry, compiler);
+    util = new CompilerUtil(compiler, options);
+
+    util.compile(module,
+        "/** @constructor */",
+        "var InternalClass = function() {};",
+        "InternalClass.staticFunc = function() {};",
+        "InternalClass.prototype.method = function() {};",
+        "exports.ExternalClass = InternalClass");
+
+    assertThat(typeRegistry.getModules()).isNotEmpty();
+
+    NominalType context = typeRegistry.getModuleType("dossier$$module__$src$module$foo");
+    assertNotNull(context);
+    linker.pushContext(context);
+
+    checkLink("ExternalClass", "module_foo_class_ExternalClass.html",
+        linker.getLink("InternalClass"));
+    checkLink("ExternalClass.staticFunc",
+        "module_foo_class_ExternalClass.html#ExternalClass.staticFunc",
+        linker.getLink("InternalClass.staticFunc"));
+    checkLink("ExternalClass#method",
+        "module_foo_class_ExternalClass.html#method",
+        linker.getLink("InternalClass#method"));
   }
 
   @Test

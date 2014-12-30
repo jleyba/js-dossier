@@ -170,7 +170,7 @@ class DossierProcessCommonJsModules implements CompilerPass {
         }
       }
 
-      if (n.isAssign() && n.getFirstChild().getNext().isName()) {
+      if (isTopLevelAssign(n)) {
         String name = n.getFirstChild().getQualifiedName();
         if (!isNullOrEmpty(name)) {
           if ("exports".equals(name)
@@ -197,7 +197,7 @@ class DossierProcessCommonJsModules implements CompilerPass {
         return;
       }
 
-      processInternalFunctionExportsAssignments();
+      processExportAssignments();
       processModuleExportRefs(t);
 
       Node googModule = exprResult(call(
@@ -219,19 +219,25 @@ class DossierProcessCommonJsModules implements CompilerPass {
       t.getCompiler().reportCodeChange();
     }
 
-    /**
-     * Saves a reference to the internal JSDocs for any exported functions that do not have docs
-     * attached to the export statement.
-     */
-    private void processInternalFunctionExportsAssignments() {
+    private void processExportAssignments() {
       for (Node ref : exportAssignments) {
-        if (ref.getJSDocInfo() == null && ref.isAssign() && ref.getLastChild().isName()) {
-          String rhsName = ref.getLastChild().getQualifiedName();
-          if (internalFunctionsToJsdoc.containsKey(rhsName)) {
-            String lhsName = ref.getFirstChild().getQualifiedName();
+        String rhsName = ref.getLastChild().getQualifiedName();
+        if (isNullOrEmpty(rhsName)) {
+          continue;
+        }
 
-            String prefix = lhsName.startsWith("module.exports") ? "module.exports" : "exports";
-            lhsName = currentModule.getVarName() + lhsName.substring(prefix.length());
+        String lhsName = ref.getFirstChild().getQualifiedName();
+        if (isNullOrEmpty(lhsName)) {
+          continue;
+        }
+
+        String prefix = lhsName.startsWith("module.exports") ? "module.exports" : "exports";
+        lhsName = currentModule.getVarName() + lhsName.substring(prefix.length());
+
+        currentModule.addExportedName(rhsName, lhsName);
+
+        if (ref.getJSDocInfo() == null && ref.isAssign() && ref.getLastChild().isName()) {
+          if (internalFunctionsToJsdoc.containsKey(rhsName)) {
             currentModule.addExportedFunctionDocs(lhsName, internalFunctionsToJsdoc.get(rhsName));
           }
         }
@@ -258,11 +264,15 @@ class DossierProcessCommonJsModules implements CompilerPass {
       }
     }
 
+    private boolean isTopLevelAssign(Node n) {
+      return n.isAssign()
+          && n.getParent().isExprResult()
+          && n.getParent().getParent().isScript();
+    }
+
     private boolean isTopLevelAssignLhs(Node n) {
-      Node parent = n.getParent();
-      return parent.isAssign() && n == parent.getFirstChild() &&
-          parent.getParent().isExprResult() &&
-          parent.getParent().getParent().isScript();
+      return n == n.getParent().getFirstChild()
+          && isTopLevelAssign(n.getParent());
     }
 
     private void visitRequireCall(NodeTraversal t, Node require, Node parent) {

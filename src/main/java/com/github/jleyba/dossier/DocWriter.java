@@ -71,6 +71,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -215,6 +216,8 @@ class DocWriter {
   }
 
   private void generateModuleDocs(NominalType module) throws IOException {
+    linker.pushContext(module);
+
     Path output = linker.getFilePath(module);
     createDirectories(output.getParent());
 
@@ -274,9 +277,12 @@ class DocWriter {
         generateDocs(type);
       }
     }
+    linker.popContext();
   }
 
   private void generateDocs(NominalType type) throws IOException {
+    linker.pushContext(type);
+
     Path output = linker.getFilePath(type);
     createDirectories(output.getParent());
 
@@ -308,7 +314,7 @@ class DocWriter {
       }
     }
 
-    Dossier.Comment description = getBlockDescription(linker, type.getJsdoc());
+    Dossier.Comment description = getBlockDescription(linker, type);
     NominalType aliased = typeRegistry.resolve(type.getJsType());
 
     if (aliased != type) {
@@ -324,7 +330,7 @@ class DocWriter {
           .setHref(linker.getFilePath(aliased).getFileName().toString()));
 
       if (description.getTokenCount() == 0) {
-        description = getBlockDescription(linker, aliased.getJsdoc());
+        description = getBlockDescription(linker, aliased);
       }
     }
 
@@ -374,6 +380,7 @@ class DocWriter {
         .setType(jsTypeBuilder.build())
         .setIndex(generateNavIndex(output));
     renderer.render(output, spec.build());
+    linker.popContext();
   }
 
   private void copyResources() throws IOException {
@@ -602,7 +609,7 @@ class DocWriter {
                 .setName(name)
                 .setType(linker.formatTypeExpression(jsdoc.getType()))
                 .setSource(linker.getSourceLink(typedef.getNode()))
-                .setDescription(getBlockDescription(linker, jsdoc))
+                .setDescription(getBlockDescription(linker, type))
                 .setVisibility(Dossier.Visibility.valueOf(jsdoc.getVisibility().name()));
 
             if (jsdoc.isDeprecated()) {
@@ -688,24 +695,29 @@ class DocWriter {
       }
 
       ObjectType object = assignableType.toObjectType();
+      FunctionType ctor = object.getConstructor();
+      NominalType ntype = ctor == null ? null : typeRegistry.resolve(ctor);
+
       for (String pname : object.getOwnPropertyNames()) {
         if (!"constructor".equals(pname) && !properties.containsKey(pname)) {
-          properties.put(pname, object.getOwnSlot(pname));
-          propertyTypes.put(pname, getType(object, object.getOwnSlot(pname)));
+          Property property = object.getOwnSlot(pname);
+          properties.put(pname, property);
+          propertyTypes.put(pname, getType(object, property));
         }
       }
 
-      if (object.getConstructor() == null) {
+      if (ctor == null) {
         continue;
       }
 
-      ObjectType prototype = ObjectType.cast(object.getConstructor().getPropertyType("prototype"));
+      ObjectType prototype = ObjectType.cast(ctor.getPropertyType("prototype"));
       verify(prototype != null);
 
       for (String pname : prototype.getOwnPropertyNames()) {
         if (!"constructor".equals(pname) && !properties.containsKey(pname)) {
-          properties.put(pname, prototype.getOwnSlot(pname));
-          propertyTypes.put(pname, getType(object, prototype.getOwnSlot(pname)));
+          Property property = prototype.getOwnSlot(pname);
+          properties.put(pname, property);
+          propertyTypes.put(pname, getType(object, property));
         }
       }
     }

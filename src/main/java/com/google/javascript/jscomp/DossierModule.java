@@ -1,13 +1,16 @@
 package com.google.javascript.jscomp;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Strings.isNullOrEmpty;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Joiner;
 import com.google.common.io.Files;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.Node;
 
 import java.nio.file.Path;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,6 +29,7 @@ public class DossierModule {
   private final String varName;
 
   private final Map<String, JSDocInfo> exportedFunctionDocs = new HashMap<>();
+  private final Map<String, String> exportedNames = new HashMap<>();
 
   /**
    * Creates a new module descriptor.
@@ -55,6 +59,31 @@ public class DossierModule {
   }
 
   /**
+   * Records a symbol exported as part of this module's public API.
+   *
+   * @param internalName the internal name.
+   * @param publicName the fully qualified public name.
+   */
+  void addExportedName(String internalName, String publicName) {
+    checkArgument(!isNullOrEmpty(internalName));
+    checkArgument(!isNullOrEmpty(publicName));
+    if (!exportedNames.containsKey(internalName)) {
+      exportedNames.put(internalName, publicName);
+    }
+  }
+
+  @VisibleForTesting Map<String, String> getExportedNames() {
+    return Collections.unmodifiableMap(exportedNames);
+  }
+
+  /**
+   * Returns the fully qualified public name of an internal symbol exported by this module.
+   */
+  public String getExportedName(String internalName) {
+    return exportedNames.get(internalName);
+  }
+
+  /**
    * Saves a reference to the JSDocs for one of this module's internal functions that is exported
    * as part of its public API without extra documentation:
    *
@@ -65,7 +94,7 @@ public class DossierModule {
    * @param name the function name.
    * @param docs the function's JS docs.
    */
-  public void addExportedFunctionDocs(String name, JSDocInfo docs) {
+  void addExportedFunctionDocs(String name, JSDocInfo docs) {
     checkArgument(!exportedFunctionDocs.containsKey(name),
         "Function already registered in module %s: %s", modulePath, name);
     exportedFunctionDocs.put(name, docs);

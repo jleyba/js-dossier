@@ -40,7 +40,7 @@ exports.IdGenerator = IdGenerator;
 
 
 /**
- * Generates incrementing IDs.
+ * An {@link IdGenerator} that generates incrementing IDs.
  * @constructor
  * @implements {IdGenerator}
  */

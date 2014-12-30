@@ -76,10 +76,11 @@ sample.inheritance.TemplateClass.prototype.getValue = function() {
 
 
 /**
+ * Adds a value to this instance's {@link #getValue() value}.
  * @param {T} value The value to add.
  */
 sample.inheritance.TemplateClass.prototype.add = function(value) {
-  this.value = value;
+  this.value += value;
 };
 
 
@@ -93,6 +94,7 @@ sample.inheritance.NumberClass = function() {
 
 
 /**
+ * Similar to {@link #add}, but handles many values.
  * @param {number} n The first number to add.
  * @param {...number} var_args The remaining numbers to add.
  * @return {number} The result.

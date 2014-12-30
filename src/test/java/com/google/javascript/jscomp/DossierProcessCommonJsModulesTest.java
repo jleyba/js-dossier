@@ -2,19 +2,16 @@ package com.google.javascript.jscomp;
 
 import static com.github.jleyba.dossier.CompilerUtil.createSourceFile;
 import static com.google.common.collect.Iterables.getOnlyElement;
+import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import com.github.jleyba.dossier.CompilerUtil;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Iterables;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.Token;
@@ -886,6 +883,40 @@ public class DossierProcessCommonJsModulesTest {
 
     assertSame(xdocs, module.getFunctionDocs(module.getVarName() + ".publicX"));
     assertSame(ydocs, module.getFunctionDocs(module.getVarName() + ".publicY"));
+  }
+
+  @Test
+  public void recordsExportedNames() {
+    CompilerUtil util = createCompiler(path("foo/one.js"), path("foo/two.js"));
+
+    SourceFile one = createSourceFile(path("foo/one.js"), "");
+    SourceFile two = createSourceFile(path("foo/two.js"),
+        "var otherModule = require('./one');",
+        "var bar = 123;",
+        "var x = function() {};",
+        "x.y = function() {};",
+        "module.exports = {};",
+        "module.exports.foo = bar;",
+        "exports.publicX = x;",
+        "exports.publicY = x.y;",
+        "exports.foo.alias = otherModule.clazz;");
+
+    util.compile(one, two);
+
+    DossierCompiler compiler = (DossierCompiler) util.getCompiler();
+    DossierModuleRegistry registry = compiler.getModuleRegistry();
+    DossierModule module = registry.getModuleNamed("dossier$$module__foo$two");
+
+    assertThat(module.getExportedNames().keySet())
+        .containsExactly("bar", "x", "x.y", "otherModule.clazz");
+    assertThat(module.getExportedNames())
+        .containsEntry("bar", "dossier$$module__foo$two.foo");
+    assertThat(module.getExportedNames())
+        .containsEntry("x", "dossier$$module__foo$two.publicX");
+    assertThat(module.getExportedNames())
+        .containsEntry("x.y", "dossier$$module__foo$two.publicY");
+    assertThat(module.getExportedNames())
+        .containsEntry("otherModule.clazz", "dossier$$module__foo$two.foo.alias");
   }
 
   private static CompilerUtil createCompiler(final Path... commonJsModules) {
