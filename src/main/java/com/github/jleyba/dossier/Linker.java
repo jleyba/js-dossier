@@ -26,6 +26,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.io.Files;
+import com.google.javascript.jscomp.DossierModule;
 import com.google.javascript.rhino.JSTypeExpression;
 import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.jstype.EnumElementType;
@@ -685,6 +686,8 @@ public class Linker {
       Dossier.TypeLink link = getLink(type.getReferenceName());
       if (link != null) {
         appendLink(link);
+      } else if (DossierModule.isExternModule(type.getReferenceName())) {
+        appendText(DossierModule.externToOriginalName(type.getReferenceName()));
       } else {
         appendText(type.getReferenceName());
       }

@@ -454,6 +454,32 @@ public class LinkerTest {
     assertEquals("module_a.html", token.getHref());
   }
 
+  @Test
+  public void formatTypeExpression_removesInternalModuleNameFromUnrecognizedSymbols() {
+    when(mockConfig.getModulePrefix()).thenReturn(fileSystem.getPath("/src/module"));
+    DossierCompiler compiler = new DossierCompiler(System.err, ImmutableList.of(
+        fileSystem.getPath("/src/module/a.js")));
+    CompilerOptions options = Main.createOptions(fileSystem, typeRegistry, compiler);
+    util = new CompilerUtil(compiler, options);
+
+    util.compile(
+        createSourceFile(fileSystem.getPath("/src/module/a.js"),
+            "var http = require('http');",
+            "/** @param {!http.Agent} agent The agent to use. */",
+            "exports.createClient = function(agent) {};"));
+
+    NominalType type = typeRegistry.getModuleType("dossier$$module__$src$module$a");
+    assertNotNull(type);
+
+    Property property = type.getProperty("createClient");
+    assertNotNull(property);
+
+    JSTypeExpression expression = property.getJSDocInfo().getParameterType("agent");
+    Dossier.Comment comment = linker.formatTypeExpression(expression);
+    Dossier.Comment.Token token = getOnlyElement(comment.getTokenList());
+    assertEquals("http.Agent", token.getText());
+    assertFalse(token.hasHref());
+  }
 
   private static void checkLink(String text, String href, Dossier.TypeLink link) {
     assertEquals(text, link.getText());

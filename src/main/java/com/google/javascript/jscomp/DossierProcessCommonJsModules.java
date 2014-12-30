@@ -200,8 +200,15 @@ class DossierProcessCommonJsModules implements CompilerPass {
       Path currentFile = moduleRegistry.getFileSystem().getPath(t.getSourceName());
 
       String modulePath = require.getChildAtIndex(1).getString();
-      Path moduleFile = currentFile.getParent().resolve(modulePath).normalize();
-      String moduleName = DossierModule.guessModuleName(moduleFile);
+      String moduleName;
+
+      if (modulePath.startsWith(".") || modulePath.startsWith("/")) {
+        Path moduleFile = currentFile.getParent().resolve(modulePath).normalize();
+        moduleName = DossierModule.guessModuleName(moduleFile);
+      } else {
+        // TODO: allow users to provide extern module definitions.
+        moduleName = DossierModule.externModuleName(modulePath);
+      }
 
       // Only register the require statement on this module if it occurs at the global
       // scope. Assume other require statements are not declared at the global scope to

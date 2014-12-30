@@ -15,6 +15,7 @@ public class DossierModule {
 
   private static final String PATH_SEPARATOR = "$";
   private static final String PREFIX = "dossier$$module__";
+  private static final String EXTERN_PREFIX = "dossier$$extern__";
 
   private final Node scriptNode;
   private final Path modulePath;
@@ -45,6 +46,23 @@ public class DossierModule {
 
   public Path getModulePath() {
     return modulePath;
+  }
+
+  public static boolean isExternModule(String name) {
+    return name.startsWith(EXTERN_PREFIX);
+  }
+
+  public static String externToOriginalName(String name) {
+    checkArgument(isExternModule(name));
+    return name.substring(EXTERN_PREFIX.length());
+  }
+
+  /**
+   * Mangles an extern module's ID so it may be used as a global variable with Closure's type
+   * system.
+   */
+  static String externModuleName(String id) {
+    return EXTERN_PREFIX + id;
   }
 
   /**

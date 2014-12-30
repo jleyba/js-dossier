@@ -203,6 +203,26 @@ public class DossierProcessCommonJsModulesTest {
   }
 
   @Test
+  public void rewritesRequireStatementsForExternModuleDefinitions() {
+    Compiler compiler = new DossierCompiler(System.err, ImmutableSet.of(path("foo/module.js")));
+    CompilerOptions options = new CompilerOptions();
+    options.setClosurePass(true);
+    options.setPrettyPrint(true);
+    CompilerUtil util = new CompilerUtil(compiler, options);
+
+    util.compile(
+        createSourceFile(path("foo/module.js"),
+            "var http = require('http');",
+            "http.doSomething();"));
+
+    assertEquals(
+        lines(
+            "var dossier$$module__foo$module = {};",
+            "dossier$$extern__http.doSomething();"),
+        util.toSource().trim());
+  }
+
+  @Test
   public void rewritesRequireStatementToDirectlyReferenceExportsObject_compoundStatement() {
     CompilerUtil compiler = createCompiler(path("foo/leaf.js"), path("foo/root.js"));
 
