@@ -8,7 +8,6 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableSet;
-import com.google.javascript.jscomp.DossierModule;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.JSTypeExpression;
 import com.google.javascript.rhino.jstype.FunctionType;
@@ -36,10 +35,12 @@ public class TypeRegistry {
 
   private final Set<String> providedSymbols = new HashSet<>();
   private final Set<String> implicitNamespaces = new HashSet<>();
+  private final Map<String, ModuleDescriptor> moduleDescriptors = new HashMap<>();
+
   private final Map<Path, JsDoc> fileOverviews = new HashMap<>();
   private final Map<String, NominalType> nominalTypes = new HashMap<>();
   private final Map<String, NominalType> moduleExports = new HashMap<>();
-  private final Map<DossierModule, NominalType> moduleToExports = new IdentityHashMap<>();
+  private final Map<ModuleDescriptor, NominalType> moduleToExports = new IdentityHashMap<>();
   private final Set<NominalType> allTypes = new HashSet<>();
   private final Map<String, NominalType> nameToModuleTypes = new HashMap<>();
   private final Map<JSType, NominalType.TypeDescriptor> descriptorsByJsType = new HashMap<>();
@@ -63,6 +64,19 @@ public class TypeRegistry {
    */
   public JSType evaluate(JSTypeExpression expression) {
     return expression.evaluate(null, jsTypeRegistry);
+  }
+
+  /**
+   * Forward declares a module, but does <em>not</em> define it as a nominal type.
+   */
+  public void declareModule(ModuleDescriptor module) {
+    moduleDescriptors.put(module.getName(), module);
+    recordGoogProvide(module.getName());
+  }
+
+  @Nullable
+  public ModuleDescriptor getModuleDescriptor(String name) {
+    return moduleDescriptors.get(name);
   }
 
   public void recordGoogProvide(String name) {
@@ -130,12 +144,12 @@ public class TypeRegistry {
       registerModuleTypes(qualifiedName, type.getTypes());
     }
 
-    if (type.isModuleExports()) {
+    if (type.isModuleExports() && type.isCommonJsModule()) {
       checkArgument(!moduleToExports.containsKey(type.getModule()),
-          "Module already registerd %s", type.getModule().getVarName());
+          "Module already registerd %s", type.getModule().getName());
       moduleToExports.put(type.getModule(), type);
       moduleExports.put(type.getQualifiedName(false), type);
-    } else if (type.getModule() == null) {
+    } else if (!type.isCommonJsModule()) {
       nominalTypes.put(type.getQualifiedName(true), type);
     }
   }
@@ -182,7 +196,8 @@ public class TypeRegistry {
     return nameToModuleTypes.get(name);
   }
 
-  public Collection<NominalType> getModules() {
+  public Collection<NominalType>
+  getModules() {
     return Collections.unmodifiableCollection(moduleExports.values());
   }
 

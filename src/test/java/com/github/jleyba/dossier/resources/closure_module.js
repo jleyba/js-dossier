@@ -35,6 +35,7 @@ exports.PubClass = PublicClass;
 
 /**
  * This class is defined on exports and should be documented.
+ * It is an extension of the internally defined {@link PublicClass}.
  * @constructor
  * @extends {PublicClass}
  */
@@ -47,3 +48,9 @@ goog.inherits(exports.Clazz, PublicClass);
 /** Lorem ipsum. */
 exports.Clazz.prototype.method = function() {
 };
+
+
+/** This is an internal function exposed below. */
+function internal() {
+}
+exports.publicMethod = internal;

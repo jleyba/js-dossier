@@ -3,7 +3,6 @@ package com.github.jleyba.dossier;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import com.google.javascript.jscomp.DossierModule;
 import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.jstype.JSType;
 import com.google.javascript.rhino.jstype.Property;
@@ -47,7 +46,7 @@ public final class NominalType {
   private final TypeDescriptor typeDescriptor;
   private final Node node;
   private final JsDoc jsdoc;
-  private final DossierModule module;
+  private final ModuleDescriptor module;
   private final NominalType parent;
 
   private final Map<String, Object> attributes = new HashMap<>();
@@ -58,7 +57,7 @@ public final class NominalType {
       TypeDescriptor typeDescriptor,
       Node node,
       @Nullable JsDoc jsdoc,
-      @Nullable DossierModule module) {
+      @Nullable ModuleDescriptor module) {
     this.name = name;
     this.typeDescriptor = typeDescriptor;
     this.node = node;
@@ -71,8 +70,9 @@ public final class NominalType {
     if (parent != null) {
       parent.typeDescriptor.types.put(name, this);
     }
-    checkArgument(!isModuleExports() || parent == null,
-        "Module exports object may not have a parent: %s", name);
+    checkArgument(
+        !isCommonJsModule() || !isModuleExports() || parent == null,
+        "CommonJS module export objects may not have a parent: %s", name);
   }
 
   @Override
@@ -119,7 +119,7 @@ public final class NominalType {
   }
 
   public String getQualifiedName() {
-    return getQualifiedName(getModule() == null);
+    return getQualifiedName(!isCommonJsModule());
   }
 
   /**
@@ -153,7 +153,7 @@ public final class NominalType {
   }
 
   @Nullable
-  public DossierModule getModule() {
+  public ModuleDescriptor getModule() {
     if (module != null) {
       return module;
     }
@@ -182,7 +182,11 @@ public final class NominalType {
   }
 
   public boolean isModuleExports() {
-    return module != null && name.equals(module.getVarName());
+    return module != null && getQualifiedName(true).equals(module.getName());
+  }
+
+  public boolean isCommonJsModule() {
+    return getModule() != null && getModule().isCommonJsModule();
   }
 
   public boolean isNamespace() {

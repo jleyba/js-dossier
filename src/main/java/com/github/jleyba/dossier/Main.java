@@ -110,7 +110,7 @@ public class Main extends CommandLineRunner {
         });
 
     ProvidedSymbolsCollectionPass providedNamespacesPass =
-        new ProvidedSymbolsCollectionPass(compiler, typeRegistry);
+        new ProvidedSymbolsCollectionPass(compiler, typeRegistry, fileSystem);
     customPasses.put(CustomPassExecutionTime.BEFORE_CHECKS, providedNamespacesPass);
     customPasses.put(CustomPassExecutionTime.BEFORE_OPTIMIZATIONS,
         new DocPass(compiler, typeRegistry, fileSystem));

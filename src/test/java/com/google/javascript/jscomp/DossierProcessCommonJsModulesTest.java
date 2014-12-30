@@ -2,10 +2,8 @@ package com.google.javascript.jscomp;
 
 import static com.github.jleyba.dossier.CompilerUtil.createSourceFile;
 import static com.google.common.collect.Iterables.getOnlyElement;
-import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -833,7 +831,8 @@ public class DossierProcessCommonJsModulesTest {
             "var dossier$$module__module = {};",
             "dossier$$module__module.x = function() {",
             "};"),
-        util.toSource().trim());
+        util.toSource().trim()
+    );
   }
 
   @Test
@@ -848,75 +847,8 @@ public class DossierProcessCommonJsModulesTest {
             "var dossier$$module__module = {};",
             "dossier$$module__module.x = function() {",
             "};"),
-        util.toSource().trim());
-  }
-
-  @Test
-  public void recordsDocsForInternalFunctionsExportedWithoutJsdoc() {
-    CompilerUtil util = createCompiler(path("module.js"));
-
-    util.compile(path("module.js"),
-        "/** Docs. */",
-        "function x() {}",
-        "",
-        "/** More docs. */",
-        "var y = /** function docs. */function() {};",
-        "",
-        "exports = x;",
-        "/** has docs; should not save reference. */",
-        "module.exports = y;",
-        "module.exports.foo = y;",
-        "exports.publicX = x;",
-        "exports.publicY = y;");
-
-    DossierCompiler compiler = (DossierCompiler) util.getCompiler();
-    DossierModuleRegistry registry = compiler.getModuleRegistry();
-    DossierModule module = getOnlyElement(registry.getModules());
-
-    JSDocInfo xdocs = module.getFunctionDocs(module.getVarName());
-    assertNotNull(xdocs);
-    assertEquals("/** Docs. */", xdocs.getOriginalCommentString());
-
-    JSDocInfo ydocs = module.getFunctionDocs(module.getVarName() + ".foo");
-    assertNotNull(ydocs);
-    assertEquals("/** More docs. */", ydocs.getOriginalCommentString());
-
-    assertSame(xdocs, module.getFunctionDocs(module.getVarName() + ".publicX"));
-    assertSame(ydocs, module.getFunctionDocs(module.getVarName() + ".publicY"));
-  }
-
-  @Test
-  public void recordsExportedNames() {
-    CompilerUtil util = createCompiler(path("foo/one.js"), path("foo/two.js"));
-
-    SourceFile one = createSourceFile(path("foo/one.js"), "");
-    SourceFile two = createSourceFile(path("foo/two.js"),
-        "var otherModule = require('./one');",
-        "var bar = 123;",
-        "var x = function() {};",
-        "x.y = function() {};",
-        "module.exports = {};",
-        "module.exports.foo = bar;",
-        "exports.publicX = x;",
-        "exports.publicY = x.y;",
-        "exports.foo.alias = otherModule.clazz;");
-
-    util.compile(one, two);
-
-    DossierCompiler compiler = (DossierCompiler) util.getCompiler();
-    DossierModuleRegistry registry = compiler.getModuleRegistry();
-    DossierModule module = registry.getModuleNamed("dossier$$module__foo$two");
-
-    assertThat(module.getExportedNames().keySet())
-        .containsExactly("bar", "x", "x.y", "otherModule.clazz");
-    assertThat(module.getExportedNames())
-        .containsEntry("bar", "dossier$$module__foo$two.foo");
-    assertThat(module.getExportedNames())
-        .containsEntry("x", "dossier$$module__foo$two.publicX");
-    assertThat(module.getExportedNames())
-        .containsEntry("x.y", "dossier$$module__foo$two.publicY");
-    assertThat(module.getExportedNames())
-        .containsEntry("otherModule.clazz", "dossier$$module__foo$two.foo.alias");
+        util.toSource().trim()
+    );
   }
 
   private static CompilerUtil createCompiler(final Path... commonJsModules) {

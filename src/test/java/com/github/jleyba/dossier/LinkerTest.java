@@ -63,10 +63,16 @@ public class LinkerTest {
   }
 
   @Test
+  public void testGetDisplayName_closureModuleExports() {
+    NominalType type = createType("foo.bar.baz", createModule("foo.bar.baz"));
+    assertThat(linker.getDisplayName(type)).isEqualTo("foo.bar.baz");
+  }
+
+  @Test
   public void testGetDisplayName_moduleExports() {
     NominalType type = createType(
         "dossier$$module__$modules$foo$bar$baz",
-        createModule(fileSystem.getPath("/modules/foo/bar/baz.js")));
+        createCommonJsModule(fileSystem.getPath("/modules/foo/bar/baz.js")));
 
     assertThat(linker.getDisplayName(type)).isEqualTo("foo/bar/baz");
   }
@@ -75,7 +81,7 @@ public class LinkerTest {
   public void testGetDisplayName_moduleExportsAsIndexFile() {
     NominalType type = createType(
         "dossier$$module__$modules$foo$bar",
-        createModule(fileSystem.getPath("/modules/foo/bar/index.js")));
+        createCommonJsModule(fileSystem.getPath("/modules/foo/bar/index.js")));
 
     assertThat(linker.getDisplayName(type)).isEqualTo("foo/bar");
   }
@@ -109,13 +115,30 @@ public class LinkerTest {
   }
 
   @Test
+  public void testGetFilePath_closureModuleExports() {
+    NominalType type = createType("foo.bar", createModule("foo.bar"));
+    assertEquals(outputDir.resolve("namespace_foo_bar.html"), linker.getFilePath(type));
+  }
+
+  @Test
   public void testGetFilePath_moduleExports() {
     NominalType type = createType(
         "dossier$$module__$modules$foo$bar$baz",
-        createModule(fileSystem.getPath("/modules/foo/bar/baz.js")));
+        createCommonJsModule(fileSystem.getPath("/modules/foo/bar/baz.js")));
 
     assertEquals(
         outputDir.resolve("module_foo_bar_baz.html"),
+        linker.getFilePath(type));
+  }
+
+  @Test
+  public void testGetFilePath_closureModuleType() {
+    JSType jsType = mock(JSType.class);
+    when(jsType.isConstructor()).thenReturn(true);
+
+    NominalType type = createType("bar", jsType, createModule("bar"));
+    assertEquals(
+        outputDir.resolve("class_bar.html"),
         linker.getFilePath(type));
   }
 
@@ -125,7 +148,7 @@ public class LinkerTest {
     when(jsType.isConstructor()).thenReturn(true);
 
     NominalType type = createType("Baz", jsType,
-        createModule(fileSystem.getPath("/modules/foo/bar/index.js")));
+        createCommonJsModule(fileSystem.getPath("/modules/foo/bar/index.js")));
 
     assertEquals(
         outputDir.resolve("module_foo_bar_class_Baz.html"),
@@ -382,7 +405,7 @@ public class LinkerTest {
     return createType(name, mock(JSType.class), null);
   }
 
-  private static NominalType createType(String name, DossierModule module) {
+  private static NominalType createType(String name, ModuleDescriptor module) {
     return createType(name, mock(JSType.class), module);
   }
 
@@ -390,7 +413,7 @@ public class LinkerTest {
     return createType(name, type, null);
   }
 
-  private static NominalType createType(String name, JSType type, DossierModule module) {
+  private static NominalType createType(String name, JSType type, ModuleDescriptor module) {
     return new NominalType(
         null,
         name,
@@ -400,10 +423,15 @@ public class LinkerTest {
         module);
   }
 
-  private static DossierModule createModule(Path path) {
+  private ModuleDescriptor createModule(String name) {
+    return new ModuleDescriptor(name, fileSystem.getPath("/unused"), false);
+  }
+
+  private static ModuleDescriptor createCommonJsModule(Path path) {
     Node node = mock(Node.class);
     when(node.isScript()).thenReturn(true);
     when(node.getSourceFileName()).thenReturn(path.toString());
-    return new DossierModule(node, path);
+    DossierModule module = new DossierModule(node, path);
+    return new ModuleDescriptor(module.getVarName(), path, true);
   }
 }

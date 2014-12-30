@@ -6,6 +6,7 @@ import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import com.google.common.base.Joiner;
@@ -386,7 +387,7 @@ public class DocPassTest {
   }
 
   @Test
-  public void doesNotDocumentCtorReferencesAsNestedTypes_closureModule() {
+  public void documentsCtorReferencesAsNestedTypes_closureModule() {
     util.compile(path("module.js"),
         "goog.module('foo');",
         "",
@@ -394,9 +395,38 @@ public class DocPassTest {
         "var Internal = function() {};",
         "",
         "/** @type {function(new: Internal)} */",
-        "exports.createInternal = Internal;");
+        "exports.Public = Internal;",
+        "exports.Other = Internal;");
+    assertThat(typeRegistry.getNominalTypeMap().keySet())
+        .containsExactly("foo", "foo.Public", "foo.Other");
+    assertNamespace(typeRegistry.getNominalType("foo"));
+    assertConstructor(typeRegistry.getNominalType("foo.Public"));
+    assertConstructor(typeRegistry.getNominalType("foo.Other"));
+  }
+
+  @Test
+  public void identifiesBasicClosureModule() {
+    util.compile(path("module.js"),
+        "goog.module('foo');");
     assertThat(typeRegistry.getNominalTypeMap().keySet()).containsExactly("foo");
-    assertThat(typeRegistry.getNominalType("foo").getProperty("createInternal")).isNotNull();
+
+    NominalType type = typeRegistry.getNominalType("foo");
+    assertNotNull(type);
+    assertNotNull(type.getModule());
+    assertFalse(type.getModule().isCommonJsModule());
+  }
+
+  @Test
+  public void identifiesQualifiedClosureModule() {
+    util.compile(path("module.js"),
+        "goog.module('foo.bar');");
+    assertThat(typeRegistry.getNominalTypeMap().keySet())
+        .containsExactly("foo", "foo.bar");
+
+    NominalType type = typeRegistry.getNominalType("foo.bar");
+    assertNotNull(type);
+    assertNotNull(type.getModule());
+    assertFalse(type.getModule().isCommonJsModule());
   }
 
   private Path path(String first, String... remaining) {

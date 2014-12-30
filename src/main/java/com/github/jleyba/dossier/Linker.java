@@ -26,7 +26,6 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.io.Files;
-import com.google.javascript.jscomp.DossierModule;
 import com.google.javascript.rhino.JSTypeExpression;
 import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.jstype.EnumElementType;
@@ -91,7 +90,7 @@ public class Linker {
    * Returns the display name for the given type.
    */
   public String getDisplayName(NominalType type) {
-    if (!type.isModuleExports()) {
+    if (!type.isModuleExports() || !type.isCommonJsModule()) {
       return type.getQualifiedName();
     }
     String displayName = getDisplayName(type.getModule());
@@ -102,8 +101,8 @@ public class Linker {
   /**
    * Returns the display name for the given module.
    */
-  public String getDisplayName(DossierModule module) {
-    Path modulePath = stripExtension(module.getModulePath());
+  public String getDisplayName(ModuleDescriptor module) {
+    Path modulePath = stripExtension(module.getPath());
 
     Path displayPath = config.getModulePrefix().relativize(modulePath);
     if (displayPath.getFileName().toString().equals("index")
@@ -124,10 +123,10 @@ public class Linker {
    */
   public Path getFilePath(NominalType type) {
     String name = "";
-    if (type.getModule() != null) {
+    if (type.isCommonJsModule()) {
       name = "module_" + getDisplayName(type.getModule()).replace('/', '_');
     }
-    if (!type.isModuleExports()) {
+    if (!type.isCommonJsModule() || !type.isModuleExports()) {
       if (!name.isEmpty()) {
         name += "_";
       }

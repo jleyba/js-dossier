@@ -20,8 +20,6 @@ import com.google.common.base.Optional;
 import com.google.javascript.jscomp.AbstractCompiler;
 import com.google.javascript.jscomp.CompilerPass;
 import com.google.javascript.jscomp.DossierCompiler;
-import com.google.javascript.jscomp.DossierModule;
-import com.google.javascript.jscomp.DossierModuleRegistry;
 import com.google.javascript.jscomp.NodeTraversal;
 import com.google.javascript.jscomp.Scope;
 import com.google.javascript.rhino.JSDocInfo;
@@ -60,7 +58,6 @@ class DocPass implements CompilerPass {
   private static final Logger log = Logger.getLogger(DocPass.class.getName());
 
   private final AbstractCompiler compiler;
-  private final DossierModuleRegistry moduleRegistry;
   private final TypeRegistry typeRegistry;
   private final FileSystem fileSystem;
 
@@ -69,7 +66,6 @@ class DocPass implements CompilerPass {
       TypeRegistry typeRegistry,
       FileSystem fileSystem) {
     this.compiler = compiler;
-    this.moduleRegistry = compiler.getModuleRegistry();
     this.typeRegistry = typeRegistry;
     this.fileSystem = fileSystem;
   }
@@ -253,14 +249,13 @@ class DocPass implements CompilerPass {
           continue;
         }
 
-        @Nullable DossierModule module = moduleRegistry.hasModuleNamed(name)
-            ? moduleRegistry.getModuleNamed(name)
-            : null;
+        @Nullable ModuleDescriptor module = typeRegistry.getModuleDescriptor(name);
         crawl(name, info, node, type, module);
       }
     }
 
-    void crawl(String name, JSDocInfo info, Node node, JSType jsType, DossierModule module) {
+    void crawl(
+        String name, JSDocInfo info, Node node, JSType jsType, @Nullable ModuleDescriptor module) {
       NominalType.TypeDescriptor descriptor = typeRegistry.findTypeDescriptor(jsType);
 
       // If we've already crawled the type, we know it's documentable.
@@ -395,6 +390,10 @@ class DocPass implements CompilerPass {
     }
 
     private void recordPropertyAsNestedType(Property property) {
+      String qualifiedName = types.peek().getQualifiedName(true)
+          + "." + property.getName();
+      ModuleDescriptor module = typeRegistry.getModuleDescriptor(qualifiedName);
+
       NominalType.TypeDescriptor seen = typeRegistry.findTypeDescriptor(property.getType());
       if (seen != null) {
         logfmt("Found type alias as property: %s -> %s", property.getName(), property.getType());
@@ -404,7 +403,7 @@ class DocPass implements CompilerPass {
             seen,
             property.getNode(),
             JsDoc.from(property.getJSDocInfo()),
-            null);
+            module);
         typeRegistry.addType(child);
         return;
       }
@@ -422,7 +421,7 @@ class DocPass implements CompilerPass {
           new NominalType.TypeDescriptor(property.getType()),
           property.getNode(),
           JsDoc.from(info),
-          null));
+          module));
     }
 
     @Override

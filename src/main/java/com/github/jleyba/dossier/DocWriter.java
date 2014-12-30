@@ -51,7 +51,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.google.javascript.jscomp.DossierModule;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.jstype.EnumType;
@@ -71,7 +70,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.IdentityHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -225,7 +223,7 @@ class DocWriter {
         .setName(linker.getDisplayName(module))
         .setSource(linker.getSourceLink(module.getNode()))
         .setDescription(getFileoverview(linker,
-            typeRegistry.getFileOverview(module.getModule().getModulePath())))
+            typeRegistry.getFileOverview(module.getModule().getPath())))
         .addAllNested(getNestedTypeInfo(module))
         .addAllTypeDef(getTypeDefInfo(module))
         .addAllExtendedType(getInheritedTypes(module))
@@ -256,8 +254,8 @@ class DocWriter {
     if (jsType.isFunctionType()) {
       JsDoc docs = module.getJsdoc();
       if (docs == null || isNullOrEmpty(docs.getOriginalCommentString())) {
-        DossierModule internalModule = module.getModule();
-        docs = JsDoc.from(internalModule.getFunctionDocs(module.getName()));
+        ModuleDescriptor internalModule = module.getModule();
+        docs = JsDoc.from(internalModule.getInternalVarDocs(module.getName()));
       }
       jsTypeBuilder.setMainFunction(getFunctionData(
           linker.getDisplayName(module),
@@ -287,32 +285,15 @@ class DocWriter {
     createDirectories(output.getParent());
 
     String name = type.getQualifiedName(type.isNamespace());
-    if (type.getModule() != null && name.startsWith(type.getModule().getVarName())) {
-      name = name.substring(type.getModule().getVarName().length() + 1);
+    if (type.getModule() != null
+        && type.getModule().isCommonJsModule()
+        && name.startsWith(type.getModule().getName())) {
+      name = name.substring(type.getModule().getName().length() + 1);
     }
     JsType.Builder jsTypeBuilder = JsType.newBuilder()
         .setName(name);
 
-    if (!type.isModuleExports() && (!type.isNamespace() || type.getModule() != null)) {
-      NominalType parent;
-      if (type.getModule() != null) {
-        parent = type.getParent();
-        while (!parent.isModuleExports()) {
-          parent = parent.getParent();
-        }
-      } else {
-        parent = type.getParent();
-        while (parent != null && !parent.isNamespace()) {
-          parent = parent.getParent();
-        }
-      }
-
-      if (parent != null) {
-        jsTypeBuilder.getParentBuilder()
-            .setLink(linker.getLink(parent))
-            .setIsModule(parent.isModuleExports());
-      }
-    }
+    addParentLink(jsTypeBuilder, type);
 
     Dossier.Comment description = getBlockDescription(linker, type);
     NominalType aliased = typeRegistry.resolve(type.getJsType());
@@ -504,6 +485,33 @@ class DocWriter {
           .setIndex(generateNavIndex(renderPath));
 
       renderer.render(renderPath, spec.build());
+    }
+  }
+
+  private void addParentLink(JsType.Builder jsTypeBuilder, NominalType type) {
+    if (type.isModuleExports()) {
+      return;
+    }
+    if (type.isNamespace()) {
+      return;
+    }
+    NominalType parent;
+    if (type.getModule() != null) {
+      parent = type.getParent();
+      while (!parent.isModuleExports()) {
+        parent = parent.getParent();
+      }
+    } else {
+      parent = type.getParent();
+      while (parent != null && !parent.isNamespace()) {
+        parent = parent.getParent();
+      }
+    }
+
+    if (parent != null) {
+      jsTypeBuilder.getParentBuilder()
+          .setLink(linker.getLink(parent))
+          .setIsModule(parent.isModuleExports() && parent.isCommonJsModule());
     }
   }
 
@@ -783,8 +791,9 @@ class DocWriter {
         JsDoc docs = JsDoc.from(property.getJSDocInfo());
         if ((docs == null || isNullOrEmpty(docs.getOriginalCommentString()))
             && type.isModuleExports()) {
-          docs = JsDoc.from(
-              type.getModule().getFunctionDocs(type.getName() + "." + property.getName()));
+          String internalName = type.getModule().getInternalName(
+              type.getQualifiedName(true) + "." + property.getName());
+          docs = JsDoc.from(type.getModule().getInternalVarDocs(internalName));
         }
         jsTypeBuilder.addStaticFunction(getFunctionData(
             name,
