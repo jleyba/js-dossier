@@ -107,7 +107,6 @@ class DocWriter {
     sortedTypes = FluentIterable.from(typeRegistry.getNominalTypes())
         .filter(isNonEmpty())
         .filter(not(isTypedef()))
-        .filter(isPublic())
         .toSortedList(new QualifiedNameComparator());
     sortedModules = FluentIterable.from(typeRegistry.getModules())
         .toSortedList(new DisplayNameComparator());
@@ -590,7 +589,6 @@ class DocWriter {
   private List<JsType.TypeDef> getTypeDefInfo(final NominalType type) {
     return FluentIterable.from(type.getTypes())
         .filter(isTypedef())
-        .filter(isPublic())
         .transform(new Function<NominalType, JsType.TypeDef>() {
           @Override
           public JsType.TypeDef apply(NominalType typedef) {
@@ -1008,21 +1006,6 @@ class DocWriter {
         return input != null
             && input.getJsdoc() != null
             && input.getJsdoc().isTypedef();
-      }
-    };
-  }
-
-  private static Predicate<NominalType> isPublic() {
-    return new Predicate<NominalType>() {
-      @Override
-      public boolean apply(@Nullable NominalType input) {
-        if (input == null) {
-          return false;
-        }
-        JsDoc jsdoc = input.getJsdoc();
-        return jsdoc == null
-            || jsdoc.getVisibility() == JSDocInfo.Visibility.PUBLIC
-            || jsdoc.getVisibility() == JSDocInfo.Visibility.INHERITED && apply(input.getParent());
       }
     };
   }
