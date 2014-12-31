@@ -33,16 +33,30 @@ var IdGenerator = function() {};
 IdGenerator.prototype.getNext = function() {};
 
 
+/**
+ * @interface
+ */
+var IncreasingIdGenerator = function() {};
+
+
+/**
+ * @return {string} A new ID that will always be greater than the last.
+ */
+IncreasingIdGenerator.prototype.getNext = function() {};
+
+
 // Public API
 
 exports.Greeter = Greeter;
 exports.IdGenerator = IdGenerator;
+exports.IncreasingIdGenerator = IncreasingIdGenerator;
 
 
 /**
  * An {@link IdGenerator} that generates incrementing IDs.
  * @constructor
  * @implements {IdGenerator}
+ * @implements {IncreasingIdGenerator}
  */
 exports.IncrementingIdGenerator = function() {
   /** @private {number} */

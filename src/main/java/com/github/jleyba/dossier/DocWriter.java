@@ -47,6 +47,8 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.MultimapBuilder;
 import com.google.common.collect.Ordering;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -68,12 +70,10 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 
 import javax.annotation.Nullable;
 
@@ -668,6 +668,10 @@ class DocWriter {
     Iterable<JSType> assignableTypes;
     if (nominalType.getJsType().isConstructor()) {
       assignableTypes = Lists.reverse(typeRegistry.getTypeHierarchy(nominalType.getJsType()));
+      assignableTypes = Iterables.concat(
+          assignableTypes,
+          typeRegistry.getImplementedTypes(nominalType));
+
     } else if (nominalType.getJsType().isInterface()) {
       assignableTypes = Iterables.concat(
           ImmutableSet.of(nominalType.getJsType()),
@@ -676,8 +680,11 @@ class DocWriter {
       return;
     }
 
-    Map<String, Property> properties = new TreeMap<>();
-    Map<String, JSType> propertyTypes = new HashMap<>();
+    Multimap<String, InstanceProperty> properties = MultimapBuilder
+        .treeKeys()
+        .linkedHashSetValues()
+        .build();
+
     for (JSType assignableType : assignableTypes) {
       if (assignableType.isConstructor() || assignableType.isInterface()) {
         assignableType = ((FunctionType) assignableType).getInstanceType();
@@ -685,12 +692,18 @@ class DocWriter {
 
       ObjectType object = assignableType.toObjectType();
       FunctionType ctor = object.getConstructor();
+      Set<String> ownProps = new HashSet<>();
 
       for (String pname : object.getOwnPropertyNames()) {
-        if (!"constructor".equals(pname) && !properties.containsKey(pname)) {
+        if (!"constructor".equals(pname)) {
+          ownProps.add(pname);
           Property property = object.getOwnSlot(pname);
-          properties.put(pname, property);
-          propertyTypes.put(pname, getType(object, property));
+          properties.put(pname, new InstanceProperty(
+              object,
+              property.getName(),
+              getType(object, property),
+              property.getNode(),
+              property.getJSDocInfo()));
         }
       }
 
@@ -702,10 +715,14 @@ class DocWriter {
       verify(prototype != null);
 
       for (String pname : prototype.getOwnPropertyNames()) {
-        if (!"constructor".equals(pname) && !properties.containsKey(pname)) {
+        if (!"constructor".equals(pname) && !ownProps.contains(pname)) {
           Property property = prototype.getOwnSlot(pname);
-          properties.put(pname, property);
-          propertyTypes.put(pname, getType(object, property));
+          properties.put(pname, new InstanceProperty(
+              object,
+              property.getName(),
+              getType(object, property),
+              property.getNode(),
+              property.getJSDocInfo()));
         }
       }
     }
@@ -715,27 +732,78 @@ class DocWriter {
     }
 
     // TODO: add a "defined on" field (specified on for interface).
-    for (Property property : properties.values()) {
+    for (String key : properties.keySet()) {
+      LinkedList<InstanceProperty> definitions = new LinkedList<>(properties.get(key));
+      InstanceProperty property = definitions.removeFirst();
+
+      Dossier.Comment overrides = findOverriddenType(definitions);
+      Iterable<Dossier.Comment> specifications = findSpecifications(definitions);
+
       JsDoc jsdoc = JsDoc.from(property.getJSDocInfo());
       if (jsdoc != null && jsdoc.getVisibility() == JSDocInfo.Visibility.PRIVATE) {
         continue;
       }
 
-      JSType propType = propertyTypes.get(property.getName());
+      JSType propType = property.getType();
       if (propType.isFunctionType()) {
         jsTypeBuilder.addMethod(getFunctionData(
             property.getName(),
             propType,
             property.getNode(),
-            jsdoc));
+            jsdoc,
+            overrides,
+            specifications));
       } else {
         jsTypeBuilder.addField(getPropertyData(
             property.getName(),
             propType,
             property.getNode(),
-            jsdoc));
+            jsdoc,
+            overrides,
+            specifications));
       }
     }
+  }
+
+  /**
+   * Given a list of properties, finds the first one defined on a class or (non-interface) object.
+   */
+  @Nullable
+  private Dossier.Comment findOverriddenType(Iterable<InstanceProperty> properties) {
+    for (InstanceProperty property : properties) {
+      JSType definedOn = property.getDefinedOn();
+      if (definedOn.isInterface()) {
+        continue;
+      } else if (definedOn.isInstanceType()) {
+        FunctionType ctor = definedOn.toObjectType().getConstructor();
+        if (ctor != null && ctor.isInterface()) {
+          continue;
+        }
+      }
+      return linker.formatTypeExpression(definedOn);
+    }
+    return null;
+  }
+
+  /**
+   * Given a list of properties, finds those that are specified on an interface.
+   */
+  private Iterable<Dossier.Comment> findSpecifications(Collection<InstanceProperty> properties) {
+    List<Dossier.Comment> specifications = new ArrayList<>(properties.size());
+    for (InstanceProperty property : properties) {
+      JSType definedOn = property.getDefinedOn();
+      if (!definedOn.isInterface()) {
+        JSType ctor = null;
+        if (definedOn.isInstanceType()) {
+           ctor = definedOn.toObjectType().getConstructor();
+        }
+        if (ctor == null || !ctor.isInterface()) {
+          continue;
+        }
+      }
+      specifications.add(linker.formatTypeExpression(definedOn));
+    }
+    return specifications;
   }
 
   private static JSType getType(ObjectType object, Property property) {
@@ -792,11 +860,19 @@ class DocWriter {
   }
 
   private Dossier.BaseProperty getBasePropertyDetails(
-      String name, JSType type, Node node, @Nullable JsDoc jsdoc) {
+      String name, JSType type, Node node, @Nullable JsDoc jsdoc,
+      @Nullable Dossier.Comment overrides,
+      Iterable<Dossier.Comment> specifications) {
     Dossier.BaseProperty.Builder builder = Dossier.BaseProperty.newBuilder()
         .setName(name)
         .setDescription(getBlockDescription(linker, jsdoc))
-        .setSource(linker.getSourceLink(node));
+        .setSource(linker.getSourceLink(node))
+        .addAllSpecifiedBy(specifications);
+
+    if (overrides != null) {
+      builder.setOverrides(overrides);
+    }
+
     if (jsdoc != null) {
       builder.setVisibility(Dossier.Visibility.valueOf(jsdoc.getVisibility().name()))
           .getTagsBuilder()
@@ -809,10 +885,17 @@ class DocWriter {
     return builder.build();
   }
 
-  private Dossier.Property getPropertyData
-      (String name, JSType type, Node node, @Nullable JsDoc jsDoc) {
+  private Dossier.Property getPropertyData(
+      String name, JSType type, Node node, @Nullable JsDoc jsDoc) {
+    return getPropertyData(name, type, node, jsDoc, null, ImmutableList.<Dossier.Comment>of());
+  }
+
+  private Dossier.Property getPropertyData(
+      String name, JSType type, Node node, @Nullable JsDoc jsDoc,
+      @Nullable Dossier.Comment overrides,
+      Iterable<Dossier.Comment> specifications) {
     Dossier.Property.Builder builder = Dossier.Property.newBuilder()
-        .setBase(getBasePropertyDetails(name, type, node, jsDoc));
+        .setBase(getBasePropertyDetails(name, type, node, jsDoc, overrides, specifications));
 
     if (jsDoc != null && jsDoc.getType() != null) {
       builder.setType(linker.formatTypeExpression(jsDoc.getType()));
@@ -825,13 +908,20 @@ class DocWriter {
 
   private Dossier.Function getFunctionData(
       String name, JSType type, Node node, @Nullable JsDoc jsDoc) {
+    return getFunctionData(name, type, node, jsDoc, null, ImmutableList.<Dossier.Comment>of());
+  }
+
+  private Dossier.Function getFunctionData(
+      String name, JSType type, Node node, @Nullable JsDoc jsDoc,
+      @Nullable Dossier.Comment overrides,
+      Iterable<Dossier.Comment> specifications) {
     checkArgument(type.isFunctionType());
 
     boolean isConstructor = type.isConstructor();
     boolean isInterface = !isConstructor && type.isInterface();
 
     Dossier.Function.Builder builder = Dossier.Function.newBuilder()
-        .setBase(getBasePropertyDetails(name, type, node, jsDoc))
+        .setBase(getBasePropertyDetails(name, type, node, jsDoc, overrides, specifications))
         .setIsConstructor(isConstructor);
 
     if (!isConstructor && !isInterface) {
@@ -1062,5 +1152,42 @@ class DocWriter {
     }
 
     return null;
+  }
+
+  private static class InstanceProperty {
+    private final JSType definedOn;
+    private final String name;
+    private final JSType type;
+    private final Node node;
+    private final JSDocInfo info;
+
+    private InstanceProperty(
+        JSType definedOn, String name, JSType type, Node node, JSDocInfo info) {
+      this.definedOn = definedOn;
+      this.name = name;
+      this.type = type;
+      this.node = node;
+      this.info = info;
+    }
+
+    public JSType getDefinedOn() {
+      return definedOn;
+    }
+
+    public String getName() {
+      return name;
+    }
+
+    public JSType getType() {
+      return type;
+    }
+
+    public Node getNode() {
+      return node;
+    }
+
+    public JSDocInfo getJSDocInfo() {
+      return info;
+    }
   }
 }

@@ -398,10 +398,9 @@
 /**
  * Generates a table with details about a single function, such as its
  * arguments, thrown types, deprecation notice, and return type.
- *
- * @param fn A Dossier.Function object.
  */
 {template .fnDetails}
+  {@param fn: dossier.Function}
   // Only generate the table if there is data to actually display.
   {if length($fn.parameter)
       or length($fn.thrown)
@@ -525,6 +524,8 @@
   {/call}
 
   {if ($fn.base.description and length($fn.base.description.token))
+      or $fn.base.overrides
+      or length($fn.base.specifiedBy)
       or length($fn.parameter)
       or length($fn.thrown)
       or ($fn.return and
@@ -532,6 +533,9 @@
            ($fn.return.type and length($fn.return.type.token))))}
     {call .comment}
       {param comment: $fn.base.description /}
+    {/call}
+    {call .fnOverrides}
+      {param fn: $fn /}
     {/call}
     {call .deprecationNotice}
       {param deprecation: $fn.base.deprecation /}
@@ -548,6 +552,42 @@
   {else}
     <p>No information.</p>
   {/if}
+{/template}
+
+
+/**
+ * Template for rendering type information about what a function overrides
+ * or any interfaces it is specified by.
+ */
+{template .fnOverrides}
+  {@param fn: dossier.Function}
+  {let $base: $fn.base /}
+
+  {if length($base.specifiedBy) or $base.overrides}
+    <p>
+      {if length($base.specifiedBy)}
+        <b>Specified by: </b>
+        {foreach $spec in $base.specifiedBy}
+          {call .comment}
+            {param comment: $spec /}
+            {param omitLeadingTag: true /}
+          {/call}
+          {if not isLast($spec)}
+            ,{sp}
+          {/if}
+        {/foreach}
+        {if $base.overrides}<br>{/if}
+      {/if}
+      {if $base.overrides}
+        <b>Overrides: </b>
+        {call .comment}
+          {param comment: $base.overrides /}
+          {param omitLeadingTag: true /}
+        {/call}
+      {/if}
+    </p>
+  {/if}
+
 {/template}
 
 

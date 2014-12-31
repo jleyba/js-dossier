@@ -106,14 +106,23 @@ message Tags {
 message BaseProperty {
   // The property's name; this should not be the fully qualified name.
   required string name = 1;
+
   // Link to the location in the source file where this property is defined.
   required SourceLink source = 2;
+
   // The property's block comment.
   required Comment description = 3;
+
   // Whether this property is deprecated.
   optional Deprecation deprecation = 4;
   optional Visibility visibility = 5 [default = PUBLIC];
   optional Tags tags = 6;
+
+  // Parent class that defines this property.
+  optional Comment overrides = 8;
+
+  // Interfaces that define this property.
+  repeated Comment specified_by = 7;
 }
 
 

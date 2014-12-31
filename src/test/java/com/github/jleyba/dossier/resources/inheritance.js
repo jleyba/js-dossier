@@ -36,9 +36,28 @@ sample.inheritance.LeafInterface = function() {};
 
 
 /**
+ * Runs stuff.
+ * @interface
+ */
+sample.inheritance.Runnable = function() {};
+
+
+/**
+ * Run this instance.
+ */
+sample.inheritance.Runnable.prototype.run = function() {};
+
+
+/**
  * @constructor
  */
 sample.inheritance.BaseClass = function() {};
+
+
+/**
+ * The base method.
+ */
+sample.inheritance.BaseClass.prototype.run = function() {};
 
 
 /**
@@ -49,12 +68,21 @@ sample.inheritance.BaseClass = function() {};
 sample.inheritance.SecondClass = function() {};
 
 
+/** @override */
+sample.inheritance.SecondClass.prototype.run = function() {};
+
+
 /**
  * @constructor
  * @extends {sample.inheritance.SecondClass}
+ * @implements {sample.inheritance.Runnable}
  * @final
  */
 sample.inheritance.FinalClass = function() {};
+
+
+/** @override */
+sample.inheritance.FinalClass.prototype.run = function() {};
 
 
 /**
@@ -105,4 +133,22 @@ sample.inheritance.NumberClass.prototype.addMany = function(n, var_args) {
     result += arguments[i];
   }
   return result;
+};
+
+
+/**
+ * A runnable error.
+ * @param {string} msg The error message.
+ * @constructor
+ * @extends {Error}
+ * @implements {sample.inheritance.Runnable}
+ */
+sample.inheritance.RunnableError = function(msg) {
+  Error.call(this, msg);
+
+  /** @override */
+  this.name = 'RunnableError';
+
+  /** @override */
+  this.run = function() {};
 };
