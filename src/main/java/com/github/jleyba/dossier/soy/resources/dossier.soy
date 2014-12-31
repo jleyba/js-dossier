@@ -228,7 +228,6 @@
  * Prints the values for the given enumeration.
  */
 {template .enumValues private="true"}
-  {@param name: string}
   {@param enumeration: dossier.Enumeration}
 
   {if length($enumeration.value)}
@@ -236,8 +235,7 @@
     <dl>
       {foreach $value in $enumeration.value}
         <dt{if $value.deprecation.notice and length($value.deprecation.notice.token)} class="deprecated"{/if}>
-          <a id="{$name + '.' + $value.name}"></a>
-          /* TODO: deprecation */
+          <a id="{$value.name}"></a>
           {$value.name}
         {if ($value.description and length($value.description.token)) or
             ($value.deprecation
@@ -863,7 +861,6 @@
 
       {if $spec.type.enumeration}
         {call .enumValues}
-          {param name: $spec.type.name /}
           {param enumeration: $spec.type.enumeration /}
         {/call}
       {/if}

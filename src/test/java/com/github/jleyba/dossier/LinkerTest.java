@@ -263,6 +263,23 @@ public class LinkerTest {
   }
 
   @Test
+  public void testGetLink_enum() {
+    util.compile(
+        fileSystem.getPath("/src/foo/bar.js"),
+        "goog.provide('foo');",
+        "/** @enum {string} */",
+        "foo.Bar = {yes: 'yes', no: 'no'};",
+        "foo.Bar.valueOf = function (x) { return x ? foo.Bar.yes : foo.Bar.no; };");
+
+    assertNotNull(typeRegistry.getNominalType("foo.Bar"));
+
+    checkLink("foo.Bar", "enum_foo_Bar.html", linker.getLink("foo.Bar"));
+    checkLink("foo.Bar.yes", "enum_foo_Bar.html#yes", linker.getLink("foo.Bar#yes"));
+    checkLink("foo.Bar.valueOf", "enum_foo_Bar.html#Bar.valueOf",
+        linker.getLink("foo.Bar.valueOf"));
+  }
+
+  @Test
   public void testGetLink_contextHash_contextIsClass() {
     util.compile(
         fileSystem.getPath("/src/foo/bar.js"),
@@ -312,7 +329,7 @@ public class LinkerTest {
     assertNotNull(context);
     linker.pushContext(context);
 
-    checkLink("foo.Bar.x", "enum_foo_Bar.html#Bar.x", linker.getLink("#x"));
+    checkLink("foo.Bar.x", "enum_foo_Bar.html#x", linker.getLink("#x"));
     checkLink("foo.Bar.baz", "enum_foo_Bar.html#Bar.baz", linker.getLink("#baz"));
   }
 

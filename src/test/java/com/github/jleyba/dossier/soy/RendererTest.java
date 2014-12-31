@@ -569,21 +569,20 @@ public class RendererTest {
                 .setNotice(parseComment("This value is deprecated"))))
         .build();
 
-    Document document = renderDocument("dossier.soy.enumValues",
-        ImmutableMap.of("name", "foo.Bar", "enumeration", e));
+    Document document = renderDocument("dossier.soy.enumValues", ImmutableMap.of("enumeration", e));
 
     assertThat(querySelector(document, "h2").toString(), is("<h2>Values and Descriptions</h2>"));
     assertThat(querySelector(document, "body").toString(), isHtml(
         "<body>",
         "<h2>Values and Descriptions</h2>",
         "<dl>",
-        "<dt><a id=\"foo.Bar.ONE\"></a>ONE</dt>",
-        "<dt><a id=\"foo.Bar.TWO\"></a>TWO</dt>",
-        "<dt><a id=\"foo.Bar.RED\"></a>RED</dt>",
+        "<dt><a id=\"ONE\"></a>ONE</dt>",
+        "<dt><a id=\"TWO\"></a>TWO</dt>",
+        "<dt><a id=\"RED\"></a>RED</dt>",
         "<dd><strong>the color red</strong></dd>",
-        "<dt><a id=\"foo.Bar.GREEN\"></a>GREEN</dt>",
+        "<dt><a id=\"GREEN\"></a>GREEN</dt>",
         "<dd><i>the color green</i></dd>",
-        "<dt class=\"deprecated\"><a id=\"foo.Bar.BLUE\"></a>BLUE</dt>",
+        "<dt class=\"deprecated\"><a id=\"BLUE\"></a>BLUE</dt>",
         "<dd>",
         "<b>Deprecated: </b>This value is deprecated",
         "</dd>",

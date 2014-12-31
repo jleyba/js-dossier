@@ -273,6 +273,13 @@ public class Linker {
       }
     }
 
+    if (type.getJsType().toObjectType().getPropertyType(symbol).isEnumElementType()) {
+      return link.toBuilder()
+          .setText(link.getText() + "." + symbol)
+          .setHref(link.getHref() + "#" + id)
+          .build();
+    }
+
     if (!type.getJsType().toObjectType().getPropertyNames().contains(symbol)) {
       return link.toBuilder()
           .setText(link.getText() + "." + symbol)
