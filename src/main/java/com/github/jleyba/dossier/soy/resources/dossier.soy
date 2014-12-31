@@ -563,8 +563,24 @@
   {@param fn: dossier.Function}
   {let $base: $fn.base /}
 
-  {if length($base.specifiedBy) or $base.overrides}
+  {if $base.definedBy or length($base.specifiedBy) or $base.overrides}
     <p>
+      {if $base.definedBy}
+        <b>Defined by: </b>
+        {call .comment}
+          {param comment: $base.definedBy /}
+          {param omitLeadingTag: true /}
+        {/call}
+        {if $base.overrides or length($base.specifiedBy)}<br>{/if}
+      {/if}
+      {if $base.overrides}
+        <b>Overrides: </b>
+        {call .comment}
+          {param comment: $base.overrides /}
+          {param omitLeadingTag: true /}
+        {/call}
+        {if length($base.specifiedBy)}<br>{/if}
+      {/if}
       {if length($base.specifiedBy)}
         <b>Specified by: </b>
         {foreach $spec in $base.specifiedBy}
@@ -576,14 +592,6 @@
             ,{sp}
           {/if}
         {/foreach}
-        {if $base.overrides}<br>{/if}
-      {/if}
-      {if $base.overrides}
-        <b>Overrides: </b>
-        {call .comment}
-          {param comment: $base.overrides /}
-          {param omitLeadingTag: true /}
-        {/call}
       {/if}
     </p>
   {/if}

@@ -118,11 +118,14 @@ message BaseProperty {
   optional Visibility visibility = 5 [default = PUBLIC];
   optional Tags tags = 6;
 
+  // The class or interface that defines this property.
+  optional Comment defined_by = 7;
+
   // Parent class that defines this property.
   optional Comment overrides = 8;
 
   // Interfaces that define this property.
-  repeated Comment specified_by = 7;
+  repeated Comment specified_by = 9;
 }
 
 

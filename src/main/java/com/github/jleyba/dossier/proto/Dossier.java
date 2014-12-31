@@ -7061,6 +7061,31 @@ public final class Dossier {
     com.github.jleyba.dossier.proto.Dossier.TagsOrBuilder getTagsOrBuilder();
 
     /**
+     * <code>optional .dossier.Comment defined_by = 7;</code>
+     *
+     * <pre>
+     * The class or interface that defines this property.
+     * </pre>
+     */
+    boolean hasDefinedBy();
+    /**
+     * <code>optional .dossier.Comment defined_by = 7;</code>
+     *
+     * <pre>
+     * The class or interface that defines this property.
+     * </pre>
+     */
+    com.github.jleyba.dossier.proto.Dossier.Comment getDefinedBy();
+    /**
+     * <code>optional .dossier.Comment defined_by = 7;</code>
+     *
+     * <pre>
+     * The class or interface that defines this property.
+     * </pre>
+     */
+    com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder getDefinedByOrBuilder();
+
+    /**
      * <code>optional .dossier.Comment overrides = 8;</code>
      *
      * <pre>
@@ -7086,7 +7111,7 @@ public final class Dossier {
     com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder getOverridesOrBuilder();
 
     /**
-     * <code>repeated .dossier.Comment specified_by = 7;</code>
+     * <code>repeated .dossier.Comment specified_by = 9;</code>
      *
      * <pre>
      * Interfaces that define this property.
@@ -7095,7 +7120,7 @@ public final class Dossier {
     java.util.List<com.github.jleyba.dossier.proto.Dossier.Comment> 
         getSpecifiedByList();
     /**
-     * <code>repeated .dossier.Comment specified_by = 7;</code>
+     * <code>repeated .dossier.Comment specified_by = 9;</code>
      *
      * <pre>
      * Interfaces that define this property.
@@ -7103,7 +7128,7 @@ public final class Dossier {
      */
     com.github.jleyba.dossier.proto.Dossier.Comment getSpecifiedBy(int index);
     /**
-     * <code>repeated .dossier.Comment specified_by = 7;</code>
+     * <code>repeated .dossier.Comment specified_by = 9;</code>
      *
      * <pre>
      * Interfaces that define this property.
@@ -7111,7 +7136,7 @@ public final class Dossier {
      */
     int getSpecifiedByCount();
     /**
-     * <code>repeated .dossier.Comment specified_by = 7;</code>
+     * <code>repeated .dossier.Comment specified_by = 9;</code>
      *
      * <pre>
      * Interfaces that define this property.
@@ -7120,7 +7145,7 @@ public final class Dossier {
     java.util.List<? extends com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder> 
         getSpecifiedByOrBuilderList();
     /**
-     * <code>repeated .dossier.Comment specified_by = 7;</code>
+     * <code>repeated .dossier.Comment specified_by = 9;</code>
      *
      * <pre>
      * Interfaces that define this property.
@@ -7255,16 +7280,21 @@ public final class Dossier {
               break;
             }
             case 58: {
-              if (!((mutable_bitField0_ & 0x00000080) == 0x00000080)) {
-                specifiedBy_ = new java.util.ArrayList<com.github.jleyba.dossier.proto.Dossier.Comment>();
-                mutable_bitField0_ |= 0x00000080;
+              com.github.jleyba.dossier.proto.Dossier.Comment.Builder subBuilder = null;
+              if (((bitField0_ & 0x00000040) == 0x00000040)) {
+                subBuilder = definedBy_.toBuilder();
               }
-              specifiedBy_.add(input.readMessage(com.github.jleyba.dossier.proto.Dossier.Comment.PARSER, extensionRegistry));
+              definedBy_ = input.readMessage(com.github.jleyba.dossier.proto.Dossier.Comment.PARSER, extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(definedBy_);
+                definedBy_ = subBuilder.buildPartial();
+              }
+              bitField0_ |= 0x00000040;
               break;
             }
             case 66: {
               com.github.jleyba.dossier.proto.Dossier.Comment.Builder subBuilder = null;
-              if (((bitField0_ & 0x00000040) == 0x00000040)) {
+              if (((bitField0_ & 0x00000080) == 0x00000080)) {
                 subBuilder = overrides_.toBuilder();
               }
               overrides_ = input.readMessage(com.github.jleyba.dossier.proto.Dossier.Comment.PARSER, extensionRegistry);
@@ -7272,7 +7302,15 @@ public final class Dossier {
                 subBuilder.mergeFrom(overrides_);
                 overrides_ = subBuilder.buildPartial();
               }
-              bitField0_ |= 0x00000040;
+              bitField0_ |= 0x00000080;
+              break;
+            }
+            case 74: {
+              if (!((mutable_bitField0_ & 0x00000100) == 0x00000100)) {
+                specifiedBy_ = new java.util.ArrayList<com.github.jleyba.dossier.proto.Dossier.Comment>();
+                mutable_bitField0_ |= 0x00000100;
+              }
+              specifiedBy_.add(input.readMessage(com.github.jleyba.dossier.proto.Dossier.Comment.PARSER, extensionRegistry));
               break;
             }
           }
@@ -7283,7 +7321,7 @@ public final class Dossier {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e.getMessage()).setUnfinishedMessage(this);
       } finally {
-        if (((mutable_bitField0_ & 0x00000080) == 0x00000080)) {
+        if (((mutable_bitField0_ & 0x00000100) == 0x00000100)) {
           specifiedBy_ = java.util.Collections.unmodifiableList(specifiedBy_);
         }
         this.unknownFields = unknownFields.build();
@@ -7507,6 +7545,39 @@ public final class Dossier {
       return tags_;
     }
 
+    public static final int DEFINED_BY_FIELD_NUMBER = 7;
+    private com.github.jleyba.dossier.proto.Dossier.Comment definedBy_;
+    /**
+     * <code>optional .dossier.Comment defined_by = 7;</code>
+     *
+     * <pre>
+     * The class or interface that defines this property.
+     * </pre>
+     */
+    public boolean hasDefinedBy() {
+      return ((bitField0_ & 0x00000040) == 0x00000040);
+    }
+    /**
+     * <code>optional .dossier.Comment defined_by = 7;</code>
+     *
+     * <pre>
+     * The class or interface that defines this property.
+     * </pre>
+     */
+    public com.github.jleyba.dossier.proto.Dossier.Comment getDefinedBy() {
+      return definedBy_;
+    }
+    /**
+     * <code>optional .dossier.Comment defined_by = 7;</code>
+     *
+     * <pre>
+     * The class or interface that defines this property.
+     * </pre>
+     */
+    public com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder getDefinedByOrBuilder() {
+      return definedBy_;
+    }
+
     public static final int OVERRIDES_FIELD_NUMBER = 8;
     private com.github.jleyba.dossier.proto.Dossier.Comment overrides_;
     /**
@@ -7517,7 +7588,7 @@ public final class Dossier {
      * </pre>
      */
     public boolean hasOverrides() {
-      return ((bitField0_ & 0x00000040) == 0x00000040);
+      return ((bitField0_ & 0x00000080) == 0x00000080);
     }
     /**
      * <code>optional .dossier.Comment overrides = 8;</code>
@@ -7540,10 +7611,10 @@ public final class Dossier {
       return overrides_;
     }
 
-    public static final int SPECIFIED_BY_FIELD_NUMBER = 7;
+    public static final int SPECIFIED_BY_FIELD_NUMBER = 9;
     private java.util.List<com.github.jleyba.dossier.proto.Dossier.Comment> specifiedBy_;
     /**
-     * <code>repeated .dossier.Comment specified_by = 7;</code>
+     * <code>repeated .dossier.Comment specified_by = 9;</code>
      *
      * <pre>
      * Interfaces that define this property.
@@ -7553,7 +7624,7 @@ public final class Dossier {
       return specifiedBy_;
     }
     /**
-     * <code>repeated .dossier.Comment specified_by = 7;</code>
+     * <code>repeated .dossier.Comment specified_by = 9;</code>
      *
      * <pre>
      * Interfaces that define this property.
@@ -7564,7 +7635,7 @@ public final class Dossier {
       return specifiedBy_;
     }
     /**
-     * <code>repeated .dossier.Comment specified_by = 7;</code>
+     * <code>repeated .dossier.Comment specified_by = 9;</code>
      *
      * <pre>
      * Interfaces that define this property.
@@ -7574,7 +7645,7 @@ public final class Dossier {
       return specifiedBy_.size();
     }
     /**
-     * <code>repeated .dossier.Comment specified_by = 7;</code>
+     * <code>repeated .dossier.Comment specified_by = 9;</code>
      *
      * <pre>
      * Interfaces that define this property.
@@ -7584,7 +7655,7 @@ public final class Dossier {
       return specifiedBy_.get(index);
     }
     /**
-     * <code>repeated .dossier.Comment specified_by = 7;</code>
+     * <code>repeated .dossier.Comment specified_by = 9;</code>
      *
      * <pre>
      * Interfaces that define this property.
@@ -7602,6 +7673,7 @@ public final class Dossier {
       deprecation_ = com.github.jleyba.dossier.proto.Dossier.Deprecation.getDefaultInstance();
       visibility_ = com.github.jleyba.dossier.proto.Dossier.Visibility.PUBLIC;
       tags_ = com.github.jleyba.dossier.proto.Dossier.Tags.getDefaultInstance();
+      definedBy_ = com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance();
       overrides_ = com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance();
       specifiedBy_ = java.util.Collections.emptyList();
     }
@@ -7633,6 +7705,12 @@ public final class Dossier {
       }
       if (hasDeprecation()) {
         if (!getDeprecation().isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+      }
+      if (hasDefinedBy()) {
+        if (!getDefinedBy().isInitialized()) {
           memoizedIsInitialized = 0;
           return false;
         }
@@ -7674,11 +7752,14 @@ public final class Dossier {
       if (((bitField0_ & 0x00000020) == 0x00000020)) {
         output.writeMessage(6, tags_);
       }
-      for (int i = 0; i < specifiedBy_.size(); i++) {
-        output.writeMessage(7, specifiedBy_.get(i));
-      }
       if (((bitField0_ & 0x00000040) == 0x00000040)) {
+        output.writeMessage(7, definedBy_);
+      }
+      if (((bitField0_ & 0x00000080) == 0x00000080)) {
         output.writeMessage(8, overrides_);
+      }
+      for (int i = 0; i < specifiedBy_.size(); i++) {
+        output.writeMessage(9, specifiedBy_.get(i));
       }
       getUnknownFields().writeTo(output);
     }
@@ -7713,13 +7794,17 @@ public final class Dossier {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(6, tags_);
       }
-      for (int i = 0; i < specifiedBy_.size(); i++) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(7, specifiedBy_.get(i));
-      }
       if (((bitField0_ & 0x00000040) == 0x00000040)) {
         size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(7, definedBy_);
+      }
+      if (((bitField0_ & 0x00000080) == 0x00000080)) {
+        size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(8, overrides_);
+      }
+      for (int i = 0; i < specifiedBy_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(9, specifiedBy_.get(i));
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -7838,6 +7923,7 @@ public final class Dossier {
           getDescriptionFieldBuilder();
           getDeprecationFieldBuilder();
           getTagsFieldBuilder();
+          getDefinedByFieldBuilder();
           getOverridesFieldBuilder();
           getSpecifiedByFieldBuilder();
         }
@@ -7876,15 +7962,21 @@ public final class Dossier {
           tagsBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000020);
+        if (definedByBuilder_ == null) {
+          definedBy_ = com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance();
+        } else {
+          definedByBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000040);
         if (overridesBuilder_ == null) {
           overrides_ = com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance();
         } else {
           overridesBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00000040);
+        bitField0_ = (bitField0_ & ~0x00000080);
         if (specifiedByBuilder_ == null) {
           specifiedBy_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000080);
+          bitField0_ = (bitField0_ & ~0x00000100);
         } else {
           specifiedByBuilder_.clear();
         }
@@ -7959,15 +8051,23 @@ public final class Dossier {
         if (((from_bitField0_ & 0x00000040) == 0x00000040)) {
           to_bitField0_ |= 0x00000040;
         }
+        if (definedByBuilder_ == null) {
+          result.definedBy_ = definedBy_;
+        } else {
+          result.definedBy_ = definedByBuilder_.build();
+        }
+        if (((from_bitField0_ & 0x00000080) == 0x00000080)) {
+          to_bitField0_ |= 0x00000080;
+        }
         if (overridesBuilder_ == null) {
           result.overrides_ = overrides_;
         } else {
           result.overrides_ = overridesBuilder_.build();
         }
         if (specifiedByBuilder_ == null) {
-          if (((bitField0_ & 0x00000080) == 0x00000080)) {
+          if (((bitField0_ & 0x00000100) == 0x00000100)) {
             specifiedBy_ = java.util.Collections.unmodifiableList(specifiedBy_);
-            bitField0_ = (bitField0_ & ~0x00000080);
+            bitField0_ = (bitField0_ & ~0x00000100);
           }
           result.specifiedBy_ = specifiedBy_;
         } else {
@@ -8009,6 +8109,9 @@ public final class Dossier {
         if (other.hasTags()) {
           mergeTags(other.getTags());
         }
+        if (other.hasDefinedBy()) {
+          mergeDefinedBy(other.getDefinedBy());
+        }
         if (other.hasOverrides()) {
           mergeOverrides(other.getOverrides());
         }
@@ -8016,7 +8119,7 @@ public final class Dossier {
           if (!other.specifiedBy_.isEmpty()) {
             if (specifiedBy_.isEmpty()) {
               specifiedBy_ = other.specifiedBy_;
-              bitField0_ = (bitField0_ & ~0x00000080);
+              bitField0_ = (bitField0_ & ~0x00000100);
             } else {
               ensureSpecifiedByIsMutable();
               specifiedBy_.addAll(other.specifiedBy_);
@@ -8029,7 +8132,7 @@ public final class Dossier {
               specifiedByBuilder_.dispose();
               specifiedByBuilder_ = null;
               specifiedBy_ = other.specifiedBy_;
-              bitField0_ = (bitField0_ & ~0x00000080);
+              bitField0_ = (bitField0_ & ~0x00000100);
               specifiedByBuilder_ = 
                 com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
                    getSpecifiedByFieldBuilder() : null;
@@ -8065,6 +8168,12 @@ public final class Dossier {
         }
         if (hasDeprecation()) {
           if (!getDeprecation().isInitialized()) {
+            
+            return false;
+          }
+        }
+        if (hasDefinedBy()) {
+          if (!getDefinedBy().isInitialized()) {
             
             return false;
           }
@@ -8810,6 +8919,158 @@ public final class Dossier {
         return tagsBuilder_;
       }
 
+      private com.github.jleyba.dossier.proto.Dossier.Comment definedBy_ = com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          com.github.jleyba.dossier.proto.Dossier.Comment, com.github.jleyba.dossier.proto.Dossier.Comment.Builder, com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder> definedByBuilder_;
+      /**
+       * <code>optional .dossier.Comment defined_by = 7;</code>
+       *
+       * <pre>
+       * The class or interface that defines this property.
+       * </pre>
+       */
+      public boolean hasDefinedBy() {
+        return ((bitField0_ & 0x00000040) == 0x00000040);
+      }
+      /**
+       * <code>optional .dossier.Comment defined_by = 7;</code>
+       *
+       * <pre>
+       * The class or interface that defines this property.
+       * </pre>
+       */
+      public com.github.jleyba.dossier.proto.Dossier.Comment getDefinedBy() {
+        if (definedByBuilder_ == null) {
+          return definedBy_;
+        } else {
+          return definedByBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>optional .dossier.Comment defined_by = 7;</code>
+       *
+       * <pre>
+       * The class or interface that defines this property.
+       * </pre>
+       */
+      public Builder setDefinedBy(com.github.jleyba.dossier.proto.Dossier.Comment value) {
+        if (definedByBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          definedBy_ = value;
+          onChanged();
+        } else {
+          definedByBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000040;
+        return this;
+      }
+      /**
+       * <code>optional .dossier.Comment defined_by = 7;</code>
+       *
+       * <pre>
+       * The class or interface that defines this property.
+       * </pre>
+       */
+      public Builder setDefinedBy(
+          com.github.jleyba.dossier.proto.Dossier.Comment.Builder builderForValue) {
+        if (definedByBuilder_ == null) {
+          definedBy_ = builderForValue.build();
+          onChanged();
+        } else {
+          definedByBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000040;
+        return this;
+      }
+      /**
+       * <code>optional .dossier.Comment defined_by = 7;</code>
+       *
+       * <pre>
+       * The class or interface that defines this property.
+       * </pre>
+       */
+      public Builder mergeDefinedBy(com.github.jleyba.dossier.proto.Dossier.Comment value) {
+        if (definedByBuilder_ == null) {
+          if (((bitField0_ & 0x00000040) == 0x00000040) &&
+              definedBy_ != com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance()) {
+            definedBy_ =
+              com.github.jleyba.dossier.proto.Dossier.Comment.newBuilder(definedBy_).mergeFrom(value).buildPartial();
+          } else {
+            definedBy_ = value;
+          }
+          onChanged();
+        } else {
+          definedByBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000040;
+        return this;
+      }
+      /**
+       * <code>optional .dossier.Comment defined_by = 7;</code>
+       *
+       * <pre>
+       * The class or interface that defines this property.
+       * </pre>
+       */
+      public Builder clearDefinedBy() {
+        if (definedByBuilder_ == null) {
+          definedBy_ = com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance();
+          onChanged();
+        } else {
+          definedByBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000040);
+        return this;
+      }
+      /**
+       * <code>optional .dossier.Comment defined_by = 7;</code>
+       *
+       * <pre>
+       * The class or interface that defines this property.
+       * </pre>
+       */
+      public com.github.jleyba.dossier.proto.Dossier.Comment.Builder getDefinedByBuilder() {
+        bitField0_ |= 0x00000040;
+        onChanged();
+        return getDefinedByFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>optional .dossier.Comment defined_by = 7;</code>
+       *
+       * <pre>
+       * The class or interface that defines this property.
+       * </pre>
+       */
+      public com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder getDefinedByOrBuilder() {
+        if (definedByBuilder_ != null) {
+          return definedByBuilder_.getMessageOrBuilder();
+        } else {
+          return definedBy_;
+        }
+      }
+      /**
+       * <code>optional .dossier.Comment defined_by = 7;</code>
+       *
+       * <pre>
+       * The class or interface that defines this property.
+       * </pre>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          com.github.jleyba.dossier.proto.Dossier.Comment, com.github.jleyba.dossier.proto.Dossier.Comment.Builder, com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder> 
+          getDefinedByFieldBuilder() {
+        if (definedByBuilder_ == null) {
+          definedByBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              com.github.jleyba.dossier.proto.Dossier.Comment, com.github.jleyba.dossier.proto.Dossier.Comment.Builder, com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder>(
+                  getDefinedBy(),
+                  getParentForChildren(),
+                  isClean());
+          definedBy_ = null;
+        }
+        return definedByBuilder_;
+      }
+
       private com.github.jleyba.dossier.proto.Dossier.Comment overrides_ = com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           com.github.jleyba.dossier.proto.Dossier.Comment, com.github.jleyba.dossier.proto.Dossier.Comment.Builder, com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder> overridesBuilder_;
@@ -8821,7 +9082,7 @@ public final class Dossier {
        * </pre>
        */
       public boolean hasOverrides() {
-        return ((bitField0_ & 0x00000040) == 0x00000040);
+        return ((bitField0_ & 0x00000080) == 0x00000080);
       }
       /**
        * <code>optional .dossier.Comment overrides = 8;</code>
@@ -8854,7 +9115,7 @@ public final class Dossier {
         } else {
           overridesBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00000040;
+        bitField0_ |= 0x00000080;
         return this;
       }
       /**
@@ -8872,7 +9133,7 @@ public final class Dossier {
         } else {
           overridesBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00000040;
+        bitField0_ |= 0x00000080;
         return this;
       }
       /**
@@ -8884,7 +9145,7 @@ public final class Dossier {
        */
       public Builder mergeOverrides(com.github.jleyba.dossier.proto.Dossier.Comment value) {
         if (overridesBuilder_ == null) {
-          if (((bitField0_ & 0x00000040) == 0x00000040) &&
+          if (((bitField0_ & 0x00000080) == 0x00000080) &&
               overrides_ != com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance()) {
             overrides_ =
               com.github.jleyba.dossier.proto.Dossier.Comment.newBuilder(overrides_).mergeFrom(value).buildPartial();
@@ -8895,7 +9156,7 @@ public final class Dossier {
         } else {
           overridesBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x00000040;
+        bitField0_ |= 0x00000080;
         return this;
       }
       /**
@@ -8912,7 +9173,7 @@ public final class Dossier {
         } else {
           overridesBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00000040);
+        bitField0_ = (bitField0_ & ~0x00000080);
         return this;
       }
       /**
@@ -8923,7 +9184,7 @@ public final class Dossier {
        * </pre>
        */
       public com.github.jleyba.dossier.proto.Dossier.Comment.Builder getOverridesBuilder() {
-        bitField0_ |= 0x00000040;
+        bitField0_ |= 0x00000080;
         onChanged();
         return getOverridesFieldBuilder().getBuilder();
       }
@@ -8965,9 +9226,9 @@ public final class Dossier {
       private java.util.List<com.github.jleyba.dossier.proto.Dossier.Comment> specifiedBy_ =
         java.util.Collections.emptyList();
       private void ensureSpecifiedByIsMutable() {
-        if (!((bitField0_ & 0x00000080) == 0x00000080)) {
+        if (!((bitField0_ & 0x00000100) == 0x00000100)) {
           specifiedBy_ = new java.util.ArrayList<com.github.jleyba.dossier.proto.Dossier.Comment>(specifiedBy_);
-          bitField0_ |= 0x00000080;
+          bitField0_ |= 0x00000100;
          }
       }
 
@@ -8975,7 +9236,7 @@ public final class Dossier {
           com.github.jleyba.dossier.proto.Dossier.Comment, com.github.jleyba.dossier.proto.Dossier.Comment.Builder, com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder> specifiedByBuilder_;
 
       /**
-       * <code>repeated .dossier.Comment specified_by = 7;</code>
+       * <code>repeated .dossier.Comment specified_by = 9;</code>
        *
        * <pre>
        * Interfaces that define this property.
@@ -8989,7 +9250,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .dossier.Comment specified_by = 7;</code>
+       * <code>repeated .dossier.Comment specified_by = 9;</code>
        *
        * <pre>
        * Interfaces that define this property.
@@ -9003,7 +9264,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .dossier.Comment specified_by = 7;</code>
+       * <code>repeated .dossier.Comment specified_by = 9;</code>
        *
        * <pre>
        * Interfaces that define this property.
@@ -9017,7 +9278,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .dossier.Comment specified_by = 7;</code>
+       * <code>repeated .dossier.Comment specified_by = 9;</code>
        *
        * <pre>
        * Interfaces that define this property.
@@ -9038,7 +9299,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .dossier.Comment specified_by = 7;</code>
+       * <code>repeated .dossier.Comment specified_by = 9;</code>
        *
        * <pre>
        * Interfaces that define this property.
@@ -9056,7 +9317,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .dossier.Comment specified_by = 7;</code>
+       * <code>repeated .dossier.Comment specified_by = 9;</code>
        *
        * <pre>
        * Interfaces that define this property.
@@ -9076,7 +9337,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .dossier.Comment specified_by = 7;</code>
+       * <code>repeated .dossier.Comment specified_by = 9;</code>
        *
        * <pre>
        * Interfaces that define this property.
@@ -9097,7 +9358,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .dossier.Comment specified_by = 7;</code>
+       * <code>repeated .dossier.Comment specified_by = 9;</code>
        *
        * <pre>
        * Interfaces that define this property.
@@ -9115,7 +9376,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .dossier.Comment specified_by = 7;</code>
+       * <code>repeated .dossier.Comment specified_by = 9;</code>
        *
        * <pre>
        * Interfaces that define this property.
@@ -9133,7 +9394,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .dossier.Comment specified_by = 7;</code>
+       * <code>repeated .dossier.Comment specified_by = 9;</code>
        *
        * <pre>
        * Interfaces that define this property.
@@ -9152,7 +9413,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .dossier.Comment specified_by = 7;</code>
+       * <code>repeated .dossier.Comment specified_by = 9;</code>
        *
        * <pre>
        * Interfaces that define this property.
@@ -9161,7 +9422,7 @@ public final class Dossier {
       public Builder clearSpecifiedBy() {
         if (specifiedByBuilder_ == null) {
           specifiedBy_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000080);
+          bitField0_ = (bitField0_ & ~0x00000100);
           onChanged();
         } else {
           specifiedByBuilder_.clear();
@@ -9169,7 +9430,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .dossier.Comment specified_by = 7;</code>
+       * <code>repeated .dossier.Comment specified_by = 9;</code>
        *
        * <pre>
        * Interfaces that define this property.
@@ -9186,7 +9447,7 @@ public final class Dossier {
         return this;
       }
       /**
-       * <code>repeated .dossier.Comment specified_by = 7;</code>
+       * <code>repeated .dossier.Comment specified_by = 9;</code>
        *
        * <pre>
        * Interfaces that define this property.
@@ -9197,7 +9458,7 @@ public final class Dossier {
         return getSpecifiedByFieldBuilder().getBuilder(index);
       }
       /**
-       * <code>repeated .dossier.Comment specified_by = 7;</code>
+       * <code>repeated .dossier.Comment specified_by = 9;</code>
        *
        * <pre>
        * Interfaces that define this property.
@@ -9211,7 +9472,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .dossier.Comment specified_by = 7;</code>
+       * <code>repeated .dossier.Comment specified_by = 9;</code>
        *
        * <pre>
        * Interfaces that define this property.
@@ -9226,7 +9487,7 @@ public final class Dossier {
         }
       }
       /**
-       * <code>repeated .dossier.Comment specified_by = 7;</code>
+       * <code>repeated .dossier.Comment specified_by = 9;</code>
        *
        * <pre>
        * Interfaces that define this property.
@@ -9237,7 +9498,7 @@ public final class Dossier {
             com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance());
       }
       /**
-       * <code>repeated .dossier.Comment specified_by = 7;</code>
+       * <code>repeated .dossier.Comment specified_by = 9;</code>
        *
        * <pre>
        * Interfaces that define this property.
@@ -9249,7 +9510,7 @@ public final class Dossier {
             index, com.github.jleyba.dossier.proto.Dossier.Comment.getDefaultInstance());
       }
       /**
-       * <code>repeated .dossier.Comment specified_by = 7;</code>
+       * <code>repeated .dossier.Comment specified_by = 9;</code>
        *
        * <pre>
        * Interfaces that define this property.
@@ -9266,7 +9527,7 @@ public final class Dossier {
           specifiedByBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
               com.github.jleyba.dossier.proto.Dossier.Comment, com.github.jleyba.dossier.proto.Dossier.Comment.Builder, com.github.jleyba.dossier.proto.Dossier.CommentOrBuilder>(
                   specifiedBy_,
-                  ((bitField0_ & 0x00000080) == 0x00000080),
+                  ((bitField0_ & 0x00000100) == 0x00000100),
                   getParentForChildren(),
                   isClean());
           specifiedBy_ = null;
@@ -29598,74 +29859,75 @@ public final class Dossier {
       "\022\020\n\010is_const\030\001 \001(\010\022\025\n\ris_deprecated\030\002 \001(" +
       "\010\022\017\n\007is_dict\030\003 \001(\010\022\020\n\010is_final\030\004 \001(\010\022\024\n\014" +
       "is_interface\030\005 \001(\010\022\021\n\tis_module\030\006 \001(\010\022\021\n" +
-      "\tis_struct\030\007 \001(\010\"\256\002\n\014BaseProperty\022\014\n\004nam" +
+      "\tis_struct\030\007 \001(\010\"\324\002\n\014BaseProperty\022\014\n\004nam" +
       "e\030\001 \002(\t\022#\n\006source\030\002 \002(\0132\023.dossier.Source" +
       "Link\022%\n\013description\030\003 \002(\0132\020.dossier.Comm" +
       "ent\022)\n\013deprecation\030\004 \001(\0132\024.dossier.Depre" +
       "cation\022/\n\nvisibility\030\005 \001(\0162\023.dossier.Vis",
       "ibility:\006PUBLIC\022\033\n\004tags\030\006 \001(\0132\r.dossier." +
-      "Tags\022#\n\toverrides\030\010 \001(\0132\020.dossier.Commen" +
-      "t\022&\n\014specified_by\030\007 \003(\0132\020.dossier.Commen" +
-      "t\"O\n\010Property\022#\n\004base\030\001 \002(\0132\025.dossier.Ba" +
-      "seProperty\022\036\n\004type\030\002 \001(\0132\020.dossier.Comme" +
-      "nt\"\305\002\n\010Function\022#\n\004base\030\001 \002(\0132\025.dossier." +
-      "BaseProperty\022\025\n\rtemplate_name\030\002 \003(\t\022\035\n\016i" +
-      "s_constructor\030\003 \001(\010:\005false\022+\n\tparameter\030" +
-      "\004 \003(\0132\030.dossier.Function.Detail\022(\n\006retur" +
-      "n\030\005 \001(\0132\030.dossier.Function.Detail\022(\n\006thr",
-      "own\030\006 \003(\0132\030.dossier.Function.Detail\032]\n\006D" +
-      "etail\022\014\n\004name\030\001 \001(\t\022\036\n\004type\030\002 \001(\0132\020.doss" +
-      "ier.Comment\022%\n\013description\030\003 \001(\0132\020.dossi" +
-      "er.Comment\"\362\001\n\013Enumeration\022\036\n\004type\030\001 \002(\013" +
-      "2\020.dossier.Comment\022)\n\005value\030\002 \003(\0132\032.doss" +
-      "ier.Enumeration.Value\022/\n\nvisibility\030\003 \001(" +
-      "\0162\023.dossier.Visibility:\006PUBLIC\032g\n\005Value\022" +
-      "\014\n\004name\030\001 \002(\t\022%\n\013description\030\002 \001(\0132\020.dos" +
-      "sier.Comment\022)\n\013deprecation\030\003 \001(\0132\024.doss" +
-      "ier.Deprecation\"\251\001\n\005Index\022\014\n\004home\030\001 \002(\t\022",
-      "\037\n\004type\030\002 \003(\0132\021.dossier.TypeLink\022%\n\006modu" +
-      "le\030\003 \003(\0132\025.dossier.Index.Module\032J\n\006Modul" +
-      "e\022\037\n\004link\030\001 \002(\0132\021.dossier.TypeLink\022\037\n\004ty" +
-      "pe\030\002 \003(\0132\021.dossier.TypeLink\"\276\010\n\006JsType\022\014" +
-      "\n\004name\030\001 \002(\t\022#\n\006source\030\005 \002(\0132\023.dossier.S" +
-      "ourceLink\022+\n\006nested\030\006 \003(\0132\033.dossier.JsTy" +
-      "pe.TypeSummary\022%\n\013description\030\007 \002(\0132\020.do" +
-      "ssier.Comment\022\033\n\004tags\030\010 \002(\0132\r.dossier.Ta" +
-      "gs\022)\n\013deprecation\030\t \001(\0132\024.dossier.Deprec" +
-      "ation\022)\n\010type_def\030\n \003(\0132\027.dossier.JsType",
-      ".TypeDef\022)\n\013enumeration\030\013 \001(\0132\024.dossier." +
-      "Enumeration\022*\n\017static_function\030\014 \003(\0132\021.d" +
-      "ossier.Function\022*\n\017static_property\030\r \003(\013" +
-      "2\021.dossier.Property\022(\n\rmain_function\030\016 \001" +
-      "(\0132\021.dossier.Function\022!\n\006method\030\017 \003(\0132\021." +
-      "dossier.Function\022 \n\005field\030\020 \003(\0132\021.dossie" +
-      "r.Property\022\'\n\rextended_type\030\022 \003(\0132\020.doss" +
-      "ier.Comment\022*\n\020implemented_type\030\023 \003(\0132\020." +
-      "dossier.Comment\022,\n\021compiler_constant\030\024 \003" +
-      "(\0132\021.dossier.Property\022*\n\006parent\030\025 \001(\0132\032.",
-      "dossier.JsType.ParentLink\022\'\n\014aliased_typ" +
-      "e\030\026 \001(\0132\021.dossier.TypeLink\032L\n\013TypeSummar" +
-      "y\022\014\n\004name\030\001 \002(\t\022\014\n\004href\030\002 \002(\t\022!\n\007summary" +
-      "\030\003 \002(\0132\020.dossier.Comment\032\337\001\n\007TypeDef\022\014\n\004" +
-      "name\030\001 \002(\t\022\036\n\004type\030\002 \002(\0132\020.dossier.Comme" +
-      "nt\022#\n\006source\030\003 \002(\0132\023.dossier.SourceLink\022" +
-      "%\n\013description\030\004 \002(\0132\020.dossier.Comment\022)" +
-      "\n\013deprecation\030\005 \001(\0132\024.dossier.Deprecatio" +
-      "n\022/\n\nvisibility\030\006 \001(\0162\023.dossier.Visibili" +
-      "ty:\006PUBLIC\032@\n\nParentLink\022\037\n\004link\030\001 \002(\0132\021",
-      ".dossier.TypeLink\022\021\n\tis_module\030\002 \001(\010\"}\n\023" +
-      "IndexFileRenderSpec\022%\n\tresources\030\001 \002(\0132\022" +
-      ".dossier.Resources\022 \n\006readme\030\002 \001(\0132\020.dos" +
-      "sier.Comment\022\035\n\005index\030\003 \002(\0132\016.dossier.In" +
-      "dex\"\177\n\024SourceFileRenderSpec\022%\n\tresources" +
-      "\030\001 \002(\0132\022.dossier.Resources\022!\n\004file\030\002 \002(\013" +
-      "2\023.dossier.SourceFile\022\035\n\005index\030\003 \002(\0132\016.d" +
-      "ossier.Index\"w\n\020JsTypeRenderSpec\022\035\n\004type" +
-      "\030\001 \002(\0132\017.dossier.JsType\022%\n\tresources\030\002 \002" +
-      "(\0132\022.dossier.Resources\022\035\n\005index\030\003 \002(\0132\016.",
-      "dossier.Index*A\n\nVisibility\022\n\n\006PUBLIC\020\000\022" +
-      "\r\n\tPROTECTED\020\001\022\013\n\007PRIVATE\020\002\022\013\n\007PACKAGE\020\003" +
-      "B!\n\037com.github.jleyba.dossier.proto"
+      "Tags\022$\n\ndefined_by\030\007 \001(\0132\020.dossier.Comme" +
+      "nt\022#\n\toverrides\030\010 \001(\0132\020.dossier.Comment\022" +
+      "&\n\014specified_by\030\t \003(\0132\020.dossier.Comment\"" +
+      "O\n\010Property\022#\n\004base\030\001 \002(\0132\025.dossier.Base" +
+      "Property\022\036\n\004type\030\002 \001(\0132\020.dossier.Comment" +
+      "\"\305\002\n\010Function\022#\n\004base\030\001 \002(\0132\025.dossier.Ba" +
+      "seProperty\022\025\n\rtemplate_name\030\002 \003(\t\022\035\n\016is_" +
+      "constructor\030\003 \001(\010:\005false\022+\n\tparameter\030\004 " +
+      "\003(\0132\030.dossier.Function.Detail\022(\n\006return\030",
+      "\005 \001(\0132\030.dossier.Function.Detail\022(\n\006throw" +
+      "n\030\006 \003(\0132\030.dossier.Function.Detail\032]\n\006Det" +
+      "ail\022\014\n\004name\030\001 \001(\t\022\036\n\004type\030\002 \001(\0132\020.dossie" +
+      "r.Comment\022%\n\013description\030\003 \001(\0132\020.dossier" +
+      ".Comment\"\362\001\n\013Enumeration\022\036\n\004type\030\001 \002(\0132\020" +
+      ".dossier.Comment\022)\n\005value\030\002 \003(\0132\032.dossie" +
+      "r.Enumeration.Value\022/\n\nvisibility\030\003 \001(\0162" +
+      "\023.dossier.Visibility:\006PUBLIC\032g\n\005Value\022\014\n" +
+      "\004name\030\001 \002(\t\022%\n\013description\030\002 \001(\0132\020.dossi" +
+      "er.Comment\022)\n\013deprecation\030\003 \001(\0132\024.dossie",
+      "r.Deprecation\"\251\001\n\005Index\022\014\n\004home\030\001 \002(\t\022\037\n" +
+      "\004type\030\002 \003(\0132\021.dossier.TypeLink\022%\n\006module" +
+      "\030\003 \003(\0132\025.dossier.Index.Module\032J\n\006Module\022" +
+      "\037\n\004link\030\001 \002(\0132\021.dossier.TypeLink\022\037\n\004type" +
+      "\030\002 \003(\0132\021.dossier.TypeLink\"\276\010\n\006JsType\022\014\n\004" +
+      "name\030\001 \002(\t\022#\n\006source\030\005 \002(\0132\023.dossier.Sou" +
+      "rceLink\022+\n\006nested\030\006 \003(\0132\033.dossier.JsType" +
+      ".TypeSummary\022%\n\013description\030\007 \002(\0132\020.doss" +
+      "ier.Comment\022\033\n\004tags\030\010 \002(\0132\r.dossier.Tags" +
+      "\022)\n\013deprecation\030\t \001(\0132\024.dossier.Deprecat",
+      "ion\022)\n\010type_def\030\n \003(\0132\027.dossier.JsType.T" +
+      "ypeDef\022)\n\013enumeration\030\013 \001(\0132\024.dossier.En" +
+      "umeration\022*\n\017static_function\030\014 \003(\0132\021.dos" +
+      "sier.Function\022*\n\017static_property\030\r \003(\0132\021" +
+      ".dossier.Property\022(\n\rmain_function\030\016 \001(\013" +
+      "2\021.dossier.Function\022!\n\006method\030\017 \003(\0132\021.do" +
+      "ssier.Function\022 \n\005field\030\020 \003(\0132\021.dossier." +
+      "Property\022\'\n\rextended_type\030\022 \003(\0132\020.dossie" +
+      "r.Comment\022*\n\020implemented_type\030\023 \003(\0132\020.do" +
+      "ssier.Comment\022,\n\021compiler_constant\030\024 \003(\013",
+      "2\021.dossier.Property\022*\n\006parent\030\025 \001(\0132\032.do" +
+      "ssier.JsType.ParentLink\022\'\n\014aliased_type\030" +
+      "\026 \001(\0132\021.dossier.TypeLink\032L\n\013TypeSummary\022" +
+      "\014\n\004name\030\001 \002(\t\022\014\n\004href\030\002 \002(\t\022!\n\007summary\030\003" +
+      " \002(\0132\020.dossier.Comment\032\337\001\n\007TypeDef\022\014\n\004na" +
+      "me\030\001 \002(\t\022\036\n\004type\030\002 \002(\0132\020.dossier.Comment" +
+      "\022#\n\006source\030\003 \002(\0132\023.dossier.SourceLink\022%\n" +
+      "\013description\030\004 \002(\0132\020.dossier.Comment\022)\n\013" +
+      "deprecation\030\005 \001(\0132\024.dossier.Deprecation\022" +
+      "/\n\nvisibility\030\006 \001(\0162\023.dossier.Visibility",
+      ":\006PUBLIC\032@\n\nParentLink\022\037\n\004link\030\001 \002(\0132\021.d" +
+      "ossier.TypeLink\022\021\n\tis_module\030\002 \001(\010\"}\n\023In" +
+      "dexFileRenderSpec\022%\n\tresources\030\001 \002(\0132\022.d" +
+      "ossier.Resources\022 \n\006readme\030\002 \001(\0132\020.dossi" +
+      "er.Comment\022\035\n\005index\030\003 \002(\0132\016.dossier.Inde" +
+      "x\"\177\n\024SourceFileRenderSpec\022%\n\tresources\030\001" +
+      " \002(\0132\022.dossier.Resources\022!\n\004file\030\002 \002(\0132\023" +
+      ".dossier.SourceFile\022\035\n\005index\030\003 \002(\0132\016.dos" +
+      "sier.Index\"w\n\020JsTypeRenderSpec\022\035\n\004type\030\001" +
+      " \002(\0132\017.dossier.JsType\022%\n\tresources\030\002 \002(\013",
+      "2\022.dossier.Resources\022\035\n\005index\030\003 \002(\0132\016.do" +
+      "ssier.Index*A\n\nVisibility\022\n\n\006PUBLIC\020\000\022\r\n" +
+      "\tPROTECTED\020\001\022\013\n\007PRIVATE\020\002\022\013\n\007PACKAGE\020\003B!" +
+      "\n\037com.github.jleyba.dossier.proto"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -29732,7 +29994,7 @@ public final class Dossier {
     internal_static_dossier_BaseProperty_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_dossier_BaseProperty_descriptor,
-        new java.lang.String[] { "Name", "Source", "Description", "Deprecation", "Visibility", "Tags", "Overrides", "SpecifiedBy", });
+        new java.lang.String[] { "Name", "Source", "Description", "Deprecation", "Visibility", "Tags", "DefinedBy", "Overrides", "SpecifiedBy", });
     internal_static_dossier_Property_descriptor =
       getDescriptor().getMessageTypes().get(8);
     internal_static_dossier_Property_fieldAccessorTable = new

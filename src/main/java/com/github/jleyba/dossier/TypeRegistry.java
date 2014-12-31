@@ -13,6 +13,7 @@ import com.google.javascript.rhino.JSTypeExpression;
 import com.google.javascript.rhino.jstype.FunctionType;
 import com.google.javascript.rhino.jstype.JSType;
 import com.google.javascript.rhino.jstype.JSTypeRegistry;
+import com.google.javascript.rhino.jstype.NamedType;
 
 import java.nio.file.Path;
 import java.util.Collection;
@@ -277,7 +278,17 @@ public class TypeRegistry {
     if (baseType == null) {
       return null;
     }
-    return baseType.evaluate(null, jsTypeRegistry);
+    type = evaluate(baseType);
+    if (type instanceof NamedType) {
+      String name = ((NamedType) type).getReferenceName();
+      if (nominalTypes.containsKey(name)) {
+        return nominalTypes.get(name).getJsType();
+      }
+      if (nameToModuleTypes.containsKey(name)) {
+        return nameToModuleTypes.get(name).getJsType();
+      }
+    }
+    return type;
   }
 
   /**
@@ -290,9 +301,13 @@ public class TypeRegistry {
     if (type.isConstructor()) {
       for (JSType jsType : getTypeHierarchy(type)) {
         if (jsType.getJSDocInfo() != null) {
-          JSDocInfo info = type.getJSDocInfo();
-          for (JSTypeExpression expr : info.getImplementedInterfaces()) {
-            builder.add(expr.evaluate(null, jsTypeRegistry));
+          for (JSTypeExpression expr : jsType.getJSDocInfo().getImplementedInterfaces()) {
+            builder.add(evaluate(expr));
+          }
+        } else if (jsType.isInstanceType()) {
+          NominalType resolved = resolve(jsType);
+          if (resolved != null && resolved != nominalType) {
+            builder.addAll(getImplementedTypes(resolved));
           }
         }
       }
