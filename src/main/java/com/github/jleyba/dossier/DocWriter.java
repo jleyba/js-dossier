@@ -601,7 +601,7 @@ class DocWriter {
                 .setName(name)
                 .setType(linker.formatTypeExpression(jsdoc.getType()))
                 .setSource(linker.getSourceLink(typedef.getNode()))
-                .setDescription(getBlockDescription(linker, type))
+                .setDescription(getBlockDescription(linker, typedef))
                 .setVisibility(Dossier.Visibility.valueOf(jsdoc.getVisibility().name()));
 
             if (jsdoc.isDeprecated()) {

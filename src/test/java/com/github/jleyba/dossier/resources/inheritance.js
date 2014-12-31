@@ -122,6 +122,13 @@ sample.inheritance.NumberClass = function() {
 
 
 /**
+ * Type definition for an addition result.
+ * @typedef {number}
+ */
+sample.inheritance.NumberClass.Result;
+
+
+/**
  * Similar to {@link #add}, but handles many values.
  * @param {number} n The first number to add.
  * @param {...number} var_args The remaining numbers to add.
