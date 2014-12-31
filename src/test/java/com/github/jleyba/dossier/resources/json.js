@@ -25,3 +25,13 @@ sample.json.stringify = function(value) {
  */
 sample.json.parse = function(str) {
 };
+
+
+/**
+ * A private function; should be excluded from generated documentation.
+ * @return {boolean} Whether the current environment has native JSON support.
+ * @private
+ */
+sample.json.hasNativeSupport_ = function() {
+  return typeof JSON === 'object';
+};

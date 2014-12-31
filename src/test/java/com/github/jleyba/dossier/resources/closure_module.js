@@ -58,3 +58,12 @@ exports.Clazz.prototype.method = function() {
 function internal(a, b) {
 }
 exports.publicMethod = internal;
+
+
+/**
+ * A private function; should be excluded from generated documentation.
+ * @private
+ */
+function secret() {
+}
+exports.getSecret = secret;

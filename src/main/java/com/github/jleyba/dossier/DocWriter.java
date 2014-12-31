@@ -835,38 +835,43 @@ class DocWriter {
       if (!type.isModuleExports() && !type.isNamespace()) {
         name = type.getName() + "." + name;
       }
-      JSDocInfo info = property.getJSDocInfo();
 
-      if (info != null && info.isDefine()) {
+      JsDoc jsdoc = JsDoc.from(property.getJSDocInfo());
+
+      // If this property does not have any docs and is part of a CommonJS module's exported API,
+      // check if the property is a reference to one of the module's internal variables and we
+      // can use those docs instead.
+      if ((jsdoc == null || isNullOrEmpty(jsdoc.getOriginalCommentString()))
+          && type.isModuleExports()) {
+        String internalName = type.getModule().getInternalName(
+            type.getQualifiedName(true) + "." + property.getName());
+        jsdoc = JsDoc.from(type.getModule().getInternalVarDocs(internalName));
+      }
+
+      if (jsdoc != null && jsdoc.getVisibility() == JSDocInfo.Visibility.PRIVATE) {
+        continue;
+      }
+
+      if (jsdoc != null && jsdoc.isDefine()) {
         jsTypeBuilder.addCompilerConstant(getPropertyData(
             name,
             property.getType(),
             property.getNode(),
-            JsDoc.from(property.getJSDocInfo())));
+            jsdoc));
 
       } else if (property.getType().isFunctionType()) {
-        // If this property does not have any docs and is part of a CommonJS module's exported API,
-        // check if the property is a reference to one of the module's internal functions and we
-        // can use those docs instead.
-        JsDoc docs = JsDoc.from(property.getJSDocInfo());
-        if ((docs == null || isNullOrEmpty(docs.getOriginalCommentString()))
-            && type.isModuleExports()) {
-          String internalName = type.getModule().getInternalName(
-              type.getQualifiedName(true) + "." + property.getName());
-          docs = JsDoc.from(type.getModule().getInternalVarDocs(internalName));
-        }
         jsTypeBuilder.addStaticFunction(getFunctionData(
             name,
             property.getType(),
             property.getNode(),
-            docs));
+            jsdoc));
 
       } else if (!property.getType().isEnumElementType()) {
         jsTypeBuilder.addStaticProperty(getPropertyData(
             name,
             property.getType(),
             property.getNode(),
-            JsDoc.from(property.getJSDocInfo())));
+            jsdoc));
       }
     }
   }
