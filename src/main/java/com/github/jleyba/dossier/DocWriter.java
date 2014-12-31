@@ -60,6 +60,7 @@ import com.google.javascript.rhino.jstype.JSType;
 import com.google.javascript.rhino.jstype.NamedType;
 import com.google.javascript.rhino.jstype.ObjectType;
 import com.google.javascript.rhino.jstype.Property;
+import com.google.javascript.rhino.jstype.TemplatizedType;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -742,7 +743,8 @@ class DocWriter {
 
       Dossier.Comment definedBy = null;
       if (!docType.equals(property.getDefinedOn())) {
-        definedBy = linker.formatTypeExpression(property.getDefinedOn());
+        JSType definedByType = stripTemplateTypeInformation(property.getDefinedOn());
+        definedBy = linker.formatTypeExpression(definedByType);
       }
       Dossier.Comment overrides = findOverriddenType(definitions);
       Iterable<Dossier.Comment> specifications = findSpecifications(definitions);
@@ -790,6 +792,7 @@ class DocWriter {
           continue;
         }
       }
+      definedOn = stripTemplateTypeInformation(definedOn);
       return linker.formatTypeExpression(definedOn);
     }
     return null;
@@ -811,9 +814,17 @@ class DocWriter {
           continue;
         }
       }
+      definedOn = stripTemplateTypeInformation(definedOn);
       specifications.add(linker.formatTypeExpression(definedOn));
     }
     return specifications;
+  }
+
+  private static JSType stripTemplateTypeInformation(JSType type) {
+    if (type.isTemplatizedType()) {
+      return ((TemplatizedType) type).getReferencedType();
+    }
+    return type;
   }
 
   private static JSType getType(ObjectType object, Property property) {
