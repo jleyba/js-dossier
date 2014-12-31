@@ -1,7 +1,7 @@
 .idea/workspace.xml
-target/
 .idea/dictionaries
-lib/
+.idea/inspectionProfiles
 buck-out/
+lib/
 out/
-
+target/
