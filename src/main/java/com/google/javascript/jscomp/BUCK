@@ -12,8 +12,8 @@ java_library(
     "//third_party/java/jsr305:jsr305",
   ],
   visibility = [
-    "//src/main/java/com/github/jleyba/dossier/...",
-    "//src/test/java/com/github/jleyba/dossier/...",
+    "//src/main/java/com/github/jsdossier/...",
+    "//src/test/java/com/github/jsdossier/...",
     "//src/test/java/com/google/javascript/jscomp/...",
   ],
 )

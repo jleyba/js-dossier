@@ -1,13 +1,13 @@
 package com.google.javascript.jscomp;
 
-import static com.github.jleyba.dossier.CompilerUtil.createSourceFile;
+import static com.github.jsdossier.CompilerUtil.createSourceFile;
 import static com.google.common.collect.Iterables.getOnlyElement;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import com.github.jleyba.dossier.CompilerUtil;
+import com.github.jsdossier.CompilerUtil;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableSet;
 import com.google.javascript.rhino.JSDocInfo;

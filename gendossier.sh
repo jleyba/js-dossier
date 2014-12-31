@@ -4,7 +4,7 @@
 
 set -e
 
-readonly RESOURCES="src/main/java/com/github/jleyba/dossier/resources"
+readonly RESOURCES="src/main/java/com/github/jsdossier/resources"
 
 usage() {
   cat <<EOF
@@ -77,25 +77,25 @@ run_protoc() {
       src/main/proto/dossier.proto
   protoc --java_out=src/test/java \
       --proto_path=src/main/proto \
-      --proto_path=src/test/java/com/github/jleyba/dossier/soy \
+      --proto_path=src/test/java/com/github/jsdossier/soy \
       --proto_path=third_party/java \
-      src/test/java/com/github/jleyba/dossier/soy/test_proto.proto
+      src/test/java/com/github/jsdossier/soy/test_proto.proto
 }
 
 build_release() {
   buck clean
   buck build app || \
-      echo "Release built: buck-out/gen/src/main/java/com/github/jleyba/dossier/dossier.jar"
+      echo "Release built: buck-out/gen/src/main/java/com/github/jsdossier/dossier.jar"
 }
 
 build_sample() {
   buck build app
-  java -jar buck-out/gen/src/main/java/com/github/jleyba/dossier/dossier.jar \
+  java -jar buck-out/gen/src/main/java/com/github/jsdossier/dossier.jar \
       --config sample_config.json
 }
 
 update_readme() {
-  buck build //src/main/java/com/github/jleyba/dossier:Config
+  buck build //src/main/java/com/github/jsdossier:Config
   cat > README.md <<EOF
 # Dossier
 
@@ -109,7 +109,7 @@ top of the [Closure Compiler](https://developers.google.com/closure/compiler/?cs
 Where \`config.json\` is a configuration file with the options listed below.
 
 EOF
-  java -jar buck-out/gen/src/main/java/com/github/jleyba/dossier/Config.jar 2>> README.md
+  java -jar buck-out/gen/src/main/java/com/github/jsdossier/Config.jar 2>> README.md
 
   cat >> README.md <<EOF
 ## Building

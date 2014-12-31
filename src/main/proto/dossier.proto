@@ -1,6 +1,6 @@
 import "protobuf/descriptor.proto";
 
-option java_package = "com.github.jleyba.dossier.proto";
+option java_package = "com.github.jsdossier.proto";
 
 package dossier;
 
