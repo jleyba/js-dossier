@@ -32,12 +32,12 @@ public class CommentUtilTest {
     String original = "hello, world.";
     Comment comment = getSummary(original, mockLinker);
     assertEquals(1, comment.getTokenCount());
-    assertPlainText(comment.getToken(0), original);
+    assertHtmlText(comment.getToken(0), original);
 
     original = "nothing left";
     comment = getSummary(original, mockLinker);
     assertEquals(1, comment.getTokenCount());
-    assertPlainText(comment.getToken(0), original);
+    assertHtmlText(comment.getToken(0), original);
   }
 
   @Test
@@ -45,41 +45,41 @@ public class CommentUtilTest {
     String original = "nothing left";
     Comment comment = getSummary(original, mockLinker);
     assertEquals(1, comment.getTokenCount());
-    assertPlainText(comment.getToken(0), original);
+    assertHtmlText(comment.getToken(0), original);
   }
 
   @Test
   public void getSummaryFromMultipleSentences() {
     Comment comment = getSummary("Hello, world. Goodbye, world.", mockLinker);
     assertEquals(1, comment.getTokenCount());
-    assertPlainText(comment.getToken(0), "Hello, world.");
+    assertHtmlText(comment.getToken(0), "Hello, world.");
   }
 
   @Test
   public void getSummaryFromMultipleLines() {
     Comment comment = getSummary("Hello, world.\nGoodbye, world.", mockLinker);
     assertEquals(1, comment.getTokenCount());
-    assertPlainText(comment.getToken(0), "Hello, world.");
+    assertHtmlText(comment.getToken(0), "Hello, world.");
   }
 
   @Test
   public void getSummaryFromMultipleTabs() {
     Comment comment = getSummary("Hello, world.\tGoodbye, world.", mockLinker);
     assertEquals(1, comment.getTokenCount());
-    assertPlainText(comment.getToken(0), "Hello, world.");
+    assertHtmlText(comment.getToken(0), "Hello, world.");
   }
 
   @Test
   public void getSummaryWithInlineTag() {
     Comment comment = getSummary("Hello, {@code world. }Goodbye, world.", mockLinker);
     assertEquals(1, comment.getTokenCount());
-    assertPlainText(comment.getToken(0), "Hello, {@code world.");
+    assertHtmlText(comment.getToken(0), "Hello, {@code world.");
   }
 
   @Test
   public void parseCommentWithUnterminatedInlineTaglet() {
     Comment comment = parseComment("Hello {@code world", mockLinker);
-    assertPlainText(Iterables.getOnlyElement(comment.getTokenList()),
+    assertHtmlText(Iterables.getOnlyElement(comment.getTokenList()),
         "Hello {@code world");
   }
 
@@ -87,7 +87,7 @@ public class CommentUtilTest {
   public void parseCommentWithCodeTaglet() {
     Comment comment = parseComment("Hello {@code world}", mockLinker);
     assertEquals(2, comment.getTokenCount());
-    assertPlainText(comment.getToken(0), "Hello ");
+    assertHtmlText(comment.getToken(0), "Hello ");
     assertCode(comment.getToken(1), "world");
   }
 
@@ -96,7 +96,7 @@ public class CommentUtilTest {
     Comment comment = parseComment("{@code Hello} world", mockLinker);
     assertEquals(2, comment.getTokenCount());
     assertCode(comment.getToken(0), "Hello");
-    assertPlainText(comment.getToken(1), " world");
+    assertHtmlText(comment.getToken(1), " world");
   }
 
   @Test
@@ -111,9 +111,9 @@ public class CommentUtilTest {
   public void parseLiteralTaglet() {
     Comment comment = parseComment("red {@literal &} green", mockLinker);
     assertEquals(3, comment.getTokenCount());
-    assertPlainText(comment.getToken(0), "red ");
+    assertHtmlText(comment.getToken(0), "red ");
     assertLiteral(comment.getToken(1), "&");
-    assertPlainText(comment.getToken(2), " green");
+    assertHtmlText(comment.getToken(2), " green");
   }
 
   @Test
@@ -141,7 +141,7 @@ public class CommentUtilTest {
   public void parseCommentWithUnresolvableLink() {
     Comment comment = parseComment("A {@link link}", mockLinker);
     assertEquals(2, comment.getTokenCount());
-    assertPlainText(comment.getToken(0), "A ");
+    assertHtmlText(comment.getToken(0), "A ");
     assertUnresolvedCodeLink(comment.getToken(1), "link");
   }
 
@@ -149,7 +149,7 @@ public class CommentUtilTest {
   public void parseCommentWithUnresolvablePlainLink() {
     Comment comment = parseComment("A {@linkplain link}", mockLinker);
     assertEquals(2, comment.getTokenCount());
-    assertPlainText(comment.getToken(0), "A ");
+    assertHtmlText(comment.getToken(0), "A ");
     assertUnresolvedPlainLink(comment.getToken(1), "link");
   }
 
@@ -162,9 +162,9 @@ public class CommentUtilTest {
 
     Comment comment = parseComment("A link to {@link foo.Bar foo}.", mockLinker);
     assertEquals(3, comment.getTokenCount());
-    assertPlainText(comment.getToken(0), "A link to ");
+    assertHtmlText(comment.getToken(0), "A link to ");
     assertCodeLink(comment.getToken(1), "/path/to/foo", "foo");
-    assertPlainText(comment.getToken(2), ".");
+    assertHtmlText(comment.getToken(2), ".");
   }
 
   @Test
@@ -176,13 +176,13 @@ public class CommentUtilTest {
 
     Comment comment = parseComment("A link to {@linkplain foo.Bar foo}.", mockLinker);
     assertEquals(3, comment.getTokenCount());
-    assertPlainText(comment.getToken(0), "A link to ");
+    assertHtmlText(comment.getToken(0), "A link to ");
     assertPlainLink(comment.getToken(1), "/path/to/foo", "foo");
-    assertPlainText(comment.getToken(2), ".");
+    assertHtmlText(comment.getToken(2), ".");
   }
 
-  private static void assertPlainText(Token token, String text) {
-    assertEquals(text, token.getText());
+  private static void assertHtmlText(Token token, String text) {
+    assertEquals(text, token.getHtml());
     assertFalse(token.getIsLiteral());
     assertFalse(token.getIsCode());
     assertEquals("", token.getHref());

@@ -2,8 +2,12 @@ package com.github.jleyba.dossier.soy;
 
 import static com.google.common.base.CaseFormat.LOWER_CAMEL;
 import static com.google.common.base.CaseFormat.LOWER_UNDERSCORE;
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.collect.Iterables.transform;
+import static com.google.template.soy.data.SanitizedContent.ContentKind.HTML;
+import static com.google.template.soy.data.SanitizedContent.ContentKind.URI;
 
+import com.github.jleyba.dossier.proto.Dossier;
 import com.google.common.base.Function;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -15,10 +19,12 @@ import com.google.protobuf.Descriptors.EnumValueDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.GeneratedMessage;
 import com.google.template.soy.base.SoyBackendKind;
+import com.google.template.soy.data.SanitizedContent;
 import com.google.template.soy.data.SoyListData;
 import com.google.template.soy.data.SoyMapData;
 import com.google.template.soy.data.SoyRecord;
 import com.google.template.soy.data.SoyValue;
+import com.google.template.soy.data.UnsafeSanitizedContentOrdainer;
 import com.google.template.soy.data.restricted.BooleanData;
 import com.google.template.soy.data.restricted.IntegerData;
 import com.google.template.soy.data.restricted.NullData;
@@ -163,6 +169,9 @@ class ProtoMessageSoyType implements SoyObjectType {
       }
 
       case STRING: {
+        if (field.getOptions().hasExtension(Dossier.sanitized)) {
+          return toSanitizedContent(field, fieldValue);
+        }
         if (field.isRepeated()) {
           @SuppressWarnings("unchecked")
           List<String> values = (List<String>) fieldValue;
@@ -200,6 +209,48 @@ class ProtoMessageSoyType implements SoyObjectType {
         throw new UnsupportedOperationException(
             "Cannot convert type for field " + field.getFullName());
     }
+  }
+
+  private static SoyValue toSanitizedContent(FieldDescriptor field, Object fieldValue) {
+    checkArgument(field.getOptions().hasExtension(Dossier.sanitized));
+
+    Dossier.SanitizedContent sc = field.getOptions().getExtension(Dossier.sanitized);
+    SanitizedContent.ContentKind kind;
+    if (sc.getHtml()) {
+      kind = HTML;
+    } else if (sc.getUri()) {
+      kind = URI;
+    } else {
+      throw new IllegalArgumentException();
+    }
+    return toSanitizedContent(field, fieldValue, kind);
+  }
+
+  private static SoyValue toSanitizedContent(
+      FieldDescriptor field, Object fieldValue, final SanitizedContent.ContentKind kind) {
+    if (field.isRepeated()) {
+      @SuppressWarnings("unchecked")
+      List<String> values = (List<String>) fieldValue;
+      return toSoyValue(values, new Function<String, SoyValue>() {
+        @Nullable
+        @Override
+        public SoyValue apply(@Nullable String input) {
+          if (input == null) {
+            return NullData.INSTANCE;
+          }
+          if (kind == HTML) {
+            input = HtmlSanitizer.sanitize(input);
+          }
+          return UnsafeSanitizedContentOrdainer.ordainAsSafe(input, kind);
+        }
+      });
+    }
+    @SuppressWarnings("unchecked")
+    String value = (String) fieldValue;
+    if (kind == HTML) {
+      value = HtmlSanitizer.sanitize(value);
+    }
+    return UnsafeSanitizedContentOrdainer.ordainAsSafe(value, kind);
   }
 
   private static <T> SoyValue toSoyValue(Iterable<T> values, Function<T, SoyValue> fn) {

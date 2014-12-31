@@ -229,6 +229,17 @@
         </SOURCES>
       </library>
     </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/third_party/java/owasp_html_sanitizer/owasp-java-html-sanitizer-r239.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/third_party/java/owasp_html_sanitizer/owasp-java-html-sanitizer-r239-src.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
   </component>
 </module>
 

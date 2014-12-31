@@ -15,6 +15,7 @@ java_library(
     "//third_party/java/jsr305:jsr305",
     "//third_party/java/protobuf:protobuf",
     "//third_party/java/soy:soy",
+    "//third_party/java/owasp_html_sanitizer:owasp_html_sanitizer",
     "//third_party/java/txtmark:txtmark",
   ],
   visibility = [

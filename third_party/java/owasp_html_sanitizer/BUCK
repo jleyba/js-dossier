@@ -1,0 +1,8 @@
+include_defs("//third_party/java/DEFS")
+
+prebuilt_jar_with_license(
+  name = "owasp_html_sanitizer",
+  binary_jar = "owasp-java-html-sanitizer-r239.jar",
+  source_jar = "owasp-java-html-sanitizer-r239-src.jar",
+  visibility = ["PUBLIC"],
+)

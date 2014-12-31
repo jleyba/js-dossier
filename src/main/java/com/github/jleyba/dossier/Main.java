@@ -243,7 +243,7 @@ public class Main extends CommandLineRunner {
     args = compilerFlags.toArray(new String[compilerFlags.size()]);
 
     Logger log = Logger.getLogger(Main.class.getPackage().getName());
-    log.setLevel(Level.OFF);
+    log.setLevel(Level.WARNING);
     log.addHandler(new Handler() {
       @Override
       public void publish(LogRecord record) {

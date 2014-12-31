@@ -1,4 +1,4 @@
-{namespace dossier.soy autoescape="deprecated-noncontextual"}
+{namespace dossier.soy}
 
 /**
  * The main page header; responsible for setting the doctype, title, and
@@ -102,11 +102,8 @@
       {elseif $token.unresolvedLink}
         <a class="unresolved-link">
       {/if}
-      {if $token.isCode or $token.isLiteral}
-        {$token.text}
-      {else}
-        {$token.text |noAutoescape}
-      {/if}
+      {if $token.text}{$token.text}{/if}
+      {if $token.html}{$token.html}{/if}
       {if $token.unresolvedLink or $token.href}</a>{/if}
       {if $token.isCode}</code>{/if}
     {/foreach}
@@ -301,13 +298,7 @@
 {template .returnDetails}
   {@param details: dossier.Function.Detail}
 
-  /*
-   * Pre-render the return type and comment. If non-empty, these will be
-   * rendered into this template using |noAutoescape - which is safe
-   * since the content will already be sanitized by the .comment template.
-   */
-
-  {let $returnType}
+  {let $returnType kind="html"}
     {if $details}
       {call .comment}
         {param comment: $details.type /}
@@ -316,7 +307,7 @@
     {/if}
   {/let}
 
-  {let $returnComment}
+  {let $returnComment kind="html"}
     {if $details}
       {call .comment}
         {param comment: $details.description /}
@@ -340,13 +331,13 @@
       {if $returnType}
         <dl>
           <dt>
-            <code>{$returnType |noAutoescape}</code>
+            <code>{$returnType}</code>
             {if $hasComment}
-              <dd>{$returnComment |noAutoescape}
+              <dd>{$returnComment}
             {/if}
         </dl>
       {elseif $hasComment}
-        <p>{$returnComment |noAutoescape}</p>
+        <p>{$returnComment}</p>
       {/if}
   {/if}
 {/template}
@@ -375,8 +366,7 @@
             {/call}
           </code>
         {/if}
-
-        {let $detailComment}
+        {let $detailComment kind="html"}
           {if $detail.description}
             {call .comment}
               {param comment: $detail.description /}
@@ -385,7 +375,7 @@
           {/if}
         {/let}
         {if $detailComment and $detailComment != '.'}
-          <dd>{$detailComment |noAutoescape}  /* Already escaped by .comment template */
+          <dd>{$detailComment}
         {/if}
       {/foreach}
     </dl>

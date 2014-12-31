@@ -77,8 +77,12 @@ public class CommentUtil {
     return parseComment(jsdoc.getBlockComment(), linker);
   }
 
-  private static Dossier.Comment.Token.Builder newToken(String text) {
+  private static Dossier.Comment.Token.Builder newTextToken(String text) {
     return Dossier.Comment.Token.newBuilder().setText(text);
+  }
+
+  private static Dossier.Comment.Token.Builder newHtmlToken(String html) {
+    return Dossier.Comment.Token.newBuilder().setHtml(html);
   }
 
   /**
@@ -95,16 +99,16 @@ public class CommentUtil {
       int tagletStart = findInlineTagStart(text, start);
       if (tagletStart == -1) {
         if (start < text.length()) {
-          builder.addToken(newToken(text.substring(start)));
+          builder.addToken(newHtmlToken(text.substring(start)));
         }
         break;
       } else if (tagletStart > start) {
-        builder.addToken(newToken(text.substring(start, tagletStart)));
+        builder.addToken(newHtmlToken(text.substring(start, tagletStart)));
       }
 
       int tagletEnd = findInlineTagEnd(text, tagletStart + 1);
       if (tagletEnd == -1) {
-        builder.addToken(newToken(text.substring(start)));
+        builder.addToken(newHtmlToken(text.substring(start)));
         break;
       }
 
@@ -113,7 +117,7 @@ public class CommentUtil {
       String tagletText = text.substring(tagletStart + tagletPrefix.length(), tagletEnd);
       switch (tagletName) {
         case "code":
-          builder.addToken(newToken(tagletText).setIsCode(true));
+          builder.addToken(newTextToken(tagletText).setIsCode(true));
           break;
 
         case "link":
@@ -121,7 +125,7 @@ public class CommentUtil {
           LinkInfo info = LinkInfo.fromText(tagletText);
           @Nullable Dossier.TypeLink link =linker.getLink(info.type);
 
-          Dossier.Comment.Token.Builder token = newToken(info.text)
+          Dossier.Comment.Token.Builder token = newTextToken(info.text)
               .setIsCode("link".equals(tagletName))
               .setUnresolvedLink(link == null);
           if (link != null) {
@@ -131,11 +135,11 @@ public class CommentUtil {
           break;
 
         case "literal":
-          builder.addToken(newToken(tagletText).setIsLiteral(true));
+          builder.addToken(newTextToken(tagletText).setIsLiteral(true));
           break;
 
         default:
-          builder.addToken(newToken(tagletText));
+          builder.addToken(newTextToken(tagletText));
       }
       start = tagletEnd + 1;
     }

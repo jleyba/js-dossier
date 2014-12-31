@@ -1,6 +1,25 @@
+import "protobuf/descriptor.proto";
+
 option java_package = "com.github.jleyba.dossier.proto";
 
 package dossier;
+
+message SanitizedContent {
+  oneof kind {
+    // Indicates a field should be treated as a sanitized URI when
+    // injected into a Soy template.
+    bool uri = 1;
+
+    // Indicates a field should be treated as sanitized HTML content when
+    // injected into a Soy template.
+    bool html = 2;
+  }
+}
+
+extend google.protobuf.FieldOptions {
+  optional SanitizedContent sanitized = 51230;
+}
+
 
 // Describes a documented source file.
 message SourceFile {
@@ -16,12 +35,12 @@ message SourceFile {
 // Describes the resources to include in a generated HTML page.
 message Resources {
   // Paths to stylesheets to link to in the generated page.
-  repeated string css = 1;
+  repeated string css = 1 [(sanitized).uri = true];
   // Paths to JavaScript files to include in the generated page's head.
-  repeated string head_script = 2;
+  repeated string head_script = 2 [(sanitized).uri = true];
   // Paths to JavaScript files to include in the generated page after
   // the DOM has been defined.
-  repeated string tail_script = 3;
+  repeated string tail_script = 3 [(sanitized).uri = true];
 }
 
 
@@ -30,7 +49,7 @@ message TypeLink {
   // The link display text.
   required string text = 1;
   // The link href.
-  required string href = 2;
+  required string href = 2 [(sanitized).uri = true];
 }
 
 
@@ -48,8 +67,13 @@ message SourceLink {
 message Comment {
 
   message Token {
-    // The text content for this token.
-    required string text = 1;
+    oneof content {
+      // The text content for this token; text should be escaped when rendered.
+      string text = 1;
+
+      // The pre-escaped html content for this token.
+      string html = 6 [(sanitized).html = true];
+    }
 
     // Whether to render this token as a literal, escaping all
     // HTML content.
@@ -60,7 +84,7 @@ message Comment {
     optional bool is_code = 3 [default = false];
 
     // If set, this token will be rendered as a hyperlink.
-    optional string href = 4;
+    optional string href = 4 [(sanitized).uri = true];
 
     // Whether this token represents a linked type that could not be resolved.
     optional bool unresolved_link = 5 [default = false];
@@ -176,7 +200,7 @@ message Index {
   }
 
   // Defines the href from the current page to the main index.
-  required string home = 1;
+  required string home = 1 [(sanitized).uri = true];
 
   // Links to the global JavaScript types.
   repeated TypeLink type = 2;
@@ -192,9 +216,9 @@ message JsType {
 
   // Short description for a type defined when this |JsType|.
   message TypeSummary {
-    required string name = 1;      // The type name.
-    required string href = 2;      // The hyperlink for the actual type.
-    required Comment summary = 3;  // The summary sentence for this type.
+    required string name = 1;                           // The type name.
+    required string href = 2 [(sanitized).uri = true];  // The hyperlink for the actual type.
+    required Comment summary = 3;                       // The summary sentence for this type.
   }
 
   // Describes a typedef defined within this type.

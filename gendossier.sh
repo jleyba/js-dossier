@@ -72,8 +72,13 @@ run_lessc() {
 
 run_protoc() {
   protoc --java_out=src/main/java \
+      --proto_path=src/main/proto \
+      --proto_path=third_party/java \
       src/main/proto/dossier.proto
   protoc --java_out=src/test/java \
+      --proto_path=src/main/proto \
+      --proto_path=src/test/java/com/github/jleyba/dossier/soy \
+      --proto_path=third_party/java \
       src/test/java/com/github/jleyba/dossier/soy/test_proto.proto
 }
 

@@ -1,5 +1,6 @@
 package com.github.jleyba.dossier.soy;
 
+import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
@@ -7,7 +8,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
+import com.google.template.soy.data.SanitizedContent;
 import com.google.template.soy.data.SoyListData;
 import com.google.template.soy.data.SoyMapData;
 import com.google.template.soy.data.SoyValue;
@@ -98,16 +99,16 @@ public class ProtoMessageSoyTypeTest {
     assertTrue(value instanceof SoyMapData);
 
     Map<String, ? extends SoyValue> map = ((SoyMapData) value).asResolvedJavaStringMap();
-    assertEquals(
-        ImmutableSet.of("boolField", "intField", "stringField", "fruit", "color", "repeatedInt",
-            "repeatedColor"),
-        map.keySet());
+    assertThat(map.keySet()).containsExactly(
+        "boolField", "intField", "stringField", "fruit", "color", "repeatedInt",
+        "repeatedColor", "htmlField");
 
     assertEquals(NullData.INSTANCE, map.get("boolField"));
     assertEquals(NullData.INSTANCE, map.get("intField"));
     assertEquals(NullData.INSTANCE, map.get("stringField"));
     assertEquals(NullData.INSTANCE, map.get("fruit"));
     assertEquals(NullData.INSTANCE, map.get("color"));
+    assertEquals(NullData.INSTANCE, map.get("htmlField"));
     assertEquals(0, ((SoyListData) map.get("repeatedInt")).length());
     assertEquals(0, ((SoyListData) map.get("repeatedColor")).length());
   }
@@ -120,6 +121,7 @@ public class ProtoMessageSoyTypeTest {
         .setStringField("hello")
         .setFruit(TestProto.Fruit.ORANGE)
         .setColor(TestProto.Color.RED)
+        .setHtmlField("<strong>text</strong>")
         .addRepeatedInt(678)
         .addRepeatedInt(90)
         .addRepeatedColor(TestProto.Color.RED)
@@ -128,10 +130,9 @@ public class ProtoMessageSoyTypeTest {
     assertTrue(value instanceof SoyMapData);
 
     Map<String, ? extends SoyValue> map = ((SoyMapData) value).asResolvedJavaStringMap();
-    assertEquals(
-        ImmutableSet.of("boolField", "intField", "stringField", "fruit", "color", "repeatedInt",
-            "repeatedColor"),
-        map.keySet());
+    assertThat(map.keySet()).containsExactly(
+        "boolField", "intField", "stringField", "fruit", "color", "repeatedInt",
+        "repeatedColor", "htmlField");
 
     assertEquals(BooleanData.TRUE, map.get("boolField"));
     assertEquals(IntegerData.forValue(1234), map.get("intField"));
@@ -147,5 +148,10 @@ public class ProtoMessageSoyTypeTest {
             ProtoEnumSoyValue.get(TestProto.Color.RED),
             ProtoEnumSoyValue.get(TestProto.Color.GREEN)),
         ((SoyListData) map.get("repeatedColor")).asResolvedJavaList());
+
+    assertThat(map.get("htmlField")).isInstanceOf(SanitizedContent.class);
+    SanitizedContent content = (SanitizedContent) map.get("htmlField");
+    assertEquals(SanitizedContent.ContentKind.HTML, content.getContentKind());
+    assertEquals("<strong>text</strong>", content.getContent());
   }
 }
