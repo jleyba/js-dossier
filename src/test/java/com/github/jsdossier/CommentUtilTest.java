@@ -8,9 +8,8 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import com.github.jsdossier.proto.Dossier;
-import com.github.jsdossier.proto.Dossier.Comment;
-import com.github.jsdossier.proto.Dossier.Comment.Token;
+import com.github.jsdossier.proto.Comment;
+import com.github.jsdossier.proto.TypeLink;
 import com.google.common.collect.Iterables;
 import org.junit.Before;
 import org.junit.Test;
@@ -155,7 +154,7 @@ public class CommentUtilTest {
 
   @Test
   public void parseCommentWithTypeLinks() {
-    when(mockLinker.getLink("foo.Bar")).thenReturn(Dossier.TypeLink.newBuilder()
+    when(mockLinker.getLink("foo.Bar")).thenReturn(TypeLink.newBuilder()
         .setText("")
         .setHref("/path/to/foo")
         .build());
@@ -169,7 +168,7 @@ public class CommentUtilTest {
 
   @Test
   public void parseCommentWithPlainTypeLinks() {
-    when(mockLinker.getLink("foo.Bar")).thenReturn(Dossier.TypeLink.newBuilder()
+    when(mockLinker.getLink("foo.Bar")).thenReturn(TypeLink.newBuilder()
         .setText("")
         .setHref("/path/to/foo")
         .build());
@@ -181,7 +180,7 @@ public class CommentUtilTest {
     assertHtmlText(comment.getToken(2), ".");
   }
 
-  private static void assertHtmlText(Token token, String text) {
+  private static void assertHtmlText(Comment.Token token, String text) {
     assertEquals(text, token.getHtml());
     assertFalse(token.getIsLiteral());
     assertFalse(token.getIsCode());
@@ -189,7 +188,7 @@ public class CommentUtilTest {
     assertFalse(token.getUnresolvedLink());
   }
 
-  private static void assertCode(Token token, String text) {
+  private static void assertCode(Comment.Token token, String text) {
     assertEquals(text, token.getText());
     assertFalse(token.getIsLiteral());
     assertTrue(token.getIsCode());
@@ -197,7 +196,7 @@ public class CommentUtilTest {
     assertFalse(token.getUnresolvedLink());
   }
 
-  private static void assertLiteral(Token token, String text) {
+  private static void assertLiteral(Comment.Token token, String text) {
     assertEquals(text, token.getText());
     assertTrue(token.getIsLiteral());
     assertFalse(token.getIsCode());
@@ -205,7 +204,7 @@ public class CommentUtilTest {
     assertFalse(token.getUnresolvedLink());
   }
 
-  private static void assertCodeLink(Token token, String href, String text) {
+  private static void assertCodeLink(Comment.Token token, String href, String text) {
     assertEquals(text, token.getText());
     assertFalse(token.getIsLiteral());
     assertTrue(token.getIsCode());
@@ -213,7 +212,7 @@ public class CommentUtilTest {
     assertFalse(token.getUnresolvedLink());
   }
 
-  private static void assertPlainLink(Token token, String href, String text) {
+  private static void assertPlainLink(Comment.Token token, String href, String text) {
     assertEquals(text, token.getText());
     assertFalse(token.getIsLiteral());
     assertFalse(token.getIsCode());
@@ -221,7 +220,7 @@ public class CommentUtilTest {
     assertFalse(token.getUnresolvedLink());
   }
 
-  private static void assertUnresolvedCodeLink(Token token, String text) {
+  private static void assertUnresolvedCodeLink(Comment.Token token, String text) {
     assertEquals(text, token.getText());
     assertFalse(token.getIsLiteral());
     assertTrue(token.getIsCode());
@@ -229,7 +228,7 @@ public class CommentUtilTest {
     assertTrue(token.getUnresolvedLink());
   }
 
-  private static void assertUnresolvedPlainLink(Token token, String text) {
+  private static void assertUnresolvedPlainLink(Comment.Token token, String text) {
     assertEquals(text, token.getText());
     assertFalse(token.getIsLiteral());
     assertFalse(token.getIsCode());

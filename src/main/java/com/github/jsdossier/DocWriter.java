@@ -17,15 +17,6 @@ import static com.github.jsdossier.CommentUtil.getBlockDescription;
 import static com.github.jsdossier.CommentUtil.getFileoverview;
 import static com.github.jsdossier.CommentUtil.getSummary;
 import static com.github.jsdossier.CommentUtil.parseComment;
-import static com.github.jsdossier.proto.Dossier.Deprecation;
-import static com.github.jsdossier.proto.Dossier.Enumeration;
-import static com.github.jsdossier.proto.Dossier.IndexFileRenderSpec;
-import static com.github.jsdossier.proto.Dossier.JsType;
-import static com.github.jsdossier.proto.Dossier.JsTypeRenderSpec;
-import static com.github.jsdossier.proto.Dossier.Resources;
-import static com.github.jsdossier.proto.Dossier.SourceFile;
-import static com.github.jsdossier.proto.Dossier.SourceFileRenderSpec;
-import static com.github.jsdossier.proto.Dossier.TypeLink;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Predicates.not;
@@ -35,7 +26,19 @@ import static com.google.common.collect.Iterables.concat;
 import static com.google.common.collect.Iterables.transform;
 import static java.nio.file.Files.createDirectories;
 
-import com.github.jsdossier.proto.Dossier;
+import com.github.jsdossier.proto.BaseProperty;
+import com.github.jsdossier.proto.Comment;
+import com.github.jsdossier.proto.Deprecation;
+import com.github.jsdossier.proto.Enumeration;
+import com.github.jsdossier.proto.Index;
+import com.github.jsdossier.proto.IndexFileRenderSpec;
+import com.github.jsdossier.proto.JsType;
+import com.github.jsdossier.proto.JsTypeRenderSpec;
+import com.github.jsdossier.proto.Resources;
+import com.github.jsdossier.proto.SourceFile;
+import com.github.jsdossier.proto.SourceFileRenderSpec;
+import com.github.jsdossier.proto.TypeLink;
+import com.github.jsdossier.proto.Visibility;
 import com.github.jsdossier.soy.Renderer;
 import com.github.rjeschke.txtmark.Processor;
 import com.google.common.base.Charsets;
@@ -94,7 +97,7 @@ class DocWriter {
   private Iterable<Path> sortedFiles;
   private Iterable<NominalType> sortedTypes;
   private Iterable<NominalType> sortedModules;
-  private Dossier.Index masterIndex;
+  private Index masterIndex;
 
   DocWriter(Config config, TypeRegistry typeRegistry) {
     this.config = checkNotNull(config);
@@ -133,15 +136,15 @@ class DocWriter {
     writeTypesJson();
   }
 
-  private Dossier.Index generateNavIndex(Path path) {
-    Dossier.Index.Builder builder = Dossier.Index.newBuilder()
+  private Index generateNavIndex(Path path) {
+    Index.Builder builder = Index.newBuilder()
         .mergeFrom(masterIndex);
 
     Path toRoot = path.getParent().relativize(config.getOutput());
 
     builder.setHome(toUrlPath(toRoot.resolve(INDEX_FILE_NAME)));
 
-    for (Dossier.Index.Module.Builder module : builder.getModuleBuilderList()) {
+    for (Index.Module.Builder module : builder.getModuleBuilderList()) {
       module.getLinkBuilder().setHref(
           toUrlPath(toRoot.resolve(module.getLinkBuilder().getHref())));
     }
@@ -157,13 +160,13 @@ class DocWriter {
     return Joiner.on('/').join(p.iterator());
   }
 
-  private Dossier.Index generateNavIndex() {
-    Dossier.Index.Builder builder = Dossier.Index.newBuilder();
+  private Index generateNavIndex() {
+    Index.Builder builder = Index.newBuilder();
 
     builder.setHome(INDEX_FILE_NAME);
 
     for (NominalType module : sortedModules) {
-      Dossier.Index.Module.Builder moduleBuilder = builder.addModuleBuilder()
+      Index.Module.Builder moduleBuilder = builder.addModuleBuilder()
           .setLink(TypeLink.newBuilder()
           .setHref(toUrlPath(config.getOutput().relativize(linker.getFilePath(module))))
           .setText(linker.getDisplayName(module)));
@@ -196,7 +199,7 @@ class DocWriter {
   }
 
   private void generateIndex() throws IOException {
-    Dossier.Comment readme = Dossier.Comment.getDefaultInstance();
+    Comment readme = Comment.getDefaultInstance();
     if (config.getReadme().isPresent()) {
       String text = new String(Files.readAllBytes(config.getReadme().get()), Charsets.UTF_8);
       String readmeHtml = Processor.process(text);
@@ -294,7 +297,7 @@ class DocWriter {
 
     addParentLink(jsTypeBuilder, type);
 
-    Dossier.Comment description = getBlockDescription(linker, type);
+    Comment description = getBlockDescription(linker, type);
     NominalType aliased = typeRegistry.resolve(type.getJsType());
 
     if (aliased != type) {
@@ -514,14 +517,14 @@ class DocWriter {
     }
   }
 
-  private List<Dossier.Comment> getInheritedTypes(NominalType nominalType) {
+  private List<Comment> getInheritedTypes(NominalType nominalType) {
     JSType type = nominalType.getJsType();
     if (!type.isConstructor()) {
       return ImmutableList.of();
     }
 
     LinkedList<JSType> types = typeRegistry.getTypeHierarchy(type);
-    List<Dossier.Comment> list = Lists.newArrayListWithExpectedSize(types.size());
+    List<Comment> list = Lists.newArrayListWithExpectedSize(types.size());
     // Skip bottom of stack (type of this). Handled specially below.
     while (types.size() > 1) {
       JSType base = types.pop();
@@ -531,19 +534,19 @@ class DocWriter {
       verify(base.isInstanceType() || base instanceof NamedType);
       list.add(linker.formatTypeExpression(base));
     }
-    list.add(Dossier.Comment.newBuilder()
-        .addToken(Dossier.Comment.Token.newBuilder()
+    list.add(Comment.newBuilder()
+        .addToken(Comment.Token.newBuilder()
             .setText(linker.getDisplayName(nominalType)))
         .build());
     return list;
   }
 
-  private Iterable<Dossier.Comment> getImplementedTypes(NominalType nominalType) {
+  private Iterable<Comment> getImplementedTypes(NominalType nominalType) {
     Set<JSType> interfaces = typeRegistry.getImplementedTypes(nominalType);
     return transform(Ordering.usingToString().sortedCopy(interfaces),
-        new Function<JSType, Dossier.Comment>() {
+        new Function<JSType, Comment>() {
           @Override
-          public Dossier.Comment apply(JSType input) {
+          public Comment apply(JSType input) {
             return linker.formatTypeExpression(input);
           }
         }
@@ -558,7 +561,7 @@ class DocWriter {
 
     JsDoc jsdoc = type.getJsdoc();
     if (jsdoc != null) {
-      enumBuilder.setVisibility(Dossier.Visibility.valueOf(jsdoc.getVisibility().name()));
+      enumBuilder.setVisibility(Visibility.valueOf(jsdoc.getVisibility().name()));
     }
 
     // Type may be documented as an enum without an associated object literal for us to analyze:
@@ -601,7 +604,7 @@ class DocWriter {
                 .setType(linker.formatTypeExpression(jsdoc.getType()))
                 .setSource(linker.getSourceLink(typedef.getNode()))
                 .setDescription(getBlockDescription(linker, typedef))
-                .setVisibility(Dossier.Visibility.valueOf(jsdoc.getVisibility().name()));
+                .setVisibility(Visibility.valueOf(jsdoc.getVisibility().name()));
 
             if (jsdoc.isDeprecated()) {
               builder.setDeprecation(getDeprecation(jsdoc));
@@ -641,7 +644,7 @@ class DocWriter {
 
       String href = linker.getFilePath(child).getFileName().toString();
 
-      Dossier.Comment summary = getSummary("No description.", linker);
+      Comment summary = getSummary("No description.", linker);
 
       JsDoc jsdoc = child.getJsdoc();
       if (jsdoc != null && !isNullOrEmpty(jsdoc.getBlockComment())) {
@@ -741,13 +744,13 @@ class DocWriter {
       LinkedList<InstanceProperty> definitions = new LinkedList<>(properties.get(key));
       InstanceProperty property = definitions.removeFirst();
 
-      Dossier.Comment definedBy = null;
+      Comment definedBy = null;
       if (!docType.equals(property.getDefinedOn())) {
         JSType definedByType = stripTemplateTypeInformation(property.getDefinedOn());
         definedBy = linker.formatTypeExpression(definedByType);
       }
-      Dossier.Comment overrides = findOverriddenType(definitions);
-      Iterable<Dossier.Comment> specifications = findSpecifications(definitions);
+      Comment overrides = findOverriddenType(definitions);
+      Iterable<Comment> specifications = findSpecifications(definitions);
 
       JsDoc jsdoc = JsDoc.from(property.getJSDocInfo());
       if (jsdoc != null && jsdoc.getVisibility() == JSDocInfo.Visibility.PRIVATE) {
@@ -781,7 +784,7 @@ class DocWriter {
    * Given a list of properties, finds the first one defined on a class or (non-interface) object.
    */
   @Nullable
-  private Dossier.Comment findOverriddenType(Iterable<InstanceProperty> properties) {
+  private Comment findOverriddenType(Iterable<InstanceProperty> properties) {
     for (InstanceProperty property : properties) {
       JSType definedOn = property.getDefinedOn();
       if (definedOn.isInterface()) {
@@ -801,8 +804,8 @@ class DocWriter {
   /**
    * Given a list of properties, finds those that are specified on an interface.
    */
-  private Iterable<Dossier.Comment> findSpecifications(Collection<InstanceProperty> properties) {
-    List<Dossier.Comment> specifications = new ArrayList<>(properties.size());
+  private Iterable<Comment> findSpecifications(Collection<InstanceProperty> properties) {
+    List<Comment> specifications = new ArrayList<>(properties.size());
     for (InstanceProperty property : properties) {
       JSType definedOn = property.getDefinedOn();
       if (!definedOn.isInterface()) {
@@ -885,12 +888,12 @@ class DocWriter {
     }
   }
 
-  private Dossier.BaseProperty getBasePropertyDetails(
+  private BaseProperty getBasePropertyDetails(
       String name, JSType type, Node node, @Nullable JsDoc jsdoc,
-      @Nullable Dossier.Comment definedBy,
-      @Nullable Dossier.Comment overrides,
-      Iterable<Dossier.Comment> specifications) {
-    Dossier.BaseProperty.Builder builder = Dossier.BaseProperty.newBuilder()
+      @Nullable Comment definedBy,
+      @Nullable Comment overrides,
+      Iterable<Comment> specifications) {
+    BaseProperty.Builder builder = BaseProperty.newBuilder()
         .setName(name)
         .setDescription(getBlockDescription(linker, jsdoc))
         .setSource(linker.getSourceLink(node))
@@ -905,7 +908,7 @@ class DocWriter {
     }
 
     if (jsdoc != null) {
-      builder.setVisibility(Dossier.Visibility.valueOf(jsdoc.getVisibility().name()))
+      builder.setVisibility(Visibility.valueOf(jsdoc.getVisibility().name()))
           .getTagsBuilder()
           .setIsDeprecated(jsdoc.isDeprecated())
           .setIsConst(!type.isFunctionType() && (jsdoc.isConst() || jsdoc.isDefine()));
@@ -916,20 +919,21 @@ class DocWriter {
     return builder.build();
   }
 
-  private Dossier.Property getPropertyData(
+  private com.github.jsdossier.proto.Property getPropertyData(
       String name, JSType type, Node node, @Nullable JsDoc jsDoc) {
     return getPropertyData(
-        name, type, node, jsDoc, null, null, ImmutableList.<Dossier.Comment>of());
+        name, type, node, jsDoc, null, null, ImmutableList.<Comment>of());
   }
 
-  private Dossier.Property getPropertyData(
+  private com.github.jsdossier.proto.Property getPropertyData(
       String name, JSType type, Node node, @Nullable JsDoc jsDoc,
-      @Nullable Dossier.Comment definedBy,
-      @Nullable Dossier.Comment overrides,
-      Iterable<Dossier.Comment> specifications) {
-    Dossier.Property.Builder builder = Dossier.Property.newBuilder()
-        .setBase(getBasePropertyDetails(
-            name, type, node, jsDoc, definedBy, overrides, specifications));
+      @Nullable Comment definedBy,
+      @Nullable Comment overrides,
+      Iterable<Comment> specifications) {
+    com.github.jsdossier.proto.Property.Builder builder =
+        com.github.jsdossier.proto.Property.newBuilder()
+            .setBase(getBasePropertyDetails(
+                name, type, node, jsDoc, definedBy, overrides, specifications));
 
     if (jsDoc != null && jsDoc.getType() != null) {
       builder.setType(linker.formatTypeExpression(jsDoc.getType()));
@@ -940,29 +944,31 @@ class DocWriter {
     return builder.build();
   }
 
-  private Dossier.Function getFunctionData(
+  private com.github.jsdossier.proto.Function getFunctionData(
       String name, JSType type, Node node, @Nullable JsDoc jsDoc) {
     return getFunctionData(
-        name, type, node, jsDoc, null, null, ImmutableList.<Dossier.Comment>of());
+        name, type, node, jsDoc, null, null, ImmutableList.<Comment>of());
   }
 
-  private Dossier.Function getFunctionData(
+  private com.github.jsdossier.proto.Function getFunctionData(
       String name, JSType type, Node node, @Nullable JsDoc jsDoc,
-      @Nullable Dossier.Comment definedBy,
-      @Nullable Dossier.Comment overrides,
-      Iterable<Dossier.Comment> specifications) {
+      @Nullable Comment definedBy,
+      @Nullable Comment overrides,
+      Iterable<Comment> specifications) {
     checkArgument(type.isFunctionType());
 
     boolean isConstructor = type.isConstructor();
     boolean isInterface = !isConstructor && type.isInterface();
 
-    Dossier.Function.Builder builder = Dossier.Function.newBuilder()
-        .setBase(getBasePropertyDetails(
-            name, type, node, jsDoc, definedBy, overrides, specifications))
+    com.github.jsdossier.proto.Function.Builder builder =
+        com.github.jsdossier.proto.Function.newBuilder()
+            .setBase(getBasePropertyDetails(
+                name, type, node, jsDoc, definedBy, overrides, specifications))
         .setIsConstructor(isConstructor);
 
     if (!isConstructor && !isInterface) {
-      Dossier.Function.Detail.Builder detail = Dossier.Function.Detail.newBuilder();
+      com.github.jsdossier.proto.Function.Detail.Builder detail =
+          com.github.jsdossier.proto.Function.Detail.newBuilder();
       detail.setType(getReturnType(jsDoc, type));
       if (jsDoc != null) {
         detail.setDescription(parseComment(jsDoc.getReturnDescription(), linker));
@@ -980,16 +986,16 @@ class DocWriter {
     return builder.build();
   }
 
-  private Iterable<Dossier.Function.Detail> buildThrowsData(JsDoc jsDoc) {
+  private Iterable<com.github.jsdossier.proto.Function.Detail> buildThrowsData(JsDoc jsDoc) {
     return transform(jsDoc.getThrowsClauses(),
-        new Function<JsDoc.ThrowsClause, Dossier.Function.Detail>() {
+        new Function<JsDoc.ThrowsClause, com.github.jsdossier.proto.Function.Detail>() {
           @Override
-          public Dossier.Function.Detail apply(JsDoc.ThrowsClause input) {
-            Dossier.Comment thrownType = Dossier.Comment.getDefaultInstance();
+          public com.github.jsdossier.proto.Function.Detail apply(JsDoc.ThrowsClause input) {
+            Comment thrownType = Comment.getDefaultInstance();
             if (input.getType().isPresent()) {
               thrownType = linker.formatTypeExpression(input.getType().get());
             }
-            return Dossier.Function.Detail.newBuilder()
+            return com.github.jsdossier.proto.Function.Detail.newBuilder()
                 .setType(thrownType)
                 .setDescription(parseComment(input.getDescription(), linker))
                 .build();
@@ -998,14 +1004,14 @@ class DocWriter {
     );
   }
 
-  private Dossier.Comment getReturnType(@Nullable JsDoc jsdoc, JSType function) {
+  private Comment getReturnType(@Nullable JsDoc jsdoc, JSType function) {
     JSType returnType = ((FunctionType) function).getReturnType();
     if (returnType.isUnknownType() && jsdoc != null && jsdoc.getReturnType() != null) {
       returnType = typeRegistry.evaluate(jsdoc.getReturnType());
     }
-    Dossier.Comment comment = linker.formatTypeExpression(returnType);
+    Comment comment = linker.formatTypeExpression(returnType);
     if (isVacuousTypeComment(comment)) {
-      return Dossier.Comment.getDefaultInstance();
+      return Comment.getDefaultInstance();
     }
     return comment;
   }
@@ -1046,7 +1052,7 @@ class DocWriter {
     return type.isNamespace() && type.getProperties().isEmpty();
   }
 
-  private static boolean isVacuousTypeComment(Dossier.Comment comment) {
+  private static boolean isVacuousTypeComment(Comment comment) {
     return comment.getTokenCount() == 1
         && ("undefined".equals(comment.getToken(0).getText())
         || "void".equals(comment.getToken(0).getText())
@@ -1089,7 +1095,7 @@ class DocWriter {
     }
   }
 
-  private List<Dossier.Function.Detail> getParameters(JSType type, Node node, @Nullable JsDoc docs) {
+  private List<com.github.jsdossier.proto.Function.Detail> getParameters(JSType type, Node node, @Nullable JsDoc docs) {
     checkArgument(type.isFunctionType());
     final JsDoc jsdoc = docs == null && type.getJSDocInfo() != null
         ? JsDoc.from(type.getJSDocInfo())
@@ -1098,7 +1104,7 @@ class DocWriter {
     // TODO: simplify this mess by adding a check that JSDoc parameter names are consistent with
     // the param list (order and number)
     List<Node> parameterNodes = Lists.newArrayList(((FunctionType) type).getParameters());
-    List<Dossier.Function.Detail> details = new ArrayList<>(parameterNodes.size());
+    List<com.github.jsdossier.proto.Function.Detail> details = new ArrayList<>(parameterNodes.size());
     @Nullable Node paramList = findParamList(node);
 
     for (int i = 0; i < parameterNodes.size(); i++) {
@@ -1113,7 +1119,7 @@ class DocWriter {
         parameter = jsdoc.getParameters().get(i);
       }
 
-      Dossier.Function.Detail.Builder detail = Dossier.Function.Detail.newBuilder()
+      com.github.jsdossier.proto.Function.Detail.Builder detail = com.github.jsdossier.proto.Function.Detail.newBuilder()
           .setName("arg" + i);
 
       // If the compiler hasn't determined a type yet, try to map back to the jsdoc.

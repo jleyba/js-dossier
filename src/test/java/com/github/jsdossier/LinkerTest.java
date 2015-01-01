@@ -10,7 +10,9 @@ import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import com.github.jsdossier.proto.Dossier;
+import com.github.jsdossier.proto.Comment;
+import com.github.jsdossier.proto.SourceLink;
+import com.github.jsdossier.proto.TypeLink;
 import com.google.common.collect.ImmutableList;
 import com.google.common.jimfs.Jimfs;
 import com.google.javascript.jscomp.CompilerOptions;
@@ -401,7 +403,7 @@ public class LinkerTest {
   @Test
   public void testGetSourcePath_nullNode() {
     assertEquals(
-        Dossier.SourceLink.newBuilder()
+        SourceLink.newBuilder()
             .setPath("")
             .build(),
         linker.getSourceLink(null));
@@ -412,7 +414,7 @@ public class LinkerTest {
     Node node = mock(Node.class);
     when(node.isFromExterns()).thenReturn(true);
     assertEquals(
-        Dossier.SourceLink.newBuilder()
+        SourceLink.newBuilder()
             .setPath("")
             .build(),
         linker.getSourceLink(node));
@@ -427,7 +429,7 @@ public class LinkerTest {
     when(node.getSourceFileName()).thenReturn("/alphabet/soup/a/b/c");
     when(node.getLineno()).thenReturn(123);
     assertEquals(
-        Dossier.SourceLink.newBuilder()
+        SourceLink.newBuilder()
             .setPath("source/a/b/c.src.html")
             .setLine(123)
             .build(),
@@ -461,8 +463,8 @@ public class LinkerTest {
     assertNotNull(property);
 
     JSTypeExpression expression = property.getJSDocInfo().getParameterType("name");
-    Dossier.Comment comment = linker.formatTypeExpression(expression);
-    Dossier.Comment.Token token = getOnlyElement(comment.getTokenList());
+    Comment comment = linker.formatTypeExpression(expression);
+    Comment.Token token = getOnlyElement(comment.getTokenList());
     assertEquals(
         "ns is defined as an alias to module/a, so any type reference will hide the global " +
             "ns variable",
@@ -492,13 +494,13 @@ public class LinkerTest {
     assertNotNull(property);
 
     JSTypeExpression expression = property.getJSDocInfo().getParameterType("agent");
-    Dossier.Comment comment = linker.formatTypeExpression(expression);
-    Dossier.Comment.Token token = getOnlyElement(comment.getTokenList());
+    Comment comment = linker.formatTypeExpression(expression);
+    Comment.Token token = getOnlyElement(comment.getTokenList());
     assertEquals("http.Agent", token.getText());
     assertFalse(token.hasHref());
   }
 
-  private static void checkLink(String text, String href, Dossier.TypeLink link) {
+  private static void checkLink(String text, String href, TypeLink link) {
     assertEquals(text, link.getText());
     assertEquals(href, link.getHref());
   }

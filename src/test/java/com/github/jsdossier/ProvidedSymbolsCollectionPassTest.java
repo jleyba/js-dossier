@@ -1,6 +1,5 @@
 package com.github.jsdossier;
 
-import static com.google.common.collect.Iterables.getOnlyElement;
 import static com.google.common.collect.Lists.newLinkedList;
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertEquals;

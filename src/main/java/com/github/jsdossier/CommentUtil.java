@@ -17,7 +17,8 @@ package com.github.jsdossier;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Strings.isNullOrEmpty;
 
-import com.github.jsdossier.proto.Dossier;
+import com.github.jsdossier.proto.Comment;
+import com.github.jsdossier.proto.TypeLink;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -37,7 +38,7 @@ public class CommentUtil {
    * Extracts summary sentence from the provided comment text. This is the substring up to the
    * first period (.) followed by a blank, tab, or newline.
    */
-  public static Dossier.Comment getSummary(String text, Linker linker) {
+  public static Comment getSummary(String text, Linker linker) {
     Matcher matcher = SUMMARY_REGEX.matcher(text);
     if (matcher.find()) {
       return parseComment(matcher.group(1), linker);
@@ -48,9 +49,9 @@ public class CommentUtil {
   /**
    * Extracs the fileoverview comment string from the given {@link JsDoc} object.
    */
-  public static Dossier.Comment getFileoverview(Linker linker, @Nullable JsDoc jsdoc) {
+  public static Comment getFileoverview(Linker linker, @Nullable JsDoc jsdoc) {
     if (jsdoc == null) {
-      return Dossier.Comment.getDefaultInstance();
+      return Comment.getDefaultInstance();
     }
     return parseComment(jsdoc.getFileoverview(), linker);
   }
@@ -58,7 +59,7 @@ public class CommentUtil {
   /**
    * Extracts the block comment string from the given type.
    */
-  public static Dossier.Comment getBlockDescription(Linker linker, NominalType type) {
+  public static Comment getBlockDescription(Linker linker, NominalType type) {
     try {
       linker.pushContext(type);
       return getBlockDescription(linker, type.getJsdoc());
@@ -70,26 +71,26 @@ public class CommentUtil {
   /**
    * Extracts the block comment string from the given {@link JsDoc} object.
    */
-  public static Dossier.Comment getBlockDescription(Linker linker, @Nullable JsDoc jsdoc) {
+  public static Comment getBlockDescription(Linker linker, @Nullable JsDoc jsdoc) {
     if (jsdoc == null) {
-      return Dossier.Comment.getDefaultInstance();
+      return Comment.getDefaultInstance();
     }
     return parseComment(jsdoc.getBlockComment(), linker);
   }
 
-  private static Dossier.Comment.Token.Builder newTextToken(String text) {
-    return Dossier.Comment.Token.newBuilder().setText(text);
+  private static Comment.Token.Builder newTextToken(String text) {
+    return Comment.Token.newBuilder().setText(text);
   }
 
-  private static Dossier.Comment.Token.Builder newHtmlToken(String html) {
-    return Dossier.Comment.Token.newBuilder().setHtml(html);
+  private static Comment.Token.Builder newHtmlToken(String html) {
+    return Comment.Token.newBuilder().setHtml(html);
   }
 
   /**
    * Parses the {@code text} of a JSDoc block comment.
    */
-  public static Dossier.Comment parseComment(String text, Linker linker) {
-    Dossier.Comment.Builder builder = Dossier.Comment.newBuilder();
+  public static Comment parseComment(String text, Linker linker) {
+    Comment.Builder builder = Comment.newBuilder();
     if (isNullOrEmpty(text)) {
       return builder.build();
     }
@@ -123,9 +124,9 @@ public class CommentUtil {
         case "link":
         case "linkplain":
           LinkInfo info = LinkInfo.fromText(tagletText);
-          @Nullable Dossier.TypeLink link =linker.getLink(info.type);
+          @Nullable TypeLink link = linker.getLink(info.type);
 
-          Dossier.Comment.Token.Builder token = newTextToken(info.text)
+          Comment.Token.Builder token = newTextToken(info.text)
               .setIsCode("link".equals(tagletName))
               .setUnresolvedLink(link == null);
           if (link != null) {

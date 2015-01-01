@@ -1,6 +1,8 @@
 package com.github.jsdossier.soy;
 
-import com.github.jsdossier.proto.Dossier;
+import com.github.jsdossier.proto.IndexFileRenderSpec;
+import com.github.jsdossier.proto.JsTypeRenderSpec;
+import com.github.jsdossier.proto.SourceFileRenderSpec;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableSet;
@@ -28,15 +30,15 @@ public class Renderer {
       .build()
       .compileToTofu();
 
-  public void render(Path output, Dossier.IndexFileRenderSpec spec) throws IOException {
+  public void render(Path output, IndexFileRenderSpec spec) throws IOException {
     render(output, "dossier.soy.indexFile", spec);
   }
 
-  public void render(Path output, Dossier.SourceFileRenderSpec spec) throws IOException {
+  public void render(Path output, SourceFileRenderSpec spec) throws IOException {
     render(output, "dossier.soy.srcfile", spec);
   }
 
-  public void render(Path output, Dossier.JsTypeRenderSpec spec) throws IOException {
+  public void render(Path output, JsTypeRenderSpec spec) throws IOException {
     render(output, "dossier.soy.typefile", spec);
   }
 

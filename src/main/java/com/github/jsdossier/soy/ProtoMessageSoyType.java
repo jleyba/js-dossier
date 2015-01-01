@@ -214,7 +214,8 @@ class ProtoMessageSoyType implements SoyObjectType {
   private static SoyValue toSanitizedContent(FieldDescriptor field, Object fieldValue) {
     checkArgument(field.getOptions().hasExtension(Dossier.sanitized));
 
-    Dossier.SanitizedContent sc = field.getOptions().getExtension(Dossier.sanitized);
+    com.github.jsdossier.proto.SanitizedContent sc =
+        field.getOptions().getExtension(Dossier.sanitized);
     SanitizedContent.ContentKind kind;
     if (sc.getHtml()) {
       kind = HTML;

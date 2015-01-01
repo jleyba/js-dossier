@@ -19,7 +19,10 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.base.Verify.verify;
 import static com.google.common.collect.Iterables.filter;
 
-import com.github.jsdossier.proto.Dossier;
+import com.github.jsdossier.proto.Comment;
+import com.github.jsdossier.proto.SourceLink;
+import com.github.jsdossier.proto.TypeLink;
+import com.github.jsdossier.proto.TypeLinkOrBuilder;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Predicate;
@@ -156,14 +159,14 @@ public class Linker {
   /**
    * Returns the path to the rendered source file for the given node.
    */
-  public Dossier.SourceLink getSourceLink(@Nullable Node node) {
+  public SourceLink getSourceLink(@Nullable Node node) {
     if (node == null || node.isFromExterns()) {
-      return Dossier.SourceLink.newBuilder().setPath("").build();
+      return SourceLink.newBuilder().setPath("").build();
     }
     Iterator<Path> parts = config.getOutput()
         .relativize(getFilePath(node.getSourceFileName()))
         .iterator();
-    return Dossier.SourceLink.newBuilder()
+    return SourceLink.newBuilder()
         .setPath(Joiner.on('/').join(parts))
         .setLine(node.getLineno())
         .build();
@@ -182,7 +185,7 @@ public class Linker {
    * directory, otherwise {@code null} is returned.
    */
   @Nullable
-  public Dossier.TypeLink getLink(String symbol) {
+  public TypeLink getLink(String symbol) {
     // Trim down the target symbol to something that would be indexable.
     int index = symbol.indexOf("(");
     if (index != -1) {
@@ -190,7 +193,7 @@ public class Linker {
     }
 
     if (symbol.startsWith("#")) {
-      Dossier.TypeLink link = getContextLink(symbol);
+      TypeLink link = getContextLink(symbol);
       if (link != null) {
         return link;
       }
@@ -248,7 +251,7 @@ public class Linker {
   }
 
   @Nullable
-  private Dossier.TypeLink getContextLink(String symbol) {
+  private TypeLink getContextLink(String symbol) {
     if (context.isEmpty()) {
       return null;
     }
@@ -257,7 +260,7 @@ public class Linker {
     symbol = symbol.substring(1);
     NominalType type = context.peek();
 
-    Dossier.TypeLink link = checkNotNull(getLink(type), "Failed to build link for %s",
+    TypeLink link = checkNotNull(getLink(type), "Failed to build link for %s",
         type.getQualifiedName());
 
     String id = symbol;
@@ -297,8 +300,8 @@ public class Linker {
   }
 
   @Nullable
-  public Dossier.TypeLink getLink(NominalType type) {
-    Dossier.TypeLink.Builder link = Dossier.TypeLink.newBuilder()
+  public TypeLink getLink(NominalType type) {
+    TypeLink.Builder link = TypeLink.newBuilder()
         .setText(getDisplayName(type));
     if (type.getJsdoc() != null && type.getJsdoc().isTypedef()) {
       NominalType parent = type.getParent();
@@ -314,12 +317,12 @@ public class Linker {
   }
 
   @Nullable
-  public Dossier.TypeLink getLink(final JSType to) {
+  public TypeLink getLink(final JSType to) {
     NominalType type = typeRegistry.resolve(to);
     if (type == null) {
       return null;
     }
-    return Dossier.TypeLink.newBuilder()
+    return TypeLink.newBuilder()
         .setText(getDisplayName(type))
         .setHref(getFilePath(type).getFileName().toString())
         .build();
@@ -387,9 +390,9 @@ public class Linker {
    * @return A link to the extern's type definition, or {@code null} if one could not be found.
    */
   @Nullable
-  public Dossier.TypeLink getExternLink(String name) {
+  public TypeLink getExternLink(String name) {
     if (BUILTIN_TO_MDN_LINK.containsKey(name)) {
-      return Dossier.TypeLink.newBuilder()
+      return TypeLink.newBuilder()
           .setText(name)
           .setHref(BUILTIN_TO_MDN_LINK.get(name))
           .build();
@@ -398,10 +401,10 @@ public class Linker {
   }
 
   /**
-   * Parses the type expression into a {@link Dossier.Comment} suitable for injection into a soy
+   * Parses the type expression into a {@link Comment} suitable for injection into a soy
    * template.
    */
-  public Dossier.Comment formatTypeExpression(JSTypeExpression expression) {
+  public Comment formatTypeExpression(JSTypeExpression expression) {
     return new CommentTypeParser().parse(
         typeRegistry.evaluate(expression),
         ParseModifier.forExpression(expression));
@@ -410,20 +413,20 @@ public class Linker {
   /**
    * Parses the type expression attached to the given node.
    */
-  public Dossier.Comment formatTypeExpression(Node node) {
+  public Comment formatTypeExpression(Node node) {
     JSType type = node.getJSType();
     if (type == null) {
-      return Dossier.Comment.newBuilder().build();
+      return Comment.newBuilder().build();
     }
     return new CommentTypeParser().parse(type, ParseModifier.forNode(node));
   }
 
   /**
-   * Parses the type into a {@link Dossier.Comment} suitable for injection into a soy template.
+   * Parses the type into a {@link Comment} suitable for injection into a soy template.
    */
-  public Dossier.Comment formatTypeExpression(@Nullable JSType type) {
+  public Comment formatTypeExpression(@Nullable JSType type) {
     if (type == null) {
-      return Dossier.Comment.newBuilder().build();
+      return Comment.newBuilder().build();
     }
     return new CommentTypeParser().parse(type, ParseModifier.NONE);
   }
@@ -457,11 +460,11 @@ public class Linker {
    */
   private class CommentTypeParser implements Visitor<Void> {
 
-    private final Dossier.Comment.Builder comment = Dossier.Comment.newBuilder();
+    private final Comment.Builder comment = Comment.newBuilder();
 
     private String currentText = "";
 
-    Dossier.Comment parse(JSType type, ParseModifier modifier) {
+    Comment parse(JSType type, ParseModifier modifier) {
       comment.clear();
       currentText = "";
 
@@ -496,7 +499,7 @@ public class Linker {
       appendLink(checkNotNull(getExternLink(type)));
     }
 
-    private void appendLink(Dossier.TypeLinkOrBuilder link) {
+    private void appendLink(TypeLinkOrBuilder link) {
       appendLink(link.getText(), link.getHref());
     }
 
@@ -640,7 +643,7 @@ public class Linker {
     }
 
     private void caseInstanceType(String displayName, ObjectType type) {
-      Dossier.TypeLink link = getLink(type.getConstructor());
+      TypeLink link = getLink(type.getConstructor());
       if (link == null) {
         link = getExternLink(type.getReferenceName());
         appendLink(displayName, link == null ? "" : link.getHref());
@@ -690,7 +693,7 @@ public class Linker {
 
     @Override
     public Void caseNamedType(NamedType type) {
-      Dossier.TypeLink link = getLink(type.getReferenceName());
+      TypeLink link = getLink(type.getReferenceName());
       if (link != null) {
         appendLink(link);
       } else if (DossierModule.isExternModule(type.getReferenceName())) {
