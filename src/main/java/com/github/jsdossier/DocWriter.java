@@ -302,11 +302,13 @@ class DocWriter {
 
     if (aliased != type) {
       String aliasDisplayName = linker.getDisplayName(aliased);
-      if (aliased.isModuleExports()) {
-        aliasDisplayName = "module(" + linker.getDisplayName(aliased) + ")";
-      } else if (aliased.getModule() != null) {
-        aliasDisplayName =
-            "module(" + linker.getDisplayName(aliased.getModule()) + ")." + aliasDisplayName;
+      if (aliased.isCommonJsModule()) {
+        if (aliased.isModuleExports()) {
+          aliasDisplayName = "module(" + aliasDisplayName + ")";
+        } else {
+          aliasDisplayName =
+              "module(" + linker.getDisplayName(aliased.getModule()) + ")." + aliasDisplayName;
+        }
       }
       jsTypeBuilder.setAliasedType(TypeLink.newBuilder()
           .setText(aliasDisplayName)
