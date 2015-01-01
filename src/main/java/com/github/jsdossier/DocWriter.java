@@ -638,10 +638,8 @@ class DocWriter {
     for (NominalType child : FluentIterable.from(nestedTypes).toSortedList(new NameComparator())) {
       JSType childType = child.getJsType();
 
-      if (!parent.isModuleExports()) {
-        if (!childType.isConstructor() && !childType.isEnumType() && !childType.isInterface()) {
-          continue;
-        }
+      if (!childType.isConstructor() && !childType.isEnumType() && !childType.isInterface()) {
+        continue;
       }
 
       String href = linker.getFilePath(child).getFileName().toString();
