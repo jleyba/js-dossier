@@ -232,6 +232,16 @@ public class EndToEndTest {
   }
 
   @Test
+  public void checkGoogDefinedClass() throws IOException {
+    Document document = load(outDir.resolve("class_sample_inheritance_StringClass.html"));
+    compareWithGoldenFile(querySelector(document, "article"),
+        "class_sample_inheritance_StringClass.html");
+    checkHeader(document);
+    checkNav(document);
+    checkFooter(document);
+  }
+
+  @Test
   public void checkPackageIndexCommonJsModule() throws IOException {
     Document document = load(outDir.resolve("module_example.html"));
     compareWithGoldenFile(querySelector(document, "article"), "module_example.html");

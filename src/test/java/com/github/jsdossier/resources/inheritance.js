@@ -90,6 +90,7 @@ sample.inheritance.FinalClass.prototype.run = function() {};
  * @param {string=} opt_name Class name.
  * @constructor
  * @template T
+ * @struct
  */
 sample.inheritance.TemplateClass = function(value, opt_name) {
   this.value = value;
@@ -115,6 +116,7 @@ sample.inheritance.TemplateClass.prototype.add = function(value) {
 /**
  * @constructor
  * @extends {sample.inheritance.TemplateClass<number>}
+ * @struct
  */
 sample.inheritance.NumberClass = function() {
   sample.inheritance.TemplateClass.call(this, 1234);
@@ -159,3 +161,44 @@ sample.inheritance.RunnableError = function(msg) {
   /** @override */
   this.run = function() {};
 };
+
+
+/**
+ * This class extends another using Closure's goog.defineClass. This comment
+ * should be used for the class description, but be merged with the constructor
+ * documentation below.
+ * @extends {sample.inheritance.TemplateClass<string>}
+ * @implements {sample.inheritance.Runnable}
+ */
+sample.inheritance.StringClass = goog.defineClass(sample.inheritance.TemplateClass, {
+  /**
+   * @param {string} value The initial value.
+   */
+  constructor: function(value) {
+    sample.inheritance.TemplateClass.call(this, value, 'StringClass');
+  },
+
+  statics: {
+    /**
+     * Tests if a value is a string.
+     * @param {*} value The value to test.
+     * @return {boolean} Whether the value is a string.
+     */
+    isString: function(value) {
+      return typeof value === 'string';
+    }
+  },
+
+  /** @override */
+  run: function() {
+  },
+
+  /**
+   * @param {number} fromIndex The starting index.
+   * @param {number=} opt_toIndex The ending index.
+   * @return {string} A substring of this instance's current value.
+   */
+  substring: function(fromIndex, opt_toIndex) {
+    return this.value.substring(fromIndex, opt_toIndex);
+  }
+});

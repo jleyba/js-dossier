@@ -3,6 +3,7 @@ package com.github.jsdossier;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.base.Strings.isNullOrEmpty;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Splitter;
@@ -238,9 +239,7 @@ public class JsDoc {
     int firstAnnotation = findFirstAnnotationLine(lines);
     int annotationOffset = 0;
     if (firstAnnotation != -1 && !info.getMarkers().isEmpty()) {
-      blockComment = processBlockCommentLines(
-          Iterables.limit(lines, firstAnnotation)
-      );
+      blockComment = processBlockCommentLines(Iterables.limit(lines, firstAnnotation));
 
       JSDocInfo.StringPosition firstAnnotationPosition =
           info.getMarkers().iterator().next().getAnnotation();
@@ -248,6 +247,14 @@ public class JsDoc {
       annotationOffset = firstAnnotationPosition.getStartLine() - firstAnnotation;
     } else {
       blockComment = processBlockCommentLines(lines);
+    }
+
+    // If we failed to extract a block comment, yet the original JSDoc has one, we've
+    // probably encountered a case where the compiler merged multiple JSDoc comments
+    // into one. Try to recover by parsing the compiler's provided block comment.
+    if (isNullOrEmpty(blockComment) && !isNullOrEmpty(info.getBlockDescription())) {
+      blockComment = processBlockCommentLines(
+          Splitter.on('\n').split(info.getBlockDescription()));
     }
 
     for (JSDocInfo.Marker marker : info.getMarkers()) {

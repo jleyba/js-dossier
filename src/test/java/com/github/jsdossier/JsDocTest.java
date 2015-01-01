@@ -398,6 +398,55 @@ public class JsDocTest {
         doc.getFileoverview());
   }
 
+  @Test
+  public void blockCommentsFromGoogDefinedClass_usesClassCommentIfNoCommentOnConstructor() {
+    JsDoc docs = getClassJsDoc(
+        "/**",
+        " * This is the class level description.",
+        " * <pre>",
+        " *   it contains a pre block",
+        " * </pre>",
+        " */",
+        "var Foo = goog.defineClass(null, {",
+        "  /**",
+        "   * @param {string} a A parameter.",
+        "   */",
+        "  constructor: function(a) {}",
+        "});");
+    // Note the compiler strips all leading and trailing whitespace on each line, so the
+    // pre block's indendentation is ruined.
+    assertEquals(
+        "This is the class level description.\n<pre>\nit contains a pre block\n</pre>",
+        docs.getBlockComment());
+  }
+
+  @Test
+  public void blockCommentsFromGoogDefinedClass_usesCtorCommentIfProvided() {
+    JsDoc docs = getClassJsDoc(
+        "/**",
+        " * This is the class level description.",
+        " * <pre>",
+        " *   it contains a pre block",
+        " * </pre>",
+        " */",
+        "var Foo = goog.defineClass(null, {",
+        "  /**",
+        "   * This is a comment on the constructor and should be used as the class comment.",
+        "   * <pre>",
+        "   *    This is a pre-formatted block.",
+        "   * </pre>",
+        "   * @param {string} a A parameter.",
+        "   */",
+        "  constructor: function(a) {}",
+        "});");
+    assertEquals(
+        "This is a comment on the constructor and should be used as the class comment.\n"
+            + " <pre>\n"
+            + "    This is a pre-formatted block.\n"
+            + " </pre>",
+        docs.getBlockComment());
+  }
+
   private Node getScriptNode(String... lines) {
     util.compile(path("foo/bar.js"), lines);
     return util.getCompiler().getRoot()
