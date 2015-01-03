@@ -264,5 +264,10 @@ public class Main extends CommandLineRunner {
 
   public static void main(String[] args) {
     run(args, FileSystems.getDefault());
+
+    // Explicitly exit. Soy bootstraps itself with Guice, whose finalers cause the JVM to
+    // take >30 seconds to shutdown.
+    // TODO: track down the exact cause of shutdown delay and fix it.
+    System.exit(0);
   }
 }
