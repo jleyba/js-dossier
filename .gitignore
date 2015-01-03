@@ -3,5 +3,6 @@
 .idea/inspectionProfiles
 buck-out/
 lib/
+node_modules/
 out/
 target/

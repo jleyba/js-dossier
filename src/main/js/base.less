@@ -1,0 +1,115 @@
+/*
+   Copyright 2015 Jason Leyba
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+ */
+
+@import url(http://fonts.googleapis.com/css?family=Roboto:400,400italic,700,700italic);
+
+@header_height: 5rem;
+@footer_height: 4rem;
+
+@article_top: @header_height / 2;
+
+@main_desktop_width: 100rem;
+
+@main_column_color: #fff;
+@banner_color: #424242;
+@link_color: #66f;
+
+.set-font-size(@size) {
+  font-size: @size;
+
+  a[id] {
+    padding-top: @header_height + @size;
+    margin-top: -@header_height - @size;
+    display: inline-block;
+  }
+}
+
+.main-column-width(@size) {
+  width: @size;
+  margin: 0 auto;
+}
+
+html {
+  font-size: 10px;
+  min-height: 100%;
+  position: relative;
+}
+
+body {
+  color: #333;
+  font-family: "Roboto", sans-serif;
+  line-height: 1.6;
+  word-wrap: break-word;
+  margin: 0 0 @footer_height;
+  padding: 0;
+  background: #f7f7f7;
+
+  .set-font-size(1.4rem);
+}
+
+a {
+  &, &:visited {
+    color: @link_color;
+    text-decoration: none;
+  }
+  &[href]:hover {
+    text-decoration: underline;
+  }
+}
+
+header, footer {
+  background: @banner_color;
+}
+
+
+div.pre-footer {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+  z-index: -1;
+
+  & > div {
+    height: 100%;
+  }
+}
+
+footer {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  height: @footer_height;
+  padding: 0;
+  margin: 0;
+
+  font-size: 1rem;
+
+  div {
+    display: table-cell;
+    vertical-align: middle;
+    height: @footer_height;
+  }
+
+  a {
+    padding-left: 2.25rem;
+
+    &, &:visited {
+      color: rgba(255, 255, 255, 0.8);
+    }
+  }
+}
+

@@ -13,71 +13,22 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-@import url(http://fonts.googleapis.com/css?family=Roboto:400,400italic,700,700italic);
-
-@header_height: 4rem;
-@footer_height: 2rem;
-
-.set-font-size(@size) {
-  font-size: @size;
-
-  a[id] {
-    padding-top: @header_height + @size;
-    margin-top: -@header_height - @size;
-    display: inline-block;
-  }
-}
+@import "base";
 
 .main-column() {
   margin: 0 auto;
   width: 100rem;
-  background: #fff;
 }
 
-html {
-  font-size: 10px;
-  min-height: 100%;
-  position: relative;
+.article-margin-top() {
+  margin-top: @header_height / 2;
 }
 
-body {
-  color: #333;
-  font-family: "Roboto", sans-serif;
-  line-height: 1.6;
-  word-wrap: break-word;
-  margin: 0 0 @footer_height;
-  padding: 0;
-  background: #f7f7f7;
-
-  .set-font-size(1.4rem);
-}
-
-div.pre-footer {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 100%;
-  z-index: -1;
-
-  & > div {
-    height: 100%;
-    .main-column();
-  }
-}
-
-a[href] {
-  &, &:visited {
-    color: #66f;
-    text-decoration: none;
-  }
-  &:hover {
-    text-decoration: underline;
-  }
+main, div.pre-footer > div {
+  background: @main_column_color;
 }
 
 main {
-  .main-column();
-
   &:after {
     clear: both;
     content: "";
@@ -86,10 +37,8 @@ main {
 }
 
 article {
+  .article-margin-top();
   padding: 3rem;
-  width: 66rem;
-  margin-top: 2rem;
-  float: right;
 
   &.indexfile > h1,
   &.srcfile > h1 {
@@ -139,12 +88,9 @@ article {
 }
 
 nav {
-  padding: 3rem 4rem 3rem 1rem;
-  width: 23rem;
-  margin-top: 2rem;
-  float: left;
+  padding-bottom: 3rem;
+  padding-left: 1rem;
   font-size: 1.1rem;
-  height: 100%;
 
   ul {
     margin: 0;
@@ -197,6 +143,7 @@ nav {
     font-size: 2rem;
     border-top: 1px solid #8f8f8f;
     padding-top: .3em;
+    margin-top: .9rem;
 
     &:before {
       content: '\2335';
@@ -235,7 +182,7 @@ h1, h2, h3 {
 }
 
 h1 {
-  @font-size: 3.0rem;
+  @font-size: 2.6rem;
 
   .set-font-size(@font-size);
   margin: 0.67rem 0;
@@ -253,7 +200,7 @@ h1 {
 }
 
 h2 {
-  .set-font-size(2.4rem);
+  .set-font-size(2.0rem);
   line-height: 1.225;
 
   h1 + &, &.main {
@@ -262,7 +209,7 @@ h2 {
 }
 
 h3 {
-  .set-font-size(2.0rem);
+  .set-font-size(1.8rem);
 
   border-bottom: 1px solid #a9a9a9;
   border: 0;
@@ -280,7 +227,7 @@ h3 {
   }
 }
 
-h4 { .set-font-size(1.8rem); }
+h4 { .set-font-size(1.6rem); }
 h5 { .set-font-size(1.4rem); }
 h6 { .set-font-size(1.2rem); }
 
@@ -382,85 +329,29 @@ hr.fn-sep {
   }
 }
 
-header {
-  position: fixed;
-  height: @header_height;
-  top: 0;
-  right: 0;
-  left: 0;
-  background: #424242;
-  color: #fff;
-  font-weight: bold;
-  box-shadow: 0 1px 5px #888888;
+@import "header";
 
-  & > div {
-    position: relative;
-    height: 4rem;
-    width: 100%;
-  }
-
-  form {
-    position: absolute;
-    right: 3rem;
-    padding-top: .6rem;
-
-    div {
-      display: table-cell;
-      vertical-align: middle;
-      height: 2.75rem;
-    }
-
-    input {
-      width: 25rem;
-      height: 2.3rem;
-      padding-left: 4px;
-      border-radius: 15px;
-      border: 1px solid black;
-      -webkit-appearance: none;
-
-      &:focus { outline: 0; }
-    }
+@media (max-width: 1000px) {
+  article {
+    padding: 3rem 1rem;
   }
 }
 
-footer {
-  font-size: 1rem;
-  background: #424242;
+@media (min-width: 1000px) {
+  main, div.pre-footer > div {
+    .main-column();
+  }
 
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  right: 0;
+  article {
+    float: right;
+    width: 66rem;
+  }
 
-  height: @footer_height;
-  padding: .75rem 0 .75rem 2.25rem;
-  margin: 0;
-
-  a[href], a[href]:visited {
-    color: rgba(255, 255, 255, 0.8);
+  nav {
+    width: 23rem;
+    float: left;
+    .article-margin-top();
+    padding-top: 3rem;
+    padding-right: 4rem;
   }
 }
-
-
-/* Auto complete styles */
-.ac-renderer {
-  position: absolute;
-  background: #fff;
-  border: 1px solid black;
-
-  @ac_render_shadow: 2px 2px 2px rgba(102, 102, 102, .4);
-
-  -moz-box-shadow: @ac_render_shadow;
-  -webkit-box-shadow: @ac_render_shadow;
-  box-shadow: @ac_render_shadow;
-
-  z-index: 2;
-  width: 40rem;
-  overflow: auto;
-}
-.ac-row {
-  cursor: pointer;
-  padding: .5rem;
-}
-.ac-highlighted { font-weight: bold; }
-.ac-active { background-color: rgba(82, 82, 82, 0.1); }
