@@ -15,7 +15,6 @@
  */
 
 @import "base";
-@import "autocomplete";
 
 @search_input_width: 30rem;
 
@@ -63,6 +62,36 @@ header {
     &:focus { outline: 0; }
   }
 }
+
+.ac-renderer {
+  position: absolute;
+  background: #fff;
+  border: 1px solid black;
+
+  @ac_render_shadow: 2px 2px 2px rgba(102, 102, 102, .4);
+
+  -moz-box-shadow: @ac_render_shadow;
+  -webkit-box-shadow: @ac_render_shadow;
+  box-shadow: @ac_render_shadow;
+
+  z-index: 2;
+  overflow: auto;
+  width: @search_input_width;
+}
+
+.ac-row {
+  cursor: pointer;
+  padding: .5rem;
+}
+
+.ac-highlighted {
+  font-weight: bold;
+}
+
+.ac-active {
+  background-color: rgba(82, 82, 82, 0.1);
+}
+
 
 @media (min-width: 1000px) {
   header {
