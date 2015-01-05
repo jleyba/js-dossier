@@ -1,0 +1,91 @@
+/*
+   Copyright 2015 Jason Leyba
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+ */
+
+#nav-modules,
+#nav-types {
+  display: none;
+
+  & ~ label h3:before {
+    .rotate(0);
+  }
+
+  &:checked ~ label h3:before {
+    .rotate(-90deg);
+  }
+
+  &:checked ~ div {
+    display: none;
+  }
+}
+
+label[for="nav-types"],
+label[for="nav-modules"] {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+nav {
+  font-size: 1.1rem;
+  margin: 0 0 3rem 1rem;
+
+  ul {
+    margin: 0 0 0 1rem;
+    padding: 0;
+  }
+
+  li {
+    list-style: none;
+    padding-left: 1em;
+    text-indent: -1em;
+    word-wrap: initial;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  h3 {
+    font-size: 2rem;
+    border: 0;
+    border-top: 1px solid @header_border;
+    margin-top: 1.2rem;
+
+    &:before {
+      content: '\2335';
+      display: inline-block;
+      margin-right: 1rem;
+    }
+
+    &:first-child:before {
+      .rotate(-90deg);
+    }
+
+    a, a:visited {
+      color: @banner_color;
+    }
+  }
+
+  & > h3:first-child {
+    border-top: 0;
+    margin-top: 0;
+
+    &:before {
+      transform: rotate(-90deg);
+    }
+  }
+}

@@ -100,8 +100,9 @@ public class RendererTest {
         )),
         isHtml(
             "<!DOCTYPE html>",
-            "<meta charset=\"UTF-8\">",
-            "<meta http-equiv=\"Content-Language\" content=\"en\" />",
+            "<meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, ",
+            "initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no\">",
+            "<meta http-equiv=\"Content-Language\" content=\"en\">",
             "<title>Foo.Bar</title>",
             "<link href=\"apples\" rel=\"stylesheet\" type=\"text/css\">",
             "<link href=\"oranges\" rel=\"stylesheet\" type=\"text/css\">",
@@ -635,15 +636,12 @@ public class RendererTest {
             "types", toSoyValue(types)));
     assertThat(querySelector(document, "section > h2").toString(), is("<h2>Interfaces</h2>"));
     assertThat(querySelector(document, "section > h2 + .type-summary").toString(), isHtml(
-        "<div class=\"type-summary\">",
-        "<table><tbody><tr><td><dl>",
+        "<div class=\"type-summary\"><dl>",
         "<dt><a href=\"foo-link\">Foo</a></dt><dd>foo summary</dd>",
         "<dt><a href=\"bar-link\">Bar</a></dt>",
         "<dd><strong>bar summary <i>has html</i></strong></dd>",
-        "<dt><a href=\"baz-link\">Baz</a></dt>",
-        "<dd>No Description.</dd>",
-        "</dl></td></tr></tbody></table>",
-        "</div>"));
+        "<dt><a href=\"baz-link\">Baz</a></dt><dd>No Description.</dd>",
+        "</dl></div>"));
   }
 
   @Test
@@ -687,9 +685,9 @@ public class RendererTest {
     Document document = renderDocument("dossier.soy.fnDetails", "fn", function);
     assertThat(document.body().children().size(), is(1));
     assertThat(document.body().child(0).toString(), isHtml(
-        "<div><table><tbody>",
-        "<tr><th>Parameters</th></tr>",
-        "<tr><td><dl>",
+        "<div><div class=\"fn-details\">",
+        "<div><b>Parameters</b></div>",
+        "<dl>",
         "<dt>a</dt>",
         "<dt>b</dt>",
         "<dd><i>b</i> awesome</dd>",
@@ -698,8 +696,8 @@ public class RendererTest {
         "<dd>goodbye</dd>",
         "<dt></dt>",
         "<dd>who am i</dd>",
-        "</dl></td></tr>",
-        "</tbody></table></div>"));
+        "</dl>",
+        "</div></div>"));
   }
 
   @Test
@@ -717,14 +715,14 @@ public class RendererTest {
     Document document = renderDocument("dossier.soy.fnDetails", "fn", function);
     assertThat(document.body().children().size(), is(1));
     assertThat(document.body().child(0).toString(), isHtml(
-        "<div><table><tbody>",
-        "<tr><th>Throws</th></tr>",
-        "<tr><td><dl>",
+        "<div><div class=\"fn-details\">",
+        "<div><b>Throws</b></div>",
+        "<dl>",
         "<dt>Error</dt>",
         "<dt></dt>",
         "<dd>randomly</dd>",
-        "</dl></td></tr>",
-        "</tbody></table></div>"));
+        "</dl>",
+        "</div></div>"));
   }
 
   @Test
@@ -755,10 +753,10 @@ public class RendererTest {
     Document document = renderDocument("dossier.soy.fnDetails", "fn", function);
     assertThat(document.body().children().size(), is(1));
     assertThat(document.body().child(0).toString(), isHtml(
-        "<div><table><tbody>",
-        "<tr><th>Returns</th></tr>",
-        "<tr><td><p>randomly</p></td></tr>",
-        "</tbody></table></div>"));
+        "<div><div class=\"fn-details\">",
+        "<div><b>Returns</b></div>",
+        "<p>randomly</p>",
+        "</div></div>"));
   }
 
   @Test
@@ -777,10 +775,11 @@ public class RendererTest {
     Document document = renderDocument("dossier.soy.fnDetails", "fn", function);
     assertThat(document.body().children().size(), is(1));
     assertThat(document.body().child(0).toString(), isHtml(
-        "<div><table><tbody>",
-        "<tr><th>Parameters</th></tr>",
-        "<tr><td><dl><dt>a</dt></dl></td></tr>",
-        "</tbody></table></div>"));  }
+        "<div><div class=\"fn-details\">",
+        "<div><b>Parameters</b></div>",
+        "<dl><dt>a</dt></dl>",
+        "</div></div>"));
+  }
 
   @Test
   public void renderFunctionDetails_fullyDefined() {
@@ -816,17 +815,22 @@ public class RendererTest {
     Document document = renderDocument("dossier.soy.fnDetails", "fn", function);
     assertThat(document.body().children().size(), is(1));
     assertThat(document.body().child(0).toString(), isHtml(
-        "<div><table><tbody>",
-        "<tr><th>Parameters</th></tr>",
-        "<tr><td><dl>",
+        "<div>",
+        "<div class=\"fn-details\">",
+        "<div><b>Parameters</b></div>",
+        "<dl>",
         "<dt>a</dt><dt>b</dt><dd><i>b</i> awesome</dd>",
         "<dt>c<code><b>Object</b></code></dt>",
         "<dt>d<code>Error</code></dt><dd>goodbye</dd>",
         "<dt></dt><dd>who am i</dd>",
-        "</dl></td></tr>",
-        "<tr><th>Returns</th></tr><tr><td><p>something</p></td></tr>",
-        "<tr><th>Throws</th></tr><tr><td><dl><dt>Error</dt><dd>randomly</dd></dl></td></tr>",
-        "</tbody></table></div>"));
+        "</dl></div>",
+        "<div class=\"fn-details\">",
+        "<div><b>Returns</b></div>",
+        "<p>something</p></div>",
+        "<div class=\"fn-details\">",
+        "<div><b>Throws</b></div>",
+        "<dl><dt>Error</dt><dd>randomly</dd></dl>",
+        "</div></div>"));
   }
 
   @Test
@@ -851,7 +855,7 @@ public class RendererTest {
     Document document = renderDocument("dossier.soy.mainFunction", "type", type);
     assertThat(document.body().children().size(), is(2));
     assertThat(document.body().child(0).toString(),
-        isHtml("<h2 class=\"main\">new Foo(a, b)</h2>"));
+        isHtml("<h2 class=\"main\">new Foo(<wbr />a, b)</h2>"));
   }
 
   @Test
@@ -872,16 +876,14 @@ public class RendererTest {
     assertThat(querySelector(document, "body").toString(), isHtml(
         "<body>",
         "<h3>",
-        "<a id=\"Bar\"></a>Bar(a)",
+        "<a id=\"Bar\"></a>Bar(<wbr />a)",
         "<span class=\"codelink\"><a href=\"bar.link\">code &raquo;</a></span>",
         "</h3>",
         "<p>description here\n</p>",
         "<p>second paragraph</p>",
         "<p><b>Deprecated: </b>is old</p>",
-        "<div><table><tbody>",
-        "<tr><th>Parameters</th></tr>",
-        "<tr><td><dl><dt>a</dt></dl></td></tr>",
-        "</tbody></table></div>",
+        "<div><div class=\"fn-details\">",
+        "<div><b>Parameters</b></div><dl><dt>a</dt></dl></div></div>",
         "</body>"));
   }
 
