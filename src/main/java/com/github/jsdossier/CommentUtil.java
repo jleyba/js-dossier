@@ -19,6 +19,8 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 
 import com.github.jsdossier.proto.Comment;
 import com.github.jsdossier.proto.TypeLink;
+import com.google.common.escape.CharEscaperBuilder;
+import com.google.common.escape.Escaper;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -78,38 +80,31 @@ public class CommentUtil {
     return parseComment(jsdoc.getBlockComment(), linker);
   }
 
-  private static Comment.Token.Builder newTextToken(String text) {
-    return Comment.Token.newBuilder().setText(text);
-  }
-
-  private static Comment.Token.Builder newHtmlToken(String html) {
-    return Comment.Token.newBuilder().setHtml(html);
-  }
-
   /**
    * Parses the {@code text} of a JSDoc block comment.
    */
   public static Comment parseComment(String text, Linker linker) {
-    Comment.Builder builder = Comment.newBuilder();
     if (isNullOrEmpty(text)) {
-      return builder.build();
+      return Comment.getDefaultInstance();
     }
+
+    StringBuilder builder = new StringBuilder(text.length());
 
     int start = 0;
     while (true) {
       int tagletStart = findInlineTagStart(text, start);
       if (tagletStart == -1) {
         if (start < text.length()) {
-          builder.addToken(newHtmlToken(text.substring(start)));
+          builder.append(text.substring(start));
         }
         break;
       } else if (tagletStart > start) {
-        builder.addToken(newHtmlToken(text.substring(start, tagletStart)));
+        builder.append(text.substring(start, tagletStart));
       }
 
       int tagletEnd = findInlineTagEnd(text, tagletStart + 1);
       if (tagletEnd == -1) {
-        builder.addToken(newHtmlToken(text.substring(start)));
+        builder.append(text.substring(start));
         break;
       }
 
@@ -118,7 +113,7 @@ public class CommentUtil {
       String tagletText = text.substring(tagletStart + tagletPrefix.length(), tagletEnd);
       switch (tagletName) {
         case "code":
-          builder.addToken(newTextToken(tagletText).setIsCode(true));
+          builder.append("<code>").append(HTML_ESCAPER.escape(tagletText)).append("</code>");
           break;
 
         case "link":
@@ -126,26 +121,31 @@ public class CommentUtil {
           LinkInfo info = LinkInfo.fromText(tagletText);
           @Nullable TypeLink link = linker.getLink(info.type);
 
-          Comment.Token.Builder token = newTextToken(info.text)
-              .setIsCode("link".equals(tagletName))
-              .setUnresolvedLink(link == null);
-          if (link != null) {
-            token.setHref(link.getHref());
+          if ("link".equals(tagletName)) {
+            builder.append("<code>");
           }
-          builder.addToken(token);
+          if (link == null) {
+            builder.append(HTML_ESCAPER.escape(info.text));
+          } else {
+            builder.append("<a href=\"").append(link.getHref()).append("\">")
+                .append(HTML_ESCAPER.escape(info.text))
+                .append("</a>");
+          }
+          if ("link".equals(tagletName)) {
+            builder.append("</code>");
+          }
           break;
 
         case "literal":
-          builder.addToken(newTextToken(tagletText).setIsLiteral(true));
-          break;
-
         default:
-          builder.addToken(newTextToken(tagletText));
+          builder.append(HTML_ESCAPER.escape(tagletText));
       }
       start = tagletEnd + 1;
     }
 
-    return builder.build();
+    return Comment.newBuilder()
+        .addToken(Comment.Token.newBuilder().setHtml(builder.toString()))
+        .build();
   }
 
   private static int findInlineTagStart(String text, int start) {
@@ -204,4 +204,12 @@ public class CommentUtil {
       return new LinkInfo(linkedType, linkText);
     }
   }
+
+  private static Escaper HTML_ESCAPER = new CharEscaperBuilder()
+      .addEscape('"', "&quot;")
+      .addEscape('\'', "&#39;")
+      .addEscape('&', "&amp;")
+      .addEscape('<', "&lt;")
+      .addEscape('>', "&gt;")
+      .toEscaper();
 }

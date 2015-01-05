@@ -483,9 +483,7 @@ public class Linker {
       }
 
       if (!currentText.isEmpty()) {
-        comment.addTokenBuilder()
-            .setIsLiteral(true)
-            .setText(currentText);
+        comment.addTokenBuilder().setText(currentText);
         currentText = "";
       }
       return comment.build();
@@ -505,9 +503,7 @@ public class Linker {
 
     private void appendLink(String text, String href) {
       if (!currentText.isEmpty()) {
-        comment.addTokenBuilder()
-            .setIsLiteral(true)
-            .setText(currentText);
+        comment.addTokenBuilder().setText(currentText);
         currentText = "";
       }
       comment.addTokenBuilder().setText(text).setHref(href);

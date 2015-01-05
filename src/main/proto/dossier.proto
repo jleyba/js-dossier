@@ -76,19 +76,8 @@ message Comment {
       string html = 6 [(sanitized).html = true];
     }
 
-    // Whether to render this token as a literal, escaping all
-    // HTML content.
-    optional bool is_literal = 2 [default = false];
-
-    // Whether this token should be rendered using code formatting;
-    // This option implies |is_literal| is true.
-    optional bool is_code = 3 [default = false];
-
     // If set, this token will be rendered as a hyperlink.
     optional string href = 4 [(sanitized).uri = true];
-
-    // Whether this token represents a linked type that could not be resolved.
-    optional bool unresolved_link = 5 [default = false];
   }
 
   // The tokens that comprise this comment.

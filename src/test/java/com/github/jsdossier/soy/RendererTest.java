@@ -859,6 +859,31 @@ public class RendererTest {
   }
 
   @Test
+  public void renderFunction_tagletsInDescription() {
+    Function function = Function.newBuilder()
+        .setBase(BaseProperty.newBuilder()
+            .setName("foo.Bar")
+            .setSource(SourceLink.newBuilder().setPath(""))
+            .setDescription(parseComment(Joiner.on("\n").join(
+                "First paragraph.",
+                "<ul><li>bullet {@code with code}</li>",
+                "<li>another bullet</ul>"))))
+        .build();
+
+    ImmutableMap<String, ?> data = ImmutableMap.of("fn", function);
+
+    Document document = renderDocument("dossier.soy.printFunction", data);
+    assertThat(querySelector(document, "body").toString(), isHtml(
+        "<body>",
+        "<h3><a id=\"foo.Bar\"></a>foo.Bar()</h3>",
+        "<p>First paragraph.\n</p>",
+        "<ul><li>bullet <code>with code</code></li>",
+        "<li>another bullet</li>",
+        "</ul>",
+        "</body>"));
+  }
+
+  @Test
   public void renderDeprecatedFunctionProperty() {
     Function function = Function.newBuilder()
         .setBase(BaseProperty.newBuilder()
@@ -960,7 +985,7 @@ public class RendererTest {
     Document document = renderDocument("dossier.soy.comment", "comment", comment);
     assertThat(document.body().toString(), isHtml(
         "<body><p>",
-        "An <code><a class=\"unresolved-link\">unknown</a></code>",
+        "An <code>unknown</code>",
         " type</p></body>"));
   }
 

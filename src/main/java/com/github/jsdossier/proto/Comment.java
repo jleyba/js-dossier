@@ -167,44 +167,6 @@ public final class Comment extends
         getHtmlBytes();
 
     /**
-     * <code>optional bool is_literal = 2 [default = false];</code>
-     *
-     * <pre>
-     * Whether to render this token as a literal, escaping all
-     * HTML content.
-     * </pre>
-     */
-    boolean hasIsLiteral();
-    /**
-     * <code>optional bool is_literal = 2 [default = false];</code>
-     *
-     * <pre>
-     * Whether to render this token as a literal, escaping all
-     * HTML content.
-     * </pre>
-     */
-    boolean getIsLiteral();
-
-    /**
-     * <code>optional bool is_code = 3 [default = false];</code>
-     *
-     * <pre>
-     * Whether this token should be rendered using code formatting;
-     * This option implies |is_literal| is true.
-     * </pre>
-     */
-    boolean hasIsCode();
-    /**
-     * <code>optional bool is_code = 3 [default = false];</code>
-     *
-     * <pre>
-     * Whether this token should be rendered using code formatting;
-     * This option implies |is_literal| is true.
-     * </pre>
-     */
-    boolean getIsCode();
-
-    /**
      * <code>optional string href = 4;</code>
      *
      * <pre>
@@ -229,23 +191,6 @@ public final class Comment extends
      */
     com.google.protobuf.ByteString
         getHrefBytes();
-
-    /**
-     * <code>optional bool unresolved_link = 5 [default = false];</code>
-     *
-     * <pre>
-     * Whether this token represents a linked type that could not be resolved.
-     * </pre>
-     */
-    boolean hasUnresolvedLink();
-    /**
-     * <code>optional bool unresolved_link = 5 [default = false];</code>
-     *
-     * <pre>
-     * Whether this token represents a linked type that could not be resolved.
-     * </pre>
-     */
-    boolean getUnresolvedLink();
   }
   /**
    * Protobuf type {@code dossier.Comment.Token}
@@ -305,25 +250,10 @@ public final class Comment extends
               content_ = bs;
               break;
             }
-            case 16: {
-              bitField0_ |= 0x00000004;
-              isLiteral_ = input.readBool();
-              break;
-            }
-            case 24: {
-              bitField0_ |= 0x00000008;
-              isCode_ = input.readBool();
-              break;
-            }
             case 34: {
               com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00000010;
+              bitField0_ |= 0x00000004;
               href_ = bs;
-              break;
-            }
-            case 40: {
-              bitField0_ |= 0x00000020;
-              unresolvedLink_ = input.readBool();
               break;
             }
             case 50: {
@@ -525,56 +455,6 @@ public final class Comment extends
       }
     }
 
-    public static final int IS_LITERAL_FIELD_NUMBER = 2;
-    private boolean isLiteral_;
-    /**
-     * <code>optional bool is_literal = 2 [default = false];</code>
-     *
-     * <pre>
-     * Whether to render this token as a literal, escaping all
-     * HTML content.
-     * </pre>
-     */
-    public boolean hasIsLiteral() {
-      return ((bitField0_ & 0x00000004) == 0x00000004);
-    }
-    /**
-     * <code>optional bool is_literal = 2 [default = false];</code>
-     *
-     * <pre>
-     * Whether to render this token as a literal, escaping all
-     * HTML content.
-     * </pre>
-     */
-    public boolean getIsLiteral() {
-      return isLiteral_;
-    }
-
-    public static final int IS_CODE_FIELD_NUMBER = 3;
-    private boolean isCode_;
-    /**
-     * <code>optional bool is_code = 3 [default = false];</code>
-     *
-     * <pre>
-     * Whether this token should be rendered using code formatting;
-     * This option implies |is_literal| is true.
-     * </pre>
-     */
-    public boolean hasIsCode() {
-      return ((bitField0_ & 0x00000008) == 0x00000008);
-    }
-    /**
-     * <code>optional bool is_code = 3 [default = false];</code>
-     *
-     * <pre>
-     * Whether this token should be rendered using code formatting;
-     * This option implies |is_literal| is true.
-     * </pre>
-     */
-    public boolean getIsCode() {
-      return isCode_;
-    }
-
     public static final int HREF_FIELD_NUMBER = 4;
     private java.lang.Object href_;
     /**
@@ -585,7 +465,7 @@ public final class Comment extends
      * </pre>
      */
     public boolean hasHref() {
-      return ((bitField0_ & 0x00000010) == 0x00000010);
+      return ((bitField0_ & 0x00000004) == 0x00000004);
     }
     /**
      * <code>optional string href = 4;</code>
@@ -629,34 +509,8 @@ public final class Comment extends
       }
     }
 
-    public static final int UNRESOLVED_LINK_FIELD_NUMBER = 5;
-    private boolean unresolvedLink_;
-    /**
-     * <code>optional bool unresolved_link = 5 [default = false];</code>
-     *
-     * <pre>
-     * Whether this token represents a linked type that could not be resolved.
-     * </pre>
-     */
-    public boolean hasUnresolvedLink() {
-      return ((bitField0_ & 0x00000020) == 0x00000020);
-    }
-    /**
-     * <code>optional bool unresolved_link = 5 [default = false];</code>
-     *
-     * <pre>
-     * Whether this token represents a linked type that could not be resolved.
-     * </pre>
-     */
-    public boolean getUnresolvedLink() {
-      return unresolvedLink_;
-    }
-
     private void initFields() {
-      isLiteral_ = false;
-      isCode_ = false;
       href_ = "";
-      unresolvedLink_ = false;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -675,16 +529,7 @@ public final class Comment extends
         output.writeBytes(1, getTextBytes());
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        output.writeBool(2, isLiteral_);
-      }
-      if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        output.writeBool(3, isCode_);
-      }
-      if (((bitField0_ & 0x00000010) == 0x00000010)) {
         output.writeBytes(4, getHrefBytes());
-      }
-      if (((bitField0_ & 0x00000020) == 0x00000020)) {
-        output.writeBool(5, unresolvedLink_);
       }
       if (contentCase_ == 6) {
         output.writeBytes(6, getHtmlBytes());
@@ -704,19 +549,7 @@ public final class Comment extends
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(2, isLiteral_);
-      }
-      if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(3, isCode_);
-      }
-      if (((bitField0_ & 0x00000010) == 0x00000010)) {
-        size += com.google.protobuf.CodedOutputStream
           .computeBytesSize(4, getHrefBytes());
-      }
-      if (((bitField0_ & 0x00000020) == 0x00000020)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(5, unresolvedLink_);
       }
       if (contentCase_ == 6) {
         size += com.google.protobuf.CodedOutputStream
@@ -839,14 +672,8 @@ public final class Comment extends
 
       public Builder clear() {
         super.clear();
-        isLiteral_ = false;
-        bitField0_ = (bitField0_ & ~0x00000004);
-        isCode_ = false;
-        bitField0_ = (bitField0_ & ~0x00000008);
         href_ = "";
-        bitField0_ = (bitField0_ & ~0x00000010);
-        unresolvedLink_ = false;
-        bitField0_ = (bitField0_ & ~0x00000020);
+        bitField0_ = (bitField0_ & ~0x00000004);
         contentCase_ = 0;
         content_ = null;
         return this;
@@ -886,19 +713,7 @@ public final class Comment extends
         if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
           to_bitField0_ |= 0x00000004;
         }
-        result.isLiteral_ = isLiteral_;
-        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
-          to_bitField0_ |= 0x00000008;
-        }
-        result.isCode_ = isCode_;
-        if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
-          to_bitField0_ |= 0x00000010;
-        }
         result.href_ = href_;
-        if (((from_bitField0_ & 0x00000020) == 0x00000020)) {
-          to_bitField0_ |= 0x00000020;
-        }
-        result.unresolvedLink_ = unresolvedLink_;
         result.bitField0_ = to_bitField0_;
         result.contentCase_ = contentCase_;
         onBuilt();
@@ -916,19 +731,10 @@ public final class Comment extends
 
       public Builder mergeFrom(com.github.jsdossier.proto.Comment.Token other) {
         if (other == com.github.jsdossier.proto.Comment.Token.getDefaultInstance()) return this;
-        if (other.hasIsLiteral()) {
-          setIsLiteral(other.getIsLiteral());
-        }
-        if (other.hasIsCode()) {
-          setIsCode(other.getIsCode());
-        }
         if (other.hasHref()) {
-          bitField0_ |= 0x00000010;
+          bitField0_ |= 0x00000004;
           href_ = other.href_;
           onChanged();
-        }
-        if (other.hasUnresolvedLink()) {
-          setUnresolvedLink(other.getUnresolvedLink());
         }
         switch (other.getContentCase()) {
           case TEXT: {
@@ -1211,110 +1017,6 @@ public final class Comment extends
         return this;
       }
 
-      private boolean isLiteral_ ;
-      /**
-       * <code>optional bool is_literal = 2 [default = false];</code>
-       *
-       * <pre>
-       * Whether to render this token as a literal, escaping all
-       * HTML content.
-       * </pre>
-       */
-      public boolean hasIsLiteral() {
-        return ((bitField0_ & 0x00000004) == 0x00000004);
-      }
-      /**
-       * <code>optional bool is_literal = 2 [default = false];</code>
-       *
-       * <pre>
-       * Whether to render this token as a literal, escaping all
-       * HTML content.
-       * </pre>
-       */
-      public boolean getIsLiteral() {
-        return isLiteral_;
-      }
-      /**
-       * <code>optional bool is_literal = 2 [default = false];</code>
-       *
-       * <pre>
-       * Whether to render this token as a literal, escaping all
-       * HTML content.
-       * </pre>
-       */
-      public Builder setIsLiteral(boolean value) {
-        bitField0_ |= 0x00000004;
-        isLiteral_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional bool is_literal = 2 [default = false];</code>
-       *
-       * <pre>
-       * Whether to render this token as a literal, escaping all
-       * HTML content.
-       * </pre>
-       */
-      public Builder clearIsLiteral() {
-        bitField0_ = (bitField0_ & ~0x00000004);
-        isLiteral_ = false;
-        onChanged();
-        return this;
-      }
-
-      private boolean isCode_ ;
-      /**
-       * <code>optional bool is_code = 3 [default = false];</code>
-       *
-       * <pre>
-       * Whether this token should be rendered using code formatting;
-       * This option implies |is_literal| is true.
-       * </pre>
-       */
-      public boolean hasIsCode() {
-        return ((bitField0_ & 0x00000008) == 0x00000008);
-      }
-      /**
-       * <code>optional bool is_code = 3 [default = false];</code>
-       *
-       * <pre>
-       * Whether this token should be rendered using code formatting;
-       * This option implies |is_literal| is true.
-       * </pre>
-       */
-      public boolean getIsCode() {
-        return isCode_;
-      }
-      /**
-       * <code>optional bool is_code = 3 [default = false];</code>
-       *
-       * <pre>
-       * Whether this token should be rendered using code formatting;
-       * This option implies |is_literal| is true.
-       * </pre>
-       */
-      public Builder setIsCode(boolean value) {
-        bitField0_ |= 0x00000008;
-        isCode_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional bool is_code = 3 [default = false];</code>
-       *
-       * <pre>
-       * Whether this token should be rendered using code formatting;
-       * This option implies |is_literal| is true.
-       * </pre>
-       */
-      public Builder clearIsCode() {
-        bitField0_ = (bitField0_ & ~0x00000008);
-        isCode_ = false;
-        onChanged();
-        return this;
-      }
-
       private java.lang.Object href_ = "";
       /**
        * <code>optional string href = 4;</code>
@@ -1324,7 +1026,7 @@ public final class Comment extends
        * </pre>
        */
       public boolean hasHref() {
-        return ((bitField0_ & 0x00000010) == 0x00000010);
+        return ((bitField0_ & 0x00000004) == 0x00000004);
       }
       /**
        * <code>optional string href = 4;</code>
@@ -1379,7 +1081,7 @@ public final class Comment extends
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000010;
+  bitField0_ |= 0x00000004;
         href_ = value;
         onChanged();
         return this;
@@ -1392,7 +1094,7 @@ public final class Comment extends
        * </pre>
        */
       public Builder clearHref() {
-        bitField0_ = (bitField0_ & ~0x00000010);
+        bitField0_ = (bitField0_ & ~0x00000004);
         href_ = getDefaultInstance().getHref();
         onChanged();
         return this;
@@ -1409,56 +1111,8 @@ public final class Comment extends
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000010;
+  bitField0_ |= 0x00000004;
         href_ = value;
-        onChanged();
-        return this;
-      }
-
-      private boolean unresolvedLink_ ;
-      /**
-       * <code>optional bool unresolved_link = 5 [default = false];</code>
-       *
-       * <pre>
-       * Whether this token represents a linked type that could not be resolved.
-       * </pre>
-       */
-      public boolean hasUnresolvedLink() {
-        return ((bitField0_ & 0x00000020) == 0x00000020);
-      }
-      /**
-       * <code>optional bool unresolved_link = 5 [default = false];</code>
-       *
-       * <pre>
-       * Whether this token represents a linked type that could not be resolved.
-       * </pre>
-       */
-      public boolean getUnresolvedLink() {
-        return unresolvedLink_;
-      }
-      /**
-       * <code>optional bool unresolved_link = 5 [default = false];</code>
-       *
-       * <pre>
-       * Whether this token represents a linked type that could not be resolved.
-       * </pre>
-       */
-      public Builder setUnresolvedLink(boolean value) {
-        bitField0_ |= 0x00000020;
-        unresolvedLink_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional bool unresolved_link = 5 [default = false];</code>
-       *
-       * <pre>
-       * Whether this token represents a linked type that could not be resolved.
-       * </pre>
-       */
-      public Builder clearUnresolvedLink() {
-        bitField0_ = (bitField0_ & ~0x00000020);
-        unresolvedLink_ = false;
         onChanged();
         return this;
       }

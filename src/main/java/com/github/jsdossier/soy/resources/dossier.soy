@@ -100,16 +100,10 @@
   {if $comment and length($comment.token)}
     {if not $omitLeadingTag}<p>{/if}
     {foreach $token in $comment.token}
-      {if $token.isCode}<code>{/if}
-      {if $token.href}
-        <a href="{$token.href}">
-      {elseif $token.unresolvedLink}
-        <a class="unresolved-link">
-      {/if}
+      {if $token.href}<a href="{$token.href}">{/if}
       {if $token.text}{$token.text}{/if}
       {if $token.html}{$token.html}{/if}
-      {if $token.unresolvedLink or $token.href}</a>{/if}
-      {if $token.isCode}</code>{/if}
+      {if $token.href}</a>{/if}
     {/foreach}
   {/if}
 {/template}

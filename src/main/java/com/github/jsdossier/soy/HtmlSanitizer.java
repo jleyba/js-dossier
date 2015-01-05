@@ -23,11 +23,12 @@ final class HtmlSanitizer {
           "ul", "ol", "li", "dd", "dt", "dl",
           "tbody", "thead", "tfoot", "table", "td", "th", "tr", "colgroup")
       .allowAttributes("title").matching(HTML_TITLE).globally()
+      .allowStandardUrlProtocols().allowElements("a")
+      .allowAttributes("href").onElements("a")
       .toFactory()
       .and(Sanitizers.BLOCKS)
       .and(Sanitizers.FORMATTING)
-      .and(Sanitizers.IMAGES)
-      .and(Sanitizers.LINKS);
+      .and(Sanitizers.IMAGES);
 
   private static final Logger log = Logger.getLogger(HtmlSanitizer.class.getName());
 
