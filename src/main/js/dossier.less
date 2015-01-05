@@ -55,8 +55,6 @@ article {
 
   table {
     .code-block();
-    border-collapse: collapse;
-    border-spacing: 0;
     font-family: monospace;
     font-size: 1.2rem;
     white-space: pre;
@@ -67,11 +65,17 @@ article {
 
   td {
     padding: 0 .8rem;
+    border: 0;
   }
 
   td:first-child {
     text-align: right;
     padding-left: .8rem;
+  }
+
+  tr {
+    background: initial;
+    border: 0;
   }
 
   tr:first-child td {

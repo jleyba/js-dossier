@@ -29,6 +29,9 @@ dt>code{font-weight:normal;color:#66f;margin-left:.5rem}
 dd{margin:0 0 0 3rem}
 ol,ul{margin:1rem 0 1rem 4rem}
 blockquote{margin:1rem 3rem}
+table{border-collapse:collapse;border-spacing:0}table caption{font-style:italic}
+table tr{background:#fff;border-top:1px solid #ccc}table tr:nth-child(2n){background:#f7f7f7}
+th,td{padding:.6rem 1.3rem;border:1px solid #ddd}
 .parentlink{float:left}
 .codelink a{float:right}
 .codelink:after{clear:both;content:"";display:table}
@@ -56,9 +59,10 @@ main,div.pre-footer>div{background:#fff}
 main:after{clear:both;content:"";display:table}
 article{margin-top:2.5rem;padding:3rem}article.indexfile>h1,article.srcfile>h1{margin-top:0;white-space:nowrap;text-overflow:ellipsis;overflow:hidden}article.indexfile>h1:hover,article.srcfile>h1:hover{overflow:visible}
 .srcfile div{width:100%;overflow:auto}
-.srcfile table{background:#f7f7f7;border-radius:3px;border-left:.2rem solid #ababab;line-height:1.45;word-wrap:normal;border-collapse:collapse;border-spacing:0;font-family:monospace;font-size:1.2rem;white-space:pre;margin:1rem 0;width:100%}
-.srcfile td{padding:0 .8rem}
+.srcfile table{background:#f7f7f7;border-radius:3px;border-left:.2rem solid #ababab;line-height:1.45;word-wrap:normal;font-family:monospace;font-size:1.2rem;white-space:pre;margin:1rem 0;width:100%}
+.srcfile td{padding:0 .8rem;border:0}
 .srcfile td:first-child{text-align:right;padding-left:.8rem}
+.srcfile tr{background:initial;border:0}
 .srcfile tr:first-child td{padding-top:1rem}
 .srcfile tr:last-child td{padding-bottom:1rem}
 .srcfile :target+a{font-weight:bold}

@@ -12,6 +12,10 @@ import java.util.regex.Pattern;
 final class HtmlSanitizer {
   private static final Pattern HTML_TITLE = Pattern.compile(
       "[\\p{L}\\p{N}\\s\\-_',:\\[\\]!\\./\\\\\\(\\)&]*");
+  private static final Pattern NUMBER = Pattern.compile("[0-9]+");
+  private static final Pattern NUMBER_OR_PERCENT = Pattern.compile("[0-9]+%?");
+  private static final Pattern ALIGN = Pattern.compile("(?i)center|left|right|justify|char");
+  private static final Pattern VALIGN = Pattern.compile("(?i)baseline|bottom|middle|top");
 
   private static final PolicyFactory HTML_POLICY = new HtmlPolicyBuilder()
       .allowElements(
@@ -21,10 +25,26 @@ final class HtmlSanitizer {
           "cite", "samp", "sub", "sup", "strike", "center", "blockquote",
           "hr", "br", "col", "font", "map", "span", "div", "img",
           "ul", "ol", "li", "dd", "dt", "dl",
-          "tbody", "thead", "tfoot", "table", "td", "th", "tr", "colgroup")
+          "tbody", "thead", "tfoot", "table", "td", "th", "tr", "colgroup", "caption")
       .allowAttributes("title").matching(HTML_TITLE).globally()
       .allowStandardUrlProtocols().allowElements("a")
+      .allowAttributes("lang").matching(Pattern.compile("[a-zA-Z]{2,20}")).globally()
       .allowAttributes("href").onElements("a")
+      .allowAttributes("border", "cellpadding", "cellspacing").matching(NUMBER).onElements("table")
+      .allowAttributes("colspan").matching(NUMBER).onElements("td", "th")
+      .allowAttributes("nowrap").onElements("td", "th")
+      .allowAttributes("height", "width").matching(NUMBER_OR_PERCENT)
+          .onElements("table", "td", "th", "tr", "img")
+      .allowAttributes("align").matching(ALIGN)
+          .onElements("thead", "tbody", "tfoot", "img", "td", "th", "tr", "colgroup", "col")
+      .allowAttributes("valign").matching(VALIGN)
+          .onElements("thead", "tbody", "tfoot", "td", "th", "tr", "colgroup", "col")
+      .allowAttributes("charoff").matching(NUMBER_OR_PERCENT)
+          .onElements("td", "th", "tr", "colgroup", "col", "thead", "tbody", "tfoot")
+      .allowAttributes("colspan", "rowspan").matching(NUMBER)
+          .onElements("td", "th")
+      .allowAttributes("span", "width").matching(NUMBER_OR_PERCENT)
+          .onElements("colgroup", "col")
       .toFactory()
       .and(Sanitizers.BLOCKS)
       .and(Sanitizers.FORMATTING)

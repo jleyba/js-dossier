@@ -233,6 +233,29 @@ blockquote {
   margin: 1rem 3rem;
 }
 
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+
+  caption {
+    font-style: italic;
+  }
+
+  tr {
+    background: #fff;
+    border-top: 1px solid #ccc;
+
+    &:nth-child(2n) {
+      background: @code_bg;
+    }
+  }
+}
+
+th, td {
+  padding: .6rem 1.3rem;
+  border: 1px solid #ddd;
+}
+
 .parentlink { float: left; }
 
 .codelink {

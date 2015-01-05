@@ -120,3 +120,21 @@ GlobalEnum.doSomething = function() {
  * @enum {!(string|number|{age: ?number})}
  */
 var UndefinedEnum;
+
+
+/**
+ * <table>
+ * <caption>This is the table caption</caption>
+ * <thead>
+ * <tr><th>Fruit</th><th>Color</th></tr>
+ * </thead>
+ * <tbody>
+ * <tr><td>Apple</td><td>Red</td></tr>
+ * <tr><td>Apple</td><td>Green</td></tr>
+ * <tr><td colspan="2">Orange</td></tr>
+ * </tbody>
+ * </table>
+ * @constructor
+ */
+function SomeCtor() {
+}
