@@ -41,7 +41,6 @@
   background: @code_bg;
   border-radius: 3px;
   border-left: .2rem solid darken(@code_bg, 30%);
-  overflow: auto;
   line-height: 1.45;
   word-wrap: normal;
 }
@@ -147,14 +146,15 @@ pre, code {
 
 pre {
   .code-block();
+  margin: 1rem 3rem;
   padding: 1rem;
-  margin: 1rem 0;
+  overflow: auto;
 
   &.inheritance {
     border: 0;
     background: initial;
     padding: 0;
-    margin-top: .5rem;
+    margin: .5rem 0 1rem 0;
 
     h1 + & {
       margin-top: -1rem;
@@ -166,7 +166,8 @@ p {
   margin: 0 0 1rem 0;
 }
 
-p code {
+p code,
+li code {
   background: @code_bg;
   padding: 3px;
   border-radius: 3px;
@@ -223,6 +224,7 @@ dd {
   margin: 0 0 0 3rem;
 }
 
+ol,
 ul {
   margin: 1rem 0 1rem 4rem;
 }
