@@ -94,8 +94,7 @@ a {
 }
 
 h1, h2, h3, h4, h5, h6 {
-  margin-top: 1.5rem;
-  margin-bottom: 1.5rem;
+  margin: 1.5rem 0;
 }
 
 h1, h2, h3 {
@@ -119,8 +118,11 @@ h2 {
 
 h3 {
   .set-font-size(1.8rem);
-
   border: 0;
+
+  & + .tags {
+    margin-top: -1.5rem;
+  }
 
   .codelink {
     font-size: 1.4rem;

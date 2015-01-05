@@ -4,13 +4,14 @@ html{font-size:10px;min-height:100%;position:relative}
 body{color:#333;font-family:"Roboto",sans-serif;line-height:1.6;word-wrap:break-word;margin:0 0 4rem;padding:0;background:#f7f7f7;font-size:1.4rem}body a[id]{padding-top:6.4rem;margin-top:-6.4rem;display:inline-block}
 a,a:visited{color:#66f;text-decoration:none}
 a[href]:hover{text-decoration:underline}
-h1,h2,h3,h4,h5,h6{margin-top:1.5rem;margin-bottom:1.5rem}
+h1,h2,h3,h4,h5,h6{margin:1.5rem 0}
 h1,h2,h3{border-bottom:1px solid #8f8f8f}
 h1{font-size:2.5rem}h1 a[id]{padding-top:7.5rem;margin-top:-7.5rem;display:inline-block}
 h1+.tags{margin-top:-1rem}
 h2{font-size:2.2rem}h2 a[id]{padding-top:7.2rem;margin-top:-7.2rem;display:inline-block}
 h2.main{border:0}
 h3{font-size:1.8rem;border:0}h3 a[id]{padding-top:6.8rem;margin-top:-6.8rem;display:inline-block}
+h3+.tags{margin-top:-1.5rem}
 h3 .codelink{font-size:1.4rem;font-weight:normal;display:inline}h3 .codelink:after{clear:none;display:none}
 h3 code{font-size:75%}
 h4{font-size:1.6rem}h4 a[id]{padding-top:6.6rem;margin-top:-6.6rem;display:inline-block}
