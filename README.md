@@ -81,12 +81,12 @@ Where `config.json` is a configuration file with the options listed below.
     compiler. These  files are used to satisfy references to external types,
     but are excluded when generating  API documentation.
 
- * `license` Path to a license file to include with the generated
-    documentation. If specified, a link to the license will be included on
-    every page.
-
  * `readme` Path to a README file to include as the main landing page for the
     generated documentation. This file should use markdown syntax.
+
+ * `customPages` Map of additional files to include in the generated
+    documentation. Each key should be the page name listed in the navigation
+    menu, and the value is the path to the markdown file to use.
 
  * `strict` Whether to run with all type checking flags enabled.
 
