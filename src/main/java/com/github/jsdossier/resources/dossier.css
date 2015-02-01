@@ -53,7 +53,7 @@ label[for="nav-types"],label[for="nav-modules"]{-webkit-touch-callout:none;-webk
 nav{font-size:1.1rem;margin:0 0 3rem 1rem}nav ul{margin:0 0 0 1rem;padding:0}
 nav li{list-style:none;padding-left:1em;text-indent:-1em;word-wrap:initial;overflow:hidden;text-overflow:ellipsis}
 nav h3{font-size:2rem;border:0;border-top:1px solid #8f8f8f;margin-top:1.2rem}nav h3:before{content:'\2335';display:inline-block;margin-right:1rem}
-nav h3:first-child:before{-ms-transform:rotate(-90deg);-webkit-transform:rotate(-90deg);transform:rotate(-90deg)}
+nav h3:before{-ms-transform:rotate(-90deg);-webkit-transform:rotate(-90deg);transform:rotate(-90deg)}
 nav h3 a,nav h3 a:visited{color:#424242}
 nav>h3:first-child{border-top:0;margin-top:0}nav>h3:first-child:before{transform:rotate(-90deg)}
 main,div.pre-footer>div{background:#fff}

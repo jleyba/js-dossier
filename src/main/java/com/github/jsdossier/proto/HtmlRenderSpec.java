@@ -4,29 +4,29 @@
 package com.github.jsdossier.proto;
 
 /**
- * Protobuf type {@code dossier.IndexFileRenderSpec}
+ * Protobuf type {@code dossier.HtmlRenderSpec}
  *
  * <pre>
- * Describes how to render the main index.
+ * Describes how to render a generic HTML page.
  * </pre>
  */
-public final class IndexFileRenderSpec extends
+public final class HtmlRenderSpec extends
     com.google.protobuf.GeneratedMessage implements
-    // @@protoc_insertion_point(message_implements:dossier.IndexFileRenderSpec)
-    IndexFileRenderSpecOrBuilder {
-  // Use IndexFileRenderSpec.newBuilder() to construct.
-  private IndexFileRenderSpec(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+    // @@protoc_insertion_point(message_implements:dossier.HtmlRenderSpec)
+    HtmlRenderSpecOrBuilder {
+  // Use HtmlRenderSpec.newBuilder() to construct.
+  private HtmlRenderSpec(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
     super(builder);
     this.unknownFields = builder.getUnknownFields();
   }
-  private IndexFileRenderSpec(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+  private HtmlRenderSpec(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
 
-  private static final IndexFileRenderSpec defaultInstance;
-  public static IndexFileRenderSpec getDefaultInstance() {
+  private static final HtmlRenderSpec defaultInstance;
+  public static HtmlRenderSpec getDefaultInstance() {
     return defaultInstance;
   }
 
-  public IndexFileRenderSpec getDefaultInstanceForType() {
+  public HtmlRenderSpec getDefaultInstanceForType() {
     return defaultInstance;
   }
 
@@ -36,7 +36,7 @@ public final class IndexFileRenderSpec extends
       getUnknownFields() {
     return this.unknownFields;
   }
-  private IndexFileRenderSpec(
+  private HtmlRenderSpec(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
@@ -73,21 +73,27 @@ public final class IndexFileRenderSpec extends
             break;
           }
           case 18: {
-            com.github.jsdossier.proto.Comment.Builder subBuilder = null;
-            if (((bitField0_ & 0x00000002) == 0x00000002)) {
-              subBuilder = readme_.toBuilder();
-            }
-            readme_ = input.readMessage(com.github.jsdossier.proto.Comment.PARSER, extensionRegistry);
-            if (subBuilder != null) {
-              subBuilder.mergeFrom(readme_);
-              readme_ = subBuilder.buildPartial();
-            }
+            com.google.protobuf.ByteString bs = input.readBytes();
             bitField0_ |= 0x00000002;
+            title_ = bs;
             break;
           }
           case 26: {
-            com.github.jsdossier.proto.Index.Builder subBuilder = null;
+            com.github.jsdossier.proto.Comment.Builder subBuilder = null;
             if (((bitField0_ & 0x00000004) == 0x00000004)) {
+              subBuilder = content_.toBuilder();
+            }
+            content_ = input.readMessage(com.github.jsdossier.proto.Comment.PARSER, extensionRegistry);
+            if (subBuilder != null) {
+              subBuilder.mergeFrom(content_);
+              content_ = subBuilder.buildPartial();
+            }
+            bitField0_ |= 0x00000004;
+            break;
+          }
+          case 34: {
+            com.github.jsdossier.proto.Index.Builder subBuilder = null;
+            if (((bitField0_ & 0x00000008) == 0x00000008)) {
               subBuilder = index_.toBuilder();
             }
             index_ = input.readMessage(com.github.jsdossier.proto.Index.PARSER, extensionRegistry);
@@ -95,7 +101,7 @@ public final class IndexFileRenderSpec extends
               subBuilder.mergeFrom(index_);
               index_ = subBuilder.buildPartial();
             }
-            bitField0_ |= 0x00000004;
+            bitField0_ |= 0x00000008;
             break;
           }
         }
@@ -112,28 +118,28 @@ public final class IndexFileRenderSpec extends
   }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return com.github.jsdossier.proto.Dossier.internal_static_dossier_IndexFileRenderSpec_descriptor;
+    return com.github.jsdossier.proto.Dossier.internal_static_dossier_HtmlRenderSpec_descriptor;
   }
 
   protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return com.github.jsdossier.proto.Dossier.internal_static_dossier_IndexFileRenderSpec_fieldAccessorTable
+    return com.github.jsdossier.proto.Dossier.internal_static_dossier_HtmlRenderSpec_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
-            com.github.jsdossier.proto.IndexFileRenderSpec.class, com.github.jsdossier.proto.IndexFileRenderSpec.Builder.class);
+            com.github.jsdossier.proto.HtmlRenderSpec.class, com.github.jsdossier.proto.HtmlRenderSpec.Builder.class);
   }
 
-  public static com.google.protobuf.Parser<IndexFileRenderSpec> PARSER =
-      new com.google.protobuf.AbstractParser<IndexFileRenderSpec>() {
-    public IndexFileRenderSpec parsePartialFrom(
+  public static com.google.protobuf.Parser<HtmlRenderSpec> PARSER =
+      new com.google.protobuf.AbstractParser<HtmlRenderSpec>() {
+    public HtmlRenderSpec parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return new IndexFileRenderSpec(input, extensionRegistry);
+      return new HtmlRenderSpec(input, extensionRegistry);
     }
   };
 
   @java.lang.Override
-  public com.google.protobuf.Parser<IndexFileRenderSpec> getParserForType() {
+  public com.google.protobuf.Parser<HtmlRenderSpec> getParserForType() {
     return PARSER;
   }
 
@@ -171,53 +177,107 @@ public final class IndexFileRenderSpec extends
     return resources_;
   }
 
-  public static final int README_FIELD_NUMBER = 2;
-  private com.github.jsdossier.proto.Comment readme_;
+  public static final int TITLE_FIELD_NUMBER = 2;
+  private java.lang.Object title_;
   /**
-   * <code>optional .dossier.Comment readme = 2;</code>
+   * <code>required string title = 2;</code>
    *
    * <pre>
-   * The readme to display on the main page, if any.
+   * The page title.
    * </pre>
    */
-  public boolean hasReadme() {
+  public boolean hasTitle() {
     return ((bitField0_ & 0x00000002) == 0x00000002);
   }
   /**
-   * <code>optional .dossier.Comment readme = 2;</code>
+   * <code>required string title = 2;</code>
    *
    * <pre>
-   * The readme to display on the main page, if any.
+   * The page title.
    * </pre>
    */
-  public com.github.jsdossier.proto.Comment getReadme() {
-    return readme_;
+  public java.lang.String getTitle() {
+    java.lang.Object ref = title_;
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
+    } else {
+      com.google.protobuf.ByteString bs = 
+          (com.google.protobuf.ByteString) ref;
+      java.lang.String s = bs.toStringUtf8();
+      if (bs.isValidUtf8()) {
+        title_ = s;
+      }
+      return s;
+    }
   }
   /**
-   * <code>optional .dossier.Comment readme = 2;</code>
+   * <code>required string title = 2;</code>
    *
    * <pre>
-   * The readme to display on the main page, if any.
+   * The page title.
    * </pre>
    */
-  public com.github.jsdossier.proto.CommentOrBuilder getReadmeOrBuilder() {
-    return readme_;
+  public com.google.protobuf.ByteString
+      getTitleBytes() {
+    java.lang.Object ref = title_;
+    if (ref instanceof java.lang.String) {
+      com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString.copyFromUtf8(
+              (java.lang.String) ref);
+      title_ = b;
+      return b;
+    } else {
+      return (com.google.protobuf.ByteString) ref;
+    }
   }
 
-  public static final int INDEX_FIELD_NUMBER = 3;
+  public static final int CONTENT_FIELD_NUMBER = 3;
+  private com.github.jsdossier.proto.Comment content_;
+  /**
+   * <code>optional .dossier.Comment content = 3;</code>
+   *
+   * <pre>
+   * The page content, if any.
+   * </pre>
+   */
+  public boolean hasContent() {
+    return ((bitField0_ & 0x00000004) == 0x00000004);
+  }
+  /**
+   * <code>optional .dossier.Comment content = 3;</code>
+   *
+   * <pre>
+   * The page content, if any.
+   * </pre>
+   */
+  public com.github.jsdossier.proto.Comment getContent() {
+    return content_;
+  }
+  /**
+   * <code>optional .dossier.Comment content = 3;</code>
+   *
+   * <pre>
+   * The page content, if any.
+   * </pre>
+   */
+  public com.github.jsdossier.proto.CommentOrBuilder getContentOrBuilder() {
+    return content_;
+  }
+
+  public static final int INDEX_FIELD_NUMBER = 4;
   private com.github.jsdossier.proto.Index index_;
   /**
-   * <code>required .dossier.Index index = 3;</code>
+   * <code>required .dossier.Index index = 4;</code>
    *
    * <pre>
    * Navigation index.
    * </pre>
    */
   public boolean hasIndex() {
-    return ((bitField0_ & 0x00000004) == 0x00000004);
+    return ((bitField0_ & 0x00000008) == 0x00000008);
   }
   /**
-   * <code>required .dossier.Index index = 3;</code>
+   * <code>required .dossier.Index index = 4;</code>
    *
    * <pre>
    * Navigation index.
@@ -227,7 +287,7 @@ public final class IndexFileRenderSpec extends
     return index_;
   }
   /**
-   * <code>required .dossier.Index index = 3;</code>
+   * <code>required .dossier.Index index = 4;</code>
    *
    * <pre>
    * Navigation index.
@@ -239,7 +299,8 @@ public final class IndexFileRenderSpec extends
 
   private void initFields() {
     resources_ = com.github.jsdossier.proto.Resources.getDefaultInstance();
-    readme_ = com.github.jsdossier.proto.Comment.getDefaultInstance();
+    title_ = "";
+    content_ = com.github.jsdossier.proto.Comment.getDefaultInstance();
     index_ = com.github.jsdossier.proto.Index.getDefaultInstance();
   }
   private byte memoizedIsInitialized = -1;
@@ -249,6 +310,10 @@ public final class IndexFileRenderSpec extends
     if (isInitialized == 0) return false;
 
     if (!hasResources()) {
+      memoizedIsInitialized = 0;
+      return false;
+    }
+    if (!hasTitle()) {
       memoizedIsInitialized = 0;
       return false;
     }
@@ -271,10 +336,13 @@ public final class IndexFileRenderSpec extends
       output.writeMessage(1, resources_);
     }
     if (((bitField0_ & 0x00000002) == 0x00000002)) {
-      output.writeMessage(2, readme_);
+      output.writeBytes(2, getTitleBytes());
     }
     if (((bitField0_ & 0x00000004) == 0x00000004)) {
-      output.writeMessage(3, index_);
+      output.writeMessage(3, content_);
+    }
+    if (((bitField0_ & 0x00000008) == 0x00000008)) {
+      output.writeMessage(4, index_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -291,11 +359,15 @@ public final class IndexFileRenderSpec extends
     }
     if (((bitField0_ & 0x00000002) == 0x00000002)) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(2, readme_);
+        .computeBytesSize(2, getTitleBytes());
     }
     if (((bitField0_ & 0x00000004) == 0x00000004)) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(3, index_);
+        .computeMessageSize(3, content_);
+    }
+    if (((bitField0_ & 0x00000008) == 0x00000008)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(4, index_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSerializedSize = size;
@@ -309,53 +381,53 @@ public final class IndexFileRenderSpec extends
     return super.writeReplace();
   }
 
-  public static com.github.jsdossier.proto.IndexFileRenderSpec parseFrom(
+  public static com.github.jsdossier.proto.HtmlRenderSpec parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static com.github.jsdossier.proto.IndexFileRenderSpec parseFrom(
+  public static com.github.jsdossier.proto.HtmlRenderSpec parseFrom(
       com.google.protobuf.ByteString data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static com.github.jsdossier.proto.IndexFileRenderSpec parseFrom(byte[] data)
+  public static com.github.jsdossier.proto.HtmlRenderSpec parseFrom(byte[] data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static com.github.jsdossier.proto.IndexFileRenderSpec parseFrom(
+  public static com.github.jsdossier.proto.HtmlRenderSpec parseFrom(
       byte[] data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static com.github.jsdossier.proto.IndexFileRenderSpec parseFrom(java.io.InputStream input)
+  public static com.github.jsdossier.proto.HtmlRenderSpec parseFrom(java.io.InputStream input)
       throws java.io.IOException {
     return PARSER.parseFrom(input);
   }
-  public static com.github.jsdossier.proto.IndexFileRenderSpec parseFrom(
+  public static com.github.jsdossier.proto.HtmlRenderSpec parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return PARSER.parseFrom(input, extensionRegistry);
   }
-  public static com.github.jsdossier.proto.IndexFileRenderSpec parseDelimitedFrom(java.io.InputStream input)
+  public static com.github.jsdossier.proto.HtmlRenderSpec parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return PARSER.parseDelimitedFrom(input);
   }
-  public static com.github.jsdossier.proto.IndexFileRenderSpec parseDelimitedFrom(
+  public static com.github.jsdossier.proto.HtmlRenderSpec parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return PARSER.parseDelimitedFrom(input, extensionRegistry);
   }
-  public static com.github.jsdossier.proto.IndexFileRenderSpec parseFrom(
+  public static com.github.jsdossier.proto.HtmlRenderSpec parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
     return PARSER.parseFrom(input);
   }
-  public static com.github.jsdossier.proto.IndexFileRenderSpec parseFrom(
+  public static com.github.jsdossier.proto.HtmlRenderSpec parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -364,7 +436,7 @@ public final class IndexFileRenderSpec extends
 
   public static Builder newBuilder() { return Builder.create(); }
   public Builder newBuilderForType() { return newBuilder(); }
-  public static Builder newBuilder(com.github.jsdossier.proto.IndexFileRenderSpec prototype) {
+  public static Builder newBuilder(com.github.jsdossier.proto.HtmlRenderSpec prototype) {
     return newBuilder().mergeFrom(prototype);
   }
   public Builder toBuilder() { return newBuilder(this); }
@@ -376,29 +448,29 @@ public final class IndexFileRenderSpec extends
     return builder;
   }
   /**
-   * Protobuf type {@code dossier.IndexFileRenderSpec}
+   * Protobuf type {@code dossier.HtmlRenderSpec}
    *
    * <pre>
-   * Describes how to render the main index.
+   * Describes how to render a generic HTML page.
    * </pre>
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessage.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:dossier.IndexFileRenderSpec)
-      com.github.jsdossier.proto.IndexFileRenderSpecOrBuilder {
+      // @@protoc_insertion_point(builder_implements:dossier.HtmlRenderSpec)
+      com.github.jsdossier.proto.HtmlRenderSpecOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.github.jsdossier.proto.Dossier.internal_static_dossier_IndexFileRenderSpec_descriptor;
+      return com.github.jsdossier.proto.Dossier.internal_static_dossier_HtmlRenderSpec_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.github.jsdossier.proto.Dossier.internal_static_dossier_IndexFileRenderSpec_fieldAccessorTable
+      return com.github.jsdossier.proto.Dossier.internal_static_dossier_HtmlRenderSpec_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              com.github.jsdossier.proto.IndexFileRenderSpec.class, com.github.jsdossier.proto.IndexFileRenderSpec.Builder.class);
+              com.github.jsdossier.proto.HtmlRenderSpec.class, com.github.jsdossier.proto.HtmlRenderSpec.Builder.class);
     }
 
-    // Construct using com.github.jsdossier.proto.IndexFileRenderSpec.newBuilder()
+    // Construct using com.github.jsdossier.proto.HtmlRenderSpec.newBuilder()
     private Builder() {
       maybeForceBuilderInitialization();
     }
@@ -411,7 +483,7 @@ public final class IndexFileRenderSpec extends
     private void maybeForceBuilderInitialization() {
       if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
         getResourcesFieldBuilder();
-        getReadmeFieldBuilder();
+        getContentFieldBuilder();
         getIndexFieldBuilder();
       }
     }
@@ -427,18 +499,20 @@ public final class IndexFileRenderSpec extends
         resourcesBuilder_.clear();
       }
       bitField0_ = (bitField0_ & ~0x00000001);
-      if (readmeBuilder_ == null) {
-        readme_ = com.github.jsdossier.proto.Comment.getDefaultInstance();
-      } else {
-        readmeBuilder_.clear();
-      }
+      title_ = "";
       bitField0_ = (bitField0_ & ~0x00000002);
+      if (contentBuilder_ == null) {
+        content_ = com.github.jsdossier.proto.Comment.getDefaultInstance();
+      } else {
+        contentBuilder_.clear();
+      }
+      bitField0_ = (bitField0_ & ~0x00000004);
       if (indexBuilder_ == null) {
         index_ = com.github.jsdossier.proto.Index.getDefaultInstance();
       } else {
         indexBuilder_.clear();
       }
-      bitField0_ = (bitField0_ & ~0x00000004);
+      bitField0_ = (bitField0_ & ~0x00000008);
       return this;
     }
 
@@ -448,23 +522,23 @@ public final class IndexFileRenderSpec extends
 
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return com.github.jsdossier.proto.Dossier.internal_static_dossier_IndexFileRenderSpec_descriptor;
+      return com.github.jsdossier.proto.Dossier.internal_static_dossier_HtmlRenderSpec_descriptor;
     }
 
-    public com.github.jsdossier.proto.IndexFileRenderSpec getDefaultInstanceForType() {
-      return com.github.jsdossier.proto.IndexFileRenderSpec.getDefaultInstance();
+    public com.github.jsdossier.proto.HtmlRenderSpec getDefaultInstanceForType() {
+      return com.github.jsdossier.proto.HtmlRenderSpec.getDefaultInstance();
     }
 
-    public com.github.jsdossier.proto.IndexFileRenderSpec build() {
-      com.github.jsdossier.proto.IndexFileRenderSpec result = buildPartial();
+    public com.github.jsdossier.proto.HtmlRenderSpec build() {
+      com.github.jsdossier.proto.HtmlRenderSpec result = buildPartial();
       if (!result.isInitialized()) {
         throw newUninitializedMessageException(result);
       }
       return result;
     }
 
-    public com.github.jsdossier.proto.IndexFileRenderSpec buildPartial() {
-      com.github.jsdossier.proto.IndexFileRenderSpec result = new com.github.jsdossier.proto.IndexFileRenderSpec(this);
+    public com.github.jsdossier.proto.HtmlRenderSpec buildPartial() {
+      com.github.jsdossier.proto.HtmlRenderSpec result = new com.github.jsdossier.proto.HtmlRenderSpec(this);
       int from_bitField0_ = bitField0_;
       int to_bitField0_ = 0;
       if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
@@ -478,13 +552,17 @@ public final class IndexFileRenderSpec extends
       if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
         to_bitField0_ |= 0x00000002;
       }
-      if (readmeBuilder_ == null) {
-        result.readme_ = readme_;
-      } else {
-        result.readme_ = readmeBuilder_.build();
-      }
+      result.title_ = title_;
       if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
         to_bitField0_ |= 0x00000004;
+      }
+      if (contentBuilder_ == null) {
+        result.content_ = content_;
+      } else {
+        result.content_ = contentBuilder_.build();
+      }
+      if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
+        to_bitField0_ |= 0x00000008;
       }
       if (indexBuilder_ == null) {
         result.index_ = index_;
@@ -497,21 +575,26 @@ public final class IndexFileRenderSpec extends
     }
 
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof com.github.jsdossier.proto.IndexFileRenderSpec) {
-        return mergeFrom((com.github.jsdossier.proto.IndexFileRenderSpec)other);
+      if (other instanceof com.github.jsdossier.proto.HtmlRenderSpec) {
+        return mergeFrom((com.github.jsdossier.proto.HtmlRenderSpec)other);
       } else {
         super.mergeFrom(other);
         return this;
       }
     }
 
-    public Builder mergeFrom(com.github.jsdossier.proto.IndexFileRenderSpec other) {
-      if (other == com.github.jsdossier.proto.IndexFileRenderSpec.getDefaultInstance()) return this;
+    public Builder mergeFrom(com.github.jsdossier.proto.HtmlRenderSpec other) {
+      if (other == com.github.jsdossier.proto.HtmlRenderSpec.getDefaultInstance()) return this;
       if (other.hasResources()) {
         mergeResources(other.getResources());
       }
-      if (other.hasReadme()) {
-        mergeReadme(other.getReadme());
+      if (other.hasTitle()) {
+        bitField0_ |= 0x00000002;
+        title_ = other.title_;
+        onChanged();
+      }
+      if (other.hasContent()) {
+        mergeContent(other.getContent());
       }
       if (other.hasIndex()) {
         mergeIndex(other.getIndex());
@@ -522,6 +605,10 @@ public final class IndexFileRenderSpec extends
 
     public final boolean isInitialized() {
       if (!hasResources()) {
+        
+        return false;
+      }
+      if (!hasTitle()) {
         
         return false;
       }
@@ -540,11 +627,11 @@ public final class IndexFileRenderSpec extends
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      com.github.jsdossier.proto.IndexFileRenderSpec parsedMessage = null;
+      com.github.jsdossier.proto.HtmlRenderSpec parsedMessage = null;
       try {
         parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        parsedMessage = (com.github.jsdossier.proto.IndexFileRenderSpec) e.getUnfinishedMessage();
+        parsedMessage = (com.github.jsdossier.proto.HtmlRenderSpec) e.getUnfinishedMessage();
         throw e;
       } finally {
         if (parsedMessage != null) {
@@ -707,173 +794,273 @@ public final class IndexFileRenderSpec extends
       return resourcesBuilder_;
     }
 
-    private com.github.jsdossier.proto.Comment readme_ = com.github.jsdossier.proto.Comment.getDefaultInstance();
-    private com.google.protobuf.SingleFieldBuilder<
-        com.github.jsdossier.proto.Comment, com.github.jsdossier.proto.Comment.Builder, com.github.jsdossier.proto.CommentOrBuilder> readmeBuilder_;
+    private java.lang.Object title_ = "";
     /**
-     * <code>optional .dossier.Comment readme = 2;</code>
+     * <code>required string title = 2;</code>
      *
      * <pre>
-     * The readme to display on the main page, if any.
+     * The page title.
      * </pre>
      */
-    public boolean hasReadme() {
+    public boolean hasTitle() {
       return ((bitField0_ & 0x00000002) == 0x00000002);
     }
     /**
-     * <code>optional .dossier.Comment readme = 2;</code>
+     * <code>required string title = 2;</code>
      *
      * <pre>
-     * The readme to display on the main page, if any.
+     * The page title.
      * </pre>
      */
-    public com.github.jsdossier.proto.Comment getReadme() {
-      if (readmeBuilder_ == null) {
-        return readme_;
+    public java.lang.String getTitle() {
+      java.lang.Object ref = title_;
+      if (!(ref instanceof java.lang.String)) {
+        com.google.protobuf.ByteString bs =
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          title_ = s;
+        }
+        return s;
       } else {
-        return readmeBuilder_.getMessage();
+        return (java.lang.String) ref;
       }
     }
     /**
-     * <code>optional .dossier.Comment readme = 2;</code>
+     * <code>required string title = 2;</code>
      *
      * <pre>
-     * The readme to display on the main page, if any.
+     * The page title.
      * </pre>
      */
-    public Builder setReadme(com.github.jsdossier.proto.Comment value) {
-      if (readmeBuilder_ == null) {
+    public com.google.protobuf.ByteString
+        getTitleBytes() {
+      java.lang.Object ref = title_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        title_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    /**
+     * <code>required string title = 2;</code>
+     *
+     * <pre>
+     * The page title.
+     * </pre>
+     */
+    public Builder setTitle(
+        java.lang.String value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000002;
+      title_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>required string title = 2;</code>
+     *
+     * <pre>
+     * The page title.
+     * </pre>
+     */
+    public Builder clearTitle() {
+      bitField0_ = (bitField0_ & ~0x00000002);
+      title_ = getDefaultInstance().getTitle();
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>required string title = 2;</code>
+     *
+     * <pre>
+     * The page title.
+     * </pre>
+     */
+    public Builder setTitleBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000002;
+      title_ = value;
+      onChanged();
+      return this;
+    }
+
+    private com.github.jsdossier.proto.Comment content_ = com.github.jsdossier.proto.Comment.getDefaultInstance();
+    private com.google.protobuf.SingleFieldBuilder<
+        com.github.jsdossier.proto.Comment, com.github.jsdossier.proto.Comment.Builder, com.github.jsdossier.proto.CommentOrBuilder> contentBuilder_;
+    /**
+     * <code>optional .dossier.Comment content = 3;</code>
+     *
+     * <pre>
+     * The page content, if any.
+     * </pre>
+     */
+    public boolean hasContent() {
+      return ((bitField0_ & 0x00000004) == 0x00000004);
+    }
+    /**
+     * <code>optional .dossier.Comment content = 3;</code>
+     *
+     * <pre>
+     * The page content, if any.
+     * </pre>
+     */
+    public com.github.jsdossier.proto.Comment getContent() {
+      if (contentBuilder_ == null) {
+        return content_;
+      } else {
+        return contentBuilder_.getMessage();
+      }
+    }
+    /**
+     * <code>optional .dossier.Comment content = 3;</code>
+     *
+     * <pre>
+     * The page content, if any.
+     * </pre>
+     */
+    public Builder setContent(com.github.jsdossier.proto.Comment value) {
+      if (contentBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
         }
-        readme_ = value;
+        content_ = value;
         onChanged();
       } else {
-        readmeBuilder_.setMessage(value);
+        contentBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000002;
+      bitField0_ |= 0x00000004;
       return this;
     }
     /**
-     * <code>optional .dossier.Comment readme = 2;</code>
+     * <code>optional .dossier.Comment content = 3;</code>
      *
      * <pre>
-     * The readme to display on the main page, if any.
+     * The page content, if any.
      * </pre>
      */
-    public Builder setReadme(
+    public Builder setContent(
         com.github.jsdossier.proto.Comment.Builder builderForValue) {
-      if (readmeBuilder_ == null) {
-        readme_ = builderForValue.build();
+      if (contentBuilder_ == null) {
+        content_ = builderForValue.build();
         onChanged();
       } else {
-        readmeBuilder_.setMessage(builderForValue.build());
+        contentBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000002;
+      bitField0_ |= 0x00000004;
       return this;
     }
     /**
-     * <code>optional .dossier.Comment readme = 2;</code>
+     * <code>optional .dossier.Comment content = 3;</code>
      *
      * <pre>
-     * The readme to display on the main page, if any.
+     * The page content, if any.
      * </pre>
      */
-    public Builder mergeReadme(com.github.jsdossier.proto.Comment value) {
-      if (readmeBuilder_ == null) {
-        if (((bitField0_ & 0x00000002) == 0x00000002) &&
-            readme_ != com.github.jsdossier.proto.Comment.getDefaultInstance()) {
-          readme_ =
-            com.github.jsdossier.proto.Comment.newBuilder(readme_).mergeFrom(value).buildPartial();
+    public Builder mergeContent(com.github.jsdossier.proto.Comment value) {
+      if (contentBuilder_ == null) {
+        if (((bitField0_ & 0x00000004) == 0x00000004) &&
+            content_ != com.github.jsdossier.proto.Comment.getDefaultInstance()) {
+          content_ =
+            com.github.jsdossier.proto.Comment.newBuilder(content_).mergeFrom(value).buildPartial();
         } else {
-          readme_ = value;
+          content_ = value;
         }
         onChanged();
       } else {
-        readmeBuilder_.mergeFrom(value);
+        contentBuilder_.mergeFrom(value);
       }
-      bitField0_ |= 0x00000002;
+      bitField0_ |= 0x00000004;
       return this;
     }
     /**
-     * <code>optional .dossier.Comment readme = 2;</code>
+     * <code>optional .dossier.Comment content = 3;</code>
      *
      * <pre>
-     * The readme to display on the main page, if any.
+     * The page content, if any.
      * </pre>
      */
-    public Builder clearReadme() {
-      if (readmeBuilder_ == null) {
-        readme_ = com.github.jsdossier.proto.Comment.getDefaultInstance();
+    public Builder clearContent() {
+      if (contentBuilder_ == null) {
+        content_ = com.github.jsdossier.proto.Comment.getDefaultInstance();
         onChanged();
       } else {
-        readmeBuilder_.clear();
+        contentBuilder_.clear();
       }
-      bitField0_ = (bitField0_ & ~0x00000002);
+      bitField0_ = (bitField0_ & ~0x00000004);
       return this;
     }
     /**
-     * <code>optional .dossier.Comment readme = 2;</code>
+     * <code>optional .dossier.Comment content = 3;</code>
      *
      * <pre>
-     * The readme to display on the main page, if any.
+     * The page content, if any.
      * </pre>
      */
-    public com.github.jsdossier.proto.Comment.Builder getReadmeBuilder() {
-      bitField0_ |= 0x00000002;
+    public com.github.jsdossier.proto.Comment.Builder getContentBuilder() {
+      bitField0_ |= 0x00000004;
       onChanged();
-      return getReadmeFieldBuilder().getBuilder();
+      return getContentFieldBuilder().getBuilder();
     }
     /**
-     * <code>optional .dossier.Comment readme = 2;</code>
+     * <code>optional .dossier.Comment content = 3;</code>
      *
      * <pre>
-     * The readme to display on the main page, if any.
+     * The page content, if any.
      * </pre>
      */
-    public com.github.jsdossier.proto.CommentOrBuilder getReadmeOrBuilder() {
-      if (readmeBuilder_ != null) {
-        return readmeBuilder_.getMessageOrBuilder();
+    public com.github.jsdossier.proto.CommentOrBuilder getContentOrBuilder() {
+      if (contentBuilder_ != null) {
+        return contentBuilder_.getMessageOrBuilder();
       } else {
-        return readme_;
+        return content_;
       }
     }
     /**
-     * <code>optional .dossier.Comment readme = 2;</code>
+     * <code>optional .dossier.Comment content = 3;</code>
      *
      * <pre>
-     * The readme to display on the main page, if any.
+     * The page content, if any.
      * </pre>
      */
     private com.google.protobuf.SingleFieldBuilder<
         com.github.jsdossier.proto.Comment, com.github.jsdossier.proto.Comment.Builder, com.github.jsdossier.proto.CommentOrBuilder> 
-        getReadmeFieldBuilder() {
-      if (readmeBuilder_ == null) {
-        readmeBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+        getContentFieldBuilder() {
+      if (contentBuilder_ == null) {
+        contentBuilder_ = new com.google.protobuf.SingleFieldBuilder<
             com.github.jsdossier.proto.Comment, com.github.jsdossier.proto.Comment.Builder, com.github.jsdossier.proto.CommentOrBuilder>(
-                getReadme(),
+                getContent(),
                 getParentForChildren(),
                 isClean());
-        readme_ = null;
+        content_ = null;
       }
-      return readmeBuilder_;
+      return contentBuilder_;
     }
 
     private com.github.jsdossier.proto.Index index_ = com.github.jsdossier.proto.Index.getDefaultInstance();
     private com.google.protobuf.SingleFieldBuilder<
         com.github.jsdossier.proto.Index, com.github.jsdossier.proto.Index.Builder, com.github.jsdossier.proto.IndexOrBuilder> indexBuilder_;
     /**
-     * <code>required .dossier.Index index = 3;</code>
+     * <code>required .dossier.Index index = 4;</code>
      *
      * <pre>
      * Navigation index.
      * </pre>
      */
     public boolean hasIndex() {
-      return ((bitField0_ & 0x00000004) == 0x00000004);
+      return ((bitField0_ & 0x00000008) == 0x00000008);
     }
     /**
-     * <code>required .dossier.Index index = 3;</code>
+     * <code>required .dossier.Index index = 4;</code>
      *
      * <pre>
      * Navigation index.
@@ -887,7 +1074,7 @@ public final class IndexFileRenderSpec extends
       }
     }
     /**
-     * <code>required .dossier.Index index = 3;</code>
+     * <code>required .dossier.Index index = 4;</code>
      *
      * <pre>
      * Navigation index.
@@ -903,11 +1090,11 @@ public final class IndexFileRenderSpec extends
       } else {
         indexBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000004;
+      bitField0_ |= 0x00000008;
       return this;
     }
     /**
-     * <code>required .dossier.Index index = 3;</code>
+     * <code>required .dossier.Index index = 4;</code>
      *
      * <pre>
      * Navigation index.
@@ -921,11 +1108,11 @@ public final class IndexFileRenderSpec extends
       } else {
         indexBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000004;
+      bitField0_ |= 0x00000008;
       return this;
     }
     /**
-     * <code>required .dossier.Index index = 3;</code>
+     * <code>required .dossier.Index index = 4;</code>
      *
      * <pre>
      * Navigation index.
@@ -933,7 +1120,7 @@ public final class IndexFileRenderSpec extends
      */
     public Builder mergeIndex(com.github.jsdossier.proto.Index value) {
       if (indexBuilder_ == null) {
-        if (((bitField0_ & 0x00000004) == 0x00000004) &&
+        if (((bitField0_ & 0x00000008) == 0x00000008) &&
             index_ != com.github.jsdossier.proto.Index.getDefaultInstance()) {
           index_ =
             com.github.jsdossier.proto.Index.newBuilder(index_).mergeFrom(value).buildPartial();
@@ -944,11 +1131,11 @@ public final class IndexFileRenderSpec extends
       } else {
         indexBuilder_.mergeFrom(value);
       }
-      bitField0_ |= 0x00000004;
+      bitField0_ |= 0x00000008;
       return this;
     }
     /**
-     * <code>required .dossier.Index index = 3;</code>
+     * <code>required .dossier.Index index = 4;</code>
      *
      * <pre>
      * Navigation index.
@@ -961,23 +1148,23 @@ public final class IndexFileRenderSpec extends
       } else {
         indexBuilder_.clear();
       }
-      bitField0_ = (bitField0_ & ~0x00000004);
+      bitField0_ = (bitField0_ & ~0x00000008);
       return this;
     }
     /**
-     * <code>required .dossier.Index index = 3;</code>
+     * <code>required .dossier.Index index = 4;</code>
      *
      * <pre>
      * Navigation index.
      * </pre>
      */
     public com.github.jsdossier.proto.Index.Builder getIndexBuilder() {
-      bitField0_ |= 0x00000004;
+      bitField0_ |= 0x00000008;
       onChanged();
       return getIndexFieldBuilder().getBuilder();
     }
     /**
-     * <code>required .dossier.Index index = 3;</code>
+     * <code>required .dossier.Index index = 4;</code>
      *
      * <pre>
      * Navigation index.
@@ -991,7 +1178,7 @@ public final class IndexFileRenderSpec extends
       }
     }
     /**
-     * <code>required .dossier.Index index = 3;</code>
+     * <code>required .dossier.Index index = 4;</code>
      *
      * <pre>
      * Navigation index.
@@ -1011,14 +1198,14 @@ public final class IndexFileRenderSpec extends
       return indexBuilder_;
     }
 
-    // @@protoc_insertion_point(builder_scope:dossier.IndexFileRenderSpec)
+    // @@protoc_insertion_point(builder_scope:dossier.HtmlRenderSpec)
   }
 
   static {
-    defaultInstance = new IndexFileRenderSpec(true);
+    defaultInstance = new HtmlRenderSpec(true);
     defaultInstance.initFields();
   }
 
-  // @@protoc_insertion_point(class_scope:dossier.IndexFileRenderSpec)
+  // @@protoc_insertion_point(class_scope:dossier.HtmlRenderSpec)
 }
 

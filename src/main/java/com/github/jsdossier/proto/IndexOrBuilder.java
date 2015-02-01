@@ -120,4 +120,48 @@ public interface IndexOrBuilder extends
    */
   com.github.jsdossier.proto.Index.ModuleOrBuilder getModuleOrBuilder(
       int index);
+
+  /**
+   * <code>repeated .dossier.TypeLink links = 4;</code>
+   *
+   * <pre>
+   * Additional links to include in the navigation pane.
+   * </pre>
+   */
+  java.util.List<com.github.jsdossier.proto.TypeLink> 
+      getLinksList();
+  /**
+   * <code>repeated .dossier.TypeLink links = 4;</code>
+   *
+   * <pre>
+   * Additional links to include in the navigation pane.
+   * </pre>
+   */
+  com.github.jsdossier.proto.TypeLink getLinks(int index);
+  /**
+   * <code>repeated .dossier.TypeLink links = 4;</code>
+   *
+   * <pre>
+   * Additional links to include in the navigation pane.
+   * </pre>
+   */
+  int getLinksCount();
+  /**
+   * <code>repeated .dossier.TypeLink links = 4;</code>
+   *
+   * <pre>
+   * Additional links to include in the navigation pane.
+   * </pre>
+   */
+  java.util.List<? extends com.github.jsdossier.proto.TypeLinkOrBuilder> 
+      getLinksOrBuilderList();
+  /**
+   * <code>repeated .dossier.TypeLink links = 4;</code>
+   *
+   * <pre>
+   * Additional links to include in the navigation pane.
+   * </pre>
+   */
+  com.github.jsdossier.proto.TypeLinkOrBuilder getLinksOrBuilder(
+      int index);
 }

@@ -197,6 +197,9 @@ message Index {
 
   // Links to JavaScript modules.
   repeated Module module = 3;
+
+  // Additional links to include in the navigation pane.
+  repeated TypeLink links = 4;
 }
 
 
@@ -268,14 +271,16 @@ message JsType {
 
 
 
-// Describes how to render the main index.
-message IndexFileRenderSpec {
+// Describes how to render a generic HTML page.
+message HtmlRenderSpec {
   // The resources to include.
   required Resources resources = 1;
-  // The readme to display on the main page, if any.
-  optional Comment readme = 2;
+  // The page title.
+  required string title = 2;
+  // The page content, if any.
+  optional Comment content = 3;
   // Navigation index.
-  required Index index = 3;
+  required Index index = 4;
 }
 
 

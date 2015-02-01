@@ -81,6 +81,14 @@ public final class Index extends
             module_.add(input.readMessage(com.github.jsdossier.proto.Index.Module.PARSER, extensionRegistry));
             break;
           }
+          case 34: {
+            if (!((mutable_bitField0_ & 0x00000008) == 0x00000008)) {
+              links_ = new java.util.ArrayList<com.github.jsdossier.proto.TypeLink>();
+              mutable_bitField0_ |= 0x00000008;
+            }
+            links_.add(input.readMessage(com.github.jsdossier.proto.TypeLink.PARSER, extensionRegistry));
+            break;
+          }
         }
       }
     } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -94,6 +102,9 @@ public final class Index extends
       }
       if (((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
         module_ = java.util.Collections.unmodifiableList(module_);
+      }
+      if (((mutable_bitField0_ & 0x00000008) == 0x00000008)) {
+        links_ = java.util.Collections.unmodifiableList(links_);
       }
       this.unknownFields = unknownFields.build();
       makeExtensionsImmutable();
@@ -1187,10 +1198,66 @@ public final class Index extends
     return module_.get(index);
   }
 
+  public static final int LINKS_FIELD_NUMBER = 4;
+  private java.util.List<com.github.jsdossier.proto.TypeLink> links_;
+  /**
+   * <code>repeated .dossier.TypeLink links = 4;</code>
+   *
+   * <pre>
+   * Additional links to include in the navigation pane.
+   * </pre>
+   */
+  public java.util.List<com.github.jsdossier.proto.TypeLink> getLinksList() {
+    return links_;
+  }
+  /**
+   * <code>repeated .dossier.TypeLink links = 4;</code>
+   *
+   * <pre>
+   * Additional links to include in the navigation pane.
+   * </pre>
+   */
+  public java.util.List<? extends com.github.jsdossier.proto.TypeLinkOrBuilder> 
+      getLinksOrBuilderList() {
+    return links_;
+  }
+  /**
+   * <code>repeated .dossier.TypeLink links = 4;</code>
+   *
+   * <pre>
+   * Additional links to include in the navigation pane.
+   * </pre>
+   */
+  public int getLinksCount() {
+    return links_.size();
+  }
+  /**
+   * <code>repeated .dossier.TypeLink links = 4;</code>
+   *
+   * <pre>
+   * Additional links to include in the navigation pane.
+   * </pre>
+   */
+  public com.github.jsdossier.proto.TypeLink getLinks(int index) {
+    return links_.get(index);
+  }
+  /**
+   * <code>repeated .dossier.TypeLink links = 4;</code>
+   *
+   * <pre>
+   * Additional links to include in the navigation pane.
+   * </pre>
+   */
+  public com.github.jsdossier.proto.TypeLinkOrBuilder getLinksOrBuilder(
+      int index) {
+    return links_.get(index);
+  }
+
   private void initFields() {
     home_ = "";
     type_ = java.util.Collections.emptyList();
     module_ = java.util.Collections.emptyList();
+    links_ = java.util.Collections.emptyList();
   }
   private byte memoizedIsInitialized = -1;
   public final boolean isInitialized() {
@@ -1214,6 +1281,12 @@ public final class Index extends
         return false;
       }
     }
+    for (int i = 0; i < getLinksCount(); i++) {
+      if (!getLinks(i).isInitialized()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+    }
     memoizedIsInitialized = 1;
     return true;
   }
@@ -1229,6 +1302,9 @@ public final class Index extends
     }
     for (int i = 0; i < module_.size(); i++) {
       output.writeMessage(3, module_.get(i));
+    }
+    for (int i = 0; i < links_.size(); i++) {
+      output.writeMessage(4, links_.get(i));
     }
     getUnknownFields().writeTo(output);
   }
@@ -1250,6 +1326,10 @@ public final class Index extends
     for (int i = 0; i < module_.size(); i++) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(3, module_.get(i));
+    }
+    for (int i = 0; i < links_.size(); i++) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(4, links_.get(i));
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSerializedSize = size;
@@ -1366,6 +1446,7 @@ public final class Index extends
       if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
         getTypeFieldBuilder();
         getModuleFieldBuilder();
+        getLinksFieldBuilder();
       }
     }
     private static Builder create() {
@@ -1387,6 +1468,12 @@ public final class Index extends
         bitField0_ = (bitField0_ & ~0x00000004);
       } else {
         moduleBuilder_.clear();
+      }
+      if (linksBuilder_ == null) {
+        links_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000008);
+      } else {
+        linksBuilder_.clear();
       }
       return this;
     }
@@ -1437,6 +1524,15 @@ public final class Index extends
         result.module_ = module_;
       } else {
         result.module_ = moduleBuilder_.build();
+      }
+      if (linksBuilder_ == null) {
+        if (((bitField0_ & 0x00000008) == 0x00000008)) {
+          links_ = java.util.Collections.unmodifiableList(links_);
+          bitField0_ = (bitField0_ & ~0x00000008);
+        }
+        result.links_ = links_;
+      } else {
+        result.links_ = linksBuilder_.build();
       }
       result.bitField0_ = to_bitField0_;
       onBuilt();
@@ -1511,6 +1607,32 @@ public final class Index extends
           }
         }
       }
+      if (linksBuilder_ == null) {
+        if (!other.links_.isEmpty()) {
+          if (links_.isEmpty()) {
+            links_ = other.links_;
+            bitField0_ = (bitField0_ & ~0x00000008);
+          } else {
+            ensureLinksIsMutable();
+            links_.addAll(other.links_);
+          }
+          onChanged();
+        }
+      } else {
+        if (!other.links_.isEmpty()) {
+          if (linksBuilder_.isEmpty()) {
+            linksBuilder_.dispose();
+            linksBuilder_ = null;
+            links_ = other.links_;
+            bitField0_ = (bitField0_ & ~0x00000008);
+            linksBuilder_ = 
+              com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+                 getLinksFieldBuilder() : null;
+          } else {
+            linksBuilder_.addAllMessages(other.links_);
+          }
+        }
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       return this;
     }
@@ -1528,6 +1650,12 @@ public final class Index extends
       }
       for (int i = 0; i < getModuleCount(); i++) {
         if (!getModule(i).isInitialized()) {
+          
+          return false;
+        }
+      }
+      for (int i = 0; i < getLinksCount(); i++) {
+        if (!getLinks(i).isInitialized()) {
           
           return false;
         }
@@ -2276,6 +2404,318 @@ public final class Index extends
         module_ = null;
       }
       return moduleBuilder_;
+    }
+
+    private java.util.List<com.github.jsdossier.proto.TypeLink> links_ =
+      java.util.Collections.emptyList();
+    private void ensureLinksIsMutable() {
+      if (!((bitField0_ & 0x00000008) == 0x00000008)) {
+        links_ = new java.util.ArrayList<com.github.jsdossier.proto.TypeLink>(links_);
+        bitField0_ |= 0x00000008;
+       }
+    }
+
+    private com.google.protobuf.RepeatedFieldBuilder<
+        com.github.jsdossier.proto.TypeLink, com.github.jsdossier.proto.TypeLink.Builder, com.github.jsdossier.proto.TypeLinkOrBuilder> linksBuilder_;
+
+    /**
+     * <code>repeated .dossier.TypeLink links = 4;</code>
+     *
+     * <pre>
+     * Additional links to include in the navigation pane.
+     * </pre>
+     */
+    public java.util.List<com.github.jsdossier.proto.TypeLink> getLinksList() {
+      if (linksBuilder_ == null) {
+        return java.util.Collections.unmodifiableList(links_);
+      } else {
+        return linksBuilder_.getMessageList();
+      }
+    }
+    /**
+     * <code>repeated .dossier.TypeLink links = 4;</code>
+     *
+     * <pre>
+     * Additional links to include in the navigation pane.
+     * </pre>
+     */
+    public int getLinksCount() {
+      if (linksBuilder_ == null) {
+        return links_.size();
+      } else {
+        return linksBuilder_.getCount();
+      }
+    }
+    /**
+     * <code>repeated .dossier.TypeLink links = 4;</code>
+     *
+     * <pre>
+     * Additional links to include in the navigation pane.
+     * </pre>
+     */
+    public com.github.jsdossier.proto.TypeLink getLinks(int index) {
+      if (linksBuilder_ == null) {
+        return links_.get(index);
+      } else {
+        return linksBuilder_.getMessage(index);
+      }
+    }
+    /**
+     * <code>repeated .dossier.TypeLink links = 4;</code>
+     *
+     * <pre>
+     * Additional links to include in the navigation pane.
+     * </pre>
+     */
+    public Builder setLinks(
+        int index, com.github.jsdossier.proto.TypeLink value) {
+      if (linksBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureLinksIsMutable();
+        links_.set(index, value);
+        onChanged();
+      } else {
+        linksBuilder_.setMessage(index, value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .dossier.TypeLink links = 4;</code>
+     *
+     * <pre>
+     * Additional links to include in the navigation pane.
+     * </pre>
+     */
+    public Builder setLinks(
+        int index, com.github.jsdossier.proto.TypeLink.Builder builderForValue) {
+      if (linksBuilder_ == null) {
+        ensureLinksIsMutable();
+        links_.set(index, builderForValue.build());
+        onChanged();
+      } else {
+        linksBuilder_.setMessage(index, builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .dossier.TypeLink links = 4;</code>
+     *
+     * <pre>
+     * Additional links to include in the navigation pane.
+     * </pre>
+     */
+    public Builder addLinks(com.github.jsdossier.proto.TypeLink value) {
+      if (linksBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureLinksIsMutable();
+        links_.add(value);
+        onChanged();
+      } else {
+        linksBuilder_.addMessage(value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .dossier.TypeLink links = 4;</code>
+     *
+     * <pre>
+     * Additional links to include in the navigation pane.
+     * </pre>
+     */
+    public Builder addLinks(
+        int index, com.github.jsdossier.proto.TypeLink value) {
+      if (linksBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureLinksIsMutable();
+        links_.add(index, value);
+        onChanged();
+      } else {
+        linksBuilder_.addMessage(index, value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .dossier.TypeLink links = 4;</code>
+     *
+     * <pre>
+     * Additional links to include in the navigation pane.
+     * </pre>
+     */
+    public Builder addLinks(
+        com.github.jsdossier.proto.TypeLink.Builder builderForValue) {
+      if (linksBuilder_ == null) {
+        ensureLinksIsMutable();
+        links_.add(builderForValue.build());
+        onChanged();
+      } else {
+        linksBuilder_.addMessage(builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .dossier.TypeLink links = 4;</code>
+     *
+     * <pre>
+     * Additional links to include in the navigation pane.
+     * </pre>
+     */
+    public Builder addLinks(
+        int index, com.github.jsdossier.proto.TypeLink.Builder builderForValue) {
+      if (linksBuilder_ == null) {
+        ensureLinksIsMutable();
+        links_.add(index, builderForValue.build());
+        onChanged();
+      } else {
+        linksBuilder_.addMessage(index, builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .dossier.TypeLink links = 4;</code>
+     *
+     * <pre>
+     * Additional links to include in the navigation pane.
+     * </pre>
+     */
+    public Builder addAllLinks(
+        java.lang.Iterable<? extends com.github.jsdossier.proto.TypeLink> values) {
+      if (linksBuilder_ == null) {
+        ensureLinksIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, links_);
+        onChanged();
+      } else {
+        linksBuilder_.addAllMessages(values);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .dossier.TypeLink links = 4;</code>
+     *
+     * <pre>
+     * Additional links to include in the navigation pane.
+     * </pre>
+     */
+    public Builder clearLinks() {
+      if (linksBuilder_ == null) {
+        links_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000008);
+        onChanged();
+      } else {
+        linksBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .dossier.TypeLink links = 4;</code>
+     *
+     * <pre>
+     * Additional links to include in the navigation pane.
+     * </pre>
+     */
+    public Builder removeLinks(int index) {
+      if (linksBuilder_ == null) {
+        ensureLinksIsMutable();
+        links_.remove(index);
+        onChanged();
+      } else {
+        linksBuilder_.remove(index);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .dossier.TypeLink links = 4;</code>
+     *
+     * <pre>
+     * Additional links to include in the navigation pane.
+     * </pre>
+     */
+    public com.github.jsdossier.proto.TypeLink.Builder getLinksBuilder(
+        int index) {
+      return getLinksFieldBuilder().getBuilder(index);
+    }
+    /**
+     * <code>repeated .dossier.TypeLink links = 4;</code>
+     *
+     * <pre>
+     * Additional links to include in the navigation pane.
+     * </pre>
+     */
+    public com.github.jsdossier.proto.TypeLinkOrBuilder getLinksOrBuilder(
+        int index) {
+      if (linksBuilder_ == null) {
+        return links_.get(index);  } else {
+        return linksBuilder_.getMessageOrBuilder(index);
+      }
+    }
+    /**
+     * <code>repeated .dossier.TypeLink links = 4;</code>
+     *
+     * <pre>
+     * Additional links to include in the navigation pane.
+     * </pre>
+     */
+    public java.util.List<? extends com.github.jsdossier.proto.TypeLinkOrBuilder> 
+         getLinksOrBuilderList() {
+      if (linksBuilder_ != null) {
+        return linksBuilder_.getMessageOrBuilderList();
+      } else {
+        return java.util.Collections.unmodifiableList(links_);
+      }
+    }
+    /**
+     * <code>repeated .dossier.TypeLink links = 4;</code>
+     *
+     * <pre>
+     * Additional links to include in the navigation pane.
+     * </pre>
+     */
+    public com.github.jsdossier.proto.TypeLink.Builder addLinksBuilder() {
+      return getLinksFieldBuilder().addBuilder(
+          com.github.jsdossier.proto.TypeLink.getDefaultInstance());
+    }
+    /**
+     * <code>repeated .dossier.TypeLink links = 4;</code>
+     *
+     * <pre>
+     * Additional links to include in the navigation pane.
+     * </pre>
+     */
+    public com.github.jsdossier.proto.TypeLink.Builder addLinksBuilder(
+        int index) {
+      return getLinksFieldBuilder().addBuilder(
+          index, com.github.jsdossier.proto.TypeLink.getDefaultInstance());
+    }
+    /**
+     * <code>repeated .dossier.TypeLink links = 4;</code>
+     *
+     * <pre>
+     * Additional links to include in the navigation pane.
+     * </pre>
+     */
+    public java.util.List<com.github.jsdossier.proto.TypeLink.Builder> 
+         getLinksBuilderList() {
+      return getLinksFieldBuilder().getBuilderList();
+    }
+    private com.google.protobuf.RepeatedFieldBuilder<
+        com.github.jsdossier.proto.TypeLink, com.github.jsdossier.proto.TypeLink.Builder, com.github.jsdossier.proto.TypeLinkOrBuilder> 
+        getLinksFieldBuilder() {
+      if (linksBuilder_ == null) {
+        linksBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+            com.github.jsdossier.proto.TypeLink, com.github.jsdossier.proto.TypeLink.Builder, com.github.jsdossier.proto.TypeLinkOrBuilder>(
+                links_,
+                ((bitField0_ & 0x00000008) == 0x00000008),
+                getParentForChildren(),
+                isClean());
+        links_ = null;
+      }
+      return linksBuilder_;
     }
 
     // @@protoc_insertion_point(builder_scope:dossier.Index)

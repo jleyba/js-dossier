@@ -1,6 +1,6 @@
 package com.github.jsdossier.soy;
 
-import com.github.jsdossier.proto.IndexFileRenderSpec;
+import com.github.jsdossier.proto.HtmlRenderSpec;
 import com.github.jsdossier.proto.JsTypeRenderSpec;
 import com.github.jsdossier.proto.SourceFileRenderSpec;
 import com.google.common.annotations.VisibleForTesting;
@@ -30,8 +30,8 @@ public class Renderer {
       .build()
       .compileToTofu();
 
-  public void render(Path output, IndexFileRenderSpec spec) throws IOException {
-    render(output, "dossier.soy.indexFile", spec);
+  public void render(Path output, HtmlRenderSpec spec) throws IOException {
+    render(output, "dossier.soy.htmlFile", spec);
   }
 
   public void render(Path output, SourceFileRenderSpec spec) throws IOException {

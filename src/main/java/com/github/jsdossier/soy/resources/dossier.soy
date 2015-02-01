@@ -66,6 +66,11 @@
         </div>
       </div>
     {/if}
+    {foreach $link in $index.links}
+      {if $link.href and $link.text}
+        <h3><a href="{$link.href}">{$link.text}</a></h3>
+      {/if}
+    {/foreach}
   </nav>
 {/template}
 
@@ -921,22 +926,21 @@
 
 
 /**
- * Generates the main index.
+ * Renders a generic page.
  */
-{template .indexFile}
-  {@param spec: dossier.IndexFileRenderSpec}
+{template .htmlFile}
+  {@param spec: dossier.HtmlRenderSpec}
 
   {call .pageHeader}
-    /* TODO(jleyba): title should be configurable. */
-    {param title: 'Index' /}
+    {param title: $spec.title /}
     {param resources: $spec.resources /}
   {/call}
 
   <main>
     <article class="indexfile">
-      {if $spec.readme and length($spec.readme.token)}
+      {if $spec.content and length($spec.content.token)}
         {call .comment}
-          {param comment: $spec.readme /}
+          {param comment: $spec.content /}
           {param omitLeadingTag: true /}
         {/call}
        {else}

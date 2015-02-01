@@ -28,6 +28,7 @@ import com.google.common.base.Predicates;
 import com.google.common.base.Splitter;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.common.reflect.TypeToken;
@@ -67,6 +68,7 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Describes the runtime configuration for the app.
@@ -79,8 +81,8 @@ class Config {
   private final Path srcPrefix;
   private final Path modulePrefix;
   private final Path output;
-  private final Optional<Path> license;
   private final Optional<Path> readme;
+  private final ImmutableMap<String, Path> customPages;
   private final boolean strict;
   private final Language language;
   private final PrintStream outputStream;
@@ -95,8 +97,8 @@ class Config {
    * @param modules The list of CommonJS compiler input sources.
    * @param externs The list of extern files for the Closure compiler.
    * @param output Path to the output directory.
-   * @param license Path to a license file to include with the generated documentation.
    * @param readme Path to a markdown file to include in the main index.
+   * @param customPages Custom markdown files to include in the generated documentation.
    * @param modulePrefix Prefix to strip from each module path when rendering documentation.
    * @param strict Whether to enable all type checks.
    * @param language The JavaScript dialog sources must conform to.
@@ -107,7 +109,7 @@ class Config {
    */
   private Config(
       ImmutableSet<Path> srcs, ImmutableSet<Path> modules, ImmutableSet<Path> externs, Path output,
-      Optional<Path> license, Optional<Path> readme, Optional<Path> modulePrefix,
+      Optional<Path> readme, Map<String, Path> customPages, Optional<Path> modulePrefix,
       boolean strict, Language language, PrintStream outputStream, PrintStream errorStream,
       FileSystem fileSystem) {
     checkArgument(!srcs.isEmpty() || !modules.isEmpty(),
@@ -123,10 +125,11 @@ class Config {
         modules, externs);
     checkArgument(!Files.exists(output) || Files.isDirectory(output),
         "Output path, %s, is not a directory", output);
-    checkArgument(!license.isPresent() || Files.exists(license.get()),
-        "LICENSE path, %s, does not exist", license.orNull());
     checkArgument(!readme.isPresent() || Files.exists(readme.get()),
         "README path, %s, does not exist", readme.orNull());
+    for (Path path : customPages.values()) {
+      checkArgument(Files.exists(path), "Custom page file does not exist: %s", path);
+    }
 
     this.srcs = srcs;
     this.modules = modules;
@@ -134,8 +137,8 @@ class Config {
     this.modulePrefix = getModulePreixPath(fileSystem, modulePrefix, modules);
     this.externs = externs;
     this.output = output;
-    this.license = license;
     this.readme = readme;
+    this.customPages = ImmutableMap.copyOf(customPages);
     this.strict = strict;
     this.language = language;
     this.outputStream = outputStream;
@@ -186,17 +189,17 @@ class Config {
   }
 
   /**
-   * Returns the path to a license file to include with the generated documentation.
-   */
-  Optional<Path> getLicense() {
-    return license;
-  }
-
-  /**
    * Returns the path to the readme markdown file, if any, to include in the main index.
    */
   Optional<Path> getReadme() {
     return readme;
+  }
+
+  /**
+   * Returns the custom pages to include in the generated documentation.
+   */
+  ImmutableMap<String, Path> getCustomPages() {
+    return customPages;
   }
 
   /**
@@ -307,8 +310,8 @@ class Config {
         ImmutableSet.copyOf(filteredModules),
         ImmutableSet.copyOf(resolve(spec.externs)),
         spec.output,
-        spec.license,
         spec.readme,
+        spec.customPages,
         spec.stripModulePrefix,
         spec.strict,
         spec.language,
@@ -607,13 +610,14 @@ class Config {
         "generating  API documentation.")
     private final List<PathSpec> externs = ImmutableList.of();
 
-    @Description("Path to a license file to include with the generated documentation. If " +
-        "specified, a link to the license will be included on every page.")
-    private final Optional<Path> license = Optional.absent();
-
     @Description("Path to a README file to include as the main landing page for the generated " +
         "documentation. This file should use markdown syntax.")
     private final Optional<Path> readme = Optional.absent();
+
+    @Description("Map of additional files to include in the generated documentation. Each key " +
+        "should be the page name listed in the navigation menu, and the value is the path to " +
+        "the markdown file to use.")
+    private final Map<String, Path> customPages = ImmutableMap.of();
 
     @Description("Whether to run with all type checking flags enabled.")
     private final boolean strict = false;

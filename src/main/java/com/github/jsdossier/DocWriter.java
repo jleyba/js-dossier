@@ -31,7 +31,7 @@ import com.github.jsdossier.proto.Comment;
 import com.github.jsdossier.proto.Deprecation;
 import com.github.jsdossier.proto.Enumeration;
 import com.github.jsdossier.proto.Index;
-import com.github.jsdossier.proto.IndexFileRenderSpec;
+import com.github.jsdossier.proto.HtmlRenderSpec;
 import com.github.jsdossier.proto.JsType;
 import com.github.jsdossier.proto.JsTypeRenderSpec;
 import com.github.jsdossier.proto.Resources;
@@ -44,6 +44,7 @@ import com.github.rjeschke.txtmark.Processor;
 import com.google.common.base.Charsets;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
+import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
@@ -77,6 +78,7 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Nullable;
@@ -121,6 +123,7 @@ class DocWriter {
     copyResources();
     copySourceFiles();
     generateIndex();
+    generateCustomPages();
 
     for (NominalType type : sortedTypes) {
       if (isEmptyNamespace(type)) {
@@ -195,24 +198,50 @@ class DocWriter {
           .setText(type.getQualifiedName());
     }
 
+    Iterable<String> customPages = FluentIterable.from(config.getCustomPages().keySet())
+        .toSortedList(String.CASE_INSENSITIVE_ORDER);
+    for (String page : customPages) {
+      builder.addLinksBuilder()
+          .setHref(page + ".html")
+          .setText(page);
+    }
+
     return builder.build();
   }
 
   private void generateIndex() throws IOException {
-    Comment readme = Comment.getDefaultInstance();
-    if (config.getReadme().isPresent()) {
-      String text = new String(Files.readAllBytes(config.getReadme().get()), Charsets.UTF_8);
+    generateHtmlPage(
+        "Index",
+        config.getOutput().resolve(INDEX_FILE_NAME),
+        config.getReadme());
+  }
+
+  private void generateCustomPages() throws IOException {
+    for (Map.Entry<String, Path> page : config.getCustomPages().entrySet()) {
+      String name = page.getKey();
+      checkArgument(!"index".equalsIgnoreCase(name), "reserved page name: %s", name);
+      generateHtmlPage(
+          name,
+          config.getOutput().resolve(name + ".html"),
+          Optional.of(page.getValue()));
+    }
+  }
+
+  private void generateHtmlPage(String title, Path output, Optional<Path> input)
+      throws IOException {
+    Comment content = Comment.getDefaultInstance();
+    if (input.isPresent()) {
+      String text = new String(Files.readAllBytes(input.get()), Charsets.UTF_8);
       String readmeHtml = Processor.process(text);
       // One more pass to process any inline taglets (e.g. {@code} or {@link}).
-      readme = parseComment(readmeHtml, linker);
+      content = parseComment(readmeHtml, linker);
     }
-
-    Path index = config.getOutput().resolve(INDEX_FILE_NAME);
-    IndexFileRenderSpec.Builder spec = IndexFileRenderSpec.newBuilder()
-        .setResources(getResources(index))
+    HtmlRenderSpec.Builder spec = HtmlRenderSpec.newBuilder()
+        .setResources(getResources(output))
+        .setTitle(title)
         .setIndex(masterIndex)
-        .setReadme(readme);
-    renderer.render(index, spec.build());
+        .setContent(content);
+    renderer.render(output, spec.build());
   }
 
   private void generateModuleDocs(NominalType module) throws IOException {
