@@ -84,7 +84,7 @@ run_protoc() {
 
 build_release() {
   buck clean
-  buck build app || \
+  buck test && buck build app && \
       echo "Release built: buck-out/gen/src/main/java/com/github/jsdossier/dossier.jar"
 }
 
