@@ -781,7 +781,7 @@ class DocWriter {
         }
       }
       definedOn = stripTemplateTypeInformation(definedOn);
-      return linker.formatTypeExpression(definedOn);
+      return addPropertyHash(linker.formatTypeExpression(definedOn), property.getName());
     }
     return null;
   }
@@ -803,9 +803,22 @@ class DocWriter {
         }
       }
       definedOn = stripTemplateTypeInformation(definedOn);
-      specifications.add(linker.formatTypeExpression(definedOn));
+      specifications.add(
+          addPropertyHash(linker.formatTypeExpression(definedOn), property.getName()));
     }
     return specifications;
+  }
+
+  private static Comment addPropertyHash(Comment comment, String hash) {
+    // TODO: find a non-hacky way for this.
+    if (comment.getTokenCount() == 1 && comment.getToken(0).hasHref()) {
+      Comment.Builder cbuilder = comment.toBuilder();
+      Comment.Token.Builder token = cbuilder.getToken(0).toBuilder();
+      token.setHref(token.getHref() + "#" + hash);
+      cbuilder.setToken(0, token);
+      comment = cbuilder.build();
+    }
+    return comment;
   }
 
   private static JSType stripTemplateTypeInformation(JSType type) {
