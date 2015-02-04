@@ -30,8 +30,8 @@ import com.github.jsdossier.proto.BaseProperty;
 import com.github.jsdossier.proto.Comment;
 import com.github.jsdossier.proto.Deprecation;
 import com.github.jsdossier.proto.Enumeration;
-import com.github.jsdossier.proto.Index;
 import com.github.jsdossier.proto.HtmlRenderSpec;
+import com.github.jsdossier.proto.Index;
 import com.github.jsdossier.proto.JsType;
 import com.github.jsdossier.proto.JsTypeRenderSpec;
 import com.github.jsdossier.proto.Resources;
@@ -56,6 +56,7 @@ import com.google.common.collect.MultimapBuilder;
 import com.google.common.collect.Ordering;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.jstype.EnumType;
@@ -95,8 +96,8 @@ class DocWriter {
   private final Linker linker;
 
   private final Renderer renderer = new Renderer();
+  private final TypeIndex typeIndex = new TypeIndex();
 
-  private Iterable<Path> sortedFiles;
   private Iterable<NominalType> sortedTypes;
   private Iterable<NominalType> sortedModules;
   private Index masterIndex;
@@ -108,8 +109,6 @@ class DocWriter {
   }
 
   public void generateDocs() throws IOException {
-    sortedFiles = FluentIterable.from(concat(config.getSources(), config.getModules()))
-        .toSortedList(new PathComparator());
     sortedTypes = FluentIterable.from(typeRegistry.getNominalTypes())
         .filter(isNonEmpty())
         .filter(not(isTypedef()))
@@ -129,7 +128,7 @@ class DocWriter {
       if (isEmptyNamespace(type)) {
         continue;
       }
-      generateDocs(type);
+      generateDocs(typeIndex.addType(type));
     }
 
     for (NominalType module : sortedModules) {
@@ -245,6 +244,7 @@ class DocWriter {
   }
 
   private void generateModuleDocs(NominalType module) throws IOException {
+    ModuleIndexReference ref = typeIndex.addModule(module);
     linker.pushContext(module);
 
     Path output = linker.getFilePath(module);
@@ -271,8 +271,8 @@ class DocWriter {
         .setIsDict(jsdoc != null && jsdoc.isDict())
         .setIsStruct(jsdoc != null && jsdoc.isStruct());
 
-    getStaticData(jsTypeBuilder, module);
-    getPrototypeData(jsTypeBuilder, module);
+    getStaticData(jsTypeBuilder, ref);
+    getPrototypeData(jsTypeBuilder, ref);
 
     if (jsdoc != null && jsdoc.isDeprecated()) {
       jsTypeBuilder.setDeprecation(getDeprecation(jsdoc));
@@ -303,13 +303,14 @@ class DocWriter {
 
     for (NominalType type : module.getTypes()) {
       if (!isEmptyNamespace(type)) {
-        generateDocs(type);
+        generateDocs(ref.addType(type));
       }
     }
     linker.popContext();
   }
 
-  private void generateDocs(NominalType type) throws IOException {
+  private void generateDocs(IndexReference ref) throws IOException {
+    NominalType type = ref.getNominalType();
     linker.pushContext(type);
 
     Path output = linker.getFilePath(type);
@@ -366,8 +367,8 @@ class DocWriter {
         .setIsDict(jsdoc != null && jsdoc.isDict())
         .setIsStruct(jsdoc != null && jsdoc.isStruct());
 
-    getStaticData(jsTypeBuilder, type);
-    getPrototypeData(jsTypeBuilder, type);
+    getStaticData(jsTypeBuilder, ref);
+    getPrototypeData(jsTypeBuilder, ref);
 
     if (jsdoc != null && jsdoc.isDeprecated()) {
       jsTypeBuilder.setDeprecation(getDeprecation(jsdoc));
@@ -411,78 +412,13 @@ class DocWriter {
   }
 
   private void writeTypesJson() throws IOException {
-    JsonArray files = new JsonArray();
-    for (Path source : sortedFiles) {
-      Path displayPath = config.getSrcPrefix().relativize(source);
-      String dest = config.getOutput().relativize(
-          linker.getFilePath(source)).toString();
-
-      JsonObject obj = new JsonObject();
-      obj.addProperty("name", displayPath.toString());
-      obj.addProperty("href", dest);
-
-      files.add(obj);
-    }
-
-    JsonArray modules = new JsonArray();
-    for (NominalType module : sortedModules) {
-      String dest = config.getOutput().relativize(linker.getFilePath(module)).toString();
-
-      JsonObject obj = new JsonObject();
-      obj.addProperty("name", linker.getDisplayName(module));
-      obj.addProperty("href", dest);
-      obj.add("types", getTypeInfo(module.getTypes()));
-      modules.add(obj);
-    }
-
-    JsonObject json = new JsonObject();
-    json.add("files", files);
-    json.add("modules", modules);
-    json.add("types", getTypeInfo(sortedTypes));
-
     // NOTE: JSON is not actually a subset of JavaScript, but in our case we know we only
     // have valid JavaScript input, so we can use JSONObject#toString() as a quick-and-dirty
     // formatting mechanism.
-    String content = "var TYPES = " + json + ";";
+    String content = "var TYPES = " + typeIndex + ";";
 
     Path outputPath = config.getOutput().resolve("types.js");
     Files.write(outputPath, content.getBytes(Charsets.UTF_8));
-  }
-
-  private JsonArray getTypeInfo(Iterable<NominalType> types) {
-    JsonArray array = new JsonArray();
-    for (NominalType type : types) {
-      if (isEmptyNamespace(type)) {
-        continue;
-      }
-
-      String dest = config.getOutput().relativize(linker.getFilePath(type)).toString();
-
-      JsonObject details = new JsonObject();
-      details.addProperty("name", type.getQualifiedName());
-      details.addProperty("href", dest);
-      details.addProperty("isInterface", type.getJsdoc() != null && type.getJsdoc().isInterface());
-      details.addProperty("isTypedef", type.getJsdoc() != null && type.getJsdoc().isTypedef());
-      array.add(details);
-
-      // Also include typedefs. These will not be included in the main
-      // index, but will be searchable.
-      List<NominalType> typedefs = FluentIterable.from(type.getTypes())
-          .filter(isTypedef())
-          .toSortedList(new NameComparator());
-      for (NominalType typedef : typedefs) {
-        TypeLink link = linker.getLink(typedef);
-        if (link == null) {
-          continue;  // TODO: decide what to do with global type links.
-        }
-        JsonObject typedefDetails = new JsonObject();
-        typedefDetails.addProperty("name", link.getText());
-        typedefDetails.addProperty("href", link.getHref());
-        typedefDetails.addProperty("isTypedef", true);
-        array.add(typedefDetails);
-      }
-    }
-    return array;
   }
 
   private Resources getResources(Path forPathFromRoot) {
@@ -698,7 +634,8 @@ class DocWriter {
     return types;
   }
 
-  private void getPrototypeData(JsType.Builder jsTypeBuilder, NominalType nominalType) {
+  private void getPrototypeData(JsType.Builder jsTypeBuilder, IndexReference indexReference) {
+    NominalType nominalType = indexReference.getNominalType();
     Iterable<JSType> assignableTypes;
     if (nominalType.getJsType().isConstructor()) {
       assignableTypes = Iterables.concat(
@@ -787,24 +724,38 @@ class DocWriter {
       }
 
       JSType propType = property.getType();
+      BaseProperty base;
       if (propType.isFunctionType()) {
-        jsTypeBuilder.addMethod(getFunctionData(
+        com.github.jsdossier.proto.Function data = getFunctionData(
             property.getName(),
             propType,
             property.getNode(),
             jsdoc,
             definedBy,
             overrides,
-            specifications));
+            specifications);
+        jsTypeBuilder.addMethod(data);
+        base = data.getBase();
       } else {
-        jsTypeBuilder.addField(getPropertyData(
+        com.github.jsdossier.proto.Property data = getPropertyData(
             property.getName(),
             propType,
             property.getNode(),
             jsdoc,
             definedBy,
             overrides,
-            specifications));
+            specifications);
+        jsTypeBuilder.addField(data);
+        base = data.getBase();
+      }
+
+      // Do not include the property in the search index if the parent type is an alias,
+      // the property is inherited from another type, or the property overrides a parent
+      // property but does not provide a comment of its own.
+      if (!jsTypeBuilder.hasAliasedType() && !base.hasDefinedBy()
+          && (!base.hasOverrides()
+          || (base.hasDescription() && base.getDescription().getTokenCount() > 0))) {
+        indexReference.addInstanceProperty(base.getName());
       }
     }
   }
@@ -867,7 +818,9 @@ class DocWriter {
     return type;
   }
 
-  private void getStaticData(JsType.Builder jsTypeBuilder, NominalType type) {
+  private void getStaticData(
+      JsType.Builder jsTypeBuilder, IndexReference indexReference) {
+    NominalType type = indexReference.getNominalType();
     ImmutableList<Property> properties = FluentIterable.from(type.getProperties())
         .toSortedList(new PropertyNameComparator());
 
@@ -889,30 +842,42 @@ class DocWriter {
         jsdoc = JsDoc.from(type.getModule().getInternalVarDocs(internalName));
       }
 
-      if (jsdoc != null && jsdoc.getVisibility() == JSDocInfo.Visibility.PRIVATE) {
+      if (jsdoc != null && jsdoc.getVisibility() == JSDocInfo.Visibility.PRIVATE
+          || (name.endsWith(".superClass_") && property.getType().isFunctionPrototypeType())) {
         continue;
       }
 
+      BaseProperty base = null;
       if (jsdoc != null && jsdoc.isDefine()) {
-        jsTypeBuilder.addCompilerConstant(getPropertyData(
+        com.github.jsdossier.proto.Property data = getPropertyData(
             name,
             property.getType(),
             property.getNode(),
-            jsdoc));
+            jsdoc);
+        base = data.getBase();
+        jsTypeBuilder.addCompilerConstant(data);
 
       } else if (property.getType().isFunctionType()) {
-        jsTypeBuilder.addStaticFunction(getFunctionData(
+        com.github.jsdossier.proto.Function data = getFunctionData(
             name,
             property.getType(),
             property.getNode(),
-            jsdoc));
+            jsdoc);
+        base = data.getBase();
+        jsTypeBuilder.addStaticFunction(data);
 
       } else if (!property.getType().isEnumElementType()) {
-        jsTypeBuilder.addStaticProperty(getPropertyData(
+        com.github.jsdossier.proto.Property data = getPropertyData(
             name,
             property.getType(),
             property.getNode(),
-            jsdoc));
+            jsdoc);
+        base = data.getBase();
+        jsTypeBuilder.addStaticProperty(data);
+      }
+
+      if (!jsTypeBuilder.hasAliasedType() && base != null) {
+        indexReference.addStaticProperty(base.getName());
       }
     }
   }
@@ -1209,6 +1174,99 @@ class DocWriter {
     }
 
     return null;
+  }
+
+  private static JsonArray getJsonArray(JsonObject object, String name) {
+    if (!object.has(name)) {
+      object.add(name, new JsonArray());
+    }
+    return object.get(name).getAsJsonArray();
+  }
+
+  class TypeIndex {
+
+    private final JsonObject json;
+
+    TypeIndex() {
+      this.json = new JsonObject();
+    }
+
+    @Override
+    public String toString() {
+      return json.toString();
+    }
+
+    ModuleIndexReference addModule(NominalType module) {
+      String dest = config.getOutput().relativize(linker.getFilePath(module)).toString();
+
+      JsonObject obj = new JsonObject();
+      obj.addProperty("name", linker.getDisplayName(module));
+      obj.addProperty("href", dest);
+
+      getJsonArray(json, "modules").add(obj);
+      return new ModuleIndexReference(module, obj);
+    }
+
+    IndexReference addType(NominalType type) {
+      return addTypeInfo(getJsonArray(json, "types"), type);
+    }
+  }
+
+  private class IndexReference {
+    private final NominalType type;
+    protected final JsonObject index;
+
+    private IndexReference(NominalType type, JsonObject index) {
+      this.type = type;
+      this.index = index;
+    }
+
+    NominalType getNominalType() {
+      return type;
+    }
+
+    void addStaticProperty(String name) {
+      getJsonArray(index, "statics").add(new JsonPrimitive(name));
+    }
+
+    void addInstanceProperty(String name) {
+      getJsonArray(index, "members").add(new JsonPrimitive(name));
+    }
+  }
+
+  private class ModuleIndexReference extends IndexReference {
+    private ModuleIndexReference(NominalType module, JsonObject index) {
+      super(module, index);
+    }
+
+    IndexReference addType(NominalType type) {
+      checkArgument(type.getParent() == getNominalType());
+      return addTypeInfo(getJsonArray(index, "types"), type);
+    }
+  }
+
+  private IndexReference addTypeInfo(JsonArray array, NominalType type) {
+    String dest = config.getOutput().relativize(linker.getFilePath(type)).toString();
+
+    JsonObject details = new JsonObject();
+    details.addProperty("name", type.getQualifiedName());
+    details.addProperty("href", dest);
+    array.add(details);
+
+    List<NominalType> typedefs = FluentIterable.from(type.getTypes())
+        .filter(isTypedef())
+        .toSortedList(new NameComparator());
+    for (NominalType typedef : typedefs) {
+      TypeLink link = linker.getLink(typedef);
+      if (link == null) {
+        continue;  // TODO: decide what to do with global type links.
+      }
+      JsonObject typedefDetails = new JsonObject();
+      typedefDetails.addProperty("name", link.getText());
+      typedefDetails.addProperty("href", link.getHref());
+      array.add(typedefDetails);
+    }
+    return new IndexReference(type, details);
   }
 
   private static class InstanceProperty {

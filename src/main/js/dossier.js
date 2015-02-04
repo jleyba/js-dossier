@@ -27,6 +27,7 @@ goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('goog.dom');
 goog.require('goog.dom.classlist');
+goog.require('goog.string');
 goog.require('goog.ui.ac');
 goog.require('goog.ui.ac.AutoComplete.EventType');
 
@@ -34,8 +35,8 @@ goog.require('goog.ui.ac.AutoComplete.EventType');
 /**
  * @typedef {{name: string,
  *            href: string,
- *            isInterface: boolean,
- *            isTypedef: boolean,
+ *            statics: Array.<dossier.Descriptor_>,
+ *            members: Array.<dossier.Descriptor_>,
  *            types: Array.<dossier.Descriptor_>}}
  * @private
  */
@@ -44,8 +45,7 @@ dossier.Descriptor_;
 
 /**
  * @typedef {{types: !Array.<dossier.Descriptor_>,
- *            modules: !Array.<dossier.Descriptor_>,
- *            files: !Array.<dossier.Descriptor_>}}
+ *            modules: !Array.<dossier.Descriptor_>}}
  * @private
  */
 dossier.TypeInfo_;
@@ -135,21 +135,13 @@ dossier.initSourceHilite_ = function() {
  */
 dossier.initSearchBox_ = function(typeInfo) {
   var nameToHref = {};
-  var allTerms = goog.array.map(typeInfo['types'], function(descriptor) {
-    nameToHref[descriptor['name']] = descriptor['href'];
-    return descriptor['name'];
+  var allTerms = [];
+  goog.array.forEach(typeInfo['types'], function(descriptor) {
+    dossier.addTypes_(allTerms, nameToHref, descriptor);
   });
 
   goog.array.forEach(typeInfo['modules'], function(module) {
-    nameToHref[module['name']] = module['href'];
-    allTerms = goog.array.concat(
-        allTerms,
-        module['name'],
-        goog.array.map(module['types'] || [], function(type) {
-          var displayName = module['name'] + '.' + type['name'];
-          nameToHref[displayName] = type['href'];
-          return displayName;
-        }));
+    dossier.addTypes_(allTerms, nameToHref, module, true);
   });
 
   var searchForm = document.querySelector('header form');
@@ -162,7 +154,7 @@ dossier.initSearchBox_ = function(typeInfo) {
 
   var input = searchForm.querySelector('input');
   var ac = goog.ui.ac.createSimpleAutoComplete(allTerms, input, false, true);
-  ac.setMaxMatches(15);
+  ac.setMaxMatches(20);
   goog.events.listen(ac,
       goog.ui.ac.AutoComplete.EventType.UPDATE, navigatePage);
 
@@ -171,6 +163,59 @@ dossier.initSearchBox_ = function(typeInfo) {
     if (href) {
       window.location.href = dossier.BASE_PATH_ + href;
     }
+  }
+};
+
+
+/**
+ * @param {!Array<string>} terms .
+ * @param {!Object<string, string>} nameToHref .
+ * @param {dossier.Descriptor_} descriptor .
+ * @param {boolean=} opt_isModule .
+ * @param {string=} opt_parent .
+ * @private
+ */
+dossier.addTypes_ = function(terms, nameToHref, descriptor, opt_isModule, opt_parent) {
+  var descriptorName = descriptor['name'];
+  if (opt_parent) {
+    descriptorName = opt_parent +
+        (goog.string.endsWith(opt_parent, ')') ? ' ' : '.') +
+        descriptorName;
+  }
+  nameToHref[descriptorName] = descriptor['href'];
+  terms.push(descriptorName);
+
+  if (opt_isModule) {
+    descriptorName = '(' + descriptorName + ')';
+  }
+
+  if (opt_isModule && descriptor['types']) {
+    goog.array.forEach(descriptor['types'], function(type) {
+      dossier.addTypes_(terms, nameToHref, type, false, descriptorName);
+    });
+  }
+
+  if (descriptor['statics']) {
+    goog.array.forEach(descriptor['statics'], function(name) {
+      var href = descriptor['href'] + '#' + name;
+      if (goog.string.endsWith(descriptorName, ')')) {
+        name = descriptorName + ' ' + name;
+      } else if (name.indexOf('.') === -1) {
+        name = descriptorName + '.' + name;
+      } else {
+        name = descriptorName + name.slice(name.lastIndexOf('.'));
+      }
+      nameToHref[name] = href;
+      terms.push(name);
+    });
+  }
+
+  if (descriptor['members']) {
+    goog.array.forEach(descriptor['members'], function(name) {
+      var href = descriptor['href'] + '#' + name;
+      nameToHref[descriptorName + '#' + name] = href;
+      terms.push(descriptorName + '#' + name);
+    });
   }
 };
 

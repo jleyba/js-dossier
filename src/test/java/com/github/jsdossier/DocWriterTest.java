@@ -1,9 +1,11 @@
 package com.github.jsdossier;
 
 import static com.github.jsdossier.CompilerUtil.createSourceFile;
+import static com.google.common.truth.Truth.assertThat;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.readAllBytes;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import com.google.common.base.Joiner;
@@ -59,14 +61,7 @@ public class DocWriterTest {
   public void writesTypes_simple() throws IOException {
     config.addSource(path("simple.js"), "function x() {}").generateDocs();
     JsonObject json = readTypesJs();
-
-    assertEquals(
-        new JsonArrayBuilder()
-            .add(new JsonObjectBuilder()
-                .put("name", "simple.js")
-                .put("href", "source/simple.js.src.html"))
-            .build(),
-        json.getAsJsonArray("files"));
+    assertThat(json.entrySet()).isEmpty();
   }
 
   @Test
@@ -80,23 +75,21 @@ public class DocWriterTest {
         .generateDocs();
     JsonObject json = readTypesJs();
 
-    assertEquals(
-        new JsonArrayBuilder()
-            .add(new JsonObjectBuilder()
-                .put("name", "module.js")
-                .put("href", "source/module.js.src.html"))
-            .build(),
-        json.getAsJsonArray("files"));
-
-    assertEquals(new JsonArray(), json.getAsJsonArray("types"));
+    assertFalse(json.has("types"));
 
     JsonArray modules = json.getAsJsonArray("modules");
     assertEquals(1, modules.size());
 
     JsonObject module = modules.get(0).getAsJsonObject();
     assertEquals("work/module", module.get("name").getAsString());
-    assertEquals(new JsonArray(), module.get("types").getAsJsonArray());
     assertEquals("module_work_module.html", module.get("href").getAsString());
+    assertFalse(module.has("types"));
+    assertFalse(module.has("members"));
+    assertEquals(
+        new JsonArrayBuilder()
+            .add(new JsonPrimitive("greet"))
+            .build(),
+        module.getAsJsonArray("statics"));
   }
 
   private JsonObject readTypesJs() throws IOException {

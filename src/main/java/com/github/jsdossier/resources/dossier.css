@@ -43,7 +43,7 @@ header input{height:2.5rem;width:30rem;margin:auto;display:block;padding:0;paddi
 .ac-row{cursor:pointer;padding:.5rem}
 .ac-highlighted{font-weight:bold}
 .ac-active{background-color:rgba(82,82,82,0.1)}
-@media (min-width:1000px){header form{width:100rem;margin:auto} header input{position:absolute;right:1rem}}div.pre-footer{position:absolute;top:0;bottom:0;width:100%;z-index:-1}div.pre-footer>div{height:100%}
+@media (min-width:1000px){header form{width:100rem;margin:auto} header input{position:absolute;right:1rem} .ac-renderer{min-width:30rem;width:initial}}div.pre-footer{position:absolute;top:0;bottom:0;width:100%;z-index:-1}div.pre-footer>div{height:100%}
 footer{position:absolute;left:0;bottom:0;right:0;height:4rem;padding:0;margin:0;font-size:1rem}footer div{display:table-cell;vertical-align:middle;height:4rem}
 footer a{padding-left:2.25rem}footer a,footer a:visited{color:rgba(255,255,255,0.8)}
 #nav-modules,#nav-types{display:none}#nav-modules~label h3:before,#nav-types~label h3:before{-ms-transform:rotate(0);-webkit-transform:rotate(0);transform:rotate(0)}
