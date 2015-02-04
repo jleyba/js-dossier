@@ -723,6 +723,11 @@ class DocWriter {
         continue;
       }
 
+      // TODO: include inherited properties in UI without generate lots of redundant info.
+      if (definedBy != null) {
+        continue;
+      }
+
       JSType propType = property.getType();
       BaseProperty base;
       if (propType.isFunctionType()) {
