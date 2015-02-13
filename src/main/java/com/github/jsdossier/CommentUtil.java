@@ -18,9 +18,9 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Strings.isNullOrEmpty;
 
 import com.github.jsdossier.proto.Comment;
+import com.github.jsdossier.proto.Deprecation;
 import com.github.jsdossier.proto.TypeLink;
-import com.google.common.escape.CharEscaperBuilder;
-import com.google.common.escape.Escaper;
+import com.github.rjeschke.txtmark.Processor;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -84,8 +84,29 @@ public class CommentUtil {
    * Parses the {@code text} of a JSDoc block comment.
    */
   public static Comment parseComment(String text, Linker linker) {
-    if (isNullOrEmpty(text)) {
+    String html = parseMarkdown(text, linker);
+    if (html.isEmpty()) {
       return Comment.getDefaultInstance();
+    }
+    return Comment.newBuilder()
+        .addToken(Comment.Token.newBuilder().setHtml(html))
+        .build();
+  }
+
+  public static Deprecation parseDeprecation(String text, Linker linker) {
+    String html = parseMarkdown(text, linker);
+    if (html.isEmpty()) {
+      return Deprecation.getDefaultInstance();
+    }
+    checkArgument(html.startsWith("<p>"));
+    // TODO: figure out how to do this in soy.
+    html = "<p><b>Deprecated: </b>" + html.substring(3);
+    return Deprecation.newBuilder().setHtml(html).build();
+  }
+
+  private static String parseMarkdown(String text, Linker linker) {
+    if (isNullOrEmpty(text)) {
+      return "";
     }
 
     StringBuilder builder = new StringBuilder(text.length());
@@ -113,7 +134,7 @@ public class CommentUtil {
       String tagletText = text.substring(tagletStart + tagletPrefix.length(), tagletEnd);
       switch (tagletName) {
         case "code":
-          builder.append("<code>").append(HTML_ESCAPER.escape(tagletText)).append("</code>");
+          builder.append("<code>").append(tagletText).append("</code>");
           break;
 
         case "link":
@@ -125,11 +146,10 @@ public class CommentUtil {
             builder.append("<code>");
           }
           if (link == null) {
-            builder.append(HTML_ESCAPER.escape(info.text));
+            builder.append(info.text);
           } else {
-            builder.append("<a href=\"").append(link.getHref()).append("\">")
-                .append(HTML_ESCAPER.escape(info.text))
-                .append("</a>");
+            builder.append("[").append(info.text).append("]")
+                .append("(").append(link.getHref()).append(")");
           }
           if ("link".equals(tagletName)) {
             builder.append("</code>");
@@ -138,14 +158,13 @@ public class CommentUtil {
 
         case "literal":
         default:
-          builder.append(HTML_ESCAPER.escape(tagletText));
+          builder.append(tagletText);
       }
       start = tagletEnd + 1;
     }
 
-    return Comment.newBuilder()
-        .addToken(Comment.Token.newBuilder().setHtml(builder.toString()))
-        .build();
+    String markdown = builder.toString();
+    return Processor.process(markdown).trim();
   }
 
   private static int findInlineTagStart(String text, int start) {
@@ -204,12 +223,4 @@ public class CommentUtil {
       return new LinkInfo(linkedType, linkText);
     }
   }
-
-  private static Escaper HTML_ESCAPER = new CharEscaperBuilder()
-      .addEscape('"', "&quot;")
-      .addEscape('\'', "&#39;")
-      .addEscape('&', "&amp;")
-      .addEscape('<', "&lt;")
-      .addEscape('>', "&gt;")
-      .toEscaper();
 }

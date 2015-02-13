@@ -8,15 +8,16 @@ public interface DeprecationOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>optional .dossier.Comment notice = 1;</code>
+   * <code>optional string html = 1;</code>
    */
-  boolean hasNotice();
+  boolean hasHtml();
   /**
-   * <code>optional .dossier.Comment notice = 1;</code>
+   * <code>optional string html = 1;</code>
    */
-  com.github.jsdossier.proto.Comment getNotice();
+  java.lang.String getHtml();
   /**
-   * <code>optional .dossier.Comment notice = 1;</code>
+   * <code>optional string html = 1;</code>
    */
-  com.github.jsdossier.proto.CommentOrBuilder getNoticeOrBuilder();
+  com.google.protobuf.ByteString
+      getHtmlBytes();
 }

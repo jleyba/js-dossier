@@ -60,16 +60,9 @@ public final class Deprecation extends
             break;
           }
           case 10: {
-            com.github.jsdossier.proto.Comment.Builder subBuilder = null;
-            if (((bitField0_ & 0x00000001) == 0x00000001)) {
-              subBuilder = notice_.toBuilder();
-            }
-            notice_ = input.readMessage(com.github.jsdossier.proto.Comment.PARSER, extensionRegistry);
-            if (subBuilder != null) {
-              subBuilder.mergeFrom(notice_);
-              notice_ = subBuilder.buildPartial();
-            }
+            com.google.protobuf.ByteString bs = input.readBytes();
             bitField0_ |= 0x00000001;
+            html_ = bs;
             break;
           }
         }
@@ -112,29 +105,50 @@ public final class Deprecation extends
   }
 
   private int bitField0_;
-  public static final int NOTICE_FIELD_NUMBER = 1;
-  private com.github.jsdossier.proto.Comment notice_;
+  public static final int HTML_FIELD_NUMBER = 1;
+  private java.lang.Object html_;
   /**
-   * <code>optional .dossier.Comment notice = 1;</code>
+   * <code>optional string html = 1;</code>
    */
-  public boolean hasNotice() {
+  public boolean hasHtml() {
     return ((bitField0_ & 0x00000001) == 0x00000001);
   }
   /**
-   * <code>optional .dossier.Comment notice = 1;</code>
+   * <code>optional string html = 1;</code>
    */
-  public com.github.jsdossier.proto.Comment getNotice() {
-    return notice_;
+  public java.lang.String getHtml() {
+    java.lang.Object ref = html_;
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
+    } else {
+      com.google.protobuf.ByteString bs = 
+          (com.google.protobuf.ByteString) ref;
+      java.lang.String s = bs.toStringUtf8();
+      if (bs.isValidUtf8()) {
+        html_ = s;
+      }
+      return s;
+    }
   }
   /**
-   * <code>optional .dossier.Comment notice = 1;</code>
+   * <code>optional string html = 1;</code>
    */
-  public com.github.jsdossier.proto.CommentOrBuilder getNoticeOrBuilder() {
-    return notice_;
+  public com.google.protobuf.ByteString
+      getHtmlBytes() {
+    java.lang.Object ref = html_;
+    if (ref instanceof java.lang.String) {
+      com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString.copyFromUtf8(
+              (java.lang.String) ref);
+      html_ = b;
+      return b;
+    } else {
+      return (com.google.protobuf.ByteString) ref;
+    }
   }
 
   private void initFields() {
-    notice_ = com.github.jsdossier.proto.Comment.getDefaultInstance();
+    html_ = "";
   }
   private byte memoizedIsInitialized = -1;
   public final boolean isInitialized() {
@@ -150,7 +164,7 @@ public final class Deprecation extends
                       throws java.io.IOException {
     getSerializedSize();
     if (((bitField0_ & 0x00000001) == 0x00000001)) {
-      output.writeMessage(1, notice_);
+      output.writeBytes(1, getHtmlBytes());
     }
     getUnknownFields().writeTo(output);
   }
@@ -163,7 +177,7 @@ public final class Deprecation extends
     size = 0;
     if (((bitField0_ & 0x00000001) == 0x00000001)) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(1, notice_);
+        .computeBytesSize(1, getHtmlBytes());
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSerializedSize = size;
@@ -278,7 +292,6 @@ public final class Deprecation extends
     }
     private void maybeForceBuilderInitialization() {
       if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
-        getNoticeFieldBuilder();
       }
     }
     private static Builder create() {
@@ -287,11 +300,7 @@ public final class Deprecation extends
 
     public Builder clear() {
       super.clear();
-      if (noticeBuilder_ == null) {
-        notice_ = com.github.jsdossier.proto.Comment.getDefaultInstance();
-      } else {
-        noticeBuilder_.clear();
-      }
+      html_ = "";
       bitField0_ = (bitField0_ & ~0x00000001);
       return this;
     }
@@ -324,11 +333,7 @@ public final class Deprecation extends
       if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
         to_bitField0_ |= 0x00000001;
       }
-      if (noticeBuilder_ == null) {
-        result.notice_ = notice_;
-      } else {
-        result.notice_ = noticeBuilder_.build();
-      }
+      result.html_ = html_;
       result.bitField0_ = to_bitField0_;
       onBuilt();
       return result;
@@ -345,8 +350,10 @@ public final class Deprecation extends
 
     public Builder mergeFrom(com.github.jsdossier.proto.Deprecation other) {
       if (other == com.github.jsdossier.proto.Deprecation.getDefaultInstance()) return this;
-      if (other.hasNotice()) {
-        mergeNotice(other.getNotice());
+      if (other.hasHtml()) {
+        bitField0_ |= 0x00000001;
+        html_ = other.html_;
+        onChanged();
       }
       this.mergeUnknownFields(other.getUnknownFields());
       return this;
@@ -375,120 +382,80 @@ public final class Deprecation extends
     }
     private int bitField0_;
 
-    private com.github.jsdossier.proto.Comment notice_ = com.github.jsdossier.proto.Comment.getDefaultInstance();
-    private com.google.protobuf.SingleFieldBuilder<
-        com.github.jsdossier.proto.Comment, com.github.jsdossier.proto.Comment.Builder, com.github.jsdossier.proto.CommentOrBuilder> noticeBuilder_;
+    private java.lang.Object html_ = "";
     /**
-     * <code>optional .dossier.Comment notice = 1;</code>
+     * <code>optional string html = 1;</code>
      */
-    public boolean hasNotice() {
+    public boolean hasHtml() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
     /**
-     * <code>optional .dossier.Comment notice = 1;</code>
+     * <code>optional string html = 1;</code>
      */
-    public com.github.jsdossier.proto.Comment getNotice() {
-      if (noticeBuilder_ == null) {
-        return notice_;
-      } else {
-        return noticeBuilder_.getMessage();
-      }
-    }
-    /**
-     * <code>optional .dossier.Comment notice = 1;</code>
-     */
-    public Builder setNotice(com.github.jsdossier.proto.Comment value) {
-      if (noticeBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
+    public java.lang.String getHtml() {
+      java.lang.Object ref = html_;
+      if (!(ref instanceof java.lang.String)) {
+        com.google.protobuf.ByteString bs =
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          html_ = s;
         }
-        notice_ = value;
-        onChanged();
+        return s;
       } else {
-        noticeBuilder_.setMessage(value);
+        return (java.lang.String) ref;
       }
-      bitField0_ |= 0x00000001;
-      return this;
     }
     /**
-     * <code>optional .dossier.Comment notice = 1;</code>
+     * <code>optional string html = 1;</code>
      */
-    public Builder setNotice(
-        com.github.jsdossier.proto.Comment.Builder builderForValue) {
-      if (noticeBuilder_ == null) {
-        notice_ = builderForValue.build();
-        onChanged();
+    public com.google.protobuf.ByteString
+        getHtmlBytes() {
+      java.lang.Object ref = html_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        html_ = b;
+        return b;
       } else {
-        noticeBuilder_.setMessage(builderForValue.build());
+        return (com.google.protobuf.ByteString) ref;
       }
-      bitField0_ |= 0x00000001;
-      return this;
     }
     /**
-     * <code>optional .dossier.Comment notice = 1;</code>
+     * <code>optional string html = 1;</code>
      */
-    public Builder mergeNotice(com.github.jsdossier.proto.Comment value) {
-      if (noticeBuilder_ == null) {
-        if (((bitField0_ & 0x00000001) == 0x00000001) &&
-            notice_ != com.github.jsdossier.proto.Comment.getDefaultInstance()) {
-          notice_ =
-            com.github.jsdossier.proto.Comment.newBuilder(notice_).mergeFrom(value).buildPartial();
-        } else {
-          notice_ = value;
-        }
-        onChanged();
-      } else {
-        noticeBuilder_.mergeFrom(value);
-      }
-      bitField0_ |= 0x00000001;
-      return this;
-    }
-    /**
-     * <code>optional .dossier.Comment notice = 1;</code>
-     */
-    public Builder clearNotice() {
-      if (noticeBuilder_ == null) {
-        notice_ = com.github.jsdossier.proto.Comment.getDefaultInstance();
-        onChanged();
-      } else {
-        noticeBuilder_.clear();
-      }
-      bitField0_ = (bitField0_ & ~0x00000001);
-      return this;
-    }
-    /**
-     * <code>optional .dossier.Comment notice = 1;</code>
-     */
-    public com.github.jsdossier.proto.Comment.Builder getNoticeBuilder() {
-      bitField0_ |= 0x00000001;
+    public Builder setHtml(
+        java.lang.String value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+      html_ = value;
       onChanged();
-      return getNoticeFieldBuilder().getBuilder();
+      return this;
     }
     /**
-     * <code>optional .dossier.Comment notice = 1;</code>
+     * <code>optional string html = 1;</code>
      */
-    public com.github.jsdossier.proto.CommentOrBuilder getNoticeOrBuilder() {
-      if (noticeBuilder_ != null) {
-        return noticeBuilder_.getMessageOrBuilder();
-      } else {
-        return notice_;
-      }
+    public Builder clearHtml() {
+      bitField0_ = (bitField0_ & ~0x00000001);
+      html_ = getDefaultInstance().getHtml();
+      onChanged();
+      return this;
     }
     /**
-     * <code>optional .dossier.Comment notice = 1;</code>
+     * <code>optional string html = 1;</code>
      */
-    private com.google.protobuf.SingleFieldBuilder<
-        com.github.jsdossier.proto.Comment, com.github.jsdossier.proto.Comment.Builder, com.github.jsdossier.proto.CommentOrBuilder> 
-        getNoticeFieldBuilder() {
-      if (noticeBuilder_ == null) {
-        noticeBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-            com.github.jsdossier.proto.Comment, com.github.jsdossier.proto.Comment.Builder, com.github.jsdossier.proto.CommentOrBuilder>(
-                getNotice(),
-                getParentForChildren(),
-                isClean());
-        notice_ = null;
-      }
-      return noticeBuilder_;
+    public Builder setHtmlBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+      html_ = value;
+      onChanged();
+      return this;
     }
 
     // @@protoc_insertion_point(builder_scope:dossier.Deprecation)

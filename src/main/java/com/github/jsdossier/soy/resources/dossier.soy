@@ -100,10 +100,7 @@
  */
 {template .comment}
   {@param comment: dossier.Comment}
-  {@param? omitLeadingTag: bool}  /* Whether to omit the leading P tag. */
-
   {if $comment and length($comment.token)}
-    {if not $omitLeadingTag}<p>{/if}
     {foreach $token in $comment.token}
       {if $token.href}<a href="{$token.href}">{/if}
       {if $token.text}{$token.text}{/if}
@@ -151,7 +148,6 @@
         {/if}
         {call .comment}
           {param comment: $type /}
-          {param omitLeadingTag: true /}
         {/call}
       {/foreach}
     </pre>
@@ -176,7 +172,6 @@
         <code>
           {call .comment}
             {param comment: $interface /}
-            {param omitLeadingTag: true /}
           {/call}
         </code>
         {if not isLast($interface)},{sp}{/if}
@@ -210,16 +205,8 @@
  */
 {template .deprecationNotice private="true"}
   {@param deprecation: dossier.Deprecation}
-  {@param? omitLeadingTag: bool}
-
-  {if $deprecation and $deprecation.notice and length($deprecation.notice.token)}
-    {if not $omitLeadingTag}<p>{/if}
-      <b>Deprecated: </b>
-      {call .comment}
-        {param comment: $deprecation.notice /}
-        {param omitLeadingTag: true /}
-      {/call}
-    {if not $omitLeadingTag}</p>{/if}
+  {if $deprecation and $deprecation.html}
+    {$deprecation.html}
   {/if}
 {/template}
 
@@ -234,23 +221,18 @@
     <h2>Values and Descriptions</h2>
     <dl>
       {foreach $value in $enumeration.value}
-        <dt{if $value.deprecation.notice and length($value.deprecation.notice.token)} class="deprecated"{/if}>
+        <dt{if $value.deprecation.html} class="deprecated"{/if}>
           <a id="{$value.name}"></a>
           {$value.name}
         {if ($value.description and length($value.description.token)) or
-            ($value.deprecation
-             and $value.deprecation.notice
-             and length($value.deprecation.notice.token))}
+            ($value.deprecation and $value.deprecation.html)}
           <dd>
             {call .comment}
               {param comment: $value.description /}
-              {param omitLeadingTag: true /}
             {/call}
-            {if $value.deprecation.notice and length($value.deprecation.notice.token)}
-              {if ($value.description and length($value.description.token))}<br>{/if}
+            {if $value.deprecation.html}
               {call .deprecationNotice}
                 {param deprecation: $value.deprecation /}
-                {param omitLeadingTag: true /}
               {/call}
             {/if}
         {/if}
@@ -279,7 +261,6 @@
               {if $type.summary and length($type.summary.token)}
                 {call .comment}
                   {param comment: $type.summary /}
-                  {param omitLeadingTag: true /}
                 {/call}
               {else}
                 No Description.
@@ -305,7 +286,6 @@
     {if $details}
       {call .comment}
         {param comment: $details.type /}
-        {param omitLeadingTag: true /}
       {/call}
     {/if}
   {/let}
@@ -314,7 +294,6 @@
     {if $details}
       {call .comment}
         {param comment: $details.description /}
-        {param omitLeadingTag: true /}
       {/call}
     {/if}
   {/let}
@@ -340,7 +319,7 @@
             {/if}
         </dl>
       {elseif $hasComment}
-        <p>{$returnComment}</p>
+        {$returnComment}
       {/if}
     </div>
   {/if}
@@ -367,7 +346,6 @@
             <code>
               {call .comment}
                 {param comment: $detail.type /}
-                {param omitLeadingTag: true /}
               {/call}
             </code>
           {/if}
@@ -375,7 +353,6 @@
             {if $detail.description}
               {call .comment}
                 {param comment: $detail.description /}
-                {param omitLeadingTag: true /}
               {/call}
             {/if}
           {/let}
@@ -533,9 +510,7 @@
     {call .fnDetails}
       {param fn: $fn /}
     {/call}
-  {elseif $fn.base.deprecation
-      and $fn.base.deprecation.notice
-      and length($fn.base.deprecation.notice.token)}
+  {elseif $fn.base.deprecation and $fn.base.deprecation.html}
     {call .deprecationNotice}
       {param deprecation: $fn.base.deprecation /}
     {/call}
@@ -559,7 +534,6 @@
         <b>Defined by: </b>
         {call .comment}
           {param comment: $base.definedBy /}
-          {param omitLeadingTag: true /}
         {/call}
         {if $base.overrides or length($base.specifiedBy)}<br>{/if}
       {/if}
@@ -567,7 +541,6 @@
         <b>Overrides: </b>
         {call .comment}
           {param comment: $base.overrides /}
-          {param omitLeadingTag: true /}
         {/call}
         {if length($base.specifiedBy)}<br>{/if}
       {/if}
@@ -576,7 +549,6 @@
         {foreach $spec in $base.specifiedBy}
           {call .comment}
             {param comment: $spec /}
-            {param omitLeadingTag: true /}
           {/call}
           {if not isLast($spec)}
             ,{sp}
@@ -606,7 +578,6 @@
       <code>
         {call .comment}
           {param comment: $prop.type /}
-          {param omitLeadingTag: true /}
         {/call}
       </code>
     {/if}
@@ -614,7 +585,6 @@
     {if $prop.base.description and length($prop.base.description.token)}
       {call .comment}
         {param comment: $prop.base.description /}
-        {param omitLeadingTag: true /}
       {/call}
     {else}
       No description.
@@ -784,7 +754,6 @@
           <code>
             {call .comment}
               {param comment: $type.enumeration.type /}
-              {param omitLeadingTag: true /}
             {/call}
           </code>
       {/if}
@@ -875,7 +844,6 @@
               {if $type.summary and length($type.summary.token)}
                 {call .comment}
                   {param comment: $type.summary /}
-                  {param omitLeadingTag: true /}
                 {/call}
               {else}
                 No Description.
@@ -897,14 +865,12 @@
               <code>
                 {call .comment}
                   {param comment: $typedef.type /}
-                  {param omitLeadingTag: true /}
                 {/call}
               </code>
             <dd>
               {if $typedef.description and length($typedef.description.token)}
                 {call .comment}
                   {param comment: $typedef.description /}
-                  {param omitLeadingTag: true /}
                 {/call}
               {else}
                 No description.
@@ -941,7 +907,6 @@
       {if $spec.content and length($spec.content.token)}
         {call .comment}
           {param comment: $spec.content /}
-          {param omitLeadingTag: true /}
         {/call}
        {else}
         <strong>TODO</strong>

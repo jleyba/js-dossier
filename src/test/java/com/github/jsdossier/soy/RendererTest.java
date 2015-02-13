@@ -68,21 +68,17 @@ public class RendererTest {
 
   @Test
   public void renderDeprecationNotice() {
-    Deprecation.Builder builder = Deprecation.newBuilder();
-
     assertEquals("", render("dossier.soy.deprecationNotice", null));
     assertEquals("", render("dossier.soy.deprecationNotice", new HashMap<String, Object>()));
 
-    builder.setNotice(parseComment("Hello, world!"));
     assertThat(
         render("dossier.soy.deprecationNotice",
-            "deprecation", toSoyValue(builder.build())),
+            "deprecation", toSoyValue(parseDeprecation("Hello, world!"))),
         isHtml("<p><b>Deprecated: </b>Hello, world!</p>"));
 
-    builder.setNotice(parseComment("<strong>Hello, world!</strong>"));
     assertThat(
         render("dossier.soy.deprecationNotice", ImmutableMap.of(
-            "deprecation", toSoyValue(builder.build()))),
+            "deprecation", toSoyValue(parseDeprecation("<strong>Hello, world!</strong>")))),
         isHtml("<p><b>Deprecated: </b><strong>Hello, world!</strong></p>"));
   }
 
@@ -331,8 +327,7 @@ public class RendererTest {
         .setSource(SourceLink.newBuilder().setPath("source"))
         .setDescription(parseComment("description"))
         .setTags(Tags.newBuilder().setIsInterface(true))
-        .setDeprecation(Deprecation.newBuilder()
-            .setNotice(parseComment("<i>Goodbye</i>, world!")))
+        .setDeprecation(parseDeprecation("<i>Goodbye</i>, world!"))
         .build();
 
     Document document = renderDocument("dossier.soy.typeHeader", "type", type);
@@ -575,8 +570,7 @@ public class RendererTest {
             .setDescription(parseComment("<i>the color green</i>")))
         .addValue(Enumeration.Value.newBuilder()
             .setName("BLUE")
-            .setDeprecation(Deprecation.newBuilder()
-                .setNotice(parseComment("This value is deprecated"))))
+            .setDeprecation(parseDeprecation("This value is deprecated")))
         .build();
 
     Document document = renderDocument("dossier.soy.enumValues", ImmutableMap.of("enumeration", e));
@@ -589,12 +583,12 @@ public class RendererTest {
         "<dt><a id=\"ONE\"></a>ONE</dt>",
         "<dt><a id=\"TWO\"></a>TWO</dt>",
         "<dt><a id=\"RED\"></a>RED</dt>",
-        "<dd><strong>the color red</strong></dd>",
+        "<dd><p><strong>the color red</strong></p></dd>",
         "<dt><a id=\"GREEN\"></a>GREEN</dt>",
-        "<dd><i>the color green</i></dd>",
+        "<dd><p><i>the color green</i></p></dd>",
         "<dt class=\"deprecated\"><a id=\"BLUE\"></a>BLUE</dt>",
         "<dd>",
-        "<b>Deprecated: </b>This value is deprecated",
+        "<p><b>Deprecated: </b>This value is deprecated</p>",
         "</dd>",
         "</dl>",
         "</body>"));
@@ -637,9 +631,9 @@ public class RendererTest {
     assertThat(querySelector(document, "section > h2").toString(), is("<h2>Interfaces</h2>"));
     assertThat(querySelector(document, "section > h2 + .type-summary").toString(), isHtml(
         "<div class=\"type-summary\"><dl>",
-        "<dt><a href=\"foo-link\">Foo</a></dt><dd>foo summary</dd>",
+        "<dt><a href=\"foo-link\">Foo</a></dt><dd><p>foo summary</p></dd>",
         "<dt><a href=\"bar-link\">Bar</a></dt>",
-        "<dd><strong>bar summary <i>has html</i></strong></dd>",
+        "<dd><p><strong>bar summary <i>has html</i></strong></p></dd>",
         "<dt><a href=\"baz-link\">Baz</a></dt><dd>No Description.</dd>",
         "</dl></div>"));
   }
@@ -690,12 +684,12 @@ public class RendererTest {
         "<dl>",
         "<dt>a</dt>",
         "<dt>b</dt>",
-        "<dd><i>b</i> awesome</dd>",
+        "<dd><p><i>b</i> awesome</p></dd>",
         "<dt>c<code><b>Object</b></code></dt>",
         "<dt>d<code>Error</code></dt>",
-        "<dd>goodbye</dd>",
+        "<dd><p>goodbye</p></dd>",
         "<dt></dt>",
-        "<dd>who am i</dd>",
+        "<dd><p>who am i</p></dd>",
         "</dl>",
         "</div></div>"));
   }
@@ -720,7 +714,7 @@ public class RendererTest {
         "<dl>",
         "<dt>Error</dt>",
         "<dt></dt>",
-        "<dd>randomly</dd>",
+        "<dd><p>randomly</p></dd>",
         "</dl>",
         "</div></div>"));
   }
@@ -819,17 +813,17 @@ public class RendererTest {
         "<div class=\"fn-details\">",
         "<div><b>Parameters</b></div>",
         "<dl>",
-        "<dt>a</dt><dt>b</dt><dd><i>b</i> awesome</dd>",
+        "<dt>a</dt><dt>b</dt><dd><p><i>b</i> awesome</p></dd>",
         "<dt>c<code><b>Object</b></code></dt>",
-        "<dt>d<code>Error</code></dt><dd>goodbye</dd>",
-        "<dt></dt><dd>who am i</dd>",
+        "<dt>d<code>Error</code></dt><dd><p>goodbye</p></dd>",
+        "<dt></dt><dd><p>who am i</p></dd>",
         "</dl></div>",
         "<div class=\"fn-details\">",
         "<div><b>Returns</b></div>",
         "<p>something</p></div>",
         "<div class=\"fn-details\">",
         "<div><b>Throws</b></div>",
-        "<dl><dt>Error</dt><dd>randomly</dd></dl>",
+        "<dl><dt>Error</dt><dd><p>randomly</p></dd></dl>",
         "</div></div>"));
   }
 
@@ -876,7 +870,7 @@ public class RendererTest {
     assertThat(querySelector(document, "body").toString(), isHtml(
         "<body>",
         "<h3><a id=\"foo.Bar\"></a>foo.Bar()</h3>",
-        "<p>First paragraph.\n</p>",
+        "<p>First paragraph.</p>\n",
         "<ul><li>bullet <code>with code</code></li>",
         "<li>another bullet</li>",
         "</ul>",
@@ -890,8 +884,7 @@ public class RendererTest {
             .setName("Bar")
             .setSource(SourceLink.newBuilder().setPath("bar.link"))
             .setDescription(parseComment("description here\n<p>second paragraph"))
-            .setDeprecation(Deprecation.newBuilder()
-                .setNotice(parseComment("is old"))))
+            .setDeprecation(parseDeprecation("is old")))
         .addParameter(Function.Detail.newBuilder().setName("a"))
         .build();
 
@@ -1043,7 +1036,7 @@ public class RendererTest {
     Document document = renderDocument("dossier.soy.comment",
         ImmutableMap.of("comment", comment, "omitLeadingTag", true));
     assertThat(document.body().toString(), isHtml(
-        "<body>A <strong>strongly</strong> worded letter</body>"));
+        "<body><p>A <strong>strongly</strong> worded letter</p></body>"));
   }
 
   @Test
@@ -1070,6 +1063,10 @@ public class RendererTest {
 
   private Comment parseComment(String comment) {
     return CommentUtil.parseComment(comment, mockLinker);
+  }
+
+  private Deprecation parseDeprecation(String comment) {
+    return CommentUtil.parseDeprecation(comment, mockLinker);
   }
 
   private static Element querySelector(Document document, String selector) {

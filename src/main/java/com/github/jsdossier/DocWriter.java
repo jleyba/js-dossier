@@ -17,6 +17,7 @@ import static com.github.jsdossier.CommentUtil.getBlockDescription;
 import static com.github.jsdossier.CommentUtil.getFileoverview;
 import static com.github.jsdossier.CommentUtil.getSummary;
 import static com.github.jsdossier.CommentUtil.parseComment;
+import static com.github.jsdossier.CommentUtil.parseDeprecation;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Predicates.not;
@@ -591,9 +592,7 @@ class DocWriter {
   private Deprecation getDeprecation(JsDoc jsdoc) {
     checkArgument(jsdoc != null, "null jsdoc");
     checkArgument(jsdoc.isDeprecated(), "no deprecation in jsdoc");
-    return Deprecation.newBuilder()
-        .setNotice(parseComment(jsdoc.getDeprecationReason(), linker))
-        .build();
+    return parseDeprecation(jsdoc.getDeprecationReason(), linker);
   }
 
   private List<JsType.TypeSummary> getNestedTypeInfo(NominalType parent) {

@@ -87,7 +87,7 @@ message Comment {
 
 // Describes a deprecation notice.
 message Deprecation {
-  optional Comment notice = 1;
+  optional string html = 1 [(sanitized).html = true];
 }
 
 
