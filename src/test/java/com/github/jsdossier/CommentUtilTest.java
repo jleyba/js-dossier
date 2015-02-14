@@ -192,6 +192,13 @@ public class CommentUtilTest {
   }
 
   @Test
+  public void doesNotTreatUnderscoresWithinAWordAsEmphasisBlocks() {
+    Comment comment = parseComment("Description references CONSTANT_ENUM_VALUE.", mockLinker);
+    assertEquals(1, comment.getTokenCount());
+    assertHtmlText(comment.getToken(0), "<p>Description references CONSTANT_ENUM_VALUE.</p>");
+  }
+
+  @Test
   public void parseClassDescription() {
     util.compile(
         fileSystem.getPath("/src/foo/bar.js"),

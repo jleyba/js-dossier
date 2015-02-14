@@ -33,8 +33,9 @@ import javax.annotation.Nullable;
 public class CommentUtil {
   private CommentUtil() {}  // Utility class.
 
-  private static Pattern SUMMARY_REGEX = Pattern.compile("(.*?\\.)[\\s$]", Pattern.DOTALL);
+  private static final Pattern SUMMARY_REGEX = Pattern.compile("(.*?\\.)[\\s$]", Pattern.DOTALL);
   private static final Pattern TAGLET_START_PATTERN = Pattern.compile("\\{@(\\w+)\\s");
+  private static final String ENABLE_EXTENDED_PROFILES = "[$PROFILE$]: extended\n";
 
   /**
    * Extracts summary sentence from the provided comment text. This is the substring up to the
@@ -161,7 +162,7 @@ public class CommentUtil {
       start = tagletEnd + 1;
     }
 
-    String markdown = builder.toString();
+    String markdown = ENABLE_EXTENDED_PROFILES + builder.toString();
     return Processor.process(markdown).trim();
   }
 
