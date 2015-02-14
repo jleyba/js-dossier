@@ -401,6 +401,34 @@ public class LinkerTest {
   }
 
   @Test
+  public void testGetLink_toCommonJsModule() {
+    Path module = fileSystem.getPath("/src/module/foo.js");
+
+    when(mockConfig.getModulePrefix()).thenReturn(fileSystem.getPath("/src/module"));
+    DossierCompiler compiler = new DossierCompiler(System.err, ImmutableList.of(module));
+    CompilerOptions options = Main.createOptions(fileSystem, typeRegistry, compiler);
+    util = new CompilerUtil(compiler, options);
+
+    util.compile(module,
+        "/** @constructor */",
+        "var InternalClass = function() {};",
+        "InternalClass.staticFunc = function() {};",
+        "InternalClass.prototype.method = function() {};",
+        "exports.ExternalClass = InternalClass");
+
+    checkLink("foo", "module_foo.html", linker.getLink("foo"));
+    checkLink("foo.ExternalClass",
+        "module_foo_class_ExternalClass.html",
+        linker.getLink("foo.ExternalClass"));
+    checkLink("foo.ExternalClass.staticFunc",
+        "module_foo_class_ExternalClass.html#ExternalClass.staticFunc",
+        linker.getLink("foo.ExternalClass.staticFunc"));
+    checkLink("foo.ExternalClass#method",
+        "module_foo_class_ExternalClass.html#method",
+        linker.getLink("foo.ExternalClass#method"));
+  }
+
+  @Test
   public void testGetSourcePath_nullNode() {
     assertEquals(
         SourceLink.newBuilder()

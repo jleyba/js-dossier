@@ -142,17 +142,15 @@ public class CommentUtil {
           LinkInfo info = LinkInfo.fromText(tagletText);
           @Nullable TypeLink link = linker.getLink(info.type);
 
+          String linkText = info.text;
           if ("link".equals(tagletName)) {
-            builder.append("<code>");
+            linkText = "`" + linkText + "`";
           }
           if (link == null) {
-            builder.append(info.text);
+            builder.append(linkText);
           } else {
-            builder.append("[").append(info.text).append("]")
+            builder.append("[").append(linkText).append("]")
                 .append("(").append(link.getHref()).append(")");
-          }
-          if ("link".equals(tagletName)) {
-            builder.append("</code>");
           }
           break;
 

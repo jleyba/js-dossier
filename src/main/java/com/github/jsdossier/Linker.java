@@ -231,6 +231,19 @@ public class Linker {
       }
     }
 
+    // Link might be qualified path to property on a module's exported type.
+    if (type == null && !propertyName.isEmpty()) {
+      index = typeName.lastIndexOf(".");
+      if (index != -1) {
+        String exportedName = typeName.substring(index + 1);
+        String moduleName = typeName.substring(0, index);
+        type = getType(moduleName, true);
+        if (type != null && type.isModuleExports()) {
+          return buildModuleLink(type, exportedName, propertyName);
+        }
+      }
+    }
+
     if (type == null) {
       // If we get here, make one last attempt to resolve the referenced path
       // by checking for an extern type.
@@ -242,12 +255,43 @@ public class Linker {
           "Failed to build link for %s", type.getQualifiedName());
     }
 
+    if (type.isModuleExports()) {
+      TypeLink link = buildModuleLink(type, propertyName, null);
+      if (link != null) {
+        return link;
+      }
+    }
+
     try {
       pushContext(type);
       return getContextLink("#" + propertyName);
     } finally {
       popContext();
     }
+  }
+
+  @Nullable
+  private TypeLink buildModuleLink(NominalType module, String typeName, String propertyName) {
+    for (NominalType type : module.getTypes()) {
+      if (typeName.equals(type.getName())) {
+        TypeLink link;
+        if (isNullOrEmpty(propertyName)) {
+          link = getLink(type);
+        } else {
+          try {
+            pushContext(type);
+            link = getContextLink("#" + propertyName);
+          } finally {
+            popContext();
+          }
+        }
+        checkNotNull(link, "Failed to build link for %s", type.getQualifiedName());
+        return link.toBuilder()
+            .setText(getDisplayName(module) + "." + link.getText())
+            .build();
+      }
+    }
+    return null;
   }
 
   @Nullable
@@ -333,6 +377,13 @@ public class Linker {
     NominalType type = typeRegistry.getNominalType(name);
     if (type == null) {
       type = typeRegistry.getModuleType(name);
+    }
+    if (type == null) {
+      for (NominalType module: typeRegistry.getModules()) {
+        if (name.equals(getDisplayName(module))) {
+          return module;
+        }
+      }
     }
     if (type == null && !context.isEmpty() && checkContextModule) {
       NominalType t = context.peek();

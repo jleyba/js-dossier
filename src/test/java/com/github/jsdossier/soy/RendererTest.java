@@ -995,8 +995,8 @@ public class RendererTest {
     Document document = renderDocument("dossier.soy.comment", "comment", comment);
     assertThat(document.body().toString(), isHtml(
         "<body><p>",
-        "A <code>",
-        "<a href=\"/path/to/foo\">milk &amp; cookies</a></code>",
+        "A ",
+        "<a href=\"/path/to/foo\"><code>milk &amp; cookies</code></a>",
         " snack</p></body>"));
   }
 

@@ -232,9 +232,7 @@ class DocWriter {
     Comment content = Comment.getDefaultInstance();
     if (input.isPresent()) {
       String text = new String(Files.readAllBytes(input.get()), Charsets.UTF_8);
-      String readmeHtml = Processor.process(text);
-      // One more pass to process any inline taglets (e.g. {@code} or {@link}).
-      content = parseComment(readmeHtml, linker);
+      content = parseComment(text, linker);
     }
     HtmlRenderSpec.Builder spec = HtmlRenderSpec.newBuilder()
         .setResources(getResources(output))

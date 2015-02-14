@@ -153,7 +153,7 @@ public class CommentUtilTest {
     Comment comment = parseComment("A link to {@link foo.Bar foo}.", mockLinker);
     assertEquals(1, comment.getTokenCount());
     assertHtmlText(comment.getToken(0),
-        "<p>A link to <code><a href=\"/path/to/foo\">foo</a></code>.</p>");
+        "<p>A link to <a href=\"/path/to/foo\"><code>foo</code></a>.</p>");
   }
 
   @Test
