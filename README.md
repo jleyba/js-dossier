@@ -1,7 +1,12 @@
 # Dossier
 
 Dossier is a [JSDoc](http://en.wikipedia.org/wiki/JSDoc) parsing tool built on
-top of the [Closure Compiler](https://developers.google.com/closure/compiler/?csw=1).
+top of the [Closure Compiler](https://developers.google.com/closure/compiler/).
+Dossier uses the compiler to parse your code and build a type graph. It then
+traverses the graph to find types to generate documentation for. Proper use of
+Closure's [annotations](https://developers.google.com/closure/compiler/docs/js-for-compiler)
+will not only improve the type-checking and optimizations of the Closure
+Compiler, but will also improve Dossier's ability to generate meaningful documentation.
 
 ## Usage
 
@@ -93,6 +98,59 @@ Where `config.json` is a configuration file with the options listed below.
  * `language` Specifies which version of EcmaScript the input sources conform
     to. Defaults to ES5.
 
+
+## Formatting
+
+Before generating the final HTML output, Dossier runs all commments through the
+[txtmark](https://github.com/rjeschke/txtmark) markdown processor. Since
+markdown is sensitive to the leading whitespace on each line, Dossier will trim
+each line up to the first space *after* the leading \* in the comment.
+
+For example, the JSDoc comment
+
+    /**
+     * Line one.
+     * Line two.
+     *
+     *     code block
+     */
+
+is passed to txtmark as
+
+    Line one.
+    Line two.
+
+        code block
+
+## Type Links
+
+Dossier uses the `{@link}` and `{@linkplain}` taglets from Javadoc to
+generate links to named types (`{@link}` will generate `<code>` formatted
+links).  The taglet contents up to the first space are parsed as the type name
+and everything after the space is the link text. If there is no text within the
+taglet, the type name will be used. For example, suppose there is a type named
+`example.Widget`, then
+
+    An {@link example.Widget} link.
+    A {@link example.Widget widget link}.
+
+would produce
+
+    An <a href="path/to/example_Widget.html"><code>example.Widget</code></a> link.
+    A <a href="path/to/example_Widget.html"><code>widget link</code></a>.
+
+You may use a hash tag (#) to reference a type's property inside a link:
+`{@link example.Widget#build()}`. You may omit the type's name to qualifier
+when linking to one of its own properties: `{@link #build()}`. Only instance
+properties use a hash tag qualifier; static properties must be referenced by
+their qualified name: `{@link Clazz.staticProperty}`.
+
+## HTML Sanitization
+
+After a comment is processed by txtmark, Dossier will run it through a HTML
+sanitizer before generating the final HTML output. Refer to the
+[source](https://github.com/jleyba/js-dossier/blob/master/src/main/java/com/github/jsdossier/soy/HtmlSanitizer.java)
+for an up-to-date list of the supported HTML tags and attributes.
 
 ## Building
 
