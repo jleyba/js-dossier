@@ -2,26 +2,49 @@ package com.github.jsdossier;
 
 import static com.github.jsdossier.CommentUtil.getSummary;
 import static com.github.jsdossier.CommentUtil.parseComment;
+import static com.google.common.base.Preconditions.checkNotNull;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.github.jsdossier.proto.Comment;
 import com.github.jsdossier.proto.TypeLink;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
+import com.google.common.jimfs.Jimfs;
+import com.google.javascript.jscomp.CompilerOptions;
+import com.google.javascript.jscomp.DossierCompiler;
+import com.google.javascript.rhino.ErrorReporter;
+import com.google.javascript.rhino.jstype.JSTypeRegistry;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import java.nio.file.FileSystem;
+import java.nio.file.Path;
+
 @RunWith(JUnit4.class)
 public class CommentUtilTest {
 
+  private FileSystem fileSystem;
+  private TypeRegistry typeRegistry;
+  private CompilerUtil util;
   private Linker mockLinker;
 
   @Before
   public void setUp() {
+    fileSystem = Jimfs.newFileSystem();
     mockLinker = mock(Linker.class);
+
+    ErrorReporter errorReporter = mock(ErrorReporter.class);
+    JSTypeRegistry jsTypeRegistry = new JSTypeRegistry(errorReporter);
+    typeRegistry = new TypeRegistry(jsTypeRegistry);
+
+    DossierCompiler compiler = new DossierCompiler(System.err, ImmutableList.<Path>of());
+    CompilerOptions options = Main.createOptions(fileSystem, typeRegistry, compiler);
+
+    util = new CompilerUtil(compiler, options);
   }
 
   @Test
@@ -166,6 +189,42 @@ public class CommentUtilTest {
     Comment comment = parseComment("A link to {@linkplain foo.Bar foo}.", mockLinker);
     assertEquals(1, comment.getTokenCount());
     assertHtmlText(comment.getToken(0), "<p>A link to <a href=\"/path/to/foo\">foo</a>.</p>");
+  }
+
+  @Test
+  public void parseClassDescription() {
+    util.compile(
+        fileSystem.getPath("/src/foo/bar.js"),
+        "goog.provide('foo.Bar');",
+        "",
+        "/**",
+        " * This is a class comment.",
+        " *",
+        " * - with",
+        " *     list",
+        " * - items",
+        " *",
+        " * And a",
+        " *",
+        " *     code block",
+        " * @constructor",
+        " */",
+        "foo.Bar = function() {};");
+
+    NominalType type = checkNotNull(typeRegistry.getNominalType("foo.Bar"));
+    Comment comment = parseComment(
+        type.getJsdoc().getBlockComment(),
+        mockLinker);
+    assertEquals(1, comment.getTokenCount());
+    assertHtmlText(comment.getToken(0),
+        "<p>This is a class comment.</p>\n" +
+            "<ul>\n" +
+            "<li>with\nlist</li>\n" +
+            "<li>items</li>\n" +
+            "</ul>\n" +
+            "<p>And a</p>\n" +
+            "<pre><code>code block\n" +
+            "</code></pre>");
   }
 
   private static void assertHtmlText(Comment.Token token, String text) {

@@ -311,7 +311,7 @@ public class JsDoc {
     return new JSTypeExpression(marker.getType().getItem(), info.getSourceName());
   }
 
-  private static final Pattern STAR_PREFIX = Pattern.compile("^\\s*\\*+");
+  private static final Pattern STAR_PREFIX = Pattern.compile("^\\s*\\*+\\s?");
   private static final Pattern ANNOTATION_LINE_PATTERN = Pattern.compile("^\\s*\\**\\s*@[a-zA-Z]");
 
   private static int findFirstAnnotationLine(Iterable<String> lines) {
