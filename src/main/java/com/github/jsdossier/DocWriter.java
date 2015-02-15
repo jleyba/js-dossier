@@ -41,7 +41,6 @@ import com.github.jsdossier.proto.SourceFileRenderSpec;
 import com.github.jsdossier.proto.TypeLink;
 import com.github.jsdossier.proto.Visibility;
 import com.github.jsdossier.soy.Renderer;
-import com.github.rjeschke.txtmark.Processor;
 import com.google.common.base.Charsets;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
@@ -80,7 +79,6 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Nullable;
@@ -198,12 +196,10 @@ class DocWriter {
           .setText(type.getQualifiedName());
     }
 
-    Iterable<String> customPages = FluentIterable.from(config.getCustomPages().keySet())
-        .toSortedList(String.CASE_INSENSITIVE_ORDER);
-    for (String page : customPages) {
+    for (Config.Page page : config.getCustomPages()) {
       builder.addLinksBuilder()
-          .setHref(page + ".html")
-          .setText(page);
+          .setHref(page.getName() + ".html")
+          .setText(page.getName());
     }
 
     return builder.build();
@@ -217,13 +213,13 @@ class DocWriter {
   }
 
   private void generateCustomPages() throws IOException {
-    for (Map.Entry<String, Path> page : config.getCustomPages().entrySet()) {
-      String name = page.getKey();
+    for (Config.Page page : config.getCustomPages()) {
+      String name = page.getName();
       checkArgument(!"index".equalsIgnoreCase(name), "reserved page name: %s", name);
       generateHtmlPage(
           name,
           config.getOutput().resolve(name + ".html"),
-          Optional.of(page.getValue()));
+          Optional.of(page.getPath()));
     }
   }
 
