@@ -17,11 +17,12 @@ h3 code{font-size:75%}
 h4{font-size:1.6rem}h4 a[id]{padding-top:6.6rem;margin-top:-6.6rem;display:inline-block}
 h5{font-size:1.4rem}h5 a[id]{padding-top:6.4rem;margin-top:-6.4rem;display:inline-block}
 h6{font-size:1.2rem}h6 a[id]{padding-top:6.2rem;margin-top:-6.2rem;display:inline-block}
-code,.srcfile table{font-family:"Inconsolata",Menlo,Courier,monospace}
+pre.inheritance,code,.srcfile table{font-family:"Inconsolata",Menlo,Courier,monospace}
 pre,code,.srcfile table{font-size:1.3rem}
 pre{background:#f8f8f8;border-radius:3px;border-left:.2rem solid #d2d2d2;line-height:1.45;word-wrap:normal;margin:1rem 3rem;padding:1rem;overflow:auto}pre.inheritance{border:0;background:initial;padding:0;margin:.5rem 0 1rem 0}h1+pre.inheritance{margin-top:-1rem}
 p{margin:0 0 1rem 0}
-p code,li code{background:#f8f8f8;padding:3px;border-radius:3px;border:1px solid #d2d2d2}
+p code,li code{background:#f8f8f8;padding:2px;border-radius:3px;border:1px solid #d2d2d2}
+pre code{border:0}
 .fn-details div:first-child{border-bottom:1px solid #c2c2c2;margin-top:.5rem}
 hr.fn-sep{border:0;border-top:1px solid #dcdcdc;width:50%;margin:auto}
 .tags span{background:rgba(102,102,255,0.4);border:1px solid #66f;border-radius:3px;color:#fff;font-size:75%;font-weight:bold;padding:2px 4px;line-height:1.4rem}.tags span+span{margin-left:2px}

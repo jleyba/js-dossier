@@ -144,7 +144,7 @@ h4 { .set-font-size(1.6rem); }
 h5 { .set-font-size(1.4rem); }
 h6 { .set-font-size(1.2rem); }
 
-code, .srcfile table {
+pre.inheritance, code, .srcfile table {
   font-family: "Inconsolata", Menlo, Courier, monospace;
 }
 
@@ -177,9 +177,13 @@ p {
 p code,
 li code {
   background: @code_bg;
-  padding: 3px;
+  padding: 2px;
   border-radius: 3px;
   border: 1px solid @code_border;
+}
+
+pre code {
+  border: 0;
 }
 
 .fn-details {
