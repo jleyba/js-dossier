@@ -1111,13 +1111,6 @@ class DocWriter {
     }
   }
 
-  private static class PathComparator implements Comparator<Path> {
-    @Override
-    public int compare(Path o1, Path o2) {
-      return o1.toString().compareTo(o2.toString());
-    }
-  }
-
   private List<com.github.jsdossier.proto.Function.Detail> getParameters(JSType type, Node node, @Nullable JsDoc docs) {
     checkArgument(type.isFunctionType());
     final JsDoc jsdoc = docs == null && type.getJSDocInfo() != null
