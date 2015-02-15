@@ -76,6 +76,7 @@ public class EndToEndTest {
 
     copyResource("resources/SimpleReadme.md", srcDir.resolve("SimpleReadme.md"));
     copyResource("resources/closure_module.js", srcDir.resolve("main/closure_module.js"));
+    copyResource("resources/filter.js", srcDir.resolve("main/filter.js"));
     copyResource("resources/globals.js", srcDir.resolve("main/globals.js"));
     copyResource("resources/json.js", srcDir.resolve("main/json.js"));
     copyResource("resources/inheritance.js", srcDir.resolve("main/inheritance.js"));
@@ -88,7 +89,11 @@ public class EndToEndTest {
       setOutput(outDir);
       setReadme(srcDir.resolve("SimpleReadme.md"));
 
+      addFilteredName("foo.FilteredClass");
+      addFilteredName("foo.bar");
+
       addSource(srcDir.resolve("main/closure_module.js"));
+      addSource(srcDir.resolve("main/filter.js"));
       addSource(srcDir.resolve("main/globals.js"));
       addSource(srcDir.resolve("main/json.js"));
       addSource(srcDir.resolve("main/inheritance.js"));
@@ -300,6 +305,15 @@ public class EndToEndTest {
     checkFooter(document);
   }
 
+  @Test
+  public void checkNamespaceWithFilteredTypes() throws IOException {
+    Document document = load(outDir.resolve("namespace_foo.html"));
+    compareWithGoldenFile(querySelector(document, "article"), "namespace_foo.html");
+    checkHeader(document);
+    checkNav(document);
+    checkFooter(document);
+  }
+
   private void checkHeader(Document document) throws IOException {
     compareWithGoldenFile(querySelector(document, "header"), "header.html");
   }
@@ -368,8 +382,14 @@ public class EndToEndTest {
 
   private static class Config {
     private final JsonObject json = new JsonObject();
+    private final JsonArray typeFilters = new JsonArray();
     private final JsonArray sources = new JsonArray();
     private final JsonArray modules = new JsonArray();
+
+    void addFilteredName(String name) {
+      typeFilters.add(new JsonPrimitive(name));
+      json.add("typeFilters", typeFilters);
+    }
 
     void setOutput(Path path) {
       json.addProperty("output", path.toString());

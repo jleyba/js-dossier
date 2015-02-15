@@ -250,6 +250,10 @@ public class Linker {
       return getExternLink(typeName);
     }
 
+    if (config.isFilteredType(type)) {
+      return null;
+    }
+
     if (propertyName.isEmpty()) {
       return checkNotNull(getLink(type),
           "Failed to build link for %s", type.getQualifiedName());
@@ -345,6 +349,9 @@ public class Linker {
 
   @Nullable
   public TypeLink getLink(NominalType type) {
+    if (config.isFilteredType(type)) {
+      return null;
+    }
     TypeLink.Builder link = TypeLink.newBuilder()
         .setText(getDisplayName(type));
     if (type.getJsdoc() != null && type.getJsdoc().isTypedef()) {
@@ -363,7 +370,7 @@ public class Linker {
   @Nullable
   public TypeLink getLink(final JSType to) {
     NominalType type = typeRegistry.resolve(to);
-    if (type == null) {
+    if (type == null || config.isFilteredType(type)) {
       return null;
     }
     return TypeLink.newBuilder()

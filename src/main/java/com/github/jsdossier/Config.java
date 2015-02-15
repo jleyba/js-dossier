@@ -76,6 +76,7 @@ class Config {
   private final ImmutableSet<Path> srcs;
   private final ImmutableSet<Path> modules;
   private final ImmutableSet<Path> externs;
+  private final ImmutableSet<String> typeFilters;
   private final Path srcPrefix;
   private final Path modulePrefix;
   private final Path output;
@@ -95,6 +96,7 @@ class Config {
    * @param srcs The list of compiler input sources.
    * @param modules The list of CommonJS compiler input sources.
    * @param externs The list of extern files for the Closure compiler.
+   * @param typeFilters The list of types to filter from generated output.
    * @param output Path to the output directory.
    * @param readme Path to a markdown file to include in the main index.
    * @param customPages Custom markdown files to include in the generated documentation.
@@ -108,7 +110,8 @@ class Config {
    *     output path is not a directory.
    */
   private Config(
-      ImmutableSet<Path> srcs, ImmutableSet<Path> modules, ImmutableSet<Path> externs, Path output,
+      ImmutableSet<Path> srcs, ImmutableSet<Path> modules, ImmutableSet<Path> externs,
+      ImmutableSet<String> typeFilters, Path output,
       Optional<Path> readme, List<Page> customPages, Optional<Path> modulePrefix,
       boolean strict, boolean useMarkdown,
       Language language, PrintStream outputStream, PrintStream errorStream,
@@ -139,6 +142,7 @@ class Config {
     this.srcPrefix = getSourcePrefixPath(fileSystem, srcs, modules);
     this.modulePrefix = getModulePreixPath(fileSystem, modulePrefix, modules);
     this.externs = externs;
+    this.typeFilters = typeFilters;
     this.output = output;
     this.readme = readme;
     this.customPages = ImmutableList.copyOf(customPages);
@@ -183,6 +187,13 @@ class Config {
    */
   ImmutableSet<Path> getExterns() {
     return externs;
+  }
+
+  /**
+   * Returns the set of types that should be filtered from generated output.
+   */
+  ImmutableSet<String> getTypeFilters() {
+    return typeFilters;
   }
 
   /**
@@ -246,6 +257,17 @@ class Config {
    */
   FileSystem getFileSystem() {
     return fileSystem;
+  }
+
+  /**
+   * Returns whether the given type is a filtered type.
+   */
+  boolean isFilteredType(NominalType input) {
+    if (typeFilters.contains(input.getQualifiedName(true))) {
+      return true;
+    }
+    NominalType parent = input.getParent();
+    return parent != null && isFilteredType(parent);
   }
 
   private static Path getSourcePrefixPath(
@@ -320,6 +342,7 @@ class Config {
         ImmutableSet.copyOf(filteredSources),
         ImmutableSet.copyOf(filteredModules),
         ImmutableSet.copyOf(resolve(spec.externs)),
+        ImmutableSet.copyOf(spec.typeFilters),
         spec.output,
         spec.readme,
         spec.customPages,
@@ -621,6 +644,12 @@ class Config {
         "These  files are used to satisfy references to external types, but are excluded when " +
         "generating  API documentation.")
     private final List<PathSpec> externs = ImmutableList.of();
+
+    @Description("List of types that should be excluded from generated documentation, even if " +
+        "it is found in the type graph. These filters use basic namespace prefix matching: " +
+        "listing `foo.bar` will filter out all types in the `foo.bar` namespace, but not a type " +
+        "named `foo.barbaz`")
+    private final List<String> typeFilters = ImmutableList.of();
 
     @Description("Path to a README file to include as the main landing page for the generated " +
         "documentation. This file should use markdown syntax.")

@@ -86,6 +86,11 @@ Where `config.json` is a configuration file with the options listed below.
     compiler. These  files are used to satisfy references to external types,
     but are excluded when generating  API documentation.
 
+ * `typeFilters` List of types that should be excluded from generated
+    documentation, even if it is found in the type graph. These filters use
+    basic namespace prefix matching: listing `foo.bar` will filter out all
+    types in the `foo.bar` namespace, but not a type named `foo.barbaz`
+
  * `readme` Path to a README file to include as the main landing page for the
     generated documentation. This file should use markdown syntax.
 

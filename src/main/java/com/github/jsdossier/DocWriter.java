@@ -106,6 +106,7 @@ class DocWriter {
 
   public void generateDocs() throws IOException {
     sortedTypes = FluentIterable.from(typeRegistry.getNominalTypes())
+        .filter(not(isFilteredType()))
         .filter(isNonEmpty())
         .filter(not(isTypedef()))
         .toSortedList(new QualifiedNameComparator());
@@ -595,8 +596,11 @@ class DocWriter {
     List<JsType.TypeSummary> types = new ArrayList<>(nestedTypes.size());
 
     for (NominalType child : FluentIterable.from(nestedTypes).toSortedList(new NameComparator())) {
-      JSType childType = child.getJsType();
+      if (config.isFilteredType(child)) {
+        continue;
+      }
 
+      JSType childType = child.getJsType();
       if (!childType.isConstructor() && !childType.isEnumType() && !childType.isInterface()) {
         continue;
       }
@@ -1020,6 +1024,15 @@ class DocWriter {
       return Comment.getDefaultInstance();
     }
     return comment;
+  }
+
+  private Predicate<NominalType> isFilteredType() {
+    return new Predicate<NominalType>() {
+      @Override
+      public boolean apply(NominalType input) {
+        return config.isFilteredType(input);
+      }
+    };
   }
 
   private static Predicate<NominalType> isTypedef() {
