@@ -16,35 +16,36 @@ final class HtmlSanitizer {
   private static final Pattern NUMBER_OR_PERCENT = Pattern.compile("[0-9]+%?");
   private static final Pattern ALIGN = Pattern.compile("(?i)center|left|right|justify|char");
   private static final Pattern VALIGN = Pattern.compile("(?i)baseline|bottom|middle|top");
+  private static final Pattern HTML_DIR = Pattern.compile("(?i)ltr|rtl|auto");
 
   private static final PolicyFactory HTML_POLICY = new HtmlPolicyBuilder()
       .allowElements(
           "a",
           "h1", "h2", "h3", "h4", "h5", "h6",
-          "p", "i", "b", "u", "strong", "em", "small", "big", "pre", "code",
-          "cite", "samp", "sub", "sup", "strike", "center", "blockquote",
-          "hr", "br", "col", "font", "map", "span", "div", "img",
+          "p", "div", "span", "blockquote",
+          "b", "i", "strong", "em", "tt", "code", "ins", "del", "sup", "sub", "kbd", "samp", "q",
+          "var", "cite", "strike", "center",
+          "hr", "br", "wbr",
           "ul", "ol", "li", "dd", "dt", "dl",
-          "tbody", "thead", "tfoot", "table", "td", "th", "tr", "colgroup", "caption")
+          "table", "caption", "tbody", "thead", "tfoot", "td", "th", "tr", "colgroup", "col")
+      .allowStandardUrlProtocols()
       .allowAttributes("title").matching(HTML_TITLE).globally()
-      .allowStandardUrlProtocols().allowElements("a")
+      .allowAttributes("dir").matching(HTML_DIR).globally()
       .allowAttributes("lang").matching(Pattern.compile("[a-zA-Z]{2,20}")).globally()
       .allowAttributes("href").onElements("a")
       .allowAttributes("border", "cellpadding", "cellspacing").matching(NUMBER).onElements("table")
       .allowAttributes("colspan").matching(NUMBER).onElements("td", "th")
       .allowAttributes("nowrap").onElements("td", "th")
-      .allowAttributes("height", "width").matching(NUMBER_OR_PERCENT)
-          .onElements("table", "td", "th", "tr", "img")
-      .allowAttributes("align").matching(ALIGN)
-          .onElements("thead", "tbody", "tfoot", "img", "td", "th", "tr", "colgroup", "col")
-      .allowAttributes("valign").matching(VALIGN)
-          .onElements("thead", "tbody", "tfoot", "td", "th", "tr", "colgroup", "col")
-      .allowAttributes("charoff").matching(NUMBER_OR_PERCENT)
-          .onElements("td", "th", "tr", "colgroup", "col", "thead", "tbody", "tfoot")
-      .allowAttributes("colspan", "rowspan").matching(NUMBER)
-          .onElements("td", "th")
-      .allowAttributes("span", "width").matching(NUMBER_OR_PERCENT)
-          .onElements("colgroup", "col")
+      .allowAttributes("height", "width").matching(NUMBER_OR_PERCENT).onElements(
+          "table", "td", "th", "tr")
+      .allowAttributes("align").matching(ALIGN).onElements(
+          "thead", "tbody", "tfoot", "td", "th", "tr", "colgroup", "col")
+      .allowAttributes("valign").matching(VALIGN).onElements(
+          "thead", "tbody", "tfoot", "td", "th", "tr", "colgroup", "col")
+      .allowAttributes("charoff").matching(NUMBER_OR_PERCENT).onElements(
+          "td", "th", "tr", "colgroup", "col", "thead", "tbody", "tfoot")
+      .allowAttributes("colspan", "rowspan").matching(NUMBER).onElements("td", "th")
+      .allowAttributes("span", "width").matching(NUMBER_OR_PERCENT).onElements("colgroup", "col")
       .toFactory()
       .and(Sanitizers.BLOCKS)
       .and(Sanitizers.FORMATTING)
