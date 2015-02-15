@@ -75,6 +75,7 @@ public class EndToEndTest {
     createDirectories(outDir);
 
     copyResource("resources/SimpleReadme.md", srcDir.resolve("SimpleReadme.md"));
+    copyResource("resources/Custom.md", srcDir.resolve("Custom.md"));
     copyResource("resources/closure_module.js", srcDir.resolve("main/closure_module.js"));
     copyResource("resources/filter.js", srcDir.resolve("main/filter.js"));
     copyResource("resources/globals.js", srcDir.resolve("main/globals.js"));
@@ -88,6 +89,8 @@ public class EndToEndTest {
     writeConfig(config, new Config() {{
       setOutput(outDir);
       setReadme(srcDir.resolve("SimpleReadme.md"));
+
+      addCustomPage("Custom Page", srcDir.resolve("Custom.md"));
 
       addFilteredName("foo.FilteredClass");
       addFilteredName("foo.bar");
@@ -382,9 +385,18 @@ public class EndToEndTest {
 
   private static class Config {
     private final JsonObject json = new JsonObject();
+    private final JsonArray customPages = new JsonArray();
     private final JsonArray typeFilters = new JsonArray();
     private final JsonArray sources = new JsonArray();
     private final JsonArray modules = new JsonArray();
+
+    void addCustomPage(String name, Path path) {
+      JsonObject spec = new JsonObject();
+      spec.addProperty("name", name);
+      spec.addProperty("path", path.toString());
+      customPages.add(spec);
+      json.add("customPages", customPages);
+    }
 
     void addFilteredName(String name) {
       typeFilters.add(new JsonPrimitive(name));

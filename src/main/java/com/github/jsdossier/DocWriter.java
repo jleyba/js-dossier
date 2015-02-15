@@ -152,6 +152,10 @@ class DocWriter {
       link.setHref(toUrlPath(toRoot.resolve(link.getHref())));
     }
 
+    for (TypeLink.Builder link : builder.getLinksBuilderList()) {
+      link.setHref(toUrlPath(toRoot.resolve(link.getHref())));
+    }
+
     return builder.build();
   }
 
@@ -196,7 +200,7 @@ class DocWriter {
 
     for (Config.Page page : config.getCustomPages()) {
       builder.addLinksBuilder()
-          .setHref(page.getName() + ".html")
+          .setHref(page.getName().replace(' ', '_') + ".html")
           .setText(page.getName());
     }
 
@@ -219,7 +223,7 @@ class DocWriter {
       generateHtmlPage(
           parser,
           name,
-          config.getOutput().resolve(name + ".html"),
+          config.getOutput().resolve(name.replace(' ', '_') + ".html"),
           Optional.of(page.getPath()));
     }
   }
