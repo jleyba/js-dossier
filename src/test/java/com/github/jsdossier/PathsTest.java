@@ -5,6 +5,8 @@ import static com.github.jsdossier.Paths.getCommonPrefix;
 import static com.github.jsdossier.Paths.getRelativePath;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Sets.newHashSet;
+import static java.nio.file.Files.createDirectories;
+import static java.nio.file.Files.write;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 
@@ -15,7 +17,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.FileSystem;
@@ -86,7 +87,23 @@ public class PathsTest {
   @SuppressWarnings("unchecked")
   @Test
   public void recursivelyWalksTreeWhenExpandingADirectory() throws IOException {
-    Path testData = new File("src/test/java/com/github/jsdossier/testdata").toPath();
+    FileSystem fileSystem = Jimfs.newFileSystem();
+    Path testData = fileSystem.getPath("/src/testdata");
+
+    createDirectories(testData);
+    write(testData.resolve("externs.js"), new byte[0]);
+    write(testData.resolve("one.js"), new byte[0]);
+    write(testData.resolve("two.js"), new byte[0]);
+
+    Path subDir = testData.resolve("subdir");
+    createDirectories(subDir);
+    write(subDir.resolve("apples.txt"), new byte[0]);
+    write(subDir.resolve("three.js"), new byte[0]);
+
+    Path deepDir = subDir.resolve("deep");
+    createDirectories(deepDir);
+    write(deepDir.resolve("hidden.js"), new byte[0]);
+
     List<Path> found = expandDir(testData, new JsFileFilter(newHashSet(
         "externs.js", "three.js")));
 
