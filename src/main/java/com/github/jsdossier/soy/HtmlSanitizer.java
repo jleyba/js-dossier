@@ -22,7 +22,7 @@ final class HtmlSanitizer {
       .allowElements(
           "a",
           "h1", "h2", "h3", "h4", "h5", "h6",
-          "p", "div", "span", "blockquote",
+          "p", "div", "span", "blockquote", "pre",
           "b", "i", "strong", "em", "tt", "code", "ins", "del", "sup", "sub", "kbd", "samp", "q",
           "var", "cite", "strike", "center",
           "hr", "br", "wbr",
