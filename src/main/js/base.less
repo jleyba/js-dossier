@@ -14,7 +14,7 @@
    limitations under the License.
  */
 
-@import url(http://fonts.googleapis.com/css?family=Roboto:400,400italic,700,700italic);
+@import url(http://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Inconsolata);
 
 @header_height: 5rem;
 @footer_height: 4rem;
@@ -25,7 +25,8 @@
 @banner_color: #424242;
 @link_color: #66f;
 @header_border: #8f8f8f;
-@code_bg: #f7f7f7;
+@code_bg: #f8f8f8;
+@code_border: darken(@code_bg, 15%);
 @body_bg: #f0f0f0;
 
 .set-font-size(@size) {
@@ -41,7 +42,7 @@
 .code-block() {
   background: @code_bg;
   border-radius: 3px;
-  border-left: .2rem solid darken(@code_bg, 30%);
+  border-left: .2rem solid @code_border;
   line-height: 1.45;
   word-wrap: normal;
 }
@@ -74,7 +75,7 @@ html {
 
 body {
   color: #333;
-  font-family: "Roboto", sans-serif;
+  font-family: "Lato", sans-serif;
   line-height: 1.6;
   word-wrap: break-word;
   margin: 0 0 @footer_height;
@@ -143,8 +144,12 @@ h4 { .set-font-size(1.6rem); }
 h5 { .set-font-size(1.4rem); }
 h6 { .set-font-size(1.2rem); }
 
-pre, code {
-  font-size: 1.2rem;
+code, .srcfile table {
+  font-family: "Inconsolata", Menlo, Courier, monospace;
+}
+
+pre, code, .srcfile table {
+  font-size: 1.3rem;
 }
 
 pre {
@@ -174,7 +179,7 @@ li code {
   background: @code_bg;
   padding: 3px;
   border-radius: 3px;
-  border: 1px solid @body_bg;
+  border: 1px solid @code_border;
 }
 
 .fn-details {
