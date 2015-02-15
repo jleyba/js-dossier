@@ -82,6 +82,7 @@ class Config {
   private final Optional<Path> readme;
   private final ImmutableList<Page> customPages;
   private final boolean strict;
+  private final boolean useMarkdown;
   private final Language language;
   private final PrintStream outputStream;
   private final PrintStream errorStream;
@@ -99,6 +100,7 @@ class Config {
    * @param customPages Custom markdown files to include in the generated documentation.
    * @param modulePrefix Prefix to strip from each module path when rendering documentation.
    * @param strict Whether to enable all type checks.
+   * @param useMarkdown Whether to use markdown for comment parser.
    * @param language The JavaScript dialog sources must conform to.
    * @param outputStream The stream to use for standard output.
    * @param errorStream The stream to use for error output.
@@ -108,7 +110,8 @@ class Config {
   private Config(
       ImmutableSet<Path> srcs, ImmutableSet<Path> modules, ImmutableSet<Path> externs, Path output,
       Optional<Path> readme, List<Page> customPages, Optional<Path> modulePrefix,
-      boolean strict, Language language, PrintStream outputStream, PrintStream errorStream,
+      boolean strict, boolean useMarkdown,
+      Language language, PrintStream outputStream, PrintStream errorStream,
       FileSystem fileSystem) {
     checkArgument(!srcs.isEmpty() || !modules.isEmpty(),
         "There must be at least one input source or module");
@@ -140,6 +143,7 @@ class Config {
     this.readme = readme;
     this.customPages = ImmutableList.copyOf(customPages);
     this.strict = strict;
+    this.useMarkdown = useMarkdown;
     this.language = language;
     this.outputStream = outputStream;
     this.errorStream = errorStream;
@@ -207,6 +211,13 @@ class Config {
    */
   boolean isStrict() {
     return strict;
+  }
+
+  /**
+   * Returns whether to parse comments as markdown.
+   */
+  boolean useMarkdown() {
+    return useMarkdown;
   }
 
   /**
@@ -314,6 +325,7 @@ class Config {
         spec.customPages,
         spec.stripModulePrefix,
         spec.strict,
+        spec.useMarkdown,
         spec.language,
         System.out,
         System.err,
@@ -622,6 +634,10 @@ class Config {
 
     @Description("Whether to run with all type checking flags enabled.")
     private final boolean strict = false;
+
+    @Description("Whether to parse all comments as markdown. The `readme` and `customPages` will " +
+        "always be parsed as markdown.")
+    private final boolean useMarkdown = true;
 
     @Description("Specifies which version of EcmaScript the input sources conform to. Defaults " +
         "to ES5.")

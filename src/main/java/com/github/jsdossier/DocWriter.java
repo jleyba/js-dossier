@@ -13,11 +13,6 @@
 // limitations under the License.
 package com.github.jsdossier;
 
-import static com.github.jsdossier.CommentUtil.getBlockDescription;
-import static com.github.jsdossier.CommentUtil.getFileoverview;
-import static com.github.jsdossier.CommentUtil.getSummary;
-import static com.github.jsdossier.CommentUtil.parseComment;
-import static com.github.jsdossier.CommentUtil.parseDeprecation;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Predicates.not;
@@ -93,6 +88,7 @@ class DocWriter {
   private final Config config;
   private final TypeRegistry typeRegistry;
   private final Linker linker;
+  private final CommentParser parser;
 
   private final Renderer renderer = new Renderer();
   private final TypeIndex typeIndex = new TypeIndex();
@@ -105,6 +101,7 @@ class DocWriter {
     this.config = checkNotNull(config);
     this.typeRegistry = checkNotNull(typeRegistry);
     this.linker = new Linker(config, typeRegistry);
+    this.parser = new CommentParser(config.useMarkdown());
   }
 
   public void generateDocs() throws IOException {
@@ -207,28 +204,32 @@ class DocWriter {
 
   private void generateIndex() throws IOException {
     generateHtmlPage(
+        new CommentParser(true),
         "Index",
         config.getOutput().resolve(INDEX_FILE_NAME),
         config.getReadme());
   }
 
   private void generateCustomPages() throws IOException {
+    CommentParser parser = new CommentParser(true);
     for (Config.Page page : config.getCustomPages()) {
       String name = page.getName();
       checkArgument(!"index".equalsIgnoreCase(name), "reserved page name: %s", name);
       generateHtmlPage(
+          parser,
           name,
           config.getOutput().resolve(name + ".html"),
           Optional.of(page.getPath()));
     }
   }
 
-  private void generateHtmlPage(String title, Path output, Optional<Path> input)
+  private void generateHtmlPage(
+      CommentParser parser, String title, Path output, Optional<Path> input)
       throws IOException {
     Comment content = Comment.getDefaultInstance();
     if (input.isPresent()) {
       String text = new String(Files.readAllBytes(input.get()), Charsets.UTF_8);
-      content = parseComment(text, linker);
+      content = parser.parseComment(text, linker);
     }
     HtmlRenderSpec.Builder spec = HtmlRenderSpec.newBuilder()
         .setResources(getResources(output))
@@ -248,7 +249,7 @@ class DocWriter {
     JsType.Builder jsTypeBuilder = JsType.newBuilder()
         .setName(linker.getDisplayName(module))
         .setSource(linker.getSourceLink(module.getNode()))
-        .setDescription(getFileoverview(linker,
+        .setDescription(parser.getFileoverview(linker,
             typeRegistry.getFileOverview(module.getModule().getPath())))
         .addAllNested(getNestedTypeInfo(module))
         .addAllTypeDef(getTypeDefInfo(module))
@@ -322,7 +323,7 @@ class DocWriter {
 
     addParentLink(jsTypeBuilder, type);
 
-    Comment description = getBlockDescription(linker, type);
+    Comment description = parser.getBlockDescription(linker, type);
     NominalType aliased = typeRegistry.resolve(type.getJsType());
 
     if (aliased != type) {
@@ -340,7 +341,7 @@ class DocWriter {
           .setHref(linker.getFilePath(aliased).getFileName().toString()));
 
       if (description.getTokenCount() == 0) {
-        description = getBlockDescription(linker, aliased);
+        description = parser.getBlockDescription(linker, aliased);
       }
     }
 
@@ -543,7 +544,7 @@ class DocWriter {
 
       if (valueInfo != null) {
         JsDoc valueJsDoc = new JsDoc(valueInfo);
-        valueBuilder.setDescription(parseComment(valueJsDoc.getBlockComment(), linker));
+        valueBuilder.setDescription(parser.parseComment(valueJsDoc.getBlockComment(), linker));
 
         if (valueJsDoc.isDeprecated()) {
           valueBuilder.setDeprecation(getDeprecation(valueJsDoc));
@@ -565,7 +566,7 @@ class DocWriter {
                 .setName(name)
                 .setType(linker.formatTypeExpression(jsdoc.getType()))
                 .setSource(linker.getSourceLink(typedef.getNode()))
-                .setDescription(getBlockDescription(linker, typedef))
+                .setDescription(parser.getBlockDescription(linker, typedef))
                 .setVisibility(Visibility.valueOf(jsdoc.getVisibility().name()));
 
             if (jsdoc.isDeprecated()) {
@@ -586,7 +587,7 @@ class DocWriter {
   private Deprecation getDeprecation(JsDoc jsdoc) {
     checkArgument(jsdoc != null, "null jsdoc");
     checkArgument(jsdoc.isDeprecated(), "no deprecation in jsdoc");
-    return parseDeprecation(jsdoc.getDeprecationReason(), linker);
+    return parser.parseDeprecation(jsdoc.getDeprecationReason(), linker);
   }
 
   private List<JsType.TypeSummary> getNestedTypeInfo(NominalType parent) {
@@ -602,18 +603,18 @@ class DocWriter {
 
       String href = linker.getFilePath(child).getFileName().toString();
 
-      Comment summary = getSummary("No description.", linker);
+      Comment summary = parser.getSummary("No description.", linker);
 
       JsDoc jsdoc = child.getJsdoc();
       if (jsdoc != null && !isNullOrEmpty(jsdoc.getBlockComment())) {
-        summary =  getSummary(jsdoc.getBlockComment(), linker);
+        summary =  parser.getSummary(jsdoc.getBlockComment(), linker);
       } else {
         NominalType aliased = typeRegistry.resolve(childType);
         if (aliased != null
             && aliased != child
             && aliased.getJsdoc() != null
             && !isNullOrEmpty(aliased.getJsdoc().getBlockComment())) {
-          summary = getSummary(aliased.getJsdoc().getBlockComment(), linker);
+          summary = parser.getSummary(aliased.getJsdoc().getBlockComment(), linker);
         }
       }
 
@@ -900,7 +901,7 @@ class DocWriter {
       Iterable<Comment> specifications) {
     BaseProperty.Builder builder = BaseProperty.newBuilder()
         .setName(name)
-        .setDescription(getBlockDescription(linker, jsdoc))
+        .setDescription(parser.getBlockDescription(linker, jsdoc))
         .setSource(linker.getSourceLink(node))
         .addAllSpecifiedBy(specifications);
 
@@ -976,7 +977,7 @@ class DocWriter {
           com.github.jsdossier.proto.Function.Detail.newBuilder();
       detail.setType(getReturnType(jsDoc, type));
       if (jsDoc != null) {
-        detail.setDescription(parseComment(jsDoc.getReturnDescription(), linker));
+        detail.setDescription(parser.parseComment(jsDoc.getReturnDescription(), linker));
       }
       builder.setReturn(detail);
     }
@@ -1002,7 +1003,7 @@ class DocWriter {
             }
             return com.github.jsdossier.proto.Function.Detail.newBuilder()
                 .setType(thrownType)
-                .setDescription(parseComment(input.getDescription(), linker))
+                .setDescription(parser.parseComment(input.getDescription(), linker))
                 .build();
           }
         }
@@ -1142,14 +1143,14 @@ class DocWriter {
         String name = paramList.getChildAtIndex(i).getString();
         detail.setName(name);
         if (jsdoc != null && jsdoc.hasParameter(name)) {
-          detail.setDescription(parseComment(
+          detail.setDescription(parser.parseComment(
               jsdoc.getParameter(name).getDescription(),
               linker));
         }
 
       } else if (parameter != null) {
         detail.setName(parameter.getName());
-        detail.setDescription(parseComment(parameter.getDescription(), linker));
+        detail.setDescription(parser.parseComment(parameter.getDescription(), linker));
       }
 
       details.add(detail.build());

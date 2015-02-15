@@ -10,7 +10,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import com.github.jsdossier.CommentUtil;
+import com.github.jsdossier.CommentParser;
 import com.github.jsdossier.Linker;
 import com.github.jsdossier.proto.BaseProperty;
 import com.github.jsdossier.proto.Comment;
@@ -54,6 +54,7 @@ public class RendererTest {
 
   private static SoyTofu tofu;
 
+  private final CommentParser parser = new CommentParser(true);
   private Linker mockLinker;
 
   @BeforeClass
@@ -1062,11 +1063,11 @@ public class RendererTest {
   }
 
   private Comment parseComment(String comment) {
-    return CommentUtil.parseComment(comment, mockLinker);
+    return parser.parseComment(comment, mockLinker);
   }
 
   private Deprecation parseDeprecation(String comment) {
-    return CommentUtil.parseDeprecation(comment, mockLinker);
+    return parser.parseDeprecation(comment, mockLinker);
   }
 
   private static Element querySelector(Document document, String selector) {

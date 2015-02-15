@@ -22,7 +22,6 @@ import com.github.jsdossier.proto.Deprecation;
 import com.github.jsdossier.proto.TypeLink;
 import com.google.common.escape.CharEscaperBuilder;
 import com.google.common.escape.Escaper;
-import org.pegdown.Extensions;
 import org.pegdown.PegDownProcessor;
 
 import java.util.regex.Matcher;
@@ -33,8 +32,7 @@ import javax.annotation.Nullable;
 /**
  * Utility class for working with JSDoc comments.
  */
-public class CommentUtil {
-  private CommentUtil() {}  // Utility class.
+public class CommentParser {
 
   private static Escaper HTML_ESCAPER = new CharEscaperBuilder()
       .addEscape('"', "&quot;")
@@ -46,13 +44,21 @@ public class CommentUtil {
 
   private static final Pattern SUMMARY_REGEX = Pattern.compile("(.*?\\.)[\\s$]", Pattern.DOTALL);
   private static final Pattern TAGLET_START_PATTERN = Pattern.compile("\\{@(\\w+)\\s");
-  private static final String ENABLE_EXTENDED_PROFILES = "[$PROFILE$]: extended\n";
+
+  private final boolean useMarkdown;
+
+  /**
+   * @param useMarkdown whether to process parsed comments as markdown.
+   */
+  public CommentParser(boolean useMarkdown) {
+    this.useMarkdown = useMarkdown;
+  }
 
   /**
    * Extracts summary sentence from the provided comment text. This is the substring up to the
    * first period (.) followed by a blank, tab, or newline.
    */
-  public static Comment getSummary(String text, Linker linker) {
+  public Comment getSummary(String text, Linker linker) {
     Matcher matcher = SUMMARY_REGEX.matcher(text);
     if (matcher.find()) {
       return parseComment(matcher.group(1), linker);
@@ -63,7 +69,7 @@ public class CommentUtil {
   /**
    * Extracs the fileoverview comment string from the given {@link JsDoc} object.
    */
-  public static Comment getFileoverview(Linker linker, @Nullable JsDoc jsdoc) {
+  public Comment getFileoverview(Linker linker, @Nullable JsDoc jsdoc) {
     if (jsdoc == null) {
       return Comment.getDefaultInstance();
     }
@@ -73,7 +79,7 @@ public class CommentUtil {
   /**
    * Extracts the block comment string from the given type.
    */
-  public static Comment getBlockDescription(Linker linker, NominalType type) {
+  public Comment getBlockDescription(Linker linker, NominalType type) {
     try {
       linker.pushContext(type);
       return getBlockDescription(linker, type.getJsdoc());
@@ -85,7 +91,7 @@ public class CommentUtil {
   /**
    * Extracts the block comment string from the given {@link JsDoc} object.
    */
-  public static Comment getBlockDescription(Linker linker, @Nullable JsDoc jsdoc) {
+  public Comment getBlockDescription(Linker linker, @Nullable JsDoc jsdoc) {
     if (jsdoc == null) {
       return Comment.getDefaultInstance();
     }
@@ -95,7 +101,7 @@ public class CommentUtil {
   /**
    * Parses the {@code text} of a JSDoc block comment.
    */
-  public static Comment parseComment(String text, Linker linker) {
+  public Comment parseComment(String text, Linker linker) {
     String html = parseMarkdown(text, linker);
     if (html.isEmpty()) {
       return Comment.getDefaultInstance();
@@ -105,7 +111,7 @@ public class CommentUtil {
         .build();
   }
 
-  public static Deprecation parseDeprecation(String text, Linker linker) {
+  public Deprecation parseDeprecation(String text, Linker linker) {
     String html = parseMarkdown(text, linker);
     if (html.isEmpty()) {
       return Deprecation.getDefaultInstance();
@@ -116,7 +122,7 @@ public class CommentUtil {
     return Deprecation.newBuilder().setHtml(html).build();
   }
 
-  private static String parseMarkdown(String text, Linker linker) {
+  private String parseMarkdown(String text, Linker linker) {
     if (isNullOrEmpty(text)) {
       return "";
     }
@@ -156,13 +162,14 @@ public class CommentUtil {
 
           String linkText = info.text;
           if ("link".equals(tagletName)) {
-            linkText = "`" + linkText + "`";
+            linkText = "<code>" + linkText + "</code>";
           }
           if (link == null) {
             builder.append(linkText);
           } else {
-            builder.append("[").append(linkText).append("]")
-                .append("(").append(link.getHref()).append(")");
+            builder.append("<a href=\"").append(link.getHref()).append("\">")
+                .append(linkText)
+                .append("</a>");
           }
           break;
 
@@ -174,7 +181,10 @@ public class CommentUtil {
     }
 
     String markdown = builder.toString();
-    return new PegDownProcessor().markdownToHtml(markdown).trim();
+    if (useMarkdown) {
+      return new PegDownProcessor().markdownToHtml(markdown).trim();
+    }
+    return markdown;
   }
 
   private static int findInlineTagStart(String text, int start) {

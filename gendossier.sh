@@ -119,34 +119,49 @@ EOF
   cat >> README.md <<EOF
 ## Formatting
 
-Before generating the final HTML output, Dossier runs all commments through the
+Before generating the final HTML output, Dossier runs all comments through the
 [*pegdown*](https://github.com/sirthias/pegdown) markdown processor. Since
 markdown is sensitive to the leading whitespace on each line, Dossier will trim
 each line up to the first space *after* the leading \* in the comment.
 
-For example, the JSDoc comment
+For example, the JSDoc comment (.'s inserted to highlight whitespace)
 
     /**
-     * Line one.
-     * Line two.
-     *
-     *     code block
-     */
+    .*.Line one.
+    .*.Line two.
+    .*
+    .*.....code block
+    .*/
 
 is passed to *pegdown* as
 
     Line one.
     Line two.
 
-        code block
+    ....code block
 
-## Type Links
+Markdown support can be disabled by setting `useMarkdown=false` in your
+configuration.
 
-Dossier uses the \`{@link}\` and \`{@linkplain}\` taglets from Javadoc to
-generate links to named types (\`{@link}\` will generate \`<code>\` formatted
-links).  The taglet contents up to the first space are parsed as the type name
-and everything after the space is the link text. If there is no text within the
-taglet, the type name will be used. For example, suppose there is a type named
+### The \`@code\` and \`@literal\` Taglets
+
+The \`{@code}\` and \`{@literal}\` taglets may be used to specify text that
+should be HTML escaped for rendering; the \`{@code}\` taglet will wrap its
+output in \`<code>\` tags. For example, the following
+
+    {@code 1 < 2 && 3 < 4;}
+
+will produce
+
+    <code>1 &lt; 2 &amp;&amp; 3 &lt; 4;</code>
+
+### Type Linking
+
+Dossier uses the \`@link\` and \`@linkplain\` taglets to generate links to
+named types (\`@link\` will generate \`<code>\` formatted links).  The taglet
+contents up to the first space are parsed as the type name and everything after
+the space is the link text. If there is no text within the taglet, the type
+name will be used. For example, suppose there is a type named
 \`example.Widget\`, then
 
     An {@link example.Widget} link.
@@ -158,16 +173,15 @@ would produce
     A <a href="path/to/example_Widget.html"><code>widget link</code></a>.
 
 You may use a hash tag (#) to reference a type's property inside a link:
-\`{@link example.Widget#build()}\`. You may omit the type's name to qualifier
+\`{@link example.Widget#build()}\`. You may omit the type's name as a qualifier
 when linking to one of its own properties: \`{@link #build()}\`. Only instance
 properties use a hash tag qualifier; static properties must be referenced by
 their qualified name: \`{@link Clazz.staticProperty}\`.
 
 ## HTML Sanitization
 
-After a comment is processed by *pegdown*, Dossier will run it through a HTML
-sanitizer before generating the final HTML output. Refer to the
-[source](https://github.com/jleyba/js-dossier/blob/master/src/main/java/com/github/jsdossier/soy/HtmlSanitizer.java)
+All HTML output is sanitized using the [owasp HTML sanitizer](https://code.google.com/p/owasp-java-html-sanitizer/).
+Refer to the [source](https://github.com/jleyba/js-dossier/blob/master/src/main/java/com/github/jsdossier/soy/HtmlSanitizer.java)
 for an up-to-date list of the supported HTML tags and attributes.
 
 ## Building
