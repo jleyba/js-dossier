@@ -89,9 +89,11 @@ Where `config.json` is a configuration file with the options listed below.
  * `readme` Path to a README file to include as the main landing page for the
     generated documentation. This file should use markdown syntax.
 
- * `customPages` Map of additional files to include in the generated
-    documentation. Each key should be the page name listed in the navigation
-    menu, and the value is the path to the markdown file to use.
+ * `customPages` List of additional files to include in the generated
+    documentation. Each page is defined as a {name: string, path: string}
+    object, where the name is what's displayed in the navigation menu, and
+    `path` is the path to the markdown file to use. Files will be included in
+    the order listed, after the standard navigation items.
 
  * `strict` Whether to run with all type checking flags enabled.
 
@@ -102,7 +104,7 @@ Where `config.json` is a configuration file with the options listed below.
 ## Formatting
 
 Before generating the final HTML output, Dossier runs all commments through the
-[txtmark](https://github.com/rjeschke/txtmark) markdown processor. Since
+[*pegdown*](https://github.com/sirthias/pegdown) markdown processor. Since
 markdown is sensitive to the leading whitespace on each line, Dossier will trim
 each line up to the first space *after* the leading \* in the comment.
 
@@ -115,7 +117,7 @@ For example, the JSDoc comment
      *     code block
      */
 
-is passed to txtmark as
+is passed to *pegdown* as
 
     Line one.
     Line two.
@@ -147,7 +149,7 @@ their qualified name: `{@link Clazz.staticProperty}`.
 
 ## HTML Sanitization
 
-After a comment is processed by txtmark, Dossier will run it through a HTML
+After a comment is processed by *pegdown*, Dossier will run it through a HTML
 sanitizer before generating the final HTML output. Refer to the
 [source](https://github.com/jleyba/js-dossier/blob/master/src/main/java/com/github/jsdossier/soy/HtmlSanitizer.java)
 for an up-to-date list of the supported HTML tags and attributes.

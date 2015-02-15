@@ -120,7 +120,7 @@ EOF
 ## Formatting
 
 Before generating the final HTML output, Dossier runs all commments through the
-[txtmark](https://github.com/rjeschke/txtmark) markdown processor. Since
+[*pegdown*](https://github.com/sirthias/pegdown) markdown processor. Since
 markdown is sensitive to the leading whitespace on each line, Dossier will trim
 each line up to the first space *after* the leading \* in the comment.
 
@@ -133,7 +133,7 @@ For example, the JSDoc comment
      *     code block
      */
 
-is passed to txtmark as
+is passed to *pegdown* as
 
     Line one.
     Line two.
@@ -165,7 +165,7 @@ their qualified name: \`{@link Clazz.staticProperty}\`.
 
 ## HTML Sanitization
 
-After a comment is processed by txtmark, Dossier will run it through a HTML
+After a comment is processed by *pegdown*, Dossier will run it through a HTML
 sanitizer before generating the final HTML output. Refer to the
 [source](https://github.com/jleyba/js-dossier/blob/master/src/main/java/com/github/jsdossier/soy/HtmlSanitizer.java)
 for an up-to-date list of the supported HTML tags and attributes.

@@ -20,7 +20,10 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 import com.github.jsdossier.proto.Comment;
 import com.github.jsdossier.proto.Deprecation;
 import com.github.jsdossier.proto.TypeLink;
-import com.github.rjeschke.txtmark.Processor;
+import com.google.common.escape.CharEscaperBuilder;
+import com.google.common.escape.Escaper;
+import org.pegdown.Extensions;
+import org.pegdown.PegDownProcessor;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -32,6 +35,14 @@ import javax.annotation.Nullable;
  */
 public class CommentUtil {
   private CommentUtil() {}  // Utility class.
+
+  private static Escaper HTML_ESCAPER = new CharEscaperBuilder()
+      .addEscape('"', "&quot;")
+      .addEscape('\'', "&#39;")
+      .addEscape('&', "&amp;")
+      .addEscape('<', "&lt;")
+      .addEscape('>', "&gt;")
+      .toEscaper();
 
   private static final Pattern SUMMARY_REGEX = Pattern.compile("(.*?\\.)[\\s$]", Pattern.DOTALL);
   private static final Pattern TAGLET_START_PATTERN = Pattern.compile("\\{@(\\w+)\\s");
@@ -135,7 +146,7 @@ public class CommentUtil {
       String tagletText = text.substring(tagletStart + tagletPrefix.length(), tagletEnd);
       switch (tagletName) {
         case "code":
-          builder.append("<code>").append(tagletText).append("</code>");
+          builder.append("<code>").append(HTML_ESCAPER.escape(tagletText)).append("</code>");
           break;
 
         case "link":
@@ -157,13 +168,13 @@ public class CommentUtil {
 
         case "literal":
         default:
-          builder.append(tagletText);
+          builder.append(HTML_ESCAPER.escape(tagletText));
       }
       start = tagletEnd + 1;
     }
 
-    String markdown = ENABLE_EXTENDED_PROFILES + builder.toString();
-    return Processor.process(markdown).trim();
+    String markdown = builder.toString();
+    return new PegDownProcessor().markdownToHtml(markdown).trim();
   }
 
   private static int findInlineTagStart(String text, int start) {

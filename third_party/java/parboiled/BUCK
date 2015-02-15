@@ -1,0 +1,21 @@
+include_defs("//third_party/java/DEFS")
+
+prebuilt_jar_with_license(
+  name = "core",
+  binary_jar = "parboiled-core-1.1.7.jar",
+  source_jar = "parboiled-core-1.1.7-src.jar",
+)
+
+prebuilt_jar_with_license(
+  name = "java",
+  binary_jar = "parboiled-java-1.1.7.jar",
+  source_jar = "parboiled-java-1.1.7-src.jar",
+  deps = [
+      ":core",
+      "//third_party/java/asm:asm",
+      "//third_party/java/asm:asm_analysis",
+      "//third_party/java/asm:asm_tree",
+      "//third_party/java/asm:asm_util",
+  ],
+  visibility = ["PUBLIC"],
+)

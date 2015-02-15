@@ -1,0 +1,11 @@
+include_defs("//third_party/java/DEFS")
+
+prebuilt_jar_with_license(
+  name = "pegdown",
+  binary_jar = "pegdown-1.4.2.jar",
+  source_jar = "pegdown-1.4.2-src.jar",
+  deps = [
+    "//third_party/java/parboiled:java",
+  ],
+  visibility = ["PUBLIC"],
+)

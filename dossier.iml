@@ -141,17 +141,6 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/third_party/java/txtmark/txtmark-0.8.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="jar://$MODULE_DIR$/third_party/java/txtmark/txtmark-0.8-src.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
           <root url="jar://$MODULE_DIR$/third_party/java/guava/guava-18.0.jar!/" />
         </CLASSES>
         <JAVADOC />
@@ -240,6 +229,46 @@
         </SOURCES>
       </library>
     </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/third_party/java/pegdown/pegdown-1.4.2.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/third_party/java/pegdown/pegdown-1.4.2-src.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/third_party/java/asm/asm-5.0.3.jar!/" />
+          <root url="jar://$MODULE_DIR$/third_party/java/asm/asm-analysis-5.0.3.jar!/" />
+          <root url="jar://$MODULE_DIR$/third_party/java/asm/asm-tree-5.0.3.jar!/" />
+          <root url="jar://$MODULE_DIR$/third_party/java/asm/asm-util-5.0.3.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/third_party/java/asm/asm-5.0.3-src.jar!/" />
+          <root url="jar://$MODULE_DIR$/third_party/java/asm/asm-analysis-5.0.3-src.jar!/" />
+          <root url="jar://$MODULE_DIR$/third_party/java/asm/asm-tree-5.0.3-src.jar!/" />
+          <root url="jar://$MODULE_DIR$/third_party/java/asm/asm-util-5.0.3-src.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/third_party/java/parboiled/parboiled-core-1.1.7.jar!/" />
+          <root url="jar://$MODULE_DIR$/third_party/java/parboiled/parboiled-java-1.1.7.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/third_party/java/parboiled/parboiled-core-1.1.7-src.jar!/" />
+          <root url="jar://$MODULE_DIR$/third_party/java/parboiled/parboiled-java-1.1.7-src.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
   </component>
 </module>
-

@@ -16,7 +16,7 @@ java_library(
     "//third_party/java/protobuf:protobuf",
     "//third_party/java/soy:soy",
     "//third_party/java/owasp_html_sanitizer:owasp_html_sanitizer",
-    "//third_party/java/txtmark:txtmark",
+    "//third_party/java/pegdown:pegdown",
   ],
   visibility = [
     "//src/test/java/com/github/jsdossier/...",

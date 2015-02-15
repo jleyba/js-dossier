@@ -870,7 +870,7 @@ public class RendererTest {
     assertThat(querySelector(document, "body").toString(), isHtml(
         "<body>",
         "<h3><a id=\"foo.Bar\"></a>foo.Bar()</h3>",
-        "<p>First paragraph.</p>\n",
+        "<p>First paragraph. </p>",
         "<ul><li>bullet <code>with code</code></li>",
         "<li>another bullet</li>",
         "</ul>",
@@ -897,7 +897,7 @@ public class RendererTest {
         "<a id=\"Bar\"></a>Bar(<wbr />a)",
         "<span class=\"codelink\"><a href=\"bar.link\">code &raquo;</a></span>",
         "</h3>",
-        "<p>description here\n</p>",
+        "<p>description here </p>",
         "<p>second paragraph</p>",
         "<p><b>Deprecated: </b>is old</p>",
         "<div><div class=\"fn-details\">",

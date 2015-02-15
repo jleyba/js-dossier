@@ -1,0 +1,29 @@
+include_defs("//third_party/java/DEFS")
+
+prebuilt_jar_with_license(
+  name = "asm",
+  binary_jar = "asm-5.0.3.jar",
+  source_jar = "asm-5.0.3-src.jar",
+  visibility = ["PUBLIC"],
+)
+
+prebuilt_jar_with_license(
+  name = "asm_analysis",
+  binary_jar = "asm-analysis-5.0.3.jar",
+  source_jar = "asm-analysis-5.0.3-src.jar",
+  visibility = ["PUBLIC"],
+)
+
+prebuilt_jar_with_license(
+  name = "asm_tree",
+  binary_jar = "asm-tree-5.0.3.jar",
+  source_jar = "asm-tree-5.0.3-src.jar",
+  visibility = ["PUBLIC"],
+)
+
+prebuilt_jar_with_license(
+  name = "asm_util",
+  binary_jar = "asm-util-5.0.3.jar",
+  source_jar = "asm-util-5.0.3-src.jar",
+  visibility = ["PUBLIC"],
+)

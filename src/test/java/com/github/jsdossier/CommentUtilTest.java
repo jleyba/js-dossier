@@ -226,11 +226,34 @@ public class CommentUtilTest {
     assertHtmlText(comment.getToken(0),
         "<p>This is a class comment.</p>\n" +
             "<ul>\n" +
-            "<li>with\nlist</li>\n" +
-            "<li>items</li>\n" +
-            "</ul>\n" +
-            "<p>And a</p>\n" +
+            "  <li>with list</li>\n" +
+            "  <li>items</li>\n" +
+            "</ul><p>And a</p>\n" +
             "<pre><code>code block\n" +
+            "</code></pre>");
+  }
+
+  @Test
+  public void escapesHtmlCommentWithinCodeTaglet() {
+    Comment comment = parseComment("{@code <em>Hello</em>}", mockLinker);
+    assertEquals(1, comment.getTokenCount());
+    assertHtmlText(comment.getToken(0), "<p><code>&lt;em&gt;Hello&lt;/em&gt;</code></p>");
+  }
+
+  @Test
+  public void escapesHtmlCommentWithinLiteralTaglet() {
+    Comment comment = parseComment("{@literal <em>Hello</em>}", mockLinker);
+    assertEquals(1, comment.getTokenCount());
+    assertHtmlText(comment.getToken(0), "<p>&lt;em&gt;Hello&lt;/em&gt;</p>");
+  }
+
+  @Test
+  public void requiresBlankLineBetweenParagraphsBeforeOpeningACodeBlock() {
+    Comment comment = parseComment("A promise for a\n    file path.\n\n    code now", mockLinker);
+    assertEquals(1, comment.getTokenCount());
+    assertHtmlText(comment.getToken(0),
+        "<p>A promise for a  file path.</p>\n" +
+            "<pre><code>code now\n" +
             "</code></pre>");
   }
 
