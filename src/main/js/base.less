@@ -25,7 +25,8 @@
 @banner_color: #424242;
 @link_color: #66f;
 @header_border: #8f8f8f;
-@code_bg: #f0f0f0;
+@code_bg: #f7f7f7;
+@body_bg: #f0f0f0;
 
 .set-font-size(@size) {
   font-size: @size;
@@ -78,7 +79,7 @@ body {
   word-wrap: break-word;
   margin: 0 0 @footer_height;
   padding: 0;
-  background: @code_bg;
+  background: @body_bg;
 
   .set-font-size(1.4rem);
 }
@@ -173,6 +174,7 @@ li code {
   background: @code_bg;
   padding: 3px;
   border-radius: 3px;
+  border: 1px solid @body_bg;
 }
 
 .fn-details {

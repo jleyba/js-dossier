@@ -18,9 +18,9 @@ h4{font-size:1.6rem}h4 a[id]{padding-top:6.6rem;margin-top:-6.6rem;display:inlin
 h5{font-size:1.4rem}h5 a[id]{padding-top:6.4rem;margin-top:-6.4rem;display:inline-block}
 h6{font-size:1.2rem}h6 a[id]{padding-top:6.2rem;margin-top:-6.2rem;display:inline-block}
 pre,code{font-size:1.2rem}
-pre{background:#f0f0f0;border-radius:3px;border-left:.2rem solid #a3a3a3;line-height:1.45;word-wrap:normal;margin:1rem 3rem;padding:1rem;overflow:auto}pre.inheritance{border:0;background:initial;padding:0;margin:.5rem 0 1rem 0}h1+pre.inheritance{margin-top:-1rem}
+pre{background:#f7f7f7;border-radius:3px;border-left:.2rem solid #ababab;line-height:1.45;word-wrap:normal;margin:1rem 3rem;padding:1rem;overflow:auto}pre.inheritance{border:0;background:initial;padding:0;margin:.5rem 0 1rem 0}h1+pre.inheritance{margin-top:-1rem}
 p{margin:0 0 1rem 0}
-p code,li code{background:#f0f0f0;padding:3px;border-radius:3px}
+p code,li code{background:#f7f7f7;padding:3px;border-radius:3px;border:1px solid #f0f0f0}
 .fn-details div:first-child{border-bottom:1px solid #c2c2c2;margin-top:.5rem}
 hr.fn-sep{border:0;border-top:1px solid #dcdcdc;width:50%;margin:auto}
 .tags span{background:rgba(102,102,255,0.4);border:1px solid #66f;border-radius:3px;color:#fff;font-size:75%;font-weight:bold;padding:2px 4px;line-height:1.4rem}.tags span+span{margin-left:2px}
@@ -31,7 +31,7 @@ dd{margin:0 0 0 3rem}
 ol,ul{margin:1rem 0 1rem 4rem}
 blockquote{margin:1rem 3rem}
 table{border-collapse:collapse;border-spacing:0}table caption{font-style:italic}
-table tr{background:#fff;border-top:1px solid #ccc}table tr:nth-child(2n){background:#f0f0f0}
+table tr{background:#fff;border-top:1px solid #ccc}table tr:nth-child(2n){background:#f7f7f7}
 th,td{padding:.6rem 1.3rem;border:1px solid #ddd}
 .parentlink{float:left}
 .codelink a{float:right}
@@ -60,7 +60,7 @@ nav>h3:first-child{border-top:0;margin-top:0}nav>h3:first-child:before{transform
 main:after{clear:both;content:"";display:table}
 article{margin-top:2.5rem;padding:3rem}article.indexfile>h1,article.srcfile>h1{margin-top:0;white-space:nowrap;text-overflow:ellipsis;overflow:hidden}article.indexfile>h1:hover,article.srcfile>h1:hover{overflow:visible}
 .srcfile div{width:100%;overflow:auto}
-.srcfile table{background:#f0f0f0;border-radius:3px;border-left:.2rem solid #a3a3a3;line-height:1.45;word-wrap:normal;font-family:monospace;font-size:1.2rem;white-space:pre;margin:1rem 0;width:100%}
+.srcfile table{background:#f7f7f7;border-radius:3px;border-left:.2rem solid #ababab;line-height:1.45;word-wrap:normal;font-family:monospace;font-size:1.2rem;white-space:pre;margin:1rem 0;width:100%}
 .srcfile td{padding:0 .8rem;border:0}
 .srcfile td:first-child{text-align:right;padding-left:.8rem}
 .srcfile tr{background:initial;border:0}
