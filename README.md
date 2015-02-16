@@ -132,7 +132,7 @@ is passed to *pegdown* as
 
     ....code block
 
-Markdown support can be disabled by setting  in your
+Markdown support can be disabled by setting `useMarkdown=false` in your
 configuration.
 
 ### The `@code` and `@literal` Taglets
