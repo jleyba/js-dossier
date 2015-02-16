@@ -1,12 +1,20 @@
 {
   "output": "out/sample",
-  "closureLibraryDir": "third_party/js/closure_library/closure/goog",
   "license": "LICENSE",
   "readme": "README.md",
-  "language": "ES5_STRICT",
+  "language": "ES5",
+  "useMarkdown": false,
   "sources": [
-    "src/main/js/dossier.js",
-    "src/main/js/dossier_soy.js",
-    "src/main/js/soyutils_usegoog.js"
+    "third_party/js/closure_library/closure/goog",
+    "third_party/js/closure_library/third_party/closure/goog"
+  ],
+  "excludes": [
+    "third_party/js/closure_library/closure/goog/**_test.js",
+    "third_party/js/closure_library/closure/goog/**_perf.js",
+    "third_party/js/closure_library/closure/goog/demos",
+    "third_party/js/closure_library/closure/goog/tweak/testhelpers.js",
+    "third_party/js/closure_library/third_party/closure/goog/**_test.js",
+    "third_party/js/closure_library/third_party/closure/goog/base.js",
+    "third_party/js/closure_library/third_party/closure/goog/deps.js"
   ]
 }

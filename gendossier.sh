@@ -90,7 +90,8 @@ build_release() {
 
 build_sample() {
   buck build app
-  java -jar buck-out/gen/src/main/java/com/github/jsdossier/dossier.jar \
+  java -Xmx2048M \
+      -jar buck-out/gen/src/main/java/com/github/jsdossier/dossier.jar \
       --config sample_config.json
 }
 
