@@ -137,11 +137,11 @@ configuration.
 
 ### The `@code` and `@literal` Taglets
 
-The `{@code}` and `{@literal}` taglets may be used to specify text that
-should be HTML escaped for rendering; the `{@code}` taglet will wrap its
+The `@code` and `@literal` taglets may be used to specify text that
+should be HTML escaped for rendering; the `@code` taglet will wrap its
 output in `<code>` tags. For example, the following
 
-    {@code 1 < 2 && 3 < 4;}
+<pre><code>{@&shy;code 1 < 2 && 3 < 4;}</code></pre>
 
 will produce
 
@@ -156,8 +156,9 @@ the space is the link text. If there is no text within the taglet, the type
 name will be used. For example, suppose there is a type named
 `example.Widget`, then
 
-    An {@link example.Widget} link.
-    A {@link example.Widget widget link}.
+<pre><code>An {@&shy;link example.Widget} link.
+A {@&shy;link example.Widget widget link}.
+</code></pre>
 
 would produce
 
@@ -165,10 +166,10 @@ would produce
     A <a href="path/to/example_Widget.html"><code>widget link</code></a>.
 
 You may use a hash tag (#) to reference a type's property inside a link:
-`{@link example.Widget#build()}`. You may omit the type's name as a qualifier
-when linking to one of its own properties: `{@link #build()}`. Only instance
-properties use a hash tag qualifier; static properties must be referenced by
-their qualified name: `{@link Clazz.staticProperty}`.
+<code>{&shy;@link example.Widget#build()}</code>. You may omit the type's name
+as a qualifier when linking to one of its own properties:
+<code>{&shy;@link #build()}</code>. Dossier will favor instance over static
+properties when de-referencing a hash link.
 
 ## HTML Sanitization
 
