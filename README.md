@@ -141,7 +141,7 @@ The `@code` and `@literal` taglets may be used to specify text that
 should be HTML escaped for rendering; the `@code` taglet will wrap its
 output in `<code>` tags. For example, the following
 
-<pre><code>{@&shy;code 1 < 2 && 3 < 4;}</code></pre>
+<pre><code>{@&shy;code 1 &lt; 2 &amp;&amp; 3 &lt; 4;}</code></pre>
 
 will produce
 
