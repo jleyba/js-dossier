@@ -251,11 +251,20 @@ class DocWriter {
     Path output = linker.getFilePath(module);
     createDirectories(output.getParent());
 
+    Comment description = null;
+    if (module.getJsType().isFunctionType()) {
+      description = parser.getBlockDescription(linker, module);
+    }
+
+    if (description == null) {
+      description = parser.getFileoverview(linker,
+          typeRegistry.getFileOverview(module.getModule().getPath()));
+    }
+
     JsType.Builder jsTypeBuilder = JsType.newBuilder()
         .setName(linker.getDisplayName(module))
         .setSource(linker.getSourceLink(module.getNode()))
-        .setDescription(parser.getFileoverview(linker,
-            typeRegistry.getFileOverview(module.getModule().getPath())))
+        .setDescription(description)
         .addAllNested(getNestedTypeInfo(module))
         .addAllTypeDef(getTypeDefInfo(module))
         .addAllExtendedType(getInheritedTypes(module))

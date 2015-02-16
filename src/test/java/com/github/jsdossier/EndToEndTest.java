@@ -84,6 +84,7 @@ public class EndToEndTest {
     copyResource("resources/emptyenum.js", srcDir.resolve("main/subdir/emptyenum.js"));
     copyResource("resources/module/index.js", srcDir.resolve("main/example/index.js"));
     copyResource("resources/module/nested.js", srcDir.resolve("main/example/nested.js"));
+    copyResource("resources/module/worker.js", srcDir.resolve("main/example/worker.js"));
 
     Path config = createTempFile(tmpDir, "config", ".json");
     writeConfig(config, new Config() {{
@@ -104,6 +105,7 @@ public class EndToEndTest {
 
       addModule(srcDir.resolve("main/example/index.js"));
       addModule(srcDir.resolve("main/example/nested.js"));
+      addModule(srcDir.resolve("main/example/worker.js"));
     }});
 
     Main.run(new String[]{"-c", config.toAbsolutePath().toString()}, fileSystem);
@@ -262,6 +264,15 @@ public class EndToEndTest {
   public void checkCommonJsModule() throws IOException {
     Document document = load(outDir.resolve("module_example_nested.html"));
     compareWithGoldenFile(querySelector(document, "article"), "module_example_nested.html");
+    checkHeader(document);
+    checkNav(document);
+    checkFooter(document);
+  }
+
+  @Test
+  public void checkCommonJsModuleThatIsExportedConstructor() throws IOException {
+    Document document = load(outDir.resolve("module_example_worker.html"));
+    compareWithGoldenFile(querySelector(document, "article"), "module_example_worker.html");
     checkHeader(document);
     checkNav(document);
     checkFooter(document);
