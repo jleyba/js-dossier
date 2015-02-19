@@ -24,6 +24,7 @@ main, div.pre-footer > div {
 }
 
 main {
+  display: block;  // For IE.
   &:after {
     clear: both;
     content: "";
@@ -72,7 +73,7 @@ article {
   }
 
   tr {
-    background: initial;
+    background: @code_bg;
     border: 0;
   }
 
