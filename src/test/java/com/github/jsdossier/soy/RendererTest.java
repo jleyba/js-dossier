@@ -871,11 +871,13 @@ public class RendererTest {
     Document document = renderDocument("dossier.soy.printFunction", data);
     assertThat(querySelector(document, "body").toString(), isHtml(
         "<body>",
-        "<h3><a id=\"foo.Bar\"></a>foo.Bar()</h3>",
+        "<div id=\"foo.Bar\" class=\"function\"><div>",
+        "<h3>foo.Bar()</h3>",
         "<p>First paragraph. </p>",
         "<ul><li>bullet <code>with code</code></li>",
         "<li>another bullet</li>",
         "</ul>",
+        "</div></div>",
         "</body>"));
   }
 
@@ -895,8 +897,9 @@ public class RendererTest {
     Document document = renderDocument("dossier.soy.printFunction", data);
     assertThat(querySelector(document, "body").toString(), isHtml(
         "<body>",
+        "<div id=\"Bar\" class=\"function\"><div>",
         "<h3>",
-        "<a id=\"Bar\"></a>Bar(<wbr />a)",
+        "Bar(<wbr />a)",
         "<span class=\"codelink\"><a href=\"bar.link\">code &raquo;</a></span>",
         "</h3>",
         "<p>description here </p>",
@@ -904,6 +907,7 @@ public class RendererTest {
         "<p><b>Deprecated: </b>is old</p>",
         "<div><div class=\"fn-details\">",
         "<div><b>Parameters</b></div><dl><dt>a</dt></dl></div></div>",
+        "</div></div>",
         "</body>"));
   }
 
@@ -923,7 +927,8 @@ public class RendererTest {
     assertThat(details.className(), is(""));
 
     assertThat(details.child(0).toString(), isHtml(
-        "<dt><a id=\"foo\"></a><a href=\"foo-source\">foo</a><code>string</code></dt>"));
+        "<div id=\"foo\" class=\"property\"><dl><dt><a href=\"foo-source\">foo</a>" +
+            "<code>string</code></dt><dd><p>foo description</p></dd></dl></div>"));
   }
 
   @Test

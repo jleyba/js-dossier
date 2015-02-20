@@ -32,11 +32,11 @@
 .set-font-size(@size) {
   font-size: @size;
 
-  a[id] {
+  a[id], .property, .function {
     padding-top: @header_height + @size;
     margin-top: -@header_height - @size;
-    display: inline-block;
   }
+  a[id] {display:inline-block}
 }
 
 .code-block() {
@@ -211,8 +211,12 @@ hr.fn-sep {
   }
 }
 
-dl {
-  margin: 1rem 0;
+.function:target > div,
+.property:target > dl {
+  @width: 3px;
+  border-left: 3px solid @link_color;
+  padding-left: 2 * @width;
+  margin-left: -3 * @width;
 }
 
 dt {

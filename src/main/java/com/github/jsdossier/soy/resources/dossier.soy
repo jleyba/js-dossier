@@ -462,62 +462,65 @@
 {template .printFunction}
   {@param  fn: dossier.Function}
 
-  <h3>
-    {if $fn.templateName and length($fn.templateName)}
-      <code>
-        {call .printTemplateNames}
-          {param names: $fn.templateName /}
-        {/call}
-      </code>
-      {sp}
-    {/if}
+  <div id="{$fn.base.name}" class="function">
+    <div>
+      <h3>
+        {if $fn.templateName and length($fn.templateName)}
+          <code>
+            {call .printTemplateNames}
+              {param names: $fn.templateName /}
+            {/call}
+          </code>
+          {sp}
+        {/if}
 
-    /* TODO: deprecation $fn.base.deprecation */
-    <a id="{$fn.base.name}"></a>
-    {$fn.base.name}
-    {call .functionArgs}
-      {param fn: $fn /}
-    {/call}
-    {if $fn.base.source.path}
-      <span class="codelink">
-        {call .sourceLink}
-          {param text: 'code »' /}
-          {param source: $fn.base.source /}
+        /* TODO: deprecation $fn.base.deprecation */
+        {$fn.base.name}
+        {call .functionArgs}
+          {param fn: $fn /}
         {/call}
-      </span>
-    {/if}
-  </h3>
-  {call .tags}
-    {param tags: $fn.base.tags /}
-  {/call}
+        {if $fn.base.source.path}
+          <span class="codelink">
+            {call .sourceLink}
+              {param text: 'code »' /}
+              {param source: $fn.base.source /}
+            {/call}
+          </span>
+        {/if}
+      </h3>
+      {call .tags}
+        {param tags: $fn.base.tags /}
+      {/call}
 
-  {if ($fn.base.description and length($fn.base.description.token))
-      or $fn.base.overrides
-      or length($fn.base.specifiedBy)
-      or length($fn.parameter)
-      or length($fn.thrown)
-      or ($fn.return and
-          (($fn.return.description and length($fn.return.description.token)) or
-           ($fn.return.type and length($fn.return.type.token))))}
-    {call .comment}
-      {param comment: $fn.base.description /}
-    {/call}
-    {call .fnOverrides}
-      {param fn: $fn /}
-    {/call}
-    {call .deprecationNotice}
-      {param deprecation: $fn.base.deprecation /}
-    {/call}
-    {call .fnDetails}
-      {param fn: $fn /}
-    {/call}
-  {elseif $fn.base.deprecation and $fn.base.deprecation.html}
-    {call .deprecationNotice}
-      {param deprecation: $fn.base.deprecation /}
-    {/call}
-  {else}
-    <p>No information.</p>
-  {/if}
+      {if ($fn.base.description and length($fn.base.description.token))
+          or $fn.base.overrides
+          or length($fn.base.specifiedBy)
+          or length($fn.parameter)
+          or length($fn.thrown)
+          or ($fn.return and
+              (($fn.return.description and length($fn.return.description.token)) or
+               ($fn.return.type and length($fn.return.type.token))))}
+        {call .comment}
+          {param comment: $fn.base.description /}
+        {/call}
+        {call .fnOverrides}
+          {param fn: $fn /}
+        {/call}
+        {call .deprecationNotice}
+          {param deprecation: $fn.base.deprecation /}
+        {/call}
+        {call .fnDetails}
+          {param fn: $fn /}
+        {/call}
+      {elseif $fn.base.deprecation and $fn.base.deprecation.html}
+        {call .deprecationNotice}
+          {param deprecation: $fn.base.deprecation /}
+        {/call}
+      {else}
+        <p>No information.</p>
+      {/if}
+    </div>
+  </div>
 {/template}
 
 
@@ -568,28 +571,31 @@
 {template .printProperty}
   {@param prop: dossier.Property}
 
-  <dt>
-    <a id="{$prop.base.name}"></a>
-    {call .sourceLink}
-      {param text: $prop.base.name /}
-      {param source: $prop.base.source /}
-    {/call}
-    /* todo: deprecation */
-    {if $prop.type}
-      <code>
-        {call .comment}
-          {param comment: $prop.type /}
+  <div id="{$prop.base.name}" class="property">
+    <dl>
+      <dt>
+        {call .sourceLink}
+          {param text: $prop.base.name /}
+          {param source: $prop.base.source /}
         {/call}
-      </code>
-    {/if}
-  <dd>
-    {if $prop.base.description and length($prop.base.description.token)}
-      {call .comment}
-        {param comment: $prop.base.description /}
-      {/call}
-    {else}
-      No description.
-    {/if}
+        /* todo: deprecation */
+        {if $prop.type}
+          <code>
+            {call .comment}
+              {param comment: $prop.type /}
+            {/call}
+          </code>
+        {/if}
+      <dd>
+        {if $prop.base.description and length($prop.base.description.token)}
+          {call .comment}
+            {param comment: $prop.base.description /}
+          {/call}
+        {else}
+          No description.
+        {/if}
+    </dl>
+  </div>
 {/template}
 
 
@@ -641,13 +647,9 @@
 
   {if length($type.field)}
     <h2>Instance Properties</h2>
-    <dl>
-      {foreach $property in $type.field}
-        {call .printProperty}
-          {param prop: $property /}
-        {/call}
-      {/foreach}
-    </dl>
+    {call .printProperties}
+      {param properties: $type.field /}
+    {/call}
   {/if}
 {/template}
 
@@ -679,20 +681,16 @@
         Properties
       {/if}
     </h2>
-    <dl>
-      {call .printProperties}
-        {param properties: $type.staticProperty /}
-      {/call}
-    </dl>
+    {call .printProperties}
+      {param properties: $type.staticProperty /}
+    {/call}
   {/if}
 
   {if length($type.compilerConstant)}
     <h2>Compiler Constants</h2>
-    <dl>
-      {call .printProperties}
-        {param properties: $type.compilerConstant /}
-      {/call}
-    </dl>
+    {call .printProperties}
+      {param properties: $type.compilerConstant /}
+    {/call}
   {/if}
 {/template}
 
