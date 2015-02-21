@@ -214,9 +214,25 @@ hr.fn-sep {
 .function:target > div,
 .property:target > dl {
   @width: 3px;
-  border-left: 3px solid @link_color;
-  padding-left: 2 * @width;
-  margin-left: -3 * @width;
+  border-left: @width solid #fff;
+  padding-left: 3 * @width;
+  margin-left: -4 * @width;
+
+  -webkit-animation: highlight 0.75s;
+  -moz-animation: highlight 0.75s;
+  animation: highlight 0.75s;
+}
+@-webkit-keyframes highlight {
+  from { border-left-color: fade(@link_color, 70%); }
+  to { border-left-color: #fff; }
+}
+@-moz-keyframes highlight {
+  from { border-left-color: fade(@link_color, 70%); }
+  to { border-left-color: #fff; }
+}
+@keyframes highlight {
+  from { border-left-color: fade(@link_color, 70%); }
+  to { border-left-color: #fff; }
 }
 
 dt {
