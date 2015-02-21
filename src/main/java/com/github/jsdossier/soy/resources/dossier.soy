@@ -220,25 +220,26 @@
 
   {if length($enumeration.value)}
     <h2>Values and Descriptions</h2>
-    <dl>
-      {foreach $value in $enumeration.value}
-        <dt{if $value.deprecation.html} class="deprecated"{/if}>
-          <a id="{$value.name}"></a>
-          {$value.name}
-        {if ($value.description and length($value.description.token)) or
-            ($value.deprecation and $value.deprecation.html)}
-          <dd>
-            {call .comment}
-              {param comment: $value.description /}
-            {/call}
-            {if $value.deprecation.html}
-              {call .deprecationNotice}
-                {param deprecation: $value.deprecation /}
+    {foreach $value in $enumeration.value}
+      <div id="{$value.name}" class="property">
+        <dl>
+          <dt{if $value.deprecation.html} class="deprecated"{/if}>
+            {$value.name}
+          {if ($value.description and length($value.description.token)) or
+              ($value.deprecation and $value.deprecation.html)}
+            <dd>
+              {call .comment}
+                {param comment: $value.description /}
               {/call}
-            {/if}
-        {/if}
-      {/foreach}
-    </dl>
+              {if $value.deprecation.html}
+                {call .deprecationNotice}
+                  {param deprecation: $value.deprecation /}
+                {/call}
+              {/if}
+          {/if}
+        </dl>
+      </div>
+    {/foreach}
   {/if}
 {/template}
 
