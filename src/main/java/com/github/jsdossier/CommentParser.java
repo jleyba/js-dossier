@@ -232,13 +232,16 @@ public class CommentParser {
       this.text = text;
     }
 
+    private static Pattern SEPARATOR = Pattern.compile("\\s");
+
     static LinkInfo fromText(String text) {
       String linkedType = text;
       String linkText = text;
-      int index = text.indexOf(' ');
-      if (index != -1) {
-        linkedType = text.substring(0, index);
-        linkText= text.substring(index + 1);
+      Matcher matcher = SEPARATOR.matcher(text);
+      if (matcher.find()) {
+        int index = matcher.start();
+        linkedType = text.substring(0, matcher.start());
+        linkText = text.substring(index + 1);
       }
       return new LinkInfo(linkedType, linkText);
     }

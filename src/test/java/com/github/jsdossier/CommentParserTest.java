@@ -180,6 +180,32 @@ public class CommentParserTest {
   }
 
   @Test
+  public void parseCommentWithTypeLinkWhereLinkTextStartsOnNewline() {
+    when(mockLinker.getLink("foo.Bar")).thenReturn(TypeLink.newBuilder()
+        .setText("")
+        .setHref("/path/to/foo")
+        .build());
+
+    Comment comment = parser.parseComment("A link to {@link foo.Bar\nfoo}.", mockLinker);
+    assertEquals(1, comment.getTokenCount());
+    assertHtmlText(comment.getToken(0),
+        "<p>A link to <a href=\"/path/to/foo\"><code>foo</code></a>.</p>");
+  }
+
+  @Test
+  public void parseCommentWithTypeLinkWithTextSpanningMultipleLines() {
+    when(mockLinker.getLink("foo.Bar")).thenReturn(TypeLink.newBuilder()
+        .setText("")
+        .setHref("/path/to/foo")
+        .build());
+
+    Comment comment = parser.parseComment("A link to {@link foo.Bar foo\nbar}.", mockLinker);
+    assertEquals(1, comment.getTokenCount());
+    assertHtmlText(comment.getToken(0),
+        "<p>A link to <a href=\"/path/to/foo\"><code>foo bar</code></a>.</p>");
+  }
+
+  @Test
   public void parseCommentWithPlainTypeLinks() {
     when(mockLinker.getLink("foo.Bar")).thenReturn(TypeLink.newBuilder()
         .setText("")
