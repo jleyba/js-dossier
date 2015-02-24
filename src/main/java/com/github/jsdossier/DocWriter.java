@@ -298,8 +298,13 @@ class DocWriter {
         ModuleDescriptor internalModule = module.getModule();
         docs = JsDoc.from(internalModule.getInternalVarDocs(module.getName()));
       }
+      String name = linker.getDisplayName(module);
+      int index = name.lastIndexOf('/');
+      if (index != -1 && !name.endsWith("/")) {
+        name = name.substring(index + 1);
+      }
       jsTypeBuilder.setMainFunction(getFunctionData(
-          linker.getDisplayName(module),
+          name,
           module.getJsType(),
           module.getNode(),
           docs));

@@ -445,7 +445,7 @@
   {if $isNonTrivial}
     <h2 class="main">
       {if $fn.isConstructor}new{sp}{/if}
-      {$type.name}
+      {$fn.base.name}
       {call .functionArgs}
         {param fn: $fn /}
       {/call}
