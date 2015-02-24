@@ -261,6 +261,15 @@ public class EndToEndTest {
   }
 
   @Test
+  public void checkModuleDirectlyExportsConstructor() throws IOException {
+    Document document = load(outDir.resolve("module_example_worker.html"));
+    compareWithGoldenFile(querySelector(document, "article"), "module_example_worker.html");
+    checkHeader(document);
+    checkNav(document);
+    checkFooter(document);
+  }
+
+  @Test
   public void checkCommonJsModule() throws IOException {
     Document document = load(outDir.resolve("module_example_nested.html"));
     compareWithGoldenFile(querySelector(document, "article"), "module_example_nested.html");

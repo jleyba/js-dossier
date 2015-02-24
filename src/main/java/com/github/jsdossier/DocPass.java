@@ -13,6 +13,7 @@
 // limitations under the License.
 package com.github.jsdossier;
 
+import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.base.Verify.verify;
 
 import com.google.common.base.Joiner;
@@ -233,8 +234,10 @@ class DocPass implements CompilerPass {
           continue;
         }
 
+        @Nullable ModuleDescriptor module = typeRegistry.getModuleDescriptor(name);
         @Nullable JSDocInfo info = var.getJSDocInfo();
-        if (null == info) {
+        if ((info == null || (module != null && isNullOrEmpty(info.getOriginalCommentString())))
+            && type != null) {
           info = type.getJSDocInfo();
         }
 
@@ -249,7 +252,6 @@ class DocPass implements CompilerPass {
           continue;
         }
 
-        @Nullable ModuleDescriptor module = typeRegistry.getModuleDescriptor(name);
         crawl(name, info, node, type, module);
       }
     }

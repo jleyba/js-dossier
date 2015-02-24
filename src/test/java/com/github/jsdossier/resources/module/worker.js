@@ -4,7 +4,8 @@
 
 /**
  * And this is the exported constructor comment.
+ * @param {string} name Worker name.
  * @constructor
  */
-module.exports = function() {
+module.exports = function(name) {
 };
