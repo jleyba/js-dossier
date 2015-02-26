@@ -44,8 +44,8 @@ dossier.Descriptor_;
 
 
 /**
- * @typedef {{types: !Array.<dossier.Descriptor_>,
- *            modules: !Array.<dossier.Descriptor_>}}
+ * @typedef {{types: Array.<dossier.Descriptor_>,
+ *            modules: Array.<dossier.Descriptor_>}}
  * @private
  */
 dossier.TypeInfo_;
@@ -136,13 +136,17 @@ dossier.initSourceHilite_ = function() {
 dossier.initSearchBox_ = function(typeInfo) {
   var nameToHref = {};
   var allTerms = [];
-  goog.array.forEach(typeInfo['types'], function(descriptor) {
-    dossier.addTypes_(allTerms, nameToHref, descriptor);
-  });
+  if (typeInfo['types']) {
+    goog.array.forEach(typeInfo['types'], function(descriptor) {
+      dossier.addTypes_(allTerms, nameToHref, descriptor);
+    });
+  }
 
-  goog.array.forEach(typeInfo['modules'], function(module) {
-    dossier.addTypes_(allTerms, nameToHref, module, true);
-  });
+  if (typeInfo['modules']) {
+    goog.array.forEach(typeInfo['modules'], function(module) {
+      dossier.addTypes_(allTerms, nameToHref, module, true);
+    });
+  }
 
   var searchForm = document.querySelector('header form');
   goog.events.listen(searchForm, goog.events.EventType.SUBMIT, function(e) {
