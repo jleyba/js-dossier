@@ -854,30 +854,32 @@
 
       {if length($spec.type.typeDef) > 0}
         <h2>Type Definitions</h2>
-        <dl>
-          {foreach $typedef in $spec.type.typeDef}
-            <dt>
-              <a id="{$typedef.name}"></a>
-              {call .sourceLink}
-                {param text: $typedef.name /}
-                {param source: $typedef.source /}
-              {/call}
-              <code>
-                {call .comment}
-                  {param comment: $typedef.type /}
+        {foreach $typedef in $spec.type.typeDef}
+          <div id="{$typedef.name}" class="property">
+            <dl>
+              <dt>
+                {call .sourceLink}
+                  {param text: $typedef.name /}
+                  {param source: $typedef.source /}
                 {/call}
-              </code>
-            <dd>
-              {if $typedef.description and length($typedef.description.token)}
-                {call .comment}
-                  {param comment: $typedef.description /}
-                {/call}
-              {else}
-                No description.
-              {/if}
-            /* TODO: deprecation notice $typedef.deprecation*/
-          {/foreach}
-        </dl>
+                /* todo: deprecation */
+                <code>
+                  {call .comment}
+                    {param comment: $typedef.type /}
+                  {/call}
+                </code>
+              <dd>
+                {if $typedef.description and length($typedef.description.token)}
+                  {call .comment}
+                    {param comment: $typedef.description /}
+                  {/call}
+                {else}
+                  No description.
+                {/if}
+              /* TODO: deprecation notice $typedef.deprecation*/
+            </dl>
+          </div>
+        {/foreach}
       {/if}
 
     </article>
