@@ -18,11 +18,19 @@
 #nav-types {
   display: none;
 
-  & ~ label h3:before {
+  & ~ label h3:after {
+    content: '\2335';
+    display: inline-block;
+
+    float: right;
+    margin-right: 1rem;
     .rotate(0);
   }
 
-  &:checked ~ label h3:before {
+  &:checked ~ label h3:after {
+
+    float: right;
+    margin-right: 1rem;
     .rotate(-90deg);
   }
 
@@ -30,6 +38,7 @@
     display: none;
   }
 }
+
 
 label[for="nav-types"],
 label[for="nav-modules"] {
@@ -64,16 +73,6 @@ nav {
     border-top: 1px solid @header_border;
     margin-top: 1.2rem;
 
-    &:before {
-      content: '\2335';
-      display: inline-block;
-      margin-right: 1rem;
-    }
-
-    &:before {
-      .rotate(-90deg);
-    }
-
     a, a:visited {
       color: @banner_color;
     }
@@ -82,10 +81,6 @@ nav {
   & > h3:first-child {
     border-top: 0;
     margin-top: 0;
-
-    &:before {
-      transform: rotate(-90deg);
-    }
   }
 }
 
