@@ -22,6 +22,7 @@ import com.github.jsdossier.proto.Deprecation;
 import com.github.jsdossier.proto.TypeLink;
 import com.google.common.escape.CharEscaperBuilder;
 import com.google.common.escape.Escaper;
+import org.pegdown.Extensions;
 import org.pegdown.PegDownProcessor;
 
 import java.util.regex.Matcher;
@@ -182,7 +183,9 @@ public class CommentParser {
 
     String markdown = builder.toString();
     if (useMarkdown) {
-      return new PegDownProcessor().markdownToHtml(markdown).trim();
+      return new PegDownProcessor(Extensions.TABLES)
+          .markdownToHtml(markdown)
+          .trim();
     }
     return markdown;
   }

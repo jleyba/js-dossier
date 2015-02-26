@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 final class HtmlSanitizer {
   private static final Pattern HTML_TITLE = Pattern.compile(
       "[\\p{L}\\p{N}\\s\\-_',:\\[\\]!\\./\\\\\\(\\)&]*");
+  private static final Pattern HTML4_ID = Pattern.compile("[A-Za-z][A-Za-z0-9\\-_:\\.]*");
   private static final Pattern NUMBER = Pattern.compile("[0-9]+");
   private static final Pattern NUMBER_OR_PERCENT = Pattern.compile("[0-9]+%?");
   private static final Pattern ALIGN = Pattern.compile("(?i)center|left|right|justify|char");
@@ -29,6 +30,7 @@ final class HtmlSanitizer {
           "ul", "ol", "li", "dd", "dt", "dl",
           "table", "caption", "tbody", "thead", "tfoot", "td", "th", "tr", "colgroup", "col")
       .allowStandardUrlProtocols()
+      .allowAttributes("id", "name").matching(HTML4_ID).globally()
       .allowAttributes("title").matching(HTML_TITLE).globally()
       .allowAttributes("dir").matching(HTML_DIR).globally()
       .allowAttributes("lang").matching(Pattern.compile("[a-zA-Z]{2,20}")).globally()
