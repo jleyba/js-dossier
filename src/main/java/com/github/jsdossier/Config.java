@@ -19,6 +19,9 @@ import static com.google.common.collect.FluentIterable.from;
 import static com.google.common.collect.Iterables.transform;
 import static com.google.common.collect.Lists.newLinkedList;
 import static com.google.common.collect.Sets.intersection;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.nio.file.Files.exists;
+import static java.nio.file.Files.isDirectory;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Function;
@@ -28,6 +31,7 @@ import com.google.common.base.Predicates;
 import com.google.common.base.Splitter;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.common.reflect.TypeToken;
@@ -57,8 +61,10 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -80,6 +86,7 @@ class Config {
   private final Path srcPrefix;
   private final Path modulePrefix;
   private final Path output;
+  private final boolean isZipOutput;
   private final Optional<Path> readme;
   private final ImmutableList<Page> customPages;
   private final boolean strict;
@@ -98,6 +105,7 @@ class Config {
    * @param externs The list of extern files for the Closure compiler.
    * @param typeFilters The list of types to filter from generated output.
    * @param output Path to the output directory.
+   * @param isZipOutput Whether the output directory belongs to a zip file system.
    * @param readme Path to a markdown file to include in the main index.
    * @param customPages Custom markdown files to include in the generated documentation.
    * @param modulePrefix Prefix to strip from each module path when rendering documentation.
@@ -111,7 +119,7 @@ class Config {
    */
   private Config(
       ImmutableSet<Path> srcs, ImmutableSet<Path> modules, ImmutableSet<Path> externs,
-      ImmutableSet<String> typeFilters, Path output,
+      ImmutableSet<String> typeFilters, boolean isZipOutput, Path output,
       Optional<Path> readme, List<Page> customPages, Optional<Path> modulePrefix,
       boolean strict, boolean useMarkdown,
       Language language, PrintStream outputStream, PrintStream errorStream,
@@ -127,12 +135,12 @@ class Config {
     checkArgument(intersection(modules, externs).isEmpty(),
         "The sources and modules inputs must be disjoint:\n  modules: %s\n  externs: %s",
         modules, externs);
-    checkArgument(!Files.exists(output) || Files.isDirectory(output),
+    checkArgument(!exists(output) || isDirectory(output),
         "Output path, %s, is not a directory", output);
-    checkArgument(!readme.isPresent() || Files.exists(readme.get()),
+    checkArgument(!readme.isPresent() || exists(readme.get()),
         "README path, %s, does not exist", readme.orNull());
     for (Page page : customPages) {
-      checkArgument(Files.exists(page.getPath()),
+      checkArgument(exists(page.getPath()),
           "For custom page \"%s\", file does not exist: %s",
           page.getName(), page.getPath());
     }
@@ -144,6 +152,7 @@ class Config {
     this.externs = externs;
     this.typeFilters = typeFilters;
     this.output = output;
+    this.isZipOutput = isZipOutput;
     this.readme = readme;
     this.customPages = ImmutableList.copyOf(customPages);
     this.strict = strict;
@@ -201,6 +210,13 @@ class Config {
    */
   Path getOutput() {
     return output;
+  }
+
+  /**
+   * Returns whethre the output directory belongs to a zip file system.
+   */
+  boolean isZipOutput() {
+    return isZipOutput;
   }
 
   /**
@@ -285,7 +301,7 @@ class Config {
     Path path;
     if (userSupplierPath.isPresent()) {
       path = userSupplierPath.get();
-      checkArgument(Files.isDirectory(path), "Module prefix must be a directory: %s", path);
+      checkArgument(isDirectory(path), "Module prefix must be a directory: %s", path);
       for (Path module : modules) {
         checkArgument(module.startsWith(path),
             "Module prefix <%s> is not an ancestor of module %s", path, module);
@@ -307,14 +323,40 @@ class Config {
     return path;
   }
 
+  private static boolean isZipFile(Path path) {
+    return path.toString().endsWith(".zip");
+  }
+
   /**
    * Loads a new runtime configuration from the provided input stream.
    */
   static Config load(InputStream stream, FileSystem fileSystem) {
     ConfigSpec spec = ConfigSpec.load(stream, fileSystem);
     checkArgument(spec.output != null, "Output not specified");
-    checkArgument(!Files.exists(spec.output) || Files.isDirectory(spec.output),
-        "Output path exists, but is not a directory: %s", spec.output);
+    Path output = spec.output;
+    boolean isZip = isZipFile(output);
+    if (exists(output)) {
+      checkArgument(
+          isDirectory(output) || isZipFile(output),
+          "Output path must be a directory or zip file: %s", output);
+    }
+
+    if (isZip) {
+      FileSystem fs;
+      try {
+        if (output.getFileSystem() == FileSystems.getDefault()) {
+          URI uri = URI.create("jar:file:" + output.toAbsolutePath());
+          fs = FileSystems.newFileSystem(uri,
+              ImmutableMap.of("create", "true", "encoding", UTF_8.displayName()));
+        } else {
+          fs = output.getFileSystem().provider().newFileSystem(output,
+              ImmutableMap.of("create", "true", "encoding", UTF_8.displayName()));
+        }
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      }
+      output = fs.getPath("/");
+    }
 
     @SuppressWarnings("unchecked")
     Predicate<Path> filter = Predicates.and(
@@ -343,7 +385,8 @@ class Config {
         ImmutableSet.copyOf(filteredModules),
         ImmutableSet.copyOf(resolve(spec.externs)),
         ImmutableSet.copyOf(spec.typeFilters),
-        spec.output,
+        isZip,
+        output,
         spec.readme,
         spec.customPages,
         spec.stripModulePrefix,
@@ -492,11 +535,11 @@ class Config {
 
     List<Path> resolve() throws IOException {
       Path path = baseDir.resolve(spec);
-      if (Files.isDirectory(path)) {
+      if (isDirectory(path)) {
         return collectFiles(path, "**.js");
       }
 
-      if (Files.exists(path)) {
+      if (exists(path)) {
         return ImmutableList.of(path);
       }
 

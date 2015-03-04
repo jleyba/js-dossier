@@ -1,10 +1,14 @@
 package com.github.jsdossier.soy;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.nio.file.StandardOpenOption.CREATE;
+import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
+import static java.nio.file.StandardOpenOption.WRITE;
+
 import com.github.jsdossier.proto.HtmlRenderSpec;
 import com.github.jsdossier.proto.JsTypeRenderSpec;
 import com.github.jsdossier.proto.SourceFileRenderSpec;
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.GeneratedMessage;
 import com.google.template.soy.SoyFileSet;
@@ -17,6 +21,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 
 /**
  * Renders soy templates.
@@ -45,7 +50,7 @@ public class Renderer {
   private void render(Path output, String templateName, GeneratedMessage message)
       throws IOException {
     Files.createDirectories(output.getParent());
-    try (BufferedWriter writer = Files.newBufferedWriter(output, Charsets.UTF_8)) {
+    try (BufferedWriter writer = Files.newBufferedWriter(output, UTF_8, CREATE, WRITE, TRUNCATE_EXISTING)) {
       tofu.newRenderer(templateName)
           .setData(new SoyMapData("spec", ProtoMessageSoyType.toSoyValue(message)))
           .render(writer);

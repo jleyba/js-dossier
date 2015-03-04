@@ -14,43 +14,41 @@ import static java.nio.file.Files.write;
 import static org.junit.Assert.assertEquals;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
 import com.google.common.io.Resources;
 import com.google.common.jimfs.Jimfs;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.junit.BeforeClass;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.Collection;
 
-@RunWith(JUnit4.class)
+@RunWith(Parameterized.class)
 public class EndToEndTest {
 
+  private static Path tmpDir;
   private static Path srcDir;
-  private static Path outDir;
 
-  @Rule public TestName name = new TestName();
-
-  @BeforeClass
-  public static void setUpOnce() throws IOException {
+  private static void initFileSystem() throws IOException {
     FileSystem fileSystem;
-    Path tmpDir;
     if (Boolean.getBoolean("dossier.e2e.useDefaultFileSystem")) {
       fileSystem = FileSystems.getDefault();
 
@@ -69,10 +67,6 @@ public class EndToEndTest {
     }
 
     srcDir = tmpDir.resolve("src");
-    outDir = tmpDir.resolve("out");
-
-    System.out.println("Generating output in " + outDir);
-    createDirectories(outDir);
 
     copyResource("resources/SimpleReadme.md", srcDir.resolve("SimpleReadme.md"));
     copyResource("resources/Custom.md", srcDir.resolve("Custom.md"));
@@ -85,10 +79,13 @@ public class EndToEndTest {
     copyResource("resources/module/index.js", srcDir.resolve("main/example/index.js"));
     copyResource("resources/module/nested.js", srcDir.resolve("main/example/nested.js"));
     copyResource("resources/module/worker.js", srcDir.resolve("main/example/worker.js"));
+  }
 
+  private static Path generateData(final Path output) throws IOException {
+    System.out.println("Generating output in " + output);
     Path config = createTempFile(tmpDir, "config", ".json");
     writeConfig(config, new Config() {{
-      setOutput(outDir);
+      setOutput(output);
       setReadme(srcDir.resolve("SimpleReadme.md"));
 
       addCustomPage("Custom Page", srcDir.resolve("Custom.md"));
@@ -108,7 +105,45 @@ public class EndToEndTest {
       addModule(srcDir.resolve("main/example/worker.js"));
     }});
 
-    Main.run(new String[]{"-c", config.toAbsolutePath().toString()}, fileSystem);
+    Main.run(new String[]{"-c", config.toAbsolutePath().toString()}, srcDir.getFileSystem());
+
+    if (output.toString().endsWith(".zip")) {
+      FileSystem fs;
+      if (output.getFileSystem() == FileSystems.getDefault()) {
+        URI uri = URI.create("jar:file:" + output.toAbsolutePath());
+        fs = FileSystems.newFileSystem(uri, ImmutableMap.<String, Object>of());
+      } else {
+        fs = output.getFileSystem()
+            .provider()
+            .newFileSystem(output, ImmutableMap.<String, Object>of());
+      }
+      return fs.getPath("/");
+    }
+    return output;
+  }
+
+  @Parameters(name = "{1}")
+  public static Collection<Object[]> data() throws IOException {
+    initFileSystem();
+    ImmutableList.Builder<Object[]> data = ImmutableList.builder();
+
+    data.add(new Object[]{generateData(tmpDir.resolveSibling("out")), "directory"});
+    data.add(new Object[]{generateData(tmpDir.resolveSibling("out.zip")), "zip file"});
+
+    return data.build();
+  }
+
+  private final Path outDir;
+  private final String scenario;
+
+  public EndToEndTest(Path outDir, String scenario) {
+    this.outDir = outDir;
+    this.scenario = scenario;
+  }
+
+  @Override
+  public String toString() {
+    return "EndToEndTest::" + scenario;
   }
 
   @Test

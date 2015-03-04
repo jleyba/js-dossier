@@ -20,22 +20,13 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.base.Verify.verify;
 import static com.google.common.collect.Iterables.concat;
 import static com.google.common.collect.Iterables.transform;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.createDirectories;
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
+import static java.nio.file.StandardOpenOption.CREATE;
+import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
+import static java.nio.file.StandardOpenOption.WRITE;
 
-import com.github.jsdossier.proto.BaseProperty;
-import com.github.jsdossier.proto.Comment;
-import com.github.jsdossier.proto.Deprecation;
-import com.github.jsdossier.proto.Enumeration;
-import com.github.jsdossier.proto.HtmlRenderSpec;
-import com.github.jsdossier.proto.Index;
-import com.github.jsdossier.proto.JsType;
-import com.github.jsdossier.proto.JsTypeRenderSpec;
-import com.github.jsdossier.proto.Resources;
-import com.github.jsdossier.proto.SourceFile;
-import com.github.jsdossier.proto.SourceFileRenderSpec;
-import com.github.jsdossier.proto.TypeLink;
-import com.github.jsdossier.proto.Visibility;
-import com.github.jsdossier.soy.Renderer;
 import com.google.common.base.Charsets;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
@@ -62,12 +53,25 @@ import com.google.javascript.rhino.jstype.ObjectType;
 import com.google.javascript.rhino.jstype.Property;
 import com.google.javascript.rhino.jstype.TemplatizedType;
 
+import com.github.jsdossier.proto.BaseProperty;
+import com.github.jsdossier.proto.Comment;
+import com.github.jsdossier.proto.Deprecation;
+import com.github.jsdossier.proto.Enumeration;
+import com.github.jsdossier.proto.HtmlRenderSpec;
+import com.github.jsdossier.proto.Index;
+import com.github.jsdossier.proto.JsType;
+import com.github.jsdossier.proto.JsTypeRenderSpec;
+import com.github.jsdossier.proto.Resources;
+import com.github.jsdossier.proto.SourceFile;
+import com.github.jsdossier.proto.SourceFileRenderSpec;
+import com.github.jsdossier.proto.TypeLink;
+import com.github.jsdossier.proto.Visibility;
+import com.github.jsdossier.soy.Renderer;
+
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -140,6 +144,9 @@ class DocWriter {
         .mergeFrom(masterIndex);
 
     Path toRoot = path.getParent().relativize(config.getOutput());
+    if (toRoot.getNameCount() == 0) {
+      toRoot = config.getOutput();
+    }
 
     builder.setHome(toUrlPath(toRoot.resolve(INDEX_FILE_NAME)));
 
@@ -414,15 +421,15 @@ class DocWriter {
   }
 
   private void copyResources() throws IOException {
-    FileSystem fs = config.getOutput().getFileSystem();
-    copyResource(fs.getPath("resources/dossier.css"), config.getOutput());
-    copyResource(fs.getPath("resources/dossier.js"), config.getOutput());
+    copyResource("resources/dossier.css", config.getOutput());
+    copyResource("resources/dossier.js", config.getOutput());
   }
 
-  private static void copyResource(Path resourcePath, Path outputDir) throws IOException {
-    try (InputStream stream = DocPass.class.getResourceAsStream(resourcePath.toString())) {
-      Path outputPath = outputDir.resolve(resourcePath.getFileName());
-      Files.copy(stream, outputPath, StandardCopyOption.REPLACE_EXISTING);
+  private static void copyResource(String resource, Path outputDir) throws IOException {
+    String resourceName = outputDir.getFileSystem().getPath(resource).getFileName().toString();
+    try (InputStream stream = DocPass.class.getResourceAsStream(resource)) {
+      Path outputPath = outputDir.resolve(resourceName);
+      Files.copy(stream, outputPath, REPLACE_EXISTING);
     }
   }
 
@@ -433,7 +440,7 @@ class DocWriter {
     String content = "var TYPES = " + typeIndex + ";";
 
     Path outputPath = config.getOutput().resolve("types.js");
-    Files.write(outputPath, content.getBytes(Charsets.UTF_8));
+    Files.write(outputPath, content.getBytes(UTF_8), CREATE, WRITE, TRUNCATE_EXISTING);
   }
 
   private Resources getResources(Path forPathFromRoot) {
@@ -442,20 +449,26 @@ class DocWriter {
         .getParent()
         .relativize(config.getOutput());
     return Resources.newBuilder()
-        .addCss(pathToRoot.resolve("dossier.css").toString())
-        .addTailScript(pathToRoot.resolve("types.js").toString())
-        .addTailScript(pathToRoot.resolve("dossier.js").toString())
+        .addCss(resolve(pathToRoot, "dossier.css"))
+        .addTailScript(resolve(pathToRoot, "types.js"))
+        .addTailScript(resolve(pathToRoot, "dossier.js"))
         .build();
+  }
+
+  private static String resolve(Path path, String name) {
+    return path.getNameCount() == 0 ? name : path.resolve(name).toString();
   }
 
   private void copySourceFiles() throws IOException {
     for (Path source : concat(config.getSources(), config.getModules())) {
       Path displayPath = config.getSrcPrefix().relativize(source);
+      Path relativePath = config.getSrcPrefix()
+          .relativize(source.toAbsolutePath().normalize())
+          .resolveSibling(source.getFileName() + ".src.html");
+
       Path renderPath = config.getOutput()
           .resolve("source")
-          .resolve(config.getSrcPrefix()
-              .relativize(source.toAbsolutePath().normalize())
-              .resolveSibling(source.getFileName() + ".src.html"));
+          .resolve(relativePath.toString());
 
       SourceFile file = SourceFile.newBuilder()
           .setBaseName(source.getFileName().toString())

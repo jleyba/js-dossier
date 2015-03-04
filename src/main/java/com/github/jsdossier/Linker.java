@@ -146,14 +146,18 @@ public class Linker {
     Path path = config.getSrcPrefix()
         .relativize(sourceFile.toAbsolutePath().normalize())
         .resolveSibling(sourceFile.getFileName() + ".src.html");
-    return outputRoot.resolve("source").resolve(path);
+    Path ret = outputRoot.resolve("source");
+    for (Path part : path) {
+      ret = ret.resolve(part.toString());
+    }
+    return ret;
   }
 
   /**
    * @see #getFilePath(Path)
    */
   public Path getFilePath(String sourceFile) {
-    return getFilePath(outputRoot.getFileSystem().getPath(sourceFile));
+    return getFilePath(config.getFileSystem().getPath(sourceFile));
   }
 
   /**

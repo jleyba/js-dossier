@@ -451,6 +451,7 @@ public class LinkerTest {
   @Test
   public void testGetSourcePath() {
     Path srcPrefix = fileSystem.getPath("/alphabet/soup");
+    when(mockConfig.getFileSystem()).thenReturn(fileSystem);
     when(mockConfig.getSrcPrefix()).thenReturn(srcPrefix);
 
     Node node = mock(Node.class);

@@ -160,6 +160,9 @@ public class Main extends CommandLineRunner {
     DocWriter writer = new DocWriter(config, typeRegistry);
     try {
       writer.generateDocs();
+      if (config.isZipOutput()) {
+        config.getOutput().getFileSystem().close();
+      }
     } catch (IOException e) {
       e.printStackTrace(System.err);
       System.exit(-3);
