@@ -6,7 +6,7 @@ java_library(
     "DossierModuleRegistry.java",
     "DossierProcessCommonJsModules.java",
   ],
-  deps = [
+  provided_deps = [
     "//third_party/java/closure_compiler:closure_compiler",
     "//third_party/java/guava:guava",
     "//third_party/java/jsr305:jsr305",
