@@ -47,6 +47,7 @@ class Flags {
   @Option(
       name = "--config", aliases = "-c",
       required = true,
+      metaVar = "CONFIG",
       usage = "Path to the JSON configuration file to use.")
   private void setConfigPath(String path) {
     config = fileSystem.getPath(path).toAbsolutePath().normalize();
@@ -63,16 +64,23 @@ class Flags {
     CmdLineParser parser = new CmdLineParser(flags);
     parser.setUsageWidth(79);
 
-    boolean isConfigValid = true;
     try {
       parser.parseArgument(args);
     } catch (CmdLineException e) {
-      System.err.println(e.getMessage());
-      isConfigValid = false;
+      if (!flags.displayHelp) {
+        System.err.println(e.getMessage());
+      }
+      flags.displayHelp = true;
     }
 
-    if (!isConfigValid || flags.displayHelp) {
+    if (flags.displayHelp) {
+      System.err.println("\nUsage: dossier [options] -c CONFIG");
+
+      System.err.println("\nwhere options include:\n");
       parser.printUsage(System.err);
+
+      System.err.println("\nThe JSON configuration file may have the following options:\n");
+      System.err.println(Config.getOptionsText(false));
       System.exit(1);
     }
 

@@ -563,12 +563,14 @@ class Config {
     }
   }
 
-  static String getOptionsText() {
+  static String getOptionsText(boolean includeHeader) {
     StringWriter sw = new StringWriter();
     PrintWriter pw = new PrintWriter(sw);
 
-    pw.println("**Configuration Options**");
-    pw.println();
+    if (includeHeader) {
+      pw.println("__Configuration Options__");
+      pw.println();
+    }
 
     for (Field field : ConfigSpec.class.getDeclaredFields()) {
       Description description = field.getAnnotation(Description.class);
@@ -820,6 +822,6 @@ class Config {
   }
 
   public static void main(String[] args) {
-    System.err.println(getOptionsText());
+    System.err.println(getOptionsText(true));
   }
 }
