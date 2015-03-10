@@ -8,5 +8,5 @@ prebuilt_jar_with_license(
     "//third_party/java/guava:guava",
     "//third_party/java/icu4j:icu4j",
   ],
-  visibility = ["//src/test/..."],
+  visibility = ["//test/..."],
 )

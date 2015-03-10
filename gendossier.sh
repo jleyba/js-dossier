@@ -4,7 +4,7 @@
 
 set -e
 
-readonly RESOURCES="src/main/java/com/github/jsdossier/resources"
+readonly RESOURCES="src/java/com/github/jsdossier/resources"
 
 usage() {
   cat <<EOF
@@ -21,6 +21,7 @@ OPTIONS:
   -p       Run protoc on dossier.proto
   -r       Build a release
   -s       Build sample documentation for dossier.js
+  -t       Run all tests
 EOF
 }
 
@@ -30,8 +31,8 @@ run_jsc() {
       //third_party/java/closure_compiler:compiler
 
   python ./third_party/js/closure_library/closure/bin/calcdeps.py \
-      -i ./src/main/js/dossier.js \
-      -i ./src/main/js/deps.js \
+      -i ./src/js/dossier.js \
+      -i ./src/js/deps.js \
       -p ./third_party/js/closure_library/closure/goog/ \
       -o compiled \
       -c ./buck-out/gen/third_party/java/closure_compiler/compiler.jar \
@@ -66,37 +67,37 @@ run_jsc() {
 
 run_lessc() {
   lessc --compress \
-      src/main/js/dossier.less \
+      src/js/dossier.less \
       $RESOURCES/dossier.css
 }
 
 run_protoc() {
-  protoc --java_out=src/main/java \
-      --proto_path=src/main/proto \
+  protoc --java_out=src/java \
+      --proto_path=src/proto \
       --proto_path=third_party/java \
-      src/main/proto/dossier.proto
-  protoc --java_out=src/test/java \
-      --proto_path=src/main/proto \
-      --proto_path=src/test/java/com/github/jsdossier/soy \
+      src/proto/dossier.proto
+  protoc --java_out=test/java \
+      --proto_path=src/proto \
+      --proto_path=test/java/com/github/jsdossier/soy \
       --proto_path=third_party/java \
-      src/test/java/com/github/jsdossier/soy/test_proto.proto
+      test/java/com/github/jsdossier/soy/test_proto.proto
 }
 
 build_release() {
   buck clean
   buck test app_tests jscomp_tests && buck build app && \
-      echo "Release built: buck-out/gen/src/main/java/com/github/jsdossier/dossier.jar"
+      echo "Release built: buck-out/gen/src/java/com/github/jsdossier/dossier.jar"
 }
 
 build_sample() {
   buck build app
   java -Xmx2048M \
-      -jar buck-out/gen/src/main/java/com/github/jsdossier/dossier.jar \
+      -jar buck-out/gen/src/java/com/github/jsdossier/dossier.jar \
       --config sample_config.json
 }
 
 update_readme() {
-  buck build //src/main/java/com/github/jsdossier:Config
+  buck build //src/java/com/github/jsdossier:Config
   cat > README.md <<EOF
 # Dossier
 
@@ -115,7 +116,7 @@ Compiler, but will also improve Dossier's ability to generate meaningful documen
 Where \`config.json\` is a configuration file with the options listed below.
 
 EOF
-  java -jar buck-out/gen/src/main/java/com/github/jsdossier/Config.jar 2>> README.md
+  java -jar buck-out/gen/src/java/com/github/jsdossier/Config.jar 2>> README.md
 
   cat >> README.md <<EOF
 ## Formatting
@@ -183,7 +184,7 @@ properties when de-referencing a hash link.
 ## HTML Sanitization
 
 All HTML output is sanitized using the [owasp HTML sanitizer](https://code.google.com/p/owasp-java-html-sanitizer/).
-Refer to the [source](https://github.com/jleyba/js-dossier/blob/master/src/main/java/com/github/jsdossier/soy/HtmlSanitizer.java)
+Refer to the [source](https://github.com/jleyba/js-dossier/blob/master/src/java/com/github/jsdossier/soy/HtmlSanitizer.java)
 for an up-to-date list of the supported HTML tags and attributes.
 
 ## Building

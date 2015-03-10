@@ -1,7 +1,7 @@
 [alias]
-  app     = //src/main/java/com/github/jsdossier:dossier
-  app_tests = //src/test/java/com/github/jsdossier:tests
-  jscomp_tests = //src/test/java/com/google/javascript/jscomp:tests
+  app     = //src/java/com/github/jsdossier:dossier
+  app_tests = //test/java/com/github/jsdossier:tests
+  jscomp_tests = //test/java/com/google/javascript/jscomp:tests
 
 [java]
-  src_roots = /src/main/java/, /src/test/java/
+  src_roots = /src/java/, /test/java/

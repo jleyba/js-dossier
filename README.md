@@ -14,7 +14,7 @@ Compiler, but will also improve Dossier's ability to generate meaningful documen
 
 Where `config.json` is a configuration file with the options listed below.
 
-**Configuration Options**
+__Configuration Options__
 
  * `output` Path to the directory to write all generated documentation to. This
     field is required.
@@ -86,10 +86,8 @@ Where `config.json` is a configuration file with the options listed below.
     compiler. These  files are used to satisfy references to external types,
     but are excluded when generating  API documentation.
 
- * `typeFilters` List of types that should be excluded from generated
-    documentation, even if it is found in the type graph. These filters use
-    basic namespace prefix matching: listing `foo.bar` will filter out all
-    types in the `foo.bar` namespace, but not a type named `foo.barbaz`
+ * `typeFilters` List of regular expressions for types that should be excluded
+    from generated documentation, even if found in the type graph.
 
  * `readme` Path to a README file to include as the main landing page for the
     generated documentation. This file should use markdown syntax.
@@ -105,8 +103,8 @@ Where `config.json` is a configuration file with the options listed below.
  * `useMarkdown` Whether to parse all comments as markdown. The `readme` and
     `customPages` will always be parsed as markdown.
 
- * `language` Specifies which version of EcmaScript the input sources conform
-    to. Defaults to ES5.
+ * `language` Specifies which version of ECMAScript the input sources conform
+    to. Defaults to ES5. Must be one of {ES3, ES5, ES5_STRICT}
 
 
 ## Formatting
@@ -174,7 +172,7 @@ properties when de-referencing a hash link.
 ## HTML Sanitization
 
 All HTML output is sanitized using the [owasp HTML sanitizer](https://code.google.com/p/owasp-java-html-sanitizer/).
-Refer to the [source](https://github.com/jleyba/js-dossier/blob/master/src/main/java/com/github/jsdossier/soy/HtmlSanitizer.java)
+Refer to the [source](https://github.com/jleyba/js-dossier/blob/master/src/java/com/github/jsdossier/soy/HtmlSanitizer.java)
 for an up-to-date list of the supported HTML tags and attributes.
 
 ## Building

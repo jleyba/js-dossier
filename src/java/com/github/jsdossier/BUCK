@@ -6,7 +6,7 @@ java_library(
     "soy/resources/*"
   ]),
   deps = [
-    "//src/main/java/com/google/javascript/jscomp:jscomp",
+    "//src/java/com/google/javascript/jscomp:jscomp",
   ],
   provided_deps = [
     "//third_party/java/args4j:args4j",
@@ -38,7 +38,7 @@ java_library(
     "//third_party/java/pegdown:pegdown",
   ],
   visibility = [
-    "//src/test/java/com/github/jsdossier/...",
+    "//test/java/com/github/jsdossier/...",
   ],
 )
 

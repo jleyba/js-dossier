@@ -3,9 +3,9 @@
   <component name="CompilerConfiguration">
     <option name="DEFAULT_COMPILER" value="Javac" />
     <excludeFromCompile>
-      <file url="file://$PROJECT_DIR$/src/test/java/com/google/javascript/jscomp/BUCK" />
-      <file url="file://$PROJECT_DIR$/src/main/java/com/github/jsdossier/BUCK" />
-      <file url="file://$PROJECT_DIR$/src/test/java/com/github/jsdossier/BUCK" />
+      <file url="file://$PROJECT_DIR$/test/java/com/google/javascript/jscomp/BUCK" />
+      <file url="file://$PROJECT_DIR$/src/java/com/github/jsdossier/BUCK" />
+      <file url="file://$PROJECT_DIR$/test/java/com/github/jsdossier/BUCK" />
     </excludeFromCompile>
     <resourceExtensions />
     <wildcardResourcePatterns>
@@ -25,4 +25,3 @@
     </annotationProcessing>
   </component>
 </project>
-
