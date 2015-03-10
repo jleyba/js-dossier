@@ -90,8 +90,9 @@ public class EndToEndTest {
 
       addCustomPage("Custom Page", srcDir.resolve("Custom.md"));
 
-      addFilteredName("foo.FilteredClass");
-      addFilteredName("foo.bar");
+      addFilter("^foo.\\w+_.*");
+      addFilter("foo.FilteredClass");
+      addFilter("foo.bar");
 
       addSource(srcDir.resolve("main/closure_module.js"));
       addSource(srcDir.resolve("main/filter.js"));
@@ -444,7 +445,7 @@ public class EndToEndTest {
       json.add("customPages", customPages);
     }
 
-    void addFilteredName(String name) {
+    void addFilter(String name) {
       typeFilters.add(new JsonPrimitive(name));
       json.add("typeFilters", typeFilters);
     }

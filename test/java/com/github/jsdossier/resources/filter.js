@@ -47,3 +47,10 @@ foo.bar.someFunc = function() {};
  * @constructor
  */
 foo.bar.baz.Three = function() {};
+
+
+/**
+ * This class should be filtered out.
+ * @constructor
+ */
+foo.One_bar = function() {};
