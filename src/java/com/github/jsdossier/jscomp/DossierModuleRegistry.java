@@ -1,4 +1,4 @@
-package com.google.javascript.jscomp;
+package com.github.jsdossier.jscomp;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -15,8 +15,6 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-
-import javax.annotation.Nullable;
 
 /**
  * Tracks which source files should be treated as CommonJS modules during a compiler run.

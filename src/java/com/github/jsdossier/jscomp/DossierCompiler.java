@@ -1,18 +1,18 @@
-package com.google.javascript.jscomp;
+package com.github.jsdossier.jscomp;
 
 import static com.google.common.base.Preconditions.checkState;
 
-import com.google.common.collect.ImmutableSet;
+import com.google.javascript.jscomp.*;
 import com.google.javascript.rhino.Node;
 
 import java.io.PrintStream;
 import java.nio.file.Path;
 
 /**
- * A specialized version of the {@link Compiler Closure Compiler} that preserves CommonJS module
+ * A specialized version of the {@link com.google.javascript.jscomp.Compiler Closure Compiler} that preserves CommonJS module
  * structure so as to properly extract JSDoc info.
  */
-public class DossierCompiler extends Compiler {
+public class DossierCompiler extends com.google.javascript.jscomp.Compiler {
 
   private final DossierModuleRegistry moduleRegistry;
   private boolean hasParsed = false;
@@ -45,7 +45,7 @@ public class DossierCompiler extends Compiler {
     // (otherwise, we could just process the modules as a custom pass).
     DossierProcessCommonJsModules cjs = new DossierProcessCommonJsModules(this);
     // TODO(jleyba): processCommonJsModules(cjs, getExternsInOrder());
-    processCommonJsModules(cjs, getInputsInOrder());
+    processCommonJsModules(cjs, getInputsById().values());
 
     // Now we can proceed with the normal parsing.
     super.parse();

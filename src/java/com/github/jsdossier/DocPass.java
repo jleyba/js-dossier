@@ -16,11 +16,11 @@ package com.github.jsdossier;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.base.Verify.verify;
 
+import com.github.jsdossier.jscomp.DossierCompiler;
 import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 import com.google.javascript.jscomp.AbstractCompiler;
 import com.google.javascript.jscomp.CompilerPass;
-import com.google.javascript.jscomp.DossierCompiler;
 import com.google.javascript.jscomp.NodeTraversal;
 import com.google.javascript.jscomp.Scope;
 import com.google.javascript.rhino.JSDocInfo;

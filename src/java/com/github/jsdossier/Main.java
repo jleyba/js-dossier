@@ -19,6 +19,7 @@ import static com.google.common.collect.Lists.newLinkedList;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.newInputStream;
 
+import com.github.jsdossier.jscomp.DossierCompiler;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Function;
 import com.google.common.base.Strings;
@@ -37,7 +38,6 @@ import com.google.javascript.jscomp.CompilationLevel;
 import com.google.javascript.jscomp.CompilerOptions;
 import com.google.javascript.jscomp.CompilerPass;
 import com.google.javascript.jscomp.CustomPassExecutionTime;
-import com.google.javascript.jscomp.DossierCompiler;
 import com.google.javascript.jscomp.SourceFile;
 import org.joda.time.Instant;
 import org.joda.time.Period;

@@ -5,13 +5,13 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import com.github.jsdossier.jscomp.DossierCompiler;
 import com.github.jsdossier.proto.Comment;
 import com.github.jsdossier.proto.TypeLink;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.jimfs.Jimfs;
 import com.google.javascript.jscomp.CompilerOptions;
-import com.google.javascript.jscomp.DossierCompiler;
 import com.google.javascript.rhino.ErrorReporter;
 import com.google.javascript.rhino.jstype.JSTypeRegistry;
 import org.junit.Before;

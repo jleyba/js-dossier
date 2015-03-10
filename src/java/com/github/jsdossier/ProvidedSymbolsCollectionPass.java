@@ -4,9 +4,9 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.base.Verify.verify;
 
+import com.github.jsdossier.jscomp.DossierCompiler;
 import com.google.javascript.jscomp.CodingConvention;
 import com.google.javascript.jscomp.CompilerPass;
-import com.google.javascript.jscomp.DossierCompiler;
 import com.google.javascript.jscomp.NodeTraversal;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.Node;

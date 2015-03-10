@@ -10,14 +10,14 @@ import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import com.github.jsdossier.jscomp.DossierCompiler;
+import com.github.jsdossier.jscomp.DossierModule;
 import com.github.jsdossier.proto.Comment;
 import com.github.jsdossier.proto.SourceLink;
 import com.github.jsdossier.proto.TypeLink;
 import com.google.common.collect.ImmutableList;
 import com.google.common.jimfs.Jimfs;
 import com.google.javascript.jscomp.CompilerOptions;
-import com.google.javascript.jscomp.DossierCompiler;
-import com.google.javascript.jscomp.DossierModule;
 import com.google.javascript.rhino.ErrorReporter;
 import com.google.javascript.rhino.JSTypeExpression;
 import com.google.javascript.rhino.Node;

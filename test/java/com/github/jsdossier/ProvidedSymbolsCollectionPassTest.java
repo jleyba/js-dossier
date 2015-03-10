@@ -6,6 +6,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import com.github.jsdossier.jscomp.DossierCompiler;
 import com.google.common.base.Supplier;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
@@ -17,7 +18,6 @@ import com.google.javascript.jscomp.CompilationLevel;
 import com.google.javascript.jscomp.CompilerOptions;
 import com.google.javascript.jscomp.CompilerPass;
 import com.google.javascript.jscomp.CustomPassExecutionTime;
-import com.google.javascript.jscomp.DossierCompiler;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

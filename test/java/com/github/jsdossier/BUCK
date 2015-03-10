@@ -22,7 +22,6 @@ java_test(
   deps = [
     ":util",
     "//src/java/com/github/jsdossier:lib",
-    "//src/java/com/google/javascript/jscomp:jscomp",
     "//third_party/java/closure_compiler:closure_compiler",
     "//third_party/java/gson:gson",
     "//third_party/java/guava:guava",

@@ -19,6 +19,7 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.base.Verify.verify;
 import static com.google.common.collect.Iterables.filter;
 
+import com.github.jsdossier.jscomp.DossierModule;
 import com.github.jsdossier.proto.Comment;
 import com.github.jsdossier.proto.SourceLink;
 import com.github.jsdossier.proto.TypeLink;
@@ -29,7 +30,6 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.io.Files;
-import com.google.javascript.jscomp.DossierModule;
 import com.google.javascript.rhino.JSTypeExpression;
 import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.jstype.EnumElementType;

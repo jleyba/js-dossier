@@ -1,4 +1,4 @@
-package com.google.javascript.jscomp;
+package com.github.jsdossier.jscomp;
 
 import static com.google.common.base.Preconditions.checkArgument;
 

@@ -85,7 +85,7 @@ run_protoc() {
 
 build_release() {
   buck clean
-  buck test app_tests jscomp_tests && buck build app && \
+  buck test app_tests && buck build app && \
       echo "Release built: buck-out/gen/src/java/com/github/jsdossier/dossier.jar"
 }
 
@@ -279,7 +279,7 @@ main() {
   fi
 
   if (( $test )); then
-    buck test app_tests jscomp_tests
+    buck test app_tests
   fi
 
   if (( $release )); then

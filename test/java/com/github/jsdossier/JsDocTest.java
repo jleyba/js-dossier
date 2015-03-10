@@ -8,11 +8,11 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
+import com.github.jsdossier.jscomp.DossierCompiler;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import com.google.common.jimfs.Jimfs;
 import com.google.javascript.jscomp.CompilerOptions;
-import com.google.javascript.jscomp.DossierCompiler;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.JSTypeExpression;
 import com.google.javascript.rhino.Node;

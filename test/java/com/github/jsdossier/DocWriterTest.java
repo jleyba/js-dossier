@@ -8,6 +8,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import com.github.jsdossier.jscomp.DossierCompiler;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
@@ -18,7 +19,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.google.javascript.jscomp.CompilerOptions;
-import com.google.javascript.jscomp.DossierCompiler;
 import com.google.javascript.jscomp.SourceFile;
 import org.junit.Before;
 import org.junit.Test;

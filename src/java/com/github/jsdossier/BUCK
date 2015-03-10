@@ -5,9 +5,6 @@ java_library(
     "resources/*",
     "soy/resources/*"
   ]),
-  deps = [
-    "//src/java/com/google/javascript/jscomp:jscomp",
-  ],
   provided_deps = [
     "//third_party/java/args4j:args4j",
     "//third_party/java/closure_compiler:closure_compiler",
