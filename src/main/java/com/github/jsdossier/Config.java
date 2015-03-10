@@ -37,10 +37,14 @@ import com.google.common.collect.Iterables;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonNull;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import com.google.gson.JsonPrimitive;
 import com.google.javascript.jscomp.ErrorManager;
 import com.google.javascript.jscomp.PrintStreamErrorManager;
 import com.google.javascript.jscomp.SourceFile;
@@ -82,6 +86,7 @@ class Config {
   private final ImmutableSet<Path> srcs;
   private final ImmutableSet<Path> modules;
   private final ImmutableSet<Path> externs;
+  private final ImmutableSet<Path> excludes;
   private final ImmutableSet<String> typeFilters;
   private final Path srcPrefix;
   private final Path modulePrefix;
@@ -103,6 +108,7 @@ class Config {
    * @param srcs The list of compiler input sources.
    * @param modules The list of CommonJS compiler input sources.
    * @param externs The list of extern files for the Closure compiler.
+   * @param excludes The list of excluded files.
    * @param typeFilters The list of types to filter from generated output.
    * @param output Path to the output directory.
    * @param isZipOutput Whether the output directory belongs to a zip file system.
@@ -118,11 +124,21 @@ class Config {
    *     output path is not a directory.
    */
   private Config(
-      ImmutableSet<Path> srcs, ImmutableSet<Path> modules, ImmutableSet<Path> externs,
-      ImmutableSet<String> typeFilters, boolean isZipOutput, Path output,
-      Optional<Path> readme, List<Page> customPages, Optional<Path> modulePrefix,
-      boolean strict, boolean useMarkdown,
-      Language language, PrintStream outputStream, PrintStream errorStream,
+      ImmutableSet<Path> srcs,
+      ImmutableSet<Path> modules,
+      ImmutableSet<Path> externs,
+      ImmutableSet<Path> excludes,
+      ImmutableSet<String> typeFilters,
+      boolean isZipOutput,
+      Path output,
+      Optional<Path> readme,
+      List<Page> customPages,
+      Optional<Path> modulePrefix,
+      boolean strict,
+      boolean useMarkdown,
+      Language language,
+      PrintStream outputStream,
+      PrintStream errorStream,
       FileSystem fileSystem) {
     checkArgument(!srcs.isEmpty() || !modules.isEmpty(),
         "There must be at least one input source or module");
@@ -150,6 +166,7 @@ class Config {
     this.srcPrefix = getSourcePrefixPath(fileSystem, srcs, modules);
     this.modulePrefix = getModulePreixPath(fileSystem, modulePrefix, modules);
     this.externs = externs;
+    this.excludes = excludes;
     this.typeFilters = typeFilters;
     this.output = output;
     this.isZipOutput = isZipOutput;
@@ -276,6 +293,42 @@ class Config {
   }
 
   /**
+   * Returns this configuration object as a JSON object.
+   */
+  JsonObject toJson() {
+    JsonObject json = new JsonObject();
+    json.add("output", new JsonPrimitive(output.toString()));
+    json.add("sources", toJsonArray(srcs));
+    json.add("modules", toJsonArray(modules));
+    json.add("externs", toJsonArray(externs));
+    json.add("excludes", toJsonArray(excludes));
+    json.add("typeFilters", toJsonArray(typeFilters));
+    json.add("stripModulePrefix", new JsonPrimitive(modulePrefix.toString()));
+    json.add("readme", readme.isPresent()
+        ? new JsonPrimitive(readme.get().toString())
+        : JsonNull.INSTANCE);
+    json.addProperty("strict", strict);
+    json.addProperty("useMarkdown", useMarkdown);
+    json.addProperty("language", language.name());
+
+    JsonArray pages = new JsonArray();
+    for (Page page : customPages) {
+      pages.add(page.toJson());
+    }
+    json.add("customPages", pages);
+
+    return json;
+  }
+
+  private JsonArray toJsonArray(ImmutableSet<?> items) {
+    JsonArray array = new JsonArray();
+    for (Object i : items) {
+      array.add(new JsonPrimitive(i.toString()));
+    }
+    return array;
+  }
+
+  /**
    * Returns whether the given type is a filtered type.
    */
   boolean isFilteredType(NominalType input) {
@@ -358,9 +411,11 @@ class Config {
       output = fs.getPath("/");
     }
 
+    ImmutableSet<Path> excludes = resolve(spec.excludes);
+
     @SuppressWarnings("unchecked")
     Predicate<Path> filter = Predicates.and(
-        notExcluded(resolve(spec.excludes)),
+        notExcluded(excludes),
         notHidden());
 
     Iterable<Path> filteredSources = from(resolve(spec.sources)).filter(filter);
@@ -384,6 +439,7 @@ class Config {
         ImmutableSet.copyOf(filteredSources),
         ImmutableSet.copyOf(filteredModules),
         ImmutableSet.copyOf(resolve(spec.externs)),
+        excludes,
         ImmutableSet.copyOf(spec.typeFilters),
         isZip,
         output,
@@ -748,6 +804,13 @@ class Config {
 
     public Path getPath() {
       return path;
+    }
+
+    private JsonObject toJson() {
+      JsonObject json = new JsonObject();
+      json.addProperty("name", name);
+      json.addProperty("path", path.toString());
+      return json;
     }
   }
 

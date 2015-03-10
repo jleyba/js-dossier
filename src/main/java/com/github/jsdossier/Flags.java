@@ -29,6 +29,7 @@ import java.nio.file.Path;
 class Flags {
 
   boolean displayHelp;
+  boolean printConfig;
   Path config = null;
 
   private final FileSystem fileSystem;
@@ -53,6 +54,14 @@ class Flags {
     config = fileSystem.getPath(path).toAbsolutePath().normalize();
     checkArgument(Files.exists(config), "Path does not exist: %s", config);
     checkArgument(Files.isReadable(config), "Path is not readable: %s", config);
+  }
+
+  @Option(
+      name = "--print_config", aliases = "-p",
+      usage = "Whether to print diagnostic information about the parsed JSON configuration, " +
+          "including all resolved paths.")
+  private void setPrintConfig(boolean print) {
+    this.printConfig = print;
   }
 
   /**

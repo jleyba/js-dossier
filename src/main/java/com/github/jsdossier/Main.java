@@ -21,12 +21,15 @@ import static java.nio.file.Files.newInputStream;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Function;
+import com.google.common.base.Strings;
 import com.google.common.base.Supplier;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
 import com.google.common.io.ByteStreams;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.javascript.jscomp.AbstractCompiler;
 import com.google.javascript.jscomp.ClosureCodingConvention;
 import com.google.javascript.jscomp.CommandLineRunner;
@@ -222,6 +225,18 @@ public class Main extends CommandLineRunner {
     } catch (IOException e) {
       e.printStackTrace(System.err);
       System.exit(-1);
+    }
+
+    if (flags.printConfig) {
+      Gson gson = new GsonBuilder().setPrettyPrinting().create();
+      String header = " Configuration  ";
+      int len = header.length();
+      String pad = Strings.repeat("=", len / 2);
+
+      System.err.println(pad + header + pad);
+      System.err.println(gson.toJson(config.toJson()));
+      System.err.println(Strings.repeat("=", 79));
+      System.exit(1);
     }
 
     Iterable<String> standardFlags = STANDARD_FLAGS;
