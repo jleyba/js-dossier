@@ -77,6 +77,7 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Collection;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * Describes the runtime configuration for the app.
@@ -87,7 +88,7 @@ class Config {
   private final ImmutableSet<Path> modules;
   private final ImmutableSet<Path> externs;
   private final ImmutableSet<Path> excludes;
-  private final ImmutableSet<String> typeFilters;
+  private final ImmutableSet<Pattern> typeFilters;
   private final Path srcPrefix;
   private final Path modulePrefix;
   private final Path output;
@@ -128,7 +129,7 @@ class Config {
       ImmutableSet<Path> modules,
       ImmutableSet<Path> externs,
       ImmutableSet<Path> excludes,
-      ImmutableSet<String> typeFilters,
+      ImmutableSet<Pattern> typeFilters,
       boolean isZipOutput,
       Path output,
       Optional<Path> readme,
@@ -218,7 +219,7 @@ class Config {
   /**
    * Returns the set of types that should be filtered from generated output.
    */
-  ImmutableSet<String> getTypeFilters() {
+  ImmutableSet<Pattern> getTypeFilters() {
     return typeFilters;
   }
 
@@ -332,8 +333,11 @@ class Config {
    * Returns whether the given type is a filtered type.
    */
   boolean isFilteredType(NominalType input) {
-    if (typeFilters.contains(input.getQualifiedName(true))) {
-      return true;
+    String qualifiedName = input.getQualifiedName(true);
+    for (Pattern filter : typeFilters) {
+      if (filter.matcher(qualifiedName).matches()) {
+        return true;
+      }
     }
     NominalType parent = input.getParent();
     return parent != null && isFilteredType(parent);
@@ -746,11 +750,9 @@ class Config {
         "generating  API documentation.")
     private final List<PathSpec> externs = ImmutableList.of();
 
-    @Description("List of types that should be excluded from generated documentation, even if " +
-        "it is found in the type graph. These filters use basic namespace prefix matching: " +
-        "listing `foo.bar` will filter out all types in the `foo.bar` namespace, but not a type " +
-        "named `foo.barbaz`")
-    private final List<String> typeFilters = ImmutableList.of();
+    @Description("List of regular expressions for types that should be excluded from generated " +
+        "documentation, even if found in the type graph.")
+    private final List<Pattern> typeFilters = ImmutableList.of();
 
     @Description("Path to a README file to include as the main landing page for the generated " +
         "documentation. This file should use markdown syntax.")
@@ -769,8 +771,8 @@ class Config {
         "always be parsed as markdown.")
     private final boolean useMarkdown = true;
 
-    @Description("Specifies which version of EcmaScript the input sources conform to. Defaults " +
-        "to ES5.")
+    @Description("Specifies which version of ECMAScript the input sources conform to. Defaults " +
+        "to ES5. Must be one of {ES3, ES5, ES5_STRICT}")
     private final Language language = Language.ES5;
 
     static ConfigSpec load(InputStream stream, FileSystem fileSystem) {
@@ -778,6 +780,7 @@ class Config {
       Gson gson = new GsonBuilder()
           .registerTypeAdapter(Path.class, new PathDeserializer(fileSystem))
           .registerTypeAdapter(PathSpec.class, new PathSpecDeserializer(pwd))
+          .registerTypeAdapter(Pattern.class, new PatternDeserializer())
           .registerTypeAdapter(
               new TypeToken<Optional<Path>>(){}.getType(),
               new OptionalDeserializer<>(Path.class))
@@ -880,6 +883,16 @@ class Config {
         JsonElement jsonElement, Type type, JsonDeserializationContext context)
         throws JsonParseException {
       return new PathSpec(baseDir, jsonElement.getAsString());
+    }
+  }
+
+  private static class PatternDeserializer implements JsonDeserializer<Pattern> {
+
+    @Override
+    public Pattern deserialize(
+        JsonElement jsonElement, Type type, JsonDeserializationContext context)
+        throws JsonParseException {
+      return Pattern.compile(jsonElement.getAsString());
     }
   }
 

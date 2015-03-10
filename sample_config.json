@@ -16,5 +16,8 @@
     "third_party/js/closure_library/third_party/closure/goog/**_test.js",
     "third_party/js/closure_library/third_party/closure/goog/base.js",
     "third_party/js/closure_library/third_party/closure/goog/deps.js"
+  ],
+  "typeFilters": [
+    "^goog.i18n.\\w+_.*"
   ]
 }
