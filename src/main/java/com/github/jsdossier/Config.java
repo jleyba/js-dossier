@@ -590,7 +590,7 @@ class Config {
     }
 
     List<Path> resolve() throws IOException {
-      Path path = baseDir.resolve(spec);
+      Path path = baseDir.resolve(spec).normalize();
       if (isDirectory(path)) {
         return collectFiles(path, "**.js");
       }
@@ -874,7 +874,6 @@ class Config {
     public PathSpecDeserializer(Path baseDir) {
       this.baseDir = baseDir;
     }
-
 
     @Override
     public PathSpec deserialize(
