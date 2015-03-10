@@ -18,6 +18,7 @@
     "third_party/js/closure_library/third_party/closure/goog/deps.js"
   ],
   "typeFilters": [
-    "^goog.i18n.\\w+_.*"
+    "^goog.i18n.\\w+_.*",
+    "^goog.labs.i18n.\\w+_.*"
   ]
 }
