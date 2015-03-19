@@ -15,6 +15,7 @@ package com.github.jsdossier;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.base.Verify.verify;
+import static com.google.javascript.jscomp.NodeTraversal.traverseTyped;
 
 import com.github.jsdossier.jscomp.DossierCompiler;
 import com.google.common.base.Joiner;
@@ -22,7 +23,7 @@ import com.google.common.base.Optional;
 import com.google.javascript.jscomp.AbstractCompiler;
 import com.google.javascript.jscomp.CompilerPass;
 import com.google.javascript.jscomp.NodeTraversal;
-import com.google.javascript.jscomp.Scope;
+import com.google.javascript.jscomp.Var;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.jstype.EnumElementType;
@@ -76,8 +77,8 @@ class DocPass implements CompilerPass {
     if (compiler.getErrorManager().getErrorCount() > 0) {
       return;
     }
-    NodeTraversal.traverse(compiler, externs, new ExternCollector());
-    NodeTraversal.traverse(compiler, root, new TypeCollector());
+    traverseTyped(compiler, externs, new ExternCollector());
+    traverseTyped(compiler, root, new TypeCollector());
   }
 
   private class ExternCollector implements NodeTraversal.Callback, Visitor<Object> {
@@ -104,11 +105,8 @@ class DocPass implements CompilerPass {
     @Override
     public void visit(NodeTraversal t, Node n, Node parent) {
       verify(t.getScope().isGlobal());
-      for (Scope.Var var : t.getScope().getAllSymbols()) {
-        @Nullable JSType type = var.getType();
-        if (type == null) {
-          type = var.getNameNode().getJSType();
-        }
+      for (Var var : t.getScope().getAllSymbols()) {
+        @Nullable JSType type = var.getNameNode().getJSType();
         if (type != null) {
           crawl(var.getName(), type);
         }
@@ -216,16 +214,11 @@ class DocPass implements CompilerPass {
         return;
       }
 
-      for (Scope.Var var : t.getScope().getAllSymbols()) {
+      for (Var var : t.getScope().getAllSymbols()) {
         String name = var.getName();
         if (TypeRegistry.isInternalNamespaceVar(name)) {
           logfmt("Skipping internal compiler namespace %s", name);
           continue;
-        }
-
-        @Nullable JSType type = var.getType();
-        if (type == null) {
-          type = var.getNameNode().getJSType();
         }
 
         @Nullable Node node = var.getNameNode();
@@ -233,6 +226,7 @@ class DocPass implements CompilerPass {
           logfmt("Skipping type without a source node: %s", name);
           continue;
         }
+        @Nullable JSType type = node.getJSType();
 
         @Nullable ModuleDescriptor module = typeRegistry.getModuleDescriptor(name);
         @Nullable JSDocInfo info = var.getJSDocInfo();

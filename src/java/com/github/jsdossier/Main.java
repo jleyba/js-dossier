@@ -15,7 +15,6 @@ package com.github.jsdossier;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.collect.Iterables.transform;
-import static com.google.common.collect.Lists.newLinkedList;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.newInputStream;
 
@@ -23,11 +22,7 @@ import com.github.jsdossier.jscomp.DossierCompiler;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Function;
 import com.google.common.base.Strings;
-import com.google.common.base.Supplier;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.Multimaps;
 import com.google.common.io.ByteStreams;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -36,7 +31,6 @@ import com.google.javascript.jscomp.ClosureCodingConvention;
 import com.google.javascript.jscomp.CommandLineRunner;
 import com.google.javascript.jscomp.CompilationLevel;
 import com.google.javascript.jscomp.CompilerOptions;
-import com.google.javascript.jscomp.CompilerPass;
 import com.google.javascript.jscomp.CustomPassExecutionTime;
 import com.google.javascript.jscomp.SourceFile;
 import org.joda.time.Instant;
@@ -50,7 +44,6 @@ import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -102,23 +95,12 @@ public class Main extends CommandLineRunner {
     // For easier debugging.
     options.setPrettyPrint(true);
 
-    Multimap<CustomPassExecutionTime, CompilerPass> customPasses;
-    customPasses = Multimaps.newListMultimap(
-        Maps.<CustomPassExecutionTime, Collection<CompilerPass>>newHashMap(),
-        new Supplier<List<CompilerPass>>() {
-          @Override
-          public List<CompilerPass> get() {
-            return newLinkedList();
-          }
-        });
-
     ProvidedSymbolsCollectionPass providedNamespacesPass =
         new ProvidedSymbolsCollectionPass(compiler, typeRegistry, fileSystem);
-    customPasses.put(CustomPassExecutionTime.BEFORE_CHECKS, providedNamespacesPass);
-    customPasses.put(CustomPassExecutionTime.BEFORE_OPTIMIZATIONS,
+    options.addCustomPass(CustomPassExecutionTime.BEFORE_CHECKS, providedNamespacesPass);
+    options.addCustomPass(CustomPassExecutionTime.BEFORE_OPTIMIZATIONS,
         new DocPass(compiler, typeRegistry, fileSystem));
 
-    options.setCustomPasses(customPasses);
     return options;
   }
 

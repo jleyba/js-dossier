@@ -1,17 +1,12 @@
 package com.github.jsdossier;
 
-import static com.google.common.collect.Lists.newLinkedList;
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import com.github.jsdossier.jscomp.DossierCompiler;
-import com.google.common.base.Supplier;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.Multimaps;
 import com.google.common.jimfs.Jimfs;
 import com.google.javascript.jscomp.ClosureCodingConvention;
 import com.google.javascript.jscomp.CompilationLevel;
@@ -26,8 +21,6 @@ import org.junit.runners.JUnit4;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
-import java.util.Collection;
-import java.util.List;
 
 /**
  * Tests for {@link ProvidedSymbolsCollectionPass}.
@@ -161,18 +154,7 @@ public class ProvidedSymbolsCollectionPassTest {
     options.setCodingConvention(new ClosureCodingConvention());
     CompilationLevel.ADVANCED_OPTIMIZATIONS.setOptionsForCompilationLevel(options);
     CompilationLevel.ADVANCED_OPTIMIZATIONS.setTypeBasedOptimizationOptions(options);
-
-    Multimap<CustomPassExecutionTime, CompilerPass> customPasses;
-    customPasses = Multimaps.newListMultimap(
-        Maps.<CustomPassExecutionTime, Collection<CompilerPass>>newHashMap(),
-        new Supplier<List<CompilerPass>>() {
-          @Override
-          public List<CompilerPass> get() {
-            return newLinkedList();
-          }
-        });
-    customPasses.put(CustomPassExecutionTime.BEFORE_CHECKS, pass);
-    options.setCustomPasses(customPasses);
+    options.addCustomPass(CustomPassExecutionTime.BEFORE_CHECKS, pass);
 
     return options;
   }

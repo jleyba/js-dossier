@@ -3,6 +3,7 @@ package com.github.jsdossier.jscomp;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.javascript.jscomp.NodeTraversal.traverse;
+import static com.google.javascript.jscomp.NodeTraversal.traverseTyped;
 import static com.google.javascript.rhino.IR.call;
 import static com.google.javascript.rhino.IR.exprResult;
 import static com.google.javascript.rhino.IR.getprop;
@@ -11,7 +12,6 @@ import static com.google.javascript.rhino.IR.string;
 
 import com.google.common.base.Splitter;
 import com.google.javascript.jscomp.AbstractCompiler;
-import com.google.javascript.jscomp.CompilerInput;
 import com.google.javascript.jscomp.CompilerPass;
 import com.google.javascript.jscomp.DiagnosticType;
 import com.google.javascript.jscomp.NodeTraversal;
@@ -22,8 +22,6 @@ import com.google.javascript.rhino.jstype.JSType;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -92,7 +90,7 @@ class DossierProcessCommonJsModules implements CompilerPass {
 
   @Override
   public void process(Node externs, Node root) {
-    traverse(compiler, root, new CommonJsModuleCallback());
+    traverseTyped(compiler, root, new CommonJsModuleCallback());
   }
 
   private void printTree(Node n) {
@@ -122,7 +120,7 @@ class DossierProcessCommonJsModules implements CompilerPass {
         currentModule = moduleRegistry.registerScriptForModule(n);
 
         // Process all namespace references before module.exports and exports references.
-        traverse(t.getCompiler(), n, new ProcessNamespaceReferences());
+        traverseTyped(t.getCompiler(), n, new ProcessNamespaceReferences());
       }
       return true;
     }
@@ -163,7 +161,7 @@ class DossierProcessCommonJsModules implements CompilerPass {
       ));
       script.addChildToFront(googModule.srcrefTree(script));
 
-      addProvide(t.getInput(), currentModule.getVarName());
+      t.getInput().addProvide(currentModule.getVarName());
 
       traverse(t.getCompiler(), script, new TypeCleanup());
 
@@ -224,7 +222,7 @@ class DossierProcessCommonJsModules implements CompilerPass {
       // the compiler. For more information on how Node handles cycles, see:
       //     http://www.nodejs.org/api/modules.html#modules_cycles
       if (t.getScope().isGlobal()) {
-        addRequire(t.getInput(), moduleName);
+        t.getInput().addRequire(moduleName);
       }
 
       parent.replaceChild(require, name(moduleName).srcrefTree(require));
@@ -274,7 +272,7 @@ class DossierProcessCommonJsModules implements CompilerPass {
 
       String namespace = type.getDisplayName().substring(0, type.getDisplayName().length() - 1);
       if (t.getScope().isGlobal()) {
-        addRequire(t.getInput(), namespace);
+        t.getInput().addRequire(namespace);
       }
       node.setJSDocInfo(null);
 
@@ -296,7 +294,7 @@ class DossierProcessCommonJsModules implements CompilerPass {
 
       String namespace = type.getDisplayName().substring(0, type.getDisplayName().length() - 1);
       if (t.getScope().isGlobal()) {
-        addRequire(t.getInput(), namespace);
+        t.getInput().addRequire(namespace);
       }
       getProp.setJSDocInfo(null);
 
@@ -323,7 +321,7 @@ class DossierProcessCommonJsModules implements CompilerPass {
 
       String namespace = type.getDisplayName().substring(0, type.getDisplayName().length() - 1);
       if (t.getScope().isGlobal()) {
-        addRequire(t.getInput(), namespace);
+        t.getInput().addRequire(namespace);
       }
 
       node.removeChildren();
@@ -341,7 +339,7 @@ class DossierProcessCommonJsModules implements CompilerPass {
         return null;
       }
 
-      JSType type = info.getType().evaluate(t.getScope(), t.getCompiler().getTypeRegistry());
+      JSType type = info.getType().evaluate(t.getTypedScope(), t.getCompiler().getTypeRegistry());
       if (type == null || type.getDisplayName() == null) {
         return null;
       }
@@ -396,25 +394,5 @@ class DossierProcessCommonJsModules implements CompilerPass {
     }
 
     return current;
-  }
-
-  private static void addRequire(CompilerInput input, String require) {
-    try {
-      Method m = input.getClass().getDeclaredMethod("addRequire", String.class);
-      m.setAccessible(true);
-      m.invoke(input, require);
-    } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-      throw new RuntimeException(e);
-    }
-  }
-
-  private static void addProvide(CompilerInput input, String provide) {
-    try {
-      Method m = input.getClass().getDeclaredMethod("addProvide", String.class);
-      m.setAccessible(true);
-      m.invoke(input, provide);
-    } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-      throw new RuntimeException(e);
-    }
   }
 }

@@ -17,6 +17,7 @@ import com.google.javascript.jscomp.Compiler;
 import com.google.javascript.jscomp.CompilerOptions;
 import com.google.javascript.jscomp.Scope;
 import com.google.javascript.jscomp.SourceFile;
+import com.google.javascript.jscomp.Var;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.Token;
@@ -546,8 +547,8 @@ public class DossierProcessCommonJsModulesTest {
             "exports.Builder = Builder"));
 
     Scope scope = compiler.getCompiler().getTopScope();
-    Scope.Var var = scope.getVar("dossier$$module__foo");
-    ObjectType exports = var.getType().toObjectType();
+    Var var = scope.getVar("dossier$$module__foo");
+    ObjectType exports = var.getInitialValue().getJSType().toObjectType();
 
     JSType type = exports.getPropertyType("Builder");
     assertTrue(type.isConstructor());
@@ -584,8 +585,8 @@ public class DossierProcessCommonJsModulesTest {
             "exports.Foo = foo.Foo;"));
 
     Scope scope = compiler.getCompiler().getTopScope();
-    Scope.Var var = scope.getVar("dossier$$module__x$bar");
-    ObjectType exports = var.getType().toObjectType();
+    Var var = scope.getVar("dossier$$module__x$bar");
+    ObjectType exports = var.getInitialValue().getJSType().toObjectType();
 
     JSType type = exports.getPropertyType("Foo");
     assertTrue(type.isConstructor());
@@ -613,8 +614,8 @@ public class DossierProcessCommonJsModulesTest {
             "};"));
 
     Scope scope = compiler.getCompiler().getTopScope();
-    Scope.Var var = scope.getVar("dossier$$module__foo");
-    JSType type = var.getType().toObjectType()
+    Var var = scope.getVar("dossier$$module__foo");
+    JSType type = var.getInitialValue().getJSType().toObjectType()
         .getPropertyType("add");
     assertTrue(type.isFunctionType());
 

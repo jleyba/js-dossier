@@ -193,19 +193,6 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/third_party/java/closure_compiler/closure-compiler-v20141215.jar!/" />
-          <root url="jar://$MODULE_DIR$/third_party/java/closure_compiler/closure-compiler-externs-v20141215.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="jar://$MODULE_DIR$/third_party/java/closure_compiler/closure-compiler-v20141215-src.jar!/" />
-          <root url="jar://$MODULE_DIR$/third_party/java/closure_compiler/closure-compiler-externs-v20141215-src.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
     <orderEntry type="module-library" scope="TEST">
       <library>
         <CLASSES>
@@ -267,6 +254,19 @@
         <SOURCES>
           <root url="jar://$MODULE_DIR$/third_party/java/parboiled/parboiled-core-1.1.7-src.jar!/" />
           <root url="jar://$MODULE_DIR$/third_party/java/parboiled/parboiled-java-1.1.7-src.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/third_party/java/closure_compiler/closure-compiler-v20150315.jar!/" />
+          <root url="jar://$MODULE_DIR$/third_party/java/closure_compiler/closure-compiler-externs-v20150315.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/third_party/java/closure_compiler/closure-compiler-v20150315-src.jar!/" />
+          <root url="jar://$MODULE_DIR$/third_party/java/closure_compiler/closure-compiler-externs-v20150315-src.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
