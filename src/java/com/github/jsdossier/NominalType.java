@@ -6,6 +6,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.jstype.JSType;
 import com.google.javascript.rhino.jstype.Property;
+import com.google.javascript.rhino.jstype.StaticTypedScope;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -19,7 +20,7 @@ import javax.annotation.Nullable;
 /**
  * Describes a named type to be documented.
  */
-public final class NominalType {
+public final class NominalType implements StaticTypedScope<JSType> {
 
   static class TypeDescriptor {
     private final JSType type;
@@ -80,6 +81,31 @@ public final class NominalType {
     return String.format("NominalType(%s, %s)", name, typeDescriptor.type);
   }
 
+  @Override
+  public Node getRootNode() {
+    return node;
+  }
+
+  @Override
+  public StaticTypedScope<JSType> getParentScope() {
+    return null;
+  }
+
+  @Override
+  public Property getSlot(String name) {
+    return getOwnSlot(name);
+  }
+
+  @Override
+  public Property getOwnSlot(String name) {
+    return typeDescriptor.properties.get(name);
+  }
+
+  @Override
+  public JSType getTypeOfThis() {
+    return typeDescriptor.type;
+  }
+
   /**
    * Returns the object this type is defined as a property on, or null if this is type is defined
    * in the global scope.
@@ -101,21 +127,6 @@ public final class NominalType {
    */
   public Collection<Property> getProperties() {
     return Collections.unmodifiableCollection(typeDescriptor.properties.values());
-  }
-
-  /**
-   * Returns the named property, or null if no such property is defined on this type.
-   */
-  @Nullable
-  public Property getProperty(String name) {
-    return typeDescriptor.properties.get(name);
-  }
-
-  /**
-   * Returns whether this type has a known property with the given name.
-   */
-  public boolean hasProperty(String name) {
-    return typeDescriptor.properties.containsKey(name);
   }
 
   public String getQualifiedName() {

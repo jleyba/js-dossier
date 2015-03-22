@@ -488,7 +488,7 @@ public class LinkerTest {
     NominalType type = typeRegistry.getModuleType("dossier$$module__$src$module$b");
     assertNotNull(type);
 
-    Property property = type.getProperty("greet");
+    Property property = type.getOwnSlot("greet");
     assertNotNull(property);
 
     JSTypeExpression expression = property.getJSDocInfo().getParameterType("name");
@@ -519,7 +519,7 @@ public class LinkerTest {
     NominalType type = typeRegistry.getModuleType("dossier$$module__$src$module$a");
     assertNotNull(type);
 
-    Property property = type.getProperty("createClient");
+    Property property = type.getOwnSlot("createClient");
     assertNotNull(property);
 
     JSTypeExpression expression = property.getJSDocInfo().getParameterType("agent");
