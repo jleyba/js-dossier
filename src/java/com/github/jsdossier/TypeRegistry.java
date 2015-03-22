@@ -10,7 +10,8 @@ import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableSet;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.JSTypeExpression;
-import com.google.javascript.rhino.jstype.FunctionType;
+import com.google.javascript.rhino.ObjectTypeI;
+import com.google.javascript.rhino.TypeI;
 import com.google.javascript.rhino.jstype.JSType;
 import com.google.javascript.rhino.jstype.JSTypeRegistry;
 import com.google.javascript.rhino.jstype.NamedType;
@@ -219,18 +220,17 @@ public class TypeRegistry {
    * given type.
    */
   @Nullable
-  public NominalType resolve(JSType jsType) {
-    if (jsType.isInstanceType() && jsType.toObjectType().getConstructor() != null) {
-      jsType = jsType.toObjectType().getConstructor();
+  public NominalType resolve(TypeI type) {
+    if (type instanceof ObjectTypeI && ((ObjectTypeI) type).getConstructor() != null) {
+      type = type.toMaybeObjectType().getConstructor();
     }
-
     Iterator<NominalType> candidates = FluentIterable.from(allTypes)
-        .filter(hasType(jsType))
+        .filter(hasType(type))
         .iterator();
     return candidates.hasNext() ? candidates.next() : null;
   }
 
-  private static boolean typesEqual(JSType a, JSType b) {
+  private static boolean typesEqual(TypeI a, TypeI b) {
     if (a.equals(b)) {
       return true;
     }
@@ -240,18 +240,18 @@ public class TypeRegistry {
     // We consider these equivalent even though technically they are not
     // (I'm not sure how the return type of a constructor could be unknown).
     if (a.isConstructor() && b.isConstructor()) {
-      a = ((FunctionType) a).getInstanceType();
-      b = ((FunctionType) b).getInstanceType();
+      a = a.toMaybeFunctionType().getInstanceType();
+      b = b.toMaybeFunctionType().getInstanceType();
       return a.equals(b);
     }
     return false;
   }
 
-  private static Predicate<NominalType> hasType(final JSType jsType) {
+  private static Predicate<NominalType> hasType(final TypeI type) {
     return new Predicate<NominalType>() {
       @Override
       public boolean apply(@Nullable NominalType input) {
-        return input != null && typesEqual(input.getJsType(), jsType);
+        return input != null && typesEqual(input.getJsType(), type);
       }
     };
   }
