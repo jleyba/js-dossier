@@ -858,7 +858,7 @@ class DocWriter {
   }
 
   private static JSType getType(ObjectType object, Property property) {
-    JSType type = object.getPropertyType(property.getName());
+    JSType type = object.findPropertyType(property.getName());
     if (type.isUnknownType()) {
       type = property.getType();
     }

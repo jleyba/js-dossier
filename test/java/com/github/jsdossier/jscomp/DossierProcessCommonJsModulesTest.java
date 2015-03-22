@@ -525,12 +525,10 @@ public class DossierProcessCommonJsModulesTest {
             "",
             "exports.Greeter = Greeter"));
 
-    ObjectType exportsObj = compiler.getCompiler().getTopScope()
+    JSType exportedGreeter = compiler.getCompiler().getTopScope()
         .getVar("dossier$$module__foo")
         .getType()
-        .toObjectType();
-
-    JSType exportedGreeter = exportsObj.getPropertyType("Greeter");
+        .findPropertyType("Greeter");
     assertTrue(exportedGreeter.isConstructor());
   }
 
@@ -548,9 +546,7 @@ public class DossierProcessCommonJsModulesTest {
 
     Scope scope = compiler.getCompiler().getTopScope();
     Var var = scope.getVar("dossier$$module__foo");
-    ObjectType exports = var.getInitialValue().getJSType().toObjectType();
-
-    JSType type = exports.getPropertyType("Builder");
+    JSType type = var.getInitialValue().getJSType().findPropertyType("Builder");
     assertTrue(type.isConstructor());
 
     type = type.toObjectType().getTypeOfThis();
@@ -586,9 +582,8 @@ public class DossierProcessCommonJsModulesTest {
 
     Scope scope = compiler.getCompiler().getTopScope();
     Var var = scope.getVar("dossier$$module__x$bar");
-    ObjectType exports = var.getInitialValue().getJSType().toObjectType();
 
-    JSType type = exports.getPropertyType("Foo");
+    JSType type = var.getInitialValue().getJSType().findPropertyType("Foo");
     assertTrue(type.isConstructor());
 
     type = type.toObjectType().getTypeOfThis();
@@ -757,8 +752,7 @@ public class DossierProcessCommonJsModulesTest {
     ObjectType scope = compiler.getCompiler().getTopScope()
         .getVar("$jscomp")
         .getType()
-        .toObjectType()
-        .getPropertyType("scope")
+        .findPropertyType("scope")
         .toObjectType();
 
     assertEquals("dossier$$module__foo$bar.foo", scope.getPropertyType("a").getDisplayName());
