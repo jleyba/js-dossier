@@ -29,6 +29,7 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Iterables;
 import com.google.common.io.Files;
 import com.google.javascript.rhino.JSTypeExpression;
 import com.google.javascript.rhino.Node;
@@ -255,7 +256,10 @@ public class Linker {
     }
 
     if (config.isFilteredType(type)) {
-      return null;
+      type = getUnfilteredAlias(type);
+      if (type == null) {
+        return null;
+      }
     }
 
     if (propertyName.isEmpty()) {
@@ -352,9 +356,32 @@ public class Linker {
   }
 
   @Nullable
+  private NominalType resolve(JSType type) {
+    NominalType nominalType = typeRegistry.resolve(type);
+    if (nominalType != null && config.isFilteredType(nominalType)) {
+      return getUnfilteredAlias(nominalType);
+    }
+    return nominalType;
+  }
+
+  @Nullable
+  private NominalType getUnfilteredAlias(NominalType type) {
+    return Iterables.getFirst(FluentIterable.from(type.getTypeDescriptor().getAliases())
+        .filter(new Predicate<NominalType>() {
+          @Override
+          public boolean apply(NominalType input) {
+            return !config.isFilteredType(input);
+          }
+        }), null);
+  }
+
+  @Nullable
   public TypeLink getLink(NominalType type) {
     if (config.isFilteredType(type)) {
-      return null;
+      type = getUnfilteredAlias(type);
+      if (type == null) {
+        return null;
+      }
     }
     TypeLink.Builder link = TypeLink.newBuilder()
         .setText(getDisplayName(type));
@@ -373,8 +400,8 @@ public class Linker {
 
   @Nullable
   public TypeLink getLink(final JSType to) {
-    NominalType type = typeRegistry.resolve(to);
-    if (type == null || config.isFilteredType(type)) {
+    NominalType type = resolve(to);
+    if (type == null) {
       return null;
     }
     return TypeLink.newBuilder()
@@ -669,7 +696,7 @@ public class Linker {
       if (type.getOwnerFunction() != null) {
         ObjectType obj = type.getOwnerFunction().getTypeOfThis().toObjectType();
 
-        NominalType nominalType = typeRegistry.resolve(obj.getConstructor());
+        NominalType nominalType = resolve(obj.getConstructor());
         if (nominalType != null) {
           appendLink(
               getDisplayName(nominalType) + ".prototype",
@@ -678,7 +705,7 @@ public class Linker {
           caseInstanceType(obj.getReferenceName() + ".prototype", obj);
         }
       } else if (!type.getOwnPropertyNames().isEmpty()) {
-        NominalType nominalType = typeRegistry.resolve(type);
+        NominalType nominalType = resolve(type);
         if (nominalType != null) {
           appendLink(
               getDisplayName(nominalType),
@@ -693,7 +720,7 @@ public class Linker {
     }
 
     private void caseInstanceType(ObjectType type) {
-      NominalType nominalType = typeRegistry.resolve(type.getConstructor());
+      NominalType nominalType = resolve(type.getConstructor());
       String displayName = nominalType == null
           ? type.getReferenceName()
           : getDisplayName(nominalType);

@@ -353,18 +353,20 @@ class DocWriter {
     NominalType aliased = typeRegistry.resolve(type.getJsType());
 
     if (aliased != type) {
-      String aliasDisplayName = linker.getDisplayName(aliased);
-      if (aliased.isCommonJsModule()) {
-        if (aliased.isModuleExports()) {
-          aliasDisplayName = "module(" + aliasDisplayName + ")";
-        } else {
-          aliasDisplayName =
-              "module(" + linker.getDisplayName(aliased.getModule()) + ")." + aliasDisplayName;
+      if (!config.isFilteredType(aliased)) {
+        String aliasDisplayName = linker.getDisplayName(aliased);
+        if (aliased.isCommonJsModule()) {
+          if (aliased.isModuleExports()) {
+            aliasDisplayName = "module(" + aliasDisplayName + ")";
+          } else {
+            aliasDisplayName =
+                "module(" + linker.getDisplayName(aliased.getModule()) + ")." + aliasDisplayName;
+          }
         }
+        jsTypeBuilder.setAliasedType(TypeLink.newBuilder()
+            .setText(aliasDisplayName)
+            .setHref(linker.getFilePath(aliased).getFileName().toString()));
       }
-      jsTypeBuilder.setAliasedType(TypeLink.newBuilder()
-          .setText(aliasDisplayName)
-          .setHref(linker.getFilePath(aliased).getFileName().toString()));
 
       if (description.getTokenCount() == 0) {
         description = parser.getBlockDescription(linker, aliased);
@@ -1162,8 +1164,9 @@ class DocWriter {
         parameter = jsdoc.getParameters().get(i);
       }
 
-      com.github.jsdossier.proto.Function.Detail.Builder detail = com.github.jsdossier.proto.Function.Detail.newBuilder()
-          .setName("arg" + i);
+      com.github.jsdossier.proto.Function.Detail.Builder detail =
+          com.github.jsdossier.proto.Function.Detail.newBuilder()
+              .setName("arg" + i);
 
       // If the compiler hasn't determined a type yet, try to map back to the jsdoc.
       Node parameterNode = parameterNodes.get(i);

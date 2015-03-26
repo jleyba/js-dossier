@@ -185,6 +185,62 @@ public class LinkerTest {
   }
 
   @Test
+  public void testGetLink_filteredType() {
+    JSType jsType = mock(JSType.class);
+    when(jsType.isConstructor()).thenReturn(true);
+
+    NominalType filtered = createType("foo.Filtered", jsType);
+    when(mockConfig.isFilteredType(filtered)).thenReturn(true);
+
+    typeRegistry.addType(filtered);
+    assertNull("Type is filtered from documentation", linker.getLink("foo.Filtered"));
+  }
+
+  @Test
+  public void testGetLink_filteredTypeWithUnfilteredAlias() {
+    JSType jsType = mock(JSType.class);
+    when(jsType.isConstructor()).thenReturn(true);
+
+    NominalType filtered = createType("foo.Filtered", jsType);
+    NominalType alias = new NominalType(
+        null, "foo.Alias", filtered.getTypeDescriptor(), mock(Node.class), null, null);
+
+    when(mockConfig.isFilteredType(filtered)).thenReturn(true);
+
+    typeRegistry.addType(filtered);
+    typeRegistry.addType(alias);
+    checkLink("foo.Alias", "class_foo_Alias.html", linker.getLink("foo.Filtered"));
+  }
+
+  @Test
+  public void testGetLink_filteredJsType() {
+    JSType jsType = mock(JSType.class);
+    when(jsType.isConstructor()).thenReturn(true);
+
+    NominalType filtered = createType("foo.Filtered", jsType);
+    when(mockConfig.isFilteredType(filtered)).thenReturn(true);
+
+    typeRegistry.addType(filtered);
+    assertNull("Type is filtered from documentation", linker.getLink(jsType));
+  }
+
+  @Test
+  public void testGetLink_filteredJsTypeWithUnfilteredAlias() {
+    JSType jsType = mock(JSType.class);
+    when(jsType.isConstructor()).thenReturn(true);
+
+    NominalType filtered = createType("foo.Filtered", jsType);
+    NominalType alias = new NominalType(
+        null, "foo.Alias", filtered.getTypeDescriptor(), mock(Node.class), null, null);
+
+    when(mockConfig.isFilteredType(filtered)).thenReturn(true);
+
+    typeRegistry.addType(filtered);
+    typeRegistry.addType(alias);
+    checkLink("foo.Alias", "class_foo_Alias.html", linker.getLink(jsType));
+  }
+
+  @Test
   public void testGetLink_externs() {
     String href =
         "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String";

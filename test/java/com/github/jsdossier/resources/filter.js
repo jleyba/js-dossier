@@ -5,6 +5,7 @@
 goog.provide('foo');
 goog.provide('foo.bar');
 goog.provide('foo.bar.baz');
+goog.provide('foo.quot');
 
 
 /**
@@ -50,7 +51,26 @@ foo.bar.baz.Three = function() {};
 
 
 /**
- * This class should be filtered out.
+ * This class should be filtered out, but its alias below should be included
+ * (with this comment).
  * @constructor
  */
 foo.One_bar = function() {};
+
+
+/**
+ * @param {!foo.One_bar} other The other instance to compare.
+ */
+foo.One_bar.prototype.equals = function(other) {};
+
+
+/**
+ * Run, forest, run!
+ */
+foo.One_bar.prototype.run = function() {};
+
+
+/**
+ * @const
+ */
+foo.quot.OneBarAlias = foo.One_bar;
