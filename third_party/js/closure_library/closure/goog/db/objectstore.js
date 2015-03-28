@@ -42,7 +42,7 @@ goog.require('goog.events');
  * @param {!IDBObjectStore} store The backing IndexedDb object.
  * @constructor
  *
- * TODO(user): revisit msg in exception and errors in this class. In newer
+ * TODO(arthurhsu): revisit msg in exception and errors in this class. In newer
  *     Chrome (v22+) the error/request come with a DOM error string that is
  *     already very descriptive.
  * @final
@@ -101,7 +101,6 @@ goog.db.ObjectStore.prototype.insert_ = function(fn, msg, value, opt_key) {
   request.onsuccess = function(ev) {
     d.callback();
   };
-  var self = this;
   request.onerror = function(ev) {
     msg += goog.debug.deepExpose(value);
     if (opt_key) {

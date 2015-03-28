@@ -55,12 +55,6 @@ goog.net.IpAddress = function(address, version) {
    */
   this.version_ = version;
 
-  /**
-   * The IPAddress, as string.
-   * @type {string}
-   * @private
-   */
-  this.ipStr_ = '';
 };
 
 
@@ -83,10 +77,10 @@ goog.net.IpAddress.prototype.equals = function(other) {
 
 
 /**
- * @return {goog.math.Integer} The IP Address, as an Integer.
+ * @return {!goog.math.Integer} The IP Address, as an Integer.
  */
 goog.net.IpAddress.prototype.toInteger = function() {
-  return /** @type {goog.math.Integer} */ (goog.object.clone(this.ip_));
+  return /** @type {!goog.math.Integer} */ (goog.object.clone(this.ip_));
 };
 
 

@@ -33,6 +33,7 @@
 
 goog.provide('goog.testing.TestRunner');
 
+goog.require('goog.dom.TagName');
 goog.require('goog.testing.TestCase');
 
 
@@ -264,7 +265,21 @@ goog.testing.TestRunner.prototype.execute = function() {
   }
 
   this.testCase.setCompletedCallback(goog.bind(this.onComplete_, this));
-  this.testCase.runTests();
+  if (goog.testing.TestRunner.shouldUsePromises_(this.testCase)) {
+    this.testCase.runTestsReturningPromise();
+  } else {
+    this.testCase.runTests();
+  }
+};
+
+
+/**
+ * @param {!goog.testing.TestCase} testCase
+ * @return {boolean}
+ * @private
+ */
+goog.testing.TestRunner.shouldUsePromises_ = function(testCase) {
+  return testCase.constructor === goog.testing.TestCase;
 };
 
 
@@ -281,7 +296,7 @@ goog.testing.TestRunner.prototype.onComplete_ = function() {
   if (!this.logEl_) {
     var el = document.getElementById('closureTestRunnerLog');
     if (el == null) {
-      el = document.createElement('div');
+      el = document.createElement(goog.dom.TagName.DIV);
       document.body.appendChild(el);
     }
     this.logEl_ = el;
@@ -291,7 +306,7 @@ goog.testing.TestRunner.prototype.onComplete_ = function() {
   this.writeLog(log);
 
   // TODO(chrishenry): Make this work with multiple test cases (b/8603638).
-  var runAgainLink = document.createElement('a');
+  var runAgainLink = document.createElement(goog.dom.TagName.A);
   runAgainLink.style.display = 'inline-block';
   runAgainLink.style.fontSize = 'small';
   runAgainLink.style.marginBottom = '16px';
@@ -322,7 +337,7 @@ goog.testing.TestRunner.prototype.writeLog = function(log) {
     } else {
       color = '#333';
     }
-    var div = document.createElement('div');
+    var div = document.createElement(goog.dom.TagName.DIV);
     if (line.substr(0, 2) == '> ') {
       // The stack trace may contain links so it has to be interpreted as HTML.
       div.innerHTML = line;
@@ -359,7 +374,7 @@ goog.testing.TestRunner.prototype.writeLog = function(log) {
       href = href.split('#')[0].split('?')[0] + newSearch + hash;
 
       // Add the link.
-      var a = document.createElement('A');
+      var a = document.createElement(goog.dom.TagName.A);
       a.innerHTML = '(run individually)';
       a.style.fontSize = '0.8em';
       a.style.color = '#888';

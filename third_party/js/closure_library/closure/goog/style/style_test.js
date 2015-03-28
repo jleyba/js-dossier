@@ -22,6 +22,7 @@ goog.provide('goog.style_test');
 goog.require('goog.array');
 goog.require('goog.color');
 goog.require('goog.dom');
+goog.require('goog.dom.TagName');
 goog.require('goog.events.BrowserEvent');
 goog.require('goog.labs.userAgent.util');
 goog.require('goog.math.Box');
@@ -81,6 +82,9 @@ function tearDown() {
   testViewport.setAttribute('style', '');
   testViewport.innerHTML = '';
   goog.dispose(mockUserAgent);
+
+  // Prevent multiple vendor prefixed mock elements from poisoning the cache.
+  goog.style.styleNameCache_ = {};
 }
 
 function testSetStyle() {
@@ -325,7 +329,7 @@ function testSetPosition() {
 }
 
 function testGetClientPositionAbsPositionElement() {
-  var div = goog.dom.createDom('DIV');
+  var div = goog.dom.createDom(goog.dom.TagName.DIV);
   div.style.position = 'absolute';
   div.style.left = '100px';
   div.style.top = '200px';
@@ -336,11 +340,11 @@ function testGetClientPositionAbsPositionElement() {
 }
 
 function testGetClientPositionNestedElements() {
-  var innerDiv = goog.dom.createDom('DIV');
+  var innerDiv = goog.dom.createDom(goog.dom.TagName.DIV);
   innerDiv.style.position = 'relative';
   innerDiv.style.left = '-10px';
   innerDiv.style.top = '-10px';
-  var div = goog.dom.createDom('DIV');
+  var div = goog.dom.createDom(goog.dom.TagName.DIV);
   div.style.position = 'absolute';
   div.style.left = '150px';
   div.style.top = '250px';
@@ -352,7 +356,7 @@ function testGetClientPositionNestedElements() {
 }
 
 function testGetClientPositionOfOffscreenElement() {
-  var div = goog.dom.createDom('DIV');
+  var div = goog.dom.createDom(goog.dom.TagName.DIV);
   div.style.position = 'absolute';
   div.style.left = '2000px';
   div.style.top = '2000px';
@@ -393,7 +397,7 @@ function testGetClientPositionOfOffscreenElement() {
 }
 
 function testGetClientPositionOfOrphanElement() {
-  var orphanElem = document.createElement('DIV');
+  var orphanElem = document.createElement(goog.dom.TagName.DIV);
   var pos = goog.style.getClientPosition(orphanElem);
   assertEquals(0, pos.x);
   assertEquals(0, pos.y);
@@ -453,7 +457,7 @@ function testGetClientPositionAbstractedTouchEvent() {
 }
 
 function testGetPageOffsetAbsPositionedElement() {
-  var div = goog.dom.createDom('DIV');
+  var div = goog.dom.createDom(goog.dom.TagName.DIV);
   div.style.position = 'absolute';
   div.style.left = '100px';
   div.style.top = '200px';
@@ -464,11 +468,11 @@ function testGetPageOffsetAbsPositionedElement() {
 }
 
 function testGetPageOffsetNestedElements() {
-  var innerDiv = goog.dom.createDom('DIV');
+  var innerDiv = goog.dom.createDom(goog.dom.TagName.DIV);
   innerDiv.style.position = 'relative';
   innerDiv.style.left = '-10px';
   innerDiv.style.top = '-10px';
-  var div = goog.dom.createDom('DIV');
+  var div = goog.dom.createDom(goog.dom.TagName.DIV);
   div.style.position = 'absolute';
   div.style.left = '150px';
   div.style.top = '250px';
@@ -484,7 +488,7 @@ function testGetPageOffsetWithBodyPadding() {
   document.body.style.padding = '60px';
   document.body.style.borderWidth = '70px';
   try {
-    var div = goog.dom.createDom('DIV');
+    var div = goog.dom.createDom(goog.dom.TagName.DIV);
     div.style.position = 'absolute';
     div.style.left = '100px';
     div.style.top = '200px';
@@ -510,7 +514,7 @@ function testGetPageOffsetWithDocumentElementPadding() {
   document.documentElement.style.padding = '60px';
   document.documentElement.style.borderWidth = '70px';
   try {
-    var div = goog.dom.createDom('DIV');
+    var div = goog.dom.createDom(goog.dom.TagName.DIV);
     div.style.position = 'absolute';
     div.style.left = '100px';
     div.style.top = '200px';
@@ -539,7 +543,7 @@ function testGetPageOffsetWithDocumentElementPadding() {
 }
 
 function testGetPageOffsetElementOffscreen() {
-  var div = goog.dom.createDom('DIV');
+  var div = goog.dom.createDom(goog.dom.TagName.DIV);
   div.style.position = 'absolute';
   div.style.left = '10000px';
   div.style.top = '20000px';
@@ -582,7 +586,7 @@ function testGetPageOffsetFixedPositionElements() {
   // position:fixed is not supported in IE before version 7
   if (!goog.userAgent.IE || !goog.userAgent.isVersionOrHigher('6')) {
     // Test with a position fixed element
-    var div = goog.dom.createDom('DIV');
+    var div = goog.dom.createDom(goog.dom.TagName.DIV);
     div.style.position = 'fixed';
     div.style.top = '10px';
     div.style.left = '10px';
@@ -592,8 +596,8 @@ function testGetPageOffsetFixedPositionElements() {
     assertEquals(10, pos.y);
 
     // Test with a position fixed element as parent
-    var innerDiv = goog.dom.createDom('DIV');
-    div = goog.dom.createDom('DIV');
+    var innerDiv = goog.dom.createDom(goog.dom.TagName.DIV);
+    div = goog.dom.createDom(goog.dom.TagName.DIV);
     div.style.position = 'fixed';
     div.style.top = '10px';
     div.style.left = '10px';
@@ -611,7 +615,7 @@ function testGetPositionTolerantToNoDocumentElementBorder() {
   // 2-pixel offset.  Ensure that we're correctly compensating for both cases.
   try {
     document.documentElement.style.borderWidth = '0';
-    var div = goog.dom.createDom('DIV');
+    var div = goog.dom.createDom(goog.dom.TagName.DIV);
     div.style.position = 'absolute';
     div.style.left = '100px';
     div.style.top = '200px';
@@ -758,12 +762,12 @@ function testGetSize() {
   assertNotEquals(0, dims.width);
   assertNotEquals(0, dims.height);
 
-  el = goog.dom.getElementsByTagNameAndClass('html')[0];
+  el = goog.dom.getElementsByTagNameAndClass(goog.dom.TagName.HTML)[0];
   dims = goog.style.getSize(el);
   assertNotEquals(0, dims.width);
   assertNotEquals(0, dims.height);
 
-  el = goog.dom.getElementsByTagNameAndClass('body')[0];
+  el = goog.dom.getElementsByTagNameAndClass(goog.dom.TagName.BODY)[0];
   dims = goog.style.getSize(el);
   assertNotEquals(0, dims.width);
   assertNotEquals(0, dims.height);
@@ -891,7 +895,7 @@ function hasWebkitTransform() {
 }
 
 function testGetSizeOfOrphanElement() {
-  var orphanElem = document.createElement('DIV');
+  var orphanElem = document.createElement(goog.dom.TagName.DIV);
   var size = goog.style.getSize(orphanElem);
   assertEquals(0, size.width);
   assertEquals(0, size.height);
@@ -1243,7 +1247,7 @@ function testGetPaddingBox() {
 }
 
 function testGetPaddingBoxUnattached() {
-  var el = document.createElement('div');
+  var el = document.createElement(goog.dom.TagName.DIV);
   var box = goog.style.getPaddingBox(el);
   if (goog.userAgent.WEBKIT) {
     assertTrue(isNaN(box.top));
@@ -1441,7 +1445,7 @@ function testGetFontFamily() {
   // IE raises an 'Invalid Argument' error when using the moveToElementText
   // method from the TextRange object with an element that is not attached to
   // a document.
-  var element = goog.dom.createDom('span',
+  var element = goog.dom.createDom(goog.dom.TagName.SPAN,
       {style: 'font-family:Times,sans-serif;'}, 'some text');
   tmpFont = goog.style.getFontFamily(element);
   assertEquals('Font should be correctly retrieved for element not attached' +
@@ -1697,6 +1701,16 @@ function testFramedPageOffset() {
       goog.style.getFramedPageOffset(testElement3, iframeWindow));
   assertCoordinateApprox(500, 500, 2,
       goog.style.getFramedPageOffset(testElement3, iframeWindow2));
+
+  // In IE, if the element is in a frame that's been removed from the DOM and
+  // relativeWin is not that frame's contentWindow, the contentWindow's parent
+  // reference points to itself. We want to guarantee that we don't fall into
+  // an infinite loop.
+  var iframeParent = iframe.parentElement;
+  iframeParent.removeChild(iframe);
+  // We don't check the value returned as it differs by browser. 0,0 for Chrome
+  // and FF. IE returns 30000 or 30198 for x in IE8-9 and 300 in IE10-11
+  goog.style.getFramedPageOffset(testElement2, window);
 }
 
 
@@ -1825,7 +1839,7 @@ function testGetVisibleRectForElement() {
 function testGetVisibleRectForElementWithBodyScrolled() {
   var container = goog.dom.getElement('test-visible2');
   var dom = goog.dom.getDomHelper(container);
-  var el = dom.createDom('div', undefined, 'Test');
+  var el = dom.createDom(goog.dom.TagName.DIV, undefined, 'Test');
   el.style.position = 'absolute';
   dom.append(container, el);
 
@@ -1888,8 +1902,8 @@ function testGetVisibleRectForElementWithNestedAreaAndNonOffsetAncestor() {
 
   var container = goog.dom.getElement('test-visible2');
   var dom = goog.dom.getDomHelper(container);
-  var container2 = dom.createDom('div');
-  var el = dom.createDom('div', undefined, 'Test');
+  var container2 = dom.createDom(goog.dom.TagName.DIV);
+  var el = dom.createDom(goog.dom.TagName.DIV, undefined, 'Test');
   el.style.position = 'absolute';
   dom.append(container, container2);
   dom.append(container2, el);
@@ -1953,8 +1967,8 @@ function testGetVisibleRectForElementWithNestedAreaAndNonOffsetAncestor() {
 function testGetVisibleRectForElementInsideNestedScrollableArea() {
   var container = goog.dom.getElement('test-visible2');
   var dom = goog.dom.getDomHelper(container);
-  var container2 = dom.createDom('div');
-  var el = dom.createDom('div', undefined, 'Test');
+  var container2 = dom.createDom(goog.dom.TagName.DIV);
+  var el = dom.createDom(goog.dom.TagName.DIV, undefined, 'Test');
   el.style.position = 'absolute';
   dom.append(container, container2);
   dom.append(container2, el);
@@ -2020,20 +2034,6 @@ function testGetVisibleRectForElementInsideNestedScrollableArea() {
   goog.style.setStyle(container2, 'top', '10000px');
   goog.style.setStyle(container2, 'left', '10000px');
   assertNull(goog.style.getVisibleRectForElement(el));
-}
-
-function testGeckoMacOrX11RoundPosition() {
-  if ((goog.userAgent.MAC || goog.userAgent.X11) && goog.userAgent.GECKO &&
-      goog.userAgent.isVersionOrHigher('1.9')) {
-
-    var pos = new goog.math.Coordinate(1.5, 1.4);
-    var el = document.createElement('div');
-    goog.style.setPosition(el, pos);
-    assertEquals('The left position should have been rounded',
-                 '2px', el.style.left);
-    assertEquals('The top position should have been rounded',
-                 '1px', el.style.top);
-  }
 }
 
 function testScrollIntoContainerViewQuirks() {
@@ -2125,6 +2125,23 @@ function testOffsetParent() {
 function testOverflowOffsetParent() {
   var parent = goog.dom.getElement('offset-parent-overflow');
   var child = goog.dom.getElement('offset-child-overflow');
+  assertEquals(parent, goog.style.getOffsetParent(child));
+}
+
+function testShadowDomOffsetParent() {
+  // Ignore browsers that don't support shadowDOM.
+  if (!document.createShadowRoot) {
+    return;
+  }
+
+  var parent = goog.dom.createDom(goog.dom.TagName.DIV);
+  parent.style.position = 'relative';
+  var host = goog.dom.createDom(goog.dom.TagName.DIV);
+  goog.dom.appendChild(parent, host);
+  var root = host.createShadowRoot();
+  var child = goog.dom.createDom(goog.dom.TagName.DIV);
+  goog.dom.appendChild(root, child);
+
   assertEquals(parent, goog.style.getOffsetParent(child));
 }
 

@@ -26,7 +26,7 @@ goog.require('goog.userAgent');
 var anchor;
 
 function setUp() {
-  anchor = goog.dom.createDom('A');
+  anchor = goog.dom.createDom(goog.dom.TagName.A);
   document.body.appendChild(anchor);
 }
 
@@ -56,6 +56,18 @@ function testCreateNewLinkFromText() {
   var link = goog.editor.Link.createNewLinkFromText(anchor);
   assertNotNull('Should have created object', link);
   assertEquals('Should have url in anchor', url, anchor.href);
+}
+
+function testCreateNewLinkFromTextLeadingTrailingWhitespace() {
+  var url = 'http://www.google.com/';
+  var urlWithSpaces = ' ' + url + ' ';
+  anchor.innerHTML = urlWithSpaces;
+  var urlWithSpacesUpdatedByBrowser = anchor.innerHTML;
+  var link = goog.editor.Link.createNewLinkFromText(anchor);
+  assertNotNull('Should have created object', link);
+  assertEquals('Should have url in anchor', url, anchor.href);
+  assertEquals('The text should still have spaces',
+      urlWithSpacesUpdatedByBrowser, link.getCurrentText());
 }
 
 function testCreateNewLinkFromTextWithAnchor() {
@@ -140,7 +152,7 @@ function testSetMixed() {
 
 function testPlaceCursorRightOf() {
   // IE can only do selections properly if the region is editable.
-  var ed = goog.dom.createDom('div');
+  var ed = goog.dom.createDom(goog.dom.TagName.DIV);
   goog.dom.replaceNode(ed, anchor);
   ed.contentEditable = true;
   ed.appendChild(anchor);

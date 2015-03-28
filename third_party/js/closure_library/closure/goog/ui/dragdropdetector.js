@@ -24,6 +24,7 @@ goog.provide('goog.ui.DragDropDetector.ImageDropEvent');
 goog.provide('goog.ui.DragDropDetector.LinkDropEvent');
 
 goog.require('goog.dom');
+goog.require('goog.dom.InputType');
 goog.require('goog.dom.TagName');
 goog.require('goog.events.Event');
 goog.require('goog.events.EventHandler');
@@ -61,7 +62,7 @@ goog.ui.DragDropDetector = function(opt_filePath) {
           goog.ui.DragDropDetector.BASE_CSS_NAME_, 'w3c-editable-iframe');
   iframe.src = opt_filePath || goog.ui.DragDropDetector.DEFAULT_FILE_PATH_;
 
-  this.element_ = /** @type {HTMLIFrameElement} */ (iframe);
+  this.element_ = /** @type {!HTMLIFrameElement} */ (iframe);
 
   this.handler_ = new goog.events.EventHandler(this);
   this.handler_.listen(iframe, goog.events.EventType.LOAD, this.initIframe_);
@@ -70,7 +71,7 @@ goog.ui.DragDropDetector = function(opt_filePath) {
     // In IE, we have to bounce between an INPUT for catching links and an
     // IFRAME for catching images.
     this.textInput_ = goog.dom.createDom(goog.dom.TagName.INPUT, {
-      'type': 'text',
+      'type': goog.dom.InputType.TEXT,
       'className': goog.getCssName(
           goog.ui.DragDropDetector.BASE_CSS_NAME_, 'ie-input')
     });
@@ -488,7 +489,7 @@ goog.ui.DragDropDetector.prototype.clearContents_ = function() {
     // clear, calling this right away crashes some versions of WebKit.  Wait
     // until the events are finished.
     goog.global.setTimeout(goog.bind(function() {
-      this.innerHTML = '';
+      goog.dom.setTextContent(this, '');
     }, this.body_), 0);
   } else {
     this.document_.execCommand('selectAll', false, null);

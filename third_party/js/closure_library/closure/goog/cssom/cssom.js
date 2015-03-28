@@ -31,6 +31,7 @@ goog.provide('goog.cssom.CssRuleType');
 
 goog.require('goog.array');
 goog.require('goog.dom');
+goog.require('goog.dom.TagName');
 
 
 /**
@@ -68,7 +69,7 @@ goog.cssom.getAllCssText = function(opt_styleSheet) {
  */
 goog.cssom.getAllCssStyleRules = function(opt_styleSheet) {
   var styleSheet = opt_styleSheet || document.styleSheets;
-  return /** @type {Array<CSSStyleRule>} */ (
+  return /** @type {!Array<CSSStyleRule>} */ (
       goog.cssom.getAllCss_(styleSheet, false));
 };
 
@@ -146,7 +147,7 @@ goog.cssom.getAllCssStyleSheets = function(opt_styleSheet,
     // to see if there are styleSheets buried in there.
     // If we have a CSSStyleSheet within CssRules.
     var cssRuleList = goog.cssom.getCssRulesFromStyleSheet(
-        /** @type {CSSStyleSheet} */ (styleSheet));
+        /** @type {!CSSStyleSheet} */ (styleSheet));
     if (cssRuleList && cssRuleList.length) {
       // Chrome does not evaluate cssRuleList[i] to undefined when i >=n;
       // so we use a (i < n) check instead of cssRuleList[i] in the loop below
@@ -351,9 +352,9 @@ goog.cssom.removeCssRule = function(cssStyleSheet, index) {
 goog.cssom.addCssText = function(cssText, opt_domHelper) {
   var document = opt_domHelper ? opt_domHelper.getDocument() :
       goog.dom.getDocument();
-  var cssNode = document.createElement('style');
+  var cssNode = document.createElement(goog.dom.TagName.STYLE);
   cssNode.type = 'text/css';
-  var head = document.getElementsByTagName('head')[0];
+  var head = document.getElementsByTagName(goog.dom.TagName.HEAD)[0];
   head.appendChild(cssNode);
   if (cssNode.styleSheet) {
     // IE.

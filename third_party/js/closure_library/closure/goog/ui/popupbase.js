@@ -24,6 +24,7 @@ goog.provide('goog.ui.PopupBase.Type');
 goog.require('goog.Timer');
 goog.require('goog.array');
 goog.require('goog.dom');
+goog.require('goog.dom.TagName');
 goog.require('goog.events');
 goog.require('goog.events.EventHandler');
 goog.require('goog.events.EventTarget');
@@ -424,7 +425,10 @@ goog.ui.PopupBase.prototype.getLastHideTime = function() {
  * @template T
  */
 goog.ui.PopupBase.prototype.getHandler = function() {
-  return this.handler_;
+  // As the template type is unbounded, narrow the "this" type
+  var self = /** @type {!goog.ui.PopupBase} */ (this);
+
+  return self.handler_;
 };
 
 
@@ -562,7 +566,8 @@ goog.ui.PopupBase.prototype.show_ = function() {
         // document.activeElement to throw an Unspecified Error.  This
         // may have to do with loading a popup within a hidden iframe.
       }
-      while (activeElement && activeElement.nodeName == 'IFRAME') {
+      while (activeElement &&
+             activeElement.nodeName == goog.dom.TagName.IFRAME) {
         /** @preserveTry */
         try {
           var tempDoc = goog.dom.getFrameContentDocument(activeElement);
@@ -607,7 +612,7 @@ goog.ui.PopupBase.prototype.show_ = function() {
   // the transition is over.
   if (this.showTransition_) {
     goog.events.listenOnce(
-        /** @type {goog.events.EventTarget} */ (this.showTransition_),
+        /** @type {!goog.events.EventTarget} */ (this.showTransition_),
         goog.fx.Transition.EventType.END, this.onShow_, false, this);
     this.showTransition_.play();
   } else {
@@ -643,7 +648,7 @@ goog.ui.PopupBase.prototype.hide_ = function(opt_target) {
   // (and fire HIDE event) after the transition is over.
   if (this.hideTransition_) {
     goog.events.listenOnce(
-        /** @type {goog.events.EventTarget} */ (this.hideTransition_),
+        /** @type {!goog.events.EventTarget} */ (this.hideTransition_),
         goog.fx.Transition.EventType.END,
         goog.partial(this.continueHidingPopup_, opt_target), false, this);
     this.hideTransition_.play();
@@ -823,7 +828,7 @@ goog.ui.PopupBase.prototype.onDocumentBlur_ = function(e) {
   if (typeof document.activeElement != 'undefined') {
     var activeElement = doc.activeElement;
     if (!activeElement || goog.dom.contains(this.element_,
-        activeElement) || activeElement.tagName == 'BODY') {
+        activeElement) || activeElement.tagName == goog.dom.TagName.BODY) {
       return;
     }
 

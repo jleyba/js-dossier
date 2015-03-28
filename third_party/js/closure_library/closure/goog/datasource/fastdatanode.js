@@ -41,6 +41,7 @@ goog.provide('goog.ds.FastListNode');
 goog.provide('goog.ds.PrimitiveFastDataNode');
 
 goog.require('goog.ds.DataManager');
+goog.require('goog.ds.DataNodeList');
 goog.require('goog.ds.EmptyNodeList');
 goog.require('goog.string');
 
@@ -299,7 +300,7 @@ goog.ds.FastDataNode.prototype.getJsObject = function() {
  * @return {goog.ds.FastDataNode} Clone of this data node.
  */
 goog.ds.FastDataNode.prototype.clone = function() {
-  return /** @type {goog.ds.FastDataNode} */(goog.ds.FastDataNode.fromJs(
+  return /** @type {!goog.ds.FastDataNode} */(goog.ds.FastDataNode.fromJs(
       this.getJsObject(), this.getDataName()));
 };
 

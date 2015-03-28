@@ -87,6 +87,7 @@ goog.testing.MockClock = function(opt_autoInstall) {
   if (opt_autoInstall) {
     this.install();
   }
+  goog.testing.MockClock.nextId = 1; // TODO(b/19729551): Remove
 };
 goog.inherits(goog.testing.MockClock, goog.Disposable);
 
@@ -101,7 +102,15 @@ goog.testing.MockClock.REQUEST_ANIMATION_FRAME_TIMEOUT = 20;
 
 
 /**
- * Count of the number of timeouts made.
+ * ID to use for next timeout.  Timeout IDs must never be reused, even across
+ * MockClock instances.
+ * @public {number}
+ */
+goog.testing.MockClock.nextId = Math.round(Math.random() * 10000);
+
+
+/**
+ * Count of the number of timeouts made by this instance.
  * @type {number}
  * @private
  */
@@ -187,7 +196,8 @@ goog.testing.MockClock.prototype.replaceRequestAnimationFrame_ = function() {
                       'oRequestAnimationFrame',
                       'msRequestAnimationFrame'];
 
-  var cancelFuncs = ['cancelRequestAnimationFrame',
+  var cancelFuncs = ['cancelAnimationFrame',
+                     'cancelRequestAnimationFrame',
                      'webkitCancelRequestAnimationFrame',
                      'mozCancelRequestAnimationFrame',
                      'oCancelRequestAnimationFrame',
@@ -243,6 +253,8 @@ goog.testing.MockClock.prototype.reset = function() {
   this.nowMillis_ = 0;
   this.timeoutsMade_ = 0;
   this.timeoutDelay_ = 0;
+
+  goog.testing.MockClock.nextId = 1; // TODO(b/19729551): Remove
 
   this.fireResetEvent();
 };
@@ -358,7 +370,9 @@ goog.testing.MockClock.prototype.getCurrentTime = function() {
  *     cleared.
  */
 goog.testing.MockClock.prototype.isTimeoutSet = function(timeoutKey) {
-  return timeoutKey <= this.timeoutsMade_ && !this.deletedKeys_[timeoutKey];
+  return timeoutKey < goog.testing.MockClock.nextId &&
+      timeoutKey >= goog.testing.MockClock.nextId - this.timeoutsMade_ &&
+      !this.deletedKeys_[timeoutKey];
 };
 
 
@@ -471,20 +485,23 @@ goog.testing.MockClock.MAX_INT_ = 2147483647;
  * Schedules a function to be called after {@code millis} milliseconds.
  * Mock implementation for setTimeout.
  * @param {Function} funcToCall The function to call.
- * @param {number} millis The number of milliseconds to call it after.
+ * @param {number=} opt_millis The number of milliseconds to call it after.
  * @return {number} The number of timeouts created.
  * @private
  */
-goog.testing.MockClock.prototype.setTimeout_ = function(funcToCall, millis) {
+goog.testing.MockClock.prototype.setTimeout_ = function(
+    funcToCall, opt_millis) {
+  var millis = opt_millis || 0;
   if (millis > goog.testing.MockClock.MAX_INT_) {
     throw Error(
         'Bad timeout value: ' + millis + '.  Timeouts over MAX_INT ' +
         '(24.8 days) cause timeouts to be fired ' +
         'immediately in most browsers, except for IE.');
   }
-  this.timeoutsMade_ = this.timeoutsMade_ + 1;
-  this.scheduleFunction_(this.timeoutsMade_, funcToCall, millis, false);
-  return this.timeoutsMade_;
+  this.timeoutsMade_++;
+  this.scheduleFunction_(goog.testing.MockClock.nextId, funcToCall, millis,
+      false);
+  return goog.testing.MockClock.nextId++;
 };
 
 
@@ -492,14 +509,17 @@ goog.testing.MockClock.prototype.setTimeout_ = function(funcToCall, millis) {
  * Schedules a function to be called every {@code millis} milliseconds.
  * Mock implementation for setInterval.
  * @param {Function} funcToCall The function to call.
- * @param {number} millis The number of milliseconds between calls.
+ * @param {number=} opt_millis The number of milliseconds between calls.
  * @return {number} The number of timeouts created.
  * @private
  */
-goog.testing.MockClock.prototype.setInterval_ = function(funcToCall, millis) {
-  this.timeoutsMade_ = this.timeoutsMade_ + 1;
-  this.scheduleFunction_(this.timeoutsMade_, funcToCall, millis, true);
-  return this.timeoutsMade_;
+goog.testing.MockClock.prototype.setInterval_ =
+    function(funcToCall, opt_millis) {
+  var millis = opt_millis || 0;
+  this.timeoutsMade_++;
+  this.scheduleFunction_(goog.testing.MockClock.nextId, funcToCall, millis,
+      true);
+  return goog.testing.MockClock.nextId++;
 };
 
 

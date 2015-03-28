@@ -26,6 +26,7 @@ goog.provide('goog.ui.KeyboardShortcutHandler.EventType');
 goog.require('goog.Timer');
 goog.require('goog.array');
 goog.require('goog.asserts');
+goog.require('goog.dom.TagName');
 goog.require('goog.events');
 goog.require('goog.events.Event');
 goog.require('goog.events.EventTarget');
@@ -286,7 +287,7 @@ goog.ui.KeyboardShortcutHandler.EventType = {
 
 /**
  * Cache for name to key code lookup.
- * @type {Object}
+ * @type {Object.<number>}
  * @private
  */
 goog.ui.KeyboardShortcutHandler.nameToKeyCodeCache_;
@@ -337,7 +338,9 @@ goog.ui.KeyboardShortcutHandler.getKeyCode = function(name) {
   if (!goog.ui.KeyboardShortcutHandler.nameToKeyCodeCache_) {
     var map = {};
     for (var key in goog.events.KeyNames) {
-      map[goog.events.KeyNames[key]] = key;
+      // Explicitly convert the stringified map keys to numbers and normalize.
+      map[goog.events.KeyNames[key]] =
+          goog.events.KeyCodes.normalizeKeyCode(parseInt(key, 10));
     }
     goog.ui.KeyboardShortcutHandler.nameToKeyCodeCache_ = map;
   }
@@ -579,6 +582,8 @@ goog.ui.KeyboardShortcutHandler.prototype.interpretStrokes_ = function(
     strokes = goog.array.map(
         goog.ui.KeyboardShortcutHandler.parseStringShortcut(args[initialIndex]),
         function(stroke) {
+          goog.asserts.assertNumber(
+              stroke.keyCode, 'A non-modifier key is needed in each stroke.');
           return goog.ui.KeyboardShortcutHandler.makeStroke_(
               stroke.keyCode, stroke.modifiers);
         });
@@ -652,7 +657,8 @@ goog.ui.KeyboardShortcutHandler.prototype.getEventType =
 /**
  * Builds stroke array from string representation of shortcut.
  * @param {string} s String representation of shortcut.
- * @return {!Array<!{keyCode: number, modifiers: number}>} The stroke array.
+ * @return {!Array<!{keyCode: ?number, modifiers: number}>} The stroke array.  A
+ *     null keyCode means no non-modifier key was part of the stroke.
  */
 goog.ui.KeyboardShortcutHandler.parseStringShortcut = function(s) {
   // Normalize whitespace and force to lower case.
@@ -664,7 +670,8 @@ goog.ui.KeyboardShortcutHandler.parseStringShortcut = function(s) {
   var strokes = [];
   for (var group, i = 0; group = groups[i]; i++) {
     var keys = group.split('+');
-    var keyCode = 0;
+    // Explicitly re-initialize key data (JS does not have block scoping).
+    var keyCode = null;
     var modifiers = goog.ui.KeyboardShortcutHandler.Modifiers.NONE;
     for (var key, j = 0; key = keys[j]; j++) {
       switch (key) {
@@ -681,7 +688,12 @@ goog.ui.KeyboardShortcutHandler.parseStringShortcut = function(s) {
           modifiers |= goog.ui.KeyboardShortcutHandler.Modifiers.META;
           continue;
       }
+      if (!goog.isNull(keyCode)) {
+        goog.asserts.fail('At most one non-modifier key can be in a stroke.');
+      }
       keyCode = goog.ui.KeyboardShortcutHandler.getKeyCode(key);
+      goog.asserts.assertNumber(
+          keyCode, 'Key name not found in goog.events.KeyNames: ' + key);
       break;
     }
     strokes.push({keyCode: keyCode, modifiers: modifiers});
@@ -968,9 +980,7 @@ goog.ui.KeyboardShortcutHandler.prototype.handleKeyDown_ = function(event) {
     return;
   }
 
-  var keyCode = goog.userAgent.GECKO ?
-      goog.events.KeyCodes.normalizeGeckoKeyCode(event.keyCode) :
-      event.keyCode;
+  var keyCode = goog.events.KeyCodes.normalizeKeyCode(event.keyCode);
 
   var modifiers =
       (event.shiftKey ? goog.ui.KeyboardShortcutHandler.Modifiers.SHIFT : 0) |
@@ -1060,8 +1070,10 @@ goog.ui.KeyboardShortcutHandler.prototype.isValidShortcut_ = function(event) {
   }
   var el = /** @type {Element} */ (event.target);
   var isFormElement =
-      el.tagName == 'TEXTAREA' || el.tagName == 'INPUT' ||
-      el.tagName == 'BUTTON' || el.tagName == 'SELECT';
+      el.tagName == goog.dom.TagName.TEXTAREA ||
+      el.tagName == goog.dom.TagName.INPUT ||
+      el.tagName == goog.dom.TagName.BUTTON ||
+      el.tagName == goog.dom.TagName.SELECT;
 
   var isContentEditable = !isFormElement && (el.isContentEditable ||
       (el.ownerDocument && el.ownerDocument.designMode == 'on'));
@@ -1086,11 +1098,12 @@ goog.ui.KeyboardShortcutHandler.prototype.isValidShortcut_ = function(event) {
     return true;
   }
   // Allow ENTER to be used as shortcut for text inputs.
-  if (el.tagName == 'INPUT' && this.textInputs_[el.type]) {
+  if (el.tagName == goog.dom.TagName.INPUT && this.textInputs_[el.type]) {
     return keyCode == goog.events.KeyCodes.ENTER;
   }
   // Checkboxes, radiobuttons and buttons. Allow all but SPACE as shortcut.
-  if (el.tagName == 'INPUT' || el.tagName == 'BUTTON') {
+  if (el.tagName == goog.dom.TagName.INPUT ||
+      el.tagName == goog.dom.TagName.BUTTON) {
     // TODO(gboyer): If more flexibility is needed, create protected helper
     // methods for each case (e.g. button, input, etc).
     if (this.allowSpaceKeyOnButtons_) {

@@ -67,6 +67,15 @@ goog.proto2.FieldDescriptor = function(messageType, tag, metadata) {
   /** @type {*} */
   metadata.required;
 
+  /** @type {*} */
+  metadata.packed;
+
+  /**
+   * If true, this field is a packed field.
+   * @private {boolean}
+   */
+  this.isPacked_ = !!metadata.packed;
+
   /**
    * If true, this field is a repeating field.
    * @private {boolean}
@@ -165,7 +174,9 @@ goog.proto2.FieldDescriptor.prototype.getTag = function() {
  * @return {!goog.proto2.Descriptor} The descriptor.
  */
 goog.proto2.FieldDescriptor.prototype.getContainingType = function() {
-  return this.parent_.getDescriptor();
+  // Generated JS proto_library messages have getDescriptor() method which can
+  // be called with or without an instance.
+  return this.parent_.prototype.getDescriptor();
 };
 
 
@@ -247,7 +258,11 @@ goog.proto2.FieldDescriptor.prototype.deserializationConversionPermitted =
  * @return {!goog.proto2.Descriptor} The message descriptor.
  */
 goog.proto2.FieldDescriptor.prototype.getFieldMessageType = function() {
-  return this.nativeType_.getDescriptor();
+  // Generated JS proto_library messages have getDescriptor() method which can
+  // be called with or without an instance.
+  var messageClass = /** @type {function(new:goog.proto2.Message)} */(
+      this.nativeType_);
+  return messageClass.prototype.getDescriptor();
 };
 
 
@@ -258,6 +273,15 @@ goog.proto2.FieldDescriptor.prototype.getFieldMessageType = function() {
 goog.proto2.FieldDescriptor.prototype.isCompositeType = function() {
   return this.fieldType_ == goog.proto2.FieldDescriptor.FieldType.MESSAGE ||
       this.fieldType_ == goog.proto2.FieldDescriptor.FieldType.GROUP;
+};
+
+
+/**
+ * Returns whether the field described by this descriptor is packed.
+ * @return {boolean} Whether the field is packed.
+ */
+goog.proto2.FieldDescriptor.prototype.isPacked = function() {
+  return this.isPacked_;
 };
 
 

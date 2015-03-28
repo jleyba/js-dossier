@@ -20,7 +20,9 @@ goog.provide('goog.html.safeHtmlTest');
 
 goog.require('goog.html.SafeHtml');
 goog.require('goog.html.SafeStyle');
+goog.require('goog.html.SafeStyleSheet');
 goog.require('goog.html.SafeUrl');
+goog.require('goog.html.TrustedResourceUrl');
 goog.require('goog.html.testing');
 goog.require('goog.i18n.bidi.Dir');
 goog.require('goog.string.Const');
@@ -152,11 +154,11 @@ function testSafeHtmlCreate() {
   });
 
   assertThrows(function() {
-    goog.html.SafeHtml.create('a', {'href': 'javascript:alert(1)'});
+    goog.html.SafeHtml.create('img', {'OnError': ''});
   });
 
   assertThrows(function() {
-    goog.html.SafeHtml.create('hr', {'class': style});
+    goog.html.SafeHtml.create('a', {'href': 'javascript:alert(1)'});
   });
 
   assertThrows(function() {
@@ -169,7 +171,7 @@ function testSafeHtmlCreate() {
 }
 
 
-function testSafeHtmlCreate_supportsStyle() {
+function testSafeHtmlCreate_styleAttribute() {
   var style = 'color:red;';
   var expected = '<hr style="' + style + '">';
   assertThrows(function() {
@@ -181,6 +183,111 @@ function testSafeHtmlCreate_supportsStyle() {
   assertSameHtml(expected, goog.html.SafeHtml.create('hr', {
     'style': {'color': 'red'}
   }));
+}
+
+
+function testSafeHtmlCreate_urlAttributes() {
+  // TrustedResourceUrl is allowed.
+  var trustedResourceUrl = goog.html.TrustedResourceUrl.fromConstant(
+      goog.string.Const.from('https://google.com/trusted'));
+  assertSameHtml(
+      '<img src="https://google.com/trusted">',
+      goog.html.SafeHtml.create('img', {'src': trustedResourceUrl}));
+  // SafeUrl is allowed.
+  var safeUrl = goog.html.SafeUrl.sanitize('https://google.com/safe');
+  assertSameHtml(
+      '<imG src="https://google.com/safe">',
+      goog.html.SafeHtml.create('imG', {'src': safeUrl}));
+  // Const is allowed.
+  var constUrl = goog.string.Const.from('https://google.com/const');
+  assertSameHtml(
+      '<a href="https://google.com/const"></a>',
+      goog.html.SafeHtml.create('a', {'href': constUrl}));
+
+  // string is not allowed.
+  assertThrows(function() {
+    goog.html.SafeHtml.create('imG', {'src': 'https://google.com'});
+  });
+}
+
+
+function testSafeHtmlCreateIframe() {
+  // Setting src and srcdoc.
+  var url = goog.html.TrustedResourceUrl.fromConstant(
+      goog.string.Const.from('https://google.com/trusted<'));
+  assertSameHtml(
+      '<iframe src="https://google.com/trusted&lt;"></iframe>',
+      goog.html.SafeHtml.createIframe(url, null, {'sandbox': null}));
+  var srcdoc = goog.html.SafeHtml.create('br');
+  assertSameHtml(
+      '<iframe srcdoc="&lt;br&gt;"></iframe>',
+      goog.html.SafeHtml.createIframe(null, srcdoc, {'sandbox': null}));
+
+  // sandbox default and overriding it.
+  assertSameHtml(
+      '<iframe sandbox=""></iframe>',
+      goog.html.SafeHtml.createIframe());
+  assertSameHtml(
+      '<iframe Sandbox="allow-same-origin allow-top-navigation"></iframe>',
+      goog.html.SafeHtml.createIframe(
+          null, null, {'Sandbox': 'allow-same-origin allow-top-navigation'}));
+
+  // Cannot override src and srddoc.
+  assertThrows(function() {
+    goog.html.SafeHtml.createIframe(null, null, {'Src': url});
+  });
+  assertThrows(function() {
+    goog.html.SafeHtml.createIframe(null, null, {'Srcdoc': url});
+  });
+
+  // Can set content.
+  assertSameHtml(
+      '<iframe>&lt;</iframe>',
+      goog.html.SafeHtml.createIframe(null, null, {'sandbox': null}, '<'));
+}
+
+
+function testSafeHtmlCreateStyle() {
+  var styleSheet = goog.html.SafeStyleSheet.fromConstant(
+      goog.string.Const.from('P.special { color:"red" ; }'));
+  var styleHtml = goog.html.SafeHtml.createStyle(styleSheet);
+  assertSameHtml(
+      '<style type="text/css">P.special { color:"red" ; }</style>', styleHtml);
+
+  // Two stylesheets.
+  var otherStyleSheet = goog.html.SafeStyleSheet.fromConstant(
+      goog.string.Const.from('P.regular { color:blue ; }'));
+  styleHtml = goog.html.SafeHtml.createStyle([styleSheet, otherStyleSheet]);
+  assertSameHtml(
+      '<style type="text/css">P.special { color:"red" ; }' +
+          'P.regular { color:blue ; }</style>',
+      styleHtml);
+
+  // Set attribute.
+  styleHtml = goog.html.SafeHtml.createStyle(styleSheet, {'id': 'test'});
+  var styleHtmlString = goog.html.SafeHtml.unwrap(styleHtml);
+  assertTrue(styleHtmlString, styleHtmlString.indexOf('id="test"') != -1);
+  assertTrue(styleHtmlString, styleHtmlString.indexOf('type="text/css"') != -1);
+
+  // Set attribute to null.
+  styleHtml = goog.html.SafeHtml.createStyle(
+      goog.html.SafeStyleSheet.EMPTY, {'id': null});
+  assertSameHtml('<style type="text/css"></style>', styleHtml);
+
+  // Set attribute to invalid value.
+  assertThrows(function() {
+    styleHtml = goog.html.SafeHtml.createStyle(
+        goog.html.SafeStyleSheet.EMPTY, {'invalid.': 'cantdothis'});
+  });
+
+  // Cannot override type attribute.
+  assertThrows(function() {
+    styleHtml = goog.html.SafeHtml.createStyle(
+        goog.html.SafeStyleSheet.EMPTY, {'Type': 'cantdothis'});
+  });
+
+  // Directionality.
+  assertEquals(goog.i18n.bidi.Dir.NEUTRAL, styleHtml.getDirection());
 }
 
 

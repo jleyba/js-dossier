@@ -72,21 +72,21 @@ goog.db.Transaction = function(tx, db) {
   // TODO(user): remove these casts once the externs file is updated to
   // correctly reflect that IDBTransaction extends EventTarget
   this.eventHandler_.listen(
-      /** @type {EventTarget} */ (this.tx_),
+      /** @type {!EventTarget} */ (this.tx_),
       'complete',
       goog.bind(
           this.dispatchEvent,
           this,
           goog.db.Transaction.EventTypes.COMPLETE));
   this.eventHandler_.listen(
-      /** @type {EventTarget} */ (this.tx_),
+      /** @type {!EventTarget} */ (this.tx_),
       'abort',
       goog.bind(
           this.dispatchEvent,
           this,
           goog.db.Transaction.EventTypes.ABORT));
   this.eventHandler_.listen(
-      /** @type {EventTarget} */ (this.tx_),
+      /** @type {!EventTarget} */ (this.tx_),
       'error',
       this.dispatchError_);
 };
@@ -174,13 +174,16 @@ goog.db.Transaction.prototype.wait = function() {
   var d = new goog.async.Deferred();
   goog.events.listenOnce(
       this, goog.db.Transaction.EventTypes.COMPLETE, goog.bind(d.callback, d));
-  goog.events.listenOnce(
+  var errorKey;
+  var abortKey = goog.events.listenOnce(
       this, goog.db.Transaction.EventTypes.ABORT, function() {
+        goog.events.unlistenByKey(errorKey);
         d.errback(new goog.db.Error(goog.db.Error.ErrorCode.ABORT_ERR,
             'waiting for transaction to complete'));
       });
-  goog.events.listenOnce(
+  errorKey = goog.events.listenOnce(
       this, goog.db.Transaction.EventTypes.ERROR, function(e) {
+        goog.events.unlistenByKey(abortKey);
         d.errback(e.target);
       });
 
