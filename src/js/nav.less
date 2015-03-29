@@ -64,7 +64,7 @@ nav {
   }
 
   ul {
-    margin: 0 0 0 1rem;
+    margin: 0;
     padding: 0;
 
     &.nav-tree {
@@ -88,6 +88,10 @@ nav {
 
     label[for] { display: block; }
 
+    // TODO: Find a better way to ensure label:before stays in the gutter and
+    // actual content stays aligned.
+    & > a:before { visibility: hidden; }
+    & > a:before,
     label[for]:before {
       float: left;
       padding-right: 1rem;
