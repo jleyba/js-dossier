@@ -27,6 +27,20 @@ import static java.nio.file.StandardOpenOption.CREATE;
 import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 import static java.nio.file.StandardOpenOption.WRITE;
 
+import com.github.jsdossier.proto.BaseProperty;
+import com.github.jsdossier.proto.Comment;
+import com.github.jsdossier.proto.Deprecation;
+import com.github.jsdossier.proto.Enumeration;
+import com.github.jsdossier.proto.HtmlRenderSpec;
+import com.github.jsdossier.proto.Index;
+import com.github.jsdossier.proto.JsType;
+import com.github.jsdossier.proto.JsTypeRenderSpec;
+import com.github.jsdossier.proto.Resources;
+import com.github.jsdossier.proto.SourceFile;
+import com.github.jsdossier.proto.SourceFileRenderSpec;
+import com.github.jsdossier.proto.TypeLink;
+import com.github.jsdossier.proto.Visibility;
+import com.github.jsdossier.soy.Renderer;
 import com.google.common.base.Charsets;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
@@ -52,21 +66,6 @@ import com.google.javascript.rhino.jstype.NamedType;
 import com.google.javascript.rhino.jstype.ObjectType;
 import com.google.javascript.rhino.jstype.Property;
 import com.google.javascript.rhino.jstype.TemplatizedType;
-
-import com.github.jsdossier.proto.BaseProperty;
-import com.github.jsdossier.proto.Comment;
-import com.github.jsdossier.proto.Deprecation;
-import com.github.jsdossier.proto.Enumeration;
-import com.github.jsdossier.proto.HtmlRenderSpec;
-import com.github.jsdossier.proto.Index;
-import com.github.jsdossier.proto.JsType;
-import com.github.jsdossier.proto.JsTypeRenderSpec;
-import com.github.jsdossier.proto.Resources;
-import com.github.jsdossier.proto.SourceFile;
-import com.github.jsdossier.proto.SourceFileRenderSpec;
-import com.github.jsdossier.proto.TypeLink;
-import com.github.jsdossier.proto.Visibility;
-import com.github.jsdossier.soy.Renderer;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -150,15 +149,6 @@ class DocWriter {
 
     builder.setHome(toUrlPath(toRoot.resolve(INDEX_FILE_NAME)));
 
-    for (Index.Module.Builder module : builder.getModuleBuilderList()) {
-      module.getLinkBuilder().setHref(
-          toUrlPath(toRoot.resolve(module.getLinkBuilder().getHref())));
-    }
-
-    for (TypeLink.Builder link : builder.getTypeBuilderList()) {
-      link.setHref(toUrlPath(toRoot.resolve(link.getHref())));
-    }
-
     for (TypeLink.Builder link : builder.getLinksBuilderList()) {
       link.setHref(toUrlPath(toRoot.resolve(link.getHref())));
     }
@@ -171,39 +161,10 @@ class DocWriter {
   }
 
   private Index generateNavIndex() {
-    Index.Builder builder = Index.newBuilder();
-
-    builder.setHome(INDEX_FILE_NAME);
-
-    for (NominalType module : sortedModules) {
-      Index.Module.Builder moduleBuilder = builder.addModuleBuilder()
-          .setLink(TypeLink.newBuilder()
-          .setHref(toUrlPath(config.getOutput().relativize(linker.getFilePath(module))))
-          .setText(linker.getDisplayName(module)));
-
-      Iterable<NominalType> types = FluentIterable.from(module.getTypes())
-          .toSortedList(new QualifiedNameComparator());
-      for (NominalType type : types) {
-        if (isEmptyNamespace(type)) {
-          continue;
-        }
-        Path path = linker.getFilePath(type);
-        moduleBuilder.addTypeBuilder()
-            .setHref(toUrlPath(config.getOutput().relativize(path)))
-            .setText(type.getQualifiedName(false));
-      }
-    }
-
-    for (NominalType type : sortedTypes) {
-      if (isEmptyNamespace(type)) {
-        continue;
-      }
-
-      Path path = linker.getFilePath(type);
-      builder.addTypeBuilder()
-          .setHref(toUrlPath(config.getOutput().relativize(path)))
-          .setText(type.getQualifiedName());
-    }
+    Index.Builder builder = Index.newBuilder()
+        .setHome(INDEX_FILE_NAME)
+        .setIncludeModules(sortedModules.iterator().hasNext())
+        .setIncludeTypes(sortedTypes.iterator().hasNext());
 
     for (Config.Page page : config.getCustomPages()) {
       builder.addLinksBuilder()
@@ -1254,6 +1215,7 @@ class DocWriter {
       JsonObject obj = new JsonObject();
       obj.addProperty("name", linker.getDisplayName(module));
       obj.addProperty("href", dest);
+      obj.addProperty("module", true);
 
       getJsonArray(json, "modules").add(obj);
       return new ModuleIndexReference(module, obj);
@@ -1303,6 +1265,10 @@ class DocWriter {
     JsonObject details = new JsonObject();
     details.addProperty("name", type.getQualifiedName());
     details.addProperty("href", dest);
+    details.addProperty("namespace",
+        !type.getJsType().isInstanceType()
+            && !type.getJsType().isConstructor()
+            && !type.getJsType().isEnumType());
     array.add(details);
 
     List<NominalType> typedefs = FluentIterable.from(type.getTypes())

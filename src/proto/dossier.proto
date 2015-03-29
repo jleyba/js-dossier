@@ -184,19 +184,14 @@ message Enumeration {
 
 // Describes how to build the side index for a generated page.
 message Index {
-  message Module {
-    required TypeLink link = 1;
-    repeated TypeLink type = 2;
-  }
-
   // Defines the href from the current page to the main index.
   required string home = 1 [(sanitized).uri = true];
 
-  // Links to the global JavaScript types.
-  repeated TypeLink type = 2;
+  // Whether to generate the global type section.
+  optional bool include_types = 2;
 
-  // Links to JavaScript modules.
-  repeated Module module = 3;
+  // Whether to generate the module type section.
+  optional bool include_modules = 3;
 
   // Additional links to include in the navigation pane.
   repeated TypeLink links = 4;

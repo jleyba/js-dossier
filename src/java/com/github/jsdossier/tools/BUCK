@@ -1,0 +1,21 @@
+java_library(
+  name = "tools",
+  srcs = glob(["**/*.java"]),
+  deps = [
+    "//third_party/java/args4j:args4j",
+    "//third_party/java/closure_compiler:closure_compiler",
+    "//third_party/java/guava:guava",
+  ],
+)
+
+java_binary(
+  name = "WriteDeps",
+  main_class = "com.github.jsdossier.tools.WriteDeps",
+  deps = [":tools"],
+)
+
+java_binary(
+  name = "Compile",
+  main_class = "com.github.jsdossier.tools.Compile",
+  deps = [":tools"],
+)

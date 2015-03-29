@@ -22,6 +22,7 @@
 
 goog.provide('dossier');
 
+goog.require('dossier.nav');
 goog.require('goog.array');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
@@ -31,52 +32,40 @@ goog.require('goog.string');
 goog.require('goog.ui.ac');
 goog.require('goog.ui.ac.AutoComplete.EventType');
 
+goog.forwardDeclare('goog.debug.ErrorHandler');
+goog.forwardDeclare('goog.events.EventWrapper');
+goog.forwardDeclare('goog.ui.ac.RenderOptions');
 
-/**
- * @typedef {{name: string,
- *            href: string,
- *            statics: Array.<dossier.Descriptor_>,
- *            members: Array.<dossier.Descriptor_>,
- *            types: Array.<dossier.Descriptor_>}}
- * @private
- */
-dossier.Descriptor_;
-
-
-/**
- * @typedef {{types: Array.<dossier.Descriptor_>,
- *            modules: Array.<dossier.Descriptor_>}}
- * @private
- */
-dossier.TypeInfo_;
 
 
 /**
  * Initializes the dossier page.
  */
 dossier.init = function() {
-  var typeInfo = /** @type {dossier.TypeInfo_} */(goog.global['TYPES']);
+  var typeInfo = /** @type {!TypeRegistry} */(goog.global['TYPES']);
   dossier.initSearchBox_(typeInfo);
-  dossier.initNavList_();
+  dossier.initNavList_(typeInfo);
   dossier.initSourceHilite_();
 };
 goog.exportSymbol('init', dossier.init);
 
 
 /**
- * Computes the relative path used to load this script.
+ * Computes the relative path used to load this script. It is assumed that
+ * this script is always in a directory that is an ancestor of the current
+ * file running this script.
  * @private {string}
  * @const
  */
 dossier.BASE_PATH_ = (function() {
-  var scripts = goog.dom.getDocument().getElementsByTagName('script');
-  var dirPath = './';
+  var scripts = goog.dom.getDocument().querySelectorAll('script');
+  var dirPath = '';
   var thisFile = 'dossier.js';
   goog.array.find(scripts, function(script) {
-    var src = script.src;
+    var src = script.getAttribute('src');
     var len = src.length;
-    if (src.substr(len - thisFile.length) === thisFile) {
-      dirPath = src.substr(0, len - thisFile.length);
+    if (src.slice(len - thisFile.length) === thisFile) {
+      dirPath = src.slice(0, len - thisFile.length);
       return true;
     }
     return false;
@@ -129,21 +118,21 @@ dossier.initSourceHilite_ = function() {
 
 /**
  * Initializes the auto-complete for the top navigation bar's search box.
- * @param {dossier.TypeInfo_} typeInfo The types to link to from the current
+ * @param {!TypeRegistry} typeInfo The types to link to from the current
  *     page.
  * @private
  */
 dossier.initSearchBox_ = function(typeInfo) {
   var nameToHref = {};
   var allTerms = [];
-  if (typeInfo['types']) {
-    goog.array.forEach(typeInfo['types'], function(descriptor) {
+  if (typeInfo.types) {
+    goog.array.forEach(typeInfo.types, function(descriptor) {
       dossier.addTypes_(allTerms, nameToHref, descriptor);
     });
   }
 
-  if (typeInfo['modules']) {
-    goog.array.forEach(typeInfo['modules'], function(module) {
+  if (typeInfo.modules) {
+    goog.array.forEach(typeInfo.modules, function(module) {
       dossier.addTypes_(allTerms, nameToHref, module, true);
     });
   }
@@ -174,34 +163,34 @@ dossier.initSearchBox_ = function(typeInfo) {
 /**
  * @param {!Array<string>} terms .
  * @param {!Object<string, string>} nameToHref .
- * @param {dossier.Descriptor_} descriptor .
+ * @param {!Descriptor} descriptor .
  * @param {boolean=} opt_isModule .
  * @param {string=} opt_parent .
  * @private
  */
 dossier.addTypes_ = function(terms, nameToHref, descriptor, opt_isModule, opt_parent) {
-  var descriptorName = descriptor['name'];
+  var descriptorName = descriptor.name;
   if (opt_parent) {
     descriptorName = opt_parent +
         (goog.string.endsWith(opt_parent, ')') ? ' ' : '.') +
         descriptorName;
   }
-  nameToHref[descriptorName] = descriptor['href'];
+  nameToHref[descriptorName] = descriptor.href;
   terms.push(descriptorName);
 
   if (opt_isModule) {
     descriptorName = '(' + descriptorName + ')';
   }
 
-  if (opt_isModule && descriptor['types']) {
-    goog.array.forEach(descriptor['types'], function(type) {
+  if (opt_isModule && descriptor.types) {
+    goog.array.forEach(descriptor.types, function(type) {
       dossier.addTypes_(terms, nameToHref, type, false, descriptorName);
     });
   }
 
-  if (descriptor['statics']) {
-    goog.array.forEach(descriptor['statics'], function(name) {
-      var href = descriptor['href'] + '#' + name;
+  if (descriptor.statics) {
+    goog.array.forEach(descriptor.statics, function(name) {
+      var href = descriptor.href + '#' + name;
       if (goog.string.endsWith(descriptorName, ')')) {
         name = descriptorName + ' ' + name;
       } else if (name.indexOf('.') === -1) {
@@ -214,9 +203,9 @@ dossier.addTypes_ = function(terms, nameToHref, descriptor, opt_isModule, opt_pa
     });
   }
 
-  if (descriptor['members']) {
-    goog.array.forEach(descriptor['members'], function(name) {
-      var href = descriptor['href'] + '#' + name;
+  if (descriptor.members) {
+    goog.array.forEach(descriptor.members, function(name) {
+      var href = descriptor.href + '#' + name;
       nameToHref[descriptorName + '#' + name] = href;
       terms.push(descriptorName + '#' + name);
     });
@@ -226,11 +215,36 @@ dossier.addTypes_ = function(terms, nameToHref, descriptor, opt_isModule, opt_pa
 
 /**
  * Initializes the side navigation bar from local history.
+ * @param {!TypeRegistry} typeInfo The type information to build the list from.
  * @private
  */
-dossier.initNavList_ = function() {
+dossier.initNavList_ = function(typeInfo) {
   initChangeHandler('nav-types', 'dossier.typesList');
   initChangeHandler('nav-modules', 'dossier.modulesList');
+
+  var currentFile = '';
+  if (dossier.BASE_PATH_) {
+    currentFile = window.location.pathname
+      .split('/')
+      .slice(dossier.BASE_PATH_.split('/').length)
+      .join('/');
+  } else if (window.location.pathname && window.location.pathname !== '/') {
+    currentFile = window.location.pathname.slice(
+        window.location.pathname.lastIndexOf('/') + 1);
+  }
+
+  var nav = goog.module.get('dossier.nav');
+  var view = goog.dom.getElement('nav-types-view');
+  if (view && typeInfo.types) {
+    view.appendChild(nav.buildList(
+        typeInfo.types, dossier.BASE_PATH_, currentFile, false));
+  }
+
+  view = goog.dom.getElement('nav-modules-view');
+  if (view && typeInfo.modules) {
+    view.appendChild(nav.buildList(
+        typeInfo.modules, dossier.BASE_PATH_, currentFile, true));
+  }
 
   /**
    * @param {string} id .

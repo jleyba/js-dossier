@@ -53,9 +53,21 @@ label[for="nav-modules"] {
 nav {
   margin: 0 0 3rem 1rem;
 
+  .current {
+    font-weight: bold;
+    font-size: 1.1em;
+    text-decoration: underline;
+  }
+
   ul {
     margin: 0 0 0 1rem;
     padding: 0;
+
+    &.nav-tree {
+      margin: 0 0 0 -.9rem;
+      padding: 0 0 0 1rem;
+      border-left: 1px dotted fade(@banner_color, 50%);
+    }
   }
 
   li {
@@ -65,6 +77,19 @@ nav {
     word-wrap: initial;
     overflow: hidden;
     text-overflow: ellipsis;
+
+    input { display: none; }
+    input ~ ul.nav-tree > li { display: none; }
+    input:checked ~ ul.nav-tree > li { display: block; }
+
+    label[for] { display: block; }
+
+    label[for]:before {
+      float: left;
+      padding-right: 1rem;
+      content: '\002b';
+    }
+    input:checked + label[for]:before { content: '\2212'; }
   }
 
   h3 {

@@ -27,17 +27,18 @@ EOF
 
 
 run_jsc() {
-  buck build \
-      //third_party/java/closure_compiler:compiler
+  buck build //src/java/com/github/jsdossier/tools:Compile
 
-  python ./third_party/js/closure_library/closure/bin/calcdeps.py \
+  java -jar ./buck-out/gen/src/java/com/github/jsdossier/tools/Compile.jar \
+      -c ./third_party/js/closure_library/closure/goog/ \
       -i ./src/js/dossier.js \
-      -i ./src/js/deps.js \
-      -p ./third_party/js/closure_library/closure/goog/ \
-      -o compiled \
-      -c ./buck-out/gen/third_party/java/closure_compiler/compiler.jar \
+      -i ./src/js/nav.js \
+      -f "--charset=UTF-8" \
       -f "--compilation_level=ADVANCED_OPTIMIZATIONS" \
       -f "--define=goog.DEBUG=false" \
+      -f "--externs=./src/js/externs.js" \
+      -f "--manage_closure_dependencies" \
+      -f "--closure_entry_point=dossier" \
       -f "--jscomp_error=accessControls" \
       -f "--jscomp_error=ambiguousFunctionDecl" \
       -f "--jscomp_error=checkRegExp" \
@@ -62,7 +63,7 @@ run_jsc() {
       -f "--language_in=ES5" \
       -f "--third_party=false" \
       -f "--output_wrapper=\"(function(){%output%;init();})();\"" \
-      --output_file=$RESOURCES/dossier.js
+      -f "--js_output_file=$RESOURCES/dossier.js"
 }
 
 run_lessc() {
@@ -81,6 +82,18 @@ run_protoc() {
       --proto_path=test/java/com/github/jsdossier/soy \
       --proto_path=third_party/java \
       test/java/com/github/jsdossier/soy/test_proto.proto
+}
+
+run_tests() {
+  buck build //src/java/com/github/jsdossier/tools:WriteDeps
+  buck test app_tests
+
+  java -jar ./buck-out/gen/src/java/com/github/jsdossier/tools/WriteDeps.jar \
+      -c ./third_party/js/closure_library/closure/goog/ \
+      -i ./src/js/dossier.js \
+      -i ./src/js/nav.js \
+      -i ./test/js/nav_test.js \
+      -o ./test/js/deps.js
 }
 
 build_release() {
@@ -279,7 +292,7 @@ main() {
   fi
 
   if (( $test )); then
-    buck test app_tests
+    run_tests
   fi
 
   if (( $release )); then

@@ -34,92 +34,38 @@ public interface IndexOrBuilder extends
       getHomeBytes();
 
   /**
-   * <code>repeated .dossier.TypeLink type = 2;</code>
+   * <code>optional bool include_types = 2;</code>
    *
    * <pre>
-   * Links to the global JavaScript types.
+   * Whether to generate the global type section.
    * </pre>
    */
-  java.util.List<com.github.jsdossier.proto.TypeLink> 
-      getTypeList();
+  boolean hasIncludeTypes();
   /**
-   * <code>repeated .dossier.TypeLink type = 2;</code>
+   * <code>optional bool include_types = 2;</code>
    *
    * <pre>
-   * Links to the global JavaScript types.
+   * Whether to generate the global type section.
    * </pre>
    */
-  com.github.jsdossier.proto.TypeLink getType(int index);
-  /**
-   * <code>repeated .dossier.TypeLink type = 2;</code>
-   *
-   * <pre>
-   * Links to the global JavaScript types.
-   * </pre>
-   */
-  int getTypeCount();
-  /**
-   * <code>repeated .dossier.TypeLink type = 2;</code>
-   *
-   * <pre>
-   * Links to the global JavaScript types.
-   * </pre>
-   */
-  java.util.List<? extends com.github.jsdossier.proto.TypeLinkOrBuilder> 
-      getTypeOrBuilderList();
-  /**
-   * <code>repeated .dossier.TypeLink type = 2;</code>
-   *
-   * <pre>
-   * Links to the global JavaScript types.
-   * </pre>
-   */
-  com.github.jsdossier.proto.TypeLinkOrBuilder getTypeOrBuilder(
-      int index);
+  boolean getIncludeTypes();
 
   /**
-   * <code>repeated .dossier.Index.Module module = 3;</code>
+   * <code>optional bool include_modules = 3;</code>
    *
    * <pre>
-   * Links to JavaScript modules.
+   * Whether to generate the module type section.
    * </pre>
    */
-  java.util.List<com.github.jsdossier.proto.Index.Module> 
-      getModuleList();
+  boolean hasIncludeModules();
   /**
-   * <code>repeated .dossier.Index.Module module = 3;</code>
+   * <code>optional bool include_modules = 3;</code>
    *
    * <pre>
-   * Links to JavaScript modules.
+   * Whether to generate the module type section.
    * </pre>
    */
-  com.github.jsdossier.proto.Index.Module getModule(int index);
-  /**
-   * <code>repeated .dossier.Index.Module module = 3;</code>
-   *
-   * <pre>
-   * Links to JavaScript modules.
-   * </pre>
-   */
-  int getModuleCount();
-  /**
-   * <code>repeated .dossier.Index.Module module = 3;</code>
-   *
-   * <pre>
-   * Links to JavaScript modules.
-   * </pre>
-   */
-  java.util.List<? extends com.github.jsdossier.proto.Index.ModuleOrBuilder> 
-      getModuleOrBuilderList();
-  /**
-   * <code>repeated .dossier.Index.Module module = 3;</code>
-   *
-   * <pre>
-   * Links to JavaScript modules.
-   * </pre>
-   */
-  com.github.jsdossier.proto.Index.ModuleOrBuilder getModuleOrBuilder(
-      int index);
+  boolean getIncludeModules();
 
   /**
    * <code>repeated .dossier.TypeLink links = 4;</code>

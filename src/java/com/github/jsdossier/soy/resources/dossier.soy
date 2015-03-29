@@ -41,30 +41,18 @@
 
   <nav>
     <h3><a href="{$index.home}">Overview</a></h3>
-    {if length($index.module)}
+    {if $index.includeModules}
       <div>
         <input type="checkbox" id="nav-modules" checked/>
         <label for="nav-modules"><h3>Modules</h3></label>
-        <div>
-          <ul>
-            {foreach $module in $index.module}
-              <li><a href="{$module.link.href}">{$module.link.text}</a>
-            {/foreach}
-          </ul>
-        </div>
+        <div id="nav-modules-view"></div>
       </div>
     {/if}
-    {if length($index.type)}
+    {if $index.includeTypes}
       <div>
         <input type="checkbox" id="nav-types" checked/>
         <label for="nav-types"><h3>Types</h3></label>
-        <div>
-          <ul>
-            {foreach $link in $index.type}
-              <li><a href="{$link.href}">{$link.text}</a>
-            {/foreach}
-          </ul>
-        </div>
+        <div id="nav-types-view"></div>
       </div>
     {/if}
     {foreach $link in $index.links}
