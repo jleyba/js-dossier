@@ -79,17 +79,17 @@ nav {
     text-overflow: ellipsis;
 
     input { display: none; }
-    input ~ ul.nav-tree > li { display: none; }
-    input:checked ~ ul.nav-tree > li { display: block; }
+    input ~ ul.nav-tree > li { display: block; }
+    input:checked ~ ul.nav-tree > li { display: none; }
 
     label[for] { display: block; }
 
     label[for]:before {
       float: left;
       padding-right: 1rem;
-      content: '\002b';
+      content: '\2212';
     }
-    input:checked + label[for]:before { content: '\2212'; }
+    input:checked + label[for]:before { content: '\002b'; }
   }
 
   h3 {

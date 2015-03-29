@@ -219,9 +219,6 @@ dossier.addTypes_ = function(terms, nameToHref, descriptor, opt_isModule, opt_pa
  * @private
  */
 dossier.initNavList_ = function(typeInfo) {
-  initChangeHandler('nav-types', 'dossier.typesList');
-  initChangeHandler('nav-modules', 'dossier.modulesList');
-
   var currentFile = '';
   if (dossier.BASE_PATH_) {
     currentFile = window.location.pathname
@@ -246,24 +243,17 @@ dossier.initNavList_ = function(typeInfo) {
         typeInfo.modules, dossier.BASE_PATH_, currentFile, true));
   }
 
-  /**
-   * @param {string} id .
-   * @param {string} storageKey .
-   */
-  function initChangeHandler(id, storageKey) {
-    var controlEl = goog.dom.getElement(id);
-    if (!controlEl) {
-      return;
-    }
-
-    if (window.localStorage) {
-      var state = window.localStorage.getItem(storageKey);
-      controlEl.checked = !goog.isString(state) || state === 'closed';
-
-      goog.events.listen(controlEl, goog.events.EventType.CHANGE, function() {
-        window.localStorage.setItem(
-            storageKey, controlEl.checked ? 'closed' : 'open');
-      });
-    }
+  if (!window.localStorage) {
+    return;
   }
+  var nav = document.querySelector('nav');
+  var inputs = nav.querySelectorAll('input[type="checkbox"][id]');
+  goog.array.forEach(inputs, function(el) {
+    var state = window.localStorage.getItem(el.id);
+    el.checked = !goog.isString(state) || state === 'closed';
+  });
+  goog.events.listen(nav, goog.events.EventType.CHANGE, function(e) {
+    window.localStorage.setItem(e.target.id,
+        e.target.checked ? 'closed' : 'open');
+  });
 };
