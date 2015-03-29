@@ -1271,18 +1271,22 @@ class DocWriter {
     details.addProperty("interface", type.getJsType().isInterface());
     array.add(details);
 
-    List<NominalType> typedefs = FluentIterable.from(type.getTypes())
-        .filter(isTypedef())
-        .toSortedList(new NameComparator());
-    for (NominalType typedef : typedefs) {
-      TypeLink link = linker.getLink(typedef);
-      if (link == null) {
-        continue;  // TODO: decide what to do with global type links.
+    NominalType resolvedType = typeRegistry.resolve(type.getJsType());
+    boolean isAlias = resolvedType != type;
+    if (!isAlias || config.isFilteredType(resolvedType)) {
+      List<NominalType> typedefs = FluentIterable.from(type.getTypes())
+          .filter(isTypedef())
+          .toSortedList(new NameComparator());
+      for (NominalType typedef : typedefs) {
+        TypeLink link = linker.getLink(typedef);
+        if (link == null) {
+          continue;  // TODO: decide what to do with global type links.
+        }
+        JsonObject typedefDetails = new JsonObject();
+        typedefDetails.addProperty("name", link.getText());
+        typedefDetails.addProperty("href", link.getHref());
+        array.add(typedefDetails);
       }
-      JsonObject typedefDetails = new JsonObject();
-      typedefDetails.addProperty("name", link.getText());
-      typedefDetails.addProperty("href", link.getHref());
-      array.add(typedefDetails);
     }
     return new IndexReference(type, details);
   }
