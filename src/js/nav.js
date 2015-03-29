@@ -258,7 +258,9 @@ function buildListItem(node, basePath, currentPath, idPrefix) {
   var a = document.createElement('a');
   a.href = basePath + node.getValue().href;
   a.textContent = node.getKey();
-
+  if (node.getValue().interface) {
+    a.classList.add('interface');
+  }
 
   var children = node.getChildren();
   if (children) {

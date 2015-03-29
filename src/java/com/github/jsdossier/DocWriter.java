@@ -1215,7 +1215,6 @@ class DocWriter {
       JsonObject obj = new JsonObject();
       obj.addProperty("name", linker.getDisplayName(module));
       obj.addProperty("href", dest);
-      obj.addProperty("module", true);
 
       getJsonArray(json, "modules").add(obj);
       return new ModuleIndexReference(module, obj);
@@ -1269,6 +1268,7 @@ class DocWriter {
         !type.getJsType().isInstanceType()
             && !type.getJsType().isConstructor()
             && !type.getJsType().isEnumType());
+    details.addProperty("interface", type.getJsType().isInterface());
     array.add(details);
 
     List<NominalType> typedefs = FluentIterable.from(type.getTypes())
