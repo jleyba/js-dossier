@@ -452,7 +452,7 @@ class DocWriter {
     if (type.isModuleExports()) {
       return;
     }
-    if (type.isNamespace()) {
+    if (type.isNamespace() && type.getModule() == null) {
       return;
     }
     NominalType parent;
