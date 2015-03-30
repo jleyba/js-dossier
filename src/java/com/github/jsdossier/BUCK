@@ -1,6 +1,7 @@
 java_library(
   name = "lib_no_deps",
-  srcs = glob(["**/*.java"]),
+  srcs = glob(["**/*.java"], 
+              excludes = ["tools/*.java"]),
   resources = glob([
     "resources/*",
     "soy/resources/*"
