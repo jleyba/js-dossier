@@ -39,19 +39,22 @@
   }
 }
 
+nav {
+  margin: 0 0 3rem 1rem;
 
-label[for="nav-types"],
-label[for="nav-modules"] {
   -webkit-touch-callout: none;
   -webkit-user-select: none;
-  -khtml-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
-}
 
-nav {
-  margin: 0 0 3rem 1rem;
+  .selectable, a {
+    -webkit-touch-callout: default;
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
+  }
 
   .current {
     font-weight: bold;
