@@ -71,16 +71,14 @@ nav {
     padding: 0;
 
     &.nav-tree {
-      margin: 0 0 0 -.9rem;
-      padding: 0 0 0 1rem;
+      margin: 0 0 0 .3rem;
+      padding: 0 0 0 .5rem;
       border-left: 1px dotted fade(@banner_color, 50%);
     }
   }
 
   li {
     list-style: none;
-    padding-left: 1em;
-    text-indent: -1em;
     word-wrap: initial;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -89,18 +87,22 @@ nav {
     input ~ ul.nav-tree > li { display: block; }
     input:checked ~ ul.nav-tree > li { display: none; }
 
-    label[for] { display: block; }
+    label, & > a { display: block; }
+
+    label:hover, & > a:hover {
+      background: fade(@banner_color, 10%);
+    }
 
     // TODO: Find a better way to ensure label:before stays in the gutter and
     // actual content stays aligned.
     & > a:before { visibility: hidden; }
     & > a:before,
-    label[for]:before {
+    label:before {
       float: left;
-      padding-right: 1rem;
+      margin-right: 1rem;
       content: '\2212';
     }
-    input:checked + label[for]:before { content: '\002b'; }
+    input:checked + label:before { content: '\002b'; }
   }
 
   h3 {
