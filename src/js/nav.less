@@ -87,7 +87,13 @@ nav {
     input ~ ul.nav-tree > li { display: block; }
     input:checked ~ ul.nav-tree > li { display: none; }
 
-    label, & > a { display: block; }
+    label, & > a {
+      display: block;
+      width: 100%;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
 
     label:hover, & > a:hover {
       background: fade(@link_color, 10%);
