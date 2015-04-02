@@ -42,6 +42,10 @@ public final class NominalType implements StaticTypedScope<JSType> {
     @Override public int hashCode() { return type.hashCode(); }
     @Override public String toString() { return type.toString(); }
 
+    public JSType toJSType() {
+      return type;
+    }
+
     public Set<NominalType> getAliases() {
       return Collections.unmodifiableSet(aliases);
     }

@@ -3,6 +3,7 @@ package com.github.jsdossier;
 import static com.github.jsdossier.CompilerUtil.createSourceFile;
 import static com.google.common.collect.Iterables.getOnlyElement;
 import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth.assertWithMessage;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -230,10 +231,6 @@ public class DocPassTest {
     assertInterface(type);
   }
 
-  public DocPassTest() {
-    super();
-  }
-
   @Test
   public void onlyDocumentsAModulesExportedClass() {
     util.compile(path("foo.js"),
@@ -426,6 +423,62 @@ public class DocPassTest {
     assertNotNull(type);
     assertNotNull(type.getModule());
     assertFalse(type.getModule().isCommonJsModule());
+  }
+
+  @Test
+  public void functionAliasDetection() {
+    util.compile(path("foo/bar.js"),
+        // Provide everything so dossier consider them namespaces worth documenting.
+        "goog.provide('foo.one');",
+        "goog.provide('foo.two');",
+        "goog.provide('foo.three');",
+        "goog.provide('foo.four');",
+        "goog.provide('foo.five');",
+        "goog.provide('foo.six');",
+        "",
+        "foo.one = function() {};",
+        "foo.one.a = {b: 123};",
+        "",
+        "foo.two = function() {};",
+        "foo.two.a = {b: 'abc'};",
+        "",
+        "foo.three = function() {};",
+        "foo.three.a = {b: 123};",
+        "",
+        "foo.four = function() {};",
+        "foo.four.a = {b: 123};",
+        "",
+        "foo.five = foo.four;",
+        "",
+        "foo.six = function() {};",
+        "foo.six.a = foo.four.a;",
+        "");
+
+    NominalType one = typeRegistry.getNominalType("foo.one");
+    assertThat(one).isNotNull();
+    assertThat(one.getTypeDescriptor().getAliases()).containsExactly(one);
+
+    NominalType two = typeRegistry.getNominalType("foo.two");
+    assertThat(two).isNotNull();
+    assertThat(two.getTypeDescriptor().getAliases()).containsExactly(two);
+
+    NominalType three = typeRegistry.getNominalType("foo.three");
+    assertThat(three).isNotNull();
+    assertWithMessage(
+        "Even though foo.three duck-types to foo.one, the" +
+            " compiler should detect that foo.three.a.b != foo.one.a.b")
+        .that(three.getTypeDescriptor().getAliases()).containsExactly(three);
+
+    NominalType four = typeRegistry.getNominalType("foo.four");
+    NominalType five = typeRegistry.getNominalType("foo.five");
+    assertWithMessage("foo.five is a straight alias of foo.four")
+        .that(four.getTypeDescriptor().getAliases()).containsExactly(four, five);
+    assertWithMessage("foo.five is a straight alias of foo.four")
+        .that(five.getTypeDescriptor().getAliases()).containsExactly(four, five);
+
+    NominalType six = typeRegistry.getNominalType("foo.six");
+    assertWithMessage("foo.six.a === foo.four.a, but foo.six !== foo.four")
+        .that(six.getTypeDescriptor().getAliases()).containsExactly(six);
   }
 
   private Path path(String first, String... remaining) {

@@ -8,13 +8,15 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.JSTypeExpression;
 import com.google.javascript.rhino.ObjectTypeI;
-import com.google.javascript.rhino.TypeI;
 import com.google.javascript.rhino.jstype.JSType;
 import com.google.javascript.rhino.jstype.JSTypeRegistry;
 import com.google.javascript.rhino.jstype.NamedType;
+
+import com.github.jsdossier.NominalType.TypeDescriptor;
 
 import java.nio.file.Path;
 import java.util.Collection;
@@ -45,7 +47,7 @@ public class TypeRegistry {
   private final Map<ModuleDescriptor, NominalType> moduleToExports = new IdentityHashMap<>();
   private final Set<NominalType> allTypes = new HashSet<>();
   private final Map<String, NominalType> nameToModuleTypes = new HashMap<>();
-  private final Map<JSType, NominalType.TypeDescriptor> descriptorsByJsType = new HashMap<>();
+  private final Set<TypeDescriptor> allDescriptors = Sets.newIdentityHashSet();
 
   private final Map<String, JSType> externsByName = new HashMap<>();
   private final Set<JSType> externs = new HashSet<>();
@@ -130,12 +132,7 @@ public class TypeRegistry {
     }
 
     if (type.getJsdoc() == null || !type.getJsdoc().isTypedef()) {
-      NominalType.TypeDescriptor descriptor = type.getTypeDescriptor();
-      NominalType.TypeDescriptor replaced =  descriptorsByJsType.put(type.getJsType(), descriptor);
-      if (replaced != null && replaced != descriptor) {
-        throw new AssertionError("Replacing " + replaced + " with " + descriptor
-            + " when adding type " + type.getQualifiedName());
-      }
+      allDescriptors.add(type.getTypeDescriptor());
     }
 
     if (type.getModule() != null) {
@@ -178,15 +175,9 @@ public class TypeRegistry {
 
   @Nullable
   public NominalType.TypeDescriptor findTypeDescriptor(JSType type) {
-    if (descriptorsByJsType.containsKey(type)) {
-      return descriptorsByJsType.get(type);
-    }
-    if (type.isConstructor()) {
-      for (Map.Entry<JSType, NominalType.TypeDescriptor> entry : descriptorsByJsType.entrySet()) {
-        JSType other = entry.getKey();
-        if (typesEqual(type, other)) {
-          return entry.getValue();
-        }
+    for (NominalType.TypeDescriptor descriptor : allDescriptors) {
+      if (typesEqual(type, descriptor.toJSType())) {
+        return descriptor;
       }
     }
     return null;
@@ -220,7 +211,7 @@ public class TypeRegistry {
    * given type.
    */
   @Nullable
-  public NominalType resolve(TypeI type) {
+  public NominalType resolve(JSType type) {
     if (type instanceof ObjectTypeI && ((ObjectTypeI) type).getConstructor() != null) {
       type = type.toMaybeObjectType().getConstructor();
     }
@@ -230,8 +221,21 @@ public class TypeRegistry {
     return candidates.hasNext() ? candidates.next() : null;
   }
 
-  private static boolean typesEqual(TypeI a, TypeI b) {
+  private static boolean typesEqual(JSType a, JSType b) {
     if (a.equals(b)) {
+      // NOTE: FunctionTypes are considered equalivalent if they have the same
+      // signature. This works for type checking, but we are looking for unique
+      // nominal types - so fallback on a strict identity check. This relies
+      // on insight gained from a comment in JSType#checkEquivalenceHelper:
+      //
+      // Relies on the fact that for the base {@link JSType}, only one
+      // instance of each sub-type will ever be created in a given registry, so
+      // there is no need to verify members. If the object pointers are not
+      // identical, then the type member must be different.
+      if (a.isFunctionType()) {
+        verify(b.isFunctionType());
+        return a == b;
+      }
       return true;
     }
     // Sometimes the JSCompiler will generate two version of a constructor:
@@ -242,12 +246,12 @@ public class TypeRegistry {
     if (a.isConstructor() && b.isConstructor()) {
       a = a.toMaybeFunctionType().getInstanceType();
       b = b.toMaybeFunctionType().getInstanceType();
-      return a.equals(b);
+      return typesEqual(a, b);
     }
     return false;
   }
 
-  private static Predicate<NominalType> hasType(final TypeI type) {
+  private static Predicate<NominalType> hasType(final JSType type) {
     return new Predicate<NominalType>() {
       @Override
       public boolean apply(@Nullable NominalType input) {
