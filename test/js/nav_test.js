@@ -97,16 +97,32 @@ function testBuildTree_multiRooted() {
 }
 
 
-function testBuildTree_collapsesNamespacesWithNoData() {
+function testBuildTree_collapsesNamespacesWithNoDataAndOneChild() {
   var input = [
     {name: 'foo.bar.one'},
-    {name: 'foo.bar.two'}
+    {name: 'foo.bar.two'},
+    {name: 'foo.baz.quot'},
+    {name: 'foo.baz.quux'}
   ];
 
   var root = nav.buildTree(input);
-  assertEquals(2, root.getChildCount());
-  assertNode(root.getChildAt(0), 'foo.bar.one', input[0]);
-  assertNode(root.getChildAt(1), 'foo.bar.two', input[1]);
+  assertEquals(1, root.getChildCount());
+  assertNode(root.getChildAt(0), 'foo', null);
+
+  var foo = root.getChildAt(0);
+  assertEquals(2, foo.getChildCount());
+  assertNode(foo.getChildAt(0), 'bar', null);
+  assertNode(foo.getChildAt(1), 'baz', null);
+
+  var bar = foo.getChildAt(0);
+  assertEquals(2, bar.getChildCount());
+  assertNode(bar.getChildAt(0), 'one', input[0]);
+  assertNode(bar.getChildAt(1), 'two', input[1]);
+
+  var baz = foo.getChildAt(1);
+  assertEquals(2, baz.getChildCount());
+  assertNode(baz.getChildAt(0), 'quot', input[2]);
+  assertNode(baz.getChildAt(1), 'quux', input[3]);
 }
 
 
@@ -308,4 +324,51 @@ function testBuildList_marksTheNodeForTheCurrentFile_namespace() {
   var el = root.querySelector('.current');
   assertEquals('LABEL', el.tagName);
   assertEquals('.nav:foo', el.getAttribute('for'));
+}
+
+
+function testBuildList_handlesDatalessNodes() {
+  var input = [
+    {name: 'foo.bar.one', href: 'one.html'},
+    {name: 'foo.bar.two', href: 'two.html'},
+    {name: 'foo.baz.quot', href: 'quot.html'},
+    {name: 'foo.baz.quux', href: 'quux.html'}
+  ];
+
+  var root = nav.buildList(input, '', '', false);
+  document.body.appendChild(root);
+
+  assertNotNull(root.querySelector('input#\\.nav\\:foo'));
+  var label = root.querySelector('label[for=".nav:foo"]');
+  assertNotNull(label);
+  assertEquals('foo', label.querySelector('a').textContent);
+  assertNull(label.querySelector('a').getAttribute('href'));
+
+  assertNotNull(root.querySelector('input#\\.nav\\:foo\\.bar'));
+  label = root.querySelector('label[for=".nav:foo\\.bar"]');
+  assertNotNull(label);
+  assertEquals('bar', label.querySelector('a').textContent);
+  assertNull(label.querySelector('a').getAttribute('href'));
+
+  var leaves = root.querySelectorAll(
+      'label[for=".nav:foo\\.bar"] + .nav-tree a[href]');
+  assertEquals(2, leaves.length);
+  assertEquals('one', leaves[0].textContent);
+  assertEquals('one.html', leaves[0].getAttribute('href'));
+  assertEquals('two', leaves[1].textContent);
+  assertEquals('two.html', leaves[1].getAttribute('href'));
+
+  assertNotNull(root.querySelector('input#\\.nav\\:foo\\.baz'));
+  label = root.querySelector('label[for=".nav:foo\\.baz"]');
+  assertNotNull(label);
+  assertEquals('baz', label.querySelector('a').textContent);
+  assertNull(label.querySelector('a').getAttribute('href'));
+
+  leaves = root.querySelectorAll(
+      'label[for=".nav:foo\\.baz"] + .nav-tree a[href]');
+  assertEquals(2, leaves.length);
+  assertEquals('quot', leaves[0].textContent);
+  assertEquals('quot.html', leaves[0].getAttribute('href'));
+  assertEquals('quux', leaves[1].textContent);
+  assertEquals('quux.html', leaves[1].getAttribute('href'));
 }

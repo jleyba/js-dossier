@@ -125,7 +125,7 @@ var TreeNode = goog.defineClass(null, {
     return goog.array.find(this.children_, function(child) {
       return child.key_ === key;
     });
-  },
+  }
 });
 
 
@@ -144,7 +144,7 @@ function collapseNodes(node) {
 
   children.forEach(collapseNodes);
   children.filter(function(child) {
-    return child.getValue() === null;
+    return child.getValue() === null && child.getChildCount() == 1;
   }).forEach(function(child) {
     node.removeChild(child);
     var grandChildren = child.removeChildren();
@@ -251,15 +251,17 @@ function getId(descriptor) {
  * @return {!Element} The list item.
  */
 function buildListItem(node, basePath, currentPath, idPrefix) {
-  assert(node.getValue());
+  assert(node.getValue() || node.getChildCount());
 
   var li = document.createElement('li');
 
   var a = document.createElement('a');
-  a.href = basePath + node.getValue().href;
   a.textContent = node.getKey();
-  if (node.getValue().interface) {
-    a.classList.add('interface');
+  if (node.getValue()) {
+    a.href = basePath + node.getValue().href;
+    if (node.getValue().interface) {
+      a.classList.add('interface');
+    }
   }
 
   var children = node.getChildren();
@@ -272,7 +274,7 @@ function buildListItem(node, basePath, currentPath, idPrefix) {
     var label = document.createElement('label');
     label.setAttribute('for', input.id);
     label.appendChild(a);
-    if (node.getValue().href === currentPath) {
+    if (node.getValue() && node.getValue().href === currentPath) {
       label.classList.add('current');
     }
     li.appendChild(label);
@@ -287,7 +289,7 @@ function buildListItem(node, basePath, currentPath, idPrefix) {
     });
 
   } else {
-    if (node.getValue().href === currentPath) {
+    if (node.getValue() && node.getValue().href === currentPath) {
       a.classList.add('current');
     }
     li.appendChild(a);
