@@ -481,6 +481,22 @@ public class DocPassTest {
         .that(six.getTypeDescriptor().getAliases()).containsExactly(six);
   }
 
+  @Test
+  public void namespaceFunctionsAreRecordedAsNominalTypesAndPropertiesOfParentNamespace() {
+    util.compile(path("foo/bar.js"),
+        "goog.provide('foo.bar');",
+        "foo.bar = function() {};",
+        "foo.bar.baz = function() {};");
+
+    NominalType foo = typeRegistry.getNominalType("foo");
+    assertThat(foo).isNotNull();
+    assertThat(foo.getOwnSlot("bar")).isNotNull();
+
+    NominalType bar = typeRegistry.getNominalType("foo.bar");
+    assertThat(bar).isNotNull();
+    assertThat(foo.getOwnSlot("bar").getType()).isSameAs(bar.getJsType());
+  }
+
   private Path path(String first, String... remaining) {
     return fs.getPath(first, remaining);
   }

@@ -830,7 +830,7 @@ class DocWriter {
 
   private void getStaticData(
       JsType.Builder jsTypeBuilder, IndexReference indexReference) {
-    NominalType type = indexReference.getNominalType();
+    final NominalType type = indexReference.getNominalType();
     ImmutableList<Property> properties = FluentIterable.from(type.getProperties())
         .toSortedList(new PropertyNameComparator());
 
@@ -886,7 +886,10 @@ class DocWriter {
         jsTypeBuilder.addStaticProperty(data);
       }
 
-      if (!jsTypeBuilder.hasAliasedType() && base != null) {
+      if (!jsTypeBuilder.hasAliasedType()
+          && base != null
+          && typeRegistry.getNominalType(base.getName()) == null
+          && type.getType(base.getName()) == null) {
         indexReference.addStaticProperty(base.getName());
       }
     }

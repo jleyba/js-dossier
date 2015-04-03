@@ -358,6 +358,9 @@ class DocPass implements CompilerPass {
           && (typeRegistry.hasNamespace(parent.getQualifiedName() + "." + property.getName())
           || typeRegistry.findTypeDescriptor(propertyType) != null)) {
         recordPropertyAsNestedType(property);
+        if (property.getType().isOrdinaryFunction()) {
+          types.peek().addProperty(property);
+        }
       } else {
         parent.addProperty(property);
       }

@@ -131,6 +131,17 @@ public final class NominalType implements StaticTypedScope<JSType> {
   }
 
   /**
+   * Returns a named type defined as a property on this type.
+   *
+   * @param name the unqualified type name (e.g. "bar", not "foo.bar").
+   * @return the nominal type, if it exists.
+   */
+  @Nullable
+  public NominalType getType(String name) {
+    return typeDescriptor.types.get(name);
+  }
+
+  /**
    * Returns the properties defined on this type.
    */
   public Collection<Property> getProperties() {
