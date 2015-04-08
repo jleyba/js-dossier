@@ -10,6 +10,12 @@ goog.provide('sample.json');
 
 
 /**
+ * @define {boolean} Whether to enable debug mode.
+ */
+sample.json.DEBUG = false;
+
+
+/**
  * Converts a value to its JSON representation.
  * @param {*} value The value to convert.
  * @return {string} The value's JSON representation.

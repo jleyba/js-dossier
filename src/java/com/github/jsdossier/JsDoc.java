@@ -60,6 +60,7 @@ public class JsDoc {
 
   private String blockComment = "";
   private String returnDescription = "";
+  private String defineComment = "";
   private String deprecationReason = "";
   private String fileoverview = "";
   private boolean parsed = false;
@@ -155,14 +156,32 @@ public class JsDoc {
     return info.getExtendedInterfaces();
   }
 
+  /**
+   * Returns the comment string for the {@literal @fileoverview} annotation. Returns an empty string
+   * if the annotation was not present.
+   */
   String getFileoverview() {
     parse();
     return fileoverview;
   }
 
+  /**
+   * Returns the block comment listed before any annotations. If this comment does not have a block
+   * comment, but has a {@link #getFileoverview()} or {@link #getDefinition()}, then those will be
+   * used as the block comment.
+   */
   String getBlockComment() {
     parse();
     return blockComment;
+  }
+
+  /**
+   * Returns the comment string for the {@literal @define} annotation. Returns an empty string if
+   * the annotation was not present.
+   */
+  String getDefinition() {
+    parse();
+    return defineComment;
   }
 
   String getDeprecationReason() {
@@ -291,6 +310,9 @@ public class JsDoc {
       descriptionLines = Iterables.limit(descriptionLines, numLines);
 
       switch (annotation.get()) {
+        case DEFINE:
+          defineComment = processDescriptionLines(descriptionLines, description);
+          break;
         case DEPRECATED:
           deprecationReason = processDescriptionLines(descriptionLines, description);
           break;
@@ -315,6 +337,14 @@ public class JsDoc {
               getJsTypeExpression(marker),
               processDescriptionLines(descriptionLines, description)));
           break;
+      }
+    }
+
+    if (isNullOrEmpty(blockComment)) {
+      if (!isNullOrEmpty(fileoverview)) {
+        blockComment = fileoverview;
+      } else if (!isNullOrEmpty(defineComment)) {
+        blockComment = defineComment;
       }
     }
   }

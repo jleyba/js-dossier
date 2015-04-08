@@ -463,6 +463,50 @@ public class JsDocTest {
         docs.getBlockComment());
   }
 
+  @Test
+  public void extractsDefineComments_blockCommentAboveAnnotation() {
+    util.compile(path("foo/bar.js"),
+        "goog.provide('foo');",
+        "",
+        "/**",
+        " * Hello, world!",
+        " * @define {boolean}",
+        " */",
+        "foo.bar = false;");
+    NominalType type = getOnlyElement(typeRegistry.getNominalTypes());
+    assertThat(type.getQualifiedName()).isEqualTo("foo");
+
+    Property property = getOnlyElement(type.getProperties());
+    assertThat(property.getName()).isEqualTo("bar");
+
+    JsDoc doc = JsDoc.from(property.getJSDocInfo());
+    assertThat(doc).isNotNull();
+    assertThat(doc.getBlockComment()).isEqualTo("Hello, world!");
+  }
+
+  @Test
+  public void extractsDefineComments_commentInlineWithAnnotation() {
+    util.compile(path("foo/bar.js"),
+        "goog.provide('foo');",
+        "",
+        "/**",
+        " * @define {boolean} Hello, world!",
+        " *     Goodbye, world!",
+        " */",
+        "foo.bar = false;");
+    NominalType type = getOnlyElement(typeRegistry.getNominalTypes());
+    assertThat(type.getQualifiedName()).isEqualTo("foo");
+
+    Property property = getOnlyElement(type.getProperties());
+    assertThat(property.getName()).isEqualTo("bar");
+
+    JsDoc doc = JsDoc.from(property.getJSDocInfo());
+    assertThat(doc).isNotNull();
+    assertThat(doc.getBlockComment()).isEqualTo(
+        "Hello, world!\n" +
+        "    Goodbye, world!");
+  }
+
   private Node getScriptNode(String... lines) {
     util.compile(path("foo/bar.js"), lines);
     return util.getCompiler().getRoot()
