@@ -16,15 +16,21 @@
 
 package com.github.jsdossier;
 
+import static com.google.common.truth.Truth.assertThat;
+import static java.nio.file.Files.createDirectories;
+import static java.nio.file.Files.createFile;
 import static org.junit.Assert.assertEquals;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.jimfs.Jimfs;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -35,6 +41,21 @@ import java.util.List;
  */
 @RunWith(JUnit4.class)
 public class ConfigTest {
+
+  @Test
+  public void loadIgnoresNullFilePaths() throws IOException {
+    Path rootDir = Jimfs.newFileSystem().getPath("/root");
+    createDirectories(rootDir);
+    createFile(rootDir.resolve("foo.js"));
+    String content = String.format(
+        "{\"output\":\"%s\", \"sources\":[\"%s\",]}",  // Want a trailing comma inside sources.
+        rootDir.resolveSibling("out"),
+        rootDir.resolve("**.js"));
+    ByteArrayInputStream input = new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8));
+
+    Config config = Config.load(input, rootDir.getFileSystem());
+    assertThat(config.getSources()).containsExactly(rootDir.resolve("foo.js"));
+  }
 
   @Test
   public void pathSpecResolvesToExpectedSetOfFiles() throws IOException {

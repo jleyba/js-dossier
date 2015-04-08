@@ -17,6 +17,7 @@ package com.github.jsdossier;
 
 import static com.google.common.base.MoreObjects.firstNonNull;
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Predicates.notNull;
 import static com.google.common.collect.FluentIterable.from;
 import static com.google.common.collect.Iterables.transform;
 import static com.google.common.collect.Lists.newLinkedList;
@@ -462,6 +463,7 @@ class Config {
 
   private static ImmutableSet<Path> resolve(Iterable<PathSpec> specs) {
     Iterable<List<Path>> paths = from(specs)
+        .filter(notNull())
         .transform(new Function<PathSpec, List<Path>>() {
           @Override
           public List<Path> apply(PathSpec input) {
