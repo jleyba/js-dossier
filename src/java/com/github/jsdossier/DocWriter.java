@@ -336,6 +336,11 @@ class DocWriter {
       }
     }
 
+    if (description.getTokenCount() == 0 && type.isModuleExports()) {
+      Path path = config.getFileSystem().getPath(type.getNode().getSourceFileName());
+      description = parser.getFileoverview(linker, typeRegistry.getFileOverview(path));
+    }
+
     jsTypeBuilder
         .addAllNested(getNestedTypeInfo(type))
         .setSource(linker.getSourceLink(type.getNode()))
