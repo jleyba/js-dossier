@@ -250,7 +250,12 @@ dossier.initNavList_ = function(typeInfo) {
   var inputs = nav.querySelectorAll('input[type="checkbox"][id]');
   goog.array.forEach(inputs, function(el) {
     var state = window.localStorage.getItem(el.id);
-    el.checked = !goog.isString(state) || state === 'closed';
+    if (goog.isString(state)) {
+      el.checked = state == 'closed';
+    } else {
+      // Default to opened.
+      el.checked = false;
+    }
   });
   goog.events.listen(nav, goog.events.EventType.CHANGE, function(e) {
     window.localStorage.setItem(e.target.id,
