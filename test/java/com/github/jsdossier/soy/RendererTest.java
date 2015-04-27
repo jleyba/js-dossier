@@ -1092,6 +1092,22 @@ public class RendererTest {
     assertThat(document.body().toString(), isHtml("<body></body>"));
   }
 
+  @Test
+  public void renderComment_simpleParagraph() {
+    Document document = renderDocument("dossier.soy.comment", new HashMap<String, Object>() {{
+      put("comment", parseComment("Hello, there!"));
+    }});
+    assertThat(document.body().toString(), isHtml("<body><p>Hello, there!</p></body>"));
+  }
+
+  @Test
+  public void renderComment_commentHasOpenHtmlBlock() {
+    Document document = renderDocument("dossier.soy.comment", new HashMap<String, Object>() {{
+      put("comment", parseComment("<div>Hello, there!"));
+    }});
+    assertThat(document.body().toString(), isHtml("<body><p></p><div>Hello, there!</div></body>"));
+  }
+
   private Comment parseComment(String comment) {
     return parser.parseComment(comment, mockLinker);
   }
