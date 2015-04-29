@@ -20,11 +20,11 @@ import static com.google.common.collect.Iterables.transform;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.newInputStream;
 
-import com.github.jsdossier.jscomp.DossierCompiler;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Function;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
 import com.google.common.io.ByteStreams;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -35,6 +35,8 @@ import com.google.javascript.jscomp.CompilationLevel;
 import com.google.javascript.jscomp.CompilerOptions;
 import com.google.javascript.jscomp.CustomPassExecutionTime;
 import com.google.javascript.jscomp.SourceFile;
+
+import com.github.jsdossier.jscomp.DossierCompiler;
 import org.joda.time.Instant;
 import org.joda.time.Period;
 import org.joda.time.format.PeriodFormatterBuilder;
@@ -144,7 +146,21 @@ public class Main extends CommandLineRunner {
       System.exit(result);
     }
 
-    DocWriter writer = new DocWriter(config, typeRegistry);
+    DocWriter writer = new DocWriter(
+        config.getOutput(),
+        Iterables.concat(config.getSources(), config.getModules()),
+        config.getSrcPrefix(),
+        config.getReadme(),
+        config.getCustomPages(),
+        typeRegistry,
+        config.getTypeFilter(),
+        new Linker(
+            config.getOutput(),
+            config.getSrcPrefix(),
+            config.getModulePrefix(),
+            config.getTypeFilter(),
+            typeRegistry),
+        new CommentParser(config.useMarkdown()));
     try {
       writer.generateDocs();
       if (config.isZipOutput()) {

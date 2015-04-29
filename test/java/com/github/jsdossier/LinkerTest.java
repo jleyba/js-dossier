@@ -26,20 +26,20 @@ import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.ImmutableList;
+import com.google.common.jimfs.Jimfs;
+import com.google.javascript.jscomp.CompilerOptions;
+import com.google.javascript.rhino.JSTypeExpression;
+import com.google.javascript.rhino.Node;
+import com.google.javascript.rhino.jstype.JSType;
+import com.google.javascript.rhino.jstype.Property;
+
 import com.github.jsdossier.jscomp.DossierCompiler;
 import com.github.jsdossier.jscomp.DossierModule;
 import com.github.jsdossier.proto.Comment;
 import com.github.jsdossier.proto.SourceLink;
 import com.github.jsdossier.proto.TypeLink;
-import com.google.common.collect.ImmutableList;
-import com.google.common.jimfs.Jimfs;
-import com.google.javascript.jscomp.CompilerOptions;
-import com.google.javascript.rhino.ErrorReporter;
-import com.google.javascript.rhino.JSTypeExpression;
-import com.google.javascript.rhino.Node;
-import com.google.javascript.rhino.jstype.JSType;
-import com.google.javascript.rhino.jstype.JSTypeRegistry;
-import com.google.javascript.rhino.jstype.Property;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -53,7 +53,9 @@ public class LinkerTest {
 
   private FileSystem fileSystem;
   private Path outputDir;
-  private Config mockConfig;
+  private Path sourcePrefix;
+  private Path modulePrefix;
+  private Predicate<NominalType> typeFilter;
   private TypeRegistry typeRegistry;
   private CompilerUtil util;
   private Linker linker;
@@ -62,21 +64,25 @@ public class LinkerTest {
   public void setUp() {
     fileSystem = Jimfs.newFileSystem();
     outputDir = fileSystem.getPath("/root/output");
+    sourcePrefix = fileSystem.getPath("/sources");
+    modulePrefix = fileSystem.getPath("/modules");
 
-    mockConfig = mock(Config.class);
-    when(mockConfig.getModulePrefix()).thenReturn(fileSystem.getPath("/modules"));
-    when(mockConfig.getOutput()).thenReturn(outputDir);
-
-    ErrorReporter errorReporter = mock(ErrorReporter.class);
-    JSTypeRegistry jsTypeRegistry = new JSTypeRegistry(errorReporter);
-    typeRegistry = new TypeRegistry(jsTypeRegistry);
+    @SuppressWarnings("unchecked")
+    Predicate<NominalType> mockTypeFilter = mock(Predicate.class);
+    typeFilter = mockTypeFilter;
 
     DossierCompiler compiler = new DossierCompiler(System.err, ImmutableList.<Path>of());
-    CompilerOptions options = Main.createOptions(fileSystem, typeRegistry, compiler);
+    typeRegistry = new TypeRegistry(compiler.getTypeRegistry());
 
+    CompilerOptions options = Main.createOptions(fileSystem, typeRegistry, compiler);
     util = new CompilerUtil(compiler, options);
 
-    linker = new Linker(mockConfig, typeRegistry);
+    linker = new Linker(
+        outputDir,
+        sourcePrefix,
+        modulePrefix,
+        typeFilter,
+        typeRegistry);
   }
 
   @Test
@@ -180,12 +186,9 @@ public class LinkerTest {
 
   @Test
   public void testGetFilePath_source() {
-    Path srcPrefix = fileSystem.getPath("/apples/oranges");
-    when(mockConfig.getSrcPrefix()).thenReturn(srcPrefix);
-
     assertEquals(
         outputDir.resolve("source/one/two/three.js.src.html"),
-        linker.getFilePath(srcPrefix.resolve("one/two/three.js")));
+        linker.getFilePath(sourcePrefix.resolve("one/two/three.js")));
   }
 
   @Test
@@ -206,7 +209,7 @@ public class LinkerTest {
     when(jsType.isConstructor()).thenReturn(true);
 
     NominalType filtered = createType("foo.Filtered", jsType);
-    when(mockConfig.isFilteredType(filtered)).thenReturn(true);
+    when(typeFilter.apply(filtered)).thenReturn(true);
 
     typeRegistry.addType(filtered);
     assertNull("Type is filtered from documentation", linker.getLink("foo.Filtered"));
@@ -221,7 +224,7 @@ public class LinkerTest {
     NominalType alias = new NominalType(
         null, "foo.Alias", filtered.getTypeDescriptor(), mock(Node.class), null, null);
 
-    when(mockConfig.isFilteredType(filtered)).thenReturn(true);
+    when(typeFilter.apply(filtered)).thenReturn(true);
 
     typeRegistry.addType(filtered);
     typeRegistry.addType(alias);
@@ -234,7 +237,7 @@ public class LinkerTest {
     when(jsType.isConstructor()).thenReturn(true);
 
     NominalType filtered = createType("foo.Filtered", jsType);
-    when(mockConfig.isFilteredType(filtered)).thenReturn(true);
+    when(typeFilter.apply(filtered)).thenReturn(true);
 
     typeRegistry.addType(filtered);
     assertNull("Type is filtered from documentation", linker.getLink(jsType));
@@ -249,7 +252,7 @@ public class LinkerTest {
     NominalType alias = new NominalType(
         null, "foo.Alias", filtered.getTypeDescriptor(), mock(Node.class), null, null);
 
-    when(mockConfig.isFilteredType(filtered)).thenReturn(true);
+    when(typeFilter.apply(filtered)).thenReturn(true);
 
     typeRegistry.addType(filtered);
     typeRegistry.addType(alias);
@@ -305,35 +308,31 @@ public class LinkerTest {
 
   @Test
   public void testGetLink_module() {
-    Path module = fileSystem.getPath("/src/module/foo.js");
-
-    when(mockConfig.getModulePrefix()).thenReturn(fileSystem.getPath("/src/module"));
+    Path module = modulePrefix.resolve("foo.js");
     DossierCompiler compiler = new DossierCompiler(System.err, ImmutableList.of(module));
     CompilerOptions options = Main.createOptions(fileSystem, typeRegistry, compiler);
     util = new CompilerUtil(compiler, options);
 
     util.compile(module, "exports = {bar: function() {}};");
-    assertThat(typeRegistry.getModules()).isNotEmpty();
+    assertThat((Iterable) typeRegistry.getModules()).isNotEmpty();
 
-    checkLink("foo", "module_foo.html", linker.getLink("dossier$$module__$src$module$foo"));
+    checkLink("foo", "module_foo.html", linker.getLink("dossier$$module__$modules$foo"));
     checkLink("foo.bar", "module_foo.html#bar",
-        linker.getLink("dossier$$module__$src$module$foo.bar"));
+        linker.getLink("dossier$$module__$modules$foo.bar"));
   }
 
   @Test
   public void testGetLink_unknownModuleProperty() {
-    Path module = fileSystem.getPath("/src/module/foo.js");
-
-    when(mockConfig.getModulePrefix()).thenReturn(fileSystem.getPath("/src/module"));
+    Path module = modulePrefix.resolve("foo.js");
     DossierCompiler compiler = new DossierCompiler(System.err, ImmutableList.of(module));
     CompilerOptions options = Main.createOptions(fileSystem, typeRegistry, compiler);
     util = new CompilerUtil(compiler, options);
 
     util.compile(module, "exports = {bar: function() {}};");
-    assertThat(typeRegistry.getModules()).isNotEmpty();
+    assertThat((Iterable) typeRegistry.getModules()).isNotEmpty();
 
     checkLink("foo.Name", "module_foo.html",
-        linker.getLink("dossier$$module__$src$module$foo.Name"));
+        linker.getLink("dossier$$module__$modules$foo.Name"));
   }
 
   @Test
@@ -423,17 +422,15 @@ public class LinkerTest {
 
   @Test
   public void testGetLink_contextHash_contextIsModule() {
-    Path module = fileSystem.getPath("/src/module/foo.js");
-
-    when(mockConfig.getModulePrefix()).thenReturn(fileSystem.getPath("/src/module"));
+    Path module = modulePrefix.resolve("foo.js");
     DossierCompiler compiler = new DossierCompiler(System.err, ImmutableList.of(module));
     CompilerOptions options = Main.createOptions(fileSystem, typeRegistry, compiler);
     util = new CompilerUtil(compiler, options);
 
     util.compile(module, "exports = {bar: function() {}};");
-    assertThat(typeRegistry.getModules()).isNotEmpty();
+    assertThat((Iterable) typeRegistry.getModules()).isNotEmpty();
 
-    NominalType context = typeRegistry.getModuleType("dossier$$module__$src$module$foo");
+    NominalType context = typeRegistry.getModuleType("dossier$$module__$modules$foo");
     assertNotNull(context);
     linker.pushContext(context);
 
@@ -442,9 +439,7 @@ public class LinkerTest {
 
   @Test
   public void testGetLink_referenceToContextModuleExportedType() {
-    Path module = fileSystem.getPath("/src/module/foo.js");
-
-    when(mockConfig.getModulePrefix()).thenReturn(fileSystem.getPath("/src/module"));
+    Path module = modulePrefix.resolve("foo.js");
     DossierCompiler compiler = new DossierCompiler(System.err, ImmutableList.of(module));
     CompilerOptions options = Main.createOptions(fileSystem, typeRegistry, compiler);
     util = new CompilerUtil(compiler, options);
@@ -456,9 +451,9 @@ public class LinkerTest {
         "InternalClass.prototype.method = function() {};",
         "exports.ExternalClass = InternalClass");
 
-    assertThat(typeRegistry.getModules()).isNotEmpty();
+    assertThat((Iterable) typeRegistry.getModules()).isNotEmpty();
 
-    NominalType context = typeRegistry.getModuleType("dossier$$module__$src$module$foo");
+    NominalType context = typeRegistry.getModuleType("dossier$$module__$modules$foo");
     assertNotNull(context);
     linker.pushContext(context);
 
@@ -474,9 +469,7 @@ public class LinkerTest {
 
   @Test
   public void testGetLink_toCommonJsModule() {
-    Path module = fileSystem.getPath("/src/module/foo.js");
-
-    when(mockConfig.getModulePrefix()).thenReturn(fileSystem.getPath("/src/module"));
+    Path module = modulePrefix.resolve("foo.js");
     DossierCompiler compiler = new DossierCompiler(System.err, ImmutableList.of(module));
     CompilerOptions options = Main.createOptions(fileSystem, typeRegistry, compiler);
     util = new CompilerUtil(compiler, options);
@@ -522,12 +515,8 @@ public class LinkerTest {
 
   @Test
   public void testGetSourcePath() {
-    Path srcPrefix = fileSystem.getPath("/alphabet/soup");
-    when(mockConfig.getFileSystem()).thenReturn(fileSystem);
-    when(mockConfig.getSrcPrefix()).thenReturn(srcPrefix);
-
     Node node = mock(Node.class);
-    when(node.getSourceFileName()).thenReturn("/alphabet/soup/a/b/c");
+    when(node.getSourceFileName()).thenReturn(sourcePrefix.resolve("a/b/c").toString());
     when(node.getLineno()).thenReturn(123);
     assertEquals(
         SourceLink.newBuilder()
@@ -539,25 +528,24 @@ public class LinkerTest {
 
   @Test
   public void formatTypeExpression_moduleContextWillHideGlobalTypeNames() {
-    when(mockConfig.getModulePrefix()).thenReturn(fileSystem.getPath("/src/module"));
     DossierCompiler compiler = new DossierCompiler(System.err, ImmutableList.of(
-        fileSystem.getPath("/src/module/a.js"),
-        fileSystem.getPath("/src/module/b.js")));
+        modulePrefix.resolve("a.js"),
+        modulePrefix.resolve("b.js")));
     CompilerOptions options = Main.createOptions(fileSystem, typeRegistry, compiler);
     util = new CompilerUtil(compiler, options);
 
     util.compile(
-        createSourceFile(fileSystem.getPath("/globals.js"),
+        createSourceFile(sourcePrefix.resolve("/globals.js"),
             "goog.provide('ns');",
             "/** @typedef {string} */",
             "ns.Name;"),
-        createSourceFile(fileSystem.getPath("/src/module/a.js"), ""),
-        createSourceFile(fileSystem.getPath("/src/module/b.js"),
+        createSourceFile(modulePrefix.resolve("a.js"), ""),
+        createSourceFile(modulePrefix.resolve("b.js"),
             "var ns = require('./a');",
             "/** @param {ns.Name} name The name. */",
             "exports.greet = function(name) {};"));
 
-    NominalType type = typeRegistry.getModuleType("dossier$$module__$src$module$b");
+    NominalType type = typeRegistry.getModuleType("dossier$$module__$modules$b");
     assertNotNull(type);
 
     Property property = type.getOwnSlot("greet");
@@ -576,19 +564,18 @@ public class LinkerTest {
 
   @Test
   public void formatTypeExpression_removesInternalModuleNameFromUnrecognizedSymbols() {
-    when(mockConfig.getModulePrefix()).thenReturn(fileSystem.getPath("/src/module"));
     DossierCompiler compiler = new DossierCompiler(System.err, ImmutableList.of(
-        fileSystem.getPath("/src/module/a.js")));
+        modulePrefix.resolve("a.js")));
     CompilerOptions options = Main.createOptions(fileSystem, typeRegistry, compiler);
     util = new CompilerUtil(compiler, options);
 
     util.compile(
-        createSourceFile(fileSystem.getPath("/src/module/a.js"),
+        createSourceFile(modulePrefix.resolve("a.js"),
             "var http = require('http');",
             "/** @param {!http.Agent} agent The agent to use. */",
             "exports.createClient = function(agent) {};"));
 
-    NominalType type = typeRegistry.getModuleType("dossier$$module__$src$module$a");
+    NominalType type = typeRegistry.getModuleType("dossier$$module__$modules$a");
     assertNotNull(type);
 
     Property property = type.getOwnSlot("createClient");

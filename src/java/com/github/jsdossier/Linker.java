@@ -21,11 +21,6 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.base.Verify.verify;
 import static com.google.common.collect.Iterables.filter;
 
-import com.github.jsdossier.jscomp.DossierModule;
-import com.github.jsdossier.proto.Comment;
-import com.github.jsdossier.proto.SourceLink;
-import com.github.jsdossier.proto.TypeLink;
-import com.github.jsdossier.proto.TypeLinkOrBuilder;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Predicate;
@@ -49,6 +44,12 @@ import com.google.javascript.rhino.jstype.TemplatizedType;
 import com.google.javascript.rhino.jstype.UnionType;
 import com.google.javascript.rhino.jstype.Visitor;
 
+import com.github.jsdossier.jscomp.DossierModule;
+import com.github.jsdossier.proto.Comment;
+import com.github.jsdossier.proto.SourceLink;
+import com.github.jsdossier.proto.TypeLink;
+import com.github.jsdossier.proto.TypeLinkOrBuilder;
+
 import java.nio.file.Path;
 import java.util.Iterator;
 import java.util.Stack;
@@ -57,20 +58,28 @@ import javax.annotation.Nullable;
 
 public class Linker {
 
-  private final Config config;
   private final Path outputRoot;
+  private final Path modulePrefix;
+  private final Path sourcePrefix;
+  private final Predicate<NominalType> typeFilter;
   private final TypeRegistry typeRegistry;
 
   private final Stack<NominalType> context = new Stack<>();
 
   /**
-   * @param config The current runtime configuration.
    * @param typeRegistry The type registry.
    */
-  public Linker(Config config, TypeRegistry typeRegistry) {
+  public Linker(
+      Path outputRoot,
+      Path sourcePrefix,
+      Path modulePrefix,
+      Predicate<NominalType> typeFilter,
+      TypeRegistry typeRegistry) {
     this.typeRegistry = typeRegistry;
-    this.config = checkNotNull(config);
-    this.outputRoot = config.getOutput();
+    this.outputRoot = outputRoot;
+    this.modulePrefix = modulePrefix;
+    this.sourcePrefix = sourcePrefix;
+    this.typeFilter = typeFilter;
   }
 
   public void pushContext(NominalType type) {
@@ -111,7 +120,7 @@ public class Linker {
   public String getDisplayName(ModuleDescriptor module) {
     Path modulePath = stripExtension(module.getPath());
 
-    Path displayPath = config.getModulePrefix().relativize(modulePath);
+    Path displayPath = modulePrefix.relativize(modulePath);
     if (displayPath.getFileName().toString().equals("index")
         && displayPath.getParent() != null) {
       displayPath = displayPath.getParent();
@@ -146,7 +155,7 @@ public class Linker {
    * Returns the path of the generated documentation for the given source file.
    */
   public Path getFilePath(Path sourceFile) {
-    Path path = config.getSrcPrefix()
+    Path path = sourcePrefix
         .relativize(sourceFile.toAbsolutePath().normalize())
         .resolveSibling(sourceFile.getFileName() + ".src.html");
     Path ret = outputRoot.resolve("source");
@@ -160,7 +169,7 @@ public class Linker {
    * @see #getFilePath(Path)
    */
   public Path getFilePath(String sourceFile) {
-    return getFilePath(config.getFileSystem().getPath(sourceFile));
+    return getFilePath(sourcePrefix.getFileSystem().getPath(sourceFile));
   }
 
   /**
@@ -170,7 +179,7 @@ public class Linker {
     if (node == null || node.isFromExterns()) {
       return SourceLink.newBuilder().setPath("").build();
     }
-    Iterator<Path> parts = config.getOutput()
+    Iterator<Path> parts = outputRoot
         .relativize(getFilePath(node.getSourceFileName()))
         .iterator();
     return SourceLink.newBuilder()
@@ -257,7 +266,7 @@ public class Linker {
       return getExternLink(typeName);
     }
 
-    if (config.isFilteredType(type)) {
+    if (typeFilter.apply(type)) {
       type = getUnfilteredAlias(type);
       if (type == null) {
         return null;
@@ -360,7 +369,7 @@ public class Linker {
   @Nullable
   private NominalType resolve(JSType type) {
     NominalType nominalType = typeRegistry.resolve(type);
-    if (nominalType != null && config.isFilteredType(nominalType)) {
+    if (nominalType != null && typeFilter.apply(nominalType)) {
       return getUnfilteredAlias(nominalType);
     }
     return nominalType;
@@ -372,14 +381,14 @@ public class Linker {
         .filter(new Predicate<NominalType>() {
           @Override
           public boolean apply(NominalType input) {
-            return !config.isFilteredType(input);
+            return !typeFilter.apply(input);
           }
         }), null);
   }
 
   @Nullable
   public TypeLink getLink(NominalType type) {
-    if (config.isFilteredType(type)) {
+    if (typeFilter.apply(type)) {
       type = getUnfilteredAlias(type);
       if (type == null) {
         return null;

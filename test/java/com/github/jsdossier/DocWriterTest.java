@@ -24,7 +24,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import com.github.jsdossier.jscomp.DossierCompiler;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
@@ -36,6 +35,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.google.javascript.jscomp.CompilerOptions;
 import com.google.javascript.jscomp.SourceFile;
+
+import com.github.jsdossier.jscomp.DossierCompiler;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -77,7 +78,7 @@ public class DocWriterTest {
   public void writesTypes_simple() throws IOException {
     config.addSource(path("simple.js"), "function x() {}").generateDocs();
     JsonObject json = readTypesJs();
-    assertThat(json.entrySet()).isEmpty();
+    assertThat((Iterable) json.entrySet()).isEmpty();
   }
 
   @Test
@@ -145,10 +146,6 @@ public class DocWriterTest {
       return addFile(jsonConfig.getAsJsonArray("modules"), modules, path, lines);
     }
 
-    ConfigBuilder addExterns(Path path, String... lines) throws IOException {
-      return addFile(jsonConfig.getAsJsonArray("externs"), externs, path, lines);
-    }
-
     private ConfigBuilder addFile(
         JsonArray configList, ImmutableList.Builder<SourceFile> builder,
         Path path, String... lines)
@@ -176,37 +173,27 @@ public class DocWriterTest {
           ImmutableList.copyOf(
               Iterables.concat(sources.build(), modules.build())));
 
-      DocWriter writer = new DocWriter(config, typeRegistry);
+      DocWriter writer = new DocWriter(
+          config.getOutput(),
+          Iterables.concat(config.getSources(), config.getModules()),
+          config.getSrcPrefix(),
+          config.getReadme(),
+          config.getCustomPages(),
+          typeRegistry,
+          config.getTypeFilter(),
+          new Linker(
+              config.getOutput(),
+              config.getSrcPrefix(),
+              config.getModulePrefix(),
+              config.getTypeFilter(),
+              typeRegistry),
+          new CommentParser(config.useMarkdown()));
       writer.generateDocs();
     }
   }
 
   private static interface JsonBuilder<T extends JsonElement> {
     T build();
-  }
-
-  private static class JsonObjectBuilder implements JsonBuilder<JsonObject> {
-    private final JsonObject object = new JsonObject();
-
-    public JsonObjectBuilder put(String key, JsonBuilder<?> builder) {
-      object.add(key, builder.build());
-      return this;
-    }
-
-    public JsonObjectBuilder put(String key, JsonElement element) {
-      object.add(key, element);
-      return this;
-    }
-
-    public JsonObjectBuilder put(String key, String value) {
-      object.addProperty(key, value);
-      return this;
-    }
-
-    @Override
-    public JsonObject build() {
-      return object;
-    }
   }
 
   private static class JsonArrayBuilder implements JsonBuilder<JsonArray> {

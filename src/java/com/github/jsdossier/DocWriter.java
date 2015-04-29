@@ -20,7 +20,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Predicates.not;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.base.Verify.verify;
-import static com.google.common.collect.Iterables.concat;
 import static com.google.common.collect.Iterables.transform;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.createDirectories;
@@ -29,20 +28,6 @@ import static java.nio.file.StandardOpenOption.CREATE;
 import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 import static java.nio.file.StandardOpenOption.WRITE;
 
-import com.github.jsdossier.proto.BaseProperty;
-import com.github.jsdossier.proto.Comment;
-import com.github.jsdossier.proto.Deprecation;
-import com.github.jsdossier.proto.Enumeration;
-import com.github.jsdossier.proto.HtmlRenderSpec;
-import com.github.jsdossier.proto.Index;
-import com.github.jsdossier.proto.JsType;
-import com.github.jsdossier.proto.JsTypeRenderSpec;
-import com.github.jsdossier.proto.Resources;
-import com.github.jsdossier.proto.SourceFile;
-import com.github.jsdossier.proto.SourceFileRenderSpec;
-import com.github.jsdossier.proto.TypeLink;
-import com.github.jsdossier.proto.Visibility;
-import com.github.jsdossier.soy.Renderer;
 import com.google.common.base.Charsets;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
@@ -69,6 +54,21 @@ import com.google.javascript.rhino.jstype.ObjectType;
 import com.google.javascript.rhino.jstype.Property;
 import com.google.javascript.rhino.jstype.TemplatizedType;
 
+import com.github.jsdossier.proto.BaseProperty;
+import com.github.jsdossier.proto.Comment;
+import com.github.jsdossier.proto.Deprecation;
+import com.github.jsdossier.proto.Enumeration;
+import com.github.jsdossier.proto.HtmlRenderSpec;
+import com.github.jsdossier.proto.Index;
+import com.github.jsdossier.proto.JsType;
+import com.github.jsdossier.proto.JsTypeRenderSpec;
+import com.github.jsdossier.proto.Resources;
+import com.github.jsdossier.proto.SourceFile;
+import com.github.jsdossier.proto.SourceFileRenderSpec;
+import com.github.jsdossier.proto.TypeLink;
+import com.github.jsdossier.proto.Visibility;
+import com.github.jsdossier.soy.Renderer;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -90,8 +90,13 @@ class DocWriter {
 
   private static final String INDEX_FILE_NAME = "index.html";
 
-  private final Config config;
+  private final Path outputDir;
+  private final ImmutableSet<Path> inputFiles;
+  private final Path sourcePrefix;
+  private final Optional<Path> readme;
   private final TypeRegistry typeRegistry;
+  private final Predicate<NominalType> typeFilter;
+  private final ImmutableList<MarkdownPage> markdownPages;
   private final Linker linker;
   private final CommentParser parser;
 
@@ -102,11 +107,25 @@ class DocWriter {
   private Iterable<NominalType> sortedModules;
   private Index masterIndex;
 
-  DocWriter(Config config, TypeRegistry typeRegistry) {
-    this.config = checkNotNull(config);
+  DocWriter(
+      Path outputDir,
+      Iterable<Path> inputFiles,
+      Path sourcePrefix,
+      Optional<Path> readme,
+      ImmutableList<MarkdownPage> markdownPages,
+      TypeRegistry typeRegistry,
+      Predicate<NominalType> typeFilter,
+      Linker linker,
+      CommentParser parser) {
+    this.outputDir = checkNotNull(outputDir);
+    this.inputFiles = ImmutableSet.copyOf(inputFiles);
+    this.sourcePrefix = checkNotNull(sourcePrefix);
+    this.readme = checkNotNull(readme);
+    this.markdownPages = checkNotNull(markdownPages);
     this.typeRegistry = checkNotNull(typeRegistry);
-    this.linker = new Linker(config, typeRegistry);
-    this.parser = new CommentParser(config.useMarkdown());
+    this.typeFilter = checkNotNull(typeFilter);
+    this.linker = checkNotNull(linker);
+    this.parser = checkNotNull(parser);
   }
 
   public void generateDocs() throws IOException {
@@ -120,7 +139,7 @@ class DocWriter {
 
     masterIndex = generateNavIndex();
 
-    createDirectories(config.getOutput());
+    createDirectories(outputDir);
     copyResources();
     copySourceFiles();
     generateIndex();
@@ -144,9 +163,9 @@ class DocWriter {
     Index.Builder builder = Index.newBuilder()
         .mergeFrom(masterIndex);
 
-    Path toRoot = path.getParent().relativize(config.getOutput());
+    Path toRoot = path.getParent().relativize(outputDir);
     if (toRoot.getNameCount() == 0) {
-      toRoot = config.getOutput();
+      toRoot = outputDir;
     }
 
     builder.setHome(toUrlPath(toRoot.resolve(INDEX_FILE_NAME)));
@@ -168,7 +187,7 @@ class DocWriter {
         .setIncludeModules(sortedModules.iterator().hasNext())
         .setIncludeTypes(sortedTypes.iterator().hasNext());
 
-    for (Config.Page page : config.getCustomPages()) {
+    for (MarkdownPage page : markdownPages) {
       builder.addLinksBuilder()
           .setHref(page.getName().replace(' ', '_') + ".html")
           .setText(page.getName());
@@ -181,19 +200,19 @@ class DocWriter {
     generateHtmlPage(
         new CommentParser(true),
         "Index",
-        config.getOutput().resolve(INDEX_FILE_NAME),
-        config.getReadme());
+        outputDir.resolve(INDEX_FILE_NAME),
+        readme);
   }
 
   private void generateCustomPages() throws IOException {
     CommentParser parser = new CommentParser(true);
-    for (Config.Page page : config.getCustomPages()) {
+    for (MarkdownPage page : markdownPages) {
       String name = page.getName();
       checkArgument(!"index".equalsIgnoreCase(name), "reserved page name: %s", name);
       generateHtmlPage(
           parser,
           name,
-          config.getOutput().resolve(name.replace(' ', '_') + ".html"),
+          outputDir.resolve(name.replace(' ', '_') + ".html"),
           Optional.of(page.getPath()));
     }
   }
@@ -316,7 +335,7 @@ class DocWriter {
     NominalType aliased = typeRegistry.resolve(type.getJsType());
 
     if (aliased != type) {
-      if (!config.isFilteredType(aliased)) {
+      if (!typeFilter.apply(aliased)) {
         String aliasDisplayName = linker.getDisplayName(aliased);
         if (aliased.isCommonJsModule()) {
           if (aliased.isModuleExports()) {
@@ -337,7 +356,7 @@ class DocWriter {
     }
 
     if (description.getTokenCount() == 0 && type.isModuleExports()) {
-      Path path = config.getFileSystem().getPath(type.getNode().getSourceFileName());
+      Path path = sourcePrefix.getFileSystem().getPath(type.getNode().getSourceFileName());
       description = parser.getFileoverview(linker, typeRegistry.getFileOverview(path));
     }
 
@@ -391,8 +410,8 @@ class DocWriter {
   }
 
   private void copyResources() throws IOException {
-    copyResource("resources/dossier.css", config.getOutput());
-    copyResource("resources/dossier.js", config.getOutput());
+    copyResource("resources/dossier.css", outputDir);
+    copyResource("resources/dossier.js", outputDir);
   }
 
   private static void copyResource(String resource, Path outputDir) throws IOException {
@@ -409,15 +428,15 @@ class DocWriter {
     // formatting mechanism.
     String content = "var TYPES = " + typeIndex + ";";
 
-    Path outputPath = config.getOutput().resolve("types.js");
+    Path outputPath = outputDir.resolve("types.js");
     Files.write(outputPath, content.getBytes(UTF_8), CREATE, WRITE, TRUNCATE_EXISTING);
   }
 
   private Resources getResources(Path forPathFromRoot) {
-    Path pathToRoot = config.getOutput()
+    Path pathToRoot = outputDir
         .resolve(forPathFromRoot)
         .getParent()
-        .relativize(config.getOutput());
+        .relativize(outputDir);
     return Resources.newBuilder()
         .addCss(resolve(pathToRoot, "dossier.css"))
         .addTailScript(resolve(pathToRoot, "types.js"))
@@ -430,13 +449,13 @@ class DocWriter {
   }
 
   private void copySourceFiles() throws IOException {
-    for (Path source : concat(config.getSources(), config.getModules())) {
-      Path displayPath = config.getSrcPrefix().relativize(source);
-      Path relativePath = config.getSrcPrefix()
+    for (Path source : inputFiles) {
+      Path displayPath = sourcePrefix.relativize(source);
+      Path relativePath = sourcePrefix
           .relativize(source.toAbsolutePath().normalize())
           .resolveSibling(source.getFileName() + ".src.html");
 
-      Path renderPath = config.getOutput()
+      Path renderPath = outputDir
           .resolve("source")
           .resolve(relativePath.toString());
 
@@ -597,7 +616,7 @@ class DocWriter {
     List<JsType.TypeSummary> types = new ArrayList<>(nestedTypes.size());
 
     for (NominalType child : FluentIterable.from(nestedTypes).toSortedList(new NameComparator())) {
-      if (config.isFilteredType(child)) {
+      if (typeFilter.apply(child)) {
         continue;
       }
 
@@ -1034,7 +1053,7 @@ class DocWriter {
     return new Predicate<NominalType>() {
       @Override
       public boolean apply(NominalType input) {
-        return config.isFilteredType(input);
+        return typeFilter.apply(input);
       }
     };
   }
@@ -1220,7 +1239,7 @@ class DocWriter {
     }
 
     ModuleIndexReference addModule(NominalType module) {
-      String dest = config.getOutput().relativize(linker.getFilePath(module)).toString();
+      String dest = outputDir.relativize(linker.getFilePath(module)).toString();
 
       JsonObject obj = new JsonObject();
       obj.addProperty("name", linker.getDisplayName(module));
@@ -1269,7 +1288,7 @@ class DocWriter {
   }
 
   private IndexReference addTypeInfo(JsonArray array, NominalType type) {
-    String dest = config.getOutput().relativize(linker.getFilePath(type)).toString();
+    String dest = outputDir.relativize(linker.getFilePath(type)).toString();
 
     JsonObject details = new JsonObject();
     details.addProperty("name", type.getQualifiedName());
@@ -1283,7 +1302,7 @@ class DocWriter {
 
     NominalType resolvedType = typeRegistry.resolve(type.getJsType());
     boolean isAlias = resolvedType != type;
-    if (!isAlias || config.isFilteredType(resolvedType)) {
+    if (!isAlias || typeFilter.apply(resolvedType)) {
       List<NominalType> typedefs = FluentIterable.from(type.getTypes())
           .filter(isTypedef())
           .toSortedList(new NameComparator());

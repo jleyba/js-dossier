@@ -97,7 +97,7 @@ class Config {
   private final Path output;
   private final boolean isZipOutput;
   private final Optional<Path> readme;
-  private final ImmutableList<Page> customPages;
+  private final ImmutableList<MarkdownPage> customPages;
   private final boolean strict;
   private final boolean useMarkdown;
   private final Language language;
@@ -136,7 +136,7 @@ class Config {
       boolean isZipOutput,
       Path output,
       Optional<Path> readme,
-      List<Page> customPages,
+      List<MarkdownPage> customPages,
       Optional<Path> modulePrefix,
       boolean strict,
       boolean useMarkdown,
@@ -159,7 +159,7 @@ class Config {
         "Output path, %s, is not a directory", output);
     checkArgument(!readme.isPresent() || exists(readme.get()),
         "README path, %s, does not exist", readme.orNull());
-    for (Page page : customPages) {
+    for (MarkdownPage page : customPages) {
       checkArgument(exists(page.getPath()),
           "For custom page \"%s\", file does not exist: %s",
           page.getName(), page.getPath());
@@ -222,8 +222,13 @@ class Config {
   /**
    * Returns the set of types that should be filtered from generated output.
    */
-  ImmutableSet<Pattern> getTypeFilters() {
-    return typeFilters;
+  Predicate<NominalType> getTypeFilter() {
+    return new Predicate<NominalType>() {
+      @Override
+      public boolean apply(NominalType input) {
+        return isFilteredType(input);
+      }
+    };
   }
 
   /**
@@ -250,7 +255,7 @@ class Config {
   /**
    * Returns the custom pages to include in the generated documentation.
    */
-  ImmutableList<Page> getCustomPages() {
+  ImmutableList<MarkdownPage> getCustomPages() {
     return customPages;
   }
 
@@ -316,7 +321,7 @@ class Config {
     json.addProperty("language", language.name());
 
     JsonArray pages = new JsonArray();
-    for (Page page : customPages) {
+    for (MarkdownPage page : customPages) {
       pages.add(page.toJson());
     }
     json.add("customPages", pages);
@@ -324,7 +329,7 @@ class Config {
     return json;
   }
 
-  private JsonArray toJsonArray(ImmutableSet<?> items) {
+  private JsonArray toJsonArray(Iterable<?> items) {
     JsonArray array = new JsonArray();
     for (Object i : items) {
       array.add(new JsonPrimitive(i.toString()));
@@ -766,7 +771,7 @@ class Config {
         "is defined as a {name: string, path: string} object, where the name is what's " +
         "displayed in the navigation menu, and `path` is the path to the markdown file to use. " +
         "Files will be included in the order listed, after the standard navigation items.")
-    private final List<Page> customPages = ImmutableList.of();
+    private final List<MarkdownPage> customPages = ImmutableList.of();
 
     @Description("Whether to run with all type checking flags enabled.")
     private final boolean strict = false;
@@ -793,31 +798,6 @@ class Config {
       return gson.fromJson(
           new InputStreamReader(stream, StandardCharsets.UTF_8),
           ConfigSpec.class);
-    }
-  }
-
-  public static class Page {
-    private final String name;
-    private final Path path;
-
-    Page(String name, Path path) {
-      this.name = name;
-      this.path = path;
-    }
-
-    public String getName() {
-      return name;
-    }
-
-    public Path getPath() {
-      return path;
-    }
-
-    private JsonObject toJson() {
-      JsonObject json = new JsonObject();
-      json.addProperty("name", name);
-      json.addProperty("path", path.toString());
-      return json;
     }
   }
 
