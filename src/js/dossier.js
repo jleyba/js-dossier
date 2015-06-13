@@ -26,6 +26,7 @@ goog.require('dossier.nav');
 goog.require('goog.array');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
+goog.require('goog.events.KeyCodes');
 goog.require('goog.dom');
 goog.require('goog.dom.classlist');
 goog.require('goog.string');
@@ -150,6 +151,22 @@ dossier.initSearchBox_ = function(typeInfo) {
   ac.setMaxMatches(20);
   goog.events.listen(ac,
       goog.ui.ac.AutoComplete.EventType.UPDATE, navigatePage);
+
+  goog.events.listen(
+      document.documentElement,
+      goog.events.EventType.KEYDOWN,
+      function(e) {
+        if (document.activeElement !== input
+            && e.keyCode === goog.events.KeyCodes.SLASH) {
+          input.focus();
+          e.preventDefault();
+          e.stopPropagation();
+          return false;
+        } else if (document.activeElement === input
+            && e.keyCode === goog.events.KeyCodes.ESC) {
+          input.blur();
+        }
+      });
 
   function navigatePage() {
     var href = nameToHref[input.value];

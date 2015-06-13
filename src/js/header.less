@@ -59,7 +59,18 @@ header {
     border: 0;
     -webkit-appearance: none;
 
-    &:focus { outline: 0; }
+    color: #fff;
+    background: rgba(255,255,255,.25);
+
+    &::-webkit-input-placeholder { color: #fff; }
+    &::-moz-placeholder { color: #fff; }
+    &:-ms-input-placeholder { color: #fff; }
+
+    &:focus {
+      background: #fff;
+      color: #333;
+      outline: 0;
+    }
   }
 }
 
