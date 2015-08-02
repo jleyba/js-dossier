@@ -155,9 +155,6 @@ is passed to the parser as
 
     ....code block
 
-Markdown support can be disabled by setting \`useMarkdown=false\` in your
-configuration.
-
 ### The \`@code\` and \`@literal\` Taglets
 
 The \`@code\` and \`@literal\` taglets may be used to specify text that

@@ -58,15 +58,6 @@ public class CommentParser {
       .escapeHtml(false)
       .build();
 
-  private final boolean useMarkdown;
-
-  /**
-   * @param useMarkdown whether to process parsed comments as markdown.
-   */
-  public CommentParser(boolean useMarkdown) {
-    this.useMarkdown = useMarkdown;
-  }
-
   /**
    * Extracts summary sentence from the provided comment text. This is the substring up to the
    * first period (.) followed by a blank, tab, or newline.
@@ -194,11 +185,8 @@ public class CommentParser {
     }
 
     String markdown = builder.toString();
-    if (useMarkdown) {
-      Node root = parser.parse(markdown);
-      return renderer.render(root);
-    }
-    return markdown;
+    Node root = parser.parse(markdown);
+    return renderer.render(root);
   }
 
   private static int findInlineTagStart(String text, int start) {

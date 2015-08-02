@@ -198,14 +198,14 @@ class DocWriter {
 
   private void generateIndex() throws IOException {
     generateHtmlPage(
-        new CommentParser(true),
+        new CommentParser(),
         "Index",
         outputDir.resolve(INDEX_FILE_NAME),
         readme);
   }
 
   private void generateCustomPages() throws IOException {
-    CommentParser parser = new CommentParser(true);
+    CommentParser parser = new CommentParser();
     for (MarkdownPage page : markdownPages) {
       String name = page.getName();
       checkArgument(!"index".equalsIgnoreCase(name), "reserved page name: %s", name);

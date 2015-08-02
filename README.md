@@ -100,9 +100,6 @@ __Configuration Options__
 
  * `strict` Whether to run with all type checking flags enabled.
 
- * `useMarkdown` Whether to parse all comments as markdown. The `readme` and
-    `customPages` will always be parsed as markdown.
-
  * `language` Specifies which version of ECMAScript the input sources conform
     to. Defaults to ES5. Must be one of {ES3, ES5, ES5_STRICT}
 
@@ -129,9 +126,6 @@ is passed to the parser as
     Line two.
 
     ....code block
-
-Markdown support can be disabled by setting `useMarkdown=false` in your
-configuration.
 
 ### The `@code` and `@literal` Taglets
 

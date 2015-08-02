@@ -46,7 +46,7 @@ public class CommentParserTest {
   private CompilerUtil util;
   private Linker mockLinker;
 
-  private final CommentParser parser = new CommentParser(true);
+  private final CommentParser parser = new CommentParser();
 
   @Before
   public void setUp() {

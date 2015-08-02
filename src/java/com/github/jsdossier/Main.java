@@ -160,7 +160,7 @@ public class Main extends CommandLineRunner {
             config.getModulePrefix(),
             config.getTypeFilter(),
             typeRegistry),
-        new CommentParser(config.useMarkdown()));
+        new CommentParser());
     try {
       writer.generateDocs();
       if (config.isZipOutput()) {

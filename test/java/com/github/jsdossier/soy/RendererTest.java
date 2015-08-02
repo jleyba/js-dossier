@@ -70,7 +70,7 @@ public class RendererTest {
 
   private static SoyTofu tofu;
 
-  private final CommentParser parser = new CommentParser(true);
+  private final CommentParser parser = new CommentParser();
   private Linker mockLinker;
 
   @BeforeClass

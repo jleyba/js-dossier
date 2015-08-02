@@ -99,7 +99,6 @@ class Config {
   private final Optional<Path> readme;
   private final ImmutableList<MarkdownPage> customPages;
   private final boolean strict;
-  private final boolean useMarkdown;
   private final Language language;
   private final PrintStream outputStream;
   private final PrintStream errorStream;
@@ -107,7 +106,6 @@ class Config {
 
   /**
    * Creates a new runtime configuration.
-   *
    *
    * @param srcs The list of compiler input sources.
    * @param modules The list of CommonJS compiler input sources.
@@ -120,7 +118,6 @@ class Config {
    * @param customPages Custom markdown files to include in the generated documentation.
    * @param modulePrefix Prefix to strip from each module path when rendering documentation.
    * @param strict Whether to enable all type checks.
-   * @param useMarkdown Whether to use markdown for comment parser.
    * @param language The JavaScript dialog sources must conform to.
    * @param outputStream The stream to use for standard output.
    * @param errorStream The stream to use for error output.
@@ -139,7 +136,6 @@ class Config {
       List<MarkdownPage> customPages,
       Optional<Path> modulePrefix,
       boolean strict,
-      boolean useMarkdown,
       Language language,
       PrintStream outputStream,
       PrintStream errorStream,
@@ -177,7 +173,6 @@ class Config {
     this.readme = readme;
     this.customPages = ImmutableList.copyOf(customPages);
     this.strict = strict;
-    this.useMarkdown = useMarkdown;
     this.language = language;
     this.outputStream = outputStream;
     this.errorStream = errorStream;
@@ -267,13 +262,6 @@ class Config {
   }
 
   /**
-   * Returns whether to parse comments as markdown.
-   */
-  boolean useMarkdown() {
-    return useMarkdown;
-  }
-
-  /**
    * Returns the language dialect sources must conform to.
    */
   Language getLanguage() {
@@ -317,7 +305,6 @@ class Config {
         ? new JsonPrimitive(readme.get().toString())
         : JsonNull.INSTANCE);
     json.addProperty("strict", strict);
-    json.addProperty("useMarkdown", useMarkdown);
     json.addProperty("language", language.name());
 
     JsonArray pages = new JsonArray();
@@ -459,7 +446,6 @@ class Config {
         spec.customPages,
         spec.stripModulePrefix,
         spec.strict,
-        spec.useMarkdown,
         spec.language,
         System.out,
         System.err,
@@ -775,10 +761,6 @@ class Config {
 
     @Description("Whether to run with all type checking flags enabled.")
     private final boolean strict = false;
-
-    @Description("Whether to parse all comments as markdown. The `readme` and `customPages` will " +
-        "always be parsed as markdown.")
-    private final boolean useMarkdown = true;
 
     @Description("Specifies which version of ECMAScript the input sources conform to. Defaults " +
         "to ES5. Must be one of {ES3, ES5, ES5_STRICT}")

@@ -187,7 +187,7 @@ public class DocWriterTest {
               config.getModulePrefix(),
               config.getTypeFilter(),
               typeRegistry),
-          new CommentParser(config.useMarkdown()));
+          new CommentParser());
       writer.generateDocs();
     }
   }
