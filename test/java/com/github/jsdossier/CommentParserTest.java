@@ -218,7 +218,7 @@ public class CommentParserTest {
     Comment comment = parser.parseComment("A link to {@link foo.Bar foo\nbar}.", mockLinker);
     assertEquals(1, comment.getTokenCount());
     assertHtmlText(comment.getToken(0),
-        "<p>A link to <a href=\"/path/to/foo\"><code>foo bar</code></a>.</p>");
+        "<p>A link to <a href=\"/path/to/foo\"><code>foo\nbar</code></a>.</p>");
   }
 
   @Test
@@ -268,9 +268,9 @@ public class CommentParserTest {
     assertHtmlText(comment.getToken(0),
         "<p>This is a class comment.</p>\n" +
             "<ul>\n" +
-            "  <li>with list</li>\n" +
-            "  <li>items</li>\n" +
-            "</ul><p>And a</p>\n" +
+            "<li>with\nlist</li>\n" +
+            "<li>items</li>\n" +
+            "</ul>\n<p>And a</p>\n" +
             "<pre><code>code block\n" +
             "</code></pre>");
   }
@@ -302,8 +302,9 @@ public class CommentParserTest {
     assertHtmlText(comment.getToken(0),
         "<p>This is a class comment.</p>\n" +
             "<ul>\n" +
-            "  <li>This is a list item</li>\n" +
-            "</ul><p>and this</p>\n" +
+            "<li>This is a list item</li>\n" +
+            "</ul>\n" +
+            "<p>and this</p>\n" +
             "<pre><code>is a code block\n" +
             "</code></pre>");
   }
@@ -327,12 +328,15 @@ public class CommentParserTest {
     Comment comment = parser.parseComment("A promise for a\n    file path.\n\n    code now", mockLinker);
     assertEquals(1, comment.getTokenCount());
     assertHtmlText(comment.getToken(0),
-        "<p>A promise for a  file path.</p>\n" +
+        "<p>A promise for a\nfile path.</p>\n" +
             "<pre><code>code now\n" +
             "</code></pre>");
   }
 
   private static void assertHtmlText(Comment.Token token, String text) {
+    if (!text.endsWith("\n")) {
+      text += "\n";
+    }
     assertEquals(text, token.getHtml());
     assertEquals("", token.getHref());
   }

@@ -24,9 +24,12 @@ import com.github.jsdossier.proto.Deprecation;
 import com.github.jsdossier.proto.TypeLink;
 import com.google.common.escape.CharEscaperBuilder;
 import com.google.common.escape.Escaper;
-import org.pegdown.Extensions;
-import org.pegdown.PegDownProcessor;
+import org.commonmark.ext.gfm.tables.TablesExtension;
+import org.commonmark.html.HtmlRenderer;
+import org.commonmark.node.Node;
+import org.commonmark.parser.Parser;
 
+import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -47,6 +50,13 @@ public class CommentParser {
 
   private static final Pattern SUMMARY_REGEX = Pattern.compile("(.*?\\.)[\\s$]", Pattern.DOTALL);
   private static final Pattern TAGLET_START_PATTERN = Pattern.compile("\\{@(\\w+)\\s");
+
+  private final Parser parser = Parser.builder()
+      .extensions(Arrays.asList(TablesExtension.create()))
+      .build();
+  private final HtmlRenderer renderer = HtmlRenderer.builder()
+      .escapeHtml(false)
+      .build();
 
   private final boolean useMarkdown;
 
@@ -185,9 +195,8 @@ public class CommentParser {
 
     String markdown = builder.toString();
     if (useMarkdown) {
-      return new PegDownProcessor(Extensions.TABLES)
-          .markdownToHtml(markdown)
-          .trim();
+      Node root = parser.parse(markdown);
+      return renderer.render(root);
     }
     return markdown;
   }

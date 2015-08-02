@@ -134,10 +134,10 @@ EOF
   cat >> README.md <<EOF
 ## Formatting
 
-Before generating the final HTML output, Dossier runs all comments through the
-[*pegdown*](https://github.com/sirthias/pegdown) markdown processor. Since
-markdown is sensitive to the leading whitespace on each line, Dossier will trim
-each line up to the first space *after* the leading \* in the comment.
+Before generating the final HTML output, Dossier runs all comments through a
+[CommonMark](http://commonmark.org/) parser. Since markdown is sensitive to the
+leading whitespace on each line, Dossier will trim each line up to the first
+space *after* the leading \* in the comment.
 
 For example, the JSDoc comment (.'s inserted to highlight whitespace)
 
@@ -148,7 +148,7 @@ For example, the JSDoc comment (.'s inserted to highlight whitespace)
     .*.....code block
     .*/
 
-is passed to *pegdown* as
+is passed to the parser as
 
     Line one.
     Line two.

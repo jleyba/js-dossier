@@ -91,12 +91,12 @@ public class RendererTest {
     assertThat(
         render("dossier.soy.deprecationNotice",
             "deprecation", toSoyValue(parseDeprecation("Hello, world!"))),
-        isHtml("<p><b>Deprecated: </b>Hello, world!</p>"));
+        isHtml("<p><b>Deprecated: </b>Hello, world!</p>\n"));
 
     assertThat(
         render("dossier.soy.deprecationNotice", ImmutableMap.of(
             "deprecation", toSoyValue(parseDeprecation("<strong>Hello, world!</strong>")))),
-        isHtml("<p><b>Deprecated: </b><strong>Hello, world!</strong></p>"));
+        isHtml("<p><b>Deprecated: </b><strong>Hello, world!</strong></p>\n"));
   }
 
   @Test
@@ -602,19 +602,19 @@ public class RendererTest {
         "<div id=\"RED\" class=\"property\">",
         "<dl>",
         "<dt>RED</dt>",
-        "<dd><p><strong>the color red</strong></p></dd>",
+        "<dd><p><strong>the color red</strong></p>\n</dd>",
         "</dl>",
         "</div>",
         "<div id=\"GREEN\" class=\"property\">",
         "<dl>",
         "<dt>GREEN</dt>",
-        "<dd><p><i>the color green</i></p></dd>",
+        "<dd><p><i>the color green</i></p>\n</dd>",
         "</dl>",
         "</div>",
         "<div id=\"BLUE\" class=\"property\">",
         "<dl>",
         "<dt class=\"deprecated\">BLUE</dt>",
-        "<dd><p><b>Deprecated: </b>This value is deprecated</p></dd>",
+        "<dd><p><b>Deprecated: </b>This value is deprecated</p>\n</dd>",
         "</dl>",
         "</div>",
         "</body>"));
@@ -657,9 +657,9 @@ public class RendererTest {
     assertThat(querySelector(document, "section > h2").toString(), is("<h2>Interfaces</h2>"));
     assertThat(querySelector(document, "section > h2 + .type-summary").toString(), isHtml(
         "<div class=\"type-summary\"><dl>",
-        "<dt><a href=\"foo-link\">Foo</a></dt><dd><p>foo summary</p></dd>",
+        "<dt><a href=\"foo-link\">Foo</a></dt><dd><p>foo summary</p>\n</dd>",
         "<dt><a href=\"bar-link\">Bar</a></dt>",
-        "<dd><p><strong>bar summary <i>has html</i></strong></p></dd>",
+        "<dd><p><strong>bar summary <i>has html</i></strong></p>\n</dd>",
         "<dt><a href=\"baz-link\">Baz</a></dt><dd>No Description.</dd>",
         "</dl></div>"));
   }
@@ -710,12 +710,12 @@ public class RendererTest {
         "<dl>",
         "<dt>a</dt>",
         "<dt>b</dt>",
-        "<dd><p><i>b</i> awesome</p></dd>",
+        "<dd><p><i>b</i> awesome</p>\n</dd>",
         "<dt>c<code><b>Object</b></code></dt>",
         "<dt>d<code>Error</code></dt>",
-        "<dd><p>goodbye</p></dd>",
+        "<dd><p>goodbye</p>\n</dd>",
         "<dt></dt>",
-        "<dd><p>who am i</p></dd>",
+        "<dd><p>who am i</p>\n</dd>",
         "</dl>",
         "</div></div>"));
   }
@@ -740,7 +740,7 @@ public class RendererTest {
         "<dl>",
         "<dt>Error</dt>",
         "<dt></dt>",
-        "<dd><p>randomly</p></dd>",
+        "<dd><p>randomly</p>\n</dd>",
         "</dl>",
         "</div></div>"));
   }
@@ -775,7 +775,7 @@ public class RendererTest {
     assertThat(document.body().child(0).toString(), isHtml(
         "<div><div class=\"fn-details\">",
         "<div><b>Returns</b></div>",
-        "<p>randomly</p>",
+        "<p>randomly</p>\n",
         "</div></div>"));
   }
 
@@ -839,17 +839,17 @@ public class RendererTest {
         "<div class=\"fn-details\">",
         "<div><b>Parameters</b></div>",
         "<dl>",
-        "<dt>a</dt><dt>b</dt><dd><p><i>b</i> awesome</p></dd>",
+        "<dt>a</dt><dt>b</dt><dd><p><i>b</i> awesome</p>\n</dd>",
         "<dt>c<code><b>Object</b></code></dt>",
-        "<dt>d<code>Error</code></dt><dd><p>goodbye</p></dd>",
-        "<dt></dt><dd><p>who am i</p></dd>",
+        "<dt>d<code>Error</code></dt><dd><p>goodbye</p>\n</dd>",
+        "<dt></dt><dd><p>who am i</p>\n</dd>",
         "</dl></div>",
         "<div class=\"fn-details\">",
         "<div><b>Returns</b></div>",
-        "<p>something</p></div>",
+        "<p>something</p>\n</div>",
         "<div class=\"fn-details\">",
         "<div><b>Throws</b></div>",
-        "<dl><dt>Error</dt><dd><p>randomly</p></dd></dl>",
+        "<dl><dt>Error</dt><dd><p>randomly</p>\n</dd></dl>",
         "</div></div>"));
   }
 
@@ -897,10 +897,10 @@ public class RendererTest {
         "<body>",
         "<div id=\"foo.Bar\" class=\"function\"><div>",
         "<h3>foo.Bar()</h3>",
-        "<p>First paragraph. </p>",
+        "<p>First paragraph.</p>\n",
         "<ul><li>bullet <code>with code</code></li>",
         "<li>another bullet</li>",
-        "</ul>",
+        "</ul>\n",
         "</div></div>",
         "</body>"));
   }
@@ -926,9 +926,9 @@ public class RendererTest {
         "Bar(<wbr />a)",
         "<span class=\"codelink\"><a href=\"bar.link\">code &raquo;</a></span>",
         "</h3>",
-        "<p>description here </p>",
-        "<p>second paragraph</p>",
-        "<p><b>Deprecated: </b>is old</p>",
+        "<p>description here</p>\n",
+        "<p>second paragraph\n</p>",
+        "<p><b>Deprecated: </b>is old</p>\n",
         "<div><div class=\"fn-details\">",
         "<div><b>Parameters</b></div><dl><dt>a</dt></dl></div></div>",
         "</div></div>",
@@ -952,7 +952,7 @@ public class RendererTest {
 
     assertThat(details.child(0).toString(), isHtml(
         "<div id=\"foo\" class=\"property\"><dl><dt><a href=\"foo-source\">foo</a>" +
-            "<code>string</code></dt><dd><p>foo description</p></dd></dl></div>"));
+            "<code>string</code></dt><dd><p>foo description</p>\n</dd></dl></div>"));
   }
 
   @Test
@@ -961,7 +961,7 @@ public class RendererTest {
 
     Document document = renderDocument("dossier.soy.comment", "comment", comment);
     assertThat(document.body().toString(),
-        isHtml("<body><p>Hello {@code world</p></body>"));
+        isHtml("<body><p>Hello {@code world</p>\n</body>"));
   }
 
   @Test
@@ -970,7 +970,7 @@ public class RendererTest {
 
     Document document = renderDocument("dossier.soy.comment", "comment", comment);
     assertThat(document.body().toString(),
-        isHtml("<body><p>Hello, <code>world</code>!</p></body>"));
+        isHtml("<body><p>Hello, <code>world</code>!</p>\n</body>"));
   }
 
   @Test
@@ -979,7 +979,7 @@ public class RendererTest {
 
     Document document = renderDocument("dossier.soy.comment", "comment", comment);
     assertThat(document.body().toString(),
-        isHtml("<body><p><code>hello</code><code>world</code></p></body>"));
+        isHtml("<body><p><code>hello</code><code>world</code></p>\n</body>"));
   }
 
   @Test
@@ -990,7 +990,7 @@ public class RendererTest {
     assertThat(document.body().toString(), isHtml(
         "<body><p>",
         "<code>1 &lt; 2 &amp;&amp; 4 &gt; 3</code>",
-        "</p></body>"));
+        "</p>\n</body>"));
   }
 
   @Test
@@ -999,7 +999,7 @@ public class RendererTest {
 
     Document document = renderDocument("dossier.soy.comment", "comment", comment);
     assertThat(document.body().toString(), isHtml(
-        "<body><p>1 &lt; 2 &amp;&amp; 4 &gt; 3</p></body>"));
+        "<body><p>1 &lt; 2 &amp;&amp; 4 &gt; 3</p>\n</body>"));
   }
 
   @Test
@@ -1010,7 +1010,7 @@ public class RendererTest {
     assertThat(document.body().toString(), isHtml(
         "<body><p>",
         "An <code>unknown</code>",
-        " type</p></body>"));
+        " type</p>\n</body>"));
   }
 
   @Test
@@ -1028,7 +1028,7 @@ public class RendererTest {
         "<body><p>",
         "A ",
         "<a href=\"/path/to/foo\"><code>milk &amp; cookies</code></a>",
-        " snack</p></body>"));
+        " snack</p>\n</body>"));
   }
 
   @Test
@@ -1046,7 +1046,7 @@ public class RendererTest {
     assertThat(document.body().toString(), isHtml(
         "<body><p>",
         "A <a href=\"/path/to/foo\">milk &amp; cookies</a> snack",
-        "</p></body>"));
+        "</p>\n</body>"));
   }
 
   @Test
@@ -1056,7 +1056,7 @@ public class RendererTest {
 
     Document document = renderDocument("dossier.soy.comment", "comment", comment);
     assertThat(document.body().toString(), isHtml(
-        "<body><p>A <strong>strongly</strong> worded letter</p></body>"));
+        "<body><p>A <strong>strongly</strong> worded letter</p>\n</body>"));
   }
 
   @Test
@@ -1067,7 +1067,7 @@ public class RendererTest {
     Document document = renderDocument("dossier.soy.comment",
         ImmutableMap.of("comment", comment, "omitLeadingTag", true));
     assertThat(document.body().toString(), isHtml(
-        "<body><p>A <strong>strongly</strong> worded letter</p></body>"));
+        "<body><p>A <strong>strongly</strong> worded letter</p>\n</body>"));
   }
 
   @Test
@@ -1097,7 +1097,7 @@ public class RendererTest {
     Document document = renderDocument("dossier.soy.comment", new HashMap<String, Object>() {{
       put("comment", parseComment("Hello, there!"));
     }});
-    assertThat(document.body().toString(), isHtml("<body><p>Hello, there!</p></body>"));
+    assertThat(document.body().toString(), isHtml("<body><p>Hello, there!</p>\n</body>"));
   }
 
   @Test
@@ -1105,7 +1105,7 @@ public class RendererTest {
     Document document = renderDocument("dossier.soy.comment", new HashMap<String, Object>() {{
       put("comment", parseComment("<div>Hello, there!"));
     }});
-    assertThat(document.body().toString(), isHtml("<body><p></p><div>Hello, there!</div></body>"));
+    assertThat(document.body().toString(), isHtml("<body><div>Hello, there!\n</div></body>"));
   }
 
   private Comment parseComment(String comment) {

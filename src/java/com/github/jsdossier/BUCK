@@ -1,3 +1,17 @@
+THIRD_PARTY_DEPS = [
+    "//third_party/java/args4j:args4j",
+    "//third_party/java/closure_compiler:closure_compiler",
+    "//third_party/java/commonmark:commonmark",
+    "//third_party/java/commonmark:gfm_tables",
+    "//third_party/java/gson:gson",
+    "//third_party/java/guava:guava",
+    "//third_party/java/joda_time:joda_time",
+    "//third_party/java/jsr305:jsr305",
+    "//third_party/java/protobuf:protobuf",
+    "//third_party/java/soy:soy",
+    "//third_party/java/owasp_html_sanitizer:owasp_html_sanitizer",
+]
+
 java_library(
   name = "lib_no_deps",
   srcs = glob(["**/*.java"], 
@@ -6,35 +20,13 @@ java_library(
     "resources/*",
     "soy/resources/*"
   ]),
-  provided_deps = [
-    "//third_party/java/args4j:args4j",
-    "//third_party/java/closure_compiler:closure_compiler",
-    "//third_party/java/gson:gson",
-    "//third_party/java/guava:guava",
-    "//third_party/java/joda_time:joda_time",
-    "//third_party/java/jsr305:jsr305",
-    "//third_party/java/protobuf:protobuf",
-    "//third_party/java/soy:soy",
-    "//third_party/java/owasp_html_sanitizer:owasp_html_sanitizer",
-    "//third_party/java/pegdown:pegdown",
-  ],
+  provided_deps = THIRD_PARTY_DEPS,
 )
 
 java_library(
   name = "lib",
   exported_deps = [":lib_no_deps"],
-  deps = [
-    "//third_party/java/args4j:args4j",
-    "//third_party/java/closure_compiler:closure_compiler",
-    "//third_party/java/gson:gson",
-    "//third_party/java/guava:guava",
-    "//third_party/java/joda_time:joda_time",
-    "//third_party/java/jsr305:jsr305",
-    "//third_party/java/protobuf:protobuf",
-    "//third_party/java/soy:soy",
-    "//third_party/java/owasp_html_sanitizer:owasp_html_sanitizer",
-    "//third_party/java/pegdown:pegdown",
-  ],
+  deps = THIRD_PARTY_DEPS,
   visibility = [
     "//test/java/com/github/jsdossier/...",
   ],
