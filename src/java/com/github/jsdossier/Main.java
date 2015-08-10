@@ -20,6 +20,7 @@ import static com.google.common.collect.Iterables.transform;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.newInputStream;
 
+import com.github.jsdossier.jscomp.DossierCompiler;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Function;
 import com.google.common.base.Strings;
@@ -35,8 +36,6 @@ import com.google.javascript.jscomp.CompilationLevel;
 import com.google.javascript.jscomp.CompilerOptions;
 import com.google.javascript.jscomp.CustomPassExecutionTime;
 import com.google.javascript.jscomp.SourceFile;
-
-import com.github.jsdossier.jscomp.DossierCompiler;
 import org.joda.time.Instant;
 import org.joda.time.Period;
 import org.joda.time.format.PeriodFormatterBuilder;
@@ -54,32 +53,58 @@ import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
-public class Main extends CommandLineRunner {
+final class Main {
+  private Main() {}
 
-  private final Config config;
+  private static class Runner extends CommandLineRunner {
+    private final Config config;
+    private TypeRegistry typeRegistry;
 
-  private TypeRegistry typeRegistry;
-
-  @VisibleForTesting
-  Main(String[] args, PrintStream out, PrintStream err, Config config) {
-    super(args, out, err);
-    this.config = config;
-  }
-
-  @Override
-  protected com.google.javascript.jscomp.Compiler createCompiler() {
-    return new DossierCompiler(getErrorPrintStream(), config.getModules());
-  }
-
-  @Override
-  @SuppressWarnings("unchecked")
-  protected CompilerOptions createOptions() {
-    AbstractCompiler compiler = getCompiler();
-    if (!(compiler instanceof DossierCompiler)) {
-      throw new AssertionError();
+    private Runner(String[] args, PrintStream out, PrintStream err, Config config) {
+      super(args, out, err);
+      this.config = config;
     }
-    typeRegistry = new TypeRegistry(compiler.getTypeRegistry());
-    return createOptions(config.getFileSystem(), typeRegistry, (DossierCompiler) compiler);
+
+    @Override
+    protected com.google.javascript.jscomp.Compiler createCompiler() {
+      return new DossierCompiler(getErrorPrintStream(), config.getModules());
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    protected CompilerOptions createOptions() {
+      AbstractCompiler compiler = getCompiler();
+      if (!(compiler instanceof DossierCompiler)) {
+        throw new AssertionError();
+      }
+      typeRegistry = new TypeRegistry(compiler.getTypeRegistry());
+      return Main.createOptions(config.getFileSystem(), typeRegistry, (DossierCompiler) compiler);
+    }
+
+    @Override
+    protected List<SourceFile> createInputs(List<String> files, boolean allowStdIn)
+        throws IOException {
+      List<SourceFile> inputs = new ArrayList<>(files.size());
+      for (String filename : files) {
+        checkArgument(!"-".equals(filename), "Reading from stdin not supported");
+        Path path = config.getFileSystem().getPath(filename);
+        try (InputStream inputStream = newInputStream(path)) {
+          SourceFile file = SourceFile.fromInputStream(filename, inputStream, UTF_8);
+          inputs.add(file);
+        }
+      }
+      return inputs;
+    }
+
+    @Override
+    public int doRun() throws IOException {
+      try {
+        return super.doRun();
+      } catch (FlagUsageException e) {
+        // FlagUsageException has protected visibility, so have to wrap for rethrow.
+        throw new IllegalArgumentException(e);
+      }
+    }
   }
 
   @VisibleForTesting
@@ -106,82 +131,6 @@ public class Main extends CommandLineRunner {
         new DocPass(compiler, typeRegistry, fileSystem));
 
     return options;
-  }
-
-  @Override
-  protected List<SourceFile> createInputs(List<String> files, boolean allowStdIn)
-      throws IOException {
-    List<SourceFile> inputs = new ArrayList<>(files.size());
-    for (String filename : files) {
-      checkArgument(!"-".equals(filename), "Reading from stdin not supported");
-      Path path = config.getFileSystem().getPath(filename);
-      try (InputStream inputStream = newInputStream(path)) {
-        SourceFile file = SourceFile.fromInputStream(filename, inputStream, UTF_8);
-        inputs.add(file);
-      }
-    }
-    return inputs;
-  }
-
-  private void runCompiler() {
-    if (!shouldRunCompiler()) {
-      System.exit(-1);
-    }
-
-    Instant start = Instant.now();
-    config.getOutputStream().println("Generating documentation...");
-
-    int result = 0;
-    try {
-      result = doRun();
-    } catch (FlagUsageException e) {
-      System.err.println(e.getMessage());
-      System.exit(-1);
-    } catch (Throwable t) {
-      t.printStackTrace(System.err);
-      System.exit(-2);
-    }
-
-    if (result != 0) {
-      System.exit(result);
-    }
-
-    DocWriter writer = new DocWriter(
-        config.getOutput(),
-        Iterables.concat(config.getSources(), config.getModules()),
-        config.getSrcPrefix(),
-        config.getReadme(),
-        config.getCustomPages(),
-        typeRegistry,
-        config.getTypeFilter(),
-        new Linker(
-            config.getOutput(),
-            config.getSrcPrefix(),
-            config.getModulePrefix(),
-            config.getTypeFilter(),
-            typeRegistry),
-        new CommentParser());
-    try {
-      writer.generateDocs();
-      if (config.isZipOutput()) {
-        config.getOutput().getFileSystem().close();
-      }
-    } catch (IOException e) {
-      e.printStackTrace(System.err);
-      System.exit(-3);
-    }
-
-    Instant stop = Instant.now();
-    String output = new PeriodFormatterBuilder()
-        .appendHours().appendSuffix("h")  // I hope not...
-        .appendSeparator(" ")
-        .appendMinutes().appendSuffix("m")
-        .appendSeparator(" ")
-        .appendSecondsWithOptionalMillis().appendSuffix("s")
-        .toFormatter()
-        .print(new Period(start, stop));
-
-    config.getOutputStream().println("Finished in " + output);
   }
 
   private static Function<Path, String> toFlag(final String flagPrefix) {
@@ -217,28 +166,18 @@ public class Main extends CommandLineRunner {
       "--jscomp_warning=visibility",
       "--third_party=false");
 
-  @VisibleForTesting static void run(String[] args, FileSystem fileSystem) {
-    Flags flags = Flags.parse(args, fileSystem);
-    Config config = null;
-    try (InputStream stream = newInputStream(flags.config)) {
-      config = Config.load(stream, fileSystem);
-    } catch (IOException e) {
-      e.printStackTrace(System.err);
-      System.exit(-1);
-    }
+  private static void print(Config config) {
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    String header = " Configuration  ";
+    int len = header.length();
+    String pad = Strings.repeat("=", len / 2);
 
-    if (flags.printConfig) {
-      Gson gson = new GsonBuilder().setPrettyPrinting().create();
-      String header = " Configuration  ";
-      int len = header.length();
-      String pad = Strings.repeat("=", len / 2);
+    System.err.println(pad + header + pad);
+    System.err.println(gson.toJson(config.toJson()));
+    System.err.println(Strings.repeat("=", 79));
+  }
 
-      System.err.println(pad + header + pad);
-      System.err.println(gson.toJson(config.toJson()));
-      System.err.println(Strings.repeat("=", 79));
-      System.exit(1);
-    }
-
+  private static String[] getCompilerFlags(Config config) {
     Iterable<String> standardFlags = STANDARD_FLAGS;
     if (config.isStrict()) {
       standardFlags = transform(standardFlags, new Function<String, String>() {
@@ -256,10 +195,10 @@ public class Main extends CommandLineRunner {
         .add("--language_in=" + config.getLanguage().getName())
         .addAll(standardFlags)
         .build();
+    return compilerFlags.toArray(new String[compilerFlags.size()]);
+  }
 
-    PrintStream nullStream = new PrintStream(ByteStreams.nullOutputStream());
-    args = compilerFlags.toArray(new String[compilerFlags.size()]);
-
+  private static void configureLogging() {
     Logger log = Logger.getLogger(Main.class.getPackage().getName());
     log.setLevel(Level.WARNING);
     log.addHandler(new Handler() {
@@ -275,17 +214,83 @@ public class Main extends CommandLineRunner {
       @Override public void flush() {}
       @Override public void close() {}
     });
+  }
 
-    Main main = new Main(args, nullStream, System.err, config);
-    main.runCompiler();
+  @VisibleForTesting
+  static int run(String[] args, FileSystem fileSystem) throws IOException {
+    Flags flags = Flags.parse(args, fileSystem);
+    Config config;
+    try (InputStream stream = newInputStream(flags.config)) {
+      config = Config.load(stream, fileSystem);
+    }
+
+    if (flags.printConfig) {
+      print(config);
+      return 1;
+    }
+    configureLogging();
+
+    Runner runner = new Runner(
+        getCompilerFlags(config),
+        new PrintStream(ByteStreams.nullOutputStream()),
+        System.err,
+        config);
+
+    if (!runner.shouldRunCompiler()) {
+      return -1;
+    }
+
+    Instant start = Instant.now();
+    System.out.println("Generating documentation...");
+
+    int result = runner.doRun();
+    if (result != 0) {
+      return result;
+    }
+
+    DocWriter writer = new DocWriter(
+        config.getOutput(),
+        Iterables.concat(config.getSources(), config.getModules()),
+        config.getSrcPrefix(),
+        config.getReadme(),
+        config.getCustomPages(),
+        runner.typeRegistry,
+        config.getTypeFilter(),
+        new Linker(
+            config.getOutput(),
+            config.getSrcPrefix(),
+            config.getModulePrefix(),
+            config.getTypeFilter(),
+            runner.typeRegistry),
+        new CommentParser());
+
+    writer.generateDocs();
+    if (config.isZipOutput()) {
+      config.getOutput().getFileSystem().close();
+    }
+
+    Instant stop = Instant.now();
+    String output = new PeriodFormatterBuilder()
+        .appendHours().appendSuffix("h")  // I hope not...
+        .appendSeparator(" ")
+        .appendMinutes().appendSuffix("m")
+        .appendSeparator(" ")
+        .appendSecondsWithOptionalMillis().appendSuffix("s")
+        .toFormatter()
+        .print(new Period(start, stop));
+
+    System.out.println("Finished in " + output);
+    return 0;
   }
 
   public static void main(String[] args) {
-    run(args, FileSystems.getDefault());
-
-    // Explicitly exit. Soy bootstraps itself with Guice, whose finalers cause the JVM to
-    // take >30 seconds to shutdown.
-    // TODO: track down the exact cause of shutdown delay and fix it.
-    System.exit(0);
+    int exitCode;
+    try {
+      exitCode = run(args, FileSystems.getDefault());
+    } catch (IOException e) {
+      e.printStackTrace(System.err);
+      exitCode = 2;
+    }
+    System.exit(exitCode);
   }
 }

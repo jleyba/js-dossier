@@ -59,7 +59,6 @@ import com.google.javascript.jscomp.deps.SortedDependencies;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.annotation.ElementType;
@@ -100,8 +99,6 @@ class Config {
   private final ImmutableList<MarkdownPage> customPages;
   private final boolean strict;
   private final Language language;
-  private final PrintStream outputStream;
-  private final PrintStream errorStream;
   private final FileSystem fileSystem;
 
   /**
@@ -119,8 +116,6 @@ class Config {
    * @param modulePrefix Prefix to strip from each module path when rendering documentation.
    * @param strict Whether to enable all type checks.
    * @param language The JavaScript dialog sources must conform to.
-   * @param outputStream The stream to use for standard output.
-   * @param errorStream The stream to use for error output.
    * @throws IllegalStateException If any of source, moudle, and extern sets intersect, or if the
    *     output path is not a directory.
    */
@@ -137,8 +132,6 @@ class Config {
       Optional<Path> modulePrefix,
       boolean strict,
       Language language,
-      PrintStream outputStream,
-      PrintStream errorStream,
       FileSystem fileSystem) {
     checkArgument(!srcs.isEmpty() || !modules.isEmpty(),
         "There must be at least one input source or module");
@@ -174,8 +167,6 @@ class Config {
     this.customPages = ImmutableList.copyOf(customPages);
     this.strict = strict;
     this.language = language;
-    this.outputStream = outputStream;
-    this.errorStream = errorStream;
     this.fileSystem = fileSystem;
   }
 
@@ -266,20 +257,6 @@ class Config {
    */
   Language getLanguage() {
     return language;
-  }
-
-  /**
-   * Returns the stream to use as stdout.
-   */
-  PrintStream getOutputStream() {
-    return outputStream;
-  }
-
-  /**
-   * Returns the stream to use as stderr.
-   */
-  PrintStream getErrorStream() {
-    return errorStream;
   }
 
   /**
@@ -447,8 +424,6 @@ class Config {
         spec.stripModulePrefix,
         spec.strict,
         spec.language,
-        System.out,
-        System.err,
         fileSystem);
   }
 
