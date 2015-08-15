@@ -98,6 +98,7 @@ class DocWriter {
   private final Linker linker;
   private final CommentParser parser;
   private final NavIndexFactory navIndex;
+  private final DocTemplate template;
 
   private final Renderer renderer = new Renderer();
   private final TypeIndex typeIndex = new TypeIndex();
@@ -114,7 +115,9 @@ class DocWriter {
       Predicate<NominalType> typeFilter,
       Linker linker,
       CommentParser parser,
-      NavIndexFactory navIndex) {
+      NavIndexFactory navIndex,
+      DocTemplate template) {
+    this.template = template;
     this.outputDir = checkNotNull(outputDir);
     this.inputFiles = ImmutableSet.copyOf(inputFiles);
     this.sortedTypes = sortedTypes;
@@ -364,15 +367,12 @@ class DocWriter {
   }
 
   private void copyResources() throws IOException {
-    copyResource("resources/dossier.css", outputDir);
-    copyResource("resources/dossier.js", outputDir);
-  }
-
-  private static void copyResource(String resource, Path outputDir) throws IOException {
-    String resourceName = outputDir.getFileSystem().getPath(resource).getFileName().toString();
-    try (InputStream stream = DocPass.class.getResourceAsStream(resource)) {
-      Path outputPath = outputDir.resolve(resourceName);
-      Files.copy(stream, outputPath, REPLACE_EXISTING);
+    for (TemplateFile file
+        : Iterables.concat(template.getCss(), template.getHeadJs(), template.getTailJs())) {
+      try (InputStream input = file.getSource().openStream()) {
+        Path output = outputDir.resolve(file.getName());
+        Files.copy(input, output, REPLACE_EXISTING);
+      }
     }
   }
 
@@ -387,14 +387,21 @@ class DocWriter {
   }
 
   private Resources getResources(Path forPathFromRoot) {
-    Path pathToRoot = outputDir
+    final Path pathToRoot = outputDir
         .resolve(forPathFromRoot)
         .getParent()
         .relativize(outputDir);
+    Function<TemplateFile, String> toOutputPath = new Function<TemplateFile, String>() {
+      @Override
+      public String apply(TemplateFile input) {
+        return resolve(pathToRoot, input.getName());
+      }
+    };
     return Resources.newBuilder()
-        .addCss(resolve(pathToRoot, "dossier.css"))
+        .addAllCss(FluentIterable.from(template.getCss()).transform(toOutputPath))
+        .addAllHeadScript(FluentIterable.from(template.getHeadJs()).transform(toOutputPath))
         .addTailScript(resolve(pathToRoot, "types.js"))
-        .addTailScript(resolve(pathToRoot, "dossier.js"))
+        .addAllTailScript(FluentIterable.from(template.getTailJs()).transform(toOutputPath))
         .build();
   }
 

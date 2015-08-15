@@ -307,7 +307,8 @@ final class Main {
         config.getTypeFilter(),
         linker,
         new CommentParser(),
-        index);
+        index,
+        new DefaultDocTemplate());
 
     writer.generateDocs();
     if (config.isZipOutput()) {
