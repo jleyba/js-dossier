@@ -29,6 +29,8 @@ import static java.nio.file.Files.readAllBytes;
 import static java.nio.file.Files.write;
 import static org.junit.Assert.assertEquals;
 
+import com.google.common.base.Supplier;
+import com.google.common.base.Suppliers;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
@@ -37,11 +39,11 @@ import com.google.common.jimfs.Jimfs;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -97,6 +99,19 @@ public class EndToEndTest {
     copyResource("resources/module/worker.js", srcDir.resolve("main/example/worker.js"));
   }
 
+  private static Supplier<Path> createDataSupplier(final Path output) {
+    return Suppliers.memoize(new Supplier<Path>() {
+      @Override
+      public Path get() {
+        try {
+          return generateData(output);
+        } catch (IOException e) {
+          throw new RuntimeException(e);
+        }
+      }
+    });
+  }
+
   private static Path generateData(final Path output) throws IOException {
     System.out.println("Generating output in " + output);
     Path config = createTempFile(tmpDir, "config", ".json");
@@ -144,23 +159,30 @@ public class EndToEndTest {
     initFileSystem();
     ImmutableList.Builder<Object[]> data = ImmutableList.builder();
 
-    data.add(new Object[]{generateData(tmpDir.resolveSibling("out")), "directory"});
-    data.add(new Object[]{generateData(tmpDir.resolveSibling("out.zip")), "zip file"});
+    data.add(new Object[]{createDataSupplier(tmpDir.resolveSibling("out")), "directory"});
+    data.add(new Object[]{createDataSupplier(tmpDir.resolveSibling("out.zip")), "zip file"});
 
     return data.build();
   }
 
-  private final Path outDir;
+  private final Supplier<Path> outputDirSupplier;
   private final String scenario;
 
-  public EndToEndTest(Path outDir, String scenario) {
-    this.outDir = outDir;
+  private Path outDir;
+
+  public EndToEndTest(Supplier<Path> outputDirSupplier, String scenario) {
+    this.outputDirSupplier = outputDirSupplier;
     this.scenario = scenario;
   }
 
   @Override
   public String toString() {
     return "EndToEndTest::" + scenario;
+  }
+
+  @Before
+  public void initOutputDir() {
+    outDir = outputDirSupplier.get();
   }
 
   @Test

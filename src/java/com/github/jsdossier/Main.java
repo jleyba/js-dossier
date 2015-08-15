@@ -18,6 +18,7 @@ package com.github.jsdossier;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Predicates.not;
 import static com.google.common.collect.Iterables.transform;
+import static com.google.common.io.Files.getFileExtension;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.newInputStream;
 
@@ -28,6 +29,7 @@ import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
 import com.google.common.io.ByteStreams;
 import com.google.gson.Gson;
@@ -46,6 +48,7 @@ import org.joda.time.format.PeriodFormatterBuilder;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.net.URI;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
@@ -251,6 +254,30 @@ final class Main {
       print(config);
       return 1;
     }
+
+    Path output = config.getOutput();
+    if ("zip".equals(getFileExtension(output.toString()))) {
+      try (FileSystem outputFs = openZipFileSystem(output)) {
+        output = outputFs.getPath("/");
+        return run(config, output);
+      }
+    }
+    return run(config, output);
+  }
+
+  private static FileSystem openZipFileSystem(Path zip) throws IOException {
+    ImmutableMap<String, String> attributes = ImmutableMap.of(
+        "create", "true",
+        "encoding", UTF_8.displayName());
+    if (zip.getFileSystem() == FileSystems.getDefault()) {
+      URI uri = URI.create("jar:file:" + zip.toAbsolutePath());
+      return FileSystems.newFileSystem(uri, attributes);
+    }
+    // An in-memory file system used for testing.
+    return zip.getFileSystem().provider().newFileSystem(zip, attributes);
+  }
+
+  private static int run(Config config, Path outputDir) throws IOException {
     configureLogging();
 
     Runner runner = new Runner(
@@ -272,7 +299,7 @@ final class Main {
     }
 
     Linker linker = new Linker(
-        config.getOutput(),
+        outputDir,
         config.getSrcPrefix(),
         config.getModulePrefix(),
         config.getTypeFilter(),
@@ -290,13 +317,13 @@ final class Main {
         .toSortedList(new DisplayNameComparator(linker));
 
     NavIndexFactory index = NavIndexFactory.create(
-        config.getOutput().resolve(INDEX_FILE_NAME),
+        outputDir.resolve(INDEX_FILE_NAME),
         !modules.isEmpty(),
         !types.isEmpty(),
         config.getCustomPages());
 
     DocWriter writer = new DocWriter(
-        config.getOutput(),
+        outputDir,
         Iterables.concat(config.getSources(), config.getModules()),
         types,
         modules,
@@ -311,9 +338,6 @@ final class Main {
         new DefaultDocTemplate());
 
     writer.generateDocs();
-    if (config.isZipOutput()) {
-      config.getOutput().getFileSystem().close();
-    }
 
     Instant stop = Instant.now();
     String output = new PeriodFormatterBuilder()
