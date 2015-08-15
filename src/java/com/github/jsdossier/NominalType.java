@@ -241,6 +241,33 @@ public final class NominalType implements StaticTypedScope<JSType> {
         && !typeDescriptor.type.isEnumType();
   }
 
+  /**
+   * Returns whether this is an "empty" namespace. A type is considered an empty namespace if
+   * <ul>
+   *   <li>it is not the {@code exports} object for a CommonJS module,</li>
+   *   <li>its only children are other namespaces,</li>
+   *   <li>and it has no properties</li>
+   * </ul>
+   */
+  public boolean isEmptyNamespace() {
+    if (isModuleExports()) {
+      return false;
+    }
+    for (NominalType child : getTypes()) {
+      if (!child.isNamespace()) {
+        return false;
+      }
+    }
+    return isNamespace() && getProperties().isEmpty();
+  }
+
+  /**
+   * Returns whether this type is a {@literal @typedef}.
+   */
+  public boolean isTypedef() {
+    return getJsdoc() != null && getJsdoc().isTypedef();
+  }
+
   TypeDescriptor getTypeDescriptor() {
     return typeDescriptor;
   }

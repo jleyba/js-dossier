@@ -16,6 +16,7 @@
 package com.github.jsdossier;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Predicates.not;
 import static com.google.common.collect.Iterables.transform;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.newInputStream;
@@ -23,7 +24,9 @@ import static java.nio.file.Files.newInputStream;
 import com.github.jsdossier.jscomp.DossierCompiler;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Function;
+import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
+import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.io.ByteStreams;
@@ -216,6 +219,24 @@ final class Main {
     });
   }
 
+  private static Predicate<NominalType> isNotTypedef() {
+    return new Predicate<NominalType>() {
+      @Override
+      public boolean apply(NominalType input) {
+        return !input.isTypedef();
+      }
+    };
+  }
+
+  private static Predicate<NominalType> isNonEmptyNamespace() {
+    return new Predicate<NominalType>() {
+      @Override
+      public boolean apply(NominalType input) {
+        return !input.isEmptyNamespace();
+      }
+    };
+  }
+
   @VisibleForTesting
   static int run(String[] args, FileSystem fileSystem) throws IOException {
     Flags flags = Flags.parse(args, fileSystem);
@@ -248,20 +269,35 @@ final class Main {
       return result;
     }
 
+    Linker linker = new Linker(
+        config.getOutput(),
+        config.getSrcPrefix(),
+        config.getModulePrefix(),
+        config.getTypeFilter(),
+        runner.typeRegistry);
+
+    ImmutableList<NominalType> types = FluentIterable
+        .from(runner.typeRegistry.getNominalTypes())
+        .filter(not(config.getTypeFilter()))
+        .filter(isNonEmptyNamespace())
+        .filter(isNotTypedef())
+        .toSortedList(new QualifiedNameComparator());
+
+    ImmutableList<NominalType> modules = FluentIterable
+        .from(runner.typeRegistry.getModules())
+        .toSortedList(new DisplayNameComparator(linker));
+
     DocWriter writer = new DocWriter(
         config.getOutput(),
         Iterables.concat(config.getSources(), config.getModules()),
+        types,
+        modules,
         config.getSrcPrefix(),
         config.getReadme(),
         config.getCustomPages(),
         runner.typeRegistry,
         config.getTypeFilter(),
-        new Linker(
-            config.getOutput(),
-            config.getSrcPrefix(),
-            config.getModulePrefix(),
-            config.getTypeFilter(),
-            runner.typeRegistry),
+        linker,
         new CommentParser());
 
     writer.generateDocs();

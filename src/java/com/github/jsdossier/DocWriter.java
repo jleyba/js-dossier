@@ -17,7 +17,6 @@ package com.github.jsdossier;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Predicates.not;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.base.Verify.verify;
 import static com.google.common.collect.Iterables.transform;
@@ -28,6 +27,20 @@ import static java.nio.file.StandardOpenOption.CREATE;
 import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 import static java.nio.file.StandardOpenOption.WRITE;
 
+import com.github.jsdossier.proto.BaseProperty;
+import com.github.jsdossier.proto.Comment;
+import com.github.jsdossier.proto.Deprecation;
+import com.github.jsdossier.proto.Enumeration;
+import com.github.jsdossier.proto.HtmlRenderSpec;
+import com.github.jsdossier.proto.Index;
+import com.github.jsdossier.proto.JsType;
+import com.github.jsdossier.proto.JsTypeRenderSpec;
+import com.github.jsdossier.proto.Resources;
+import com.github.jsdossier.proto.SourceFile;
+import com.github.jsdossier.proto.SourceFileRenderSpec;
+import com.github.jsdossier.proto.TypeLink;
+import com.github.jsdossier.proto.Visibility;
+import com.github.jsdossier.soy.Renderer;
 import com.google.common.base.Charsets;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
@@ -54,21 +67,6 @@ import com.google.javascript.rhino.jstype.ObjectType;
 import com.google.javascript.rhino.jstype.Property;
 import com.google.javascript.rhino.jstype.TemplatizedType;
 
-import com.github.jsdossier.proto.BaseProperty;
-import com.github.jsdossier.proto.Comment;
-import com.github.jsdossier.proto.Deprecation;
-import com.github.jsdossier.proto.Enumeration;
-import com.github.jsdossier.proto.HtmlRenderSpec;
-import com.github.jsdossier.proto.Index;
-import com.github.jsdossier.proto.JsType;
-import com.github.jsdossier.proto.JsTypeRenderSpec;
-import com.github.jsdossier.proto.Resources;
-import com.github.jsdossier.proto.SourceFile;
-import com.github.jsdossier.proto.SourceFileRenderSpec;
-import com.github.jsdossier.proto.TypeLink;
-import com.github.jsdossier.proto.Visibility;
-import com.github.jsdossier.soy.Renderer;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -92,6 +90,8 @@ class DocWriter {
 
   private final Path outputDir;
   private final ImmutableSet<Path> inputFiles;
+  private final ImmutableList<NominalType> sortedTypes;
+  private final ImmutableList<NominalType> sortedModules;
   private final Path sourcePrefix;
   private final Optional<Path> readme;
   private final TypeRegistry typeRegistry;
@@ -103,13 +103,13 @@ class DocWriter {
   private final Renderer renderer = new Renderer();
   private final TypeIndex typeIndex = new TypeIndex();
 
-  private Iterable<NominalType> sortedTypes;
-  private Iterable<NominalType> sortedModules;
   private Index masterIndex;
 
   DocWriter(
       Path outputDir,
       Iterable<Path> inputFiles,
+      ImmutableList<NominalType> sortedTypes,
+      ImmutableList<NominalType> sortedModules,
       Path sourcePrefix,
       Optional<Path> readme,
       ImmutableList<MarkdownPage> markdownPages,
@@ -119,6 +119,8 @@ class DocWriter {
       CommentParser parser) {
     this.outputDir = checkNotNull(outputDir);
     this.inputFiles = ImmutableSet.copyOf(inputFiles);
+    this.sortedTypes = sortedTypes;
+    this.sortedModules = sortedModules;
     this.sourcePrefix = checkNotNull(sourcePrefix);
     this.readme = checkNotNull(readme);
     this.markdownPages = checkNotNull(markdownPages);
@@ -129,14 +131,6 @@ class DocWriter {
   }
 
   public void generateDocs() throws IOException {
-    sortedTypes = FluentIterable.from(typeRegistry.getNominalTypes())
-        .filter(not(isFilteredType()))
-        .filter(isNonEmpty())
-        .filter(not(isTypedef()))
-        .toSortedList(new QualifiedNameComparator());
-    sortedModules = FluentIterable.from(typeRegistry.getModules())
-        .toSortedList(new DisplayNameComparator());
-
     masterIndex = generateNavIndex();
 
     createDirectories(outputDir);
@@ -146,7 +140,7 @@ class DocWriter {
     generateCustomPages();
 
     for (NominalType type : sortedTypes) {
-      if (isEmptyNamespace(type)) {
+      if (type.isEmptyNamespace()) {
         continue;
       }
       generateDocs(typeIndex.addType(type));
@@ -306,7 +300,7 @@ class DocWriter {
     renderer.render(output, spec.build());
 
     for (NominalType type : module.getTypes()) {
-      if (!isEmptyNamespace(type)) {
+      if (!type.isEmptyNamespace()) {
         generateDocs(ref.addType(type));
       }
     }
@@ -1062,9 +1056,7 @@ class DocWriter {
     return new Predicate<NominalType>() {
       @Override
       public boolean apply(@Nullable NominalType input) {
-        return input != null
-            && input.getJsdoc() != null
-            && input.getJsdoc().isTypedef();
+        return input != null && input.isTypedef();
       }
     };
   }
@@ -1073,25 +1065,9 @@ class DocWriter {
     return new Predicate<NominalType>() {
       @Override
       public boolean apply(NominalType input) {
-        return !isEmptyNamespace(input);
+        return !input.isEmptyNamespace();
       }
     };
-  }
-
-  /**
-   * Tests if a nominal type is an "empty" namespace. A type is considered empty if it is not
-   * a constructor, interface, enum and has no non-namespace children.
-   */
-  private static boolean isEmptyNamespace(NominalType type) {
-    if (type.isModuleExports()) {
-      return false;
-    }
-    for (NominalType child : type.getTypes()) {
-      if (!child.isNamespace()) {
-        return false;
-      }
-    }
-    return type.isNamespace() && type.getProperties().isEmpty();
   }
 
   private static boolean isVacuousTypeComment(Comment comment) {
@@ -1109,24 +1085,10 @@ class DocWriter {
     }
   }
 
-  private static class QualifiedNameComparator implements Comparator<NominalType> {
-    @Override
-    public int compare(NominalType a, NominalType b) {
-      return a.getQualifiedName().compareTo(b.getQualifiedName());
-    }
-  }
-
   private static class PropertyNameComparator implements Comparator<Property> {
     @Override
     public int compare(Property a, Property b) {
       return a.getName().compareTo(b.getName());
-    }
-  }
-
-  private class DisplayNameComparator implements Comparator<NominalType> {
-    @Override
-    public int compare(NominalType a, NominalType b) {
-      return linker.getDisplayName(a).compareTo(linker.getDisplayName(b));
     }
   }
 

@@ -176,6 +176,8 @@ public class DocWriterTest {
       DocWriter writer = new DocWriter(
           config.getOutput(),
           Iterables.concat(config.getSources(), config.getModules()),
+          ImmutableList.copyOf(typeRegistry.getNominalTypes()),
+          ImmutableList.copyOf(typeRegistry.getModules()),
           config.getSrcPrefix(),
           config.getReadme(),
           config.getCustomPages(),
