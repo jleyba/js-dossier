@@ -59,6 +59,8 @@ import java.util.logging.Logger;
 final class Main {
   private Main() {}
 
+  private static final String INDEX_FILE_NAME = "index.html";
+
   private static class Runner extends CommandLineRunner {
     private final Config config;
     private TypeRegistry typeRegistry;
@@ -287,6 +289,12 @@ final class Main {
         .from(runner.typeRegistry.getModules())
         .toSortedList(new DisplayNameComparator(linker));
 
+    NavIndexFactory index = NavIndexFactory.create(
+        config.getOutput().resolve(INDEX_FILE_NAME),
+        !modules.isEmpty(),
+        !types.isEmpty(),
+        config.getCustomPages());
+
     DocWriter writer = new DocWriter(
         config.getOutput(),
         Iterables.concat(config.getSources(), config.getModules()),
@@ -298,7 +306,8 @@ final class Main {
         runner.typeRegistry,
         config.getTypeFilter(),
         linker,
-        new CommentParser());
+        new CommentParser(),
+        index);
 
     writer.generateDocs();
     if (config.isZipOutput()) {

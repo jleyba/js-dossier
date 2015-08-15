@@ -32,7 +32,6 @@ import com.github.jsdossier.proto.Comment;
 import com.github.jsdossier.proto.Deprecation;
 import com.github.jsdossier.proto.Enumeration;
 import com.github.jsdossier.proto.HtmlRenderSpec;
-import com.github.jsdossier.proto.Index;
 import com.github.jsdossier.proto.JsType;
 import com.github.jsdossier.proto.JsTypeRenderSpec;
 import com.github.jsdossier.proto.Resources;
@@ -43,7 +42,6 @@ import com.github.jsdossier.proto.Visibility;
 import com.github.jsdossier.soy.Renderer;
 import com.google.common.base.Charsets;
 import com.google.common.base.Function;
-import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
@@ -99,11 +97,10 @@ class DocWriter {
   private final ImmutableList<MarkdownPage> markdownPages;
   private final Linker linker;
   private final CommentParser parser;
+  private final NavIndexFactory navIndex;
 
   private final Renderer renderer = new Renderer();
   private final TypeIndex typeIndex = new TypeIndex();
-
-  private Index masterIndex;
 
   DocWriter(
       Path outputDir,
@@ -116,7 +113,8 @@ class DocWriter {
       TypeRegistry typeRegistry,
       Predicate<NominalType> typeFilter,
       Linker linker,
-      CommentParser parser) {
+      CommentParser parser,
+      NavIndexFactory navIndex) {
     this.outputDir = checkNotNull(outputDir);
     this.inputFiles = ImmutableSet.copyOf(inputFiles);
     this.sortedTypes = sortedTypes;
@@ -128,11 +126,10 @@ class DocWriter {
     this.typeFilter = checkNotNull(typeFilter);
     this.linker = checkNotNull(linker);
     this.parser = checkNotNull(parser);
+    this.navIndex = navIndex;
   }
 
   public void generateDocs() throws IOException {
-    masterIndex = generateNavIndex();
-
     createDirectories(outputDir);
     copyResources();
     copySourceFiles();
@@ -151,43 +148,6 @@ class DocWriter {
     }
 
     writeTypesJson();
-  }
-
-  private Index generateNavIndex(Path path) {
-    Index.Builder builder = Index.newBuilder()
-        .mergeFrom(masterIndex);
-
-    Path toRoot = path.getParent().relativize(outputDir);
-    if (toRoot.getNameCount() == 0) {
-      toRoot = outputDir;
-    }
-
-    builder.setHome(toUrlPath(toRoot.resolve(INDEX_FILE_NAME)));
-
-    for (TypeLink.Builder link : builder.getLinksBuilderList()) {
-      link.setHref(toUrlPath(toRoot.resolve(link.getHref())));
-    }
-
-    return builder.build();
-  }
-
-  private static String toUrlPath(Path p) {
-    return Joiner.on('/').join(p.iterator());
-  }
-
-  private Index generateNavIndex() {
-    Index.Builder builder = Index.newBuilder()
-        .setHome(INDEX_FILE_NAME)
-        .setIncludeModules(sortedModules.iterator().hasNext())
-        .setIncludeTypes(sortedTypes.iterator().hasNext());
-
-    for (MarkdownPage page : markdownPages) {
-      builder.addLinksBuilder()
-          .setHref(page.getName().replace(' ', '_') + ".html")
-          .setText(page.getName());
-    }
-
-    return builder.build();
   }
 
   private void generateIndex() throws IOException {
@@ -222,7 +182,7 @@ class DocWriter {
     HtmlRenderSpec.Builder spec = HtmlRenderSpec.newBuilder()
         .setResources(getResources(output))
         .setTitle(title)
-        .setIndex(masterIndex)
+        .setIndex(navIndex.create(output))
         .setContent(content);
     renderer.render(output, spec.build());
   }
@@ -296,7 +256,7 @@ class DocWriter {
     JsTypeRenderSpec.Builder spec = JsTypeRenderSpec.newBuilder()
         .setResources(getResources(output))
         .setType(jsTypeBuilder.build())
-        .setIndex(generateNavIndex(output));
+        .setIndex(navIndex.create(output));
     renderer.render(output, spec.build());
 
     for (NominalType type : module.getTypes()) {
@@ -398,7 +358,7 @@ class DocWriter {
     JsTypeRenderSpec.Builder spec = JsTypeRenderSpec.newBuilder()
         .setResources(getResources(output))
         .setType(jsTypeBuilder.build())
-        .setIndex(generateNavIndex(output));
+        .setIndex(navIndex.create(output));
     renderer.render(output, spec.build());
     linker.popContext();
   }
@@ -462,7 +422,7 @@ class DocWriter {
       SourceFileRenderSpec.Builder spec = SourceFileRenderSpec.newBuilder()
           .setFile(file)
           .setResources(getResources(renderPath))
-          .setIndex(generateNavIndex(renderPath));
+          .setIndex(navIndex.create(renderPath));
 
       renderer.render(renderPath, spec.build());
     }

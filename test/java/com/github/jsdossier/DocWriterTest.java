@@ -189,7 +189,8 @@ public class DocWriterTest {
               config.getModulePrefix(),
               config.getTypeFilter(),
               typeRegistry),
-          new CommentParser());
+          new CommentParser(),
+          NavIndexFactory.create(config.getOutput().resolve("root"), true, true, config.getCustomPages()));
       writer.generateDocs();
     }
   }

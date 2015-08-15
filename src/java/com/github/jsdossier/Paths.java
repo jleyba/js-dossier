@@ -22,6 +22,7 @@ import static com.google.common.collect.Iterables.isEmpty;
 import static com.google.common.collect.Iterables.transform;
 
 import com.google.common.base.Function;
+import com.google.common.base.Joiner;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Ordering;
@@ -39,6 +40,13 @@ import java.util.List;
  */
 class Paths {
   private Paths() {}
+
+  /**
+   * Normalizes the path separators in {@code p} to forward slashes.
+   */
+  static String toUrlPath(Path p) {
+    return Joiner.on('/').join(p.iterator());
+  }
 
   /**
    * Computes the relative path {@code from} one path {@code to} another. The
