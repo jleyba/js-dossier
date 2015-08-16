@@ -24,23 +24,30 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
-import com.github.jsdossier.jscomp.DossierCompiler;
+import com.github.jsdossier.annotations.Input;
+import com.github.jsdossier.annotations.Modules;
+import com.github.jsdossier.annotations.Stderr;
 import com.google.common.base.Joiner;
-import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.jimfs.Jimfs;
-import com.google.javascript.jscomp.CompilerOptions;
+import com.google.inject.AbstractModule;
+import com.google.inject.Provides;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.JSTypeExpression;
 import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.jstype.Property;
-import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import java.io.PrintStream;
+import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.Iterator;
+
+import javax.inject.Inject;
 
 /**
  * Tests for {@link JsDoc}.
@@ -48,17 +55,20 @@ import java.util.Iterator;
 @RunWith(JUnit4.class)
 public class JsDocTest {
 
-  private TypeRegistry typeRegistry;
-  private CompilerUtil util;
+  @Rule
+  public GuiceRule guice = new GuiceRule(this, new AbstractModule() {
+    @Override protected void configure() {
+      install(new CompilerModule());
+    }
+    @Provides @Input FileSystem provideFs() { return fileSystem; }
+    @Provides @Stderr PrintStream provideStderr() { return System.err; }
+    @Provides @Modules ImmutableSet<Path> provideModules() { return ImmutableSet.of(); }
+  });
 
-  @Before
-  public void setUp() {
-    DossierCompiler compiler = new DossierCompiler(System.err, ImmutableList.<Path>of());
-    typeRegistry = new TypeRegistry(compiler.getTypeRegistry());
-    CompilerOptions options = Main.createOptions(Jimfs.newFileSystem(), typeRegistry, compiler);
+  private final FileSystem fileSystem = Jimfs.newFileSystem();
 
-    util = new CompilerUtil(compiler, options);
-  }
+  @Inject CompilerUtil util;
+  @Inject TypeRegistry typeRegistry;
 
   @Test
   public void returnsEmptyBlockCommentIfAnnotationsOnly() {

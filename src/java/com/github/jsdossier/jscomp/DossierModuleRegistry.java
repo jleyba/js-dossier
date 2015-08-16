@@ -20,8 +20,10 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
+import com.github.jsdossier.annotations.Modules;
 import com.google.common.base.Functions;
 import com.google.common.collect.FluentIterable;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.javascript.rhino.Node;
 
@@ -32,10 +34,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import javax.inject.Inject;
+
 /**
  * Tracks which source files should be treated as CommonJS modules during a compiler run.
  */
-public class DossierModuleRegistry {
+public final class DossierModuleRegistry {
 
   private final FileSystem fileSystem;
   private final Set<String> commonJsModulePaths;
@@ -49,7 +53,8 @@ public class DossierModuleRegistry {
    * @param commonJsModulePaths the set of source files that should be treated as a CommonJS
    *     modules. All other source files will be treated as normal JS files.
    */
-  public DossierModuleRegistry(Iterable<Path> commonJsModulePaths) {
+  @Inject
+  public DossierModuleRegistry(@Modules ImmutableSet<Path> commonJsModulePaths) {
     this.commonJsModulePaths = FluentIterable.from(commonJsModulePaths)
         .transform(Functions.toStringFunction())
         .toSet();

@@ -21,47 +21,47 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import com.github.jsdossier.jscomp.DossierCompiler;
+import com.github.jsdossier.annotations.Input;
+import com.github.jsdossier.annotations.Modules;
+import com.github.jsdossier.annotations.Stderr;
 import com.github.jsdossier.proto.Comment;
 import com.github.jsdossier.proto.TypeLink;
-import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.common.jimfs.Jimfs;
-import com.google.javascript.jscomp.CompilerOptions;
-import com.google.javascript.rhino.ErrorReporter;
-import com.google.javascript.rhino.jstype.JSTypeRegistry;
-import org.junit.Before;
+import com.google.inject.AbstractModule;
+import com.google.inject.Provides;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import java.io.PrintStream;
 import java.nio.file.FileSystem;
 import java.nio.file.Path;
+
+import javax.inject.Inject;
 
 @RunWith(JUnit4.class)
 public class CommentParserTest {
 
-  private FileSystem fileSystem;
-  private TypeRegistry typeRegistry;
-  private CompilerUtil util;
-  private Linker mockLinker;
+  @Rule
+  public GuiceRule guice = new GuiceRule(this, new AbstractModule() {
+    @Override
+    protected void configure() {
+      install(new CompilerModule());
+    }
+    @Provides @Input FileSystem provideFs() { return fileSystem; }
+    @Provides @Stderr PrintStream provideStderr() { return System.err; }
+    @Provides @Modules ImmutableSet<Path> provideModules() { return ImmutableSet.of(); }
+  });
 
-  private final CommentParser parser = new CommentParser();
+  private final FileSystem fileSystem = Jimfs.newFileSystem();
+  private final Linker mockLinker = mock(Linker.class);
 
-  @Before
-  public void setUp() {
-    fileSystem = Jimfs.newFileSystem();
-    mockLinker = mock(Linker.class);
-
-    ErrorReporter errorReporter = mock(ErrorReporter.class);
-    JSTypeRegistry jsTypeRegistry = new JSTypeRegistry(errorReporter);
-    typeRegistry = new TypeRegistry(jsTypeRegistry);
-
-    DossierCompiler compiler = new DossierCompiler(System.err, ImmutableList.<Path>of());
-    CompilerOptions options = Main.createOptions(fileSystem, typeRegistry, compiler);
-
-    util = new CompilerUtil(compiler, options);
-  }
+  @Inject CompilerUtil util;
+  @Inject CommentParser parser;
+  @Inject TypeRegistry typeRegistry;
 
   @Test
   public void getSummaryWhenEntireCommentIsSummary_fullSentence() {

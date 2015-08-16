@@ -21,6 +21,15 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.base.Verify.verify;
 import static com.google.common.collect.Iterables.filter;
 
+import com.github.jsdossier.annotations.ModulePrefix;
+import com.github.jsdossier.annotations.Output;
+import com.github.jsdossier.annotations.SourcePrefix;
+import com.github.jsdossier.annotations.TypeFilter;
+import com.github.jsdossier.jscomp.DossierModule;
+import com.github.jsdossier.proto.Comment;
+import com.github.jsdossier.proto.SourceLink;
+import com.github.jsdossier.proto.TypeLink;
+import com.github.jsdossier.proto.TypeLinkOrBuilder;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Predicate;
@@ -44,17 +53,12 @@ import com.google.javascript.rhino.jstype.TemplatizedType;
 import com.google.javascript.rhino.jstype.UnionType;
 import com.google.javascript.rhino.jstype.Visitor;
 
-import com.github.jsdossier.jscomp.DossierModule;
-import com.github.jsdossier.proto.Comment;
-import com.github.jsdossier.proto.SourceLink;
-import com.github.jsdossier.proto.TypeLink;
-import com.github.jsdossier.proto.TypeLinkOrBuilder;
-
 import java.nio.file.Path;
 import java.util.Iterator;
 import java.util.Stack;
 
 import javax.annotation.Nullable;
+import javax.inject.Inject;
 
 public class Linker {
 
@@ -69,11 +73,12 @@ public class Linker {
   /**
    * @param typeRegistry The type registry.
    */
-  public Linker(
-      Path outputRoot,
-      Path sourcePrefix,
-      Path modulePrefix,
-      Predicate<NominalType> typeFilter,
+  @Inject
+  Linker(
+      @Output Path outputRoot,
+      @SourcePrefix Path sourcePrefix,
+      @ModulePrefix Path modulePrefix,
+      @TypeFilter Predicate<NominalType> typeFilter,
       TypeRegistry typeRegistry) {
     this.typeRegistry = typeRegistry;
     this.outputRoot = outputRoot;

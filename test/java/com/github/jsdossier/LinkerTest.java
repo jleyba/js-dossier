@@ -26,63 +26,57 @@ import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.ImmutableList;
-import com.google.common.jimfs.Jimfs;
-import com.google.javascript.jscomp.CompilerOptions;
-import com.google.javascript.rhino.JSTypeExpression;
-import com.google.javascript.rhino.Node;
-import com.google.javascript.rhino.jstype.JSType;
-import com.google.javascript.rhino.jstype.Property;
-
-import com.github.jsdossier.jscomp.DossierCompiler;
+import com.github.jsdossier.annotations.Input;
+import com.github.jsdossier.annotations.ModulePrefix;
+import com.github.jsdossier.annotations.Modules;
+import com.github.jsdossier.annotations.Output;
+import com.github.jsdossier.annotations.SourcePrefix;
+import com.github.jsdossier.annotations.Stderr;
+import com.github.jsdossier.annotations.TypeFilter;
 import com.github.jsdossier.jscomp.DossierModule;
 import com.github.jsdossier.proto.Comment;
 import com.github.jsdossier.proto.SourceLink;
 import com.github.jsdossier.proto.TypeLink;
+import com.google.common.base.Predicate;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.jimfs.Jimfs;
+import com.google.inject.AbstractModule;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.google.inject.Provides;
+import com.google.javascript.rhino.JSTypeExpression;
+import com.google.javascript.rhino.Node;
+import com.google.javascript.rhino.jstype.JSType;
+import com.google.javascript.rhino.jstype.Property;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import java.io.PrintStream;
 import java.nio.file.FileSystem;
 import java.nio.file.Path;
+
+import javax.inject.Inject;
 
 @RunWith(JUnit4.class)
 public class LinkerTest {
 
-  private FileSystem fileSystem;
-  private Path outputDir;
-  private Path sourcePrefix;
-  private Path modulePrefix;
-  private Predicate<NominalType> typeFilter;
-  private TypeRegistry typeRegistry;
-  private CompilerUtil util;
-  private Linker linker;
+  private final FileSystem fileSystem = Jimfs.newFileSystem();
+  private final Path outputDir = fileSystem.getPath("/root/output");
+  private final Path sourcePrefix = fileSystem.getPath("/sources");
+  private final Path modulePrefix = fileSystem.getPath("/modules");
+
+  @SuppressWarnings("unchecked")
+  private final Predicate<NominalType> typeFilter = mock(Predicate.class);
+
+  @Inject TypeRegistry typeRegistry;
+  @Inject CompilerUtil util;
+  @Inject Linker linker;
 
   @Before
   public void setUp() {
-    fileSystem = Jimfs.newFileSystem();
-    outputDir = fileSystem.getPath("/root/output");
-    sourcePrefix = fileSystem.getPath("/sources");
-    modulePrefix = fileSystem.getPath("/modules");
-
-    @SuppressWarnings("unchecked")
-    Predicate<NominalType> mockTypeFilter = mock(Predicate.class);
-    typeFilter = mockTypeFilter;
-
-    DossierCompiler compiler = new DossierCompiler(System.err, ImmutableList.<Path>of());
-    typeRegistry = new TypeRegistry(compiler.getTypeRegistry());
-
-    CompilerOptions options = Main.createOptions(fileSystem, typeRegistry, compiler);
-    util = new CompilerUtil(compiler, options);
-
-    linker = new Linker(
-        outputDir,
-        sourcePrefix,
-        modulePrefix,
-        typeFilter,
-        typeRegistry);
+    createCompiler();
   }
 
   @Test
@@ -309,9 +303,7 @@ public class LinkerTest {
   @Test
   public void testGetLink_module() {
     Path module = modulePrefix.resolve("foo.js");
-    DossierCompiler compiler = new DossierCompiler(System.err, ImmutableList.of(module));
-    CompilerOptions options = Main.createOptions(fileSystem, typeRegistry, compiler);
-    util = new CompilerUtil(compiler, options);
+    createCompiler(module);
 
     util.compile(module, "exports = {bar: function() {}};");
     assertThat((Iterable) typeRegistry.getModules()).isNotEmpty();
@@ -324,9 +316,7 @@ public class LinkerTest {
   @Test
   public void testGetLink_unknownModuleProperty() {
     Path module = modulePrefix.resolve("foo.js");
-    DossierCompiler compiler = new DossierCompiler(System.err, ImmutableList.of(module));
-    CompilerOptions options = Main.createOptions(fileSystem, typeRegistry, compiler);
-    util = new CompilerUtil(compiler, options);
+    createCompiler(module);
 
     util.compile(module, "exports = {bar: function() {}};");
     assertThat((Iterable) typeRegistry.getModules()).isNotEmpty();
@@ -423,9 +413,7 @@ public class LinkerTest {
   @Test
   public void testGetLink_contextHash_contextIsModule() {
     Path module = modulePrefix.resolve("foo.js");
-    DossierCompiler compiler = new DossierCompiler(System.err, ImmutableList.of(module));
-    CompilerOptions options = Main.createOptions(fileSystem, typeRegistry, compiler);
-    util = new CompilerUtil(compiler, options);
+    createCompiler(module);
 
     util.compile(module, "exports = {bar: function() {}};");
     assertThat((Iterable) typeRegistry.getModules()).isNotEmpty();
@@ -440,9 +428,7 @@ public class LinkerTest {
   @Test
   public void testGetLink_referenceToContextModuleExportedType() {
     Path module = modulePrefix.resolve("foo.js");
-    DossierCompiler compiler = new DossierCompiler(System.err, ImmutableList.of(module));
-    CompilerOptions options = Main.createOptions(fileSystem, typeRegistry, compiler);
-    util = new CompilerUtil(compiler, options);
+    createCompiler(module);
 
     util.compile(module,
         "/** @constructor */",
@@ -470,9 +456,7 @@ public class LinkerTest {
   @Test
   public void testGetLink_toCommonJsModule() {
     Path module = modulePrefix.resolve("foo.js");
-    DossierCompiler compiler = new DossierCompiler(System.err, ImmutableList.of(module));
-    CompilerOptions options = Main.createOptions(fileSystem, typeRegistry, compiler);
-    util = new CompilerUtil(compiler, options);
+    createCompiler(module);
 
     util.compile(module,
         "/** @constructor */",
@@ -528,11 +512,9 @@ public class LinkerTest {
 
   @Test
   public void formatTypeExpression_moduleContextWillHideGlobalTypeNames() {
-    DossierCompiler compiler = new DossierCompiler(System.err, ImmutableList.of(
+    createCompiler(
         modulePrefix.resolve("a.js"),
-        modulePrefix.resolve("b.js")));
-    CompilerOptions options = Main.createOptions(fileSystem, typeRegistry, compiler);
-    util = new CompilerUtil(compiler, options);
+        modulePrefix.resolve("b.js"));
 
     util.compile(
         createSourceFile(sourcePrefix.resolve("/globals.js"),
@@ -564,10 +546,7 @@ public class LinkerTest {
 
   @Test
   public void formatTypeExpression_removesInternalModuleNameFromUnrecognizedSymbols() {
-    DossierCompiler compiler = new DossierCompiler(System.err, ImmutableList.of(
-        modulePrefix.resolve("a.js")));
-    CompilerOptions options = Main.createOptions(fileSystem, typeRegistry, compiler);
-    util = new CompilerUtil(compiler, options);
+    createCompiler(modulePrefix.resolve("a.js"));
 
     util.compile(
         createSourceFile(modulePrefix.resolve("a.js"),
@@ -625,5 +604,58 @@ public class LinkerTest {
     when(node.getSourceFileName()).thenReturn(path.toString());
     DossierModule module = new DossierModule(node, path);
     return new ModuleDescriptor(module.getVarName(), path, true);
+  }
+
+  private void createCompiler(final Path... modules) {
+    Injector injector = Guice.createInjector(
+        new CompilerModule(),
+        new AbstractModule() {
+          @Override
+          protected void configure() {
+          }
+
+          @Provides
+          @Input
+          FileSystem provideFs() {
+            return fileSystem;
+          }
+
+          @Provides
+          @Stderr
+          PrintStream provideStderr() {
+            return System.err;
+          }
+
+          @Provides
+          @Output
+          Path provideOutput() {
+            return outputDir;
+          }
+
+          @Provides
+          @SourcePrefix
+          Path provideSrcPrefix() {
+            return sourcePrefix;
+          }
+
+          @Provides
+          @ModulePrefix
+          Path provideModulePrefix() {
+            return modulePrefix;
+          }
+
+          @Provides
+          @TypeFilter
+          Predicate<NominalType> provideTypeFilter() {
+            return typeFilter;
+          }
+
+          @Provides
+          @Modules
+          ImmutableSet<Path> provideModules() {
+            return ImmutableSet.copyOf(modules);
+          }
+        });
+    injector.injectMembers(this);
   }
 }

@@ -228,7 +228,7 @@ public class DossierProcessCommonJsModulesTest {
 
   @Test
   public void rewritesRequireStatementsForExternModuleDefinitions() {
-    Compiler compiler = new DossierCompiler(System.err, ImmutableSet.of(path("foo/module.js")));
+    DossierCompiler compiler = new DossierCompiler(System.err, ImmutableSet.of(path("foo/module.js")));
     CompilerOptions options = new CompilerOptions();
     options.setClosurePass(true);
     options.setPrettyPrint(true);
@@ -901,7 +901,7 @@ public class DossierProcessCommonJsModulesTest {
     CompilationLevel.ADVANCED_OPTIMIZATIONS.setOptionsForCompilationLevel(options);
     CompilationLevel.ADVANCED_OPTIMIZATIONS.setTypeBasedOptimizationOptions(options);
 
-    Compiler compiler = new DossierCompiler(System.err, ImmutableSet.copyOf(commonJsModules));
+    DossierCompiler compiler = new DossierCompiler(System.err, ImmutableSet.copyOf(commonJsModules));
 
     return new CompilerUtil(compiler, options);
   }

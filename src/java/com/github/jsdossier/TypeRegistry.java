@@ -46,6 +46,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Nullable;
+import javax.inject.Inject;
 
 public class TypeRegistry {
 
@@ -68,6 +69,7 @@ public class TypeRegistry {
   private final Map<String, JSType> externsByName = new HashMap<>();
   private final Set<JSType> externs = new HashSet<>();
 
+  @Inject
   public TypeRegistry(JSTypeRegistry jsTypeRegistry) {
     this.jsTypeRegistry = checkNotNull(jsTypeRegistry, "null JSTypeRegistry");
   }

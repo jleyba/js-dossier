@@ -20,6 +20,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.base.Verify.verify;
 
+import com.github.jsdossier.annotations.Input;
 import com.github.jsdossier.jscomp.DossierCompiler;
 import com.google.javascript.jscomp.CodingConvention;
 import com.google.javascript.jscomp.CompilerPass;
@@ -31,19 +32,22 @@ import java.nio.file.FileSystem;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.inject.Inject;
+
 /**
  * A compiler pass that collects all of the provided symbols in the input sources.
  */
-class ProvidedSymbolsCollectionPass implements CompilerPass {
+final class ProvidedSymbolsCollectionPass implements CompilerPass {
 
   private final TypeRegistry typeRegistry;
   private final DossierCompiler compiler;
   private final FileSystem fileSystem;
 
+  @Inject
   ProvidedSymbolsCollectionPass(
       DossierCompiler compiler,
       TypeRegistry typeRegistry,
-      FileSystem fileSystem) {
+      @Input FileSystem fileSystem) {
     this.compiler = compiler;
     this.typeRegistry = typeRegistry;
     this.fileSystem = fileSystem;

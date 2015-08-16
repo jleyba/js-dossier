@@ -27,6 +27,13 @@ import static java.nio.file.StandardOpenOption.CREATE;
 import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 import static java.nio.file.StandardOpenOption.WRITE;
 
+import com.github.jsdossier.annotations.Input;
+import com.github.jsdossier.annotations.Modules;
+import com.github.jsdossier.annotations.Output;
+import com.github.jsdossier.annotations.Readme;
+import com.github.jsdossier.annotations.SourcePrefix;
+import com.github.jsdossier.annotations.TypeFilter;
+import com.github.jsdossier.annotations.Types;
 import com.github.jsdossier.proto.BaseProperty;
 import com.github.jsdossier.proto.Comment;
 import com.github.jsdossier.proto.Deprecation;
@@ -78,6 +85,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.annotation.Nullable;
+import javax.inject.Inject;
 
 /**
  * Generates HTML documentation.
@@ -103,16 +111,17 @@ class DocWriter {
   private final Renderer renderer = new Renderer();
   private final TypeIndex typeIndex = new TypeIndex();
 
+  @Inject
   DocWriter(
-      Path outputDir,
-      Iterable<Path> inputFiles,
-      ImmutableList<NominalType> sortedTypes,
-      ImmutableList<NominalType> sortedModules,
-      Path sourcePrefix,
-      Optional<Path> readme,
+      @Output Path outputDir,
+      @Input Iterable<Path> inputFiles,
+      @Types ImmutableList<NominalType> sortedTypes,
+      @Modules ImmutableList<NominalType> sortedModules,
+      @SourcePrefix Path sourcePrefix,
+      @Readme Optional<Path> readme,
       ImmutableList<MarkdownPage> markdownPages,
       TypeRegistry typeRegistry,
-      Predicate<NominalType> typeFilter,
+      @TypeFilter Predicate<NominalType> typeFilter,
       Linker linker,
       CommentParser parser,
       NavIndexFactory navIndex,

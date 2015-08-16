@@ -18,17 +18,23 @@ package com.github.jsdossier.jscomp;
 
 import static com.google.common.base.Preconditions.checkState;
 
-import com.google.javascript.jscomp.*;
+import com.github.jsdossier.annotations.Stderr;
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.ImmutableSet;
+import com.google.javascript.jscomp.Compiler;
+import com.google.javascript.jscomp.CompilerInput;
 import com.google.javascript.rhino.Node;
 
 import java.io.PrintStream;
 import java.nio.file.Path;
 
+import javax.inject.Inject;
+
 /**
  * A specialized version of the {@link com.google.javascript.jscomp.Compiler Closure Compiler} that preserves CommonJS module
  * structure so as to properly extract JSDoc info.
  */
-public class DossierCompiler extends com.google.javascript.jscomp.Compiler {
+public final class DossierCompiler extends Compiler {
 
   private final DossierModuleRegistry moduleRegistry;
   private boolean hasParsed = false;
@@ -37,11 +43,22 @@ public class DossierCompiler extends com.google.javascript.jscomp.Compiler {
    * Creates a new compiler that reports errors and warnings to an output stream.
    *
    * @param stream the output stream.
-   * @param commonJsModules the inputs that should be parsed as CommonJS modules.
+   * @param moduleRegistry the module registry to use.
    */
-  public DossierCompiler(PrintStream stream, Iterable<Path> commonJsModules) {
+  @Inject
+  DossierCompiler(
+      @Stderr PrintStream stream,
+      DossierModuleRegistry moduleRegistry) {
     super(stream);
-    this.moduleRegistry = new DossierModuleRegistry(commonJsModules);
+    this.moduleRegistry = moduleRegistry;
+  }
+
+  @VisibleForTesting
+  @Deprecated
+  public DossierCompiler(
+      PrintStream stream,
+      Iterable<Path> modules) {
+    this(stream, new DossierModuleRegistry(ImmutableSet.copyOf(modules)));
   }
 
   public DossierModuleRegistry getModuleRegistry() {

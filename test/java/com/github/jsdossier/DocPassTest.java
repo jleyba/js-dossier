@@ -25,21 +25,30 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import com.github.jsdossier.jscomp.DossierCompiler;
+import com.github.jsdossier.annotations.Input;
+import com.github.jsdossier.annotations.Modules;
+import com.github.jsdossier.annotations.Stderr;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.jimfs.Jimfs;
-import com.google.javascript.jscomp.CompilerOptions;
+import com.google.inject.AbstractModule;
+import com.google.inject.Guice;
+import com.google.inject.Module;
+import com.google.inject.Provides;
 import com.google.javascript.jscomp.SourceFile;
-import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import java.io.IOException;
+import java.io.PrintStream;
 import java.nio.file.FileSystem;
 import java.nio.file.Path;
 import java.util.Map;
+
+import javax.inject.Inject;
 
 /**
  * Tests for {@link DocPass}.
@@ -47,20 +56,13 @@ import java.util.Map;
 @RunWith(JUnit4.class)
 public class DocPassTest {
 
-  private FileSystem fs;
-  private TypeRegistry typeRegistry;
-  private CompilerUtil util;
+  @Rule
+  public GuiceRule guice = new GuiceRule(this, createTestModule(ImmutableSet.<Path>of()));
 
-  @Before
-  public void setUp() {
-    fs = Jimfs.newFileSystem();
+  private final FileSystem fs = Jimfs.newFileSystem();
 
-    DossierCompiler compiler = new DossierCompiler(System.err, ImmutableList.<Path>of());
-    typeRegistry = new TypeRegistry(compiler.getTypeRegistry());
-    CompilerOptions options = Main.createOptions(fs, typeRegistry, compiler);
-
-    util = new CompilerUtil(compiler, options);
-  }
+  @Inject TypeRegistry typeRegistry;
+  @Inject CompilerUtil util;
 
   @Test
   public void recordsFileOverviewComments() throws IOException {
@@ -266,7 +268,7 @@ public class DocPassTest {
 
   @Test
   public void documentsFunctionExportedByCommonJsModule() {
-    createCompiler(ImmutableList.of(path("module.js")));
+    createCompiler(ImmutableSet.of(path("module.js")));
     util.compile(path("module.js"),
         "/**",
         " * @param {string} name a name.",
@@ -279,7 +281,7 @@ public class DocPassTest {
 
   @Test
   public void documentsTypesAfterModuleExportsAssignment_assignedToFunction() {
-    createCompiler(ImmutableList.of(path("module.js")));
+    createCompiler(ImmutableSet.of(path("module.js")));
     util.compile(path("module.js"),
         "/**",
         " * @param {string} name a name.",
@@ -517,12 +519,19 @@ public class DocPassTest {
     return fs.getPath(first, remaining);
   }
 
-  private void createCompiler(Iterable<Path> modules) {
-    DossierCompiler compiler = new DossierCompiler(System.err, modules);
-    CompilerOptions options = Main.createOptions(
-        fs, typeRegistry, compiler);
+  private Module createTestModule(final ImmutableSet<Path> modules) {
+    return new AbstractModule() {
+      @Override protected void configure() {
+        install(new CompilerModule());
+      }
+      @Provides @Input FileSystem provideFs() { return fs; }
+      @Provides @Stderr PrintStream provideStderr() { return System.err; }
+      @Provides @Modules ImmutableSet<Path> provideModules() { return modules; }
+    };
+  }
 
-    util = new CompilerUtil(compiler, options);
+  private void createCompiler(ImmutableSet<Path> modules) {
+    Guice.createInjector(createTestModule(modules)).injectMembers(this);
   }
 
   private static void assertTypedef(NominalType type) {

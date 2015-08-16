@@ -19,6 +19,7 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.base.Verify.verify;
 import static com.google.javascript.jscomp.NodeTraversal.traverseTyped;
 
+import com.github.jsdossier.annotations.Input;
 import com.github.jsdossier.jscomp.DossierCompiler;
 import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
@@ -53,11 +54,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.annotation.Nullable;
+import javax.inject.Inject;
 
 /**
  * A {@link CompilerPass} that collects the symbols the symbols to generate documentation for.
  */
-class DocPass implements CompilerPass {
+final class DocPass implements CompilerPass {
 
   private static final Logger log = Logger.getLogger(DocPass.class.getName());
 
@@ -65,10 +67,11 @@ class DocPass implements CompilerPass {
   private final TypeRegistry typeRegistry;
   private final FileSystem fileSystem;
 
+  @Inject
   DocPass(
       DossierCompiler compiler,
       TypeRegistry typeRegistry,
-      FileSystem fileSystem) {
+      @Input FileSystem fileSystem) {
     this.compiler = compiler;
     this.typeRegistry = typeRegistry;
     this.fileSystem = fileSystem;

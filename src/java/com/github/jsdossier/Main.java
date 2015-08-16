@@ -17,29 +17,47 @@ package com.github.jsdossier;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Predicates.not;
+import static com.google.common.collect.Iterables.concat;
 import static com.google.common.collect.Iterables.transform;
 import static com.google.common.io.Files.getFileExtension;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.newInputStream;
 
+import com.github.jsdossier.annotations.DocumentationScoped;
+import com.github.jsdossier.annotations.Input;
+import com.github.jsdossier.annotations.ModulePrefix;
+import com.github.jsdossier.annotations.Modules;
+import com.github.jsdossier.annotations.Output;
+import com.github.jsdossier.annotations.Readme;
+import com.github.jsdossier.annotations.SourcePrefix;
+import com.github.jsdossier.annotations.Stderr;
+import com.github.jsdossier.annotations.Stdout;
+import com.github.jsdossier.annotations.TypeFilter;
+import com.github.jsdossier.annotations.Types;
+import com.github.jsdossier.jscomp.CallableCompiler;
 import com.github.jsdossier.jscomp.DossierCompiler;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Function;
+import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Iterables;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.io.ByteStreams;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.javascript.jscomp.AbstractCompiler;
-import com.google.javascript.jscomp.ClosureCodingConvention;
+import com.google.inject.AbstractModule;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.google.inject.Key;
+import com.google.inject.Provider;
+import com.google.inject.Provides;
+import com.google.inject.TypeLiteral;
 import com.google.javascript.jscomp.CommandLineRunner;
-import com.google.javascript.jscomp.CompilationLevel;
+import com.google.javascript.jscomp.Compiler;
 import com.google.javascript.jscomp.CompilerOptions;
-import com.google.javascript.jscomp.CustomPassExecutionTime;
 import com.google.javascript.jscomp.SourceFile;
 import org.joda.time.Instant;
 import org.joda.time.Period;
@@ -48,6 +66,8 @@ import org.joda.time.format.PeriodFormatterBuilder;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.net.URI;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
@@ -59,96 +79,13 @@ import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
+import javax.inject.Inject;
+import javax.inject.Qualifier;
+
 final class Main {
   private Main() {}
 
   private static final String INDEX_FILE_NAME = "index.html";
-
-  private static class Runner extends CommandLineRunner {
-    private final Config config;
-    private TypeRegistry typeRegistry;
-
-    private Runner(String[] args, PrintStream out, PrintStream err, Config config) {
-      super(args, out, err);
-      this.config = config;
-    }
-
-    @Override
-    protected com.google.javascript.jscomp.Compiler createCompiler() {
-      return new DossierCompiler(getErrorPrintStream(), config.getModules());
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    protected CompilerOptions createOptions() {
-      AbstractCompiler compiler = getCompiler();
-      if (!(compiler instanceof DossierCompiler)) {
-        throw new AssertionError();
-      }
-      typeRegistry = new TypeRegistry(compiler.getTypeRegistry());
-      return Main.createOptions(config.getFileSystem(), typeRegistry, (DossierCompiler) compiler);
-    }
-
-    @Override
-    protected List<SourceFile> createInputs(List<String> files, boolean allowStdIn)
-        throws IOException {
-      List<SourceFile> inputs = new ArrayList<>(files.size());
-      for (String filename : files) {
-        checkArgument(!"-".equals(filename), "Reading from stdin not supported");
-        Path path = config.getFileSystem().getPath(filename);
-        try (InputStream inputStream = newInputStream(path)) {
-          SourceFile file = SourceFile.fromInputStream(filename, inputStream, UTF_8);
-          inputs.add(file);
-        }
-      }
-      return inputs;
-    }
-
-    @Override
-    public int doRun() throws IOException {
-      try {
-        return super.doRun();
-      } catch (FlagUsageException e) {
-        // FlagUsageException has protected visibility, so have to wrap for rethrow.
-        throw new IllegalArgumentException(e);
-      }
-    }
-  }
-
-  @VisibleForTesting
-  static CompilerOptions createOptions(
-      FileSystem fileSystem,
-      TypeRegistry typeRegistry,
-      DossierCompiler compiler) {
-    CompilerOptions options = new CompilerOptions();
-
-    options.setCodingConvention(new ClosureCodingConvention());
-    CompilationLevel.ADVANCED_OPTIMIZATIONS.setOptionsForCompilationLevel(options);
-    CompilationLevel.ADVANCED_OPTIMIZATIONS.setTypeBasedOptimizationOptions(options);
-
-    // IDE mode must be enabled or all of the jsdoc info will be stripped from the AST.
-    options.setIdeMode(true);
-
-    // For easier debugging.
-    options.setPrettyPrint(true);
-
-    ProvidedSymbolsCollectionPass providedNamespacesPass =
-        new ProvidedSymbolsCollectionPass(compiler, typeRegistry, fileSystem);
-    options.addCustomPass(CustomPassExecutionTime.BEFORE_CHECKS, providedNamespacesPass);
-    options.addCustomPass(CustomPassExecutionTime.BEFORE_OPTIMIZATIONS,
-        new DocPass(compiler, typeRegistry, fileSystem));
-
-    return options;
-  }
-
-  private static Function<Path, String> toFlag(final String flagPrefix) {
-    return new Function<Path, String>() {
-      @Override
-      public String apply(Path input) {
-        return flagPrefix + input;
-      }
-    };
-  }
 
   private static final List<String> STANDARD_FLAGS = ImmutableList.of(
       "--jscomp_warning=accessControls",
@@ -173,6 +110,118 @@ final class Main {
       "--jscomp_warning=uselessCode",
       "--jscomp_warning=visibility",
       "--third_party=false");
+
+  @Qualifier
+  @Retention(RetentionPolicy.RUNTIME)
+  private @interface CompilerFlags {}
+
+  private static final ExplicitScope DOCUMENTATION_SCOPE = new ExplicitScope();
+
+  private static class DossierModule extends AbstractModule {
+
+    private final Config config;
+    private final Path outputDir;
+
+    private DossierModule(Config config, Path outputDir) {
+      this.config = config;
+      this.outputDir = outputDir;
+    }
+
+    @Override
+    protected void configure() {
+      bindScope(DocumentationScoped.class, DOCUMENTATION_SCOPE);
+
+      bind(PrintStream.class).annotatedWith(Stderr.class).toInstance(System.err);
+      bind(PrintStream.class).annotatedWith(Stdout.class).toInstance(
+          new PrintStream(ByteStreams.nullOutputStream()));
+
+      bind(Key.get(new TypeLiteral<Optional<Path>>() {}, Readme.class))
+          .toInstance(config.getReadme());
+      bind(Key.get(new TypeLiteral<Iterable<Path>>() {}, Input.class))
+          .toInstance(concat(config.getSources(), config.getModules()));
+      bind(Key.get(new TypeLiteral<ImmutableSet<Path>>() {}, Modules.class))
+          .toInstance(config.getModules());
+      bind(Key.get(new TypeLiteral<Predicate<NominalType>>(){}, TypeFilter.class))
+          .toInstance(config.getTypeFilter());
+      bind(new TypeLiteral<ImmutableList<MarkdownPage>>(){})
+          .toInstance(config.getCustomPages());
+
+      bind(Path.class).annotatedWith(ModulePrefix.class).toInstance(config.getModulePrefix());
+      bind(Path.class).annotatedWith(SourcePrefix.class).toInstance(config.getSrcPrefix());
+
+      bind(Path.class).annotatedWith(Output.class).toInstance(outputDir);
+      bind(FileSystem.class).annotatedWith(Output.class).toInstance(outputDir.getFileSystem());
+      bind(FileSystem.class).annotatedWith(Input.class).toInstance(config.getFileSystem());
+
+      bind(DocTemplate.class).to(DefaultDocTemplate.class);
+    }
+
+    @Provides
+    @CompilerFlags
+    String[] provideCompilerFlags() {
+      Iterable<String> standardFlags = STANDARD_FLAGS;
+      if (config.isStrict()) {
+        standardFlags = transform(standardFlags, new Function<String, String>() {
+          @Override
+          public String apply(String input) {
+            return input.replace("--jscomp_warning", "--jscomp_error");
+          }
+        });
+      }
+
+      ImmutableList<String> compilerFlags = ImmutableList.<String>builder()
+          .addAll(transform(config.getSources(), toFlag("--js=")))
+          .addAll(transform(config.getModules(), toFlag("--js=")))
+          .addAll(transform(config.getExterns(), toFlag("--externs=")))
+          .add("--language_in=" + config.getLanguage().getName())
+          .addAll(standardFlags)
+          .build();
+      return compilerFlags.toArray(new String[compilerFlags.size()]);
+    }
+
+    @Provides
+    @DocumentationScoped
+    @Types
+    ImmutableList<NominalType> provideTypes(TypeRegistry typeRegistry) {
+      return FluentIterable
+          .from(typeRegistry.getNominalTypes())
+          .filter(not(config.getTypeFilter()))
+          .filter(isNonEmptyNamespace())
+          .filter(isNotTypedef())
+          .toSortedList(new QualifiedNameComparator());
+    }
+
+    @Provides
+    @DocumentationScoped
+    @Modules
+    ImmutableList<NominalType> provideModules(TypeRegistry typeRegistry, Linker linker) {
+      return FluentIterable
+          .from(typeRegistry.getModules())
+          .toSortedList(new DisplayNameComparator(linker));
+    }
+
+    @Provides
+    @DocumentationScoped
+    NavIndexFactory provideNavIndexFactory(
+        @Output Path outputDir,
+        @Modules ImmutableList<NominalType> modules,
+        @Types ImmutableList<NominalType> types) {
+      return NavIndexFactory.create(
+          outputDir.resolve(INDEX_FILE_NAME),
+          !modules.isEmpty(),
+          !types.isEmpty(),
+          config.getCustomPages());
+    }
+  }
+
+  private static Function<Path, String> toFlag(final String flagPrefix) {
+    return new Function<Path, String>() {
+      @Override
+      public String apply(Path input) {
+        return flagPrefix + input;
+      }
+    };
+  }
 
   private static void print(Config config) {
     Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -280,64 +329,30 @@ final class Main {
   private static int run(Config config, Path outputDir) throws IOException {
     configureLogging();
 
-    Runner runner = new Runner(
-        getCompilerFlags(config),
-        new PrintStream(ByteStreams.nullOutputStream()),
-        System.err,
-        config);
+    Injector injector = Guice.createInjector(
+        new CompilerModule(getCompilerFlags(config)),
+        new DossierModule(config, outputDir));
 
-    if (!runner.shouldRunCompiler()) {
+    CallableCompiler compiler = injector.getInstance(CallableCompiler.class);
+    if (!compiler.shouldRunCompiler()) {
       return -1;
     }
 
     Instant start = Instant.now();
     System.out.println("Generating documentation...");
 
-    int result = runner.doRun();
+    int result = compiler.call();
     if (result != 0) {
+      System.out.println("Compilation failed; aborting...");
       return result;
     }
 
-    Linker linker = new Linker(
-        outputDir,
-        config.getSrcPrefix(),
-        config.getModulePrefix(),
-        config.getTypeFilter(),
-        runner.typeRegistry);
-
-    ImmutableList<NominalType> types = FluentIterable
-        .from(runner.typeRegistry.getNominalTypes())
-        .filter(not(config.getTypeFilter()))
-        .filter(isNonEmptyNamespace())
-        .filter(isNotTypedef())
-        .toSortedList(new QualifiedNameComparator());
-
-    ImmutableList<NominalType> modules = FluentIterable
-        .from(runner.typeRegistry.getModules())
-        .toSortedList(new DisplayNameComparator(linker));
-
-    NavIndexFactory index = NavIndexFactory.create(
-        outputDir.resolve(INDEX_FILE_NAME),
-        !modules.isEmpty(),
-        !types.isEmpty(),
-        config.getCustomPages());
-
-    DocWriter writer = new DocWriter(
-        outputDir,
-        Iterables.concat(config.getSources(), config.getModules()),
-        types,
-        modules,
-        config.getSrcPrefix(),
-        config.getReadme(),
-        config.getCustomPages(),
-        runner.typeRegistry,
-        config.getTypeFilter(),
-        linker,
-        new CommentParser(),
-        index,
-        new DefaultDocTemplate());
-
-    writer.generateDocs();
+    DOCUMENTATION_SCOPE.enter();
+    try {
+      injector.getInstance(DocWriter.class).generateDocs();
+    } finally {
+      DOCUMENTATION_SCOPE.exit();
+    }
 
     Instant stop = Instant.now();
     String output = new PeriodFormatterBuilder()
