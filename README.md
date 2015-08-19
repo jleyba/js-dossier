@@ -171,15 +171,15 @@ for an up-to-date list of the supported HTML tags and attributes.
 
 ## Building
 
-Dossier is built using [Facebook's Buck](http://facebook.github.io/buck/). Once
-you have [installed Buck](http://facebook.github.io/buck/setup/quick_start.html),
+Dossier is built using [Bazel](http://bazel.io/). Once
+you have [installed](http://bazel.io/docs/install.html) Bazel,
 you can use the `gendossier.sh` script to complete various actions:
 
     ./gendossier.sh -h
 
 ## LICENSE
 
-Copyright 2013 Jason Leyba
+Copyright 2013-2015 Jason Leyba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

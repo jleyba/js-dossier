@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="com.ibm.icu:icu4j:51.1" type="repository">
+    <properties maven-id="com.ibm.icu:icu4j:51.1" />
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/ibm/icu/icu4j/51.1/icu4j-51.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

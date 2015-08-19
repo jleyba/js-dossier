@@ -1,6 +1,0 @@
-[alias]
-  app     = //src/java/com/github/jsdossier:dossier
-  app_tests = //test/java/com/github/jsdossier:tests
-
-[java]
-  src_roots = /src/java/, /test/java/

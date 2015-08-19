@@ -529,7 +529,8 @@ public class JsDocTest {
     util.compile(path("foo/bar.js"), lines);
     NominalType type = getOnlyElement(typeRegistry.getNominalTypes());
     assertWithMessage("Not a constructor: " + type.getQualifiedName())
-        .that(type.getJsType().isConstructor());
+        .that(type.getJsType().isConstructor())
+        .isTrue();
     return type.getJsdoc();
   }
 

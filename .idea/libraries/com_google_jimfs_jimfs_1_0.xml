@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="com.google.jimfs:jimfs:1.0" type="repository">
+    <properties maven-id="com.google.jimfs:jimfs:1.0" />
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/google/jimfs/jimfs/1.0/jimfs-1.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/google/jimfs/jimfs/1.0/jimfs-1.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

@@ -22,6 +22,8 @@ import com.google.template.soy.data.SoyData;
 import com.google.template.soy.data.SoyValue;
 import com.google.template.soy.data.SoyValueProvider;
 
+import java.io.IOException;
+
 class ProtoEnumSoyValue extends SoyData implements SoyValue {
 
   private final Descriptors.EnumValueDescriptor value;
@@ -69,6 +71,11 @@ class ProtoEnumSoyValue extends SoyData implements SoyValue {
   @Override
   public String coerceToString() {
     return value.getName();
+  }
+
+  @Override
+  public void render(Appendable appendable) throws IOException {
+    appendable.append(coerceToString());
   }
 
   @Override

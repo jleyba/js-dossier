@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="com.googlecode.owasp-java-html-sanitizer:owasp-java-html-sanitizer:r239" type="repository">
+    <properties maven-id="com.googlecode.owasp-java-html-sanitizer:owasp-java-html-sanitizer:r239" />
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/googlecode/owasp-java-html-sanitizer/owasp-java-html-sanitizer/r239/owasp-java-html-sanitizer-r239.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/googlecode/owasp-java-html-sanitizer/owasp-java-html-sanitizer/r239/owasp-java-html-sanitizer-r239-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

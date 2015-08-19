@@ -4,7 +4,8 @@
 
 set -e
 
-readonly RESOURCES="src/java/com/github/jsdossier/resources"
+readonly ROOT="$(cd $(dirname $0) && pwd)"
+readonly RESOURCES="${ROOT}/src/java/com/github/jsdossier/resources"
 
 usage() {
   cat <<EOF
@@ -27,16 +28,14 @@ EOF
 
 
 run_jsc() {
-  buck build //src/java/com/github/jsdossier/tools:Compile
-
-  java -jar ./buck-out/gen/src/java/com/github/jsdossier/tools/Compile.jar \
-      -c ./third_party/js/closure_library/closure/goog/ \
-      -i ./src/js/dossier.js \
-      -i ./src/js/nav.js \
+  bazel run //src/java/com/github/jsdossier/tools:Compile -- \
+      -c "${ROOT}/third_party/js/closure_library/closure/goog/" \
+      -i "${ROOT}/src/js/dossier.js" \
+      -i "${ROOT}/src/js/nav.js" \
       -f "--charset=UTF-8" \
       -f "--compilation_level=ADVANCED_OPTIMIZATIONS" \
       -f "--define=goog.DEBUG=false" \
-      -f "--externs=./src/js/externs.js" \
+      -f "--externs=\"${ROOT}/src/js/externs.js\"" \
       -f "--manage_closure_dependencies" \
       -f "--closure_entry_point=dossier" \
       -f "--jscomp_error=accessControls" \
@@ -63,7 +62,7 @@ run_jsc() {
       -f "--language_in=ES5" \
       -f "--third_party=false" \
       -f "--output_wrapper=\"(function(){%output%;init();})();\"" \
-      -f "--js_output_file=$RESOURCES/dossier.js"
+      -f "--js_output_file=\"${RESOURCES}/dossier.js\""
 }
 
 run_lessc() {
@@ -85,32 +84,31 @@ run_protoc() {
 }
 
 run_tests() {
-  buck build //src/java/com/github/jsdossier/tools:WriteDeps
-  buck test app_tests
+  bazel test //test/...
 
-  java -jar ./buck-out/gen/src/java/com/github/jsdossier/tools/WriteDeps.jar \
-      -c ./third_party/js/closure_library/closure/goog/ \
-      -i ./src/js/dossier.js \
-      -i ./src/js/nav.js \
-      -i ./test/js/nav_test.js \
-      -o ./test/js/deps.js
+  bazel run //src/java/com/github/jsdossier/tools:WriteDeps -- \
+      -c "${ROOT}/third_party/js/closure_library/closure/goog/" \
+      -i "${ROOT}/src/js/dossier.js" \
+      -i "${ROOT}/src/js/nav.js" \
+      -i "${ROOT}/test/js/nav_test.js" \
+      -o "${ROOT}/test/js/deps.js"
 }
 
 build_release() {
-  buck clean
-  buck test app_tests && buck build app && \
+  bazel clean
+  bazel test //test/... && \
+      bazel build //src/java/com/github/jsdossier:dossier_deploy.jar && \
       echo "Release built: buck-out/gen/src/java/com/github/jsdossier/dossier.jar"
 }
 
 build_sample() {
-  buck build app
-  java -Xmx2048M \
-      -jar buck-out/gen/src/java/com/github/jsdossier/dossier.jar \
+  bazel build //src/java/com/github/jsdossier:dossier_deploy.jar
+  java -jar bazel-bin/src/java/com/github/jsdossier/dossier_deploy.jar \
       --config sample_config.json
 }
 
 update_readme() {
-  buck build //src/java/com/github/jsdossier:Config
+  bazel build //src/java/com/github/jsdossier:Config
   cat > README.md <<EOF
 # Dossier
 
@@ -129,7 +127,7 @@ Compiler, but will also improve Dossier's ability to generate meaningful documen
 Where \`config.json\` is a configuration file with the options listed below.
 
 EOF
-  java -jar buck-out/gen/src/java/com/github/jsdossier/Config.jar 2>> README.md
+  bazel-bin/src/java/com/github/jsdossier/Config 2>> README.md
 
   cat >> README.md <<EOF
 ## Formatting
@@ -199,15 +197,15 @@ for an up-to-date list of the supported HTML tags and attributes.
 
 ## Building
 
-Dossier is built using [Facebook's Buck](http://facebook.github.io/buck/). Once
-you have [installed Buck](http://facebook.github.io/buck/setup/quick_start.html),
+Dossier is built using [Bazel](http://bazel.io/). Once
+you have [installed](http://bazel.io/docs/install.html) Bazel,
 you can use the \`gendossier.sh\` script to complete various actions:
 
     ./gendossier.sh -h
 
 ## LICENSE
 
-Copyright 2013 Jason Leyba
+Copyright 2013-2015 Jason Leyba
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

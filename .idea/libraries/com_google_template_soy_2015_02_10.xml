@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="com.google.template:soy:2015-02-10" type="repository">
+    <properties maven-id="com.google.template:soy:2015-02-10" />
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/google/template/soy/2015-02-10/soy-2015-02-10.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/google/template/soy/2015-02-10/soy-2015-02-10-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

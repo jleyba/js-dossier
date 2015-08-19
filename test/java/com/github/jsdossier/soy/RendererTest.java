@@ -85,9 +85,6 @@ public class RendererTest {
 
   @Test
   public void renderDeprecationNotice() {
-    assertEquals("", render("dossier.soy.deprecationNotice", null));
-    assertEquals("", render("dossier.soy.deprecationNotice", new HashMap<String, Object>()));
-
     assertThat(
         render("dossier.soy.deprecationNotice",
             "deprecation", toSoyValue(parseDeprecation("Hello, world!"))),
@@ -875,7 +872,7 @@ public class RendererTest {
     Document document = renderDocument("dossier.soy.mainFunction", "type", type);
     assertThat(document.body().children().size(), is(2));
     assertThat(document.body().child(0).toString(),
-        isHtml("<h2 class=\"main\">new foo.Bar(<wbr />a, b)</h2>"));
+        isHtml("<h2 class=\"main\">new foo.Bar(<wbr>a, b)</h2>"));
   }
 
   @Test
@@ -923,8 +920,8 @@ public class RendererTest {
         "<body>",
         "<div id=\"Bar\" class=\"function\"><div>",
         "<h3>",
-        "Bar(<wbr />a)",
-        "<span class=\"codelink\"><a href=\"bar.link\">code &raquo;</a></span>",
+        "Bar(<wbr>a)",
+        "<span class=\"codelink\"><a href=\"bar.link\">code »</a></span>",
         "</h3>",
         "<p>description here</p>\n",
         "<p>second paragraph\n</p>",
