@@ -1,8 +1,0 @@
-include_defs("//third_party/java/DEFS")
-
-prebuilt_jar_with_license(
-  name = "mockito",
-  binary_jar = "mockito-all-1.9.5.jar",
-  source_jar = "mockito-all-1.9.5-src.jar",
-  visibility = ["PUBLIC"],
-)

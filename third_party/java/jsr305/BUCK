@@ -1,8 +1,0 @@
-include_defs("//third_party/java/DEFS")
-
-prebuilt_jar_with_license(
-  name = "jsr305",
-  binary_jar = "jsr305-1.3.9.jar",
-  source_jar = "jsr305-1.3.9-src.jar",
-  visibility = ["PUBLIC"],
-)

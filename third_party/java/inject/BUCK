@@ -1,8 +1,0 @@
-include_defs("//third_party/java/DEFS")
-
-prebuilt_jar_with_license(
-  name = "inject",
-  binary_jar = "javax.inject-1.jar",
-  source_jar = "javax.inject-1-src.jar",
-  visibility = ["PUBLIC"],
-)

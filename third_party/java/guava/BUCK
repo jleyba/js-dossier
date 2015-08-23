@@ -1,8 +1,0 @@
-include_defs("//third_party/java/DEFS")
-
-prebuilt_jar_with_license(
-  name = "guava",
-  binary_jar = "guava-18.0.jar",
-  source_jar = "guava-18.0-src.jar",
-  visibility = ["PUBLIC"],
-)

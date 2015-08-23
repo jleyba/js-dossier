@@ -1,8 +1,0 @@
-include_defs("//third_party/java/DEFS")
-
-prebuilt_jar_with_license(
-  name = "joda_time",
-  binary_jar = "joda-time-2.3.jar",
-  source_jar = "joda-time-2.3-src.jar",
-  visibility = ["PUBLIC"],
-)

@@ -1,8 +1,0 @@
-include_defs("//third_party/java/DEFS")
-
-prebuilt_jar_with_license(
-  name = "gson",
-  binary_jar = "gson-2.2.4.jar",
-  source_jar = "gson-2.2.4-src.jar",
-  visibility = ["PUBLIC"],
-)

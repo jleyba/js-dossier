@@ -1,8 +1,0 @@
-include_defs("//third_party/java/DEFS")
-
-prebuilt_jar_with_license(
-  name = "icu4j",
-  binary_jar = "icu4j-51.1.jar",
-  source_jar = "icu4j-51.1-src.jar",
-  visibility = ["PUBLIC"],
-)

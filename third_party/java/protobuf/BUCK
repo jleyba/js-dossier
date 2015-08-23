@@ -1,8 +1,0 @@
-include_defs("//third_party/java/DEFS")
-
-prebuilt_jar_with_license(
-  name = "protobuf",
-  binary_jar = "protobuf-java-2.6.1.jar",
-  source_jar = "protobuf-java-2.6.1-src.jar",
-  visibility = ["PUBLIC"],
-)

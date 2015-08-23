@@ -1,8 +1,0 @@
-include_defs("//third_party/java/DEFS")
-
-prebuilt_jar_with_license(
-  name = "jsoup",
-  binary_jar = "jsoup-1.7.2.jar",
-  source_jar = "jsoup-1.7.2-src.jar",
-  visibility = ["PUBLIC"],
-)
