@@ -16,20 +16,19 @@
 
 package com.github.jsdossier.jscomp;
 
-import static com.github.jsdossier.CompilerUtil.createSourceFile;
+import static com.github.jsdossier.testing.CompilerUtil.createSourceFile;
 import static com.google.common.collect.Iterables.getOnlyElement;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import com.github.jsdossier.CompilerUtil;
+import com.github.jsdossier.testing.CompilerUtil;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableSet;
 import com.google.javascript.jscomp.CheckLevel;
 import com.google.javascript.jscomp.ClosureCodingConvention;
 import com.google.javascript.jscomp.CompilationLevel;
-import com.google.javascript.jscomp.Compiler;
 import com.google.javascript.jscomp.CompilerOptions;
 import com.google.javascript.jscomp.Scope;
 import com.google.javascript.jscomp.SourceFile;

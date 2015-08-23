@@ -14,7 +14,7 @@
  limitations under the License.
  */
 
-package com.github.jsdossier;
+package com.github.jsdossier.testing;
 
 import com.github.jsdossier.jscomp.DossierCompiler;
 import com.google.common.base.Joiner;

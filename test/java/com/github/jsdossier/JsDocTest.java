@@ -27,6 +27,8 @@ import static org.junit.Assert.assertTrue;
 import com.github.jsdossier.annotations.Input;
 import com.github.jsdossier.annotations.Modules;
 import com.github.jsdossier.annotations.Stderr;
+import com.github.jsdossier.testing.CompilerUtil;
+import com.github.jsdossier.testing.GuiceRule;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.jimfs.Jimfs;
@@ -67,7 +69,8 @@ public class JsDocTest {
 
   private final FileSystem fileSystem = Jimfs.newFileSystem();
 
-  @Inject CompilerUtil util;
+  @Inject
+  CompilerUtil util;
   @Inject TypeRegistry typeRegistry;
 
   @Test

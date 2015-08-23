@@ -17,7 +17,7 @@ java_library(
         "//src/java/com/github/jsdossier/proto",
         "//src/java/com/github/jsdossier/soy",
     ],
-    visibility = ["//test/java/com/github/jsdossier:__pkg__"],
+    visibility = ["//test/java/com/github/jsdossier:__subpackages__"],
 )
 
 java_binary(

@@ -16,7 +16,7 @@
 
 package com.github.jsdossier;
 
-import static com.github.jsdossier.CompilerUtil.createSourceFile;
+import static com.github.jsdossier.testing.CompilerUtil.createSourceFile;
 import static com.google.common.collect.Iterables.getOnlyElement;
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
@@ -28,6 +28,8 @@ import static org.junit.Assert.assertTrue;
 import com.github.jsdossier.annotations.Input;
 import com.github.jsdossier.annotations.Modules;
 import com.github.jsdossier.annotations.Stderr;
+import com.github.jsdossier.testing.CompilerUtil;
+import com.github.jsdossier.testing.GuiceRule;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -62,7 +64,8 @@ public class DocPassTest {
   private final FileSystem fs = Jimfs.newFileSystem();
 
   @Inject TypeRegistry typeRegistry;
-  @Inject CompilerUtil util;
+  @Inject
+  CompilerUtil util;
 
   @Test
   public void recordsFileOverviewComments() throws IOException {

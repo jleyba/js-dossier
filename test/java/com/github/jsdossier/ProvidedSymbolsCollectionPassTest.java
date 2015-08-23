@@ -22,6 +22,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import com.github.jsdossier.jscomp.DossierCompiler;
+import com.github.jsdossier.testing.CompilerUtil;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.jimfs.Jimfs;
 import com.google.javascript.jscomp.ClosureCodingConvention;

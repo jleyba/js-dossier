@@ -26,6 +26,8 @@ import com.github.jsdossier.annotations.Modules;
 import com.github.jsdossier.annotations.Stderr;
 import com.github.jsdossier.proto.Comment;
 import com.github.jsdossier.proto.TypeLink;
+import com.github.jsdossier.testing.CompilerUtil;
+import com.github.jsdossier.testing.GuiceRule;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.common.jimfs.Jimfs;
@@ -59,7 +61,8 @@ public class CommentParserTest {
   private final FileSystem fileSystem = Jimfs.newFileSystem();
   private final Linker mockLinker = mock(Linker.class);
 
-  @Inject CompilerUtil util;
+  @Inject
+  CompilerUtil util;
   @Inject CommentParser parser;
   @Inject TypeRegistry typeRegistry;
 

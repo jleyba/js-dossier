@@ -16,7 +16,7 @@
 
 package com.github.jsdossier;
 
-import static com.github.jsdossier.CompilerUtil.createSourceFile;
+import static com.github.jsdossier.testing.CompilerUtil.createSourceFile;
 import static com.google.common.collect.Iterables.getOnlyElement;
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertEquals;
@@ -37,6 +37,7 @@ import com.github.jsdossier.jscomp.DossierModule;
 import com.github.jsdossier.proto.Comment;
 import com.github.jsdossier.proto.SourceLink;
 import com.github.jsdossier.proto.TypeLink;
+import com.github.jsdossier.testing.CompilerUtil;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.jimfs.Jimfs;
@@ -71,7 +72,8 @@ public class LinkerTest {
   private final Predicate<NominalType> typeFilter = mock(Predicate.class);
 
   @Inject TypeRegistry typeRegistry;
-  @Inject CompilerUtil util;
+  @Inject
+  CompilerUtil util;
   @Inject Linker linker;
 
   @Before

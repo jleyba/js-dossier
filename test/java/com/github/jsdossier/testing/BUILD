@@ -1,16 +1,16 @@
 java_library(
-    name = "jscomp",
+    name = "testing",
     srcs = glob(["*.java"]),
+    testonly = 1,
     deps = [
         "//lib/maven:closure_compiler",
         "//lib/maven:guava",
         "//lib/maven:guice",
         "//lib/maven:inject",
-        "//lib/maven:jsr305",
-        "//src/java/com/github/jsdossier/annotations",
+        "//lib/maven:junit",
+        "//src/java/com/github/jsdossier/jscomp",
     ],
     visibility = [
-        "//src/java/com/github/jsdossier:__subpackages__",
         "//test/java/com/github/jsdossier:__subpackages__",
     ],
 )

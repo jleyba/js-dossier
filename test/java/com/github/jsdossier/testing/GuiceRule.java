@@ -14,7 +14,7 @@
  limitations under the License.
  */
 
-package com.github.jsdossier;
+package com.github.jsdossier.testing;
 
 import com.google.common.collect.ImmutableList;
 import com.google.inject.Guice;
