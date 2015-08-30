@@ -98,7 +98,7 @@ build_release() {
   bazel clean
   bazel test //test/... && \
       bazel build //src/java/com/github/jsdossier:dossier_deploy.jar && \
-      echo "Release built: buck-out/gen/src/java/com/github/jsdossier/dossier.jar"
+      echo "Release built: bazel-bin/src/java/com/github/jsdossier/dossier_deploy.jar"
 }
 
 build_sample() {
