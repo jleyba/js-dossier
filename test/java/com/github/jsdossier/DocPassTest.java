@@ -178,6 +178,38 @@ public class DocPassTest {
   }
 
   @Test
+  public void doesNotDocumentPrivateTypes() {
+    util.compile(path("foo.js"),
+        "goog.provide('foo');",
+        "",
+        "/** @constructor */function PublicClass() {}",
+        "/** @constructor @protected */function ProtectedClass() {}",
+        "/** @constructor @private */function PrivateClass() {}",
+        "",
+        "/** @constructor @public */",
+        "foo.PublicClass = function() {};",
+        "",
+        "/** @constructor @protected */",
+        "foo.ProtectedClass = function() {};",
+        "",
+        "/** @constructor @private */",
+        "foo.PrivateClass = function() {};",
+        "",
+        "/** @enum {string} */",
+        "foo.PrivateClass.NestedType = {one: 'two'};");
+    Map<String, NominalType> types = typeRegistry.getNominalTypeMap();
+    assertThat(types.keySet()).containsExactly(
+        "PublicClass",
+        "ProtectedClass",
+        "foo",
+        "foo.PublicClass",
+        "foo.ProtectedClass");
+    assertNamespace(types.get("foo"));
+    assertConstructor(types.get("foo.PublicClass"));
+    assertConstructor(types.get("foo.ProtectedClass"));
+  }
+
+  @Test
   public void functionVariablesAreNotDocumentedAsConstructors() {
     util.compile(path("foo/bar.js"),
         "goog.provide('foo');",
