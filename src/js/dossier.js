@@ -32,6 +32,7 @@ goog.require('goog.dom.classlist');
 goog.require('goog.string');
 goog.require('goog.ui.ac');
 goog.require('goog.ui.ac.AutoComplete.EventType');
+goog.require('goog.userAgent');
 
 goog.forwardDeclare('goog.debug.ErrorHandler');
 goog.forwardDeclare('goog.events.EventWrapper');
@@ -147,6 +148,8 @@ dossier.initSearchBox_ = function(typeInfo) {
   });
 
   var input = searchForm.querySelector('input');
+  input.setAttribute('title', 'Search (' + (goog.userAgent.MAC ? '⌘' : 'Ctrl+') + 'E)');
+
   var ac = goog.ui.ac.createSimpleAutoComplete(allTerms, input, false, true);
   ac.setMaxMatches(20);
   goog.events.listen(ac,
@@ -157,7 +160,8 @@ dossier.initSearchBox_ = function(typeInfo) {
       goog.events.EventType.KEYDOWN,
       function(e) {
         if (document.activeElement !== input
-            && e.keyCode === goog.events.KeyCodes.SLASH) {
+            && e.keyCode === goog.events.KeyCodes.E
+            && (goog.userAgent.MAC ? e.metaKey : e.ctrlKey)) {
           input.focus();
           e.preventDefault();
           e.stopPropagation();
@@ -263,16 +267,11 @@ dossier.initNavList_ = function(typeInfo) {
   if (!window.localStorage) {
     return;
   }
-  var nav = document.querySelector('nav');
+  nav = document.querySelector('nav');
   var inputs = nav.querySelectorAll('input[type="checkbox"][id]');
   goog.array.forEach(inputs, function(el) {
     var state = window.localStorage.getItem(el.id);
-    if (goog.isString(state)) {
-      el.checked = state == 'closed';
-    } else {
-      // Default to opened.
-      el.checked = false;
-    }
+    el.checked = !goog.isString(state) || state === 'closed';
   });
   goog.events.listen(nav, goog.events.EventType.CHANGE, function(e) {
     window.localStorage.setItem(e.target.id,
