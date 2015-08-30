@@ -118,7 +118,7 @@ public class RendererTest {
             "<link href=\"apples\" rel=\"stylesheet\" type=\"text/css\">",
             "<link href=\"oranges\" rel=\"stylesheet\" type=\"text/css\">",
             "<header><div><form><div>",
-            "<input type=\"search\" placeholder=\"Search\">",
+            "<input type=\"search\" placeholder=\"Search\" tabindex=\"1\">",
             "</div></form></div></header>"));
   }
 

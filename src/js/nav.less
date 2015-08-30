@@ -56,6 +56,15 @@ nav {
     user-select: text;
   }
 
+  *:focus {
+    text-decoration: underline;
+    outline: 0;
+  }
+
+  .selectable:hover {
+    text-decoration: underline;
+  }
+
   .current {
     font-weight: bold;
     font-size: 1.1em;
@@ -95,8 +104,11 @@ nav {
       text-overflow: ellipsis;
     }
 
-    label:hover, & > a:hover {
-      background: fade(@link_color, 10%);
+    a {
+      display: block;
+      &:hover, &:focus {
+        background: fade(@link_color, 10%);
+      }
     }
 
     // TODO: Find a better way to ensure label:before stays in the gutter and

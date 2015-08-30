@@ -28,6 +28,7 @@ goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('goog.events.KeyCodes');
 goog.require('goog.dom');
+goog.require('goog.dom.TagName');
 goog.require('goog.dom.classlist');
 goog.require('goog.string');
 goog.require('goog.ui.ac');
@@ -264,17 +265,41 @@ dossier.initNavList_ = function(typeInfo) {
         typeInfo.modules, dossier.BASE_PATH_, currentFile, true));
   }
 
+  function updateStorage(checkbox) {
+    if (window.localStorage) {
+      window.localStorage.setItem(checkbox.id,
+          checkbox.checked ? 'closed' : 'open');
+    }
+  }
+
+  var navEl = document.querySelector('nav');
+  goog.events.listen(navEl, goog.events.EventType.KEYDOWN, function(e) {
+    if (e.keyCode !== goog.events.KeyCodes.LEFT
+        && e.keyCode !== goog.events.KeyCodes.RIGHT) {
+      return;
+    }
+    var label = goog.dom.getAncestor(e.target, function(node) {
+      return node.tagName === goog.dom.TagName.LABEL;
+    });
+    if (!label) {
+      return;
+    }
+    var input = document.getElementById(label.getAttribute('for'));
+    if (input) {
+      input.checked = e.keyCode === goog.events.KeyCodes.LEFT;
+      updateStorage(input);
+    }
+  });
+
   if (!window.localStorage) {
     return;
   }
-  nav = document.querySelector('nav');
-  var inputs = nav.querySelectorAll('input[type="checkbox"][id]');
+  var inputs = navEl.querySelectorAll('input[type="checkbox"][id]');
   goog.array.forEach(inputs, function(el) {
     var state = window.localStorage.getItem(el.id);
     el.checked = !goog.isString(state) || state === 'closed';
   });
-  goog.events.listen(nav, goog.events.EventType.CHANGE, function(e) {
-    window.localStorage.setItem(e.target.id,
-        e.target.checked ? 'closed' : 'open');
+  goog.events.listen(navEl, goog.events.EventType.CHANGE, function(e) {
+    updateStorage(e.target);
   });
 };

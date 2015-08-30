@@ -259,6 +259,7 @@ function buildListItem(node, basePath, currentPath, idPrefix) {
 
   var a = document.createElement('a');
   a.textContent = node.getKey();
+  a.tabIndex = 2;
   if (node.getValue()) {
     a.href = basePath + node.getValue().href;
     if (node.getValue().interface) {
