@@ -66,7 +66,7 @@ run_jsc() {
 }
 
 run_lessc() {
-  lessc --compress \
+  lessc --clean-css="--s0 --advanced" \
       src/js/dossier.less \
       $RESOURCES/dossier.css
 }
