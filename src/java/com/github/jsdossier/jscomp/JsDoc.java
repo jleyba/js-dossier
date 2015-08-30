@@ -21,7 +21,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.base.Strings.isNullOrEmpty;
 
-import com.google.common.base.CharMatcher;
 import com.google.common.base.Optional;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
@@ -338,8 +337,6 @@ public class JsDoc {
   }
 
   private static final Pattern STAR_PREFIX = Pattern.compile("^\\s*\\*+\\s?");
-  private static final CharMatcher LOWER_ASCII_ALPHA = CharMatcher.inRange('a', 'z');
-  private static final CharMatcher UPPER_ASCII_ALPHA = CharMatcher.inRange('A', 'Z');
 
   private static int skipChar(String line, int offset, char c) {
     while (offset < line.length() && line.charAt(offset) == c) {
@@ -348,10 +345,13 @@ public class JsDoc {
     return offset;
   }
 
+  private static boolean isAlpha(char c) {
+    return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
+  }
+
   @Nullable
   private static Offset findFirstAnnotationLine(Iterable<String> lines) {
     int lineNum = 0;
-    LINE_LOOP:
     for (Iterator<String> it = lines.iterator(); it.hasNext(); lineNum++) {
       String line = it.next();
       int offset = 0;
@@ -369,19 +369,11 @@ public class JsDoc {
       }
       int startAnnotation = offset;
       offset += 1;
-      if (offset >= line.length() || !LOWER_ASCII_ALPHA.matches(line.charAt(offset))) {
+      if (offset >= line.length() || !isAlpha(line.charAt(offset))) {
         continue;
       }
-      offset += 1;
-      while (offset < line.length()) {
-        char c = line.charAt(offset);
-        if (LOWER_ASCII_ALPHA.matches(c) || UPPER_ASCII_ALPHA.matches(c)) {
-          offset += 1;
-        } else if (c == ' ') {
-          break;
-        } else {
-          continue LINE_LOOP;
-        }
+      while (offset < line.length() && isAlpha(line.charAt(offset))) {
+        offset += 1;
       }
 
       StringPosition position = new StringPosition();
@@ -505,6 +497,11 @@ public class JsDoc {
     private Offset(int line, int column) {
       this.line = line;
       this.column = column;
+    }
+
+    @Override
+    public String toString() {
+      return line + ":" + column;
     }
   }
 }

@@ -103,7 +103,8 @@ build_release() {
 
 build_sample() {
   bazel build //src/java/com/github/jsdossier:dossier_deploy.jar
-  java -jar bazel-bin/src/java/com/github/jsdossier/dossier_deploy.jar \
+  java -agentlib:jdwp=transport=dt_socket,server=y,suspend="${DEBUG:-n}",address=5005 \
+      -jar bazel-bin/src/java/com/github/jsdossier/dossier_deploy.jar \
       --config sample_config.json
 }
 
