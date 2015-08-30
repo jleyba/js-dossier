@@ -34,6 +34,8 @@ import com.github.jsdossier.annotations.Readme;
 import com.github.jsdossier.annotations.SourcePrefix;
 import com.github.jsdossier.annotations.TypeFilter;
 import com.github.jsdossier.annotations.Types;
+import com.github.jsdossier.jscomp.JsDoc;
+import com.github.jsdossier.jscomp.Parameter;
 import com.github.jsdossier.proto.BaseProperty;
 import com.github.jsdossier.proto.Comment;
 import com.github.jsdossier.proto.Deprecation;

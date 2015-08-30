@@ -6,9 +6,13 @@ java_test_suite(
     deps = [
         "//lib/maven:closure_compiler",
         "//lib/maven:guava",
+        "//lib/maven:guice",
+        "//lib/maven:inject",
         "//lib/maven:jimfs",
         "//lib/maven:junit",
         "//lib/maven:truth",
+        "//src/java/com/github/jsdossier",
+        "//src/java/com/github/jsdossier/annotations",
         "//src/java/com/github/jsdossier/jscomp",
         "//test/java/com/github/jsdossier/testing",
     ],

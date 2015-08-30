@@ -19,6 +19,7 @@ package com.github.jsdossier;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Strings.isNullOrEmpty;
 
+import com.github.jsdossier.jscomp.JsDoc;
 import com.github.jsdossier.proto.Comment;
 import com.github.jsdossier.proto.Deprecation;
 import com.github.jsdossier.proto.TypeLink;

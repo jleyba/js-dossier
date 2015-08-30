@@ -14,7 +14,7 @@
  limitations under the License.
  */
 
-package com.github.jsdossier;
+package com.github.jsdossier.jscomp;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -75,23 +75,23 @@ public class JsDoc {
     return info == null ? null : new JsDoc(info);
   }
 
-  JSDocInfo getInfo() {
+  public JSDocInfo getInfo() {
     return info;
   }
 
-  String getOriginalCommentString() {
+  public String getOriginalCommentString() {
     return info.getOriginalCommentString();
   }
 
-  boolean isConstructor() {
+  public boolean isConstructor() {
     return info.isConstructor();
   }
 
-  boolean isInterface() {
+  public boolean isInterface() {
     return info.isInterface();
   }
 
-  boolean isEnum() {
+  public boolean isEnum() {
     return info.getEnumParameterType() != null;
   }
 
@@ -119,11 +119,12 @@ public class JsDoc {
     return hasAnnotation(Annotation.STRUCT);
   }
 
-  boolean isTypedef() {
+  public boolean isTypedef() {
     return info.getTypedefType() != null;
   }
 
-  @Nullable JSTypeExpression getType() {
+  @Nullable
+  public JSTypeExpression getType() {
     if (isEnum()) {
       return info.getEnumParameterType();
     } else if (isTypedef()) {
@@ -141,7 +142,7 @@ public class JsDoc {
     return info.getVisibility();
   }
 
-  List<JSTypeExpression> getExtendedInterfaces() {
+  public List<JSTypeExpression> getExtendedInterfaces() {
     return info.getExtendedInterfaces();
   }
 
@@ -149,7 +150,7 @@ public class JsDoc {
    * Returns the comment string for the {@literal @fileoverview} annotation. Returns an empty string
    * if the annotation was not present.
    */
-  String getFileoverview() {
+  public String getFileoverview() {
     parse();
     return fileoverview;
   }
@@ -159,7 +160,7 @@ public class JsDoc {
    * comment, but has a {@link #getFileoverview()} or {@link #getDefinition()}, then those will be
    * used as the block comment.
    */
-  String getBlockComment() {
+  public String getBlockComment() {
     parse();
     return blockComment;
   }
@@ -168,12 +169,12 @@ public class JsDoc {
    * Returns the comment string for the {@literal @define} annotation. Returns an empty string if
    * the annotation was not present.
    */
-  String getDefinition() {
+  public String getDefinition() {
     parse();
     return defineComment;
   }
 
-  String getDeprecationReason() {
+  public String getDeprecationReason() {
     checkState(isDeprecated());
     parse();
     return deprecationReason;
@@ -195,26 +196,27 @@ public class JsDoc {
     return parameters.get(name);
   }
 
-  @Nullable JSTypeExpression getReturnType() {
+  @Nullable
+  public JSTypeExpression getReturnType() {
     return info.getReturnType();
   }
 
-  String getReturnDescription() {
+  public String getReturnDescription() {
     parse();
     return returnDescription;
   }
 
-  ImmutableList<String> getSeeClauses() {
+  public ImmutableList<String> getSeeClauses() {
     parse();
     return ImmutableList.copyOf(seeClauses);
   }
 
-  ImmutableList<ThrowsClause> getThrowsClauses() {
+  public ImmutableList<ThrowsClause> getThrowsClauses() {
     parse();
     return ImmutableList.copyOf(throwsClauses);
   }
 
-  ImmutableList<String> getTemplateTypeNames() {
+  public ImmutableList<String> getTemplateTypeNames() {
     return info.getTemplateTypeNames();
   }
 
@@ -439,7 +441,7 @@ public class JsDoc {
     return builder.toString().trim();
   }
 
-  static class ThrowsClause {
+  public static class ThrowsClause {
 
     private final Optional<JSTypeExpression> type;
     private final String description;
@@ -449,26 +451,16 @@ public class JsDoc {
       this.description = description;
     }
 
-    Optional<JSTypeExpression> getType() {
+    public Optional<JSTypeExpression> getType() {
       return type;
     }
 
-    String getDescription() {
+    public String getDescription() {
       return description;
     }
   }
 
-  private static final class Offset {
-    private final int line;
-    private final int column;
-
-    private Offset(int line, int column) {
-      this.line = line;
-      this.column = column;
-    }
-  }
-
-  static enum Annotation {
+  public static enum Annotation {
     CONST("const"),
     DEFINE("define"),
     DEPRECATED("deprecated"),
@@ -503,6 +495,16 @@ public class JsDoc {
 
     String getAnnotation() {
       return annotation;
+    }
+  }
+
+  private static final class Offset {
+    private final int line;
+    private final int column;
+
+    private Offset(int line, int column) {
+      this.line = line;
+      this.column = column;
     }
   }
 }

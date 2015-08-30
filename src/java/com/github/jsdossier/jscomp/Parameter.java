@@ -14,7 +14,7 @@
  limitations under the License.
  */
 
-package com.github.jsdossier;
+package com.github.jsdossier.jscomp;
 
 import static com.google.common.base.Strings.nullToEmpty;
 
@@ -26,17 +26,13 @@ import javax.annotation.Nullable;
 /**
  * Describes a function parameter.
  */
-class Parameter {
+public final class Parameter {
 
   private final String name;
   @Nullable private final JSTypeExpression type;
   private final String description;
 
-  Parameter(@Nullable String name) {
-    this(name, null, null);
-  }
-
-  Parameter(
+  public Parameter(
       @Nullable String name,
       @Nullable JSTypeExpression type,
       @Nullable String description) {
@@ -45,15 +41,16 @@ class Parameter {
     this.description = Strings.nullToEmpty(description);
   }
 
-  String getName() {
+  public String getName() {
     return name;
   }
 
-  @Nullable JSTypeExpression getType() {
+  @Nullable
+  public JSTypeExpression getType() {
     return type;
   }
 
-  String getDescription() {
+  public String getDescription() {
     return description;
   }
 }

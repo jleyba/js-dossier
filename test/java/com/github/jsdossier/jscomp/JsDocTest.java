@@ -14,7 +14,7 @@
  limitations under the License.
  */
 
-package com.github.jsdossier;
+package com.github.jsdossier.jscomp;
 
 import static com.google.common.collect.Iterables.getOnlyElement;
 import static com.google.common.truth.Truth.assertThat;
@@ -24,6 +24,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
+import com.github.jsdossier.CompilerModule;
+import com.github.jsdossier.NominalType;
+import com.github.jsdossier.TypeRegistry;
 import com.github.jsdossier.annotations.Input;
 import com.github.jsdossier.annotations.Modules;
 import com.github.jsdossier.annotations.Stderr;
@@ -71,7 +74,8 @@ public class JsDocTest {
 
   @Inject
   CompilerUtil util;
-  @Inject TypeRegistry typeRegistry;
+  @Inject
+  TypeRegistry typeRegistry;
 
   @Test
   public void returnsEmptyBlockCommentIfAnnotationsOnly() {

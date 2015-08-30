@@ -21,6 +21,7 @@ import static com.google.javascript.jscomp.NodeTraversal.traverseTyped;
 
 import com.github.jsdossier.annotations.Input;
 import com.github.jsdossier.jscomp.DossierCompiler;
+import com.github.jsdossier.jscomp.JsDoc;
 import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 import com.google.javascript.jscomp.AbstractCompiler;
