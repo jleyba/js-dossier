@@ -22,7 +22,8 @@
     <orderEntry type="library" name="com.google.template:soy:2015-02-10" level="project" />
     <orderEntry type="library" name="args4j:args4j:2.0.26" level="project" />
     <orderEntry type="library" name="com.google.code.gson:gson:2.2.4" level="project" />
-    <orderEntry type="library" name="com.google.javascript:closure-compiler:v20150315" level="project" />
+    <orderEntry type="library" name="com.google.javascript:closure-compiler-externs:v20150729" level="project" />
+    <orderEntry type="library" name="com.google.javascript:closure-compiler:v20150729" level="project" />
     <orderEntry type="library" name="com.google.guava:guava:18.0" level="project" />
     <orderEntry type="library" name="com.google.inject:guice:3.0" level="project" />
     <orderEntry type="library" name="com.google.inject.extensions:guice-assistedinject:3.0" level="project" />

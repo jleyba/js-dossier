@@ -21,6 +21,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.base.Strings.isNullOrEmpty;
 
+import com.google.common.base.CharMatcher;
 import com.google.common.base.Optional;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
@@ -28,8 +29,8 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.JSDocInfo.Marker;
+import com.google.javascript.rhino.JSDocInfo.StringPosition;
 import com.google.javascript.rhino.JSTypeExpression;
-import com.google.javascript.rhino.Node;
 
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -76,18 +77,6 @@ public class JsDoc {
 
   JSDocInfo getInfo() {
     return info;
-  }
-
-  String getSource() {
-    return info.getSourceName();
-  }
-
-  int getLineNum() {
-    Node node = info.getAssociatedNode();
-    if (node != null) {
-      return Math.max(node.getLineno(), 0);
-    }
-    return 0;
   }
 
   String getOriginalCommentString() {
@@ -261,25 +250,20 @@ public class JsDoc {
     if (original.isEmpty()) {
       return;
     }
-    if (info.getStaticSourceFile() != null && info.getOriginalCommentPosition() > 0) {
-      int offset = info.getOriginalCommentPosition();
-      int column = info.getStaticSourceFile().getColumnOfOffset(offset);
-      if (column > 0) {
-        original = Strings.repeat(" ", column) + original;
-      }
-    }
-    original = original.substring(0, original.length() - 2);  // subtract closing */
 
-    Iterable<String> lines = Splitter.on(EOL_PATTERN).split(original);
-    int firstAnnotation = findFirstAnnotationLine(lines);
-    int annotationOffset = 0;
-    if (firstAnnotation != -1 && !info.getMarkers().isEmpty()) {
-      blockComment = processBlockCommentLines(Iterables.limit(lines, firstAnnotation));
+    List<String> lines = Splitter.on(EOL_PATTERN).splitToList(
+        original.subSequence(0, original.length() - 2));  // subtract closing */
+    Offset firstAnnotation = findFirstAnnotationLine(lines);
+    Offset annotationOffset = new Offset(0, 0);
+    if (firstAnnotation != null && !info.getMarkers().isEmpty()) {
+      blockComment = processBlockCommentLines(Iterables.limit(lines, firstAnnotation.line));
 
       JSDocInfo.StringPosition firstAnnotationPosition =
           info.getMarkers().iterator().next().getAnnotation();
 
-      annotationOffset = firstAnnotationPosition.getStartLine() - firstAnnotation;
+      annotationOffset = new Offset(
+          firstAnnotationPosition.getStartLine() - firstAnnotation.line,
+          firstAnnotationPosition.getPositionOnStartLine() - firstAnnotation.column);
     } else {
       blockComment = processBlockCommentLines(lines);
     }
@@ -303,39 +287,33 @@ public class JsDoc {
         continue;
       }
 
-      int startLine = description.getStartLine() - annotationOffset;
-      Iterable<String> descriptionLines = Iterables.skip(lines, startLine);
-
-      int numLines = Math.max(description.getEndLine() - description.getStartLine(), 1);
-      descriptionLines = Iterables.limit(descriptionLines, numLines);
-
       switch (annotation.get()) {
         case DEFINE:
-          defineComment = processDescriptionLines(descriptionLines, description);
+          defineComment = processDescriptionLines(lines, annotationOffset, description);
           break;
         case DEPRECATED:
-          deprecationReason = processDescriptionLines(descriptionLines, description);
+          deprecationReason = processDescriptionLines(lines, annotationOffset, description);
           break;
         case FILEOVERVIEW:
-          fileoverview = processDescriptionLines(descriptionLines, description);
+          fileoverview = processDescriptionLines(lines, annotationOffset, description);
           break;
         case PARAM:
           String name = marker.getNameNode().getItem().getString();
           parameters.put(name, new Parameter(
               name,
               getJsTypeExpression(marker),
-              processDescriptionLines(descriptionLines, description)));
+              processDescriptionLines(lines, annotationOffset, description)));
           break;
         case RETURN:
-          returnDescription = processDescriptionLines(descriptionLines, description);
+          returnDescription = processDescriptionLines(lines, annotationOffset, description);
           break;
         case SEE:
-          seeClauses.add(processDescriptionLines(descriptionLines, description));
+          seeClauses.add(processDescriptionLines(lines, annotationOffset, description));
           break;
         case THROWS:
           throwsClauses.add(new ThrowsClause(
               getJsTypeExpression(marker),
-              processDescriptionLines(descriptionLines, description)));
+              processDescriptionLines(lines, annotationOffset, description)));
           break;
       }
     }
@@ -354,28 +332,61 @@ public class JsDoc {
     if (marker.getType() == null) {
       return null;
     }
-    return new JSTypeExpression(marker.getType().getItem(), info.getSourceName());
+    return new JSTypeExpression(marker.getType().getItem(), "");
   }
 
   private static final Pattern STAR_PREFIX = Pattern.compile("^\\s*\\*+\\s?");
-  private static final Pattern ANNOTATION_LINE_PATTERN = Pattern.compile("^\\s*\\**\\s*@[a-zA-Z]");
+  private static final CharMatcher LOWER_ASCII_ALPHA = CharMatcher.inRange('a', 'z');
+  private static final CharMatcher UPPER_ASCII_ALPHA = CharMatcher.inRange('A', 'Z');
 
-  private static int findFirstAnnotationLine(Iterable<String> lines) {
+  private static int skipChar(String line, int offset, char c) {
+    while (offset < line.length() && line.charAt(offset) == c) {
+      offset++;
+    }
+    return offset;
+  }
+
+  @Nullable
+  private static Offset findFirstAnnotationLine(Iterable<String> lines) {
     int lineNum = 0;
+    LINE_LOOP:
     for (Iterator<String> it = lines.iterator(); it.hasNext(); lineNum++) {
       String line = it.next();
+      int offset = 0;
       if (lineNum == 0) {
         int start = line.indexOf("/**");
         if (start != -1) {
-          line = line.substring(start + 3);
+          offset = start + 3;
         }
       }
-      Matcher m = ANNOTATION_LINE_PATTERN.matcher(line);
-      if (m.find(0)) {
-        return lineNum;
+      offset = skipChar(line, offset, ' ');
+      offset = skipChar(line, offset, '*');
+      offset = skipChar(line, offset, ' ');
+      if (offset >= line.length() || line.charAt(offset) != '@') {
+        continue;
       }
+      int startAnnotation = offset;
+      offset += 1;
+      if (offset >= line.length() || !LOWER_ASCII_ALPHA.matches(line.charAt(offset))) {
+        continue;
+      }
+      offset += 1;
+      while (offset < line.length()) {
+        char c = line.charAt(offset);
+        if (LOWER_ASCII_ALPHA.matches(c) || UPPER_ASCII_ALPHA.matches(c)) {
+          offset += 1;
+        } else if (c == ' ') {
+          break;
+        } else {
+          continue LINE_LOOP;
+        }
+      }
+
+      StringPosition position = new StringPosition();
+      position.setPositionInformation(lineNum, startAnnotation, lineNum, offset);
+      return new Offset(lineNum, startAnnotation);
     }
-    return -1;  // Not found.
+    return null;  // Not found.
   }
 
   private static String processBlockCommentLines(Iterable<String> lines) {
@@ -398,14 +409,24 @@ public class JsDoc {
     return builder.toString().trim();
   }
 
-  private static String processDescriptionLines(
-      Iterable<String> lines, JSDocInfo.StringPosition position) {
+  private String processDescriptionLines(
+      List<String> lines, Offset annotationOffset, JSDocInfo.StringPosition position) {
+    int startLine = position.getStartLine() - annotationOffset.line;
+    int numLines = Math.max(position.getEndLine() - position.getStartLine(), 1);
+
+    Iterable<String> descriptionLines = Iterables.skip(lines, startLine);
+    descriptionLines = Iterables.limit(descriptionLines, numLines);
+
     StringBuilder builder = new StringBuilder();
     boolean isFirst = true;
-    for (String line : lines) {
+    for (String line : descriptionLines) {
       if (isFirst) {
         isFirst = false;
-        line = line.substring(position.getPositionOnStartLine());
+        int pos = position.getPositionOnStartLine();
+        if (lines.size() == 1) {
+          pos -= annotationOffset.column;
+        }
+        line = line.substring(pos);
       } else {
         Matcher matcher = STAR_PREFIX.matcher(line);
         if (matcher.find(0)) {
@@ -434,6 +455,16 @@ public class JsDoc {
 
     String getDescription() {
       return description;
+    }
+  }
+
+  private static final class Offset {
+    private final int line;
+    private final int column;
+
+    private Offset(int line, int column) {
+      this.line = line;
+      this.column = column;
     }
   }
 

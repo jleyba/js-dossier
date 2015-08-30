@@ -179,12 +179,37 @@ public class JsDocTest {
     assertEquals("a name.", param.getDescription());
   }
 
-
   @Test
   public void parsesParamDescriptions_indentedSingleLineComment() {
     JsDoc doc = getClassJsDoc(
-        "  /** @constructor @param {string} x a name. */",
-        "  function foo(x) {}");
+        "    /** @constructor @param {string} x a name. */",
+        "    function foo(x) {}");
+    Parameter param = getOnlyElement(doc.getParameters());
+    assertEquals("x", param.getName());
+    assertEquals("a name.", param.getDescription());
+  }
+
+  @Test
+  public void parsesParamDescriptions_indentedSingleLineComment_otherContentInSourceBeforeComment() {
+    JsDoc doc = getClassJsDoc(
+        "// garbage text",
+        "// should be ignored",
+        "//",
+        "    /** @constructor @param {string} x a name. */",
+        "    function foo(x) {}");
+    Parameter param = getOnlyElement(doc.getParameters());
+    assertEquals("x", param.getName());
+    assertEquals("a name.", param.getDescription());
+  }
+
+  @Test
+  public void parsesParamDescriptions_indentedMultiLineComment() {
+    JsDoc doc = getClassJsDoc(
+        "    /**",
+        "     * @param {string} x a name.",
+        "     * @constructor",
+        "     */",
+        "    function foo(x) {}");
     Parameter param = getOnlyElement(doc.getParameters());
     assertEquals("x", param.getName());
     assertEquals("a name.", param.getDescription());
@@ -425,6 +450,60 @@ public class JsDocTest {
     assertEquals(
         "line one\nline two\nline three",
         doc.getFileoverview());
+  }
+
+  @Test
+  public void parsesFileOverviewComments_indented() {
+    Node script = getScriptNode(
+        "",
+        "  /**",
+        "   * @fileoverview line one",
+        "   * line two",
+        "   * line three",
+        "   */",
+        "",
+        "var x = {};");
+
+    JsDoc doc = new JsDoc(script.getJSDocInfo());
+    assertEquals(
+        "line one\nline two\nline three",
+        doc.getFileoverview());
+  }
+
+  @Test
+  public void parsesFileOverviewComments_singleLine() {
+    Node script = getScriptNode(
+        "",
+        "/** @fileoverview hello, world! */",
+        "",
+        "var x = {};");
+
+    JsDoc doc = new JsDoc(script.getJSDocInfo());
+    assertEquals("hello, world!", doc.getFileoverview());
+  }
+
+  @Test
+  public void parsesFileOverviewComments_singleLineWithLeadingContent() {
+    Node script = getScriptNode(
+        "// hello, world",
+        "/** @fileoverview hello, world! */",
+        "",
+        "var x = {};");
+
+    JsDoc doc = new JsDoc(script.getJSDocInfo());
+    assertEquals("hello, world!", doc.getFileoverview());
+  }
+
+  @Test
+  public void parsesFileOverviewComments_singleLine_indented() {
+    Node script = getScriptNode(
+        "",
+        "    /** @fileoverview hello, world! */",
+        "",
+        "var x = {};");
+
+    JsDoc doc = new JsDoc(script.getJSDocInfo());
+    assertEquals("hello, world!", doc.getFileoverview());
   }
 
   @Test

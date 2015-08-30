@@ -12,14 +12,14 @@ maven_jar(
 
 maven_jar(
     name = "closure_compiler",
-    artifact = "com.google.javascript:closure-compiler:v20150315",
-    sha1 = "6fab834228f1f78a6a7533aea1de0d758eef09ac",
+    artifact = "com.google.javascript:closure-compiler:v20150729",
+    sha1 = "c4c6fc679916adabb5b1fa993ec37f4263e4dd3f",
 )
 
 maven_jar(
     name = "closure_compiler_externs",
-    artifact = "com.google.javascript:closure-compiler-externs:v20150315",
-    sha1 = "b689df9d0c7246ccfdfa9a487486640d259df11e",
+    artifact = "com.google.javascript:closure-compiler-externs:v20150729",
+    sha1 = "d00fda57c3fb91223fc79be7adbf11e48b76552a",
 )
 
 maven_jar(
