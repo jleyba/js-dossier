@@ -29,6 +29,7 @@ import com.google.common.collect.Sets;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.JSTypeExpression;
 import com.google.javascript.rhino.ObjectTypeI;
+import com.google.javascript.rhino.jstype.FunctionType;
 import com.google.javascript.rhino.jstype.JSType;
 import com.google.javascript.rhino.jstype.JSTypeRegistry;
 import com.google.javascript.rhino.jstype.NamedType;
@@ -282,11 +283,17 @@ public class TypeRegistry {
   /**
    * Returns the type hierarchy for the given type as a stack with the type at the
    * bottom and the root ancestor at the top (Object is excluded as it is implied).
+   *
+   * <p>This method returns the <em>instance</em> types for each type, not the constructors.
    */
   public LinkedList<JSType> getTypeHierarchy(JSType type) {
     LinkedList<JSType> stack = new LinkedList<>();
     for (; type != null; type = getBaseType(type)) {
-      stack.push(type);
+      JSType toAdd = type;
+      if (toAdd.isConstructor()) {
+        toAdd = ((FunctionType) toAdd).getInstanceType();
+      }
+      stack.push(toAdd);
     }
     return stack;
   }
@@ -325,8 +332,13 @@ public class TypeRegistry {
       for (JSType jsType : getTypeHierarchy(type)) {
         if (jsType.getJSDocInfo() != null) {
           for (JSTypeExpression expr : jsType.getJSDocInfo().getImplementedInterfaces()) {
-            builder.add(evaluate(expr));
+            JSType exprType = evaluate(expr);
+            if (exprType.getJSDocInfo() != null) {
+              builder.addAll(getExtendedInterfaces(exprType.getJSDocInfo()));
+            }
+            builder.add(exprType);
           }
+
         } else if (jsType.isInstanceType()) {
           NominalType resolved = resolve(jsType);
           if (resolved != null && resolved != nominalType) {
