@@ -80,6 +80,10 @@ public class TypeRegistry {
     return name.startsWith(INTERNAL_NAMESPACE_VAR);
   }
 
+  public JSType getJsType(String name) {
+    return jsTypeRegistry.getType(name);
+  }
+
   /**
    * Evaluates a type expression to a JSType.
    *
