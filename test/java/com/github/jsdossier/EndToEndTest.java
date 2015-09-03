@@ -80,7 +80,7 @@ public class EndToEndTest {
       }
     } else {
       fileSystem = Jimfs.newFileSystem();
-      tmpDir = fileSystem.getPath(System.getProperty("java.io.tmpdir"));
+      tmpDir = fileSystem.getPath("/tmp");
       createDirectories(tmpDir);
     }
 
