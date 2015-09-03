@@ -16,6 +16,9 @@
 
 @import url(https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Inconsolata);
 
+@large_screen_size: 1000px;
+@small_screen_size: 320px;
+
 @header_height: 5rem;
 @footer_height: 4rem;
 
@@ -62,6 +65,13 @@
   transform: rotate(@amount);
 }
 
+.display-flex(@direction) {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: @direction;
+  flex-direction: @direction;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -69,7 +79,10 @@
 
 html {
   font-size: 10px;
-  min-height: 100%;
+  min-height: 100vh;
+  // IE requires an explicit height for flex-direction: column to work.
+  // See https://connect.microsoft.com/IE/feedback/details/802625
+  height: 100%;
   position: relative;
 }
 
@@ -78,9 +91,13 @@ body {
   font-family: "Lato", sans-serif;
   line-height: 1.6;
   word-wrap: break-word;
-  margin: 0 0 @footer_height;
-  padding: 0;
   background: @body_bg;
+
+  min-height: 100vh;
+  // IE requires an explicit height for flex-direction: column to work.
+  // See https://connect.microsoft.com/IE/feedback/details/802625
+  height: 100%;
+  .display-flex(column);
 
   .set-font-size(1.4rem);
 }

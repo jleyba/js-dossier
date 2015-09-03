@@ -24,12 +24,8 @@ main, div.pre-footer > div {
 }
 
 main {
-  display: block;  // For IE.
-  &:after {
-    clear: both;
-    content: "";
-    display: table;
-  }
+  flex: 1 0 auto;
+  .display-flex(row-reverse);
 }
 
 article {
@@ -91,19 +87,21 @@ article {
   }
 }
 
-@media (max-width: 1000px) {
+@media (max-width: @large_screen_size) {
+  main {
+    .display-flex(column);
+  }
   article {
     padding: 3rem 1rem;
   }
 }
 
-@media (min-width: 1000px) {
-  main, div.pre-footer > div {
-    .main-column-width(100rem);
+@media (min-width: @large_screen_size) {
+  main {
+    .main-column-width(@main_desktop_width);
   }
 
   article {
-    float: right;
     width: 66rem;
   }
 

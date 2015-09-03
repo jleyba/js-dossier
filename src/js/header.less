@@ -26,35 +26,22 @@ header {
   height: @header_height;
   box-shadow: 0 1px 5px #888888;
 
-  @input_height: 2.5rem;
+  @input_height: 3rem;
 
-  /**
-   * We want to position the input center of the page horizontally
-   * and center of the header vertically. To achieve the vertical
-   * alignment, we could use
-   *    display: table-cell;
-   *    height: @header_height;
-   *    vertical-align: middle;
-   *
-   * but then we could not accomplish horizontal align. To get
-   * both, we manually position the form so it stretches the entire
-   * header, and starts mid way down (minus the height of the input).
-   */
-  form {
-    position: absolute;
-    top: (@header_height - @input_height) / 2;
-    left: 0;
-    right: 0;
+  & > div {
+    .display-flex(row);
+    -ms-flex-align: center;
+    align-items: center;
+    -ms-flex-pack: end;
+    justify-content: flex-end;
+    height: 100%;
   }
 
   input {
     height: @input_height;
     width: @search_input_width;
-    margin: auto;
-    display: block;
 
-    padding: 0;
-    padding-left: 5px;
+    padding: 0 10px;
     border-radius: 15px;
     border: 0;
     -webkit-appearance: none;
@@ -87,7 +74,8 @@ header {
 
   z-index: 2;
   overflow: auto;
-  width: @search_input_width;
+  width: @search_input_width + 2rem;
+  margin-left: -1rem;
 }
 
 .ac-row {
@@ -103,20 +91,20 @@ header {
   background-color: rgba(82, 82, 82, 0.1);
 }
 
-
-@media (min-width: 1000px) {
-  header {
-    form {
-      width: 100rem;
-      margin: auto;
-    }
-    input {
-      position: absolute;
-      right: 1rem;
-    }
-  }
+@media (max-width: @small_screen_size) {
   .ac-renderer {
-    min-width: @search_input_width;
-    width: initial;
+    width: @search_input_width;
+    margin: 0;
+  }
+}
+@media (max-width: @large_screen_size) {
+  header > div {
+    -ms-flex-pack: center;
+    justify-content: center;
+  }
+}
+@media (min-width: @large_screen_size) {
+  header > div {
+    .main-column-width(@main_desktop_width);
   }
 }
