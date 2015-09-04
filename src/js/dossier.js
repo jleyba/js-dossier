@@ -275,7 +275,8 @@ dossier.initNavList_ = function(typeInfo) {
   var navEl = document.querySelector('nav');
   goog.events.listen(navEl, goog.events.EventType.KEYDOWN, function(e) {
     if (e.keyCode !== goog.events.KeyCodes.LEFT
-        && e.keyCode !== goog.events.KeyCodes.RIGHT) {
+        && e.keyCode !== goog.events.KeyCodes.RIGHT
+        && e.keyCode !== goog.events.KeyCodes.SPACE) {
       return;
     }
     var label = goog.dom.getAncestor(e.target, function(node) {
@@ -286,7 +287,12 @@ dossier.initNavList_ = function(typeInfo) {
     }
     var input = document.getElementById(label.getAttribute('for'));
     if (input) {
-      input.checked = e.keyCode === goog.events.KeyCodes.LEFT;
+      if (e.keyCode === goog.events.KeyCodes.SPACE) {
+        input.checked = !input.checked;
+        e.preventDefault();
+      } else {
+        input.checked = e.keyCode === goog.events.KeyCodes.LEFT;
+      }
       updateStorage(input);
     }
   });
