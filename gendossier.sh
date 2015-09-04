@@ -66,7 +66,8 @@ run_jsc() {
 }
 
 run_lessc() {
-  lessc --clean-css="--s0 --advanced" \
+  # npm install -g less less-plugin-clean-css less-plugin-autoprefix
+  lessc --clean-css="--s0 --advanced" --autoprefix="last 2 versions, edge > 12" \
       src/js/dossier.less \
       $RESOURCES/dossier.css
 }

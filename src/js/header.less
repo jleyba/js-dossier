@@ -29,10 +29,8 @@ header {
   @input_height: 3rem;
 
   & > div {
-    .display-flex(row);
-    -ms-flex-align: center;
+    display: flex;
     align-items: center;
-    -ms-flex-pack: end;
     justify-content: flex-end;
     height: 100%;
   }
@@ -99,7 +97,6 @@ header {
 }
 @media (max-width: @large_screen_size) {
   header > div {
-    -ms-flex-pack: center;
     justify-content: center;
   }
 }

@@ -25,7 +25,8 @@ main, div.pre-footer > div {
 
 main {
   flex: 1 0 auto;
-  .display-flex(row-reverse);
+  display: flex;
+  flex-direction: row-reverse;
 }
 
 article {
@@ -89,7 +90,7 @@ article {
 
 @media (max-width: @large_screen_size) {
   main {
-    .display-flex(column);
+    flex-direction: column;
   }
   article {
     padding: 3rem 1rem;

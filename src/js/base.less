@@ -59,19 +59,6 @@
   margin: 0 auto;
 }
 
-.rotate(@amount) {
-  -ms-transform: rotate(@amount);
-  -webkit-transform: rotate(@amount);
-  transform: rotate(@amount);
-}
-
-.display-flex(@direction) {
-  display: -ms-flexbox;
-  display: flex;
-  -ms-flex-direction: @direction;
-  flex-direction: @direction;
-}
-
 * {
   margin: 0;
   padding: 0;
@@ -97,7 +84,8 @@ body {
   // IE requires an explicit height for flex-direction: column to work.
   // See https://connect.microsoft.com/IE/feedback/details/802625
   height: 100%;
-  .display-flex(column);
+  display: flex;
+  flex-direction: column;
 
   .set-font-size(1.4rem);
 }
