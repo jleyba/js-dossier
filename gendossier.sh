@@ -12,7 +12,7 @@ usage() {
 usage $0 [...options]
 
 Generate various resources for Dossier. If no options are specified,
-all steps will be executed.
+builds a new release (-r).
 
 OPTIONS:
   -h       Print this help message and exit
@@ -235,7 +235,7 @@ EOF
 }
 
 main() {
-  local all=1
+  local no_options=1
   local js=0
   local less=0
   local proto=0
@@ -252,35 +252,31 @@ main() {
         exit 0
         ;;
       d)
-        all=0; readme=1
+        no_options=0; readme=1
         ;;
       j)
-        all=0; js=1
+        no_options=0; js=1
         ;;
       l)
-        all=0; less=1
+        no_options=0; less=1
         ;;
       p)
-        all=0; proto=1
+        no_options=0; proto=1
         ;;
       r)
-        all=0; release=1
+        no_options=0; release=1
         ;;
       s)
-        all=0; sample=1
+        no_options=0; sample=1
         ;;
       t)
-        all=0; test=1
+        no_options=0; test=1
         ;;
     esac
   done
 
-  if (( $all )); then
-    js=1
-    less=1
-    proto=1
+  if (( $no_options )); then
     release=1
-    sample=1
   fi
 
   if (( $readme )); then
