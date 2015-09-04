@@ -291,6 +291,18 @@ dossier.initNavList_ = function(typeInfo) {
     }
   });
 
+  goog.events.listen(navEl, ['focus', 'blur'], function(e) {
+    if (e.target.classList.contains('nav-item')
+        && e.target.parentNode.tagName === goog.dom.TagName.LABEL) {
+      var label = e.target.parentNode;
+      if (e.type === 'focus') {
+        label.classList.add('focused');
+      } else {
+        label.classList.remove('focused');
+      }
+    }
+  }, true);
+
   if (!window.localStorage) {
     return;
   }

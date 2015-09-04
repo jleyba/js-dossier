@@ -258,6 +258,7 @@ function buildListItem(node, basePath, currentPath, idPrefix) {
   var li = document.createElement('li');
 
   var a = document.createElement('a');
+  a.classList.add('nav-item');
   a.textContent = node.getKey();
   a.tabIndex = 2;
   if (node.getValue()) {

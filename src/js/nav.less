@@ -104,11 +104,11 @@ nav {
       text-overflow: ellipsis;
     }
 
-    a {
-      display: block;
-      &:hover, &:focus {
+    label:hover,
+    label.focused,
+    & > a:hover,
+    & > a:focus {
         background: fade(@link_color, 10%);
-      }
     }
 
     // TODO: Find a better way to ensure label:before stays in the gutter and
