@@ -66,22 +66,33 @@ run_jsc() {
 }
 
 run_lessc() {
-  # npm install -g less less-plugin-clean-css less-plugin-autoprefix
-  lessc --clean-css="--s0 --advanced" --autoprefix="last 2 versions, edge > 12" \
-      src/js/dossier.less \
-      $RESOURCES/dossier.css
+  if type -P lessc >/dev/null; then
+    lessc --clean-css="--s0 --advanced" --autoprefix="last 2 versions, edge > 12" \
+        src/js/dossier.less \
+        $RESOURCES/dossier.css
+  else
+    echo >&2 "[ERROR] lessc not found: install node from https://nodejs.org, then run:"
+    echo >&2 "  $ npm install -g less less-plugin-clean-css less-plugin-autoprefix"
+    exit 2
+  fi
 }
 
 run_protoc() {
-  protoc --java_out=src/java \
-      --proto_path=src/proto \
-      --proto_path=third_party/java \
-      src/proto/dossier.proto
-  protoc --java_out=test/java \
-      --proto_path=src/proto \
-      --proto_path=test/java/com/github/jsdossier/soy \
-      --proto_path=third_party/java \
-      test/java/com/github/jsdossier/soy/test_proto.proto
+  if type -P protoc >/dev/null; then
+    protoc --java_out=src/java \
+        --proto_path=src/proto \
+        --proto_path=third_party/java \
+        src/proto/dossier.proto
+    protoc --java_out=test/java \
+        --proto_path=src/proto \
+        --proto_path=test/java/com/github/jsdossier/soy \
+        --proto_path=third_party/java \
+        test/java/com/github/jsdossier/soy/test_proto.proto
+  else
+    echo >&2 "[ERROR] protoc not found: download v2.6.1 from:"
+    echo >&2 "  https://developers.google.com/protocol-buffers/docs/downloads"
+    exit 2
+  fi
 }
 
 run_tests() {
