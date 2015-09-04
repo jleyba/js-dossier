@@ -81,12 +81,12 @@ run_protoc() {
   if type -P protoc >/dev/null; then
     protoc --java_out=src/java \
         --proto_path=src/proto \
-        --proto_path=third_party/java \
+        --proto_path=third_party/proto \
         src/proto/dossier.proto
     protoc --java_out=test/java \
         --proto_path=src/proto \
         --proto_path=test/java/com/github/jsdossier/soy \
-        --proto_path=third_party/java \
+        --proto_path=third_party/proto \
         test/java/com/github/jsdossier/soy/test_proto.proto
   else
     echo >&2 "[ERROR] protoc not found: download v2.6.1 from:"
