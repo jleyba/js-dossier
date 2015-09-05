@@ -95,6 +95,18 @@ public class Linker {
     context.pop();
   }
 
+  private static String getTypePrefix(JSType type) {
+    if (type.isInterface()) {
+      return "interface_";
+    } else if (type.isConstructor()) {
+      return "class_";
+    } else if (type.isEnumType()) {
+      return "enum_";
+    } else {
+      return "namespace_";
+    }
+  }
+
   /**
    * Returns the display name for the given type.
    */
@@ -139,7 +151,7 @@ public class Linker {
       if (!name.isEmpty()) {
         name += "_";
       }
-      name += getDisplayName(type).replace('.', '_');
+      name += getTypePrefix(type.getJsType()) + getDisplayName(type).replace('.', '_');
     }
     return outputRoot.resolve(name + ".html");
   }

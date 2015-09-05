@@ -118,31 +118,31 @@ public class LinkerTest {
 
     when(jsType.isInterface()).thenReturn(true);
     assertEquals(
-        outputDir.resolve("foo_Bar.html"),
+        outputDir.resolve("interface_foo_Bar.html"),
         linker.getFilePath(type));
 
     when(jsType.isInterface()).thenReturn(false);
     when(jsType.isConstructor()).thenReturn(true);
     assertEquals(
-        outputDir.resolve("foo_Bar.html"),
+        outputDir.resolve("class_foo_Bar.html"),
         linker.getFilePath(type));
 
     when(jsType.isConstructor()).thenReturn(false);
     when(jsType.isEnumType()).thenReturn(true);
     assertEquals(
-        outputDir.resolve("foo_Bar.html"),
+        outputDir.resolve("enum_foo_Bar.html"),
         linker.getFilePath(type));
 
     when(jsType.isEnumType()).thenReturn(false);
     assertEquals(
-        outputDir.resolve("foo_Bar.html"),
+        outputDir.resolve("namespace_foo_Bar.html"),
         linker.getFilePath(type));
   }
 
   @Test
   public void testGetFilePath_closureModuleExports() {
     NominalType type = createType("foo.bar", createModule("foo.bar"));
-    assertEquals(outputDir.resolve("foo_bar.html"), linker.getFilePath(type));
+    assertEquals(outputDir.resolve("namespace_foo_bar.html"), linker.getFilePath(type));
   }
 
   @Test
@@ -163,7 +163,7 @@ public class LinkerTest {
 
     NominalType type = createType("bar", jsType, createModule("bar"));
     assertEquals(
-        outputDir.resolve("bar.html"),
+        outputDir.resolve("class_bar.html"),
         linker.getFilePath(type));
   }
 
@@ -176,7 +176,7 @@ public class LinkerTest {
         createCommonJsModule(fileSystem.getPath("/modules/foo/bar/index.js")));
 
     assertEquals(
-        outputDir.resolve("module_foo_bar_Baz.html"),
+        outputDir.resolve("module_foo_bar_class_Baz.html"),
         linker.getFilePath(type));
   }
 
@@ -196,7 +196,7 @@ public class LinkerTest {
   public void testGetLink_namespace() {
     NominalType type = createType("foo.bar");
     typeRegistry.addType(type);
-    checkLink("foo.bar", "foo_bar.html", linker.getLink("foo.bar"));
+    checkLink("foo.bar", "namespace_foo_bar.html", linker.getLink("foo.bar"));
   }
 
   @Test
@@ -224,7 +224,7 @@ public class LinkerTest {
 
     typeRegistry.addType(filtered);
     typeRegistry.addType(alias);
-    checkLink("foo.Alias", "foo_Alias.html", linker.getLink("foo.Filtered"));
+    checkLink("foo.Alias", "class_foo_Alias.html", linker.getLink("foo.Filtered"));
   }
 
   @Test
@@ -252,7 +252,7 @@ public class LinkerTest {
 
     typeRegistry.addType(filtered);
     typeRegistry.addType(alias);
-    checkLink("foo.Alias", "foo_Alias.html", linker.getLink(jsType));
+    checkLink("foo.Alias", "class_foo_Alias.html", linker.getLink(jsType));
   }
 
   @Test
@@ -277,8 +277,8 @@ public class LinkerTest {
         "foo.bar.baz = function() {};");
 
     assertNotNull(typeRegistry.getNominalType("foo.bar"));
-    checkLink("foo.bar.baz", "foo_bar.html#baz", linker.getLink("foo.bar.baz"));
-    checkLink("foo.bar.unknown", "foo_bar.html", linker.getLink("foo.bar.unknown"));
+    checkLink("foo.bar.baz", "namespace_foo_bar.html#baz", linker.getLink("foo.bar.baz"));
+    checkLink("foo.bar.unknown", "namespace_foo_bar.html", linker.getLink("foo.bar.unknown"));
   }
 
   @Test
@@ -293,13 +293,13 @@ public class LinkerTest {
 
     assertNotNull(typeRegistry.getNominalType("foo.Bar"));
 
-    checkLink("foo.Bar", "foo_Bar.html", linker.getLink("foo.Bar"));
-    checkLink("foo.Bar", "foo_Bar.html", linker.getLink("foo.Bar#"));
-    checkLink("foo.Bar#bar", "foo_Bar.html#bar", linker.getLink("foo.Bar#bar"));
-    checkLink("foo.Bar#bar", "foo_Bar.html#bar", linker.getLink("foo.Bar#bar()"));
-    checkLink("foo.Bar#bar", "foo_Bar.html#bar", linker.getLink("foo.Bar.prototype.bar"));
-    checkLink("foo.Bar#bar", "foo_Bar.html#bar", linker.getLink("foo.Bar.prototype.bar()"));
-    checkLink("foo.Bar.unknown", "foo_Bar.html", linker.getLink("foo.Bar.prototype.unknown"));
+    checkLink("foo.Bar", "class_foo_Bar.html", linker.getLink("foo.Bar"));
+    checkLink("foo.Bar", "class_foo_Bar.html", linker.getLink("foo.Bar#"));
+    checkLink("foo.Bar#bar", "class_foo_Bar.html#bar", linker.getLink("foo.Bar#bar"));
+    checkLink("foo.Bar#bar", "class_foo_Bar.html#bar", linker.getLink("foo.Bar#bar()"));
+    checkLink("foo.Bar#bar", "class_foo_Bar.html#bar", linker.getLink("foo.Bar.prototype.bar"));
+    checkLink("foo.Bar#bar", "class_foo_Bar.html#bar", linker.getLink("foo.Bar.prototype.bar()"));
+    checkLink("foo.Bar.unknown", "class_foo_Bar.html", linker.getLink("foo.Bar.prototype.unknown"));
   }
 
   @Test
@@ -338,9 +338,9 @@ public class LinkerTest {
 
     assertNotNull(typeRegistry.getNominalType("foo.Bar"));
 
-    checkLink("foo.Bar", "foo_Bar.html", linker.getLink("foo.Bar"));
-    checkLink("foo.Bar.yes", "foo_Bar.html#yes", linker.getLink("foo.Bar#yes"));
-    checkLink("foo.Bar.valueOf", "foo_Bar.html#Bar.valueOf",
+    checkLink("foo.Bar", "enum_foo_Bar.html", linker.getLink("foo.Bar"));
+    checkLink("foo.Bar.yes", "enum_foo_Bar.html#yes", linker.getLink("foo.Bar#yes"));
+    checkLink("foo.Bar.valueOf", "enum_foo_Bar.html#Bar.valueOf",
         linker.getLink("foo.Bar.valueOf"));
   }
 
@@ -358,9 +358,9 @@ public class LinkerTest {
     assertNotNull(context);
     linker.pushContext(context);
 
-    checkLink("foo.Bar#bar", "foo_Bar.html#bar", linker.getLink("#bar"));
-    checkLink("foo.Bar#x", "foo_Bar.html#x", linker.getLink("#x"));
-    checkLink("foo.Bar.baz", "foo_Bar.html#Bar.baz", linker.getLink("#baz"));
+    checkLink("foo.Bar#bar", "class_foo_Bar.html#bar", linker.getLink("#bar"));
+    checkLink("foo.Bar#x", "class_foo_Bar.html#x", linker.getLink("#x"));
+    checkLink("foo.Bar.baz", "class_foo_Bar.html#Bar.baz", linker.getLink("#baz"));
   }
 
   @Test
@@ -377,8 +377,8 @@ public class LinkerTest {
     assertNotNull(context);
     linker.pushContext(context);
 
-    checkLink("foo.Bar#bar", "foo_Bar.html#bar", linker.getLink("#bar"));
-    checkLink("foo.Bar.baz", "foo_Bar.html#Bar.baz", linker.getLink("#baz"));
+    checkLink("foo.Bar#bar", "interface_foo_Bar.html#bar", linker.getLink("#bar"));
+    checkLink("foo.Bar.baz", "interface_foo_Bar.html#Bar.baz", linker.getLink("#baz"));
   }
 
   @Test
@@ -394,8 +394,8 @@ public class LinkerTest {
     assertNotNull(context);
     linker.pushContext(context);
 
-    checkLink("foo.Bar.x", "foo_Bar.html#x", linker.getLink("#x"));
-    checkLink("foo.Bar.baz", "foo_Bar.html#Bar.baz", linker.getLink("#baz"));
+    checkLink("foo.Bar.x", "enum_foo_Bar.html#x", linker.getLink("#x"));
+    checkLink("foo.Bar.baz", "enum_foo_Bar.html#Bar.baz", linker.getLink("#baz"));
   }
 
   @Test
@@ -409,7 +409,7 @@ public class LinkerTest {
     assertNotNull(context);
     linker.pushContext(context);
 
-    checkLink("foo.bar", "foo.html#bar", linker.getLink("#bar"));
+    checkLink("foo.bar", "namespace_foo.html#bar", linker.getLink("#bar"));
   }
 
   @Test
@@ -445,13 +445,13 @@ public class LinkerTest {
     assertNotNull(context);
     linker.pushContext(context);
 
-    checkLink("ExternalClass", "module_foo_ExternalClass.html",
+    checkLink("ExternalClass", "module_foo_class_ExternalClass.html",
         linker.getLink("InternalClass"));
     checkLink("ExternalClass.staticFunc",
-        "module_foo_ExternalClass.html#ExternalClass.staticFunc",
+        "module_foo_class_ExternalClass.html#ExternalClass.staticFunc",
         linker.getLink("InternalClass.staticFunc"));
     checkLink("ExternalClass#method",
-        "module_foo_ExternalClass.html#method",
+        "module_foo_class_ExternalClass.html#method",
         linker.getLink("InternalClass#method"));
   }
 
@@ -469,13 +469,13 @@ public class LinkerTest {
 
     checkLink("foo", "module_foo.html", linker.getLink("foo"));
     checkLink("foo.ExternalClass",
-        "module_foo_ExternalClass.html",
+        "module_foo_class_ExternalClass.html",
         linker.getLink("foo.ExternalClass"));
     checkLink("foo.ExternalClass.staticFunc",
-        "module_foo_ExternalClass.html#ExternalClass.staticFunc",
+        "module_foo_class_ExternalClass.html#ExternalClass.staticFunc",
         linker.getLink("foo.ExternalClass.staticFunc"));
     checkLink("foo.ExternalClass#method",
-        "module_foo_ExternalClass.html#method",
+        "module_foo_class_ExternalClass.html#method",
         linker.getLink("foo.ExternalClass#method"));
   }
 
