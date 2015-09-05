@@ -55,11 +55,11 @@ public class JsDoc {
   private final JSDocInfo info;
 
   private final Map<String, Parameter> parameters = new LinkedHashMap<>();
-  private final List<ThrowsClause> throwsClauses = new LinkedList<>();
+  private final List<TypedDescription> throwsClauses = new LinkedList<>();
   private final List<String> seeClauses = new LinkedList<>();
 
   private String blockComment = "";
-  private String returnDescription = "";
+  private TypedDescription returnDescription = new TypedDescription(null, "");
   private String defineComment = "";
   private String deprecationReason = "";
   private String fileoverview = "";
@@ -195,12 +195,7 @@ public class JsDoc {
     return parameters.get(name);
   }
 
-  @Nullable
-  public JSTypeExpression getReturnType() {
-    return info.getReturnType();
-  }
-
-  public String getReturnDescription() {
+  public TypedDescription getReturnClause() {
     parse();
     return returnDescription;
   }
@@ -210,7 +205,7 @@ public class JsDoc {
     return ImmutableList.copyOf(seeClauses);
   }
 
-  public ImmutableList<ThrowsClause> getThrowsClauses() {
+  public ImmutableList<TypedDescription> getThrowsClauses() {
     parse();
     return ImmutableList.copyOf(throwsClauses);
   }
@@ -306,13 +301,15 @@ public class JsDoc {
               processDescriptionLines(lines, annotationOffset, description)));
           break;
         case RETURN:
-          returnDescription = processDescriptionLines(lines, annotationOffset, description);
+          returnDescription = new TypedDescription(
+              getJsTypeExpression(marker),
+              processDescriptionLines(lines, annotationOffset, description));
           break;
         case SEE:
           seeClauses.add(processDescriptionLines(lines, annotationOffset, description));
           break;
         case THROWS:
-          throwsClauses.add(new ThrowsClause(
+          throwsClauses.add(new TypedDescription(
               getJsTypeExpression(marker),
               processDescriptionLines(lines, annotationOffset, description)));
           break;
@@ -433,12 +430,12 @@ public class JsDoc {
     return builder.toString().trim();
   }
 
-  public static class ThrowsClause {
+  public static class TypedDescription {
 
     private final Optional<JSTypeExpression> type;
     private final String description;
 
-    private ThrowsClause(@Nullable JSTypeExpression type, String description) {
+    private TypedDescription(@Nullable JSTypeExpression type, String description) {
       this.type = Optional.fromNullable(type);
       this.description = description;
     }

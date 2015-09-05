@@ -30,6 +30,7 @@ import com.github.jsdossier.TypeRegistry;
 import com.github.jsdossier.annotations.Input;
 import com.github.jsdossier.annotations.Modules;
 import com.github.jsdossier.annotations.Stderr;
+import com.github.jsdossier.jscomp.JsDoc.TypedDescription;
 import com.github.jsdossier.testing.CompilerUtil;
 import com.github.jsdossier.testing.GuiceRule;
 import com.google.common.base.Joiner;
@@ -269,7 +270,8 @@ public class JsDocTest {
     Property bar = getOnlyElement(foo.getProperties());
     assertEquals("bar", bar.getName());
     assertTrue(bar.getType().isFunctionType());
-    assertEquals("nothing.", JsDoc.from(bar.getJSDocInfo()).getReturnDescription());
+    assertEquals("nothing.",
+        JsDoc.from(bar.getJSDocInfo()).getReturnClause().getDescription());
   }
 
   @Test
@@ -285,7 +287,8 @@ public class JsDocTest {
     Property bar = getOnlyElement(foo.getProperties());
     assertEquals("bar", bar.getName());
     assertTrue(bar.getType().isFunctionType());
-    assertEquals("nothing.", JsDoc.from(bar.getJSDocInfo()).getReturnDescription());
+    assertEquals("nothing.",
+        JsDoc.from(bar.getJSDocInfo()).getReturnClause().getDescription());
   }
 
   @Test
@@ -303,7 +306,7 @@ public class JsDocTest {
     assertEquals("bar", bar.getName());
     assertTrue(bar.getType().isFunctionType());
     assertEquals("nothing over\n    two lines.",
-        JsDoc.from(bar.getJSDocInfo()).getReturnDescription());
+        JsDoc.from(bar.getJSDocInfo()).getReturnClause().getDescription());
   }
 
   @Test
@@ -322,7 +325,7 @@ public class JsDocTest {
     assertEquals("bar", bar.getName());
     assertTrue(bar.getType().isFunctionType());
     assertEquals("nothing over\n    many\n    lines.",
-        JsDoc.from(bar.getJSDocInfo()).getReturnDescription());
+        JsDoc.from(bar.getJSDocInfo()).getReturnClause().getDescription());
   }
 
   @Test
@@ -359,7 +362,7 @@ public class JsDocTest {
         " * @constructor",
         " */",
         "function Foo(){}");
-    JsDoc.ThrowsClause tc = getOnlyElement(doc.getThrowsClauses());
+    TypedDescription tc = getOnlyElement(doc.getThrowsClauses());
     assertEquals("Hello.", tc.getDescription());
     assertTrue(tc.getType().isPresent());
   }
@@ -373,7 +376,7 @@ public class JsDocTest {
         " * @constructor",
         " */",
         "function Foo(){}");
-    JsDoc.ThrowsClause tc = getOnlyElement(doc.getThrowsClauses());
+    TypedDescription tc = getOnlyElement(doc.getThrowsClauses());
     assertEquals("Hello.\n    Goodbye.", tc.getDescription());
     assertTrue(tc.getType().isPresent());
   }
@@ -388,8 +391,8 @@ public class JsDocTest {
         " * @constructor",
         " */",
         "function Foo(){}");
-    Iterator<JsDoc.ThrowsClause> it = doc.getThrowsClauses().iterator();
-    JsDoc.ThrowsClause tc = it.next();
+    Iterator<TypedDescription> it = doc.getThrowsClauses().iterator();
+    TypedDescription tc = it.next();
     assertEquals("Hello.\n    Goodbye.", tc.getDescription());
 
     tc = it.next();

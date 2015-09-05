@@ -22,7 +22,7 @@ import static com.google.common.base.Verify.verify;
 import static com.google.common.collect.Iterables.transform;
 
 import com.github.jsdossier.jscomp.JsDoc;
-import com.github.jsdossier.jscomp.JsDoc.ThrowsClause;
+import com.github.jsdossier.jscomp.JsDoc.TypedDescription;
 import com.github.jsdossier.jscomp.Parameter;
 import com.github.jsdossier.proto.BaseProperty;
 import com.github.jsdossier.proto.Comment;
@@ -269,7 +269,8 @@ final class TypeInspector {
       Function.Detail.Builder detail = builder.getReturnBuilder();
       detail.setType(getReturnType(jsDoc, (FunctionType) type));
       if (jsDoc != null) {
-        detail.setDescription(parser.parseComment(jsDoc.getReturnDescription(), linker));
+        detail.setDescription(
+            parser.parseComment(jsDoc.getReturnClause().getDescription(), linker));
       }
     }
 
@@ -373,9 +374,9 @@ final class TypeInspector {
 
   private Iterable<Function.Detail> buildThrowsData(JsDoc jsDoc) {
     return transform(jsDoc.getThrowsClauses(),
-        new com.google.common.base.Function<ThrowsClause, Detail>() {
+        new com.google.common.base.Function<TypedDescription, Detail>() {
           @Override
-          public Function.Detail apply(JsDoc.ThrowsClause input) {
+          public Function.Detail apply(TypedDescription input) {
             Comment thrownType = Comment.getDefaultInstance();
             if (input.getType().isPresent()) {
               thrownType = linker.formatTypeExpression(input.getType().get());
@@ -391,8 +392,10 @@ final class TypeInspector {
 
   private Comment getReturnType(@Nullable JsDoc jsdoc, FunctionType function) {
     JSType returnType = function.getReturnType();
-    if (returnType.isUnknownType() && jsdoc != null && jsdoc.getReturnType() != null) {
-      returnType = typeRegistry.evaluate(jsdoc.getReturnType());
+    if (returnType.isUnknownType()
+        && jsdoc != null
+        && jsdoc.getReturnClause().getType().isPresent()) {
+      returnType = typeRegistry.evaluate(jsdoc.getReturnClause().getType().get());
     }
     Comment comment = linker.formatTypeExpression(returnType);
     if (isVacuousTypeComment(comment)) {
