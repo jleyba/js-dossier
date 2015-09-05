@@ -216,8 +216,8 @@ public class EndToEndTest {
 
   @Test
   public void checkGlobalClass() throws IOException {
-    Document document = load(outDir.resolve("class_GlobalCtor.html"));
-    compareWithGoldenFile(querySelector(document, "article"), "class_GlobalCtor.html");
+    Document document = load(outDir.resolve("GlobalCtor.html"));
+    compareWithGoldenFile(querySelector(document, "article"), "GlobalCtor.html");
     checkHeader(document);
     checkNav(document);
     checkFooter(document);
@@ -225,8 +225,8 @@ public class EndToEndTest {
 
   @Test
   public void checkGlobalEnum() throws IOException {
-    Document document = load(outDir.resolve("enum_GlobalEnum.html"));
-    compareWithGoldenFile(querySelector(document, "article"), "enum_GlobalEnum.html");
+    Document document = load(outDir.resolve("GlobalEnum.html"));
+    compareWithGoldenFile(querySelector(document, "article"), "GlobalEnum.html");
     checkHeader(document);
     checkNav(document);
     checkFooter(document);
@@ -234,8 +234,8 @@ public class EndToEndTest {
 
   @Test
   public void checkEmptyGlobalEnum() throws IOException {
-    Document document = load(outDir.resolve("enum_EmptyEnum.html"));
-    compareWithGoldenFile(querySelector(document, "article"), "enum_EmptyEnum.html");
+    Document document = load(outDir.resolve("EmptyEnum.html"));
+    compareWithGoldenFile(querySelector(document, "article"), "EmptyEnum.html");
     checkHeader(document);
     checkNav(document);
     checkFooter(document);
@@ -243,8 +243,8 @@ public class EndToEndTest {
 
   @Test
   public void checkGlobalUndefinedEnum() throws IOException {
-    Document document = load(outDir.resolve("enum_UndefinedEnum.html"));
-    compareWithGoldenFile(querySelector(document, "article"), "enum_UndefinedEnum.html");
+    Document document = load(outDir.resolve("UndefinedEnum.html"));
+    compareWithGoldenFile(querySelector(document, "article"), "UndefinedEnum.html");
     checkHeader(document);
     checkNav(document);
     checkFooter(document);
@@ -252,8 +252,8 @@ public class EndToEndTest {
 
   @Test
   public void checkDeprecatedClass() throws IOException {
-    Document document = load(outDir.resolve("class_DeprecatedFoo.html"));
-    compareWithGoldenFile(querySelector(document, "article"), "class_DeprecatedFoo.html");
+    Document document = load(outDir.resolve("DeprecatedFoo.html"));
+    compareWithGoldenFile(querySelector(document, "article"), "DeprecatedFoo.html");
     checkHeader(document);
     checkNav(document);
     checkFooter(document);
@@ -261,8 +261,8 @@ public class EndToEndTest {
 
   @Test
   public void checkFunctionNamespace() throws IOException {
-    Document document = load(outDir.resolve("namespace_sample_json.html"));
-    compareWithGoldenFile(querySelector(document, "article"), "namespace_sample_json.html");
+    Document document = load(outDir.resolve("sample_json.html"));
+    compareWithGoldenFile(querySelector(document, "article"), "sample_json.html");
     checkHeader(document);
     checkNav(document);
     checkFooter(document);
@@ -270,9 +270,9 @@ public class EndToEndTest {
 
   @Test
   public void checkInterfaceThatExtendsOtherInterfaces() throws IOException {
-    Document document = load(outDir.resolve("interface_sample_inheritance_LeafInterface.html"));
+    Document document = load(outDir.resolve("sample_inheritance_LeafInterface.html"));
     compareWithGoldenFile(querySelector(document, "article"),
-        "interface_sample_inheritance_LeafInterface.html");
+        "sample_inheritance_LeafInterface.html");
     checkHeader(document);
     checkNav(document);
     checkFooter(document);
@@ -280,8 +280,8 @@ public class EndToEndTest {
 
   @Test
   public void checkExportedApiOfClosureModule() throws IOException {
-    Document document = load(outDir.resolve("namespace_closure_module.html"));
-    compareWithGoldenFile(querySelector(document, "article"), "namespace_closure_module.html");
+    Document document = load(outDir.resolve("closure_module.html"));
+    compareWithGoldenFile(querySelector(document, "article"), "closure_module.html");
     checkHeader(document);
     checkNav(document);
     checkFooter(document);
@@ -289,8 +289,8 @@ public class EndToEndTest {
 
   @Test
   public void checkClassDefiendOnClosureModuleExportsObject() throws IOException {
-    Document document = load(outDir.resolve("class_closure_module_Clazz.html"));
-    compareWithGoldenFile(querySelector(document, "article"), "class_closure_module_Clazz.html");
+    Document document = load(outDir.resolve("closure_module_Clazz.html"));
+    compareWithGoldenFile(querySelector(document, "article"), "closure_module_Clazz.html");
     checkHeader(document);
     checkNav(document);
     checkFooter(document);
@@ -298,8 +298,8 @@ public class EndToEndTest {
 
   @Test
   public void checkClassExportedByClosureModule() throws IOException {
-    Document document = load(outDir.resolve("class_closure_module_PubClass.html"));
-    compareWithGoldenFile(querySelector(document, "article"), "class_closure_module_PubClass.html");
+    Document document = load(outDir.resolve("closure_module_PubClass.html"));
+    compareWithGoldenFile(querySelector(document, "article"), "closure_module_PubClass.html");
     checkHeader(document);
     checkNav(document);
     checkFooter(document);
@@ -307,9 +307,9 @@ public class EndToEndTest {
 
   @Test
   public void checkClassExtendsTemplateClass() throws IOException {
-    Document document = load(outDir.resolve("class_sample_inheritance_NumberClass.html"));
+    Document document = load(outDir.resolve("sample_inheritance_NumberClass.html"));
     compareWithGoldenFile(querySelector(document, "article"),
-        "class_sample_inheritance_NumberClass.html");
+        "sample_inheritance_NumberClass.html");
     checkHeader(document);
     checkNav(document);
     checkFooter(document);
@@ -317,9 +317,9 @@ public class EndToEndTest {
 
   @Test
   public void checkGoogDefinedClass() throws IOException {
-    Document document = load(outDir.resolve("class_sample_inheritance_StringClass.html"));
+    Document document = load(outDir.resolve("sample_inheritance_StringClass.html"));
     compareWithGoldenFile(querySelector(document, "article"),
-        "class_sample_inheritance_StringClass.html");
+        "sample_inheritance_StringClass.html");
     checkHeader(document);
     checkNav(document);
     checkFooter(document);
@@ -354,8 +354,8 @@ public class EndToEndTest {
 
   @Test
   public void checkCommonJsModuleClassAlias() throws IOException {
-    Document document = load(outDir.resolve("module_example_class_Greeter.html"));
-    compareWithGoldenFile(querySelector(document, "article"), "module_example_class_Greeter.html");
+    Document document = load(outDir.resolve("module_example_Greeter.html"));
+    compareWithGoldenFile(querySelector(document, "article"), "module_example_Greeter.html");
     checkHeader(document);
     checkNav(document);
     checkFooter(document);
@@ -363,9 +363,9 @@ public class EndToEndTest {
 
   @Test
   public void checkCommonJsModuleExportedInterface() throws IOException {
-    Document document = load(outDir.resolve("module_example_nested_interface_IdGenerator.html"));
+    Document document = load(outDir.resolve("module_example_nested_IdGenerator.html"));
     compareWithGoldenFile(querySelector(document, "article"),
-        "module_example_nested_interface_IdGenerator.html");
+        "module_example_nested_IdGenerator.html");
     checkHeader(document);
     checkNav(document);
     checkFooter(document);
@@ -374,9 +374,9 @@ public class EndToEndTest {
   @Test
   public void checkCommonJsModuleInterfaceImplementation() throws IOException {
     Document document = load(outDir.resolve(
-        "module_example_nested_class_IncrementingIdGenerator.html"));
+        "module_example_nested_IncrementingIdGenerator.html"));
     compareWithGoldenFile(querySelector(document, "article"),
-        "module_example_nested_class_IncrementingIdGenerator.html");
+        "module_example_nested_IncrementingIdGenerator.html");
     checkHeader(document);
     checkNav(document);
     checkFooter(document);
@@ -385,9 +385,9 @@ public class EndToEndTest {
   @Test
   public void checkClassThatExtendsExternType() throws IOException {
     Document document = load(outDir.resolve(
-        "class_sample_inheritance_RunnableError.html"));
+        "sample_inheritance_RunnableError.html"));
     compareWithGoldenFile(querySelector(document, "article"),
-        "class_sample_inheritance_RunnableError.html");
+        "sample_inheritance_RunnableError.html");
     checkHeader(document);
     checkNav(document);
     checkFooter(document);
@@ -395,8 +395,8 @@ public class EndToEndTest {
 
   @Test
   public void checkNamespaceWithFilteredTypes() throws IOException {
-    Document document = load(outDir.resolve("namespace_foo.html"));
-    compareWithGoldenFile(querySelector(document, "article"), "namespace_foo.html");
+    Document document = load(outDir.resolve("foo.html"));
+    compareWithGoldenFile(querySelector(document, "article"), "foo.html");
     checkHeader(document);
     checkNav(document);
     checkFooter(document);
@@ -404,8 +404,8 @@ public class EndToEndTest {
 
   @Test
   public void checkUnfilteredAliasOfFilteredClass() throws IOException {
-    Document document = load(outDir.resolve("class_foo_quot_OneBarAlias.html"));
-    compareWithGoldenFile(querySelector(document, "article"), "class_foo_quot_OneBarAlias.html");
+    Document document = load(outDir.resolve("foo_quot_OneBarAlias.html"));
+    compareWithGoldenFile(querySelector(document, "article"), "foo_quot_OneBarAlias.html");
     checkHeader(document);
     checkNav(document);
     checkFooter(document);
