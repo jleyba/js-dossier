@@ -310,8 +310,8 @@ public class InheritanceTest {
 
     assertThat(typeRegistry.getTypeHierarchy(b.getJsType()))
         .containsExactly(
-            getInstanceType(a),
-            getInstanceType(b))
+            getInstanceType(b),
+            getInstanceType(a))
         .inOrder();
   }
 
@@ -335,11 +335,171 @@ public class InheritanceTest {
 
     assertThat(typeRegistry.getTypeHierarchy(d.getJsType()))
         .containsExactly(
-            getInstanceType(a),
-            getInstanceType(b),
+            getInstanceType(d),
             getInstanceType(c),
-            getInstanceType(d))
+            getInstanceType(b),
+            getInstanceType(a))
         .inOrder();
+  }
+  
+  @Test
+  public void getDeclaredInterfaces_classHasNoInterfaces() {
+    util.compile(path("foo.js"),
+        "/** @constructor */",
+        "function Clazz() {}");
+
+    NominalType clazz = typeRegistry.getNominalType("Clazz");
+    assertThat(typeRegistry.getDeclaredInterfaces(clazz)).isEmpty();
+  }
+  
+  @Test
+  public void getDeclaredInterfaces_classImplementsInterface() {
+    util.compile(path("foo.js"),
+        "/** @interface */",
+        "function A() {}",
+        "",
+        "/** @interface */",
+        "function B() {}",
+        "",
+        "/** @interface */",
+        "function C() {}",
+        "",
+        "/**",
+        " * @constructor",
+        " * @implements {C}",
+        " * @implements {B}",
+        " * @implements {A}",
+        " */",
+        "function Clazz() {}",
+        "",
+        "/**",
+        " * @constructor",
+        " * @implements {A}",
+        " * @implements {B}",
+        " */",
+        "function OtherClazz() {}");
+
+    NominalType a = typeRegistry.getNominalType("A");
+    NominalType b = typeRegistry.getNominalType("B");
+    NominalType c = typeRegistry.getNominalType("C");
+    NominalType clazz = typeRegistry.getNominalType("Clazz");
+
+    assertThat(typeRegistry.getDeclaredInterfaces(clazz))
+        .containsExactly(
+            getInstanceType(c),
+            getInstanceType(b),
+            getInstanceType(a))
+        .inOrder();
+  }
+  
+  @Test
+  public void getDeclaredInterfaces_doesNotReturnInterfacesDeclaredOnSuperClass() {
+    util.compile(path("foo.js"),
+        "/** @interface */",
+        "function A() {}",
+        "",
+        "/** @interface */",
+        "function B() {}",
+        "",
+        "/** @interface */",
+        "function C() {}",
+        "",
+        "/**",
+        " * @constructor",
+        " * @implements {C}",
+        " * @implements {B}",
+        " * @implements {A}",
+        " */",
+        "function Clazz() {}",
+        "",
+        "/**",
+        " * @constructor",
+        " * @extends {Clazz}",
+        " */",
+        "function OtherClazz() {}");
+
+    NominalType a = typeRegistry.getNominalType("A");
+    NominalType b = typeRegistry.getNominalType("B");
+    NominalType c = typeRegistry.getNominalType("C");
+    NominalType clazz = typeRegistry.getNominalType("Clazz");
+
+    assertThat(typeRegistry.getDeclaredInterfaces(clazz))
+        .containsExactly(
+            getInstanceType(c),
+            getInstanceType(b),
+            getInstanceType(a))
+        .inOrder();
+
+    NominalType otherClazz = typeRegistry.getNominalType("OtherClazz");
+    assertThat(typeRegistry.getDeclaredInterfaces(otherClazz)).isEmpty();
+  }
+  
+  @Test
+  public void getDeclaredInterfaces_leafInterface() {
+    util.compile(path("foo.js"),
+        "/** @interface */",
+        "function Foo() {}");
+
+    NominalType type = typeRegistry.getNominalType("Foo");
+    assertThat(typeRegistry.getDeclaredInterfaces(type)).isEmpty();
+  }
+  
+  @Test
+  public void getDeclaredInterfaces_interfaceHasSuperInterface() {
+    util.compile(path("foo.js"),
+        "/** @interface */",
+        "function A() {}",
+        "",
+        "/** @interface */",
+        "function B() {}",
+        "",
+        "/** @interface */",
+        "function C() {}",
+        "",
+        "/**",
+        " * @interface",
+        " * @extends {C}",
+        " * @extends {B}",
+        " * @extends {A}",
+        " */",
+        "function Foo() {}");
+
+    NominalType a = typeRegistry.getNominalType("A");
+    NominalType b = typeRegistry.getNominalType("B");
+    NominalType c = typeRegistry.getNominalType("C");
+    NominalType type = typeRegistry.getNominalType("Foo");
+
+    assertThat(typeRegistry.getDeclaredInterfaces(type))
+        .containsExactly(
+            getInstanceType(c),
+            getInstanceType(b),
+            getInstanceType(a))
+        .inOrder();
+  }
+  
+  @Test
+  public void getDeclaredInterfaces_doesNotReturnDeclarationsFromSuperInterface() {
+    util.compile(path("foo.js"),
+        "/** @interface */",
+        "function A() {}",
+        "",
+        "/** @interface */",
+        "function B() {}",
+        "",
+        "/** @interface @extends {A} @extends {B}*/",
+        "function C() {}",
+        "",
+        "/**",
+        " * @interface",
+        " * @extends {C}",
+        " */",
+        "function Foo() {}");
+
+    NominalType c = typeRegistry.getNominalType("C");
+    NominalType type = typeRegistry.getNominalType("Foo");
+
+    assertThat(typeRegistry.getDeclaredInterfaces(type))
+        .containsExactly(getInstanceType(c));
   }
 
   private static JSType getInstanceType(NominalType nominalType) {

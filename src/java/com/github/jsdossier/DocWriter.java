@@ -477,11 +477,11 @@ class DocWriter {
       return ImmutableList.of();
     }
 
-    LinkedList<JSType> types = typeRegistry.getTypeHierarchy(type);
+    List<JSType> types = Lists.reverse(typeRegistry.getTypeHierarchy(type));
     List<Comment> list = Lists.newArrayListWithExpectedSize(types.size());
     // Skip bottom of stack (type of this). Handled specially below.
-    while (types.size() > 1) {
-      JSType base = types.pop();
+    for (int i = 0; i < (types.size() - 1); i++) {
+      JSType base = types.get(i);
       if (base.isConstructor() || base.isInterface()) {
         base = ((FunctionType) base).getInstanceType();
       }

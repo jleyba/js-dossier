@@ -20,6 +20,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Verify.verify;
 
+import com.github.jsdossier.NominalType.TypeDescriptor;
 import com.github.jsdossier.jscomp.JsDoc;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Predicate;
@@ -33,17 +34,17 @@ import com.google.javascript.rhino.jstype.FunctionType;
 import com.google.javascript.rhino.jstype.JSType;
 import com.google.javascript.rhino.jstype.JSTypeRegistry;
 import com.google.javascript.rhino.jstype.NamedType;
-
-import com.github.jsdossier.NominalType.TypeDescriptor;
+import com.google.javascript.rhino.jstype.ObjectType;
 
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -285,19 +286,19 @@ public class TypeRegistry {
   }
 
   /**
-   * Returns the type hierarchy for the given type as a stack with the type at the
-   * bottom and the root ancestor at the top (Object is excluded as it is implied).
+   * Returns the type hierarchy for the given type as a list with the type listed first and
+   * its most distant super class listed last (Object is excluded as it is implied).
    *
    * <p>This method returns the <em>instance</em> types for each type, not the constructors.
    */
-  public LinkedList<JSType> getTypeHierarchy(JSType type) {
-    LinkedList<JSType> stack = new LinkedList<>();
+  public List<JSType> getTypeHierarchy(JSType type) {
+    List<JSType> stack = new ArrayList<>();
     for (; type != null; type = getBaseType(type)) {
       JSType toAdd = type;
       if (toAdd.isConstructor()) {
         toAdd = ((FunctionType) toAdd).getInstanceType();
       }
-      stack.push(toAdd);
+      stack.add(toAdd);
     }
     return stack;
   }
@@ -323,6 +324,39 @@ public class TypeRegistry {
       }
     }
     return type;
+  }
+
+  /**
+   * Returns the interfaces directly implemented by the given type.
+   */
+  public ImmutableSet<JSType> getDeclaredInterfaces(NominalType nominalType) {
+    return getDeclaredInterfaces(nominalType.getJsType());
+  }
+
+  /**
+   * Returns the interfaces directly implemented by the given type.
+   */
+  public ImmutableSet<JSType> getDeclaredInterfaces(JSType jsType) {
+    Iterable<JSTypeExpression> interfaces;
+    if (jsType.isConstructor() && jsType.getJSDocInfo() != null) {
+      interfaces = jsType.getJSDocInfo().getImplementedInterfaces();
+
+    } else if (jsType.isInterface() && jsType.getJSDocInfo() != null) {
+      interfaces = jsType.getJSDocInfo().getExtendedInterfaces();
+
+    } else if (jsType.isInstanceType()) {
+      JSType ctorType = ((ObjectType) jsType).getConstructor();
+      return ctorType == null ? ImmutableSet.<JSType>of() : getDeclaredInterfaces(ctorType);
+
+    } else {
+      return ImmutableSet.of();
+    }
+
+    ImmutableSet.Builder<JSType> builder = ImmutableSet.builder();
+    for (JSTypeExpression expr : interfaces) {
+      builder.add(evaluate(expr));
+    }
+    return builder.build();
   }
 
   /**

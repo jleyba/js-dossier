@@ -141,10 +141,6 @@ public class JsDoc {
     return info.getVisibility();
   }
 
-  public List<JSTypeExpression> getExtendedInterfaces() {
-    return info.getExtendedInterfaces();
-  }
-
   /**
    * Returns the comment string for the {@literal @fileoverview} annotation. Returns an empty string
    * if the annotation was not present.
@@ -214,7 +210,7 @@ public class JsDoc {
     return info.getTemplateTypeNames();
   }
 
-  private boolean hasAnnotation(Annotation target) {
+  public boolean hasAnnotation(Annotation target) {
     for (Marker marker : info.getMarkers()) {
       Optional<Annotation> annotation = Annotation.forMarker(marker);
       if (target.equals(annotation.orNull())) {
