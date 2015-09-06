@@ -157,15 +157,13 @@
   {if length($type.implementedType)}
     <dt>
       All {if $type.tags.isInterface}extended{else}implemented{/if} interfaces:
-    <dd>
-      {foreach $interface in $type.implementedType}
-        <code>
-          {call .comment}
-            {param comment: $interface /}
-          {/call}
-        </code>
-        {if not isLast($interface)},{sp}{/if}
-      {/foreach}
+    {foreach $interface in $type.implementedType}
+      <dd><code>
+        {call .comment}
+          {param comment: $interface /}
+        {/call}
+      </code>
+    {/foreach}
   {/if}
 {/template}
 

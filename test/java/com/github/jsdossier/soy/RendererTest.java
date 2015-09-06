@@ -223,7 +223,7 @@ public class RendererTest {
     assertThat(render("dossier.soy.printInterfaces", "type", type),
         isHtml(
             "<dt>All extended interfaces:<dd>",
-            "<code><a href=\"type-one\">Hello</a></code>, ",
+            "<code><a href=\"type-one\">Hello</a></code><dd>",
             "<code><a href=\"type-two\">Goodbye</a></code>"));
   }
 
@@ -252,7 +252,7 @@ public class RendererTest {
     assertThat(render("dossier.soy.printInterfaces", "type", type),
         isHtml(
             "<dt>All implemented interfaces:<dd>",
-            "<code><a href=\"type-one\">Hello</a></code>, ",
+            "<code><a href=\"type-one\">Hello</a></code><dd>",
             "<code><a href=\"type-two\">Goodbye</a></code>"));
   }
 
@@ -475,7 +475,7 @@ public class RendererTest {
         "\n      \u2514 Foo",
         "</pre>",
         "<dl><dt>All implemented interfaces:</dt><dd>",
-        "<code><a href=\"type-one\">Hello</a></code>, ",
+        "<code><a href=\"type-one\">Hello</a></code></dd><dd>",
         "<code><a href=\"type-two\">Goodbye</a></code>",
         "</dd></dl>",
         "</body>"));
@@ -523,7 +523,7 @@ public class RendererTest {
         "  └ <a href=\"super-two\">SuperClass2</a>\n",
         "      └ Foo</pre>",
         "<dl><dt>All implemented interfaces:</dt>",
-        "<dd><code><a href=\"type-one\">Hello</a></code>, ",
+        "<dd><code><a href=\"type-one\">Hello</a></code></dd><dd>",
         "<code><a href=\"type-two\">Goodbye</a></code></dd></dl></body>"));
   }
 
