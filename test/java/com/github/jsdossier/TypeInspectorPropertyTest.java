@@ -19,7 +19,6 @@ package com.github.jsdossier;
 import static com.google.common.truth.Truth.assertThat;
 
 import com.github.jsdossier.proto.BaseProperty;
-import com.github.jsdossier.proto.Deprecation;
 import com.github.jsdossier.proto.Property;
 import com.github.jsdossier.proto.Tags;
 import org.junit.Test;
@@ -280,8 +279,7 @@ public class TypeInspectorPropertyTest extends AbstractTypeInspectorTest {
                 .setDescription(htmlComment("<p>Some value.</p>\n"))
                 .setTags(Tags.newBuilder()
                     .setIsDeprecated(true))
-                .setDeprecation(Deprecation.newBuilder()
-                    .setHtml("<p><b>Deprecated: </b>Do not use this.</p>\n")))
+                .setDeprecation(htmlComment("<p>Do not use this.</p>\n")))
             .setType(numberTypeComment())
             .build());
   }

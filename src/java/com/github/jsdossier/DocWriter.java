@@ -35,10 +35,8 @@ import com.github.jsdossier.annotations.SourcePrefix;
 import com.github.jsdossier.annotations.TypeFilter;
 import com.github.jsdossier.annotations.Types;
 import com.github.jsdossier.jscomp.JsDoc;
-import com.github.jsdossier.jscomp.Parameter;
 import com.github.jsdossier.proto.BaseProperty;
 import com.github.jsdossier.proto.Comment;
-import com.github.jsdossier.proto.Deprecation;
 import com.github.jsdossier.proto.Enumeration;
 import com.github.jsdossier.proto.HtmlRenderSpec;
 import com.github.jsdossier.proto.JsType;
@@ -77,7 +75,6 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -575,10 +572,10 @@ class DocWriter {
         });
   }
 
-  private Deprecation getDeprecation(JsDoc jsdoc) {
+  private Comment getDeprecation(JsDoc jsdoc) {
     checkArgument(jsdoc != null, "null jsdoc");
     checkArgument(jsdoc.isDeprecated(), "no deprecation in jsdoc");
-    return parser.parseDeprecation(jsdoc.getDeprecationReason(), linker);
+    return parser.parseComment(jsdoc.getDeprecationReason(), linker);
   }
 
   private List<JsType.TypeSummary> getNestedTypeInfo(NominalType parent) {

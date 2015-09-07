@@ -324,6 +324,16 @@ public class EndToEndTest {
     checkNav(document);
     checkFooter(document);
   }
+  
+  @Test
+  public void checkDeprecatedClassWithSuperTypes() throws IOException {
+    Document document = load(outDir.resolve("class_sample_inheritance_DeprecatedFinalClass.html"));
+    compareWithGoldenFile(querySelector(document, "article"),
+        "class_sample_inheritance_DeprecatedFinalClass.html");
+    checkHeader(document);
+    checkNav(document);
+    checkFooter(document);
+  }
 
   @Test
   public void checkPackageIndexCommonJsModule() throws IOException {

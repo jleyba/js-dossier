@@ -30,7 +30,6 @@ import com.github.jsdossier.CommentParser;
 import com.github.jsdossier.Linker;
 import com.github.jsdossier.proto.BaseProperty;
 import com.github.jsdossier.proto.Comment;
-import com.github.jsdossier.proto.Deprecation;
 import com.github.jsdossier.proto.Enumeration;
 import com.github.jsdossier.proto.Function;
 import com.github.jsdossier.proto.JsType;
@@ -87,13 +86,13 @@ public class RendererTest {
   public void renderDeprecationNotice() {
     assertThat(
         render("dossier.soy.deprecationNotice",
-            "deprecation", toSoyValue(parseDeprecation("Hello, world!"))),
-        isHtml("<p><b>Deprecated: </b>Hello, world!</p>\n"));
+            "deprecation", toSoyValue(parseComment("Hello, world!"))),
+        isHtml("<dl><dt>Deprecated<dd><p>Hello, world!</p>\n</dl>"));
 
     assertThat(
         render("dossier.soy.deprecationNotice", ImmutableMap.of(
-            "deprecation", toSoyValue(parseDeprecation("<strong>Hello, world!</strong>")))),
-        isHtml("<p><b>Deprecated: </b><strong>Hello, world!</strong></p>\n"));
+            "deprecation", toSoyValue(parseComment("**Hello, world!**")))),
+        isHtml("<dl><dt>Deprecated<dd><p><strong>Hello, world!</strong></p>\n</dl>"));
   }
 
   @Test
@@ -222,7 +221,7 @@ public class RendererTest {
 
     assertThat(render("dossier.soy.printInterfaces", "type", type),
         isHtml(
-            "<dt>All extended interfaces:<dd>",
+            "<dt>All extended interfaces<dd>",
             "<code><a href=\"type-one\">Hello</a></code><dd>",
             "<code><a href=\"type-two\">Goodbye</a></code>"));
   }
@@ -251,7 +250,7 @@ public class RendererTest {
 
     assertThat(render("dossier.soy.printInterfaces", "type", type),
         isHtml(
-            "<dt>All implemented interfaces:<dd>",
+            "<dt>All implemented interfaces<dd>",
             "<code><a href=\"type-one\">Hello</a></code><dd>",
             "<code><a href=\"type-two\">Goodbye</a></code>"));
   }
@@ -270,7 +269,7 @@ public class RendererTest {
 
     assertThat(render("dossier.soy.printInterfaces", "type", type),
         isHtml(
-            "<dt>All extended interfaces:<dd>",
+            "<dt>All extended interfaces<dd>",
             "<code>Hello</code>"));
   }
 
@@ -314,7 +313,7 @@ public class RendererTest {
     Element h1 = querySelector(document, "body > h1");
     assertEquals("<h1>interface Foo</h1>", h1.toString());
     assertThat(querySelector(document, "dl > dt").toString(),
-        is("<dt>All extended interfaces:</dt>"));
+        is("<dt>All extended interfaces</dt>"));
     assertThat(document.select("div.deprecation-notice").isEmpty(), is(true));
   }
 
@@ -325,7 +324,7 @@ public class RendererTest {
         .setSource(SourceLink.newBuilder().setPath("source"))
         .setDescription(parseComment("description"))
         .setTags(Tags.newBuilder().setIsInterface(true))
-        .setDeprecation(Deprecation.newBuilder())
+        .setDeprecation(Comment.getDefaultInstance())
         .build();
 
     Document document = renderDocument("dossier.soy.typeHeader", "type", type);
@@ -342,15 +341,15 @@ public class RendererTest {
         .setSource(SourceLink.newBuilder().setPath("source"))
         .setDescription(parseComment("description"))
         .setTags(Tags.newBuilder().setIsInterface(true))
-        .setDeprecation(parseDeprecation("<i>Goodbye</i>, world!"))
+        .setDeprecation(parseComment("<i>Goodbye</i>, world!"))
         .build();
 
     Document document = renderDocument("dossier.soy.typeHeader", "type", type);
 
     assertThat(querySelector(document, "h1").toString(), isHtml(
         "<h1 class=\"deprecated\">interface Foo</h1>"));
-    assertThat(querySelector(document, "h1 + p").toString(), isHtml(
-        "<p><b>Deprecated: </b><i>Goodbye</i>, world!</p>"));
+    assertThat(querySelector(document, "h1 + dl").toString(), isHtml(
+        "<dl><dt>Deprecated</dt><dd><p><i>Goodbye</i>, world!</p>\n</dd></dl>"));
   }
 
   @Test
@@ -474,7 +473,7 @@ public class RendererTest {
         "\n  \u2514 <a href=\"super-two\">SuperClass2</a>",
         "\n      \u2514 Foo",
         "</pre>",
-        "<dl><dt>All implemented interfaces:</dt><dd>",
+        "<dl><dt>All implemented interfaces</dt><dd>",
         "<code><a href=\"type-one\">Hello</a></code></dd><dd>",
         "<code><a href=\"type-two\">Goodbye</a></code>",
         "</dd></dl>",
@@ -522,7 +521,7 @@ public class RendererTest {
         "<pre class=\"inheritance\"><a href=\"super-one\">SuperClass1</a>\n",
         "  └ <a href=\"super-two\">SuperClass2</a>\n",
         "      └ Foo</pre>",
-        "<dl><dt>All implemented interfaces:</dt>",
+        "<dl><dt>All implemented interfaces</dt>",
         "<dd><code><a href=\"type-one\">Hello</a></code></dd><dd>",
         "<code><a href=\"type-two\">Goodbye</a></code></dd></dl></body>"));
   }
@@ -581,11 +580,11 @@ public class RendererTest {
             .setDescription(parseComment("<strong>the color red</strong>")))
         .addValue(Enumeration.Value.newBuilder()
             .setName("GREEN")
-            .setDeprecation(Deprecation.newBuilder())  // No deprecation text.
+            .setDeprecation(Comment.getDefaultInstance())  // No deprecation text.
             .setDescription(parseComment("<i>the color green</i>")))
         .addValue(Enumeration.Value.newBuilder()
             .setName("BLUE")
-            .setDeprecation(parseDeprecation("This value is deprecated")))
+            .setDeprecation(parseComment("This value is deprecated")))
         .build();
 
     Document document = renderDocument("dossier.soy.enumValues", ImmutableMap.of("enumeration", e));
@@ -611,7 +610,7 @@ public class RendererTest {
         "<div id=\"BLUE\" class=\"property\">",
         "<dl>",
         "<dt class=\"deprecated\">BLUE</dt>",
-        "<dd><p><b>Deprecated: </b>This value is deprecated</p>\n</dd>",
+        "<dd><dl><dt>Deprecated</dt><dd><p>This value is deprecated</p>\n</dd></dl></dd>",
         "</dl>",
         "</div>",
         "</body>"));
@@ -909,7 +908,7 @@ public class RendererTest {
             .setName("Bar")
             .setSource(SourceLink.newBuilder().setPath("bar.link"))
             .setDescription(parseComment("description here\n<p>second paragraph"))
-            .setDeprecation(parseDeprecation("is old")))
+            .setDeprecation(parseComment("is old")))
         .addParameter(Function.Detail.newBuilder().setName("a"))
         .build();
 
@@ -925,7 +924,7 @@ public class RendererTest {
         "</h3>",
         "<p>description here</p>\n",
         "<p>second paragraph\n</p>",
-        "<p><b>Deprecated: </b>is old</p>\n",
+        "<dl><dt>Deprecated</dt><dd><p>is old</p>\n</dd></dl>",
         "<div><div class=\"fn-details\">",
         "<div><b>Parameters</b></div><dl><dt>a</dt></dl></div></div>",
         "</div></div>",
@@ -1107,10 +1106,6 @@ public class RendererTest {
 
   private Comment parseComment(String comment) {
     return parser.parseComment(comment, mockLinker);
-  }
-
-  private Deprecation parseDeprecation(String comment) {
-    return parser.parseDeprecation(comment, mockLinker);
   }
 
   private static Element querySelector(Document document, String selector) {

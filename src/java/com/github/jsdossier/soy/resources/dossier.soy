@@ -156,7 +156,7 @@
   // |implemented_type| list.
   {if length($type.implementedType)}
     <dt>
-      All {if $type.tags.isInterface}extended{else}implemented{/if} interfaces:
+      All {if $type.tags.isInterface}extended{else}implemented{/if} interfaces
     {foreach $interface in $type.implementedType}
       <dd><code>
         {call .comment}
@@ -192,9 +192,15 @@
  * Prints a notification that a descriptor is deprecated.
  */
 {template .deprecationNotice private="true"}
-  {@param deprecation: dossier.Deprecation}
-  {if $deprecation and $deprecation.html}
-    {$deprecation.html}
+  {@param deprecation: dossier.Comment}
+  {if $deprecation and length($deprecation.token)}
+    <dl>
+      <dt>Deprecated
+      <dd>
+      {call .comment}
+        {param comment: $deprecation /}
+      {/call}
+    </dl>
   {/if}
 {/template}
 
@@ -210,19 +216,17 @@
     {foreach $value in $enumeration.value}
       <div id="{$value.name}" class="property">
         <dl>
-          <dt{if $value.deprecation.html} class="deprecated"{/if}>
+          <dt{if $value.deprecation and length($value.deprecation.token)} class="deprecated"{/if}>
             {$value.name}
           {if ($value.description and length($value.description.token)) or
-              ($value.deprecation and $value.deprecation.html)}
+              ($value.deprecation and length($value.deprecation.token))}
             <dd>
               {call .comment}
                 {param comment: $value.description /}
               {/call}
-              {if $value.deprecation.html}
-                {call .deprecationNotice}
-                  {param deprecation: $value.deprecation /}
-                {/call}
-              {/if}
+              {call .deprecationNotice}
+                {param deprecation: $value.deprecation /}
+              {/call}
           {/if}
         </dl>
       </div>
@@ -500,7 +504,7 @@
         {call .fnDetails}
           {param fn: $fn /}
         {/call}
-      {elseif $fn.base.deprecation and $fn.base.deprecation.html}
+      {elseif $fn.base.deprecation and length($fn.base.deprecation.token)}
         {call .deprecationNotice}
           {param deprecation: $fn.base.deprecation /}
         {/call}
@@ -734,7 +738,8 @@
   {/call}
   {if $type.aliasedType
       or length($type.implementedType)
-      or ($type.enumeration and length($type.enumeration.type.token))}
+      or ($type.enumeration and length($type.enumeration.type.token))
+      or ($type.deprecation and length($type.deprecation.token))}
     <dl>
       {if $type.enumeration and length($type.enumeration.type.token)}
         <dt>Type
@@ -750,11 +755,15 @@
       {call .printInterfaces}
         {param type: $type /}
       {/call}
+      {if $type.deprecation and length($type.deprecation.token)}
+        <dt>Deprecated
+        <dd>
+          {call .comment}
+            {param comment: $type.deprecation /}
+          {/call}
+      {/if}
     </dl>
   {/if}
-  {call .deprecationNotice}
-    {param deprecation: $type.deprecation /}
-  {/call}
 {/template}
 
 

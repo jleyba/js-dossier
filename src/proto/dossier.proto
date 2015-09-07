@@ -99,12 +99,6 @@ message Comment {
 }
 
 
-// Describes a deprecation notice.
-message Deprecation {
-  optional string html = 1 [(sanitized).html = true];
-}
-
-
 // Describes a type/property's visibility.
 enum Visibility {
   // The type is globally accessible.
@@ -142,7 +136,7 @@ message BaseProperty {
   required Comment description = 3;
 
   // Whether this property is deprecated.
-  optional Deprecation deprecation = 4;
+  optional Comment deprecation = 4;
   optional Visibility visibility = 5 [default = PUBLIC];
   optional Tags tags = 6;
 
@@ -188,7 +182,7 @@ message Enumeration {
   message Value {
     required string name = 1;
     optional Comment description = 2;
-    optional Deprecation deprecation = 3;
+    optional Comment deprecation = 3;
   }
 
   required Comment type = 1;
@@ -229,7 +223,7 @@ message JsType {
     required Comment type = 2;
     required SourceLink source = 3;
     required Comment description = 4;
-    optional Deprecation deprecation = 5;
+    optional Comment deprecation = 5;
     optional Visibility visibility = 6 [default = PUBLIC];
   }
 
@@ -238,7 +232,7 @@ message JsType {
   repeated TypeSummary nested = 6;
   required Comment description = 7;
   required Tags tags = 8;
-  optional Deprecation deprecation = 9;
+  optional Comment deprecation = 9;
   repeated TypeDef type_def = 10;
 
   optional Enumeration enumeration = 11;

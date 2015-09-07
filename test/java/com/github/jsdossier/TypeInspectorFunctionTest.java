@@ -20,7 +20,6 @@ import static com.google.common.truth.Truth.assertThat;
 
 import com.github.jsdossier.proto.BaseProperty;
 import com.github.jsdossier.proto.Comment;
-import com.github.jsdossier.proto.Deprecation;
 import com.github.jsdossier.proto.Function;
 import com.github.jsdossier.proto.Function.Detail;
 import com.github.jsdossier.proto.Tags;
@@ -878,8 +877,7 @@ public class TypeInspectorFunctionTest extends AbstractTypeInspectorTest {
                 .setDescription(Comment.getDefaultInstance())
                 .setTags(Tags.newBuilder()
                     .setIsDeprecated(true))
-                .setDeprecation(Deprecation.newBuilder()
-                    .setHtml("<p><b>Deprecated: </b>Do not use this.</p>\n")))
+                .setDeprecation(htmlComment("<p>Do not use this.</p>\n")))
             .build());
 
     type = typeRegistry.getNominalType("B");

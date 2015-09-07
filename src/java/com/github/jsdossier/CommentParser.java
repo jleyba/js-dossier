@@ -21,7 +21,6 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 
 import com.github.jsdossier.jscomp.JsDoc;
 import com.github.jsdossier.proto.Comment;
-import com.github.jsdossier.proto.Deprecation;
 import com.github.jsdossier.proto.TypeLink;
 import com.google.common.escape.CharEscaperBuilder;
 import com.google.common.escape.Escaper;
@@ -114,17 +113,6 @@ public class CommentParser {
     return Comment.newBuilder()
         .addToken(Comment.Token.newBuilder().setHtml(html))
         .build();
-  }
-
-  public Deprecation parseDeprecation(String text, Linker linker) {
-    String html = parseMarkdown(text, linker);
-    if (html.isEmpty()) {
-      return Deprecation.getDefaultInstance();
-    }
-    checkArgument(html.startsWith("<p>"));
-    // TODO: figure out how to do this in soy.
-    html = "<p><b>Deprecated: </b>" + html.substring(3);
-    return Deprecation.newBuilder().setHtml(html).build();
   }
 
   private String parseMarkdown(String text, Linker linker) {

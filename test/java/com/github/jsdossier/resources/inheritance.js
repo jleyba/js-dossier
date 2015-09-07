@@ -202,3 +202,17 @@ sample.inheritance.StringClass = goog.defineClass(sample.inheritance.TemplateCla
     return this.value.substring(fromIndex, opt_toIndex);
   }
 });
+
+
+/**
+ * @constructor
+ * @extends {sample.inheritance.SecondClass}
+ * @implements {sample.inheritance.Runnable}
+ * @deprecated Use {@link sample.inheritance.FinalClass} instead.
+ * @final
+ */
+sample.inheritance.DeprecatedFinalClass = function() {};
+
+
+/** @override */
+sample.inheritance.DeprecatedFinalClass.prototype.run = function() {};

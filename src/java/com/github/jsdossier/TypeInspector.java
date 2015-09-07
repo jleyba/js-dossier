@@ -496,7 +496,7 @@ final class TypeInspector {
       
       if (jsdoc.isDeprecated()) {
         builder.getTagsBuilder().setIsDeprecated(true);
-        builder.setDeprecation(parser.parseDeprecation(jsdoc.getDeprecationReason(), linker));
+        builder.setDeprecation(parser.parseComment(jsdoc.getDeprecationReason(), linker));
       }
 
       if (!type.isFunctionType() && (jsdoc.isConst() || jsdoc.isDefine())) {
