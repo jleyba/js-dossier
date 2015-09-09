@@ -23,6 +23,7 @@ import com.github.jsdossier.proto.Comment;
 import com.github.jsdossier.proto.Function;
 import com.github.jsdossier.proto.Function.Detail;
 import com.github.jsdossier.proto.Tags;
+import com.github.jsdossier.testing.Bug;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -965,9 +966,9 @@ public class TypeInspectorFunctionTest extends AbstractTypeInspectorTest {
                 .setDefinedBy(linkComment("A", "class_A.html#run")))
             .build());
   }
-  
-  /** @see "https://github.com/jleyba/js-dossier/issues/30" */
+
   @Test
+  @Bug(30)
   public void abstractMethodInheritsDocsFromInterfaceSpecification() {
     compile(
         "/**",
@@ -1009,8 +1010,8 @@ public class TypeInspectorFunctionTest extends AbstractTypeInspectorTest {
             .build());
   }
 
-  /** @see "https://github.com/jleyba/js-dossier/issues/38" */
   @Test
+  @Bug(38)
   public void methodsCanLinkToOtherMethodsOnTheSameClass() {
     compile(
         "/** @constructor */",
@@ -1042,8 +1043,8 @@ public class TypeInspectorFunctionTest extends AbstractTypeInspectorTest {
             .build());
   }
 
-  /** @see "https://github.com/jleyba/js-dossier/issues/38" */
   @Test
+  @Bug(38)
   public void methodsCanLinkToMethodDefinedBySuperClass() {
     compile(
         "/** @constructor */",
@@ -1076,8 +1077,8 @@ public class TypeInspectorFunctionTest extends AbstractTypeInspectorTest {
             .build());
   }
 
-  /** @see "https://github.com/jleyba/js-dossier/issues/38" */
   @Test
+  @Bug(38)
   public void methodLinksToOverriddenMethodIfNoTypeQualifierSpecified() {
     compile(
         "/** @constructor */",
@@ -1113,8 +1114,8 @@ public class TypeInspectorFunctionTest extends AbstractTypeInspectorTest {
             .build());
   }
 
-  /** @see "https://github.com/jleyba/js-dossier/issues/38" */
   @Test
+  @Bug(38)
   public void methodCanLinkToOriginalDefinitionIfQualifierProvided() {
     compile(
         "/** @constructor */",
@@ -1150,8 +1151,8 @@ public class TypeInspectorFunctionTest extends AbstractTypeInspectorTest {
             .build());
   }
 
-  /** @see "https://github.com/jleyba/js-dossier/issues/38" */
   @Test
+  @Bug(38)
   public void methodCanLinkToMethodOnAnotherClass() {
     compile(
         "/** @constructor */",
