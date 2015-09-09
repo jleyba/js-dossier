@@ -1008,4 +1008,171 @@ public class TypeInspectorFunctionTest extends AbstractTypeInspectorTest {
                 .setDescription(htmlComment("<p>The canvas to draw this object into</p>\n")))
             .build());
   }
+
+  /** @see "https://github.com/jleyba/js-dossier/issues/38" */
+  @Test
+  public void methodsCanLinkToOtherMethodsOnTheSameClass() {
+    compile(
+        "/** @constructor */",
+        "var Foo = function() {};",
+        "",
+        "/** Go to {@link #b}. */",
+        "Foo.prototype.a = function() {};",
+        "",
+        "/** Go to {@link #a}. */",
+        "Foo.prototype.b = function() {};");
+
+    NominalType type = typeRegistry.getNominalType("Foo");
+    TypeInspector.Report report = typeInspector.inspectMembers(type);
+    assertThat(report.getProperties()).isEmpty();
+    assertThat(report.getFunctions()).containsExactly(
+        Function.newBuilder()
+            .setBase(BaseProperty.newBuilder()
+                .setName("a")
+                .setSource(sourceFile("source/foo.js.src.html", 5))
+                .setDescription(htmlComment(
+                    "<p>Go to <a href=\"class_Foo.html#b\"><code>#b</code></a>.</p>\n")))
+            .build(),
+        Function.newBuilder()
+            .setBase(BaseProperty.newBuilder()
+                .setName("b")
+                .setSource(sourceFile("source/foo.js.src.html", 8))
+                .setDescription(htmlComment(
+                    "<p>Go to <a href=\"class_Foo.html#a\"><code>#a</code></a>.</p>\n")))
+            .build());
+  }
+
+  /** @see "https://github.com/jleyba/js-dossier/issues/38" */
+  @Test
+  public void methodsCanLinkToMethodDefinedBySuperClass() {
+    compile(
+        "/** @constructor */",
+        "var Foo = function() {};",
+        "Foo.prototype.a = function() {};",
+        "",
+        "/** @constructor @extends {Foo} */",
+        "var Bar = function() {};",
+        "",
+        "/** Go to {@link #a}. */",
+        "Bar.prototype.b = function() {};");
+
+    NominalType type = typeRegistry.getNominalType("Bar");
+    TypeInspector.Report report = typeInspector.inspectMembers(type);
+    assertThat(report.getProperties()).isEmpty();
+    assertThat(report.getFunctions()).containsExactly(
+        Function.newBuilder()
+            .setBase(BaseProperty.newBuilder()
+                .setName("a")
+                .setSource(sourceFile("source/foo.js.src.html", 3))
+                .setDescription(Comment.getDefaultInstance())
+                .setDefinedBy(linkComment("Foo", "class_Foo.html#a")))
+            .build(),
+        Function.newBuilder()
+            .setBase(BaseProperty.newBuilder()
+                .setName("b")
+                .setSource(sourceFile("source/foo.js.src.html", 9))
+                .setDescription(htmlComment(
+                    "<p>Go to <a href=\"class_Bar.html#a\"><code>#a</code></a>.</p>\n")))
+            .build());
+  }
+
+  /** @see "https://github.com/jleyba/js-dossier/issues/38" */
+  @Test
+  public void methodLinksToOverriddenMethodIfNoTypeQualifierSpecified() {
+    compile(
+        "/** @constructor */",
+        "var Foo = function() {};",
+        "Foo.prototype.a = function() {};",
+        "",
+        "/** @constructor @extends {Foo} */",
+        "var Bar = function() {};",
+        "",
+        "/** @override */",
+        "Bar.prototype.a = function() {};",
+        "",
+        "/** Go to {@link #a}. */",
+        "Bar.prototype.b = function() {};");
+
+    NominalType type = typeRegistry.getNominalType("Bar");
+    TypeInspector.Report report = typeInspector.inspectMembers(type);
+    assertThat(report.getProperties()).isEmpty();
+    assertThat(report.getFunctions()).containsExactly(
+        Function.newBuilder()
+            .setBase(BaseProperty.newBuilder()
+                .setName("a")
+                .setSource(sourceFile("source/foo.js.src.html", 9))
+                .setDescription(Comment.getDefaultInstance())
+                .setOverrides(linkComment("Foo", "class_Foo.html#a")))
+            .build(),
+        Function.newBuilder()
+            .setBase(BaseProperty.newBuilder()
+                .setName("b")
+                .setSource(sourceFile("source/foo.js.src.html", 12))
+                .setDescription(htmlComment(
+                    "<p>Go to <a href=\"class_Bar.html#a\"><code>#a</code></a>.</p>\n")))
+            .build());
+  }
+
+  /** @see "https://github.com/jleyba/js-dossier/issues/38" */
+  @Test
+  public void methodCanLinkToOriginalDefinitionIfQualifierProvided() {
+    compile(
+        "/** @constructor */",
+        "var Foo = function() {};",
+        "Foo.prototype.a = function() {};",
+        "",
+        "/** @constructor @extends {Foo} */",
+        "var Bar = function() {};",
+        "",
+        "/** @override */",
+        "Bar.prototype.a = function() {};",
+        "",
+        "/** Go to {@link Foo#a}. */",
+        "Bar.prototype.b = function() {};");
+
+    NominalType type = typeRegistry.getNominalType("Bar");
+    TypeInspector.Report report = typeInspector.inspectMembers(type);
+    assertThat(report.getProperties()).isEmpty();
+    assertThat(report.getFunctions()).containsExactly(
+        Function.newBuilder()
+            .setBase(BaseProperty.newBuilder()
+                .setName("a")
+                .setSource(sourceFile("source/foo.js.src.html", 9))
+                .setDescription(Comment.getDefaultInstance())
+                .setOverrides(linkComment("Foo", "class_Foo.html#a")))
+            .build(),
+        Function.newBuilder()
+            .setBase(BaseProperty.newBuilder()
+                .setName("b")
+                .setSource(sourceFile("source/foo.js.src.html", 12))
+                .setDescription(htmlComment(
+                    "<p>Go to <a href=\"class_Foo.html#a\"><code>Foo#a</code></a>.</p>\n")))
+            .build());
+  }
+
+  /** @see "https://github.com/jleyba/js-dossier/issues/38" */
+  @Test
+  public void methodCanLinkToMethodOnAnotherClass() {
+    compile(
+        "/** @constructor */",
+        "var Foo = function() {};",
+        "Foo.prototype.a = function() {};",
+        "",
+        "/** @constructor */",
+        "var Bar = function() {};",
+        "/** Go to {@link Foo#a}. */",
+        "Bar.prototype.b = function() {};");
+
+    NominalType type = typeRegistry.getNominalType("Bar");
+    TypeInspector.Report report = typeInspector.inspectMembers(type);
+    assertThat(report.getProperties()).isEmpty();
+    assertThat(report.getFunctions()).containsExactly(
+        Function.newBuilder()
+            .setBase(BaseProperty.newBuilder()
+                .setName("b")
+                .setSource(sourceFile("source/foo.js.src.html", 8))
+                .setDescription(htmlComment(
+                    "<p>Go to <a href=\"class_Foo.html#a\"><code>Foo#a</code></a>.</p>\n")))
+            .build());
+  }
 }

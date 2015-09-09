@@ -85,7 +85,8 @@ final class TypeInspector {
     if (!nominalType.getJsType().isConstructor() && !nominalType.getJsType().isInterface()) {
       return new Report();
     }
-
+    
+    linker.pushContext(nominalType);
     Report report = new Report();
     Multimap<String, InstanceProperty> properties = MultimapBuilder
         .treeKeys()
@@ -131,6 +132,7 @@ final class TypeInspector {
       }
     }
 
+    linker.popContext();
     return report;
   }
 
