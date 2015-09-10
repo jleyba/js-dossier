@@ -95,7 +95,7 @@ public class DossierModule {
     }
     String name = PREFIX +
         (modulePath.isAbsolute() ? PATH_SEPARATOR : "") +
-        Joiner.on(PATH_SEPARATOR).join(pseudoPath.iterator());
-    return name.replace('-', '_');
+        Joiner.on(PATH_SEPARATOR).join(pseudoPath);
+    return name.replaceAll("[-\\.]", "_");
   }
 }

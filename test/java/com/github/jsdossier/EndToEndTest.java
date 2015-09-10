@@ -29,8 +29,6 @@ import static java.nio.file.Files.readAllBytes;
 import static java.nio.file.Files.write;
 import static org.junit.Assert.assertEquals;
 
-import com.google.common.base.Supplier;
-import com.google.common.base.Suppliers;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
@@ -62,116 +60,18 @@ import java.util.Collection;
 @RunWith(Parameterized.class)
 public class EndToEndTest {
 
-  private static Path tmpDir;
-  private static Path srcDir;
-
-  private static void initFileSystem() throws IOException {
-    FileSystem fileSystem;
-    if (Boolean.getBoolean("dossier.e2e.useDefaultFileSystem")) {
-      fileSystem = FileSystems.getDefault();
-
-      String customTmpDir = System.getProperty("dossier.e2e.useDir");
-      if (!isNullOrEmpty(customTmpDir)) {
-        tmpDir = fileSystem.getPath(customTmpDir);
-        createDirectories(tmpDir);
-      } else {
-        tmpDir = fileSystem.getPath(System.getProperty("java.io.tmpdir"));
-        tmpDir = createTempDirectory(tmpDir, "dossier.e2e");
-      }
-    } else {
-      fileSystem = Jimfs.newFileSystem();
-      tmpDir = fileSystem.getPath("/tmp");
-      createDirectories(tmpDir);
-    }
-
-    srcDir = tmpDir.resolve("src");
-
-    copyResource("resources/SimpleReadme.md", srcDir.resolve("SimpleReadme.md"));
-    copyResource("resources/Custom.md", srcDir.resolve("Custom.md"));
-    copyResource("resources/closure_module.js", srcDir.resolve("main/closure_module.js"));
-    copyResource("resources/filter.js", srcDir.resolve("main/filter.js"));
-    copyResource("resources/globals.js", srcDir.resolve("main/globals.js"));
-    copyResource("resources/json.js", srcDir.resolve("main/json.js"));
-    copyResource("resources/inheritance.js", srcDir.resolve("main/inheritance.js"));
-    copyResource("resources/emptyenum.js", srcDir.resolve("main/subdir/emptyenum.js"));
-    copyResource("resources/module/index.js", srcDir.resolve("main/example/index.js"));
-    copyResource("resources/module/nested.js", srcDir.resolve("main/example/nested.js"));
-    copyResource("resources/module/worker.js", srcDir.resolve("main/example/worker.js"));
-  }
-
-  private static Supplier<Path> createDataSupplier(final Path output) {
-    return Suppliers.memoize(new Supplier<Path>() {
-      @Override
-      public Path get() {
-        try {
-          return generateData(output);
-        } catch (IOException e) {
-          throw new RuntimeException(e);
-        }
-      }
-    });
-  }
-
-  private static Path generateData(final Path output) throws IOException {
-    System.out.println("Generating output in " + output);
-    Path config = createTempFile(tmpDir, "config", ".json");
-    writeConfig(config, new Config() {{
-      setOutput(output);
-      setReadme(srcDir.resolve("SimpleReadme.md"));
-
-      addCustomPage("Custom Page", srcDir.resolve("Custom.md"));
-
-      addFilter("^foo.\\w+_.*");
-      addFilter("foo.FilteredClass");
-      addFilter("foo.bar");
-
-      addSource(srcDir.resolve("main/closure_module.js"));
-      addSource(srcDir.resolve("main/filter.js"));
-      addSource(srcDir.resolve("main/globals.js"));
-      addSource(srcDir.resolve("main/json.js"));
-      addSource(srcDir.resolve("main/inheritance.js"));
-      addSource(srcDir.resolve("main/subdir/emptyenum.js"));
-
-      addModule(srcDir.resolve("main/example/index.js"));
-      addModule(srcDir.resolve("main/example/nested.js"));
-      addModule(srcDir.resolve("main/example/worker.js"));
-    }});
-
-    Main.run(new String[]{"-c", config.toAbsolutePath().toString()}, srcDir.getFileSystem());
-
-    if (output.toString().endsWith(".zip")) {
-      FileSystem fs;
-      if (output.getFileSystem() == FileSystems.getDefault()) {
-        URI uri = URI.create("jar:file:" + output.toAbsolutePath());
-        fs = FileSystems.newFileSystem(uri, ImmutableMap.<String, Object>of());
-      } else {
-        fs = output.getFileSystem()
-            .provider()
-            .newFileSystem(output, ImmutableMap.<String, Object>of());
-      }
-      return fs.getPath("/");
-    }
-    return output;
-  }
-
-  @Parameters(name = "{1}")
+  @Parameters(name = "{0}")
   public static Collection<Object[]> data() throws IOException {
-    initFileSystem();
     ImmutableList.Builder<Object[]> data = ImmutableList.builder();
-
-    data.add(new Object[]{createDataSupplier(tmpDir.resolveSibling("out")), "directory"});
-    data.add(new Object[]{createDataSupplier(tmpDir.resolveSibling("out.zip")), "zip file"});
-
+    data.add(new Object[]{new Scenario("out/")});
+    data.add(new Object[]{new Scenario("out.zip")});
     return data.build();
   }
 
-  private final Supplier<Path> outputDirSupplier;
-  private final String scenario;
-
+  private final Scenario scenario;
   private Path outDir;
 
-  public EndToEndTest(Supplier<Path> outputDirSupplier, String scenario) {
-    this.outputDirSupplier = outputDirSupplier;
+  public EndToEndTest(Scenario scenario) {
     this.scenario = scenario;
   }
 
@@ -181,8 +81,8 @@ public class EndToEndTest {
   }
 
   @Before
-  public void initOutputDir() {
-    outDir = outputDirSupplier.get();
+  public void initOutputDir() throws Exception {
+    outDir = scenario.init();
   }
 
   @Test
@@ -528,6 +428,121 @@ public class EndToEndTest {
     @Override
     public String toString() {
       return json.toString();
+    }
+  }
+  
+  private static class Scenario {
+    private final String outputPath;
+
+    private Path tmpDir;
+    private Path srcDir;
+    private Path outDir;
+    private Exception initFailure;
+
+    private Scenario(String outputPath) {
+      this.outputPath = outputPath;
+    }
+    
+    @Override
+    public String toString() {
+      return outputPath;
+    }
+    
+    public Path init() throws Exception {
+      if (outDir != null) {
+        return outDir;
+      }
+      
+      if (initFailure != null) {
+        throw initFailure;
+      }
+
+      try {
+        initFileSystem();
+        outDir = generateData();
+        return outDir;
+      } catch (Exception e) {
+        initFailure = e;
+        throw e;
+      }
+    }
+
+    private void initFileSystem() throws IOException {
+      FileSystem fileSystem;
+      if (outputPath.endsWith(".zip") || Boolean.getBoolean("dossier.e2e.useDefaultFileSystem")) {
+        fileSystem = FileSystems.getDefault();
+
+        String customTmpDir = System.getProperty("dossier.e2e.useDir");
+        if (!isNullOrEmpty(customTmpDir)) {
+          tmpDir = fileSystem.getPath(customTmpDir);
+          createDirectories(tmpDir);
+        } else {
+          tmpDir = fileSystem.getPath(System.getProperty("java.io.tmpdir"));
+          tmpDir = createTempDirectory(tmpDir, "dossier.e2e");
+        }
+      } else {
+        fileSystem = Jimfs.newFileSystem();
+        tmpDir = fileSystem.getPath("/tmp");
+        createDirectories(tmpDir);
+      }
+
+      srcDir = tmpDir.resolve("src");
+
+      copyResource("resources/SimpleReadme.md", srcDir.resolve("SimpleReadme.md"));
+      copyResource("resources/Custom.md", srcDir.resolve("Custom.md"));
+      copyResource("resources/closure_module.js", srcDir.resolve("main/closure_module.js"));
+      copyResource("resources/filter.js", srcDir.resolve("main/filter.js"));
+      copyResource("resources/globals.js", srcDir.resolve("main/globals.js"));
+      copyResource("resources/json.js", srcDir.resolve("main/json.js"));
+      copyResource("resources/inheritance.js", srcDir.resolve("main/inheritance.js"));
+      copyResource("resources/emptyenum.js", srcDir.resolve("main/subdir/emptyenum.js"));
+      copyResource("resources/module/index.js", srcDir.resolve("main/example/index.js"));
+      copyResource("resources/module/nested.js", srcDir.resolve("main/example/nested.js"));
+      copyResource("resources/module/worker.js", srcDir.resolve("main/example/worker.js"));
+    }
+    
+    private Path generateData() throws IOException {
+      final Path output = tmpDir.resolveSibling(outputPath);
+      System.out.println("Generating output in " + output);
+
+      Path config = createTempFile(tmpDir, "config", ".json");
+      writeConfig(config, new Config() {{
+        setOutput(output);
+        setReadme(srcDir.resolve("SimpleReadme.md"));
+
+        addCustomPage("Custom Page", srcDir.resolve("Custom.md"));
+
+        addFilter("^foo.\\w+_.*");
+        addFilter("foo.FilteredClass");
+        addFilter("foo.bar");
+
+        addSource(srcDir.resolve("main/closure_module.js"));
+        addSource(srcDir.resolve("main/filter.js"));
+        addSource(srcDir.resolve("main/globals.js"));
+        addSource(srcDir.resolve("main/json.js"));
+        addSource(srcDir.resolve("main/inheritance.js"));
+        addSource(srcDir.resolve("main/subdir/emptyenum.js"));
+
+        addModule(srcDir.resolve("main/example/index.js"));
+        addModule(srcDir.resolve("main/example/nested.js"));
+        addModule(srcDir.resolve("main/example/worker.js"));
+      }});
+
+      Main.run(new String[]{"-c", config.toAbsolutePath().toString()}, srcDir.getFileSystem());
+
+      if (output.toString().endsWith(".zip")) {
+        FileSystem fs;
+        if (output.getFileSystem() == FileSystems.getDefault()) {
+          URI uri = URI.create("jar:file:" + output.toAbsolutePath());
+          fs = FileSystems.newFileSystem(uri, ImmutableMap.<String, Object>of());
+        } else {
+          fs = output.getFileSystem()
+              .provider()
+              .newFileSystem(output, ImmutableMap.<String, Object>of());
+        }
+        return fs.getPath("/");
+      }
+      return output;
     }
   }
 }
