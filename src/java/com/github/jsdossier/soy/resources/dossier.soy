@@ -327,32 +327,37 @@
 {template .typeDetails}
   {@param header: string}
   {@param details: list<dossier.Function.Detail>}
+  {@param? fillEmpty: bool}
 
-  {if $details and length($details) > 0}
+  {if $fillEmpty or ($details and length($details) > 0)}
     <div class="fn-details">
       <div><b>{$header}</b></div>
       <dl>
-        {foreach $detail in $details}
-          <dt>
-          {if $detail.name}{$detail.name}{/if}
-          {if $detail.type and length($detail.type.token)}
-            <code>
-              {call .comment}
-                {param comment: $detail.type /}
-              {/call}
-            </code>
-          {/if}
-          {let $detailComment kind="html"}
-            {if $detail.description}
-              {call .comment}
-                {param comment: $detail.description /}
-              {/call}
+        {if $details and length($details) > 0}
+          {foreach $detail in $details}
+            <dt>
+            {if $detail.name}{$detail.name}{/if}
+            {if $detail.type and length($detail.type.token)}
+              <code>
+                {call .comment}
+                  {param comment: $detail.type /}
+                {/call}
+              </code>
             {/if}
-          {/let}
-          {if $detailComment and $detailComment != '.'}
-            <dd>{$detailComment}
-          {/if}
-        {/foreach}
+            {let $detailComment kind="html"}
+              {if $detail.description}
+                {call .comment}
+                  {param comment: $detail.description /}
+                {/call}
+              {/if}
+            {/let}
+            {if $detailComment and $detailComment != '.'}
+              <dd>{$detailComment}
+            {/if}
+          {/foreach}
+        {else}
+          <dd>None.
+        {/if}
       </dl>
     </div>
   {/if}
@@ -365,8 +370,11 @@
  */
 {template .fnDetails}
   {@param fn: dossier.Function}
+  {@param? forceParams: bool}
+
   // Only generate the table if there is data to actually display.
-  {if length($fn.parameter)
+  {if $forceParams
+      or length($fn.parameter)
       or length($fn.thrown)
       or ($fn.return and not $fn.isConstructor
           and (($fn.return.description and length($fn.return.description.token))
@@ -375,6 +383,7 @@
       {call .typeDetails}
         {param header: 'Parameters' /}
         {param details: $fn.parameter /}
+        {param fillEmpty: $forceParams /}
       {/call}
       {if not $fn.isConstructor}
         {call .returnDetails}
@@ -431,11 +440,20 @@
                       or length($fn.thrown)
                       or ($fn.return
                           and $fn.return.description
-                          and length($fn.return.description.token)
-                          and not $fn.isConstructor) /}
-  {if $isNonTrivial}
-    <h2 class="main">
-      {if $fn.isConstructor}new{sp}{/if}
+                          and length($fn.return.description.token)) /}
+  {if $fn.isConstructor}
+    <h3>
+      new {$fn.base.name}
+      {call .functionArgs}
+        {param fn: $fn /}
+      {/call}
+    </h3>
+    {call .fnDetails}
+      {param fn: $fn /}
+      {param forceParams: true /}
+    {/call}
+  {elseif $isNonTrivial}
+    <h2>
       {$fn.base.name}
       {call .functionArgs}
         {param fn: $fn /}
