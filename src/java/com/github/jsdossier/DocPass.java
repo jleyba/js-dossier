@@ -29,7 +29,6 @@ import com.google.javascript.jscomp.CompilerPass;
 import com.google.javascript.jscomp.NodeTraversal;
 import com.google.javascript.jscomp.Var;
 import com.google.javascript.rhino.JSDocInfo;
-import com.google.javascript.rhino.JSDocInfo.Visibility;
 import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.jstype.EnumElementType;
 import com.google.javascript.rhino.jstype.FunctionType;
@@ -259,10 +258,6 @@ final class DocPass implements CompilerPass {
 
     void crawl(
         String name, JSDocInfo info, Node node, JSType jsType, @Nullable ModuleDescriptor module) {
-      if (info != null && info.getVisibility() == Visibility.PRIVATE) {
-        return;
-      }
-
       NominalType.TypeDescriptor descriptor = typeRegistry.findTypeDescriptor(jsType);
 
       // If we've already crawled the type, we know it's documentable.
@@ -400,11 +395,6 @@ final class DocPass implements CompilerPass {
     }
 
     private void recordPropertyAsNestedType(Property property) {
-      if (property.getJSDocInfo() != null
-          && property.getJSDocInfo().getVisibility() == Visibility.PRIVATE) {
-        return;
-      }
-
       String qualifiedName = types.peek().getQualifiedName(true)
           + "." + property.getName();
       ModuleDescriptor module = typeRegistry.getModuleDescriptor(qualifiedName);
