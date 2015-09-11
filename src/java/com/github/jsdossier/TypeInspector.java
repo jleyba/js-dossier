@@ -35,6 +35,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
@@ -104,6 +105,7 @@ final class TypeInspector {
 
     for (String key : properties.keySet()) {
       LinkedList<InstanceProperty> definitions = new LinkedList<>(properties.get(key));
+      JSType propertyType = findPropertyType(definitions);
       InstanceProperty property = definitions.removeFirst();
 
       if (property.getJsDoc() != null
@@ -113,10 +115,10 @@ final class TypeInspector {
 
       Comment definedBy = getDefinedByComment(currentType, property);
 
-      if (property.getType().isFunctionType()) {
+      if (propertyType.isFunctionType()) {
         report.addFunction(getFunctionData(
             property.getName(),
-            property.getType(),
+            propertyType,
             property.getNode(),
             property.getJsDoc(),
             definedBy,
@@ -124,7 +126,7 @@ final class TypeInspector {
       } else {
         report.addProperty(getPropertyData(
             property.getName(),
-            property.getType(),
+            propertyType,
             property.getNode(),
             property.getJsDoc(),
             definedBy,
@@ -134,6 +136,22 @@ final class TypeInspector {
 
     linker.popContext();
     return report;
+  }
+  
+  private JSType findPropertyType(Iterable<InstanceProperty> definitions) {
+    for (InstanceProperty def : definitions) {
+      if (!def.getType().isUnknownType()) {
+        return def.getType();
+      }
+    }
+    return definitions.iterator().next().getType();
+  }
+  
+  private boolean describesFunction(@Nullable JsDoc docs) {
+    return docs != null
+        && (docs.hasAnnotation(Annotation.PARAM)
+        || docs.hasAnnotation(Annotation.RETURN)
+        || docs.hasAnnotation(Annotation.THROWS));
   }
 
   private Set<JSType> getAssignableTypes(JSType type) {

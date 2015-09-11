@@ -550,6 +550,74 @@ public class TypeInspectorFunctionTest extends AbstractTypeInspectorTest {
                 .setDescription(htmlComment("<p>The value to record.</p>\n")))
             .build());
   }
+
+  @Test
+  public void usesParameterInfoFromOverriddenType_abstractMethodWithSuperClass() {
+    compile(
+        "/** @constructor */",
+        "var A = function() {};",
+        "",
+        "/**",
+        " * @param {number} v The value to record.",
+        " */",
+        "A.prototype.record = goog.abstractMethod;",
+        "",
+        "/** @constructor @extends {A} */",
+        "var B = function() {};",
+        "",
+        "/** @override */",
+        "B.prototype.record = goog.abstractMethod;");
+
+    NominalType type = typeRegistry.getNominalType("B");
+    TypeInspector.Report report = typeInspector.inspectMembers(type);
+    assertThat(report.getProperties()).isEmpty();
+    assertThat(report.getFunctions()).containsExactly(
+        Function.newBuilder()
+            .setBase(BaseProperty.newBuilder()
+                .setName("record")
+                .setSource(sourceFile("source/foo.js.src.html", 7))
+                .setDescription(Comment.getDefaultInstance())
+                .setDefinedBy(linkComment("A", "class_A.html#record")))
+            .addParameter(Detail.newBuilder()
+                .setName("v")
+                .setType(numberTypeComment())
+                .setDescription(htmlComment("<p>The value to record.</p>\n")))
+            .build());
+  }
+
+  @Test
+  public void usesParameterInfoFromOverriddenType_abstractMethodWithDeclaredInterface() {
+    compile(
+        "/** @interface */",
+        "var A = function() {};",
+        "",
+        "/**",
+        " * @param {number} v The value to record.",
+        " */",
+        "A.prototype.record = goog.abstractMethod;",
+        "",
+        "/** @constructor @implements {A} */",
+        "var B = function() {};",
+        "",
+        "/** @override */",
+        "B.prototype.record = goog.abstractMethod;");
+
+    NominalType type = typeRegistry.getNominalType("B");
+    TypeInspector.Report report = typeInspector.inspectMembers(type);
+    assertThat(report.getProperties()).isEmpty();
+    assertThat(report.getFunctions()).containsExactly(
+        Function.newBuilder()
+            .setBase(BaseProperty.newBuilder()
+                .setName("record")
+                .setSource(sourceFile("source/foo.js.src.html", 13))
+                .setDescription(Comment.getDefaultInstance())
+                .addSpecifiedBy(linkComment("A", "interface_A.html#record")))
+            .addParameter(Detail.newBuilder()
+                .setName("v")
+                .setType(numberTypeComment())
+                .setDescription(htmlComment("<p>The value to record.</p>\n")))
+            .build());
+  }
   
   @Test
   public void usesReturnInfoFromOverriddenType_superClass() {
@@ -686,6 +754,130 @@ public class TypeInspectorFunctionTest extends AbstractTypeInspectorTest {
                 .setDescription(Comment.getDefaultInstance())
                 .setOverrides(linkComment("B", "class_B.html#record"))
                 .addSpecifiedBy(linkComment("A", "interface_A.html#record")))
+            .setReturn(Detail.newBuilder()
+                .setType(stringTypeComment())
+                .setDescription(htmlComment("<p>Return from A.</p>\n")))
+            .build());
+  }
+
+  @Test
+  @Bug(35)
+  public void usesReturnInfoFromOverriddenType_abstractMethod_interfaceSpecification() {
+    compile(
+        "/** @interface */",
+        "var A = function() {};",
+        "",
+        "/**",
+        " * Returns some value.",
+        " * @return {string} Return from A.",
+        " */",
+        "A.prototype.record = function() {};",
+        "",
+        "/** @constructor @implements {A} */",
+        "var B = function() {};",
+        "",
+        "/**",
+        " * @override",
+        " */",
+        "B.prototype.record = goog.abstractMethod;");
+
+    NominalType type = typeRegistry.getNominalType("B");
+    TypeInspector.Report report = typeInspector.inspectMembers(type);
+    assertThat(report.getProperties()).isEmpty();
+    assertThat(report.getFunctions()).containsExactly(
+        Function.newBuilder()
+            .setBase(BaseProperty.newBuilder()
+                .setName("record")
+                .setSource(sourceFile("source/foo.js.src.html", 16))
+                .setDescription(htmlComment("<p>Returns some value.</p>\n"))
+                .addSpecifiedBy(linkComment("A", "interface_A.html#record")))
+            .setReturn(Detail.newBuilder()
+                .setType(stringTypeComment())
+                .setDescription(htmlComment("<p>Return from A.</p>\n")))
+            .build());
+  }
+
+  @Test
+  @Bug(35)
+  public void usesReturnInfoFromOverriddenType_abstractMethod_superClass() {
+    compile(
+        "/** @constructor */",
+        "var A = function() {};",
+        "",
+        "/**",
+        " * Returns some value.",
+        " * @return {string} Return from A.",
+        " */",
+        "A.prototype.record = function() {};",
+        "",
+        "/** @constructor @extends {A} */",
+        "var B = function() {};",
+        "",
+        "/**",
+        " * @override",
+        " */",
+        "B.prototype.record = goog.abstractMethod;");
+
+    NominalType type = typeRegistry.getNominalType("B");
+    TypeInspector.Report report = typeInspector.inspectMembers(type);
+    assertThat(report.getProperties()).isEmpty();
+    assertThat(report.getFunctions()).containsExactly(
+        Function.newBuilder()
+            .setBase(BaseProperty.newBuilder()
+                .setName("record")
+                .setSource(sourceFile("source/foo.js.src.html", 8))
+                .setDescription(htmlComment("<p>Returns some value.</p>\n"))
+                .setDefinedBy(linkComment("A", "class_A.html#record")))
+            .setReturn(Detail.newBuilder()
+                .setType(stringTypeComment())
+                .setDescription(htmlComment("<p>Return from A.</p>\n")))
+            .build());
+  }
+
+  @Test
+  @Bug(35)
+  public void usesReturnInfoFromOverriddenType_abstractMethod_insideAGoogScope() {
+    compile(
+        "goog.provide('foo.bar');",
+        "goog.scope(function() {",
+        "  /**",
+        "   * This is an interface.",
+        "   * @interface",
+        "   */",
+        "  foo.bar.AnInterface = function() {};",
+        "  var A = foo.bar.AnInterface;",
+        "",
+        "  /**",
+        "   * Returns some value.",
+        "   * @return {string} Return from A.",
+        "   */",
+        "  A.prototype.record = function() {};",
+        "",
+        "  /**",
+        "   * This is a class.",
+        "   * @constructor",
+        "   * @implements {A}",
+        "   */",
+        "  foo.bar.AClass = function() {};",
+        "  var B = foo.bar.AClass;",
+        "",
+        "  /**",
+        "   * @override",
+        "   */",
+        "  B.prototype.record = goog.abstractMethod;",
+        "});");
+
+    NominalType type = typeRegistry.getNominalType("foo.bar.AClass");
+    TypeInspector.Report report = typeInspector.inspectMembers(type);
+    assertThat(report.getProperties()).isEmpty();
+    assertThat(report.getFunctions()).containsExactly(
+        Function.newBuilder()
+            .setBase(BaseProperty.newBuilder()
+                .setName("record")
+                .setSource(sourceFile("source/foo.js.src.html", 27))
+                .setDescription(htmlComment("<p>Returns some value.</p>\n"))
+                .addSpecifiedBy(linkComment(
+                    "foo.bar.AnInterface", "interface_foo_bar_AnInterface.html#record")))
             .setReturn(Detail.newBuilder()
                 .setType(stringTypeComment())
                 .setDescription(htmlComment("<p>Return from A.</p>\n")))
