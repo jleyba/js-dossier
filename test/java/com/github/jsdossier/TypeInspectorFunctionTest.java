@@ -34,6 +34,13 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class TypeInspectorFunctionTest extends AbstractTypeInspectorTest {
 
+  /**
+   * Simulates the definition of goog.abstractMethod, which is not a built-in automatically
+   *  handled by the closure compiler.
+   */
+  private static final String DEFINE_ABSTRACT_METHOD =
+      "/** @type {!Function} */ var abstractMethod = function() {};";
+
   @Test
   public void extractsFunctionDataFromPrototype() {
     compile(
@@ -47,6 +54,80 @@ public class TypeInspectorFunctionTest extends AbstractTypeInspectorTest {
         " * @throws {Error} If the person does not exist.",
         " */",
         "A.prototype.sayHi = function(name) { return 'Hello, ' + name; };");
+
+    NominalType a = typeRegistry.getNominalType("A");
+    TypeInspector.Report report = typeInspector.inspectMembers(a);
+    assertThat(report.getProperties()).isEmpty();
+    assertThat(report.getFunctions()).containsExactly(
+        Function.newBuilder()
+            .setBase(BaseProperty.newBuilder()
+                .setName("sayHi")
+                .setSource(sourceFile("source/foo.js.src.html", 10))
+                .setDescription(htmlComment("<p>Says hello.</p>\n")))
+            .addParameter(Detail.newBuilder()
+                .setName("name")
+                .setType(stringTypeComment())
+                .setDescription(htmlComment("<p>The person to greet.</p>\n")))
+            .setReturn(Detail.newBuilder()
+                .setType(stringTypeComment())
+                .setDescription(htmlComment("<p>A greeting.</p>\n")))
+            .addThrown(Detail.newBuilder()
+                .setType(errorTypeComment())
+                .setDescription(htmlComment("<p>If the person does not exist.</p>\n")))
+            .build());
+  }
+
+  @Test
+  @Bug(43)
+  public void extractsFunctionDataFromPrototype_forInterface() {
+    compile(
+        "/** @interface */",
+        "function A() {}",
+        "",
+        "/**",
+        " * Says hello.",
+        " * @param {string} name The person to greet.",
+        " * @return {string} A greeting.",
+        " * @throws {Error} If the person does not exist.",
+        " */",
+        "A.prototype.sayHi = function(name) {};");
+
+    NominalType a = typeRegistry.getNominalType("A");
+    TypeInspector.Report report = typeInspector.inspectMembers(a);
+    assertThat(report.getProperties()).isEmpty();
+    assertThat(report.getFunctions()).containsExactly(
+        Function.newBuilder()
+            .setBase(BaseProperty.newBuilder()
+                .setName("sayHi")
+                .setSource(sourceFile("source/foo.js.src.html", 10))
+                .setDescription(htmlComment("<p>Says hello.</p>\n")))
+            .addParameter(Detail.newBuilder()
+                .setName("name")
+                .setType(stringTypeComment())
+                .setDescription(htmlComment("<p>The person to greet.</p>\n")))
+            .setReturn(Detail.newBuilder()
+                .setType(stringTypeComment())
+                .setDescription(htmlComment("<p>A greeting.</p>\n")))
+            .addThrown(Detail.newBuilder()
+                .setType(errorTypeComment())
+                .setDescription(htmlComment("<p>If the person does not exist.</p>\n")))
+            .build());
+  }
+
+  @Test
+  @Bug(43)
+  public void extractsFunctionDataFromPrototype_interfaceFunctionDeclaredButNotAssigned() {
+    compile(
+        "/** @interface */",
+        "function A() {}",
+        "",
+        "/**",
+        " * Says hello.",
+        " * @param {string} name The person to greet.",
+        " * @return {string} A greeting.",
+        " * @throws {Error} If the person does not exist.",
+        " */",
+        "A.prototype.sayHi;");
 
     NominalType a = typeRegistry.getNominalType("A");
     TypeInspector.Report report = typeInspector.inspectMembers(a);
@@ -110,6 +191,7 @@ public class TypeInspectorFunctionTest extends AbstractTypeInspectorTest {
   @Test
   public void usesFunctionParameterDataFromJsDoc_noParametersAvailableInSource() {
     compile(
+        DEFINE_ABSTRACT_METHOD,
         "/** @constructor */",
         "var Clazz = function() {};",
         "",
@@ -118,7 +200,7 @@ public class TypeInspectorFunctionTest extends AbstractTypeInspectorTest {
         " * @param {number} y the second number.",
         " * @return {number} x + y.",
         " */",
-        "Clazz.prototype.add = goog.abstractMethod");
+        "Clazz.prototype.add = abstractMethod");
 
     NominalType type = typeRegistry.getNominalType("Clazz");
     TypeInspector.Report report = typeInspector.inspectMembers(type);
@@ -127,7 +209,7 @@ public class TypeInspectorFunctionTest extends AbstractTypeInspectorTest {
         Function.newBuilder()
             .setBase(BaseProperty.newBuilder()
                 .setName("add")
-                .setSource(sourceFile("source/foo.js.src.html", 9))
+                .setSource(sourceFile("source/foo.js.src.html", 10))
                 .setDescription(Comment.getDefaultInstance()))
             .addParameter(Detail.newBuilder()
                 .setName("x")
@@ -140,6 +222,38 @@ public class TypeInspectorFunctionTest extends AbstractTypeInspectorTest {
             .setReturn(Detail.newBuilder()
                 .setType(numberTypeComment())
                 .setDescription(htmlComment("<p>x + y.</p>\n")))
+            .build());
+  }
+
+  @Test
+  @Bug(43)
+  public void usesFunctionParameterDataFromJsDoc_parameterNamesOnlyNoDescription() {
+    compile(
+        DEFINE_ABSTRACT_METHOD,
+        "/** @constructor */",
+        "var Clazz = function() {};",
+        "",
+        "/**",
+        " * @param {number} x",
+        " * @param {number} y",
+        " */",
+        "Clazz.prototype.add = abstractMethod");
+
+    NominalType type = typeRegistry.getNominalType("Clazz");
+    TypeInspector.Report report = typeInspector.inspectMembers(type);
+    assertThat(report.getProperties()).isEmpty();
+    assertThat(report.getFunctions()).containsExactly(
+        Function.newBuilder()
+            .setBase(BaseProperty.newBuilder()
+                .setName("add")
+                .setSource(sourceFile("source/foo.js.src.html", 9))
+                .setDescription(Comment.getDefaultInstance()))
+            .addParameter(Detail.newBuilder()
+                .setName("x")
+                .setType(numberTypeComment()))
+            .addParameter(Detail.newBuilder()
+                .setName("y")
+                .setType(numberTypeComment()))
             .build());
   }
 
@@ -190,11 +304,11 @@ public class TypeInspectorFunctionTest extends AbstractTypeInspectorTest {
                 .setSource(sourceFile("source/foo.js.src.html", 8))
                 .setDescription(Comment.getDefaultInstance()))
             .addParameter(Detail.newBuilder()
-                .setName("x")
-                .setType(textComment("?")))
+                .setName("arg0")
+                .setType(numberTypeComment()))
             .addParameter(Detail.newBuilder()
-                .setName("y")
-                .setType(textComment("?")))
+                .setName("arg1")
+                .setType(numberTypeComment()))
             .build());
   }
 
@@ -231,11 +345,12 @@ public class TypeInspectorFunctionTest extends AbstractTypeInspectorTest {
   @Test
   public void usesPositionalArgsIfNoJsDocAndNoneInSource() {
     compile(
+        DEFINE_ABSTRACT_METHOD,
         "/** @constructor */",
         "var Clazz = function() {};",
         "",
         "/** @type {function(number, number)} */",
-        "Clazz.prototype.add = goog.abstractMethod;");
+        "Clazz.prototype.add = abstractMethod;");
 
     NominalType type = typeRegistry.getNominalType("Clazz");
     TypeInspector.Report report = typeInspector.inspectMembers(type);
@@ -244,7 +359,7 @@ public class TypeInspectorFunctionTest extends AbstractTypeInspectorTest {
         Function.newBuilder()
             .setBase(BaseProperty.newBuilder()
                 .setName("add")
-                .setSource(sourceFile("source/foo.js.src.html", 5))
+                .setSource(sourceFile("source/foo.js.src.html", 6))
                 .setDescription(Comment.getDefaultInstance()))
             .addParameter(Detail.newBuilder()
                 .setName("arg0")
@@ -258,11 +373,12 @@ public class TypeInspectorFunctionTest extends AbstractTypeInspectorTest {
   @Test
   public void usesOverriddenComment_superClass() {
     compile(
+        DEFINE_ABSTRACT_METHOD,
         "/** @constructor */",
         "var A = function() {};",
         "",
         "/** Comment on A. */",
-        "A.prototype.record = goog.abstractMethod;",
+        "A.prototype.record = abstractMethod;",
         "",
         "/** @constructor @extends {A} */",
         "var B = function() {};",
@@ -280,7 +396,7 @@ public class TypeInspectorFunctionTest extends AbstractTypeInspectorTest {
         Function.newBuilder()
             .setBase(BaseProperty.newBuilder()
                 .setName("record")
-                .setSource(sourceFile("source/foo.js.src.html", 14))
+                .setSource(sourceFile("source/foo.js.src.html", 15))
                 .setDescription(htmlComment("<p>Comment on B.</p>\n"))
                 .setOverrides(linkComment("A", "class_A.html#record")))
             .build());
@@ -289,11 +405,12 @@ public class TypeInspectorFunctionTest extends AbstractTypeInspectorTest {
   @Test
   public void usesOverriddenComment_superInterface() {
     compile(
+        DEFINE_ABSTRACT_METHOD,
         "/** @interface */",
         "var A = function() {};",
         "",
         "/** Comment on A. */",
-        "A.prototype.record = goog.abstractMethod;",
+        "A.prototype.record = abstractMethod;",
         "",
         "/** @interface @extends {A} */",
         "var B = function() {};",
@@ -311,7 +428,7 @@ public class TypeInspectorFunctionTest extends AbstractTypeInspectorTest {
         Function.newBuilder()
             .setBase(BaseProperty.newBuilder()
                 .setName("record")
-                .setSource(sourceFile("source/foo.js.src.html", 14))
+                .setSource(sourceFile("source/foo.js.src.html", 15))
                 .setDescription(htmlComment("<p>Comment on B.</p>\n"))
                 .addSpecifiedBy(linkComment("A", "interface_A.html#record")))
             .build());
@@ -320,11 +437,12 @@ public class TypeInspectorFunctionTest extends AbstractTypeInspectorTest {
   @Test
   public void usesOverriddenComment_declaredInterface() {
     compile(
+        DEFINE_ABSTRACT_METHOD,
         "/** @interface */",
         "var A = function() {};",
         "",
         "/** Comment on A. */",
-        "A.prototype.record = goog.abstractMethod;",
+        "A.prototype.record = abstractMethod;",
         "",
         "/** @constructor @implements {A} */",
         "var B = function() {};",
@@ -342,7 +460,7 @@ public class TypeInspectorFunctionTest extends AbstractTypeInspectorTest {
         Function.newBuilder()
             .setBase(BaseProperty.newBuilder()
                 .setName("record")
-                .setSource(sourceFile("source/foo.js.src.html", 14))
+                .setSource(sourceFile("source/foo.js.src.html", 15))
                 .setDescription(htmlComment("<p>Comment on B.</p>\n"))
                 .addSpecifiedBy(linkComment("A", "interface_A.html#record")))
             .build());
@@ -351,11 +469,12 @@ public class TypeInspectorFunctionTest extends AbstractTypeInspectorTest {
   @Test
   public void usesCommentFromOverriddenType_superClass() {
     compile(
+        DEFINE_ABSTRACT_METHOD,
         "/** @constructor */",
         "var A = function() {};",
         "",
         "/** Comment on A. */",
-        "A.prototype.record = goog.abstractMethod;",
+        "A.prototype.record = abstractMethod;",
         "",
         "/** @constructor @extends {A} */",
         "var B = function() {};",
@@ -372,7 +491,7 @@ public class TypeInspectorFunctionTest extends AbstractTypeInspectorTest {
         Function.newBuilder()
             .setBase(BaseProperty.newBuilder()
                 .setName("record")
-                .setSource(sourceFile("source/foo.js.src.html", 13))
+                .setSource(sourceFile("source/foo.js.src.html", 14))
                 .setDescription(htmlComment("<p>Comment on A.</p>\n"))
                 .setOverrides(linkComment("A", "class_A.html#record")))
             .build());
@@ -381,11 +500,12 @@ public class TypeInspectorFunctionTest extends AbstractTypeInspectorTest {
   @Test
   public void usesCommentFromOverriddenType_superInterface() {
     compile(
+        DEFINE_ABSTRACT_METHOD,
         "/** @interface */",
         "var A = function() {};",
         "",
         "/** Comment on A. */",
-        "A.prototype.record = goog.abstractMethod;",
+        "A.prototype.record = abstractMethod;",
         "",
         "/** @interface @extends {A} */",
         "var B = function() {};",
@@ -402,7 +522,7 @@ public class TypeInspectorFunctionTest extends AbstractTypeInspectorTest {
         Function.newBuilder()
             .setBase(BaseProperty.newBuilder()
                 .setName("record")
-                .setSource(sourceFile("source/foo.js.src.html", 13))
+                .setSource(sourceFile("source/foo.js.src.html", 14))
                 .setDescription(htmlComment("<p>Comment on A.</p>\n"))
                 .addSpecifiedBy(linkComment("A", "interface_A.html#record")))
             .build());
@@ -411,13 +531,14 @@ public class TypeInspectorFunctionTest extends AbstractTypeInspectorTest {
   @Test
   public void usesParameterInfoFromOverriddenType_superClass() {
     compile(
+        DEFINE_ABSTRACT_METHOD,
         "/** @constructor */",
         "var A = function() {};",
         "",
         "/**",
         " * @param {number} v The value to record.",
         " */",
-        "A.prototype.record = goog.abstractMethod;",
+        "A.prototype.record = abstractMethod;",
         "",
         "/** @constructor @extends {A} */",
         "var B = function() {};",
@@ -432,7 +553,7 @@ public class TypeInspectorFunctionTest extends AbstractTypeInspectorTest {
         Function.newBuilder()
             .setBase(BaseProperty.newBuilder()
                 .setName("record")
-                .setSource(sourceFile("source/foo.js.src.html", 13))
+                .setSource(sourceFile("source/foo.js.src.html", 14))
                 .setDescription(Comment.getDefaultInstance())
                 .setOverrides(linkComment("A", "class_A.html#record")))
             .addParameter(Detail.newBuilder()
@@ -445,13 +566,14 @@ public class TypeInspectorFunctionTest extends AbstractTypeInspectorTest {
   @Test
   public void usesParameterInfoFromOverriddenType_superInterface() {
     compile(
+        DEFINE_ABSTRACT_METHOD,
         "/** @interface */",
         "var A = function() {};",
         "",
         "/**",
         " * @param {number} v The value to record.",
         " */",
-        "A.prototype.record = goog.abstractMethod;",
+        "A.prototype.record = abstractMethod;",
         "",
         "/** @interface @extends {A} */",
         "var B = function() {};",
@@ -466,7 +588,7 @@ public class TypeInspectorFunctionTest extends AbstractTypeInspectorTest {
         Function.newBuilder()
             .setBase(BaseProperty.newBuilder()
                 .setName("record")
-                .setSource(sourceFile("source/foo.js.src.html", 13))
+                .setSource(sourceFile("source/foo.js.src.html", 14))
                 .setDescription(Comment.getDefaultInstance())
                 .addSpecifiedBy(linkComment("A", "interface_A.html#record")))
             .addParameter(Detail.newBuilder()
@@ -479,13 +601,14 @@ public class TypeInspectorFunctionTest extends AbstractTypeInspectorTest {
   @Test
   public void usesParameterInfoFromOverriddenType_declaredInterface() {
     compile(
+        DEFINE_ABSTRACT_METHOD,
         "/** @interface */",
         "var A = function() {};",
         "",
         "/**",
         " * @param {number} v The value to record.",
         " */",
-        "A.prototype.record = goog.abstractMethod;",
+        "A.prototype.record = abstractMethod;",
         "",
         "/** @constructor @implements {A} */",
         "var B = function() {};",
@@ -500,7 +623,7 @@ public class TypeInspectorFunctionTest extends AbstractTypeInspectorTest {
         Function.newBuilder()
             .setBase(BaseProperty.newBuilder()
                 .setName("record")
-                .setSource(sourceFile("source/foo.js.src.html", 13))
+                .setSource(sourceFile("source/foo.js.src.html", 14))
                 .setDescription(Comment.getDefaultInstance())
                 .addSpecifiedBy(linkComment("A", "interface_A.html#record")))
             .addParameter(Detail.newBuilder()
@@ -513,13 +636,14 @@ public class TypeInspectorFunctionTest extends AbstractTypeInspectorTest {
   @Test
   public void usesParameterInfoFromOverriddenType_interfaceDeclaredOnSuperClass() {
     compile(
+        DEFINE_ABSTRACT_METHOD,
         "/** @interface */",
         "var A = function() {};",
         "",
         "/**",
         " * @param {number} v The value to record.",
         " */",
-        "A.prototype.record = goog.abstractMethod;",
+        "A.prototype.record = abstractMethod;",
         "",
         "/** @constructor @implements {A} */",
         "var B = function() {};",
@@ -540,7 +664,7 @@ public class TypeInspectorFunctionTest extends AbstractTypeInspectorTest {
         Function.newBuilder()
             .setBase(BaseProperty.newBuilder()
                 .setName("record")
-                .setSource(sourceFile("source/foo.js.src.html", 19))
+                .setSource(sourceFile("source/foo.js.src.html", 20))
                 .setDescription(Comment.getDefaultInstance())
                 .setOverrides(linkComment("B", "class_B.html#record"))
                 .addSpecifiedBy(linkComment("A", "interface_A.html#record")))
@@ -554,19 +678,20 @@ public class TypeInspectorFunctionTest extends AbstractTypeInspectorTest {
   @Test
   public void usesParameterInfoFromOverriddenType_abstractMethodWithSuperClass() {
     compile(
+        DEFINE_ABSTRACT_METHOD,
         "/** @constructor */",
         "var A = function() {};",
         "",
         "/**",
         " * @param {number} v The value to record.",
         " */",
-        "A.prototype.record = goog.abstractMethod;",
+        "A.prototype.record = abstractMethod;",
         "",
         "/** @constructor @extends {A} */",
         "var B = function() {};",
         "",
         "/** @override */",
-        "B.prototype.record = goog.abstractMethod;");
+        "B.prototype.record = abstractMethod;");
 
     NominalType type = typeRegistry.getNominalType("B");
     TypeInspector.Report report = typeInspector.inspectMembers(type);
@@ -575,7 +700,7 @@ public class TypeInspectorFunctionTest extends AbstractTypeInspectorTest {
         Function.newBuilder()
             .setBase(BaseProperty.newBuilder()
                 .setName("record")
-                .setSource(sourceFile("source/foo.js.src.html", 7))
+                .setSource(sourceFile("source/foo.js.src.html", 8))
                 .setDescription(Comment.getDefaultInstance())
                 .setDefinedBy(linkComment("A", "class_A.html#record")))
             .addParameter(Detail.newBuilder()
@@ -588,19 +713,20 @@ public class TypeInspectorFunctionTest extends AbstractTypeInspectorTest {
   @Test
   public void usesParameterInfoFromOverriddenType_abstractMethodWithDeclaredInterface() {
     compile(
+        DEFINE_ABSTRACT_METHOD,
         "/** @interface */",
         "var A = function() {};",
         "",
         "/**",
         " * @param {number} v The value to record.",
         " */",
-        "A.prototype.record = goog.abstractMethod;",
+        "A.prototype.record = abstractMethod;",
         "",
         "/** @constructor @implements {A} */",
         "var B = function() {};",
         "",
         "/** @override */",
-        "B.prototype.record = goog.abstractMethod;");
+        "B.prototype.record = abstractMethod;");
 
     NominalType type = typeRegistry.getNominalType("B");
     TypeInspector.Report report = typeInspector.inspectMembers(type);
@@ -609,7 +735,7 @@ public class TypeInspectorFunctionTest extends AbstractTypeInspectorTest {
         Function.newBuilder()
             .setBase(BaseProperty.newBuilder()
                 .setName("record")
-                .setSource(sourceFile("source/foo.js.src.html", 13))
+                .setSource(sourceFile("source/foo.js.src.html", 14))
                 .setDescription(Comment.getDefaultInstance())
                 .addSpecifiedBy(linkComment("A", "interface_A.html#record")))
             .addParameter(Detail.newBuilder()
@@ -622,11 +748,12 @@ public class TypeInspectorFunctionTest extends AbstractTypeInspectorTest {
   @Test
   public void usesReturnInfoFromOverriddenType_superClass() {
     compile(
+        DEFINE_ABSTRACT_METHOD,
         "/** @constructor */",
         "var A = function() {};",
         "",
         "/** @return {string} Return from A. */",
-        "A.prototype.record = goog.abstractMethod;",
+        "A.prototype.record = abstractMethod;",
         "",
         "/** @constructor @extends {A} */",
         "var B = function() {};",
@@ -643,7 +770,7 @@ public class TypeInspectorFunctionTest extends AbstractTypeInspectorTest {
         Function.newBuilder()
             .setBase(BaseProperty.newBuilder()
                 .setName("record")
-                .setSource(sourceFile("source/foo.js.src.html", 13))
+                .setSource(sourceFile("source/foo.js.src.html", 14))
                 .setDescription(Comment.getDefaultInstance())
                 .setOverrides(linkComment("A", "class_A.html#record")))
             .setReturn(Detail.newBuilder()
@@ -655,11 +782,12 @@ public class TypeInspectorFunctionTest extends AbstractTypeInspectorTest {
   @Test
   public void usesReturnInfoFromOverriddenType_superInterface() {
     compile(
+        DEFINE_ABSTRACT_METHOD,
         "/** @interface */",
         "var A = function() {};",
         "",
         "/** @return {string} Return from A. */",
-        "A.prototype.record = goog.abstractMethod;",
+        "A.prototype.record = abstractMethod;",
         "",
         "/** @interface @extends {A} */",
         "var B = function() {};",
@@ -676,7 +804,7 @@ public class TypeInspectorFunctionTest extends AbstractTypeInspectorTest {
         Function.newBuilder()
             .setBase(BaseProperty.newBuilder()
                 .setName("record")
-                .setSource(sourceFile("source/foo.js.src.html", 13))
+                .setSource(sourceFile("source/foo.js.src.html", 14))
                 .setDescription(Comment.getDefaultInstance())
                 .addSpecifiedBy(linkComment("A", "interface_A.html#record")))
             .setReturn(Detail.newBuilder()
@@ -688,11 +816,12 @@ public class TypeInspectorFunctionTest extends AbstractTypeInspectorTest {
   @Test
   public void usesReturnInfoFromOverriddenType_declaredInterface() {
     compile(
+        DEFINE_ABSTRACT_METHOD,
         "/** @interface */",
         "var A = function() {};",
         "",
         "/** @return {string} Return from A. */",
-        "A.prototype.record = goog.abstractMethod;",
+        "A.prototype.record = abstractMethod;",
         "",
         "/** @constructor @implements {A} */",
         "var B = function() {};",
@@ -709,7 +838,42 @@ public class TypeInspectorFunctionTest extends AbstractTypeInspectorTest {
         Function.newBuilder()
             .setBase(BaseProperty.newBuilder()
                 .setName("record")
-                .setSource(sourceFile("source/foo.js.src.html", 13))
+                .setSource(sourceFile("source/foo.js.src.html", 14))
+                .setDescription(Comment.getDefaultInstance())
+                .addSpecifiedBy(linkComment("A", "interface_A.html#record")))
+            .setReturn(Detail.newBuilder()
+                .setType(stringTypeComment())
+                .setDescription(htmlComment("<p>Return from A.</p>\n")))
+            .build());
+  }
+  
+  @Test
+  public void usesReturnInfoFromOverriddenType_declaredInterfaceWithNoFunctionBody() {
+    compile(
+        DEFINE_ABSTRACT_METHOD,
+        "",
+        "/** @interface */",
+        "var A = function() {};",
+        "",
+        "/** @return {string} Return from A. */",
+        "A.prototype.record;",
+        "",
+        "/** @constructor @implements {A} */",
+        "var B = function() {};",
+        "",
+        "/**",
+        " * @override",
+        " */",
+        "B.prototype.record = noOpFunc;");
+
+    NominalType type = typeRegistry.getNominalType("B");
+    TypeInspector.Report report = typeInspector.inspectMembers(type);
+    assertThat(report.getProperties()).isEmpty();
+    assertThat(report.getFunctions()).containsExactly(
+        Function.newBuilder()
+            .setBase(BaseProperty.newBuilder()
+                .setName("record")
+                .setSource(sourceFile("source/foo.js.src.html", 15))
                 .setDescription(Comment.getDefaultInstance())
                 .addSpecifiedBy(linkComment("A", "interface_A.html#record")))
             .setReturn(Detail.newBuilder()
@@ -721,11 +885,12 @@ public class TypeInspectorFunctionTest extends AbstractTypeInspectorTest {
   @Test
   public void usesReturnInfoFromOverriddenType_interfaceDeclaredOnSuperClass() {
     compile(
+        DEFINE_ABSTRACT_METHOD,
         "/** @interface */",
         "var A = function() {};",
         "",
         "/** @return {string} Return from A. */",
-        "A.prototype.record = goog.abstractMethod;",
+        "A.prototype.record = abstractMethod;",
         "",
         "/** @constructor @implements {A} */",
         "var B = function() {};",
@@ -750,7 +915,7 @@ public class TypeInspectorFunctionTest extends AbstractTypeInspectorTest {
         Function.newBuilder()
             .setBase(BaseProperty.newBuilder()
                 .setName("record")
-                .setSource(sourceFile("source/foo.js.src.html", 21))
+                .setSource(sourceFile("source/foo.js.src.html", 22))
                 .setDescription(Comment.getDefaultInstance())
                 .setOverrides(linkComment("B", "class_B.html#record"))
                 .addSpecifiedBy(linkComment("A", "interface_A.html#record")))
@@ -764,6 +929,7 @@ public class TypeInspectorFunctionTest extends AbstractTypeInspectorTest {
   @Bug(35)
   public void usesReturnInfoFromOverriddenType_abstractMethod_interfaceSpecification() {
     compile(
+        DEFINE_ABSTRACT_METHOD,
         "/** @interface */",
         "var A = function() {};",
         "",
@@ -779,7 +945,7 @@ public class TypeInspectorFunctionTest extends AbstractTypeInspectorTest {
         "/**",
         " * @override",
         " */",
-        "B.prototype.record = goog.abstractMethod;");
+        "B.prototype.record = abstractMethod;");
 
     NominalType type = typeRegistry.getNominalType("B");
     TypeInspector.Report report = typeInspector.inspectMembers(type);
@@ -788,7 +954,7 @@ public class TypeInspectorFunctionTest extends AbstractTypeInspectorTest {
         Function.newBuilder()
             .setBase(BaseProperty.newBuilder()
                 .setName("record")
-                .setSource(sourceFile("source/foo.js.src.html", 16))
+                .setSource(sourceFile("source/foo.js.src.html", 17))
                 .setDescription(htmlComment("<p>Returns some value.</p>\n"))
                 .addSpecifiedBy(linkComment("A", "interface_A.html#record")))
             .setReturn(Detail.newBuilder()
@@ -801,6 +967,7 @@ public class TypeInspectorFunctionTest extends AbstractTypeInspectorTest {
   @Bug(35)
   public void usesReturnInfoFromOverriddenType_abstractMethod_superClass() {
     compile(
+        DEFINE_ABSTRACT_METHOD,
         "/** @constructor */",
         "var A = function() {};",
         "",
@@ -816,7 +983,7 @@ public class TypeInspectorFunctionTest extends AbstractTypeInspectorTest {
         "/**",
         " * @override",
         " */",
-        "B.prototype.record = goog.abstractMethod;");
+        "B.prototype.record = abstractMethod;");
 
     NominalType type = typeRegistry.getNominalType("B");
     TypeInspector.Report report = typeInspector.inspectMembers(type);
@@ -825,7 +992,7 @@ public class TypeInspectorFunctionTest extends AbstractTypeInspectorTest {
         Function.newBuilder()
             .setBase(BaseProperty.newBuilder()
                 .setName("record")
-                .setSource(sourceFile("source/foo.js.src.html", 8))
+                .setSource(sourceFile("source/foo.js.src.html", 9))
                 .setDescription(htmlComment("<p>Returns some value.</p>\n"))
                 .setDefinedBy(linkComment("A", "class_A.html#record")))
             .setReturn(Detail.newBuilder()
@@ -838,6 +1005,7 @@ public class TypeInspectorFunctionTest extends AbstractTypeInspectorTest {
   @Bug(35)
   public void usesReturnInfoFromOverriddenType_abstractMethod_insideAGoogScope() {
     compile(
+        DEFINE_ABSTRACT_METHOD,
         "goog.provide('foo.bar');",
         "goog.scope(function() {",
         "  /**",
@@ -864,7 +1032,7 @@ public class TypeInspectorFunctionTest extends AbstractTypeInspectorTest {
         "  /**",
         "   * @override",
         "   */",
-        "  B.prototype.record = goog.abstractMethod;",
+        "  B.prototype.record = abstractMethod;",
         "});");
 
     NominalType type = typeRegistry.getNominalType("foo.bar.AClass");
@@ -874,7 +1042,7 @@ public class TypeInspectorFunctionTest extends AbstractTypeInspectorTest {
         Function.newBuilder()
             .setBase(BaseProperty.newBuilder()
                 .setName("record")
-                .setSource(sourceFile("source/foo.js.src.html", 27))
+                .setSource(sourceFile("source/foo.js.src.html", 28))
                 .setDescription(htmlComment("<p>Returns some value.</p>\n"))
                 .addSpecifiedBy(linkComment(
                     "foo.bar.AnInterface", "interface_foo_bar_AnInterface.html#record")))
@@ -887,11 +1055,12 @@ public class TypeInspectorFunctionTest extends AbstractTypeInspectorTest {
   @Test
   public void canOverrideReturnDescription() {
     compile(
+        DEFINE_ABSTRACT_METHOD,
         "/** @interface */",
         "var A = function() {};",
         "",
         "/** @return {string} Return from A. */",
-        "A.prototype.record = goog.abstractMethod;",
+        "A.prototype.record = abstractMethod;",
         "",
         "/** @constructor @implements {A} */",
         "var B = function() {};",
@@ -909,7 +1078,7 @@ public class TypeInspectorFunctionTest extends AbstractTypeInspectorTest {
         Function.newBuilder()
             .setBase(BaseProperty.newBuilder()
                 .setName("record")
-                .setSource(sourceFile("source/foo.js.src.html", 14))
+                .setSource(sourceFile("source/foo.js.src.html", 15))
                 .setDescription(Comment.getDefaultInstance())
                 .addSpecifiedBy(linkComment("A", "interface_A.html#record")))
             .setReturn(Detail.newBuilder()
@@ -921,6 +1090,7 @@ public class TypeInspectorFunctionTest extends AbstractTypeInspectorTest {
   @Test
   public void canNarrowParameterDefinedOnSuperType() {
     compile(
+        DEFINE_ABSTRACT_METHOD,
         "/** @constructor */",
         "var Person = function() {};",
         "",
@@ -933,7 +1103,7 @@ public class TypeInspectorFunctionTest extends AbstractTypeInspectorTest {
         "/**",
         " * @param {!Person} person The person to greet.",
         " */",
-        "Greeter.prototype.greet = goog.abstractMethod;",
+        "Greeter.prototype.greet = abstractMethod;",
         "",
         "/**",
         " * @constructor",
@@ -954,7 +1124,7 @@ public class TypeInspectorFunctionTest extends AbstractTypeInspectorTest {
         Function.newBuilder()
             .setBase(BaseProperty.newBuilder()
                 .setName("greet")
-                .setSource(sourceFile("source/foo.js.src.html", 25))
+                .setSource(sourceFile("source/foo.js.src.html", 26))
                 .setDescription(Comment.getDefaultInstance())
                 .addSpecifiedBy(linkComment("Greeter", "interface_Greeter.html#greet")))
             .addParameter(Detail.newBuilder()
@@ -971,7 +1141,7 @@ public class TypeInspectorFunctionTest extends AbstractTypeInspectorTest {
         Function.newBuilder()
             .setBase(BaseProperty.newBuilder()
                 .setName("greet")
-                .setSource(sourceFile("source/foo.js.src.html", 13))
+                .setSource(sourceFile("source/foo.js.src.html", 14))
                 .setDescription(Comment.getDefaultInstance()))
             .addParameter(Detail.newBuilder()
                 .setName("person")
@@ -983,6 +1153,7 @@ public class TypeInspectorFunctionTest extends AbstractTypeInspectorTest {
   @Test
   public void canNarrowReturnTypeOfSuperType() {
     compile(
+        DEFINE_ABSTRACT_METHOD,
         "/** @constructor */",
         "var Greeting = function() {};",
         "",
@@ -995,7 +1166,7 @@ public class TypeInspectorFunctionTest extends AbstractTypeInspectorTest {
         "/**",
         " * @return {!Greeting} Returns a greeting.",
         " */",
-        "Greeter.prototype.greet = goog.abstractMethod;",
+        "Greeter.prototype.greet = abstractMethod;",
         "",
         "/**",
         " * @constructor",
@@ -1016,7 +1187,7 @@ public class TypeInspectorFunctionTest extends AbstractTypeInspectorTest {
         Function.newBuilder()
             .setBase(BaseProperty.newBuilder()
                 .setName("greet")
-                .setSource(sourceFile("source/foo.js.src.html", 25))
+                .setSource(sourceFile("source/foo.js.src.html", 26))
                 .setDescription(Comment.getDefaultInstance())
                 .addSpecifiedBy(linkComment("Greeter", "interface_Greeter.html#greet")))
             .setReturn(Detail.newBuilder()
@@ -1032,7 +1203,7 @@ public class TypeInspectorFunctionTest extends AbstractTypeInspectorTest {
         Function.newBuilder()
             .setBase(BaseProperty.newBuilder()
                 .setName("greet")
-                .setSource(sourceFile("source/foo.js.src.html", 13))
+                .setSource(sourceFile("source/foo.js.src.html", 14))
                 .setDescription(Comment.getDefaultInstance()))
             .setReturn(Detail.newBuilder()
                 .setType(linkComment("Greeting", "class_Greeting.html"))
@@ -1163,6 +1334,7 @@ public class TypeInspectorFunctionTest extends AbstractTypeInspectorTest {
   @Bug(30)
   public void abstractMethodInheritsDocsFromInterfaceSpecification() {
     compile(
+        DEFINE_ABSTRACT_METHOD,
         "/**",
         " * @interface",
         " */",
@@ -1172,7 +1344,7 @@ public class TypeInspectorFunctionTest extends AbstractTypeInspectorTest {
         " * Render this edge to the given context",
         " * @param {!CanvasRenderingContext2D} context The canvas to draw this object into",
         " */",
-        "Edge.prototype.addPath = goog.abstractMethod;",
+        "Edge.prototype.addPath = abstractMethod;",
         "",
         "/**",
         " * Abstract edge implementation.",
@@ -1192,7 +1364,7 @@ public class TypeInspectorFunctionTest extends AbstractTypeInspectorTest {
         Function.newBuilder()
             .setBase(BaseProperty.newBuilder()
                 .setName("addPath")
-                .setSource(sourceFile("source/foo.js.src.html", 21))
+                .setSource(sourceFile("source/foo.js.src.html", 22))
                 .setDescription(htmlComment("<p>Render this edge to the given context</p>\n"))
                 .addSpecifiedBy(linkComment("Edge", "interface_Edge.html#addPath")))
             .addParameter(Detail.newBuilder()

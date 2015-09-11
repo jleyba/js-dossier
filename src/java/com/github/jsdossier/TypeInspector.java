@@ -35,7 +35,6 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
@@ -145,13 +144,6 @@ final class TypeInspector {
       }
     }
     return definitions.iterator().next().getType();
-  }
-  
-  private boolean describesFunction(@Nullable JsDoc docs) {
-    return docs != null
-        && (docs.hasAnnotation(Annotation.PARAM)
-        || docs.hasAnnotation(Annotation.RETURN)
-        || docs.hasAnnotation(Annotation.THROWS));
   }
 
   private Set<JSType> getAssignableTypes(JSType type) {
@@ -286,7 +278,7 @@ final class TypeInspector {
       Iterable<InstanceProperty> overrides) {
     checkArgument(type.isFunctionType(), "%s is not a function type: %s", name, type);
 
-    boolean isConstructor = type.isConstructor();
+    boolean isConstructor = type.isConstructor() && !isFunctionTypeConstructor(type);
     boolean isInterface = !isConstructor && type.isInterface();
 
     Function.Builder builder = Function.newBuilder()
@@ -354,15 +346,20 @@ final class TypeInspector {
           .transform(new com.google.common.base.Function<Parameter, Detail>() {
             @Override
             public Detail apply(Parameter input) {
-              Detail.Builder detail = Detail.newBuilder()
-                  .setName(input.getName())
-                  .setDescription(parser.parseComment(input.getDescription(), linker));
+              Detail.Builder detail = Detail.newBuilder().setName(input.getName());
+              if (!isNullOrEmpty(input.getDescription())) {
+                detail.setDescription(parser.parseComment(input.getDescription(), linker));
+              }
               if (input.getType() != null) {
                 detail.setType(linker.formatTypeExpression(input.getType()));
               }
               return detail.build();
             }
           });
+    }
+    
+    if (isFunctionTypeConstructor(type)) {
+      return ImmutableList.of();
     }
 
     List<Node> parameterNodes = Lists.newArrayList(((FunctionType) type).getParameters());
@@ -382,6 +379,15 @@ final class TypeInspector {
       details.add(detail.build());
     }
     return details;
+  }
+
+  /**
+   * Returns whether the given {@code type} looks like the base function type constructor (that is,
+   * {@code @type {!Function}}).
+   */
+  private static boolean isFunctionTypeConstructor(JSType type) {
+    return type.isConstructor()
+        && ((FunctionType) type).getInstanceType().isUnknownType();
   }
 
   @Nullable

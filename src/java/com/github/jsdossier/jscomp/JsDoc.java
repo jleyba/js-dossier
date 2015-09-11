@@ -268,6 +268,7 @@ public class JsDoc {
           Splitter.on('\n').split(info.getBlockDescription()));
     }
 
+    int nextParamIndex = 0;
     for (JSDocInfo.Marker marker : info.getMarkers()) {
       Optional<Annotation> annotation = Annotation.forMarker(marker);
       if (!annotation.isPresent()) {
@@ -275,10 +276,6 @@ public class JsDoc {
       }
 
       JSDocInfo.StringPosition description = marker.getDescription();
-      if (description == null) {
-        continue;
-      }
-
       switch (annotation.get()) {
         case DEFINE:
           defineComment = processDescriptionLines(lines, annotationOffset, description);
@@ -290,7 +287,10 @@ public class JsDoc {
           fileoverview = processDescriptionLines(lines, annotationOffset, description);
           break;
         case PARAM:
-          String name = marker.getNameNode().getItem().getString();
+          String name = "arg" + (nextParamIndex++);
+          if (marker.getNameNode() != null) {
+            name = marker.getNameNode().getItem().getString();
+          }
           parameters.put(name, new Parameter(
               name,
               getJsTypeExpression(marker),
@@ -397,7 +397,11 @@ public class JsDoc {
   }
 
   private String processDescriptionLines(
-      List<String> lines, Offset annotationOffset, JSDocInfo.StringPosition position) {
+      List<String> lines, Offset annotationOffset,
+      @Nullable JSDocInfo.StringPosition position) {
+    if (position == null) {
+      return "";
+    }
     int startLine = position.getStartLine() - annotationOffset.line;
     int numLines = Math.max(position.getEndLine() - position.getStartLine(), 1);
 

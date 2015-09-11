@@ -31,6 +31,7 @@ import com.github.jsdossier.annotations.Input;
 import com.github.jsdossier.annotations.Modules;
 import com.github.jsdossier.annotations.Stderr;
 import com.github.jsdossier.jscomp.JsDoc.TypedDescription;
+import com.github.jsdossier.testing.Bug;
 import com.github.jsdossier.testing.CompilerUtil;
 import com.github.jsdossier.testing.GuiceRule;
 import com.google.common.base.Joiner;
@@ -52,6 +53,7 @@ import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -135,6 +137,46 @@ public class JsDocTest {
     assertEquals(
         "Hello, world! @not_an_annotation\nGoodbye, world!",
         doc.getBlockComment());
+  }
+  
+  @Test
+  @Bug(43)
+  public void parseParamsWithNamesOnly() {
+    JsDoc doc = getClassJsDoc(
+        "/**",
+        " * @param {number} x",
+        " * @param {number} y",
+        " * @constructor",
+        " */",
+        "function Foo(x, y) {}");
+    List<Parameter> parameters = doc.getParameters();
+    assertThat(parameters).hasSize(2);
+    
+    assertThat(parameters.get(0).getName()).isEqualTo("x");
+    assertThat(parameters.get(0).getDescription()).isEmpty();
+
+    assertThat(parameters.get(1).getName()).isEqualTo("y");
+    assertThat(parameters.get(1).getDescription()).isEmpty();
+  }
+  
+  @Test
+  @Bug(43)
+  public void parseParamsWithTypesOnly() {
+    JsDoc doc = getClassJsDoc(
+        "/**",
+        " * @param {number}",
+        " * @param {number}",
+        " * @constructor",
+        " */",
+        "function Foo(x, y) {}");
+    List<Parameter> parameters = doc.getParameters();
+    assertThat(parameters).hasSize(2);
+    
+    assertThat(parameters.get(0).getName()).isEqualTo("arg0");
+    assertThat(parameters.get(0).getDescription()).isEmpty();
+
+    assertThat(parameters.get(1).getName()).isEqualTo("arg1");
+    assertThat(parameters.get(1).getDescription()).isEmpty();
   }
 
   @Test
