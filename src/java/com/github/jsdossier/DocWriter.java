@@ -621,7 +621,7 @@ class DocWriter {
 
   private void getPrototypeData(JsType.Builder jsTypeBuilder, IndexReference indexReference) {
     NominalType nominalType = indexReference.getNominalType();
-    TypeInspector.Report report = typeInspector.inspectMembers(nominalType);
+    TypeInspector.Report report = typeInspector.inspectInstanceType(nominalType);
     for (com.github.jsdossier.proto.Property prop : report.getProperties()) {
       jsTypeBuilder.addField(prop);
       updateIndex(jsTypeBuilder, indexReference, prop.getBase());
@@ -646,68 +646,35 @@ class DocWriter {
 
   private void getStaticData(
       JsType.Builder jsTypeBuilder, IndexReference indexReference) {
-    final NominalType type = indexReference.getNominalType();
-    ImmutableList<Property> properties = FluentIterable.from(type.getProperties())
-        .toSortedList(new PropertyNameComparator());
+    NominalType type = indexReference.getNominalType();
+    TypeInspector.Report report = typeInspector.inspectType(type);
 
-    for (Property property : properties) {
-      String name = property.getName();
-      if (!type.isModuleExports() && !type.isNamespace()) {
-        name = type.getName() + "." + name;
-      }
+    for (com.github.jsdossier.proto.Property prop : report.getCompilerConstants()) {
+      jsTypeBuilder.addCompilerConstant(prop);
+      updateStaticPropertyIndex(jsTypeBuilder, indexReference, type, prop.getBase());
+    }
 
-      JsDoc jsdoc = JsDoc.from(property.getJSDocInfo());
+    for (com.github.jsdossier.proto.Property prop : report.getProperties()) {
+      jsTypeBuilder.addStaticProperty(prop);
+      updateStaticPropertyIndex(jsTypeBuilder, indexReference, type, prop.getBase());
+    }
 
-      // If this property does not have any docs and is part of a CommonJS module's exported API,
-      // check if the property is a reference to one of the module's internal variables and we
-      // can use those docs instead.
-      if ((jsdoc == null || isNullOrEmpty(jsdoc.getOriginalCommentString()))
-          && type.isModuleExports()) {
-        String internalName = type.getModule().getInternalName(
-            type.getQualifiedName(true) + "." + property.getName());
-        jsdoc = JsDoc.from(type.getModule().getInternalVarDocs(internalName));
-      }
-
-      if (jsdoc != null && jsdoc.getVisibility() == JSDocInfo.Visibility.PRIVATE
-          || (name.endsWith(".superClass_") && property.getType().isFunctionPrototypeType())) {
-        continue;
-      }
-
-      BaseProperty base = null;
-      if (jsdoc != null && jsdoc.isDefine()) {
-        com.github.jsdossier.proto.Property data = typeInspector.getPropertyData(
-            name,
-            property.getType(),
-            property.getNode(),
-            jsdoc);
-        base = data.getBase();
-        jsTypeBuilder.addCompilerConstant(data);
-
-      } else if (property.getType().isFunctionType()) {
-        com.github.jsdossier.proto.Function data = typeInspector.getFunctionData(
-            name,
-            property.getType(),
-            property.getNode(),
-            jsdoc);
-        base = data.getBase();
-        jsTypeBuilder.addStaticFunction(data);
-
-      } else if (!property.getType().isEnumElementType()) {
-        com.github.jsdossier.proto.Property data = typeInspector.getPropertyData(
-            name,
-            property.getType(),
-            property.getNode(),
-            jsdoc);
-        base = data.getBase();
-        jsTypeBuilder.addStaticProperty(data);
-      }
-
-      if (!jsTypeBuilder.hasAliasedType()
-          && base != null
-          && typeRegistry.getNominalType(base.getName()) == null
-          && type.getType(base.getName()) == null) {
-        indexReference.addStaticProperty(base.getName());
-      }
+    for (com.github.jsdossier.proto.Function func : report.getFunctions()) {
+      jsTypeBuilder.addStaticFunction(func);
+      updateStaticPropertyIndex(jsTypeBuilder, indexReference, type, func.getBase());
+    }
+  }
+  
+  private void updateStaticPropertyIndex(
+      JsType.Builder jsTypeBuilder,
+      IndexReference indexReference,
+      NominalType type,
+      BaseProperty base) {
+    if (!jsTypeBuilder.hasAliasedType()
+        && base != null
+        && typeRegistry.getNominalType(base.getName()) == null
+        && type.getType(base.getName()) == null) {
+      indexReference.addStaticProperty(base.getName());
     }
   }
 
@@ -723,13 +690,6 @@ class DocWriter {
   private static class NameComparator implements Comparator<NominalType> {
     @Override
     public int compare(NominalType a, NominalType b) {
-      return a.getName().compareTo(b.getName());
-    }
-  }
-
-  private static class PropertyNameComparator implements Comparator<Property> {
-    @Override
-    public int compare(Property a, Property b) {
       return a.getName().compareTo(b.getName());
     }
   }

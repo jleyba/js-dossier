@@ -75,13 +75,79 @@ final class TypeInspector {
   }
 
   /**
+   * Extracts information on the properties defined directly on the given nominal type. For
+   * classes and interfaces, this will return information on the <em>static</em> properties, not
+   * instance properties.
+   */
+  public Report inspectType(NominalType nominalType) {
+    ImmutableList<Property> properties = FluentIterable.from(nominalType.getProperties())
+        .toSortedList(new PropertyNameComparator());
+    if (properties.isEmpty()) {
+      return new Report();
+    }
+
+    Report report = new Report();
+    linker.pushContext(nominalType);
+
+    for (Property property : properties) {
+      String name = property.getName();
+      if (!nominalType.isModuleExports() && !nominalType.isNamespace()) {
+        name = nominalType.getName() + "." + name;
+      }
+
+      JsDoc jsdoc = JsDoc.from(property.getJSDocInfo());
+
+      // If this property does not have any docs and is part of a CommonJS module's exported API,
+      // check if the property is a reference to one of the module's internal variables and we
+      // can use those docs instead.
+      if ((jsdoc == null || isNullOrEmpty(jsdoc.getOriginalCommentString()))
+          && nominalType.getModule() != null
+          && nominalType.isModuleExports()) {
+        String internalName = nominalType.getModule().getInternalName(
+            nominalType.getQualifiedName(true) + "." + property.getName());
+        jsdoc = JsDoc.from(nominalType.getModule().getInternalVarDocs(internalName));
+      }
+
+      if (jsdoc != null && jsdoc.getVisibility() == JSDocInfo.Visibility.PRIVATE
+          || (name.endsWith(".superClass_") && property.getType().isFunctionPrototypeType())) {
+        continue;
+      }
+      
+      if (jsdoc != null && jsdoc.isDefine()) {
+        report.addCompilerConstant(getPropertyData(
+            name,
+            property.getType(),
+            property.getNode(),
+            jsdoc));
+
+      } else if (property.getType().isFunctionType()) {
+        report.addFunction(getFunctionData(
+            name,
+            property.getType(),
+            property.getNode(),
+            jsdoc));
+
+      } else if (!property.getType().isEnumElementType()) {
+        report.addProperty(getPropertyData(
+            name,
+            property.getType(),
+            property.getNode(),
+            jsdoc));
+      }
+    }
+
+    linker.popContext();
+    return report;
+  }
+
+  /**
    * Extracts information on the members (both functions and properties) of the given type.
    * 
    * <p>The returned report will include information on all properties on the type, regardless of
    * whether the property is defined directly on the nominal type or one of its super
    * types/interfaces.
    */
-  public Report inspectMembers(NominalType nominalType) {
+  public Report inspectInstanceType(NominalType nominalType) {
     if (!nominalType.getJsType().isConstructor() && !nominalType.getJsType().isInterface()) {
       return new Report();
     }
@@ -601,6 +667,7 @@ final class TypeInspector {
   public static final class Report {
     private List<com.github.jsdossier.proto.Function> functions = new ArrayList<>();
     private List<com.github.jsdossier.proto.Property> properties = new ArrayList<>();
+    private List<com.github.jsdossier.proto.Property> compilerConstants = new ArrayList<>();
 
     private void addFunction(com.github.jsdossier.proto.Function function) {
       functions.add(function);
@@ -609,6 +676,10 @@ final class TypeInspector {
     private void addProperty(com.github.jsdossier.proto.Property property) {
       properties.add(property);
     }
+    
+    private void addCompilerConstant(com.github.jsdossier.proto.Property property) {
+      compilerConstants.add(property);
+    }
 
     public List<com.github.jsdossier.proto.Function> getFunctions() {
       return functions;
@@ -616,6 +687,10 @@ final class TypeInspector {
 
     public List<com.github.jsdossier.proto.Property> getProperties() {
       return properties;
+    }
+
+    public List<com.github.jsdossier.proto.Property> getCompilerConstants() {
+      return compilerConstants;
     }
   }
 

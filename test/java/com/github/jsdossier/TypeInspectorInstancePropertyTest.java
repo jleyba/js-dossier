@@ -29,7 +29,7 @@ import org.junit.runners.JUnit4;
  * Tests for extracting property information with a {@link TypeInspector}.
  */
 @RunWith(JUnit4.class)
-public class TypeInspectorPropertyTest extends AbstractTypeInspectorTest {
+public class TypeInspectorInstancePropertyTest extends AbstractTypeInspectorTest {
 
   @Test
   public void collectsPropertiesDefinedOnPrototype_classHasNoSuperType() {
@@ -44,7 +44,7 @@ public class TypeInspectorPropertyTest extends AbstractTypeInspectorTest {
 
     NominalType person = typeRegistry.getNominalType("Person");
 
-    TypeInspector.Report report = typeInspector.inspectMembers(person);
+    TypeInspector.Report report = typeInspector.inspectInstanceType(person);
     assertThat(report.getFunctions()).isEmpty();
     assertThat(report.getProperties()).containsExactly(
         Property.newBuilder()
@@ -70,7 +70,7 @@ public class TypeInspectorPropertyTest extends AbstractTypeInspectorTest {
 
     NominalType person = typeRegistry.getNominalType("Person");
 
-    TypeInspector.Report report = typeInspector.inspectMembers(person);
+    TypeInspector.Report report = typeInspector.inspectInstanceType(person);
     assertThat(report.getFunctions()).isEmpty();
     assertThat(report.getProperties()).containsExactly(
         Property.newBuilder()
@@ -100,7 +100,7 @@ public class TypeInspectorPropertyTest extends AbstractTypeInspectorTest {
 
     NominalType character = typeRegistry.getNominalType("Character");
 
-    TypeInspector.Report report = typeInspector.inspectMembers(character);
+    TypeInspector.Report report = typeInspector.inspectInstanceType(character);
     assertThat(report.getFunctions()).isEmpty();
     assertThat(report.getProperties()).containsExactly(
         Property.newBuilder()
@@ -131,7 +131,7 @@ public class TypeInspectorPropertyTest extends AbstractTypeInspectorTest {
 
     NominalType character = typeRegistry.getNominalType("Character");
 
-    TypeInspector.Report report = typeInspector.inspectMembers(character);
+    TypeInspector.Report report = typeInspector.inspectInstanceType(character);
     assertThat(report.getFunctions()).isEmpty();
     assertThat(report.getProperties()).containsExactly(
         Property.newBuilder()
@@ -167,7 +167,7 @@ public class TypeInspectorPropertyTest extends AbstractTypeInspectorTest {
         "B.prototype.a = 456;");
 
     NominalType typeB = typeRegistry.getNominalType("B");
-    TypeInspector.Report reportB = typeInspector.inspectMembers(typeB);
+    TypeInspector.Report reportB = typeInspector.inspectInstanceType(typeB);
     assertThat(reportB.getFunctions()).isEmpty();
     assertThat(reportB.getProperties()).containsExactly(
         Property.newBuilder()
@@ -201,7 +201,7 @@ public class TypeInspectorPropertyTest extends AbstractTypeInspectorTest {
         "};");
 
     NominalType typeB = typeRegistry.getNominalType("B");
-    TypeInspector.Report reportB = typeInspector.inspectMembers(typeB);
+    TypeInspector.Report reportB = typeInspector.inspectInstanceType(typeB);
     assertThat(reportB.getFunctions()).isEmpty();
     assertThat(reportB.getProperties()).containsExactly(
         Property.newBuilder()
@@ -242,7 +242,7 @@ public class TypeInspectorPropertyTest extends AbstractTypeInspectorTest {
         "};");
 
     NominalType type = typeRegistry.getNominalType("C");
-    TypeInspector.Report report = typeInspector.inspectMembers(type);
+    TypeInspector.Report report = typeInspector.inspectInstanceType(type);
     assertThat(report.getFunctions()).isEmpty();
     assertThat(report.getProperties()).containsExactly(
         Property.newBuilder()
@@ -269,7 +269,7 @@ public class TypeInspectorPropertyTest extends AbstractTypeInspectorTest {
         "A.prototype.a = 123;");
 
     NominalType type = typeRegistry.getNominalType("A");
-    TypeInspector.Report report = typeInspector.inspectMembers(type);
+    TypeInspector.Report report = typeInspector.inspectInstanceType(type);
     assertThat(report.getFunctions()).isEmpty();
     assertThat(report.getProperties()).containsExactly(
         Property.newBuilder()
