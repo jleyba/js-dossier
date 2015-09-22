@@ -28,6 +28,8 @@ import com.github.jsdossier.proto.Comment;
 import com.github.jsdossier.proto.TypeLink;
 import com.github.jsdossier.testing.CompilerUtil;
 import com.github.jsdossier.testing.GuiceRule;
+
+import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.common.jimfs.Jimfs;
@@ -334,6 +336,28 @@ public class CommentParserTest {
         "<p>A promise for a\nfile path.</p>\n" +
             "<pre><code>code now\n" +
             "</code></pre>");
+  }
+
+  @Test
+  public void parsesCommentWithMarkdownTable() {
+    Comment comment = parser.parseComment(
+        "Leading paragraph.\n" +
+            "\n" +
+            "|  a  |  b  |  c  |\n" +
+            "| --- | --- | --- |\n" +
+            "|  d  |  e  |  f  |\n",
+        mockLinker);
+    assertEquals(1, comment.getTokenCount());
+    assertHtmlText(comment.getToken(0),
+        "<p>Leading paragraph.</p>\n" +
+            "<table>\n" +
+            "<thead>\n" +
+            "<tr><th>a</th><th>b</th><th>c</th></tr>\n" +
+            "</thead>\n" +
+            "<tbody>\n" +
+            "<tr><td>d</td><td>e</td><td>f</td></tr>\n" +
+            "</tbody>\n" +
+            "</table>\n");
   }
 
   private static void assertHtmlText(Comment.Token token, String text) {

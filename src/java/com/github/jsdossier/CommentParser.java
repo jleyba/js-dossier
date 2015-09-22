@@ -19,17 +19,20 @@ package com.github.jsdossier;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Strings.isNullOrEmpty;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.escape.CharEscaperBuilder;
+import com.google.common.escape.Escaper;
+
 import com.github.jsdossier.jscomp.JsDoc;
 import com.github.jsdossier.proto.Comment;
 import com.github.jsdossier.proto.TypeLink;
-import com.google.common.escape.CharEscaperBuilder;
-import com.google.common.escape.Escaper;
+import org.commonmark.Extension;
 import org.commonmark.ext.gfm.tables.TablesExtension;
 import org.commonmark.html.HtmlRenderer;
 import org.commonmark.node.Node;
 import org.commonmark.parser.Parser;
 
-import java.util.Arrays;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -51,11 +54,14 @@ public class CommentParser {
   private static final Pattern SUMMARY_REGEX = Pattern.compile("(.*?\\.)[\\s$]", Pattern.DOTALL);
   private static final Pattern TAGLET_START_PATTERN = Pattern.compile("\\{@(\\w+)\\s");
 
+  private final List<? extends Extension> extensions = ImmutableList.of(TablesExtension.create());
   private final Parser parser = Parser.builder()
-      .extensions(Arrays.asList(TablesExtension.create()))
+      .extensions(extensions)
       .build();
   private final HtmlRenderer renderer = HtmlRenderer.builder()
       .escapeHtml(false)
+      .extensions(extensions)
+
       .build();
 
   /**
