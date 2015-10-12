@@ -63,8 +63,12 @@ public class EndToEndTest {
   @Parameters(name = "{0}")
   public static Collection<Object[]> data() throws IOException {
     ImmutableList.Builder<Object[]> data = ImmutableList.builder();
-    data.add(new Object[]{new Scenario("out/")});
-    data.add(new Object[]{new Scenario("out.zip")});
+    data.add(new Object[]{new Scenario("out/", "ES5_STRICT")});
+    data.add(new Object[]{new Scenario("out.zip", "ES5_STRICT")});
+    if (!Scenario.useDefaultFileSystem()) {
+      data.add(new Object[]{new Scenario("out.es6.zip", "ES6")});
+      data.add(new Object[]{new Scenario("out.es6_strict.zip", "ES6_STRICT")});
+    }
     return data.build();
   }
 
@@ -425,6 +429,10 @@ public class EndToEndTest {
       json.add("modules", modules);
     }
 
+    void setLanguage(String language) {
+      json.addProperty("language", language);
+    }
+
     @Override
     public String toString() {
       return json.toString();
@@ -433,16 +441,18 @@ public class EndToEndTest {
   
   private static class Scenario {
     private final String outputPath;
+    private final String langauge;
 
     private Path tmpDir;
     private Path srcDir;
     private Path outDir;
     private Exception initFailure;
 
-    private Scenario(String outputPath) {
+    private Scenario(String outputPath, String langauge) {
       this.outputPath = outputPath;
+      this.langauge = langauge;
     }
-    
+
     @Override
     public String toString() {
       return outputPath;
@@ -467,14 +477,18 @@ public class EndToEndTest {
       }
     }
 
+    public static boolean useDefaultFileSystem() {
+      return Boolean.getBoolean("dossier.e2e.useDefaultFileSystem");
+    }
+
     private void initFileSystem() throws IOException {
       FileSystem fileSystem;
-      if (outputPath.endsWith(".zip") || Boolean.getBoolean("dossier.e2e.useDefaultFileSystem")) {
+      if (outputPath.endsWith(".zip") || useDefaultFileSystem()) {
         fileSystem = FileSystems.getDefault();
 
-        String customTmpDir = System.getProperty("dossier.e2e.useDir");
-        if (!isNullOrEmpty(customTmpDir)) {
-          tmpDir = fileSystem.getPath(customTmpDir);
+        String baseDir = System.getProperty("dossier.e2e.useDir");
+        if (!isNullOrEmpty(baseDir)) {
+          tmpDir = fileSystem.getPath(baseDir);
           createDirectories(tmpDir);
         } else {
           tmpDir = fileSystem.getPath(System.getProperty("java.io.tmpdir"));
@@ -509,6 +523,7 @@ public class EndToEndTest {
       writeConfig(config, new Config() {{
         setOutput(output);
         setReadme(srcDir.resolve("SimpleReadme.md"));
+        setLanguage(Scenario.this.langauge);
 
         addCustomPage("Custom Page", srcDir.resolve("Custom.md"));
 

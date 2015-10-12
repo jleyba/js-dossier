@@ -704,7 +704,7 @@ class Config {
     private final boolean strict = false;
 
     @Description("Specifies which version of ECMAScript the input sources conform to. Defaults " +
-        "to ES5. Must be one of {ES3, ES5, ES5_STRICT}")
+        "to ES5. Must be one of {ES3, ES5, ES5_STRICT, ES6, ES6_STRICT}")
     private final Language language = Language.ES5;
 
     static ConfigSpec load(InputStream stream, FileSystem fileSystem) {
@@ -724,10 +724,13 @@ class Config {
     }
   }
 
-  static enum Language {
+  enum Language {
     ES3("ECMASCRIPT3"),
     ES5("ECMASCRIPT5"),
-    ES5_STRICT("ECMASCRIPT5_STRICT");
+    ES5_STRICT("ECMASCRIPT5_STRICT"),
+    ES6("ECMASCRIPT6"),
+    ES6_STRICT("ECMASCRIPT6_STRICT"),
+    ;
 
     private final String fullName;
 
