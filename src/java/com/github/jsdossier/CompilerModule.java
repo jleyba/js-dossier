@@ -17,10 +17,7 @@
 package com.github.jsdossier;
 
 import com.github.jsdossier.annotations.Args;
-import com.github.jsdossier.annotations.Input;
-import com.github.jsdossier.annotations.Modules;
 import com.github.jsdossier.jscomp.DossierCompiler;
-import com.google.common.collect.ImmutableSet;
 import com.google.inject.AbstractModule;
 import com.google.inject.Key;
 import com.google.inject.Provides;
@@ -31,9 +28,6 @@ import com.google.javascript.jscomp.CompilationLevel;
 import com.google.javascript.jscomp.CompilerOptions;
 import com.google.javascript.jscomp.CustomPassExecutionTime;
 import com.google.javascript.rhino.jstype.JSTypeRegistry;
-
-import java.nio.file.FileSystem;
-import java.nio.file.Path;
 
 /**
  * Defines the bindings for the compiler.
