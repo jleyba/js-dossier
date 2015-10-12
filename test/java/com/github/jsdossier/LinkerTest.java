@@ -345,6 +345,49 @@ public class LinkerTest {
   }
 
   @Test
+  public void testGetLink_qualifiedHashProperty() {
+    util.compile(
+        fileSystem.getPath("/src/foo/bar.js"),
+        "goog.provide('foo.Bar');",
+        "/** @constructor */",
+        "foo.Bar = function() {};",
+        "foo.Bar.bot = function() {};",
+        "foo.Bar.prototype.box = function() {}");
+
+    checkLink("foo.Bar.bot", "class_foo_Bar.html#Bar.bot", linker.getLink("foo.Bar#bot"));
+    checkLink("foo.Bar#box", "class_foo_Bar.html#box", linker.getLink("foo.Bar#box"));
+  }
+
+  @Test
+  public void testGetLink_qualifiedHashProperty_favorsInstanceOverStatic() {
+    util.compile(
+        fileSystem.getPath("/src/foo/bar.js"),
+        "goog.provide('foo.Bar');",
+        "/** @constructor */",
+        "foo.Bar = function() {};",
+        "foo.Bar.baz = function() {};",
+        "foo.Bar.prototype.baz = function() {}");
+
+    checkLink("foo.Bar#baz", "class_foo_Bar.html#baz", linker.getLink("foo.Bar#baz"));
+    checkLink("foo.Bar.baz", "class_foo_Bar.html#Bar.baz", linker.getLink("foo.Bar.baz"));
+  }
+
+  @Test
+  public void testGetLink_cannotReferToInstancePropertyWithDotNotation() {
+    util.compile(
+        fileSystem.getPath("/src/foo/bar.js"),
+        "goog.provide('foo.Bar');",
+        "/** @constructor */",
+        "foo.Bar = function() {};",
+        "foo.Bar.prototype.baz = function() {}",
+        "foo.Bar.box = function() {};",
+        "foo.Bar.prototype.box = function() {};");
+
+    checkLink("foo.Bar.box", "class_foo_Bar.html#Bar.box", linker.getLink("foo.Bar.box"));
+    checkLink("foo.Bar.baz", "class_foo_Bar.html", linker.getLink("foo.Bar.baz"));
+  }
+
+  @Test
   public void testGetLink_contextHash_contextIsClass() {
     util.compile(
         fileSystem.getPath("/src/foo/bar.js"),
@@ -352,6 +395,7 @@ public class LinkerTest {
         "/** @constructor */",
         "foo.Bar = function() { this.x = 123; };",
         "foo.Bar.baz = function() {};",
+        "foo.Bar.bar = function() {};",
         "foo.Bar.prototype.bar = function() {}");
 
     NominalType context = typeRegistry.getNominalType("foo.Bar");

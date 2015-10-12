@@ -15,7 +15,6 @@
  */
 package com.github.jsdossier;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.base.Verify.verify;
@@ -232,12 +231,12 @@ public class Linker {
     } else if (symbol.contains("#")) {
       String[] parts = symbol.split("#");
       typeName = parts[0];
-      propertyName = parts[1];
+      propertyName = "#" + parts[1];
 
     } else if (symbol.contains(".prototype.")) {
       String[] parts = symbol.split(".prototype.");
       typeName = parts[0];
-      propertyName = parts[1];
+      propertyName = "#" + parts[1];
     }
 
     NominalType type = getType(typeName, true);
@@ -292,7 +291,7 @@ public class Linker {
 
     try {
       pushContext(type);
-      return getContextLink("#" + propertyName);
+      return getContextLink(propertyName);
     } finally {
       popContext();
     }
@@ -308,7 +307,7 @@ public class Linker {
         } else {
           try {
             pushContext(type);
-            link = getContextLink("#" + propertyName);
+            link = getContextLink(propertyName);
           } finally {
             popContext();
           }
@@ -328,8 +327,11 @@ public class Linker {
       return null;
     }
 
-    checkArgument(symbol.startsWith("#"));
-    symbol = symbol.substring(1);
+    boolean checkPrototype = false;
+    if (symbol.startsWith("#")) {
+      checkPrototype = true;
+      symbol = symbol.substring(1);
+    }
     NominalType type = context.peek();
 
     TypeLink link = checkNotNull(getLink(type), "Failed to build link for %s",
@@ -338,7 +340,8 @@ public class Linker {
     String id = symbol;
 
     // If we have a class/interface, check for a prototype first.
-    if (type.getJsType().isConstructor() || type.getJsType().isInterface()) {
+    if (checkPrototype
+        && (type.getJsType().isConstructor() || type.getJsType().isInterface())) {
       ObjectType instanceType = ((FunctionType) type.getJsType()).getInstanceType();
       if (instanceType.getPropertyNames().contains(symbol)) {
         return link.toBuilder()
@@ -536,7 +539,7 @@ public class Linker {
     return new CommentTypeParser().parse(type, ParseModifier.NONE);
   }
 
-  private static enum ParseModifier {
+  private enum ParseModifier {
     NONE,
     OPTIONAL_ARG,
     VAR_ARGS;
