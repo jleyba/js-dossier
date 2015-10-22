@@ -24,10 +24,10 @@ import com.google.common.collect.ImmutableSet;
 import com.google.javascript.jscomp.CommandLineRunner;
 import com.google.javascript.jscomp.ErrorManager;
 import com.google.javascript.jscomp.PrintStreamErrorManager;
+import com.google.javascript.jscomp.deps.ClosureSortedDependencies;
 import com.google.javascript.jscomp.deps.DependencyInfo;
 import com.google.javascript.jscomp.deps.DepsFileParser;
 import com.google.javascript.jscomp.deps.JsFileParser;
-import com.google.javascript.jscomp.deps.SortedDependencies;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
@@ -86,7 +86,7 @@ final class Compile {
     List<DependencyInfo> allDeps = new LinkedList<>(info);
     allDeps.addAll(
         new DepsFileParser(errorManager).parseFile(closure.resolve("deps.js").toString()));
-    List<DependencyInfo> sortedDeps = new SortedDependencies<>(allDeps)
+    List<DependencyInfo> sortedDeps = new ClosureSortedDependencies<>(allDeps)
         .getSortedDependenciesOf(info);
 
     ImmutableSet<String> compilerFlags = FluentIterable.from(sortedDeps)

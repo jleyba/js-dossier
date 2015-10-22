@@ -49,6 +49,7 @@ import com.google.gson.JsonPrimitive;
 import com.google.javascript.jscomp.ErrorManager;
 import com.google.javascript.jscomp.PrintStreamErrorManager;
 import com.google.javascript.jscomp.SourceFile;
+import com.google.javascript.jscomp.deps.ClosureSortedDependencies;
 import com.google.javascript.jscomp.deps.DependencyInfo;
 import com.google.javascript.jscomp.deps.DepsFileParser;
 import com.google.javascript.jscomp.deps.DepsGenerator;
@@ -439,7 +440,7 @@ class Config {
         .filter(isInSources(sources, closureBase))
         .toList();
 
-    List<DependencyInfo> sortedDeps = new SortedDependencies<>(allDeps)
+    List<DependencyInfo> sortedDeps = new ClosureSortedDependencies<>(allDeps)
         .getDependenciesOf(sourceDeps, true);
 
     return ImmutableSet.<Path>builder()

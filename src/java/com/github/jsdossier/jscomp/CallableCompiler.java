@@ -78,8 +78,9 @@ public final class CallableCompiler extends CommandLineRunner implements Callabl
   }
 
   @Override
-  protected List<SourceFile> createInputs(List<String> files, boolean allowStdIn)
+  protected List<SourceFile> createInputs(List<String> files, List<String> zips, boolean allowStdIn)
       throws IOException {
+    checkArgument(zips.isEmpty(), "Reading from zip files is not supported");
     List<SourceFile> inputs = new ArrayList<>(files.size());
     for (String filename : files) {
       checkArgument(!"-".equals(filename), "Reading from stdin not supported");

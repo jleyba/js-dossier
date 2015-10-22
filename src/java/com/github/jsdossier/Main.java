@@ -23,6 +23,7 @@ import static com.google.common.io.Files.getFileExtension;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.newInputStream;
 
+import com.github.jsdossier.Config.Language;
 import com.github.jsdossier.annotations.DocumentationScoped;
 import com.github.jsdossier.annotations.Input;
 import com.github.jsdossier.annotations.ModulePrefix;
@@ -250,6 +251,7 @@ final class Main {
         .addAll(transform(config.getModules(), toFlag("--js=")))
         .addAll(transform(config.getExterns(), toFlag("--externs=")))
         .add("--language_in=" + config.getLanguage().getName())
+        .add("--language_out=" + Language.ES5_STRICT.getName())
         .addAll(standardFlags)
         .build();
     return compilerFlags.toArray(new String[compilerFlags.size()]);

@@ -1,0 +1,6 @@
+URL: http://dl.google.com/closure-compiler/compiler-20151015.zip
+
+Local Modifications:
+Removed dependencies from the compiler jar (args4j, guava, gson, protobuf 2.5,
+etc.). This avoids duplicate, and potentially different definitions on the
+classpath.

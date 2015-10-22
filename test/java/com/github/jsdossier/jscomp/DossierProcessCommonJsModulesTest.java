@@ -26,7 +26,6 @@ import static org.junit.Assert.fail;
 import com.github.jsdossier.testing.CompilerUtil;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableSet;
-import com.google.javascript.jscomp.CheckLevel;
 import com.google.javascript.jscomp.ClosureCodingConvention;
 import com.google.javascript.jscomp.CompilationLevel;
 import com.google.javascript.jscomp.CompilerOptions;
@@ -227,7 +226,9 @@ public class DossierProcessCommonJsModulesTest {
 
   @Test
   public void rewritesRequireStatementsForExternModuleDefinitions() {
-    DossierCompiler compiler = new DossierCompiler(System.err, ImmutableSet.of(path("foo/module.js")));
+    DossierCompiler compiler = new DossierCompiler(
+        System.err,
+        new DossierModuleRegistry(ImmutableSet.of(path("foo/module.js"))));
     CompilerOptions options = new CompilerOptions();
     options.setClosurePass(true);
     options.setPrettyPrint(true);
@@ -357,7 +358,7 @@ public class DossierProcessCommonJsModulesTest {
             "};",
             "dossier$$module__foo$two.go = $jscomp.scope.go;",
             "var dossier$$module__foo$one = {};",
-            "dossier$$module__foo$two.go();",
+            "$jscomp.scope.go();",
             "var dossier$$module__foo$three = {};"),
         compiler.toSource().trim());
   }
@@ -703,7 +704,10 @@ public class DossierProcessCommonJsModulesTest {
             "/** @type {foo.} */",
             "(exports.__defineGetter__('bar', function(){}));",
             "/** @type {foo.} */",
-            "(exports.bar.__defineGetter__('baz', function(){}));"),
+            "(exports.bar.__defineGetter__('baz', function(){}));",
+            "exports.bat = {};",
+            "/** @type {foo.} */",
+            "(exports.bat.__defineGetter__('baz', function(){}));"),
         createSourceFile(path("foo.js"),
             "goog.provide('foo');"));
 
@@ -712,7 +716,9 @@ public class DossierProcessCommonJsModulesTest {
             "var foo = {};",
             "var dossier$$module__foo$bar = {};",
             "dossier$$module__foo$bar.bar = foo;",
-            "dossier$$module__foo$bar.bar.baz = foo;"),
+            "foo.baz = foo;",
+            "dossier$$module__foo$bar.bat = {};",
+            "dossier$$module__foo$bar.bat.baz = foo;"),
         compiler.toSource().trim());
   }
 
@@ -896,11 +902,12 @@ public class DossierProcessCommonJsModulesTest {
     options.setPrettyPrint(true);
     options.setCheckTypes(true);
     options.setCheckSymbols(true);
-    options.setAggressiveVarCheck(CheckLevel.ERROR);
     CompilationLevel.ADVANCED_OPTIMIZATIONS.setOptionsForCompilationLevel(options);
     CompilationLevel.ADVANCED_OPTIMIZATIONS.setTypeBasedOptimizationOptions(options);
 
-    DossierCompiler compiler = new DossierCompiler(System.err, ImmutableSet.copyOf(commonJsModules));
+    DossierCompiler compiler = new DossierCompiler(
+        System.err,
+        new DossierModuleRegistry(ImmutableSet.copyOf(commonJsModules)));
 
     return new CompilerUtil(compiler, options);
   }
