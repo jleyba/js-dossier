@@ -519,6 +519,17 @@ final class TypeInspector {
     if (returnType.isUnknownType() && returnDocs != null) {
       returnType = typeRegistry.evaluate(returnDocs.getReturnClause().getType().get());
     }
+    if (returnType.isUnknownType()) {
+      for (InstanceProperty property : overrides) {
+        if (property.getType() != null && property.getType().isFunctionType()) {
+          FunctionType fn = (FunctionType) property.getType();
+          if (fn.getReturnType() != null && !fn.getReturnType().isUnknownType()) {
+            returnType = fn.getReturnType();
+            break;
+          }
+        }
+      }
+    }
     Comment comment = linker.formatTypeExpression(returnType);
     if (isVacuousTypeComment(comment)) {
       return Comment.getDefaultInstance();
@@ -530,7 +541,7 @@ final class TypeInspector {
       String name,
       JSType type,
       Node node,
-      @Nullable JsDoc jsDoc) {
+      JsDoc jsDoc) {
     return getPropertyData(name, type, node, jsDoc, null,
         ImmutableList.<InstanceProperty>of());
   }
@@ -560,7 +571,7 @@ final class TypeInspector {
       String name,
       JSType type,
       Node node,
-      @Nullable JsDoc jsdoc,
+      JsDoc jsdoc,
       @Nullable Comment definedBy,
       Iterable<InstanceProperty> overrides) {
     BaseProperty.Builder builder = BaseProperty.newBuilder()
@@ -598,9 +609,7 @@ final class TypeInspector {
     return builder.build();
   }
   
-  private Comment findBlockComment(
-      @Nullable JsDoc typeDocs,
-      Iterable<InstanceProperty> overrides) {
+  private Comment findBlockComment(JsDoc typeDocs, Iterable<InstanceProperty> overrides) {
     JsDoc docs = findJsDoc(typeDocs, overrides, new Predicate<JsDoc>() {
       @Override
       public boolean apply(@Nullable JsDoc input) {
@@ -614,7 +623,7 @@ final class TypeInspector {
 
   @Nullable
   private JsDoc findJsDoc(
-      @Nullable JsDoc typeDocs,
+      JsDoc typeDocs,
       Iterable<InstanceProperty> overrides,
       Predicate<JsDoc> predicate) {
     if (predicate.apply(typeDocs)) {

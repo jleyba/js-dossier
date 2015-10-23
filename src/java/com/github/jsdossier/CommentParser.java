@@ -79,10 +79,7 @@ public class CommentParser {
   /**
    * Extracs the fileoverview comment string from the given {@link JsDoc} object.
    */
-  public Comment getFileoverview(Linker linker, @Nullable JsDoc jsdoc) {
-    if (jsdoc == null) {
-      return Comment.getDefaultInstance();
-    }
+  public Comment getFileoverview(Linker linker, JsDoc jsdoc) {
     return parseComment(jsdoc.getFileoverview(), linker);
   }
 
@@ -101,10 +98,7 @@ public class CommentParser {
   /**
    * Extracts the block comment string from the given {@link JsDoc} object.
    */
-  public Comment getBlockDescription(Linker linker, @Nullable JsDoc jsdoc) {
-    if (jsdoc == null) {
-      return Comment.getDefaultInstance();
-    }
+  public Comment getBlockDescription(Linker linker, JsDoc jsdoc) {
     return parseComment(jsdoc.getBlockComment(), linker);
   }
 

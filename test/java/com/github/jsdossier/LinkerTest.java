@@ -34,6 +34,7 @@ import com.github.jsdossier.annotations.SourcePrefix;
 import com.github.jsdossier.annotations.Stderr;
 import com.github.jsdossier.annotations.TypeFilter;
 import com.github.jsdossier.jscomp.DossierModule;
+import com.github.jsdossier.jscomp.JsDoc;
 import com.github.jsdossier.proto.Comment;
 import com.github.jsdossier.proto.SourceLink;
 import com.github.jsdossier.proto.TypeLink;
@@ -218,7 +219,7 @@ public class LinkerTest {
 
     NominalType filtered = createType("foo.Filtered", jsType);
     NominalType alias = new NominalType(
-        null, "foo.Alias", filtered.getTypeDescriptor(), mock(Node.class), null, null);
+        null, "foo.Alias", filtered.getTypeDescriptor(), mock(Node.class), JsDoc.from(null), null);
 
     when(typeFilter.apply(filtered)).thenReturn(true);
 
@@ -246,7 +247,7 @@ public class LinkerTest {
 
     NominalType filtered = createType("foo.Filtered", jsType);
     NominalType alias = new NominalType(
-        null, "foo.Alias", filtered.getTypeDescriptor(), mock(Node.class), null, null);
+        null, "foo.Alias", filtered.getTypeDescriptor(), mock(Node.class), JsDoc.from(null), null);
 
     when(typeFilter.apply(filtered)).thenReturn(true);
 
@@ -636,7 +637,7 @@ public class LinkerTest {
         name,
         new NominalType.TypeDescriptor(type),
         mock(Node.class),
-        null,
+        JsDoc.from(null),
         module);
   }
 

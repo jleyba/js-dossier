@@ -82,12 +82,12 @@ public final class NominalType implements StaticTypedScope<JSType> {
       String name,
       TypeDescriptor typeDescriptor,
       Node node,
-      @Nullable JsDoc jsdoc,
+      JsDoc jsdoc,
       @Nullable ModuleDescriptor module) {
     this.name = name;
     this.typeDescriptor = typeDescriptor;
     this.node = node;
-    this.jsdoc = jsdoc;
+    this.jsdoc = checkNotNull(jsdoc);
     this.parent = parent;
     this.module = module;
 
@@ -194,7 +194,6 @@ public final class NominalType implements StaticTypedScope<JSType> {
     return node;
   }
 
-  @Nullable
   public JsDoc getJsdoc() {
     return jsdoc;
   }

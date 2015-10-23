@@ -17,27 +17,21 @@
 package com.github.jsdossier.jscomp;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.base.Strings.isNullOrEmpty;
+import static com.google.common.base.Strings.nullToEmpty;
 
 import com.google.common.base.Optional;
-import com.google.common.base.Splitter;
-import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterables;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.JSDocInfo.Marker;
-import com.google.javascript.rhino.JSDocInfo.StringPosition;
+import com.google.javascript.rhino.JSDocInfoBuilder;
 import com.google.javascript.rhino.JSTypeExpression;
 
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.annotation.Nullable;
 
@@ -52,6 +46,8 @@ import javax.annotation.Nullable;
  */
 public class JsDoc {
 
+  private static final JsDoc DEFAULT = new JsDoc(new JSDocInfoBuilder(true).build(true));
+
   private final JSDocInfo info;
 
   private final Map<String, Parameter> parameters = new LinkedHashMap<>();
@@ -65,13 +61,12 @@ public class JsDoc {
   private String fileoverview = "";
   private boolean parsed = false;
 
-  public JsDoc(JSDocInfo info) {
-    this.info = checkNotNull(info, "null info");
+  private JsDoc(JSDocInfo info) {
+    this.info = info;
   }
 
-  @Nullable
   public static JsDoc from(@Nullable JSDocInfo info) {
-    return info == null ? null : new JsDoc(info);
+    return info == null ? DEFAULT : new JsDoc(info);
   }
 
   public JSDocInfo getInfo() {
@@ -230,84 +225,41 @@ public class JsDoc {
     return Optional.absent();
   }
 
-  private static final Pattern EOL_PATTERN = Pattern.compile("\r?\n");
-
   private void parse() {
     if (parsed) {
       return;
     }
     parsed = true;
+    blockComment = nullToEmpty(info.getBlockDescription()).trim();
+    deprecationReason = nullToEmpty(info.getDeprecationReason()).trim();
+    fileoverview = nullToEmpty(info.getFileOverview()).trim();
+    returnDescription = new TypedDescription(
+        info.getReturnType(), info.getReturnDescription());
 
-    String original = Strings.nullToEmpty(info.getOriginalCommentString());
-    if (original.isEmpty()) {
-      return;
+    for (String name : info.getParameterNames()) {
+      parameters.put(name, new Parameter(
+          name,
+          info.getParameterType(name),
+          info.getDescriptionForParameter(name)));
     }
 
-    List<String> lines = Splitter.on(EOL_PATTERN).splitToList(
-        original.subSequence(0, original.length() - 2));  // subtract closing */
-    Offset firstAnnotation = findFirstAnnotationLine(lines);
-    Offset annotationOffset = new Offset(0, 0);
-    if (firstAnnotation != null && !info.getMarkers().isEmpty()) {
-      blockComment = processBlockCommentLines(Iterables.limit(lines, firstAnnotation.line));
-
-      JSDocInfo.StringPosition firstAnnotationPosition =
-          info.getMarkers().iterator().next().getAnnotation();
-
-      annotationOffset = new Offset(
-          firstAnnotationPosition.getStartLine() - firstAnnotation.line,
-          firstAnnotationPosition.getPositionOnStartLine() - firstAnnotation.column);
-    } else {
-      blockComment = processBlockCommentLines(lines);
-    }
-
-    // If we failed to extract a block comment, yet the original JSDoc has one, we've
-    // probably encountered a case where the compiler merged multiple JSDoc comments
-    // into one. Try to recover by parsing the compiler's provided block comment.
-    if (isNullOrEmpty(blockComment) && !isNullOrEmpty(info.getBlockDescription())) {
-      blockComment = processBlockCommentLines(
-          Splitter.on('\n').split(info.getBlockDescription()));
-    }
-
-    int nextParamIndex = 0;
     for (JSDocInfo.Marker marker : info.getMarkers()) {
       Optional<Annotation> annotation = Annotation.forMarker(marker);
       if (!annotation.isPresent()) {
         continue;  // Unrecognized/unsupported annotation.
       }
 
-      JSDocInfo.StringPosition description = marker.getDescription();
+      String description = marker.getDescription() == null
+          ? "" : nullToEmpty(marker.getDescription().getItem()).trim();
       switch (annotation.get()) {
         case DEFINE:
-          defineComment = processDescriptionLines(lines, annotationOffset, description);
-          break;
-        case DEPRECATED:
-          deprecationReason = processDescriptionLines(lines, annotationOffset, description);
-          break;
-        case FILEOVERVIEW:
-          fileoverview = processDescriptionLines(lines, annotationOffset, description);
-          break;
-        case PARAM:
-          String name = "arg" + (nextParamIndex++);
-          if (marker.getNameNode() != null) {
-            name = marker.getNameNode().getItem().getString();
-          }
-          parameters.put(name, new Parameter(
-              name,
-              getJsTypeExpression(marker),
-              processDescriptionLines(lines, annotationOffset, description)));
-          break;
-        case RETURN:
-          returnDescription = new TypedDescription(
-              getJsTypeExpression(marker),
-              processDescriptionLines(lines, annotationOffset, description));
+          defineComment = description;
           break;
         case SEE:
-          seeClauses.add(processDescriptionLines(lines, annotationOffset, description));
+          seeClauses.add(description);
           break;
         case THROWS:
-          throwsClauses.add(new TypedDescription(
-              getJsTypeExpression(marker),
-              processDescriptionLines(lines, annotationOffset, description)));
+          throwsClauses.add(new TypedDescription(getJsTypeExpression(marker), description));
           break;
       }
     }
@@ -329,115 +281,14 @@ public class JsDoc {
     return new JSTypeExpression(marker.getType().getItem(), "");
   }
 
-  private static final Pattern STAR_PREFIX = Pattern.compile("^\\s*\\*+\\s?");
-
-  private static int skipChar(String line, int offset, char c) {
-    while (offset < line.length() && line.charAt(offset) == c) {
-      offset++;
-    }
-    return offset;
-  }
-
-  private static boolean isAlpha(char c) {
-    return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
-  }
-
-  @Nullable
-  private static Offset findFirstAnnotationLine(Iterable<String> lines) {
-    int lineNum = 0;
-    for (Iterator<String> it = lines.iterator(); it.hasNext(); lineNum++) {
-      String line = it.next();
-      int offset = 0;
-      if (lineNum == 0) {
-        int start = line.indexOf("/**");
-        if (start != -1) {
-          offset = start + 3;
-        }
-      }
-      offset = skipChar(line, offset, ' ');
-      offset = skipChar(line, offset, '*');
-      offset = skipChar(line, offset, ' ');
-      if (offset >= line.length() || line.charAt(offset) != '@') {
-        continue;
-      }
-      int startAnnotation = offset;
-      offset += 1;
-      if (offset >= line.length() || !isAlpha(line.charAt(offset))) {
-        continue;
-      }
-      while (offset < line.length() && isAlpha(line.charAt(offset))) {
-        offset += 1;
-      }
-
-      StringPosition position = new StringPosition();
-      position.setPositionInformation(lineNum, startAnnotation, lineNum, offset);
-      return new Offset(lineNum, startAnnotation);
-    }
-    return null;  // Not found.
-  }
-
-  private static String processBlockCommentLines(Iterable<String> lines) {
-    StringBuilder builder = new StringBuilder();
-    boolean first = true;
-    for (String line : lines) {
-      if (first) {
-        first = false;
-        int index = line.indexOf("/**");
-        if (index != -1) {
-          line = line.substring(index + 3);
-        }
-      }
-      Matcher matcher = STAR_PREFIX.matcher(line);
-      if (matcher.find(0)) {
-        line = line.substring(matcher.end());
-      }
-      builder.append(line).append('\n');
-    }
-    return builder.toString().trim();
-  }
-
-  private String processDescriptionLines(
-      List<String> lines, Offset annotationOffset,
-      @Nullable JSDocInfo.StringPosition position) {
-    if (position == null) {
-      return "";
-    }
-    int startLine = position.getStartLine() - annotationOffset.line;
-    int numLines = Math.max(position.getEndLine() - position.getStartLine(), 1);
-
-    Iterable<String> descriptionLines = Iterables.skip(lines, startLine);
-    descriptionLines = Iterables.limit(descriptionLines, numLines);
-
-    StringBuilder builder = new StringBuilder();
-    boolean isFirst = true;
-    for (String line : descriptionLines) {
-      if (isFirst) {
-        isFirst = false;
-        int pos = position.getPositionOnStartLine();
-        if (lines.size() == 1) {
-          pos -= annotationOffset.column;
-        }
-        line = line.substring(pos);
-      } else {
-        Matcher matcher = STAR_PREFIX.matcher(line);
-        if (matcher.find(0)) {
-          line = line.substring(matcher.end());
-        }
-      }
-
-      builder.append(line).append('\n');
-    }
-    return builder.toString().trim();
-  }
-
-  public static class TypedDescription {
+  public static final class TypedDescription {
 
     private final Optional<JSTypeExpression> type;
     private final String description;
 
-    private TypedDescription(@Nullable JSTypeExpression type, String description) {
+    private TypedDescription(@Nullable JSTypeExpression type, @Nullable String description) {
       this.type = Optional.fromNullable(type);
-      this.description = description;
+      this.description = nullToEmpty(description).trim();
     }
 
     public Optional<JSTypeExpression> getType() {
@@ -449,7 +300,7 @@ public class JsDoc {
     }
   }
 
-  public static enum Annotation {
+  public enum Annotation {
     CONST("const"),
     DEFINE("define"),
     DEPRECATED("deprecated"),
@@ -469,7 +320,7 @@ public class JsDoc {
 
     private final String annotation;
 
-    private Annotation(String annotation) {
+    Annotation(String annotation) {
       this.annotation = annotation;
     }
 
@@ -484,21 +335,6 @@ public class JsDoc {
 
     String getAnnotation() {
       return annotation;
-    }
-  }
-
-  private static final class Offset {
-    private final int line;
-    private final int column;
-
-    private Offset(int line, int column) {
-      this.line = line;
-      this.column = column;
-    }
-
-    @Override
-    public String toString() {
-      return line + ":" + column;
     }
   }
 }

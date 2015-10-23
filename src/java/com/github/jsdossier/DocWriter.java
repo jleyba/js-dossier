@@ -531,7 +531,7 @@ class DocWriter {
           .setName(property.getName());
 
       if (valueInfo != null) {
-        JsDoc valueJsDoc = new JsDoc(valueInfo);
+        JsDoc valueJsDoc = JsDoc.from(valueInfo);
         valueBuilder.setDescription(parser.parseComment(valueJsDoc.getBlockComment(), linker));
 
         if (valueJsDoc.isDeprecated()) {

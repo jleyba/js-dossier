@@ -107,7 +107,7 @@ public class JsDocTest {
         " */",
         "function Foo(){}");
     assertEquals(
-        "Hello, world!\nGoodbye, world!",
+        "Hello, world!\n Goodbye, world!",
         doc.getBlockComment());
   }
 
@@ -121,7 +121,7 @@ public class JsDocTest {
         "   */",
         "  function Foo(){}");
     assertEquals(
-        "Hello, world!\nGoodbye, world!",
+        "Hello, world!\n Goodbye, world!",
         doc.getBlockComment());
   }
 
@@ -135,7 +135,7 @@ public class JsDocTest {
         " */",
         "function Foo(){}");
     assertEquals(
-        "Hello, world! @not_an_annotation\nGoodbye, world!",
+        "Hello, world! @not_an_annotation\n Goodbye, world!",
         doc.getBlockComment());
   }
   
@@ -170,13 +170,7 @@ public class JsDocTest {
         " */",
         "function Foo(x, y) {}");
     List<Parameter> parameters = doc.getParameters();
-    assertThat(parameters).hasSize(2);
-    
-    assertThat(parameters.get(0).getName()).isEqualTo("arg0");
-    assertThat(parameters.get(0).getDescription()).isEmpty();
-
-    assertThat(parameters.get(1).getName()).isEqualTo("arg1");
-    assertThat(parameters.get(1).getDescription()).isEmpty();
+    assertThat(parameters).isEmpty();
   }
 
   @Test
@@ -204,12 +198,12 @@ public class JsDocTest {
 
     param = parameters.next();
     assertEquals("b", param.getName());
-    assertEquals("is for\n    bananas.", param.getDescription());
+    assertEquals("is for\n     bananas.", param.getDescription());
     assertSameRootNode(rawInfo.getParameterType("b"), param.getType());
 
     param = parameters.next();
     assertEquals("c", param.getName());
-    assertEquals("this comment\n    span multiple\n    lines.",
+    assertEquals("this comment\n     span multiple\n     lines.",
         param.getDescription());
     assertSameRootNode(rawInfo.getParameterType("c"), param.getType());
 
@@ -284,7 +278,7 @@ public class JsDocTest {
         " */",
         "function Foo(){}");
     assertTrue(doc.isDeprecated());
-    assertEquals("Use something\n    else.", doc.getDeprecationReason());
+    assertEquals("Use something\n     else.", doc.getDeprecationReason());
   }
 
   @Test
@@ -298,7 +292,7 @@ public class JsDocTest {
         " */",
         "function Foo(){}");
     assertTrue(doc.isDeprecated());
-    assertEquals("Use\n    something\n    else.", doc.getDeprecationReason());
+    assertEquals("Use\n     something\n     else.", doc.getDeprecationReason());
   }
 
   @Test
@@ -347,7 +341,7 @@ public class JsDocTest {
     Property bar = getOnlyElement(foo.getProperties());
     assertEquals("bar", bar.getName());
     assertTrue(bar.getType().isFunctionType());
-    assertEquals("nothing over\n    two lines.",
+    assertEquals("nothing over\n     two lines.",
         JsDoc.from(bar.getJSDocInfo()).getReturnClause().getDescription());
   }
 
@@ -366,7 +360,7 @@ public class JsDocTest {
     Property bar = getOnlyElement(foo.getProperties());
     assertEquals("bar", bar.getName());
     assertTrue(bar.getType().isFunctionType());
-    assertEquals("nothing over\n    many\n    lines.",
+    assertEquals("nothing over\n     many\n     lines.",
         JsDoc.from(bar.getJSDocInfo()).getReturnClause().getDescription());
   }
 
@@ -419,7 +413,7 @@ public class JsDocTest {
         " */",
         "function Foo(){}");
     TypedDescription tc = getOnlyElement(doc.getThrowsClauses());
-    assertEquals("Hello.\n    Goodbye.", tc.getDescription());
+    assertEquals("Hello.\n     Goodbye.", tc.getDescription());
     assertTrue(tc.getType().isPresent());
   }
 
@@ -435,7 +429,7 @@ public class JsDocTest {
         "function Foo(){}");
     Iterator<TypedDescription> it = doc.getThrowsClauses().iterator();
     TypedDescription tc = it.next();
-    assertEquals("Hello.\n    Goodbye.", tc.getDescription());
+    assertEquals("Hello.\n     Goodbye.", tc.getDescription());
 
     tc = it.next();
     assertEquals("boom.", tc.getDescription());
@@ -464,6 +458,8 @@ public class JsDocTest {
 
     assertEquals(
         lines(
+            "* * * * * * * * * * * * *",
+            "",
             "foo bar",
             "",
             "       final line of block comment."),
@@ -472,13 +468,13 @@ public class JsDocTest {
     Iterator<Parameter> parameters = doc.getParameters().iterator();
 
     Parameter param = parameters.next();
-    assertEquals("is for\n    apples.", param.getDescription());
+    assertEquals("is for\n     apples.", param.getDescription());
 
     param = parameters.next();
     assertEquals("is for bananas.", param.getDescription());
 
     param = parameters.next();
-    assertEquals("is for an optional\n    parameter.", param.getDescription());
+    assertEquals("is for an optional\n     parameter.", param.getDescription());
 
     assertFalse(parameters.hasNext());
   }
@@ -495,9 +491,9 @@ public class JsDocTest {
         "",
         "var x = {};");
 
-    JsDoc doc = new JsDoc(script.getJSDocInfo());
+    JsDoc doc = JsDoc.from(script.getJSDocInfo());
     assertEquals(
-        "line one\nline two\nline three",
+        "line one\n line two\n line three",
         doc.getFileoverview());
   }
 
@@ -513,9 +509,9 @@ public class JsDocTest {
         "",
         "var x = {};");
 
-    JsDoc doc = new JsDoc(script.getJSDocInfo());
+    JsDoc doc = JsDoc.from(script.getJSDocInfo());
     assertEquals(
-        "line one\nline two\nline three",
+        "line one\n line two\n line three",
         doc.getFileoverview());
   }
 
@@ -527,7 +523,7 @@ public class JsDocTest {
         "",
         "var x = {};");
 
-    JsDoc doc = new JsDoc(script.getJSDocInfo());
+    JsDoc doc = JsDoc.from(script.getJSDocInfo());
     assertEquals("hello, world!", doc.getFileoverview());
   }
 
@@ -539,7 +535,7 @@ public class JsDocTest {
         "",
         "var x = {};");
 
-    JsDoc doc = new JsDoc(script.getJSDocInfo());
+    JsDoc doc = JsDoc.from(script.getJSDocInfo());
     assertEquals("hello, world!", doc.getFileoverview());
   }
 
@@ -551,7 +547,7 @@ public class JsDocTest {
         "",
         "var x = {};");
 
-    JsDoc doc = new JsDoc(script.getJSDocInfo());
+    JsDoc doc = JsDoc.from(script.getJSDocInfo());
     assertEquals("hello, world!", doc.getFileoverview());
   }
 
@@ -573,7 +569,7 @@ public class JsDocTest {
     // Note the compiler strips all leading and trailing whitespace on each line, so the
     // pre block's indendentation is ruined.
     assertEquals(
-        "This is the class level description.\n<pre>\nit contains a pre block\n</pre>",
+        "This is the class level description.\n <pre>\n   it contains a pre block\n </pre>",
         docs.getBlockComment());
   }
 
@@ -598,9 +594,9 @@ public class JsDocTest {
         "});");
     assertEquals(
         "This is a comment on the constructor and should be used as the class comment.\n"
-            + "<pre>\n"
-            + "   This is a pre-formatted block.\n"
-            + "</pre>",
+            + " <pre>\n"
+            + "    This is a pre-formatted block.\n"
+            + " </pre>",
         docs.getBlockComment());
   }
 
@@ -645,7 +641,7 @@ public class JsDocTest {
     assertThat(doc).isNotNull();
     assertThat(doc.getBlockComment()).isEqualTo(
         "Hello, world!\n" +
-        "    Goodbye, world!");
+        "     Goodbye, world!");
   }
 
   private Node getScriptNode(String... lines) {

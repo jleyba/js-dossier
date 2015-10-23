@@ -276,7 +276,7 @@ public class CommentParserTest {
             "<li>with\nlist</li>\n" +
             "<li>items</li>\n" +
             "</ul>\n<p>And a</p>\n" +
-            "<pre><code>code block\n" +
+            "<pre><code> code block\n" +
             "</code></pre>");
   }
 

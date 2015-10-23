@@ -38,7 +38,7 @@ public final class Parameter {
       @Nullable String description) {
     this.name = nullToEmpty(name);
     this.type = type;
-    this.description = Strings.nullToEmpty(description);
+    this.description = nullToEmpty(description).trim();
   }
 
   public String getName() {

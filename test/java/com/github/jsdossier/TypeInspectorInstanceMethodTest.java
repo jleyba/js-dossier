@@ -304,11 +304,11 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setSource(sourceFile("source/foo.js.src.html", 8))
                 .setDescription(Comment.getDefaultInstance()))
             .addParameter(Detail.newBuilder()
-                .setName("arg0")
-                .setType(numberTypeComment()))
+                .setName("x")
+                .setType(textComment("?")))
             .addParameter(Detail.newBuilder()
-                .setName("arg1")
-                .setType(numberTypeComment()))
+                .setName("y")
+                .setType(textComment("?")))
             .build());
   }
 

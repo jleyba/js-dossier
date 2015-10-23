@@ -89,11 +89,11 @@ public class DocPassTest {
     assertEquals(
         Joiner.on('\n').join(
             "This is a file overview",
-            "    It is on multiple lines.",
+            "     It is on multiple lines.",
             "Here is a pre tag:",
             "<pre>",
-            "   adfadfafd",
-            "      </pre>"),
+            "    adfadfafd",
+            "       </pre>"),
         typeRegistry.getFileOverview(path("foo/bar.js")).getFileoverview()
     );
     assertEquals("Single line overview.",
