@@ -162,15 +162,7 @@ final class DossierFileSystem {
     checkArgument(
         file.getFileSystem() == outputRoot.getFileSystem() && file.startsWith(outputRoot),
         "The target file does not belong to the output file system: %s", file);
-    Path dir = getPath(type).getParent();
-    if (file.startsWith(dir)) {
-      return dir.relativize(file);
-    }
-    Path commonAncestor = dir;
-    do {
-      commonAncestor = commonAncestor.getParent();
-    } while (!file.startsWith(commonAncestor) && !commonAncestor.equals(outputRoot));
-    return dir.relativize(commonAncestor).resolve(commonAncestor.relativize(file));
+    return Paths.getRelativePath(getPath(type), file);
   }
 
   /**
