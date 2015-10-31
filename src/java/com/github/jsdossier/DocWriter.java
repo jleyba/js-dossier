@@ -248,7 +248,7 @@ class DocWriter {
       JsDoc docs = module.getJsdoc();
       if (docs == null || isNullOrEmpty(docs.getOriginalCommentString())) {
         ModuleDescriptor internalModule = module.getModule();
-        docs = JsDoc.from(internalModule.getInternalVarDocs(module.getName()));
+        docs = internalModule.getInternalVarDocs(module.getName());
       }
       String name = linker.getDisplayName(module);
       int index = name.lastIndexOf('/');

@@ -105,7 +105,7 @@ final class TypeInspector {
           && nominalType.isModuleExports()) {
         String internalName = nominalType.getModule().getInternalName(
             nominalType.getQualifiedName(true) + "." + property.getName());
-        jsdoc = JsDoc.from(nominalType.getModule().getInternalVarDocs(internalName));
+        jsdoc = nominalType.getModule().getInternalVarDocs(internalName);
       }
 
       if (jsdoc != null && jsdoc.getVisibility() == JSDocInfo.Visibility.PRIVATE

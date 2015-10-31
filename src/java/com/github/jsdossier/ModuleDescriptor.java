@@ -17,12 +17,13 @@
 package com.github.jsdossier;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Strings.isNullOrEmpty;
 
+import com.github.jsdossier.jscomp.JsDoc;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import com.google.javascript.rhino.JSDocInfo;
 
 import java.nio.file.Path;
 import java.util.Collections;
@@ -39,7 +40,7 @@ final class ModuleDescriptor {
   private final String name;
   private final Path path;
   private final ModuleType type;
-  private final Map<String, JSDocInfo> internalVarDocs = new HashMap<>();
+  private final Map<String, JsDoc> internalVarDocs = new HashMap<>();
   private final BiMap<String, String> exportedNames = HashBiMap.create();
 
   public ModuleDescriptor(String name, Path path, ModuleType type) {
@@ -107,19 +108,20 @@ final class ModuleDescriptor {
    * @param name the variable name.
    * @param info the variable's JS docs.
    */
-  public void addInternalVarDocs(String name, JSDocInfo info) {
+  public void addInternalVarDocs(String name, JsDoc info) {
+    checkNotNull(name, "null name");
+    checkNotNull(info, "null jsdocs");
     checkArgument(!internalVarDocs.containsKey(name),
         "Function already registered in module %s: %s", this.name, name);
     internalVarDocs.put(name, info);
   }
 
   @VisibleForTesting
-  Map<String, JSDocInfo> getInternalVarDocs() {
+  Map<String, JsDoc> getInternalVarDocs() {
     return Collections.unmodifiableMap(internalVarDocs);
   }
 
-  @Nullable
-  public JSDocInfo getInternalVarDocs(String name) {
+  public JsDoc getInternalVarDocs(String name) {
     return internalVarDocs.get(name);
   }
 }

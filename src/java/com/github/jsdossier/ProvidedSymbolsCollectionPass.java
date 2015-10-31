@@ -22,6 +22,7 @@ import static com.google.common.base.Verify.verify;
 
 import com.github.jsdossier.annotations.Input;
 import com.github.jsdossier.jscomp.DossierCompiler;
+import com.github.jsdossier.jscomp.JsDoc;
 import com.google.javascript.jscomp.CodingConvention;
 import com.google.javascript.jscomp.CompilerPass;
 import com.google.javascript.jscomp.NodeTraversal;
@@ -117,7 +118,7 @@ final class ProvidedSymbolsCollectionPass implements CompilerPass {
         String name = n.getFirstChild().getString();
         JSDocInfo docs = n.getJSDocInfo();
         if (!"__missing_name__".equals(name) && docs != null) {
-          module.addInternalVarDocs(name, docs);
+          module.addInternalVarDocs(name, JsDoc.from(docs));
         }
       }
 
@@ -125,7 +126,7 @@ final class ProvidedSymbolsCollectionPass implements CompilerPass {
         verify(n.getFirstChild().isName());
         String name = n.getFirstChild().getString();
         if (n.getJSDocInfo() != null) {
-          module.addInternalVarDocs(name, n.getJSDocInfo());
+          module.addInternalVarDocs(name, JsDoc.from(n.getJSDocInfo()));
         }
       }
 
