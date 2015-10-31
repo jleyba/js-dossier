@@ -670,7 +670,7 @@ public class LinkerTest {
   }
 
   private ModuleDescriptor createModule(String name) {
-    return new ModuleDescriptor(name, fileSystem.getPath("/unused"), false);
+    return new ModuleDescriptor(name, fileSystem.getPath("/unused"), ModuleType.CLOSURE);
   }
 
   private static ModuleDescriptor createCommonJsModule(Path path) {
@@ -678,7 +678,7 @@ public class LinkerTest {
     when(node.isScript()).thenReturn(true);
     when(node.getSourceFileName()).thenReturn(path.toString());
     DossierModule module = new DossierModule(node, path);
-    return new ModuleDescriptor(module.getVarName(), path, true);
+    return new ModuleDescriptor(module.getVarName(), path, ModuleType.NODE);
   }
 
   private void createCompiler(final Path... modules) {

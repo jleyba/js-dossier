@@ -232,7 +232,7 @@ public final class NominalType implements StaticTypedScope<JSType> {
   }
 
   public boolean isCommonJsModule() {
-    return getModule() != null && getModule().isCommonJsModule();
+    return getModule() != null && getModule().getType() != ModuleType.CLOSURE;
   }
 
   public boolean isNamespace() {

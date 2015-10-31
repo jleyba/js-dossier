@@ -87,7 +87,7 @@ final class DossierFileSystem {
     }
 
     ModuleDescriptor module = type.getModule();
-    if (module == null || !module.isCommonJsModule()) {
+    if (module == null || module.getType() == ModuleType.CLOSURE) {
       return outputRoot.resolve(type.getQualifiedName() + ".html");
     }
 
@@ -130,7 +130,7 @@ final class DossierFileSystem {
    * Returns the display name for the given module.
    */
   public String getDisplayName(ModuleDescriptor module) {
-    if (!module.isCommonJsModule()) {
+    if (module.getType() == ModuleType.CLOSURE) {
       return module.getName();
     }
 

@@ -176,11 +176,11 @@ public class DossierFileSystemTest {
   private ModuleDescriptor commonJsModule(String path) {
     return new ModuleDescriptor(
         path.substring(0, path.length() - 3).replace('/', '.'),
-        modulePrefix.resolve(path), true);
+        modulePrefix.resolve(path), ModuleType.NODE);
   }
   
   private ModuleDescriptor googModule(String name) {
-    return new ModuleDescriptor(name, modulePrefix.resolve("unused"), false);
+    return new ModuleDescriptor(name, modulePrefix.resolve("unused"), ModuleType.CLOSURE);
   }
   
   private static NominalType createType(String name) {

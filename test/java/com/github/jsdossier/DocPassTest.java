@@ -430,7 +430,7 @@ public class DocPassTest {
     NominalType type = typeRegistry.getNominalType("foo");
     assertNotNull(type);
     assertNotNull(type.getModule());
-    assertFalse(type.getModule().isCommonJsModule());
+    assertThat(type.getModule().getType()).isEqualTo(ModuleType.CLOSURE);
   }
 
   @Test
@@ -443,7 +443,7 @@ public class DocPassTest {
     NominalType type = typeRegistry.getNominalType("foo.bar");
     assertNotNull(type);
     assertNotNull(type.getModule());
-    assertFalse(type.getModule().isCommonJsModule());
+    assertThat(type.getModule().getType()).isEqualTo(ModuleType.CLOSURE);
   }
 
   @Test

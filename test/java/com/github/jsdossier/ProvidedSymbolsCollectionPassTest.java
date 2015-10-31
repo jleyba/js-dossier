@@ -86,7 +86,7 @@ public class ProvidedSymbolsCollectionPassTest {
 
     ModuleDescriptor module = typeRegistry.getModuleDescriptor("sample.module");
     assertThat(module).isNotNull();
-    assertFalse(module.isCommonJsModule());
+    assertThat(module.getType()).isEqualTo(ModuleType.CLOSURE);
   }
 
   @Test
@@ -163,7 +163,7 @@ public class ProvidedSymbolsCollectionPassTest {
 
     ModuleDescriptor module = typeRegistry.getModuleDescriptor("dossier$$module__$module$foo");
     assertEquals(fileSystem.getPath("/module/foo.js"), module.getPath());
-    assertTrue(module.isCommonJsModule());
+    assertThat(module.getType()).isEqualTo(ModuleType.NODE);
   }
 
   private static CompilerOptions createOptions(CompilerPass pass) {

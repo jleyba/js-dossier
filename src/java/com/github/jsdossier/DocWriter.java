@@ -285,7 +285,7 @@ class DocWriter {
 
     String name = type.getQualifiedName(type.isNamespace());
     if (type.getModule() != null
-        && type.getModule().isCommonJsModule()
+        && type.isCommonJsModule()
         && name.startsWith(type.getModule().getName())) {
       name = name.substring(type.getModule().getName().length() + 1);
     }
@@ -300,7 +300,7 @@ class DocWriter {
     if (aliased != type) {
       if (!typeFilter.apply(aliased)) {
         String aliasDisplayName = linker.getDisplayName(aliased);
-        if (aliased.isCommonJsModule()) {
+        if (aliased != null && aliased.isCommonJsModule()) {
           if (aliased.isModuleExports()) {
             aliasDisplayName = "module(" + aliasDisplayName + ")";
           } else {

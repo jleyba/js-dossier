@@ -38,14 +38,14 @@ final class ModuleDescriptor {
 
   private final String name;
   private final Path path;
-  private final boolean isCommonJsModule;
+  private final ModuleType type;
   private final Map<String, JSDocInfo> internalVarDocs = new HashMap<>();
   private final BiMap<String, String> exportedNames = HashBiMap.create();
 
-  public ModuleDescriptor(String name, Path path, boolean isCommonJsModule) {
+  public ModuleDescriptor(String name, Path path, ModuleType type) {
     this.name = name;
     this.path = path;
-    this.isCommonJsModule = isCommonJsModule;
+    this.type = type;
   }
 
   public String getName() {
@@ -55,9 +55,9 @@ final class ModuleDescriptor {
   public Path getPath() {
     return path;
   }
-
-  public boolean isCommonJsModule() {
-    return isCommonJsModule;
+  
+  public ModuleType getType() {
+    return type;
   }
 
   /**

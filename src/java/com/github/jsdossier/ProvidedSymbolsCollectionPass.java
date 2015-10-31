@@ -66,7 +66,8 @@ final class ProvidedSymbolsCollectionPass implements CompilerPass {
               ModuleDescriptor module = new ModuleDescriptor(
                   name,
                   fileSystem.getPath(n.getSourceFileName()),
-                  compiler.getModuleRegistry().hasModuleNamed(name));
+                  compiler.getModuleRegistry().hasModuleNamed(name)
+                      ? ModuleType.NODE : ModuleType.CLOSURE);
               NodeTraversal.traverse(
                   compiler, getScriptNode(n), new ClosureModuleNameCollector(module));
               typeRegistry.declareModule(module);
