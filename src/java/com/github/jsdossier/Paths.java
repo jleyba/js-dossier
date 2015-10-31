@@ -59,6 +59,9 @@ class Paths {
     Path root = getCommonPrefix(from.getRoot(), ImmutableSet.of(from, to));
     Path pathToRoot = from.relativize(root);
     Path pathFromRoot = root.relativize(to);
+    if (pathToRoot.getNameCount() == 0) {
+      return pathFromRoot;
+    }
 
     return pathToRoot.resolve(pathFromRoot).normalize();
   }
