@@ -238,7 +238,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
                 .setName("Clazz.foo")
                 .setSource(sourceFile("source/foo.js.src.html", 7))
                 .setDescription(htmlComment(
-                    "<p>Link to <a href=\"class_Clazz.html#Clazz.bar\">" +
+                    "<p>Link to <a href=\"Clazz.html#Clazz.bar\">" +
                         "<code>Clazz.bar</code></a>.</p>\n")))
             .build(),
         Function.newBuilder()
@@ -246,7 +246,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
                 .setName("Clazz.bar")
                 .setSource(sourceFile("source/foo.js.src.html", 12))
                 .setDescription(htmlComment(
-                    "<p>Link to <a href=\"class_Clazz.html#Clazz.foo\">" +
+                    "<p>Link to <a href=\"Clazz.html#Clazz.foo\">" +
                         "<code>Clazz.foo</code></a>.</p>\n")))
             .build());
   }
@@ -276,7 +276,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
                 .setName("Clazz.foo")
                 .setSource(sourceFile("source/foo.js.src.html", 7))
                 .setDescription(htmlComment(
-                    "<p>Link to <a href=\"class_OtherClazz.html#OtherClazz.bar\">" +
+                    "<p>Link to <a href=\"OtherClazz.html#OtherClazz.bar\">" +
                         "<code>OtherClazz.bar</code></a>.</p>\n")))
             .build());
   }
@@ -304,7 +304,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
                 .setName("Clazz.foo")
                 .setSource(sourceFile("source/foo.js.src.html", 7))
                 .setDescription(htmlComment(
-                    "<p>Link to <a href=\"class_Clazz.html#bar\">" +
+                    "<p>Link to <a href=\"Clazz.html#bar\">" +
                         "<code>#bar</code></a>.</p>\n")))
             .build());
   }

@@ -20,9 +20,6 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.base.Verify.verify;
 import static com.google.common.collect.Iterables.filter;
 
-import com.github.jsdossier.annotations.ModulePrefix;
-import com.github.jsdossier.annotations.Output;
-import com.github.jsdossier.annotations.SourcePrefix;
 import com.github.jsdossier.annotations.TypeFilter;
 import com.github.jsdossier.jscomp.DossierModule;
 import com.github.jsdossier.proto.Comment;
@@ -30,12 +27,10 @@ import com.github.jsdossier.proto.SourceLink;
 import com.github.jsdossier.proto.TypeLink;
 import com.github.jsdossier.proto.TypeLinkOrBuilder;
 import com.google.common.base.Function;
-import com.google.common.base.Joiner;
 import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
-import com.google.common.io.Files;
 import com.google.javascript.rhino.JSTypeExpression;
 import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.jstype.EnumElementType;
@@ -52,19 +47,16 @@ import com.google.javascript.rhino.jstype.TemplatizedType;
 import com.google.javascript.rhino.jstype.UnionType;
 import com.google.javascript.rhino.jstype.Visitor;
 
+import javax.annotation.Nullable;
+import javax.inject.Inject;
 import java.nio.file.Path;
 import java.util.Iterator;
 import java.util.Stack;
 
-import javax.annotation.Nullable;
-import javax.inject.Inject;
-
 public class Linker {
 
-  private final Path outputRoot;
-  private final Path modulePrefix;
-  private final Path sourcePrefix;
   private final Predicate<NominalType> typeFilter;
+  private final DossierFileSystem dfs;
   private final TypeRegistry typeRegistry;
 
   private final Stack<NominalType> context = new Stack<>();
@@ -74,15 +66,11 @@ public class Linker {
    */
   @Inject
   Linker(
-      @Output Path outputRoot,
-      @SourcePrefix Path sourcePrefix,
-      @ModulePrefix Path modulePrefix,
       @TypeFilter Predicate<NominalType> typeFilter,
+      DossierFileSystem dfs,
       TypeRegistry typeRegistry) {
     this.typeRegistry = typeRegistry;
-    this.outputRoot = outputRoot;
-    this.modulePrefix = modulePrefix;
-    this.sourcePrefix = sourcePrefix;
+    this.dfs = dfs;
     this.typeFilter = typeFilter;
   }
 
@@ -93,87 +81,40 @@ public class Linker {
   public void popContext() {
     context.pop();
   }
-
-  private static String getTypePrefix(JSType type) {
-    if (type.isInterface()) {
-      return "interface_";
-    } else if (type.isConstructor()) {
-      return "class_";
-    } else if (type.isEnumType()) {
-      return "enum_";
+  
+  private String buildUrl(NominalType type) {
+    return buildUrl(dfs.getPath(type));
+  }
+  
+  private String buildUrl(Path path) {
+    if (context.isEmpty()) {
+      path = dfs.getRelativePath(path);
     } else {
-      return "namespace_";
+      path = dfs.getRelativePath(context.peek(), path);
     }
+    return path.toString()
+        .replace(path.getFileSystem().getSeparator(), "/");  // Windows.
   }
 
   /**
    * Returns the display name for the given type.
    */
   public String getDisplayName(NominalType type) {
-    if (!type.isModuleExports() || !type.isCommonJsModule()) {
-      return type.getQualifiedName();
-    }
-    String displayName = getDisplayName(type.getModule());
-    type.setAttribute("displayName", displayName);
-    return displayName;
+    return dfs.getDisplayName(type);
   }
 
   /**
    * Returns the display name for the given module.
    */
   public String getDisplayName(ModuleDescriptor module) {
-    Path modulePath = stripExtension(module.getPath());
-
-    Path displayPath = modulePrefix.relativize(modulePath);
-    if (displayPath.getFileName().toString().equals("index")
-        && displayPath.getParent() != null) {
-      displayPath = displayPath.getParent();
-    }
-    return displayPath.toString()
-        .replace(modulePath.getFileSystem().getSeparator(), "/");  // Oh windows...
-  }
-
-  private static Path stripExtension(Path path) {
-    String name = path.getFileName().toString();
-    return path.resolveSibling(Files.getNameWithoutExtension(name));
+    return dfs.getDisplayName(module);
   }
 
   /**
    * Returns the path of the generated document file for the given type.
    */
   public Path getFilePath(NominalType type) {
-    String name = "";
-    if (type.isCommonJsModule()) {
-      name = "module_" + getDisplayName(type.getModule()).replace('/', '_');
-    }
-    if (!type.isCommonJsModule() || !type.isModuleExports()) {
-      if (!name.isEmpty()) {
-        name += "_";
-      }
-      name += getTypePrefix(type.getJsType()) + getDisplayName(type).replace('.', '_');
-    }
-    return outputRoot.resolve(name + ".html");
-  }
-
-  /**
-   * Returns the path of the generated documentation for the given source file.
-   */
-  public Path getFilePath(Path sourceFile) {
-    Path path = sourcePrefix
-        .relativize(sourceFile.toAbsolutePath().normalize())
-        .resolveSibling(sourceFile.getFileName() + ".src.html");
-    Path ret = outputRoot.resolve("source");
-    for (Path part : path) {
-      ret = ret.resolve(part.toString());
-    }
-    return ret;
-  }
-
-  /**
-   * @see #getFilePath(Path)
-   */
-  public Path getFilePath(String sourceFile) {
-    return getFilePath(sourcePrefix.getFileSystem().getPath(sourceFile));
+    return dfs.getPath(type);
   }
 
   /**
@@ -183,11 +124,9 @@ public class Linker {
     if (node == null || node.isFromExterns()) {
       return SourceLink.newBuilder().setPath("").build();
     }
-    Iterator<Path> parts = outputRoot
-        .relativize(getFilePath(node.getSourceFileName()))
-        .iterator();
+    Path sourcePath = dfs.getPath(node);
     return SourceLink.newBuilder()
-        .setPath(Joiner.on('/').join(parts))
+        .setPath(buildUrl(sourcePath))
         .setLine(node.getLineno())
         .build();
   }
@@ -213,7 +152,7 @@ public class Linker {
     }
 
     if (symbol.startsWith("#")) {
-      TypeLink link = getContextLink(symbol);
+      TypeLink link = getContextLink(context.peek(), symbol);
       if (link != null) {
         return link;
       }
@@ -289,12 +228,7 @@ public class Linker {
       }
     }
 
-    try {
-      pushContext(type);
-      return getContextLink(propertyName);
-    } finally {
-      popContext();
-    }
+    return getContextLink(type, propertyName);
   }
 
   @Nullable
@@ -305,12 +239,7 @@ public class Linker {
         if (isNullOrEmpty(propertyName)) {
           link = getLink(type);
         } else {
-          try {
-            pushContext(type);
-            link = getContextLink(propertyName);
-          } finally {
-            popContext();
-          }
+          link = getContextLink(type, propertyName);
         }
         checkNotNull(link, "Failed to build link for %s", type.getQualifiedName());
         return link.toBuilder()
@@ -322,8 +251,8 @@ public class Linker {
   }
 
   @Nullable
-  private TypeLink getContextLink(String symbol) {
-    if (context.isEmpty()) {
+  private TypeLink getContextLink(@Nullable NominalType context, String symbol) {
+    if (context == null) {
       return null;
     }
 
@@ -332,17 +261,16 @@ public class Linker {
       checkPrototype = true;
       symbol = symbol.substring(1);
     }
-    NominalType type = context.peek();
 
-    TypeLink link = checkNotNull(getLink(type), "Failed to build link for %s",
-        type.getQualifiedName());
+    TypeLink link = checkNotNull(getLink(context), "Failed to build link for %s",
+        context.getQualifiedName());
 
     String id = symbol;
 
     // If we have a class/interface, check for a prototype first.
     if (checkPrototype
-        && (type.getJsType().isConstructor() || type.getJsType().isInterface())) {
-      ObjectType instanceType = ((FunctionType) type.getJsType()).getInstanceType();
+        && (context.getJsType().isConstructor() || context.getJsType().isInterface())) {
+      ObjectType instanceType = ((FunctionType) context.getJsType()).getInstanceType();
       if (instanceType.getPropertyNames().contains(symbol)) {
         return link.toBuilder()
             .setText(link.getText() + "#" + symbol)
@@ -351,21 +279,21 @@ public class Linker {
       }
     }
 
-    if (type.getJsType().toObjectType().getPropertyType(symbol).isEnumElementType()) {
+    if (context.getJsType().toObjectType().getPropertyType(symbol).isEnumElementType()) {
       return link.toBuilder()
           .setText(link.getText() + "." + symbol)
           .setHref(link.getHref() + "#" + id)
           .build();
     }
 
-    if (!type.getJsType().toObjectType().getPropertyNames().contains(symbol)) {
+    if (!context.getJsType().toObjectType().getPropertyNames().contains(symbol)) {
       return link.toBuilder()
           .setText(link.getText() + "." + symbol)
           .build();
     }
 
-    if (!type.isNamespace()) {
-      id = type.getName() + "." + symbol;
+    if (!context.isNamespace()) {
+      id = context.getName() + "." + symbol;
     }
     // Otherwise, we check for static properties.
     return link.toBuilder()
@@ -410,9 +338,9 @@ public class Linker {
         return null;
       }
       link.setHref(
-          getFilePath(parent).getFileName() + "#" + parent.getName() + "." + type.getName());
+          buildUrl(parent) + "#" + parent.getName() + "." + type.getName());
     } else {
-      link.setHref(getFilePath(type).getFileName().toString());
+      link.setHref(buildUrl(type));
     }
     return link.build();
   }

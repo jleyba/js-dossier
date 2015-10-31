@@ -108,7 +108,7 @@ public class TypeInspectorInstancePropertyTest extends AbstractTypeInspectorTest
                 .setName("age")
                 .setSource(sourceFile("source/foo.js.src.html", 7))
                 .setDescription(htmlComment("<p>This person\'s age.</p>\n"))
-                .setDefinedBy(linkComment("Person", "class_Person.html#age")))
+                .setDefinedBy(linkComment("Person", "Person.html#age")))
             .setType(numberTypeComment())
             .build());
   }
@@ -139,7 +139,7 @@ public class TypeInspectorInstancePropertyTest extends AbstractTypeInspectorTest
                 .setName("age")
                 .setSource(sourceFile("source/foo.js.src.html", 7))
                 .setDescription(htmlComment("<p>This person\'s age.</p>\n"))
-                .setDefinedBy(linkComment("Person", "class_Person.html#age")))
+                .setDefinedBy(linkComment("Person", "Person.html#age")))
             .setType(numberTypeComment())
             .build());
   }
@@ -175,7 +175,7 @@ public class TypeInspectorInstancePropertyTest extends AbstractTypeInspectorTest
                 .setName("a")
                 .setSource(sourceFile("source/foo.js.src.html", 7))
                 .setDescription(htmlComment("<p>Original comment.</p>\n"))
-                .setDefinedBy(linkComment("A", "class_A.html#a")))
+                .setDefinedBy(linkComment("A", "A.html#a")))
             .setType(numberTypeComment())
             .build());
   }
@@ -209,7 +209,7 @@ public class TypeInspectorInstancePropertyTest extends AbstractTypeInspectorTest
                 .setName("a")
                 .setSource(sourceFile("source/foo.js.src.html", 15))
                 .setDescription(htmlComment("<p>Custom comment.</p>\n"))
-                .setOverrides(linkComment("A", "class_A.html#a")))
+                .setOverrides(linkComment("A", "A.html#a")))
             .setType(numberTypeComment())
             .build());
   }
@@ -250,8 +250,8 @@ public class TypeInspectorInstancePropertyTest extends AbstractTypeInspectorTest
                 .setName("a")
                 .setSource(sourceFile("source/foo.js.src.html", 22))
                 .setDescription(htmlComment("<p>Comment on interface B.</p>\n"))
-                .setOverrides(linkComment("A", "class_A.html#a"))
-                .addSpecifiedBy(linkComment("B", "interface_B.html#a")))
+                .setOverrides(linkComment("A", "A.html#a"))
+                .addSpecifiedBy(linkComment("B", "B.html#a")))
             .setType(numberTypeComment())
             .build());
   }

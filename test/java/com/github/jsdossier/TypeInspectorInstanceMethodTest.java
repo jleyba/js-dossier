@@ -398,7 +398,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setName("record")
                 .setSource(sourceFile("source/foo.js.src.html", 15))
                 .setDescription(htmlComment("<p>Comment on B.</p>\n"))
-                .setOverrides(linkComment("A", "class_A.html#record")))
+                .setOverrides(linkComment("A", "A.html#record")))
             .build());
   }
   
@@ -430,7 +430,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setName("record")
                 .setSource(sourceFile("source/foo.js.src.html", 15))
                 .setDescription(htmlComment("<p>Comment on B.</p>\n"))
-                .addSpecifiedBy(linkComment("A", "interface_A.html#record")))
+                .addSpecifiedBy(linkComment("A", "A.html#record")))
             .build());
   }
   
@@ -462,7 +462,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setName("record")
                 .setSource(sourceFile("source/foo.js.src.html", 15))
                 .setDescription(htmlComment("<p>Comment on B.</p>\n"))
-                .addSpecifiedBy(linkComment("A", "interface_A.html#record")))
+                .addSpecifiedBy(linkComment("A", "A.html#record")))
             .build());
   }
   
@@ -493,7 +493,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setName("record")
                 .setSource(sourceFile("source/foo.js.src.html", 14))
                 .setDescription(htmlComment("<p>Comment on A.</p>\n"))
-                .setOverrides(linkComment("A", "class_A.html#record")))
+                .setOverrides(linkComment("A", "A.html#record")))
             .build());
   }
   
@@ -524,7 +524,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setName("record")
                 .setSource(sourceFile("source/foo.js.src.html", 14))
                 .setDescription(htmlComment("<p>Comment on A.</p>\n"))
-                .addSpecifiedBy(linkComment("A", "interface_A.html#record")))
+                .addSpecifiedBy(linkComment("A", "A.html#record")))
             .build());
   }
   
@@ -555,7 +555,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setName("record")
                 .setSource(sourceFile("source/foo.js.src.html", 14))
                 .setDescription(Comment.getDefaultInstance())
-                .setOverrides(linkComment("A", "class_A.html#record")))
+                .setOverrides(linkComment("A", "A.html#record")))
             .addParameter(Detail.newBuilder()
                 .setName("v")
                 .setType(numberTypeComment())
@@ -590,7 +590,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setName("record")
                 .setSource(sourceFile("source/foo.js.src.html", 14))
                 .setDescription(Comment.getDefaultInstance())
-                .addSpecifiedBy(linkComment("A", "interface_A.html#record")))
+                .addSpecifiedBy(linkComment("A", "A.html#record")))
             .addParameter(Detail.newBuilder()
                 .setName("v")
                 .setType(numberTypeComment())
@@ -625,7 +625,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setName("record")
                 .setSource(sourceFile("source/foo.js.src.html", 14))
                 .setDescription(Comment.getDefaultInstance())
-                .addSpecifiedBy(linkComment("A", "interface_A.html#record")))
+                .addSpecifiedBy(linkComment("A", "A.html#record")))
             .addParameter(Detail.newBuilder()
                 .setName("v")
                 .setType(numberTypeComment())
@@ -666,8 +666,8 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setName("record")
                 .setSource(sourceFile("source/foo.js.src.html", 20))
                 .setDescription(Comment.getDefaultInstance())
-                .setOverrides(linkComment("B", "class_B.html#record"))
-                .addSpecifiedBy(linkComment("A", "interface_A.html#record")))
+                .setOverrides(linkComment("B", "B.html#record"))
+                .addSpecifiedBy(linkComment("A", "A.html#record")))
             .addParameter(Detail.newBuilder()
                 .setName("v")
                 .setType(numberTypeComment())
@@ -702,7 +702,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setName("record")
                 .setSource(sourceFile("source/foo.js.src.html", 8))
                 .setDescription(Comment.getDefaultInstance())
-                .setDefinedBy(linkComment("A", "class_A.html#record")))
+                .setDefinedBy(linkComment("A", "A.html#record")))
             .addParameter(Detail.newBuilder()
                 .setName("v")
                 .setType(numberTypeComment())
@@ -737,7 +737,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setName("record")
                 .setSource(sourceFile("source/foo.js.src.html", 14))
                 .setDescription(Comment.getDefaultInstance())
-                .addSpecifiedBy(linkComment("A", "interface_A.html#record")))
+                .addSpecifiedBy(linkComment("A", "A.html#record")))
             .addParameter(Detail.newBuilder()
                 .setName("v")
                 .setType(numberTypeComment())
@@ -772,7 +772,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setName("record")
                 .setSource(sourceFile("source/foo.js.src.html", 14))
                 .setDescription(Comment.getDefaultInstance())
-                .setOverrides(linkComment("A", "class_A.html#record")))
+                .setOverrides(linkComment("A", "A.html#record")))
             .setReturn(Detail.newBuilder()
                 .setType(stringTypeComment())
                 .setDescription(htmlComment("<p>Return from A.</p>\n")))
@@ -806,7 +806,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setName("record")
                 .setSource(sourceFile("source/foo.js.src.html", 14))
                 .setDescription(Comment.getDefaultInstance())
-                .addSpecifiedBy(linkComment("A", "interface_A.html#record")))
+                .addSpecifiedBy(linkComment("A", "A.html#record")))
             .setReturn(Detail.newBuilder()
                 .setType(stringTypeComment())
                 .setDescription(htmlComment("<p>Return from A.</p>\n")))
@@ -840,7 +840,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setName("record")
                 .setSource(sourceFile("source/foo.js.src.html", 14))
                 .setDescription(Comment.getDefaultInstance())
-                .addSpecifiedBy(linkComment("A", "interface_A.html#record")))
+                .addSpecifiedBy(linkComment("A", "A.html#record")))
             .setReturn(Detail.newBuilder()
                 .setType(stringTypeComment())
                 .setDescription(htmlComment("<p>Return from A.</p>\n")))
@@ -875,7 +875,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setName("record")
                 .setSource(sourceFile("source/foo.js.src.html", 15))
                 .setDescription(Comment.getDefaultInstance())
-                .addSpecifiedBy(linkComment("A", "interface_A.html#record")))
+                .addSpecifiedBy(linkComment("A", "A.html#record")))
             .setReturn(Detail.newBuilder()
                 .setType(stringTypeComment())
                 .setDescription(htmlComment("<p>Return from A.</p>\n")))
@@ -917,8 +917,8 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setName("record")
                 .setSource(sourceFile("source/foo.js.src.html", 22))
                 .setDescription(Comment.getDefaultInstance())
-                .setOverrides(linkComment("B", "class_B.html#record"))
-                .addSpecifiedBy(linkComment("A", "interface_A.html#record")))
+                .setOverrides(linkComment("B", "B.html#record"))
+                .addSpecifiedBy(linkComment("A", "A.html#record")))
             .setReturn(Detail.newBuilder()
                 .setType(stringTypeComment())
                 .setDescription(htmlComment("<p>Return from A.</p>\n")))
@@ -956,7 +956,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setName("record")
                 .setSource(sourceFile("source/foo.js.src.html", 17))
                 .setDescription(htmlComment("<p>Returns some value.</p>\n"))
-                .addSpecifiedBy(linkComment("A", "interface_A.html#record")))
+                .addSpecifiedBy(linkComment("A", "A.html#record")))
             .setReturn(Detail.newBuilder()
                 .setType(stringTypeComment())
                 .setDescription(htmlComment("<p>Return from A.</p>\n")))
@@ -994,7 +994,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setName("record")
                 .setSource(sourceFile("source/foo.js.src.html", 9))
                 .setDescription(htmlComment("<p>Returns some value.</p>\n"))
-                .setDefinedBy(linkComment("A", "class_A.html#record")))
+                .setDefinedBy(linkComment("A", "A.html#record")))
             .setReturn(Detail.newBuilder()
                 .setType(stringTypeComment())
                 .setDescription(htmlComment("<p>Return from A.</p>\n")))
@@ -1045,7 +1045,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setSource(sourceFile("source/foo.js.src.html", 28))
                 .setDescription(htmlComment("<p>Returns some value.</p>\n"))
                 .addSpecifiedBy(linkComment(
-                    "foo.bar.AnInterface", "interface_foo_bar_AnInterface.html#record")))
+                    "foo.bar.AnInterface", "foo.bar.AnInterface.html#record")))
             .setReturn(Detail.newBuilder()
                 .setType(stringTypeComment())
                 .setDescription(htmlComment("<p>Return from A.</p>\n")))
@@ -1080,7 +1080,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setName("record")
                 .setSource(sourceFile("source/foo.js.src.html", 15))
                 .setDescription(Comment.getDefaultInstance())
-                .addSpecifiedBy(linkComment("A", "interface_A.html#record")))
+                .addSpecifiedBy(linkComment("A", "A.html#record")))
             .setReturn(Detail.newBuilder()
                 .setType(stringTypeComment())
                 .setDescription(htmlComment("<p>Return from B.</p>\n")))
@@ -1126,10 +1126,10 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setName("greet")
                 .setSource(sourceFile("source/foo.js.src.html", 26))
                 .setDescription(Comment.getDefaultInstance())
-                .addSpecifiedBy(linkComment("Greeter", "interface_Greeter.html#greet")))
+                .addSpecifiedBy(linkComment("Greeter", "Greeter.html#greet")))
             .addParameter(Detail.newBuilder()
                 .setName("student")
-                .setType(linkComment("Student", "class_Student.html"))
+                .setType(linkComment("Student", "Student.html"))
                 .setDescription(htmlComment("<p>The student to greet.</p>\n")))
             .build());
 
@@ -1145,7 +1145,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setDescription(Comment.getDefaultInstance()))
             .addParameter(Detail.newBuilder()
                 .setName("person")
-                .setType(linkComment("Person", "class_Person.html"))
+                .setType(linkComment("Person", "Person.html"))
                 .setDescription(htmlComment("<p>The person to greet.</p>\n")))
             .build());
   }
@@ -1189,9 +1189,9 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setName("greet")
                 .setSource(sourceFile("source/foo.js.src.html", 26))
                 .setDescription(Comment.getDefaultInstance())
-                .addSpecifiedBy(linkComment("Greeter", "interface_Greeter.html#greet")))
+                .addSpecifiedBy(linkComment("Greeter", "Greeter.html#greet")))
             .setReturn(Detail.newBuilder()
-                .setType(linkComment("HappyGreeting", "class_HappyGreeting.html"))
+                .setType(linkComment("HappyGreeting", "HappyGreeting.html"))
                 .setDescription(htmlComment("<p>A happy greeting.</p>\n")))
             .build());
 
@@ -1206,7 +1206,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setSource(sourceFile("source/foo.js.src.html", 14))
                 .setDescription(Comment.getDefaultInstance()))
             .setReturn(Detail.newBuilder()
-                .setType(linkComment("Greeting", "class_Greeting.html"))
+                .setType(linkComment("Greeting", "Greeting.html"))
                 .setDescription(htmlComment("<p>Returns a greeting.</p>\n")))
             .build());
   }
@@ -1253,7 +1253,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setName("go")
                 .setSource(sourceFile("source/foo.js.src.html", 15))
                 .setDescription(Comment.getDefaultInstance())
-                .addSpecifiedBy(linkComment("A", "interface_A.html#go")))
+                .addSpecifiedBy(linkComment("A", "A.html#go")))
             .build());
   }
   
@@ -1299,7 +1299,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setName("go")
                 .setSource(sourceFile("source/foo.js.src.html", 15))
                 .setDescription(Comment.getDefaultInstance())
-                .addSpecifiedBy(linkComment("A", "interface_A.html#go")))
+                .addSpecifiedBy(linkComment("A", "A.html#go")))
             .build());
   }
   
@@ -1326,7 +1326,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setName("run")
                 .setSource(sourceFile("source/foo.js.src.html", 7))
                 .setDescription(htmlComment("<p>Runs this instance.</p>\n"))
-                .setDefinedBy(linkComment("A", "class_A.html#run")))
+                .setDefinedBy(linkComment("A", "A.html#run")))
             .build());
   }
 
@@ -1366,7 +1366,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setName("addPath")
                 .setSource(sourceFile("source/foo.js.src.html", 22))
                 .setDescription(htmlComment("<p>Render this edge to the given context</p>\n"))
-                .addSpecifiedBy(linkComment("Edge", "interface_Edge.html#addPath")))
+                .addSpecifiedBy(linkComment("Edge", "Edge.html#addPath")))
             .addParameter(Detail.newBuilder()
                 .setName("context")
                 .setType(textComment("CanvasRenderingContext2D"))
@@ -1396,14 +1396,14 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setName("a")
                 .setSource(sourceFile("source/foo.js.src.html", 5))
                 .setDescription(htmlComment(
-                    "<p>Go to <a href=\"class_Foo.html#b\"><code>#b</code></a>.</p>\n")))
+                    "<p>Go to <a href=\"Foo.html#b\"><code>#b</code></a>.</p>\n")))
             .build(),
         Function.newBuilder()
             .setBase(BaseProperty.newBuilder()
                 .setName("b")
                 .setSource(sourceFile("source/foo.js.src.html", 8))
                 .setDescription(htmlComment(
-                    "<p>Go to <a href=\"class_Foo.html#a\"><code>#a</code></a>.</p>\n")))
+                    "<p>Go to <a href=\"Foo.html#a\"><code>#a</code></a>.</p>\n")))
             .build());
   }
 
@@ -1430,14 +1430,14 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setName("a")
                 .setSource(sourceFile("source/foo.js.src.html", 3))
                 .setDescription(Comment.getDefaultInstance())
-                .setDefinedBy(linkComment("Foo", "class_Foo.html#a")))
+                .setDefinedBy(linkComment("Foo", "Foo.html#a")))
             .build(),
         Function.newBuilder()
             .setBase(BaseProperty.newBuilder()
                 .setName("b")
                 .setSource(sourceFile("source/foo.js.src.html", 9))
                 .setDescription(htmlComment(
-                    "<p>Go to <a href=\"class_Bar.html#a\"><code>#a</code></a>.</p>\n")))
+                    "<p>Go to <a href=\"Bar.html#a\"><code>#a</code></a>.</p>\n")))
             .build());
   }
 
@@ -1467,14 +1467,14 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setName("a")
                 .setSource(sourceFile("source/foo.js.src.html", 9))
                 .setDescription(Comment.getDefaultInstance())
-                .setOverrides(linkComment("Foo", "class_Foo.html#a")))
+                .setOverrides(linkComment("Foo", "Foo.html#a")))
             .build(),
         Function.newBuilder()
             .setBase(BaseProperty.newBuilder()
                 .setName("b")
                 .setSource(sourceFile("source/foo.js.src.html", 12))
                 .setDescription(htmlComment(
-                    "<p>Go to <a href=\"class_Bar.html#a\"><code>#a</code></a>.</p>\n")))
+                    "<p>Go to <a href=\"Bar.html#a\"><code>#a</code></a>.</p>\n")))
             .build());
   }
 
@@ -1504,14 +1504,14 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setName("a")
                 .setSource(sourceFile("source/foo.js.src.html", 9))
                 .setDescription(Comment.getDefaultInstance())
-                .setOverrides(linkComment("Foo", "class_Foo.html#a")))
+                .setOverrides(linkComment("Foo", "Foo.html#a")))
             .build(),
         Function.newBuilder()
             .setBase(BaseProperty.newBuilder()
                 .setName("b")
                 .setSource(sourceFile("source/foo.js.src.html", 12))
                 .setDescription(htmlComment(
-                    "<p>Go to <a href=\"class_Foo.html#a\"><code>Foo#a</code></a>.</p>\n")))
+                    "<p>Go to <a href=\"Foo.html#a\"><code>Foo#a</code></a>.</p>\n")))
             .build());
   }
 
@@ -1537,7 +1537,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setName("b")
                 .setSource(sourceFile("source/foo.js.src.html", 8))
                 .setDescription(htmlComment(
-                    "<p>Go to <a href=\"class_Foo.html#a\"><code>Foo#a</code></a>.</p>\n")))
+                    "<p>Go to <a href=\"Foo.html#a\"><code>Foo#a</code></a>.</p>\n")))
             .build());
   }
 }
