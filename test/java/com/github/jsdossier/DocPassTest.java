@@ -305,49 +305,6 @@ public class DocPassTest {
   }
 
   @Test
-  public void recordsReferencedExterns() {
-    util.compile(
-        ImmutableList.of(
-            createSourceFile(path("externs.js"),
-                "/** @constructor */",
-                "function GlobalCtor() {}",
-                "",
-                "/** @interface */",
-                "var GlobalIface = function() {};",
-                "",
-                "/** @enum {string} */",
-                "var GlobalEnum = {};",
-                "",
-                "/** @const */",
-                "var ns = {};",
-                "",
-                "/** @constructor */",
-                "ns.Ctor = function(e) {};",
-                "",
-                "/** @enum {number} */",
-                "ns.Enum = {foo:1};")
-        ),
-        ImmutableList.of(
-            createSourceFile(path("script.js"),
-                "var x = new GlobalCtor();",
-                "/**",
-                " * @param {GlobalEnum} a .",
-                " * @param {ns.Ctor} b .",
-                " * @param {ns.Enum} c .",
-                " * @constructor",
-                " * @implements {GlobalIface}",
-                " */",
-                "var y = function(a, b, c) {};"
-            )));
-    assertThat(typeRegistry.getExternNames()).containsExactly(
-        "GlobalCtor",
-        "GlobalIface",
-        "GlobalEnum",
-        "ns.Ctor",
-        "ns.Enum");
-  }
-
-  @Test
   public void doesNotTraverseGlobalObjectAsExtern() {
     util.compile(
         ImmutableList.of(
@@ -363,7 +320,12 @@ public class DocPassTest {
                 "global.y = function() {};")
         )
     );
-    assertThat(typeRegistry.getExternNames()).containsExactly("global");
+    assertConstructor(typeRegistry.getNominalType("x"));
+
+    assertThat(typeRegistry.getNominalType("global")).isNull();
+    assertWithMessage("types defined on an extern are considered extern")
+        .that(typeRegistry.getNominalType("y"))
+        .isNull();
   }
 
   @Test

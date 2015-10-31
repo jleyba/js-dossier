@@ -24,6 +24,8 @@ import com.github.jsdossier.jscomp.DossierCompiler;
 import com.github.jsdossier.jscomp.JsDoc;
 import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import com.google.javascript.jscomp.AbstractCompiler;
 import com.google.javascript.jscomp.CompilerPass;
 import com.google.javascript.jscomp.NodeTraversal;
@@ -46,11 +48,15 @@ import com.google.javascript.rhino.jstype.Visitor;
 
 import java.nio.file.FileSystem;
 import java.nio.file.Path;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -79,29 +85,39 @@ final class DocPass implements CompilerPass {
   }
 
   @Override
-  public void process(Node externs, Node root) {
+  public void process(Node externsRoot, Node root) {
     if (compiler.getErrorManager().getErrorCount() > 0) {
       return;
     }
-    traverseTyped(compiler, externs, new ExternCollector());
-    traverseTyped(compiler, root, new TypeCollector());
+    Externs externs = new Externs();
+    traverseTyped(compiler, externsRoot, new ExternCollector(externs));
+    traverseTyped(compiler, root, new TypeCollector(externs));
+  }
+  
+  private static final class Externs {
+    private final Map<String, JSType> byName = new HashMap<>();
+    private final Set<JSType> types = new HashSet<>();
+    
+    public void addExtern(String name, JSType type) {
+      byName.put(name, type);
+      types.add(type);
+    }
+    
+    public boolean isExtern(JSType type) {
+      return types.contains(type);
+    }
   }
 
   private class ExternCollector implements NodeTraversal.Callback, Visitor<Object> {
-    private class Extern {
-      private final String name;
-      private final JSType type;
-      private final List<Extern> children = new ArrayList<>();
-
-      private Extern(String name, JSType type) {
-        this.name = name;
-        this.type = type;
-      }
-    }
+    private final Externs externs;
 
     private final Joiner joiner = Joiner.on('.');
-    private final Map<JSType, Extern> seen = new HashMap<>();
-    private final LinkedList<String> names = new LinkedList<>();
+    private final Set<JSType> seen = new HashSet<>();
+    private final Deque<String> names = new ArrayDeque<>();
+
+    private ExternCollector(Externs externs) {
+      this.externs = externs;
+    }
 
     @Override
     public boolean shouldTraverse(NodeTraversal t, Node n, Node parent) {
@@ -120,31 +136,18 @@ final class DocPass implements CompilerPass {
     }
 
     private void crawl(String name, JSType type) {
-      try {
-        names.addLast(name);
-        Extern extern = seen.get(type);
-        if (extern == null) {
-          extern = new Extern(name, type);
-          seen.put(type, extern);
-          type.visit(this);
-        }
-
-        if (type.isNominalType()
-            || type.isNominalConstructor()
-            || type.isEnumType()) {
-          String qualifiedName = joiner.join(names);
-          typeRegistry.addExtern(qualifiedName, type);
-          registerChildren(qualifiedName, extern);
-        }
-      } finally {
-        names.removeLast();
+      names.addLast(name);
+      if (!seen.contains(type)) {
+        type.visit(this);
       }
-    }
 
-    private void registerChildren(String baseName, Extern extern) {
-      for (Extern child : extern.children) {
-        typeRegistry.addExtern(baseName + "." + child.name, child.type);
+      if ((type.isNominalType() && !type.isInstanceType())
+          || type.isNominalConstructor()
+          || type.isEnumType()) {
+        String qualifiedName = joiner.join(names);
+        externs.addExtern(qualifiedName, type);
       }
+      names.removeLast();
     }
 
     @Override
@@ -197,7 +200,12 @@ final class DocPass implements CompilerPass {
    */
   private class TypeCollector implements NodeTraversal.Callback, Visitor<Object> {
 
+    private final Externs externs;
     private final LinkedList<NominalType> types = new LinkedList<>();
+
+    public TypeCollector(Externs externs) {
+      this.externs = externs;
+    }
 
     @Override
     public boolean shouldTraverse(NodeTraversal t, Node n, @Nullable Node parent) {
@@ -279,7 +287,7 @@ final class DocPass implements CompilerPass {
 
     private void defineType(NominalType type) {
       JSType jsType = type.getJsType();
-      if (jsType.isConstructor() && typeRegistry.isExtern(jsType)) {
+      if (jsType.isConstructor() && externs.isExtern(jsType)) {
         logfmt("Not documenting extern constructor alias: %s -> %s", type.getName(), jsType);
         return;
       }
@@ -388,10 +396,6 @@ final class DocPass implements CompilerPass {
 
     private boolean hasTypeExpression(Optional<JSDocInfo.Marker> marker) {
       return marker.isPresent() && marker.get().getType() != null;
-    }
-
-    public TypeCollector() {
-      super();
     }
 
     private void recordPropertyAsNestedType(Property property) {

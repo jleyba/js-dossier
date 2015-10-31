@@ -69,9 +69,6 @@ public class TypeRegistry {
   private final Map<String, NominalType> nameToModuleTypes = new HashMap<>();
   private final Set<TypeDescriptor> allDescriptors = Sets.newIdentityHashSet();
 
-  private final Map<String, JSType> externsByName = new HashMap<>();
-  private final Set<JSType> externs = new HashSet<>();
-
   @Inject
   public TypeRegistry(JSTypeRegistry jsTypeRegistry) {
     this.jsTypeRegistry = checkNotNull(jsTypeRegistry, "null JSTypeRegistry");
@@ -127,19 +124,6 @@ public class TypeRegistry {
 
   public boolean hasNamespace(String name) {
     return implicitNamespaces.contains(name);
-  }
-
-  public void addExtern(String name, JSType type) {
-    externsByName.put(name, type);
-    externs.add(type);
-  }
-
-  public Set<String> getExternNames() {
-    return Collections.unmodifiableSet(externsByName.keySet());
-  }
-
-  public boolean isExtern(JSType type) {
-    return externs.contains(type);
   }
 
   public void recordFileOverview(Path path, JsDoc jsdoc) {
