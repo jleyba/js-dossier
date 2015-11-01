@@ -1,7 +1,9 @@
 java_library(
     name = "jsdossier",
     srcs = glob(["*.java"]),
-    resources = glob(["resources/*"]),
+    resources = [
+        "//src/js:dossier_bin",
+    ] + glob(["resources/*"]),
     deps = [
         "//lib/maven:args4j",
         "//lib/maven:closure_compiler",

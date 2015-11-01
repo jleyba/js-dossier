@@ -1,0 +1,21 @@
+load("/build_tools/js_library", "js_library")
+
+licenses(["notice"])  # Apache 2
+
+exports_files(["LICENSE"])
+
+js_library(
+    name = "closure_library",
+    srcs = glob(
+        [
+            "closure/goog/**/*.js",
+            "third_party/closure/goog/**/*.js",
+        ],
+        exclude = [
+            "closure/goog/**/*_test.js",
+            "closure/goog/demos/**/*.js",
+            "third_party/closure/goog/**/*_test.js",
+        ],
+    ),
+    visibility = ["//visibility:public"],
+)

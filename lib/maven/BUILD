@@ -34,6 +34,12 @@ java_library(
     ],
 )
 
+java_binary(
+    name = "ClosureCompiler",
+    main_class = "com.google.javascript.jscomp.CommandLineRunner",
+    runtime_deps = [":closure_compiler"],
+)
+
 java_library(
     name = "closure_templates",
     exports = ["@closure_templates//jar"],

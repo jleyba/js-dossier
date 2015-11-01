@@ -10,8 +10,11 @@
       <sourceFolder url="file://$MODULE_DIR$/test/java" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/generated" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/generated_tests" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/bazel-bin" type="java-resource" />
       <excludeFolder url="file://$MODULE_DIR$/.idea" />
-      <excludeFolder url="file://$MODULE_DIR$/bazel-bin" />
+      <excludeFolder url="file://$MODULE_DIR$/bazel-bin/lib" />
+      <excludeFolder url="file://$MODULE_DIR$/bazel-bin/src/java" />
+      <excludeFolder url="file://$MODULE_DIR$/bazel-bin/test" />
       <excludeFolder url="file://$MODULE_DIR$/bazel-genfiles" />
       <excludeFolder url="file://$MODULE_DIR$/bazel-js-dossier" />
       <excludeFolder url="file://$MODULE_DIR$/bazel-out" />

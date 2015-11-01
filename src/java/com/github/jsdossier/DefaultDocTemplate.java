@@ -31,9 +31,6 @@ import java.net.URL;
  */
 final class DefaultDocTemplate implements DocTemplate {
 
-  private static final String DOSSIER_CSS = "dossier.css";
-  private static final String DOSSIER_JS = "dossier.js";
-
   @Override
   public ImmutableList<TemplateFile> getHeadJs() {
     return ImmutableList.of();
@@ -41,17 +38,16 @@ final class DefaultDocTemplate implements DocTemplate {
 
   @Override
   public ImmutableList<TemplateFile> getTailJs() {
-    return ImmutableList.of(loadResourceFile(DOSSIER_JS));
+    return ImmutableList.of(loadResourceFile("dossier.js", "/src/js/dossier_bin.js"));
   }
 
   @Override
   public ImmutableList<TemplateFile> getCss() {
-    return ImmutableList.of(loadResourceFile(DOSSIER_CSS));
+    return ImmutableList.of(loadResourceFile("dossier.css", "resources/dossier.css"));
   }
-
-  private static TemplateFile loadResourceFile(String name) {
-    String path = "resources/" + name;
-    URL url = Resources.getResource(DefaultDocTemplate.class, path);
+  
+  private static TemplateFile loadResourceFile(String name, String path) {
+    URL url = DefaultDocTemplate.class.getResource(path);
     checkNotNull(url, "Resource not found: %s", path);
     return new TemplateFile(Resources.asByteSource(url), name);
   }
