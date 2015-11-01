@@ -19,8 +19,6 @@ package com.github.jsdossier;
 import static com.google.common.truth.Truth.assertThat;
 
 import com.github.jsdossier.proto.BaseProperty;
-import com.github.jsdossier.proto.Function;
-import com.github.jsdossier.proto.Function.Detail;
 import com.github.jsdossier.proto.Property;
 import com.github.jsdossier.proto.Tags;
 import org.junit.Test;
