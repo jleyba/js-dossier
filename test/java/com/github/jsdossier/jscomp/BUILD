@@ -14,6 +14,7 @@ java_test_suite(
         "//src/java/com/github/jsdossier",
         "//src/java/com/github/jsdossier/annotations",
         "//src/java/com/github/jsdossier/jscomp",
+        "//src/java/com/github/jsdossier/testing",
         "//test/java/com/github/jsdossier/testing",
     ],
 )

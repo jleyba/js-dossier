@@ -22,27 +22,17 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.github.jsdossier.annotations.Input;
-import com.github.jsdossier.annotations.Modules;
-import com.github.jsdossier.annotations.Stderr;
 import com.github.jsdossier.proto.Comment;
 import com.github.jsdossier.proto.TypeLink;
 import com.github.jsdossier.testing.CompilerUtil;
 import com.github.jsdossier.testing.GuiceRule;
-
-import com.google.common.base.Joiner;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
-import com.google.common.jimfs.Jimfs;
-import com.google.inject.AbstractModule;
-import com.google.inject.Provides;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import java.io.PrintStream;
 import java.nio.file.FileSystem;
-import java.nio.file.Path;
 
 import javax.inject.Inject;
 
@@ -50,21 +40,12 @@ import javax.inject.Inject;
 public class CommentParserTest {
 
   @Rule
-  public GuiceRule guice = new GuiceRule(this, new AbstractModule() {
-    @Override
-    protected void configure() {
-      install(new CompilerModule());
-    }
-    @Provides @Input FileSystem provideFs() { return fileSystem; }
-    @Provides @Stderr PrintStream provideStderr() { return System.err; }
-    @Provides @Modules ImmutableSet<Path> provideModules() { return ImmutableSet.of(); }
-  });
+  public GuiceRule guice = GuiceRule.builder(this).build();
 
-  private final FileSystem fileSystem = Jimfs.newFileSystem();
   private final Linker mockLinker = mock(Linker.class);
 
-  @Inject
-  CompilerUtil util;
+  @Inject @Input FileSystem fileSystem;
+  @Inject CompilerUtil util;
   @Inject CommentParser parser;
   @Inject TypeRegistry typeRegistry;
 

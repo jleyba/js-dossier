@@ -10,6 +10,17 @@ java_library(
 )
 
 java_library(
+    name = "auto_value_lib",
+    exports = ["@auto_value//jar"],
+)
+
+java_plugin(
+    name = "auto_value_plugin",
+     processor_class = "com.google.auto.value.processor.AutoValueProcessor",
+    deps = [":auto_value_lib"],
+)
+
+java_library(
     name = "closure_compiler",
     # exports = ["@closure_compiler//jar"],
     exports = ["//third_party/java/closure_compiler"],

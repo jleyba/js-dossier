@@ -11,6 +11,12 @@ maven_jar(
 )
 
 maven_jar(
+    name = "auto_value",
+    artifact = "com.google.auto.value:auto-value:1.1",
+    sha1 = "f6951c141ea3e89c0f8b01da16834880a1ebf162",
+)
+
+maven_jar(
     name = "closure_compiler",
     artifact = "com.google.javascript:closure-compiler:v20151015",
     sha1 = "8e20293908bc676ad6ed2013a4f52728b87af460",

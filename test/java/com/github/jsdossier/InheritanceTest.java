@@ -19,15 +19,8 @@ package com.github.jsdossier;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.truth.Truth.assertThat;
 
-import com.github.jsdossier.annotations.Input;
-import com.github.jsdossier.annotations.Modules;
-import com.github.jsdossier.annotations.Stderr;
 import com.github.jsdossier.testing.CompilerUtil;
 import com.github.jsdossier.testing.GuiceRule;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.jimfs.Jimfs;
-import com.google.inject.AbstractModule;
-import com.google.inject.Provides;
 import com.google.javascript.rhino.jstype.FunctionType;
 import com.google.javascript.rhino.jstype.JSType;
 import org.junit.Rule;
@@ -35,8 +28,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import java.io.PrintStream;
-import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 
@@ -49,16 +40,7 @@ import javax.inject.Inject;
 public class InheritanceTest {
 
   @Rule
-  public GuiceRule guice = new GuiceRule(this, new AbstractModule() {
-    @Override protected void configure() {
-      install(new CompilerModule());
-    }
-    @Provides @Input FileSystem provideFs() { return fileSystem; }
-    @Provides @Stderr PrintStream provideStderr() { return System.err; }
-    @Provides @Modules ImmutableSet<Path> provideModules() { return ImmutableSet.of(); }
-  });
-
-  private final FileSystem fileSystem = Jimfs.newFileSystem();
+  public GuiceRule guice = GuiceRule.builder(this).build();
 
   @Inject CompilerUtil util;
   @Inject TypeRegistry typeRegistry;

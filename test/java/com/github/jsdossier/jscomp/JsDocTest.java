@@ -24,21 +24,13 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
-import com.github.jsdossier.CompilerModule;
 import com.github.jsdossier.NominalType;
 import com.github.jsdossier.TypeRegistry;
-import com.github.jsdossier.annotations.Input;
-import com.github.jsdossier.annotations.Modules;
-import com.github.jsdossier.annotations.Stderr;
 import com.github.jsdossier.jscomp.JsDoc.TypedDescription;
 import com.github.jsdossier.testing.Bug;
 import com.github.jsdossier.testing.CompilerUtil;
 import com.github.jsdossier.testing.GuiceRule;
 import com.google.common.base.Joiner;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.jimfs.Jimfs;
-import com.google.inject.AbstractModule;
-import com.google.inject.Provides;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.JSTypeExpression;
 import com.google.javascript.rhino.Node;
@@ -48,8 +40,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import java.io.PrintStream;
-import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.Iterator;
@@ -64,21 +54,10 @@ import javax.inject.Inject;
 public class JsDocTest {
 
   @Rule
-  public GuiceRule guice = new GuiceRule(this, new AbstractModule() {
-    @Override protected void configure() {
-      install(new CompilerModule());
-    }
-    @Provides @Input FileSystem provideFs() { return fileSystem; }
-    @Provides @Stderr PrintStream provideStderr() { return System.err; }
-    @Provides @Modules ImmutableSet<Path> provideModules() { return ImmutableSet.of(); }
-  });
+  public GuiceRule guice = GuiceRule.builder(this).build();
 
-  private final FileSystem fileSystem = Jimfs.newFileSystem();
-
-  @Inject
-  CompilerUtil util;
-  @Inject
-  TypeRegistry typeRegistry;
+  @Inject CompilerUtil util;
+  @Inject TypeRegistry typeRegistry;
 
   @Test
   public void returnsEmptyBlockCommentIfAnnotationsOnly() {

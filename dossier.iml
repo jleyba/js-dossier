@@ -8,19 +8,21 @@
       <sourceFolder url="file://$MODULE_DIR$/test/java/com/github/jsdossier/resources" type="java-test-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/test/java" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/generated" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/generated_tests" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/.idea" />
       <excludeFolder url="file://$MODULE_DIR$/bazel-bin" />
       <excludeFolder url="file://$MODULE_DIR$/bazel-genfiles" />
       <excludeFolder url="file://$MODULE_DIR$/bazel-js-dossier" />
       <excludeFolder url="file://$MODULE_DIR$/bazel-out" />
       <excludeFolder url="file://$MODULE_DIR$/bazel-testlogs" />
-      <excludeFolder url="file://$MODULE_DIR$/buck-out" />
       <excludeFolder url="file://$MODULE_DIR$/third_party/java" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="com.google.template:soy:2015-02-10" level="project" />
     <orderEntry type="library" name="args4j:args4j:2.0.26" level="project" />
+    <orderEntry type="library" name="com.google.auto.value:auto-value:1.1" level="project" />
     <orderEntry type="library" name="com.google.code.gson:gson:2.2.4" level="project" />
     <orderEntry type="module-library">
       <library>
@@ -46,9 +48,9 @@
     <orderEntry type="library" name="com.google.protobuf:protobuf-java:2.6.1" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="aopalliance:aopalliance:1.0" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="com.ibm.icu:icu4j:51.1" level="project" />
-    <orderEntry type="library" scope="TEST" name="com.google.jimfs:jimfs:1.0" level="project" />
+    <orderEntry type="library" name="com.google.jimfs:jimfs:1.0" level="project" />
     <orderEntry type="library" scope="TEST" name="com.google.truth:truth:0.27" level="project" />
-    <orderEntry type="library" scope="TEST" name="junit:junit:4.12" level="project" />
+    <orderEntry type="library" name="junit:junit:4.12" level="project" />
     <orderEntry type="library" scope="TEST" name="org.hamcrest:hamcrest-core:1.3" level="project" />
     <orderEntry type="library" scope="TEST" name="org.jsoup:jsoup:1.8.3" level="project" />
     <orderEntry type="library" scope="TEST" name="org.mockito:mockito-all:1.10.19" level="project" />

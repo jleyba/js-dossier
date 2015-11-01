@@ -26,18 +26,11 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import com.github.jsdossier.annotations.Input;
-import com.github.jsdossier.annotations.Modules;
-import com.github.jsdossier.annotations.Stderr;
 import com.github.jsdossier.testing.CompilerUtil;
 import com.github.jsdossier.testing.GuiceRule;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.jimfs.Jimfs;
-import com.google.inject.AbstractModule;
-import com.google.inject.Guice;
-import com.google.inject.Module;
-import com.google.inject.Provides;
 import com.google.javascript.jscomp.SourceFile;
 import org.junit.Rule;
 import org.junit.Test;
@@ -45,7 +38,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import java.io.IOException;
-import java.io.PrintStream;
 import java.nio.file.FileSystem;
 import java.nio.file.Path;
 import java.util.Map;
@@ -59,13 +51,11 @@ import javax.inject.Inject;
 public class DocPassTest {
 
   @Rule
-  public GuiceRule guice = new GuiceRule(this, createTestModule(ImmutableSet.<Path>of()));
+  public GuiceRule guice = GuiceRule.builder(this).build();
 
-  private final FileSystem fs = Jimfs.newFileSystem();
-
+  @Inject @Input FileSystem fs;
   @Inject TypeRegistry typeRegistry;
-  @Inject
-  CompilerUtil util;
+  @Inject CompilerUtil util;
 
   @Test
   public void recordsFileOverviewComments() throws IOException {
@@ -484,19 +474,13 @@ public class DocPassTest {
     return fs.getPath(first, remaining);
   }
 
-  private Module createTestModule(final ImmutableSet<Path> modules) {
-    return new AbstractModule() {
-      @Override protected void configure() {
-        install(new CompilerModule());
-      }
-      @Provides @Input FileSystem provideFs() { return fs; }
-      @Provides @Stderr PrintStream provideStderr() { return System.err; }
-      @Provides @Modules ImmutableSet<Path> provideModules() { return modules; }
-    };
-  }
-
   private void createCompiler(ImmutableSet<Path> modules) {
-    Guice.createInjector(createTestModule(modules)).injectMembers(this);
+    GuiceRule.builder(this)
+        .setInputFs(fs)
+        .setModules(modules)
+        .build()
+        .createInjector()
+        .injectMembers(this);
   }
 
   private static void assertTypedef(NominalType type) {

@@ -7,6 +7,8 @@ bazel-js-dossier
 bazel-out
 bazel-testlogs
 buck-out/
+generated/
+generated_tests/
 node_modules/
 out/
 out.zip

@@ -20,35 +20,18 @@ import static com.google.common.truth.Truth.assertAbout;
 import static com.google.common.truth.Truth.assertWithMessage;
 
 import com.github.jsdossier.TypeInspector.InstanceProperty;
-import com.github.jsdossier.annotations.Input;
-import com.github.jsdossier.annotations.ModulePrefix;
-import com.github.jsdossier.annotations.Modules;
-import com.github.jsdossier.annotations.Output;
-import com.github.jsdossier.annotations.SourcePrefix;
-import com.github.jsdossier.annotations.Stderr;
-import com.github.jsdossier.annotations.TypeFilter;
 import com.github.jsdossier.proto.Comment;
 import com.github.jsdossier.proto.Comment.Token;
 import com.github.jsdossier.proto.SourceLink;
 import com.github.jsdossier.testing.CompilerUtil;
 import com.github.jsdossier.testing.GuiceRule;
-import com.google.common.base.Predicate;
-import com.google.common.base.Predicates;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.jimfs.Jimfs;
 import com.google.common.truth.FailureStrategy;
 import com.google.common.truth.Subject;
 import com.google.common.truth.SubjectFactory;
-import com.google.inject.AbstractModule;
-import com.google.inject.Provides;
 import com.google.javascript.rhino.jstype.FunctionType;
 import com.google.javascript.rhino.jstype.JSType;
 import org.junit.Rule;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 
-import java.io.PrintStream;
-import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 
@@ -60,22 +43,11 @@ import javax.inject.Inject;
 public abstract class AbstractTypeInspectorTest {
 
   @Rule
-  public GuiceRule guice = new GuiceRule(this, new AbstractModule() {
-    @Override protected void configure() {
-      install(new CompilerModule());
-    }
-    @Provides @Input FileSystem provideFs() { return fileSystem; }
-    @Provides @Output Path provideOutputDir() { return fileSystem.getPath("/out"); }
-    @Provides @Stderr PrintStream provideStderr() { return System.err; }
-    @Provides @Modules ImmutableSet<Path> provideModules() { return ImmutableSet.of(); }
-    @Provides @ModulePrefix Path provideModulePrefix() { return fileSystem.getPath("/modules"); }
-    @Provides @SourcePrefix Path provideSourcePrefix() { return fileSystem.getPath("/src"); }
-    @Provides @TypeFilter Predicate<NominalType> provideFilter() {
-      return Predicates.alwaysFalse();
-    }
-  });
-
-  private final FileSystem fileSystem = Jimfs.newFileSystem();
+  public GuiceRule guice = GuiceRule.builder(this)
+      .setModulePrefix("/modules")
+      .setSourcePrefix("/src")
+      .setOutputDir("/out")
+      .build();
 
   @Inject protected CompilerUtil util;
   @Inject protected TypeInspector typeInspector;
