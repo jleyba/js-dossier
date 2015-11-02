@@ -10,14 +10,16 @@ java_library(
 )
 
 java_library(
-    name = "auto_value_lib",
+    name = "auto_value",
     exports = ["@auto_value//jar"],
+    exported_plugins = [":auto_value_plugin"],
 )
 
 java_plugin(
     name = "auto_value_plugin",
-     processor_class = "com.google.auto.value.processor.AutoValueProcessor",
-    deps = [":auto_value_lib"],
+    processor_class = "com.google.auto.value.processor.AutoValueProcessor",
+    deps = ["@auto_value//jar"],
+    visibility = ["//visibility:private"],
 )
 
 java_library(

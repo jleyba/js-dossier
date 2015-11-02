@@ -2,7 +2,7 @@ java_library(
     name = "jscomp",
     srcs = glob(["*.java"]),
     deps = [
-        "//lib/maven:auto_value_lib",
+        "//lib/maven:auto_value",
         "//lib/maven:closure_compiler",
         "//lib/maven:guava",
         "//lib/maven:guice",
@@ -10,7 +10,6 @@ java_library(
         "//lib/maven:jsr305",
         "//src/java/com/github/jsdossier/annotations",
     ],
-    plugins = ["//lib/maven:auto_value_plugin"],
     visibility = [
         "//src/java/com/github/jsdossier:__subpackages__",
         "//test/java/com/github/jsdossier:__subpackages__",

@@ -3,7 +3,7 @@ java_library(
     srcs = glob(["*.java"]),
     testonly = 1,
     deps = [
-        "//lib/maven:auto_value_lib",
+        "//lib/maven:auto_value",
         "//lib/maven:closure_compiler",
         "//lib/maven:guava",
         "//lib/maven:guice",
@@ -14,7 +14,6 @@ java_library(
         "//src/java/com/github/jsdossier/annotations",
         "//src/java/com/github/jsdossier/jscomp",
     ],
-    plugins = ["//lib/maven:auto_value_plugin"],
     visibility = [
         "//test/java/com/github/jsdossier:__subpackages__",
     ],
