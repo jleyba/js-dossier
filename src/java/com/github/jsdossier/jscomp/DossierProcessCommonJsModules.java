@@ -26,9 +26,8 @@ import static com.google.javascript.rhino.IR.getprop;
 import static com.google.javascript.rhino.IR.name;
 import static com.google.javascript.rhino.IR.string;
 
+import com.github.jsdossier.annotations.Input;
 import com.google.common.base.Splitter;
-import com.google.javascript.jscomp.AbstractCompiler;
-import com.google.javascript.jscomp.CompilerPass;
 import com.google.javascript.jscomp.DiagnosticType;
 import com.google.javascript.jscomp.NodeTraversal;
 import com.google.javascript.rhino.IR;
@@ -38,12 +37,14 @@ import com.google.javascript.rhino.jstype.JSType;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.nio.file.FileSystem;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import javax.annotation.Nullable;
+import javax.inject.Inject;
 
 /**
  * Processes all files flagged as CommonJS modules by renaming all variables so they may be
@@ -82,7 +83,7 @@ import javax.annotation.Nullable;
  *   foo$$__dossier$$module__bar.sayHi();
  * </code></pre>
  */
-class DossierProcessCommonJsModules implements CompilerPass {
+class DossierProcessCommonJsModules {
 
   // NB: The following errors are forbid situations that complicate type checking.
 
@@ -94,18 +95,23 @@ class DossierProcessCommonJsModules implements CompilerPass {
           "DOSSIER_INVALID_MODULE_EXPORTS_ASSIGNMENT",
           "Multiple assignments to module.exports are not permitted");
 
-  private final AbstractCompiler compiler;
   private final DossierModuleRegistry moduleRegistry;
+  private final TypeRegistry typeRegistry;
+  private final FileSystem inputFs;
 
   private DossierModule currentModule;
 
-  DossierProcessCommonJsModules(DossierCompiler compiler) {
-    this.compiler = compiler;
-    this.moduleRegistry = compiler.getModuleRegistry();
+  @Inject
+  DossierProcessCommonJsModules(
+      DossierModuleRegistry moduleRegistry,
+      TypeRegistry typeRegistry,
+      @Input FileSystem inputFs) {
+    this.moduleRegistry = moduleRegistry;
+    this.typeRegistry = typeRegistry;
+    this.inputFs = inputFs;
   }
-
-  @Override
-  public void process(Node externs, Node root) {
+  
+  public void process(DossierCompiler compiler, Node root) {
     traverseTyped(compiler, root, new CommonJsModuleCallback());
   }
 
@@ -130,6 +136,9 @@ class DossierProcessCommonJsModules implements CompilerPass {
     public boolean shouldTraverse(NodeTraversal t, Node n, Node parent) {
       if (n.isScript()) {
         checkState(currentModule == null);
+        if (typeRegistry.isModule(inputFs.getPath(n.getSourceFileName()))) {
+          return false;
+        }
         if (!moduleRegistry.hasModuleWithPath(n.getSourceFileName())) {
           return false;
         }
@@ -242,7 +251,7 @@ class DossierProcessCommonJsModules implements CompilerPass {
       }
 
       parent.replaceChild(require, name(moduleName).srcrefTree(require));
-      compiler.reportCodeChange();
+      t.getCompiler().reportCodeChange();
     }
   }
 

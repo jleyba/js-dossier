@@ -17,7 +17,10 @@
 package com.github.jsdossier;
 
 import com.github.jsdossier.annotations.Args;
+import com.github.jsdossier.jscomp.AliasTransformListener;
 import com.github.jsdossier.jscomp.DossierCompiler;
+import com.github.jsdossier.jscomp.ProvidedSymbolPass;
+import com.github.jsdossier.jscomp.TypeCollectionPass;
 import com.google.inject.AbstractModule;
 import com.google.inject.Key;
 import com.google.inject.Provides;
@@ -32,16 +35,18 @@ import com.google.javascript.rhino.jstype.JSTypeRegistry;
 /**
  * Defines the bindings for the compiler.
  */
-public final class CompilerModule extends AbstractModule {
+public class CompilerModule extends AbstractModule {
 
   private final String[] compilerArgs;
-
-  public CompilerModule() {
-    this(new String[0]);
-  }
-
-  public CompilerModule(String[] compilerArgs) {
-    this.compilerArgs = compilerArgs;
+  private final CompilerOptions.LanguageMode languageIn;
+  private final CompilerOptions.LanguageMode languageOut;
+  private final boolean newTypeInference;
+  
+  private CompilerModule(Builder builder) {
+    this.compilerArgs = builder.args;
+    this.languageIn = builder.languageIn;
+    this.languageOut = builder.languageOut;
+    this.newTypeInference = builder.newTypeInference;
   }
 
   @Override
@@ -58,9 +63,16 @@ public final class CompilerModule extends AbstractModule {
 
   @Provides
   CompilerOptions provideCompilerOptions(
+      AliasTransformListener transformListener,
       ProvidedSymbolsCollectionPass providedNamespacesPass,
+      ProvidedSymbolPass providedSymbolPass,
+      TypeCollectionPass typeCollectionPass,
       DocPass docPass) {
     CompilerOptions options = new CompilerOptions();
+    
+    options.setNewTypeInference(newTypeInference);
+    options.setLanguageIn(languageIn);
+    options.setLanguageOut(languageOut);
 
     options.setCodingConvention(new ClosureCodingConvention());
     CompilationLevel.ADVANCED_OPTIMIZATIONS.setOptionsForCompilationLevel(options);
@@ -72,10 +84,45 @@ public final class CompilerModule extends AbstractModule {
 
     // For easier debugging.
     options.setPrettyPrint(true);
+    
+    options.setAliasTransformationHandler(transformListener);
 
+    options.addCustomPass(CustomPassExecutionTime.BEFORE_CHECKS, providedSymbolPass);
     options.addCustomPass(CustomPassExecutionTime.BEFORE_CHECKS, providedNamespacesPass);
+    options.addCustomPass(CustomPassExecutionTime.BEFORE_OPTIMIZATIONS, typeCollectionPass);
     options.addCustomPass(CustomPassExecutionTime.BEFORE_OPTIMIZATIONS, docPass);
 
     return options;
+  }
+  
+  public static final class Builder {
+    private String[] args = new String[0];
+    private CompilerOptions.LanguageMode languageIn = CompilerOptions.LanguageMode.ECMASCRIPT5;
+    private CompilerOptions.LanguageMode languageOut = CompilerOptions.LanguageMode.ECMASCRIPT5;
+    private boolean newTypeInference = false;
+    
+    public Builder setArgs(String[] args) {
+      this.args = args;
+      return this;
+    }
+    
+    public Builder setLanguageIn(CompilerOptions.LanguageMode in) {
+      this.languageIn = in;
+      return this;
+    }
+    
+    public Builder setLanguageOut(CompilerOptions.LanguageMode out) {
+      this.languageOut = out;
+      return this;
+    }
+    
+    public Builder setNewTypeInference(boolean set) {
+      this.newTypeInference = set;
+      return this;
+    }
+    
+    public CompilerModule build() {
+      return new CompilerModule(this);
+    }
   }
 }

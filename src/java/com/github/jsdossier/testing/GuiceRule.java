@@ -40,6 +40,7 @@ import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.Module;
 import com.google.inject.Provides;
+import com.google.javascript.jscomp.CompilerOptions;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
@@ -48,8 +49,6 @@ import java.io.PrintStream;
 import java.lang.annotation.Annotation;
 import java.nio.file.FileSystem;
 import java.nio.file.Path;
-
-import javax.inject.Inject;
 
 /**
  * A simple rule for injecting necessary values into an object prior to evaluating a statement.
@@ -61,6 +60,8 @@ public abstract class GuiceRule implements TestRule {
     Builder builder = new AutoValue_GuiceRule.Builder();
     return builder
         .setTarget(target)
+        .setLanguageIn(CompilerOptions.LanguageMode.ECMASCRIPT5)
+        .setNewTypeInference(false)
         .setGuiceModules(ImmutableList.copyOf(modules))
         .setInputFs(Jimfs.newFileSystem())
         .setModulePrefix(Optional.<Path>absent())
@@ -81,9 +82,14 @@ public abstract class GuiceRule implements TestRule {
   abstract Optional<Path> getSourcePrefix();
   abstract ImmutableSet<Path> getModules();
   abstract Predicate<NominalType> getTypeFilter();
+  
+  abstract CompilerOptions.LanguageMode getLanguageIn();
+  abstract boolean getNewTypeInference();
 
   abstract FileSystem getOutputFs();
   abstract Optional<Path> getOutputDir();
+  
+  public abstract Builder toBuilder();
 
   @Override
   public Statement apply(final Statement base, Description description) {
@@ -100,7 +106,10 @@ public abstract class GuiceRule implements TestRule {
   public Injector createInjector() {
     ImmutableList<Module> modules = ImmutableList.<Module>builder()
         .addAll(getGuiceModules())
-        .add(new CompilerModule())
+        .add(new CompilerModule.Builder()
+            .setLanguageIn(getLanguageIn())
+            .setNewTypeInference(getNewTypeInference())
+            .build())
         .add(new AbstractModule() {
           @Override
           protected void configure() {
@@ -161,7 +170,9 @@ public abstract class GuiceRule implements TestRule {
 
     abstract Builder setSourcePrefix(Optional<Path> path);
     abstract Builder setOutputDir(Optional<Path> out);
-
+    
+    public abstract Builder setNewTypeInference(boolean set);
+    public abstract Builder setLanguageIn(CompilerOptions.LanguageMode languageIn);
     public abstract Builder setTypeFilter(Predicate<NominalType> filter);
     public abstract Builder setInputFs(FileSystem fs);
     public abstract FileSystem getInputFs();

@@ -16,10 +16,12 @@
 
 package com.github.jsdossier.testing;
 
+import com.github.jsdossier.jscomp.CallableCompiler;
 import com.github.jsdossier.jscomp.DossierCompiler;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+import com.google.javascript.jscomp.AbstractCommandLineRunner;
 import com.google.javascript.jscomp.CompilerOptions;
 import com.google.javascript.jscomp.JSError;
 import com.google.javascript.jscomp.Result;
@@ -49,10 +51,6 @@ public class CompilerUtil {
     return compiler;
   }
 
-  public Node getRoot() {
-    return compiler.getRoot();
-  }
-
   public String toSource() {
     return compiler.toSource();
   }
@@ -70,6 +68,17 @@ public class CompilerUtil {
   }
 
   public void compile(List<SourceFile> externs, List<SourceFile> inputs) {
+    if (options.getNewTypeInference()) {
+      try {
+        externs = ImmutableList.<SourceFile>builder()
+            .addAll(externs)
+            .addAll(AbstractCommandLineRunner.getBuiltinExterns(options))
+            .build();
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      }
+    }
+
     Result result = compiler.compile(externs, inputs, options);
     assertCompiled(result);
   }

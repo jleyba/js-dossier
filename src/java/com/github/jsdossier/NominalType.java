@@ -103,7 +103,7 @@ public final class NominalType implements StaticTypedScope<JSType> {
 
   @Override
   public String toString() {
-    return String.format("NominalType(%s, %s)", name, typeDescriptor.type);
+    return String.format("NominalType2(%s, %s)", name, typeDescriptor.type);
   }
 
   @Override

@@ -28,34 +28,26 @@ import static org.mockito.Mockito.when;
 
 import com.github.jsdossier.annotations.Input;
 import com.github.jsdossier.annotations.ModulePrefix;
-import com.github.jsdossier.annotations.Modules;
 import com.github.jsdossier.annotations.Output;
 import com.github.jsdossier.annotations.SourcePrefix;
-import com.github.jsdossier.annotations.Stderr;
-import com.github.jsdossier.annotations.TypeFilter;
 import com.github.jsdossier.jscomp.DossierModule;
 import com.github.jsdossier.jscomp.JsDoc;
 import com.github.jsdossier.proto.Comment;
 import com.github.jsdossier.proto.SourceLink;
 import com.github.jsdossier.proto.TypeLink;
 import com.github.jsdossier.testing.CompilerUtil;
+import com.github.jsdossier.testing.GuiceRule;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.jimfs.Jimfs;
-import com.google.inject.AbstractModule;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import com.google.inject.Provides;
 import com.google.javascript.rhino.JSTypeExpression;
 import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.jstype.JSType;
 import com.google.javascript.rhino.jstype.Property;
-import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import java.io.PrintStream;
 import java.nio.file.FileSystem;
 import java.nio.file.Path;
 
@@ -64,23 +56,24 @@ import javax.inject.Inject;
 @RunWith(JUnit4.class)
 public class LinkerTest {
 
-  private final FileSystem fileSystem = Jimfs.newFileSystem();
-  private final Path outputDir = fileSystem.getPath("/root/output");
-  private final Path sourcePrefix = fileSystem.getPath("/sources");
-  private final Path modulePrefix = fileSystem.getPath("/sources/modules");
-
   @SuppressWarnings("unchecked")
   private final Predicate<NominalType> typeFilter = mock(Predicate.class);
 
-  @Inject TypeRegistry typeRegistry;
-  @Inject
-  CompilerUtil util;
-  @Inject Linker linker;
+  @Rule
+  public GuiceRule guice = GuiceRule.builder(this)
+      .setOutputDir("/root/output")
+      .setSourcePrefix("/sources")
+      .setModulePrefix("/sources/modules")
+      .setTypeFilter(typeFilter)
+      .build();
 
-  @Before
-  public void setUp() {
-    createCompiler();
-  }
+  @Inject @Input FileSystem fileSystem;
+  @Inject @Output Path outputDir;
+  @Inject @SourcePrefix Path sourcePrefix;
+  @Inject @ModulePrefix Path modulePrefix;
+  @Inject TypeRegistry typeRegistry;
+  @Inject CompilerUtil util;
+  @Inject Linker linker;
 
   @Test
   public void testGetDisplayName() {
@@ -682,55 +675,10 @@ public class LinkerTest {
   }
 
   private void createCompiler(final Path... modules) {
-    Injector injector = Guice.createInjector(
-        new CompilerModule(),
-        new AbstractModule() {
-          @Override
-          protected void configure() {
-          }
-
-          @Provides
-          @Input
-          FileSystem provideFs() {
-            return fileSystem;
-          }
-
-          @Provides
-          @Stderr
-          PrintStream provideStderr() {
-            return System.err;
-          }
-
-          @Provides
-          @Output
-          Path provideOutput() {
-            return outputDir;
-          }
-
-          @Provides
-          @SourcePrefix
-          Path provideSrcPrefix() {
-            return sourcePrefix;
-          }
-
-          @Provides
-          @ModulePrefix
-          Path provideModulePrefix() {
-            return modulePrefix;
-          }
-
-          @Provides
-          @TypeFilter
-          Predicate<NominalType> provideTypeFilter() {
-            return typeFilter;
-          }
-
-          @Provides
-          @Modules
-          ImmutableSet<Path> provideModules() {
-            return ImmutableSet.copyOf(modules);
-          }
-        });
-    injector.injectMembers(this);
+    guice.toBuilder()
+        .setModules(ImmutableSet.copyOf(modules))
+        .build()
+        .createInjector()
+        .injectMembers(this);
   }
 }

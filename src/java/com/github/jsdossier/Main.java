@@ -15,7 +15,6 @@
  */
 package com.github.jsdossier;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Predicates.not;
 import static com.google.common.collect.Iterables.concat;
 import static com.google.common.collect.Iterables.transform;
@@ -36,7 +35,6 @@ import com.github.jsdossier.annotations.Stdout;
 import com.github.jsdossier.annotations.TypeFilter;
 import com.github.jsdossier.annotations.Types;
 import com.github.jsdossier.jscomp.CallableCompiler;
-import com.github.jsdossier.jscomp.DossierCompiler;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
@@ -53,13 +51,8 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Key;
-import com.google.inject.Provider;
 import com.google.inject.Provides;
 import com.google.inject.TypeLiteral;
-import com.google.javascript.jscomp.CommandLineRunner;
-import com.google.javascript.jscomp.Compiler;
-import com.google.javascript.jscomp.CompilerOptions;
-import com.google.javascript.jscomp.SourceFile;
 import org.joda.time.Instant;
 import org.joda.time.Period;
 import org.joda.time.format.PeriodFormatterBuilder;
@@ -73,14 +66,12 @@ import java.net.URI;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
-import javax.inject.Inject;
 import javax.inject.Qualifier;
 
 final class Main {
@@ -332,7 +323,9 @@ final class Main {
     configureLogging();
 
     Injector injector = Guice.createInjector(
-        new CompilerModule(getCompilerFlags(config)),
+        new CompilerModule.Builder()
+            .setArgs(getCompilerFlags(config))
+            .build(),
         new DossierModule(config, outputDir));
 
     CallableCompiler compiler = injector.getInstance(CallableCompiler.class);

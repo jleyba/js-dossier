@@ -18,17 +18,18 @@ package com.github.jsdossier.jscomp;
 
 import static com.github.jsdossier.testing.CompilerUtil.createSourceFile;
 import static com.google.common.collect.Iterables.getOnlyElement;
+import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import com.github.jsdossier.testing.CompilerUtil;
+import com.github.jsdossier.testing.GuiceRule;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableSet;
-import com.google.javascript.jscomp.ClosureCodingConvention;
-import com.google.javascript.jscomp.CompilationLevel;
-import com.google.javascript.jscomp.CompilerOptions;
+import com.google.common.jimfs.Jimfs;
+import com.google.inject.Injector;
 import com.google.javascript.jscomp.Scope;
 import com.google.javascript.jscomp.SourceFile;
 import com.google.javascript.jscomp.Var;
@@ -41,14 +42,20 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import java.nio.file.FileSystems;
+import java.nio.file.FileSystem;
 import java.nio.file.Path;
+
+import javax.inject.Inject;
 
 /**
  * Tests for {@link DossierProcessCommonJsModules}.
  */
 @RunWith(JUnit4.class)
 public class DossierProcessCommonJsModulesTest {
+  
+  private static final FileSystem FS = Jimfs.newFileSystem();
+  
+  @Inject TypeRegistry typeRegistry;
 
   @Test
   public void doesNotModifySourceIfFileIsNotACommonJsModule() {
@@ -66,6 +73,7 @@ public class DossierProcessCommonJsModulesTest {
     assertEquals(
         "var dossier$$module__foo$bar = {};",
         compiler.toSource().trim());
+    assertIsNodeModule("dossier$$module__foo$bar", "foo/bar.js");
   }
 
   @Test
@@ -78,6 +86,7 @@ public class DossierProcessCommonJsModulesTest {
             "var dossier$$module__foo$bar = {};",
             "dossier$$module__foo$bar.x = 123;"),
         compiler.toSource().trim());
+    assertIsNodeModule("dossier$$module__foo$bar", "foo/bar.js");
   }
 
   @Test
@@ -93,6 +102,7 @@ public class DossierProcessCommonJsModulesTest {
             "var dossier$$module__foo$bar = {};",
             "dossier$$module__foo$bar.x = 123;"),
         compiler.toSource().trim());
+    assertIsNodeModule("dossier$$module__foo$bar", "foo/bar.js");
   }
 
   @Test
@@ -103,6 +113,7 @@ public class DossierProcessCommonJsModulesTest {
     assertEquals(
         "var dossier$$module__foo$bar = 123;",
         compiler.toSource().trim());
+    assertIsNodeModule("dossier$$module__foo$bar", "foo/bar.js");
   }
 
   @Test
@@ -117,6 +128,7 @@ public class DossierProcessCommonJsModulesTest {
             "var dossier$$module__foo$bar = {};",
             "$jscomp.scope.x = 123;"),
         compiler.toSource().trim());
+    assertIsNodeModule("dossier$$module__foo$bar", "foo/bar.js");
   }
 
   @Test
@@ -133,6 +145,7 @@ public class DossierProcessCommonJsModulesTest {
             "  var x = 123;",
             "};"),
         compiler.toSource().trim());
+    assertIsNodeModule("dossier$$module__foo$bar", "foo/bar.js");
   }
 
   @Test
@@ -148,6 +161,7 @@ public class DossierProcessCommonJsModulesTest {
             "$jscomp.scope.foo = function() {",
             "};"),
         compiler.toSource().trim());
+    assertIsNodeModule("dossier$$module__foo$bar", "foo/bar.js");
   }
 
   @Test
@@ -163,6 +177,7 @@ public class DossierProcessCommonJsModulesTest {
             "$jscomp.scope.foo = function() {",
             "};"),
         compiler.toSource().trim());
+    assertIsNodeModule("dossier$$module__foo$bar", "foo/bar.js");
   }
 
   @Test
@@ -180,6 +195,8 @@ public class DossierProcessCommonJsModulesTest {
             "var dossier$$module__foo$leaf = {};",
             "dossier$$module__foo$root;"),
         compiler.toSource().trim());
+    assertIsNodeModule("dossier$$module__foo$leaf", "foo/leaf.js");
+    assertIsNodeModule("dossier$$module__foo$root", "foo/root.js");
   }
 
   @Test
@@ -203,6 +220,9 @@ public class DossierProcessCommonJsModulesTest {
             "dossier$$module__foo$one;",
             "dossier$$module__foo$three;"),
         compiler.toSource().trim());
+    assertIsNodeModule("dossier$$module__foo$one", "foo/one.js");
+    assertIsNodeModule("dossier$$module__foo$two", "foo/two.js");
+    assertIsNodeModule("dossier$$module__foo$three", "foo/three.js");
   }
 
   @Test
@@ -222,19 +242,15 @@ public class DossierProcessCommonJsModulesTest {
             "var dossier$$module__foo$leaf = {};",
             "dossier$$module__foo$root.bar(dossier$$module__foo$root);"),
         compiler.toSource().trim());
+    assertIsNodeModule("dossier$$module__foo$leaf", "foo/leaf.js");
+    assertIsNodeModule("dossier$$module__foo$root", "foo/root.js");
   }
 
   @Test
   public void rewritesRequireStatementsForExternModuleDefinitions() {
-    DossierCompiler compiler = new DossierCompiler(
-        System.err,
-        new DossierModuleRegistry(ImmutableSet.of(path("foo/module.js"))));
-    CompilerOptions options = new CompilerOptions();
-    options.setClosurePass(true);
-    options.setPrettyPrint(true);
-    CompilerUtil util = new CompilerUtil(compiler, options);
+    CompilerUtil compiler = createCompiler(path("foo/module.js"));
 
-    util.compile(
+    compiler.compile(
         createSourceFile(path("foo/module.js"),
             "var http = require('http');",
             "http.doSomething();"));
@@ -243,7 +259,8 @@ public class DossierProcessCommonJsModulesTest {
         lines(
             "var dossier$$module__foo$module = {};",
             "dossier$$extern__http.doSomething();"),
-        util.toSource().trim());
+        compiler.toSource().trim());
+    assertIsNodeModule("dossier$$module__foo$module", "foo/module.js");
   }
 
   @Test
@@ -893,23 +910,21 @@ public class DossierProcessCommonJsModulesTest {
         util.toSource().trim()
     );
   }
+  
+  private void assertIsNodeModule(String id, String path) {
+    Module module = typeRegistry.getModule(id);
+    assertThat(module.getPath().toString()).isEqualTo(path);
+    assertThat(module.getType()).isEqualTo(Module.Type.NODE);
+  }
 
-  private static CompilerUtil createCompiler(final Path... commonJsModules) {
-    CompilerOptions options = new CompilerOptions();
-    options.setCodingConvention(new ClosureCodingConvention());
-    options.setIdeMode(true);
-    options.setClosurePass(true);
-    options.setPrettyPrint(true);
-    options.setCheckTypes(true);
-    options.setCheckSymbols(true);
-    CompilationLevel.ADVANCED_OPTIMIZATIONS.setOptionsForCompilationLevel(options);
-    CompilationLevel.ADVANCED_OPTIMIZATIONS.setTypeBasedOptimizationOptions(options);
-
-    DossierCompiler compiler = new DossierCompiler(
-        System.err,
-        new DossierModuleRegistry(ImmutableSet.copyOf(commonJsModules)));
-
-    return new CompilerUtil(compiler, options);
+  private CompilerUtil createCompiler(final Path... modules) {
+    Injector injector = GuiceRule.builder(new Object())
+        .setInputFs(FS)
+        .setModules(ImmutableSet.copyOf(modules))
+        .build()
+        .createInjector();
+    injector.injectMembers(this);
+    return injector.getInstance(CompilerUtil.class);
   }
 
   private static String lines(String... lines) {
@@ -917,6 +932,6 @@ public class DossierProcessCommonJsModulesTest {
   }
 
   private static Path path(String first, String... remaining) {
-    return FileSystems.getDefault().getPath(first, remaining);
+    return FS.getPath(first, remaining);
   }
 }

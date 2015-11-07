@@ -171,14 +171,17 @@ public class TypeRegistry {
     }
 
     // If there are any known subtypes (e.g. |type| is an alias), register them for future lookup.
-    registerModuleTypes(qualifiedName, type.getTypes());
+    registerModuleTypes(qualifiedName, type.getTypes(), new HashSet<NominalType>());
   }
 
-  private void registerModuleTypes(String baseName, Iterable<NominalType> types) {
+  private void registerModuleTypes(
+      String baseName, Iterable<NominalType> types, Set<NominalType> seen) {
     for (NominalType type : types) {
       String name = baseName + "." + type.getName();
       nameToModuleTypes.put(name, type);
-      registerModuleTypes(name, type.getTypes());
+      if (!seen.add(type)) {
+        registerModuleTypes(name, type.getTypes(), seen);
+      }
     }
   }
 
