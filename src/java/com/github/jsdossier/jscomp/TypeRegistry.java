@@ -48,7 +48,6 @@ import java.util.Set;
 
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nullable;
-import javax.inject.Inject;
 import javax.inject.Singleton;
 
 /**
@@ -56,8 +55,6 @@ import javax.inject.Singleton;
  */
 @Singleton
 public final class TypeRegistry {
-
-  private final FileSystem inputFs;
 
   private final Set<String> providedSymbols = new HashSet<>();
   private final Set<String> implicitNamespaces = new HashSet<>();
@@ -75,11 +72,6 @@ public final class TypeRegistry {
         }
       });
   
-  @Inject
-  TypeRegistry(@Input FileSystem inputFs) {
-    this.inputFs = inputFs;
-  }
-
   /**
    * Records a region of a file that defines variable aliases.
    */
