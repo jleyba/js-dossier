@@ -21,6 +21,7 @@ import static com.google.javascript.jscomp.NodeTraversal.traverseEs6;
 
 import com.github.jsdossier.annotations.Input;
 import com.github.jsdossier.annotations.Stderr;
+import com.google.common.collect.Range;
 import com.google.javascript.jscomp.Compiler;
 import com.google.javascript.jscomp.CompilerInput;
 import com.google.javascript.jscomp.ES6ModuleLoader;
@@ -29,7 +30,6 @@ import com.google.javascript.rhino.Node;
 
 import java.io.PrintStream;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.nio.file.FileSystem;
 import java.nio.file.Path;
 
@@ -44,26 +44,22 @@ public final class DossierCompiler extends Compiler {
   private final DossierModuleRegistry moduleRegistry;
   private final TypeRegistry typeRegistry;
   private final FileSystem inputFs;
+  private final AliasTransformListener aliasTransformListener;
+
   private boolean hasParsed = false;
 
-  /**
-   * Creates a new compiler that reports errors and warnings to an output stream.
-   *
-   * @param stream the output stream.
-   * @param moduleRegistry the module registry to use.
-   * @param typeRegistry registry for documented types.
-   * @param inputFs the input file system.
-   */
   @Inject
   DossierCompiler(
       @Stderr PrintStream stream,
       DossierModuleRegistry moduleRegistry,
       TypeRegistry typeRegistry,
-      @Input FileSystem inputFs) {
+      @Input FileSystem inputFs,
+      AliasTransformListener aliasTransformListener) {
     super(stream);
     this.moduleRegistry = moduleRegistry;
     this.typeRegistry = typeRegistry;
     this.inputFs = inputFs;
+    this.aliasTransformListener = aliasTransformListener;
   }
 
   public DossierModuleRegistry getModuleRegistry() {
@@ -118,6 +114,14 @@ public final class DossierCompiler extends Compiler {
               .setType(Module.Type.ES6)
               .setJsDoc(findScriptJsDoc(n))
               .build());
+
+          // The compiler does not generate alias notifications when it rewrites an ES6 module,
+          // so we register a region here.
+          AliasRegion region = AliasRegion.builder()
+              .setPath(path)
+              .setRange(Range.atLeast(Position.of(0, 0)))
+              .build();
+          typeRegistry.addAliasRegion(region);
         }
       }
     });

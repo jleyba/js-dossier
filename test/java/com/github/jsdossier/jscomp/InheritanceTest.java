@@ -21,6 +21,7 @@ import static com.google.common.truth.Truth.assertThat;
 
 import com.github.jsdossier.testing.CompilerUtil;
 import com.github.jsdossier.testing.GuiceRule;
+import com.google.javascript.jscomp.CompilerOptions;
 import com.google.javascript.rhino.jstype.FunctionType;
 import com.google.javascript.rhino.jstype.JSType;
 import com.google.javascript.rhino.jstype.JSTypeRegistry;
@@ -41,7 +42,9 @@ import javax.inject.Inject;
 public class InheritanceTest {
 
   @Rule
-  public GuiceRule guice = GuiceRule.builder(this).build();
+  public GuiceRule guice = GuiceRule.builder(this)
+      .setLanguageIn(CompilerOptions.LanguageMode.ECMASCRIPT6_STRICT)
+      .build();
 
   @Inject CompilerUtil util;
   @Inject TypeRegistry typeRegistry;

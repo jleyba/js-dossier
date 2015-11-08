@@ -28,7 +28,6 @@ import com.google.common.collect.MultimapBuilder;
 import com.google.common.collect.Multimaps;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.JSTypeExpression;
-import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.jstype.FunctionType;
 import com.google.javascript.rhino.jstype.JSType;
 import com.google.javascript.rhino.jstype.JSTypeRegistry;
@@ -89,23 +88,26 @@ public final class TypeRegistry {
   }
 
   /**
-   * Resolves an alias created by the compiler.
+   * Returns the alias regions defined for the file with the given path.
+   */
+  public Collection<AliasRegion> getAliasRegions(Path path) {
+    return aliasRegions.get(path);
+  }
+
+  /**
+   * Resolves an alias created by the compiler relative to the given type.
    *
-   * @param node the point of reference for the alias to resolve.
+   * @param type the point of reference for the alias to resolve.
    * @param key the alias to resolve.
    * @return the resolved alias, or null if none is defined.
    */
-  @Nullable
-  @CheckReturnValue
-  public String resolveAlias(Node node, String key) {
-    Path path = inputFs.getPath(node.getSourceFileName());
-    if (!aliasRegions.containsKey(path)) {
+  public String resolveAlias(NominalType2 type, String key) {
+    if (!aliasRegions.containsKey(type.getSourceFile())) {
       return null;
     }
 
-    Position position = Position.of(node.getLineno(), node.getCharno());
-    for (AliasRegion region : aliasRegions.get(path)) {
-      if (region.getRange().contains(position)) {
+    for (AliasRegion region : aliasRegions.get(type.getSourceFile())) {
+      if (region.getRange().contains(type.getSourcePosition())) {
         String def = region.resolveAlias(key);
         if (def != null) {
           return def;
@@ -239,6 +241,15 @@ public final class TypeRegistry {
     return Collections.unmodifiableCollection(typesByName.values());
   }
   
+  @Nullable
+  @CheckReturnValue
+  public NominalType2 resolveType(String name) {
+    if (typesByName.containsKey(name)) {
+      return typesByName.get(name);
+    }
+    return null;
+  }
+  
   public List<JSType> getTypeHierarchy(JSType type, JSTypeRegistry jsRegistry) {
     List<JSType> stack = new ArrayList<>();
     for (; type != null; type = getBaseType(type, jsRegistry)) {
@@ -267,9 +278,7 @@ public final class TypeRegistry {
       if (typesByName.containsKey(name)) {
         return typesByName.get(name).getType();
       }
-//      if (nameToModuleTypes.containsKey(name)) {
-//        return nameToModuleTypes.get(name).getJsType();
-//      }
+      throw new AssertionError("Need to resolve " + name);
     }
     return type;
   }

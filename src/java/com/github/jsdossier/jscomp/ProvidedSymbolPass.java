@@ -122,40 +122,4 @@ public final class ProvidedSymbolPass implements CompilerPass {
     }
     return checkNotNull(n);
   }
-
-  private static boolean isTopLevelAssign(Node n) {
-    return n.isAssign()
-        && n.getParent().isExprResult()
-        && n.getParent().getParent().isScript();
-  }
-  
-  private static final class ExportedNameCollector extends NodeTraversal.AbstractShallowCallback {
-    private final Module module;
-    private final Set<Node> exportAssignments = new HashSet<>();
-
-    private ExportedNameCollector(Module module) {
-      this.module = module;
-    }
-
-    @Override
-    public void visit(NodeTraversal t, Node n, Node parent) {
-      if (isTopLevelAssign(n)) {
-        String name = n.getFirstChild().getQualifiedName();
-        if (!isNullOrEmpty(name) && ("exports".equals(name) || name.startsWith("exports."))) {
-          exportAssignments.add(n);
-        }
-      }
-      
-      // Handle a function declaration within the module's main body.
-      if (n.isScript()) {
-        for (Node ref : exportAssignments) {
-          String rhsName = ref.getLastChild().getQualifiedName();
-          if (isNullOrEmpty(rhsName)) {
-            continue;
-          }
-          String lhsName = ref.getFirstChild().getQualifiedName();
-        }
-      }
-    }
-  }
 }

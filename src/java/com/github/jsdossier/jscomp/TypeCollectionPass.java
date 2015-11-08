@@ -280,8 +280,18 @@ public final class TypeCollectionPass implements CompilerPass {
       }
       
       if (type.getName().contains("$$")) {
-        String id = type.getName().substring(type.getName().indexOf("$$") + 2);
+        int index = type.getName().indexOf("$$");
+        String id = type.getName().substring(index + 2);
         if (typeRegistry.isModule(id)) {
+          Module module = typeRegistry.getModule(id);
+          if (module.getType() == Module.Type.ES6) {
+            for (AliasRegion region : typeRegistry.getAliasRegions(type.getSourceFile())) {
+              if (region.getRange().contains(type.getSourcePosition())) {
+                String alias = type.getName().substring(0, index);
+                region.addAlias(alias, type.getName());
+              }
+            }
+          }
           System.out.println("Skipping module alias: " + type.getName());
           return;
         }

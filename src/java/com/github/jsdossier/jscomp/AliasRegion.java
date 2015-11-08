@@ -46,7 +46,7 @@ public abstract class AliasRegion implements CompilerOptions.AliasTransformation
 
   @Override
   public void addAlias(String alias, String definition) {
-    System.out.println("In " + getPath() + " " + alias + " = " + definition);
+    System.out.println("In " + getPath() + " " + alias + " = " + definition + " (" + getRange() + ")");
     aliases.put(alias, definition);
   }
 
