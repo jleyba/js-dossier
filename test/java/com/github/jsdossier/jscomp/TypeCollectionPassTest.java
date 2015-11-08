@@ -45,7 +45,7 @@ public class TypeCollectionPassTest {
 
   @Inject @Input private FileSystem fs;
   @Inject private CompilerUtil util;
-  @Inject private TypeRegistry typeRegistry;
+  @Inject private TypeRegistry2 typeRegistry;
   
   @Test
   public void collectsGlobalClasses_functionDeclaration() {

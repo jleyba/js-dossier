@@ -79,7 +79,7 @@ public abstract class NominalType2 {
    */
   @Nullable
   @CheckReturnValue
-  public NominalType2 resolveType(String name, TypeRegistry typeRegistry) {
+  public NominalType2 resolveType(String name, TypeRegistry2 typeRegistry) {
     String def = typeRegistry.resolveAlias(this, name);
     if (def != null) {
       name = def;

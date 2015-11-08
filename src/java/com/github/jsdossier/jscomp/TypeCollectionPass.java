@@ -66,13 +66,13 @@ public final class TypeCollectionPass implements CompilerPass {
   private static final Logger log = Logger.getLogger(TypeCollectionPass.class.getName());
 
   private final DossierCompiler compiler;
-  private final TypeRegistry typeRegistry;
+  private final TypeRegistry2 typeRegistry;
   private final FileSystem inputFs;
 
   @Inject
   TypeCollectionPass(
       DossierCompiler compiler,
-      TypeRegistry typeRegistry,
+      TypeRegistry2 typeRegistry,
       @Input FileSystem inputFs) {
     this.compiler = compiler;
     this.typeRegistry = typeRegistry;

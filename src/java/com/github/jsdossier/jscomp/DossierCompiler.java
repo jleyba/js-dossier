@@ -42,7 +42,7 @@ import javax.inject.Inject;
 public final class DossierCompiler extends Compiler {
 
   private final DossierModuleRegistry moduleRegistry;
-  private final TypeRegistry typeRegistry;
+  private final TypeRegistry2 typeRegistry;
   private final FileSystem inputFs;
   private final AliasTransformListener aliasTransformListener;
 
@@ -52,7 +52,7 @@ public final class DossierCompiler extends Compiler {
   DossierCompiler(
       @Stderr PrintStream stream,
       DossierModuleRegistry moduleRegistry,
-      TypeRegistry typeRegistry,
+      TypeRegistry2 typeRegistry,
       @Input FileSystem inputFs,
       AliasTransformListener aliasTransformListener) {
     super(stream);

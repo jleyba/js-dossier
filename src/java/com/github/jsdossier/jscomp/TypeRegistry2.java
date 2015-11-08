@@ -54,7 +54,7 @@ import javax.inject.Singleton;
  * Dossier's internal type registry.
  */
 @Singleton
-public final class TypeRegistry {
+public final class TypeRegistry2 {
 
   private final Set<String> providedSymbols = new HashSet<>();
   private final Set<String> implicitNamespaces = new HashSet<>();

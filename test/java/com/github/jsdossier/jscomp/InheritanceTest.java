@@ -47,7 +47,8 @@ public class InheritanceTest {
       .build();
 
   @Inject CompilerUtil util;
-  @Inject TypeRegistry typeRegistry;
+  @Inject
+  TypeRegistry2 typeRegistry;
   @Inject JSTypeRegistry jsRegistry;
 
   @Test

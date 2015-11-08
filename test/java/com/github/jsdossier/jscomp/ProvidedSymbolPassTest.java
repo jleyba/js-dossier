@@ -40,7 +40,7 @@ public class ProvidedSymbolPassTest {
   public GuiceRule guiceRule = GuiceRule.builder(this).build();
 
   @Inject @Input private FileSystem fs; 
-  @Inject private TypeRegistry typeRegistry;
+  @Inject private TypeRegistry2 typeRegistry;
   @Inject private CompilerUtil util;
 
   @Test
@@ -74,7 +74,7 @@ public class ProvidedSymbolPassTest {
         "exports = internalObj;",
         "",
         "module.exports = 'foo';"
-        );
+    );
     
     assertThat(typeRegistry.getProvidedSymbols()).containsExactly("sample.module");
     assertThat(typeRegistry.getImplicitNamespaces()).containsExactly("sample", "sample.module");
@@ -150,7 +150,7 @@ public class ProvidedSymbolPassTest {
 ////    DossierCompiler compiler = new DossierCompiler(System.err,
 ////        new DossierModuleRegistry(
 ////            fileSystem, ImmutableSet.of(fileSystem.getPath("/module/foo.js"))));
-////    typeRegistry = new TypeRegistry(compiler.getTypeRegistry());
+////    typeRegistry = new TypeRegistry2(compiler.getTypeRegistry());
 ////    ProvidedSymbolsCollectionPass pass = new ProvidedSymbolsCollectionPass(
 ////        compiler, typeRegistry, fileSystem);
 ////    util = new CompilerUtil(compiler, createOptions(pass));

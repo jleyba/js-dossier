@@ -96,7 +96,7 @@ class DossierProcessCommonJsModules {
           "Multiple assignments to module.exports are not permitted");
 
   private final DossierModuleRegistry moduleRegistry;
-  private final TypeRegistry typeRegistry;
+  private final TypeRegistry2 typeRegistry;
   private final FileSystem inputFs;
 
   private DossierModule currentModule;
@@ -104,7 +104,7 @@ class DossierProcessCommonJsModules {
   @Inject
   DossierProcessCommonJsModules(
       DossierModuleRegistry moduleRegistry,
-      TypeRegistry typeRegistry,
+      TypeRegistry2 typeRegistry,
       @Input FileSystem inputFs) {
     this.moduleRegistry = moduleRegistry;
     this.typeRegistry = typeRegistry;

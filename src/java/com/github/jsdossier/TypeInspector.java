@@ -26,6 +26,7 @@ import com.github.jsdossier.jscomp.JsDoc;
 import com.github.jsdossier.jscomp.JsDoc.Annotation;
 import com.github.jsdossier.jscomp.JsDoc.TypedDescription;
 import com.github.jsdossier.jscomp.Parameter;
+import com.github.jsdossier.jscomp.TypeRegistry2;
 import com.github.jsdossier.proto.BaseProperty;
 import com.github.jsdossier.proto.Comment;
 import com.github.jsdossier.proto.Function;
@@ -66,12 +67,18 @@ final class TypeInspector {
   private final Linker linker;
   private final CommentParser parser;
   private final TypeRegistry typeRegistry;
+  private final TypeRegistry2 registry;
 
   @Inject
-  TypeInspector(Linker linker, CommentParser parser, TypeRegistry typeRegistry) {
+  TypeInspector(
+      Linker linker,
+      CommentParser parser,
+      TypeRegistry typeRegistry,
+      TypeRegistry2 registry) {
     this.linker = linker;
     this.parser = parser;
     this.typeRegistry = typeRegistry;
+    this.registry = registry;
   }
 
   /**

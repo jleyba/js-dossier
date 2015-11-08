@@ -18,12 +18,10 @@ package com.github.jsdossier.jscomp;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Strings.isNullOrEmpty;
-import static com.google.javascript.jscomp.NodeTraversal.traverse;
 import static com.google.javascript.jscomp.NodeTraversal.traverseEs6;
 
 import com.github.jsdossier.annotations.Input;
 import com.github.jsdossier.annotations.Modules;
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableSet;
 import com.google.javascript.jscomp.CodingConvention;
 import com.google.javascript.jscomp.CompilerPass;
@@ -34,8 +32,6 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.nio.file.FileSystem;
 import java.nio.file.Path;
-import java.util.HashSet;
-import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -48,14 +44,14 @@ public final class ProvidedSymbolPass implements CompilerPass {
   private final FileSystem inputFs;
   private final ImmutableSet<Path> nodeModules;
   private final DossierCompiler compiler;
-  private final TypeRegistry typeRegistry;
+  private final TypeRegistry2 typeRegistry;
   
   @Inject
   ProvidedSymbolPass(
       @Input FileSystem inputFs,
       @Modules ImmutableSet<Path> nodeModules,
       DossierCompiler compiler,
-      TypeRegistry typeRegistry) {
+      TypeRegistry2 typeRegistry) {
     this.inputFs = inputFs;
     this.nodeModules = nodeModules;
     this.compiler = compiler;

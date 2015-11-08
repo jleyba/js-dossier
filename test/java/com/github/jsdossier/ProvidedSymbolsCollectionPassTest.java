@@ -135,7 +135,7 @@ public class ProvidedSymbolsCollectionPassTest {
 //    DossierCompiler compiler = new DossierCompiler(System.err,
 //        new DossierModuleRegistry(
 //            fileSystem, ImmutableSet.of(fileSystem.getPath("/module/foo.js"))));
-//    typeRegistry = new TypeRegistry(compiler.getTypeRegistry());
+//    typeRegistry = new TypeRegistry2(compiler.getTypeRegistry());
 //    ProvidedSymbolsCollectionPass pass = new ProvidedSymbolsCollectionPass(
 //        compiler, typeRegistry, fileSystem);
 //    util = new CompilerUtil(compiler, createOptions(pass));

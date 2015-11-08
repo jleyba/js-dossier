@@ -55,7 +55,8 @@ public class DossierProcessCommonJsModulesTest {
   
   private static final FileSystem FS = Jimfs.newFileSystem();
   
-  @Inject TypeRegistry typeRegistry;
+  @Inject
+  TypeRegistry2 typeRegistry;
 
   @Test
   public void doesNotModifySourceIfFileIsNotACommonJsModule() {

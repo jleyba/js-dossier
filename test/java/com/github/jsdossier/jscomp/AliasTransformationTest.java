@@ -44,7 +44,7 @@ public class AliasTransformationTest {
       .build();
 
   @Inject @Input private FileSystem inputFs;
-  @Inject private TypeRegistry typeRegistry;
+  @Inject private TypeRegistry2 typeRegistry;
   @Inject private CompilerUtil util;
   
   @Test
