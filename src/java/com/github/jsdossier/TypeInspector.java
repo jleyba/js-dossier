@@ -25,6 +25,7 @@ import static com.google.common.collect.Iterables.transform;
 import com.github.jsdossier.jscomp.JsDoc;
 import com.github.jsdossier.jscomp.JsDoc.Annotation;
 import com.github.jsdossier.jscomp.JsDoc.TypedDescription;
+import com.github.jsdossier.jscomp.NominalType2;
 import com.github.jsdossier.jscomp.Parameter;
 import com.github.jsdossier.jscomp.TypeRegistry2;
 import com.github.jsdossier.proto.BaseProperty;
@@ -48,6 +49,7 @@ import com.google.javascript.rhino.jstype.Property;
 import com.google.javascript.rhino.jstype.TemplatizedType;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -86,6 +88,37 @@ final class TypeInspector {
    * classes and interfaces, this will return information on the <em>static</em> properties, not
    * instance properties.
    */
+  public Report inspectType(NominalType2 nominalType) {
+    List<Property> properties = getProperties(nominalType.getType());
+    Collections.sort(properties, new PropertyNameComparator());
+    
+    Report report = new Report();
+    
+    for (Property property : properties) {
+    }
+
+    return report;
+  }
+  
+  private List<Property> getProperties(JSType type) {
+    checkArgument(type.isObject());
+    ObjectType object = ObjectType.cast(type);
+    boolean isFunction = type.isFunctionType();
+    List<Property> properties = new ArrayList<>();
+    for (String name : object.getOwnPropertyNames()) {
+      if (isFunction
+          && !"apply".equals(name)
+          && !"bind".equals(name)
+          && !"call".equals(name)
+          && !"prototype".equals(name)) {
+        properties.add(object.getOwnSlot(name));
+      } else if (!"prototype".equals(name)) {
+        properties.add(object.getOwnSlot(name));
+      }
+    }
+    return properties;
+  }
+
   public Report inspectType(NominalType nominalType) {
     ImmutableList<Property> properties = FluentIterable.from(nominalType.getProperties())
         .toSortedList(new PropertyNameComparator());

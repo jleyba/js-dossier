@@ -89,7 +89,7 @@ class Config {
   private final ImmutableSet<Path> excludes;
   private final ImmutableSet<Pattern> typeFilters;
   private final Path srcPrefix;
-  private final Path modulePrefix;
+  private final Optional<Path> modulePrefix;
   private final Path output;
   private final Optional<Path> readme;
   private final ImmutableList<MarkdownPage> customPages;
@@ -151,7 +151,7 @@ class Config {
     this.srcs = srcs;
     this.modules = modules;
     this.srcPrefix = getSourcePrefixPath(fileSystem, srcs, modules);
-    this.modulePrefix = getModulePreixPath(fileSystem, modulePrefix, modules);
+    this.modulePrefix = modulePrefix;
     this.externs = externs;
     this.excludes = excludes;
     this.typeFilters = typeFilters;
@@ -185,9 +185,9 @@ class Config {
   }
 
   /**
-   * Returns the common path prefix for all of the input modules.
+   * Returns the user-specified module prefix to use for input modules.
    */
-  Path getModulePrefix() {
+  Optional<Path> getModulePrefix() {
     return modulePrefix;
   }
 
@@ -322,33 +322,6 @@ class Config {
       prefix = prefix.getParent();
     }
     return prefix;
-  }
-
-  private static Path getModulePreixPath(
-      FileSystem fileSystem, Optional<Path> userSupplierPath, ImmutableSet<Path> modules) {
-    Path path;
-    if (userSupplierPath.isPresent()) {
-      path = userSupplierPath.get();
-      checkArgument(isDirectory(path), "Module prefix must be a directory: %s", path);
-      for (Path module : modules) {
-        checkArgument(module.startsWith(path),
-            "Module prefix <%s> is not an ancestor of module %s", path, module);
-      }
-    } else {
-      path = Paths.getCommonPrefix(fileSystem.getPath("").toAbsolutePath(), modules);
-      if (modules.contains(path) && path.getParent() != null) {
-        path = path.getParent();
-      }
-    }
-
-    // Always display at least one parent directory, if possible.
-    for (Path module : modules) {
-      if (path.equals(module.getParent())) {
-        return firstNonNull(path.getParent(), path);
-      }
-    }
-
-    return path;
   }
 
   private static boolean isZipFile(Path path) {

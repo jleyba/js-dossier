@@ -156,6 +156,13 @@ public final class TypeRegistry2 {
   }
 
   /**
+   * Returns all registered modules.
+   */
+  public Collection<Module> getAllModules() {
+    return Collections.unmodifiableCollection(modulesById.values());
+  }
+
+  /**
    * Records a symbol declared by a "goog.provide" statement.
    */
   public void recordProvide(String symbol) {

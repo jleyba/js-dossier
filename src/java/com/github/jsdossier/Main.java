@@ -138,7 +138,11 @@ final class Main {
       bind(new TypeLiteral<ImmutableList<MarkdownPage>>(){})
           .toInstance(config.getCustomPages());
 
-      bind(Path.class).annotatedWith(ModulePrefix.class).toInstance(config.getModulePrefix());
+      bind(Key.get(new TypeLiteral<Optional<Path>>() {}, ModulePrefix.class))
+          .toInstance(config.getModulePrefix());
+      bind(Key.get(Path.class, ModulePrefix.class))
+          .toProvider(ModulePrefixProvider.class)
+          .in(DocumentationScoped.class);
       bind(Path.class).annotatedWith(SourcePrefix.class).toInstance(config.getSrcPrefix());
 
       bind(Path.class).annotatedWith(Output.class).toInstance(outputDir);

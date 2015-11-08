@@ -25,7 +25,7 @@ import javax.annotation.Nonnull;
  * Represents a position in a file.
  */
 @AutoValue
-abstract class Position implements Comparable<Position> {
+public abstract class Position implements Comparable<Position> {
 
   public static Position fromStart(SourcePosition<?> pos) {
     return new AutoValue_Position.Builder()
@@ -47,6 +47,9 @@ abstract class Position implements Comparable<Position> {
         .setOffset(offset)
         .build();
   }
+  
+  // Package-private to prevent extensions.
+  Position() {}
 
   /**
    * The line in the file.

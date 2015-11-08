@@ -20,6 +20,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 
 import com.github.jsdossier.CompilerModule;
 import com.github.jsdossier.NominalType;
+import com.github.jsdossier.annotations.DocumentationScoped;
 import com.github.jsdossier.annotations.Input;
 import com.github.jsdossier.annotations.ModulePrefix;
 import com.github.jsdossier.annotations.Modules;
@@ -40,6 +41,7 @@ import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.Module;
 import com.google.inject.Provides;
+import com.google.inject.Scopes;
 import com.google.javascript.jscomp.CompilerOptions;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
@@ -118,6 +120,7 @@ public abstract class GuiceRule implements TestRule {
             bind(Path.class, ModulePrefix.class, getModulePrefix());
             bind(Path.class, SourcePrefix.class, getSourcePrefix());
             bind(Path.class, Output.class, getOutputDir());
+            bindScope(DocumentationScoped.class, Scopes.NO_SCOPE);
           }
 
           @Provides
