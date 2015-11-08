@@ -68,6 +68,7 @@ public abstract class GuiceRule implements TestRule {
         .setSourcePrefix(Optional.<Path>absent())
         .setModules(ImmutableSet.<Path>of())
         .setTypeFilter(Predicates.<NominalType>alwaysFalse())
+        .setTypeNameFilter(Predicates.<String>alwaysFalse())
 
         .setOutputFs(Jimfs.newFileSystem())
         .setOutputDir(Optional.<Path>absent())
@@ -82,6 +83,7 @@ public abstract class GuiceRule implements TestRule {
   abstract Optional<Path> getSourcePrefix();
   abstract ImmutableSet<Path> getModules();
   abstract Predicate<NominalType> getTypeFilter();
+  abstract Predicate<String> getTypeNameFilter();
   
   abstract CompilerOptions.LanguageMode getLanguageIn();
   abstract boolean getNewTypeInference();
@@ -143,6 +145,12 @@ public abstract class GuiceRule implements TestRule {
           }
 
           @Provides
+          @TypeFilter
+          Predicate<String> provideTypeNameFilter() {
+            return getTypeNameFilter();
+          }
+
+          @Provides
           @Modules
           ImmutableSet<Path> provideModuels() {
             return getModules();
@@ -174,6 +182,7 @@ public abstract class GuiceRule implements TestRule {
     public abstract Builder setNewTypeInference(boolean set);
     public abstract Builder setLanguageIn(CompilerOptions.LanguageMode languageIn);
     public abstract Builder setTypeFilter(Predicate<NominalType> filter);
+    public abstract Builder setTypeNameFilter(Predicate<String> filter);
     public abstract Builder setInputFs(FileSystem fs);
     public abstract FileSystem getInputFs();
     

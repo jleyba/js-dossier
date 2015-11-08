@@ -22,8 +22,10 @@ import static com.google.common.base.Verify.verify;
 import static com.google.javascript.jscomp.NodeTraversal.traverseEs6;
 
 import com.github.jsdossier.annotations.Input;
+import com.github.jsdossier.annotations.TypeFilter;
 import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
+import com.google.common.base.Predicate;
 import com.google.javascript.jscomp.CompilerPass;
 import com.google.javascript.jscomp.NodeTraversal;
 import com.google.javascript.jscomp.Var;
@@ -68,15 +70,18 @@ public final class TypeCollectionPass implements CompilerPass {
   private final DossierCompiler compiler;
   private final TypeRegistry2 typeRegistry;
   private final FileSystem inputFs;
+  private final Predicate<String> typeNameFilter;
 
   @Inject
   TypeCollectionPass(
       DossierCompiler compiler,
       TypeRegistry2 typeRegistry,
-      @Input FileSystem inputFs) {
+      @Input FileSystem inputFs, 
+      @TypeFilter Predicate<String> typeNameFilter) {
     this.compiler = compiler;
     this.typeRegistry = typeRegistry;
     this.inputFs = inputFs;
+    this.typeNameFilter = typeNameFilter;
   }
 
   @Override
@@ -318,14 +323,29 @@ public final class TypeCollectionPass implements CompilerPass {
 
       if (!typeRegistry.getTypes(type.getType()).isEmpty()) {
         System.out.printf("Found type alias: %s\n", type.getName());
-        typeRegistry.addType(type);
+        addType(type);
         return;
       }
 
+      if (addType(type)) {
+        types.push(type);
+        jsType.visit(this);
+        types.pop();
+      }
+    }
+
+    /**
+     * Registers a type, unless it is excluded by the name filter.
+     *
+     * @param type the type to add.
+     * @return whether the type was registered.
+     */
+    private boolean addType(NominalType2 type) {
+      if (typeNameFilter.apply(type.getName())) {
+        return false;
+      }
       typeRegistry.addType(type);
-      types.push(type);
-      jsType.visit(this);
-      types.pop();
+      return true;
     }
     
     private void crawlProperty(Property property) {
@@ -340,7 +360,7 @@ public final class TypeCollectionPass implements CompilerPass {
       JsDoc jsdoc = JsDoc.from(info);
 
       if (jsdoc.isTypedef()) {
-        typeRegistry.addType(NominalType2.builder()
+        addType(NominalType2.builder()
             .setName(parent.getName() + "." + property.getName())
             .setModule(getModule(node))
             .setJsDoc(jsdoc)

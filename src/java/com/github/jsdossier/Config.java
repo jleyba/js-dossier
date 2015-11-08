@@ -301,6 +301,19 @@ class Config {
     return parent != null && isFilteredType(parent);
   }
 
+  /**
+   * Returns whether the type with the given type should be excluded from documentation.
+   */
+  boolean isFilteredType(String name) {
+    for (Pattern filter : typeFilters) {
+      if (filter.matcher(name).matches()) {
+        return true;
+      }
+    }
+    int index = name.lastIndexOf('.');
+    return index != -1 && isFilteredType(name.substring(0, index));
+  }
+
   private static Path getSourcePrefixPath(
       FileSystem fileSystem, ImmutableSet<Path> sources, ImmutableSet<Path> modules) {
     Path prefix = Paths.getCommonPrefix(fileSystem.getPath("").toAbsolutePath(),

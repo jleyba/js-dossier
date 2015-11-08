@@ -22,6 +22,7 @@ import static com.google.common.truth.Truth.assertWithMessage;
 import com.github.jsdossier.annotations.Input;
 import com.github.jsdossier.testing.CompilerUtil;
 import com.github.jsdossier.testing.GuiceRule;
+import com.google.common.base.Predicate;
 import com.google.javascript.jscomp.CompilerOptions;
 import org.junit.Rule;
 import org.junit.Test;
@@ -523,6 +524,32 @@ public class TypeCollectionPassTest {
     NominalType2 bar = typeRegistry.getType("foo.bar");
     assertNamespace(bar);
     assertThat(bar.getType().isFunctionType()).isTrue();
+  }
+  
+  @Test
+  public void doesNotRegisterFilteredTypes() {
+    guice.toBuilder()
+        .setTypeNameFilter(new Predicate<String>() {
+          @Override
+          public boolean apply(String input) {
+            return input.startsWith("one.") || input.contains("two");
+          }
+        })
+        .build()
+        .createInjector()
+        .injectMembers(this);
+    util.compile(fs.getPath("foo.js"),
+        "goog.provide('one.a.two.b');",
+        "goog.provide('foo.bar.two.baz');");
+    assertNamespace(typeRegistry.getType("one"));
+    assertThat(typeRegistry.isType("one.a")).isFalse();
+    assertThat(typeRegistry.isType("one.a.two")).isFalse();
+    assertThat(typeRegistry.isType("one.a.two.b")).isFalse();
+
+    assertNamespace(typeRegistry.getType("foo"));
+    assertNamespace(typeRegistry.getType("foo.bar"));
+    assertThat(typeRegistry.isType("foo.bar.two")).isFalse();
+    assertThat(typeRegistry.isType("foo.bar.two.baz")).isFalse();
   }
 
   private void defineInputModules(String prefix, String... modules) {

@@ -147,6 +147,17 @@ final class Main {
 
       bind(DocTemplate.class).to(DefaultDocTemplate.class);
     }
+    
+    @Provides
+    @TypeFilter
+    Predicate<String> provideTypeNameFilter() {
+      return new Predicate<String>() {
+        @Override
+        public boolean apply(String input) {
+          return config.isFilteredType(input);
+        }
+      };
+    }
 
     @Provides
     @CompilerFlags
