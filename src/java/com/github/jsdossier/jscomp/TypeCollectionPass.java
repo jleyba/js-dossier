@@ -49,9 +49,7 @@ import java.nio.file.FileSystem;
 import java.nio.file.Path;
 import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -96,11 +94,9 @@ public final class TypeCollectionPass implements CompilerPass {
   }
 
   private static final class Externs {
-    private final Map<String, JSType> byName = new HashMap<>();
     private final Set<JSType> types = new HashSet<>();
 
-    public void addExtern(String name, JSType type) {
-      byName.put(name, type);
+    public void addExtern(JSType type) {
       types.add(type);
     }
 
@@ -152,7 +148,7 @@ public final class TypeCollectionPass implements CompilerPass {
           || type.isNominalConstructor()
           || type.isEnumType()) {
         String qualifiedName = joiner.join(names);
-        externs.addExtern(qualifiedName, type);
+        externs.addExtern(type);
       }
       names.removeLast();
     }
@@ -247,7 +243,6 @@ public final class TypeCollectionPass implements CompilerPass {
 
         JSDocInfo info = var.getJSDocInfo();
         if (info == null || isNullOrEmpty(info.getOriginalCommentString())) {
-          System.out.printf("For %s, using jsdoc from node type\n", name);
           info = node.getJSType().getJSDocInfo();
         }
         

@@ -16,7 +16,9 @@
 
 package com.github.jsdossier.jscomp;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.collect.Iterables.getFirst;
 import static com.google.javascript.jscomp.NodeTraversal.traverseEs6;
 
 import com.github.jsdossier.annotations.Input;
@@ -27,11 +29,16 @@ import com.google.javascript.jscomp.CompilerInput;
 import com.google.javascript.jscomp.ES6ModuleLoader;
 import com.google.javascript.jscomp.NodeTraversal;
 import com.google.javascript.rhino.Node;
+import com.google.javascript.rhino.Token;
 
+import java.io.IOException;
 import java.io.PrintStream;
+import java.io.StringWriter;
 import java.net.URI;
 import java.nio.file.FileSystem;
 import java.nio.file.Path;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -98,33 +105,9 @@ public final class DossierCompiler extends Compiler {
       }
     }
   }
-  
+
   private void processEs6Modules(Node root) {
-    traverseEs6(this, root, new NodeTraversal.AbstractShallowCallback() {
-      private boolean isModule;
-
-      @Override
-      public void visit(NodeTraversal t, Node n, Node parent) {
-        if (!isModule && n.isExport()) {
-          isModule = true;
-          Path path = inputFs.getPath(n.getSourceFileName());
-          typeRegistry.addModule(Module.builder()
-              .setId(ES6ModuleLoader.toModuleName(toSimpleUri(path)))
-              .setPath(path)
-              .setType(Module.Type.ES6)
-              .setJsDoc(findScriptJsDoc(n))
-              .build());
-
-          // The compiler does not generate alias notifications when it rewrites an ES6 module,
-          // so we register a region here.
-          AliasRegion region = AliasRegion.builder()
-              .setPath(path)
-              .setRange(Range.atLeast(Position.of(0, 0)))
-              .build();
-          typeRegistry.addAliasRegion(region);
-        }
-      }
-    });
+    traverseEs6(this, root, new Es6ModuleTraversal());
   }
 
   /**
@@ -156,6 +139,101 @@ public final class DossierCompiler extends Compiler {
         continue;
       }
       compilerPass.process(this, root);
+    }
+  }
+  
+  private class Es6ModuleTraversal extends NodeTraversal.AbstractShallowCallback {
+
+    private final Set<Node> imports = new HashSet<>();
+    private boolean isModule;
+
+    @Override
+    public void visit(NodeTraversal t, Node n, Node parent) {
+      if (!isModule && n.isExport()) {
+        isModule = true;
+        Path path = inputFs.getPath(n.getSourceFileName());
+        typeRegistry.addModule(Module.builder()
+            .setId(ES6ModuleLoader.toModuleName(toSimpleUri(path)))
+            .setPath(path)
+            .setType(Module.Type.ES6)
+            .setJsDoc(findScriptJsDoc(n))
+            .build());
+
+        // The compiler does not generate alias notifications when it rewrites an ES6 module,
+        // so we register a region here.
+        AliasRegion region = AliasRegion.builder()
+            .setPath(path)
+            .setRange(Range.atLeast(Position.of(0, 0)))
+            .build();
+        typeRegistry.addAliasRegion(region);
+      }
+
+      if (n.isImport()) {
+        imports.add(n);
+      }
+
+      if (n.isScript() && isModule && !imports.isEmpty()) {
+        for (Node imp : imports) {
+          processImportStatement(imp);
+        }
+      }
+    }
+    
+    private void processImportStatement(Node n) {
+      checkArgument(n.isImport());
+
+      Path path = inputFs.getPath(n.getSourceFileName());
+      AliasRegion aliasRegion = getFirst(typeRegistry.getAliasRegions(path), null);
+      if (aliasRegion == null) {
+        throw new AssertionError();
+      }
+      
+      Node first = n.getFirstChild();
+      Node second = first.getNext();
+      
+      String def = second.getNext().getString();
+      // TODO: support non-relative imports?
+      if (!def.startsWith("./") && !def.startsWith("../")) {
+        return;
+      }
+      def = guessModuleId(path, def);
+
+      if (first.isEmpty() && second.getType() == Token.IMPORT_STAR) {
+        String alias = second.getString();
+        aliasRegion.addAlias(alias, def);
+
+      } else if (first.isName()) {
+        String alias = first.getQualifiedName();
+        aliasRegion.addAlias(alias, def + "." + alias);
+
+      } else if (first.isEmpty() && second.getType() == Token.IMPORT_SPECS) {
+        for (Node spec = second.getFirstChild(); spec != null; spec = spec.getNext()) {
+          String imported = spec.getFirstChild().getQualifiedName();
+          String alias = spec.getLastChild().getQualifiedName();
+          
+          // TODO: not sure if this is the best way to handle defaults.
+          if ("default".equals(imported)) {
+            aliasRegion.addAlias(alias, def);
+          } else {
+            aliasRegion.addAlias(alias, def + "." + imported);
+          }
+        }
+      }
+    }
+    
+    private String guessModuleId(Path ctx, String path) {
+      Path module = ctx.resolveSibling(path);
+      return ES6ModuleLoader.toModuleName(toSimpleUri(module));
+    }
+
+    private void printTree(Node n) {
+      StringWriter sw = new StringWriter();
+      try {
+        n.appendStringTree(sw);
+        System.err.println(sw.toString());
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
     }
   }
 }

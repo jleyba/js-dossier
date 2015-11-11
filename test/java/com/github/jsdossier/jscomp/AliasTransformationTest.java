@@ -104,7 +104,7 @@ public class AliasTransformationTest {
   }
   
   @Test
-  public void resolveAliasFromEs6Module() {
+  public void es6Module_internalModuleAlias() {
     defineInputModules("module", "foo.js", "bar.js");
     util.compile(
         createSourceFile(
@@ -118,6 +118,140 @@ public class AliasTransformationTest {
 
     NominalType2 type = typeRegistry.getType("module$module$bar.Y");
     assertThat(typeRegistry.resolveAlias(type, "Y")).isEqualTo("Y$$module$module$bar");
+  }
+  
+  @Test
+  public void es6Module_aliasForImportedStar1() {
+    util.compile(
+        createSourceFile(
+            inputFs.getPath("module/foo.js"),
+            "class X {}",
+            "export {X as Y};"),
+        createSourceFile(
+            inputFs.getPath("module/bar.js"),
+            "import * as f from './foo';",
+            "export class Y extends f.X {}"));
+
+    NominalType2 type = typeRegistry.getType("module$module$bar.Y");
+    assertThat(typeRegistry.resolveAlias(type, "f")).isEqualTo("module$module$foo");
+  }
+  
+  @Test
+  public void es6Module_aliasForImportedStar2() {
+    util.compile(
+        createSourceFile(
+            inputFs.getPath("module/a/b/c.js"),
+            "class X {}",
+            "export {X as Y};"),
+        createSourceFile(
+            inputFs.getPath("module/bar.js"),
+            "import * as f from './a/b/c';",
+            "export class Y extends f.X {}"));
+
+    NominalType2 type = typeRegistry.getType("module$module$bar.Y");
+    assertThat(typeRegistry.resolveAlias(type, "f")).isEqualTo("module$module$a$b$c");
+  }
+  
+  @Test
+  public void es6Module_aliasForImportedStar3() {
+    util.compile(
+        createSourceFile(
+            inputFs.getPath("module/a/foo.js"),
+            "class X {}",
+            "export {X as Y};"),
+        createSourceFile(
+            inputFs.getPath("module/a/b/c.js"),
+            "import * as f from '../foo';",
+            "export class Y extends f.X {}"));
+
+    NominalType2 type = typeRegistry.getType("module$module$a$b$c.Y");
+    assertThat(typeRegistry.resolveAlias(type, "f")).isEqualTo("module$module$a$foo");
+  }
+  
+  @Test
+  public void es6Module_aliasForImportedName() {
+    util.compile(
+        createSourceFile(
+            inputFs.getPath("module/a/foo.js"),
+            "export class X {}"),
+        createSourceFile(
+            inputFs.getPath("module/a/bar.js"),
+            "import X from './foo';",
+            "export class Y extends X {}"));
+
+    NominalType2 type = typeRegistry.getType("module$module$a$bar.Y");
+    assertThat(typeRegistry.resolveAlias(type, "X"))
+        .isEqualTo("module$module$a$foo.X");
+  }
+  
+  @Test
+  public void es6Module_aliasForMultipleImportedNames() {
+    util.compile(
+        createSourceFile(
+            inputFs.getPath("module/a/foo.js"),
+            "export class X {}",
+            "export class Y {}"),
+        createSourceFile(
+            inputFs.getPath("module/a/bar.js"),
+            "import {X, Y} from './foo';",
+            "export class Z extends Y {}"));
+
+    NominalType2 type = typeRegistry.getType("module$module$a$bar.Z");
+    assertThat(typeRegistry.resolveAlias(type, "X"))
+        .isEqualTo("module$module$a$foo.X");
+    assertThat(typeRegistry.resolveAlias(type, "Y"))
+        .isEqualTo("module$module$a$foo.Y");
+  }
+  
+  @Test
+  public void es6Module_aliasForRenamedImportedName1() {
+    util.compile(
+        createSourceFile(
+            inputFs.getPath("module/a/foo.js"),
+            "export class X {}"),
+        createSourceFile(
+            inputFs.getPath("module/a/bar.js"),
+            "import {X as A} from './foo';",
+            "export class Y extends A {}"));
+
+    NominalType2 type = typeRegistry.getType("module$module$a$bar.Y");
+    assertThat(typeRegistry.resolveAlias(type, "A"))
+        .isEqualTo("module$module$a$foo.X");
+  }
+  
+  @Test
+  public void es6Module_aliasForRenamedImportedName2() {
+    util.compile(
+        createSourceFile(
+            inputFs.getPath("module/a/foo.js"),
+            "export class X {}",
+            "export class Y {}"),
+        createSourceFile(
+            inputFs.getPath("module/a/bar.js"),
+            "import {X as A, Y as B} from './foo';",
+            "export class Y extends A {}"));
+
+    NominalType2 type = typeRegistry.getType("module$module$a$bar.Y");
+    assertThat(typeRegistry.resolveAlias(type, "A"))
+        .isEqualTo("module$module$a$foo.X");
+    assertThat(typeRegistry.resolveAlias(type, "B"))
+        .isEqualTo("module$module$a$foo.Y");
+  }
+  
+  @Test
+  public void es6Module_aliasForImportedDefault() {
+    util.compile(
+        createSourceFile(
+            inputFs.getPath("module/a/foo.js"),
+            "export default class {}"),
+        createSourceFile(
+            inputFs.getPath("module/a/bar.js"),
+            "import {default as A} from './foo';",
+            "export class Y extends A {}"));
+
+    NominalType2 type = typeRegistry.getType("module$module$a$bar.Y");
+    assertThat(typeRegistry.resolveAlias(type, "A"))
+        .isEqualTo("module$module$a$foo");
   }
 
   private void defineInputModules(String prefix, String... modules) {

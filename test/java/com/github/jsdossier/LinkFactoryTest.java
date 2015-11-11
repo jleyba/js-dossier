@@ -998,7 +998,117 @@ public class LinkFactoryTest {
     checkLink(factory.createLink("b"), "One", "one_exports_One.html");
   }
 
-  // TODO: es6 module import aliases.
+  @Test
+  public void createAliasedTypeLink_importedEs6Module() {
+    util.compile(
+        createSourceFile(
+            fs.getPath("source/modules/one.js"),
+            "export class One {}"),
+        createSourceFile(
+            fs.getPath("source/modules/two.js"),
+            "import * as a from './one';",
+            "export class Two extends One {}"));
+
+    NominalType2 ref = typeRegistry.getType("module$source$modules$two");
+    LinkFactory factory = createFactory().withContext(ref);
+
+    checkLink(factory.createLink("a"), "one", "one.html");
+    checkLink(factory.createLink("a.One"), "One", "one_exports_One.html");
+  }
+
+  @Test
+  public void createAliasedTypeLink_importedEs6ModuleType() {
+    util.compile(
+        createSourceFile(
+            fs.getPath("source/modules/one.js"),
+            "export class One {}"),
+        createSourceFile(
+            fs.getPath("source/modules/two.js"),
+            "import One from './one';",
+            "export class Two extends One {}"));
+
+    NominalType2 ref = typeRegistry.getType("module$source$modules$two");
+    LinkFactory factory = createFactory().withContext(ref);
+
+    checkLink(factory.createLink("One"), "One", "one_exports_One.html");
+  }
+
+  @Test
+  public void createAliasedTypeLink_multipleImportedEs6ModuleTypes() {
+    util.compile(
+        createSourceFile(
+            fs.getPath("source/modules/one.js"),
+            "export class One {}",
+            "export class Two {}"),
+        createSourceFile(
+            fs.getPath("source/modules/two.js"),
+            "import {One, Two} from './one';",
+            "export class Three extends One {}"));
+
+    NominalType2 ref = typeRegistry.getType("module$source$modules$two");
+    LinkFactory factory = createFactory().withContext(ref);
+
+    checkLink(factory.createLink("One"), "One", "one_exports_One.html");
+    checkLink(factory.createLink("Two"), "Two", "one_exports_Two.html");
+  }
+
+  @Test
+  public void createAliasedTypeLink_renamedImportedEs6ModuleType() {
+    util.compile(
+        createSourceFile(
+            fs.getPath("source/modules/one.js"),
+            "export class One {}"),
+        createSourceFile(
+            fs.getPath("source/modules/two.js"),
+            "import {One as TheOne} from './one';",
+            "export class Two extends TheOne {}"));
+
+    NominalType2 ref = typeRegistry.getType("module$source$modules$two");
+    LinkFactory factory = createFactory().withContext(ref);
+
+    checkLink(factory.createLink("TheOne"), "One", "one_exports_One.html");
+    checkLink(factory.createLink("One"), "One", "");
+  }
+
+  @Test
+  public void createAliasedTypeLink_multipleRenamedImportedEs6ModuleTypes() {
+    util.compile(
+        createSourceFile(
+            fs.getPath("source/modules/one.js"),
+            "export class One {}",
+            "export class Two {}"),
+        createSourceFile(
+            fs.getPath("source/modules/two.js"),
+            "import {One as X, Two as Y} from './one';",
+            "export class Three extends X {}"));
+
+    NominalType2 ref = typeRegistry.getType("module$source$modules$two");
+    LinkFactory factory = createFactory().withContext(ref);
+
+    checkLink(factory.createLink("X"), "One", "one_exports_One.html");
+    checkLink(factory.createLink("Y"), "Two", "one_exports_Two.html");
+
+    checkLink(factory.createLink("One"), "One", "");
+    checkLink(factory.createLink("Two"), "Two", "");
+  }
+
+  @Test
+  public void createAliasedTypeLink_importRenamedEs6ModuleDefault() {
+    util.compile(
+        createSourceFile(
+            fs.getPath("source/modules/one.js"),
+            "export default class {}"),
+        createSourceFile(
+            fs.getPath("source/modules/two.js"),
+            "import {default as X} from './one';",
+            "export class Three extends X {}"));
+    System.out.println(util.toSource());
+
+    NominalType2 ref = typeRegistry.getType("module$source$modules$two");
+    LinkFactory factory = createFactory().withContext(ref);
+
+    checkLink(factory.createLink("X"), "one", "one.html");
+  }
   
   @Test
   public void createLinkToStaticProperty() {
