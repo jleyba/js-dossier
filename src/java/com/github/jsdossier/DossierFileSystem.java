@@ -64,6 +64,27 @@ final class DossierFileSystem {
   }
 
   /**
+   * Returns the prefix path trimmed from all module inputs before computing their output path.
+   */
+  public Path getModulePrefix() {
+    return modulePrefix;
+  }
+
+  /**
+   * Returns the root output path.
+   */
+  public Path getOutputRoot() {
+    return outputRoot;
+  }
+
+  /**
+   * Returns the path to the global types index.
+   */
+  public Path getGlobalsPath() {
+    return outputRoot.resolve(".globals.html");
+  }
+
+  /**
    * Returns the path to the given file once copied to the output directory.
    */
   public Path getPath(TemplateFile file) {

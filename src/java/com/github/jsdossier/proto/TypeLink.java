@@ -168,7 +168,7 @@ public final class TypeLink extends
   public static final int HREF_FIELD_NUMBER = 2;
   private java.lang.Object href_;
   /**
-   * <code>required string href = 2;</code>
+   * <code>optional string href = 2;</code>
    *
    * <pre>
    * The link href.
@@ -178,7 +178,7 @@ public final class TypeLink extends
     return ((bitField0_ & 0x00000002) == 0x00000002);
   }
   /**
-   * <code>required string href = 2;</code>
+   * <code>optional string href = 2;</code>
    *
    * <pre>
    * The link href.
@@ -199,7 +199,7 @@ public final class TypeLink extends
     }
   }
   /**
-   * <code>required string href = 2;</code>
+   * <code>optional string href = 2;</code>
    *
    * <pre>
    * The link href.
@@ -230,10 +230,6 @@ public final class TypeLink extends
     if (isInitialized == 0) return false;
 
     if (!hasText()) {
-      memoizedIsInitialized = 0;
-      return false;
-    }
-    if (!hasHref()) {
       memoizedIsInitialized = 0;
       return false;
     }
@@ -463,10 +459,6 @@ public final class TypeLink extends
         
         return false;
       }
-      if (!hasHref()) {
-        
-        return false;
-      }
       return true;
     }
 
@@ -591,7 +583,7 @@ public final class TypeLink extends
 
     private java.lang.Object href_ = "";
     /**
-     * <code>required string href = 2;</code>
+     * <code>optional string href = 2;</code>
      *
      * <pre>
      * The link href.
@@ -601,7 +593,7 @@ public final class TypeLink extends
       return ((bitField0_ & 0x00000002) == 0x00000002);
     }
     /**
-     * <code>required string href = 2;</code>
+     * <code>optional string href = 2;</code>
      *
      * <pre>
      * The link href.
@@ -622,7 +614,7 @@ public final class TypeLink extends
       }
     }
     /**
-     * <code>required string href = 2;</code>
+     * <code>optional string href = 2;</code>
      *
      * <pre>
      * The link href.
@@ -642,7 +634,7 @@ public final class TypeLink extends
       }
     }
     /**
-     * <code>required string href = 2;</code>
+     * <code>optional string href = 2;</code>
      *
      * <pre>
      * The link href.
@@ -659,7 +651,7 @@ public final class TypeLink extends
       return this;
     }
     /**
-     * <code>required string href = 2;</code>
+     * <code>optional string href = 2;</code>
      *
      * <pre>
      * The link href.
@@ -672,7 +664,7 @@ public final class TypeLink extends
       return this;
     }
     /**
-     * <code>required string href = 2;</code>
+     * <code>optional string href = 2;</code>
      *
      * <pre>
      * The link href.

@@ -251,7 +251,8 @@ public final class TypeCollectionPass implements CompilerPass {
           info = node.getJSType().getJSDocInfo();
         }
         
-        if (isPrimitive(node.getJSType()) && (info == null || info.getTypedefType() == null)) {
+        if (isPrimitive(node.getJSType())
+            && (info == null || (info.getTypedefType() == null && !info.isDefine()))) {
           System.out.printf(
               "Skipping primitive type assigned to %s: %s\n", name, node.getJSType());
           continue;
@@ -316,6 +317,7 @@ public final class TypeCollectionPass implements CompilerPass {
           && !jsType.isInterface()
           && !jsType.isEnumType()
           && !type.getJsDoc().isTypedef()
+          && !type.getJsDoc().isDefine()
           && !typeRegistry.isProvided(type.getName())) {
         System.out.println("Ignoring undeclared namespace " + type.getName());
         return;

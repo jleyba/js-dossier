@@ -551,6 +551,17 @@ public class TypeCollectionPassTest {
     assertThat(typeRegistry.isType("foo.bar.two")).isFalse();
     assertThat(typeRegistry.isType("foo.bar.two.baz")).isFalse();
   }
+  
+  @Test
+  public void recordsNamespacesWithNoChildTypes() {
+    util.compile(fs.getPath("foo.js"),
+        "goog.provide('util.array');",
+        "util.array.forEach = function() {};");
+
+    assertNamespace(typeRegistry.getType("util"));
+    assertNamespace(typeRegistry.getType("util.array"));
+    assertThat(typeRegistry.isType("util.array.forEach")).isFalse();
+  }
 
   private void defineInputModules(String prefix, String... modules) {
     guice.toBuilder()

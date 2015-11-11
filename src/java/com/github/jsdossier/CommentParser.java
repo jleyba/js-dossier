@@ -61,7 +61,6 @@ public class CommentParser {
   private final HtmlRenderer renderer = HtmlRenderer.builder()
       .escapeHtml(false)
       .extensions(extensions)
-
       .build();
 
   /**

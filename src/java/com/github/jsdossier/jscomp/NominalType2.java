@@ -73,23 +73,6 @@ public abstract class NominalType2 {
     return getModule().isPresent() && getModule().get().getId().equals(getName());
   }
 
-  /**
-   * Resolves a type name relative to this type. Returns {@code null} if the name cannot be
-   * resolved.
-   */
-  @Nullable
-  @CheckReturnValue
-  public NominalType2 resolveType(String name, TypeRegistry2 typeRegistry) {
-    String def = typeRegistry.resolveAlias(this, name);
-    if (def != null) {
-      name = def;
-    }
-    if (typeRegistry.isType(name)) {
-      return typeRegistry.getType(name);
-    }
-    return null;
-  }
-
   @AutoValue.Builder
   public static abstract class Builder {
     public abstract Builder setName(String name);

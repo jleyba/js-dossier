@@ -34,7 +34,7 @@ public interface TypeLinkOrBuilder extends
       getTextBytes();
 
   /**
-   * <code>required string href = 2;</code>
+   * <code>optional string href = 2;</code>
    *
    * <pre>
    * The link href.
@@ -42,7 +42,7 @@ public interface TypeLinkOrBuilder extends
    */
   boolean hasHref();
   /**
-   * <code>required string href = 2;</code>
+   * <code>optional string href = 2;</code>
    *
    * <pre>
    * The link href.
@@ -50,7 +50,7 @@ public interface TypeLinkOrBuilder extends
    */
   java.lang.String getHref();
   /**
-   * <code>required string href = 2;</code>
+   * <code>optional string href = 2;</code>
    *
    * <pre>
    * The link href.

@@ -64,7 +64,7 @@ message TypeLink {
   // The link display text.
   required string text = 1;
   // The link href.
-  required string href = 2 [(sanitized).uri = true];
+  optional string href = 2 [(sanitized).uri = true];
 }
 
 

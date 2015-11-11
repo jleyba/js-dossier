@@ -26,7 +26,9 @@ import com.github.jsdossier.jscomp.Position;
 import com.github.jsdossier.jscomp.TypeRegistry2;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.jimfs.Jimfs;
+import com.google.javascript.jscomp.parsing.NullErrorReporter;
 import com.google.javascript.rhino.jstype.JSType;
+import com.google.javascript.rhino.jstype.JSTypeRegistry;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -43,11 +45,6 @@ public class DossierFileSystemTest {
   private final FileSystem inputFs = Jimfs.newFileSystem();
   private final Path srcPrefix = inputFs.getPath("/input/src");
   private final Path modulePrefix = inputFs.getPath("/input/module");
-  private final ImmutableSet<Path> allModules = ImmutableSet.of(
-      modulePrefix.resolve("foo/index.js"),
-      modulePrefix.resolve("foo/bar.js"),
-      modulePrefix.resolve("foo/bar/index.js"),
-      modulePrefix.resolve("foo/bar/baz.js"));
 
   private final TypeRegistry2 typeRegistry = new TypeRegistry2();
 

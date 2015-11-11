@@ -18,7 +18,6 @@ package com.github.jsdossier.jscomp;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
-import com.github.jsdossier.annotations.Input;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Supplier;
 import com.google.common.collect.ImmutableSet;
@@ -34,7 +33,6 @@ import com.google.javascript.rhino.jstype.JSTypeRegistry;
 import com.google.javascript.rhino.jstype.NamedType;
 import com.google.javascript.rhino.jstype.ObjectType;
 
-import java.nio.file.FileSystem;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
