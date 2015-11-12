@@ -35,6 +35,9 @@ public abstract class NominalType2 {
   public static Builder builder() {
     return new AutoValue_NominalType2.Builder();
   }
+  
+  // Package private to prevent extensions.
+  NominalType2() {}
 
   /**
    * Returns this type's name.

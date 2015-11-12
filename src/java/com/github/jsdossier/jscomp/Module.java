@@ -33,6 +33,9 @@ public abstract class Module {
     return new AutoValue_Module.Builder();
   }
 
+  // Package private to prevent extensions.
+  Module() {}
+
   /**
    * Returns the ID used to reference this module in code after any transformations
    * applied by the compiler. For Closure module's, this will simply be the ID specified in the

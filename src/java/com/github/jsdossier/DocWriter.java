@@ -209,8 +209,8 @@ class DocWriter {
     }
 
     if (description == null) {
-      description = parser.getFileoverview(linker,
-          typeRegistry.getFileOverview(module.getModule().getPath()));
+      description = parser.parseComment(
+          typeRegistry.getFileOverview(module.getModule().getPath()).getFileoverview(), linker);
     }
 
     JsType.Builder jsTypeBuilder = JsType.newBuilder()
@@ -320,7 +320,8 @@ class DocWriter {
 
     if (description.getTokenCount() == 0 && type.isModuleExports()) {
       Path path = sourcePrefix.getFileSystem().getPath(type.getNode().getSourceFileName());
-      description = parser.getFileoverview(linker, typeRegistry.getFileOverview(path));
+      description = parser.parseComment(
+          typeRegistry.getFileOverview(path).getFileoverview(), linker);
     }
 
     jsTypeBuilder

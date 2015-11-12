@@ -19,13 +19,11 @@ package com.github.jsdossier;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Strings.isNullOrEmpty;
 
+import com.github.jsdossier.proto.Comment;
+import com.github.jsdossier.proto.TypeLink;
 import com.google.common.collect.ImmutableList;
 import com.google.common.escape.CharEscaperBuilder;
 import com.google.common.escape.Escaper;
-
-import com.github.jsdossier.jscomp.JsDoc;
-import com.github.jsdossier.proto.Comment;
-import com.github.jsdossier.proto.TypeLink;
 import org.commonmark.Extension;
 import org.commonmark.ext.gfm.tables.TablesExtension;
 import org.commonmark.html.HtmlRenderer;
@@ -36,6 +34,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.annotation.CheckReturnValue;
 import javax.annotation.Nullable;
 
 /**
@@ -74,12 +73,12 @@ public class CommentParser {
     }
     return parseComment(text, linker);
   }
-
-  /**
-   * Extracs the fileoverview comment string from the given {@link JsDoc} object.
-   */
-  public Comment getFileoverview(Linker linker, JsDoc jsdoc) {
-    return parseComment(jsdoc.getFileoverview(), linker);
+  public Comment getSummary(String text, LinkFactory factory) {
+    Matcher matcher = SUMMARY_REGEX.matcher(text);
+    if (matcher.find()) {
+      return parseComment(matcher.group(1), factory);
+    }
+    return parseComment(text, factory);
   }
 
   /**
@@ -88,24 +87,26 @@ public class CommentParser {
   public Comment getBlockDescription(Linker linker, NominalType type) {
     try {
       linker.pushContext(type);
-      return getBlockDescription(linker, type.getJsdoc());
+      return parseComment(type.getJsdoc().getBlockComment(), linker);
     } finally {
       linker.popContext();
     }
   }
 
   /**
-   * Extracts the block comment string from the given {@link JsDoc} object.
-   */
-  public Comment getBlockDescription(Linker linker, JsDoc jsdoc) {
-    return parseComment(jsdoc.getBlockComment(), linker);
-  }
-
-  /**
    * Parses the {@code text} of a JSDoc block comment.
    */
   public Comment parseComment(String text, Linker linker) {
-    String html = parseMarkdown(text, linker);
+    String html = parseMarkdown(text, new LinkerLinkFactoryFacade(linker));
+    if (html.isEmpty()) {
+      return Comment.getDefaultInstance();
+    }
+    return Comment.newBuilder()
+        .addToken(Comment.Token.newBuilder().setHtml(html))
+        .build();
+  }
+  public Comment parseComment(String text, LinkFactory factory) {
+    String html = parseMarkdown(text, new WrappedLinkFactory(factory));
     if (html.isEmpty()) {
       return Comment.getDefaultInstance();
     }
@@ -114,7 +115,7 @@ public class CommentParser {
         .build();
   }
 
-  private String parseMarkdown(String text, Linker linker) {
+  private String parseMarkdown(String text, LinkFactoryFacade linkFactory) {
     if (isNullOrEmpty(text)) {
       return "";
     }
@@ -150,13 +151,13 @@ public class CommentParser {
         case "link":
         case "linkplain":
           LinkInfo info = LinkInfo.fromText(tagletText);
-          @Nullable TypeLink link = linker.getLink(info.type);
+          @Nullable TypeLink link = linkFactory.createLink(info.type);
 
           String linkText = info.text;
           if ("link".equals(tagletName)) {
             linkText = "<code>" + linkText + "</code>";
           }
-          if (link == null) {
+          if (link == null || link.getHref().isEmpty()) {
             builder.append(linkText);
           } else {
             builder.append("<a href=\"").append(link.getHref()).append("\">")
@@ -210,6 +211,45 @@ public class CommentParser {
     }
 
     return end;
+  }
+  
+  // TODO: remove this with the old type system.
+  private interface LinkFactoryFacade {
+    @Nullable
+    @CheckReturnValue
+    TypeLink createLink(String symbol);
+  }
+  
+  private static class LinkerLinkFactoryFacade implements LinkFactoryFacade {
+    
+    private final Linker linker;
+
+    private LinkerLinkFactoryFacade(Linker linker) {
+      this.linker = linker;
+    }
+
+    @Nullable
+    @CheckReturnValue
+    @Override
+    public TypeLink createLink(String symbol) {
+      return linker.getLink(symbol);
+    }
+  }
+  
+  private static class WrappedLinkFactory implements LinkFactoryFacade {
+    
+    private final LinkFactory factory;
+
+    private WrappedLinkFactory(LinkFactory factory) {
+      this.factory = factory;
+    }
+
+    @Nullable
+    @CheckReturnValue
+    @Override
+    public TypeLink createLink(String symbol) {
+      return factory.createLink(symbol);
+    }
   }
 
   private static class LinkInfo {

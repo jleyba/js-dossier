@@ -44,6 +44,9 @@ public abstract class AliasRegion implements CompilerOptions.AliasTransformation
     return new AutoValue_AliasRegion.Builder();
   }
 
+  // Package-private to prevent extensions.
+  AliasRegion() {}
+
   @Override
   public void addAlias(String alias, String definition) {
     System.out.println("In " + getPath() + " " + alias + " = " + definition + " (" + getRange() + ")");
