@@ -21,6 +21,7 @@ import static com.google.common.truth.Truth.assertThat;
 import com.github.jsdossier.annotations.Input;
 import com.github.jsdossier.testing.CompilerUtil;
 import com.github.jsdossier.testing.GuiceRule;
+import com.google.javascript.jscomp.CompilerOptions;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,7 +38,11 @@ import javax.inject.Inject;
 public class ProvidedSymbolPassTest {
   
   @Rule 
-  public GuiceRule guiceRule = GuiceRule.builder(this).build();
+  public GuiceRule guiceRule = GuiceRule.builder(this)
+      .setModulePrefix("/modules")
+      .setModules("foo/bar.js")
+      .setLanguageIn(CompilerOptions.LanguageMode.ECMASCRIPT6_STRICT)
+      .build();
 
   @Inject @Input private FileSystem fs; 
   @Inject private TypeRegistry2 typeRegistry;
@@ -83,82 +88,120 @@ public class ProvidedSymbolPassTest {
     assertThat(module.getPath().toString()).isEqualTo("/foo/bar/module.js");
     assertThat(module.getType()).isEqualTo(Module.Type.CLOSURE);
   }
-//
-//  @Test
-//  public void collectsJsDocForModuleInternalVars() {
-//    util.compile(FileSystems.getDefault().getPath("module.js"),
-//        "goog.module('sample.module');",
-//        "",
-//        "function noDocs() {}",
-//        "",
-//        "/** Has docs. */",
-//        "function foo() {}",
-//        "",
-//        "/** More docs */",
-//        "var bar = function() {};",
-//        "",
-//        "/** value-less var docs. */",
-//        "var baz;",
-//        "",
-//        "/** Var docs */",
-//        "var x = 123;",
-//        "var noDocs2 = 345;");
-//
-//    assertThat(typeRegistry.getProvidedSymbols()).containsExactly("sample.module");
-//    assertThat(typeRegistry.getImplicitNamespaces()).containsExactly("sample", "sample.module");
-//    ModuleDescriptor module = typeRegistry.getModuleDescriptor("sample.module");
-//    assertThat(module).isNotNull();
-//
-//    assertThat(module.getInternalVarDocs().keySet()).containsExactly("foo", "bar", "baz", "x");
-//  }
-//
-//  @Test
-//  public void buildsExportToInternalNameMap() {
-//    util.compile(FileSystems.getDefault().getPath("module.js"),
-//        "goog.module('sample.module');",
-//        "",
-//        "function internalFunction1() {}",
-//        "var internalFunction2 = function() {}",
-//        "var internalX = 1234;",
-//        "var internalObj = {};",
-//        "",
-//        "exports.publicFunction1 = internalFunction1",
-//        "exports.publicFunction2 = internalFunction2",
-//        "exports.publicX = internalX",
-//        "exports = internalObj");
-//
-//    assertThat(typeRegistry.getProvidedSymbols()).containsExactly("sample.module");
-//    assertThat(typeRegistry.getImplicitNamespaces()).containsExactly("sample", "sample.module");
-//
-//    ModuleDescriptor module = typeRegistry.getModuleDescriptor("sample.module");
-//    assertThat(module).isNotNull();
-//
-//    assertThat(module.getExportedNames().keySet()).containsExactly(
-//        "internalFunction1", "internalFunction2", "internalX", "internalObj");
-//    assertThat(module.getExportedNames()).containsEntry(
-//        "internalFunction1", "sample.module.publicFunction1");
-//    assertThat(module.getExportedNames()).containsEntry(
-//        "internalFunction2", "sample.module.publicFunction2");
-//    assertThat(module.getExportedNames()).containsEntry(
-//        "internalX", "sample.module.publicX");
-//    assertThat(module.getExportedNames()).containsEntry(
-//        "internalObj", "sample.module");
-//  }
-//
-//  @Test
-//  public void identifiesCommonJsModules() {
-////    DossierCompiler compiler = new DossierCompiler(System.err,
-////        new DossierModuleRegistry(
-////            fileSystem, ImmutableSet.of(fileSystem.getPath("/module/foo.js"))));
-////    typeRegistry = new TypeRegistry2(compiler.getTypeRegistry());
-////    ProvidedSymbolsCollectionPass pass = new ProvidedSymbolsCollectionPass(
-////        compiler, typeRegistry, fileSystem);
-////    util = new CompilerUtil(compiler, createOptions(pass));
-////
-////    util.compile(fileSystem.getPath("/module/foo.js"), "exports.foo = function() {};");
-////
-////    ModuleDescriptor module = typeRegistry.getModuleDescriptor("dossier$$module__$module$foo");
-////    assertEquals(fileSystem.getPath("/module/foo.js"), module.getPath());
-////    assertThat(module.getType()).isEqualTo(ModuleType.NODE);
-//  }
+
+  @Test
+  public void collectsJsDocForModuleInternalVars_closureModule() {
+    util.compile(fs.getPath("module.js"),
+        "goog.module('sample.module');",
+        "",
+        "function fnDeclNoDocs() {}",
+        "/** Has docs. */ function fnDeclDocs() {}",
+        "/** Var docs. */ var fnExpr = function() {}",
+        "/** Let docs. */ let fnExpr2 = function() {}",
+        "/** Const docs. */ const fnExpr3 = function() {}",
+        "",
+        "class clazzNoDocs {}",
+        "/** Var class. */ var varClass = class {};",
+        "/** Let class. */ let letClass = class {};",
+        "/** Const class. */ const constClass = class {};",
+        "",
+        "/** Undef1. */ var undef1;",
+        "/** Undef2. */ let undef2;",
+        "/** Integer. */ var x = 123;",
+        "/** Boolean. */ let y = true;",
+        "/** String. */ const z = 'hi';",
+        "",
+        "var varNoDocs;",
+        "let letNoDocs;");
+
+    Module module = typeRegistry.getModule("sample.module");
+    assertThat(module.getInternalVarDocs().keySet()).containsExactly(
+        "fnDeclDocs", "fnExpr", "fnExpr2", "fnExpr3",
+        "varClass", "letClass", "constClass",
+        "undef1", "undef2", "x", "y", "z");
+  }
+
+  @Test
+  public void collectsJsDocForModuleInternalVars_nodeModule() {
+    util.compile(fs.getPath("/modules/foo/bar.js"),
+        "",
+        "function fnDeclNoDocs() {}",
+        "/** Has docs. */ function fnDeclDocs() {}",
+        "/** Var docs. */ var fnExpr = function() {}",
+        "/** Let docs. */ let fnExpr2 = function() {}",
+        "/** Const docs. */ const fnExpr3 = function() {}",
+        "",
+        "class clazzNoDocs {}",
+        "/** Var class. */ var varClass = class {};",
+        "/** Let class. */ let letClass = class {};",
+        "/** Const class. */ const constClass = class {};",
+        "",
+        "/** Undef1. */ var undef1;",
+        "/** Undef2. */ let undef2;",
+        "/** Integer. */ var x = 123;",
+        "/** Boolean. */ let y = true;",
+        "/** String. */ const z = 'hi';",
+        "",
+        "var varNoDocs;",
+        "let letNoDocs;");
+
+    Module module = typeRegistry.getModule("dossier$$module__$modules$foo$bar");
+    assertThat(module.getInternalVarDocs().keySet()).containsExactly(
+        "fnDeclDocs", "fnExpr", "fnExpr2", "fnExpr3",
+        "varClass", "letClass", "constClass",
+        "undef1", "undef2", "x", "y", "z");
+  }
+
+  @Test
+  public void buildsExportToInternalNameMap_closureModule() {
+    util.compile(fs.getPath("module.js"),
+        "goog.module('sample.module');",
+        "",
+        "function internalFunction1() {}",
+        "var internalFunction2 = function() {}",
+        "var internalX = 1234;",
+        "var internalObj = {};",
+        "",
+        "exports.publicFunction1 = internalFunction1",
+        "exports.publicFunction2 = internalFunction2",
+        "exports.publicX = internalX",
+        "exports = internalObj");
+
+    assertThat(typeRegistry.getProvidedSymbols()).containsExactly("sample.module");
+    assertThat(typeRegistry.getImplicitNamespaces()).containsExactly("sample", "sample.module");
+    
+    Module module = typeRegistry.getModule("sample.module");
+    assertThat(module.getExportedNames().keySet()).containsExactly(
+        "publicFunction1", "publicFunction2", "publicX");
+    assertThat(module.getExportedNames()).containsEntry("publicFunction1", "internalFunction1");
+    assertThat(module.getExportedNames()).containsEntry("publicFunction2", "internalFunction2");
+    assertThat(module.getExportedNames()).containsEntry("publicX", "internalX");
+  }
+
+  @Test
+  public void buildsExportToInternalNameMap_nodeModule() {
+    util.compile(fs.getPath("/modules/foo/bar.js"),
+        "",
+        "function internalFunction1() {}",
+        "var internalFunction2 = function() {}",
+        "var internalX = 1234;",
+        "var internalObj = {};",
+        "",
+        "exports.publicFunction1 = internalFunction1",
+        "exports.publicFunction2 = internalFunction2",
+        "exports.publicX = internalX",
+        "module.exports = internalObj");
+
+    assertThat(typeRegistry.getProvidedSymbols()).isEmpty();
+    assertThat(typeRegistry.getImplicitNamespaces()).isEmpty();
+
+    Module module = typeRegistry.getModule("dossier$$module__$modules$foo$bar");
+    assertThat(module.getPath().toString()).isEqualTo("/modules/foo/bar.js");
+    assertThat(module.getType()).isEqualTo(Module.Type.NODE);
+    assertThat(module.getExportedNames().keySet()).containsExactly(
+        "publicFunction1", "publicFunction2", "publicX");
+    assertThat(module.getExportedNames()).containsEntry("publicFunction1", "internalFunction1");
+    assertThat(module.getExportedNames()).containsEntry("publicFunction2", "internalFunction2");
+    assertThat(module.getExportedNames()).containsEntry("publicX", "internalX");
+  }
 }

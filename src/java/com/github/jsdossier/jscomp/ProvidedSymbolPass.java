@@ -16,22 +16,27 @@
 
 package com.github.jsdossier.jscomp;
 
-import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.javascript.jscomp.NodeTraversal.traverseEs6;
 
 import com.github.jsdossier.annotations.Input;
 import com.github.jsdossier.annotations.Modules;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.javascript.jscomp.CodingConvention;
 import com.google.javascript.jscomp.CompilerPass;
 import com.google.javascript.jscomp.NodeTraversal;
+import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.Node;
 
 import java.io.IOException;
 import java.io.StringWriter;
 import java.nio.file.FileSystem;
 import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -71,8 +76,46 @@ public final class ProvidedSymbolPass implements CompilerPass {
   @Override
   public void process(Node ignored, Node root) {
     traverseEs6(compiler, root, new NodeTraversal.AbstractShallowCallback() {
+      
+      private final Set<Node> exportAssignments = new HashSet<>();
+      private final Map<String, JSDocInfo> internalDocs = new HashMap<>();
+      private Module.Builder module;
+
       @Override
       public void visit(NodeTraversal t, Node n, Node parent) {
+        if (isTopLevelAssign(n)) {
+          String name = n.getFirstChild().getQualifiedName();
+          if (!isNullOrEmpty(name) && ("exports".equals(name) || name.startsWith("exports."))) {
+            exportAssignments.add(n);
+          }
+        }
+
+        if (n.isScript()) {
+          visitScript(n);
+          return;
+        }
+        
+        if (n.isClass() && parent.isScript()) {
+          String name = n.getFirstChild().getQualifiedName();
+          if (n.getJSDocInfo() != null) {
+            internalDocs.put(name, n.getJSDocInfo());
+          }
+        }
+        
+        if (n.isFunction() && parent.isScript()) {
+          String name = n.getFirstChild().getQualifiedName();
+          if (n.getJSDocInfo() != null) {
+            internalDocs.put(name, n.getJSDocInfo());
+          }
+        }
+
+        if ((n.isConst() || n.isLet() || n.isVar()) && parent.isScript()) {
+          String name = n.getFirstChild().getQualifiedName();
+          if (n.getJSDocInfo() != null) {
+            internalDocs.put(name, n.getJSDocInfo());
+          }
+        }
+
         if (!n.isCall()) {
           return;
         }
@@ -87,35 +130,59 @@ public final class ProvidedSymbolPass implements CompilerPass {
         if (convention.extractIsModuleFile(n, parent)) {
           Path path = inputFs.getPath(n.getSourceFileName());
           Module.Type type = nodeModules.contains(path) ? Module.Type.NODE : Module.Type.CLOSURE;
-          Module module = Module.builder()
+          module = Module.builder()
               .setId(name)
               .setPath(inputFs.getPath(n.getSourceFileName()))
-              .setType(type)
-              .setJsDoc(findScriptJsDoc(n))
-              .build();
-//          traverseEs6(compiler, getScriptNode(n), new ExportedNameCollector(module));
-          // TODO: collect module exports
-          System.out.println(">>> Adding module " + name);
-          typeRegistry.addModule(module);
+              .setType(type);
         } else {
           typeRegistry.recordProvide(name);
         }
       }
+      
+      private void visitScript(Node script) {
+        if (module == null) {
+          return;
+        }
+        
+        Map<String, String> exportedNames = new HashMap<>();
+        for (Node ref : exportAssignments) {
+          String rhsName = ref.getLastChild().getQualifiedName();
+          if (isNullOrEmpty(rhsName)) {
+            continue;
+          }
+
+          String lhsName = ref.getFirstChild().getQualifiedName();
+          if (isNullOrEmpty(lhsName)) {
+            continue;
+          }
+
+          int trim = "exports".length();
+          lhsName = lhsName.substring(trim);
+          if (lhsName.startsWith(".")) {
+            lhsName = lhsName.substring(1);
+          }
+          if (isNullOrEmpty(lhsName)) {
+            continue;
+          }
+
+          exportedNames.put(lhsName, rhsName);
+        }
+
+        module.setJsDoc(JsDoc.from(script.getJSDocInfo()))
+            .setExportedNames(ImmutableMap.copyOf(exportedNames))
+            .setInternalVarDocs(ImmutableMap.copyOf(internalDocs));
+
+        typeRegistry.addModule(module.build());
+        exportAssignments.clear();
+        internalDocs.clear();
+        module = null;
+      }
     });
   }
-  
-  private static JsDoc findScriptJsDoc(Node n) {
-    n = getScriptNode(n);
-    if (n.isScript() && n.getParent() != null && n.getParent().isBlock()) {
-      return JsDoc.from(n.getJSDocInfo());
-    }
-    return JsDoc.from(null);
-  }
 
-  private static Node getScriptNode(Node n) {
-    while (n != null && !n.isScript()) {
-      n = n.getParent();
-    }
-    return checkNotNull(n);
+  private static boolean isTopLevelAssign(Node n) {
+    return n.isAssign()
+        && n.getParent().isExprResult()
+        && n.getParent().getParent().isScript();
   }
 }

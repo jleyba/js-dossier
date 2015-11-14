@@ -76,6 +76,16 @@ public abstract class NominalType2 {
     return getModule().isPresent() && getModule().get().getId().equals(getName());
   }
 
+  /**
+   * Returns whether this type is a "namespace" object: an object that is neither a constructor,
+   * an interface, nor an enum.
+   */
+  public boolean isNamespace() {
+    return !getType().isConstructor()
+        && !getType().isInterface()
+        && !getType().isEnumType();
+  }
+
   @AutoValue.Builder
   public static abstract class Builder {
     public abstract Builder setName(String name);

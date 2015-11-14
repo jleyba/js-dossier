@@ -17,6 +17,8 @@
 package com.github.jsdossier.jscomp;
 
 import com.google.auto.value.AutoValue;
+import com.google.common.collect.ImmutableMap;
+import com.google.javascript.rhino.JSDocInfo;
 
 import java.nio.file.Path;
 
@@ -30,7 +32,9 @@ public abstract class Module {
    * Returns a new builder.
    */
   public static Builder builder() {
-    return new AutoValue_Module.Builder();
+    return new AutoValue_Module.Builder()
+        .setExportedNames(ImmutableMap.<String, String>of())
+        .setInternalVarDocs(ImmutableMap.<String, JSDocInfo>of());
   }
 
   // Package private to prevent extensions.
@@ -60,6 +64,22 @@ public abstract class Module {
   public abstract JsDoc getJsDoc();
 
   /**
+   * Returns a map of exported names. Keys will be the exported symbol and values will be the
+   * name of the exported value, as seen within the module. This map will only include exported
+   * names:
+   * <pre><code>
+   *   function foo() {}
+   *   exports.bar = foo;  // Will record (foo, bar)
+   * </code></pre>
+   */
+  public abstract ImmutableMap<String, String> getExportedNames();
+
+  /**
+   * Returns the JSDoc for symbols defined within this module.
+   */
+  public abstract ImmutableMap<String, JSDocInfo> getInternalVarDocs();
+
+  /**
    * The recognized module types.
    */
   public enum Type {
@@ -82,9 +102,12 @@ public abstract class Module {
   @AutoValue.Builder
   public static abstract class Builder {
     public abstract Builder setId(String id);
+    public abstract String getId();
     public abstract Builder setPath(Path path);
     public abstract Builder setType(Type type);
     public abstract Builder setJsDoc(JsDoc doc);
+    public abstract Builder setExportedNames(ImmutableMap<String, String> names);
+    public abstract Builder setInternalVarDocs(ImmutableMap<String, JSDocInfo> docs);
     public abstract Module build();
   }
 }
