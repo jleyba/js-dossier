@@ -2,6 +2,7 @@ java_library(
     name = "jscomp",
     srcs = glob(["*.java"]),
     deps = [
+        "//lib/maven:auto_factory",
         "//lib/maven:auto_value",
         "//lib/maven:closure_compiler",
         "//lib/maven:guava",

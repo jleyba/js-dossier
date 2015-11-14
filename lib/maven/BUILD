@@ -10,6 +10,33 @@ java_library(
 )
 
 java_library(
+    name = "auto_common",
+    exports = ["@auto_common//jar"],
+    runtime_deps = [
+        ":inject",
+        ":guava"
+    ],
+)
+
+java_library(
+    name = "auto_factory",
+    exports = ["@auto_factory//jar"],
+    exported_plugins = [":auto_factory_plugin"],
+)
+
+java_plugin(
+    name = "auto_factory_plugin",
+    processor_class = "com.google.auto.factory.processor.AutoFactoryProcessor",
+    deps = [
+        ":auto_common",
+        ":guava",
+        "@auto_factory//jar",
+        "@javawriter//jar",
+    ],
+    visibility = ["//visibility:private"],
+)
+
+java_library(
     name = "auto_value",
     exports = ["@auto_value//jar"],
     exported_plugins = [":auto_value_plugin"],

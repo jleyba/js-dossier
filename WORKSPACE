@@ -11,6 +11,18 @@ maven_jar(
 )
 
 maven_jar(
+    name = "auto_common",
+    artifact = "com.google.auto:auto-common:0.5",
+    sha1 = "27185563ca9551183fa5379807c3034c0012c8c4",
+)
+
+maven_jar(
+    name = "auto_factory",
+    artifact = "com.google.auto.factory:auto-factory:1.0-beta3",
+    sha1 = "99b2ffe0e41abbd4cc42bf3836276e7174c4929d",
+)
+
+maven_jar(
     name = "auto_value",
     artifact = "com.google.auto.value:auto-value:1.1",
     sha1 = "f6951c141ea3e89c0f8b01da16834880a1ebf162",
@@ -92,6 +104,12 @@ maven_jar(
     name = "inject",
     artifact = "javax.inject:javax.inject:1",
     sha1 = "6975da39a7040257bd51d21a231b76c915872d38",
+)
+
+maven_jar(
+    name = "javawriter",
+    artifact = "com.squareup:javawriter:2.5.1",
+    sha1 = "54c87b3d91238e5b58e1a436d4916eee680ec959",
 )
 
 maven_jar(

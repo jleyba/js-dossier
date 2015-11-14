@@ -23,8 +23,10 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="com.google.template:soy:2015-02-10" level="project" />
     <orderEntry type="library" name="args4j:args4j:2.0.26" level="project" />
+    <orderEntry type="library" name="com.google.template:soy:2015-02-10" level="project" />
+    <orderEntry type="library" name="com.google.auto:auto-common:0.5" level="project" />
+    <orderEntry type="library" name="com.google.auto.factory:auto-factory:1.0-beta3" level="project" />
     <orderEntry type="library" name="com.google.auto.value:auto-value:1.1" level="project" />
     <orderEntry type="library" name="com.google.code.gson:gson:2.2.4" level="project" />
     <orderEntry type="module-library">
@@ -49,6 +51,7 @@
     <orderEntry type="library" name="com.atlassian.commonmark:commonmark:0.2.0" level="project" />
     <orderEntry type="library" name="com.googlecode.owasp-java-html-sanitizer:owasp-java-html-sanitizer:r239" level="project" />
     <orderEntry type="library" name="com.google.protobuf:protobuf-java:2.6.1" level="project" />
+    <orderEntry type="library" name="com.squareup:javawriter:2.5.1" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="aopalliance:aopalliance:1.0" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="com.ibm.icu:icu4j:51.1" level="project" />
     <orderEntry type="library" name="com.google.jimfs:jimfs:1.0" level="project" />
