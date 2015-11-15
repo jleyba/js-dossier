@@ -313,9 +313,9 @@ public class TypeInspectorInstancePropertyTest extends AbstractTypeInspectorTest
         Property.newBuilder()
             .setBase(BaseProperty.newBuilder()
                 .setName("limit")
-                .setSource(sourceFile("../source/modules/foo/bar.js.src.html", 6))
+                .setSource(sourceFile("../../source/modules/foo/bar.js.src.html", 6))
                 .setDescription(htmlComment(
-                    "<p>Link to a <a href=\"foo_bar_exports_Person.html\">" +
+                    "<p>Link to a <a href=\"bar_exports_Person.html\">" +
                         "<code>Person</code></a>.</p>\n")))
             .setType(numberTypeComment())
             .build());
@@ -366,11 +366,11 @@ public class TypeInspectorInstancePropertyTest extends AbstractTypeInspectorTest
         Property.newBuilder()
             .setBase(BaseProperty.newBuilder()
                 .setName("p")
-                .setSource(sourceFile("../source/globals.js.src.html", 10))
+                .setSource(sourceFile("../../source/globals.js.src.html", 10))
                 .setDescription(htmlComment(
-                    "<p>The <a href=\"../Person.html\"><code>Person</code></a> to greet.</p>\n"))
-                .setDefinedBy(linkComment("Greeter", "../Greeter.html#p")))
-            .setType(linkComment("Person", "../Person.html"))
+                    "<p>The <a href=\"../../Person.html\"><code>Person</code></a> to greet.</p>\n"))
+                .setDefinedBy(linkComment("Greeter", "../../Greeter.html#p")))
+            .setType(linkComment("Person", "../../Person.html"))
             .build());
   }
   
@@ -405,11 +405,11 @@ public class TypeInspectorInstancePropertyTest extends AbstractTypeInspectorTest
         Property.newBuilder()
             .setBase(BaseProperty.newBuilder()
                 .setName("p")
-                .setSource(sourceFile("../source/modules/foo/bar.js.src.html", 4))
+                .setSource(sourceFile("../../source/modules/foo/bar.js.src.html", 4))
                 .setDescription(htmlComment(
-                    "<p>The <a href=\"../Person.html\"><code>Person</code></a> to greet.</p>\n"))
-                .addSpecifiedBy(linkComment("Greeter", "../Greeter.html#p")))
-            .setType(linkComment("Person", "../Person.html"))
+                    "<p>The <a href=\"../../Person.html\"><code>Person</code></a> to greet.</p>\n"))
+                .addSpecifiedBy(linkComment("Greeter", "../../Greeter.html#p")))
+            .setType(linkComment("Person", "../../Person.html"))
             .build());
   }
 }

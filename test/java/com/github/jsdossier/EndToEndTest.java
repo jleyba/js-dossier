@@ -241,8 +241,8 @@ public class EndToEndTest {
 
   @Test
   public void checkPackageIndexCommonJsModule() throws IOException {
-    Document document = load(outDir.resolve("module/example_index.html"));
-    compareWithGoldenFile(querySelector(document, "article"), "module/example_index.html");
+    Document document = load(outDir.resolve("module/example/index.html"));
+    compareWithGoldenFile(querySelector(document, "article"), "module/example/index.html");
     checkHeader(document);
     checkModuleNav(document);
     checkModuleFooter(document);
@@ -250,8 +250,8 @@ public class EndToEndTest {
 
   @Test
   public void checkCommonJsModule() throws IOException {
-    Document document = load(outDir.resolve("module/example_nested.html"));
-    compareWithGoldenFile(querySelector(document, "article"), "module/example_nested.html");
+    Document document = load(outDir.resolve("module/example/nested.html"));
+    compareWithGoldenFile(querySelector(document, "article"), "module/example/nested.html");
     checkHeader(document);
     checkModuleNav(document);
     checkModuleFooter(document);
@@ -259,8 +259,8 @@ public class EndToEndTest {
 
   @Test
   public void checkCommonJsModuleThatIsExportedConstructor() throws IOException {
-    Document document = load(outDir.resolve("module/example_worker.html"));
-    compareWithGoldenFile(querySelector(document, "article"), "module/example_worker.html");
+    Document document = load(outDir.resolve("module/example/worker.html"));
+    compareWithGoldenFile(querySelector(document, "article"), "module/example/worker.html");
     checkHeader(document);
     checkModuleNav(document);
     checkModuleFooter(document);
@@ -268,9 +268,9 @@ public class EndToEndTest {
 
   @Test
   public void checkCommonJsModuleClassAlias() throws IOException {
-    Document document = load(outDir.resolve("module/example_index_exports_Greeter.html"));
+    Document document = load(outDir.resolve("module/example/index_exports_Greeter.html"));
     compareWithGoldenFile(
-        querySelector(document, "article"), "module/example_index_exports_Greeter.html");
+        querySelector(document, "article"), "module/example/index_exports_Greeter.html");
     checkHeader(document);
     checkModuleNav(document);
     checkModuleFooter(document);
@@ -278,9 +278,9 @@ public class EndToEndTest {
 
   @Test
   public void checkCommonJsModuleExportedInterface() throws IOException {
-    Document document = load(outDir.resolve("module/example_nested_exports_IdGenerator.html"));
+    Document document = load(outDir.resolve("module/example/nested_exports_IdGenerator.html"));
     compareWithGoldenFile(querySelector(document, "article"),
-        "module/example_nested_exports_IdGenerator.html");
+        "module/example/nested_exports_IdGenerator.html");
     checkHeader(document);
     checkModuleNav(document);
     checkModuleFooter(document);
@@ -289,9 +289,9 @@ public class EndToEndTest {
   @Test
   public void checkCommonJsModuleInterfaceImplementation() throws IOException {
     Document document = load(outDir.resolve(
-        "module/example_nested_exports_IncrementingIdGenerator.html"));
+        "module/example/nested_exports_IncrementingIdGenerator.html"));
     compareWithGoldenFile(querySelector(document, "article"),
-        "module/example_nested_exports_IncrementingIdGenerator.html");
+        "module/example/nested_exports_IncrementingIdGenerator.html");
     checkHeader(document);
     checkModuleNav(document);
     checkModuleFooter(document);
@@ -335,7 +335,7 @@ public class EndToEndTest {
   }
 
   private void checkModuleFooter(Document document) throws IOException {
-    compareWithGoldenFile(querySelectorAll(document, "main ~ *"), "module/footer.html");
+    compareWithGoldenFile(querySelectorAll(document, "main ~ *"), "module/example/footer.html");
   }
 
   private void checkNav(Document document) throws IOException {
@@ -343,7 +343,7 @@ public class EndToEndTest {
   }
 
   private void checkModuleNav(Document document) throws IOException {
-    compareWithGoldenFile(querySelectorAll(document, "nav"), "module/nav.html");
+    compareWithGoldenFile(querySelectorAll(document, "nav"), "module/example/nav.html");
   }
 
   private void compareWithGoldenFile(Element element, String goldenPath) throws IOException {

@@ -448,7 +448,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
         Function.newBuilder()
             .setBase(BaseProperty.newBuilder()
                 .setName("greet")
-                .setSource(sourceFile("../source/modules/foo/bar.js.src.html", 3))
+                .setSource(sourceFile("../../source/modules/foo/bar.js.src.html", 3))
                 .setDescription(htmlComment("<p>Hello, world!</p>\n")))
             .build());
   }
@@ -469,7 +469,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
         Function.newBuilder()
             .setBase(BaseProperty.newBuilder()
                 .setName("greet")
-                .setSource(sourceFile("../source/modules/foo/bar.js.src.html", 3))
+                .setSource(sourceFile("../../source/modules/foo/bar.js.src.html", 3))
                 .setDescription(htmlComment("<p>Hello, world!</p>\n")))
             .build());
   }
@@ -497,13 +497,13 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
         Function.newBuilder()
             .setBase(BaseProperty.newBuilder()
                 .setName("greeting1")
-                .setSource(sourceFile("../source/modules/foo/baz.js.src.html", 1))
+                .setSource(sourceFile("../../source/modules/foo/baz.js.src.html", 1))
                 .setDescription(htmlComment("<p>Hello, world!</p>\n")))
             .build(),
         Function.newBuilder()
             .setBase(BaseProperty.newBuilder()
                 .setName("greeting2")
-                .setSource(sourceFile("../source/modules/foo/baz.js.src.html", 4))
+                .setSource(sourceFile("../../source/modules/foo/baz.js.src.html", 4))
                 .setDescription(htmlComment("<p>Hello, world!</p>\n")))
             .build());
   }
@@ -533,9 +533,9 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
         Function.newBuilder()
             .setBase(BaseProperty.newBuilder()
                 .setName("greet")
-                .setSource(sourceFile("../source/modules/foo/bar.js.src.html", 7))
+                .setSource(sourceFile("../../source/modules/foo/bar.js.src.html", 7))
                 .setDescription(htmlComment(
-                    "<p>Greet a <a href=\"foo_bar_exports_Person.html\">"
+                    "<p>Greet a <a href=\"bar_exports_Person.html\">"
                         + "<code>Person</code></a>.</p>\n")))
             .build());
   }

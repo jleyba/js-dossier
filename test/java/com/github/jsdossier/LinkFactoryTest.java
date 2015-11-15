@@ -873,7 +873,7 @@ public class LinkFactoryTest {
         "export default class {}");
 
     TypeLink link = createFactory().createLink("foo/bar/baz");
-    checkLink(link, "foo/bar/baz", "module/foo_bar_baz.html");
+    checkLink(link, "foo/bar/baz", "module/foo/bar/baz.html");
   }
   
   @Test
@@ -889,7 +889,7 @@ public class LinkFactoryTest {
     NominalType2 ref = typeRegistry.getType("module$source$modules$one");
 
     TypeLink link = createFactory().withContext(ref).createLink("foo/bar/baz");
-    checkLink(link, "foo/bar/baz", "foo_bar_baz.html");
+    checkLink(link, "foo/bar/baz", "foo/bar/baz.html");
   }
   
   @Test
@@ -905,7 +905,7 @@ public class LinkFactoryTest {
     NominalType2 ref = typeRegistry.getType("module$source$modules$one");
 
     TypeLink link = createFactory().withContext(ref).createLink("./foo/bar/baz");
-    checkLink(link, "foo/bar/baz", "foo_bar_baz.html");
+    checkLink(link, "foo/bar/baz", "foo/bar/baz.html");
   }
   
   @Test
@@ -921,7 +921,7 @@ public class LinkFactoryTest {
     NominalType2 ref = typeRegistry.getType("module$source$modules$one$two");
 
     TypeLink link = createFactory().withContext(ref).createLink("../foo/bar/baz");
-    checkLink(link, "foo/bar/baz", "foo_bar_baz.html");
+    checkLink(link, "foo/bar/baz", "../foo/bar/baz.html");
   }
   
   @Test
@@ -932,7 +932,7 @@ public class LinkFactoryTest {
             "export class B {}"));
 
     TypeLink link = createFactory().createLink("module$source$modules$one$two.B");
-    checkLink(link, "B", "module/one_two_exports_B.html");
+    checkLink(link, "B", "module/one/two_exports_B.html");
   }
   
   @Test
@@ -946,10 +946,10 @@ public class LinkFactoryTest {
     LinkFactory factory = createFactory().withContext(ref);
 
     TypeLink link = factory.createLink("module$source$modules$one$two.B");
-    checkLink(link, "B", "one_two_exports_B.html");
+    checkLink(link, "B", "two_exports_B.html");
 
     link = factory.createLink("B");
-    checkLink(link, "B", "one_two_exports_B.html");
+    checkLink(link, "B", "two_exports_B.html");
   }
 
   @Test

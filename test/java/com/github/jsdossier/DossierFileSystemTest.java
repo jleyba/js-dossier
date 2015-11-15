@@ -26,9 +26,7 @@ import com.github.jsdossier.jscomp.Position;
 import com.github.jsdossier.jscomp.TypeRegistry2;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.jimfs.Jimfs;
-import com.google.javascript.jscomp.parsing.NullErrorReporter;
 import com.google.javascript.rhino.jstype.JSType;
-import com.google.javascript.rhino.jstype.JSTypeRegistry;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -72,14 +70,14 @@ public class DossierFileSystemTest {
   public void canGetThePathToAModule_index() {
     Path path = sut.getPath(commonJsModule("foo/bar/index.js"));
     assertThat(path.toString()).isEqualTo(
-        outputRoot.resolve("module/foo_bar_index.html").toString());
+        outputRoot.resolve("module/foo/bar/index.html").toString());
   }
   
   @Test
   public void canGetThePathToAModule() {
     Path path = sut.getPath(commonJsModule("foo/bar/baz.js"));
     assertThat(path.toString()).isEqualTo(
-        outputRoot.resolve("module/foo_bar_baz.html").toString());
+        outputRoot.resolve("module/foo/bar/baz.html").toString());
   }
   
   @Test
@@ -87,7 +85,7 @@ public class DossierFileSystemTest {
     NominalType2 type = createType("Clazz", commonJsModule("foo/bar.js"));
     Path path = sut.getPath(type);
     assertThat(path.toString()).isEqualTo(
-        outputRoot.resolve("module/foo_bar_exports_Clazz.html").toString());
+        outputRoot.resolve("module/foo/bar_exports_Clazz.html").toString());
   }
   
   @Test
@@ -95,7 +93,7 @@ public class DossierFileSystemTest {
     NominalType2 type = createType("Clazz", commonJsModule("foo/bar/index.js"));
     Path path = sut.getPath(type);
     assertThat(path.toString()).isEqualTo(
-        outputRoot.resolve("module/foo_bar_index_exports_Clazz.html").toString());
+        outputRoot.resolve("module/foo/bar/index_exports_Clazz.html").toString());
   }
   
   @Test
@@ -147,31 +145,31 @@ public class DossierFileSystemTest {
     NominalType2 type = createType("Baz", commonJsModule("foo/bar/baz.js"));
     Path path = sut.getPath(srcPrefix.resolve("foo/bar/baz.js"));
     assertThat(sut.getRelativePath(type, path).toString()).isEqualTo(
-        "../source/foo/bar/baz.js.src.html");
+        "../../../source/foo/bar/baz.js.src.html");
   }
   
   @Test
   public void getRelativePath_betweenTypesExportedByTheSameModule() {
     NominalType2 a = createType("One", commonJsModule("foo/bar/baz.js"));
     NominalType2 b = createType("Two", commonJsModule("foo/bar/baz.js"));
-    assertThat(sut.getRelativePath(a, b).toString()).isEqualTo("foo_bar_baz_exports_Two.html");
-    assertThat(sut.getRelativePath(b, a).toString()).isEqualTo("foo_bar_baz_exports_One.html");
+    assertThat(sut.getRelativePath(a, b).toString()).isEqualTo("baz_exports_Two.html");
+    assertThat(sut.getRelativePath(b, a).toString()).isEqualTo("baz_exports_One.html");
   }
   
   @Test
   public void getRelativePath_betweenTypesExportedModulesInTheSameDirectory() {
     NominalType2 a = createType("One", commonJsModule("foo/bar/one.js"));
     NominalType2 b = createType("Two", commonJsModule("foo/bar/two.js"));
-    assertThat(sut.getRelativePath(a, b).toString()).isEqualTo("foo_bar_two_exports_Two.html");
-    assertThat(sut.getRelativePath(b, a).toString()).isEqualTo("foo_bar_one_exports_One.html");
+    assertThat(sut.getRelativePath(a, b).toString()).isEqualTo("two_exports_Two.html");
+    assertThat(sut.getRelativePath(b, a).toString()).isEqualTo("one_exports_One.html");
   }
   
   @Test
   public void getRelativePath_betweenTypesExportedByDifferentModules() {
     NominalType2 a = createType("One", commonJsModule("foo/one.js"));
     NominalType2 b = createType("Two", commonJsModule("foo/bar/two.js"));
-    assertThat(sut.getRelativePath(a, b).toString()).isEqualTo("foo_bar_two_exports_Two.html");
-    assertThat(sut.getRelativePath(b, a).toString()).isEqualTo("foo_one_exports_One.html");
+    assertThat(sut.getRelativePath(a, b).toString()).isEqualTo("bar/two_exports_Two.html");
+    assertThat(sut.getRelativePath(b, a).toString()).isEqualTo("../one_exports_One.html");
   }
   
   private Module commonJsModule(String path) {

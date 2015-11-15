@@ -273,9 +273,9 @@ public class TypeInspectorStaticPropertyTest extends AbstractTypeInspectorTest {
         Property.newBuilder()
             .setBase(BaseProperty.newBuilder()
                 .setName("limit")
-                .setSource(sourceFile("../source/modules/foo/bar.js.src.html", 7))
+                .setSource(sourceFile("../../source/modules/foo/bar.js.src.html", 7))
                 .setDescription(htmlComment(
-                    "<p>Link to a <a href=\"foo_bar_exports_Person.html\">"
+                    "<p>Link to a <a href=\"bar_exports_Person.html\">"
                         + "<code>Person</code></a>.</p>\n"))
                 .setTags(Tags.newBuilder()
                     .setIsConst(true)))

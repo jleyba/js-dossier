@@ -146,7 +146,7 @@ public class LinkerTest {
         createCommonJsModule(modulePrefix.resolve("foo/bar/baz.js")));
 
     assertEquals(
-        outputDir.resolve("module/foo_bar_baz.html"),
+        outputDir.resolve("module/foo/bar/baz.html"),
         linker.getFilePath(type));
   }
 
@@ -170,7 +170,7 @@ public class LinkerTest {
         createCommonJsModule(modulePrefix.resolve("foo/bar/index.js")));
 
     assertEquals(
-        outputDir.resolve("module/foo_bar_index_exports_Baz.html"),
+        outputDir.resolve("module/foo/bar/index_exports_Baz.html"),
         linker.getFilePath(type));
   }
 

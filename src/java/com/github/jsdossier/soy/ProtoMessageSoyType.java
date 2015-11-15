@@ -45,6 +45,7 @@ import com.google.template.soy.data.restricted.BooleanData;
 import com.google.template.soy.data.restricted.IntegerData;
 import com.google.template.soy.data.restricted.NullData;
 import com.google.template.soy.data.restricted.StringData;
+import com.google.template.soy.shared.restricted.Sanitizers;
 import com.google.template.soy.types.SoyObjectType;
 import com.google.template.soy.types.SoyType;
 import com.google.template.soy.types.aggregate.ListType;
@@ -57,10 +58,15 @@ import com.google.template.soy.types.primitive.StringType;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.annotation.Nullable;
 
 class ProtoMessageSoyType implements SoyObjectType {
+  
+  private static final Pattern PERMISSIBLE_URI_PREFIX_PATTERN =
+      Pattern.compile("^((?:\\.{1,2}/)+)");
 
   private static final ImmutableMap<FieldDescriptor.JavaType, PrimitiveType> JAVA_TO_PRIMITIVE_TYPES =
       ImmutableMap.of(
@@ -232,15 +238,43 @@ class ProtoMessageSoyType implements SoyObjectType {
 
     com.github.jsdossier.proto.SanitizedContent sc =
         field.getOptions().getExtension(Dossier.sanitized);
-    SanitizedContent.ContentKind kind;
     if (sc.getHtml()) {
-      kind = HTML;
+      return toSanitizedContent(field, fieldValue, HTML);
     } else if (sc.getUri()) {
-      kind = URI;
+      if (fieldValue instanceof String) {
+        return toSanitizedUri((String) fieldValue);
+      } else if (field.isRepeated()) {
+        @SuppressWarnings("unchecked")
+        List<String> values = (List<String>) fieldValue;
+        return toSanitizedUri(values);
+      }
+
+      throw new IllegalArgumentException(
+          "sanitized URI fields must be strings: " + field.getName());
     } else {
       throw new IllegalArgumentException();
     }
-    return toSanitizedContent(field, fieldValue, kind);
+  }
+  
+  private static SoyListData toSanitizedUri(List<String> uris) {
+    return new SoyListData(transform(uris, new Function<String, SoyValue>() {
+      @Override
+      public SoyValue apply(String input) {
+        return toSanitizedUri(input);
+      }
+    }));
+  }
+
+  private static SoyValue toSanitizedUri(String uri) {
+    Matcher matcher = PERMISSIBLE_URI_PREFIX_PATTERN.matcher(uri);
+    if (matcher.find()) {
+      String prefix = matcher.group(1);
+      String rest = uri.substring(matcher.end());
+      uri = prefix + Sanitizers.filterNormalizeUri(rest);
+    } else {
+      uri = Sanitizers.filterNormalizeUri(uri);
+    }
+    return UnsafeSanitizedContentOrdainer.ordainAsSafe(uri, URI);
   }
 
   private static SoyValue toSanitizedContent(

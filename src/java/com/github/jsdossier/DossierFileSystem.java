@@ -158,12 +158,7 @@ final class DossierFileSystem {
    * Returns the path to the generated documentation for the given {@code module}.
    */
   public Path getPath(ModuleDescriptor module) {
-    // NB: Ideally, we'd use the module's relative path under MODULE_DIR, but soy templates won't
-    // let us generate links with a "/../" in the href. Interestingly, it will permit "../" in a
-    // <a href>, and it _will_ permit "/../" in the href of a <link>.
-    String path = stripExtension(modulePrefix.relativize(module.getPath()))
-        .toString()
-        .replace(modulePrefix.getFileSystem().getSeparator(), "_");
+    Path path = stripExtension(modulePrefix.relativize(module.getPath()));
     return outputRoot.resolve(MODULE_DIR).resolve(path + ".html");
   }
 
@@ -171,12 +166,7 @@ final class DossierFileSystem {
    * Returns the path to the generated documentation for the given {@code module}.
    */
   public Path getPath(Module module) {
-    // NB: Ideally, we'd use the module's relative path under MODULE_DIR, but soy templates won't
-    // let us generate links with a "/../" in the href. Interestingly, it will permit "../" in a
-    // <a href>, and it _will_ permit "/../" in the href of a <link>.
-    String path = stripExtension(modulePrefix.relativize(module.getPath()))
-        .toString()
-        .replace(modulePrefix.getFileSystem().getSeparator(), "_");
+    Path path = stripExtension(modulePrefix.relativize(module.getPath()));
     return outputRoot.resolve(MODULE_DIR).resolve(path + ".html");
   }
 

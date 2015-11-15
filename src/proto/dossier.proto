@@ -71,7 +71,7 @@ message TypeLink {
 // Defines a link to a symbol's definition in its rendered source file.
 message SourceLink {
   // Path from the current file to the rendered source file.
-  required string path = 1;
+  required string path = 1  [(sanitized).uri = true];
   // The line in the source file containing the symbol, if known.
   optional int32 line = 2;
 }
