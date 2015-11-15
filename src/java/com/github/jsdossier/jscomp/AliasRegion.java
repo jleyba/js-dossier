@@ -24,6 +24,7 @@ import com.google.javascript.rhino.SourcePosition;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nullable;
@@ -34,6 +35,8 @@ import javax.annotation.Nullable;
  */
 @AutoValue
 public abstract class AliasRegion implements CompilerOptions.AliasTransformation {
+  
+  private static final Logger log = Logger.getLogger(AliasRegion.class.getName());
   
   private final Map<String, String> aliases = new HashMap<>();
 
@@ -49,7 +52,7 @@ public abstract class AliasRegion implements CompilerOptions.AliasTransformation
 
   @Override
   public void addAlias(String alias, String definition) {
-    System.out.println("In " + getPath() + " " + alias + " = " + definition + " (" + getRange() + ")");
+    log.fine(String.format("In %s, %s = %s (%s)", getPath(), alias, definition, getRange()));
     aliases.put(alias, definition);
   }
 

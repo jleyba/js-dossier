@@ -211,29 +211,29 @@ public final class TypeCollectionPass implements CompilerPass {
     @Override
     public void visit(NodeTraversal t, Node n, Node parent) {
       if (!t.getScope().isGlobal()) {
-        System.out.println("Skipping no global scope");
+        logfmt("Skipping non-global scope");
         return;
       }
       
       for (Var var : t.getScope().getAllSymbols()) {
         String name = var.getName();
         if (name.startsWith(INTERNAL_NAMESPACE_VAR)) {
-          System.out.printf("Skipping internal compiler namespace %s\n", name);
+          logfmt("Skipping internal compiler namespace %s", name);
           continue;
         }
         
         Node node = var.getNameNode();
         if (node == null) {
-          System.out.printf("Skipping type without a source node: %s\n", name);
+          logfmt("Skipping type without a source node: %s", name);
           continue;
         } else if (node.getJSType() == null) {
-          System.out.printf("Unable to determine type for %s; skipping\n", name);
+          logfmt("Unable to determine type for %s; skipping", name);
           continue;
         } else if (node.getJSType().isGlobalThisType()) {
-          System.out.println("Skipping global this: " + name);
+          logfmt("Skipping global this: %s", name);
           continue;
         } else if (externs.isExtern(node.getJSType())) {
-          System.out.println("Skipping extern alias: " + name);
+          logfmt("Skipping extern alias: %s", name);
           continue;
         }
 
@@ -244,8 +244,7 @@ public final class TypeCollectionPass implements CompilerPass {
         
         if (isPrimitive(node.getJSType())
             && (info == null || (info.getTypedefType() == null && !info.isDefine()))) {
-          System.out.printf(
-              "Skipping primitive type assigned to %s: %s\n", name, node.getJSType());
+          logfmt("Skipping primitive type assigned to %s: %s", name, node.getJSType());
           continue;
         }
         
@@ -272,7 +271,7 @@ public final class TypeCollectionPass implements CompilerPass {
 
     private void recordType(NominalType2 type) {
       if (externs.isExtern(type.getType())) {
-        System.out.println("Skipping extern alias: " + type.getName());
+        logfmt("Skipping extern alias: %s", type.getName());
         return;
       }
       
@@ -289,7 +288,7 @@ public final class TypeCollectionPass implements CompilerPass {
               }
             }
           }
-          System.out.println("Skipping module alias: " + type.getName());
+          logfmt("Skipping module alias: %s", type.getName());
           return;
         }
       }
@@ -297,7 +296,7 @@ public final class TypeCollectionPass implements CompilerPass {
       if (type.getName().endsWith(".default")) {
         String id = type.getName().substring(0, type.getName().length() - ".default".length());
         if (typeRegistry.isModule(id)) {
-          System.out.println("Skipping default module export: " + type.getName());
+          logfmt("Skipping default module export: %s", type.getName());
           return;
         }
       }
@@ -310,12 +309,12 @@ public final class TypeCollectionPass implements CompilerPass {
           && !type.getJsDoc().isTypedef()
           && !type.getJsDoc().isDefine()
           && !typeRegistry.isProvided(type.getName())) {
-        System.out.println("Ignoring undeclared namespace " + type.getName());
+        logfmt("Ignoring undeclared namespace %s", type.getName());
         return;
       }
 
       if (!typeRegistry.getTypes(type.getType()).isEmpty()) {
-        System.out.printf("Found type alias: %s\n", type.getName());
+        logfmt("Found type alias: %s", type.getName());
         addType(type);
         return;
       }

@@ -42,6 +42,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nullable;
@@ -52,6 +53,8 @@ import javax.annotation.Nullable;
 @AutoFactory
 final class Es6ModulePass implements CompilerPass {
   
+  private static final Logger log = Logger.getLogger(Es6ModulePass.class.getName());
+
   private final DossierCompiler compiler;
   private final TypeRegistry2 typeRegistry;
   private final FileSystem inputFs;
@@ -139,8 +142,7 @@ final class Es6ModulePass implements CompilerPass {
     private void visitExport(Node n) {
       if (module == null) {
         Path path = inputFs.getPath(n.getSourceFileName());
-        System.out.println("Found ES6 module: " + path + " (" + toSimpleUri(path) + ")");
-        System.out.println("...id = " + ES6ModuleLoader.toModuleName(toSimpleUri(path)));
+        log.fine(String.format("Found ES6 module: %s (%s)", path, toSimpleUri(path)));
         module = Module.builder()
             .setId(ES6ModuleLoader.toModuleName(toSimpleUri(path)))
             .setPath(path)
