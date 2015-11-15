@@ -16,8 +16,10 @@
 
 package com.github.jsdossier;
 
+import static com.github.jsdossier.testing.CompilerUtil.createSourceFile;
 import static com.google.common.truth.Truth.assertThat;
 
+import com.github.jsdossier.jscomp.NominalType2;
 import com.github.jsdossier.proto.BaseProperty;
 import com.github.jsdossier.proto.Comment;
 import com.github.jsdossier.proto.Function;
@@ -55,7 +57,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
         " */",
         "A.prototype.sayHi = function(name) { return 'Hello, ' + name; };");
 
-    NominalType a = typeRegistry.getNominalType("A");
+    NominalType2 a = typeRegistry.getType("A");
     TypeInspector.Report report = typeInspector.inspectInstanceType(a);
     assertThat(report.getProperties()).isEmpty();
     assertThat(report.getFunctions()).containsExactly(
@@ -92,7 +94,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
         " */",
         "A.prototype.sayHi = function(name) {};");
 
-    NominalType a = typeRegistry.getNominalType("A");
+    NominalType2 a = typeRegistry.getType("A");
     TypeInspector.Report report = typeInspector.inspectInstanceType(a);
     assertThat(report.getProperties()).isEmpty();
     assertThat(report.getFunctions()).containsExactly(
@@ -129,7 +131,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
         " */",
         "A.prototype.sayHi;");
 
-    NominalType a = typeRegistry.getNominalType("A");
+    NominalType2 a = typeRegistry.getType("A");
     TypeInspector.Report report = typeInspector.inspectInstanceType(a);
     assertThat(report.getProperties()).isEmpty();
     assertThat(report.getFunctions()).containsExactly(
@@ -166,7 +168,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
         "  this.sayHi = function(name) { return 'Hello, ' + name; };",
         "}");
 
-    NominalType a = typeRegistry.getNominalType("A");
+    NominalType2 a = typeRegistry.getType("A");
     TypeInspector.Report report = typeInspector.inspectInstanceType(a);
     assertThat(report.getProperties()).isEmpty();
     assertThat(report.getFunctions()).containsExactly(
@@ -202,7 +204,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
         " */",
         "Clazz.prototype.add = abstractMethod");
 
-    NominalType type = typeRegistry.getNominalType("Clazz");
+    NominalType2 type = typeRegistry.getType("Clazz");
     TypeInspector.Report report = typeInspector.inspectInstanceType(type);
     assertThat(report.getProperties()).isEmpty();
     assertThat(report.getFunctions()).containsExactly(
@@ -239,7 +241,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
         " */",
         "Clazz.prototype.add = abstractMethod");
 
-    NominalType type = typeRegistry.getNominalType("Clazz");
+    NominalType2 type = typeRegistry.getType("Clazz");
     TypeInspector.Report report = typeInspector.inspectInstanceType(type);
     assertThat(report.getProperties()).isEmpty();
     assertThat(report.getFunctions()).containsExactly(
@@ -264,7 +266,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
         "var Clazz = function() {};",
         "Clazz.prototype.add = function(x, y) { return x + y; };");
 
-    NominalType type = typeRegistry.getNominalType("Clazz");
+    NominalType2 type = typeRegistry.getType("Clazz");
     TypeInspector.Report report = typeInspector.inspectInstanceType(type);
     assertThat(report.getProperties()).isEmpty();
     assertThat(report.getFunctions()).containsExactly(
@@ -294,7 +296,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
         " */",
         "Clazz.prototype.add = function(x, y) { return x + y; };");
 
-    NominalType type = typeRegistry.getNominalType("Clazz");
+    NominalType2 type = typeRegistry.getType("Clazz");
     TypeInspector.Report report = typeInspector.inspectInstanceType(type);
     assertThat(report.getProperties()).isEmpty();
     assertThat(report.getFunctions()).containsExactly(
@@ -324,7 +326,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
         " */",
         "Clazz.prototype.add = function(x, y) { return x + y; };");
 
-    NominalType type = typeRegistry.getNominalType("Clazz");
+    NominalType2 type = typeRegistry.getType("Clazz");
     TypeInspector.Report report = typeInspector.inspectInstanceType(type);
     assertThat(report.getProperties()).isEmpty();
     assertThat(report.getFunctions()).containsExactly(
@@ -352,7 +354,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
         "/** @type {function(number, number)} */",
         "Clazz.prototype.add = abstractMethod;");
 
-    NominalType type = typeRegistry.getNominalType("Clazz");
+    NominalType2 type = typeRegistry.getType("Clazz");
     TypeInspector.Report report = typeInspector.inspectInstanceType(type);
     assertThat(report.getProperties()).isEmpty();
     assertThat(report.getFunctions()).containsExactly(
@@ -389,7 +391,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
         " */",
         "B.prototype.record = function() {};");
 
-    NominalType type = typeRegistry.getNominalType("B");
+    NominalType2 type = typeRegistry.getType("B");
     TypeInspector.Report report = typeInspector.inspectInstanceType(type);
     assertThat(report.getProperties()).isEmpty();
     assertThat(report.getFunctions()).containsExactly(
@@ -421,7 +423,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
         " */",
         "B.prototype.record = function() {};");
 
-    NominalType type = typeRegistry.getNominalType("B");
+    NominalType2 type = typeRegistry.getType("B");
     TypeInspector.Report report = typeInspector.inspectInstanceType(type);
     assertThat(report.getProperties()).isEmpty();
     assertThat(report.getFunctions()).containsExactly(
@@ -453,7 +455,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
         " */",
         "B.prototype.record = function() {};");
 
-    NominalType type = typeRegistry.getNominalType("B");
+    NominalType2 type = typeRegistry.getType("B");
     TypeInspector.Report report = typeInspector.inspectInstanceType(type);
     assertThat(report.getProperties()).isEmpty();
     assertThat(report.getFunctions()).containsExactly(
@@ -484,7 +486,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
         " */",
         "B.prototype.record = function() {};");
 
-    NominalType type = typeRegistry.getNominalType("B");
+    NominalType2 type = typeRegistry.getType("B");
     TypeInspector.Report report = typeInspector.inspectInstanceType(type);
     assertThat(report.getProperties()).isEmpty();
     assertThat(report.getFunctions()).containsExactly(
@@ -515,7 +517,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
         " */",
         "B.prototype.record = function() {};");
 
-    NominalType type = typeRegistry.getNominalType("B");
+    NominalType2 type = typeRegistry.getType("B");
     TypeInspector.Report report = typeInspector.inspectInstanceType(type);
     assertThat(report.getProperties()).isEmpty();
     assertThat(report.getFunctions()).containsExactly(
@@ -546,7 +548,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
         "/** @override */",
         "B.prototype.record = function(x) {};");
 
-    NominalType type = typeRegistry.getNominalType("B");
+    NominalType2 type = typeRegistry.getType("B");
     TypeInspector.Report report = typeInspector.inspectInstanceType(type);
     assertThat(report.getProperties()).isEmpty();
     assertThat(report.getFunctions()).containsExactly(
@@ -581,7 +583,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
         "/** @override */",
         "B.prototype.record = function(x) {};");
 
-    NominalType type = typeRegistry.getNominalType("B");
+    NominalType2 type = typeRegistry.getType("B");
     TypeInspector.Report report = typeInspector.inspectInstanceType(type);
     assertThat(report.getProperties()).isEmpty();
     assertThat(report.getFunctions()).containsExactly(
@@ -616,7 +618,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
         "/** @override */",
         "B.prototype.record = function(x) {};");
 
-    NominalType type = typeRegistry.getNominalType("B");
+    NominalType2 type = typeRegistry.getType("B");
     TypeInspector.Report report = typeInspector.inspectInstanceType(type);
     assertThat(report.getProperties()).isEmpty();
     assertThat(report.getFunctions()).containsExactly(
@@ -657,7 +659,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
         "/** @override */",
         "C.prototype.record = function(y) {};");
 
-    NominalType type = typeRegistry.getNominalType("C");
+    NominalType2 type = typeRegistry.getType("C");
     TypeInspector.Report report = typeInspector.inspectInstanceType(type);
     assertThat(report.getProperties()).isEmpty();
     assertThat(report.getFunctions()).containsExactly(
@@ -693,7 +695,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
         "/** @override */",
         "B.prototype.record = abstractMethod;");
 
-    NominalType type = typeRegistry.getNominalType("B");
+    NominalType2 type = typeRegistry.getType("B");
     TypeInspector.Report report = typeInspector.inspectInstanceType(type);
     assertThat(report.getProperties()).isEmpty();
     assertThat(report.getFunctions()).containsExactly(
@@ -728,7 +730,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
         "/** @override */",
         "B.prototype.record = abstractMethod;");
 
-    NominalType type = typeRegistry.getNominalType("B");
+    NominalType2 type = typeRegistry.getType("B");
     TypeInspector.Report report = typeInspector.inspectInstanceType(type);
     assertThat(report.getProperties()).isEmpty();
     assertThat(report.getFunctions()).containsExactly(
@@ -763,7 +765,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
         " */",
         "B.prototype.record = function() {};");
 
-    NominalType type = typeRegistry.getNominalType("B");
+    NominalType2 type = typeRegistry.getType("B");
     TypeInspector.Report report = typeInspector.inspectInstanceType(type);
     assertThat(report.getProperties()).isEmpty();
     assertThat(report.getFunctions()).containsExactly(
@@ -771,6 +773,36 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
             .setBase(BaseProperty.newBuilder()
                 .setName("record")
                 .setSource(sourceFile("source/foo.js.src.html", 14))
+                .setDescription(Comment.getDefaultInstance())
+                .setOverrides(linkComment("A", "A.html#record")))
+            .setReturn(Detail.newBuilder()
+                .setType(stringTypeComment())
+                .setDescription(htmlComment("<p>Return from A.</p>\n")))
+            .build());
+  }  
+
+  @Test
+  public void usesReturnInfoFromOverriddenType_superClassEs6() {
+    compile(
+        DEFINE_ABSTRACT_METHOD,
+        "class A {",
+        "  /** @return {string} Return from A. */",
+        "  record() {}",
+        "}",
+        "",
+        "class B extends A {",
+        "  /** @override */",
+        "  record() {}",
+        "}");
+
+    NominalType2 type = typeRegistry.getType("B");
+    TypeInspector.Report report = typeInspector.inspectInstanceType(type);
+    assertThat(report.getProperties()).isEmpty();
+    assertThat(report.getFunctions()).containsExactly(
+        Function.newBuilder()
+            .setBase(BaseProperty.newBuilder()
+                .setName("record")
+                .setSource(sourceFile("source/foo.js.src.html", 9))
                 .setDescription(Comment.getDefaultInstance())
                 .setOverrides(linkComment("A", "A.html#record")))
             .setReturn(Detail.newBuilder()
@@ -797,7 +829,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
         " */",
         "B.prototype.record = function() {};");
 
-    NominalType type = typeRegistry.getNominalType("B");
+    NominalType2 type = typeRegistry.getType("B");
     TypeInspector.Report report = typeInspector.inspectInstanceType(type);
     assertThat(report.getProperties()).isEmpty();
     assertThat(report.getFunctions()).containsExactly(
@@ -831,7 +863,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
         " */",
         "B.prototype.record = function() {};");
 
-    NominalType type = typeRegistry.getNominalType("B");
+    NominalType2 type = typeRegistry.getType("B");
     TypeInspector.Report report = typeInspector.inspectInstanceType(type);
     assertThat(report.getProperties()).isEmpty();
     assertThat(report.getFunctions()).containsExactly(
@@ -866,7 +898,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
         " */",
         "B.prototype.record = noOpFunc;");
 
-    NominalType type = typeRegistry.getNominalType("B");
+    NominalType2 type = typeRegistry.getType("B");
     TypeInspector.Report report = typeInspector.inspectInstanceType(type);
     assertThat(report.getProperties()).isEmpty();
     assertThat(report.getFunctions()).containsExactly(
@@ -908,7 +940,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
         " */",
         "C.prototype.record = function() {};");
 
-    NominalType type = typeRegistry.getNominalType("C");
+    NominalType2 type = typeRegistry.getType("C");
     TypeInspector.Report report = typeInspector.inspectInstanceType(type);
     assertThat(report.getProperties()).isEmpty();
     assertThat(report.getFunctions()).containsExactly(
@@ -947,7 +979,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
         " */",
         "B.prototype.record = abstractMethod;");
 
-    NominalType type = typeRegistry.getNominalType("B");
+    NominalType2 type = typeRegistry.getType("B");
     TypeInspector.Report report = typeInspector.inspectInstanceType(type);
     assertThat(report.getProperties()).isEmpty();
     assertThat(report.getFunctions()).containsExactly(
@@ -985,7 +1017,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
         " */",
         "B.prototype.record = abstractMethod;");
 
-    NominalType type = typeRegistry.getNominalType("B");
+    NominalType2 type = typeRegistry.getType("B");
     TypeInspector.Report report = typeInspector.inspectInstanceType(type);
     assertThat(report.getProperties()).isEmpty();
     assertThat(report.getFunctions()).containsExactly(
@@ -1035,7 +1067,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
         "  B.prototype.record = abstractMethod;",
         "});");
 
-    NominalType type = typeRegistry.getNominalType("foo.bar.AClass");
+    NominalType2 type = typeRegistry.getType("foo.bar.AClass");
     TypeInspector.Report report = typeInspector.inspectInstanceType(type);
     assertThat(report.getProperties()).isEmpty();
     assertThat(report.getFunctions()).containsExactly(
@@ -1071,7 +1103,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
         " */",
         "B.prototype.record = function() {};");
 
-    NominalType type = typeRegistry.getNominalType("B");
+    NominalType2 type = typeRegistry.getType("B");
     TypeInspector.Report report = typeInspector.inspectInstanceType(type);
     assertThat(report.getProperties()).isEmpty();
     assertThat(report.getFunctions()).containsExactly(
@@ -1117,7 +1149,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
         " */",
         "StudentGreeter.prototype.greet = function(student) {};");
 
-    NominalType type = typeRegistry.getNominalType("StudentGreeter");
+    NominalType2 type = typeRegistry.getType("StudentGreeter");
     TypeInspector.Report report = typeInspector.inspectInstanceType(type);
     assertThat(report.getProperties()).isEmpty();
     assertThat(report.getFunctions()).containsExactly(
@@ -1134,7 +1166,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
             .build());
 
     // Sanity check the interface specification.
-    type = typeRegistry.getNominalType("Greeter");
+    type = typeRegistry.getType("Greeter");
     report = typeInspector.inspectInstanceType(type);
     assertThat(report.getProperties()).isEmpty();
     assertThat(report.getFunctions()).containsExactly(
@@ -1180,7 +1212,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
         " */",
         "HappyGreeter.prototype.greet = function() {};");
 
-    NominalType type = typeRegistry.getNominalType("HappyGreeter");
+    NominalType2 type = typeRegistry.getType("HappyGreeter");
     TypeInspector.Report report = typeInspector.inspectInstanceType(type);
     assertThat(report.getProperties()).isEmpty();
     assertThat(report.getFunctions()).containsExactly(
@@ -1196,7 +1228,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
             .build());
 
     // Sanity check the interface specification.
-    type = typeRegistry.getNominalType("Greeter");
+    type = typeRegistry.getType("Greeter");
     report = typeInspector.inspectInstanceType(type);
     assertThat(report.getProperties()).isEmpty();
     assertThat(report.getFunctions()).containsExactly(
@@ -1230,7 +1262,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
         " */",
         "B.prototype.go = function() {};");
     
-    NominalType type = typeRegistry.getNominalType("A");
+    NominalType2 type = typeRegistry.getType("A");
     TypeInspector.Report report = typeInspector.inspectInstanceType(type);
     assertThat(report.getProperties()).isEmpty();
     assertThat(report.getFunctions()).containsExactly(
@@ -1244,7 +1276,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setDeprecation(htmlComment("<p>Do not use this.</p>\n")))
             .build());
 
-    type = typeRegistry.getNominalType("B");
+    type = typeRegistry.getType("B");
     report = typeInspector.inspectInstanceType(type);
     assertThat(report.getProperties()).isEmpty();
     assertThat(report.getFunctions()).containsExactly(
@@ -1276,7 +1308,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
         " */",
         "B.prototype.go = function() {};");
 
-    NominalType type = typeRegistry.getNominalType("A");
+    NominalType2 type = typeRegistry.getType("A");
     TypeInspector.Report report = typeInspector.inspectInstanceType(type);
     assertThat(report.getProperties()).isEmpty();
     assertThat(report.getFunctions()).containsExactly(
@@ -1290,7 +1322,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setDescription(htmlComment("<p>if something goes wrong.</p>\n")))
             .build());
 
-    type = typeRegistry.getNominalType("B");
+    type = typeRegistry.getType("B");
     report = typeInspector.inspectInstanceType(type);
     assertThat(report.getProperties()).isEmpty();
     assertThat(report.getFunctions()).containsExactly(
@@ -1317,7 +1349,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
         "/** @constructor @extends {A} */",
         "function B() {}");
 
-    NominalType type = typeRegistry.getNominalType("B");
+    NominalType2 type = typeRegistry.getType("B");
     TypeInspector.Report report = typeInspector.inspectInstanceType(type);
     assertThat(report.getProperties()).isEmpty();
     assertThat(report.getFunctions()).containsExactly(
@@ -1357,7 +1389,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
         "/** @inheritDoc */",
         "AbstractEdge.prototype.addPath = function() {};");
 
-    NominalType type = typeRegistry.getNominalType("AbstractEdge");
+    NominalType2 type = typeRegistry.getType("AbstractEdge");
     TypeInspector.Report report = typeInspector.inspectInstanceType(type);
     assertThat(report.getProperties()).isEmpty();
     assertThat(report.getFunctions()).containsExactly(
@@ -1387,7 +1419,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
         "/** Go to {@link #a}. */",
         "Foo.prototype.b = function() {};");
 
-    NominalType type = typeRegistry.getNominalType("Foo");
+    NominalType2 type = typeRegistry.getType("Foo");
     TypeInspector.Report report = typeInspector.inspectInstanceType(type);
     assertThat(report.getProperties()).isEmpty();
     assertThat(report.getFunctions()).containsExactly(
@@ -1421,7 +1453,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
         "/** Go to {@link #a}. */",
         "Bar.prototype.b = function() {};");
 
-    NominalType type = typeRegistry.getNominalType("Bar");
+    NominalType2 type = typeRegistry.getType("Bar");
     TypeInspector.Report report = typeInspector.inspectInstanceType(type);
     assertThat(report.getProperties()).isEmpty();
     assertThat(report.getFunctions()).containsExactly(
@@ -1458,7 +1490,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
         "/** Go to {@link #a}. */",
         "Bar.prototype.b = function() {};");
 
-    NominalType type = typeRegistry.getNominalType("Bar");
+    NominalType2 type = typeRegistry.getType("Bar");
     TypeInspector.Report report = typeInspector.inspectInstanceType(type);
     assertThat(report.getProperties()).isEmpty();
     assertThat(report.getFunctions()).containsExactly(
@@ -1495,7 +1527,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
         "/** Go to {@link Foo#a}. */",
         "Bar.prototype.b = function() {};");
 
-    NominalType type = typeRegistry.getNominalType("Bar");
+    NominalType2 type = typeRegistry.getType("Bar");
     TypeInspector.Report report = typeInspector.inspectInstanceType(type);
     assertThat(report.getProperties()).isEmpty();
     assertThat(report.getFunctions()).containsExactly(
@@ -1528,7 +1560,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
         "/** Go to {@link Foo#a}. */",
         "Bar.prototype.b = function() {};");
 
-    NominalType type = typeRegistry.getNominalType("Bar");
+    NominalType2 type = typeRegistry.getType("Bar");
     TypeInspector.Report report = typeInspector.inspectInstanceType(type);
     assertThat(report.getProperties()).isEmpty();
     assertThat(report.getFunctions()).containsExactly(
@@ -1538,6 +1570,39 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setSource(sourceFile("source/foo.js.src.html", 8))
                 .setDescription(htmlComment(
                     "<p>Go to <a href=\"Foo.html#a\"><code>Foo#a</code></a>.</p>\n")))
+            .build());
+  }
+  
+  @Test
+  public void methodSpecifiedByInterfaceInAnotherModule() {
+    util.compile(
+        createSourceFile(
+            fs.getPath("/src/modules/one.js"),
+            "",
+            "/** @interface */",
+            "export class Greeter {",
+            "  /** Returns a greeting. */",
+            "  greet() {}",
+            "}"),
+        createSourceFile(
+            fs.getPath("/src/modules/two.js"),
+            "",
+            "/** @implements {./one.Greeter} */",
+            "export class CustomGreeter {",
+            "  /** @override */",
+            "  greet() {}",
+            "}"));
+
+    NominalType2 type = typeRegistry.getType("module$src$modules$two.CustomGreeter");
+    TypeInspector.Report report = typeInspector.inspectInstanceType(type);
+    assertThat(report.getProperties()).isEmpty();
+    assertThat(report.getFunctions()).containsExactly(
+        Function.newBuilder()
+            .setBase(BaseProperty.newBuilder()
+                .setName("greet")
+                .setSource(sourceFile("../source/modules/two.js.src.html", 5))
+                .setDescription(htmlComment("<p>Returns a greeting.</p>\n"))
+                .addSpecifiedBy(linkComment("Greeter", "one_exports_Greeter.html#greet")))
             .build());
   }
 }

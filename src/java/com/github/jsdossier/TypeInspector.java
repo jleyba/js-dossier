@@ -17,14 +17,19 @@
 package com.github.jsdossier;
 
 import static com.github.jsdossier.Comments.isVacuousTypeComment;
+import static com.github.jsdossier.jscomp.Types.isBuiltInFunctionProperty;
+import static com.github.jsdossier.jscomp.Types.isConstructorTypeDefinition;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.base.Verify.verify;
+import static com.google.common.collect.Iterables.getFirst;
 import static com.google.common.collect.Iterables.transform;
 
+import com.github.jsdossier.annotations.TypeFilter;
 import com.github.jsdossier.jscomp.JsDoc;
 import com.github.jsdossier.jscomp.JsDoc.Annotation;
 import com.github.jsdossier.jscomp.JsDoc.TypedDescription;
+import com.github.jsdossier.jscomp.Module;
 import com.github.jsdossier.jscomp.NominalType2;
 import com.github.jsdossier.jscomp.Parameter;
 import com.github.jsdossier.jscomp.TypeRegistry2;
@@ -32,8 +37,11 @@ import com.github.jsdossier.proto.BaseProperty;
 import com.github.jsdossier.proto.Comment;
 import com.github.jsdossier.proto.Function;
 import com.github.jsdossier.proto.Function.Detail;
+import com.github.jsdossier.proto.TypeLink;
 import com.github.jsdossier.proto.Visibility;
+import com.google.auto.value.AutoValue;
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
@@ -44,15 +52,17 @@ import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.jstype.FunctionType;
 import com.google.javascript.rhino.jstype.JSType;
+import com.google.javascript.rhino.jstype.JSTypeRegistry;
 import com.google.javascript.rhino.jstype.ObjectType;
 import com.google.javascript.rhino.jstype.Property;
 import com.google.javascript.rhino.jstype.TemplatizedType;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -67,20 +77,32 @@ import javax.inject.Inject;
 final class TypeInspector {
 
   private final Linker linker;
+  private final LinkFactory linkFactory;
+  private final DossierFileSystem dfs;
   private final CommentParser parser;
-  private final TypeRegistry typeRegistry;
   private final TypeRegistry2 registry;
+  private final JSTypeRegistry jsRegistry;
+  private final TypeExpressionParserFactory expressionParserFactory;
+  private final Predicate<String> typeFilter;
 
   @Inject
   TypeInspector(
       Linker linker,
+      LinkFactory linkFactory,
+      DossierFileSystem dfs,
       CommentParser parser,
-      TypeRegistry typeRegistry,
-      TypeRegistry2 registry) {
+      TypeRegistry2 registry,
+      JSTypeRegistry jsRegistry,
+      TypeExpressionParserFactory expressionParserFactory,
+      @TypeFilter Predicate<String> typeFilter) {
     this.linker = linker;
+    this.linkFactory = linkFactory;
+    this.dfs = dfs;
     this.parser = parser;
-    this.typeRegistry = typeRegistry;
     this.registry = registry;
+    this.jsRegistry = jsRegistry;
+    this.expressionParserFactory = expressionParserFactory;
+    this.typeFilter = typeFilter;
   }
 
   /**
@@ -89,95 +111,156 @@ final class TypeInspector {
    * instance properties.
    */
   public Report inspectType(NominalType2 nominalType) {
-    List<Property> properties = getProperties(nominalType.getType());
+    List<Property> properties = getProperties(nominalType);
     Collections.sort(properties, new PropertyNameComparator());
-    
-    Report report = new Report();
-    
-    for (Property property : properties) {
-    }
-
-    return report;
-  }
-  
-  private List<Property> getProperties(JSType type) {
-    checkArgument(type.isObject());
-    ObjectType object = ObjectType.cast(type);
-    boolean isFunction = type.isFunctionType();
-    List<Property> properties = new ArrayList<>();
-    for (String name : object.getOwnPropertyNames()) {
-      if (isFunction
-          && !"apply".equals(name)
-          && !"bind".equals(name)
-          && !"call".equals(name)
-          && !"prototype".equals(name)) {
-        properties.add(object.getOwnSlot(name));
-      } else if (!"prototype".equals(name)) {
-        properties.add(object.getOwnSlot(name));
-      }
-    }
-    return properties;
-  }
-
-  public Report inspectType(NominalType nominalType) {
-    ImmutableList<Property> properties = FluentIterable.from(nominalType.getProperties())
-        .toSortedList(new PropertyNameComparator());
     if (properties.isEmpty()) {
       return new Report();
     }
 
     Report report = new Report();
-    linker.pushContext(nominalType);
 
     for (Property property : properties) {
       String name = property.getName();
       if (!nominalType.isModuleExports() && !nominalType.isNamespace()) {
-        name = nominalType.getName() + "." + name;
+        String typeName = dfs.getDisplayName(nominalType);
+        int index = typeName.lastIndexOf('.');
+        if (index != -1) {
+          typeName = typeName.substring(index + 1);
+        }
+        name = typeName + "." + name;
       }
 
-      JsDoc jsdoc = JsDoc.from(property.getJSDocInfo());
+      PropertyDocs docs = findStaticPropertyJsDoc(nominalType, property);
+      JsDoc jsdoc = docs.getJsDoc();
 
-      // If this property does not have any docs and is part of a CommonJS module's exported API,
-      // check if the property is a reference to one of the module's internal variables and we
-      // can use those docs instead.
-      if ((jsdoc == null || isNullOrEmpty(jsdoc.getOriginalCommentString()))
-          && nominalType.getModule() != null
-          && nominalType.isModuleExports()) {
-        String internalName = nominalType.getModule().getInternalName(
-            nominalType.getQualifiedName(true) + "." + property.getName());
-        jsdoc = nominalType.getModule().getInternalVarDocs(internalName);
-      }
-
-      if (jsdoc != null && jsdoc.getVisibility() == JSDocInfo.Visibility.PRIVATE
+      if (jsdoc.getVisibility() == JSDocInfo.Visibility.PRIVATE
           || (name.endsWith(".superClass_") && property.getType().isFunctionPrototypeType())) {
         continue;
       }
       
-      if (jsdoc != null && jsdoc.isDefine()) {
+      if (jsdoc.isDefine()) {
         report.addCompilerConstant(getPropertyData(
             name,
             property.getType(),
             property.getNode(),
-            jsdoc));
+            docs));
 
       } else if (property.getType().isFunctionType()) {
         report.addFunction(getFunctionData(
             name,
             property.getType(),
             property.getNode(),
-            jsdoc));
+            docs));
 
       } else if (!property.getType().isEnumElementType()) {
         report.addProperty(getPropertyData(
             name,
             property.getType(),
             property.getNode(),
-            jsdoc));
+            docs));
       }
     }
 
-    linker.popContext();
     return report;
+  }
+  
+  private PropertyDocs findStaticPropertyJsDoc(NominalType2 ownerType, Property property) {
+    JsDoc jsdoc = JsDoc.from(property.getJSDocInfo());
+    if (!isEmptyComment(jsdoc) || !ownerType.isModuleExports()) {
+      return PropertyDocs.create(ownerType, jsdoc);
+    }
+
+    // The property does not have any docs, but is part of a module's exported API,
+    // so we can see if the property is just a symbol defined in the module whose docs we can
+    // use.
+    Module module = ownerType.getModule().get();
+
+    String internalName = module.getExportedNames().get(property.getName());
+    if (isNullOrEmpty(internalName)) {
+      return PropertyDocs.create(ownerType, jsdoc);
+    }
+    
+    // Case 1: the exported property is a reference to a variable defiend within the module that
+    // had documentation:
+    //    /** hi */
+    //    let someSymbol = function() {};
+    //    export {someSymbol as publicName};
+    jsdoc = JsDoc.from(module.getInternalVarDocs().get(internalName));
+    if (!isEmptyComment(jsdoc)) {
+      return PropertyDocs.create(ownerType, jsdoc);
+    }
+
+    // The internal name is an alias for a symbol renamed during compilation, so we should use the
+    // resolved name for subsequent checks.
+    String resolved = registry.resolveAlias(ownerType, internalName);
+    if (resolved != null) {
+      internalName = resolved;
+    }
+
+    // The exported property is a reference to another type recorded from the global scope.
+    if (registry.isType(internalName)) {
+      // We ignore this case if the forwarded type is the main exports of another module.
+      if (registry.isModule(internalName)) {
+        return PropertyDocs.create(ownerType, jsdoc);
+      }
+      NominalType2 type = registry.getType(internalName);
+      return PropertyDocs.create(type, type.getJsDoc());
+    }
+    
+    // Make one last attempt when the property is a reference to another static property.
+    int index = internalName.indexOf('.');
+    if (index != -1) {
+      String name = internalName.substring(0, index);
+      if (registry.isType(name)) {
+        NominalType2 type = registry.getType(name);
+        property = type.getType().toObjectType().getOwnSlot(
+            internalName.substring(index + 1));
+        if (property != null) {
+          return findStaticPropertyJsDoc(type, property);
+        }
+      }
+    }
+
+    return PropertyDocs.create(ownerType, jsdoc);
+  }
+  
+  private static boolean isEmptyComment(JsDoc doc) {
+    return isNullOrEmpty(doc.getOriginalCommentString());
+  }
+
+  private List<Property> getProperties(NominalType2 nominalType) {
+    JSType type = nominalType.getType();
+    ObjectType object = ObjectType.cast(type);
+
+    List<Property> properties = new ArrayList<>();
+    for (String name : object.getOwnPropertyNames()) {
+      Property property = null;
+      if (type.isFunctionType()) {
+        if (!isBuiltInFunctionProperty(type, name)) {
+          property = object.getOwnSlot(name);
+        }
+      } else if (!"prototype".equals(name)) {
+        property = object.getOwnSlot(name);
+      }
+      
+      if (property != null) {
+        if (property.getType().isConstructor()
+            && isConstructorTypeDefinition(
+                property.getType(), JsDoc.from(property.getJSDocInfo()))) {
+          continue;
+        }
+        
+        // If the property is registered as a nominal type, it does not count as a static
+        // property. It should also be ignored if it is not registered as a nominal type, but its
+        // qualified name has been filtered out by the user.
+        String qualifiedName = nominalType.getName() + "." + property.getName();
+        if (registry.getTypes(property.getType()).isEmpty()
+            && !typeFilter.apply(qualifiedName)) {
+          properties.add(property);
+        }
+      }
+    }
+    return properties;
   }
 
   /**
@@ -187,29 +270,28 @@ final class TypeInspector {
    * whether the property is defined directly on the nominal type or one of its super
    * types/interfaces.
    */
-  public Report inspectInstanceType(NominalType nominalType) {
-    if (!nominalType.getJsType().isConstructor() && !nominalType.getJsType().isInterface()) {
+  public Report inspectInstanceType(NominalType2 type) {
+    if (!type.getType().isConstructor() && !type.getType().isInterface()) {
       return new Report();
     }
     
-    linker.pushContext(nominalType);
     Report report = new Report();
     Multimap<String, InstanceProperty> properties = MultimapBuilder
         .treeKeys()
         .linkedHashSetValues()
         .build();
 
-    for (JSType assignableType : getAssignableTypes(nominalType.getJsType())) {
+    for (JSType assignableType : getAssignableTypes(type.getType())) {
       for (Map.Entry<String, InstanceProperty> entry
           : getInstanceProperties(assignableType).entrySet()) {
         properties.put(entry.getKey(), entry.getValue());
       }
     }
 
-    final JSType currentType = ((FunctionType) nominalType.getJsType()).getInstanceType();
+    final JSType currentType = ((FunctionType) type.getType()).getInstanceType();
 
     for (String key : properties.keySet()) {
-      LinkedList<InstanceProperty> definitions = new LinkedList<>(properties.get(key));
+      Deque<InstanceProperty> definitions = new ArrayDeque<>(properties.get(key));
       JSType propertyType = findPropertyType(definitions);
       InstanceProperty property = definitions.removeFirst();
 
@@ -218,14 +300,14 @@ final class TypeInspector {
         continue;
       }
 
-      Comment definedBy = getDefinedByComment(currentType, property);
+      Comment definedBy = getDefinedByComment(type, currentType, property);
 
       if (propertyType.isFunctionType()) {
         report.addFunction(getFunctionData(
             property.getName(),
             propertyType,
             property.getNode(),
-            property.getJsDoc(),
+            PropertyDocs.create(type, property.getJsDoc()),
             definedBy,
             definitions));
       } else {
@@ -233,13 +315,12 @@ final class TypeInspector {
             property.getName(),
             propertyType,
             property.getNode(),
-            property.getJsDoc(),
+            PropertyDocs.create(type, property.getJsDoc()),
             definedBy,
             definitions));
       }
     }
 
-    linker.popContext();
     return report;
   }
   
@@ -258,10 +339,10 @@ final class TypeInspector {
     }
     Set<JSType> types = new LinkedHashSet<>();
     types.add(type);
-    for (JSType iface : typeRegistry.getDeclaredInterfaces(type)) {
+    for (JSType iface : registry.getDeclaredInterfaces(type, jsRegistry)) {
       types.addAll(getAssignableTypes(iface));
     }
-    List<JSType> typeHierarchy = typeRegistry.getTypeHierarchy(type);
+    List<JSType> typeHierarchy = registry.getTypeHierarchy(type, jsRegistry);
     for (int i = 1; i < typeHierarchy.size(); i++) {
       types.addAll(getAssignableTypes(typeHierarchy.get(i)));
     }
@@ -299,28 +380,55 @@ final class TypeInspector {
     for (String name : object.getOwnPropertyNames()) {
       if (!"constructor".equals(name)) {
         Property property = object.getOwnSlot(name);
-        properties.put(property.getName(), new InstanceProperty(
-            definingType,
-            property.getName(),
-            getType(object, property),
-            property.getNode(),
-            property.getJSDocInfo()));
+        properties.put(property.getName(), InstanceProperty.builder()
+            .setOwnerType(getFirst(registry.getTypes(definingType), null))
+            .setDefinedByType(definingType)
+            .setName(property.getName())
+            .setType(getType(object, property))
+            .setNode(property.getNode())
+            .setJsDoc(JsDoc.from(property.getJSDocInfo()))
+            .build());
       }
     }
     return properties;
   }
 
   @Nullable
-  private Comment getDefinedByComment(JSType currentType, InstanceProperty property) {
-    JSType propertyDefinedOn = property.getDefinedOn();
-    if (propertyDefinedOn.isConstructor() || propertyDefinedOn.isInterface()) {
+  private Comment getDefinedByComment(
+      NominalType2 context, JSType currentType, InstanceProperty property) {
+    JSType propertyDefinedOn = property.getDefinedByType();
+    if (propertyDefinedOn.isInterface()
+        || (propertyDefinedOn.toObjectType() != null
+            && propertyDefinedOn.toObjectType().getConstructor() != null
+            && propertyDefinedOn.toObjectType().getConstructor().isInterface())) {
+      return null;
+    }
+    if (propertyDefinedOn.isConstructor()) {
       propertyDefinedOn = ((FunctionType) propertyDefinedOn).getInstanceType();
     }
     if (currentType.equals(propertyDefinedOn)) {
       return null;
     }
-    JSType definedByType = stripTemplateTypeInformation(propertyDefinedOn);
-    return addPropertyHash(linker.formatTypeExpression(definedByType), property.getName());
+
+    final JSType definedByType = stripTemplateTypeInformation(propertyDefinedOn);
+
+    List<NominalType2> types = registry.getTypes(definedByType);
+    if (types.isEmpty() && definedByType.isInstanceType()) {
+      types = registry.getTypes(definedByType.toObjectType().getConstructor());
+    }
+    
+    if (!types.isEmpty()) {
+      TypeLink link = linkFactory.withContext(context)
+          .createLink(types.get(0), "#" + property.getName());
+      Comment.Builder comment = Comment.newBuilder();
+      comment.addTokenBuilder()
+          .setText(stripHash(link.getText()))
+          .setHref(link.getHref());
+      return comment.build();
+    }
+    
+    TypeExpressionParser parser = expressionParserFactory.create(context);
+    return parser.parse(definedByType);
   }
 
   /**
@@ -330,7 +438,7 @@ final class TypeInspector {
   @CheckReturnValue
   private InstanceProperty findFirstClassOverride(Iterable<InstanceProperty> properties) {
     for (InstanceProperty property : properties) {
-      JSType definedOn = property.getDefinedOn();
+      JSType definedOn = property.getDefinedByType();
       if (definedOn.isInterface()) {
         continue;
       } else if (definedOn.isInstanceType()) {
@@ -351,7 +459,7 @@ final class TypeInspector {
     return FluentIterable.from(properties).filter(new Predicate<InstanceProperty>() {
       @Override
       public boolean apply(InstanceProperty property) {
-        JSType definedOn = property.getDefinedOn();
+        JSType definedOn = property.getDefinedByType();
         if (!definedOn.isInterface()) {
           JSType ctor = null;
           if (definedOn.isInstanceType()) {
@@ -370,8 +478,10 @@ final class TypeInspector {
       String name,
       JSType type,
       Node node,
-      @Nullable JsDoc jsDoc) {
-    return getFunctionData(name, type, node, jsDoc, null,
+      NominalType2 context,
+      JsDoc jsDoc) {
+    PropertyDocs propertyDocs = PropertyDocs.create(context, jsDoc);
+    return getFunctionData(name, type, node, propertyDocs, null,
         ImmutableList.<InstanceProperty>of());
   }
 
@@ -379,7 +489,16 @@ final class TypeInspector {
       String name,
       JSType type,
       Node node,
-      @Nullable JsDoc jsDoc,
+      PropertyDocs docs) {
+    return getFunctionData(name, type, node, docs, null,
+        ImmutableList.<InstanceProperty>of());
+  }
+
+  private Function getFunctionData(
+      String name,
+      JSType type,
+      Node node,
+      PropertyDocs docs,
       @Nullable Comment definedBy,
       Iterable<InstanceProperty> overrides) {
     checkArgument(type.isFunctionType(), "%s is not a function type: %s", name, type);
@@ -388,40 +507,38 @@ final class TypeInspector {
     boolean isInterface = !isConstructor && type.isInterface();
 
     Function.Builder builder = Function.newBuilder()
-        .setBase(getBasePropertyDetails(name, type, node, jsDoc, definedBy, overrides));
-    
+        .setBase(getBasePropertyDetails(name, type, node, docs, definedBy, overrides));
+
     if (isConstructor) {
       builder.setIsConstructor(true);
     }
 
     if (!isConstructor && !isInterface) {
-      JsDoc returnDocs = findJsDoc(jsDoc, overrides, new Predicate<JsDoc>() {
+      PropertyDocs returnDocs = findPropertyDocs(docs, overrides, new Predicate<JsDoc>() {
         @Override
-        public boolean apply(@Nullable JsDoc input) {
-          return input != null && input.hasAnnotation(Annotation.RETURN);
+        public boolean apply(JsDoc input) {
+          return input.hasAnnotation(Annotation.RETURN);
         }
       });
 
       if (returnDocs != null) {
         Comment returnComment = parser.parseComment(
-            returnDocs.getReturnClause().getDescription(), linker);
+            returnDocs.getJsDoc().getReturnClause().getDescription(),
+            linkFactory.withContext(returnDocs.getContextType()));
         if (returnComment.getTokenCount() > 0) {
           builder.getReturnBuilder().setDescription(returnComment);
         }
       }
 
-      Comment returnType = getReturnType(returnDocs, overrides, (FunctionType) type);
+      Comment returnType = getReturnType(docs, overrides, (FunctionType) type);
       if (returnType.getTokenCount() > 0) {
         builder.getReturnBuilder().setType(returnType);
       }
     }
 
-    if (jsDoc != null) {
-      builder.addAllTemplateName(jsDoc.getTemplateTypeNames())
-          .addAllThrown(buildThrowsData(jsDoc));
-    }
-
-    builder.addAllParameter(getParameters(type, node, jsDoc, overrides));
+    builder.addAllTemplateName(docs.getJsDoc().getTemplateTypeNames())
+        .addAllThrown(buildThrowsData(docs.getContextType(), docs.getJsDoc()))
+        .addAllParameter(getParameters(type, node, docs, overrides));
 
     return builder.build();
   }
@@ -429,14 +546,14 @@ final class TypeInspector {
   private Iterable<Function.Detail> getParameters(
       JSType type,
       Node node,
-      @Nullable JsDoc docs,
+      PropertyDocs docs,
       Iterable<InstanceProperty> overrides) {
     checkArgument(type.isFunctionType());
     
-    JsDoc foundDocs = findJsDoc(docs, overrides, new Predicate<JsDoc>() {
+    PropertyDocs foundDocs = findPropertyDocs(docs, overrides, new Predicate<JsDoc>() {
       @Override
-      public boolean apply(@Nullable JsDoc input) {
-        return input != null && input.hasAnnotation(Annotation.PARAM);
+      public boolean apply(JsDoc input) {
+        return input.hasAnnotation(Annotation.PARAM);
       }
     });
 
@@ -447,8 +564,9 @@ final class TypeInspector {
     //    * @param {number}
     //    *\
     //   Clazz.prototype.add = function(x, y) { return x + y; };
-    if (foundDocs != null && !foundDocs.getParameters().isEmpty()) {
-      return FluentIterable.from(foundDocs.getParameters())
+    if (foundDocs != null
+        && !foundDocs.getJsDoc().getParameters().isEmpty()) {
+      return FluentIterable.from(foundDocs.getJsDoc().getParameters())
           .transform(new com.google.common.base.Function<Parameter, Detail>() {
             @Override
             public Detail apply(Parameter input) {
@@ -526,18 +644,20 @@ final class TypeInspector {
     return null;
   }
 
-  private Iterable<Function.Detail> buildThrowsData(JsDoc jsDoc) {
+  private Iterable<Function.Detail> buildThrowsData(final NominalType2 context, JsDoc jsDoc) {
     return transform(jsDoc.getThrowsClauses(),
         new com.google.common.base.Function<TypedDescription, Detail>() {
           @Override
           public Function.Detail apply(TypedDescription input) {
             Comment thrownType = Comment.getDefaultInstance();
             if (input.getType().isPresent()) {
-              thrownType = linker.formatTypeExpression(input.getType().get());
+              thrownType = expressionParserFactory.create(context).parse(input.getType().get());
             }
             return Function.Detail.newBuilder()
                 .setType(thrownType)
-                .setDescription(parser.parseComment(input.getDescription(), linker))
+                .setDescription(parser.parseComment(
+                    input.getDescription(),
+                    linkFactory.withContext(context)))
                 .build();
           }
         }
@@ -545,20 +665,22 @@ final class TypeInspector {
   }
 
   private Comment getReturnType(
-      @Nullable JsDoc jsdoc,
+      PropertyDocs docs,
       Iterable<InstanceProperty> overrides,
       FunctionType function) {
-    JsDoc returnDocs = findJsDoc(jsdoc, overrides, new Predicate<JsDoc>() {
+    PropertyDocs returnDocs = findPropertyDocs(docs, overrides, new Predicate<JsDoc>() {
       @Override
       public boolean apply(@Nullable JsDoc input) {
-        return input != null
-            && input.getReturnClause().getType().isPresent();
+        return input != null && input.getReturnClause().getType().isPresent();
       }
     });
+
     JSType returnType = function.getReturnType();
     if (returnType.isUnknownType() && returnDocs != null) {
-      returnType = typeRegistry.evaluate(returnDocs.getReturnClause().getType().get());
+      returnType =
+          returnDocs.getJsDoc().getReturnClause().getType().get().evaluate(null, jsRegistry);
     }
+
     if (returnType.isUnknownType()) {
       for (InstanceProperty property : overrides) {
         if (property.getType() != null && property.getType().isFunctionType()) {
@@ -570,19 +692,28 @@ final class TypeInspector {
         }
       }
     }
-    Comment comment = linker.formatTypeExpression(returnType);
+
+    NominalType2 context = null;
+    if (returnDocs != null) {
+      context = returnDocs.getContextType();
+    } else if (docs != null) {
+      context = docs.getContextType();
+    }
+
+    TypeExpressionParser parser = expressionParserFactory.create(context);
+    Comment comment = parser.parse(returnType);
     if (isVacuousTypeComment(comment)) {
       return Comment.getDefaultInstance();
     }
     return comment;
   }
 
-  public com.github.jsdossier.proto.Property getPropertyData(
+  private com.github.jsdossier.proto.Property getPropertyData(
       String name,
       JSType type,
       Node node,
-      JsDoc jsDoc) {
-    return getPropertyData(name, type, node, jsDoc, null,
+      PropertyDocs docs) {
+    return getPropertyData(name, type, node, docs, null,
         ImmutableList.<InstanceProperty>of());
   }
 
@@ -590,18 +721,18 @@ final class TypeInspector {
       String name,
       JSType type,
       Node node,
-      @Nullable JsDoc jsDoc,
+      PropertyDocs docs,
       @Nullable Comment definedBy,
       Iterable<InstanceProperty> overrides) {
     com.github.jsdossier.proto.Property.Builder builder =
         com.github.jsdossier.proto.Property.newBuilder()
-            .setBase(getBasePropertyDetails(
-                name, type, node, jsDoc, definedBy, overrides));
-
-    if (jsDoc != null && jsDoc.getType() != null) {
-      builder.setType(linker.formatTypeExpression(jsDoc.getType()));
+            .setBase(getBasePropertyDetails(name, type, node, docs, definedBy, overrides));
+    
+    TypeExpressionParser parser = expressionParserFactory.create(docs.getContextType());
+    if (docs.getJsDoc().getType() != null) {
+      builder.setType(parser.parse(docs.getJsDoc().getType()));
     } else if (type != null) {
-      builder.setType(linker.formatTypeExpression(type));
+      builder.setType(parser.parse(type));
     }
 
     return builder.build();
@@ -611,13 +742,15 @@ final class TypeInspector {
       String name,
       JSType type,
       Node node,
-      JsDoc jsdoc,
+      PropertyDocs docs,
       @Nullable Comment definedBy,
       Iterable<InstanceProperty> overrides) {
     BaseProperty.Builder builder = BaseProperty.newBuilder()
         .setName(name)
-        .setDescription(findBlockComment(jsdoc, overrides))
-        .setSource(linker.getSourceLink(node));
+        .setDescription(findBlockComment(docs, overrides))
+        .setSource(
+            linkFactory.withContext(docs.getContextType())
+                .createLink(node));
 
     if (definedBy != null) {
       builder.setDefinedBy(definedBy);
@@ -625,65 +758,92 @@ final class TypeInspector {
 
     InstanceProperty immediateOverride = findFirstClassOverride(overrides);
     if (immediateOverride != null) {
-      builder.setOverrides(getPropertyLink(immediateOverride));
+      builder.setOverrides(getPropertyLink(docs.getContextType(), immediateOverride));
     }
     
     for (InstanceProperty property : findSpecifications(overrides)) {
-      builder.addSpecifiedBy(getPropertyLink(property));
+      builder.addSpecifiedBy(getPropertyLink(docs.getContextType(), property));
+    }
+    
+    JsDoc jsdoc = docs.getJsDoc();
+    if (jsdoc.getVisibility() != JSDocInfo.Visibility.PUBLIC) {
+      builder.setVisibility(Visibility.valueOf(jsdoc.getVisibility().name()));
     }
 
-    if (jsdoc != null) {
-      if (jsdoc.getVisibility() != JSDocInfo.Visibility.PUBLIC) {
-        builder.setVisibility(Visibility.valueOf(jsdoc.getVisibility().name()));
-      }
-      
-      if (jsdoc.isDeprecated()) {
-        builder.getTagsBuilder().setIsDeprecated(true);
-        builder.setDeprecation(parser.parseComment(jsdoc.getDeprecationReason(), linker));
-      }
+    if (jsdoc.isDeprecated()) {
+      builder.getTagsBuilder().setIsDeprecated(true);
+      builder.setDeprecation(
+          parser.parseComment(
+              jsdoc.getDeprecationReason(),
+              linkFactory.withContext(docs.getContextType())));
+    }
 
-      if (!type.isFunctionType() && (jsdoc.isConst() || jsdoc.isDefine())) {
-        builder.getTagsBuilder().setIsConst(true);
-      }
+    if (!type.isFunctionType() && (jsdoc.isConst() || jsdoc.isDefine())) {
+      builder.getTagsBuilder().setIsConst(true);
     }
     return builder.build();
   }
   
-  private Comment findBlockComment(JsDoc typeDocs, Iterable<InstanceProperty> overrides) {
-    JsDoc docs = findJsDoc(typeDocs, overrides, new Predicate<JsDoc>() {
+  private Comment findBlockComment(PropertyDocs docs, Iterable<InstanceProperty> overrides) {
+    docs = findPropertyDocs(docs, overrides, new Predicate<JsDoc>() {
       @Override
-      public boolean apply(@Nullable JsDoc input) {
-        return input != null && !isNullOrEmpty(input.getBlockComment());
+      public boolean apply(JsDoc input) {
+        return !isNullOrEmpty(input.getBlockComment());
       }
     });
     return docs == null
         ? Comment.getDefaultInstance()
-        : parser.parseComment(docs.getBlockComment(), linker);
+        : parser.parseComment(
+        docs.getJsDoc().getBlockComment(),
+            linkFactory.withContext(docs.getContextType()));
   }
-
+  
   @Nullable
-  private JsDoc findJsDoc(
-      JsDoc typeDocs,
+  private PropertyDocs findPropertyDocs(
+      PropertyDocs docs,
       Iterable<InstanceProperty> overrides,
       Predicate<JsDoc> predicate) {
-    if (predicate.apply(typeDocs)) {
-      return typeDocs;
+    if (predicate.apply(docs.getJsDoc())) {
+      return docs;
     }
     for (InstanceProperty property : overrides) {
       if (predicate.apply(property.getJsDoc())) {
-        return property.getJsDoc();
+        List<NominalType2> types = registry.getTypes(property.getType());
+        if (types.isEmpty()) {
+          return PropertyDocs.create(docs.getContextType(), property.getJsDoc());
+        }
+        return PropertyDocs.create(types.get(0), property.getJsDoc());
       }
     }
     return null;
   }
 
-  private Comment getPropertyLink(InstanceProperty property) {
-    JSType type = property.getDefinedOn();
+  private Comment getPropertyLink(NominalType2 context, InstanceProperty property) {
+    JSType type = property.getDefinedByType();
+    
+    if (property.getOwnerType().isPresent()) {
+      TypeLink link = linkFactory.withContext(context)
+          .createLink(property.getOwnerType().get(), "#" + property.getName());
+      return Comment.newBuilder()
+          .addToken(Comment.Token.newBuilder()
+              .setText(stripHash(link.getText()))
+              .setHref(link.getHref()))
+          .build();
+    }
+    
     if (type.isConstructor() || type.isInterface()) {
       type = ((FunctionType) type).getInstanceType();
     }
     type = stripTemplateTypeInformation(type);
-    return addPropertyHash(linker.formatTypeExpression(type), property.getName());
+    return expressionParserFactory.create(context).parse(type);
+  }
+  
+  private static String stripHash(String text) {
+    int index = text.indexOf('#');
+    if (index != -1) {
+      text = text.substring(0, index);
+    }
+    return text;
   }
 
   private static JSType stripTemplateTypeInformation(JSType type) {
@@ -699,18 +859,6 @@ final class TypeInspector {
       type = property.getType();
     }
     return type;
-  }
-
-  private static Comment addPropertyHash(Comment comment, String hash) {
-    // TODO: find a non-hacky way for this.
-    if (comment.getTokenCount() == 1 && comment.getToken(0).hasHref()) {
-      Comment.Builder cbuilder = comment.toBuilder();
-      Comment.Token.Builder token = cbuilder.getToken(0).toBuilder();
-      token.setHref(token.getHref() + "#" + hash);
-      cbuilder.setToken(0, token);
-      comment = cbuilder.build();
-    }
-    return comment;
   }
 
   public static final class Report {
@@ -743,41 +891,42 @@ final class TypeInspector {
     }
   }
 
-  @VisibleForTesting
-  static final class InstanceProperty {
-    private final JSType definedOn;
-    private final String name;
-    private final JSType type;
-    private final Node node;
-    private final JsDoc jsDoc;
-
-    private InstanceProperty(
-        JSType definedOn, String name, JSType type, Node node, JSDocInfo info) {
-      this.definedOn = definedOn;
-      this.name = name;
-      this.type = type;
-      this.node = node;
-      this.jsDoc = JsDoc.from(info);
+  @AutoValue
+  static abstract class PropertyDocs {
+    static PropertyDocs create(NominalType2 context, JsDoc jsDoc) {
+      return new AutoValue_TypeInspector_PropertyDocs(context, jsDoc);
     }
+    
+    abstract NominalType2 getContextType();
+    abstract JsDoc getJsDoc();
+  }
 
-    public JSType getDefinedOn() {
-      return definedOn;
+  @AutoValue
+  static abstract class InstanceProperty {
+    static Builder builder() {
+      return new AutoValue_TypeInspector_InstanceProperty.Builder();
     }
+    
+    abstract Optional<NominalType2> getOwnerType();
+    abstract JSType getDefinedByType();
+    abstract String getName();
+    abstract JSType getType();
+    abstract Node getNode();
+    abstract JsDoc getJsDoc();
 
-    public String getName() {
-      return name;
-    }
+    @AutoValue.Builder
+    static abstract class Builder {
+      final Builder setOwnerType(@Nullable NominalType2 type) {
+        return setOwnerType(Optional.fromNullable(type));
+      }
 
-    public JSType getType() {
-      return type;
-    }
-
-    public Node getNode() {
-      return node;
-    }
-
-    public JsDoc getJsDoc() {
-      return jsDoc;
+      abstract Builder setOwnerType(Optional<NominalType2> type);
+      abstract Builder setDefinedByType(JSType type);
+      abstract Builder setName(String name);
+      abstract Builder setType(JSType type);
+      abstract Builder setNode(Node node);
+      abstract Builder setJsDoc(JsDoc doc);
+      abstract InstanceProperty build();
     }
   }
 }

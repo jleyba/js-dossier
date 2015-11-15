@@ -16,12 +16,16 @@
 
 package com.github.jsdossier;
 
+import static com.github.jsdossier.testing.CompilerUtil.createSourceFile;
 import static com.google.common.truth.Truth.assertThat;
 
+import com.github.jsdossier.jscomp.NominalType2;
 import com.github.jsdossier.proto.BaseProperty;
 import com.github.jsdossier.proto.Comment;
 import com.github.jsdossier.proto.Function;
 import com.github.jsdossier.proto.Function.Detail;
+import com.google.common.base.Predicate;
+import org.junit.Assume;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -46,7 +50,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
         " */",
         "A.sayHi = function(name) { return 'Hello, ' + name; };");
 
-    NominalType a = typeRegistry.getNominalType("A");
+    NominalType2 a = typeRegistry.getType("A");
     TypeInspector.Report report = typeInspector.inspectType(a);
     assertThat(report.getProperties()).isEmpty();
     assertThat(report.getCompilerConstants()).isEmpty();
@@ -83,7 +87,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
         " */",
         "A.sayHi = function(name) { return 'Hello, ' + name; };");
 
-    NominalType a = typeRegistry.getNominalType("A");
+    NominalType2 a = typeRegistry.getType("A");
     TypeInspector.Report report = typeInspector.inspectType(a);
     assertThat(report.getProperties()).isEmpty();
     assertThat(report.getCompilerConstants()).isEmpty();
@@ -120,7 +124,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
         " */",
         "Color.darken = function(c) { return c; };");
 
-    NominalType type = typeRegistry.getNominalType("Color");
+    NominalType2 type = typeRegistry.getType("Color");
     TypeInspector.Report report = typeInspector.inspectType(type);
     assertThat(report.getProperties()).isEmpty();
     assertThat(report.getCompilerConstants()).isEmpty();
@@ -156,7 +160,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
         " */",
         "Color.darken = function(c) { return c; };");
 
-    NominalType type = typeRegistry.getNominalType("Color");
+    NominalType2 type = typeRegistry.getType("Color");
     TypeInspector.Report report = typeInspector.inspectType(type);
     assertThat(report.getProperties()).isEmpty();
     assertThat(report.getCompilerConstants()).isEmpty();
@@ -191,7 +195,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
         " */",
         "foo.bar = function(v) { return v;};");
 
-    NominalType type = typeRegistry.getNominalType("foo");
+    NominalType2 type = typeRegistry.getType("foo");
     TypeInspector.Report report = typeInspector.inspectType(type);
     assertThat(report.getProperties()).isEmpty();
     assertThat(report.getCompilerConstants()).isEmpty();
@@ -228,7 +232,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
         " */",
         "Clazz.bar = function() {};");
 
-    NominalType type = typeRegistry.getNominalType("Clazz");
+    NominalType2 type = typeRegistry.getType("Clazz");
     TypeInspector.Report report = typeInspector.inspectType(type);
     assertThat(report.getProperties()).isEmpty();
     assertThat(report.getCompilerConstants()).isEmpty();
@@ -266,7 +270,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
         "function OtherClazz() {}",
         "OtherClazz.bar = function() {};");
 
-    NominalType type = typeRegistry.getNominalType("Clazz");
+    NominalType2 type = typeRegistry.getType("Clazz");
     TypeInspector.Report report = typeInspector.inspectType(type);
     assertThat(report.getProperties()).isEmpty();
     assertThat(report.getCompilerConstants()).isEmpty();
@@ -294,7 +298,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
         "",
         "Clazz.prototype.bar = function() {};");
 
-    NominalType type = typeRegistry.getNominalType("Clazz");
+    NominalType2 type = typeRegistry.getType("Clazz");
     TypeInspector.Report report = typeInspector.inspectType(type);
     assertThat(report.getProperties()).isEmpty();
     assertThat(report.getCompilerConstants()).isEmpty();
@@ -306,6 +310,283 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
                 .setDescription(htmlComment(
                     "<p>Link to <a href=\"Clazz.html#bar\">" +
                         "<code>#bar</code></a>.</p>\n")))
+            .build());
+  }
+
+  @Test
+  public void doesNotIdentifyConstructorPropertyAsStaticFunction1() {
+    compile(
+        "/** @constructor */",
+        "var One = function () {};",
+        "",
+        "/** @constructor */",
+        "One.Two = function() {};");
+
+    NominalType2 type = typeRegistry.getType("One");
+    TypeInspector.Report report = typeInspector.inspectType(type);
+    assertThat(report.getProperties()).isEmpty();
+    assertThat(report.getCompilerConstants()).isEmpty();
+    assertThat(report.getFunctions()).isEmpty();
+  }
+
+  @Test
+  public void doesNotIdentifyConstructorPropertyAsStaticFunction2() {
+    compile(
+        "goog.provide('foo');",
+        "",
+        "/** @constructor */",
+        "foo.One = function() {};");
+
+    NominalType2 type = typeRegistry.getType("foo");
+    TypeInspector.Report report = typeInspector.inspectType(type);
+    assertThat(report.getProperties()).isEmpty();
+    assertThat(report.getCompilerConstants()).isEmpty();
+    assertThat(report.getFunctions()).isEmpty();
+  }
+
+  @Test
+  public void doesNotIdentifyConstructorPropertyAsStaticFunction3() {
+    guice.toBuilder()
+        .setTypeNameFilter(new Predicate<String>() {
+          @Override
+          public boolean apply(String input) {
+            return "foo.One".equals(input);
+          }
+        })
+        .build()
+        .createInjector()
+        .injectMembers(this); 
+
+    compile(
+        "goog.provide('foo');",
+        "",
+        "/** @constructor */",
+        "foo.One = function() {};",
+        "",
+        "/** @return {!foo.One} A new object. */",
+        "foo.newOne = function() { return new foo.One; };");
+
+    NominalType2 type = typeRegistry.getType("foo");
+    TypeInspector.Report report = typeInspector.inspectType(type);
+    assertThat(report.getProperties()).isEmpty();
+    assertThat(report.getCompilerConstants()).isEmpty();
+    assertThat(report.getFunctions()).containsExactly(
+        Function.newBuilder()
+            .setBase(BaseProperty.newBuilder()
+                .setName("newOne")
+                .setSource(sourceFile("source/foo.js.src.html", 7))
+                .setDescription(Comment.getDefaultInstance()))
+            .setReturn(Detail.newBuilder()
+                .setDescription(htmlComment("<p>A new object.</p>\n"))
+                .setType(textComment("foo.One")))
+            .build());
+  }
+
+  @Test
+  public void doesNotRecordConstructorCallAsStaticFunction() {
+    compile(
+        "/** @constructor */",
+        "var One = function () {};",
+        "",
+        "/** @constructor @extends {One} */",
+        "var Two = function() { One.call(this); };",
+        "goog.inherits(Two, One);");
+
+    NominalType2 type = typeRegistry.getType("One");
+    TypeInspector.Report report = typeInspector.inspectType(type);
+    assertThat(report.getProperties()).isEmpty();
+    assertThat(report.getCompilerConstants()).isEmpty();
+    assertThat(report.getFunctions()).isEmpty();
+  }
+
+  @Test
+  public void doesNotRecordConstructorCallAsStaticFunction_es6_1() {
+    compile(
+        "class One {}",
+        "",
+        "/** @constructor @extends {One} */",
+        "var Two = function() { One.call(this); };",
+        "goog.inherits(Two, One);");
+
+    NominalType2 type = typeRegistry.getType("One");
+    TypeInspector.Report report = typeInspector.inspectType(type);
+    assertThat(report.getProperties()).isEmpty();
+    assertThat(report.getCompilerConstants()).isEmpty();
+    assertThat(report.getFunctions()).isEmpty();
+  }
+
+  @Test
+  public void doesNotRecordConstructorCallAsStaticFunction_es6_2() {
+    compile(
+        "class One {}",
+        "",
+        "class Two extends One {",
+        "  constructor() {",
+        "    super();",
+        "    One.call(this);",
+        "  }",
+        "}");
+
+    NominalType2 type = typeRegistry.getType("One");
+    TypeInspector.Report report = typeInspector.inspectType(type);
+    assertThat(report.getProperties()).isEmpty();
+    assertThat(report.getCompilerConstants()).isEmpty();
+    assertThat(report.getFunctions()).isEmpty();
+  }
+  
+  @Test
+  public void usesDocsFromModuleVarIfExportedInstanceHasNoDocs_nodeModule() {
+    util.compile(fs.getPath("/src/modules/foo/bar.js"),
+        "/** Hello, world! */",
+        "function greet() {}",
+        "exports.greet = greet");
+    NominalType2 type = typeRegistry.getType("dossier$$module__$src$modules$foo$bar");
+    TypeInspector.Report report = typeInspector.inspectType(type);
+    assertThat(report.getProperties()).isEmpty();
+    assertThat(report.getCompilerConstants()).isEmpty();
+    assertThat(report.getFunctions()).containsExactly(
+        Function.newBuilder()
+            .setBase(BaseProperty.newBuilder()
+                .setName("greet")
+                .setSource(sourceFile("../source/modules/foo/bar.js.src.html", 3))
+                .setDescription(htmlComment("<p>Hello, world!</p>\n")))
+            .build());
+  }
+  
+  @Test
+  public void usesDocsFromModuleVarIfExportedInstanceHasNoDocs_es6Module() {
+    util.compile(fs.getPath("/src/modules/foo/bar.js"),
+        "/** Hello, world! */",
+        "function greet() {}",
+        "export {greet}");
+    System.out.println(util.toSource());
+    NominalType2 type = typeRegistry.getType("module$src$modules$foo$bar");
+    Assume.assumeNotNull(type, "Update this test for new type registry which supports es6");
+    TypeInspector.Report report = typeInspector.inspectType(type);
+    assertThat(report.getProperties()).isEmpty();
+    assertThat(report.getCompilerConstants()).isEmpty();
+    assertThat(report.getFunctions()).containsExactly(
+        Function.newBuilder()
+            .setBase(BaseProperty.newBuilder()
+                .setName("greet")
+                .setSource(sourceFile("../source/modules/foo/bar.js.src.html", 3))
+                .setDescription(htmlComment("<p>Hello, world!</p>\n")))
+            .build());
+  }
+
+  @Test
+  public void usesDocsFromModuleVarIfExportedInstanceHasNoDocs_nodeModuleForwardsExport() {
+    util.compile(
+        createSourceFile(
+            fs.getPath("/src/modules/foo/bar.js"),
+            "/** Hello, world! */",
+            "function greet() {}",
+            "exports.greet = greet"),
+        createSourceFile(
+            fs.getPath("/src/modules/foo/baz.js"),
+            "exports.greeting1 = require('./bar').greet;",
+            "",
+            "const greet = require('./bar').greet;",
+            "exports.greeting2 = greet;"));
+
+    NominalType2 type = typeRegistry.getType("dossier$$module__$src$modules$foo$baz");
+    TypeInspector.Report report = typeInspector.inspectType(type);
+    assertThat(report.getProperties()).isEmpty();
+    assertThat(report.getCompilerConstants()).isEmpty();
+    assertThat(report.getFunctions()).containsExactly(
+        Function.newBuilder()
+            .setBase(BaseProperty.newBuilder()
+                .setName("greeting1")
+                .setSource(sourceFile("../source/modules/foo/baz.js.src.html", 1))
+                .setDescription(htmlComment("<p>Hello, world!</p>\n")))
+            .build(),
+        Function.newBuilder()
+            .setBase(BaseProperty.newBuilder()
+                .setName("greeting2")
+                .setSource(sourceFile("../source/modules/foo/baz.js.src.html", 4))
+                .setDescription(htmlComment("<p>Hello, world!</p>\n")))
+            .build());
+  }
+  
+  @Test
+  public void linkReferencesAreParsedRelativeToOwningType() {
+    util.compile(
+        createSourceFile(
+            fs.getPath("/src/globals.js"),
+            "/** Global person. */",
+            "class Person {}"),
+        createSourceFile(
+            fs.getPath("/src/modules/foo/bar.js"),
+            "",
+            "/** Hides global person. */",
+            "class Person {}",
+            "exports.Person = Person;",
+            "",
+            "/** Greet a {@link Person}. */",
+            "exports.greet = function() {};"));
+
+    NominalType2 type = typeRegistry.getType("dossier$$module__$src$modules$foo$bar");
+    TypeInspector.Report report = typeInspector.inspectType(type);
+    assertThat(report.getProperties()).isEmpty();
+    assertThat(report.getCompilerConstants()).isEmpty();
+    assertThat(report.getFunctions()).containsExactly(
+        Function.newBuilder()
+            .setBase(BaseProperty.newBuilder()
+                .setName("greet")
+                .setSource(sourceFile("../source/modules/foo/bar.js.src.html", 7))
+                .setDescription(htmlComment(
+                    "<p>Greet a <a href=\"foo_bar_exports_Person.html\">"
+                        + "<code>Person</code></a>.</p>\n")))
+            .build());
+  }
+  
+  @Test
+  public void inspectGoogDefinedClass() {
+    util.compile(fs.getPath("/src/foo.js"),
+        "goog.provide('foo.bar');",
+        "foo.bar.Baz = goog.defineClass(null, {",
+        "  constructor: function() {},",
+        "  statics: {",
+        "    /** Does stuff. */",
+        "    go: function() {}",
+        "  }",
+        "});");
+
+    NominalType2 type = typeRegistry.getType("foo.bar.Baz");
+    TypeInspector.Report report = typeInspector.inspectType(type);
+    assertThat(report.getProperties()).isEmpty();
+    assertThat(report.getCompilerConstants()).isEmpty();
+    assertThat(report.getFunctions()).containsExactly(
+        Function.newBuilder()
+            .setBase(BaseProperty.newBuilder()
+                .setName("Baz.go")
+                .setSource(sourceFile("source/foo.js.src.html", 6))
+                .setDescription(htmlComment("<p>Does stuff.</p>\n")))
+            .build());
+  }
+  
+  @Test
+  public void inspectGoogDefinedInterface() {
+    util.compile(fs.getPath("/src/foo.js"),
+        "goog.provide('foo.bar');",
+        "/** @interface */",
+        "foo.bar.Baz = goog.defineClass(null, {",
+        "  statics: {",
+        "    /** Does stuff. */",
+        "    go: function() {}",
+        "  }",
+        "});");
+
+    NominalType2 type = typeRegistry.getType("foo.bar.Baz");
+    TypeInspector.Report report = typeInspector.inspectType(type);
+    assertThat(report.getProperties()).isEmpty();
+    assertThat(report.getCompilerConstants()).isEmpty();
+    assertThat(report.getFunctions()).containsExactly(
+        Function.newBuilder()
+            .setBase(BaseProperty.newBuilder()
+                .setName("Baz.go")
+                .setSource(sourceFile("source/foo.js.src.html", 6))
+                .setDescription(htmlComment("<p>Does stuff.</p>\n")))
             .build());
   }
 }

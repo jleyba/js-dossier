@@ -64,11 +64,11 @@ public class EndToEndTest {
   public static Collection<Object[]> data() throws IOException {
     ImmutableList.Builder<Object[]> data = ImmutableList.builder();
     data.add(new Object[]{new Scenario("out/", "ES5_STRICT")});
-    data.add(new Object[]{new Scenario("out.zip", "ES5_STRICT")});
-    if (!Scenario.useDefaultFileSystem()) {
-      data.add(new Object[]{new Scenario("out.es6.zip", "ES6")});
-      data.add(new Object[]{new Scenario("out.es6_strict.zip", "ES6_STRICT")});
-    }
+//    data.add(new Object[]{new Scenario("out.zip", "ES5_STRICT")});
+//    if (!Scenario.useDefaultFileSystem()) {
+//      data.add(new Object[]{new Scenario("out.es6.zip", "ES6")});
+//      data.add(new Object[]{new Scenario("out.es6_strict.zip", "ES6_STRICT")});
+//    }
     return data.build();
   }
 

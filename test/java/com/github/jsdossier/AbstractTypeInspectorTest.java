@@ -20,6 +20,8 @@ import static com.google.common.truth.Truth.assertAbout;
 import static com.google.common.truth.Truth.assertWithMessage;
 
 import com.github.jsdossier.TypeInspector.InstanceProperty;
+import com.github.jsdossier.annotations.Input;
+import com.github.jsdossier.jscomp.TypeRegistry2;
 import com.github.jsdossier.proto.Comment;
 import com.github.jsdossier.proto.Comment.Token;
 import com.github.jsdossier.proto.SourceLink;
@@ -28,10 +30,13 @@ import com.github.jsdossier.testing.GuiceRule;
 import com.google.common.truth.FailureStrategy;
 import com.google.common.truth.Subject;
 import com.google.common.truth.SubjectFactory;
+import com.google.javascript.jscomp.CompilerOptions;
 import com.google.javascript.rhino.jstype.FunctionType;
 import com.google.javascript.rhino.jstype.JSType;
+import com.google.javascript.rhino.jstype.JSTypeRegistry;
 import org.junit.Rule;
 
+import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 
@@ -44,14 +49,18 @@ public abstract class AbstractTypeInspectorTest {
 
   @Rule
   public GuiceRule guice = GuiceRule.builder(this)
-      .setModulePrefix("/modules")
+      .setModulePrefix("/src/modules")
+      .setModules("foo/bar.js", "foo/baz.js")
       .setSourcePrefix("/src")
       .setOutputDir("/out")
+      .setLanguageIn(CompilerOptions.LanguageMode.ECMASCRIPT6_STRICT)
       .build();
 
   @Inject protected CompilerUtil util;
   @Inject protected TypeInspector typeInspector;
-  @Inject protected TypeRegistry typeRegistry;
+  @Inject protected TypeRegistry2 typeRegistry;
+  @Inject protected JSTypeRegistry jsTypeRegistry;
+  @Inject @Input protected FileSystem fs;
   
   protected void compile(String... lines) {
     util.compile(path("/src/foo.js"), lines);
@@ -134,7 +143,8 @@ public abstract class AbstractTypeInspectorTest {
     }
 
     public void isDefinedOn(JSType type) {
-      assertWithMessage("wrong defining type").that(getSubject().getDefinedOn()).isEqualTo(type);
+      assertWithMessage("wrong defining type").that(getSubject().getDefinedByType())
+          .isEqualTo(type);
     }
   }
 }

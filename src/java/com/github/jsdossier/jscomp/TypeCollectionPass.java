@@ -16,6 +16,8 @@
 
 package com.github.jsdossier.jscomp;
 
+import static com.github.jsdossier.jscomp.Types.isBuiltInFunctionProperty;
+import static com.github.jsdossier.jscomp.Types.isConstructorTypeDefinition;
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.base.Verify.verify;
@@ -23,7 +25,6 @@ import static com.google.javascript.jscomp.NodeTraversal.traverseEs6;
 
 import com.github.jsdossier.annotations.Input;
 import com.github.jsdossier.annotations.TypeFilter;
-import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.javascript.jscomp.CompilerPass;
@@ -114,7 +115,6 @@ public final class TypeCollectionPass implements CompilerPass {
   private class ExternCollector implements NodeTraversal.Callback, Visitor<Object> {
     private final Externs externs;
 
-    private final Joiner joiner = Joiner.on('.');
     private final Set<JSType> seen = new HashSet<>();
     private final Deque<String> names = new ArrayDeque<>();
 
@@ -147,7 +147,6 @@ public final class TypeCollectionPass implements CompilerPass {
       if ((type.isNominalType() && !type.isInstanceType())
           || type.isNominalConstructor()
           || type.isEnumType()) {
-        String qualifiedName = joiner.join(names);
         externs.addExtern(type);
       }
       names.removeLast();
@@ -156,10 +155,7 @@ public final class TypeCollectionPass implements CompilerPass {
     @Override
     public Object caseFunctionType(FunctionType type) {
       for (String name : type.getOwnPropertyNames()) {
-        if (!"apply".equals(name)
-            && !"bind".equals(name)
-            && !"call".equals(name)
-            && !"prototype".equals(name)) {
+        if (!isBuiltInFunctionProperty(type, name)) {
           crawl(name, type.getPropertyType(name));
         }
       }
@@ -479,21 +475,5 @@ public final class TypeCollectionPass implements CompilerPass {
         || type.isStringValueType()
         || type.isVoidType()
         || type.isArrayType());
-  }
-
-  private static boolean isConstructorTypeDefinition(JSType type, JsDoc jsdoc) {
-    if (type.isConstructor()) {
-      return jsdoc.isConstructor()
-          || jsdoc.isConst()
-          && !hasTypeExpression(jsdoc.getMarker(JsDoc.Annotation.TYPE))
-          && !hasTypeExpression(jsdoc.getMarker(JsDoc.Annotation.PUBLIC))
-          && !hasTypeExpression(jsdoc.getMarker(JsDoc.Annotation.PROTECTED)) 
-          && !hasTypeExpression(jsdoc.getMarker(JsDoc.Annotation.PRIVATE));
-    }
-    return false;
-  }
-
-  private static boolean hasTypeExpression(Optional<JSDocInfo.Marker> marker) {
-    return marker.isPresent() && marker.get().getType() != null;
   }
 }

@@ -75,7 +75,10 @@ final class Es6ModulePass implements CompilerPass {
    * file system provider for compatibility with the compiler in testing.
    */
   private static URI toSimpleUri(Path path) {
-    return URI.create(path.toString()).normalize();
+    if (path.isAbsolute()) {
+      path = path.getRoot().relativize(path);
+    }
+    return URI.create(path.toString().replace('\\', '/')).normalize();
   }
 
   private static void printTree(Node n) {
@@ -136,7 +139,8 @@ final class Es6ModulePass implements CompilerPass {
     private void visitExport(Node n) {
       if (module == null) {
         Path path = inputFs.getPath(n.getSourceFileName());
-        System.out.println("Found ES6 module: " + path);
+        System.out.println("Found ES6 module: " + path + " (" + toSimpleUri(path) + ")");
+        System.out.println("...id = " + ES6ModuleLoader.toModuleName(toSimpleUri(path)));
         module = Module.builder()
             .setId(ES6ModuleLoader.toModuleName(toSimpleUri(path)))
             .setPath(path)

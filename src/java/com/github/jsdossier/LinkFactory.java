@@ -22,9 +22,11 @@ import static com.google.common.base.Verify.verify;
 import com.github.jsdossier.jscomp.Module;
 import com.github.jsdossier.jscomp.NominalType2;
 import com.github.jsdossier.jscomp.TypeRegistry2;
+import com.github.jsdossier.proto.SourceLink;
 import com.github.jsdossier.proto.TypeLink;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
+import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.jstype.FunctionType;
 import com.google.javascript.rhino.jstype.JSType;
 import com.google.javascript.rhino.jstype.JSTypeRegistry;
@@ -122,6 +124,24 @@ final class LinkFactory {
    */
   public LinkFactory withContext(NominalType2 type) {
     return new LinkFactory(dfs, typeRegistry, jsTypeRegistry, Optional.of(type));
+  }
+
+  /**
+   * Creates a link to the rendered source file for the given node, relative to this factory's
+   * current context.
+   */
+  public SourceLink createLink(Node node) {
+    if (node == null || node.isFromExterns()) {
+      return SourceLink.newBuilder().setPath("").build();
+    }
+    Path sourcePath = dfs.getPath(node);
+    if (context.isPresent()) {
+      sourcePath = dfs.getRelativePath(context.get(), sourcePath);
+    }
+    return SourceLink.newBuilder()
+        .setPath(getUriPath(sourcePath))
+        .setLine(node.getLineno())
+        .build();
   }
 
   /**
@@ -283,10 +303,10 @@ final class LinkFactory {
       return property.isEmpty() ? createLink(type) : createLink(type, property);
     }
 
-    TypeLink link = resolveExternLink(ref.type);
+    TypeLink link = createNativeExternLink(ref.type);
     if (link == null && ref.property.isEmpty()
         && (index = ref.type.indexOf('.')) != -1) {
-      link = resolveExternLink(ref.type.substring(0, index));
+      link = createNativeExternLink(ref.type.substring(0, index));
     }
 
     if (link != null) {
@@ -371,9 +391,12 @@ final class LinkFactory {
     return dfs.getModulePrefix().resolve(symbol + ".js");
   }
 
+  /**
+   * Creates a link to one of the JS built-in types defined in externs.
+   */
   @Nullable
   @CheckReturnValue
-  private TypeLink resolveExternLink(String name) {
+  public TypeLink createNativeExternLink(String name) {
     if (BUILTIN_TO_MDN_LINK.containsKey(name)) {
       return TypeLink.newBuilder()
           .setText(name)

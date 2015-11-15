@@ -19,11 +19,7 @@ package com.github.jsdossier;
 import static com.google.common.truth.Truth.assertThat;
 
 import com.github.jsdossier.TypeInspector.InstanceProperty;
-import com.github.jsdossier.proto.BaseProperty;
-import com.github.jsdossier.proto.Comment;
-import com.github.jsdossier.proto.Function;
-import com.github.jsdossier.proto.Function.Detail;
-import com.github.jsdossier.proto.Property;
+import com.github.jsdossier.jscomp.NominalType2;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -49,31 +45,31 @@ public class TypeInspectorTest extends AbstractTypeInspectorTest {
         "Person.prototype.age;",
         "Person.prototype.eat = function() {};");
 
-    NominalType person = typeRegistry.getNominalType("Person");
+    NominalType2 person = typeRegistry.getType("Person");
     Map<String, InstanceProperty> properties =
-        typeInspector.getInstanceProperties(person.getJsType());
+        typeInspector.getInstanceProperties(person.getType());
 
     assertThat(properties.keySet()).containsExactly("name", "age", "eat", "sleep");
 
     InstanceProperty name = properties.get("name");
     assertInstanceProperty(name).isNamed("name");
-    assertInstanceProperty(name).hasType(typeRegistry.getJsType("string"));
-    assertInstanceProperty(name).isDefinedOn(person.getJsType());
+    assertInstanceProperty(name).hasType(jsTypeRegistry.getType("string"));
+    assertInstanceProperty(name).isDefinedOn(person.getType());
 
     InstanceProperty age = properties.get("age");
     assertInstanceProperty(age).isNamed("age");
-    assertInstanceProperty(age).hasType(typeRegistry.getJsType("number"));
-    assertInstanceProperty(age).isDefinedOn(person.getJsType());
+    assertInstanceProperty(age).hasType(jsTypeRegistry.getType("number"));
+    assertInstanceProperty(age).isDefinedOn(person.getType());
 
     InstanceProperty sleep = properties.get("sleep");
     assertInstanceProperty(sleep).isNamed("sleep");
-    assertInstanceProperty(sleep).isInstanceMethod(person.getJsType());
-    assertInstanceProperty(sleep).isDefinedOn(person.getJsType());
+    assertInstanceProperty(sleep).isInstanceMethod(person.getType());
+    assertInstanceProperty(sleep).isDefinedOn(person.getType());
 
     InstanceProperty eat = properties.get("eat");
     assertInstanceProperty(eat).isNamed("eat");
-    assertInstanceProperty(eat).isInstanceMethod(person.getJsType());
-    assertInstanceProperty(eat).isDefinedOn(person.getJsType());
+    assertInstanceProperty(eat).isInstanceMethod(person.getType());
+    assertInstanceProperty(eat).isDefinedOn(person.getType());
   }
 
   @Test
@@ -89,31 +85,31 @@ public class TypeInspectorTest extends AbstractTypeInspectorTest {
         "  eat: function() {}",
         "});");
 
-    NominalType person = typeRegistry.getNominalType("Person");
+    NominalType2 person = typeRegistry.getType("Person");
     Map<String, InstanceProperty> properties =
-        typeInspector.getInstanceProperties(person.getJsType());
+        typeInspector.getInstanceProperties(person.getType());
 
     assertThat(properties.keySet()).containsExactly("name", "age", "eat", "sleep");
 
     InstanceProperty name = properties.get("name");
     assertInstanceProperty(name).isNamed("name");
-    assertInstanceProperty(name).hasType(typeRegistry.getJsType("string"));
-    assertInstanceProperty(name).isDefinedOn(person.getJsType());
+    assertInstanceProperty(name).hasType(jsTypeRegistry.getType("string"));
+    assertInstanceProperty(name).isDefinedOn(person.getType());
 
     InstanceProperty age = properties.get("age");
     assertInstanceProperty(age).isNamed("age");
-    assertInstanceProperty(age).hasType(typeRegistry.getJsType("number"));
-    assertInstanceProperty(age).isDefinedOn(person.getJsType());
+    assertInstanceProperty(age).hasType(jsTypeRegistry.getType("number"));
+    assertInstanceProperty(age).isDefinedOn(person.getType());
 
     InstanceProperty sleep = properties.get("sleep");
     assertInstanceProperty(sleep).isNamed("sleep");
-    assertInstanceProperty(sleep).isInstanceMethod(person.getJsType());
-    assertInstanceProperty(sleep).isDefinedOn(person.getJsType());
+    assertInstanceProperty(sleep).isInstanceMethod(person.getType());
+    assertInstanceProperty(sleep).isDefinedOn(person.getType());
 
     InstanceProperty eat = properties.get("eat");
     assertInstanceProperty(eat).isNamed("eat");
-    assertInstanceProperty(eat).isInstanceMethod(person.getJsType());
-    assertInstanceProperty(eat).isDefinedOn(person.getJsType());
+    assertInstanceProperty(eat).isInstanceMethod(person.getType());
+    assertInstanceProperty(eat).isDefinedOn(person.getType());
   }
 
   @Test
@@ -128,31 +124,31 @@ public class TypeInspectorTest extends AbstractTypeInspectorTest {
         "Person.prototype.sleep = function() {}",
         "Person.prototype.eat = function(food) {};");
 
-    NominalType person = typeRegistry.getNominalType("Person");
+    NominalType2 person = typeRegistry.getType("Person");
     Map<String, InstanceProperty> properties =
-        typeInspector.getInstanceProperties(person.getJsType());
+        typeInspector.getInstanceProperties(person.getType());
 
     assertThat(properties.keySet()).containsExactly("name", "age", "eat", "sleep");
 
     InstanceProperty name = properties.get("name");
     assertInstanceProperty(name).isNamed("name");
-    assertInstanceProperty(name).hasType(typeRegistry.getJsType("string"));
-    assertInstanceProperty(name).isDefinedOn(person.getJsType());
+    assertInstanceProperty(name).hasType(jsTypeRegistry.getType("string"));
+    assertInstanceProperty(name).isDefinedOn(person.getType());
 
     InstanceProperty age = properties.get("age");
     assertInstanceProperty(age).isNamed("age");
-    assertInstanceProperty(age).hasType(typeRegistry.getJsType("number"));
-    assertInstanceProperty(age).isDefinedOn(person.getJsType());
+    assertInstanceProperty(age).hasType(jsTypeRegistry.getType("number"));
+    assertInstanceProperty(age).isDefinedOn(person.getType());
 
     InstanceProperty sleep = properties.get("sleep");
     assertInstanceProperty(sleep).isNamed("sleep");
-    assertInstanceProperty(sleep).isInstanceMethod(person.getJsType());
-    assertInstanceProperty(sleep).isDefinedOn(person.getJsType());
+    assertInstanceProperty(sleep).isInstanceMethod(person.getType());
+    assertInstanceProperty(sleep).isDefinedOn(person.getType());
 
     InstanceProperty eat = properties.get("eat");
     assertInstanceProperty(eat).isNamed("eat");
-    assertInstanceProperty(eat).isInstanceMethod(person.getJsType());
-    assertInstanceProperty(eat).isDefinedOn(person.getJsType());
+    assertInstanceProperty(eat).isInstanceMethod(person.getType());
+    assertInstanceProperty(eat).isDefinedOn(person.getType());
   }
 
   @Test
@@ -167,31 +163,31 @@ public class TypeInspectorTest extends AbstractTypeInspectorTest {
         "  sleep: function() {}",
         "});");
 
-    NominalType person = typeRegistry.getNominalType("Person");
+    NominalType2 person = typeRegistry.getType("Person");
     Map<String, InstanceProperty> properties =
-        typeInspector.getInstanceProperties(person.getJsType());
+        typeInspector.getInstanceProperties(person.getType());
 
     assertThat(properties.keySet()).containsExactly("name", "age", "eat", "sleep");
 
     InstanceProperty name = properties.get("name");
     assertInstanceProperty(name).isNamed("name");
-    assertInstanceProperty(name).hasType(typeRegistry.getJsType("string"));
-    assertInstanceProperty(name).isDefinedOn(person.getJsType());
+    assertInstanceProperty(name).hasType(jsTypeRegistry.getType("string"));
+    assertInstanceProperty(name).isDefinedOn(person.getType());
 
     InstanceProperty age = properties.get("age");
     assertInstanceProperty(age).isNamed("age");
-    assertInstanceProperty(age).hasType(typeRegistry.getJsType("number"));
-    assertInstanceProperty(age).isDefinedOn(person.getJsType());
+    assertInstanceProperty(age).hasType(jsTypeRegistry.getType("number"));
+    assertInstanceProperty(age).isDefinedOn(person.getType());
 
     InstanceProperty sleep = properties.get("sleep");
     assertInstanceProperty(sleep).isNamed("sleep");
-    assertInstanceProperty(sleep).isInstanceMethod(person.getJsType());
-    assertInstanceProperty(sleep).isDefinedOn(person.getJsType());
+    assertInstanceProperty(sleep).isInstanceMethod(person.getType());
+    assertInstanceProperty(sleep).isDefinedOn(person.getType());
 
     InstanceProperty eat = properties.get("eat");
     assertInstanceProperty(eat).isNamed("eat");
-    assertInstanceProperty(eat).isInstanceMethod(person.getJsType());
-    assertInstanceProperty(eat).isDefinedOn(person.getJsType());
+    assertInstanceProperty(eat).isInstanceMethod(person.getType());
+    assertInstanceProperty(eat).isDefinedOn(person.getType());
   }
 
   @Test
@@ -207,16 +203,16 @@ public class TypeInspectorTest extends AbstractTypeInspectorTest {
         "goog.inherits(SuperHero, Person);",
         "/** @type {string} */SuperHero.prototype.power;");
 
-    NominalType hero = typeRegistry.getNominalType("SuperHero");
+    NominalType2 hero = typeRegistry.getType("SuperHero");
     Map<String, InstanceProperty> properties =
-        typeInspector.getInstanceProperties(hero.getJsType());
+        typeInspector.getInstanceProperties(hero.getType());
 
     assertThat(properties.keySet()).containsExactly("power");
 
     InstanceProperty power = properties.get("power");
     assertInstanceProperty(power).isNamed("power");
-    assertInstanceProperty(power).hasType(typeRegistry.getJsType("string"));
-    assertInstanceProperty(power).isDefinedOn(hero.getJsType());
+    assertInstanceProperty(power).hasType(jsTypeRegistry.getType("string"));
+    assertInstanceProperty(power).isDefinedOn(hero.getType());
   }
 
   @Test
@@ -231,15 +227,15 @@ public class TypeInspectorTest extends AbstractTypeInspectorTest {
         "function Athlete() {}",
         "Athlete.prototype.run = function() {}");
 
-    NominalType athlete = typeRegistry.getNominalType("Athlete");
+    NominalType2 athlete = typeRegistry.getType("Athlete");
     Map<String, InstanceProperty> properties =
-        typeInspector.getInstanceProperties(athlete.getJsType());
+        typeInspector.getInstanceProperties(athlete.getType());
 
     assertThat(properties.keySet()).containsExactly("run");
 
     InstanceProperty run = properties.get("run");
     assertInstanceProperty(run).isNamed("run");
-    assertInstanceProperty(run).isInstanceMethod(athlete.getJsType());
-    assertInstanceProperty(run).isDefinedOn(athlete.getJsType());
+    assertInstanceProperty(run).isInstanceMethod(athlete.getType());
+    assertInstanceProperty(run).isDefinedOn(athlete.getType());
   }
 }

@@ -91,6 +91,8 @@ public final class TypeRegistry2 {
    * @param key the alias to resolve.
    * @return the resolved alias, or null if none is defined.
    */
+  @Nullable
+  @CheckReturnValue
   public String resolveAlias(NominalType2 type, String key) {
     if (!aliasRegions.containsKey(type.getSourceFile())) {
       return null;

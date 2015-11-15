@@ -562,6 +562,39 @@ public class TypeCollectionPassTest {
     assertNamespace(typeRegistry.getType("util.array"));
     assertThat(typeRegistry.isType("util.array.forEach")).isFalse();
   }
+  
+  @Test
+  public void doesNotRecordInternalEs6VarsAsTypes1() {
+    util.compile(fs.getPath("foo.js"),
+        "/** Hello */function greet() {}",
+        "export {greet}");
+    
+    assertNamespace(typeRegistry.getType("module$foo"));
+    assertThat(typeRegistry.getAllTypes()).hasSize(1);
+  }
+  
+  @Test
+  public void doesNotRecordInternalEs6VarsAsTypes2() {
+    util.compile(fs.getPath("foo.js"),
+        "/** Hello, world! */",
+        "function greet() {}",
+        "export {greet}");
+
+    assertNamespace(typeRegistry.getType("module$foo"));
+    assertThat(typeRegistry.getAllTypes()).hasSize(1);
+  }
+  
+  @Test
+  public void doesNotRecordInternalEs6VarsAsTypes3() {
+    defineInputModules("modules", "foo/bar.js");
+    util.compile(fs.getPath("modules/foo/bar.js"),
+        "/** Hello, world! */",
+        "function greet() {}",
+        "export {greet}");
+
+    assertNamespace(typeRegistry.getType("module$modules$foo$bar"));
+    assertThat(typeRegistry.getAllTypes()).hasSize(1);
+  }
 
   private void defineInputModules(String prefix, String... modules) {
     guice.toBuilder()

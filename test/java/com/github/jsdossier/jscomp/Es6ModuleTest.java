@@ -24,13 +24,18 @@ import static org.junit.Assume.assumeNoException;
 import com.github.jsdossier.annotations.Input;
 import com.github.jsdossier.testing.CompilerUtil;
 import com.github.jsdossier.testing.GuiceRule;
+import com.google.common.jimfs.Configuration;
+import com.google.common.jimfs.Jimfs;
 import com.google.javascript.jscomp.CompilerOptions;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import java.io.IOException;
 import java.nio.file.FileSystem;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import javax.inject.Inject;
 
@@ -167,5 +172,52 @@ public class Es6ModuleTest {
     assertThat(module.getExportedNames()).containsEntry("foo", "foo");
   }
   
-  // TODO: report import of unknown module as an error.
+  @Test
+  public void reportsACompilerErrorIfAFileThatDoesNotExistIsImported() {
+    assertThat(Files.exists(fs.getPath("does_not_exist.js"))).isFalse();
+    try {
+      util.compile(
+          createSourceFile(fs.getPath("one.js"),
+              "import * as dne from './does_not_exist';"));
+      fail("should fail to compile!");
+    } catch (CompilerUtil.CompileFailureException expected) {
+      assertThat(expected.getMessage()).contains(
+          "Failed to load module \"./does_not_exist\" one.js:1");
+    }
+  }
+  
+  @Test
+  public void reportsACompilerErrorIfImportedModuleIsNotACompilerInput() throws IOException {
+    Files.createFile(fs.getPath("two.js"));
+    try {
+      util.compile(
+          createSourceFile(fs.getPath("one.js"),
+              "import * as dne from './two';"));
+      fail("should fail to compile!");
+    } catch (CompilerUtil.CompileFailureException expected) {
+      assertThat(expected.getMessage()).contains(
+          "Failed to load module \"./two\" one.js:1");
+    }
+  }
+  
+  @Test
+  public void identifiesModulesWithAbsolutePaths() {
+    util.compile(fs.getPath("/one/two.js"),
+        "export default function() {}");
+    assertThat(typeRegistry.isModule("module$one$two")).isTrue();
+  }
+  
+  @Test
+  public void identifiesModulesWithAbsolutePaths_windows() {
+    FileSystem inputFs = Jimfs.newFileSystem(Configuration.windows());
+    guiceRule.toBuilder()
+        .setInputFs(inputFs)
+        .build()
+        .createInjector()
+        .injectMembers(this);
+    
+    util.compile(fs.getPath("C:\\one\\two\\three.js"),
+        "export default function() {}");
+    assertThat(typeRegistry.isModule("module$one$two$three")).isTrue();
+  }
 }

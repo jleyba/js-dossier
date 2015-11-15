@@ -35,6 +35,8 @@ import com.github.jsdossier.annotations.SourcePrefix;
 import com.github.jsdossier.annotations.TypeFilter;
 import com.github.jsdossier.annotations.Types;
 import com.github.jsdossier.jscomp.JsDoc;
+import com.github.jsdossier.jscomp.NominalType2;
+import com.github.jsdossier.jscomp.TypeRegistry2;
 import com.github.jsdossier.proto.BaseProperty;
 import com.github.jsdossier.proto.Comment;
 import com.github.jsdossier.proto.Enumeration;
@@ -95,6 +97,7 @@ class DocWriter {
   private final Path sourcePrefix;
   private final Optional<Path> readme;
   private final TypeRegistry typeRegistry;
+  private final TypeRegistry2 typeRegistry2;
   private final Predicate<NominalType> typeFilter;
   private final ImmutableList<MarkdownPage> markdownPages;
   private final Linker linker;
@@ -116,6 +119,7 @@ class DocWriter {
       @Readme Optional<Path> readme,
       ImmutableList<MarkdownPage> markdownPages,
       TypeRegistry typeRegistry,
+      TypeRegistry2 typeRegistry2,
       @TypeFilter Predicate<NominalType> typeFilter,
       Linker linker,
       CommentParser parser,
@@ -131,6 +135,7 @@ class DocWriter {
     this.readme = checkNotNull(readme);
     this.markdownPages = checkNotNull(markdownPages);
     this.typeRegistry = checkNotNull(typeRegistry);
+    this.typeRegistry2 = typeRegistry2;
     this.typeFilter = checkNotNull(typeFilter);
     this.linker = checkNotNull(linker);
     this.parser = checkNotNull(parser);
@@ -259,6 +264,7 @@ class DocWriter {
           name,
           module.getJsType(),
           module.getNode(),
+          typeRegistry2.getTypes(module.getJsType()).get(0),
           docs));
     }
 
@@ -362,6 +368,7 @@ class DocWriter {
           name,
           type.getJsType(),
           type.getNode(),
+          typeRegistry2.getTypes(type.getJsType()).get(0),
           docs));
     }
 
@@ -622,7 +629,8 @@ class DocWriter {
 
   private void getPrototypeData(JsType.Builder jsTypeBuilder, IndexReference indexReference) {
     NominalType nominalType = indexReference.getNominalType();
-    TypeInspector.Report report = typeInspector.inspectInstanceType(nominalType);
+    TypeInspector.Report report = typeInspector.inspectInstanceType(
+        typeRegistry2.getTypes(nominalType.getJsType()).get(0));
     for (com.github.jsdossier.proto.Property prop : report.getProperties()) {
       jsTypeBuilder.addField(prop);
       updateIndex(jsTypeBuilder, indexReference, prop.getBase());
@@ -648,7 +656,8 @@ class DocWriter {
   private void getStaticData(
       JsType.Builder jsTypeBuilder, IndexReference indexReference) {
     NominalType type = indexReference.getNominalType();
-    TypeInspector.Report report = typeInspector.inspectType(type);
+    NominalType2 trueType = typeRegistry2.getTypes(type.getJsType()).get(0);
+    TypeInspector.Report report = typeInspector.inspectType(trueType);
 
     for (com.github.jsdossier.proto.Property prop : report.getCompilerConstants()) {
       jsTypeBuilder.addCompilerConstant(prop);

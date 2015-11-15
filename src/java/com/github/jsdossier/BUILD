@@ -6,6 +6,8 @@ java_library(
     ] + glob(["resources/*"]),
     deps = [
         "//lib/maven:args4j",
+        "//lib/maven:auto_factory",
+        "//lib/maven:auto_value",
         "//lib/maven:closure_compiler",
         "//lib/maven:commonmark",
         "//lib/maven:gson",

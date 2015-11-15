@@ -16,8 +16,10 @@
 
 package com.github.jsdossier;
 
+import static com.github.jsdossier.testing.CompilerUtil.createSourceFile;
 import static com.google.common.truth.Truth.assertThat;
 
+import com.github.jsdossier.jscomp.NominalType2;
 import com.github.jsdossier.proto.BaseProperty;
 import com.github.jsdossier.proto.Property;
 import com.github.jsdossier.proto.Tags;
@@ -42,7 +44,7 @@ public class TypeInspectorInstancePropertyTest extends AbstractTypeInspectorTest
         " */",
         "Person.prototype.age = 123;");
 
-    NominalType person = typeRegistry.getNominalType("Person");
+    NominalType2 person = typeRegistry.getType("Person");
 
     TypeInspector.Report report = typeInspector.inspectInstanceType(person);
     assertThat(report.getFunctions()).isEmpty();
@@ -68,7 +70,7 @@ public class TypeInspectorInstancePropertyTest extends AbstractTypeInspectorTest
         "  this.age = 123;",
         "}");
 
-    NominalType person = typeRegistry.getNominalType("Person");
+    NominalType2 person = typeRegistry.getType("Person");
 
     TypeInspector.Report report = typeInspector.inspectInstanceType(person);
     assertThat(report.getFunctions()).isEmpty();
@@ -98,7 +100,7 @@ public class TypeInspectorInstancePropertyTest extends AbstractTypeInspectorTest
         "function Character() {}",
         "goog.inherits(Character, Person);");
 
-    NominalType character = typeRegistry.getNominalType("Character");
+    NominalType2 character = typeRegistry.getType("Character");
 
     TypeInspector.Report report = typeInspector.inspectInstanceType(character);
     assertThat(report.getFunctions()).isEmpty();
@@ -129,7 +131,7 @@ public class TypeInspectorInstancePropertyTest extends AbstractTypeInspectorTest
         "function Character() {}",
         "goog.inherits(Character, Person);");
 
-    NominalType character = typeRegistry.getNominalType("Character");
+    NominalType2 character = typeRegistry.getType("Character");
 
     TypeInspector.Report report = typeInspector.inspectInstanceType(character);
     assertThat(report.getFunctions()).isEmpty();
@@ -166,7 +168,7 @@ public class TypeInspectorInstancePropertyTest extends AbstractTypeInspectorTest
         " */",
         "B.prototype.a = 456;");
 
-    NominalType typeB = typeRegistry.getNominalType("B");
+    NominalType2 typeB = typeRegistry.getType("B");
     TypeInspector.Report reportB = typeInspector.inspectInstanceType(typeB);
     assertThat(reportB.getFunctions()).isEmpty();
     assertThat(reportB.getProperties()).containsExactly(
@@ -200,7 +202,7 @@ public class TypeInspectorInstancePropertyTest extends AbstractTypeInspectorTest
         "  this.a = 456",
         "};");
 
-    NominalType typeB = typeRegistry.getNominalType("B");
+    NominalType2 typeB = typeRegistry.getType("B");
     TypeInspector.Report reportB = typeInspector.inspectInstanceType(typeB);
     assertThat(reportB.getFunctions()).isEmpty();
     assertThat(reportB.getProperties()).containsExactly(
@@ -241,7 +243,7 @@ public class TypeInspectorInstancePropertyTest extends AbstractTypeInspectorTest
         "  this.a = 456",
         "};");
 
-    NominalType type = typeRegistry.getNominalType("C");
+    NominalType2 type = typeRegistry.getType("C");
     TypeInspector.Report report = typeInspector.inspectInstanceType(type);
     assertThat(report.getFunctions()).isEmpty();
     assertThat(report.getProperties()).containsExactly(
@@ -268,7 +270,7 @@ public class TypeInspectorInstancePropertyTest extends AbstractTypeInspectorTest
         " */",
         "A.prototype.a = 123;");
 
-    NominalType type = typeRegistry.getNominalType("A");
+    NominalType2 type = typeRegistry.getType("A");
     TypeInspector.Report report = typeInspector.inspectInstanceType(type);
     assertThat(report.getFunctions()).isEmpty();
     assertThat(report.getProperties()).containsExactly(
@@ -281,6 +283,133 @@ public class TypeInspectorInstancePropertyTest extends AbstractTypeInspectorTest
                     .setIsDeprecated(true))
                 .setDeprecation(htmlComment("<p>Do not use this.</p>\n")))
             .setType(numberTypeComment())
+            .build());
+  }
+  
+  @Test
+  public void linkReferencesAreParsedRelativeToOwningType_contextIsQueriedType() {
+    util.compile(
+        createSourceFile(
+            fs.getPath("/src/globals.js"),
+            "/** Global person. */",
+            "class Person {}"),
+        createSourceFile(
+            fs.getPath("/src/modules/foo/bar.js"),
+            "",
+            "/** Hides global person. */",
+            "class Person {",
+            "  constructor() {",
+            "    /** Link to a {@link Person}. */",
+            "    this.limit = 123;",
+            "  }",
+            "}",
+            "export {Person}"));
+
+    NominalType2 type = typeRegistry.getType("module$src$modules$foo$bar.Person");
+    TypeInspector.Report report = typeInspector.inspectInstanceType(type);
+    assertThat(report.getCompilerConstants()).isEmpty();
+    assertThat(report.getFunctions()).isEmpty();
+    assertThat(report.getProperties()).containsExactly(
+        Property.newBuilder()
+            .setBase(BaseProperty.newBuilder()
+                .setName("limit")
+                .setSource(sourceFile("../source/modules/foo/bar.js.src.html", 6))
+                .setDescription(htmlComment(
+                    "<p>Link to a <a href=\"foo_bar_exports_Person.html\">" +
+                        "<code>Person</code></a>.</p>\n")))
+            .setType(numberTypeComment())
+            .build());
+  }
+  
+  @Test
+  public void linkReferencesAreParsedRelativeToOwningType_contextIsQueriedBaseType() {
+    util.compile(
+        createSourceFile(
+            fs.getPath("/src/globals.js"),
+            "/** Global person. */",
+            "class Person {}",
+            "",
+            "class Greeter {",
+            "  constructor() {",
+            "    /**",
+            "     * The {@link Person} to greet.",
+            "     * @type {Person}",
+            "     */",
+            "    this.p = null;",
+            "  }",
+            "}"),
+        createSourceFile(
+            fs.getPath("/src/modules/foo/bar.js"),
+            "",
+            "export class CustomGreeter extends Greeter {",
+            "}"));
+
+    NominalType2 type = typeRegistry.getType("Greeter");
+    TypeInspector.Report report = typeInspector.inspectInstanceType(type);
+    assertThat(report.getCompilerConstants()).isEmpty();
+    assertThat(report.getFunctions()).isEmpty();
+    assertThat(report.getProperties()).containsExactly(
+        Property.newBuilder()
+            .setBase(BaseProperty.newBuilder()
+                .setName("p")
+                .setSource(sourceFile("source/globals.js.src.html", 10))
+                .setDescription(htmlComment(
+                    "<p>The <a href=\"Person.html\"><code>Person</code></a> to greet.</p>\n")))
+            .setType(linkComment("Person", "Person.html"))
+            .build());
+
+    type = typeRegistry.getType("module$src$modules$foo$bar.CustomGreeter");
+    report = typeInspector.inspectInstanceType(type);
+    assertThat(report.getCompilerConstants()).isEmpty();
+    assertThat(report.getFunctions()).isEmpty();
+    assertThat(report.getProperties()).containsExactly(
+        Property.newBuilder()
+            .setBase(BaseProperty.newBuilder()
+                .setName("p")
+                .setSource(sourceFile("../source/globals.js.src.html", 10))
+                .setDescription(htmlComment(
+                    "<p>The <a href=\"../Person.html\"><code>Person</code></a> to greet.</p>\n"))
+                .setDefinedBy(linkComment("Greeter", "../Greeter.html#p")))
+            .setType(linkComment("Person", "../Person.html"))
+            .build());
+  }
+  
+  @Test
+  public void linkReferencesAreParsedRelativeToOwningType_contextIsInterfaceType() {
+    util.compile(
+        createSourceFile(
+            fs.getPath("/src/globals.js"),
+            "/** Global person. */",
+            "class Person {}",
+            "",
+            "/** @interface */",
+            "function Greeter() {}",
+            "/**",
+            " * The {@link Person} to greet.",
+            " * @type {Person}",
+            " */",
+            "Greeter.prototype.p;"),
+        createSourceFile(
+            fs.getPath("/src/modules/foo/bar.js"),
+            "",
+            "/** @implements {Greeter} */",
+            "export class CustomGreeter {",
+            "  constructor() { this.p = new Person; }",
+            "}"));
+    
+    NominalType2 type = typeRegistry.getType("module$src$modules$foo$bar.CustomGreeter");
+    TypeInspector.Report report = typeInspector.inspectInstanceType(type);
+    assertThat(report.getCompilerConstants()).isEmpty();
+    assertThat(report.getFunctions()).isEmpty();
+    assertThat(report.getProperties()).containsExactly(
+        Property.newBuilder()
+            .setBase(BaseProperty.newBuilder()
+                .setName("p")
+                .setSource(sourceFile("../source/modules/foo/bar.js.src.html", 4))
+                .setDescription(htmlComment(
+                    "<p>The <a href=\"../Person.html\"><code>Person</code></a> to greet.</p>\n"))
+                .addSpecifiedBy(linkComment("Greeter", "../Greeter.html#p")))
+            .setType(linkComment("Person", "../Person.html"))
             .build());
   }
 }

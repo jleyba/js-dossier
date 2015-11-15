@@ -16,11 +16,15 @@
 
 package com.github.jsdossier;
 
+import static com.github.jsdossier.testing.CompilerUtil.createSourceFile;
 import static com.google.common.truth.Truth.assertThat;
 
+import com.github.jsdossier.jscomp.NominalType2;
 import com.github.jsdossier.proto.BaseProperty;
+import com.github.jsdossier.proto.Comment;
 import com.github.jsdossier.proto.Property;
 import com.github.jsdossier.proto.Tags;
+import com.google.common.base.Predicate;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -30,6 +34,89 @@ import org.junit.runners.JUnit4;
  */
 @RunWith(JUnit4.class)
 public class TypeInspectorStaticPropertyTest extends AbstractTypeInspectorTest {
+  
+  @Test
+  public void doesNotReturnNestedTypeAsProperty() {
+    compile(
+        "/** @constructor */",
+        "function A() {}",
+        "",
+        "A.B = class {};",
+        "",
+        "/** @constructor */",
+        "A.C = function() {};",
+        "",
+        "/** @interface */",
+        "A.D = function() {};",
+        "",
+        "/** @enum {string} */",
+        "A.E = {};");
+
+    NominalType2 a = typeRegistry.getType("A");
+    TypeInspector.Report report = typeInspector.inspectType(a);
+    assertThat(report.getFunctions()).isEmpty();
+    assertThat(report.getCompilerConstants()).isEmpty();
+    assertThat(report.getProperties()).isEmpty();
+  }
+
+  @Test
+  public void doesNotReturnNestedNamespacesAsProperty() {
+    compile(
+        "goog.provide('foo');",
+        "goog.provide('foo.bar');",
+        "",
+        "foo.x = 123;",
+        "foo.bar.y = 456;");
+
+    NominalType2 type = typeRegistry.getType("foo");
+    TypeInspector.Report report = typeInspector.inspectType(type);
+    assertThat(report.getFunctions()).isEmpty();
+    assertThat(report.getCompilerConstants()).isEmpty();
+    assertThat(report.getProperties()).containsExactly(
+        Property.newBuilder()
+            .setBase(BaseProperty.newBuilder()
+                .setName("x")
+                .setSource(sourceFile("source/foo.js.src.html", 4))
+                .setDescription(Comment.getDefaultInstance()))
+            .setType(numberTypeComment())
+            .build());
+  }
+
+  @Test
+  public void doesNotReturnNestedNamespacesAsProperty_subNamespaceHasBeenFiltered() {
+    guice.toBuilder()
+        .setTypeNameFilter(new Predicate<String>() {
+          @Override
+          public boolean apply(String input) {
+            return "foo.bar".equals(input);
+          }
+        })
+        .build()
+        .createInjector()
+        .injectMembers(this);
+
+    compile(
+        "goog.provide('foo');",
+        "goog.provide('foo.bar');",
+        "",
+        "foo.x = 123;",
+        "foo.bar.y = 456;");
+    
+    assertThat(typeRegistry.isType("foo.bar")).isFalse();
+
+    NominalType2 type = typeRegistry.getType("foo");
+    TypeInspector.Report report = typeInspector.inspectType(type);
+    assertThat(report.getFunctions()).isEmpty();
+    assertThat(report.getCompilerConstants()).isEmpty();
+    assertThat(report.getProperties()).containsExactly(
+        Property.newBuilder()
+            .setBase(BaseProperty.newBuilder()
+                .setName("x")
+                .setSource(sourceFile("source/foo.js.src.html", 4))
+                .setDescription(Comment.getDefaultInstance()))
+            .setType(numberTypeComment())
+            .build());
+  }
 
   @Test
   public void returnsInfoOnStaticProperties_constructor() {
@@ -43,7 +130,7 @@ public class TypeInspectorStaticPropertyTest extends AbstractTypeInspectorTest {
         " */",
         "A.b = 1234;");
 
-    NominalType a = typeRegistry.getNominalType("A");
+    NominalType2 a = typeRegistry.getType("A");
     TypeInspector.Report report = typeInspector.inspectType(a);
     assertThat(report.getFunctions()).isEmpty();
     assertThat(report.getCompilerConstants()).isEmpty();
@@ -69,7 +156,7 @@ public class TypeInspectorStaticPropertyTest extends AbstractTypeInspectorTest {
         " */",
         "A.b = 1234;");
 
-    NominalType a = typeRegistry.getNominalType("A");
+    NominalType2 a = typeRegistry.getType("A");
     TypeInspector.Report report = typeInspector.inspectType(a);
     assertThat(report.getFunctions()).isEmpty();
     assertThat(report.getCompilerConstants()).isEmpty();
@@ -94,7 +181,7 @@ public class TypeInspectorStaticPropertyTest extends AbstractTypeInspectorTest {
         " */",
         "A.b = 1234;");
 
-    NominalType a = typeRegistry.getNominalType("A");
+    NominalType2 a = typeRegistry.getType("A");
     TypeInspector.Report report = typeInspector.inspectType(a);
     assertThat(report.getFunctions()).isEmpty();
     assertThat(report.getCompilerConstants()).isEmpty();
@@ -119,7 +206,7 @@ public class TypeInspectorStaticPropertyTest extends AbstractTypeInspectorTest {
         " */",
         "A.b = 1234;");
 
-    NominalType a = typeRegistry.getNominalType("A");
+    NominalType2 a = typeRegistry.getType("A");
     TypeInspector.Report report = typeInspector.inspectType(a);
     assertThat(report.getFunctions()).isEmpty();
     assertThat(report.getProperties()).isEmpty();
@@ -146,7 +233,7 @@ public class TypeInspectorStaticPropertyTest extends AbstractTypeInspectorTest {
         " */",
         "goog.define('A.b', 1234);");
 
-    NominalType a = typeRegistry.getNominalType("A");
+    NominalType2 a = typeRegistry.getType("A");
     TypeInspector.Report report = typeInspector.inspectType(a);
     assertThat(report.getFunctions()).isEmpty();
     assertThat(report.getProperties()).isEmpty();
@@ -156,6 +243,40 @@ public class TypeInspectorStaticPropertyTest extends AbstractTypeInspectorTest {
                 .setName("b")
                 .setSource(sourceFile("source/foo.js.src.html", 7))
                 .setDescription(htmlComment("<p>This is a constant defined on A.</p>\n"))
+                .setTags(Tags.newBuilder()
+                    .setIsConst(true)))
+            .setType(numberTypeComment())
+            .build());
+  }
+
+  @Test
+  public void linkReferencesAreParsedRelativeToOwningType() {
+    util.compile(
+        createSourceFile(
+            fs.getPath("/src/globals.js"),
+            "/** Global person. */",
+            "class Person {}"),
+        createSourceFile(
+            fs.getPath("/src/modules/foo/bar.js"),
+            "",
+            "/** Hides global person. */",
+            "class Person {}",
+            "exports.Person = Person;",
+            "",
+            "/** Link to a {@link Person}. */",
+            "exports.limit = 123;"));
+
+    NominalType2 type = typeRegistry.getType("dossier$$module__$src$modules$foo$bar");
+    TypeInspector.Report report = typeInspector.inspectType(type);
+    assertThat(report.getCompilerConstants()).isEmpty();
+    assertThat(report.getProperties()).containsExactly(
+        Property.newBuilder()
+            .setBase(BaseProperty.newBuilder()
+                .setName("limit")
+                .setSource(sourceFile("../source/modules/foo/bar.js.src.html", 7))
+                .setDescription(htmlComment(
+                    "<p>Link to a <a href=\"foo_bar_exports_Person.html\">"
+                        + "<code>Person</code></a>.</p>\n"))
                 .setTags(Tags.newBuilder()
                     .setIsConst(true)))
             .setType(numberTypeComment())

@@ -925,6 +925,34 @@ public class LinkFactoryTest {
   }
   
   @Test
+  public void createModuleExportedTypeLink_fromGlobalScope() {
+    util.compile(
+        createSourceFile(
+            fs.getPath("source/modules/one/two.js"),
+            "export class B {}"));
+
+    TypeLink link = createFactory().createLink("module$source$modules$one$two.B");
+    checkLink(link, "B", "module/one_two_exports_B.html");
+  }
+  
+  @Test
+  public void createModuleExportedTypeLink_fromModule() {
+    util.compile(
+        createSourceFile(
+            fs.getPath("source/modules/one/two.js"),
+            "export class B {}"));
+
+    NominalType2 ref = typeRegistry.getType("module$source$modules$one$two");
+    LinkFactory factory = createFactory().withContext(ref);
+
+    TypeLink link = factory.createLink("module$source$modules$one$two.B");
+    checkLink(link, "B", "one_two_exports_B.html");
+
+    link = factory.createLink("B");
+    checkLink(link, "B", "one_two_exports_B.html");
+  }
+
+  @Test
   public void createAliasedTypeLink_forTypeInsideGoogScopeBlock() {
     util.compile(
         fs.getPath("foo.js"),
@@ -1326,6 +1354,24 @@ public class LinkFactoryTest {
         "String.prototype.indexOf", url);
     checkLink(factory.createLink("String#indexOf"), "String#indexOf", url);
     checkLink(factory.createLink("String.fromCharCode"), "String.fromCharCode", url);
+  }
+  
+  @Test
+  public void createLinkToForwardedExport() {
+    util.compile(
+        createSourceFile(
+            fs.getPath("source/modules/one.js"),
+            "export class One {}"),
+        createSourceFile(
+            fs.getPath("source/modules/two.js"),
+            "export {One as Two} from './one';"));
+
+    NominalType2 ref = typeRegistry.getType("module$source$modules$two");
+    LinkFactory factory = createFactory().withContext(ref);
+
+    checkLink(factory.createLink("One"), "One", "");
+    checkLink(factory.createLink("Two"), "Two", "");
+    checkLink(factory.createLink("module$source$modules$two.Two"), "Two", "two_exports_Two.html");
   }
 
   private LinkFactory createFactory() {
