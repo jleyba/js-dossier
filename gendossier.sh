@@ -204,7 +204,7 @@ properties when de-referencing a hash link.
 
 ## HTML Sanitization
 
-All HTML output is sanitized using the [owasp HTML sanitizer](https://code.google.com/p/owasp-java-html-sanitizer/).
+All HTML output is sanitized using the [owasp HTML sanitizer](https://github.com/owasp/java-html-sanitizer).
 Refer to the [source](https://github.com/jleyba/js-dossier/blob/master/src/java/com/github/jsdossier/soy/HtmlSanitizer.java)
 for an up-to-date list of the supported HTML tags and attributes.
 
