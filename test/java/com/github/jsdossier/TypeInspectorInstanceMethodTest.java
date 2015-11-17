@@ -1161,7 +1161,8 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .addSpecifiedBy(linkComment("Greeter", "Greeter.html#greet")))
             .addParameter(Detail.newBuilder()
                 .setName("student")
-                .setType(linkComment("Student", "Student.html"))
+                .setType(
+                    linkComment("Student", "Student.html").toBuilder().addToken(0, textToken("!")))
                 .setDescription(htmlComment("<p>The student to greet.</p>\n")))
             .build());
 
@@ -1177,7 +1178,9 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setDescription(Comment.getDefaultInstance()))
             .addParameter(Detail.newBuilder()
                 .setName("person")
-                .setType(linkComment("Person", "Person.html"))
+                .setType(linkComment("Person", "Person.html")
+                    .toBuilder()
+                    .addToken(0, textToken("!")))
                 .setDescription(htmlComment("<p>The person to greet.</p>\n")))
             .build());
   }
@@ -1401,7 +1404,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .addSpecifiedBy(linkComment("Edge", "Edge.html#addPath")))
             .addParameter(Detail.newBuilder()
                 .setName("context")
-                .setType(textComment("CanvasRenderingContext2D"))
+                .setType(textComment("!CanvasRenderingContext2D"))
                 .setDescription(htmlComment("<p>The canvas to draw this object into</p>\n")))
             .build());
   }

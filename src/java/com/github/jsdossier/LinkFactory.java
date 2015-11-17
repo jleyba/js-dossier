@@ -84,6 +84,7 @@ final class LinkFactory {
   private final DossierFileSystem dfs;
   private final TypeRegistry2 typeRegistry;
   private final JSTypeRegistry jsTypeRegistry;
+  private final ModuleNamingConvention namingConvention;
   private final Optional<NominalType2> context;
 
   /**
@@ -94,18 +95,21 @@ final class LinkFactory {
   LinkFactory(
       DossierFileSystem dfs,
       TypeRegistry2 typeRegistry,
-      JSTypeRegistry jsTypeRegistry) {
-    this(dfs, typeRegistry, jsTypeRegistry, Optional.<NominalType2>absent());
+      JSTypeRegistry jsTypeRegistry,
+      ModuleNamingConvention namingConvention) {
+    this(dfs, typeRegistry, jsTypeRegistry, namingConvention, Optional.<NominalType2>absent());
   }
 
   private LinkFactory(
       DossierFileSystem dfs,
       TypeRegistry2 typeRegistry,
       JSTypeRegistry jsTypeRegistry,
+      ModuleNamingConvention namingConvention,
       Optional<NominalType2> context) {
     this.dfs = dfs;
     this.typeRegistry = typeRegistry;
     this.jsTypeRegistry = jsTypeRegistry;
+    this.namingConvention = namingConvention;
     this.context = context;
   }
 
@@ -114,7 +118,7 @@ final class LinkFactory {
    */
   public LinkFactory forGlobalScope() {
     if (context.isPresent()) {
-      return new LinkFactory(dfs, typeRegistry, jsTypeRegistry);
+      return new LinkFactory(dfs, typeRegistry, jsTypeRegistry, namingConvention);
     }
     return this;
   }
@@ -123,7 +127,7 @@ final class LinkFactory {
    * Returns a new factory that generates links relative to the given type.
    */
   public LinkFactory withContext(NominalType2 type) {
-    return new LinkFactory(dfs, typeRegistry, jsTypeRegistry, Optional.of(type));
+    return new LinkFactory(dfs, typeRegistry, jsTypeRegistry, namingConvention, Optional.of(type));
   }
 
   /**
@@ -213,6 +217,13 @@ final class LinkFactory {
             .setText(link.getText() + "#" + property)
             .setHref(link.getHref() + "#" + property)
             .build();
+      }
+    }
+    
+    if (type.isModuleExports()) {
+      String exportedType = type.getName() + "." + property;
+      if (typeRegistry.isType(exportedType)) {
+        return createLink(typeRegistry.getType(exportedType));
       }
     }
     
@@ -337,6 +348,11 @@ final class LinkFactory {
   
   private String resolveAlias(String symbol) {
     verify(context.isPresent());
+    
+    // Can't be an alias if it starts with a relative path.
+    if (symbol.startsWith("./") || symbol.startsWith("../")) {
+      return symbol;
+    }
 
     NominalType2 ctx = context.get();
     for (int index = symbol.indexOf('.'); index != -1;) {
@@ -385,8 +401,22 @@ final class LinkFactory {
   
   private Path resolveModulePath(String symbol) {
     if (context.isPresent() && context.get().getModule().isPresent()) {
-      Path currentPath = context.get().getModule().get().getPath();
-      return currentPath.resolveSibling(symbol + ".js").normalize();
+      final Path contextPath = context.get().getModule().get().getPath();
+      
+      if (symbol.endsWith("/")) {
+        return contextPath.resolveSibling(symbol).resolve("index.js").normalize();
+      }
+      
+      Path path = contextPath.resolveSibling(symbol + ".js").normalize();
+
+      if (!typeRegistry.isModule(path) && namingConvention == ModuleNamingConvention.NODE) {
+        Path indexPath = contextPath.resolveSibling(symbol).resolve("index.js").normalize();
+        if (typeRegistry.isModule(indexPath)) {
+          return indexPath;
+        }
+      }
+
+      return path;
     }
     return dfs.getModulePrefix().resolve(symbol + ".js");
   }

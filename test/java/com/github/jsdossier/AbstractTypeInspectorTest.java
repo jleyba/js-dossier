@@ -92,6 +92,10 @@ public abstract class AbstractTypeInspectorTest {
         .build();
   }
 
+  protected static Comment.Token textToken(String text) {
+    return Comment.Token.newBuilder().setText(text).build();
+  }
+
   protected static Comment errorTypeComment() {
     return linkComment("Error",
         "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error");

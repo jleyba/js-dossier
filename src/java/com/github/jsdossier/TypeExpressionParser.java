@@ -208,6 +208,10 @@ final class TypeExpressionParser {
 
     private void appendLink(String text, String href) {
       if (!currentText.isEmpty()) {
+        if (href.isEmpty()) {
+          currentText += text;
+          return;
+        }
         comment.addTokenBuilder().setText(currentText);
         currentText = "";
       }

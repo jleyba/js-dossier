@@ -897,7 +897,7 @@ public class LinkFactoryTest {
     util.compile(
         createSourceFile(
             fs.getPath("source/modules/foo/bar/baz.js"),
-            "export default class {}"),
+            "export class A {}"),
         createSourceFile(
             fs.getPath("source/modules/one.js"),
             "export class B {}"));
@@ -906,6 +906,9 @@ public class LinkFactoryTest {
 
     TypeLink link = createFactory().withContext(ref).createLink("./foo/bar/baz");
     checkLink(link, "foo/bar/baz", "foo/bar/baz.html");
+
+    link = createFactory().withContext(ref).createLink("./foo/bar/baz.A");
+    checkLink(link, "A", "foo/bar/baz_exports_A.html");
   }
   
   @Test
@@ -913,7 +916,7 @@ public class LinkFactoryTest {
     util.compile(
         createSourceFile(
             fs.getPath("source/modules/foo/bar/baz.js"),
-            "export default class {}"),
+            "export class A {}"),
         createSourceFile(
             fs.getPath("source/modules/one/two.js"),
             "export class B {}"));
@@ -922,6 +925,84 @@ public class LinkFactoryTest {
 
     TypeLink link = createFactory().withContext(ref).createLink("../foo/bar/baz");
     checkLink(link, "foo/bar/baz", "../foo/bar/baz.html");
+
+    link = createFactory().withContext(ref).createLink("../foo/bar/baz.A");
+    checkLink(link, "A", "../foo/bar/baz_exports_A.html");
+  }
+  
+  @Test
+  public void createModuleTypeLink_fromModule_withRelativeModulePath3() {
+    util.compile(
+        createSourceFile(
+            fs.getPath("source/modules/one.js"),
+            "exports.X = class {};"),
+        createSourceFile(
+            fs.getPath("source/modules/two.js"),
+            "exports.Y = class {}"));
+
+    NominalType2 ref = typeRegistry.getType("dossier$$module__source$modules$two");
+
+    TypeLink link = createFactory().withContext(ref).createLink("./one");
+    checkLink(link, "one", "one.html");
+    
+    link = createFactory().withContext(ref).createLink("./one.X");
+    checkLink(link, "X", "one_exports_X.html");
+  }
+  
+  @Test
+  public void createIndexModuleTypeLink_withRelativeModulePath_es6Conventions() {
+    guice.toBuilder()
+        .setModuleNamingConvention(ModuleNamingConvention.ES6)
+        .build()
+        .createInjector()
+        .injectMembers(this);
+
+    util.compile(
+        createSourceFile(
+            fs.getPath("source/modules/foo/bar/index.js"),
+            "export default class {}"),
+        createSourceFile(
+            fs.getPath("source/modules/one/two.js"),
+            "export class B {}"));
+
+    NominalType2 ref = typeRegistry.getType("module$source$modules$one$two");
+
+    TypeLink link = createFactory().withContext(ref).createLink("../foo/bar/index");
+    checkLink(link, "foo/bar/index", "../foo/bar/index.html");
+
+    link = createFactory().withContext(ref).createLink("../foo/bar/");
+    checkLink(link, "foo/bar/index", "../foo/bar/index.html");
+
+    link = createFactory().withContext(ref).createLink("../foo/bar");
+    checkLink(link, "../foo/bar", "");
+  }
+  
+  @Test
+  public void createIndexModuleTypeLink_withRelativeModulePath_nodeConventions() {
+    guice.toBuilder()
+        .setModuleNamingConvention(ModuleNamingConvention.NODE)
+        .build()
+        .createInjector()
+        .injectMembers(this);
+
+    util.compile(
+        createSourceFile(
+            fs.getPath("source/modules/foo/bar/index.js"),
+            "export default class {}"),
+        createSourceFile(
+            fs.getPath("source/modules/one/two.js"),
+            "export class B {}"));
+
+    NominalType2 ref = typeRegistry.getType("module$source$modules$one$two");
+
+    TypeLink link = createFactory().withContext(ref).createLink("../foo/bar/index");
+    checkLink(link, "foo/bar", "../foo/bar/index.html");
+    
+    link = createFactory().withContext(ref).createLink("../foo/bar/");
+    checkLink(link, "foo/bar", "../foo/bar/index.html");
+    
+    link = createFactory().withContext(ref).createLink("../foo/bar");
+    checkLink(link, "foo/bar", "../foo/bar/index.html");
   }
   
   @Test

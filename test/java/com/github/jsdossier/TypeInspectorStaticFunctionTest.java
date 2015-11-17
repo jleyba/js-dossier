@@ -136,7 +136,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
                 .setDescription(htmlComment("<p>Darkens a color.</p>\n")))
             .addParameter(Detail.newBuilder()
                 .setName("c")
-                .setType(stringTypeComment())
+                .setType(stringTypeComment().toBuilder().addToken(0, textToken("!")))
                 .setDescription(htmlComment("<p>The color to darken.</p>\n")))
             .setReturn(Detail.newBuilder()
                 .setType(stringTypeComment())
@@ -452,7 +452,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
                 .setDescription(htmlComment("<p>Hello, world!</p>\n")))
             .build());
   }
-  
+
   @Test
   public void usesDocsFromModuleVarIfExportedInstanceHasNoDocs_es6Module() {
     util.compile(fs.getPath("/src/modules/foo/bar.js"),
@@ -624,7 +624,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
                 .setDescription(htmlComment("<p>The person's name.</p>\n")))
             .setReturn(Detail.newBuilder()
                 .setType(linkComment("Person", "bar_exports_Person.html"))
-            .setDescription(htmlComment("<p>The new person.</p>\n")))
+                .setDescription(htmlComment("<p>The new person.</p>\n")))
             .build());
   }
   
@@ -662,7 +662,69 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
                 .setDescription(htmlComment("<p>The person's name.</p>\n")))
             .setReturn(Detail.newBuilder()
                 .setType(linkComment("Person", "bar_exports_Person.html"))
-            .setDescription(htmlComment("<p>The new person.</p>\n")))
+                .setDescription(htmlComment("<p>The new person.</p>\n")))
+            .build());
+  }  
+
+  @Test
+  public void typeExpressionsCanReferToAnotherModuleByRelativePath_es6Modules() {
+    util.compile(
+        createSourceFile(
+            fs.getPath("/src/modules/foo/bar.js"),
+            "export class X {}"),
+        createSourceFile(
+            fs.getPath("/src/modules/foo/baz.js"),
+            "/** @param {./bar.X} x an object. */",
+            "export function go(x) {}"));
+
+    NominalType2 type = typeRegistry.getType("module$src$modules$foo$baz");
+    TypeInspector.Report report = typeInspector.inspectType(type);
+    assertThat(report.getProperties()).isEmpty();
+    assertThat(report.getCompilerConstants()).isEmpty();
+    try {
+      assertThat(report.getFunctions()).containsExactly(
+          Function.newBuilder()
+              .setBase(BaseProperty.newBuilder()
+                  .setName("go")
+                  .setSource(sourceFile("../../source/modules/foo/baz.js.src.html", 2))
+                  .setDescription(Comment.getDefaultInstance()))
+              .addParameter(Detail.newBuilder()
+                  .setName("x")
+                  .setType(linkComment("X", "bar_exports_X.html"))
+                  .setType(stringTypeComment())
+                  .setDescription(htmlComment("<p>an object.</p>\n")))
+              .build());
+      throw new IllegalStateException("Update this test!");
+    } catch (AssertionError e) {
+      Assume.assumeNoException("See issue #49", e);
+    }
+  }
+
+  @Test
+  public void typeExpressionsCanReferToAnotherModuleByRelativePath_nodeModules() {
+    util.compile(
+        createSourceFile(
+            fs.getPath("/src/modules/foo/bar.js"),
+            "exports.X = class {}"),
+        createSourceFile(
+            fs.getPath("/src/modules/foo/baz.js"),
+            "/** @param {./bar.X} x an object. */",
+            "exports.go = function(x) {};"));
+
+    NominalType2 type = typeRegistry.getType("dossier$$module__$src$modules$foo$baz");
+    TypeInspector.Report report = typeInspector.inspectType(type);
+    assertThat(report.getProperties()).isEmpty();
+    assertThat(report.getCompilerConstants()).isEmpty();
+    assertThat(report.getFunctions()).containsExactly(
+        Function.newBuilder()
+            .setBase(BaseProperty.newBuilder()
+                .setName("go")
+                .setSource(sourceFile("../../source/modules/foo/baz.js.src.html", 2))
+                .setDescription(Comment.getDefaultInstance()))
+            .addParameter(Detail.newBuilder()
+                .setName("x")
+                .setType(linkComment("X", "bar_exports_X.html"))
+                .setDescription(htmlComment("<p>an object.</p>\n")))
             .build());
   }
 }

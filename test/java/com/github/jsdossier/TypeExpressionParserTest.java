@@ -130,6 +130,21 @@ public class TypeExpressionParserTest {
             .build());
   }
   
+  @Test
+  public void redundantNonNullQualifierOnPrimitiveIsIncluded() {
+    util.compile(fs.getPath("foo.js"), "/** @typedef {!string} */var Name;");
+
+    NominalType2 type = typeRegistry.getType("Name");
+    TypeExpressionParser parser = parserFactory.create(type);
+
+    Comment comment = parser.parse(type.getJsDoc().getInfo().getTypedefType());
+    assertThat(comment).isEqualTo(
+        Comment.newBuilder()
+            .addToken(text("!"))
+            .addToken(stringLink())
+            .build());
+  }
+  
   private static Comment.Token text(String text) {
     return Comment.Token.newBuilder().setText(text).build();
   }

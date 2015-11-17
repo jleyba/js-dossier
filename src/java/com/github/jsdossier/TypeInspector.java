@@ -76,7 +76,6 @@ import javax.inject.Inject;
  */
 final class TypeInspector {
 
-  private final Linker linker;
   private final LinkFactory linkFactory;
   private final DossierFileSystem dfs;
   private final CommentParser parser;
@@ -87,7 +86,6 @@ final class TypeInspector {
 
   @Inject
   TypeInspector(
-      Linker linker,
       LinkFactory linkFactory,
       DossierFileSystem dfs,
       CommentParser parser,
@@ -95,7 +93,6 @@ final class TypeInspector {
       JSTypeRegistry jsRegistry,
       TypeExpressionParserFactory expressionParserFactory,
       @TypeFilter Predicate<String> typeFilter) {
-    this.linker = linker;
     this.linkFactory = linkFactory;
     this.dfs = dfs;
     this.parser = parser;
@@ -566,16 +563,20 @@ final class TypeInspector {
     //   Clazz.prototype.add = function(x, y) { return x + y; };
     if (foundDocs != null
         && !foundDocs.getJsDoc().getParameters().isEmpty()) {
+      final NominalType2 contextType = foundDocs.getContextType();
       return FluentIterable.from(foundDocs.getJsDoc().getParameters())
           .transform(new com.google.common.base.Function<Parameter, Detail>() {
             @Override
             public Detail apply(Parameter input) {
               Detail.Builder detail = Detail.newBuilder().setName(input.getName());
               if (!isNullOrEmpty(input.getDescription())) {
-                detail.setDescription(parser.parseComment(input.getDescription(), linker));
+                detail.setDescription(
+                    parser.parseComment(
+                        input.getDescription(), linkFactory.withContext(contextType)));
               }
               if (input.getType() != null) {
-                detail.setType(linker.formatTypeExpression(input.getType()));
+                detail.setType(
+                    expressionParserFactory.create(contextType).parse(input.getType()));
               }
               return detail.build();
             }
@@ -589,12 +590,14 @@ final class TypeInspector {
     List<Node> parameterNodes = Lists.newArrayList(((FunctionType) type).getParameters());
     List<Detail> details = new ArrayList<>(parameterNodes.size());
     @Nullable Node paramList = findParamList(node);
-
+    
+    TypeExpressionParser parser = expressionParserFactory
+        .create(foundDocs == null ? docs.getContextType() : foundDocs.getContextType());
     for (int i = 0; i < parameterNodes.size(); i++) {
       Detail.Builder detail = Detail.newBuilder().setName("arg" + i);
       Node parameterNode = parameterNodes.get(i);
       if (!parameterNode.getJSType().isNoType() && !parameterNode.getJSType().isNoResolvedType()) {
-        detail.setType(linker.formatTypeExpression(parameterNode));
+        detail.setType(parser.parse(parameterNode));
       }
       if (paramList != null && i < paramList.getChildCount()) {
         String name = paramList.getChildAtIndex(i).getString();
