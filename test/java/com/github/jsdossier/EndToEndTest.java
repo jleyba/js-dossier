@@ -413,6 +413,7 @@ public class EndToEndTest {
       spec.addProperty("path", path.toString());
       customPages.add(spec);
       json.add("customPages", customPages);
+      json.addProperty("moduleNamingConvention", "NODE");
     }
 
     void addFilter(String name) {

@@ -102,7 +102,7 @@ public class LinkerTest {
         "dossier$$module__$sources$modules$foo$bar",
         createCommonJsModule(modulePrefix.resolve("foo/bar/index.js")));
 
-    assertThat(linker.getDisplayName(type)).isEqualTo("foo/bar");
+    assertThat(linker.getDisplayName(type)).isEqualTo("foo/bar/index");
   }
 
   @Test

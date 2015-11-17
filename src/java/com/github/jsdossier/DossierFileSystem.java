@@ -48,6 +48,7 @@ final class DossierFileSystem {
   private final Path sourcePrefix;
   private final ImmutableSet<Path> allModules;
   private final TypeRegistry2 typeRegistry;
+  private final ModuleNamingConvention namingConvention;
 
   @Inject
   DossierFileSystem(
@@ -55,12 +56,14 @@ final class DossierFileSystem {
       @SourcePrefix Path sourcePrefix,
       @ModulePrefix Path modulePrefix,
       @Modules ImmutableSet<Path> allModules,
-      TypeRegistry2 typeRegistry) {
+      TypeRegistry2 typeRegistry,
+      ModuleNamingConvention namingConvention) {
     this.outputRoot = outputRoot;
     this.modulePrefix = modulePrefix;
     this.sourcePrefix = sourcePrefix;
     this.allModules = allModules;
     this.typeRegistry = typeRegistry;
+    this.namingConvention = namingConvention;
   }
 
   /**
@@ -181,6 +184,20 @@ final class DossierFileSystem {
   }
 
   /**
+   * Returns the fully-qualified display name for the given type. For types exported by a module,
+   * this is the display name of the module <em>and</em> the type's display name. For types defined
+   * in the global scope or off a namespace in the global scope, the qualified display name is the
+   * same as the normal {@linkplain #getDisplayName(NominalType2) display name}.
+   */
+  public String getQualifiedDisplayName(NominalType2 type) {
+    String name = getDisplayName(type);
+    if (type.getModule().isPresent()) {
+      return getDisplayName(type.getModule().get()) + "." + name;
+    }
+    return name;
+  }
+
+  /**
    * Returns the display name for the given type.
    */
   public String getDisplayName(NominalType2 type) {
@@ -203,8 +220,9 @@ final class DossierFileSystem {
     }
 
     Path path = stripExtension(module.getPath());
-    
-    if (path.endsWith("index") && path.getParent() != null) {
+
+    if (namingConvention == ModuleNamingConvention.NODE
+        && path.endsWith("index") && path.getParent() != null) {
       path = path.getParent();
       
       Path other = path.resolveSibling(path.getFileName() + ".js");
@@ -225,7 +243,8 @@ final class DossierFileSystem {
 
     Path path = stripExtension(module.getPath());
 
-    if (path.endsWith("index")
+    if (namingConvention == ModuleNamingConvention.NODE
+        && path.endsWith("index")
         && path.getParent() != null) {
       path = path.getParent();
 

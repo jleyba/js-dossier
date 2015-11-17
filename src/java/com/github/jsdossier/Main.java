@@ -148,6 +148,8 @@ final class Main {
       bind(Path.class).annotatedWith(Output.class).toInstance(outputDir);
       bind(FileSystem.class).annotatedWith(Output.class).toInstance(outputDir.getFileSystem());
       bind(FileSystem.class).annotatedWith(Input.class).toInstance(config.getFileSystem());
+      
+      bind(ModuleNamingConvention.class).toInstance(config.getModuleNamingConvention());
 
       bind(DocTemplate.class).to(DefaultDocTemplate.class);
     }

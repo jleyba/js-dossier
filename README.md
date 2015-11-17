@@ -77,6 +77,11 @@ __Configuration Options__
     omitted, the closest common ancestor for all module files will be selected
     as the default.
 
+ * `moduleNamingConvention` The module naming convention to use. If set to
+    `NODE`, modules with a basename of index.js will use the name of the parent
+    directory (e.g. "foo/bar/index.js" -> "foo/bar/"). Must be one of {ES6,
+    NODE}; defaults to ES6
+
  * `excludes` A list of .js files to exclude from processing. If a directory is
     specified, all of the .js files under that directory will be excluded. A
     glob pattern may also be specified to exclude all of the paths under the

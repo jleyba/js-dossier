@@ -49,8 +49,7 @@ public class DossierFileSystemTest {
   private final FileSystem outputFs = Jimfs.newFileSystem();
   private final Path outputRoot = outputFs.getPath("/out");
   
-  private final DossierFileSystem sut = new DossierFileSystem(
-      outputRoot, srcPrefix, modulePrefix, ImmutableSet.<Path>of(), typeRegistry);
+  private DossierFileSystem sut = createFileSystem(ModuleNamingConvention.ES6);
   
   @Test
   public void canGetThePathToARenderedSourceFile() {
@@ -97,8 +96,15 @@ public class DossierFileSystemTest {
   }
   
   @Test
-  public void getModuleDisplayName_index() {
+  public void getModuleDisplayName_indexWithNodeConventions() {
+    sut = createFileSystem(ModuleNamingConvention.NODE);
     assertThat(sut.getDisplayName(commonJsModule("foo/index.js"))).isEqualTo("foo");
+  }
+  
+  @Test
+  public void getModuleDisplayName_indexWithEs6Conventions() {
+    sut = createFileSystem(ModuleNamingConvention.ES6);
+    assertThat(sut.getDisplayName(commonJsModule("foo/index.js"))).isEqualTo("foo/index");
   }
   
   @Test
@@ -107,7 +113,20 @@ public class DossierFileSystemTest {
   }
   
   @Test
-  public void getModuleDisplayName_indexClashesWithSiblingInParentDir() {
+  public void getModuleDisplayName_indexClashesWithSiblingInParentDir_es6Conventions() {
+    sut = createFileSystem(ModuleNamingConvention.ES6);
+
+    typeRegistry.addModule(commonJsModule("foo/bar.js"));
+    typeRegistry.addModule(commonJsModule("foo/bar/index.js"));
+
+    assertThat(sut.getDisplayName(commonJsModule("foo/bar.js"))).isEqualTo("foo/bar");
+    assertThat(sut.getDisplayName(commonJsModule("foo/bar/index.js"))).isEqualTo("foo/bar/index");
+  }
+  
+  @Test
+  public void getModuleDisplayName_indexClashesWithSiblingInParentDir_nodeConventions() {
+    sut = createFileSystem(ModuleNamingConvention.NODE);
+
     typeRegistry.addModule(commonJsModule("foo/bar.js"));
     typeRegistry.addModule(commonJsModule("foo/bar/index.js"));
 
@@ -172,6 +191,64 @@ public class DossierFileSystemTest {
     assertThat(sut.getRelativePath(b, a).toString()).isEqualTo("../one_exports_One.html");
   }
   
+  @Test
+  public void getQualifiedDisplayName_globalType() {
+    NominalType2 type = createType("One");
+    assertThat(sut.getDisplayName(type)).isEqualTo("One");
+    assertThat(sut.getQualifiedDisplayName(type)).isEqualTo("One");
+  }
+  
+  @Test
+  public void getQualifiedDisplayName_namespacedType() {
+    NominalType2 type = createType("one.two.Three");
+    assertThat(sut.getDisplayName(type)).isEqualTo("one.two.Three");
+    assertThat(sut.getQualifiedDisplayName(type)).isEqualTo("one.two.Three");
+  }
+  
+  @Test
+  public void getQualifiedDisplayName_closureModuleType() {
+    NominalType2 type = createType("Three", googModule("one.two"));
+    assertThat(sut.getDisplayName(type)).isEqualTo("Three");
+    assertThat(sut.getQualifiedDisplayName(type)).isEqualTo("one.two.Three");
+  }
+  
+  @Test
+  public void getQualifiedDisplayName_nodeModuleType() {
+    NominalType2 type = createType("Three", commonJsModule("one/two.js"));
+    assertThat(sut.getDisplayName(type)).isEqualTo("Three");
+    assertThat(sut.getQualifiedDisplayName(type)).isEqualTo("one/two.Three");
+  }
+  
+  @Test
+  public void getQualifiedDisplayName_nodeIndexModuleType() {
+    NominalType2 type = createType("Three", commonJsModule("one/two/index.js"));
+    assertThat(sut.getDisplayName(type)).isEqualTo("Three");
+    assertThat(sut.getQualifiedDisplayName(type)).isEqualTo("one/two/index.Three");
+  }
+
+  @Test
+  public void getQualifiedDisplayName_es6ModuleType() {
+    NominalType2 type = createType("Three", es6Module("one/two.js"));
+    assertThat(sut.getDisplayName(type)).isEqualTo("Three");
+    assertThat(sut.getQualifiedDisplayName(type)).isEqualTo("one/two.Three");
+  }
+
+  @Test
+  public void getQualifiedDisplayName_es6IndexModuleType() {
+    NominalType2 type = createType("Three", es6Module("one/two/index.js"));
+    assertThat(sut.getDisplayName(type)).isEqualTo("Three");
+    assertThat(sut.getQualifiedDisplayName(type)).isEqualTo("one/two/index.Three");
+  }
+  
+  private Module es6Module(String path) {
+    return Module.builder()
+        .setId(path.substring(0, path.length() - 3).replace('/', '.'))
+        .setJsDoc(JsDoc.from(null))
+        .setType(Module.Type.ES6)
+        .setPath(modulePrefix.resolve(path))
+        .build();
+  }
+  
   private Module commonJsModule(String path) {
     return Module.builder()
         .setId(path.substring(0, path.length() - 3).replace('/', '.'))
@@ -207,5 +284,11 @@ public class DossierFileSystemTest {
         .setType(type)
         .setModule(module)
         .build();
+  }
+  
+  private DossierFileSystem createFileSystem(ModuleNamingConvention convention) {
+    return new DossierFileSystem(
+        outputRoot, srcPrefix, modulePrefix, ImmutableSet.<Path>of(), typeRegistry,
+        convention);
   }
 }

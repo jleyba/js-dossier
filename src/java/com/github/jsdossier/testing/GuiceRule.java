@@ -19,6 +19,7 @@ package com.github.jsdossier.testing;
 import static com.google.common.base.Preconditions.checkArgument;
 
 import com.github.jsdossier.CompilerModule;
+import com.github.jsdossier.ModuleNamingConvention;
 import com.github.jsdossier.NominalType;
 import com.github.jsdossier.annotations.DocumentationScoped;
 import com.github.jsdossier.annotations.Input;
@@ -63,6 +64,7 @@ public abstract class GuiceRule implements TestRule {
     return builder
         .setTarget(target)
         .setLanguageIn(CompilerOptions.LanguageMode.ECMASCRIPT5)
+        .setModuleNamingConvention(ModuleNamingConvention.ES6)
         .setNewTypeInference(false)
         .setGuiceModules(ImmutableList.copyOf(modules))
         .setInputFs(Jimfs.newFileSystem())
@@ -87,6 +89,7 @@ public abstract class GuiceRule implements TestRule {
   abstract Predicate<NominalType> getTypeFilter();
   abstract Predicate<String> getTypeNameFilter();
   
+  abstract ModuleNamingConvention getModuleNamingConvention();
   abstract CompilerOptions.LanguageMode getLanguageIn();
   abstract boolean getNewTypeInference();
 
@@ -121,6 +124,7 @@ public abstract class GuiceRule implements TestRule {
             bind(Path.class, SourcePrefix.class, getSourcePrefix());
             bind(Path.class, Output.class, getOutputDir());
             bindScope(DocumentationScoped.class, Scopes.NO_SCOPE);
+            bind(ModuleNamingConvention.class).toInstance(getModuleNamingConvention());
           }
 
           @Provides
@@ -183,6 +187,7 @@ public abstract class GuiceRule implements TestRule {
     abstract Builder setOutputDir(Optional<Path> out);
     
     public abstract Builder setNewTypeInference(boolean set);
+    public abstract Builder setModuleNamingConvention(ModuleNamingConvention convention);
     public abstract Builder setLanguageIn(CompilerOptions.LanguageMode languageIn);
     public abstract Builder setTypeFilter(Predicate<NominalType> filter);
     public abstract Builder setTypeNameFilter(Predicate<String> filter);

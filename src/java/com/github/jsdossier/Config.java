@@ -96,6 +96,7 @@ class Config {
   private final boolean strict;
   private final Language language;
   private final FileSystem fileSystem;
+  private final ModuleNamingConvention moduleNamingConvention;
 
   /**
    * Creates a new runtime configuration.
@@ -111,7 +112,8 @@ class Config {
    * @param modulePrefix Prefix to strip from each module path when rendering documentation.
    * @param strict Whether to enable all type checks.
    * @param language The JavaScript dialog sources must conform to.
-   * @throws IllegalStateException If any of source, moudle, and extern sets intersect, or if the
+   * @param moduleNamingConvention the module naming convention to use.
+   * @throws IllegalStateException If any of source, module, and extern sets intersect, or if the
    *     output path is not a directory.
    */
   private Config(
@@ -126,7 +128,8 @@ class Config {
       Optional<Path> modulePrefix,
       boolean strict,
       Language language,
-      FileSystem fileSystem) {
+      FileSystem fileSystem,
+      ModuleNamingConvention moduleNamingConvention) {
     checkArgument(!srcs.isEmpty() || !modules.isEmpty(),
         "There must be at least one input source or module");
     checkArgument(intersection(srcs, externs).isEmpty(),
@@ -161,6 +164,7 @@ class Config {
     this.strict = strict;
     this.language = language;
     this.fileSystem = fileSystem;
+    this.moduleNamingConvention = moduleNamingConvention;
   }
 
   /**
@@ -243,6 +247,13 @@ class Config {
    */
   Language getLanguage() {
     return language;
+  }
+
+  /**
+   * Returns the module naming convention to use.
+   */
+  ModuleNamingConvention getModuleNamingConvention() {
+    return moduleNamingConvention;
   }
 
   /**
@@ -377,7 +388,8 @@ class Config {
         spec.stripModulePrefix,
         spec.strict,
         spec.language,
-        fileSystem);
+        fileSystem,
+        spec.moduleNamingConvention);
   }
 
   private static ImmutableSet<Path> resolve(Iterable<PathSpec> specs) {
@@ -661,6 +673,11 @@ class Config {
         "in `modules`. Note: if this option is omitted, the closest common ancestor for all " +
         "module files will be selected as the default.")
     private final Optional<Path> stripModulePrefix = Optional.absent();
+    
+    @Description("The module naming convention to use. If set to `NODE`, modules with a basename" +
+        " of index.js will use the name of the parent directory" +
+        " (e.g. \"foo/bar/index.js\" -> \"foo/bar/\"). Must be one of {ES6, NODE}; defaults to ES6")
+    private final ModuleNamingConvention moduleNamingConvention = ModuleNamingConvention.ES6;
 
     @Description("A list of .js files to exclude from processing. If a directory is specified," +
         " all of the .js files under that directory will be excluded. A glob pattern may also" +
