@@ -63,12 +63,8 @@ public class EndToEndTest {
   @Parameters(name = "{0}")
   public static Collection<Object[]> data() throws IOException {
     ImmutableList.Builder<Object[]> data = ImmutableList.builder();
-    data.add(new Object[]{new Scenario("out/", "ES5_STRICT")});
-    data.add(new Object[]{new Scenario("out.zip", "ES5_STRICT")});
-    if (!Scenario.useDefaultFileSystem()) {
-      data.add(new Object[]{new Scenario("out.es6.zip", "ES6")});
-      data.add(new Object[]{new Scenario("out.es6_strict.zip", "ES6_STRICT")});
-    }
+    data.add(new Object[]{new Scenario("out/")});
+    data.add(new Object[]{new Scenario("out.zip")});
     return data.build();
   }
 
@@ -325,6 +321,15 @@ public class EndToEndTest {
     checkNav(document);
     checkFooter(document);
   }
+  
+  @Test
+  public void checkEs6Class() throws IOException {
+    Document document = load(outDir.resolve("Calculator.html"));
+    compareWithGoldenFile(querySelector(document, "article"), "Calculator.html");
+    checkHeader(document);
+    checkNav(document);
+    checkFooter(document);
+  }
 
   private void checkHeader(Document document) throws IOException {
     compareWithGoldenFile(querySelector(document, "header"), "header.html");
@@ -451,16 +456,14 @@ public class EndToEndTest {
   
   private static class Scenario {
     private final String outputPath;
-    private final String langauge;
 
     private Path tmpDir;
     private Path srcDir;
     private Path outDir;
     private Exception initFailure;
 
-    private Scenario(String outputPath, String langauge) {
+    private Scenario(String outputPath) {
       this.outputPath = outputPath;
-      this.langauge = langauge;
     }
 
     @Override
@@ -515,6 +518,7 @@ public class EndToEndTest {
       copyResource("resources/SimpleReadme.md", srcDir.resolve("SimpleReadme.md"));
       copyResource("resources/Custom.md", srcDir.resolve("Custom.md"));
       copyResource("resources/closure_module.js", srcDir.resolve("main/closure_module.js"));
+      copyResource("resources/es2015.js", srcDir.resolve("main/es2015.js"));
       copyResource("resources/filter.js", srcDir.resolve("main/filter.js"));
       copyResource("resources/globals.js", srcDir.resolve("main/globals.js"));
       copyResource("resources/json.js", srcDir.resolve("main/json.js"));
@@ -533,7 +537,7 @@ public class EndToEndTest {
       writeConfig(config, new Config() {{
         setOutput(output);
         setReadme(srcDir.resolve("SimpleReadme.md"));
-        setLanguage(Scenario.this.langauge);
+        setLanguage("ES6_STRICT");
 
         addCustomPage("Custom Page", srcDir.resolve("Custom.md"));
 
@@ -542,6 +546,7 @@ public class EndToEndTest {
         addFilter("foo.bar");
 
         addSource(srcDir.resolve("main/closure_module.js"));
+        addSource(srcDir.resolve("main/es2015.js"));
         addSource(srcDir.resolve("main/filter.js"));
         addSource(srcDir.resolve("main/globals.js"));
         addSource(srcDir.resolve("main/json.js"));
