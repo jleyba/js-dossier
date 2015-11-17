@@ -163,7 +163,9 @@ public class TypeRegistry {
     nameToModuleTypes.put(qualifiedName, type);
 
     JSType jsType = type.getJsType();
-    if (jsType.isObject() && jsType.toObjectType().hasReferenceName()) {
+    if (jsType.isObject()
+        && jsType.toObjectType() != null
+        && jsType.toObjectType().hasReferenceName()) {
       String referenceName = jsType.toObjectType().getReferenceName();
       if (referenceName.startsWith(INTERNAL_NAMESPACE_VAR)) {
         nameToModuleTypes.put(referenceName, type);
