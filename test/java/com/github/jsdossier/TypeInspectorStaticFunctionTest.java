@@ -589,4 +589,80 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
                 .setDescription(htmlComment("<p>Does stuff.</p>\n")))
             .build());
   }
+  
+  @Test
+  public void exportedEs6Class_nodeModule() {
+    util.compile(fs.getPath("/src/modules/foo/bar.js"),
+        "/** A person. */",
+        "class Person {",
+        "  constructor(name) {}",
+        "",
+        "  /**",
+        "   * Creates a person.",
+        "   * @param {string} name The person's name.",
+        "   * @return {!Person} The new person.",
+        "   */",
+        "  static create(name) {",
+        "    return new Person(name);",
+        "  }",
+        "}",
+        "exports.Person = Person;");
+
+    NominalType2 type = typeRegistry.getType("dossier$$module__$src$modules$foo$bar.Person");
+    TypeInspector.Report report = typeInspector.inspectType(type);
+    assertThat(report.getProperties()).isEmpty();
+    assertThat(report.getCompilerConstants()).isEmpty();
+    assertThat(report.getFunctions()).containsExactly(
+        Function.newBuilder()
+            .setBase(BaseProperty.newBuilder()
+                .setName("Person.create")
+                .setSource(sourceFile("../../source/modules/foo/bar.js.src.html", 10))
+                .setDescription(htmlComment("<p>Creates a person.</p>\n")))
+            .addParameter(Detail.newBuilder()
+                .setName("name")
+                .setType(stringTypeComment())
+                .setDescription(htmlComment("<p>The person's name.</p>\n")))
+            .setReturn(Detail.newBuilder()
+                .setType(linkComment("Person", "bar_exports_Person.html"))
+            .setDescription(htmlComment("<p>The new person.</p>\n")))
+            .build());
+  }
+  
+  @Test
+  public void exportedEs6Class_es6Module() {
+    util.compile(fs.getPath("/src/modules/foo/bar.js"),
+        "/** A person. */",
+        "class Person {",
+        "  constructor(name) {}",
+        "",
+        "  /**",
+        "   * Creates a person.",
+        "   * @param {string} name The person's name.",
+        "   * @return {!Person} The new person.",
+        "   */",
+        "  static create(name) {",
+        "    return new Person(name);",
+        "  }",
+        "}",
+        "export {Person};");
+
+    NominalType2 type = typeRegistry.getType("module$src$modules$foo$bar.Person");
+    TypeInspector.Report report = typeInspector.inspectType(type);
+    assertThat(report.getProperties()).isEmpty();
+    assertThat(report.getCompilerConstants()).isEmpty();
+    assertThat(report.getFunctions()).containsExactly(
+        Function.newBuilder()
+            .setBase(BaseProperty.newBuilder()
+                .setName("Person.create")
+                .setSource(sourceFile("../../source/modules/foo/bar.js.src.html", 10))
+                .setDescription(htmlComment("<p>Creates a person.</p>\n")))
+            .addParameter(Detail.newBuilder()
+                .setName("name")
+                .setType(stringTypeComment())
+                .setDescription(htmlComment("<p>The person's name.</p>\n")))
+            .setReturn(Detail.newBuilder()
+                .setType(linkComment("Person", "bar_exports_Person.html"))
+            .setDescription(htmlComment("<p>The new person.</p>\n")))
+            .build());
+  }
 }
