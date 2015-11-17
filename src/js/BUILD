@@ -1,19 +1,12 @@
-load("/build_tools/js_library", "js_library")
 load("/build_tools/js_binary", "js_binary")
 
-js_library(
-    name = "dossier_lib",
+js_binary(
+    name = "dossier_bin",
     srcs = [
         "dossier.js",
         "nav.js",
     ],
     externs = ["externs.js"],
-    deps = ["//third_party/js/closure_library"],
-)
-
-js_binary(
-    name = "dossier_bin",
-    deps = [":dossier_lib"],
     flags = [
         "--charset=UTF-8",
         "--compilation_level=ADVANCED_OPTIMIZATIONS",
@@ -43,7 +36,7 @@ js_binary(
         "--jscomp_error=visibility",
         "--language_in=ES5",
         "--third_party=false",
-        "--output_wrapper=\"(function(){%output%;init();})();\"",
+        "--output_wrapper=\\\"(function(){%output%;init();})();\\\"",
     ],
     visibility = ["//src/java/com/github/jsdossier:__pkg__"],
 )

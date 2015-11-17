@@ -4,7 +4,7 @@ licenses(["notice"])  # Apache 2
 
 exports_files(["LICENSE"])
 
-js_library(
+filegroup(
     name = "closure_library",
     srcs = glob(
         [
@@ -17,5 +17,11 @@ js_library(
             "third_party/closure/goog/**/*_test.js",
         ],
     ),
+    visibility = ["//visibility:public"],
+)
+
+filegroup(
+    name = "base",
+    srcs = ["closure/goog/base.js"],
     visibility = ["//visibility:public"],
 )

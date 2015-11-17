@@ -18,4 +18,5 @@ java_binary(
     name = "Compile",
     main_class = "com.github.jsdossier.tools.Compile",
     runtime_deps = [":tools"],
+    visibility = ["//visibility:public"],
 )
