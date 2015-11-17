@@ -220,7 +220,7 @@ public final class NominalType implements StaticTypedScope<JSType> {
   @Nullable
   public <T> T getAttribute(String key, Class<T> type) {
     Object value = attributes.get(key);
-    checkArgument(value == null || type.isInstance(type),
+    checkArgument(value == null || type.isInstance(value),
         "Attribute %s is a %s, not a %s", key,
         value == null ? null : value.getClass().getName(),
         type.getName());
