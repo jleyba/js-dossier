@@ -25,6 +25,7 @@ import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
 import com.google.common.collect.Multimaps;
+import com.google.common.collect.SetMultimap;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.JSTypeExpression;
 import com.google.javascript.rhino.jstype.FunctionType;
@@ -69,6 +70,9 @@ public final class TypeRegistry2 {
           return new ArrayList<>();
         }
       });
+
+  private final SetMultimap<NominalType2, NominalType2> nestedTypes =
+      MultimapBuilder.hashKeys().hashSetValues().build();
   
   /**
    * Records a region of a file that defines variable aliases.
@@ -200,6 +204,14 @@ public final class TypeRegistry2 {
         "A type with name %s has already been defined", type.getName());
     typesByName.put(type.getName(), type);
     typesByJsType.put(type.getType(), type);
+
+    int index = type.getName().lastIndexOf('.');
+    if (index != -1) {
+      String parentName = type.getName().substring(0, index);
+      if (isType(parentName)) {
+        nestedTypes.put(getType(parentName), type);
+      }
+    }
   }
 
   /**
@@ -238,6 +250,13 @@ public final class TypeRegistry2 {
    */
   public Collection<NominalType2> getAllTypes() {
     return Collections.unmodifiableCollection(typesByName.values());
+  }
+
+  /**
+   * Returns all types nested under another.
+   */
+  public Set<NominalType2> getNestedTypes(NominalType2 type) {
+    return Collections.unmodifiableSet(nestedTypes.get(type));
   }
   
   @Nullable

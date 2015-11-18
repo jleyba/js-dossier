@@ -596,6 +596,26 @@ public class TypeCollectionPassTest {
     assertThat(typeRegistry.getAllTypes()).hasSize(1);
   }
 
+  @Test
+  public void recordsNestedTypes() {
+    util.compile(fs.getPath("foo.js"),
+        "goog.provide('foo.bar.baz');",
+        "foo.bar.baz.Clazz = class {};",
+        "foo.Bar = class {};");
+
+    NominalType2 foo = typeRegistry.getType("foo");
+    NominalType2 bar = typeRegistry.getType("foo.bar");
+    NominalType2 barClass = typeRegistry.getType("foo.Bar");
+    NominalType2 baz = typeRegistry.getType("foo.bar.baz");
+    NominalType2 clazz = typeRegistry.getType("foo.bar.baz.Clazz");
+
+    assertThat(typeRegistry.getNestedTypes(foo)).containsExactly(bar, barClass);
+    assertThat(typeRegistry.getNestedTypes(barClass)).isEmpty();
+    assertThat(typeRegistry.getNestedTypes(bar)).containsExactly(baz);
+    assertThat(typeRegistry.getNestedTypes(baz)).containsExactly(clazz);
+    assertThat(typeRegistry.getNestedTypes(clazz)).isEmpty();
+  }
+
   private void defineInputModules(String prefix, String... modules) {
     guice.toBuilder()
         .setModulePrefix(prefix)
