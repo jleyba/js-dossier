@@ -46,8 +46,8 @@ import javax.inject.Inject;
  */
 final class LinkFactory {
 
-  private static final String MDN_PREFIX =
-      "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/";
+  private static final String MDN = "https://developer.mozilla.org/en-US/docs/Web/JavaScript/";
+  private static final String MDN_PREFIX = MDN + "/Reference/";
 
   /**
    * Maps built-in objects to a link to their definition on the Mozilla Develper Network.
@@ -61,14 +61,21 @@ final class LinkFactory {
           .put("Date", MDN_PREFIX + "Global_Objects/Date")
           .put("Error", MDN_PREFIX + "Global_Objects/Error")
           .put("Function", MDN_PREFIX + "Global_Objects/Function")
+          .put("Generator", MDN_PREFIX + "Global_Objects/Generaor")
           .put("Infinity", MDN_PREFIX + "Global_Objects/Infinity")
+          .put("Iterable", MDN_PREFIX + "Global_Objects/Symbol/iterator")
+          .put("Iterator", MDN + "Guide/The_Iterator_protocol")
+          .put("Map", MDN_PREFIX + "Global_Objects/Map")
           .put("Math", MDN_PREFIX + "Global_Objects/Math")
           .put("NaN", MDN_PREFIX + "Global_Objects/NaN")
           .put("Number", MDN_PREFIX + "Global_Objects/Number")
           .put("Object", MDN_PREFIX + "Global_Objects/Object")
+          .put("Promise", MDN_PREFIX + "Global_Objects/Promise")
           .put("RangeError", MDN_PREFIX + "Global_Objects/RangeError")
           .put("ReferenceError", MDN_PREFIX + "Global_Objects/ReferenceError")
           .put("RegExp", MDN_PREFIX + "Global_Objects/RegExp")
+          .put("Set", MDN_PREFIX + "Global_Objects/Set")
+          .put("Symbol", MDN_PREFIX + "Global_Objects/Symbol")
           .put("String", MDN_PREFIX + "Global_Objects/String")
           .put("SyntaxError", MDN_PREFIX + "Global_Objects/SyntaxError")
           .put("TypeError", MDN_PREFIX + "Global_Objects/TypeError")
@@ -79,6 +86,8 @@ final class LinkFactory {
           .put("number", MDN_PREFIX + "Global_Objects/Number")
           .put("string", MDN_PREFIX + "Global_Objects/String")
           .put("undefined", MDN_PREFIX + "Global_Objects/Undefined")
+          .put("WeakMap", MDN_PREFIX + "Global_Objects/WeakMap")
+          .put("WeakSet", MDN_PREFIX + "Global_Objects/WeakSet")
           .build();
 
   private final DossierFileSystem dfs;
