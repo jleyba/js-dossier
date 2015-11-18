@@ -98,8 +98,8 @@ public class AliasTransformationTest {
             "class Y extends f.X {}",
             "exports.Z = Y;"));
 
-    NominalType2 z = typeRegistry.getType("dossier$$module__module$bar.Z");
-    assertThat(typeRegistry.resolveAlias(z, "f")).isEqualTo("dossier$$module__module$foo");
+    NominalType2 z = typeRegistry.getType("module$module$bar.Z");
+    assertThat(typeRegistry.resolveAlias(z, "f")).isEqualTo("module$module$foo");
     assertThat(typeRegistry.resolveAlias(z, "Y")).isEqualTo("$jscomp.scope.Y");
   }
   

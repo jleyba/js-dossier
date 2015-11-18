@@ -17,16 +17,18 @@
 package com.github.jsdossier.jscomp;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
 
 import com.github.jsdossier.annotations.Modules;
+import com.github.jsdossier.jscomp.Module.Type;
+
 import com.google.common.base.Functions;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
+import com.google.javascript.jscomp.ES6ModuleLoader;
 import com.google.javascript.rhino.Node;
 
+import java.net.URI;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
@@ -75,16 +77,6 @@ public final class DossierModuleRegistry {
   }
 
   /**
-   * Returns the module with the given {@code name}.
-   *
-   * @throws IllegalArgumentException if there is no match module.
-   */
-  public DossierModule getModuleNamed(String name) {
-    checkArgument(hasModuleNamed(name), "No such module: %s", name);
-    return nameToModule.get(name);
-  }
-
-  /**
    * Returns whether there is a known CommonJS module with the given source file {@code path}.
    */
   boolean hasModuleWithPath(String path) {
@@ -102,7 +94,15 @@ public final class DossierModuleRegistry {
 
     DossierModule module = scriptToModule.get(script);
     if (module == null) {
-      module = new DossierModule(script, fileSystem.getPath(script.getSourceFileName()));
+      Path path = fileSystem.getPath(script.getSourceFileName());
+      module = new DossierModule(
+          script,
+          Module.builder()
+              .setId(getId(path))
+              .setPath(path)
+              .setJsDoc(JsDoc.from(null))
+              .setType(Type.NODE)
+              .build());
       scriptToModule.put(script, module);
       nameToModule.put(module.getVarName(), module);
     } else {
@@ -111,6 +111,12 @@ public final class DossierModuleRegistry {
           module.getScriptNode(), script);
     }
     return module;
+  }
+
+  static String getId(Path path) {
+    // NB: don't use modulePath.toUri(), because that will include the file system type.
+    URI uri = URI.create(path.toString());
+    return ES6ModuleLoader.toModuleName(uri);
   }
 
   public Iterable<DossierModule> getModules() {

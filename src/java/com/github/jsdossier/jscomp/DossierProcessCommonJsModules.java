@@ -234,7 +234,7 @@ class DossierProcessCommonJsModules {
 
       if (modulePath.startsWith(".") || modulePath.startsWith("/")) {
         Path moduleFile = currentFile.getParent().resolve(modulePath).normalize();
-        moduleName = DossierModule.guessModuleName(moduleFile);
+        moduleName = DossierModuleRegistry.getId(moduleFile);
       } else {
         // TODO: allow users to provide extern module definitions.
         moduleName = DossierModule.externModuleName(modulePath);

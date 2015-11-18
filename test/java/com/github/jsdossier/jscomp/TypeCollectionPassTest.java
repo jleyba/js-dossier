@@ -269,11 +269,11 @@ public class TypeCollectionPassTest {
     util.compile(fs.getPath("modules/foo/bar.js"),
         "exports.Bar = {}");
 
-    NominalType2 type = typeRegistry.getType("dossier$$module__modules$foo$bar");
+    NominalType2 type = typeRegistry.getType("module$modules$foo$bar");
     assertNamespace(type);
     assertPath(type, "modules/foo/bar.js");
     assertPosition(type, 1, 1);
-    assertModule(type, Module.Type.NODE, "dossier$$module__modules$foo$bar", "modules/foo/bar.js");
+    assertModule(type, Module.Type.NODE, "module$modules$foo$bar", "modules/foo/bar.js");
   }
   
   @Test
@@ -398,8 +398,8 @@ public class TypeCollectionPassTest {
     util.compile(fs.getPath("modules/foo/bar.js"),
         "class InternalClass {}",
         "exports.Foo = class {};");
-    assertNamespace(typeRegistry.getType("dossier$$module__modules$foo$bar"));
-    assertConstructor(typeRegistry.getType("dossier$$module__modules$foo$bar.Foo"));
+    assertNamespace(typeRegistry.getType("module$modules$foo$bar"));
+    assertConstructor(typeRegistry.getType("module$modules$foo$bar.Foo"));
     assertThat(typeRegistry.getAllTypes()).hasSize(2);
   }
   

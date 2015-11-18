@@ -18,38 +18,31 @@ package com.github.jsdossier.jscomp;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
-import com.google.common.base.Joiner;
-import com.google.common.io.Files;
 import com.google.javascript.rhino.Node;
-
-import java.nio.file.Path;
 
 /**
  * Describes a CommonJS module.
+ *
+ * @deprecated Use {@link Module} instead.
  */
+@Deprecated
 public class DossierModule {
 
-  private static final String PATH_SEPARATOR = "$";
-  private static final String PREFIX = "dossier$$module__";
   private static final String EXTERN_PREFIX = "dossier$$extern__";
 
   private final Node scriptNode;
-  private final Path modulePath;
-  private final String varName;
+  private final Module module;
 
   /**
    * Creates a new module descriptor.
    *
    * @param script the SCRIPT node for the module.
-   * @param modulePath path to this module's source file.
+   * @param module the new container to delegate to for module information.
    */
-  public DossierModule(Node script, Path modulePath) {
+  public DossierModule(Node script, Module module) {
     checkArgument(script.isScript());
-    checkArgument(script.getSourceFileName() != null);
-
     this.scriptNode = script;
-    this.modulePath = modulePath;
-    this.varName = guessModuleName(modulePath);
+    this.module = module;
   }
 
   public Node getScriptNode() {
@@ -57,11 +50,7 @@ public class DossierModule {
   }
 
   public String getVarName() {
-    return varName;
-  }
-
-  public Path getModulePath() {
-    return modulePath;
+    return module.getId();
   }
 
   public static boolean isExternModule(String name) {
@@ -79,23 +68,5 @@ public class DossierModule {
    */
   static String externModuleName(String id) {
     return EXTERN_PREFIX + id;
-  }
-
-  /**
-   * Guesses the name of the global variable to use with Closure's type system for a module
-   * with the given source path.
-   */
-  static String guessModuleName(Path modulePath) {
-    String baseName = Files.getNameWithoutExtension(modulePath.getFileName().toString());
-    Path pseudoPath = modulePath.resolveSibling(baseName);
-    String fileName = modulePath.getFileName().toString();
-    if ((fileName.equals("index.js") || fileName.equals("index"))
-        && pseudoPath.getParent() != null) {
-      pseudoPath = pseudoPath.getParent();
-    }
-    String name = PREFIX +
-        (modulePath.isAbsolute() ? PATH_SEPARATOR : "") +
-        Joiner.on(PATH_SEPARATOR).join(pseudoPath);
-    return name.replaceAll("[-\\.]", "_");
   }
 }

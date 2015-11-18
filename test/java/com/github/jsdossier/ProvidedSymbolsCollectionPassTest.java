@@ -142,7 +142,7 @@ public class ProvidedSymbolsCollectionPassTest {
 //
 //    util.compile(fileSystem.getPath("/module/foo.js"), "exports.foo = function() {};");
 //
-//    ModuleDescriptor module = typeRegistry.getModuleDescriptor("dossier$$module__$module$foo");
+//    ModuleDescriptor module = typeRegistry.getModuleDescriptor("module$$module$foo");
 //    assertEquals(fileSystem.getPath("/module/foo.js"), module.getPath());
 //    assertThat(module.getType()).isEqualTo(ModuleType.NODE);
   }

@@ -440,7 +440,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
         "/** Hello, world! */",
         "function greet() {}",
         "exports.greet = greet");
-    NominalType2 type = typeRegistry.getType("dossier$$module__$src$modules$foo$bar");
+    NominalType2 type = typeRegistry.getType("module$$src$modules$foo$bar");
     TypeInspector.Report report = typeInspector.inspectType(type);
     assertThat(report.getProperties()).isEmpty();
     assertThat(report.getCompilerConstants()).isEmpty();
@@ -489,7 +489,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
             "const greet = require('./bar').greet;",
             "exports.greeting2 = greet;"));
 
-    NominalType2 type = typeRegistry.getType("dossier$$module__$src$modules$foo$baz");
+    NominalType2 type = typeRegistry.getType("module$$src$modules$foo$baz");
     TypeInspector.Report report = typeInspector.inspectType(type);
     assertThat(report.getProperties()).isEmpty();
     assertThat(report.getCompilerConstants()).isEmpty();
@@ -525,7 +525,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
             "/** Greet a {@link Person}. */",
             "exports.greet = function() {};"));
 
-    NominalType2 type = typeRegistry.getType("dossier$$module__$src$modules$foo$bar");
+    NominalType2 type = typeRegistry.getType("module$$src$modules$foo$bar");
     TypeInspector.Report report = typeInspector.inspectType(type);
     assertThat(report.getProperties()).isEmpty();
     assertThat(report.getCompilerConstants()).isEmpty();
@@ -608,7 +608,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
         "}",
         "exports.Person = Person;");
 
-    NominalType2 type = typeRegistry.getType("dossier$$module__$src$modules$foo$bar.Person");
+    NominalType2 type = typeRegistry.getType("module$$src$modules$foo$bar.Person");
     TypeInspector.Report report = typeInspector.inspectType(type);
     assertThat(report.getProperties()).isEmpty();
     assertThat(report.getCompilerConstants()).isEmpty();
@@ -711,7 +711,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
             "/** @param {./bar.X} x an object. */",
             "exports.go = function(x) {};"));
 
-    NominalType2 type = typeRegistry.getType("dossier$$module__$src$modules$foo$baz");
+    NominalType2 type = typeRegistry.getType("module$$src$modules$foo$baz");
     TypeInspector.Report report = typeInspector.inspectType(type);
     assertThat(report.getProperties()).isEmpty();
     assertThat(report.getCompilerConstants()).isEmpty();

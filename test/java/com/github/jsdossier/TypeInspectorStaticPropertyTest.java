@@ -266,7 +266,7 @@ public class TypeInspectorStaticPropertyTest extends AbstractTypeInspectorTest {
             "/** Link to a {@link Person}. */",
             "exports.limit = 123;"));
 
-    NominalType2 type = typeRegistry.getType("dossier$$module__$src$modules$foo$bar");
+    NominalType2 type = typeRegistry.getType("module$$src$modules$foo$bar");
     TypeInspector.Report report = typeInspector.inspectType(type);
     assertThat(report.getCompilerConstants()).isEmpty();
     assertThat(report.getProperties()).containsExactly(

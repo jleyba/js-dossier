@@ -145,7 +145,7 @@ public class ProvidedSymbolPassTest {
         "var varNoDocs;",
         "let letNoDocs;");
 
-    Module module = typeRegistry.getModule("dossier$$module__$modules$foo$bar");
+    Module module = typeRegistry.getModule("module$$modules$foo$bar");
     assertThat(module.getInternalVarDocs().keySet()).containsExactly(
         "fnDeclDocs", "fnExpr", "fnExpr2", "fnExpr3",
         "varClass", "letClass", "constClass",
@@ -195,7 +195,7 @@ public class ProvidedSymbolPassTest {
     assertThat(typeRegistry.getProvidedSymbols()).isEmpty();
     assertThat(typeRegistry.getImplicitNamespaces()).isEmpty();
 
-    Module module = typeRegistry.getModule("dossier$$module__$modules$foo$bar");
+    Module module = typeRegistry.getModule("module$$modules$foo$bar");
     assertThat(module.getPath().toString()).isEqualTo("/modules/foo/bar.js");
     assertThat(module.getType()).isEqualTo(Module.Type.NODE);
     assertThat(module.getExportedNames().keySet()).containsExactly(

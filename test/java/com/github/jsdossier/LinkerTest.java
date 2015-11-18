@@ -32,6 +32,8 @@ import com.github.jsdossier.annotations.Output;
 import com.github.jsdossier.annotations.SourcePrefix;
 import com.github.jsdossier.jscomp.DossierModule;
 import com.github.jsdossier.jscomp.JsDoc;
+import com.github.jsdossier.jscomp.Module;
+import com.github.jsdossier.jscomp.Module.Type;
 import com.github.jsdossier.proto.Comment;
 import com.github.jsdossier.proto.SourceLink;
 import com.github.jsdossier.proto.TypeLink;
@@ -39,6 +41,7 @@ import com.github.jsdossier.testing.CompilerUtil;
 import com.github.jsdossier.testing.GuiceRule;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableSet;
+import com.google.javascript.jscomp.ES6ModuleLoader;
 import com.google.javascript.rhino.JSTypeExpression;
 import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.jstype.JSType;
@@ -48,6 +51,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import java.net.URI;
 import java.nio.file.FileSystem;
 import java.nio.file.Path;
 
@@ -90,7 +94,7 @@ public class LinkerTest {
   @Test
   public void testGetDisplayName_moduleExports() {
     NominalType type = createType(
-        "dossier$$module__$sources$modules$foo$bar$baz",
+        "module$$sources$modules$foo$bar$baz",
         createCommonJsModule(modulePrefix.resolve("foo/bar/baz.js")));
 
     assertThat(linker.getDisplayName(type)).isEqualTo("foo/bar/baz");
@@ -99,7 +103,7 @@ public class LinkerTest {
   @Test
   public void testGetDisplayName_moduleExportsAsIndexFile() {
     NominalType type = createType(
-        "dossier$$module__$sources$modules$foo$bar",
+        "module$$sources$modules$foo$bar$index",
         createCommonJsModule(modulePrefix.resolve("foo/bar/index.js")));
 
     assertThat(linker.getDisplayName(type)).isEqualTo("foo/bar/index");
@@ -142,7 +146,7 @@ public class LinkerTest {
   @Test
   public void testGetFilePath_moduleExports() {
     NominalType type = createType(
-        "dossier$$module__$sources$modules$foo$bar$baz",
+        "module$$sources$modules$foo$bar$baz",
         createCommonJsModule(modulePrefix.resolve("foo/bar/baz.js")));
 
     assertEquals(
@@ -297,9 +301,9 @@ public class LinkerTest {
     util.compile(module, "exports = {bar: function() {}};");
     assertThat((Iterable) typeRegistry.getModules()).isNotEmpty();
 
-    checkLink("foo", "module/foo.html", linker.getLink("dossier$$module__$sources$modules$foo"));
+    checkLink("foo", "module/foo.html", linker.getLink("module$$sources$modules$foo"));
     checkLink("foo.bar", "module/foo.html#bar",
-        linker.getLink("dossier$$module__$sources$modules$foo.bar"));
+        linker.getLink("module$$sources$modules$foo.bar"));
   }
 
   @Test
@@ -311,7 +315,7 @@ public class LinkerTest {
     assertThat((Iterable) typeRegistry.getModules()).isNotEmpty();
 
     checkLink("foo.Name", "module/foo.html",
-        linker.getLink("dossier$$module__$sources$modules$foo.Name"));
+        linker.getLink("module$$sources$modules$foo.Name"));
   }
 
   @Test
@@ -451,7 +455,7 @@ public class LinkerTest {
     util.compile(module, "exports = {bar: function() {}};");
     assertThat((Iterable) typeRegistry.getModules()).isNotEmpty();
 
-    NominalType context = typeRegistry.getModuleType("dossier$$module__$sources$modules$foo");
+    NominalType context = typeRegistry.getModuleType("module$$sources$modules$foo");
     assertNotNull(context);
     linker.pushContext(context);
 
@@ -472,7 +476,7 @@ public class LinkerTest {
 
     assertThat((Iterable) typeRegistry.getModules()).isNotEmpty();
 
-    NominalType context = typeRegistry.getModuleType("dossier$$module__$sources$modules$foo");
+    NominalType context = typeRegistry.getModuleType("module$$sources$modules$foo");
     assertNotNull(context);
     linker.pushContext(context);
 
@@ -549,7 +553,7 @@ public class LinkerTest {
     util.compile(modulePrefix.resolve("a.js"),
         "exports.hi = 'hi';");
 
-    NominalType type = typeRegistry.getModuleType("dossier$$module__$sources$modules$a");
+    NominalType type = typeRegistry.getModuleType("module$$sources$modules$a");
     assertNotNull(type);
 
     assertEquals(
@@ -566,7 +570,7 @@ public class LinkerTest {
     util.compile(modulePrefix.resolve("a.js"),
         "exports.hi = 'hi';");
 
-    NominalType type = typeRegistry.getModuleType("dossier$$module__$sources$modules$a");
+    NominalType type = typeRegistry.getModuleType("module$$sources$modules$a");
     assertNotNull(type);
     
     linker.pushContext(type);
@@ -595,7 +599,7 @@ public class LinkerTest {
             "/** @param {ns.Name} name The name. */",
             "exports.greet = function(name) {};"));
 
-    NominalType type = typeRegistry.getModuleType("dossier$$module__$sources$modules$b");
+    NominalType type = typeRegistry.getModuleType("module$$sources$modules$b");
     assertNotNull(type);
 
     Property property = type.getOwnSlot("greet");
@@ -622,7 +626,7 @@ public class LinkerTest {
             "/** @param {!http.Agent} agent The agent to use. */",
             "exports.createClient = function(agent) {};"));
 
-    NominalType type = typeRegistry.getModuleType("dossier$$module__$sources$modules$a");
+    NominalType type = typeRegistry.getModuleType("module$$sources$modules$a");
     assertNotNull(type);
 
     Property property = type.getOwnSlot("createClient");
@@ -670,7 +674,12 @@ public class LinkerTest {
     Node node = mock(Node.class);
     when(node.isScript()).thenReturn(true);
     when(node.getSourceFileName()).thenReturn(path.toString());
-    DossierModule module = new DossierModule(node, path);
+    DossierModule module = new DossierModule(node, Module.builder()
+        .setId(ES6ModuleLoader.toModuleName(URI.create(path.toString())))
+        .setPath(path)
+        .setJsDoc(JsDoc.from(null))
+        .setType(Type.NODE)
+        .build());
     return new ModuleDescriptor(module.getVarName(), path, ModuleType.NODE);
   }
 
