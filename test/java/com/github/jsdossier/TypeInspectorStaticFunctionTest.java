@@ -750,4 +750,48 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
                 .setDescription(htmlComment("<p>an object.</p>\n")))
             .build());
   }
+  
+  @Test
+  public void subclassesInheritEs6StaticProperties() {
+    util.compile(
+        fs.getPath("/src/modules/foo/baz.js"),
+        "export class X { static go() {}}",
+        "export class Y extends X {}");
+
+    NominalType2 type = typeRegistry.getType("module$src$modules$foo$baz.Y");
+    TypeInspector typeInspector = typeInspectorFactory.create(type);
+    TypeInspector.Report report = typeInspector.inspectType();
+    assertThat(report.getFunctions()).containsExactly(
+        Function.newBuilder()
+            .setBase(BaseProperty.newBuilder()
+                .setName("Y.go")
+                .setSource(sourceFile("../../source/modules/foo/baz.js.src.html", 2))
+                .setDescription(Comment.getDefaultInstance()))
+            .build());
+  }
+  
+  @Test
+  public void subclassesInheritEs6StaticProperties_docsReferenceInheritedProperty() {
+    util.compile(
+        fs.getPath("/src/modules/foo/baz.js"),
+        "export class X {",
+        "  constructor() { this.x = 123; }",
+        "",
+        "  /** Reference to {@link #x} */",
+        "  static go() {}",
+        "}",
+        "export class Y extends X {}");
+
+    NominalType2 type = typeRegistry.getType("module$src$modules$foo$baz.Y");
+    TypeInspector typeInspector = typeInspectorFactory.create(type);
+    TypeInspector.Report report = typeInspector.inspectType();
+    assertThat(report.getFunctions()).containsExactly(
+        Function.newBuilder()
+            .setBase(BaseProperty.newBuilder()
+                .setName("Y.go")
+                .setSource(sourceFile("../../source/modules/foo/baz.js.src.html", 7))
+                .setDescription(htmlComment(
+                    "<p>Reference to <a href=\"baz_exports_Y.html#x\"><code>#x</code></a></p>\n")))
+            .build());
+  }
 }
