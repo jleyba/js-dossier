@@ -21,6 +21,7 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
+    TypeInspectorTest.class,
     TypeInspectorInstanceMethodTest.class,
     TypeInspectorInstancePropertyTest.class,
     TypeInspectorStaticFunctionTest.class,

@@ -54,6 +54,7 @@ public class TypeExpressionParserTest {
   @Inject @Input private FileSystem fs;
   @Inject private CompilerUtil util;
   @Inject private TypeRegistry2 typeRegistry;
+  @Inject private LinkFactoryBuilder linkFactoryBuilder;
   @Inject private TypeExpressionParserFactory parserFactory;
   
   @Test
@@ -61,7 +62,7 @@ public class TypeExpressionParserTest {
     util.compile(fs.getPath("foo.js"), "/** @typedef {{name: string, age: number}} */var Person;");
     
     NominalType2 type = typeRegistry.getType("Person");
-    TypeExpressionParser parser = parserFactory.create(type);
+    TypeExpressionParser parser = parserFactory.create(linkFactoryBuilder.create(type));
 
     Comment comment = parser.parse(type.getJsDoc().getInfo().getTypedefType());
     assertThat(comment).isEqualTo(
@@ -85,7 +86,7 @@ public class TypeExpressionParserTest {
         "function Greeter(a) {}");
 
     NominalType2 type = typeRegistry.getType("Greeter");
-    TypeExpressionParser parser = parserFactory.create(type);
+    TypeExpressionParser parser = parserFactory.create(linkFactoryBuilder.create(type));
     JSTypeExpression expression = type.getJsDoc().getParameter("a").getType();
     Comment comment = parser.parse(expression);
     assertThat(comment).isEqualTo(
@@ -112,7 +113,8 @@ public class TypeExpressionParserTest {
             "export function Greeter(a) {}"));
     
     NominalType2 type = typeRegistry.getType("module$source$modules$two.Greeter");
-    TypeExpressionParser parser = parserFactory.create(type);
+    TypeExpressionParser parser = parserFactory.create(
+        linkFactoryBuilder.create(type).withTypeContext(type));
     JSTypeExpression expression = type.getJsDoc().getParameter("a").getType();
     Comment comment = parser.parse(expression);
     assertThat(comment).isEqualTo(
@@ -121,7 +123,8 @@ public class TypeExpressionParserTest {
             .addToken(link("Foo", "one_exports_Foo.html"))
             .build());
     
-    parser = parserFactory.create(typeRegistry.getType("Person"));
+    parser = parserFactory.create(
+        linkFactoryBuilder.create(typeRegistry.getType("Person")));
     comment = parser.parse(expression);
     assertThat(comment).isEqualTo(
         Comment.newBuilder()
@@ -135,7 +138,7 @@ public class TypeExpressionParserTest {
     util.compile(fs.getPath("foo.js"), "/** @typedef {!string} */var Name;");
 
     NominalType2 type = typeRegistry.getType("Name");
-    TypeExpressionParser parser = parserFactory.create(type);
+    TypeExpressionParser parser = parserFactory.create(linkFactoryBuilder.create(type));
 
     Comment comment = parser.parse(type.getJsDoc().getInfo().getTypedefType());
     assertThat(comment).isEqualTo(

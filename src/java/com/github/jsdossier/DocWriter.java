@@ -104,7 +104,7 @@ class DocWriter {
   private final CommentParser parser;
   private final NavIndexFactory navIndex;
   private final DocTemplate template;
-  private final TypeInspector typeInspector;
+  private final TypeInspectorFactory typeInspectorFactory;
 
   private final Renderer renderer = new Renderer();
   private final TypeIndex typeIndex = new TypeIndex();
@@ -125,7 +125,7 @@ class DocWriter {
       CommentParser parser,
       NavIndexFactory navIndex,
       DocTemplate template,
-      TypeInspector typeInspector) {
+      TypeInspectorFactory typeInspectorFactory) {
     this.template = template;
     this.outputDir = checkNotNull(outputDir);
     this.inputFiles = ImmutableSet.copyOf(inputFiles);
@@ -140,7 +140,7 @@ class DocWriter {
     this.linker = checkNotNull(linker);
     this.parser = checkNotNull(parser);
     this.navIndex = navIndex;
-    this.typeInspector = typeInspector;
+    this.typeInspectorFactory = typeInspectorFactory;
   }
 
   public void generateDocs() throws IOException {
@@ -260,6 +260,8 @@ class DocWriter {
       if (index != -1 && !name.endsWith("/")) {
         name = name.substring(index + 1);
       }
+      NominalType2 type2 = typeRegistry2.getType(module.getQualifiedName(true));
+      TypeInspector typeInspector = typeInspectorFactory.create(type2);
       jsTypeBuilder.setMainFunction(typeInspector.getFunctionData(
           name,
           module.getJsType(),
@@ -364,6 +366,8 @@ class DocWriter {
       if (aliased != null && aliased != type && aliased.getJsdoc() != null) {
         docs = aliased.getJsdoc();
       }
+      NominalType2 type2 = typeRegistry2.getType(type.getQualifiedName(true));
+      TypeInspector typeInspector = typeInspectorFactory.create(type2);
       jsTypeBuilder.setMainFunction(typeInspector.getFunctionData(
           name,
           type.getJsType(),
@@ -629,8 +633,9 @@ class DocWriter {
 
   private void getPrototypeData(JsType.Builder jsTypeBuilder, IndexReference indexReference) {
     NominalType nominalType = indexReference.getNominalType();
-    TypeInspector.Report report = typeInspector.inspectInstanceType(
-        typeRegistry2.getTypes(nominalType.getJsType()).get(0));
+    NominalType2 type2 = typeRegistry2.getType(nominalType.getQualifiedName(true));
+    TypeInspector typeInspector = typeInspectorFactory.create(type2);
+    TypeInspector.Report report = typeInspector.inspectInstanceType();
     for (com.github.jsdossier.proto.Property prop : report.getProperties()) {
       jsTypeBuilder.addField(prop);
       updateIndex(jsTypeBuilder, indexReference, prop.getBase());
@@ -656,8 +661,9 @@ class DocWriter {
   private void getStaticData(
       JsType.Builder jsTypeBuilder, IndexReference indexReference) {
     NominalType type = indexReference.getNominalType();
-    NominalType2 trueType = typeRegistry2.getTypes(type.getJsType()).get(0);
-    TypeInspector.Report report = typeInspector.inspectType(trueType);
+    NominalType2 trueType = typeRegistry2.getType(type.getQualifiedName(true));
+    TypeInspector typeInspector = typeInspectorFactory.create(trueType);
+    TypeInspector.Report report = typeInspector.inspectType();
 
     for (com.github.jsdossier.proto.Property prop : report.getCompilerConstants()) {
       jsTypeBuilder.addCompilerConstant(prop);

@@ -57,10 +57,10 @@ public abstract class AbstractTypeInspectorTest {
       .build();
 
   @Inject protected CompilerUtil util;
-  @Inject protected TypeInspector typeInspector;
   @Inject protected TypeRegistry2 typeRegistry;
   @Inject protected JSTypeRegistry jsTypeRegistry;
   @Inject @Input protected FileSystem fs;
+  @Inject protected TypeInspectorFactory typeInspectorFactory;
   
   protected void compile(String... lines) {
     util.compile(path("/src/foo.js"), lines);

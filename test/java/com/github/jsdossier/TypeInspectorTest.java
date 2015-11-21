@@ -46,6 +46,8 @@ public class TypeInspectorTest extends AbstractTypeInspectorTest {
         "Person.prototype.eat = function() {};");
 
     NominalType2 person = typeRegistry.getType("Person");
+    TypeInspector typeInspector = typeInspectorFactory.create(person);
+
     Map<String, InstanceProperty> properties =
         typeInspector.getInstanceProperties(person.getType());
 
@@ -86,6 +88,8 @@ public class TypeInspectorTest extends AbstractTypeInspectorTest {
         "});");
 
     NominalType2 person = typeRegistry.getType("Person");
+    TypeInspector typeInspector = typeInspectorFactory.create(person);
+
     Map<String, InstanceProperty> properties =
         typeInspector.getInstanceProperties(person.getType());
 
@@ -125,6 +129,8 @@ public class TypeInspectorTest extends AbstractTypeInspectorTest {
         "Person.prototype.eat = function(food) {};");
 
     NominalType2 person = typeRegistry.getType("Person");
+    TypeInspector typeInspector = typeInspectorFactory.create(person);
+
     Map<String, InstanceProperty> properties =
         typeInspector.getInstanceProperties(person.getType());
 
@@ -164,6 +170,8 @@ public class TypeInspectorTest extends AbstractTypeInspectorTest {
         "});");
 
     NominalType2 person = typeRegistry.getType("Person");
+    TypeInspector typeInspector = typeInspectorFactory.create(person);
+
     Map<String, InstanceProperty> properties =
         typeInspector.getInstanceProperties(person.getType());
 
@@ -204,6 +212,8 @@ public class TypeInspectorTest extends AbstractTypeInspectorTest {
         "/** @type {string} */SuperHero.prototype.power;");
 
     NominalType2 hero = typeRegistry.getType("SuperHero");
+    TypeInspector typeInspector = typeInspectorFactory.create(hero);
+
     Map<String, InstanceProperty> properties =
         typeInspector.getInstanceProperties(hero.getType());
 
@@ -228,6 +238,8 @@ public class TypeInspectorTest extends AbstractTypeInspectorTest {
         "Athlete.prototype.run = function() {}");
 
     NominalType2 athlete = typeRegistry.getType("Athlete");
+    TypeInspector typeInspector = typeInspectorFactory.create(athlete);
+
     Map<String, InstanceProperty> properties =
         typeInspector.getInstanceProperties(athlete.getType());
 

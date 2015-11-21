@@ -70,13 +70,11 @@ final class TypeExpressionParser {
       @Provided DossierFileSystem dfs,
       @Provided TypeRegistry2 typeRegistry,
       @Provided JSTypeRegistry jsTypeRegistry,
-      @Provided LinkFactory linkFactory,
-      @Nullable NominalType2 context) {
+      LinkFactory linkFactory) {
     this.dfs = dfs;
     this.typeRegistry = typeRegistry;
     this.jsTypeRegistry = jsTypeRegistry;
-    this.linkFactory = context == null
-        ? linkFactory.forGlobalScope() : linkFactory.withContext(context);
+    this.linkFactory = linkFactory;
   }
 
   /**

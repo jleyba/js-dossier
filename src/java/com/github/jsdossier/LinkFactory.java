@@ -17,37 +17,35 @@
 package com.github.jsdossier;
 
 import static com.google.common.base.Preconditions.checkState;
-import static com.google.common.base.Verify.verify;
 
-import com.github.jsdossier.jscomp.Module;
 import com.github.jsdossier.jscomp.NominalType2;
 import com.github.jsdossier.jscomp.TypeRegistry2;
 import com.github.jsdossier.proto.SourceLink;
 import com.github.jsdossier.proto.TypeLink;
+import com.google.auto.factory.AutoFactory;
+import com.google.auto.factory.Provided;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
 import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.jstype.FunctionType;
-import com.google.javascript.rhino.jstype.JSType;
 import com.google.javascript.rhino.jstype.JSTypeRegistry;
 import com.google.javascript.rhino.jstype.ObjectType;
 
 import java.net.URI;
 import java.nio.file.Path;
-import java.util.List;
 
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nullable;
-import javax.inject.Inject;
 
 /**
  * Class responsible for generating the information necessary to render links between documented
  * types.
  */
+@AutoFactory(className = "LinkFactoryBuilder")  // Avoid generating a LinkFactoryFactory.
 final class LinkFactory {
 
   private static final String MDN = "https://developer.mozilla.org/en-US/docs/Web/JavaScript/";
-  private static final String MDN_PREFIX = MDN + "/Reference/";
+  private static final String MDN_PREFIX = MDN + "Reference/";
 
   /**
    * Maps built-in objects to a link to their definition on the Mozilla Develper Network.
@@ -89,54 +87,48 @@ final class LinkFactory {
           .put("WeakMap", MDN_PREFIX + "Global_Objects/WeakMap")
           .put("WeakSet", MDN_PREFIX + "Global_Objects/WeakSet")
           .build();
-
+  
   private final DossierFileSystem dfs;
   private final TypeRegistry2 typeRegistry;
   private final JSTypeRegistry jsTypeRegistry;
   private final ModuleNamingConvention namingConvention;
-  private final Optional<NominalType2> context;
+  private final Optional<NominalType2> pathContext;
+  private final TypeContext typeContext;
 
   /**
-   * Creates a link factory with no context: all links will be generated relative to the global
-   * scope.
+   * Creates a new link factory.
+   * 
+   * @param dfs used to generate paths to documentation in the output file system.
+   * @param typeRegistry used to lookup nominal types.
+   * @param jsTypeRegistry used to lookup JavaScript types.
+   * @param typeContext defines the context in which to resolve type names.
+   * @param pathContext the object, if any, to generate paths relative to in the output file system.
+   *     If {@code null}, paths will be relative to the output root.
    */
-  @Inject
   LinkFactory(
-      DossierFileSystem dfs,
-      TypeRegistry2 typeRegistry,
-      JSTypeRegistry jsTypeRegistry,
-      ModuleNamingConvention namingConvention) {
-    this(dfs, typeRegistry, jsTypeRegistry, namingConvention, Optional.<NominalType2>absent());
-  }
-
-  private LinkFactory(
-      DossierFileSystem dfs,
-      TypeRegistry2 typeRegistry,
-      JSTypeRegistry jsTypeRegistry,
-      ModuleNamingConvention namingConvention,
-      Optional<NominalType2> context) {
+      @Provided DossierFileSystem dfs,
+      @Provided TypeRegistry2 typeRegistry,
+      @Provided JSTypeRegistry jsTypeRegistry,
+      @Provided ModuleNamingConvention namingConvention,
+      @Provided TypeContext typeContext,
+      @Nullable NominalType2 pathContext) {
     this.dfs = dfs;
     this.typeRegistry = typeRegistry;
     this.jsTypeRegistry = jsTypeRegistry;
     this.namingConvention = namingConvention;
-    this.context = context;
+    this.pathContext = Optional.fromNullable(pathContext);
+    this.typeContext = typeContext;
   }
 
   /**
-   * Returns the link factory for the global scope.
+   * Creates a new link factory that resolves type names relative to the given context type. All
+   * generated paths will remain relative to this factory's path context type.
    */
-  public LinkFactory forGlobalScope() {
-    if (context.isPresent()) {
-      return new LinkFactory(dfs, typeRegistry, jsTypeRegistry, namingConvention);
-    }
-    return this;
-  }
-
-  /**
-   * Returns a new factory that generates links relative to the given type.
-   */
-  public LinkFactory withContext(NominalType2 type) {
-    return new LinkFactory(dfs, typeRegistry, jsTypeRegistry, namingConvention, Optional.of(type));
+  public LinkFactory withTypeContext(NominalType2 context) {
+    // NB: Can't use an overloaded constructor b/c AutoFactory tries to generate a constructor
+    // for everything, even ones with private visibility.
+    return new LinkFactory(dfs, typeRegistry, jsTypeRegistry, namingConvention,
+        typeContext.changeContext(context), pathContext.orNull());
   }
 
   /**
@@ -148,8 +140,8 @@ final class LinkFactory {
       return SourceLink.newBuilder().setPath("").build();
     }
     Path sourcePath = dfs.getPath(node);
-    if (context.isPresent()) {
-      sourcePath = dfs.getRelativePath(context.get(), sourcePath);
+    if (pathContext.isPresent()) {
+      sourcePath = dfs.getRelativePath(pathContext.get(), sourcePath);
     }
     return SourceLink.newBuilder()
         .setPath(getUriPath(sourcePath))
@@ -185,8 +177,8 @@ final class LinkFactory {
       path = dfs.getPath(type);
     }
 
-    if (context.isPresent()) {
-      path = dfs.getRelativePath(context.get(), path);
+    if (pathContext.isPresent()) {
+      path = dfs.getRelativePath(pathContext.get(), path);
     } else {
       path = dfs.getOutputRoot().relativize(path);
     }
@@ -278,8 +270,8 @@ final class LinkFactory {
     }
 
     if (symbol.startsWith("#")) {
-      return context.isPresent()
-          ? createLink(context.get(), symbol)
+      return pathContext.isPresent()
+          ? createLink(pathContext.get(), symbol)
           : TypeLink.newBuilder().setText(symbol).build();
 
     } else if (symbol.endsWith("#")) {
@@ -290,7 +282,7 @@ final class LinkFactory {
     }
 
     TypeRef ref = TypeRef.from(symbol);
-    if (ref.type.isEmpty() && !context.isPresent()) {
+    if (ref.type.isEmpty() && typeContext.isGlobalScope()) {
       return TypeLink.newBuilder()
           .setText(symbol)
           .build();
@@ -300,13 +292,10 @@ final class LinkFactory {
     String property = ref.property;
     NominalType2 type;
     if (typeName.isEmpty()) {
-      type = context.get();
+      type = typeContext.getContextType();
 
     } else {
-      if (context.isPresent()) {
-        typeName = resolveAlias(typeName);
-      }
-      type = resolveType(typeName);
+      type = typeContext.resolveType(typeName);
     }
 
     // Link might be a qualified path to a property.
@@ -315,7 +304,7 @@ final class LinkFactory {
       if (index != -1 && index != typeName.length() - 1) {
         property = typeName.substring(index + 1);
         typeName = typeName.substring(0, index);
-        type = resolveType(typeName);
+        type = typeContext.resolveType(typeName);
       }
     }
  
@@ -336,98 +325,6 @@ final class LinkFactory {
     return TypeLink.newBuilder()
         .setText(symbol)
         .build();
-  }
-  
-  @Nullable
-  @CheckReturnValue
-  private NominalType2 resolveType(String symbol) {
-    if (typeRegistry.isType(symbol)) {
-      return typeRegistry.getType(symbol);
-    }
-
-    Path modulePath = resolveModulePath(symbol);
-    if (typeRegistry.isModule(modulePath)) {
-      Module module = typeRegistry.getModule(modulePath);
-      verify(typeRegistry.isType(module.getId()));
-      return typeRegistry.getType(module.getId());
-    }
-
-    return null;
-  }
-  
-  private String resolveAlias(String symbol) {
-    verify(context.isPresent());
-    
-    // Can't be an alias if it starts with a relative path.
-    if (symbol.startsWith("./") || symbol.startsWith("../")) {
-      return symbol;
-    }
-
-    NominalType2 ctx = context.get();
-    for (int index = symbol.indexOf('.'); index != -1;) {
-      String subName = symbol.substring(0, index);
-      NominalType2 def = resolveAlias(ctx, subName);
-      if (def != null) {
-        return def.getName() + symbol.substring(index);
-      }
-
-      if (index + 1 < symbol.length()) {
-        index = symbol.indexOf('.', index + 1);
-      } else {
-        break;
-      }
-    }
-    
-    NominalType2 def = resolveAlias(ctx, symbol);
-    if (def != null) {
-      return def.getName();
-    }
-    return symbol;
-  }
-
-  @Nullable
-  @CheckReturnValue
-  private NominalType2 resolveAlias(NominalType2 context, String alias) {
-    String def = typeRegistry.resolveAlias(context, alias);
-    if (def != null) {
-      alias = def;
-    }
-    if (typeRegistry.isType(alias)) {
-      return typeRegistry.getType(alias);
-    }
-    JSType type = jsTypeRegistry.getType(alias);
-    if (type != null) {
-      if (type.isInstanceType()) {
-        type = type.toObjectType().getConstructor();
-      }
-      List<NominalType2> types = typeRegistry.getTypes(type);
-      if (!types.isEmpty()) {
-        return types.get(0);
-      }
-    }
-    return null;
-  }
-  
-  private Path resolveModulePath(String symbol) {
-    if (context.isPresent() && context.get().getModule().isPresent()) {
-      final Path contextPath = context.get().getModule().get().getPath();
-      
-      if (symbol.endsWith("/")) {
-        return contextPath.resolveSibling(symbol).resolve("index.js").normalize();
-      }
-      
-      Path path = contextPath.resolveSibling(symbol + ".js").normalize();
-
-      if (!typeRegistry.isModule(path) && namingConvention == ModuleNamingConvention.NODE) {
-        Path indexPath = contextPath.resolveSibling(symbol).resolve("index.js").normalize();
-        if (typeRegistry.isModule(indexPath)) {
-          return indexPath;
-        }
-      }
-
-      return path;
-    }
-    return dfs.getModulePrefix().resolve(symbol + ".js");
   }
 
   /**

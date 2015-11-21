@@ -28,6 +28,7 @@ import com.github.jsdossier.testing.CompilerUtil;
 import com.github.jsdossier.testing.GuiceRule;
 import com.google.common.collect.Iterables;
 import com.google.javascript.jscomp.CompilerOptions;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -53,7 +54,14 @@ public class CommentParserTest {
   @Inject CompilerUtil util;
   @Inject CommentParser parser;
   @Inject TypeRegistry2 typeRegistry;
-  @Inject LinkFactory linkFactory;
+  @Inject LinkFactoryBuilder linkFactoryBuilder;
+  
+  private LinkFactory linkFactory;
+  
+  @Before
+  public void createDefaultLinkFactory() {
+    linkFactory = linkFactoryBuilder.create(null);
+  }
 
   @Test
   public void getSummaryWhenEntireCommentIsSummary_fullSentence() {
@@ -360,7 +368,7 @@ public class CommentParserTest {
     NominalType2 type = typeRegistry.getType("a.b.c.d.Clazz");
     Comment comment = parser.parseComment(
         type.getJsDoc().getBlockComment(),
-        linkFactory.withContext(type));
+        linkFactory.withTypeContext(type));
     assertEquals(1, comment.getTokenCount());
     assertHtmlText(comment.getToken(0),
         "<p>A <a href=\"a.b.c.d.IFace.html\"><code>abcd.IFace</code></a> implementation.</p>");
