@@ -1,12 +1,12 @@
 /*
  Copyright 2013-2015 Jason Leyba
-
+ 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
  You may obtain a copy of the License at
-
+ 
    http://www.apache.org/licenses/LICENSE-2.0
-
+ 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -32,6 +32,7 @@ class Flags {
 
   boolean displayHelp;
   boolean printConfig;
+  int numThreads = Runtime.getRuntime().availableProcessors() * 2;
   Path config = null;
 
   private final FileSystem fileSystem;
@@ -64,6 +65,15 @@ class Flags {
           "including all resolved paths.")
   private void setPrintConfig(boolean print) {
     this.printConfig = print;
+  }
+  
+  @Option(
+      name = "--num_threads",
+      usage = "The number of threads to use for rendering. Defaults to 2 times the number of " +
+          "available processors")
+  private void setNumThreads(int n) {
+    checkArgument(n >= 1, "invalid number of flags: %s", n);
+    this.numThreads = n;
   }
 
   /**

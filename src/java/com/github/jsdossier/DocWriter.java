@@ -1,12 +1,12 @@
 /*
  Copyright 2013-2015 Jason Leyba
-
+ 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
  You may obtain a copy of the License at
-
+ 
    http://www.apache.org/licenses/LICENSE-2.0
-
+ 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,12 +22,10 @@ import static com.google.common.base.Verify.verify;
 import static com.google.common.collect.Iterables.transform;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.createDirectories;
-import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import static java.nio.file.StandardOpenOption.CREATE;
 import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 import static java.nio.file.StandardOpenOption.WRITE;
 
-import com.github.jsdossier.annotations.Input;
 import com.github.jsdossier.annotations.Modules;
 import com.github.jsdossier.annotations.Output;
 import com.github.jsdossier.annotations.Readme;
@@ -44,8 +42,6 @@ import com.github.jsdossier.proto.HtmlRenderSpec;
 import com.github.jsdossier.proto.JsType;
 import com.github.jsdossier.proto.JsTypeRenderSpec;
 import com.github.jsdossier.proto.Resources;
-import com.github.jsdossier.proto.SourceFile;
-import com.github.jsdossier.proto.SourceFileRenderSpec;
 import com.github.jsdossier.proto.TypeLink;
 import com.github.jsdossier.proto.Visibility;
 import com.github.jsdossier.soy.Renderer;
@@ -55,8 +51,6 @@ import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
 import com.google.gson.JsonArray;
@@ -71,7 +65,6 @@ import com.google.javascript.rhino.jstype.NamedType;
 import com.google.javascript.rhino.jstype.Property;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -91,7 +84,6 @@ class DocWriter {
   private static final String INDEX_FILE_NAME = "index.html";
 
   private final Path outputDir;
-  private final ImmutableSet<Path> inputFiles;
   private final ImmutableList<NominalType> sortedTypes;
   private final ImmutableList<NominalType> sortedModules;
   private final Path sourcePrefix;
@@ -99,7 +91,6 @@ class DocWriter {
   private final TypeRegistry typeRegistry;
   private final TypeRegistry2 typeRegistry2;
   private final Predicate<NominalType> typeFilter;
-  private final ImmutableList<MarkdownPage> markdownPages;
   private final Linker linker;
   private final CommentParser parser;
   private final NavIndexFactory navIndex;
@@ -112,12 +103,10 @@ class DocWriter {
   @Inject
   DocWriter(
       @Output Path outputDir,
-      @Input Iterable<Path> inputFiles,
       @Types ImmutableList<NominalType> sortedTypes,
       @Modules ImmutableList<NominalType> sortedModules,
       @SourcePrefix Path sourcePrefix,
       @Readme Optional<Path> readme,
-      ImmutableList<MarkdownPage> markdownPages,
       TypeRegistry typeRegistry,
       TypeRegistry2 typeRegistry2,
       @TypeFilter Predicate<NominalType> typeFilter,
@@ -128,12 +117,10 @@ class DocWriter {
       TypeInspectorFactory typeInspectorFactory) {
     this.template = template;
     this.outputDir = checkNotNull(outputDir);
-    this.inputFiles = ImmutableSet.copyOf(inputFiles);
     this.sortedTypes = sortedTypes;
     this.sortedModules = sortedModules;
     this.sourcePrefix = checkNotNull(sourcePrefix);
     this.readme = checkNotNull(readme);
-    this.markdownPages = checkNotNull(markdownPages);
     this.typeRegistry = checkNotNull(typeRegistry);
     this.typeRegistry2 = typeRegistry2;
     this.typeFilter = checkNotNull(typeFilter);
@@ -144,11 +131,7 @@ class DocWriter {
   }
 
   public void generateDocs() throws IOException {
-    createDirectories(outputDir);
-    copyResources();
-    copySourceFiles();
     generateIndex();
-    generateCustomPages();
 
     for (NominalType type : sortedTypes) {
       if (type.isEmptyNamespace()) {
@@ -170,19 +153,6 @@ class DocWriter {
         "Index",
         outputDir.resolve(INDEX_FILE_NAME),
         readme);
-  }
-
-  private void generateCustomPages() throws IOException {
-    CommentParser parser = new CommentParser();
-    for (MarkdownPage page : markdownPages) {
-      String name = page.getName();
-      checkArgument(!"index".equalsIgnoreCase(name), "reserved page name: %s", name);
-      generateHtmlPage(
-          parser,
-          name,
-          outputDir.resolve(name.replace(' ', '_') + ".html"),
-          Optional.of(page.getPath()));
-    }
   }
 
   private void generateHtmlPage(
@@ -384,16 +354,6 @@ class DocWriter {
     linker.popContext();
   }
 
-  private void copyResources() throws IOException {
-    for (TemplateFile file
-        : Iterables.concat(template.getCss(), template.getHeadJs(), template.getTailJs())) {
-      try (InputStream input = file.getSource().openStream()) {
-        Path output = outputDir.resolve(file.getName());
-        Files.copy(input, output, REPLACE_EXISTING);
-      }
-    }
-  }
-
   private void writeTypesJson() throws IOException {
     // NOTE: JSON is not actually a subset of JavaScript, but in our case we know we only
     // have valid JavaScript input, so we can use JSONObject#toString() as a quick-and-dirty
@@ -425,32 +385,6 @@ class DocWriter {
 
   private static String resolve(Path path, String name) {
     return path.getNameCount() == 0 ? name : path.resolve(name).toString();
-  }
-
-  private void copySourceFiles() throws IOException {
-    for (Path source : inputFiles) {
-      Path displayPath = sourcePrefix.relativize(source);
-      Path relativePath = sourcePrefix
-          .relativize(source.toAbsolutePath().normalize())
-          .resolveSibling(source.getFileName() + ".src.html");
-
-      Path renderPath = outputDir
-          .resolve("source")
-          .resolve(relativePath.toString());
-
-      SourceFile file = SourceFile.newBuilder()
-          .setBaseName(source.getFileName().toString())
-          .setPath(displayPath.toString())
-          .addAllLines(Files.readAllLines(source, Charsets.UTF_8))
-          .build();
-
-      SourceFileRenderSpec.Builder spec = SourceFileRenderSpec.newBuilder()
-          .setFile(file)
-          .setResources(getResources(renderPath))
-          .setIndex(navIndex.create(renderPath));
-
-      renderer.render(renderPath, spec.build());
-    }
   }
 
   private void addParentLink(JsType.Builder jsTypeBuilder, NominalType type) {
@@ -810,42 +744,5 @@ class DocWriter {
       }
     }
     return new IndexReference(type, details);
-  }
-
-  private static class InstanceProperty {
-    private final JSType definedOn;
-    private final String name;
-    private final JSType type;
-    private final Node node;
-    private final JSDocInfo info;
-
-    private InstanceProperty(
-        JSType definedOn, String name, JSType type, Node node, JSDocInfo info) {
-      this.definedOn = definedOn;
-      this.name = name;
-      this.type = type;
-      this.node = node;
-      this.info = info;
-    }
-
-    public JSType getDefinedOn() {
-      return definedOn;
-    }
-
-    public String getName() {
-      return name;
-    }
-
-    public JSType getType() {
-      return type;
-    }
-
-    public Node getNode() {
-      return node;
-    }
-
-    public JSDocInfo getJSDocInfo() {
-      return info;
-    }
   }
 }

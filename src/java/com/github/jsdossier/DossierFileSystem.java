@@ -27,6 +27,9 @@ import com.github.jsdossier.annotations.SourcePrefix;
 import com.github.jsdossier.jscomp.Module;
 import com.github.jsdossier.jscomp.NominalType2;
 import com.github.jsdossier.jscomp.TypeRegistry2;
+import com.github.jsdossier.proto.Resources;
+import com.google.common.base.Function;
+import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableSet;
 import com.google.javascript.rhino.Node;
 
@@ -290,6 +293,31 @@ final class DossierFileSystem {
    */
   public Path getRelativePath(NominalType2 from, NominalType2 to) {
     return getRelativePath(from, getPath(to));
+  }
+
+  /**
+   * Returns the paths in the resource set.
+   * 
+   * @param outputPath path of the generated file the paths in the resource set should be relative
+   *     to.
+   * @param template the template to pull resources from.
+   * @return the resource set for the generated file.
+   */
+  public Resources getResources(final Path outputPath, DocTemplate template) {
+    Function<TemplateFile, String> toOutputPath = new Function<TemplateFile, String>() {
+      @Override
+      public String apply(TemplateFile file) {
+        Path toFile = getPath(file);
+        return Paths.getRelativePath(outputPath, toFile).toString();
+      }
+    };
+    Path typesJs = getOutputRoot().resolve("types.js");
+    return Resources.newBuilder()
+        .addAllCss(FluentIterable.from(template.getCss()).transform(toOutputPath))
+        .addAllHeadScript(FluentIterable.from(template.getHeadJs()).transform(toOutputPath))
+        .addTailScript(Paths.getRelativePath(outputPath, typesJs).toString())
+        .addAllTailScript(FluentIterable.from(template.getTailJs()).transform(toOutputPath))
+        .build();
   }
   
   private static String toCanonicalString(Path path) {

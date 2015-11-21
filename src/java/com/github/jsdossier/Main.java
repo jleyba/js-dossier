@@ -1,12 +1,12 @@
 /*
  Copyright 2013-2015 Jason Leyba
-
+ 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
  You may obtain a copy of the License at
-
+ 
    http://www.apache.org/licenses/LICENSE-2.0
-
+ 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,6 +20,7 @@ import static com.google.common.collect.Iterables.concat;
 import static com.google.common.collect.Iterables.transform;
 import static com.google.common.io.Files.getFileExtension;
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.nio.file.Files.createDirectories;
 import static java.nio.file.Files.newInputStream;
 
 import com.github.jsdossier.Config.Language;
@@ -35,11 +36,14 @@ import com.github.jsdossier.annotations.Stdout;
 import com.github.jsdossier.annotations.TypeFilter;
 import com.github.jsdossier.annotations.Types;
 import com.github.jsdossier.jscomp.CallableCompiler;
+import com.github.jsdossier.soy.Renderer;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Function;
+import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
+import com.google.common.base.Throwables;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -67,6 +71,7 @@ import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
@@ -76,6 +81,8 @@ import javax.inject.Qualifier;
 
 final class Main {
   private Main() {}
+  
+  private static final Logger log = Logger.getLogger(Main.class.getName());
 
   private static final String INDEX_FILE_NAME = "index.html";
 
@@ -123,11 +130,15 @@ final class Main {
     protected void configure() {
       bindScope(DocumentationScoped.class, DOCUMENTATION_SCOPE);
 
+      int numThreads = Runtime.getRuntime().availableProcessors() * 2;
+      bindConstant().annotatedWith(Annotations.NumThreads.class).to(numThreads);
+
       bind(PrintStream.class).annotatedWith(Stderr.class).toInstance(System.err);
       bind(PrintStream.class).annotatedWith(Stdout.class).toInstance(
           new PrintStream(ByteStreams.nullOutputStream()));
 
-      bind(Key.get(new TypeLiteral<Optional<Path>>() {}, Readme.class))
+      bind(Key.get(new TypeLiteral<Optional<Path>>() {
+      }, Readme.class))
           .toInstance(config.getReadme());
       bind(Key.get(new TypeLiteral<Iterable<Path>>() {}, Input.class))
           .toInstance(concat(config.getSources(), config.getModules()));
@@ -151,9 +162,10 @@ final class Main {
       
       bind(ModuleNamingConvention.class).toInstance(config.getModuleNamingConvention());
 
-      bind(DocTemplate.class).to(DefaultDocTemplate.class);
+      bind(DocTemplate.class).to(DefaultDocTemplate.class).in(DocumentationScoped.class);
+      bind(Renderer.class).in(DocumentationScoped.class);
     }
-    
+
     @Provides
     @TypeFilter
     Predicate<String> provideTypeNameFilter() {
@@ -361,6 +373,27 @@ final class Main {
 
     DOCUMENTATION_SCOPE.enter();
     try {
+      createDirectories(outputDir);
+      try {
+        DocTemplate template = injector.getInstance(DocTemplate.class);
+        List<Path> files = injector.getInstance(RenderTaskExecutor.class)
+            .renderIndex()
+            .renderMarkdown(config.getCustomPages())
+            .renderResources(concat(template.getCss(), template.getHeadJs(), template.getTailJs()))
+            .renderSourceFiles(concat(config.getSources(), config.getModules()))
+            .awaitTermination()
+            .get();
+        if (log.isLoggable(Level.FINER)) {
+          log.fine("Rendered:\n  " + Joiner.on("\n  ").join(files));
+        }
+      } catch (InterruptedException e) {
+        Thread.currentThread().interrupt();
+        throw new IOException("Rendering was interrupted", e);
+      } catch (ExecutionException e) {
+        Throwables.propagateIfInstanceOf(e.getCause(), IOException.class);
+        throw Throwables.propagate(e.getCause());
+      }
+
       injector.getInstance(DocWriter.class).generateDocs();
     } finally {
       DOCUMENTATION_SCOPE.exit();
