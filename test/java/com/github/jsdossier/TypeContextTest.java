@@ -122,20 +122,32 @@ public class TypeContextTest {
     NominalType2 typeC = typeRegistry.getType("module$src$modules$dir$foo.C");
     NominalType2 moduleFoo = typeRegistry.getType("module$src$modules$foo");
     NominalType2 moduleDirFoo = typeRegistry.getType("module$src$modules$dir$foo");
+    NominalType2 moduleFooTypeB = typeRegistry.getType("module$src$modules$foo.B");
+    NominalType2 moduleDirFooTypeC = typeRegistry.getType("module$src$modules$dir$foo.C");
 
     assertThat(context.resolveType("A")).isSameAs(typeA);
+    assertThat(context.resolveType("foo")).isSameAs(moduleFoo);
+    assertThat(context.resolveType("foo.B")).isSameAs(moduleFooTypeB);
+    assertThat(context.resolveType("dir/foo")).isSameAs(moduleDirFoo);
+    assertThat(context.resolveType("dir/foo.C")).isSameAs(moduleDirFooTypeC);
     assertThat(context.resolveType("./foo")).isSameAs(moduleFoo);
+    assertThat(context.resolveType("./foo.B")).isSameAs(moduleFooTypeB);
     assertThat(context.resolveType("./dir/foo")).isSameAs(moduleDirFoo);
+    assertThat(context.resolveType("./dir/foo.C")).isSameAs(moduleDirFooTypeC);
     assertThat(context.resolveType("../foo")).isNull();
     
     context = context.changeContext(moduleFoo);
     assertThat(context.resolveType("A")).isSameAs(typeB);
+    assertThat(context.resolveType("foo")).isSameAs(moduleFoo);
+    assertThat(context.resolveType("dir/foo")).isSameAs(moduleDirFoo);
     assertThat(context.resolveType("./foo")).isSameAs(moduleFoo);
     assertThat(context.resolveType("./dir/foo")).isSameAs(moduleDirFoo);
     assertThat(context.resolveType("../foo")).isNull();
     
     context = context.changeContext(moduleDirFoo);
     assertThat(context.resolveType("A")).isSameAs(typeC);
+    assertThat(context.resolveType("foo")).isSameAs(moduleFoo);
+    assertThat(context.resolveType("dir/foo")).isSameAs(moduleDirFoo);
     assertThat(context.resolveType("./foo")).isSameAs(moduleDirFoo);
     assertThat(context.resolveType("./dir/foo")).isNull();
     assertThat(context.resolveType("../foo")).isSameAs(moduleFoo);

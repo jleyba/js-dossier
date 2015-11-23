@@ -16,6 +16,8 @@
 
 package com.github.jsdossier;
 
+import static com.google.common.base.Verify.verify;
+
 import com.github.jsdossier.jscomp.Module;
 import com.github.jsdossier.jscomp.NominalType2;
 import com.github.jsdossier.jscomp.TypeRegistry2;
@@ -131,7 +133,7 @@ final class TypeContext {
   @CheckReturnValue
   public NominalType2 resolveType(String name) {
     if (name.indexOf(MODULE_PATH_SEPARATOR) != -1) {
-      return resolveModulePath(name);
+      return resolveModuleType(name);
     }
 
     if (!context.isPresent()) {
@@ -170,45 +172,67 @@ final class TypeContext {
 
   @Nullable
   @CheckReturnValue
-  private NominalType2 resolveModulePath(String pathStr) {
-    if (pathStr.endsWith("/") && moduleNamingConvention == ModuleNamingConvention.NODE) {
-      pathStr += "index";
-    }
-    
-    if (!pathStr.startsWith("./") && !pathStr.startsWith("../")) {
-      pathStr = "./" + pathStr;
-    }
-    
-    if (!pathStr.endsWith(".js")) {
-      pathStr += ".js";
+  private NominalType2 resolveModuleType(String pathStr) {
+    Path path = resolveModulePath(pathStr);
+
+    NominalType2 type = resolveModuleType(path);
+    if (type != null) {
+      return type;
     }
 
-    Path path;
-    if (!context.isPresent() || !context.get().getModule().isPresent()) {
-      path = dfs.getModulePrefix().resolve(pathStr).normalize();
-    } else {
-      path = context.get()
-          .getModule().get()
-          .getPath()
-          .resolveSibling(pathStr)
-          .normalize();
+    String baseName = Files.getNameWithoutExtension(path.getFileName().toString());
+    int index = baseName.indexOf('.');
+    if (index != -1) {
+      path = path.resolveSibling(baseName.substring(0, index) + ".js");
+      if (typeRegistry.isModule(path)) {
+        Module module = typeRegistry.getModule(path);
+        String typeName = module.getId() + baseName.substring(index);
+        if (typeRegistry.isType(typeName)) {
+          return typeRegistry.getType(typeName);
+        }
+      }
     }
-    
+
+    return null;
+  }
+
+  @Nullable
+  private NominalType2 resolveModuleType(Path path) {
     if (!typeRegistry.isModule(path)
         && moduleNamingConvention == ModuleNamingConvention.NODE
         && !path.endsWith("index.js")) {
       String name = Files.getNameWithoutExtension(path.toString());
       path = path.resolveSibling(name).resolve("index.js");
     }
-
     if (typeRegistry.isModule(path)) {
       Module module = typeRegistry.getModule(path);
       return typeRegistry.getType(module.getId());
     }
-
     return null;
   }
-  
+
+  private Path resolveModulePath(String pathStr) {
+    if (pathStr.endsWith("/") && moduleNamingConvention == ModuleNamingConvention.NODE) {
+      pathStr += "index";
+    }
+
+    if (!pathStr.endsWith(".js")) {
+      pathStr += ".js";
+    }
+
+    if (!context.isPresent()
+        || !context.get().getModule().isPresent()
+        || (!pathStr.startsWith("./") && !pathStr.startsWith("../"))) {
+      return dfs.getModulePrefix().resolve(pathStr).normalize();
+    } else {
+      return context.get()
+          .getModule().get()
+          .getPath()
+          .resolveSibling(pathStr)
+          .normalize();
+    }
+  }
+
   @Nullable
   @CheckReturnValue
   private NominalType2 resolveGlobalType(String name) {
@@ -226,7 +250,7 @@ final class TypeContext {
         return types.get(0);
       }
     }
-    
-    return null;
+
+    return resolveModuleType(name);
   }
 }
