@@ -1,12 +1,12 @@
 /*
  Copyright 2013-2015 Jason Leyba
-
+ 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
  You may obtain a copy of the License at
-
+ 
    http://www.apache.org/licenses/LICENSE-2.0
-
+ 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,7 +16,6 @@
 
 package com.github.jsdossier;
 
-import static com.github.jsdossier.testing.CompilerUtil.createSourceFile;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static org.junit.Assert.assertEquals;
 
@@ -61,55 +60,6 @@ public class CommentParserTest {
   @Before
   public void createDefaultLinkFactory() {
     linkFactory = linkFactoryBuilder.create(null);
-  }
-
-  @Test
-  public void getSummaryWhenEntireCommentIsSummary_fullSentence() {
-    String original = "hello, world.";
-    Comment comment = parser.getSummary(original, linkFactory);
-    assertEquals(1, comment.getTokenCount());
-    assertHtmlText(comment.getToken(0), "<p>" + original + "</p>");
-
-    original = "nothing left";
-    comment = parser.getSummary(original, linkFactory);
-    assertEquals(1, comment.getTokenCount());
-    assertHtmlText(comment.getToken(0), "<p>" + original + "</p>");
-  }
-
-  @Test
-  public void getSummaryWhenEntireCommentIsSummary_sentenceFragment() {
-    String original = "nothing left";
-    Comment comment = parser.getSummary(original, linkFactory);
-    assertEquals(1, comment.getTokenCount());
-    assertHtmlText(comment.getToken(0), "<p>" + original + "</p>");
-  }
-
-  @Test
-  public void getSummaryFromMultipleSentences() {
-    Comment comment = parser.getSummary("Hello, world. Goodbye, world.", linkFactory);
-    assertEquals(1, comment.getTokenCount());
-    assertHtmlText(comment.getToken(0), "<p>Hello, world.</p>");
-  }
-
-  @Test
-  public void getSummaryFromMultipleLines() {
-    Comment comment = parser.getSummary("Hello, world.\nGoodbye, world.", linkFactory);
-    assertEquals(1, comment.getTokenCount());
-    assertHtmlText(comment.getToken(0), "<p>Hello, world.</p>");
-  }
-
-  @Test
-  public void getSummaryFromMultipleTabs() {
-    Comment comment = parser.getSummary("Hello, world.\tGoodbye, world.", linkFactory);
-    assertEquals(1, comment.getTokenCount());
-    assertHtmlText(comment.getToken(0), "<p>Hello, world.</p>");
-  }
-
-  @Test
-  public void getSummaryWithInlineTag() {
-    Comment comment = parser.getSummary("Hello, {@code world. }Goodbye, world.", linkFactory);
-    assertEquals(1, comment.getTokenCount());
-    assertHtmlText(comment.getToken(0), "<p>Hello, {@code world.</p>");
   }
 
   @Test

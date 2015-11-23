@@ -23,11 +23,8 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import com.github.jsdossier.CommentParser;
-import com.github.jsdossier.Linker;
 import com.github.jsdossier.proto.BaseProperty;
 import com.github.jsdossier.proto.Comment;
 import com.github.jsdossier.proto.Enumeration;
@@ -50,7 +47,6 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -70,16 +66,10 @@ public class RendererTest {
   private static SoyTofu tofu;
 
   private final CommentParser parser = new CommentParser();
-  private Linker mockLinker;
 
   @BeforeClass
   public static void createTofu() {
     tofu = new Renderer().getTofu();
-  }
-
-  @Before
-  public void setUpMocks() {
-    mockLinker = mock(Linker.class);
   }
 
   @Test
@@ -999,53 +989,6 @@ public class RendererTest {
   }
 
   @Test
-  public void renderComment_unresolvedLink() {
-    Comment comment = parseComment("An {@link Foo unknown} type");
-
-    Document document = renderDocument("dossier.soy.comment", "comment", comment);
-    assertThat(document.body().toString(), isHtml(
-        "<body><p>",
-        "An <code>unknown</code>",
-        " type</p>\n</body>"));
-  }
-
-  @Test
-  public void renderComment_resolvedLink() {
-    when(mockLinker.getLink("foo.Bar")).thenReturn(
-        TypeLink.newBuilder()
-            .setText("")
-            .setHref("/path/to/foo").build());
-
-    Comment comment = parseComment(
-        "A {@link foo.Bar milk & cookies} snack");
-
-    Document document = renderDocument("dossier.soy.comment", "comment", comment);
-    assertThat(document.body().toString(), isHtml(
-        "<body><p>",
-        "A ",
-        "<a href=\"/path/to/foo\"><code>milk &amp; cookies</code></a>",
-        " snack</p>\n</body>"));
-  }
-
-  @Test
-  public void renderComment_plainLink() {
-    when(mockLinker.getLink("foo.Bar")).thenReturn(
-        TypeLink.newBuilder()
-            .setText("")
-            .setHref("/path/to/foo").build());
-
-
-    Comment comment = parseComment(
-        "A {@linkplain foo.Bar milk & cookies} snack");
-
-    Document document = renderDocument("dossier.soy.comment", "comment", comment);
-    assertThat(document.body().toString(), isHtml(
-        "<body><p>",
-        "A <a href=\"/path/to/foo\">milk &amp; cookies</a> snack",
-        "</p>\n</body>"));
-  }
-
-  @Test
   public void renderComment_doesNotEscapePlainTextContent() {
     Comment comment = parseComment(
         "A <strong>strongly</strong> worded letter");
@@ -1105,7 +1048,7 @@ public class RendererTest {
   }
 
   private Comment parseComment(String comment) {
-    return parser.parseComment(comment, mockLinker);
+    return parser.parseComment(comment, null);
   }
 
   private static Element querySelector(Document document, String selector) {
