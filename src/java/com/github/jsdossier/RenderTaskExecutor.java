@@ -36,6 +36,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -205,9 +207,14 @@ final class RenderTaskExecutor {
     submittedTasks.add(indexJsTask);
     ListenableFuture<List<Path>> list = allAsList(submittedTasks);
     Futures.addCallback(list, new FutureCallback<List<Path>>() {
+      private final AtomicBoolean loggedError = new AtomicBoolean(false);
+
       @Override public void onSuccess(List<Path> result) {}
       @Override public void onFailure(Throwable t) {
-        logger.log(Level.SEVERE, "An error occurred", t);
+        // Only log an error once since the hard shutdown will likely cause other failures.
+        if (loggedError.compareAndSet(false, true)) {
+          logger.log(Level.SEVERE, "An error occurred", t);
+        }
         executorService.shutdownNow();
       }
     });

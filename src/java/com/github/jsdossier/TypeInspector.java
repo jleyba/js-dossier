@@ -320,6 +320,9 @@ final class TypeInspector {
   public List<Property> getProperties(NominalType2 nominalType) {
     JSType type = nominalType.getType();
     ObjectType object = ObjectType.cast(type);
+    if (object == null) {
+      return ImmutableList.of();
+    }
 
     List<Property> properties = new ArrayList<>();
     for (String name : object.getOwnPropertyNames()) {
