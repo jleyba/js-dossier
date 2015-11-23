@@ -1572,7 +1572,7 @@ public class LinkFactoryTest {
     // Check everything relative to abc.
     factory = createFactory().withTypeContext(abc);
     checkLink(factory.createLink("A"), "Y", "module/a/b/c_exports_Y.html");
-    checkLink(factory.createLink("Y"), "Y", "");  // Because Y is an export alias.
+    checkLink(factory.createLink("Y"), "Y", "module/a/b/c_exports_Y.html");
     checkLink(factory.createLink("Z"), "Z", "module/a/b/c_exports_Z.html");
     
     // Check type resolution with |one|, but paths generated relative to |abc|.
@@ -1584,7 +1584,7 @@ public class LinkFactoryTest {
     // Check type resolution with |abc|, but paths generated relative to |one|.
     factory = createFactory(one).withTypeContext(abc);
     checkLink(factory.createLink("A"), "Y", "a/b/c_exports_Y.html");
-    checkLink(factory.createLink("Y"), "Y", "");
+    checkLink(factory.createLink("Y"), "Y", "a/b/c_exports_Y.html");
     checkLink(factory.createLink("Z"), "Z", "a/b/c_exports_Z.html");
   }
   
@@ -1610,6 +1610,36 @@ public class LinkFactoryTest {
     
     factory = createFactory(b).withTypeContext(a);
     checkLink(factory.createLink("#x"), "B#x", "one_exports_B.html#x");
+  }
+
+  @Test
+  public void unqualifiedReferenceToPropertiesExportedFromEs6Module() {
+    util.compile(
+        fs.getPath("source/modules/one.js"),
+        "export function foo() {}",
+        "export class Foo {}",
+        "",
+        "function bar() {}",
+        "export {bar as Bar}");
+
+    NominalType2 module = typeRegistry.getType("module$source$modules$one");
+    NominalType2 foo = typeRegistry.getType("module$source$modules$one.Foo");
+    
+    LinkFactory factory = createFactory();
+    checkLink(factory.createLink("Foo"), "Foo", "");
+    checkLink(factory.createLink("foo"), "foo", "");
+
+    factory = factory.withTypeContext(foo);
+    checkLink(factory.createLink("Foo"), "Foo", "module/one_exports_Foo.html");
+    checkLink(factory.createLink("foo"), "one.foo", "module/one.html#foo");
+    checkLink(factory.createLink("Bar"), "one.Bar", "module/one.html#Bar");
+    checkLink(factory.createLink("bar"), "one.Bar", "module/one.html#Bar");
+
+    factory = factory.withTypeContext(module);
+    checkLink(factory.createLink("Foo"), "Foo", "module/one_exports_Foo.html");
+    checkLink(factory.createLink("foo"), "one.foo", "module/one.html#foo");
+    checkLink(factory.createLink("Bar"), "one.Bar", "module/one.html#Bar");
+    checkLink(factory.createLink("bar"), "one.Bar", "module/one.html#Bar");
   }
 
   private LinkFactory createFactory() {

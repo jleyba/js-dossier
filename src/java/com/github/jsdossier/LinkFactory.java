@@ -16,8 +16,11 @@
 
 package com.github.jsdossier;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.base.Verify.verify;
 
+import com.github.jsdossier.jscomp.Module;
 import com.github.jsdossier.jscomp.NominalType2;
 import com.github.jsdossier.jscomp.Position;
 import com.github.jsdossier.jscomp.TypeRegistry2;
@@ -27,6 +30,7 @@ import com.google.auto.factory.AutoFactory;
 import com.google.auto.factory.Provided;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Iterables;
 import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.jstype.FunctionType;
 import com.google.javascript.rhino.jstype.JSTypeRegistry;
@@ -316,6 +320,19 @@ final class LinkFactory {
     } else {
       type = typeContext.resolveType(typeName);
     }
+    
+    // Link might be an unqualified reference to a property exported by a ES6 module.
+    if (type == null && property.isEmpty()
+        && typeContext.getContextType() != null
+        && typeContext.getContextType().getModule().isPresent()
+        && typeContext.getContextType().getModule().get().getType() == Module.Type.ES6) {
+      Module module = typeContext.getContextType().getModule().get();
+      TypeLink link =
+          maybeCreateExportedPropertyLink(typeRegistry.getType(module.getId()), typeName);
+      if (link != null) {
+        return link;
+      }
+    }
 
     // Link might be a qualified path to a property.
     if (type == null && property.isEmpty()) {
@@ -345,6 +362,23 @@ final class LinkFactory {
         .setText(symbol)
         .build();
   }
+  
+  @Nullable
+  @CheckReturnValue
+  private TypeLink maybeCreateExportedPropertyLink(NominalType2 type, String property) {
+    checkArgument(type.isModuleExports());
+    if (type.getType().toObjectType().hasOwnProperty(property)) {
+      return createLink(type, property);
+    }
+    Module module = type.getModule().get();
+    String exportedName =
+        Iterables.getFirst(module.getExportedNames().asMultimap().inverse().get(property), null);
+    if (exportedName == null) {
+      return null;
+    }
+    verify(type.getType().toObjectType().hasOwnProperty(exportedName));
+    return createLink(type, exportedName);
+  }
 
   /**
    * Creates a link to one of the JS built-in types defined in externs.
@@ -362,7 +396,7 @@ final class LinkFactory {
   }
   
   private String getUriPath(Path path) {
-    return URI.create(path.toString()).toString();
+    return URI.create(path.normalize().toString()).toString();
   }
   
   private static class TypeRef {
