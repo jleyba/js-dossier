@@ -34,7 +34,7 @@ exports.max = function(a, b) {
 
 
 /** @type {function(new: GlobalCtor)} */
-exports.GlobalCtor = require('GlobalCtor');
+exports.GlobalCtor = GlobalCtor;
 
 
 exports.Greeter = require('./nested').Greeter;

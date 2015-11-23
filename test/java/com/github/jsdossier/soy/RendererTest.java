@@ -656,7 +656,7 @@ public class RendererTest {
         "<dt><a href=\"foo-link\">Foo</a></dt><dd><p>foo summary</p>\n</dd>",
         "<dt><a href=\"bar-link\">Bar</a></dt>",
         "<dd><p><strong>bar summary <i>has html</i></strong></p>\n</dd>",
-        "<dt><a href=\"baz-link\">Baz</a></dt><dd>No Description.</dd>",
+        "<dt><a href=\"baz-link\">Baz</a></dt><dd>No description.</dd>",
         "</dl></div>"));
   }
 

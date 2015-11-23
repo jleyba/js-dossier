@@ -17,6 +17,7 @@
 package com.github.jsdossier.jscomp;
 
 import com.google.common.base.Optional;
+import com.google.common.base.Predicate;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.jstype.JSType;
 
@@ -66,5 +67,17 @@ public final class Types {
         || "bind".equals(propertyName)
         || "call".equals(propertyName)
         || "prototype".equals(propertyName));
+  }
+
+  /**
+   * Returns a predicate that accepts typedefs.
+   */
+  public static Predicate<NominalType2> isTypedef() {
+    return new Predicate<NominalType2>() {
+      @Override
+      public boolean apply(NominalType2 input) {
+        return input.getJsDoc().isTypedef();
+      }
+    };
   }
 }

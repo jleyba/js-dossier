@@ -194,7 +194,7 @@ final class DossierFileSystem {
    */
   public String getQualifiedDisplayName(NominalType2 type) {
     String name = getDisplayName(type);
-    if (type.getModule().isPresent()) {
+    if (type.getModule().isPresent() && !type.isModuleExports()) {
       return getDisplayName(type.getModule().get()) + "." + name;
     }
     return name;
@@ -209,7 +209,11 @@ final class DossierFileSystem {
       if (type.getName().equals(module.getId())) {
         return getDisplayName(module);
       }
-      return type.getName().substring(module.getId().length() + 1);
+      try {
+        return type.getName().substring(module.getId().length() + 1);
+      } catch (RuntimeException e) {
+        throw new RuntimeException("For " + type.getName() + "\n   " + module.getId(), e);
+      }
     }
     return type.getName();
   }

@@ -112,12 +112,14 @@ public class Es6ModuleTest {
 
     Module module = typeRegistry.getModule("module$module");
     assertThat(module.getExportedNames().keySet()).containsExactly(
-        "Bar", "AClass", "publicFunction1", "publicFunction2", "publicX");
+        "Bar", "AClass", "publicFunction1", "publicFunction2", "publicX", "x", "y");
     assertThat(module.getExportedNames()).containsEntry("Bar", "AClass");
     assertThat(module.getExportedNames()).containsEntry("AClass", "AClass");
     assertThat(module.getExportedNames()).containsEntry("publicFunction1", "internalFunction1");
     assertThat(module.getExportedNames()).containsEntry("publicFunction2", "internalFunction2");
     assertThat(module.getExportedNames()).containsEntry("publicX", "internalX");
+    assertThat(module.getExportedNames()).containsEntry("x", "x");
+    assertThat(module.getExportedNames()).containsEntry("y", "y");
   }
   
   @Test

@@ -16,13 +16,21 @@
 
 package com.github.jsdossier;
 
+import static com.google.common.util.concurrent.Futures.allAsList;
+import static com.google.common.util.concurrent.Futures.transform;
+import static com.google.common.util.concurrent.MoreExecutors.directExecutor;
+
 import com.github.jsdossier.Annotations.NumThreads;
+import com.github.jsdossier.annotations.DocumentationScoped;
+import com.github.jsdossier.jscomp.NominalType2;
+import com.google.common.util.concurrent.AsyncFunction;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,29 +44,38 @@ import javax.inject.Inject;
 /**
  * Executes a collection of rendering tasks.
  */
+@DocumentationScoped
 final class RenderTaskExecutor {
   
   private static final Logger logger = Logger.getLogger(RenderTaskExecutor.class.getName());
 
+  private final RenderDocumentationTaskFactory documentationTaskFactory;
   private final RenderResourceTaskFactory resourceTaskFactory;
   private final RenderMarkdownTaskFactory markdownTaskFactory;
   private final RenderSourceFileTaskFactory sourceFileTaskFactory;
   private final RenderIndexTask indexTask;
+  private final RenderTypeIndexTask typeIndexTask;
+
   private final ListeningExecutorService executorService;
-  
+
+  private final List<ListenableFuture<Path>> documentationTasks = new ArrayList<>();
   private final List<ListenableFuture<Path>> submittedTasks = new ArrayList<>();
 
   @Inject
   RenderTaskExecutor(
       @NumThreads int numThreads,
+      RenderDocumentationTaskFactory documentationTaskFactory,
       RenderResourceTaskFactory resourceTaskFactory,
       RenderMarkdownTaskFactory markdownTaskFactory,
       RenderSourceFileTaskFactory sourceFileTaskFactory,
-      RenderIndexTask indexTask) {
+      RenderIndexTask indexTask,
+      RenderTypeIndexTask typeIndexTask) {
+    this.documentationTaskFactory = documentationTaskFactory;
     this.resourceTaskFactory = resourceTaskFactory;
     this.markdownTaskFactory = markdownTaskFactory;
     this.sourceFileTaskFactory = sourceFileTaskFactory;
     this.indexTask = indexTask;
+    this.typeIndexTask = typeIndexTask;
     this.executorService =
         MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(numThreads));
   }
@@ -70,6 +87,19 @@ final class RenderTaskExecutor {
    */
   public RenderTaskExecutor renderIndex() {
     submit(indexTask);
+    return this;
+  }
+
+  /**
+   * Submits tasks to render documentation for the given types.
+   *
+   * @param types the types to generate documentation for.
+   * @return a self reference.
+   */
+  public RenderTaskExecutor renderDocumentation(Iterable<NominalType2> types) {
+    for (NominalType2 type : types) {
+      submit(documentationTaskFactory.create(type));
+    }
     return this;
   }
 
@@ -144,9 +174,18 @@ final class RenderTaskExecutor {
     submit(sourceFileTaskFactory.create(path));
     return this;
   }
-  
+
   private void submit(Callable<Path> task) {
     submittedTasks.add(executorService.submit(task));
+  }
+  
+  private AsyncFunction<Object, Path> renderTypeIndex() {
+    return new AsyncFunction<Object, Path>() {
+      @Override
+      public ListenableFuture<Path> apply(Object input) throws IOException {
+        return Futures.immediateFuture(typeIndexTask.call());
+      }
+    };
   }
 
   /**
@@ -157,7 +196,14 @@ final class RenderTaskExecutor {
    */
   public ListenableFuture<List<Path>> awaitTermination() {
     executorService.shutdown();
-    ListenableFuture<List<Path>> list = Futures.allAsList(submittedTasks);
+
+    // Once all documentation rendering tasks have finished, the type index will be built and may
+    // be rendered.
+    ListenableFuture<?> docs = allAsList(documentationTasks);
+    ListenableFuture<Path> indexJsTask = transform(docs, renderTypeIndex(), directExecutor());
+
+    submittedTasks.add(indexJsTask);
+    ListenableFuture<List<Path>> list = allAsList(submittedTasks);
     Futures.addCallback(list, new FutureCallback<List<Path>>() {
       @Override public void onSuccess(List<Path> result) {}
       @Override public void onFailure(Throwable t) {

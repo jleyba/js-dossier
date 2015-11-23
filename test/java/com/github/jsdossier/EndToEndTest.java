@@ -1,12 +1,12 @@
 /*
  Copyright 2013-2015 Jason Leyba
-
+ 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
  You may obtain a copy of the License at
-
+ 
    http://www.apache.org/licenses/LICENSE-2.0
-
+ 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -331,6 +331,25 @@ public class EndToEndTest {
     checkFooter(document);
   }
 
+  @Test
+  public void checkEs6Module() throws IOException {
+    Document document = load(outDir.resolve("module/example/net.html"));
+    compareWithGoldenFile(querySelector(document, "article"), "module/example/net.html");
+    checkHeader(document);
+    checkModuleNav(document);
+    checkModuleFooter(document);
+  }
+
+  @Test
+  public void checkEs6ModuleExportedClass() throws IOException {
+    Document document = load(outDir.resolve("module/example/net_exports_HttpClient.html"));
+    compareWithGoldenFile(querySelector(document, "article"),
+        "module/example/net_exports_HttpClient.html");
+    checkHeader(document);
+    checkModuleNav(document);
+    checkModuleFooter(document);
+  }
+
   private void checkHeader(Document document) throws IOException {
     compareWithGoldenFile(querySelector(document, "header"), "header.html");
   }
@@ -526,6 +545,7 @@ public class EndToEndTest {
       copyResource("resources/emptyenum.js", srcDir.resolve("main/subdir/emptyenum.js"));
       copyResource("resources/module/index.js", srcDir.resolve("main/example/index.js"));
       copyResource("resources/module/nested.js", srcDir.resolve("main/example/nested.js"));
+      copyResource("resources/module/es6/net.js", srcDir.resolve("main/example/net.js"));
       copyResource("resources/module/worker.js", srcDir.resolve("main/example/worker.js"));
     }
     
@@ -555,6 +575,7 @@ public class EndToEndTest {
 
         addModule(srcDir.resolve("main/example/index.js"));
         addModule(srcDir.resolve("main/example/nested.js"));
+        addModule(srcDir.resolve("main/example/net.js"));
         addModule(srcDir.resolve("main/example/worker.js"));
       }});
 

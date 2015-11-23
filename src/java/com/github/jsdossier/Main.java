@@ -36,6 +36,7 @@ import com.github.jsdossier.annotations.Stdout;
 import com.github.jsdossier.annotations.TypeFilter;
 import com.github.jsdossier.annotations.Types;
 import com.github.jsdossier.jscomp.CallableCompiler;
+import com.github.jsdossier.jscomp.TypeRegistry2;
 import com.github.jsdossier.soy.Renderer;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Function;
@@ -118,10 +119,12 @@ final class Main {
 
   private static class DossierModule extends AbstractModule {
 
+    private final Flags flags;
     private final Config config;
     private final Path outputDir;
 
-    private DossierModule(Config config, Path outputDir) {
+    private DossierModule(Flags flags, Config config, Path outputDir) {
+      this.flags = flags;
       this.config = config;
       this.outputDir = outputDir;
     }
@@ -130,15 +133,13 @@ final class Main {
     protected void configure() {
       bindScope(DocumentationScoped.class, DOCUMENTATION_SCOPE);
 
-      int numThreads = Runtime.getRuntime().availableProcessors() * 2;
-      bindConstant().annotatedWith(Annotations.NumThreads.class).to(numThreads);
+      bindConstant().annotatedWith(Annotations.NumThreads.class).to(flags.numThreads);
 
       bind(PrintStream.class).annotatedWith(Stderr.class).toInstance(System.err);
       bind(PrintStream.class).annotatedWith(Stdout.class).toInstance(
           new PrintStream(ByteStreams.nullOutputStream()));
 
-      bind(Key.get(new TypeLiteral<Optional<Path>>() {
-      }, Readme.class))
+      bind(Key.get(new TypeLiteral<Optional<Path>>() {}, Readme.class))
           .toInstance(config.getReadme());
       bind(Key.get(new TypeLiteral<Iterable<Path>>() {}, Input.class))
           .toInstance(concat(config.getSources(), config.getModules()));
@@ -330,10 +331,10 @@ final class Main {
     if ("zip".equals(getFileExtension(output.toString()))) {
       try (FileSystem outputFs = openZipFileSystem(output)) {
         output = outputFs.getPath("/");
-        return run(config, output);
+        return run(flags, config, output);
       }
     }
-    return run(config, output);
+    return run(flags, config, output);
   }
 
   private static FileSystem openZipFileSystem(Path zip) throws IOException {
@@ -348,14 +349,14 @@ final class Main {
     return zip.getFileSystem().provider().newFileSystem(zip, attributes);
   }
 
-  private static int run(Config config, Path outputDir) throws IOException {
+  private static int run(Flags flags, Config config, Path outputDir) throws IOException {
     configureLogging();
 
     Injector injector = Guice.createInjector(
         new CompilerModule.Builder()
             .setArgs(getCompilerFlags(config))
             .build(),
-        new DossierModule(config, outputDir));
+        new DossierModule(flags, config, outputDir));
 
     CallableCompiler compiler = injector.getInstance(CallableCompiler.class);
     if (!compiler.shouldRunCompiler()) {
@@ -371,30 +372,28 @@ final class Main {
       return result;
     }
 
-    DOCUMENTATION_SCOPE.enter();
     try {
+      DOCUMENTATION_SCOPE.enter();
       createDirectories(outputDir);
-      try {
-        DocTemplate template = injector.getInstance(DocTemplate.class);
-        List<Path> files = injector.getInstance(RenderTaskExecutor.class)
-            .renderIndex()
-            .renderMarkdown(config.getCustomPages())
-            .renderResources(concat(template.getCss(), template.getHeadJs(), template.getTailJs()))
-            .renderSourceFiles(concat(config.getSources(), config.getModules()))
-            .awaitTermination()
-            .get();
-        if (log.isLoggable(Level.FINER)) {
-          log.fine("Rendered:\n  " + Joiner.on("\n  ").join(files));
-        }
-      } catch (InterruptedException e) {
-        Thread.currentThread().interrupt();
-        throw new IOException("Rendering was interrupted", e);
-      } catch (ExecutionException e) {
-        Throwables.propagateIfInstanceOf(e.getCause(), IOException.class);
-        throw Throwables.propagate(e.getCause());
+      DocTemplate template = injector.getInstance(DocTemplate.class);
+      TypeRegistry2 typeRegistry2 = injector.getInstance(TypeRegistry2.class);
+      List<Path> files = injector.getInstance(RenderTaskExecutor.class)
+          .renderIndex()
+          .renderDocumentation(typeRegistry2.getAllTypes())
+          .renderMarkdown(config.getCustomPages())
+          .renderResources(concat(template.getCss(), template.getHeadJs(), template.getTailJs()))
+          .renderSourceFiles(concat(config.getSources(), config.getModules()))
+          .awaitTermination()
+          .get();
+      if (log.isLoggable(Level.FINER)) {
+        log.fine("Rendered:\n  " + Joiner.on("\n  ").join(files));
       }
-
-      injector.getInstance(DocWriter.class).generateDocs();
+    } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+      throw new IOException("Rendering was interrupted", e);
+    } catch (ExecutionException e) {
+      Throwables.propagateIfInstanceOf(e.getCause(), IOException.class);
+      throw Throwables.propagate(e.getCause());
     } finally {
       DOCUMENTATION_SCOPE.exit();
     }
