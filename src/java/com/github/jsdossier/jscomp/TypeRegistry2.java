@@ -190,10 +190,18 @@ public final class TypeRegistry2 {
 
   /**
    * Returns whether the provided symbol was declared with a "goog.provide" statement.
-   * This only checks for symbols directly declared.
    */
   public boolean isProvided(String symbol) {
     return providedSymbols.contains(symbol) || implicitNamespaces.contains(symbol);
+  }
+
+  /**
+   * Returns whether a symbol identifies a namespace implicitly created by a "goog.provide" or
+   * "goog.module" statement. For example, {@code goog.module('foo.bar.baz')} implicitly creates
+   * the "foo" and "foo.bar" namespaces.
+   */
+  public boolean isImplicitNamespace(String symbol) {
+    return !providedSymbols.contains(symbol) && implicitNamespaces.contains(symbol);
   }
 
   /**
@@ -219,13 +227,6 @@ public final class TypeRegistry2 {
    */
   public boolean isType(String name) {
     return typesByName.containsKey(name);
-  }
-
-  /**
-   * Returns whether there is a nominal type registered with the given JSType.
-   */
-  public boolean isType(JSType type) {
-    return typesByJsType.containsKey(type);
   }
 
   /**
@@ -257,15 +258,6 @@ public final class TypeRegistry2 {
    */
   public Set<NominalType2> getNestedTypes(NominalType2 type) {
     return Collections.unmodifiableSet(nestedTypes.get(type));
-  }
-  
-  @Nullable
-  @CheckReturnValue
-  public NominalType2 resolveType(String name) {
-    if (typesByName.containsKey(name)) {
-      return typesByName.get(name);
-    }
-    return null;
   }
   
   public List<JSType> getTypeHierarchy(JSType type, JSTypeRegistry jsRegistry) {

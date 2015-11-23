@@ -615,6 +615,35 @@ public class TypeCollectionPassTest {
     assertThat(typeRegistry.getNestedTypes(baz)).containsExactly(clazz);
     assertThat(typeRegistry.getNestedTypes(clazz)).isEmpty();
   }
+  
+  @Test
+  public void implicitNamespacesFromClosureModulesAreNotRegisteredAsModules1() {
+    util.compile(fs.getPath("foo.js"),
+        "goog.module('foo.bar');",
+        "exports.Baz = class {};");
+
+    NominalType2 foo = typeRegistry.getType("foo");
+    assertThat(foo.getModule()).isAbsent();
+    
+    NominalType2 bar = typeRegistry.getType("foo.bar");
+    assertThat(bar.getModule()).isPresent();
+  }
+  
+  @Test
+  public void implicitNamespacesFromClosureModulesAreNotRegisteredAsModules2() {
+    util.compile(fs.getPath("foo.js"),
+        "goog.module('foo.bar.baz');",
+        "exports.Baz = class {};");
+
+    NominalType2 foo = typeRegistry.getType("foo");
+    assertThat(foo.getModule()).isAbsent();
+    
+    NominalType2 bar = typeRegistry.getType("foo.bar");
+    assertThat(bar.getModule()).isAbsent();
+    
+    NominalType2 baz = typeRegistry.getType("foo.bar.baz");
+    assertThat(baz.getModule()).isPresent();
+  }
 
   private void defineInputModules(String prefix, String... modules) {
     guice.toBuilder()

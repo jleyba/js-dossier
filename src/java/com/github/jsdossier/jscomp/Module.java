@@ -33,6 +33,7 @@ public abstract class Module {
    */
   public static Builder builder() {
     return new AutoValue_Module.Builder()
+        .setExportedDocs(ImmutableMap.<String, JSDocInfo>of())
         .setExportedNames(ImmutableMap.<String, String>of())
         .setInternalVarDocs(ImmutableMap.<String, JSDocInfo>of());
   }
@@ -62,6 +63,12 @@ public abstract class Module {
    * Returns the file-level JSDoc for this module.
    */
   public abstract JsDoc getJsDoc();
+
+  /**
+   * Returns a map of exported names to the JSDoc attached to the <em>export</em> keyword in the
+   * AST.
+   */
+  public abstract ImmutableMap<String, JSDocInfo> getExportedDocs();
 
   /**
    * Returns a map of exported names. Keys will be the exported symbol and values will be the
@@ -107,6 +114,7 @@ public abstract class Module {
     public abstract Builder setType(Type type);
     public abstract Builder setJsDoc(JsDoc doc);
     public abstract Builder setExportedNames(ImmutableMap<String, String> names);
+    public abstract Builder setExportedDocs(ImmutableMap<String, JSDocInfo> docs);
     public abstract Builder setInternalVarDocs(ImmutableMap<String, JSDocInfo> docs);
     public abstract Module build();
   }

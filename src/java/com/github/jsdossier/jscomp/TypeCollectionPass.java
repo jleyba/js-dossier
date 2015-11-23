@@ -255,18 +255,24 @@ public final class TypeCollectionPass implements CompilerPass {
             .setJsDoc(info)
             .setSourceFile(path)
             .setSourcePosition(Position.of(node.getLineno(), node.getCharno()))
-            .setModule(getModule(node))
+            .setModule(getModule(name, node))
             .build();
 
         recordType(nominalType);
       }
     }
     
-    private Optional<Module> getModule(Node node) {
+    private Optional<Module> getModule(String typeName, Node node) {
       Path path = inputFs.getPath(node.getSourceFileName());
-      return typeRegistry.isModule(path)
-          ? Optional.of(typeRegistry.getModule(path))
-          : Optional.<Module>absent();
+      if (!typeRegistry.isModule(path)) {
+        return Optional.absent();
+      }
+      Module module = typeRegistry.getModule(path);
+      if (typeRegistry.isImplicitNamespace(typeName)) {
+        verify(!typeName.equals(module.getId()));
+        return Optional.absent();
+      }
+      return Optional.of(module);
     }
 
     private void recordType(NominalType2 type) {
@@ -352,9 +358,10 @@ public final class TypeCollectionPass implements CompilerPass {
       JsDoc jsdoc = JsDoc.from(info);
 
       if (jsdoc.isTypedef()) {
+        String name = parent.getName() + "." + property.getName();
         addType(NominalType2.builder()
-            .setName(parent.getName() + "." + property.getName())
-            .setModule(getModule(node))
+            .setName(name)
+            .setModule(getModule(name, node))
             .setJsDoc(jsdoc)
             .setType(property.getType())
             .setSourceFile(inputFs.getPath(node.getSourceFileName()))
@@ -370,10 +377,11 @@ public final class TypeCollectionPass implements CompilerPass {
           propertyType = ctor;
         }
       }
-      
+
+      String name = parent.getName() + "." + property.getName();
       NominalType2 nt = NominalType2.builder()
-          .setName(parent.getName() + "." + property.getName())
-          .setModule(getModule(node))
+          .setName(name)
+          .setModule(getModule(name, node))
           .setJsDoc(jsdoc)
           .setType(propertyType)
           .setSourceFile(inputFs.getPath(node.getSourceFileName()))

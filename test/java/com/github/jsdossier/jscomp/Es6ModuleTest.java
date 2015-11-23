@@ -220,4 +220,36 @@ public class Es6ModuleTest {
         "export default function() {}");
     assertThat(typeRegistry.isModule("module$one$two$three")).isTrue();
   }
+  
+  @Test
+  public void recordsInternalDocsForExportExpressions() {
+    util.compile(fs.getPath("/one/two.js"),
+        "/** Class one. */ export class One {}",
+        "export /** Class one (a) */ class OneA {}",
+        "",
+        "/** Class two. */ export const Two = class {};",
+        "export /** Class two (a) */ const TwoA = class {};",
+        "",
+        "/** Function one. */ export function one() {}",
+        "export /** Function one (a) */ function oneA() {}");
+
+    Module module = typeRegistry.getModule("module$one$two");
+
+    assertThat(module.getInternalVarDocs().keySet())
+        .containsExactly("One", "OneA", "Two", "TwoA", "one", "oneA");
+
+    checkInternalDocs(module, "One", "Class one.");
+    checkInternalDocs(module, "OneA", "Class one (a)");
+
+    checkInternalDocs(module, "Two", "Class two.");
+    checkInternalDocs(module, "TwoA", "Class two (a)");
+    
+    checkInternalDocs(module, "one", "Function one.");
+    checkInternalDocs(module, "oneA", "Function one (a)");
+  }
+  
+  private static void checkInternalDocs(Module module, String name, String comment) {
+    assertThat(module.getInternalVarDocs().get(name).getBlockDescription().trim())
+        .isEqualTo(comment);
+  }
 }

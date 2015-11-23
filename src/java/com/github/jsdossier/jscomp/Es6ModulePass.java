@@ -18,6 +18,7 @@ package com.github.jsdossier.jscomp;
 
 import static com.google.common.base.MoreObjects.firstNonNull;
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.collect.Iterables.getFirst;
 import static com.google.javascript.jscomp.NodeTraversal.traverseEs6;
 
@@ -97,8 +98,10 @@ final class Es6ModulePass implements CompilerPass {
   private class Es6ModuleTraversal extends NodeTraversal.AbstractShallowCallback {
 
     private final Set<Node> imports = new HashSet<>();
+    private final Map<String, JSDocInfo> exportedDocs = new HashMap<>();
     private final Map<String, String> exportedNames = new HashMap<>();
     private final Map<String, JSDocInfo> internalDocs = new HashMap<>();
+    private JsDoc moduleDocs;
     private Module.Builder module;
 
     @Override
@@ -107,26 +110,17 @@ final class Es6ModulePass implements CompilerPass {
         visitScript(n);
         return;
       }
-
-      if (n.isClass() && parent.isScript()) {
-        String name = n.getFirstChild().getQualifiedName();
-        if (n.getJSDocInfo() != null) {
-          internalDocs.put(name, n.getJSDocInfo());
-        }
+      
+      if (n.isClass()) {
+        visitInternalNameDefinition(n, parent);
       }
 
-      if (n.isFunction() && parent.isScript()) {
-        String name = n.getFirstChild().getQualifiedName();
-        if (n.getJSDocInfo() != null) {
-          internalDocs.put(name, n.getJSDocInfo());
-        }
+      if (n.isFunction()) {
+        visitInternalNameDefinition(n, parent);
       }
 
-      if ((n.isConst() || n.isLet() || n.isVar()) && parent.isScript()) {
-        String name = n.getFirstChild().getQualifiedName();
-        if (n.getJSDocInfo() != null) {
-          internalDocs.put(name, n.getJSDocInfo());
-        }
+      if ((n.isConst() || n.isLet() || n.isVar())) {
+        visitInternalNameDefinition(n, parent);
       }
 
       if (n.isExport()) {
@@ -138,6 +132,31 @@ final class Es6ModulePass implements CompilerPass {
         imports.add(n);
       }
     }
+    
+    private void visitInternalNameDefinition(Node n, Node parent) {
+      String name = n.getFirstChild().getQualifiedName();
+      if (isNullOrEmpty(name)) {
+        return;
+      }
+
+      if (parent.isScript()) {
+        if (n.getJSDocInfo() != null) {
+          internalDocs.put(name, n.getJSDocInfo());
+        }
+
+      } else if (parent.isExport()) {
+        exportedNames.put(name, name);
+        if (parent.getJSDocInfo() != null) {
+          exportedDocs.put(name, parent.getJSDocInfo());
+        }
+
+        if (n.getJSDocInfo() != null) {
+          internalDocs.put(name, n.getJSDocInfo());
+        } else if (parent.getJSDocInfo() != null) {
+          internalDocs.put(name, parent.getJSDocInfo());
+        }
+      }
+    }
 
     private void visitExport(Node n) {
       if (module == null) {
@@ -147,6 +166,11 @@ final class Es6ModulePass implements CompilerPass {
             .setId(ES6ModuleLoader.toModuleName(toSimpleUri(path)))
             .setPath(path)
             .setType(Module.Type.ES6);
+        
+        if (n.getJSDocInfo() != null) {
+          moduleDocs = JsDoc.from(n.getJSDocInfo());
+          module.setJsDoc(moduleDocs);
+        }
 
         // The compiler does not generate alias notifications when it rewrites an ES6 module,
         // so we register a region here.
@@ -161,6 +185,9 @@ final class Es6ModulePass implements CompilerPass {
       if (n.getFirstChild().isName() && n.getFirstChild().getNext() == null) {
         String name = n.getFirstChild().getQualifiedName();
         exportedNames.put(name, name);
+        if (n.getJSDocInfo() != null) {
+          exportedDocs.put(name, n.getJSDocInfo());
+        }
         return;
       }
 
@@ -192,15 +219,22 @@ final class Es6ModulePass implements CompilerPass {
       if (module == null) {
         return;
       }
+      
+      if (moduleDocs == null) {
+        module.setJsDoc(JsDoc.from(script.getJSDocInfo()));
+      }
 
-      module.setJsDoc(JsDoc.from(script.getJSDocInfo()))
+      module
+          .setExportedDocs(ImmutableMap.copyOf(exportedDocs))
           .setExportedNames(ImmutableMap.copyOf(exportedNames))
           .setInternalVarDocs(ImmutableMap.copyOf(internalDocs));
 
       typeRegistry.addModule(module.build());
+      exportedDocs.clear();
       exportedNames.clear();
       internalDocs.clear();
       module = null;
+      moduleDocs = null;
 
       for (Node imp : imports) {
         processImportStatement(imp);
