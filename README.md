@@ -106,7 +106,8 @@ __Configuration Options__
  * `strict` Whether to run with all type checking flags enabled.
 
  * `language` Specifies which version of ECMAScript the input sources conform
-    to. Defaults to ES5. Must be one of {ES3, ES5, ES5_STRICT, ES6, ES6_STRICT}
+    to. Defaults to ES6_STRICT. Must be one of {ES3, ES5, ES5_STRICT, ES6,
+    ES6_STRICT}
 
 
 ## Formatting

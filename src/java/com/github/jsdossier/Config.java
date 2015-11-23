@@ -1,12 +1,12 @@
 /*
  Copyright 2013-2015 Jason Leyba
- 
+
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
  You may obtain a copy of the License at
- 
+
    http://www.apache.org/licenses/LICENSE-2.0
- 
+
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -682,8 +682,8 @@ class Config {
     private final boolean strict = false;
 
     @Description("Specifies which version of ECMAScript the input sources conform to. Defaults " +
-        "to ES5. Must be one of {ES3, ES5, ES5_STRICT, ES6, ES6_STRICT}")
-    private final Language language = Language.ES5;
+        "to ES6_STRICT. Must be one of {ES3, ES5, ES5_STRICT, ES6, ES6_STRICT}")
+    private final Language language = Language.ES6_STRICT;
 
     static ConfigSpec load(InputStream stream, FileSystem fileSystem) {
       Path pwd = fileSystem.getPath("").toAbsolutePath().normalize();
