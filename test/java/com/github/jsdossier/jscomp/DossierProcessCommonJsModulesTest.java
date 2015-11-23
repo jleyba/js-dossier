@@ -1,12 +1,12 @@
 /*
  Copyright 2013-2015 Jason Leyba
-
+ 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
  You may obtain a copy of the License at
-
+ 
    http://www.apache.org/licenses/LICENSE-2.0
-
+ 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -622,6 +622,28 @@ public class DossierProcessCommonJsModulesTest {
 
     type = type.toObjectType().getTypeOfThis();
     assertEquals("module$x$foo.Foo", type.toString());
+  }
+
+  @Test
+  public void canReferenceConstructorDefinedInTheGlobalScope() {
+    CompilerUtil compiler = createCompiler(path("x/bar.js"));
+
+    compiler.compile(
+        createSourceFile(path("x/foo.js"),
+            "/** @constructor */",
+            "function Foo() {}"),
+        createSourceFile(path("x/bar.js"),
+            "/** @type {function(new: Foo)} */",
+            "exports.Foo = Foo;"));
+
+    Scope scope = compiler.getCompiler().getTopScope();
+    Var var = scope.getVar("module$x$bar");
+
+    JSType type = var.getInitialValue().getJSType().findPropertyType("Foo");
+    assertTrue(type.isConstructor());
+
+    type = type.toObjectType().getTypeOfThis();
+    assertEquals("Foo", type.toString());
   }
 
   @Test

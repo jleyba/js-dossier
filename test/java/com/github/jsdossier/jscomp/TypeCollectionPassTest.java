@@ -24,6 +24,7 @@ import com.github.jsdossier.testing.CompilerUtil;
 import com.github.jsdossier.testing.GuiceRule;
 import com.google.common.base.Predicate;
 import com.google.javascript.jscomp.CompilerOptions;
+import com.google.javascript.rhino.jstype.JSType;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -628,7 +629,7 @@ public class TypeCollectionPassTest {
     NominalType2 bar = typeRegistry.getType("foo.bar");
     assertThat(bar.getModule()).isPresent();
   }
-  
+
   @Test
   public void implicitNamespacesFromClosureModulesAreNotRegisteredAsModules2() {
     util.compile(fs.getPath("foo.js"),
@@ -643,6 +644,30 @@ public class TypeCollectionPassTest {
     
     NominalType2 baz = typeRegistry.getType("foo.bar.baz");
     assertThat(baz.getModule()).isPresent();
+  }
+  
+  @Test
+  public void canResolveNominalTypeFromConstructorAliases() {
+    util.compile(fs.getPath("foo.js"),
+        "goog.provide('ns');",
+        "ns.Foo = class {};",
+        "ns.Bar = ns.Foo;",
+        "/** @type {function(new: ns.Foo)} */ ns.F1 = ns.Foo;",
+        "/** @type {function(new: ns.Foo): undefined} */ ns.F2 = ns.Foo;");
+    
+    NominalType2 ns = typeRegistry.getType("ns");
+    NominalType2 foo = typeRegistry.getType("ns.Foo");
+    NominalType2 bar = typeRegistry.getType("ns.Bar");
+
+    assertThat(typeRegistry.getAllTypes()).containsExactly(ns, foo, bar);
+    assertThat(typeRegistry.getTypes(foo.getType())).containsExactly(foo, bar);
+    
+    JSType nsType = ns.getType();
+    JSType f1 = nsType.toObjectType().getOwnSlot("F1").getType();
+    JSType f2 = nsType.toObjectType().getOwnSlot("F2").getType();
+    
+    assertThat(typeRegistry.findTypes(f1)).containsExactly(foo, bar);
+    assertThat(typeRegistry.findTypes(f2)).containsExactly(foo, bar);
   }
 
   private void defineInputModules(String prefix, String... modules) {

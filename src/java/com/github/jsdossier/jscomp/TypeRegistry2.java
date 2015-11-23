@@ -17,8 +17,11 @@
 package com.github.jsdossier.jscomp;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Verify.verify;
+import static com.google.common.collect.Multimaps.filterKeys;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Predicate;
 import com.google.common.base.Supplier;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ListMultimap;
@@ -244,6 +247,55 @@ public final class TypeRegistry2 {
    */
   public List<NominalType2> getTypes(JSType type) {
     return Collections.unmodifiableList(typesByJsType.get(type));
+  }
+
+  /**
+   * Finds all nominal types whose underlying JSType is <em>equivalent</em> to the given type. This
+   * stands in contrast to {@link #getTypes(JSType)}, which returns the nominal types with the
+   * exact JSType.
+   */
+  public Collection<NominalType2> findTypes(final JSType type) {
+    Predicate<JSType> predicate = new Predicate<JSType>() {
+      @Override
+      public boolean apply(JSType input) {
+        return typesEqual(type, input);
+      }
+    };
+    Multimap<JSType, NominalType2> filtered = filterKeys(typesByJsType, predicate);
+    return Collections.unmodifiableCollection(filtered.values());
+  }
+
+  private static boolean typesEqual(JSType a, JSType b) {
+    if (a.equals(b)) {
+      // NOTE: FunctionTypes are considered equal if they have the same
+      // signature. This works for type checking, but we are looking for unique
+      // nominal types - so fallback on a strict identity check. This relies
+      // on insight gained from a comment in JSType#checkEquivalenceHelper:
+      //
+      // Relies on the fact that for the base {@link JSType}, only one
+      // instance of each sub-type will ever be created in a given registry, so
+      // there is no need to verify members. If the object pointers are not
+      // identical, then the type member must be different.
+      if (a.isFunctionType()) {
+        verify(b.isFunctionType());
+        return a == b;
+      }
+      return true;
+    }
+    // We consider the following two versions of a constructor to be equivalent,
+    // even though the compiler does not:
+    //   function(new: Foo): undefined
+    //   function(new: Foo): ?
+    if (a.isConstructor() && b.isConstructor()
+        && a.toMaybeFunctionType() != null
+        && b.toMaybeFunctionType() != null) {
+      a = a.toMaybeFunctionType().getInstanceType();
+      b = b.toMaybeFunctionType().getInstanceType();
+      if (a != null && b != null) {
+        return typesEqual(a, b);
+      }
+    }
+    return false;
   }
 
   /**
