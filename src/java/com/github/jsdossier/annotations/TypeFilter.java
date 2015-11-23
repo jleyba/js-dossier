@@ -1,12 +1,12 @@
 /*
  Copyright 2013-2015 Jason Leyba
-
+ 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
  You may obtain a copy of the License at
-
+ 
    http://www.apache.org/licenses/LICENSE-2.0
-
+ 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,7 +23,7 @@ import javax.inject.Qualifier;
 
 /**
  * Qualifier for a {@link com.google.common.base.Predicate} that accepts
- * {@link com.github.jsdossier.NominalType} objects that should be excluded
+ * {@link com.github.jsdossier.jscomp.NominalType2} objects that should be excluded
  * from generated output.
  */
 @Qualifier

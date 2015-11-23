@@ -24,7 +24,6 @@ import com.github.jsdossier.jscomp.Module;
 import com.github.jsdossier.jscomp.NominalType2;
 import com.github.jsdossier.jscomp.Position;
 import com.github.jsdossier.jscomp.TypeRegistry2;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.jimfs.Jimfs;
 import com.google.javascript.rhino.jstype.JSType;
 import org.junit.Test;
@@ -287,8 +286,6 @@ public class DossierFileSystemTest {
   }
   
   private DossierFileSystem createFileSystem(ModuleNamingConvention convention) {
-    return new DossierFileSystem(
-        outputRoot, srcPrefix, modulePrefix, ImmutableSet.<Path>of(), typeRegistry,
-        convention);
+    return new DossierFileSystem(outputRoot, srcPrefix, modulePrefix, typeRegistry, convention);
   }
 }

@@ -1,12 +1,12 @@
 /*
  Copyright 2013-2015 Jason Leyba
-
+ 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
  You may obtain a copy of the License at
-
+ 
    http://www.apache.org/licenses/LICENSE-2.0
-
+ 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -203,18 +203,6 @@ class Config {
   }
 
   /**
-   * Returns the set of types that should be filtered from generated output.
-   */
-  Predicate<NominalType> getTypeFilter() {
-    return new Predicate<NominalType>() {
-      @Override
-      public boolean apply(NominalType input) {
-        return isFilteredType(input);
-      }
-    };
-  }
-
-  /**
    * Returns the path to the output directory.
    */
   Path getOutput() {
@@ -296,20 +284,6 @@ class Config {
       array.add(new JsonPrimitive(i.toString()));
     }
     return array;
-  }
-
-  /**
-   * Returns whether the given type is a filtered type.
-   */
-  boolean isFilteredType(NominalType input) {
-    String qualifiedName = input.getQualifiedName(true);
-    for (Pattern filter : typeFilters) {
-      if (filter.matcher(qualifiedName).matches()) {
-        return true;
-      }
-    }
-    NominalType parent = input.getParent();
-    return parent != null && isFilteredType(parent);
   }
 
   /**

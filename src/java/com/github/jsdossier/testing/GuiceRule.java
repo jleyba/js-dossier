@@ -1,12 +1,12 @@
 /*
  Copyright 2013-2015 Jason Leyba
-
+ 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
  You may obtain a copy of the License at
-
+ 
    http://www.apache.org/licenses/LICENSE-2.0
-
+ 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,7 +20,6 @@ import static com.google.common.base.Preconditions.checkArgument;
 
 import com.github.jsdossier.CompilerModule;
 import com.github.jsdossier.ModuleNamingConvention;
-import com.github.jsdossier.NominalType;
 import com.github.jsdossier.annotations.DocumentationScoped;
 import com.github.jsdossier.annotations.Input;
 import com.github.jsdossier.annotations.ModulePrefix;
@@ -71,7 +70,6 @@ public abstract class GuiceRule implements TestRule {
         .setModulePrefix(Optional.<Path>absent())
         .setSourcePrefix(Optional.<Path>absent())
         .setModules(ImmutableSet.<Path>of())
-        .setTypeFilter(Predicates.<NominalType>alwaysFalse())
         .setTypeNameFilter(Predicates.<String>alwaysFalse())
 
         .setOutputFs(Jimfs.newFileSystem())
@@ -86,7 +84,6 @@ public abstract class GuiceRule implements TestRule {
   abstract Optional<Path> getModulePrefix();
   abstract Optional<Path> getSourcePrefix();
   abstract ImmutableSet<Path> getModules();
-  abstract Predicate<NominalType> getTypeFilter();
   abstract Predicate<String> getTypeNameFilter();
   
   abstract ModuleNamingConvention getModuleNamingConvention();
@@ -147,12 +144,6 @@ public abstract class GuiceRule implements TestRule {
 
           @Provides
           @TypeFilter
-          Predicate<NominalType> provideTypeFilter() {
-            return getTypeFilter();
-          }
-
-          @Provides
-          @TypeFilter
           Predicate<String> provideTypeNameFilter() {
             return getTypeNameFilter();
           }
@@ -189,7 +180,6 @@ public abstract class GuiceRule implements TestRule {
     public abstract Builder setNewTypeInference(boolean set);
     public abstract Builder setModuleNamingConvention(ModuleNamingConvention convention);
     public abstract Builder setLanguageIn(CompilerOptions.LanguageMode languageIn);
-    public abstract Builder setTypeFilter(Predicate<NominalType> filter);
     public abstract Builder setTypeNameFilter(Predicate<String> filter);
     public abstract Builder setInputFs(FileSystem fs);
     public abstract FileSystem getInputFs();

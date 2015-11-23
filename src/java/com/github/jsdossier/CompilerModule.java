@@ -1,12 +1,12 @@
 /*
  Copyright 2013-2015 Jason Leyba
-
+ 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
  You may obtain a copy of the License at
-
+ 
    http://www.apache.org/licenses/LICENSE-2.0
-
+ 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -53,7 +53,6 @@ public class CompilerModule extends AbstractModule {
   protected void configure() {
     bind(Key.get(new TypeLiteral<String[]>(){}, Args.class)).toInstance(compilerArgs);
     bind(DossierCompiler.class).in(Scopes.SINGLETON);
-    bind(TypeRegistry.class).in(Scopes.SINGLETON);
   }
 
   @Provides
@@ -64,10 +63,8 @@ public class CompilerModule extends AbstractModule {
   @Provides
   CompilerOptions provideCompilerOptions(
       AliasTransformListener transformListener,
-      ProvidedSymbolsCollectionPass providedNamespacesPass,
       ProvidedSymbolPass providedSymbolPass,
-      TypeCollectionPass typeCollectionPass,
-      DocPass docPass) {
+      TypeCollectionPass typeCollectionPass) {
     CompilerOptions options = new CompilerOptions();
     
     options.setNewTypeInference(newTypeInference);
@@ -88,9 +85,7 @@ public class CompilerModule extends AbstractModule {
     options.setAliasTransformationHandler(transformListener);
 
     options.addCustomPass(CustomPassExecutionTime.BEFORE_CHECKS, providedSymbolPass);
-    options.addCustomPass(CustomPassExecutionTime.BEFORE_CHECKS, providedNamespacesPass);
     options.addCustomPass(CustomPassExecutionTime.BEFORE_OPTIMIZATIONS, typeCollectionPass);
-    options.addCustomPass(CustomPassExecutionTime.BEFORE_OPTIMIZATIONS, docPass);
 
     return options;
   }
@@ -105,14 +100,9 @@ public class CompilerModule extends AbstractModule {
       this.args = args;
       return this;
     }
-    
+
     public Builder setLanguageIn(CompilerOptions.LanguageMode in) {
       this.languageIn = in;
-      return this;
-    }
-    
-    public Builder setLanguageOut(CompilerOptions.LanguageMode out) {
-      this.languageOut = out;
       return this;
     }
     

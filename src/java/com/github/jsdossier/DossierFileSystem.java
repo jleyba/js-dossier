@@ -21,7 +21,6 @@ import static com.google.common.io.Files.getNameWithoutExtension;
 
 import com.github.jsdossier.annotations.DocumentationScoped;
 import com.github.jsdossier.annotations.ModulePrefix;
-import com.github.jsdossier.annotations.Modules;
 import com.github.jsdossier.annotations.Output;
 import com.github.jsdossier.annotations.SourcePrefix;
 import com.github.jsdossier.jscomp.Module;
@@ -30,7 +29,6 @@ import com.github.jsdossier.jscomp.TypeRegistry2;
 import com.github.jsdossier.proto.Resources;
 import com.google.common.base.Function;
 import com.google.common.collect.FluentIterable;
-import com.google.common.collect.ImmutableSet;
 import com.google.javascript.rhino.Node;
 
 import java.nio.file.Path;
@@ -49,7 +47,6 @@ final class DossierFileSystem {
   private final Path outputRoot;
   private final Path modulePrefix;
   private final Path sourcePrefix;
-  private final ImmutableSet<Path> allModules;
   private final TypeRegistry2 typeRegistry;
   private final ModuleNamingConvention namingConvention;
 
@@ -58,13 +55,11 @@ final class DossierFileSystem {
       @Output Path outputRoot,
       @SourcePrefix Path sourcePrefix,
       @ModulePrefix Path modulePrefix,
-      @Modules ImmutableSet<Path> allModules,
       TypeRegistry2 typeRegistry,
       ModuleNamingConvention namingConvention) {
     this.outputRoot = outputRoot;
     this.modulePrefix = modulePrefix;
     this.sourcePrefix = sourcePrefix;
-    this.allModules = allModules;
     this.typeRegistry = typeRegistry;
     this.namingConvention = namingConvention;
   }
@@ -117,31 +112,6 @@ final class DossierFileSystem {
   /**
    * Returns the path to the generated documentation for the given {@code type}.
    */
-  public Path getPath(NominalType type) {
-    if (type.isModuleExports() && type.isCommonJsModule()) {
-      return getPath(type.getModule());
-    }
-
-    ModuleDescriptor module = type.getModule();
-    if (module == null || module.getType() == ModuleType.CLOSURE) {
-      return outputRoot.resolve(type.getQualifiedName() + ".html");
-    }
-
-    Path path = getPath(module);
-    String base = module.getName() + ".";
-    String name = type.getQualifiedName(true);
-    if (name.startsWith(base)) {
-      name = name.substring(base.length());
-    }
-    
-    String exports =
-        stripExtension(path).getFileName().toString() + "_exports_" + name + ".html";
-    return path.resolveSibling(exports);
-  }
-
-  /**
-   * Returns the path to the generated documentation for the given {@code type}.
-   */
   public Path getPath(NominalType2 type) {
     if (type.isModuleExports() && type.getModule().get().getType() != Module.Type.CLOSURE) {
       return getPath(type.getModule().get());
@@ -163,27 +133,9 @@ final class DossierFileSystem {
   /**
    * Returns the path to the generated documentation for the given {@code module}.
    */
-  public Path getPath(ModuleDescriptor module) {
-    Path path = stripExtension(modulePrefix.relativize(module.getPath()));
-    return outputRoot.resolve(MODULE_DIR).resolve(path + ".html");
-  }
-
-  /**
-   * Returns the path to the generated documentation for the given {@code module}.
-   */
   public Path getPath(Module module) {
     Path path = stripExtension(modulePrefix.relativize(module.getPath()));
     return outputRoot.resolve(MODULE_DIR).resolve(path + ".html");
-  }
-
-  /**
-   * Returns the display name for the given type.
-   */
-  public String getDisplayName(NominalType type) {
-    if (!type.isModuleExports() || !type.isCommonJsModule()) {
-      return type.getQualifiedName();
-    }
-    return getDisplayName(type.getModule());
   }
 
   /**
@@ -221,28 +173,6 @@ final class DossierFileSystem {
   /**
    * Returns the display name for the given module.
    */
-  public String getDisplayName(ModuleDescriptor module) {
-    if (module.getType() == ModuleType.CLOSURE) {
-      return module.getName();
-    }
-
-    Path path = stripExtension(module.getPath());
-
-    if (namingConvention == ModuleNamingConvention.NODE
-        && path.endsWith("index") && path.getParent() != null) {
-      path = path.getParent();
-      
-      Path other = path.resolveSibling(path.getFileName() + ".js");
-      if (allModules.contains(other)) {
-        return toCanonicalString(modulePrefix.relativize(path)) + "/";
-      }
-    }
-    return toCanonicalString(modulePrefix.relativize(path));
-  }
-
-  /**
-   * Returns the display name for the given module.
-   */
   public String getDisplayName(Module module) {
     if (module.getType() == Module.Type.CLOSURE) {
       return module.getId();
@@ -268,17 +198,6 @@ final class DossierFileSystem {
    */
   public Path getRelativePath(Path file) {
     return outputRoot.relativize(file);
-  }
-
-  /**
-   * Computes the relative path from the generated documentation for {@code type} to the specified
-   * {@code file}.
-   */
-  public Path getRelativePath(NominalType type, Path file) {
-    checkArgument(
-        file.getFileSystem() == outputRoot.getFileSystem() && file.startsWith(outputRoot),
-        "The target file does not belong to the output file system: %s", file);
-    return Paths.getRelativePath(getPath(type), file);
   }
 
   /**

@@ -15,7 +15,6 @@
  */
 package com.github.jsdossier;
 
-import static com.google.common.base.Predicates.not;
 import static com.google.common.collect.Iterables.concat;
 import static com.google.common.collect.Iterables.transform;
 import static com.google.common.io.Files.getFileExtension;
@@ -34,8 +33,9 @@ import com.github.jsdossier.annotations.SourcePrefix;
 import com.github.jsdossier.annotations.Stderr;
 import com.github.jsdossier.annotations.Stdout;
 import com.github.jsdossier.annotations.TypeFilter;
-import com.github.jsdossier.annotations.Types;
 import com.github.jsdossier.jscomp.CallableCompiler;
+import com.github.jsdossier.jscomp.Module;
+import com.github.jsdossier.jscomp.NominalType2;
 import com.github.jsdossier.jscomp.TypeRegistry2;
 import com.github.jsdossier.soy.Renderer;
 import com.google.common.annotations.VisibleForTesting;
@@ -45,7 +45,6 @@ import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
 import com.google.common.base.Throwables;
-import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -145,8 +144,6 @@ final class Main {
           .toInstance(concat(config.getSources(), config.getModules()));
       bind(Key.get(new TypeLiteral<ImmutableSet<Path>>() {}, Modules.class))
           .toInstance(config.getModules());
-      bind(Key.get(new TypeLiteral<Predicate<NominalType>>(){}, TypeFilter.class))
-          .toInstance(config.getTypeFilter());
       bind(new TypeLiteral<ImmutableList<MarkdownPage>>(){})
           .toInstance(config.getCustomPages());
 
@@ -203,35 +200,21 @@ final class Main {
 
     @Provides
     @DocumentationScoped
-    @Types
-    ImmutableList<NominalType> provideTypes(TypeRegistry typeRegistry) {
-      return FluentIterable
-          .from(typeRegistry.getNominalTypes())
-          .filter(not(config.getTypeFilter()))
-          .filter(isNonEmptyNamespace())
-          .filter(isNotTypedef())
-          .toSortedList(new QualifiedNameComparator());
-    }
-
-    @Provides
-    @DocumentationScoped
-    @Modules
-    ImmutableList<NominalType> provideModules(TypeRegistry typeRegistry, Linker linker) {
-      return FluentIterable
-          .from(typeRegistry.getModules())
-          .toSortedList(new DisplayNameComparator(linker));
-    }
-
-    @Provides
-    @DocumentationScoped
     NavIndexFactory provideNavIndexFactory(
         @Output Path outputDir,
-        @Modules ImmutableList<NominalType> modules,
-        @Types ImmutableList<NominalType> types) {
+        TypeRegistry2 typeRegistry) {
+      boolean showTypes = false;
+      for (NominalType2 type : typeRegistry.getAllTypes()) {
+        if (!type.getModule().isPresent()
+            || type.getModule().get().getType() == Module.Type.CLOSURE) {
+          showTypes = true;
+          break;
+        }
+      }
       return NavIndexFactory.create(
           outputDir.resolve(INDEX_FILE_NAME),
-          !modules.isEmpty(),
-          !types.isEmpty(),
+          !typeRegistry.getAllModules().isEmpty(),
+          showTypes,
           config.getCustomPages());
     }
   }
@@ -294,24 +277,6 @@ final class Main {
       @Override public void flush() {}
       @Override public void close() {}
     });
-  }
-
-  private static Predicate<NominalType> isNotTypedef() {
-    return new Predicate<NominalType>() {
-      @Override
-      public boolean apply(NominalType input) {
-        return !input.isTypedef();
-      }
-    };
-  }
-
-  private static Predicate<NominalType> isNonEmptyNamespace() {
-    return new Predicate<NominalType>() {
-      @Override
-      public boolean apply(NominalType input) {
-        return !input.isEmptyNamespace();
-      }
-    };
   }
 
   @VisibleForTesting
