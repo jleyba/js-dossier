@@ -68,6 +68,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nullable;
@@ -77,6 +79,8 @@ import javax.annotation.Nullable;
  */
 @AutoFactory
 final class TypeInspector {
+
+  private static final Pattern SUMMARY_REGEX = Pattern.compile("(.*?\\.)[\\s$]", Pattern.DOTALL);
 
   private final DossierFileSystem dfs;
   private final CommentParser parser;
@@ -104,6 +108,87 @@ final class TypeInspector {
     this.typeFilter = typeFilter;
     this.linkFactory = linkFactoryBuilder.create(inspectedType);
     this.inspectedType = inspectedType;
+  }
+
+  /**
+   * Returns the top description for the inspected type.
+   */
+  public Comment getTypeDescription() {
+    return getTypeDescription(inspectedType, false);
+  }
+
+  /**
+   * Extracts the summary sentence for the inspected type. This is the substring up to the
+   * first period (.) followed by a blank, tab, or newline.
+   */
+  public Comment getTypeSummary() {
+    return getTypeDescription(inspectedType, true);
+  }
+
+  /**
+   * Returns the description for the given type. All links in the returned comment will be
+   * generated relative to the output file for this instance's inspected type.
+   *
+   * @param type the type to extract a description from.
+   * @param summaryOnly whether to only extract a summary description. The summary is substring
+   *     up to the first period (.) followed by a blank, tab, or newline. Summaries are extracted
+   *     before the markdown parser is invoked.
+   * @return the extracted description.
+   */
+  public Comment getTypeDescription(NominalType2 type, boolean summaryOnly) {
+    String blockComment = type.getJsDoc().getBlockComment();
+    if (!isNullOrEmpty(blockComment)) {
+      return parseComment(type, blockComment, summaryOnly);
+    }
+
+    if (type.isModuleExports()) {
+      Module module = type.getModule().get();
+      blockComment = module.getJsDoc().getBlockComment();
+      if (!isNullOrEmpty(blockComment)) {
+        return parseComment(type, blockComment, summaryOnly);
+      }
+    }
+
+    if (type.getModule().isPresent() && !type.isModuleExports()) {
+      Module module = type.getModule().get();
+      String exportedName = type.getName().substring(module.getId().length() + 1);
+      String internalName = module.getExportedNames().get(exportedName);
+      if (!isNullOrEmpty(internalName)) {
+        JSDocInfo info = module.getInternalVarDocs().get(internalName);
+        blockComment = JsDoc.from(info).getBlockComment();
+
+        if (isNullOrEmpty(blockComment)) {
+          NominalType2 resolved = linkFactory.getTypeContext()
+              .changeContext(type)
+              .resolveType(internalName);
+          if (resolved != null) {
+            blockComment = resolved.getJsDoc().getBlockComment();
+            if (!isNullOrEmpty(blockComment)) {
+              return parseComment(resolved, blockComment, summaryOnly);
+            }
+          }
+        } else {
+          return parseComment(type, blockComment, summaryOnly);
+        }
+      }
+    }
+
+    NominalType2 aliased = registry.getTypes(type.getType()).get(0);
+    if (aliased != null && aliased != type) {
+      return getTypeDescription(aliased, summaryOnly);
+    }
+
+    return Comment.getDefaultInstance();
+  }
+  
+  private Comment parseComment(NominalType2 context, String comment, boolean summaryOnly) {
+    if (summaryOnly) {
+      Matcher matcher = SUMMARY_REGEX.matcher(comment);
+      if (matcher.find()) {
+        comment = matcher.group(1);
+      }
+    }
+    return parser.parseComment(comment, linkFactory.withTypeContext(context));
   }
 
   /**
@@ -229,7 +314,10 @@ final class TypeInspector {
     return isNullOrEmpty(doc.getOriginalCommentString());
   }
 
-  private List<Property> getProperties(NominalType2 nominalType) {
+  /**
+   * Returns the raw properties for the given type.
+   */
+  public List<Property> getProperties(NominalType2 nominalType) {
     JSType type = nominalType.getType();
     ObjectType object = ObjectType.cast(type);
 

@@ -16,8 +16,6 @@
 
 package com.github.jsdossier;
 
-import static com.google.common.base.Verify.verify;
-
 import com.github.jsdossier.jscomp.Module;
 import com.github.jsdossier.jscomp.NominalType2;
 import com.github.jsdossier.jscomp.TypeRegistry2;
@@ -27,7 +25,7 @@ import com.google.javascript.rhino.jstype.JSType;
 import com.google.javascript.rhino.jstype.JSTypeRegistry;
 
 import java.nio.file.Path;
-import java.util.List;
+import java.util.Collection;
 
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nullable;
@@ -242,12 +240,12 @@ final class TypeContext {
 
     JSType type = jsTypeRegistry.getType(name);
     if (type != null) {
-      List<NominalType2> types = typeRegistry.getTypes(type);
+      Collection<NominalType2> types = typeRegistry.findTypes(type);
       if (types.isEmpty() && type.isInstanceType()) {
-        types = typeRegistry.getTypes(type.toObjectType().getConstructor());
+        types = typeRegistry.findTypes(type.toObjectType().getConstructor());
       }
       if (!types.isEmpty()) {
-        return types.get(0);
+        return types.iterator().next();
       }
     }
 

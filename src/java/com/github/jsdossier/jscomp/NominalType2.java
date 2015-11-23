@@ -39,6 +39,11 @@ public abstract class NominalType2 {
   // Package private to prevent extensions.
   NominalType2() {}
 
+  @Override
+  public String toString() {
+    return "NominalType(" + getName() + ")";
+  }
+
   /**
    * Returns this type's name.
    */

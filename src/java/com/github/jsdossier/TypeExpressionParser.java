@@ -49,8 +49,8 @@ import com.google.javascript.rhino.jstype.TemplatizedType;
 import com.google.javascript.rhino.jstype.UnionType;
 import com.google.javascript.rhino.jstype.Visitor;
 
+import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nullable;
@@ -110,11 +110,14 @@ final class TypeExpressionParser {
   @Nullable
   @CheckReturnValue
   private NominalType2 resolve(JSType type) {
-    List<NominalType2> types = typeRegistry.getTypes(type);
+    Collection<NominalType2> types = typeRegistry.getTypes(type);  // Exact check first.
+    if (types.isEmpty()) {
+      types = typeRegistry.findTypes(type);  // Slow equivalence check next.
+    }
     if (types.isEmpty()) {
       return null;
     }
-    return types.get(0);
+    return types.iterator().next();
   }
 
   @Nullable

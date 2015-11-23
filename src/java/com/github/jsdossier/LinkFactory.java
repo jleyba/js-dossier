@@ -19,6 +19,7 @@ package com.github.jsdossier;
 import static com.google.common.base.Preconditions.checkState;
 
 import com.github.jsdossier.jscomp.NominalType2;
+import com.github.jsdossier.jscomp.Position;
 import com.github.jsdossier.jscomp.TypeRegistry2;
 import com.github.jsdossier.proto.SourceLink;
 import com.github.jsdossier.proto.TypeLink;
@@ -119,6 +120,10 @@ final class LinkFactory {
     this.pathContext = Optional.fromNullable(pathContext);
     this.typeContext = typeContext;
   }
+  
+  public TypeContext getTypeContext() {
+    return typeContext;
+  }
 
   /**
    * Creates a new link factory that resolves type names relative to the given context type. All
@@ -129,6 +134,20 @@ final class LinkFactory {
     // for everything, even ones with private visibility.
     return new LinkFactory(dfs, typeRegistry, jsTypeRegistry, namingConvention,
         typeContext.changeContext(context), pathContext.orNull());
+  }
+
+  /**
+   * Creates a link to a specific line in a rendered source file.
+   */
+  public SourceLink createLink(Path path, Position position) {
+    Path sourcePath = dfs.getPath(path);
+    if (pathContext.isPresent()) {
+      sourcePath = dfs.getRelativePath(pathContext.get(), sourcePath);
+    }
+    return SourceLink.newBuilder()
+        .setPath(getUriPath(sourcePath))
+        .setLine(position.getLine())
+        .build();
   }
 
   /**
