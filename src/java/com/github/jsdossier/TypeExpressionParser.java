@@ -16,11 +16,12 @@
 
 package com.github.jsdossier;
 
+import static com.github.jsdossier.jscomp.Types.externToOriginalName;
+import static com.github.jsdossier.jscomp.Types.isExternModule;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Verify.verify;
 import static com.google.common.collect.Iterables.filter;
 
-import com.github.jsdossier.jscomp.DossierModule;
 import com.github.jsdossier.jscomp.NominalType2;
 import com.github.jsdossier.jscomp.TypeRegistry2;
 import com.github.jsdossier.proto.Comment;
@@ -422,10 +423,9 @@ final class TypeExpressionParser {
 
       if (link != null) {
         appendLink(link);
-      } else if (DossierModule.isExternModule(type.getReferenceName())) {
-        appendText(DossierModule.externToOriginalName(type.getReferenceName()));
+      } else if (isExternModule(type.getReferenceName())) {
+        appendText(externToOriginalName(type.getReferenceName()));
       } else {
-        
         appendText(type.getReferenceName());
       }
       return null;

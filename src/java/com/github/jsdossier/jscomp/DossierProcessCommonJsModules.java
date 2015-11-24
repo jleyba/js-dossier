@@ -16,6 +16,8 @@
 
 package com.github.jsdossier.jscomp;
 
+import static com.github.jsdossier.jscomp.Types.externModuleName;
+import static com.github.jsdossier.jscomp.Types.getModuleId;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.javascript.jscomp.NodeTraversal.traverse;
@@ -27,7 +29,9 @@ import static com.google.javascript.rhino.IR.name;
 import static com.google.javascript.rhino.IR.string;
 
 import com.github.jsdossier.annotations.Input;
+import com.github.jsdossier.annotations.Modules;
 import com.google.common.base.Splitter;
+import com.google.common.collect.ImmutableSet;
 import com.google.javascript.jscomp.DiagnosticType;
 import com.google.javascript.jscomp.NodeTraversal;
 import com.google.javascript.rhino.IR;
@@ -70,17 +74,17 @@ import javax.inject.Inject;
  *
  * <p>Given the code above, this pass would produce:
  * <pre><code>
- *   var dossier$$module__foo = {exports: {}};
- *   dossier$$module__foo.exports.sayHi = function() {
+ *   var module$foo = {exports: {}};
+ *   module$foo.sayHi = function() {
  *     console.log('hello, world!');
  *   };
- *   dossier$$module__foo.exports.sayBye = function() {
+ *   module$foo.sayBye = function() {
  *     console.log('hello, world!');
  *   };
  *
- *   var dossier$$module__bar = {exports: {}};
- *   var foo$$__dossier$$module__bar = dossier$$module__foo.exports;
- *   foo$$__dossier$$module__bar.sayHi();
+ *   var module$bar = {exports: {}};
+ *   var foo$$module$bar = module$foo;
+ *   foo$$module$bar.sayHi();
  * </code></pre>
  */
 class DossierProcessCommonJsModules {
@@ -95,22 +99,22 @@ class DossierProcessCommonJsModules {
           "DOSSIER_INVALID_MODULE_EXPORTS_ASSIGNMENT",
           "Multiple assignments to module.exports are not permitted");
 
-  private final DossierModuleRegistry moduleRegistry;
   private final TypeRegistry2 typeRegistry;
   private final FileSystem inputFs;
+  private final ImmutableSet<Path> modulePaths;
 
-  private DossierModule currentModule;
+  private String currentModule = null;
 
   @Inject
   DossierProcessCommonJsModules(
-      DossierModuleRegistry moduleRegistry,
       TypeRegistry2 typeRegistry,
-      @Input FileSystem inputFs) {
-    this.moduleRegistry = moduleRegistry;
+      @Input FileSystem inputFs,
+      @Modules ImmutableSet<Path> modulePaths) {
     this.typeRegistry = typeRegistry;
     this.inputFs = inputFs;
+    this.modulePaths = modulePaths;
   }
-  
+
   public void process(DossierCompiler compiler, Node root) {
     traverseTyped(compiler, root, new CommonJsModuleCallback());
   }
@@ -136,13 +140,11 @@ class DossierProcessCommonJsModules {
     public boolean shouldTraverse(NodeTraversal t, Node n, Node parent) {
       if (n.isScript()) {
         checkState(currentModule == null);
-        if (typeRegistry.isModule(inputFs.getPath(n.getSourceFileName()))) {
+        Path path = inputFs.getPath(n.getSourceFileName());
+        if (typeRegistry.isModule(path) || !modulePaths.contains(path)) {
           return false;
         }
-        if (!moduleRegistry.hasModuleWithPath(n.getSourceFileName())) {
-          return false;
-        }
-        currentModule = moduleRegistry.registerScriptForModule(n);
+        currentModule = getModuleId(path);
 
         // Process all namespace references before module.exports and exports references.
         traverseTyped(t.getCompiler(), n, new ProcessNamespaceReferences());
@@ -182,11 +184,10 @@ class DossierProcessCommonJsModules {
           getprop(
               name("goog"),
               string("module")),
-          string(currentModule.getVarName())
-      ));
+          string(currentModule)));
       script.addChildToFront(googModule.srcrefTree(script));
 
-      t.getInput().addProvide(currentModule.getVarName());
+      t.getInput().addProvide(currentModule);
 
       traverse(t.getCompiler(), script, new TypeCleanup());
 
@@ -227,17 +228,17 @@ class DossierProcessCommonJsModules {
     }
 
     private void visitRequireCall(NodeTraversal t, Node require, Node parent) {
-      Path currentFile = moduleRegistry.getFileSystem().getPath(t.getSourceName());
+      Path currentFile = inputFs.getPath(t.getSourceName());
 
       String modulePath = require.getChildAtIndex(1).getString();
       String moduleName;
 
       if (modulePath.startsWith(".") || modulePath.startsWith("/")) {
         Path moduleFile = currentFile.getParent().resolve(modulePath).normalize();
-        moduleName = DossierModuleRegistry.getId(moduleFile);
+        moduleName = getModuleId(moduleFile);
       } else {
         // TODO: allow users to provide extern module definitions.
-        moduleName = DossierModule.externModuleName(modulePath);
+        moduleName = externModuleName(modulePath);
       }
 
       // Only register the require statement on this module if it occurs at the global
@@ -394,7 +395,7 @@ class DossierProcessCommonJsModules {
         typeNode.putProp(Node.ORIGINALNAME_PROP, typeNode.getString());
 
         if (typeNode.getString().startsWith("exports.")) {
-          String newName = currentModule.getVarName() +
+          String newName = currentModule +
               typeNode.getString().substring("exports".length());
           typeNode.setString(newName);
         }

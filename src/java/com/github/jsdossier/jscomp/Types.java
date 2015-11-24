@@ -16,16 +16,57 @@
 
 package com.github.jsdossier.jscomp;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
+import com.google.javascript.jscomp.ES6ModuleLoader;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.jstype.JSType;
+
+import java.net.URI;
+import java.nio.file.Path;
 
 /**
  * Utilities for working with JavaScript types.
  */
 public final class Types {
   private Types() {}  // Utility class.
+
+  private static final String EXTERN_PREFIX = "dossier$$extern__";
+
+  /**
+   * Mangles an extern module's ID so it may be used as a global variable with Closure's type
+   * system.
+   */
+  public static String externModuleName(String id) {
+    return EXTERN_PREFIX + id;
+  }
+
+  /**
+   * Returns whether the given name is for an extern module.
+   */
+  public static boolean isExternModule(String name) {
+    return name.startsWith(EXTERN_PREFIX);
+  }
+
+  /**
+   * Converts an extern module's ID back to its original name as it appeared in
+   * source.
+   */
+  public static String externToOriginalName(String name) {
+    checkArgument(isExternModule(name));
+    return name.substring(EXTERN_PREFIX.length());
+  }
+
+  /**
+   * Converts a file path to its internal module ID.
+   */
+  public static String getModuleId(Path path) {
+    // NB: don't use modulePath.toUri(), because that will include the file system type.
+    URI uri = URI.create(path.toString()).normalize();
+    return ES6ModuleLoader.toModuleName(uri);
+  }
 
   /**
    * Determines if the jsdoc on a type indicates a type is actually a constructor or just a

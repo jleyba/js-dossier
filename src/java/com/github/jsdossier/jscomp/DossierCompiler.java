@@ -19,13 +19,16 @@ package com.github.jsdossier.jscomp;
 import static com.google.common.base.Preconditions.checkState;
 
 import com.github.jsdossier.annotations.Input;
+import com.github.jsdossier.annotations.Modules;
 import com.github.jsdossier.annotations.Stderr;
+import com.google.common.collect.ImmutableSet;
 import com.google.javascript.jscomp.Compiler;
 import com.google.javascript.jscomp.CompilerInput;
 import com.google.javascript.rhino.Node;
 
 import java.io.PrintStream;
 import java.nio.file.FileSystem;
+import java.nio.file.Path;
 
 import javax.inject.Inject;
 
@@ -35,9 +38,9 @@ import javax.inject.Inject;
  */
 public final class DossierCompiler extends Compiler {
 
-  private final DossierModuleRegistry moduleRegistry;
   private final TypeRegistry2 typeRegistry;
   private final FileSystem inputFs;
+  private final ImmutableSet<Path> modulePaths;
   private final Es6ModulePassFactory modulePassFactory;
 
   private boolean hasParsed = false;
@@ -45,19 +48,15 @@ public final class DossierCompiler extends Compiler {
   @Inject
   DossierCompiler(
       @Stderr PrintStream stream,
-      DossierModuleRegistry moduleRegistry,
       TypeRegistry2 typeRegistry,
       @Input FileSystem inputFs,
+      @Modules ImmutableSet<Path> modulePaths,
       Es6ModulePassFactory modulePassFactory) {
     super(stream);
-    this.moduleRegistry = moduleRegistry;
     this.typeRegistry = typeRegistry;
     this.inputFs = inputFs;
+    this.modulePaths = modulePaths;
     this.modulePassFactory = modulePassFactory;
-  }
-
-  public DossierModuleRegistry getModuleRegistry() {
-    return moduleRegistry;
   }
 
   @Override
@@ -75,8 +74,8 @@ public final class DossierCompiler extends Compiler {
     // based on the goog.provide/require statements we generate for the modules. This is necessary
     // since the compiler does its final input ordering before invoking any custom passes
     // (otherwise, we could just process the modules as a custom pass).
-    DossierProcessCommonJsModules cjs = new DossierProcessCommonJsModules(
-        moduleRegistry, typeRegistry, inputFs);
+    DossierProcessCommonJsModules cjs =
+        new DossierProcessCommonJsModules(typeRegistry, inputFs, modulePaths);
     // TODO(jleyba): processCommonJsModules(cjs, getExternsInOrder());
     processCommonJsModules(cjs, getInputsById().values());
 
