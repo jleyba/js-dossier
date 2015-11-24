@@ -20,8 +20,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static org.junit.Assert.assertEquals;
 
 import com.github.jsdossier.annotations.Input;
-import com.github.jsdossier.jscomp.NominalType2;
-import com.github.jsdossier.jscomp.TypeRegistry2;
+import com.github.jsdossier.jscomp.NominalType;
+import com.github.jsdossier.jscomp.TypeRegistry;
 import com.github.jsdossier.proto.Comment;
 import com.github.jsdossier.testing.CompilerUtil;
 import com.github.jsdossier.testing.GuiceRule;
@@ -52,7 +52,8 @@ public class CommentParserTest {
   @Inject @Input FileSystem fs;
   @Inject CompilerUtil util;
   @Inject CommentParser parser;
-  @Inject TypeRegistry2 typeRegistry;
+  @Inject
+  TypeRegistry typeRegistry;
   @Inject LinkFactoryBuilder linkFactoryBuilder;
   
   private LinkFactory linkFactory;
@@ -207,7 +208,7 @@ public class CommentParserTest {
         " */",
         "foo.Bar = function() {};");
 
-    NominalType2 type = checkNotNull(typeRegistry.getType("foo.Bar"));
+    NominalType type = checkNotNull(typeRegistry.getType("foo.Bar"));
     Comment comment = parser.parseComment(
         type.getJsDoc().getBlockComment(),
         linkFactory);
@@ -241,7 +242,7 @@ public class CommentParserTest {
         " */",
         "foo.Bar = function() {};");
 
-    NominalType2 type = checkNotNull(typeRegistry.getType("foo.Bar"));
+    NominalType type = checkNotNull(typeRegistry.getType("foo.Bar"));
     Comment comment = parser.parseComment(
         type.getJsDoc().getBlockComment(),
         linkFactory);
@@ -315,7 +316,7 @@ public class CommentParserTest {
         "  /** A {@link abcd.IFace} implementation. */",
         "  abcd.Clazz = class extends abcd.IFace {};",
         "});");
-    NominalType2 type = typeRegistry.getType("a.b.c.d.Clazz");
+    NominalType type = typeRegistry.getType("a.b.c.d.Clazz");
     Comment comment = parser.parseComment(
         type.getJsDoc().getBlockComment(),
         linkFactory.withTypeContext(type));

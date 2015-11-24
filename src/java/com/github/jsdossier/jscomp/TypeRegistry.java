@@ -56,7 +56,7 @@ import javax.inject.Singleton;
  * Dossier's internal type registry.
  */
 @Singleton
-public final class TypeRegistry2 {
+public final class TypeRegistry {
 
   private final Set<String> providedSymbols = new HashSet<>();
   private final Set<String> implicitNamespaces = new HashSet<>();
@@ -64,17 +64,17 @@ public final class TypeRegistry2 {
   private final Map<Path, Module> modulesByPath = new HashMap<>();
   private final Multimap<Path, AliasRegion> aliasRegions =
       MultimapBuilder.hashKeys().arrayListValues().build();
-  private final Map<String, NominalType2> typesByName = new HashMap<>();
-  private final ListMultimap<JSType, NominalType2> typesByJsType = Multimaps.newListMultimap(
-      new IdentityHashMap<JSType, Collection<NominalType2>>(),
-      new Supplier<List<NominalType2>>() {
+  private final Map<String, NominalType> typesByName = new HashMap<>();
+  private final ListMultimap<JSType, NominalType> typesByJsType = Multimaps.newListMultimap(
+      new IdentityHashMap<JSType, Collection<NominalType>>(),
+      new Supplier<List<NominalType>>() {
         @Override
-        public List<NominalType2> get() {
+        public List<NominalType> get() {
           return new ArrayList<>();
         }
       });
 
-  private final SetMultimap<NominalType2, NominalType2> nestedTypes =
+  private final SetMultimap<NominalType, NominalType> nestedTypes =
       MultimapBuilder.hashKeys().hashSetValues().build();
   
   /**
@@ -100,7 +100,7 @@ public final class TypeRegistry2 {
    */
   @Nullable
   @CheckReturnValue
-  public String resolveAlias(NominalType2 type, String key) {
+  public String resolveAlias(NominalType type, String key) {
     if (!aliasRegions.containsKey(type.getSourceFile())) {
       return null;
     }
@@ -210,7 +210,7 @@ public final class TypeRegistry2 {
   /**
    * Registers a nominal type.
    */
-  public void addType(NominalType2 type) {
+  public void addType(NominalType type) {
     checkArgument(!typesByName.containsKey(type.getName()),
         "A type with name %s has already been defined", type.getName());
     typesByName.put(type.getName(), type);
@@ -237,7 +237,7 @@ public final class TypeRegistry2 {
    * 
    * @throws IllegalArgumentException if there is no such type.
    */
-  public NominalType2 getType(String name) {
+  public NominalType getType(String name) {
     checkArgument(isType(name), "no such type: %s", name);
     return typesByName.get(name);
   }
@@ -245,7 +245,7 @@ public final class TypeRegistry2 {
   /**
    * Returns all nominal types that have the given JSType.
    */
-  public List<NominalType2> getTypes(JSType type) {
+  public List<NominalType> getTypes(JSType type) {
     return Collections.unmodifiableList(typesByJsType.get(type));
   }
 
@@ -254,14 +254,14 @@ public final class TypeRegistry2 {
    * stands in contrast to {@link #getTypes(JSType)}, which returns the nominal types with the
    * exact JSType.
    */
-  public Collection<NominalType2> findTypes(final JSType type) {
+  public Collection<NominalType> findTypes(final JSType type) {
     Predicate<JSType> predicate = new Predicate<JSType>() {
       @Override
       public boolean apply(JSType input) {
         return typesEqual(type, input);
       }
     };
-    Multimap<JSType, NominalType2> filtered = filterKeys(typesByJsType, predicate);
+    Multimap<JSType, NominalType> filtered = filterKeys(typesByJsType, predicate);
     return Collections.unmodifiableCollection(filtered.values());
   }
 
@@ -301,14 +301,14 @@ public final class TypeRegistry2 {
   /**
    * Returns all registered types.
    */
-  public Collection<NominalType2> getAllTypes() {
+  public Collection<NominalType> getAllTypes() {
     return Collections.unmodifiableCollection(typesByName.values());
   }
 
   /**
    * Returns all types nested under another.
    */
-  public Set<NominalType2> getNestedTypes(NominalType2 type) {
+  public Set<NominalType> getNestedTypes(NominalType type) {
     return Collections.unmodifiableSet(nestedTypes.get(type));
   }
   
@@ -378,7 +378,7 @@ public final class TypeRegistry2 {
    * will return the interfaces it extends.
    */
   public ImmutableSet<JSType> getImplementedTypes(
-      NominalType2 nominalType, JSTypeRegistry jsRegistry) {
+      NominalType nominalType, JSTypeRegistry jsRegistry) {
     JSType type = nominalType.getType();
     ImmutableSet.Builder<JSType> builder = ImmutableSet.builder();
     if (type.isConstructor()) {
@@ -393,9 +393,9 @@ public final class TypeRegistry2 {
           }
 
         } else if (jsType.isInstanceType()) {
-          Collection<NominalType2> types = getTypes(jsType);
+          Collection<NominalType> types = getTypes(jsType);
           if (!types.isEmpty()) {
-            NominalType2 nt = types.iterator().next();
+            NominalType nt = types.iterator().next();
             if (nt != nominalType) {
               builder.addAll(getImplementedTypes(nt, jsRegistry));
             }

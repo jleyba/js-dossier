@@ -30,10 +30,10 @@ import javax.inject.Inject;
 public final class AliasTransformListener implements CompilerOptions.AliasTransformationHandler {
   
   private final FileSystem inputFs;
-  private final TypeRegistry2 typeRegistry;
+  private final TypeRegistry typeRegistry;
 
   @Inject
-  AliasTransformListener(@Input FileSystem inputFs, TypeRegistry2 typeRegistry) {
+  AliasTransformListener(@Input FileSystem inputFs, TypeRegistry typeRegistry) {
     this.inputFs = inputFs;
     this.typeRegistry = typeRegistry;
   }

@@ -23,8 +23,8 @@ import static java.nio.file.Files.createDirectories;
 
 import com.github.jsdossier.jscomp.JsDoc;
 import com.github.jsdossier.jscomp.Module;
-import com.github.jsdossier.jscomp.NominalType2;
-import com.github.jsdossier.jscomp.TypeRegistry2;
+import com.github.jsdossier.jscomp.NominalType;
+import com.github.jsdossier.jscomp.TypeRegistry;
 import com.github.jsdossier.jscomp.Types;
 import com.github.jsdossier.proto.BaseProperty;
 import com.github.jsdossier.proto.Comment;
@@ -72,13 +72,13 @@ final class RenderDocumentationTask implements Callable<Path> {
   private final NavIndexFactory navIndexFactory;
   private final Renderer renderer;
   private final CommentParser parser;
-  private final TypeRegistry2 typeRegistry;
+  private final TypeRegistry typeRegistry;
   private final JSTypeRegistry jsRegistry;
   private final LinkFactory linkFactory;
   private final TypeExpressionParserFactory expressionParserFactory;
   private final TypeInspector typeInspector;
   private final TypeIndex.IndexReference indexReference;
-  private final NominalType2 type;
+  private final NominalType type;
 
   RenderDocumentationTask(
       @Provided LinkFactoryBuilder linkFactoryBuilder,
@@ -87,12 +87,12 @@ final class RenderDocumentationTask implements Callable<Path> {
       @Provided NavIndexFactory navIndexFactory,
       @Provided Renderer renderer,
       @Provided CommentParser parser,
-      @Provided TypeRegistry2 typeRegistry,
+      @Provided TypeRegistry typeRegistry,
       @Provided JSTypeRegistry jsTypeRegistry,
       @Provided TypeExpressionParserFactory expressionParserFactory,
       @Provided TypeInspectorFactory typeInspectorFactory,
       @Provided TypeIndex typeIndex,
-      NominalType2 type) {
+      NominalType type) {
     this.dfs = dfs;
     this.template = template;
     this.navIndexFactory = navIndexFactory;
@@ -114,7 +114,7 @@ final class RenderDocumentationTask implements Callable<Path> {
       }
 
       Module module = type.getModule().get();
-      NominalType2 moduleType = typeRegistry.getType(module.getId());
+      NominalType moduleType = typeRegistry.getType(module.getId());
       TypeIndex.IndexReference moduleRef = typeIndex.addModule(moduleType);
       return moduleRef.addNestedType(type);
     } else {
@@ -172,7 +172,7 @@ final class RenderDocumentationTask implements Callable<Path> {
   private void addDescription(JsType.Builder renderSpec) {
     Comment description = typeInspector.getTypeDescription();
 
-    NominalType2 primary = getPrimaryDefinition(type);
+    NominalType primary = getPrimaryDefinition(type);
     if (primary != type) {
       renderSpec.setAliasedType(
           linkFactory.createLink(primary)
@@ -188,7 +188,7 @@ final class RenderDocumentationTask implements Callable<Path> {
     renderSpec.setDescription(description);
   }
 
-  private NominalType2 getPrimaryDefinition(NominalType2 type) {
+  private NominalType getPrimaryDefinition(NominalType type) {
     return typeRegistry.getTypes(type.getType()).iterator().next();
   }
 
@@ -197,7 +197,7 @@ final class RenderDocumentationTask implements Callable<Path> {
       return;
     }
 
-    NominalType2 parent;
+    NominalType parent;
     if (type.getModule().isPresent()) {
       parent = getParent(type);
       while (parent != null && !parent.isModuleExports()) {
@@ -221,7 +221,7 @@ final class RenderDocumentationTask implements Callable<Path> {
   
   @Nullable
   @CheckReturnValue
-  private NominalType2 getParent(NominalType2 type) {
+  private NominalType getParent(NominalType type) {
     String name = type.getName();
     int index = name.lastIndexOf('.');
     if (index != -1) {
@@ -234,10 +234,10 @@ final class RenderDocumentationTask implements Callable<Path> {
   }
   
   private void addNestedTypeInfo(JsType.Builder spec) {
-    Iterable<NominalType2> types =
+    Iterable<NominalType> types =
         FluentIterable.from(typeRegistry.getNestedTypes(type))
-            .toSortedList(new QualifiedNameComparator2());
-    for (NominalType2 child : types) {
+            .toSortedList(new QualifiedNameComparator());
+    for (NominalType child : types) {
       if (child.isNamespace() || child.getJsDoc().isTypedef()) {
         continue;
       }
@@ -252,10 +252,10 @@ final class RenderDocumentationTask implements Callable<Path> {
   }
 
   private void addTypedefInfo(JsType.Builder spec) {
-    Iterable<NominalType2> typedefs = FluentIterable.from(typeRegistry.getNestedTypes(type))
+    Iterable<NominalType> typedefs = FluentIterable.from(typeRegistry.getNestedTypes(type))
         .filter(Types.isTypedef())
-        .toSortedList(new QualifiedNameComparator2());
-    for (NominalType2 typedef : typedefs) {
+        .toSortedList(new QualifiedNameComparator());
+    for (NominalType typedef : typedefs) {
       JsType.TypeDef.Builder builder = spec.addTypeDefBuilder()
           .setName(getNestedTypeName(typedef))
           .setType(
@@ -275,7 +275,7 @@ final class RenderDocumentationTask implements Callable<Path> {
     }
   }
   
-  private String getNestedTypeName(NominalType2 child) {
+  private String getNestedTypeName(NominalType child) {
     String parentName = type.getName();
     String childName = child.getName();
     verify(childName.startsWith(parentName + "."));
@@ -288,7 +288,7 @@ final class RenderDocumentationTask implements Callable<Path> {
     return childName;
   }
 
-  private String getBasename(NominalType2 type) {
+  private String getBasename(NominalType type) {
     String name = dfs.getDisplayName(type);
     int index = name.lastIndexOf('.');
     if (index != -1) {
@@ -303,11 +303,11 @@ final class RenderDocumentationTask implements Callable<Path> {
     if (!type.getType().isFunctionType()) {
       return;
     }
-    NominalType2 context = type;
+    NominalType context = type;
     JsDoc docs = type.getJsDoc();
 
     if (isNullOrEmpty(docs.getOriginalCommentString())) {
-      NominalType2 aliased = getPrimaryDefinition(type);
+      NominalType aliased = getPrimaryDefinition(type);
       if (aliased != null && aliased != type) {
         docs = aliased.getJsDoc();
         context = aliased;

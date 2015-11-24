@@ -21,9 +21,9 @@ import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.base.Verify.verify;
 
 import com.github.jsdossier.jscomp.Module;
-import com.github.jsdossier.jscomp.NominalType2;
+import com.github.jsdossier.jscomp.NominalType;
 import com.github.jsdossier.jscomp.Position;
-import com.github.jsdossier.jscomp.TypeRegistry2;
+import com.github.jsdossier.jscomp.TypeRegistry;
 import com.github.jsdossier.proto.SourceLink;
 import com.github.jsdossier.proto.TypeLink;
 import com.google.auto.factory.AutoFactory;
@@ -94,10 +94,10 @@ final class LinkFactory {
           .build();
   
   private final DossierFileSystem dfs;
-  private final TypeRegistry2 typeRegistry;
+  private final TypeRegistry typeRegistry;
   private final JSTypeRegistry jsTypeRegistry;
   private final ModuleNamingConvention namingConvention;
-  private final Optional<NominalType2> pathContext;
+  private final Optional<NominalType> pathContext;
   private final TypeContext typeContext;
 
   /**
@@ -112,11 +112,11 @@ final class LinkFactory {
    */
   LinkFactory(
       @Provided DossierFileSystem dfs,
-      @Provided TypeRegistry2 typeRegistry,
+      @Provided TypeRegistry typeRegistry,
       @Provided JSTypeRegistry jsTypeRegistry,
       @Provided ModuleNamingConvention namingConvention,
       @Provided TypeContext typeContext,
-      @Nullable NominalType2 pathContext) {
+      @Nullable NominalType pathContext) {
     this.dfs = dfs;
     this.typeRegistry = typeRegistry;
     this.jsTypeRegistry = jsTypeRegistry;
@@ -133,7 +133,7 @@ final class LinkFactory {
    * Creates a new link factory that resolves type names relative to the given context type. All
    * generated paths will remain relative to this factory's path context type.
    */
-  public LinkFactory withTypeContext(NominalType2 context) {
+  public LinkFactory withTypeContext(NominalType context) {
     // NB: Can't use an overloaded constructor b/c AutoFactory tries to generate a constructor
     // for everything, even ones with private visibility.
     return new LinkFactory(dfs, typeRegistry, jsTypeRegistry, namingConvention,
@@ -177,7 +177,7 @@ final class LinkFactory {
    * will be relative to the context's generated file. Otherwise, the link will be relative to the
    * output root (e.g. the "global" scope).
    */
-  public TypeLink createLink(NominalType2 type) {
+  public TypeLink createLink(NominalType type) {
     Path path;
     String symbol = null;
 
@@ -219,7 +219,7 @@ final class LinkFactory {
   /**
    * Creates a link to a specific property on a type.
    */
-  public TypeLink createLink(NominalType2 type, String property) {
+  public TypeLink createLink(NominalType type, String property) {
     TypeLink link = createLink(type);
     checkState(!link.getHref().isEmpty(), "Failed to build link for %s", type.getName());
 
@@ -313,7 +313,7 @@ final class LinkFactory {
 
     String typeName = ref.type;
     String property = ref.property;
-    NominalType2 type;
+    NominalType type;
     if (typeName.isEmpty()) {
       type = typeContext.getContextType();
 
@@ -365,7 +365,7 @@ final class LinkFactory {
   
   @Nullable
   @CheckReturnValue
-  private TypeLink maybeCreateExportedPropertyLink(NominalType2 type, String property) {
+  private TypeLink maybeCreateExportedPropertyLink(NominalType type, String property) {
     checkArgument(type.isModuleExports());
     if (type.getType().toObjectType().hasOwnProperty(property)) {
       return createLink(type, property);

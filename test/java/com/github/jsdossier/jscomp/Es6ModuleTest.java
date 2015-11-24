@@ -35,7 +35,6 @@ import org.junit.runners.JUnit4;
 import java.io.IOException;
 import java.nio.file.FileSystem;
 import java.nio.file.Files;
-import java.nio.file.Path;
 
 import javax.inject.Inject;
 
@@ -53,7 +52,7 @@ public class Es6ModuleTest {
       .build();
 
   @Inject @Input private FileSystem fs;
-  @Inject private TypeRegistry2 typeRegistry;
+  @Inject private TypeRegistry typeRegistry;
   @Inject private CompilerUtil util;
 
   @Test

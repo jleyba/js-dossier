@@ -19,7 +19,7 @@ package com.github.jsdossier;
 import static com.github.jsdossier.testing.CompilerUtil.createSourceFile;
 import static com.google.common.truth.Truth.assertThat;
 
-import com.github.jsdossier.jscomp.NominalType2;
+import com.github.jsdossier.jscomp.NominalType;
 import com.github.jsdossier.proto.BaseProperty;
 import com.github.jsdossier.proto.Property;
 import com.github.jsdossier.proto.Tags;
@@ -44,7 +44,7 @@ public class TypeInspectorInstancePropertyTest extends AbstractTypeInspectorTest
         " */",
         "Person.prototype.age = 123;");
 
-    NominalType2 person = typeRegistry.getType("Person");
+    NominalType person = typeRegistry.getType("Person");
     TypeInspector typeInspector = typeInspectorFactory.create(person);
     TypeInspector.Report report = typeInspector.inspectInstanceType();
     assertThat(report.getFunctions()).isEmpty();
@@ -70,7 +70,7 @@ public class TypeInspectorInstancePropertyTest extends AbstractTypeInspectorTest
         "  this.age = 123;",
         "}");
 
-    NominalType2 person = typeRegistry.getType("Person");
+    NominalType person = typeRegistry.getType("Person");
     TypeInspector typeInspector = typeInspectorFactory.create(person);
     TypeInspector.Report report = typeInspector.inspectInstanceType();
     assertThat(report.getFunctions()).isEmpty();
@@ -100,7 +100,7 @@ public class TypeInspectorInstancePropertyTest extends AbstractTypeInspectorTest
         "function Character() {}",
         "goog.inherits(Character, Person);");
 
-    NominalType2 character = typeRegistry.getType("Character");
+    NominalType character = typeRegistry.getType("Character");
     TypeInspector typeInspector = typeInspectorFactory.create(character);
     TypeInspector.Report report = typeInspector.inspectInstanceType();
     assertThat(report.getFunctions()).isEmpty();
@@ -131,7 +131,7 @@ public class TypeInspectorInstancePropertyTest extends AbstractTypeInspectorTest
         "function Character() {}",
         "goog.inherits(Character, Person);");
 
-    NominalType2 character = typeRegistry.getType("Character");
+    NominalType character = typeRegistry.getType("Character");
     TypeInspector typeInspector = typeInspectorFactory.create(character);
     TypeInspector.Report report = typeInspector.inspectInstanceType();
     assertThat(report.getFunctions()).isEmpty();
@@ -168,7 +168,7 @@ public class TypeInspectorInstancePropertyTest extends AbstractTypeInspectorTest
         " */",
         "B.prototype.a = 456;");
 
-    NominalType2 typeB = typeRegistry.getType("B");
+    NominalType typeB = typeRegistry.getType("B");
     TypeInspector typeInspector = typeInspectorFactory.create(typeB);
     TypeInspector.Report reportB = typeInspector.inspectInstanceType();
     assertThat(reportB.getFunctions()).isEmpty();
@@ -203,7 +203,7 @@ public class TypeInspectorInstancePropertyTest extends AbstractTypeInspectorTest
         "  this.a = 456",
         "};");
 
-    NominalType2 typeB = typeRegistry.getType("B");
+    NominalType typeB = typeRegistry.getType("B");
     TypeInspector typeInspector = typeInspectorFactory.create(typeB);
     TypeInspector.Report reportB = typeInspector.inspectInstanceType();
     assertThat(reportB.getFunctions()).isEmpty();
@@ -245,7 +245,7 @@ public class TypeInspectorInstancePropertyTest extends AbstractTypeInspectorTest
         "  this.a = 456",
         "};");
 
-    NominalType2 type = typeRegistry.getType("C");
+    NominalType type = typeRegistry.getType("C");
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectInstanceType();
     assertThat(report.getFunctions()).isEmpty();
@@ -273,7 +273,7 @@ public class TypeInspectorInstancePropertyTest extends AbstractTypeInspectorTest
         " */",
         "A.prototype.a = 123;");
 
-    NominalType2 type = typeRegistry.getType("A");
+    NominalType type = typeRegistry.getType("A");
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectInstanceType();
     assertThat(report.getFunctions()).isEmpty();
@@ -309,7 +309,7 @@ public class TypeInspectorInstancePropertyTest extends AbstractTypeInspectorTest
             "}",
             "export {Person}"));
 
-    NominalType2 type = typeRegistry.getType("module$src$modules$foo$bar.Person");
+    NominalType type = typeRegistry.getType("module$src$modules$foo$bar.Person");
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectInstanceType();
     assertThat(report.getCompilerConstants()).isEmpty();
@@ -349,7 +349,7 @@ public class TypeInspectorInstancePropertyTest extends AbstractTypeInspectorTest
             "export class CustomGreeter extends Greeter {",
             "}"));
 
-    NominalType2 type = typeRegistry.getType("Greeter");
+    NominalType type = typeRegistry.getType("Greeter");
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectInstanceType();
     assertThat(report.getCompilerConstants()).isEmpty();
@@ -404,7 +404,7 @@ public class TypeInspectorInstancePropertyTest extends AbstractTypeInspectorTest
             "  constructor() { this.p = new Person; }",
             "}"));
     
-    NominalType2 type = typeRegistry.getType("module$src$modules$foo$bar.CustomGreeter");
+    NominalType type = typeRegistry.getType("module$src$modules$foo$bar.CustomGreeter");
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectInstanceType();
     assertThat(report.getCompilerConstants()).isEmpty();

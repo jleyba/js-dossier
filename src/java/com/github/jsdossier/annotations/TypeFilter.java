@@ -23,7 +23,7 @@ import javax.inject.Qualifier;
 
 /**
  * Qualifier for a {@link com.google.common.base.Predicate} that accepts
- * {@link com.github.jsdossier.jscomp.NominalType2} objects that should be excluded
+ * {@link com.github.jsdossier.jscomp.NominalType} objects that should be excluded
  * from generated output.
  */
 @Qualifier

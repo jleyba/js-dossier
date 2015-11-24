@@ -87,7 +87,7 @@ import javax.inject.Inject;
  *   foo$$module$bar.sayHi();
  * </code></pre>
  */
-class DossierProcessCommonJsModules {
+class NodeModulePass {
 
   // NB: The following errors are forbid situations that complicate type checking.
 
@@ -99,15 +99,15 @@ class DossierProcessCommonJsModules {
           "DOSSIER_INVALID_MODULE_EXPORTS_ASSIGNMENT",
           "Multiple assignments to module.exports are not permitted");
 
-  private final TypeRegistry2 typeRegistry;
+  private final TypeRegistry typeRegistry;
   private final FileSystem inputFs;
   private final ImmutableSet<Path> modulePaths;
 
   private String currentModule = null;
 
   @Inject
-  DossierProcessCommonJsModules(
-      TypeRegistry2 typeRegistry,
+  NodeModulePass(
+      TypeRegistry typeRegistry,
       @Input FileSystem inputFs,
       @Modules ImmutableSet<Path> modulePaths) {
     this.typeRegistry = typeRegistry;

@@ -48,15 +48,15 @@ import java.nio.file.Path;
 import javax.inject.Inject;
 
 /**
- * Tests for {@link DossierProcessCommonJsModules}.
+ * Tests for {@link NodeModulePass}.
  */
 @RunWith(JUnit4.class)
-public class DossierProcessCommonJsModulesTest {
+public class NodeModulePassTest {
   
   private static final FileSystem FS = Jimfs.newFileSystem();
   
   @Inject
-  TypeRegistry2 typeRegistry;
+  TypeRegistry typeRegistry;
 
   @Test
   public void doesNotModifySourceIfFileIsNotACommonJsModule() {

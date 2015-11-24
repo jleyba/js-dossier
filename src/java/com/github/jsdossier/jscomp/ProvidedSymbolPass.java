@@ -49,14 +49,14 @@ public final class ProvidedSymbolPass implements CompilerPass {
   private final FileSystem inputFs;
   private final ImmutableSet<Path> nodeModules;
   private final DossierCompiler compiler;
-  private final TypeRegistry2 typeRegistry;
+  private final TypeRegistry typeRegistry;
   
   @Inject
   ProvidedSymbolPass(
       @Input FileSystem inputFs,
       @Modules ImmutableSet<Path> nodeModules,
       DossierCompiler compiler,
-      TypeRegistry2 typeRegistry) {
+      TypeRegistry typeRegistry) {
     this.inputFs = inputFs;
     this.nodeModules = nodeModules;
     this.compiler = compiler;

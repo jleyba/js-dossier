@@ -20,8 +20,8 @@ import static com.github.jsdossier.testing.CompilerUtil.createSourceFile;
 import static com.google.common.truth.Truth.assertThat;
 
 import com.github.jsdossier.annotations.Input;
-import com.github.jsdossier.jscomp.NominalType2;
-import com.github.jsdossier.jscomp.TypeRegistry2;
+import com.github.jsdossier.jscomp.NominalType;
+import com.github.jsdossier.jscomp.TypeRegistry;
 import com.github.jsdossier.proto.Comment;
 import com.github.jsdossier.testing.CompilerUtil;
 import com.github.jsdossier.testing.GuiceRule;
@@ -53,7 +53,7 @@ public class TypeExpressionParserTest {
   
   @Inject @Input private FileSystem fs;
   @Inject private CompilerUtil util;
-  @Inject private TypeRegistry2 typeRegistry;
+  @Inject private TypeRegistry typeRegistry;
   @Inject private LinkFactoryBuilder linkFactoryBuilder;
   @Inject private TypeExpressionParserFactory parserFactory;
   
@@ -61,7 +61,7 @@ public class TypeExpressionParserTest {
   public void parseTypeDefinition() {
     util.compile(fs.getPath("foo.js"), "/** @typedef {{name: string, age: number}} */var Person;");
     
-    NominalType2 type = typeRegistry.getType("Person");
+    NominalType type = typeRegistry.getType("Person");
     TypeExpressionParser parser = parserFactory.create(linkFactoryBuilder.create(type));
 
     Comment comment = parser.parse(type.getJsDoc().getInfo().getTypedefType());
@@ -85,7 +85,7 @@ public class TypeExpressionParserTest {
         " */",
         "function Greeter(a) {}");
 
-    NominalType2 type = typeRegistry.getType("Greeter");
+    NominalType type = typeRegistry.getType("Greeter");
     TypeExpressionParser parser = parserFactory.create(linkFactoryBuilder.create(type));
     JSTypeExpression expression = type.getJsDoc().getParameter("a").getType();
     Comment comment = parser.parse(expression);
@@ -112,7 +112,7 @@ public class TypeExpressionParserTest {
             " */",
             "export function Greeter(a) {}"));
     
-    NominalType2 type = typeRegistry.getType("module$source$modules$two.Greeter");
+    NominalType type = typeRegistry.getType("module$source$modules$two.Greeter");
     TypeExpressionParser parser = parserFactory.create(
         linkFactoryBuilder.create(type).withTypeContext(type));
     JSTypeExpression expression = type.getJsDoc().getParameter("a").getType();
@@ -137,7 +137,7 @@ public class TypeExpressionParserTest {
   public void redundantNonNullQualifierOnPrimitiveIsIncluded() {
     util.compile(fs.getPath("foo.js"), "/** @typedef {!string} */var Name;");
 
-    NominalType2 type = typeRegistry.getType("Name");
+    NominalType type = typeRegistry.getType("Name");
     TypeExpressionParser parser = parserFactory.create(linkFactoryBuilder.create(type));
 
     Comment comment = parser.parse(type.getJsDoc().getInfo().getTypedefType());

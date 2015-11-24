@@ -35,8 +35,8 @@ import com.github.jsdossier.annotations.Stdout;
 import com.github.jsdossier.annotations.TypeFilter;
 import com.github.jsdossier.jscomp.CallableCompiler;
 import com.github.jsdossier.jscomp.Module;
-import com.github.jsdossier.jscomp.NominalType2;
-import com.github.jsdossier.jscomp.TypeRegistry2;
+import com.github.jsdossier.jscomp.NominalType;
+import com.github.jsdossier.jscomp.TypeRegistry;
 import com.github.jsdossier.soy.Renderer;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Function;
@@ -202,9 +202,9 @@ final class Main {
     @DocumentationScoped
     NavIndexFactory provideNavIndexFactory(
         @Output Path outputDir,
-        TypeRegistry2 typeRegistry) {
+        TypeRegistry typeRegistry) {
       boolean showTypes = false;
-      for (NominalType2 type : typeRegistry.getAllTypes()) {
+      for (NominalType type : typeRegistry.getAllTypes()) {
         if (!type.getModule().isPresent()
             || type.getModule().get().getType() == Module.Type.CLOSURE) {
           showTypes = true;
@@ -341,10 +341,10 @@ final class Main {
       DOCUMENTATION_SCOPE.enter();
       createDirectories(outputDir);
       DocTemplate template = injector.getInstance(DocTemplate.class);
-      TypeRegistry2 typeRegistry2 = injector.getInstance(TypeRegistry2.class);
+      TypeRegistry typeRegistry = injector.getInstance(TypeRegistry.class);
       List<Path> files = injector.getInstance(RenderTaskExecutor.class)
           .renderIndex()
-          .renderDocumentation(typeRegistry2.getAllTypes())
+          .renderDocumentation(typeRegistry.getAllTypes())
           .renderMarkdown(config.getCustomPages())
           .renderResources(concat(template.getCss(), template.getHeadJs(), template.getTailJs()))
           .renderSourceFiles(concat(config.getSources(), config.getModules()))

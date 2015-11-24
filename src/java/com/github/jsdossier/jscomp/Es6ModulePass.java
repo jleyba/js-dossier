@@ -57,11 +57,11 @@ final class Es6ModulePass implements CompilerPass {
   private static final Logger log = Logger.getLogger(Es6ModulePass.class.getName());
 
   private final DossierCompiler compiler;
-  private final TypeRegistry2 typeRegistry;
+  private final TypeRegistry typeRegistry;
   private final FileSystem inputFs;
 
   Es6ModulePass(
-      @Provided TypeRegistry2 typeRegistry,
+      @Provided TypeRegistry typeRegistry,
       @Provided @Input FileSystem inputFs,
       DossierCompiler compiler) {
     this.typeRegistry = typeRegistry;

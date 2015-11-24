@@ -25,8 +25,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
 import com.github.jsdossier.annotations.DocumentationScoped;
-import com.github.jsdossier.jscomp.NominalType2;
-import com.github.jsdossier.jscomp.TypeRegistry2;
+import com.github.jsdossier.jscomp.NominalType;
+import com.github.jsdossier.jscomp.TypeRegistry;
 import com.github.jsdossier.proto.TypeLink;
 
 import java.util.HashMap;
@@ -43,16 +43,16 @@ final class TypeIndex {
 
   private final DossierFileSystem dfs;
   private final LinkFactory linkFactory;
-  private final TypeRegistry2 typeRegistry;
+  private final TypeRegistry typeRegistry;
   
   private final JsonObject json = new JsonObject();
-  private final Map<NominalType2, IndexReference> seenTypes = new HashMap<>();
+  private final Map<NominalType, IndexReference> seenTypes = new HashMap<>();
 
   @Inject
   TypeIndex(
       DossierFileSystem dfs,
       LinkFactoryBuilder linkFactoryBuilder,
-      TypeRegistry2 typeRegistry) {
+      TypeRegistry typeRegistry) {
     this.dfs = dfs;
     this.typeRegistry = typeRegistry;
     this.linkFactory = linkFactoryBuilder.create(null);
@@ -66,7 +66,7 @@ final class TypeIndex {
     return json.toString();
   }
   
-  public synchronized IndexReference addModule(NominalType2 module) {
+  public synchronized IndexReference addModule(NominalType module) {
     if (seenTypes.containsKey(module)) {
       return seenTypes.get(module);
     }
@@ -83,7 +83,7 @@ final class TypeIndex {
     return ref;
   }
 
-  public synchronized IndexReference addType(NominalType2 type) {
+  public synchronized IndexReference addType(NominalType type) {
     return addTypeInfo(getJsonArray(json, "types"), type);
   }
 
@@ -94,7 +94,7 @@ final class TypeIndex {
     return object.get(name).getAsJsonArray();
   }
 
-  private synchronized IndexReference addTypeInfo(JsonArray array, NominalType2 type) {
+  private synchronized IndexReference addTypeInfo(JsonArray array, NominalType type) {
     if (seenTypes.containsKey(type)) {
       return seenTypes.get(type);
     }
@@ -107,12 +107,12 @@ final class TypeIndex {
     details.addProperty("interface", type.getType().isInterface());
     array.add(details);
 
-    List<NominalType2> allTypes = typeRegistry.getTypes(type.getType());
+    List<NominalType> allTypes = typeRegistry.getTypes(type.getType());
     if (allTypes.get(0) != type) {
-      List<NominalType2> typedefs = FluentIterable.from(typeRegistry.getNestedTypes(type))
+      List<NominalType> typedefs = FluentIterable.from(typeRegistry.getNestedTypes(type))
           .filter(isTypedef())
-          .toSortedList(new QualifiedNameComparator2());
-      for (NominalType2 typedef : typedefs) {
+          .toSortedList(new QualifiedNameComparator());
+      for (NominalType typedef : typedefs) {
         TypeLink link = linkFactory.createLink(typedef);
         checkArgument(
             !link.getHref().isEmpty(), "Failed to build link for %s", typedef.getName());
@@ -128,19 +128,19 @@ final class TypeIndex {
   }
 
   final class IndexReference {
-    private final NominalType2 type;
+    private final NominalType type;
     protected final JsonObject index;
 
-    private IndexReference(NominalType2 type, JsonObject index) {
+    private IndexReference(NominalType type, JsonObject index) {
       this.type = type;
       this.index = index;
     }
     
-    public NominalType2 getNominalType() {
+    public NominalType getNominalType() {
       return type;
     }
     
-    public IndexReference addNestedType(NominalType2 type) {
+    public IndexReference addNestedType(NominalType type) {
       checkArgument(getNominalType().isModuleExports(),
           "Nested types should only be recorded for modules: %s", getNominalType().getName());
       checkArgument(getNominalType().getModule().equals(type.getModule()),

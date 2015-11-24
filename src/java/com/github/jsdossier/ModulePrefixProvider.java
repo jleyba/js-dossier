@@ -24,7 +24,7 @@ import static java.nio.file.Files.isDirectory;
 import com.github.jsdossier.annotations.Input;
 import com.github.jsdossier.annotations.ModulePrefix;
 import com.github.jsdossier.jscomp.Module;
-import com.github.jsdossier.jscomp.TypeRegistry2;
+import com.github.jsdossier.jscomp.TypeRegistry;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
@@ -43,13 +43,13 @@ import javax.inject.Provider;
 final class ModulePrefixProvider implements Provider<Path>  {
 
   private final FileSystem inputFs;
-  private final TypeRegistry2 typeRegistry;
+  private final TypeRegistry typeRegistry;
   private final Optional<Path> userSuppliedPrefix;
 
   @Inject
   ModulePrefixProvider(
       @Input FileSystem inputFs,
-      TypeRegistry2 typeRegistry,
+      TypeRegistry typeRegistry,
       @ModulePrefix Optional<Path> userSuppliedPrefix) {
     this.inputFs = inputFs;
     this.typeRegistry = typeRegistry;

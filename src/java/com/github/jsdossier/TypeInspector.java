@@ -30,9 +30,9 @@ import com.github.jsdossier.jscomp.JsDoc;
 import com.github.jsdossier.jscomp.JsDoc.Annotation;
 import com.github.jsdossier.jscomp.JsDoc.TypedDescription;
 import com.github.jsdossier.jscomp.Module;
-import com.github.jsdossier.jscomp.NominalType2;
+import com.github.jsdossier.jscomp.NominalType;
 import com.github.jsdossier.jscomp.Parameter;
-import com.github.jsdossier.jscomp.TypeRegistry2;
+import com.github.jsdossier.jscomp.TypeRegistry;
 import com.github.jsdossier.proto.BaseProperty;
 import com.github.jsdossier.proto.Comment;
 import com.github.jsdossier.proto.Function;
@@ -84,22 +84,22 @@ final class TypeInspector {
 
   private final DossierFileSystem dfs;
   private final CommentParser parser;
-  private final TypeRegistry2 registry;
+  private final TypeRegistry registry;
   private final JSTypeRegistry jsRegistry;
   private final Predicate<String> typeFilter;
   private final TypeExpressionParserFactory expressionParserFactory;
   private final LinkFactory linkFactory;
-  private final NominalType2 inspectedType;
+  private final NominalType inspectedType;
 
   TypeInspector(
       @Provided DossierFileSystem dfs,
       @Provided CommentParser parser,
-      @Provided TypeRegistry2 registry,
+      @Provided TypeRegistry registry,
       @Provided JSTypeRegistry jsRegistry,
       @Provided @TypeFilter Predicate<String> typeFilter,
       @Provided TypeExpressionParserFactory expressionParserFactory,
       @Provided LinkFactoryBuilder linkFactoryBuilder,
-      NominalType2 inspectedType) {
+      NominalType inspectedType) {
     this.dfs = dfs;
     this.parser = parser;
     this.registry = registry;
@@ -135,7 +135,7 @@ final class TypeInspector {
    *     before the markdown parser is invoked.
    * @return the extracted description.
    */
-  public Comment getTypeDescription(NominalType2 type, boolean summaryOnly) {
+  public Comment getTypeDescription(NominalType type, boolean summaryOnly) {
     String blockComment = type.getJsDoc().getBlockComment();
     if (!isNullOrEmpty(blockComment)) {
       return parseComment(type, blockComment, summaryOnly);
@@ -158,7 +158,7 @@ final class TypeInspector {
         blockComment = JsDoc.from(info).getBlockComment();
 
         if (isNullOrEmpty(blockComment)) {
-          NominalType2 resolved = linkFactory.getTypeContext()
+          NominalType resolved = linkFactory.getTypeContext()
               .changeContext(type)
               .resolveType(internalName);
           if (resolved != null) {
@@ -173,7 +173,7 @@ final class TypeInspector {
       }
     }
 
-    NominalType2 aliased = registry.getTypes(type.getType()).get(0);
+    NominalType aliased = registry.getTypes(type.getType()).get(0);
     if (aliased != null && aliased != type) {
       return getTypeDescription(aliased, summaryOnly);
     }
@@ -181,7 +181,7 @@ final class TypeInspector {
     return Comment.getDefaultInstance();
   }
   
-  private Comment parseComment(NominalType2 context, String comment, boolean summaryOnly) {
+  private Comment parseComment(NominalType context, String comment, boolean summaryOnly) {
     if (summaryOnly) {
       Matcher matcher = SUMMARY_REGEX.matcher(comment);
       if (matcher.find()) {
@@ -250,7 +250,7 @@ final class TypeInspector {
     return report;
   }
   
-  private PropertyDocs findStaticPropertyJsDoc(NominalType2 ownerType, Property property) {
+  private PropertyDocs findStaticPropertyJsDoc(NominalType ownerType, Property property) {
     JsDoc jsdoc = JsDoc.from(property.getJSDocInfo());
     if (!isEmptyComment(jsdoc) || !ownerType.isModuleExports()) {
       return PropertyDocs.create(ownerType, jsdoc);
@@ -289,7 +289,7 @@ final class TypeInspector {
       if (registry.isModule(internalName)) {
         return PropertyDocs.create(ownerType, jsdoc);
       }
-      NominalType2 type = registry.getType(internalName);
+      NominalType type = registry.getType(internalName);
       return PropertyDocs.create(type, type.getJsDoc());
     }
     
@@ -298,7 +298,7 @@ final class TypeInspector {
     if (index != -1) {
       String name = internalName.substring(0, index);
       if (registry.isType(name)) {
-        NominalType2 type = registry.getType(name);
+        NominalType type = registry.getType(name);
         property = type.getType().toObjectType().getOwnSlot(
             internalName.substring(index + 1));
         if (property != null) {
@@ -317,7 +317,7 @@ final class TypeInspector {
   /**
    * Returns the raw properties for the given type.
    */
-  public List<Property> getProperties(NominalType2 nominalType) {
+  public List<Property> getProperties(NominalType nominalType) {
     JSType type = nominalType.getType();
     ObjectType object = ObjectType.cast(type);
     if (object == null) {
@@ -392,7 +392,7 @@ final class TypeInspector {
         continue;
       }
 
-      NominalType2 ownerType = property.getOwnerType().or(inspectedType);
+      NominalType ownerType = property.getOwnerType().or(inspectedType);
       Comment definedBy = getDefinedByComment(linkFactory, ownerType, currentType, property);
 
       if (propertyType.isFunctionType()) {
@@ -489,7 +489,7 @@ final class TypeInspector {
   @Nullable
   private Comment getDefinedByComment(
       final LinkFactory linkFactory,
-      final NominalType2 context,
+      final NominalType context,
       JSType currentType,
       InstanceProperty property) {
     JSType propertyDefinedOn = property.getDefinedByType();
@@ -508,7 +508,7 @@ final class TypeInspector {
 
     final JSType definedByType = stripTemplateTypeInformation(propertyDefinedOn);
 
-    List<NominalType2> types = registry.getTypes(definedByType);
+    List<NominalType> types = registry.getTypes(definedByType);
     if (types.isEmpty() && definedByType.isInstanceType()) {
       types = registry.getTypes(definedByType.toObjectType().getConstructor());
     }
@@ -574,7 +574,7 @@ final class TypeInspector {
       String name,
       JSType type,
       Node node,
-      NominalType2 context,
+      NominalType context,
       JsDoc jsDoc) {
     PropertyDocs propertyDocs = PropertyDocs.create(context, jsDoc);
     return getFunctionData(name, type, node, propertyDocs, null,
@@ -662,7 +662,7 @@ final class TypeInspector {
     //   Clazz.prototype.add = function(x, y) { return x + y; };
     if (foundDocs != null
         && !foundDocs.getJsDoc().getParameters().isEmpty()) {
-      final NominalType2 contextType = foundDocs.getContextType();
+      final NominalType contextType = foundDocs.getContextType();
       return FluentIterable.from(foundDocs.getJsDoc().getParameters())
           .transform(new com.google.common.base.Function<Parameter, Detail>() {
             @Override
@@ -749,7 +749,7 @@ final class TypeInspector {
     return null;
   }
 
-  private Iterable<Function.Detail> buildThrowsData(final NominalType2 context, JsDoc jsDoc) {
+  private Iterable<Function.Detail> buildThrowsData(final NominalType context, JsDoc jsDoc) {
     return transform(jsDoc.getThrowsClauses(),
         new com.google.common.base.Function<TypedDescription, Detail>() {
           @Override
@@ -800,7 +800,7 @@ final class TypeInspector {
       }
     }
 
-    NominalType2 context = null;
+    NominalType context = null;
     if (returnDocs != null) {
       context = returnDocs.getContextType();
     } else if (docs != null) {
@@ -917,7 +917,7 @@ final class TypeInspector {
     }
     for (InstanceProperty property : overrides) {
       if (predicate.apply(property.getJsDoc())) {
-        List<NominalType2> types = registry.getTypes(property.getType());
+        List<NominalType> types = registry.getTypes(property.getType());
         if (types.isEmpty()) {
           return PropertyDocs.create(docs.getContextType(), property.getJsDoc());
         }
@@ -927,7 +927,7 @@ final class TypeInspector {
     return null;
   }
 
-  private Comment getPropertyLink(NominalType2 context, InstanceProperty property) {
+  private Comment getPropertyLink(NominalType context, InstanceProperty property) {
     JSType type = property.getDefinedByType();
     
     if (property.getOwnerType().isPresent()) {
@@ -1004,11 +1004,11 @@ final class TypeInspector {
 
   @AutoValue
   static abstract class PropertyDocs {
-    static PropertyDocs create(NominalType2 context, JsDoc jsDoc) {
+    static PropertyDocs create(NominalType context, JsDoc jsDoc) {
       return new AutoValue_TypeInspector_PropertyDocs(context, jsDoc);
     }
     
-    abstract NominalType2 getContextType();
+    abstract NominalType getContextType();
     abstract JsDoc getJsDoc();
   }
 
@@ -1018,7 +1018,7 @@ final class TypeInspector {
       return new AutoValue_TypeInspector_InstanceProperty.Builder();
     }
     
-    abstract Optional<NominalType2> getOwnerType();
+    abstract Optional<NominalType> getOwnerType();
     abstract JSType getDefinedByType();
     abstract String getName();
     abstract JSType getType();
@@ -1027,11 +1027,11 @@ final class TypeInspector {
 
     @AutoValue.Builder
     static abstract class Builder {
-      final Builder setOwnerType(@Nullable NominalType2 type) {
+      final Builder setOwnerType(@Nullable NominalType type) {
         return setOwnerType(Optional.fromNullable(type));
       }
 
-      abstract Builder setOwnerType(Optional<NominalType2> type);
+      abstract Builder setOwnerType(Optional<NominalType> type);
       abstract Builder setDefinedByType(JSType type);
       abstract Builder setName(String name);
       abstract Builder setType(JSType type);

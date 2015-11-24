@@ -48,7 +48,7 @@ public class InheritanceTest {
 
   @Inject CompilerUtil util;
   @Inject
-  TypeRegistry2 typeRegistry;
+  TypeRegistry typeRegistry;
   @Inject JSTypeRegistry jsRegistry;
 
   @Test
@@ -66,8 +66,8 @@ public class InheritanceTest {
         "/** @override */",
         "RunnableImpl.prototype.run = function() {};");
 
-    NominalType2 runnable = typeRegistry.getType("Runnable");
-    NominalType2 runnableImpl = typeRegistry.getType("RunnableImpl");
+    NominalType runnable = typeRegistry.getType("Runnable");
+    NominalType runnableImpl = typeRegistry.getType("RunnableImpl");
     assertThat(typeRegistry.getImplementedTypes(runnableImpl, jsRegistry))
         .containsExactly(getInstanceType(runnable));
   }
@@ -79,7 +79,7 @@ public class InheritanceTest {
         "function A() {}",
         "A.prototype.a = function() {};");
 
-    NominalType2 a = typeRegistry.getType("A");
+    NominalType a = typeRegistry.getType("A");
     assertThat(typeRegistry.getImplementedTypes(a, jsRegistry)).isEmpty();
   }
 
@@ -103,9 +103,9 @@ public class InheritanceTest {
         "Impl.prototype.a = function() {};",
         "Impl.prototype.b = function() {};");
 
-    NominalType2 a = typeRegistry.getType("A");
-    NominalType2 b = typeRegistry.getType("B");
-    NominalType2 impl = typeRegistry.getType("Impl");
+    NominalType a = typeRegistry.getType("A");
+    NominalType b = typeRegistry.getType("B");
+    NominalType impl = typeRegistry.getType("Impl");
 
     assertThat(typeRegistry.getImplementedTypes(impl, jsRegistry))
         .containsExactly(
@@ -121,8 +121,8 @@ public class InheritanceTest {
         "/** @interface @extends {A} */",
         "function B() {}");
 
-    NominalType2 a = typeRegistry.getType("A");
-    NominalType2 b = typeRegistry.getType("B");
+    NominalType a = typeRegistry.getType("A");
+    NominalType b = typeRegistry.getType("B");
     assertThat(typeRegistry.getImplementedTypes(a, jsRegistry)).isEmpty();
     assertThat(typeRegistry.getImplementedTypes(b, jsRegistry))
         .containsExactly(getInstanceType(a));
@@ -140,10 +140,10 @@ public class InheritanceTest {
         "/** @interface @extends {C} */",
         "function D() {}");
 
-    NominalType2 a = typeRegistry.getType("A");
-    NominalType2 b = typeRegistry.getType("B");
-    NominalType2 c = typeRegistry.getType("C");
-    NominalType2 d = typeRegistry.getType("D");
+    NominalType a = typeRegistry.getType("A");
+    NominalType b = typeRegistry.getType("B");
+    NominalType c = typeRegistry.getType("C");
+    NominalType d = typeRegistry.getType("D");
     assertThat(typeRegistry.getImplementedTypes(a, jsRegistry)).isEmpty();
     assertThat(typeRegistry.getImplementedTypes(b, jsRegistry))
         .containsExactly(getInstanceType(a));
@@ -172,9 +172,9 @@ public class InheritanceTest {
         " */",
         "function C() {}");
 
-    NominalType2 a = typeRegistry.getType("A");
-    NominalType2 b = typeRegistry.getType("B");
-    NominalType2 c = typeRegistry.getType("C");
+    NominalType a = typeRegistry.getType("A");
+    NominalType b = typeRegistry.getType("B");
+    NominalType c = typeRegistry.getType("C");
     assertThat(typeRegistry.getImplementedTypes(a, jsRegistry)).isEmpty();
     assertThat(typeRegistry.getImplementedTypes(b, jsRegistry)).isEmpty();
     assertThat(typeRegistry.getImplementedTypes(c, jsRegistry))
@@ -198,9 +198,9 @@ public class InheritanceTest {
         " */",
         "function Impl() {}");
 
-    NominalType2 a = typeRegistry.getType("A");
-    NominalType2 b = typeRegistry.getType("B");
-    NominalType2 impl = typeRegistry.getType("Impl");
+    NominalType a = typeRegistry.getType("A");
+    NominalType b = typeRegistry.getType("B");
+    NominalType impl = typeRegistry.getType("Impl");
 
     assertThat(typeRegistry.getImplementedTypes(impl, jsRegistry))
         .containsExactly(
@@ -226,9 +226,9 @@ public class InheritanceTest {
         " */",
         "function Impl() {}");
 
-    NominalType2 a = typeRegistry.getType("A");
-    NominalType2 b = typeRegistry.getType("B");
-    NominalType2 impl = typeRegistry.getType("Impl");
+    NominalType a = typeRegistry.getType("A");
+    NominalType b = typeRegistry.getType("B");
+    NominalType impl = typeRegistry.getType("Impl");
 
     assertThat(typeRegistry.getImplementedTypes(impl, jsRegistry))
         .containsExactly(
@@ -258,10 +258,10 @@ public class InheritanceTest {
         " */",
         "function Impl() {}");
 
-    NominalType2 a = typeRegistry.getType("A");
-    NominalType2 b = typeRegistry.getType("B");
-    NominalType2 c = typeRegistry.getType("C");
-    NominalType2 impl = typeRegistry.getType("Impl");
+    NominalType a = typeRegistry.getType("A");
+    NominalType b = typeRegistry.getType("B");
+    NominalType c = typeRegistry.getType("C");
+    NominalType impl = typeRegistry.getType("Impl");
 
     assertThat(typeRegistry.getImplementedTypes(impl, jsRegistry))
         .containsExactly(
@@ -276,7 +276,7 @@ public class InheritanceTest {
         "/** @constructor */",
         "function A() {}");
 
-    NominalType2 a = typeRegistry.getType("A");
+    NominalType a = typeRegistry.getType("A");
 
     assertThat(typeRegistry.getTypeHierarchy(a.getType(), jsRegistry))
         .containsExactly(getInstanceType(a))
@@ -293,8 +293,8 @@ public class InheritanceTest {
         "function B() {}");
 
 
-    NominalType2 a = typeRegistry.getType("A");
-    NominalType2 b = typeRegistry.getType("B");
+    NominalType a = typeRegistry.getType("A");
+    NominalType b = typeRegistry.getType("B");
 
     assertThat(typeRegistry.getTypeHierarchy(b.getType(), jsRegistry))
         .containsExactly(
@@ -316,10 +316,10 @@ public class InheritanceTest {
         "function D() {}");
 
 
-    NominalType2 a = typeRegistry.getType("A");
-    NominalType2 b = typeRegistry.getType("B");
-    NominalType2 c = typeRegistry.getType("C");
-    NominalType2 d = typeRegistry.getType("D");
+    NominalType a = typeRegistry.getType("A");
+    NominalType b = typeRegistry.getType("B");
+    NominalType c = typeRegistry.getType("C");
+    NominalType d = typeRegistry.getType("D");
 
     assertThat(typeRegistry.getTypeHierarchy(d.getType(), jsRegistry))
         .containsExactly(
@@ -336,7 +336,7 @@ public class InheritanceTest {
         "/** @constructor */",
         "function Clazz() {}");
 
-    NominalType2 clazz = typeRegistry.getType("Clazz");
+    NominalType clazz = typeRegistry.getType("Clazz");
     assertThat(typeRegistry.getDeclaredInterfaces(clazz.getType(), jsRegistry)).isEmpty();
   }
   
@@ -367,10 +367,10 @@ public class InheritanceTest {
         " */",
         "function OtherClazz() {}");
 
-    NominalType2 a = typeRegistry.getType("A");
-    NominalType2 b = typeRegistry.getType("B");
-    NominalType2 c = typeRegistry.getType("C");
-    NominalType2 clazz = typeRegistry.getType("Clazz");
+    NominalType a = typeRegistry.getType("A");
+    NominalType b = typeRegistry.getType("B");
+    NominalType c = typeRegistry.getType("C");
+    NominalType clazz = typeRegistry.getType("Clazz");
 
     assertThat(typeRegistry.getDeclaredInterfaces(clazz.getType(), jsRegistry))
         .containsExactly(
@@ -406,10 +406,10 @@ public class InheritanceTest {
         " */",
         "function OtherClazz() {}");
 
-    NominalType2 a = typeRegistry.getType("A");
-    NominalType2 b = typeRegistry.getType("B");
-    NominalType2 c = typeRegistry.getType("C");
-    NominalType2 clazz = typeRegistry.getType("Clazz");
+    NominalType a = typeRegistry.getType("A");
+    NominalType b = typeRegistry.getType("B");
+    NominalType c = typeRegistry.getType("C");
+    NominalType clazz = typeRegistry.getType("Clazz");
 
     assertThat(typeRegistry.getDeclaredInterfaces(clazz.getType(), jsRegistry))
         .containsExactly(
@@ -418,7 +418,7 @@ public class InheritanceTest {
             getInstanceType(a))
         .inOrder();
 
-    NominalType2 otherClazz = typeRegistry.getType("OtherClazz");
+    NominalType otherClazz = typeRegistry.getType("OtherClazz");
     assertThat(typeRegistry.getDeclaredInterfaces(otherClazz.getType(), jsRegistry)).isEmpty();
   }
   
@@ -428,7 +428,7 @@ public class InheritanceTest {
         "/** @interface */",
         "function Foo() {}");
 
-    NominalType2 type = typeRegistry.getType("Foo");
+    NominalType type = typeRegistry.getType("Foo");
     assertThat(typeRegistry.getDeclaredInterfaces(type.getType(), jsRegistry)).isEmpty();
   }
   
@@ -452,10 +452,10 @@ public class InheritanceTest {
         " */",
         "function Foo() {}");
 
-    NominalType2 a = typeRegistry.getType("A");
-    NominalType2 b = typeRegistry.getType("B");
-    NominalType2 c = typeRegistry.getType("C");
-    NominalType2 type = typeRegistry.getType("Foo");
+    NominalType a = typeRegistry.getType("A");
+    NominalType b = typeRegistry.getType("B");
+    NominalType c = typeRegistry.getType("C");
+    NominalType type = typeRegistry.getType("Foo");
 
     assertThat(typeRegistry.getDeclaredInterfaces(type.getType(), jsRegistry))
         .containsExactly(
@@ -483,14 +483,14 @@ public class InheritanceTest {
         " */",
         "function Foo() {}");
 
-    NominalType2 c = typeRegistry.getType("C");
-    NominalType2 type = typeRegistry.getType("Foo");
+    NominalType c = typeRegistry.getType("C");
+    NominalType type = typeRegistry.getType("Foo");
 
     assertThat(typeRegistry.getDeclaredInterfaces(type.getType(), jsRegistry))
         .containsExactly(getInstanceType(c));
   }
 
-  private static JSType getInstanceType(NominalType2 nominalType) {
+  private static JSType getInstanceType(NominalType nominalType) {
     JSType jsType = nominalType.getType();
     checkArgument(jsType.isConstructor() || jsType.isInterface());
     return ((FunctionType) jsType).getInstanceType();

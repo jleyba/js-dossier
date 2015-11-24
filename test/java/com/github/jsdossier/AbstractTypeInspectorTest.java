@@ -21,7 +21,7 @@ import static com.google.common.truth.Truth.assertWithMessage;
 
 import com.github.jsdossier.TypeInspector.InstanceProperty;
 import com.github.jsdossier.annotations.Input;
-import com.github.jsdossier.jscomp.TypeRegistry2;
+import com.github.jsdossier.jscomp.TypeRegistry;
 import com.github.jsdossier.proto.Comment;
 import com.github.jsdossier.proto.Comment.Token;
 import com.github.jsdossier.proto.SourceLink;
@@ -57,7 +57,7 @@ public abstract class AbstractTypeInspectorTest {
       .build();
 
   @Inject protected CompilerUtil util;
-  @Inject protected TypeRegistry2 typeRegistry;
+  @Inject protected TypeRegistry typeRegistry;
   @Inject protected JSTypeRegistry jsTypeRegistry;
   @Inject @Input protected FileSystem fs;
   @Inject protected TypeInspectorFactory typeInspectorFactory;

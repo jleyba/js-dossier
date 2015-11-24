@@ -20,8 +20,8 @@ import static com.github.jsdossier.testing.CompilerUtil.createSourceFile;
 import static com.google.common.truth.Truth.assertThat;
 
 import com.github.jsdossier.annotations.Input;
-import com.github.jsdossier.jscomp.NominalType2;
-import com.github.jsdossier.jscomp.TypeRegistry2;
+import com.github.jsdossier.jscomp.NominalType;
+import com.github.jsdossier.jscomp.TypeRegistry;
 import com.github.jsdossier.testing.CompilerUtil;
 import com.github.jsdossier.testing.GuiceRule;
 import com.google.javascript.jscomp.CompilerOptions;
@@ -50,7 +50,7 @@ public class TypeContextTest {
   
   @Inject @Input private FileSystem fs;
   @Inject private CompilerUtil util;
-  @Inject private TypeRegistry2 typeRegistry;
+  @Inject private TypeRegistry typeRegistry;
   @Inject private TypeContext context;
   
   @Test
@@ -117,13 +117,13 @@ public class TypeContextTest {
             "class A {}",
             "export {A as C}"));
     
-    NominalType2 typeA = typeRegistry.getType("A");
-    NominalType2 typeB = typeRegistry.getType("module$src$modules$foo.B");
-    NominalType2 typeC = typeRegistry.getType("module$src$modules$dir$foo.C");
-    NominalType2 moduleFoo = typeRegistry.getType("module$src$modules$foo");
-    NominalType2 moduleDirFoo = typeRegistry.getType("module$src$modules$dir$foo");
-    NominalType2 moduleFooTypeB = typeRegistry.getType("module$src$modules$foo.B");
-    NominalType2 moduleDirFooTypeC = typeRegistry.getType("module$src$modules$dir$foo.C");
+    NominalType typeA = typeRegistry.getType("A");
+    NominalType typeB = typeRegistry.getType("module$src$modules$foo.B");
+    NominalType typeC = typeRegistry.getType("module$src$modules$dir$foo.C");
+    NominalType moduleFoo = typeRegistry.getType("module$src$modules$foo");
+    NominalType moduleDirFoo = typeRegistry.getType("module$src$modules$dir$foo");
+    NominalType moduleFooTypeB = typeRegistry.getType("module$src$modules$foo.B");
+    NominalType moduleDirFooTypeC = typeRegistry.getType("module$src$modules$dir$foo.C");
 
     assertThat(context.resolveType("A")).isSameAs(typeA);
     assertThat(context.resolveType("foo")).isSameAs(moduleFoo);

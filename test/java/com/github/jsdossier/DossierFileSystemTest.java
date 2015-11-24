@@ -21,9 +21,9 @@ import static org.mockito.Mockito.mock;
 
 import com.github.jsdossier.jscomp.JsDoc;
 import com.github.jsdossier.jscomp.Module;
-import com.github.jsdossier.jscomp.NominalType2;
+import com.github.jsdossier.jscomp.NominalType;
 import com.github.jsdossier.jscomp.Position;
-import com.github.jsdossier.jscomp.TypeRegistry2;
+import com.github.jsdossier.jscomp.TypeRegistry;
 import com.google.common.jimfs.Jimfs;
 import com.google.javascript.rhino.jstype.JSType;
 import org.junit.Test;
@@ -43,7 +43,7 @@ public class DossierFileSystemTest {
   private final Path srcPrefix = inputFs.getPath("/input/src");
   private final Path modulePrefix = inputFs.getPath("/input/module");
 
-  private final TypeRegistry2 typeRegistry = new TypeRegistry2();
+  private final TypeRegistry typeRegistry = new TypeRegistry();
 
   private final FileSystem outputFs = Jimfs.newFileSystem();
   private final Path outputRoot = outputFs.getPath("/out");
@@ -59,7 +59,7 @@ public class DossierFileSystemTest {
   
   @Test
   public void canGetThePathToANominalType() {
-    NominalType2 type = createType("foo.bar.Baz");
+    NominalType type = createType("foo.bar.Baz");
     assertThat(sut.getPath(type).toString()).isEqualTo(
         outputRoot.resolve("foo.bar.Baz.html").toString());
   }
@@ -80,7 +80,7 @@ public class DossierFileSystemTest {
   
   @Test
   public void canGetThePathToAModuleExportedType() {
-    NominalType2 type = createType("Clazz", commonJsModule("foo/bar.js"));
+    NominalType type = createType("Clazz", commonJsModule("foo/bar.js"));
     Path path = sut.getPath(type);
     assertThat(path.toString()).isEqualTo(
         outputRoot.resolve("module/foo/bar_exports_Clazz.html").toString());
@@ -88,7 +88,7 @@ public class DossierFileSystemTest {
   
   @Test
   public void canGetThePathToAModuleExportedType_exportedFromIndex() {
-    NominalType2 type = createType("Clazz", commonJsModule("foo/bar/index.js"));
+    NominalType type = createType("Clazz", commonJsModule("foo/bar/index.js"));
     Path path = sut.getPath(type);
     assertThat(path.toString()).isEqualTo(
         outputRoot.resolve("module/foo/bar/index_exports_Clazz.html").toString());
@@ -140,19 +140,19 @@ public class DossierFileSystemTest {
   
   @Test
   public void getModuleExportedTypeDisplayName() {
-    NominalType2 type = createType("Foo", commonJsModule("foo/bar.js"));
+    NominalType type = createType("Foo", commonJsModule("foo/bar.js"));
     assertThat(sut.getDisplayName(type)).isEqualTo("Foo");
   }
   
   @Test
   public void getGoogModuleExportedTypeDisplayName() {
-    NominalType2 type = createType("Baz", googModule("foo.bar"));
+    NominalType type = createType("Baz", googModule("foo.bar"));
     assertThat(sut.getDisplayName(type)).isEqualTo("Baz");
   }
   
   @Test
   public void getRelativePath_fromGlobalType() {
-    NominalType2 type = createType("Baz");
+    NominalType type = createType("Baz");
     Path path = sut.getPath(srcPrefix.resolve("foo/bar/baz.js"));
     assertThat(sut.getRelativePath(type, path).toString()).isEqualTo(
         "source/foo/bar/baz.js.src.html");
@@ -160,7 +160,7 @@ public class DossierFileSystemTest {
   
   @Test
   public void getRelativePath_fromModuleType() {
-    NominalType2 type = createType("Baz", commonJsModule("foo/bar/baz.js"));
+    NominalType type = createType("Baz", commonJsModule("foo/bar/baz.js"));
     Path path = sut.getPath(srcPrefix.resolve("foo/bar/baz.js"));
     assertThat(sut.getRelativePath(type, path).toString()).isEqualTo(
         "../../../source/foo/bar/baz.js.src.html");
@@ -168,73 +168,73 @@ public class DossierFileSystemTest {
   
   @Test
   public void getRelativePath_betweenTypesExportedByTheSameModule() {
-    NominalType2 a = createType("One", commonJsModule("foo/bar/baz.js"));
-    NominalType2 b = createType("Two", commonJsModule("foo/bar/baz.js"));
+    NominalType a = createType("One", commonJsModule("foo/bar/baz.js"));
+    NominalType b = createType("Two", commonJsModule("foo/bar/baz.js"));
     assertThat(sut.getRelativePath(a, b).toString()).isEqualTo("baz_exports_Two.html");
     assertThat(sut.getRelativePath(b, a).toString()).isEqualTo("baz_exports_One.html");
   }
   
   @Test
   public void getRelativePath_betweenTypesExportedModulesInTheSameDirectory() {
-    NominalType2 a = createType("One", commonJsModule("foo/bar/one.js"));
-    NominalType2 b = createType("Two", commonJsModule("foo/bar/two.js"));
+    NominalType a = createType("One", commonJsModule("foo/bar/one.js"));
+    NominalType b = createType("Two", commonJsModule("foo/bar/two.js"));
     assertThat(sut.getRelativePath(a, b).toString()).isEqualTo("two_exports_Two.html");
     assertThat(sut.getRelativePath(b, a).toString()).isEqualTo("one_exports_One.html");
   }
   
   @Test
   public void getRelativePath_betweenTypesExportedByDifferentModules() {
-    NominalType2 a = createType("One", commonJsModule("foo/one.js"));
-    NominalType2 b = createType("Two", commonJsModule("foo/bar/two.js"));
+    NominalType a = createType("One", commonJsModule("foo/one.js"));
+    NominalType b = createType("Two", commonJsModule("foo/bar/two.js"));
     assertThat(sut.getRelativePath(a, b).toString()).isEqualTo("bar/two_exports_Two.html");
     assertThat(sut.getRelativePath(b, a).toString()).isEqualTo("../one_exports_One.html");
   }
   
   @Test
   public void getQualifiedDisplayName_globalType() {
-    NominalType2 type = createType("One");
+    NominalType type = createType("One");
     assertThat(sut.getDisplayName(type)).isEqualTo("One");
     assertThat(sut.getQualifiedDisplayName(type)).isEqualTo("One");
   }
   
   @Test
   public void getQualifiedDisplayName_namespacedType() {
-    NominalType2 type = createType("one.two.Three");
+    NominalType type = createType("one.two.Three");
     assertThat(sut.getDisplayName(type)).isEqualTo("one.two.Three");
     assertThat(sut.getQualifiedDisplayName(type)).isEqualTo("one.two.Three");
   }
   
   @Test
   public void getQualifiedDisplayName_closureModuleType() {
-    NominalType2 type = createType("Three", googModule("one.two"));
+    NominalType type = createType("Three", googModule("one.two"));
     assertThat(sut.getDisplayName(type)).isEqualTo("Three");
     assertThat(sut.getQualifiedDisplayName(type)).isEqualTo("one.two.Three");
   }
   
   @Test
   public void getQualifiedDisplayName_nodeModuleType() {
-    NominalType2 type = createType("Three", commonJsModule("one/two.js"));
+    NominalType type = createType("Three", commonJsModule("one/two.js"));
     assertThat(sut.getDisplayName(type)).isEqualTo("Three");
     assertThat(sut.getQualifiedDisplayName(type)).isEqualTo("one/two.Three");
   }
   
   @Test
   public void getQualifiedDisplayName_nodeIndexModuleType() {
-    NominalType2 type = createType("Three", commonJsModule("one/two/index.js"));
+    NominalType type = createType("Three", commonJsModule("one/two/index.js"));
     assertThat(sut.getDisplayName(type)).isEqualTo("Three");
     assertThat(sut.getQualifiedDisplayName(type)).isEqualTo("one/two/index.Three");
   }
 
   @Test
   public void getQualifiedDisplayName_es6ModuleType() {
-    NominalType2 type = createType("Three", es6Module("one/two.js"));
+    NominalType type = createType("Three", es6Module("one/two.js"));
     assertThat(sut.getDisplayName(type)).isEqualTo("Three");
     assertThat(sut.getQualifiedDisplayName(type)).isEqualTo("one/two.Three");
   }
 
   @Test
   public void getQualifiedDisplayName_es6IndexModuleType() {
-    NominalType2 type = createType("Three", es6Module("one/two/index.js"));
+    NominalType type = createType("Three", es6Module("one/two/index.js"));
     assertThat(sut.getDisplayName(type)).isEqualTo("Three");
     assertThat(sut.getQualifiedDisplayName(type)).isEqualTo("one/two/index.Three");
   }
@@ -266,16 +266,16 @@ public class DossierFileSystemTest {
         .build();
   }
 
-  private NominalType2 createType(String name) {
+  private NominalType createType(String name) {
     return createType(name, mock(JSType.class), null);
   }
   
-  private NominalType2 createType(String name, Module module) {
+  private NominalType createType(String name, Module module) {
     return createType(name, mock(JSType.class), module);
   }
 
-  private NominalType2 createType(String name, JSType type, Module module) {
-    return NominalType2.builder()
+  private NominalType createType(String name, JSType type, Module module) {
+    return NominalType.builder()
         .setName(module == null ? name : (module.getId() + "." + name))
         .setSourcePosition(Position.of(0, 0))
         .setSourceFile(srcPrefix.resolve(name))

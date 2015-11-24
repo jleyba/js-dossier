@@ -38,7 +38,7 @@ import javax.inject.Inject;
  */
 public final class DossierCompiler extends Compiler {
 
-  private final TypeRegistry2 typeRegistry;
+  private final TypeRegistry typeRegistry;
   private final FileSystem inputFs;
   private final ImmutableSet<Path> modulePaths;
   private final Es6ModulePassFactory modulePassFactory;
@@ -48,7 +48,7 @@ public final class DossierCompiler extends Compiler {
   @Inject
   DossierCompiler(
       @Stderr PrintStream stream,
-      TypeRegistry2 typeRegistry,
+      TypeRegistry typeRegistry,
       @Input FileSystem inputFs,
       @Modules ImmutableSet<Path> modulePaths,
       Es6ModulePassFactory modulePassFactory) {
@@ -74,8 +74,7 @@ public final class DossierCompiler extends Compiler {
     // based on the goog.provide/require statements we generate for the modules. This is necessary
     // since the compiler does its final input ordering before invoking any custom passes
     // (otherwise, we could just process the modules as a custom pass).
-    DossierProcessCommonJsModules cjs =
-        new DossierProcessCommonJsModules(typeRegistry, inputFs, modulePaths);
+    NodeModulePass cjs = new NodeModulePass(typeRegistry, inputFs, modulePaths);
     // TODO(jleyba): processCommonJsModules(cjs, getExternsInOrder());
     processCommonJsModules(cjs, getInputsById().values());
 
@@ -93,8 +92,7 @@ public final class DossierCompiler extends Compiler {
     }
   }
 
-  private void processCommonJsModules(
-      DossierProcessCommonJsModules compilerPass, Iterable<CompilerInput> inputs) {
+  private void processCommonJsModules(NodeModulePass compilerPass, Iterable<CompilerInput> inputs) {
     for (CompilerInput input : inputs) {
       Node root = input.getAstRoot(this);
       if (root == null) {

@@ -67,14 +67,14 @@ public final class TypeCollectionPass implements CompilerPass {
   private static final Logger log = Logger.getLogger(TypeCollectionPass.class.getName());
 
   private final DossierCompiler compiler;
-  private final TypeRegistry2 typeRegistry;
+  private final TypeRegistry typeRegistry;
   private final FileSystem inputFs;
   private final Predicate<String> typeNameFilter;
 
   @Inject
   TypeCollectionPass(
       DossierCompiler compiler,
-      TypeRegistry2 typeRegistry,
+      TypeRegistry typeRegistry,
       @Input FileSystem inputFs, 
       @TypeFilter Predicate<String> typeNameFilter) {
     this.compiler = compiler;
@@ -197,7 +197,7 @@ public final class TypeCollectionPass implements CompilerPass {
   private class TypeCollector implements NodeTraversal.Callback, Visitor<Void> {
     
     private final Externs externs;
-    private final Deque<NominalType2> types = new ArrayDeque<>();
+    private final Deque<NominalType> types = new ArrayDeque<>();
 
     private TypeCollector(Externs externs) {
       this.externs = externs;
@@ -249,7 +249,7 @@ public final class TypeCollectionPass implements CompilerPass {
         }
         
         Path path = inputFs.getPath(node.getSourceFileName());
-        NominalType2 nominalType = NominalType2.builder()
+        NominalType nominalType = NominalType.builder()
             .setName(name)
             .setType(node.getJSType())
             .setJsDoc(info)
@@ -275,7 +275,7 @@ public final class TypeCollectionPass implements CompilerPass {
       return Optional.of(module);
     }
 
-    private void recordType(NominalType2 type) {
+    private void recordType(NominalType type) {
       if (externs.isExtern(type.getType())) {
         logfmt("Skipping extern alias: %s", type.getName());
         return;
@@ -338,7 +338,7 @@ public final class TypeCollectionPass implements CompilerPass {
      * @param type the type to add.
      * @return whether the type was registered.
      */
-    private boolean addType(NominalType2 type) {
+    private boolean addType(NominalType type) {
       if (typeNameFilter.apply(type.getName())) {
         return false;
       }
@@ -349,7 +349,7 @@ public final class TypeCollectionPass implements CompilerPass {
     private void crawlProperty(Property property) {
       checkState(!types.isEmpty());
 
-      NominalType2 parent = types.peek();
+      NominalType parent = types.peek();
       Node node = property.getNode();
       JSDocInfo info = property.getJSDocInfo();
       if (info == null && !isTheObjectType(property.getType())) {
@@ -359,7 +359,7 @@ public final class TypeCollectionPass implements CompilerPass {
 
       if (jsdoc.isTypedef()) {
         String name = parent.getName() + "." + property.getName();
-        addType(NominalType2.builder()
+        addType(NominalType.builder()
             .setName(name)
             .setModule(getModule(name, node))
             .setJsDoc(jsdoc)
@@ -379,7 +379,7 @@ public final class TypeCollectionPass implements CompilerPass {
       }
 
       String name = parent.getName() + "." + property.getName();
-      NominalType2 nt = NominalType2.builder()
+      NominalType nt = NominalType.builder()
           .setName(name)
           .setModule(getModule(name, node))
           .setJsDoc(jsdoc)

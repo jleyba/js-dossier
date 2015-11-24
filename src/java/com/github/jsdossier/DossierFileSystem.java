@@ -24,8 +24,8 @@ import com.github.jsdossier.annotations.ModulePrefix;
 import com.github.jsdossier.annotations.Output;
 import com.github.jsdossier.annotations.SourcePrefix;
 import com.github.jsdossier.jscomp.Module;
-import com.github.jsdossier.jscomp.NominalType2;
-import com.github.jsdossier.jscomp.TypeRegistry2;
+import com.github.jsdossier.jscomp.NominalType;
+import com.github.jsdossier.jscomp.TypeRegistry;
 import com.github.jsdossier.proto.Resources;
 import com.google.common.base.Function;
 import com.google.common.collect.FluentIterable;
@@ -47,7 +47,7 @@ final class DossierFileSystem {
   private final Path outputRoot;
   private final Path modulePrefix;
   private final Path sourcePrefix;
-  private final TypeRegistry2 typeRegistry;
+  private final TypeRegistry typeRegistry;
   private final ModuleNamingConvention namingConvention;
 
   @Inject
@@ -55,7 +55,7 @@ final class DossierFileSystem {
       @Output Path outputRoot,
       @SourcePrefix Path sourcePrefix,
       @ModulePrefix Path modulePrefix,
-      TypeRegistry2 typeRegistry,
+      TypeRegistry typeRegistry,
       ModuleNamingConvention namingConvention) {
     this.outputRoot = outputRoot;
     this.modulePrefix = modulePrefix;
@@ -112,7 +112,7 @@ final class DossierFileSystem {
   /**
    * Returns the path to the generated documentation for the given {@code type}.
    */
-  public Path getPath(NominalType2 type) {
+  public Path getPath(NominalType type) {
     if (type.isModuleExports() && type.getModule().get().getType() != Module.Type.CLOSURE) {
       return getPath(type.getModule().get());
     }
@@ -142,9 +142,9 @@ final class DossierFileSystem {
    * Returns the fully-qualified display name for the given type. For types exported by a module,
    * this is the display name of the module <em>and</em> the type's display name. For types defined
    * in the global scope or off a namespace in the global scope, the qualified display name is the
-   * same as the normal {@linkplain #getDisplayName(NominalType2) display name}.
+   * same as the normal {@linkplain #getDisplayName(NominalType) display name}.
    */
-  public String getQualifiedDisplayName(NominalType2 type) {
+  public String getQualifiedDisplayName(NominalType type) {
     String name = getDisplayName(type);
     if (type.getModule().isPresent() && !type.isModuleExports()) {
       return getDisplayName(type.getModule().get()) + "." + name;
@@ -155,7 +155,7 @@ final class DossierFileSystem {
   /**
    * Returns the display name for the given type.
    */
-  public String getDisplayName(NominalType2 type) {
+  public String getDisplayName(NominalType type) {
     if (type.getModule().isPresent()) {
       Module module = type.getModule().get();
       if (type.getName().equals(module.getId())) {
@@ -204,7 +204,7 @@ final class DossierFileSystem {
    * Computes the relative path from the generated documentation for {@code type} to the specified
    * {@code file}.
    */
-  public Path getRelativePath(NominalType2 type, Path file) {
+  public Path getRelativePath(NominalType type, Path file) {
     checkArgument(
         file.getFileSystem() == outputRoot.getFileSystem() && file.startsWith(outputRoot),
         "The target file does not belong to the output file system: %s", file);
@@ -214,7 +214,7 @@ final class DossierFileSystem {
   /**
    * Returns the relative path between two generated files.
    */
-  public Path getRelativePath(NominalType2 from, NominalType2 to) {
+  public Path getRelativePath(NominalType from, NominalType to) {
     return getRelativePath(from, getPath(to));
   }
 

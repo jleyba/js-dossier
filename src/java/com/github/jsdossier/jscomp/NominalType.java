@@ -23,21 +23,20 @@ import com.google.javascript.rhino.jstype.JSType;
 
 import java.nio.file.Path;
 
-import javax.annotation.CheckReturnValue;
 import javax.annotation.Nullable;
 
 /**
  * Describes a named JavaScript type that should be documented.
  */
 @AutoValue
-public abstract class NominalType2 {
+public abstract class NominalType {
   
   public static Builder builder() {
-    return new AutoValue_NominalType2.Builder();
+    return new AutoValue_NominalType.Builder();
   }
   
   // Package private to prevent extensions.
-  NominalType2() {}
+  NominalType() {}
 
   @Override
   public String toString() {
@@ -108,6 +107,6 @@ public abstract class NominalType2 {
       return setModule(Optional.fromNullable(module));
     }
 
-    public abstract NominalType2 build();
+    public abstract NominalType build();
   }
 }

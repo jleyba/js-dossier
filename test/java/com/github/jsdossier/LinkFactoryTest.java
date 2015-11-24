@@ -20,8 +20,8 @@ import static com.github.jsdossier.testing.CompilerUtil.createSourceFile;
 import static com.google.common.truth.Truth.assertThat;
 
 import com.github.jsdossier.annotations.Input;
-import com.github.jsdossier.jscomp.NominalType2;
-import com.github.jsdossier.jscomp.TypeRegistry2;
+import com.github.jsdossier.jscomp.NominalType;
+import com.github.jsdossier.jscomp.TypeRegistry;
 import com.github.jsdossier.proto.TypeLink;
 import com.github.jsdossier.testing.CompilerUtil;
 import com.github.jsdossier.testing.GuiceRule;
@@ -52,7 +52,7 @@ public class LinkFactoryTest {
       .build();
 
   @Inject @Input private FileSystem fs;
-  @Inject private TypeRegistry2 typeRegistry;
+  @Inject private TypeRegistry typeRegistry;
   @Inject private CompilerUtil util;
   @Inject private LinkFactoryBuilder linkFactoryBuilder;
   
@@ -61,7 +61,7 @@ public class LinkFactoryTest {
     util.compile(fs.getPath("source/foo.js"),
         "class Foo {}");
 
-    NominalType2 type = typeRegistry.getType("Foo");
+    NominalType type = typeRegistry.getType("Foo");
     TypeLink link = createFactory().createLink(type);
     checkLink(link, "Foo", "Foo.html");
   }
@@ -72,8 +72,8 @@ public class LinkFactoryTest {
         "class Foo {}",
         "class Bar {}");
 
-    NominalType2 foo = typeRegistry.getType("Foo");
-    NominalType2 bar = typeRegistry.getType("Bar");
+    NominalType foo = typeRegistry.getType("Foo");
+    NominalType bar = typeRegistry.getType("Bar");
     
     TypeLink link = createFactory().withTypeContext(bar).createLink(foo);
     checkLink(link, "Foo", "Foo.html");
@@ -90,8 +90,8 @@ public class LinkFactoryTest {
             "goog.module('a.b');",
             "exports.X = class {}"));
 
-    NominalType2 foo = typeRegistry.getType("Foo");
-    NominalType2 ref = typeRegistry.getType("a.b.X");
+    NominalType foo = typeRegistry.getType("Foo");
+    NominalType ref = typeRegistry.getType("a.b.X");
     
     TypeLink link = createFactory(ref).withTypeContext(ref).createLink(foo);
     checkLink(link, "Foo", "Foo.html");
@@ -107,8 +107,8 @@ public class LinkFactoryTest {
             fs.getPath("source/modules/one.js"),
             "exports.X = class {}"));
 
-    NominalType2 foo = typeRegistry.getType("Foo");
-    NominalType2 ref = typeRegistry.getType("module$source$modules$one");
+    NominalType foo = typeRegistry.getType("Foo");
+    NominalType ref = typeRegistry.getType("module$source$modules$one");
     
     TypeLink link = createFactory(ref).withTypeContext(ref).createLink(foo);
     checkLink(link, "Foo", "../Foo.html");
@@ -124,8 +124,8 @@ public class LinkFactoryTest {
             fs.getPath("source/modules/one.js"),
             "export class X {}"));
 
-    NominalType2 foo = typeRegistry.getType("Foo");
-    NominalType2 ref = typeRegistry.getType("module$source$modules$one.X");
+    NominalType foo = typeRegistry.getType("Foo");
+    NominalType ref = typeRegistry.getType("module$source$modules$one.X");
     
     TypeLink link = createFactory(ref).withTypeContext(ref).createLink(foo);
     checkLink(link, "Foo", "../Foo.html");
@@ -137,7 +137,7 @@ public class LinkFactoryTest {
         "goog.provide('foo.bar');",
         "foo.bar.Baz = class {};");
 
-    NominalType2 type = typeRegistry.getType("foo.bar.Baz");
+    NominalType type = typeRegistry.getType("foo.bar.Baz");
     TypeLink link = createFactory().createLink(type);
     checkLink(link, "foo.bar.Baz", "foo.bar.Baz.html");
   }
@@ -151,8 +151,8 @@ public class LinkFactoryTest {
             "foo.Bar = class Bar {};",
             "class Foo {}"));
 
-    NominalType2 foo = typeRegistry.getType("foo.Bar");
-    NominalType2 ref = typeRegistry.getType("Foo");
+    NominalType foo = typeRegistry.getType("foo.Bar");
+    NominalType ref = typeRegistry.getType("Foo");
 
     TypeLink link = createFactory(ref).withTypeContext(ref).createLink(foo);
     checkLink(link, "foo.Bar", "foo.Bar.html");
@@ -170,8 +170,8 @@ public class LinkFactoryTest {
             "goog.module('a.b');",
             "exports.X = class {}"));
 
-    NominalType2 foo = typeRegistry.getType("foo.Bar");
-    NominalType2 ref = typeRegistry.getType("a.b.X");
+    NominalType foo = typeRegistry.getType("foo.Bar");
+    NominalType ref = typeRegistry.getType("a.b.X");
 
     TypeLink link = createFactory(ref).withTypeContext(ref).createLink(foo);
     checkLink(link, "foo.Bar", "foo.Bar.html");
@@ -188,8 +188,8 @@ public class LinkFactoryTest {
             fs.getPath("source/modules/one.js"),
             "exports.X = class {};"));
 
-    NominalType2 foo = typeRegistry.getType("foo.Bar");
-    NominalType2 ref = typeRegistry.getType("module$source$modules$one");
+    NominalType foo = typeRegistry.getType("foo.Bar");
+    NominalType ref = typeRegistry.getType("module$source$modules$one");
 
     TypeLink link = createFactory(ref).withTypeContext(ref).createLink(foo);
     checkLink(link, "foo.Bar", "../foo.Bar.html");
@@ -206,8 +206,8 @@ public class LinkFactoryTest {
             fs.getPath("source/modules/one.js"),
             "export class X {}"));
 
-    NominalType2 foo = typeRegistry.getType("foo.Bar");
-    NominalType2 ref = typeRegistry.getType("module$source$modules$one.X");
+    NominalType foo = typeRegistry.getType("foo.Bar");
+    NominalType ref = typeRegistry.getType("module$source$modules$one.X");
 
     TypeLink link = createFactory(ref).withTypeContext(ref).createLink(foo);
     checkLink(link, "foo.Bar", "../foo.Bar.html");
@@ -221,7 +221,7 @@ public class LinkFactoryTest {
             "goog.module('a.b');",
             "exports.X = class {}"));
     
-    NominalType2 type = typeRegistry.getType("a.b");
+    NominalType type = typeRegistry.getType("a.b");
 
     TypeLink link = createFactory().createLink(type);
     checkLink(link, "a.b", "a.b.html");
@@ -238,8 +238,8 @@ public class LinkFactoryTest {
             fs.getPath("foo.js"),
             "class Bar {}"));
 
-    NominalType2 type = typeRegistry.getType("a.b");
-    NominalType2 ref = typeRegistry.getType("Bar");
+    NominalType type = typeRegistry.getType("a.b");
+    NominalType ref = typeRegistry.getType("Bar");
 
     TypeLink link = createFactory(ref).withTypeContext(ref).createLink(type);
     checkLink(link, "a.b", "a.b.html");
@@ -257,8 +257,8 @@ public class LinkFactoryTest {
             "goog.module('x');",
             "exports.Bar = class {};"));
 
-    NominalType2 type = typeRegistry.getType("a.b");
-    NominalType2 ref = typeRegistry.getType("x");
+    NominalType type = typeRegistry.getType("a.b");
+    NominalType ref = typeRegistry.getType("x");
 
     TypeLink link = createFactory(ref).withTypeContext(ref).createLink(type);
     checkLink(link, "a.b", "a.b.html");
@@ -275,8 +275,8 @@ public class LinkFactoryTest {
             fs.getPath("source/modules/one.js"),
             "exports.Bar = class {};"));
 
-    NominalType2 type = typeRegistry.getType("a.b");
-    NominalType2 ref = typeRegistry.getType("module$source$modules$one");
+    NominalType type = typeRegistry.getType("a.b");
+    NominalType ref = typeRegistry.getType("module$source$modules$one");
 
     TypeLink link = createFactory(ref).withTypeContext(ref).createLink(type);
     checkLink(link, "a.b", "../a.b.html");
@@ -293,8 +293,8 @@ public class LinkFactoryTest {
             fs.getPath("source/modules/one.js"),
             "export class Bar {}"));
 
-    NominalType2 type = typeRegistry.getType("a.b");
-    NominalType2 ref = typeRegistry.getType("module$source$modules$one");
+    NominalType type = typeRegistry.getType("a.b");
+    NominalType ref = typeRegistry.getType("module$source$modules$one");
 
     TypeLink link = createFactory(ref).withTypeContext(ref).createLink(type);
     checkLink(link, "a.b", "../a.b.html");
@@ -308,7 +308,7 @@ public class LinkFactoryTest {
             "goog.module('a.b');",
             "exports.X = class {}"));
 
-    NominalType2 type = typeRegistry.getType("a.b.X");
+    NominalType type = typeRegistry.getType("a.b.X");
 
     TypeLink link = createFactory().createLink(type);
     checkLink(link, "X", "a.b.X.html");
@@ -325,8 +325,8 @@ public class LinkFactoryTest {
             fs.getPath("foo.js"),
             "class Bar {}"));
 
-    NominalType2 type = typeRegistry.getType("a.b.X");
-    NominalType2 ref = typeRegistry.getType("Bar");
+    NominalType type = typeRegistry.getType("a.b.X");
+    NominalType ref = typeRegistry.getType("Bar");
 
     TypeLink link = createFactory(ref).withTypeContext(ref).createLink(type);
     checkLink(link, "X", "a.b.X.html");
@@ -344,8 +344,8 @@ public class LinkFactoryTest {
             "goog.module('x');",
             "exports.Bar = class {};"));
 
-    NominalType2 type = typeRegistry.getType("a.b.X");
-    NominalType2 ref = typeRegistry.getType("x");
+    NominalType type = typeRegistry.getType("a.b.X");
+    NominalType ref = typeRegistry.getType("x");
 
     TypeLink link = createFactory(ref).withTypeContext(ref).createLink(type);
     checkLink(link, "X", "a.b.X.html");
@@ -362,8 +362,8 @@ public class LinkFactoryTest {
             fs.getPath("source/modules/one.js"),
             "exports.Bar = class {};"));
 
-    NominalType2 type = typeRegistry.getType("a.b.X");
-    NominalType2 ref = typeRegistry.getType("module$source$modules$one");
+    NominalType type = typeRegistry.getType("a.b.X");
+    NominalType ref = typeRegistry.getType("module$source$modules$one");
 
     TypeLink link = createFactory(ref).withTypeContext(ref).createLink(type);
     checkLink(link, "X", "../a.b.X.html");
@@ -380,8 +380,8 @@ public class LinkFactoryTest {
             fs.getPath("source/modules/one.js"),
             "export class Bar {}"));
 
-    NominalType2 type = typeRegistry.getType("a.b.X");
-    NominalType2 ref = typeRegistry.getType("module$source$modules$one");
+    NominalType type = typeRegistry.getType("a.b.X");
+    NominalType ref = typeRegistry.getType("module$source$modules$one");
 
     TypeLink link = createFactory(ref).withTypeContext(ref).createLink(type);
     checkLink(link, "X", "../a.b.X.html");
@@ -394,7 +394,7 @@ public class LinkFactoryTest {
             fs.getPath("source/modules/one.js"),
             "exports.X = class {}"));
 
-    NominalType2 type = typeRegistry.getType("module$source$modules$one");
+    NominalType type = typeRegistry.getType("module$source$modules$one");
 
     TypeLink link = createFactory().createLink(type);
     checkLink(link, "one", "module/one.html");
@@ -410,8 +410,8 @@ public class LinkFactoryTest {
             fs.getPath("foo.js"),
             "class Bar {}"));
 
-    NominalType2 type = typeRegistry.getType("module$source$modules$one");
-    NominalType2 ref = typeRegistry.getType("Bar");
+    NominalType type = typeRegistry.getType("module$source$modules$one");
+    NominalType ref = typeRegistry.getType("Bar");
 
     TypeLink link = createFactory(ref).withTypeContext(ref).createLink(type);
     checkLink(link, "one", "module/one.html");
@@ -428,8 +428,8 @@ public class LinkFactoryTest {
             "goog.module('x');",
             "exports.Bar = class {};"));
 
-    NominalType2 type = typeRegistry.getType("module$source$modules$one");
-    NominalType2 ref = typeRegistry.getType("x");
+    NominalType type = typeRegistry.getType("module$source$modules$one");
+    NominalType ref = typeRegistry.getType("x");
 
     TypeLink link = createFactory(ref).withTypeContext(ref).createLink(type);
     checkLink(link, "one", "module/one.html");
@@ -445,8 +445,8 @@ public class LinkFactoryTest {
             fs.getPath("source/modules/two.js"),
             "exports.Bar = class {};"));
 
-    NominalType2 type = typeRegistry.getType("module$source$modules$one");
-    NominalType2 ref = typeRegistry.getType("module$source$modules$two");
+    NominalType type = typeRegistry.getType("module$source$modules$one");
+    NominalType ref = typeRegistry.getType("module$source$modules$two");
 
     TypeLink link = createFactory(ref).withTypeContext(ref).createLink(type);
     checkLink(link, "one", "one.html");
@@ -462,8 +462,8 @@ public class LinkFactoryTest {
             fs.getPath("source/modules/two.js"),
             "export class Bar {}"));
 
-    NominalType2 type = typeRegistry.getType("module$source$modules$one");
-    NominalType2 ref = typeRegistry.getType("module$source$modules$two");
+    NominalType type = typeRegistry.getType("module$source$modules$one");
+    NominalType ref = typeRegistry.getType("module$source$modules$two");
 
     TypeLink link = createFactory(ref).withTypeContext(ref).createLink(type);
     checkLink(link, "one", "one.html");
@@ -476,7 +476,7 @@ public class LinkFactoryTest {
             fs.getPath("source/modules/one.js"),
             "exports.X = class {}"));
 
-    NominalType2 type = typeRegistry.getType("module$source$modules$one.X");
+    NominalType type = typeRegistry.getType("module$source$modules$one.X");
 
     TypeLink link = createFactory().createLink(type);
     checkLink(link, "X", "module/one_exports_X.html");
@@ -492,8 +492,8 @@ public class LinkFactoryTest {
             fs.getPath("foo.js"),
             "class Bar {}"));
 
-    NominalType2 type = typeRegistry.getType("module$source$modules$one.X");
-    NominalType2 ref = typeRegistry.getType("Bar");
+    NominalType type = typeRegistry.getType("module$source$modules$one.X");
+    NominalType ref = typeRegistry.getType("Bar");
 
     TypeLink link = createFactory(ref).withTypeContext(ref).createLink(type);
     checkLink(link, "X", "module/one_exports_X.html");
@@ -510,8 +510,8 @@ public class LinkFactoryTest {
             "goog.module('x');",
             "exports.Bar = class {};"));
 
-    NominalType2 type = typeRegistry.getType("module$source$modules$one.X");
-    NominalType2 ref = typeRegistry.getType("x");
+    NominalType type = typeRegistry.getType("module$source$modules$one.X");
+    NominalType ref = typeRegistry.getType("x");
 
     TypeLink link = createFactory(ref).withTypeContext(ref).createLink(type);
     checkLink(link, "X", "module/one_exports_X.html");
@@ -527,8 +527,8 @@ public class LinkFactoryTest {
             fs.getPath("source/modules/two.js"),
             "exports.Bar = class {};"));
 
-    NominalType2 type = typeRegistry.getType("module$source$modules$one.X");
-    NominalType2 ref = typeRegistry.getType("module$source$modules$two");
+    NominalType type = typeRegistry.getType("module$source$modules$one.X");
+    NominalType ref = typeRegistry.getType("module$source$modules$two");
 
     checkLink(createFactory(ref).withTypeContext(ref).createLink(type), "X", "one_exports_X.html");
   }
@@ -543,8 +543,8 @@ public class LinkFactoryTest {
             fs.getPath("source/modules/two.js"),
             "export class Bar {}"));
 
-    NominalType2 type = typeRegistry.getType("module$source$modules$one.X");
-    NominalType2 ref = typeRegistry.getType("module$source$modules$two");
+    NominalType type = typeRegistry.getType("module$source$modules$one.X");
+    NominalType ref = typeRegistry.getType("module$source$modules$two");
 
     TypeLink link = createFactory(ref).withTypeContext(ref).createLink(type);
     checkLink(link, "X", "one_exports_X.html");
@@ -557,7 +557,7 @@ public class LinkFactoryTest {
             fs.getPath("source/modules/one.js"),
             "export class X {}"));
 
-    NominalType2 type = typeRegistry.getType("module$source$modules$one");
+    NominalType type = typeRegistry.getType("module$source$modules$one");
 
     TypeLink link = createFactory().createLink(type);
     checkLink(link, "one", "module/one.html");
@@ -573,8 +573,8 @@ public class LinkFactoryTest {
             fs.getPath("foo.js"),
             "class Bar {}"));
 
-    NominalType2 type = typeRegistry.getType("module$source$modules$one");
-    NominalType2 ref = typeRegistry.getType("Bar");
+    NominalType type = typeRegistry.getType("module$source$modules$one");
+    NominalType ref = typeRegistry.getType("Bar");
 
     TypeLink link = createFactory(ref).withTypeContext(ref).createLink(type);
     checkLink(link, "one", "module/one.html");
@@ -591,8 +591,8 @@ public class LinkFactoryTest {
             "goog.module('x');",
             "exports.Bar = class {};"));
 
-    NominalType2 type = typeRegistry.getType("module$source$modules$one");
-    NominalType2 ref = typeRegistry.getType("x");
+    NominalType type = typeRegistry.getType("module$source$modules$one");
+    NominalType ref = typeRegistry.getType("x");
 
     TypeLink link = createFactory(ref).withTypeContext(ref).createLink(type);
     checkLink(link, "one", "module/one.html");
@@ -608,8 +608,8 @@ public class LinkFactoryTest {
             fs.getPath("source/modules/two.js"),
             "exports.Bar = class {};"));
 
-    NominalType2 type = typeRegistry.getType("module$source$modules$one");
-    NominalType2 ref = typeRegistry.getType("module$source$modules$two");
+    NominalType type = typeRegistry.getType("module$source$modules$one");
+    NominalType ref = typeRegistry.getType("module$source$modules$two");
 
     TypeLink link = createFactory(ref).withTypeContext(ref).createLink(type);
     checkLink(link, "one", "one.html");
@@ -625,8 +625,8 @@ public class LinkFactoryTest {
             fs.getPath("source/modules/two.js"),
             "export class Bar {}"));
 
-    NominalType2 type = typeRegistry.getType("module$source$modules$one");
-    NominalType2 ref = typeRegistry.getType("module$source$modules$two");
+    NominalType type = typeRegistry.getType("module$source$modules$one");
+    NominalType ref = typeRegistry.getType("module$source$modules$two");
 
     TypeLink link = createFactory(ref).withTypeContext(ref).createLink(type);
     checkLink(link, "one", "one.html");
@@ -639,7 +639,7 @@ public class LinkFactoryTest {
             fs.getPath("source/modules/one.js"),
             "export class X {}"));
 
-    NominalType2 type = typeRegistry.getType("module$source$modules$one.X");
+    NominalType type = typeRegistry.getType("module$source$modules$one.X");
 
     TypeLink link = createFactory().createLink(type);
     checkLink(link, "X", "module/one_exports_X.html");
@@ -655,8 +655,8 @@ public class LinkFactoryTest {
             fs.getPath("foo.js"),
             "class Bar {}"));
 
-    NominalType2 type = typeRegistry.getType("module$source$modules$one.X");
-    NominalType2 ref = typeRegistry.getType("Bar");
+    NominalType type = typeRegistry.getType("module$source$modules$one.X");
+    NominalType ref = typeRegistry.getType("Bar");
 
     TypeLink link = createFactory(ref).withTypeContext(ref).createLink(type);
     checkLink(link, "X", "module/one_exports_X.html");
@@ -673,8 +673,8 @@ public class LinkFactoryTest {
             "goog.module('x');",
             "exports.Bar = class {};"));
 
-    NominalType2 type = typeRegistry.getType("module$source$modules$one.X");
-    NominalType2 ref = typeRegistry.getType("x");
+    NominalType type = typeRegistry.getType("module$source$modules$one.X");
+    NominalType ref = typeRegistry.getType("x");
 
     TypeLink link = createFactory(ref).withTypeContext(ref).createLink(type);
     checkLink(link, "X", "module/one_exports_X.html");
@@ -690,8 +690,8 @@ public class LinkFactoryTest {
             fs.getPath("source/modules/two.js"),
             "exports.Bar = class {};"));
 
-    NominalType2 type = typeRegistry.getType("module$source$modules$one.X");
-    NominalType2 ref = typeRegistry.getType("module$source$modules$two");
+    NominalType type = typeRegistry.getType("module$source$modules$one.X");
+    NominalType ref = typeRegistry.getType("module$source$modules$two");
 
     TypeLink link = createFactory(ref).withTypeContext(ref).createLink(type);
     checkLink(link, "X", "one_exports_X.html");
@@ -707,8 +707,8 @@ public class LinkFactoryTest {
             fs.getPath("source/modules/two.js"),
             "export class Bar {}"));
 
-    NominalType2 type = typeRegistry.getType("module$source$modules$one.X");
-    NominalType2 ref = typeRegistry.getType("module$source$modules$two");
+    NominalType type = typeRegistry.getType("module$source$modules$one.X");
+    NominalType ref = typeRegistry.getType("module$source$modules$two");
 
     TypeLink link = createFactory(ref).withTypeContext(ref).createLink(type);
     checkLink(link, "X", "one_exports_X.html");
@@ -720,7 +720,7 @@ public class LinkFactoryTest {
         "/** @typedef {string} */",
         "var AString;");
     
-    NominalType2 type = typeRegistry.getType("AString");
+    NominalType type = typeRegistry.getType("AString");
 
     TypeLink link = createFactory().createLink(type);
     checkLink(link, "AString", ".globals.html#AString");
@@ -737,8 +737,8 @@ public class LinkFactoryTest {
             fs.getPath("source/modules/one.js"),
             "export class B {}"));
     
-    NominalType2 type = typeRegistry.getType("AString");
-    NominalType2 ref = typeRegistry.getType("module$source$modules$one");
+    NominalType type = typeRegistry.getType("AString");
+    NominalType ref = typeRegistry.getType("module$source$modules$one");
 
     TypeLink link = createFactory(ref).withTypeContext(ref).createLink(type);
     checkLink(link, "AString", "../.globals.html#AString");
@@ -750,7 +750,7 @@ public class LinkFactoryTest {
         "/** @define {boolean} */",
         "var DEBUG=true;");
     
-    NominalType2 type = typeRegistry.getType("DEBUG");
+    NominalType type = typeRegistry.getType("DEBUG");
 
     TypeLink link = createFactory().createLink(type);
     checkLink(link, "DEBUG", ".globals.html#DEBUG");
@@ -767,8 +767,8 @@ public class LinkFactoryTest {
             fs.getPath("source/modules/one.js"),
             "export class B {}"));
     
-    NominalType2 type = typeRegistry.getType("DEBUG");
-    NominalType2 ref = typeRegistry.getType("module$source$modules$one");
+    NominalType type = typeRegistry.getType("DEBUG");
+    NominalType ref = typeRegistry.getType("module$source$modules$one");
 
     TypeLink link = createFactory(ref).withTypeContext(ref).createLink(type);
     checkLink(link, "DEBUG", "../.globals.html#DEBUG");
@@ -781,7 +781,7 @@ public class LinkFactoryTest {
         "/** @typedef {string} */",
         "foo.AString;");
 
-    NominalType2 type = typeRegistry.getType("foo.AString");
+    NominalType type = typeRegistry.getType("foo.AString");
 
     TypeLink link = createFactory().createLink(type);
     checkLink(link, "foo.AString", "foo.html#foo.AString");
@@ -799,8 +799,8 @@ public class LinkFactoryTest {
             fs.getPath("source/modules/one.js"),
             "export class B {}"));
 
-    NominalType2 type = typeRegistry.getType("foo.AString");
-    NominalType2 ref = typeRegistry.getType("module$source$modules$one");
+    NominalType type = typeRegistry.getType("foo.AString");
+    NominalType ref = typeRegistry.getType("module$source$modules$one");
 
     TypeLink link = createFactory(ref).withTypeContext(ref).createLink(type);
     checkLink(link, "foo.AString", "../foo.html#foo.AString");
@@ -834,7 +834,7 @@ public class LinkFactoryTest {
             fs.getPath("source/modules/one.js"),
             "export class B {}"));
 
-    NominalType2 ref = typeRegistry.getType("module$source$modules$one");
+    NominalType ref = typeRegistry.getType("module$source$modules$one");
     
     TypeLink link = createFactory(ref).withTypeContext(ref).createLink("Foo");
     checkLink(link, "Foo", "../Foo.html");
@@ -861,7 +861,7 @@ public class LinkFactoryTest {
             fs.getPath("source/modules/one.js"),
             "export class B {}"));
 
-    NominalType2 ref = typeRegistry.getType("module$source$modules$one");
+    NominalType ref = typeRegistry.getType("module$source$modules$one");
     
     TypeLink link = createFactory(ref).withTypeContext(ref).createLink("foo.Bar");
     checkLink(link, "foo.Bar", "../foo.Bar.html");
@@ -919,7 +919,7 @@ public class LinkFactoryTest {
             fs.getPath("source/modules/one.js"),
             "export class B {}"));
 
-    NominalType2 ref = typeRegistry.getType("module$source$modules$one");
+    NominalType ref = typeRegistry.getType("module$source$modules$one");
 
     TypeLink link = createFactory(ref).withTypeContext(ref).createLink("foo/bar/baz");
     checkLink(link, "foo/bar/baz", "foo/bar/baz.html");
@@ -935,7 +935,7 @@ public class LinkFactoryTest {
             fs.getPath("source/modules/one.js"),
             "export class B {}"));
 
-    NominalType2 ref = typeRegistry.getType("module$source$modules$one");
+    NominalType ref = typeRegistry.getType("module$source$modules$one");
 
     TypeLink link = createFactory(ref).withTypeContext(ref).createLink("./foo/bar/baz");
     checkLink(link, "foo/bar/baz", "foo/bar/baz.html");
@@ -954,7 +954,7 @@ public class LinkFactoryTest {
             fs.getPath("source/modules/one/two.js"),
             "export class B {}"));
 
-    NominalType2 ref = typeRegistry.getType("module$source$modules$one$two");
+    NominalType ref = typeRegistry.getType("module$source$modules$one$two");
 
     TypeLink link = createFactory(ref).withTypeContext(ref).createLink("../foo/bar/baz");
     checkLink(link, "foo/bar/baz", "../foo/bar/baz.html");
@@ -973,7 +973,7 @@ public class LinkFactoryTest {
             fs.getPath("source/modules/two.js"),
             "exports.Y = class {}"));
 
-    NominalType2 ref = typeRegistry.getType("module$source$modules$two");
+    NominalType ref = typeRegistry.getType("module$source$modules$two");
 
     TypeLink link = createFactory(ref).withTypeContext(ref).createLink("./one");
     checkLink(link, "one", "one.html");
@@ -998,7 +998,7 @@ public class LinkFactoryTest {
             fs.getPath("source/modules/one/two.js"),
             "export class B {}"));
 
-    NominalType2 ref = typeRegistry.getType("module$source$modules$one$two");
+    NominalType ref = typeRegistry.getType("module$source$modules$one$two");
 
     TypeLink link = createFactory(ref).withTypeContext(ref).createLink("../foo/bar/index");
     checkLink(link, "foo/bar/index", "../foo/bar/index.html");
@@ -1026,7 +1026,7 @@ public class LinkFactoryTest {
             fs.getPath("source/modules/one/two.js"),
             "export class B {}"));
 
-    NominalType2 ref = typeRegistry.getType("module$source$modules$one$two");
+    NominalType ref = typeRegistry.getType("module$source$modules$one$two");
 
     TypeLink link = createFactory(ref).withTypeContext(ref).createLink("../foo/bar/index");
     checkLink(link, "foo/bar", "../foo/bar/index.html");
@@ -1067,7 +1067,7 @@ public class LinkFactoryTest {
             fs.getPath("source/modules/one/two.js"),
             "export class B {}"));
 
-    NominalType2 ref = typeRegistry.getType("module$source$modules$one$two");
+    NominalType ref = typeRegistry.getType("module$source$modules$one$two");
     LinkFactory factory = createFactory(ref).withTypeContext(ref);
 
     TypeLink link = factory.createLink("module$source$modules$one$two.B");
@@ -1084,7 +1084,7 @@ public class LinkFactoryTest {
             fs.getPath("source/modules/one/two.js"),
             "export class B {}"));
 
-    NominalType2 ref = typeRegistry.getType("module$source$modules$one$two");
+    NominalType ref = typeRegistry.getType("module$source$modules$one$two");
     LinkFactory factory = createFactory(ref).withTypeContext(ref);
 
     checkLink(factory.createLink("one/two.B"), "B", "two_exports_B.html");
@@ -1113,7 +1113,7 @@ public class LinkFactoryTest {
             fs.getPath("source/modules/one/two.js"),
             "export class B { go() {} }"));
 
-    NominalType2 ref = typeRegistry.getType("module$source$modules$one$two");
+    NominalType ref = typeRegistry.getType("module$source$modules$one$two");
     LinkFactory factory = createFactory(ref).withTypeContext(ref);
 
     checkLink(factory.createLink("one/two.B#go"), "B#go", "two_exports_B.html#go");
@@ -1131,7 +1131,7 @@ public class LinkFactoryTest {
         "  fb.Baz = class {};",
         "});");
 
-    NominalType2 ref = typeRegistry.getType("foo.bar.Baz");
+    NominalType ref = typeRegistry.getType("foo.bar.Baz");
 
     TypeLink link = createFactory(ref).withTypeContext(ref).createLink("fb.Baz");
     checkLink(link, "foo.bar.Baz", "foo.bar.Baz.html");
@@ -1148,7 +1148,7 @@ public class LinkFactoryTest {
         "  math.Baz = class {};",
         "});");
 
-    NominalType2 ref = typeRegistry.getType("foo.bar.Baz");
+    NominalType ref = typeRegistry.getType("foo.bar.Baz");
 
     TypeLink link = createFactory(ref).withTypeContext(ref).createLink("math.Baz");
     checkLink(link, "foo.bar.Baz", "foo.bar.Baz.html");
@@ -1168,7 +1168,7 @@ public class LinkFactoryTest {
             "var a = goog.require('one');",
             "var b = goog.require('one').One"));
 
-    NominalType2 ref = typeRegistry.getType("two");
+    NominalType ref = typeRegistry.getType("two");
     LinkFactory factory = createFactory(ref).withTypeContext(ref);
 
     checkLink(factory.createLink("a"), "one", "one.html");
@@ -1187,7 +1187,7 @@ public class LinkFactoryTest {
             "var a = require('./one');",
             "var b = require('./one').One"));
 
-    NominalType2 ref = typeRegistry.getType("module$source$modules$two");
+    NominalType ref = typeRegistry.getType("module$source$modules$two");
     LinkFactory factory = createFactory(ref).withTypeContext(ref);
 
     checkLink(factory.createLink("a"), "one", "one.html");
@@ -1206,7 +1206,7 @@ public class LinkFactoryTest {
             "import * as a from './one';",
             "export class Two extends One {}"));
 
-    NominalType2 ref = typeRegistry.getType("module$source$modules$two");
+    NominalType ref = typeRegistry.getType("module$source$modules$two");
     LinkFactory factory = createFactory(ref).withTypeContext(ref);
 
     checkLink(factory.createLink("a"), "one", "one.html");
@@ -1224,7 +1224,7 @@ public class LinkFactoryTest {
             "import One from './one';",
             "export class Two extends One {}"));
 
-    NominalType2 ref = typeRegistry.getType("module$source$modules$two");
+    NominalType ref = typeRegistry.getType("module$source$modules$two");
     LinkFactory factory = createFactory(ref).withTypeContext(ref);
 
     checkLink(factory.createLink("One"), "One", "one_exports_One.html");
@@ -1242,7 +1242,7 @@ public class LinkFactoryTest {
             "import {One, Two} from './one';",
             "export class Three extends One {}"));
 
-    NominalType2 ref = typeRegistry.getType("module$source$modules$two");
+    NominalType ref = typeRegistry.getType("module$source$modules$two");
     LinkFactory factory = createFactory(ref).withTypeContext(ref);
 
     checkLink(factory.createLink("One"), "One", "one_exports_One.html");
@@ -1260,7 +1260,7 @@ public class LinkFactoryTest {
             "import {One as TheOne} from './one';",
             "export class Two extends TheOne {}"));
 
-    NominalType2 ref = typeRegistry.getType("module$source$modules$two");
+    NominalType ref = typeRegistry.getType("module$source$modules$two");
     LinkFactory factory = createFactory(ref).withTypeContext(ref);
 
     checkLink(factory.createLink("TheOne"), "One", "one_exports_One.html");
@@ -1279,7 +1279,7 @@ public class LinkFactoryTest {
             "import {One as X, Two as Y} from './one';",
             "export class Three extends X {}"));
 
-    NominalType2 ref = typeRegistry.getType("module$source$modules$two");
+    NominalType ref = typeRegistry.getType("module$source$modules$two");
     LinkFactory factory = createFactory(ref).withTypeContext(ref);
 
     checkLink(factory.createLink("X"), "One", "one_exports_One.html");
@@ -1300,7 +1300,7 @@ public class LinkFactoryTest {
             "import {default as X} from './one';",
             "export class Three extends X {}"));
 
-    NominalType2 ref = typeRegistry.getType("module$source$modules$two");
+    NominalType ref = typeRegistry.getType("module$source$modules$two");
     LinkFactory factory = createFactory(ref).withTypeContext(ref);
 
     checkLink(factory.createLink("X"), "one", "one.html");
@@ -1322,7 +1322,7 @@ public class LinkFactoryTest {
         "goog.provide('util.array');",
         "util.array.forEach = function(arr, fn) {};");
 
-    NominalType2 ref = typeRegistry.getType("util.array");
+    NominalType ref = typeRegistry.getType("util.array");
 
     TypeLink link = createFactory(ref).withTypeContext(ref).createLink("#forEach");
     checkLink(link, "util.array.forEach", "util.array.html#forEach");
@@ -1429,7 +1429,7 @@ public class LinkFactoryTest {
         "foo.Bar.bar = function() {};",
         "foo.Bar.prototype.bar = function() {}");
 
-    NominalType2 context = typeRegistry.getType("foo.Bar");
+    NominalType context = typeRegistry.getType("foo.Bar");
     LinkFactory factory = createFactory(context);
 
     checkLink(factory.createLink("#bar"), "foo.Bar#bar", "foo.Bar.html#bar");
@@ -1447,7 +1447,7 @@ public class LinkFactoryTest {
         "foo.Bar.baz = function() {};",
         "foo.Bar.prototype.bar = function() {}");
 
-    NominalType2 context = typeRegistry.getType("foo.Bar");
+    NominalType context = typeRegistry.getType("foo.Bar");
     LinkFactory factory = createFactory(context);
 
     checkLink(factory.createLink("#bar"), "foo.Bar#bar", "foo.Bar.html#bar");
@@ -1463,7 +1463,7 @@ public class LinkFactoryTest {
         "foo.Bar = {x: 1, y: 2};",
         "foo.Bar.baz = function() {};");
 
-    NominalType2 context = typeRegistry.getType("foo.Bar");
+    NominalType context = typeRegistry.getType("foo.Bar");
     LinkFactory factory = createFactory(context);
 
     checkLink(factory.createLink("#x"), "foo.Bar.x", "foo.Bar.html#x");
@@ -1476,7 +1476,7 @@ public class LinkFactoryTest {
         fs.getPath("source/modules/one.js"),
         "exports = {bar: function() {}};");
 
-    NominalType2 context = typeRegistry.getType("module$source$modules$one");
+    NominalType context = typeRegistry.getType("module$source$modules$one");
     LinkFactory factory = createFactory(context).withTypeContext(context);
 
     checkLink(factory.createLink("#bar"), "one.bar", "one.html#bar");
@@ -1492,7 +1492,7 @@ public class LinkFactoryTest {
         "InternalClass.prototype.method = function() {};",
         "exports.ExternalClass = InternalClass");
 
-    NominalType2 context = typeRegistry.getType("module$source$modules$one");
+    NominalType context = typeRegistry.getType("module$source$modules$one");
     LinkFactory factory = createFactory(context).withTypeContext(context);
 
     util.getCompiler().getTypeRegistry();
@@ -1534,7 +1534,7 @@ public class LinkFactoryTest {
             fs.getPath("source/modules/two.js"),
             "export {One as Two} from './one';"));
 
-    NominalType2 ref = typeRegistry.getType("module$source$modules$two");
+    NominalType ref = typeRegistry.getType("module$source$modules$two");
     LinkFactory factory = createFactory(ref).withTypeContext(ref);
 
     checkLink(factory.createLink("One"), "One", "");
@@ -1555,8 +1555,8 @@ public class LinkFactoryTest {
             "",
             "import {Y, Z} from './a/b/c';",
             "export class A {}"));
-    NominalType2 one = typeRegistry.getType("module$source$modules$one");
-    NominalType2 abc = typeRegistry.getType("module$source$modules$a$b$c");
+    NominalType one = typeRegistry.getType("module$source$modules$one");
+    NominalType abc = typeRegistry.getType("module$source$modules$a$b$c");
     
     // Check global scope for a base line.
     LinkFactory factory = createFactory();
@@ -1602,8 +1602,8 @@ public class LinkFactoryTest {
             "import {A} from './a/b/c';",
             "export class B extends A {}"));
 
-    NominalType2 a = typeRegistry.getType("module$source$modules$a$b$c.A");
-    NominalType2 b = typeRegistry.getType("module$source$modules$one.B");
+    NominalType a = typeRegistry.getType("module$source$modules$a$b$c.A");
+    NominalType b = typeRegistry.getType("module$source$modules$one.B");
 
     LinkFactory factory = createFactory(a).withTypeContext(a);
     checkLink(factory.createLink("#x"), "A#x", "c_exports_A.html#x");
@@ -1622,8 +1622,8 @@ public class LinkFactoryTest {
         "function bar() {}",
         "export {bar as Bar}");
 
-    NominalType2 module = typeRegistry.getType("module$source$modules$one");
-    NominalType2 foo = typeRegistry.getType("module$source$modules$one.Foo");
+    NominalType module = typeRegistry.getType("module$source$modules$one");
+    NominalType foo = typeRegistry.getType("module$source$modules$one.Foo");
     
     LinkFactory factory = createFactory();
     checkLink(factory.createLink("Foo"), "Foo", "");
@@ -1646,7 +1646,7 @@ public class LinkFactoryTest {
     return createFactory(null);
   }
 
-  private LinkFactory createFactory(@Nullable NominalType2 context) {
+  private LinkFactory createFactory(@Nullable NominalType context) {
     return linkFactoryBuilder.create(context);
   }
 

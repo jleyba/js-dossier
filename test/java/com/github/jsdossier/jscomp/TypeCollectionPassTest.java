@@ -47,14 +47,14 @@ public class TypeCollectionPassTest {
 
   @Inject @Input private FileSystem fs;
   @Inject private CompilerUtil util;
-  @Inject private TypeRegistry2 typeRegistry;
+  @Inject private TypeRegistry typeRegistry;
   
   @Test
   public void collectsGlobalClasses_functionDeclaration() {
     util.compile(fs.getPath("foo.js"),
         "/** @constructor */",
         "function One() {}");
-    NominalType2 type = typeRegistry.getType("One");
+    NominalType type = typeRegistry.getType("One");
     assertConstructor(type);
     assertNoModule(type);
     assertPath(type, "foo.js");
@@ -72,7 +72,7 @@ public class TypeCollectionPassTest {
         "",
         "/** @constructor */",
         "const Three = function() {};");
-    NominalType2 type = typeRegistry.getType("One");
+    NominalType type = typeRegistry.getType("One");
     assertConstructor(type);
     assertNoModule(type);
     assertPath(type, "foo.js");
@@ -95,7 +95,7 @@ public class TypeCollectionPassTest {
   public void collectsGlobalClasses_classDeclaration() {
     util.compile(fs.getPath("foo.js"),
         "class One {}");
-    NominalType2 type = typeRegistry.getType("One");
+    NominalType type = typeRegistry.getType("One");
     assertConstructor(type);
     assertNoModule(type);
     assertPath(type, "foo.js");
@@ -108,7 +108,7 @@ public class TypeCollectionPassTest {
         "var One = class {};",
         "let Two = class {};",
         "const Three = class {};");
-    NominalType2 type = typeRegistry.getType("One");
+    NominalType type = typeRegistry.getType("One");
     assertConstructor(type);
     assertNoModule(type);
     assertPath(type, "foo.js");
@@ -133,7 +133,7 @@ public class TypeCollectionPassTest {
         "/** @constructor */",
         "var One = function Two() {};");
 
-    NominalType2 type = typeRegistry.getType("One");
+    NominalType type = typeRegistry.getType("One");
     assertConstructor(type);
     assertNoModule(type);
     assertPath(type, "foo.js");
@@ -147,7 +147,7 @@ public class TypeCollectionPassTest {
     util.compile(fs.getPath("foo.js"),
         "var One = class Two {};");
 
-    NominalType2 type = typeRegistry.getType("One");
+    NominalType type = typeRegistry.getType("One");
     assertConstructor(type);
     assertNoModule(type);
     assertPath(type, "foo.js");
@@ -162,13 +162,13 @@ public class TypeCollectionPassTest {
         "const One = class {};",
         "const Two = One;");
 
-    NominalType2 one = typeRegistry.getType("One");
+    NominalType one = typeRegistry.getType("One");
     assertConstructor(one);
     assertNoModule(one);
     assertPath(one, "foo.js");
     assertPosition(one, 1, 6);
 
-    NominalType2 two = typeRegistry.getType("Two");
+    NominalType two = typeRegistry.getType("Two");
     assertConstructor(two);
     assertNoModule(two);
     assertPath(two, "foo.js");
@@ -184,7 +184,7 @@ public class TypeCollectionPassTest {
     util.compile(fs.getPath("foo.js"),
         "const One = goog.defineClass(null, {constructor: function() {}});");
 
-    NominalType2 one = typeRegistry.getType("One");
+    NominalType one = typeRegistry.getType("One");
     assertConstructor(one);
     assertNoModule(one);
     assertPath(one, "foo.js");
@@ -226,7 +226,7 @@ public class TypeCollectionPassTest {
     util.compile(fs.getPath("foo/bar.js"),
         "/** @enum */",
         "const Foo = {};");
-    NominalType2 foo = typeRegistry.getType("Foo");
+    NominalType foo = typeRegistry.getType("Foo");
     assertEnum(foo);
     assertNoModule(foo);
     assertPath(foo, "foo/bar.js");
@@ -238,7 +238,7 @@ public class TypeCollectionPassTest {
     util.compile(fs.getPath("foo/bar.js"),
         "/** @typedef {string} */",
         "var Foo;");
-    NominalType2 foo = typeRegistry.getType("Foo");
+    NominalType foo = typeRegistry.getType("Foo");
     assertTypedef(foo);
     assertNoModule(foo);
     assertPath(foo, "foo/bar.js");
@@ -257,7 +257,7 @@ public class TypeCollectionPassTest {
         "goog.module('foo');",
         "exports.Bar = class {};");
     
-    NominalType2 type = typeRegistry.getType("foo");
+    NominalType type = typeRegistry.getType("foo");
     assertNamespace(type);
     assertPath(type, "foo/bar.js");
     assertPosition(type, 1, 13);
@@ -270,7 +270,7 @@ public class TypeCollectionPassTest {
     util.compile(fs.getPath("modules/foo/bar.js"),
         "exports.Bar = {}");
 
-    NominalType2 type = typeRegistry.getType("module$modules$foo$bar");
+    NominalType type = typeRegistry.getType("module$modules$foo$bar");
     assertNamespace(type);
     assertPath(type, "modules/foo/bar.js");
     assertPosition(type, 1, 1);
@@ -311,7 +311,7 @@ public class TypeCollectionPassTest {
   private void testRecordsEs6ModuleExportsAsNominalType(String... source) {
     util.compile(fs.getPath("foo/bar.js"), source);
 
-    NominalType2 type = typeRegistry.getType("module$foo$bar");
+    NominalType type = typeRegistry.getType("module$foo$bar");
     assertNamespace(type);
     assertPath(type, "foo/bar.js");
     assertPosition(type, 1, 1);
@@ -324,7 +324,7 @@ public class TypeCollectionPassTest {
     util.compile(fs.getPath("modules/foo/bar.js"),
         "export function foo() {};");
 
-    NominalType2 type = typeRegistry.getType("module$modules$foo$bar");
+    NominalType type = typeRegistry.getType("module$modules$foo$bar");
     assertNamespace(type);
     assertPath(type, "modules/foo/bar.js");
     assertPosition(type, 1, 1);
@@ -488,26 +488,26 @@ public class TypeCollectionPassTest {
         "foo.six.a = foo.four.a;",
         "");
     
-    NominalType2 one = typeRegistry.getType("foo.one");
+    NominalType one = typeRegistry.getType("foo.one");
     assertThat(typeRegistry.getTypes(one.getType())).containsExactly(one);
 
-    NominalType2 two = typeRegistry.getType("foo.two");
+    NominalType two = typeRegistry.getType("foo.two");
     assertThat(typeRegistry.getTypes(two.getType())).containsExactly(two);
 
-    NominalType2 three = typeRegistry.getType("foo.three");
+    NominalType three = typeRegistry.getType("foo.three");
     assertWithMessage(
         "Even though foo.three duck-types to foo.one, the" +
             " compiler should detect that foo.three.a.b != foo.one.a.b")
         .that(typeRegistry.getTypes(three.getType())).containsExactly(three);
 
-    NominalType2 four = typeRegistry.getType("foo.four");
-    NominalType2 five = typeRegistry.getType("foo.five");
+    NominalType four = typeRegistry.getType("foo.four");
+    NominalType five = typeRegistry.getType("foo.five");
     assertWithMessage("foo.five is a straight alias of foo.four")
         .that(typeRegistry.getTypes(four.getType())).containsExactly(four, five);
     assertWithMessage("foo.five is a straight alias of foo.four")
         .that(typeRegistry.getTypes(five.getType())).containsExactly(four, five);
 
-    NominalType2 six = typeRegistry.getType("foo.six");
+    NominalType six = typeRegistry.getType("foo.six");
     assertWithMessage("foo.six.a === foo.four.a, but foo.six !== foo.four")
         .that(typeRegistry.getTypes(six.getType())).containsExactly(six);
   }
@@ -519,10 +519,10 @@ public class TypeCollectionPassTest {
         "foo.bar = function() {};",
         "foo.bar.baz = function() {};");
 
-    NominalType2 foo = typeRegistry.getType("foo");
+    NominalType foo = typeRegistry.getType("foo");
     assertNamespace(foo);
 
-    NominalType2 bar = typeRegistry.getType("foo.bar");
+    NominalType bar = typeRegistry.getType("foo.bar");
     assertNamespace(bar);
     assertThat(bar.getType().isFunctionType()).isTrue();
   }
@@ -604,11 +604,11 @@ public class TypeCollectionPassTest {
         "foo.bar.baz.Clazz = class {};",
         "foo.Bar = class {};");
 
-    NominalType2 foo = typeRegistry.getType("foo");
-    NominalType2 bar = typeRegistry.getType("foo.bar");
-    NominalType2 barClass = typeRegistry.getType("foo.Bar");
-    NominalType2 baz = typeRegistry.getType("foo.bar.baz");
-    NominalType2 clazz = typeRegistry.getType("foo.bar.baz.Clazz");
+    NominalType foo = typeRegistry.getType("foo");
+    NominalType bar = typeRegistry.getType("foo.bar");
+    NominalType barClass = typeRegistry.getType("foo.Bar");
+    NominalType baz = typeRegistry.getType("foo.bar.baz");
+    NominalType clazz = typeRegistry.getType("foo.bar.baz.Clazz");
 
     assertThat(typeRegistry.getNestedTypes(foo)).containsExactly(bar, barClass);
     assertThat(typeRegistry.getNestedTypes(barClass)).isEmpty();
@@ -623,10 +623,10 @@ public class TypeCollectionPassTest {
         "goog.module('foo.bar');",
         "exports.Baz = class {};");
 
-    NominalType2 foo = typeRegistry.getType("foo");
+    NominalType foo = typeRegistry.getType("foo");
     assertThat(foo.getModule()).isAbsent();
     
-    NominalType2 bar = typeRegistry.getType("foo.bar");
+    NominalType bar = typeRegistry.getType("foo.bar");
     assertThat(bar.getModule()).isPresent();
   }
 
@@ -636,13 +636,13 @@ public class TypeCollectionPassTest {
         "goog.module('foo.bar.baz');",
         "exports.Baz = class {};");
 
-    NominalType2 foo = typeRegistry.getType("foo");
+    NominalType foo = typeRegistry.getType("foo");
     assertThat(foo.getModule()).isAbsent();
     
-    NominalType2 bar = typeRegistry.getType("foo.bar");
+    NominalType bar = typeRegistry.getType("foo.bar");
     assertThat(bar.getModule()).isAbsent();
     
-    NominalType2 baz = typeRegistry.getType("foo.bar.baz");
+    NominalType baz = typeRegistry.getType("foo.bar.baz");
     assertThat(baz.getModule()).isPresent();
   }
   
@@ -655,9 +655,9 @@ public class TypeCollectionPassTest {
         "/** @type {function(new: ns.Foo)} */ ns.F1 = ns.Foo;",
         "/** @type {function(new: ns.Foo): undefined} */ ns.F2 = ns.Foo;");
     
-    NominalType2 ns = typeRegistry.getType("ns");
-    NominalType2 foo = typeRegistry.getType("ns.Foo");
-    NominalType2 bar = typeRegistry.getType("ns.Bar");
+    NominalType ns = typeRegistry.getType("ns");
+    NominalType foo = typeRegistry.getType("ns.Foo");
+    NominalType bar = typeRegistry.getType("ns.Bar");
 
     assertThat(typeRegistry.getAllTypes()).containsExactly(ns, foo, bar);
     assertThat(typeRegistry.getTypes(foo.getType())).containsExactly(foo, bar);
@@ -679,7 +679,7 @@ public class TypeCollectionPassTest {
         .injectMembers(this);
   }
 
-  private static void assertNamespace(NominalType2 type) {
+  private static void assertNamespace(NominalType type) {
     assertThat(type.getType().isObject()).isTrue();
     assertThat(type.getType().isConstructor()).isFalse();
     assertThat(type.getType().isInterface()).isFalse();
@@ -687,48 +687,48 @@ public class TypeCollectionPassTest {
     assertThat(type.getJsDoc().isTypedef()).isFalse();
   }
 
-  private static void assertConstructor(NominalType2 type) {
+  private static void assertConstructor(NominalType type) {
     assertThat(type.getType().isConstructor()).isTrue();
     assertThat(type.getType().isInterface()).isFalse();
     assertThat(type.getType().isEnumType()).isFalse();
     assertThat(type.getJsDoc().isTypedef()).isFalse();
   }
 
-  private static void assertInterface(NominalType2 type) {
+  private static void assertInterface(NominalType type) {
     assertThat(type.getType().isConstructor()).isFalse();
     assertThat(type.getType().isInterface()).isTrue();
     assertThat(type.getType().isEnumType()).isFalse();
     assertThat(type.getJsDoc().isTypedef()).isFalse();
   }
 
-  private static void assertEnum(NominalType2 type) {
+  private static void assertEnum(NominalType type) {
     assertThat(type.getType().isConstructor()).isFalse();
     assertThat(type.getType().isInterface()).isFalse();
     assertThat(type.getType().isEnumType()).isTrue();
     assertThat(type.getJsDoc().isTypedef()).isFalse();
   }
 
-  private static void assertTypedef(NominalType2 type) {
+  private static void assertTypedef(NominalType type) {
     assertThat(type.getType().isConstructor()).isFalse();
     assertThat(type.getType().isInterface()).isFalse();
     assertThat(type.getType().isEnumType()).isFalse();
     assertThat(type.getJsDoc().isTypedef()).isTrue();
   }
 
-  private static void assertPath(NominalType2 type, String expected) {
+  private static void assertPath(NominalType type, String expected) {
     assertThat(type.getSourceFile().toString()).isEqualTo(expected);
   }
   
-  private static void assertPosition(NominalType2 type, int line, int col) {
+  private static void assertPosition(NominalType type, int line, int col) {
     assertThat(type.getSourcePosition()).isEqualTo(Position.of(line, col));
   }
   
-  private static void assertNoModule(NominalType2 type) {
+  private static void assertNoModule(NominalType type) {
     assertThat(type.getModule()).isAbsent();
   }
   
   private static void assertModule(
-      NominalType2 type, Module.Type moduleType, String id, String path) {
+      NominalType type, Module.Type moduleType, String id, String path) {
     Module module = type.getModule().get();
     assertThat(module.getType()).isEqualTo(moduleType);
     assertThat(module.getId()).isEqualTo(id);

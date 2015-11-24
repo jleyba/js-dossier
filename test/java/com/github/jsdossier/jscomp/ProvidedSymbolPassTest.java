@@ -45,7 +45,7 @@ public class ProvidedSymbolPassTest {
       .build();
 
   @Inject @Input private FileSystem fs; 
-  @Inject private TypeRegistry2 typeRegistry;
+  @Inject private TypeRegistry typeRegistry;
   @Inject private CompilerUtil util;
 
   @Test

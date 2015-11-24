@@ -19,7 +19,7 @@ package com.github.jsdossier;
 import static com.github.jsdossier.testing.CompilerUtil.createSourceFile;
 import static com.google.common.truth.Truth.assertThat;
 
-import com.github.jsdossier.jscomp.NominalType2;
+import com.github.jsdossier.jscomp.NominalType;
 import com.github.jsdossier.proto.BaseProperty;
 import com.github.jsdossier.proto.Comment;
 import com.github.jsdossier.proto.Property;
@@ -52,7 +52,7 @@ public class TypeInspectorStaticPropertyTest extends AbstractTypeInspectorTest {
         "/** @enum {string} */",
         "A.E = {};");
 
-    NominalType2 a = typeRegistry.getType("A");
+    NominalType a = typeRegistry.getType("A");
     TypeInspector typeInspector = typeInspectorFactory.create(a);
     
     TypeInspector.Report report = typeInspector.inspectType();
@@ -70,7 +70,7 @@ public class TypeInspectorStaticPropertyTest extends AbstractTypeInspectorTest {
         "foo.x = 123;",
         "foo.bar.y = 456;");
 
-    NominalType2 type = typeRegistry.getType("foo");
+    NominalType type = typeRegistry.getType("foo");
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectType();
     assertThat(report.getFunctions()).isEmpty();
@@ -107,7 +107,7 @@ public class TypeInspectorStaticPropertyTest extends AbstractTypeInspectorTest {
     
     assertThat(typeRegistry.isType("foo.bar")).isFalse();
 
-    NominalType2 type = typeRegistry.getType("foo");
+    NominalType type = typeRegistry.getType("foo");
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectType();
     assertThat(report.getFunctions()).isEmpty();
@@ -134,7 +134,7 @@ public class TypeInspectorStaticPropertyTest extends AbstractTypeInspectorTest {
         " */",
         "A.b = 1234;");
 
-    NominalType2 a = typeRegistry.getType("A");
+    NominalType a = typeRegistry.getType("A");
     TypeInspector typeInspector = typeInspectorFactory.create(a);
     TypeInspector.Report report = typeInspector.inspectType();
     assertThat(report.getFunctions()).isEmpty();
@@ -161,7 +161,7 @@ public class TypeInspectorStaticPropertyTest extends AbstractTypeInspectorTest {
         " */",
         "A.b = 1234;");
 
-    NominalType2 a = typeRegistry.getType("A");
+    NominalType a = typeRegistry.getType("A");
     TypeInspector typeInspector = typeInspectorFactory.create(a);
     TypeInspector.Report report = typeInspector.inspectType();
     assertThat(report.getFunctions()).isEmpty();
@@ -187,7 +187,7 @@ public class TypeInspectorStaticPropertyTest extends AbstractTypeInspectorTest {
         " */",
         "A.b = 1234;");
 
-    NominalType2 a = typeRegistry.getType("A");
+    NominalType a = typeRegistry.getType("A");
     TypeInspector typeInspector = typeInspectorFactory.create(a);
     TypeInspector.Report report = typeInspector.inspectType();
     assertThat(report.getFunctions()).isEmpty();
@@ -213,7 +213,7 @@ public class TypeInspectorStaticPropertyTest extends AbstractTypeInspectorTest {
         " */",
         "A.b = 1234;");
 
-    NominalType2 a = typeRegistry.getType("A");
+    NominalType a = typeRegistry.getType("A");
     TypeInspector typeInspector = typeInspectorFactory.create(a);
     TypeInspector.Report report = typeInspector.inspectType();
     assertThat(report.getFunctions()).isEmpty();
@@ -241,7 +241,7 @@ public class TypeInspectorStaticPropertyTest extends AbstractTypeInspectorTest {
         " */",
         "goog.define('A.b', 1234);");
 
-    NominalType2 a = typeRegistry.getType("A");
+    NominalType a = typeRegistry.getType("A");
     TypeInspector typeInspector = typeInspectorFactory.create(a);
     TypeInspector.Report report = typeInspector.inspectType();
     assertThat(report.getFunctions()).isEmpty();
@@ -275,7 +275,7 @@ public class TypeInspectorStaticPropertyTest extends AbstractTypeInspectorTest {
             "/** Link to a {@link Person}. */",
             "exports.limit = 123;"));
 
-    NominalType2 type = typeRegistry.getType("module$$src$modules$foo$bar");
+    NominalType type = typeRegistry.getType("module$$src$modules$foo$bar");
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectType();
     assertThat(report.getCompilerConstants()).isEmpty();

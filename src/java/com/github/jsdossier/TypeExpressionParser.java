@@ -22,8 +22,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Verify.verify;
 import static com.google.common.collect.Iterables.filter;
 
-import com.github.jsdossier.jscomp.NominalType2;
-import com.github.jsdossier.jscomp.TypeRegistry2;
+import com.github.jsdossier.jscomp.NominalType;
+import com.github.jsdossier.jscomp.TypeRegistry;
 import com.github.jsdossier.proto.Comment;
 import com.github.jsdossier.proto.TypeLink;
 import com.github.jsdossier.proto.TypeLinkOrBuilder;
@@ -63,13 +63,13 @@ import javax.annotation.Nullable;
 final class TypeExpressionParser {
 
   private final DossierFileSystem dfs;
-  private final TypeRegistry2 typeRegistry;
+  private final TypeRegistry typeRegistry;
   private final JSTypeRegistry jsTypeRegistry;
   private final LinkFactory linkFactory;
 
   TypeExpressionParser(
       @Provided DossierFileSystem dfs,
-      @Provided TypeRegistry2 typeRegistry,
+      @Provided TypeRegistry typeRegistry,
       @Provided JSTypeRegistry jsTypeRegistry,
       LinkFactory linkFactory) {
     this.dfs = dfs;
@@ -110,8 +110,8 @@ final class TypeExpressionParser {
 
   @Nullable
   @CheckReturnValue
-  private NominalType2 resolve(JSType type) {
-    Collection<NominalType2> types = typeRegistry.getTypes(type);  // Exact check first.
+  private NominalType resolve(JSType type) {
+    Collection<NominalType> types = typeRegistry.getTypes(type);  // Exact check first.
     if (types.isEmpty()) {
       types = typeRegistry.findTypes(type);  // Slow equivalence check next.
     }
@@ -124,7 +124,7 @@ final class TypeExpressionParser {
   @Nullable
   @CheckReturnValue
   private TypeLink getLink(JSType type) {
-    NominalType2 ntype = resolve(type);
+    NominalType ntype = resolve(type);
     if (ntype == null) {
       return null;
     }
@@ -342,7 +342,7 @@ final class TypeExpressionParser {
     }
 
     private void caseInstanceType(ObjectType type) {
-      NominalType2 nominalType = resolve(type.getConstructor());
+      NominalType nominalType = resolve(type.getConstructor());
       String displayName = nominalType == null
           ? type.getReferenceName()
           : dfs.getDisplayName(nominalType);
@@ -406,7 +406,7 @@ final class TypeExpressionParser {
       if (link.getHref().isEmpty()) {
         JSType jsType = jsTypeRegistry.getType(name);
         if (jsType != null) {
-          NominalType2 ntype = resolve(jsType);
+          NominalType ntype = resolve(jsType);
           if (ntype != null) {
             link = linkFactory.createLink(ntype);
           }

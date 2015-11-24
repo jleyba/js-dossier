@@ -44,7 +44,7 @@ public class AliasTransformationTest {
       .build();
 
   @Inject @Input private FileSystem inputFs;
-  @Inject private TypeRegistry2 typeRegistry;
+  @Inject private TypeRegistry typeRegistry;
   @Inject private CompilerUtil util;
   
   @Test
@@ -53,7 +53,7 @@ public class AliasTransformationTest {
         "/** @constructor */ function X() {};",
         "/** @constructor */ function Y() {};");
     
-    NominalType2 x = typeRegistry.getType("X");
+    NominalType x = typeRegistry.getType("X");
     assertThat(typeRegistry.resolveAlias(x, "Y")).isNull();
   }
   
@@ -66,7 +66,7 @@ public class AliasTransformationTest {
         "  /** @constructor */x.A = function() {};",
         "});");
 
-    NominalType2 a = typeRegistry.getType("foo.A");
+    NominalType a = typeRegistry.getType("foo.A");
     assertThat(typeRegistry.resolveAlias(a, "x")).isEqualTo("foo");
     assertThat(typeRegistry.resolveAlias(a, "y")).isNull();
     assertThat(typeRegistry.resolveAlias(a, "foo")).isNull();
@@ -80,7 +80,7 @@ public class AliasTransformationTest {
         "/** @constructor @extends {X} */ function Y() {};",
         "exports.Z = Y;");
 
-    NominalType2 z = typeRegistry.getType("foo.Z");
+    NominalType z = typeRegistry.getType("foo.Z");
     assertThat(typeRegistry.resolveAlias(z, "X")).isEqualTo("$jscomp.scope.X");
     assertThat(typeRegistry.resolveAlias(z, "Y")).isEqualTo("$jscomp.scope.Y");
   }
@@ -98,7 +98,7 @@ public class AliasTransformationTest {
             "class Y extends f.X {}",
             "exports.Z = Y;"));
 
-    NominalType2 z = typeRegistry.getType("module$module$bar.Z");
+    NominalType z = typeRegistry.getType("module$module$bar.Z");
     assertThat(typeRegistry.resolveAlias(z, "f")).isEqualTo("module$module$foo");
     assertThat(typeRegistry.resolveAlias(z, "Y")).isEqualTo("$jscomp.scope.Y");
   }
@@ -116,7 +116,7 @@ public class AliasTransformationTest {
             "import * as f from './foo';",
             "export class Y extends f.X {}"));
 
-    NominalType2 type = typeRegistry.getType("module$module$bar.Y");
+    NominalType type = typeRegistry.getType("module$module$bar.Y");
     assertThat(typeRegistry.resolveAlias(type, "Y")).isEqualTo("Y$$module$module$bar");
   }
   
@@ -132,7 +132,7 @@ public class AliasTransformationTest {
             "import * as f from './foo';",
             "export class Y extends f.X {}"));
 
-    NominalType2 type = typeRegistry.getType("module$module$bar.Y");
+    NominalType type = typeRegistry.getType("module$module$bar.Y");
     assertThat(typeRegistry.resolveAlias(type, "f")).isEqualTo("module$module$foo");
   }
   
@@ -148,7 +148,7 @@ public class AliasTransformationTest {
             "import * as f from './a/b/c';",
             "export class Y extends f.X {}"));
 
-    NominalType2 type = typeRegistry.getType("module$module$bar.Y");
+    NominalType type = typeRegistry.getType("module$module$bar.Y");
     assertThat(typeRegistry.resolveAlias(type, "f")).isEqualTo("module$module$a$b$c");
   }
   
@@ -164,7 +164,7 @@ public class AliasTransformationTest {
             "import * as f from '../foo';",
             "export class Y extends f.X {}"));
 
-    NominalType2 type = typeRegistry.getType("module$module$a$b$c.Y");
+    NominalType type = typeRegistry.getType("module$module$a$b$c.Y");
     assertThat(typeRegistry.resolveAlias(type, "f")).isEqualTo("module$module$a$foo");
   }
   
@@ -179,7 +179,7 @@ public class AliasTransformationTest {
             "import X from './foo';",
             "export class Y extends X {}"));
 
-    NominalType2 type = typeRegistry.getType("module$module$a$bar.Y");
+    NominalType type = typeRegistry.getType("module$module$a$bar.Y");
     assertThat(typeRegistry.resolveAlias(type, "X"))
         .isEqualTo("module$module$a$foo.X");
   }
@@ -196,7 +196,7 @@ public class AliasTransformationTest {
             "import {X, Y} from './foo';",
             "export class Z extends Y {}"));
 
-    NominalType2 type = typeRegistry.getType("module$module$a$bar.Z");
+    NominalType type = typeRegistry.getType("module$module$a$bar.Z");
     assertThat(typeRegistry.resolveAlias(type, "X"))
         .isEqualTo("module$module$a$foo.X");
     assertThat(typeRegistry.resolveAlias(type, "Y"))
@@ -214,7 +214,7 @@ public class AliasTransformationTest {
             "import {X as A} from './foo';",
             "export class Y extends A {}"));
 
-    NominalType2 type = typeRegistry.getType("module$module$a$bar.Y");
+    NominalType type = typeRegistry.getType("module$module$a$bar.Y");
     assertThat(typeRegistry.resolveAlias(type, "A"))
         .isEqualTo("module$module$a$foo.X");
   }
@@ -231,7 +231,7 @@ public class AliasTransformationTest {
             "import {X as A, Y as B} from './foo';",
             "export class Y extends A {}"));
 
-    NominalType2 type = typeRegistry.getType("module$module$a$bar.Y");
+    NominalType type = typeRegistry.getType("module$module$a$bar.Y");
     assertThat(typeRegistry.resolveAlias(type, "A"))
         .isEqualTo("module$module$a$foo.X");
     assertThat(typeRegistry.resolveAlias(type, "B"))
@@ -249,7 +249,7 @@ public class AliasTransformationTest {
             "import {default as A} from './foo';",
             "export class Y extends A {}"));
 
-    NominalType2 type = typeRegistry.getType("module$module$a$bar.Y");
+    NominalType type = typeRegistry.getType("module$module$a$bar.Y");
     assertThat(typeRegistry.resolveAlias(type, "A"))
         .isEqualTo("module$module$a$foo");
   }

@@ -17,8 +17,8 @@
 package com.github.jsdossier;
 
 import com.github.jsdossier.jscomp.Module;
-import com.github.jsdossier.jscomp.NominalType2;
-import com.github.jsdossier.jscomp.TypeRegistry2;
+import com.github.jsdossier.jscomp.NominalType;
+import com.github.jsdossier.jscomp.TypeRegistry;
 import com.google.common.base.Optional;
 import com.google.common.io.Files;
 import com.google.javascript.rhino.jstype.JSType;
@@ -65,26 +65,26 @@ final class TypeContext {
   
   private static final char MODULE_PATH_SEPARATOR = '/';
 
-  private final TypeRegistry2 typeRegistry;
+  private final TypeRegistry typeRegistry;
   private final JSTypeRegistry jsTypeRegistry; 
   private final DossierFileSystem dfs;
   private final ModuleNamingConvention moduleNamingConvention;
-  private final Optional<NominalType2> context;
+  private final Optional<NominalType> context;
 
   @Inject
   TypeContext(
-      TypeRegistry2 typeRegistry,
+      TypeRegistry typeRegistry,
       JSTypeRegistry jsTypeRegistry,
       ModuleNamingConvention moduleNamingConvention, DossierFileSystem dfs) {
     this(typeRegistry, jsTypeRegistry, dfs, moduleNamingConvention,
-        Optional.<NominalType2>absent());
+        Optional.<NominalType>absent());
   }
   
   private TypeContext(
-      TypeRegistry2 typeRegistry,
+      TypeRegistry typeRegistry,
       JSTypeRegistry jsTypeRegistry,
       DossierFileSystem dfs, ModuleNamingConvention moduleNamingConvention,
-      Optional<NominalType2> context) {
+      Optional<NominalType> context) {
     this.typeRegistry = typeRegistry;
     this.jsTypeRegistry = jsTypeRegistry;
     this.dfs = dfs;
@@ -98,7 +98,7 @@ final class TypeContext {
   public TypeContext clearContext() {
     if (context.isPresent()) {
       return new TypeContext(typeRegistry, jsTypeRegistry, dfs, moduleNamingConvention,
-          Optional.<NominalType2>absent());
+          Optional.<NominalType>absent());
     }
     return this;
   }
@@ -106,7 +106,7 @@ final class TypeContext {
   /**
    * Creates a new context focused on the given type.
    */
-  public TypeContext changeContext(@Nullable NominalType2 context) {
+  public TypeContext changeContext(@Nullable NominalType context) {
     return new TypeContext(
         typeRegistry, jsTypeRegistry, dfs, moduleNamingConvention, Optional.fromNullable(context));
   }
@@ -119,7 +119,7 @@ final class TypeContext {
    * Returns the type type names or are resolved against, or null if using the global scope. 
    */
   @Nullable
-  public NominalType2 getContextType() {
+  public NominalType getContextType() {
     return context.orNull();
   }
 
@@ -129,7 +129,7 @@ final class TypeContext {
    */
   @Nullable
   @CheckReturnValue
-  public NominalType2 resolveType(String name) {
+  public NominalType resolveType(String name) {
     if (name.indexOf(MODULE_PATH_SEPARATOR) != -1) {
       return resolveModuleType(name);
     }
@@ -170,10 +170,10 @@ final class TypeContext {
 
   @Nullable
   @CheckReturnValue
-  private NominalType2 resolveModuleType(String pathStr) {
+  private NominalType resolveModuleType(String pathStr) {
     Path path = resolveModulePath(pathStr);
 
-    NominalType2 type = resolveModuleType(path);
+    NominalType type = resolveModuleType(path);
     if (type != null) {
       return type;
     }
@@ -195,7 +195,7 @@ final class TypeContext {
   }
 
   @Nullable
-  private NominalType2 resolveModuleType(Path path) {
+  private NominalType resolveModuleType(Path path) {
     if (!typeRegistry.isModule(path)
         && moduleNamingConvention == ModuleNamingConvention.NODE
         && !path.endsWith("index.js")) {
@@ -233,14 +233,14 @@ final class TypeContext {
 
   @Nullable
   @CheckReturnValue
-  private NominalType2 resolveGlobalType(String name) {
+  private NominalType resolveGlobalType(String name) {
     if (typeRegistry.isType(name)) {
       return typeRegistry.getType(name);
     }
 
     JSType type = jsTypeRegistry.getType(name);
     if (type != null) {
-      Collection<NominalType2> types = typeRegistry.findTypes(type);
+      Collection<NominalType> types = typeRegistry.findTypes(type);
       if (types.isEmpty() && type.isInstanceType()) {
         types = typeRegistry.findTypes(type.toObjectType().getConstructor());
       }

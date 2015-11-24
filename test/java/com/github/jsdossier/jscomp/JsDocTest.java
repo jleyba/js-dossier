@@ -56,7 +56,8 @@ public class JsDocTest {
   public GuiceRule guice = GuiceRule.builder(this).build();
 
   @Inject CompilerUtil util;
-  @Inject TypeRegistry2 typeRegistry;
+  @Inject
+  TypeRegistry typeRegistry;
 
   @Test
   public void returnsEmptyBlockCommentIfAnnotationsOnly() {
@@ -280,7 +281,7 @@ public class JsDocTest {
         "var Foo = function() {};",
         "/** @return nothing. */",
         "Foo.bar = function() { return ''; };");
-    NominalType2 foo =  getOnlyElement(typeRegistry.getAllTypes());
+    NominalType foo =  getOnlyElement(typeRegistry.getAllTypes());
     Property bar = getOnlyElement(getProperties(foo));
     assertEquals("bar", bar.getName());
     assertTrue(bar.getType().isFunctionType());
@@ -297,7 +298,7 @@ public class JsDocTest {
         " * @return nothing.",
         " */",
         "Foo.bar = function() { return ''; };");
-    NominalType2 foo =  getOnlyElement(typeRegistry.getAllTypes());
+    NominalType foo =  getOnlyElement(typeRegistry.getAllTypes());
     Property bar = getOnlyElement(getProperties(foo));
     assertEquals("bar", bar.getName());
     assertTrue(bar.getType().isFunctionType());
@@ -315,7 +316,7 @@ public class JsDocTest {
         " *     two lines.",
         " */",
         "Foo.bar = function() { return ''; };");
-    NominalType2 foo =  getOnlyElement(typeRegistry.getAllTypes());
+    NominalType foo =  getOnlyElement(typeRegistry.getAllTypes());
     Property bar = getOnlyElement(getProperties(foo));
     assertEquals("bar", bar.getName());
     assertTrue(bar.getType().isFunctionType());
@@ -334,7 +335,7 @@ public class JsDocTest {
         " *     lines.",
         " */",
         "Foo.bar = function() { return ''; };");
-    NominalType2 foo =  getOnlyElement(typeRegistry.getAllTypes());
+    NominalType foo =  getOnlyElement(typeRegistry.getAllTypes());
     Property bar = getOnlyElement(getProperties(foo));
     assertEquals("bar", bar.getName());
     assertTrue(bar.getType().isFunctionType());
@@ -350,7 +351,7 @@ public class JsDocTest {
         " * @see other.",
         " */",
         "var foo = function() {};");
-    NominalType2 foo =  getOnlyElement(typeRegistry.getAllTypes());
+    NominalType foo =  getOnlyElement(typeRegistry.getAllTypes());
     assertEquals("foo", foo.getName());
     assertTrue(foo.getType().isConstructor());
     assertThat(foo.getJsDoc().getSeeClauses()).containsExactly("other.");
@@ -588,7 +589,7 @@ public class JsDocTest {
         " * @define {boolean}",
         " */",
         "foo.bar = false;");
-    NominalType2 type = getOnlyElement(typeRegistry.getAllTypes());
+    NominalType type = getOnlyElement(typeRegistry.getAllTypes());
     assertThat(type.getName()).isEqualTo("foo");
 
     Property property = getOnlyElement(getProperties(type));
@@ -609,7 +610,7 @@ public class JsDocTest {
         " *     Goodbye, world!",
         " */",
         "foo.bar = false;");
-    NominalType2 type = getOnlyElement(typeRegistry.getAllTypes());
+    NominalType type = getOnlyElement(typeRegistry.getAllTypes());
     assertThat(type.getName()).isEqualTo("foo");
 
     Property property = getOnlyElement(getProperties(type));
@@ -632,14 +633,14 @@ public class JsDocTest {
 
   private JsDoc getClassJsDoc(String... lines) {
     util.compile(path("foo/bar.js"), lines);
-    NominalType2 type = getOnlyElement(typeRegistry.getAllTypes());
+    NominalType type = getOnlyElement(typeRegistry.getAllTypes());
     assertWithMessage("Not a constructor: " + type.getName())
         .that(type.getType().isConstructor())
         .isTrue();
     return type.getJsDoc();
   }
   
-  private List<Property> getProperties(NominalType2 type) {
+  private List<Property> getProperties(NominalType type) {
     List<Property> properties = new ArrayList<>();
     for (String name : type.getType().toObjectType().getOwnPropertyNames()) {
       Property property = type.getType().toObjectType().getOwnSlot(name);

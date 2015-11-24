@@ -22,7 +22,7 @@ import static com.google.common.util.concurrent.MoreExecutors.directExecutor;
 
 import com.github.jsdossier.Annotations.NumThreads;
 import com.github.jsdossier.annotations.DocumentationScoped;
-import com.github.jsdossier.jscomp.NominalType2;
+import com.github.jsdossier.jscomp.NominalType;
 import com.google.common.util.concurrent.AsyncFunction;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
@@ -37,7 +37,6 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -97,8 +96,8 @@ final class RenderTaskExecutor {
    * @param types the types to generate documentation for.
    * @return a self reference.
    */
-  public RenderTaskExecutor renderDocumentation(Iterable<NominalType2> types) {
-    for (NominalType2 type : types) {
+  public RenderTaskExecutor renderDocumentation(Iterable<NominalType> types) {
+    for (NominalType type : types) {
       submit(documentationTaskFactory.create(type));
     }
     return this;

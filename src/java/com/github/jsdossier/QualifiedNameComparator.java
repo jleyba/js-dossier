@@ -16,16 +16,16 @@
 
 package com.github.jsdossier;
 
-import com.github.jsdossier.jscomp.NominalType2;
+import com.github.jsdossier.jscomp.NominalType;
 
 import java.util.Comparator;
 
 /**
  * Compares nominal types by their qualified names.
  */
-final class QualifiedNameComparator2 implements Comparator<NominalType2> {
+final class QualifiedNameComparator implements Comparator<NominalType> {
   @Override
-  public int compare(NominalType2 a, NominalType2 b) {
+  public int compare(NominalType a, NominalType b) {
     return a.getName().compareTo(b.getName());
   }
 }
