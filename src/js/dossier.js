@@ -200,10 +200,6 @@ dossier.addTypes_ = function(terms, nameToHref, descriptor, opt_isModule, opt_pa
   nameToHref[descriptorName] = descriptor.href;
   terms.push(descriptorName);
 
-  if (opt_isModule) {
-    descriptorName = '(' + descriptorName + ')';
-  }
-
   if (opt_isModule && descriptor.types) {
     goog.array.forEach(descriptor.types, function(type) {
       dossier.addTypes_(terms, nameToHref, type, false, descriptorName);
