@@ -60,7 +60,6 @@ final class RenderTaskExecutor {
 
   private final ListeningExecutorService executorService;
 
-  private final List<ListenableFuture<Path>> documentationTasks = new ArrayList<>();
   private final List<ListenableFuture<Path>> submittedTasks = new ArrayList<>();
 
   @Inject
@@ -201,7 +200,7 @@ final class RenderTaskExecutor {
 
     // Once all documentation rendering tasks have finished, the type index will be built and may
     // be rendered.
-    ListenableFuture<?> docs = allAsList(documentationTasks);
+    ListenableFuture<?> docs = allAsList(submittedTasks);
     ListenableFuture<Path> indexJsTask = transform(docs, renderTypeIndex(), directExecutor());
 
     submittedTasks.add(indexJsTask);

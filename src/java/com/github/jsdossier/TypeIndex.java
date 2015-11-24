@@ -19,16 +19,19 @@ package com.github.jsdossier;
 import static com.github.jsdossier.jscomp.Types.isTypedef;
 import static com.google.common.base.Preconditions.checkArgument;
 
-import com.github.jsdossier.annotations.DocumentationScoped;
-import com.github.jsdossier.jscomp.NominalType2;
-import com.github.jsdossier.jscomp.TypeRegistry2;
-import com.github.jsdossier.proto.TypeLink;
 import com.google.common.collect.FluentIterable;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
+import com.github.jsdossier.annotations.DocumentationScoped;
+import com.github.jsdossier.jscomp.NominalType2;
+import com.github.jsdossier.jscomp.TypeRegistry2;
+import com.github.jsdossier.proto.TypeLink;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -43,6 +46,7 @@ final class TypeIndex {
   private final TypeRegistry2 typeRegistry;
   
   private final JsonObject json = new JsonObject();
+  private final Map<NominalType2, IndexReference> seenTypes = new HashMap<>();
 
   @Inject
   TypeIndex(
@@ -62,7 +66,10 @@ final class TypeIndex {
     return json.toString();
   }
   
-  public IndexReference addModule(NominalType2 module) {
+  public synchronized IndexReference addModule(NominalType2 module) {
+    if (seenTypes.containsKey(module)) {
+      return seenTypes.get(module);
+    }
     checkArgument(module.isModuleExports(), "not a module exports object: %s", module.getName());
     String dest = dfs.getOutputRoot().relativize(dfs.getPath(module)).toString();
 
@@ -71,21 +78,26 @@ final class TypeIndex {
     obj.addProperty("href", dest);
 
     getJsonArray(json, "modules").add(obj);
-    return new IndexReference(module, obj);
+    IndexReference ref = new IndexReference(module, obj);
+    seenTypes.put(module, ref);
+    return ref;
   }
 
-  public IndexReference addType(NominalType2 type) {
+  public synchronized IndexReference addType(NominalType2 type) {
     return addTypeInfo(getJsonArray(json, "types"), type);
   }
 
-  private static JsonArray getJsonArray(JsonObject object, String name) {
+  private synchronized static JsonArray getJsonArray(JsonObject object, String name) {
     if (!object.has(name)) {
       object.add(name, new JsonArray());
     }
     return object.get(name).getAsJsonArray();
   }
 
-  private IndexReference addTypeInfo(JsonArray array, NominalType2 type) {
+  private synchronized IndexReference addTypeInfo(JsonArray array, NominalType2 type) {
+    if (seenTypes.containsKey(type)) {
+      return seenTypes.get(type);
+    }
     String dest = dfs.getOutputRoot().relativize(dfs.getPath(type)).toString();
 
     JsonObject details = new JsonObject();
@@ -110,7 +122,9 @@ final class TypeIndex {
         array.add(typedefDetails);
       }
     }
-    return new IndexReference(type, details);
+    IndexReference ref = new IndexReference(type, details);
+    seenTypes.put(type, ref);
+    return ref;
   }
 
   final class IndexReference {

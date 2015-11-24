@@ -19,6 +19,7 @@ package com.github.jsdossier;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.base.Strings.isNullOrEmpty;
+import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.copy;
@@ -29,14 +30,19 @@ import static java.nio.file.Files.readAllBytes;
 import static java.nio.file.Files.write;
 import static org.junit.Assert.assertEquals;
 
+import com.google.common.base.Function;
+import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
 import com.google.common.io.Resources;
 import com.google.common.jimfs.Jimfs;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -50,12 +56,18 @@ import org.junit.runners.Parameterized.Parameters;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.net.URL;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 @RunWith(Parameterized.class)
 public class EndToEndTest {
@@ -348,6 +360,59 @@ public class EndToEndTest {
     checkHeader(document);
     checkModuleNav(document);
     checkModuleFooter(document);
+  }
+
+  @Test
+  public void checkGeneratedTypeIndex() throws IOException {
+    URL url = EndToEndTest.class.getResource("resources/golden/types.json");
+    String expectedContent = Resources.toString(url, UTF_8);
+
+    String actualContent = new String(readAllBytes(outDir.resolve("types.js")), UTF_8);
+    actualContent = actualContent.substring("var TYPES = ".length());
+    actualContent = actualContent.substring(0, actualContent.length() - 1);
+
+    Gson gson = new GsonBuilder()
+        .setPrettyPrinting()
+        .create();
+    @SuppressWarnings("unchecked")
+    TreeMap<String, Object> map = gson.fromJson(actualContent, TreeMap.class);
+    sortIndexMap(map);
+
+    assertThat(gson.toJson(map)).isEqualTo(expectedContent);
+  }
+
+  @SuppressWarnings("unchecked")
+  private void sortIndexMap(TreeMap<String, Object> root) {
+    root.put("modules", sortTypeList((List<Map<String, Object>>) root.get("modules")));
+    root.put("types", sortTypeList((List<Map<String, Object>>) root.get("types")));
+  }
+
+  @SuppressWarnings("unchecked")
+  private List<Map<String, Object>> sortTypeList(List<Map<String, Object>> list) {
+    return FluentIterable.from(list)
+        .transform(new Function<Map<String, Object>, Map<String, Object>>() {
+          @Override
+          public Map<String, Object> apply(Map<String, Object> item) {
+            if (item.containsKey("types")) {
+              item.put("types",  sortTypeList((List<Map<String, Object>>) item.get("types")));
+            }
+            if (item.containsKey("members")) {
+              Collections.sort((List<String>) item.get("members"));
+            }
+            if (item.containsKey("statics")) {
+              Collections.sort((List<String>) item.get("statics"));
+            }
+            return new TreeMap<>(item);
+          }
+        })
+        .toSortedList(new Comparator<Map<String, Object>>() {
+          @Override
+          public int compare(Map<String, Object> o1, Map<String, Object> o2) {
+            String name1 = (String) o1.get("name");
+            String name2 = (String) o2.get("name");
+            return name1.compareTo(name2);
+          }
+        });
   }
 
   private void checkHeader(Document document) throws IOException {

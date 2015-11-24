@@ -1,0 +1,382 @@
+{
+  "modules": [
+    {
+      "href": "module/example/index.html",
+      "name": "example",
+      "statics": [
+        "max",
+        "min"
+      ],
+      "types": [
+        {
+          "href": "module/example/index_exports_GlobalCtor.html",
+          "interface": false,
+          "members": [
+            "deprecatedMethod",
+            "deprecatedMethod2",
+            "instanceMethod",
+            "protoMethod"
+          ],
+          "name": "GlobalCtor",
+          "namespace": false
+        },
+        {
+          "href": "module/example/index_exports_Greeter.html",
+          "interface": false,
+          "name": "Greeter",
+          "namespace": false
+        }
+      ]
+    },
+    {
+      "href": "module/example/nested.html",
+      "name": "example/nested",
+      "types": [
+        {
+          "href": "module/example/nested_exports_Greeter.html",
+          "interface": false,
+          "members": [
+            "greet"
+          ],
+          "name": "Greeter",
+          "namespace": false
+        },
+        {
+          "href": "module/example/nested_exports_IdGenerator.html",
+          "interface": true,
+          "members": [
+            "getNext"
+          ],
+          "name": "IdGenerator",
+          "namespace": false
+        },
+        {
+          "href": "module/example/nested_exports_IncreasingIdGenerator.html",
+          "interface": true,
+          "members": [
+            "getNext"
+          ],
+          "name": "IncreasingIdGenerator",
+          "namespace": false
+        },
+        {
+          "href": "module/example/nested_exports_IncrementingIdGenerator.html",
+          "interface": false,
+          "members": [
+            "getNext"
+          ],
+          "name": "IncrementingIdGenerator",
+          "namespace": false
+        }
+      ]
+    },
+    {
+      "href": "module/example/net.html",
+      "name": "example/net",
+      "statics": [
+        "fetchJson",
+        "get"
+      ],
+      "types": [
+        {
+          "href": "module/example/net_exports_HttpClient.html",
+          "interface": false,
+          "members": [
+            "fetchJson",
+            "get"
+          ],
+          "name": "HttpClient",
+          "namespace": false
+        }
+      ]
+    },
+    {
+      "href": "module/example/worker.html",
+      "name": "example/worker"
+    }
+  ],
+  "types": [
+    {
+      "href": "Calculator.html",
+      "interface": false,
+      "members": [
+        "add",
+        "radix"
+      ],
+      "name": "Calculator",
+      "namespace": false,
+      "statics": [
+        "Calculator.base2",
+        "Calculator.decimal",
+        "Calculator.fibonacci"
+      ]
+    },
+    {
+      "href": "closure.module.Clazz.html",
+      "interface": false,
+      "members": [
+        "method"
+      ],
+      "name": "Clazz",
+      "namespace": false
+    },
+    {
+      "href": "DeprecatedFoo.html",
+      "interface": false,
+      "name": "DeprecatedFoo",
+      "namespace": false
+    },
+    {
+      "href": "EmptyEnum.html",
+      "interface": false,
+      "name": "EmptyEnum",
+      "namespace": false
+    },
+    {
+      "href": "GlobalCtor.html",
+      "interface": false,
+      "members": [
+        "deprecatedMethod",
+        "deprecatedMethod2",
+        "instanceMethod",
+        "protoMethod"
+      ],
+      "name": "GlobalCtor",
+      "namespace": false,
+      "statics": [
+        "GlobalCtor.dateCtor",
+        "GlobalCtor.staticFunc",
+        "GlobalCtor.staticProp"
+      ]
+    },
+    {
+      "href": "GlobalCtor.Other.html",
+      "interface": false,
+      "name": "GlobalCtor.Other",
+      "namespace": false
+    },
+    {
+      "href": "GlobalEnum.html",
+      "interface": false,
+      "name": "GlobalEnum",
+      "namespace": false,
+      "statics": [
+        "GlobalEnum.doSomething"
+      ]
+    },
+    {
+      "href": "GlobalPrivateCtor.html",
+      "interface": false,
+      "name": "GlobalPrivateCtor",
+      "namespace": false
+    },
+    {
+      "href": "closure.module.PubClass.html",
+      "interface": false,
+      "members": [
+        "aMethod"
+      ],
+      "name": "PubClass",
+      "namespace": false
+    },
+    {
+      "href": "SomeCtor.html",
+      "interface": false,
+      "name": "SomeCtor",
+      "namespace": false
+    },
+    {
+      "href": "UndefinedEnum.html",
+      "interface": false,
+      "name": "UndefinedEnum",
+      "namespace": false
+    },
+    {
+      "href": "closure.html",
+      "interface": false,
+      "name": "closure",
+      "namespace": true
+    },
+    {
+      "href": "closure.module.html",
+      "interface": false,
+      "name": "closure.module",
+      "namespace": true,
+      "statics": [
+        "publicMethod"
+      ]
+    },
+    {
+      "href": "foo.html",
+      "interface": false,
+      "name": "foo",
+      "namespace": true,
+      "statics": [
+        "newFilteredClass"
+      ]
+    },
+    {
+      "href": "foo.One.html",
+      "interface": false,
+      "name": "foo.One",
+      "namespace": false
+    },
+    {
+      "href": "foo.quot.html",
+      "interface": false,
+      "name": "foo.quot",
+      "namespace": true
+    },
+    {
+      "href": "foo.quot.OneBarAlias.html",
+      "interface": false,
+      "members": [
+        "equals",
+        "run"
+      ],
+      "name": "foo.quot.OneBarAlias",
+      "namespace": false
+    },
+    {
+      "href": "sample.html",
+      "interface": false,
+      "name": "sample",
+      "namespace": true
+    },
+    {
+      "href": "sample.inheritance.html",
+      "interface": false,
+      "name": "sample.inheritance",
+      "namespace": true
+    },
+    {
+      "href": "sample.inheritance.BaseClass.html",
+      "interface": false,
+      "members": [
+        "run"
+      ],
+      "name": "sample.inheritance.BaseClass",
+      "namespace": false
+    },
+    {
+      "href": "sample.inheritance.BaseInterface.html",
+      "interface": true,
+      "name": "sample.inheritance.BaseInterface",
+      "namespace": false
+    },
+    {
+      "href": "sample.inheritance.DeprecatedFinalClass.html",
+      "interface": false,
+      "members": [
+        "run"
+      ],
+      "name": "sample.inheritance.DeprecatedFinalClass",
+      "namespace": false
+    },
+    {
+      "href": "sample.inheritance.FinalClass.html",
+      "interface": false,
+      "members": [
+        "run"
+      ],
+      "name": "sample.inheritance.FinalClass",
+      "namespace": false
+    },
+    {
+      "href": "sample.inheritance.LeafInterface.html",
+      "interface": true,
+      "name": "sample.inheritance.LeafInterface",
+      "namespace": false
+    },
+    {
+      "href": "sample.inheritance.NumberClass.html",
+      "interface": false,
+      "members": [
+        "addMany"
+      ],
+      "name": "sample.inheritance.NumberClass",
+      "namespace": false
+    },
+    {
+      "href": "sample.inheritance.NumberClass.Result.html",
+      "interface": false,
+      "name": "sample.inheritance.NumberClass.Result",
+      "namespace": false
+    },
+    {
+      "href": "sample.inheritance.OtherInterface.html",
+      "interface": true,
+      "name": "sample.inheritance.OtherInterface",
+      "namespace": false
+    },
+    {
+      "href": "sample.inheritance.Runnable.html",
+      "interface": true,
+      "members": [
+        "run"
+      ],
+      "name": "sample.inheritance.Runnable",
+      "namespace": false
+    },
+    {
+      "href": "sample.inheritance.RunnableError.html",
+      "interface": false,
+      "members": [
+        "run"
+      ],
+      "name": "sample.inheritance.RunnableError",
+      "namespace": false
+    },
+    {
+      "href": "sample.inheritance.SecondClass.html",
+      "interface": false,
+      "members": [
+        "run"
+      ],
+      "name": "sample.inheritance.SecondClass",
+      "namespace": false
+    },
+    {
+      "href": "sample.inheritance.SecondInterface.html",
+      "interface": true,
+      "name": "sample.inheritance.SecondInterface",
+      "namespace": false
+    },
+    {
+      "href": "sample.inheritance.StringClass.html",
+      "interface": false,
+      "members": [
+        "run",
+        "substring"
+      ],
+      "name": "sample.inheritance.StringClass",
+      "namespace": false,
+      "statics": [
+        "StringClass.isString"
+      ]
+    },
+    {
+      "href": "sample.inheritance.TemplateClass.html",
+      "interface": false,
+      "members": [
+        "add",
+        "getValue",
+        "name",
+        "value"
+      ],
+      "name": "sample.inheritance.TemplateClass",
+      "namespace": false
+    },
+    {
+      "href": "sample.json.html",
+      "interface": false,
+      "name": "sample.json",
+      "namespace": true,
+      "statics": [
+        "DEBUG",
+        "parse",
+        "stringify"
+      ]
+    }
+  ]
+}

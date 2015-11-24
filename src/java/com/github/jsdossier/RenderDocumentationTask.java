@@ -104,9 +104,22 @@ final class RenderDocumentationTask implements Callable<Path> {
     this.linkFactory = linkFactoryBuilder.create(type).withTypeContext(type);
     this.typeInspector = typeInspectorFactory.create(type);
     this.type = type;
-    this.indexReference =
-        (type.isModuleExports() && type.getModule().get().getType() != Module.Type.CLOSURE)
-            ? typeIndex.addModule(type) : typeIndex.addType(type);
+    this.indexReference = updateTypeIndex(typeIndex);
+  }
+
+  private TypeIndex.IndexReference updateTypeIndex(TypeIndex typeIndex) {
+    if (type.getModule().isPresent() && type.getModule().get().getType() != Module.Type.CLOSURE) {
+      if (type.isModuleExports()) {
+        return typeIndex.addModule(type);
+      }
+
+      Module module = type.getModule().get();
+      NominalType2 moduleType = typeRegistry.getType(module.getId());
+      TypeIndex.IndexReference moduleRef = typeIndex.addModule(moduleType);
+      return moduleRef.addNestedType(type);
+    } else {
+      return typeIndex.addType(type);
+    }
   }
 
   @Override
@@ -158,8 +171,6 @@ final class RenderDocumentationTask implements Callable<Path> {
   
   private void addDescription(JsType.Builder renderSpec) {
     Comment description = typeInspector.getTypeDescription();
-//        
-//        parser.parseComment(type.getJsDoc().getBlockComment(), linkFactory);
 
     NominalType2 primary = getPrimaryDefinition(type);
     if (primary != type) {
