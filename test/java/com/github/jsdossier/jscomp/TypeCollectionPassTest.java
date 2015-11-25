@@ -421,8 +421,15 @@ public class TypeCollectionPassTest {
     util.compile(fs.getPath("modules/foo/bar.js"),
         "class InternalClass {}",
         "export { InternalClass as default }");
+
     assertNamespace(typeRegistry.getType("module$modules$foo$bar"));
-    assertThat(typeRegistry.getAllTypes()).hasSize(1);
+    assertConstructor(typeRegistry.getType("module$modules$foo$bar.default"));
+    assertThat(typeRegistry.getAllTypes()).hasSize(2);
+    
+    Module module = typeRegistry.getModule("module$modules$foo$bar");
+    assertThat(module.getType()).isEqualTo(Module.Type.ES6);
+    assertThat(module.getExportedNames()).hasSize(1);
+    assertThat(module.getExportedNames()).containsEntry("default", "InternalClass");
   }
   
   @Test
@@ -431,8 +438,166 @@ public class TypeCollectionPassTest {
     util.compile(fs.getPath("modules/foo/bar.js"),
         "class InternalClass {}",
         "export default InternalClass;");
+
+    assertNamespace(typeRegistry.getType("module$modules$foo$bar"));
+    assertConstructor(typeRegistry.getType("module$modules$foo$bar.default"));
+    assertThat(typeRegistry.getAllTypes()).hasSize(2);
+
+    Module module = typeRegistry.getModule("module$modules$foo$bar");
+    assertThat(module.getType()).isEqualTo(Module.Type.ES6);
+    assertThat(module.getExportedNames()).hasSize(1);
+    assertThat(module.getExportedNames()).containsEntry("default", "InternalClass");
+  }
+  
+  @Test
+  public void documentsEs6DefaultExports3() {
+    defineInputModules("modules", "foo/bar.js");
+    util.compile(fs.getPath("modules/foo/bar.js"),
+        "export default class {};");
+
+    assertNamespace(typeRegistry.getType("module$modules$foo$bar"));
+    assertConstructor(typeRegistry.getType("module$modules$foo$bar.default"));
+    assertThat(typeRegistry.getAllTypes()).hasSize(2);
+
+    Module module = typeRegistry.getModule("module$modules$foo$bar");
+    assertThat(module.getType()).isEqualTo(Module.Type.ES6);
+    assertThat(module.getExportedNames()).isEmpty();
+  }
+  
+  @Test
+  public void documentsEs6DefaultExports4() {
+    defineInputModules("modules", "foo/bar.js");
+    util.compile(fs.getPath("modules/foo/bar.js"),
+        "class InternalClass {}",
+        "export {InternalClass as default}");
+
+    assertNamespace(typeRegistry.getType("module$modules$foo$bar"));
+    assertConstructor(typeRegistry.getType("module$modules$foo$bar.default"));
+    assertThat(typeRegistry.getAllTypes()).hasSize(2);
+
+    Module module = typeRegistry.getModule("module$modules$foo$bar");
+    assertThat(module.getType()).isEqualTo(Module.Type.ES6);
+    assertThat(module.getExportedNames()).hasSize(1);
+    assertThat(module.getExportedNames()).containsEntry("default", "InternalClass");
+  }
+  
+  @Test
+  public void documentEs6DefaultExports5() {
+    defineInputModules("modules", "foo/bar.js");
+    util.compile(fs.getPath("modules/foo/bar.js"),
+        "function internal() {}",
+        "export {internal as default}");
+
     assertNamespace(typeRegistry.getType("module$modules$foo$bar"));
     assertThat(typeRegistry.getAllTypes()).hasSize(1);
+
+    Module module = typeRegistry.getModule("module$modules$foo$bar");
+    assertThat(module.getType()).isEqualTo(Module.Type.ES6);
+    assertThat(module.getExportedNames()).hasSize(1);
+    assertThat(module.getExportedNames()).containsEntry("default", "internal");
+  }
+  
+  @Test
+  public void documentEs6DefaultExports6() {
+    defineInputModules("modules", "foo/bar.js");
+    util.compile(fs.getPath("modules/foo/bar.js"),
+        "function internal() {}",
+        "export default internal");
+
+    assertNamespace(typeRegistry.getType("module$modules$foo$bar"));
+    assertThat(typeRegistry.getAllTypes()).hasSize(1);
+
+    Module module = typeRegistry.getModule("module$modules$foo$bar");
+    assertThat(module.getType()).isEqualTo(Module.Type.ES6);
+    assertThat(module.getExportedNames()).hasSize(1);
+    assertThat(module.getExportedNames()).containsEntry("default", "internal");
+  }
+  
+  @Test
+  public void documentEs6DefaultExports7() {
+    defineInputModules("modules", "foo/bar.js");
+    util.compile(fs.getPath("modules/foo/bar.js"),
+        "export default function internal() {}");
+
+    assertNamespace(typeRegistry.getType("module$modules$foo$bar"));
+    assertThat(typeRegistry.getAllTypes()).hasSize(1);
+
+    Module module = typeRegistry.getModule("module$modules$foo$bar");
+    assertThat(module.getType()).isEqualTo(Module.Type.ES6);
+    assertThat(module.getExportedNames()).hasSize(1);
+    assertThat(module.getExportedNames()).containsEntry("default", "internal");
+  }
+  
+  @Test
+  public void documentEs6DefaultExports8() {
+    defineInputModules("modules", "foo/bar.js");
+    util.compile(fs.getPath("modules/foo/bar.js"),
+        "export default function() {}");
+
+    assertNamespace(typeRegistry.getType("module$modules$foo$bar"));
+    assertThat(typeRegistry.getAllTypes()).hasSize(1);
+
+    Module module = typeRegistry.getModule("module$modules$foo$bar");
+    assertThat(module.getType()).isEqualTo(Module.Type.ES6);
+    assertThat(module.getExportedNames()).isEmpty();
+  }
+  
+  @Test
+  public void documentEs6DefaultExports9() {
+    defineInputModules("modules", "foo/bar.js");
+    util.compile(fs.getPath("modules/foo/bar.js"),
+        "export default function() {}");
+
+    assertNamespace(typeRegistry.getType("module$modules$foo$bar"));
+    assertThat(typeRegistry.getAllTypes()).hasSize(1);
+
+    Module module = typeRegistry.getModule("module$modules$foo$bar");
+    assertThat(module.getType()).isEqualTo(Module.Type.ES6);
+    assertThat(module.getExportedNames()).isEmpty();
+  }
+  
+  @Test
+  public void documentEs6DefaultExports10() {
+    defineInputModules("modules", "foo/bar.js");
+    util.compile(fs.getPath("modules/foo/bar.js"),
+        "export default 1;");
+
+    assertNamespace(typeRegistry.getType("module$modules$foo$bar"));
+    assertThat(typeRegistry.getAllTypes()).hasSize(1);
+
+    Module module = typeRegistry.getModule("module$modules$foo$bar");
+    assertThat(module.getType()).isEqualTo(Module.Type.ES6);
+    assertThat(module.getExportedNames()).isEmpty();
+  }
+  
+  @Test
+  public void documentEs6DefaultExports11() {
+    defineInputModules("modules", "foo/bar.js");
+    util.compile(fs.getPath("modules/foo/bar.js"),
+        "export default {};");
+
+    assertNamespace(typeRegistry.getType("module$modules$foo$bar"));
+    assertThat(typeRegistry.getAllTypes()).hasSize(1);
+
+    Module module = typeRegistry.getModule("module$modules$foo$bar");
+    assertThat(module.getType()).isEqualTo(Module.Type.ES6);
+    assertThat(module.getExportedNames()).isEmpty();
+  }  
+
+  @Test
+  public void documentEs6DefaultExports12() {
+    defineInputModules("modules", "foo/bar.js");
+    util.compile(fs.getPath("modules/foo/bar.js"),
+        "const x = 1;",
+        "export default x;");
+
+    assertNamespace(typeRegistry.getType("module$modules$foo$bar"));
+    assertThat(typeRegistry.getAllTypes()).hasSize(1);
+
+    Module module = typeRegistry.getModule("module$modules$foo$bar");
+    assertThat(module.getType()).isEqualTo(Module.Type.ES6);
+    assertThat(module.getExportedNames()).hasSize(1);
+    assertThat(module.getExportedNames()).containsEntry("default", "x");
   }
 
   @Test

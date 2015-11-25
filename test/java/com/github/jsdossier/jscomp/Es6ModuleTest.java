@@ -169,8 +169,8 @@ public class Es6ModuleTest {
             "export default foo;"));
 
     Module module = typeRegistry.getModule("module$one");
-    assertThat(module.getExportedNames().keySet()).containsExactly("foo");
-    assertThat(module.getExportedNames()).containsEntry("foo", "foo");
+    assertThat(module.getExportedNames().keySet()).containsExactly("default");
+    assertThat(module.getExportedNames()).containsEntry("default", "foo");
   }
   
   @Test

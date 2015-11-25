@@ -298,15 +298,7 @@ public final class TypeCollectionPass implements CompilerPass {
           return;
         }
       }
-      
-      if (type.getName().endsWith(".default")) {
-        String id = type.getName().substring(0, type.getName().length() - ".default".length());
-        if (typeRegistry.isModule(id)) {
-          logfmt("Skipping default module export: %s", type.getName());
-          return;
-        }
-      }
-      
+
       JSType jsType = type.getType();
       if (!type.getModule().isPresent()
           && !jsType.isConstructor()

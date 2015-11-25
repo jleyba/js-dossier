@@ -145,7 +145,11 @@ final class Es6ModulePass implements CompilerPass {
         }
 
       } else if (parent.isExport()) {
-        exportedNames.put(name, name);
+        if (parent.getBooleanProp(Node.EXPORT_DEFAULT)) {
+          exportedNames.put("default", name);
+        } else {
+          exportedNames.put(name, name);
+        }
         if (parent.getJSDocInfo() != null) {
           exportedDocs.put(name, parent.getJSDocInfo());
         }
@@ -181,16 +185,22 @@ final class Es6ModulePass implements CompilerPass {
         typeRegistry.addAliasRegion(region);
       }
 
-      // Will the second child ever be non-null here?  export default foo;
+      // Case: export name;
+      // Will the second child ever be non-null here?
       if (n.getFirstChild().isName() && n.getFirstChild().getNext() == null) {
         String name = n.getFirstChild().getQualifiedName();
-        exportedNames.put(name, name);
+        if (n.getBooleanProp(Node.EXPORT_DEFAULT)) {
+          exportedNames.put("default", name);
+        } else {
+          exportedNames.put(name, name);
+        }
         if (n.getJSDocInfo() != null) {
           exportedDocs.put(name, n.getJSDocInfo());
         }
         return;
       }
 
+      // Case: export {Name} or export {Name as Alias}
       if (n.getFirstChild().getType() == Token.EXPORT_SPECS) {
         Node exportSpecs = n.getFirstChild();
 
