@@ -1,12 +1,12 @@
 /*
  Copyright 2013-2015 Jason Leyba
- 
+
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
  You may obtain a copy of the License at
- 
+
    http://www.apache.org/licenses/LICENSE-2.0
- 
+
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,6 +17,7 @@
 package com.github.jsdossier;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.io.Files.getNameWithoutExtension;
 
 import com.github.jsdossier.annotations.DocumentationScoped;
@@ -40,7 +41,7 @@ import javax.inject.Inject;
  */
 @DocumentationScoped
 final class DossierFileSystem {
-  
+
   private static final String MODULE_DIR = "module";
   private static final String SOURCE_DIR = "source";
 
@@ -116,15 +117,14 @@ final class DossierFileSystem {
     if (type.isModuleExports() && type.getModule().get().getType() != Module.Type.CLOSURE) {
       return getPath(type.getModule().get());
     }
-    
+
     Module module = type.getModule().orNull();
     if (module == null || module.getType() == Module.Type.CLOSURE) {
       return outputRoot.resolve(type.getName() + ".html");
     }
 
     Path path = getPath(module);
-    String base = module.getId() + ".";
-    String name = type.getName().substring(base.length());
+    String name = getDisplayName(type);
     String exports =
         stripExtension(path).getFileName().toString() + "_exports_" + name + ".html";
     return path.resolveSibling(exports);
@@ -158,7 +158,7 @@ final class DossierFileSystem {
   public String getDisplayName(NominalType type) {
     if (type.getModule().isPresent()) {
       Module module = type.getModule().get();
-      if (type.getName().equals(module.getId())) {
+      if (type.isModuleExports()) {
         return getDisplayName(module);
       }
       try {
@@ -220,7 +220,7 @@ final class DossierFileSystem {
 
   /**
    * Returns the paths in the resource set.
-   * 
+   *
    * @param outputPath path of the generated file the paths in the resource set should be relative
    *     to.
    * @param template the template to pull resources from.
@@ -242,7 +242,7 @@ final class DossierFileSystem {
         .addAllTailScript(FluentIterable.from(template.getTailJs()).transform(toOutputPath))
         .build();
   }
-  
+
   private static String toCanonicalString(Path path) {
     return path.toString().replace(path.getFileSystem().getSeparator(), "/");
   }

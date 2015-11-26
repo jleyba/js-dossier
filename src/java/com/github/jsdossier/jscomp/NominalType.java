@@ -1,12 +1,12 @@
 /*
  Copyright 2013-2015 Jason Leyba
- 
+
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
  You may obtain a copy of the License at
- 
+
    http://www.apache.org/licenses/LICENSE-2.0
- 
+
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -30,11 +30,11 @@ import javax.annotation.Nullable;
  */
 @AutoValue
 public abstract class NominalType {
-  
+
   public static Builder builder() {
     return new AutoValue_NominalType.Builder();
   }
-  
+
   // Package private to prevent extensions.
   NominalType() {}
 
@@ -78,6 +78,21 @@ public abstract class NominalType {
    */
   public boolean isModuleExports() {
     return getModule().isPresent() && getModule().get().getId().equals(getName());
+  }
+
+  /**
+   * Returns whether this object is the default export for is module.
+   */
+  public boolean isDefaultExport() {
+    if (!getModule().isPresent() || !getName().endsWith(".default")) {
+      return false;
+    }
+
+    Module module = getModule().get();
+    return
+        module.getType() == Module.Type.ES6
+        &&  module.getId().equals(
+            getName().substring(0, getName().length() - ".default".length()));
   }
 
   /**

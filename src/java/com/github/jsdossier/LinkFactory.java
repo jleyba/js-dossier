@@ -1,12 +1,12 @@
 /*
  Copyright 2013-2015 Jason Leyba
- 
+
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
  You may obtain a copy of the License at
- 
+
    http://www.apache.org/licenses/LICENSE-2.0
- 
+
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -92,7 +92,7 @@ final class LinkFactory {
           .put("WeakMap", MDN_PREFIX + "Global_Objects/WeakMap")
           .put("WeakSet", MDN_PREFIX + "Global_Objects/WeakSet")
           .build();
-  
+
   private final DossierFileSystem dfs;
   private final TypeRegistry typeRegistry;
   private final JSTypeRegistry jsTypeRegistry;
@@ -102,7 +102,7 @@ final class LinkFactory {
 
   /**
    * Creates a new link factory.
-   * 
+   *
    * @param dfs used to generate paths to documentation in the output file system.
    * @param typeRegistry used to lookup nominal types.
    * @param jsTypeRegistry used to lookup JavaScript types.
@@ -124,7 +124,7 @@ final class LinkFactory {
     this.pathContext = Optional.fromNullable(pathContext);
     this.typeContext = typeContext;
   }
-  
+
   public TypeContext getTypeContext() {
     return typeContext;
   }
@@ -228,11 +228,11 @@ final class LinkFactory {
       checkPrototype = true;
       property = property.substring(1);
     }
-    
+
     if (property.isEmpty()) {
       return link;
     }
-    
+
     if (checkPrototype
         && (type.getType().isConstructor() || type.getType().isInterface())) {
       ObjectType instanceType = ((FunctionType) type.getType()).getInstanceType();
@@ -243,14 +243,14 @@ final class LinkFactory {
             .build();
       }
     }
-    
+
     if (type.isModuleExports()) {
       String exportedType = type.getName() + "." + property;
       if (typeRegistry.isType(exportedType)) {
         return createLink(typeRegistry.getType(exportedType));
       }
     }
-    
+
     if (type.getType().toObjectType().getPropertyType(property).isEnumElementType()) {
       return link.toBuilder()
           .setText(link.getText() + "." + property)
@@ -263,7 +263,7 @@ final class LinkFactory {
           .setText(link.getText() + "." + property)
           .build();
     }
-    
+
     String id = property;
     if (type.getType().isConstructor()
         || type.getType().isInterface()
@@ -320,7 +320,7 @@ final class LinkFactory {
     } else {
       type = typeContext.resolveType(typeName);
     }
-    
+
     // Link might be an unqualified reference to a property exported by a ES6 module.
     if (type == null && property.isEmpty()
         && typeContext.getContextType() != null
@@ -343,7 +343,7 @@ final class LinkFactory {
         type = typeContext.resolveType(typeName);
       }
     }
- 
+
     if (type != null) {
       return property.isEmpty() ? createLink(type) : createLink(type, property);
     }
@@ -362,7 +362,7 @@ final class LinkFactory {
         .setText(symbol)
         .build();
   }
-  
+
   @Nullable
   @CheckReturnValue
   private TypeLink maybeCreateExportedPropertyLink(NominalType type, String property) {
@@ -394,11 +394,11 @@ final class LinkFactory {
     }
     return null;
   }
-  
+
   private String getUriPath(Path path) {
     return URI.create(path.normalize().toString()).toString();
   }
-  
+
   private static class TypeRef {
     private final String type;
     private final String property;
@@ -407,7 +407,7 @@ final class LinkFactory {
       this.type = type;
       this.property = property;
     }
-    
+
     public static TypeRef from(String typeName) {
       String property = "";
       int index;
