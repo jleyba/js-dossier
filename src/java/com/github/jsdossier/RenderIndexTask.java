@@ -1,12 +1,12 @@
 /*
  Copyright 2013-2015 Jason Leyba
- 
+
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
  You may obtain a copy of the License at
- 
+
    http://www.apache.org/licenses/LICENSE-2.0
- 
+
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -32,7 +32,7 @@ import javax.inject.Inject;
  * Renders the main index file.
  */
 final class RenderIndexTask implements Callable<Path> {
-  
+
   private final DossierFileSystem dfs;
   private final CommentParser parser;
   private final LinkFactory linkFactory;
@@ -57,15 +57,15 @@ final class RenderIndexTask implements Callable<Path> {
   public Path call() throws IOException {
     // TODO: render an index of all the types.
     Comment content = Comment.getDefaultInstance();
-    
+
     if (readmeFile.isPresent()) {
       String readme = new String(
           Files.readAllBytes(readmeFile.get()),
           StandardCharsets.UTF_8);
       content = parser.parseComment(readme, linkFactory);
     }
-    
-    Path output = dfs.getOutputRoot().resolve("index.html");
+
+    Path output = dfs.getPath("index.html");
     htmlRenderer.renderHtml(output, "Index", content);
     return output;
   }

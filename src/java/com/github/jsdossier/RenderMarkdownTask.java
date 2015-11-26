@@ -1,12 +1,12 @@
 /*
  Copyright 2013-2015 Jason Leyba
- 
+
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
  You may obtain a copy of the License at
- 
+
    http://www.apache.org/licenses/LICENSE-2.0
- 
+
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -54,7 +54,7 @@ final class RenderMarkdownTask implements Callable<Path> {
   @Override
   public Path call() throws IOException {
     String name = page.getName();
-    Path output = dfs.getOutputRoot().resolve(name.replace(' ', '_') + ".html");
+    Path output = dfs.getPath(name.replace(' ', '_') + ".html");
     String text = new String(Files.readAllBytes(page.getPath()), StandardCharsets.UTF_8);
     Comment content = parser.parseComment(text, linkFactory);
     htmlRenderer.renderHtml(output, name, content);

@@ -17,7 +17,6 @@
 package com.github.jsdossier;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.io.Files.getNameWithoutExtension;
 
 import com.github.jsdossier.annotations.DocumentationScoped;
@@ -66,17 +65,11 @@ final class DossierFileSystem {
   }
 
   /**
-   * Returns the prefix path trimmed from all module inputs before computing their output path.
+   * Resolves the given path against the common ancestor directory for all input modules. This
+   * method does not check if the path is an actual module in the {@link TypeRegistry}.
    */
-  public Path getModulePrefix() {
-    return modulePrefix;
-  }
-
-  /**
-   * Returns the root output path.
-   */
-  public Path getOutputRoot() {
-    return outputRoot;
+  public Path resolveModule(String path) {
+    return modulePrefix.resolve(path).normalize();
   }
 
   /**
@@ -84,6 +77,18 @@ final class DossierFileSystem {
    */
   public Path getGlobalsPath() {
     return outputRoot.resolve(".globals.html");
+  }
+
+  /**
+   * Returns the request path resolved against the output directory.
+   *
+   * @throws IllegalArgumentException if the requested path is not under the output root.
+   */
+  public Path getPath(String path) {
+    Path p = outputRoot.resolve(path).normalize();
+    checkArgument(p.startsWith(outputRoot),
+        "The requested path is not under the output root: %s", path);
+    return p;
   }
 
   /**
@@ -95,8 +100,13 @@ final class DossierFileSystem {
 
   /**
    * Returns the path of the generated documentation for the given source file.
+   *
+   * @throws IllegalArgumentException if the given file is not under the common source directory.
    */
   public Path getPath(Path sourceFile) {
+    sourceFile = sourceFile.toAbsolutePath();
+    checkArgument(sourceFile.startsWith(sourcePrefix),
+        "The requested path is not a recognized source file: %s", sourceFile);
     Path path = sourcePrefix
         .relativize(sourceFile.toAbsolutePath().normalize())
         .resolveSibling(sourceFile.getFileName() + ".src.html");
@@ -234,7 +244,7 @@ final class DossierFileSystem {
         return Paths.getRelativePath(outputPath, toFile).toString();
       }
     };
-    Path typesJs = getOutputRoot().resolve("types.js");
+    Path typesJs = outputRoot.resolve("types.js");
     return Resources.newBuilder()
         .addAllCss(FluentIterable.from(template.getCss()).transform(toOutputPath))
         .addAllHeadScript(FluentIterable.from(template.getHeadJs()).transform(toOutputPath))

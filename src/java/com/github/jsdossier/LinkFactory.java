@@ -203,7 +203,7 @@ final class LinkFactory {
     if (pathContext.isPresent()) {
       path = dfs.getRelativePath(pathContext.get(), path);
     } else {
-      path = dfs.getOutputRoot().relativize(path);
+      path = dfs.getRelativePath(path);
     }
 
     String href = getUriPath(path);

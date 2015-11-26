@@ -1,12 +1,12 @@
 /*
  Copyright 2013-2015 Jason Leyba
- 
+
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
  You may obtain a copy of the License at
- 
+
    http://www.apache.org/licenses/LICENSE-2.0
- 
+
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -39,7 +39,7 @@ import javax.inject.Inject;
  *
  *   goog.scope(function() {
  *     let ns = foo;
- *     
+ *
  *     ns.One = class {};
  *     ns.Two = class {
  *       /** @param {ns.One} a . *\
@@ -49,7 +49,7 @@ import javax.inject.Inject;
  *
  *   goog.scope(function() {
  *     let ns = bar;
- *     
+ *
  *     ns.One = class {};
  *     ns.Two = class extends foo.Two {
  *       /** @param {ns.One} b . *\
@@ -57,16 +57,16 @@ import javax.inject.Inject;
  *     };
  *   });
  * </code></pre>
- * 
+ *
  * <p>In this example, for the context {@code foo.Two}, the type name {@code ns.One} will resolve
  * to {@code foo.One}, whereas for {@code bar.Two} it will resolve to {@code bar.One}.
  */
 final class TypeContext {
-  
+
   private static final char MODULE_PATH_SEPARATOR = '/';
 
   private final TypeRegistry typeRegistry;
-  private final JSTypeRegistry jsTypeRegistry; 
+  private final JSTypeRegistry jsTypeRegistry;
   private final DossierFileSystem dfs;
   private final ModuleNamingConvention moduleNamingConvention;
   private final Optional<NominalType> context;
@@ -79,7 +79,7 @@ final class TypeContext {
     this(typeRegistry, jsTypeRegistry, dfs, moduleNamingConvention,
         Optional.<NominalType>absent());
   }
-  
+
   private TypeContext(
       TypeRegistry typeRegistry,
       JSTypeRegistry jsTypeRegistry,
@@ -110,13 +110,13 @@ final class TypeContext {
     return new TypeContext(
         typeRegistry, jsTypeRegistry, dfs, moduleNamingConvention, Optional.fromNullable(context));
   }
-  
+
   public boolean isGlobalScope() {
     return !context.isPresent();
   }
 
   /**
-   * Returns the type type names or are resolved against, or null if using the global scope. 
+   * Returns the type type names or are resolved against, or null if using the global scope.
    */
   @Nullable
   public NominalType getContextType() {
@@ -149,7 +149,7 @@ final class TypeContext {
           name = def + name.substring(index);
           break;
         }
-        
+
         if (index + 1 < name.length()) {
           index = name.indexOf('.', index + 1);
         } else {
@@ -157,7 +157,7 @@ final class TypeContext {
         }
       }
     }
-    
+
     if (context.get().getModule().isPresent()) {
       Module module = context.get().getModule().get();
       if (module.getExportedNames().containsKey(name)) {
@@ -221,7 +221,7 @@ final class TypeContext {
     if (!context.isPresent()
         || !context.get().getModule().isPresent()
         || (!pathStr.startsWith("./") && !pathStr.startsWith("../"))) {
-      return dfs.getModulePrefix().resolve(pathStr).normalize();
+      return dfs.resolveModule(pathStr);
     } else {
       return context.get()
           .getModule().get()

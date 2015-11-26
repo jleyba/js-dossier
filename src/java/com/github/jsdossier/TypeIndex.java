@@ -1,12 +1,12 @@
 /*
  Copyright 2013-2015 Jason Leyba
- 
+
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
  You may obtain a copy of the License at
- 
+
    http://www.apache.org/licenses/LICENSE-2.0
- 
+
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -44,7 +44,7 @@ final class TypeIndex {
   private final DossierFileSystem dfs;
   private final LinkFactory linkFactory;
   private final TypeRegistry typeRegistry;
-  
+
   private final JsonObject json = new JsonObject();
   private final Map<NominalType, IndexReference> seenTypes = new HashMap<>();
 
@@ -65,13 +65,13 @@ final class TypeIndex {
   public String toString() {
     return json.toString();
   }
-  
+
   public synchronized IndexReference addModule(NominalType module) {
     if (seenTypes.containsKey(module)) {
       return seenTypes.get(module);
     }
     checkArgument(module.isModuleExports(), "not a module exports object: %s", module.getName());
-    String dest = dfs.getOutputRoot().relativize(dfs.getPath(module)).toString();
+    String dest = dfs.getRelativePath(dfs.getPath(module)).toString();
 
     JsonObject obj = new JsonObject();
     obj.addProperty("name", dfs.getDisplayName(module));
@@ -98,7 +98,7 @@ final class TypeIndex {
     if (seenTypes.containsKey(type)) {
       return seenTypes.get(type);
     }
-    String dest = dfs.getOutputRoot().relativize(dfs.getPath(type)).toString();
+    String dest = dfs.getRelativePath(dfs.getPath(type)).toString();
 
     JsonObject details = new JsonObject();
     details.addProperty("name", dfs.getDisplayName(type));
@@ -135,11 +135,11 @@ final class TypeIndex {
       this.type = type;
       this.index = index;
     }
-    
+
     public NominalType getNominalType() {
       return type;
     }
-    
+
     public IndexReference addNestedType(NominalType type) {
       checkArgument(getNominalType().isModuleExports(),
           "Nested types should only be recorded for modules: %s", getNominalType().getName());
@@ -148,11 +148,11 @@ final class TypeIndex {
           getNominalType().getName(), type.getName());
       return addTypeInfo(getJsonArray(index, "types"), type);
     }
-    
+
     public void addStaticProperty(String name) {
       getJsonArray(index, "statics").add(new JsonPrimitive(name));
     }
-    
+
     public void addInstanceProperty(String name) {
       getJsonArray(index, "members").add(new JsonPrimitive(name));
     }
