@@ -69,4 +69,13 @@ public interface TagsOrBuilder extends
    * <code>optional bool is_struct = 7;</code>
    */
   boolean getIsStruct();
+
+  /**
+   * <code>optional bool is_default = 8;</code>
+   */
+  boolean hasIsDefault();
+  /**
+   * <code>optional bool is_default = 8;</code>
+   */
+  boolean getIsDefault();
 }

@@ -18,7 +18,6 @@ package com.github.jsdossier;
 
 import static com.github.jsdossier.testing.CompilerUtil.createSourceFile;
 import static com.google.common.truth.Truth.assertThat;
-import static org.junit.Assert.fail;
 
 import com.github.jsdossier.annotations.Input;
 import com.github.jsdossier.jscomp.NominalType;
@@ -1222,7 +1221,7 @@ public class LinkFactoryTest {
             "export class One {}"),
         createSourceFile(
             fs.getPath("source/modules/two.js"),
-            "import One from './one';",
+            "import {One} from './one';",
             "export class Two extends One {}"));
 
     NominalType ref = typeRegistry.getType("module$source$modules$two");
@@ -1304,7 +1303,7 @@ public class LinkFactoryTest {
     NominalType ref = typeRegistry.getType("module$source$modules$two");
     LinkFactory factory = createFactory(ref).withTypeContext(ref);
 
-    checkLink(factory.createLink("X"), "one", "one.html");
+    checkLink(factory.createLink("X"), "default", "one_exports_default.html");
   }
 
   @Test
@@ -1538,7 +1537,7 @@ public class LinkFactoryTest {
     NominalType ref = typeRegistry.getType("module$source$modules$two");
     LinkFactory factory = createFactory(ref).withTypeContext(ref);
 
-    checkLink(factory.createLink("One"), "One", "");
+    checkLink(factory.createLink("One"), "One", "one_exports_One.html");
     checkLink(factory.createLink("Two"), "One", "one_exports_One.html");
     checkLink(factory.createLink("module$source$modules$two.Two"), "Two", "two_exports_Two.html");
   }

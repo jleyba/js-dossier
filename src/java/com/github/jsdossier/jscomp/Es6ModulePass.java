@@ -1,12 +1,12 @@
 /*
  Copyright 2013-2015 Jason Leyba
- 
+
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
  You may obtain a copy of the License at
- 
+
    http://www.apache.org/licenses/LICENSE-2.0
- 
+
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -53,8 +53,10 @@ import javax.annotation.Nullable;
  */
 @AutoFactory
 final class Es6ModulePass implements CompilerPass {
-  
+
   private static final Logger log = Logger.getLogger(Es6ModulePass.class.getName());
+
+  private static final String DEFAULT = "default";
 
   private final DossierCompiler compiler;
   private final TypeRegistry typeRegistry;
@@ -85,6 +87,7 @@ final class Es6ModulePass implements CompilerPass {
     return URI.create(path.toString().replace('\\', '/')).normalize();
   }
 
+  @SuppressWarnings("unused")
   private static void printTree(Node n) {
     StringWriter sw = new StringWriter();
     try {
@@ -110,7 +113,7 @@ final class Es6ModulePass implements CompilerPass {
         visitScript(n);
         return;
       }
-      
+
       if (n.isClass()) {
         visitInternalNameDefinition(n, parent);
       }
@@ -132,7 +135,7 @@ final class Es6ModulePass implements CompilerPass {
         imports.add(n);
       }
     }
-    
+
     private void visitInternalNameDefinition(Node n, Node parent) {
       String name = n.getFirstChild().getQualifiedName();
       if (isNullOrEmpty(name)) {
@@ -146,7 +149,7 @@ final class Es6ModulePass implements CompilerPass {
 
       } else if (parent.isExport()) {
         if (parent.getBooleanProp(Node.EXPORT_DEFAULT)) {
-          exportedNames.put("default", name);
+          exportedNames.put(DEFAULT, name);
         } else {
           exportedNames.put(name, name);
         }
@@ -170,7 +173,7 @@ final class Es6ModulePass implements CompilerPass {
             .setId(ES6ModuleLoader.toModuleName(toSimpleUri(path)))
             .setPath(path)
             .setType(Module.Type.ES6);
-        
+
         if (n.getJSDocInfo() != null) {
           moduleDocs = JsDoc.from(n.getJSDocInfo());
           module.setJsDoc(moduleDocs);
@@ -190,7 +193,7 @@ final class Es6ModulePass implements CompilerPass {
       if (n.getFirstChild().isName() && n.getFirstChild().getNext() == null) {
         String name = n.getFirstChild().getQualifiedName();
         if (n.getBooleanProp(Node.EXPORT_DEFAULT)) {
-          exportedNames.put("default", name);
+          exportedNames.put(DEFAULT, name);
         } else {
           exportedNames.put(name, name);
         }
@@ -202,11 +205,11 @@ final class Es6ModulePass implements CompilerPass {
 
       // Case: export {Name} or export {Name as Alias}
       if (n.getFirstChild().getType() == Token.EXPORT_SPECS) {
+        Path path = inputFs.getPath(n.getSourceFileName());
         Node exportSpecs = n.getFirstChild();
 
         String context = "";
-        if (exportSpecs.getNext() != null && exportSpecs.getNext().isString()) {
-          Path path = inputFs.getPath(n.getSourceFileName());
+        if (n.getLastChild().isString()) {
           context = extractModuleId(path, exportSpecs.getNext());
           if (context == null) {
             return;
@@ -217,10 +220,15 @@ final class Es6ModulePass implements CompilerPass {
         for (Node spec = exportSpecs.getFirstChild(); spec != null; spec = spec.getNext()) {
           Node first = spec.getFirstChild();
           checkArgument(first.isName());
+          String trueName = context + first.getQualifiedName();
 
           Node second = firstNonNull(first.getNext(), first);
 
-          exportedNames.put(second.getQualifiedName(), context + first.getQualifiedName());
+          exportedNames.put(second.getQualifiedName(), trueName);
+
+          if (!DEFAULT.equals(first.getQualifiedName())) {
+            getAliasRegion(path).addAlias(first.getQualifiedName(), trueName);
+          }
         }
       }
     }
@@ -229,7 +237,7 @@ final class Es6ModulePass implements CompilerPass {
       if (module == null) {
         return;
       }
-      
+
       if (moduleDocs == null) {
         module.setJsDoc(JsDoc.from(script.getJSDocInfo()));
       }
@@ -256,10 +264,7 @@ final class Es6ModulePass implements CompilerPass {
       checkArgument(n.isImport());
 
       Path path = inputFs.getPath(n.getSourceFileName());
-      AliasRegion aliasRegion = getFirst(typeRegistry.getAliasRegions(path), null);
-      if (aliasRegion == null) {
-        throw new AssertionError();
-      }
+      AliasRegion aliasRegion = getAliasRegion(path);
 
       Node first = n.getFirstChild();
       Node second = first.getNext();
@@ -269,27 +274,30 @@ final class Es6ModulePass implements CompilerPass {
         return;
       }
 
-      if (first.isEmpty() && second.getType() == Token.IMPORT_STAR) {
+      if (first.isName()) {
+        String alias = first.getQualifiedName();
+        aliasRegion.addAlias(alias, def + "." + DEFAULT);
+      }
+
+      if (second.getType() == Token.IMPORT_STAR) {
         String alias = second.getString();
         aliasRegion.addAlias(alias, def);
 
-      } else if (first.isName()) {
-        String alias = first.getQualifiedName();
-        aliasRegion.addAlias(alias, def + "." + alias);
-
-      } else if (first.isEmpty() && second.getType() == Token.IMPORT_SPECS) {
+      } else if (second.getType() == Token.IMPORT_SPECS) {
         for (Node spec = second.getFirstChild(); spec != null; spec = spec.getNext()) {
           String imported = spec.getFirstChild().getQualifiedName();
           String alias = spec.getLastChild().getQualifiedName();
-
-          // TODO: not sure if this is the best way to handle defaults.
-          if ("default".equals(imported)) {
-            aliasRegion.addAlias(alias, def);
-          } else {
-            aliasRegion.addAlias(alias, def + "." + imported);
-          }
+          aliasRegion.addAlias(alias, def + "." + imported);
         }
       }
+    }
+
+    private AliasRegion getAliasRegion(Path path) {
+      AliasRegion aliasRegion = getFirst(typeRegistry.getAliasRegions(path), null);
+      if (aliasRegion == null) {
+        throw new AssertionError();
+      }
+      return aliasRegion;
     }
 
     @Nullable

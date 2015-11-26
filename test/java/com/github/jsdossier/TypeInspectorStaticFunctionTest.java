@@ -1,12 +1,12 @@
 /*
  Copyright 2013-2015 Jason Leyba
- 
+
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
  You may obtain a copy of the License at
- 
+
    http://www.apache.org/licenses/LICENSE-2.0
- 
+
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,6 +24,7 @@ import com.github.jsdossier.proto.BaseProperty;
 import com.github.jsdossier.proto.Comment;
 import com.github.jsdossier.proto.Function;
 import com.github.jsdossier.proto.Function.Detail;
+import com.github.jsdossier.proto.Tags;
 import com.google.common.base.Predicate;
 import org.junit.Assume;
 import org.junit.Test;
@@ -35,7 +36,7 @@ import org.junit.runners.JUnit4;
  */
 @RunWith(JUnit4.class)
 public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
-  
+
   @Test
   public void returnsInfoOnStaticFunctions_constructor() {
     compile(
@@ -73,7 +74,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
                 .setDescription(htmlComment("<p>If the person does not exist.</p>\n")))
             .build());
   }
-  
+
   @Test
   public void returnsInfoOnStaticFunctions_interface() {
     compile(
@@ -111,7 +112,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
                 .setDescription(htmlComment("<p>If the person does not exist.</p>\n")))
             .build());
   }
-  
+
   @Test
   public void returnsInfoOnStaticFunctions_enum() {
     compile(
@@ -149,7 +150,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
                 .setDescription(htmlComment("<p>If the color cannot be darkened.</p>\n")))
             .build());
   }
-  
+
   @Test
   public void returnsInfoOnStaticFunctions_namespace() {
     compile(
@@ -365,7 +366,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
         })
         .build()
         .createInjector()
-        .injectMembers(this); 
+        .injectMembers(this);
 
     compile(
         "goog.provide('foo');",
@@ -447,7 +448,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
     assertThat(report.getCompilerConstants()).isEmpty();
     assertThat(report.getFunctions()).isEmpty();
   }
-  
+
   @Test
   public void usesDocsFromModuleVarIfExportedInstanceHasNoDocs_nodeModule() {
     util.compile(fs.getPath("/src/modules/foo/bar.js"),
@@ -523,7 +524,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
                 .setDescription(htmlComment("<p>Hello, world!</p>\n")))
             .build());
   }
-  
+
   @Test
   public void linkReferencesAreParsedRelativeToOwningType() {
     util.compile(
@@ -556,7 +557,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
                         + "<code>Person</code></a>.</p>\n")))
             .build());
   }
-  
+
   @Test
   public void inspectGoogDefinedClass() {
     util.compile(fs.getPath("/src/foo.js"),
@@ -582,7 +583,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
                 .setDescription(htmlComment("<p>Does stuff.</p>\n")))
             .build());
   }
-  
+
   @Test
   public void inspectGoogDefinedInterface() {
     util.compile(fs.getPath("/src/foo.js"),
@@ -608,7 +609,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
                 .setDescription(htmlComment("<p>Does stuff.</p>\n")))
             .build());
   }
-  
+
   @Test
   public void exportedEs6Class_nodeModule() {
     util.compile(fs.getPath("/src/modules/foo/bar.js"),
@@ -647,7 +648,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
                 .setDescription(htmlComment("<p>The new person.</p>\n")))
             .build());
   }
-  
+
   @Test
   public void exportedEs6Class_es6Module() {
     util.compile(fs.getPath("/src/modules/foo/bar.js"),
@@ -685,7 +686,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
                 .setType(linkComment("Person", "bar_exports_Person.html"))
                 .setDescription(htmlComment("<p>The new person.</p>\n")))
             .build());
-  }  
+  }
 
   @Test
   public void typeExpressionsCanReferToAnotherModuleByRelativePath_es6Modules() {
@@ -750,7 +751,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
                 .setDescription(htmlComment("<p>an object.</p>\n")))
             .build());
   }
-  
+
   @Test
   public void subclassesInheritEs6StaticProperties() {
     util.compile(
@@ -769,7 +770,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
                 .setDescription(Comment.getDefaultInstance()))
             .build());
   }
-  
+
   @Test
   public void subclassesInheritEs6StaticProperties_docsReferenceInheritedProperty() {
     util.compile(
@@ -792,6 +793,86 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
                 .setSource(sourceFile("../../source/modules/foo/baz.js.src.html", 7))
                 .setDescription(htmlComment(
                     "<p>Reference to <a href=\"baz_exports_Y.html#x\"><code>#x</code></a></p>\n")))
+            .build());
+  }
+
+  @Test
+  public void identifiesDefaultModuleExport() {
+    util.compile(
+        fs.getPath("/src/modules/foo/baz.js"),
+        "/** Hello, world! */",
+        "export default function go() {}");
+
+    NominalType type = typeRegistry.getType("module$src$modules$foo$baz");
+    TypeInspector typeInspector = typeInspectorFactory.create(type);
+    TypeInspector.Report report = typeInspector.inspectType();
+    assertThat(report.getFunctions()).containsExactly(
+        Function.newBuilder()
+            .setBase(BaseProperty.newBuilder()
+                .setName("default")
+                .setSource(sourceFile("../../source/modules/foo/baz.js.src.html", 2))
+                .setDescription(htmlComment("<p>Hello, world!</p>\n"))
+                .setTags(Tags.newBuilder().setIsDefault(true)))
+            .build());
+  }
+
+  @Test
+  public void doesNotFlagNamespacePropertiesWithNameDefaultAsDefaultModuleExports() {
+    util.compile(
+        fs.getPath("/src/ns.js"),
+        "goog.provide('ns');",
+        "/** Hello, world! */",
+        "ns.default = function go() {}");
+
+    NominalType type = typeRegistry.getType("ns");
+    TypeInspector typeInspector = typeInspectorFactory.create(type);
+    TypeInspector.Report report = typeInspector.inspectType();
+    assertThat(report.getFunctions()).containsExactly(
+        Function.newBuilder()
+            .setBase(BaseProperty.newBuilder()
+                .setName("default")
+                .setSource(sourceFile("source/ns.js.src.html", 3))
+                .setDescription(htmlComment("<p>Hello, world!</p>\n")))
+            .build());
+
+  }
+
+  @Test
+  public void doesNotFlagNodeExportedDefaultPropertyAsDefaultModuleExports() {
+    util.compile(
+        fs.getPath("/src/modules/foo/baz.js"),
+        "/** Hello, world! */",
+        "exports.default = function go() {}");
+
+    NominalType type = typeRegistry.getType("module$$src$modules$foo$baz");
+    TypeInspector typeInspector = typeInspectorFactory.create(type);
+    TypeInspector.Report report = typeInspector.inspectType();
+    assertThat(report.getFunctions()).containsExactly(
+        Function.newBuilder()
+            .setBase(BaseProperty.newBuilder()
+                .setName("default")
+                .setSource(sourceFile("../../source/modules/foo/baz.js.src.html", 2))
+                .setDescription(htmlComment("<p>Hello, world!</p>\n")))
+            .build());
+  }
+
+  @Test
+  public void doesNotFlagClosureExportedDefaultPropertyAsDefaultModuleExports() {
+    util.compile(
+        fs.getPath("/src/foo/bar.js"),
+        "goog.module('foo.bar');",
+        "/** Hello, world! */",
+        "exports.default = function go() {}");
+
+    NominalType type = typeRegistry.getType("foo.bar");
+    TypeInspector typeInspector = typeInspectorFactory.create(type);
+    TypeInspector.Report report = typeInspector.inspectType();
+    assertThat(report.getFunctions()).containsExactly(
+        Function.newBuilder()
+            .setBase(BaseProperty.newBuilder()
+                .setName("default")
+                .setSource(sourceFile("source/foo/bar.js.src.html", 3))
+                .setDescription(htmlComment("<p>Hello, world!</p>\n")))
             .build());
   }
 }

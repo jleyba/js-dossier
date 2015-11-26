@@ -1,12 +1,12 @@
 /*
  Copyright 2013-2015 Jason Leyba
- 
+
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
  You may obtain a copy of the License at
- 
+
    http://www.apache.org/licenses/LICENSE-2.0
- 
+
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -34,7 +34,7 @@ import org.junit.runners.JUnit4;
  */
 @RunWith(JUnit4.class)
 public class TypeInspectorStaticPropertyTest extends AbstractTypeInspectorTest {
-  
+
   @Test
   public void doesNotReturnNestedTypeAsProperty() {
     compile(
@@ -54,7 +54,7 @@ public class TypeInspectorStaticPropertyTest extends AbstractTypeInspectorTest {
 
     NominalType a = typeRegistry.getType("A");
     TypeInspector typeInspector = typeInspectorFactory.create(a);
-    
+
     TypeInspector.Report report = typeInspector.inspectType();
     assertThat(report.getFunctions()).isEmpty();
     assertThat(report.getCompilerConstants()).isEmpty();
@@ -104,7 +104,7 @@ public class TypeInspectorStaticPropertyTest extends AbstractTypeInspectorTest {
         "",
         "foo.x = 123;",
         "foo.bar.y = 456;");
-    
+
     assertThat(typeRegistry.isType("foo.bar")).isFalse();
 
     NominalType type = typeRegistry.getType("foo");
@@ -289,6 +289,29 @@ public class TypeInspectorStaticPropertyTest extends AbstractTypeInspectorTest {
                         + "<code>Person</code></a>.</p>\n"))
                 .setTags(Tags.newBuilder()
                     .setIsConst(true)))
+            .setType(numberTypeComment())
+            .build());
+  }
+
+  @Test
+  public void identifiesDefaultModuleExport() {
+    util.compile(
+        fs.getPath("/src/modules/foo/baz.js"),
+        "/** Hello, world! */",
+        "const x = 1234;",
+        "export default x;");
+
+    NominalType type = typeRegistry.getType("module$src$modules$foo$baz");
+    TypeInspector typeInspector = typeInspectorFactory.create(type);
+    TypeInspector.Report report = typeInspector.inspectType();
+    assertThat(report.getProperties()).containsExactly(
+        Property.newBuilder()
+            .setBase(BaseProperty.newBuilder()
+                .setName("default")
+                .setSource(sourceFile("../../source/modules/foo/baz.js.src.html", 3))
+                .setDescription(htmlComment("<p>Hello, world!</p>\n"))
+                .setTags(Tags.newBuilder().setIsDefault(true))
+                .build())
             .setType(numberTypeComment())
             .build());
   }

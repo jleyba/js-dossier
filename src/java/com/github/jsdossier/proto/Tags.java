@@ -90,6 +90,11 @@ public final class Tags extends
             isStruct_ = input.readBool();
             break;
           }
+          case 64: {
+            bitField0_ |= 0x00000080;
+            isDefault_ = input.readBool();
+            break;
+          }
         }
       }
     } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -235,6 +240,21 @@ public final class Tags extends
     return isStruct_;
   }
 
+  public static final int IS_DEFAULT_FIELD_NUMBER = 8;
+  private boolean isDefault_;
+  /**
+   * <code>optional bool is_default = 8;</code>
+   */
+  public boolean hasIsDefault() {
+    return ((bitField0_ & 0x00000080) == 0x00000080);
+  }
+  /**
+   * <code>optional bool is_default = 8;</code>
+   */
+  public boolean getIsDefault() {
+    return isDefault_;
+  }
+
   private void initFields() {
     isConst_ = false;
     isDeprecated_ = false;
@@ -243,6 +263,7 @@ public final class Tags extends
     isInterface_ = false;
     isModule_ = false;
     isStruct_ = false;
+    isDefault_ = false;
   }
   private byte memoizedIsInitialized = -1;
   public final boolean isInitialized() {
@@ -277,6 +298,9 @@ public final class Tags extends
     }
     if (((bitField0_ & 0x00000040) == 0x00000040)) {
       output.writeBool(7, isStruct_);
+    }
+    if (((bitField0_ & 0x00000080) == 0x00000080)) {
+      output.writeBool(8, isDefault_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -314,6 +338,10 @@ public final class Tags extends
     if (((bitField0_ & 0x00000040) == 0x00000040)) {
       size += com.google.protobuf.CodedOutputStream
         .computeBoolSize(7, isStruct_);
+    }
+    if (((bitField0_ & 0x00000080) == 0x00000080)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeBoolSize(8, isDefault_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSerializedSize = size;
@@ -446,6 +474,8 @@ public final class Tags extends
       bitField0_ = (bitField0_ & ~0x00000020);
       isStruct_ = false;
       bitField0_ = (bitField0_ & ~0x00000040);
+      isDefault_ = false;
+      bitField0_ = (bitField0_ & ~0x00000080);
       return this;
     }
 
@@ -502,6 +532,10 @@ public final class Tags extends
         to_bitField0_ |= 0x00000040;
       }
       result.isStruct_ = isStruct_;
+      if (((from_bitField0_ & 0x00000080) == 0x00000080)) {
+        to_bitField0_ |= 0x00000080;
+      }
+      result.isDefault_ = isDefault_;
       result.bitField0_ = to_bitField0_;
       onBuilt();
       return result;
@@ -538,6 +572,9 @@ public final class Tags extends
       }
       if (other.hasIsStruct()) {
         setIsStruct(other.getIsStruct());
+      }
+      if (other.hasIsDefault()) {
+        setIsDefault(other.getIsDefault());
       }
       this.mergeUnknownFields(other.getUnknownFields());
       return this;
@@ -786,6 +823,38 @@ public final class Tags extends
     public Builder clearIsStruct() {
       bitField0_ = (bitField0_ & ~0x00000040);
       isStruct_ = false;
+      onChanged();
+      return this;
+    }
+
+    private boolean isDefault_ ;
+    /**
+     * <code>optional bool is_default = 8;</code>
+     */
+    public boolean hasIsDefault() {
+      return ((bitField0_ & 0x00000080) == 0x00000080);
+    }
+    /**
+     * <code>optional bool is_default = 8;</code>
+     */
+    public boolean getIsDefault() {
+      return isDefault_;
+    }
+    /**
+     * <code>optional bool is_default = 8;</code>
+     */
+    public Builder setIsDefault(boolean value) {
+      bitField0_ |= 0x00000080;
+      isDefault_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional bool is_default = 8;</code>
+     */
+    public Builder clearIsDefault() {
+      bitField0_ = (bitField0_ & ~0x00000080);
+      isDefault_ = false;
       onChanged();
       return this;
     }

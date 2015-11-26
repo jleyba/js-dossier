@@ -121,6 +121,7 @@ message Tags {
   optional bool is_interface = 5;
   optional bool is_module = 6;
   optional bool is_struct = 7;
+  optional bool is_default = 8;
 }
 
 
