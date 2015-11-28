@@ -23,9 +23,11 @@ import static com.google.common.collect.Iterables.getFirst;
 import static com.google.javascript.jscomp.NodeTraversal.traverseEs6;
 
 import com.github.jsdossier.annotations.Input;
+import com.github.jsdossier.annotations.Modules;
 import com.google.auto.factory.AutoFactory;
 import com.google.auto.factory.Provided;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Range;
 import com.google.javascript.jscomp.CompilerPass;
 import com.google.javascript.jscomp.ES6ModuleLoader;
@@ -61,13 +63,16 @@ final class Es6ModulePass implements CompilerPass {
   private final DossierCompiler compiler;
   private final TypeRegistry typeRegistry;
   private final FileSystem inputFs;
+  private final ImmutableSet<Path> declaredModules;
 
   Es6ModulePass(
       @Provided TypeRegistry typeRegistry,
       @Provided @Input FileSystem inputFs,
+      @Provided @Modules ImmutableSet<Path> declaredModules,
       DossierCompiler compiler) {
     this.typeRegistry = typeRegistry;
     this.inputFs = inputFs;
+    this.declaredModules = declaredModules;
     this.compiler = compiler;
   }
 
@@ -128,11 +133,10 @@ final class Es6ModulePass implements CompilerPass {
 
       if (n.isExport()) {
         visitExport(n);
-        return;
       }
 
       if (n.isImport()) {
-        imports.add(n);
+        visitImport(n);
       }
     }
 
@@ -167,25 +171,8 @@ final class Es6ModulePass implements CompilerPass {
 
     private void visitExport(Node n) {
       if (module == null) {
-        Path path = inputFs.getPath(n.getSourceFileName());
-        log.fine(String.format("Found ES6 module: %s (%s)", path, toSimpleUri(path)));
-        module = Module.builder()
-            .setId(ES6ModuleLoader.toModuleName(toSimpleUri(path)))
-            .setPath(path)
-            .setType(Module.Type.ES6);
-
-        if (n.getJSDocInfo() != null) {
-          moduleDocs = JsDoc.from(n.getJSDocInfo());
-          module.setJsDoc(moduleDocs);
-        }
-
-        // The compiler does not generate alias notifications when it rewrites an ES6 module,
-        // so we register a region here.
-        AliasRegion region = AliasRegion.builder()
-            .setPath(path)
-            .setRange(Range.atLeast(Position.of(0, 0)))
-            .build();
-        typeRegistry.addAliasRegion(region);
+        initModule(n);
+        module.setType(Module.Type.ES6);
       }
 
       // Case: export name;
@@ -231,6 +218,42 @@ final class Es6ModulePass implements CompilerPass {
           }
         }
       }
+    }
+
+    private void visitImport(Node n) {
+      imports.add(n);
+      if (module == null
+          && declaredModules.contains(inputFs.getPath(n.getSourceFileName()))) {
+        initModule(n);
+      }
+    }
+
+    private void initModule(Node n) {
+      if (module != null) {
+        return;
+      }
+
+      Path path = inputFs.getPath(n.getSourceFileName());
+      URI uri = toSimpleUri(path);
+      log.fine(String.format("Found ES6 module: %s (%s)", path, uri));
+
+      module = Module.builder()
+          .setId(ES6ModuleLoader.toModuleName(uri))
+          .setPath(path)
+          .setType(Module.Type.ES6);
+
+      if (n.getJSDocInfo() != null) {
+        moduleDocs = JsDoc.from(n.getJSDocInfo());
+        module.setJsDoc(moduleDocs);
+      }
+
+      // The compiler does not generate alias notifications when it rewrites an ES6 module,
+      // so we register a region here.
+      AliasRegion region = AliasRegion.builder()
+          .setPath(path)
+          .setRange(Range.atLeast(Position.of(0, 0)))
+          .build();
+      typeRegistry.addAliasRegion(region);
     }
 
     private void visitScript(Node script) {

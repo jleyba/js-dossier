@@ -1,12 +1,12 @@
 /*
  Copyright 2013-2015 Jason Leyba
- 
+
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
  You may obtain a copy of the License at
- 
+
    http://www.apache.org/licenses/LICENSE-2.0
- 
+
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -120,7 +120,7 @@ public class Es6ModuleTest {
     assertThat(module.getExportedNames()).containsEntry("x", "x");
     assertThat(module.getExportedNames()).containsEntry("y", "y");
   }
-  
+
   @Test
   public void buildsExportToInternalNameMap_wildcardExports() {
     try {
@@ -139,7 +139,7 @@ public class Es6ModuleTest {
       throw expected;
     }
   }
-  
+
   @Test
   public void buildsExportToInternalNameMap_forwardOtherModuleExport() {
     util.compile(
@@ -160,7 +160,7 @@ public class Es6ModuleTest {
     assertThat(module.getExportedNames()).containsEntry("Three", "module$one.Bar");
     assertThat(module.getExportedNames()).containsEntry("Bar", "module$one.Bar");
   }
-  
+
   @Test
   public void buildsExportToInternalNameMap_handlesDefaultExports() {
     util.compile(
@@ -172,7 +172,7 @@ public class Es6ModuleTest {
     assertThat(module.getExportedNames().keySet()).containsExactly("default");
     assertThat(module.getExportedNames()).containsEntry("default", "foo");
   }
-  
+
   @Test
   public void reportsACompilerErrorIfAFileThatDoesNotExistIsImported() {
     assertThat(Files.exists(fs.getPath("does_not_exist.js"))).isFalse();
@@ -186,7 +186,7 @@ public class Es6ModuleTest {
           "Failed to load module \"./does_not_exist\" one.js:1");
     }
   }
-  
+
   @Test
   public void reportsACompilerErrorIfImportedModuleIsNotACompilerInput() throws IOException {
     Files.createFile(fs.getPath("two.js"));
@@ -200,14 +200,14 @@ public class Es6ModuleTest {
           "Failed to load module \"./two\" one.js:1");
     }
   }
-  
+
   @Test
   public void identifiesModulesWithAbsolutePaths() {
     util.compile(fs.getPath("/one/two.js"),
         "export default function() {}");
     assertThat(typeRegistry.isModule("module$one$two")).isTrue();
   }
-  
+
   @Test
   public void identifiesModulesWithAbsolutePaths_windows() {
     FileSystem inputFs = Jimfs.newFileSystem(Configuration.windows());
@@ -216,12 +216,12 @@ public class Es6ModuleTest {
         .build()
         .createInjector()
         .injectMembers(this);
-    
+
     util.compile(fs.getPath("C:\\one\\two\\three.js"),
         "export default function() {}");
     assertThat(typeRegistry.isModule("module$one$two$three")).isTrue();
   }
-  
+
   @Test
   public void recordsInternalDocsForExportExpressions() {
     util.compile(fs.getPath("/one/two.js"),
@@ -244,11 +244,40 @@ public class Es6ModuleTest {
 
     checkInternalDocs(module, "Two", "Class two.");
     checkInternalDocs(module, "TwoA", "Class two (a)");
-    
+
     checkInternalDocs(module, "one", "Function one.");
     checkInternalDocs(module, "oneA", "Function one (a)");
   }
-  
+
+  @Test
+  public void declaredModulesThatUseAnImportStatementAreFlaggedAsEs6() {
+    guiceRule.toBuilder()
+        .setModulePrefix("/modules")
+        .setModules("bar.js", "baz.js")
+        .build()
+        .createInjector()
+        .injectMembers(this);
+
+    util.compile(
+        createSourceFile(
+            fs.getPath("/globals/foo.js"),
+            "class Foo {}"),
+        createSourceFile(
+            fs.getPath("/modules/bar.js"),
+            "class Bar {}",
+            "export default Bar;"),
+        createSourceFile(
+            fs.getPath("/modules/baz.js"),
+            "import Bar from './bar';",
+            "class Baz extends Bar {}"));
+
+    Module bar = typeRegistry.getModule("module$modules$bar");
+    assertThat(bar.getType()).isEqualTo(Module.Type.ES6);
+
+    Module baz = typeRegistry.getModule("module$modules$baz");
+    assertThat(baz.getType()).isEqualTo(Module.Type.ES6);
+  }
+
   private static void checkInternalDocs(Module module, String name, String comment) {
     assertThat(module.getInternalVarDocs().get(name).getBlockDescription().trim())
         .isEqualTo(comment);
