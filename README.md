@@ -123,8 +123,8 @@ configuration file, simply set the input `language` to `ES6` or
 
 Dossier currently recognizes three types of JavaScript modules:
 
-1. Closure modules identified by `goog.module(id)` statements
-2. ES6 modules identified by the use of an `export` statement
+1. Closure modules identified by `goog.module(id)` declaration
+2. ES6 modules identified by the use of an `export` or `import` declaration
 3. Node-style CommonJS modules
 
 Node modules must be explicitly declared as `modules` inputs in your
@@ -190,7 +190,7 @@ the annotation). For instance,
 the comment string parsed for parameter `x` is (again, .'s inserted to denote
 leading whitespace):
 
-    .This is the comment for  
+    .This is the comment for
     .....parameter x.
 
 ### The `@code` and `@literal` Taglets
