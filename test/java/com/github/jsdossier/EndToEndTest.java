@@ -353,6 +353,15 @@ public class EndToEndTest {
   }
 
   @Test
+  public void checkEs6ModuleWithImportButNoExports() throws IOException {
+    Document document = load(outDir.resolve("module/example/empty.html"));
+    compareWithGoldenFile(querySelector(document, "article"), "module/example/empty.html");
+    checkHeader(document);
+    checkModuleNav(document);
+    checkModuleFooter(document);
+  }
+
+  @Test
   public void checkEs6ModuleExportedClass() throws IOException {
     Document document = load(outDir.resolve("module/example/net_exports_HttpClient.html"));
     compareWithGoldenFile(querySelector(document, "article"),
@@ -378,7 +387,7 @@ public class EndToEndTest {
     TreeMap<String, Object> map = gson.fromJson(actualContent, TreeMap.class);
     sortIndexMap(map);
 
-    assertThat(gson.toJson(map)).isEqualTo(expectedContent);
+    assertThat(gson.toJson(map).trim()).isEqualTo(expectedContent.trim());
   }
 
   @SuppressWarnings("unchecked")
@@ -610,6 +619,7 @@ public class EndToEndTest {
       copyResource("resources/emptyenum.js", srcDir.resolve("main/subdir/emptyenum.js"));
       copyResource("resources/module/index.js", srcDir.resolve("main/example/index.js"));
       copyResource("resources/module/nested.js", srcDir.resolve("main/example/nested.js"));
+      copyResource("resources/module/es6/empty.js", srcDir.resolve("main/example/empty.js"));
       copyResource("resources/module/es6/net.js", srcDir.resolve("main/example/net.js"));
       copyResource("resources/module/worker.js", srcDir.resolve("main/example/worker.js"));
     }
@@ -637,6 +647,10 @@ public class EndToEndTest {
         addSource(srcDir.resolve("main/json.js"));
         addSource(srcDir.resolve("main/inheritance.js"));
         addSource(srcDir.resolve("main/subdir/emptyenum.js"));
+
+        // NB: this is explicitly declared as a normal source input to test that Dossier detects
+        // the import statement and registers it as a module.
+        addSource(srcDir.resolve("main/example/empty.js"));
 
         addModule(srcDir.resolve("main/example/index.js"));
         addModule(srcDir.resolve("main/example/nested.js"));

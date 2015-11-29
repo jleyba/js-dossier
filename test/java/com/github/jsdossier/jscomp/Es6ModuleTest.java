@@ -278,6 +278,35 @@ public class Es6ModuleTest {
     assertThat(baz.getType()).isEqualTo(Module.Type.ES6);
   }
 
+  @Test
+  public void undeclaredModulesThatUseAnImportStatementAreFlaggedAsEs6() {
+    guiceRule.toBuilder()
+        .setModulePrefix("/modules")
+        .setModules("bar.js")
+        .build()
+        .createInjector()
+        .injectMembers(this);
+
+    util.compile(
+        createSourceFile(
+            fs.getPath("/globals/foo.js"),
+            "class Foo {}"),
+        createSourceFile(
+            fs.getPath("/modules/bar.js"),
+            "class Bar {}",
+            "export default Bar;"),
+        createSourceFile(
+            fs.getPath("/modules/baz.js"),
+            "import Bar from './bar';",
+            "class Baz extends Bar {}"));
+
+    Module bar = typeRegistry.getModule("module$modules$bar");
+    assertThat(bar.getType()).isEqualTo(Module.Type.ES6);
+
+    Module baz = typeRegistry.getModule("module$modules$baz");
+    assertThat(baz.getType()).isEqualTo(Module.Type.ES6);
+  }
+
   private static void checkInternalDocs(Module module, String name, String comment) {
     assertThat(module.getInternalVarDocs().get(name).getBlockDescription().trim())
         .isEqualTo(comment);

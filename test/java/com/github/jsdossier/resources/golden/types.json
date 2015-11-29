@@ -29,6 +29,10 @@
       ]
     },
     {
+      "href": "module/example/empty.html",
+      "name": "example/empty"
+    },
+    {
       "href": "module/example/nested.html",
       "name": "example/nested",
       "types": [

@@ -1,12 +1,12 @@
 /*
  Copyright 2013-2015 Jason Leyba
- 
+
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
  You may obtain a copy of the License at
- 
+
    http://www.apache.org/licenses/LICENSE-2.0
- 
+
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -35,6 +35,7 @@ import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.jstype.EnumElementType;
 import com.google.javascript.rhino.jstype.FunctionType;
 import com.google.javascript.rhino.jstype.JSType;
+import com.google.javascript.rhino.jstype.JSTypeNative;
 import com.google.javascript.rhino.jstype.NamedType;
 import com.google.javascript.rhino.jstype.NoType;
 import com.google.javascript.rhino.jstype.ObjectType;
@@ -75,7 +76,7 @@ public final class TypeCollectionPass implements CompilerPass {
   TypeCollectionPass(
       DossierCompiler compiler,
       TypeRegistry typeRegistry,
-      @Input FileSystem inputFs, 
+      @Input FileSystem inputFs,
       @TypeFilter Predicate<String> typeNameFilter) {
     this.compiler = compiler;
     this.typeRegistry = typeRegistry;
@@ -92,6 +93,23 @@ public final class TypeCollectionPass implements CompilerPass {
     Externs externs = new Externs();
     traverseEs6(compiler, externsRoot, new ExternCollector(externs));
     traverseEs6(compiler, root, new TypeCollector(externs));
+
+    // Check for known modules that did not register as a type. These are modules that import
+    // others, but have no exports of their own.
+    for (Module module : typeRegistry.getAllModules()) {
+      if (module.getType() != Module.Type.CLOSURE && !typeRegistry.isType(module.getId())) {
+        typeRegistry.addType(
+            NominalType.builder()
+                .setName(module.getId())
+                .setType(compiler.getTypeRegistry().getNativeType(JSTypeNative.VOID_TYPE))
+//                    compiler.getTypeRegistry().createAnonymousObjectType(null))
+                .setSourceFile(module.getPath())
+                .setSourcePosition(Position.of(0, 0))
+                .setJsDoc(module.getJsDoc())
+                .setModule(module)
+                .build());
+      }
+    }
   }
 
   private static final class Externs {
@@ -193,9 +211,9 @@ public final class TypeCollectionPass implements CompilerPass {
     @Override public Object caseTemplatizedType(TemplatizedType type) { return null; }
     @Override public Object caseTemplateType(TemplateType templateType) { return null; }
   }
-  
+
   private class TypeCollector implements NodeTraversal.Callback, Visitor<Void> {
-    
+
     private final Externs externs;
     private final Deque<NominalType> types = new ArrayDeque<>();
 
@@ -214,14 +232,14 @@ public final class TypeCollectionPass implements CompilerPass {
         logfmt("Skipping non-global scope");
         return;
       }
-      
+
       for (Var var : t.getScope().getAllSymbols()) {
         String name = var.getName();
         if (name.startsWith(INTERNAL_NAMESPACE_VAR)) {
           logfmt("Skipping internal compiler namespace %s", name);
           continue;
         }
-        
+
         Node node = var.getNameNode();
         if (node == null) {
           logfmt("Skipping type without a source node: %s", name);
@@ -241,13 +259,13 @@ public final class TypeCollectionPass implements CompilerPass {
         if (info == null || isNullOrEmpty(info.getOriginalCommentString())) {
           info = node.getJSType().getJSDocInfo();
         }
-        
+
         if (isPrimitive(node.getJSType())
             && (info == null || (info.getTypedefType() == null && !info.isDefine()))) {
           logfmt("Skipping primitive type assigned to %s: %s", name, node.getJSType());
           continue;
         }
-        
+
         Path path = inputFs.getPath(node.getSourceFileName());
         NominalType nominalType = NominalType.builder()
             .setName(name)
@@ -261,7 +279,7 @@ public final class TypeCollectionPass implements CompilerPass {
         recordType(nominalType);
       }
     }
-    
+
     private Optional<Module> getModule(String typeName, Node node) {
       Path path = inputFs.getPath(node.getSourceFileName());
       if (!typeRegistry.isModule(path)) {
@@ -280,7 +298,7 @@ public final class TypeCollectionPass implements CompilerPass {
         logfmt("Skipping extern alias: %s", type.getName());
         return;
       }
-      
+
       if (type.getName().contains("$$")) {
         int index = type.getName().indexOf("$$");
         String id = type.getName().substring(index + 2);
@@ -337,7 +355,7 @@ public final class TypeCollectionPass implements CompilerPass {
       typeRegistry.addType(type);
       return true;
     }
-    
+
     private void crawlProperty(Property property) {
       checkState(!types.isEmpty());
 
@@ -361,7 +379,7 @@ public final class TypeCollectionPass implements CompilerPass {
             .build());
         return;
       }
-      
+
       JSType propertyType = property.getType();
       if (propertyType.isInstanceType() && jsdoc.isConstructor()) {
         JSType ctor = ((PrototypeObjectType) propertyType).getConstructor();
@@ -379,7 +397,7 @@ public final class TypeCollectionPass implements CompilerPass {
           .setSourceFile(inputFs.getPath(node.getSourceFileName()))
           .setSourcePosition(Position.of(node.getLineno(), node.getCharno()))
           .build();
-      
+
       if (propertyType.isConstructor()) {
         // If jsdoc is present and says this is not a constructor, we've found a
         // constructor reference, which should not be documented as a unique nominal type:

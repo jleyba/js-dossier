@@ -1,12 +1,12 @@
 /*
  Copyright 2013-2015 Jason Leyba
- 
+
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
  You may obtain a copy of the License at
- 
+
    http://www.apache.org/licenses/LICENSE-2.0
- 
+
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,6 +16,7 @@
 
 package com.github.jsdossier.jscomp;
 
+import static com.github.jsdossier.testing.CompilerUtil.createSourceFile;
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 
@@ -39,7 +40,7 @@ import javax.inject.Inject;
  */
 @RunWith(JUnit4.class)
 public class TypeCollectionPassTest {
-  
+
   @Rule
   public GuiceRule guice = GuiceRule.builder(this)
       .setLanguageIn(CompilerOptions.LanguageMode.ECMASCRIPT6)
@@ -48,7 +49,7 @@ public class TypeCollectionPassTest {
   @Inject @Input private FileSystem fs;
   @Inject private CompilerUtil util;
   @Inject private TypeRegistry typeRegistry;
-  
+
   @Test
   public void collectsGlobalClasses_functionDeclaration() {
     util.compile(fs.getPath("foo.js"),
@@ -126,7 +127,7 @@ public class TypeCollectionPassTest {
     assertPath(type, "foo.js");
     assertPosition(type, 3, 6);
   }
-  
+
   @Test
   public void collectsGlobalClasses_namedFunctionExpression() {
     util.compile(fs.getPath("foo.js"),
@@ -138,10 +139,10 @@ public class TypeCollectionPassTest {
     assertNoModule(type);
     assertPath(type, "foo.js");
     assertPosition(type, 2, 4);
-    
+
     assertThat(typeRegistry.isType("Two")).isFalse();
   }
-  
+
   @Test
   public void collectsGlobalClasses_namedClassExpression() {
     util.compile(fs.getPath("foo.js"),
@@ -152,10 +153,10 @@ public class TypeCollectionPassTest {
     assertNoModule(type);
     assertPath(type, "foo.js");
     assertPosition(type, 1, 4);
-    
+
     assertThat(typeRegistry.isType("Two")).isFalse();
   }
-  
+
   @Test
   public void collectsGlobalClasses_aliasedType() {
     util.compile(fs.getPath("foo.js"),
@@ -173,12 +174,12 @@ public class TypeCollectionPassTest {
     assertNoModule(two);
     assertPath(two, "foo.js");
     assertPosition(two, 2, 6);
-    
+
     assertThat(typeRegistry.getTypes(one.getType()))
         .containsExactly(one, two)
         .inOrder();
   }
-  
+
   @Test
   public void collectsGlobalClasses_googDefinedClass() {
     util.compile(fs.getPath("foo.js"),
@@ -190,7 +191,7 @@ public class TypeCollectionPassTest {
     assertPath(one, "foo.js");
     assertPosition(one, 1, 6);
   }
-  
+
   @Test
   public void doesNotRecordExternAliasAsANominalType() {
     util.compile(fs.getPath("foo.js"),
@@ -199,13 +200,13 @@ public class TypeCollectionPassTest {
         "let Three = Date;",
         "/** @type {function(new: Date)} */",
         "let Four = Date;");
-    
+
     assertThat(typeRegistry.isType("One")).isFalse();
     assertThat(typeRegistry.isType("Two")).isFalse();
     assertThat(typeRegistry.isType("Three")).isFalse();
     assertThat(typeRegistry.isType("Four")).isFalse();
   }
-  
+
   @Test
   public void collectsGlobalInterfaces() {
     util.compile(fs.getPath("foo.js"),
@@ -215,12 +216,12 @@ public class TypeCollectionPassTest {
         "const Two = goog.defineClass(null, {});",
         "/** @interface */",
         "const Three = class {};");
-    
+
     assertInterface(typeRegistry.getType("One"));
     assertInterface(typeRegistry.getType("Two"));
     assertInterface(typeRegistry.getType("Three"));
   }
-  
+
   @Test
   public void recordsGlobalEnums() {
     util.compile(fs.getPath("foo/bar.js"),
@@ -232,7 +233,7 @@ public class TypeCollectionPassTest {
     assertPath(foo, "foo/bar.js");
     assertPosition(foo, 2, 6);
   }
-  
+
   @Test
   public void recordsGlobalTypedefs() {
     util.compile(fs.getPath("foo/bar.js"),
@@ -250,20 +251,20 @@ public class TypeCollectionPassTest {
     util.compile(fs.getPath("foo/bar.js"), "const foo = {};");
     assertThat(typeRegistry.isType("foo")).isFalse();
   }
-  
+
   @Test
   public void recordsGoogModuleExportsAsNominalType() {
     util.compile(fs.getPath("foo/bar.js"),
         "goog.module('foo');",
         "exports.Bar = class {};");
-    
+
     NominalType type = typeRegistry.getType("foo");
     assertNamespace(type);
     assertPath(type, "foo/bar.js");
     assertPosition(type, 1, 13);
     assertModule(type, Module.Type.CLOSURE, "foo", "foo/bar.js");
   }
-  
+
   @Test
   public void recordsNodeModuleExportsAsNominalType() {
     defineInputModules("modules", "foo/bar.js");
@@ -276,38 +277,38 @@ public class TypeCollectionPassTest {
     assertPosition(type, 1, 1);
     assertModule(type, Module.Type.NODE, "module$modules$foo$bar", "modules/foo/bar.js");
   }
-  
+
   @Test
   public void recordsEs6ModuleExportsAsNominalType1() {
     testRecordsEs6ModuleExportsAsNominalType("export function foo() {}");
   }
-  
+
   @Test
   public void recordsEs6ModuleExportsAsNominalType2() {
     testRecordsEs6ModuleExportsAsNominalType("export default class {}");
   }
-  
+
   @Test
   public void recordsEs6ModuleExportsAsNominalType3() {
     testRecordsEs6ModuleExportsAsNominalType(
         "export default class {}",
         "export class A {}");
   }
-  
+
   @Test
   public void recordsEs6ModuleExportsAsNominalType4() {
     testRecordsEs6ModuleExportsAsNominalType(
         "export function each() {}",
         "export { each as forEach }");
   }
-  
+
   @Test
   public void recordsEs6ModuleExportsAsNominalType5() {
     testRecordsEs6ModuleExportsAsNominalType(
         "export function each() {}",
         "export { each as default }");
   }
-  
+
   private void testRecordsEs6ModuleExportsAsNominalType(String... source) {
     util.compile(fs.getPath("foo/bar.js"), source);
 
@@ -317,7 +318,7 @@ public class TypeCollectionPassTest {
     assertPosition(type, 1, 1);
     assertModule(type, Module.Type.ES6, "module$foo$bar", "foo/bar.js");
   }
-  
+
   @Test
   public void doesNotDoubleRecordEs6ModulesAsNodeModules() {
     defineInputModules("modules", "foo/bar.js");
@@ -330,7 +331,7 @@ public class TypeCollectionPassTest {
     assertPosition(type, 1, 1);
     assertModule(type, Module.Type.ES6, "module$modules$foo$bar", "modules/foo/bar.js");
   }
-  
+
   @Test
   public void recordsGoogProvidedType() {
     util.compile(fs.getPath("types.js"),
@@ -341,7 +342,7 @@ public class TypeCollectionPassTest {
     assertNamespace(typeRegistry.getType("foo.bar"));
     assertConstructor(typeRegistry.getType("foo.bar.Baz"));
   }
-  
+
   @Test
   public void documentsNestedTypes() {
     util.compile(fs.getPath("foo/bar.js"),
@@ -356,7 +357,7 @@ public class TypeCollectionPassTest {
     assertConstructor(typeRegistry.getType("foo.bar.Bim"));
     assertConstructor(typeRegistry.getType("foo.bar.Bim.Baz"));
   }
-  
+
   @Test
   public void functionVariablesAreNotDocumentedAsConstructors() {
     util.compile(fs.getPath("foo/bar.js"),
@@ -365,23 +366,23 @@ public class TypeCollectionPassTest {
         "foo.bar = function() {};",
         "/** @type {!Function} */",
         "foo.baz = function() {};");
-    
+
     assertNamespace(typeRegistry.getType("foo"));
     assertThat(typeRegistry.isType("foo.bar")).isFalse();
     assertThat(typeRegistry.isType("foo.baz")).isFalse();
   }
-  
+
   @Test
   public void functionInstancesAreNotDocumentedAsConstructors() {
     util.compile(fs.getPath("foo/bar.js"),
         "goog.provide('foo');",
         "/** @type {!Function} */",
         "foo.bar = Function;");
-    
+
     assertNamespace(typeRegistry.getType("foo"));
     assertThat(typeRegistry.isType("foo.bar")).isFalse();
   }
-  
+
   @Test
   public void onlyDocumentsExportedModuleTypes_closure() {
     util.compile(fs.getPath("foo/bar.js"),
@@ -392,7 +393,7 @@ public class TypeCollectionPassTest {
     assertConstructor(typeRegistry.getType("foo.Foo"));
     assertThat(typeRegistry.getAllTypes()).hasSize(2);
   }
-  
+
   @Test
   public void onlyDocumentsExportedModuleTypes_node() {
     defineInputModules("modules", "foo/bar.js");
@@ -403,7 +404,7 @@ public class TypeCollectionPassTest {
     assertConstructor(typeRegistry.getType("module$modules$foo$bar.Foo"));
     assertThat(typeRegistry.getAllTypes()).hasSize(2);
   }
-  
+
   @Test
   public void onlyDocumentsExportedModuleTypes_es6() {
     defineInputModules("modules", "foo/bar.js");
@@ -414,7 +415,7 @@ public class TypeCollectionPassTest {
     assertConstructor(typeRegistry.getType("module$modules$foo$bar.Foo"));
     assertThat(typeRegistry.getAllTypes()).hasSize(2);
   }
-  
+
   @Test
   public void documentsEs6DefaultExports1() {
     defineInputModules("modules", "foo/bar.js");
@@ -425,13 +426,13 @@ public class TypeCollectionPassTest {
     assertNamespace(typeRegistry.getType("module$modules$foo$bar"));
     assertConstructor(typeRegistry.getType("module$modules$foo$bar.default"));
     assertThat(typeRegistry.getAllTypes()).hasSize(2);
-    
+
     Module module = typeRegistry.getModule("module$modules$foo$bar");
     assertThat(module.getType()).isEqualTo(Module.Type.ES6);
     assertThat(module.getExportedNames()).hasSize(1);
     assertThat(module.getExportedNames()).containsEntry("default", "InternalClass");
   }
-  
+
   @Test
   public void documentsEs6DefaultExports2() {
     defineInputModules("modules", "foo/bar.js");
@@ -448,7 +449,7 @@ public class TypeCollectionPassTest {
     assertThat(module.getExportedNames()).hasSize(1);
     assertThat(module.getExportedNames()).containsEntry("default", "InternalClass");
   }
-  
+
   @Test
   public void documentsEs6DefaultExports3() {
     defineInputModules("modules", "foo/bar.js");
@@ -463,7 +464,7 @@ public class TypeCollectionPassTest {
     assertThat(module.getType()).isEqualTo(Module.Type.ES6);
     assertThat(module.getExportedNames()).isEmpty();
   }
-  
+
   @Test
   public void documentsEs6DefaultExports4() {
     defineInputModules("modules", "foo/bar.js");
@@ -480,7 +481,7 @@ public class TypeCollectionPassTest {
     assertThat(module.getExportedNames()).hasSize(1);
     assertThat(module.getExportedNames()).containsEntry("default", "InternalClass");
   }
-  
+
   @Test
   public void documentEs6DefaultExports5() {
     defineInputModules("modules", "foo/bar.js");
@@ -496,7 +497,7 @@ public class TypeCollectionPassTest {
     assertThat(module.getExportedNames()).hasSize(1);
     assertThat(module.getExportedNames()).containsEntry("default", "internal");
   }
-  
+
   @Test
   public void documentEs6DefaultExports6() {
     defineInputModules("modules", "foo/bar.js");
@@ -512,7 +513,7 @@ public class TypeCollectionPassTest {
     assertThat(module.getExportedNames()).hasSize(1);
     assertThat(module.getExportedNames()).containsEntry("default", "internal");
   }
-  
+
   @Test
   public void documentEs6DefaultExports7() {
     defineInputModules("modules", "foo/bar.js");
@@ -527,7 +528,7 @@ public class TypeCollectionPassTest {
     assertThat(module.getExportedNames()).hasSize(1);
     assertThat(module.getExportedNames()).containsEntry("default", "internal");
   }
-  
+
   @Test
   public void documentEs6DefaultExports8() {
     defineInputModules("modules", "foo/bar.js");
@@ -541,7 +542,7 @@ public class TypeCollectionPassTest {
     assertThat(module.getType()).isEqualTo(Module.Type.ES6);
     assertThat(module.getExportedNames()).isEmpty();
   }
-  
+
   @Test
   public void documentEs6DefaultExports9() {
     defineInputModules("modules", "foo/bar.js");
@@ -555,7 +556,7 @@ public class TypeCollectionPassTest {
     assertThat(module.getType()).isEqualTo(Module.Type.ES6);
     assertThat(module.getExportedNames()).isEmpty();
   }
-  
+
   @Test
   public void documentEs6DefaultExports10() {
     defineInputModules("modules", "foo/bar.js");
@@ -569,7 +570,7 @@ public class TypeCollectionPassTest {
     assertThat(module.getType()).isEqualTo(Module.Type.ES6);
     assertThat(module.getExportedNames()).isEmpty();
   }
-  
+
   @Test
   public void documentEs6DefaultExports11() {
     defineInputModules("modules", "foo/bar.js");
@@ -582,7 +583,7 @@ public class TypeCollectionPassTest {
     Module module = typeRegistry.getModule("module$modules$foo$bar");
     assertThat(module.getType()).isEqualTo(Module.Type.ES6);
     assertThat(module.getExportedNames()).isEmpty();
-  }  
+  }
 
   @Test
   public void documentEs6DefaultExports12() {
@@ -623,7 +624,7 @@ public class TypeCollectionPassTest {
     assertConstructor(typeRegistry.getType("foo.Bar"));
     assertThat(typeRegistry.getAllTypes()).hasSize(2);
   }
-  
+
   @Test
   public void functionAliasDetection() {
     util.compile(fs.getPath("foo/bar.js"),
@@ -652,7 +653,7 @@ public class TypeCollectionPassTest {
         "foo.six = function() {};",
         "foo.six.a = foo.four.a;",
         "");
-    
+
     NominalType one = typeRegistry.getType("foo.one");
     assertThat(typeRegistry.getTypes(one.getType())).containsExactly(one);
 
@@ -691,7 +692,7 @@ public class TypeCollectionPassTest {
     assertNamespace(bar);
     assertThat(bar.getType().isFunctionType()).isTrue();
   }
-  
+
   @Test
   public void doesNotRegisterFilteredTypes() {
     guice.toBuilder()
@@ -717,7 +718,7 @@ public class TypeCollectionPassTest {
     assertThat(typeRegistry.isType("foo.bar.two")).isFalse();
     assertThat(typeRegistry.isType("foo.bar.two.baz")).isFalse();
   }
-  
+
   @Test
   public void recordsNamespacesWithNoChildTypes() {
     util.compile(fs.getPath("foo.js"),
@@ -728,17 +729,17 @@ public class TypeCollectionPassTest {
     assertNamespace(typeRegistry.getType("util.array"));
     assertThat(typeRegistry.isType("util.array.forEach")).isFalse();
   }
-  
+
   @Test
   public void doesNotRecordInternalEs6VarsAsTypes1() {
     util.compile(fs.getPath("foo.js"),
         "/** Hello */function greet() {}",
         "export {greet}");
-    
+
     assertNamespace(typeRegistry.getType("module$foo"));
     assertThat(typeRegistry.getAllTypes()).hasSize(1);
   }
-  
+
   @Test
   public void doesNotRecordInternalEs6VarsAsTypes2() {
     util.compile(fs.getPath("foo.js"),
@@ -749,7 +750,7 @@ public class TypeCollectionPassTest {
     assertNamespace(typeRegistry.getType("module$foo"));
     assertThat(typeRegistry.getAllTypes()).hasSize(1);
   }
-  
+
   @Test
   public void doesNotRecordInternalEs6VarsAsTypes3() {
     defineInputModules("modules", "foo/bar.js");
@@ -781,7 +782,7 @@ public class TypeCollectionPassTest {
     assertThat(typeRegistry.getNestedTypes(baz)).containsExactly(clazz);
     assertThat(typeRegistry.getNestedTypes(clazz)).isEmpty();
   }
-  
+
   @Test
   public void implicitNamespacesFromClosureModulesAreNotRegisteredAsModules1() {
     util.compile(fs.getPath("foo.js"),
@@ -790,7 +791,7 @@ public class TypeCollectionPassTest {
 
     NominalType foo = typeRegistry.getType("foo");
     assertThat(foo.getModule()).isAbsent();
-    
+
     NominalType bar = typeRegistry.getType("foo.bar");
     assertThat(bar.getModule()).isPresent();
   }
@@ -803,14 +804,14 @@ public class TypeCollectionPassTest {
 
     NominalType foo = typeRegistry.getType("foo");
     assertThat(foo.getModule()).isAbsent();
-    
+
     NominalType bar = typeRegistry.getType("foo.bar");
     assertThat(bar.getModule()).isAbsent();
-    
+
     NominalType baz = typeRegistry.getType("foo.bar.baz");
     assertThat(baz.getModule()).isPresent();
   }
-  
+
   @Test
   public void canResolveNominalTypeFromConstructorAliases() {
     util.compile(fs.getPath("foo.js"),
@@ -819,20 +820,35 @@ public class TypeCollectionPassTest {
         "ns.Bar = ns.Foo;",
         "/** @type {function(new: ns.Foo)} */ ns.F1 = ns.Foo;",
         "/** @type {function(new: ns.Foo): undefined} */ ns.F2 = ns.Foo;");
-    
+
     NominalType ns = typeRegistry.getType("ns");
     NominalType foo = typeRegistry.getType("ns.Foo");
     NominalType bar = typeRegistry.getType("ns.Bar");
 
     assertThat(typeRegistry.getAllTypes()).containsExactly(ns, foo, bar);
     assertThat(typeRegistry.getTypes(foo.getType())).containsExactly(foo, bar);
-    
+
     JSType nsType = ns.getType();
     JSType f1 = nsType.toObjectType().getOwnSlot("F1").getType();
     JSType f2 = nsType.toObjectType().getOwnSlot("F2").getType();
-    
+
     assertThat(typeRegistry.findTypes(f1)).containsExactly(foo, bar);
     assertThat(typeRegistry.findTypes(f2)).containsExactly(foo, bar);
+  }
+
+  @Test
+  public void fillsInMissingModuleTypesForModulesWithNoExports() {
+    util.compile(
+        createSourceFile(
+            fs.getPath("foo.js"),
+            "export class Foo {}"),
+        createSourceFile(
+            fs.getPath("bar.js"),
+            "import * as foo from './foo';"));
+
+    Module bar = typeRegistry.getModule(fs.getPath("bar.js"));
+    NominalType type = typeRegistry.getType(bar.getId());
+    assertThat(type.isModuleExports()).isTrue();
   }
 
   private void defineInputModules(String prefix, String... modules) {
@@ -883,15 +899,15 @@ public class TypeCollectionPassTest {
   private static void assertPath(NominalType type, String expected) {
     assertThat(type.getSourceFile().toString()).isEqualTo(expected);
   }
-  
+
   private static void assertPosition(NominalType type, int line, int col) {
     assertThat(type.getSourcePosition()).isEqualTo(Position.of(line, col));
   }
-  
+
   private static void assertNoModule(NominalType type) {
     assertThat(type.getModule()).isAbsent();
   }
-  
+
   private static void assertModule(
       NominalType type, Module.Type moduleType, String id, String path) {
     Module module = type.getModule().get();

@@ -23,11 +23,9 @@ import static com.google.common.collect.Iterables.getFirst;
 import static com.google.javascript.jscomp.NodeTraversal.traverseEs6;
 
 import com.github.jsdossier.annotations.Input;
-import com.github.jsdossier.annotations.Modules;
 import com.google.auto.factory.AutoFactory;
 import com.google.auto.factory.Provided;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Range;
 import com.google.javascript.jscomp.CompilerPass;
 import com.google.javascript.jscomp.ES6ModuleLoader;
@@ -63,16 +61,13 @@ final class Es6ModulePass implements CompilerPass {
   private final DossierCompiler compiler;
   private final TypeRegistry typeRegistry;
   private final FileSystem inputFs;
-  private final ImmutableSet<Path> declaredModules;
 
   Es6ModulePass(
       @Provided TypeRegistry typeRegistry,
       @Provided @Input FileSystem inputFs,
-      @Provided @Modules ImmutableSet<Path> declaredModules,
       DossierCompiler compiler) {
     this.typeRegistry = typeRegistry;
     this.inputFs = inputFs;
-    this.declaredModules = declaredModules;
     this.compiler = compiler;
   }
 
@@ -222,8 +217,7 @@ final class Es6ModulePass implements CompilerPass {
 
     private void visitImport(Node n) {
       imports.add(n);
-      if (module == null
-          && declaredModules.contains(inputFs.getPath(n.getSourceFileName()))) {
+      if (module == null) {
         initModule(n);
       }
     }
