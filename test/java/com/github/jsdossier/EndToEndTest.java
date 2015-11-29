@@ -1,12 +1,12 @@
 /*
  Copyright 2013-2015 Jason Leyba
- 
+
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
  You may obtain a copy of the License at
- 
+
    http://www.apache.org/licenses/LICENSE-2.0
- 
+
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -236,7 +236,7 @@ public class EndToEndTest {
     checkNav(document);
     checkFooter(document);
   }
-  
+
   @Test
   public void checkDeprecatedClassWithSuperTypes() throws IOException {
     Document document = load(outDir.resolve("sample.inheritance.DeprecatedFinalClass.html"));
@@ -333,7 +333,7 @@ public class EndToEndTest {
     checkNav(document);
     checkFooter(document);
   }
-  
+
   @Test
   public void checkEs6Class() throws IOException {
     Document document = load(outDir.resolve("Calculator.html"));
@@ -446,7 +446,7 @@ public class EndToEndTest {
   private void compareWithGoldenFile(String actual, String goldenPath) throws IOException {
     goldenPath = "resources/golden/" + goldenPath;
     String golden = Resources.toString(EndToEndTest.class.getResource(goldenPath), UTF_8);
-    assertEquals(golden.trim(), actual.trim());
+    assertEquals(golden.trim(), actual.replace(" \n", "\n").trim());
   }
 
   private static Document load(Path path) throws IOException {
@@ -537,7 +537,7 @@ public class EndToEndTest {
       return json.toString();
     }
   }
-  
+
   private static class Scenario {
     private final String outputPath;
 
@@ -554,12 +554,12 @@ public class EndToEndTest {
     public String toString() {
       return outputPath;
     }
-    
+
     public Path init() throws Exception {
       if (outDir != null) {
         return outDir;
       }
-      
+
       if (initFailure != null) {
         throw initFailure;
       }
@@ -613,7 +613,7 @@ public class EndToEndTest {
       copyResource("resources/module/es6/net.js", srcDir.resolve("main/example/net.js"));
       copyResource("resources/module/worker.js", srcDir.resolve("main/example/worker.js"));
     }
-    
+
     private Path generateData() throws IOException {
       final Path output = tmpDir.resolveSibling(outputPath);
       System.out.println("Generating output in " + output);
