@@ -17,21 +17,25 @@
 @import "base";
 
 footer {
-  padding: 0;
-  margin: 0;
-
-  font-size: 1.1rem;
+  font-size: 1.2rem;
 
   div {
-    display: table-cell;
-    vertical-align: middle;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     height: @footer_height;
+    background: @banner_color;
   }
 
   a {
-    padding-left: 2.25rem;
     &, &:visited {
-      color: rgba(255, 255, 255, 0.8);
+      color: rgba(255, 255, 255, 0.45) !important;
     }
+  }
+}
+
+@media screen and (max-width: 760px) {
+  footer div {
+    height: 9.2rem;
   }
 }
