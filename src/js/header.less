@@ -16,92 +16,129 @@
 
 @import "base";
 
-@search_input_width: 30rem;
+@menu_icon_width: 5.6rem;
+@search_icon_width: 4.8rem;
+@max_search_width: 48rem - @search_icon_width;
 
 header {
+  z-index: 3;
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   height: @header_height;
-  box-shadow: 0 1px 5px #888888;
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, .14),
+              0 3px 1px -2px rgba(0, 0, 0, .2),
+              0 1px 5px 0 rgba(0, 0, 0, .12);
 
-  @input_height: 3rem;
+  @input_height: 3.6rem;
 
-  & > div {
+  form {
+    height: @header_height;
     display: flex;
+    flex-direction: row-reverse;
     align-items: center;
-    justify-content: flex-end;
-    height: 100%;
+    justify-content: center;
+    margin: 0 @menu_icon_width;
+  }
+
+  .dossier-menu-button {
+    height: @header_height;
+    width: @menu_icon_width;
+    float: left;
+    color: #fff;
+
+    display: flex;
+    display: none;  // TODO: remove when the menubutton is used.
+    align-items: center;
+    justify-content: center;
   }
 
   input {
     height: @input_height;
-    width: @search_input_width;
+    max-width: @max_search_width;
+    width: ~"calc(100% - " @search_icon_width ~")";
 
-    padding: 0 10px;
-    border-radius: 15px;
+    padding: 0 1rem 0 0;//.2rem;
     border: 0;
-    -webkit-appearance: none;
 
-    color: #fff;
-    background: rgba(255,255,255,.25);
+    border-radius: 0 3px 3px 0;
+    -webkit-appearance: none;
 
     &::-webkit-input-placeholder { color: #fff; }
     &::-moz-placeholder { color: #fff; }
     &:-ms-input-placeholder { color: #fff; }
 
+    & + .material-icons {
+      width: @search_icon_width;
+      height: @input_height;
+      padding: .6rem .4rem .6rem 1.6rem;
+      border-radius: 3px 0 0 3px;
+    }
+
+    &, & + .material-icons {
+      transition: background .2s, color .2s;
+      color: #fff;
+      background: rgba(255, 255, 255, 0.25);
+    }
+
+    &:hover, &:hover + .material-icons {
+      background: rgba(255, 255, 255, 0.33);
+    }
+
     &:focus {
-      background: #fff;
-      color: #333;
       outline: 0;
+      &, & + .material-icons {
+        background: #fff;
+        color: #333;
+      }
     }
   }
 }
 
-.ac-renderer {
-  position: absolute;
-  background: #fff;
-  border: 1px solid black;
-
-  @ac_render_shadow: 2px 2px 2px rgba(102, 102, 102, .4);
-
-  -moz-box-shadow: @ac_render_shadow;
-  -webkit-box-shadow: @ac_render_shadow;
-  box-shadow: @ac_render_shadow;
-
+#dossier-ac {
   z-index: 2;
-  overflow: auto;
-  width: @search_input_width + 2rem;
-  margin-left: -1rem;
+  position: fixed;
+  top: @header_height;
+  left: 0;
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ac-renderer {
+  background: #fff;
+
+  box-shadow: 0 0 2px rgba(0,0,0,.12),0 2px 4px rgba(0,0,0,.24);
+
+  width: ~"calc(100% - " (2 * @menu_icon_width) ~")";
+  min-width: 30rem;
+  max-width: @max_search_width + @search_icon_width + 2rem;
+
+  margin-top: -.2rem;
+  padding: 1.8rem 0 .8rem 0.8rem;
+
+  border-radius: 2px;
 }
 
 .ac-row {
   cursor: pointer;
-  padding: .5rem;
+  padding: .8rem;
+  font-size: 1.3rem;
+  line-height: 2rem;
+
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
 .ac-highlighted {
-  font-weight: bold;
+  font-weight: 700;
+  font-size: 1.4rem;
 }
 
 .ac-active {
   background-color: rgba(82, 82, 82, 0.1);
-}
-
-@media (max-width: @small_screen_size) {
-  .ac-renderer {
-    width: @search_input_width;
-    margin: 0;
-  }
-}
-@media (max-width: @large_screen_size) {
-  header > div {
-    justify-content: center;
-  }
-}
-@media (min-width: @large_screen_size) {
-  header > div {
-    .main-column-width(@main_desktop_width);
-  }
 }

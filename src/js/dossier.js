@@ -20,6 +20,8 @@
  * state of the side nav list.
  */
 
+'use strict';
+
 goog.provide('dossier');
 
 goog.require('dossier.nav');
@@ -31,8 +33,10 @@ goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.dom.classlist');
 goog.require('goog.string');
-goog.require('goog.ui.ac');
-goog.require('goog.ui.ac.AutoComplete.EventType');
+goog.require('goog.ui.ac.ArrayMatcher');
+goog.require('goog.ui.ac.AutoComplete');
+goog.require('goog.ui.ac.InputHandler');
+goog.require('goog.ui.ac.Renderer');
 goog.require('goog.userAgent');
 
 goog.forwardDeclare('goog.debug.ErrorHandler');
@@ -149,10 +153,11 @@ dossier.initSearchBox_ = function(typeInfo) {
   });
 
   var input = searchForm.querySelector('input');
-  input.setAttribute('title', 'Search (' + (goog.userAgent.MAC ? '⌘' : 'Ctrl+') + 'E)');
+  input.setAttribute(
+      'title', 'Search (' + (goog.userAgent.MAC ? '⌘' : 'Ctrl+') + 'E)');
 
-  var ac = goog.ui.ac.createSimpleAutoComplete(allTerms, input, false, true);
-  ac.setMaxMatches(20);
+  var ac = dossier.createAutoComplete_(allTerms, input);
+
   goog.events.listen(ac,
       goog.ui.ac.AutoComplete.EventType.UPDATE, navigatePage);
 
@@ -179,6 +184,34 @@ dossier.initSearchBox_ = function(typeInfo) {
       window.location.href = dossier.BASE_PATH_ + href;
     }
   }
+};
+
+
+/**
+ * @param {!Array<?>} data The input data array.
+ * @param {!Element} input The controlling input element.
+ * @return {!goog.ui.ac.AutoComplete} A new autocomplete object.
+ * @private
+ */
+dossier.createAutoComplete_ = function(data, input) {
+  const parent = goog.dom.createDom('div', {'id': 'dossier-ac'});
+  parent.ownerDocument.body.appendChild(parent);
+
+  let matcher = new goog.ui.ac.ArrayMatcher(data, true);
+  let renderer = new goog.ui.ac.Renderer(parent);
+  let inputHandler = new goog.ui.ac.InputHandler(null, null, false);
+
+  let ac = new goog.ui.ac.AutoComplete(matcher, renderer, inputHandler);
+  ac.setMaxMatches(8);
+
+  inputHandler.attachAutoComplete(ac);
+  inputHandler.attachInputs(input);
+
+  renderer.setAutoPosition(false);
+  renderer.setShowScrollbarsIfTooLarge(true);
+  renderer.setUseStandardHighlighting(true);
+
+  return ac;
 };
 
 

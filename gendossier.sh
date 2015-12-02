@@ -59,9 +59,10 @@ run_jsc() {
       -f "--jscomp_error=unknownDefines" \
       -f "--jscomp_error=uselessCode" \
       -f "--jscomp_error=visibility" \
-      -f "--language_in=ES5" \
+      -f "--language_in=ECMASCRIPT6_STRICT" \
+      -f "--language_out=ECMASCRIPT5_STRICT" \
       -f "--third_party=false" \
-      -f "--output_wrapper=\"(function(){%output%;init();})();\"" \
+      -f "--output_wrapper=\"(function(){%output%;init();}).call(this);\"" \
       -f "--js_output_file=\"${RESOURCES}/dossier.js\""
 }
 

@@ -17,6 +17,7 @@
 @import url(https://fonts.googleapis.com/css?family=Roboto+Mono:400,400italic,700,700italic|Roboto);
 
 @large_screen_size: 1000px;
+@medium_screen_size: 760px;
 @small_screen_size: 320px;
 
 @header_height: 5.6rem;
@@ -62,6 +63,7 @@
 * {
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
 }
 
 html {
@@ -196,8 +198,7 @@ hr.fn-sep {
   border: 0;
   border-top: 1px solid #dcdcdc;
   width: 50%;
-  margin: auto;
-  margin-top: 2rem;
+  margin: 2rem auto auto;
 }
 
 .tags span {
