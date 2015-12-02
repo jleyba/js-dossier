@@ -194,7 +194,7 @@ dossier.initSearchBox_ = function(typeInfo) {
  * @private
  */
 dossier.createAutoComplete_ = function(data, input) {
-  const parent = goog.dom.createDom('div', {'id': 'dossier-ac'});
+  const parent = goog.dom.createDom('div', 'dossier-ac');
   parent.ownerDocument.body.appendChild(parent);
 
   let matcher = new goog.ui.ac.ArrayMatcher(data, true);
@@ -202,7 +202,7 @@ dossier.createAutoComplete_ = function(data, input) {
   let inputHandler = new goog.ui.ac.InputHandler(null, null, false);
 
   let ac = new goog.ui.ac.AutoComplete(matcher, renderer, inputHandler);
-  ac.setMaxMatches(8);
+  ac.setMaxMatches(6);
 
   inputHandler.attachAutoComplete(ac);
   inputHandler.attachInputs(input);
