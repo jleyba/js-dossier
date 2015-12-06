@@ -26,12 +26,16 @@ main, div.pre-footer > div {
 main {
   flex: 1 0 auto;
   display: flex;
-  flex-direction: row-reverse;
+  margin: @header_height + .8rem auto 8rem auto;  // TODO use px
+
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, .14),
+              0 3px 1px -2px rgba(0, 0, 0, .2),
+              0 1px 5px 0 rgba(0, 0, 0, .12);
 }
 
 article {
-  .clear-header();
-  padding: 3rem;
+  margin: @header_height 8px 8px;
+  width: 100%;
 
   &.indexfile > h1,
   &.srcfile > h1 {
@@ -89,29 +93,29 @@ article {
 }
 
 @media (max-width: @large_screen_size) {
-  main {
-    flex-direction: column;
-  }
   article {
-    padding: 3rem 1rem;
+    padding: 8px;
   }
 }
 
-@media (min-width: @large_screen_size) {
+@media (max-width: 839px) {
   main {
-    .main-column-width(@main_desktop_width);
+    width: ~"calc(100% - 16px)";
+  }
+}
+
+@media (min-width: 840px) {
+  main {
+    width: ~"calc(66% - 16px)";
   }
 
   article {
-    width: 66rem;
+    padding: 16px;
   }
+}
 
-  nav {
-    .clear-header();
-
-    width: 23rem;
-    float: left;
-    padding-top: 3rem;
-    padding-right: 4rem;
+@media (min-width: 1280px) {
+  main {
+    width: ~"calc(66% - 24px)";
   }
 }

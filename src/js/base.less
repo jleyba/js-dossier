@@ -16,22 +16,31 @@
 
 @import url(https://fonts.googleapis.com/css?family=Roboto+Mono:400,400italic,700,700italic|Roboto);
 
-@large_screen_size: 1000px;
-@medium_screen_size: 760px;
-@small_screen_size: 320px;
+@large_screen_size: 960px;
+@medium_screen_size: 600px;
+@small_screen_size: 360px;
 
 @header_height: 5.6rem;
 @footer_height: 9.6rem;
 
+@header_z_index: 3;
+@nav_z_index: 5;
+@nav_mask_z_index: 4;
+
 @main_desktop_width: 100rem;
+@nav_width: 244px;
 
 @main_column_color: #fff;
 @banner_color: #424242;
 @link_color: #66f;
+@font_color: #333;
 @header_border: #8f8f8f;
 @code_bg: #f8f8f8;
 @code_border: darken(@code_bg, 15%);
 @body_bg: #f8f8f8;
+
+@gutter_small_screen: 16px;
+@gutter_large_screen: 24px;
 
 .set-font-size(@size) {
   font-size: @size;
@@ -55,11 +64,6 @@
   margin-top: @header_height / 2;
 }
 
-.main-column-width(@size) {
-  width: @size;
-  margin: 0 auto;
-}
-
 * {
   margin: 0;
   padding: 0;
@@ -76,9 +80,8 @@ html {
 }
 
 body {
-  color: #333;
+  color: @font_color;
   font-family: "Roboto", sans-serif;
-  line-height: 1.6;
   word-wrap: break-word;
   background: @body_bg;
 
@@ -291,4 +294,25 @@ th, td {
 
 header, footer {
   background: @banner_color;
+}
+
+::-webkit-scrollbar {
+  height: 15px;
+  width: 15px;
+}
+
+::-webkit-scrollbar-button {
+  height: 0;
+  width: 0;
+}
+
+::-webkit-scrollbar-thumb {
+  background-clip: padding-box;
+  background-color: rgba(0, 0, 0, .3);
+  border: 5px solid transparent;
+}
+
+::-webkit-scrollbar-thumb:hover,
+::-webkit-scrollbar-thumb:active{
+  background-color: rgba(0, 0, 0, .4);
 }

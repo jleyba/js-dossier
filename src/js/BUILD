@@ -34,9 +34,11 @@ js_binary(
         "--jscomp_error=unknownDefines",
         "--jscomp_error=uselessCode",
         "--jscomp_error=visibility",
-        "--language_in=ES5",
+        "--language_in=ECMASCRIPT6_STRICT",
+        "--language_out=ECMASCRIPT5_STRICT",
+        "--formatting=pretty_print",
         "--third_party=false",
-        "--output_wrapper=\\\"(function(){%output%;init();})();\\\"",
+        "--output_wrapper=\\\"(function(){%output%;init();}).call(this);\\\"",
     ],
     visibility = ["//src/java/com/github/jsdossier:__pkg__"],
 )

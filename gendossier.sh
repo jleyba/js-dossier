@@ -28,42 +28,7 @@ EOF
 
 
 run_jsc() {
-  bazel run //src/java/com/github/jsdossier/tools:Compile -- \
-      -c "${ROOT}/third_party/js/closure_library/closure/goog/" \
-      -i "${ROOT}/src/js/dossier.js" \
-      -i "${ROOT}/src/js/nav.js" \
-      -f "--charset=UTF-8" \
-      -f "--compilation_level=ADVANCED_OPTIMIZATIONS" \
-      -f "--define=goog.DEBUG=false" \
-      -f "--externs=\"${ROOT}/src/js/externs.js\"" \
-      -f "--manage_closure_dependencies" \
-      -f "--closure_entry_point=dossier" \
-      -f "--jscomp_error=accessControls" \
-      -f "--jscomp_error=ambiguousFunctionDecl" \
-      -f "--jscomp_error=checkRegExp" \
-      -f "--jscomp_error=checkTypes" \
-      -f "--jscomp_error=checkVars" \
-      -f "--jscomp_error=constantProperty" \
-      -f "--jscomp_error=deprecated" \
-      -f "--jscomp_error=duplicateMessage" \
-      -f "--jscomp_error=es5Strict" \
-      -f "--jscomp_error=externsValidation" \
-      -f "--jscomp_error=fileoverviewTags" \
-      -f "--jscomp_error=globalThis" \
-      -f "--jscomp_error=invalidCasts" \
-      -f "--jscomp_error=missingProperties" \
-      -f "--jscomp_error=nonStandardJsDocs" \
-      -f "--jscomp_error=strictModuleDepCheck" \
-      -f "--jscomp_error=typeInvalidation" \
-      -f "--jscomp_error=undefinedVars" \
-      -f "--jscomp_error=unknownDefines" \
-      -f "--jscomp_error=uselessCode" \
-      -f "--jscomp_error=visibility" \
-      -f "--language_in=ECMASCRIPT6_STRICT" \
-      -f "--language_out=ECMASCRIPT5_STRICT" \
-      -f "--third_party=false" \
-      -f "--output_wrapper=\"(function(){%output%;init();}).call(this);\"" \
-      -f "--js_output_file=\"${RESOURCES}/dossier.js\""
+  bazel build //src/js:dossier_bin
 }
 
 run_lessc() {

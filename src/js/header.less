@@ -21,7 +21,7 @@
 @max_search_width: 48rem - @search_icon_width;
 
 header {
-  z-index: 3;
+  z-index: @header_z_index;
   position: fixed;
   top: 0;
   left: 0;
@@ -32,6 +32,7 @@ header {
               0 1px 5px 0 rgba(0, 0, 0, .12);
 
   @input_height: 3.6rem;
+  @control_bg: rgba(255, 255, 255, 0.15);
 
   form {
     height: @header_height;
@@ -42,16 +43,35 @@ header {
     margin: 0 @menu_icon_width;
   }
 
-  .dossier-menu-button {
-    height: @header_height;
-    width: @menu_icon_width;
+  button.dossier-menu {
+    height: @header_height - 2.4rem;
+    width: @menu_icon_width - 2.4rem;
+    margin: 1.2rem;
+
     float: left;
     color: #fff;
 
+    transition: background .2s;
+    background: transparent;
+    border: 0;
+    border-radius: 50%;
+    cursor: pointer;
+    &:focus { outline: 0; }
+    &:hover { background: @control_bg; }
+
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    -ms-appearance: none;
+    -o-appearance: none;
+    appearance: none;
+
     display: flex;
-    display: none;  // TODO: remove when the menubutton is used.
     align-items: center;
     justify-content: center;
+
+    & .material-icons {
+      padding: 0 4px;
+    }
   }
 
   input {
@@ -64,6 +84,10 @@ header {
 
     border-radius: 0 3px 3px 0;
     -webkit-appearance: none;
+    -moz-appearance: none;
+    -ms-appearance: none;
+    -o-appearance: none;
+    appearance: none;
 
     &::-webkit-input-placeholder { color: #fff; }
     &::-moz-placeholder { color: #fff; }
@@ -79,11 +103,11 @@ header {
     &, & + .material-icons {
       transition: background .2s, color .2s;
       color: #fff;
-      background: rgba(255, 255, 255, 0.25);
+      background: @control_bg;
     }
 
     &:hover, &:hover + .material-icons {
-      background: rgba(255, 255, 255, 0.33);
+      background: rgba(255, 255, 255, 0.2);
     }
 
     &:focus {
@@ -96,7 +120,7 @@ header {
   }
 }
 
-#dossier-ac {
+.dossier-ac {
   z-index: 2;
   position: fixed;
   top: @header_height;

@@ -14,6 +14,8 @@
  limitations under the License.
  */
 
+'use strict';
+
 goog.module('dossier.nav');
 
 var Arrays = goog.require('goog.array');
@@ -258,7 +260,7 @@ function buildListItem(node, basePath, currentPath, idPrefix) {
   var li = document.createElement('li');
 
   var a = document.createElement('a');
-  a.classList.add('nav-item');
+  a.classList.add('item');
   a.textContent = node.getKey();
   a.tabIndex = 2;
   if (node.getValue()) {
@@ -268,34 +270,34 @@ function buildListItem(node, basePath, currentPath, idPrefix) {
     }
   }
 
+  if (node.getValue() && node.getValue().href === currentPath) {
+    a.classList.add('current');
+  }
+
   var children = node.getChildren();
   if (children) {
-    var input = document.createElement('input');
-    input.type = 'checkbox';
-    input.id = idPrefix + node.getKey();
-    li.appendChild(input);
+    let i = document.createElement('i');
+    i.classList.add('material-icons');
+    i.textContent = 'expand_more';
 
-    var label = document.createElement('label');
-    label.setAttribute('for', input.id);
-    label.appendChild(a);
-    if (node.getValue() && node.getValue().href === currentPath) {
-      label.classList.add('current');
-    }
-    li.appendChild(label);
+    let div = document.createElement('div');
+    div.dataset.id = idPrefix + node.getKey();
+    div.classList.add('toggle');
+    div.appendChild(a);
+    div.appendChild(i);
+
+    li.appendChild(div);
 
     var ul = document.createElement('ul');
-    ul.classList.add('nav-tree');
+    ul.classList.add('tree');
     li.appendChild(ul);
 
     children.forEach(function(child) {
-      ul.appendChild(buildListItem(child, basePath, currentPath,
-          input.id + '.'));
+      ul.appendChild(
+          buildListItem(
+              child, basePath, currentPath, idPrefix + node.getKey() + '.'));
     });
-
   } else {
-    if (node.getValue() && node.getValue().href === currentPath) {
-      a.classList.add('current');
-    }
     li.appendChild(a);
   }
 
@@ -303,8 +305,19 @@ function buildListItem(node, basePath, currentPath, idPrefix) {
 }
 
 
-var TYPE_ID_PREFIX = '.nav:';
-var MODULE_TYPE_ID_PREFIX = '.nav-module:';
+const TYPE_ID_PREFIX = '.nav:';
+const MODULE_TYPE_ID_PREFIX = '.nav-module:';
+
+
+/**
+ * Returns the ID prefix used for data types.
+ *
+ * @param {boolean} modules whether to return the ID for module types.
+ * @return {string} the ID prefix.
+ */
+exports.getIdPrefix = function(modules) {
+  return modules ? MODULE_TYPE_ID_PREFIX : TYPE_ID_PREFIX;
+};
 
 
 /**
@@ -321,6 +334,7 @@ exports.buildList = function(descriptors, basePath, currentPath, isModule) {
   }
   var root = exports.buildTree(descriptors, isModule);
   var rootEl = document.createElement('ul');
+  rootEl.classList.add('tree');
   if (root.getChildren()) {
     root.getChildren().forEach(function(child) {
       rootEl.appendChild(buildListItem(child, basePath, currentPath,
@@ -328,4 +342,16 @@ exports.buildList = function(descriptors, basePath, currentPath, isModule) {
     });
   }
   return rootEl;
+};
+
+
+/**
+ * Creates the element used to mask page content when the navigation menu is
+ * open.
+ * @return {!Element} The new mask element.
+ */
+exports.createMask = function() {
+  let mask = document.createElement('div');
+  mask.classList.add('dossier-nav-mask');
+  return mask;
 };

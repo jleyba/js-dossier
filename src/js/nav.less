@@ -14,76 +14,130 @@
  limitations under the License.
  */
 
-#nav-modules,
-#nav-types {
-  display: none;
+@import "base";
 
-  & ~ label h3:after {
-    content: '\2335';
+.dossier-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+
+  z-index: @nav_z_index;
+  box-shadow: 0 4px 5px 0 rgba(0, 0, 0, .14),
+              0 1px 10px 0 rgba(0, 0, 0, .2),
+              0 2px 4px -1px rgba(0, 0, 0, .12);
+
+  min-height: 100%;
+  height: 100%;
+  width: @nav_width;
+  padding: @header_height 0 0 0;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow-x: auto;
+  overflow-y: scroll;
+
+  font-size: 13px;
+  background: #fff;
+
+  transform: translateX(-@nav_width - 16px);
+  will-change: transform;
+  transition: transform cubic-bezier(0.4, 0, 0.2, 1) .2s;
+
+  &.visible {
+    transform: translateX(0);
+  }
+
+  & a {
+    color: rgba(0, 0, 0, 0.54);
+    &:hover {
+      color: @link_color;
+    }
+  }
+
+  .title {
+    color: #333;
+    font-size: 14px;
+    font-weight: 700;
+
     display: inline-block;
+    padding: 12px 0;
+    width: 100%;
 
-    float: right;
-    margin-right: 1rem;
-    transform: rotate(0);
+    &:focus {
+      outline: 0;
+      text-decoration: underline;
+    }
   }
 
-  &:checked ~ label h3:after {
+  section {
+    overflow: hidden;
 
-    float: right;
-    margin-right: 1rem;
-    transform: rotate(-90deg);
+    margin: 4px 0 0 0;
+    padding: 4px 0 0 16px;
+    border-top: 1px solid #e0e0e0;
+
+    &:first-child {
+      border: 0;
+      margin: 0;
+      padding-top: 8px;
+    }
+
+    &:last-child {
+      padding-bottom: 4px;
+      margin-bottom: (@footer_height + .4rem);
+    }
   }
 
-  &:checked ~ div {
-    display: none;
-  }
-}
+  .toggle {
+    color: rgba(0, 0, 0, .54);
+    width: 100%;
+    height: 48px;
+    cursor: pointer;
 
-nav {
-  margin: 0 0 3rem 1rem;
-  font-size: 1.3rem;
+    & .item {
+      float: left;
+      display: inline-block;
+      height: 24px;  // Match icon height.
+      line-height: 24px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: ~"calc(100% - 40px)";
+    }
+
+    & .material-icons {
+      float: right;
+      margin: 0 16px 0 0;
+      transition: transform cubic-bezier(0.4, 0, 0.2, 1) .2s;
+    }
+
+    &.open .material-icons {
+      transform: rotateX(180deg);
+    }
+  }
 
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
-
-  .selectable, a {
-    -webkit-touch-callout: default;
-    -webkit-user-select: text;
-    -moz-user-select: text;
-    -ms-user-select: text;
-    user-select: text;
-  }
-
-  *:focus {
-    text-decoration: underline;
-    outline: 0;
-  }
-
-  .selectable:hover {
-    text-decoration: underline;
-  }
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
   .current {
-    font-weight: bold;
-    text-decoration: underline;
+    color: @link_color;
+    font-weight: 700;
   }
 
   .interface {
     font-style: italic;
   }
 
-  ul {
+  .tree {
     margin: 0;
-    padding: 0;
+    padding: 0 0 0 4px;
+    transition: max-height cubic-bezier(0.4, 0, 0.2, 1) .2s;
+  }
 
-    &.nav-tree {
-      margin: 0 0 0 .3rem;
-      padding: 0 0 0 .5rem;
-      border-left: 1px dotted fade(@banner_color, 50%);
-    }
+  a, a:hover {
+    text-decoration: none !important;
   }
 
   li {
@@ -92,51 +146,46 @@ nav {
     overflow: hidden;
     text-overflow: ellipsis;
 
-    input { display: none; }
-    input ~ ul.nav-tree > li { display: block; }
-    input:checked ~ ul.nav-tree > li { display: none; }
+    width: 100%;
 
-    label, & > a {
-      display: block;
-      width: 100%;
+    & > .tree {
+      padding-left: 12px;
+    }
+
+    & > a {
+      display: inline-block;
+      height: 48px;
+      padding: 12px 0;
+      line-height: 24px;
+    }
+
+    & > a,
+    & > .toggle {
+      display: inline-block;
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
-    }
-
-    label:hover,
-    label.focused,
-    & > a:hover,
-    & > a:focus {
-        background: fade(@link_color, 10%);
-    }
-
-    // TODO: Find a better way to ensure label:before stays in the gutter and
-    // actual content stays aligned.
-    & > a:before { visibility: hidden; }
-    & > a:before,
-    label:before {
-      float: left;
-      margin-right: 1rem;
-      content: '\2212';
-      font-size: 1.4rem;
-    }
-    input:checked + label:before { content: '\002b'; }
-  }
-
-  h3 {
-    font-size: 2rem;
-    border: 0;
-    border-top: 1px solid @header_border;
-    margin-top: 1.2rem;
-
-    a, a:visited {
-      color: @banner_color;
+      padding: 12px 0 12px 8px;
     }
   }
+}
 
-  & > h3:first-child {
-    border-top: 0;
-    margin-top: 0;
+
+
+.dossier-nav-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: @nav_mask_z_index;
+
+  background: transparent;
+  transition: background-color cubic-bezier(0.4, 0, 0.2, 1) .2s;
+  visibility: hidden;
+
+  .dossier-nav.visible ~ & {
+    visibility: visible;
+    background: rgba(0, 0, 0, .5);
   }
 }

@@ -114,7 +114,8 @@ public class EndToEndTest {
         "source/subdir/emptyenum.js.src.html");
     checkHeader(document);
     compareWithGoldenFile(querySelectorAll(document, "nav"), "source/subdir/nav.html");
-    compareWithGoldenFile(querySelectorAll(document, "main ~ *"), "source/subdir/footer.html");
+    compareWithGoldenFile(
+        querySelectorAll(document, "main ~ footer, main ~ script"), "source/subdir/footer.html");
   }
 
   @Test
@@ -429,19 +430,21 @@ public class EndToEndTest {
   }
 
   private void checkFooter(Document document) throws IOException {
-    compareWithGoldenFile(querySelectorAll(document, "main ~ *"), "footer.html");
+    Elements elements = querySelectorAll(document, "main ~ footer, main ~ script");
+    compareWithGoldenFile(elements, "footer.html");
   }
 
   private void checkModuleFooter(Document document) throws IOException {
-    compareWithGoldenFile(querySelectorAll(document, "main ~ *"), "module/example/footer.html");
+    Elements elements = querySelectorAll(document, "main ~ footer, main ~ script");
+    compareWithGoldenFile(elements, "module/example/footer.html");
   }
 
   private void checkNav(Document document) throws IOException {
-    compareWithGoldenFile(querySelectorAll(document, "nav"), "nav.html");
+    compareWithGoldenFile(querySelectorAll(document, ".dossier-nav"), "nav.html");
   }
 
   private void checkModuleNav(Document document) throws IOException {
-    compareWithGoldenFile(querySelectorAll(document, "nav"), "module/example/nav.html");
+    compareWithGoldenFile(querySelectorAll(document, ".dossier-nav"), "module/example/nav.html");
   }
 
   private void compareWithGoldenFile(Element element, String goldenPath) throws IOException {

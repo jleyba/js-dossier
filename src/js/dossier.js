@@ -270,38 +270,50 @@ dossier.addTypes_ = function(terms, nameToHref, descriptor, opt_isModule, opt_pa
  * @private
  */
 dossier.initNavList_ = function(typeInfo) {
-  var currentFile = '';
-  if (dossier.BASE_PATH_) {
-    currentFile = window.location.pathname
-      .split('/')
-      .slice(dossier.BASE_PATH_.split('/').length)
-      .join('/');
-  } else if (window.location.pathname && window.location.pathname !== '/') {
-    currentFile = window.location.pathname.slice(
-        window.location.pathname.lastIndexOf('/') + 1);
+  const currentFile = window.location.pathname.slice(1);
+
+  const nav = goog.module.get('dossier.nav');
+
+  const navButton = document.querySelector('button.dossier-menu');
+  const navEl = document.querySelector('nav');
+
+  const mask = nav.createMask();
+  navEl.parentNode.insertBefore(mask, navEl.nextSibling);
+
+  const toggleVisibility = () => navEl.classList.toggle('visible');
+  goog.events.listen(mask, goog.events.EventType.CLICK, toggleVisibility);
+  goog.events.listen(navButton, goog.events.EventType.CLICK, toggleVisibility);
+
+  let typeSection = navEl.querySelector('.types');
+  if (typeSection && typeInfo.types) {
+    buildSectionList(typeSection, typeInfo.types, false);
   }
 
-  var nav = goog.module.get('dossier.nav');
-  var view = goog.dom.getElement('nav-types-view');
-  if (view && typeInfo.types) {
-    view.appendChild(nav.buildList(
-        typeInfo.types, dossier.BASE_PATH_, currentFile, false));
+  let moduleSection = navEl.querySelector('.modules');
+  if (moduleSection && typeInfo.modules) {
+    buildSectionList(moduleSection, typeInfo.modules, true);
   }
 
-  view = goog.dom.getElement('nav-modules-view');
-  if (view && typeInfo.modules) {
-    view.appendChild(nav.buildList(
-        typeInfo.modules, dossier.BASE_PATH_, currentFile, true));
-  }
+  goog.events.listen(navEl, goog.events.EventType.CLICK, function(e) {
+    let el = goog.dom.getAncestor(e.target, function(node) {
+      return node
+          && node.classList
+          && node.classList.contains('toggle');
+    }, true, 4);
 
-  function updateStorage(checkbox) {
-    if (window.localStorage) {
-      window.localStorage.setItem(checkbox.id,
-          checkbox.checked ? 'closed' : 'open');
+    if (el && el.classList.contains('toggle')) {
+      updateControl(/** @type {!Element} */(el));
     }
+  });
+
+  let trees = navEl.querySelectorAll('.tree');
+  for (let i = 0; i < trees.length; i++) {
+    let tree = trees[i];
+    let numItems = tree.querySelectorAll('li').length;
+    tree.dataset.maxHeight = numItems * 48;  // TODO: magic number!
+    tree.style.maxHeight = 0;
   }
 
-  var navEl = document.querySelector('nav');
   goog.events.listen(navEl, goog.events.EventType.KEYDOWN, function(e) {
     if (e.keyCode !== goog.events.KeyCodes.LEFT
         && e.keyCode !== goog.events.KeyCodes.RIGHT
@@ -326,27 +338,61 @@ dossier.initNavList_ = function(typeInfo) {
     }
   });
 
-  goog.events.listen(navEl, ['focus', 'blur'], function(e) {
-    if (e.target.classList.contains('nav-item')
-        && e.target.parentNode.tagName === goog.dom.TagName.LABEL) {
-      var label = e.target.parentNode;
-      if (e.type === 'focus') {
-        label.classList.add('focused');
+  if (window.localStorage) {
+    let toggles = navEl.querySelectorAll('.toggle[data-id]');
+    goog.array.forEach(toggles, function(el) {
+      var state = window.localStorage.getItem(el.dataset.id);
+      updateControl(el, state === 'open');
+    });
+  }
+
+  /**
+   * @param {!Element} section .
+   * @param {!Array<!Descriptor>} descriptors .
+   * @param {boolean} isModule .
+   */
+  function buildSectionList(section, descriptors, isModule) {
+    let list =
+        nav.buildList(descriptors, dossier.BASE_PATH_, currentFile, isModule);
+    section.appendChild(list);
+
+    let toggle = section.querySelector('.toggle');
+    toggle.dataset.id = nav.getIdPrefix(isModule);
+  }
+
+  /**
+   * @param {!Element} el .
+   * @param {boolean=} opt_value .
+   */
+  function updateControl(el, opt_value) {
+    if (goog.isBoolean(opt_value)) {
+      if (opt_value) {
+        el.classList.add('open');
       } else {
-        label.classList.remove('focused');
+        el.classList.remove('open');
+      }
+    } else {
+      el.classList.toggle('open');
+    }
+
+    updateStorage(el);
+
+    let tree = el.nextSibling;
+    if (tree && tree.classList.contains('tree')) {
+      if (el.classList.contains('open')) {
+        tree.style.maxHeight = tree.dataset.maxHeight + 'px';
+      } else {
+        tree.style.maxHeight = '0';
       }
     }
-  }, true);
-
-  if (!window.localStorage) {
-    return;
   }
-  var inputs = navEl.querySelectorAll('input[type="checkbox"][id]');
-  goog.array.forEach(inputs, function(el) {
-    var state = window.localStorage.getItem(el.id);
-    el.checked = !goog.isString(state) || state === 'closed';
-  });
-  goog.events.listen(navEl, goog.events.EventType.CHANGE, function(e) {
-    updateStorage(e.target);
-  });
+
+  /** @param {!Element} el . */
+  function updateStorage(el) {
+    if (window.localStorage && el.dataset.id) {
+      window.localStorage.setItem(
+          el.dataset.id,
+          el.classList.contains('open') ? 'open' : 'closed');
+    }
+  }
 };
