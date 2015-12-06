@@ -26,15 +26,13 @@ main, div.pre-footer > div {
 main {
   flex: 1 0 auto;
   display: flex;
-  margin: @header_height + .8rem auto 8rem auto;  // TODO use px
+  margin: @header_height + 8px auto 8px auto;
 
-  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, .14),
-              0 3px 1px -2px rgba(0, 0, 0, .2),
-              0 1px 5px 0 rgba(0, 0, 0, .12);
+  .raise-2dp();
 }
 
 article {
-  margin: @header_height 8px 8px;
+  margin: 8px;
   width: 100%;
 
   &.indexfile > h1,
@@ -59,18 +57,19 @@ article {
     .code-block();
     white-space: pre;
 
-    margin: 1rem 0;
+    margin: 10px 0;
     width: 100%;
   }
 
   td {
-    padding: 0 .8rem;
+    padding: 0 8px;
     border: 0;
   }
 
   td:first-child {
     text-align: right;
-    padding-left: .8rem;
+    padding-left: 8px;
+    .disable-select();
   }
 
   tr {

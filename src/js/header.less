@@ -16,9 +16,9 @@
 
 @import "base";
 
-@menu_icon_width: 5.6rem;
-@search_icon_width: 4.8rem;
-@max_search_width: 48rem - @search_icon_width;
+@menu_icon_width: 56px;
+@search_icon_width: 48px;
+@max_search_width: 480px - @search_icon_width;
 
 header {
   z-index: @header_z_index;
@@ -27,11 +27,10 @@ header {
   left: 0;
   right: 0;
   height: @header_height;
-  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, .14),
-              0 3px 1px -2px rgba(0, 0, 0, .2),
-              0 1px 5px 0 rgba(0, 0, 0, .12);
+  .raise-2dp();
+  background: @banner_color;
 
-  @input_height: 3.6rem;
+  @input_height: 36px;
   @control_bg: rgba(255, 255, 255, 0.15);
 
   form {
@@ -44,9 +43,9 @@ header {
   }
 
   button.dossier-menu {
-    height: @header_height - 2.4rem;
-    width: @menu_icon_width - 2.4rem;
-    margin: 1.2rem;
+    height: @header_height - 24px;
+    width: @menu_icon_width - 24px;
+    margin: 12px;
 
     float: left;
     color: #fff;
@@ -79,7 +78,7 @@ header {
     max-width: @max_search_width;
     width: ~"calc(100% - " @search_icon_width ~")";
 
-    padding: 0 1rem 0 0;//.2rem;
+    padding: 0 10px 0 0;
     border: 0;
 
     border-radius: 0 3px 3px 0;
@@ -96,7 +95,7 @@ header {
     & + .material-icons {
       width: @search_icon_width;
       height: @input_height;
-      padding: .6rem .4rem .6rem 1.6rem;
+      padding: 6px 4px 6px 16px;
       border-radius: 3px 0 0 3px;
     }
 
@@ -135,23 +134,24 @@ header {
 .ac-renderer {
   background: #fff;
 
-  box-shadow: 0 0 2px rgba(0,0,0,.12),0 2px 4px rgba(0,0,0,.24);
+  box-shadow: 0 0 2px rgba(0, 0, 0, .12),
+              0 2px 4px rgba(0, 0, 0, .24);
 
   width: ~"calc(100% - " (2 * @menu_icon_width) ~")";
-  min-width: 30rem;
-  max-width: @max_search_width + @search_icon_width + 2rem;
+  min-width: 300px;
+  max-width: @max_search_width + @search_icon_width + 20px;
 
-  margin-top: -.2rem;
-  padding: 1.8rem 0 .8rem 0.8rem;
+  margin-top: -2px;
+  padding: 18px 0 8px 8px;
 
   border-radius: 2px;
 }
 
 .ac-row {
   cursor: pointer;
-  padding: .8rem;
-  font-size: 1.3rem;
-  line-height: 2rem;
+  padding: 8px;
+  font-size: 13px;
+  line-height: 20px;
 
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -159,8 +159,8 @@ header {
 }
 
 .ac-highlighted {
-  font-weight: 700;
-  font-size: 1.4rem;
+  font-weight: 500;
+  font-size: 14px;
 }
 
 .ac-active {

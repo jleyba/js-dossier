@@ -9,6 +9,7 @@
     "third_party/js/closure_library/third_party/closure/goog"
   ],
   "excludes": [
+    "third_party/js/closure_library/closure/goog/events/eventtargettester.js",
     "third_party/js/closure_library/closure/goog/**_test.js",
     "third_party/js/closure_library/closure/goog/**_perf.js",
     "third_party/js/closure_library/closure/goog/demos",
