@@ -1,12 +1,12 @@
 /*
  Copyright 2013-2015 Jason Leyba
- 
+
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
  You may obtain a copy of the License at
- 
+
    http://www.apache.org/licenses/LICENSE-2.0
- 
+
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -81,7 +81,7 @@ import javax.inject.Qualifier;
 
 final class Main {
   private Main() {}
-  
+
   private static final Logger log = Logger.getLogger(Main.class.getName());
 
   private static final String INDEX_FILE_NAME = "index.html";
@@ -157,7 +157,7 @@ final class Main {
       bind(Path.class).annotatedWith(Output.class).toInstance(outputDir);
       bind(FileSystem.class).annotatedWith(Output.class).toInstance(outputDir.getFileSystem());
       bind(FileSystem.class).annotatedWith(Input.class).toInstance(config.getFileSystem());
-      
+
       bind(ModuleNamingConvention.class).toInstance(config.getModuleNamingConvention());
 
       bind(DocTemplate.class).to(DefaultDocTemplate.class).in(DocumentationScoped.class);
@@ -203,6 +203,14 @@ final class Main {
     NavIndexFactory provideNavIndexFactory(
         @Output Path outputDir,
         TypeRegistry typeRegistry) {
+      boolean showModules = false;
+      for (Module module : typeRegistry.getAllModules()) {
+        if (module.getType() != Module.Type.CLOSURE) {
+          showModules = true;
+          break;
+        }
+      }
+
       boolean showTypes = false;
       for (NominalType type : typeRegistry.getAllTypes()) {
         if (!type.getModule().isPresent()
@@ -213,7 +221,7 @@ final class Main {
       }
       return NavIndexFactory.create(
           outputDir.resolve(INDEX_FILE_NAME),
-          !typeRegistry.getAllModules().isEmpty(),
+          showModules,
           showTypes,
           config.getCustomPages());
     }
