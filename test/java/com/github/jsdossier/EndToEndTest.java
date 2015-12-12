@@ -121,7 +121,7 @@ public class EndToEndTest {
   @Test
   public void checkMarkdownIndexProcessing() throws IOException {
     Document document = load(outDir.resolve("index.html"));
-    compareWithGoldenFile(querySelector(document, "article.indexfile"), "index.html");
+    compareWithGoldenFile(querySelector(document, "article.page"), "index.html");
     checkHeader(document);
     checkNav(document);
     checkFooter(document);

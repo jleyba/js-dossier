@@ -19,23 +19,90 @@
 @import "footer";
 @import "nav";
 
-main, div.pre-footer > div {
-  background: @main_column_color;
-}
-
 main {
   flex: 1 0 auto;
   display: flex;
-  margin: @header_height + 8px auto 8px auto;
+  margin: @header_height + 8px auto 72px auto;
+}
 
+h1.title {
+  margin-top: 20px;
+}
+
+.instance-methods,
+.instance-properties,
+.static-functions,
+.static-properties,
+.enum-values,
+.types,
+.type-defs {
+  & > h2 {
+    margin-top: 48px;
+    opacity: .8;
+    font-weight: 300;
+  }
+}
+
+.intro,
+.property,
+article.srcfile,
+article.page {
+  margin-bottom: 16px;
+  padding: 16px;
+  background: @main_column_color;
   .raise-2dp();
 }
 
+.property {
+  @size: 24px;
+
+  &:target {
+    .target();
+  }
+
+  .code-link {
+    width: @size;
+    height: @size;
+    float: right;
+
+    a {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .material-icons {
+      font-size: 18px;
+      padding: 3px;
+    }
+  }
+}
+
+.intro,
+.property {
+  h3.name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-top: 0;
+    line-height: 24px;
+    padding-left: 16px;
+    text-indent: -16px;
+  }
+}
+
+h6.detail {
+  margin: 0;
+  code {
+    margin-left: 12px;
+  }
+}
+div.detail { margin-left: 16px; }
+
 article {
-  margin: 8px;
   width: 100%;
 
-  &.indexfile > h1,
+  &.page > h1,
   &.srcfile > h1 {
     margin-top: 0;
     white-space: nowrap;
@@ -56,6 +123,7 @@ article {
   table {
     .code-block();
     white-space: pre;
+    border: 1px solid @code_border;
 
     margin: 10px 0;
     width: 100%;
@@ -92,9 +160,9 @@ article {
 }
 
 @media (max-width: @large_screen_size) {
-  article {
-    padding: 8px;
-  }
+  //article {
+  //  padding: 8px;
+  //}
 }
 
 @media (max-width: 839px) {
@@ -108,9 +176,9 @@ article {
     width: ~"calc(66% - 16px)";
   }
 
-  article {
-    padding: 16px;
-  }
+  //article {
+  //  padding: 16px;
+  //}
 }
 
 @media (min-width: 1280px) {

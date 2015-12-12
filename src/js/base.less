@@ -44,6 +44,8 @@
 @gutter_small_screen: 16px;
 @gutter_large_screen: 24px;
 
+@target_border_width: 3px;
+
 .raise-2dp() {
   box-shadow: 0 2px 2px 0 rgba(0, 0, 0, .14),
               0 3px 1px -2px rgba(0, 0, 0, .2),
@@ -73,6 +75,10 @@
   border-radius: 3px;
   border-left: 2px solid @code_border;
   word-wrap: normal;
+}
+
+.target() {
+  border-left: @target_border_width solid fade(@link_color, 70%);
 }
 
 .clear-header() {
@@ -123,8 +129,8 @@ h1 {
 h2 { font: 400 24px/32px Roboto, sans-serif; }
 h3 { font: 500 20px/32px Roboto, sans-serif; }
 h4 { font: 500 18px/32px Roboto, sans-serif; }
-h5 { font: 700 16px/24px Roboto, sans-serif; }
-h6 { font: 500 16px/24px Roboto, sans-serif; }
+h5 { font: 500 16px/24px Roboto, sans-serif; }
+h6 { font: 400 16px/24px Roboto, sans-serif; }
 
 a {
   &, &:visited {
@@ -141,7 +147,7 @@ a {
 }
 
 pre, code, .srcfile table {
-  font-family: "Roboto Mono", Menlo, monospace;
+  font-family: "Roboto Mono", monospace;
   font-size: 12px !important;
 }
 
@@ -220,16 +226,21 @@ hr {
   }
 }
 
-.function:target > div,
-.property:target > dl {
-  @width: 3px;
-  border-left: @width solid fade(@link_color, 70%);
-  padding-left: 3 * @width;
-  margin-left: -4 * @width;
+dl {
+  margin: 0 0 16px 0;
+
+  :target > & {
+    .target();
+    padding-left: 16px - @target_border_width;
+    margin-left: -16px;
+  }
 }
 
 dt {
-  padding: 8px 0;
+  & + dt,
+  dd + & {
+    padding: 8px 0 0 0;
+  }
   font-weight: 500;
 
   &.deprecated {
@@ -239,7 +250,7 @@ dt {
   & > code {
     font-weight: initial;
     color: @link_color;
-    padding-left: 8px;
+    padding-left: 12px;
   }
 }
 

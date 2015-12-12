@@ -137,6 +137,15 @@
       "namespace": false
     },
     {
+      "href": "Formatter.html",
+      "interface": false,
+      "members": [
+        "format"
+      ],
+      "name": "Formatter",
+      "namespace": false
+    },
+    {
       "href": "GlobalCtor.html",
       "interface": false,
       "members": [
