@@ -851,6 +851,21 @@ public class TypeCollectionPassTest {
     assertThat(type.isModuleExports()).isTrue();
   }
 
+  @Test
+  public void doesNotRecordCompilerConstantAsType() {
+    util.compile(fs.getPath("foo.js"),
+        "/** @define {boolean} Hi. */",
+        "var COMPILED = false;",
+        "",
+        "class One {};",
+        "One.Two = class {};");
+
+    assertThat(typeRegistry.getAllTypes())
+        .containsExactly(
+            typeRegistry.getType("One"),
+            typeRegistry.getType("One.Two"));
+  }
+
   private void defineInputModules(String prefix, String... modules) {
     guice.toBuilder()
         .setModulePrefix(prefix)

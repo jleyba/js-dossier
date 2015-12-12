@@ -102,7 +102,6 @@ public final class TypeCollectionPass implements CompilerPass {
             NominalType.builder()
                 .setName(module.getId())
                 .setType(compiler.getTypeRegistry().getNativeType(JSTypeNative.VOID_TYPE))
-//                    compiler.getTypeRegistry().createAnonymousObjectType(null))
                 .setSourceFile(module.getPath())
                 .setSourcePosition(Position.of(0, 0))
                 .setJsDoc(module.getJsDoc())
@@ -263,6 +262,12 @@ public final class TypeCollectionPass implements CompilerPass {
         if (isPrimitive(node.getJSType())
             && (info == null || (info.getTypedefType() == null && !info.isDefine()))) {
           logfmt("Skipping primitive type assigned to %s: %s", name, node.getJSType());
+          continue;
+        }
+
+        // TODO: globals (functions, typedefs, compiler constants) should be documented together.
+        if (info != null && info.isDefine()) {
+          logfmt("Skipping global compiler constant: %s", name);
           continue;
         }
 
