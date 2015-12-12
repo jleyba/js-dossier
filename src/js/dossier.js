@@ -314,36 +314,32 @@ dossier.initNavList_ = function(typeInfo) {
     tree.style.maxHeight = 0;
   }
 
-  goog.events.listen(navEl, goog.events.EventType.KEYDOWN, function(e) {
-    if (e.keyCode !== goog.events.KeyCodes.LEFT
-        && e.keyCode !== goog.events.KeyCodes.RIGHT
-        && e.keyCode !== goog.events.KeyCodes.SPACE) {
-      return;
-    }
-    var label = goog.dom.getAncestor(e.target, function(node) {
-      return node.tagName === goog.dom.TagName.LABEL;
-    });
-    if (!label) {
-      return;
-    }
-    var input = document.getElementById(label.getAttribute('for'));
-    if (input) {
-      if (e.keyCode === goog.events.KeyCodes.SPACE) {
-        input.checked = !input.checked;
-        e.preventDefault();
-      } else {
-        input.checked = e.keyCode === goog.events.KeyCodes.LEFT;
-      }
-      updateStorage(input);
-    }
-  });
-
   if (window.localStorage) {
     let toggles = navEl.querySelectorAll('.toggle[data-id]');
     goog.array.forEach(toggles, function(el) {
       var state = window.localStorage.getItem(el.dataset.id);
       updateControl(el, state === 'open');
     });
+  }
+
+  let current = navEl.querySelector('.current');
+  if (current) {
+    revealElement(current);
+  }
+
+  /** @param {!Element} el . */
+  function revealElement(el) {
+    for (let current = el;
+        current && current != navEl;
+        current = goog.dom.getParentElement(current)) {
+      if (current.classList.contains('tree')) {
+        let control = current.previousElementSibling;
+        if (control && control.classList.contains('toggle')) {
+          updateControl(control, true, true);
+        }
+      }
+    }
+    navEl.scrollTop = el.offsetTop - (window.innerHeight / 2);
   }
 
   /**
@@ -363,8 +359,9 @@ dossier.initNavList_ = function(typeInfo) {
   /**
    * @param {!Element} el .
    * @param {boolean=} opt_value .
+   * @param {boolean=} opt_skipPersist .
    */
-  function updateControl(el, opt_value) {
+  function updateControl(el, opt_value, opt_skipPersist) {
     if (goog.isBoolean(opt_value)) {
       if (opt_value) {
         el.classList.add('open');
@@ -375,7 +372,9 @@ dossier.initNavList_ = function(typeInfo) {
       el.classList.toggle('open');
     }
 
-    updateStorage(el);
+    if (!opt_skipPersist) {
+      updateStorage(el);
+    }
 
     let tree = el.nextSibling;
     if (tree && tree.classList.contains('tree')) {
