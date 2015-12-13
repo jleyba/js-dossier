@@ -27,7 +27,8 @@ header {
   left: 0;
   right: 0;
   height: @header_height;
-  .raise-2dp();
+  box-shadow: 0 0 4px rgba(0, 0, 0, .14),
+              0 4px 8px rgba(0, 0, 0, .28);
   background: @banner_color;
 
   @input_height: 36px;
@@ -133,16 +134,14 @@ header {
 
 .ac-renderer {
   background: #fff;
-
-  box-shadow: 0 0 2px rgba(0, 0, 0, .12),
-              0 2px 4px rgba(0, 0, 0, .24);
+  .raise-4dp();
 
   width: ~"calc(100% - " (2 * @menu_icon_width) ~")";
   min-width: 300px;
   max-width: @max_search_width + @search_icon_width + 20px;
 
   margin-top: -2px;
-  padding: 18px 0 8px 8px;
+  padding: 18px 8px 8px 8px;
 
   border-radius: 2px;
 }

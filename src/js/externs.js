@@ -23,6 +23,9 @@ var Descriptor = function() {};
 /** @type {string} */
 Descriptor.prototype.name = '';
 
+/** @type {string} */
+Descriptor.prototype.qualifiedName = '';
+
 /** @type {boolean} */
 Descriptor.prototype.namespace = false;
 

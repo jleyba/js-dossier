@@ -75,6 +75,7 @@ final class TypeIndex {
 
     JsonObject obj = new JsonObject();
     obj.addProperty("name", dfs.getDisplayName(module));
+    obj.addProperty("qualifiedName", dfs.getQualifiedDisplayName(module));
     obj.addProperty("href", dest);
 
     getJsonArray(json, "modules").add(obj);
@@ -102,6 +103,7 @@ final class TypeIndex {
 
     JsonObject details = new JsonObject();
     details.addProperty("name", dfs.getDisplayName(type));
+    details.addProperty("qualifiedName", dfs.getQualifiedDisplayName(type));
     details.addProperty("href", dest);
     details.addProperty("namespace", type.isNamespace());
     details.addProperty("interface", type.getType().isInterface());
