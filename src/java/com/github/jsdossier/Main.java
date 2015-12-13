@@ -15,7 +15,10 @@
  */
 package com.github.jsdossier;
 
+import static com.github.jsdossier.jscomp.Types.isTypedef;
+import static com.google.common.base.Predicates.not;
 import static com.google.common.collect.Iterables.concat;
+import static com.google.common.collect.Iterables.filter;
 import static com.google.common.collect.Iterables.transform;
 import static com.google.common.io.Files.getFileExtension;
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -48,6 +51,7 @@ import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Iterables;
 import com.google.common.io.ByteStreams;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -352,7 +356,7 @@ final class Main {
       TypeRegistry typeRegistry = injector.getInstance(TypeRegistry.class);
       List<Path> files = injector.getInstance(RenderTaskExecutor.class)
           .renderIndex()
-          .renderDocumentation(typeRegistry.getAllTypes())
+          .renderDocumentation(filter(typeRegistry.getAllTypes(), not(isTypedef())))
           .renderMarkdown(config.getCustomPages())
           .renderResources(concat(template.getCss(), template.getHeadJs(), template.getTailJs()))
           .renderSourceFiles(concat(config.getSources(), config.getModules()))
