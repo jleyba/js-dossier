@@ -67,3 +67,40 @@ exports.publicMethod = internal;
 function secret() {
 }
 exports.getSecret = secret;
+
+
+/**
+ * A generic worker class.
+ */
+exports.Worker = class {
+  constructor() {
+    /**
+     * The task ID.
+     * @type {number}
+     */
+    this.taskId = 0;
+
+    /**
+     * The task name.
+     * @type {string}
+     * @deprecated Use {@link #taskId} instead.
+     */
+    this.taskName = '';
+  }
+};
+
+
+/**
+ * Works extra hard.
+ */
+exports.HardWorker = class extends exports.Worker {
+  constructor() {
+    super();
+
+    /**
+     * The task ID; never 0.
+     * @override
+     */
+    this.taskId = 1;
+  }
+};

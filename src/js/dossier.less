@@ -35,7 +35,8 @@ h1.title {
 .static-properties,
 .enum-values,
 .types,
-.type-defs {
+.type-defs,
+.constants {
   & > h2 {
     margin-top: 48px;
     opacity: .8;
@@ -51,6 +52,10 @@ article.page {
   padding: 16px;
   background: @main_column_color;
   .raise-2dp();
+}
+
+.parentlink {
+  float: left;
 }
 
 .property {
@@ -78,6 +83,34 @@ article.page {
   }
 }
 
+h1.title,
+h3.name {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap-reverse;
+}
+
+.tags {
+  font-size: 12px;
+
+  h1.title & {
+    margin: 2px 8px -2px 0;
+  }
+
+  span {
+    background: fade(@link_color, 25%);
+    border: 1px solid @link_color;
+    border-radius: 3px;
+    color: @link_color;
+    font-weight: 500;
+    padding: 2px 4px;
+
+    & + span {
+      margin-left: 4px;
+    }
+  }
+}
+
 .intro,
 .property {
   h3.name {
@@ -88,6 +121,9 @@ article.page {
     line-height: 24px;
     padding-left: 16px;
     text-indent: -16px;
+    .tags {
+      margin-left: 24px;
+    }
   }
 }
 
@@ -125,6 +161,9 @@ article {
     white-space: pre;
     border: 1px solid @code_border;
 
+    // For mobile-safari.
+    -webkit-text-size-adjust: 100%;
+
     margin: 10px 0;
     width: 100%;
   }
@@ -153,16 +192,10 @@ article {
     padding-bottom: 1rem;
   }
 
-  :target + a { font-weight: bold; }
+  :target + a { font-weight: 500; }
   tr.hilite {
     background: fade(@link_color, 10%);
   }
-}
-
-@media (max-width: @large_screen_size) {
-  //article {
-  //  padding: 8px;
-  //}
 }
 
 @media (max-width: 839px) {
@@ -175,10 +208,6 @@ article {
   main {
     width: ~"calc(66% - 16px)";
   }
-
-  //article {
-  //  padding: 16px;
-  //}
 }
 
 @media (min-width: 1280px) {

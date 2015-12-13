@@ -177,7 +177,7 @@
   // Note: if type is itself an interface, it will not be included in the
   // |implemented_type| list.
   {if length($type.implementedType)}
-    <dt>
+    <dt class="spec">
       All {if $type.tags.isInterface}extended{else}implemented{/if} interfaces
     {foreach $interface in $type.implementedType}
       <dd><code>
@@ -198,7 +198,7 @@
   {@param type: dossier.JsType}
 
   {if $type.aliasedType}
-    <dt>Alias for{sp}
+    <dt class="spec">Alias for{sp}
       <code>
         {if $type.aliasedType.href}
           <a href="{$type.aliasedType.href}">{$type.aliasedType.text}</a>
@@ -215,14 +215,15 @@
  */
 {template .deprecationNotice private="true"}
   {@param deprecation: dossier.Comment}
+  {@param? inList: bool}
   {if $deprecation and length($deprecation.token)}
-    <dl>
-      <dt>Deprecated
+    {if not $inList}<dl>{/if}
+      <dt class="spec">Deprecated
       <dd>
       {call .comment}
         {param comment: $deprecation /}
       {/call}
-    </dl>
+    {if not $inList}</dl>{/if}
   {/if}
 {/template}
 
@@ -376,7 +377,7 @@
             {/if}
           {/foreach}
         {else}
-          <dd>None.
+          <dd><p>None.</p>
         {/if}
       </dl>
     </div>
@@ -488,38 +489,31 @@
  * Template for rendering type information about what a function overrides
  * or any interfaces it is specified by.
  */
-{template .fnOverrides}
-  {@param fn: dossier.Function}
-  {let $base: $fn.base /}
+{template .overrides}
+  {@param base: dossier.BaseProperty}
 
-  {if $base.definedBy or length($base.specifiedBy) or $base.overrides}
-    <p>
-      {if $base.definedBy}
-        <b>Defined by{sp}</b>
-        {call .comment}
-          {param comment: $base.definedBy /}
-        {/call}
-        {if $base.overrides or length($base.specifiedBy)}<br>{/if}
+  {if $base.definedBy}
+    <dt class="spec">Defined by{sp}
+    {call .comment}
+      {param comment: $base.definedBy /}
+    {/call}
+  {/if}
+  {if $base.overrides}
+    <dt class="spec">Overrides{sp}
+    {call .comment}
+      {param comment: $base.overrides /}
+    {/call}
+  {/if}
+  {if length($base.specifiedBy)}
+    <dt class="spec">Specified by{sp}
+    {foreach $spec in $base.specifiedBy}
+      {call .comment}
+        {param comment: $spec /}
+      {/call}
+      {if not isLast($spec)}
+        ,{sp}
       {/if}
-      {if $base.overrides}
-        <b>Overrides{sp}</b>
-        {call .comment}
-          {param comment: $base.overrides /}
-        {/call}
-        {if length($base.specifiedBy)}<br>{/if}
-      {/if}
-      {if length($base.specifiedBy)}
-        <b>Specified by{sp}</b>
-        {foreach $spec in $base.specifiedBy}
-          {call .comment}
-            {param comment: $spec /}
-          {/call}
-          {if not isLast($spec)}
-            ,{sp}
-          {/if}
-        {/foreach}
-      {/if}
-    </p>
+    {/foreach}
   {/if}
 
 {/template}
@@ -538,24 +532,25 @@
       {/call}
 
       <h3 class="name">
-        {if $fn.templateName and length($fn.templateName)}
-          <code>
-            {call .printTemplateNames}
-              {param names: $fn.templateName /}
-            {/call}
-          </code>
-          {sp}
-        {/if}
-
-        /* TODO: deprecation $fn.base.deprecation */
-        {$fn.base.name}
-        {call .functionArgs}
-          {param fn: $fn /}
+        <div>
+          {if $fn.templateName and length($fn.templateName)}
+            <code>
+              {call .printTemplateNames}
+                {param names: $fn.templateName /}
+              {/call}
+            </code>
+            {sp}
+          {/if}
+          {$fn.base.name}
+          {call .functionArgs}
+            {param fn: $fn /}
+          {/call}
+        </div>
+        {call .tags}
+          {param tags: $fn.base.tags /}
         {/call}
       </h3>
-      {call .tags}
-        {param tags: $fn.base.tags /}
-      {/call}
+
       {if ($fn.base.description and length($fn.base.description.token))
           or $fn.base.overrides
           or length($fn.base.specifiedBy)
@@ -567,12 +562,17 @@
         {call .comment}
           {param comment: $fn.base.description /}
         {/call}
-        {call .fnOverrides}
-          {param fn: $fn /}
-        {/call}
-        {call .deprecationNotice}
-          {param deprecation: $fn.base.deprecation /}
-        {/call}
+        {if $fn.base.overrides or length($fn.base.specifiedBy)}
+          <dl>
+            {call .overrides}
+              {param base: $fn.base /}
+            {/call}
+            {call .deprecationNotice}
+              {param deprecation: $fn.base.deprecation /}
+              {param inList: true /}
+            {/call}
+          </dl>
+        {/if}
         {call .fnDetails}
           {param fn: $fn /}
         {/call}
@@ -598,43 +598,45 @@
       {call .codeLink}
         {param source: $property.base.source /}
       {/call}
-      <h3 class="name">{$property.base.name}</h3>
-      {call .tags}
-        {param tags: $property.base.tags /}
-      {/call}
-      /* todo: deprecation */
-      {if $property.type}
-        <h6 class="detail">
-          Type{sp}
-          <code>
-            {call .comment}
-              {param comment: $property.type /}
+      <h3 class="name">
+        <div>{$property.base.name}</div>
+        {call .tags}
+          {param tags: $property.base.tags /}
+        {/call}
+      </h3>
+      {if ($property.base.description and length($property.base.description.token))
+          or $property.base.overrides
+          or length($property.base.specifiedBy)
+          or $property.type}
+        {call .comment}
+          {param comment: $property.base.description /}
+        {/call}
+        {if $property.base.overrides
+            or length($property.base.specifiedBy)
+            or $property.type}
+          <dl>
+            {call .deprecationNotice}
+              {param deprecation: $property.base.deprecation /}
+              {param inList: true /}
             {/call}
-          </code>
-        </h6>
-      {/if}
-      <div class="detail">
-        {if ($property.base.description and length($property.base.description.token))
-            or $property.base.overrides
-            or length($property.base.specifiedBy)}
-          {call .comment}
-            {param comment: $property.base.description /}
-          {/call}
-  // TODO: overrides
-  //        {call .fnOverrides}
-  //          {param fn: $fn /}
-  //        {/call}
-          {call .deprecationNotice}
-            {param deprecation: $property.base.deprecation /}
-          {/call}
-        {elseif $property.base.deprecation and length($property.base.deprecation.token)}
-          {call .deprecationNotice}
-            {param deprecation: $property.base.deprecation /}
-          {/call}
-        {else}
-          <p>No information.</p>
+            {if $property.type}
+              <dt class="spec">Type{sp}
+              {call .comment}
+                {param comment: $property.type /}
+              {/call}
+            {/if}
+            {call .overrides}
+              {param base: $property.base /}
+            {/call}
+          </dl>
         {/if}
-      </div>
+      {elseif $property.base.deprecation and length($property.base.deprecation.token)}
+        {call .deprecationNotice}
+          {param deprecation: $property.base.deprecation /}
+        {/call}
+      {else}
+        <p>No information.</p>
+      {/if}
     </section>
   {/foreach}
 {/template}
@@ -743,26 +745,28 @@
     </div>
   {/if}
   <h1 class="title{if $type.deprecation}{sp}deprecated{/if}">
-    {if $type.tags.isModule}
-      module {$type.name}
-    {elseif $type.tags.isInterface}
-      interface {$type.name}
-    {elseif $type.mainFunction and $type.mainFunction.isConstructor}
-      class {$type.name}
-    {elseif $type.enumeration}
-      enum {$type.name}
-    {else}
-      namespace {$type.name}
-    {/if}
-    {if $type.mainFunction and length($type.mainFunction.templateName)}
-      {call .printTemplateNames}
-        {param names: $type.mainFunction.templateName /}
-      {/call}
-    {/if}
+    {call .tags}
+      {param tags: $type.tags /}
+    {/call}
+    <div>
+      {if $type.tags.isModule}
+        module {$type.name}
+      {elseif $type.tags.isInterface}
+        interface {$type.name}
+      {elseif $type.mainFunction and $type.mainFunction.isConstructor}
+        class {$type.name}
+      {elseif $type.enumeration}
+        enum {$type.name}
+      {else}
+        namespace {$type.name}
+      {/if}
+      {if $type.mainFunction and length($type.mainFunction.templateName)}
+        {call .printTemplateNames}
+          {param names: $type.mainFunction.templateName /}
+        {/call}
+      {/if}
+    </div>
   </h1>
-  {call .tags}
-    {param tags: $type.tags /}
-  {/call}
 
   {call .classInheritance}
     {param types: $type.extendedType /}
@@ -789,7 +793,7 @@
         {param type: $type /}
       {/call}
       {if $type.deprecation and length($type.deprecation.token)}
-        <dt>Deprecated
+        <dt class="spec">Deprecated
         <dd>
           {call .comment}
             {param comment: $type.deprecation /}

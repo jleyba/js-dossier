@@ -125,6 +125,12 @@
       "namespace": false
     },
     {
+      "href": "Color.html",
+      "interface": false,
+      "name": "Color",
+      "namespace": false
+    },
+    {
       "href": "DeprecatedFoo.html",
       "interface": false,
       "name": "DeprecatedFoo",
@@ -184,6 +190,15 @@
       "namespace": false
     },
     {
+      "href": "closure.module.HardWorker.html",
+      "interface": false,
+      "members": [
+        "taskId"
+      ],
+      "name": "HardWorker",
+      "namespace": false
+    },
+    {
       "href": "closure.module.PubClass.html",
       "interface": false,
       "members": [
@@ -202,6 +217,16 @@
       "href": "UndefinedEnum.html",
       "interface": false,
       "name": "UndefinedEnum",
+      "namespace": false
+    },
+    {
+      "href": "closure.module.Worker.html",
+      "interface": false,
+      "members": [
+        "taskId",
+        "taskName"
+      ],
+      "name": "Worker",
       "namespace": false
     },
     {

@@ -151,15 +151,13 @@ pre, code, .srcfile table {
   font-size: 12px !important;
 }
 
-.tags span,
-code,
 small {
   font-size: .85em;
 }
 
 pre {
   .code-block();
-  margin: 8px 30px;
+  margin: 8px 24px;
   padding: 8px;
   overflow: auto;
 
@@ -167,7 +165,7 @@ pre {
     border: 0;
     background: initial;
     padding: 0;
-    margin: 16px 0;
+    margin: -8px 0 16px 0;
   }
 }
 
@@ -210,26 +208,10 @@ hr {
   }
 }
 
-.tags {
-  margin: 0 0 8px 0;
-  span {
-    background: fade(@link_color, 25%);
-    border: 1px solid @link_color;
-    border-radius: 3px;
-    color: @link_color;
-    font-weight: 500;
-    padding: 2px 4px;
-
-    & + span {
-      margin-left: 2px;
-    }
-  }
-}
-
 dl {
   margin: 0 0 16px 0;
 
-  :target > & {
+  div:target > & {
     .target();
     padding-left: 16px - @target_border_width;
     margin-left: -16px;
@@ -245,6 +227,14 @@ dt {
 
   &.deprecated {
     text-decoration: line-through;
+  }
+
+  &.spec {
+    font-weight: 400;
+    a {
+      font-weight: 300;
+      margin-left: 16px;
+    }
   }
 
   & > code {
@@ -305,7 +295,10 @@ b {
   font-weight: 500;
 }
 
-.parentlink { float: left; }
+.parentlink {
+  float: left;
+  b { font-weight: 400; }
+}
 
 .codelink {
   a {

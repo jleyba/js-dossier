@@ -356,3 +356,15 @@ class Formatter {
   format() {
   }
 }
+
+
+/**
+ * Color names.
+ * @enum {string}
+ * @deprecated
+ */
+const Color = {
+  RED: 'red',
+  GREEN: 'green',
+  BLUE: 'blue'
+};
