@@ -114,6 +114,7 @@ body {
   font-size: 14px;
   font-weight: 300;
   line-height: 1.4;
+  -webkit-font-smoothing: subpixel-antialiased;
 }
 
 h1, h2, h3, h4, h5, h6 { line-height: 1.1; }
@@ -155,7 +156,7 @@ small {
 
 pre {
   .code-block();
-  margin: 8px 24px;
+  margin: 8px 24px 16px 24px;
   padding: 8px;
   overflow: auto;
 
@@ -289,7 +290,8 @@ th, td {
   border: 1px solid #ddd;
 }
 
-b {
+b,
+strong {
   font-weight: 500;
 }
 
