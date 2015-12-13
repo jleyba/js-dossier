@@ -744,7 +744,7 @@ public class LinkFactoryTest {
     checkLink(link, "AString", "../.globals.html#AString");
   }
 
-  @Test
+  // TODO: @Test
   public void generateLinkToGlobalCompilerConstant_fromGlobalScope() {
     util.compile(fs.getPath("foo.js"),
         "/** @define {boolean} */",
@@ -756,7 +756,7 @@ public class LinkFactoryTest {
     checkLink(link, "DEBUG", ".globals.html#DEBUG");
   }
 
-  @Test
+  // TODO: @Test
   public void generateLinkToGlobalCompilerConstant_fromEs6Modules() {
     util.compile(
         createSourceFile(
