@@ -14,6 +14,8 @@
  limitations under the License.
  */
 
+'use strict';
+
 goog.provide('dossier.nav.test');
 goog.setTestOnly('dossier.nav.test');
 
@@ -226,32 +228,32 @@ function testBuildList() {
   document.body.appendChild(root);
   goog.testing.dom.assertHtmlContentsMatch(
       [
-        '<li><a href="class_GlobalCtor.html">GlobalCtor</a></li>',
-        '<li><a href="class_GlobalCtor_Other.html">GlobalCtor.Other</a></li>',
+        '<li><a class="item" tabindex="2" href="class_GlobalCtor.html">GlobalCtor</a></li>',
+        '<li><a class="item" tabindex="2" href="class_GlobalCtor_Other.html">GlobalCtor.Other</a></li>',
         '<li>',
-        '<input type="checkbox" id=".nav:closure.module">',
-        '<label for=".nav:closure.module">',
-        '<a href="namespace_closure_module.html">closure.module</a>',
-        '</label>',
-        '<ul class="nav-tree">',
-        '<li><a href="class_closure_module_Clazz.html">Clazz</a></li>',
-        '<li><a href="class_closure_module_PubClass.html">PubClass</a></li>',
+        '<div class="toggle" data-id=".nav:closure.module">',
+        '<a class="item" tabindex="2" href="namespace_closure_module.html">closure.module</a>',
+        '<i class="material-icons">expand_more</i>',
+        '</div>',
+        '<ul class="tree">',
+        '<li><a class="item" tabindex="2" href="class_closure_module_Clazz.html">Clazz</a></li>',
+        '<li><a class="item" tabindex="2" href="class_closure_module_PubClass.html">PubClass</a></li>',
         '</ul>',
         '</li>',
         '<li>',
-        '<input type="checkbox" id=".nav:foo">',
-        '<label for=".nav:foo">',
-        '<a href="namespace_foo.html">foo</a>',
-        '</label>',
-        '<ul class="nav-tree">',
-        '<li><a href="class_foo_One.html">One</a></li>',
+        '<div class="toggle" data-id=".nav:foo">',
+        '<a class="item" tabindex="2" href="namespace_foo.html">foo</a>',
+        '<i class="material-icons">expand_more</i>',
+        '</div>',
+        '<ul class="tree">',
+        '<li><a class="item" tabindex="2" href="class_foo_One.html">One</a></li>',
         '<li>',
-        '<input type="checkbox" id=".nav:foo.quot">',
-        '<label for=".nav:foo.quot">',
-        '<a href="namespace_foo_quot.html">quot</a>',
-        '</label>',
-        '<ul class="nav-tree">',
-        '<li><a href="class_foo_quot_OneBarAlias.html">OneBarAlias</a></li>',
+        '<div class="toggle" data-id=".nav:foo.quot">',
+        '<a class="item" tabindex="2" href="namespace_foo_quot.html">quot</a>',
+        '<i class="material-icons">expand_more</i>',
+        '</div>',
+        '<ul class="tree">',
+        '<li><a class="item" tabindex="2" href="class_foo_quot_OneBarAlias.html">OneBarAlias</a></li>',
         '</ul>',
         '</li>',
         '</ul>',
@@ -278,31 +280,31 @@ function testBuildList_forModules() {
   goog.testing.dom.assertHtmlContentsMatch(
       [
         '<li>',
-        '<input type="checkbox" id=".nav-module:example">',
-        '<label for=".nav-module:example">',
-        '<a href="module_example.html">example</a>',
-        '</label>',
-        '<ul class="nav-tree">',
-        '<li><a href="type_Greeter.html">Greeter</a></li>',
+        '<div class="toggle" data-id=".nav-module:example">',
+        '<a class="item" tabindex="2" href="module_example.html">example</a>',
+        '<i class="material-icons">expand_more</i>',
+        '</div>',
+        '<ul class="tree">',
+        '<li><a class="item" tabindex="2" href="type_Greeter.html">Greeter</a></li>',
         '<li>',
-        '<input type="checkbox" id=".nav-module:example.foo">',
-        '<label for=".nav-module:example.foo">',
-        '<a href="type_foo.html">foo</a>',
-        '</label>',
-        '<ul class="nav-tree">',
-        '<li><a href="type_foo.bar.html">bar</a></li>',
+        '<div class="toggle" data-id=".nav-module:example.foo">',
+        '<a class="item" tabindex="2" href="type_foo.html">foo</a>',
+        '<i class="material-icons">expand_more</i>',
+        '</div>',
+        '<ul class="tree">',
+        '<li><a class="item" tabindex="2" href="type_foo.bar.html">bar</a></li>',
         '</ul>',
         '</li>',
         '</ul>',
         '</li>',
         '<li>',
-        '<input type="checkbox" id=".nav-module:example/nested">',
-        '<label for=".nav-module:example/nested">',
-        '<a href="module_example_nested.html">example/nested</a>',
-        '</label>',
-        '<ul class="nav-tree">',
-        '<li><a href="type_IdGenerator.html">IdGenerator</a></li>',
-        '<li><a href="type_IdGenerator.Impl.html">IdGenerator.Impl</a></li>',
+        '<div class="toggle" data-id=".nav-module:example/nested">',
+        '<a class="item" tabindex="2" href="module_example_nested.html">example/nested</a>',
+        '<i class="material-icons">expand_more</i>',
+        '</div>',
+        '<ul class="tree">',
+        '<li><a class="item" tabindex="2" href="type_IdGenerator.html">IdGenerator</a></li>',
+        '<li><a class="item" tabindex="2" href="type_IdGenerator.Impl.html">IdGenerator.Impl</a></li>',
         '</ul>',
         '</li>'
       ].join(''),
@@ -338,53 +340,7 @@ function testBuildList_marksTheNodeForTheCurrentFile_namespace() {
 
   var root = nav.buildList(input, '../..', 'class_GlobalCtor.html');
   var el = root.querySelector('.current');
-  assertEquals('LABEL', el.tagName);
-  assertEquals('.nav:foo', el.getAttribute('for'));
-}
-
-
-function testBuildList_handlesDatalessNodes() {
-  var input = [
-    {name: 'foo.bar.one', href: 'one.html'},
-    {name: 'foo.bar.two', href: 'two.html'},
-    {name: 'foo.baz.quot', href: 'quot.html'},
-    {name: 'foo.baz.quux', href: 'quux.html'}
-  ];
-
-  var root = nav.buildList(input, '', '', false);
-  document.body.appendChild(root);
-
-  assertNotNull(root.querySelector('input#\\.nav\\:foo'));
-  var label = root.querySelector('label[for=".nav:foo"]');
-  assertNotNull(label);
-  assertEquals('foo', label.querySelector('a').textContent);
-  assertNull(label.querySelector('a').getAttribute('href'));
-
-  assertNotNull(root.querySelector('input#\\.nav\\:foo\\.bar'));
-  label = root.querySelector('label[for=".nav:foo\\.bar"]');
-  assertNotNull(label);
-  assertEquals('bar', label.querySelector('a').textContent);
-  assertNull(label.querySelector('a').getAttribute('href'));
-
-  var leaves = root.querySelectorAll(
-      'label[for=".nav:foo\\.bar"] + .nav-tree a[href]');
-  assertEquals(2, leaves.length);
-  assertEquals('one', leaves[0].textContent);
-  assertEquals('one.html', leaves[0].getAttribute('href'));
-  assertEquals('two', leaves[1].textContent);
-  assertEquals('two.html', leaves[1].getAttribute('href'));
-
-  assertNotNull(root.querySelector('input#\\.nav\\:foo\\.baz'));
-  label = root.querySelector('label[for=".nav:foo\\.baz"]');
-  assertNotNull(label);
-  assertEquals('baz', label.querySelector('a').textContent);
-  assertNull(label.querySelector('a').getAttribute('href'));
-
-  leaves = root.querySelectorAll(
-      'label[for=".nav:foo\\.baz"] + .nav-tree a[href]');
-  assertEquals(2, leaves.length);
-  assertEquals('quot', leaves[0].textContent);
-  assertEquals('quot.html', leaves[0].getAttribute('href'));
-  assertEquals('quux', leaves[1].textContent);
-  assertEquals('quux.html', leaves[1].getAttribute('href'));
+  assertEquals('A', el.tagName);
+  assertEquals('DIV', el.parentNode.tagName);
+  assertEquals('.nav:foo', el.parentNode.dataset.id);
 }
