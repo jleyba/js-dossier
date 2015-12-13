@@ -42,6 +42,7 @@ import com.google.javascript.rhino.jstype.JSType;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.nio.file.FileSystem;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -235,6 +236,12 @@ class NodeModulePass {
 
       if (modulePath.startsWith(".") || modulePath.startsWith("/")) {
         Path moduleFile = currentFile.getParent().resolve(modulePath).normalize();
+        if (modulePath.endsWith("/")
+            || Files.isDirectory(moduleFile)
+            && !modulePath.endsWith(".js")
+            && !Files.exists(moduleFile.resolveSibling(moduleFile.getFileName() + ".js"))) {
+          moduleFile = moduleFile.resolve("index.js");
+        }
         moduleName = getModuleId(moduleFile);
       } else {
         // TODO: allow users to provide extern module definitions.

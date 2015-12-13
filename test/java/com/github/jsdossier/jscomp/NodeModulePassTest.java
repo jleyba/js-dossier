@@ -1,12 +1,12 @@
 /*
  Copyright 2013-2015 Jason Leyba
- 
+
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
  You may obtain a copy of the License at
- 
+
    http://www.apache.org/licenses/LICENSE-2.0
- 
+
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,6 +19,8 @@ package com.github.jsdossier.jscomp;
 import static com.github.jsdossier.testing.CompilerUtil.createSourceFile;
 import static com.google.common.collect.Iterables.getOnlyElement;
 import static com.google.common.truth.Truth.assertThat;
+import static java.nio.file.Files.createDirectories;
+import static java.nio.file.Files.createFile;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -42,7 +44,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import java.io.IOException;
 import java.nio.file.FileSystem;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
 import javax.inject.Inject;
@@ -52,9 +56,9 @@ import javax.inject.Inject;
  */
 @RunWith(JUnit4.class)
 public class NodeModulePassTest {
-  
+
   private static final FileSystem FS = Jimfs.newFileSystem();
-  
+
   @Inject
   TypeRegistry typeRegistry;
 
@@ -245,6 +249,53 @@ public class NodeModulePassTest {
         compiler.toSource().trim());
     assertIsNodeModule("module$foo$leaf", "foo/leaf.js");
     assertIsNodeModule("module$foo$root", "foo/root.js");
+  }
+
+  @Test
+  public void rewritesRequireStatementForDirectoryIndex1() {
+    CompilerUtil compiler = createCompiler(path("foo/bar/index.js"), path("foo/main.js"));
+
+    compiler.compile(
+        createSourceFile(path("foo/bar/index.js"), "exports.a = 123;"),
+        createSourceFile(path("foo/main.js"),
+            "var bar = require('./bar');",
+            "exports.b = bar.a * 2;"));
+
+    assertEquals(
+        lines(
+            "var module$foo$bar$index = {};",
+            "module$foo$bar$index.a = 123;",
+            "var module$foo$main = {};",
+            "module$foo$main.b = module$foo$bar$index.a * 2;"),
+        compiler.toSource().trim());
+  }
+
+  @Test
+  public void rewritesRequireStatementForDirectoryIndex2() throws IOException {
+    createDirectories(path("foo"));
+    createFile(path("foo/bar.js"));
+    CompilerUtil compiler = createCompiler(
+        path("foo/bar/index.js"),
+        path("foo/bar.js"),
+        path("foo/main.js"));
+
+    compiler.compile(
+        createSourceFile(path("foo/bar/index.js"), "exports.a = 123;"),
+        createSourceFile(path("foo/bar.js"), "exports.b = 456;"),
+        createSourceFile(path("foo/main.js"),
+            "var bar1 = require('./bar');",
+            "var bar2 = require('./bar/');",
+            "exports.c = bar1.a * bar2.b;"));
+
+    assertEquals(
+        lines(
+            "var module$foo$bar$index = {};",
+            "module$foo$bar$index.a = 123;",
+            "var module$foo$bar = {};",
+            "module$foo$bar.b = 456;",
+            "var module$foo$main = {};",
+            "module$foo$main.c = module$foo$bar.a * module$foo$bar$index.b;"),
+        compiler.toSource().trim());
   }
 
   @Test
@@ -933,7 +984,7 @@ public class NodeModulePassTest {
         util.toSource().trim()
     );
   }
-  
+
   private void assertIsNodeModule(String id, String path) {
     Module module = typeRegistry.getModule(id);
     assertThat(module.getPath().toString()).isEqualTo(path);
@@ -941,6 +992,16 @@ public class NodeModulePassTest {
   }
 
   private CompilerUtil createCompiler(final Path... modules) {
+    for (Path module : modules) {
+      Path parent = module.getParent();
+      if (parent != null) {
+        try {
+          Files.createDirectories(parent);
+        } catch (IOException e) {
+          throw new RuntimeException(e);
+        }
+      }
+    }
     Injector injector = GuiceRule.builder(new Object())
         .setInputFs(FS)
         .setModules(ImmutableSet.copyOf(modules))

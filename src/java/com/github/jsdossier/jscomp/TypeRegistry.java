@@ -1,12 +1,12 @@
 /*
  Copyright 2013-2015 Jason Leyba
- 
+
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
  You may obtain a copy of the License at
- 
+
    http://www.apache.org/licenses/LICENSE-2.0
- 
+
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -47,6 +47,7 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nullable;
@@ -57,6 +58,8 @@ import javax.inject.Singleton;
  */
 @Singleton
 public final class TypeRegistry {
+
+  private static final Logger log = Logger.getLogger(TypeRegistry.class.getName());
 
   private final Set<String> providedSymbols = new HashSet<>();
   private final Set<String> implicitNamespaces = new HashSet<>();
@@ -76,7 +79,7 @@ public final class TypeRegistry {
 
   private final SetMultimap<NominalType, NominalType> nestedTypes =
       MultimapBuilder.hashKeys().hashSetValues().build();
-  
+
   /**
    * Records a region of a file that defines variable aliases.
    */
@@ -144,7 +147,7 @@ public final class TypeRegistry {
 
   /**
    * Returns the module with the given ID.
-   * 
+   *
    * @throws IllegalArgumentException if there is no such module.
    */
   public Module getModule(String id) {
@@ -185,7 +188,7 @@ public final class TypeRegistry {
   Set<String> getProvidedSymbols() {
     return Collections.unmodifiableSet(providedSymbols);
   }
-  
+
   @VisibleForTesting
   Set<String> getImplicitNamespaces() {
     return Collections.unmodifiableSet(implicitNamespaces);
@@ -234,7 +237,7 @@ public final class TypeRegistry {
 
   /**
    * Returns the nominal type with the given name.
-   * 
+   *
    * @throws IllegalArgumentException if there is no such type.
    */
   public NominalType getType(String name) {
@@ -311,7 +314,7 @@ public final class TypeRegistry {
   public Set<NominalType> getNestedTypes(NominalType type) {
     return Collections.unmodifiableSet(nestedTypes.get(type));
   }
-  
+
   public List<JSType> getTypeHierarchy(JSType type, JSTypeRegistry jsRegistry) {
     List<JSType> stack = new ArrayList<>();
     for (; type != null; type = getBaseType(type, jsRegistry)) {
@@ -340,7 +343,8 @@ public final class TypeRegistry {
       if (typesByName.containsKey(name)) {
         return typesByName.get(name).getType();
       }
-      throw new AssertionError("Need to resolve " + name);
+      log.fine("Failed to resolve named type: " + name);
+      return null;
     }
     return type;
   }
@@ -407,7 +411,7 @@ public final class TypeRegistry {
     }
     return builder.build();
   }
-  
+
   private Set<JSType> getExtendedInterfaces(JSDocInfo jsdoc, JSTypeRegistry jsRegistry) {
     Set<JSType> interfaces = new HashSet<>();
     for (JSTypeExpression expr : jsdoc.getExtendedInterfaces()) {
