@@ -77,7 +77,16 @@ dossier.BASE_PATH_ = (function() {
     }
     return false;
   });
-  return dirPath;
+
+  let trimN = dirPath.split(/\.\.\//).length;
+  let currentPath = window.location.pathname.split(/\//);
+  currentPath.splice(currentPath.length - trimN, trimN);
+
+  let basePath = currentPath.join('/');
+  if (!basePath.endsWith('/')) {
+    basePath += '/';
+  }
+  return basePath;
 })();
 
 
@@ -256,7 +265,7 @@ dossier.addTypes_ = function(terms, nameToHref, descriptor) {
  * @private
  */
 dossier.initNavList_ = function(typeInfo) {
-  const currentFile = window.location.pathname.slice(1);
+  const currentFile = window.location.pathname.slice(dossier.BASE_PATH_.length);
 
   const nav = goog.module.get('dossier.nav');
 
