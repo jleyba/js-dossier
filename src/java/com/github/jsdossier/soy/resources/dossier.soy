@@ -462,10 +462,12 @@
                           and length($fn.return.description.token)) /}
   {if $fn.isConstructor}
     <h3 class="name">
-      new {$fn.base.name}
-      {call .functionArgs}
-        {param fn: $fn /}
-      {/call}
+      <div>
+        new {$fn.base.name}
+        {call .functionArgs}
+          {param fn: $fn /}
+        {/call}
+      </div>
     </h3>
     {call .fnDetails}
       {param fn: $fn /}
