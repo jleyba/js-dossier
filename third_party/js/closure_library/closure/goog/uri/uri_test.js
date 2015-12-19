@@ -914,7 +914,7 @@ function testQueryDataAddWithArray() {
 }
 
 function testFragmentEncoding() {
-  var allowedInFragment = /[A-Za-z0-9\-\._~!$&'()*+,;=:@/?]/g;
+  var allowedInFragment = /[A-Za-z0-9\-._~!$&'()*+,;=:@/?]/g;
 
   var sb = [];
   for (var i = 33; i < 500; i++) {  // arbitrarily use first 500 chars.
@@ -942,7 +942,9 @@ function testStrictDoubleEncodingRemoval() {
   var url = goog.Uri.parse('dummy/a%25invalid');
   assertEquals('dummy/a%25invalid', url.toString());
   url = goog.Uri.parse('dummy/a%252fdouble-encoded-slash');
-  assertEquals('dummy/a%2fdouble-encoded-slash', url.toString());
+  assertEquals('dummy/a%252fdouble-encoded-slash', url.toString());
+  url = goog.Uri.parse('https://example.com/a%25%2f%25bcd%25%25');
+  assertEquals('https://example.com/a%25%2f%25bcd%25%25', url.toString());
 }
 
 
@@ -1085,6 +1087,13 @@ function testRestrictedCharactersArePreserved() {
   assertEquals('/path%2f-with-embedded-slash/', uri.getPath());
   assertEquals('http://host.example.%2f.com/path%2f-with-embedded-slash/',
       uri.toString());
+}
+
+
+function testFileUriWithNoDomainToString() {
+  // Regression test for https://github.com/google/closure-library/issues/104.
+  var uri = new goog.Uri('file:///a/b');
+  assertEquals('file:///a/b', uri.toString());
 }
 
 function assertDotRemovedEquals(expected, path) {

@@ -1,12 +1,12 @@
 /*
  Copyright 2013-2015 Jason Leyba
- 
+
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
  You may obtain a copy of the License at
- 
+
    http://www.apache.org/licenses/LICENSE-2.0
- 
+
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,6 +23,7 @@ import com.github.jsdossier.annotations.Input;
 import com.github.jsdossier.jscomp.NominalType;
 import com.github.jsdossier.jscomp.TypeRegistry;
 import com.github.jsdossier.proto.Comment;
+import com.github.jsdossier.testing.Bug;
 import com.github.jsdossier.testing.CompilerUtil;
 import com.github.jsdossier.testing.GuiceRule;
 import com.google.common.collect.Iterables;
@@ -55,9 +56,9 @@ public class CommentParserTest {
   @Inject
   TypeRegistry typeRegistry;
   @Inject LinkFactoryBuilder linkFactoryBuilder;
-  
+
   private LinkFactory linkFactory;
-  
+
   @Before
   public void createDefaultLinkFactory() {
     linkFactory = linkFactoryBuilder.create(null);
@@ -303,7 +304,7 @@ public class CommentParserTest {
             "</tbody>\n" +
             "</table>\n");
   }
-  
+
   @Test
   public void parseCommentInContextOfASpecificType() {
     util.compile(fs.getPath("one.js"),
@@ -323,6 +324,25 @@ public class CommentParserTest {
     assertEquals(1, comment.getTokenCount());
     assertHtmlText(comment.getToken(0),
         "<p>A <a href=\"a.b.c.d.IFace.html\"><code>abcd.IFace</code></a> implementation.</p>");
+  }
+
+  @Test
+  @Bug(48)
+  public void parseCommentWithMarkdownList() {
+    util.compile(fs.getPath("one.js"),
+        "/**",
+        " * * One",
+        " * * Two",
+        " *",
+        " * @constructor",
+        " */",
+        "var One = function() {};");
+    NominalType type = typeRegistry.getType("One");
+    Comment comment = parser.parseComment(
+        type.getJsDoc().getBlockComment(),
+        linkFactory.withTypeContext(type));
+    assertEquals(1, comment.getTokenCount());
+    assertHtmlText(comment.getToken(0), "<ul>\n<li>One</li>\n<li>Two</li>\n</ul>");
   }
 
   private static void assertHtmlText(Comment.Token token, String text) {

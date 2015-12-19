@@ -17,7 +17,6 @@ goog.provide('goog.async.run');
 goog.require('goog.async.WorkQueue');
 goog.require('goog.async.nextTick');
 goog.require('goog.async.throwException');
-goog.require('goog.testing.watchers');
 
 
 /**
@@ -51,7 +50,7 @@ goog.async.run.initializeRunner_ = function() {
   // on a fulfilled promise, which is specified to be async, but as fast as
   // possible.
   if (goog.global.Promise && goog.global.Promise.resolve) {
-    var promise = goog.global.Promise.resolve();
+    var promise = goog.global.Promise.resolve(undefined);
     goog.async.run.schedule_ = function() {
       promise.then(goog.async.run.processWorkQueue);
     };
@@ -69,10 +68,19 @@ goog.async.run.initializeRunner_ = function() {
  * This should only be done in unit tests. It's useful because MockClock
  * replaces nextTick, but not the browser Promise implementation, so it allows
  * Promise-based code to be tested with MockClock.
+ *
+ * However, we also want to run promises if the MockClock is no longer in
+ * control so we schedule a backup "setTimeout" to the unmocked timeout if
+ * provided.
+ *
+ * @param {function(function())=} opt_realSetTimeout
  */
-goog.async.run.forceNextTick = function() {
+goog.async.run.forceNextTick = function(opt_realSetTimeout) {
   goog.async.run.schedule_ = function() {
     goog.async.nextTick(goog.async.run.processWorkQueue);
+    if (opt_realSetTimeout) {
+      opt_realSetTimeout(goog.async.run.processWorkQueue);
+    }
   };
 };
 
@@ -94,17 +102,12 @@ goog.async.run.workQueue_ = new goog.async.WorkQueue();
 
 if (goog.DEBUG) {
   /**
-   * Reset the work queue.
-   * @private
+   * Reset the work queue. Only available for tests in debug mode.
    */
-  goog.async.run.resetQueue_ = function() {
+  goog.async.run.resetQueue = function() {
     goog.async.run.workQueueScheduled_ = false;
     goog.async.run.workQueue_ = new goog.async.WorkQueue();
   };
-
-  // If there is a clock implemenation in use for testing
-  // and it is reset, reset the queue.
-  goog.testing.watchers.watchClockReset(goog.async.run.resetQueue_);
 }
 
 

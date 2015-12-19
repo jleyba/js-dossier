@@ -28,10 +28,12 @@ import com.google.javascript.rhino.JSDocInfo.Marker;
 import com.google.javascript.rhino.JSDocInfoBuilder;
 import com.google.javascript.rhino.JSTypeExpression;
 
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Nullable;
 
@@ -243,6 +245,22 @@ public class JsDoc {
           info.getDescriptionForParameter(name)));
     }
 
+    Set<JSTypeExpression> missingThrowsDescriptions = new HashSet<>();
+    for (JSTypeExpression thrown : info.getThrownTypes()) {
+      // NB: this is interesting. The thrown types to descriptions is a LinkedHashMap, from
+      // which we cannot reliably extract a JSTypeExpression (the hash must not be stable?)
+      // Try to lookup the description this way. If it cannot be found, we'll scan the JSDoc
+      // annotations below, and finally resort to just documenting the type. We check for a
+      // description here first for the documentation of transpiled classes (the thrown
+      // descriptions are recorded for ES6 constructors, but the original marker is discarded).
+      String description = info.getThrowsDescriptionForType(thrown);
+      if (isNullOrEmpty(description)) {
+        missingThrowsDescriptions.add(thrown);
+      } else {
+        throwsClauses.add(new TypedDescription(thrown, description));
+      }
+    }
+
     for (JSDocInfo.Marker marker : info.getMarkers()) {
       Optional<Annotation> annotation = Annotation.forMarker(marker);
       if (!annotation.isPresent()) {
@@ -258,10 +276,19 @@ public class JsDoc {
         case SEE:
           seeClauses.add(description);
           break;
-        case THROWS:
-          throwsClauses.add(new TypedDescription(getJsTypeExpression(marker), description));
+        case THROWS: {
+          JSTypeExpression markerType = getJsTypeExpression(marker);
+          if (missingThrowsDescriptions.contains(markerType)) {
+            missingThrowsDescriptions.remove(markerType);
+            throwsClauses.add(new TypedDescription(markerType, description));
+          }
           break;
+        }
       }
+    }
+
+    for (JSTypeExpression thrown : missingThrowsDescriptions) {
+      throwsClauses.add(new TypedDescription(thrown, null));
     }
 
     if (isNullOrEmpty(blockComment)) {

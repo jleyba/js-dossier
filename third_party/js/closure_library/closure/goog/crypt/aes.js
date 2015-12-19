@@ -84,6 +84,13 @@ goog.crypt.Aes = function(key) {
    */
   this.temp_ = [[], [], [], []];
 
+  /**
+   * The key schedule.
+   * @type {!Array<!Array<number>>}
+   * @private
+   */
+  this.keySchedule_;
+
   this.keyExpansion_();
 };
 
@@ -299,7 +306,8 @@ goog.crypt.Aes.prototype.testKeySchedule_ = goog.nullFunction;
 
 /**
  * Helper to copy input into the AES state matrix.
- * @param {!Array<number>} input Byte array to copy into the state matrix.
+ * @param {!Array<number>|!Uint8Array} input Byte array to copy into the state
+ *     matrix.
  * @private
  */
 goog.crypt.Aes.prototype.copyInput_ = function(input) {
@@ -552,14 +560,6 @@ goog.crypt.Aes.prototype.rotWord_ = function(w) {
 
   return w;
 };
-
-
-/**
- * The key schedule.
- * @type {!Array<!Array<number>>}
- * @private
- */
-goog.crypt.Aes.prototype.keySchedule_;
 
 
 /**

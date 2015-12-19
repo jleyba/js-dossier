@@ -243,7 +243,7 @@ goog.date.getWeekNumber = function(year, month, date, opt_weekDay,
   var d = new Date(year, month, date);
 
   // Default to Thursday for cut off as per ISO 8601.
-  var cutoff = opt_weekDay || goog.date.weekDay.THU;
+  var cutoff = goog.isDef(opt_weekDay) ? opt_weekDay : goog.date.weekDay.THU;
 
   // Default to Monday for first day of the week as per ISO 8601.
   var firstday = opt_firstDayOfWeek || goog.date.weekDay.MON;
@@ -433,7 +433,7 @@ goog.date.setIso8601TimeOnly_ = function(d, formatted) {
   var offset = 0; // local time if no timezone info
   if (parts) {
     if (parts[0] != 'Z') {
-      offset = parts[2] * 60 + Number(parts[3]);
+      offset = Number(parts[2]) * 60 + Number(parts[3]);
       offset *= parts[1] == '-' ? 1 : -1;
     }
     offset -= d.getTimezoneOffset();
@@ -449,7 +449,7 @@ goog.date.setIso8601TimeOnly_ = function(d, formatted) {
   d.setHours(Number(parts[1]));
   d.setMinutes(Number(parts[2]) || 0);
   d.setSeconds(Number(parts[3]) || 0);
-  d.setMilliseconds(parts[4] ? parts[4] * 1000 : 0);
+  d.setMilliseconds(parts[4] ? Number(parts[4]) * 1000 : 0);
 
   if (offset != 0) {
     // adjust the date and time according to the specified timezone
@@ -477,6 +477,7 @@ goog.date.setIso8601TimeOnly_ = function(d, formatted) {
  * @param {number=} opt_minutes Minutes.
  * @param {number=} opt_seconds Seconds.
  * @constructor
+ * @struct
  * @final
  */
 goog.date.Interval = function(opt_years, opt_months, opt_days, opt_hours,
@@ -748,6 +749,7 @@ goog.date.Interval.prototype.add = function(interval) {
  * @param {number=} opt_month Month, 0 = Jan, 11 = Dec.
  * @param {number=} opt_date Date of month, 1 - 31.
  * @constructor
+ * @struct
  * @see goog.date.DateTime
  */
 goog.date.Date = function(opt_year, opt_month, opt_date) {
@@ -763,10 +765,15 @@ goog.date.Date = function(opt_year, opt_month, opt_date) {
     this.maybeFixDst_(opt_year.getDate());
   } else {
     this.date = new Date(goog.now());
+    var expectedDate = this.date.getDate();
     this.date.setHours(0);
     this.date.setMinutes(0);
     this.date.setSeconds(0);
     this.date.setMilliseconds(0);
+    // In some time zones there is no "0" hour on certain days during DST.
+    // Adjust here, if necessary. See:
+    // https://github.com/google/closure-library/issues/34.
+    this.maybeFixDst_(expectedDate);
   }
 };
 
@@ -834,7 +841,7 @@ goog.date.Date.prototype.getFullYear = function() {
  * Alias for getFullYear.
  *
  * @return {number} The four digit year of date.
- * @see #getFullyear
+ * @see #getFullYear
  */
 goog.date.Date.prototype.getYear = function() {
   return this.getFullYear();
@@ -868,18 +875,18 @@ goog.date.Date.prototype.getTime = function() {
 
 
 /**
- * @return {goog.date.weekDay} The day of week, US style. 0 = Sun, 6 = Sat.
+ * @return {number} The day of week, US style. 0 = Sun, 6 = Sat.
  */
 goog.date.Date.prototype.getDay = function() {
-  return /** @type {goog.date.weekDay} */ (this.date.getDay());
+  return this.date.getDay();
 };
 
 
 /**
- * @return {number} The day of week, ISO style. 0 = Mon, 6 = Sun.
+ * @return {goog.date.weekDay} The day of week, ISO style. 0 = Mon, 6 = Sun.
  */
 goog.date.Date.prototype.getIsoWeekday = function() {
-  return (this.getDay() + 6) % 7;
+  return /** @type {goog.date.weekDay} */ ((this.getDay() + 6) % 7);
 };
 
 
@@ -917,11 +924,11 @@ goog.date.Date.prototype.getUTCDate = function() {
 
 
 /**
- * @return {goog.date.weekDay} The day of week according to universal time,
- *     US style. 0 = Sun, 1 = Mon, 6 = Sat.
+ * @return {number} The day of week according to universal time, US style.
+ *     0 = Sun, 1 = Mon, 6 = Sat.
  */
 goog.date.Date.prototype.getUTCDay = function() {
-  return /** @type {goog.date.weekDay} */ (this.date.getDay());
+  return this.date.getDay();
 };
 
 
@@ -942,11 +949,11 @@ goog.date.Date.prototype.getUTCMinutes = function() {
 
 
 /**
- * @return {number} The day of week according to universal time, ISO style.
- *     0 = Mon, 6 = Sun.
+ * @return {goog.date.weekDay} The day of week according to universal time, ISO
+ *     style. 0 = Mon, 6 = Sun.
  */
 goog.date.Date.prototype.getUTCIsoWeekday = function() {
-  return (this.date.getUTCDay() + 6) % 7;
+  return /** @type {goog.date.weekDay} */ ((this.date.getUTCDay() + 6) % 7);
 };
 
 
@@ -1328,6 +1335,7 @@ goog.date.Date.compare = function(date1, date2) {
  * @param {number=} opt_seconds Seconds, 0 - 61.
  * @param {number=} opt_milliseconds Milliseconds, 0 - 999.
  * @constructor
+ * @struct
  * @extends {goog.date.Date}
  */
 goog.date.DateTime = function(opt_year, opt_month, opt_date, opt_hours,
@@ -1490,7 +1498,7 @@ goog.date.DateTime.prototype.setSeconds = function(seconds) {
 
 
 /**
- * Sets the seconds part of the datetime.
+ * Sets the milliseconds part of the datetime.
  *
  * @param {number} ms Integer between 0 and 999, representing the milliseconds.
  */
@@ -1558,13 +1566,13 @@ goog.date.DateTime.prototype.add = function(interval) {
   goog.date.Date.prototype.add.call(this, interval);
 
   if (interval.hours) {
-    this.setHours(this.date.getHours() + interval.hours);
+    this.setUTCHours(this.date.getUTCHours() + interval.hours);
   }
   if (interval.minutes) {
-    this.setMinutes(this.date.getMinutes() + interval.minutes);
+    this.setUTCMinutes(this.date.getUTCMinutes() + interval.minutes);
   }
   if (interval.seconds) {
-    this.setSeconds(this.date.getSeconds() + interval.seconds);
+    this.setUTCSeconds(this.date.getUTCSeconds() + interval.seconds);
   }
 };
 

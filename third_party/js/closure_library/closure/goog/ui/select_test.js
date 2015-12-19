@@ -105,6 +105,12 @@ function testAriaRoles() {
       goog.a11y.aria.State.SETSIZE));
   assertEquals('0', goog.a11y.aria.getState(contentElement,
       goog.a11y.aria.State.POSINSET));
+  select.setSelectedItem(item1);
+  assertEquals('1', goog.a11y.aria.getState(contentElement,
+      goog.a11y.aria.State.POSINSET));
+  select.setSelectedItem(item2);
+  assertEquals('2', goog.a11y.aria.getState(contentElement,
+      goog.a11y.aria.State.POSINSET));
 }
 
 
@@ -317,7 +323,7 @@ function testDisposeWhenInnerHTMLHasBeenClearedInIE10() {
 
     // In IE10 setting the innerHTML of a node invalidates the parent child
     // relation of all its child nodes (unlike removeNode).
-    sandboxEl.innerHTML = '';
+    goog.dom.removeChildren(sandboxEl);
 
     // goog.ui.Select's disposeInternal trigger's goog.ui.Component's
     // disposeInternal, which triggers goog.ui.MenuButton's exitDocument,

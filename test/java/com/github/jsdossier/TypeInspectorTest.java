@@ -1,12 +1,12 @@
 /*
  Copyright 2013-2015 Jason Leyba
- 
+
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
  You may obtain a copy of the License at
- 
+
    http://www.apache.org/licenses/LICENSE-2.0
- 
+
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,12 +16,17 @@
 
 package com.github.jsdossier;
 
+import static com.github.jsdossier.TypeInspector.fakeNodeForType;
 import static com.github.jsdossier.testing.CompilerUtil.createSourceFile;
 import static com.google.common.truth.Truth.assertThat;
 
 import com.github.jsdossier.TypeInspector.InstanceProperty;
 import com.github.jsdossier.jscomp.NominalType;
+import com.github.jsdossier.proto.BaseProperty;
 import com.github.jsdossier.proto.Comment;
+import com.github.jsdossier.proto.Function;
+import com.github.jsdossier.testing.Bug;
+import com.google.javascript.rhino.Node;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -252,7 +257,7 @@ public class TypeInspectorTest extends AbstractTypeInspectorTest {
     assertInstanceProperty(run).isInstanceMethod(athlete.getType());
     assertInstanceProperty(run).isDefinedOn(athlete.getType());
   }
-  
+
   @Test
   public void getTypeDescription_globalType() {
     compile(
@@ -260,18 +265,18 @@ public class TypeInspectorTest extends AbstractTypeInspectorTest {
         " * This is a comment on a type.",
         " */",
         "class Foo {}");
-    
+
     NominalType type = typeRegistry.getType("Foo");
     TypeInspector inspector = typeInspectorFactory.create(type);
     assertThat(inspector.getTypeDescription())
         .isEqualTo(htmlComment("<p>This is a comment on a type.</p>\n"));
   }
-  
+
   @Test
   public void getTypeDescription_noCommentFound() {
     compile(
         "class Foo {}");
-    
+
     NominalType type = typeRegistry.getType("Foo");
     TypeInspector inspector = typeInspectorFactory.create(type);
     assertThat(inspector.getTypeDescription()).isEqualTo(Comment.getDefaultInstance());
@@ -285,7 +290,7 @@ public class TypeInspectorTest extends AbstractTypeInspectorTest {
         " * This is a comment on a type.",
         " */",
         "foo.bar.Baz = class {}");
-    
+
     NominalType type = typeRegistry.getType("foo.bar.Baz");
     TypeInspector inspector = typeInspectorFactory.create(type);
     assertThat(inspector.getTypeDescription())
@@ -300,7 +305,7 @@ public class TypeInspectorTest extends AbstractTypeInspectorTest {
         " * This is a comment on a type.",
         " */",
         "exports.Baz = class {}");
-    
+
     NominalType type = typeRegistry.getType("foo.bar.Baz");
     TypeInspector inspector = typeInspectorFactory.create(type);
     assertThat(inspector.getTypeDescription())
@@ -314,7 +319,7 @@ public class TypeInspectorTest extends AbstractTypeInspectorTest {
         " * This is a comment on a type.",
         " */",
         "exports.Baz = class {}");
-    
+
     NominalType type = typeRegistry.getType("module$$src$modules$foo$bar.Baz");
     TypeInspector inspector = typeInspectorFactory.create(type);
     assertThat(inspector.getTypeDescription())
@@ -328,7 +333,7 @@ public class TypeInspectorTest extends AbstractTypeInspectorTest {
         " * This is a comment on a type.",
         " */",
         "export class Baz {}");
-    
+
     NominalType type = typeRegistry.getType("module$src$modules$foo$bar.Baz");
     TypeInspector inspector = typeInspectorFactory.create(type);
     assertThat(inspector.getTypeDescription())
@@ -369,7 +374,7 @@ public class TypeInspectorTest extends AbstractTypeInspectorTest {
     assertThat(inspector.getTypeDescription())
         .isEqualTo(htmlComment("<p>This is a comment on a type.</p>\n"));
   }
-  
+
   @Test
   public void getTypeDescription_closureModuleExportsInternalType() {
     compile(
@@ -385,7 +390,7 @@ public class TypeInspectorTest extends AbstractTypeInspectorTest {
     assertThat(inspector.getTypeDescription())
         .isEqualTo(htmlComment("<p>This is a comment on a type.</p>\n"));
   }
-  
+
   @Test
   public void getTypeDescription_nodeModuleExportsInternalType() {
     util.compile(fs.getPath("/src/modules/foo/bar.js"),
@@ -400,7 +405,7 @@ public class TypeInspectorTest extends AbstractTypeInspectorTest {
     assertThat(inspector.getTypeDescription())
         .isEqualTo(htmlComment("<p>This is a comment on a type.</p>\n"));
   }
-  
+
   @Test
   public void getTypeDescription_es6ModuleExportsInternalType() {
     util.compile(fs.getPath("/src/modules/foo/bar.js"),
@@ -418,7 +423,7 @@ public class TypeInspectorTest extends AbstractTypeInspectorTest {
             "<p>This is a comment on a type.\n" +
                 "<a href=\"bar_exports_Baz.html\"><code>InternalClazz</code></a></p>\n"));
   }
-  
+
   @Test
   public void getTypeDescription_aliasOfExportedModuleType() {
     util.compile(
@@ -438,7 +443,7 @@ public class TypeInspectorTest extends AbstractTypeInspectorTest {
     assertThat(inspector.getTypeDescription())
         .isEqualTo(htmlComment("<p>This is a comment on a type.</p>\n"));
   }
-  
+
   @Test
   public void getTypeDescription_emptyDescriptionForGoogProvideNamespaces() {
     compile(
@@ -453,7 +458,7 @@ public class TypeInspectorTest extends AbstractTypeInspectorTest {
     inspector = typeInspectorFactory.create(type);
     assertThat(inspector.getTypeDescription()).isEqualTo(Comment.getDefaultInstance());
   }
-  
+
   @Test
   public void getTypeDescription_emptyDescriptionForImplicitNamespacesFromGoogModule() {
     compile(
@@ -469,7 +474,7 @@ public class TypeInspectorTest extends AbstractTypeInspectorTest {
     inspector = typeInspectorFactory.create(type);
     assertThat(inspector.getTypeDescription()).isEqualTo(htmlComment("<p>Hello, world!</p>\n"));
   }
-  
+
   @Test
   public void getTypeDescription_nodeModule() {
     util.compile(
@@ -484,7 +489,7 @@ public class TypeInspectorTest extends AbstractTypeInspectorTest {
         .isEqualTo(htmlComment(
             "<p>Exports <a href=\"bar_exports_A.html\"><code>A</code></a>.</p>\n"));
   }
-  
+
   @Test
   public void getTypeDescription_es6Module() {
     util.compile(
@@ -539,5 +544,41 @@ public class TypeInspectorTest extends AbstractTypeInspectorTest {
     TypeInspector inspector = typeInspectorFactory.create(type);
     assertThat(inspector.getTypeDescription())
         .isEqualTo(htmlComment("<p>The main function.</p>\n"));
+  }
+
+  @Test
+  @Bug(49)
+  public void canGetInfoForEs6Constructor() {
+    compile(
+        "class Person {",
+        "   /**",
+        "    * @param {string} name The person's name.",
+        "    * @throws {Error} Randomly.",
+        "    */",
+        "   constructor(name) { this.name = name; }",
+        "}");
+
+    NominalType type = typeRegistry.getType("Person");
+    TypeInspector typeInspector = typeInspectorFactory.create(type);
+
+    Node fakeNode = fakeNodeForType(type);
+    Function data = typeInspector.getFunctionData(
+        type.getName(), type.getType(), fakeNode, type, type.getJsDoc());
+
+    assertThat(data).isEqualTo(
+        Function.newBuilder()
+            .setBase(BaseProperty.newBuilder()
+                .setName("Person")
+                .setSource(sourceFile("source/foo.js.src.html", 1))
+                .setDescription(Comment.getDefaultInstance()))
+            .setIsConstructor(true)
+            .addParameter(Function.Detail.newBuilder()
+                .setName("name")
+                .setType(stringTypeComment())
+                .setDescription(htmlComment("<p>The person's name.</p>\n")))
+            .addThrown(Function.Detail.newBuilder()
+                .setType(errorTypeComment())
+                .setDescription(htmlComment("<p>Randomly.</p>\n")))
+            .build());
   }
 }

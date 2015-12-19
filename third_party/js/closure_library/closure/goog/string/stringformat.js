@@ -28,9 +28,9 @@ goog.require('goog.string');
 
 
 /**
- * Performs sprintf-like conversion, ie. puts the values in a template.
+ * Performs sprintf-like conversion, i.e. puts the values in a template.
  * DO NOT use it instead of built-in conversions in simple cases such as
- * 'Cost: %.2f' as it would introduce unneccessary latency oposed to
+ * 'Cost: %.2f' as it would introduce unnecessary latency opposed to
  * 'Cost: ' + cost.toFixed(2).
  * @param {string} formatString Template string containing % specifiers.
  * @param {...string|number} var_args Values formatString is to be filled with.
@@ -98,8 +98,7 @@ goog.string.format = function(formatString, var_args) {
 
 /**
  * Contains various conversion functions (to be filled in later on).
- * @type {Object}
- * @private
+ * @private {!Object}
  */
 goog.string.format.demuxes_ = {};
 
@@ -135,11 +134,11 @@ goog.string.format.demuxes_['s'] = function(value,
 
   // Otherwise we should find out where to put spaces.
   if (flags.indexOf('-', 0) > -1) {
-    replacement =
-        replacement + goog.string.repeat(' ', width - replacement.length);
+    replacement = replacement +
+      goog.string.repeat(' ', Number(width) - replacement.length);
   } else {
-    replacement =
-        goog.string.repeat(' ', width - replacement.length) + replacement;
+    replacement = goog.string.repeat(' ', Number(width) - replacement.length) +
+      replacement;
   }
   return replacement;
 };
@@ -177,7 +176,7 @@ goog.string.format.demuxes_['f'] = function(value,
 
   // Generates sign string that will be attached to the replacement.
   var sign;
-  if (value < 0) {
+  if (Number(value) < 0) {
     sign = '-';
   } else if (flags.indexOf('+') >= 0) {
     sign = '+';
@@ -187,12 +186,12 @@ goog.string.format.demuxes_['f'] = function(value,
     sign = '';
   }
 
-  if (value >= 0) {
+  if (Number(value) >= 0) {
     replacement = sign + replacement;
   }
 
   // If no padding is neccessary we're done.
-  if (isNaN(width) || replacement.length >= width) {
+  if (isNaN(width) || replacement.length >= Number(width)) {
     return replacement;
   }
 
@@ -201,7 +200,7 @@ goog.string.format.demuxes_['f'] = function(value,
       Math.abs(value).toString() :
       Math.abs(value).toFixed(precision);
 
-  var padCount = width - replacement.length - sign.length;
+  var padCount = Number(width) - replacement.length - sign.length;
 
   // Find out which side to pad, and if it's left side, then which character to
   // pad, and set the sign on the left and padding in the middle.

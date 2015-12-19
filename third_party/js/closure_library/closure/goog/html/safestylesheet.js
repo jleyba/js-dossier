@@ -15,7 +15,7 @@
 /**
  * @fileoverview The SafeStyleSheet type and its builders.
  *
- * TODO(user): Link to document stating type contract.
+ * TODO(xtof): Link to document stating type contract.
  */
 
 goog.provide('goog.html.SafeStyleSheet');
@@ -86,7 +86,7 @@ goog.html.SafeStyleSheet = function() {
    * @const
    * @private
    */
-  this.SAFE_SCRIPT_TYPE_MARKER_GOOG_HTML_SECURITY_PRIVATE_ =
+  this.SAFE_STYLE_SHEET_TYPE_MARKER_GOOG_HTML_SECURITY_PRIVATE_ =
       goog.html.SafeStyleSheet.TYPE_MARKER_GOOG_HTML_SECURITY_PRIVATE_;
 };
 
@@ -101,7 +101,7 @@ goog.html.SafeStyleSheet.prototype.implementsGoogStringTypedString = true;
 /**
  * Type marker for the SafeStyleSheet type, used to implement additional
  * run-time type checking.
- * @const
+ * @const {!Object}
  * @private
  */
 goog.html.SafeStyleSheet.TYPE_MARKER_GOOG_HTML_SECURITY_PRIVATE_ = {};
@@ -225,7 +225,8 @@ goog.html.SafeStyleSheet.unwrap = function(safeStyleSheet) {
   // to stand out in code reviews.
   if (safeStyleSheet instanceof goog.html.SafeStyleSheet &&
       safeStyleSheet.constructor === goog.html.SafeStyleSheet &&
-      safeStyleSheet.SAFE_SCRIPT_TYPE_MARKER_GOOG_HTML_SECURITY_PRIVATE_ ===
+      safeStyleSheet
+          .SAFE_STYLE_SHEET_TYPE_MARKER_GOOG_HTML_SECURITY_PRIVATE_ ===
           goog.html.SafeStyleSheet.TYPE_MARKER_GOOG_HTML_SECURITY_PRIVATE_) {
     return safeStyleSheet.privateDoNotAccessOrElseSafeStyleSheetWrappedValue_;
   } else {

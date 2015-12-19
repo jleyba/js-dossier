@@ -96,7 +96,7 @@ goog.ui.SliderBase = function(opt_domHelper, opt_labelFn) {
    * The model for the range of the slider.
    * @type {!goog.ui.RangeModel}
    */
-  this.rangeModel = new goog.ui.RangeModel;
+  this.rangeModel = new goog.ui.RangeModel();
 
   /**
    * A function mapping slider values to text description.
@@ -1118,6 +1118,7 @@ goog.ui.SliderBase.prototype.animatedSetValue = function(v) {
 
   if (this.isAnimating_) {
     this.currentAnimation_.stop(true);
+    this.currentAnimation_.dispose();
   }
   var animations = new goog.fx.AnimationParallelQueue();
   var end;

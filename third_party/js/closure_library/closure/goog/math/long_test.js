@@ -1322,6 +1322,21 @@ var TEST_STRINGS = [
   '9223372036854775807'
 ];
 
+function setUp() {
+  if (Object.seal) {
+    Object.seal(goog.math.Long);
+  }
+}
+
+function testSealingDoesntMakeLazyInitializersUndefined() {
+  assertNotNull(goog.math.Long.getZero());
+  assertNotNull(goog.math.Long.getOne());
+  assertNotNull(goog.math.Long.getNegOne());
+  assertNotNull(goog.math.Long.getMaxValue());
+  assertNotNull(goog.math.Long.getMinValue());
+  assertNotNull(goog.math.Long.getTwoPwr24());
+}
+
 function testToFromBits() {
   for (var i = 0; i < TEST_BITS.length; i += 2) {
     var val = goog.math.Long.fromBits(TEST_BITS[i + 1], TEST_BITS[i]);
@@ -1568,4 +1583,10 @@ function createTestToFromString(i) {
 
 for (var i = 0; i < TEST_BITS.length; i += 2) {
   goog.global['testToFromString' + i] = createTestToFromString(i);
+}
+
+// Regression test for
+// https://github.com/google/closure-library/pull/498
+function testBase36ToString() {
+  assertEquals('zzzzzz', goog.math.Long.fromString('zzzzzz', 36).toString(36));
 }

@@ -37,7 +37,7 @@ goog.editor.BrowserFeature = {
   // Whether this browser uses the W3C standard Range object.
   // Assumes IE higher versions will be compliance with W3C standard.
   HAS_W3C_RANGES: goog.userAgent.GECKO || goog.userAgent.WEBKIT ||
-      goog.userAgent.OPERA ||
+      goog.userAgent.OPERA || goog.userAgent.EDGE ||
       (goog.userAgent.IE && goog.userAgent.isDocumentModeOrHigher(9)),
 
   // Has the contentEditable attribute, which makes nodes editable.
@@ -55,7 +55,7 @@ goog.editor.BrowserFeature = {
   // If we ever hope to support FF3/contentEditable, all 3 of these issues
   // will need answers. Most just involve refactoring at our end.
   HAS_CONTENT_EDITABLE: goog.userAgent.IE || goog.userAgent.WEBKIT ||
-      goog.userAgent.OPERA ||
+      goog.userAgent.OPERA || goog.userAgent.EDGE ||
       (goog.editor.defines.USE_CONTENTEDITABLE_IN_FIREFOX_3 &&
        goog.userAgent.GECKO && goog.userAgent.isVersionOrHigher('1.9')),
 
@@ -107,6 +107,7 @@ goog.editor.BrowserFeature = {
 
   // Whether hitting the tab key will fire a keypress event.
   // see http://www.quirksmode.org/js/keys.html
+  // TODO(user): This is fixed in IE8 and higher.
   TAB_FIRES_KEYPRESS: !goog.userAgent.IE,
 
   // Has a standards mode quirk where width=100% doesn't do the right thing,
@@ -155,7 +156,7 @@ goog.editor.BrowserFeature = {
 
   // Whether this browser has document.activeElement available.
   HAS_ACTIVE_ELEMENT:
-      goog.userAgent.IE || goog.userAgent.OPERA ||
+      goog.userAgent.IE || goog.userAgent.EDGE || goog.userAgent.OPERA ||
       goog.userAgent.GECKO && goog.userAgent.isVersionOrHigher('1.9'),
 
   // Whether this browser supports the setCapture method on DOM elements.
@@ -200,7 +201,7 @@ goog.editor.BrowserFeature = {
 
   // Whether to use keydown for key listening (uses keypress otherwise). Taken
   // from goog.events.KeyHandler.
-  USES_KEYDOWN: goog.userAgent.IE ||
+  USES_KEYDOWN: goog.userAgent.IE || goog.userAgent.EDGE ||
       goog.userAgent.WEBKIT && goog.userAgent.isVersionOrHigher('525'),
 
   // Whether this browser converts spaces to non-breaking spaces when calling
@@ -219,7 +220,7 @@ goog.editor.BrowserFeature = {
   // removing them from the Document instead of merging them.
   NORMALIZE_CORRUPTS_EMPTY_TEXT_NODES: goog.userAgent.GECKO &&
       goog.userAgent.isVersionOrHigher('1.9') || goog.userAgent.IE ||
-      goog.userAgent.OPERA ||
+      goog.userAgent.EDGE || goog.userAgent.OPERA ||
       goog.userAgent.WEBKIT && goog.userAgent.isVersionOrHigher('531'),
 
   // Whether the browser corrupts all text nodes in Node#normalize,
@@ -229,8 +230,8 @@ goog.editor.BrowserFeature = {
   // Browsers where executing subscript then superscript (or vv) will cause both
   // to be applied in a nested fashion instead of the first being overwritten by
   // the second.
-  NESTS_SUBSCRIPT_SUPERSCRIPT: goog.userAgent.IE || goog.userAgent.GECKO ||
-      goog.userAgent.OPERA,
+  NESTS_SUBSCRIPT_SUPERSCRIPT: goog.userAgent.IE || goog.userAgent.EDGE ||
+      goog.userAgent.GECKO || goog.userAgent.OPERA,
 
   // Whether this browser can place a cursor in an empty element natively.
   CAN_SELECT_EMPTY_ELEMENT: !goog.userAgent.IE && !goog.userAgent.WEBKIT,
@@ -247,7 +248,8 @@ goog.editor.BrowserFeature = {
   // size, the browser creates a font tag, but the font size in the style attr
   // overrides the font tag. Only webkit removes that font size from the style
   // attr.
-  DOESNT_OVERRIDE_FONT_SIZE_IN_STYLE_ATTR: !goog.userAgent.WEBKIT,
+  DOESNT_OVERRIDE_FONT_SIZE_IN_STYLE_ATTR:
+      !goog.userAgent.WEBKIT && !goog.userAgent.EDGE,
 
   // Implements this spec about dragging files from the filesystem to the
   // browser: http://www.whatwg/org/specs/web-apps/current-work/#dnd
@@ -258,7 +260,8 @@ goog.editor.BrowserFeature = {
       (goog.userAgent.GECKO &&
        goog.userAgent.isVersionOrHigher('2.0')) ||
       (goog.userAgent.IE &&
-       goog.userAgent.isVersionOrHigher('10')),
+       goog.userAgent.isVersionOrHigher('10')) ||
+      goog.userAgent.EDGE,
 
   // Version of Opera that supports the opera-defaultBlock execCommand to change
   // the default block inserted when [return] is pressed. Note that this only is

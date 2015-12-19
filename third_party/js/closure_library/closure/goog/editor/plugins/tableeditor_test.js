@@ -23,6 +23,7 @@ goog.require('goog.object');
 goog.require('goog.string');
 goog.require('goog.testing.ExpectedFailures');
 goog.require('goog.testing.JsUnitException');
+goog.require('goog.testing.TestCase');
 goog.require('goog.testing.editor.FieldMock');
 goog.require('goog.testing.editor.TestHelper');
 goog.require('goog.testing.jsunit');
@@ -40,6 +41,9 @@ function setUpPage() {
 }
 
 function setUp() {
+  // TODO(b/25875505): Fix unreported assertions (go/failonunreportedasserts).
+  goog.testing.TestCase.getActiveTestCase().failOnUnreportedAsserts = false;
+
   testHelper = new goog.testing.editor.TestHelper(
       goog.dom.getElement('field'));
   testHelper.setUpEditableElement();
@@ -226,7 +230,7 @@ function testSplitCell() {
   // Splitting is only supported if we set these attributes.
   selectedCell.rowSpan = '1';
   selectedCell.colSpan = '2';
-  selectedCell.innerHTML = 'foo';
+  goog.dom.setTextContent(selectedCell, 'foo');
   goog.dom.Range.createFromNodeContents(selectedCell).select();
   assertEquals('Table should have one cell', 1, getCellCount(table));
   plugin.execCommandInternal(
@@ -245,8 +249,8 @@ function testMergeCells() {
   createTableAndSelectCell({width: 2, height: 1});
   var table = plugin.getCurrentTable_();
   var selectedCell = fieldMock.getRange().getContainerElement();
-  selectedCell.innerHTML = 'foo';
-  selectedCell.nextSibling.innerHTML = 'bar';
+  goog.dom.setTextContent(selectedCell, 'foo');
+  goog.dom.setTextContent(selectedCell.nextSibling, 'bar');
   var range = goog.dom.Range.createFromNodeContents(
       table.getElementsByTagName(goog.dom.TagName.TR)[0]);
   range.select();

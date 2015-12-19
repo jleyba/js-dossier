@@ -20,16 +20,25 @@
  * own XmlHttpRequest object and handles clearing of the event callback to
  * ensure no leaks.
  *
- * XhrIo is event based, it dispatches events when a request finishes, fails or
- * succeeds or when the ready-state changes. The ready-state or timeout event
- * fires first, followed by a generic completed event. Then the abort, error,
- * or success event is fired as appropriate. Lastly, the ready event will fire
- * to indicate that the object may be used to make another request.
+ * XhrIo is event based, it dispatches events on success, failure, finishing,
+ * ready-state change, or progress (download and upload).
+ *
+ * The ready-state or timeout event fires first, followed by
+ * a generic completed event. Then the abort, error, or success event
+ * is fired as appropriate. Progress events are fired as they are
+ * received. Lastly, the ready event will fire to indicate that the
+ * object may be used to make another request.
  *
  * The error event may also be called before completed and
  * ready-state-change if the XmlHttpRequest.open() or .send() methods throw.
  *
  * This class does not support multiple requests, queuing, or prioritization.
+ *
+ * When progress events are supported by the browser, and progress is
+ * enabled via .setProgressEventsEnabled(true), the
+ * goog.net.EventType.PROGRESS event will be the re-dispatched browser
+ * progress event. Additionally, a DOWNLOAD_PROGRESS or UPLOAD_PROGRESS event
+ * will be fired for download and upload progress respectively.
  *
  * Tested = IE6, FF1.5, Safari, Opera 8.5
  *
@@ -43,6 +52,7 @@ goog.provide('goog.net.XhrIo.ResponseType');
 
 goog.require('goog.Timer');
 goog.require('goog.array');
+goog.require('goog.asserts');
 goog.require('goog.debug.entryPointRegistry');
 goog.require('goog.events.EventTarget');
 goog.require('goog.json');
@@ -190,6 +200,27 @@ goog.net.XhrIo = function(opt_xmlHttpFactory) {
    * @private {boolean}
    */
   this.withCredentials_ = false;
+
+  /**
+   * Whether progress events are enabled for this request. This is
+   * disabled by default because setting a progress event handler
+   * causes pre-flight OPTIONS requests to be sent for CORS requests,
+   * even in cases where a pre-flight request would not otherwise be
+   * sent.
+   *
+   * @see http://xhr.spec.whatwg.org/#security-considerations
+   *
+   * Note that this can cause problems for Firefox 22 and below, as an
+   * older "LSProgressEvent" will be dispatched by the browser. That
+   * progress event is no longer supported, and can lead to failures,
+   * including throwing exceptions.
+   *
+   * @see http://bugzilla.mozilla.org/show_bug.cgi?id=845631
+   * @see b/23469793
+   *
+   * @private {boolean}
+   */
+  this.progressEventsEnabled_ = false;
 
   /**
    * True if we can use XMLHttpRequest's timeout directly.
@@ -442,6 +473,27 @@ goog.net.XhrIo.prototype.getWithCredentials = function() {
 
 
 /**
+ * Sets whether progress events are enabled for this request. Note
+ * that progress events require pre-flight OPTIONS request handling
+ * for CORS requests, and may cause trouble with older browsers. See
+ * progressEventsEnabled_ for details.
+ * @param {boolean} enabled Whether progress events should be enabled.
+ */
+goog.net.XhrIo.prototype.setProgressEventsEnabled = function(enabled) {
+  this.progressEventsEnabled_ = enabled;
+};
+
+
+/**
+ * Gets whether progress events are enabled.
+ * @return {boolean} Whether progress events are enabled for this request.
+ */
+goog.net.XhrIo.prototype.getProgressEventsEnabled = function() {
+  return this.progressEventsEnabled_;
+};
+
+
+/**
  * Instance send that actually uses XMLHttpRequest to make a server call.
  * @param {string|goog.Uri} url Uri to make request to.
  * @param {string=} opt_method Send method, default: GET.
@@ -473,6 +525,15 @@ goog.net.XhrIo.prototype.send = function(url, opt_method, opt_content,
 
   // Set up the onreadystatechange callback
   this.xhr_.onreadystatechange = goog.bind(this.onReadyStateChange_, this);
+
+  // Set up upload/download progress events, if progress events are supported.
+  if (this.getProgressEventsEnabled() && 'onprogress' in this.xhr_) {
+    this.xhr_.onprogress =
+        goog.bind(function(e) { this.onProgressHandler_(e, true); }, this);
+    if (this.xhr_.upload) {
+      this.xhr_.upload.onprogress = goog.bind(this.onProgressHandler_, this);
+    }
+  }
 
   /**
    * Try to open the XMLHttpRequest (always async), if an error occurs here it
@@ -812,6 +873,47 @@ goog.net.XhrIo.prototype.onReadyStateChangeHelper_ = function() {
       }
     }
   }
+};
+
+
+/**
+ * Internal handler for the XHR object's onprogress event. Fires both a generic
+ * PROGRESS event and either a DOWNLOAD_PROGRESS or UPLOAD_PROGRESS event to
+ * allow specific binding for each XHR progress event.
+ * @param {!ProgressEvent} e XHR progress event.
+ * @param {boolean=} opt_isDownload Whether the current progress event is from a
+ *     download. Used to determine whether DOWNLOAD_PROGRESS or UPLOAD_PROGRESS
+ *     event should be dispatched.
+ * @private
+ */
+goog.net.XhrIo.prototype.onProgressHandler_ = function(e, opt_isDownload) {
+  goog.asserts.assert(
+      e.type === goog.net.EventType.PROGRESS,
+      'goog.net.EventType.PROGRESS is of the same type as raw XHR progress.');
+  this.dispatchEvent(
+      goog.net.XhrIo.buildProgressEvent_(e, goog.net.EventType.PROGRESS));
+  this.dispatchEvent(goog.net.XhrIo.buildProgressEvent_(
+      e, opt_isDownload ? goog.net.EventType.DOWNLOAD_PROGRESS :
+                          goog.net.EventType.UPLOAD_PROGRESS));
+};
+
+
+/**
+ * Creates a representation of the native ProgressEvent. IE doesn't support
+ * constructing ProgressEvent via "new", and the alternatives (e.g.,
+ * ProgressEvent.initProgressEvent) are non-standard or deprecated.
+ * @param {!ProgressEvent} e XHR progress event.
+ * @param {!goog.net.EventType} eventType The type of the event.
+ * @return {!ProgressEvent} The progress event.
+ * @private
+ */
+goog.net.XhrIo.buildProgressEvent_ = function(e, eventType) {
+  return /** @type {!ProgressEvent} */ ({
+    type: eventType,
+    lengthComputable: e.lengthComputable,
+    loaded: e.loaded,
+    total: e.total
+  });
 };
 
 

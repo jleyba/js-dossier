@@ -60,7 +60,7 @@ goog.define('goog.asserts.ENABLE_ASSERTS', goog.DEBUG);
 goog.asserts.AssertionError = function(messagePattern, messageArgs) {
   messageArgs.unshift(messagePattern);
   goog.debug.Error.call(this, goog.string.subs.apply(null, messageArgs));
-  // Remove the messagePattern afterwards to avoid permenantly modifying the
+  // Remove the messagePattern afterwards to avoid permanently modifying the
   // passed in array.
   messageArgs.shift();
 
@@ -316,7 +316,7 @@ goog.asserts.assertElement = function(value, opt_message, var_args) {
  *
  * The compiler may tighten the type returned by this function.
  *
- * @param {*} value The value to check.
+ * @param {?} value The value to check.
  * @param {function(new: T, ...)} type A user-defined constructor.
  * @param {string=} opt_message Error message in case of failure.
  * @param {...*} var_args The items to substitute into the failure message.

@@ -19,6 +19,7 @@ goog.require('goog.date.Date');
 goog.require('goog.date.DateTime');
 goog.require('goog.i18n.DateTimeFormat');
 goog.require('goog.i18n.DateTimePatterns');
+goog.require('goog.i18n.DateTimePatterns_ar');
 goog.require('goog.i18n.DateTimePatterns_de');
 goog.require('goog.i18n.DateTimePatterns_en');
 goog.require('goog.i18n.DateTimePatterns_fa');
@@ -26,6 +27,7 @@ goog.require('goog.i18n.DateTimePatterns_fr');
 goog.require('goog.i18n.DateTimePatterns_ja');
 goog.require('goog.i18n.DateTimePatterns_sv');
 goog.require('goog.i18n.DateTimeSymbols');
+goog.require('goog.i18n.DateTimeSymbols_ar');
 goog.require('goog.i18n.DateTimeSymbols_ar_AE');
 goog.require('goog.i18n.DateTimeSymbols_ar_SA');
 goog.require('goog.i18n.DateTimeSymbols_bn_BD');
@@ -53,6 +55,7 @@ function tearDown() {
   // We always revert to a known state
   goog.i18n.DateTimePatterns = goog.i18n.DateTimePatterns_en;
   goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_en;
+  goog.i18n.DateTimeFormat.setEnforceAsciiDigits(false);
 }
 
 // Helpers to make tests work regardless of the timeZone we're in.
@@ -105,6 +108,12 @@ var americaLosAngelesData = {
     571450, 60, 577161, 0, 580186, 60, 585897, 0, 588922, 60, 594633, 0
   ],
   'names': ['PST', 'Pacific Standard Time', 'PDT', 'Pacific Daylight Time'],
+  'names_ext': {
+    STD_LONG_NAME_GMT: 'GMT-08:00',
+    STD_GENERIC_LOCATION: 'Los Angeles Time',
+    DST_LONG_NAME_GMT: 'GMT-07:00',
+    DST_GENERIC_LOCATION: 'Los Angeles Time'
+  },
   'id': 'America/Los_Angeles',
   'std_offset': -480
 };
@@ -133,6 +142,12 @@ var europeBerlinData = {
     589417, 60, 594457, 0],
   'names': ['MEZ', 'Mitteleurop\u00e4ische Zeit',
             'MESZ', 'Mitteleurop\u00e4ische Sommerzeit'],
+  'names_ext': {
+    STD_LONG_NAME_GMT: 'GMT+01:00',
+    STD_GENERIC_LOCATION: 'Deutschland Zeit',
+    DST_LONG_NAME_GMT: 'GMT+02:00',
+    DST_GENERIC_LOCATION: 'Deutschland Zeit'
+  },
   'id': 'Europe/Berlin',
   'std_offset': 60
 };
@@ -507,6 +522,39 @@ function testMMddyyyyHHmmssvSimpleTimeZone() {
   assertEquals('07/27/2006 06:10:10 Etc/GMT+7', fmt.format(date, timeZone));
 }
 
+function testMMddyyyyHHmmssVCommonTimeZone() {
+  goog.i18n.DateTimePatterns = goog.i18n.DateTimePatterns_de;
+  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_de;
+  var date = new Date(Date.UTC(2006, 6, 27, 13, 10, 10));
+  var timeZone = goog.i18n.TimeZone.createTimeZone(americaLosAngelesData);
+  var fmt = new goog.i18n.DateTimeFormat('MM/dd/yyyy HH:mm:ss V');
+  assertEquals('07/27/2006 06:10:10 America/Los_Angeles',
+      fmt.format(date, timeZone));
+  fmt = new goog.i18n.DateTimeFormat('MM/dd/yyyy HH:mm:ss VV');
+  assertEquals('07/27/2006 06:10:10 America/Los_Angeles',
+      fmt.format(date, timeZone));
+  fmt = new goog.i18n.DateTimeFormat('MM/dd/yyyy HH:mm:ss VVV');
+  assertEquals('07/27/2006 06:10:10 Los Angeles Time',
+      fmt.format(date, timeZone));
+  fmt = new goog.i18n.DateTimeFormat('MM/dd/yyyy HH:mm:ss VVVV');
+  assertEquals('07/27/2006 06:10:10 Los Angeles Time',
+      fmt.format(date, timeZone));
+}
+
+function testMMddyyyyHHmmssVSimpleTimeZone() {
+  goog.i18n.DateTimePatterns = goog.i18n.DateTimePatterns_de;
+  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_de;
+  var date = new Date(Date.UTC(2006, 6, 27, 13, 10, 10));
+  var timeZone = goog.i18n.TimeZone.createTimeZone(420);
+  var fmt = new goog.i18n.DateTimeFormat('MM/dd/yyyy HH:mm:ss V');
+  assertEquals('07/27/2006 06:10:10 Etc/GMT+7', fmt.format(date, timeZone));
+  fmt = new goog.i18n.DateTimeFormat('MM/dd/yyyy HH:mm:ss VV');
+  assertEquals('07/27/2006 06:10:10 Etc/GMT+7', fmt.format(date, timeZone));
+  fmt = new goog.i18n.DateTimeFormat('MM/dd/yyyy HH:mm:ss VVV');
+  assertEquals('07/27/2006 06:10:10 GMT-07:00', fmt.format(date, timeZone));
+  var fmt = new goog.i18n.DateTimeFormat('MM/dd/yyyy HH:mm:ss VVVV');
+  assertEquals('07/27/2006 06:10:10 GMT-07:00', fmt.format(date, timeZone));
+}
 
 function test_yyyyMMddG() {
   goog.i18n.DateTimePatterns = goog.i18n.DateTimePatterns_de;
@@ -576,14 +624,49 @@ function testTimeDisplayOnDaylightTimeTransitionDayChange() {
   assertEquals('2015/10/31 23:00:01 -1200', fmt.format(date, timeZone));
 }
 
-function test_nativeDigits() {
+function test_nativeDigits_fa() {
   goog.i18n.DateTimePatterns = goog.i18n.DateTimePatterns_fa;
   goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_fa;
 
-  date = new Date(2006, 6, 27, 13, 10, 10, 250);
+  date = new Date(2006, 7 - 1, 27, 13, 10, 10, 250);
   var timeZone = goog.i18n.TimeZone.createTimeZone(420);
   var fmt = new goog.i18n.DateTimeFormat('y/MM/dd H:mm:ss٫SS');
   assertEquals('۲۰۰۶/۰۷/۲۷ ۱۳:۱۰:۱۰٫۲۵', fmt.format(date));
+
+  // Make sure standardized timezone formats don't use native digits
+  fmt = new goog.i18n.DateTimeFormat('Z');
+  assertEquals('-0700', fmt.format(date, timeZone));
+}
+
+function test_nativeDigits_ar() {
+  goog.i18n.DateTimePatterns = goog.i18n.DateTimePatterns_ar;
+  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_ar;
+
+  date = new Date(2006, 7 - 1, 27, 13, 10, 10, 250);
+  var timeZone = goog.i18n.TimeZone.createTimeZone(420);
+  var fmt = new goog.i18n.DateTimeFormat('y/MM/dd H:mm:ss٫SS');
+  assertEquals('٢٠٠٦/٠٧/٢٧ ١٣:١٠:١٠٫٢٥', fmt.format(date));
+
+  var fmt = new goog.i18n.DateTimeFormat(11);
+  assertEquals('٢٧\u200f/٧\u200f/٢٠٠٦ ١:١٠ م', fmt.format(date));
+
+  // Make sure standardized timezone formats don't use native digits
+  fmt = new goog.i18n.DateTimeFormat('Z');
+  assertEquals('-0700', fmt.format(date, timeZone));
+}
+
+function test_enforceAsciiDigits_ar() {
+  goog.i18n.DateTimePatterns = goog.i18n.DateTimePatterns_ar;
+  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_ar;
+
+  goog.i18n.DateTimeFormat.setEnforceAsciiDigits(true);
+  date = new Date(2006, 7 - 1, 27, 13, 10, 10, 250);
+  var timeZone = goog.i18n.TimeZone.createTimeZone(420);
+  var fmt = new goog.i18n.DateTimeFormat('y/MM/dd H:mm:ss٫SS');
+  assertEquals('2006/07/27 13:10:10٫25', fmt.format(date));
+
+  var fmt = new goog.i18n.DateTimeFormat(11);
+  assertEquals('27/7/2006 1:10 م', fmt.format(date));
 
   // Make sure standardized timezone formats don't use native digits
   fmt = new goog.i18n.DateTimeFormat('Z');
@@ -762,10 +845,10 @@ function test_variousDateTypes() {
       goog.i18n.DateTimeFormat.Format.MEDIUM_DATETIME);
 
   var date = new Date(2006, 6, 27, 13, 10, 42, 250);
-  assertEquals('27 juil. 2006 13:10:42', fmt.format(date));
+  assertEquals('27 juil. 2006 à 13:10:42', fmt.format(date));
 
   var gdatetime = new goog.date.DateTime(2006, 6, 27, 13, 10, 42, 250);
-  assertEquals('27 juil. 2006 13:10:42', fmt.format(gdatetime));
+  assertEquals('27 juil. 2006 à 13:10:42', fmt.format(gdatetime));
 
   var gdate = new goog.date.Date(2006, 6, 27);
   var fmtDate =

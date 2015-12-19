@@ -16,7 +16,6 @@
  * @fileoverview Shared unit tests for styles.
  */
 
-/** @suppress {extraProvide} */
 goog.provide('goog.style_test');
 
 goog.require('goog.array');
@@ -30,14 +29,13 @@ goog.require('goog.math.Coordinate');
 goog.require('goog.math.Rect');
 goog.require('goog.math.Size');
 goog.require('goog.object');
-goog.require('goog.string');
 goog.require('goog.style');
 goog.require('goog.testing.ExpectedFailures');
 goog.require('goog.testing.MockUserAgent');
+goog.require('goog.testing.TestCase');
 goog.require('goog.testing.asserts');
 goog.require('goog.testing.jsunit');
 goog.require('goog.userAgent');
-goog.require('goog.userAgent.product');
 goog.require('goog.userAgentTestUtil');
 goog.require('goog.userAgentTestUtil.UserAgents');
 
@@ -53,6 +51,9 @@ var $ = goog.dom.getElement;
 var mockUserAgent;
 
 function setUpPage() {
+  // TODO(b/25875505): Fix unreported assertions (go/failonunreportedasserts).
+  goog.testing.TestCase.getActiveTestCase().failOnUnreportedAsserts = false;
+
   var viewportSize = goog.dom.getViewportSize();
   // When the window is too short or not wide enough, some tests, especially
   // those for off-screen elements, fail.  Oddly, the most reliable
@@ -77,10 +78,10 @@ function tearDown() {
   expectedFailures.handleTearDown();
   var testVisibleDiv2 = goog.dom.getElement('test-visible2');
   testVisibleDiv2.setAttribute('style', '');
-  testVisibleDiv2.innerHTML = '';
+  goog.dom.removeChildren(testVisibleDiv2);
   var testViewport = goog.dom.getElement('test-viewport');
   testViewport.setAttribute('style', '');
-  testViewport.innerHTML = '';
+  goog.dom.removeChildren(testViewport);
   goog.dispose(mockUserAgent);
 
   // Prevent multiple vendor prefixed mock elements from poisoning the cache.
@@ -414,14 +415,9 @@ function testGetClientPositionEvent() {
 
 function testGetClientPositionTouchEvent() {
   var mockTouchEvent = {};
-
-  mockTouchEvent.targetTouches = [{}];
-  mockTouchEvent.targetTouches[0].clientX = 100;
-  mockTouchEvent.targetTouches[0].clientY = 200;
-
-  mockTouchEvent.touches = [{}];
-  mockTouchEvent.touches[0].clientX = 100;
-  mockTouchEvent.touches[0].clientY = 200;
+  mockTouchEvent.changedTouches = [{}];
+  mockTouchEvent.changedTouches[0].clientX = 100;
+  mockTouchEvent.changedTouches[0].clientY = 200;
 
   var pos = goog.style.getClientPosition(mockTouchEvent);
   assertEquals(100, pos.x);
@@ -431,11 +427,11 @@ function testGetClientPositionTouchEvent() {
 function testGetClientPositionEmptyTouchList() {
   var mockTouchEvent = {};
 
-  mockTouchEvent.clientX = 100;
-  mockTouchEvent.clientY = 200;
-
-  mockTouchEvent.targetTouches = [];
   mockTouchEvent.touches = [];
+
+  mockTouchEvent.changedTouches = [{}];
+  mockTouchEvent.changedTouches[0].clientX = 100;
+  mockTouchEvent.changedTouches[0].clientY = 200;
 
   var pos = goog.style.getClientPosition(mockTouchEvent);
   assertEquals(100, pos.x);
@@ -443,14 +439,13 @@ function testGetClientPositionEmptyTouchList() {
 }
 
 function testGetClientPositionAbstractedTouchEvent() {
-  var e = new goog.events.BrowserEvent();
-  e.event_ = {};
-  e.event_.touches = [{}];
-  e.event_.touches[0].clientX = 100;
-  e.event_.touches[0].clientY = 200;
-  e.event_.targetTouches = [{}];
-  e.event_.targetTouches[0].clientX = 100;
-  e.event_.targetTouches[0].clientY = 200;
+  var mockTouchEvent = {};
+  mockTouchEvent.changedTouches = [{}];
+  mockTouchEvent.changedTouches[0].clientX = 100;
+  mockTouchEvent.changedTouches[0].clientY = 200;
+
+  var e = new goog.events.BrowserEvent(mockTouchEvent);
+
   var pos = goog.style.getClientPosition(e);
   assertEquals(100, pos.x);
   assertEquals(200, pos.y);
@@ -622,9 +617,10 @@ function testGetPositionTolerantToNoDocumentElementBorder() {
     document.body.appendChild(div);
 
     // Test all major positioning methods.
-    // Disabled for IE8 and below - IE8 returns dimensions multiplied by 100.
+    // Disabled for IE9 and below - IE8 returns dimensions multiplied by 100.
+    // IE9 is flaky. See b/22873770.
     expectedFailures.expectFailureFor(
-        goog.userAgent.IE && !goog.userAgent.isVersionOrHigher(9));
+        goog.userAgent.IE && !goog.userAgent.isVersionOrHigher(10));
     try {
       // Test all major positioning methods.
       var pos = goog.style.getClientPosition(div);
@@ -794,8 +790,8 @@ function testGetSizeSvgElements() {
   svgEl.appendChild(el);
 
   // The bounding size in 1 larger than the SVG element in IE.
-  var expectedWidth = (goog.userAgent.IE) ? 33 : 32;
-  var expectedHeight = (goog.userAgent.IE) ? 22 : 21;
+  var expectedWidth = (goog.userAgent.EDGE_OR_IE) ? 33 : 32;
+  var expectedHeight = (goog.userAgent.EDGE_OR_IE) ? 22 : 21;
 
   var dims = goog.style.getSize(el);
   assertEquals(expectedWidth, dims.width);
@@ -833,7 +829,7 @@ function testGetSizeSvgDocument() {
   var doc = goog.dom.getFrameContentDocument(frame);
   var rect = doc.getElementById('rect');
   var dims = goog.style.getSize(rect);
-  if (!goog.userAgent.IE) {
+  if (!goog.userAgent.EDGE_OR_IE) {
     assertEquals(50, dims.width);
     assertEquals(50, dims.height);
   } else {
@@ -924,15 +920,6 @@ function testInstallStyles() {
   var result = goog.style.installStyles(
       '#installTest0 { background-color: rgb(255, 192, 203); }');
 
-  // For some odd reason, the change in computed style does not register on
-  // Chrome 19 unless the style property is touched.  The behavior goes
-  // away again in Chrome 20.
-  // TODO(nnaze): Remove special caseing once we switch the testing image
-  // to Chrome 20 or higher.
-  if (isChrome19()) {
-    el.style.display = '';
-  }
-
   assertColorRgbEquals('rgb(255,192,203)', goog.style.getBackgroundColor(el));
 
   goog.style.uninstallStyles(result);
@@ -945,15 +932,6 @@ function testSetStyles() {
   // Change to pink
   var ss = goog.style.installStyles(
       '#installTest1 { background-color: rgb(255, 192, 203); }');
-
-  // For some odd reason, the change in computed style does not register on
-  // Chrome 19 unless the style property is touched.  The behavior goes
-  // away again in Chrome 20.
-  // TODO(nnaze): Remove special caseing once we switch the testing image
-  // to Chrome 20 or higher.
-  if (isChrome19()) {
-    el.style.display = '';
-  }
 
   assertColorRgbEquals('rgb(255,192,203)', goog.style.getBackgroundColor(el));
 
@@ -968,11 +946,6 @@ function assertColorRgbEquals(expected, actual) {
       goog.color.hexToRgbStyle(goog.color.parse(actual).hex));
 }
 
-function isChrome19() {
-  return goog.userAgent.product.CHROME &&
-         goog.string.startsWith(goog.userAgent.product.VERSION, '19.');
-}
-
 function testIsRightToLeft() {
   assertFalse(goog.style.isRightToLeft($('rtl1')));
   assertTrue(goog.style.isRightToLeft($('rtl2')));
@@ -984,6 +957,45 @@ function testIsRightToLeft() {
   assertFalse(goog.style.isRightToLeft($('rtl8')));
   assertTrue(goog.style.isRightToLeft($('rtl9')));
   assertFalse(goog.style.isRightToLeft($('rtl10')));
+}
+
+function testIsUnselectable() {
+  assertEquals(goog.userAgent.GECKO,
+               goog.style.isUnselectable($('unselectable-gecko')));
+  assertEquals(goog.userAgent.IE || goog.userAgent.OPERA,
+               goog.style.isUnselectable($('unselectable-ie')));
+  assertEquals(goog.userAgent.WEBKIT || goog.userAgent.EDGE,
+               goog.style.isUnselectable($('unselectable-webkit')));
+}
+
+function testSetUnselectable() {
+  var el = $('make-unselectable');
+  assertFalse(goog.style.isUnselectable(el));
+
+  function assertDescendantsUnselectable(unselectable) {
+    goog.array.forEach(el.getElementsByTagName('*'), function(descendant) {
+      // Skip MathML or any other elements that do not have a style property.
+      if (descendant.style) {
+        assertEquals(unselectable, goog.style.isUnselectable(descendant));
+      }
+    });
+  }
+
+  goog.style.setUnselectable(el, true);
+  assertTrue(goog.style.isUnselectable(el));
+  assertDescendantsUnselectable(true);
+
+  goog.style.setUnselectable(el, false);
+  assertFalse(goog.style.isUnselectable(el));
+  assertDescendantsUnselectable(false);
+
+  goog.style.setUnselectable(el, true, true);
+  assertTrue(goog.style.isUnselectable(el));
+  assertDescendantsUnselectable(false);
+
+  goog.style.setUnselectable(el, false, true);
+  assertFalse(goog.style.isUnselectable(el));
+  assertDescendantsUnselectable(false);
 }
 
 function testPosWithAbsoluteAndScroll() {
@@ -2147,25 +2159,30 @@ function testShadowDomOffsetParent() {
 
 function testGetViewportPageOffset() {
   expectedFailures.expectFailureFor(
-      goog.userAgent.IE && !goog.userAgent.isVersionOrHigher(9),
-      'Test has been flaky for ie8-winxp image. Disabling.');
+      goog.userAgent.IE && !goog.userAgent.isVersionOrHigher(10),
+      'Test has been flaky for ie9-win7 and ie8-winxp image. Disabling. ' +
+      'See b/22873770.');
 
-  var testViewport = goog.dom.getElement('test-viewport');
-  testViewport.style.height = '5000px';
-  testViewport.style.width = '5000px';
-  var offset = goog.style.getViewportPageOffset(document);
-  assertEquals(0, offset.x);
-  assertEquals(0, offset.y);
+  try {
+    var testViewport = goog.dom.getElement('test-viewport');
+    testViewport.style.height = '5000px';
+    testViewport.style.width = '5000px';
+    var offset = goog.style.getViewportPageOffset(document);
+    assertEquals(0, offset.x);
+    assertEquals(0, offset.y);
 
-  window.scrollTo(0, 100);
-  offset = goog.style.getViewportPageOffset(document);
-  assertEquals(0, offset.x);
-  assertEquals(100, offset.y);
+    window.scrollTo(0, 100);
+    offset = goog.style.getViewportPageOffset(document);
+    assertEquals(0, offset.x);
+    assertEquals(100, offset.y);
 
-  window.scrollTo(100, 0);
-  offset = goog.style.getViewportPageOffset(document);
-  assertEquals(100, offset.x);
-  assertEquals(0, offset.y);
+    window.scrollTo(100, 0);
+    offset = goog.style.getViewportPageOffset(document);
+    assertEquals(100, offset.x);
+    assertEquals(0, offset.y);
+  } catch (e) {
+    expectedFailures.handleException(e);
+  }
 }
 
 function testGetsTranslation() {
@@ -2655,4 +2672,17 @@ function testGetVendorStyleOpera() {
   assertUserAgent([goog.userAgentTestUtil.UserAgents.OPERA], 'Opera');
   goog.style.setStyle(mockElement, 'transform', styleValue);
   assertEquals(styleValue, goog.style.getStyle(mockElement, 'transform'));
+}
+
+function testParseStyleAttributeWithColon() {
+  // Regression test for https://github.com/google/closure-library/issues/127.
+  var cssObj = goog.style.parseStyleAttribute(
+      'left: 0px; text-align: center; background-image: ' +
+      'url(http://www.google.ca/Test.gif); -ms-filter: ' +
+      'progid:DXImageTransform.Microsoft.MotionBlur(strength=50), ' +
+      'progid:DXImageTransform.Microsoft.BasicImage(mirror=1);');
+  assertEquals('url(http://www.google.ca/Test.gif)', cssObj.backgroundImage);
+  assertEquals('progid:DXImageTransform.Microsoft.MotionBlur(strength=50), ' +
+               'progid:DXImageTransform.Microsoft.BasicImage(mirror=1)',
+               cssObj.MsFilter);
 }

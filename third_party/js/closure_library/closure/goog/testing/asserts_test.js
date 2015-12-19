@@ -23,9 +23,16 @@ goog.require('goog.labs.userAgent.browser');
 goog.require('goog.string');
 goog.require('goog.structs.Map');
 goog.require('goog.structs.Set');
+goog.require('goog.testing.TestCase');
 goog.require('goog.testing.asserts');
 goog.require('goog.testing.jsunit');
 goog.require('goog.userAgent');
+goog.require('goog.userAgent.product');
+
+function setUp() {
+  // TODO(b/25875505): Fix unreported assertions (go/failonunreportedasserts).
+  goog.testing.TestCase.getActiveTestCase().failOnUnreportedAsserts = false;
+}
 
 function testAssertTrue() {
   assertTrue(true);
@@ -766,7 +773,32 @@ function testAssertThrows() {
   assertEquals('string error', 'string error test', stringError);
 }
 
+function testAssertThrowsJsUnitException() {
+  var error = assertThrowsJsUnitException(function() {
+    assertTrue(false);
+  });
+  assertEquals('Call to assertTrue(boolean) with false', error.message);
+
+  error = assertThrowsJsUnitException(function() {
+    assertThrowsJsUnitException(function() {
+      throw new Error('fail');
+    });
+  });
+  assertEquals('Call to fail()\nExpected a JsUnitException', error.message);
+
+  error = assertThrowsJsUnitException(function() {
+    assertThrowsJsUnitException(goog.nullFunction);
+  });
+  assertEquals('Expected a failure', error.message);
+}
+
 function testAssertNotThrows() {
+  if (goog.userAgent.product.SAFARI) {
+    // TODO(b/20733468): Disabled so we can get the rest of the Closure test
+    // suite running in a continuous build. Will investigate later.
+    return;
+  }
+
   var failed = false;
   try {
     assertNotThrows('assertNotThrows should not pass with null param', null);

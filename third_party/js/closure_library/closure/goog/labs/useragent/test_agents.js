@@ -156,9 +156,15 @@ testAgents.IE_11_COMPATIBILITY_MSIE_9 =
  * https://msdn.microsoft.com/en-us/library/hh869301%28v=vs.85%29.aspx?f=255&MSPPError=-2147217396#edge
  * @const {string}
  */
-testAgents.IE_EDGE =
+testAgents.EDGE_12_0 =
     'Mozilla/5.0 (Windows NT 6.4; WOW64) AppleWebKit/537.36 ' +
     '(KHTML, like Gecko) Chrome/36.0.1985.143 Safari/537.36 Edge/12.0';
+
+
+/** @const {string} */
+testAgents.EDGE_12_9600 =
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 ' +
+    '(KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36 Edge/12.9600';
 
 
 /** @const {string} */
@@ -337,6 +343,13 @@ testAgents.CHROME_IPHONE =
     'Mozilla/5.0 (iPhone; CPU iPhone OS 5_1_1 like Mac OS X; en-us) ' +
     'AppleWebKit/534.46.0 (KHTML, like Gecko) CriOS/22.0.1194.0 Mobile/11E53 ' +
     'Safari/7534.48.3';
+
+
+/** @const {string} */
+testAgents.CHROME_IPAD =
+    'Mozilla/5.0 (iPad; CPU OS 7_0_4 like Mac OS X) ' +
+    'AppleWebKit/537.51.1 (KHTML, like Gecko) CriOS/32.0.1700.20 ' +
+    'Mobile/11B554a Safari/9537.53';
 
 
 /** @const {string} */

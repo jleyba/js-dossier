@@ -4,6 +4,6 @@ exports_files(["LICENSE"])
 
 java_import(
   name = "closure_compiler",
-  jars = ["compiler-v20151015.jar"],
+  jars = ["compiler-v20151216.jar"],
   visibility = ["//lib/maven:__pkg__"],
 )

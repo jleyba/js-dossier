@@ -1,12 +1,12 @@
 /*
  Copyright 2013-2015 Jason Leyba
- 
+
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
  You may obtain a copy of the License at
- 
+
    http://www.apache.org/licenses/LICENSE-2.0
- 
+
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -117,7 +117,7 @@ public class JsDocTest {
         "Hello, world! @not_an_annotation\n Goodbye, world!",
         doc.getBlockComment());
   }
-  
+
   @Test
   @Bug(43)
   public void parseParamsWithNamesOnly() {
@@ -130,14 +130,14 @@ public class JsDocTest {
         "function Foo(x, y) {}");
     List<Parameter> parameters = doc.getParameters();
     assertThat(parameters).hasSize(2);
-    
+
     assertThat(parameters.get(0).getName()).isEqualTo("x");
     assertThat(parameters.get(0).getDescription()).isEmpty();
 
     assertThat(parameters.get(1).getName()).isEqualTo("y");
     assertThat(parameters.get(1).getDescription()).isEmpty();
   }
-  
+
   @Test
   @Bug(43)
   public void parseParamsWithTypesOnly() {
@@ -437,7 +437,7 @@ public class JsDocTest {
 
     assertEquals(
         lines(
-            "* * * * * * * * * * * * *",
+            "*************",
             "",
             "foo bar",
             "",
@@ -639,7 +639,7 @@ public class JsDocTest {
         .isTrue();
     return type.getJsDoc();
   }
-  
+
   private List<Property> getProperties(NominalType type) {
     List<Property> properties = new ArrayList<>();
     for (String name : type.getType().toObjectType().getOwnPropertyNames()) {

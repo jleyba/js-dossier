@@ -19,6 +19,7 @@
 goog.provide('goog.html.safeStyleTest');
 
 goog.require('goog.html.SafeStyle');
+goog.require('goog.object');
 goog.require('goog.string.Const');
 goog.require('goog.testing.jsunit');
 
@@ -41,16 +42,20 @@ function testSafeStyle() {
 
 /** @suppress {checkTypes} */
 function testUnwrap() {
+  var privateFieldName = 'privateDoNotAccessOrElseSafeStyleWrappedValue_';
+  var markerFieldName = 'SAFE_STYLE_TYPE_MARKER_GOOG_HTML_SECURITY_PRIVATE_';
+  var propNames = goog.object.getKeys(
+      goog.html.SafeStyle.fromConstant(goog.string.Const.from('')));
+  assertContains(privateFieldName, propNames);
+  assertContains(markerFieldName, propNames);
   var evil = {};
-  evil.safeStyleValueWithSecurityContract__googHtmlSecurityPrivate_ =
-      'width: expression(evil);';
-  evil.SAFE_STYLE_TYPE_MARKER__GOOG_HTML_SECURITY_PRIVATE_ = {};
+  evil[privateFieldName] = 'width: expression(evil);';
+  evil[markerFieldName] = {};
 
   var exception = assertThrows(function() {
     goog.html.SafeStyle.unwrap(evil);
   });
-  assertTrue(
-      exception.message.indexOf('expected object of type SafeStyle') > 0);
+  assertContains('expected object of type SafeStyle', exception.message);
 }
 
 
@@ -113,6 +118,23 @@ function testCreate_skipsNull() {
 function testCreate_allowsLengths() {
   var style = goog.html.SafeStyle.create({'padding': '0 1px .2% 3.4em'});
   assertEquals('padding:0 1px .2% 3.4em;', goog.html.SafeStyle.unwrap(style));
+}
+
+
+function testCreate_allowsRgb() {
+  var style = goog.html.SafeStyle.create({'color': 'rgb(10,20,30)'});
+  assertEquals('color:rgb(10,20,30);', goog.html.SafeStyle.unwrap(style));
+  style = goog.html.SafeStyle.create({'color': 'rgb(10%, 20%, 30%)'});
+  assertEquals('color:rgb(10%, 20%, 30%);', goog.html.SafeStyle.unwrap(style));
+}
+
+
+function testCreate_allowsRgba() {
+  var style = goog.html.SafeStyle.create({'color': 'rgba(10,20,30,0.1)'});
+  assertEquals('color:rgba(10,20,30,0.1);', goog.html.SafeStyle.unwrap(style));
+  style = goog.html.SafeStyle.create({'color': 'rgba(10%, 20%, 30%, .5)'});
+  assertEquals('color:rgba(10%, 20%, 30%, .5);',
+      goog.html.SafeStyle.unwrap(style));
 }
 
 

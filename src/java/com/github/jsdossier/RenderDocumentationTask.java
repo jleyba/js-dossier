@@ -1,12 +1,12 @@
 /*
  Copyright 2013-2015 Jason Leyba
- 
+
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
  You may obtain a copy of the License at
- 
+
    http://www.apache.org/licenses/LICENSE-2.0
- 
+
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,6 +16,7 @@
 
 package com.github.jsdossier;
 
+import static com.github.jsdossier.TypeInspector.fakeNodeForType;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.base.Verify.verify;
@@ -125,7 +126,7 @@ final class RenderDocumentationTask implements Callable<Path> {
   @Override
   public Path call() throws IOException {
     Path output = dfs.getPath(type);
-    
+
     String displayName = dfs.getDisplayName(type);
     if (!type.isModuleExports()
         && (type.getType().isConstructor() || type.getType().isInterface())) {
@@ -145,7 +146,7 @@ final class RenderDocumentationTask implements Callable<Path> {
     addEnumValues(typeSpec);
     addStaticProperties(typeSpec);
     addInstanceProperties(typeSpec);
-    
+
     JsDoc jsdoc = type.getJsDoc();
     typeSpec.getTagsBuilder()
         .setIsModule(type.isModuleExports())
@@ -168,7 +169,7 @@ final class RenderDocumentationTask implements Callable<Path> {
     renderer.render(output, spec);
     return output;
   }
-  
+
   private void addDescription(JsType.Builder renderSpec) {
     Comment description = typeInspector.getTypeDescription();
 
@@ -184,7 +185,7 @@ final class RenderDocumentationTask implements Callable<Path> {
             linkFactory.withTypeContext(primary));
       }
     }
-    
+
     renderSpec.setDescription(description);
   }
 
@@ -218,7 +219,7 @@ final class RenderDocumentationTask implements Callable<Path> {
                   && parent.getModule().get().getType() != Module.Type.CLOSURE);
     }
   }
-  
+
   @Nullable
   @CheckReturnValue
   private NominalType getParent(NominalType type) {
@@ -232,7 +233,7 @@ final class RenderDocumentationTask implements Callable<Path> {
     }
     return null;
   }
-  
+
   private void addNestedTypeInfo(JsType.Builder spec) {
     Iterable<NominalType> types =
         FluentIterable.from(typeRegistry.getNestedTypes(type))
@@ -274,7 +275,7 @@ final class RenderDocumentationTask implements Callable<Path> {
       }
     }
   }
-  
+
   private String getNestedTypeName(NominalType child) {
     String parentName = type.getName();
     String childName = child.getName();
@@ -284,7 +285,7 @@ final class RenderDocumentationTask implements Callable<Path> {
     if (!type.isNamespace() && !type.isModuleExports()) {
       childName = getBasename(type) + "." + childName;
     }
-    
+
     return childName;
   }
 
@@ -315,19 +316,7 @@ final class RenderDocumentationTask implements Callable<Path> {
     }
 
     // TODO: should not be using Node here.
-    Node fakeNode = IR.script();
-    fakeNode.getSourceFileName();
-    fakeNode.setStaticSourceFile(
-        new StaticSourceFile() {
-          @Override public String getName() { return type.getSourceFile().toString(); }
-          @Override public boolean isExtern() { return false; }
-          @Override public int getLineOffset(int lineNumber) { return 0; }
-          @Override public int getLineOfOffset(int offset) { return 0; }
-          @Override public int getColumnOfOffset(int offset) { return 0; }
-        }
-    );
-    fakeNode.setLineno(type.getSourcePosition().getLine());
-
+    Node fakeNode = fakeNodeForType(type);
     spec.setMainFunction(
         typeInspector.getFunctionData(
             getBasename(type), type.getType(), fakeNode, context, docs));
@@ -363,7 +352,7 @@ final class RenderDocumentationTask implements Callable<Path> {
       spec.addImplementedType(parser.parse(iface));
     }
   }
-  
+
   private void addEnumValues(JsType.Builder spec) {
     if (!type.getType().isEnumType()) {
       return;
@@ -400,7 +389,7 @@ final class RenderDocumentationTask implements Callable<Path> {
       }
     }
   }
-  
+
   private void addStaticProperties(JsType.Builder spec) {
     TypeInspector.Report report = typeInspector.inspectType();
 
@@ -425,7 +414,7 @@ final class RenderDocumentationTask implements Callable<Path> {
       }
     }
   }
-  
+
   private void addInstanceProperties(JsType.Builder spec) {
     TypeInspector.Report report = typeInspector.inspectInstanceType();
     for (com.github.jsdossier.proto.Property prop : report.getProperties()) {
@@ -437,7 +426,7 @@ final class RenderDocumentationTask implements Callable<Path> {
       updateInstancePropertyIndex(spec, func.getBase());
     }
   }
-  
+
   private void updateInstancePropertyIndex(JsTypeOrBuilder spec, BaseProperty base) {
     // Do not include the property in the search index if the parent type is an alias,
     // the property is inherited from another type, or the property overrides a parent

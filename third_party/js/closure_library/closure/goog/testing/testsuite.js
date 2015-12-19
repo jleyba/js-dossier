@@ -13,27 +13,21 @@
 // limitations under the License.
 goog.provide('goog.testing.testSuite');
 
+goog.require('goog.labs.testing.Environment');
 goog.require('goog.testing.TestCase');
 
 
 /**
- * Creates a TestCase from the given object, using test* methods and
- * "lifecycle methods" (setUp, tearDown, etc.) from that object. Then,
- * initializes the global test runner 'G_testRunner' with the new test case.
+ * Runs the lifecycle methods (setUp, tearDown, etc.) and test* methods from
+ * the given object. For use in tests that are written as JavaScript modules
+ * or goog.modules.
+ *
  * @param {!Object<string, function()>} obj An object with one or more test
  *     methods, and optionally a setUp and tearDown method, etc.
  */
 goog.testing.testSuite = function(obj) {
-  var testCase = new goog.testing.TestCase();
-  var regex = new RegExp('^' + testCase.getAutoDiscoveryPrefix());
-  for (var name in obj) {
-    if (regex.test(name)) {
-      var testMethod = obj[name];
-      if (goog.isFunction(testMethod)) {
-        testCase.addNewTest(name, testMethod, obj);
-      }
-    }
-  }
-  testCase.autoDiscoverLifecycle(obj);
+  var testCase = goog.labs.testing.Environment.getTestCaseIfActive() ||
+      new goog.testing.TestCase(document.title);
+  testCase.setTestObj(obj);
   goog.testing.TestCase.initializeTestRunner(testCase);
 };

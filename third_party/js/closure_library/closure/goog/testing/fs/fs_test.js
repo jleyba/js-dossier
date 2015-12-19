@@ -15,12 +15,9 @@
 goog.provide('goog.testing.fsTest');
 goog.setTestOnly('goog.testing.fsTest');
 
-goog.require('goog.testing.AsyncTestCase');
 goog.require('goog.testing.fs');
 goog.require('goog.testing.fs.Blob');
 goog.require('goog.testing.jsunit');
-
-var asyncTestCase = goog.testing.AsyncTestCase.createAndInstall();
 
 function testObjectUrls() {
   var blob = goog.testing.fs.getBlob('foo');
@@ -41,10 +38,8 @@ function testGetBlob() {
 }
 
 function testBlobToString() {
-  goog.testing.fs.blobToString(new goog.testing.fs.Blob('foobarbaz')).
-      addCallback(goog.partial(assertEquals, 'foobarbaz')).
-      addCallback(goog.bind(asyncTestCase.continueTesting, asyncTestCase));
-  asyncTestCase.waitForAsync('testBlobToString');
+  return goog.testing.fs.blobToString(new goog.testing.fs.Blob('foobarbaz'))
+      .then(function(result) { assertEquals('foobarbaz', result); });
 }
 
 function testGetBlobWithProperties() {
@@ -52,4 +47,16 @@ function testGetBlobWithProperties() {
       'data:spam/eggs;base64,Zm9vYmFy',
       new goog.testing.fs.getBlobWithProperties(
           ['foo', new goog.testing.fs.Blob('bar')], 'spam/eggs').toDataUrl());
+}
+
+function testSliceBlob() {
+  myBlob = new goog.testing.fs.Blob('0123456789');
+  actual = new goog.testing.fs.sliceBlob(myBlob, 1, 3);
+  expected = new goog.testing.fs.Blob('12');
+  assertEquals(expected.toString(), actual.toString());
+
+  myBlob = new goog.testing.fs.Blob('0123456789');
+  actual = new goog.testing.fs.sliceBlob(myBlob, 0, -1);
+  expected = new goog.testing.fs.Blob('012345678');
+  assertEquals(expected.toString(), actual.toString());
 }

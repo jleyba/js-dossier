@@ -167,6 +167,8 @@ goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.InputType');
 goog.require('goog.dom.safe');
+/** @suppress {extraRequire} */
+goog.require('goog.events.Event');
 goog.require('goog.events.EventHandler');
 goog.require('goog.events.EventTarget');
 goog.require('goog.events.EventType');
@@ -426,7 +428,7 @@ goog.History.prototype.lastToken_ = null;
  */
 goog.History.isOnHashChangeSupported = goog.memoize(function() {
   return goog.userAgent.IE ?
-      document.documentMode >= 8 :
+      goog.userAgent.isDocumentModeOrHigher(8) :
       'onhashchange' in goog.global;
 });
 

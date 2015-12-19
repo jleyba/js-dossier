@@ -33,6 +33,10 @@ goog.require('goog.userAgent');
 goog.define('goog.debug.LOGGING_ENABLED', goog.DEBUG);
 
 
+/** @define {boolean} Whether to force "sloppy" stack building. */
+goog.define('goog.debug.FORCE_SLOPPY_STACKS', false);
+
+
 /**
  * Catches onerror events fired by windows and similar objects.
  * @param {function(Object)} logFunc The function to call with the error
@@ -382,7 +386,7 @@ goog.debug.enhanceError = function(err, opt_message) {
  * @suppress {es5Strict}
  */
 goog.debug.getStacktraceSimple = function(opt_depth) {
-  if (goog.STRICT_MODE_COMPATIBLE) {
+  if (!goog.debug.FORCE_SLOPPY_STACKS) {
     var stack = goog.debug.getNativeStackTrace_(goog.debug.getStacktraceSimple);
     if (stack) {
       return stack;
@@ -464,7 +468,7 @@ goog.debug.getNativeStackTrace_ = function(fn) {
  */
 goog.debug.getStacktrace = function(opt_fn) {
   var stack;
-  if (goog.STRICT_MODE_COMPATIBLE) {
+  if (!goog.debug.FORCE_SLOPPY_STACKS) {
     // Try to get the stack trace from the environment if it is available.
     var contextFn = opt_fn || goog.debug.getStacktrace;
     stack = goog.debug.getNativeStackTrace_(contextFn);
@@ -613,6 +617,27 @@ goog.debug.makeWhitespaceVisible = function(string) {
       .replace(/\n/g, '[n]\n')
       .replace(/\r/g, '[r]')
       .replace(/\t/g, '[t]');
+};
+
+
+/**
+ * Returns the type of a value. If a constructor is passed, and a suitable
+ * string cannot be found, 'unknown type name' will be returned.
+ *
+ * <p>Forked rather than moved from {@link goog.asserts.getType_}
+ * to avoid adding a dependency to goog.asserts.
+ * @param {*} value A constructor, object, or primitive.
+ * @return {string} The best display name for the value, or 'unknown type name'.
+ */
+goog.debug.runtimeType = function(value) {
+  if (value instanceof Function) {
+    return value.displayName || value.name || 'unknown type name';
+  } else if (value instanceof Object) {
+    return value.constructor.displayName || value.constructor.name ||
+        Object.prototype.toString.call(value);
+  } else {
+    return value === null ? 'null' : typeof value;
+  }
 };
 
 

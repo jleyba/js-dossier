@@ -326,7 +326,7 @@ function testChineseDate() {
 
   parser = new goog.i18n.DateTimeParse(
       goog.i18n.DateTimeFormat.Format.FULL_TIME);
-  assertTrue(parser.parse('GMT-07:00\u4E0B\u534803:26:28', date) > 0);
+  assertTrue(parser.parse('GMT-07:00 \u4E0B\u534803:26:28', date) > 0);
 
   // Fails in Safari4/Chrome Winxp because of infrastructure issues, temporarily
   // disabled. See b/4274778.
@@ -627,4 +627,32 @@ function testStandaloneMonthPattern() {
       }
     }
   }
+}
+
+function testConstructorSymbols() {
+  var y = 2015, m = 8, d = 28;
+  var dateFr = new Date(y, m, d);
+  var dateZh = new Date(y, m, d);
+
+  var parserFr = new goog.i18n.DateTimeParse(
+      goog.i18n.DateTimeFormat.Format.FULL_DATE,
+      goog.i18n.DateTimeSymbols_fr);
+
+  var parserZh = new goog.i18n.DateTimeParse(
+      goog.i18n.DateTimeFormat.Format.FULL_DATE,
+      goog.i18n.DateTimeSymbols_zh);
+
+  var fmtFr = new goog.i18n.DateTimeFormat(
+      goog.i18n.DateTimeFormat.Format.FULL_DATE,
+      goog.i18n.DateTimeSymbols_fr);
+
+  var fmtZh = new goog.i18n.DateTimeFormat(
+      goog.i18n.DateTimeFormat.Format.FULL_DATE,
+      goog.i18n.DateTimeSymbols_zh);
+
+  var dateStrFr = fmtFr.format(dateFr);
+  var dateStrZh = fmtZh.format(dateZh);
+
+  assertParsedDateEquals(y, m, d, parserFr, dateStrFr, dateFr);
+  assertParsedDateEquals(y, m, d, parserZh, dateStrZh, dateZh);
 }

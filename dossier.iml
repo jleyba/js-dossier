@@ -34,11 +34,11 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/third_party/java/closure_compiler/compiler-v20151015.jar!/" />
+          <root url="jar://$MODULE_DIR$/third_party/java/closure_compiler/compiler-v20151216.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$MODULE_DIR$/third_party/java/closure_compiler/compiler-v20151015-src.jar!/" />
+          <root url="jar://$MODULE_DIR$/third_party/java/closure_compiler/compiler-v20151216-src.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>

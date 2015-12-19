@@ -98,8 +98,9 @@ goog.format.numericValueToString = function(val, opt_decimals) {
 
 /**
  * Converts number of bytes to string representation. Binary conversion.
- * Default is to return the additional 'B' suffix, e.g. '10.5KB' to minimize
- * confusion with counts that are scaled by powers of 1000.
+ * Default is to return the additional 'B' suffix only for scales greater than
+ * 1K, e.g. '10.5KB' to minimize confusion with counts that are scaled by powers
+ * of 1000. Otherwise, suffix is empty string.
  * @param {number} val Value to be converted.
  * @param {number=} opt_decimals The number of decimals to use.  Defaults to 2.
  * @param {boolean=} opt_suffix If true, include trailing 'B' in returned
@@ -133,7 +134,7 @@ goog.format.stringToNumericValue_ = function(stringValue, conversion) {
   if (!match) {
     return NaN;
   }
-  var val = match[1] * conversion[match[2]];
+  var val = Number(match[1]) * conversion[match[2]];
   return val;
 };
 

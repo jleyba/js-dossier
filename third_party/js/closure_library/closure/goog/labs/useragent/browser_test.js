@@ -39,7 +39,8 @@ var Browser = {
   IE: goog.labs.userAgent.browser.isIE,
   IOS_WEBVIEW: goog.labs.userAgent.browser.isIosWebview,
   SAFARI: goog.labs.userAgent.browser.isSafari,
-  SILK: goog.labs.userAgent.browser.isSilk
+  SILK: goog.labs.userAgent.browser.isSilk,
+  EDGE: goog.labs.userAgent.browser.isEdge
 };
 
 
@@ -181,10 +182,19 @@ function testIE11CompatibilityMSIE9() {
   assertVersion('11.0');
 }
 
-function testIEEdge() {
-  goog.labs.userAgent.util.setUserAgent(goog.labs.userAgent.testAgents.IE_EDGE);
-  assertBrowser(Browser.IE);
+function testEdge120() {
+  goog.labs.userAgent.util.setUserAgent(
+      goog.labs.userAgent.testAgents.EDGE_12_0);
+  assertBrowser(Browser.EDGE);
   assertVersion('12.0');
+  assertVersionBetween('11.0', '13.0');
+}
+
+function testEdge() {
+  goog.labs.userAgent.util.setUserAgent(
+      goog.labs.userAgent.testAgents.EDGE_12_9600);
+  assertBrowser(Browser.EDGE);
+  assertVersion('12.9600');
   assertVersionBetween('11.0', '13.0');
 }
 
@@ -230,6 +240,16 @@ function testChromeIphone() {
   assertVersion('22.0.1194.0');
   assertVersionBetween('22.0', '23.0');
   assertVersionBetween('22.0', '22.10');
+}
+
+function testChromeIpad() {
+  goog.labs.userAgent.util.setUserAgent(
+      goog.labs.userAgent.testAgents.CHROME_IPAD);
+  assertBrowser(Browser.CHROME);
+  assertTrue(goog.labs.userAgent.browser.isChrome());
+  assertVersion('32.0.1700.20');
+  assertVersionBetween('32.0', '33.0');
+  assertVersionBetween('32.0', '32.10');
 }
 
 function testChromeMac() {

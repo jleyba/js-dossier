@@ -15,6 +15,7 @@
 goog.provide('goog.editor.plugins.BasicTextFormatterTest');
 goog.setTestOnly('goog.editor.plugins.BasicTextFormatterTest');
 
+goog.require('goog.array');
 goog.require('goog.dom');
 goog.require('goog.dom.Range');
 goog.require('goog.dom.TagName');
@@ -208,7 +209,7 @@ function testGeckoListFont() {
     retVal = FORMATTER.beforeInsertListGecko_();
     assertFalse('Workaround shouldn\'t be applied when not needed', retVal);
 
-    font.innerHTML = '';
+    goog.dom.removeChildren(font);
     goog.dom.Range.createFromNodeContents(font).select();
     var retVal = FORMATTER.beforeInsertListGecko_();
     assertTrue('Workaround should be applied when needed', retVal);
@@ -248,8 +249,25 @@ function testSwitchListType() {
   tearDownListAndBlockquoteTests();
 }
 
+function testIsSilentCommand() {
+  var commands =
+      goog.object.getValues(goog.editor.plugins.BasicTextFormatter.COMMAND);
+  var silentCommands = [
+    goog.editor.plugins.BasicTextFormatter.COMMAND.CREATE_LINK
+  ];
+
+  for (var i = 0; i < commands.length; i += 1) {
+    var command = commands[i];
+    var shouldBeSilent = goog.array.contains(silentCommands, command);
+    var isSilent =
+        goog.editor.plugins.BasicTextFormatter.prototype.isSilentCommand.call(
+            null, command);
+    assertEquals(shouldBeSilent, isSilent);
+  }
+}
+
 function setUpSubSuperTests() {
-  ROOT.innerHTML = '12345';
+  goog.dom.setTextContent(ROOT, '12345');
   HELPER = new goog.testing.editor.TestHelper(ROOT);
   HELPER.setUpEditableElement();
 }
@@ -384,8 +402,8 @@ function testLinks() {
   HELPER.select(url1, 0, url2, url2.length);
   FORMATTER.execCommandInternal(goog.editor.Command.LINK);
   HELPER.assertHtmlMatches('<p><a href="' + url1 + '">' + url1 + '</a></p><p>' +
-      '<a href="' + dialogUrl + '">' + (goog.userAgent.IE ? dialogUrl : url2) +
-      '</a></p>');
+      '<a href="' + dialogUrl + '">' +
+      (goog.userAgent.EDGE_OR_IE ? dialogUrl : url2) + '</a></p>');
 }
 
 function testSelectedLink() {
@@ -428,6 +446,27 @@ function testUnfocusedLink() {
 
   FORMATTER.execCommandInternal(goog.editor.Command.LINK);
   HELPER.assertHtmlMatches('12345');
+
+  FIELDMOCK.$verify();
+  tearDownLinkTests();
+}
+
+function testCreateLink() {
+  var text = 'some text here';
+  var url = 'http://google.com';
+
+  ROOT.innerHTML = text;
+  HELPER = new goog.testing.editor.TestHelper(ROOT);
+  HELPER.setUpEditableElement();
+  FIELDMOCK.isSelectionEditable().$anyTimes().$returns(true);
+  FIELDMOCK.getElement().$anyTimes().$returns(ROOT);
+  FIELDMOCK.$replay();
+
+  HELPER.select(text, 0, text, text.length);
+  FORMATTER.execCommandInternal(
+      goog.editor.plugins.BasicTextFormatter.COMMAND.CREATE_LINK,
+      FIELDMOCK.getRange(), url);
+  HELPER.assertHtmlMatches('<a href="' + url + '">' + text + '</a>');
 
   FIELDMOCK.$verify();
   tearDownLinkTests();
@@ -616,7 +655,6 @@ function testFontSizeOverridesStyleAttrMultiNode() {
         span.getAttributeNode('style') != null &&
         span.getAttributeNode('style').specified);
     assertTrue('Style attribute should not be gone from last span',
-        span2.getAttributeNode('style') != null &&
         span2.getAttributeNode('style').specified);
   }
 
@@ -1118,7 +1156,7 @@ function testPrepareContent() {
 
 function testScrubImagesRemovesCustomAttributes() {
   var fieldElem = goog.dom.getElement('real-field');
-  fieldElem.innerHTML = '';
+  goog.dom.removeChildren(fieldElem);
   var attrs = {'src': 'http://www.google.com/foo.jpg',
     'tabIndex': '0',
     'tabIndexSet': '0'};

@@ -22,11 +22,11 @@ goog.provide('goog.editor.plugins.LinkBubble.Action');
 
 goog.require('goog.array');
 goog.require('goog.dom');
+goog.require('goog.dom.Range');
 goog.require('goog.dom.TagName');
 goog.require('goog.editor.Command');
 goog.require('goog.editor.Link');
 goog.require('goog.editor.plugins.AbstractBubblePlugin');
-goog.require('goog.editor.range');
 goog.require('goog.functions');
 goog.require('goog.string');
 goog.require('goog.style');
@@ -417,14 +417,19 @@ goog.editor.plugins.LinkBubble.prototype.createBubbleContents = function(
 /**
  * Tests the link by opening it in a new tab/window. Should be used as the
  * click event handler for the test pseudo-link.
+ * @param {!Event=} opt_event If passed in, the event will be stopped.
  * @protected
  */
-goog.editor.plugins.LinkBubble.prototype.testLink = function() {
+goog.editor.plugins.LinkBubble.prototype.testLink = function(opt_event) {
   goog.window.open(this.getTestLinkAction_(),
       {
         'target': '_blank',
         'noreferrer': this.stopReferrerLeaks_
       }, this.getFieldObject().getAppWindow());
+  if (opt_event) {
+    opt_event.stopPropagation();
+    opt_event.preventDefault();
+  }
 };
 
 
@@ -480,20 +485,30 @@ goog.editor.plugins.LinkBubble.prototype.showLinkDialog_ = function(e) {
 
 /**
  * Deletes the link associated with the bubble
+ * @param {goog.events.BrowserEvent} e The event.
  * @private
  */
-goog.editor.plugins.LinkBubble.prototype.deleteLink_ = function() {
+goog.editor.plugins.LinkBubble.prototype.deleteLink_ = function(e) {
+  // Needed when this occurs due to an ENTER key event, else the editor receives
+  // the key press and inserts a newline.
+  e.preventDefault();
+
   this.getFieldObject().dispatchBeforeChange();
 
   var link = this.getTargetElement();
   var child = link.lastChild;
   goog.dom.flattenElement(link);
-  goog.editor.range.placeCursorNextTo(child, false);
+
+  var restoreScrollPosition = this.saveScrollPosition();
+  var range = goog.dom.Range.createFromNodeContents(child);
+  range.collapse(false);
+  range.select();
 
   this.closeBubble();
 
   this.getFieldObject().dispatchChange();
   this.getFieldObject().focus();
+  restoreScrollPosition();
 };
 
 

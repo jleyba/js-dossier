@@ -50,8 +50,10 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
+import com.google.javascript.rhino.IR;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.Node;
+import com.google.javascript.rhino.StaticSourceFile;
 import com.google.javascript.rhino.jstype.FunctionType;
 import com.google.javascript.rhino.jstype.JSType;
 import com.google.javascript.rhino.jstype.JSTypeRegistry;
@@ -649,7 +651,7 @@ final class TypeInspector {
     PropertyDocs foundDocs = findPropertyDocs(docs, overrides, new Predicate<JsDoc>() {
       @Override
       public boolean apply(JsDoc input) {
-        return input.hasAnnotation(Annotation.PARAM);
+        return !input.getParameters().isEmpty();
       }
     });
 
@@ -954,6 +956,22 @@ final class TypeInspector {
     return expressionParserFactory
         .create(linkFactory.withTypeContext(context))
         .parse(type);
+  }
+
+  static Node fakeNodeForType(final NominalType type) {
+    Node fakeNode = IR.script();
+    fakeNode.getSourceFileName();
+    fakeNode.setStaticSourceFile(
+        new StaticSourceFile() {
+          @Override public String getName() { return type.getSourceFile().toString(); }
+          @Override public boolean isExtern() { return false; }
+          @Override public int getLineOffset(int lineNumber) { return 0; }
+          @Override public int getLineOfOffset(int offset) { return 0; }
+          @Override public int getColumnOfOffset(int offset) { return 0; }
+        }
+    );
+    fakeNode.setLineno(type.getSourcePosition().getLine());
+    return fakeNode;
   }
 
   private static String stripHash(String text) {

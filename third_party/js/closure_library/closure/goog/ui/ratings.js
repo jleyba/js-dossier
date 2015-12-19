@@ -154,7 +154,7 @@ goog.ui.Ratings.prototype.decorateInternal = function(el) {
   }
   this.setSelectedIndex(select.selectedIndex);
   select.style.display = 'none';
-  this.attachedFormField_ = select;
+  this.attachedFormField_ = /** @type {HTMLSelectElement} */(select);
   this.createDom();
   el.insertBefore(this.getElement(), select);
 };
@@ -168,6 +168,7 @@ goog.ui.Ratings.prototype.decorateInternal = function(el) {
 goog.ui.Ratings.prototype.enterDocument = function() {
   var el = this.getElement();
   goog.asserts.assert(el, 'The DOM element for ratings cannot be null.');
+  goog.ui.Ratings.base(this, 'enterDocument');
   el.tabIndex = 0;
   goog.dom.classlist.add(el, this.getCssClass());
   goog.a11y.aria.setRole(el, goog.a11y.aria.Role.SLIDER);

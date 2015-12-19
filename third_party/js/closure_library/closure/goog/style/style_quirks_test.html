@@ -15,6 +15,7 @@ See the COPYING file for details.
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0,
     maximum-scale=1.0, minimum-scale=1.0, user-scalable=0">
+<meta charset="UTF-8" />
 <title>Closure Unit Tests - goog.dom.style</title>
 <script src="../base.js"></script>
 <script>goog.require('goog.userAgent');</script>
@@ -318,6 +319,15 @@ i {
     <div class=ltr>
       <div id='rtl10'>left to right (css)</div>
     </div>
+  </div>
+
+  <div id="unselectable-gecko" style="-moz-user-select:none">no-select</div>
+  <div id="unselectable-webkit" style="-webkit-user-select:none">no-select</div>
+  <div id="unselectable-ie" unselectable="on">no-select</div>
+
+  <div id="make-unselectable">
+    <p>Can't touch this <aside>(Oh-oh oh oh-oh)</aside></p>
+    <div><em>Stop.</em> Hammer <math><mo>×</mo></math></div>
   </div>
 
   <div id="pos-scroll-abs">

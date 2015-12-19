@@ -34,6 +34,7 @@ goog.require('goog.async.Delay');
 goog.require('goog.dom');
 goog.require('goog.dom.Range');
 goog.require('goog.dom.TagName');
+goog.require('goog.dom.classlist');
 goog.require('goog.editor.BrowserFeature');
 goog.require('goog.editor.Command');
 goog.require('goog.editor.Plugin');
@@ -168,12 +169,15 @@ goog.editor.Field = function(id, opt_doc) {
   var doc = opt_doc || document;
 
   /**
-   * @type {!goog.dom.DomHelper}
+   * The dom helper for the node to be made editable.
+   * @type {goog.dom.DomHelper}
    * @protected
    */
   this.originalDomHelper = goog.dom.getDomHelper(doc);
 
   /**
+   * The original node that is being made editable, or null if it has
+   * not yet been found.
    * @type {Element}
    * @protected
    */
@@ -197,15 +201,6 @@ goog.inherits(goog.editor.Field, goog.events.EventTarget);
  * TODO(user): Make this private!
  */
 goog.editor.Field.prototype.field = null;
-
-
-/**
- * The original node that is being made editable, or null if it has
- * not yet been found.
- * @type {Element}
- * @protected
- */
-goog.editor.Field.prototype.originalElement = null;
 
 
 /**
@@ -273,6 +268,15 @@ goog.editor.Field.EventType = {
    */
   IFRAME_RESIZED: 'ifrsz',
   /**
+   * Dispatched after a user action that will eventually fire a SELECTIONCHANGE
+   * event. For mouseups, this is fired immediately before SELECTIONCHANGE,
+   * since {@link #handleMouseUp_} fires SELECTIONCHANGE immediately. May be
+   * fired up to {@link #SELECTION_CHANGE_FREQUENCY_} ms before SELECTIONCHANGE
+   * is fired in the case of keyup events, since they use
+   * {@link #selectionChangeTimer_}.
+   */
+  BEFORESELECTIONCHANGE: 'beforeselectionchange',
+  /**
    * Dispatched when the selection changes.
    * Use handleSelectionChange from plugin API instead of listening
    * directly to this event.
@@ -328,14 +332,6 @@ goog.editor.Field.prototype.inModalMode_ = false;
  * @private
  */
 goog.editor.Field.prototype.appWindow_;
-
-
-/**
- * The dom helper for the node to be made editable.
- * @type {goog.dom.DomHelper}
- * @protected
- */
-goog.editor.Field.prototype.originalDomHelper;
 
 
 /**
@@ -1283,6 +1279,11 @@ goog.editor.Field.prototype.getInjectableContents = function(contents, styles) {
  * @private
  */
 goog.editor.Field.prototype.handleKeyDown_ = function(e) {
+  // Mac only fires Cmd+A for keydown, not keyup: b/22407515.
+  if (goog.userAgent.MAC && e.keyCode == goog.events.KeyCodes.A) {
+    this.maybeStartSelectionChangeTimer_(e);
+  }
+
   if (!goog.editor.BrowserFeature.USE_MUTATION_EVENTS) {
     if (!this.handleBeforeChangeKeyEvent_(e)) {
       return;
@@ -1322,7 +1323,7 @@ goog.editor.Field.prototype.handleKeyPress_ = function(e) {
 
 /**
  * Handles keyup on the field.
- * @param {goog.events.BrowserEvent} e The browser event.
+ * @param {!goog.events.BrowserEvent} e The browser event.
  * @private
  */
 goog.editor.Field.prototype.handleKeyUp_ = function(e) {
@@ -1335,7 +1336,18 @@ goog.editor.Field.prototype.handleKeyUp_ = function(e) {
   }
 
   this.invokeShortCircuitingOp_(goog.editor.Plugin.Op.KEYUP, e);
+  this.maybeStartSelectionChangeTimer_(e);
+};
 
+
+/**
+ * Fires {@code BEFORESELECTIONCHANGE} and starts the selection change timer
+ * (which will fire {@code SELECTIONCHANGE}) if the given event is a key event
+ * that causes a selection change.
+ * @param {!goog.events.BrowserEvent} e The browser event.
+ * @private
+ */
+goog.editor.Field.prototype.maybeStartSelectionChangeTimer_ = function(e) {
   if (this.isEventStopped(goog.editor.Field.EventType.SELECTIONCHANGE)) {
     return;
   }
@@ -1343,6 +1355,7 @@ goog.editor.Field.prototype.handleKeyUp_ = function(e) {
   if (goog.editor.Field.SELECTION_CHANGE_KEYCODES[e.keyCode] ||
       ((e.ctrlKey || e.metaKey) &&
        goog.editor.Field.CTRL_KEYS_CAUSING_SELECTION_CHANGES_[e.keyCode])) {
+    this.dispatchEvent(goog.editor.Field.EventType.BEFORESELECTIONCHANGE);
     this.selectionChangeTimer_.start();
   }
 };
@@ -1378,6 +1391,13 @@ goog.editor.Field.prototype.handleKeyboardShortcut_ = function(e) {
     }
 
     var stringKey = String.fromCharCode(key).toLowerCase();
+    // Ctrl+Cmd+Space generates a charCode for a backtick on Mac Firefox, but
+    // has the correct string key in the browser event.
+    if (goog.userAgent.MAC && goog.userAgent.GECKO &&
+        stringKey == '`' && e.getBrowserEvent().key == ' ') {
+      stringKey = ' ';
+    }
+
     if (this.invokeShortCircuitingOp_(goog.editor.Plugin.Op.SHORTCUT,
                                       e, stringKey, isModifierPressed)) {
       e.preventDefault();
@@ -1937,7 +1957,7 @@ goog.editor.Field.prototype.dispatchFocus_ = function() {
     var range = this.getRange();
 
     if (range) {
-      var focusNode = range.getFocusNode();
+      var focusNode = /** @type {!Element} */ (range.getFocusNode());
       if (range.getFocusOffset() == 0 && (!focusNode || focusNode == field ||
           focusNode.tagName == goog.dom.TagName.BODY)) {
         goog.editor.range.selectNodeStart(field);
@@ -2007,7 +2027,8 @@ goog.editor.Field.prototype.handleMouseDown_ = function(e) {
   if (goog.userAgent.IE) {
     var targetElement = e.target;
     if (targetElement &&
-        targetElement.tagName == goog.dom.TagName.A && e.ctrlKey) {
+        /** @type {!Element} */ (targetElement).tagName == goog.dom.TagName.A &&
+        e.ctrlKey) {
       this.originalDomHelper.getWindow().open(targetElement.href);
     }
   }
@@ -2043,6 +2064,7 @@ goog.editor.Field.prototype.handleMouseUp_ = function(e) {
    * retrieve the selection with goog.dom.Range may see an out-of-date
    * selection range.
    */
+  this.dispatchEvent(goog.editor.Field.EventType.BEFORESELECTIONCHANGE);
   this.dispatchSelectionChangeEvent(e);
   if (goog.userAgent.IE) {
     /*
@@ -2368,15 +2390,10 @@ goog.editor.Field.prototype.placeCursorAtStartOrEnd_ = function(isStart) {
  * @param {goog.dom.SavedRange=} opt_range A previously saved selected range.
  */
 goog.editor.Field.prototype.restoreSavedRange = function(opt_range) {
-  if (goog.userAgent.IE) {
-    this.focus();
-  }
   if (opt_range) {
     opt_range.restore();
   }
-  if (!goog.userAgent.IE) {
-    this.focus();
-  }
+  this.focus();
 };
 
 
@@ -2397,7 +2414,7 @@ goog.editor.Field.prototype.makeEditable = function(opt_iframeSrc) {
   this.savedClassName_ = field.className;
   this.setInitialStyle(field.style.cssText);
 
-  field.className += ' editable';
+  goog.dom.classlist.add(field, 'editable');
 
   this.makeEditableInternal(opt_iframeSrc);
 };

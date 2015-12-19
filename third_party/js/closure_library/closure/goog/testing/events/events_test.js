@@ -64,7 +64,7 @@ function setUp() {
   goog.events.removeAll(parentEl);
   goog.events.removeAll(childEl);
 
-  root.innerHTML = '';
+  goog.dom.removeChildren(root);
   firedEventTypes = [];
   firedEventCoordinates = [];
   firedScreenCoordinates = [];
@@ -139,6 +139,20 @@ function tearDownPage() {
           e.type, e.clientX, e.clientY);
     });
   }
+}
+
+function testMouseEnter() {
+  goog.testing.events.fireMouseEnterEvent(root, null);
+  goog.testing.events.fireMouseEnterEvent(root, null, coordinate);
+  assertEventTypes(['mouseenter', 'mouseenter']);
+  assertCoordinates([goog.style.getClientPosition(root), coordinate]);
+}
+
+function testMouseLeave() {
+  goog.testing.events.fireMouseLeaveEvent(root, null);
+  goog.testing.events.fireMouseLeaveEvent(root, null, coordinate);
+  assertEventTypes(['mouseleave', 'mouseleave']);
+  assertCoordinates([goog.style.getClientPosition(root), coordinate]);
 }
 
 function testMouseOver() {
@@ -360,7 +374,8 @@ function testKeySequenceCancellingKeyup() {
 function testKeySequenceWithEscapeKey() {
   assertTrue(goog.testing.events.fireKeySequence(
       root, goog.events.KeyCodes.ESC));
-  if (goog.userAgent.WEBKIT && goog.userAgent.isVersionOrHigher('525')) {
+  if (goog.userAgent.EDGE ||
+      (goog.userAgent.WEBKIT && goog.userAgent.isVersionOrHigher('525'))) {
     assertEventTypes(['keydown', 'keyup']);
   } else {
     assertEventTypes(['keydown', 'keypress', 'keyup']);
