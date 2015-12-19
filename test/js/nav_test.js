@@ -34,7 +34,7 @@ function assertNode(node, key, value) {
 
 
 function testBuildTree_singleNode() {
-  var input = {name: 'foo'};
+  var input = {name: 'foo', qualifiedName: 'foo'};
   var root = nav.buildTree([input]);
 
   assertEquals(1, root.getChildCount());
@@ -43,7 +43,7 @@ function testBuildTree_singleNode() {
 
 
 function testBuildTree_singleNodeIsNestedNamespace() {
-  var input = {name: 'foo.bar'};
+  var input = {name: 'foo.bar', qualifiedName: 'foo.bar'};
   var root = nav.buildTree([input]);
 
   assertEquals(1, root.getChildCount());
@@ -52,8 +52,8 @@ function testBuildTree_singleNodeIsNestedNamespace() {
 
 
 function testBuildTree_multipleNamespaces() {
-  var foo = {name: 'foo'};
-  var bar = {name: 'bar'};
+  var foo = {name: 'foo', qualifiedName: 'foo'};
+  var bar = {name: 'bar', qualifiedName: 'bar'};
   var root = nav.buildTree([foo, bar]);
 
   assertEquals(2, root.getChildCount());
@@ -64,12 +64,12 @@ function testBuildTree_multipleNamespaces() {
 
 function testBuildTree_nestedNamespaces() {
   var input = [
-    {name: 'foo', namespace: true},
-    {name: 'foo.bar', namespace: true},
-    {name: 'foo.baz', namespace: true},
-    {name: 'foo.quot', namespace: true},
-    {name: 'foo.quot.quux', namespace: true},
-    {name: 'foo.one.two'}
+    {name: 'foo', qualifiedName: 'foo', namespace: true},
+    {name: 'foo.bar', qualifiedName: 'foo.bar', namespace: true},
+    {name: 'foo.baz', qualifiedName: 'foo.baz', namespace: true},
+    {name: 'foo.quot', qualifiedName: 'foo.quot', namespace: true},
+    {name: 'foo.quot.quux', qualifiedName: 'foo.quot.quux', namespace: true},
+    {name: 'foo.one.two', qualifiedName: 'foo.one.two'}
   ];
   var root = nav.buildTree(input);
 
@@ -91,11 +91,11 @@ function testBuildTree_nestedNamespaces() {
 
 function testBuildTree_multiRooted() {
   var input = [
-    {name: 'foo', namespace: true},
-    {name: 'foo.bar', namespace: true},
-    {name: 'foo.baz', namespace: true},
-    {name: 'quot.quux', namespace: true},
-    {name: 'quot.quux.one.two'}
+    {name: 'foo', qualifiedName: 'foo', namespace: true},
+    {name: 'foo.bar', qualifiedName: 'foo.bar', namespace: true},
+    {name: 'foo.baz', qualifiedName: 'foo.baz', namespace: true},
+    {name: 'quot.quux', qualifiedName: 'quot.quux', namespace: true},
+    {name: 'quot.quux.one.two', qualifiedName: 'quot.quux.one.two'}
   ];
 
   var root = nav.buildTree(input);
@@ -117,10 +117,10 @@ function testBuildTree_multiRooted() {
 
 function testBuildTree_collapsesNamespacesWithNoDataAndOneChild() {
   var input = [
-    {name: 'foo.bar.one'},
-    {name: 'foo.bar.two'},
-    {name: 'foo.baz.quot'},
-    {name: 'foo.baz.quux'}
+    {name: 'foo.bar.one', qualifiedName: 'foo.bar.one'},
+    {name: 'foo.bar.two', qualifiedName: 'foo.bar.two'},
+    {name: 'foo.baz.quot', qualifiedName: 'foo.baz.quot'},
+    {name: 'foo.baz.quux', qualifiedName: 'foo.baz.quux'}
   ];
 
   var root = nav.buildTree(input);
@@ -146,11 +146,11 @@ function testBuildTree_collapsesNamespacesWithNoDataAndOneChild() {
 
 function testBuildTree_attachesNestedClassesToParentNamespace() {
   var input = [
-    {name: 'foo', namespace: true},
-    {name: 'foo.Bar'},
-    {name: 'foo.Bar.Baz'},
-    {name: 'foo.Bar.Quot'},
-    {name: 'foo.Bar.Quot.Quux'}
+    {name: 'foo', qualifiedName: 'foo', namespace: true},
+    {name: 'Bar', qualifiedName: 'foo.Bar'},
+    {name: 'Baz', qualifiedName: 'foo.Bar.Baz'},
+    {name: 'Quot', qualifiedName: 'foo.Bar.Quot'},
+    {name: 'Quux', qualifiedName: 'foo.Bar.Quot.Quux'}
   ];
 
   var root = nav.buildTree(input);
@@ -168,8 +168,10 @@ function testBuildTree_attachesNestedClassesToParentNamespace() {
 
 function testBuildTree_modulesAreAlwaysUnderRoot() {
   var input = [
-    {name: 'foo', types: [{name: 'Clazz'}]},
-    {name: 'foo.bar'}
+    {name: 'foo', qualifiedName: 'foo', types: [{
+      name: 'Clazz', qualifiedName: 'foo.Clazz'
+    }]},
+    {name: 'foo.bar', qualifiedName: 'foo.bar'}
   ];
 
   var root = nav.buildTree(input, true);
@@ -185,10 +187,10 @@ function testBuildTree_modulesAreAlwaysUnderRoot() {
 
 function testBuildTree_sortsNodesByKey() {
   var input = [
-    {name: 'zz.bb'},
-    {name: 'zz.aa'},
-    {name: 'zz', namespace: true},
-    {name: 'aa'}
+    {name: 'zz.bb', qualifiedName: 'zz.bb'},
+    {name: 'zz.aa', qualifiedName: 'zz.aa'},
+    {name: 'zz', qualifiedName: 'zz', namespace: true},
+    {name: 'aa', qualifiedName: 'aa'}
   ];
 
   var root = nav.buildTree(input);
@@ -205,23 +207,36 @@ function testBuildTree_sortsNodesByKey() {
 
 function testBuildList() {
   var input = [
-    {name: 'GlobalCtor', href: 'class_GlobalCtor.html'},
-    {name: 'GlobalCtor.Other', href: 'class_GlobalCtor_Other.html'},
+    {name: 'GlobalCtor',
+     qualifiedName: 'GlobalCtor',
+     href: 'class_GlobalCtor.html'},
+    {name: 'Other',
+     qualifiedName: 'GlobalCtor.Other',
+     href: 'class_GlobalCtor_Other.html'},
     {name: 'closure.module',
+     qualifiedName: 'closure.module',
      href: 'namespace_closure_module.html',
      namespace: true},
-    {name: 'closure.module.Clazz',
+    {name: 'Clazz',
+     qualifiedName: 'closure.module.Clazz',
      href: 'class_closure_module_Clazz.html'},
-    {name: 'closure.module.PubClass',
+    {name: 'PubClass',
+     qualifiedName: 'closure.module.PubClass',
      href: 'class_closure_module_PubClass.html'},
     {name: 'foo',
+     qualifiedName: 'foo',
      href: 'namespace_foo.html',
      namespace: true},
-    {name: 'foo.One', href: 'class_foo_One.html'},
+    {name: 'One',
+     qualifiedName: 'foo.One',
+     href: 'class_foo_One.html'},
     {name: 'foo.quot',
+     qualifiedName: 'foo.quot',
      href: 'namespace_foo_quot.html',
      namespace: true},
-    {name: 'foo.quot.OneBarAlias', href: 'class_foo_quot_OneBarAlias.html'}
+    {name: 'OneBarAlias',
+     qualifiedName: 'foo.quot.OneBarAlias',
+     href: 'class_foo_quot_OneBarAlias.html'}
   ];
 
   var root = nav.buildList(input, '');
@@ -266,13 +281,28 @@ function testBuildList() {
 
 function testBuildList_forModules() {
   var input = [
-    {name: 'example', href: 'module_example.html',
-     types: [{name: 'Greeter', href: 'type_Greeter.html'},
-             {name: 'foo', namespace: true, href: 'type_foo.html'},
-             {name: 'foo.bar', href: 'type_foo.bar.html'}]},
-    {name: 'example/nested', href: 'module_example_nested.html',
-     types: [{name: 'IdGenerator', href: 'type_IdGenerator.html'},
-             {name: 'IdGenerator.Impl', href: 'type_IdGenerator.Impl.html'}]}
+    {name: 'example',
+     qualifiedName: 'example',
+     href: 'module_example.html',
+     types: [{name: 'Greeter',
+              qualifiedName: 'example.Greeter',
+              href: 'type_Greeter.html'},
+             {name: 'foo',
+              qualifiedName: 'example.foo',
+              namespace: true,
+              href: 'type_foo.html'},
+             {name: 'foo.bar',
+              qualifiedName: 'example.foo.bar',
+              href: 'type_foo.bar.html'}]},
+    {name: 'example/nested',
+     qualifiedName: 'example/nested',
+     href: 'module_example_nested.html',
+     types: [{name: 'IdGenerator',
+              qualifiedName: 'example/nested.IdGenerator',
+              href: 'type_IdGenerator.html'},
+             {name: 'IdGenerator.Impl',
+              qualifiedName: 'example/nested.IdGenerator.Impl',
+              href: 'type_IdGenerator.Impl.html'}]}
   ];
 
   var root = nav.buildList(input, '', '', true);
@@ -314,7 +344,8 @@ function testBuildList_forModules() {
 
 
 function testBuildList_prependsBasePathToLinks() {
-  var input = [{name: 'GlobalCtor', href: 'class_GlobalCtor.html'}];
+  var input = [{name: 'GlobalCtor', qualifiedName: 'GlobalCtor',
+                href: 'class_GlobalCtor.html'}];
 
   var root = nav.buildList(input, '../..');
   var el = root.querySelector('a[href]');
@@ -323,7 +354,8 @@ function testBuildList_prependsBasePathToLinks() {
 
 
 function testBuildList_marksTheNodeForTheCurrentFile() {
-  var input = [{name: 'GlobalCtor', href: 'class_GlobalCtor.html'}];
+  var input = [{name: 'GlobalCtor', qualifiedName: 'GlobalCtor',
+                href: 'class_GlobalCtor.html'}];
 
   var root = nav.buildList(input, '../..', 'class_GlobalCtor.html');
   var el = root.querySelector('.current');
@@ -334,8 +366,11 @@ function testBuildList_marksTheNodeForTheCurrentFile() {
 
 function testBuildList_marksTheNodeForTheCurrentFile_namespace() {
   var input = [
-    {name: 'foo', namespace: true, href: 'class_GlobalCtor.html'},
-    {name: 'foo.bar', href: ''}
+    {name: 'foo',
+     qualifiedName: 'foo',
+     namespace: true,
+     href: 'class_GlobalCtor.html'},
+    {name: 'foo.bar', qualifiedName: 'foo.bar', href: ''}
   ];
 
   var root = nav.buildList(input, '../..', 'class_GlobalCtor.html');

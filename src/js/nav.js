@@ -198,27 +198,28 @@ function sortTree(root) {
  *
  * @param {!Array<!Descriptor>} descriptors The descriptors.
  * @param {boolean} isModule Whether the descriptors describe CommonJS modules.
+ * @param {TreeNode=} opt_root The root node. If not provided, one will be
+ *     created.
  * @return {!TreeNode} The root of the tree node.
  */
-exports.buildTree = function(descriptors, isModule) {
-  /** @type {!TreeNode} */
-  var root = new TreeNode('', null);
+exports.buildTree = function(descriptors, isModule, opt_root) {
+  let root = opt_root || new TreeNode('', null);
   descriptors.forEach(function(descriptor) {
     if (isModule) {
-      var moduleRoot;
-      if (descriptor.types) {
-        moduleRoot = exports.buildTree(descriptor.types, false);
-        moduleRoot.setKey(descriptor.name);
-        moduleRoot.setValue(descriptor);
-      } else {
-        moduleRoot = new TreeNode(descriptor.name, descriptor);
-      }
+      let moduleRoot = new TreeNode(descriptor.name, descriptor);
       root.addChild(moduleRoot);
+      if (descriptor.types) {
+        let ret = exports.buildTree(descriptor.types, false, moduleRoot);
+        assert(ret === moduleRoot);
+      }
       return;
     }
 
     var currentNode = root;
-    descriptor.name.split(/\./).forEach(function(part) {
+    descriptor.qualifiedName.split(/\./).forEach(function(part) {
+      if (currentNode === root && currentNode.getKey() === part) {
+        return;
+      }
       var found = currentNode.findChild(part);
       if (!found) {
         found = new TreeNode(part, null);
