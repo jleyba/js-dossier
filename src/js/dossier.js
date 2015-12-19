@@ -165,6 +165,13 @@ dossier.initSearchBox_ = function(typeInfo) {
   input.setAttribute(
       'title', 'Search (' + (goog.userAgent.MAC ? '⌘' : 'Ctrl+') + 'E)');
 
+  var icon = searchForm.querySelector('.material-icons');
+  if (icon) {
+    goog.events.listen(icon, goog.events.EventType.CLICK, function() {
+      input.focus();
+    });
+  }
+
   var ac = dossier.createAutoComplete_(allTerms, input);
 
   goog.events.listen(ac,

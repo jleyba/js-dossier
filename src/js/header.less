@@ -32,7 +32,7 @@ header {
   background: @banner_color;
 
   @input_height: 36px;
-  @control_bg: rgba(255, 255, 255, 0.15);
+  @control_bg: rgba(255, 255, 255, 0.1);
 
   form {
     height: @header_height;
@@ -79,6 +79,9 @@ header {
     max-width: @max_search_width;
     width: ~"calc(100% - " @search_icon_width ~")";
 
+    font-size: 16px;
+    font-weight: 300;
+
     padding: 0 10px 0 0;
     border: 0;
 
@@ -89,9 +92,11 @@ header {
     -o-appearance: none;
     appearance: none;
 
-    &::-webkit-input-placeholder { color: #fff; }
-    &::-moz-placeholder { color: #fff; }
-    &:-ms-input-placeholder { color: #fff; }
+    @placeholder_color: rgba(255, 255, 255, 0.75);
+
+    &::-webkit-input-placeholder { color: @placeholder_color; }
+    &::-moz-placeholder { color: @placeholder_color; }
+    &:-ms-input-placeholder { color: @placeholder_color; }
 
     & + .material-icons {
       width: @search_icon_width;
@@ -102,12 +107,12 @@ header {
 
     &, & + .material-icons {
       transition: background .2s, color .2s;
-      color: #fff;
+      color: @placeholder_color;
       background: @control_bg;
     }
 
     &:hover, &:hover + .material-icons {
-      background: rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.15);
     }
 
     &:focus {
