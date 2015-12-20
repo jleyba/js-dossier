@@ -34,6 +34,13 @@
   overflow-y: scroll;
   -webkit-overflow-scrolling: touch;
 
+  &::-webkit-scrollbar-thumb {
+    background: transparent;
+  }
+  &:hover::-webkit-scrollbar-thumb {
+    .scroll-thumb();
+  }
+
   font-size: 13px;
   background: #fff;
 

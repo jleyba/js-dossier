@@ -330,8 +330,8 @@ strong {
 }
 
 ::-webkit-scrollbar {
-  height: 15px;
-  width: 15px;
+  height: 8px;
+  width: 8px;
 }
 
 ::-webkit-scrollbar-button {
@@ -339,13 +339,9 @@ strong {
   width: 0;
 }
 
-::-webkit-scrollbar-thumb {
-  background-clip: padding-box;
-  background-color: rgba(0, 0, 0, .3);
-  border: 5px solid transparent;
+.scroll-thumb() {
+  background: rgba(0, 0, 0, .2);
 }
-
-::-webkit-scrollbar-thumb:hover,
-::-webkit-scrollbar-thumb:active{
-  background-color: rgba(0, 0, 0, .4);
+::-webkit-scrollbar-thumb {
+  .scroll-thumb();
 }
