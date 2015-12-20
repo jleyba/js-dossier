@@ -36,7 +36,6 @@ js_binary(
         "--jscomp_error=visibility",
         "--language_in=ECMASCRIPT6_STRICT",
         "--language_out=ECMASCRIPT5_STRICT",
-        "--formatting=pretty_print",
         "--third_party=false",
         "--output_wrapper=\\\"(function(){%output%;init();}).call(this);\\\"",
     ],

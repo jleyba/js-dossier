@@ -53,6 +53,7 @@ dossier.init = function() {
   dossier.initSearchBox_(typeInfo);
   dossier.initNavList_(typeInfo);
   dossier.initSourceHilite_();
+  setTimeout(dossier.adjustTarget_, 0);
 };
 goog.exportSymbol('init', dossier.init);
 
@@ -88,6 +89,24 @@ dossier.BASE_PATH_ = (function() {
   }
   return basePath;
 })();
+
+
+/**
+ * Scrolls the page to ensure the active target (if any) is not hidden by the
+ * fixed position header.
+ * @private
+ */
+dossier.adjustTarget_ = function() {
+  let target = document.querySelector(':target');
+  if (!target) {
+    return;
+  }
+  let position = target.getBoundingClientRect();
+  if (position.top < 56) {
+    let scrollBy = 64 - position.top;
+    document.body.scrollTop -= scrollBy;
+  }
+};
 
 
 /**
