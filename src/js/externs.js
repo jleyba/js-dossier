@@ -35,10 +35,10 @@ Descriptor.prototype.interface = false;
 /** @type {string} */
 Descriptor.prototype.href = '';
 
-/** @type {Array<!Descriptor>} */
+/** @type {Array<string>} */
 Descriptor.prototype.statics = null;
 
-/** @type {Array<!Descriptor>} */
+/** @type {Array<string>} */
 Descriptor.prototype.members = null;
 
 /** @type {Array<!Descriptor>} */

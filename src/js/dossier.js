@@ -238,6 +238,8 @@ dossier.createAutoComplete_ = function(data, input) {
  * @private
  */
 dossier.addTypes_ = function(terms, nameToHref, descriptor) {
+  let baseName = goog.array.peek(descriptor.qualifiedName.split(/\./));
+
   nameToHref[descriptor.qualifiedName] = descriptor.href;
   terms.push(descriptor.qualifiedName);
 
@@ -250,6 +252,11 @@ dossier.addTypes_ = function(terms, nameToHref, descriptor) {
   if (descriptor.statics) {
     goog.array.forEach(descriptor.statics, function(name) {
       var href = descriptor.href + '#' + name;
+
+      if (name.startsWith(baseName + '.')) {
+        name = name.substring(baseName.length + 1);
+      }
+
       name = descriptor.qualifiedName + '.' + name;
       nameToHref[name] = href;
       terms.push(name);
