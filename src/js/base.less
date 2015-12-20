@@ -108,11 +108,8 @@ html {
 
 body {
   min-height: 100vh;
-  // IE requires an explicit height for flex-direction: column to work.
-  // See https://connect.microsoft.com/IE/feedback/details/802625
   height: 100%;
-  display: flex;
-  flex-direction: column;
+  overflow: hidden;
 
   background: @body_bg;
   color: @font_color;
@@ -123,6 +120,18 @@ body {
   font-weight: 300;
   line-height: 1.4;
   -webkit-font-smoothing: subpixel-antialiased;
+}
+
+.content {
+  width: 100%;
+  height: ~"calc(100% - " @header_height ~")";
+  position: absolute;
+  top: @header_height;
+
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 h1, h2, h3, h4, h5, h6 { line-height: 1.1; }

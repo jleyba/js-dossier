@@ -104,7 +104,7 @@ dossier.adjustTarget_ = function() {
   let position = target.getBoundingClientRect();
   if (position.top < 56) {
     let scrollBy = 64 - position.top;
-    document.body.scrollTop -= scrollBy;
+    document.querySelector('.content').scrollTop -= scrollBy;
   }
 };
 
@@ -306,7 +306,7 @@ dossier.initNavList_ = function(typeInfo) {
   const navEl = document.querySelector('nav');
 
   const mask = nav.createMask();
-  navEl.parentNode.insertBefore(mask, navEl.nextSibling);
+  navEl.parentNode.appendChild(mask);
 
   const toggleVisibility = () => navEl.classList.toggle('visible');
   goog.events.listen(mask, goog.events.EventType.CLICK, toggleVisibility);
