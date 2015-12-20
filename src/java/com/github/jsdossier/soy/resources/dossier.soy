@@ -215,15 +215,12 @@
  */
 {template .deprecationNotice private="true"}
   {@param deprecation: dossier.Comment}
-  {@param? inList: bool}
   {if $deprecation and length($deprecation.token)}
-    {if not $inList}<dl>{/if}
-      <dt class="spec">Deprecated
-      <dd>
-      {call .comment}
-        {param comment: $deprecation /}
-      {/call}
-    {if not $inList}</dl>{/if}
+    <dt class="spec">Deprecated
+    <dd>
+    {call .comment}
+      {param comment: $deprecation /}
+    {/call}
   {/if}
 {/template}
 
@@ -236,7 +233,7 @@
 
   {if length($enumeration.value)}
     <section class="enum-values">
-      <h2>Values and Descriptions</h2>
+      <h2>Members</h2>
       <section class="property">
         {foreach $value in $enumeration.value}
           <div id="{$value.name}">
@@ -249,9 +246,11 @@
                   {call .comment}
                     {param comment: $value.description /}
                   {/call}
-                  {call .deprecationNotice}
-                    {param deprecation: $value.deprecation /}
-                  {/call}
+                  <dl>
+                    {call .deprecationNotice}
+                      {param deprecation: $value.deprecation /}
+                    {/call}
+                  </dl>
               {/if}
             </dl>
           </div>
@@ -294,53 +293,6 @@
 
 
 /**
- * Generates the table rows for describing a function's return value. Will
- * only generate content if there is a return description, or a non-vacuous
- * return type expression (i.e. nothing will be generated if the only
- * return detail is the type is "*", "undefined", etc.)
- */
-{template .returnDetails}
-  {@param details: dossier.Function.Detail}
-
-  {let $returnType kind="html"}
-    {if $details}
-      {call .comment}
-        {param comment: $details.type /}
-      {/call}
-    {/if}
-  {/let}
-
-  {let $returnComment kind="html"}
-    {if $details}
-      {call .comment}
-        {param comment: $details.description /}
-      {/call}
-    {/if}
-  {/let}
-
-  /*
-   * In Closure code developers will often omit an actual comment
-   * while still satisfying the linter by writing:
-   *     @return {string} .
-   *
-   * We ignore these comments.
-   */
-  {let $hasComment: $returnComment and $returnComment != '.' /}
-
-  {if $returnType or $hasComment}
-    <h6 class="detail">
-      Returns{if $returnType}{sp}<code>{$returnType}</code>{/if}
-    </h6>
-    <div class="detail">
-      {if $hasComment}
-        {$returnComment}
-      {/if}
-    </div>
-  {/if}
-{/template}
-
-
-/**
  * Generates the table rows that describe some typed details about a function,
  * such as the named parameters or the conditions under which the function will
  * throw.
@@ -351,12 +303,12 @@
   {@param? fillEmpty: bool}
 
   {if $fillEmpty or ($details and length($details) > 0)}
-    <h6 class="detail">{$header}</h6>
-    <div class="detail">
+    <dt class="spec">{$header}</dt>
+    <dd>
       <dl>
         {if $details and length($details) > 0}
           {foreach $detail in $details}
-            <dt>
+            <dt{if $detail.name} class="named"{/if}>
             {if $detail.name}{$detail.name}{/if}
             {if $detail.type and length($detail.type.token)}
               <code>
@@ -380,7 +332,7 @@
           <dd><p>None.</p>
         {/if}
       </dl>
-    </div>
+    </dd>
   {/if}
 {/template}
 
@@ -405,9 +357,13 @@
       {param details: $fn.parameter /}
       {param fillEmpty: $forceParams /}
     {/call}
-    {if not $fn.isConstructor}
-      {call .returnDetails}
-        {param details: $fn.return /}
+    {if not $fn.isConstructor
+        and $fn.return
+        and (($fn.return.description and length($fn.return.description.token)) or
+             ($fn.return.type and length($fn.return.type.token)))}
+      {call .typeDetails}
+        {param header: 'Returns' /}
+        {param details: [$fn.return] /}
       {/call}
     {/if}
     {call .typeDetails}
@@ -440,7 +396,7 @@
   {if length($fn.parameter)}<wbr>{/if}
   {foreach $parameter in $fn.parameter}
     {$parameter.name}
-    {if not isLast($parameter)},{sp}{/if}
+    {if not isLast($parameter)},<wbr>{sp}{/if}
   {/foreach}
   )
 {/template}
@@ -480,9 +436,11 @@
         {param fn: $fn /}
       {/call}
     </h3>
-    {call .fnDetails}
-      {param fn: $fn /}
-    {/call}
+    <dl>
+      {call .fnDetails}
+        {param fn: $fn /}
+      {/call}
+    </dl>
   {/if}
 {/template}
 
@@ -495,26 +453,29 @@
   {@param base: dossier.BaseProperty}
 
   {if $base.definedBy}
-    <dt class="spec">Defined by{sp}
-    {call .comment}
-      {param comment: $base.definedBy /}
-    {/call}
+    <dt class="spec">Defined by</dt>
+    <dd>
+      {call .comment}
+        {param comment: $base.definedBy /}
+      {/call}
+    </dd>
   {/if}
   {if $base.overrides}
-    <dt class="spec">Overrides{sp}
-    {call .comment}
-      {param comment: $base.overrides /}
-    {/call}
+    <dt class="spec">Overrides</dt>
+    <dd>
+      {call .comment}
+        {param comment: $base.overrides /}
+      {/call}
+    </dd>
   {/if}
   {if length($base.specifiedBy)}
-    <dt class="spec">Specified by{sp}
+    <dt class="spec">Specified by</dt>
     {foreach $spec in $base.specifiedBy}
-      {call .comment}
-        {param comment: $spec /}
-      {/call}
-      {if not isLast($spec)}
-        ,{sp}
-      {/if}
+      <dd>
+        {call .comment}
+          {param comment: $spec /}
+        {/call}
+      </dd>
     {/foreach}
   {/if}
 
@@ -534,9 +495,12 @@
       {/call}
 
       <h3 class="name">
+        {call .tags}
+          {param tags: $fn.base.tags /}
+        {/call}
         <div>
           {if $fn.templateName and length($fn.templateName)}
-            <code>
+            <code class="template-name">
               {call .printTemplateNames}
                 {param names: $fn.templateName /}
               {/call}
@@ -548,12 +512,13 @@
             {param fn: $fn /}
           {/call}
         </div>
-        {call .tags}
-          {param tags: $fn.base.tags /}
-        {/call}
       </h3>
 
-      {if ($fn.base.description and length($fn.base.description.token))
+      {call .comment}
+        {param comment: $fn.base.description /}
+      {/call}
+
+      {if ($fn.base.deprecation and length($fn.base.deprecation.token))
           or $fn.base.overrides
           or length($fn.base.specifiedBy)
           or length($fn.parameter)
@@ -561,28 +526,18 @@
           or ($fn.return and
               (($fn.return.description and length($fn.return.description.token)) or
                ($fn.return.type and length($fn.return.type.token))))}
-        {call .comment}
-          {param comment: $fn.base.description /}
-        {/call}
-        {if $fn.base.overrides or length($fn.base.specifiedBy)}
-          <dl>
-            {call .overrides}
-              {param base: $fn.base /}
-            {/call}
-            {call .deprecationNotice}
-              {param deprecation: $fn.base.deprecation /}
-              {param inList: true /}
-            {/call}
-          </dl>
-        {/if}
-        {call .fnDetails}
-          {param fn: $fn /}
-        {/call}
-      {elseif $fn.base.deprecation and length($fn.base.deprecation.token)}
-        {call .deprecationNotice}
-          {param deprecation: $fn.base.deprecation /}
-        {/call}
-      {else}
+        <dl>
+          {call .deprecationNotice}
+            {param deprecation: $fn.base.deprecation /}
+          {/call}
+          {call .overrides}
+            {param base: $fn.base /}
+          {/call}
+          {call .fnDetails}
+            {param fn: $fn /}
+          {/call}
+        </dl>
+      {elseif not $fn.base.description or not length($fn.base.description.token)}
         <p>No information.</p>
       {/if}
     </section>
@@ -600,43 +555,40 @@
       {call .codeLink}
         {param source: $property.base.source /}
       {/call}
+
       <h3 class="name">
-        <div>{$property.base.name}</div>
         {call .tags}
           {param tags: $property.base.tags /}
         {/call}
+        <div>{$property.base.name}</div>
       </h3>
-      {if ($property.base.description and length($property.base.description.token))
-          or $property.base.overrides
+
+      {call .comment}
+        {param comment: $property.base.description /}
+      {/call}
+
+      {if $property.base.overrides
           or length($property.base.specifiedBy)
-          or $property.type}
-        {call .comment}
-          {param comment: $property.base.description /}
-        {/call}
-        {if $property.base.overrides
-            or length($property.base.specifiedBy)
-            or $property.type}
-          <dl>
-            {call .deprecationNotice}
-              {param deprecation: $property.base.deprecation /}
-              {param inList: true /}
-            {/call}
-            {if $property.type}
-              <dt class="spec">Type{sp}
+          or $property.type
+          or ($property.base.deprecation and length($property.base.deprecation.token))}
+        <dl>
+          {call .deprecationNotice}
+            {param deprecation: $property.base.deprecation /}
+          {/call}
+          {if $property.type}
+            <dt class="spec">Type
+            <dd>
               {call .comment}
                 {param comment: $property.type /}
               {/call}
-            {/if}
-            {call .overrides}
-              {param base: $property.base /}
-            {/call}
-          </dl>
-        {/if}
-      {elseif $property.base.deprecation and length($property.base.deprecation.token)}
-        {call .deprecationNotice}
-          {param deprecation: $property.base.deprecation /}
-        {/call}
-      {else}
+            </dd>
+          {/if}
+          {call .overrides}
+            {param base: $property.base /}
+          {/call}
+        </dl>
+      {elseif not $property.base.description
+          or not length($property.base.description.token)}
         <p>No information.</p>
       {/if}
     </section>
@@ -777,30 +729,25 @@
       or length($type.implementedType)
       or ($type.enumeration and length($type.enumeration.type.token))
       or ($type.deprecation and length($type.deprecation.token))}
-    {if $type.enumeration and length($type.enumeration.type.token)}
-      <h6 class="detail">
-        Type{sp}
-        <code>
-          {call .comment}
-            {param comment: $type.enumeration.type /}
-          {/call}
-        </code>
-      </h6>
-    {/if}
     <dl>
+      {if $type.enumeration and length($type.enumeration.type.token)}
+        <dt class="spec">Type
+        <dd>
+          <code>
+            {call .comment}
+              {param comment: $type.enumeration.type /}
+            {/call}
+          </code>
+      {/if}
       {call .printAliasLink}
         {param type: $type /}
       {/call}
       {call .printInterfaces}
         {param type: $type /}
       {/call}
-      {if $type.deprecation and length($type.deprecation.token)}
-        <dt class="spec">Deprecated
-        <dd>
-          {call .comment}
-            {param comment: $type.deprecation /}
-          {/call}
-      {/if}
+      {call .deprecationNotice}
+        {param deprecation: $type.deprecation /}
+      {/call}
     </dl>
   {/if}
 {/template}
@@ -853,7 +800,7 @@
             {param comment: $spec.type.description /}
           {/call}
         {else}
-          <p>No description available</p>
+          <p>No description available.</p>
         {/if}
 
         {if not $spec.type.tags.isInterface and $spec.type.mainFunction}
@@ -912,24 +859,25 @@
                 {param source: $typedef.source /}
               {/call}
               <h3 class="name">{$typedef.name}</h3>
-              <h6 class="detail">
-                Type{sp}
-                <code>
-                  {call .comment}
-                    {param comment: $typedef.type /}
-                  {/call}
-                </code>
-              </h6>
-              <div class="detail">
-                {if $typedef.description and length($typedef.description.token)}
-                  {call .comment}
-                    {param comment: $typedef.description /}
-                  {/call}
-                {else}
-                  <p>No description.</p>
-                {/if}
-                /* TODO: deprecation notice $typedef.deprecation*/
-              </div>
+              <dl>
+                <dt class="spec">Type
+                <dd>
+                  <code>
+                    {call .comment}
+                      {param comment: $typedef.type /}
+                    {/call}
+                  </code>
+                {call .deprecationNotice}
+                  {param deprecation: $typedef.deprecation /}
+                {/call}
+              </dl>
+              {if $typedef.description and length($typedef.description.token)}
+                {call .comment}
+                  {param comment: $typedef.description /}
+                {/call}
+              {else}
+                <p>No description.</p>
+              {/if}
             </section>
           {/foreach}
         </section>

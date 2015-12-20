@@ -30,6 +30,8 @@
 @main_desktop_width: 1000px;
 @nav_width: 280px;
 
+@section_border_color: #e0e0e0;
+
 @main_column_color: #fff;
 @banner_color: #424242;
 @link_color: #66f;
@@ -226,7 +228,7 @@ dl {
 dt {
   & + dt,
   dd + & {
-    padding: 8px 0 0 0;
+    margin: 16px 0 0 0;
   }
   font-weight: 500;
 
@@ -242,7 +244,7 @@ dt {
     }
   }
 
-  & > code {
+  &.named > code {
     font-weight: initial;
     color: @link_color;
     padding-left: 12px;

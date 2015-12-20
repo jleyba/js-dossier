@@ -66,9 +66,9 @@ article.page {
   }
 
   .code-link {
-    width: @size;
     height: @size;
     float: right;
+    padding: 0 0 0 8px;
 
     a {
       display: block;
@@ -85,9 +85,16 @@ article.page {
 
 h1.title,
 h3.name {
+  border-bottom: 1px solid @section_border_color;
+  padding-bottom: 4px;
+
   display: flex;
   flex-direction: row;
   flex-wrap: wrap-reverse;
+
+  .template-name {
+    padding: 2px 4px;
+  }
 }
 
 .tags {
@@ -122,7 +129,7 @@ h3.name {
     padding-left: 16px;
     text-indent: -16px;
     .tags {
-      margin-left: 24px;
+      margin-right: 24px;
     }
   }
 }

@@ -21,22 +21,35 @@
           <wbr>url)
         </div></h3>
       <p>Fetches a JSON resource from the given URL.</p>
-      <h6 class="detail">Parameters</h6>
-      <div class="detail">
-        <dl>
-          <dt>
-            url
-            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
-          </dt>
-          <dd>
-            <p>The URL To fetch the resource from.</p>
-          </dd>
-        </dl>
-      </div>
-      <h6 class="detail">Returns <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>&gt;</code></h6>
-      <div class="detail">
-        <p>A promise that will be fulfilled with the parsed JSON response.</p>
-      </div>
+      <dl>
+        <dt class="spec">
+          Parameters
+        </dt>
+        <dd>
+          <dl>
+            <dt class="named">
+              url
+              <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
+            </dt>
+            <dd>
+              <p>The URL To fetch the resource from.</p>
+            </dd>
+          </dl>
+        </dd>
+        <dt class="spec">
+          Returns
+        </dt>
+        <dd>
+          <dl>
+            <dt>
+              <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>&gt;</code>
+            </dt>
+            <dd>
+              <p>A promise that will be fulfilled with the parsed JSON response.</p>
+            </dd>
+          </dl>
+        </dd>
+      </dl>
     </section>
     <section class="property" id="get">
       <div class="code-link">
@@ -45,32 +58,46 @@
       <h3 class="name">
         <div>
           get(
-          <wbr>path, opt_headers)
+          <wbr>path,
+          <wbr> opt_headers)
         </div></h3>
       <p>Performs a HTTP GET request using a XMLHttpRequest.</p>
-      <h6 class="detail">Parameters</h6>
-      <div class="detail">
-        <dl>
-          <dt>
-            path
-            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
-          </dt>
-          <dd>
-            <p>The resource to retrieve.</p>
-          </dd>
-          <dt>
-            opt_headers
-            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map">Map</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>&gt;=</code>
-          </dt>
-          <dd>
-            <p>Any extra headers to include with the request.</p>
-          </dd>
-        </dl>
-      </div>
-      <h6 class="detail">Returns <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>&gt;</code></h6>
-      <div class="detail">
-        <p>A promise that will be fulfilled with the server's response.</p>
-      </div>
+      <dl>
+        <dt class="spec">
+          Parameters
+        </dt>
+        <dd>
+          <dl>
+            <dt class="named">
+              path
+              <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
+            </dt>
+            <dd>
+              <p>The resource to retrieve.</p>
+            </dd>
+            <dt class="named">
+              opt_headers
+              <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map">Map</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>&gt;=</code>
+            </dt>
+            <dd>
+              <p>Any extra headers to include with the request.</p>
+            </dd>
+          </dl>
+        </dd>
+        <dt class="spec">
+          Returns
+        </dt>
+        <dd>
+          <dl>
+            <dt>
+              <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>&gt;</code>
+            </dt>
+            <dd>
+              <p>A promise that will be fulfilled with the server's response.</p>
+            </dd>
+          </dl>
+        </dd>
+      </dl>
     </section>
   </section>
   <section class="types">
