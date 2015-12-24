@@ -203,6 +203,10 @@ dossier.initSearchBox_ = function(typeInfo) {
         if (document.activeElement !== input
             && e.keyCode === goog.events.KeyCodes.E
             && (goog.userAgent.MAC ? e.metaKey : e.ctrlKey)) {
+          let navEl = document.querySelector('.dossier-nav.visible');
+          if (navEl) {
+            navEl.classList.remove('visible');
+          }
           input.focus();
           e.preventDefault();
           e.stopPropagation();
