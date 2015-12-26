@@ -25,6 +25,7 @@
 goog.provide('dossier');
 
 goog.require('dossier.nav');
+goog.require('dossier.search');
 goog.require('goog.array');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
@@ -33,15 +34,10 @@ goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.dom.classlist');
 goog.require('goog.string');
-goog.require('goog.ui.ac.ArrayMatcher');
-goog.require('goog.ui.ac.AutoComplete');
-goog.require('goog.ui.ac.InputHandler');
-goog.require('goog.ui.ac.Renderer');
 goog.require('goog.userAgent');
 
 goog.forwardDeclare('goog.debug.ErrorHandler');
 goog.forwardDeclare('goog.events.EventWrapper');
-goog.forwardDeclare('goog.ui.ac.RenderOptions');
 
 
 
@@ -49,8 +45,11 @@ goog.forwardDeclare('goog.ui.ac.RenderOptions');
  * Initializes the dossier page.
  */
 dossier.init = function() {
-  var typeInfo = /** @type {!TypeRegistry} */(goog.global['TYPES']);
-  dossier.initSearchBox_(typeInfo);
+  let typeInfo = /** @type {!TypeRegistry} */(goog.global['TYPES']);
+
+  const search = goog.module.get('dossier.search');
+  search.init(typeInfo, dossier.BASE_PATH_);
+
   dossier.initNavList_(typeInfo);
   dossier.initSourceHilite_();
   setTimeout(dossier.adjustTarget_, 0);
@@ -147,151 +146,6 @@ dossier.initSourceHilite_ = function() {
       return node.nodeName === 'TR';
     }));
     goog.dom.classlist.add(tr, 'hilite');
-  }
-};
-
-
-/**
- * Initializes the auto-complete for the top navigation bar's search box.
- * @param {!TypeRegistry} typeInfo The types to link to from the current
- *     page.
- * @private
- */
-dossier.initSearchBox_ = function(typeInfo) {
-  var nameToHref = {};
-  var allTerms = [];
-  if (typeInfo.types) {
-    goog.array.forEach(typeInfo.types, function(descriptor) {
-      dossier.addTypes_(allTerms, nameToHref, descriptor);
-    });
-  }
-
-  if (typeInfo.modules) {
-    goog.array.forEach(typeInfo.modules, function(module) {
-      dossier.addTypes_(allTerms, nameToHref, module);
-    });
-  }
-
-  var searchForm = document.querySelector('header form');
-  goog.events.listen(searchForm, goog.events.EventType.SUBMIT, function(e) {
-    e.preventDefault();
-    e.stopPropagation();
-    navigatePage();
-    return false;
-  });
-
-  var input = searchForm.querySelector('input');
-  input.setAttribute(
-      'title', 'Search (' + (goog.userAgent.MAC ? '⌘' : 'Ctrl+') + 'E)');
-
-  var icon = searchForm.querySelector('.material-icons');
-  if (icon) {
-    goog.events.listen(icon, goog.events.EventType.CLICK, function() {
-      input.focus();
-    });
-  }
-
-  var ac = dossier.createAutoComplete_(allTerms, input);
-
-  goog.events.listen(ac,
-      goog.ui.ac.AutoComplete.EventType.UPDATE, navigatePage);
-
-  goog.events.listen(
-      document.documentElement,
-      goog.events.EventType.KEYDOWN,
-      function(e) {
-        if (document.activeElement !== input
-            && e.keyCode === goog.events.KeyCodes.E
-            && (goog.userAgent.MAC ? e.metaKey : e.ctrlKey)) {
-          let navEl = document.querySelector('.dossier-nav.visible');
-          if (navEl) {
-            navEl.classList.remove('visible');
-          }
-          input.focus();
-          e.preventDefault();
-          e.stopPropagation();
-          return false;
-        } else if (document.activeElement === input
-            && e.keyCode === goog.events.KeyCodes.ESC) {
-          input.blur();
-        }
-      });
-
-  function navigatePage() {
-    var href = nameToHref[input.value];
-    if (href) {
-      window.location.href = dossier.BASE_PATH_ + href;
-    }
-  }
-};
-
-
-/**
- * @param {!Array<?>} data The input data array.
- * @param {!Element} input The controlling input element.
- * @return {!goog.ui.ac.AutoComplete} A new autocomplete object.
- * @private
- */
-dossier.createAutoComplete_ = function(data, input) {
-  const parent = goog.dom.createDom('div', 'dossier-ac');
-  parent.ownerDocument.body.appendChild(parent);
-
-  let matcher = new goog.ui.ac.ArrayMatcher(data, true);
-  let renderer = new goog.ui.ac.Renderer(parent);
-  let inputHandler = new goog.ui.ac.InputHandler(null, null, false);
-
-  let ac = new goog.ui.ac.AutoComplete(matcher, renderer, inputHandler);
-  ac.setMaxMatches(10);
-
-  inputHandler.attachAutoComplete(ac);
-  inputHandler.attachInputs(input);
-
-  renderer.setAutoPosition(false);
-  renderer.setShowScrollbarsIfTooLarge(true);
-  renderer.setUseStandardHighlighting(true);
-
-  return ac;
-};
-
-
-/**
- * @param {!Array<string>} terms .
- * @param {!Object<string, string>} nameToHref .
- * @param {!Descriptor} descriptor .
- * @private
- */
-dossier.addTypes_ = function(terms, nameToHref, descriptor) {
-  let baseName = goog.array.peek(descriptor.qualifiedName.split(/\./));
-
-  nameToHref[descriptor.qualifiedName] = descriptor.href;
-  terms.push(descriptor.qualifiedName);
-
-  if (descriptor.types) {
-    goog.array.forEach(descriptor.types, function(type) {
-      dossier.addTypes_(terms, nameToHref, type);
-    });
-  }
-
-  if (descriptor.statics) {
-    goog.array.forEach(descriptor.statics, function(name) {
-      var href = descriptor.href + '#' + name;
-
-      if (name.startsWith(baseName + '.')) {
-        name = name.substring(baseName.length + 1);
-      }
-
-      name = descriptor.qualifiedName + '.' + name;
-      nameToHref[name] = href;
-      terms.push(name);
-    });
-  }
-
-  if (descriptor.members) {
-    goog.array.forEach(descriptor.members, function(name) {
-      var href = descriptor.href + '#' + name;
-      nameToHref[descriptor.qualifiedName + '#' + name] = href;
-      terms.push(descriptor.qualifiedName + '#' + name);
-    });
   }
 };
 

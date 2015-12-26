@@ -5,6 +5,7 @@ js_binary(
     srcs = [
         "dossier.js",
         "nav.js",
+        "search.js",
     ],
     externs = ["externs.js"],
     flags = [
