@@ -56,8 +56,12 @@ header {
     border: 0;
     border-radius: 50%;
     cursor: pointer;
-    &:focus { outline: 0; }
-    &:hover { background: @control_bg; }
+
+    &:focus,
+    &:hover {
+      background: @control_bg;
+      outline: 0;
+    }
 
     -webkit-appearance: none;
     -moz-appearance: none;

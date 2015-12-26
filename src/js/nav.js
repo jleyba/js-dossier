@@ -364,9 +364,13 @@ function createMask() {
  */
 class NavDrawer {
   /**
+   * @param {!Element} navButton The button that opens the nav drawer.
    * @param {!Element} navEl The main element for the nav drawer.
    */
-  constructor(navEl) {
+  constructor(navButton, navEl) {
+    /** @private {!Element} */
+    this.navButton_ = navButton;
+
     /** @private {!Element} */
     this.navEl_ = navEl;
   }
@@ -389,6 +393,8 @@ class NavDrawer {
 
   /** @private */
   updateTabIndices_() {
+    this.navButton_.disabled = this.navEl_.classList.contains('visible');
+
     let index = this.navEl_.classList.contains('visible') ? 2 : -1;
     let controls = this.navEl_.querySelectorAll('span.item, a');
     Arrays.forEach(controls, control => control.tabIndex = index);
@@ -479,7 +485,7 @@ exports.createNavDrawer = function(typeInfo, currentFile, basePath) {
   const mask = createMask();
   navEl.parentNode.appendChild(mask);
 
-  const drawer = new NavDrawer(navEl);
+  const drawer = new NavDrawer(navButton, navEl);
   events.listen(mask, 'click', drawer.toggleVisibility, false, drawer);
   events.listen(navButton, 'click', drawer.toggleVisibility, false, drawer);
   events.listen(navEl, 'click', drawer.onClick_, false, drawer);
