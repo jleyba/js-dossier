@@ -519,6 +519,18 @@ exports.createNavDrawer = function(typeInfo, currentFile, basePath) {
   let current = navEl.querySelector('.current');
   if (current) {
     revealElement(current);
+  } else {
+    let titles = navEl.querySelectorAll('a.title[href]');
+    Arrays.some(titles, function(el) {
+      // Use the actual attribute, not the resolved href property.
+      let href = el.getAttribute('href');
+      if (href === currentFile) {
+        el.classList.add('current');
+        revealElement(el);
+        return true;
+      }
+      return false;
+    });
   }
 
   drawer.hide();  // Start hidden.
