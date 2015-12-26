@@ -14,8 +14,6 @@
  limitations under the License.
  */
 
-'use strict';
-
 goog.module('dossier.nav');
 
 const Arrays = goog.require('goog.array');
