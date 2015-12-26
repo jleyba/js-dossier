@@ -376,6 +376,7 @@ class NavDrawer {
    */
   hide() {
     this.navEl_.classList.remove('visible');
+    this.updateTabIndices_();
   }
 
   /**
@@ -383,6 +384,14 @@ class NavDrawer {
    */
   toggleVisibility() {
     this.navEl_.classList.toggle('visible');
+    this.updateTabIndices_();
+  }
+
+  /** @private */
+  updateTabIndices_() {
+    let index = this.navEl_.classList.contains('visible') ? 2 : -1;
+    let controls = this.navEl_.querySelectorAll('span.item, a');
+    Arrays.forEach(controls, control => control.tabIndex = index);
   }
 
   /**
@@ -506,6 +515,7 @@ exports.createNavDrawer = function(typeInfo, currentFile, basePath) {
     revealElement(current);
   }
 
+  drawer.hide();  // Start hidden.
   return drawer;
 
   /**
