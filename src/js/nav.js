@@ -18,9 +18,12 @@
 
 goog.module('dossier.nav');
 
-var Arrays = goog.require('goog.array');
-var assert = goog.require('goog.asserts').assert;
-var Strings = goog.require('goog.string');
+const Arrays = goog.require('goog.array');
+const assert = goog.require('goog.asserts').assert;
+const dom = goog.require('goog.dom');
+const events = goog.require('goog.events');
+const EventType = goog.require('goog.events.EventType');
+const Strings = goog.require('goog.string');
 
 
 /**
@@ -316,9 +319,9 @@ const MODULE_TYPE_ID_PREFIX = '.nav-module:';
  * @param {boolean} modules whether to return the ID for module types.
  * @return {string} the ID prefix.
  */
-exports.getIdPrefix = function(modules) {
+function getIdPrefix(modules) {
   return modules ? MODULE_TYPE_ID_PREFIX : TYPE_ID_PREFIX;
-};
+}
 
 
 /**
@@ -329,7 +332,7 @@ exports.getIdPrefix = function(modules) {
  * @param {boolean} isModule Whether the descriptors describe CommonJS modules.
  * @return {!Element} The root element for the tree.
  */
-exports.buildList = function(descriptors, basePath, currentPath, isModule) {
+function buildList(descriptors, basePath, currentPath, isModule) {
   if (basePath && !Strings.endsWith(basePath, '/')) {
     basePath += '/';
   }
@@ -343,7 +346,8 @@ exports.buildList = function(descriptors, basePath, currentPath, isModule) {
     });
   }
   return rootEl;
-};
+}
+exports.buildList = buildList;  // For testing.
 
 
 /**
@@ -351,8 +355,178 @@ exports.buildList = function(descriptors, basePath, currentPath, isModule) {
  * open.
  * @return {!Element} The new mask element.
  */
-exports.createMask = function() {
+function createMask() {
   let mask = document.createElement('div');
   mask.classList.add('dossier-nav-mask');
   return mask;
+}
+
+
+/**
+ * Widget for the side navigation drawer.
+ */
+class NavDrawer {
+  /**
+   * @param {!Element} navEl The main element for the nav drawer.
+   */
+  constructor(navEl) {
+    /** @private {!Element} */
+    this.navEl_ = navEl;
+  }
+
+  /**
+   * Toggle the visibility of the nav drawer.
+   */
+  toggleVisibility() {
+    this.navEl_.classList.toggle('visible');
+  }
+
+  /**
+   * Handles click events on the nav drawer.
+   *
+   * @param {!goog.events.BrowserEvent} e .
+   * @private
+   */
+  onClick_(e) {
+    let el = dom.getAncestor(e.target, function(node) {
+      return node
+          && node.classList
+          && node.classList.contains('toggle');
+    }, true, /*maxSteps=*/4);
+
+    if (el && el.classList.contains('toggle')) {
+      this.updateControl_(/** @type {!Element} */(el));
+    }
+  }
+
+  /**
+   * @param {!Element} el .
+   * @param {boolean=} opt_value .
+   * @param {boolean=} opt_skipPersist .
+   * @private
+   */
+  updateControl_(el, opt_value, opt_skipPersist) {
+    if (goog.isBoolean(opt_value)) {
+      if (opt_value) {
+        el.classList.add('open');
+      } else {
+        el.classList.remove('open');
+      }
+    } else {
+      el.classList.toggle('open');
+    }
+
+    if (!opt_skipPersist) {
+      this.updateStorage_(el);
+    }
+
+    let tree = el.nextSibling;
+    if (tree && tree.classList.contains('tree')) {
+      if (el.classList.contains('open')) {
+        tree.style.maxHeight = tree.dataset.maxHeight + 'px';
+      } else {
+        tree.style.maxHeight = '0';
+      }
+    }
+  }
+
+  /**
+   * @param {!Element} el .
+   * @private
+   */
+  updateStorage_(el) {
+    if (window.localStorage && el.dataset.id) {
+      window.localStorage.setItem(
+          el.dataset.id,
+          el.classList.contains('open') ? 'open' : 'closed');
+    }
+  }
+}
+exports.NavDrawer = NavDrawer;  // For better documentation.
+
+
+const NAV_ITEM_HEIGHT = 48;
+
+
+/**
+ * Creates the side nav drawer widget.
+ *
+ * @param {!TypeRegistry} typeInfo The type information to build the list from.
+ * @param {string} currentFile The path to the file that loaded this script.
+ * @param {string} basePath The path to the main index file.
+ * @return {!NavDrawer} The created nav drawer widget.
+ */
+exports.createNavDrawer = function(typeInfo, currentFile, basePath) {
+  const navButton = document.querySelector('button.dossier-menu');
+  const navEl =
+      /** @type {!Element} */(document.querySelector('nav.dossier-nav'));
+
+  const mask = createMask();
+  navEl.parentNode.appendChild(mask);
+
+  const drawer = new NavDrawer(navEl);
+  events.listen(mask, 'click', drawer.toggleVisibility, false, drawer);
+  events.listen(navButton, 'click', drawer.toggleVisibility, false, drawer);
+  events.listen(navEl, 'click', drawer.onClick_, false, drawer);
+
+  const typeSection = navEl.querySelector('.types');
+  if (typeSection && typeInfo.types) {
+    buildSectionList(typeSection, typeInfo.types, false);
+  }
+
+  const moduleSection = navEl.querySelector('.modules');
+  if (moduleSection && typeInfo.modules) {
+    buildSectionList(moduleSection, typeInfo.modules, true);
+  }
+
+  let trees = navEl.querySelectorAll('.tree');
+  for (let i = 0, n = trees.length; i < n; i++) {
+    let tree = trees[i];
+    let numItems = tree.querySelectorAll('li').length;
+    tree.dataset.maxHeight = numItems * NAV_ITEM_HEIGHT;
+    tree.style.maxHeight = 0;
+  }
+
+  if (window.localStorage) {
+    let toggles = navEl.querySelectorAll('.toggle[data-id]');
+    Arrays.forEach(toggles, function(el) {
+      var state = window.localStorage.getItem(el.dataset.id);
+      drawer.updateControl_(el, state === 'open');
+    });
+  }
+
+  let current = navEl.querySelector('.current');
+  if (current) {
+    revealElement(current);
+  }
+
+  return drawer;
+
+  /**
+   * @param {!Element} section .
+   * @param {!Array<!Descriptor>} descriptors .
+   * @param {boolean} isModule .
+   */
+  function buildSectionList(section, descriptors, isModule) {
+    let list = buildList(descriptors, basePath, currentFile, isModule);
+    section.appendChild(list);
+
+    let toggle = section.querySelector('.toggle');
+    toggle.dataset.id = getIdPrefix(isModule);
+  }
+
+  /** @param {!Element} el . */
+  function revealElement(el) {
+    for (let current = el;
+         current && current != navEl;
+         current = dom.getParentElement(current)) {
+      if (current.classList.contains('tree')) {
+        let control = current.previousElementSibling;
+        if (control && control.classList.contains('toggle')) {
+          drawer.updateControl_(control, true, true);
+        }
+      }
+    }
+    navEl.scrollTop = el.offsetTop - (window.innerHeight / 2);
+  }
 };
