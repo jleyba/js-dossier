@@ -114,6 +114,7 @@ function createAutoComplete(data, input) {
  * @param {!TypeRegistry} typeInfo The types to link to from the current
  *     page.
  * @param {string} basePath The base path for the main page.
+ * @return {!HTMLInputElement} The search box input element.
  */
 exports.init = function(typeInfo, basePath) {
   let nameToHref = /** !Map<string, string> */new Map;
@@ -135,9 +136,10 @@ exports.init = function(typeInfo, basePath) {
     return false;
   });
 
-  let input = searchForm.querySelector('input');
+  let input =
+      /** @type {!HTMLInputElement} */(searchForm.querySelector('input'));
   input.setAttribute(
-      'title', 'Search (' + (goog.userAgent.MAC ? '⌘' : 'Ctrl+') + 'E)');
+      'title', 'Search (/ or ' + (goog.userAgent.MAC ? '⌘' : 'Ctrl+') + 'E)');
 
   let icon = searchForm.querySelector('.material-icons');
   if (icon) {
@@ -147,22 +149,7 @@ exports.init = function(typeInfo, basePath) {
   let ac = createAutoComplete(allTerms, input);
   events.listen(ac, AutoComplete.EventType.UPDATE, navigatePage);
 
-  events.listen(document.documentElement, EventType.KEYDOWN, function(e) {
-    if (document.activeElement !== input
-        && e.keyCode === KeyCodes.E
-        && (userAgent.MAC ? e.metaKey : e.ctrlKey)) {
-      let navEl = document.querySelector('.dossier-nav.visible');
-      if (navEl) {
-        navEl.classList.remove('visible');
-      }
-      input.focus();
-      e.preventDefault();
-      e.stopPropagation();
-      return false;
-    } else if (document.activeElement === input && e.keyCode === KeyCodes.ESC) {
-      input.blur();
-    }
-  });
+  return input;
 
   function navigatePage() {
     let href = nameToHref.get(input.value);

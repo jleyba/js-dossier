@@ -4,6 +4,7 @@ js_binary(
     name = "dossier_bin",
     srcs = [
         "dossier.js",
+        "keyhandler.js",
         "nav.js",
         "search.js",
     ],

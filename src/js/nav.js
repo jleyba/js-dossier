@@ -20,7 +20,6 @@ const Arrays = goog.require('goog.array');
 const assert = goog.require('goog.asserts').assert;
 const dom = goog.require('goog.dom');
 const events = goog.require('goog.events');
-const EventType = goog.require('goog.events.EventType');
 const Strings = goog.require('goog.string');
 
 
@@ -373,6 +372,13 @@ class NavDrawer {
   }
 
   /**
+   * Hides the nav drawer.
+   */
+  hide() {
+    this.navEl_.classList.remove('visible');
+  }
+
+  /**
    * Toggle the visibility of the nav drawer.
    */
   toggleVisibility() {
@@ -456,6 +462,8 @@ const NAV_ITEM_HEIGHT = 48;
  */
 exports.createNavDrawer = function(typeInfo, currentFile, basePath) {
   const navButton = document.querySelector('button.dossier-menu');
+  navButton.setAttribute('title', 'Show Navigation (n)');
+
   const navEl =
       /** @type {!Element} */(document.querySelector('nav.dossier-nav'));
 

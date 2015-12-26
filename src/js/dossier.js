@@ -24,6 +24,7 @@
 
 goog.provide('dossier');
 
+goog.require('dossier.keyhandler');
 goog.require('dossier.nav');
 goog.require('dossier.search');
 goog.require('goog.array');
@@ -47,10 +48,14 @@ goog.forwardDeclare('goog.events.EventWrapper');
 dossier.init = function() {
   let typeInfo = /** @type {!TypeRegistry} */(goog.global['TYPES']);
 
+  const keyHandler = goog.module.get('dossier.keyhandler');
   const search = goog.module.get('dossier.search');
-  search.init(typeInfo, dossier.BASE_PATH_);
 
-  dossier.initNavList_(typeInfo);
+  let input = search.init(typeInfo, dossier.BASE_PATH_);
+  let drawer = dossier.initNavList_(typeInfo);
+
+  keyHandler.init(drawer, input);
+
   dossier.initSourceHilite_();
   setTimeout(dossier.adjustTarget_, 0);
 };
@@ -153,12 +158,11 @@ dossier.initSourceHilite_ = function() {
 /**
  * Initializes the side navigation bar from local history.
  * @param {!TypeRegistry} typeInfo The type information to build the list from.
+ * @return {!dossier.nav.NavDrawer} The new nav drawer widget.
  * @private
  */
 dossier.initNavList_ = function(typeInfo) {
   const currentFile = window.location.pathname.slice(dossier.BASE_PATH_.length);
-
   const nav = goog.module.get('dossier.nav');
-  const drawer = nav.createNavDrawer(typeInfo, currentFile, dossier.BASE_PATH_);
-  // TODO: keyboard navigation for the drawer.
+  return nav.createNavDrawer(typeInfo, currentFile, dossier.BASE_PATH_);
 };
