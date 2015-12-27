@@ -74,6 +74,12 @@ exports.init = function(navDrawer, inputEl) {
         }
         navDrawer.hide();
         break;
+
+      default:
+        if (navDrawer.isOpen) {
+          navDrawer.handleKeyEvent(/** @type {!goog.events.BrowserEvent} */(e));
+        }
+        break;
     }
   });
 };

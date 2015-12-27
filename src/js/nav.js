@@ -20,6 +20,7 @@ const Arrays = goog.require('goog.array');
 const assert = goog.require('goog.asserts').assert;
 const dom = goog.require('goog.dom');
 const events = goog.require('goog.events');
+const KeyCodes = goog.require('goog.events.KeyCodes');
 const Strings = goog.require('goog.string');
 
 
@@ -373,6 +374,22 @@ class NavDrawer {
 
     /** @private {!Element} */
     this.navEl_ = navEl;
+
+    /**
+     * Special element that receives focus whenever the nav drawer is opened.
+     * This ensures tab stop will select the first item in the navigation tree
+     * instead of going back to the input box (which would cause the drawer to
+     * close).
+     * @private {!Element}
+     */
+    this.focusSink_ = navEl.ownerDocument.createElement('div');
+    this.focusSink_.tabIndex = -1;
+    navEl.insertBefore(this.focusSink_, navEl.firstChild);
+  }
+
+  /** @return {boolean} Whether the nav drawer is currently open. */
+  get isOpen() {
+    return this.navEl_.classList.contains('visible');
   }
 
   /**
@@ -391,13 +408,64 @@ class NavDrawer {
     this.updateTabIndices_();
   }
 
+  /**
+   * Handles a keyboard event on the side nav pane.
+   *
+   * @param {!goog.events.BrowserEvent} e The browser event.
+   */
+  handleKeyEvent(e) {
+    if (!this.isOpen || e.type !== 'keydown') {
+      return;
+    }
+
+    if ((e.keyCode === KeyCodes.LEFT || e.keyCode === KeyCodes.RIGHT)
+        && !e.altKey && !e.ctrlKey && !e.metaKey && !e.shiftKey
+        && e.target
+        && e.target.classList
+        && e.target.classList.contains('item')) {
+      let parent = e.target.parentNode;
+      if (!isToggle(parent) && parent) {
+        parent = parent.parentNode;
+      }
+
+      if (isToggle(parent)) {
+        this.updateControl_(
+            /** @type {!Element} */(parent),
+            e.keyCode === KeyCodes.RIGHT);
+      }
+    }
+
+    if (e.keyCode === KeyCodes.TAB && !e.shiftKey) {
+      let allItems = this.navEl_.querySelectorAll('span.item, a');
+      if (e.target === Arrays.peek(allItems)) {
+        this.hide();
+      }
+    }
+
+    function isToggle(n) {
+      return n && n.classList && n.classList.contains('toggle');
+    }
+  }
+
   /** @private */
   updateTabIndices_() {
     this.navButton_.disabled = this.navEl_.classList.contains('visible');
 
-    let index = this.navEl_.classList.contains('visible') ? 2 : -1;
-    let controls = this.navEl_.querySelectorAll('span.item, a');
-    Arrays.forEach(controls, control => control.tabIndex = index);
+    if (!this.isOpen) {
+      let allControls = this.navEl_.querySelectorAll('span.item, a');
+      Arrays.forEach(allControls, control => control.tabIndex = -1);
+      return;
+    }
+
+    // Make the top level controls tab-able.
+    let topControls = this.navEl_.querySelectorAll('a.title, span.item');
+    Arrays.forEach(topControls, control => control.tabIndex = 1);
+
+    // Get our trees.
+    let trees = this.navEl_.querySelectorAll('section > .toggle.open ~ .tree');
+    Arrays.forEach(trees, tree => this.enableTree_(tree, true));
+
+    this.focusSink_.focus();
   }
 
   /**
@@ -439,13 +507,50 @@ class NavDrawer {
       this.updateStorage_(el);
     }
 
-    let tree = el.nextSibling;
+    let tree = el.nextElementSibling;
     if (tree && tree.classList.contains('tree')) {
       if (el.classList.contains('open')) {
         tree.style.maxHeight = tree.dataset.maxHeight + 'px';
+        this.enableTree_(tree, this.isOpen);
       } else {
         tree.style.maxHeight = '0';
+        this.enableTree_(tree, false);
       }
+    }
+  }
+
+  /**
+   * @param {!Element} tree .
+   * @param {boolean} enable .
+   * @private
+   */
+  enableTree_(tree, enable) {
+    if (enable) {
+      Arrays.forEach(tree.childNodes, function(child) {
+        let firstChild = child.firstChild;
+        if (!firstChild || !firstChild.classList) {
+          return;
+        }
+
+        if (firstChild.classList.contains('item')) {
+          firstChild.tabIndex = 1;
+        } else if (firstChild.classList.contains('toggle')) {
+          let item = firstChild.querySelector('.item');
+          if (item) {
+            item.tabIndex = 1;
+          }
+
+          if (firstChild.classList.contains('open')
+              && firstChild.nextElementSibling
+              && firstChild.nextElementSibling.classList.contains('tree')) {
+            this.enableTree_(firstChild.nextElementSibling, true);
+          }
+        }
+      }, this);
+
+    } else {
+      Arrays.forEach(
+          tree.querySelectorAll('.item'), item => item.tabIndex = -1);
     }
   }
 
@@ -517,20 +622,17 @@ exports.createNavDrawer = function(typeInfo, currentFile, basePath) {
   }
 
   let current = navEl.querySelector('.current');
-  if (current) {
-    revealElement(current);
-  } else {
+  if (!current) {
     let titles = navEl.querySelectorAll('a.title[href]');
-    Arrays.some(titles, function(el) {
+    current = Arrays.find(titles, function(el) {
       // Use the actual attribute, not the resolved href property.
-      let href = el.getAttribute('href');
-      if (href === currentFile) {
-        el.classList.add('current');
-        revealElement(el);
-        return true;
-      }
-      return false;
+      return el.getAttribute('href') === currentFile;
     });
+  }
+
+  if (current) {
+    current.classList.add('current');
+    revealElement(current);
   }
 
   drawer.hide();  // Start hidden.
