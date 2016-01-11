@@ -1,12 +1,12 @@
 /*
- Copyright 2013-2015 Jason Leyba
- 
+ Copyright 2013-2016 Jason Leyba
+
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
  You may obtain a copy of the License at
- 
+
    http://www.apache.org/licenses/LICENSE-2.0
- 
+
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -381,7 +381,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setType(numberTypeComment()))
             .build());
   }
-  
+
   @Test
   public void usesOverriddenComment_superClass() {
     compile(
@@ -414,7 +414,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setOverrides(linkComment("A", "A.html#record")))
             .build());
   }
-  
+
   @Test
   public void usesOverriddenComment_superInterface() {
     compile(
@@ -447,7 +447,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .addSpecifiedBy(linkComment("A", "A.html#record")))
             .build());
   }
-  
+
   @Test
   public void usesOverriddenComment_declaredInterface() {
     compile(
@@ -480,7 +480,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .addSpecifiedBy(linkComment("A", "A.html#record")))
             .build());
   }
-  
+
   @Test
   public void usesCommentFromOverriddenType_superClass() {
     compile(
@@ -512,7 +512,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setOverrides(linkComment("A", "A.html#record")))
             .build());
   }
-  
+
   @Test
   public void usesCommentFromOverriddenType_superInterface() {
     compile(
@@ -544,7 +544,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .addSpecifiedBy(linkComment("A", "A.html#record")))
             .build());
   }
-  
+
   @Test
   public void usesParameterInfoFromOverriddenType_superClass() {
     compile(
@@ -580,7 +580,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setDescription(htmlComment("<p>The value to record.</p>\n")))
             .build());
   }
-  
+
   @Test
   public void usesParameterInfoFromOverriddenType_superInterface() {
     compile(
@@ -616,7 +616,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setDescription(htmlComment("<p>The value to record.</p>\n")))
             .build());
   }
-  
+
   @Test
   public void usesParameterInfoFromOverriddenType_declaredInterface() {
     compile(
@@ -652,7 +652,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setDescription(htmlComment("<p>The value to record.</p>\n")))
             .build());
   }
-  
+
   @Test
   public void usesParameterInfoFromOverriddenType_interfaceDeclaredOnSuperClass() {
     compile(
@@ -767,7 +767,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setDescription(htmlComment("<p>The value to record.</p>\n")))
             .build());
   }
-  
+
   @Test
   public void usesReturnInfoFromOverriddenType_superClass() {
     compile(
@@ -801,7 +801,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setType(stringTypeComment())
                 .setDescription(htmlComment("<p>Return from A.</p>\n")))
             .build());
-  }  
+  }
 
   @Test
   public void usesReturnInfoFromOverriddenType_superClassEs6() {
@@ -833,7 +833,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setDescription(htmlComment("<p>Return from A.</p>\n")))
             .build());
   }
-  
+
   @Test
   public void usesReturnInfoFromOverriddenType_superInterface() {
     compile(
@@ -868,7 +868,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setDescription(htmlComment("<p>Return from A.</p>\n")))
             .build());
   }
-  
+
   @Test
   public void usesReturnInfoFromOverriddenType_declaredInterface() {
     compile(
@@ -903,7 +903,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setDescription(htmlComment("<p>Return from A.</p>\n")))
             .build());
   }
-  
+
   @Test
   public void usesReturnInfoFromOverriddenType_declaredInterfaceWithNoFunctionBody() {
     compile(
@@ -939,7 +939,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setDescription(htmlComment("<p>Return from A.</p>\n")))
             .build());
   }
-  
+
   @Test
   public void usesReturnInfoFromOverriddenType_interfaceDeclaredOnSuperClass() {
     compile(
@@ -1113,7 +1113,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setDescription(htmlComment("<p>Return from A.</p>\n")))
             .build());
   }
-  
+
   @Test
   public void canOverrideReturnDescription() {
     compile(
@@ -1149,7 +1149,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setDescription(htmlComment("<p>Return from B.</p>\n")))
             .build());
   }
-  
+
   @Test
   public void canNarrowParameterDefinedOnSuperType() {
     compile(
@@ -1217,7 +1217,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setDescription(htmlComment("<p>The person to greet.</p>\n")))
             .build());
   }
-  
+
   @Test
   public void canNarrowReturnTypeOfSuperType() {
     compile(
@@ -1280,7 +1280,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setDescription(htmlComment("<p>Returns a greeting.</p>\n")))
             .build());
   }
-  
+
   @Test
   public void doesNotInheritDeprecationNoticeFromSuperType() {
     compile(
@@ -1299,7 +1299,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
         " * @override",
         " */",
         "B.prototype.go = function() {};");
-    
+
     NominalType type = typeRegistry.getType("A");
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectInstanceType();
@@ -1328,7 +1328,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .addSpecifiedBy(linkComment("A", "A.html#go")))
             .build());
   }
-  
+
   @Test
   public void doesNotInheritThrownClausesFromSuperType() {
     compile(
@@ -1376,7 +1376,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .addSpecifiedBy(linkComment("A", "A.html#go")))
             .build());
   }
-  
+
   @Test
   public void includesFunctionsDefinedBySuperTypeButNotOverriddenByInspectedType() {
     compile(
@@ -1621,7 +1621,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                     "<p>Go to <a href=\"Foo.html#a\"><code>Foo#a</code></a>.</p>\n")))
             .build());
   }
-  
+
   @Test
   public void methodSpecifiedByInterfaceInAnotherModule() {
     util.compile(

@@ -1,12 +1,12 @@
 /*
- Copyright 2013-2015 Jason Leyba
- 
+ Copyright 2013-2016 Jason Leyba
+
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
  You may obtain a copy of the License at
- 
+
    http://www.apache.org/licenses/LICENSE-2.0
- 
+
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -50,7 +50,7 @@ public final class ProvidedSymbolPass implements CompilerPass {
   private final ImmutableSet<Path> nodeModules;
   private final DossierCompiler compiler;
   private final TypeRegistry typeRegistry;
-  
+
   @Inject
   ProvidedSymbolPass(
       @Input FileSystem inputFs,
@@ -76,7 +76,7 @@ public final class ProvidedSymbolPass implements CompilerPass {
   @Override
   public void process(Node ignored, Node root) {
     traverseEs6(compiler, root, new NodeTraversal.AbstractShallowCallback() {
-      
+
       private final Set<Node> exportAssignments = new HashSet<>();
       private final Map<String, JSDocInfo> internalDocs = new HashMap<>();
       private Module.Builder module;
@@ -94,14 +94,14 @@ public final class ProvidedSymbolPass implements CompilerPass {
           visitScript(n);
           return;
         }
-        
+
         if (n.isClass() && parent.isScript()) {
           String name = n.getFirstChild().getQualifiedName();
           if (n.getJSDocInfo() != null) {
             internalDocs.put(name, n.getJSDocInfo());
           }
         }
-        
+
         if (n.isFunction() && parent.isScript()) {
           String name = n.getFirstChild().getQualifiedName();
           if (n.getJSDocInfo() != null) {
@@ -138,12 +138,12 @@ public final class ProvidedSymbolPass implements CompilerPass {
           typeRegistry.recordProvide(name);
         }
       }
-      
+
       private void visitScript(Node script) {
         if (module == null) {
           return;
         }
-        
+
         Map<String, String> exportedNames = new HashMap<>();
         for (Node ref : exportAssignments) {
           String rhsName = ref.getLastChild().getQualifiedName();

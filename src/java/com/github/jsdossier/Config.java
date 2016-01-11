@@ -1,5 +1,5 @@
 /*
- Copyright 2013-2015 Jason Leyba
+ Copyright 2013-2016 Jason Leyba
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -647,7 +647,7 @@ class Config {
         "in `modules`. Note: if this option is omitted, the closest common ancestor for all " +
         "module files will be selected as the default.")
     private final Optional<Path> stripModulePrefix = Optional.absent();
-    
+
     @Description("The module naming convention to use. If set to `NODE`, modules with a basename" +
         " of index.js will use the name of the parent directory" +
         " (e.g. \"foo/bar/index.js\" -> \"foo/bar/\"). Must be one of {ES6, NODE}; defaults to ES6")

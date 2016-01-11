@@ -1,5 +1,5 @@
 /*
- Copyright 2013-2015 Jason Leyba
+ Copyright 2013-2016 Jason Leyba
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -65,7 +65,7 @@ public final class DossierCompiler extends Compiler {
         "%s can only parse its inputs once! Create a new instance if you must re-parse",
         getClass());
     hasParsed = true;
-    
+
     // Look for ES6 modules before we do anything else. This is necessary since the compiler
     // transpiles modules to ES5.
     processEs6Modules();
@@ -81,7 +81,7 @@ public final class DossierCompiler extends Compiler {
     // Now we can proceed with the normal parsing.
     super.parse();
   }
-  
+
   private void processEs6Modules() {
     Es6ModulePass modulePass = modulePassFactory.create(this);
     for (CompilerInput input : getInputsById().values()) {

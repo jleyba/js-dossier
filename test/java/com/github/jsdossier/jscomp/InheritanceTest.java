@@ -1,12 +1,12 @@
 /*
- Copyright 2013-2015 Jason Leyba
- 
+ Copyright 2013-2016 Jason Leyba
+
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
  You may obtain a copy of the License at
- 
+
    http://www.apache.org/licenses/LICENSE-2.0
- 
+
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -329,7 +329,7 @@ public class InheritanceTest {
             getInstanceType(a))
         .inOrder();
   }
-  
+
   @Test
   public void getDeclaredInterfaces_classHasNoInterfaces() {
     util.compile(path("foo.js"),
@@ -339,7 +339,7 @@ public class InheritanceTest {
     NominalType clazz = typeRegistry.getType("Clazz");
     assertThat(typeRegistry.getDeclaredInterfaces(clazz.getType(), jsRegistry)).isEmpty();
   }
-  
+
   @Test
   public void getDeclaredInterfaces_classImplementsInterface() {
     util.compile(path("foo.js"),
@@ -379,7 +379,7 @@ public class InheritanceTest {
             getInstanceType(a))
         .inOrder();
   }
-  
+
   @Test
   public void getDeclaredInterfaces_doesNotReturnInterfacesDeclaredOnSuperClass() {
     util.compile(path("foo.js"),
@@ -421,7 +421,7 @@ public class InheritanceTest {
     NominalType otherClazz = typeRegistry.getType("OtherClazz");
     assertThat(typeRegistry.getDeclaredInterfaces(otherClazz.getType(), jsRegistry)).isEmpty();
   }
-  
+
   @Test
   public void getDeclaredInterfaces_leafInterface() {
     util.compile(path("foo.js"),
@@ -431,7 +431,7 @@ public class InheritanceTest {
     NominalType type = typeRegistry.getType("Foo");
     assertThat(typeRegistry.getDeclaredInterfaces(type.getType(), jsRegistry)).isEmpty();
   }
-  
+
   @Test
   public void getDeclaredInterfaces_interfaceHasSuperInterface() {
     util.compile(path("foo.js"),
@@ -464,7 +464,7 @@ public class InheritanceTest {
             getInstanceType(a))
         .inOrder();
   }
-  
+
   @Test
   public void getDeclaredInterfaces_doesNotReturnDeclarationsFromSuperInterface() {
     util.compile(path("foo.js"),

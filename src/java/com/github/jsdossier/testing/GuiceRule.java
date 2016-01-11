@@ -1,12 +1,12 @@
 /*
- Copyright 2013-2015 Jason Leyba
- 
+ Copyright 2013-2016 Jason Leyba
+
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
  You may obtain a copy of the License at
- 
+
    http://www.apache.org/licenses/LICENSE-2.0
- 
+
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -57,7 +57,7 @@ import java.nio.file.Path;
  */
 @AutoValue
 public abstract class GuiceRule implements TestRule {
-  
+
   public static Builder builder(Object target, Module... modules) {
     Builder builder = new AutoValue_GuiceRule.Builder();
     return builder
@@ -85,14 +85,14 @@ public abstract class GuiceRule implements TestRule {
   abstract Optional<Path> getSourcePrefix();
   abstract ImmutableSet<Path> getModules();
   abstract Predicate<String> getTypeNameFilter();
-  
+
   abstract ModuleNamingConvention getModuleNamingConvention();
   abstract CompilerOptions.LanguageMode getLanguageIn();
   abstract boolean getNewTypeInference();
 
   abstract FileSystem getOutputFs();
   abstract Optional<Path> getOutputDir();
-  
+
   public abstract Builder toBuilder();
 
   @Override
@@ -106,7 +106,7 @@ public abstract class GuiceRule implements TestRule {
       }
     };
   }
-  
+
   public Injector createInjector() {
     ImmutableList<Module> modules = ImmutableList.<Module>builder()
         .addAll(getGuiceModules())
@@ -165,7 +165,7 @@ public abstract class GuiceRule implements TestRule {
 
     return Guice.createInjector(modules);
   }
-  
+
   @AutoValue.Builder
   public static abstract class Builder {
     abstract Builder setTarget(Object target);
@@ -176,18 +176,18 @@ public abstract class GuiceRule implements TestRule {
 
     abstract Builder setSourcePrefix(Optional<Path> path);
     abstract Builder setOutputDir(Optional<Path> out);
-    
+
     public abstract Builder setNewTypeInference(boolean set);
     public abstract Builder setModuleNamingConvention(ModuleNamingConvention convention);
     public abstract Builder setLanguageIn(CompilerOptions.LanguageMode languageIn);
     public abstract Builder setTypeNameFilter(Predicate<String> filter);
     public abstract Builder setInputFs(FileSystem fs);
     public abstract FileSystem getInputFs();
-    
+
     public Builder setModulePrefix(String prefix) {
       return setModulePrefix(Optional.of(getInputFs().getPath(prefix)));
     }
-    
+
     public Builder setSourcePrefix(String prefix) {
       return setSourcePrefix(Optional.of(getInputFs().getPath(prefix)));
     }
@@ -196,7 +196,7 @@ public abstract class GuiceRule implements TestRule {
     public Builder setModules(String... paths) {
       Optional<Path> opt = getModulePrefix();
       checkArgument(opt.isPresent(), "module prefix not set");
-      
+
       Path prefix = opt.get();
       ImmutableSet.Builder<Path> modules = ImmutableSet.builder();
       for (String path : paths) {
@@ -208,7 +208,7 @@ public abstract class GuiceRule implements TestRule {
 
     public abstract Builder setOutputFs(FileSystem fs);
     public abstract FileSystem getOutputFs();
-    
+
     public Builder setOutputDir(String path) {
       return setOutputDir(Optional.of(getOutputFs().getPath(path)));
     }

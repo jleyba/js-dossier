@@ -1,5 +1,5 @@
 /*
- Copyright 2013-2015 Jason Leyba
+ Copyright 2013-2016 Jason Leyba
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -64,7 +64,7 @@ import java.util.regex.Pattern;
 import javax.annotation.Nullable;
 
 class ProtoMessageSoyType implements SoyObjectType {
-  
+
   private static final Pattern PERMISSIBLE_URI_PREFIX_PATTERN =
       Pattern.compile("^((?:\\.{1,2}/)+)");
 
@@ -255,7 +255,7 @@ class ProtoMessageSoyType implements SoyObjectType {
       throw new IllegalArgumentException();
     }
   }
-  
+
   private static SoyListData toSanitizedUri(List<String> uris) {
     return new SoyListData(transform(uris, new Function<String, SoyValue>() {
       @Override

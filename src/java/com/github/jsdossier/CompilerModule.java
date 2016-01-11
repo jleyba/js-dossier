@@ -1,12 +1,12 @@
 /*
- Copyright 2013-2015 Jason Leyba
- 
+ Copyright 2013-2016 Jason Leyba
+
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
  You may obtain a copy of the License at
- 
+
    http://www.apache.org/licenses/LICENSE-2.0
- 
+
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -41,7 +41,7 @@ public class CompilerModule extends AbstractModule {
   private final CompilerOptions.LanguageMode languageIn;
   private final CompilerOptions.LanguageMode languageOut;
   private final boolean newTypeInference;
-  
+
   private CompilerModule(Builder builder) {
     this.compilerArgs = builder.args;
     this.languageIn = builder.languageIn;
@@ -66,7 +66,7 @@ public class CompilerModule extends AbstractModule {
       ProvidedSymbolPass providedSymbolPass,
       TypeCollectionPass typeCollectionPass) {
     CompilerOptions options = new CompilerOptions();
-    
+
     options.setNewTypeInference(newTypeInference);
     options.setLanguageIn(languageIn);
     options.setLanguageOut(languageOut);
@@ -81,7 +81,7 @@ public class CompilerModule extends AbstractModule {
 
     // For easier debugging.
     options.setPrettyPrint(true);
-    
+
     options.setAliasTransformationHandler(transformListener);
 
     options.addCustomPass(CustomPassExecutionTime.BEFORE_CHECKS, providedSymbolPass);
@@ -89,13 +89,13 @@ public class CompilerModule extends AbstractModule {
 
     return options;
   }
-  
+
   public static final class Builder {
     private String[] args = new String[0];
     private CompilerOptions.LanguageMode languageIn = CompilerOptions.LanguageMode.ECMASCRIPT5;
     private CompilerOptions.LanguageMode languageOut = CompilerOptions.LanguageMode.ECMASCRIPT5;
     private boolean newTypeInference = false;
-    
+
     public Builder setArgs(String[] args) {
       this.args = args;
       return this;
@@ -105,12 +105,12 @@ public class CompilerModule extends AbstractModule {
       this.languageIn = in;
       return this;
     }
-    
+
     public Builder setNewTypeInference(boolean set) {
       this.newTypeInference = set;
       return this;
     }
-    
+
     public CompilerModule build() {
       return new CompilerModule(this);
     }

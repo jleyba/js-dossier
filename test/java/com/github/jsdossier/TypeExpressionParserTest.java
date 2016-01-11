@@ -1,12 +1,12 @@
 /*
- Copyright 2013-2015 Jason Leyba
- 
+ Copyright 2013-2016 Jason Leyba
+
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
  You may obtain a copy of the License at
- 
+
    http://www.apache.org/licenses/LICENSE-2.0
- 
+
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -41,7 +41,7 @@ import javax.inject.Inject;
  */
 @RunWith(JUnit4.class)
 public class TypeExpressionParserTest {
-  
+
   @Rule
   public GuiceRule guice = GuiceRule.builder(this)
       .setOutputDir("out")
@@ -50,17 +50,17 @@ public class TypeExpressionParserTest {
       .setModules("one.js", "two.js", "three.js")
       .setLanguageIn(CompilerOptions.LanguageMode.ECMASCRIPT6_STRICT)
       .build();
-  
+
   @Inject @Input private FileSystem fs;
   @Inject private CompilerUtil util;
   @Inject private TypeRegistry typeRegistry;
   @Inject private LinkFactoryBuilder linkFactoryBuilder;
   @Inject private TypeExpressionParserFactory parserFactory;
-  
+
   @Test
   public void parseTypeDefinition() {
     util.compile(fs.getPath("foo.js"), "/** @typedef {{name: string, age: number}} */var Person;");
-    
+
     NominalType type = typeRegistry.getType("Person");
     TypeExpressionParser parser = parserFactory.create(linkFactoryBuilder.create(type));
 
@@ -74,7 +74,7 @@ public class TypeExpressionParserTest {
             .addToken(text("}"))
             .build());
   }
-  
+
   @Test
   public void parseConstructorFunctionReference() {
     util.compile(fs.getPath("foo.js"),
@@ -96,7 +96,7 @@ public class TypeExpressionParserTest {
             .addToken(text(")"))
             .build());
   }
-  
+
   @Test
   public void moduleContextWillHideGlobalTypeNames() {
     util.compile(
@@ -111,7 +111,7 @@ public class TypeExpressionParserTest {
             " * @constructor",
             " */",
             "export function Greeter(a) {}"));
-    
+
     NominalType type = typeRegistry.getType("module$source$modules$two.Greeter");
     TypeExpressionParser parser = parserFactory.create(
         linkFactoryBuilder.create(type).withTypeContext(type));
@@ -122,7 +122,7 @@ public class TypeExpressionParserTest {
             .addToken(text("!"))
             .addToken(link("Foo", "one_exports_Foo.html"))
             .build());
-    
+
     parser = parserFactory.create(
         linkFactoryBuilder.create(typeRegistry.getType("Person")));
     comment = parser.parse(expression);
@@ -132,7 +132,7 @@ public class TypeExpressionParserTest {
             .addToken(link("Person", "Person.html"))
             .build());
   }
-  
+
   @Test
   public void redundantNonNullQualifierOnPrimitiveIsIncluded() {
     util.compile(fs.getPath("foo.js"), "/** @typedef {!string} */var Name;");
@@ -147,11 +147,11 @@ public class TypeExpressionParserTest {
             .addToken(stringLink())
             .build());
   }
-  
+
   private static Comment.Token text(String text) {
     return Comment.Token.newBuilder().setText(text).build();
   }
-  
+
   private static Comment.Token numberLink() {
     return link("number",
         "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number");

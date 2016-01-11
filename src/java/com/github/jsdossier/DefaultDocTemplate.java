@@ -1,5 +1,5 @@
 /*
- Copyright 2013-2015 Jason Leyba
+ Copyright 2013-2016 Jason Leyba
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -45,7 +45,7 @@ final class DefaultDocTemplate implements DocTemplate {
   public ImmutableList<TemplateFile> getCss() {
     return ImmutableList.of(loadResourceFile("dossier.css", "resources/dossier.css"));
   }
-  
+
   private static TemplateFile loadResourceFile(String name, String path) {
     URL url = DefaultDocTemplate.class.getResource(path);
     checkNotNull(url, "Resource not found: %s", path);

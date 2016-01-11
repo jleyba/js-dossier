@@ -1,5 +1,5 @@
 /*
- Copyright 2013-2015 Jason Leyba
+ Copyright 2013-2016 Jason Leyba
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -40,14 +40,14 @@ public abstract class Position implements Comparable<Position> {
         .setOffset(pos.getPositionOnEndLine())
         .build();
   }
-  
+
   public static Position of(int line, int offset) {
     return new AutoValue_Position.Builder()
         .setLine(line)
         .setOffset(offset)
         .build();
   }
-  
+
   // Package-private to prevent extensions.
   Position() {}
 

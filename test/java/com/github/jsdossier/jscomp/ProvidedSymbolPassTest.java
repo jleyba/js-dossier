@@ -1,12 +1,12 @@
 /*
- Copyright 2013-2015 Jason Leyba
- 
+ Copyright 2013-2016 Jason Leyba
+
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
  You may obtain a copy of the License at
- 
+
    http://www.apache.org/licenses/LICENSE-2.0
- 
+
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -36,15 +36,15 @@ import javax.inject.Inject;
  */
 @RunWith(JUnit4.class)
 public class ProvidedSymbolPassTest {
-  
-  @Rule 
+
+  @Rule
   public GuiceRule guiceRule = GuiceRule.builder(this)
       .setModulePrefix("/modules")
       .setModules("foo/bar.js")
       .setLanguageIn(CompilerOptions.LanguageMode.ECMASCRIPT6_STRICT)
       .build();
 
-  @Inject @Input private FileSystem fs; 
+  @Inject @Input private FileSystem fs;
   @Inject private TypeRegistry typeRegistry;
   @Inject private CompilerUtil util;
 
@@ -80,10 +80,10 @@ public class ProvidedSymbolPassTest {
         "",
         "module.exports = 'foo';"
     );
-    
+
     assertThat(typeRegistry.getProvidedSymbols()).containsExactly("sample.module");
     assertThat(typeRegistry.getImplicitNamespaces()).containsExactly("sample", "sample.module");
-    
+
     Module module = typeRegistry.getModule("sample.module");
     assertThat(module.getPath().toString()).isEqualTo("/foo/bar/module.js");
     assertThat(module.getType()).isEqualTo(Module.Type.CLOSURE);
@@ -169,7 +169,7 @@ public class ProvidedSymbolPassTest {
 
     assertThat(typeRegistry.getProvidedSymbols()).containsExactly("sample.module");
     assertThat(typeRegistry.getImplicitNamespaces()).containsExactly("sample", "sample.module");
-    
+
     Module module = typeRegistry.getModule("sample.module");
     assertThat(module.getExportedNames().keySet()).containsExactly(
         "publicFunction1", "publicFunction2", "publicX");
