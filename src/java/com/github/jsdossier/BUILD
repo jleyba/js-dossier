@@ -18,6 +18,7 @@ java_library(
         "//lib/maven:jsr305",
         "//src/java/com/github/jsdossier/annotations",
         "//src/java/com/github/jsdossier/jscomp",
+        "//src/java/com/github/jsdossier/markdown",
         "//src/java/com/github/jsdossier/proto",
         "//src/java/com/github/jsdossier/soy",
     ],

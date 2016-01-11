@@ -19,6 +19,7 @@ package com.github.jsdossier;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Strings.isNullOrEmpty;
 
+import com.github.jsdossier.markdown.MarkdownTableExtension;
 import com.github.jsdossier.proto.Comment;
 import com.github.jsdossier.proto.TypeLink;
 import com.google.common.collect.ImmutableList;
@@ -51,7 +52,8 @@ public class CommentParser {
 
   private static final Pattern TAGLET_START_PATTERN = Pattern.compile("\\{@(\\w+)\\s");
 
-  private final List<? extends Extension> extensions = ImmutableList.of(TablesExtension.create());
+  private final List<? extends Extension> extensions =
+      ImmutableList.of(new MarkdownTableExtension());
   private final Parser parser = Parser.builder()
       .extensions(extensions)
       .build();

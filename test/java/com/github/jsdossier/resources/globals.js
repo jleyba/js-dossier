@@ -208,14 +208,12 @@ function SomeCtor() {
  * ---
  *
  * | Fruit  | Color  |
- * | ------ | ------ |
+ * | :----- | :----: |
  * | Apple  | Red    |
  * | Apple  | Green  |
  * | Banana | Yellow |
  * | Orange ||
  * [Table caption]
- *
- * (Note captions and colspans not yet working)
  *
  * ---
  *
@@ -314,15 +312,13 @@ class Formatter {
    *
    * ---
    *
-   * | Fruit  | Color  |
-   * | ------ | ------ |
-   * | Apple  | Red    |
-   * | Apple  | Green  |
-   * | Banana | Yellow |
-   * | Orange ||
+   * | Fruit  | Color  | Quantity |
+   * | :----- | :----: | -------: |
+   * | Apple  | Red    |        1 |
+   * | Apple  | Green  |        2 |
+   * | Banana | Yellow |        3 |
+   * | Orange ||                4 |
    * [Table caption]
-   *
-   * (Note captions and colspans not yet working)
    *
    * ---
    *
