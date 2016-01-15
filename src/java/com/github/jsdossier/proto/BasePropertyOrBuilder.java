@@ -223,4 +223,28 @@ public interface BasePropertyOrBuilder extends
    */
   com.github.jsdossier.proto.CommentOrBuilder getSpecifiedByOrBuilder(
       int index);
+
+  /**
+   * <code>repeated .dossier.Comment see_also = 10;</code>
+   */
+  java.util.List<com.github.jsdossier.proto.Comment> 
+      getSeeAlsoList();
+  /**
+   * <code>repeated .dossier.Comment see_also = 10;</code>
+   */
+  com.github.jsdossier.proto.Comment getSeeAlso(int index);
+  /**
+   * <code>repeated .dossier.Comment see_also = 10;</code>
+   */
+  int getSeeAlsoCount();
+  /**
+   * <code>repeated .dossier.Comment see_also = 10;</code>
+   */
+  java.util.List<? extends com.github.jsdossier.proto.CommentOrBuilder> 
+      getSeeAlsoOrBuilderList();
+  /**
+   * <code>repeated .dossier.Comment see_also = 10;</code>
+   */
+  com.github.jsdossier.proto.CommentOrBuilder getSeeAlsoOrBuilder(
+      int index);
 }

@@ -502,8 +502,9 @@ public class TypeInspectorTest extends AbstractTypeInspectorTest {
     TypeInspector inspector = typeInspectorFactory.create(type);
     assertThat(inspector.getTypeDescription())
         .isEqualTo(htmlComment(
-              "<p>Exports <a href=\"bar_exports_A.html\"><code>A</code></a>.</p>\n"));
+            "<p>Exports <a href=\"bar_exports_A.html\"><code>A</code></a>.</p>\n"));
   }
+
   @Test
   public void getTypeDescription_closureModuleWithMainFunction() {
     compile(
@@ -579,6 +580,128 @@ public class TypeInspectorTest extends AbstractTypeInspectorTest {
             .addThrown(Function.Detail.newBuilder()
                 .setType(errorTypeComment())
                 .setDescription(htmlComment("<p>Randomly.</p>\n")))
+            .build());
+  }
+
+  @Test
+  public void seeOtherMethodOnType() {
+    compile(
+        "class Bar {",
+        "  a() {}",
+        "  /** @see #a */",
+        "  b() {}",
+        "}");
+
+    NominalType type = typeRegistry.getType("Bar");
+    TypeInspector typeInspector = typeInspectorFactory.create(type);
+    TypeInspector.Report report = typeInspector.inspectInstanceType();
+    assertThat(report.getProperties()).isEmpty();
+    assertThat(report.getFunctions()).containsExactly(
+        Function.newBuilder()
+            .setBase(BaseProperty.newBuilder()
+                .setName("a")
+                .setSource(sourceFile("source/foo.js.src.html", 2))
+                .setDescription(Comment.getDefaultInstance()))
+            .build(),
+        Function.newBuilder()
+            .setBase(BaseProperty.newBuilder()
+                .setName("b")
+                .setSource(sourceFile("source/foo.js.src.html", 4))
+                .setDescription(Comment.getDefaultInstance())
+                .addSeeAlso(linkComment("#a", "Bar.html#a")))
+            .build());
+  }
+
+  @Test
+  public void seeMethodOnOtherType() {
+    compile(
+        "class Foo { a() {}}",
+        "class Bar {",
+        "  /** @see Foo#a */",
+        "  b() {}",
+        "}");
+
+    NominalType type = typeRegistry.getType("Bar");
+    TypeInspector typeInspector = typeInspectorFactory.create(type);
+    TypeInspector.Report report = typeInspector.inspectInstanceType();
+    assertThat(report.getProperties()).isEmpty();
+    assertThat(report.getFunctions()).containsExactly(
+        Function.newBuilder()
+            .setBase(BaseProperty.newBuilder()
+                .setName("b")
+                .setSource(sourceFile("source/foo.js.src.html", 4))
+                .setDescription(Comment.getDefaultInstance())
+                .addSeeAlso(linkComment("Foo#a", "Foo.html#a")))
+            .build());
+  }
+
+  @Test
+  public void seeOtherType() {
+    compile(
+        "class Foo { a() {}}",
+        "class Bar {",
+        "  /** @see Foo */",
+        "  b() {}",
+        "}");
+
+    NominalType type = typeRegistry.getType("Bar");
+    TypeInspector typeInspector = typeInspectorFactory.create(type);
+    TypeInspector.Report report = typeInspector.inspectInstanceType();
+    assertThat(report.getProperties()).isEmpty();
+    assertThat(report.getFunctions()).containsExactly(
+        Function.newBuilder()
+            .setBase(BaseProperty.newBuilder()
+                .setName("b")
+                .setSource(sourceFile("source/foo.js.src.html", 4))
+                .setDescription(Comment.getDefaultInstance())
+                .addSeeAlso(linkComment("Foo", "Foo.html")))
+            .build());
+  }
+
+  @Test
+  public void seeUrl() {
+    compile(
+        "class Bar {",
+        "  /** @see http://www.example.com */",
+        "  b() {}",
+        "}");
+
+    NominalType type = typeRegistry.getType("Bar");
+    TypeInspector typeInspector = typeInspectorFactory.create(type);
+    TypeInspector.Report report = typeInspector.inspectInstanceType();
+    assertThat(report.getProperties()).isEmpty();
+    assertThat(report.getFunctions()).containsExactly(
+        Function.newBuilder()
+            .setBase(BaseProperty.newBuilder()
+                .setName("b")
+                .setSource(sourceFile("source/foo.js.src.html", 3))
+                .setDescription(Comment.getDefaultInstance())
+                .addSeeAlso(htmlComment(
+                    "<p><a href=\"http://www.example.com\">http://www.example.com</a></p>\n"))
+                .build())
+            .build());
+  }
+
+  @Test
+  public void seeMarkdown() {
+    compile(
+        "class Bar {",
+        "  /** @see **foo *bar*** */",
+        "  b() {}",
+        "}");
+
+    NominalType type = typeRegistry.getType("Bar");
+    TypeInspector typeInspector = typeInspectorFactory.create(type);
+    TypeInspector.Report report = typeInspector.inspectInstanceType();
+    assertThat(report.getProperties()).isEmpty();
+    assertThat(report.getFunctions()).containsExactly(
+        Function.newBuilder()
+            .setBase(BaseProperty.newBuilder()
+                .setName("b")
+                .setSource(sourceFile("source/foo.js.src.html", 3))
+                .setDescription(Comment.getDefaultInstance())
+                .addSeeAlso(htmlComment("<p><strong>foo <em>bar</em></strong></p>\n"))
+                .build())
             .build());
   }
 }

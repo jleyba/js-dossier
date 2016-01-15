@@ -269,6 +269,45 @@ type from another module, simply qualify it with the module's relative path.
 /** A link to type {@&shy;link ./foo/bar.Baz} */
 </code></pre>
 
+### The \`@see\` Annotation
+
+Use the \`@see\` annotation in your JSDoc to add a reference to another
+type or an external resource. The text context following the annotation is
+processed in the following order:
+
+1. The annotation contents are processed as a type link using the rules defined
+   in the previous section. If the contents define a valid reference to another
+   type or property, a link will be included in the HTML output.
+2. If the annotation is a well-formed http or https URL, it will be rendered as
+   a link.
+3. Otherwise, the contents of the annotation are processed as markdown like a
+   comment's main body.
+
+
+__Example__
+
+    class Greeter {
+      /** @param {!Person} person . */
+      greet(person) {}
+    }
+
+    /**
+     * @see Greeter
+     * @see #name
+     * @see http://www.example.com
+     */
+    class Person {
+      /** @return {string} . */
+      name() { return ''; }
+    }
+
+In this example, the \`@see\` annotations on the \`Person\` class would
+generate the following links:
+
+    <a href="Greeter.html"><code>Greeter</code></a>
+    <a href="Person.html#name"><code>#name</code></a>
+    <a href="http://www.example.com">http://www.example.com</a>
+
 ## HTML Sanitization
 
 All HTML output is sanitized using the [owasp HTML sanitizer](https://github.com/owasp/java-html-sanitizer).

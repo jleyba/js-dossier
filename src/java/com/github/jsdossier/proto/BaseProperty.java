@@ -162,6 +162,14 @@ public final class BaseProperty extends
             specifiedBy_.add(input.readMessage(com.github.jsdossier.proto.Comment.PARSER, extensionRegistry));
             break;
           }
+          case 82: {
+            if (!((mutable_bitField0_ & 0x00000200) == 0x00000200)) {
+              seeAlso_ = new java.util.ArrayList<com.github.jsdossier.proto.Comment>();
+              mutable_bitField0_ |= 0x00000200;
+            }
+            seeAlso_.add(input.readMessage(com.github.jsdossier.proto.Comment.PARSER, extensionRegistry));
+            break;
+          }
         }
       }
     } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -172,6 +180,9 @@ public final class BaseProperty extends
     } finally {
       if (((mutable_bitField0_ & 0x00000100) == 0x00000100)) {
         specifiedBy_ = java.util.Collections.unmodifiableList(specifiedBy_);
+      }
+      if (((mutable_bitField0_ & 0x00000200) == 0x00000200)) {
+        seeAlso_ = java.util.Collections.unmodifiableList(seeAlso_);
       }
       this.unknownFields = unknownFields.build();
       makeExtensionsImmutable();
@@ -515,6 +526,41 @@ public final class BaseProperty extends
     return specifiedBy_.get(index);
   }
 
+  public static final int SEE_ALSO_FIELD_NUMBER = 10;
+  private java.util.List<com.github.jsdossier.proto.Comment> seeAlso_;
+  /**
+   * <code>repeated .dossier.Comment see_also = 10;</code>
+   */
+  public java.util.List<com.github.jsdossier.proto.Comment> getSeeAlsoList() {
+    return seeAlso_;
+  }
+  /**
+   * <code>repeated .dossier.Comment see_also = 10;</code>
+   */
+  public java.util.List<? extends com.github.jsdossier.proto.CommentOrBuilder> 
+      getSeeAlsoOrBuilderList() {
+    return seeAlso_;
+  }
+  /**
+   * <code>repeated .dossier.Comment see_also = 10;</code>
+   */
+  public int getSeeAlsoCount() {
+    return seeAlso_.size();
+  }
+  /**
+   * <code>repeated .dossier.Comment see_also = 10;</code>
+   */
+  public com.github.jsdossier.proto.Comment getSeeAlso(int index) {
+    return seeAlso_.get(index);
+  }
+  /**
+   * <code>repeated .dossier.Comment see_also = 10;</code>
+   */
+  public com.github.jsdossier.proto.CommentOrBuilder getSeeAlsoOrBuilder(
+      int index) {
+    return seeAlso_.get(index);
+  }
+
   private void initFields() {
     name_ = "";
     source_ = com.github.jsdossier.proto.SourceLink.getDefaultInstance();
@@ -525,6 +571,7 @@ public final class BaseProperty extends
     definedBy_ = com.github.jsdossier.proto.Comment.getDefaultInstance();
     overrides_ = com.github.jsdossier.proto.Comment.getDefaultInstance();
     specifiedBy_ = java.util.Collections.emptyList();
+    seeAlso_ = java.util.Collections.emptyList();
   }
   private byte memoizedIsInitialized = -1;
   public final boolean isInitialized() {
@@ -582,6 +629,9 @@ public final class BaseProperty extends
     for (int i = 0; i < specifiedBy_.size(); i++) {
       output.writeMessage(9, specifiedBy_.get(i));
     }
+    for (int i = 0; i < seeAlso_.size(); i++) {
+      output.writeMessage(10, seeAlso_.get(i));
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -626,6 +676,10 @@ public final class BaseProperty extends
     for (int i = 0; i < specifiedBy_.size(); i++) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(9, specifiedBy_.get(i));
+    }
+    for (int i = 0; i < seeAlso_.size(); i++) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(10, seeAlso_.get(i));
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSerializedSize = size;
@@ -747,6 +801,7 @@ public final class BaseProperty extends
         getDefinedByFieldBuilder();
         getOverridesFieldBuilder();
         getSpecifiedByFieldBuilder();
+        getSeeAlsoFieldBuilder();
       }
     }
     private static Builder create() {
@@ -800,6 +855,12 @@ public final class BaseProperty extends
         bitField0_ = (bitField0_ & ~0x00000100);
       } else {
         specifiedByBuilder_.clear();
+      }
+      if (seeAlsoBuilder_ == null) {
+        seeAlso_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000200);
+      } else {
+        seeAlsoBuilder_.clear();
       }
       return this;
     }
@@ -894,6 +955,15 @@ public final class BaseProperty extends
       } else {
         result.specifiedBy_ = specifiedByBuilder_.build();
       }
+      if (seeAlsoBuilder_ == null) {
+        if (((bitField0_ & 0x00000200) == 0x00000200)) {
+          seeAlso_ = java.util.Collections.unmodifiableList(seeAlso_);
+          bitField0_ = (bitField0_ & ~0x00000200);
+        }
+        result.seeAlso_ = seeAlso_;
+      } else {
+        result.seeAlso_ = seeAlsoBuilder_.build();
+      }
       result.bitField0_ = to_bitField0_;
       onBuilt();
       return result;
@@ -959,6 +1029,32 @@ public final class BaseProperty extends
                  getSpecifiedByFieldBuilder() : null;
           } else {
             specifiedByBuilder_.addAllMessages(other.specifiedBy_);
+          }
+        }
+      }
+      if (seeAlsoBuilder_ == null) {
+        if (!other.seeAlso_.isEmpty()) {
+          if (seeAlso_.isEmpty()) {
+            seeAlso_ = other.seeAlso_;
+            bitField0_ = (bitField0_ & ~0x00000200);
+          } else {
+            ensureSeeAlsoIsMutable();
+            seeAlso_.addAll(other.seeAlso_);
+          }
+          onChanged();
+        }
+      } else {
+        if (!other.seeAlso_.isEmpty()) {
+          if (seeAlsoBuilder_.isEmpty()) {
+            seeAlsoBuilder_.dispose();
+            seeAlsoBuilder_ = null;
+            seeAlso_ = other.seeAlso_;
+            bitField0_ = (bitField0_ & ~0x00000200);
+            seeAlsoBuilder_ = 
+              com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+                 getSeeAlsoFieldBuilder() : null;
+          } else {
+            seeAlsoBuilder_.addAllMessages(other.seeAlso_);
           }
         }
       }
@@ -2326,6 +2422,246 @@ public final class BaseProperty extends
         specifiedBy_ = null;
       }
       return specifiedByBuilder_;
+    }
+
+    private java.util.List<com.github.jsdossier.proto.Comment> seeAlso_ =
+      java.util.Collections.emptyList();
+    private void ensureSeeAlsoIsMutable() {
+      if (!((bitField0_ & 0x00000200) == 0x00000200)) {
+        seeAlso_ = new java.util.ArrayList<com.github.jsdossier.proto.Comment>(seeAlso_);
+        bitField0_ |= 0x00000200;
+       }
+    }
+
+    private com.google.protobuf.RepeatedFieldBuilder<
+        com.github.jsdossier.proto.Comment, com.github.jsdossier.proto.Comment.Builder, com.github.jsdossier.proto.CommentOrBuilder> seeAlsoBuilder_;
+
+    /**
+     * <code>repeated .dossier.Comment see_also = 10;</code>
+     */
+    public java.util.List<com.github.jsdossier.proto.Comment> getSeeAlsoList() {
+      if (seeAlsoBuilder_ == null) {
+        return java.util.Collections.unmodifiableList(seeAlso_);
+      } else {
+        return seeAlsoBuilder_.getMessageList();
+      }
+    }
+    /**
+     * <code>repeated .dossier.Comment see_also = 10;</code>
+     */
+    public int getSeeAlsoCount() {
+      if (seeAlsoBuilder_ == null) {
+        return seeAlso_.size();
+      } else {
+        return seeAlsoBuilder_.getCount();
+      }
+    }
+    /**
+     * <code>repeated .dossier.Comment see_also = 10;</code>
+     */
+    public com.github.jsdossier.proto.Comment getSeeAlso(int index) {
+      if (seeAlsoBuilder_ == null) {
+        return seeAlso_.get(index);
+      } else {
+        return seeAlsoBuilder_.getMessage(index);
+      }
+    }
+    /**
+     * <code>repeated .dossier.Comment see_also = 10;</code>
+     */
+    public Builder setSeeAlso(
+        int index, com.github.jsdossier.proto.Comment value) {
+      if (seeAlsoBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureSeeAlsoIsMutable();
+        seeAlso_.set(index, value);
+        onChanged();
+      } else {
+        seeAlsoBuilder_.setMessage(index, value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .dossier.Comment see_also = 10;</code>
+     */
+    public Builder setSeeAlso(
+        int index, com.github.jsdossier.proto.Comment.Builder builderForValue) {
+      if (seeAlsoBuilder_ == null) {
+        ensureSeeAlsoIsMutable();
+        seeAlso_.set(index, builderForValue.build());
+        onChanged();
+      } else {
+        seeAlsoBuilder_.setMessage(index, builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .dossier.Comment see_also = 10;</code>
+     */
+    public Builder addSeeAlso(com.github.jsdossier.proto.Comment value) {
+      if (seeAlsoBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureSeeAlsoIsMutable();
+        seeAlso_.add(value);
+        onChanged();
+      } else {
+        seeAlsoBuilder_.addMessage(value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .dossier.Comment see_also = 10;</code>
+     */
+    public Builder addSeeAlso(
+        int index, com.github.jsdossier.proto.Comment value) {
+      if (seeAlsoBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureSeeAlsoIsMutable();
+        seeAlso_.add(index, value);
+        onChanged();
+      } else {
+        seeAlsoBuilder_.addMessage(index, value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .dossier.Comment see_also = 10;</code>
+     */
+    public Builder addSeeAlso(
+        com.github.jsdossier.proto.Comment.Builder builderForValue) {
+      if (seeAlsoBuilder_ == null) {
+        ensureSeeAlsoIsMutable();
+        seeAlso_.add(builderForValue.build());
+        onChanged();
+      } else {
+        seeAlsoBuilder_.addMessage(builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .dossier.Comment see_also = 10;</code>
+     */
+    public Builder addSeeAlso(
+        int index, com.github.jsdossier.proto.Comment.Builder builderForValue) {
+      if (seeAlsoBuilder_ == null) {
+        ensureSeeAlsoIsMutable();
+        seeAlso_.add(index, builderForValue.build());
+        onChanged();
+      } else {
+        seeAlsoBuilder_.addMessage(index, builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .dossier.Comment see_also = 10;</code>
+     */
+    public Builder addAllSeeAlso(
+        java.lang.Iterable<? extends com.github.jsdossier.proto.Comment> values) {
+      if (seeAlsoBuilder_ == null) {
+        ensureSeeAlsoIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, seeAlso_);
+        onChanged();
+      } else {
+        seeAlsoBuilder_.addAllMessages(values);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .dossier.Comment see_also = 10;</code>
+     */
+    public Builder clearSeeAlso() {
+      if (seeAlsoBuilder_ == null) {
+        seeAlso_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000200);
+        onChanged();
+      } else {
+        seeAlsoBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .dossier.Comment see_also = 10;</code>
+     */
+    public Builder removeSeeAlso(int index) {
+      if (seeAlsoBuilder_ == null) {
+        ensureSeeAlsoIsMutable();
+        seeAlso_.remove(index);
+        onChanged();
+      } else {
+        seeAlsoBuilder_.remove(index);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .dossier.Comment see_also = 10;</code>
+     */
+    public com.github.jsdossier.proto.Comment.Builder getSeeAlsoBuilder(
+        int index) {
+      return getSeeAlsoFieldBuilder().getBuilder(index);
+    }
+    /**
+     * <code>repeated .dossier.Comment see_also = 10;</code>
+     */
+    public com.github.jsdossier.proto.CommentOrBuilder getSeeAlsoOrBuilder(
+        int index) {
+      if (seeAlsoBuilder_ == null) {
+        return seeAlso_.get(index);  } else {
+        return seeAlsoBuilder_.getMessageOrBuilder(index);
+      }
+    }
+    /**
+     * <code>repeated .dossier.Comment see_also = 10;</code>
+     */
+    public java.util.List<? extends com.github.jsdossier.proto.CommentOrBuilder> 
+         getSeeAlsoOrBuilderList() {
+      if (seeAlsoBuilder_ != null) {
+        return seeAlsoBuilder_.getMessageOrBuilderList();
+      } else {
+        return java.util.Collections.unmodifiableList(seeAlso_);
+      }
+    }
+    /**
+     * <code>repeated .dossier.Comment see_also = 10;</code>
+     */
+    public com.github.jsdossier.proto.Comment.Builder addSeeAlsoBuilder() {
+      return getSeeAlsoFieldBuilder().addBuilder(
+          com.github.jsdossier.proto.Comment.getDefaultInstance());
+    }
+    /**
+     * <code>repeated .dossier.Comment see_also = 10;</code>
+     */
+    public com.github.jsdossier.proto.Comment.Builder addSeeAlsoBuilder(
+        int index) {
+      return getSeeAlsoFieldBuilder().addBuilder(
+          index, com.github.jsdossier.proto.Comment.getDefaultInstance());
+    }
+    /**
+     * <code>repeated .dossier.Comment see_also = 10;</code>
+     */
+    public java.util.List<com.github.jsdossier.proto.Comment.Builder> 
+         getSeeAlsoBuilderList() {
+      return getSeeAlsoFieldBuilder().getBuilderList();
+    }
+    private com.google.protobuf.RepeatedFieldBuilder<
+        com.github.jsdossier.proto.Comment, com.github.jsdossier.proto.Comment.Builder, com.github.jsdossier.proto.CommentOrBuilder> 
+        getSeeAlsoFieldBuilder() {
+      if (seeAlsoBuilder_ == null) {
+        seeAlsoBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+            com.github.jsdossier.proto.Comment, com.github.jsdossier.proto.Comment.Builder, com.github.jsdossier.proto.CommentOrBuilder>(
+                seeAlso_,
+                ((bitField0_ & 0x00000200) == 0x00000200),
+                getParentForChildren(),
+                isClean());
+        seeAlso_ = null;
+      }
+      return seeAlsoBuilder_;
     }
 
     // @@protoc_insertion_point(builder_scope:dossier.BaseProperty)

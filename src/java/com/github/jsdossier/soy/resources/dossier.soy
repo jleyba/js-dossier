@@ -355,6 +355,7 @@
   {if $forceParams
       or length($fn.parameter)
       or length($fn.thrown)
+      or length($fn.base.seeAlso)
       or ($fn.return and not $fn.isConstructor
           and (($fn.return.description and length($fn.return.description.token))
           or ($fn.return.type and length($fn.return.type.token))))}
@@ -375,6 +376,9 @@
     {call .typeDetails}
       {param header: 'Throws' /}
       {param details: $fn.thrown /}
+    {/call}
+    {call .seeAlso}
+      {param base: $fn.base /}
     {/call}
   {/if}
 {/template}
@@ -576,7 +580,8 @@
       {if $property.base.overrides
           or length($property.base.specifiedBy)
           or $property.type
-          or ($property.base.deprecation and length($property.base.deprecation.token))}
+          or ($property.base.deprecation and length($property.base.deprecation.token))
+          or length($property.base.seeAlso)}
         <dl>
           {call .deprecationNotice}
             {param deprecation: $property.base.deprecation /}
@@ -592,6 +597,9 @@
           {call .overrides}
             {param base: $property.base /}
           {/call}
+          {call .seeAlso}
+            {param base: $property.base /}
+          {/call}
         </dl>
       {elseif not $property.base.description
           or not length($property.base.description.token)}
@@ -599,6 +607,25 @@
       {/if}
     </section>
   {/foreach}
+{/template}
+
+
+/**
+ * Renders references to other resources defined by @see annotations.
+ * This template assumes it is called with a DL element.
+ */
+{template .seeAlso}
+  {@param base: dossier.BaseProperty}
+  {if length($base.seeAlso)}
+    <dt class="spec">See Also</dt>
+    {foreach $ref in $base.seeAlso}
+      <dd>
+        {call .comment}
+          {param comment: $ref /}
+        {/call}
+      </dd>
+    {/foreach}
+  {/if}
 {/template}
 
 

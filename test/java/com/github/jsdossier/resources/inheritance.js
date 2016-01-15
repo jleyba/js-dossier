@@ -135,6 +135,7 @@ sample.inheritance.NumberClass.Result;
  * @param {number} n The first number to add.
  * @param {...number} var_args The remaining numbers to add.
  * @return {number} The result.
+ * @see #add
  */
 sample.inheritance.NumberClass.prototype.addMany = function(n, var_args) {
   var result = this.getValue();
@@ -197,6 +198,7 @@ sample.inheritance.StringClass = goog.defineClass(sample.inheritance.TemplateCla
    * @param {number} fromIndex The starting index.
    * @param {number=} opt_toIndex The ending index.
    * @return {string} A substring of this instance's current value.
+   * @see #getValue()
    */
   substring: function(fromIndex, opt_toIndex) {
     return this.value.substring(fromIndex, opt_toIndex);

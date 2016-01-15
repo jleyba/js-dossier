@@ -149,6 +149,8 @@ message BaseProperty {
 
   // Interfaces that define this property.
   repeated Comment specified_by = 9;
+
+  repeated Comment see_also = 10;
 }
 
 

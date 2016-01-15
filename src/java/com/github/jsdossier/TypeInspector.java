@@ -84,6 +84,18 @@ final class TypeInspector {
 
   private static final Pattern SUMMARY_REGEX = Pattern.compile("(.*?\\.)[\\s$]", Pattern.DOTALL);
 
+  /**
+   * URI pattern from RFC 2396, with the scheme portion restricted to http/s.
+   */
+  private static final Pattern URI_PATTERN = Pattern.compile(
+      "^\\s*https?://" +
+          "(?<authority>[^/?#]+)" +
+          "(?<path>/[^?#]*)?" +
+          "(?<query>\\?[^#]*)?" +
+          "(?<fragment>#.*)?" +
+          "\\s*$",
+      Pattern.CASE_INSENSITIVE);
+
   private final DossierFileSystem dfs;
   private final CommentParser parser;
   private final TypeRegistry registry;
@@ -885,12 +897,32 @@ final class TypeInspector {
       builder.setVisibility(Visibility.valueOf(jsdoc.getVisibility().name()));
     }
 
+    LinkFactory contextLinkFactory = linkFactory.withTypeContext(docs.getContextType());
+
     if (jsdoc.isDeprecated()) {
       builder.getTagsBuilder().setIsDeprecated(true);
       builder.setDeprecation(
           parser.parseComment(
               jsdoc.getDeprecationReason(),
-              linkFactory.withTypeContext(docs.getContextType())));
+              contextLinkFactory));
+    }
+
+    for (String seeAlso : jsdoc.getSeeClauses()) {
+      // 1) Try as a link reference to another type.
+      @Nullable TypeLink link = contextLinkFactory.createLink(seeAlso);
+      if (link != null && !link.getHref().isEmpty()) {
+        builder.addSeeAlsoBuilder()
+            .addTokenBuilder()
+            .setText(seeAlso)
+            .setHref(link.getHref());
+        continue;
+      }
+
+      if (URI_PATTERN.matcher(seeAlso).matches()) {
+        seeAlso = "<" + seeAlso + ">";
+      }
+
+      builder.addSeeAlso(parser.parseComment(seeAlso, contextLinkFactory));
     }
 
     if (!type.isFunctionType() && (jsdoc.isConst() || jsdoc.isDefine())) {
