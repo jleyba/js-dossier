@@ -22,8 +22,10 @@ import static com.google.common.collect.FluentIterable.from;
 import static com.google.common.collect.Iterables.transform;
 import static com.google.common.collect.Lists.newLinkedList;
 import static com.google.common.collect.Sets.intersection;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.exists;
 import static java.nio.file.Files.isDirectory;
+import static java.nio.file.Files.write;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Function;
@@ -35,6 +37,7 @@ import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
+import com.google.common.io.Resources;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -66,8 +69,10 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -557,6 +562,7 @@ class Config {
       }
       pw.println();
     }
+    pw.println();
     return sw.toString();
   }
 
@@ -784,7 +790,18 @@ class Config {
     }
   }
 
-  public static void main(String[] args) {
-    System.err.println(getOptionsText(true));
+  public static void main(String[] args) throws IOException {
+    URL headUrl = Resources.getResource(Config.class, "resources/ReadmeHead.md");
+    URL tailUrl = Resources.getResource(Config.class, "resources/ReadmeTail.md");
+    String output = Resources.toString(headUrl, UTF_8)
+        + getOptionsText(true)
+        + Resources.toString(tailUrl, UTF_8);
+
+    if (args.length > 0) {
+      Path path = FileSystems.getDefault().getPath(args[0]);
+      write(path, output.getBytes(UTF_8));
+    } else {
+      System.err.println(output);
+    }
   }
 }

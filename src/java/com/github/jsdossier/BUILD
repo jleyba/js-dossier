@@ -3,7 +3,7 @@ java_library(
     srcs = glob(["*.java"]),
     resources = [
         "//src/js:dossier_bin",
-    ] + glob(["resources/*"]),
+    ] + glob(["resources/*.css"]),
     deps = [
         "//lib/maven:args4j",
         "//lib/maven:auto_factory",
@@ -35,7 +35,8 @@ java_binary(
 )
 
 java_binary(
-    name = "Config",
+    name = "GenerateReadme",
+    resources = glob(["resources/*.md"]),
     runtime_deps = [":jsdossier"],
     main_class = "com.github.jsdossier.Config",
 )
