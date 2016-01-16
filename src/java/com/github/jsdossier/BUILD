@@ -32,6 +32,7 @@ java_binary(
     name = "dossier",
     runtime_deps = [":jsdossier"],
     main_class = "com.github.jsdossier.Main",
+    visibility = ["//:__pkg__"],
 )
 
 java_binary(
@@ -39,4 +40,5 @@ java_binary(
     resources = glob(["resources/*.md"]),
     runtime_deps = [":jsdossier"],
     main_class = "com.github.jsdossier.Config",
+    visibility = ["//:__pkg__"],
 )

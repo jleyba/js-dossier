@@ -75,10 +75,10 @@ run_tests() {
 }
 
 build_release() {
-  bazel clean
-  bazel test //test/... && \
-      bazel build //src/java/com/github/jsdossier:dossier_deploy.jar && \
-      echo "Release built: bazel-bin/src/java/com/github/jsdossier/dossier_deploy.jar"
+  bazel clean && \
+      bazel test //test/... && \
+      bazel build :release && \
+      echo "Release built: bazel-genfiles/js-dossier.tar.gz"
 }
 
 build_sample() {
@@ -89,7 +89,7 @@ build_sample() {
 }
 
 update_readme() {
-  bazel run //src/java/com/github/jsdossier:GenerateReadme -- "${ROOT}/README.md"
+  bazel build :readme && cp bazel-genfiles/README.md README.md
 }
 
 main() {

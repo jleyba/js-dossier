@@ -1,0 +1,22 @@
+{
+  "name": "js-dossier",
+  "version": "0.8.0-dev",
+  "description": "A JavaScript API documentation generator",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jleyba/js-dossier.git"
+  },
+  "keywords": [
+    "Dossier",
+    "JSDoc",
+    "Closure Compiler",
+    "documentation",
+    "docs",
+  ],
+  "author": "Jason Leyba",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/jleyba/js-dossier/issues"
+  },
+  "homepage": "https://github.com/jleyba/js-dossier"
+}
