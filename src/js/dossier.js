@@ -35,6 +35,7 @@ goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.dom.classlist');
 goog.require('goog.string');
+goog.require('goog.style');
 goog.require('goog.userAgent');
 
 goog.forwardDeclare('goog.debug.ErrorHandler');
@@ -56,7 +57,9 @@ dossier.init = function() {
 
   keyHandler.init(drawer, input);
 
+  dossier.resolveAmbiguity_();
   dossier.initSourceHilite_();
+
   setTimeout(dossier.adjustTarget_, 0);
 };
 goog.exportSymbol('init', dossier.init);
@@ -93,6 +96,34 @@ dossier.BASE_PATH_ = (function() {
   }
   return basePath;
 })();
+
+
+/**
+ * If the current page has multiple type articles, determines which one should
+ * be displayed to the user.
+ * @private
+ */
+dossier.resolveAmbiguity_ = function() {
+  let articles = document.querySelectorAll('.content > main > article');
+  if (!articles.length) {
+    return;
+  }
+
+  const currentFile = goog.array.peek(location.pathname.split(/\//));
+  const article = goog.array.find(articles, function(a) {
+    return a.dataset && a.dataset.filename === currentFile;
+  });
+
+  if (article) {
+    goog.array.forEach(articles, function(a) {
+      if (a !== article) {
+        goog.dom.removeNode(a);
+      }
+    });
+    goog.style.setElementShown(article, true);
+    document.title = article.dataset.name;
+  }
+};
 
 
 /**

@@ -345,6 +345,17 @@ public class EndToEndTest {
   }
 
   @Test
+  public void checkTypesWithCaseInsensitiveOutputFileNameCollision() throws IOException {
+    for (String file : ImmutableList.of("test.Registry.html", "test.registry.html")) {
+      Document document = load(outDir.resolve(file));
+      compareWithGoldenFile(querySelector(document, "main"), "Registry.html");
+      checkHeader(document);
+      checkNav(document);
+      checkFooter(document);
+    }
+  }
+
+  @Test
   public void checkEs6Module() throws IOException {
     Document document = load(outDir.resolve("module/example/net.html"));
     compareWithGoldenFile(querySelector(document, "article"), "module/example/net.html");
@@ -619,6 +630,7 @@ public class EndToEndTest {
       copyResource("resources/globals.js", srcDir.resolve("main/globals.js"));
       copyResource("resources/json.js", srcDir.resolve("main/json.js"));
       copyResource("resources/inheritance.js", srcDir.resolve("main/inheritance.js"));
+      copyResource("resources/registry.js", srcDir.resolve("main/registry.js"));
       copyResource("resources/emptyenum.js", srcDir.resolve("main/subdir/emptyenum.js"));
       copyResource("resources/module/index.js", srcDir.resolve("main/example/index.js"));
       copyResource("resources/module/nested.js", srcDir.resolve("main/example/nested.js"));
@@ -649,6 +661,7 @@ public class EndToEndTest {
         addSource(srcDir.resolve("main/globals.js"));
         addSource(srcDir.resolve("main/json.js"));
         addSource(srcDir.resolve("main/inheritance.js"));
+        addSource(srcDir.resolve("main/registry.js"));
         addSource(srcDir.resolve("main/subdir/emptyenum.js"));
 
         // NB: this is explicitly declared as a normal source input to test that Dossier detects

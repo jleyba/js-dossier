@@ -242,6 +242,18 @@ public final class JsType extends
             bitField0_ |= 0x00000100;
             break;
           }
+          case 186: {
+            com.google.protobuf.ByteString bs = input.readBytes();
+            bitField0_ |= 0x00000200;
+            filename_ = bs;
+            break;
+          }
+          case 194: {
+            com.google.protobuf.ByteString bs = input.readBytes();
+            bitField0_ |= 0x00000400;
+            qualifiedName_ = bs;
+            break;
+          }
         }
       }
     } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -3941,6 +3953,114 @@ public final class JsType extends
     return aliasedType_;
   }
 
+  public static final int FILENAME_FIELD_NUMBER = 23;
+  private java.lang.Object filename_;
+  /**
+   * <code>optional string filename = 23;</code>
+   *
+   * <pre>
+   * Base name for the rendered file for this type.
+   * </pre>
+   */
+  public boolean hasFilename() {
+    return ((bitField0_ & 0x00000200) == 0x00000200);
+  }
+  /**
+   * <code>optional string filename = 23;</code>
+   *
+   * <pre>
+   * Base name for the rendered file for this type.
+   * </pre>
+   */
+  public java.lang.String getFilename() {
+    java.lang.Object ref = filename_;
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
+    } else {
+      com.google.protobuf.ByteString bs = 
+          (com.google.protobuf.ByteString) ref;
+      java.lang.String s = bs.toStringUtf8();
+      if (bs.isValidUtf8()) {
+        filename_ = s;
+      }
+      return s;
+    }
+  }
+  /**
+   * <code>optional string filename = 23;</code>
+   *
+   * <pre>
+   * Base name for the rendered file for this type.
+   * </pre>
+   */
+  public com.google.protobuf.ByteString
+      getFilenameBytes() {
+    java.lang.Object ref = filename_;
+    if (ref instanceof java.lang.String) {
+      com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString.copyFromUtf8(
+              (java.lang.String) ref);
+      filename_ = b;
+      return b;
+    } else {
+      return (com.google.protobuf.ByteString) ref;
+    }
+  }
+
+  public static final int QUALIFIED_NAME_FIELD_NUMBER = 24;
+  private java.lang.Object qualifiedName_;
+  /**
+   * <code>optional string qualified_name = 24;</code>
+   *
+   * <pre>
+   * Qualified display name for this type.
+   * </pre>
+   */
+  public boolean hasQualifiedName() {
+    return ((bitField0_ & 0x00000400) == 0x00000400);
+  }
+  /**
+   * <code>optional string qualified_name = 24;</code>
+   *
+   * <pre>
+   * Qualified display name for this type.
+   * </pre>
+   */
+  public java.lang.String getQualifiedName() {
+    java.lang.Object ref = qualifiedName_;
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
+    } else {
+      com.google.protobuf.ByteString bs = 
+          (com.google.protobuf.ByteString) ref;
+      java.lang.String s = bs.toStringUtf8();
+      if (bs.isValidUtf8()) {
+        qualifiedName_ = s;
+      }
+      return s;
+    }
+  }
+  /**
+   * <code>optional string qualified_name = 24;</code>
+   *
+   * <pre>
+   * Qualified display name for this type.
+   * </pre>
+   */
+  public com.google.protobuf.ByteString
+      getQualifiedNameBytes() {
+    java.lang.Object ref = qualifiedName_;
+    if (ref instanceof java.lang.String) {
+      com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString.copyFromUtf8(
+              (java.lang.String) ref);
+      qualifiedName_ = b;
+      return b;
+    } else {
+      return (com.google.protobuf.ByteString) ref;
+    }
+  }
+
   private void initFields() {
     name_ = "";
     source_ = com.github.jsdossier.proto.SourceLink.getDefaultInstance();
@@ -3960,6 +4080,8 @@ public final class JsType extends
     compilerConstant_ = java.util.Collections.emptyList();
     parent_ = com.github.jsdossier.proto.JsType.ParentLink.getDefaultInstance();
     aliasedType_ = com.github.jsdossier.proto.TypeLink.getDefaultInstance();
+    filename_ = "";
+    qualifiedName_ = "";
   }
   private byte memoizedIsInitialized = -1;
   public final boolean isInitialized() {
@@ -4114,6 +4236,12 @@ public final class JsType extends
     if (((bitField0_ & 0x00000100) == 0x00000100)) {
       output.writeMessage(22, aliasedType_);
     }
+    if (((bitField0_ & 0x00000200) == 0x00000200)) {
+      output.writeBytes(23, getFilenameBytes());
+    }
+    if (((bitField0_ & 0x00000400) == 0x00000400)) {
+      output.writeBytes(24, getQualifiedNameBytes());
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -4194,6 +4322,14 @@ public final class JsType extends
     if (((bitField0_ & 0x00000100) == 0x00000100)) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(22, aliasedType_);
+    }
+    if (((bitField0_ & 0x00000200) == 0x00000200)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeBytesSize(23, getFilenameBytes());
+    }
+    if (((bitField0_ & 0x00000400) == 0x00000400)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeBytesSize(24, getQualifiedNameBytes());
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSerializedSize = size;
@@ -4438,6 +4574,10 @@ public final class JsType extends
         aliasedTypeBuilder_.clear();
       }
       bitField0_ = (bitField0_ & ~0x00020000);
+      filename_ = "";
+      bitField0_ = (bitField0_ & ~0x00040000);
+      qualifiedName_ = "";
+      bitField0_ = (bitField0_ & ~0x00080000);
       return this;
     }
 
@@ -4615,6 +4755,14 @@ public final class JsType extends
       } else {
         result.aliasedType_ = aliasedTypeBuilder_.build();
       }
+      if (((from_bitField0_ & 0x00040000) == 0x00040000)) {
+        to_bitField0_ |= 0x00000200;
+      }
+      result.filename_ = filename_;
+      if (((from_bitField0_ & 0x00080000) == 0x00080000)) {
+        to_bitField0_ |= 0x00000400;
+      }
+      result.qualifiedName_ = qualifiedName_;
       result.bitField0_ = to_bitField0_;
       onBuilt();
       return result;
@@ -4893,6 +5041,16 @@ public final class JsType extends
       }
       if (other.hasAliasedType()) {
         mergeAliasedType(other.getAliasedType());
+      }
+      if (other.hasFilename()) {
+        bitField0_ |= 0x00040000;
+        filename_ = other.filename_;
+        onChanged();
+      }
+      if (other.hasQualifiedName()) {
+        bitField0_ |= 0x00080000;
+        qualifiedName_ = other.qualifiedName_;
+        onChanged();
       }
       this.mergeUnknownFields(other.getUnknownFields());
       return this;
@@ -8583,6 +8741,206 @@ public final class JsType extends
         aliasedType_ = null;
       }
       return aliasedTypeBuilder_;
+    }
+
+    private java.lang.Object filename_ = "";
+    /**
+     * <code>optional string filename = 23;</code>
+     *
+     * <pre>
+     * Base name for the rendered file for this type.
+     * </pre>
+     */
+    public boolean hasFilename() {
+      return ((bitField0_ & 0x00040000) == 0x00040000);
+    }
+    /**
+     * <code>optional string filename = 23;</code>
+     *
+     * <pre>
+     * Base name for the rendered file for this type.
+     * </pre>
+     */
+    public java.lang.String getFilename() {
+      java.lang.Object ref = filename_;
+      if (!(ref instanceof java.lang.String)) {
+        com.google.protobuf.ByteString bs =
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          filename_ = s;
+        }
+        return s;
+      } else {
+        return (java.lang.String) ref;
+      }
+    }
+    /**
+     * <code>optional string filename = 23;</code>
+     *
+     * <pre>
+     * Base name for the rendered file for this type.
+     * </pre>
+     */
+    public com.google.protobuf.ByteString
+        getFilenameBytes() {
+      java.lang.Object ref = filename_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        filename_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    /**
+     * <code>optional string filename = 23;</code>
+     *
+     * <pre>
+     * Base name for the rendered file for this type.
+     * </pre>
+     */
+    public Builder setFilename(
+        java.lang.String value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00040000;
+      filename_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional string filename = 23;</code>
+     *
+     * <pre>
+     * Base name for the rendered file for this type.
+     * </pre>
+     */
+    public Builder clearFilename() {
+      bitField0_ = (bitField0_ & ~0x00040000);
+      filename_ = getDefaultInstance().getFilename();
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional string filename = 23;</code>
+     *
+     * <pre>
+     * Base name for the rendered file for this type.
+     * </pre>
+     */
+    public Builder setFilenameBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00040000;
+      filename_ = value;
+      onChanged();
+      return this;
+    }
+
+    private java.lang.Object qualifiedName_ = "";
+    /**
+     * <code>optional string qualified_name = 24;</code>
+     *
+     * <pre>
+     * Qualified display name for this type.
+     * </pre>
+     */
+    public boolean hasQualifiedName() {
+      return ((bitField0_ & 0x00080000) == 0x00080000);
+    }
+    /**
+     * <code>optional string qualified_name = 24;</code>
+     *
+     * <pre>
+     * Qualified display name for this type.
+     * </pre>
+     */
+    public java.lang.String getQualifiedName() {
+      java.lang.Object ref = qualifiedName_;
+      if (!(ref instanceof java.lang.String)) {
+        com.google.protobuf.ByteString bs =
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          qualifiedName_ = s;
+        }
+        return s;
+      } else {
+        return (java.lang.String) ref;
+      }
+    }
+    /**
+     * <code>optional string qualified_name = 24;</code>
+     *
+     * <pre>
+     * Qualified display name for this type.
+     * </pre>
+     */
+    public com.google.protobuf.ByteString
+        getQualifiedNameBytes() {
+      java.lang.Object ref = qualifiedName_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        qualifiedName_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    /**
+     * <code>optional string qualified_name = 24;</code>
+     *
+     * <pre>
+     * Qualified display name for this type.
+     * </pre>
+     */
+    public Builder setQualifiedName(
+        java.lang.String value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00080000;
+      qualifiedName_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional string qualified_name = 24;</code>
+     *
+     * <pre>
+     * Qualified display name for this type.
+     * </pre>
+     */
+    public Builder clearQualifiedName() {
+      bitField0_ = (bitField0_ & ~0x00080000);
+      qualifiedName_ = getDefaultInstance().getQualifiedName();
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional string qualified_name = 24;</code>
+     *
+     * <pre>
+     * Qualified display name for this type.
+     * </pre>
+     */
+    public Builder setQualifiedNameBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00080000;
+      qualifiedName_ = value;
+      onChanged();
+      return this;
     }
 
     // @@protoc_insertion_point(builder_scope:dossier.JsType)

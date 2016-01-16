@@ -460,4 +460,56 @@ public interface JsTypeOrBuilder extends
    * </pre>
    */
   com.github.jsdossier.proto.TypeLinkOrBuilder getAliasedTypeOrBuilder();
+
+  /**
+   * <code>optional string filename = 23;</code>
+   *
+   * <pre>
+   * Base name for the rendered file for this type.
+   * </pre>
+   */
+  boolean hasFilename();
+  /**
+   * <code>optional string filename = 23;</code>
+   *
+   * <pre>
+   * Base name for the rendered file for this type.
+   * </pre>
+   */
+  java.lang.String getFilename();
+  /**
+   * <code>optional string filename = 23;</code>
+   *
+   * <pre>
+   * Base name for the rendered file for this type.
+   * </pre>
+   */
+  com.google.protobuf.ByteString
+      getFilenameBytes();
+
+  /**
+   * <code>optional string qualified_name = 24;</code>
+   *
+   * <pre>
+   * Qualified display name for this type.
+   * </pre>
+   */
+  boolean hasQualifiedName();
+  /**
+   * <code>optional string qualified_name = 24;</code>
+   *
+   * <pre>
+   * Qualified display name for this type.
+   * </pre>
+   */
+  java.lang.String getQualifiedName();
+  /**
+   * <code>optional string qualified_name = 24;</code>
+   *
+   * <pre>
+   * Qualified display name for this type.
+   * </pre>
+   */
+  com.google.protobuf.ByteString
+      getQualifiedNameBytes();
 }

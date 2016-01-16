@@ -23,6 +23,9 @@ import static com.google.common.util.concurrent.MoreExecutors.directExecutor;
 import com.github.jsdossier.Annotations.NumThreads;
 import com.github.jsdossier.annotations.DocumentationScoped;
 import com.github.jsdossier.jscomp.NominalType;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.MultimapBuilder;
 import com.google.common.util.concurrent.AsyncFunction;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
@@ -50,7 +53,8 @@ final class RenderTaskExecutor {
 
   private static final Logger logger = Logger.getLogger(RenderTaskExecutor.class.getName());
 
-  private final RenderDocumentationTaskFactory documentationTaskFactory;
+  private final DossierFileSystem dfs;
+  private final RenderDocumentationTaskSupplierFactory documentationTaskSupplierFactory;
   private final RenderResourceTaskFactory resourceTaskFactory;
   private final RenderMarkdownTaskFactory markdownTaskFactory;
   private final RenderSourceFileTaskFactory sourceFileTaskFactory;
@@ -64,13 +68,15 @@ final class RenderTaskExecutor {
   @Inject
   RenderTaskExecutor(
       @NumThreads int numThreads,
-      RenderDocumentationTaskFactory documentationTaskFactory,
+      DossierFileSystem dfs,
+      RenderDocumentationTaskSupplierFactory documentationTaskSupplierFactory,
       RenderResourceTaskFactory resourceTaskFactory,
       RenderMarkdownTaskFactory markdownTaskFactory,
       RenderSourceFileTaskFactory sourceFileTaskFactory,
       RenderIndexTask indexTask,
       RenderTypeIndexTask typeIndexTask) {
-    this.documentationTaskFactory = documentationTaskFactory;
+    this.dfs = dfs;
+    this.documentationTaskSupplierFactory = documentationTaskSupplierFactory;
     this.resourceTaskFactory = resourceTaskFactory;
     this.markdownTaskFactory = markdownTaskFactory;
     this.sourceFileTaskFactory = sourceFileTaskFactory;
@@ -97,9 +103,26 @@ final class RenderTaskExecutor {
    * @return a self reference.
    */
   public RenderTaskExecutor renderDocumentation(Iterable<NominalType> types) {
+    // First, group all types by output paths, forced to lower case strings.
+    // Any types with a collision must be rendered together to ensure no data mysteriously
+    // disappears when running on a case insensitive file system (OSX is case-insensitive,
+    // but case-preserving).
+    Multimap<String, NominalType> normalizedPathToTypes =
+        MultimapBuilder.hashKeys().arrayListValues().build();
     for (NominalType type : types) {
-      submit(documentationTaskFactory.create(type));
+      String normalized = dfs.getPath(type).toAbsolutePath().normalize().toString().toLowerCase();
+      normalizedPathToTypes.put(normalized, type);
     }
+
+    for (String path : normalizedPathToTypes.keySet()) {
+      RenderDocumentationTaskSupplier supplier =
+          documentationTaskSupplierFactory.create(
+              ImmutableList.copyOf(normalizedPathToTypes.get(path)));
+      for (Callable<Path> task : supplier.get()) {
+        submit(task);
+      }
+    }
+
     return this;
   }
 

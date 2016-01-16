@@ -8,29 +8,48 @@ public interface JsTypeRenderSpecOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>required .dossier.JsType type = 1;</code>
+   * <code>repeated .dossier.JsType type = 1;</code>
    *
    * <pre>
-   * The type to generate documentation for.
+   * The types to generate documentation for.
    * </pre>
    */
-  boolean hasType();
+  java.util.List<com.github.jsdossier.proto.JsType> 
+      getTypeList();
   /**
-   * <code>required .dossier.JsType type = 1;</code>
+   * <code>repeated .dossier.JsType type = 1;</code>
    *
    * <pre>
-   * The type to generate documentation for.
+   * The types to generate documentation for.
    * </pre>
    */
-  com.github.jsdossier.proto.JsType getType();
+  com.github.jsdossier.proto.JsType getType(int index);
   /**
-   * <code>required .dossier.JsType type = 1;</code>
+   * <code>repeated .dossier.JsType type = 1;</code>
    *
    * <pre>
-   * The type to generate documentation for.
+   * The types to generate documentation for.
    * </pre>
    */
-  com.github.jsdossier.proto.JsTypeOrBuilder getTypeOrBuilder();
+  int getTypeCount();
+  /**
+   * <code>repeated .dossier.JsType type = 1;</code>
+   *
+   * <pre>
+   * The types to generate documentation for.
+   * </pre>
+   */
+  java.util.List<? extends com.github.jsdossier.proto.JsTypeOrBuilder> 
+      getTypeOrBuilderList();
+  /**
+   * <code>repeated .dossier.JsType type = 1;</code>
+   *
+   * <pre>
+   * The types to generate documentation for.
+   * </pre>
+   */
+  com.github.jsdossier.proto.JsTypeOrBuilder getTypeOrBuilder(
+      int index);
 
   /**
    * <code>required .dossier.Resources resources = 2;</code>

@@ -273,6 +273,12 @@ message JsType {
 
   // Link to another type that this type is an alias of.
   optional TypeLink aliased_type = 22;
+
+  // Base name for the rendered file for this type.
+  optional string filename = 23;
+
+  // Qualified display name for this type.
+  optional string qualified_name = 24;
 }
 
 
@@ -303,10 +309,12 @@ message SourceFileRenderSpec {
 
 // Describes how to render documentation for a JavaScript type.
 message JsTypeRenderSpec {
-  // The type to generate documentation for.
-  required JsType type = 1;
+  // The types to generate documentation for.
+  repeated JsType type = 1;
+
   // The resources to include.
   required Resources resources = 2;
+
   // Navigation index.
   required Index index = 3;
 }

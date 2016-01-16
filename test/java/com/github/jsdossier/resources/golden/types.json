@@ -458,6 +458,30 @@
         "parse",
         "stringify"
       ]
+    },
+    {
+      "href": "test.html",
+      "interface": false,
+      "name": "test",
+      "namespace": true,
+      "qualifiedName": "test"
+    },
+    {
+      "href": "test.Registry.html",
+      "interface": false,
+      "name": "test.Registry",
+      "namespace": false,
+      "qualifiedName": "test.Registry"
+    },
+    {
+      "href": "test.registry.html",
+      "interface": false,
+      "name": "test.registry",
+      "namespace": true,
+      "qualifiedName": "test.registry",
+      "statics": [
+        "register"
+      ]
     }
   ]
 }

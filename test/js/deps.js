@@ -1,3 +1,5 @@
 goog.addDependency('../../../../../test/js/nav_test.js', ['dossier.nav.test'], ['dossier.nav', 'goog.testing.dom', 'goog.testing.jsunit']);
-goog.addDependency('../../../../../src/js/nav.js', ['dossier.nav'], ['goog.array', 'goog.asserts', 'goog.string'], true);
-goog.addDependency('../../../../../src/js/dossier.js', ['dossier'], ['dossier.nav', 'goog.array', 'goog.events', 'goog.events.EventType', 'goog.events.KeyCodes', 'goog.dom', 'goog.dom.TagName', 'goog.dom.classlist', 'goog.string', 'goog.ui.ac.ArrayMatcher', 'goog.ui.ac.AutoComplete', 'goog.ui.ac.InputHandler', 'goog.ui.ac.Renderer', 'goog.userAgent']);
+goog.addDependency('../../../../../src/js/nav.js', ['dossier.nav'], ['goog.array', 'goog.asserts', 'goog.dom', 'goog.events', 'goog.events.KeyCodes', 'goog.string'], true);
+goog.addDependency('../../../../../src/js/dossier.js', ['dossier'], ['dossier.keyhandler', 'dossier.nav', 'dossier.search', 'goog.array', 'goog.events', 'goog.events.EventType', 'goog.events.KeyCodes', 'goog.dom', 'goog.dom.TagName', 'goog.dom.classlist', 'goog.string', 'goog.style', 'goog.userAgent']);
+goog.addDependency('../../../../../src/js/keyhandler.js', ['dossier.keyhandler'], ['dossier.nav', 'goog.events', 'goog.events.EventType', 'goog.events.KeyCodes', 'goog.userAgent'], true);
+goog.addDependency('../../../../../src/js/search.js', ['dossier.search'], ['goog.events', 'goog.events.EventType', 'goog.events.KeyCodes', 'goog.ui.ac.ArrayMatcher', 'goog.ui.ac.AutoComplete', 'goog.ui.ac.InputHandler', 'goog.ui.ac.Renderer', 'goog.userAgent'], true);

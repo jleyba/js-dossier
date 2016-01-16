@@ -67,7 +67,9 @@ run_tests() {
   bazel run //src/java/com/github/jsdossier/tools:WriteDeps -- \
       -c "${ROOT}/third_party/js/closure_library/closure/goog/" \
       -i "${ROOT}/src/js/dossier.js" \
+      -i "${ROOT}/src/js/keyhandler.js" \
       -i "${ROOT}/src/js/nav.js" \
+      -i "${ROOT}/src/js/search.js" \
       -i "${ROOT}/test/js/nav_test.js" \
       -o "${ROOT}/test/js/deps.js"
 }

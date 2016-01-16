@@ -816,108 +816,126 @@
   {@param spec: dossier.JsTypeRenderSpec}
 
   {call .pageHeader}
-    {param title: $spec.type.name /}
+    {param title: $spec.type[0].name /}
     {param resources: $spec.resources /}
   {/call}
 
   <div class="content">
     <main>
-      <article>
-        <section class="intro">
-          {call .typeHeader}
-            {param type: $spec.type /}
-          {/call}
-
-          {if $spec.type.description
-              and length($spec.type.description.token)}
-            {call .comment}
-              {param comment: $spec.type.description /}
-            {/call}
-          {else}
-            <p>No description available.</p>
-          {/if}
-
-          {if not $spec.type.tags.isInterface and $spec.type.mainFunction}
-            {call .mainFunction}
-              {param type: $spec.type /}
-            {/call}
-          {/if}
-        </section>
-
-        {if $spec.type.enumeration}
-          {call .enumValues}
-            {param enumeration: $spec.type.enumeration /}
-          {/call}
-        {/if}
-
-        {call .prototype}
-          {param type: $spec.type /}
-        {/call}
-
-        {call .static}
-          {param type: $spec.type /}
-        {/call}
-
-        /* TODO: merged nested types into a flat list, not sorted by category */
-        {if length($spec.type.nested) > 0}
-          <section class="types">
-            {if $spec.type.tags.isModule}
-              <h2>Exported Types</h2>
-            {else}
-              <h2>Types</h2>
-            {/if}
-            <section class="property">
-              <dl>
-                {foreach $type in $spec.type.nested}
-                  <dt><a href="{$type.href}">{$type.name}</a>
-                  <dd>
-                    {if $type.summary and length($type.summary.token)}
-                      {call .comment}
-                        {param comment: $type.summary /}
-                      {/call}
-                    {else}
-                      <p>No description.</p>
-                    {/if}
-                {/foreach}
-              </dl>
-            </section>
-          </section>
-        {/if}
-
-        {if length($spec.type.typeDef) > 0}
-          <section class="type-defs">
-            <h2>Type Definitions</h2>
-            {foreach $typedef in $spec.type.typeDef}
-              <section id="{$typedef.name}" class="property">
-                {call .codeLink}
-                  {param source: $typedef.source /}
-                {/call}
-                <h3 class="name">{$typedef.name}</h3>
-                <dl>
-                  <dt class="spec">Type
-                  <dd>
-                    <code>
-                      {call .comment}
-                        {param comment: $typedef.type /}
-                      {/call}
-                    </code>
-                  {call .deprecationNotice}
-                    {param deprecation: $typedef.deprecation /}
-                  {/call}
-                </dl>
-                {if $typedef.description and length($typedef.description.token)}
-                  {call .comment}
-                    {param comment: $typedef.description /}
-                  {/call}
-                {else}
-                  <p>No description.</p>
-                {/if}
-              </section>
+      {if length($spec.type) > 1}
+        <article>
+          <h2>Did you mean?</h2>
+          <ul>
+            {foreach $type in $spec.type}
+              <li><a href="{$type.filename}">{$type.qualifiedName}</a>
             {/foreach}
-          </section>
+          </ul>
+        </article>
+      {/if}
+      {foreach $type in $spec.type}
+        {if length($spec.type) > 1}
+          <article
+              style="display:none"
+              data-name="{$type.name}" data-filename="{$type.filename}">
+        {else}
+          <article>
         {/if}
+          <section class="intro">
+            {call .typeHeader}
+              {param type: $type /}
+            {/call}
 
-      </article>
+            {if $type.description
+                and length($type.description.token)}
+              {call .comment}
+                {param comment: $type.description /}
+              {/call}
+            {else}
+              <p>No description available.</p>
+            {/if}
+
+            {if not $type.tags.isInterface and $type.mainFunction}
+              {call .mainFunction}
+                {param type: $type /}
+              {/call}
+            {/if}
+          </section>
+
+          {if $type.enumeration}
+            {call .enumValues}
+              {param enumeration: $type.enumeration /}
+            {/call}
+          {/if}
+
+          {call .prototype}
+            {param type: $type /}
+          {/call}
+
+          {call .static}
+            {param type: $type /}
+          {/call}
+
+          /* TODO: merged nested types into a flat list, not sorted by category */
+          {if length($type.nested) > 0}
+            <section class="types">
+              {if $type.tags.isModule}
+                <h2>Exported Types</h2>
+              {else}
+                <h2>Types</h2>
+              {/if}
+              <section class="property">
+                <dl>
+                  {foreach $nestedType in $type.nested}
+                    <dt><a href="{$nestedType.href}">{$nestedType.name}</a>
+                    <dd>
+                      {if $nestedType.summary and length($nestedType.summary.token)}
+                        {call .comment}
+                          {param comment: $nestedType.summary /}
+                        {/call}
+                      {else}
+                        <p>No description.</p>
+                      {/if}
+                  {/foreach}
+                </dl>
+              </section>
+            </section>
+          {/if}
+
+          {if length($type.typeDef) > 0}
+            <section class="type-defs">
+              <h2>Type Definitions</h2>
+              {foreach $typedef in $type.typeDef}
+                <section id="{$typedef.name}" class="property">
+                  {call .codeLink}
+                    {param source: $typedef.source /}
+                  {/call}
+                  <h3 class="name">{$typedef.name}</h3>
+                  <dl>
+                    <dt class="spec">Type
+                    <dd>
+                      <code>
+                        {call .comment}
+                          {param comment: $typedef.type /}
+                        {/call}
+                      </code>
+                    {call .deprecationNotice}
+                      {param deprecation: $typedef.deprecation /}
+                    {/call}
+                  </dl>
+                  {if $typedef.description and length($typedef.description.token)}
+                    {call .comment}
+                      {param comment: $typedef.description /}
+                    {/call}
+                  {else}
+                    <p>No description.</p>
+                  {/if}
+                </section>
+              {/foreach}
+            </section>
+          {/if}
+
+        </article>
+      {/foreach}
     </main>
     {call .footer /}
   </div>

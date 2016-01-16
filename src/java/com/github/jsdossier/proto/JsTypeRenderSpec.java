@@ -60,21 +60,16 @@ public final class JsTypeRenderSpec extends
             break;
           }
           case 10: {
-            com.github.jsdossier.proto.JsType.Builder subBuilder = null;
-            if (((bitField0_ & 0x00000001) == 0x00000001)) {
-              subBuilder = type_.toBuilder();
+            if (!((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
+              type_ = new java.util.ArrayList<com.github.jsdossier.proto.JsType>();
+              mutable_bitField0_ |= 0x00000001;
             }
-            type_ = input.readMessage(com.github.jsdossier.proto.JsType.PARSER, extensionRegistry);
-            if (subBuilder != null) {
-              subBuilder.mergeFrom(type_);
-              type_ = subBuilder.buildPartial();
-            }
-            bitField0_ |= 0x00000001;
+            type_.add(input.readMessage(com.github.jsdossier.proto.JsType.PARSER, extensionRegistry));
             break;
           }
           case 18: {
             com.github.jsdossier.proto.Resources.Builder subBuilder = null;
-            if (((bitField0_ & 0x00000002) == 0x00000002)) {
+            if (((bitField0_ & 0x00000001) == 0x00000001)) {
               subBuilder = resources_.toBuilder();
             }
             resources_ = input.readMessage(com.github.jsdossier.proto.Resources.PARSER, extensionRegistry);
@@ -82,12 +77,12 @@ public final class JsTypeRenderSpec extends
               subBuilder.mergeFrom(resources_);
               resources_ = subBuilder.buildPartial();
             }
-            bitField0_ |= 0x00000002;
+            bitField0_ |= 0x00000001;
             break;
           }
           case 26: {
             com.github.jsdossier.proto.Index.Builder subBuilder = null;
-            if (((bitField0_ & 0x00000004) == 0x00000004)) {
+            if (((bitField0_ & 0x00000002) == 0x00000002)) {
               subBuilder = index_.toBuilder();
             }
             index_ = input.readMessage(com.github.jsdossier.proto.Index.PARSER, extensionRegistry);
@@ -95,7 +90,7 @@ public final class JsTypeRenderSpec extends
               subBuilder.mergeFrom(index_);
               index_ = subBuilder.buildPartial();
             }
-            bitField0_ |= 0x00000004;
+            bitField0_ |= 0x00000002;
             break;
           }
         }
@@ -106,6 +101,9 @@ public final class JsTypeRenderSpec extends
       throw new com.google.protobuf.InvalidProtocolBufferException(
           e.getMessage()).setUnfinishedMessage(this);
     } finally {
+      if (((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
+        type_ = java.util.Collections.unmodifiableList(type_);
+      }
       this.unknownFields = unknownFields.build();
       makeExtensionsImmutable();
     }
@@ -139,36 +137,58 @@ public final class JsTypeRenderSpec extends
 
   private int bitField0_;
   public static final int TYPE_FIELD_NUMBER = 1;
-  private com.github.jsdossier.proto.JsType type_;
+  private java.util.List<com.github.jsdossier.proto.JsType> type_;
   /**
-   * <code>required .dossier.JsType type = 1;</code>
+   * <code>repeated .dossier.JsType type = 1;</code>
    *
    * <pre>
-   * The type to generate documentation for.
+   * The types to generate documentation for.
    * </pre>
    */
-  public boolean hasType() {
-    return ((bitField0_ & 0x00000001) == 0x00000001);
-  }
-  /**
-   * <code>required .dossier.JsType type = 1;</code>
-   *
-   * <pre>
-   * The type to generate documentation for.
-   * </pre>
-   */
-  public com.github.jsdossier.proto.JsType getType() {
+  public java.util.List<com.github.jsdossier.proto.JsType> getTypeList() {
     return type_;
   }
   /**
-   * <code>required .dossier.JsType type = 1;</code>
+   * <code>repeated .dossier.JsType type = 1;</code>
    *
    * <pre>
-   * The type to generate documentation for.
+   * The types to generate documentation for.
    * </pre>
    */
-  public com.github.jsdossier.proto.JsTypeOrBuilder getTypeOrBuilder() {
+  public java.util.List<? extends com.github.jsdossier.proto.JsTypeOrBuilder> 
+      getTypeOrBuilderList() {
     return type_;
+  }
+  /**
+   * <code>repeated .dossier.JsType type = 1;</code>
+   *
+   * <pre>
+   * The types to generate documentation for.
+   * </pre>
+   */
+  public int getTypeCount() {
+    return type_.size();
+  }
+  /**
+   * <code>repeated .dossier.JsType type = 1;</code>
+   *
+   * <pre>
+   * The types to generate documentation for.
+   * </pre>
+   */
+  public com.github.jsdossier.proto.JsType getType(int index) {
+    return type_.get(index);
+  }
+  /**
+   * <code>repeated .dossier.JsType type = 1;</code>
+   *
+   * <pre>
+   * The types to generate documentation for.
+   * </pre>
+   */
+  public com.github.jsdossier.proto.JsTypeOrBuilder getTypeOrBuilder(
+      int index) {
+    return type_.get(index);
   }
 
   public static final int RESOURCES_FIELD_NUMBER = 2;
@@ -181,7 +201,7 @@ public final class JsTypeRenderSpec extends
    * </pre>
    */
   public boolean hasResources() {
-    return ((bitField0_ & 0x00000002) == 0x00000002);
+    return ((bitField0_ & 0x00000001) == 0x00000001);
   }
   /**
    * <code>required .dossier.Resources resources = 2;</code>
@@ -214,7 +234,7 @@ public final class JsTypeRenderSpec extends
    * </pre>
    */
   public boolean hasIndex() {
-    return ((bitField0_ & 0x00000004) == 0x00000004);
+    return ((bitField0_ & 0x00000002) == 0x00000002);
   }
   /**
    * <code>required .dossier.Index index = 3;</code>
@@ -238,7 +258,7 @@ public final class JsTypeRenderSpec extends
   }
 
   private void initFields() {
-    type_ = com.github.jsdossier.proto.JsType.getDefaultInstance();
+    type_ = java.util.Collections.emptyList();
     resources_ = com.github.jsdossier.proto.Resources.getDefaultInstance();
     index_ = com.github.jsdossier.proto.Index.getDefaultInstance();
   }
@@ -248,10 +268,6 @@ public final class JsTypeRenderSpec extends
     if (isInitialized == 1) return true;
     if (isInitialized == 0) return false;
 
-    if (!hasType()) {
-      memoizedIsInitialized = 0;
-      return false;
-    }
     if (!hasResources()) {
       memoizedIsInitialized = 0;
       return false;
@@ -260,9 +276,11 @@ public final class JsTypeRenderSpec extends
       memoizedIsInitialized = 0;
       return false;
     }
-    if (!getType().isInitialized()) {
-      memoizedIsInitialized = 0;
-      return false;
+    for (int i = 0; i < getTypeCount(); i++) {
+      if (!getType(i).isInitialized()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
     }
     if (!getIndex().isInitialized()) {
       memoizedIsInitialized = 0;
@@ -275,13 +293,13 @@ public final class JsTypeRenderSpec extends
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
     getSerializedSize();
-    if (((bitField0_ & 0x00000001) == 0x00000001)) {
-      output.writeMessage(1, type_);
+    for (int i = 0; i < type_.size(); i++) {
+      output.writeMessage(1, type_.get(i));
     }
-    if (((bitField0_ & 0x00000002) == 0x00000002)) {
+    if (((bitField0_ & 0x00000001) == 0x00000001)) {
       output.writeMessage(2, resources_);
     }
-    if (((bitField0_ & 0x00000004) == 0x00000004)) {
+    if (((bitField0_ & 0x00000002) == 0x00000002)) {
       output.writeMessage(3, index_);
     }
     getUnknownFields().writeTo(output);
@@ -293,15 +311,15 @@ public final class JsTypeRenderSpec extends
     if (size != -1) return size;
 
     size = 0;
-    if (((bitField0_ & 0x00000001) == 0x00000001)) {
+    for (int i = 0; i < type_.size(); i++) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(1, type_);
+        .computeMessageSize(1, type_.get(i));
     }
-    if (((bitField0_ & 0x00000002) == 0x00000002)) {
+    if (((bitField0_ & 0x00000001) == 0x00000001)) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(2, resources_);
     }
-    if (((bitField0_ & 0x00000004) == 0x00000004)) {
+    if (((bitField0_ & 0x00000002) == 0x00000002)) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(3, index_);
     }
@@ -430,11 +448,11 @@ public final class JsTypeRenderSpec extends
     public Builder clear() {
       super.clear();
       if (typeBuilder_ == null) {
-        type_ = com.github.jsdossier.proto.JsType.getDefaultInstance();
+        type_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000001);
       } else {
         typeBuilder_.clear();
       }
-      bitField0_ = (bitField0_ & ~0x00000001);
       if (resourcesBuilder_ == null) {
         resources_ = com.github.jsdossier.proto.Resources.getDefaultInstance();
       } else {
@@ -475,16 +493,17 @@ public final class JsTypeRenderSpec extends
       com.github.jsdossier.proto.JsTypeRenderSpec result = new com.github.jsdossier.proto.JsTypeRenderSpec(this);
       int from_bitField0_ = bitField0_;
       int to_bitField0_ = 0;
-      if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
-        to_bitField0_ |= 0x00000001;
-      }
       if (typeBuilder_ == null) {
+        if (((bitField0_ & 0x00000001) == 0x00000001)) {
+          type_ = java.util.Collections.unmodifiableList(type_);
+          bitField0_ = (bitField0_ & ~0x00000001);
+        }
         result.type_ = type_;
       } else {
         result.type_ = typeBuilder_.build();
       }
       if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
-        to_bitField0_ |= 0x00000002;
+        to_bitField0_ |= 0x00000001;
       }
       if (resourcesBuilder_ == null) {
         result.resources_ = resources_;
@@ -492,7 +511,7 @@ public final class JsTypeRenderSpec extends
         result.resources_ = resourcesBuilder_.build();
       }
       if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
-        to_bitField0_ |= 0x00000004;
+        to_bitField0_ |= 0x00000002;
       }
       if (indexBuilder_ == null) {
         result.index_ = index_;
@@ -515,8 +534,31 @@ public final class JsTypeRenderSpec extends
 
     public Builder mergeFrom(com.github.jsdossier.proto.JsTypeRenderSpec other) {
       if (other == com.github.jsdossier.proto.JsTypeRenderSpec.getDefaultInstance()) return this;
-      if (other.hasType()) {
-        mergeType(other.getType());
+      if (typeBuilder_ == null) {
+        if (!other.type_.isEmpty()) {
+          if (type_.isEmpty()) {
+            type_ = other.type_;
+            bitField0_ = (bitField0_ & ~0x00000001);
+          } else {
+            ensureTypeIsMutable();
+            type_.addAll(other.type_);
+          }
+          onChanged();
+        }
+      } else {
+        if (!other.type_.isEmpty()) {
+          if (typeBuilder_.isEmpty()) {
+            typeBuilder_.dispose();
+            typeBuilder_ = null;
+            type_ = other.type_;
+            bitField0_ = (bitField0_ & ~0x00000001);
+            typeBuilder_ = 
+              com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+                 getTypeFieldBuilder() : null;
+          } else {
+            typeBuilder_.addAllMessages(other.type_);
+          }
+        }
       }
       if (other.hasResources()) {
         mergeResources(other.getResources());
@@ -529,10 +571,6 @@ public final class JsTypeRenderSpec extends
     }
 
     public final boolean isInitialized() {
-      if (!hasType()) {
-        
-        return false;
-      }
       if (!hasResources()) {
         
         return false;
@@ -541,9 +579,11 @@ public final class JsTypeRenderSpec extends
         
         return false;
       }
-      if (!getType().isInitialized()) {
-        
-        return false;
+      for (int i = 0; i < getTypeCount(); i++) {
+        if (!getType(i).isInitialized()) {
+          
+          return false;
+        }
       }
       if (!getIndex().isInitialized()) {
         
@@ -571,151 +611,311 @@ public final class JsTypeRenderSpec extends
     }
     private int bitField0_;
 
-    private com.github.jsdossier.proto.JsType type_ = com.github.jsdossier.proto.JsType.getDefaultInstance();
-    private com.google.protobuf.SingleFieldBuilder<
-        com.github.jsdossier.proto.JsType, com.github.jsdossier.proto.JsType.Builder, com.github.jsdossier.proto.JsTypeOrBuilder> typeBuilder_;
-    /**
-     * <code>required .dossier.JsType type = 1;</code>
-     *
-     * <pre>
-     * The type to generate documentation for.
-     * </pre>
-     */
-    public boolean hasType() {
-      return ((bitField0_ & 0x00000001) == 0x00000001);
+    private java.util.List<com.github.jsdossier.proto.JsType> type_ =
+      java.util.Collections.emptyList();
+    private void ensureTypeIsMutable() {
+      if (!((bitField0_ & 0x00000001) == 0x00000001)) {
+        type_ = new java.util.ArrayList<com.github.jsdossier.proto.JsType>(type_);
+        bitField0_ |= 0x00000001;
+       }
     }
+
+    private com.google.protobuf.RepeatedFieldBuilder<
+        com.github.jsdossier.proto.JsType, com.github.jsdossier.proto.JsType.Builder, com.github.jsdossier.proto.JsTypeOrBuilder> typeBuilder_;
+
     /**
-     * <code>required .dossier.JsType type = 1;</code>
+     * <code>repeated .dossier.JsType type = 1;</code>
      *
      * <pre>
-     * The type to generate documentation for.
+     * The types to generate documentation for.
      * </pre>
      */
-    public com.github.jsdossier.proto.JsType getType() {
+    public java.util.List<com.github.jsdossier.proto.JsType> getTypeList() {
       if (typeBuilder_ == null) {
-        return type_;
+        return java.util.Collections.unmodifiableList(type_);
       } else {
-        return typeBuilder_.getMessage();
+        return typeBuilder_.getMessageList();
       }
     }
     /**
-     * <code>required .dossier.JsType type = 1;</code>
+     * <code>repeated .dossier.JsType type = 1;</code>
      *
      * <pre>
-     * The type to generate documentation for.
+     * The types to generate documentation for.
      * </pre>
      */
-    public Builder setType(com.github.jsdossier.proto.JsType value) {
+    public int getTypeCount() {
+      if (typeBuilder_ == null) {
+        return type_.size();
+      } else {
+        return typeBuilder_.getCount();
+      }
+    }
+    /**
+     * <code>repeated .dossier.JsType type = 1;</code>
+     *
+     * <pre>
+     * The types to generate documentation for.
+     * </pre>
+     */
+    public com.github.jsdossier.proto.JsType getType(int index) {
+      if (typeBuilder_ == null) {
+        return type_.get(index);
+      } else {
+        return typeBuilder_.getMessage(index);
+      }
+    }
+    /**
+     * <code>repeated .dossier.JsType type = 1;</code>
+     *
+     * <pre>
+     * The types to generate documentation for.
+     * </pre>
+     */
+    public Builder setType(
+        int index, com.github.jsdossier.proto.JsType value) {
       if (typeBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
         }
-        type_ = value;
+        ensureTypeIsMutable();
+        type_.set(index, value);
         onChanged();
       } else {
-        typeBuilder_.setMessage(value);
+        typeBuilder_.setMessage(index, value);
       }
-      bitField0_ |= 0x00000001;
       return this;
     }
     /**
-     * <code>required .dossier.JsType type = 1;</code>
+     * <code>repeated .dossier.JsType type = 1;</code>
      *
      * <pre>
-     * The type to generate documentation for.
+     * The types to generate documentation for.
      * </pre>
      */
     public Builder setType(
-        com.github.jsdossier.proto.JsType.Builder builderForValue) {
+        int index, com.github.jsdossier.proto.JsType.Builder builderForValue) {
       if (typeBuilder_ == null) {
-        type_ = builderForValue.build();
+        ensureTypeIsMutable();
+        type_.set(index, builderForValue.build());
         onChanged();
       } else {
-        typeBuilder_.setMessage(builderForValue.build());
+        typeBuilder_.setMessage(index, builderForValue.build());
       }
-      bitField0_ |= 0x00000001;
       return this;
     }
     /**
-     * <code>required .dossier.JsType type = 1;</code>
+     * <code>repeated .dossier.JsType type = 1;</code>
      *
      * <pre>
-     * The type to generate documentation for.
+     * The types to generate documentation for.
      * </pre>
      */
-    public Builder mergeType(com.github.jsdossier.proto.JsType value) {
+    public Builder addType(com.github.jsdossier.proto.JsType value) {
       if (typeBuilder_ == null) {
-        if (((bitField0_ & 0x00000001) == 0x00000001) &&
-            type_ != com.github.jsdossier.proto.JsType.getDefaultInstance()) {
-          type_ =
-            com.github.jsdossier.proto.JsType.newBuilder(type_).mergeFrom(value).buildPartial();
-        } else {
-          type_ = value;
+        if (value == null) {
+          throw new NullPointerException();
         }
+        ensureTypeIsMutable();
+        type_.add(value);
         onChanged();
       } else {
-        typeBuilder_.mergeFrom(value);
+        typeBuilder_.addMessage(value);
       }
-      bitField0_ |= 0x00000001;
       return this;
     }
     /**
-     * <code>required .dossier.JsType type = 1;</code>
+     * <code>repeated .dossier.JsType type = 1;</code>
      *
      * <pre>
-     * The type to generate documentation for.
+     * The types to generate documentation for.
+     * </pre>
+     */
+    public Builder addType(
+        int index, com.github.jsdossier.proto.JsType value) {
+      if (typeBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureTypeIsMutable();
+        type_.add(index, value);
+        onChanged();
+      } else {
+        typeBuilder_.addMessage(index, value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .dossier.JsType type = 1;</code>
+     *
+     * <pre>
+     * The types to generate documentation for.
+     * </pre>
+     */
+    public Builder addType(
+        com.github.jsdossier.proto.JsType.Builder builderForValue) {
+      if (typeBuilder_ == null) {
+        ensureTypeIsMutable();
+        type_.add(builderForValue.build());
+        onChanged();
+      } else {
+        typeBuilder_.addMessage(builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .dossier.JsType type = 1;</code>
+     *
+     * <pre>
+     * The types to generate documentation for.
+     * </pre>
+     */
+    public Builder addType(
+        int index, com.github.jsdossier.proto.JsType.Builder builderForValue) {
+      if (typeBuilder_ == null) {
+        ensureTypeIsMutable();
+        type_.add(index, builderForValue.build());
+        onChanged();
+      } else {
+        typeBuilder_.addMessage(index, builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .dossier.JsType type = 1;</code>
+     *
+     * <pre>
+     * The types to generate documentation for.
+     * </pre>
+     */
+    public Builder addAllType(
+        java.lang.Iterable<? extends com.github.jsdossier.proto.JsType> values) {
+      if (typeBuilder_ == null) {
+        ensureTypeIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, type_);
+        onChanged();
+      } else {
+        typeBuilder_.addAllMessages(values);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .dossier.JsType type = 1;</code>
+     *
+     * <pre>
+     * The types to generate documentation for.
      * </pre>
      */
     public Builder clearType() {
       if (typeBuilder_ == null) {
-        type_ = com.github.jsdossier.proto.JsType.getDefaultInstance();
+        type_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000001);
         onChanged();
       } else {
         typeBuilder_.clear();
       }
-      bitField0_ = (bitField0_ & ~0x00000001);
       return this;
     }
     /**
-     * <code>required .dossier.JsType type = 1;</code>
+     * <code>repeated .dossier.JsType type = 1;</code>
      *
      * <pre>
-     * The type to generate documentation for.
+     * The types to generate documentation for.
      * </pre>
      */
-    public com.github.jsdossier.proto.JsType.Builder getTypeBuilder() {
-      bitField0_ |= 0x00000001;
-      onChanged();
-      return getTypeFieldBuilder().getBuilder();
+    public Builder removeType(int index) {
+      if (typeBuilder_ == null) {
+        ensureTypeIsMutable();
+        type_.remove(index);
+        onChanged();
+      } else {
+        typeBuilder_.remove(index);
+      }
+      return this;
     }
     /**
-     * <code>required .dossier.JsType type = 1;</code>
+     * <code>repeated .dossier.JsType type = 1;</code>
      *
      * <pre>
-     * The type to generate documentation for.
+     * The types to generate documentation for.
      * </pre>
      */
-    public com.github.jsdossier.proto.JsTypeOrBuilder getTypeOrBuilder() {
-      if (typeBuilder_ != null) {
-        return typeBuilder_.getMessageOrBuilder();
-      } else {
-        return type_;
+    public com.github.jsdossier.proto.JsType.Builder getTypeBuilder(
+        int index) {
+      return getTypeFieldBuilder().getBuilder(index);
+    }
+    /**
+     * <code>repeated .dossier.JsType type = 1;</code>
+     *
+     * <pre>
+     * The types to generate documentation for.
+     * </pre>
+     */
+    public com.github.jsdossier.proto.JsTypeOrBuilder getTypeOrBuilder(
+        int index) {
+      if (typeBuilder_ == null) {
+        return type_.get(index);  } else {
+        return typeBuilder_.getMessageOrBuilder(index);
       }
     }
     /**
-     * <code>required .dossier.JsType type = 1;</code>
+     * <code>repeated .dossier.JsType type = 1;</code>
      *
      * <pre>
-     * The type to generate documentation for.
+     * The types to generate documentation for.
      * </pre>
      */
-    private com.google.protobuf.SingleFieldBuilder<
+    public java.util.List<? extends com.github.jsdossier.proto.JsTypeOrBuilder> 
+         getTypeOrBuilderList() {
+      if (typeBuilder_ != null) {
+        return typeBuilder_.getMessageOrBuilderList();
+      } else {
+        return java.util.Collections.unmodifiableList(type_);
+      }
+    }
+    /**
+     * <code>repeated .dossier.JsType type = 1;</code>
+     *
+     * <pre>
+     * The types to generate documentation for.
+     * </pre>
+     */
+    public com.github.jsdossier.proto.JsType.Builder addTypeBuilder() {
+      return getTypeFieldBuilder().addBuilder(
+          com.github.jsdossier.proto.JsType.getDefaultInstance());
+    }
+    /**
+     * <code>repeated .dossier.JsType type = 1;</code>
+     *
+     * <pre>
+     * The types to generate documentation for.
+     * </pre>
+     */
+    public com.github.jsdossier.proto.JsType.Builder addTypeBuilder(
+        int index) {
+      return getTypeFieldBuilder().addBuilder(
+          index, com.github.jsdossier.proto.JsType.getDefaultInstance());
+    }
+    /**
+     * <code>repeated .dossier.JsType type = 1;</code>
+     *
+     * <pre>
+     * The types to generate documentation for.
+     * </pre>
+     */
+    public java.util.List<com.github.jsdossier.proto.JsType.Builder> 
+         getTypeBuilderList() {
+      return getTypeFieldBuilder().getBuilderList();
+    }
+    private com.google.protobuf.RepeatedFieldBuilder<
         com.github.jsdossier.proto.JsType, com.github.jsdossier.proto.JsType.Builder, com.github.jsdossier.proto.JsTypeOrBuilder> 
         getTypeFieldBuilder() {
       if (typeBuilder_ == null) {
-        typeBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+        typeBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
             com.github.jsdossier.proto.JsType, com.github.jsdossier.proto.JsType.Builder, com.github.jsdossier.proto.JsTypeOrBuilder>(
-                getType(),
+                type_,
+                ((bitField0_ & 0x00000001) == 0x00000001),
                 getParentForChildren(),
                 isClean());
         type_ = null;
