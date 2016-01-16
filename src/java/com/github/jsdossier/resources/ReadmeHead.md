@@ -10,6 +10,8 @@ Compiler, but will also improve Dossier's ability to generate meaningful documen
 
 ## Usage
 
+_Dossier requires [Java 7](http://openjdk.java.net/) or newer_
+
     java -jar dossier.jar -c config.json
 
 Where `config.json` is a configuration file with the options listed below.
