@@ -236,7 +236,7 @@ final class Es6ModulePass implements CompilerPass {
           .setPath(path)
           .setType(Module.Type.ES6);
 
-      if (n.getJSDocInfo() != null) {
+      if (n.getJSDocInfo() != null && n.getBooleanProp(Node.EXPORT_DEFAULT)) {
         moduleDocs = JsDoc.from(n.getJSDocInfo());
         module.setJsDoc(moduleDocs);
       }

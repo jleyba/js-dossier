@@ -307,6 +307,41 @@ public class Es6ModuleTest {
     assertThat(baz.getType()).isEqualTo(Module.Type.ES6);
   }
 
+  @Test
+  public void extractsModuleDocsFromTheScriptNode() {
+    util.compile(fs.getPath("/one/two.js"),
+        "/** @fileoverview The file overview comment should be used for module docs. */",
+        "",
+        "/** Class does should not be used. */",
+        "export class A {}");
+
+    Module module = typeRegistry.getModule("module$one$two");
+
+    assertThat(module.getJsDoc().getBlockComment())
+        .isEqualTo("The file overview comment should be used for module docs.");
+  }
+
+  @Test
+  public void modulesWithNoFileOverviewHaveNoDocs() {
+    util.compile(fs.getPath("/one/two.js"),
+        "/** Class does should not be used. */",
+        "export class A {}");
+
+    Module module = typeRegistry.getModule("module$one$two");
+    assertThat(module.getJsDoc().getBlockComment()).isEmpty();
+  }
+
+  @Test
+  public void modulesWithNoFileOverviewHaveNoDocs_moduleHasDefaultExportClass() {
+    util.compile(fs.getPath("/one/two.js"),
+        "/** @fileoverview Fileoverview should not be used when there is a default export */",
+        "/** This class is the default export */",
+        "export default class A {}");
+
+    Module module = typeRegistry.getModule("module$one$two");
+    assertThat(module.getJsDoc().getBlockComment()).isEqualTo("This class is the default export");
+  }
+
   private static void checkInternalDocs(Module module, String name, String comment) {
     assertThat(module.getInternalVarDocs().get(name).getBlockDescription().trim())
         .isEqualTo(comment);
