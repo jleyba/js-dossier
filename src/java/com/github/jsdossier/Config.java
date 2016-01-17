@@ -93,6 +93,7 @@ class Config {
   private final ImmutableSet<Path> externs;
   private final ImmutableSet<Path> excludes;
   private final ImmutableSet<Pattern> typeFilters;
+  private final ImmutableSet<Pattern> moduleFilters;
   private final Path srcPrefix;
   private final Optional<Path> modulePrefix;
   private final Path output;
@@ -111,6 +112,7 @@ class Config {
    * @param externs The list of extern files for the Closure compiler.
    * @param excludes The list of excluded files.
    * @param typeFilters The list of types to filter from generated output.
+   * @param moduleFilters The set of modules to filter from generated output.
    * @param output Path to the output directory.
    * @param readme Path to a markdown file to include in the main index.
    * @param customPages Custom markdown files to include in the generated documentation.
@@ -127,6 +129,7 @@ class Config {
       ImmutableSet<Path> externs,
       ImmutableSet<Path> excludes,
       ImmutableSet<Pattern> typeFilters,
+      ImmutableSet<Pattern> moduleFilters,
       Path output,
       Optional<Path> readme,
       List<MarkdownPage> customPages,
@@ -163,6 +166,7 @@ class Config {
     this.externs = externs;
     this.excludes = excludes;
     this.typeFilters = typeFilters;
+    this.moduleFilters = moduleFilters;
     this.output = output;
     this.readme = readme;
     this.customPages = ImmutableList.copyOf(customPages);
@@ -266,6 +270,7 @@ class Config {
     json.add("modules", toJsonArray(modules));
     json.add("externs", toJsonArray(externs));
     json.add("excludes", toJsonArray(excludes));
+    json.add("moduleFilters", toJsonArray(moduleFilters));
     json.add("typeFilters", toJsonArray(typeFilters));
     json.add("stripModulePrefix", new JsonPrimitive(modulePrefix.toString()));
     json.add("readme", readme.isPresent()
@@ -302,6 +307,18 @@ class Config {
     }
     int index = name.lastIndexOf('.');
     return index != -1 && isFilteredType(name.substring(0, index));
+  }
+
+  /**
+   * Returns whether the given path should be excluded from documentation.
+   */
+  boolean isFilteredModule(Path path) {
+    for (Pattern filter : moduleFilters) {
+      if (filter.matcher(path.toAbsolutePath().normalize().toString()).matches()) {
+        return true;
+      }
+    }
+    return false;
   }
 
   private static Path getSourcePrefixPath(
@@ -361,6 +378,7 @@ class Config {
         ImmutableSet.copyOf(resolve(spec.externs)),
         excludes,
         ImmutableSet.copyOf(spec.typeFilters),
+        ImmutableSet.copyOf(spec.moduleFilters),
         output,
         spec.readme,
         spec.customPages,
@@ -669,6 +687,11 @@ class Config {
         "These  files are used to satisfy references to external types, but are excluded when " +
         "generating  API documentation.")
     private final List<PathSpec> externs = ImmutableList.of();
+
+    @Description("List of regular expressions for modules that should be excluded from generated "
+        + "documentation, even if found in the type graph. The provided expressions will be "
+        + "to the _absolute_ path of the source file for each module.")
+    private final List<Pattern> moduleFilters = ImmutableList.of();
 
     @Description("List of regular expressions for types that should be excluded from generated " +
         "documentation, even if found in the type graph.")

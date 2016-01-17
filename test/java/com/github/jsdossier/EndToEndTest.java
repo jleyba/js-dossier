@@ -515,6 +515,7 @@ public class EndToEndTest {
   private static class Config {
     private final JsonObject json = new JsonObject();
     private final JsonArray customPages = new JsonArray();
+    private final JsonArray moduleFilters = new JsonArray();
     private final JsonArray typeFilters = new JsonArray();
     private final JsonArray sources = new JsonArray();
     private final JsonArray modules = new JsonArray();
@@ -531,6 +532,11 @@ public class EndToEndTest {
     void addFilter(String name) {
       typeFilters.add(new JsonPrimitive(name));
       json.add("typeFilters", typeFilters);
+    }
+
+    void addModuleFilter(String path) {
+      moduleFilters.add(new JsonPrimitive(path));
+      json.add("moduleFilters", moduleFilters);
     }
 
     void setOutput(Path path) {
@@ -635,6 +641,7 @@ public class EndToEndTest {
       copyResource("resources/module/index.js", srcDir.resolve("main/example/index.js"));
       copyResource("resources/module/nested.js", srcDir.resolve("main/example/nested.js"));
       copyResource("resources/module/es6/empty.js", srcDir.resolve("main/example/empty.js"));
+      copyResource("resources/module/es6/filter.js", srcDir.resolve("main/example/filter.js"));
       copyResource("resources/module/es6/net.js", srcDir.resolve("main/example/net.js"));
       copyResource("resources/module/worker.js", srcDir.resolve("main/example/worker.js"));
     }
@@ -655,6 +662,8 @@ public class EndToEndTest {
         addFilter("foo.FilteredClass");
         addFilter("foo.bar");
 
+        addModuleFilter(".*/main/example/filter.js$");
+
         addSource(srcDir.resolve("main/closure_module.js"));
         addSource(srcDir.resolve("main/es2015.js"));
         addSource(srcDir.resolve("main/filter.js"));
@@ -668,6 +677,7 @@ public class EndToEndTest {
         // the import statement and registers it as a module.
         addSource(srcDir.resolve("main/example/empty.js"));
 
+        addModule(srcDir.resolve("main/example/filter.js"));
         addModule(srcDir.resolve("main/example/index.js"));
         addModule(srcDir.resolve("main/example/nested.js"));
         addModule(srcDir.resolve("main/example/net.js"));

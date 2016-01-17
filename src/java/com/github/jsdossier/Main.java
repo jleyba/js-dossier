@@ -28,6 +28,7 @@ import static java.nio.file.Files.newInputStream;
 import com.github.jsdossier.Config.Language;
 import com.github.jsdossier.annotations.DocumentationScoped;
 import com.github.jsdossier.annotations.Input;
+import com.github.jsdossier.annotations.ModuleFilter;
 import com.github.jsdossier.annotations.ModulePrefix;
 import com.github.jsdossier.annotations.Modules;
 import com.github.jsdossier.annotations.Output;
@@ -51,7 +52,6 @@ import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Iterables;
 import com.google.common.io.ByteStreams;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -166,6 +166,17 @@ final class Main {
 
       bind(DocTemplate.class).to(DefaultDocTemplate.class).in(DocumentationScoped.class);
       bind(Renderer.class).in(DocumentationScoped.class);
+    }
+
+    @Provides
+    @ModuleFilter
+    Predicate<Path> provideModulePathFilter() {
+      return new Predicate<Path>() {
+        @Override
+        public boolean apply(Path input) {
+          return config.isFilteredModule(input);
+        }
+      };
     }
 
     @Provides

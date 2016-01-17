@@ -22,6 +22,7 @@ import com.github.jsdossier.CompilerModule;
 import com.github.jsdossier.ModuleNamingConvention;
 import com.github.jsdossier.annotations.DocumentationScoped;
 import com.github.jsdossier.annotations.Input;
+import com.github.jsdossier.annotations.ModuleFilter;
 import com.github.jsdossier.annotations.ModulePrefix;
 import com.github.jsdossier.annotations.Modules;
 import com.github.jsdossier.annotations.Output;
@@ -70,6 +71,7 @@ public abstract class GuiceRule implements TestRule {
         .setModulePrefix(Optional.<Path>absent())
         .setSourcePrefix(Optional.<Path>absent())
         .setModules(ImmutableSet.<Path>of())
+        .setModulePathFilter(Predicates.<Path>alwaysFalse())
         .setTypeNameFilter(Predicates.<String>alwaysFalse())
 
         .setOutputFs(Jimfs.newFileSystem())
@@ -84,6 +86,7 @@ public abstract class GuiceRule implements TestRule {
   abstract Optional<Path> getModulePrefix();
   abstract Optional<Path> getSourcePrefix();
   abstract ImmutableSet<Path> getModules();
+  abstract Predicate<Path> getModulePathFilter();
   abstract Predicate<String> getTypeNameFilter();
 
   abstract ModuleNamingConvention getModuleNamingConvention();
@@ -143,6 +146,12 @@ public abstract class GuiceRule implements TestRule {
           }
 
           @Provides
+          @ModuleFilter
+          Predicate<Path> provideModulePathFilter() {
+            return getModulePathFilter();
+          }
+
+          @Provides
           @TypeFilter
           Predicate<String> provideTypeNameFilter() {
             return getTypeNameFilter();
@@ -180,6 +189,7 @@ public abstract class GuiceRule implements TestRule {
     public abstract Builder setNewTypeInference(boolean set);
     public abstract Builder setModuleNamingConvention(ModuleNamingConvention convention);
     public abstract Builder setLanguageIn(CompilerOptions.LanguageMode languageIn);
+    public abstract Builder setModulePathFilter(Predicate<Path> filter);
     public abstract Builder setTypeNameFilter(Predicate<String> filter);
     public abstract Builder setInputFs(FileSystem fs);
     public abstract FileSystem getInputFs();

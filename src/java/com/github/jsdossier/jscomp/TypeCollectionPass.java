@@ -24,6 +24,7 @@ import static com.google.common.base.Verify.verify;
 import static com.google.javascript.jscomp.NodeTraversal.traverseEs6;
 
 import com.github.jsdossier.annotations.Input;
+import com.github.jsdossier.annotations.ModuleFilter;
 import com.github.jsdossier.annotations.TypeFilter;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
@@ -71,16 +72,19 @@ public final class TypeCollectionPass implements CompilerPass {
   private final TypeRegistry typeRegistry;
   private final FileSystem inputFs;
   private final Predicate<String> typeNameFilter;
+  private final Predicate<Path> modulePathFilter;
 
   @Inject
   TypeCollectionPass(
       DossierCompiler compiler,
       TypeRegistry typeRegistry,
       @Input FileSystem inputFs,
+      @ModuleFilter Predicate<Path> modulePathFilter,
       @TypeFilter Predicate<String> typeNameFilter) {
     this.compiler = compiler;
     this.typeRegistry = typeRegistry;
     this.inputFs = inputFs;
+    this.modulePathFilter = modulePathFilter;
     this.typeNameFilter = typeNameFilter;
   }
 
@@ -97,6 +101,9 @@ public final class TypeCollectionPass implements CompilerPass {
     // Check for known modules that did not register as a type. These are modules that import
     // others, but have no exports of their own.
     for (Module module : typeRegistry.getAllModules()) {
+      if (modulePathFilter.apply(module.getPath())) {
+        continue;
+      }
       if (module.getType() != Module.Type.CLOSURE && !typeRegistry.isType(module.getId())) {
         typeRegistry.addType(
             NominalType.builder()
@@ -272,13 +279,18 @@ public final class TypeCollectionPass implements CompilerPass {
         }
 
         Path path = inputFs.getPath(node.getSourceFileName());
+        Optional<Module> module = getModule(name, node);
+        if (module.isPresent() && modulePathFilter.apply(module.get().getPath())) {
+          continue;
+        }
+
         NominalType nominalType = NominalType.builder()
             .setName(name)
             .setType(node.getJSType())
             .setJsDoc(info)
             .setSourceFile(path)
             .setSourcePosition(Position.of(node.getLineno(), node.getCharno()))
-            .setModule(getModule(name, node))
+            .setModule(module)
             .build();
 
         recordType(nominalType);
@@ -374,9 +386,15 @@ public final class TypeCollectionPass implements CompilerPass {
 
       if (jsdoc.isTypedef()) {
         String name = parent.getName() + "." + property.getName();
+
+        Optional<Module> module = getModule(name, node);
+        if (module.isPresent() && modulePathFilter.apply(module.get().getPath())) {
+          return;
+        }
+
         addType(NominalType.builder()
             .setName(name)
-            .setModule(getModule(name, node))
+            .setModule(module)
             .setJsDoc(jsdoc)
             .setType(property.getType())
             .setSourceFile(inputFs.getPath(node.getSourceFileName()))
@@ -394,9 +412,14 @@ public final class TypeCollectionPass implements CompilerPass {
       }
 
       String name = parent.getName() + "." + property.getName();
+      Optional<Module> module = getModule(name, node);
+      if (module.isPresent() && modulePathFilter.apply(module.get().getPath())) {
+        return;
+      }
+
       NominalType nt = NominalType.builder()
           .setName(name)
-          .setModule(getModule(name, node))
+          .setModule(module)
           .setJsDoc(jsdoc)
           .setType(propertyType)
           .setSourceFile(inputFs.getPath(node.getSourceFileName()))
