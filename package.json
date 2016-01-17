@@ -1,6 +1,6 @@
 {
   "name": "js-dossier",
-  "version": "0.8.0-dev",
+  "version": "0.8.0",
   "description": "A JavaScript API documentation generator",
   "repository": {
     "type": "git",
