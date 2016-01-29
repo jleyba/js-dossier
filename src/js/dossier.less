@@ -115,6 +115,34 @@ h3.name {
     & + span {
       margin-left: 4px;
     }
+
+    &.deprecated {
+      border: 1px solid #757575;
+      color: #757575;
+      background: #f5f5f5;
+      &::after { content: 'deprecated'; }
+    }
+
+    &.private {
+      border: 1px solid #e53935;
+      color: #e53935;
+      background: #ffcdd2;
+      &::after { content: 'private'; }
+    }
+
+    &.package {
+      border: 1px solid #ffb300;
+      color: #ffb300;
+      background: #ffecb3;
+      &::after { content: 'package'; }
+    }
+
+    &.protected {
+      border: 1px solid #ffb300;
+      color: #ffb300;
+      background: #ffecb3;
+      &::after { content: 'protected'; }
+    }
   }
 }
 

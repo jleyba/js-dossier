@@ -21,6 +21,7 @@ import com.google.protobuf.ProtocolMessageEnum;
 import com.google.template.soy.data.SoyData;
 import com.google.template.soy.data.SoyValue;
 import com.google.template.soy.data.SoyValueProvider;
+import com.google.template.soy.data.restricted.IntegerData;
 
 import java.io.IOException;
 
@@ -49,6 +50,9 @@ class ProtoEnumSoyValue extends SoyData implements SoyValue {
     if (o instanceof ProtoEnumSoyValue) {
       ProtoEnumSoyValue that = (ProtoEnumSoyValue) o;
       return this.value.equals(that.value);
+    } else if (o instanceof IntegerData) {
+      IntegerData that = (IntegerData) o;
+      return this.integerValue() == that.integerValue();
     }
     return false;
   }
