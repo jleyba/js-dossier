@@ -25,6 +25,7 @@ import com.github.jsdossier.jscomp.NominalType;
 import com.github.jsdossier.proto.BaseProperty;
 import com.github.jsdossier.proto.Comment;
 import com.github.jsdossier.proto.Function;
+import com.github.jsdossier.proto.Visibility;
 import com.github.jsdossier.testing.Bug;
 import com.google.javascript.rhino.Node;
 import org.junit.Test;
@@ -701,6 +702,41 @@ public class TypeInspectorTest extends AbstractTypeInspectorTest {
                 .setSource(sourceFile("source/foo.js.src.html", 3))
                 .setDescription(Comment.getDefaultInstance())
                 .addSeeAlso(htmlComment("<p><strong>foo <em>bar</em></strong></p>\n"))
+                .build())
+            .build());
+  }
+
+  @Test
+  public void globalFunctionsInheritVisibilityFromFileDefaults() {
+    compile(
+        "/** @fileoverview A test.",
+        " *  @package",
+        " */",
+        "goog.provide('vis');",
+        "",
+        "/** @public */ vis.publicFn = function() {};",
+        "/** @private */ vis.privateFn = function() {};",
+        "",
+        "vis.inheritsVisFn = function() {};");
+
+    NominalType type = typeRegistry.getType("vis");
+    TypeInspector typeInspector = typeInspectorFactory.create(type);
+    TypeInspector.Report report = typeInspector.inspectType();
+    assertThat(report.getProperties()).isEmpty();
+    assertThat(report.getFunctions()).containsExactly(
+        Function.newBuilder()
+            .setBase(BaseProperty.newBuilder()
+                .setName("publicFn")
+                .setSource(sourceFile("source/foo.js.src.html", 6))
+                .setDescription(Comment.getDefaultInstance())
+                .build())
+            .build(),
+        Function.newBuilder()
+            .setBase(BaseProperty.newBuilder()
+                .setName("inheritsVisFn")
+                .setSource(sourceFile("source/foo.js.src.html", 9))
+                .setDescription(Comment.getDefaultInstance())
+                .setVisibility(Visibility.PACKAGE)
                 .build())
             .build());
   }

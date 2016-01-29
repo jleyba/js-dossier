@@ -17,6 +17,7 @@
 package com.github.jsdossier.jscomp;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Verify.verify;
 import static com.google.common.collect.Multimaps.filterKeys;
 
@@ -30,6 +31,7 @@ import com.google.common.collect.MultimapBuilder;
 import com.google.common.collect.Multimaps;
 import com.google.common.collect.SetMultimap;
 import com.google.javascript.rhino.JSDocInfo;
+import com.google.javascript.rhino.JSDocInfo.Visibility;
 import com.google.javascript.rhino.JSTypeExpression;
 import com.google.javascript.rhino.jstype.FunctionType;
 import com.google.javascript.rhino.jstype.JSType;
@@ -65,6 +67,7 @@ public final class TypeRegistry {
   private final Set<String> implicitNamespaces = new HashSet<>();
   private final Map<String, Module> modulesById = new HashMap<>();
   private final Map<Path, Module> modulesByPath = new HashMap<>();
+  private final Map<Path, JSDocInfo.Visibility> defaultVisibilities = new HashMap<>();
   private final Multimap<Path, AliasRegion> aliasRegions =
       MultimapBuilder.hashKeys().arrayListValues().build();
   private final Map<String, NominalType> typesByName = new HashMap<>();
@@ -421,5 +424,42 @@ public final class TypeRegistry {
       }
     }
     return interfaces;
+  }
+
+  /**
+   * Sets the default visibility for the given source file.
+   */
+  public void setDefaultVisibility(Path path, Visibility visibility) {
+    defaultVisibilities.put(
+        checkNotNull(path, "null path"),
+        checkNotNull(visibility, "null visibility"));
+  }
+
+  /**
+   * Returns the effective visibility for the given type.
+   */
+  public Visibility getDefaultVisibility(Path path) {
+    if (defaultVisibilities.containsKey(path)) {
+      return defaultVisibilities.get(path);
+    }
+    return Visibility.PUBLIC;
+  }
+
+  /**
+   * Returns the effective visibility for the given type.
+   */
+  public Visibility getVisibility(NominalType type) {
+    JsDoc docs = type.getJsDoc();
+    Visibility visibility = docs.getVisibility();
+
+    if (visibility == Visibility.INHERITED
+        && defaultVisibilities.containsKey(type.getSourceFile())) {
+      visibility = defaultVisibilities.get(type.getSourceFile());
+    }
+
+    if (visibility == Visibility.INHERITED) {
+      visibility = Visibility.PUBLIC;
+    }
+    return visibility;
   }
 }

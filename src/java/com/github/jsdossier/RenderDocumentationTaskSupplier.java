@@ -331,6 +331,7 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Ca
           .filter(Types.isTypedef())
           .toSortedList(new QualifiedNameComparator());
       for (NominalType typedef : typedefs) {
+        JSDocInfo.Visibility visibility = typeRegistry.getVisibility(typedef);
         JsType.TypeDef.Builder builder = spec.addTypeDefBuilder()
             .setName(getNestedTypeName(typedef))
             .setType(
@@ -342,7 +343,7 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Ca
                 parser.parseComment(
                     typedef.getJsDoc().getBlockComment(),
                     linkFactory.withTypeContext(typedef)))
-            .setVisibility(Visibility.valueOf(typedef.getJsDoc().getVisibility().name()));
+            .setVisibility(Visibility.valueOf(visibility.name()));
 
         if (typedef.getJsDoc().isDeprecated()) {
           builder.setDeprecation(getDeprecation(typedef.getJsDoc()));
@@ -432,10 +433,11 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Ca
         return;
       }
       JSType elementType = ((EnumType) type.getType()).getElementsType();
+      JSDocInfo.Visibility visibility = typeRegistry.getVisibility(type);
+
       Enumeration.Builder enumBuilder = spec.getEnumerationBuilder()
-          .setType(
-              expressionParserFactory.create(linkFactory).parse(elementType))
-          .setVisibility(Visibility.valueOf(type.getJsDoc().getVisibility().name()));
+          .setType(expressionParserFactory.create(linkFactory).parse(elementType))
+          .setVisibility(Visibility.valueOf(visibility.name()));
 
       // Type may be documented as an enum without an associated object literal for us to analyze:
       //     /** @enum {string} */ namespace.foo;

@@ -24,7 +24,9 @@ import com.github.jsdossier.proto.BaseProperty;
 import com.github.jsdossier.proto.Comment;
 import com.github.jsdossier.proto.Function;
 import com.github.jsdossier.proto.Function.Detail;
+import com.github.jsdossier.proto.Property;
 import com.github.jsdossier.proto.Tags;
+import com.github.jsdossier.proto.Visibility;
 import com.github.jsdossier.testing.Bug;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -1695,6 +1697,68 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setDescription(htmlComment(
                     "<p>A reference to <a href=\"a/b/c_exports_Y.html\">" +
                         "<code>X</code></a></p>\n")))
+            .build());
+  }
+
+  @Test
+  public void overriddenMethodsInheritVisibilityFromParentType() {
+    util.compile(
+        createSourceFile(
+            fs.getPath("/src/globals.js"),
+            "class Greeter {",
+            "  /** @protected */greet() {}",
+            "}",
+            "",
+            "class CustomGreeter extends Greeter {",
+            "  /** @override */greet() {}",
+            "}",
+            "",
+            "class FinalGreeter extends CustomGreeter {",
+            "  /** @override */greet() {}",
+            "}"));
+
+    NominalType type = typeRegistry.getType("Greeter");
+    TypeInspector typeInspector = typeInspectorFactory.create(type);
+    TypeInspector.Report report = typeInspector.inspectInstanceType();
+    assertThat(report.getCompilerConstants()).isEmpty();
+    assertThat(report.getProperties()).isEmpty();
+    assertThat(report.getFunctions()).containsExactly(
+        Function.newBuilder()
+            .setBase(BaseProperty.newBuilder()
+                .setName("greet")
+                .setSource(sourceFile("source/globals.js.src.html", 2))
+                .setDescription(Comment.getDefaultInstance())
+                .setVisibility(Visibility.PROTECTED))
+            .build());
+
+    type = typeRegistry.getType("CustomGreeter");
+    typeInspector = typeInspectorFactory.create(type);
+    report = typeInspector.inspectInstanceType();
+    assertThat(report.getCompilerConstants()).isEmpty();
+    assertThat(report.getProperties()).isEmpty();
+    assertThat(report.getFunctions()).containsExactly(
+        Function.newBuilder()
+            .setBase(BaseProperty.newBuilder()
+                .setName("greet")
+                .setSource(sourceFile("source/globals.js.src.html", 6))
+                .setDescription(Comment.getDefaultInstance())
+                .setOverrides(linkComment("Greeter", "Greeter.html#greet"))
+                .setVisibility(Visibility.PROTECTED))
+            .build());
+
+    type = typeRegistry.getType("FinalGreeter");
+    typeInspector = typeInspectorFactory.create(type);
+    report = typeInspector.inspectInstanceType();
+    assertThat(report.getCompilerConstants()).isEmpty();
+    assertThat(report.getProperties()).isEmpty();
+    assertThat(report.getFunctions()).containsExactly(
+        Function.newBuilder()
+            .setBase(BaseProperty.newBuilder()
+                .setName("greet")
+                .setSource(sourceFile("source/globals.js.src.html", 10))
+                .setDescription(Comment.getDefaultInstance())
+                .setOverrides(linkComment("CustomGreeter", "CustomGreeter.html#greet"))
+                .setVisibility(Visibility.PROTECTED))
             .build());
   }
 }

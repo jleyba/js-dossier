@@ -428,6 +428,10 @@
                           and length($fn.return.description.token)) /}
   {if $fn.isConstructor}
     <h3 class="name">
+      {call .tags}
+        {param tags: null /}
+        {param visibility: $fn.base.visibility /}
+      {/call}
       <div>
         new {$fn.base.name}
         {call .functionArgs}
@@ -811,12 +815,6 @@
       {elseif $visibility == dossier.Visibility.PACKAGE}
         <span class="protected"></span>
       {/if}
-
-      {switch $visibility}
-        {case dossier.Visibility.PACKAGE}<span class="package"></span>
-        {case dossier.Visibility.PRIVATE}<span class="private"></span>
-        {case dossier.Visibility.PROTECTED}<span class="protected"></span>
-      {/switch}
 
       {if $tags.isConst}<span>const</span>{/if}
       {if $tags.isFinal}<span>final</span>{/if}

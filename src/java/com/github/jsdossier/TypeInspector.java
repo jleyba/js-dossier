@@ -66,6 +66,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -892,13 +893,14 @@ final class TypeInspector {
       builder.addSpecifiedBy(getPropertyLink(docs.getContextType(), property));
     }
 
-    JsDoc jsdoc = docs.getJsDoc();
-    if (jsdoc.getVisibility() != JSDocInfo.Visibility.PUBLIC) {
-      builder.setVisibility(Visibility.valueOf(jsdoc.getVisibility().name()));
+    JSDocInfo.Visibility visibility = determineVisibility(docs, overrides);
+    if (visibility != JSDocInfo.Visibility.PUBLIC) {
+      builder.setVisibility(Visibility.valueOf(visibility.name()));
     }
 
     LinkFactory contextLinkFactory = linkFactory.withTypeContext(docs.getContextType());
 
+    JsDoc jsdoc = docs.getJsDoc();
     if (jsdoc.isDeprecated()) {
       builder.getTagsBuilder().setIsDeprecated(true);
       builder.setDeprecation(
@@ -929,6 +931,32 @@ final class TypeInspector {
       builder.getTagsBuilder().setIsConst(true);
     }
     return builder.build();
+  }
+
+  private JSDocInfo.Visibility determineVisibility(
+      PropertyDocs docs, Iterable<InstanceProperty> overrides) {
+    JsDoc jsdoc = docs.getJsDoc();
+    JSDocInfo.Visibility vis = jsdoc.getVisibility();
+    if (vis == JSDocInfo.Visibility.INHERITED) {
+      for (InstanceProperty superType : overrides) {
+        vis = getVisibility(superType);
+        if (vis != JSDocInfo.Visibility.INHERITED) {
+          break;
+        }
+      }
+    }
+    if (vis == JSDocInfo.Visibility.INHERITED) {
+      vis = registry.getDefaultVisibility(docs.getContextType().getSourceFile());
+    }
+    return vis;
+  }
+
+  private JSDocInfo.Visibility getVisibility(InstanceProperty property) {
+    JsDoc docs = property.getJsDoc();
+    if (docs == null) {
+      return JSDocInfo.Visibility.INHERITED;
+    }
+    return docs.getVisibility();
   }
 
   private Comment findBlockComment(

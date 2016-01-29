@@ -64,9 +64,7 @@ public class ProtoEnumSoyValueTest {
   public void testEquality() {
     assertEquals(RED, RED);
     assertEquals(RED.hashCode(), RED.hashCode());
-
     assertEquals(RED, IntegerData.forValue(RED.integerValue()));
-    assertEquals(IntegerData.forValue(RED.integerValue()), RED);
 
     assertNotEquals(RED, BLUE);
   }

@@ -24,6 +24,7 @@ import com.github.jsdossier.annotations.Stderr;
 import com.google.common.collect.ImmutableSet;
 import com.google.javascript.jscomp.Compiler;
 import com.google.javascript.jscomp.CompilerInput;
+import com.google.javascript.jscomp.CompilerPass;
 import com.google.javascript.rhino.Node;
 
 import java.io.PrintStream;
@@ -42,6 +43,7 @@ public final class DossierCompiler extends Compiler {
   private final FileSystem inputFs;
   private final ImmutableSet<Path> modulePaths;
   private final Es6ModulePassFactory modulePassFactory;
+  private final FileVisibilityPassFactory fileVisibilityPassFactory;
 
   private boolean hasParsed = false;
 
@@ -51,12 +53,14 @@ public final class DossierCompiler extends Compiler {
       TypeRegistry typeRegistry,
       @Input FileSystem inputFs,
       @Modules ImmutableSet<Path> modulePaths,
-      Es6ModulePassFactory modulePassFactory) {
+      Es6ModulePassFactory modulePassFactory,
+      FileVisibilityPassFactory fileVisibilityPassFactory) {
     super(stream);
     this.typeRegistry = typeRegistry;
     this.inputFs = inputFs;
     this.modulePaths = modulePaths;
     this.modulePassFactory = modulePassFactory;
+    this.fileVisibilityPassFactory = fileVisibilityPassFactory;
   }
 
   @Override
@@ -65,6 +69,8 @@ public final class DossierCompiler extends Compiler {
         "%s can only parse its inputs once! Create a new instance if you must re-parse",
         getClass());
     hasParsed = true;
+
+    collectFileVisibilities();
 
     // Look for ES6 modules before we do anything else. This is necessary since the compiler
     // transpiles modules to ES5.
@@ -80,6 +86,16 @@ public final class DossierCompiler extends Compiler {
 
     // Now we can proceed with the normal parsing.
     super.parse();
+  }
+
+  private void collectFileVisibilities() {
+    CompilerPass pass = fileVisibilityPassFactory.create(this);
+    for (CompilerInput input : getInputsById().values()) {
+      Node root = input.getAstRoot(this);
+      if (root != null) {
+        pass.process(null, root);
+      }
+    }
   }
 
   private void processEs6Modules() {

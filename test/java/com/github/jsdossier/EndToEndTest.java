@@ -402,6 +402,21 @@ public class EndToEndTest {
     assertThat(gson.toJson(map).trim()).isEqualTo(expectedContent.trim());
   }
 
+  @Test
+  public void visibilityRendering() throws IOException {
+    Document document = load(outDir.resolve("vis.html"));
+    compareWithGoldenFile(querySelector(document, "article"), "vis.html");
+    checkHeader(document);
+    checkNav(document);
+    checkFooter(document);
+
+    document = load(outDir.resolve("vis.InheritsVis.html"));
+    compareWithGoldenFile(querySelector(document, "article"), "vis.InheritsVis.html");
+    checkHeader(document);
+    checkNav(document);
+    checkFooter(document);
+  }
+
   @SuppressWarnings("unchecked")
   private void sortIndexMap(TreeMap<String, Object> root) {
     root.put("modules", sortTypeList((List<Map<String, Object>>) root.get("modules")));
@@ -637,6 +652,7 @@ public class EndToEndTest {
       copyResource("resources/json.js", srcDir.resolve("main/json.js"));
       copyResource("resources/inheritance.js", srcDir.resolve("main/inheritance.js"));
       copyResource("resources/registry.js", srcDir.resolve("main/registry.js"));
+      copyResource("resources/visibility.js", srcDir.resolve("main/visibility.js"));
       copyResource("resources/emptyenum.js", srcDir.resolve("main/subdir/emptyenum.js"));
       copyResource("resources/module/index.js", srcDir.resolve("main/example/index.js"));
       copyResource("resources/module/nested.js", srcDir.resolve("main/example/nested.js"));
@@ -671,6 +687,7 @@ public class EndToEndTest {
         addSource(srcDir.resolve("main/json.js"));
         addSource(srcDir.resolve("main/inheritance.js"));
         addSource(srcDir.resolve("main/registry.js"));
+        addSource(srcDir.resolve("main/visibility.js"));
         addSource(srcDir.resolve("main/subdir/emptyenum.js"));
 
         // NB: this is explicitly declared as a normal source input to test that Dossier detects

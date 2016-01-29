@@ -131,10 +131,6 @@ public class JsDoc {
   }
 
   public JSDocInfo.Visibility getVisibility() {
-    // TODO(jleyba): Properly handle Visibility.INHERITED
-    if (info.getVisibility() == JSDocInfo.Visibility.INHERITED) {
-      return JSDocInfo.Visibility.PUBLIC;
-    }
     return info.getVisibility();
   }
 

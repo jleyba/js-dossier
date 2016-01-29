@@ -482,6 +482,39 @@
       "statics": [
         "register"
       ]
+    },
+    {
+      "href": "vis.html",
+      "interface": false,
+      "name": "vis",
+      "namespace": true,
+      "qualifiedName": "vis",
+      "statics": [
+        "deprecated",
+        "one",
+        "public"
+      ]
+    },
+    {
+      "href": "vis.InheritsVis.html",
+      "interface": false,
+      "name": "vis.InheritsVis",
+      "namespace": false,
+      "qualifiedName": "vis.InheritsVis"
+    },
+    {
+      "href": "vis.Private.html",
+      "interface": false,
+      "name": "vis.Private",
+      "namespace": false,
+      "qualifiedName": "vis.Private"
+    },
+    {
+      "href": "vis.Public.html",
+      "interface": false,
+      "name": "vis.Public",
+      "namespace": false,
+      "qualifiedName": "vis.Public"
     }
   ]
 }
