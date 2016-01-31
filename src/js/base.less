@@ -341,3 +341,18 @@ strong {
 ::-webkit-scrollbar-thumb {
   .scroll-thumb();
 }
+
+@media
+(-webkit-min-device-pixel-ratio: 2),
+(min-resolution: 192dpi) {
+  body, input {
+    font-weight: 300;
+  }
+
+  dt.spec {
+    font-weight: 400;
+    a {
+      font-weight: 300;
+    }
+  }
+}
