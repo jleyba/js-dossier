@@ -91,7 +91,7 @@ dossier.BASE_PATH_ = (function() {
   currentPath.splice(currentPath.length - trimN, trimN);
 
   let basePath = currentPath.join('/');
-  if (!basePath.endsWith('/')) {
+  if (!goog.string.endsWith(basePath, '/')) {
     basePath += '/';
   }
   return basePath;

@@ -23,6 +23,7 @@ goog.module('dossier.search');
 const events = goog.require('goog.events');
 const EventType = goog.require('goog.events.EventType');
 const KeyCodes = goog.require('goog.events.KeyCodes');
+const Strings = goog.require('goog.string');
 const ArrayMatcher = goog.require('goog.ui.ac.ArrayMatcher');
 const AutoComplete = goog.require('goog.ui.ac.AutoComplete');
 const InputHandler = goog.require('goog.ui.ac.InputHandler');
@@ -61,7 +62,7 @@ function addTypes(terms, nameToHref, descriptor) {
     descriptor.statics.forEach(function(name) {
       let href = descriptor.href + '#' + name;
 
-      if (name.startsWith(baseName + '.')) {
+      if (Strings.startsWith(name, baseName + '.')) {
         name = name.substring(baseName.length + 1);
       }
 
