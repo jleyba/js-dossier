@@ -169,7 +169,7 @@ final class TableBlockParser extends AbstractBlockParser {
     @Override
     public BlockStart tryStart(ParserState state, MatchedBlockParser matchedBlockParser) {
       CharSequence line = state.getLine();
-      CharSequence previousLine = matchedBlockParser.getParagraphStartLine();
+      CharSequence previousLine = matchedBlockParser.getParagraphContent();
       if (previousLine != null && previousLine.toString().contains("|")) {
         line = line.subSequence(state.getIndex(), line.length());
         ImmutableList<Alignment> columnAlignments = parseHeaderDivider(line);
