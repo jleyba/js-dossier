@@ -33,6 +33,7 @@ import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.base.Splitter;
+import com.google.common.base.Strings;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -614,7 +615,7 @@ class Config {
 
   private static void printLine(PrintWriter pw, String line) {
     if (line.length() <= 79) {
-      pw.println(line);
+      pw.println(line.replaceAll("\\s+$", ""));
     } else {
       int index = 79;
       while (line.charAt(index) != ' ') {

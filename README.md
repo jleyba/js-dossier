@@ -28,20 +28,20 @@ __Configuration Options__
     automatically expand the set of `sources` any time a symbol is
     goog.require'd with the ile that goog.provides that symbol, along with all
     of its transitive dependencies.
-   
+
     For example, suppose you have one source file, `foo.js`:
-   
+
         goog.require('goog.array');
         // ...
-   
+
     and your configuration includes:
-   
+
         "sources": ["foo.js"],
         "closureLibraryDir": "closure/goog"
-   
+
     due to the dependencies of goog.array declared in closure/goog/deps.js,
     this is equivalent to the following configuration:
-   
+
         "sources": [
             "closure/goog/base.js",
             "closure/goog/debug/error.js",
@@ -50,7 +50,7 @@ __Configuration Options__
             "closure/goog/array/array.js",
             "foo.js"
         ]
-   
+
     Notice specifying `closureLibraryDir` instructs Dossier to sort the input
     files so a a file that goog.provides symbol X comes before any file that
     goog.requires X.
@@ -121,7 +121,7 @@ __Configuration Options__
     tokens will be replaced with the linked type's source file path and line
     number, respectively. Source paths will be relative to the closest common
     ancestor of all input files.
-   
+
     If this option is not specified, a rendered copy of each input file will be
     included in the generated output.
 
