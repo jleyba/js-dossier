@@ -20,6 +20,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.base.Verify.verify;
 
+import com.github.jsdossier.annotations.SourceUrlTemplate;
 import com.github.jsdossier.jscomp.Module;
 import com.github.jsdossier.jscomp.NominalType;
 import com.github.jsdossier.jscomp.Position;
@@ -99,6 +100,7 @@ final class LinkFactory {
   private final ModuleNamingConvention namingConvention;
   private final Optional<NominalType> pathContext;
   private final TypeContext typeContext;
+  private final Optional<String> urlTemplate;
 
   /**
    * Creates a new link factory.
@@ -107,6 +109,7 @@ final class LinkFactory {
    * @param typeRegistry used to lookup nominal types.
    * @param jsTypeRegistry used to lookup JavaScript types.
    * @param typeContext defines the context in which to resolve type names.
+   * @param urlTemplate if provided, defines a template for links to source files.
    * @param pathContext the object, if any, to generate paths relative to in the output file system.
    *     If {@code null}, paths will be relative to the output root.
    */
@@ -116,6 +119,7 @@ final class LinkFactory {
       @Provided JSTypeRegistry jsTypeRegistry,
       @Provided ModuleNamingConvention namingConvention,
       @Provided TypeContext typeContext,
+      @Provided @SourceUrlTemplate Optional<String> urlTemplate,
       @Nullable NominalType pathContext) {
     this.dfs = dfs;
     this.typeRegistry = typeRegistry;
@@ -123,6 +127,7 @@ final class LinkFactory {
     this.namingConvention = namingConvention;
     this.pathContext = Optional.fromNullable(pathContext);
     this.typeContext = typeContext;
+    this.urlTemplate = urlTemplate;
   }
 
   public TypeContext getTypeContext() {
@@ -137,21 +142,34 @@ final class LinkFactory {
     // NB: Can't use an overloaded constructor b/c AutoFactory tries to generate a constructor
     // for everything, even ones with private visibility.
     return new LinkFactory(dfs, typeRegistry, jsTypeRegistry, namingConvention,
-        typeContext.changeContext(context), pathContext.orNull());
+        typeContext.changeContext(context), urlTemplate,
+        pathContext.orNull());
   }
 
   /**
    * Creates a link to a specific line in a rendered source file.
    */
   public SourceLink createLink(Path path, Position position) {
-    Path sourcePath = dfs.getPath(path);
-    if (pathContext.isPresent()) {
-      sourcePath = dfs.getRelativePath(pathContext.get(), sourcePath);
+    if (urlTemplate.isPresent()) {
+      path = dfs.getSourceRelativePath(path);
+    } else {
+      path = dfs.getPath(path);
+      if (pathContext.isPresent()) {
+        path = dfs.getRelativePath(pathContext.get(), path);
+      }
     }
-    return SourceLink.newBuilder()
-        .setPath(getUriPath(sourcePath))
-        .setLine(position.getLine())
-        .build();
+
+    String pathStr = getUriPath(path);
+    SourceLink.Builder link = SourceLink.newBuilder()
+        .setPath(pathStr)
+        .setLine(position.getLine());
+    if (urlTemplate.isPresent()) {
+      String url = urlTemplate.get()
+          .replaceAll("\\$\\{path\\}", pathStr)
+          .replaceAll("\\$\\{line\\}", String.valueOf(position.getLine()));
+      link.setUri(url);
+    }
+    return link.build();
   }
 
   /**
@@ -162,14 +180,8 @@ final class LinkFactory {
     if (node == null || node.isFromExterns()) {
       return SourceLink.newBuilder().setPath("").build();
     }
-    Path sourcePath = dfs.getPath(node);
-    if (pathContext.isPresent()) {
-      sourcePath = dfs.getRelativePath(pathContext.get(), sourcePath);
-    }
-    return SourceLink.newBuilder()
-        .setPath(getUriPath(sourcePath))
-        .setLine(node.getLineno())
-        .build();
+    Path sourcePath = dfs.getSourcePath(node);
+    return createLink(sourcePath, Position.of(node.getLineno(), 0));
   }
 
   /**

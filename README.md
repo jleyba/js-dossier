@@ -116,6 +116,15 @@ __Configuration Options__
     to. Defaults to ES6_STRICT. Must be one of {ES3, ES5, ES5_STRICT, ES6,
     ES6_STRICT}
 
+ * `sourceUrlTemplate` Specifies a template from which to generate a HTTP(S)
+    links to source files. Within this template, the `${path}` and `${line}`
+    tokens will be replaced with the linked type's source file path and line
+    number, respectively. Source paths will be relative to the closest common
+    ancestor of all input files.
+   
+    If this option is not specified, a rendered copy of each input file will be
+    included in the generated output.
+
 
 ## ES6 Support
 

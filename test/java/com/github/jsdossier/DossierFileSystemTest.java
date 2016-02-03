@@ -29,6 +29,7 @@ import com.github.jsdossier.jscomp.Position;
 import com.github.jsdossier.jscomp.TypeRegistry;
 import com.github.jsdossier.testing.CompilerUtil;
 import com.github.jsdossier.testing.GuiceRule;
+import com.google.common.base.Optional;
 import com.google.javascript.jscomp.CompilerOptions;
 import com.google.javascript.rhino.jstype.JSType;
 import org.junit.Rule;
@@ -82,6 +83,12 @@ public class DossierFileSystemTest {
     Path path = sut.getPath(srcPrefix.resolve("foo/bar/baz.js"));
     assertThat(path.toString()).isEqualTo(
         outputRoot.resolve("source/foo/bar/baz.js.src.html").toString());
+  }
+
+  @Test
+  public void getSourceRelativePath() {
+    Path path = sut.getSourceRelativePath(srcPrefix.resolve("foo/bar/baz.js"));
+    assertThat(path.toString()).isEqualTo("foo/bar/baz.js");
   }
 
   @Test

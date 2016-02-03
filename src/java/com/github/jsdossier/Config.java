@@ -103,6 +103,7 @@ class Config {
   private final Language language;
   private final FileSystem fileSystem;
   private final ModuleNamingConvention moduleNamingConvention;
+  private final Optional<String> sourceUrlTemplate;
 
   /**
    * Creates a new runtime configuration.
@@ -120,6 +121,7 @@ class Config {
    * @param strict Whether to enable all type checks.
    * @param language The JavaScript dialog sources must conform to.
    * @param moduleNamingConvention the module naming convention to use.
+   * @param sourceUrlTemplate a user-provided pattern for source file links.
    * @throws IllegalStateException If any of source, module, and extern sets intersect, or if the
    *     output path is not a directory.
    */
@@ -137,7 +139,8 @@ class Config {
       boolean strict,
       Language language,
       FileSystem fileSystem,
-      ModuleNamingConvention moduleNamingConvention) {
+      ModuleNamingConvention moduleNamingConvention,
+      Optional<String> sourceUrlTemplate) {
     checkArgument(!srcs.isEmpty() || !modules.isEmpty(),
         "There must be at least one input source or module");
     checkArgument(intersection(srcs, externs).isEmpty(),
@@ -174,6 +177,7 @@ class Config {
     this.language = language;
     this.fileSystem = fileSystem;
     this.moduleNamingConvention = moduleNamingConvention;
+    this.sourceUrlTemplate = sourceUrlTemplate;
   }
 
   /**
@@ -254,6 +258,13 @@ class Config {
   }
 
   /**
+   * Returns the user provided source URL pattern.
+   */
+  Optional<String> getSourceUrlTemplate() {
+    return sourceUrlTemplate;
+  }
+
+  /**
    * Returns the file system used in this configuration.
    */
   FileSystem getFileSystem() {
@@ -278,6 +289,10 @@ class Config {
         : JsonNull.INSTANCE);
     json.addProperty("strict", strict);
     json.addProperty("language", language.name());
+
+    if (sourceUrlTemplate.isPresent()) {
+      json.addProperty("sourceUrlTemplate", sourceUrlTemplate.get());
+    }
 
     JsonArray pages = new JsonArray();
     for (MarkdownPage page : customPages) {
@@ -386,7 +401,20 @@ class Config {
         spec.strict,
         spec.language,
         fileSystem,
-        spec.moduleNamingConvention);
+        spec.moduleNamingConvention,
+        checkSourceUrlTemplate(spec));
+  }
+
+  private static Optional<String> checkSourceUrlTemplate(ConfigSpec spec) {
+    if (spec.sourceUrlTemplate.isPresent()) {
+      String template = spec.sourceUrlTemplate.get();
+      checkArgument(template.startsWith("http://") || template.startsWith("https://"),
+          "Invalid URL template: must be a http or https URL: %s", template);
+      checkArgument(template.contains("${path}"),
+          "Invalid URL template: must contain '${path}' and (optionally) '${line}': %s",
+          template);
+    }
+    return spec.sourceUrlTemplate;
   }
 
   private static ImmutableSet<Path> resolve(Iterable<PathSpec> specs) {
@@ -714,6 +742,16 @@ class Config {
         "to ES6_STRICT. Must be one of {ES3, ES5, ES5_STRICT, ES6, ES6_STRICT}")
     private final Language language = Language.ES6_STRICT;
 
+    @Description(
+        "Specifies a template from which to generate a HTTP(S) links to source files. Within this" +
+            " template, the `${path}` and `${line}` tokens will be replaced with the linked" +
+            " type's source file path and line number, respectively. Source paths will be" +
+            " relative to the closest common ancestor of all input files.\n" +
+            "\n" +
+            " If this option is not specified, a rendered copy of each input file will be" +
+            " included in the generated output.")
+    private final Optional<String> sourceUrlTemplate = Optional.absent();
+
     static ConfigSpec load(InputStream stream, FileSystem fileSystem) {
       Path pwd = fileSystem.getPath("").toAbsolutePath().normalize();
       Gson gson = new GsonBuilder()
@@ -723,6 +761,9 @@ class Config {
           .registerTypeAdapter(
               new TypeToken<Optional<Path>>(){}.getType(),
               new OptionalDeserializer<>(Path.class))
+          .registerTypeAdapter(
+              new TypeToken<Optional<String>>(){}.getType(),
+              new OptionalDeserializer<>(String.class))
           .create();
 
       return gson.fromJson(

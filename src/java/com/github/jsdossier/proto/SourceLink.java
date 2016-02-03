@@ -70,6 +70,12 @@ public final class SourceLink extends
             line_ = input.readInt32();
             break;
           }
+          case 26: {
+            com.google.protobuf.ByteString bs = input.readBytes();
+            bitField0_ |= 0x00000004;
+            uri_ = bs;
+            break;
+          }
         }
       }
     } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -187,9 +193,67 @@ public final class SourceLink extends
     return line_;
   }
 
+  public static final int URI_FIELD_NUMBER = 3;
+  private java.lang.Object uri_;
+  /**
+   * <code>optional string uri = 3;</code>
+   *
+   * <pre>
+   * A user-provided URI to use for the source link instead of |path| and
+   * |line|. This URI is not sanitized.
+   * </pre>
+   */
+  public boolean hasUri() {
+    return ((bitField0_ & 0x00000004) == 0x00000004);
+  }
+  /**
+   * <code>optional string uri = 3;</code>
+   *
+   * <pre>
+   * A user-provided URI to use for the source link instead of |path| and
+   * |line|. This URI is not sanitized.
+   * </pre>
+   */
+  public java.lang.String getUri() {
+    java.lang.Object ref = uri_;
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
+    } else {
+      com.google.protobuf.ByteString bs = 
+          (com.google.protobuf.ByteString) ref;
+      java.lang.String s = bs.toStringUtf8();
+      if (bs.isValidUtf8()) {
+        uri_ = s;
+      }
+      return s;
+    }
+  }
+  /**
+   * <code>optional string uri = 3;</code>
+   *
+   * <pre>
+   * A user-provided URI to use for the source link instead of |path| and
+   * |line|. This URI is not sanitized.
+   * </pre>
+   */
+  public com.google.protobuf.ByteString
+      getUriBytes() {
+    java.lang.Object ref = uri_;
+    if (ref instanceof java.lang.String) {
+      com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString.copyFromUtf8(
+              (java.lang.String) ref);
+      uri_ = b;
+      return b;
+    } else {
+      return (com.google.protobuf.ByteString) ref;
+    }
+  }
+
   private void initFields() {
     path_ = "";
     line_ = 0;
+    uri_ = "";
   }
   private byte memoizedIsInitialized = -1;
   public final boolean isInitialized() {
@@ -214,6 +278,9 @@ public final class SourceLink extends
     if (((bitField0_ & 0x00000002) == 0x00000002)) {
       output.writeInt32(2, line_);
     }
+    if (((bitField0_ & 0x00000004) == 0x00000004)) {
+      output.writeBytes(3, getUriBytes());
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -230,6 +297,10 @@ public final class SourceLink extends
     if (((bitField0_ & 0x00000002) == 0x00000002)) {
       size += com.google.protobuf.CodedOutputStream
         .computeInt32Size(2, line_);
+    }
+    if (((bitField0_ & 0x00000004) == 0x00000004)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeBytesSize(3, getUriBytes());
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSerializedSize = size;
@@ -356,6 +427,8 @@ public final class SourceLink extends
       bitField0_ = (bitField0_ & ~0x00000001);
       line_ = 0;
       bitField0_ = (bitField0_ & ~0x00000002);
+      uri_ = "";
+      bitField0_ = (bitField0_ & ~0x00000004);
       return this;
     }
 
@@ -392,6 +465,10 @@ public final class SourceLink extends
         to_bitField0_ |= 0x00000002;
       }
       result.line_ = line_;
+      if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+        to_bitField0_ |= 0x00000004;
+      }
+      result.uri_ = uri_;
       result.bitField0_ = to_bitField0_;
       onBuilt();
       return result;
@@ -415,6 +492,11 @@ public final class SourceLink extends
       }
       if (other.hasLine()) {
         setLine(other.getLine());
+      }
+      if (other.hasUri()) {
+        bitField0_ |= 0x00000004;
+        uri_ = other.uri_;
+        onChanged();
       }
       this.mergeUnknownFields(other.getUnknownFields());
       return this;
@@ -591,6 +673,112 @@ public final class SourceLink extends
     public Builder clearLine() {
       bitField0_ = (bitField0_ & ~0x00000002);
       line_ = 0;
+      onChanged();
+      return this;
+    }
+
+    private java.lang.Object uri_ = "";
+    /**
+     * <code>optional string uri = 3;</code>
+     *
+     * <pre>
+     * A user-provided URI to use for the source link instead of |path| and
+     * |line|. This URI is not sanitized.
+     * </pre>
+     */
+    public boolean hasUri() {
+      return ((bitField0_ & 0x00000004) == 0x00000004);
+    }
+    /**
+     * <code>optional string uri = 3;</code>
+     *
+     * <pre>
+     * A user-provided URI to use for the source link instead of |path| and
+     * |line|. This URI is not sanitized.
+     * </pre>
+     */
+    public java.lang.String getUri() {
+      java.lang.Object ref = uri_;
+      if (!(ref instanceof java.lang.String)) {
+        com.google.protobuf.ByteString bs =
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          uri_ = s;
+        }
+        return s;
+      } else {
+        return (java.lang.String) ref;
+      }
+    }
+    /**
+     * <code>optional string uri = 3;</code>
+     *
+     * <pre>
+     * A user-provided URI to use for the source link instead of |path| and
+     * |line|. This URI is not sanitized.
+     * </pre>
+     */
+    public com.google.protobuf.ByteString
+        getUriBytes() {
+      java.lang.Object ref = uri_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        uri_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    /**
+     * <code>optional string uri = 3;</code>
+     *
+     * <pre>
+     * A user-provided URI to use for the source link instead of |path| and
+     * |line|. This URI is not sanitized.
+     * </pre>
+     */
+    public Builder setUri(
+        java.lang.String value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000004;
+      uri_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional string uri = 3;</code>
+     *
+     * <pre>
+     * A user-provided URI to use for the source link instead of |path| and
+     * |line|. This URI is not sanitized.
+     * </pre>
+     */
+    public Builder clearUri() {
+      bitField0_ = (bitField0_ & ~0x00000004);
+      uri_ = getDefaultInstance().getUri();
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional string uri = 3;</code>
+     *
+     * <pre>
+     * A user-provided URI to use for the source link instead of |path| and
+     * |line|. This URI is not sanitized.
+     * </pre>
+     */
+    public Builder setUriBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000004;
+      uri_ = value;
       onChanged();
       return this;
     }

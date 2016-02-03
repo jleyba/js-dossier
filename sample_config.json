@@ -18,6 +18,7 @@
     "third_party/js/closure_library/third_party/closure/goog/base.js",
     "third_party/js/closure_library/third_party/closure/goog/deps.js"
   ],
+  "sourceUrlTemplate": "https://github.com/jleyba/js-dossier/blob/master/third_party/js/closure_library/${path}#L${line}",
   "typeFilters": [
     "^goog.i18n.\\w+_.*",
     "^goog.labs.i18n.\\w+_.*"

@@ -49,4 +49,33 @@ public interface SourceLinkOrBuilder extends
    * </pre>
    */
   int getLine();
+
+  /**
+   * <code>optional string uri = 3;</code>
+   *
+   * <pre>
+   * A user-provided URI to use for the source link instead of |path| and
+   * |line|. This URI is not sanitized.
+   * </pre>
+   */
+  boolean hasUri();
+  /**
+   * <code>optional string uri = 3;</code>
+   *
+   * <pre>
+   * A user-provided URI to use for the source link instead of |path| and
+   * |line|. This URI is not sanitized.
+   * </pre>
+   */
+  java.lang.String getUri();
+  /**
+   * <code>optional string uri = 3;</code>
+   *
+   * <pre>
+   * A user-provided URI to use for the source link instead of |path| and
+   * |line|. This URI is not sanitized.
+   * </pre>
+   */
+  com.google.protobuf.ByteString
+      getUriBytes();
 }

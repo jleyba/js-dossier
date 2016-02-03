@@ -34,6 +34,7 @@ import com.github.jsdossier.annotations.Modules;
 import com.github.jsdossier.annotations.Output;
 import com.github.jsdossier.annotations.Readme;
 import com.github.jsdossier.annotations.SourcePrefix;
+import com.github.jsdossier.annotations.SourceUrlTemplate;
 import com.github.jsdossier.annotations.Stderr;
 import com.github.jsdossier.annotations.Stdout;
 import com.github.jsdossier.annotations.TypeFilter;
@@ -166,6 +167,12 @@ final class Main {
 
       bind(DocTemplate.class).to(DefaultDocTemplate.class).in(DocumentationScoped.class);
       bind(Renderer.class).in(DocumentationScoped.class);
+    }
+
+    @Provides
+    @SourceUrlTemplate
+    Optional<String> provideUrlTemplate() {
+      return config.getSourceUrlTemplate();
     }
 
     @Provides
@@ -365,14 +372,15 @@ final class Main {
       createDirectories(outputDir);
       DocTemplate template = injector.getInstance(DocTemplate.class);
       TypeRegistry typeRegistry = injector.getInstance(TypeRegistry.class);
-      List<Path> files = injector.getInstance(RenderTaskExecutor.class)
+      RenderTaskExecutor executor = injector.getInstance(RenderTaskExecutor.class)
           .renderIndex()
           .renderDocumentation(filter(typeRegistry.getAllTypes(), not(isTypedef())))
           .renderMarkdown(config.getCustomPages())
-          .renderResources(concat(template.getCss(), template.getHeadJs(), template.getTailJs()))
-          .renderSourceFiles(concat(config.getSources(), config.getModules()))
-          .awaitTermination()
-          .get();
+          .renderResources(concat(template.getCss(), template.getHeadJs(), template.getTailJs()));
+      if (!config.getSourceUrlTemplate().isPresent()) {
+        executor.renderSourceFiles(concat(config.getSources(), config.getModules()));
+      }
+      List<Path> files = executor.awaitTermination().get();
       if (log.isLoggable(Level.FINER)) {
         log.fine("Rendered:\n  " + Joiner.on("\n  ").join(files));
       }

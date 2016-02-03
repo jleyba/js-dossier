@@ -73,6 +73,13 @@ final class DossierFileSystem {
   }
 
   /**
+   * Returns the path on the input file system for the script containing the given node.
+   */
+  public Path getSourcePath(Node node) {
+    return sourcePrefix.getFileSystem().getPath(node.getSourceFileName());
+  }
+
+  /**
    * Returns the path to the global types index.
    */
   public Path getGlobalsPath() {
@@ -99,16 +106,26 @@ final class DossierFileSystem {
   }
 
   /**
+   * Returns the path of the given source file relative to the common input source directory.
+   *
+   * @throws IllegalArgumentException if the given file is not under the common source directory.
+   */
+  public Path getSourceRelativePath(Path sourceFile) {
+    if (sourcePrefix.isAbsolute()) {
+      sourceFile = sourceFile.toAbsolutePath();
+    }
+    checkArgument(sourceFile.startsWith(sourcePrefix),
+        "The requested path is not a recognized source file: %s", sourceFile);
+    return sourcePrefix.relativize(sourceFile.normalize());
+  }
+
+  /**
    * Returns the path of the generated documentation for the given source file.
    *
    * @throws IllegalArgumentException if the given file is not under the common source directory.
    */
   public Path getPath(Path sourceFile) {
-    sourceFile = sourceFile.toAbsolutePath();
-    checkArgument(sourceFile.startsWith(sourcePrefix),
-        "The requested path is not a recognized source file: %s", sourceFile);
-    Path path = sourcePrefix
-        .relativize(sourceFile.toAbsolutePath().normalize())
+    Path path = getSourceRelativePath(sourceFile)
         .resolveSibling(sourceFile.getFileName() + ".src.html");
     return outputRoot.resolve(SOURCE_DIR).resolve(path.toString());
   }
@@ -117,7 +134,7 @@ final class DossierFileSystem {
    * Returns the path of the generated documentation for the given node's source file.
    */
   public Path getPath(Node node) {
-    return getPath(sourcePrefix.getFileSystem().getPath(node.getSourceFileName()));
+    return getPath(getSourcePath(node));
   }
 
   /**

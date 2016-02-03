@@ -27,6 +27,7 @@ import com.github.jsdossier.annotations.ModulePrefix;
 import com.github.jsdossier.annotations.Modules;
 import com.github.jsdossier.annotations.Output;
 import com.github.jsdossier.annotations.SourcePrefix;
+import com.github.jsdossier.annotations.SourceUrlTemplate;
 import com.github.jsdossier.annotations.Stderr;
 import com.github.jsdossier.annotations.TypeFilter;
 import com.google.auto.value.AutoValue;
@@ -73,6 +74,7 @@ public abstract class GuiceRule implements TestRule {
         .setModules(ImmutableSet.<Path>of())
         .setModulePathFilter(Predicates.<Path>alwaysFalse())
         .setTypeNameFilter(Predicates.<String>alwaysFalse())
+        .setSourceUrlTemplate(Optional.<String>absent())
 
         .setOutputFs(Jimfs.newFileSystem())
         .setOutputDir(Optional.<Path>absent())
@@ -88,6 +90,7 @@ public abstract class GuiceRule implements TestRule {
   abstract ImmutableSet<Path> getModules();
   abstract Predicate<Path> getModulePathFilter();
   abstract Predicate<String> getTypeNameFilter();
+  abstract Optional<String> getSourceUrlTemplate();
 
   abstract ModuleNamingConvention getModuleNamingConvention();
   abstract CompilerOptions.LanguageMode getLanguageIn();
@@ -158,6 +161,12 @@ public abstract class GuiceRule implements TestRule {
           }
 
           @Provides
+          @SourceUrlTemplate
+          Optional<String> provideSourceUrlTemplate() {
+            return getSourceUrlTemplate();
+          }
+
+          @Provides
           @Modules
           ImmutableSet<Path> provideModuels() {
             return getModules();
@@ -193,6 +202,11 @@ public abstract class GuiceRule implements TestRule {
     public abstract Builder setTypeNameFilter(Predicate<String> filter);
     public abstract Builder setInputFs(FileSystem fs);
     public abstract FileSystem getInputFs();
+
+    abstract Builder setSourceUrlTemplate(Optional<String> pattern);
+    public Builder setSourceUrlTemplate(String pattern) {
+      return setSourceUrlTemplate(Optional.of(pattern));
+    }
 
     public Builder setModulePrefix(String prefix) {
       return setModulePrefix(Optional.of(getInputFs().getPath(prefix)));

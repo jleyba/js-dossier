@@ -120,7 +120,9 @@
 {template .sourceLink private="true"}
   {@param text: string}                // The link text.
   {@param source: dossier.SourceLink}  // The link.
-  {if $source.path}
+  {if $source.uri}
+    <a href="{$source.uri}" target="_blank">{$text}</a>
+  {elseif $source.path}
     <a href="{$source.path}{if $source.line and $source.line > 0}#l{$source.line}{/if}">{$text}</a>
   {else}
     {$text}
@@ -134,8 +136,12 @@
   {@param source: dossier.SourceLink}  // The link.
   {if $source.path}
     <div class="code-link">
-      <a href="{$source.path}{if $source.line and $source.line > 0}#l{$source.line}{/if}"
-          title="View source">
+      {if $source.uri}
+        <a href="{$source.uri}" target="_blank" title="View source">
+      {else}
+        <a href="{$source.path}{if $source.line and $source.line > 0}#l{$source.line}{/if}"
+            title="View source">
+      {/if}
         <i class="material-icons">code</i>
       </a>
     </div>

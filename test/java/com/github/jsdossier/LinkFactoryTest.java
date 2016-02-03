@@ -22,6 +22,7 @@ import static com.google.common.truth.Truth.assertThat;
 import com.github.jsdossier.annotations.Input;
 import com.github.jsdossier.jscomp.NominalType;
 import com.github.jsdossier.jscomp.TypeRegistry;
+import com.github.jsdossier.proto.SourceLink;
 import com.github.jsdossier.proto.TypeLink;
 import com.github.jsdossier.testing.CompilerUtil;
 import com.github.jsdossier.testing.GuiceRule;
@@ -55,6 +56,63 @@ public class LinkFactoryTest {
   @Inject private TypeRegistry typeRegistry;
   @Inject private CompilerUtil util;
   @Inject private LinkFactoryBuilder linkFactoryBuilder;
+
+  @Test
+  public void createLinkFromPathAndPosition() {
+    util.compile(fs.getPath("source/foo.js"),
+        "class Foo {}");
+
+    NominalType type = typeRegistry.getType("Foo");
+    SourceLink link = createFactory()
+        .createLink(type.getSourceFile(), type.getSourcePosition());
+    checkLink(link, "out/source/foo.js.src.html", 1);
+  }
+
+  @Test
+  public void createLinkFromPathAndPosition_withSourceUrlTemplate() {
+    guice.toBuilder()
+        .setSourceUrlTemplate("http://www.example.com/${path}#l${line}")
+        .build()
+        .createInjector()
+        .injectMembers(this);
+
+    util.compile(fs.getPath("source/foo/bar/baz.js"),
+        "class Foo {}");
+
+    NominalType type = typeRegistry.getType("Foo");
+    SourceLink link = createFactory()
+        .createLink(type.getSourceFile(), type.getSourcePosition());
+    checkLink(link,
+        "http://www.example.com/foo/bar/baz.js#l1",
+        "foo/bar/baz.js", 1);
+  }
+
+  @Test
+  public void createLinkFromPathAndPosition_withSourceUrlTemplate_fromModule() {
+    guice.toBuilder()
+        .setSourceUrlTemplate("http://www.example.com/${path}#l${line}")
+        .build()
+        .createInjector()
+        .injectMembers(this);
+
+    util.compile(
+        createSourceFile(
+            fs.getPath("source/foo/bar/baz.js"),
+            "class Foo {}"),
+        createSourceFile(
+            fs.getPath("source/some/closure/module.js"),
+            "goog.module('a.b');",
+            "exports.X = class {}"));
+
+    NominalType type = typeRegistry.getType("Foo");
+    NominalType ref = typeRegistry.getType("a.b.X");
+
+    SourceLink link = createFactory(ref)
+        .createLink(type.getSourceFile(), type.getSourcePosition());
+    checkLink(link,
+        "http://www.example.com/foo/bar/baz.js#l1",
+        "foo/bar/baz.js", 1);
+  }
 
   @Test
   public void generateLinkToGlobalType_fromGlobalScope() {
@@ -1771,6 +1829,23 @@ public class LinkFactoryTest {
 
   private LinkFactory createFactory(@Nullable NominalType context) {
     return linkFactoryBuilder.create(context);
+  }
+
+  private static void checkLink(SourceLink link, String text, int line) {
+    SourceLink expected = SourceLink.newBuilder()
+        .setPath(text)
+        .setLine(line)
+        .build();
+    assertThat(link).isEqualTo(expected);
+  }
+
+  private static void checkLink(SourceLink link, String url, String text, int line) {
+    SourceLink expected = SourceLink.newBuilder()
+        .setPath(text)
+        .setLine(line)
+        .setUri(url)
+        .build();
+    assertThat(link).isEqualTo(expected);
   }
 
   private static void checkLink(TypeLink link, String text, String href) {

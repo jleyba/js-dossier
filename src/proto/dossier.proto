@@ -72,8 +72,13 @@ message TypeLink {
 message SourceLink {
   // Path from the current file to the rendered source file.
   required string path = 1  [(sanitized).uri = true];
+
   // The line in the source file containing the symbol, if known.
   optional int32 line = 2;
+
+  // A user-provided URI to use for the source link instead of |path| and
+  // |line|. This URI is not sanitized.
+  optional string uri = 3;
 }
 
 
