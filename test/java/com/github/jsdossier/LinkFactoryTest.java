@@ -1823,6 +1823,62 @@ public class LinkFactoryTest {
     checkLink(factory.createLink("default"), "a/b/c.default", "module/a/b/c.html#default");
   }
 
+  @Test
+  public void createLinkToCompilerConstant_fromGlobalScope() {
+    util.compile(fs.getPath("foo.js"),
+        "goog.provide('foo.bar');",
+        "/** @define {number} */",
+        "foo.bar.BAZ = 1234;");
+
+    LinkFactory factory = createFactory();
+    checkLink(factory.createLink("foo.bar.BAZ"), "foo.bar.BAZ", "foo.bar.html#foo.bar.BAZ");
+  }
+
+  @Test
+  public void createLinkToCompilerConstant_fromModule() {
+    util.compile(
+        createSourceFile(
+            fs.getPath("source/modules/one/two.js"),
+            "export class B {}"),
+        createSourceFile(
+            fs.getPath("foo.js"),
+            "goog.provide('foo.bar');",
+            "/** @define {number} */",
+            "foo.bar.BAZ = 1234;"));
+
+    NominalType ref = typeRegistry.getType("module$source$modules$one$two");
+    LinkFactory factory = createFactory(ref).withTypeContext(ref);
+    checkLink(factory.createLink("foo.bar.BAZ"), "foo.bar.BAZ", "../../foo.bar.html#foo.bar.BAZ");
+  }
+
+  @Test
+  public void createLinkToGoogDefinedCompilerConstant_fromGlobalScope() {
+    util.compile(fs.getPath("foo.js"),
+        "goog.provide('foo.bar');",
+        "/** @define {number} */",
+        "goog.define('foo.bar.BAZ', 1234);");
+
+    LinkFactory factory = createFactory();
+    checkLink(factory.createLink("foo.bar.BAZ"), "foo.bar.BAZ", "foo.bar.html#foo.bar.BAZ");
+  }
+
+  @Test
+  public void createLinkToGoogDefinedCompilerConstant_fromModule() {
+    util.compile(
+        createSourceFile(
+            fs.getPath("source/modules/one/two.js"),
+            "export class B {}"),
+        createSourceFile(
+            fs.getPath("foo.js"),
+            "goog.provide('foo.bar');",
+            "/** @define {number} */",
+            "goog.define('foo.bar.BAZ', 1234);"));
+
+    NominalType ref = typeRegistry.getType("module$source$modules$one$two");
+    LinkFactory factory = createFactory(ref).withTypeContext(ref);
+    checkLink(factory.createLink("foo.bar.BAZ"), "foo.bar.BAZ", "../../foo.bar.html#foo.bar.BAZ");
+  }
+
   private LinkFactory createFactory() {
     return createFactory(null);
   }

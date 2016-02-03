@@ -32,6 +32,7 @@ import com.google.auto.factory.Provided;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
+import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.jstype.FunctionType;
 import com.google.javascript.rhino.jstype.JSTypeRegistry;
@@ -267,6 +268,15 @@ final class LinkFactory {
       return link.toBuilder()
           .setText(link.getText() + "." + property)
           .setHref(link.getHref() + "#" + property)
+          .build();
+    }
+
+    JSDocInfo propertyDocs = type.getType().toObjectType().getOwnPropertyJSDocInfo(property);
+    if (propertyDocs != null && propertyDocs.isDefine()) {
+      String name = dfs.getQualifiedDisplayName(type) + "." + property;
+      return link.toBuilder()
+          .setText(name)
+          .setHref(link.getHref() + "#" + name)
           .build();
     }
 

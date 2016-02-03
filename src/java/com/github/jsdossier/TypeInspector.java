@@ -240,6 +240,7 @@ final class TypeInspector {
       }
 
       if (jsdoc.isDefine()) {
+        name = dfs.getQualifiedDisplayName(inspectedType) + "." + property.getName();
         report.addCompilerConstant(getPropertyData(
             name,
             property.getType(),

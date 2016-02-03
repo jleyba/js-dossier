@@ -22,6 +22,7 @@ sample.json.DEBUG = false;
  * @param {*} value The value to convert.
  * @return {string} The value's JSON representation.
  * @see sample.json.parse
+ * @see sample.json.DEBUG
  * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON
  */
 sample.json.stringify = function(value) {

@@ -454,8 +454,8 @@
       "namespace": true,
       "qualifiedName": "sample.json",
       "statics": [
-        "DEBUG",
         "parse",
+        "sample.json.DEBUG",
         "stringify"
       ]
     },

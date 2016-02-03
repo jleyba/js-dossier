@@ -205,15 +205,15 @@ public class TypeInspectorStaticPropertyTest extends AbstractTypeInspectorTest {
   @Test
   public void returnsInfoOnCompilerConstants() {
     compile(
-        "goog.provide('A');",
+        "goog.provide('foo.bar');",
         "",
         "/**",
-        " * This is a constant defined on A.",
+        " * This is a constant defined on foo.bar.",
         " * @define {number}",
         " */",
-        "A.b = 1234;");
+        "foo.bar.BAZ = 1234;");
 
-    NominalType a = typeRegistry.getType("A");
+    NominalType a = typeRegistry.getType("foo.bar");
     TypeInspector typeInspector = typeInspectorFactory.create(a);
     TypeInspector.Report report = typeInspector.inspectType();
     assertThat(report.getFunctions()).isEmpty();
@@ -221,9 +221,9 @@ public class TypeInspectorStaticPropertyTest extends AbstractTypeInspectorTest {
     assertThat(report.getCompilerConstants()).containsExactly(
         Property.newBuilder()
             .setBase(BaseProperty.newBuilder()
-                .setName("b")
+                .setName("foo.bar.BAZ")
                 .setSource(sourceFile("source/foo.js.src.html", 7))
-                .setDescription(htmlComment("<p>This is a constant defined on A.</p>\n"))
+                .setDescription(htmlComment("<p>This is a constant defined on foo.bar.</p>\n"))
                 .setTags(Tags.newBuilder()
                     .setIsConst(true)))
             .setType(numberTypeComment())
@@ -233,15 +233,15 @@ public class TypeInspectorStaticPropertyTest extends AbstractTypeInspectorTest {
   @Test
   public void returnsInfoOnCompilerConstants_usingGoogDefine() {
     compile(
-        "goog.provide('A');",
+        "goog.provide('foo.bar');",
         "",
         "/**",
-        " * This is a constant defined on A.",
+        " * This is a constant defined on foo.bar.",
         " * @define {number}",
         " */",
-        "goog.define('A.b', 1234);");
+        "goog.define('foo.bar.BAZ', 1234);");
 
-    NominalType a = typeRegistry.getType("A");
+    NominalType a = typeRegistry.getType("foo.bar");
     TypeInspector typeInspector = typeInspectorFactory.create(a);
     TypeInspector.Report report = typeInspector.inspectType();
     assertThat(report.getFunctions()).isEmpty();
@@ -249,9 +249,9 @@ public class TypeInspectorStaticPropertyTest extends AbstractTypeInspectorTest {
     assertThat(report.getCompilerConstants()).containsExactly(
         Property.newBuilder()
             .setBase(BaseProperty.newBuilder()
-                .setName("b")
+                .setName("foo.bar.BAZ")
                 .setSource(sourceFile("source/foo.js.src.html", 7))
-                .setDescription(htmlComment("<p>This is a constant defined on A.</p>\n"))
+                .setDescription(htmlComment("<p>This is a constant defined on foo.bar.</p>\n"))
                 .setTags(Tags.newBuilder()
                     .setIsConst(true)))
             .setType(numberTypeComment())

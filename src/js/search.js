@@ -62,11 +62,13 @@ function addTypes(terms, nameToHref, descriptor) {
     descriptor.statics.forEach(function(name) {
       let href = descriptor.href + '#' + name;
 
-      if (Strings.startsWith(name, baseName + '.')) {
-        name = name.substring(baseName.length + 1);
+      if (!Strings.startsWith(name, descriptor.qualifiedName + '.')) {
+        if (Strings.startsWith(name, baseName + '.')) {
+          name = name.substring(baseName.length + 1);
+        }
+        name = descriptor.qualifiedName + '.' + name;
       }
 
-      name = descriptor.qualifiedName + '.' + name;
       nameToHref.set(name, href);
       terms.push(name);
     });
