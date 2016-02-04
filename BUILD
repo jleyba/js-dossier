@@ -10,6 +10,7 @@ genrule(
   name = "release",
   srcs = [
       "LICENSE",
+      "CHANGES.md",
       "package.json",
       ":readme",
       "//src/java/com/github/jsdossier:dossier_deploy.jar",
@@ -23,6 +24,7 @@ genrule(
         'cp $(location :readme) $$OUT/ && ' +
         'cp $(location package.json) $$OUT/ && ' +
         'cp $(location //:LICENSE) $$OUT/ && ' +
+        'cp $(location //:CHANGES.md) $$OUT/ && ' +
         'cp $(location //src/java/com/github/jsdossier:dossier_deploy.jar) $$OUT/dossier.jar && ' +
         'chmod a-x $$OUT/* && ' +
         'cd $$(dirname $$OUT) && ' +
