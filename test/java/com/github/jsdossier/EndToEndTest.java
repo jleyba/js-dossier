@@ -307,6 +307,17 @@ public class EndToEndTest {
   }
 
   @Test
+  public void checkModuleExportedClass() throws IOException {
+    Document document = load(outDir.resolve(
+        "module/example/nested_exports_Person.html"));
+    compareWithGoldenFile(querySelector(document, "article"),
+        "module/example/nested_exports_Person.html");
+    checkHeader(document);
+    checkModuleNav(document);
+    checkModuleFooter(document);
+  }
+
+  @Test
   public void checkClassThatExtendsExternType() throws IOException {
     Document document = load(outDir.resolve(
         "sample.inheritance.RunnableError.html"));

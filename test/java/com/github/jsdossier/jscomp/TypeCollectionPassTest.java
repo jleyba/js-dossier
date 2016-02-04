@@ -21,6 +21,7 @@ import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 
 import com.github.jsdossier.annotations.Input;
+import com.github.jsdossier.testing.Bug;
 import com.github.jsdossier.testing.CompilerUtil;
 import com.github.jsdossier.testing.GuiceRule;
 import com.google.common.base.Predicate;
@@ -864,6 +865,168 @@ public class TypeCollectionPassTest {
         .containsExactly(
             typeRegistry.getType("One"),
             typeRegistry.getType("One.Two"));
+  }
+
+  @Test
+  @Bug(53)
+  public void usesAliasDocsIfModuleExportDoesNotHaveDocs_closureMode() {
+    util.compile(fs.getPath("modules/foo/bar.js"),
+        "goog.module('foo');",
+        "/** A person. */",
+        "class Person {}",
+        "exports.Person = Person;");
+
+    NominalType type = typeRegistry.getType("foo.Person");
+    assertConstructor(type);
+    assertPath(type, "modules/foo/bar.js");
+    assertPosition(type, 4, 0);
+    assertThat(type.getJsDoc().getBlockComment()).isEqualTo("A person.");
+  }
+
+  @Test
+  @Bug(53)
+  public void usesAliasDocsIfModuleExportDoesNotHaveDocs_nodeModule() {
+    defineInputModules("modules", "foo/bar.js");
+    util.compile(fs.getPath("modules/foo/bar.js"),
+        "/** A person. */",
+        "class Person {}",
+        "exports.Person = Person;");
+
+    NominalType type = typeRegistry.getType("module$modules$foo$bar.Person");
+    assertConstructor(type);
+    assertPath(type, "modules/foo/bar.js");
+    assertPosition(type, 3, 0);
+    assertThat(type.getJsDoc().getBlockComment()).isEqualTo("A person.");
+  }
+
+  @Test
+  @Bug(53)
+  public void usesAliasDocsIfModuleExportDoesNotHaveDocs_es6Module() {
+    util.compile(fs.getPath("modules/foo/bar.js"),
+        "/** A person. */",
+        "class Person {}",
+        "export {Person};");
+
+    NominalType type = typeRegistry.getType("module$modules$foo$bar.Person");
+    assertConstructor(type);
+    assertPath(type, "modules/foo/bar.js");
+    assertPosition(type, 3, 8);
+    assertThat(type.getJsDoc().getBlockComment()).isEqualTo("A person.");
+  }
+
+  @Test
+  @Bug(53)
+  public void usesAliasDocsIfProvided_closureModule() {
+    util.compile(fs.getPath("modules/foo/bar.js"),
+        "goog.module('foo');",
+        "/** A person. */",
+        "class Person {}",
+        "/** An exported person. */",
+        "exports.Person = Person;");
+
+    NominalType type = typeRegistry.getType("foo.Person");
+    assertConstructor(type);
+    assertPath(type, "modules/foo/bar.js");
+    assertPosition(type, 5, 0);
+    assertThat(type.getJsDoc().getBlockComment()).isEqualTo("An exported person.");
+  }
+
+  @Test
+  @Bug(53)
+  public void usesAliasDocsIfProvided_nodeModule() {
+    defineInputModules("modules", "foo/bar.js");
+    util.compile(fs.getPath("modules/foo/bar.js"),
+        "/** A person. */",
+        "class Person {}",
+        "/** An exported person. */",
+        "exports.Person = Person;");
+
+    NominalType type = typeRegistry.getType("module$modules$foo$bar.Person");
+    assertConstructor(type);
+    assertPath(type, "modules/foo/bar.js");
+    assertPosition(type, 4, 0);
+    assertThat(type.getJsDoc().getBlockComment()).isEqualTo("An exported person.");
+  }
+
+  @Test
+  @Bug(53)
+  public void capturesConstructorDocsWhenExportedDirectly() {
+    defineInputModules("modules", "foo/bar.js");
+    util.compile(fs.getPath("modules/foo/bar.js"),
+        "/** A person. */",
+        "exports.Person = class Person {};");
+
+    NominalType type = typeRegistry.getType("module$modules$foo$bar.Person");
+    assertConstructor(type);
+    assertPath(type, "modules/foo/bar.js");
+    assertPosition(type, 2, 0);
+    assertThat(type.getJsDoc().getBlockComment()).isEqualTo("A person.");
+  }
+
+  @Test
+  @Bug(53)
+  public void capturesConstructorDocsWhenTheDefaultExport() {
+    defineInputModules("modules", "foo/bar.js");
+    util.compile(fs.getPath("modules/foo/bar.js"),
+        "/** A person. */",
+        "module.exports = class Person{};");
+
+    NominalType type = typeRegistry.getType("module$modules$foo$bar");
+    assertConstructor(type);
+    assertPath(type, "modules/foo/bar.js");
+    assertPosition(type, 2, 0);
+    assertThat(type.getJsDoc().getBlockComment()).isEqualTo("A person.");
+  }
+
+  @Test
+  @Bug(54)
+  public void tracksClassesExportedViaObjectDestructuring_nodeModule() {
+    defineInputModules("modules", "foo/bar.js");
+    util.compile(fs.getPath("modules/foo/bar.js"),
+        "/** A person. */",
+        "class Person{}",
+        "/** A happy person. */",
+        "class HappyPerson extends Person {}",
+        "",
+        "module.exports = {Person, HappyPerson};");
+
+    NominalType type = typeRegistry.getType("module$modules$foo$bar.Person");
+    assertConstructor(type);
+    assertPath(type, "modules/foo/bar.js");
+    assertPosition(type, 6, 18);
+    assertThat(type.getJsDoc().getBlockComment()).isEqualTo("A person.");
+
+    type = typeRegistry.getType("module$modules$foo$bar.HappyPerson");
+    assertConstructor(type);
+    assertPath(type, "modules/foo/bar.js");
+    assertPosition(type, 6, 26);
+    assertThat(type.getJsDoc().getBlockComment()).isEqualTo("A happy person.");
+  }
+
+  @Test
+  @Bug(54)
+  public void tracksClassesExportedViaObjectDestructuring_closureModule() {
+    util.compile(fs.getPath("modules/foo/bar.js"),
+        "goog.module('foo');",
+        "",
+        "/** A person. */",
+        "class Person{}",
+        "/** A happy person. */",
+        "class HappyPerson extends Person {}",
+        "",
+        "exports = {Person, HappyPerson};");
+
+    NominalType type = typeRegistry.getType("foo.Person");
+    assertConstructor(type);
+    assertPath(type, "modules/foo/bar.js");
+    assertPosition(type, 8, 11);
+    assertThat(type.getJsDoc().getBlockComment()).isEqualTo("A person.");
+
+    type = typeRegistry.getType("foo.HappyPerson");
+    assertConstructor(type);
+    assertPath(type, "modules/foo/bar.js");
+    assertPosition(type, 8, 19);
+    assertThat(type.getJsDoc().getBlockComment()).isEqualTo("A happy person.");
   }
 
   private void defineInputModules(String prefix, String... modules) {

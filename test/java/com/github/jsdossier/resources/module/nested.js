@@ -2,6 +2,22 @@
  * @fileoverview A nested package.
  */
 
+
+/**
+ * Basic description of a person.
+ */
+class Person {
+  /**
+   * @param {string} name the person's name.
+   * @param {number} age the person's age.
+   */
+  constructor(name, age) {
+    this.name = name;
+    this.age = age;
+  }
+}
+
+
 /**
  * A greeter.
  * @constructor
@@ -10,12 +26,12 @@ function Greeter() {}
 
 
 /**
- * Greeter the person.
- * @param {string} name The person to greet.
+ * Greet the person.
+ * @param {!Person} person The person to greet.
  * @return {string} A greeting.
  */
-Greeter.prototype.greet = function(name) {
-  return 'Hello, ' + name;
+Greeter.prototype.greet = function(person) {
+  return 'Hello, ' + person.name;
 };
 
 
@@ -50,6 +66,7 @@ IncreasingIdGenerator.prototype.getNext = function() {};
 exports.Greeter = Greeter;
 exports.IdGenerator = IdGenerator;
 exports.IncreasingIdGenerator = IncreasingIdGenerator;
+exports.Person = Person;
 
 
 /**

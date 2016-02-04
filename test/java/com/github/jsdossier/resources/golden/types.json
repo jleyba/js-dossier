@@ -80,6 +80,17 @@
           "name": "IncrementingIdGenerator",
           "namespace": false,
           "qualifiedName": "example/nested.IncrementingIdGenerator"
+        },
+        {
+          "href": "module/example/nested_exports_Person.html",
+          "interface": false,
+          "members": [
+            "age",
+            "name"
+          ],
+          "name": "Person",
+          "namespace": false,
+          "qualifiedName": "example/nested.Person"
         }
       ]
     },

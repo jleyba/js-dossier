@@ -373,13 +373,22 @@ public final class TypeCollectionPass implements CompilerPass {
       return true;
     }
 
+    private boolean shouldUsePropertyTypeDocs(NominalType parent, Property property) {
+      JSDocInfo info = property.getJSDocInfo();
+      return (info == null && !isTheObjectType(property.getType()))
+          || (parent.isModuleExports()
+              && parent.getModule().get().getType() != Module.Type.ES6
+              && (info == null || isNullOrEmpty(info.getOriginalCommentString())));
+    }
+
     private void crawlProperty(Property property) {
       checkState(!types.isEmpty());
 
       NominalType parent = types.peek();
+
       Node node = property.getNode();
       JSDocInfo info = property.getJSDocInfo();
-      if (info == null && !isTheObjectType(property.getType())) {
+      if (shouldUsePropertyTypeDocs(parent, property)) {
         info = property.getType().getJSDocInfo();
       }
       JsDoc jsdoc = JsDoc.from(info);
