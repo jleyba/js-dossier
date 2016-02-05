@@ -51,6 +51,10 @@ public class CompilerUtil {
     return compiler;
   }
 
+  public CompilerOptions getOptions() {
+    return options;
+  }
+
   public String toSource() {
     return compiler.toSource();
   }

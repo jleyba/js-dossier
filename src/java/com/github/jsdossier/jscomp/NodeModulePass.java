@@ -27,9 +27,14 @@ import static com.google.javascript.rhino.IR.exprResult;
 import static com.google.javascript.rhino.IR.getprop;
 import static com.google.javascript.rhino.IR.name;
 import static com.google.javascript.rhino.IR.string;
+import static java.nio.file.Files.exists;
+import static java.nio.file.Files.isDirectory;
 
 import com.github.jsdossier.annotations.Input;
 import com.github.jsdossier.annotations.Modules;
+
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Optional;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableSet;
 import com.google.javascript.jscomp.DiagnosticType;
@@ -237,7 +242,7 @@ class NodeModulePass {
       if (modulePath.startsWith(".") || modulePath.startsWith("/")) {
         Path moduleFile = currentFile.getParent().resolve(modulePath).normalize();
         if (modulePath.endsWith("/")
-            || Files.isDirectory(moduleFile)
+            || isDirectory(moduleFile)
             && !modulePath.endsWith(".js")
             && !Files.exists(moduleFile.resolveSibling(moduleFile.getFileName() + ".js"))) {
           moduleFile = moduleFile.resolve("index.js");
@@ -392,16 +397,22 @@ class NodeModulePass {
       JSDocInfo info = n.getJSDocInfo();
       if (info != null) {
         for (Node node : info.getTypeNodes()) {
-          fixTypeNode(node);
+          fixTypeNode(t, node);
         }
       }
     }
 
-    private void fixTypeNode(Node typeNode) {
+    private void fixTypeNode(NodeTraversal t, Node typeNode) {
       if (typeNode.isString()) {
         typeNode.putProp(Node.ORIGINALNAME_PROP, typeNode.getString());
 
-        if (typeNode.getString().startsWith("exports.")) {
+        if (typeNode.getString().startsWith("./")
+            || typeNode.getString().startsWith("../")) {
+          Path currentFile = inputFs.getPath(t.getSourceName());
+          String newName = resolveModuleTypeReference(currentFile, typeNode.getString());
+          typeNode.setString(newName);
+
+        } else if (typeNode.getString().startsWith("exports.")) {
           String newName = currentModule +
               typeNode.getString().substring("exports".length());
           typeNode.setString(newName);
@@ -409,7 +420,7 @@ class NodeModulePass {
       }
 
       for (Node child = typeNode.getFirstChild(); child != null; child = child.getNext()) {
-        fixTypeNode(child);
+        fixTypeNode(t, child);
       }
     }
   }
@@ -427,5 +438,73 @@ class NodeModulePass {
     }
 
     return current;
+  }
+
+  /**
+   * Attempts to resolve a type name that contains a relative path to a type exported by another
+   * module (e.g. "./foo/bar.Baz" refers to "Baz" exported by the module at "./foo/bar"). This
+   * method <em>does not</em> verify that the referenced type is actually defined.
+   *
+   * @param referencePath path of the module to resolve the type name relative to.
+   * @param relativePath the type name containing a relative path.
+   * @return the resolved type name, or the original {@code relativePath} if it could not be
+   *     resolved.
+   */
+  @VisibleForTesting
+  static String resolveModuleTypeReference(Path referencePath, String relativePath) {
+    checkArgument(relativePath.startsWith("./") || relativePath.startsWith("../"),
+        "Relative path must start with ./ or ../ (%s)", relativePath);
+
+    // First check if the path resolves to a module.
+    Optional<Path> path = maybeResolvePath(referencePath, relativePath);
+    if (path.isPresent()) {
+      return getModuleId(path.get());
+    }
+
+    // Otherwise, check if the path resolves to a module's exported type.
+    int index = relativePath.lastIndexOf('/');
+    if (index != -1 && relativePath.lastIndexOf('.') > index) {
+      String dirPath = relativePath.substring(0, index + 1);
+      String name = relativePath.substring(index + 1);
+
+      index = name.indexOf('.');
+      if (index == -1 || index == name.length() - 1) {
+        return relativePath;  // throw AssertionError?
+      }
+
+      String exportedType = name.substring(index + 1);
+      name = name.substring(0, index);
+      while (true) {
+        path = maybeResolvePath(referencePath, dirPath + name);
+        if (path.isPresent()) {
+          return getModuleId(path.get()) + "." + exportedType;
+        }
+
+        index = exportedType.indexOf('.');
+        if (index == -1) {
+          break;
+        }
+        name += "." + exportedType.substring(0, index);
+        exportedType = exportedType.substring(index + 1);
+      }
+    }
+
+    return relativePath;
+  }
+
+  private static Optional<Path> maybeResolvePath(Path reference, String pathStr) {
+    // 1. Path resolves to another module exactly.
+    Path path = reference.resolveSibling(pathStr + ".js");
+    if (exists(path)) {
+      return Optional.of(path);
+    }
+
+    // 2. Path resolves to a directory with an index.js file.
+    path = reference.resolveSibling(pathStr);
+    if (isDirectory(path) && exists(path.resolve("index.js"))) {
+      return Optional.of(path.resolve("index"));
+    }
+
+    return Optional.absent();
   }
 }

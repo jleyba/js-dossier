@@ -16,6 +16,8 @@
 
 package com.github.jsdossier.jscomp;
 
+import static com.github.jsdossier.jscomp.NodeModulePass.resolveModuleTypeReference;
+import static com.github.jsdossier.jscomp.Types.getModuleId;
 import static com.github.jsdossier.testing.CompilerUtil.createSourceFile;
 import static com.google.common.collect.Iterables.getOnlyElement;
 import static com.google.common.truth.Truth.assertThat;
@@ -57,7 +59,7 @@ import javax.inject.Inject;
 @RunWith(JUnit4.class)
 public class NodeModulePassTest {
 
-  private static final FileSystem FS = Jimfs.newFileSystem();
+  private final FileSystem fs = Jimfs.newFileSystem();
 
   @Inject
   TypeRegistry typeRegistry;
@@ -985,6 +987,115 @@ public class NodeModulePassTest {
     );
   }
 
+  @Test
+  public void resolveModuleTypeReference_nonRelativePath() {
+    try {
+      resolveModuleTypeReference(path("context.js"), "/abs/path");
+      fail();
+    } catch (IllegalArgumentException expected) {
+      // Do nothing.
+    }
+  }
+
+  @Test
+  public void testResolveModuleTypeReference_pathResolvesToModuleDirectly() throws IOException {
+    Path ref = path("a/b/c.js");
+    Path file = ref.resolveSibling("d/e.js");
+    createDirectories(file.getParent());
+    createFile(file);
+
+    assertThat(resolveModuleTypeReference(ref, "./d/e")).isEqualTo(getModuleId(file));
+    assertThat(resolveModuleTypeReference(ref, "./d/../d/e")).isEqualTo(getModuleId(file));
+    assertThat(resolveModuleTypeReference(ref, "../b/d/e")).isEqualTo(getModuleId(file));
+  }
+
+  @Test
+  public void testResolveModuleTypeReference_pathResolvesToModuleWithIndex()
+      throws IOException {
+    Path ref = path("a/b/c.js");
+    Path dir = ref.resolveSibling("d/e");
+    Path file = dir.resolve("index.js");
+    createDirectories(dir);
+    createFile(file);
+
+    assertThat(resolveModuleTypeReference(ref, "./d/e")).isEqualTo(getModuleId(file));
+    assertThat(resolveModuleTypeReference(ref, "./d/../d/e")).isEqualTo(getModuleId(file));
+    assertThat(resolveModuleTypeReference(ref, "../b/d/e")).isEqualTo(getModuleId(file));
+
+    assertThat(resolveModuleTypeReference(ref, "./d/e/index")).isEqualTo(getModuleId(file));
+    assertThat(resolveModuleTypeReference(ref, "./d/../d/e/index")).isEqualTo(getModuleId(file));
+    assertThat(resolveModuleTypeReference(ref, "../b/d/e/index")).isEqualTo(getModuleId(file));
+  }
+
+  @Test
+  public void testResolveModuleTypeReference_pathResolvesToExportedType() throws IOException {
+    Path ref = path("a/b/c.js");
+    Path dir = ref.resolveSibling("d/e");
+    createDirectories(dir);
+
+    Path indexFile = dir.resolve("index.js");
+    createFile(indexFile);
+
+    Path otherFile = dir.resolve("foo.bar.js");
+    createFile(otherFile);
+
+    assertThat(resolveModuleTypeReference(ref, "./d/e.Foo"))
+        .isEqualTo(getModuleId(indexFile) + ".Foo");
+    assertThat(resolveModuleTypeReference(ref, "./d/../d/e.Foo"))
+        .isEqualTo(getModuleId(indexFile) + ".Foo");
+    assertThat(resolveModuleTypeReference(ref, "../b/d/e.Foo"))
+        .isEqualTo(getModuleId(indexFile) + ".Foo");
+    assertThat(resolveModuleTypeReference(ref, "./d/e.Foo.Bar"))
+        .isEqualTo(getModuleId(indexFile) + ".Foo.Bar");
+
+    assertThat(resolveModuleTypeReference(ref, "./d/e/index.Foo"))
+        .isEqualTo(getModuleId(indexFile) + ".Foo");
+    assertThat(resolveModuleTypeReference(ref, "./d/../d/e/index.Foo"))
+        .isEqualTo(getModuleId(indexFile) + ".Foo");
+    assertThat(resolveModuleTypeReference(ref, "../b/d/e/index.Foo"))
+        .isEqualTo(getModuleId(indexFile) + ".Foo");
+    assertThat(resolveModuleTypeReference(ref, "./d/e/index.Foo.Bar"))
+        .isEqualTo(getModuleId(indexFile) + ".Foo.Bar");
+
+    assertThat(resolveModuleTypeReference(ref, "./d/e/foo.bar.Baz"))
+        .isEqualTo(getModuleId(otherFile) + ".Baz");
+    assertThat(resolveModuleTypeReference(ref, "./d/../d/e/foo.bar.Baz"))
+        .isEqualTo(getModuleId(otherFile) + ".Baz");
+    assertThat(resolveModuleTypeReference(ref, "../b/d/e/foo.bar.Baz"))
+        .isEqualTo(getModuleId(otherFile) + ".Baz");
+  }
+
+  @Test
+  public void testResolveModuleTypeReference_pathDoesNotREsolve() throws IOException {
+    Path ref = path("a/b/c.js");
+    assertThat(resolveModuleTypeReference(ref, "./d/e")).isEqualTo("./d/e");
+  }
+
+  @Test
+  public void handlesReferencesToOtherModulesTypesEvenIfNotExplicitlyRequired()
+      throws IOException {
+    Path root = path("root.js");
+    Path bar = path("foo/bar.js");
+    Path baz = path("foo/baz.js");
+
+    createFile(root);
+    createDirectories(bar.getParent());
+    createFile(bar);
+    createFile(baz);
+
+    CompilerUtil compiler = createCompiler(root, bar, baz);
+    compiler.compile(
+        createSourceFile(root,
+            "/** @param {!./foo/bar.Person} p . */",
+            "function inRoot(p) {}"),
+        createSourceFile(bar,
+            "/** @constructor */",
+            "exports.Person = function(){};"),
+        createSourceFile(baz,
+            "/** @param {!./bar.Person} p . */",
+            "function inBaz(p) {}"));
+  }
+
   private void assertIsNodeModule(String id, String path) {
     Module module = typeRegistry.getModule(id);
     assertThat(module.getPath().toString()).isEqualTo(path);
@@ -1003,19 +1114,21 @@ public class NodeModulePassTest {
       }
     }
     Injector injector = GuiceRule.builder(new Object())
-        .setInputFs(FS)
+        .setInputFs(fs)
         .setModules(ImmutableSet.copyOf(modules))
         .build()
         .createInjector();
     injector.injectMembers(this);
-    return injector.getInstance(CompilerUtil.class);
+    CompilerUtil util = injector.getInstance(CompilerUtil.class);
+    util.getOptions().setCheckTypes(true);
+    return util;
+  }
+
+  private Path path(String first, String... remaining) {
+    return fs.getPath(first, remaining);
   }
 
   private static String lines(String... lines) {
     return Joiner.on('\n').join(lines);
-  }
-
-  private static Path path(String first, String... remaining) {
-    return FS.getPath(first, remaining);
   }
 }
