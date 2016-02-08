@@ -50,17 +50,20 @@ public final class ProvidedSymbolPass implements CompilerPass {
   private final ImmutableSet<Path> nodeModules;
   private final DossierCompiler compiler;
   private final TypeRegistry typeRegistry;
+  private final NodeCoreLibrary nodeLibrary;
 
   @Inject
   ProvidedSymbolPass(
       @Input FileSystem inputFs,
       @Modules ImmutableSet<Path> nodeModules,
       DossierCompiler compiler,
-      TypeRegistry typeRegistry) {
+      TypeRegistry typeRegistry,
+      NodeCoreLibrary nodeLibrary) {
     this.inputFs = inputFs;
     this.nodeModules = nodeModules;
     this.compiler = compiler;
     this.typeRegistry = typeRegistry;
+    this.nodeLibrary = nodeLibrary;
   }
 
   private void printTree(Node n) {
@@ -172,7 +175,9 @@ public final class ProvidedSymbolPass implements CompilerPass {
             .setExportedNames(ImmutableMap.copyOf(exportedNames))
             .setInternalVarDocs(ImmutableMap.copyOf(internalDocs));
 
-        typeRegistry.addModule(module.build());
+        if (!nodeLibrary.isModuleId(module.getId())) {
+          typeRegistry.addModule(module.build());
+        }
         exportAssignments.clear();
         internalDocs.clear();
         module = null;

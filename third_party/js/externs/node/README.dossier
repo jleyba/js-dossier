@@ -1,0 +1,6 @@
+URL: https://github.com/google/closure-compiler/tree/b1ea083b46121922e4de9b19316ebfee99c7ed8c/contrib/nodejs
+
+Local Modifications:
+- All files updated to use module syntax (excluding globals.js)
+- Added missing API definitions
+- Miscellaneous formatting changes

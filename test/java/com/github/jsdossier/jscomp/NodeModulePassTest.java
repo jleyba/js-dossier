@@ -77,9 +77,16 @@ public class NodeModulePassTest {
     CompilerUtil compiler = createCompiler(path("foo/bar.js"));
 
     compiler.compile(path("foo/bar.js"), "");
-    assertEquals(
-        "var module$foo$bar = {};",
-        compiler.toSource().trim());
+    assertThat(compiler.toSource()).contains("var module$foo$bar = {};");
+    assertIsNodeModule("module$foo$bar", "foo/bar.js");
+  }
+
+  @Test
+  public void setsUpCommonJsModulePrimitives_useStrictModule() {
+    CompilerUtil compiler = createCompiler(path("foo/bar.js"));
+
+    compiler.compile(path("foo/bar.js"), "'use strict';");
+    assertThat(compiler.toSource()).contains("var module$foo$bar = {};");
     assertIsNodeModule("module$foo$bar", "foo/bar.js");
   }
 
@@ -88,11 +95,10 @@ public class NodeModulePassTest {
     CompilerUtil compiler = createCompiler(path("foo/bar.js"));
 
     compiler.compile(path("foo/bar.js"), "exports.x = 123;");
-    assertEquals(
+    assertThat(compiler.toSource()).contains(
         lines(
             "var module$foo$bar = {};",
-            "module$foo$bar.x = 123;"),
-        compiler.toSource().trim());
+            "module$foo$bar.x = 123;"));
     assertIsNodeModule("module$foo$bar", "foo/bar.js");
   }
 
@@ -103,12 +109,11 @@ public class NodeModulePassTest {
     compiler.compile(
         createSourceFile(path("base.js"), "var exports = {};"),
         createSourceFile(path("foo/bar.js"), "exports.x = 123;"));
-    assertEquals(
+    assertThat(compiler.toSource()).contains(
         lines(
             "var exports = {};",
             "var module$foo$bar = {};",
-            "module$foo$bar.x = 123;"),
-        compiler.toSource().trim());
+            "module$foo$bar.x = 123;"));
     assertIsNodeModule("module$foo$bar", "foo/bar.js");
   }
 
@@ -117,9 +122,8 @@ public class NodeModulePassTest {
     CompilerUtil compiler = createCompiler(path("foo/bar.js"));
 
     compiler.compile(path("foo/bar.js"), "exports = 123;");
-    assertEquals(
-        "var module$foo$bar = 123;",
-        compiler.toSource().trim());
+    assertThat(compiler.toSource()).contains(
+        "var module$foo$bar = 123;");
     assertIsNodeModule("module$foo$bar", "foo/bar.js");
   }
 
@@ -128,13 +132,12 @@ public class NodeModulePassTest {
     CompilerUtil compiler = createCompiler(path("foo/bar.js"));
 
     compiler.compile(path("foo/bar.js"), "var x = 123;");
-    assertEquals(
+    assertThat(compiler.toSource()).startsWith(
         lines(
             "var $jscomp = {};",
             "$jscomp.scope = {};",
             "var module$foo$bar = {};",
-            "$jscomp.scope.x = 123;"),
-        compiler.toSource().trim());
+            "$jscomp.scope.x = 123;"));
     assertIsNodeModule("module$foo$bar", "foo/bar.js");
   }
 
@@ -143,15 +146,14 @@ public class NodeModulePassTest {
     CompilerUtil compiler = createCompiler(path("foo/bar.js"));
 
     compiler.compile(path("foo/bar.js"), "function x() { var x = 123; }");
-    assertEquals(
+    assertThat(compiler.toSource()).startsWith(
         lines(
             "var $jscomp = {};",
             "$jscomp.scope = {};",
             "var module$foo$bar = {};",
             "$jscomp.scope.x = function() {",
             "  var x = 123;",
-            "};"),
-        compiler.toSource().trim());
+            "};"));
     assertIsNodeModule("module$foo$bar", "foo/bar.js");
   }
 
@@ -160,14 +162,13 @@ public class NodeModulePassTest {
     CompilerUtil compiler = createCompiler(path("foo/bar.js"));
 
     compiler.compile(path("foo/bar.js"), "function foo(){}");
-    assertEquals(
+    assertThat(compiler.toSource()).startsWith(
         lines(
             "var $jscomp = {};",
             "$jscomp.scope = {};",
             "var module$foo$bar = {};",
             "$jscomp.scope.foo = function() {",
-            "};"),
-        compiler.toSource().trim());
+            "};"));
     assertIsNodeModule("module$foo$bar", "foo/bar.js");
   }
 
@@ -176,14 +177,13 @@ public class NodeModulePassTest {
     CompilerUtil compiler = createCompiler(path("foo/bar.js"));
 
     compiler.compile(path("foo/bar.js"), "var foo = function(){}");
-    assertEquals(
+    assertThat(compiler.toSource()).startsWith(
         lines(
             "var $jscomp = {};",
             "$jscomp.scope = {};",
             "var module$foo$bar = {};",
             "$jscomp.scope.foo = function() {",
-            "};"),
-        compiler.toSource().trim());
+            "};"));
     assertIsNodeModule("module$foo$bar", "foo/bar.js");
   }
 
@@ -196,12 +196,12 @@ public class NodeModulePassTest {
 
     compiler.compile(leaf, root);  // Should reorder since leaf depends on root.
 
-    assertEquals(
+    assertThat(compiler.toSource()).startsWith(
         lines(
+            "var $jscomp = {};",
+            "$jscomp.scope = {};",
             "var module$foo$root = {};",
-            "var module$foo$leaf = {};",
-            "module$foo$root;"),
-        compiler.toSource().trim());
+            "var module$foo$leaf = {};"));
     assertIsNodeModule("module$foo$leaf", "foo/leaf.js");
     assertIsNodeModule("module$foo$root", "foo/root.js");
   }
@@ -219,14 +219,13 @@ public class NodeModulePassTest {
 
     compiler.compile(two, one, three);  // Should properly reorder inputs.
 
-    assertEquals(
+    assertThat(compiler.toSource()).startsWith(
         lines(
+            "var $jscomp = {};",
+            "$jscomp.scope = {};",
             "var module$foo$one = {};",
             "var module$foo$three = {};",
-            "var module$foo$two = {};",
-            "module$foo$one;",
-            "module$foo$three;"),
-        compiler.toSource().trim());
+            "var module$foo$two = {};"));
     assertIsNodeModule("module$foo$one", "foo/one.js");
     assertIsNodeModule("module$foo$two", "foo/two.js");
     assertIsNodeModule("module$foo$three", "foo/three.js");
@@ -243,12 +242,11 @@ public class NodeModulePassTest {
             "var bar = require('./root').bar;",
             "foo.bar(foo);"));
 
-    assertEquals(
+    assertThat(compiler.toSource()).contains(
         lines(
             "var module$foo$root = {};",
             "var module$foo$leaf = {};",
-            "module$foo$root.bar(module$foo$root);"),
-        compiler.toSource().trim());
+            "module$foo$root.bar(module$foo$root);"));
     assertIsNodeModule("module$foo$leaf", "foo/leaf.js");
     assertIsNodeModule("module$foo$root", "foo/root.js");
   }
@@ -263,13 +261,12 @@ public class NodeModulePassTest {
             "var bar = require('./bar');",
             "exports.b = bar.a * 2;"));
 
-    assertEquals(
+    assertThat(compiler.toSource()).contains(
         lines(
             "var module$foo$bar$index = {};",
             "module$foo$bar$index.a = 123;",
             "var module$foo$main = {};",
-            "module$foo$main.b = module$foo$bar$index.a * 2;"),
-        compiler.toSource().trim());
+            "module$foo$main.b = module$foo$bar$index.a * 2;"));
   }
 
   @Test
@@ -289,31 +286,67 @@ public class NodeModulePassTest {
             "var bar2 = require('./bar/');",
             "exports.c = bar1.a * bar2.b;"));
 
-    assertEquals(
+    assertThat(compiler.toSource()).startsWith(
         lines(
+            "var $jscomp = {};",
+            "$jscomp.scope = {};",
             "var module$foo$bar$index = {};",
             "module$foo$bar$index.a = 123;",
             "var module$foo$bar = {};",
             "module$foo$bar.b = 456;",
             "var module$foo$main = {};",
-            "module$foo$main.c = module$foo$bar.a * module$foo$bar$index.b;"),
-        compiler.toSource().trim());
+            "module$foo$main.c = module$foo$bar.a * module$foo$bar$index.b;"));
   }
 
   @Test
-  public void rewritesRequireStatementsForExternModuleDefinitions() {
+  public void handlesRequireNodeCoreModule() {
     CompilerUtil compiler = createCompiler(path("foo/module.js"));
 
     compiler.compile(
         createSourceFile(path("foo/module.js"),
-            "var http = require('http');",
-            "http.doSomething();"));
+            "var p = require('path');",
+            "p.join('a', 'b');"));
 
-    assertEquals(
-        lines(
+    assertThat(compiler.toSource().trim())
+        .contains(lines(
             "var module$foo$module = {};",
-            "dossier$$extern__http.doSomething();"),
-        compiler.toSource().trim());
+            "$jscomp.scope.path_module.join(\"a\", \"b\");"));
+  }
+
+  @Test
+  public void canReferToClassesExportedByNodeCoreModule() {
+    CompilerUtil compiler = createCompiler(path("foo/module.js"));
+
+    compiler.compile(
+        createSourceFile(path("foo/module.js"),
+            "var stream = require('stream');",
+            "",
+            "/** @type {!stream.Stream} */",
+            "exports.s = new stream.Stream;"));
+
+
+    assertThat(compiler.toSource().trim())
+        .contains(lines(
+            "var module$foo$module = {};",
+            "module$foo$module.s = new $jscomp.scope.stream_module.Stream;"));
+  }
+
+  @Test
+  public void leavesRequireStatementsForUnrecognizedModuleIds() {
+    CompilerUtil compiler = createCompiler(path("foo/module.js"));
+
+    compiler.compile(
+        createSourceFile(path("foo/module.js"),
+            "var foo = require('foo');",
+            "foo.doSomething();"));
+
+    assertThat(compiler.toSource()).startsWith(
+        lines(
+            "var $jscomp = {};",
+            "$jscomp.scope = {};",
+            "var module$foo$module = {};",
+            "$jscomp.scope.foo = require(\"foo\");",
+            "$jscomp.scope.foo.doSomething();"));
     assertIsNodeModule("module$foo$module", "foo/module.js");
   }
 
@@ -328,12 +361,11 @@ public class NodeModulePassTest {
             "    bar = require('./root').bar;",
             "foo.bar(foo);"));
 
-    assertEquals(
+    assertThat(compiler.toSource()).contains(
         lines(
             "var module$foo$root = {};",
             "var module$foo$leaf = {};",
-            "module$foo$root.bar(module$foo$root);"),
-        compiler.toSource().trim());
+            "module$foo$root.bar(module$foo$root);"));
   }
 
   @Test
@@ -344,12 +376,10 @@ public class NodeModulePassTest {
         createSourceFile(path("foo/one.js"), "require('./bar/two');"),
         createSourceFile(path("foo/bar/two.js"), ""));
 
-    assertEquals(
+    assertThat(compiler.toSource()).contains(
         lines(
             "var module$foo$bar$two = {};",
-            "var module$foo$one = {};",
-            "module$foo$bar$two;"),
-        compiler.toSource().trim());
+            "var module$foo$one = {};"));
   }
 
   @Test
@@ -360,12 +390,10 @@ public class NodeModulePassTest {
         createSourceFile(path("foo/one.js"), ""),
         createSourceFile(path("foo/bar/two.js"), "require('../one');"));
 
-    assertEquals(
+    assertThat(compiler.toSource()).contains(
         lines(
             "var module$foo$one = {};",
-            "var module$foo$bar$two = {};",
-            "module$foo$one;"),
-        compiler.toSource().trim());
+            "var module$foo$bar$two = {};"));
   }
 
   @Test
@@ -377,12 +405,10 @@ public class NodeModulePassTest {
         createSourceFile(path("foo/baz/one.js"), ""),
         createSourceFile(path("foo/bar/two.js"), "require('../baz/one');"));
 
-    assertEquals(
+    assertThat(compiler.toSource()).contains(
         lines(
             "var module$foo$baz$one = {};",
-            "var module$foo$bar$two = {};",
-            "module$foo$baz$one;"),
-        compiler.toSource().trim());
+            "var module$foo$bar$two = {};"));
   }
 
   @Test
@@ -394,12 +420,10 @@ public class NodeModulePassTest {
         createSourceFile(path("/absolute/foo/baz/one.js"), ""),
         createSourceFile(path("foo/bar/two.js"), "require('/absolute/foo/baz/one');"));
 
-    assertEquals(
+    assertThat(compiler.toSource()).contains(
         lines(
             "var module$$absolute$foo$baz$one = {};",
-            "var module$foo$bar$two = {};",
-            "module$$absolute$foo$baz$one;"),
-        compiler.toSource().trim());
+            "var module$foo$bar$two = {};"));
   }
 
   @Test
@@ -419,7 +443,7 @@ public class NodeModulePassTest {
         createSourceFile(path("foo/three.js"),
             "var x = require('./one');"));
 
-    assertEquals(
+    assertThat(compiler.toSource()).contains(
         lines(
             "var $jscomp = {};",
             "$jscomp.scope = {};",
@@ -430,8 +454,7 @@ public class NodeModulePassTest {
             "module$foo$two.go = $jscomp.scope.go;",
             "var module$foo$one = {};",
             "$jscomp.scope.go();",
-            "var module$foo$three = {};"),
-        compiler.toSource().trim());
+            "var module$foo$three = {};"));
   }
 
   @Test
@@ -452,7 +475,7 @@ public class NodeModulePassTest {
         "var y = new Bar.Baz();",
         "");
 
-    assertEquals(
+    assertThat(compiler.toSource()).startsWith(
         lines(
             "var $jscomp = {};",
             "$jscomp.scope = {};",
@@ -462,8 +485,7 @@ public class NodeModulePassTest {
             "$jscomp.scope.Bar.Baz = function() {",
             "};",
             "$jscomp.scope.x = new $jscomp.scope.Bar;",
-            "$jscomp.scope.y = new $jscomp.scope.Bar.Baz;"),
-        compiler.toSource().trim());
+            "$jscomp.scope.y = new $jscomp.scope.Bar.Baz;"));
   }
 
   @Test
@@ -739,80 +761,14 @@ public class NodeModulePassTest {
             "function go(e) {}",
             "go(exports);"));
 
-    assertEquals(
+    assertThat(compiler.toSource()).contains(
         lines(
             "var $jscomp = {};",
             "$jscomp.scope = {};",
             "var module$foo$bar = {};",
             "$jscomp.scope.go = function(e) {",
             "};",
-            "(0,$jscomp.scope.go)(module$foo$bar);"),
-        compiler.toSource().trim());
-  }
-
-  @Test
-  public void rewritesNamespaceAssignments() {
-    CompilerUtil compiler = createCompiler(path("foo/bar.js"));
-
-    compiler.compile(
-        createSourceFile(path("foo/bar.js"),
-            "/** @type {foo.} */",
-            "exports.foo = {};"),
-        createSourceFile(path("foo.js"),
-            "goog.provide('foo');"));
-
-    assertEquals(
-        lines(
-            "var foo = {};",
-            "var module$foo$bar = {};",
-            "module$foo$bar.foo = foo;"),
-        compiler.toSource().trim());
-  }
-
-  @Test
-  public void rewritesNamespaceTypeDeclarations() {
-    CompilerUtil compiler = createCompiler(path("foo/bar.js"));
-
-    compiler.compile(
-        createSourceFile(path("foo/bar.js"),
-            "/** @type {foo.} */",
-            "exports.bar;"),
-        createSourceFile(path("foo.js"),
-            "goog.provide('foo');"));
-
-    assertEquals(
-        lines(
-            "var foo = {};",
-            "var module$foo$bar = {};",
-            "module$foo$bar.bar = foo;"),
-        compiler.toSource().trim());
-  }
-
-  @Test
-  public void rewritesNamespaceTypeGetters() {
-    CompilerUtil compiler = createCompiler(path("foo/bar.js"));
-
-    compiler.compile(
-        createSourceFile(path("foo/bar.js"),
-            "/** @type {foo.} */",
-            "(exports.__defineGetter__('bar', function(){}));",
-            "/** @type {foo.} */",
-            "(exports.bar.__defineGetter__('baz', function(){}));",
-            "exports.bat = {};",
-            "/** @type {foo.} */",
-            "(exports.bat.__defineGetter__('baz', function(){}));"),
-        createSourceFile(path("foo.js"),
-            "goog.provide('foo');"));
-
-    assertEquals(
-        lines(
-            "var foo = {};",
-            "var module$foo$bar = {};",
-            "module$foo$bar.bar = foo;",
-            "foo.baz = foo;",
-            "module$foo$bar.bat = {};",
-            "module$foo$bar.bat.baz = foo;"),
-        compiler.toSource().trim());
+            "(0,$jscomp.scope.go)(module$foo$bar);"));
   }
 
   @Test
@@ -824,15 +780,13 @@ public class NodeModulePassTest {
             "var x = 1,",
             "    y = 2;"));
 
-    assertEquals(
+    assertThat(compiler.toSource()).startsWith(
         lines(
             "var $jscomp = {};",
             "$jscomp.scope = {};",
             "var module$foo$bar = {};",
             "$jscomp.scope.x = 1;",
-            "$jscomp.scope.y = 2;"),
-        compiler.toSource().trim()
-    );
+            "$jscomp.scope.y = 2;"));
   }
 
   @Test
@@ -851,7 +805,7 @@ public class NodeModulePassTest {
             "/** @type {!foo} */",
             "var b = new foo();"));
 
-    assertEquals(
+    assertThat(compiler.toSource()).startsWith(
         lines(
             "var $jscomp = {};",
             "$jscomp.scope = {};",
@@ -860,8 +814,7 @@ public class NodeModulePassTest {
             "};",
             "var module$foo$baz = {};",
             "$jscomp.scope.a = new module$foo$bar.foo;",
-            "$jscomp.scope.b = new module$foo$bar.foo;"),
-        compiler.toSource().trim());
+            "$jscomp.scope.b = new module$foo$bar.foo;"));
 
     ObjectType scope = compiler.getCompiler().getTopScope()
         .getVar("$jscomp")
@@ -893,9 +846,21 @@ public class NodeModulePassTest {
           "module.exports = 2;");
       fail();
     } catch (CompilerUtil.CompileFailureException expected) {
-      assertTrue(expected.getMessage(),
-          expected.getMessage().contains(
-              "Multiple assignments to module.exports are not permitted"));
+      assertThat(expected.getMessage())
+          .contains("Multiple assignments to module.exports are not permitted");
+    }
+  }
+
+  @Test
+  public void requireAnEmptyModuleIdIsNotPermitted() {
+    CompilerUtil util = createCompiler(path("module.js"));
+
+    try {
+      util.compile(path("module.js"), "require('');");
+      fail();
+    } catch (CompilerUtil.CompileFailureException expected) {
+      assertThat(expected.getMessage())
+          .contains("Invalid module ID passed to require()");
     }
   }
 
@@ -905,9 +870,7 @@ public class NodeModulePassTest {
 
     util.compile(path("module.js"), "module.exports = 1234;");
 
-    assertEquals(
-        "var module$module = 1234;",
-        util.toSource().trim());
+    assertThat(util.toSource()).contains("var module$module = 1234;");
   }
 
   @Test
@@ -921,7 +884,7 @@ public class NodeModulePassTest {
         "}",
         "module.exports = {};");
 
-    assertEquals(
+    assertThat(util.toSource()).startsWith(
         lines(
             "var $jscomp = {};",
             "$jscomp.scope = {};",
@@ -929,8 +892,7 @@ public class NodeModulePassTest {
             "  var module = {};",
             "  module.exports = 1234;",
             "};",
-            "var module$module = {};"),
-        util.toSource().trim());
+            "var module$module = {};"));
   }
 
   @Test
@@ -942,7 +904,7 @@ public class NodeModulePassTest {
         "module.exports = {};",
         "module.exports.x = function() {};");
 
-    assertEquals(
+    assertThat(util.toSource()).startsWith(
         lines(
             "var $jscomp = {};",
             "$jscomp.scope = {};",
@@ -950,8 +912,7 @@ public class NodeModulePassTest {
             "$jscomp.scope.module = {};",
             "$jscomp.scope.module.exports = {};",
             "$jscomp.scope.module.exports.x = function() {",
-            "};"),
-        util.toSource().trim());
+            "};"));
   }
 
   @Test
@@ -962,13 +923,11 @@ public class NodeModulePassTest {
         "module.exports = {};",
         "module.exports.x = function() {};");
 
-    assertEquals(
+    assertThat(util.toSource()).contains(
         lines(
             "var module$module = {};",
             "module$module.x = function() {",
-            "};"),
-        util.toSource().trim()
-    );
+            "};"));
   }
 
   @Test
@@ -978,13 +937,11 @@ public class NodeModulePassTest {
     util.compile(path("module.js"),
         "module.exports.x = function() {};");
 
-    assertEquals(
-        lines(
+    assertThat(util.toSource())
+        .contains(lines(
             "var module$module = {};",
             "module$module.x = function() {",
-            "};"),
-        util.toSource().trim()
-    );
+            "};"));
   }
 
   @Test

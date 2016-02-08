@@ -35,12 +35,22 @@ public final class Types {
 
   private static final String EXTERN_PREFIX = "dossier$$extern__";
 
+  static final String NODE_CORE_PREFIX = "__dossier$$node__";
+
   /**
-   * Mangles an extern module's ID so it may be used as a global variable with Closure's type
-   * system.
+   * Returns an alias for one of node's core modules.
    */
-  public static String externModuleName(String id) {
-    return EXTERN_PREFIX + id;
+  static String coreAlias(String id) {
+    return NODE_CORE_PREFIX + id;
+  }
+
+  static boolean isNodeModuelId(String name) {
+    return name.startsWith(NODE_CORE_PREFIX);
+  }
+
+  static String getNodeModuleId(String name) {
+    checkArgument(name.startsWith(NODE_CORE_PREFIX));
+    return name.substring(NODE_CORE_PREFIX.length());
   }
 
   /**

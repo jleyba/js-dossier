@@ -73,6 +73,7 @@ public final class TypeCollectionPass implements CompilerPass {
   private final FileSystem inputFs;
   private final Predicate<String> typeNameFilter;
   private final Predicate<Path> modulePathFilter;
+  private final NodeCoreLibrary nodeLibrary;
 
   @Inject
   TypeCollectionPass(
@@ -80,12 +81,14 @@ public final class TypeCollectionPass implements CompilerPass {
       TypeRegistry typeRegistry,
       @Input FileSystem inputFs,
       @ModuleFilter Predicate<Path> modulePathFilter,
-      @TypeFilter Predicate<String> typeNameFilter) {
+      @TypeFilter Predicate<String> typeNameFilter,
+      NodeCoreLibrary nodeLibrary) {
     this.compiler = compiler;
     this.typeRegistry = typeRegistry;
     this.inputFs = inputFs;
     this.modulePathFilter = modulePathFilter;
     this.typeNameFilter = typeNameFilter;
+    this.nodeLibrary = nodeLibrary;
   }
 
   @Override
@@ -258,6 +261,12 @@ public final class TypeCollectionPass implements CompilerPass {
           continue;
         } else if (externs.isExtern(node.getJSType())) {
           logfmt("Skipping extern alias: %s", name);
+          continue;
+        }
+
+        if (nodeLibrary.isModuleId(name)) {
+          logfmt("Recording core node module as an extern: %s", name);
+          externs.addExtern(node.getJSType());
           continue;
         }
 

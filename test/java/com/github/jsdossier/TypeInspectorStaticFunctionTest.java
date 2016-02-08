@@ -500,7 +500,8 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
             "exports.greet = greet"),
         createSourceFile(
             fs.getPath("/src/modules/foo/baz.js"),
-            "exports.greeting1 = require('./bar').greet;",
+            "var bar = require('./bar');",
+            "exports.greeting1 = bar.greet;",
             "",
             "const greet = require('./bar').greet;",
             "exports.greeting2 = greet;"));
@@ -514,13 +515,14 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
         Function.newBuilder()
             .setBase(BaseProperty.newBuilder()
                 .setName("greeting1")
-                .setSource(sourceFile("../../source/modules/foo/baz.js.src.html", 1))
-                .setDescription(htmlComment("<p>Hello, world!</p>\n")))
+                .setSource(sourceFile("../../source/modules/foo/baz.js.src.html", 2))
+                // Description not copied because local alias is not const.
+                .setDescription(Comment.getDefaultInstance()))
             .build(),
         Function.newBuilder()
             .setBase(BaseProperty.newBuilder()
                 .setName("greeting2")
-                .setSource(sourceFile("../../source/modules/foo/baz.js.src.html", 4))
+                .setSource(sourceFile("../../source/modules/foo/baz.js.src.html", 5))
                 .setDescription(htmlComment("<p>Hello, world!</p>\n")))
             .build());
   }

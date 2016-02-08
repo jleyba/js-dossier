@@ -17,10 +17,12 @@
 package com.github.jsdossier;
 
 import com.github.jsdossier.annotations.Args;
+import com.github.jsdossier.annotations.Modules;
 import com.github.jsdossier.jscomp.AliasTransformListener;
 import com.github.jsdossier.jscomp.DossierCompiler;
 import com.github.jsdossier.jscomp.ProvidedSymbolPass;
 import com.github.jsdossier.jscomp.TypeCollectionPass;
+import com.google.common.collect.ImmutableSet;
 import com.google.inject.AbstractModule;
 import com.google.inject.Key;
 import com.google.inject.Provides;
@@ -31,6 +33,9 @@ import com.google.javascript.jscomp.CompilationLevel;
 import com.google.javascript.jscomp.CompilerOptions;
 import com.google.javascript.jscomp.CustomPassExecutionTime;
 import com.google.javascript.rhino.jstype.JSTypeRegistry;
+
+import java.io.IOException;
+import java.nio.file.Path;
 
 /**
  * Defines the bindings for the compiler.
@@ -64,8 +69,14 @@ public class CompilerModule extends AbstractModule {
   CompilerOptions provideCompilerOptions(
       AliasTransformListener transformListener,
       ProvidedSymbolPass providedSymbolPass,
-      TypeCollectionPass typeCollectionPass) {
+      TypeCollectionPass typeCollectionPass,
+      @Modules ImmutableSet<Path> modulePaths) throws IOException {
     CompilerOptions options = new CompilerOptions();
+
+    if (!modulePaths.isEmpty()) {
+      // Prevents browser-specific externs from being loaded.
+      options.setEnvironment(CompilerOptions.Environment.CUSTOM);
+    }
 
     options.setNewTypeInference(newTypeInference);
     options.setLanguageIn(languageIn);

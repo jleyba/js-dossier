@@ -9,11 +9,13 @@
 
 ## Changes
 
-- Added new configuration option: `sourceUrlTemplate`
+- Added a new configuration option: `sourceUrlTemplate`
 - Added visibility tags for package-private, protected, and protected
    types/properties
 - Adjusted page font-weight based on screen dpi
 - Compiler constants (`@define` and `goog.define(name, value)`) will now
    render using their fully qualified names, exactly as they must be used
    with the compiler's --define flag.
+- Dossier will now automatically include extern definitions for Node's core
+   modules when the input configuration includes `modules` file list.
 - Started user CHANGES log. For older releases, refer to git commit history

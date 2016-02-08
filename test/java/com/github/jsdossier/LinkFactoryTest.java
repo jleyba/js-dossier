@@ -1367,23 +1367,23 @@ public class LinkFactoryTest {
   @Test
   public void createLinkToStaticProperty() {
     util.compile(fs.getPath("foo.js"),
-        "goog.provide('util.array');",
-        "util.array.forEach = function(arr, fn) {};");
+        "goog.provide('utils.array');",
+        "utils.array.forEach = function(arr, fn) {};");
 
-    TypeLink link = createFactory().createLink("util.array.forEach");
-    checkLink(link, "util.array.forEach", "util.array.html#forEach");
+    TypeLink link = createFactory().createLink("utils.array.forEach");
+    checkLink(link, "utils.array.forEach", "utils.array.html#forEach");
   }
 
   @Test
   public void createLinkToStaticProperty_contextIsOwner() {
     util.compile(fs.getPath("foo.js"),
-        "goog.provide('util.array');",
-        "util.array.forEach = function(arr, fn) {};");
+        "goog.provide('utils.array');",
+        "utils.array.forEach = function(arr, fn) {};");
 
-    NominalType ref = typeRegistry.getType("util.array");
+    NominalType ref = typeRegistry.getType("utils.array");
 
     TypeLink link = createFactory(ref).withTypeContext(ref).createLink("#forEach");
-    checkLink(link, "util.array.forEach", "util.array.html#forEach");
+    checkLink(link, "utils.array.forEach", "utils.array.html#forEach");
   }
 
   @Test

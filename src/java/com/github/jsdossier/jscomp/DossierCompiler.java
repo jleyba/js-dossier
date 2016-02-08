@@ -21,15 +21,22 @@ import static com.google.common.base.Preconditions.checkState;
 import com.github.jsdossier.annotations.Input;
 import com.github.jsdossier.annotations.Modules;
 import com.github.jsdossier.annotations.Stderr;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.javascript.jscomp.Compiler;
 import com.google.javascript.jscomp.CompilerInput;
+import com.google.javascript.jscomp.CompilerOptions;
 import com.google.javascript.jscomp.CompilerPass;
+import com.google.javascript.jscomp.Result;
+import com.google.javascript.jscomp.SourceFile;
 import com.google.javascript.rhino.Node;
 
+import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.file.FileSystem;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -44,6 +51,7 @@ public final class DossierCompiler extends Compiler {
   private final ImmutableSet<Path> modulePaths;
   private final Es6ModulePassFactory modulePassFactory;
   private final FileVisibilityPassFactory fileVisibilityPassFactory;
+  private final NodeCoreLibrary nodeLibrary;
 
   private boolean hasParsed = false;
 
@@ -54,13 +62,44 @@ public final class DossierCompiler extends Compiler {
       @Input FileSystem inputFs,
       @Modules ImmutableSet<Path> modulePaths,
       Es6ModulePassFactory modulePassFactory,
-      FileVisibilityPassFactory fileVisibilityPassFactory) {
+      FileVisibilityPassFactory fileVisibilityPassFactory,
+      NodeCoreLibrary nodeLibrary) {
     super(stream);
     this.typeRegistry = typeRegistry;
     this.inputFs = inputFs;
     this.modulePaths = modulePaths;
     this.modulePassFactory = modulePassFactory;
     this.fileVisibilityPassFactory = fileVisibilityPassFactory;
+    this.nodeLibrary = nodeLibrary;
+  }
+
+  @Override
+  public CompilerInput newExternInput(String name) {
+    return super.newExternInput(name);
+  }
+
+  @Override
+  public <T1 extends SourceFile, T2 extends SourceFile> Result compile(
+      List<T1> externs, List<T2> inputs, CompilerOptions options) {
+    List<? extends SourceFile> externList = externs;
+    List<? extends SourceFile> inputList = inputs;
+    if (!modulePaths.isEmpty()) {
+      try {
+        externList = concat(externs, nodeLibrary.getExternFiles());
+        inputList  = concat(inputs, nodeLibrary.getCoreModules());
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      }
+    }
+    return super.compile(externList, inputList, options);
+  }
+
+  private ImmutableList<SourceFile> concat(
+      Iterable<? extends SourceFile> a, Iterable<? extends SourceFile> b) {
+    return ImmutableList.<SourceFile> builder()
+        .addAll(a)
+        .addAll(b)
+        .build();
   }
 
   @Override
@@ -80,9 +119,9 @@ public final class DossierCompiler extends Compiler {
     // based on the goog.provide/require statements we generate for the modules. This is necessary
     // since the compiler does its final input ordering before invoking any custom passes
     // (otherwise, we could just process the modules as a custom pass).
-    NodeModulePass cjs = new NodeModulePass(typeRegistry, inputFs, modulePaths);
-    // TODO(jleyba): processCommonJsModules(cjs, getExternsInOrder());
-    processCommonJsModules(cjs, getInputsById().values());
+    if (!modulePaths.isEmpty()) {
+      processCommonJsModules();
+    }
 
     // Now we can proceed with the normal parsing.
     super.parse();
@@ -108,13 +147,21 @@ public final class DossierCompiler extends Compiler {
     }
   }
 
-  private void processCommonJsModules(NodeModulePass compilerPass, Iterable<CompilerInput> inputs) {
-    for (CompilerInput input : inputs) {
+  private void processCommonJsModules() {
+    List<Node> roots = new ArrayList<>();
+    for (CompilerInput input : getInputsById().values()) {
+      if (input.isExtern()) {
+        continue;
+      }
+
       Node root = input.getAstRoot(this);
       if (root == null) {
         continue;
       }
-      compilerPass.process(this, root);
+      roots.add(root);
     }
+
+    NodeModulePass processor = new NodeModulePass(typeRegistry, inputFs, modulePaths, nodeLibrary);
+    processor.process(this, roots);
   }
 }

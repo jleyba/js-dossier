@@ -10,6 +10,7 @@ java_library(
         "//lib/maven:inject",
         "//lib/maven:jsr305",
         "//src/java/com/github/jsdossier/annotations",
+        "//third_party/js/externs/node",
     ],
     visibility = [
         "//src/java/com/github/jsdossier:__subpackages__",

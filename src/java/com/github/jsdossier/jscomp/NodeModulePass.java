@@ -16,12 +16,10 @@
 
 package com.github.jsdossier.jscomp;
 
-import static com.github.jsdossier.jscomp.Types.externModuleName;
 import static com.github.jsdossier.jscomp.Types.getModuleId;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
-import static com.google.javascript.jscomp.NodeTraversal.traverse;
-import static com.google.javascript.jscomp.NodeTraversal.traverseTyped;
+import static com.google.javascript.jscomp.NodeTraversal.traverseEs6;
 import static com.google.javascript.rhino.IR.call;
 import static com.google.javascript.rhino.IR.exprResult;
 import static com.google.javascript.rhino.IR.getprop;
@@ -32,17 +30,13 @@ import static java.nio.file.Files.isDirectory;
 
 import com.github.jsdossier.annotations.Input;
 import com.github.jsdossier.annotations.Modules;
-
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
-import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableSet;
 import com.google.javascript.jscomp.DiagnosticType;
 import com.google.javascript.jscomp.NodeTraversal;
-import com.google.javascript.rhino.IR;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.Node;
-import com.google.javascript.rhino.jstype.JSType;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -50,10 +44,10 @@ import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-import javax.annotation.Nullable;
 import javax.inject.Inject;
 
 /**
@@ -100,14 +94,20 @@ class NodeModulePass {
   /**
    * Reported when there are multiple assignments to module.exports.
    */
-  private static DiagnosticType MULTIPLE_ASSIGNMENTS_TO_MODULE_EXPORTS =
+  private static final DiagnosticType MULTIPLE_ASSIGNMENTS_TO_MODULE_EXPORTS =
       DiagnosticType.error(
           "DOSSIER_INVALID_MODULE_EXPORTS_ASSIGNMENT",
           "Multiple assignments to module.exports are not permitted");
 
+  private static final DiagnosticType REQUIRE_INVALID_MODULE_ID =
+      DiagnosticType.error(
+          "DOSSIER_REQUIRE_INVALID_MODULE_ID",
+          "Invalid module ID passed to require()");
+
   private final TypeRegistry typeRegistry;
   private final FileSystem inputFs;
   private final ImmutableSet<Path> modulePaths;
+  private final NodeCoreLibrary nodeCoreLibrary;
 
   private String currentModule = null;
 
@@ -115,14 +115,19 @@ class NodeModulePass {
   NodeModulePass(
       TypeRegistry typeRegistry,
       @Input FileSystem inputFs,
-      @Modules ImmutableSet<Path> modulePaths) {
+      @Modules ImmutableSet<Path> modulePaths,
+      NodeCoreLibrary nodeCoreLibrary) {
     this.typeRegistry = typeRegistry;
     this.inputFs = inputFs;
     this.modulePaths = modulePaths;
+    this.nodeCoreLibrary = nodeCoreLibrary;
   }
 
-  public void process(DossierCompiler compiler, Node root) {
-    traverseTyped(compiler, root, new CommonJsModuleCallback());
+  public void process(DossierCompiler compiler, List<Node> roots) {
+    for (Node root : roots) {
+      CommonJsModuleCallback callback = new CommonJsModuleCallback();
+      traverseEs6(compiler, root, callback);
+    }
   }
 
   private void printTree(Node n) {
@@ -146,14 +151,19 @@ class NodeModulePass {
     public boolean shouldTraverse(NodeTraversal t, Node n, Node parent) {
       if (n.isScript()) {
         checkState(currentModule == null);
+
+        String sourceName = n.getSourceFileName();
         Path path = inputFs.getPath(n.getSourceFileName());
-        if (typeRegistry.isModule(path) || !modulePaths.contains(path)) {
+        if (!nodeCoreLibrary.isModulePath(sourceName)
+            && (typeRegistry.isModule(path) || !modulePaths.contains(path))) {
           return false;
         }
-        currentModule = getModuleId(path);
 
-        // Process all namespace references before module.exports and exports references.
-        traverseTyped(t.getCompiler(), n, new ProcessNamespaceReferences());
+        if (nodeCoreLibrary.isModulePath(sourceName)) {
+          currentModule = nodeCoreLibrary.getIdFromPath(sourceName);
+        } else {
+          currentModule = getModuleId(path);
+        }
       }
       return true;
     }
@@ -184,6 +194,18 @@ class NodeModulePass {
         return;
       }
 
+      // Remove any 'use strict' directives. The compiler adds these by default to
+      // closure modules and will generate a warning if specified directly.
+      // TODO: remove when https://github.com/google/closure-compiler/issues/1263 is fixed.
+      Set<String> directives = script.getDirectives();
+      if (directives != null && directives.contains("use strict")) {
+        // Directives is likely an immutable collection, so we need to make a copy.
+        Set<String> newDirectives = new HashSet<>();
+        newDirectives.addAll(directives);
+        newDirectives.remove("use strict");
+        script.setDirectives(newDirectives);
+      }
+
       processModuleExportRefs(t);
 
       Node googModule = exprResult(call(
@@ -195,7 +217,7 @@ class NodeModulePass {
 
       t.getInput().addProvide(currentModule);
 
-      traverse(t.getCompiler(), script, new TypeCleanup());
+      traverseEs6(t.getCompiler(), script, new TypeCleanup());
 
       currentModule = null;
 
@@ -237,7 +259,13 @@ class NodeModulePass {
       Path currentFile = inputFs.getPath(t.getSourceName());
 
       String modulePath = require.getChildAtIndex(1).getString();
-      String moduleName;
+
+      if (modulePath.isEmpty()) {
+        t.report(require, REQUIRE_INVALID_MODULE_ID);
+        return;
+      }
+
+      String moduleId = null;
 
       if (modulePath.startsWith(".") || modulePath.startsWith("/")) {
         Path moduleFile = currentFile.getParent().resolve(modulePath).normalize();
@@ -247,146 +275,35 @@ class NodeModulePass {
             && !Files.exists(moduleFile.resolveSibling(moduleFile.getFileName() + ".js"))) {
           moduleFile = moduleFile.resolve("index.js");
         }
-        moduleName = getModuleId(moduleFile);
-      } else {
-        // TODO: allow users to provide extern module definitions.
-        moduleName = externModuleName(modulePath);
+        moduleId = getModuleId(moduleFile);
+
+      } else if (nodeCoreLibrary.getExternModuleNames().contains(modulePath)) {
+        moduleId = modulePath;
       }
 
-      // Only register the require statement on this module if it occurs at the global
-      // scope. Assume other require statements are not declared at the global scope to
-      // avoid create a circular dependency. While node can handle these, by returning
-      // a partial definition of the required module, the cycle would be an error for
-      // the compiler. For more information on how Node handles cycles, see:
-      //     http://www.nodejs.org/api/modules.html#modules_cycles
-      if (t.getScope().isGlobal()) {
-        t.getInput().addRequire(moduleName);
-      }
+      if (moduleId != null) {
+        // Only register the require statement on this module if it occurs at the global
+        // scope. Assume other require statements are not declared at the global scope to
+        // avoid create a circular dependency. While node can handle these, by returning
+        // a partial definition of the required module, the cycle would be an error for
+        // the compiler. For more information on how Node handles cycles, see:
+        //     http://www.nodejs.org/api/modules.html#modules_cycles
+        if (t.getScope().isGlobal()) {
+          Node googRequire = call(
+              getprop(name("goog"), string("require")),
+              string(moduleId));
+          parent.replaceChild(require, googRequire.srcrefTree(require));
+          t.getInput().addRequire(moduleId);
 
-      parent.replaceChild(require, name(moduleName).srcrefTree(require));
-      t.getCompiler().reportCodeChange();
-    }
-  }
-
-  private class ProcessNamespaceReferences extends NodeTraversal.AbstractPostOrderCallback {
-
-    @Override
-    public void visit(NodeTraversal t, Node n, Node parent) {
-      if (n.isAssign()) {
-        processAssignment(t, n);
-      }
-
-      // Handle simple property references: foo.bar;
-      if (n.isExprResult()
-          && n.getFirstChild().isGetProp()
-          && n.getFirstChild() == n.getLastChild()) {
-        processPropertyDeclaration(t, n);
-      }
-
-      // Handle obj.__defineGetter__(...);
-      if (n.isExprResult()
-          && n.getFirstChild().isCast()
-          && n.getFirstChild().getFirstChild().isCall()
-          && n.getFirstChild().getFirstChild().getFirstChild().isGetProp()) {
-        String name = n.getFirstChild().getFirstChild().getFirstChild().getQualifiedName();
-        if (name.endsWith(".__defineGetter__")) {
-          procesPropertyGetter(t, n);
+        } else {
+          parent.replaceChild(require, name(moduleId).srcrefTree(require));
         }
-      }
-    }
 
-    /**
-     * Modifies any assignments whose type is declared as a reference to another namespace to be a
-     * direct reference to the indicated namespace object. This is required since the Closure
-     * Compiler's type system does not fully support namespace type references yet.
-     *
-     * TODO(jleyba): Remove this when Closure supports namespace type references.
-     */
-    private void processAssignment(NodeTraversal t, Node node) {
-      JSType type = getNamespaceType(t, node);
-      if (type == null) {
-        return;
+        t.getCompiler().reportCodeChange();
       }
 
-      String namespace = type.getDisplayName().substring(0, type.getDisplayName().length() - 1);
-      if (t.getScope().isGlobal()) {
-        t.getInput().addRequire(namespace);
-      }
-      node.setJSDocInfo(null);
-
-      Node prop = buildProp(namespace);
-      prop.copyInformationFromForTree(node.getLastChild());
-      node.replaceChild(node.getLastChild(), prop);
-    }
-
-    /**
-     * Modifies any property declarations whose declared type is a namespace to be a direct
-     * reference to the indicated namespace object.
-     */
-    private void processPropertyDeclaration(NodeTraversal t, Node node) {
-      Node getProp = node.getFirstChild();
-      JSType type = getNamespaceType(t, getProp);
-      if (type == null) {
-        return;
-      }
-
-      String namespace = type.getDisplayName().substring(0, type.getDisplayName().length() - 1);
-      if (t.getScope().isGlobal()) {
-        t.getInput().addRequire(namespace);
-      }
-      getProp.setJSDocInfo(null);
-
-      node.removeChildren();
-      Node prop = IR.assign(getProp, buildProp(namespace));
-      prop.copyInformationFromForTree(getProp);
-      node.addChildrenToFront(prop);
-    }
-
-    /**
-     * Modifies any property getters whose declared type is a namespace to be a direct
-     * reference to the indicated namespace object.
-     */
-    private void procesPropertyGetter(NodeTraversal t, Node node) {
-      JSType type = getNamespaceType(t, node.getFirstChild());
-      if (type == null) {
-        return;
-      }
-
-      Node call = node.getFirstChild().getFirstChild();
-      Node getProp = call.getFirstChild();
-      Node name = getProp.getNext();
-      checkArgument(name.isString());
-
-      String namespace = type.getDisplayName().substring(0, type.getDisplayName().length() - 1);
-      if (t.getScope().isGlobal()) {
-        t.getInput().addRequire(namespace);
-      }
-
-      node.removeChildren();
-      getProp = getProp.cloneTree();
-      getProp.replaceChild(getProp.getLastChild(), name.cloneNode());
-      Node prop = IR.assign(getProp.cloneTree(), buildProp(namespace));
-      prop.copyInformationFromForTree(getProp);
-      node.addChildrenToFront(prop);
-    }
-
-    @Nullable
-    private JSType getNamespaceType(NodeTraversal t, Node node) {
-      JSDocInfo info = node.getJSDocInfo();
-      if (info == null || info.getType() == null) {
-        return null;
-      }
-
-      JSType type = info.getType().evaluate(t.getTypedScope(), t.getCompiler().getTypeRegistry());
-      if (type == null || type.getDisplayName() == null) {
-        return null;
-      }
-
-      if (type.getDisplayName().endsWith(".")) {
-        return type;
-      }
-
-      return null;
+      // Else we have an unrecognized module ID. Do nothing, leaving it to the
+      // type-checking gods.
     }
   }
 
@@ -423,21 +340,6 @@ class NodeModulePass {
         fixTypeNode(t, child);
       }
     }
-  }
-
-  private static Node buildProp(String namespace) {
-    Iterator<String> names = Splitter.on('.')
-        .omitEmptyStrings()
-        .split(namespace)
-        .iterator();
-    checkArgument(names.hasNext());
-
-    Node current = name(names.next());
-    while (names.hasNext()) {
-      current = getprop(current, string(names.next()));
-    }
-
-    return current;
   }
 
   /**
