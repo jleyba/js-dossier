@@ -34,7 +34,7 @@ http.requestListener;
 
 /**
  * @param {http.requestListener=} listener
- * @return {http.Server}
+ * @return {!http.Server}
  */
 http.createServer;
 

@@ -28,6 +28,7 @@ import static java.nio.file.Files.newInputStream;
 import com.github.jsdossier.Config.Language;
 import com.github.jsdossier.annotations.DocumentationScoped;
 import com.github.jsdossier.annotations.Input;
+import com.github.jsdossier.annotations.ModuleExterns;
 import com.github.jsdossier.annotations.ModuleFilter;
 import com.github.jsdossier.annotations.ModulePrefix;
 import com.github.jsdossier.annotations.Modules;
@@ -149,6 +150,8 @@ final class Main {
           .toInstance(concat(config.getSources(), config.getModules()));
       bind(Key.get(new TypeLiteral<ImmutableSet<Path>>() {}, Modules.class))
           .toInstance(config.getModules());
+      bind(Key.get(new TypeLiteral<ImmutableSet<Path>>() {}, ModuleExterns.class))
+          .toInstance(config.getExternModules());
       bind(new TypeLiteral<ImmutableList<MarkdownPage>>(){})
           .toInstance(config.getCustomPages());
 

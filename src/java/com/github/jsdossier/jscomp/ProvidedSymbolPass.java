@@ -50,7 +50,7 @@ public final class ProvidedSymbolPass implements CompilerPass {
   private final ImmutableSet<Path> nodeModules;
   private final DossierCompiler compiler;
   private final TypeRegistry typeRegistry;
-  private final NodeCoreLibrary nodeLibrary;
+  private final NodeLibrary nodeLibrary;
 
   @Inject
   ProvidedSymbolPass(
@@ -58,7 +58,7 @@ public final class ProvidedSymbolPass implements CompilerPass {
       @Modules ImmutableSet<Path> nodeModules,
       DossierCompiler compiler,
       TypeRegistry typeRegistry,
-      NodeCoreLibrary nodeLibrary) {
+      NodeLibrary nodeLibrary) {
     this.inputFs = inputFs;
     this.nodeModules = nodeModules;
     this.compiler = compiler;

@@ -23,7 +23,10 @@ import static com.google.common.io.Files.getNameWithoutExtension;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.readAllBytes;
 
+import com.github.jsdossier.annotations.ModuleExterns;
 import com.github.jsdossier.annotations.Modules;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -42,26 +45,37 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
 @Singleton
-public final class NodeCoreLibrary {
+final class NodeLibrary {
 
-  private static final Logger log = Logger.getLogger(NodeCoreLibrary.class.getName());
+  private static final Logger log = Logger.getLogger(NodeLibrary.class.getName());
 
   private static final String NODE_EXTERNS_RESOURCE_DIRECTORY = "/third_party/js/externs/node";
-  private static final String FILE_NAME_PREFIX = "node/externs.zip//";
+  private static final String FILE_NAME_PREFIX = "dossier//node-externs.zip//";
 
   private final boolean loadExterns;
+  private ImmutableSet<Path> userExterns;
   private ImmutableSet<String> externIds;
   private ImmutableList<SourceFile> externFiles;
-  private ImmutableMap<String, SourceFile> coreModulesByPath;
+  private ImmutableMap<String, SourceFile> modulesByPath;
+  private ImmutableMap<String, String> idsByPath;
 
   @Inject
-  NodeCoreLibrary(@Modules ImmutableSet<Path> modulePaths) {
+  NodeLibrary(
+      @ModuleExterns ImmutableSet<Path> userExterns,
+      @Modules ImmutableSet<Path> modulePaths) {
+    this.userExterns = userExterns;
     this.loadExterns = !modulePaths.isEmpty();
   }
 
@@ -79,9 +93,9 @@ public final class NodeCoreLibrary {
     return externFiles;
   }
 
-  public ImmutableCollection<SourceFile> getCoreModules() throws IOException {
+  public ImmutableCollection<SourceFile> getExternModules() throws IOException {
     loadExterns();
-    return coreModulesByPath.values();
+    return modulesByPath.values();
   }
 
   public boolean isModuleId(String id) {
@@ -89,13 +103,12 @@ public final class NodeCoreLibrary {
   }
 
   public String getIdFromPath(String path) {
-    checkArgument(isModulePath(path), "not a node core module: %s", path);
-    String name = path.substring(FILE_NAME_PREFIX.length());
-    return getNameWithoutExtension(name);
+    checkArgument(idsByPath.containsKey(path), "not an extern module: %s", path);
+    return idsByPath.get(path);
   }
 
   public boolean isModulePath(String path) {
-    return coreModulesByPath.containsKey(path);
+    return modulesByPath.containsKey(path);
   }
 
   private void loadExterns() throws IOException {
@@ -105,7 +118,8 @@ public final class NodeCoreLibrary {
           if (!loadExterns) {
             externFiles = ImmutableList.of();
             externIds = ImmutableSet.of();
-            coreModulesByPath = ImmutableMap.of();
+            modulesByPath = ImmutableMap.of();
+            idsByPath = ImmutableMap.of();
             return;
           }
 
@@ -129,9 +143,10 @@ public final class NodeCoreLibrary {
   private void loadExterns(Path directory) throws IOException {
     log.fine("Loading node core library externs from " + directory);
 
-    final ImmutableSet.Builder<String> idsBuilder = ImmutableSet.builder();
-    final ImmutableList.Builder<SourceFile> externsBuilder = ImmutableList.builder();
-    final ImmutableMap.Builder<String, SourceFile> modulesBuilder = ImmutableMap.builder();
+    final Set<String> externIds = new HashSet<>();
+    final List<SourceFile> externFiles = new ArrayList<>();
+    final Map<String, SourceFile> modulesByPath = new HashMap<>();
+    final BiMap<String, String> modulePathsById = HashBiMap.create();
 
     Files.walkFileTree(directory, new FileVisitor<Path>() {
       @Override
@@ -145,18 +160,16 @@ public final class NodeCoreLibrary {
         if (file.getFileName().toString().endsWith(".js")) {
           String id = getNameWithoutExtension(file.getFileName().toString());
           if ("globals".equals(id)) {
-            externsBuilder.add(SourceFile.fromInputStream(
+            externFiles.add(SourceFile.fromInputStream(
                 FILE_NAME_PREFIX + file.getFileName(),
                 Files.newInputStream(file),
                 UTF_8));
           } else {
-            idsBuilder.add(id);
+            externIds.add(id);
 
-            String content = new String(readAllBytes(file), UTF_8);
-            checkArgument(content.contains("module.exports = "), id);
-
-            SourceFile source = SourceFile.fromCode(FILE_NAME_PREFIX + file.getFileName(), content);
-            modulesBuilder.put(source.getName(), source);
+            SourceFile source = loadSource(file, true);
+            modulesByPath.put(source.getName(), source);
+            modulePathsById.put(id, source.getName());
           }
         }
         return FileVisitResult.CONTINUE;
@@ -173,13 +186,35 @@ public final class NodeCoreLibrary {
       }
     });
 
-    externIds = idsBuilder.build();
-    externFiles = externsBuilder.build();
-    coreModulesByPath = modulesBuilder.build();
+    for (Path path : userExterns) {
+      String id = getNameWithoutExtension(path.getFileName().toString());
+      if (modulePathsById.containsKey(id)) {
+        throw new IllegalArgumentException(
+            "Duplicate extern module ID <" + id + "> (" + path + "); originally defined by "
+                + modulePathsById.get(id));
+      }
+      modulePathsById.put(id, path.toString());
+      externIds.add(id);
+      SourceFile source = loadSource(path, false);
+      modulesByPath.put(source.getName(), source);
+      modulePathsById.put(id, source.getName());
+    }
+
+    this.externIds = ImmutableSet.copyOf(externIds);
+    this.externFiles = ImmutableList.copyOf(externFiles);
+    this.modulesByPath = ImmutableMap.copyOf(modulesByPath);
+    this.idsByPath = ImmutableMap.copyOf(modulePathsById.inverse());
+  }
+
+  private static SourceFile loadSource(Path path, boolean isInternal)
+      throws IOException {
+    String sourceName = isInternal ? (FILE_NAME_PREFIX + path.getFileName()) : path.toString();
+    String content = new String(readAllBytes(path), UTF_8);
+    return SourceFile.fromCode(sourceName, content);
   }
 
   private static URI getExternZipUri() {
-    URL url = NodeCoreLibrary.class.getResource(NODE_EXTERNS_RESOURCE_DIRECTORY);
+    URL url = NodeLibrary.class.getResource(NODE_EXTERNS_RESOURCE_DIRECTORY);
     checkNotNull(url, "Unable to find resource %s", NODE_EXTERNS_RESOURCE_DIRECTORY);
     try {
       URI uri = url.toURI();

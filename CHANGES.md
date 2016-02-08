@@ -9,7 +9,7 @@
 
 ## Changes
 
-- Added a new configuration option: `sourceUrlTemplate`
+- Added new configuration options: `externModules` and `sourceUrlTemplate`
 - Added visibility tags for package-private, protected, and protected
    types/properties
 - Adjusted page font-weight based on screen dpi

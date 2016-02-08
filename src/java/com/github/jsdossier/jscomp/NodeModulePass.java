@@ -107,7 +107,7 @@ class NodeModulePass {
   private final TypeRegistry typeRegistry;
   private final FileSystem inputFs;
   private final ImmutableSet<Path> modulePaths;
-  private final NodeCoreLibrary nodeCoreLibrary;
+  private final NodeLibrary nodeLibrary;
 
   private String currentModule = null;
 
@@ -116,11 +116,11 @@ class NodeModulePass {
       TypeRegistry typeRegistry,
       @Input FileSystem inputFs,
       @Modules ImmutableSet<Path> modulePaths,
-      NodeCoreLibrary nodeCoreLibrary) {
+      NodeLibrary nodeLibrary) {
     this.typeRegistry = typeRegistry;
     this.inputFs = inputFs;
     this.modulePaths = modulePaths;
-    this.nodeCoreLibrary = nodeCoreLibrary;
+    this.nodeLibrary = nodeLibrary;
   }
 
   public void process(DossierCompiler compiler, List<Node> roots) {
@@ -154,13 +154,13 @@ class NodeModulePass {
 
         String sourceName = n.getSourceFileName();
         Path path = inputFs.getPath(n.getSourceFileName());
-        if (!nodeCoreLibrary.isModulePath(sourceName)
+        if (!nodeLibrary.isModulePath(sourceName)
             && (typeRegistry.isModule(path) || !modulePaths.contains(path))) {
           return false;
         }
 
-        if (nodeCoreLibrary.isModulePath(sourceName)) {
-          currentModule = nodeCoreLibrary.getIdFromPath(sourceName);
+        if (nodeLibrary.isModulePath(sourceName)) {
+          currentModule = nodeLibrary.getIdFromPath(sourceName);
         } else {
           currentModule = getModuleId(path);
         }
@@ -277,7 +277,7 @@ class NodeModulePass {
         }
         moduleId = getModuleId(moduleFile);
 
-      } else if (nodeCoreLibrary.getExternModuleNames().contains(modulePath)) {
+      } else if (nodeLibrary.getExternModuleNames().contains(modulePath)) {
         moduleId = modulePath;
       }
 

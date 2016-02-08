@@ -33,7 +33,6 @@ import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.base.Splitter;
-import com.google.common.base.Strings;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -92,6 +91,7 @@ class Config {
   private final ImmutableSet<Path> srcs;
   private final ImmutableSet<Path> modules;
   private final ImmutableSet<Path> externs;
+  private final ImmutableSet<Path> externModules;
   private final ImmutableSet<Path> excludes;
   private final ImmutableSet<Pattern> typeFilters;
   private final ImmutableSet<Pattern> moduleFilters;
@@ -112,6 +112,7 @@ class Config {
    * @param srcs The list of compiler input sources.
    * @param modules The list of CommonJS compiler input sources.
    * @param externs The list of extern files for the Closure compiler.
+   * @param externModules The list of files to process as module externs.
    * @param excludes The list of excluded files.
    * @param typeFilters The list of types to filter from generated output.
    * @param moduleFilters The set of modules to filter from generated output.
@@ -130,6 +131,7 @@ class Config {
       ImmutableSet<Path> srcs,
       ImmutableSet<Path> modules,
       ImmutableSet<Path> externs,
+      ImmutableSet<Path> externModules,
       ImmutableSet<Path> excludes,
       ImmutableSet<Pattern> typeFilters,
       ImmutableSet<Pattern> moduleFilters,
@@ -168,6 +170,7 @@ class Config {
     this.srcPrefix = getSourcePrefixPath(fileSystem, srcs, modules);
     this.modulePrefix = modulePrefix;
     this.externs = externs;
+    this.externModules = externModules;
     this.excludes = excludes;
     this.typeFilters = typeFilters;
     this.moduleFilters = moduleFilters;
@@ -214,6 +217,13 @@ class Config {
    */
   ImmutableSet<Path> getExterns() {
     return externs;
+  }
+
+  /**
+   * Returns the set of files to process as extern modules.
+   */
+  ImmutableSet<Path> getExternModules() {
+    return externModules;
   }
 
   /**
@@ -392,6 +402,7 @@ class Config {
         ImmutableSet.copyOf(filteredSources),
         ImmutableSet.copyOf(filteredModules),
         ImmutableSet.copyOf(resolve(spec.externs)),
+        ImmutableSet.copyOf(resolve(spec.externModules)),
         excludes,
         ImmutableSet.copyOf(spec.typeFilters),
         ImmutableSet.copyOf(spec.moduleFilters),
@@ -716,6 +727,13 @@ class Config {
         "These  files are used to satisfy references to external types, but are excluded when " +
         "generating  API documentation.")
     private final List<PathSpec> externs = ImmutableList.of();
+
+    @Description(
+        "A list of .js files to include as CommonJS extern module definitions. Each module may be" +
+            " required in source by the file's base name, excluding the extension. For example," +
+            " 'extern/libfoo.js' would provide the extern definition for the import" +
+            " `require('libfoo');`")
+    private final List<PathSpec> externModules = ImmutableList.of();
 
     @Description("List of regular expressions for modules that should be excluded from generated "
         + "documentation, even if found in the type graph. The provided expressions will be "

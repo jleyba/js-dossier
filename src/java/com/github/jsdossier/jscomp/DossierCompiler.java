@@ -51,7 +51,7 @@ public final class DossierCompiler extends Compiler {
   private final ImmutableSet<Path> modulePaths;
   private final Es6ModulePassFactory modulePassFactory;
   private final FileVisibilityPassFactory fileVisibilityPassFactory;
-  private final NodeCoreLibrary nodeLibrary;
+  private final NodeLibrary nodeLibrary;
 
   private boolean hasParsed = false;
 
@@ -63,7 +63,7 @@ public final class DossierCompiler extends Compiler {
       @Modules ImmutableSet<Path> modulePaths,
       Es6ModulePassFactory modulePassFactory,
       FileVisibilityPassFactory fileVisibilityPassFactory,
-      NodeCoreLibrary nodeLibrary) {
+      NodeLibrary nodeLibrary) {
     super(stream);
     this.typeRegistry = typeRegistry;
     this.inputFs = inputFs;
@@ -86,7 +86,7 @@ public final class DossierCompiler extends Compiler {
     if (!modulePaths.isEmpty()) {
       try {
         externList = concat(externs, nodeLibrary.getExternFiles());
-        inputList  = concat(inputs, nodeLibrary.getCoreModules());
+        inputList  = concat(inputs, nodeLibrary.getExternModules());
       } catch (IOException e) {
         throw new RuntimeException(e);
       }

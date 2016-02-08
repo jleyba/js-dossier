@@ -22,6 +22,7 @@ import com.github.jsdossier.CompilerModule;
 import com.github.jsdossier.ModuleNamingConvention;
 import com.github.jsdossier.annotations.DocumentationScoped;
 import com.github.jsdossier.annotations.Input;
+import com.github.jsdossier.annotations.ModuleExterns;
 import com.github.jsdossier.annotations.ModuleFilter;
 import com.github.jsdossier.annotations.ModulePrefix;
 import com.github.jsdossier.annotations.Modules;
@@ -71,6 +72,7 @@ public abstract class GuiceRule implements TestRule {
         .setInputFs(Jimfs.newFileSystem())
         .setModulePrefix(Optional.<Path>absent())
         .setSourcePrefix(Optional.<Path>absent())
+        .setModuleExterns(ImmutableSet.<Path>of())
         .setModules(ImmutableSet.<Path>of())
         .setModulePathFilter(Predicates.<Path>alwaysFalse())
         .setTypeNameFilter(Predicates.<String>alwaysFalse())
@@ -88,6 +90,7 @@ public abstract class GuiceRule implements TestRule {
   abstract Optional<Path> getModulePrefix();
   abstract Optional<Path> getSourcePrefix();
   abstract ImmutableSet<Path> getModules();
+  abstract ImmutableSet<Path> getModuleExterns();
   abstract Predicate<Path> getModulePathFilter();
   abstract Predicate<String> getTypeNameFilter();
   abstract Optional<String> getSourceUrlTemplate();
@@ -168,8 +171,14 @@ public abstract class GuiceRule implements TestRule {
 
           @Provides
           @Modules
-          ImmutableSet<Path> provideModuels() {
+          ImmutableSet<Path> provideModules() {
             return getModules();
+          }
+
+          @Provides
+          @ModuleExterns
+          ImmutableSet<Path> provideModuleExterns() {
+            return getModuleExterns();
           }
 
           private <T> void bind(
@@ -214,6 +223,15 @@ public abstract class GuiceRule implements TestRule {
 
     public Builder setSourcePrefix(String prefix) {
       return setSourcePrefix(Optional.of(getInputFs().getPath(prefix)));
+    }
+
+    public abstract Builder setModuleExterns(ImmutableSet<Path> externs);
+    public Builder setModuleExterns(String... paths) {
+      ImmutableSet.Builder<Path> externs = ImmutableSet.builder();
+      for (String path : paths) {
+        externs.add(getInputFs().getPath(path));
+      }
+      return setModuleExterns(externs.build());
     }
 
     public abstract Builder setModules(ImmutableSet<Path> modules);

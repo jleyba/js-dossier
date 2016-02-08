@@ -19,10 +19,12 @@ package com.github.jsdossier.jscomp;
 import static com.github.jsdossier.jscomp.NodeModulePass.resolveModuleTypeReference;
 import static com.github.jsdossier.jscomp.Types.getModuleId;
 import static com.github.jsdossier.testing.CompilerUtil.createSourceFile;
+import static com.google.common.collect.Iterables.concat;
 import static com.google.common.collect.Iterables.getOnlyElement;
 import static com.google.common.truth.Truth.assertThat;
 import static java.nio.file.Files.createDirectories;
 import static java.nio.file.Files.createFile;
+import static java.nio.file.Files.write;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -47,6 +49,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -1053,6 +1056,36 @@ public class NodeModulePassTest {
             "function inBaz(p) {}"));
   }
 
+  @Test
+  public void processesExternModules() throws IOException {
+    Path extern = path("root/externs/xml.js");
+    Path module = path("root/source/foo.js");
+
+    createDirectories(extern.getParent());
+    write(extern,
+        lines(
+            "/** @const */",
+            "var xml = {};",
+            "/** @param {string} str",
+            " *  @return {!Object}",
+            " */",
+            "xml.parse = function(str) {};",
+            "module.exports = xml;").getBytes(StandardCharsets.UTF_8));
+
+
+    CompilerUtil compiler = createCompiler(
+        ImmutableSet.of(extern), ImmutableSet.of(module));
+    compiler.compile(module,
+        "var xml = require('xml');",
+        "xml.parse('abc');");
+
+    assertThat(compiler.toSource()).contains(
+        lines(
+            "var xml = $jscomp.scope.xml_module;",
+            "var module$root$source$foo = {};",
+            "$jscomp.scope.xml_module.parse(\"abc\");"));
+  }
+
   private void assertIsNodeModule(String id, String path) {
     Module module = typeRegistry.getModule(id);
     assertThat(module.getPath().toString()).isEqualTo(path);
@@ -1060,8 +1093,14 @@ public class NodeModulePassTest {
   }
 
   private CompilerUtil createCompiler(final Path... modules) {
-    for (Path module : modules) {
-      Path parent = module.getParent();
+    return createCompiler(ImmutableSet.<Path>of(), ImmutableSet.copyOf(modules));
+  }
+
+  private CompilerUtil createCompiler(
+      ImmutableSet<Path> externs,
+      ImmutableSet<Path> modules) {
+    for (Path path : concat(externs, modules)) {
+      Path parent = path.getParent();
       if (parent != null) {
         try {
           Files.createDirectories(parent);
@@ -1072,7 +1111,8 @@ public class NodeModulePassTest {
     }
     Injector injector = GuiceRule.builder(new Object())
         .setInputFs(fs)
-        .setModules(ImmutableSet.copyOf(modules))
+        .setModuleExterns(externs)
+        .setModules(modules)
         .build()
         .createInjector();
     injector.injectMembers(this);

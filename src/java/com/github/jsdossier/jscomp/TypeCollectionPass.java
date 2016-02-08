@@ -73,7 +73,7 @@ public final class TypeCollectionPass implements CompilerPass {
   private final FileSystem inputFs;
   private final Predicate<String> typeNameFilter;
   private final Predicate<Path> modulePathFilter;
-  private final NodeCoreLibrary nodeLibrary;
+  private final NodeLibrary nodeLibrary;
 
   @Inject
   TypeCollectionPass(
@@ -82,7 +82,7 @@ public final class TypeCollectionPass implements CompilerPass {
       @Input FileSystem inputFs,
       @ModuleFilter Predicate<Path> modulePathFilter,
       @TypeFilter Predicate<String> typeNameFilter,
-      NodeCoreLibrary nodeLibrary) {
+      NodeLibrary nodeLibrary) {
     this.compiler = compiler;
     this.typeRegistry = typeRegistry;
     this.inputFs = inputFs;
