@@ -13,6 +13,8 @@
 - Added visibility tags for package-private, protected, and protected
    types/properties
 - Adjusted page font-weight based on screen dpi
+- Adjusted nav tree view so its (hopefully) easier to navigate when there
+   is a lot of nesting
 - Compiler constants (`@define` and `goog.define(name, value)`) will now
    render using their fully qualified names, exactly as they must be used
    with the compiler's --define flag.
