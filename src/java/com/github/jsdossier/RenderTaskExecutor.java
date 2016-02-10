@@ -16,13 +16,9 @@
 
 package com.github.jsdossier;
 
-import static com.google.common.util.concurrent.Futures.allAsList;
 import static com.google.common.util.concurrent.Futures.transform;
 import static com.google.common.util.concurrent.MoreExecutors.directExecutor;
 
-import com.github.jsdossier.Annotations.NumThreads;
-import com.github.jsdossier.annotations.DocumentationScoped;
-import com.github.jsdossier.jscomp.NominalType;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
@@ -32,6 +28,11 @@ import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
+import com.google.common.util.concurrent.SettableFuture;
+
+import com.github.jsdossier.Annotations.NumThreads;
+import com.github.jsdossier.annotations.DocumentationScoped;
+import com.github.jsdossier.jscomp.NominalType;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -43,6 +44,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.annotation.Nonnull;
 import javax.inject.Inject;
 
 /**
@@ -202,15 +204,6 @@ final class RenderTaskExecutor {
     submittedTasks.add(executorService.submit(task));
   }
 
-  private AsyncFunction<Object, Path> renderTypeIndex() {
-    return new AsyncFunction<Object, Path>() {
-      @Override
-      public ListenableFuture<Path> apply(Object input) throws IOException {
-        return Futures.immediateFuture(typeIndexTask.call());
-      }
-    };
-  }
-
   /**
    * Signals that no further tasks will be submitted and the executor should wait for existing tasks
    * to complete.
@@ -220,25 +213,39 @@ final class RenderTaskExecutor {
   public ListenableFuture<List<Path>> awaitTermination() {
     executorService.shutdown();
 
-    // Once all documentation rendering tasks have finished, the type index will be built and may
-    // be rendered.
-    ListenableFuture<?> docs = allAsList(submittedTasks);
-    ListenableFuture<Path> indexJsTask = transform(docs, renderTypeIndex(), directExecutor());
-
-    submittedTasks.add(indexJsTask);
-    ListenableFuture<List<Path>> list = allAsList(submittedTasks);
-    Futures.addCallback(list, new FutureCallback<List<Path>>() {
+    final SettableFuture<List<Path>> completedTasks = SettableFuture.create();
+    final int numTasks = submittedTasks.size();
+    FutureCallback<Path> callback = new FutureCallback<Path>() {
       private final AtomicBoolean loggedError = new AtomicBoolean(false);
+      private final List<Path> completed = new ArrayList<>();
 
-      @Override public void onSuccess(List<Path> result) {}
+      @Override public synchronized void onSuccess(Path result) {
+        completed.add(result);
+        if (completed.size() >= numTasks) {
+          completedTasks.set(completed);
+        }
+      }
+
       @Override public void onFailure(Throwable t) {
         // Only log an error once since the hard shutdown will likely cause other failures.
         if (loggedError.compareAndSet(false, true)) {
           logger.log(Level.SEVERE, "An error occurred", t);
+          completedTasks.setException(t);
         }
         executorService.shutdownNow();
       }
-    });
-    return list;
+    };
+
+    for (ListenableFuture<Path> task : submittedTasks) {
+      Futures.addCallback(task, callback);
+    }
+
+    return transform(completedTasks, new AsyncFunction<List<Path>, List<Path>>() {
+      @Override
+      public ListenableFuture<List<Path>> apply(@Nonnull List<Path> input) throws IOException {
+        input.add(typeIndexTask.call());
+        return Futures.immediateFuture(input);
+      }
+    }, directExecutor());
   }
 }
