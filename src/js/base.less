@@ -245,15 +245,21 @@ dt {
     text-decoration: line-through;
   }
 
-  &.spec a {
-    margin-left: 16px;
+  &.spec {
+    font-weight: 500;
+    a {
+      margin-left: 16px;
+    }
   }
 
-  &.named > code,
-  &.named > i {
-    font-weight: initial;
-    color: @link_color;
-    padding-left: 12px;
+  &.named {
+    font-weight: 400;
+    & > code,
+    & > i {
+      font-weight: initial;
+      color: @link_color;
+      padding-left: 12px;
+    }
   }
 }
 
@@ -350,11 +356,8 @@ strong {
     font-weight: 300;
   }
 
-  dt.spec {
-    font-weight: 400;
-    a {
-      font-weight: 300;
-    }
+  dt.spec a {
+    font-weight: 300;
   }
 
   dt.named > i {
