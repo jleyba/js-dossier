@@ -358,11 +358,13 @@ final class TypeInspector {
           continue;
         }
 
-        // If the property is registered as a nominal type, it does not count as a static
-        // property. It should also be ignored if it is not registered as a nominal type, but its
-        // qualified name has been filtered out by the user.
+        // If the property is another module and the inspected type is also a module, then count
+        // the property as a static property. Otherwise, if the property i registered as a nominal
+        // type, it does not count as a static property. It should also be ignored if it is not
+        // registered as a nominal type, but its qualified name has been filtered out by the user.
         String qualifiedName = nominalType.getName() + "." + property.getName();
-        if (registry.getTypes(property.getType()).isEmpty()
+        if (((inspectedType.isModuleExports() && registry.isModule(property.getType()))
+            || registry.getTypes(property.getType()).isEmpty())
             && !typeFilter.apply(qualifiedName)) {
           properties.add(property);
         }
@@ -873,6 +875,10 @@ final class TypeInspector {
         .setName(name)
         .setDescription(findBlockComment(linkFactory, docs, overrides))
         .setSource(linkFactory.withTypeContext(docs.getContextType()).createLink(node));
+
+    if (registry.isModule(type)) {
+      builder.getTagsBuilder().setIsModule(true);
+    }
 
     if ("default".equals(name)
         && docs.getContextType() == inspectedType

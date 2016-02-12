@@ -1029,6 +1029,63 @@ public class TypeCollectionPassTest {
     assertThat(type.getJsDoc().getBlockComment()).isEqualTo("A happy person.");
   }
 
+  @Test
+  public void exportedModuleAliasesAreNotRecordedAsTypes_closureModule() {
+    util.compile(
+        createSourceFile(
+            fs.getPath("one.js"),
+            "goog.module('one');",
+            "exports.One = class {};"),
+        createSourceFile(
+            fs.getPath("two.js"),
+            "goog.module('two');",
+            "let one = goog.require('one');",
+            "exports.one = one;"));
+
+    assertThat(typeRegistry.getAllTypes())
+        .containsExactly(
+            typeRegistry.getType("one"),
+            typeRegistry.getType("one.One"),
+            typeRegistry.getType("two"));
+  }
+
+  @Test
+  public void exportedModuleAliasesAreNotRecordedAsTypes_nodeModule() {
+    defineInputModules("modules", "one.js", "two.js");
+    util.compile(
+        createSourceFile(
+            fs.getPath("modules/one.js"),
+            "exports.One = class {};"),
+        createSourceFile(
+            fs.getPath("modules/two.js"),
+            "let one = require('./one');",
+            "exports.one = one;"));
+
+    assertThat(typeRegistry.getAllTypes())
+        .containsExactly(
+            typeRegistry.getType("module$modules$one"),
+            typeRegistry.getType("module$modules$one.One"),
+            typeRegistry.getType("module$modules$two"));
+  }
+
+  @Test
+  public void exportedModuleAliasesAreNotRecordedAsTypes_es6Module() {
+    util.compile(
+        createSourceFile(
+            fs.getPath("modules/one.js"),
+            "export class One {}"),
+        createSourceFile(
+            fs.getPath("modules/two.js"),
+            "import * as one from './one';",
+            "export {one};"));
+
+    assertThat(typeRegistry.getAllTypes())
+        .containsExactly(
+            typeRegistry.getType("module$modules$one"),
+            typeRegistry.getType("module$modules$one.One"),
+            typeRegistry.getType("module$modules$two"));
+  }
+
   private void defineInputModules(String prefix, String... modules) {
     guice.toBuilder()
         .setModulePrefix(prefix)

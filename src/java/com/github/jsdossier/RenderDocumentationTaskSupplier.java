@@ -244,6 +244,18 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Ca
       return typeSpec.build();
     }
 
+    private boolean reexportsModules(JsType.Builder typeSpec) {
+      if (!type.isModuleExports()) {
+        return false;
+      }
+      for (com.github.jsdossier.proto.Property property : typeSpec.getStaticPropertyList()) {
+        if (property.getBase().getTags().getIsModule()) {
+          return true;
+        }
+      }
+      return false;
+    }
+
     private void addDescription(JsType.Builder renderSpec) {
       Comment description = typeInspector.getTypeDescription();
 
@@ -477,9 +489,14 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Ca
       }
 
       for (com.github.jsdossier.proto.Property prop : report.getProperties()) {
-        spec.addStaticProperty(prop);
-        if (!spec.hasAliasedType()) {
-          indexReference.addStaticProperty(prop.getBase().getName());
+        if (prop.getBase().getTags().getIsModule()) {
+          spec.addReexportedModule(prop);
+
+        } else {
+          spec.addStaticProperty(prop);
+          if (!spec.hasAliasedType()) {
+            indexReference.addStaticProperty(prop.getBase().getName());
+          }
         }
       }
 

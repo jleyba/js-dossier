@@ -422,6 +422,10 @@ public final class TypeCollectionPass implements CompilerPass {
       }
 
       JSType propertyType = property.getType();
+      if (typeRegistry.isModule(propertyType)) {
+        return;
+      }
+
       if (propertyType.isInstanceType() && jsdoc.isConstructor()) {
         JSType ctor = ((PrototypeObjectType) propertyType).getConstructor();
         if (ctor != null && parent.getType().equals(ctor)) {

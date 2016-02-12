@@ -149,6 +149,18 @@ public final class TypeRegistry {
   }
 
   /**
+   * Returns whether the given type is registered as a module's exports.
+   */
+  public boolean isModule(JSType type) {
+    for (NominalType ntype : getTypes(type)) {
+      if (ntype.isModuleExports()) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /**
    * Returns the module with the given ID.
    *
    * @throws IllegalArgumentException if there is no such module.

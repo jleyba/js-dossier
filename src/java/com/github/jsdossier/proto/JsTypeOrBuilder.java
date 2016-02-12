@@ -512,4 +512,48 @@ public interface JsTypeOrBuilder extends
    */
   com.google.protobuf.ByteString
       getQualifiedNameBytes();
+
+  /**
+   * <code>repeated .dossier.Property reexported_module = 25;</code>
+   *
+   * <pre>
+   * Re-exported modules.
+   * </pre>
+   */
+  java.util.List<com.github.jsdossier.proto.Property> 
+      getReexportedModuleList();
+  /**
+   * <code>repeated .dossier.Property reexported_module = 25;</code>
+   *
+   * <pre>
+   * Re-exported modules.
+   * </pre>
+   */
+  com.github.jsdossier.proto.Property getReexportedModule(int index);
+  /**
+   * <code>repeated .dossier.Property reexported_module = 25;</code>
+   *
+   * <pre>
+   * Re-exported modules.
+   * </pre>
+   */
+  int getReexportedModuleCount();
+  /**
+   * <code>repeated .dossier.Property reexported_module = 25;</code>
+   *
+   * <pre>
+   * Re-exported modules.
+   * </pre>
+   */
+  java.util.List<? extends com.github.jsdossier.proto.PropertyOrBuilder> 
+      getReexportedModuleOrBuilderList();
+  /**
+   * <code>repeated .dossier.Property reexported_module = 25;</code>
+   *
+   * <pre>
+   * Re-exported modules.
+   * </pre>
+   */
+  com.github.jsdossier.proto.PropertyOrBuilder getReexportedModuleOrBuilder(
+      int index);
 }

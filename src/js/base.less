@@ -249,7 +249,8 @@ dt {
     margin-left: 16px;
   }
 
-  &.named > code {
+  &.named > code,
+  &.named > i {
     font-weight: initial;
     color: @link_color;
     padding-left: 12px;
@@ -354,5 +355,9 @@ strong {
     a {
       font-weight: 300;
     }
+  }
+
+  dt.named > i {
+    font-weight: 300;
   }
 }

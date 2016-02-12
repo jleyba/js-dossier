@@ -254,6 +254,14 @@ public final class JsType extends
             qualifiedName_ = bs;
             break;
           }
+          case 202: {
+            if (!((mutable_bitField0_ & 0x00100000) == 0x00100000)) {
+              reexportedModule_ = new java.util.ArrayList<com.github.jsdossier.proto.Property>();
+              mutable_bitField0_ |= 0x00100000;
+            }
+            reexportedModule_.add(input.readMessage(com.github.jsdossier.proto.Property.PARSER, extensionRegistry));
+            break;
+          }
         }
       }
     } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -288,6 +296,9 @@ public final class JsType extends
       }
       if (((mutable_bitField0_ & 0x00008000) == 0x00008000)) {
         compilerConstant_ = java.util.Collections.unmodifiableList(compilerConstant_);
+      }
+      if (((mutable_bitField0_ & 0x00100000) == 0x00100000)) {
+        reexportedModule_ = java.util.Collections.unmodifiableList(reexportedModule_);
       }
       this.unknownFields = unknownFields.build();
       makeExtensionsImmutable();
@@ -4061,6 +4072,61 @@ public final class JsType extends
     }
   }
 
+  public static final int REEXPORTED_MODULE_FIELD_NUMBER = 25;
+  private java.util.List<com.github.jsdossier.proto.Property> reexportedModule_;
+  /**
+   * <code>repeated .dossier.Property reexported_module = 25;</code>
+   *
+   * <pre>
+   * Re-exported modules.
+   * </pre>
+   */
+  public java.util.List<com.github.jsdossier.proto.Property> getReexportedModuleList() {
+    return reexportedModule_;
+  }
+  /**
+   * <code>repeated .dossier.Property reexported_module = 25;</code>
+   *
+   * <pre>
+   * Re-exported modules.
+   * </pre>
+   */
+  public java.util.List<? extends com.github.jsdossier.proto.PropertyOrBuilder> 
+      getReexportedModuleOrBuilderList() {
+    return reexportedModule_;
+  }
+  /**
+   * <code>repeated .dossier.Property reexported_module = 25;</code>
+   *
+   * <pre>
+   * Re-exported modules.
+   * </pre>
+   */
+  public int getReexportedModuleCount() {
+    return reexportedModule_.size();
+  }
+  /**
+   * <code>repeated .dossier.Property reexported_module = 25;</code>
+   *
+   * <pre>
+   * Re-exported modules.
+   * </pre>
+   */
+  public com.github.jsdossier.proto.Property getReexportedModule(int index) {
+    return reexportedModule_.get(index);
+  }
+  /**
+   * <code>repeated .dossier.Property reexported_module = 25;</code>
+   *
+   * <pre>
+   * Re-exported modules.
+   * </pre>
+   */
+  public com.github.jsdossier.proto.PropertyOrBuilder getReexportedModuleOrBuilder(
+      int index) {
+    return reexportedModule_.get(index);
+  }
+
   private void initFields() {
     name_ = "";
     source_ = com.github.jsdossier.proto.SourceLink.getDefaultInstance();
@@ -4082,6 +4148,7 @@ public final class JsType extends
     aliasedType_ = com.github.jsdossier.proto.TypeLink.getDefaultInstance();
     filename_ = "";
     qualifiedName_ = "";
+    reexportedModule_ = java.util.Collections.emptyList();
   }
   private byte memoizedIsInitialized = -1;
   public final boolean isInitialized() {
@@ -4175,6 +4242,12 @@ public final class JsType extends
         return false;
       }
     }
+    for (int i = 0; i < getReexportedModuleCount(); i++) {
+      if (!getReexportedModule(i).isInitialized()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+    }
     memoizedIsInitialized = 1;
     return true;
   }
@@ -4241,6 +4314,9 @@ public final class JsType extends
     }
     if (((bitField0_ & 0x00000400) == 0x00000400)) {
       output.writeBytes(24, getQualifiedNameBytes());
+    }
+    for (int i = 0; i < reexportedModule_.size(); i++) {
+      output.writeMessage(25, reexportedModule_.get(i));
     }
     getUnknownFields().writeTo(output);
   }
@@ -4330,6 +4406,10 @@ public final class JsType extends
     if (((bitField0_ & 0x00000400) == 0x00000400)) {
       size += com.google.protobuf.CodedOutputStream
         .computeBytesSize(24, getQualifiedNameBytes());
+    }
+    for (int i = 0; i < reexportedModule_.size(); i++) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(25, reexportedModule_.get(i));
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSerializedSize = size;
@@ -4462,6 +4542,7 @@ public final class JsType extends
         getCompilerConstantFieldBuilder();
         getParentFieldBuilder();
         getAliasedTypeFieldBuilder();
+        getReexportedModuleFieldBuilder();
       }
     }
     private static Builder create() {
@@ -4578,6 +4659,12 @@ public final class JsType extends
       bitField0_ = (bitField0_ & ~0x00040000);
       qualifiedName_ = "";
       bitField0_ = (bitField0_ & ~0x00080000);
+      if (reexportedModuleBuilder_ == null) {
+        reexportedModule_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00100000);
+      } else {
+        reexportedModuleBuilder_.clear();
+      }
       return this;
     }
 
@@ -4763,6 +4850,15 @@ public final class JsType extends
         to_bitField0_ |= 0x00000400;
       }
       result.qualifiedName_ = qualifiedName_;
+      if (reexportedModuleBuilder_ == null) {
+        if (((bitField0_ & 0x00100000) == 0x00100000)) {
+          reexportedModule_ = java.util.Collections.unmodifiableList(reexportedModule_);
+          bitField0_ = (bitField0_ & ~0x00100000);
+        }
+        result.reexportedModule_ = reexportedModule_;
+      } else {
+        result.reexportedModule_ = reexportedModuleBuilder_.build();
+      }
       result.bitField0_ = to_bitField0_;
       onBuilt();
       return result;
@@ -5052,6 +5148,32 @@ public final class JsType extends
         qualifiedName_ = other.qualifiedName_;
         onChanged();
       }
+      if (reexportedModuleBuilder_ == null) {
+        if (!other.reexportedModule_.isEmpty()) {
+          if (reexportedModule_.isEmpty()) {
+            reexportedModule_ = other.reexportedModule_;
+            bitField0_ = (bitField0_ & ~0x00100000);
+          } else {
+            ensureReexportedModuleIsMutable();
+            reexportedModule_.addAll(other.reexportedModule_);
+          }
+          onChanged();
+        }
+      } else {
+        if (!other.reexportedModule_.isEmpty()) {
+          if (reexportedModuleBuilder_.isEmpty()) {
+            reexportedModuleBuilder_.dispose();
+            reexportedModuleBuilder_ = null;
+            reexportedModule_ = other.reexportedModule_;
+            bitField0_ = (bitField0_ & ~0x00100000);
+            reexportedModuleBuilder_ = 
+              com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+                 getReexportedModuleFieldBuilder() : null;
+          } else {
+            reexportedModuleBuilder_.addAllMessages(other.reexportedModule_);
+          }
+        }
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       return this;
     }
@@ -5139,6 +5261,12 @@ public final class JsType extends
       }
       if (hasAliasedType()) {
         if (!getAliasedType().isInitialized()) {
+          
+          return false;
+        }
+      }
+      for (int i = 0; i < getReexportedModuleCount(); i++) {
+        if (!getReexportedModule(i).isInitialized()) {
           
           return false;
         }
@@ -8941,6 +9069,318 @@ public final class JsType extends
       qualifiedName_ = value;
       onChanged();
       return this;
+    }
+
+    private java.util.List<com.github.jsdossier.proto.Property> reexportedModule_ =
+      java.util.Collections.emptyList();
+    private void ensureReexportedModuleIsMutable() {
+      if (!((bitField0_ & 0x00100000) == 0x00100000)) {
+        reexportedModule_ = new java.util.ArrayList<com.github.jsdossier.proto.Property>(reexportedModule_);
+        bitField0_ |= 0x00100000;
+       }
+    }
+
+    private com.google.protobuf.RepeatedFieldBuilder<
+        com.github.jsdossier.proto.Property, com.github.jsdossier.proto.Property.Builder, com.github.jsdossier.proto.PropertyOrBuilder> reexportedModuleBuilder_;
+
+    /**
+     * <code>repeated .dossier.Property reexported_module = 25;</code>
+     *
+     * <pre>
+     * Re-exported modules.
+     * </pre>
+     */
+    public java.util.List<com.github.jsdossier.proto.Property> getReexportedModuleList() {
+      if (reexportedModuleBuilder_ == null) {
+        return java.util.Collections.unmodifiableList(reexportedModule_);
+      } else {
+        return reexportedModuleBuilder_.getMessageList();
+      }
+    }
+    /**
+     * <code>repeated .dossier.Property reexported_module = 25;</code>
+     *
+     * <pre>
+     * Re-exported modules.
+     * </pre>
+     */
+    public int getReexportedModuleCount() {
+      if (reexportedModuleBuilder_ == null) {
+        return reexportedModule_.size();
+      } else {
+        return reexportedModuleBuilder_.getCount();
+      }
+    }
+    /**
+     * <code>repeated .dossier.Property reexported_module = 25;</code>
+     *
+     * <pre>
+     * Re-exported modules.
+     * </pre>
+     */
+    public com.github.jsdossier.proto.Property getReexportedModule(int index) {
+      if (reexportedModuleBuilder_ == null) {
+        return reexportedModule_.get(index);
+      } else {
+        return reexportedModuleBuilder_.getMessage(index);
+      }
+    }
+    /**
+     * <code>repeated .dossier.Property reexported_module = 25;</code>
+     *
+     * <pre>
+     * Re-exported modules.
+     * </pre>
+     */
+    public Builder setReexportedModule(
+        int index, com.github.jsdossier.proto.Property value) {
+      if (reexportedModuleBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureReexportedModuleIsMutable();
+        reexportedModule_.set(index, value);
+        onChanged();
+      } else {
+        reexportedModuleBuilder_.setMessage(index, value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .dossier.Property reexported_module = 25;</code>
+     *
+     * <pre>
+     * Re-exported modules.
+     * </pre>
+     */
+    public Builder setReexportedModule(
+        int index, com.github.jsdossier.proto.Property.Builder builderForValue) {
+      if (reexportedModuleBuilder_ == null) {
+        ensureReexportedModuleIsMutable();
+        reexportedModule_.set(index, builderForValue.build());
+        onChanged();
+      } else {
+        reexportedModuleBuilder_.setMessage(index, builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .dossier.Property reexported_module = 25;</code>
+     *
+     * <pre>
+     * Re-exported modules.
+     * </pre>
+     */
+    public Builder addReexportedModule(com.github.jsdossier.proto.Property value) {
+      if (reexportedModuleBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureReexportedModuleIsMutable();
+        reexportedModule_.add(value);
+        onChanged();
+      } else {
+        reexportedModuleBuilder_.addMessage(value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .dossier.Property reexported_module = 25;</code>
+     *
+     * <pre>
+     * Re-exported modules.
+     * </pre>
+     */
+    public Builder addReexportedModule(
+        int index, com.github.jsdossier.proto.Property value) {
+      if (reexportedModuleBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureReexportedModuleIsMutable();
+        reexportedModule_.add(index, value);
+        onChanged();
+      } else {
+        reexportedModuleBuilder_.addMessage(index, value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .dossier.Property reexported_module = 25;</code>
+     *
+     * <pre>
+     * Re-exported modules.
+     * </pre>
+     */
+    public Builder addReexportedModule(
+        com.github.jsdossier.proto.Property.Builder builderForValue) {
+      if (reexportedModuleBuilder_ == null) {
+        ensureReexportedModuleIsMutable();
+        reexportedModule_.add(builderForValue.build());
+        onChanged();
+      } else {
+        reexportedModuleBuilder_.addMessage(builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .dossier.Property reexported_module = 25;</code>
+     *
+     * <pre>
+     * Re-exported modules.
+     * </pre>
+     */
+    public Builder addReexportedModule(
+        int index, com.github.jsdossier.proto.Property.Builder builderForValue) {
+      if (reexportedModuleBuilder_ == null) {
+        ensureReexportedModuleIsMutable();
+        reexportedModule_.add(index, builderForValue.build());
+        onChanged();
+      } else {
+        reexportedModuleBuilder_.addMessage(index, builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .dossier.Property reexported_module = 25;</code>
+     *
+     * <pre>
+     * Re-exported modules.
+     * </pre>
+     */
+    public Builder addAllReexportedModule(
+        java.lang.Iterable<? extends com.github.jsdossier.proto.Property> values) {
+      if (reexportedModuleBuilder_ == null) {
+        ensureReexportedModuleIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, reexportedModule_);
+        onChanged();
+      } else {
+        reexportedModuleBuilder_.addAllMessages(values);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .dossier.Property reexported_module = 25;</code>
+     *
+     * <pre>
+     * Re-exported modules.
+     * </pre>
+     */
+    public Builder clearReexportedModule() {
+      if (reexportedModuleBuilder_ == null) {
+        reexportedModule_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00100000);
+        onChanged();
+      } else {
+        reexportedModuleBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .dossier.Property reexported_module = 25;</code>
+     *
+     * <pre>
+     * Re-exported modules.
+     * </pre>
+     */
+    public Builder removeReexportedModule(int index) {
+      if (reexportedModuleBuilder_ == null) {
+        ensureReexportedModuleIsMutable();
+        reexportedModule_.remove(index);
+        onChanged();
+      } else {
+        reexportedModuleBuilder_.remove(index);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .dossier.Property reexported_module = 25;</code>
+     *
+     * <pre>
+     * Re-exported modules.
+     * </pre>
+     */
+    public com.github.jsdossier.proto.Property.Builder getReexportedModuleBuilder(
+        int index) {
+      return getReexportedModuleFieldBuilder().getBuilder(index);
+    }
+    /**
+     * <code>repeated .dossier.Property reexported_module = 25;</code>
+     *
+     * <pre>
+     * Re-exported modules.
+     * </pre>
+     */
+    public com.github.jsdossier.proto.PropertyOrBuilder getReexportedModuleOrBuilder(
+        int index) {
+      if (reexportedModuleBuilder_ == null) {
+        return reexportedModule_.get(index);  } else {
+        return reexportedModuleBuilder_.getMessageOrBuilder(index);
+      }
+    }
+    /**
+     * <code>repeated .dossier.Property reexported_module = 25;</code>
+     *
+     * <pre>
+     * Re-exported modules.
+     * </pre>
+     */
+    public java.util.List<? extends com.github.jsdossier.proto.PropertyOrBuilder> 
+         getReexportedModuleOrBuilderList() {
+      if (reexportedModuleBuilder_ != null) {
+        return reexportedModuleBuilder_.getMessageOrBuilderList();
+      } else {
+        return java.util.Collections.unmodifiableList(reexportedModule_);
+      }
+    }
+    /**
+     * <code>repeated .dossier.Property reexported_module = 25;</code>
+     *
+     * <pre>
+     * Re-exported modules.
+     * </pre>
+     */
+    public com.github.jsdossier.proto.Property.Builder addReexportedModuleBuilder() {
+      return getReexportedModuleFieldBuilder().addBuilder(
+          com.github.jsdossier.proto.Property.getDefaultInstance());
+    }
+    /**
+     * <code>repeated .dossier.Property reexported_module = 25;</code>
+     *
+     * <pre>
+     * Re-exported modules.
+     * </pre>
+     */
+    public com.github.jsdossier.proto.Property.Builder addReexportedModuleBuilder(
+        int index) {
+      return getReexportedModuleFieldBuilder().addBuilder(
+          index, com.github.jsdossier.proto.Property.getDefaultInstance());
+    }
+    /**
+     * <code>repeated .dossier.Property reexported_module = 25;</code>
+     *
+     * <pre>
+     * Re-exported modules.
+     * </pre>
+     */
+    public java.util.List<com.github.jsdossier.proto.Property.Builder> 
+         getReexportedModuleBuilderList() {
+      return getReexportedModuleFieldBuilder().getBuilderList();
+    }
+    private com.google.protobuf.RepeatedFieldBuilder<
+        com.github.jsdossier.proto.Property, com.github.jsdossier.proto.Property.Builder, com.github.jsdossier.proto.PropertyOrBuilder> 
+        getReexportedModuleFieldBuilder() {
+      if (reexportedModuleBuilder_ == null) {
+        reexportedModuleBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+            com.github.jsdossier.proto.Property, com.github.jsdossier.proto.Property.Builder, com.github.jsdossier.proto.PropertyOrBuilder>(
+                reexportedModule_,
+                ((bitField0_ & 0x00100000) == 0x00100000),
+                getParentForChildren(),
+                isClean());
+        reexportedModule_ = null;
+      }
+      return reexportedModuleBuilder_;
     }
 
     // @@protoc_insertion_point(builder_scope:dossier.JsType)

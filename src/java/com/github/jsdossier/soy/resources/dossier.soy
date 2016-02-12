@@ -134,17 +134,23 @@
  */
 {template .codeLink private="true"}
   {@param source: dossier.SourceLink}  // The link.
+  {@param? text: string}
+  {@param? noDiv: bool}
   {if $source.path}
-    <div class="code-link">
+    {if not $noDiv}<div class="code-link">{/if}
       {if $source.uri}
         <a href="{$source.uri}" target="_blank" title="View source">
       {else}
         <a href="{$source.path}{if $source.line and $source.line > 0}#l{$source.line}{/if}"
             title="View source">
       {/if}
+      {if $text}
+        {$text}
+      {else}
         <i class="material-icons">code</i>
+      {/if}
       </a>
-    </div>
+    {if not $noDiv}</div>{/if}
   {/if}
 {/template}
 
@@ -566,6 +572,38 @@
 {/template}
 
 /**
+ * Prints the list of properties that re-export another module.
+ */
+{template .printReexportedModules}
+  {@param properties: list<dossier.Property>}
+  <section class="property">
+    <dl style="-webkit-column-width:20em">
+      {foreach $property in $properties}
+        <div id="{$property.base.name}">
+          <dt class="named">
+            {if $property.base.source}
+              {call .codeLink}
+                {param source: $property.base.source /}
+                {param text: $property.base.name /}
+                {param noDiv: true /}
+              {/call}
+            {else}
+              {$property.base.name}
+            {/if}
+            {if $property.type}
+              <i>(
+                {call .comment}
+                  {param comment: $property.type /}
+                {/call}
+              )</i>
+            {/if}
+        </div>
+      {/foreach}
+    </dl>
+  </section>
+{/template}
+
+/**
  * Print a list of properties.
  */
 {template .printProperties}
@@ -687,6 +725,15 @@
       </h2>
       {call .printFunctions}
         {param functions: $type.staticFunction /}
+      {/call}
+    </section>
+  {/if}
+
+  {if $type.tags.isModule and length($type.reexportedModule)}
+    <section class="static-properties">
+      <h2>Exported Modules</h2>
+      {call .printReexportedModules}
+        {param properties: $type.reexportedModule /}
       {/call}
     </section>
   {/if}

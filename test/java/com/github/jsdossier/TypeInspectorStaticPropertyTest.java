@@ -315,4 +315,30 @@ public class TypeInspectorStaticPropertyTest extends AbstractTypeInspectorTest {
             .setType(numberTypeComment())
             .build());
   }
+
+  @Test
+  public void moduleExportsAnotherModuleAsAProperty() {
+    util.compile(
+        createSourceFile(
+            fs.getPath("/src/modules/foo/bar.js"),
+            "exports.One = class {};"),
+        createSourceFile(
+            fs.getPath("/src/modules/foo/baz.js"),
+            "let bar = require('./bar');",
+            "exports.bar = bar;"));
+
+    NominalType type = typeRegistry.getType("module$$src$modules$foo$baz");
+    TypeInspector typeInspector = typeInspectorFactory.create(type);
+    TypeInspector.Report report = typeInspector.inspectType();
+    assertThat(report.getProperties()).containsExactly(
+        Property.newBuilder()
+            .setBase(BaseProperty.newBuilder()
+                .setName("bar")
+                .setSource(sourceFile("../../source/modules/foo/baz.js.src.html", 2))
+                .setDescription(Comment.getDefaultInstance())
+                .setTags(Tags.newBuilder().setIsModule(true))
+                .build())
+            .setType(linkComment("foo/bar", "bar.html"))
+            .build());
+  }
 }

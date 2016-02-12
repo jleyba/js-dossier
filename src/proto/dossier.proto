@@ -284,6 +284,9 @@ message JsType {
 
   // Qualified display name for this type.
   optional string qualified_name = 24;
+
+  // Re-exported modules.
+  repeated Property reexported_module = 25;
 }
 
 
