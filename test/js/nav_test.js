@@ -180,8 +180,10 @@ function testBuildTree_modulesAreAlwaysUnderRoot() {
   assertNode(root.getChildAt(1), 'foo.bar', input[1]);
 
   var foo = root.getChildAt(0);
-  assertEquals(1, foo.getChildCount());
-  assertNode(foo.getChildAt(0), 'Clazz', input[0].types[0]);
+  assertEquals(0, foo.getChildCount());
+
+  var bar = root.getChildAt(1);
+  assertEquals(0, bar.getChildCount());
 }
 
 
@@ -315,26 +317,10 @@ function testBuildList_forModules() {
         '<i class="material-icons">expand_more</i>',
         '</div>',
         '<ul class="tree">',
-        '<li><a class="item" tabindex="2" href="type_Greeter.html">Greeter</a></li>',
         '<li>',
-        '<div class="toggle" data-id=".nav-module:example.foo">',
-        '<a class="item" tabindex="2" href="type_foo.html">foo</a>',
-        '<i class="material-icons">expand_more</i>',
-        '</div>',
-        '<ul class="tree">',
-        '<li><a class="item" tabindex="2" href="type_foo.bar.html">bar</a></li>',
-        '</ul>',
+        '<a class="item" tabindex="2" href="module_example_nested.html">nested</a>',
         '</li>',
         '</ul>',
-        '</li>',
-        '<li>',
-        '<div class="toggle" data-id=".nav-module:example/nested">',
-        '<a class="item" tabindex="2" href="module_example_nested.html">example/nested</a>',
-        '<i class="material-icons">expand_more</i>',
-        '</div>',
-        '<ul class="tree">',
-        '<li><a class="item" tabindex="2" href="type_IdGenerator.html">IdGenerator</a></li>',
-        '<li><a class="item" tabindex="2" href="type_IdGenerator.Impl.html">IdGenerator.Impl</a></li>',
         '</ul>',
         '</li>'
       ].join(''),

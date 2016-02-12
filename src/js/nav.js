@@ -206,18 +206,9 @@ function sortTree(root) {
 exports.buildTree = function(descriptors, isModule, opt_root) {
   let root = opt_root || new TreeNode('', null);
   descriptors.forEach(function(descriptor) {
-    if (isModule) {
-      let moduleRoot = new TreeNode(descriptor.name, descriptor);
-      root.addChild(moduleRoot);
-      if (descriptor.types) {
-        let ret = exports.buildTree(descriptor.types, false, moduleRoot);
-        assert(ret === moduleRoot);
-      }
-      return;
-    }
-
     var currentNode = root;
-    descriptor.qualifiedName.split(/\./).forEach(function(part) {
+    var splitOn = isModule ? new RegExp('/') : /\./;
+    descriptor.qualifiedName.split(splitOn).forEach(function(part) {
       if (currentNode === root && currentNode.getKey() === part) {
         return;
       }
@@ -232,7 +223,9 @@ exports.buildTree = function(descriptors, isModule, opt_root) {
     currentNode.setValue(descriptor);
   });
 
-  collapseNodes(root);
+  if (!isModule) {
+    collapseNodes(root);
+  }
   sortTree(root);
 
   return root;
