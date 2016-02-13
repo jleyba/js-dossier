@@ -1,4 +1,4 @@
-# v0.9.0-dev
+# v0.9.0
 
 ## Bug Fixes
 
@@ -20,4 +20,6 @@
    with the compiler's --define flag.
 - Dossier will now automatically include extern definitions for Node's core
    modules when the input configuration includes `modules` file list.
+- Updates the HTML sanitizer to permit the `cite` attribute on `q` elements.
+- Set styles on `kbd` elements
 - Started user CHANGES log. For older releases, refer to git commit history
