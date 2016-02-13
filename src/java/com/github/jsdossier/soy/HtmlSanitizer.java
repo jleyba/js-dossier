@@ -64,6 +64,7 @@ final class HtmlSanitizer {
           "td", "th", "tr", "colgroup", "col", "thead", "tbody", "tfoot")
       .allowAttributes("colspan", "rowspan").matching(NUMBER).onElements("td", "th")
       .allowAttributes("span", "width").matching(NUMBER_OR_PERCENT).onElements("colgroup", "col")
+      .allowAttributes("cite").onElements("q")
       .toFactory()
       .and(Sanitizers.BLOCKS)
       .and(Sanitizers.FORMATTING)
