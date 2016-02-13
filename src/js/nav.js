@@ -21,7 +21,12 @@ const assert = goog.require('goog.asserts').assert;
 const dom = goog.require('goog.dom');
 const events = goog.require('goog.events');
 const KeyCodes = goog.require('goog.events.KeyCodes');
+const browser = goog.require('goog.labs.userAgent.browser');
+const device = goog.require('goog.labs.userAgent.device');
 const Strings = goog.require('goog.string');
+
+
+const SLOW_ANIMATIONS = browser.isSafari() || device.isMobile();
 
 
 /**
@@ -516,10 +521,18 @@ class NavDrawer {
     let tree = el.nextElementSibling;
     if (tree && tree.classList.contains('tree')) {
       if (el.classList.contains('open')) {
-        tree.style.maxHeight = tree.dataset.maxHeight + 'px';
+        if (SLOW_ANIMATIONS) {
+          tree.style.display = 'block';
+        } else {
+          tree.style.maxHeight = tree.dataset.maxHeight + 'px';
+        }
         this.enableTree_(tree, this.isOpen);
       } else {
-        tree.style.maxHeight = '0';
+        if (SLOW_ANIMATIONS) {
+          tree.style.display = 'none';
+        } else {
+          tree.style.maxHeight = '0';
+        }
         this.enableTree_(tree, false);
       }
     }
@@ -616,7 +629,12 @@ exports.createNavDrawer = function(typeInfo, currentFile, basePath) {
     let tree = trees[i];
     let numItems = tree.querySelectorAll('li').length;
     tree.dataset.maxHeight = numItems * NAV_ITEM_HEIGHT;
-    tree.style.maxHeight = 0;
+    if (SLOW_ANIMATIONS) {
+      tree.style.transition = 'none';
+      tree.style.display = 'none';
+    } else {
+      tree.style.maxHeight = 0;
+    }
   }
 
   if (window.localStorage) {

@@ -4,6 +4,8 @@
 
 - Properly set the nav drawer's initial scroll position to include the current
    page in view.
+- In order to improve rendering performance, removed use of max-height
+   transitions on Safari and mobile
 
 # v0.9.0
 
