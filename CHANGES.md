@@ -1,3 +1,10 @@
+# v0.9.1-dev
+
+## Bug Fixes
+
+- Properly set the nav drawer's initial scroll position to include the current
+   page in view.
+
 # v0.9.0
 
 ## Bug Fixes

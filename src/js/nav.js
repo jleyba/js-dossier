@@ -386,6 +386,17 @@ class NavDrawer {
   }
 
   /**
+   * Scrolls to the currently selected item in this nav drawer.
+   */
+  scrollToCurrent() {
+    let current = this.navEl_.querySelector('.current');
+    if (current) {
+      let top = current.getBoundingClientRect().top;
+      this.navEl_.scrollTop = top - (window.innerHeight / 2);
+    }
+  }
+
+  /**
    * Hides the nav drawer.
    */
   hide() {
@@ -458,7 +469,9 @@ class NavDrawer {
     let trees = this.navEl_.querySelectorAll('section > .toggle.open ~ .tree');
     Arrays.forEach(trees, tree => this.enableTree_(tree, true));
 
+    let scroll = this.navEl_.scrollTop;
     this.focusSink_.focus();
+    this.navEl_.scrollTop = scroll;
   }
 
   /**
@@ -656,6 +669,5 @@ exports.createNavDrawer = function(typeInfo, currentFile, basePath) {
         }
       }
     }
-    navEl.scrollTop = el.offsetTop - (window.innerHeight / 2);
   }
 };

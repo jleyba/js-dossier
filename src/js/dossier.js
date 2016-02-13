@@ -61,6 +61,7 @@ dossier.init = function() {
   dossier.initSourceHilite_();
 
   setTimeout(dossier.adjustTarget_, 0);
+  setTimeout(drawer.scrollToCurrent.bind(drawer), 0);
 };
 goog.exportSymbol('init', dossier.init);
 
