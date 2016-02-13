@@ -139,6 +139,11 @@ h3.name {
       .tag-color(#ffb300);
       &::after { content: 'protected'; }
     }
+
+    &.const::after  { content: 'const';  }
+    &.final::after  { content: 'final';  }
+    &.dict::after   { content: 'dict';   }
+    &.struct::after { content: 'struct'; }
   }
 }
 

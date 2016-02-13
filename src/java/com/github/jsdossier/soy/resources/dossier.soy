@@ -869,10 +869,10 @@
         <span class="protected"></span>
       {/if}
 
-      {if $tags.isConst}<span>const</span>{/if}
-      {if $tags.isFinal}<span>final</span>{/if}
-      {if $tags.isDict}<span>dict</span>{/if}
-      {if $tags.isStruct}<span>struct</span>{/if}
+      {if $tags.isConst}<span class="const"></span>{/if}
+      {if $tags.isFinal}<span class="final"></span>{/if}
+      {if $tags.isDict}<span class="dict"></span>{/if}
+      {if $tags.isStruct}<span class="struct"></span>{/if}
     </{if $span}span{else}div{/if}>
   {/if}
 {/template}
