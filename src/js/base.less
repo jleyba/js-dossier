@@ -37,10 +37,12 @@
 @link_color: #66f;
 @font_color: #212121;
 @caption_color: #333;
+@kbd_color: #555;
 @header_border: #8f8f8f;
 @code_bg: #f8f8f8;
 @code_border: darken(@code_bg, 15%);
 @body_bg: #f8f8f8;
+@kbd_bg: #fcfcfc;
 
 @gutter_small_screen: 16px;
 @gutter_large_screen: 24px;
@@ -162,8 +164,10 @@ a {
   }
 }
 
-pre, code, .srcfile table {
+pre, code, kbd, .srcfile table {
   font-family: "Roboto Mono", monospace;
+}
+pre, code, .srcfile table {
   font-size: 12px !important;
 }
 
@@ -314,6 +318,21 @@ b,
 strong {
   font-weight: 500;
 }
+
+kbd {
+  display: inline-block;
+  padding: 3px 5px;
+  font-size: 11px;
+  line-height: 10px;
+  vertical-align: middle;
+  color: @kbd_color;
+  background: @kbd_bg;
+  border-radius: 3px;
+  border: solid 1px #ccc;
+  border-bottom-color: #bbb;
+  box-shadow: inset 0 -1px 0 #bbb;
+}
+kbd + kbd { margin-left: 3px; }
 
 .parentlink {
   float: left;

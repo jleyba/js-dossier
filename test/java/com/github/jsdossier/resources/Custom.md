@@ -100,3 +100,25 @@ function sayHello() {
 <dd>Definition 2.a</dd>
 <dd>Definition 2.b</dd>
 </dl>
+
+---
+
+<ins>Goodbye</ins><del>Hello</del>, World!
+
+<sup>a</sup>B<sub>c</sub>
+
+Regular text. <samp>This is sample text.</samp> Regular text. Everytime Kenny
+is killed, Stan will announce
+<q cite="http://en.wikipedia.org/wiki/Kenny_McCormick#Cultural_impact">
+Oh my God, you/they killed Kenny!</q>.
+
+A simple equation: <var>x</var> = <var>y</var> + 2
+
+More information can be found in <cite>\[ISO-0000]</cite>.
+
+<kbd>`</kbd><kbd>1</kbd><kbd>2</kbd><kbd>3</kbd><kbd>4</kbd><kbd>5</kbd><kbd>6</kbd><kbd>7</kbd><kbd>8</kbd><kbd>9</kbd><kbd>0</kbd><kbd>-</kbd><kbd>=</kbd><kbd>&nbsp;&nbsp;&nbsp;&nbsp;←</kbd>\
+<kbd>Tab&nbsp;&nbsp;</kbd><kbd>q</kbd><kbd>w</kbd><kbd>e</kbd><kbd>r</kbd><kbd>t</kbd><kbd>y</kbd><kbd>u</kbd><kbd>i</kbd><kbd>o</kbd><kbd>p</kbd><kbd>\[</kbd><kbd>]</kbd><kbd>\\</kbd>\
+<kbd>Caps</kbd><kbd>a</kbd><kbd>s</kbd><kbd>d</kbd><kbd>f</kbd><kbd>g</kbd><kbd>h</kbd><kbd>j</kbd><kbd>k</kbd><kbd>l</kbd><kbd>;</kbd><kbd>'</kbd><kbd>&nbsp;Enter</kbd>\
+<kbd>Shift&nbsp;</kbd><kbd>z</kbd><kbd>x</kbd><kbd>c</kbd><kbd>v</kbd><kbd>b</kbd><kbd>n</kbd><kbd>m</kbd><kbd>,</kbd><kbd>.</kbd><kbd>/</kbd><kbd>&nbsp;&nbsp;Shift</kbd>
+
+Copy and paste with <kbd>Ctrl</kbd><kbd>x</kbd> then <kbd>Ctrl</kbd><kbd>v</kbd>
