@@ -104,11 +104,15 @@ h3.name {
     margin: 2px 8px -2px 0;
   }
 
+  .tag-color(@color) {
+    background: fade(@color, 25%);
+    border: 1px solid @color;
+    color: @color;
+  }
+
   span {
-    background: fade(@link_color, 25%);
-    border: 1px solid @link_color;
+    .tag-color(@link_color);
     border-radius: 3px;
-    color: @link_color;
     font-weight: 500;
     padding: 2px 4px;
 
@@ -117,30 +121,22 @@ h3.name {
     }
 
     &.deprecated {
-      border: 1px solid #757575;
-      color: #757575;
-      background: #f5f5f5;
+      .tag-color(#757575);
       &::after { content: 'deprecated'; }
     }
 
     &.private {
-      border: 1px solid #e53935;
-      color: #e53935;
-      background: #ffcdd2;
+      .tag-color(#e53935);
       &::after { content: 'private'; }
     }
 
     &.package {
-      border: 1px solid #ffb300;
-      color: #ffb300;
-      background: #ffecb3;
+      .tag-color(#ffb300);
       &::after { content: 'package'; }
     }
 
     &.protected {
-      border: 1px solid #ffb300;
-      color: #ffb300;
-      background: #ffecb3;
+      .tag-color(#ffb300);
       &::after { content: 'protected'; }
     }
   }
