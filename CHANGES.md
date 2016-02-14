@@ -1,4 +1,4 @@
-# v0.9.1-dev
+# v0.9.1
 
 ## Bug Fixes
 
