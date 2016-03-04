@@ -1,3 +1,9 @@
+# v0.9.2-dev
+
+## Bug Fixes
+
+- Include visibility indicators for enums
+
 # v0.9.1
 
 ## Bug Fixes

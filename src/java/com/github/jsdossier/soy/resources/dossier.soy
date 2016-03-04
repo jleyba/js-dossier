@@ -793,6 +793,7 @@
   <h1 class="title{if $type.deprecation}{sp}deprecated{/if}">
     {call .tags}
       {param tags: $type.tags /}
+      {param visibility: $type.enumeration ? $type.enumeration.visibility : null /}
     {/call}
     <div>
       {if $type.tags.isModule}

@@ -233,6 +233,13 @@
       "qualifiedName": "closure.module.HardWorker"
     },
     {
+      "href": "PrivateColor_.html",
+      "interface": false,
+      "name": "PrivateColor_",
+      "namespace": false,
+      "qualifiedName": "PrivateColor_"
+    },
+    {
       "href": "closure.module.PubClass.html",
       "interface": false,
       "members": [

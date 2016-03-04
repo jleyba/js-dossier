@@ -364,3 +364,14 @@ const Color = {
   GREEN: 'green',
   BLUE: 'blue'
 };
+
+
+/**
+ * Private color names.
+ * @enum {string}
+ * @private
+ */
+const PrivateColor_ = {
+  PINK: 'pink',
+  TEAL: 'teal'
+};
