@@ -22,8 +22,10 @@ configuration file so Dossier knows to look for `require()` and
 For Node and ES6 modules, you may import other modules by their _relative_
 path:
 
-    import {Foo as Bar} from './lib';  // ES6
-    const Baz = require('./dir/lib');  // Node
+```js
+import {Foo as Bar} from './lib';  // ES6
+const Baz = require('./dir/lib');  // Node
+```
 
 Refer to the section on [type linking](#type-linking) below for information
 on how to refer to imported types within a JSDoc comment.
@@ -46,40 +48,48 @@ Comments are extracted from the source according to the follow rules:
 
 For example, the JSDoc comment (.'s inserted to highlight whitespace)
 
-    /**
-    .*.Line one.
-    .*.Line two.
-    .*
-    .*.* list item one
-    .*.* line item two
-    .*
-    .*.....code block
-    .*/
+```js
+/**
+.*.Line one.
+.*.Line two.
+.*
+.*.* list item one
+.*.* line item two
+.*
+.*.....code block
+.*/
+```
 
 is passed to the parser as
 
-    .Line one.
-    .Line two.
+```
+.Line one.
+.Line two.
 
-    .* list item one
-    .* list item two
+.* list item one
+.* list item two
 
-    .....code block
+.....code block
+```
 
 When applied to comments attached to annotations, the same rules apply, except
 the comment text starts after the annotation, type, or name (as applicable for
 the annotation). For instance,
 
-    /**
-     * @param {string} x This is the comment for
-     *     parameter x.
-     */
+```js
+/**
+ * @param {string} x This is the comment for
+ *     parameter x.
+ */
+```
 
 the comment string parsed for parameter `x` is (again, .'s inserted to denote
 leading whitespace):
 
-    .This is the comment for
-    .....parameter x.
+```
+.This is the comment for
+.....parameter x.
+```
 
 ### The `@code` and `@literal` Taglets
 
@@ -87,11 +97,15 @@ The `@code` and `@literal` taglets may be used to specify text that
 should be HTML escaped for rendering; the `@code` taglet will wrap its
 output in `<code>` tags. For example, the following
 
-<pre><code>{@&shy;code 1 &lt; 2 &amp;&amp; 3 &lt; 4;}</code></pre>
+```js
+{@code 1 < 2 && 3 < 4;}
+```
 
 will produce
 
-    <code>1 &lt; 2 &amp;&amp; 3 &lt; 4;</code>
+```html
+<code>1 &lt; 2 &amp;&amp; 3 &lt; 4;</code>
+```
 
 ### Type Linking <a name="type-linking"></a>
 
@@ -102,61 +116,71 @@ the space is the link text. If there is no text within the taglet, the type
 name will be used. For example, suppose there is a type named
 `example.Widget`, then
 
-<pre><code>An {@&shy;link example.Widget} link.
-A {@&shy;link example.Widget widget link}.
-</code></pre>
+```
+An {@link example.Widget} link.
+A {@link example.Widget widget link}.
+```
 
 would produce
 
-    An <a href="path/to/example.Widget.html"><code>example.Widget</code></a> link.
-    A <a href="path/to/example.Widget.html"><code>widget link</code></a>.
+```html
+An <a href="path/to/example.Widget.html"><code>example.Widget</code></a> link.
+A <a href="path/to/example.Widget.html"><code>widget link</code></a>.
+```
 
 You may use a hash tag (#) to reference a type's property inside a link:
-<code>{&shy;@link example.Widget#build()}</code>. You may omit the type's name
+`{@link example.Widget#build()}`. You may omit the type's name
 as a qualifier when linking to one of its own properties:
-<code>{&shy;@link #build()}</code>. Dossier will favor instance over static
+`{@link #build()}`. Dossier will favor instance over static
 properties when de-referencing a hash link.
 
 Dossier tracks type aliases so your documentation may reflect the actual source.
 For instance, if you import a type from a module, you may refer to that type
 by its imported alias:
 
-<pre><code>import {Widget as Whatsit} from './lib';
+```js
+import {Widget as Whatsit} from './lib';
 
-/** A {@&shy;link Whatsit} object. */
+/** A {@link Whatsit} object. */
 export const w = new Whatsit;
-</code></pre>
+```
 
 Here, the comment on the exported `w` property produces
 
-    <p>A <a href="module/lib_exports_Widget"><code>Whatsit</code></a> object.</p>
+```html
+<p>A <a href="module/lib_exports_Widget"><code>Whatsit</code></a> object.</p>
+```
 
 When using the [revealing module pattern](https://carldanley.com/js-revealing-module-pattern/),
 your module's documentation can refer to a type by its internal name and
 Dossier will generate a link to the exported type.
 
-<pre><code>class Widget {}
+```js
+class Widget {}
 
-/** A factory that generates {@&shy;link Widget} objects. */
+/** A factory that generates {@link Widget} objects. */
 class WidgetFactory {}
 
 export {Widget as WhatsIt, WidgetFactory}
-</code></pre>
+```
 
 In the above, since `Widget`'s public name is `WhatsIt`, the generate
 documentation would be (extra newlines inserted for readability)
 
-    <p>A factory that generates
-    <a href="module/lib_exports_WhatsIt.html"><code>Widget</code></a> objects.
-    </p>
+```html
+<p>A factory that generates
+<a href="module/lib_exports_WhatsIt.html"><code>Widget</code></a> objects.
+</p>
+```
 
 Within an ES6 or Node module, you may refer to another module without importing
 using the module's _relative_ path as your type symbol. To refer to an exported
 type from another module, simply qualify it with the module's relative path.
 
-<pre><code>/** A link to module {@&shy;link ./foo/bar} */
-/** A link to type {@&shy;link ./foo/bar.Baz} */
-</code></pre>
+```js
+/** A link to module {@link ./foo/bar} */
+/** A link to type {@link ./foo/bar.Baz} */
+```
 
 ### The `@see` Annotation
 
@@ -175,27 +199,31 @@ processed in the following order:
 
 __Example__
 
-    class Greeter {
-      /** @param {!Person} person . */
-      greet(person) {}
-    }
+```js
+class Greeter {
+  /** @param {!Person} person . */
+  greet(person) {}
+}
 
-    /**
-     * @see Greeter
-     * @see #name
-     * @see http://www.example.com
-     */
-    class Person {
-      /** @return {string} . */
-      name() { return ''; }
-    }
+/**
+ * @see Greeter
+ * @see #name
+ * @see http://www.example.com
+ */
+class Person {
+  /** @return {string} . */
+  name() { return ''; }
+}
+```
 
 In this example, the `@see` annotations on the `Person` class would
 generate the following links:
 
-    <a href="Greeter.html"><code>Greeter</code></a>
-    <a href="Person.html#name"><code>#name</code></a>
-    <a href="http://www.example.com">http://www.example.com</a>
+```html
+<a href="Greeter.html"><code>Greeter</code></a>
+<a href="Person.html#name"><code>#name</code></a>
+<a href="http://www.example.com">http://www.example.com</a>
+```
 
 ## HTML Sanitization
 
@@ -209,7 +237,9 @@ Dossier is built using [Bazel](http://bazel.io/). Once
 you have [installed](http://bazel.io/docs/install.html) Bazel,
 you can use the `gendossier.sh` script to complete various actions:
 
-    ./gendossier.sh -h
+```
+./gendossier.sh -h
+```
 
 ## LICENSE
 

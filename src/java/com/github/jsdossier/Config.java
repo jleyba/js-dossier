@@ -663,25 +663,31 @@ class Config {
         "\n" +
         " For example, suppose you have one source file, `foo.js`:\n" +
         "\n" +
-        "     goog.require('goog.array');\n" +
-        "     // ...\n" +
+        "```js\n" +
+        "goog.require('goog.array');\n" +
+        "// ...\n" +
+        "```\n" +
         "\n" +
         " and your configuration includes:\n" +
         "\n" +
-        "     \"sources\": [\"foo.js\"],\n" +
-        "     \"closureLibraryDir\": \"closure/goog\"\n" +
+        "```json\n" +
+        "\"sources\": [\"foo.js\"],\n" +
+        "\"closureLibraryDir\": \"closure/goog\"\n" +
+        "```\n" +
         "\n" +
         " due to the dependencies of goog.array declared in closure/goog/deps.js, this is" +
         " equivalent to the following configuration:\n" +
         "\n" +
-        "     \"sources\": [\n" +
-        "         \"closure/goog/base.js\",\n" +
-        "         \"closure/goog/debug/error.js\",\n" +
-        "         \"closure/goog/string/string.js\",\n" +
-        "         \"closure/goog/asserts/asserts.js\",\n" +
-        "         \"closure/goog/array/array.js\",\n" +
-        "         \"foo.js\"\n" +
-        "     ]\n" +
+        "```json\n" +
+        "\"sources\": [\n" +
+        "    \"closure/goog/base.js\",\n" +
+        "    \"closure/goog/debug/error.js\",\n" +
+        "    \"closure/goog/string/string.js\",\n" +
+        "    \"closure/goog/asserts/asserts.js\",\n" +
+        "    \"closure/goog/array/array.js\",\n" +
+        "    \"foo.js\"\n" +
+        "]\n" +
+        "```\n" +
         "\n" +
         " Notice specifying `closureLibraryDir` instructs Dossier to sort the input files so a" +
         " a file that goog.provides symbol X comes before any file that goog.requires X.")
