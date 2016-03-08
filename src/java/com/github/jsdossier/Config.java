@@ -27,6 +27,7 @@ import static java.nio.file.Files.exists;
 import static java.nio.file.Files.isDirectory;
 import static java.nio.file.Files.write;
 
+import com.google.auto.value.AutoValue;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
@@ -86,227 +87,128 @@ import java.util.regex.Pattern;
 /**
  * Describes the runtime configuration for the app.
  */
-class Config {
+@AutoValue
+abstract class Config {
 
-  private final ImmutableSet<Path> srcs;
-  private final ImmutableSet<Path> modules;
-  private final ImmutableSet<Path> externs;
-  private final ImmutableSet<Path> externModules;
-  private final ImmutableSet<Path> excludes;
-  private final ImmutableSet<Pattern> typeFilters;
-  private final ImmutableSet<Pattern> moduleFilters;
-  private final Path srcPrefix;
-  private final Optional<Path> modulePrefix;
-  private final Path output;
-  private final Optional<Path> readme;
-  private final ImmutableList<MarkdownPage> customPages;
-  private final boolean strict;
-  private final Language language;
-  private final FileSystem fileSystem;
-  private final ModuleNamingConvention moduleNamingConvention;
-  private final Optional<String> sourceUrlTemplate;
-
-  /**
-   * Creates a new runtime configuration.
-   *
-   * @param srcs The list of compiler input sources.
-   * @param modules The list of CommonJS compiler input sources.
-   * @param externs The list of extern files for the Closure compiler.
-   * @param externModules The list of files to process as module externs.
-   * @param excludes The list of excluded files.
-   * @param typeFilters The list of types to filter from generated output.
-   * @param moduleFilters The set of modules to filter from generated output.
-   * @param output Path to the output directory.
-   * @param readme Path to a markdown file to include in the main index.
-   * @param customPages Custom markdown files to include in the generated documentation.
-   * @param modulePrefix Prefix to strip from each module path when rendering documentation.
-   * @param strict Whether to enable all type checks.
-   * @param language The JavaScript dialog sources must conform to.
-   * @param moduleNamingConvention the module naming convention to use.
-   * @param sourceUrlTemplate a user-provided pattern for source file links.
-   * @throws IllegalStateException If any of source, module, and extern sets intersect, or if the
-   *     output path is not a directory.
-   */
-  private Config(
-      ImmutableSet<Path> srcs,
-      ImmutableSet<Path> modules,
-      ImmutableSet<Path> externs,
-      ImmutableSet<Path> externModules,
-      ImmutableSet<Path> excludes,
-      ImmutableSet<Pattern> typeFilters,
-      ImmutableSet<Pattern> moduleFilters,
-      Path output,
-      Optional<Path> readme,
-      List<MarkdownPage> customPages,
-      Optional<Path> modulePrefix,
-      boolean strict,
-      Language language,
-      FileSystem fileSystem,
-      ModuleNamingConvention moduleNamingConvention,
-      Optional<String> sourceUrlTemplate) {
-    checkArgument(!srcs.isEmpty() || !modules.isEmpty(),
-        "There must be at least one input source or module");
-    checkArgument(intersection(srcs, externs).isEmpty(),
-        "The sources and externs inputs must be disjoint:\n  sources: %s\n  externs: %s",
-        srcs, externs);
-    checkArgument(intersection(srcs, modules).isEmpty(),
-        "The sources and modules inputs must be disjoint:\n  sources: %s\n  modules: %s",
-        srcs, modules);
-    checkArgument(intersection(modules, externs).isEmpty(),
-        "The sources and modules inputs must be disjoint:\n  modules: %s\n  externs: %s",
-        modules, externs);
-    checkArgument(!exists(output) || isDirectory(output) || isZipFile(output),
-        "Output path, %s, is neither a directory nor a zip file", output);
-    checkArgument(!readme.isPresent() || exists(readme.get()),
-        "README path, %s, does not exist", readme.orNull());
-    for (MarkdownPage page : customPages) {
-      checkArgument(exists(page.getPath()),
-          "For custom page \"%s\", file does not exist: %s",
-          page.getName(), page.getPath());
-    }
-
-    this.srcs = srcs;
-    this.modules = modules;
-    this.srcPrefix = getSourcePrefixPath(fileSystem, srcs, modules);
-    this.modulePrefix = modulePrefix;
-    this.externs = externs;
-    this.externModules = externModules;
-    this.excludes = excludes;
-    this.typeFilters = typeFilters;
-    this.moduleFilters = moduleFilters;
-    this.output = output;
-    this.readme = readme;
-    this.customPages = ImmutableList.copyOf(customPages);
-    this.strict = strict;
-    this.language = language;
-    this.fileSystem = fileSystem;
-    this.moduleNamingConvention = moduleNamingConvention;
-    this.sourceUrlTemplate = sourceUrlTemplate;
+  public static Builder builder() {
+    return new AutoValue_Config.Builder();
   }
+
+  Config() {}
 
   /**
    * Returns the set of input sources for the compiler.
    */
-  ImmutableSet<Path> getSources() {
-    return srcs;
-  }
+  abstract ImmutableSet<Path> getSources();
 
   /**
    * Returns the set of CommonJS input sources for the compiler.
    */
-  ImmutableSet<Path> getModules() {
-    return modules;
-  }
+  abstract ImmutableSet<Path> getModules();
 
   /**
    * Returns the longest common path prefix for all of the input sources.
    */
-  Path getSrcPrefix() {
-    return srcPrefix;
-  }
+  abstract Path getSrcPrefix();
 
   /**
    * Returns the user-specified module prefix to use for input modules.
    */
-  Optional<Path> getModulePrefix() {
-    return modulePrefix;
-  }
+  abstract Optional<Path> getModulePrefix();
 
   /**
    * Returns the set of extern files to use.
    */
-  ImmutableSet<Path> getExterns() {
-    return externs;
-  }
+  abstract ImmutableSet<Path> getExterns();
 
   /**
    * Returns the set of files to process as extern modules.
    */
-  ImmutableSet<Path> getExternModules() {
-    return externModules;
-  }
+  abstract ImmutableSet<Path> getExternModules();
+
+  /**
+   * Returns the files to include for type checking, but to <em>exclude</em>
+   * from generated documentation.
+   */
+  abstract ImmutableSet<Path> getExcludes();
 
   /**
    * Returns the path to the output directory.
    */
-  Path getOutput() {
-    return output;
-  }
+  abstract Path getOutput();
 
   /**
    * Returns the path to the readme markdown file, if any, to include in the main index.
    */
-  Optional<Path> getReadme() {
-    return readme;
-  }
+  abstract Optional<Path> getReadme();
 
   /**
    * Returns the custom pages to include in the generated documentation.
    */
-  ImmutableList<MarkdownPage> getCustomPages() {
-    return customPages;
-  }
+  abstract ImmutableList<MarkdownPage> getCustomPages();
 
   /**
    * Returns whether to enable all type checks.
    */
-  boolean isStrict() {
-    return strict;
-  }
+  abstract boolean isStrict();
 
   /**
    * Returns the language dialect sources must conform to.
    */
-  Language getLanguage() {
-    return language;
-  }
+  abstract Language getLanguage();
 
   /**
    * Returns the module naming convention to use.
    */
-  ModuleNamingConvention getModuleNamingConvention() {
-    return moduleNamingConvention;
-  }
+  abstract ModuleNamingConvention getModuleNamingConvention();
 
   /**
    * Returns the user provided source URL pattern.
    */
-  Optional<String> getSourceUrlTemplate() {
-    return sourceUrlTemplate;
-  }
+  abstract Optional<String> getSourceUrlTemplate();
 
   /**
    * Returns the file system used in this configuration.
    */
-  FileSystem getFileSystem() {
-    return fileSystem;
-  }
+  abstract FileSystem getFileSystem();
+
+  /**
+   * Returns the regular expressions to use for filtering out types from
+   * generated documentation.
+   */
+  abstract ImmutableSet<Pattern> getTypeFilters();
+
+  /**
+   * Returns the regular expressions to use for filtering out modules from
+   * generated documentation.
+   */
+  abstract ImmutableSet<Pattern> getModuleFilters();
 
   /**
    * Returns this configuration object as a JSON object.
    */
   JsonObject toJson() {
     JsonObject json = new JsonObject();
-    json.add("output", new JsonPrimitive(output.toString()));
-    json.add("sources", toJsonArray(srcs));
-    json.add("modules", toJsonArray(modules));
-    json.add("externs", toJsonArray(externs));
-    json.add("excludes", toJsonArray(excludes));
-    json.add("moduleFilters", toJsonArray(moduleFilters));
-    json.add("typeFilters", toJsonArray(typeFilters));
-    json.add("stripModulePrefix", new JsonPrimitive(modulePrefix.toString()));
-    json.add("readme", readme.isPresent()
-        ? new JsonPrimitive(readme.get().toString())
+    json.add("output", new JsonPrimitive(getOutput().toString()));
+    json.add("sources", toJsonArray(getSources()));
+    json.add("modules", toJsonArray(getModules()));
+    json.add("externs", toJsonArray(getExterns()));
+    json.add("excludes", toJsonArray(getExcludes()));
+    json.add("moduleFilters", toJsonArray(getModuleFilters()));
+    json.add("typeFilters", toJsonArray(getTypeFilters()));
+    json.add("stripModulePrefix", new JsonPrimitive(getModulePrefix().toString()));
+    json.add("readme", getReadme().isPresent()
+        ? new JsonPrimitive(getReadme().get().toString())
         : JsonNull.INSTANCE);
-    json.addProperty("strict", strict);
-    json.addProperty("language", language.name());
+    json.addProperty("strict", isStrict());
+    json.addProperty("language", getLanguage().name());
 
-    if (sourceUrlTemplate.isPresent()) {
-      json.addProperty("sourceUrlTemplate", sourceUrlTemplate.get());
+    if (getSourceUrlTemplate().isPresent()) {
+      json.addProperty("sourceUrlTemplate", getSourceUrlTemplate().get());
     }
 
     JsonArray pages = new JsonArray();
-    for (MarkdownPage page : customPages) {
+    for (MarkdownPage page : getCustomPages()) {
       pages.add(page.toJson());
     }
     json.add("customPages", pages);
@@ -326,7 +228,7 @@ class Config {
    * Returns whether the type with the given type should be excluded from documentation.
    */
   boolean isFilteredType(String name) {
-    for (Pattern filter : typeFilters) {
+    for (Pattern filter : getTypeFilters()) {
       if (filter.matcher(name).matches()) {
         return true;
       }
@@ -339,12 +241,74 @@ class Config {
    * Returns whether the given path should be excluded from documentation.
    */
   boolean isFilteredModule(Path path) {
-    for (Pattern filter : moduleFilters) {
+    for (Pattern filter : getModuleFilters()) {
       if (filter.matcher(path.toAbsolutePath().normalize().toString()).matches()) {
         return true;
       }
     }
     return false;
+  }
+
+  @AutoValue.Builder
+  abstract static class Builder {
+    abstract ImmutableSet<Path> getExterns();
+    abstract Builder setExterns(ImmutableSet<Path> paths);
+    abstract Builder setExternModules(ImmutableSet<Path> paths);
+    abstract Builder setExcludes(ImmutableSet<Path> paths);
+
+    abstract ImmutableSet<Path> getModules();
+    abstract Builder setModules(ImmutableSet<Path> paths);
+
+    abstract ImmutableSet<Path> getSources();
+    abstract Builder setSources(ImmutableSet<Path> paths);
+
+    abstract Path getOutput();
+    abstract Builder setOutput(Path path);
+
+    abstract FileSystem getFileSystem();
+    abstract Builder setFileSystem(FileSystem fs);
+
+    abstract Optional<Path> getReadme();
+    abstract Builder setReadme(Optional<Path> path);
+
+    abstract ImmutableList<MarkdownPage> getCustomPages();
+    abstract Builder setCustomPages(ImmutableList<MarkdownPage> pages);
+
+    abstract Builder setStrict(boolean strict);
+    abstract Builder setLanguage(Language lang);
+    abstract Builder setModuleNamingConvention(ModuleNamingConvention convention);
+    abstract Builder setSourceUrlTemplate(Optional<String> template);
+    abstract Builder setSrcPrefix(Path path);
+    abstract Builder setModulePrefix(Optional<Path> path);
+    abstract Builder setTypeFilters(ImmutableSet<Pattern> filters);
+    abstract Builder setModuleFilters(ImmutableSet<Pattern> filters);
+    abstract Config autoBuild();
+
+    public Config build() {
+      checkArgument(!getSources().isEmpty() || !getModules().isEmpty(),
+          "There must be at least one input source or module");
+      checkArgument(intersection(getSources(), getExterns()).isEmpty(),
+          "The sources and externs inputs must be disjoint:\n  sources: %s\n  externs: %s",
+          getSources(), getExterns());
+      checkArgument(intersection(getSources(), getModules()).isEmpty(),
+          "The sources and modules inputs must be disjoint:\n  sources: %s\n  modules: %s",
+          getSources(), getModules());
+      checkArgument(intersection(getModules(), getExterns()).isEmpty(),
+          "The sources and modules inputs must be disjoint:\n  modules: %s\n  externs: %s",
+          getModules(), getExterns());
+      checkArgument(!exists(getOutput()) || isDirectory(getOutput()) || isZipFile(getOutput()),
+          "Output path, %s, is neither a directory nor a zip file", getOutput());
+      checkArgument(!getReadme().isPresent() || exists(getReadme().get()),
+          "README path, %s, does not exist", getReadme().orNull());
+      for (MarkdownPage page : getCustomPages()) {
+        checkArgument(exists(page.getPath()),
+            "For custom page \"%s\", file does not exist: %s",
+            page.getName(), page.getPath());
+      }
+
+      return setSrcPrefix(getSourcePrefixPath(getFileSystem(), getSources(), getModules()))
+          .autoBuild();
+    }
   }
 
   private static Path getSourcePrefixPath(
@@ -366,6 +330,7 @@ class Config {
    */
   static Config load(InputStream stream, FileSystem fileSystem) {
     ConfigSpec spec = ConfigSpec.load(stream, fileSystem);
+    //noinspection ConstantConditions
     checkArgument(spec.output != null, "Output not specified");
     Path output = spec.output;
     if (exists(output)) {
@@ -398,23 +363,24 @@ class Config {
       }
     }
 
-    return new Config(
-        ImmutableSet.copyOf(filteredSources),
-        ImmutableSet.copyOf(filteredModules),
-        ImmutableSet.copyOf(resolve(spec.externs)),
-        ImmutableSet.copyOf(resolve(spec.externModules)),
-        excludes,
-        ImmutableSet.copyOf(spec.typeFilters),
-        ImmutableSet.copyOf(spec.moduleFilters),
-        output,
-        spec.readme,
-        spec.customPages,
-        spec.stripModulePrefix,
-        spec.strict,
-        spec.language,
-        fileSystem,
-        spec.moduleNamingConvention,
-        checkSourceUrlTemplate(spec));
+    return builder()
+        .setSources(ImmutableSet.copyOf(filteredSources))
+        .setModules(ImmutableSet.copyOf(filteredModules))
+        .setExterns(ImmutableSet.copyOf(resolve(spec.externs)))
+        .setExternModules(ImmutableSet.copyOf(resolve(spec.externModules)))
+        .setExcludes(excludes)
+        .setTypeFilters(ImmutableSet.copyOf(spec.typeFilters))
+        .setModuleFilters(ImmutableSet.copyOf(spec.moduleFilters))
+        .setOutput(output)
+        .setReadme(spec.readme)
+        .setCustomPages(ImmutableList.copyOf(spec.customPages))
+        .setModulePrefix(spec.stripModulePrefix)
+        .setStrict(spec.strict)
+        .setLanguage(spec.language)
+        .setFileSystem(fileSystem)
+        .setModuleNamingConvention(spec.moduleNamingConvention)
+        .setSourceUrlTemplate(checkSourceUrlTemplate(spec))
+        .build();
   }
 
   private static Optional<String> checkSourceUrlTemplate(ConfigSpec spec) {
