@@ -21,7 +21,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 
 import com.github.jsdossier.proto.Index;
 import com.github.jsdossier.proto.TypeLink;
-import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 
 import java.nio.file.Path;
 
@@ -56,7 +56,7 @@ final class NavIndexFactory {
       Path homePage,
       boolean includeModules,
       boolean includeTypes,
-      ImmutableList<MarkdownPage> markdownPages) {
+      ImmutableSet<MarkdownPage> markdownPages) {
     Index.Builder builder = Index.newBuilder()
         .setHome(homePage.getFileName().toString())
         .setIncludeModules(includeModules)

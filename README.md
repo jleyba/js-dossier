@@ -20,11 +20,11 @@ Where `config.json` is a configuration file with the options listed below.
 
 __Configuration Options__
 
- * `output` Path to the directory to write all generated documentation to. This
-    field is required.
+ * `closureDepFiles` Path to a file to parse for calls to `goog.addDependency`.
+    This option requires also setting `closureLibraryDir`.
 
  * `closureLibraryDir` Path to the base directory of the Closure library (which
-    must contain base.js and depsjs). When this option is specified, Closure's
+    must contain base.js and deps.js). When this option is specified, Closure's
     deps.js and all of the files specified by `closureDepsFile` will be parsed
     for calls to `goog.addDependency`. The resulting map will be used to
     automatically expand the set of `sources` any time a symbol is
@@ -63,15 +63,45 @@ __Configuration Options__
     files so a a file that goog.provides symbol X comes before any file that
     goog.requires X.
 
- * `closureDepsFile` Path to a file to parse for calls to `goog.addDependency`.
-    This option requires also setting `closureLibraryDir`.
+ * `customPages` List of additional files to include in the generated
+    documentation. Each page is defined as a {name: string, path: string}
+    object, where the name is what's displayed in the navigation menu, and
+    `path` is the path to the markdown file to use. Files will be included in
+    the order listed, after the standard navigation items.
 
- * `sources` A list of .js files to extract API documentation from. If a glob
-    pattern is specified, every .js file under the current working directory
-    matching that pattern will be included. Specifying the path to a directory,
-    `foo`, is the same as using the glob pattern `foo/**.js`. The set of paths
-    specified by this option *must* be disjoint from those specified by
-    `modules`.
+ * `excludes` A list of .js files to exclude from processing. If a directory is
+    specified, all of the .js files under that directory will be excluded. A
+    glob pattern may also be specified to exclude all of the paths under the
+    current working directory that match  the provided pattern.
+
+ * `externModules` A list of .js files to include as CommonJS extern module
+    definitions. Each module may be required in source by the file's base name,
+    excluding the extension. For example, 'extern/libfoo.js' would provide the
+    extern definition for the import `require('libfoo');`
+
+ * `externs` A list of .js files to include as an extern file for the Closure
+    compiler. These  files are used to satisfy references to external types,
+    but are excluded when generating  API documentation.
+
+ * `language` Specifies which version of ECMAScript the input sources conform
+    to. Defaults to ES6_STRICT. Must be one of {ES3, ES5, ES5_STRICT, ES6,
+    ES6_STRICT}
+
+ * `moduleFilters` List of regular expressions for modules that should be
+    excluded from generated documentation, even if found in the type graph. The
+    provided expressions will be to the _absolute_ path of the source file for
+    each module.
+
+ * `moduleNamingConvention` The module naming convention to use. If set to
+    `NODE`, modules with a basename of index.js will use the name of the parent
+    directory (e.g. "foo/bar/index.js" -> "foo/bar/"). Must be one of {ES6,
+    NODE}; defaults to ES6
+
+ * `modulePrefix` A prefix to strip from every module's path when generating
+    documentation. The specified path must be a directory that is an ancestor
+    of every file specified in `modules`. Note: if this option is omitted, the
+    closest common ancestor for all module files will be selected as the
+    default.
 
  * `modules` A list of .js files to extract API documentation from. Each file
     will be processed as a CommonJS module, with only its exported API included
@@ -81,53 +111,11 @@ __Configuration Options__
     `foo/**.js`. The set of paths specified by this option *mut* be disjoint
     from those specified by `sources`.
 
- * `stripModulePrefix` A prefix to strip from every module's path when
-    generating documentation. The specified path must be a directory that is an
-    ancestor of every file specified in `modules`. Note: if this option is
-    omitted, the closest common ancestor for all module files will be selected
-    as the default.
-
- * `moduleNamingConvention` The module naming convention to use. If set to
-    `NODE`, modules with a basename of index.js will use the name of the parent
-    directory (e.g. "foo/bar/index.js" -> "foo/bar/"). Must be one of {ES6,
-    NODE}; defaults to ES6
-
- * `excludes` A list of .js files to exclude from processing. If a directory is
-    specified, all of the .js files under that directory will be excluded. A
-    glob pattern may also be specified to exclude all of the paths under the
-    current working directory that match  the provided pattern.
-
- * `externs` A list of .js files to include as an extern file for the Closure
-    compiler. These  files are used to satisfy references to external types,
-    but are excluded when generating  API documentation.
-
- * `externModules` A list of .js files to include as CommonJS extern module
-    definitions. Each module may be required in source by the file's base name,
-    excluding the extension. For example, 'extern/libfoo.js' would provide the
-    extern definition for the import `require('libfoo');`
-
- * `moduleFilters` List of regular expressions for modules that should be
-    excluded from generated documentation, even if found in the type graph. The
-    provided expressions will be to the _absolute_ path of the source file for
-    each module.
-
- * `typeFilters` List of regular expressions for types that should be excluded
-    from generated documentation, even if found in the type graph.
+ * `output` Path to the directory to write all generated documentation to. This
+    field is required.
 
  * `readme` Path to a README file to include as the main landing page for the
     generated documentation. This file should use markdown syntax.
-
- * `customPages` List of additional files to include in the generated
-    documentation. Each page is defined as a {name: string, path: string}
-    object, where the name is what's displayed in the navigation menu, and
-    `path` is the path to the markdown file to use. Files will be included in
-    the order listed, after the standard navigation items.
-
- * `strict` Whether to run with all type checking flags enabled.
-
- * `language` Specifies which version of ECMAScript the input sources conform
-    to. Defaults to ES6_STRICT. Must be one of {ES3, ES5, ES5_STRICT, ES6,
-    ES6_STRICT}
 
  * `sourceUrlTemplate` Specifies a template from which to generate a HTTP(S)
     links to source files. Within this template, the `${path}` and `${line}`
@@ -137,6 +125,18 @@ __Configuration Options__
 
     If this option is not specified, a rendered copy of each input file will be
     included in the generated output.
+
+ * `sources` A list of .js files to extract API documentation from. If a glob
+    pattern is specified, every .js file under the current working directory
+    matching that pattern will be included. Specifying the path to a directory,
+    `foo`, is the same as using the glob pattern `foo/**.js`. The set of paths
+    specified by this option *must* be disjoint from those specified by
+    `modules`.
+
+ * `strict` Whether to run with all type checking flags enabled.
+
+ * `typeFilters` List of regular expressions for types that should be excluded
+    from generated documentation, even if found in the type graph.
 
 
 ## ES6 Support

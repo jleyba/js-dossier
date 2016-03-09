@@ -1,5 +1,8 @@
 # v0.9.2-dev
 
+- Renamed configuration option `closureDepsFile` to `closureDepFiles`
+- Renamed configuration option `stripModulePrefix` to `modulePrefix`
+
 ## Bug Fixes
 
 - Include visibility indicators for enums

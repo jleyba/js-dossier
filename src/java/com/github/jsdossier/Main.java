@@ -152,7 +152,7 @@ final class Main {
           .toInstance(config.getModules());
       bind(Key.get(new TypeLiteral<ImmutableSet<Path>>() {}, ModuleExterns.class))
           .toInstance(config.getExternModules());
-      bind(new TypeLiteral<ImmutableList<MarkdownPage>>(){})
+      bind(new TypeLiteral<ImmutableSet<MarkdownPage>>(){})
           .toInstance(config.getCustomPages());
 
       bind(Key.get(new TypeLiteral<Optional<Path>>() {}, ModulePrefix.class))

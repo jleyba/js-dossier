@@ -15,9 +15,11 @@
  */
 package com.github.jsdossier;
 
+import static com.github.jsdossier.Paths.normalizedAbsolutePath;
 import static com.google.common.base.MoreObjects.firstNonNull;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Predicates.notNull;
+import static com.google.common.base.Verify.verify;
 import static com.google.common.collect.FluentIterable.from;
 import static com.google.common.collect.Iterables.transform;
 import static com.google.common.collect.Lists.newLinkedList;
@@ -28,7 +30,6 @@ import static java.nio.file.Files.isDirectory;
 import static java.nio.file.Files.write;
 
 import com.google.auto.value.AutoValue;
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
@@ -68,7 +69,9 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -80,9 +83,13 @@ import java.nio.file.Path;
 import java.nio.file.PathMatcher;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Pattern;
+
+import javax.annotation.Nullable;
 
 /**
  * Describes the runtime configuration for the app.
@@ -145,7 +152,7 @@ abstract class Config {
   /**
    * Returns the custom pages to include in the generated documentation.
    */
-  abstract ImmutableList<MarkdownPage> getCustomPages();
+  abstract ImmutableSet<MarkdownPage> getCustomPages();
 
   /**
    * Returns whether to enable all type checks.
@@ -271,8 +278,8 @@ abstract class Config {
     abstract Optional<Path> getReadme();
     abstract Builder setReadme(Optional<Path> path);
 
-    abstract ImmutableList<MarkdownPage> getCustomPages();
-    abstract Builder setCustomPages(ImmutableList<MarkdownPage> pages);
+    abstract ImmutableSet<MarkdownPage> getCustomPages();
+    abstract Builder setCustomPages(ImmutableSet<MarkdownPage> pages);
 
     abstract Builder setStrict(boolean strict);
     abstract Builder setLanguage(Language lang);
@@ -329,35 +336,33 @@ abstract class Config {
    * Loads a new runtime configuration from the provided input stream.
    */
   static Config load(InputStream stream, FileSystem fileSystem) {
-    ConfigSpec spec = ConfigSpec.load(stream, fileSystem);
-    //noinspection ConstantConditions
-    checkArgument(spec.output != null, "Output not specified");
-    Path output = spec.output;
+    Spec spec = Spec.fromJson(stream, fileSystem);
+    Path output = spec.getOutput();
     if (exists(output)) {
       checkArgument(
           isDirectory(output) || isZipFile(output),
           "Output path must be a directory or zip file: %s", output);
     }
 
-    ImmutableSet<Path> excludes = resolve(spec.excludes);
+    ImmutableSet<Path> excludes = resolve(spec.getExcludes());
 
     @SuppressWarnings("unchecked")
     Predicate<Path> filter = Predicates.and(
         notExcluded(excludes),
         notHidden());
 
-    Iterable<Path> filteredSources = from(resolve(spec.sources)).filter(filter);
-    Iterable<Path> filteredModules = from(resolve(spec.modules)).filter(filter);
+    Iterable<Path> filteredSources = from(resolve(spec.getSources())).filter(filter);
+    Iterable<Path> filteredModules = from(resolve(spec.getModules())).filter(filter);
 
-    if (spec.closureLibraryDir.isPresent()) {
+    if (spec.getClosureLibraryDir().isPresent()) {
       ImmutableSet<Path> depsFiles = ImmutableSet.<Path>builder()
-          .add(spec.closureLibraryDir.get().resolve("deps.js"))
-          .addAll(spec.closureDepsFile)
+          .add(spec.getClosureLibraryDir().get().resolve("deps.js"))
+          .addAll(resolve(spec.getClosureDepFiles()))
           .build();
 
       try {
         filteredSources = processClosureSources(
-            filteredSources, depsFiles, spec.closureLibraryDir.get());
+            filteredSources, depsFiles, spec.getClosureLibraryDir().get());
       } catch (IOException | SortedDependencies.CircularDependencyException e) {
         throw new RuntimeException(e);
       }
@@ -366,33 +371,33 @@ abstract class Config {
     return builder()
         .setSources(ImmutableSet.copyOf(filteredSources))
         .setModules(ImmutableSet.copyOf(filteredModules))
-        .setExterns(ImmutableSet.copyOf(resolve(spec.externs)))
-        .setExternModules(ImmutableSet.copyOf(resolve(spec.externModules)))
+        .setExterns(ImmutableSet.copyOf(resolve(spec.getExterns())))
+        .setExternModules(ImmutableSet.copyOf(resolve(spec.getExternModules())))
         .setExcludes(excludes)
-        .setTypeFilters(ImmutableSet.copyOf(spec.typeFilters))
-        .setModuleFilters(ImmutableSet.copyOf(spec.moduleFilters))
+        .setTypeFilters(spec.getTypeFilters())
+        .setModuleFilters(spec.getModuleFilters())
         .setOutput(output)
-        .setReadme(spec.readme)
-        .setCustomPages(ImmutableList.copyOf(spec.customPages))
-        .setModulePrefix(spec.stripModulePrefix)
-        .setStrict(spec.strict)
-        .setLanguage(spec.language)
+        .setReadme(spec.getReadme())
+        .setCustomPages(spec.getCustomPages())
+        .setModulePrefix(spec.getModulePrefix())
+        .setStrict(spec.isStrict())
+        .setLanguage(spec.getLanguage())
         .setFileSystem(fileSystem)
-        .setModuleNamingConvention(spec.moduleNamingConvention)
+        .setModuleNamingConvention(spec.getModuleNamingConvention())
         .setSourceUrlTemplate(checkSourceUrlTemplate(spec))
         .build();
   }
 
-  private static Optional<String> checkSourceUrlTemplate(ConfigSpec spec) {
-    if (spec.sourceUrlTemplate.isPresent()) {
-      String template = spec.sourceUrlTemplate.get();
+  private static Optional<String> checkSourceUrlTemplate(Spec spec) {
+    if (spec.getSourceUrlTemplate().isPresent()) {
+      String template = spec.getSourceUrlTemplate().get();
       checkArgument(template.startsWith("http://") || template.startsWith("https://"),
           "Invalid URL template: must be a http or https URL: %s", template);
       checkArgument(template.contains("${path}"),
           "Invalid URL template: must contain '${path}' and (optionally) '${line}': %s",
           template);
     }
-    return spec.sourceUrlTemplate;
+    return spec.getSourceUrlTemplate();
   }
 
   private static ImmutableSet<Path> resolve(Iterable<PathSpec> specs) {
@@ -521,8 +526,7 @@ abstract class Config {
     };
   }
 
-  @VisibleForTesting
-  static class PathSpec {
+  static final class PathSpec {
     private final Path baseDir;
     private final String spec;
 
@@ -570,18 +574,32 @@ abstract class Config {
       pw.println();
     }
 
-    for (Field field : ConfigSpec.class.getDeclaredFields()) {
-      Description description = field.getAnnotation(Description.class);
-      if (description != null) {
-        String str = String.format(" * `%s` ", field.getName()) + description.value().trim();
-        boolean isFirst = true;
-        for (String line : Splitter.on("\n").split(str)) {
-          if (isFirst) {
-            printLine(pw, line);
-            isFirst = false;
-          } else {
-            printLine(pw, "   " + line);
-          }
+    Iterable<Description> descriptions =
+        FluentIterable.from(ImmutableList.copyOf(Spec.class.getDeclaredMethods()))
+            .transform(new Function<Method, Description>() {
+              @Nullable
+              @Override
+              public Description apply(@Nullable Method input) {
+                return input == null ? null : input.getAnnotation(Description.class);
+              }
+            })
+            .filter(Predicates.notNull())
+            .toSortedList(new Comparator<Description>() {
+              @Override
+              public int compare(Description a, Description b) {
+                return a.name().compareTo(b.name());
+              }
+            });
+
+    for (Description description : descriptions) {
+      String str = " * `" + description.name() + "` " + description.desc().trim();
+      boolean isFirst = true;
+      for (String line : Splitter.on('\n').split(str)) {
+        if (isFirst) {
+          printLine(pw, line);
+          isFirst = false;
+        } else {
+          printLine(pw, "   " + line);
         }
       }
       pw.println();
@@ -609,19 +627,76 @@ abstract class Config {
   }
 
   @Retention(RetentionPolicy.RUNTIME)
-  @Target(ElementType.FIELD)
-  private @interface Description {
-    String value();
+  @Target(ElementType.METHOD)
+  @interface Description {
+    String name();
+    String desc();
   }
 
-  private static class ConfigSpec {
+  @AutoValue
+  public abstract static class Spec {
+    public static Builder builder() {
+      return new AutoValue_Config_Spec.Builder()
+          .setClosureLibraryDir(Optional.<Path>absent())
+          .setClosureDepFiles(ImmutableSet.<PathSpec>of())
+          .setSources(ImmutableSet.<PathSpec>of())
+          .setModules(ImmutableSet.<PathSpec>of())
+          .setModulePrefix(Optional.<Path>absent())
+          .setModuleNamingConvention(ModuleNamingConvention.ES6)
+          .setExcludes(ImmutableSet.<PathSpec>of())
+          .setExterns(ImmutableSet.<PathSpec>of())
+          .setExternModules(ImmutableSet.<PathSpec>of())
+          .setModuleFilters(ImmutableSet.<Pattern>of())
+          .setTypeFilters(ImmutableSet.<Pattern>of())
+          .setReadme(Optional.<Path>absent())
+          .setCustomPages(ImmutableSet.<MarkdownPage>of())
+          .setLanguage(Language.ES6_STRICT)
+          .setStrict(false)
+          .setSourceUrlTemplate(Optional.<String>absent());
+    }
 
-    @Description("Path to the directory to write all generated documentation to. This field is" +
-        " required.")
-    private final Path output = null;
+    public static Spec fromJson(InputStream stream, FileSystem fileSystem) {
+      Path pwd = normalizedAbsolutePath(fileSystem, "");
 
-    @Description("Path to the base directory of the Closure library (which must contain base.js" +
-        " and depsjs). When this option is specified, Closure's deps.js and all of the files" +
+      Gson gson = new GsonBuilder()
+          .registerTypeAdapter(Spec.class, new SpecMarshaller())
+          .registerTypeAdapter(Path.class, new PathDeserializer(fileSystem))
+          .registerTypeAdapter(PathSpec.class, new PathSpecDeserializer(pwd))
+          .registerTypeAdapter(Pattern.class, new PatternDeserializer())
+          .registerTypeAdapter(
+              new TypeToken<ImmutableSet<Pattern>>(){}.getType(),
+              new ImmutableSetDeserializer<>(Pattern.class))
+          .registerTypeAdapter(
+              new TypeToken<ImmutableSet<MarkdownPage>>(){}.getType(),
+              new ImmutableSetDeserializer<>(MarkdownPage.class))
+          .registerTypeAdapter(
+              new TypeToken<ImmutableSet<Path>>(){}.getType(),
+              new ImmutableSetDeserializer<>(Path.class))
+          .registerTypeAdapter(
+              new TypeToken<ImmutableSet<PathSpec>>(){}.getType(),
+              new ImmutableSetDeserializer<>(PathSpec.class))
+          .registerTypeAdapter(
+              new TypeToken<Optional<Path>>() {}.getType(),
+              new OptionalDeserializer<>(Path.class))
+          .registerTypeAdapter(
+              new TypeToken<Optional<String>>(){}.getType(),
+              new OptionalDeserializer<>(String.class))
+          .create();
+
+      return gson.fromJson(
+          new InputStreamReader(stream, StandardCharsets.UTF_8), Spec.class);
+    }
+
+    @Description(
+        name = "output",
+        desc = "Path to the directory to write all generated documentation to. This field is" +
+            " required.")
+    abstract Path getOutput();
+
+    @Description(
+        name = "closureLibraryDir",
+        desc = "Path to the base directory of the Closure library (which must contain base.js" +
+        " and deps.js). When this option is specified, Closure's deps.js and all of the files" +
         " specified by `closureDepsFile` will be parsed for calls to `goog.addDependency`. The" +
         " resulting map will be used to automatically expand the set of `sources` any time a" +
         " symbol is goog.require'd with the ile that goog.provides that symbol, along with all" +
@@ -657,83 +732,125 @@ abstract class Config {
         "\n" +
         " Notice specifying `closureLibraryDir` instructs Dossier to sort the input files so a" +
         " a file that goog.provides symbol X comes before any file that goog.requires X.")
-    private final Optional<Path> closureLibraryDir = Optional.absent();
+    abstract Optional<Path> getClosureLibraryDir();
 
-    @Description("Path to a file to parse for calls to `goog.addDependency`. This option " +
+    @Description(
+        name = "closureDepFiles",
+        desc =
+        "Path to a file to parse for calls to `goog.addDependency`. This option " +
         "requires also setting `closureLibraryDir`.")
-    private final List<Path> closureDepsFile = ImmutableList.of();
+    abstract ImmutableSet<PathSpec> getClosureDepFiles();
 
-    @Description("A list of .js files to extract API documentation from. If a glob pattern " +
+    @Description(
+        name = "sources",
+        desc =
+        "A list of .js files to extract API documentation from. If a glob pattern " +
         "is specified, every .js file under the current working directory matching that pattern" +
         " will be included. Specifying the path to a directory, `foo`, is the same as using " +
         "the glob pattern `foo/**.js`. The set of paths specified by this option *must* be " +
         "disjoint from those specified by `modules`.")
-    private final List<PathSpec> sources = ImmutableList.of();
+    abstract ImmutableSet<PathSpec> getSources();
 
-    @Description("A list of .js files to extract API documentation from. Each file will be " +
+    @Description(
+        name = "modules",
+        desc =
+        "A list of .js files to extract API documentation from. Each file will be " +
         "processed as a CommonJS module, with only its exported API included in the generated" +
         " output. If a glob pattern is specified, every .js file under the current directory " +
         "matching that pattern will be included. Specifying the path to a directory, `foo`, is" +
         " the same as the glob pattern `foo/**.js`. The set of paths specified by this option " +
         "*mut* be disjoint from those specified by `sources`.")
-    private final List<PathSpec> modules = ImmutableList.of();
+    abstract ImmutableSet<PathSpec> getModules();
 
-    @Description("A prefix to strip from every module's path when generating documentation." +
+    @Description(
+        name = "modulePrefix",
+        desc =
+        "A prefix to strip from every module's path when generating documentation." +
         " The specified path must be a directory that is an ancestor of every file specified " +
         "in `modules`. Note: if this option is omitted, the closest common ancestor for all " +
         "module files will be selected as the default.")
-    private final Optional<Path> stripModulePrefix = Optional.absent();
+    abstract Optional<Path> getModulePrefix();
 
-    @Description("The module naming convention to use. If set to `NODE`, modules with a basename" +
+    @Description(
+        name = "moduleNamingConvention",
+        desc =
+        "The module naming convention to use. If set to `NODE`, modules with a basename" +
         " of index.js will use the name of the parent directory" +
         " (e.g. \"foo/bar/index.js\" -> \"foo/bar/\"). Must be one of {ES6, NODE}; defaults to ES6")
-    private final ModuleNamingConvention moduleNamingConvention = ModuleNamingConvention.ES6;
+    abstract ModuleNamingConvention getModuleNamingConvention();
 
-    @Description("A list of .js files to exclude from processing. If a directory is specified," +
+    @Description(
+        name = "excludes",
+        desc =
+        "A list of .js files to exclude from processing. If a directory is specified," +
         " all of the .js files under that directory will be excluded. A glob pattern may also" +
         " be specified to exclude all of the paths under the current working directory that " +
         "match  the provided pattern.")
-    private final List<PathSpec> excludes = ImmutableList.of();
-
-    @Description("A list of .js files to include as an extern file for the Closure compiler. " +
-        "These  files are used to satisfy references to external types, but are excluded when " +
-        "generating  API documentation.")
-    private final List<PathSpec> externs = ImmutableList.of();
+    abstract ImmutableSet<PathSpec> getExcludes();
 
     @Description(
+        name = "externs",
+        desc =
+        "A list of .js files to include as an extern file for the Closure compiler. " +
+        "These  files are used to satisfy references to external types, but are excluded when " +
+        "generating  API documentation.")
+    abstract ImmutableSet<PathSpec> getExterns();
+
+    @Description(
+        name = "externModules",
+        desc =
         "A list of .js files to include as CommonJS extern module definitions. Each module may be" +
             " required in source by the file's base name, excluding the extension. For example," +
             " 'extern/libfoo.js' would provide the extern definition for the import" +
             " `require('libfoo');`")
-    private final List<PathSpec> externModules = ImmutableList.of();
+    abstract ImmutableSet<PathSpec> getExternModules();
 
-    @Description("List of regular expressions for modules that should be excluded from generated "
+    @Description(
+        name = "moduleFilters",
+        desc =
+        "List of regular expressions for modules that should be excluded from generated "
         + "documentation, even if found in the type graph. The provided expressions will be "
         + "to the _absolute_ path of the source file for each module.")
-    private final List<Pattern> moduleFilters = ImmutableList.of();
+    abstract ImmutableSet<Pattern> getModuleFilters();
 
-    @Description("List of regular expressions for types that should be excluded from generated " +
+    @Description(
+        name = "typeFilters",
+        desc =
+        "List of regular expressions for types that should be excluded from generated " +
         "documentation, even if found in the type graph.")
-    private final List<Pattern> typeFilters = ImmutableList.of();
+    abstract ImmutableSet<Pattern> getTypeFilters();
 
-    @Description("Path to a README file to include as the main landing page for the generated " +
+    @Description(
+        name = "readme",
+        desc =
+        "Path to a README file to include as the main landing page for the generated " +
         "documentation. This file should use markdown syntax.")
-    private final Optional<Path> readme = Optional.absent();
+    abstract Optional<Path> getReadme();
 
-    @Description("List of additional files to include in the generated documentation. Each page " +
+    @Description(
+        name = "customPages",
+        desc =
+        "List of additional files to include in the generated documentation. Each page " +
         "is defined as a {name: string, path: string} object, where the name is what's " +
         "displayed in the navigation menu, and `path` is the path to the markdown file to use. " +
         "Files will be included in the order listed, after the standard navigation items.")
-    private final List<MarkdownPage> customPages = ImmutableList.of();
-
-    @Description("Whether to run with all type checking flags enabled.")
-    private final boolean strict = false;
-
-    @Description("Specifies which version of ECMAScript the input sources conform to. Defaults " +
-        "to ES6_STRICT. Must be one of {ES3, ES5, ES5_STRICT, ES6, ES6_STRICT}")
-    private final Language language = Language.ES6_STRICT;
+    abstract ImmutableSet<MarkdownPage> getCustomPages();
 
     @Description(
+        name = "language",
+        desc =
+        "Specifies which version of ECMAScript the input sources conform to. Defaults " +
+        "to ES6_STRICT. Must be one of {ES3, ES5, ES5_STRICT, ES6, ES6_STRICT}")
+    abstract Language getLanguage();
+
+    @Description(
+        name = "strict",
+        desc = "Whether to run with all type checking flags enabled.")
+    abstract boolean isStrict();
+
+    @Description(
+        name = "sourceUrlTemplate",
+        desc =
         "Specifies a template from which to generate a HTTP(S) links to source files. Within this" +
             " template, the `${path}` and `${line}` tokens will be replaced with the linked" +
             " type's source file path and line number, respectively. Source paths will be" +
@@ -741,25 +858,30 @@ abstract class Config {
             "\n" +
             " If this option is not specified, a rendered copy of each input file will be" +
             " included in the generated output.")
-    private final Optional<String> sourceUrlTemplate = Optional.absent();
+    abstract Optional<String> getSourceUrlTemplate();
 
-    static ConfigSpec load(InputStream stream, FileSystem fileSystem) {
-      Path pwd = fileSystem.getPath("").toAbsolutePath().normalize();
-      Gson gson = new GsonBuilder()
-          .registerTypeAdapter(Path.class, new PathDeserializer(fileSystem))
-          .registerTypeAdapter(PathSpec.class, new PathSpecDeserializer(pwd))
-          .registerTypeAdapter(Pattern.class, new PatternDeserializer())
-          .registerTypeAdapter(
-              new TypeToken<Optional<Path>>(){}.getType(),
-              new OptionalDeserializer<>(Path.class))
-          .registerTypeAdapter(
-              new TypeToken<Optional<String>>(){}.getType(),
-              new OptionalDeserializer<>(String.class))
-          .create();
+    abstract Builder toBuilder();
 
-      return gson.fromJson(
-          new InputStreamReader(stream, StandardCharsets.UTF_8),
-          ConfigSpec.class);
+    @AutoValue.Builder
+    abstract static class Builder {
+      abstract Builder setOutput(Path path);
+      abstract Builder setClosureLibraryDir(Optional<Path> dir);
+      abstract Builder setClosureDepFiles(ImmutableSet<PathSpec> files);
+      abstract Builder setSources(ImmutableSet<PathSpec> sources);
+      abstract Builder setModules(ImmutableSet<PathSpec> modules);
+      abstract Builder setModulePrefix(Optional<Path> prefix);
+      abstract Builder setModuleNamingConvention(ModuleNamingConvention convention);
+      abstract Builder setExcludes(ImmutableSet<PathSpec> excludes);
+      abstract Builder setExterns(ImmutableSet<PathSpec> externs);
+      abstract Builder setExternModules(ImmutableSet<PathSpec> externs);
+      abstract Builder setModuleFilters(ImmutableSet<Pattern> filters);
+      abstract Builder setTypeFilters(ImmutableSet<Pattern> filters);
+      abstract Builder setReadme(Optional<Path> path);
+      abstract Builder setCustomPages(ImmutableSet<MarkdownPage> pages);
+      abstract Builder setLanguage(Language language);
+      abstract Builder setStrict(boolean strict);
+      abstract Builder setSourceUrlTemplate(Optional<String> template);
+      abstract Spec build();
     }
   }
 
@@ -779,6 +901,86 @@ abstract class Config {
 
     public String getName() {
       return fullName;
+    }
+  }
+
+  private static class SpecMarshaller implements JsonDeserializer<Spec> {
+
+    @Override
+    public Spec deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+        throws JsonParseException {
+      Spec.Builder builder = Spec.builder();
+
+      JsonObject jsonObj = json.getAsJsonObject();
+      for (Method getter : Spec.class.getDeclaredMethods()) {
+        Description desc = getter.getAnnotation(Description.class);
+        if (desc == null || !jsonObj.has(desc.name())) {
+          continue;
+        }
+
+        Type genericType = getter.getGenericReturnType();
+        Object value = context.deserialize(jsonObj.get(desc.name()), genericType);
+
+        String setterName;
+        if (getter.getName().startsWith("get")) {
+          setterName = "set" + getter.getName().substring("get".length());
+        } else {
+          verify(getter.getName().startsWith("is"));
+          setterName = "set" + getter.getName().substring("is".length());
+        }
+
+        Class<? extends Spec.Builder> clazz = builder.getClass();
+        try {
+          Class<?> basicType;
+          if (genericType instanceof Class) {
+            basicType = (Class<?>) genericType;
+          } else if (genericType instanceof ParameterizedType) {
+            basicType = (Class<?>) ((ParameterizedType) genericType).getRawType();
+          } else {
+            throw new AssertionError();
+          }
+          Method setterMethod = clazz.getMethod(setterName, basicType);
+          setterMethod.invoke(builder, basicType.cast(value));
+        } catch (NoSuchMethodException
+            | InvocationTargetException
+            | IllegalAccessException
+            | RuntimeException e) {
+          throw new JsonParseException(e);
+        }
+      }
+
+      return builder.build();
+    }
+  }
+
+  private static class ImmutableSetDeserializer<T> implements JsonDeserializer<ImmutableSet<T>> {
+    private final Class<T> componentType;
+
+    private ImmutableSetDeserializer(Class<T> componentType) {
+      this.componentType = componentType;
+    }
+
+    @Override
+    public ImmutableSet<T> deserialize(
+        JsonElement json, Type typeOfT, JsonDeserializationContext context)
+        throws JsonParseException {
+      if (json.isJsonNull()) {
+        return ImmutableSet.of();
+      }
+      List<T> items = new ArrayList<>();
+      JsonArray array = json.getAsJsonArray();
+      for (int i = 0; i < array.size(); i++) {
+        JsonElement element = array.get(i);
+        if (element.isJsonNull()) {
+          if (i == array.size() - 1) {
+            break;
+          }
+          throw new JsonParseException("null element in array at index " + i);
+        }
+        T item = context.deserialize(array.get(i), componentType);
+        items.add(item);
+      }
+      return ImmutableSet.copyOf(items);
     }
   }
 
@@ -813,9 +1015,7 @@ abstract class Config {
     @Override
     public Path deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext context)
         throws JsonParseException {
-      return fileSystem.getPath(jsonElement.getAsString())
-          .toAbsolutePath()
-          .normalize();
+      return normalizedAbsolutePath(fileSystem, jsonElement.getAsString());
     }
   }
 

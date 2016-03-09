@@ -29,6 +29,7 @@ import com.google.common.collect.Ordering;
 
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
+import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Comparator;
@@ -40,6 +41,18 @@ import java.util.List;
  */
 class Paths {
   private Paths() {}
+
+  /**
+   * Returns a normalized, absolute path for the given file system.
+   *
+   * @param fs the file system to use.
+   * @param first the first part of the path.
+   * @param rest the remaining path components.
+   * @return the constructed path.
+   */
+  static Path normalizedAbsolutePath(FileSystem fs, String first, String... rest) {
+    return fs.getPath(first, rest).toAbsolutePath().normalize();
+  }
 
   /**
    * Normalizes the path separators in {@code p} to forward slashes.

@@ -21,7 +21,7 @@ import static org.junit.Assert.fail;
 
 import com.github.jsdossier.proto.Index;
 import com.github.jsdossier.proto.TypeLink;
-import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.jimfs.Configuration;
 import com.google.common.jimfs.Jimfs;
 import org.junit.Test;
@@ -40,7 +40,7 @@ public class NavIndexFactoryTest {
   private final FileSystem fs = Jimfs.newFileSystem();
   private final Path root = fs.getPath("/out");
   private final Path home = root.resolve("index.html");
-  private final ImmutableList<MarkdownPage> pages = ImmutableList.of(
+  private final ImmutableSet<MarkdownPage> pages = ImmutableSet.of(
       new MarkdownPage("foo", fs.getPath("/pages/foo.md")),
       new MarkdownPage("bar", fs.getPath("/pages/bar.md")));
   private final NavIndexFactory factory = NavIndexFactory.create(home, true, true, pages);
@@ -51,7 +51,7 @@ public class NavIndexFactoryTest {
       NavIndexFactory.create(
           root.resolve("index.html"),
           true, true,
-          ImmutableList.of(new MarkdownPage("index", root.resolve("index.md"))));
+          ImmutableSet.of(new MarkdownPage("index", root.resolve("index.md"))));
       fail();
     } catch (IllegalArgumentException e) {
       // Expected.
@@ -105,7 +105,7 @@ public class NavIndexFactoryTest {
     NavIndexFactory factory = NavIndexFactory.create(
         root.resolve("index.html"),
         true, true,
-        ImmutableList.of(
+        ImmutableSet.of(
             new MarkdownPage("foo", fs.getPath("pages/foo.md")),
             new MarkdownPage("bar", fs.getPath("pages/bar.md"))));
 
