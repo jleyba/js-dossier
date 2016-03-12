@@ -22,7 +22,7 @@
 
 /**
  * @param {*} value
- * @param {string} message
+ * @param {string=} message
  * @return {void}
  * @throws {assert.AssertionError}
  */
@@ -50,9 +50,9 @@ assert.ok;
 
 /**
  * @param {*} actual
- * @param {*} expected
- * @param {string} message
- * @param {string} operator
+ * @param {*=} expected
+ * @param {string=} message
+ * @param {string=} operator
  * @return {void}
  * @throws {assert.AssertionError}
  */
@@ -61,7 +61,7 @@ assert.fail;
 /**
  * @param {*} actual
  * @param {*} expected
- * @param {string} message
+ * @param {string=} message
  * @return {void}
  * @throws {assert.AssertionError}
  */
@@ -70,7 +70,7 @@ assert.equal;
 /**
  * @param {*} actual
  * @param {*} expected
- * @param {string} message
+ * @param {string=} message
  * @return {void}
  * @throws {assert.AssertionError}
  */
@@ -79,7 +79,7 @@ assert.notEqual;
 /**
  * @param {*} actual
  * @param {*} expected
- * @param {string} message
+ * @param {string=} message
  * @return {void}
  * @throws {assert.AssertionError}
  */
@@ -88,7 +88,7 @@ assert.deepEqual;
 /**
  * @param {*} actual
  * @param {*} expected
- * @param {string} message
+ * @param {string=} message
  * @return {void}
  * @throws {assert.AssertionError}
  */
@@ -97,7 +97,7 @@ assert.notDeepEqual;
 /**
  * @param {*} actual
  * @param {*} expected
- * @param {string} message
+ * @param {string=} message
  * @return {void}
  * @throws {assert.AssertionError}
  */
@@ -106,7 +106,7 @@ assert.strictEqual;
 /**
  * @param {*} actual
  * @param {*} expected
- * @param {string} message
+ * @param {string=} message
  * @return {void}
  * @throws {assert.AssertionError}
  */
