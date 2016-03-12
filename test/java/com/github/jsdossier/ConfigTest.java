@@ -468,7 +468,7 @@ public class ConfigTest {
 
   private Config load(String string) {
     ByteArrayInputStream input = new ByteArrayInputStream(string.getBytes(StandardCharsets.UTF_8));
-    return Config.load(input, fs);
+    return Config.fromJson(input, fs);
   }
 
   @SafeVarargs

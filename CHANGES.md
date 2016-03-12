@@ -1,7 +1,8 @@
-# v0.9.2-dev
+# v0.10.0-dev
 
 - Renamed configuration option `closureDepsFile` to `closureDepFiles`
 - Renamed configuration option `stripModulePrefix` to `modulePrefix`
+- Dossier may now be configured entirely through command line flags
 
 ## Bug Fixes
 

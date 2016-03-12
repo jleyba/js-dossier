@@ -42,16 +42,15 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.runners.JUnit4;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -62,480 +61,521 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-@RunWith(Parameterized.class)
+@RunWith(Enclosed.class)
 public class EndToEndTest {
 
-  @Parameters(name = "{0}")
-  public static Collection<Object[]> data() throws IOException {
-    ImmutableList.Builder<Object[]> data = ImmutableList.builder();
-    data.add(new Object[]{new Scenario("out/")});
-    data.add(new Object[]{new Scenario("out.zip")});
-    return data.build();
+  @RunWith(JUnit4.class)
+  public static class ConfigurationEquivalenceTest {
+    @Test
+    public void flagAndJsonConfigAreEquivalent() throws IOException {
+      FileSystem fs = Jimfs.newFileSystem();
+      Path tmpDir = fs.getPath("/root");
+
+      Scenario jsonScenario = createScenario(tmpDir, false);
+      Scenario flagScenario = createScenario(tmpDir, true);
+
+      String[] jsonArgs = jsonScenario.buildCommandLine();
+      String[] flagArgs = flagScenario.buildCommandLine();
+
+      assertThat(jsonArgs.length).isLessThan(flagArgs.length);
+      assertThat(jsonArgs).asList().contains("-c");
+      assertThat(flagArgs).asList().doesNotContain("-c");
+
+      com.github.jsdossier.Config jsonConfig = loadConfig(jsonScenario);
+      com.github.jsdossier.Config flagConfig = loadConfig(flagScenario);
+
+      assertThat(jsonConfig.getFileSystem()).isSameAs(flagConfig.getFileSystem());
+      assertThat(jsonConfig.toJson()).isEqualTo(flagConfig.toJson());
+    }
+
+    private com.github.jsdossier.Config loadConfig(Scenario scenario) throws IOException {
+      Flags flags = Flags.parse(scenario.buildCommandLine(), scenario.getInputFileSystem());
+      return com.github.jsdossier.Config.fromFlags(flags, scenario.getInputFileSystem());
+    }
+
+    private Scenario createScenario(Path tmpDir, boolean useFlags) throws IOException {
+      Scenario scenario = new Scenario("out/equivalence_test", useFlags);
+      // These tests require the default file system.
+      scenario.initFileSystem(tmpDir);
+      return scenario;
+    }
   }
 
-  private final Scenario scenario;
-  private Path outDir;
+  private abstract static class AbstractScenarioTest {
+    private Path outDir;
 
-  public EndToEndTest(Scenario scenario) {
-    this.scenario = scenario;
-  }
+    abstract Scenario getScenario();
 
-  @Override
-  public String toString() {
-    return "EndToEndTest::" + scenario;
-  }
+    @Before
+    public void initOutputDir() throws Exception {
+      outDir = getScenario().init();
+    }
 
-  @Before
-  public void initOutputDir() throws Exception {
-    outDir = scenario.init();
-  }
+    @Test
+    public void checkCopiesAllSourceFiles() {
+      assertExists(outDir.resolve("source/closure_module.js.src.html"));
+      assertExists(outDir.resolve("source/globals.js.src.html"));
+      assertExists(outDir.resolve("source/json.js.src.html"));
+      assertExists(outDir.resolve("source/example/index.js.src.html"));
+      assertExists(outDir.resolve("source/subdir/emptyenum.js.src.html"));
+    }
 
-  @Test
-  public void checkCopiesAllSourceFiles() {
-    assertExists(outDir.resolve("source/closure_module.js.src.html"));
-    assertExists(outDir.resolve("source/globals.js.src.html"));
-    assertExists(outDir.resolve("source/json.js.src.html"));
-    assertExists(outDir.resolve("source/example/index.js.src.html"));
-    assertExists(outDir.resolve("source/subdir/emptyenum.js.src.html"));
-  }
+    @Test
+    public void checkSourceFileRendering() throws IOException {
+      Document document = load(outDir.resolve("source/subdir/emptyenum.js.src.html"));
+      compareWithGoldenFile(
+          querySelector(document, "article.srcfile"),
+          "source/subdir/emptyenum.js.src.html");
+      checkHeader(document);
+      compareWithGoldenFile(querySelectorAll(document, "nav"), "source/subdir/nav.html");
+      compareWithGoldenFile(
+          querySelectorAll(document, "main ~ footer, main ~ script"), "source/subdir/footer.html");
+    }
 
-  @Test
-  public void checkSourceFileRendering() throws IOException {
-    Document document = load(outDir.resolve("source/subdir/emptyenum.js.src.html"));
-    compareWithGoldenFile(
-        querySelector(document, "article.srcfile"),
-        "source/subdir/emptyenum.js.src.html");
-    checkHeader(document);
-    compareWithGoldenFile(querySelectorAll(document, "nav"), "source/subdir/nav.html");
-    compareWithGoldenFile(
-        querySelectorAll(document, "main ~ footer, main ~ script"), "source/subdir/footer.html");
-  }
-
-  @Test
-  public void checkMarkdownIndexProcessing() throws IOException {
-    Document document = load(outDir.resolve("index.html"));
-    compareWithGoldenFile(querySelector(document, "article.page"), "index.html");
-    checkHeader(document);
-    checkNav(document);
-    checkFooter(document);
-  }
-
-  @Test
-  public void checkGlobalClass() throws IOException {
-    Document document = load(outDir.resolve("GlobalCtor.html"));
-    compareWithGoldenFile(querySelector(document, "article"), "GlobalCtor.html");
-    checkHeader(document);
-    checkNav(document);
-    checkFooter(document);
-  }
-
-  @Test
-  public void checkGlobalEnum() throws IOException {
-    Document document = load(outDir.resolve("GlobalEnum.html"));
-    compareWithGoldenFile(querySelector(document, "article"), "GlobalEnum.html");
-    checkHeader(document);
-    checkNav(document);
-    checkFooter(document);
-  }
-
-  @Test
-  public void checkEmptyGlobalEnum() throws IOException {
-    Document document = load(outDir.resolve("EmptyEnum.html"));
-    compareWithGoldenFile(querySelector(document, "article"), "EmptyEnum.html");
-    checkHeader(document);
-    checkNav(document);
-    checkFooter(document);
-  }
-
-  @Test
-  public void checkGlobalUndefinedEnum() throws IOException {
-    Document document = load(outDir.resolve("UndefinedEnum.html"));
-    compareWithGoldenFile(querySelector(document, "article"), "UndefinedEnum.html");
-    checkHeader(document);
-    checkNav(document);
-    checkFooter(document);
-  }
-
-  @Test
-  public void checkDeprecatedClass() throws IOException {
-    Document document = load(outDir.resolve("DeprecatedFoo.html"));
-    compareWithGoldenFile(querySelector(document, "article"), "DeprecatedFoo.html");
-    checkHeader(document);
-    checkNav(document);
-    checkFooter(document);
-  }
-
-  @Test
-  public void checkFunctionNamespace() throws IOException {
-    Document document = load(outDir.resolve("sample.json.html"));
-    compareWithGoldenFile(querySelector(document, "article"), "sample.json.html");
-    checkHeader(document);
-    checkNav(document);
-    checkFooter(document);
-  }
-
-  @Test
-  public void checkInterfaceThatExtendsOtherInterfaces() throws IOException {
-    Document document = load(outDir.resolve("sample.inheritance.LeafInterface.html"));
-    compareWithGoldenFile(querySelector(document, "article"),
-        "sample.inheritance.LeafInterface.html");
-    checkHeader(document);
-    checkNav(document);
-    checkFooter(document);
-  }
-
-  @Test
-  public void checkExportedApiOfClosureModule() throws IOException {
-    Document document = load(outDir.resolve("closure.module.html"));
-    compareWithGoldenFile(querySelector(document, "article"), "closure.module.html");
-    checkHeader(document);
-    checkNav(document);
-    checkFooter(document);
-  }
-
-  @Test
-  public void checkClassDefiendOnClosureModuleExportsObject() throws IOException {
-    Document document = load(outDir.resolve("closure.module.Clazz.html"));
-    compareWithGoldenFile(querySelector(document, "article"), "closure.module.Clazz.html");
-    checkHeader(document);
-    checkNav(document);
-    checkFooter(document);
-  }
-
-  @Test
-  public void checkClassExportedByClosureModule() throws IOException {
-    Document document = load(outDir.resolve("closure.module.PubClass.html"));
-    compareWithGoldenFile(querySelector(document, "article"), "closure.module.PubClass.html");
-    checkHeader(document);
-    checkNav(document);
-    checkFooter(document);
-  }
-
-  @Test
-  public void checkClassExtendsTemplateClass() throws IOException {
-    Document document = load(outDir.resolve("sample.inheritance.NumberClass.html"));
-    compareWithGoldenFile(querySelector(document, "article"),
-        "sample.inheritance.NumberClass.html");
-    checkHeader(document);
-    checkNav(document);
-    checkFooter(document);
-  }
-
-  @Test
-  public void checkGoogDefinedClass() throws IOException {
-    Document document = load(outDir.resolve("sample.inheritance.StringClass.html"));
-    compareWithGoldenFile(querySelector(document, "article"),
-        "sample.inheritance.StringClass.html");
-    checkHeader(document);
-    checkNav(document);
-    checkFooter(document);
-  }
-
-  @Test
-  public void checkDeprecatedClassWithSuperTypes() throws IOException {
-    Document document = load(outDir.resolve("sample.inheritance.DeprecatedFinalClass.html"));
-    compareWithGoldenFile(querySelector(document, "article"),
-        "sample.inheritance.DeprecatedFinalClass.html");
-    checkHeader(document);
-    checkNav(document);
-    checkFooter(document);
-  }
-
-  @Test
-  public void checkPackageIndexCommonJsModule() throws IOException {
-    Document document = load(outDir.resolve("module/example/index.html"));
-    compareWithGoldenFile(querySelector(document, "article"), "module/example/index.html");
-    checkHeader(document);
-    checkModuleNav(document);
-    checkModuleFooter(document);
-  }
-
-  @Test
-  public void checkCommonJsModule() throws IOException {
-    Document document = load(outDir.resolve("module/example/nested.html"));
-    compareWithGoldenFile(querySelector(document, "article"), "module/example/nested.html");
-    checkHeader(document);
-    checkModuleNav(document);
-    checkModuleFooter(document);
-  }
-
-  @Test
-  public void checkCommonJsModuleThatIsExportedConstructor() throws IOException {
-    Document document = load(outDir.resolve("module/example/worker.html"));
-    compareWithGoldenFile(querySelector(document, "article"), "module/example/worker.html");
-    checkHeader(document);
-    checkModuleNav(document);
-    checkModuleFooter(document);
-  }
-
-  @Test
-  public void checkCommonJsModuleClassAlias() throws IOException {
-    Document document = load(outDir.resolve("module/example/index_exports_Greeter.html"));
-    compareWithGoldenFile(
-        querySelector(document, "article"), "module/example/index_exports_Greeter.html");
-    checkHeader(document);
-    checkModuleNav(document);
-    checkModuleFooter(document);
-  }
-
-  @Test
-  public void checkCommonJsModuleExportedInterface() throws IOException {
-    Document document = load(outDir.resolve("module/example/nested_exports_IdGenerator.html"));
-    compareWithGoldenFile(querySelector(document, "article"),
-        "module/example/nested_exports_IdGenerator.html");
-    checkHeader(document);
-    checkModuleNav(document);
-    checkModuleFooter(document);
-  }
-
-  @Test
-  public void checkCommonJsModuleInterfaceImplementation() throws IOException {
-    Document document = load(outDir.resolve(
-        "module/example/nested_exports_IncrementingIdGenerator.html"));
-    compareWithGoldenFile(querySelector(document, "article"),
-        "module/example/nested_exports_IncrementingIdGenerator.html");
-    checkHeader(document);
-    checkModuleNav(document);
-    checkModuleFooter(document);
-  }
-
-  @Test
-  public void checkModuleExportedClass() throws IOException {
-    Document document = load(outDir.resolve(
-        "module/example/nested_exports_Person.html"));
-    compareWithGoldenFile(querySelector(document, "article"),
-        "module/example/nested_exports_Person.html");
-    checkHeader(document);
-    checkModuleNav(document);
-    checkModuleFooter(document);
-  }
-
-  @Test
-  public void checkClassThatExtendsExternType() throws IOException {
-    Document document = load(outDir.resolve(
-        "sample.inheritance.RunnableError.html"));
-    compareWithGoldenFile(querySelector(document, "article"),
-        "sample.inheritance.RunnableError.html");
-    checkHeader(document);
-    checkNav(document);
-    checkFooter(document);
-  }
-
-  @Test
-  public void checkNamespaceWithFilteredTypes() throws IOException {
-    Document document = load(outDir.resolve("foo.html"));
-    compareWithGoldenFile(querySelector(document, "article"), "foo.html");
-    checkHeader(document);
-    checkNav(document);
-    checkFooter(document);
-  }
-
-  @Test
-  public void checkUnfilteredAliasOfFilteredClass() throws IOException {
-    Document document = load(outDir.resolve("foo.quot.OneBarAlias.html"));
-    compareWithGoldenFile(querySelector(document, "article"), "foo.quot.OneBarAlias.html");
-    checkHeader(document);
-    checkNav(document);
-    checkFooter(document);
-  }
-
-  @Test
-  public void checkEs6Class() throws IOException {
-    Document document = load(outDir.resolve("Calculator.html"));
-    compareWithGoldenFile(querySelector(document, "article"), "Calculator.html");
-    checkHeader(document);
-    checkNav(document);
-    checkFooter(document);
-  }
-
-  @Test
-  public void checkTypesWithCaseInsensitiveOutputFileNameCollision() throws IOException {
-    for (String file : ImmutableList.of("test.Registry.html", "test.registry.html")) {
-      Document document = load(outDir.resolve(file));
-      compareWithGoldenFile(querySelector(document, "main"), "Registry.html");
+    @Test
+    public void checkMarkdownIndexProcessing() throws IOException {
+      Document document = load(outDir.resolve("index.html"));
+      compareWithGoldenFile(querySelector(document, "article.page"), "index.html");
       checkHeader(document);
       checkNav(document);
       checkFooter(document);
     }
-  }
 
-  @Test
-  public void checkEs6Module() throws IOException {
-    Document document = load(outDir.resolve("module/example/net.html"));
-    compareWithGoldenFile(querySelector(document, "article"), "module/example/net.html");
-    checkHeader(document);
-    checkModuleNav(document);
-    checkModuleFooter(document);
-  }
+    @Test
+    public void checkGlobalClass() throws IOException {
+      Document document = load(outDir.resolve("GlobalCtor.html"));
+      compareWithGoldenFile(querySelector(document, "article"), "GlobalCtor.html");
+      checkHeader(document);
+      checkNav(document);
+      checkFooter(document);
+    }
 
-  @Test
-  public void checkEs6ModuleWithImportButNoExports() throws IOException {
-    Document document = load(outDir.resolve("module/example/empty.html"));
-    compareWithGoldenFile(querySelector(document, "article"), "module/example/empty.html");
-    checkHeader(document);
-    checkModuleNav(document);
-    checkModuleFooter(document);
-  }
+    @Test
+    public void checkGlobalEnum() throws IOException {
+      Document document = load(outDir.resolve("GlobalEnum.html"));
+      compareWithGoldenFile(querySelector(document, "article"), "GlobalEnum.html");
+      checkHeader(document);
+      checkNav(document);
+      checkFooter(document);
+    }
 
-  @Test
-  public void checkEs6ModuleExportedClass() throws IOException {
-    Document document = load(outDir.resolve("module/example/net_exports_HttpClient.html"));
-    compareWithGoldenFile(querySelector(document, "article"),
-        "module/example/net_exports_HttpClient.html");
-    checkHeader(document);
-    checkModuleNav(document);
-    checkModuleFooter(document);
-  }
+    @Test
+    public void checkEmptyGlobalEnum() throws IOException {
+      Document document = load(outDir.resolve("EmptyEnum.html"));
+      compareWithGoldenFile(querySelector(document, "article"), "EmptyEnum.html");
+      checkHeader(document);
+      checkNav(document);
+      checkFooter(document);
+    }
 
-  @Test
-  public void checkGeneratedTypeIndex() throws IOException {
-    URL url = EndToEndTest.class.getResource("resources/golden/types.json");
-    String expectedContent = Resources.toString(url, UTF_8);
+    @Test
+    public void checkGlobalUndefinedEnum() throws IOException {
+      Document document = load(outDir.resolve("UndefinedEnum.html"));
+      compareWithGoldenFile(querySelector(document, "article"), "UndefinedEnum.html");
+      checkHeader(document);
+      checkNav(document);
+      checkFooter(document);
+    }
 
-    String actualContent = new String(readAllBytes(outDir.resolve("types.js")), UTF_8);
-    actualContent = actualContent.substring("var TYPES = ".length());
-    actualContent = actualContent.substring(0, actualContent.length() - 1);
+    @Test
+    public void checkDeprecatedClass() throws IOException {
+      Document document = load(outDir.resolve("DeprecatedFoo.html"));
+      compareWithGoldenFile(querySelector(document, "article"), "DeprecatedFoo.html");
+      checkHeader(document);
+      checkNav(document);
+      checkFooter(document);
+    }
 
-    Gson gson = new GsonBuilder()
-        .setPrettyPrinting()
-        .create();
+    @Test
+    public void checkFunctionNamespace() throws IOException {
+      Document document = load(outDir.resolve("sample.json.html"));
+      compareWithGoldenFile(querySelector(document, "article"), "sample.json.html");
+      checkHeader(document);
+      checkNav(document);
+      checkFooter(document);
+    }
+
+    @Test
+    public void checkInterfaceThatExtendsOtherInterfaces() throws IOException {
+      Document document = load(outDir.resolve("sample.inheritance.LeafInterface.html"));
+      compareWithGoldenFile(querySelector(document, "article"),
+          "sample.inheritance.LeafInterface.html");
+      checkHeader(document);
+      checkNav(document);
+      checkFooter(document);
+    }
+
+    @Test
+    public void checkExportedApiOfClosureModule() throws IOException {
+      Document document = load(outDir.resolve("closure.module.html"));
+      compareWithGoldenFile(querySelector(document, "article"), "closure.module.html");
+      checkHeader(document);
+      checkNav(document);
+      checkFooter(document);
+    }
+
+    @Test
+    public void checkClassDefiendOnClosureModuleExportsObject() throws IOException {
+      Document document = load(outDir.resolve("closure.module.Clazz.html"));
+      compareWithGoldenFile(querySelector(document, "article"), "closure.module.Clazz.html");
+      checkHeader(document);
+      checkNav(document);
+      checkFooter(document);
+    }
+
+    @Test
+    public void checkClassExportedByClosureModule() throws IOException {
+      Document document = load(outDir.resolve("closure.module.PubClass.html"));
+      compareWithGoldenFile(querySelector(document, "article"), "closure.module.PubClass.html");
+      checkHeader(document);
+      checkNav(document);
+      checkFooter(document);
+    }
+
+    @Test
+    public void checkClassExtendsTemplateClass() throws IOException {
+      Document document = load(outDir.resolve("sample.inheritance.NumberClass.html"));
+      compareWithGoldenFile(querySelector(document, "article"),
+          "sample.inheritance.NumberClass.html");
+      checkHeader(document);
+      checkNav(document);
+      checkFooter(document);
+    }
+
+    @Test
+    public void checkGoogDefinedClass() throws IOException {
+      Document document = load(outDir.resolve("sample.inheritance.StringClass.html"));
+      compareWithGoldenFile(querySelector(document, "article"),
+          "sample.inheritance.StringClass.html");
+      checkHeader(document);
+      checkNav(document);
+      checkFooter(document);
+    }
+
+    @Test
+    public void checkDeprecatedClassWithSuperTypes() throws IOException {
+      Document document = load(outDir.resolve("sample.inheritance.DeprecatedFinalClass.html"));
+      compareWithGoldenFile(querySelector(document, "article"),
+          "sample.inheritance.DeprecatedFinalClass.html");
+      checkHeader(document);
+      checkNav(document);
+      checkFooter(document);
+    }
+
+    @Test
+    public void checkPackageIndexCommonJsModule() throws IOException {
+      Document document = load(outDir.resolve("module/example/index.html"));
+      compareWithGoldenFile(querySelector(document, "article"), "module/example/index.html");
+      checkHeader(document);
+      checkModuleNav(document);
+      checkModuleFooter(document);
+    }
+
+    @Test
+    public void checkCommonJsModule() throws IOException {
+      Document document = load(outDir.resolve("module/example/nested.html"));
+      compareWithGoldenFile(querySelector(document, "article"), "module/example/nested.html");
+      checkHeader(document);
+      checkModuleNav(document);
+      checkModuleFooter(document);
+    }
+
+    @Test
+    public void checkCommonJsModuleThatIsExportedConstructor() throws IOException {
+      Document document = load(outDir.resolve("module/example/worker.html"));
+      compareWithGoldenFile(querySelector(document, "article"), "module/example/worker.html");
+      checkHeader(document);
+      checkModuleNav(document);
+      checkModuleFooter(document);
+    }
+
+    @Test
+    public void checkCommonJsModuleClassAlias() throws IOException {
+      Document document = load(outDir.resolve("module/example/index_exports_Greeter.html"));
+      compareWithGoldenFile(
+          querySelector(document, "article"), "module/example/index_exports_Greeter.html");
+      checkHeader(document);
+      checkModuleNav(document);
+      checkModuleFooter(document);
+    }
+
+    @Test
+    public void checkCommonJsModuleExportedInterface() throws IOException {
+      Document document = load(outDir.resolve("module/example/nested_exports_IdGenerator.html"));
+      compareWithGoldenFile(querySelector(document, "article"),
+          "module/example/nested_exports_IdGenerator.html");
+      checkHeader(document);
+      checkModuleNav(document);
+      checkModuleFooter(document);
+    }
+
+    @Test
+    public void checkCommonJsModuleInterfaceImplementation() throws IOException {
+      Document document = load(outDir.resolve(
+          "module/example/nested_exports_IncrementingIdGenerator.html"));
+      compareWithGoldenFile(querySelector(document, "article"),
+          "module/example/nested_exports_IncrementingIdGenerator.html");
+      checkHeader(document);
+      checkModuleNav(document);
+      checkModuleFooter(document);
+    }
+
+    @Test
+    public void checkModuleExportedClass() throws IOException {
+      Document document = load(outDir.resolve(
+          "module/example/nested_exports_Person.html"));
+      compareWithGoldenFile(querySelector(document, "article"),
+          "module/example/nested_exports_Person.html");
+      checkHeader(document);
+      checkModuleNav(document);
+      checkModuleFooter(document);
+    }
+
+    @Test
+    public void checkClassThatExtendsExternType() throws IOException {
+      Document document = load(outDir.resolve(
+          "sample.inheritance.RunnableError.html"));
+      compareWithGoldenFile(querySelector(document, "article"),
+          "sample.inheritance.RunnableError.html");
+      checkHeader(document);
+      checkNav(document);
+      checkFooter(document);
+    }
+
+    @Test
+    public void checkNamespaceWithFilteredTypes() throws IOException {
+      Document document = load(outDir.resolve("foo.html"));
+      compareWithGoldenFile(querySelector(document, "article"), "foo.html");
+      checkHeader(document);
+      checkNav(document);
+      checkFooter(document);
+    }
+
+    @Test
+    public void checkUnfilteredAliasOfFilteredClass() throws IOException {
+      Document document = load(outDir.resolve("foo.quot.OneBarAlias.html"));
+      compareWithGoldenFile(querySelector(document, "article"), "foo.quot.OneBarAlias.html");
+      checkHeader(document);
+      checkNav(document);
+      checkFooter(document);
+    }
+
+    @Test
+    public void checkEs6Class() throws IOException {
+      Document document = load(outDir.resolve("Calculator.html"));
+      compareWithGoldenFile(querySelector(document, "article"), "Calculator.html");
+      checkHeader(document);
+      checkNav(document);
+      checkFooter(document);
+    }
+
+    @Test
+    public void checkTypesWithCaseInsensitiveOutputFileNameCollision() throws IOException {
+      for (String file : ImmutableList.of("test.Registry.html", "test.registry.html")) {
+        Document document = load(outDir.resolve(file));
+        compareWithGoldenFile(querySelector(document, "main"), "Registry.html");
+        checkHeader(document);
+        checkNav(document);
+        checkFooter(document);
+      }
+    }
+
+    @Test
+    public void checkEs6Module() throws IOException {
+      Document document = load(outDir.resolve("module/example/net.html"));
+      compareWithGoldenFile(querySelector(document, "article"), "module/example/net.html");
+      checkHeader(document);
+      checkModuleNav(document);
+      checkModuleFooter(document);
+    }
+
+    @Test
+    public void checkEs6ModuleWithImportButNoExports() throws IOException {
+      Document document = load(outDir.resolve("module/example/empty.html"));
+      compareWithGoldenFile(querySelector(document, "article"), "module/example/empty.html");
+      checkHeader(document);
+      checkModuleNav(document);
+      checkModuleFooter(document);
+    }
+
+    @Test
+    public void checkEs6ModuleExportedClass() throws IOException {
+      Document document = load(outDir.resolve("module/example/net_exports_HttpClient.html"));
+      compareWithGoldenFile(querySelector(document, "article"),
+          "module/example/net_exports_HttpClient.html");
+      checkHeader(document);
+      checkModuleNav(document);
+      checkModuleFooter(document);
+    }
+
+    @Test
+    public void checkGeneratedTypeIndex() throws IOException {
+      URL url = EndToEndTest.class.getResource("resources/golden/types.json");
+      String expectedContent = Resources.toString(url, UTF_8);
+
+      String actualContent = new String(readAllBytes(outDir.resolve("types.js")), UTF_8);
+      actualContent = actualContent.substring("var TYPES = ".length());
+      actualContent = actualContent.substring(0, actualContent.length() - 1);
+
+      Gson gson = new GsonBuilder()
+          .setPrettyPrinting()
+          .create();
+      @SuppressWarnings("unchecked")
+      TreeMap<String, Object> map = gson.fromJson(actualContent, TreeMap.class);
+      sortIndexMap(map);
+
+      assertThat(gson.toJson(map).trim()).isEqualTo(expectedContent.trim());
+    }
+
+    @Test
+    public void visibilityRendering() throws IOException {
+      Document document = load(outDir.resolve("vis.html"));
+      compareWithGoldenFile(querySelector(document, "article"), "vis.html");
+      checkHeader(document);
+      checkNav(document);
+      checkFooter(document);
+
+      document = load(outDir.resolve("vis.InheritsVis.html"));
+      compareWithGoldenFile(querySelector(document, "article"), "vis.InheritsVis.html");
+      checkHeader(document);
+      checkNav(document);
+      checkFooter(document);
+    }
+
     @SuppressWarnings("unchecked")
-    TreeMap<String, Object> map = gson.fromJson(actualContent, TreeMap.class);
-    sortIndexMap(map);
+    private void sortIndexMap(TreeMap<String, Object> root) {
+      root.put("modules", sortTypeList((List<Map<String, Object>>) root.get("modules")));
+      root.put("types", sortTypeList((List<Map<String, Object>>) root.get("types")));
+    }
 
-    assertThat(gson.toJson(map).trim()).isEqualTo(expectedContent.trim());
-  }
-
-  @Test
-  public void visibilityRendering() throws IOException {
-    Document document = load(outDir.resolve("vis.html"));
-    compareWithGoldenFile(querySelector(document, "article"), "vis.html");
-    checkHeader(document);
-    checkNav(document);
-    checkFooter(document);
-
-    document = load(outDir.resolve("vis.InheritsVis.html"));
-    compareWithGoldenFile(querySelector(document, "article"), "vis.InheritsVis.html");
-    checkHeader(document);
-    checkNav(document);
-    checkFooter(document);
-  }
-
-  @SuppressWarnings("unchecked")
-  private void sortIndexMap(TreeMap<String, Object> root) {
-    root.put("modules", sortTypeList((List<Map<String, Object>>) root.get("modules")));
-    root.put("types", sortTypeList((List<Map<String, Object>>) root.get("types")));
-  }
-
-  @SuppressWarnings("unchecked")
-  private List<Map<String, Object>> sortTypeList(List<Map<String, Object>> list) {
-    return FluentIterable.from(list)
-        .transform(new Function<Map<String, Object>, Map<String, Object>>() {
-          @Override
-          public Map<String, Object> apply(Map<String, Object> item) {
-            if (item.containsKey("types")) {
-              item.put("types",  sortTypeList((List<Map<String, Object>>) item.get("types")));
+    @SuppressWarnings("unchecked")
+    private List<Map<String, Object>> sortTypeList(List<Map<String, Object>> list) {
+      return FluentIterable.from(list)
+          .transform(new Function<Map<String, Object>, Map<String, Object>>() {
+            @Override
+            public Map<String, Object> apply(Map<String, Object> item) {
+              if (item.containsKey("types")) {
+                item.put("types",  sortTypeList((List<Map<String, Object>>) item.get("types")));
+              }
+              if (item.containsKey("members")) {
+                Collections.sort((List<String>) item.get("members"));
+              }
+              if (item.containsKey("statics")) {
+                Collections.sort((List<String>) item.get("statics"));
+              }
+              return new TreeMap<>(item);
             }
-            if (item.containsKey("members")) {
-              Collections.sort((List<String>) item.get("members"));
+          })
+          .toSortedList(new Comparator<Map<String, Object>>() {
+            @Override
+            public int compare(Map<String, Object> o1, Map<String, Object> o2) {
+              String name1 = (String) o1.get("name");
+              String name2 = (String) o2.get("name");
+              return name1.compareTo(name2);
             }
-            if (item.containsKey("statics")) {
-              Collections.sort((List<String>) item.get("statics"));
-            }
-            return new TreeMap<>(item);
-          }
-        })
-        .toSortedList(new Comparator<Map<String, Object>>() {
-          @Override
-          public int compare(Map<String, Object> o1, Map<String, Object> o2) {
-            String name1 = (String) o1.get("name");
-            String name2 = (String) o2.get("name");
-            return name1.compareTo(name2);
-          }
-        });
+          });
+    }
+
+    private void checkHeader(Document document) throws IOException {
+      compareWithGoldenFile(querySelector(document, "header"), "header.html");
+    }
+
+    private void checkFooter(Document document) throws IOException {
+      Elements elements = querySelectorAll(document, "main ~ footer, main ~ script");
+      compareWithGoldenFile(elements, "footer.html");
+    }
+
+    private void checkModuleFooter(Document document) throws IOException {
+      Elements elements = querySelectorAll(document, "main ~ footer, main ~ script");
+      compareWithGoldenFile(elements, "module/example/footer.html");
+    }
+
+    private void checkNav(Document document) throws IOException {
+      compareWithGoldenFile(querySelectorAll(document, ".dossier-nav"), "nav.html");
+    }
+
+    private void checkModuleNav(Document document) throws IOException {
+      compareWithGoldenFile(querySelectorAll(document, ".dossier-nav"), "module/example/nav.html");
+    }
+
+    private void compareWithGoldenFile(Element element, String goldenPath) throws IOException {
+      compareWithGoldenFile(element.toString(), goldenPath);
+    }
+
+    private void compareWithGoldenFile(Elements elements, String goldenPath) throws IOException {
+      compareWithGoldenFile(elements.toString(), goldenPath);
+    }
+
+    private void compareWithGoldenFile(String actual, String goldenPath) throws IOException {
+      goldenPath = "resources/golden/" + goldenPath;
+      String golden = Resources.toString(EndToEndTest.class.getResource(goldenPath), UTF_8);
+      assertEquals(golden.trim(), actual.replace(" \n", "\n").trim());
+    }
+
+    private static Document load(Path path) throws IOException {
+      String html = toString(path);
+      Document document = Jsoup.parse(html);
+      document.outputSettings()
+          .prettyPrint(true)
+          .indentAmount(2);
+      return document;
+    }
+
+    private static Element querySelector(Document document, String selector) {
+      Elements elements = document.select(selector);
+      checkState(!elements.isEmpty(),
+          "Selector %s not found in %s", selector, document);
+      return Iterables.getOnlyElement(elements);
+    }
+
+    private static Elements querySelectorAll(Document document, String selector) {
+      return document.select(selector);
+    }
+
+    private static String toString(Path path) throws IOException {
+      return new String(readAllBytes(path), UTF_8);
+    }
+
+    private static void assertExists(Path path) {
+      assertWithMessage("Expected to exist: " + path).that(Files.exists(path)).isTrue();
+    }
   }
 
-  private void checkHeader(Document document) throws IOException {
-    compareWithGoldenFile(querySelector(document, "header"), "header.html");
+  @RunWith(JUnit4.class)
+  public static class DirectoryOutputTest extends AbstractScenarioTest {
+    private static final Scenario SCENARIO = new Scenario("out/");
+
+    @Override
+    Scenario getScenario() {
+      return SCENARIO;
+    }
   }
 
-  private void checkFooter(Document document) throws IOException {
-    Elements elements = querySelectorAll(document, "main ~ footer, main ~ script");
-    compareWithGoldenFile(elements, "footer.html");
+  @RunWith(JUnit4.class)
+  public static class DirectoryOutputFlagBasedConfigTest extends AbstractScenarioTest {
+    private static final Scenario SCENARIO = new Scenario("out/flags", true);
+
+    @Override
+    Scenario getScenario() {
+      return SCENARIO;
+    }
   }
 
-  private void checkModuleFooter(Document document) throws IOException {
-    Elements elements = querySelectorAll(document, "main ~ footer, main ~ script");
-    compareWithGoldenFile(elements, "module/example/footer.html");
-  }
+  @RunWith(JUnit4.class)
+  public static class ZipOutputTest extends AbstractScenarioTest {
+    private static final Scenario SCENARIO = new Scenario("out.zip");
 
-  private void checkNav(Document document) throws IOException {
-    compareWithGoldenFile(querySelectorAll(document, ".dossier-nav"), "nav.html");
-  }
-
-  private void checkModuleNav(Document document) throws IOException {
-    compareWithGoldenFile(querySelectorAll(document, ".dossier-nav"), "module/example/nav.html");
-  }
-
-  private void compareWithGoldenFile(Element element, String goldenPath) throws IOException {
-    compareWithGoldenFile(element.toString(), goldenPath);
-  }
-
-  private void compareWithGoldenFile(Elements elements, String goldenPath) throws IOException {
-    compareWithGoldenFile(elements.toString(), goldenPath);
-  }
-
-  private void compareWithGoldenFile(String actual, String goldenPath) throws IOException {
-    goldenPath = "resources/golden/" + goldenPath;
-    String golden = Resources.toString(EndToEndTest.class.getResource(goldenPath), UTF_8);
-    assertEquals(golden.trim(), actual.replace(" \n", "\n").trim());
-  }
-
-  private static Document load(Path path) throws IOException {
-    String html = toString(path);
-    Document document = Jsoup.parse(html);
-    document.outputSettings()
-        .prettyPrint(true)
-        .indentAmount(2);
-    return document;
-  }
-
-  private static Element querySelector(Document document, String selector) {
-    Elements elements = document.select(selector);
-    checkState(!elements.isEmpty(),
-        "Selector %s not found in %s", selector, document);
-    return Iterables.getOnlyElement(elements);
-  }
-
-  private static Elements querySelectorAll(Document document, String selector) {
-    return document.select(selector);
-  }
-
-  private static String toString(Path path) throws IOException {
-    return new String(readAllBytes(path), UTF_8);
-  }
-
-  private static void writeConfig(Path path, Config config) throws IOException {
-    write(path, ImmutableList.of(config.toString()), UTF_8);
-  }
-
-  private static void copyResource(String from, Path to) throws IOException {
-    createDirectories(to.getParent());
-
-    InputStream resource = EndToEndTest.class.getResourceAsStream(from);
-    checkNotNull(resource, "Resource not found: %s", from);
-    copy(resource, to, StandardCopyOption.REPLACE_EXISTING);
-  }
-
-  private static void assertExists(Path path) {
-    assertWithMessage("Expected to exist: " + path).that(Files.exists(path)).isTrue();
+    @Override
+    Scenario getScenario() {
+      return SCENARIO;
+    }
   }
 
   private static class Config {
@@ -593,8 +633,21 @@ public class EndToEndTest {
     }
   }
 
+  private static void writeConfig(Path path, Config config) throws IOException {
+    write(path, ImmutableList.of(config.toString()), UTF_8);
+  }
+
+  private static void copyResource(String from, Path to) throws IOException {
+    createDirectories(to.getParent());
+
+    InputStream resource = EndToEndTest.class.getResourceAsStream(from);
+    checkNotNull(resource, "Resource not found: %s", from);
+    copy(resource, to, StandardCopyOption.REPLACE_EXISTING);
+  }
+
   private static class Scenario {
     private final String outputPath;
+    private final boolean useFlags;
 
     private Path tmpDir;
     private Path srcDir;
@@ -602,7 +655,12 @@ public class EndToEndTest {
     private Exception initFailure;
 
     private Scenario(String outputPath) {
+      this(outputPath, false);
+    }
+
+    private Scenario(String outputPath, boolean useFlags) {
       this.outputPath = outputPath;
+      this.useFlags = useFlags;
     }
 
     @Override
@@ -634,7 +692,12 @@ public class EndToEndTest {
     }
 
     private void initFileSystem() throws IOException {
+      initFileSystem(null);
+    }
+
+    private static Path createTmpDir(String outputPath) throws IOException {
       FileSystem fileSystem;
+      Path tmpDir;
       if (outputPath.endsWith(".zip") || useDefaultFileSystem()) {
         fileSystem = FileSystems.getDefault();
 
@@ -651,7 +714,14 @@ public class EndToEndTest {
         tmpDir = fileSystem.getPath("/tmp");
         createDirectories(tmpDir);
       }
+      return tmpDir;
+    }
 
+    private void initFileSystem(Path tmpDir) throws IOException {
+      if (tmpDir == null) {
+        tmpDir = createTmpDir(outputPath);
+      }
+      this.tmpDir = tmpDir;
       srcDir = tmpDir.resolve("src");
 
       copyResource("resources/SimpleReadme.md", srcDir.resolve("SimpleReadme.md"));
@@ -673,46 +743,122 @@ public class EndToEndTest {
       copyResource("resources/module/worker.js", srcDir.resolve("main/example/worker.js"));
     }
 
+    FileSystem getInputFileSystem() {
+      return srcDir.getFileSystem();
+    }
+
+    private void addAll(List<String> list, String... items) {
+      // TODO: switch to Collections.addAll when we support java 8.
+      //noinspection ManualArrayToCollectionCopy
+      for (String item : items) {
+        list.add(item);
+      }
+    }
+
+    String[] buildCommandLine() throws IOException {
+      final Path output = tmpDir.resolveSibling(outputPath);
+      final List<String> filters = ImmutableList.of(
+          "^foo.\\w+_.*",
+          "foo.FilteredClass",
+          "foo.bar");
+
+      final List<String> moduleFilters = ImmutableList.of(".*/main/example/filter.js$");
+
+      final List<Path> sources = ImmutableList.of(
+          srcDir.resolve("main/closure_module.js"),
+          srcDir.resolve("main/es2015.js"),
+          srcDir.resolve("main/filter.js"),
+          srcDir.resolve("main/globals.js"),
+          srcDir.resolve("main/json.js"),
+          srcDir.resolve("main/inheritance.js"),
+          srcDir.resolve("main/registry.js"),
+          srcDir.resolve("main/visibility.js"),
+          srcDir.resolve("main/subdir/emptyenum.js"),
+
+          // NB: this is explicitly declared as a normal source input to test that Dossier detects
+          // the import statement and registers it as a module.
+          srcDir.resolve("main/example/empty.js"));
+
+      final List<Path> modules = ImmutableList.of(
+          srcDir.resolve("main/example/filter.js"),
+          srcDir.resolve("main/example/index.js"),
+          srcDir.resolve("main/example/nested.js"),
+          srcDir.resolve("main/example/net.js"),
+          srcDir.resolve("main/example/worker.js"));
+
+      String[] args;
+      if (useFlags) {
+        List<String> list = new ArrayList<>();
+        addAll(list,
+            "--output", output.toString(),
+            "--readme", srcDir.resolve("SimpleReadme.md").toString(),
+            "--language", "ES6_STRICT",
+            "--custom_page", "Custom Page:" + srcDir.resolve("Custom.md"),
+            "--module_naming_convention", "NODE");
+
+        for (String filter : filters) {
+          list.add("--type_filter");
+          list.add(filter);
+        }
+
+        for (String filter : moduleFilters) {
+          list.add("--module_filter");
+          list.add(filter);
+        }
+
+        for (Path source : sources) {
+          list.add("--source");
+          list.add(source.toString());
+        }
+
+        for (Path module : modules) {
+          list.add("--module");
+          list.add(module.toString());
+        }
+
+        args = new String[list.size()];
+        list.toArray(args);
+      } else {
+        Path config = createTempFile(tmpDir, "config", ".json");
+        writeConfig(config, new Config() {{
+          setOutput(output);
+          setReadme(srcDir.resolve("SimpleReadme.md"));
+          setLanguage("ES6_STRICT");
+
+          addCustomPage("Custom Page", srcDir.resolve("Custom.md"));
+
+          for (String filter : filters) {
+            addFilter(filter);
+          }
+
+          for (String filter : moduleFilters) {
+            addModuleFilter(filter);
+          }
+
+          for (Path source : sources) {
+            addSource(source);
+          }
+
+          for (Path module : modules) {
+            addModule(module);
+          }
+        }});
+
+        if (config.getFileSystem() == FileSystems.getDefault()) {
+          config.toFile().deleteOnExit();
+        }
+
+        args = new String[]{"-c", config.toAbsolutePath().toString()};
+      }
+      return args;
+    }
+
     private Path generateData() throws IOException {
       final Path output = tmpDir.resolveSibling(outputPath);
       System.out.println("Generating output in " + output);
 
-      Path config = createTempFile(tmpDir, "config", ".json");
-      writeConfig(config, new Config() {{
-        setOutput(output);
-        setReadme(srcDir.resolve("SimpleReadme.md"));
-        setLanguage("ES6_STRICT");
-
-        addCustomPage("Custom Page", srcDir.resolve("Custom.md"));
-
-        addFilter("^foo.\\w+_.*");
-        addFilter("foo.FilteredClass");
-        addFilter("foo.bar");
-
-        addModuleFilter(".*/main/example/filter.js$");
-
-        addSource(srcDir.resolve("main/closure_module.js"));
-        addSource(srcDir.resolve("main/es2015.js"));
-        addSource(srcDir.resolve("main/filter.js"));
-        addSource(srcDir.resolve("main/globals.js"));
-        addSource(srcDir.resolve("main/json.js"));
-        addSource(srcDir.resolve("main/inheritance.js"));
-        addSource(srcDir.resolve("main/registry.js"));
-        addSource(srcDir.resolve("main/visibility.js"));
-        addSource(srcDir.resolve("main/subdir/emptyenum.js"));
-
-        // NB: this is explicitly declared as a normal source input to test that Dossier detects
-        // the import statement and registers it as a module.
-        addSource(srcDir.resolve("main/example/empty.js"));
-
-        addModule(srcDir.resolve("main/example/filter.js"));
-        addModule(srcDir.resolve("main/example/index.js"));
-        addModule(srcDir.resolve("main/example/nested.js"));
-        addModule(srcDir.resolve("main/example/net.js"));
-        addModule(srcDir.resolve("main/example/worker.js"));
-      }});
-
-      Main.run(new String[]{"-c", config.toAbsolutePath().toString()}, srcDir.getFileSystem());
+      String[] args = buildCommandLine();
+      Main.run(args, srcDir.getFileSystem());
 
       if (output.toString().endsWith(".zip")) {
         FileSystem fs;

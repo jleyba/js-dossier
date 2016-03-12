@@ -23,7 +23,6 @@ import static com.google.common.collect.Iterables.transform;
 import static com.google.common.io.Files.getFileExtension;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.createDirectories;
-import static java.nio.file.Files.newInputStream;
 
 import com.github.jsdossier.Config.Language;
 import com.github.jsdossier.annotations.DocumentationScoped;
@@ -68,7 +67,6 @@ import org.joda.time.Period;
 import org.joda.time.format.PeriodFormatterBuilder;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintStream;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -315,10 +313,7 @@ final class Main {
   @VisibleForTesting
   static int run(String[] args, FileSystem fileSystem) throws IOException {
     Flags flags = Flags.parse(args, fileSystem);
-    Config config;
-    try (InputStream stream = newInputStream(flags.config)) {
-      config = Config.load(stream, fileSystem);
-    }
+    Config config = Config.fromFlags(flags, fileSystem);
 
     if (flags.printConfig) {
       print(config);

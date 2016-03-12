@@ -29,6 +29,7 @@ import static com.google.common.collect.Sets.intersection;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.exists;
 import static java.nio.file.Files.isDirectory;
+import static java.nio.file.Files.newInputStream;
 import static java.nio.file.Files.readAllBytes;
 import static java.nio.file.Files.write;
 
@@ -44,6 +45,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.io.Resources;
 import com.google.common.reflect.TypeToken;
+import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
@@ -90,6 +92,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 import javax.annotation.Nullable;
@@ -99,6 +102,8 @@ import javax.annotation.Nullable;
  */
 @AutoValue
 abstract class Config {
+
+  private static final Logger log = Logger.getLogger(Config.class.getName());
 
   Config() {}
 
@@ -298,13 +303,14 @@ abstract class Config {
   abstract FileSystem getFileSystem();
   abstract Builder toBuilder();
 
-  JsonElement toJson() {
+  String toJson() {
     return new GsonBuilder()
         .registerTypeAdapter(Config.class, new ConfigMarshaller(getFileSystem()))
         .registerTypeAdapter(AutoValue_Config.class, new ConfigMarshaller(getFileSystem()))
+        .registerTypeAdapter(MarkdownPage.class, new MarkdownPageSerializer())
         .setPrettyPrinting()
         .create()
-        .toJsonTree(this);
+        .toJson(this);
   }
 
   /**
@@ -569,9 +575,32 @@ abstract class Config {
   }
 
   /**
-   * Loads a new runtime configuration from the provided input stream.
+   * Loads a new runtime configuration from command line flags.
    */
-  static Config load(InputStream stream, FileSystem fileSystem) {
+  static Config fromFlags(Flags flags, FileSystem fileSystem) throws IOException {
+    if (flags.config == null) {
+      return Config.fromJson(flags.jsonConfig, fileSystem);
+    } else {
+      if (!flags.jsonConfig.entrySet().isEmpty()) {
+        log.warning("A JSON configuration file was provided; ignoring flag-based configuration");
+      }
+      try (InputStream stream = newInputStream(flags.config)) {
+        return Config.fromJson(stream, fileSystem);
+      }
+    }
+  }
+
+  @VisibleForTesting
+  static Config fromJson(InputStream stream, FileSystem fileSystem) {
+    return createGsonParser(fileSystem)
+        .fromJson(new InputStreamReader(stream), Config.class);
+  }
+
+  private static Config fromJson(JsonElement json, FileSystem fileSystem) {
+    return createGsonParser(fileSystem).fromJson(json, Config.class);
+  }
+
+  private static Gson createGsonParser(FileSystem fileSystem) {
     Path cwd = normalizedAbsolutePath(fileSystem, "");
     return new GsonBuilder()
         .registerTypeAdapter(Config.class, new ConfigMarshaller(fileSystem))
@@ -593,8 +622,7 @@ abstract class Config {
         .registerTypeAdapter(
             new TypeToken<ImmutableSet<Pattern>>(){}.getType(),
             new ImmutableSetDeserializer<>(Pattern.class))
-        .create()
-        .fromJson(new InputStreamReader(stream), Config.class);
+        .create();
   }
 
   private static ImmutableSet<Path> processClosureSources(
@@ -910,6 +938,18 @@ abstract class Config {
         }
       }
       return config.build();
+    }
+  }
+
+  private static class MarkdownPageSerializer implements JsonSerializer<MarkdownPage> {
+
+    @Override
+    public JsonElement serialize(
+        MarkdownPage src, Type typeOfSrc, JsonSerializationContext context) {
+      JsonObject json = new JsonObject();
+      json.addProperty("name", src.getName());
+      json.addProperty("path", src.getPath().toString());
+      return json;
     }
   }
 
