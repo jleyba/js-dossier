@@ -36,6 +36,8 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 /**
  * Utilities for working with {@link Path paths}.
  */
@@ -52,6 +54,18 @@ class Paths {
    */
   static Path normalizedAbsolutePath(FileSystem fs, String first, String... rest) {
     return fs.getPath(first, rest).toAbsolutePath().normalize();
+  }
+
+  /**
+   * Returns a function that transforms paths to an absolute, normalized path.
+   */
+  static Function<Path, Path> toNormalizedAbsolutePath() {
+    return new Function<Path, Path>() {
+      @Override
+      public Path apply(Path input) {
+        return input.toAbsolutePath().normalize();
+      }
+    };
   }
 
   /**
@@ -128,6 +142,34 @@ class Paths {
       }
     }
     return paths;
+  }
+
+  /**
+   * Returns a predicate that accepts paths not in the provided set.
+   */
+  static Predicate<Path> notIn(final ImmutableSet<Path> paths) {
+    return new Predicate<Path>() {
+      @Override
+      public boolean apply(Path input) {
+        return !paths.contains(input);
+      }
+    };
+  }
+
+  /**
+   * Returns a predicate that accepts paths to files that are not hidden.
+   */
+  static Predicate<Path> notHidden() {
+    return new Predicate<Path>() {
+      @Override
+      public boolean apply(Path input) {
+        try {
+          return !Files.isHidden(input);
+        } catch (IOException e) {
+          throw new RuntimeException(e);
+        }
+      }
+    };
   }
 
   private static Predicate<Path> startsWith(final Path root) {
