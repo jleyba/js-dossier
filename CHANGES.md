@@ -7,6 +7,7 @@
 ## Bug Fixes
 
 - Include visibility indicators for enums
+- Support node extern modules with a hyphen in the file name
 
 # v0.9.1
 

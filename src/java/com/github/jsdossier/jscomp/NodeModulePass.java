@@ -277,8 +277,8 @@ class NodeModulePass {
         }
         moduleId = getModuleId(moduleFile);
 
-      } else if (nodeLibrary.getExternModuleNames().contains(modulePath)) {
-        moduleId = modulePath;
+      } else if (nodeLibrary.isModuleId(modulePath)) {
+        moduleId = nodeLibrary.normalizeModuleId(modulePath);
       }
 
       if (moduleId != null) {

@@ -79,15 +79,6 @@ final class NodeLibrary {
     this.loadExterns = !modulePaths.isEmpty();
   }
 
-  public ImmutableSet<String> getExternModuleNames() {
-    try {
-      loadExterns();
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
-    return externIds;
-  }
-
   public ImmutableList<SourceFile> getExternFiles() throws IOException {
     loadExterns();
     return externFiles;
@@ -99,7 +90,16 @@ final class NodeLibrary {
   }
 
   public boolean isModuleId(String id) {
-    return getExternModuleNames().contains(id);
+    try {
+      loadExterns();
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+    return externIds.contains(toSafeName(id));
+  }
+
+  public String normalizeModuleId(String id) {
+    return toSafeName(id);
   }
 
   public String getIdFromPath(String path) {
@@ -158,7 +158,7 @@ final class NodeLibrary {
       public FileVisitResult visitFile(Path file, BasicFileAttributes attrs)
           throws IOException {
         if (file.getFileName().toString().endsWith(".js")) {
-          String id = getNameWithoutExtension(file.getFileName().toString());
+          String id = toSafeName(getNameWithoutExtension(file.getFileName().toString()));
           if ("globals".equals(id)) {
             externFiles.add(SourceFile.fromInputStream(
                 FILE_NAME_PREFIX + file.getFileName(),
@@ -187,7 +187,7 @@ final class NodeLibrary {
     });
 
     for (Path path : userExterns) {
-      String id = getNameWithoutExtension(path.getFileName().toString());
+      String id = toSafeName(getNameWithoutExtension(path.getFileName().toString()));
       if (modulePathsById.containsKey(id)) {
         throw new IllegalArgumentException(
             "Duplicate extern module ID <" + id + "> (" + path + "); originally defined by "
@@ -204,6 +204,10 @@ final class NodeLibrary {
     this.externFiles = ImmutableList.copyOf(externFiles);
     this.modulesByPath = ImmutableMap.copyOf(modulesByPath);
     this.idsByPath = ImmutableMap.copyOf(modulePathsById.inverse());
+  }
+
+  private static String toSafeName(String name) {
+    return name.replace('-', '_');
   }
 
   private static SourceFile loadSource(Path path, boolean isInternal)
