@@ -11,6 +11,8 @@
   "excludes": [
     "third_party/js/closure_library/closure/goog/events/eventtargettester.js",
     "third_party/js/closure_library/closure/goog/**_test.js",
+    "third_party/js/closure_library/closure/goog/**_testhelper.js",
+    "third_party/js/closure_library/closure/goog/**test.pb.js",
     "third_party/js/closure_library/closure/goog/**_perf.js",
     "third_party/js/closure_library/closure/goog/demos",
     "third_party/js/closure_library/closure/goog/tweak/testhelpers.js",
@@ -21,6 +23,6 @@
   "sourceUrlTemplate": "https://github.com/jleyba/js-dossier/blob/master/third_party/js/closure_library/${path}#L${line}",
   "typeFilters": [
     "^goog.i18n.\\w+_.*",
-    "^goog.labs.i18n.\\w+_.*"
+    "^goog.labs.i18n.\\w+_.*",
   ]
 }

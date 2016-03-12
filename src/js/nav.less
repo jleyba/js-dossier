@@ -96,7 +96,7 @@
     }
   }
 
-  @item-height: 48px;
+  @item-height: 40px;
 
   .toggle {
     color: rgba(0, 0, 0, .54);
@@ -123,6 +123,10 @@
     &.open .material-icons {
       transform: rotateX(180deg);
     }
+  }
+
+  section > .toggle {
+    height: 48px;  // Top level toggles are slightly bigger.
   }
 
   .disable-select();
