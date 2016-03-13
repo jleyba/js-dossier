@@ -166,8 +166,8 @@ final class LinkFactory {
         .setLine(position.getLine());
     if (urlTemplate.isPresent()) {
       String url = urlTemplate.get()
-          .replaceAll("\\$\\{path\\}", pathStr)
-          .replaceAll("\\$\\{line\\}", String.valueOf(position.getLine()));
+          .replaceAll("%path%", pathStr)
+          .replaceAll("%line%", String.valueOf(position.getLine()));
       link.setUri(url);
     }
     return link.build();

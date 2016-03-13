@@ -5,6 +5,8 @@
 - Dossier may now be configured entirely through command line flags
 - API documentation will now differentiate between nominal interfaces (declared
   with `@interface`) and structural interfaces (declared with `@record`)
+- Changed the `sourceUrlTemplate` configuration option to use `%path%` and
+  `%line%` as replacement tokens instead of `${path}` and `${line}`
 
 ## Bug Fixes
 

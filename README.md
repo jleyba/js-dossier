@@ -117,8 +117,14 @@ __Configuration Options__
  * `readme` Path to a README file to include as the main landing page for the
     generated documentation. This file should use markdown syntax.
 
+ * `sourcePrefix` A prefix to strip from every input file's path (source &
+    module) when rendering source paths. Notably, paths will be inserted into
+    the source URL template after this prefix has been removed. If this option
+    is omitted, the closest common ancestor for all input files will be used as
+    the default.
+
  * `sourceUrlTemplate` Specifies a template from which to generate a HTTP(S)
-    links to source files. Within this template, the `${path}` and `${line}`
+    links to source files. Within this template, the `%path%` and `%line%`
     tokens will be replaced with the linked type's source file path and line
     number, respectively. Source paths will be relative to the closest common
     ancestor of all input files.

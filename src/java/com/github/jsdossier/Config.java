@@ -277,7 +277,7 @@ abstract class Config {
       name = "sourceUrlTemplate",
       desc =
           "Specifies a template from which to generate a HTTP(S) links to source files. Within this" +
-              " template, the `${path}` and `${line}` tokens will be replaced with the linked" +
+              " template, the `%path%` and `%line%` tokens will be replaced with the linked" +
               " type's source file path and line number, respectively. Source paths will be" +
               " relative to the closest common ancestor of all input files.\n" +
               "\n" +
@@ -525,9 +525,9 @@ abstract class Config {
               "Invalid URL template: must be a http or https URL: %s", template);
         }
 
-        if (!template.contains("${path}")) {
+        if (!template.contains("%path%")) {
           throw new InvalidConfigurationException(
-              "Invalid URL template: must contain '${path}' and (optionally) '${line}': %s",
+              "Invalid URL template: must contain '%%path%%' and (optionally) '%%line%%': %s",
               template);
         }
       }
