@@ -1,4 +1,4 @@
-# v0.10.0-dev
+# v0.10.0
 
 - Renamed configuration option `closureDepsFile` to `closureDepFiles`
 - Renamed configuration option `stripModulePrefix` to `modulePrefix`
