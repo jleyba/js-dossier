@@ -95,6 +95,11 @@ public final class Tags extends
             isDefault_ = input.readBool();
             break;
           }
+          case 72: {
+            bitField0_ |= 0x00000100;
+            isRecord_ = input.readBool();
+            break;
+          }
         }
       }
     } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -255,6 +260,21 @@ public final class Tags extends
     return isDefault_;
   }
 
+  public static final int IS_RECORD_FIELD_NUMBER = 9;
+  private boolean isRecord_;
+  /**
+   * <code>optional bool is_record = 9;</code>
+   */
+  public boolean hasIsRecord() {
+    return ((bitField0_ & 0x00000100) == 0x00000100);
+  }
+  /**
+   * <code>optional bool is_record = 9;</code>
+   */
+  public boolean getIsRecord() {
+    return isRecord_;
+  }
+
   private void initFields() {
     isConst_ = false;
     isDeprecated_ = false;
@@ -264,6 +284,7 @@ public final class Tags extends
     isModule_ = false;
     isStruct_ = false;
     isDefault_ = false;
+    isRecord_ = false;
   }
   private byte memoizedIsInitialized = -1;
   public final boolean isInitialized() {
@@ -301,6 +322,9 @@ public final class Tags extends
     }
     if (((bitField0_ & 0x00000080) == 0x00000080)) {
       output.writeBool(8, isDefault_);
+    }
+    if (((bitField0_ & 0x00000100) == 0x00000100)) {
+      output.writeBool(9, isRecord_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -342,6 +366,10 @@ public final class Tags extends
     if (((bitField0_ & 0x00000080) == 0x00000080)) {
       size += com.google.protobuf.CodedOutputStream
         .computeBoolSize(8, isDefault_);
+    }
+    if (((bitField0_ & 0x00000100) == 0x00000100)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeBoolSize(9, isRecord_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSerializedSize = size;
@@ -476,6 +504,8 @@ public final class Tags extends
       bitField0_ = (bitField0_ & ~0x00000040);
       isDefault_ = false;
       bitField0_ = (bitField0_ & ~0x00000080);
+      isRecord_ = false;
+      bitField0_ = (bitField0_ & ~0x00000100);
       return this;
     }
 
@@ -536,6 +566,10 @@ public final class Tags extends
         to_bitField0_ |= 0x00000080;
       }
       result.isDefault_ = isDefault_;
+      if (((from_bitField0_ & 0x00000100) == 0x00000100)) {
+        to_bitField0_ |= 0x00000100;
+      }
+      result.isRecord_ = isRecord_;
       result.bitField0_ = to_bitField0_;
       onBuilt();
       return result;
@@ -575,6 +609,9 @@ public final class Tags extends
       }
       if (other.hasIsDefault()) {
         setIsDefault(other.getIsDefault());
+      }
+      if (other.hasIsRecord()) {
+        setIsRecord(other.getIsRecord());
       }
       this.mergeUnknownFields(other.getUnknownFields());
       return this;
@@ -855,6 +892,38 @@ public final class Tags extends
     public Builder clearIsDefault() {
       bitField0_ = (bitField0_ & ~0x00000080);
       isDefault_ = false;
+      onChanged();
+      return this;
+    }
+
+    private boolean isRecord_ ;
+    /**
+     * <code>optional bool is_record = 9;</code>
+     */
+    public boolean hasIsRecord() {
+      return ((bitField0_ & 0x00000100) == 0x00000100);
+    }
+    /**
+     * <code>optional bool is_record = 9;</code>
+     */
+    public boolean getIsRecord() {
+      return isRecord_;
+    }
+    /**
+     * <code>optional bool is_record = 9;</code>
+     */
+    public Builder setIsRecord(boolean value) {
+      bitField0_ |= 0x00000100;
+      isRecord_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional bool is_record = 9;</code>
+     */
+    public Builder clearIsRecord() {
+      bitField0_ = (bitField0_ & ~0x00000100);
+      isRecord_ = false;
       onChanged();
       return this;
     }

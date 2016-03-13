@@ -798,6 +798,8 @@
     <div>
       {if $type.tags.isModule}
         module {$type.name}
+      {elseif $type.tags.isRecord}
+        record {$type.name}
       {elseif $type.tags.isInterface}
         interface {$type.name}
       {elseif $type.mainFunction and $type.mainFunction.isConstructor}

@@ -233,6 +233,7 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Ca
       typeSpec.getTagsBuilder()
           .setIsModule(type.isModuleExports())
           .setIsInterface(type.getType().isInterface())
+          .setIsRecord(type.getType().isStructuralInterface())
           .setIsDeprecated(jsdoc.isDeprecated())
           .setIsFinal(jsdoc.isFinal())
           .setIsDict(jsdoc.isDict())

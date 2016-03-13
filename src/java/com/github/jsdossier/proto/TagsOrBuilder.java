@@ -78,4 +78,13 @@ public interface TagsOrBuilder extends
    * <code>optional bool is_default = 8;</code>
    */
   boolean getIsDefault();
+
+  /**
+   * <code>optional bool is_record = 9;</code>
+   */
+  boolean hasIsRecord();
+  /**
+   * <code>optional bool is_record = 9;</code>
+   */
+  boolean getIsRecord();
 }

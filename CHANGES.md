@@ -3,6 +3,8 @@
 - Renamed configuration option `closureDepsFile` to `closureDepFiles`
 - Renamed configuration option `stripModulePrefix` to `modulePrefix`
 - Dossier may now be configured entirely through command line flags
+- API documentation will now differentiate between nominal interfaces (declared
+  with `@interface`) and structural interfaces (declared with `@record`)
 
 ## Bug Fixes
 

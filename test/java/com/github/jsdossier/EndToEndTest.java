@@ -449,6 +449,15 @@ public class EndToEndTest {
       checkFooter(document);
     }
 
+    @Test
+    public void checkRecord() throws IOException {
+      Document document = load(outDir.resolve("Person.html"));
+      compareWithGoldenFile(querySelector(document, "article"), "Person.html");
+      checkHeader(document);
+      checkNav(document);
+      checkFooter(document);
+    }
+
     @SuppressWarnings("unchecked")
     private void sortIndexMap(TreeMap<String, Object> root) {
       root.put("modules", sortTypeList((List<Map<String, Object>>) root.get("modules")));

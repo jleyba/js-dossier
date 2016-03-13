@@ -233,6 +233,17 @@
       "qualifiedName": "closure.module.HardWorker"
     },
     {
+      "href": "Person.html",
+      "interface": true,
+      "members": [
+        "age",
+        "name"
+      ],
+      "name": "Person",
+      "namespace": false,
+      "qualifiedName": "Person"
+    },
+    {
       "href": "PrivateColor_.html",
       "interface": false,
       "name": "PrivateColor_",

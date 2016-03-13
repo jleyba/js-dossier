@@ -375,3 +375,8 @@ const PrivateColor_ = {
   PINK: 'pink',
   TEAL: 'teal'
 };
+
+
+/** @record */ function Person() {}
+/** @type {string} */ Person.prototype.name;
+/** @type {number} */ Person.prototype.age;
