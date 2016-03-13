@@ -71,7 +71,7 @@ public class LinkFactoryTest {
   @Test
   public void createLinkFromPathAndPosition_withSourceUrlTemplate() {
     guice.toBuilder()
-        .setSourceUrlTemplate("http://www.example.com/${path}#l${line}")
+        .setSourceUrlTemplate("http://www.example.com/%path%#l%line%")
         .build()
         .createInjector()
         .injectMembers(this);
@@ -90,7 +90,7 @@ public class LinkFactoryTest {
   @Test
   public void createLinkFromPathAndPosition_withSourceUrlTemplate_fromModule() {
     guice.toBuilder()
-        .setSourceUrlTemplate("http://www.example.com/${path}#l${line}")
+        .setSourceUrlTemplate("http://www.example.com/%path%#l%line%")
         .build()
         .createInjector()
         .injectMembers(this);
