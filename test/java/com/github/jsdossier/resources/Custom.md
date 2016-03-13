@@ -44,6 +44,11 @@ Here are some lists:
    * Sed vel ante ac mi efficitur
 
 
+4. Once
+5. Twice
+6. Three times
+
+
 ---
 
 > Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium
@@ -85,6 +90,13 @@ efficitur bibendum ut eget mauris.
 
 ```
 // This a fenced code block.
+function sayHello() {
+  console.log('Hello, world!');
+}
+```
+
+```javascript
+// This a fenced code block for javascript.
 function sayHello() {
   console.log('Hello, world!');
 }

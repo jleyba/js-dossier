@@ -12,6 +12,10 @@
 
 - Include visibility indicators for enums
 - Support node extern modules with a hyphen in the file name
+- Updated HTML sanitizer policies to permit safe HTML generated from markdown
+  comments
+  * Fenced code block info string (`<code class="language-javascript">`)
+  * Ordered lists that do not start at (`<ol start="3">`)
 
 # v0.9.1
 

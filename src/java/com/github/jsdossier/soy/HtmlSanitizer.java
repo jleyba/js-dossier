@@ -34,6 +34,7 @@ final class HtmlSanitizer {
   private static final Pattern ALIGN = Pattern.compile("(?i)center|left|right|justify|char");
   private static final Pattern VALIGN = Pattern.compile("(?i)baseline|bottom|middle|top");
   private static final Pattern HTML_DIR = Pattern.compile("(?i)ltr|rtl|auto");
+  private static final Pattern LANGUAGE_INFO = Pattern.compile("language-[A-Za-z]+");
 
   private static final PolicyFactory HTML_POLICY = new HtmlPolicyBuilder()
       .allowElements(
@@ -65,6 +66,8 @@ final class HtmlSanitizer {
       .allowAttributes("colspan", "rowspan").matching(NUMBER).onElements("td", "th")
       .allowAttributes("span", "width").matching(NUMBER_OR_PERCENT).onElements("colgroup", "col")
       .allowAttributes("cite").onElements("q")
+      .allowAttributes("class").matching(LANGUAGE_INFO).onElements("code")
+      .allowAttributes("start").matching(NUMBER).onElements("ol")
       .toFactory()
       .and(Sanitizers.BLOCKS)
       .and(Sanitizers.FORMATTING)
