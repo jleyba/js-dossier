@@ -53,6 +53,8 @@ final class LinkFactory {
 
   private static final String MDN = "https://developer.mozilla.org/en-US/docs/Web/JavaScript/";
   private static final String MDN_PREFIX = MDN + "Reference/";
+  private static final String CLOSURE_COMPILER_PREFIX =
+      "https://github.com/google/closure-compiler/wiki/Special-types-in-the-Closure-Type-System#";
 
   /**
    * Maps built-in objects to a link to their definition on the Mozilla Develper Network.
@@ -67,6 +69,9 @@ final class LinkFactory {
           .put("Error", MDN_PREFIX + "Global_Objects/Error")
           .put("Function", MDN_PREFIX + "Global_Objects/Function")
           .put("Generator", MDN_PREFIX + "Global_Objects/Generaor")
+          .put("IArrayLike", CLOSURE_COMPILER_PREFIX + "iarraylike")
+          .put("IObject", CLOSURE_COMPILER_PREFIX + "iobject")
+          .put("IThenable", CLOSURE_COMPILER_PREFIX + "ithenable")
           .put("Infinity", MDN_PREFIX + "Global_Objects/Infinity")
           .put("Iterable", MDN_PREFIX + "Global_Objects/Symbol/iterator")
           .put("Iterator", MDN + "Guide/The_Iterator_protocol")

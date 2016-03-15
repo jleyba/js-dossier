@@ -1,3 +1,8 @@
+# v0.11.0-dev
+
+- Treat the compiler's IArrayLike, IObject, and IThenable like other built-in
+  externs and automatically link to external documentation.
+
 # v0.10.0
 
 - Renamed configuration option `closureDepsFile` to `closureDepFiles`
