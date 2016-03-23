@@ -28,6 +28,35 @@ java_library(
     ],
 )
 
+
+# Generates a single jar with Dossier's class files, _excluding_ third party
+# dependencies.
+genrule(
+  name = "lib_no_deps",
+  srcs = [
+    "//src/java/com/github/jsdossier",
+    "//src/java/com/github/jsdossier/annotations",
+    "//src/java/com/github/jsdossier/jscomp",
+    "//src/java/com/github/jsdossier/markdown",
+    "//src/java/com/github/jsdossier/proto",
+    "//src/java/com/github/jsdossier/soy",
+  ],
+  outs = ["dossier-no-deps.jar"],
+  cmd = 'readonly GENFILE="$$(pwd)/$@"; ' +
+        'readonly OUT="$$(mktemp -d $${TMPDIR:-/tmp}/dossier.XXXXXX)/js-dossier"; ' +
+        'readonly CWD="$$(pwd)"; ' +
+        'mkdir -p $$OUT && ' +
+        'cd $$OUT && ' +
+        'jar -xf $$CWD/$(location //src/java/com/github/jsdossier) && ' +
+        'jar -xf $$CWD/$(location //src/java/com/github/jsdossier/annotations) && ' +
+        'jar -xf $$CWD/$(location //src/java/com/github/jsdossier/jscomp) && ' +
+        'jar -xf $$CWD/$(location //src/java/com/github/jsdossier/markdown) && ' +
+        'jar -xf $$CWD/$(location //src/java/com/github/jsdossier/proto) && ' +
+        'jar -xf $$CWD/$(location //src/java/com/github/jsdossier/soy) && ' +
+        'jar -cf $$GENFILE -C $$OUT . && ' +
+        'cd $$(dirname $$GENFILE) && rm -rf $$OUT/',
+)
+
 java_binary(
     name = "dossier",
     runtime_deps = [":jsdossier"],

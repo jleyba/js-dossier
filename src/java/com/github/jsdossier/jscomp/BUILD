@@ -10,6 +10,8 @@ java_library(
         "//lib/maven:inject",
         "//lib/maven:jsr305",
         "//src/java/com/github/jsdossier/annotations",
+    ],
+    resources = [
         "//third_party/js/externs/node",
     ],
     visibility = [

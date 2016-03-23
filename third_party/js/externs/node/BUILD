@@ -2,8 +2,8 @@ licenses(["notice"])  # Apache 2
 
 exports_files(["LICENSE"])
 
-java_library(
+filegroup(
     name = "node",
-    resources = glob(["*.js"]),
+    srcs = glob(["*.js"]),
     visibility = ["//visibility:public"],
 )
