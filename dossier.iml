@@ -45,7 +45,7 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="library" name="com.google.guava:guava:18.0" level="project" />
+    <orderEntry type="library" name="com.google.guava:guava:19.0" level="project" />
     <orderEntry type="library" name="com.google.inject:guice:3.0" level="project" />
     <orderEntry type="library" name="com.google.inject.extensions:guice-assistedinject:3.0" level="project" />
     <orderEntry type="library" name="com.google.inject.extensions:guice-multibindings:3.0" level="project" />
