@@ -42,8 +42,8 @@ maven_jar(
 
 maven_jar(
     name = "closure_templates",
-    artifact = "com.google.template:soy:2015-02-10",
-    sha1 = "693fc1e3e17d060627625da9807b7c43f7d341f3",
+    artifact = "com.google.template:soy:2016-01-12",
+    sha1 = "adadc37aecf1042de7c9c6a6eb8f34719500ed69",
 )
 
 maven_jar(

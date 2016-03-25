@@ -105,15 +105,23 @@ public final class TestProto {
   public enum Fruit
       implements com.google.protobuf.ProtocolMessageEnum {
     /**
+     * <code>UNKNOWN = 0;</code>
+     */
+    UNKNOWN(0, 0),
+    /**
      * <code>APPLE = 1;</code>
      */
-    APPLE(0, 1),
+    APPLE(1, 1),
     /**
      * <code>ORANGE = 2;</code>
      */
-    ORANGE(1, 2),
+    ORANGE(2, 2),
     ;
 
+    /**
+     * <code>UNKNOWN = 0;</code>
+     */
+    public static final int UNKNOWN_VALUE = 0;
     /**
      * <code>APPLE = 1;</code>
      */
@@ -128,6 +136,7 @@ public final class TestProto {
 
     public static Fruit valueOf(int value) {
       switch (value) {
+        case 0: return UNKNOWN;
         case 1: return APPLE;
         case 2: return ORANGE;
         default: return null;
@@ -662,7 +671,7 @@ public final class TestProto {
       boolField_ = false;
       intField_ = 0;
       stringField_ = "";
-      fruit_ = com.github.jsdossier.soy.TestProto.Fruit.APPLE;
+      fruit_ = com.github.jsdossier.soy.TestProto.Fruit.UNKNOWN;
       color_ = com.github.jsdossier.soy.TestProto.Color.RED;
       repeatedInt_ = java.util.Collections.emptyList();
       repeatedColor_ = java.util.Collections.emptyList();
@@ -879,7 +888,7 @@ public final class TestProto {
         bitField0_ = (bitField0_ & ~0x00000002);
         stringField_ = "";
         bitField0_ = (bitField0_ & ~0x00000004);
-        fruit_ = com.github.jsdossier.soy.TestProto.Fruit.APPLE;
+        fruit_ = com.github.jsdossier.soy.TestProto.Fruit.UNKNOWN;
         bitField0_ = (bitField0_ & ~0x00000008);
         color_ = com.github.jsdossier.soy.TestProto.Color.RED;
         bitField0_ = (bitField0_ & ~0x00000010);
@@ -1176,7 +1185,7 @@ public final class TestProto {
         return this;
       }
 
-      private com.github.jsdossier.soy.TestProto.Fruit fruit_ = com.github.jsdossier.soy.TestProto.Fruit.APPLE;
+      private com.github.jsdossier.soy.TestProto.Fruit fruit_ = com.github.jsdossier.soy.TestProto.Fruit.UNKNOWN;
       /**
        * <code>optional .test.Fruit fruit = 4;</code>
        */
@@ -1206,7 +1215,7 @@ public final class TestProto {
        */
       public Builder clearFruit() {
         bitField0_ = (bitField0_ & ~0x00000008);
-        fruit_ = com.github.jsdossier.soy.TestProto.Fruit.APPLE;
+        fruit_ = com.github.jsdossier.soy.TestProto.Fruit.UNKNOWN;
         onChanged();
         return this;
       }
@@ -1507,6 +1516,19 @@ public final class TestProto {
      */
     com.github.jsdossier.soy.TestProto.OrderOrBuilder getOrderOrBuilder(
         int index);
+
+    /**
+     * <code>optional .test.Top.NestedMessage nested_message = 3;</code>
+     */
+    boolean hasNestedMessage();
+    /**
+     * <code>optional .test.Top.NestedMessage nested_message = 3;</code>
+     */
+    com.github.jsdossier.soy.TestProto.Top.NestedMessage getNestedMessage();
+    /**
+     * <code>optional .test.Top.NestedMessage nested_message = 3;</code>
+     */
+    com.github.jsdossier.soy.TestProto.Top.NestedMessageOrBuilder getNestedMessageOrBuilder();
   }
   /**
    * Protobuf type {@code test.Top}
@@ -1577,6 +1599,19 @@ public final class TestProto {
                 mutable_bitField0_ |= 0x00000002;
               }
               order_.add(input.readMessage(com.github.jsdossier.soy.TestProto.Order.PARSER, extensionRegistry));
+              break;
+            }
+            case 26: {
+              com.github.jsdossier.soy.TestProto.Top.NestedMessage.Builder subBuilder = null;
+              if (((bitField0_ & 0x00000002) == 0x00000002)) {
+                subBuilder = nestedMessage_.toBuilder();
+              }
+              nestedMessage_ = input.readMessage(com.github.jsdossier.soy.TestProto.Top.NestedMessage.PARSER, extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(nestedMessage_);
+                nestedMessage_ = subBuilder.buildPartial();
+              }
+              bitField0_ |= 0x00000002;
               break;
             }
           }
@@ -2142,9 +2177,31 @@ public final class TestProto {
       return order_.get(index);
     }
 
+    public static final int NESTED_MESSAGE_FIELD_NUMBER = 3;
+    private com.github.jsdossier.soy.TestProto.Top.NestedMessage nestedMessage_;
+    /**
+     * <code>optional .test.Top.NestedMessage nested_message = 3;</code>
+     */
+    public boolean hasNestedMessage() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    /**
+     * <code>optional .test.Top.NestedMessage nested_message = 3;</code>
+     */
+    public com.github.jsdossier.soy.TestProto.Top.NestedMessage getNestedMessage() {
+      return nestedMessage_;
+    }
+    /**
+     * <code>optional .test.Top.NestedMessage nested_message = 3;</code>
+     */
+    public com.github.jsdossier.soy.TestProto.Top.NestedMessageOrBuilder getNestedMessageOrBuilder() {
+      return nestedMessage_;
+    }
+
     private void initFields() {
       nestedEnum_ = com.github.jsdossier.soy.TestProto.Top.NestedEnum.VALUE;
       order_ = java.util.Collections.emptyList();
+      nestedMessage_ = com.github.jsdossier.soy.TestProto.Top.NestedMessage.getDefaultInstance();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -2165,6 +2222,9 @@ public final class TestProto {
       for (int i = 0; i < order_.size(); i++) {
         output.writeMessage(2, order_.get(i));
       }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeMessage(3, nestedMessage_);
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -2181,6 +2241,10 @@ public final class TestProto {
       for (int i = 0; i < order_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(2, order_.get(i));
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(3, nestedMessage_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -2292,6 +2356,7 @@ public final class TestProto {
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
           getOrderFieldBuilder();
+          getNestedMessageFieldBuilder();
         }
       }
       private static Builder create() {
@@ -2308,6 +2373,12 @@ public final class TestProto {
         } else {
           orderBuilder_.clear();
         }
+        if (nestedMessageBuilder_ == null) {
+          nestedMessage_ = com.github.jsdossier.soy.TestProto.Top.NestedMessage.getDefaultInstance();
+        } else {
+          nestedMessageBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000004);
         return this;
       }
 
@@ -2348,6 +2419,14 @@ public final class TestProto {
           result.order_ = order_;
         } else {
           result.order_ = orderBuilder_.build();
+        }
+        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        if (nestedMessageBuilder_ == null) {
+          result.nestedMessage_ = nestedMessage_;
+        } else {
+          result.nestedMessage_ = nestedMessageBuilder_.build();
         }
         result.bitField0_ = to_bitField0_;
         onBuilt();
@@ -2393,6 +2472,9 @@ public final class TestProto {
               orderBuilder_.addAllMessages(other.order_);
             }
           }
+        }
+        if (other.hasNestedMessage()) {
+          mergeNestedMessage(other.getNestedMessage());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -2696,6 +2778,122 @@ public final class TestProto {
         return orderBuilder_;
       }
 
+      private com.github.jsdossier.soy.TestProto.Top.NestedMessage nestedMessage_ = com.github.jsdossier.soy.TestProto.Top.NestedMessage.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          com.github.jsdossier.soy.TestProto.Top.NestedMessage, com.github.jsdossier.soy.TestProto.Top.NestedMessage.Builder, com.github.jsdossier.soy.TestProto.Top.NestedMessageOrBuilder> nestedMessageBuilder_;
+      /**
+       * <code>optional .test.Top.NestedMessage nested_message = 3;</code>
+       */
+      public boolean hasNestedMessage() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      /**
+       * <code>optional .test.Top.NestedMessage nested_message = 3;</code>
+       */
+      public com.github.jsdossier.soy.TestProto.Top.NestedMessage getNestedMessage() {
+        if (nestedMessageBuilder_ == null) {
+          return nestedMessage_;
+        } else {
+          return nestedMessageBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>optional .test.Top.NestedMessage nested_message = 3;</code>
+       */
+      public Builder setNestedMessage(com.github.jsdossier.soy.TestProto.Top.NestedMessage value) {
+        if (nestedMessageBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          nestedMessage_ = value;
+          onChanged();
+        } else {
+          nestedMessageBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000004;
+        return this;
+      }
+      /**
+       * <code>optional .test.Top.NestedMessage nested_message = 3;</code>
+       */
+      public Builder setNestedMessage(
+          com.github.jsdossier.soy.TestProto.Top.NestedMessage.Builder builderForValue) {
+        if (nestedMessageBuilder_ == null) {
+          nestedMessage_ = builderForValue.build();
+          onChanged();
+        } else {
+          nestedMessageBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000004;
+        return this;
+      }
+      /**
+       * <code>optional .test.Top.NestedMessage nested_message = 3;</code>
+       */
+      public Builder mergeNestedMessage(com.github.jsdossier.soy.TestProto.Top.NestedMessage value) {
+        if (nestedMessageBuilder_ == null) {
+          if (((bitField0_ & 0x00000004) == 0x00000004) &&
+              nestedMessage_ != com.github.jsdossier.soy.TestProto.Top.NestedMessage.getDefaultInstance()) {
+            nestedMessage_ =
+              com.github.jsdossier.soy.TestProto.Top.NestedMessage.newBuilder(nestedMessage_).mergeFrom(value).buildPartial();
+          } else {
+            nestedMessage_ = value;
+          }
+          onChanged();
+        } else {
+          nestedMessageBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000004;
+        return this;
+      }
+      /**
+       * <code>optional .test.Top.NestedMessage nested_message = 3;</code>
+       */
+      public Builder clearNestedMessage() {
+        if (nestedMessageBuilder_ == null) {
+          nestedMessage_ = com.github.jsdossier.soy.TestProto.Top.NestedMessage.getDefaultInstance();
+          onChanged();
+        } else {
+          nestedMessageBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000004);
+        return this;
+      }
+      /**
+       * <code>optional .test.Top.NestedMessage nested_message = 3;</code>
+       */
+      public com.github.jsdossier.soy.TestProto.Top.NestedMessage.Builder getNestedMessageBuilder() {
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return getNestedMessageFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>optional .test.Top.NestedMessage nested_message = 3;</code>
+       */
+      public com.github.jsdossier.soy.TestProto.Top.NestedMessageOrBuilder getNestedMessageOrBuilder() {
+        if (nestedMessageBuilder_ != null) {
+          return nestedMessageBuilder_.getMessageOrBuilder();
+        } else {
+          return nestedMessage_;
+        }
+      }
+      /**
+       * <code>optional .test.Top.NestedMessage nested_message = 3;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          com.github.jsdossier.soy.TestProto.Top.NestedMessage, com.github.jsdossier.soy.TestProto.Top.NestedMessage.Builder, com.github.jsdossier.soy.TestProto.Top.NestedMessageOrBuilder> 
+          getNestedMessageFieldBuilder() {
+        if (nestedMessageBuilder_ == null) {
+          nestedMessageBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              com.github.jsdossier.soy.TestProto.Top.NestedMessage, com.github.jsdossier.soy.TestProto.Top.NestedMessage.Builder, com.github.jsdossier.soy.TestProto.Top.NestedMessageOrBuilder>(
+                  getNestedMessage(),
+                  getParentForChildren(),
+                  isClean());
+          nestedMessage_ = null;
+        }
+        return nestedMessageBuilder_;
+      }
+
       // @@protoc_insertion_point(builder_scope:test.Top)
     }
 
@@ -2737,13 +2935,14 @@ public final class TestProto {
       "\004 \001(\0162\013.test.Fruit\022\032\n\005color\030\005 \001(\0162\013.test" +
       ".Color\022\024\n\014repeated_int\030\006 \003(\005\022#\n\016repeated" +
       "_color\030\007 \003(\0162\013.test.Color\022\032\n\nhtml_field\030" +
-      "\010 \001(\tB\006\362\201\031\002\020\001\"\204\001\n\003Top\022)\n\013nested_enum\030\001 \001" +
+      "\010 \001(\tB\006\362\201\031\002\020\001\"\265\001\n\003Top\022)\n\013nested_enum\030\001 \001" +
       "(\0162\024.test.Top.NestedEnum\022\032\n\005order\030\002 \003(\0132" +
-      "\013.test.Order\032\035\n\rNestedMessage\022\014\n\004item\030\001 " +
-      "\001(\010\"\027\n\nNestedEnum\022\t\n\005VALUE\020\000*%\n\005Color\022\007\n",
-      "\003RED\020\000\022\010\n\004BLUE\020\001\022\t\n\005GREEN\020\002*\036\n\005Fruit\022\t\n\005" +
-      "APPLE\020\001\022\n\n\006ORANGE\020\002B\032\n\030com.github.jsdoss" +
-      "ier.soy"
+      "\013.test.Order\022/\n\016nested_message\030\003 \001(\0132\027.t" +
+      "est.Top.NestedMessage\032\035\n\rNestedMessage\022\014",
+      "\n\004item\030\001 \001(\010\"\027\n\nNestedEnum\022\t\n\005VALUE\020\000*%\n" +
+      "\005Color\022\007\n\003RED\020\000\022\010\n\004BLUE\020\001\022\t\n\005GREEN\020\002*+\n\005" +
+      "Fruit\022\013\n\007UNKNOWN\020\000\022\t\n\005APPLE\020\001\022\n\n\006ORANGE\020" +
+      "\002B\032\n\030com.github.jsdossier.soy"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -2769,7 +2968,7 @@ public final class TestProto {
     internal_static_test_Top_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_test_Top_descriptor,
-        new java.lang.String[] { "NestedEnum", "Order", });
+        new java.lang.String[] { "NestedEnum", "Order", "NestedMessage", });
     internal_static_test_Top_NestedMessage_descriptor =
       internal_static_test_Top_descriptor.getNestedTypes().get(0);
     internal_static_test_Top_NestedMessage_fieldAccessorTable = new

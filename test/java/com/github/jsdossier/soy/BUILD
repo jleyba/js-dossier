@@ -12,6 +12,7 @@ java_library(
 java_test_suite(
     name = "AllTests",
     srcs = glob(["*.java"]),
+    resources = glob(["*.soy"]),
     deps = [
         ":lib",
         "//lib/maven:closure_templates",

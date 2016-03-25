@@ -19,6 +19,7 @@ package com.github.jsdossier.soy;
 import static com.google.common.base.CaseFormat.LOWER_CAMEL;
 import static com.google.common.base.CaseFormat.LOWER_UNDERSCORE;
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Strings.nullToEmpty;
 import static com.google.common.collect.Iterables.transform;
 import static com.google.template.soy.data.SanitizedContent.ContentKind.HTML;
 import static com.google.template.soy.data.SanitizedContent.ContentKind.URI;
@@ -29,6 +30,7 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.EnumValueDescriptor;
@@ -42,6 +44,7 @@ import com.google.template.soy.data.SoyRecord;
 import com.google.template.soy.data.SoyValue;
 import com.google.template.soy.data.UnsafeSanitizedContentOrdainer;
 import com.google.template.soy.data.restricted.BooleanData;
+import com.google.template.soy.data.restricted.FloatData;
 import com.google.template.soy.data.restricted.IntegerData;
 import com.google.template.soy.data.restricted.NullData;
 import com.google.template.soy.data.restricted.StringData;
@@ -52,7 +55,6 @@ import com.google.template.soy.types.aggregate.ListType;
 import com.google.template.soy.types.primitive.BoolType;
 import com.google.template.soy.types.primitive.IntType;
 import com.google.template.soy.types.primitive.NullType;
-import com.google.template.soy.types.primitive.PrimitiveType;
 import com.google.template.soy.types.primitive.StringType;
 
 import java.util.List;
@@ -61,6 +63,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 class ProtoMessageSoyType implements SoyObjectType {
@@ -68,7 +71,8 @@ class ProtoMessageSoyType implements SoyObjectType {
   private static final Pattern PERMISSIBLE_URI_PREFIX_PATTERN =
       Pattern.compile("^((?:\\.{1,2}/)+)");
 
-  private static final ImmutableMap<FieldDescriptor.JavaType, PrimitiveType> JAVA_TO_PRIMITIVE_TYPES =
+  private static final
+  ImmutableMap<FieldDescriptor.JavaType, ? extends SoyType> JAVA_TO_PRIMITIVE_TYPES =
       ImmutableMap.of(
           FieldDescriptor.JavaType.BOOLEAN, BoolType.getInstance(),
           FieldDescriptor.JavaType.INT, IntType.getInstance(),
@@ -78,7 +82,7 @@ class ProtoMessageSoyType implements SoyObjectType {
       CacheBuilder.newBuilder()
           .build(new CacheLoader<Descriptor, ProtoMessageSoyType>() {
             @Override
-            public ProtoMessageSoyType load(Descriptor key) throws Exception {
+            public ProtoMessageSoyType load(@Nonnull Descriptor key) throws Exception {
               return new ProtoMessageSoyType(key);
             }
           });
@@ -137,10 +141,6 @@ class ProtoMessageSoyType implements SoyObjectType {
   }
 
   private static SoyValue toSoyValue(FieldDescriptor field, GeneratedMessage message) {
-    if (!field.isRepeated() && !message.hasField(field)) {
-      return NullData.INSTANCE;
-    }
-
     Object fieldValue = message.getField(field);
     switch (field.getJavaType()) {
       case ENUM: {
@@ -168,6 +168,10 @@ class ProtoMessageSoyType implements SoyObjectType {
           return toSoyValue(messages);
         }
 
+        if (!message.hasField(field)) {
+          return NullData.INSTANCE;
+        }
+
         @SuppressWarnings("unchecked")
         GeneratedMessage value = (GeneratedMessage) fieldValue;
         return toSoyValue(value);
@@ -181,13 +185,13 @@ class ProtoMessageSoyType implements SoyObjectType {
             @Nullable
             @Override
             public SoyValue apply(@Nullable Number input) {
-              return input == null ? NullData.INSTANCE : IntegerData.forValue(input.longValue());
+              return toSoyValue(input);
             }
           });
         }
         @SuppressWarnings("unchecked")
         Number value = (Number) fieldValue;
-        return IntegerData.forValue(value.longValue());
+        return toSoyValue(value);
       }
 
       case STRING: {
@@ -201,13 +205,13 @@ class ProtoMessageSoyType implements SoyObjectType {
             @Nullable
             @Override
             public SoyValue apply(@Nullable String input) {
-              return input == null ? NullData.INSTANCE : StringData.forValue(input);
+              return toSoyValue(input);
             }
           });
         }
         @SuppressWarnings("unchecked")
         String value = (String) fieldValue;
-        return StringData.forValue(value);
+        return toSoyValue(value);
       }
 
       case BOOLEAN: {
@@ -218,19 +222,37 @@ class ProtoMessageSoyType implements SoyObjectType {
             @Nullable
             @Override
             public SoyValue apply(@Nullable Boolean input) {
-              return input == null ? NullData.INSTANCE : BooleanData.forValue(input);
+              return toSoyValue(input);
             }
           });
         }
         @SuppressWarnings("unchecked")
         Boolean value = (Boolean) fieldValue;
-        return BooleanData.forValue(value);
+        return toSoyValue(value);
       }
 
       default:
         throw new UnsupportedOperationException(
             "Cannot convert type for field " + field.getFullName());
     }
+  }
+
+  private static SoyValue toSoyValue(@Nullable Number value) {
+    if (value == null) {
+      return IntegerData.forValue(0);
+    } else if (value instanceof Float || value instanceof Double) {
+      return FloatData.forValue(value.doubleValue());
+    } else {
+      return IntegerData.forValue(value.longValue());
+    }
+  }
+
+  private static SoyValue toSoyValue(@Nullable String value) {
+    return StringData.forValue(nullToEmpty(value));
+  }
+
+  private static SoyValue toSoyValue(@Nullable Boolean value) {
+    return value == null ? BooleanData.forValue(false) : BooleanData.forValue(value);
   }
 
   private static SoyValue toSanitizedContent(FieldDescriptor field, Object fieldValue) {
@@ -388,16 +410,27 @@ class ProtoMessageSoyType implements SoyObjectType {
   }
 
   @Override
-  public String getFieldAccessor(String fieldName, SoyBackendKind soyBackendKind) {
-    if (soyBackendKind == SoyBackendKind.JS_SRC) {
-      return "." + fieldName;
+  public ImmutableSet<String> getFieldNames() {
+    return fieldTypes.keySet();
+  }
+
+  @Override
+  public String getFieldAccessExpr(
+      String fieldContainerExpr, String fieldName, SoyBackendKind backend) {
+    if (backend == SoyBackendKind.JS_SRC) {
+      return fieldContainerExpr + "." + fieldName;
     } else {
       throw new UnsupportedOperationException();
     }
   }
 
   @Override
-  public String getFieldImport(String name, SoyBackendKind soyBackendKind) {
-    return null;
+  public ImmutableSet<String> getFieldAccessImports(String fieldName, SoyBackendKind backend) {
+    return ImmutableSet.of();
+  }
+
+  @Override
+  public Class<? extends SoyValue> javaType() {
+    return SoyRecord.class;
   }
 }

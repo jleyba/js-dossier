@@ -20,7 +20,6 @@ import com.google.protobuf.Descriptors;
 import com.google.protobuf.ProtocolMessageEnum;
 import com.google.template.soy.data.SoyData;
 import com.google.template.soy.data.SoyValue;
-import com.google.template.soy.data.SoyValueProvider;
 import com.google.template.soy.data.restricted.IntegerData;
 
 import java.io.IOException;
@@ -117,8 +116,5 @@ class ProtoEnumSoyValue extends SoyData implements SoyValue {
     return this;
   }
 
-  @Override
-  public boolean equals(SoyValueProvider soyValueProvider) {
-    return false;
-  }
+
 }

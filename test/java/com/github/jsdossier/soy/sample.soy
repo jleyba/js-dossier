@@ -1,0 +1,42 @@
+{namespace sample}
+
+{template .optionalBool}
+  {@param order: test.Order}
+  {if $order.boolField}true{else}false{/if}
+{/template}
+
+{template .optionalInt}
+  {@param order: test.Order}
+  {if $order.intField}{$order.intField}{/if}
+{/template}
+
+{template .optionalString}
+  {@param order: test.Order}
+  {if $order.stringField}{$order.stringField}{/if}
+{/template}
+
+{template .optionalEnum}
+  {@param order: test.Order}
+  {if $order.fruit}{$order.fruit}{/if}
+{/template}
+
+{template .sanitizedHtmlField}
+  {@param order: test.Order}
+  {if $order.htmlField}{$order.htmlField}{/if}
+{/template}
+
+{template .repeatedMessageField}
+  {@param top: test.Top}
+  {foreach $order in $top.order}
+    {call .optionalBool}
+      {param order: $order /}
+    {/call}
+  {/foreach}
+{/template}
+
+{template .optionalMessageField}
+  {@param top: test.Top}
+  {if $top.nestedMessage}
+    {if $top.nestedMessage.item}true{else}false{/if}
+  {/if}
+{/template}

@@ -93,4 +93,9 @@ class ProtoEnumSoyType implements SoyEnumType {
     }
     return false;
   }
+
+  @Override
+  public Class<? extends SoyValue> javaType() {
+    return ProtoEnumSoyValue.class;
+  }
 }

@@ -25,9 +25,11 @@ import static org.junit.Assert.assertTrue;
 
 import com.google.common.collect.ImmutableList;
 import com.google.template.soy.data.SanitizedContent;
+import com.google.template.soy.data.SanitizedContent.ContentKind;
 import com.google.template.soy.data.SoyListData;
 import com.google.template.soy.data.SoyMapData;
 import com.google.template.soy.data.SoyValue;
+import com.google.template.soy.data.UnsafeSanitizedContentOrdainer;
 import com.google.template.soy.data.restricted.BooleanData;
 import com.google.template.soy.data.restricted.IntegerData;
 import com.google.template.soy.data.restricted.NullData;
@@ -36,6 +38,9 @@ import com.google.template.soy.types.aggregate.ListType;
 import com.google.template.soy.types.primitive.BoolType;
 import com.google.template.soy.types.primitive.IntType;
 import com.google.template.soy.types.primitive.StringType;
+
+import com.github.jsdossier.soy.TestProto.Color;
+import com.github.jsdossier.soy.TestProto.Fruit;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -119,14 +124,20 @@ public class ProtoMessageSoyTypeTest {
         "boolField", "intField", "stringField", "fruit", "color", "repeatedInt",
         "repeatedColor", "htmlField");
 
-    assertEquals(NullData.INSTANCE, map.get("boolField"));
-    assertEquals(NullData.INSTANCE, map.get("intField"));
-    assertEquals(NullData.INSTANCE, map.get("stringField"));
-    assertEquals(NullData.INSTANCE, map.get("fruit"));
-    assertEquals(NullData.INSTANCE, map.get("color"));
-    assertEquals(NullData.INSTANCE, map.get("htmlField"));
-    assertEquals(0, ((SoyListData) map.get("repeatedInt")).length());
-    assertEquals(0, ((SoyListData) map.get("repeatedColor")).length());
+    assertThat(map.get("boolField")).isEqualTo(BooleanData.FALSE);
+    assertThat(map.get("intField")).isEqualTo(IntegerData.ZERO);
+    assertThat(map.get("stringField")).isEqualTo(StringData.EMPTY_STRING);
+    assertThat(map.get("fruit")).isEqualTo(ProtoEnumSoyValue.get(Fruit.UNKNOWN));
+    assertThat(map.get("color")).isEqualTo(ProtoEnumSoyValue.get(Color.RED));
+    assertThat(map.get("htmlField"))
+        .isEqualTo(UnsafeSanitizedContentOrdainer.ordainAsSafe("", ContentKind.HTML));
+    assertThat((SoyListData) map.get("repeatedInt")).isEmpty();
+    assertThat((SoyListData) map.get("repeatedColor")).isEmpty();
+
+    value = ProtoMessageSoyType.toSoyValue(TestProto.Top.newBuilder().build());
+    map = ((SoyMapData) value).asResolvedJavaStringMap();
+    assertThat(map.get("nestedMessage")).isEqualTo(NullData.INSTANCE);
+    assertThat((SoyListData) map.get("order")).isEmpty();
   }
 
   @Test

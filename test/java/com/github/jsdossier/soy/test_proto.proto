@@ -25,6 +25,7 @@ enum Color {
 }
 
 enum Fruit {
+  UNKNOWN = 0;
   APPLE = 1;
   ORANGE = 2;
 }
@@ -51,4 +52,5 @@ message Top {
 
   optional NestedEnum nested_enum = 1;
   repeated Order order = 2;
+  optional NestedMessage nested_message = 3;
 }

@@ -2,6 +2,7 @@
 
 - Treat the compiler's IArrayLike, IObject, and IThenable like other built-in
   externs and automatically link to external documentation.
+- Upgraded to com.google.template:soy:2016-01-12
 
 # v0.10.0
 
