@@ -22,7 +22,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Strings.nullToEmpty;
 import static com.google.common.collect.Iterables.transform;
 import static com.google.template.soy.data.SanitizedContent.ContentKind.HTML;
-import static com.google.template.soy.data.SanitizedContent.ContentKind.URI;
+import static com.google.template.soy.data.SanitizedContent.ContentKind.TRUSTED_RESOURCE_URI;
 
 import com.github.jsdossier.proto.Dossier;
 import com.google.common.base.Function;
@@ -296,7 +296,7 @@ class ProtoMessageSoyType implements SoyObjectType {
     } else {
       uri = Sanitizers.filterNormalizeUri(uri);
     }
-    return UnsafeSanitizedContentOrdainer.ordainAsSafe(uri, URI);
+    return UnsafeSanitizedContentOrdainer.ordainAsSafe(uri, TRUSTED_RESOURCE_URI);
   }
 
   private static SoyValue toSanitizedContent(
