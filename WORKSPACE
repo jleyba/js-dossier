@@ -48,14 +48,14 @@ maven_jar(
 
 maven_jar(
     name = "commonmark",
-    artifact = "com.atlassian.commonmark:commonmark:0.4.0",
-    sha1 = "d2284b0223f11a82e10b621b0876ac8aec547b10",
+    artifact = "com.atlassian.commonmark:commonmark:0.4.1",
+    sha1 = "6e2e7f8514735dfa0b95bd6cfaa00078b1f0e110",
 )
 
 maven_jar(
     name = "commonmark_gfm_tables",
-    artifact = "com.atlassian.commonmark:commonmark-ext-gfm-tables:0.4.0",
-    sha1 = "954f725bcbebfe257c4957b95b6aae17e7ee2a01",
+    artifact = "com.atlassian.commonmark:commonmark-ext-gfm-tables:0.4.1",
+    sha1 = "7f7a0a1611d04a3ef13e27578934c6524516e45b",
 )
 
 maven_jar(
