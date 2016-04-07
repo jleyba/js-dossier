@@ -16,7 +16,7 @@
 
 package com.github.jsdossier;
 
-import static com.google.common.util.concurrent.Futures.transform;
+import static com.google.common.util.concurrent.Futures.transformAsync;
 import static com.google.common.util.concurrent.MoreExecutors.directExecutor;
 
 import com.google.common.collect.ImmutableList;
@@ -240,7 +240,7 @@ final class RenderTaskExecutor {
       Futures.addCallback(task, callback);
     }
 
-    return transform(completedTasks, new AsyncFunction<List<Path>, List<Path>>() {
+    return transformAsync(completedTasks, new AsyncFunction<List<Path>, List<Path>>() {
       @Override
       public ListenableFuture<List<Path>> apply(@Nonnull List<Path> input) throws IOException {
         input.add(typeIndexTask.call());
