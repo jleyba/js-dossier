@@ -10,37 +10,30 @@ package com.github.jsdossier.proto;
  * Describes the basic properties for a documented JavaScript property.
  * </pre>
  */
-public final class BaseProperty extends
+public  final class BaseProperty extends
     com.google.protobuf.GeneratedMessage implements
     // @@protoc_insertion_point(message_implements:dossier.BaseProperty)
     BasePropertyOrBuilder {
   // Use BaseProperty.newBuilder() to construct.
   private BaseProperty(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
     super(builder);
-    this.unknownFields = builder.getUnknownFields();
   }
-  private BaseProperty(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
-
-  private static final BaseProperty defaultInstance;
-  public static BaseProperty getDefaultInstance() {
-    return defaultInstance;
-  }
-
-  public BaseProperty getDefaultInstanceForType() {
-    return defaultInstance;
+  private BaseProperty() {
+    name_ = "";
+    visibility_ = 0;
+    specifiedBy_ = java.util.Collections.emptyList();
+    seeAlso_ = java.util.Collections.emptyList();
   }
 
-  private final com.google.protobuf.UnknownFieldSet unknownFields;
   @java.lang.Override
   public final com.google.protobuf.UnknownFieldSet
-      getUnknownFields() {
+  getUnknownFields() {
     return this.unknownFields;
   }
   private BaseProperty(
       com.google.protobuf.CodedInputStream input,
-      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-      throws com.google.protobuf.InvalidProtocolBufferException {
-    initFields();
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
+    this();
     int mutable_bitField0_ = 0;
     com.google.protobuf.UnknownFieldSet.Builder unknownFields =
         com.google.protobuf.UnknownFieldSet.newBuilder();
@@ -70,7 +63,7 @@ public final class BaseProperty extends
             if (((bitField0_ & 0x00000002) == 0x00000002)) {
               subBuilder = source_.toBuilder();
             }
-            source_ = input.readMessage(com.github.jsdossier.proto.SourceLink.PARSER, extensionRegistry);
+            source_ = input.readMessage(com.github.jsdossier.proto.SourceLink.parser(), extensionRegistry);
             if (subBuilder != null) {
               subBuilder.mergeFrom(source_);
               source_ = subBuilder.buildPartial();
@@ -83,7 +76,7 @@ public final class BaseProperty extends
             if (((bitField0_ & 0x00000004) == 0x00000004)) {
               subBuilder = description_.toBuilder();
             }
-            description_ = input.readMessage(com.github.jsdossier.proto.Comment.PARSER, extensionRegistry);
+            description_ = input.readMessage(com.github.jsdossier.proto.Comment.parser(), extensionRegistry);
             if (subBuilder != null) {
               subBuilder.mergeFrom(description_);
               description_ = subBuilder.buildPartial();
@@ -96,7 +89,7 @@ public final class BaseProperty extends
             if (((bitField0_ & 0x00000008) == 0x00000008)) {
               subBuilder = deprecation_.toBuilder();
             }
-            deprecation_ = input.readMessage(com.github.jsdossier.proto.Comment.PARSER, extensionRegistry);
+            deprecation_ = input.readMessage(com.github.jsdossier.proto.Comment.parser(), extensionRegistry);
             if (subBuilder != null) {
               subBuilder.mergeFrom(deprecation_);
               deprecation_ = subBuilder.buildPartial();
@@ -111,7 +104,7 @@ public final class BaseProperty extends
               unknownFields.mergeVarintField(5, rawValue);
             } else {
               bitField0_ |= 0x00000010;
-              visibility_ = value;
+              visibility_ = rawValue;
             }
             break;
           }
@@ -120,7 +113,7 @@ public final class BaseProperty extends
             if (((bitField0_ & 0x00000020) == 0x00000020)) {
               subBuilder = tags_.toBuilder();
             }
-            tags_ = input.readMessage(com.github.jsdossier.proto.Tags.PARSER, extensionRegistry);
+            tags_ = input.readMessage(com.github.jsdossier.proto.Tags.parser(), extensionRegistry);
             if (subBuilder != null) {
               subBuilder.mergeFrom(tags_);
               tags_ = subBuilder.buildPartial();
@@ -133,7 +126,7 @@ public final class BaseProperty extends
             if (((bitField0_ & 0x00000040) == 0x00000040)) {
               subBuilder = definedBy_.toBuilder();
             }
-            definedBy_ = input.readMessage(com.github.jsdossier.proto.Comment.PARSER, extensionRegistry);
+            definedBy_ = input.readMessage(com.github.jsdossier.proto.Comment.parser(), extensionRegistry);
             if (subBuilder != null) {
               subBuilder.mergeFrom(definedBy_);
               definedBy_ = subBuilder.buildPartial();
@@ -146,7 +139,7 @@ public final class BaseProperty extends
             if (((bitField0_ & 0x00000080) == 0x00000080)) {
               subBuilder = overrides_.toBuilder();
             }
-            overrides_ = input.readMessage(com.github.jsdossier.proto.Comment.PARSER, extensionRegistry);
+            overrides_ = input.readMessage(com.github.jsdossier.proto.Comment.parser(), extensionRegistry);
             if (subBuilder != null) {
               subBuilder.mergeFrom(overrides_);
               overrides_ = subBuilder.buildPartial();
@@ -159,7 +152,7 @@ public final class BaseProperty extends
               specifiedBy_ = new java.util.ArrayList<com.github.jsdossier.proto.Comment>();
               mutable_bitField0_ |= 0x00000100;
             }
-            specifiedBy_.add(input.readMessage(com.github.jsdossier.proto.Comment.PARSER, extensionRegistry));
+            specifiedBy_.add(input.readMessage(com.github.jsdossier.proto.Comment.parser(), extensionRegistry));
             break;
           }
           case 82: {
@@ -167,16 +160,17 @@ public final class BaseProperty extends
               seeAlso_ = new java.util.ArrayList<com.github.jsdossier.proto.Comment>();
               mutable_bitField0_ |= 0x00000200;
             }
-            seeAlso_.add(input.readMessage(com.github.jsdossier.proto.Comment.PARSER, extensionRegistry));
+            seeAlso_.add(input.readMessage(com.github.jsdossier.proto.Comment.parser(), extensionRegistry));
             break;
           }
         }
       }
     } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-      throw e.setUnfinishedMessage(this);
+      throw new RuntimeException(e.setUnfinishedMessage(this));
     } catch (java.io.IOException e) {
-      throw new com.google.protobuf.InvalidProtocolBufferException(
-          e.getMessage()).setUnfinishedMessage(this);
+      throw new RuntimeException(
+          new com.google.protobuf.InvalidProtocolBufferException(
+              e.getMessage()).setUnfinishedMessage(this));
     } finally {
       if (((mutable_bitField0_ & 0x00000100) == 0x00000100)) {
         specifiedBy_ = java.util.Collections.unmodifiableList(specifiedBy_);
@@ -200,24 +194,9 @@ public final class BaseProperty extends
             com.github.jsdossier.proto.BaseProperty.class, com.github.jsdossier.proto.BaseProperty.Builder.class);
   }
 
-  public static com.google.protobuf.Parser<BaseProperty> PARSER =
-      new com.google.protobuf.AbstractParser<BaseProperty>() {
-    public BaseProperty parsePartialFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return new BaseProperty(input, extensionRegistry);
-    }
-  };
-
-  @java.lang.Override
-  public com.google.protobuf.Parser<BaseProperty> getParserForType() {
-    return PARSER;
-  }
-
   private int bitField0_;
   public static final int NAME_FIELD_NUMBER = 1;
-  private java.lang.Object name_;
+  private volatile java.lang.Object name_;
   /**
    * <code>required string name = 1;</code>
    *
@@ -290,7 +269,7 @@ public final class BaseProperty extends
    * </pre>
    */
   public com.github.jsdossier.proto.SourceLink getSource() {
-    return source_;
+    return source_ == null ? com.github.jsdossier.proto.SourceLink.getDefaultInstance() : source_;
   }
   /**
    * <code>required .dossier.SourceLink source = 2;</code>
@@ -300,7 +279,7 @@ public final class BaseProperty extends
    * </pre>
    */
   public com.github.jsdossier.proto.SourceLinkOrBuilder getSourceOrBuilder() {
-    return source_;
+    return source_ == null ? com.github.jsdossier.proto.SourceLink.getDefaultInstance() : source_;
   }
 
   public static final int DESCRIPTION_FIELD_NUMBER = 3;
@@ -323,7 +302,7 @@ public final class BaseProperty extends
    * </pre>
    */
   public com.github.jsdossier.proto.Comment getDescription() {
-    return description_;
+    return description_ == null ? com.github.jsdossier.proto.Comment.getDefaultInstance() : description_;
   }
   /**
    * <code>required .dossier.Comment description = 3;</code>
@@ -333,7 +312,7 @@ public final class BaseProperty extends
    * </pre>
    */
   public com.github.jsdossier.proto.CommentOrBuilder getDescriptionOrBuilder() {
-    return description_;
+    return description_ == null ? com.github.jsdossier.proto.Comment.getDefaultInstance() : description_;
   }
 
   public static final int DEPRECATION_FIELD_NUMBER = 4;
@@ -356,7 +335,7 @@ public final class BaseProperty extends
    * </pre>
    */
   public com.github.jsdossier.proto.Comment getDeprecation() {
-    return deprecation_;
+    return deprecation_ == null ? com.github.jsdossier.proto.Comment.getDefaultInstance() : deprecation_;
   }
   /**
    * <code>optional .dossier.Comment deprecation = 4;</code>
@@ -366,11 +345,11 @@ public final class BaseProperty extends
    * </pre>
    */
   public com.github.jsdossier.proto.CommentOrBuilder getDeprecationOrBuilder() {
-    return deprecation_;
+    return deprecation_ == null ? com.github.jsdossier.proto.Comment.getDefaultInstance() : deprecation_;
   }
 
   public static final int VISIBILITY_FIELD_NUMBER = 5;
-  private com.github.jsdossier.proto.Visibility visibility_;
+  private int visibility_;
   /**
    * <code>optional .dossier.Visibility visibility = 5 [default = PUBLIC];</code>
    */
@@ -381,7 +360,8 @@ public final class BaseProperty extends
    * <code>optional .dossier.Visibility visibility = 5 [default = PUBLIC];</code>
    */
   public com.github.jsdossier.proto.Visibility getVisibility() {
-    return visibility_;
+    com.github.jsdossier.proto.Visibility result = com.github.jsdossier.proto.Visibility.valueOf(visibility_);
+    return result == null ? com.github.jsdossier.proto.Visibility.PUBLIC : result;
   }
 
   public static final int TAGS_FIELD_NUMBER = 6;
@@ -396,13 +376,13 @@ public final class BaseProperty extends
    * <code>optional .dossier.Tags tags = 6;</code>
    */
   public com.github.jsdossier.proto.Tags getTags() {
-    return tags_;
+    return tags_ == null ? com.github.jsdossier.proto.Tags.getDefaultInstance() : tags_;
   }
   /**
    * <code>optional .dossier.Tags tags = 6;</code>
    */
   public com.github.jsdossier.proto.TagsOrBuilder getTagsOrBuilder() {
-    return tags_;
+    return tags_ == null ? com.github.jsdossier.proto.Tags.getDefaultInstance() : tags_;
   }
 
   public static final int DEFINED_BY_FIELD_NUMBER = 7;
@@ -425,7 +405,7 @@ public final class BaseProperty extends
    * </pre>
    */
   public com.github.jsdossier.proto.Comment getDefinedBy() {
-    return definedBy_;
+    return definedBy_ == null ? com.github.jsdossier.proto.Comment.getDefaultInstance() : definedBy_;
   }
   /**
    * <code>optional .dossier.Comment defined_by = 7;</code>
@@ -435,7 +415,7 @@ public final class BaseProperty extends
    * </pre>
    */
   public com.github.jsdossier.proto.CommentOrBuilder getDefinedByOrBuilder() {
-    return definedBy_;
+    return definedBy_ == null ? com.github.jsdossier.proto.Comment.getDefaultInstance() : definedBy_;
   }
 
   public static final int OVERRIDES_FIELD_NUMBER = 8;
@@ -458,7 +438,7 @@ public final class BaseProperty extends
    * </pre>
    */
   public com.github.jsdossier.proto.Comment getOverrides() {
-    return overrides_;
+    return overrides_ == null ? com.github.jsdossier.proto.Comment.getDefaultInstance() : overrides_;
   }
   /**
    * <code>optional .dossier.Comment overrides = 8;</code>
@@ -468,7 +448,7 @@ public final class BaseProperty extends
    * </pre>
    */
   public com.github.jsdossier.proto.CommentOrBuilder getOverridesOrBuilder() {
-    return overrides_;
+    return overrides_ == null ? com.github.jsdossier.proto.Comment.getDefaultInstance() : overrides_;
   }
 
   public static final int SPECIFIED_BY_FIELD_NUMBER = 9;
@@ -561,18 +541,6 @@ public final class BaseProperty extends
     return seeAlso_.get(index);
   }
 
-  private void initFields() {
-    name_ = "";
-    source_ = com.github.jsdossier.proto.SourceLink.getDefaultInstance();
-    description_ = com.github.jsdossier.proto.Comment.getDefaultInstance();
-    deprecation_ = com.github.jsdossier.proto.Comment.getDefaultInstance();
-    visibility_ = com.github.jsdossier.proto.Visibility.PUBLIC;
-    tags_ = com.github.jsdossier.proto.Tags.getDefaultInstance();
-    definedBy_ = com.github.jsdossier.proto.Comment.getDefaultInstance();
-    overrides_ = com.github.jsdossier.proto.Comment.getDefaultInstance();
-    specifiedBy_ = java.util.Collections.emptyList();
-    seeAlso_ = java.util.Collections.emptyList();
-  }
   private byte memoizedIsInitialized = -1;
   public final boolean isInitialized() {
     byte isInitialized = memoizedIsInitialized;
@@ -601,30 +569,29 @@ public final class BaseProperty extends
 
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    getSerializedSize();
     if (((bitField0_ & 0x00000001) == 0x00000001)) {
-      output.writeBytes(1, getNameBytes());
+      com.google.protobuf.GeneratedMessage.writeString(output, 1, name_);
     }
     if (((bitField0_ & 0x00000002) == 0x00000002)) {
-      output.writeMessage(2, source_);
+      output.writeMessage(2, getSource());
     }
     if (((bitField0_ & 0x00000004) == 0x00000004)) {
-      output.writeMessage(3, description_);
+      output.writeMessage(3, getDescription());
     }
     if (((bitField0_ & 0x00000008) == 0x00000008)) {
-      output.writeMessage(4, deprecation_);
+      output.writeMessage(4, getDeprecation());
     }
     if (((bitField0_ & 0x00000010) == 0x00000010)) {
-      output.writeEnum(5, visibility_.getNumber());
+      output.writeEnum(5, visibility_);
     }
     if (((bitField0_ & 0x00000020) == 0x00000020)) {
-      output.writeMessage(6, tags_);
+      output.writeMessage(6, getTags());
     }
     if (((bitField0_ & 0x00000040) == 0x00000040)) {
-      output.writeMessage(7, definedBy_);
+      output.writeMessage(7, getDefinedBy());
     }
     if (((bitField0_ & 0x00000080) == 0x00000080)) {
-      output.writeMessage(8, overrides_);
+      output.writeMessage(8, getOverrides());
     }
     for (int i = 0; i < specifiedBy_.size(); i++) {
       output.writeMessage(9, specifiedBy_.get(i));
@@ -632,46 +599,44 @@ public final class BaseProperty extends
     for (int i = 0; i < seeAlso_.size(); i++) {
       output.writeMessage(10, seeAlso_.get(i));
     }
-    getUnknownFields().writeTo(output);
+    unknownFields.writeTo(output);
   }
 
-  private int memoizedSerializedSize = -1;
   public int getSerializedSize() {
-    int size = memoizedSerializedSize;
+    int size = memoizedSize;
     if (size != -1) return size;
 
     size = 0;
     if (((bitField0_ & 0x00000001) == 0x00000001)) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(1, getNameBytes());
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(1, name_);
     }
     if (((bitField0_ & 0x00000002) == 0x00000002)) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(2, source_);
+        .computeMessageSize(2, getSource());
     }
     if (((bitField0_ & 0x00000004) == 0x00000004)) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(3, description_);
+        .computeMessageSize(3, getDescription());
     }
     if (((bitField0_ & 0x00000008) == 0x00000008)) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(4, deprecation_);
+        .computeMessageSize(4, getDeprecation());
     }
     if (((bitField0_ & 0x00000010) == 0x00000010)) {
       size += com.google.protobuf.CodedOutputStream
-        .computeEnumSize(5, visibility_.getNumber());
+        .computeEnumSize(5, visibility_);
     }
     if (((bitField0_ & 0x00000020) == 0x00000020)) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(6, tags_);
+        .computeMessageSize(6, getTags());
     }
     if (((bitField0_ & 0x00000040) == 0x00000040)) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(7, definedBy_);
+        .computeMessageSize(7, getDefinedBy());
     }
     if (((bitField0_ & 0x00000080) == 0x00000080)) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(8, overrides_);
+        .computeMessageSize(8, getOverrides());
     }
     for (int i = 0; i < specifiedBy_.size(); i++) {
       size += com.google.protobuf.CodedOutputStream
@@ -681,18 +646,12 @@ public final class BaseProperty extends
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(10, seeAlso_.get(i));
     }
-    size += getUnknownFields().getSerializedSize();
-    memoizedSerializedSize = size;
+    size += unknownFields.getSerializedSize();
+    memoizedSize = size;
     return size;
   }
 
   private static final long serialVersionUID = 0L;
-  @java.lang.Override
-  protected java.lang.Object writeReplace()
-      throws java.io.ObjectStreamException {
-    return super.writeReplace();
-  }
-
   public static com.github.jsdossier.proto.BaseProperty parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
@@ -746,12 +705,17 @@ public final class BaseProperty extends
     return PARSER.parseFrom(input, extensionRegistry);
   }
 
-  public static Builder newBuilder() { return Builder.create(); }
   public Builder newBuilderForType() { return newBuilder(); }
-  public static Builder newBuilder(com.github.jsdossier.proto.BaseProperty prototype) {
-    return newBuilder().mergeFrom(prototype);
+  public static Builder newBuilder() {
+    return DEFAULT_INSTANCE.toBuilder();
   }
-  public Builder toBuilder() { return newBuilder(this); }
+  public static Builder newBuilder(com.github.jsdossier.proto.BaseProperty prototype) {
+    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+  }
+  public Builder toBuilder() {
+    return this == DEFAULT_INSTANCE
+        ? new Builder() : new Builder().mergeFrom(this);
+  }
 
   @java.lang.Override
   protected Builder newBuilderForType(
@@ -804,48 +768,44 @@ public final class BaseProperty extends
         getSeeAlsoFieldBuilder();
       }
     }
-    private static Builder create() {
-      return new Builder();
-    }
-
     public Builder clear() {
       super.clear();
       name_ = "";
       bitField0_ = (bitField0_ & ~0x00000001);
       if (sourceBuilder_ == null) {
-        source_ = com.github.jsdossier.proto.SourceLink.getDefaultInstance();
+        source_ = null;
       } else {
         sourceBuilder_.clear();
       }
       bitField0_ = (bitField0_ & ~0x00000002);
       if (descriptionBuilder_ == null) {
-        description_ = com.github.jsdossier.proto.Comment.getDefaultInstance();
+        description_ = null;
       } else {
         descriptionBuilder_.clear();
       }
       bitField0_ = (bitField0_ & ~0x00000004);
       if (deprecationBuilder_ == null) {
-        deprecation_ = com.github.jsdossier.proto.Comment.getDefaultInstance();
+        deprecation_ = null;
       } else {
         deprecationBuilder_.clear();
       }
       bitField0_ = (bitField0_ & ~0x00000008);
-      visibility_ = com.github.jsdossier.proto.Visibility.PUBLIC;
+      visibility_ = 0;
       bitField0_ = (bitField0_ & ~0x00000010);
       if (tagsBuilder_ == null) {
-        tags_ = com.github.jsdossier.proto.Tags.getDefaultInstance();
+        tags_ = null;
       } else {
         tagsBuilder_.clear();
       }
       bitField0_ = (bitField0_ & ~0x00000020);
       if (definedByBuilder_ == null) {
-        definedBy_ = com.github.jsdossier.proto.Comment.getDefaultInstance();
+        definedBy_ = null;
       } else {
         definedByBuilder_.clear();
       }
       bitField0_ = (bitField0_ & ~0x00000040);
       if (overridesBuilder_ == null) {
-        overrides_ = com.github.jsdossier.proto.Comment.getDefaultInstance();
+        overrides_ = null;
       } else {
         overridesBuilder_.clear();
       }
@@ -863,10 +823,6 @@ public final class BaseProperty extends
         seeAlsoBuilder_.clear();
       }
       return this;
-    }
-
-    public Builder clone() {
-      return create().mergeFrom(buildPartial());
     }
 
     public com.google.protobuf.Descriptors.Descriptor
@@ -1058,25 +1014,22 @@ public final class BaseProperty extends
           }
         }
       }
-      this.mergeUnknownFields(other.getUnknownFields());
+      this.mergeUnknownFields(other.unknownFields);
+      onChanged();
       return this;
     }
 
     public final boolean isInitialized() {
       if (!hasName()) {
-        
         return false;
       }
       if (!hasSource()) {
-        
         return false;
       }
       if (!hasDescription()) {
-        
         return false;
       }
       if (!getSource().isInitialized()) {
-        
         return false;
       }
       return true;
@@ -1201,7 +1154,7 @@ public final class BaseProperty extends
       return this;
     }
 
-    private com.github.jsdossier.proto.SourceLink source_ = com.github.jsdossier.proto.SourceLink.getDefaultInstance();
+    private com.github.jsdossier.proto.SourceLink source_ = null;
     private com.google.protobuf.SingleFieldBuilder<
         com.github.jsdossier.proto.SourceLink, com.github.jsdossier.proto.SourceLink.Builder, com.github.jsdossier.proto.SourceLinkOrBuilder> sourceBuilder_;
     /**
@@ -1223,7 +1176,7 @@ public final class BaseProperty extends
      */
     public com.github.jsdossier.proto.SourceLink getSource() {
       if (sourceBuilder_ == null) {
-        return source_;
+        return source_ == null ? com.github.jsdossier.proto.SourceLink.getDefaultInstance() : source_;
       } else {
         return sourceBuilder_.getMessage();
       }
@@ -1276,6 +1229,7 @@ public final class BaseProperty extends
     public Builder mergeSource(com.github.jsdossier.proto.SourceLink value) {
       if (sourceBuilder_ == null) {
         if (((bitField0_ & 0x00000002) == 0x00000002) &&
+            source_ != null &&
             source_ != com.github.jsdossier.proto.SourceLink.getDefaultInstance()) {
           source_ =
             com.github.jsdossier.proto.SourceLink.newBuilder(source_).mergeFrom(value).buildPartial();
@@ -1298,7 +1252,7 @@ public final class BaseProperty extends
      */
     public Builder clearSource() {
       if (sourceBuilder_ == null) {
-        source_ = com.github.jsdossier.proto.SourceLink.getDefaultInstance();
+        source_ = null;
         onChanged();
       } else {
         sourceBuilder_.clear();
@@ -1329,7 +1283,8 @@ public final class BaseProperty extends
       if (sourceBuilder_ != null) {
         return sourceBuilder_.getMessageOrBuilder();
       } else {
-        return source_;
+        return source_ == null ?
+            com.github.jsdossier.proto.SourceLink.getDefaultInstance() : source_;
       }
     }
     /**
@@ -1353,7 +1308,7 @@ public final class BaseProperty extends
       return sourceBuilder_;
     }
 
-    private com.github.jsdossier.proto.Comment description_ = com.github.jsdossier.proto.Comment.getDefaultInstance();
+    private com.github.jsdossier.proto.Comment description_ = null;
     private com.google.protobuf.SingleFieldBuilder<
         com.github.jsdossier.proto.Comment, com.github.jsdossier.proto.Comment.Builder, com.github.jsdossier.proto.CommentOrBuilder> descriptionBuilder_;
     /**
@@ -1375,7 +1330,7 @@ public final class BaseProperty extends
      */
     public com.github.jsdossier.proto.Comment getDescription() {
       if (descriptionBuilder_ == null) {
-        return description_;
+        return description_ == null ? com.github.jsdossier.proto.Comment.getDefaultInstance() : description_;
       } else {
         return descriptionBuilder_.getMessage();
       }
@@ -1428,6 +1383,7 @@ public final class BaseProperty extends
     public Builder mergeDescription(com.github.jsdossier.proto.Comment value) {
       if (descriptionBuilder_ == null) {
         if (((bitField0_ & 0x00000004) == 0x00000004) &&
+            description_ != null &&
             description_ != com.github.jsdossier.proto.Comment.getDefaultInstance()) {
           description_ =
             com.github.jsdossier.proto.Comment.newBuilder(description_).mergeFrom(value).buildPartial();
@@ -1450,7 +1406,7 @@ public final class BaseProperty extends
      */
     public Builder clearDescription() {
       if (descriptionBuilder_ == null) {
-        description_ = com.github.jsdossier.proto.Comment.getDefaultInstance();
+        description_ = null;
         onChanged();
       } else {
         descriptionBuilder_.clear();
@@ -1481,7 +1437,8 @@ public final class BaseProperty extends
       if (descriptionBuilder_ != null) {
         return descriptionBuilder_.getMessageOrBuilder();
       } else {
-        return description_;
+        return description_ == null ?
+            com.github.jsdossier.proto.Comment.getDefaultInstance() : description_;
       }
     }
     /**
@@ -1505,7 +1462,7 @@ public final class BaseProperty extends
       return descriptionBuilder_;
     }
 
-    private com.github.jsdossier.proto.Comment deprecation_ = com.github.jsdossier.proto.Comment.getDefaultInstance();
+    private com.github.jsdossier.proto.Comment deprecation_ = null;
     private com.google.protobuf.SingleFieldBuilder<
         com.github.jsdossier.proto.Comment, com.github.jsdossier.proto.Comment.Builder, com.github.jsdossier.proto.CommentOrBuilder> deprecationBuilder_;
     /**
@@ -1527,7 +1484,7 @@ public final class BaseProperty extends
      */
     public com.github.jsdossier.proto.Comment getDeprecation() {
       if (deprecationBuilder_ == null) {
-        return deprecation_;
+        return deprecation_ == null ? com.github.jsdossier.proto.Comment.getDefaultInstance() : deprecation_;
       } else {
         return deprecationBuilder_.getMessage();
       }
@@ -1580,6 +1537,7 @@ public final class BaseProperty extends
     public Builder mergeDeprecation(com.github.jsdossier.proto.Comment value) {
       if (deprecationBuilder_ == null) {
         if (((bitField0_ & 0x00000008) == 0x00000008) &&
+            deprecation_ != null &&
             deprecation_ != com.github.jsdossier.proto.Comment.getDefaultInstance()) {
           deprecation_ =
             com.github.jsdossier.proto.Comment.newBuilder(deprecation_).mergeFrom(value).buildPartial();
@@ -1602,7 +1560,7 @@ public final class BaseProperty extends
      */
     public Builder clearDeprecation() {
       if (deprecationBuilder_ == null) {
-        deprecation_ = com.github.jsdossier.proto.Comment.getDefaultInstance();
+        deprecation_ = null;
         onChanged();
       } else {
         deprecationBuilder_.clear();
@@ -1633,7 +1591,8 @@ public final class BaseProperty extends
       if (deprecationBuilder_ != null) {
         return deprecationBuilder_.getMessageOrBuilder();
       } else {
-        return deprecation_;
+        return deprecation_ == null ?
+            com.github.jsdossier.proto.Comment.getDefaultInstance() : deprecation_;
       }
     }
     /**
@@ -1657,7 +1616,7 @@ public final class BaseProperty extends
       return deprecationBuilder_;
     }
 
-    private com.github.jsdossier.proto.Visibility visibility_ = com.github.jsdossier.proto.Visibility.PUBLIC;
+    private int visibility_ = 0;
     /**
      * <code>optional .dossier.Visibility visibility = 5 [default = PUBLIC];</code>
      */
@@ -1668,7 +1627,8 @@ public final class BaseProperty extends
      * <code>optional .dossier.Visibility visibility = 5 [default = PUBLIC];</code>
      */
     public com.github.jsdossier.proto.Visibility getVisibility() {
-      return visibility_;
+      com.github.jsdossier.proto.Visibility result = com.github.jsdossier.proto.Visibility.valueOf(visibility_);
+      return result == null ? com.github.jsdossier.proto.Visibility.PUBLIC : result;
     }
     /**
      * <code>optional .dossier.Visibility visibility = 5 [default = PUBLIC];</code>
@@ -1678,7 +1638,7 @@ public final class BaseProperty extends
         throw new NullPointerException();
       }
       bitField0_ |= 0x00000010;
-      visibility_ = value;
+      visibility_ = value.getNumber();
       onChanged();
       return this;
     }
@@ -1687,12 +1647,12 @@ public final class BaseProperty extends
      */
     public Builder clearVisibility() {
       bitField0_ = (bitField0_ & ~0x00000010);
-      visibility_ = com.github.jsdossier.proto.Visibility.PUBLIC;
+      visibility_ = 0;
       onChanged();
       return this;
     }
 
-    private com.github.jsdossier.proto.Tags tags_ = com.github.jsdossier.proto.Tags.getDefaultInstance();
+    private com.github.jsdossier.proto.Tags tags_ = null;
     private com.google.protobuf.SingleFieldBuilder<
         com.github.jsdossier.proto.Tags, com.github.jsdossier.proto.Tags.Builder, com.github.jsdossier.proto.TagsOrBuilder> tagsBuilder_;
     /**
@@ -1706,7 +1666,7 @@ public final class BaseProperty extends
      */
     public com.github.jsdossier.proto.Tags getTags() {
       if (tagsBuilder_ == null) {
-        return tags_;
+        return tags_ == null ? com.github.jsdossier.proto.Tags.getDefaultInstance() : tags_;
       } else {
         return tagsBuilder_.getMessage();
       }
@@ -1747,6 +1707,7 @@ public final class BaseProperty extends
     public Builder mergeTags(com.github.jsdossier.proto.Tags value) {
       if (tagsBuilder_ == null) {
         if (((bitField0_ & 0x00000020) == 0x00000020) &&
+            tags_ != null &&
             tags_ != com.github.jsdossier.proto.Tags.getDefaultInstance()) {
           tags_ =
             com.github.jsdossier.proto.Tags.newBuilder(tags_).mergeFrom(value).buildPartial();
@@ -1765,7 +1726,7 @@ public final class BaseProperty extends
      */
     public Builder clearTags() {
       if (tagsBuilder_ == null) {
-        tags_ = com.github.jsdossier.proto.Tags.getDefaultInstance();
+        tags_ = null;
         onChanged();
       } else {
         tagsBuilder_.clear();
@@ -1788,7 +1749,8 @@ public final class BaseProperty extends
       if (tagsBuilder_ != null) {
         return tagsBuilder_.getMessageOrBuilder();
       } else {
-        return tags_;
+        return tags_ == null ?
+            com.github.jsdossier.proto.Tags.getDefaultInstance() : tags_;
       }
     }
     /**
@@ -1808,7 +1770,7 @@ public final class BaseProperty extends
       return tagsBuilder_;
     }
 
-    private com.github.jsdossier.proto.Comment definedBy_ = com.github.jsdossier.proto.Comment.getDefaultInstance();
+    private com.github.jsdossier.proto.Comment definedBy_ = null;
     private com.google.protobuf.SingleFieldBuilder<
         com.github.jsdossier.proto.Comment, com.github.jsdossier.proto.Comment.Builder, com.github.jsdossier.proto.CommentOrBuilder> definedByBuilder_;
     /**
@@ -1830,7 +1792,7 @@ public final class BaseProperty extends
      */
     public com.github.jsdossier.proto.Comment getDefinedBy() {
       if (definedByBuilder_ == null) {
-        return definedBy_;
+        return definedBy_ == null ? com.github.jsdossier.proto.Comment.getDefaultInstance() : definedBy_;
       } else {
         return definedByBuilder_.getMessage();
       }
@@ -1883,6 +1845,7 @@ public final class BaseProperty extends
     public Builder mergeDefinedBy(com.github.jsdossier.proto.Comment value) {
       if (definedByBuilder_ == null) {
         if (((bitField0_ & 0x00000040) == 0x00000040) &&
+            definedBy_ != null &&
             definedBy_ != com.github.jsdossier.proto.Comment.getDefaultInstance()) {
           definedBy_ =
             com.github.jsdossier.proto.Comment.newBuilder(definedBy_).mergeFrom(value).buildPartial();
@@ -1905,7 +1868,7 @@ public final class BaseProperty extends
      */
     public Builder clearDefinedBy() {
       if (definedByBuilder_ == null) {
-        definedBy_ = com.github.jsdossier.proto.Comment.getDefaultInstance();
+        definedBy_ = null;
         onChanged();
       } else {
         definedByBuilder_.clear();
@@ -1936,7 +1899,8 @@ public final class BaseProperty extends
       if (definedByBuilder_ != null) {
         return definedByBuilder_.getMessageOrBuilder();
       } else {
-        return definedBy_;
+        return definedBy_ == null ?
+            com.github.jsdossier.proto.Comment.getDefaultInstance() : definedBy_;
       }
     }
     /**
@@ -1960,7 +1924,7 @@ public final class BaseProperty extends
       return definedByBuilder_;
     }
 
-    private com.github.jsdossier.proto.Comment overrides_ = com.github.jsdossier.proto.Comment.getDefaultInstance();
+    private com.github.jsdossier.proto.Comment overrides_ = null;
     private com.google.protobuf.SingleFieldBuilder<
         com.github.jsdossier.proto.Comment, com.github.jsdossier.proto.Comment.Builder, com.github.jsdossier.proto.CommentOrBuilder> overridesBuilder_;
     /**
@@ -1982,7 +1946,7 @@ public final class BaseProperty extends
      */
     public com.github.jsdossier.proto.Comment getOverrides() {
       if (overridesBuilder_ == null) {
-        return overrides_;
+        return overrides_ == null ? com.github.jsdossier.proto.Comment.getDefaultInstance() : overrides_;
       } else {
         return overridesBuilder_.getMessage();
       }
@@ -2035,6 +1999,7 @@ public final class BaseProperty extends
     public Builder mergeOverrides(com.github.jsdossier.proto.Comment value) {
       if (overridesBuilder_ == null) {
         if (((bitField0_ & 0x00000080) == 0x00000080) &&
+            overrides_ != null &&
             overrides_ != com.github.jsdossier.proto.Comment.getDefaultInstance()) {
           overrides_ =
             com.github.jsdossier.proto.Comment.newBuilder(overrides_).mergeFrom(value).buildPartial();
@@ -2057,7 +2022,7 @@ public final class BaseProperty extends
      */
     public Builder clearOverrides() {
       if (overridesBuilder_ == null) {
-        overrides_ = com.github.jsdossier.proto.Comment.getDefaultInstance();
+        overrides_ = null;
         onChanged();
       } else {
         overridesBuilder_.clear();
@@ -2088,7 +2053,8 @@ public final class BaseProperty extends
       if (overridesBuilder_ != null) {
         return overridesBuilder_.getMessageOrBuilder();
       } else {
-        return overrides_;
+        return overrides_ == null ?
+            com.github.jsdossier.proto.Comment.getDefaultInstance() : overrides_;
       }
     }
     /**
@@ -2667,11 +2633,47 @@ public final class BaseProperty extends
     // @@protoc_insertion_point(builder_scope:dossier.BaseProperty)
   }
 
+  // @@protoc_insertion_point(class_scope:dossier.BaseProperty)
+  private static final com.github.jsdossier.proto.BaseProperty DEFAULT_INSTANCE;
   static {
-    defaultInstance = new BaseProperty(true);
-    defaultInstance.initFields();
+    DEFAULT_INSTANCE = new com.github.jsdossier.proto.BaseProperty();
   }
 
-  // @@protoc_insertion_point(class_scope:dossier.BaseProperty)
+  public static com.github.jsdossier.proto.BaseProperty getDefaultInstance() {
+    return DEFAULT_INSTANCE;
+  }
+
+  @java.lang.Deprecated public static final com.google.protobuf.Parser<BaseProperty>
+      PARSER = new com.google.protobuf.AbstractParser<BaseProperty>() {
+    public BaseProperty parsePartialFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      try {
+        return new BaseProperty(input, extensionRegistry);
+      } catch (RuntimeException e) {
+        if (e.getCause() instanceof
+            com.google.protobuf.InvalidProtocolBufferException) {
+          throw (com.google.protobuf.InvalidProtocolBufferException)
+              e.getCause();
+        }
+        throw e;
+      }
+    }
+  };
+
+  public static com.google.protobuf.Parser<BaseProperty> parser() {
+    return PARSER;
+  }
+
+  @java.lang.Override
+  public com.google.protobuf.Parser<BaseProperty> getParserForType() {
+    return PARSER;
+  }
+
+  public com.github.jsdossier.proto.BaseProperty getDefaultInstanceForType() {
+    return DEFAULT_INSTANCE;
+  }
+
 }
 

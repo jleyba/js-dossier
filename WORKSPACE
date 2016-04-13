@@ -156,8 +156,8 @@ maven_jar(
 
 maven_jar(
     name = "protobuf",
-    artifact = "com.google.protobuf:protobuf-java:2.6.1",
-    sha1 = "d9521f2aecb909835746b7a5facf612af5e890e8",
+    artifact = "com.google.protobuf:protobuf-java:3.0.0-beta-2",
+    sha1 = "de80fe047052445869b96f6def6baca7182c95af",
 )
 
 maven_jar(

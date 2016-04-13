@@ -10,37 +10,30 @@ package com.github.jsdossier.proto;
  * Describes how to build the side index for a generated page.
  * </pre>
  */
-public final class Index extends
+public  final class Index extends
     com.google.protobuf.GeneratedMessage implements
     // @@protoc_insertion_point(message_implements:dossier.Index)
     IndexOrBuilder {
   // Use Index.newBuilder() to construct.
   private Index(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
     super(builder);
-    this.unknownFields = builder.getUnknownFields();
   }
-  private Index(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
-
-  private static final Index defaultInstance;
-  public static Index getDefaultInstance() {
-    return defaultInstance;
-  }
-
-  public Index getDefaultInstanceForType() {
-    return defaultInstance;
+  private Index() {
+    home_ = "";
+    includeTypes_ = false;
+    includeModules_ = false;
+    links_ = java.util.Collections.emptyList();
   }
 
-  private final com.google.protobuf.UnknownFieldSet unknownFields;
   @java.lang.Override
   public final com.google.protobuf.UnknownFieldSet
-      getUnknownFields() {
+  getUnknownFields() {
     return this.unknownFields;
   }
   private Index(
       com.google.protobuf.CodedInputStream input,
-      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-      throws com.google.protobuf.InvalidProtocolBufferException {
-    initFields();
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
+    this();
     int mutable_bitField0_ = 0;
     com.google.protobuf.UnknownFieldSet.Builder unknownFields =
         com.google.protobuf.UnknownFieldSet.newBuilder();
@@ -80,16 +73,17 @@ public final class Index extends
               links_ = new java.util.ArrayList<com.github.jsdossier.proto.TypeLink>();
               mutable_bitField0_ |= 0x00000008;
             }
-            links_.add(input.readMessage(com.github.jsdossier.proto.TypeLink.PARSER, extensionRegistry));
+            links_.add(input.readMessage(com.github.jsdossier.proto.TypeLink.parser(), extensionRegistry));
             break;
           }
         }
       }
     } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-      throw e.setUnfinishedMessage(this);
+      throw new RuntimeException(e.setUnfinishedMessage(this));
     } catch (java.io.IOException e) {
-      throw new com.google.protobuf.InvalidProtocolBufferException(
-          e.getMessage()).setUnfinishedMessage(this);
+      throw new RuntimeException(
+          new com.google.protobuf.InvalidProtocolBufferException(
+              e.getMessage()).setUnfinishedMessage(this));
     } finally {
       if (((mutable_bitField0_ & 0x00000008) == 0x00000008)) {
         links_ = java.util.Collections.unmodifiableList(links_);
@@ -110,24 +104,9 @@ public final class Index extends
             com.github.jsdossier.proto.Index.class, com.github.jsdossier.proto.Index.Builder.class);
   }
 
-  public static com.google.protobuf.Parser<Index> PARSER =
-      new com.google.protobuf.AbstractParser<Index>() {
-    public Index parsePartialFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return new Index(input, extensionRegistry);
-    }
-  };
-
-  @java.lang.Override
-  public com.google.protobuf.Parser<Index> getParserForType() {
-    return PARSER;
-  }
-
   private int bitField0_;
   public static final int HOME_FIELD_NUMBER = 1;
-  private java.lang.Object home_;
+  private volatile java.lang.Object home_;
   /**
    * <code>required string home = 1;</code>
    *
@@ -281,12 +260,6 @@ public final class Index extends
     return links_.get(index);
   }
 
-  private void initFields() {
-    home_ = "";
-    includeTypes_ = false;
-    includeModules_ = false;
-    links_ = java.util.Collections.emptyList();
-  }
   private byte memoizedIsInitialized = -1;
   public final boolean isInitialized() {
     byte isInitialized = memoizedIsInitialized;
@@ -309,9 +282,8 @@ public final class Index extends
 
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    getSerializedSize();
     if (((bitField0_ & 0x00000001) == 0x00000001)) {
-      output.writeBytes(1, getHomeBytes());
+      com.google.protobuf.GeneratedMessage.writeString(output, 1, home_);
     }
     if (((bitField0_ & 0x00000002) == 0x00000002)) {
       output.writeBool(2, includeTypes_);
@@ -322,18 +294,16 @@ public final class Index extends
     for (int i = 0; i < links_.size(); i++) {
       output.writeMessage(4, links_.get(i));
     }
-    getUnknownFields().writeTo(output);
+    unknownFields.writeTo(output);
   }
 
-  private int memoizedSerializedSize = -1;
   public int getSerializedSize() {
-    int size = memoizedSerializedSize;
+    int size = memoizedSize;
     if (size != -1) return size;
 
     size = 0;
     if (((bitField0_ & 0x00000001) == 0x00000001)) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(1, getHomeBytes());
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(1, home_);
     }
     if (((bitField0_ & 0x00000002) == 0x00000002)) {
       size += com.google.protobuf.CodedOutputStream
@@ -347,18 +317,12 @@ public final class Index extends
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(4, links_.get(i));
     }
-    size += getUnknownFields().getSerializedSize();
-    memoizedSerializedSize = size;
+    size += unknownFields.getSerializedSize();
+    memoizedSize = size;
     return size;
   }
 
   private static final long serialVersionUID = 0L;
-  @java.lang.Override
-  protected java.lang.Object writeReplace()
-      throws java.io.ObjectStreamException {
-    return super.writeReplace();
-  }
-
   public static com.github.jsdossier.proto.Index parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
@@ -412,12 +376,17 @@ public final class Index extends
     return PARSER.parseFrom(input, extensionRegistry);
   }
 
-  public static Builder newBuilder() { return Builder.create(); }
   public Builder newBuilderForType() { return newBuilder(); }
-  public static Builder newBuilder(com.github.jsdossier.proto.Index prototype) {
-    return newBuilder().mergeFrom(prototype);
+  public static Builder newBuilder() {
+    return DEFAULT_INSTANCE.toBuilder();
   }
-  public Builder toBuilder() { return newBuilder(this); }
+  public static Builder newBuilder(com.github.jsdossier.proto.Index prototype) {
+    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+  }
+  public Builder toBuilder() {
+    return this == DEFAULT_INSTANCE
+        ? new Builder() : new Builder().mergeFrom(this);
+  }
 
   @java.lang.Override
   protected Builder newBuilderForType(
@@ -463,10 +432,6 @@ public final class Index extends
         getLinksFieldBuilder();
       }
     }
-    private static Builder create() {
-      return new Builder();
-    }
-
     public Builder clear() {
       super.clear();
       home_ = "";
@@ -482,10 +447,6 @@ public final class Index extends
         linksBuilder_.clear();
       }
       return this;
-    }
-
-    public Builder clone() {
-      return create().mergeFrom(buildPartial());
     }
 
     public com.google.protobuf.Descriptors.Descriptor
@@ -583,18 +544,17 @@ public final class Index extends
           }
         }
       }
-      this.mergeUnknownFields(other.getUnknownFields());
+      this.mergeUnknownFields(other.unknownFields);
+      onChanged();
       return this;
     }
 
     public final boolean isInitialized() {
       if (!hasHome()) {
-        
         return false;
       }
       for (int i = 0; i < getLinksCount(); i++) {
         if (!getLinks(i).isInitialized()) {
-          
           return false;
         }
       }
@@ -1131,11 +1091,47 @@ public final class Index extends
     // @@protoc_insertion_point(builder_scope:dossier.Index)
   }
 
+  // @@protoc_insertion_point(class_scope:dossier.Index)
+  private static final com.github.jsdossier.proto.Index DEFAULT_INSTANCE;
   static {
-    defaultInstance = new Index(true);
-    defaultInstance.initFields();
+    DEFAULT_INSTANCE = new com.github.jsdossier.proto.Index();
   }
 
-  // @@protoc_insertion_point(class_scope:dossier.Index)
+  public static com.github.jsdossier.proto.Index getDefaultInstance() {
+    return DEFAULT_INSTANCE;
+  }
+
+  @java.lang.Deprecated public static final com.google.protobuf.Parser<Index>
+      PARSER = new com.google.protobuf.AbstractParser<Index>() {
+    public Index parsePartialFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      try {
+        return new Index(input, extensionRegistry);
+      } catch (RuntimeException e) {
+        if (e.getCause() instanceof
+            com.google.protobuf.InvalidProtocolBufferException) {
+          throw (com.google.protobuf.InvalidProtocolBufferException)
+              e.getCause();
+        }
+        throw e;
+      }
+    }
+  };
+
+  public static com.google.protobuf.Parser<Index> parser() {
+    return PARSER;
+  }
+
+  @java.lang.Override
+  public com.google.protobuf.Parser<Index> getParserForType() {
+    return PARSER;
+  }
+
+  public com.github.jsdossier.proto.Index getDefaultInstanceForType() {
+    return DEFAULT_INSTANCE;
+  }
+
 }
 

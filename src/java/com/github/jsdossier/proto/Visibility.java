@@ -82,7 +82,9 @@ public enum Visibility
   public static final int PACKAGE_VALUE = 3;
 
 
-  public final int getNumber() { return value; }
+  public final int getNumber() {
+    return value;
+  }
 
   public static Visibility valueOf(int value) {
     switch (value) {
@@ -98,8 +100,8 @@ public enum Visibility
       internalGetValueMap() {
     return internalValueMap;
   }
-  private static com.google.protobuf.Internal.EnumLiteMap<Visibility>
-      internalValueMap =
+  private static final com.google.protobuf.Internal.EnumLiteMap<
+      Visibility> internalValueMap =
         new com.google.protobuf.Internal.EnumLiteMap<Visibility>() {
           public Visibility findValueByNumber(int number) {
             return Visibility.valueOf(number);

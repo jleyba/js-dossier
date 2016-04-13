@@ -55,7 +55,7 @@
     <orderEntry type="library" name="com.atlassian.commonmark:commonmark-ext-gfm-tables:0.4.1" level="project" />
     <orderEntry type="library" name="com.atlassian.commonmark:commonmark:0.4.1" level="project" />
     <orderEntry type="library" name="com.googlecode.owasp-java-html-sanitizer:owasp-java-html-sanitizer:r239" level="project" />
-    <orderEntry type="library" name="com.google.protobuf:protobuf-java:2.6.1" level="project" />
+    <orderEntry type="library" name="com.google.protobuf:protobuf-java:3.0.0-beta-2" level="project" />
     <orderEntry type="library" name="com.squareup:javawriter:2.5.1" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="aopalliance:aopalliance:1.0" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="com.ibm.icu:icu4j:51.1" level="project" />

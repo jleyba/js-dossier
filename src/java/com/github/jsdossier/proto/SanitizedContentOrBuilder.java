@@ -44,4 +44,6 @@ public interface SanitizedContentOrBuilder extends
    * </pre>
    */
   boolean getHtml();
+
+  public com.github.jsdossier.proto.SanitizedContent.KindCase getKindCase();
 }

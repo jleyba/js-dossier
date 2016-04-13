@@ -10,37 +10,29 @@ package com.github.jsdossier.proto;
  * Describes a documented source file.
  * </pre>
  */
-public final class SourceFile extends
+public  final class SourceFile extends
     com.google.protobuf.GeneratedMessage implements
     // @@protoc_insertion_point(message_implements:dossier.SourceFile)
     SourceFileOrBuilder {
   // Use SourceFile.newBuilder() to construct.
   private SourceFile(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
     super(builder);
-    this.unknownFields = builder.getUnknownFields();
   }
-  private SourceFile(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
-
-  private static final SourceFile defaultInstance;
-  public static SourceFile getDefaultInstance() {
-    return defaultInstance;
+  private SourceFile() {
+    baseName_ = "";
+    path_ = "";
+    lines_ = com.google.protobuf.LazyStringArrayList.EMPTY;
   }
 
-  public SourceFile getDefaultInstanceForType() {
-    return defaultInstance;
-  }
-
-  private final com.google.protobuf.UnknownFieldSet unknownFields;
   @java.lang.Override
   public final com.google.protobuf.UnknownFieldSet
-      getUnknownFields() {
+  getUnknownFields() {
     return this.unknownFields;
   }
   private SourceFile(
       com.google.protobuf.CodedInputStream input,
-      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-      throws com.google.protobuf.InvalidProtocolBufferException {
-    initFields();
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
+    this();
     int mutable_bitField0_ = 0;
     com.google.protobuf.UnknownFieldSet.Builder unknownFields =
         com.google.protobuf.UnknownFieldSet.newBuilder();
@@ -83,10 +75,11 @@ public final class SourceFile extends
         }
       }
     } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-      throw e.setUnfinishedMessage(this);
+      throw new RuntimeException(e.setUnfinishedMessage(this));
     } catch (java.io.IOException e) {
-      throw new com.google.protobuf.InvalidProtocolBufferException(
-          e.getMessage()).setUnfinishedMessage(this);
+      throw new RuntimeException(
+          new com.google.protobuf.InvalidProtocolBufferException(
+              e.getMessage()).setUnfinishedMessage(this));
     } finally {
       if (((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
         lines_ = lines_.getUnmodifiableView();
@@ -107,24 +100,9 @@ public final class SourceFile extends
             com.github.jsdossier.proto.SourceFile.class, com.github.jsdossier.proto.SourceFile.Builder.class);
   }
 
-  public static com.google.protobuf.Parser<SourceFile> PARSER =
-      new com.google.protobuf.AbstractParser<SourceFile>() {
-    public SourceFile parsePartialFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return new SourceFile(input, extensionRegistry);
-    }
-  };
-
-  @java.lang.Override
-  public com.google.protobuf.Parser<SourceFile> getParserForType() {
-    return PARSER;
-  }
-
   private int bitField0_;
   public static final int BASE_NAME_FIELD_NUMBER = 1;
-  private java.lang.Object baseName_;
+  private volatile java.lang.Object baseName_;
   /**
    * <code>required string base_name = 1;</code>
    *
@@ -178,7 +156,7 @@ public final class SourceFile extends
   }
 
   public static final int PATH_FIELD_NUMBER = 2;
-  private java.lang.Object path_;
+  private volatile java.lang.Object path_;
   /**
    * <code>required string path = 2;</code>
    *
@@ -276,11 +254,6 @@ public final class SourceFile extends
     return lines_.getByteString(index);
   }
 
-  private void initFields() {
-    baseName_ = "";
-    path_ = "";
-    lines_ = com.google.protobuf.LazyStringArrayList.EMPTY;
-  }
   private byte memoizedIsInitialized = -1;
   public final boolean isInitialized() {
     byte isInitialized = memoizedIsInitialized;
@@ -301,54 +274,43 @@ public final class SourceFile extends
 
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    getSerializedSize();
     if (((bitField0_ & 0x00000001) == 0x00000001)) {
-      output.writeBytes(1, getBaseNameBytes());
+      com.google.protobuf.GeneratedMessage.writeString(output, 1, baseName_);
     }
     if (((bitField0_ & 0x00000002) == 0x00000002)) {
-      output.writeBytes(2, getPathBytes());
+      com.google.protobuf.GeneratedMessage.writeString(output, 2, path_);
     }
     for (int i = 0; i < lines_.size(); i++) {
-      output.writeBytes(3, lines_.getByteString(i));
+      com.google.protobuf.GeneratedMessage.writeString(output, 3, lines_.getRaw(i));
     }
-    getUnknownFields().writeTo(output);
+    unknownFields.writeTo(output);
   }
 
-  private int memoizedSerializedSize = -1;
   public int getSerializedSize() {
-    int size = memoizedSerializedSize;
+    int size = memoizedSize;
     if (size != -1) return size;
 
     size = 0;
     if (((bitField0_ & 0x00000001) == 0x00000001)) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(1, getBaseNameBytes());
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(1, baseName_);
     }
     if (((bitField0_ & 0x00000002) == 0x00000002)) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(2, getPathBytes());
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(2, path_);
     }
     {
       int dataSize = 0;
       for (int i = 0; i < lines_.size(); i++) {
-        dataSize += com.google.protobuf.CodedOutputStream
-          .computeBytesSizeNoTag(lines_.getByteString(i));
+        dataSize += computeStringSizeNoTag(lines_.getRaw(i));
       }
       size += dataSize;
       size += 1 * getLinesList().size();
     }
-    size += getUnknownFields().getSerializedSize();
-    memoizedSerializedSize = size;
+    size += unknownFields.getSerializedSize();
+    memoizedSize = size;
     return size;
   }
 
   private static final long serialVersionUID = 0L;
-  @java.lang.Override
-  protected java.lang.Object writeReplace()
-      throws java.io.ObjectStreamException {
-    return super.writeReplace();
-  }
-
   public static com.github.jsdossier.proto.SourceFile parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
@@ -402,12 +364,17 @@ public final class SourceFile extends
     return PARSER.parseFrom(input, extensionRegistry);
   }
 
-  public static Builder newBuilder() { return Builder.create(); }
   public Builder newBuilderForType() { return newBuilder(); }
-  public static Builder newBuilder(com.github.jsdossier.proto.SourceFile prototype) {
-    return newBuilder().mergeFrom(prototype);
+  public static Builder newBuilder() {
+    return DEFAULT_INSTANCE.toBuilder();
   }
-  public Builder toBuilder() { return newBuilder(this); }
+  public static Builder newBuilder(com.github.jsdossier.proto.SourceFile prototype) {
+    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+  }
+  public Builder toBuilder() {
+    return this == DEFAULT_INSTANCE
+        ? new Builder() : new Builder().mergeFrom(this);
+  }
 
   @java.lang.Override
   protected Builder newBuilderForType(
@@ -452,10 +419,6 @@ public final class SourceFile extends
       if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
       }
     }
-    private static Builder create() {
-      return new Builder();
-    }
-
     public Builder clear() {
       super.clear();
       baseName_ = "";
@@ -465,10 +428,6 @@ public final class SourceFile extends
       lines_ = com.google.protobuf.LazyStringArrayList.EMPTY;
       bitField0_ = (bitField0_ & ~0x00000004);
       return this;
-    }
-
-    public Builder clone() {
-      return create().mergeFrom(buildPartial());
     }
 
     public com.google.protobuf.Descriptors.Descriptor
@@ -541,17 +500,16 @@ public final class SourceFile extends
         }
         onChanged();
       }
-      this.mergeUnknownFields(other.getUnknownFields());
+      this.mergeUnknownFields(other.unknownFields);
+      onChanged();
       return this;
     }
 
     public final boolean isInitialized() {
       if (!hasBaseName()) {
-        
         return false;
       }
       if (!hasPath()) {
-        
         return false;
       }
       return true;
@@ -908,11 +866,47 @@ public final class SourceFile extends
     // @@protoc_insertion_point(builder_scope:dossier.SourceFile)
   }
 
+  // @@protoc_insertion_point(class_scope:dossier.SourceFile)
+  private static final com.github.jsdossier.proto.SourceFile DEFAULT_INSTANCE;
   static {
-    defaultInstance = new SourceFile(true);
-    defaultInstance.initFields();
+    DEFAULT_INSTANCE = new com.github.jsdossier.proto.SourceFile();
   }
 
-  // @@protoc_insertion_point(class_scope:dossier.SourceFile)
+  public static com.github.jsdossier.proto.SourceFile getDefaultInstance() {
+    return DEFAULT_INSTANCE;
+  }
+
+  @java.lang.Deprecated public static final com.google.protobuf.Parser<SourceFile>
+      PARSER = new com.google.protobuf.AbstractParser<SourceFile>() {
+    public SourceFile parsePartialFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      try {
+        return new SourceFile(input, extensionRegistry);
+      } catch (RuntimeException e) {
+        if (e.getCause() instanceof
+            com.google.protobuf.InvalidProtocolBufferException) {
+          throw (com.google.protobuf.InvalidProtocolBufferException)
+              e.getCause();
+        }
+        throw e;
+      }
+    }
+  };
+
+  public static com.google.protobuf.Parser<SourceFile> parser() {
+    return PARSER;
+  }
+
+  @java.lang.Override
+  public com.google.protobuf.Parser<SourceFile> getParserForType() {
+    return PARSER;
+  }
+
+  public com.github.jsdossier.proto.SourceFile getDefaultInstanceForType() {
+    return DEFAULT_INSTANCE;
+  }
+
 }
 

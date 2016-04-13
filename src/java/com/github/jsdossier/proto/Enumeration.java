@@ -10,37 +10,28 @@ package com.github.jsdossier.proto;
  * Describes an enumeration.
  * </pre>
  */
-public final class Enumeration extends
+public  final class Enumeration extends
     com.google.protobuf.GeneratedMessage implements
     // @@protoc_insertion_point(message_implements:dossier.Enumeration)
     EnumerationOrBuilder {
   // Use Enumeration.newBuilder() to construct.
   private Enumeration(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
     super(builder);
-    this.unknownFields = builder.getUnknownFields();
   }
-  private Enumeration(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
-
-  private static final Enumeration defaultInstance;
-  public static Enumeration getDefaultInstance() {
-    return defaultInstance;
+  private Enumeration() {
+    value_ = java.util.Collections.emptyList();
+    visibility_ = 0;
   }
 
-  public Enumeration getDefaultInstanceForType() {
-    return defaultInstance;
-  }
-
-  private final com.google.protobuf.UnknownFieldSet unknownFields;
   @java.lang.Override
   public final com.google.protobuf.UnknownFieldSet
-      getUnknownFields() {
+  getUnknownFields() {
     return this.unknownFields;
   }
   private Enumeration(
       com.google.protobuf.CodedInputStream input,
-      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-      throws com.google.protobuf.InvalidProtocolBufferException {
-    initFields();
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
+    this();
     int mutable_bitField0_ = 0;
     com.google.protobuf.UnknownFieldSet.Builder unknownFields =
         com.google.protobuf.UnknownFieldSet.newBuilder();
@@ -64,7 +55,7 @@ public final class Enumeration extends
             if (((bitField0_ & 0x00000001) == 0x00000001)) {
               subBuilder = type_.toBuilder();
             }
-            type_ = input.readMessage(com.github.jsdossier.proto.Comment.PARSER, extensionRegistry);
+            type_ = input.readMessage(com.github.jsdossier.proto.Comment.parser(), extensionRegistry);
             if (subBuilder != null) {
               subBuilder.mergeFrom(type_);
               type_ = subBuilder.buildPartial();
@@ -77,7 +68,7 @@ public final class Enumeration extends
               value_ = new java.util.ArrayList<com.github.jsdossier.proto.Enumeration.Value>();
               mutable_bitField0_ |= 0x00000002;
             }
-            value_.add(input.readMessage(com.github.jsdossier.proto.Enumeration.Value.PARSER, extensionRegistry));
+            value_.add(input.readMessage(com.github.jsdossier.proto.Enumeration.Value.parser(), extensionRegistry));
             break;
           }
           case 24: {
@@ -87,17 +78,18 @@ public final class Enumeration extends
               unknownFields.mergeVarintField(3, rawValue);
             } else {
               bitField0_ |= 0x00000002;
-              visibility_ = value;
+              visibility_ = rawValue;
             }
             break;
           }
         }
       }
     } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-      throw e.setUnfinishedMessage(this);
+      throw new RuntimeException(e.setUnfinishedMessage(this));
     } catch (java.io.IOException e) {
-      throw new com.google.protobuf.InvalidProtocolBufferException(
-          e.getMessage()).setUnfinishedMessage(this);
+      throw new RuntimeException(
+          new com.google.protobuf.InvalidProtocolBufferException(
+              e.getMessage()).setUnfinishedMessage(this));
     } finally {
       if (((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
         value_ = java.util.Collections.unmodifiableList(value_);
@@ -116,21 +108,6 @@ public final class Enumeration extends
     return com.github.jsdossier.proto.Dossier.internal_static_dossier_Enumeration_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
             com.github.jsdossier.proto.Enumeration.class, com.github.jsdossier.proto.Enumeration.Builder.class);
-  }
-
-  public static com.google.protobuf.Parser<Enumeration> PARSER =
-      new com.google.protobuf.AbstractParser<Enumeration>() {
-    public Enumeration parsePartialFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return new Enumeration(input, extensionRegistry);
-    }
-  };
-
-  @java.lang.Override
-  public com.google.protobuf.Parser<Enumeration> getParserForType() {
-    return PARSER;
   }
 
   public interface ValueOrBuilder extends
@@ -180,37 +157,27 @@ public final class Enumeration extends
   /**
    * Protobuf type {@code dossier.Enumeration.Value}
    */
-  public static final class Value extends
+  public  static final class Value extends
       com.google.protobuf.GeneratedMessage implements
       // @@protoc_insertion_point(message_implements:dossier.Enumeration.Value)
       ValueOrBuilder {
     // Use Value.newBuilder() to construct.
     private Value(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
-      this.unknownFields = builder.getUnknownFields();
     }
-    private Value(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
-
-    private static final Value defaultInstance;
-    public static Value getDefaultInstance() {
-      return defaultInstance;
+    private Value() {
+      name_ = "";
     }
 
-    public Value getDefaultInstanceForType() {
-      return defaultInstance;
-    }
-
-    private final com.google.protobuf.UnknownFieldSet unknownFields;
     @java.lang.Override
     public final com.google.protobuf.UnknownFieldSet
-        getUnknownFields() {
+    getUnknownFields() {
       return this.unknownFields;
     }
     private Value(
         com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      initFields();
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
+      this();
       int mutable_bitField0_ = 0;
       com.google.protobuf.UnknownFieldSet.Builder unknownFields =
           com.google.protobuf.UnknownFieldSet.newBuilder();
@@ -240,7 +207,7 @@ public final class Enumeration extends
               if (((bitField0_ & 0x00000002) == 0x00000002)) {
                 subBuilder = description_.toBuilder();
               }
-              description_ = input.readMessage(com.github.jsdossier.proto.Comment.PARSER, extensionRegistry);
+              description_ = input.readMessage(com.github.jsdossier.proto.Comment.parser(), extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(description_);
                 description_ = subBuilder.buildPartial();
@@ -253,7 +220,7 @@ public final class Enumeration extends
               if (((bitField0_ & 0x00000004) == 0x00000004)) {
                 subBuilder = deprecation_.toBuilder();
               }
-              deprecation_ = input.readMessage(com.github.jsdossier.proto.Comment.PARSER, extensionRegistry);
+              deprecation_ = input.readMessage(com.github.jsdossier.proto.Comment.parser(), extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(deprecation_);
                 deprecation_ = subBuilder.buildPartial();
@@ -264,10 +231,11 @@ public final class Enumeration extends
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw e.setUnfinishedMessage(this);
+        throw new RuntimeException(e.setUnfinishedMessage(this));
       } catch (java.io.IOException e) {
-        throw new com.google.protobuf.InvalidProtocolBufferException(
-            e.getMessage()).setUnfinishedMessage(this);
+        throw new RuntimeException(
+            new com.google.protobuf.InvalidProtocolBufferException(
+                e.getMessage()).setUnfinishedMessage(this));
       } finally {
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
@@ -285,24 +253,9 @@ public final class Enumeration extends
               com.github.jsdossier.proto.Enumeration.Value.class, com.github.jsdossier.proto.Enumeration.Value.Builder.class);
     }
 
-    public static com.google.protobuf.Parser<Value> PARSER =
-        new com.google.protobuf.AbstractParser<Value>() {
-      public Value parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return new Value(input, extensionRegistry);
-      }
-    };
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<Value> getParserForType() {
-      return PARSER;
-    }
-
     private int bitField0_;
     public static final int NAME_FIELD_NUMBER = 1;
-    private java.lang.Object name_;
+    private volatile java.lang.Object name_;
     /**
      * <code>required string name = 1;</code>
      */
@@ -355,13 +308,13 @@ public final class Enumeration extends
      * <code>optional .dossier.Comment description = 2;</code>
      */
     public com.github.jsdossier.proto.Comment getDescription() {
-      return description_;
+      return description_ == null ? com.github.jsdossier.proto.Comment.getDefaultInstance() : description_;
     }
     /**
      * <code>optional .dossier.Comment description = 2;</code>
      */
     public com.github.jsdossier.proto.CommentOrBuilder getDescriptionOrBuilder() {
-      return description_;
+      return description_ == null ? com.github.jsdossier.proto.Comment.getDefaultInstance() : description_;
     }
 
     public static final int DEPRECATION_FIELD_NUMBER = 3;
@@ -376,20 +329,15 @@ public final class Enumeration extends
      * <code>optional .dossier.Comment deprecation = 3;</code>
      */
     public com.github.jsdossier.proto.Comment getDeprecation() {
-      return deprecation_;
+      return deprecation_ == null ? com.github.jsdossier.proto.Comment.getDefaultInstance() : deprecation_;
     }
     /**
      * <code>optional .dossier.Comment deprecation = 3;</code>
      */
     public com.github.jsdossier.proto.CommentOrBuilder getDeprecationOrBuilder() {
-      return deprecation_;
+      return deprecation_ == null ? com.github.jsdossier.proto.Comment.getDefaultInstance() : deprecation_;
     }
 
-    private void initFields() {
-      name_ = "";
-      description_ = com.github.jsdossier.proto.Comment.getDefaultInstance();
-      deprecation_ = com.github.jsdossier.proto.Comment.getDefaultInstance();
-    }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -406,49 +354,40 @@ public final class Enumeration extends
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      getSerializedSize();
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        output.writeBytes(1, getNameBytes());
+        com.google.protobuf.GeneratedMessage.writeString(output, 1, name_);
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        output.writeMessage(2, description_);
+        output.writeMessage(2, getDescription());
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        output.writeMessage(3, deprecation_);
+        output.writeMessage(3, getDeprecation());
       }
-      getUnknownFields().writeTo(output);
+      unknownFields.writeTo(output);
     }
 
-    private int memoizedSerializedSize = -1;
     public int getSerializedSize() {
-      int size = memoizedSerializedSize;
+      int size = memoizedSize;
       if (size != -1) return size;
 
       size = 0;
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(1, getNameBytes());
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(1, name_);
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(2, description_);
+          .computeMessageSize(2, getDescription());
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(3, deprecation_);
+          .computeMessageSize(3, getDeprecation());
       }
-      size += getUnknownFields().getSerializedSize();
-      memoizedSerializedSize = size;
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
       return size;
     }
 
     private static final long serialVersionUID = 0L;
-    @java.lang.Override
-    protected java.lang.Object writeReplace()
-        throws java.io.ObjectStreamException {
-      return super.writeReplace();
-    }
-
     public static com.github.jsdossier.proto.Enumeration.Value parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -502,12 +441,17 @@ public final class Enumeration extends
       return PARSER.parseFrom(input, extensionRegistry);
     }
 
-    public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder(com.github.jsdossier.proto.Enumeration.Value prototype) {
-      return newBuilder().mergeFrom(prototype);
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
     }
-    public Builder toBuilder() { return newBuilder(this); }
+    public static Builder newBuilder(com.github.jsdossier.proto.Enumeration.Value prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
 
     @java.lang.Override
     protected Builder newBuilderForType(
@@ -550,31 +494,23 @@ public final class Enumeration extends
           getDeprecationFieldBuilder();
         }
       }
-      private static Builder create() {
-        return new Builder();
-      }
-
       public Builder clear() {
         super.clear();
         name_ = "";
         bitField0_ = (bitField0_ & ~0x00000001);
         if (descriptionBuilder_ == null) {
-          description_ = com.github.jsdossier.proto.Comment.getDefaultInstance();
+          description_ = null;
         } else {
           descriptionBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000002);
         if (deprecationBuilder_ == null) {
-          deprecation_ = com.github.jsdossier.proto.Comment.getDefaultInstance();
+          deprecation_ = null;
         } else {
           deprecationBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000004);
         return this;
-      }
-
-      public Builder clone() {
-        return create().mergeFrom(buildPartial());
       }
 
       public com.google.protobuf.Descriptors.Descriptor
@@ -645,13 +581,13 @@ public final class Enumeration extends
         if (other.hasDeprecation()) {
           mergeDeprecation(other.getDeprecation());
         }
-        this.mergeUnknownFields(other.getUnknownFields());
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
         return this;
       }
 
       public final boolean isInitialized() {
         if (!hasName()) {
-          
           return false;
         }
         return true;
@@ -752,7 +688,7 @@ public final class Enumeration extends
         return this;
       }
 
-      private com.github.jsdossier.proto.Comment description_ = com.github.jsdossier.proto.Comment.getDefaultInstance();
+      private com.github.jsdossier.proto.Comment description_ = null;
       private com.google.protobuf.SingleFieldBuilder<
           com.github.jsdossier.proto.Comment, com.github.jsdossier.proto.Comment.Builder, com.github.jsdossier.proto.CommentOrBuilder> descriptionBuilder_;
       /**
@@ -766,7 +702,7 @@ public final class Enumeration extends
        */
       public com.github.jsdossier.proto.Comment getDescription() {
         if (descriptionBuilder_ == null) {
-          return description_;
+          return description_ == null ? com.github.jsdossier.proto.Comment.getDefaultInstance() : description_;
         } else {
           return descriptionBuilder_.getMessage();
         }
@@ -807,6 +743,7 @@ public final class Enumeration extends
       public Builder mergeDescription(com.github.jsdossier.proto.Comment value) {
         if (descriptionBuilder_ == null) {
           if (((bitField0_ & 0x00000002) == 0x00000002) &&
+              description_ != null &&
               description_ != com.github.jsdossier.proto.Comment.getDefaultInstance()) {
             description_ =
               com.github.jsdossier.proto.Comment.newBuilder(description_).mergeFrom(value).buildPartial();
@@ -825,7 +762,7 @@ public final class Enumeration extends
        */
       public Builder clearDescription() {
         if (descriptionBuilder_ == null) {
-          description_ = com.github.jsdossier.proto.Comment.getDefaultInstance();
+          description_ = null;
           onChanged();
         } else {
           descriptionBuilder_.clear();
@@ -848,7 +785,8 @@ public final class Enumeration extends
         if (descriptionBuilder_ != null) {
           return descriptionBuilder_.getMessageOrBuilder();
         } else {
-          return description_;
+          return description_ == null ?
+              com.github.jsdossier.proto.Comment.getDefaultInstance() : description_;
         }
       }
       /**
@@ -868,7 +806,7 @@ public final class Enumeration extends
         return descriptionBuilder_;
       }
 
-      private com.github.jsdossier.proto.Comment deprecation_ = com.github.jsdossier.proto.Comment.getDefaultInstance();
+      private com.github.jsdossier.proto.Comment deprecation_ = null;
       private com.google.protobuf.SingleFieldBuilder<
           com.github.jsdossier.proto.Comment, com.github.jsdossier.proto.Comment.Builder, com.github.jsdossier.proto.CommentOrBuilder> deprecationBuilder_;
       /**
@@ -882,7 +820,7 @@ public final class Enumeration extends
        */
       public com.github.jsdossier.proto.Comment getDeprecation() {
         if (deprecationBuilder_ == null) {
-          return deprecation_;
+          return deprecation_ == null ? com.github.jsdossier.proto.Comment.getDefaultInstance() : deprecation_;
         } else {
           return deprecationBuilder_.getMessage();
         }
@@ -923,6 +861,7 @@ public final class Enumeration extends
       public Builder mergeDeprecation(com.github.jsdossier.proto.Comment value) {
         if (deprecationBuilder_ == null) {
           if (((bitField0_ & 0x00000004) == 0x00000004) &&
+              deprecation_ != null &&
               deprecation_ != com.github.jsdossier.proto.Comment.getDefaultInstance()) {
             deprecation_ =
               com.github.jsdossier.proto.Comment.newBuilder(deprecation_).mergeFrom(value).buildPartial();
@@ -941,7 +880,7 @@ public final class Enumeration extends
        */
       public Builder clearDeprecation() {
         if (deprecationBuilder_ == null) {
-          deprecation_ = com.github.jsdossier.proto.Comment.getDefaultInstance();
+          deprecation_ = null;
           onChanged();
         } else {
           deprecationBuilder_.clear();
@@ -964,7 +903,8 @@ public final class Enumeration extends
         if (deprecationBuilder_ != null) {
           return deprecationBuilder_.getMessageOrBuilder();
         } else {
-          return deprecation_;
+          return deprecation_ == null ?
+              com.github.jsdossier.proto.Comment.getDefaultInstance() : deprecation_;
         }
       }
       /**
@@ -987,12 +927,48 @@ public final class Enumeration extends
       // @@protoc_insertion_point(builder_scope:dossier.Enumeration.Value)
     }
 
+    // @@protoc_insertion_point(class_scope:dossier.Enumeration.Value)
+    private static final com.github.jsdossier.proto.Enumeration.Value DEFAULT_INSTANCE;
     static {
-      defaultInstance = new Value(true);
-      defaultInstance.initFields();
+      DEFAULT_INSTANCE = new com.github.jsdossier.proto.Enumeration.Value();
     }
 
-    // @@protoc_insertion_point(class_scope:dossier.Enumeration.Value)
+    public static com.github.jsdossier.proto.Enumeration.Value getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    @java.lang.Deprecated public static final com.google.protobuf.Parser<Value>
+        PARSER = new com.google.protobuf.AbstractParser<Value>() {
+      public Value parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        try {
+          return new Value(input, extensionRegistry);
+        } catch (RuntimeException e) {
+          if (e.getCause() instanceof
+              com.google.protobuf.InvalidProtocolBufferException) {
+            throw (com.google.protobuf.InvalidProtocolBufferException)
+                e.getCause();
+          }
+          throw e;
+        }
+      }
+    };
+
+    public static com.google.protobuf.Parser<Value> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<Value> getParserForType() {
+      return PARSER;
+    }
+
+    public com.github.jsdossier.proto.Enumeration.Value getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
   }
 
   private int bitField0_;
@@ -1008,13 +984,13 @@ public final class Enumeration extends
    * <code>required .dossier.Comment type = 1;</code>
    */
   public com.github.jsdossier.proto.Comment getType() {
-    return type_;
+    return type_ == null ? com.github.jsdossier.proto.Comment.getDefaultInstance() : type_;
   }
   /**
    * <code>required .dossier.Comment type = 1;</code>
    */
   public com.github.jsdossier.proto.CommentOrBuilder getTypeOrBuilder() {
-    return type_;
+    return type_ == null ? com.github.jsdossier.proto.Comment.getDefaultInstance() : type_;
   }
 
   public static final int VALUE_FIELD_NUMBER = 2;
@@ -1053,7 +1029,7 @@ public final class Enumeration extends
   }
 
   public static final int VISIBILITY_FIELD_NUMBER = 3;
-  private com.github.jsdossier.proto.Visibility visibility_;
+  private int visibility_;
   /**
    * <code>optional .dossier.Visibility visibility = 3 [default = PUBLIC];</code>
    */
@@ -1064,14 +1040,10 @@ public final class Enumeration extends
    * <code>optional .dossier.Visibility visibility = 3 [default = PUBLIC];</code>
    */
   public com.github.jsdossier.proto.Visibility getVisibility() {
-    return visibility_;
+    com.github.jsdossier.proto.Visibility result = com.github.jsdossier.proto.Visibility.valueOf(visibility_);
+    return result == null ? com.github.jsdossier.proto.Visibility.PUBLIC : result;
   }
 
-  private void initFields() {
-    type_ = com.github.jsdossier.proto.Comment.getDefaultInstance();
-    value_ = java.util.Collections.emptyList();
-    visibility_ = com.github.jsdossier.proto.Visibility.PUBLIC;
-  }
   private byte memoizedIsInitialized = -1;
   public final boolean isInitialized() {
     byte isInitialized = memoizedIsInitialized;
@@ -1094,28 +1066,26 @@ public final class Enumeration extends
 
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    getSerializedSize();
     if (((bitField0_ & 0x00000001) == 0x00000001)) {
-      output.writeMessage(1, type_);
+      output.writeMessage(1, getType());
     }
     for (int i = 0; i < value_.size(); i++) {
       output.writeMessage(2, value_.get(i));
     }
     if (((bitField0_ & 0x00000002) == 0x00000002)) {
-      output.writeEnum(3, visibility_.getNumber());
+      output.writeEnum(3, visibility_);
     }
-    getUnknownFields().writeTo(output);
+    unknownFields.writeTo(output);
   }
 
-  private int memoizedSerializedSize = -1;
   public int getSerializedSize() {
-    int size = memoizedSerializedSize;
+    int size = memoizedSize;
     if (size != -1) return size;
 
     size = 0;
     if (((bitField0_ & 0x00000001) == 0x00000001)) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(1, type_);
+        .computeMessageSize(1, getType());
     }
     for (int i = 0; i < value_.size(); i++) {
       size += com.google.protobuf.CodedOutputStream
@@ -1123,20 +1093,14 @@ public final class Enumeration extends
     }
     if (((bitField0_ & 0x00000002) == 0x00000002)) {
       size += com.google.protobuf.CodedOutputStream
-        .computeEnumSize(3, visibility_.getNumber());
+        .computeEnumSize(3, visibility_);
     }
-    size += getUnknownFields().getSerializedSize();
-    memoizedSerializedSize = size;
+    size += unknownFields.getSerializedSize();
+    memoizedSize = size;
     return size;
   }
 
   private static final long serialVersionUID = 0L;
-  @java.lang.Override
-  protected java.lang.Object writeReplace()
-      throws java.io.ObjectStreamException {
-    return super.writeReplace();
-  }
-
   public static com.github.jsdossier.proto.Enumeration parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
@@ -1190,12 +1154,17 @@ public final class Enumeration extends
     return PARSER.parseFrom(input, extensionRegistry);
   }
 
-  public static Builder newBuilder() { return Builder.create(); }
   public Builder newBuilderForType() { return newBuilder(); }
-  public static Builder newBuilder(com.github.jsdossier.proto.Enumeration prototype) {
-    return newBuilder().mergeFrom(prototype);
+  public static Builder newBuilder() {
+    return DEFAULT_INSTANCE.toBuilder();
   }
-  public Builder toBuilder() { return newBuilder(this); }
+  public static Builder newBuilder(com.github.jsdossier.proto.Enumeration prototype) {
+    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+  }
+  public Builder toBuilder() {
+    return this == DEFAULT_INSTANCE
+        ? new Builder() : new Builder().mergeFrom(this);
+  }
 
   @java.lang.Override
   protected Builder newBuilderForType(
@@ -1242,14 +1211,10 @@ public final class Enumeration extends
         getValueFieldBuilder();
       }
     }
-    private static Builder create() {
-      return new Builder();
-    }
-
     public Builder clear() {
       super.clear();
       if (typeBuilder_ == null) {
-        type_ = com.github.jsdossier.proto.Comment.getDefaultInstance();
+        type_ = null;
       } else {
         typeBuilder_.clear();
       }
@@ -1260,13 +1225,9 @@ public final class Enumeration extends
       } else {
         valueBuilder_.clear();
       }
-      visibility_ = com.github.jsdossier.proto.Visibility.PUBLIC;
+      visibility_ = 0;
       bitField0_ = (bitField0_ & ~0x00000004);
       return this;
-    }
-
-    public Builder clone() {
-      return create().mergeFrom(buildPartial());
     }
 
     public com.google.protobuf.Descriptors.Descriptor
@@ -1359,18 +1320,17 @@ public final class Enumeration extends
       if (other.hasVisibility()) {
         setVisibility(other.getVisibility());
       }
-      this.mergeUnknownFields(other.getUnknownFields());
+      this.mergeUnknownFields(other.unknownFields);
+      onChanged();
       return this;
     }
 
     public final boolean isInitialized() {
       if (!hasType()) {
-        
         return false;
       }
       for (int i = 0; i < getValueCount(); i++) {
         if (!getValue(i).isInitialized()) {
-          
           return false;
         }
       }
@@ -1396,7 +1356,7 @@ public final class Enumeration extends
     }
     private int bitField0_;
 
-    private com.github.jsdossier.proto.Comment type_ = com.github.jsdossier.proto.Comment.getDefaultInstance();
+    private com.github.jsdossier.proto.Comment type_ = null;
     private com.google.protobuf.SingleFieldBuilder<
         com.github.jsdossier.proto.Comment, com.github.jsdossier.proto.Comment.Builder, com.github.jsdossier.proto.CommentOrBuilder> typeBuilder_;
     /**
@@ -1410,7 +1370,7 @@ public final class Enumeration extends
      */
     public com.github.jsdossier.proto.Comment getType() {
       if (typeBuilder_ == null) {
-        return type_;
+        return type_ == null ? com.github.jsdossier.proto.Comment.getDefaultInstance() : type_;
       } else {
         return typeBuilder_.getMessage();
       }
@@ -1451,6 +1411,7 @@ public final class Enumeration extends
     public Builder mergeType(com.github.jsdossier.proto.Comment value) {
       if (typeBuilder_ == null) {
         if (((bitField0_ & 0x00000001) == 0x00000001) &&
+            type_ != null &&
             type_ != com.github.jsdossier.proto.Comment.getDefaultInstance()) {
           type_ =
             com.github.jsdossier.proto.Comment.newBuilder(type_).mergeFrom(value).buildPartial();
@@ -1469,7 +1430,7 @@ public final class Enumeration extends
      */
     public Builder clearType() {
       if (typeBuilder_ == null) {
-        type_ = com.github.jsdossier.proto.Comment.getDefaultInstance();
+        type_ = null;
         onChanged();
       } else {
         typeBuilder_.clear();
@@ -1492,7 +1453,8 @@ public final class Enumeration extends
       if (typeBuilder_ != null) {
         return typeBuilder_.getMessageOrBuilder();
       } else {
-        return type_;
+        return type_ == null ?
+            com.github.jsdossier.proto.Comment.getDefaultInstance() : type_;
       }
     }
     /**
@@ -1752,7 +1714,7 @@ public final class Enumeration extends
       return valueBuilder_;
     }
 
-    private com.github.jsdossier.proto.Visibility visibility_ = com.github.jsdossier.proto.Visibility.PUBLIC;
+    private int visibility_ = 0;
     /**
      * <code>optional .dossier.Visibility visibility = 3 [default = PUBLIC];</code>
      */
@@ -1763,7 +1725,8 @@ public final class Enumeration extends
      * <code>optional .dossier.Visibility visibility = 3 [default = PUBLIC];</code>
      */
     public com.github.jsdossier.proto.Visibility getVisibility() {
-      return visibility_;
+      com.github.jsdossier.proto.Visibility result = com.github.jsdossier.proto.Visibility.valueOf(visibility_);
+      return result == null ? com.github.jsdossier.proto.Visibility.PUBLIC : result;
     }
     /**
      * <code>optional .dossier.Visibility visibility = 3 [default = PUBLIC];</code>
@@ -1773,7 +1736,7 @@ public final class Enumeration extends
         throw new NullPointerException();
       }
       bitField0_ |= 0x00000004;
-      visibility_ = value;
+      visibility_ = value.getNumber();
       onChanged();
       return this;
     }
@@ -1782,7 +1745,7 @@ public final class Enumeration extends
      */
     public Builder clearVisibility() {
       bitField0_ = (bitField0_ & ~0x00000004);
-      visibility_ = com.github.jsdossier.proto.Visibility.PUBLIC;
+      visibility_ = 0;
       onChanged();
       return this;
     }
@@ -1790,11 +1753,47 @@ public final class Enumeration extends
     // @@protoc_insertion_point(builder_scope:dossier.Enumeration)
   }
 
+  // @@protoc_insertion_point(class_scope:dossier.Enumeration)
+  private static final com.github.jsdossier.proto.Enumeration DEFAULT_INSTANCE;
   static {
-    defaultInstance = new Enumeration(true);
-    defaultInstance.initFields();
+    DEFAULT_INSTANCE = new com.github.jsdossier.proto.Enumeration();
   }
 
-  // @@protoc_insertion_point(class_scope:dossier.Enumeration)
+  public static com.github.jsdossier.proto.Enumeration getDefaultInstance() {
+    return DEFAULT_INSTANCE;
+  }
+
+  @java.lang.Deprecated public static final com.google.protobuf.Parser<Enumeration>
+      PARSER = new com.google.protobuf.AbstractParser<Enumeration>() {
+    public Enumeration parsePartialFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      try {
+        return new Enumeration(input, extensionRegistry);
+      } catch (RuntimeException e) {
+        if (e.getCause() instanceof
+            com.google.protobuf.InvalidProtocolBufferException) {
+          throw (com.google.protobuf.InvalidProtocolBufferException)
+              e.getCause();
+        }
+        throw e;
+      }
+    }
+  };
+
+  public static com.google.protobuf.Parser<Enumeration> parser() {
+    return PARSER;
+  }
+
+  @java.lang.Override
+  public com.google.protobuf.Parser<Enumeration> getParserForType() {
+    return PARSER;
+  }
+
+  public com.github.jsdossier.proto.Enumeration getDefaultInstanceForType() {
+    return DEFAULT_INSTANCE;
+  }
+
 }
 

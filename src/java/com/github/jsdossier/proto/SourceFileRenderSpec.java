@@ -10,37 +10,26 @@ package com.github.jsdossier.proto;
  * Describes how to render a source file.
  * </pre>
  */
-public final class SourceFileRenderSpec extends
+public  final class SourceFileRenderSpec extends
     com.google.protobuf.GeneratedMessage implements
     // @@protoc_insertion_point(message_implements:dossier.SourceFileRenderSpec)
     SourceFileRenderSpecOrBuilder {
   // Use SourceFileRenderSpec.newBuilder() to construct.
   private SourceFileRenderSpec(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
     super(builder);
-    this.unknownFields = builder.getUnknownFields();
   }
-  private SourceFileRenderSpec(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
-
-  private static final SourceFileRenderSpec defaultInstance;
-  public static SourceFileRenderSpec getDefaultInstance() {
-    return defaultInstance;
+  private SourceFileRenderSpec() {
   }
 
-  public SourceFileRenderSpec getDefaultInstanceForType() {
-    return defaultInstance;
-  }
-
-  private final com.google.protobuf.UnknownFieldSet unknownFields;
   @java.lang.Override
   public final com.google.protobuf.UnknownFieldSet
-      getUnknownFields() {
+  getUnknownFields() {
     return this.unknownFields;
   }
   private SourceFileRenderSpec(
       com.google.protobuf.CodedInputStream input,
-      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-      throws com.google.protobuf.InvalidProtocolBufferException {
-    initFields();
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
+    this();
     int mutable_bitField0_ = 0;
     com.google.protobuf.UnknownFieldSet.Builder unknownFields =
         com.google.protobuf.UnknownFieldSet.newBuilder();
@@ -64,7 +53,7 @@ public final class SourceFileRenderSpec extends
             if (((bitField0_ & 0x00000001) == 0x00000001)) {
               subBuilder = resources_.toBuilder();
             }
-            resources_ = input.readMessage(com.github.jsdossier.proto.Resources.PARSER, extensionRegistry);
+            resources_ = input.readMessage(com.github.jsdossier.proto.Resources.parser(), extensionRegistry);
             if (subBuilder != null) {
               subBuilder.mergeFrom(resources_);
               resources_ = subBuilder.buildPartial();
@@ -77,7 +66,7 @@ public final class SourceFileRenderSpec extends
             if (((bitField0_ & 0x00000002) == 0x00000002)) {
               subBuilder = file_.toBuilder();
             }
-            file_ = input.readMessage(com.github.jsdossier.proto.SourceFile.PARSER, extensionRegistry);
+            file_ = input.readMessage(com.github.jsdossier.proto.SourceFile.parser(), extensionRegistry);
             if (subBuilder != null) {
               subBuilder.mergeFrom(file_);
               file_ = subBuilder.buildPartial();
@@ -90,7 +79,7 @@ public final class SourceFileRenderSpec extends
             if (((bitField0_ & 0x00000004) == 0x00000004)) {
               subBuilder = index_.toBuilder();
             }
-            index_ = input.readMessage(com.github.jsdossier.proto.Index.PARSER, extensionRegistry);
+            index_ = input.readMessage(com.github.jsdossier.proto.Index.parser(), extensionRegistry);
             if (subBuilder != null) {
               subBuilder.mergeFrom(index_);
               index_ = subBuilder.buildPartial();
@@ -101,10 +90,11 @@ public final class SourceFileRenderSpec extends
         }
       }
     } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-      throw e.setUnfinishedMessage(this);
+      throw new RuntimeException(e.setUnfinishedMessage(this));
     } catch (java.io.IOException e) {
-      throw new com.google.protobuf.InvalidProtocolBufferException(
-          e.getMessage()).setUnfinishedMessage(this);
+      throw new RuntimeException(
+          new com.google.protobuf.InvalidProtocolBufferException(
+              e.getMessage()).setUnfinishedMessage(this));
     } finally {
       this.unknownFields = unknownFields.build();
       makeExtensionsImmutable();
@@ -120,21 +110,6 @@ public final class SourceFileRenderSpec extends
     return com.github.jsdossier.proto.Dossier.internal_static_dossier_SourceFileRenderSpec_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
             com.github.jsdossier.proto.SourceFileRenderSpec.class, com.github.jsdossier.proto.SourceFileRenderSpec.Builder.class);
-  }
-
-  public static com.google.protobuf.Parser<SourceFileRenderSpec> PARSER =
-      new com.google.protobuf.AbstractParser<SourceFileRenderSpec>() {
-    public SourceFileRenderSpec parsePartialFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return new SourceFileRenderSpec(input, extensionRegistry);
-    }
-  };
-
-  @java.lang.Override
-  public com.google.protobuf.Parser<SourceFileRenderSpec> getParserForType() {
-    return PARSER;
   }
 
   private int bitField0_;
@@ -158,7 +133,7 @@ public final class SourceFileRenderSpec extends
    * </pre>
    */
   public com.github.jsdossier.proto.Resources getResources() {
-    return resources_;
+    return resources_ == null ? com.github.jsdossier.proto.Resources.getDefaultInstance() : resources_;
   }
   /**
    * <code>required .dossier.Resources resources = 1;</code>
@@ -168,7 +143,7 @@ public final class SourceFileRenderSpec extends
    * </pre>
    */
   public com.github.jsdossier.proto.ResourcesOrBuilder getResourcesOrBuilder() {
-    return resources_;
+    return resources_ == null ? com.github.jsdossier.proto.Resources.getDefaultInstance() : resources_;
   }
 
   public static final int FILE_FIELD_NUMBER = 2;
@@ -191,7 +166,7 @@ public final class SourceFileRenderSpec extends
    * </pre>
    */
   public com.github.jsdossier.proto.SourceFile getFile() {
-    return file_;
+    return file_ == null ? com.github.jsdossier.proto.SourceFile.getDefaultInstance() : file_;
   }
   /**
    * <code>required .dossier.SourceFile file = 2;</code>
@@ -201,7 +176,7 @@ public final class SourceFileRenderSpec extends
    * </pre>
    */
   public com.github.jsdossier.proto.SourceFileOrBuilder getFileOrBuilder() {
-    return file_;
+    return file_ == null ? com.github.jsdossier.proto.SourceFile.getDefaultInstance() : file_;
   }
 
   public static final int INDEX_FIELD_NUMBER = 3;
@@ -224,7 +199,7 @@ public final class SourceFileRenderSpec extends
    * </pre>
    */
   public com.github.jsdossier.proto.Index getIndex() {
-    return index_;
+    return index_ == null ? com.github.jsdossier.proto.Index.getDefaultInstance() : index_;
   }
   /**
    * <code>required .dossier.Index index = 3;</code>
@@ -234,14 +209,9 @@ public final class SourceFileRenderSpec extends
    * </pre>
    */
   public com.github.jsdossier.proto.IndexOrBuilder getIndexOrBuilder() {
-    return index_;
+    return index_ == null ? com.github.jsdossier.proto.Index.getDefaultInstance() : index_;
   }
 
-  private void initFields() {
-    resources_ = com.github.jsdossier.proto.Resources.getDefaultInstance();
-    file_ = com.github.jsdossier.proto.SourceFile.getDefaultInstance();
-    index_ = com.github.jsdossier.proto.Index.getDefaultInstance();
-  }
   private byte memoizedIsInitialized = -1;
   public final boolean isInitialized() {
     byte isInitialized = memoizedIsInitialized;
@@ -274,49 +244,41 @@ public final class SourceFileRenderSpec extends
 
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    getSerializedSize();
     if (((bitField0_ & 0x00000001) == 0x00000001)) {
-      output.writeMessage(1, resources_);
+      output.writeMessage(1, getResources());
     }
     if (((bitField0_ & 0x00000002) == 0x00000002)) {
-      output.writeMessage(2, file_);
+      output.writeMessage(2, getFile());
     }
     if (((bitField0_ & 0x00000004) == 0x00000004)) {
-      output.writeMessage(3, index_);
+      output.writeMessage(3, getIndex());
     }
-    getUnknownFields().writeTo(output);
+    unknownFields.writeTo(output);
   }
 
-  private int memoizedSerializedSize = -1;
   public int getSerializedSize() {
-    int size = memoizedSerializedSize;
+    int size = memoizedSize;
     if (size != -1) return size;
 
     size = 0;
     if (((bitField0_ & 0x00000001) == 0x00000001)) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(1, resources_);
+        .computeMessageSize(1, getResources());
     }
     if (((bitField0_ & 0x00000002) == 0x00000002)) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(2, file_);
+        .computeMessageSize(2, getFile());
     }
     if (((bitField0_ & 0x00000004) == 0x00000004)) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(3, index_);
+        .computeMessageSize(3, getIndex());
     }
-    size += getUnknownFields().getSerializedSize();
-    memoizedSerializedSize = size;
+    size += unknownFields.getSerializedSize();
+    memoizedSize = size;
     return size;
   }
 
   private static final long serialVersionUID = 0L;
-  @java.lang.Override
-  protected java.lang.Object writeReplace()
-      throws java.io.ObjectStreamException {
-    return super.writeReplace();
-  }
-
   public static com.github.jsdossier.proto.SourceFileRenderSpec parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
@@ -370,12 +332,17 @@ public final class SourceFileRenderSpec extends
     return PARSER.parseFrom(input, extensionRegistry);
   }
 
-  public static Builder newBuilder() { return Builder.create(); }
   public Builder newBuilderForType() { return newBuilder(); }
-  public static Builder newBuilder(com.github.jsdossier.proto.SourceFileRenderSpec prototype) {
-    return newBuilder().mergeFrom(prototype);
+  public static Builder newBuilder() {
+    return DEFAULT_INSTANCE.toBuilder();
   }
-  public Builder toBuilder() { return newBuilder(this); }
+  public static Builder newBuilder(com.github.jsdossier.proto.SourceFileRenderSpec prototype) {
+    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+  }
+  public Builder toBuilder() {
+    return this == DEFAULT_INSTANCE
+        ? new Builder() : new Builder().mergeFrom(this);
+  }
 
   @java.lang.Override
   protected Builder newBuilderForType(
@@ -423,35 +390,27 @@ public final class SourceFileRenderSpec extends
         getIndexFieldBuilder();
       }
     }
-    private static Builder create() {
-      return new Builder();
-    }
-
     public Builder clear() {
       super.clear();
       if (resourcesBuilder_ == null) {
-        resources_ = com.github.jsdossier.proto.Resources.getDefaultInstance();
+        resources_ = null;
       } else {
         resourcesBuilder_.clear();
       }
       bitField0_ = (bitField0_ & ~0x00000001);
       if (fileBuilder_ == null) {
-        file_ = com.github.jsdossier.proto.SourceFile.getDefaultInstance();
+        file_ = null;
       } else {
         fileBuilder_.clear();
       }
       bitField0_ = (bitField0_ & ~0x00000002);
       if (indexBuilder_ == null) {
-        index_ = com.github.jsdossier.proto.Index.getDefaultInstance();
+        index_ = null;
       } else {
         indexBuilder_.clear();
       }
       bitField0_ = (bitField0_ & ~0x00000004);
       return this;
-    }
-
-    public Builder clone() {
-      return create().mergeFrom(buildPartial());
     }
 
     public com.google.protobuf.Descriptors.Descriptor
@@ -524,29 +483,25 @@ public final class SourceFileRenderSpec extends
       if (other.hasIndex()) {
         mergeIndex(other.getIndex());
       }
-      this.mergeUnknownFields(other.getUnknownFields());
+      this.mergeUnknownFields(other.unknownFields);
+      onChanged();
       return this;
     }
 
     public final boolean isInitialized() {
       if (!hasResources()) {
-        
         return false;
       }
       if (!hasFile()) {
-        
         return false;
       }
       if (!hasIndex()) {
-        
         return false;
       }
       if (!getFile().isInitialized()) {
-        
         return false;
       }
       if (!getIndex().isInitialized()) {
-        
         return false;
       }
       return true;
@@ -571,7 +526,7 @@ public final class SourceFileRenderSpec extends
     }
     private int bitField0_;
 
-    private com.github.jsdossier.proto.Resources resources_ = com.github.jsdossier.proto.Resources.getDefaultInstance();
+    private com.github.jsdossier.proto.Resources resources_ = null;
     private com.google.protobuf.SingleFieldBuilder<
         com.github.jsdossier.proto.Resources, com.github.jsdossier.proto.Resources.Builder, com.github.jsdossier.proto.ResourcesOrBuilder> resourcesBuilder_;
     /**
@@ -593,7 +548,7 @@ public final class SourceFileRenderSpec extends
      */
     public com.github.jsdossier.proto.Resources getResources() {
       if (resourcesBuilder_ == null) {
-        return resources_;
+        return resources_ == null ? com.github.jsdossier.proto.Resources.getDefaultInstance() : resources_;
       } else {
         return resourcesBuilder_.getMessage();
       }
@@ -646,6 +601,7 @@ public final class SourceFileRenderSpec extends
     public Builder mergeResources(com.github.jsdossier.proto.Resources value) {
       if (resourcesBuilder_ == null) {
         if (((bitField0_ & 0x00000001) == 0x00000001) &&
+            resources_ != null &&
             resources_ != com.github.jsdossier.proto.Resources.getDefaultInstance()) {
           resources_ =
             com.github.jsdossier.proto.Resources.newBuilder(resources_).mergeFrom(value).buildPartial();
@@ -668,7 +624,7 @@ public final class SourceFileRenderSpec extends
      */
     public Builder clearResources() {
       if (resourcesBuilder_ == null) {
-        resources_ = com.github.jsdossier.proto.Resources.getDefaultInstance();
+        resources_ = null;
         onChanged();
       } else {
         resourcesBuilder_.clear();
@@ -699,7 +655,8 @@ public final class SourceFileRenderSpec extends
       if (resourcesBuilder_ != null) {
         return resourcesBuilder_.getMessageOrBuilder();
       } else {
-        return resources_;
+        return resources_ == null ?
+            com.github.jsdossier.proto.Resources.getDefaultInstance() : resources_;
       }
     }
     /**
@@ -723,7 +680,7 @@ public final class SourceFileRenderSpec extends
       return resourcesBuilder_;
     }
 
-    private com.github.jsdossier.proto.SourceFile file_ = com.github.jsdossier.proto.SourceFile.getDefaultInstance();
+    private com.github.jsdossier.proto.SourceFile file_ = null;
     private com.google.protobuf.SingleFieldBuilder<
         com.github.jsdossier.proto.SourceFile, com.github.jsdossier.proto.SourceFile.Builder, com.github.jsdossier.proto.SourceFileOrBuilder> fileBuilder_;
     /**
@@ -745,7 +702,7 @@ public final class SourceFileRenderSpec extends
      */
     public com.github.jsdossier.proto.SourceFile getFile() {
       if (fileBuilder_ == null) {
-        return file_;
+        return file_ == null ? com.github.jsdossier.proto.SourceFile.getDefaultInstance() : file_;
       } else {
         return fileBuilder_.getMessage();
       }
@@ -798,6 +755,7 @@ public final class SourceFileRenderSpec extends
     public Builder mergeFile(com.github.jsdossier.proto.SourceFile value) {
       if (fileBuilder_ == null) {
         if (((bitField0_ & 0x00000002) == 0x00000002) &&
+            file_ != null &&
             file_ != com.github.jsdossier.proto.SourceFile.getDefaultInstance()) {
           file_ =
             com.github.jsdossier.proto.SourceFile.newBuilder(file_).mergeFrom(value).buildPartial();
@@ -820,7 +778,7 @@ public final class SourceFileRenderSpec extends
      */
     public Builder clearFile() {
       if (fileBuilder_ == null) {
-        file_ = com.github.jsdossier.proto.SourceFile.getDefaultInstance();
+        file_ = null;
         onChanged();
       } else {
         fileBuilder_.clear();
@@ -851,7 +809,8 @@ public final class SourceFileRenderSpec extends
       if (fileBuilder_ != null) {
         return fileBuilder_.getMessageOrBuilder();
       } else {
-        return file_;
+        return file_ == null ?
+            com.github.jsdossier.proto.SourceFile.getDefaultInstance() : file_;
       }
     }
     /**
@@ -875,7 +834,7 @@ public final class SourceFileRenderSpec extends
       return fileBuilder_;
     }
 
-    private com.github.jsdossier.proto.Index index_ = com.github.jsdossier.proto.Index.getDefaultInstance();
+    private com.github.jsdossier.proto.Index index_ = null;
     private com.google.protobuf.SingleFieldBuilder<
         com.github.jsdossier.proto.Index, com.github.jsdossier.proto.Index.Builder, com.github.jsdossier.proto.IndexOrBuilder> indexBuilder_;
     /**
@@ -897,7 +856,7 @@ public final class SourceFileRenderSpec extends
      */
     public com.github.jsdossier.proto.Index getIndex() {
       if (indexBuilder_ == null) {
-        return index_;
+        return index_ == null ? com.github.jsdossier.proto.Index.getDefaultInstance() : index_;
       } else {
         return indexBuilder_.getMessage();
       }
@@ -950,6 +909,7 @@ public final class SourceFileRenderSpec extends
     public Builder mergeIndex(com.github.jsdossier.proto.Index value) {
       if (indexBuilder_ == null) {
         if (((bitField0_ & 0x00000004) == 0x00000004) &&
+            index_ != null &&
             index_ != com.github.jsdossier.proto.Index.getDefaultInstance()) {
           index_ =
             com.github.jsdossier.proto.Index.newBuilder(index_).mergeFrom(value).buildPartial();
@@ -972,7 +932,7 @@ public final class SourceFileRenderSpec extends
      */
     public Builder clearIndex() {
       if (indexBuilder_ == null) {
-        index_ = com.github.jsdossier.proto.Index.getDefaultInstance();
+        index_ = null;
         onChanged();
       } else {
         indexBuilder_.clear();
@@ -1003,7 +963,8 @@ public final class SourceFileRenderSpec extends
       if (indexBuilder_ != null) {
         return indexBuilder_.getMessageOrBuilder();
       } else {
-        return index_;
+        return index_ == null ?
+            com.github.jsdossier.proto.Index.getDefaultInstance() : index_;
       }
     }
     /**
@@ -1030,11 +991,47 @@ public final class SourceFileRenderSpec extends
     // @@protoc_insertion_point(builder_scope:dossier.SourceFileRenderSpec)
   }
 
+  // @@protoc_insertion_point(class_scope:dossier.SourceFileRenderSpec)
+  private static final com.github.jsdossier.proto.SourceFileRenderSpec DEFAULT_INSTANCE;
   static {
-    defaultInstance = new SourceFileRenderSpec(true);
-    defaultInstance.initFields();
+    DEFAULT_INSTANCE = new com.github.jsdossier.proto.SourceFileRenderSpec();
   }
 
-  // @@protoc_insertion_point(class_scope:dossier.SourceFileRenderSpec)
+  public static com.github.jsdossier.proto.SourceFileRenderSpec getDefaultInstance() {
+    return DEFAULT_INSTANCE;
+  }
+
+  @java.lang.Deprecated public static final com.google.protobuf.Parser<SourceFileRenderSpec>
+      PARSER = new com.google.protobuf.AbstractParser<SourceFileRenderSpec>() {
+    public SourceFileRenderSpec parsePartialFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      try {
+        return new SourceFileRenderSpec(input, extensionRegistry);
+      } catch (RuntimeException e) {
+        if (e.getCause() instanceof
+            com.google.protobuf.InvalidProtocolBufferException) {
+          throw (com.google.protobuf.InvalidProtocolBufferException)
+              e.getCause();
+        }
+        throw e;
+      }
+    }
+  };
+
+  public static com.google.protobuf.Parser<SourceFileRenderSpec> parser() {
+    return PARSER;
+  }
+
+  @java.lang.Override
+  public com.google.protobuf.Parser<SourceFileRenderSpec> getParserForType() {
+    return PARSER;
+  }
+
+  public com.github.jsdossier.proto.SourceFileRenderSpec getDefaultInstanceForType() {
+    return DEFAULT_INSTANCE;
+  }
+
 }
 

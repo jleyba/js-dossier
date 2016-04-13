@@ -10,37 +10,28 @@ package com.github.jsdossier.proto;
  * Describes a type to link to.
  * </pre>
  */
-public final class TypeLink extends
+public  final class TypeLink extends
     com.google.protobuf.GeneratedMessage implements
     // @@protoc_insertion_point(message_implements:dossier.TypeLink)
     TypeLinkOrBuilder {
   // Use TypeLink.newBuilder() to construct.
   private TypeLink(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
     super(builder);
-    this.unknownFields = builder.getUnknownFields();
   }
-  private TypeLink(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
-
-  private static final TypeLink defaultInstance;
-  public static TypeLink getDefaultInstance() {
-    return defaultInstance;
+  private TypeLink() {
+    text_ = "";
+    href_ = "";
   }
 
-  public TypeLink getDefaultInstanceForType() {
-    return defaultInstance;
-  }
-
-  private final com.google.protobuf.UnknownFieldSet unknownFields;
   @java.lang.Override
   public final com.google.protobuf.UnknownFieldSet
-      getUnknownFields() {
+  getUnknownFields() {
     return this.unknownFields;
   }
   private TypeLink(
       com.google.protobuf.CodedInputStream input,
-      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-      throws com.google.protobuf.InvalidProtocolBufferException {
-    initFields();
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
+    this();
     int mutable_bitField0_ = 0;
     com.google.protobuf.UnknownFieldSet.Builder unknownFields =
         com.google.protobuf.UnknownFieldSet.newBuilder();
@@ -74,10 +65,11 @@ public final class TypeLink extends
         }
       }
     } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-      throw e.setUnfinishedMessage(this);
+      throw new RuntimeException(e.setUnfinishedMessage(this));
     } catch (java.io.IOException e) {
-      throw new com.google.protobuf.InvalidProtocolBufferException(
-          e.getMessage()).setUnfinishedMessage(this);
+      throw new RuntimeException(
+          new com.google.protobuf.InvalidProtocolBufferException(
+              e.getMessage()).setUnfinishedMessage(this));
     } finally {
       this.unknownFields = unknownFields.build();
       makeExtensionsImmutable();
@@ -95,24 +87,9 @@ public final class TypeLink extends
             com.github.jsdossier.proto.TypeLink.class, com.github.jsdossier.proto.TypeLink.Builder.class);
   }
 
-  public static com.google.protobuf.Parser<TypeLink> PARSER =
-      new com.google.protobuf.AbstractParser<TypeLink>() {
-    public TypeLink parsePartialFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return new TypeLink(input, extensionRegistry);
-    }
-  };
-
-  @java.lang.Override
-  public com.google.protobuf.Parser<TypeLink> getParserForType() {
-    return PARSER;
-  }
-
   private int bitField0_;
   public static final int TEXT_FIELD_NUMBER = 1;
-  private java.lang.Object text_;
+  private volatile java.lang.Object text_;
   /**
    * <code>required string text = 1;</code>
    *
@@ -166,7 +143,7 @@ public final class TypeLink extends
   }
 
   public static final int HREF_FIELD_NUMBER = 2;
-  private java.lang.Object href_;
+  private volatile java.lang.Object href_;
   /**
    * <code>optional string href = 2;</code>
    *
@@ -219,10 +196,6 @@ public final class TypeLink extends
     }
   }
 
-  private void initFields() {
-    text_ = "";
-    href_ = "";
-  }
   private byte memoizedIsInitialized = -1;
   public final boolean isInitialized() {
     byte isInitialized = memoizedIsInitialized;
@@ -239,42 +212,32 @@ public final class TypeLink extends
 
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    getSerializedSize();
     if (((bitField0_ & 0x00000001) == 0x00000001)) {
-      output.writeBytes(1, getTextBytes());
+      com.google.protobuf.GeneratedMessage.writeString(output, 1, text_);
     }
     if (((bitField0_ & 0x00000002) == 0x00000002)) {
-      output.writeBytes(2, getHrefBytes());
+      com.google.protobuf.GeneratedMessage.writeString(output, 2, href_);
     }
-    getUnknownFields().writeTo(output);
+    unknownFields.writeTo(output);
   }
 
-  private int memoizedSerializedSize = -1;
   public int getSerializedSize() {
-    int size = memoizedSerializedSize;
+    int size = memoizedSize;
     if (size != -1) return size;
 
     size = 0;
     if (((bitField0_ & 0x00000001) == 0x00000001)) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(1, getTextBytes());
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(1, text_);
     }
     if (((bitField0_ & 0x00000002) == 0x00000002)) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(2, getHrefBytes());
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(2, href_);
     }
-    size += getUnknownFields().getSerializedSize();
-    memoizedSerializedSize = size;
+    size += unknownFields.getSerializedSize();
+    memoizedSize = size;
     return size;
   }
 
   private static final long serialVersionUID = 0L;
-  @java.lang.Override
-  protected java.lang.Object writeReplace()
-      throws java.io.ObjectStreamException {
-    return super.writeReplace();
-  }
-
   public static com.github.jsdossier.proto.TypeLink parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
@@ -328,12 +291,17 @@ public final class TypeLink extends
     return PARSER.parseFrom(input, extensionRegistry);
   }
 
-  public static Builder newBuilder() { return Builder.create(); }
   public Builder newBuilderForType() { return newBuilder(); }
-  public static Builder newBuilder(com.github.jsdossier.proto.TypeLink prototype) {
-    return newBuilder().mergeFrom(prototype);
+  public static Builder newBuilder() {
+    return DEFAULT_INSTANCE.toBuilder();
   }
-  public Builder toBuilder() { return newBuilder(this); }
+  public static Builder newBuilder(com.github.jsdossier.proto.TypeLink prototype) {
+    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+  }
+  public Builder toBuilder() {
+    return this == DEFAULT_INSTANCE
+        ? new Builder() : new Builder().mergeFrom(this);
+  }
 
   @java.lang.Override
   protected Builder newBuilderForType(
@@ -378,10 +346,6 @@ public final class TypeLink extends
       if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
       }
     }
-    private static Builder create() {
-      return new Builder();
-    }
-
     public Builder clear() {
       super.clear();
       text_ = "";
@@ -389,10 +353,6 @@ public final class TypeLink extends
       href_ = "";
       bitField0_ = (bitField0_ & ~0x00000002);
       return this;
-    }
-
-    public Builder clone() {
-      return create().mergeFrom(buildPartial());
     }
 
     public com.google.protobuf.Descriptors.Descriptor
@@ -450,13 +410,13 @@ public final class TypeLink extends
         href_ = other.href_;
         onChanged();
       }
-      this.mergeUnknownFields(other.getUnknownFields());
+      this.mergeUnknownFields(other.unknownFields);
+      onChanged();
       return this;
     }
 
     public final boolean isInitialized() {
       if (!hasText()) {
-        
         return false;
       }
       return true;
@@ -684,11 +644,47 @@ public final class TypeLink extends
     // @@protoc_insertion_point(builder_scope:dossier.TypeLink)
   }
 
+  // @@protoc_insertion_point(class_scope:dossier.TypeLink)
+  private static final com.github.jsdossier.proto.TypeLink DEFAULT_INSTANCE;
   static {
-    defaultInstance = new TypeLink(true);
-    defaultInstance.initFields();
+    DEFAULT_INSTANCE = new com.github.jsdossier.proto.TypeLink();
   }
 
-  // @@protoc_insertion_point(class_scope:dossier.TypeLink)
+  public static com.github.jsdossier.proto.TypeLink getDefaultInstance() {
+    return DEFAULT_INSTANCE;
+  }
+
+  @java.lang.Deprecated public static final com.google.protobuf.Parser<TypeLink>
+      PARSER = new com.google.protobuf.AbstractParser<TypeLink>() {
+    public TypeLink parsePartialFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      try {
+        return new TypeLink(input, extensionRegistry);
+      } catch (RuntimeException e) {
+        if (e.getCause() instanceof
+            com.google.protobuf.InvalidProtocolBufferException) {
+          throw (com.google.protobuf.InvalidProtocolBufferException)
+              e.getCause();
+        }
+        throw e;
+      }
+    }
+  };
+
+  public static com.google.protobuf.Parser<TypeLink> parser() {
+    return PARSER;
+  }
+
+  @java.lang.Override
+  public com.google.protobuf.Parser<TypeLink> getParserForType() {
+    return PARSER;
+  }
+
+  public com.github.jsdossier.proto.TypeLink getDefaultInstanceForType() {
+    return DEFAULT_INSTANCE;
+  }
+
 }
 

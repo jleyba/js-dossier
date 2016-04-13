@@ -41,7 +41,9 @@ public final class TestProto {
     public static final int GREEN_VALUE = 2;
 
 
-    public final int getNumber() { return value; }
+    public final int getNumber() {
+      return value;
+    }
 
     public static Color valueOf(int value) {
       switch (value) {
@@ -56,8 +58,8 @@ public final class TestProto {
         internalGetValueMap() {
       return internalValueMap;
     }
-    private static com.google.protobuf.Internal.EnumLiteMap<Color>
-        internalValueMap =
+    private static final com.google.protobuf.Internal.EnumLiteMap<
+        Color> internalValueMap =
           new com.google.protobuf.Internal.EnumLiteMap<Color>() {
             public Color findValueByNumber(int number) {
               return Color.valueOf(number);
@@ -132,7 +134,9 @@ public final class TestProto {
     public static final int ORANGE_VALUE = 2;
 
 
-    public final int getNumber() { return value; }
+    public final int getNumber() {
+      return value;
+    }
 
     public static Fruit valueOf(int value) {
       switch (value) {
@@ -147,8 +151,8 @@ public final class TestProto {
         internalGetValueMap() {
       return internalValueMap;
     }
-    private static com.google.protobuf.Internal.EnumLiteMap<Fruit>
-        internalValueMap =
+    private static final com.google.protobuf.Internal.EnumLiteMap<
+        Fruit> internalValueMap =
           new com.google.protobuf.Internal.EnumLiteMap<Fruit>() {
             public Fruit findValueByNumber(int number) {
               return Fruit.valueOf(number);
@@ -287,37 +291,34 @@ public final class TestProto {
   /**
    * Protobuf type {@code test.Order}
    */
-  public static final class Order extends
+  public  static final class Order extends
       com.google.protobuf.GeneratedMessage implements
       // @@protoc_insertion_point(message_implements:test.Order)
       OrderOrBuilder {
     // Use Order.newBuilder() to construct.
     private Order(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
-      this.unknownFields = builder.getUnknownFields();
     }
-    private Order(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
-
-    private static final Order defaultInstance;
-    public static Order getDefaultInstance() {
-      return defaultInstance;
+    private Order() {
+      boolField_ = false;
+      intField_ = 0;
+      stringField_ = "";
+      fruit_ = 0;
+      color_ = 0;
+      repeatedInt_ = java.util.Collections.emptyList();
+      repeatedColor_ = java.util.Collections.emptyList();
+      htmlField_ = "";
     }
 
-    public Order getDefaultInstanceForType() {
-      return defaultInstance;
-    }
-
-    private final com.google.protobuf.UnknownFieldSet unknownFields;
     @java.lang.Override
     public final com.google.protobuf.UnknownFieldSet
-        getUnknownFields() {
+    getUnknownFields() {
       return this.unknownFields;
     }
     private Order(
         com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      initFields();
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
+      this();
       int mutable_bitField0_ = 0;
       com.google.protobuf.UnknownFieldSet.Builder unknownFields =
           com.google.protobuf.UnknownFieldSet.newBuilder();
@@ -359,7 +360,7 @@ public final class TestProto {
                 unknownFields.mergeVarintField(4, rawValue);
               } else {
                 bitField0_ |= 0x00000008;
-                fruit_ = value;
+                fruit_ = rawValue;
               }
               break;
             }
@@ -370,7 +371,7 @@ public final class TestProto {
                 unknownFields.mergeVarintField(5, rawValue);
               } else {
                 bitField0_ |= 0x00000010;
-                color_ = value;
+                color_ = rawValue;
               }
               break;
             }
@@ -400,12 +401,12 @@ public final class TestProto {
               com.github.jsdossier.soy.TestProto.Color value = com.github.jsdossier.soy.TestProto.Color.valueOf(rawValue);
               if (value == null) {
                 unknownFields.mergeVarintField(7, rawValue);
-                } else {
+              } else {
                 if (!((mutable_bitField0_ & 0x00000040) == 0x00000040)) {
-                  repeatedColor_ = new java.util.ArrayList<com.github.jsdossier.soy.TestProto.Color>();
+                  repeatedColor_ = new java.util.ArrayList<java.lang.Integer>();
                   mutable_bitField0_ |= 0x00000040;
                 }
-                repeatedColor_.add(value);
+                repeatedColor_.add(rawValue);
               }
               break;
             }
@@ -417,12 +418,12 @@ public final class TestProto {
                 com.github.jsdossier.soy.TestProto.Color value = com.github.jsdossier.soy.TestProto.Color.valueOf(rawValue);
                 if (value == null) {
                   unknownFields.mergeVarintField(7, rawValue);
-                  } else {
+                } else {
                   if (!((mutable_bitField0_ & 0x00000040) == 0x00000040)) {
-                    repeatedColor_ = new java.util.ArrayList<com.github.jsdossier.soy.TestProto.Color>();
+                    repeatedColor_ = new java.util.ArrayList<java.lang.Integer>();
                     mutable_bitField0_ |= 0x00000040;
                   }
-                  repeatedColor_.add(value);
+                  repeatedColor_.add(rawValue);
                 }
               }
               input.popLimit(oldLimit);
@@ -437,10 +438,11 @@ public final class TestProto {
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw e.setUnfinishedMessage(this);
+        throw new RuntimeException(e.setUnfinishedMessage(this));
       } catch (java.io.IOException e) {
-        throw new com.google.protobuf.InvalidProtocolBufferException(
-            e.getMessage()).setUnfinishedMessage(this);
+        throw new RuntimeException(
+            new com.google.protobuf.InvalidProtocolBufferException(
+                e.getMessage()).setUnfinishedMessage(this));
       } finally {
         if (((mutable_bitField0_ & 0x00000020) == 0x00000020)) {
           repeatedInt_ = java.util.Collections.unmodifiableList(repeatedInt_);
@@ -462,21 +464,6 @@ public final class TestProto {
       return com.github.jsdossier.soy.TestProto.internal_static_test_Order_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               com.github.jsdossier.soy.TestProto.Order.class, com.github.jsdossier.soy.TestProto.Order.Builder.class);
-    }
-
-    public static com.google.protobuf.Parser<Order> PARSER =
-        new com.google.protobuf.AbstractParser<Order>() {
-      public Order parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return new Order(input, extensionRegistry);
-      }
-    };
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<Order> getParserForType() {
-      return PARSER;
     }
 
     private int bitField0_;
@@ -511,7 +498,7 @@ public final class TestProto {
     }
 
     public static final int STRING_FIELD_FIELD_NUMBER = 3;
-    private java.lang.Object stringField_;
+    private volatile java.lang.Object stringField_;
     /**
      * <code>optional string string_field = 3;</code>
      */
@@ -553,7 +540,7 @@ public final class TestProto {
     }
 
     public static final int FRUIT_FIELD_NUMBER = 4;
-    private com.github.jsdossier.soy.TestProto.Fruit fruit_;
+    private int fruit_;
     /**
      * <code>optional .test.Fruit fruit = 4;</code>
      */
@@ -564,11 +551,12 @@ public final class TestProto {
      * <code>optional .test.Fruit fruit = 4;</code>
      */
     public com.github.jsdossier.soy.TestProto.Fruit getFruit() {
-      return fruit_;
+      com.github.jsdossier.soy.TestProto.Fruit result = com.github.jsdossier.soy.TestProto.Fruit.valueOf(fruit_);
+      return result == null ? com.github.jsdossier.soy.TestProto.Fruit.UNKNOWN : result;
     }
 
     public static final int COLOR_FIELD_NUMBER = 5;
-    private com.github.jsdossier.soy.TestProto.Color color_;
+    private int color_;
     /**
      * <code>optional .test.Color color = 5;</code>
      */
@@ -579,7 +567,8 @@ public final class TestProto {
      * <code>optional .test.Color color = 5;</code>
      */
     public com.github.jsdossier.soy.TestProto.Color getColor() {
-      return color_;
+      com.github.jsdossier.soy.TestProto.Color result = com.github.jsdossier.soy.TestProto.Color.valueOf(color_);
+      return result == null ? com.github.jsdossier.soy.TestProto.Color.RED : result;
     }
 
     public static final int REPEATED_INT_FIELD_NUMBER = 6;
@@ -605,12 +594,22 @@ public final class TestProto {
     }
 
     public static final int REPEATED_COLOR_FIELD_NUMBER = 7;
-    private java.util.List<com.github.jsdossier.soy.TestProto.Color> repeatedColor_;
+    private java.util.List<java.lang.Integer> repeatedColor_;
+    private static final com.google.protobuf.Internal.ListAdapter.Converter<
+        java.lang.Integer, com.github.jsdossier.soy.TestProto.Color> repeatedColor_converter_ =
+            new com.google.protobuf.Internal.ListAdapter.Converter<
+                java.lang.Integer, com.github.jsdossier.soy.TestProto.Color>() {
+              public com.github.jsdossier.soy.TestProto.Color convert(java.lang.Integer from) {
+                com.github.jsdossier.soy.TestProto.Color result = com.github.jsdossier.soy.TestProto.Color.valueOf(from);
+                return result == null ? com.github.jsdossier.soy.TestProto.Color.RED : result;
+              }
+            };
     /**
      * <code>repeated .test.Color repeated_color = 7;</code>
      */
     public java.util.List<com.github.jsdossier.soy.TestProto.Color> getRepeatedColorList() {
-      return repeatedColor_;
+      return new com.google.protobuf.Internal.ListAdapter<
+          java.lang.Integer, com.github.jsdossier.soy.TestProto.Color>(repeatedColor_, repeatedColor_converter_);
     }
     /**
      * <code>repeated .test.Color repeated_color = 7;</code>
@@ -622,11 +621,11 @@ public final class TestProto {
      * <code>repeated .test.Color repeated_color = 7;</code>
      */
     public com.github.jsdossier.soy.TestProto.Color getRepeatedColor(int index) {
-      return repeatedColor_.get(index);
+      return repeatedColor_converter_.convert(repeatedColor_.get(index));
     }
 
     public static final int HTML_FIELD_FIELD_NUMBER = 8;
-    private java.lang.Object htmlField_;
+    private volatile java.lang.Object htmlField_;
     /**
      * <code>optional string html_field = 8;</code>
      */
@@ -667,16 +666,6 @@ public final class TestProto {
       }
     }
 
-    private void initFields() {
-      boolField_ = false;
-      intField_ = 0;
-      stringField_ = "";
-      fruit_ = com.github.jsdossier.soy.TestProto.Fruit.UNKNOWN;
-      color_ = com.github.jsdossier.soy.TestProto.Color.RED;
-      repeatedInt_ = java.util.Collections.emptyList();
-      repeatedColor_ = java.util.Collections.emptyList();
-      htmlField_ = "";
-    }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -689,7 +678,6 @@ public final class TestProto {
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      getSerializedSize();
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         output.writeBool(1, boolField_);
       }
@@ -697,29 +685,28 @@ public final class TestProto {
         output.writeInt32(2, intField_);
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        output.writeBytes(3, getStringFieldBytes());
+        com.google.protobuf.GeneratedMessage.writeString(output, 3, stringField_);
       }
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        output.writeEnum(4, fruit_.getNumber());
+        output.writeEnum(4, fruit_);
       }
       if (((bitField0_ & 0x00000010) == 0x00000010)) {
-        output.writeEnum(5, color_.getNumber());
+        output.writeEnum(5, color_);
       }
       for (int i = 0; i < repeatedInt_.size(); i++) {
         output.writeInt32(6, repeatedInt_.get(i));
       }
       for (int i = 0; i < repeatedColor_.size(); i++) {
-        output.writeEnum(7, repeatedColor_.get(i).getNumber());
+        output.writeEnum(7, repeatedColor_.get(i));
       }
       if (((bitField0_ & 0x00000020) == 0x00000020)) {
-        output.writeBytes(8, getHtmlFieldBytes());
+        com.google.protobuf.GeneratedMessage.writeString(output, 8, htmlField_);
       }
-      getUnknownFields().writeTo(output);
+      unknownFields.writeTo(output);
     }
 
-    private int memoizedSerializedSize = -1;
     public int getSerializedSize() {
-      int size = memoizedSerializedSize;
+      int size = memoizedSize;
       if (size != -1) return size;
 
       size = 0;
@@ -732,16 +719,15 @@ public final class TestProto {
           .computeInt32Size(2, intField_);
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(3, getStringFieldBytes());
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(3, stringField_);
       }
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeEnumSize(4, fruit_.getNumber());
+          .computeEnumSize(4, fruit_);
       }
       if (((bitField0_ & 0x00000010) == 0x00000010)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeEnumSize(5, color_.getNumber());
+          .computeEnumSize(5, color_);
       }
       {
         int dataSize = 0;
@@ -756,27 +742,20 @@ public final class TestProto {
         int dataSize = 0;
         for (int i = 0; i < repeatedColor_.size(); i++) {
           dataSize += com.google.protobuf.CodedOutputStream
-            .computeEnumSizeNoTag(repeatedColor_.get(i).getNumber());
+            .computeEnumSizeNoTag(repeatedColor_.get(i));
         }
         size += dataSize;
         size += 1 * repeatedColor_.size();
       }
       if (((bitField0_ & 0x00000020) == 0x00000020)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(8, getHtmlFieldBytes());
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(8, htmlField_);
       }
-      size += getUnknownFields().getSerializedSize();
-      memoizedSerializedSize = size;
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
       return size;
     }
 
     private static final long serialVersionUID = 0L;
-    @java.lang.Override
-    protected java.lang.Object writeReplace()
-        throws java.io.ObjectStreamException {
-      return super.writeReplace();
-    }
-
     public static com.github.jsdossier.soy.TestProto.Order parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -830,12 +809,17 @@ public final class TestProto {
       return PARSER.parseFrom(input, extensionRegistry);
     }
 
-    public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder(com.github.jsdossier.soy.TestProto.Order prototype) {
-      return newBuilder().mergeFrom(prototype);
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
     }
-    public Builder toBuilder() { return newBuilder(this); }
+    public static Builder newBuilder(com.github.jsdossier.soy.TestProto.Order prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
 
     @java.lang.Override
     protected Builder newBuilderForType(
@@ -876,10 +860,6 @@ public final class TestProto {
         if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
         }
       }
-      private static Builder create() {
-        return new Builder();
-      }
-
       public Builder clear() {
         super.clear();
         boolField_ = false;
@@ -888,9 +868,9 @@ public final class TestProto {
         bitField0_ = (bitField0_ & ~0x00000002);
         stringField_ = "";
         bitField0_ = (bitField0_ & ~0x00000004);
-        fruit_ = com.github.jsdossier.soy.TestProto.Fruit.UNKNOWN;
+        fruit_ = 0;
         bitField0_ = (bitField0_ & ~0x00000008);
-        color_ = com.github.jsdossier.soy.TestProto.Color.RED;
+        color_ = 0;
         bitField0_ = (bitField0_ & ~0x00000010);
         repeatedInt_ = java.util.Collections.emptyList();
         bitField0_ = (bitField0_ & ~0x00000020);
@@ -899,10 +879,6 @@ public final class TestProto {
         htmlField_ = "";
         bitField0_ = (bitField0_ & ~0x00000080);
         return this;
-      }
-
-      public Builder clone() {
-        return create().mergeFrom(buildPartial());
       }
 
       public com.google.protobuf.Descriptors.Descriptor
@@ -1018,7 +994,8 @@ public final class TestProto {
           htmlField_ = other.htmlField_;
           onChanged();
         }
-        this.mergeUnknownFields(other.getUnknownFields());
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
         return this;
       }
 
@@ -1185,7 +1162,7 @@ public final class TestProto {
         return this;
       }
 
-      private com.github.jsdossier.soy.TestProto.Fruit fruit_ = com.github.jsdossier.soy.TestProto.Fruit.UNKNOWN;
+      private int fruit_ = 0;
       /**
        * <code>optional .test.Fruit fruit = 4;</code>
        */
@@ -1196,7 +1173,8 @@ public final class TestProto {
        * <code>optional .test.Fruit fruit = 4;</code>
        */
       public com.github.jsdossier.soy.TestProto.Fruit getFruit() {
-        return fruit_;
+        com.github.jsdossier.soy.TestProto.Fruit result = com.github.jsdossier.soy.TestProto.Fruit.valueOf(fruit_);
+        return result == null ? com.github.jsdossier.soy.TestProto.Fruit.UNKNOWN : result;
       }
       /**
        * <code>optional .test.Fruit fruit = 4;</code>
@@ -1206,7 +1184,7 @@ public final class TestProto {
           throw new NullPointerException();
         }
         bitField0_ |= 0x00000008;
-        fruit_ = value;
+        fruit_ = value.getNumber();
         onChanged();
         return this;
       }
@@ -1215,12 +1193,12 @@ public final class TestProto {
        */
       public Builder clearFruit() {
         bitField0_ = (bitField0_ & ~0x00000008);
-        fruit_ = com.github.jsdossier.soy.TestProto.Fruit.UNKNOWN;
+        fruit_ = 0;
         onChanged();
         return this;
       }
 
-      private com.github.jsdossier.soy.TestProto.Color color_ = com.github.jsdossier.soy.TestProto.Color.RED;
+      private int color_ = 0;
       /**
        * <code>optional .test.Color color = 5;</code>
        */
@@ -1231,7 +1209,8 @@ public final class TestProto {
        * <code>optional .test.Color color = 5;</code>
        */
       public com.github.jsdossier.soy.TestProto.Color getColor() {
-        return color_;
+        com.github.jsdossier.soy.TestProto.Color result = com.github.jsdossier.soy.TestProto.Color.valueOf(color_);
+        return result == null ? com.github.jsdossier.soy.TestProto.Color.RED : result;
       }
       /**
        * <code>optional .test.Color color = 5;</code>
@@ -1241,7 +1220,7 @@ public final class TestProto {
           throw new NullPointerException();
         }
         bitField0_ |= 0x00000010;
-        color_ = value;
+        color_ = value.getNumber();
         onChanged();
         return this;
       }
@@ -1250,7 +1229,7 @@ public final class TestProto {
        */
       public Builder clearColor() {
         bitField0_ = (bitField0_ & ~0x00000010);
-        color_ = com.github.jsdossier.soy.TestProto.Color.RED;
+        color_ = 0;
         onChanged();
         return this;
       }
@@ -1321,11 +1300,11 @@ public final class TestProto {
         return this;
       }
 
-      private java.util.List<com.github.jsdossier.soy.TestProto.Color> repeatedColor_ =
+      private java.util.List<java.lang.Integer> repeatedColor_ =
         java.util.Collections.emptyList();
       private void ensureRepeatedColorIsMutable() {
         if (!((bitField0_ & 0x00000040) == 0x00000040)) {
-          repeatedColor_ = new java.util.ArrayList<com.github.jsdossier.soy.TestProto.Color>(repeatedColor_);
+          repeatedColor_ = new java.util.ArrayList<java.lang.Integer>(repeatedColor_);
           bitField0_ |= 0x00000040;
         }
       }
@@ -1333,7 +1312,8 @@ public final class TestProto {
        * <code>repeated .test.Color repeated_color = 7;</code>
        */
       public java.util.List<com.github.jsdossier.soy.TestProto.Color> getRepeatedColorList() {
-        return java.util.Collections.unmodifiableList(repeatedColor_);
+        return new com.google.protobuf.Internal.ListAdapter<
+            java.lang.Integer, com.github.jsdossier.soy.TestProto.Color>(repeatedColor_, repeatedColor_converter_);
       }
       /**
        * <code>repeated .test.Color repeated_color = 7;</code>
@@ -1345,7 +1325,7 @@ public final class TestProto {
        * <code>repeated .test.Color repeated_color = 7;</code>
        */
       public com.github.jsdossier.soy.TestProto.Color getRepeatedColor(int index) {
-        return repeatedColor_.get(index);
+        return repeatedColor_converter_.convert(repeatedColor_.get(index));
       }
       /**
        * <code>repeated .test.Color repeated_color = 7;</code>
@@ -1356,7 +1336,7 @@ public final class TestProto {
           throw new NullPointerException();
         }
         ensureRepeatedColorIsMutable();
-        repeatedColor_.set(index, value);
+        repeatedColor_.set(index, value.getNumber());
         onChanged();
         return this;
       }
@@ -1368,7 +1348,7 @@ public final class TestProto {
           throw new NullPointerException();
         }
         ensureRepeatedColorIsMutable();
-        repeatedColor_.add(value);
+        repeatedColor_.add(value.getNumber());
         onChanged();
         return this;
       }
@@ -1378,8 +1358,9 @@ public final class TestProto {
       public Builder addAllRepeatedColor(
           java.lang.Iterable<? extends com.github.jsdossier.soy.TestProto.Color> values) {
         ensureRepeatedColorIsMutable();
-        com.google.protobuf.AbstractMessageLite.Builder.addAll(
-            values, repeatedColor_);
+        for (com.github.jsdossier.soy.TestProto.Color value : values) {
+          repeatedColor_.add(value.getNumber());
+        }
         onChanged();
         return this;
       }
@@ -1472,12 +1453,48 @@ public final class TestProto {
       // @@protoc_insertion_point(builder_scope:test.Order)
     }
 
+    // @@protoc_insertion_point(class_scope:test.Order)
+    private static final com.github.jsdossier.soy.TestProto.Order DEFAULT_INSTANCE;
     static {
-      defaultInstance = new Order(true);
-      defaultInstance.initFields();
+      DEFAULT_INSTANCE = new com.github.jsdossier.soy.TestProto.Order();
     }
 
-    // @@protoc_insertion_point(class_scope:test.Order)
+    public static com.github.jsdossier.soy.TestProto.Order getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    @java.lang.Deprecated public static final com.google.protobuf.Parser<Order>
+        PARSER = new com.google.protobuf.AbstractParser<Order>() {
+      public Order parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        try {
+          return new Order(input, extensionRegistry);
+        } catch (RuntimeException e) {
+          if (e.getCause() instanceof
+              com.google.protobuf.InvalidProtocolBufferException) {
+            throw (com.google.protobuf.InvalidProtocolBufferException)
+                e.getCause();
+          }
+          throw e;
+        }
+      }
+    };
+
+    public static com.google.protobuf.Parser<Order> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<Order> getParserForType() {
+      return PARSER;
+    }
+
+    public com.github.jsdossier.soy.TestProto.Order getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
   }
 
   public interface TopOrBuilder extends
@@ -1533,37 +1550,28 @@ public final class TestProto {
   /**
    * Protobuf type {@code test.Top}
    */
-  public static final class Top extends
+  public  static final class Top extends
       com.google.protobuf.GeneratedMessage implements
       // @@protoc_insertion_point(message_implements:test.Top)
       TopOrBuilder {
     // Use Top.newBuilder() to construct.
     private Top(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
-      this.unknownFields = builder.getUnknownFields();
     }
-    private Top(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
-
-    private static final Top defaultInstance;
-    public static Top getDefaultInstance() {
-      return defaultInstance;
+    private Top() {
+      nestedEnum_ = 0;
+      order_ = java.util.Collections.emptyList();
     }
 
-    public Top getDefaultInstanceForType() {
-      return defaultInstance;
-    }
-
-    private final com.google.protobuf.UnknownFieldSet unknownFields;
     @java.lang.Override
     public final com.google.protobuf.UnknownFieldSet
-        getUnknownFields() {
+    getUnknownFields() {
       return this.unknownFields;
     }
     private Top(
         com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      initFields();
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
+      this();
       int mutable_bitField0_ = 0;
       com.google.protobuf.UnknownFieldSet.Builder unknownFields =
           com.google.protobuf.UnknownFieldSet.newBuilder();
@@ -1589,7 +1597,7 @@ public final class TestProto {
                 unknownFields.mergeVarintField(1, rawValue);
               } else {
                 bitField0_ |= 0x00000001;
-                nestedEnum_ = value;
+                nestedEnum_ = rawValue;
               }
               break;
             }
@@ -1598,7 +1606,7 @@ public final class TestProto {
                 order_ = new java.util.ArrayList<com.github.jsdossier.soy.TestProto.Order>();
                 mutable_bitField0_ |= 0x00000002;
               }
-              order_.add(input.readMessage(com.github.jsdossier.soy.TestProto.Order.PARSER, extensionRegistry));
+              order_.add(input.readMessage(com.github.jsdossier.soy.TestProto.Order.parser(), extensionRegistry));
               break;
             }
             case 26: {
@@ -1606,7 +1614,7 @@ public final class TestProto {
               if (((bitField0_ & 0x00000002) == 0x00000002)) {
                 subBuilder = nestedMessage_.toBuilder();
               }
-              nestedMessage_ = input.readMessage(com.github.jsdossier.soy.TestProto.Top.NestedMessage.PARSER, extensionRegistry);
+              nestedMessage_ = input.readMessage(com.github.jsdossier.soy.TestProto.Top.NestedMessage.parser(), extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(nestedMessage_);
                 nestedMessage_ = subBuilder.buildPartial();
@@ -1617,10 +1625,11 @@ public final class TestProto {
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw e.setUnfinishedMessage(this);
+        throw new RuntimeException(e.setUnfinishedMessage(this));
       } catch (java.io.IOException e) {
-        throw new com.google.protobuf.InvalidProtocolBufferException(
-            e.getMessage()).setUnfinishedMessage(this);
+        throw new RuntimeException(
+            new com.google.protobuf.InvalidProtocolBufferException(
+                e.getMessage()).setUnfinishedMessage(this));
       } finally {
         if (((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
           order_ = java.util.Collections.unmodifiableList(order_);
@@ -1641,21 +1650,6 @@ public final class TestProto {
               com.github.jsdossier.soy.TestProto.Top.class, com.github.jsdossier.soy.TestProto.Top.Builder.class);
     }
 
-    public static com.google.protobuf.Parser<Top> PARSER =
-        new com.google.protobuf.AbstractParser<Top>() {
-      public Top parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return new Top(input, extensionRegistry);
-      }
-    };
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<Top> getParserForType() {
-      return PARSER;
-    }
-
     /**
      * Protobuf enum {@code test.Top.NestedEnum}
      */
@@ -1673,7 +1667,9 @@ public final class TestProto {
       public static final int VALUE_VALUE = 0;
 
 
-      public final int getNumber() { return value; }
+      public final int getNumber() {
+        return value;
+      }
 
       public static NestedEnum valueOf(int value) {
         switch (value) {
@@ -1686,8 +1682,8 @@ public final class TestProto {
           internalGetValueMap() {
         return internalValueMap;
       }
-      private static com.google.protobuf.Internal.EnumLiteMap<NestedEnum>
-          internalValueMap =
+      private static final com.google.protobuf.Internal.EnumLiteMap<
+          NestedEnum> internalValueMap =
             new com.google.protobuf.Internal.EnumLiteMap<NestedEnum>() {
               public NestedEnum findValueByNumber(int number) {
                 return NestedEnum.valueOf(number);
@@ -1745,37 +1741,27 @@ public final class TestProto {
     /**
      * Protobuf type {@code test.Top.NestedMessage}
      */
-    public static final class NestedMessage extends
+    public  static final class NestedMessage extends
         com.google.protobuf.GeneratedMessage implements
         // @@protoc_insertion_point(message_implements:test.Top.NestedMessage)
         NestedMessageOrBuilder {
       // Use NestedMessage.newBuilder() to construct.
       private NestedMessage(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
         super(builder);
-        this.unknownFields = builder.getUnknownFields();
       }
-      private NestedMessage(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
-
-      private static final NestedMessage defaultInstance;
-      public static NestedMessage getDefaultInstance() {
-        return defaultInstance;
+      private NestedMessage() {
+        item_ = false;
       }
 
-      public NestedMessage getDefaultInstanceForType() {
-        return defaultInstance;
-      }
-
-      private final com.google.protobuf.UnknownFieldSet unknownFields;
       @java.lang.Override
       public final com.google.protobuf.UnknownFieldSet
-          getUnknownFields() {
+      getUnknownFields() {
         return this.unknownFields;
       }
       private NestedMessage(
           com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        initFields();
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
+        this();
         int mutable_bitField0_ = 0;
         com.google.protobuf.UnknownFieldSet.Builder unknownFields =
             com.google.protobuf.UnknownFieldSet.newBuilder();
@@ -1802,10 +1788,11 @@ public final class TestProto {
             }
           }
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          throw e.setUnfinishedMessage(this);
+          throw new RuntimeException(e.setUnfinishedMessage(this));
         } catch (java.io.IOException e) {
-          throw new com.google.protobuf.InvalidProtocolBufferException(
-              e.getMessage()).setUnfinishedMessage(this);
+          throw new RuntimeException(
+              new com.google.protobuf.InvalidProtocolBufferException(
+                  e.getMessage()).setUnfinishedMessage(this));
         } finally {
           this.unknownFields = unknownFields.build();
           makeExtensionsImmutable();
@@ -1821,21 +1808,6 @@ public final class TestProto {
         return com.github.jsdossier.soy.TestProto.internal_static_test_Top_NestedMessage_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 com.github.jsdossier.soy.TestProto.Top.NestedMessage.class, com.github.jsdossier.soy.TestProto.Top.NestedMessage.Builder.class);
-      }
-
-      public static com.google.protobuf.Parser<NestedMessage> PARSER =
-          new com.google.protobuf.AbstractParser<NestedMessage>() {
-        public NestedMessage parsePartialFrom(
-            com.google.protobuf.CodedInputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws com.google.protobuf.InvalidProtocolBufferException {
-          return new NestedMessage(input, extensionRegistry);
-        }
-      };
-
-      @java.lang.Override
-      public com.google.protobuf.Parser<NestedMessage> getParserForType() {
-        return PARSER;
       }
 
       private int bitField0_;
@@ -1854,9 +1826,6 @@ public final class TestProto {
         return item_;
       }
 
-      private void initFields() {
-        item_ = false;
-      }
       private byte memoizedIsInitialized = -1;
       public final boolean isInitialized() {
         byte isInitialized = memoizedIsInitialized;
@@ -1869,16 +1838,14 @@ public final class TestProto {
 
       public void writeTo(com.google.protobuf.CodedOutputStream output)
                           throws java.io.IOException {
-        getSerializedSize();
         if (((bitField0_ & 0x00000001) == 0x00000001)) {
           output.writeBool(1, item_);
         }
-        getUnknownFields().writeTo(output);
+        unknownFields.writeTo(output);
       }
 
-      private int memoizedSerializedSize = -1;
       public int getSerializedSize() {
-        int size = memoizedSerializedSize;
+        int size = memoizedSize;
         if (size != -1) return size;
 
         size = 0;
@@ -1886,18 +1853,12 @@ public final class TestProto {
           size += com.google.protobuf.CodedOutputStream
             .computeBoolSize(1, item_);
         }
-        size += getUnknownFields().getSerializedSize();
-        memoizedSerializedSize = size;
+        size += unknownFields.getSerializedSize();
+        memoizedSize = size;
         return size;
       }
 
       private static final long serialVersionUID = 0L;
-      @java.lang.Override
-      protected java.lang.Object writeReplace()
-          throws java.io.ObjectStreamException {
-        return super.writeReplace();
-      }
-
       public static com.github.jsdossier.soy.TestProto.Top.NestedMessage parseFrom(
           com.google.protobuf.ByteString data)
           throws com.google.protobuf.InvalidProtocolBufferException {
@@ -1951,12 +1912,17 @@ public final class TestProto {
         return PARSER.parseFrom(input, extensionRegistry);
       }
 
-      public static Builder newBuilder() { return Builder.create(); }
       public Builder newBuilderForType() { return newBuilder(); }
-      public static Builder newBuilder(com.github.jsdossier.soy.TestProto.Top.NestedMessage prototype) {
-        return newBuilder().mergeFrom(prototype);
+      public static Builder newBuilder() {
+        return DEFAULT_INSTANCE.toBuilder();
       }
-      public Builder toBuilder() { return newBuilder(this); }
+      public static Builder newBuilder(com.github.jsdossier.soy.TestProto.Top.NestedMessage prototype) {
+        return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+      }
+      public Builder toBuilder() {
+        return this == DEFAULT_INSTANCE
+            ? new Builder() : new Builder().mergeFrom(this);
+      }
 
       @java.lang.Override
       protected Builder newBuilderForType(
@@ -1997,19 +1963,11 @@ public final class TestProto {
           if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
           }
         }
-        private static Builder create() {
-          return new Builder();
-        }
-
         public Builder clear() {
           super.clear();
           item_ = false;
           bitField0_ = (bitField0_ & ~0x00000001);
           return this;
-        }
-
-        public Builder clone() {
-          return create().mergeFrom(buildPartial());
         }
 
         public com.google.protobuf.Descriptors.Descriptor
@@ -2056,7 +2014,8 @@ public final class TestProto {
           if (other.hasItem()) {
             setItem(other.getItem());
           }
-          this.mergeUnknownFields(other.getUnknownFields());
+          this.mergeUnknownFields(other.unknownFields);
+          onChanged();
           return this;
         }
 
@@ -2118,17 +2077,53 @@ public final class TestProto {
         // @@protoc_insertion_point(builder_scope:test.Top.NestedMessage)
       }
 
+      // @@protoc_insertion_point(class_scope:test.Top.NestedMessage)
+      private static final com.github.jsdossier.soy.TestProto.Top.NestedMessage DEFAULT_INSTANCE;
       static {
-        defaultInstance = new NestedMessage(true);
-        defaultInstance.initFields();
+        DEFAULT_INSTANCE = new com.github.jsdossier.soy.TestProto.Top.NestedMessage();
       }
 
-      // @@protoc_insertion_point(class_scope:test.Top.NestedMessage)
+      public static com.github.jsdossier.soy.TestProto.Top.NestedMessage getDefaultInstance() {
+        return DEFAULT_INSTANCE;
+      }
+
+      @java.lang.Deprecated public static final com.google.protobuf.Parser<NestedMessage>
+          PARSER = new com.google.protobuf.AbstractParser<NestedMessage>() {
+        public NestedMessage parsePartialFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          try {
+            return new NestedMessage(input, extensionRegistry);
+          } catch (RuntimeException e) {
+            if (e.getCause() instanceof
+                com.google.protobuf.InvalidProtocolBufferException) {
+              throw (com.google.protobuf.InvalidProtocolBufferException)
+                  e.getCause();
+            }
+            throw e;
+          }
+        }
+      };
+
+      public static com.google.protobuf.Parser<NestedMessage> parser() {
+        return PARSER;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Parser<NestedMessage> getParserForType() {
+        return PARSER;
+      }
+
+      public com.github.jsdossier.soy.TestProto.Top.NestedMessage getDefaultInstanceForType() {
+        return DEFAULT_INSTANCE;
+      }
+
     }
 
     private int bitField0_;
     public static final int NESTED_ENUM_FIELD_NUMBER = 1;
-    private com.github.jsdossier.soy.TestProto.Top.NestedEnum nestedEnum_;
+    private int nestedEnum_;
     /**
      * <code>optional .test.Top.NestedEnum nested_enum = 1;</code>
      */
@@ -2139,7 +2134,8 @@ public final class TestProto {
      * <code>optional .test.Top.NestedEnum nested_enum = 1;</code>
      */
     public com.github.jsdossier.soy.TestProto.Top.NestedEnum getNestedEnum() {
-      return nestedEnum_;
+      com.github.jsdossier.soy.TestProto.Top.NestedEnum result = com.github.jsdossier.soy.TestProto.Top.NestedEnum.valueOf(nestedEnum_);
+      return result == null ? com.github.jsdossier.soy.TestProto.Top.NestedEnum.VALUE : result;
     }
 
     public static final int ORDER_FIELD_NUMBER = 2;
@@ -2189,20 +2185,15 @@ public final class TestProto {
      * <code>optional .test.Top.NestedMessage nested_message = 3;</code>
      */
     public com.github.jsdossier.soy.TestProto.Top.NestedMessage getNestedMessage() {
-      return nestedMessage_;
+      return nestedMessage_ == null ? com.github.jsdossier.soy.TestProto.Top.NestedMessage.getDefaultInstance() : nestedMessage_;
     }
     /**
      * <code>optional .test.Top.NestedMessage nested_message = 3;</code>
      */
     public com.github.jsdossier.soy.TestProto.Top.NestedMessageOrBuilder getNestedMessageOrBuilder() {
-      return nestedMessage_;
+      return nestedMessage_ == null ? com.github.jsdossier.soy.TestProto.Top.NestedMessage.getDefaultInstance() : nestedMessage_;
     }
 
-    private void initFields() {
-      nestedEnum_ = com.github.jsdossier.soy.TestProto.Top.NestedEnum.VALUE;
-      order_ = java.util.Collections.emptyList();
-      nestedMessage_ = com.github.jsdossier.soy.TestProto.Top.NestedMessage.getDefaultInstance();
-    }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -2215,28 +2206,26 @@ public final class TestProto {
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      getSerializedSize();
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        output.writeEnum(1, nestedEnum_.getNumber());
+        output.writeEnum(1, nestedEnum_);
       }
       for (int i = 0; i < order_.size(); i++) {
         output.writeMessage(2, order_.get(i));
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        output.writeMessage(3, nestedMessage_);
+        output.writeMessage(3, getNestedMessage());
       }
-      getUnknownFields().writeTo(output);
+      unknownFields.writeTo(output);
     }
 
-    private int memoizedSerializedSize = -1;
     public int getSerializedSize() {
-      int size = memoizedSerializedSize;
+      int size = memoizedSize;
       if (size != -1) return size;
 
       size = 0;
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeEnumSize(1, nestedEnum_.getNumber());
+          .computeEnumSize(1, nestedEnum_);
       }
       for (int i = 0; i < order_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
@@ -2244,20 +2233,14 @@ public final class TestProto {
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(3, nestedMessage_);
+          .computeMessageSize(3, getNestedMessage());
       }
-      size += getUnknownFields().getSerializedSize();
-      memoizedSerializedSize = size;
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
       return size;
     }
 
     private static final long serialVersionUID = 0L;
-    @java.lang.Override
-    protected java.lang.Object writeReplace()
-        throws java.io.ObjectStreamException {
-      return super.writeReplace();
-    }
-
     public static com.github.jsdossier.soy.TestProto.Top parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -2311,12 +2294,17 @@ public final class TestProto {
       return PARSER.parseFrom(input, extensionRegistry);
     }
 
-    public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder(com.github.jsdossier.soy.TestProto.Top prototype) {
-      return newBuilder().mergeFrom(prototype);
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
     }
-    public Builder toBuilder() { return newBuilder(this); }
+    public static Builder newBuilder(com.github.jsdossier.soy.TestProto.Top prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
 
     @java.lang.Override
     protected Builder newBuilderForType(
@@ -2359,13 +2347,9 @@ public final class TestProto {
           getNestedMessageFieldBuilder();
         }
       }
-      private static Builder create() {
-        return new Builder();
-      }
-
       public Builder clear() {
         super.clear();
-        nestedEnum_ = com.github.jsdossier.soy.TestProto.Top.NestedEnum.VALUE;
+        nestedEnum_ = 0;
         bitField0_ = (bitField0_ & ~0x00000001);
         if (orderBuilder_ == null) {
           order_ = java.util.Collections.emptyList();
@@ -2374,16 +2358,12 @@ public final class TestProto {
           orderBuilder_.clear();
         }
         if (nestedMessageBuilder_ == null) {
-          nestedMessage_ = com.github.jsdossier.soy.TestProto.Top.NestedMessage.getDefaultInstance();
+          nestedMessage_ = null;
         } else {
           nestedMessageBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000004);
         return this;
-      }
-
-      public Builder clone() {
-        return create().mergeFrom(buildPartial());
       }
 
       public com.google.protobuf.Descriptors.Descriptor
@@ -2476,7 +2456,8 @@ public final class TestProto {
         if (other.hasNestedMessage()) {
           mergeNestedMessage(other.getNestedMessage());
         }
-        this.mergeUnknownFields(other.getUnknownFields());
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
         return this;
       }
 
@@ -2503,7 +2484,7 @@ public final class TestProto {
       }
       private int bitField0_;
 
-      private com.github.jsdossier.soy.TestProto.Top.NestedEnum nestedEnum_ = com.github.jsdossier.soy.TestProto.Top.NestedEnum.VALUE;
+      private int nestedEnum_ = 0;
       /**
        * <code>optional .test.Top.NestedEnum nested_enum = 1;</code>
        */
@@ -2514,7 +2495,8 @@ public final class TestProto {
        * <code>optional .test.Top.NestedEnum nested_enum = 1;</code>
        */
       public com.github.jsdossier.soy.TestProto.Top.NestedEnum getNestedEnum() {
-        return nestedEnum_;
+        com.github.jsdossier.soy.TestProto.Top.NestedEnum result = com.github.jsdossier.soy.TestProto.Top.NestedEnum.valueOf(nestedEnum_);
+        return result == null ? com.github.jsdossier.soy.TestProto.Top.NestedEnum.VALUE : result;
       }
       /**
        * <code>optional .test.Top.NestedEnum nested_enum = 1;</code>
@@ -2524,7 +2506,7 @@ public final class TestProto {
           throw new NullPointerException();
         }
         bitField0_ |= 0x00000001;
-        nestedEnum_ = value;
+        nestedEnum_ = value.getNumber();
         onChanged();
         return this;
       }
@@ -2533,7 +2515,7 @@ public final class TestProto {
        */
       public Builder clearNestedEnum() {
         bitField0_ = (bitField0_ & ~0x00000001);
-        nestedEnum_ = com.github.jsdossier.soy.TestProto.Top.NestedEnum.VALUE;
+        nestedEnum_ = 0;
         onChanged();
         return this;
       }
@@ -2778,7 +2760,7 @@ public final class TestProto {
         return orderBuilder_;
       }
 
-      private com.github.jsdossier.soy.TestProto.Top.NestedMessage nestedMessage_ = com.github.jsdossier.soy.TestProto.Top.NestedMessage.getDefaultInstance();
+      private com.github.jsdossier.soy.TestProto.Top.NestedMessage nestedMessage_ = null;
       private com.google.protobuf.SingleFieldBuilder<
           com.github.jsdossier.soy.TestProto.Top.NestedMessage, com.github.jsdossier.soy.TestProto.Top.NestedMessage.Builder, com.github.jsdossier.soy.TestProto.Top.NestedMessageOrBuilder> nestedMessageBuilder_;
       /**
@@ -2792,7 +2774,7 @@ public final class TestProto {
        */
       public com.github.jsdossier.soy.TestProto.Top.NestedMessage getNestedMessage() {
         if (nestedMessageBuilder_ == null) {
-          return nestedMessage_;
+          return nestedMessage_ == null ? com.github.jsdossier.soy.TestProto.Top.NestedMessage.getDefaultInstance() : nestedMessage_;
         } else {
           return nestedMessageBuilder_.getMessage();
         }
@@ -2833,6 +2815,7 @@ public final class TestProto {
       public Builder mergeNestedMessage(com.github.jsdossier.soy.TestProto.Top.NestedMessage value) {
         if (nestedMessageBuilder_ == null) {
           if (((bitField0_ & 0x00000004) == 0x00000004) &&
+              nestedMessage_ != null &&
               nestedMessage_ != com.github.jsdossier.soy.TestProto.Top.NestedMessage.getDefaultInstance()) {
             nestedMessage_ =
               com.github.jsdossier.soy.TestProto.Top.NestedMessage.newBuilder(nestedMessage_).mergeFrom(value).buildPartial();
@@ -2851,7 +2834,7 @@ public final class TestProto {
        */
       public Builder clearNestedMessage() {
         if (nestedMessageBuilder_ == null) {
-          nestedMessage_ = com.github.jsdossier.soy.TestProto.Top.NestedMessage.getDefaultInstance();
+          nestedMessage_ = null;
           onChanged();
         } else {
           nestedMessageBuilder_.clear();
@@ -2874,7 +2857,8 @@ public final class TestProto {
         if (nestedMessageBuilder_ != null) {
           return nestedMessageBuilder_.getMessageOrBuilder();
         } else {
-          return nestedMessage_;
+          return nestedMessage_ == null ?
+              com.github.jsdossier.soy.TestProto.Top.NestedMessage.getDefaultInstance() : nestedMessage_;
         }
       }
       /**
@@ -2897,25 +2881,61 @@ public final class TestProto {
       // @@protoc_insertion_point(builder_scope:test.Top)
     }
 
+    // @@protoc_insertion_point(class_scope:test.Top)
+    private static final com.github.jsdossier.soy.TestProto.Top DEFAULT_INSTANCE;
     static {
-      defaultInstance = new Top(true);
-      defaultInstance.initFields();
+      DEFAULT_INSTANCE = new com.github.jsdossier.soy.TestProto.Top();
     }
 
-    // @@protoc_insertion_point(class_scope:test.Top)
+    public static com.github.jsdossier.soy.TestProto.Top getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    @java.lang.Deprecated public static final com.google.protobuf.Parser<Top>
+        PARSER = new com.google.protobuf.AbstractParser<Top>() {
+      public Top parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        try {
+          return new Top(input, extensionRegistry);
+        } catch (RuntimeException e) {
+          if (e.getCause() instanceof
+              com.google.protobuf.InvalidProtocolBufferException) {
+            throw (com.google.protobuf.InvalidProtocolBufferException)
+                e.getCause();
+          }
+          throw e;
+        }
+      }
+    };
+
+    public static com.google.protobuf.Parser<Top> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<Top> getParserForType() {
+      return PARSER;
+    }
+
+    public com.github.jsdossier.soy.TestProto.Top getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
   }
 
-  private static final com.google.protobuf.Descriptors.Descriptor
+  private static com.google.protobuf.Descriptors.Descriptor
     internal_static_test_Order_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_test_Order_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
+  private static com.google.protobuf.Descriptors.Descriptor
     internal_static_test_Top_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_test_Top_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
+  private static com.google.protobuf.Descriptors.Descriptor
     internal_static_test_Top_NestedMessage_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable

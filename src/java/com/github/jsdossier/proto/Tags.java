@@ -6,37 +6,35 @@ package com.github.jsdossier.proto;
 /**
  * Protobuf type {@code dossier.Tags}
  */
-public final class Tags extends
+public  final class Tags extends
     com.google.protobuf.GeneratedMessage implements
     // @@protoc_insertion_point(message_implements:dossier.Tags)
     TagsOrBuilder {
   // Use Tags.newBuilder() to construct.
   private Tags(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
     super(builder);
-    this.unknownFields = builder.getUnknownFields();
   }
-  private Tags(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
-
-  private static final Tags defaultInstance;
-  public static Tags getDefaultInstance() {
-    return defaultInstance;
+  private Tags() {
+    isConst_ = false;
+    isDeprecated_ = false;
+    isDict_ = false;
+    isFinal_ = false;
+    isInterface_ = false;
+    isModule_ = false;
+    isStruct_ = false;
+    isDefault_ = false;
+    isRecord_ = false;
   }
 
-  public Tags getDefaultInstanceForType() {
-    return defaultInstance;
-  }
-
-  private final com.google.protobuf.UnknownFieldSet unknownFields;
   @java.lang.Override
   public final com.google.protobuf.UnknownFieldSet
-      getUnknownFields() {
+  getUnknownFields() {
     return this.unknownFields;
   }
   private Tags(
       com.google.protobuf.CodedInputStream input,
-      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-      throws com.google.protobuf.InvalidProtocolBufferException {
-    initFields();
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
+    this();
     int mutable_bitField0_ = 0;
     com.google.protobuf.UnknownFieldSet.Builder unknownFields =
         com.google.protobuf.UnknownFieldSet.newBuilder();
@@ -103,10 +101,11 @@ public final class Tags extends
         }
       }
     } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-      throw e.setUnfinishedMessage(this);
+      throw new RuntimeException(e.setUnfinishedMessage(this));
     } catch (java.io.IOException e) {
-      throw new com.google.protobuf.InvalidProtocolBufferException(
-          e.getMessage()).setUnfinishedMessage(this);
+      throw new RuntimeException(
+          new com.google.protobuf.InvalidProtocolBufferException(
+              e.getMessage()).setUnfinishedMessage(this));
     } finally {
       this.unknownFields = unknownFields.build();
       makeExtensionsImmutable();
@@ -122,21 +121,6 @@ public final class Tags extends
     return com.github.jsdossier.proto.Dossier.internal_static_dossier_Tags_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
             com.github.jsdossier.proto.Tags.class, com.github.jsdossier.proto.Tags.Builder.class);
-  }
-
-  public static com.google.protobuf.Parser<Tags> PARSER =
-      new com.google.protobuf.AbstractParser<Tags>() {
-    public Tags parsePartialFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return new Tags(input, extensionRegistry);
-    }
-  };
-
-  @java.lang.Override
-  public com.google.protobuf.Parser<Tags> getParserForType() {
-    return PARSER;
   }
 
   private int bitField0_;
@@ -275,17 +259,6 @@ public final class Tags extends
     return isRecord_;
   }
 
-  private void initFields() {
-    isConst_ = false;
-    isDeprecated_ = false;
-    isDict_ = false;
-    isFinal_ = false;
-    isInterface_ = false;
-    isModule_ = false;
-    isStruct_ = false;
-    isDefault_ = false;
-    isRecord_ = false;
-  }
   private byte memoizedIsInitialized = -1;
   public final boolean isInitialized() {
     byte isInitialized = memoizedIsInitialized;
@@ -298,7 +271,6 @@ public final class Tags extends
 
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    getSerializedSize();
     if (((bitField0_ & 0x00000001) == 0x00000001)) {
       output.writeBool(1, isConst_);
     }
@@ -326,12 +298,11 @@ public final class Tags extends
     if (((bitField0_ & 0x00000100) == 0x00000100)) {
       output.writeBool(9, isRecord_);
     }
-    getUnknownFields().writeTo(output);
+    unknownFields.writeTo(output);
   }
 
-  private int memoizedSerializedSize = -1;
   public int getSerializedSize() {
-    int size = memoizedSerializedSize;
+    int size = memoizedSize;
     if (size != -1) return size;
 
     size = 0;
@@ -371,18 +342,12 @@ public final class Tags extends
       size += com.google.protobuf.CodedOutputStream
         .computeBoolSize(9, isRecord_);
     }
-    size += getUnknownFields().getSerializedSize();
-    memoizedSerializedSize = size;
+    size += unknownFields.getSerializedSize();
+    memoizedSize = size;
     return size;
   }
 
   private static final long serialVersionUID = 0L;
-  @java.lang.Override
-  protected java.lang.Object writeReplace()
-      throws java.io.ObjectStreamException {
-    return super.writeReplace();
-  }
-
   public static com.github.jsdossier.proto.Tags parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
@@ -436,12 +401,17 @@ public final class Tags extends
     return PARSER.parseFrom(input, extensionRegistry);
   }
 
-  public static Builder newBuilder() { return Builder.create(); }
   public Builder newBuilderForType() { return newBuilder(); }
-  public static Builder newBuilder(com.github.jsdossier.proto.Tags prototype) {
-    return newBuilder().mergeFrom(prototype);
+  public static Builder newBuilder() {
+    return DEFAULT_INSTANCE.toBuilder();
   }
-  public Builder toBuilder() { return newBuilder(this); }
+  public static Builder newBuilder(com.github.jsdossier.proto.Tags prototype) {
+    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+  }
+  public Builder toBuilder() {
+    return this == DEFAULT_INSTANCE
+        ? new Builder() : new Builder().mergeFrom(this);
+  }
 
   @java.lang.Override
   protected Builder newBuilderForType(
@@ -482,10 +452,6 @@ public final class Tags extends
       if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
       }
     }
-    private static Builder create() {
-      return new Builder();
-    }
-
     public Builder clear() {
       super.clear();
       isConst_ = false;
@@ -507,10 +473,6 @@ public final class Tags extends
       isRecord_ = false;
       bitField0_ = (bitField0_ & ~0x00000100);
       return this;
-    }
-
-    public Builder clone() {
-      return create().mergeFrom(buildPartial());
     }
 
     public com.google.protobuf.Descriptors.Descriptor
@@ -613,7 +575,8 @@ public final class Tags extends
       if (other.hasIsRecord()) {
         setIsRecord(other.getIsRecord());
       }
-      this.mergeUnknownFields(other.getUnknownFields());
+      this.mergeUnknownFields(other.unknownFields);
+      onChanged();
       return this;
     }
 
@@ -931,11 +894,47 @@ public final class Tags extends
     // @@protoc_insertion_point(builder_scope:dossier.Tags)
   }
 
+  // @@protoc_insertion_point(class_scope:dossier.Tags)
+  private static final com.github.jsdossier.proto.Tags DEFAULT_INSTANCE;
   static {
-    defaultInstance = new Tags(true);
-    defaultInstance.initFields();
+    DEFAULT_INSTANCE = new com.github.jsdossier.proto.Tags();
   }
 
-  // @@protoc_insertion_point(class_scope:dossier.Tags)
+  public static com.github.jsdossier.proto.Tags getDefaultInstance() {
+    return DEFAULT_INSTANCE;
+  }
+
+  @java.lang.Deprecated public static final com.google.protobuf.Parser<Tags>
+      PARSER = new com.google.protobuf.AbstractParser<Tags>() {
+    public Tags parsePartialFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      try {
+        return new Tags(input, extensionRegistry);
+      } catch (RuntimeException e) {
+        if (e.getCause() instanceof
+            com.google.protobuf.InvalidProtocolBufferException) {
+          throw (com.google.protobuf.InvalidProtocolBufferException)
+              e.getCause();
+        }
+        throw e;
+      }
+    }
+  };
+
+  public static com.google.protobuf.Parser<Tags> parser() {
+    return PARSER;
+  }
+
+  @java.lang.Override
+  public com.google.protobuf.Parser<Tags> getParserForType() {
+    return PARSER;
+  }
+
+  public com.github.jsdossier.proto.Tags getDefaultInstanceForType() {
+    return DEFAULT_INSTANCE;
+  }
+
 }
 
