@@ -8,15 +8,15 @@ public interface EnumerationOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>required .dossier.Comment type = 1;</code>
+   * <code>optional .dossier.Comment type = 1;</code>
    */
   boolean hasType();
   /**
-   * <code>required .dossier.Comment type = 1;</code>
+   * <code>optional .dossier.Comment type = 1;</code>
    */
   com.github.jsdossier.proto.Comment getType();
   /**
-   * <code>required .dossier.Comment type = 1;</code>
+   * <code>optional .dossier.Comment type = 1;</code>
    */
   com.github.jsdossier.proto.CommentOrBuilder getTypeOrBuilder();
 
@@ -45,11 +45,11 @@ public interface EnumerationOrBuilder extends
       int index);
 
   /**
-   * <code>optional .dossier.Visibility visibility = 3 [default = PUBLIC];</code>
+   * <code>optional .dossier.Visibility visibility = 3;</code>
    */
-  boolean hasVisibility();
+  int getVisibilityValue();
   /**
-   * <code>optional .dossier.Visibility visibility = 3 [default = PUBLIC];</code>
+   * <code>optional .dossier.Visibility visibility = 3;</code>
    */
   com.github.jsdossier.proto.Visibility getVisibility();
 }

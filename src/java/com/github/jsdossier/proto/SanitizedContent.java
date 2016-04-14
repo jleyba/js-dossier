@@ -20,15 +20,13 @@ public  final class SanitizedContent extends
   @java.lang.Override
   public final com.google.protobuf.UnknownFieldSet
   getUnknownFields() {
-    return this.unknownFields;
+    return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
   }
   private SanitizedContent(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
     this();
     int mutable_bitField0_ = 0;
-    com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-        com.google.protobuf.UnknownFieldSet.newBuilder();
     try {
       boolean done = false;
       while (!done) {
@@ -38,8 +36,7 @@ public  final class SanitizedContent extends
             done = true;
             break;
           default: {
-            if (!parseUnknownField(input, unknownFields,
-                                   extensionRegistry, tag)) {
+            if (!input.skipField(tag)) {
               done = true;
             }
             break;
@@ -63,7 +60,6 @@ public  final class SanitizedContent extends
           new com.google.protobuf.InvalidProtocolBufferException(
               e.getMessage()).setUnfinishedMessage(this));
     } finally {
-      this.unknownFields = unknownFields.build();
       makeExtensionsImmutable();
     }
   }
@@ -79,7 +75,6 @@ public  final class SanitizedContent extends
             com.github.jsdossier.proto.SanitizedContent.class, com.github.jsdossier.proto.SanitizedContent.Builder.class);
   }
 
-  private int bitField0_;
   private int kindCase_ = 0;
   private java.lang.Object kind_;
   public enum KindCase
@@ -120,17 +115,6 @@ public  final class SanitizedContent extends
    * injected into a Soy template.
    * </pre>
    */
-  public boolean hasUri() {
-    return kindCase_ == 1;
-  }
-  /**
-   * <code>optional bool uri = 1;</code>
-   *
-   * <pre>
-   * Indicates a field should be treated as a sanitized URI when
-   * injected into a Soy template.
-   * </pre>
-   */
   public boolean getUri() {
     if (kindCase_ == 1) {
       return (java.lang.Boolean) kind_;
@@ -139,17 +123,6 @@ public  final class SanitizedContent extends
   }
 
   public static final int HTML_FIELD_NUMBER = 2;
-  /**
-   * <code>optional bool html = 2;</code>
-   *
-   * <pre>
-   * Indicates a field should be treated as sanitized HTML content when
-   * injected into a Soy template.
-   * </pre>
-   */
-  public boolean hasHtml() {
-    return kindCase_ == 2;
-  }
   /**
    * <code>optional bool html = 2;</code>
    *
@@ -185,7 +158,6 @@ public  final class SanitizedContent extends
       output.writeBool(
           2, (boolean)((java.lang.Boolean) kind_));
     }
-    unknownFields.writeTo(output);
   }
 
   public int getSerializedSize() {
@@ -203,7 +175,6 @@ public  final class SanitizedContent extends
         .computeBoolSize(
             2, (boolean)((java.lang.Boolean) kind_));
     }
-    size += unknownFields.getSerializedSize();
     memoizedSize = size;
     return size;
   }
@@ -339,15 +310,12 @@ public  final class SanitizedContent extends
 
     public com.github.jsdossier.proto.SanitizedContent buildPartial() {
       com.github.jsdossier.proto.SanitizedContent result = new com.github.jsdossier.proto.SanitizedContent(this);
-      int from_bitField0_ = bitField0_;
-      int to_bitField0_ = 0;
       if (kindCase_ == 1) {
         result.kind_ = kind_;
       }
       if (kindCase_ == 2) {
         result.kind_ = kind_;
       }
-      result.bitField0_ = to_bitField0_;
       result.kindCase_ = kindCase_;
       onBuilt();
       return result;
@@ -377,7 +345,6 @@ public  final class SanitizedContent extends
           break;
         }
       }
-      this.mergeUnknownFields(other.unknownFields);
       onChanged();
       return this;
     }
@@ -418,19 +385,7 @@ public  final class SanitizedContent extends
       return this;
     }
 
-    private int bitField0_;
 
-    /**
-     * <code>optional bool uri = 1;</code>
-     *
-     * <pre>
-     * Indicates a field should be treated as a sanitized URI when
-     * injected into a Soy template.
-     * </pre>
-     */
-    public boolean hasUri() {
-      return kindCase_ == 1;
-    }
     /**
      * <code>optional bool uri = 1;</code>
      *
@@ -484,17 +439,6 @@ public  final class SanitizedContent extends
      * injected into a Soy template.
      * </pre>
      */
-    public boolean hasHtml() {
-      return kindCase_ == 2;
-    }
-    /**
-     * <code>optional bool html = 2;</code>
-     *
-     * <pre>
-     * Indicates a field should be treated as sanitized HTML content when
-     * injected into a Soy template.
-     * </pre>
-     */
     public boolean getHtml() {
       if (kindCase_ == 2) {
         return (java.lang.Boolean) kind_;
@@ -531,6 +475,16 @@ public  final class SanitizedContent extends
       }
       return this;
     }
+    public final Builder setUnknownFields(
+        final com.google.protobuf.UnknownFieldSet unknownFields) {
+      return this;
+    }
+
+    public final Builder mergeUnknownFields(
+        final com.google.protobuf.UnknownFieldSet unknownFields) {
+      return this;
+    }
+
 
     // @@protoc_insertion_point(builder_scope:dossier.SanitizedContent)
   }
@@ -545,7 +499,7 @@ public  final class SanitizedContent extends
     return DEFAULT_INSTANCE;
   }
 
-  @java.lang.Deprecated public static final com.google.protobuf.Parser<SanitizedContent>
+  private static final com.google.protobuf.Parser<SanitizedContent>
       PARSER = new com.google.protobuf.AbstractParser<SanitizedContent>() {
     public SanitizedContent parsePartialFrom(
         com.google.protobuf.CodedInputStream input,

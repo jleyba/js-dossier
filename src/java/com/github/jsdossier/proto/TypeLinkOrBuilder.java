@@ -8,15 +8,7 @@ public interface TypeLinkOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>required string text = 1;</code>
-   *
-   * <pre>
-   * The link display text.
-   * </pre>
-   */
-  boolean hasText();
-  /**
-   * <code>required string text = 1;</code>
+   * <code>optional string text = 1;</code>
    *
    * <pre>
    * The link display text.
@@ -24,7 +16,7 @@ public interface TypeLinkOrBuilder extends
    */
   java.lang.String getText();
   /**
-   * <code>required string text = 1;</code>
+   * <code>optional string text = 1;</code>
    *
    * <pre>
    * The link display text.
@@ -33,14 +25,6 @@ public interface TypeLinkOrBuilder extends
   com.google.protobuf.ByteString
       getTextBytes();
 
-  /**
-   * <code>optional string href = 2;</code>
-   *
-   * <pre>
-   * The link href.
-   * </pre>
-   */
-  boolean hasHref();
   /**
    * <code>optional string href = 2;</code>
    *

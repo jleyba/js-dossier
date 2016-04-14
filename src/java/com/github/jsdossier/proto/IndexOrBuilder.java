@@ -8,15 +8,7 @@ public interface IndexOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>required string home = 1;</code>
-   *
-   * <pre>
-   * Defines the href from the current page to the main index.
-   * </pre>
-   */
-  boolean hasHome();
-  /**
-   * <code>required string home = 1;</code>
+   * <code>optional string home = 1;</code>
    *
    * <pre>
    * Defines the href from the current page to the main index.
@@ -24,7 +16,7 @@ public interface IndexOrBuilder extends
    */
   java.lang.String getHome();
   /**
-   * <code>required string home = 1;</code>
+   * <code>optional string home = 1;</code>
    *
    * <pre>
    * Defines the href from the current page to the main index.
@@ -40,24 +32,8 @@ public interface IndexOrBuilder extends
    * Whether to generate the global type section.
    * </pre>
    */
-  boolean hasIncludeTypes();
-  /**
-   * <code>optional bool include_types = 2;</code>
-   *
-   * <pre>
-   * Whether to generate the global type section.
-   * </pre>
-   */
   boolean getIncludeTypes();
 
-  /**
-   * <code>optional bool include_modules = 3;</code>
-   *
-   * <pre>
-   * Whether to generate the module type section.
-   * </pre>
-   */
-  boolean hasIncludeModules();
   /**
    * <code>optional bool include_modules = 3;</code>
    *

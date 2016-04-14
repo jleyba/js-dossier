@@ -8,15 +8,15 @@ public interface PropertyOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>required .dossier.BaseProperty base = 1;</code>
+   * <code>optional .dossier.BaseProperty base = 1;</code>
    */
   boolean hasBase();
   /**
-   * <code>required .dossier.BaseProperty base = 1;</code>
+   * <code>optional .dossier.BaseProperty base = 1;</code>
    */
   com.github.jsdossier.proto.BaseProperty getBase();
   /**
-   * <code>required .dossier.BaseProperty base = 1;</code>
+   * <code>optional .dossier.BaseProperty base = 1;</code>
    */
   com.github.jsdossier.proto.BasePropertyOrBuilder getBaseOrBuilder();
 

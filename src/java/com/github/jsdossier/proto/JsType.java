@@ -38,15 +38,13 @@ public  final class JsType extends
   @java.lang.Override
   public final com.google.protobuf.UnknownFieldSet
   getUnknownFields() {
-    return this.unknownFields;
+    return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
   }
   private JsType(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
     this();
     int mutable_bitField0_ = 0;
-    com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-        com.google.protobuf.UnknownFieldSet.newBuilder();
     try {
       boolean done = false;
       while (!done) {
@@ -56,21 +54,20 @@ public  final class JsType extends
             done = true;
             break;
           default: {
-            if (!parseUnknownField(input, unknownFields,
-                                   extensionRegistry, tag)) {
+            if (!input.skipField(tag)) {
               done = true;
             }
             break;
           }
           case 10: {
-            com.google.protobuf.ByteString bs = input.readBytes();
-            bitField0_ |= 0x00000001;
-            name_ = bs;
+            java.lang.String s = input.readStringRequireUtf8();
+
+            name_ = s;
             break;
           }
           case 42: {
             com.github.jsdossier.proto.SourceLink.Builder subBuilder = null;
-            if (((bitField0_ & 0x00000002) == 0x00000002)) {
+            if (source_ != null) {
               subBuilder = source_.toBuilder();
             }
             source_ = input.readMessage(com.github.jsdossier.proto.SourceLink.parser(), extensionRegistry);
@@ -78,7 +75,7 @@ public  final class JsType extends
               subBuilder.mergeFrom(source_);
               source_ = subBuilder.buildPartial();
             }
-            bitField0_ |= 0x00000002;
+
             break;
           }
           case 50: {
@@ -91,7 +88,7 @@ public  final class JsType extends
           }
           case 58: {
             com.github.jsdossier.proto.Comment.Builder subBuilder = null;
-            if (((bitField0_ & 0x00000004) == 0x00000004)) {
+            if (description_ != null) {
               subBuilder = description_.toBuilder();
             }
             description_ = input.readMessage(com.github.jsdossier.proto.Comment.parser(), extensionRegistry);
@@ -99,12 +96,12 @@ public  final class JsType extends
               subBuilder.mergeFrom(description_);
               description_ = subBuilder.buildPartial();
             }
-            bitField0_ |= 0x00000004;
+
             break;
           }
           case 66: {
             com.github.jsdossier.proto.Tags.Builder subBuilder = null;
-            if (((bitField0_ & 0x00000008) == 0x00000008)) {
+            if (tags_ != null) {
               subBuilder = tags_.toBuilder();
             }
             tags_ = input.readMessage(com.github.jsdossier.proto.Tags.parser(), extensionRegistry);
@@ -112,12 +109,12 @@ public  final class JsType extends
               subBuilder.mergeFrom(tags_);
               tags_ = subBuilder.buildPartial();
             }
-            bitField0_ |= 0x00000008;
+
             break;
           }
           case 74: {
             com.github.jsdossier.proto.Comment.Builder subBuilder = null;
-            if (((bitField0_ & 0x00000010) == 0x00000010)) {
+            if (deprecation_ != null) {
               subBuilder = deprecation_.toBuilder();
             }
             deprecation_ = input.readMessage(com.github.jsdossier.proto.Comment.parser(), extensionRegistry);
@@ -125,7 +122,7 @@ public  final class JsType extends
               subBuilder.mergeFrom(deprecation_);
               deprecation_ = subBuilder.buildPartial();
             }
-            bitField0_ |= 0x00000010;
+
             break;
           }
           case 82: {
@@ -138,7 +135,7 @@ public  final class JsType extends
           }
           case 90: {
             com.github.jsdossier.proto.Enumeration.Builder subBuilder = null;
-            if (((bitField0_ & 0x00000020) == 0x00000020)) {
+            if (enumeration_ != null) {
               subBuilder = enumeration_.toBuilder();
             }
             enumeration_ = input.readMessage(com.github.jsdossier.proto.Enumeration.parser(), extensionRegistry);
@@ -146,7 +143,7 @@ public  final class JsType extends
               subBuilder.mergeFrom(enumeration_);
               enumeration_ = subBuilder.buildPartial();
             }
-            bitField0_ |= 0x00000020;
+
             break;
           }
           case 98: {
@@ -167,7 +164,7 @@ public  final class JsType extends
           }
           case 114: {
             com.github.jsdossier.proto.Function.Builder subBuilder = null;
-            if (((bitField0_ & 0x00000040) == 0x00000040)) {
+            if (mainFunction_ != null) {
               subBuilder = mainFunction_.toBuilder();
             }
             mainFunction_ = input.readMessage(com.github.jsdossier.proto.Function.parser(), extensionRegistry);
@@ -175,7 +172,7 @@ public  final class JsType extends
               subBuilder.mergeFrom(mainFunction_);
               mainFunction_ = subBuilder.buildPartial();
             }
-            bitField0_ |= 0x00000040;
+
             break;
           }
           case 122: {
@@ -220,7 +217,7 @@ public  final class JsType extends
           }
           case 170: {
             com.github.jsdossier.proto.JsType.ParentLink.Builder subBuilder = null;
-            if (((bitField0_ & 0x00000080) == 0x00000080)) {
+            if (parent_ != null) {
               subBuilder = parent_.toBuilder();
             }
             parent_ = input.readMessage(com.github.jsdossier.proto.JsType.ParentLink.parser(), extensionRegistry);
@@ -228,12 +225,12 @@ public  final class JsType extends
               subBuilder.mergeFrom(parent_);
               parent_ = subBuilder.buildPartial();
             }
-            bitField0_ |= 0x00000080;
+
             break;
           }
           case 178: {
             com.github.jsdossier.proto.TypeLink.Builder subBuilder = null;
-            if (((bitField0_ & 0x00000100) == 0x00000100)) {
+            if (aliasedType_ != null) {
               subBuilder = aliasedType_.toBuilder();
             }
             aliasedType_ = input.readMessage(com.github.jsdossier.proto.TypeLink.parser(), extensionRegistry);
@@ -241,19 +238,19 @@ public  final class JsType extends
               subBuilder.mergeFrom(aliasedType_);
               aliasedType_ = subBuilder.buildPartial();
             }
-            bitField0_ |= 0x00000100;
+
             break;
           }
           case 186: {
-            com.google.protobuf.ByteString bs = input.readBytes();
-            bitField0_ |= 0x00000200;
-            filename_ = bs;
+            java.lang.String s = input.readStringRequireUtf8();
+
+            filename_ = s;
             break;
           }
           case 194: {
-            com.google.protobuf.ByteString bs = input.readBytes();
-            bitField0_ |= 0x00000400;
-            qualifiedName_ = bs;
+            java.lang.String s = input.readStringRequireUtf8();
+
+            qualifiedName_ = s;
             break;
           }
           case 202: {
@@ -303,7 +300,6 @@ public  final class JsType extends
       if (((mutable_bitField0_ & 0x00100000) == 0x00100000)) {
         reexportedModule_ = java.util.Collections.unmodifiableList(reexportedModule_);
       }
-      this.unknownFields = unknownFields.build();
       makeExtensionsImmutable();
     }
   }
@@ -324,15 +320,7 @@ public  final class JsType extends
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>required string name = 1;</code>
-     *
-     * <pre>
-     * The type name.
-     * </pre>
-     */
-    boolean hasName();
-    /**
-     * <code>required string name = 1;</code>
+     * <code>optional string name = 1;</code>
      *
      * <pre>
      * The type name.
@@ -340,7 +328,7 @@ public  final class JsType extends
      */
     java.lang.String getName();
     /**
-     * <code>required string name = 1;</code>
+     * <code>optional string name = 1;</code>
      *
      * <pre>
      * The type name.
@@ -350,15 +338,7 @@ public  final class JsType extends
         getNameBytes();
 
     /**
-     * <code>required string href = 2;</code>
-     *
-     * <pre>
-     * The hyperlink for the actual type.
-     * </pre>
-     */
-    boolean hasHref();
-    /**
-     * <code>required string href = 2;</code>
+     * <code>optional string href = 2;</code>
      *
      * <pre>
      * The hyperlink for the actual type.
@@ -366,7 +346,7 @@ public  final class JsType extends
      */
     java.lang.String getHref();
     /**
-     * <code>required string href = 2;</code>
+     * <code>optional string href = 2;</code>
      *
      * <pre>
      * The hyperlink for the actual type.
@@ -376,7 +356,7 @@ public  final class JsType extends
         getHrefBytes();
 
     /**
-     * <code>required .dossier.Comment summary = 3;</code>
+     * <code>optional .dossier.Comment summary = 3;</code>
      *
      * <pre>
      * The summary sentence for this type.
@@ -384,7 +364,7 @@ public  final class JsType extends
      */
     boolean hasSummary();
     /**
-     * <code>required .dossier.Comment summary = 3;</code>
+     * <code>optional .dossier.Comment summary = 3;</code>
      *
      * <pre>
      * The summary sentence for this type.
@@ -392,7 +372,7 @@ public  final class JsType extends
      */
     com.github.jsdossier.proto.Comment getSummary();
     /**
-     * <code>required .dossier.Comment summary = 3;</code>
+     * <code>optional .dossier.Comment summary = 3;</code>
      *
      * <pre>
      * The summary sentence for this type.
@@ -423,15 +403,13 @@ public  final class JsType extends
     @java.lang.Override
     public final com.google.protobuf.UnknownFieldSet
     getUnknownFields() {
-      return this.unknownFields;
+      return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
     }
     private TypeSummary(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
       this();
       int mutable_bitField0_ = 0;
-      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder();
       try {
         boolean done = false;
         while (!done) {
@@ -441,27 +419,26 @@ public  final class JsType extends
               done = true;
               break;
             default: {
-              if (!parseUnknownField(input, unknownFields,
-                                     extensionRegistry, tag)) {
+              if (!input.skipField(tag)) {
                 done = true;
               }
               break;
             }
             case 10: {
-              com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00000001;
-              name_ = bs;
+              java.lang.String s = input.readStringRequireUtf8();
+
+              name_ = s;
               break;
             }
             case 18: {
-              com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00000002;
-              href_ = bs;
+              java.lang.String s = input.readStringRequireUtf8();
+
+              href_ = s;
               break;
             }
             case 26: {
               com.github.jsdossier.proto.Comment.Builder subBuilder = null;
-              if (((bitField0_ & 0x00000004) == 0x00000004)) {
+              if (summary_ != null) {
                 subBuilder = summary_.toBuilder();
               }
               summary_ = input.readMessage(com.github.jsdossier.proto.Comment.parser(), extensionRegistry);
@@ -469,7 +446,7 @@ public  final class JsType extends
                 subBuilder.mergeFrom(summary_);
                 summary_ = subBuilder.buildPartial();
               }
-              bitField0_ |= 0x00000004;
+
               break;
             }
           }
@@ -481,7 +458,6 @@ public  final class JsType extends
             new com.google.protobuf.InvalidProtocolBufferException(
                 e.getMessage()).setUnfinishedMessage(this));
       } finally {
-        this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
       }
     }
@@ -497,21 +473,10 @@ public  final class JsType extends
               com.github.jsdossier.proto.JsType.TypeSummary.class, com.github.jsdossier.proto.JsType.TypeSummary.Builder.class);
     }
 
-    private int bitField0_;
     public static final int NAME_FIELD_NUMBER = 1;
     private volatile java.lang.Object name_;
     /**
-     * <code>required string name = 1;</code>
-     *
-     * <pre>
-     * The type name.
-     * </pre>
-     */
-    public boolean hasName() {
-      return ((bitField0_ & 0x00000001) == 0x00000001);
-    }
-    /**
-     * <code>required string name = 1;</code>
+     * <code>optional string name = 1;</code>
      *
      * <pre>
      * The type name.
@@ -525,14 +490,12 @@ public  final class JsType extends
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          name_ = s;
-        }
+        name_ = s;
         return s;
       }
     }
     /**
-     * <code>required string name = 1;</code>
+     * <code>optional string name = 1;</code>
      *
      * <pre>
      * The type name.
@@ -555,17 +518,7 @@ public  final class JsType extends
     public static final int HREF_FIELD_NUMBER = 2;
     private volatile java.lang.Object href_;
     /**
-     * <code>required string href = 2;</code>
-     *
-     * <pre>
-     * The hyperlink for the actual type.
-     * </pre>
-     */
-    public boolean hasHref() {
-      return ((bitField0_ & 0x00000002) == 0x00000002);
-    }
-    /**
-     * <code>required string href = 2;</code>
+     * <code>optional string href = 2;</code>
      *
      * <pre>
      * The hyperlink for the actual type.
@@ -579,14 +532,12 @@ public  final class JsType extends
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          href_ = s;
-        }
+        href_ = s;
         return s;
       }
     }
     /**
-     * <code>required string href = 2;</code>
+     * <code>optional string href = 2;</code>
      *
      * <pre>
      * The hyperlink for the actual type.
@@ -609,17 +560,17 @@ public  final class JsType extends
     public static final int SUMMARY_FIELD_NUMBER = 3;
     private com.github.jsdossier.proto.Comment summary_;
     /**
-     * <code>required .dossier.Comment summary = 3;</code>
+     * <code>optional .dossier.Comment summary = 3;</code>
      *
      * <pre>
      * The summary sentence for this type.
      * </pre>
      */
     public boolean hasSummary() {
-      return ((bitField0_ & 0x00000004) == 0x00000004);
+      return summary_ != null;
     }
     /**
-     * <code>required .dossier.Comment summary = 3;</code>
+     * <code>optional .dossier.Comment summary = 3;</code>
      *
      * <pre>
      * The summary sentence for this type.
@@ -629,14 +580,14 @@ public  final class JsType extends
       return summary_ == null ? com.github.jsdossier.proto.Comment.getDefaultInstance() : summary_;
     }
     /**
-     * <code>required .dossier.Comment summary = 3;</code>
+     * <code>optional .dossier.Comment summary = 3;</code>
      *
      * <pre>
      * The summary sentence for this type.
      * </pre>
      */
     public com.github.jsdossier.proto.CommentOrBuilder getSummaryOrBuilder() {
-      return summary_ == null ? com.github.jsdossier.proto.Comment.getDefaultInstance() : summary_;
+      return getSummary();
     }
 
     private byte memoizedIsInitialized = -1;
@@ -645,34 +596,21 @@ public  final class JsType extends
       if (isInitialized == 1) return true;
       if (isInitialized == 0) return false;
 
-      if (!hasName()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      if (!hasHref()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      if (!hasSummary()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
       memoizedIsInitialized = 1;
       return true;
     }
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+      if (!getNameBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessage.writeString(output, 1, name_);
       }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+      if (!getHrefBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessage.writeString(output, 2, href_);
       }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+      if (summary_ != null) {
         output.writeMessage(3, getSummary());
       }
-      unknownFields.writeTo(output);
     }
 
     public int getSerializedSize() {
@@ -680,17 +618,16 @@ public  final class JsType extends
       if (size != -1) return size;
 
       size = 0;
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+      if (!getNameBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessage.computeStringSize(1, name_);
       }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+      if (!getHrefBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessage.computeStringSize(2, href_);
       }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+      if (summary_ != null) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(3, getSummary());
       }
-      size += unknownFields.getSerializedSize();
       memoizedSize = size;
       return size;
     }
@@ -802,21 +739,20 @@ public  final class JsType extends
       }
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
-          getSummaryFieldBuilder();
         }
       }
       public Builder clear() {
         super.clear();
         name_ = "";
-        bitField0_ = (bitField0_ & ~0x00000001);
+
         href_ = "";
-        bitField0_ = (bitField0_ & ~0x00000002);
+
         if (summaryBuilder_ == null) {
           summary_ = null;
         } else {
-          summaryBuilder_.clear();
+          summary_ = null;
+          summaryBuilder_ = null;
         }
-        bitField0_ = (bitField0_ & ~0x00000004);
         return this;
       }
 
@@ -839,25 +775,13 @@ public  final class JsType extends
 
       public com.github.jsdossier.proto.JsType.TypeSummary buildPartial() {
         com.github.jsdossier.proto.JsType.TypeSummary result = new com.github.jsdossier.proto.JsType.TypeSummary(this);
-        int from_bitField0_ = bitField0_;
-        int to_bitField0_ = 0;
-        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
-          to_bitField0_ |= 0x00000001;
-        }
         result.name_ = name_;
-        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
-          to_bitField0_ |= 0x00000002;
-        }
         result.href_ = href_;
-        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
-          to_bitField0_ |= 0x00000004;
-        }
         if (summaryBuilder_ == null) {
           result.summary_ = summary_;
         } else {
           result.summary_ = summaryBuilder_.build();
         }
-        result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
       }
@@ -873,34 +797,22 @@ public  final class JsType extends
 
       public Builder mergeFrom(com.github.jsdossier.proto.JsType.TypeSummary other) {
         if (other == com.github.jsdossier.proto.JsType.TypeSummary.getDefaultInstance()) return this;
-        if (other.hasName()) {
-          bitField0_ |= 0x00000001;
+        if (!other.getName().isEmpty()) {
           name_ = other.name_;
           onChanged();
         }
-        if (other.hasHref()) {
-          bitField0_ |= 0x00000002;
+        if (!other.getHref().isEmpty()) {
           href_ = other.href_;
           onChanged();
         }
         if (other.hasSummary()) {
           mergeSummary(other.getSummary());
         }
-        this.mergeUnknownFields(other.unknownFields);
         onChanged();
         return this;
       }
 
       public final boolean isInitialized() {
-        if (!hasName()) {
-          return false;
-        }
-        if (!hasHref()) {
-          return false;
-        }
-        if (!hasSummary()) {
-          return false;
-        }
         return true;
       }
 
@@ -921,21 +833,10 @@ public  final class JsType extends
         }
         return this;
       }
-      private int bitField0_;
 
       private java.lang.Object name_ = "";
       /**
-       * <code>required string name = 1;</code>
-       *
-       * <pre>
-       * The type name.
-       * </pre>
-       */
-      public boolean hasName() {
-        return ((bitField0_ & 0x00000001) == 0x00000001);
-      }
-      /**
-       * <code>required string name = 1;</code>
+       * <code>optional string name = 1;</code>
        *
        * <pre>
        * The type name.
@@ -947,16 +848,14 @@ public  final class JsType extends
           com.google.protobuf.ByteString bs =
               (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            name_ = s;
-          }
+          name_ = s;
           return s;
         } else {
           return (java.lang.String) ref;
         }
       }
       /**
-       * <code>required string name = 1;</code>
+       * <code>optional string name = 1;</code>
        *
        * <pre>
        * The type name.
@@ -976,7 +875,7 @@ public  final class JsType extends
         }
       }
       /**
-       * <code>required string name = 1;</code>
+       * <code>optional string name = 1;</code>
        *
        * <pre>
        * The type name.
@@ -987,26 +886,26 @@ public  final class JsType extends
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000001;
+  
         name_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>required string name = 1;</code>
+       * <code>optional string name = 1;</code>
        *
        * <pre>
        * The type name.
        * </pre>
        */
       public Builder clearName() {
-        bitField0_ = (bitField0_ & ~0x00000001);
+        
         name_ = getDefaultInstance().getName();
         onChanged();
         return this;
       }
       /**
-       * <code>required string name = 1;</code>
+       * <code>optional string name = 1;</code>
        *
        * <pre>
        * The type name.
@@ -1017,7 +916,8 @@ public  final class JsType extends
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000001;
+  checkByteStringIsUtf8(value);
+        
         name_ = value;
         onChanged();
         return this;
@@ -1025,17 +925,7 @@ public  final class JsType extends
 
       private java.lang.Object href_ = "";
       /**
-       * <code>required string href = 2;</code>
-       *
-       * <pre>
-       * The hyperlink for the actual type.
-       * </pre>
-       */
-      public boolean hasHref() {
-        return ((bitField0_ & 0x00000002) == 0x00000002);
-      }
-      /**
-       * <code>required string href = 2;</code>
+       * <code>optional string href = 2;</code>
        *
        * <pre>
        * The hyperlink for the actual type.
@@ -1047,16 +937,14 @@ public  final class JsType extends
           com.google.protobuf.ByteString bs =
               (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            href_ = s;
-          }
+          href_ = s;
           return s;
         } else {
           return (java.lang.String) ref;
         }
       }
       /**
-       * <code>required string href = 2;</code>
+       * <code>optional string href = 2;</code>
        *
        * <pre>
        * The hyperlink for the actual type.
@@ -1076,7 +964,7 @@ public  final class JsType extends
         }
       }
       /**
-       * <code>required string href = 2;</code>
+       * <code>optional string href = 2;</code>
        *
        * <pre>
        * The hyperlink for the actual type.
@@ -1087,26 +975,26 @@ public  final class JsType extends
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000002;
+  
         href_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>required string href = 2;</code>
+       * <code>optional string href = 2;</code>
        *
        * <pre>
        * The hyperlink for the actual type.
        * </pre>
        */
       public Builder clearHref() {
-        bitField0_ = (bitField0_ & ~0x00000002);
+        
         href_ = getDefaultInstance().getHref();
         onChanged();
         return this;
       }
       /**
-       * <code>required string href = 2;</code>
+       * <code>optional string href = 2;</code>
        *
        * <pre>
        * The hyperlink for the actual type.
@@ -1117,7 +1005,8 @@ public  final class JsType extends
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000002;
+  checkByteStringIsUtf8(value);
+        
         href_ = value;
         onChanged();
         return this;
@@ -1127,17 +1016,17 @@ public  final class JsType extends
       private com.google.protobuf.SingleFieldBuilder<
           com.github.jsdossier.proto.Comment, com.github.jsdossier.proto.Comment.Builder, com.github.jsdossier.proto.CommentOrBuilder> summaryBuilder_;
       /**
-       * <code>required .dossier.Comment summary = 3;</code>
+       * <code>optional .dossier.Comment summary = 3;</code>
        *
        * <pre>
        * The summary sentence for this type.
        * </pre>
        */
       public boolean hasSummary() {
-        return ((bitField0_ & 0x00000004) == 0x00000004);
+        return summaryBuilder_ != null || summary_ != null;
       }
       /**
-       * <code>required .dossier.Comment summary = 3;</code>
+       * <code>optional .dossier.Comment summary = 3;</code>
        *
        * <pre>
        * The summary sentence for this type.
@@ -1151,7 +1040,7 @@ public  final class JsType extends
         }
       }
       /**
-       * <code>required .dossier.Comment summary = 3;</code>
+       * <code>optional .dossier.Comment summary = 3;</code>
        *
        * <pre>
        * The summary sentence for this type.
@@ -1167,11 +1056,11 @@ public  final class JsType extends
         } else {
           summaryBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00000004;
+
         return this;
       }
       /**
-       * <code>required .dossier.Comment summary = 3;</code>
+       * <code>optional .dossier.Comment summary = 3;</code>
        *
        * <pre>
        * The summary sentence for this type.
@@ -1185,11 +1074,11 @@ public  final class JsType extends
         } else {
           summaryBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00000004;
+
         return this;
       }
       /**
-       * <code>required .dossier.Comment summary = 3;</code>
+       * <code>optional .dossier.Comment summary = 3;</code>
        *
        * <pre>
        * The summary sentence for this type.
@@ -1197,9 +1086,7 @@ public  final class JsType extends
        */
       public Builder mergeSummary(com.github.jsdossier.proto.Comment value) {
         if (summaryBuilder_ == null) {
-          if (((bitField0_ & 0x00000004) == 0x00000004) &&
-              summary_ != null &&
-              summary_ != com.github.jsdossier.proto.Comment.getDefaultInstance()) {
+          if (summary_ != null) {
             summary_ =
               com.github.jsdossier.proto.Comment.newBuilder(summary_).mergeFrom(value).buildPartial();
           } else {
@@ -1209,11 +1096,11 @@ public  final class JsType extends
         } else {
           summaryBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x00000004;
+
         return this;
       }
       /**
-       * <code>required .dossier.Comment summary = 3;</code>
+       * <code>optional .dossier.Comment summary = 3;</code>
        *
        * <pre>
        * The summary sentence for this type.
@@ -1224,25 +1111,26 @@ public  final class JsType extends
           summary_ = null;
           onChanged();
         } else {
-          summaryBuilder_.clear();
+          summary_ = null;
+          summaryBuilder_ = null;
         }
-        bitField0_ = (bitField0_ & ~0x00000004);
+
         return this;
       }
       /**
-       * <code>required .dossier.Comment summary = 3;</code>
+       * <code>optional .dossier.Comment summary = 3;</code>
        *
        * <pre>
        * The summary sentence for this type.
        * </pre>
        */
       public com.github.jsdossier.proto.Comment.Builder getSummaryBuilder() {
-        bitField0_ |= 0x00000004;
+        
         onChanged();
         return getSummaryFieldBuilder().getBuilder();
       }
       /**
-       * <code>required .dossier.Comment summary = 3;</code>
+       * <code>optional .dossier.Comment summary = 3;</code>
        *
        * <pre>
        * The summary sentence for this type.
@@ -1257,7 +1145,7 @@ public  final class JsType extends
         }
       }
       /**
-       * <code>required .dossier.Comment summary = 3;</code>
+       * <code>optional .dossier.Comment summary = 3;</code>
        *
        * <pre>
        * The summary sentence for this type.
@@ -1276,6 +1164,16 @@ public  final class JsType extends
         }
         return summaryBuilder_;
       }
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
+
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
+
 
       // @@protoc_insertion_point(builder_scope:dossier.JsType.TypeSummary)
     }
@@ -1290,7 +1188,7 @@ public  final class JsType extends
       return DEFAULT_INSTANCE;
     }
 
-    @java.lang.Deprecated public static final com.google.protobuf.Parser<TypeSummary>
+    private static final com.google.protobuf.Parser<TypeSummary>
         PARSER = new com.google.protobuf.AbstractParser<TypeSummary>() {
       public TypeSummary parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
@@ -1329,55 +1227,51 @@ public  final class JsType extends
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>required string name = 1;</code>
-     */
-    boolean hasName();
-    /**
-     * <code>required string name = 1;</code>
+     * <code>optional string name = 1;</code>
      */
     java.lang.String getName();
     /**
-     * <code>required string name = 1;</code>
+     * <code>optional string name = 1;</code>
      */
     com.google.protobuf.ByteString
         getNameBytes();
 
     /**
-     * <code>required .dossier.Comment type = 2;</code>
+     * <code>optional .dossier.Comment type = 2;</code>
      */
     boolean hasType();
     /**
-     * <code>required .dossier.Comment type = 2;</code>
+     * <code>optional .dossier.Comment type = 2;</code>
      */
     com.github.jsdossier.proto.Comment getType();
     /**
-     * <code>required .dossier.Comment type = 2;</code>
+     * <code>optional .dossier.Comment type = 2;</code>
      */
     com.github.jsdossier.proto.CommentOrBuilder getTypeOrBuilder();
 
     /**
-     * <code>required .dossier.SourceLink source = 3;</code>
+     * <code>optional .dossier.SourceLink source = 3;</code>
      */
     boolean hasSource();
     /**
-     * <code>required .dossier.SourceLink source = 3;</code>
+     * <code>optional .dossier.SourceLink source = 3;</code>
      */
     com.github.jsdossier.proto.SourceLink getSource();
     /**
-     * <code>required .dossier.SourceLink source = 3;</code>
+     * <code>optional .dossier.SourceLink source = 3;</code>
      */
     com.github.jsdossier.proto.SourceLinkOrBuilder getSourceOrBuilder();
 
     /**
-     * <code>required .dossier.Comment description = 4;</code>
+     * <code>optional .dossier.Comment description = 4;</code>
      */
     boolean hasDescription();
     /**
-     * <code>required .dossier.Comment description = 4;</code>
+     * <code>optional .dossier.Comment description = 4;</code>
      */
     com.github.jsdossier.proto.Comment getDescription();
     /**
-     * <code>required .dossier.Comment description = 4;</code>
+     * <code>optional .dossier.Comment description = 4;</code>
      */
     com.github.jsdossier.proto.CommentOrBuilder getDescriptionOrBuilder();
 
@@ -1395,11 +1289,11 @@ public  final class JsType extends
     com.github.jsdossier.proto.CommentOrBuilder getDeprecationOrBuilder();
 
     /**
-     * <code>optional .dossier.Visibility visibility = 6 [default = PUBLIC];</code>
+     * <code>optional .dossier.Visibility visibility = 6;</code>
      */
-    boolean hasVisibility();
+    int getVisibilityValue();
     /**
-     * <code>optional .dossier.Visibility visibility = 6 [default = PUBLIC];</code>
+     * <code>optional .dossier.Visibility visibility = 6;</code>
      */
     com.github.jsdossier.proto.Visibility getVisibility();
   }
@@ -1426,15 +1320,13 @@ public  final class JsType extends
     @java.lang.Override
     public final com.google.protobuf.UnknownFieldSet
     getUnknownFields() {
-      return this.unknownFields;
+      return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
     }
     private TypeDef(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
       this();
       int mutable_bitField0_ = 0;
-      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder();
       try {
         boolean done = false;
         while (!done) {
@@ -1444,21 +1336,20 @@ public  final class JsType extends
               done = true;
               break;
             default: {
-              if (!parseUnknownField(input, unknownFields,
-                                     extensionRegistry, tag)) {
+              if (!input.skipField(tag)) {
                 done = true;
               }
               break;
             }
             case 10: {
-              com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00000001;
-              name_ = bs;
+              java.lang.String s = input.readStringRequireUtf8();
+
+              name_ = s;
               break;
             }
             case 18: {
               com.github.jsdossier.proto.Comment.Builder subBuilder = null;
-              if (((bitField0_ & 0x00000002) == 0x00000002)) {
+              if (type_ != null) {
                 subBuilder = type_.toBuilder();
               }
               type_ = input.readMessage(com.github.jsdossier.proto.Comment.parser(), extensionRegistry);
@@ -1466,12 +1357,12 @@ public  final class JsType extends
                 subBuilder.mergeFrom(type_);
                 type_ = subBuilder.buildPartial();
               }
-              bitField0_ |= 0x00000002;
+
               break;
             }
             case 26: {
               com.github.jsdossier.proto.SourceLink.Builder subBuilder = null;
-              if (((bitField0_ & 0x00000004) == 0x00000004)) {
+              if (source_ != null) {
                 subBuilder = source_.toBuilder();
               }
               source_ = input.readMessage(com.github.jsdossier.proto.SourceLink.parser(), extensionRegistry);
@@ -1479,12 +1370,12 @@ public  final class JsType extends
                 subBuilder.mergeFrom(source_);
                 source_ = subBuilder.buildPartial();
               }
-              bitField0_ |= 0x00000004;
+
               break;
             }
             case 34: {
               com.github.jsdossier.proto.Comment.Builder subBuilder = null;
-              if (((bitField0_ & 0x00000008) == 0x00000008)) {
+              if (description_ != null) {
                 subBuilder = description_.toBuilder();
               }
               description_ = input.readMessage(com.github.jsdossier.proto.Comment.parser(), extensionRegistry);
@@ -1492,12 +1383,12 @@ public  final class JsType extends
                 subBuilder.mergeFrom(description_);
                 description_ = subBuilder.buildPartial();
               }
-              bitField0_ |= 0x00000008;
+
               break;
             }
             case 42: {
               com.github.jsdossier.proto.Comment.Builder subBuilder = null;
-              if (((bitField0_ & 0x00000010) == 0x00000010)) {
+              if (deprecation_ != null) {
                 subBuilder = deprecation_.toBuilder();
               }
               deprecation_ = input.readMessage(com.github.jsdossier.proto.Comment.parser(), extensionRegistry);
@@ -1505,18 +1396,13 @@ public  final class JsType extends
                 subBuilder.mergeFrom(deprecation_);
                 deprecation_ = subBuilder.buildPartial();
               }
-              bitField0_ |= 0x00000010;
+
               break;
             }
             case 48: {
               int rawValue = input.readEnum();
-              com.github.jsdossier.proto.Visibility value = com.github.jsdossier.proto.Visibility.valueOf(rawValue);
-              if (value == null) {
-                unknownFields.mergeVarintField(6, rawValue);
-              } else {
-                bitField0_ |= 0x00000020;
-                visibility_ = rawValue;
-              }
+
+              visibility_ = rawValue;
               break;
             }
           }
@@ -1528,7 +1414,6 @@ public  final class JsType extends
             new com.google.protobuf.InvalidProtocolBufferException(
                 e.getMessage()).setUnfinishedMessage(this));
       } finally {
-        this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
       }
     }
@@ -1544,17 +1429,10 @@ public  final class JsType extends
               com.github.jsdossier.proto.JsType.TypeDef.class, com.github.jsdossier.proto.JsType.TypeDef.Builder.class);
     }
 
-    private int bitField0_;
     public static final int NAME_FIELD_NUMBER = 1;
     private volatile java.lang.Object name_;
     /**
-     * <code>required string name = 1;</code>
-     */
-    public boolean hasName() {
-      return ((bitField0_ & 0x00000001) == 0x00000001);
-    }
-    /**
-     * <code>required string name = 1;</code>
+     * <code>optional string name = 1;</code>
      */
     public java.lang.String getName() {
       java.lang.Object ref = name_;
@@ -1564,14 +1442,12 @@ public  final class JsType extends
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          name_ = s;
-        }
+        name_ = s;
         return s;
       }
     }
     /**
-     * <code>required string name = 1;</code>
+     * <code>optional string name = 1;</code>
      */
     public com.google.protobuf.ByteString
         getNameBytes() {
@@ -1590,64 +1466,64 @@ public  final class JsType extends
     public static final int TYPE_FIELD_NUMBER = 2;
     private com.github.jsdossier.proto.Comment type_;
     /**
-     * <code>required .dossier.Comment type = 2;</code>
+     * <code>optional .dossier.Comment type = 2;</code>
      */
     public boolean hasType() {
-      return ((bitField0_ & 0x00000002) == 0x00000002);
+      return type_ != null;
     }
     /**
-     * <code>required .dossier.Comment type = 2;</code>
+     * <code>optional .dossier.Comment type = 2;</code>
      */
     public com.github.jsdossier.proto.Comment getType() {
       return type_ == null ? com.github.jsdossier.proto.Comment.getDefaultInstance() : type_;
     }
     /**
-     * <code>required .dossier.Comment type = 2;</code>
+     * <code>optional .dossier.Comment type = 2;</code>
      */
     public com.github.jsdossier.proto.CommentOrBuilder getTypeOrBuilder() {
-      return type_ == null ? com.github.jsdossier.proto.Comment.getDefaultInstance() : type_;
+      return getType();
     }
 
     public static final int SOURCE_FIELD_NUMBER = 3;
     private com.github.jsdossier.proto.SourceLink source_;
     /**
-     * <code>required .dossier.SourceLink source = 3;</code>
+     * <code>optional .dossier.SourceLink source = 3;</code>
      */
     public boolean hasSource() {
-      return ((bitField0_ & 0x00000004) == 0x00000004);
+      return source_ != null;
     }
     /**
-     * <code>required .dossier.SourceLink source = 3;</code>
+     * <code>optional .dossier.SourceLink source = 3;</code>
      */
     public com.github.jsdossier.proto.SourceLink getSource() {
       return source_ == null ? com.github.jsdossier.proto.SourceLink.getDefaultInstance() : source_;
     }
     /**
-     * <code>required .dossier.SourceLink source = 3;</code>
+     * <code>optional .dossier.SourceLink source = 3;</code>
      */
     public com.github.jsdossier.proto.SourceLinkOrBuilder getSourceOrBuilder() {
-      return source_ == null ? com.github.jsdossier.proto.SourceLink.getDefaultInstance() : source_;
+      return getSource();
     }
 
     public static final int DESCRIPTION_FIELD_NUMBER = 4;
     private com.github.jsdossier.proto.Comment description_;
     /**
-     * <code>required .dossier.Comment description = 4;</code>
+     * <code>optional .dossier.Comment description = 4;</code>
      */
     public boolean hasDescription() {
-      return ((bitField0_ & 0x00000008) == 0x00000008);
+      return description_ != null;
     }
     /**
-     * <code>required .dossier.Comment description = 4;</code>
+     * <code>optional .dossier.Comment description = 4;</code>
      */
     public com.github.jsdossier.proto.Comment getDescription() {
       return description_ == null ? com.github.jsdossier.proto.Comment.getDefaultInstance() : description_;
     }
     /**
-     * <code>required .dossier.Comment description = 4;</code>
+     * <code>optional .dossier.Comment description = 4;</code>
      */
     public com.github.jsdossier.proto.CommentOrBuilder getDescriptionOrBuilder() {
-      return description_ == null ? com.github.jsdossier.proto.Comment.getDefaultInstance() : description_;
+      return getDescription();
     }
 
     public static final int DEPRECATION_FIELD_NUMBER = 5;
@@ -1656,7 +1532,7 @@ public  final class JsType extends
      * <code>optional .dossier.Comment deprecation = 5;</code>
      */
     public boolean hasDeprecation() {
-      return ((bitField0_ & 0x00000010) == 0x00000010);
+      return deprecation_ != null;
     }
     /**
      * <code>optional .dossier.Comment deprecation = 5;</code>
@@ -1668,23 +1544,23 @@ public  final class JsType extends
      * <code>optional .dossier.Comment deprecation = 5;</code>
      */
     public com.github.jsdossier.proto.CommentOrBuilder getDeprecationOrBuilder() {
-      return deprecation_ == null ? com.github.jsdossier.proto.Comment.getDefaultInstance() : deprecation_;
+      return getDeprecation();
     }
 
     public static final int VISIBILITY_FIELD_NUMBER = 6;
     private int visibility_;
     /**
-     * <code>optional .dossier.Visibility visibility = 6 [default = PUBLIC];</code>
+     * <code>optional .dossier.Visibility visibility = 6;</code>
      */
-    public boolean hasVisibility() {
-      return ((bitField0_ & 0x00000020) == 0x00000020);
+    public int getVisibilityValue() {
+      return visibility_;
     }
     /**
-     * <code>optional .dossier.Visibility visibility = 6 [default = PUBLIC];</code>
+     * <code>optional .dossier.Visibility visibility = 6;</code>
      */
     public com.github.jsdossier.proto.Visibility getVisibility() {
       com.github.jsdossier.proto.Visibility result = com.github.jsdossier.proto.Visibility.valueOf(visibility_);
-      return result == null ? com.github.jsdossier.proto.Visibility.PUBLIC : result;
+      return result == null ? com.github.jsdossier.proto.Visibility.UNRECOGNIZED : result;
     }
 
     private byte memoizedIsInitialized = -1;
@@ -1693,51 +1569,30 @@ public  final class JsType extends
       if (isInitialized == 1) return true;
       if (isInitialized == 0) return false;
 
-      if (!hasName()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      if (!hasType()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      if (!hasSource()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      if (!hasDescription()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      if (!getSource().isInitialized()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
       memoizedIsInitialized = 1;
       return true;
     }
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+      if (!getNameBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessage.writeString(output, 1, name_);
       }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+      if (type_ != null) {
         output.writeMessage(2, getType());
       }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+      if (source_ != null) {
         output.writeMessage(3, getSource());
       }
-      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+      if (description_ != null) {
         output.writeMessage(4, getDescription());
       }
-      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+      if (deprecation_ != null) {
         output.writeMessage(5, getDeprecation());
       }
-      if (((bitField0_ & 0x00000020) == 0x00000020)) {
+      if (visibility_ != com.github.jsdossier.proto.Visibility.PUBLIC.getNumber()) {
         output.writeEnum(6, visibility_);
       }
-      unknownFields.writeTo(output);
     }
 
     public int getSerializedSize() {
@@ -1745,30 +1600,29 @@ public  final class JsType extends
       if (size != -1) return size;
 
       size = 0;
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+      if (!getNameBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessage.computeStringSize(1, name_);
       }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+      if (type_ != null) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(2, getType());
       }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+      if (source_ != null) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(3, getSource());
       }
-      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+      if (description_ != null) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(4, getDescription());
       }
-      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+      if (deprecation_ != null) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(5, getDeprecation());
       }
-      if (((bitField0_ & 0x00000020) == 0x00000020)) {
+      if (visibility_ != com.github.jsdossier.proto.Visibility.PUBLIC.getNumber()) {
         size += com.google.protobuf.CodedOutputStream
           .computeEnumSize(6, visibility_);
       }
-      size += unknownFields.getSerializedSize();
       memoizedSize = size;
       return size;
     }
@@ -1880,42 +1734,38 @@ public  final class JsType extends
       }
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
-          getTypeFieldBuilder();
-          getSourceFieldBuilder();
-          getDescriptionFieldBuilder();
-          getDeprecationFieldBuilder();
         }
       }
       public Builder clear() {
         super.clear();
         name_ = "";
-        bitField0_ = (bitField0_ & ~0x00000001);
+
         if (typeBuilder_ == null) {
           type_ = null;
         } else {
-          typeBuilder_.clear();
+          type_ = null;
+          typeBuilder_ = null;
         }
-        bitField0_ = (bitField0_ & ~0x00000002);
         if (sourceBuilder_ == null) {
           source_ = null;
         } else {
-          sourceBuilder_.clear();
+          source_ = null;
+          sourceBuilder_ = null;
         }
-        bitField0_ = (bitField0_ & ~0x00000004);
         if (descriptionBuilder_ == null) {
           description_ = null;
         } else {
-          descriptionBuilder_.clear();
+          description_ = null;
+          descriptionBuilder_ = null;
         }
-        bitField0_ = (bitField0_ & ~0x00000008);
         if (deprecationBuilder_ == null) {
           deprecation_ = null;
         } else {
-          deprecationBuilder_.clear();
+          deprecation_ = null;
+          deprecationBuilder_ = null;
         }
-        bitField0_ = (bitField0_ & ~0x00000010);
         visibility_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000020);
+
         return this;
       }
 
@@ -1938,49 +1788,28 @@ public  final class JsType extends
 
       public com.github.jsdossier.proto.JsType.TypeDef buildPartial() {
         com.github.jsdossier.proto.JsType.TypeDef result = new com.github.jsdossier.proto.JsType.TypeDef(this);
-        int from_bitField0_ = bitField0_;
-        int to_bitField0_ = 0;
-        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
-          to_bitField0_ |= 0x00000001;
-        }
         result.name_ = name_;
-        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
-          to_bitField0_ |= 0x00000002;
-        }
         if (typeBuilder_ == null) {
           result.type_ = type_;
         } else {
           result.type_ = typeBuilder_.build();
-        }
-        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
-          to_bitField0_ |= 0x00000004;
         }
         if (sourceBuilder_ == null) {
           result.source_ = source_;
         } else {
           result.source_ = sourceBuilder_.build();
         }
-        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
-          to_bitField0_ |= 0x00000008;
-        }
         if (descriptionBuilder_ == null) {
           result.description_ = description_;
         } else {
           result.description_ = descriptionBuilder_.build();
-        }
-        if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
-          to_bitField0_ |= 0x00000010;
         }
         if (deprecationBuilder_ == null) {
           result.deprecation_ = deprecation_;
         } else {
           result.deprecation_ = deprecationBuilder_.build();
         }
-        if (((from_bitField0_ & 0x00000020) == 0x00000020)) {
-          to_bitField0_ |= 0x00000020;
-        }
         result.visibility_ = visibility_;
-        result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
       }
@@ -1996,8 +1825,7 @@ public  final class JsType extends
 
       public Builder mergeFrom(com.github.jsdossier.proto.JsType.TypeDef other) {
         if (other == com.github.jsdossier.proto.JsType.TypeDef.getDefaultInstance()) return this;
-        if (other.hasName()) {
-          bitField0_ |= 0x00000001;
+        if (!other.getName().isEmpty()) {
           name_ = other.name_;
           onChanged();
         }
@@ -2013,30 +1841,14 @@ public  final class JsType extends
         if (other.hasDeprecation()) {
           mergeDeprecation(other.getDeprecation());
         }
-        if (other.hasVisibility()) {
-          setVisibility(other.getVisibility());
+        if (other.visibility_ != 0) {
+          setVisibilityValue(other.getVisibilityValue());
         }
-        this.mergeUnknownFields(other.unknownFields);
         onChanged();
         return this;
       }
 
       public final boolean isInitialized() {
-        if (!hasName()) {
-          return false;
-        }
-        if (!hasType()) {
-          return false;
-        }
-        if (!hasSource()) {
-          return false;
-        }
-        if (!hasDescription()) {
-          return false;
-        }
-        if (!getSource().isInitialized()) {
-          return false;
-        }
         return true;
       }
 
@@ -2057,17 +1869,10 @@ public  final class JsType extends
         }
         return this;
       }
-      private int bitField0_;
 
       private java.lang.Object name_ = "";
       /**
-       * <code>required string name = 1;</code>
-       */
-      public boolean hasName() {
-        return ((bitField0_ & 0x00000001) == 0x00000001);
-      }
-      /**
-       * <code>required string name = 1;</code>
+       * <code>optional string name = 1;</code>
        */
       public java.lang.String getName() {
         java.lang.Object ref = name_;
@@ -2075,16 +1880,14 @@ public  final class JsType extends
           com.google.protobuf.ByteString bs =
               (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            name_ = s;
-          }
+          name_ = s;
           return s;
         } else {
           return (java.lang.String) ref;
         }
       }
       /**
-       * <code>required string name = 1;</code>
+       * <code>optional string name = 1;</code>
        */
       public com.google.protobuf.ByteString
           getNameBytes() {
@@ -2100,36 +1903,37 @@ public  final class JsType extends
         }
       }
       /**
-       * <code>required string name = 1;</code>
+       * <code>optional string name = 1;</code>
        */
       public Builder setName(
           java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000001;
+  
         name_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>required string name = 1;</code>
+       * <code>optional string name = 1;</code>
        */
       public Builder clearName() {
-        bitField0_ = (bitField0_ & ~0x00000001);
+        
         name_ = getDefaultInstance().getName();
         onChanged();
         return this;
       }
       /**
-       * <code>required string name = 1;</code>
+       * <code>optional string name = 1;</code>
        */
       public Builder setNameBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000001;
+  checkByteStringIsUtf8(value);
+        
         name_ = value;
         onChanged();
         return this;
@@ -2139,13 +1943,13 @@ public  final class JsType extends
       private com.google.protobuf.SingleFieldBuilder<
           com.github.jsdossier.proto.Comment, com.github.jsdossier.proto.Comment.Builder, com.github.jsdossier.proto.CommentOrBuilder> typeBuilder_;
       /**
-       * <code>required .dossier.Comment type = 2;</code>
+       * <code>optional .dossier.Comment type = 2;</code>
        */
       public boolean hasType() {
-        return ((bitField0_ & 0x00000002) == 0x00000002);
+        return typeBuilder_ != null || type_ != null;
       }
       /**
-       * <code>required .dossier.Comment type = 2;</code>
+       * <code>optional .dossier.Comment type = 2;</code>
        */
       public com.github.jsdossier.proto.Comment getType() {
         if (typeBuilder_ == null) {
@@ -2155,7 +1959,7 @@ public  final class JsType extends
         }
       }
       /**
-       * <code>required .dossier.Comment type = 2;</code>
+       * <code>optional .dossier.Comment type = 2;</code>
        */
       public Builder setType(com.github.jsdossier.proto.Comment value) {
         if (typeBuilder_ == null) {
@@ -2167,11 +1971,11 @@ public  final class JsType extends
         } else {
           typeBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00000002;
+
         return this;
       }
       /**
-       * <code>required .dossier.Comment type = 2;</code>
+       * <code>optional .dossier.Comment type = 2;</code>
        */
       public Builder setType(
           com.github.jsdossier.proto.Comment.Builder builderForValue) {
@@ -2181,17 +1985,15 @@ public  final class JsType extends
         } else {
           typeBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00000002;
+
         return this;
       }
       /**
-       * <code>required .dossier.Comment type = 2;</code>
+       * <code>optional .dossier.Comment type = 2;</code>
        */
       public Builder mergeType(com.github.jsdossier.proto.Comment value) {
         if (typeBuilder_ == null) {
-          if (((bitField0_ & 0x00000002) == 0x00000002) &&
-              type_ != null &&
-              type_ != com.github.jsdossier.proto.Comment.getDefaultInstance()) {
+          if (type_ != null) {
             type_ =
               com.github.jsdossier.proto.Comment.newBuilder(type_).mergeFrom(value).buildPartial();
           } else {
@@ -2201,32 +2003,33 @@ public  final class JsType extends
         } else {
           typeBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x00000002;
+
         return this;
       }
       /**
-       * <code>required .dossier.Comment type = 2;</code>
+       * <code>optional .dossier.Comment type = 2;</code>
        */
       public Builder clearType() {
         if (typeBuilder_ == null) {
           type_ = null;
           onChanged();
         } else {
-          typeBuilder_.clear();
+          type_ = null;
+          typeBuilder_ = null;
         }
-        bitField0_ = (bitField0_ & ~0x00000002);
+
         return this;
       }
       /**
-       * <code>required .dossier.Comment type = 2;</code>
+       * <code>optional .dossier.Comment type = 2;</code>
        */
       public com.github.jsdossier.proto.Comment.Builder getTypeBuilder() {
-        bitField0_ |= 0x00000002;
+        
         onChanged();
         return getTypeFieldBuilder().getBuilder();
       }
       /**
-       * <code>required .dossier.Comment type = 2;</code>
+       * <code>optional .dossier.Comment type = 2;</code>
        */
       public com.github.jsdossier.proto.CommentOrBuilder getTypeOrBuilder() {
         if (typeBuilder_ != null) {
@@ -2237,7 +2040,7 @@ public  final class JsType extends
         }
       }
       /**
-       * <code>required .dossier.Comment type = 2;</code>
+       * <code>optional .dossier.Comment type = 2;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
           com.github.jsdossier.proto.Comment, com.github.jsdossier.proto.Comment.Builder, com.github.jsdossier.proto.CommentOrBuilder> 
@@ -2257,13 +2060,13 @@ public  final class JsType extends
       private com.google.protobuf.SingleFieldBuilder<
           com.github.jsdossier.proto.SourceLink, com.github.jsdossier.proto.SourceLink.Builder, com.github.jsdossier.proto.SourceLinkOrBuilder> sourceBuilder_;
       /**
-       * <code>required .dossier.SourceLink source = 3;</code>
+       * <code>optional .dossier.SourceLink source = 3;</code>
        */
       public boolean hasSource() {
-        return ((bitField0_ & 0x00000004) == 0x00000004);
+        return sourceBuilder_ != null || source_ != null;
       }
       /**
-       * <code>required .dossier.SourceLink source = 3;</code>
+       * <code>optional .dossier.SourceLink source = 3;</code>
        */
       public com.github.jsdossier.proto.SourceLink getSource() {
         if (sourceBuilder_ == null) {
@@ -2273,7 +2076,7 @@ public  final class JsType extends
         }
       }
       /**
-       * <code>required .dossier.SourceLink source = 3;</code>
+       * <code>optional .dossier.SourceLink source = 3;</code>
        */
       public Builder setSource(com.github.jsdossier.proto.SourceLink value) {
         if (sourceBuilder_ == null) {
@@ -2285,11 +2088,11 @@ public  final class JsType extends
         } else {
           sourceBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00000004;
+
         return this;
       }
       /**
-       * <code>required .dossier.SourceLink source = 3;</code>
+       * <code>optional .dossier.SourceLink source = 3;</code>
        */
       public Builder setSource(
           com.github.jsdossier.proto.SourceLink.Builder builderForValue) {
@@ -2299,17 +2102,15 @@ public  final class JsType extends
         } else {
           sourceBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00000004;
+
         return this;
       }
       /**
-       * <code>required .dossier.SourceLink source = 3;</code>
+       * <code>optional .dossier.SourceLink source = 3;</code>
        */
       public Builder mergeSource(com.github.jsdossier.proto.SourceLink value) {
         if (sourceBuilder_ == null) {
-          if (((bitField0_ & 0x00000004) == 0x00000004) &&
-              source_ != null &&
-              source_ != com.github.jsdossier.proto.SourceLink.getDefaultInstance()) {
+          if (source_ != null) {
             source_ =
               com.github.jsdossier.proto.SourceLink.newBuilder(source_).mergeFrom(value).buildPartial();
           } else {
@@ -2319,32 +2120,33 @@ public  final class JsType extends
         } else {
           sourceBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x00000004;
+
         return this;
       }
       /**
-       * <code>required .dossier.SourceLink source = 3;</code>
+       * <code>optional .dossier.SourceLink source = 3;</code>
        */
       public Builder clearSource() {
         if (sourceBuilder_ == null) {
           source_ = null;
           onChanged();
         } else {
-          sourceBuilder_.clear();
+          source_ = null;
+          sourceBuilder_ = null;
         }
-        bitField0_ = (bitField0_ & ~0x00000004);
+
         return this;
       }
       /**
-       * <code>required .dossier.SourceLink source = 3;</code>
+       * <code>optional .dossier.SourceLink source = 3;</code>
        */
       public com.github.jsdossier.proto.SourceLink.Builder getSourceBuilder() {
-        bitField0_ |= 0x00000004;
+        
         onChanged();
         return getSourceFieldBuilder().getBuilder();
       }
       /**
-       * <code>required .dossier.SourceLink source = 3;</code>
+       * <code>optional .dossier.SourceLink source = 3;</code>
        */
       public com.github.jsdossier.proto.SourceLinkOrBuilder getSourceOrBuilder() {
         if (sourceBuilder_ != null) {
@@ -2355,7 +2157,7 @@ public  final class JsType extends
         }
       }
       /**
-       * <code>required .dossier.SourceLink source = 3;</code>
+       * <code>optional .dossier.SourceLink source = 3;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
           com.github.jsdossier.proto.SourceLink, com.github.jsdossier.proto.SourceLink.Builder, com.github.jsdossier.proto.SourceLinkOrBuilder> 
@@ -2375,13 +2177,13 @@ public  final class JsType extends
       private com.google.protobuf.SingleFieldBuilder<
           com.github.jsdossier.proto.Comment, com.github.jsdossier.proto.Comment.Builder, com.github.jsdossier.proto.CommentOrBuilder> descriptionBuilder_;
       /**
-       * <code>required .dossier.Comment description = 4;</code>
+       * <code>optional .dossier.Comment description = 4;</code>
        */
       public boolean hasDescription() {
-        return ((bitField0_ & 0x00000008) == 0x00000008);
+        return descriptionBuilder_ != null || description_ != null;
       }
       /**
-       * <code>required .dossier.Comment description = 4;</code>
+       * <code>optional .dossier.Comment description = 4;</code>
        */
       public com.github.jsdossier.proto.Comment getDescription() {
         if (descriptionBuilder_ == null) {
@@ -2391,7 +2193,7 @@ public  final class JsType extends
         }
       }
       /**
-       * <code>required .dossier.Comment description = 4;</code>
+       * <code>optional .dossier.Comment description = 4;</code>
        */
       public Builder setDescription(com.github.jsdossier.proto.Comment value) {
         if (descriptionBuilder_ == null) {
@@ -2403,11 +2205,11 @@ public  final class JsType extends
         } else {
           descriptionBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00000008;
+
         return this;
       }
       /**
-       * <code>required .dossier.Comment description = 4;</code>
+       * <code>optional .dossier.Comment description = 4;</code>
        */
       public Builder setDescription(
           com.github.jsdossier.proto.Comment.Builder builderForValue) {
@@ -2417,17 +2219,15 @@ public  final class JsType extends
         } else {
           descriptionBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00000008;
+
         return this;
       }
       /**
-       * <code>required .dossier.Comment description = 4;</code>
+       * <code>optional .dossier.Comment description = 4;</code>
        */
       public Builder mergeDescription(com.github.jsdossier.proto.Comment value) {
         if (descriptionBuilder_ == null) {
-          if (((bitField0_ & 0x00000008) == 0x00000008) &&
-              description_ != null &&
-              description_ != com.github.jsdossier.proto.Comment.getDefaultInstance()) {
+          if (description_ != null) {
             description_ =
               com.github.jsdossier.proto.Comment.newBuilder(description_).mergeFrom(value).buildPartial();
           } else {
@@ -2437,32 +2237,33 @@ public  final class JsType extends
         } else {
           descriptionBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x00000008;
+
         return this;
       }
       /**
-       * <code>required .dossier.Comment description = 4;</code>
+       * <code>optional .dossier.Comment description = 4;</code>
        */
       public Builder clearDescription() {
         if (descriptionBuilder_ == null) {
           description_ = null;
           onChanged();
         } else {
-          descriptionBuilder_.clear();
+          description_ = null;
+          descriptionBuilder_ = null;
         }
-        bitField0_ = (bitField0_ & ~0x00000008);
+
         return this;
       }
       /**
-       * <code>required .dossier.Comment description = 4;</code>
+       * <code>optional .dossier.Comment description = 4;</code>
        */
       public com.github.jsdossier.proto.Comment.Builder getDescriptionBuilder() {
-        bitField0_ |= 0x00000008;
+        
         onChanged();
         return getDescriptionFieldBuilder().getBuilder();
       }
       /**
-       * <code>required .dossier.Comment description = 4;</code>
+       * <code>optional .dossier.Comment description = 4;</code>
        */
       public com.github.jsdossier.proto.CommentOrBuilder getDescriptionOrBuilder() {
         if (descriptionBuilder_ != null) {
@@ -2473,7 +2274,7 @@ public  final class JsType extends
         }
       }
       /**
-       * <code>required .dossier.Comment description = 4;</code>
+       * <code>optional .dossier.Comment description = 4;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
           com.github.jsdossier.proto.Comment, com.github.jsdossier.proto.Comment.Builder, com.github.jsdossier.proto.CommentOrBuilder> 
@@ -2496,7 +2297,7 @@ public  final class JsType extends
        * <code>optional .dossier.Comment deprecation = 5;</code>
        */
       public boolean hasDeprecation() {
-        return ((bitField0_ & 0x00000010) == 0x00000010);
+        return deprecationBuilder_ != null || deprecation_ != null;
       }
       /**
        * <code>optional .dossier.Comment deprecation = 5;</code>
@@ -2521,7 +2322,7 @@ public  final class JsType extends
         } else {
           deprecationBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00000010;
+
         return this;
       }
       /**
@@ -2535,7 +2336,7 @@ public  final class JsType extends
         } else {
           deprecationBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00000010;
+
         return this;
       }
       /**
@@ -2543,9 +2344,7 @@ public  final class JsType extends
        */
       public Builder mergeDeprecation(com.github.jsdossier.proto.Comment value) {
         if (deprecationBuilder_ == null) {
-          if (((bitField0_ & 0x00000010) == 0x00000010) &&
-              deprecation_ != null &&
-              deprecation_ != com.github.jsdossier.proto.Comment.getDefaultInstance()) {
+          if (deprecation_ != null) {
             deprecation_ =
               com.github.jsdossier.proto.Comment.newBuilder(deprecation_).mergeFrom(value).buildPartial();
           } else {
@@ -2555,7 +2354,7 @@ public  final class JsType extends
         } else {
           deprecationBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x00000010;
+
         return this;
       }
       /**
@@ -2566,16 +2365,17 @@ public  final class JsType extends
           deprecation_ = null;
           onChanged();
         } else {
-          deprecationBuilder_.clear();
+          deprecation_ = null;
+          deprecationBuilder_ = null;
         }
-        bitField0_ = (bitField0_ & ~0x00000010);
+
         return this;
       }
       /**
        * <code>optional .dossier.Comment deprecation = 5;</code>
        */
       public com.github.jsdossier.proto.Comment.Builder getDeprecationBuilder() {
-        bitField0_ |= 0x00000010;
+        
         onChanged();
         return getDeprecationFieldBuilder().getBuilder();
       }
@@ -2609,39 +2409,57 @@ public  final class JsType extends
 
       private int visibility_ = 0;
       /**
-       * <code>optional .dossier.Visibility visibility = 6 [default = PUBLIC];</code>
+       * <code>optional .dossier.Visibility visibility = 6;</code>
        */
-      public boolean hasVisibility() {
-        return ((bitField0_ & 0x00000020) == 0x00000020);
+      public int getVisibilityValue() {
+        return visibility_;
       }
       /**
-       * <code>optional .dossier.Visibility visibility = 6 [default = PUBLIC];</code>
+       * <code>optional .dossier.Visibility visibility = 6;</code>
+       */
+      public Builder setVisibilityValue(int value) {
+        visibility_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .dossier.Visibility visibility = 6;</code>
        */
       public com.github.jsdossier.proto.Visibility getVisibility() {
         com.github.jsdossier.proto.Visibility result = com.github.jsdossier.proto.Visibility.valueOf(visibility_);
-        return result == null ? com.github.jsdossier.proto.Visibility.PUBLIC : result;
+        return result == null ? com.github.jsdossier.proto.Visibility.UNRECOGNIZED : result;
       }
       /**
-       * <code>optional .dossier.Visibility visibility = 6 [default = PUBLIC];</code>
+       * <code>optional .dossier.Visibility visibility = 6;</code>
        */
       public Builder setVisibility(com.github.jsdossier.proto.Visibility value) {
         if (value == null) {
           throw new NullPointerException();
         }
-        bitField0_ |= 0x00000020;
+        
         visibility_ = value.getNumber();
         onChanged();
         return this;
       }
       /**
-       * <code>optional .dossier.Visibility visibility = 6 [default = PUBLIC];</code>
+       * <code>optional .dossier.Visibility visibility = 6;</code>
        */
       public Builder clearVisibility() {
-        bitField0_ = (bitField0_ & ~0x00000020);
+        
         visibility_ = 0;
         onChanged();
         return this;
       }
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
+
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
+
 
       // @@protoc_insertion_point(builder_scope:dossier.JsType.TypeDef)
     }
@@ -2656,7 +2474,7 @@ public  final class JsType extends
       return DEFAULT_INSTANCE;
     }
 
-    @java.lang.Deprecated public static final com.google.protobuf.Parser<TypeDef>
+    private static final com.google.protobuf.Parser<TypeDef>
         PARSER = new com.google.protobuf.AbstractParser<TypeDef>() {
       public TypeDef parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
@@ -2695,22 +2513,18 @@ public  final class JsType extends
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>required .dossier.TypeLink link = 1;</code>
+     * <code>optional .dossier.TypeLink link = 1;</code>
      */
     boolean hasLink();
     /**
-     * <code>required .dossier.TypeLink link = 1;</code>
+     * <code>optional .dossier.TypeLink link = 1;</code>
      */
     com.github.jsdossier.proto.TypeLink getLink();
     /**
-     * <code>required .dossier.TypeLink link = 1;</code>
+     * <code>optional .dossier.TypeLink link = 1;</code>
      */
     com.github.jsdossier.proto.TypeLinkOrBuilder getLinkOrBuilder();
 
-    /**
-     * <code>optional bool is_module = 2;</code>
-     */
-    boolean hasIsModule();
     /**
      * <code>optional bool is_module = 2;</code>
      */
@@ -2738,15 +2552,13 @@ public  final class JsType extends
     @java.lang.Override
     public final com.google.protobuf.UnknownFieldSet
     getUnknownFields() {
-      return this.unknownFields;
+      return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
     }
     private ParentLink(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
       this();
       int mutable_bitField0_ = 0;
-      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder();
       try {
         boolean done = false;
         while (!done) {
@@ -2756,15 +2568,14 @@ public  final class JsType extends
               done = true;
               break;
             default: {
-              if (!parseUnknownField(input, unknownFields,
-                                     extensionRegistry, tag)) {
+              if (!input.skipField(tag)) {
                 done = true;
               }
               break;
             }
             case 10: {
               com.github.jsdossier.proto.TypeLink.Builder subBuilder = null;
-              if (((bitField0_ & 0x00000001) == 0x00000001)) {
+              if (link_ != null) {
                 subBuilder = link_.toBuilder();
               }
               link_ = input.readMessage(com.github.jsdossier.proto.TypeLink.parser(), extensionRegistry);
@@ -2772,11 +2583,11 @@ public  final class JsType extends
                 subBuilder.mergeFrom(link_);
                 link_ = subBuilder.buildPartial();
               }
-              bitField0_ |= 0x00000001;
+
               break;
             }
             case 16: {
-              bitField0_ |= 0x00000002;
+
               isModule_ = input.readBool();
               break;
             }
@@ -2789,7 +2600,6 @@ public  final class JsType extends
             new com.google.protobuf.InvalidProtocolBufferException(
                 e.getMessage()).setUnfinishedMessage(this));
       } finally {
-        this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
       }
     }
@@ -2805,36 +2615,29 @@ public  final class JsType extends
               com.github.jsdossier.proto.JsType.ParentLink.class, com.github.jsdossier.proto.JsType.ParentLink.Builder.class);
     }
 
-    private int bitField0_;
     public static final int LINK_FIELD_NUMBER = 1;
     private com.github.jsdossier.proto.TypeLink link_;
     /**
-     * <code>required .dossier.TypeLink link = 1;</code>
+     * <code>optional .dossier.TypeLink link = 1;</code>
      */
     public boolean hasLink() {
-      return ((bitField0_ & 0x00000001) == 0x00000001);
+      return link_ != null;
     }
     /**
-     * <code>required .dossier.TypeLink link = 1;</code>
+     * <code>optional .dossier.TypeLink link = 1;</code>
      */
     public com.github.jsdossier.proto.TypeLink getLink() {
       return link_ == null ? com.github.jsdossier.proto.TypeLink.getDefaultInstance() : link_;
     }
     /**
-     * <code>required .dossier.TypeLink link = 1;</code>
+     * <code>optional .dossier.TypeLink link = 1;</code>
      */
     public com.github.jsdossier.proto.TypeLinkOrBuilder getLinkOrBuilder() {
-      return link_ == null ? com.github.jsdossier.proto.TypeLink.getDefaultInstance() : link_;
+      return getLink();
     }
 
     public static final int IS_MODULE_FIELD_NUMBER = 2;
     private boolean isModule_;
-    /**
-     * <code>optional bool is_module = 2;</code>
-     */
-    public boolean hasIsModule() {
-      return ((bitField0_ & 0x00000002) == 0x00000002);
-    }
     /**
      * <code>optional bool is_module = 2;</code>
      */
@@ -2848,27 +2651,18 @@ public  final class JsType extends
       if (isInitialized == 1) return true;
       if (isInitialized == 0) return false;
 
-      if (!hasLink()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      if (!getLink().isInitialized()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
       memoizedIsInitialized = 1;
       return true;
     }
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+      if (link_ != null) {
         output.writeMessage(1, getLink());
       }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+      if (isModule_ != false) {
         output.writeBool(2, isModule_);
       }
-      unknownFields.writeTo(output);
     }
 
     public int getSerializedSize() {
@@ -2876,15 +2670,14 @@ public  final class JsType extends
       if (size != -1) return size;
 
       size = 0;
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+      if (link_ != null) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(1, getLink());
       }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+      if (isModule_ != false) {
         size += com.google.protobuf.CodedOutputStream
           .computeBoolSize(2, isModule_);
       }
-      size += unknownFields.getSerializedSize();
       memoizedSize = size;
       return size;
     }
@@ -2996,7 +2789,6 @@ public  final class JsType extends
       }
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
-          getLinkFieldBuilder();
         }
       }
       public Builder clear() {
@@ -3004,11 +2796,11 @@ public  final class JsType extends
         if (linkBuilder_ == null) {
           link_ = null;
         } else {
-          linkBuilder_.clear();
+          link_ = null;
+          linkBuilder_ = null;
         }
-        bitField0_ = (bitField0_ & ~0x00000001);
         isModule_ = false;
-        bitField0_ = (bitField0_ & ~0x00000002);
+
         return this;
       }
 
@@ -3031,21 +2823,12 @@ public  final class JsType extends
 
       public com.github.jsdossier.proto.JsType.ParentLink buildPartial() {
         com.github.jsdossier.proto.JsType.ParentLink result = new com.github.jsdossier.proto.JsType.ParentLink(this);
-        int from_bitField0_ = bitField0_;
-        int to_bitField0_ = 0;
-        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
-          to_bitField0_ |= 0x00000001;
-        }
         if (linkBuilder_ == null) {
           result.link_ = link_;
         } else {
           result.link_ = linkBuilder_.build();
         }
-        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
-          to_bitField0_ |= 0x00000002;
-        }
         result.isModule_ = isModule_;
-        result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
       }
@@ -3064,21 +2847,14 @@ public  final class JsType extends
         if (other.hasLink()) {
           mergeLink(other.getLink());
         }
-        if (other.hasIsModule()) {
+        if (other.getIsModule() != false) {
           setIsModule(other.getIsModule());
         }
-        this.mergeUnknownFields(other.unknownFields);
         onChanged();
         return this;
       }
 
       public final boolean isInitialized() {
-        if (!hasLink()) {
-          return false;
-        }
-        if (!getLink().isInitialized()) {
-          return false;
-        }
         return true;
       }
 
@@ -3099,19 +2875,18 @@ public  final class JsType extends
         }
         return this;
       }
-      private int bitField0_;
 
       private com.github.jsdossier.proto.TypeLink link_ = null;
       private com.google.protobuf.SingleFieldBuilder<
           com.github.jsdossier.proto.TypeLink, com.github.jsdossier.proto.TypeLink.Builder, com.github.jsdossier.proto.TypeLinkOrBuilder> linkBuilder_;
       /**
-       * <code>required .dossier.TypeLink link = 1;</code>
+       * <code>optional .dossier.TypeLink link = 1;</code>
        */
       public boolean hasLink() {
-        return ((bitField0_ & 0x00000001) == 0x00000001);
+        return linkBuilder_ != null || link_ != null;
       }
       /**
-       * <code>required .dossier.TypeLink link = 1;</code>
+       * <code>optional .dossier.TypeLink link = 1;</code>
        */
       public com.github.jsdossier.proto.TypeLink getLink() {
         if (linkBuilder_ == null) {
@@ -3121,7 +2896,7 @@ public  final class JsType extends
         }
       }
       /**
-       * <code>required .dossier.TypeLink link = 1;</code>
+       * <code>optional .dossier.TypeLink link = 1;</code>
        */
       public Builder setLink(com.github.jsdossier.proto.TypeLink value) {
         if (linkBuilder_ == null) {
@@ -3133,11 +2908,11 @@ public  final class JsType extends
         } else {
           linkBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00000001;
+
         return this;
       }
       /**
-       * <code>required .dossier.TypeLink link = 1;</code>
+       * <code>optional .dossier.TypeLink link = 1;</code>
        */
       public Builder setLink(
           com.github.jsdossier.proto.TypeLink.Builder builderForValue) {
@@ -3147,17 +2922,15 @@ public  final class JsType extends
         } else {
           linkBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00000001;
+
         return this;
       }
       /**
-       * <code>required .dossier.TypeLink link = 1;</code>
+       * <code>optional .dossier.TypeLink link = 1;</code>
        */
       public Builder mergeLink(com.github.jsdossier.proto.TypeLink value) {
         if (linkBuilder_ == null) {
-          if (((bitField0_ & 0x00000001) == 0x00000001) &&
-              link_ != null &&
-              link_ != com.github.jsdossier.proto.TypeLink.getDefaultInstance()) {
+          if (link_ != null) {
             link_ =
               com.github.jsdossier.proto.TypeLink.newBuilder(link_).mergeFrom(value).buildPartial();
           } else {
@@ -3167,32 +2940,33 @@ public  final class JsType extends
         } else {
           linkBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x00000001;
+
         return this;
       }
       /**
-       * <code>required .dossier.TypeLink link = 1;</code>
+       * <code>optional .dossier.TypeLink link = 1;</code>
        */
       public Builder clearLink() {
         if (linkBuilder_ == null) {
           link_ = null;
           onChanged();
         } else {
-          linkBuilder_.clear();
+          link_ = null;
+          linkBuilder_ = null;
         }
-        bitField0_ = (bitField0_ & ~0x00000001);
+
         return this;
       }
       /**
-       * <code>required .dossier.TypeLink link = 1;</code>
+       * <code>optional .dossier.TypeLink link = 1;</code>
        */
       public com.github.jsdossier.proto.TypeLink.Builder getLinkBuilder() {
-        bitField0_ |= 0x00000001;
+        
         onChanged();
         return getLinkFieldBuilder().getBuilder();
       }
       /**
-       * <code>required .dossier.TypeLink link = 1;</code>
+       * <code>optional .dossier.TypeLink link = 1;</code>
        */
       public com.github.jsdossier.proto.TypeLinkOrBuilder getLinkOrBuilder() {
         if (linkBuilder_ != null) {
@@ -3203,7 +2977,7 @@ public  final class JsType extends
         }
       }
       /**
-       * <code>required .dossier.TypeLink link = 1;</code>
+       * <code>optional .dossier.TypeLink link = 1;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
           com.github.jsdossier.proto.TypeLink, com.github.jsdossier.proto.TypeLink.Builder, com.github.jsdossier.proto.TypeLinkOrBuilder> 
@@ -3223,12 +2997,6 @@ public  final class JsType extends
       /**
        * <code>optional bool is_module = 2;</code>
        */
-      public boolean hasIsModule() {
-        return ((bitField0_ & 0x00000002) == 0x00000002);
-      }
-      /**
-       * <code>optional bool is_module = 2;</code>
-       */
       public boolean getIsModule() {
         return isModule_;
       }
@@ -3236,7 +3004,7 @@ public  final class JsType extends
        * <code>optional bool is_module = 2;</code>
        */
       public Builder setIsModule(boolean value) {
-        bitField0_ |= 0x00000002;
+        
         isModule_ = value;
         onChanged();
         return this;
@@ -3245,11 +3013,21 @@ public  final class JsType extends
        * <code>optional bool is_module = 2;</code>
        */
       public Builder clearIsModule() {
-        bitField0_ = (bitField0_ & ~0x00000002);
+        
         isModule_ = false;
         onChanged();
         return this;
       }
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
+
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
+
 
       // @@protoc_insertion_point(builder_scope:dossier.JsType.ParentLink)
     }
@@ -3264,7 +3042,7 @@ public  final class JsType extends
       return DEFAULT_INSTANCE;
     }
 
-    @java.lang.Deprecated public static final com.google.protobuf.Parser<ParentLink>
+    private static final com.google.protobuf.Parser<ParentLink>
         PARSER = new com.google.protobuf.AbstractParser<ParentLink>() {
       public ParentLink parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
@@ -3302,13 +3080,7 @@ public  final class JsType extends
   public static final int NAME_FIELD_NUMBER = 1;
   private volatile java.lang.Object name_;
   /**
-   * <code>required string name = 1;</code>
-   */
-  public boolean hasName() {
-    return ((bitField0_ & 0x00000001) == 0x00000001);
-  }
-  /**
-   * <code>required string name = 1;</code>
+   * <code>optional string name = 1;</code>
    */
   public java.lang.String getName() {
     java.lang.Object ref = name_;
@@ -3318,14 +3090,12 @@ public  final class JsType extends
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      if (bs.isValidUtf8()) {
-        name_ = s;
-      }
+      name_ = s;
       return s;
     }
   }
   /**
-   * <code>required string name = 1;</code>
+   * <code>optional string name = 1;</code>
    */
   public com.google.protobuf.ByteString
       getNameBytes() {
@@ -3344,22 +3114,22 @@ public  final class JsType extends
   public static final int SOURCE_FIELD_NUMBER = 5;
   private com.github.jsdossier.proto.SourceLink source_;
   /**
-   * <code>required .dossier.SourceLink source = 5;</code>
+   * <code>optional .dossier.SourceLink source = 5;</code>
    */
   public boolean hasSource() {
-    return ((bitField0_ & 0x00000002) == 0x00000002);
+    return source_ != null;
   }
   /**
-   * <code>required .dossier.SourceLink source = 5;</code>
+   * <code>optional .dossier.SourceLink source = 5;</code>
    */
   public com.github.jsdossier.proto.SourceLink getSource() {
     return source_ == null ? com.github.jsdossier.proto.SourceLink.getDefaultInstance() : source_;
   }
   /**
-   * <code>required .dossier.SourceLink source = 5;</code>
+   * <code>optional .dossier.SourceLink source = 5;</code>
    */
   public com.github.jsdossier.proto.SourceLinkOrBuilder getSourceOrBuilder() {
-    return source_ == null ? com.github.jsdossier.proto.SourceLink.getDefaultInstance() : source_;
+    return getSource();
   }
 
   public static final int NESTED_FIELD_NUMBER = 6;
@@ -3400,43 +3170,43 @@ public  final class JsType extends
   public static final int DESCRIPTION_FIELD_NUMBER = 7;
   private com.github.jsdossier.proto.Comment description_;
   /**
-   * <code>required .dossier.Comment description = 7;</code>
+   * <code>optional .dossier.Comment description = 7;</code>
    */
   public boolean hasDescription() {
-    return ((bitField0_ & 0x00000004) == 0x00000004);
+    return description_ != null;
   }
   /**
-   * <code>required .dossier.Comment description = 7;</code>
+   * <code>optional .dossier.Comment description = 7;</code>
    */
   public com.github.jsdossier.proto.Comment getDescription() {
     return description_ == null ? com.github.jsdossier.proto.Comment.getDefaultInstance() : description_;
   }
   /**
-   * <code>required .dossier.Comment description = 7;</code>
+   * <code>optional .dossier.Comment description = 7;</code>
    */
   public com.github.jsdossier.proto.CommentOrBuilder getDescriptionOrBuilder() {
-    return description_ == null ? com.github.jsdossier.proto.Comment.getDefaultInstance() : description_;
+    return getDescription();
   }
 
   public static final int TAGS_FIELD_NUMBER = 8;
   private com.github.jsdossier.proto.Tags tags_;
   /**
-   * <code>required .dossier.Tags tags = 8;</code>
+   * <code>optional .dossier.Tags tags = 8;</code>
    */
   public boolean hasTags() {
-    return ((bitField0_ & 0x00000008) == 0x00000008);
+    return tags_ != null;
   }
   /**
-   * <code>required .dossier.Tags tags = 8;</code>
+   * <code>optional .dossier.Tags tags = 8;</code>
    */
   public com.github.jsdossier.proto.Tags getTags() {
     return tags_ == null ? com.github.jsdossier.proto.Tags.getDefaultInstance() : tags_;
   }
   /**
-   * <code>required .dossier.Tags tags = 8;</code>
+   * <code>optional .dossier.Tags tags = 8;</code>
    */
   public com.github.jsdossier.proto.TagsOrBuilder getTagsOrBuilder() {
-    return tags_ == null ? com.github.jsdossier.proto.Tags.getDefaultInstance() : tags_;
+    return getTags();
   }
 
   public static final int DEPRECATION_FIELD_NUMBER = 9;
@@ -3445,7 +3215,7 @@ public  final class JsType extends
    * <code>optional .dossier.Comment deprecation = 9;</code>
    */
   public boolean hasDeprecation() {
-    return ((bitField0_ & 0x00000010) == 0x00000010);
+    return deprecation_ != null;
   }
   /**
    * <code>optional .dossier.Comment deprecation = 9;</code>
@@ -3457,7 +3227,7 @@ public  final class JsType extends
    * <code>optional .dossier.Comment deprecation = 9;</code>
    */
   public com.github.jsdossier.proto.CommentOrBuilder getDeprecationOrBuilder() {
-    return deprecation_ == null ? com.github.jsdossier.proto.Comment.getDefaultInstance() : deprecation_;
+    return getDeprecation();
   }
 
   public static final int TYPE_DEF_FIELD_NUMBER = 10;
@@ -3501,7 +3271,7 @@ public  final class JsType extends
    * <code>optional .dossier.Enumeration enumeration = 11;</code>
    */
   public boolean hasEnumeration() {
-    return ((bitField0_ & 0x00000020) == 0x00000020);
+    return enumeration_ != null;
   }
   /**
    * <code>optional .dossier.Enumeration enumeration = 11;</code>
@@ -3513,7 +3283,7 @@ public  final class JsType extends
    * <code>optional .dossier.Enumeration enumeration = 11;</code>
    */
   public com.github.jsdossier.proto.EnumerationOrBuilder getEnumerationOrBuilder() {
-    return enumeration_ == null ? com.github.jsdossier.proto.Enumeration.getDefaultInstance() : enumeration_;
+    return getEnumeration();
   }
 
   public static final int STATIC_FUNCTION_FIELD_NUMBER = 12;
@@ -3598,7 +3368,7 @@ public  final class JsType extends
    * </pre>
    */
   public boolean hasMainFunction() {
-    return ((bitField0_ & 0x00000040) == 0x00000040);
+    return mainFunction_ != null;
   }
   /**
    * <code>optional .dossier.Function main_function = 14;</code>
@@ -3622,7 +3392,7 @@ public  final class JsType extends
    * </pre>
    */
   public com.github.jsdossier.proto.FunctionOrBuilder getMainFunctionOrBuilder() {
-    return mainFunction_ == null ? com.github.jsdossier.proto.Function.getDefaultInstance() : mainFunction_;
+    return getMainFunction();
   }
 
   public static final int METHOD_FIELD_NUMBER = 15;
@@ -3896,7 +3666,7 @@ public  final class JsType extends
    * <code>optional .dossier.JsType.ParentLink parent = 21;</code>
    */
   public boolean hasParent() {
-    return ((bitField0_ & 0x00000080) == 0x00000080);
+    return parent_ != null;
   }
   /**
    * <code>optional .dossier.JsType.ParentLink parent = 21;</code>
@@ -3908,7 +3678,7 @@ public  final class JsType extends
    * <code>optional .dossier.JsType.ParentLink parent = 21;</code>
    */
   public com.github.jsdossier.proto.JsType.ParentLinkOrBuilder getParentOrBuilder() {
-    return parent_ == null ? com.github.jsdossier.proto.JsType.ParentLink.getDefaultInstance() : parent_;
+    return getParent();
   }
 
   public static final int ALIASED_TYPE_FIELD_NUMBER = 22;
@@ -3921,7 +3691,7 @@ public  final class JsType extends
    * </pre>
    */
   public boolean hasAliasedType() {
-    return ((bitField0_ & 0x00000100) == 0x00000100);
+    return aliasedType_ != null;
   }
   /**
    * <code>optional .dossier.TypeLink aliased_type = 22;</code>
@@ -3941,21 +3711,11 @@ public  final class JsType extends
    * </pre>
    */
   public com.github.jsdossier.proto.TypeLinkOrBuilder getAliasedTypeOrBuilder() {
-    return aliasedType_ == null ? com.github.jsdossier.proto.TypeLink.getDefaultInstance() : aliasedType_;
+    return getAliasedType();
   }
 
   public static final int FILENAME_FIELD_NUMBER = 23;
   private volatile java.lang.Object filename_;
-  /**
-   * <code>optional string filename = 23;</code>
-   *
-   * <pre>
-   * Base name for the rendered file for this type.
-   * </pre>
-   */
-  public boolean hasFilename() {
-    return ((bitField0_ & 0x00000200) == 0x00000200);
-  }
   /**
    * <code>optional string filename = 23;</code>
    *
@@ -3971,9 +3731,7 @@ public  final class JsType extends
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      if (bs.isValidUtf8()) {
-        filename_ = s;
-      }
+      filename_ = s;
       return s;
     }
   }
@@ -4007,16 +3765,6 @@ public  final class JsType extends
    * Qualified display name for this type.
    * </pre>
    */
-  public boolean hasQualifiedName() {
-    return ((bitField0_ & 0x00000400) == 0x00000400);
-  }
-  /**
-   * <code>optional string qualified_name = 24;</code>
-   *
-   * <pre>
-   * Qualified display name for this type.
-   * </pre>
-   */
   public java.lang.String getQualifiedName() {
     java.lang.Object ref = qualifiedName_;
     if (ref instanceof java.lang.String) {
@@ -4025,9 +3773,7 @@ public  final class JsType extends
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      if (bs.isValidUtf8()) {
-        qualifiedName_ = s;
-      }
+      qualifiedName_ = s;
       return s;
     }
   }
@@ -4113,126 +3859,34 @@ public  final class JsType extends
     if (isInitialized == 1) return true;
     if (isInitialized == 0) return false;
 
-    if (!hasName()) {
-      memoizedIsInitialized = 0;
-      return false;
-    }
-    if (!hasSource()) {
-      memoizedIsInitialized = 0;
-      return false;
-    }
-    if (!hasDescription()) {
-      memoizedIsInitialized = 0;
-      return false;
-    }
-    if (!hasTags()) {
-      memoizedIsInitialized = 0;
-      return false;
-    }
-    if (!getSource().isInitialized()) {
-      memoizedIsInitialized = 0;
-      return false;
-    }
-    for (int i = 0; i < getNestedCount(); i++) {
-      if (!getNested(i).isInitialized()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-    }
-    for (int i = 0; i < getTypeDefCount(); i++) {
-      if (!getTypeDef(i).isInitialized()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-    }
-    if (hasEnumeration()) {
-      if (!getEnumeration().isInitialized()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-    }
-    for (int i = 0; i < getStaticFunctionCount(); i++) {
-      if (!getStaticFunction(i).isInitialized()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-    }
-    for (int i = 0; i < getStaticPropertyCount(); i++) {
-      if (!getStaticProperty(i).isInitialized()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-    }
-    if (hasMainFunction()) {
-      if (!getMainFunction().isInitialized()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-    }
-    for (int i = 0; i < getMethodCount(); i++) {
-      if (!getMethod(i).isInitialized()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-    }
-    for (int i = 0; i < getFieldCount(); i++) {
-      if (!getField(i).isInitialized()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-    }
-    for (int i = 0; i < getCompilerConstantCount(); i++) {
-      if (!getCompilerConstant(i).isInitialized()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-    }
-    if (hasParent()) {
-      if (!getParent().isInitialized()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-    }
-    if (hasAliasedType()) {
-      if (!getAliasedType().isInitialized()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-    }
-    for (int i = 0; i < getReexportedModuleCount(); i++) {
-      if (!getReexportedModule(i).isInitialized()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-    }
     memoizedIsInitialized = 1;
     return true;
   }
 
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (((bitField0_ & 0x00000001) == 0x00000001)) {
+    if (!getNameBytes().isEmpty()) {
       com.google.protobuf.GeneratedMessage.writeString(output, 1, name_);
     }
-    if (((bitField0_ & 0x00000002) == 0x00000002)) {
+    if (source_ != null) {
       output.writeMessage(5, getSource());
     }
     for (int i = 0; i < nested_.size(); i++) {
       output.writeMessage(6, nested_.get(i));
     }
-    if (((bitField0_ & 0x00000004) == 0x00000004)) {
+    if (description_ != null) {
       output.writeMessage(7, getDescription());
     }
-    if (((bitField0_ & 0x00000008) == 0x00000008)) {
+    if (tags_ != null) {
       output.writeMessage(8, getTags());
     }
-    if (((bitField0_ & 0x00000010) == 0x00000010)) {
+    if (deprecation_ != null) {
       output.writeMessage(9, getDeprecation());
     }
     for (int i = 0; i < typeDef_.size(); i++) {
       output.writeMessage(10, typeDef_.get(i));
     }
-    if (((bitField0_ & 0x00000020) == 0x00000020)) {
+    if (enumeration_ != null) {
       output.writeMessage(11, getEnumeration());
     }
     for (int i = 0; i < staticFunction_.size(); i++) {
@@ -4241,7 +3895,7 @@ public  final class JsType extends
     for (int i = 0; i < staticProperty_.size(); i++) {
       output.writeMessage(13, staticProperty_.get(i));
     }
-    if (((bitField0_ & 0x00000040) == 0x00000040)) {
+    if (mainFunction_ != null) {
       output.writeMessage(14, getMainFunction());
     }
     for (int i = 0; i < method_.size(); i++) {
@@ -4259,22 +3913,21 @@ public  final class JsType extends
     for (int i = 0; i < compilerConstant_.size(); i++) {
       output.writeMessage(20, compilerConstant_.get(i));
     }
-    if (((bitField0_ & 0x00000080) == 0x00000080)) {
+    if (parent_ != null) {
       output.writeMessage(21, getParent());
     }
-    if (((bitField0_ & 0x00000100) == 0x00000100)) {
+    if (aliasedType_ != null) {
       output.writeMessage(22, getAliasedType());
     }
-    if (((bitField0_ & 0x00000200) == 0x00000200)) {
+    if (!getFilenameBytes().isEmpty()) {
       com.google.protobuf.GeneratedMessage.writeString(output, 23, filename_);
     }
-    if (((bitField0_ & 0x00000400) == 0x00000400)) {
+    if (!getQualifiedNameBytes().isEmpty()) {
       com.google.protobuf.GeneratedMessage.writeString(output, 24, qualifiedName_);
     }
     for (int i = 0; i < reexportedModule_.size(); i++) {
       output.writeMessage(25, reexportedModule_.get(i));
     }
-    unknownFields.writeTo(output);
   }
 
   public int getSerializedSize() {
@@ -4282,10 +3935,10 @@ public  final class JsType extends
     if (size != -1) return size;
 
     size = 0;
-    if (((bitField0_ & 0x00000001) == 0x00000001)) {
+    if (!getNameBytes().isEmpty()) {
       size += com.google.protobuf.GeneratedMessage.computeStringSize(1, name_);
     }
-    if (((bitField0_ & 0x00000002) == 0x00000002)) {
+    if (source_ != null) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(5, getSource());
     }
@@ -4293,15 +3946,15 @@ public  final class JsType extends
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(6, nested_.get(i));
     }
-    if (((bitField0_ & 0x00000004) == 0x00000004)) {
+    if (description_ != null) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(7, getDescription());
     }
-    if (((bitField0_ & 0x00000008) == 0x00000008)) {
+    if (tags_ != null) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(8, getTags());
     }
-    if (((bitField0_ & 0x00000010) == 0x00000010)) {
+    if (deprecation_ != null) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(9, getDeprecation());
     }
@@ -4309,7 +3962,7 @@ public  final class JsType extends
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(10, typeDef_.get(i));
     }
-    if (((bitField0_ & 0x00000020) == 0x00000020)) {
+    if (enumeration_ != null) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(11, getEnumeration());
     }
@@ -4321,7 +3974,7 @@ public  final class JsType extends
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(13, staticProperty_.get(i));
     }
-    if (((bitField0_ & 0x00000040) == 0x00000040)) {
+    if (mainFunction_ != null) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(14, getMainFunction());
     }
@@ -4345,25 +3998,24 @@ public  final class JsType extends
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(20, compilerConstant_.get(i));
     }
-    if (((bitField0_ & 0x00000080) == 0x00000080)) {
+    if (parent_ != null) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(21, getParent());
     }
-    if (((bitField0_ & 0x00000100) == 0x00000100)) {
+    if (aliasedType_ != null) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(22, getAliasedType());
     }
-    if (((bitField0_ & 0x00000200) == 0x00000200)) {
+    if (!getFilenameBytes().isEmpty()) {
       size += com.google.protobuf.GeneratedMessage.computeStringSize(23, filename_);
     }
-    if (((bitField0_ & 0x00000400) == 0x00000400)) {
+    if (!getQualifiedNameBytes().isEmpty()) {
       size += com.google.protobuf.GeneratedMessage.computeStringSize(24, qualifiedName_);
     }
     for (int i = 0; i < reexportedModule_.size(); i++) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(25, reexportedModule_.get(i));
     }
-    size += unknownFields.getSerializedSize();
     memoizedSize = size;
     return size;
   }
@@ -4476,36 +4128,28 @@ public  final class JsType extends
     }
     private void maybeForceBuilderInitialization() {
       if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
-        getSourceFieldBuilder();
         getNestedFieldBuilder();
-        getDescriptionFieldBuilder();
-        getTagsFieldBuilder();
-        getDeprecationFieldBuilder();
         getTypeDefFieldBuilder();
-        getEnumerationFieldBuilder();
         getStaticFunctionFieldBuilder();
         getStaticPropertyFieldBuilder();
-        getMainFunctionFieldBuilder();
         getMethodFieldBuilder();
         getFieldFieldBuilder();
         getExtendedTypeFieldBuilder();
         getImplementedTypeFieldBuilder();
         getCompilerConstantFieldBuilder();
-        getParentFieldBuilder();
-        getAliasedTypeFieldBuilder();
         getReexportedModuleFieldBuilder();
       }
     }
     public Builder clear() {
       super.clear();
       name_ = "";
-      bitField0_ = (bitField0_ & ~0x00000001);
+
       if (sourceBuilder_ == null) {
         source_ = null;
       } else {
-        sourceBuilder_.clear();
+        source_ = null;
+        sourceBuilder_ = null;
       }
-      bitField0_ = (bitField0_ & ~0x00000002);
       if (nestedBuilder_ == null) {
         nested_ = java.util.Collections.emptyList();
         bitField0_ = (bitField0_ & ~0x00000004);
@@ -4515,21 +4159,21 @@ public  final class JsType extends
       if (descriptionBuilder_ == null) {
         description_ = null;
       } else {
-        descriptionBuilder_.clear();
+        description_ = null;
+        descriptionBuilder_ = null;
       }
-      bitField0_ = (bitField0_ & ~0x00000008);
       if (tagsBuilder_ == null) {
         tags_ = null;
       } else {
-        tagsBuilder_.clear();
+        tags_ = null;
+        tagsBuilder_ = null;
       }
-      bitField0_ = (bitField0_ & ~0x00000010);
       if (deprecationBuilder_ == null) {
         deprecation_ = null;
       } else {
-        deprecationBuilder_.clear();
+        deprecation_ = null;
+        deprecationBuilder_ = null;
       }
-      bitField0_ = (bitField0_ & ~0x00000020);
       if (typeDefBuilder_ == null) {
         typeDef_ = java.util.Collections.emptyList();
         bitField0_ = (bitField0_ & ~0x00000040);
@@ -4539,9 +4183,9 @@ public  final class JsType extends
       if (enumerationBuilder_ == null) {
         enumeration_ = null;
       } else {
-        enumerationBuilder_.clear();
+        enumeration_ = null;
+        enumerationBuilder_ = null;
       }
-      bitField0_ = (bitField0_ & ~0x00000080);
       if (staticFunctionBuilder_ == null) {
         staticFunction_ = java.util.Collections.emptyList();
         bitField0_ = (bitField0_ & ~0x00000100);
@@ -4557,9 +4201,9 @@ public  final class JsType extends
       if (mainFunctionBuilder_ == null) {
         mainFunction_ = null;
       } else {
-        mainFunctionBuilder_.clear();
+        mainFunction_ = null;
+        mainFunctionBuilder_ = null;
       }
-      bitField0_ = (bitField0_ & ~0x00000400);
       if (methodBuilder_ == null) {
         method_ = java.util.Collections.emptyList();
         bitField0_ = (bitField0_ & ~0x00000800);
@@ -4593,19 +4237,19 @@ public  final class JsType extends
       if (parentBuilder_ == null) {
         parent_ = null;
       } else {
-        parentBuilder_.clear();
+        parent_ = null;
+        parentBuilder_ = null;
       }
-      bitField0_ = (bitField0_ & ~0x00010000);
       if (aliasedTypeBuilder_ == null) {
         aliasedType_ = null;
       } else {
-        aliasedTypeBuilder_.clear();
+        aliasedType_ = null;
+        aliasedTypeBuilder_ = null;
       }
-      bitField0_ = (bitField0_ & ~0x00020000);
       filename_ = "";
-      bitField0_ = (bitField0_ & ~0x00040000);
+
       qualifiedName_ = "";
-      bitField0_ = (bitField0_ & ~0x00080000);
+
       if (reexportedModuleBuilder_ == null) {
         reexportedModule_ = java.util.Collections.emptyList();
         bitField0_ = (bitField0_ & ~0x00100000);
@@ -4636,13 +4280,7 @@ public  final class JsType extends
       com.github.jsdossier.proto.JsType result = new com.github.jsdossier.proto.JsType(this);
       int from_bitField0_ = bitField0_;
       int to_bitField0_ = 0;
-      if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
-        to_bitField0_ |= 0x00000001;
-      }
       result.name_ = name_;
-      if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
-        to_bitField0_ |= 0x00000002;
-      }
       if (sourceBuilder_ == null) {
         result.source_ = source_;
       } else {
@@ -4657,24 +4295,15 @@ public  final class JsType extends
       } else {
         result.nested_ = nestedBuilder_.build();
       }
-      if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
-        to_bitField0_ |= 0x00000004;
-      }
       if (descriptionBuilder_ == null) {
         result.description_ = description_;
       } else {
         result.description_ = descriptionBuilder_.build();
       }
-      if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
-        to_bitField0_ |= 0x00000008;
-      }
       if (tagsBuilder_ == null) {
         result.tags_ = tags_;
       } else {
         result.tags_ = tagsBuilder_.build();
-      }
-      if (((from_bitField0_ & 0x00000020) == 0x00000020)) {
-        to_bitField0_ |= 0x00000010;
       }
       if (deprecationBuilder_ == null) {
         result.deprecation_ = deprecation_;
@@ -4689,9 +4318,6 @@ public  final class JsType extends
         result.typeDef_ = typeDef_;
       } else {
         result.typeDef_ = typeDefBuilder_.build();
-      }
-      if (((from_bitField0_ & 0x00000080) == 0x00000080)) {
-        to_bitField0_ |= 0x00000020;
       }
       if (enumerationBuilder_ == null) {
         result.enumeration_ = enumeration_;
@@ -4715,9 +4341,6 @@ public  final class JsType extends
         result.staticProperty_ = staticProperty_;
       } else {
         result.staticProperty_ = staticPropertyBuilder_.build();
-      }
-      if (((from_bitField0_ & 0x00000400) == 0x00000400)) {
-        to_bitField0_ |= 0x00000040;
       }
       if (mainFunctionBuilder_ == null) {
         result.mainFunction_ = mainFunction_;
@@ -4769,29 +4392,17 @@ public  final class JsType extends
       } else {
         result.compilerConstant_ = compilerConstantBuilder_.build();
       }
-      if (((from_bitField0_ & 0x00010000) == 0x00010000)) {
-        to_bitField0_ |= 0x00000080;
-      }
       if (parentBuilder_ == null) {
         result.parent_ = parent_;
       } else {
         result.parent_ = parentBuilder_.build();
-      }
-      if (((from_bitField0_ & 0x00020000) == 0x00020000)) {
-        to_bitField0_ |= 0x00000100;
       }
       if (aliasedTypeBuilder_ == null) {
         result.aliasedType_ = aliasedType_;
       } else {
         result.aliasedType_ = aliasedTypeBuilder_.build();
       }
-      if (((from_bitField0_ & 0x00040000) == 0x00040000)) {
-        to_bitField0_ |= 0x00000200;
-      }
       result.filename_ = filename_;
-      if (((from_bitField0_ & 0x00080000) == 0x00080000)) {
-        to_bitField0_ |= 0x00000400;
-      }
       result.qualifiedName_ = qualifiedName_;
       if (reexportedModuleBuilder_ == null) {
         if (((bitField0_ & 0x00100000) == 0x00100000)) {
@@ -4818,8 +4429,7 @@ public  final class JsType extends
 
     public Builder mergeFrom(com.github.jsdossier.proto.JsType other) {
       if (other == com.github.jsdossier.proto.JsType.getDefaultInstance()) return this;
-      if (other.hasName()) {
-        bitField0_ |= 0x00000001;
+      if (!other.getName().isEmpty()) {
         name_ = other.name_;
         onChanged();
       }
@@ -5081,13 +4691,11 @@ public  final class JsType extends
       if (other.hasAliasedType()) {
         mergeAliasedType(other.getAliasedType());
       }
-      if (other.hasFilename()) {
-        bitField0_ |= 0x00040000;
+      if (!other.getFilename().isEmpty()) {
         filename_ = other.filename_;
         onChanged();
       }
-      if (other.hasQualifiedName()) {
-        bitField0_ |= 0x00080000;
+      if (!other.getQualifiedName().isEmpty()) {
         qualifiedName_ = other.qualifiedName_;
         onChanged();
       }
@@ -5117,87 +4725,11 @@ public  final class JsType extends
           }
         }
       }
-      this.mergeUnknownFields(other.unknownFields);
       onChanged();
       return this;
     }
 
     public final boolean isInitialized() {
-      if (!hasName()) {
-        return false;
-      }
-      if (!hasSource()) {
-        return false;
-      }
-      if (!hasDescription()) {
-        return false;
-      }
-      if (!hasTags()) {
-        return false;
-      }
-      if (!getSource().isInitialized()) {
-        return false;
-      }
-      for (int i = 0; i < getNestedCount(); i++) {
-        if (!getNested(i).isInitialized()) {
-          return false;
-        }
-      }
-      for (int i = 0; i < getTypeDefCount(); i++) {
-        if (!getTypeDef(i).isInitialized()) {
-          return false;
-        }
-      }
-      if (hasEnumeration()) {
-        if (!getEnumeration().isInitialized()) {
-          return false;
-        }
-      }
-      for (int i = 0; i < getStaticFunctionCount(); i++) {
-        if (!getStaticFunction(i).isInitialized()) {
-          return false;
-        }
-      }
-      for (int i = 0; i < getStaticPropertyCount(); i++) {
-        if (!getStaticProperty(i).isInitialized()) {
-          return false;
-        }
-      }
-      if (hasMainFunction()) {
-        if (!getMainFunction().isInitialized()) {
-          return false;
-        }
-      }
-      for (int i = 0; i < getMethodCount(); i++) {
-        if (!getMethod(i).isInitialized()) {
-          return false;
-        }
-      }
-      for (int i = 0; i < getFieldCount(); i++) {
-        if (!getField(i).isInitialized()) {
-          return false;
-        }
-      }
-      for (int i = 0; i < getCompilerConstantCount(); i++) {
-        if (!getCompilerConstant(i).isInitialized()) {
-          return false;
-        }
-      }
-      if (hasParent()) {
-        if (!getParent().isInitialized()) {
-          return false;
-        }
-      }
-      if (hasAliasedType()) {
-        if (!getAliasedType().isInitialized()) {
-          return false;
-        }
-      }
-      for (int i = 0; i < getReexportedModuleCount(); i++) {
-        if (!getReexportedModule(i).isInitialized()) {
-          return false;
-        }
-      }
       return true;
     }
 
@@ -5222,13 +4754,7 @@ public  final class JsType extends
 
     private java.lang.Object name_ = "";
     /**
-     * <code>required string name = 1;</code>
-     */
-    public boolean hasName() {
-      return ((bitField0_ & 0x00000001) == 0x00000001);
-    }
-    /**
-     * <code>required string name = 1;</code>
+     * <code>optional string name = 1;</code>
      */
     public java.lang.String getName() {
       java.lang.Object ref = name_;
@@ -5236,16 +4762,14 @@ public  final class JsType extends
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          name_ = s;
-        }
+        name_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
       }
     }
     /**
-     * <code>required string name = 1;</code>
+     * <code>optional string name = 1;</code>
      */
     public com.google.protobuf.ByteString
         getNameBytes() {
@@ -5261,36 +4785,37 @@ public  final class JsType extends
       }
     }
     /**
-     * <code>required string name = 1;</code>
+     * <code>optional string name = 1;</code>
      */
     public Builder setName(
         java.lang.String value) {
       if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000001;
+  
       name_ = value;
       onChanged();
       return this;
     }
     /**
-     * <code>required string name = 1;</code>
+     * <code>optional string name = 1;</code>
      */
     public Builder clearName() {
-      bitField0_ = (bitField0_ & ~0x00000001);
+      
       name_ = getDefaultInstance().getName();
       onChanged();
       return this;
     }
     /**
-     * <code>required string name = 1;</code>
+     * <code>optional string name = 1;</code>
      */
     public Builder setNameBytes(
         com.google.protobuf.ByteString value) {
       if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000001;
+  checkByteStringIsUtf8(value);
+      
       name_ = value;
       onChanged();
       return this;
@@ -5300,13 +4825,13 @@ public  final class JsType extends
     private com.google.protobuf.SingleFieldBuilder<
         com.github.jsdossier.proto.SourceLink, com.github.jsdossier.proto.SourceLink.Builder, com.github.jsdossier.proto.SourceLinkOrBuilder> sourceBuilder_;
     /**
-     * <code>required .dossier.SourceLink source = 5;</code>
+     * <code>optional .dossier.SourceLink source = 5;</code>
      */
     public boolean hasSource() {
-      return ((bitField0_ & 0x00000002) == 0x00000002);
+      return sourceBuilder_ != null || source_ != null;
     }
     /**
-     * <code>required .dossier.SourceLink source = 5;</code>
+     * <code>optional .dossier.SourceLink source = 5;</code>
      */
     public com.github.jsdossier.proto.SourceLink getSource() {
       if (sourceBuilder_ == null) {
@@ -5316,7 +4841,7 @@ public  final class JsType extends
       }
     }
     /**
-     * <code>required .dossier.SourceLink source = 5;</code>
+     * <code>optional .dossier.SourceLink source = 5;</code>
      */
     public Builder setSource(com.github.jsdossier.proto.SourceLink value) {
       if (sourceBuilder_ == null) {
@@ -5328,11 +4853,11 @@ public  final class JsType extends
       } else {
         sourceBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000002;
+
       return this;
     }
     /**
-     * <code>required .dossier.SourceLink source = 5;</code>
+     * <code>optional .dossier.SourceLink source = 5;</code>
      */
     public Builder setSource(
         com.github.jsdossier.proto.SourceLink.Builder builderForValue) {
@@ -5342,17 +4867,15 @@ public  final class JsType extends
       } else {
         sourceBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000002;
+
       return this;
     }
     /**
-     * <code>required .dossier.SourceLink source = 5;</code>
+     * <code>optional .dossier.SourceLink source = 5;</code>
      */
     public Builder mergeSource(com.github.jsdossier.proto.SourceLink value) {
       if (sourceBuilder_ == null) {
-        if (((bitField0_ & 0x00000002) == 0x00000002) &&
-            source_ != null &&
-            source_ != com.github.jsdossier.proto.SourceLink.getDefaultInstance()) {
+        if (source_ != null) {
           source_ =
             com.github.jsdossier.proto.SourceLink.newBuilder(source_).mergeFrom(value).buildPartial();
         } else {
@@ -5362,32 +4885,33 @@ public  final class JsType extends
       } else {
         sourceBuilder_.mergeFrom(value);
       }
-      bitField0_ |= 0x00000002;
+
       return this;
     }
     /**
-     * <code>required .dossier.SourceLink source = 5;</code>
+     * <code>optional .dossier.SourceLink source = 5;</code>
      */
     public Builder clearSource() {
       if (sourceBuilder_ == null) {
         source_ = null;
         onChanged();
       } else {
-        sourceBuilder_.clear();
+        source_ = null;
+        sourceBuilder_ = null;
       }
-      bitField0_ = (bitField0_ & ~0x00000002);
+
       return this;
     }
     /**
-     * <code>required .dossier.SourceLink source = 5;</code>
+     * <code>optional .dossier.SourceLink source = 5;</code>
      */
     public com.github.jsdossier.proto.SourceLink.Builder getSourceBuilder() {
-      bitField0_ |= 0x00000002;
+      
       onChanged();
       return getSourceFieldBuilder().getBuilder();
     }
     /**
-     * <code>required .dossier.SourceLink source = 5;</code>
+     * <code>optional .dossier.SourceLink source = 5;</code>
      */
     public com.github.jsdossier.proto.SourceLinkOrBuilder getSourceOrBuilder() {
       if (sourceBuilder_ != null) {
@@ -5398,7 +4922,7 @@ public  final class JsType extends
       }
     }
     /**
-     * <code>required .dossier.SourceLink source = 5;</code>
+     * <code>optional .dossier.SourceLink source = 5;</code>
      */
     private com.google.protobuf.SingleFieldBuilder<
         com.github.jsdossier.proto.SourceLink, com.github.jsdossier.proto.SourceLink.Builder, com.github.jsdossier.proto.SourceLinkOrBuilder> 
@@ -5658,13 +5182,13 @@ public  final class JsType extends
     private com.google.protobuf.SingleFieldBuilder<
         com.github.jsdossier.proto.Comment, com.github.jsdossier.proto.Comment.Builder, com.github.jsdossier.proto.CommentOrBuilder> descriptionBuilder_;
     /**
-     * <code>required .dossier.Comment description = 7;</code>
+     * <code>optional .dossier.Comment description = 7;</code>
      */
     public boolean hasDescription() {
-      return ((bitField0_ & 0x00000008) == 0x00000008);
+      return descriptionBuilder_ != null || description_ != null;
     }
     /**
-     * <code>required .dossier.Comment description = 7;</code>
+     * <code>optional .dossier.Comment description = 7;</code>
      */
     public com.github.jsdossier.proto.Comment getDescription() {
       if (descriptionBuilder_ == null) {
@@ -5674,7 +5198,7 @@ public  final class JsType extends
       }
     }
     /**
-     * <code>required .dossier.Comment description = 7;</code>
+     * <code>optional .dossier.Comment description = 7;</code>
      */
     public Builder setDescription(com.github.jsdossier.proto.Comment value) {
       if (descriptionBuilder_ == null) {
@@ -5686,11 +5210,11 @@ public  final class JsType extends
       } else {
         descriptionBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000008;
+
       return this;
     }
     /**
-     * <code>required .dossier.Comment description = 7;</code>
+     * <code>optional .dossier.Comment description = 7;</code>
      */
     public Builder setDescription(
         com.github.jsdossier.proto.Comment.Builder builderForValue) {
@@ -5700,17 +5224,15 @@ public  final class JsType extends
       } else {
         descriptionBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000008;
+
       return this;
     }
     /**
-     * <code>required .dossier.Comment description = 7;</code>
+     * <code>optional .dossier.Comment description = 7;</code>
      */
     public Builder mergeDescription(com.github.jsdossier.proto.Comment value) {
       if (descriptionBuilder_ == null) {
-        if (((bitField0_ & 0x00000008) == 0x00000008) &&
-            description_ != null &&
-            description_ != com.github.jsdossier.proto.Comment.getDefaultInstance()) {
+        if (description_ != null) {
           description_ =
             com.github.jsdossier.proto.Comment.newBuilder(description_).mergeFrom(value).buildPartial();
         } else {
@@ -5720,32 +5242,33 @@ public  final class JsType extends
       } else {
         descriptionBuilder_.mergeFrom(value);
       }
-      bitField0_ |= 0x00000008;
+
       return this;
     }
     /**
-     * <code>required .dossier.Comment description = 7;</code>
+     * <code>optional .dossier.Comment description = 7;</code>
      */
     public Builder clearDescription() {
       if (descriptionBuilder_ == null) {
         description_ = null;
         onChanged();
       } else {
-        descriptionBuilder_.clear();
+        description_ = null;
+        descriptionBuilder_ = null;
       }
-      bitField0_ = (bitField0_ & ~0x00000008);
+
       return this;
     }
     /**
-     * <code>required .dossier.Comment description = 7;</code>
+     * <code>optional .dossier.Comment description = 7;</code>
      */
     public com.github.jsdossier.proto.Comment.Builder getDescriptionBuilder() {
-      bitField0_ |= 0x00000008;
+      
       onChanged();
       return getDescriptionFieldBuilder().getBuilder();
     }
     /**
-     * <code>required .dossier.Comment description = 7;</code>
+     * <code>optional .dossier.Comment description = 7;</code>
      */
     public com.github.jsdossier.proto.CommentOrBuilder getDescriptionOrBuilder() {
       if (descriptionBuilder_ != null) {
@@ -5756,7 +5279,7 @@ public  final class JsType extends
       }
     }
     /**
-     * <code>required .dossier.Comment description = 7;</code>
+     * <code>optional .dossier.Comment description = 7;</code>
      */
     private com.google.protobuf.SingleFieldBuilder<
         com.github.jsdossier.proto.Comment, com.github.jsdossier.proto.Comment.Builder, com.github.jsdossier.proto.CommentOrBuilder> 
@@ -5776,13 +5299,13 @@ public  final class JsType extends
     private com.google.protobuf.SingleFieldBuilder<
         com.github.jsdossier.proto.Tags, com.github.jsdossier.proto.Tags.Builder, com.github.jsdossier.proto.TagsOrBuilder> tagsBuilder_;
     /**
-     * <code>required .dossier.Tags tags = 8;</code>
+     * <code>optional .dossier.Tags tags = 8;</code>
      */
     public boolean hasTags() {
-      return ((bitField0_ & 0x00000010) == 0x00000010);
+      return tagsBuilder_ != null || tags_ != null;
     }
     /**
-     * <code>required .dossier.Tags tags = 8;</code>
+     * <code>optional .dossier.Tags tags = 8;</code>
      */
     public com.github.jsdossier.proto.Tags getTags() {
       if (tagsBuilder_ == null) {
@@ -5792,7 +5315,7 @@ public  final class JsType extends
       }
     }
     /**
-     * <code>required .dossier.Tags tags = 8;</code>
+     * <code>optional .dossier.Tags tags = 8;</code>
      */
     public Builder setTags(com.github.jsdossier.proto.Tags value) {
       if (tagsBuilder_ == null) {
@@ -5804,11 +5327,11 @@ public  final class JsType extends
       } else {
         tagsBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000010;
+
       return this;
     }
     /**
-     * <code>required .dossier.Tags tags = 8;</code>
+     * <code>optional .dossier.Tags tags = 8;</code>
      */
     public Builder setTags(
         com.github.jsdossier.proto.Tags.Builder builderForValue) {
@@ -5818,17 +5341,15 @@ public  final class JsType extends
       } else {
         tagsBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000010;
+
       return this;
     }
     /**
-     * <code>required .dossier.Tags tags = 8;</code>
+     * <code>optional .dossier.Tags tags = 8;</code>
      */
     public Builder mergeTags(com.github.jsdossier.proto.Tags value) {
       if (tagsBuilder_ == null) {
-        if (((bitField0_ & 0x00000010) == 0x00000010) &&
-            tags_ != null &&
-            tags_ != com.github.jsdossier.proto.Tags.getDefaultInstance()) {
+        if (tags_ != null) {
           tags_ =
             com.github.jsdossier.proto.Tags.newBuilder(tags_).mergeFrom(value).buildPartial();
         } else {
@@ -5838,32 +5359,33 @@ public  final class JsType extends
       } else {
         tagsBuilder_.mergeFrom(value);
       }
-      bitField0_ |= 0x00000010;
+
       return this;
     }
     /**
-     * <code>required .dossier.Tags tags = 8;</code>
+     * <code>optional .dossier.Tags tags = 8;</code>
      */
     public Builder clearTags() {
       if (tagsBuilder_ == null) {
         tags_ = null;
         onChanged();
       } else {
-        tagsBuilder_.clear();
+        tags_ = null;
+        tagsBuilder_ = null;
       }
-      bitField0_ = (bitField0_ & ~0x00000010);
+
       return this;
     }
     /**
-     * <code>required .dossier.Tags tags = 8;</code>
+     * <code>optional .dossier.Tags tags = 8;</code>
      */
     public com.github.jsdossier.proto.Tags.Builder getTagsBuilder() {
-      bitField0_ |= 0x00000010;
+      
       onChanged();
       return getTagsFieldBuilder().getBuilder();
     }
     /**
-     * <code>required .dossier.Tags tags = 8;</code>
+     * <code>optional .dossier.Tags tags = 8;</code>
      */
     public com.github.jsdossier.proto.TagsOrBuilder getTagsOrBuilder() {
       if (tagsBuilder_ != null) {
@@ -5874,7 +5396,7 @@ public  final class JsType extends
       }
     }
     /**
-     * <code>required .dossier.Tags tags = 8;</code>
+     * <code>optional .dossier.Tags tags = 8;</code>
      */
     private com.google.protobuf.SingleFieldBuilder<
         com.github.jsdossier.proto.Tags, com.github.jsdossier.proto.Tags.Builder, com.github.jsdossier.proto.TagsOrBuilder> 
@@ -5897,7 +5419,7 @@ public  final class JsType extends
      * <code>optional .dossier.Comment deprecation = 9;</code>
      */
     public boolean hasDeprecation() {
-      return ((bitField0_ & 0x00000020) == 0x00000020);
+      return deprecationBuilder_ != null || deprecation_ != null;
     }
     /**
      * <code>optional .dossier.Comment deprecation = 9;</code>
@@ -5922,7 +5444,7 @@ public  final class JsType extends
       } else {
         deprecationBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000020;
+
       return this;
     }
     /**
@@ -5936,7 +5458,7 @@ public  final class JsType extends
       } else {
         deprecationBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000020;
+
       return this;
     }
     /**
@@ -5944,9 +5466,7 @@ public  final class JsType extends
      */
     public Builder mergeDeprecation(com.github.jsdossier.proto.Comment value) {
       if (deprecationBuilder_ == null) {
-        if (((bitField0_ & 0x00000020) == 0x00000020) &&
-            deprecation_ != null &&
-            deprecation_ != com.github.jsdossier.proto.Comment.getDefaultInstance()) {
+        if (deprecation_ != null) {
           deprecation_ =
             com.github.jsdossier.proto.Comment.newBuilder(deprecation_).mergeFrom(value).buildPartial();
         } else {
@@ -5956,7 +5476,7 @@ public  final class JsType extends
       } else {
         deprecationBuilder_.mergeFrom(value);
       }
-      bitField0_ |= 0x00000020;
+
       return this;
     }
     /**
@@ -5967,16 +5487,17 @@ public  final class JsType extends
         deprecation_ = null;
         onChanged();
       } else {
-        deprecationBuilder_.clear();
+        deprecation_ = null;
+        deprecationBuilder_ = null;
       }
-      bitField0_ = (bitField0_ & ~0x00000020);
+
       return this;
     }
     /**
      * <code>optional .dossier.Comment deprecation = 9;</code>
      */
     public com.github.jsdossier.proto.Comment.Builder getDeprecationBuilder() {
-      bitField0_ |= 0x00000020;
+      
       onChanged();
       return getDeprecationFieldBuilder().getBuilder();
     }
@@ -6255,7 +5776,7 @@ public  final class JsType extends
      * <code>optional .dossier.Enumeration enumeration = 11;</code>
      */
     public boolean hasEnumeration() {
-      return ((bitField0_ & 0x00000080) == 0x00000080);
+      return enumerationBuilder_ != null || enumeration_ != null;
     }
     /**
      * <code>optional .dossier.Enumeration enumeration = 11;</code>
@@ -6280,7 +5801,7 @@ public  final class JsType extends
       } else {
         enumerationBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000080;
+
       return this;
     }
     /**
@@ -6294,7 +5815,7 @@ public  final class JsType extends
       } else {
         enumerationBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000080;
+
       return this;
     }
     /**
@@ -6302,9 +5823,7 @@ public  final class JsType extends
      */
     public Builder mergeEnumeration(com.github.jsdossier.proto.Enumeration value) {
       if (enumerationBuilder_ == null) {
-        if (((bitField0_ & 0x00000080) == 0x00000080) &&
-            enumeration_ != null &&
-            enumeration_ != com.github.jsdossier.proto.Enumeration.getDefaultInstance()) {
+        if (enumeration_ != null) {
           enumeration_ =
             com.github.jsdossier.proto.Enumeration.newBuilder(enumeration_).mergeFrom(value).buildPartial();
         } else {
@@ -6314,7 +5833,7 @@ public  final class JsType extends
       } else {
         enumerationBuilder_.mergeFrom(value);
       }
-      bitField0_ |= 0x00000080;
+
       return this;
     }
     /**
@@ -6325,16 +5844,17 @@ public  final class JsType extends
         enumeration_ = null;
         onChanged();
       } else {
-        enumerationBuilder_.clear();
+        enumeration_ = null;
+        enumerationBuilder_ = null;
       }
-      bitField0_ = (bitField0_ & ~0x00000080);
+
       return this;
     }
     /**
      * <code>optional .dossier.Enumeration enumeration = 11;</code>
      */
     public com.github.jsdossier.proto.Enumeration.Builder getEnumerationBuilder() {
-      bitField0_ |= 0x00000080;
+      
       onChanged();
       return getEnumerationFieldBuilder().getBuilder();
     }
@@ -6859,7 +6379,7 @@ public  final class JsType extends
      * </pre>
      */
     public boolean hasMainFunction() {
-      return ((bitField0_ & 0x00000400) == 0x00000400);
+      return mainFunctionBuilder_ != null || mainFunction_ != null;
     }
     /**
      * <code>optional .dossier.Function main_function = 14;</code>
@@ -6896,7 +6416,7 @@ public  final class JsType extends
       } else {
         mainFunctionBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000400;
+
       return this;
     }
     /**
@@ -6916,7 +6436,7 @@ public  final class JsType extends
       } else {
         mainFunctionBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000400;
+
       return this;
     }
     /**
@@ -6930,9 +6450,7 @@ public  final class JsType extends
      */
     public Builder mergeMainFunction(com.github.jsdossier.proto.Function value) {
       if (mainFunctionBuilder_ == null) {
-        if (((bitField0_ & 0x00000400) == 0x00000400) &&
-            mainFunction_ != null &&
-            mainFunction_ != com.github.jsdossier.proto.Function.getDefaultInstance()) {
+        if (mainFunction_ != null) {
           mainFunction_ =
             com.github.jsdossier.proto.Function.newBuilder(mainFunction_).mergeFrom(value).buildPartial();
         } else {
@@ -6942,7 +6460,7 @@ public  final class JsType extends
       } else {
         mainFunctionBuilder_.mergeFrom(value);
       }
-      bitField0_ |= 0x00000400;
+
       return this;
     }
     /**
@@ -6959,9 +6477,10 @@ public  final class JsType extends
         mainFunction_ = null;
         onChanged();
       } else {
-        mainFunctionBuilder_.clear();
+        mainFunction_ = null;
+        mainFunctionBuilder_ = null;
       }
-      bitField0_ = (bitField0_ & ~0x00000400);
+
       return this;
     }
     /**
@@ -6974,7 +6493,7 @@ public  final class JsType extends
      * </pre>
      */
     public com.github.jsdossier.proto.Function.Builder getMainFunctionBuilder() {
-      bitField0_ |= 0x00000400;
+      
       onChanged();
       return getMainFunctionFieldBuilder().getBuilder();
     }
@@ -8549,7 +8068,7 @@ public  final class JsType extends
      * <code>optional .dossier.JsType.ParentLink parent = 21;</code>
      */
     public boolean hasParent() {
-      return ((bitField0_ & 0x00010000) == 0x00010000);
+      return parentBuilder_ != null || parent_ != null;
     }
     /**
      * <code>optional .dossier.JsType.ParentLink parent = 21;</code>
@@ -8574,7 +8093,7 @@ public  final class JsType extends
       } else {
         parentBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00010000;
+
       return this;
     }
     /**
@@ -8588,7 +8107,7 @@ public  final class JsType extends
       } else {
         parentBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00010000;
+
       return this;
     }
     /**
@@ -8596,9 +8115,7 @@ public  final class JsType extends
      */
     public Builder mergeParent(com.github.jsdossier.proto.JsType.ParentLink value) {
       if (parentBuilder_ == null) {
-        if (((bitField0_ & 0x00010000) == 0x00010000) &&
-            parent_ != null &&
-            parent_ != com.github.jsdossier.proto.JsType.ParentLink.getDefaultInstance()) {
+        if (parent_ != null) {
           parent_ =
             com.github.jsdossier.proto.JsType.ParentLink.newBuilder(parent_).mergeFrom(value).buildPartial();
         } else {
@@ -8608,7 +8125,7 @@ public  final class JsType extends
       } else {
         parentBuilder_.mergeFrom(value);
       }
-      bitField0_ |= 0x00010000;
+
       return this;
     }
     /**
@@ -8619,16 +8136,17 @@ public  final class JsType extends
         parent_ = null;
         onChanged();
       } else {
-        parentBuilder_.clear();
+        parent_ = null;
+        parentBuilder_ = null;
       }
-      bitField0_ = (bitField0_ & ~0x00010000);
+
       return this;
     }
     /**
      * <code>optional .dossier.JsType.ParentLink parent = 21;</code>
      */
     public com.github.jsdossier.proto.JsType.ParentLink.Builder getParentBuilder() {
-      bitField0_ |= 0x00010000;
+      
       onChanged();
       return getParentFieldBuilder().getBuilder();
     }
@@ -8671,7 +8189,7 @@ public  final class JsType extends
      * </pre>
      */
     public boolean hasAliasedType() {
-      return ((bitField0_ & 0x00020000) == 0x00020000);
+      return aliasedTypeBuilder_ != null || aliasedType_ != null;
     }
     /**
      * <code>optional .dossier.TypeLink aliased_type = 22;</code>
@@ -8704,7 +8222,7 @@ public  final class JsType extends
       } else {
         aliasedTypeBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00020000;
+
       return this;
     }
     /**
@@ -8722,7 +8240,7 @@ public  final class JsType extends
       } else {
         aliasedTypeBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00020000;
+
       return this;
     }
     /**
@@ -8734,9 +8252,7 @@ public  final class JsType extends
      */
     public Builder mergeAliasedType(com.github.jsdossier.proto.TypeLink value) {
       if (aliasedTypeBuilder_ == null) {
-        if (((bitField0_ & 0x00020000) == 0x00020000) &&
-            aliasedType_ != null &&
-            aliasedType_ != com.github.jsdossier.proto.TypeLink.getDefaultInstance()) {
+        if (aliasedType_ != null) {
           aliasedType_ =
             com.github.jsdossier.proto.TypeLink.newBuilder(aliasedType_).mergeFrom(value).buildPartial();
         } else {
@@ -8746,7 +8262,7 @@ public  final class JsType extends
       } else {
         aliasedTypeBuilder_.mergeFrom(value);
       }
-      bitField0_ |= 0x00020000;
+
       return this;
     }
     /**
@@ -8761,9 +8277,10 @@ public  final class JsType extends
         aliasedType_ = null;
         onChanged();
       } else {
-        aliasedTypeBuilder_.clear();
+        aliasedType_ = null;
+        aliasedTypeBuilder_ = null;
       }
-      bitField0_ = (bitField0_ & ~0x00020000);
+
       return this;
     }
     /**
@@ -8774,7 +8291,7 @@ public  final class JsType extends
      * </pre>
      */
     public com.github.jsdossier.proto.TypeLink.Builder getAliasedTypeBuilder() {
-      bitField0_ |= 0x00020000;
+      
       onChanged();
       return getAliasedTypeFieldBuilder().getBuilder();
     }
@@ -8822,25 +8339,13 @@ public  final class JsType extends
      * Base name for the rendered file for this type.
      * </pre>
      */
-    public boolean hasFilename() {
-      return ((bitField0_ & 0x00040000) == 0x00040000);
-    }
-    /**
-     * <code>optional string filename = 23;</code>
-     *
-     * <pre>
-     * Base name for the rendered file for this type.
-     * </pre>
-     */
     public java.lang.String getFilename() {
       java.lang.Object ref = filename_;
       if (!(ref instanceof java.lang.String)) {
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          filename_ = s;
-        }
+        filename_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
@@ -8878,7 +8383,7 @@ public  final class JsType extends
       if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00040000;
+  
       filename_ = value;
       onChanged();
       return this;
@@ -8891,7 +8396,7 @@ public  final class JsType extends
      * </pre>
      */
     public Builder clearFilename() {
-      bitField0_ = (bitField0_ & ~0x00040000);
+      
       filename_ = getDefaultInstance().getFilename();
       onChanged();
       return this;
@@ -8908,7 +8413,8 @@ public  final class JsType extends
       if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00040000;
+  checkByteStringIsUtf8(value);
+      
       filename_ = value;
       onChanged();
       return this;
@@ -8922,25 +8428,13 @@ public  final class JsType extends
      * Qualified display name for this type.
      * </pre>
      */
-    public boolean hasQualifiedName() {
-      return ((bitField0_ & 0x00080000) == 0x00080000);
-    }
-    /**
-     * <code>optional string qualified_name = 24;</code>
-     *
-     * <pre>
-     * Qualified display name for this type.
-     * </pre>
-     */
     public java.lang.String getQualifiedName() {
       java.lang.Object ref = qualifiedName_;
       if (!(ref instanceof java.lang.String)) {
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          qualifiedName_ = s;
-        }
+        qualifiedName_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
@@ -8978,7 +8472,7 @@ public  final class JsType extends
       if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00080000;
+  
       qualifiedName_ = value;
       onChanged();
       return this;
@@ -8991,7 +8485,7 @@ public  final class JsType extends
      * </pre>
      */
     public Builder clearQualifiedName() {
-      bitField0_ = (bitField0_ & ~0x00080000);
+      
       qualifiedName_ = getDefaultInstance().getQualifiedName();
       onChanged();
       return this;
@@ -9008,7 +8502,8 @@ public  final class JsType extends
       if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00080000;
+  checkByteStringIsUtf8(value);
+      
       qualifiedName_ = value;
       onChanged();
       return this;
@@ -9325,6 +8820,16 @@ public  final class JsType extends
       }
       return reexportedModuleBuilder_;
     }
+    public final Builder setUnknownFields(
+        final com.google.protobuf.UnknownFieldSet unknownFields) {
+      return this;
+    }
+
+    public final Builder mergeUnknownFields(
+        final com.google.protobuf.UnknownFieldSet unknownFields) {
+      return this;
+    }
+
 
     // @@protoc_insertion_point(builder_scope:dossier.JsType)
   }
@@ -9339,7 +8844,7 @@ public  final class JsType extends
     return DEFAULT_INSTANCE;
   }
 
-  @java.lang.Deprecated public static final com.google.protobuf.Parser<JsType>
+  private static final com.google.protobuf.Parser<JsType>
       PARSER = new com.google.protobuf.AbstractParser<JsType>() {
     public JsType parsePartialFrom(
         com.google.protobuf.CodedInputStream input,

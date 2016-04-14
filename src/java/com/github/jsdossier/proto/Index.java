@@ -28,15 +28,13 @@ public  final class Index extends
   @java.lang.Override
   public final com.google.protobuf.UnknownFieldSet
   getUnknownFields() {
-    return this.unknownFields;
+    return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
   }
   private Index(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
     this();
     int mutable_bitField0_ = 0;
-    com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-        com.google.protobuf.UnknownFieldSet.newBuilder();
     try {
       boolean done = false;
       while (!done) {
@@ -46,25 +44,24 @@ public  final class Index extends
             done = true;
             break;
           default: {
-            if (!parseUnknownField(input, unknownFields,
-                                   extensionRegistry, tag)) {
+            if (!input.skipField(tag)) {
               done = true;
             }
             break;
           }
           case 10: {
-            com.google.protobuf.ByteString bs = input.readBytes();
-            bitField0_ |= 0x00000001;
-            home_ = bs;
+            java.lang.String s = input.readStringRequireUtf8();
+
+            home_ = s;
             break;
           }
           case 16: {
-            bitField0_ |= 0x00000002;
+
             includeTypes_ = input.readBool();
             break;
           }
           case 24: {
-            bitField0_ |= 0x00000004;
+
             includeModules_ = input.readBool();
             break;
           }
@@ -88,7 +85,6 @@ public  final class Index extends
       if (((mutable_bitField0_ & 0x00000008) == 0x00000008)) {
         links_ = java.util.Collections.unmodifiableList(links_);
       }
-      this.unknownFields = unknownFields.build();
       makeExtensionsImmutable();
     }
   }
@@ -108,17 +104,7 @@ public  final class Index extends
   public static final int HOME_FIELD_NUMBER = 1;
   private volatile java.lang.Object home_;
   /**
-   * <code>required string home = 1;</code>
-   *
-   * <pre>
-   * Defines the href from the current page to the main index.
-   * </pre>
-   */
-  public boolean hasHome() {
-    return ((bitField0_ & 0x00000001) == 0x00000001);
-  }
-  /**
-   * <code>required string home = 1;</code>
+   * <code>optional string home = 1;</code>
    *
    * <pre>
    * Defines the href from the current page to the main index.
@@ -132,14 +118,12 @@ public  final class Index extends
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      if (bs.isValidUtf8()) {
-        home_ = s;
-      }
+      home_ = s;
       return s;
     }
   }
   /**
-   * <code>required string home = 1;</code>
+   * <code>optional string home = 1;</code>
    *
    * <pre>
    * Defines the href from the current page to the main index.
@@ -168,32 +152,12 @@ public  final class Index extends
    * Whether to generate the global type section.
    * </pre>
    */
-  public boolean hasIncludeTypes() {
-    return ((bitField0_ & 0x00000002) == 0x00000002);
-  }
-  /**
-   * <code>optional bool include_types = 2;</code>
-   *
-   * <pre>
-   * Whether to generate the global type section.
-   * </pre>
-   */
   public boolean getIncludeTypes() {
     return includeTypes_;
   }
 
   public static final int INCLUDE_MODULES_FIELD_NUMBER = 3;
   private boolean includeModules_;
-  /**
-   * <code>optional bool include_modules = 3;</code>
-   *
-   * <pre>
-   * Whether to generate the module type section.
-   * </pre>
-   */
-  public boolean hasIncludeModules() {
-    return ((bitField0_ & 0x00000004) == 0x00000004);
-  }
   /**
    * <code>optional bool include_modules = 3;</code>
    *
@@ -266,35 +230,24 @@ public  final class Index extends
     if (isInitialized == 1) return true;
     if (isInitialized == 0) return false;
 
-    if (!hasHome()) {
-      memoizedIsInitialized = 0;
-      return false;
-    }
-    for (int i = 0; i < getLinksCount(); i++) {
-      if (!getLinks(i).isInitialized()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-    }
     memoizedIsInitialized = 1;
     return true;
   }
 
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (((bitField0_ & 0x00000001) == 0x00000001)) {
+    if (!getHomeBytes().isEmpty()) {
       com.google.protobuf.GeneratedMessage.writeString(output, 1, home_);
     }
-    if (((bitField0_ & 0x00000002) == 0x00000002)) {
+    if (includeTypes_ != false) {
       output.writeBool(2, includeTypes_);
     }
-    if (((bitField0_ & 0x00000004) == 0x00000004)) {
+    if (includeModules_ != false) {
       output.writeBool(3, includeModules_);
     }
     for (int i = 0; i < links_.size(); i++) {
       output.writeMessage(4, links_.get(i));
     }
-    unknownFields.writeTo(output);
   }
 
   public int getSerializedSize() {
@@ -302,14 +255,14 @@ public  final class Index extends
     if (size != -1) return size;
 
     size = 0;
-    if (((bitField0_ & 0x00000001) == 0x00000001)) {
+    if (!getHomeBytes().isEmpty()) {
       size += com.google.protobuf.GeneratedMessage.computeStringSize(1, home_);
     }
-    if (((bitField0_ & 0x00000002) == 0x00000002)) {
+    if (includeTypes_ != false) {
       size += com.google.protobuf.CodedOutputStream
         .computeBoolSize(2, includeTypes_);
     }
-    if (((bitField0_ & 0x00000004) == 0x00000004)) {
+    if (includeModules_ != false) {
       size += com.google.protobuf.CodedOutputStream
         .computeBoolSize(3, includeModules_);
     }
@@ -317,7 +270,6 @@ public  final class Index extends
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(4, links_.get(i));
     }
-    size += unknownFields.getSerializedSize();
     memoizedSize = size;
     return size;
   }
@@ -435,11 +387,11 @@ public  final class Index extends
     public Builder clear() {
       super.clear();
       home_ = "";
-      bitField0_ = (bitField0_ & ~0x00000001);
+
       includeTypes_ = false;
-      bitField0_ = (bitField0_ & ~0x00000002);
+
       includeModules_ = false;
-      bitField0_ = (bitField0_ & ~0x00000004);
+
       if (linksBuilder_ == null) {
         links_ = java.util.Collections.emptyList();
         bitField0_ = (bitField0_ & ~0x00000008);
@@ -470,17 +422,8 @@ public  final class Index extends
       com.github.jsdossier.proto.Index result = new com.github.jsdossier.proto.Index(this);
       int from_bitField0_ = bitField0_;
       int to_bitField0_ = 0;
-      if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
-        to_bitField0_ |= 0x00000001;
-      }
       result.home_ = home_;
-      if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
-        to_bitField0_ |= 0x00000002;
-      }
       result.includeTypes_ = includeTypes_;
-      if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
-        to_bitField0_ |= 0x00000004;
-      }
       result.includeModules_ = includeModules_;
       if (linksBuilder_ == null) {
         if (((bitField0_ & 0x00000008) == 0x00000008)) {
@@ -507,15 +450,14 @@ public  final class Index extends
 
     public Builder mergeFrom(com.github.jsdossier.proto.Index other) {
       if (other == com.github.jsdossier.proto.Index.getDefaultInstance()) return this;
-      if (other.hasHome()) {
-        bitField0_ |= 0x00000001;
+      if (!other.getHome().isEmpty()) {
         home_ = other.home_;
         onChanged();
       }
-      if (other.hasIncludeTypes()) {
+      if (other.getIncludeTypes() != false) {
         setIncludeTypes(other.getIncludeTypes());
       }
-      if (other.hasIncludeModules()) {
+      if (other.getIncludeModules() != false) {
         setIncludeModules(other.getIncludeModules());
       }
       if (linksBuilder_ == null) {
@@ -544,20 +486,11 @@ public  final class Index extends
           }
         }
       }
-      this.mergeUnknownFields(other.unknownFields);
       onChanged();
       return this;
     }
 
     public final boolean isInitialized() {
-      if (!hasHome()) {
-        return false;
-      }
-      for (int i = 0; i < getLinksCount(); i++) {
-        if (!getLinks(i).isInitialized()) {
-          return false;
-        }
-      }
       return true;
     }
 
@@ -582,17 +515,7 @@ public  final class Index extends
 
     private java.lang.Object home_ = "";
     /**
-     * <code>required string home = 1;</code>
-     *
-     * <pre>
-     * Defines the href from the current page to the main index.
-     * </pre>
-     */
-    public boolean hasHome() {
-      return ((bitField0_ & 0x00000001) == 0x00000001);
-    }
-    /**
-     * <code>required string home = 1;</code>
+     * <code>optional string home = 1;</code>
      *
      * <pre>
      * Defines the href from the current page to the main index.
@@ -604,16 +527,14 @@ public  final class Index extends
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          home_ = s;
-        }
+        home_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
       }
     }
     /**
-     * <code>required string home = 1;</code>
+     * <code>optional string home = 1;</code>
      *
      * <pre>
      * Defines the href from the current page to the main index.
@@ -633,7 +554,7 @@ public  final class Index extends
       }
     }
     /**
-     * <code>required string home = 1;</code>
+     * <code>optional string home = 1;</code>
      *
      * <pre>
      * Defines the href from the current page to the main index.
@@ -644,26 +565,26 @@ public  final class Index extends
       if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000001;
+  
       home_ = value;
       onChanged();
       return this;
     }
     /**
-     * <code>required string home = 1;</code>
+     * <code>optional string home = 1;</code>
      *
      * <pre>
      * Defines the href from the current page to the main index.
      * </pre>
      */
     public Builder clearHome() {
-      bitField0_ = (bitField0_ & ~0x00000001);
+      
       home_ = getDefaultInstance().getHome();
       onChanged();
       return this;
     }
     /**
-     * <code>required string home = 1;</code>
+     * <code>optional string home = 1;</code>
      *
      * <pre>
      * Defines the href from the current page to the main index.
@@ -674,23 +595,14 @@ public  final class Index extends
       if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000001;
+  checkByteStringIsUtf8(value);
+      
       home_ = value;
       onChanged();
       return this;
     }
 
     private boolean includeTypes_ ;
-    /**
-     * <code>optional bool include_types = 2;</code>
-     *
-     * <pre>
-     * Whether to generate the global type section.
-     * </pre>
-     */
-    public boolean hasIncludeTypes() {
-      return ((bitField0_ & 0x00000002) == 0x00000002);
-    }
     /**
      * <code>optional bool include_types = 2;</code>
      *
@@ -709,7 +621,7 @@ public  final class Index extends
      * </pre>
      */
     public Builder setIncludeTypes(boolean value) {
-      bitField0_ |= 0x00000002;
+      
       includeTypes_ = value;
       onChanged();
       return this;
@@ -722,23 +634,13 @@ public  final class Index extends
      * </pre>
      */
     public Builder clearIncludeTypes() {
-      bitField0_ = (bitField0_ & ~0x00000002);
+      
       includeTypes_ = false;
       onChanged();
       return this;
     }
 
     private boolean includeModules_ ;
-    /**
-     * <code>optional bool include_modules = 3;</code>
-     *
-     * <pre>
-     * Whether to generate the module type section.
-     * </pre>
-     */
-    public boolean hasIncludeModules() {
-      return ((bitField0_ & 0x00000004) == 0x00000004);
-    }
     /**
      * <code>optional bool include_modules = 3;</code>
      *
@@ -757,7 +659,7 @@ public  final class Index extends
      * </pre>
      */
     public Builder setIncludeModules(boolean value) {
-      bitField0_ |= 0x00000004;
+      
       includeModules_ = value;
       onChanged();
       return this;
@@ -770,7 +672,7 @@ public  final class Index extends
      * </pre>
      */
     public Builder clearIncludeModules() {
-      bitField0_ = (bitField0_ & ~0x00000004);
+      
       includeModules_ = false;
       onChanged();
       return this;
@@ -1087,6 +989,16 @@ public  final class Index extends
       }
       return linksBuilder_;
     }
+    public final Builder setUnknownFields(
+        final com.google.protobuf.UnknownFieldSet unknownFields) {
+      return this;
+    }
+
+    public final Builder mergeUnknownFields(
+        final com.google.protobuf.UnknownFieldSet unknownFields) {
+      return this;
+    }
+
 
     // @@protoc_insertion_point(builder_scope:dossier.Index)
   }
@@ -1101,7 +1013,7 @@ public  final class Index extends
     return DEFAULT_INSTANCE;
   }
 
-  @java.lang.Deprecated public static final com.google.protobuf.Parser<Index>
+  private static final com.google.protobuf.Parser<Index>
       PARSER = new com.google.protobuf.AbstractParser<Index>() {
     public Index parsePartialFrom(
         com.google.protobuf.CodedInputStream input,

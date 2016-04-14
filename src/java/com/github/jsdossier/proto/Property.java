@@ -24,15 +24,13 @@ public  final class Property extends
   @java.lang.Override
   public final com.google.protobuf.UnknownFieldSet
   getUnknownFields() {
-    return this.unknownFields;
+    return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
   }
   private Property(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
     this();
     int mutable_bitField0_ = 0;
-    com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-        com.google.protobuf.UnknownFieldSet.newBuilder();
     try {
       boolean done = false;
       while (!done) {
@@ -42,15 +40,14 @@ public  final class Property extends
             done = true;
             break;
           default: {
-            if (!parseUnknownField(input, unknownFields,
-                                   extensionRegistry, tag)) {
+            if (!input.skipField(tag)) {
               done = true;
             }
             break;
           }
           case 10: {
             com.github.jsdossier.proto.BaseProperty.Builder subBuilder = null;
-            if (((bitField0_ & 0x00000001) == 0x00000001)) {
+            if (base_ != null) {
               subBuilder = base_.toBuilder();
             }
             base_ = input.readMessage(com.github.jsdossier.proto.BaseProperty.parser(), extensionRegistry);
@@ -58,12 +55,12 @@ public  final class Property extends
               subBuilder.mergeFrom(base_);
               base_ = subBuilder.buildPartial();
             }
-            bitField0_ |= 0x00000001;
+
             break;
           }
           case 18: {
             com.github.jsdossier.proto.Comment.Builder subBuilder = null;
-            if (((bitField0_ & 0x00000002) == 0x00000002)) {
+            if (type_ != null) {
               subBuilder = type_.toBuilder();
             }
             type_ = input.readMessage(com.github.jsdossier.proto.Comment.parser(), extensionRegistry);
@@ -71,7 +68,7 @@ public  final class Property extends
               subBuilder.mergeFrom(type_);
               type_ = subBuilder.buildPartial();
             }
-            bitField0_ |= 0x00000002;
+
             break;
           }
         }
@@ -83,7 +80,6 @@ public  final class Property extends
           new com.google.protobuf.InvalidProtocolBufferException(
               e.getMessage()).setUnfinishedMessage(this));
     } finally {
-      this.unknownFields = unknownFields.build();
       makeExtensionsImmutable();
     }
   }
@@ -99,26 +95,25 @@ public  final class Property extends
             com.github.jsdossier.proto.Property.class, com.github.jsdossier.proto.Property.Builder.class);
   }
 
-  private int bitField0_;
   public static final int BASE_FIELD_NUMBER = 1;
   private com.github.jsdossier.proto.BaseProperty base_;
   /**
-   * <code>required .dossier.BaseProperty base = 1;</code>
+   * <code>optional .dossier.BaseProperty base = 1;</code>
    */
   public boolean hasBase() {
-    return ((bitField0_ & 0x00000001) == 0x00000001);
+    return base_ != null;
   }
   /**
-   * <code>required .dossier.BaseProperty base = 1;</code>
+   * <code>optional .dossier.BaseProperty base = 1;</code>
    */
   public com.github.jsdossier.proto.BaseProperty getBase() {
     return base_ == null ? com.github.jsdossier.proto.BaseProperty.getDefaultInstance() : base_;
   }
   /**
-   * <code>required .dossier.BaseProperty base = 1;</code>
+   * <code>optional .dossier.BaseProperty base = 1;</code>
    */
   public com.github.jsdossier.proto.BasePropertyOrBuilder getBaseOrBuilder() {
-    return base_ == null ? com.github.jsdossier.proto.BaseProperty.getDefaultInstance() : base_;
+    return getBase();
   }
 
   public static final int TYPE_FIELD_NUMBER = 2;
@@ -132,7 +127,7 @@ public  final class Property extends
    * </pre>
    */
   public boolean hasType() {
-    return ((bitField0_ & 0x00000002) == 0x00000002);
+    return type_ != null;
   }
   /**
    * <code>optional .dossier.Comment type = 2;</code>
@@ -154,7 +149,7 @@ public  final class Property extends
    * </pre>
    */
   public com.github.jsdossier.proto.CommentOrBuilder getTypeOrBuilder() {
-    return type_ == null ? com.github.jsdossier.proto.Comment.getDefaultInstance() : type_;
+    return getType();
   }
 
   private byte memoizedIsInitialized = -1;
@@ -163,27 +158,18 @@ public  final class Property extends
     if (isInitialized == 1) return true;
     if (isInitialized == 0) return false;
 
-    if (!hasBase()) {
-      memoizedIsInitialized = 0;
-      return false;
-    }
-    if (!getBase().isInitialized()) {
-      memoizedIsInitialized = 0;
-      return false;
-    }
     memoizedIsInitialized = 1;
     return true;
   }
 
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (((bitField0_ & 0x00000001) == 0x00000001)) {
+    if (base_ != null) {
       output.writeMessage(1, getBase());
     }
-    if (((bitField0_ & 0x00000002) == 0x00000002)) {
+    if (type_ != null) {
       output.writeMessage(2, getType());
     }
-    unknownFields.writeTo(output);
   }
 
   public int getSerializedSize() {
@@ -191,15 +177,14 @@ public  final class Property extends
     if (size != -1) return size;
 
     size = 0;
-    if (((bitField0_ & 0x00000001) == 0x00000001)) {
+    if (base_ != null) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(1, getBase());
     }
-    if (((bitField0_ & 0x00000002) == 0x00000002)) {
+    if (type_ != null) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(2, getType());
     }
-    size += unknownFields.getSerializedSize();
     memoizedSize = size;
     return size;
   }
@@ -311,8 +296,6 @@ public  final class Property extends
     }
     private void maybeForceBuilderInitialization() {
       if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
-        getBaseFieldBuilder();
-        getTypeFieldBuilder();
       }
     }
     public Builder clear() {
@@ -320,15 +303,15 @@ public  final class Property extends
       if (baseBuilder_ == null) {
         base_ = null;
       } else {
-        baseBuilder_.clear();
+        base_ = null;
+        baseBuilder_ = null;
       }
-      bitField0_ = (bitField0_ & ~0x00000001);
       if (typeBuilder_ == null) {
         type_ = null;
       } else {
-        typeBuilder_.clear();
+        type_ = null;
+        typeBuilder_ = null;
       }
-      bitField0_ = (bitField0_ & ~0x00000002);
       return this;
     }
 
@@ -351,25 +334,16 @@ public  final class Property extends
 
     public com.github.jsdossier.proto.Property buildPartial() {
       com.github.jsdossier.proto.Property result = new com.github.jsdossier.proto.Property(this);
-      int from_bitField0_ = bitField0_;
-      int to_bitField0_ = 0;
-      if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
-        to_bitField0_ |= 0x00000001;
-      }
       if (baseBuilder_ == null) {
         result.base_ = base_;
       } else {
         result.base_ = baseBuilder_.build();
-      }
-      if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
-        to_bitField0_ |= 0x00000002;
       }
       if (typeBuilder_ == null) {
         result.type_ = type_;
       } else {
         result.type_ = typeBuilder_.build();
       }
-      result.bitField0_ = to_bitField0_;
       onBuilt();
       return result;
     }
@@ -391,18 +365,11 @@ public  final class Property extends
       if (other.hasType()) {
         mergeType(other.getType());
       }
-      this.mergeUnknownFields(other.unknownFields);
       onChanged();
       return this;
     }
 
     public final boolean isInitialized() {
-      if (!hasBase()) {
-        return false;
-      }
-      if (!getBase().isInitialized()) {
-        return false;
-      }
       return true;
     }
 
@@ -423,19 +390,18 @@ public  final class Property extends
       }
       return this;
     }
-    private int bitField0_;
 
     private com.github.jsdossier.proto.BaseProperty base_ = null;
     private com.google.protobuf.SingleFieldBuilder<
         com.github.jsdossier.proto.BaseProperty, com.github.jsdossier.proto.BaseProperty.Builder, com.github.jsdossier.proto.BasePropertyOrBuilder> baseBuilder_;
     /**
-     * <code>required .dossier.BaseProperty base = 1;</code>
+     * <code>optional .dossier.BaseProperty base = 1;</code>
      */
     public boolean hasBase() {
-      return ((bitField0_ & 0x00000001) == 0x00000001);
+      return baseBuilder_ != null || base_ != null;
     }
     /**
-     * <code>required .dossier.BaseProperty base = 1;</code>
+     * <code>optional .dossier.BaseProperty base = 1;</code>
      */
     public com.github.jsdossier.proto.BaseProperty getBase() {
       if (baseBuilder_ == null) {
@@ -445,7 +411,7 @@ public  final class Property extends
       }
     }
     /**
-     * <code>required .dossier.BaseProperty base = 1;</code>
+     * <code>optional .dossier.BaseProperty base = 1;</code>
      */
     public Builder setBase(com.github.jsdossier.proto.BaseProperty value) {
       if (baseBuilder_ == null) {
@@ -457,11 +423,11 @@ public  final class Property extends
       } else {
         baseBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000001;
+
       return this;
     }
     /**
-     * <code>required .dossier.BaseProperty base = 1;</code>
+     * <code>optional .dossier.BaseProperty base = 1;</code>
      */
     public Builder setBase(
         com.github.jsdossier.proto.BaseProperty.Builder builderForValue) {
@@ -471,17 +437,15 @@ public  final class Property extends
       } else {
         baseBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000001;
+
       return this;
     }
     /**
-     * <code>required .dossier.BaseProperty base = 1;</code>
+     * <code>optional .dossier.BaseProperty base = 1;</code>
      */
     public Builder mergeBase(com.github.jsdossier.proto.BaseProperty value) {
       if (baseBuilder_ == null) {
-        if (((bitField0_ & 0x00000001) == 0x00000001) &&
-            base_ != null &&
-            base_ != com.github.jsdossier.proto.BaseProperty.getDefaultInstance()) {
+        if (base_ != null) {
           base_ =
             com.github.jsdossier.proto.BaseProperty.newBuilder(base_).mergeFrom(value).buildPartial();
         } else {
@@ -491,32 +455,33 @@ public  final class Property extends
       } else {
         baseBuilder_.mergeFrom(value);
       }
-      bitField0_ |= 0x00000001;
+
       return this;
     }
     /**
-     * <code>required .dossier.BaseProperty base = 1;</code>
+     * <code>optional .dossier.BaseProperty base = 1;</code>
      */
     public Builder clearBase() {
       if (baseBuilder_ == null) {
         base_ = null;
         onChanged();
       } else {
-        baseBuilder_.clear();
+        base_ = null;
+        baseBuilder_ = null;
       }
-      bitField0_ = (bitField0_ & ~0x00000001);
+
       return this;
     }
     /**
-     * <code>required .dossier.BaseProperty base = 1;</code>
+     * <code>optional .dossier.BaseProperty base = 1;</code>
      */
     public com.github.jsdossier.proto.BaseProperty.Builder getBaseBuilder() {
-      bitField0_ |= 0x00000001;
+      
       onChanged();
       return getBaseFieldBuilder().getBuilder();
     }
     /**
-     * <code>required .dossier.BaseProperty base = 1;</code>
+     * <code>optional .dossier.BaseProperty base = 1;</code>
      */
     public com.github.jsdossier.proto.BasePropertyOrBuilder getBaseOrBuilder() {
       if (baseBuilder_ != null) {
@@ -527,7 +492,7 @@ public  final class Property extends
       }
     }
     /**
-     * <code>required .dossier.BaseProperty base = 1;</code>
+     * <code>optional .dossier.BaseProperty base = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilder<
         com.github.jsdossier.proto.BaseProperty, com.github.jsdossier.proto.BaseProperty.Builder, com.github.jsdossier.proto.BasePropertyOrBuilder> 
@@ -555,7 +520,7 @@ public  final class Property extends
      * </pre>
      */
     public boolean hasType() {
-      return ((bitField0_ & 0x00000002) == 0x00000002);
+      return typeBuilder_ != null || type_ != null;
     }
     /**
      * <code>optional .dossier.Comment type = 2;</code>
@@ -590,7 +555,7 @@ public  final class Property extends
       } else {
         typeBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000002;
+
       return this;
     }
     /**
@@ -609,7 +574,7 @@ public  final class Property extends
       } else {
         typeBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000002;
+
       return this;
     }
     /**
@@ -622,9 +587,7 @@ public  final class Property extends
      */
     public Builder mergeType(com.github.jsdossier.proto.Comment value) {
       if (typeBuilder_ == null) {
-        if (((bitField0_ & 0x00000002) == 0x00000002) &&
-            type_ != null &&
-            type_ != com.github.jsdossier.proto.Comment.getDefaultInstance()) {
+        if (type_ != null) {
           type_ =
             com.github.jsdossier.proto.Comment.newBuilder(type_).mergeFrom(value).buildPartial();
         } else {
@@ -634,7 +597,7 @@ public  final class Property extends
       } else {
         typeBuilder_.mergeFrom(value);
       }
-      bitField0_ |= 0x00000002;
+
       return this;
     }
     /**
@@ -650,9 +613,10 @@ public  final class Property extends
         type_ = null;
         onChanged();
       } else {
-        typeBuilder_.clear();
+        type_ = null;
+        typeBuilder_ = null;
       }
-      bitField0_ = (bitField0_ & ~0x00000002);
+
       return this;
     }
     /**
@@ -664,7 +628,7 @@ public  final class Property extends
      * </pre>
      */
     public com.github.jsdossier.proto.Comment.Builder getTypeBuilder() {
-      bitField0_ |= 0x00000002;
+      
       onChanged();
       return getTypeFieldBuilder().getBuilder();
     }
@@ -705,6 +669,16 @@ public  final class Property extends
       }
       return typeBuilder_;
     }
+    public final Builder setUnknownFields(
+        final com.google.protobuf.UnknownFieldSet unknownFields) {
+      return this;
+    }
+
+    public final Builder mergeUnknownFields(
+        final com.google.protobuf.UnknownFieldSet unknownFields) {
+      return this;
+    }
+
 
     // @@protoc_insertion_point(builder_scope:dossier.Property)
   }
@@ -719,7 +693,7 @@ public  final class Property extends
     return DEFAULT_INSTANCE;
   }
 
-  @java.lang.Deprecated public static final com.google.protobuf.Parser<Property>
+  private static final com.google.protobuf.Parser<Property>
       PARSER = new com.google.protobuf.AbstractParser<Property>() {
     public Property parsePartialFrom(
         com.google.protobuf.CodedInputStream input,

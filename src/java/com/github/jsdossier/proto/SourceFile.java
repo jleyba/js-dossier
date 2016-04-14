@@ -27,15 +27,13 @@ public  final class SourceFile extends
   @java.lang.Override
   public final com.google.protobuf.UnknownFieldSet
   getUnknownFields() {
-    return this.unknownFields;
+    return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
   }
   private SourceFile(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
     this();
     int mutable_bitField0_ = 0;
-    com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-        com.google.protobuf.UnknownFieldSet.newBuilder();
     try {
       boolean done = false;
       while (!done) {
@@ -45,31 +43,30 @@ public  final class SourceFile extends
             done = true;
             break;
           default: {
-            if (!parseUnknownField(input, unknownFields,
-                                   extensionRegistry, tag)) {
+            if (!input.skipField(tag)) {
               done = true;
             }
             break;
           }
           case 10: {
-            com.google.protobuf.ByteString bs = input.readBytes();
-            bitField0_ |= 0x00000001;
-            baseName_ = bs;
+            java.lang.String s = input.readStringRequireUtf8();
+
+            baseName_ = s;
             break;
           }
           case 18: {
-            com.google.protobuf.ByteString bs = input.readBytes();
-            bitField0_ |= 0x00000002;
-            path_ = bs;
+            java.lang.String s = input.readStringRequireUtf8();
+
+            path_ = s;
             break;
           }
           case 26: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            java.lang.String s = input.readStringRequireUtf8();
             if (!((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
               lines_ = new com.google.protobuf.LazyStringArrayList();
               mutable_bitField0_ |= 0x00000004;
             }
-            lines_.add(bs);
+            lines_.add(s);
             break;
           }
         }
@@ -84,7 +81,6 @@ public  final class SourceFile extends
       if (((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
         lines_ = lines_.getUnmodifiableView();
       }
-      this.unknownFields = unknownFields.build();
       makeExtensionsImmutable();
     }
   }
@@ -104,17 +100,7 @@ public  final class SourceFile extends
   public static final int BASE_NAME_FIELD_NUMBER = 1;
   private volatile java.lang.Object baseName_;
   /**
-   * <code>required string base_name = 1;</code>
-   *
-   * <pre>
-   * The file's base name.
-   * </pre>
-   */
-  public boolean hasBaseName() {
-    return ((bitField0_ & 0x00000001) == 0x00000001);
-  }
-  /**
-   * <code>required string base_name = 1;</code>
+   * <code>optional string base_name = 1;</code>
    *
    * <pre>
    * The file's base name.
@@ -128,14 +114,12 @@ public  final class SourceFile extends
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      if (bs.isValidUtf8()) {
-        baseName_ = s;
-      }
+      baseName_ = s;
       return s;
     }
   }
   /**
-   * <code>required string base_name = 1;</code>
+   * <code>optional string base_name = 1;</code>
    *
    * <pre>
    * The file's base name.
@@ -158,17 +142,7 @@ public  final class SourceFile extends
   public static final int PATH_FIELD_NUMBER = 2;
   private volatile java.lang.Object path_;
   /**
-   * <code>required string path = 2;</code>
-   *
-   * <pre>
-   * The path to the file; may be relative to some unspecified directory.
-   * </pre>
-   */
-  public boolean hasPath() {
-    return ((bitField0_ & 0x00000002) == 0x00000002);
-  }
-  /**
-   * <code>required string path = 2;</code>
+   * <code>optional string path = 2;</code>
    *
    * <pre>
    * The path to the file; may be relative to some unspecified directory.
@@ -182,14 +156,12 @@ public  final class SourceFile extends
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      if (bs.isValidUtf8()) {
-        path_ = s;
-      }
+      path_ = s;
       return s;
     }
   }
   /**
-   * <code>required string path = 2;</code>
+   * <code>optional string path = 2;</code>
    *
    * <pre>
    * The path to the file; may be relative to some unspecified directory.
@@ -260,30 +232,21 @@ public  final class SourceFile extends
     if (isInitialized == 1) return true;
     if (isInitialized == 0) return false;
 
-    if (!hasBaseName()) {
-      memoizedIsInitialized = 0;
-      return false;
-    }
-    if (!hasPath()) {
-      memoizedIsInitialized = 0;
-      return false;
-    }
     memoizedIsInitialized = 1;
     return true;
   }
 
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (((bitField0_ & 0x00000001) == 0x00000001)) {
+    if (!getBaseNameBytes().isEmpty()) {
       com.google.protobuf.GeneratedMessage.writeString(output, 1, baseName_);
     }
-    if (((bitField0_ & 0x00000002) == 0x00000002)) {
+    if (!getPathBytes().isEmpty()) {
       com.google.protobuf.GeneratedMessage.writeString(output, 2, path_);
     }
     for (int i = 0; i < lines_.size(); i++) {
       com.google.protobuf.GeneratedMessage.writeString(output, 3, lines_.getRaw(i));
     }
-    unknownFields.writeTo(output);
   }
 
   public int getSerializedSize() {
@@ -291,10 +254,10 @@ public  final class SourceFile extends
     if (size != -1) return size;
 
     size = 0;
-    if (((bitField0_ & 0x00000001) == 0x00000001)) {
+    if (!getBaseNameBytes().isEmpty()) {
       size += com.google.protobuf.GeneratedMessage.computeStringSize(1, baseName_);
     }
-    if (((bitField0_ & 0x00000002) == 0x00000002)) {
+    if (!getPathBytes().isEmpty()) {
       size += com.google.protobuf.GeneratedMessage.computeStringSize(2, path_);
     }
     {
@@ -305,7 +268,6 @@ public  final class SourceFile extends
       size += dataSize;
       size += 1 * getLinesList().size();
     }
-    size += unknownFields.getSerializedSize();
     memoizedSize = size;
     return size;
   }
@@ -422,9 +384,9 @@ public  final class SourceFile extends
     public Builder clear() {
       super.clear();
       baseName_ = "";
-      bitField0_ = (bitField0_ & ~0x00000001);
+
       path_ = "";
-      bitField0_ = (bitField0_ & ~0x00000002);
+
       lines_ = com.google.protobuf.LazyStringArrayList.EMPTY;
       bitField0_ = (bitField0_ & ~0x00000004);
       return this;
@@ -451,13 +413,7 @@ public  final class SourceFile extends
       com.github.jsdossier.proto.SourceFile result = new com.github.jsdossier.proto.SourceFile(this);
       int from_bitField0_ = bitField0_;
       int to_bitField0_ = 0;
-      if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
-        to_bitField0_ |= 0x00000001;
-      }
       result.baseName_ = baseName_;
-      if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
-        to_bitField0_ |= 0x00000002;
-      }
       result.path_ = path_;
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         lines_ = lines_.getUnmodifiableView();
@@ -480,13 +436,11 @@ public  final class SourceFile extends
 
     public Builder mergeFrom(com.github.jsdossier.proto.SourceFile other) {
       if (other == com.github.jsdossier.proto.SourceFile.getDefaultInstance()) return this;
-      if (other.hasBaseName()) {
-        bitField0_ |= 0x00000001;
+      if (!other.getBaseName().isEmpty()) {
         baseName_ = other.baseName_;
         onChanged();
       }
-      if (other.hasPath()) {
-        bitField0_ |= 0x00000002;
+      if (!other.getPath().isEmpty()) {
         path_ = other.path_;
         onChanged();
       }
@@ -500,18 +454,11 @@ public  final class SourceFile extends
         }
         onChanged();
       }
-      this.mergeUnknownFields(other.unknownFields);
       onChanged();
       return this;
     }
 
     public final boolean isInitialized() {
-      if (!hasBaseName()) {
-        return false;
-      }
-      if (!hasPath()) {
-        return false;
-      }
       return true;
     }
 
@@ -536,17 +483,7 @@ public  final class SourceFile extends
 
     private java.lang.Object baseName_ = "";
     /**
-     * <code>required string base_name = 1;</code>
-     *
-     * <pre>
-     * The file's base name.
-     * </pre>
-     */
-    public boolean hasBaseName() {
-      return ((bitField0_ & 0x00000001) == 0x00000001);
-    }
-    /**
-     * <code>required string base_name = 1;</code>
+     * <code>optional string base_name = 1;</code>
      *
      * <pre>
      * The file's base name.
@@ -558,16 +495,14 @@ public  final class SourceFile extends
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          baseName_ = s;
-        }
+        baseName_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
       }
     }
     /**
-     * <code>required string base_name = 1;</code>
+     * <code>optional string base_name = 1;</code>
      *
      * <pre>
      * The file's base name.
@@ -587,7 +522,7 @@ public  final class SourceFile extends
       }
     }
     /**
-     * <code>required string base_name = 1;</code>
+     * <code>optional string base_name = 1;</code>
      *
      * <pre>
      * The file's base name.
@@ -598,26 +533,26 @@ public  final class SourceFile extends
       if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000001;
+  
       baseName_ = value;
       onChanged();
       return this;
     }
     /**
-     * <code>required string base_name = 1;</code>
+     * <code>optional string base_name = 1;</code>
      *
      * <pre>
      * The file's base name.
      * </pre>
      */
     public Builder clearBaseName() {
-      bitField0_ = (bitField0_ & ~0x00000001);
+      
       baseName_ = getDefaultInstance().getBaseName();
       onChanged();
       return this;
     }
     /**
-     * <code>required string base_name = 1;</code>
+     * <code>optional string base_name = 1;</code>
      *
      * <pre>
      * The file's base name.
@@ -628,7 +563,8 @@ public  final class SourceFile extends
       if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000001;
+  checkByteStringIsUtf8(value);
+      
       baseName_ = value;
       onChanged();
       return this;
@@ -636,17 +572,7 @@ public  final class SourceFile extends
 
     private java.lang.Object path_ = "";
     /**
-     * <code>required string path = 2;</code>
-     *
-     * <pre>
-     * The path to the file; may be relative to some unspecified directory.
-     * </pre>
-     */
-    public boolean hasPath() {
-      return ((bitField0_ & 0x00000002) == 0x00000002);
-    }
-    /**
-     * <code>required string path = 2;</code>
+     * <code>optional string path = 2;</code>
      *
      * <pre>
      * The path to the file; may be relative to some unspecified directory.
@@ -658,16 +584,14 @@ public  final class SourceFile extends
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          path_ = s;
-        }
+        path_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
       }
     }
     /**
-     * <code>required string path = 2;</code>
+     * <code>optional string path = 2;</code>
      *
      * <pre>
      * The path to the file; may be relative to some unspecified directory.
@@ -687,7 +611,7 @@ public  final class SourceFile extends
       }
     }
     /**
-     * <code>required string path = 2;</code>
+     * <code>optional string path = 2;</code>
      *
      * <pre>
      * The path to the file; may be relative to some unspecified directory.
@@ -698,26 +622,26 @@ public  final class SourceFile extends
       if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000002;
+  
       path_ = value;
       onChanged();
       return this;
     }
     /**
-     * <code>required string path = 2;</code>
+     * <code>optional string path = 2;</code>
      *
      * <pre>
      * The path to the file; may be relative to some unspecified directory.
      * </pre>
      */
     public Builder clearPath() {
-      bitField0_ = (bitField0_ & ~0x00000002);
+      
       path_ = getDefaultInstance().getPath();
       onChanged();
       return this;
     }
     /**
-     * <code>required string path = 2;</code>
+     * <code>optional string path = 2;</code>
      *
      * <pre>
      * The path to the file; may be relative to some unspecified directory.
@@ -728,7 +652,8 @@ public  final class SourceFile extends
       if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000002;
+  checkByteStringIsUtf8(value);
+      
       path_ = value;
       onChanged();
       return this;
@@ -857,11 +782,22 @@ public  final class SourceFile extends
       if (value == null) {
     throw new NullPointerException();
   }
-  ensureLinesIsMutable();
+  checkByteStringIsUtf8(value);
+      ensureLinesIsMutable();
       lines_.add(value);
       onChanged();
       return this;
     }
+    public final Builder setUnknownFields(
+        final com.google.protobuf.UnknownFieldSet unknownFields) {
+      return this;
+    }
+
+    public final Builder mergeUnknownFields(
+        final com.google.protobuf.UnknownFieldSet unknownFields) {
+      return this;
+    }
+
 
     // @@protoc_insertion_point(builder_scope:dossier.SourceFile)
   }
@@ -876,7 +812,7 @@ public  final class SourceFile extends
     return DEFAULT_INSTANCE;
   }
 
-  @java.lang.Deprecated public static final com.google.protobuf.Parser<SourceFile>
+  private static final com.google.protobuf.Parser<SourceFile>
       PARSER = new com.google.protobuf.AbstractParser<SourceFile>() {
     public SourceFile parsePartialFrom(
         com.google.protobuf.CodedInputStream input,

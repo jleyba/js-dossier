@@ -15,26 +15,8 @@ public interface SanitizedContentOrBuilder extends
    * injected into a Soy template.
    * </pre>
    */
-  boolean hasUri();
-  /**
-   * <code>optional bool uri = 1;</code>
-   *
-   * <pre>
-   * Indicates a field should be treated as a sanitized URI when
-   * injected into a Soy template.
-   * </pre>
-   */
   boolean getUri();
 
-  /**
-   * <code>optional bool html = 2;</code>
-   *
-   * <pre>
-   * Indicates a field should be treated as sanitized HTML content when
-   * injected into a Soy template.
-   * </pre>
-   */
-  boolean hasHtml();
   /**
    * <code>optional bool html = 2;</code>
    *

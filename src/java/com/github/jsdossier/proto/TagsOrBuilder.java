@@ -10,16 +10,8 @@ public interface TagsOrBuilder extends
   /**
    * <code>optional bool is_const = 1;</code>
    */
-  boolean hasIsConst();
-  /**
-   * <code>optional bool is_const = 1;</code>
-   */
   boolean getIsConst();
 
-  /**
-   * <code>optional bool is_deprecated = 2;</code>
-   */
-  boolean hasIsDeprecated();
   /**
    * <code>optional bool is_deprecated = 2;</code>
    */
@@ -28,16 +20,8 @@ public interface TagsOrBuilder extends
   /**
    * <code>optional bool is_dict = 3;</code>
    */
-  boolean hasIsDict();
-  /**
-   * <code>optional bool is_dict = 3;</code>
-   */
   boolean getIsDict();
 
-  /**
-   * <code>optional bool is_final = 4;</code>
-   */
-  boolean hasIsFinal();
   /**
    * <code>optional bool is_final = 4;</code>
    */
@@ -46,16 +30,8 @@ public interface TagsOrBuilder extends
   /**
    * <code>optional bool is_interface = 5;</code>
    */
-  boolean hasIsInterface();
-  /**
-   * <code>optional bool is_interface = 5;</code>
-   */
   boolean getIsInterface();
 
-  /**
-   * <code>optional bool is_module = 6;</code>
-   */
-  boolean hasIsModule();
   /**
    * <code>optional bool is_module = 6;</code>
    */
@@ -64,25 +40,13 @@ public interface TagsOrBuilder extends
   /**
    * <code>optional bool is_struct = 7;</code>
    */
-  boolean hasIsStruct();
-  /**
-   * <code>optional bool is_struct = 7;</code>
-   */
   boolean getIsStruct();
 
   /**
    * <code>optional bool is_default = 8;</code>
    */
-  boolean hasIsDefault();
-  /**
-   * <code>optional bool is_default = 8;</code>
-   */
   boolean getIsDefault();
 
-  /**
-   * <code>optional bool is_record = 9;</code>
-   */
-  boolean hasIsRecord();
   /**
    * <code>optional bool is_record = 9;</code>
    */

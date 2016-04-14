@@ -26,15 +26,13 @@ public  final class Comment extends
   @java.lang.Override
   public final com.google.protobuf.UnknownFieldSet
   getUnknownFields() {
-    return this.unknownFields;
+    return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
   }
   private Comment(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
     this();
     int mutable_bitField0_ = 0;
-    com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-        com.google.protobuf.UnknownFieldSet.newBuilder();
     try {
       boolean done = false;
       while (!done) {
@@ -44,8 +42,7 @@ public  final class Comment extends
             done = true;
             break;
           default: {
-            if (!parseUnknownField(input, unknownFields,
-                                   extensionRegistry, tag)) {
+            if (!input.skipField(tag)) {
               done = true;
             }
             break;
@@ -70,7 +67,6 @@ public  final class Comment extends
       if (((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
         token_ = java.util.Collections.unmodifiableList(token_);
       }
-      this.unknownFields = unknownFields.build();
       makeExtensionsImmutable();
     }
   }
@@ -97,14 +93,6 @@ public  final class Comment extends
      * The text content for this token; text should be escaped when rendered.
      * </pre>
      */
-    boolean hasText();
-    /**
-     * <code>optional string text = 1;</code>
-     *
-     * <pre>
-     * The text content for this token; text should be escaped when rendered.
-     * </pre>
-     */
     java.lang.String getText();
     /**
      * <code>optional string text = 1;</code>
@@ -123,14 +111,6 @@ public  final class Comment extends
      * The pre-escaped html content for this token.
      * </pre>
      */
-    boolean hasHtml();
-    /**
-     * <code>optional string html = 6;</code>
-     *
-     * <pre>
-     * The pre-escaped html content for this token.
-     * </pre>
-     */
     java.lang.String getHtml();
     /**
      * <code>optional string html = 6;</code>
@@ -142,14 +122,6 @@ public  final class Comment extends
     com.google.protobuf.ByteString
         getHtmlBytes();
 
-    /**
-     * <code>optional string href = 4;</code>
-     *
-     * <pre>
-     * If set, this token will be rendered as a hyperlink.
-     * </pre>
-     */
-    boolean hasHref();
     /**
      * <code>optional string href = 4;</code>
      *
@@ -188,15 +160,13 @@ public  final class Comment extends
     @java.lang.Override
     public final com.google.protobuf.UnknownFieldSet
     getUnknownFields() {
-      return this.unknownFields;
+      return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
     }
     private Token(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
       this();
       int mutable_bitField0_ = 0;
-      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder();
       try {
         boolean done = false;
         while (!done) {
@@ -206,28 +176,27 @@ public  final class Comment extends
               done = true;
               break;
             default: {
-              if (!parseUnknownField(input, unknownFields,
-                                     extensionRegistry, tag)) {
+              if (!input.skipField(tag)) {
                 done = true;
               }
               break;
             }
             case 10: {
-              com.google.protobuf.ByteString bs = input.readBytes();
+              java.lang.String s = input.readStringRequireUtf8();
               contentCase_ = 1;
-              content_ = bs;
+              content_ = s;
               break;
             }
             case 34: {
-              com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00000004;
-              href_ = bs;
+              java.lang.String s = input.readStringRequireUtf8();
+
+              href_ = s;
               break;
             }
             case 50: {
-              com.google.protobuf.ByteString bs = input.readBytes();
+              java.lang.String s = input.readStringRequireUtf8();
               contentCase_ = 6;
-              content_ = bs;
+              content_ = s;
               break;
             }
           }
@@ -239,7 +208,6 @@ public  final class Comment extends
             new com.google.protobuf.InvalidProtocolBufferException(
                 e.getMessage()).setUnfinishedMessage(this));
       } finally {
-        this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
       }
     }
@@ -255,7 +223,6 @@ public  final class Comment extends
               com.github.jsdossier.proto.Comment.Token.class, com.github.jsdossier.proto.Comment.Token.Builder.class);
     }
 
-    private int bitField0_;
     private int contentCase_ = 0;
     private java.lang.Object content_;
     public enum ContentCase
@@ -295,16 +262,6 @@ public  final class Comment extends
      * The text content for this token; text should be escaped when rendered.
      * </pre>
      */
-    public boolean hasText() {
-      return contentCase_ == 1;
-    }
-    /**
-     * <code>optional string text = 1;</code>
-     *
-     * <pre>
-     * The text content for this token; text should be escaped when rendered.
-     * </pre>
-     */
     public java.lang.String getText() {
       java.lang.Object ref = "";
       if (contentCase_ == 1) {
@@ -316,7 +273,7 @@ public  final class Comment extends
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8() && (contentCase_ == 1)) {
+        if (contentCase_ == 1) {
           content_ = s;
         }
         return s;
@@ -356,16 +313,6 @@ public  final class Comment extends
      * The pre-escaped html content for this token.
      * </pre>
      */
-    public boolean hasHtml() {
-      return contentCase_ == 6;
-    }
-    /**
-     * <code>optional string html = 6;</code>
-     *
-     * <pre>
-     * The pre-escaped html content for this token.
-     * </pre>
-     */
     public java.lang.String getHtml() {
       java.lang.Object ref = "";
       if (contentCase_ == 6) {
@@ -377,7 +324,7 @@ public  final class Comment extends
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8() && (contentCase_ == 6)) {
+        if (contentCase_ == 6) {
           content_ = s;
         }
         return s;
@@ -418,16 +365,6 @@ public  final class Comment extends
      * If set, this token will be rendered as a hyperlink.
      * </pre>
      */
-    public boolean hasHref() {
-      return ((bitField0_ & 0x00000004) == 0x00000004);
-    }
-    /**
-     * <code>optional string href = 4;</code>
-     *
-     * <pre>
-     * If set, this token will be rendered as a hyperlink.
-     * </pre>
-     */
     public java.lang.String getHref() {
       java.lang.Object ref = href_;
       if (ref instanceof java.lang.String) {
@@ -436,9 +373,7 @@ public  final class Comment extends
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          href_ = s;
-        }
+        href_ = s;
         return s;
       }
     }
@@ -478,13 +413,12 @@ public  final class Comment extends
       if (contentCase_ == 1) {
         com.google.protobuf.GeneratedMessage.writeString(output, 1, content_);
       }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+      if (!getHrefBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessage.writeString(output, 4, href_);
       }
       if (contentCase_ == 6) {
         com.google.protobuf.GeneratedMessage.writeString(output, 6, content_);
       }
-      unknownFields.writeTo(output);
     }
 
     public int getSerializedSize() {
@@ -495,13 +429,12 @@ public  final class Comment extends
       if (contentCase_ == 1) {
         size += com.google.protobuf.GeneratedMessage.computeStringSize(1, content_);
       }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+      if (!getHrefBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessage.computeStringSize(4, href_);
       }
       if (contentCase_ == 6) {
         size += com.google.protobuf.GeneratedMessage.computeStringSize(6, content_);
       }
-      size += unknownFields.getSerializedSize();
       memoizedSize = size;
       return size;
     }
@@ -614,7 +547,7 @@ public  final class Comment extends
       public Builder clear() {
         super.clear();
         href_ = "";
-        bitField0_ = (bitField0_ & ~0x00000004);
+
         contentCase_ = 0;
         content_ = null;
         return this;
@@ -639,19 +572,13 @@ public  final class Comment extends
 
       public com.github.jsdossier.proto.Comment.Token buildPartial() {
         com.github.jsdossier.proto.Comment.Token result = new com.github.jsdossier.proto.Comment.Token(this);
-        int from_bitField0_ = bitField0_;
-        int to_bitField0_ = 0;
         if (contentCase_ == 1) {
           result.content_ = content_;
         }
         if (contentCase_ == 6) {
           result.content_ = content_;
         }
-        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
-          to_bitField0_ |= 0x00000004;
-        }
         result.href_ = href_;
-        result.bitField0_ = to_bitField0_;
         result.contentCase_ = contentCase_;
         onBuilt();
         return result;
@@ -668,8 +595,7 @@ public  final class Comment extends
 
       public Builder mergeFrom(com.github.jsdossier.proto.Comment.Token other) {
         if (other == com.github.jsdossier.proto.Comment.Token.getDefaultInstance()) return this;
-        if (other.hasHref()) {
-          bitField0_ |= 0x00000004;
+        if (!other.getHref().isEmpty()) {
           href_ = other.href_;
           onChanged();
         }
@@ -690,7 +616,6 @@ public  final class Comment extends
             break;
           }
         }
-        this.mergeUnknownFields(other.unknownFields);
         onChanged();
         return this;
       }
@@ -731,18 +656,7 @@ public  final class Comment extends
         return this;
       }
 
-      private int bitField0_;
 
-      /**
-       * <code>optional string text = 1;</code>
-       *
-       * <pre>
-       * The text content for this token; text should be escaped when rendered.
-       * </pre>
-       */
-      public boolean hasText() {
-        return contentCase_ == 1;
-      }
       /**
        * <code>optional string text = 1;</code>
        *
@@ -760,9 +674,7 @@ public  final class Comment extends
               (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
           if (contentCase_ == 1) {
-            if (bs.isValidUtf8()) {
-              content_ = s;
-            }
+            content_ = s;
           }
           return s;
         } else {
@@ -838,22 +750,13 @@ public  final class Comment extends
         if (value == null) {
     throw new NullPointerException();
   }
-  contentCase_ = 1;
+  checkByteStringIsUtf8(value);
+        contentCase_ = 1;
         content_ = value;
         onChanged();
         return this;
       }
 
-      /**
-       * <code>optional string html = 6;</code>
-       *
-       * <pre>
-       * The pre-escaped html content for this token.
-       * </pre>
-       */
-      public boolean hasHtml() {
-        return contentCase_ == 6;
-      }
       /**
        * <code>optional string html = 6;</code>
        *
@@ -871,9 +774,7 @@ public  final class Comment extends
               (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
           if (contentCase_ == 6) {
-            if (bs.isValidUtf8()) {
-              content_ = s;
-            }
+            content_ = s;
           }
           return s;
         } else {
@@ -949,7 +850,8 @@ public  final class Comment extends
         if (value == null) {
     throw new NullPointerException();
   }
-  contentCase_ = 6;
+  checkByteStringIsUtf8(value);
+        contentCase_ = 6;
         content_ = value;
         onChanged();
         return this;
@@ -963,25 +865,13 @@ public  final class Comment extends
        * If set, this token will be rendered as a hyperlink.
        * </pre>
        */
-      public boolean hasHref() {
-        return ((bitField0_ & 0x00000004) == 0x00000004);
-      }
-      /**
-       * <code>optional string href = 4;</code>
-       *
-       * <pre>
-       * If set, this token will be rendered as a hyperlink.
-       * </pre>
-       */
       public java.lang.String getHref() {
         java.lang.Object ref = href_;
         if (!(ref instanceof java.lang.String)) {
           com.google.protobuf.ByteString bs =
               (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            href_ = s;
-          }
+          href_ = s;
           return s;
         } else {
           return (java.lang.String) ref;
@@ -1019,7 +909,7 @@ public  final class Comment extends
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000004;
+  
         href_ = value;
         onChanged();
         return this;
@@ -1032,7 +922,7 @@ public  final class Comment extends
        * </pre>
        */
       public Builder clearHref() {
-        bitField0_ = (bitField0_ & ~0x00000004);
+        
         href_ = getDefaultInstance().getHref();
         onChanged();
         return this;
@@ -1049,11 +939,22 @@ public  final class Comment extends
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000004;
+  checkByteStringIsUtf8(value);
+        
         href_ = value;
         onChanged();
         return this;
       }
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
+
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
+
 
       // @@protoc_insertion_point(builder_scope:dossier.Comment.Token)
     }
@@ -1068,7 +969,7 @@ public  final class Comment extends
       return DEFAULT_INSTANCE;
     }
 
-    @java.lang.Deprecated public static final com.google.protobuf.Parser<Token>
+    private static final com.google.protobuf.Parser<Token>
         PARSER = new com.google.protobuf.AbstractParser<Token>() {
       public Token parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
@@ -1172,7 +1073,6 @@ public  final class Comment extends
     for (int i = 0; i < token_.size(); i++) {
       output.writeMessage(1, token_.get(i));
     }
-    unknownFields.writeTo(output);
   }
 
   public int getSerializedSize() {
@@ -1184,7 +1084,6 @@ public  final class Comment extends
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(1, token_.get(i));
     }
-    size += unknownFields.getSerializedSize();
     memoizedSize = size;
     return size;
   }
@@ -1381,7 +1280,6 @@ public  final class Comment extends
           }
         }
       }
-      this.mergeUnknownFields(other.unknownFields);
       onChanged();
       return this;
     }
@@ -1720,6 +1618,16 @@ public  final class Comment extends
       }
       return tokenBuilder_;
     }
+    public final Builder setUnknownFields(
+        final com.google.protobuf.UnknownFieldSet unknownFields) {
+      return this;
+    }
+
+    public final Builder mergeUnknownFields(
+        final com.google.protobuf.UnknownFieldSet unknownFields) {
+      return this;
+    }
+
 
     // @@protoc_insertion_point(builder_scope:dossier.Comment)
   }
@@ -1734,7 +1642,7 @@ public  final class Comment extends
     return DEFAULT_INSTANCE;
   }
 
-  @java.lang.Deprecated public static final com.google.protobuf.Parser<Comment>
+  private static final com.google.protobuf.Parser<Comment>
       PARSER = new com.google.protobuf.AbstractParser<Comment>() {
     public Comment parsePartialFrom(
         com.google.protobuf.CodedInputStream input,

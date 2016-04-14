@@ -8,15 +8,7 @@ public interface SourceFileOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>required string base_name = 1;</code>
-   *
-   * <pre>
-   * The file's base name.
-   * </pre>
-   */
-  boolean hasBaseName();
-  /**
-   * <code>required string base_name = 1;</code>
+   * <code>optional string base_name = 1;</code>
    *
    * <pre>
    * The file's base name.
@@ -24,7 +16,7 @@ public interface SourceFileOrBuilder extends
    */
   java.lang.String getBaseName();
   /**
-   * <code>required string base_name = 1;</code>
+   * <code>optional string base_name = 1;</code>
    *
    * <pre>
    * The file's base name.
@@ -34,15 +26,7 @@ public interface SourceFileOrBuilder extends
       getBaseNameBytes();
 
   /**
-   * <code>required string path = 2;</code>
-   *
-   * <pre>
-   * The path to the file; may be relative to some unspecified directory.
-   * </pre>
-   */
-  boolean hasPath();
-  /**
-   * <code>required string path = 2;</code>
+   * <code>optional string path = 2;</code>
    *
    * <pre>
    * The path to the file; may be relative to some unspecified directory.
@@ -50,7 +34,7 @@ public interface SourceFileOrBuilder extends
    */
   java.lang.String getPath();
   /**
-   * <code>required string path = 2;</code>
+   * <code>optional string path = 2;</code>
    *
    * <pre>
    * The path to the file; may be relative to some unspecified directory.

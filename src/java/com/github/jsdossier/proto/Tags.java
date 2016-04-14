@@ -29,15 +29,13 @@ public  final class Tags extends
   @java.lang.Override
   public final com.google.protobuf.UnknownFieldSet
   getUnknownFields() {
-    return this.unknownFields;
+    return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
   }
   private Tags(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
     this();
     int mutable_bitField0_ = 0;
-    com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-        com.google.protobuf.UnknownFieldSet.newBuilder();
     try {
       boolean done = false;
       while (!done) {
@@ -47,54 +45,53 @@ public  final class Tags extends
             done = true;
             break;
           default: {
-            if (!parseUnknownField(input, unknownFields,
-                                   extensionRegistry, tag)) {
+            if (!input.skipField(tag)) {
               done = true;
             }
             break;
           }
           case 8: {
-            bitField0_ |= 0x00000001;
+
             isConst_ = input.readBool();
             break;
           }
           case 16: {
-            bitField0_ |= 0x00000002;
+
             isDeprecated_ = input.readBool();
             break;
           }
           case 24: {
-            bitField0_ |= 0x00000004;
+
             isDict_ = input.readBool();
             break;
           }
           case 32: {
-            bitField0_ |= 0x00000008;
+
             isFinal_ = input.readBool();
             break;
           }
           case 40: {
-            bitField0_ |= 0x00000010;
+
             isInterface_ = input.readBool();
             break;
           }
           case 48: {
-            bitField0_ |= 0x00000020;
+
             isModule_ = input.readBool();
             break;
           }
           case 56: {
-            bitField0_ |= 0x00000040;
+
             isStruct_ = input.readBool();
             break;
           }
           case 64: {
-            bitField0_ |= 0x00000080;
+
             isDefault_ = input.readBool();
             break;
           }
           case 72: {
-            bitField0_ |= 0x00000100;
+
             isRecord_ = input.readBool();
             break;
           }
@@ -107,7 +104,6 @@ public  final class Tags extends
           new com.google.protobuf.InvalidProtocolBufferException(
               e.getMessage()).setUnfinishedMessage(this));
     } finally {
-      this.unknownFields = unknownFields.build();
       makeExtensionsImmutable();
     }
   }
@@ -123,15 +119,8 @@ public  final class Tags extends
             com.github.jsdossier.proto.Tags.class, com.github.jsdossier.proto.Tags.Builder.class);
   }
 
-  private int bitField0_;
   public static final int IS_CONST_FIELD_NUMBER = 1;
   private boolean isConst_;
-  /**
-   * <code>optional bool is_const = 1;</code>
-   */
-  public boolean hasIsConst() {
-    return ((bitField0_ & 0x00000001) == 0x00000001);
-  }
   /**
    * <code>optional bool is_const = 1;</code>
    */
@@ -144,24 +133,12 @@ public  final class Tags extends
   /**
    * <code>optional bool is_deprecated = 2;</code>
    */
-  public boolean hasIsDeprecated() {
-    return ((bitField0_ & 0x00000002) == 0x00000002);
-  }
-  /**
-   * <code>optional bool is_deprecated = 2;</code>
-   */
   public boolean getIsDeprecated() {
     return isDeprecated_;
   }
 
   public static final int IS_DICT_FIELD_NUMBER = 3;
   private boolean isDict_;
-  /**
-   * <code>optional bool is_dict = 3;</code>
-   */
-  public boolean hasIsDict() {
-    return ((bitField0_ & 0x00000004) == 0x00000004);
-  }
   /**
    * <code>optional bool is_dict = 3;</code>
    */
@@ -174,24 +151,12 @@ public  final class Tags extends
   /**
    * <code>optional bool is_final = 4;</code>
    */
-  public boolean hasIsFinal() {
-    return ((bitField0_ & 0x00000008) == 0x00000008);
-  }
-  /**
-   * <code>optional bool is_final = 4;</code>
-   */
   public boolean getIsFinal() {
     return isFinal_;
   }
 
   public static final int IS_INTERFACE_FIELD_NUMBER = 5;
   private boolean isInterface_;
-  /**
-   * <code>optional bool is_interface = 5;</code>
-   */
-  public boolean hasIsInterface() {
-    return ((bitField0_ & 0x00000010) == 0x00000010);
-  }
   /**
    * <code>optional bool is_interface = 5;</code>
    */
@@ -204,24 +169,12 @@ public  final class Tags extends
   /**
    * <code>optional bool is_module = 6;</code>
    */
-  public boolean hasIsModule() {
-    return ((bitField0_ & 0x00000020) == 0x00000020);
-  }
-  /**
-   * <code>optional bool is_module = 6;</code>
-   */
   public boolean getIsModule() {
     return isModule_;
   }
 
   public static final int IS_STRUCT_FIELD_NUMBER = 7;
   private boolean isStruct_;
-  /**
-   * <code>optional bool is_struct = 7;</code>
-   */
-  public boolean hasIsStruct() {
-    return ((bitField0_ & 0x00000040) == 0x00000040);
-  }
   /**
    * <code>optional bool is_struct = 7;</code>
    */
@@ -234,24 +187,12 @@ public  final class Tags extends
   /**
    * <code>optional bool is_default = 8;</code>
    */
-  public boolean hasIsDefault() {
-    return ((bitField0_ & 0x00000080) == 0x00000080);
-  }
-  /**
-   * <code>optional bool is_default = 8;</code>
-   */
   public boolean getIsDefault() {
     return isDefault_;
   }
 
   public static final int IS_RECORD_FIELD_NUMBER = 9;
   private boolean isRecord_;
-  /**
-   * <code>optional bool is_record = 9;</code>
-   */
-  public boolean hasIsRecord() {
-    return ((bitField0_ & 0x00000100) == 0x00000100);
-  }
   /**
    * <code>optional bool is_record = 9;</code>
    */
@@ -271,34 +212,33 @@ public  final class Tags extends
 
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (((bitField0_ & 0x00000001) == 0x00000001)) {
+    if (isConst_ != false) {
       output.writeBool(1, isConst_);
     }
-    if (((bitField0_ & 0x00000002) == 0x00000002)) {
+    if (isDeprecated_ != false) {
       output.writeBool(2, isDeprecated_);
     }
-    if (((bitField0_ & 0x00000004) == 0x00000004)) {
+    if (isDict_ != false) {
       output.writeBool(3, isDict_);
     }
-    if (((bitField0_ & 0x00000008) == 0x00000008)) {
+    if (isFinal_ != false) {
       output.writeBool(4, isFinal_);
     }
-    if (((bitField0_ & 0x00000010) == 0x00000010)) {
+    if (isInterface_ != false) {
       output.writeBool(5, isInterface_);
     }
-    if (((bitField0_ & 0x00000020) == 0x00000020)) {
+    if (isModule_ != false) {
       output.writeBool(6, isModule_);
     }
-    if (((bitField0_ & 0x00000040) == 0x00000040)) {
+    if (isStruct_ != false) {
       output.writeBool(7, isStruct_);
     }
-    if (((bitField0_ & 0x00000080) == 0x00000080)) {
+    if (isDefault_ != false) {
       output.writeBool(8, isDefault_);
     }
-    if (((bitField0_ & 0x00000100) == 0x00000100)) {
+    if (isRecord_ != false) {
       output.writeBool(9, isRecord_);
     }
-    unknownFields.writeTo(output);
   }
 
   public int getSerializedSize() {
@@ -306,43 +246,42 @@ public  final class Tags extends
     if (size != -1) return size;
 
     size = 0;
-    if (((bitField0_ & 0x00000001) == 0x00000001)) {
+    if (isConst_ != false) {
       size += com.google.protobuf.CodedOutputStream
         .computeBoolSize(1, isConst_);
     }
-    if (((bitField0_ & 0x00000002) == 0x00000002)) {
+    if (isDeprecated_ != false) {
       size += com.google.protobuf.CodedOutputStream
         .computeBoolSize(2, isDeprecated_);
     }
-    if (((bitField0_ & 0x00000004) == 0x00000004)) {
+    if (isDict_ != false) {
       size += com.google.protobuf.CodedOutputStream
         .computeBoolSize(3, isDict_);
     }
-    if (((bitField0_ & 0x00000008) == 0x00000008)) {
+    if (isFinal_ != false) {
       size += com.google.protobuf.CodedOutputStream
         .computeBoolSize(4, isFinal_);
     }
-    if (((bitField0_ & 0x00000010) == 0x00000010)) {
+    if (isInterface_ != false) {
       size += com.google.protobuf.CodedOutputStream
         .computeBoolSize(5, isInterface_);
     }
-    if (((bitField0_ & 0x00000020) == 0x00000020)) {
+    if (isModule_ != false) {
       size += com.google.protobuf.CodedOutputStream
         .computeBoolSize(6, isModule_);
     }
-    if (((bitField0_ & 0x00000040) == 0x00000040)) {
+    if (isStruct_ != false) {
       size += com.google.protobuf.CodedOutputStream
         .computeBoolSize(7, isStruct_);
     }
-    if (((bitField0_ & 0x00000080) == 0x00000080)) {
+    if (isDefault_ != false) {
       size += com.google.protobuf.CodedOutputStream
         .computeBoolSize(8, isDefault_);
     }
-    if (((bitField0_ & 0x00000100) == 0x00000100)) {
+    if (isRecord_ != false) {
       size += com.google.protobuf.CodedOutputStream
         .computeBoolSize(9, isRecord_);
     }
-    size += unknownFields.getSerializedSize();
     memoizedSize = size;
     return size;
   }
@@ -455,23 +394,23 @@ public  final class Tags extends
     public Builder clear() {
       super.clear();
       isConst_ = false;
-      bitField0_ = (bitField0_ & ~0x00000001);
+
       isDeprecated_ = false;
-      bitField0_ = (bitField0_ & ~0x00000002);
+
       isDict_ = false;
-      bitField0_ = (bitField0_ & ~0x00000004);
+
       isFinal_ = false;
-      bitField0_ = (bitField0_ & ~0x00000008);
+
       isInterface_ = false;
-      bitField0_ = (bitField0_ & ~0x00000010);
+
       isModule_ = false;
-      bitField0_ = (bitField0_ & ~0x00000020);
+
       isStruct_ = false;
-      bitField0_ = (bitField0_ & ~0x00000040);
+
       isDefault_ = false;
-      bitField0_ = (bitField0_ & ~0x00000080);
+
       isRecord_ = false;
-      bitField0_ = (bitField0_ & ~0x00000100);
+
       return this;
     }
 
@@ -494,45 +433,15 @@ public  final class Tags extends
 
     public com.github.jsdossier.proto.Tags buildPartial() {
       com.github.jsdossier.proto.Tags result = new com.github.jsdossier.proto.Tags(this);
-      int from_bitField0_ = bitField0_;
-      int to_bitField0_ = 0;
-      if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
-        to_bitField0_ |= 0x00000001;
-      }
       result.isConst_ = isConst_;
-      if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
-        to_bitField0_ |= 0x00000002;
-      }
       result.isDeprecated_ = isDeprecated_;
-      if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
-        to_bitField0_ |= 0x00000004;
-      }
       result.isDict_ = isDict_;
-      if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
-        to_bitField0_ |= 0x00000008;
-      }
       result.isFinal_ = isFinal_;
-      if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
-        to_bitField0_ |= 0x00000010;
-      }
       result.isInterface_ = isInterface_;
-      if (((from_bitField0_ & 0x00000020) == 0x00000020)) {
-        to_bitField0_ |= 0x00000020;
-      }
       result.isModule_ = isModule_;
-      if (((from_bitField0_ & 0x00000040) == 0x00000040)) {
-        to_bitField0_ |= 0x00000040;
-      }
       result.isStruct_ = isStruct_;
-      if (((from_bitField0_ & 0x00000080) == 0x00000080)) {
-        to_bitField0_ |= 0x00000080;
-      }
       result.isDefault_ = isDefault_;
-      if (((from_bitField0_ & 0x00000100) == 0x00000100)) {
-        to_bitField0_ |= 0x00000100;
-      }
       result.isRecord_ = isRecord_;
-      result.bitField0_ = to_bitField0_;
       onBuilt();
       return result;
     }
@@ -548,34 +457,33 @@ public  final class Tags extends
 
     public Builder mergeFrom(com.github.jsdossier.proto.Tags other) {
       if (other == com.github.jsdossier.proto.Tags.getDefaultInstance()) return this;
-      if (other.hasIsConst()) {
+      if (other.getIsConst() != false) {
         setIsConst(other.getIsConst());
       }
-      if (other.hasIsDeprecated()) {
+      if (other.getIsDeprecated() != false) {
         setIsDeprecated(other.getIsDeprecated());
       }
-      if (other.hasIsDict()) {
+      if (other.getIsDict() != false) {
         setIsDict(other.getIsDict());
       }
-      if (other.hasIsFinal()) {
+      if (other.getIsFinal() != false) {
         setIsFinal(other.getIsFinal());
       }
-      if (other.hasIsInterface()) {
+      if (other.getIsInterface() != false) {
         setIsInterface(other.getIsInterface());
       }
-      if (other.hasIsModule()) {
+      if (other.getIsModule() != false) {
         setIsModule(other.getIsModule());
       }
-      if (other.hasIsStruct()) {
+      if (other.getIsStruct() != false) {
         setIsStruct(other.getIsStruct());
       }
-      if (other.hasIsDefault()) {
+      if (other.getIsDefault() != false) {
         setIsDefault(other.getIsDefault());
       }
-      if (other.hasIsRecord()) {
+      if (other.getIsRecord() != false) {
         setIsRecord(other.getIsRecord());
       }
-      this.mergeUnknownFields(other.unknownFields);
       onChanged();
       return this;
     }
@@ -601,15 +509,8 @@ public  final class Tags extends
       }
       return this;
     }
-    private int bitField0_;
 
     private boolean isConst_ ;
-    /**
-     * <code>optional bool is_const = 1;</code>
-     */
-    public boolean hasIsConst() {
-      return ((bitField0_ & 0x00000001) == 0x00000001);
-    }
     /**
      * <code>optional bool is_const = 1;</code>
      */
@@ -620,7 +521,7 @@ public  final class Tags extends
      * <code>optional bool is_const = 1;</code>
      */
     public Builder setIsConst(boolean value) {
-      bitField0_ |= 0x00000001;
+      
       isConst_ = value;
       onChanged();
       return this;
@@ -629,19 +530,13 @@ public  final class Tags extends
      * <code>optional bool is_const = 1;</code>
      */
     public Builder clearIsConst() {
-      bitField0_ = (bitField0_ & ~0x00000001);
+      
       isConst_ = false;
       onChanged();
       return this;
     }
 
     private boolean isDeprecated_ ;
-    /**
-     * <code>optional bool is_deprecated = 2;</code>
-     */
-    public boolean hasIsDeprecated() {
-      return ((bitField0_ & 0x00000002) == 0x00000002);
-    }
     /**
      * <code>optional bool is_deprecated = 2;</code>
      */
@@ -652,7 +547,7 @@ public  final class Tags extends
      * <code>optional bool is_deprecated = 2;</code>
      */
     public Builder setIsDeprecated(boolean value) {
-      bitField0_ |= 0x00000002;
+      
       isDeprecated_ = value;
       onChanged();
       return this;
@@ -661,19 +556,13 @@ public  final class Tags extends
      * <code>optional bool is_deprecated = 2;</code>
      */
     public Builder clearIsDeprecated() {
-      bitField0_ = (bitField0_ & ~0x00000002);
+      
       isDeprecated_ = false;
       onChanged();
       return this;
     }
 
     private boolean isDict_ ;
-    /**
-     * <code>optional bool is_dict = 3;</code>
-     */
-    public boolean hasIsDict() {
-      return ((bitField0_ & 0x00000004) == 0x00000004);
-    }
     /**
      * <code>optional bool is_dict = 3;</code>
      */
@@ -684,7 +573,7 @@ public  final class Tags extends
      * <code>optional bool is_dict = 3;</code>
      */
     public Builder setIsDict(boolean value) {
-      bitField0_ |= 0x00000004;
+      
       isDict_ = value;
       onChanged();
       return this;
@@ -693,19 +582,13 @@ public  final class Tags extends
      * <code>optional bool is_dict = 3;</code>
      */
     public Builder clearIsDict() {
-      bitField0_ = (bitField0_ & ~0x00000004);
+      
       isDict_ = false;
       onChanged();
       return this;
     }
 
     private boolean isFinal_ ;
-    /**
-     * <code>optional bool is_final = 4;</code>
-     */
-    public boolean hasIsFinal() {
-      return ((bitField0_ & 0x00000008) == 0x00000008);
-    }
     /**
      * <code>optional bool is_final = 4;</code>
      */
@@ -716,7 +599,7 @@ public  final class Tags extends
      * <code>optional bool is_final = 4;</code>
      */
     public Builder setIsFinal(boolean value) {
-      bitField0_ |= 0x00000008;
+      
       isFinal_ = value;
       onChanged();
       return this;
@@ -725,19 +608,13 @@ public  final class Tags extends
      * <code>optional bool is_final = 4;</code>
      */
     public Builder clearIsFinal() {
-      bitField0_ = (bitField0_ & ~0x00000008);
+      
       isFinal_ = false;
       onChanged();
       return this;
     }
 
     private boolean isInterface_ ;
-    /**
-     * <code>optional bool is_interface = 5;</code>
-     */
-    public boolean hasIsInterface() {
-      return ((bitField0_ & 0x00000010) == 0x00000010);
-    }
     /**
      * <code>optional bool is_interface = 5;</code>
      */
@@ -748,7 +625,7 @@ public  final class Tags extends
      * <code>optional bool is_interface = 5;</code>
      */
     public Builder setIsInterface(boolean value) {
-      bitField0_ |= 0x00000010;
+      
       isInterface_ = value;
       onChanged();
       return this;
@@ -757,19 +634,13 @@ public  final class Tags extends
      * <code>optional bool is_interface = 5;</code>
      */
     public Builder clearIsInterface() {
-      bitField0_ = (bitField0_ & ~0x00000010);
+      
       isInterface_ = false;
       onChanged();
       return this;
     }
 
     private boolean isModule_ ;
-    /**
-     * <code>optional bool is_module = 6;</code>
-     */
-    public boolean hasIsModule() {
-      return ((bitField0_ & 0x00000020) == 0x00000020);
-    }
     /**
      * <code>optional bool is_module = 6;</code>
      */
@@ -780,7 +651,7 @@ public  final class Tags extends
      * <code>optional bool is_module = 6;</code>
      */
     public Builder setIsModule(boolean value) {
-      bitField0_ |= 0x00000020;
+      
       isModule_ = value;
       onChanged();
       return this;
@@ -789,19 +660,13 @@ public  final class Tags extends
      * <code>optional bool is_module = 6;</code>
      */
     public Builder clearIsModule() {
-      bitField0_ = (bitField0_ & ~0x00000020);
+      
       isModule_ = false;
       onChanged();
       return this;
     }
 
     private boolean isStruct_ ;
-    /**
-     * <code>optional bool is_struct = 7;</code>
-     */
-    public boolean hasIsStruct() {
-      return ((bitField0_ & 0x00000040) == 0x00000040);
-    }
     /**
      * <code>optional bool is_struct = 7;</code>
      */
@@ -812,7 +677,7 @@ public  final class Tags extends
      * <code>optional bool is_struct = 7;</code>
      */
     public Builder setIsStruct(boolean value) {
-      bitField0_ |= 0x00000040;
+      
       isStruct_ = value;
       onChanged();
       return this;
@@ -821,19 +686,13 @@ public  final class Tags extends
      * <code>optional bool is_struct = 7;</code>
      */
     public Builder clearIsStruct() {
-      bitField0_ = (bitField0_ & ~0x00000040);
+      
       isStruct_ = false;
       onChanged();
       return this;
     }
 
     private boolean isDefault_ ;
-    /**
-     * <code>optional bool is_default = 8;</code>
-     */
-    public boolean hasIsDefault() {
-      return ((bitField0_ & 0x00000080) == 0x00000080);
-    }
     /**
      * <code>optional bool is_default = 8;</code>
      */
@@ -844,7 +703,7 @@ public  final class Tags extends
      * <code>optional bool is_default = 8;</code>
      */
     public Builder setIsDefault(boolean value) {
-      bitField0_ |= 0x00000080;
+      
       isDefault_ = value;
       onChanged();
       return this;
@@ -853,19 +712,13 @@ public  final class Tags extends
      * <code>optional bool is_default = 8;</code>
      */
     public Builder clearIsDefault() {
-      bitField0_ = (bitField0_ & ~0x00000080);
+      
       isDefault_ = false;
       onChanged();
       return this;
     }
 
     private boolean isRecord_ ;
-    /**
-     * <code>optional bool is_record = 9;</code>
-     */
-    public boolean hasIsRecord() {
-      return ((bitField0_ & 0x00000100) == 0x00000100);
-    }
     /**
      * <code>optional bool is_record = 9;</code>
      */
@@ -876,7 +729,7 @@ public  final class Tags extends
      * <code>optional bool is_record = 9;</code>
      */
     public Builder setIsRecord(boolean value) {
-      bitField0_ |= 0x00000100;
+      
       isRecord_ = value;
       onChanged();
       return this;
@@ -885,11 +738,21 @@ public  final class Tags extends
      * <code>optional bool is_record = 9;</code>
      */
     public Builder clearIsRecord() {
-      bitField0_ = (bitField0_ & ~0x00000100);
+      
       isRecord_ = false;
       onChanged();
       return this;
     }
+    public final Builder setUnknownFields(
+        final com.google.protobuf.UnknownFieldSet unknownFields) {
+      return this;
+    }
+
+    public final Builder mergeUnknownFields(
+        final com.google.protobuf.UnknownFieldSet unknownFields) {
+      return this;
+    }
+
 
     // @@protoc_insertion_point(builder_scope:dossier.Tags)
   }
@@ -904,7 +767,7 @@ public  final class Tags extends
     return DEFAULT_INSTANCE;
   }
 
-  @java.lang.Deprecated public static final com.google.protobuf.Parser<Tags>
+  private static final com.google.protobuf.Parser<Tags>
       PARSER = new com.google.protobuf.AbstractParser<Tags>() {
     public Tags parsePartialFrom(
         com.google.protobuf.CodedInputStream input,

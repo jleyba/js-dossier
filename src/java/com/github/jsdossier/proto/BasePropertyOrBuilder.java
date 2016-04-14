@@ -8,15 +8,7 @@ public interface BasePropertyOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>required string name = 1;</code>
-   *
-   * <pre>
-   * The property's name; this should not be the fully qualified name.
-   * </pre>
-   */
-  boolean hasName();
-  /**
-   * <code>required string name = 1;</code>
+   * <code>optional string name = 1;</code>
    *
    * <pre>
    * The property's name; this should not be the fully qualified name.
@@ -24,7 +16,7 @@ public interface BasePropertyOrBuilder extends
    */
   java.lang.String getName();
   /**
-   * <code>required string name = 1;</code>
+   * <code>optional string name = 1;</code>
    *
    * <pre>
    * The property's name; this should not be the fully qualified name.
@@ -34,7 +26,7 @@ public interface BasePropertyOrBuilder extends
       getNameBytes();
 
   /**
-   * <code>required .dossier.SourceLink source = 2;</code>
+   * <code>optional .dossier.SourceLink source = 2;</code>
    *
    * <pre>
    * Link to the location in the source file where this property is defined.
@@ -42,7 +34,7 @@ public interface BasePropertyOrBuilder extends
    */
   boolean hasSource();
   /**
-   * <code>required .dossier.SourceLink source = 2;</code>
+   * <code>optional .dossier.SourceLink source = 2;</code>
    *
    * <pre>
    * Link to the location in the source file where this property is defined.
@@ -50,7 +42,7 @@ public interface BasePropertyOrBuilder extends
    */
   com.github.jsdossier.proto.SourceLink getSource();
   /**
-   * <code>required .dossier.SourceLink source = 2;</code>
+   * <code>optional .dossier.SourceLink source = 2;</code>
    *
    * <pre>
    * Link to the location in the source file where this property is defined.
@@ -59,7 +51,7 @@ public interface BasePropertyOrBuilder extends
   com.github.jsdossier.proto.SourceLinkOrBuilder getSourceOrBuilder();
 
   /**
-   * <code>required .dossier.Comment description = 3;</code>
+   * <code>optional .dossier.Comment description = 3;</code>
    *
    * <pre>
    * The property's block comment.
@@ -67,7 +59,7 @@ public interface BasePropertyOrBuilder extends
    */
   boolean hasDescription();
   /**
-   * <code>required .dossier.Comment description = 3;</code>
+   * <code>optional .dossier.Comment description = 3;</code>
    *
    * <pre>
    * The property's block comment.
@@ -75,7 +67,7 @@ public interface BasePropertyOrBuilder extends
    */
   com.github.jsdossier.proto.Comment getDescription();
   /**
-   * <code>required .dossier.Comment description = 3;</code>
+   * <code>optional .dossier.Comment description = 3;</code>
    *
    * <pre>
    * The property's block comment.
@@ -109,11 +101,11 @@ public interface BasePropertyOrBuilder extends
   com.github.jsdossier.proto.CommentOrBuilder getDeprecationOrBuilder();
 
   /**
-   * <code>optional .dossier.Visibility visibility = 5 [default = PUBLIC];</code>
+   * <code>optional .dossier.Visibility visibility = 5;</code>
    */
-  boolean hasVisibility();
+  int getVisibilityValue();
   /**
-   * <code>optional .dossier.Visibility visibility = 5 [default = PUBLIC];</code>
+   * <code>optional .dossier.Visibility visibility = 5;</code>
    */
   com.github.jsdossier.proto.Visibility getVisibility();
 

@@ -8,15 +8,7 @@ public interface SourceLinkOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>required string path = 1;</code>
-   *
-   * <pre>
-   * Path from the current file to the rendered source file.
-   * </pre>
-   */
-  boolean hasPath();
-  /**
-   * <code>required string path = 1;</code>
+   * <code>optional string path = 1;</code>
    *
    * <pre>
    * Path from the current file to the rendered source file.
@@ -24,7 +16,7 @@ public interface SourceLinkOrBuilder extends
    */
   java.lang.String getPath();
   /**
-   * <code>required string path = 1;</code>
+   * <code>optional string path = 1;</code>
    *
    * <pre>
    * Path from the current file to the rendered source file.
@@ -40,25 +32,8 @@ public interface SourceLinkOrBuilder extends
    * The line in the source file containing the symbol, if known.
    * </pre>
    */
-  boolean hasLine();
-  /**
-   * <code>optional int32 line = 2;</code>
-   *
-   * <pre>
-   * The line in the source file containing the symbol, if known.
-   * </pre>
-   */
   int getLine();
 
-  /**
-   * <code>optional string uri = 3;</code>
-   *
-   * <pre>
-   * A user-provided URI to use for the source link instead of |path| and
-   * |line|. This URI is not sanitized.
-   * </pre>
-   */
-  boolean hasUri();
   /**
    * <code>optional string uri = 3;</code>
    *

@@ -28,15 +28,13 @@ public  final class Function extends
   @java.lang.Override
   public final com.google.protobuf.UnknownFieldSet
   getUnknownFields() {
-    return this.unknownFields;
+    return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
   }
   private Function(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
     this();
     int mutable_bitField0_ = 0;
-    com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-        com.google.protobuf.UnknownFieldSet.newBuilder();
     try {
       boolean done = false;
       while (!done) {
@@ -46,15 +44,14 @@ public  final class Function extends
             done = true;
             break;
           default: {
-            if (!parseUnknownField(input, unknownFields,
-                                   extensionRegistry, tag)) {
+            if (!input.skipField(tag)) {
               done = true;
             }
             break;
           }
           case 10: {
             com.github.jsdossier.proto.BaseProperty.Builder subBuilder = null;
-            if (((bitField0_ & 0x00000001) == 0x00000001)) {
+            if (base_ != null) {
               subBuilder = base_.toBuilder();
             }
             base_ = input.readMessage(com.github.jsdossier.proto.BaseProperty.parser(), extensionRegistry);
@@ -62,20 +59,20 @@ public  final class Function extends
               subBuilder.mergeFrom(base_);
               base_ = subBuilder.buildPartial();
             }
-            bitField0_ |= 0x00000001;
+
             break;
           }
           case 18: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            java.lang.String s = input.readStringRequireUtf8();
             if (!((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
               templateName_ = new com.google.protobuf.LazyStringArrayList();
               mutable_bitField0_ |= 0x00000002;
             }
-            templateName_.add(bs);
+            templateName_.add(s);
             break;
           }
           case 24: {
-            bitField0_ |= 0x00000002;
+
             isConstructor_ = input.readBool();
             break;
           }
@@ -89,7 +86,7 @@ public  final class Function extends
           }
           case 42: {
             com.github.jsdossier.proto.Function.Detail.Builder subBuilder = null;
-            if (((bitField0_ & 0x00000004) == 0x00000004)) {
+            if (return_ != null) {
               subBuilder = return_.toBuilder();
             }
             return_ = input.readMessage(com.github.jsdossier.proto.Function.Detail.parser(), extensionRegistry);
@@ -97,7 +94,7 @@ public  final class Function extends
               subBuilder.mergeFrom(return_);
               return_ = subBuilder.buildPartial();
             }
-            bitField0_ |= 0x00000004;
+
             break;
           }
           case 50: {
@@ -126,7 +123,6 @@ public  final class Function extends
       if (((mutable_bitField0_ & 0x00000020) == 0x00000020)) {
         thrown_ = java.util.Collections.unmodifiableList(thrown_);
       }
-      this.unknownFields = unknownFields.build();
       makeExtensionsImmutable();
     }
   }
@@ -146,10 +142,6 @@ public  final class Function extends
       // @@protoc_insertion_point(interface_extends:dossier.Function.Detail)
       com.google.protobuf.MessageOrBuilder {
 
-    /**
-     * <code>optional string name = 1;</code>
-     */
-    boolean hasName();
     /**
      * <code>optional string name = 1;</code>
      */
@@ -204,15 +196,13 @@ public  final class Function extends
     @java.lang.Override
     public final com.google.protobuf.UnknownFieldSet
     getUnknownFields() {
-      return this.unknownFields;
+      return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
     }
     private Detail(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
       this();
       int mutable_bitField0_ = 0;
-      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder();
       try {
         boolean done = false;
         while (!done) {
@@ -222,21 +212,20 @@ public  final class Function extends
               done = true;
               break;
             default: {
-              if (!parseUnknownField(input, unknownFields,
-                                     extensionRegistry, tag)) {
+              if (!input.skipField(tag)) {
                 done = true;
               }
               break;
             }
             case 10: {
-              com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00000001;
-              name_ = bs;
+              java.lang.String s = input.readStringRequireUtf8();
+
+              name_ = s;
               break;
             }
             case 18: {
               com.github.jsdossier.proto.Comment.Builder subBuilder = null;
-              if (((bitField0_ & 0x00000002) == 0x00000002)) {
+              if (type_ != null) {
                 subBuilder = type_.toBuilder();
               }
               type_ = input.readMessage(com.github.jsdossier.proto.Comment.parser(), extensionRegistry);
@@ -244,12 +233,12 @@ public  final class Function extends
                 subBuilder.mergeFrom(type_);
                 type_ = subBuilder.buildPartial();
               }
-              bitField0_ |= 0x00000002;
+
               break;
             }
             case 26: {
               com.github.jsdossier.proto.Comment.Builder subBuilder = null;
-              if (((bitField0_ & 0x00000004) == 0x00000004)) {
+              if (description_ != null) {
                 subBuilder = description_.toBuilder();
               }
               description_ = input.readMessage(com.github.jsdossier.proto.Comment.parser(), extensionRegistry);
@@ -257,7 +246,7 @@ public  final class Function extends
                 subBuilder.mergeFrom(description_);
                 description_ = subBuilder.buildPartial();
               }
-              bitField0_ |= 0x00000004;
+
               break;
             }
           }
@@ -269,7 +258,6 @@ public  final class Function extends
             new com.google.protobuf.InvalidProtocolBufferException(
                 e.getMessage()).setUnfinishedMessage(this));
       } finally {
-        this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
       }
     }
@@ -285,15 +273,8 @@ public  final class Function extends
               com.github.jsdossier.proto.Function.Detail.class, com.github.jsdossier.proto.Function.Detail.Builder.class);
     }
 
-    private int bitField0_;
     public static final int NAME_FIELD_NUMBER = 1;
     private volatile java.lang.Object name_;
-    /**
-     * <code>optional string name = 1;</code>
-     */
-    public boolean hasName() {
-      return ((bitField0_ & 0x00000001) == 0x00000001);
-    }
     /**
      * <code>optional string name = 1;</code>
      */
@@ -305,9 +286,7 @@ public  final class Function extends
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          name_ = s;
-        }
+        name_ = s;
         return s;
       }
     }
@@ -334,7 +313,7 @@ public  final class Function extends
      * <code>optional .dossier.Comment type = 2;</code>
      */
     public boolean hasType() {
-      return ((bitField0_ & 0x00000002) == 0x00000002);
+      return type_ != null;
     }
     /**
      * <code>optional .dossier.Comment type = 2;</code>
@@ -346,7 +325,7 @@ public  final class Function extends
      * <code>optional .dossier.Comment type = 2;</code>
      */
     public com.github.jsdossier.proto.CommentOrBuilder getTypeOrBuilder() {
-      return type_ == null ? com.github.jsdossier.proto.Comment.getDefaultInstance() : type_;
+      return getType();
     }
 
     public static final int DESCRIPTION_FIELD_NUMBER = 3;
@@ -355,7 +334,7 @@ public  final class Function extends
      * <code>optional .dossier.Comment description = 3;</code>
      */
     public boolean hasDescription() {
-      return ((bitField0_ & 0x00000004) == 0x00000004);
+      return description_ != null;
     }
     /**
      * <code>optional .dossier.Comment description = 3;</code>
@@ -367,7 +346,7 @@ public  final class Function extends
      * <code>optional .dossier.Comment description = 3;</code>
      */
     public com.github.jsdossier.proto.CommentOrBuilder getDescriptionOrBuilder() {
-      return description_ == null ? com.github.jsdossier.proto.Comment.getDefaultInstance() : description_;
+      return getDescription();
     }
 
     private byte memoizedIsInitialized = -1;
@@ -382,16 +361,15 @@ public  final class Function extends
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+      if (!getNameBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessage.writeString(output, 1, name_);
       }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+      if (type_ != null) {
         output.writeMessage(2, getType());
       }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+      if (description_ != null) {
         output.writeMessage(3, getDescription());
       }
-      unknownFields.writeTo(output);
     }
 
     public int getSerializedSize() {
@@ -399,18 +377,17 @@ public  final class Function extends
       if (size != -1) return size;
 
       size = 0;
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+      if (!getNameBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessage.computeStringSize(1, name_);
       }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+      if (type_ != null) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(2, getType());
       }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+      if (description_ != null) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(3, getDescription());
       }
-      size += unknownFields.getSerializedSize();
       memoizedSize = size;
       return size;
     }
@@ -518,26 +495,24 @@ public  final class Function extends
       }
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
-          getTypeFieldBuilder();
-          getDescriptionFieldBuilder();
         }
       }
       public Builder clear() {
         super.clear();
         name_ = "";
-        bitField0_ = (bitField0_ & ~0x00000001);
+
         if (typeBuilder_ == null) {
           type_ = null;
         } else {
-          typeBuilder_.clear();
+          type_ = null;
+          typeBuilder_ = null;
         }
-        bitField0_ = (bitField0_ & ~0x00000002);
         if (descriptionBuilder_ == null) {
           description_ = null;
         } else {
-          descriptionBuilder_.clear();
+          description_ = null;
+          descriptionBuilder_ = null;
         }
-        bitField0_ = (bitField0_ & ~0x00000004);
         return this;
       }
 
@@ -560,29 +535,17 @@ public  final class Function extends
 
       public com.github.jsdossier.proto.Function.Detail buildPartial() {
         com.github.jsdossier.proto.Function.Detail result = new com.github.jsdossier.proto.Function.Detail(this);
-        int from_bitField0_ = bitField0_;
-        int to_bitField0_ = 0;
-        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
-          to_bitField0_ |= 0x00000001;
-        }
         result.name_ = name_;
-        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
-          to_bitField0_ |= 0x00000002;
-        }
         if (typeBuilder_ == null) {
           result.type_ = type_;
         } else {
           result.type_ = typeBuilder_.build();
-        }
-        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
-          to_bitField0_ |= 0x00000004;
         }
         if (descriptionBuilder_ == null) {
           result.description_ = description_;
         } else {
           result.description_ = descriptionBuilder_.build();
         }
-        result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
       }
@@ -598,8 +561,7 @@ public  final class Function extends
 
       public Builder mergeFrom(com.github.jsdossier.proto.Function.Detail other) {
         if (other == com.github.jsdossier.proto.Function.Detail.getDefaultInstance()) return this;
-        if (other.hasName()) {
-          bitField0_ |= 0x00000001;
+        if (!other.getName().isEmpty()) {
           name_ = other.name_;
           onChanged();
         }
@@ -609,7 +571,6 @@ public  final class Function extends
         if (other.hasDescription()) {
           mergeDescription(other.getDescription());
         }
-        this.mergeUnknownFields(other.unknownFields);
         onChanged();
         return this;
       }
@@ -635,15 +596,8 @@ public  final class Function extends
         }
         return this;
       }
-      private int bitField0_;
 
       private java.lang.Object name_ = "";
-      /**
-       * <code>optional string name = 1;</code>
-       */
-      public boolean hasName() {
-        return ((bitField0_ & 0x00000001) == 0x00000001);
-      }
       /**
        * <code>optional string name = 1;</code>
        */
@@ -653,9 +607,7 @@ public  final class Function extends
           com.google.protobuf.ByteString bs =
               (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            name_ = s;
-          }
+          name_ = s;
           return s;
         } else {
           return (java.lang.String) ref;
@@ -685,7 +637,7 @@ public  final class Function extends
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000001;
+  
         name_ = value;
         onChanged();
         return this;
@@ -694,7 +646,7 @@ public  final class Function extends
        * <code>optional string name = 1;</code>
        */
       public Builder clearName() {
-        bitField0_ = (bitField0_ & ~0x00000001);
+        
         name_ = getDefaultInstance().getName();
         onChanged();
         return this;
@@ -707,7 +659,8 @@ public  final class Function extends
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000001;
+  checkByteStringIsUtf8(value);
+        
         name_ = value;
         onChanged();
         return this;
@@ -720,7 +673,7 @@ public  final class Function extends
        * <code>optional .dossier.Comment type = 2;</code>
        */
       public boolean hasType() {
-        return ((bitField0_ & 0x00000002) == 0x00000002);
+        return typeBuilder_ != null || type_ != null;
       }
       /**
        * <code>optional .dossier.Comment type = 2;</code>
@@ -745,7 +698,7 @@ public  final class Function extends
         } else {
           typeBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00000002;
+
         return this;
       }
       /**
@@ -759,7 +712,7 @@ public  final class Function extends
         } else {
           typeBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00000002;
+
         return this;
       }
       /**
@@ -767,9 +720,7 @@ public  final class Function extends
        */
       public Builder mergeType(com.github.jsdossier.proto.Comment value) {
         if (typeBuilder_ == null) {
-          if (((bitField0_ & 0x00000002) == 0x00000002) &&
-              type_ != null &&
-              type_ != com.github.jsdossier.proto.Comment.getDefaultInstance()) {
+          if (type_ != null) {
             type_ =
               com.github.jsdossier.proto.Comment.newBuilder(type_).mergeFrom(value).buildPartial();
           } else {
@@ -779,7 +730,7 @@ public  final class Function extends
         } else {
           typeBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x00000002;
+
         return this;
       }
       /**
@@ -790,16 +741,17 @@ public  final class Function extends
           type_ = null;
           onChanged();
         } else {
-          typeBuilder_.clear();
+          type_ = null;
+          typeBuilder_ = null;
         }
-        bitField0_ = (bitField0_ & ~0x00000002);
+
         return this;
       }
       /**
        * <code>optional .dossier.Comment type = 2;</code>
        */
       public com.github.jsdossier.proto.Comment.Builder getTypeBuilder() {
-        bitField0_ |= 0x00000002;
+        
         onChanged();
         return getTypeFieldBuilder().getBuilder();
       }
@@ -838,7 +790,7 @@ public  final class Function extends
        * <code>optional .dossier.Comment description = 3;</code>
        */
       public boolean hasDescription() {
-        return ((bitField0_ & 0x00000004) == 0x00000004);
+        return descriptionBuilder_ != null || description_ != null;
       }
       /**
        * <code>optional .dossier.Comment description = 3;</code>
@@ -863,7 +815,7 @@ public  final class Function extends
         } else {
           descriptionBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00000004;
+
         return this;
       }
       /**
@@ -877,7 +829,7 @@ public  final class Function extends
         } else {
           descriptionBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00000004;
+
         return this;
       }
       /**
@@ -885,9 +837,7 @@ public  final class Function extends
        */
       public Builder mergeDescription(com.github.jsdossier.proto.Comment value) {
         if (descriptionBuilder_ == null) {
-          if (((bitField0_ & 0x00000004) == 0x00000004) &&
-              description_ != null &&
-              description_ != com.github.jsdossier.proto.Comment.getDefaultInstance()) {
+          if (description_ != null) {
             description_ =
               com.github.jsdossier.proto.Comment.newBuilder(description_).mergeFrom(value).buildPartial();
           } else {
@@ -897,7 +847,7 @@ public  final class Function extends
         } else {
           descriptionBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x00000004;
+
         return this;
       }
       /**
@@ -908,16 +858,17 @@ public  final class Function extends
           description_ = null;
           onChanged();
         } else {
-          descriptionBuilder_.clear();
+          description_ = null;
+          descriptionBuilder_ = null;
         }
-        bitField0_ = (bitField0_ & ~0x00000004);
+
         return this;
       }
       /**
        * <code>optional .dossier.Comment description = 3;</code>
        */
       public com.github.jsdossier.proto.Comment.Builder getDescriptionBuilder() {
-        bitField0_ |= 0x00000004;
+        
         onChanged();
         return getDescriptionFieldBuilder().getBuilder();
       }
@@ -948,6 +899,16 @@ public  final class Function extends
         }
         return descriptionBuilder_;
       }
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
+
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
+
 
       // @@protoc_insertion_point(builder_scope:dossier.Function.Detail)
     }
@@ -962,7 +923,7 @@ public  final class Function extends
       return DEFAULT_INSTANCE;
     }
 
-    @java.lang.Deprecated public static final com.google.protobuf.Parser<Detail>
+    private static final com.google.protobuf.Parser<Detail>
         PARSER = new com.google.protobuf.AbstractParser<Detail>() {
       public Detail parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
@@ -1000,22 +961,22 @@ public  final class Function extends
   public static final int BASE_FIELD_NUMBER = 1;
   private com.github.jsdossier.proto.BaseProperty base_;
   /**
-   * <code>required .dossier.BaseProperty base = 1;</code>
+   * <code>optional .dossier.BaseProperty base = 1;</code>
    */
   public boolean hasBase() {
-    return ((bitField0_ & 0x00000001) == 0x00000001);
+    return base_ != null;
   }
   /**
-   * <code>required .dossier.BaseProperty base = 1;</code>
+   * <code>optional .dossier.BaseProperty base = 1;</code>
    */
   public com.github.jsdossier.proto.BaseProperty getBase() {
     return base_ == null ? com.github.jsdossier.proto.BaseProperty.getDefaultInstance() : base_;
   }
   /**
-   * <code>required .dossier.BaseProperty base = 1;</code>
+   * <code>optional .dossier.BaseProperty base = 1;</code>
    */
   public com.github.jsdossier.proto.BasePropertyOrBuilder getBaseOrBuilder() {
-    return base_ == null ? com.github.jsdossier.proto.BaseProperty.getDefaultInstance() : base_;
+    return getBase();
   }
 
   public static final int TEMPLATE_NAME_FIELD_NUMBER = 2;
@@ -1050,13 +1011,7 @@ public  final class Function extends
   public static final int IS_CONSTRUCTOR_FIELD_NUMBER = 3;
   private boolean isConstructor_;
   /**
-   * <code>optional bool is_constructor = 3 [default = false];</code>
-   */
-  public boolean hasIsConstructor() {
-    return ((bitField0_ & 0x00000002) == 0x00000002);
-  }
-  /**
-   * <code>optional bool is_constructor = 3 [default = false];</code>
+   * <code>optional bool is_constructor = 3;</code>
    */
   public boolean getIsConstructor() {
     return isConstructor_;
@@ -1103,7 +1058,7 @@ public  final class Function extends
    * <code>optional .dossier.Function.Detail return = 5;</code>
    */
   public boolean hasReturn() {
-    return ((bitField0_ & 0x00000004) == 0x00000004);
+    return return_ != null;
   }
   /**
    * <code>optional .dossier.Function.Detail return = 5;</code>
@@ -1115,7 +1070,7 @@ public  final class Function extends
    * <code>optional .dossier.Function.Detail return = 5;</code>
    */
   public com.github.jsdossier.proto.Function.DetailOrBuilder getReturnOrBuilder() {
-    return return_ == null ? com.github.jsdossier.proto.Function.Detail.getDefaultInstance() : return_;
+    return getReturn();
   }
 
   public static final int THROWN_FIELD_NUMBER = 6;
@@ -1159,39 +1114,30 @@ public  final class Function extends
     if (isInitialized == 1) return true;
     if (isInitialized == 0) return false;
 
-    if (!hasBase()) {
-      memoizedIsInitialized = 0;
-      return false;
-    }
-    if (!getBase().isInitialized()) {
-      memoizedIsInitialized = 0;
-      return false;
-    }
     memoizedIsInitialized = 1;
     return true;
   }
 
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (((bitField0_ & 0x00000001) == 0x00000001)) {
+    if (base_ != null) {
       output.writeMessage(1, getBase());
     }
     for (int i = 0; i < templateName_.size(); i++) {
       com.google.protobuf.GeneratedMessage.writeString(output, 2, templateName_.getRaw(i));
     }
-    if (((bitField0_ & 0x00000002) == 0x00000002)) {
+    if (isConstructor_ != false) {
       output.writeBool(3, isConstructor_);
     }
     for (int i = 0; i < parameter_.size(); i++) {
       output.writeMessage(4, parameter_.get(i));
     }
-    if (((bitField0_ & 0x00000004) == 0x00000004)) {
+    if (return_ != null) {
       output.writeMessage(5, getReturn());
     }
     for (int i = 0; i < thrown_.size(); i++) {
       output.writeMessage(6, thrown_.get(i));
     }
-    unknownFields.writeTo(output);
   }
 
   public int getSerializedSize() {
@@ -1199,7 +1145,7 @@ public  final class Function extends
     if (size != -1) return size;
 
     size = 0;
-    if (((bitField0_ & 0x00000001) == 0x00000001)) {
+    if (base_ != null) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(1, getBase());
     }
@@ -1211,7 +1157,7 @@ public  final class Function extends
       size += dataSize;
       size += 1 * getTemplateNameList().size();
     }
-    if (((bitField0_ & 0x00000002) == 0x00000002)) {
+    if (isConstructor_ != false) {
       size += com.google.protobuf.CodedOutputStream
         .computeBoolSize(3, isConstructor_);
     }
@@ -1219,7 +1165,7 @@ public  final class Function extends
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(4, parameter_.get(i));
     }
-    if (((bitField0_ & 0x00000004) == 0x00000004)) {
+    if (return_ != null) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(5, getReturn());
     }
@@ -1227,7 +1173,6 @@ public  final class Function extends
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(6, thrown_.get(i));
     }
-    size += unknownFields.getSerializedSize();
     memoizedSize = size;
     return size;
   }
@@ -1339,9 +1284,7 @@ public  final class Function extends
     }
     private void maybeForceBuilderInitialization() {
       if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
-        getBaseFieldBuilder();
         getParameterFieldBuilder();
-        getReturnFieldBuilder();
         getThrownFieldBuilder();
       }
     }
@@ -1350,13 +1293,13 @@ public  final class Function extends
       if (baseBuilder_ == null) {
         base_ = null;
       } else {
-        baseBuilder_.clear();
+        base_ = null;
+        baseBuilder_ = null;
       }
-      bitField0_ = (bitField0_ & ~0x00000001);
       templateName_ = com.google.protobuf.LazyStringArrayList.EMPTY;
       bitField0_ = (bitField0_ & ~0x00000002);
       isConstructor_ = false;
-      bitField0_ = (bitField0_ & ~0x00000004);
+
       if (parameterBuilder_ == null) {
         parameter_ = java.util.Collections.emptyList();
         bitField0_ = (bitField0_ & ~0x00000008);
@@ -1366,9 +1309,9 @@ public  final class Function extends
       if (returnBuilder_ == null) {
         return_ = null;
       } else {
-        returnBuilder_.clear();
+        return_ = null;
+        returnBuilder_ = null;
       }
-      bitField0_ = (bitField0_ & ~0x00000010);
       if (thrownBuilder_ == null) {
         thrown_ = java.util.Collections.emptyList();
         bitField0_ = (bitField0_ & ~0x00000020);
@@ -1399,9 +1342,6 @@ public  final class Function extends
       com.github.jsdossier.proto.Function result = new com.github.jsdossier.proto.Function(this);
       int from_bitField0_ = bitField0_;
       int to_bitField0_ = 0;
-      if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
-        to_bitField0_ |= 0x00000001;
-      }
       if (baseBuilder_ == null) {
         result.base_ = base_;
       } else {
@@ -1412,9 +1352,6 @@ public  final class Function extends
         bitField0_ = (bitField0_ & ~0x00000002);
       }
       result.templateName_ = templateName_;
-      if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
-        to_bitField0_ |= 0x00000002;
-      }
       result.isConstructor_ = isConstructor_;
       if (parameterBuilder_ == null) {
         if (((bitField0_ & 0x00000008) == 0x00000008)) {
@@ -1424,9 +1361,6 @@ public  final class Function extends
         result.parameter_ = parameter_;
       } else {
         result.parameter_ = parameterBuilder_.build();
-      }
-      if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
-        to_bitField0_ |= 0x00000004;
       }
       if (returnBuilder_ == null) {
         result.return_ = return_;
@@ -1471,7 +1405,7 @@ public  final class Function extends
         }
         onChanged();
       }
-      if (other.hasIsConstructor()) {
+      if (other.getIsConstructor() != false) {
         setIsConstructor(other.getIsConstructor());
       }
       if (parameterBuilder_ == null) {
@@ -1529,18 +1463,11 @@ public  final class Function extends
           }
         }
       }
-      this.mergeUnknownFields(other.unknownFields);
       onChanged();
       return this;
     }
 
     public final boolean isInitialized() {
-      if (!hasBase()) {
-        return false;
-      }
-      if (!getBase().isInitialized()) {
-        return false;
-      }
       return true;
     }
 
@@ -1567,13 +1494,13 @@ public  final class Function extends
     private com.google.protobuf.SingleFieldBuilder<
         com.github.jsdossier.proto.BaseProperty, com.github.jsdossier.proto.BaseProperty.Builder, com.github.jsdossier.proto.BasePropertyOrBuilder> baseBuilder_;
     /**
-     * <code>required .dossier.BaseProperty base = 1;</code>
+     * <code>optional .dossier.BaseProperty base = 1;</code>
      */
     public boolean hasBase() {
-      return ((bitField0_ & 0x00000001) == 0x00000001);
+      return baseBuilder_ != null || base_ != null;
     }
     /**
-     * <code>required .dossier.BaseProperty base = 1;</code>
+     * <code>optional .dossier.BaseProperty base = 1;</code>
      */
     public com.github.jsdossier.proto.BaseProperty getBase() {
       if (baseBuilder_ == null) {
@@ -1583,7 +1510,7 @@ public  final class Function extends
       }
     }
     /**
-     * <code>required .dossier.BaseProperty base = 1;</code>
+     * <code>optional .dossier.BaseProperty base = 1;</code>
      */
     public Builder setBase(com.github.jsdossier.proto.BaseProperty value) {
       if (baseBuilder_ == null) {
@@ -1595,11 +1522,11 @@ public  final class Function extends
       } else {
         baseBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000001;
+
       return this;
     }
     /**
-     * <code>required .dossier.BaseProperty base = 1;</code>
+     * <code>optional .dossier.BaseProperty base = 1;</code>
      */
     public Builder setBase(
         com.github.jsdossier.proto.BaseProperty.Builder builderForValue) {
@@ -1609,17 +1536,15 @@ public  final class Function extends
       } else {
         baseBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000001;
+
       return this;
     }
     /**
-     * <code>required .dossier.BaseProperty base = 1;</code>
+     * <code>optional .dossier.BaseProperty base = 1;</code>
      */
     public Builder mergeBase(com.github.jsdossier.proto.BaseProperty value) {
       if (baseBuilder_ == null) {
-        if (((bitField0_ & 0x00000001) == 0x00000001) &&
-            base_ != null &&
-            base_ != com.github.jsdossier.proto.BaseProperty.getDefaultInstance()) {
+        if (base_ != null) {
           base_ =
             com.github.jsdossier.proto.BaseProperty.newBuilder(base_).mergeFrom(value).buildPartial();
         } else {
@@ -1629,32 +1554,33 @@ public  final class Function extends
       } else {
         baseBuilder_.mergeFrom(value);
       }
-      bitField0_ |= 0x00000001;
+
       return this;
     }
     /**
-     * <code>required .dossier.BaseProperty base = 1;</code>
+     * <code>optional .dossier.BaseProperty base = 1;</code>
      */
     public Builder clearBase() {
       if (baseBuilder_ == null) {
         base_ = null;
         onChanged();
       } else {
-        baseBuilder_.clear();
+        base_ = null;
+        baseBuilder_ = null;
       }
-      bitField0_ = (bitField0_ & ~0x00000001);
+
       return this;
     }
     /**
-     * <code>required .dossier.BaseProperty base = 1;</code>
+     * <code>optional .dossier.BaseProperty base = 1;</code>
      */
     public com.github.jsdossier.proto.BaseProperty.Builder getBaseBuilder() {
-      bitField0_ |= 0x00000001;
+      
       onChanged();
       return getBaseFieldBuilder().getBuilder();
     }
     /**
-     * <code>required .dossier.BaseProperty base = 1;</code>
+     * <code>optional .dossier.BaseProperty base = 1;</code>
      */
     public com.github.jsdossier.proto.BasePropertyOrBuilder getBaseOrBuilder() {
       if (baseBuilder_ != null) {
@@ -1665,7 +1591,7 @@ public  final class Function extends
       }
     }
     /**
-     * <code>required .dossier.BaseProperty base = 1;</code>
+     * <code>optional .dossier.BaseProperty base = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilder<
         com.github.jsdossier.proto.BaseProperty, com.github.jsdossier.proto.BaseProperty.Builder, com.github.jsdossier.proto.BasePropertyOrBuilder> 
@@ -1768,7 +1694,8 @@ public  final class Function extends
       if (value == null) {
     throw new NullPointerException();
   }
-  ensureTemplateNameIsMutable();
+  checkByteStringIsUtf8(value);
+      ensureTemplateNameIsMutable();
       templateName_.add(value);
       onChanged();
       return this;
@@ -1776,31 +1703,25 @@ public  final class Function extends
 
     private boolean isConstructor_ ;
     /**
-     * <code>optional bool is_constructor = 3 [default = false];</code>
-     */
-    public boolean hasIsConstructor() {
-      return ((bitField0_ & 0x00000004) == 0x00000004);
-    }
-    /**
-     * <code>optional bool is_constructor = 3 [default = false];</code>
+     * <code>optional bool is_constructor = 3;</code>
      */
     public boolean getIsConstructor() {
       return isConstructor_;
     }
     /**
-     * <code>optional bool is_constructor = 3 [default = false];</code>
+     * <code>optional bool is_constructor = 3;</code>
      */
     public Builder setIsConstructor(boolean value) {
-      bitField0_ |= 0x00000004;
+      
       isConstructor_ = value;
       onChanged();
       return this;
     }
     /**
-     * <code>optional bool is_constructor = 3 [default = false];</code>
+     * <code>optional bool is_constructor = 3;</code>
      */
     public Builder clearIsConstructor() {
-      bitField0_ = (bitField0_ & ~0x00000004);
+      
       isConstructor_ = false;
       onChanged();
       return this;
@@ -2053,7 +1974,7 @@ public  final class Function extends
      * <code>optional .dossier.Function.Detail return = 5;</code>
      */
     public boolean hasReturn() {
-      return ((bitField0_ & 0x00000010) == 0x00000010);
+      return returnBuilder_ != null || return_ != null;
     }
     /**
      * <code>optional .dossier.Function.Detail return = 5;</code>
@@ -2078,7 +1999,7 @@ public  final class Function extends
       } else {
         returnBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000010;
+
       return this;
     }
     /**
@@ -2092,7 +2013,7 @@ public  final class Function extends
       } else {
         returnBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000010;
+
       return this;
     }
     /**
@@ -2100,9 +2021,7 @@ public  final class Function extends
      */
     public Builder mergeReturn(com.github.jsdossier.proto.Function.Detail value) {
       if (returnBuilder_ == null) {
-        if (((bitField0_ & 0x00000010) == 0x00000010) &&
-            return_ != null &&
-            return_ != com.github.jsdossier.proto.Function.Detail.getDefaultInstance()) {
+        if (return_ != null) {
           return_ =
             com.github.jsdossier.proto.Function.Detail.newBuilder(return_).mergeFrom(value).buildPartial();
         } else {
@@ -2112,7 +2031,7 @@ public  final class Function extends
       } else {
         returnBuilder_.mergeFrom(value);
       }
-      bitField0_ |= 0x00000010;
+
       return this;
     }
     /**
@@ -2123,16 +2042,17 @@ public  final class Function extends
         return_ = null;
         onChanged();
       } else {
-        returnBuilder_.clear();
+        return_ = null;
+        returnBuilder_ = null;
       }
-      bitField0_ = (bitField0_ & ~0x00000010);
+
       return this;
     }
     /**
      * <code>optional .dossier.Function.Detail return = 5;</code>
      */
     public com.github.jsdossier.proto.Function.Detail.Builder getReturnBuilder() {
-      bitField0_ |= 0x00000010;
+      
       onChanged();
       return getReturnFieldBuilder().getBuilder();
     }
@@ -2403,6 +2323,16 @@ public  final class Function extends
       }
       return thrownBuilder_;
     }
+    public final Builder setUnknownFields(
+        final com.google.protobuf.UnknownFieldSet unknownFields) {
+      return this;
+    }
+
+    public final Builder mergeUnknownFields(
+        final com.google.protobuf.UnknownFieldSet unknownFields) {
+      return this;
+    }
+
 
     // @@protoc_insertion_point(builder_scope:dossier.Function)
   }
@@ -2417,7 +2347,7 @@ public  final class Function extends
     return DEFAULT_INSTANCE;
   }
 
-  @java.lang.Deprecated public static final com.google.protobuf.Parser<Function>
+  private static final com.google.protobuf.Parser<Function>
       PARSER = new com.google.protobuf.AbstractParser<Function>() {
     public Function parsePartialFrom(
         com.google.protobuf.CodedInputStream input,

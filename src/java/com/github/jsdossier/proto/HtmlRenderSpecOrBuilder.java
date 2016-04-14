@@ -8,7 +8,7 @@ public interface HtmlRenderSpecOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>required .dossier.Resources resources = 1;</code>
+   * <code>optional .dossier.Resources resources = 1;</code>
    *
    * <pre>
    * The resources to include.
@@ -16,7 +16,7 @@ public interface HtmlRenderSpecOrBuilder extends
    */
   boolean hasResources();
   /**
-   * <code>required .dossier.Resources resources = 1;</code>
+   * <code>optional .dossier.Resources resources = 1;</code>
    *
    * <pre>
    * The resources to include.
@@ -24,7 +24,7 @@ public interface HtmlRenderSpecOrBuilder extends
    */
   com.github.jsdossier.proto.Resources getResources();
   /**
-   * <code>required .dossier.Resources resources = 1;</code>
+   * <code>optional .dossier.Resources resources = 1;</code>
    *
    * <pre>
    * The resources to include.
@@ -33,15 +33,7 @@ public interface HtmlRenderSpecOrBuilder extends
   com.github.jsdossier.proto.ResourcesOrBuilder getResourcesOrBuilder();
 
   /**
-   * <code>required string title = 2;</code>
-   *
-   * <pre>
-   * The page title.
-   * </pre>
-   */
-  boolean hasTitle();
-  /**
-   * <code>required string title = 2;</code>
+   * <code>optional string title = 2;</code>
    *
    * <pre>
    * The page title.
@@ -49,7 +41,7 @@ public interface HtmlRenderSpecOrBuilder extends
    */
   java.lang.String getTitle();
   /**
-   * <code>required string title = 2;</code>
+   * <code>optional string title = 2;</code>
    *
    * <pre>
    * The page title.
@@ -84,7 +76,7 @@ public interface HtmlRenderSpecOrBuilder extends
   com.github.jsdossier.proto.CommentOrBuilder getContentOrBuilder();
 
   /**
-   * <code>required .dossier.Index index = 4;</code>
+   * <code>optional .dossier.Index index = 4;</code>
    *
    * <pre>
    * Navigation index.
@@ -92,7 +84,7 @@ public interface HtmlRenderSpecOrBuilder extends
    */
   boolean hasIndex();
   /**
-   * <code>required .dossier.Index index = 4;</code>
+   * <code>optional .dossier.Index index = 4;</code>
    *
    * <pre>
    * Navigation index.
@@ -100,7 +92,7 @@ public interface HtmlRenderSpecOrBuilder extends
    */
   com.github.jsdossier.proto.Index getIndex();
   /**
-   * <code>required .dossier.Index index = 4;</code>
+   * <code>optional .dossier.Index index = 4;</code>
    *
    * <pre>
    * Navigation index.

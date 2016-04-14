@@ -27,15 +27,13 @@ public  final class Resources extends
   @java.lang.Override
   public final com.google.protobuf.UnknownFieldSet
   getUnknownFields() {
-    return this.unknownFields;
+    return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
   }
   private Resources(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
     this();
     int mutable_bitField0_ = 0;
-    com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-        com.google.protobuf.UnknownFieldSet.newBuilder();
     try {
       boolean done = false;
       while (!done) {
@@ -45,37 +43,36 @@ public  final class Resources extends
             done = true;
             break;
           default: {
-            if (!parseUnknownField(input, unknownFields,
-                                   extensionRegistry, tag)) {
+            if (!input.skipField(tag)) {
               done = true;
             }
             break;
           }
           case 10: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            java.lang.String s = input.readStringRequireUtf8();
             if (!((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
               css_ = new com.google.protobuf.LazyStringArrayList();
               mutable_bitField0_ |= 0x00000001;
             }
-            css_.add(bs);
+            css_.add(s);
             break;
           }
           case 18: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            java.lang.String s = input.readStringRequireUtf8();
             if (!((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
               headScript_ = new com.google.protobuf.LazyStringArrayList();
               mutable_bitField0_ |= 0x00000002;
             }
-            headScript_.add(bs);
+            headScript_.add(s);
             break;
           }
           case 26: {
-            com.google.protobuf.ByteString bs = input.readBytes();
+            java.lang.String s = input.readStringRequireUtf8();
             if (!((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
               tailScript_ = new com.google.protobuf.LazyStringArrayList();
               mutable_bitField0_ |= 0x00000004;
             }
-            tailScript_.add(bs);
+            tailScript_.add(s);
             break;
           }
         }
@@ -96,7 +93,6 @@ public  final class Resources extends
       if (((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
         tailScript_ = tailScript_.getUnmodifiableView();
       }
-      this.unknownFields = unknownFields.build();
       makeExtensionsImmutable();
     }
   }
@@ -272,7 +268,6 @@ public  final class Resources extends
     for (int i = 0; i < tailScript_.size(); i++) {
       com.google.protobuf.GeneratedMessage.writeString(output, 3, tailScript_.getRaw(i));
     }
-    unknownFields.writeTo(output);
   }
 
   public int getSerializedSize() {
@@ -304,7 +299,6 @@ public  final class Resources extends
       size += dataSize;
       size += 1 * getTailScriptList().size();
     }
-    size += unknownFields.getSerializedSize();
     memoizedSize = size;
     return size;
   }
@@ -509,7 +503,6 @@ public  final class Resources extends
         }
         onChanged();
       }
-      this.mergeUnknownFields(other.unknownFields);
       onChanged();
       return this;
     }
@@ -660,7 +653,8 @@ public  final class Resources extends
       if (value == null) {
     throw new NullPointerException();
   }
-  ensureCssIsMutable();
+  checkByteStringIsUtf8(value);
+      ensureCssIsMutable();
       css_.add(value);
       onChanged();
       return this;
@@ -789,7 +783,8 @@ public  final class Resources extends
       if (value == null) {
     throw new NullPointerException();
   }
-  ensureHeadScriptIsMutable();
+  checkByteStringIsUtf8(value);
+      ensureHeadScriptIsMutable();
       headScript_.add(value);
       onChanged();
       return this;
@@ -927,11 +922,22 @@ public  final class Resources extends
       if (value == null) {
     throw new NullPointerException();
   }
-  ensureTailScriptIsMutable();
+  checkByteStringIsUtf8(value);
+      ensureTailScriptIsMutable();
       tailScript_.add(value);
       onChanged();
       return this;
     }
+    public final Builder setUnknownFields(
+        final com.google.protobuf.UnknownFieldSet unknownFields) {
+      return this;
+    }
+
+    public final Builder mergeUnknownFields(
+        final com.google.protobuf.UnknownFieldSet unknownFields) {
+      return this;
+    }
+
 
     // @@protoc_insertion_point(builder_scope:dossier.Resources)
   }
@@ -946,7 +952,7 @@ public  final class Resources extends
     return DEFAULT_INSTANCE;
   }
 
-  @java.lang.Deprecated public static final com.google.protobuf.Parser<Resources>
+  private static final com.google.protobuf.Parser<Resources>
       PARSER = new com.google.protobuf.AbstractParser<Resources>() {
     public Resources parsePartialFrom(
         com.google.protobuf.CodedInputStream input,

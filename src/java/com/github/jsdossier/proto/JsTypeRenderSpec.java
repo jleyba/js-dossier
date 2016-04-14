@@ -25,15 +25,13 @@ public  final class JsTypeRenderSpec extends
   @java.lang.Override
   public final com.google.protobuf.UnknownFieldSet
   getUnknownFields() {
-    return this.unknownFields;
+    return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
   }
   private JsTypeRenderSpec(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
     this();
     int mutable_bitField0_ = 0;
-    com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-        com.google.protobuf.UnknownFieldSet.newBuilder();
     try {
       boolean done = false;
       while (!done) {
@@ -43,8 +41,7 @@ public  final class JsTypeRenderSpec extends
             done = true;
             break;
           default: {
-            if (!parseUnknownField(input, unknownFields,
-                                   extensionRegistry, tag)) {
+            if (!input.skipField(tag)) {
               done = true;
             }
             break;
@@ -59,7 +56,7 @@ public  final class JsTypeRenderSpec extends
           }
           case 18: {
             com.github.jsdossier.proto.Resources.Builder subBuilder = null;
-            if (((bitField0_ & 0x00000001) == 0x00000001)) {
+            if (resources_ != null) {
               subBuilder = resources_.toBuilder();
             }
             resources_ = input.readMessage(com.github.jsdossier.proto.Resources.parser(), extensionRegistry);
@@ -67,12 +64,12 @@ public  final class JsTypeRenderSpec extends
               subBuilder.mergeFrom(resources_);
               resources_ = subBuilder.buildPartial();
             }
-            bitField0_ |= 0x00000001;
+
             break;
           }
           case 26: {
             com.github.jsdossier.proto.Index.Builder subBuilder = null;
-            if (((bitField0_ & 0x00000002) == 0x00000002)) {
+            if (index_ != null) {
               subBuilder = index_.toBuilder();
             }
             index_ = input.readMessage(com.github.jsdossier.proto.Index.parser(), extensionRegistry);
@@ -80,7 +77,7 @@ public  final class JsTypeRenderSpec extends
               subBuilder.mergeFrom(index_);
               index_ = subBuilder.buildPartial();
             }
-            bitField0_ |= 0x00000002;
+
             break;
           }
         }
@@ -95,7 +92,6 @@ public  final class JsTypeRenderSpec extends
       if (((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
         type_ = java.util.Collections.unmodifiableList(type_);
       }
-      this.unknownFields = unknownFields.build();
       makeExtensionsImmutable();
     }
   }
@@ -170,17 +166,17 @@ public  final class JsTypeRenderSpec extends
   public static final int RESOURCES_FIELD_NUMBER = 2;
   private com.github.jsdossier.proto.Resources resources_;
   /**
-   * <code>required .dossier.Resources resources = 2;</code>
+   * <code>optional .dossier.Resources resources = 2;</code>
    *
    * <pre>
    * The resources to include.
    * </pre>
    */
   public boolean hasResources() {
-    return ((bitField0_ & 0x00000001) == 0x00000001);
+    return resources_ != null;
   }
   /**
-   * <code>required .dossier.Resources resources = 2;</code>
+   * <code>optional .dossier.Resources resources = 2;</code>
    *
    * <pre>
    * The resources to include.
@@ -190,30 +186,30 @@ public  final class JsTypeRenderSpec extends
     return resources_ == null ? com.github.jsdossier.proto.Resources.getDefaultInstance() : resources_;
   }
   /**
-   * <code>required .dossier.Resources resources = 2;</code>
+   * <code>optional .dossier.Resources resources = 2;</code>
    *
    * <pre>
    * The resources to include.
    * </pre>
    */
   public com.github.jsdossier.proto.ResourcesOrBuilder getResourcesOrBuilder() {
-    return resources_ == null ? com.github.jsdossier.proto.Resources.getDefaultInstance() : resources_;
+    return getResources();
   }
 
   public static final int INDEX_FIELD_NUMBER = 3;
   private com.github.jsdossier.proto.Index index_;
   /**
-   * <code>required .dossier.Index index = 3;</code>
+   * <code>optional .dossier.Index index = 3;</code>
    *
    * <pre>
    * Navigation index.
    * </pre>
    */
   public boolean hasIndex() {
-    return ((bitField0_ & 0x00000002) == 0x00000002);
+    return index_ != null;
   }
   /**
-   * <code>required .dossier.Index index = 3;</code>
+   * <code>optional .dossier.Index index = 3;</code>
    *
    * <pre>
    * Navigation index.
@@ -223,14 +219,14 @@ public  final class JsTypeRenderSpec extends
     return index_ == null ? com.github.jsdossier.proto.Index.getDefaultInstance() : index_;
   }
   /**
-   * <code>required .dossier.Index index = 3;</code>
+   * <code>optional .dossier.Index index = 3;</code>
    *
    * <pre>
    * Navigation index.
    * </pre>
    */
   public com.github.jsdossier.proto.IndexOrBuilder getIndexOrBuilder() {
-    return index_ == null ? com.github.jsdossier.proto.Index.getDefaultInstance() : index_;
+    return getIndex();
   }
 
   private byte memoizedIsInitialized = -1;
@@ -239,24 +235,6 @@ public  final class JsTypeRenderSpec extends
     if (isInitialized == 1) return true;
     if (isInitialized == 0) return false;
 
-    if (!hasResources()) {
-      memoizedIsInitialized = 0;
-      return false;
-    }
-    if (!hasIndex()) {
-      memoizedIsInitialized = 0;
-      return false;
-    }
-    for (int i = 0; i < getTypeCount(); i++) {
-      if (!getType(i).isInitialized()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-    }
-    if (!getIndex().isInitialized()) {
-      memoizedIsInitialized = 0;
-      return false;
-    }
     memoizedIsInitialized = 1;
     return true;
   }
@@ -266,13 +244,12 @@ public  final class JsTypeRenderSpec extends
     for (int i = 0; i < type_.size(); i++) {
       output.writeMessage(1, type_.get(i));
     }
-    if (((bitField0_ & 0x00000001) == 0x00000001)) {
+    if (resources_ != null) {
       output.writeMessage(2, getResources());
     }
-    if (((bitField0_ & 0x00000002) == 0x00000002)) {
+    if (index_ != null) {
       output.writeMessage(3, getIndex());
     }
-    unknownFields.writeTo(output);
   }
 
   public int getSerializedSize() {
@@ -284,15 +261,14 @@ public  final class JsTypeRenderSpec extends
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(1, type_.get(i));
     }
-    if (((bitField0_ & 0x00000001) == 0x00000001)) {
+    if (resources_ != null) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(2, getResources());
     }
-    if (((bitField0_ & 0x00000002) == 0x00000002)) {
+    if (index_ != null) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(3, getIndex());
     }
-    size += unknownFields.getSerializedSize();
     memoizedSize = size;
     return size;
   }
@@ -405,8 +381,6 @@ public  final class JsTypeRenderSpec extends
     private void maybeForceBuilderInitialization() {
       if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
         getTypeFieldBuilder();
-        getResourcesFieldBuilder();
-        getIndexFieldBuilder();
       }
     }
     public Builder clear() {
@@ -420,15 +394,15 @@ public  final class JsTypeRenderSpec extends
       if (resourcesBuilder_ == null) {
         resources_ = null;
       } else {
-        resourcesBuilder_.clear();
+        resources_ = null;
+        resourcesBuilder_ = null;
       }
-      bitField0_ = (bitField0_ & ~0x00000002);
       if (indexBuilder_ == null) {
         index_ = null;
       } else {
-        indexBuilder_.clear();
+        index_ = null;
+        indexBuilder_ = null;
       }
-      bitField0_ = (bitField0_ & ~0x00000004);
       return this;
     }
 
@@ -462,16 +436,10 @@ public  final class JsTypeRenderSpec extends
       } else {
         result.type_ = typeBuilder_.build();
       }
-      if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
-        to_bitField0_ |= 0x00000001;
-      }
       if (resourcesBuilder_ == null) {
         result.resources_ = resources_;
       } else {
         result.resources_ = resourcesBuilder_.build();
-      }
-      if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
-        to_bitField0_ |= 0x00000002;
       }
       if (indexBuilder_ == null) {
         result.index_ = index_;
@@ -526,26 +494,11 @@ public  final class JsTypeRenderSpec extends
       if (other.hasIndex()) {
         mergeIndex(other.getIndex());
       }
-      this.mergeUnknownFields(other.unknownFields);
       onChanged();
       return this;
     }
 
     public final boolean isInitialized() {
-      if (!hasResources()) {
-        return false;
-      }
-      if (!hasIndex()) {
-        return false;
-      }
-      for (int i = 0; i < getTypeCount(); i++) {
-        if (!getType(i).isInitialized()) {
-          return false;
-        }
-      }
-      if (!getIndex().isInitialized()) {
-        return false;
-      }
       return true;
     }
 
@@ -884,17 +837,17 @@ public  final class JsTypeRenderSpec extends
     private com.google.protobuf.SingleFieldBuilder<
         com.github.jsdossier.proto.Resources, com.github.jsdossier.proto.Resources.Builder, com.github.jsdossier.proto.ResourcesOrBuilder> resourcesBuilder_;
     /**
-     * <code>required .dossier.Resources resources = 2;</code>
+     * <code>optional .dossier.Resources resources = 2;</code>
      *
      * <pre>
      * The resources to include.
      * </pre>
      */
     public boolean hasResources() {
-      return ((bitField0_ & 0x00000002) == 0x00000002);
+      return resourcesBuilder_ != null || resources_ != null;
     }
     /**
-     * <code>required .dossier.Resources resources = 2;</code>
+     * <code>optional .dossier.Resources resources = 2;</code>
      *
      * <pre>
      * The resources to include.
@@ -908,7 +861,7 @@ public  final class JsTypeRenderSpec extends
       }
     }
     /**
-     * <code>required .dossier.Resources resources = 2;</code>
+     * <code>optional .dossier.Resources resources = 2;</code>
      *
      * <pre>
      * The resources to include.
@@ -924,11 +877,11 @@ public  final class JsTypeRenderSpec extends
       } else {
         resourcesBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000002;
+
       return this;
     }
     /**
-     * <code>required .dossier.Resources resources = 2;</code>
+     * <code>optional .dossier.Resources resources = 2;</code>
      *
      * <pre>
      * The resources to include.
@@ -942,11 +895,11 @@ public  final class JsTypeRenderSpec extends
       } else {
         resourcesBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000002;
+
       return this;
     }
     /**
-     * <code>required .dossier.Resources resources = 2;</code>
+     * <code>optional .dossier.Resources resources = 2;</code>
      *
      * <pre>
      * The resources to include.
@@ -954,9 +907,7 @@ public  final class JsTypeRenderSpec extends
      */
     public Builder mergeResources(com.github.jsdossier.proto.Resources value) {
       if (resourcesBuilder_ == null) {
-        if (((bitField0_ & 0x00000002) == 0x00000002) &&
-            resources_ != null &&
-            resources_ != com.github.jsdossier.proto.Resources.getDefaultInstance()) {
+        if (resources_ != null) {
           resources_ =
             com.github.jsdossier.proto.Resources.newBuilder(resources_).mergeFrom(value).buildPartial();
         } else {
@@ -966,11 +917,11 @@ public  final class JsTypeRenderSpec extends
       } else {
         resourcesBuilder_.mergeFrom(value);
       }
-      bitField0_ |= 0x00000002;
+
       return this;
     }
     /**
-     * <code>required .dossier.Resources resources = 2;</code>
+     * <code>optional .dossier.Resources resources = 2;</code>
      *
      * <pre>
      * The resources to include.
@@ -981,25 +932,26 @@ public  final class JsTypeRenderSpec extends
         resources_ = null;
         onChanged();
       } else {
-        resourcesBuilder_.clear();
+        resources_ = null;
+        resourcesBuilder_ = null;
       }
-      bitField0_ = (bitField0_ & ~0x00000002);
+
       return this;
     }
     /**
-     * <code>required .dossier.Resources resources = 2;</code>
+     * <code>optional .dossier.Resources resources = 2;</code>
      *
      * <pre>
      * The resources to include.
      * </pre>
      */
     public com.github.jsdossier.proto.Resources.Builder getResourcesBuilder() {
-      bitField0_ |= 0x00000002;
+      
       onChanged();
       return getResourcesFieldBuilder().getBuilder();
     }
     /**
-     * <code>required .dossier.Resources resources = 2;</code>
+     * <code>optional .dossier.Resources resources = 2;</code>
      *
      * <pre>
      * The resources to include.
@@ -1014,7 +966,7 @@ public  final class JsTypeRenderSpec extends
       }
     }
     /**
-     * <code>required .dossier.Resources resources = 2;</code>
+     * <code>optional .dossier.Resources resources = 2;</code>
      *
      * <pre>
      * The resources to include.
@@ -1038,17 +990,17 @@ public  final class JsTypeRenderSpec extends
     private com.google.protobuf.SingleFieldBuilder<
         com.github.jsdossier.proto.Index, com.github.jsdossier.proto.Index.Builder, com.github.jsdossier.proto.IndexOrBuilder> indexBuilder_;
     /**
-     * <code>required .dossier.Index index = 3;</code>
+     * <code>optional .dossier.Index index = 3;</code>
      *
      * <pre>
      * Navigation index.
      * </pre>
      */
     public boolean hasIndex() {
-      return ((bitField0_ & 0x00000004) == 0x00000004);
+      return indexBuilder_ != null || index_ != null;
     }
     /**
-     * <code>required .dossier.Index index = 3;</code>
+     * <code>optional .dossier.Index index = 3;</code>
      *
      * <pre>
      * Navigation index.
@@ -1062,7 +1014,7 @@ public  final class JsTypeRenderSpec extends
       }
     }
     /**
-     * <code>required .dossier.Index index = 3;</code>
+     * <code>optional .dossier.Index index = 3;</code>
      *
      * <pre>
      * Navigation index.
@@ -1078,11 +1030,11 @@ public  final class JsTypeRenderSpec extends
       } else {
         indexBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000004;
+
       return this;
     }
     /**
-     * <code>required .dossier.Index index = 3;</code>
+     * <code>optional .dossier.Index index = 3;</code>
      *
      * <pre>
      * Navigation index.
@@ -1096,11 +1048,11 @@ public  final class JsTypeRenderSpec extends
       } else {
         indexBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000004;
+
       return this;
     }
     /**
-     * <code>required .dossier.Index index = 3;</code>
+     * <code>optional .dossier.Index index = 3;</code>
      *
      * <pre>
      * Navigation index.
@@ -1108,9 +1060,7 @@ public  final class JsTypeRenderSpec extends
      */
     public Builder mergeIndex(com.github.jsdossier.proto.Index value) {
       if (indexBuilder_ == null) {
-        if (((bitField0_ & 0x00000004) == 0x00000004) &&
-            index_ != null &&
-            index_ != com.github.jsdossier.proto.Index.getDefaultInstance()) {
+        if (index_ != null) {
           index_ =
             com.github.jsdossier.proto.Index.newBuilder(index_).mergeFrom(value).buildPartial();
         } else {
@@ -1120,11 +1070,11 @@ public  final class JsTypeRenderSpec extends
       } else {
         indexBuilder_.mergeFrom(value);
       }
-      bitField0_ |= 0x00000004;
+
       return this;
     }
     /**
-     * <code>required .dossier.Index index = 3;</code>
+     * <code>optional .dossier.Index index = 3;</code>
      *
      * <pre>
      * Navigation index.
@@ -1135,25 +1085,26 @@ public  final class JsTypeRenderSpec extends
         index_ = null;
         onChanged();
       } else {
-        indexBuilder_.clear();
+        index_ = null;
+        indexBuilder_ = null;
       }
-      bitField0_ = (bitField0_ & ~0x00000004);
+
       return this;
     }
     /**
-     * <code>required .dossier.Index index = 3;</code>
+     * <code>optional .dossier.Index index = 3;</code>
      *
      * <pre>
      * Navigation index.
      * </pre>
      */
     public com.github.jsdossier.proto.Index.Builder getIndexBuilder() {
-      bitField0_ |= 0x00000004;
+      
       onChanged();
       return getIndexFieldBuilder().getBuilder();
     }
     /**
-     * <code>required .dossier.Index index = 3;</code>
+     * <code>optional .dossier.Index index = 3;</code>
      *
      * <pre>
      * Navigation index.
@@ -1168,7 +1119,7 @@ public  final class JsTypeRenderSpec extends
       }
     }
     /**
-     * <code>required .dossier.Index index = 3;</code>
+     * <code>optional .dossier.Index index = 3;</code>
      *
      * <pre>
      * Navigation index.
@@ -1187,6 +1138,16 @@ public  final class JsTypeRenderSpec extends
       }
       return indexBuilder_;
     }
+    public final Builder setUnknownFields(
+        final com.google.protobuf.UnknownFieldSet unknownFields) {
+      return this;
+    }
+
+    public final Builder mergeUnknownFields(
+        final com.google.protobuf.UnknownFieldSet unknownFields) {
+      return this;
+    }
+
 
     // @@protoc_insertion_point(builder_scope:dossier.JsTypeRenderSpec)
   }
@@ -1201,7 +1162,7 @@ public  final class JsTypeRenderSpec extends
     return DEFAULT_INSTANCE;
   }
 
-  @java.lang.Deprecated public static final com.google.protobuf.Parser<JsTypeRenderSpec>
+  private static final com.google.protobuf.Parser<JsTypeRenderSpec>
       PARSER = new com.google.protobuf.AbstractParser<JsTypeRenderSpec>() {
     public JsTypeRenderSpec parsePartialFrom(
         com.google.protobuf.CodedInputStream input,

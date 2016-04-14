@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-syntax = "proto2";
+syntax = "proto3";
 
 import "descriptor.proto";
 
@@ -34,16 +34,16 @@ message SanitizedContent {
 }
 
 extend google.protobuf.FieldOptions {
-  optional SanitizedContent sanitized = 51230;
+  SanitizedContent sanitized = 51230;
 }
 
 
 // Describes a documented source file.
 message SourceFile {
   // The file's base name.
-  required string base_name = 1;
+  string base_name = 1;
   // The path to the file; may be relative to some unspecified directory.
-  required string path = 2;
+  string path = 2;
   // The individual lines in the file. Each line should not be HTML escaped.
   repeated string lines = 3;
 }
@@ -64,23 +64,23 @@ message Resources {
 // Describes a type to link to.
 message TypeLink {
   // The link display text.
-  required string text = 1;
+  string text = 1;
   // The link href.
-  optional string href = 2 [(sanitized).uri = true];
+  string href = 2 [(sanitized).uri = true];
 }
 
 
 // Defines a link to a symbol's definition in its rendered source file.
 message SourceLink {
   // Path from the current file to the rendered source file.
-  required string path = 1  [(sanitized).uri = true];
+  string path = 1  [(sanitized).uri = true];
 
   // The line in the source file containing the symbol, if known.
-  optional int32 line = 2;
+  int32 line = 2;
 
   // A user-provided URI to use for the source link instead of |path| and
   // |line|. This URI is not sanitized.
-  optional string uri = 3;
+  string uri = 3;
 }
 
 
@@ -98,7 +98,7 @@ message Comment {
     }
 
     // If set, this token will be rendered as a hyperlink.
-    optional string href = 4 [(sanitized).uri = true];
+    string href = 4 [(sanitized).uri = true];
   }
 
   // The tokens that comprise this comment.
@@ -121,39 +121,39 @@ enum Visibility {
 
 
 message Tags {
-  optional bool is_const = 1;
-  optional bool is_deprecated = 2;
-  optional bool is_dict = 3;
-  optional bool is_final = 4;
-  optional bool is_interface = 5;
-  optional bool is_module = 6;
-  optional bool is_struct = 7;
-  optional bool is_default = 8;
-  optional bool is_record = 9;
+  bool is_const = 1;
+  bool is_deprecated = 2;
+  bool is_dict = 3;
+  bool is_final = 4;
+  bool is_interface = 5;
+  bool is_module = 6;
+  bool is_struct = 7;
+  bool is_default = 8;
+  bool is_record = 9;
 }
 
 
 // Describes the basic properties for a documented JavaScript property.
 message BaseProperty {
   // The property's name; this should not be the fully qualified name.
-  required string name = 1;
+  string name = 1;
 
   // Link to the location in the source file where this property is defined.
-  required SourceLink source = 2;
+  SourceLink source = 2;
 
   // The property's block comment.
-  required Comment description = 3;
+  Comment description = 3;
 
   // Whether this property is deprecated.
-  optional Comment deprecation = 4;
-  optional Visibility visibility = 5 [default = PUBLIC];
-  optional Tags tags = 6;
+  Comment deprecation = 4;
+  Visibility visibility = 5;
+  Tags tags = 6;
 
   // The class or interface that defines this property.
-  optional Comment defined_by = 7;
+  Comment defined_by = 7;
 
   // Parent class that defines this property.
-  optional Comment overrides = 8;
+  Comment overrides = 8;
 
   // Interfaces that define this property.
   repeated Comment specified_by = 9;
@@ -164,26 +164,26 @@ message BaseProperty {
 
 // Describes a non-function JavaScript property.
 message Property {
-  required BaseProperty base = 1;
+  BaseProperty base = 1;
   // HTML snippet declaring the property type. May be omitted if the type is
   // unknown.
-  optional Comment type = 2;
+  Comment type = 2;
 }
 
 
 // Describes a function JavaScript property.
 message Function {
   message Detail {
-    optional string name = 1;
-    optional Comment type = 2;
-    optional Comment description = 3;
+    string name = 1;
+    Comment type = 2;
+    Comment description = 3;
   }
 
-  required BaseProperty base = 1;
+  BaseProperty base = 1;
   repeated string template_name = 2;
-  optional bool is_constructor = 3 [default = false];
+  bool is_constructor = 3;
   repeated Detail parameter = 4;
-  optional Detail return = 5;
+  Detail return = 5;
   repeated Detail thrown = 6;
 }
 
@@ -191,26 +191,26 @@ message Function {
 // Describes an enumeration.
 message Enumeration {
   message Value {
-    required string name = 1;
-    optional Comment description = 2;
-    optional Comment deprecation = 3;
+    string name = 1;
+    Comment description = 2;
+    Comment deprecation = 3;
   }
 
-  required Comment type = 1;
+  Comment type = 1;
   repeated Value value = 2;
-  optional Visibility visibility = 3 [default = PUBLIC];
+  Visibility visibility = 3;
 }
 
 // Describes how to build the side index for a generated page.
 message Index {
   // Defines the href from the current page to the main index.
-  required string home = 1 [(sanitized).uri = true];
+  string home = 1 [(sanitized).uri = true];
 
   // Whether to generate the global type section.
-  optional bool include_types = 2;
+  bool include_types = 2;
 
   // Whether to generate the module type section.
-  optional bool include_modules = 3;
+  bool include_modules = 3;
 
   // Additional links to include in the navigation pane.
   repeated TypeLink links = 4;
@@ -223,30 +223,30 @@ message JsType {
 
   // Short description for a type defined when this |JsType|.
   message TypeSummary {
-    required string name = 1;                           // The type name.
-    required string href = 2 [(sanitized).uri = true];  // The hyperlink for the actual type.
-    required Comment summary = 3;                       // The summary sentence for this type.
+    string name = 1;                           // The type name.
+    string href = 2 [(sanitized).uri = true];  // The hyperlink for the actual type.
+    Comment summary = 3;                       // The summary sentence for this type.
   }
 
   // Describes a typedef defined within this type.
   message TypeDef {
-    required string name = 1;
-    required Comment type = 2;
-    required SourceLink source = 3;
-    required Comment description = 4;
-    optional Comment deprecation = 5;
-    optional Visibility visibility = 6 [default = PUBLIC];
+    string name = 1;
+    Comment type = 2;
+    SourceLink source = 3;
+    Comment description = 4;
+    Comment deprecation = 5;
+    Visibility visibility = 6;
   }
 
-  required string name = 1;
-  required SourceLink source = 5;
+  string name = 1;
+  SourceLink source = 5;
   repeated TypeSummary nested = 6;
-  required Comment description = 7;
-  required Tags tags = 8;
-  optional Comment deprecation = 9;
+  Comment description = 7;
+  Tags tags = 8;
+  Comment deprecation = 9;
   repeated TypeDef type_def = 10;
 
-  optional Enumeration enumeration = 11;
+  Enumeration enumeration = 11;
 
   repeated Function static_function = 12;
   repeated Property static_property = 13;
@@ -254,7 +254,7 @@ message JsType {
   // Describes the main function for this type. This is typically a class
   // constructor, but may also be the main function for a namespace (which
   // all other properties are hung off of).
-  optional Function main_function = 14;
+  Function main_function = 14;
 
   // Instance methods for this type.
   repeated Function method = 15;
@@ -274,19 +274,19 @@ message JsType {
 
   // Link to the module or namespace this type belongs to.
   message ParentLink {
-    required TypeLink link = 1;
-    optional bool is_module = 2;
+    TypeLink link = 1;
+    bool is_module = 2;
   }
-  optional ParentLink parent = 21;
+  ParentLink parent = 21;
 
   // Link to another type that this type is an alias of.
-  optional TypeLink aliased_type = 22;
+  TypeLink aliased_type = 22;
 
   // Base name for the rendered file for this type.
-  optional string filename = 23;
+  string filename = 23;
 
   // Qualified display name for this type.
-  optional string qualified_name = 24;
+  string qualified_name = 24;
 
   // Re-exported modules.
   repeated Property reexported_module = 25;
@@ -297,24 +297,24 @@ message JsType {
 // Describes how to render a generic HTML page.
 message HtmlRenderSpec {
   // The resources to include.
-  required Resources resources = 1;
+  Resources resources = 1;
   // The page title.
-  required string title = 2;
+  string title = 2;
   // The page content, if any.
-  optional Comment content = 3;
+  Comment content = 3;
   // Navigation index.
-  required Index index = 4;
+  Index index = 4;
 }
 
 
 // Describes how to render a source file.
 message SourceFileRenderSpec {
   // The resources to include.
-  required Resources resources = 1;
+  Resources resources = 1;
   // The file to render.
-  required SourceFile file = 2;
+  SourceFile file = 2;
   // Navigation index.
-  required Index index = 3;
+  Index index = 3;
 }
 
 
@@ -324,8 +324,8 @@ message JsTypeRenderSpec {
   repeated JsType type = 1;
 
   // The resources to include.
-  required Resources resources = 2;
+  Resources resources = 2;
 
   // Navigation index.
-  required Index index = 3;
+  Index index = 3;
 }

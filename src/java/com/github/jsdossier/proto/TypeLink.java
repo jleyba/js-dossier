@@ -26,15 +26,13 @@ public  final class TypeLink extends
   @java.lang.Override
   public final com.google.protobuf.UnknownFieldSet
   getUnknownFields() {
-    return this.unknownFields;
+    return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
   }
   private TypeLink(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
     this();
     int mutable_bitField0_ = 0;
-    com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-        com.google.protobuf.UnknownFieldSet.newBuilder();
     try {
       boolean done = false;
       while (!done) {
@@ -44,22 +42,21 @@ public  final class TypeLink extends
             done = true;
             break;
           default: {
-            if (!parseUnknownField(input, unknownFields,
-                                   extensionRegistry, tag)) {
+            if (!input.skipField(tag)) {
               done = true;
             }
             break;
           }
           case 10: {
-            com.google.protobuf.ByteString bs = input.readBytes();
-            bitField0_ |= 0x00000001;
-            text_ = bs;
+            java.lang.String s = input.readStringRequireUtf8();
+
+            text_ = s;
             break;
           }
           case 18: {
-            com.google.protobuf.ByteString bs = input.readBytes();
-            bitField0_ |= 0x00000002;
-            href_ = bs;
+            java.lang.String s = input.readStringRequireUtf8();
+
+            href_ = s;
             break;
           }
         }
@@ -71,7 +68,6 @@ public  final class TypeLink extends
           new com.google.protobuf.InvalidProtocolBufferException(
               e.getMessage()).setUnfinishedMessage(this));
     } finally {
-      this.unknownFields = unknownFields.build();
       makeExtensionsImmutable();
     }
   }
@@ -87,21 +83,10 @@ public  final class TypeLink extends
             com.github.jsdossier.proto.TypeLink.class, com.github.jsdossier.proto.TypeLink.Builder.class);
   }
 
-  private int bitField0_;
   public static final int TEXT_FIELD_NUMBER = 1;
   private volatile java.lang.Object text_;
   /**
-   * <code>required string text = 1;</code>
-   *
-   * <pre>
-   * The link display text.
-   * </pre>
-   */
-  public boolean hasText() {
-    return ((bitField0_ & 0x00000001) == 0x00000001);
-  }
-  /**
-   * <code>required string text = 1;</code>
+   * <code>optional string text = 1;</code>
    *
    * <pre>
    * The link display text.
@@ -115,14 +100,12 @@ public  final class TypeLink extends
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      if (bs.isValidUtf8()) {
-        text_ = s;
-      }
+      text_ = s;
       return s;
     }
   }
   /**
-   * <code>required string text = 1;</code>
+   * <code>optional string text = 1;</code>
    *
    * <pre>
    * The link display text.
@@ -151,16 +134,6 @@ public  final class TypeLink extends
    * The link href.
    * </pre>
    */
-  public boolean hasHref() {
-    return ((bitField0_ & 0x00000002) == 0x00000002);
-  }
-  /**
-   * <code>optional string href = 2;</code>
-   *
-   * <pre>
-   * The link href.
-   * </pre>
-   */
   public java.lang.String getHref() {
     java.lang.Object ref = href_;
     if (ref instanceof java.lang.String) {
@@ -169,9 +142,7 @@ public  final class TypeLink extends
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      if (bs.isValidUtf8()) {
-        href_ = s;
-      }
+      href_ = s;
       return s;
     }
   }
@@ -202,23 +173,18 @@ public  final class TypeLink extends
     if (isInitialized == 1) return true;
     if (isInitialized == 0) return false;
 
-    if (!hasText()) {
-      memoizedIsInitialized = 0;
-      return false;
-    }
     memoizedIsInitialized = 1;
     return true;
   }
 
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (((bitField0_ & 0x00000001) == 0x00000001)) {
+    if (!getTextBytes().isEmpty()) {
       com.google.protobuf.GeneratedMessage.writeString(output, 1, text_);
     }
-    if (((bitField0_ & 0x00000002) == 0x00000002)) {
+    if (!getHrefBytes().isEmpty()) {
       com.google.protobuf.GeneratedMessage.writeString(output, 2, href_);
     }
-    unknownFields.writeTo(output);
   }
 
   public int getSerializedSize() {
@@ -226,13 +192,12 @@ public  final class TypeLink extends
     if (size != -1) return size;
 
     size = 0;
-    if (((bitField0_ & 0x00000001) == 0x00000001)) {
+    if (!getTextBytes().isEmpty()) {
       size += com.google.protobuf.GeneratedMessage.computeStringSize(1, text_);
     }
-    if (((bitField0_ & 0x00000002) == 0x00000002)) {
+    if (!getHrefBytes().isEmpty()) {
       size += com.google.protobuf.GeneratedMessage.computeStringSize(2, href_);
     }
-    size += unknownFields.getSerializedSize();
     memoizedSize = size;
     return size;
   }
@@ -349,9 +314,9 @@ public  final class TypeLink extends
     public Builder clear() {
       super.clear();
       text_ = "";
-      bitField0_ = (bitField0_ & ~0x00000001);
+
       href_ = "";
-      bitField0_ = (bitField0_ & ~0x00000002);
+
       return this;
     }
 
@@ -374,17 +339,8 @@ public  final class TypeLink extends
 
     public com.github.jsdossier.proto.TypeLink buildPartial() {
       com.github.jsdossier.proto.TypeLink result = new com.github.jsdossier.proto.TypeLink(this);
-      int from_bitField0_ = bitField0_;
-      int to_bitField0_ = 0;
-      if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
-        to_bitField0_ |= 0x00000001;
-      }
       result.text_ = text_;
-      if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
-        to_bitField0_ |= 0x00000002;
-      }
       result.href_ = href_;
-      result.bitField0_ = to_bitField0_;
       onBuilt();
       return result;
     }
@@ -400,25 +356,19 @@ public  final class TypeLink extends
 
     public Builder mergeFrom(com.github.jsdossier.proto.TypeLink other) {
       if (other == com.github.jsdossier.proto.TypeLink.getDefaultInstance()) return this;
-      if (other.hasText()) {
-        bitField0_ |= 0x00000001;
+      if (!other.getText().isEmpty()) {
         text_ = other.text_;
         onChanged();
       }
-      if (other.hasHref()) {
-        bitField0_ |= 0x00000002;
+      if (!other.getHref().isEmpty()) {
         href_ = other.href_;
         onChanged();
       }
-      this.mergeUnknownFields(other.unknownFields);
       onChanged();
       return this;
     }
 
     public final boolean isInitialized() {
-      if (!hasText()) {
-        return false;
-      }
       return true;
     }
 
@@ -439,21 +389,10 @@ public  final class TypeLink extends
       }
       return this;
     }
-    private int bitField0_;
 
     private java.lang.Object text_ = "";
     /**
-     * <code>required string text = 1;</code>
-     *
-     * <pre>
-     * The link display text.
-     * </pre>
-     */
-    public boolean hasText() {
-      return ((bitField0_ & 0x00000001) == 0x00000001);
-    }
-    /**
-     * <code>required string text = 1;</code>
+     * <code>optional string text = 1;</code>
      *
      * <pre>
      * The link display text.
@@ -465,16 +404,14 @@ public  final class TypeLink extends
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          text_ = s;
-        }
+        text_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
       }
     }
     /**
-     * <code>required string text = 1;</code>
+     * <code>optional string text = 1;</code>
      *
      * <pre>
      * The link display text.
@@ -494,7 +431,7 @@ public  final class TypeLink extends
       }
     }
     /**
-     * <code>required string text = 1;</code>
+     * <code>optional string text = 1;</code>
      *
      * <pre>
      * The link display text.
@@ -505,26 +442,26 @@ public  final class TypeLink extends
       if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000001;
+  
       text_ = value;
       onChanged();
       return this;
     }
     /**
-     * <code>required string text = 1;</code>
+     * <code>optional string text = 1;</code>
      *
      * <pre>
      * The link display text.
      * </pre>
      */
     public Builder clearText() {
-      bitField0_ = (bitField0_ & ~0x00000001);
+      
       text_ = getDefaultInstance().getText();
       onChanged();
       return this;
     }
     /**
-     * <code>required string text = 1;</code>
+     * <code>optional string text = 1;</code>
      *
      * <pre>
      * The link display text.
@@ -535,7 +472,8 @@ public  final class TypeLink extends
       if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000001;
+  checkByteStringIsUtf8(value);
+      
       text_ = value;
       onChanged();
       return this;
@@ -549,25 +487,13 @@ public  final class TypeLink extends
      * The link href.
      * </pre>
      */
-    public boolean hasHref() {
-      return ((bitField0_ & 0x00000002) == 0x00000002);
-    }
-    /**
-     * <code>optional string href = 2;</code>
-     *
-     * <pre>
-     * The link href.
-     * </pre>
-     */
     public java.lang.String getHref() {
       java.lang.Object ref = href_;
       if (!(ref instanceof java.lang.String)) {
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          href_ = s;
-        }
+        href_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
@@ -605,7 +531,7 @@ public  final class TypeLink extends
       if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000002;
+  
       href_ = value;
       onChanged();
       return this;
@@ -618,7 +544,7 @@ public  final class TypeLink extends
      * </pre>
      */
     public Builder clearHref() {
-      bitField0_ = (bitField0_ & ~0x00000002);
+      
       href_ = getDefaultInstance().getHref();
       onChanged();
       return this;
@@ -635,11 +561,22 @@ public  final class TypeLink extends
       if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000002;
+  checkByteStringIsUtf8(value);
+      
       href_ = value;
       onChanged();
       return this;
     }
+    public final Builder setUnknownFields(
+        final com.google.protobuf.UnknownFieldSet unknownFields) {
+      return this;
+    }
+
+    public final Builder mergeUnknownFields(
+        final com.google.protobuf.UnknownFieldSet unknownFields) {
+      return this;
+    }
+
 
     // @@protoc_insertion_point(builder_scope:dossier.TypeLink)
   }
@@ -654,7 +591,7 @@ public  final class TypeLink extends
     return DEFAULT_INSTANCE;
   }
 
-  @java.lang.Deprecated public static final com.google.protobuf.Parser<TypeLink>
+  private static final com.google.protobuf.Parser<TypeLink>
       PARSER = new com.google.protobuf.AbstractParser<TypeLink>() {
     public TypeLink parsePartialFrom(
         com.google.protobuf.CodedInputStream input,

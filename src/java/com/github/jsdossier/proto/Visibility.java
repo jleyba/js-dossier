@@ -45,6 +45,7 @@ public enum Visibility
    * </pre>
    */
   PACKAGE(3, 3),
+  UNRECOGNIZED(-1, -1),
   ;
 
   /**
@@ -83,6 +84,10 @@ public enum Visibility
 
 
   public final int getNumber() {
+    if (index == -1) {
+      throw new java.lang.IllegalArgumentException(
+          "Can't get the number of an unknown enum value.");
+    }
     return value;
   }
 
@@ -129,6 +134,9 @@ public enum Visibility
     if (desc.getType() != getDescriptor()) {
       throw new java.lang.IllegalArgumentException(
         "EnumValueDescriptor is not for this type.");
+    }
+    if (desc.getIndex() == -1) {
+      return UNRECOGNIZED;
     }
     return VALUES[desc.getIndex()];
   }

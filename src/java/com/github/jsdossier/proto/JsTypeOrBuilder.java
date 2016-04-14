@@ -8,29 +8,25 @@ public interface JsTypeOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>required string name = 1;</code>
-   */
-  boolean hasName();
-  /**
-   * <code>required string name = 1;</code>
+   * <code>optional string name = 1;</code>
    */
   java.lang.String getName();
   /**
-   * <code>required string name = 1;</code>
+   * <code>optional string name = 1;</code>
    */
   com.google.protobuf.ByteString
       getNameBytes();
 
   /**
-   * <code>required .dossier.SourceLink source = 5;</code>
+   * <code>optional .dossier.SourceLink source = 5;</code>
    */
   boolean hasSource();
   /**
-   * <code>required .dossier.SourceLink source = 5;</code>
+   * <code>optional .dossier.SourceLink source = 5;</code>
    */
   com.github.jsdossier.proto.SourceLink getSource();
   /**
-   * <code>required .dossier.SourceLink source = 5;</code>
+   * <code>optional .dossier.SourceLink source = 5;</code>
    */
   com.github.jsdossier.proto.SourceLinkOrBuilder getSourceOrBuilder();
 
@@ -59,28 +55,28 @@ public interface JsTypeOrBuilder extends
       int index);
 
   /**
-   * <code>required .dossier.Comment description = 7;</code>
+   * <code>optional .dossier.Comment description = 7;</code>
    */
   boolean hasDescription();
   /**
-   * <code>required .dossier.Comment description = 7;</code>
+   * <code>optional .dossier.Comment description = 7;</code>
    */
   com.github.jsdossier.proto.Comment getDescription();
   /**
-   * <code>required .dossier.Comment description = 7;</code>
+   * <code>optional .dossier.Comment description = 7;</code>
    */
   com.github.jsdossier.proto.CommentOrBuilder getDescriptionOrBuilder();
 
   /**
-   * <code>required .dossier.Tags tags = 8;</code>
+   * <code>optional .dossier.Tags tags = 8;</code>
    */
   boolean hasTags();
   /**
-   * <code>required .dossier.Tags tags = 8;</code>
+   * <code>optional .dossier.Tags tags = 8;</code>
    */
   com.github.jsdossier.proto.Tags getTags();
   /**
-   * <code>required .dossier.Tags tags = 8;</code>
+   * <code>optional .dossier.Tags tags = 8;</code>
    */
   com.github.jsdossier.proto.TagsOrBuilder getTagsOrBuilder();
 
@@ -468,14 +464,6 @@ public interface JsTypeOrBuilder extends
    * Base name for the rendered file for this type.
    * </pre>
    */
-  boolean hasFilename();
-  /**
-   * <code>optional string filename = 23;</code>
-   *
-   * <pre>
-   * Base name for the rendered file for this type.
-   * </pre>
-   */
   java.lang.String getFilename();
   /**
    * <code>optional string filename = 23;</code>
@@ -487,14 +475,6 @@ public interface JsTypeOrBuilder extends
   com.google.protobuf.ByteString
       getFilenameBytes();
 
-  /**
-   * <code>optional string qualified_name = 24;</code>
-   *
-   * <pre>
-   * Qualified display name for this type.
-   * </pre>
-   */
-  boolean hasQualifiedName();
   /**
    * <code>optional string qualified_name = 24;</code>
    *

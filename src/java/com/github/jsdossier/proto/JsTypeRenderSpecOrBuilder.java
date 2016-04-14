@@ -52,7 +52,7 @@ public interface JsTypeRenderSpecOrBuilder extends
       int index);
 
   /**
-   * <code>required .dossier.Resources resources = 2;</code>
+   * <code>optional .dossier.Resources resources = 2;</code>
    *
    * <pre>
    * The resources to include.
@@ -60,7 +60,7 @@ public interface JsTypeRenderSpecOrBuilder extends
    */
   boolean hasResources();
   /**
-   * <code>required .dossier.Resources resources = 2;</code>
+   * <code>optional .dossier.Resources resources = 2;</code>
    *
    * <pre>
    * The resources to include.
@@ -68,7 +68,7 @@ public interface JsTypeRenderSpecOrBuilder extends
    */
   com.github.jsdossier.proto.Resources getResources();
   /**
-   * <code>required .dossier.Resources resources = 2;</code>
+   * <code>optional .dossier.Resources resources = 2;</code>
    *
    * <pre>
    * The resources to include.
@@ -77,7 +77,7 @@ public interface JsTypeRenderSpecOrBuilder extends
   com.github.jsdossier.proto.ResourcesOrBuilder getResourcesOrBuilder();
 
   /**
-   * <code>required .dossier.Index index = 3;</code>
+   * <code>optional .dossier.Index index = 3;</code>
    *
    * <pre>
    * Navigation index.
@@ -85,7 +85,7 @@ public interface JsTypeRenderSpecOrBuilder extends
    */
   boolean hasIndex();
   /**
-   * <code>required .dossier.Index index = 3;</code>
+   * <code>optional .dossier.Index index = 3;</code>
    *
    * <pre>
    * Navigation index.
@@ -93,7 +93,7 @@ public interface JsTypeRenderSpecOrBuilder extends
    */
   com.github.jsdossier.proto.Index getIndex();
   /**
-   * <code>required .dossier.Index index = 3;</code>
+   * <code>optional .dossier.Index index = 3;</code>
    *
    * <pre>
    * Navigation index.
