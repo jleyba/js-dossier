@@ -59,11 +59,11 @@ import com.google.gson.JsonSerializer;
 import com.google.javascript.jscomp.ErrorManager;
 import com.google.javascript.jscomp.PrintStreamErrorManager;
 import com.google.javascript.jscomp.SourceFile;
-import com.google.javascript.jscomp.deps.ClosureSortedDependencies;
 import com.google.javascript.jscomp.deps.DependencyInfo;
 import com.google.javascript.jscomp.deps.DepsFileParser;
 import com.google.javascript.jscomp.deps.DepsGenerator;
-import com.google.javascript.jscomp.deps.SortedDependencies;
+
+import com.github.jsdossier.jscomp.ClosureSortedDependencies;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -441,7 +441,7 @@ abstract class Config {
                   getSources(),
                   depFiles,
                   getClosureLibraryDir().get()));
-        } catch (IOException | SortedDependencies.CircularDependencyException e) {
+        } catch (IOException e) {
           throw new RuntimeException(e);
         }
       }
@@ -627,7 +627,7 @@ abstract class Config {
 
   private static ImmutableSet<Path> processClosureSources(
       Iterable<Path> sources, ImmutableSet<Path> deps,
-      Path closureBase) throws SortedDependencies.CircularDependencyException, IOException {
+      Path closureBase) throws IOException {
 
     Collection<SourceFile> depsFiles = newLinkedList(transform(deps, toSourceFile()));
     Collection<SourceFile> sourceFiles = newLinkedList(transform(sources, toSourceFile()));
