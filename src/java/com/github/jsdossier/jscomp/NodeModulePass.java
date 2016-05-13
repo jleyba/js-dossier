@@ -326,7 +326,9 @@ class NodeModulePass {
           t.getInput().addRequire(moduleId);
 
         } else {
-          parent.replaceChild(require, name(moduleId).srcrefTree(require));
+          // For goog.module('foo'), ClosureRewriteModule produces module$exports$foo = {};, so
+          // we use the transformed name in the direct reference.
+          parent.replaceChild(require, name("module$exports$" + moduleId).srcrefTree(require));
         }
 
         t.getCompiler().reportCodeChange();

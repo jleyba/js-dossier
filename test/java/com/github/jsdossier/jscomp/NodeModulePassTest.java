@@ -436,7 +436,7 @@ public class NodeModulePassTest {
         lines(
             "var module$exports$module$foo$two = {};",
             "var module$contents$module$foo$two_go = function() {",
-            "  var x = module$foo$three;",
+            "  var x = module$exports$module$foo$three;",
             "};",
             "module$exports$module$foo$two.go = module$contents$module$foo$two_go;",
             "var module$exports$module$foo$one = {};",
