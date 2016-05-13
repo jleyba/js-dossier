@@ -22,7 +22,6 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.base.Verify.verify;
-import static com.google.common.collect.Iterables.getFirst;
 import static com.google.javascript.jscomp.NodeTraversal.traverseEs6;
 
 import com.github.jsdossier.annotations.Input;
@@ -273,10 +272,13 @@ public final class TypeCollectionPass implements CompilerPass {
 
         Path file = inputFs.getPath(node.getSourceFileName());
         if (nodeLibrary.isModulePath(node.getSourceFileName())) {
-          if (nodeLibrary.isModuleId(name)) {
-            logfmt("Recording core node module as an extern: %s", name);
-            externs.addExtern(node.getJSType());
-            continue;
+          if (name.startsWith(MODULE_ID_PREFIX)) {
+            String id = name.substring(MODULE_ID_PREFIX.length());
+            if (nodeLibrary.isModuleId(id)) {
+              logfmt("Recording core node module as an extern: %s", id);
+              externs.addExtern(node.getJSType());
+              continue;
+            }
           }
 
           if (name.startsWith(MODULE_CONTENTS_PREFIX)) {

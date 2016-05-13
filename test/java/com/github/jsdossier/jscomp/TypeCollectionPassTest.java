@@ -25,6 +25,7 @@ import com.github.jsdossier.testing.Bug;
 import com.github.jsdossier.testing.CompilerUtil;
 import com.github.jsdossier.testing.GuiceRule;
 import com.google.common.base.Predicate;
+import com.google.inject.Injector;
 import com.google.javascript.jscomp.CompilerOptions;
 import com.google.javascript.rhino.jstype.JSType;
 import org.junit.Rule;
@@ -32,7 +33,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystem;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import javax.inject.Inject;
 
@@ -1086,6 +1091,36 @@ public class TypeCollectionPassTest {
             typeRegistry.getType("module$modules$one"),
             typeRegistry.getType("module$modules$one.One"),
             typeRegistry.getType("module$modules$two"));
+  }
+
+  @Test
+  public void detectsNodeExternUsage() throws IOException {
+    Injector injector = guice.toBuilder()
+        .setModulePrefix("modules")
+        .setModules("one.js")
+        .setModuleExterns("externs/two.js")
+        .build()
+        .createInjector();
+
+    injector.injectMembers(this);
+
+    // Module externs are loaded directly.
+    Path path = fs.getPath("externs/two.js");
+    Files.createDirectories(path.getParent());
+    Files.write(path,
+        "module.exports = function(a, b) { return a + b; };".getBytes(StandardCharsets.UTF_8));
+
+    util.compile(
+        createSourceFile(
+            fs.getPath("modules/one.js"),
+            "var two = require('two');",
+            "exports.path = two('a', 'b');"));
+
+    assertThat(typeRegistry.getAllTypes())
+        .containsExactly(typeRegistry.getType("module$exports$module$modules$one"));
+
+    NodeLibrary library = injector.getInstance(NodeLibrary.class);
+    assertThat(library.isModuleId("two")).isTrue();
   }
 
   private void defineInputModules(String prefix, String... modules) {
