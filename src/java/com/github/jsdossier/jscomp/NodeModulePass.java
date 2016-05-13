@@ -181,12 +181,12 @@ class NodeModulePass {
         visitScript(t, n);
       }
 
-      if (n.isCall()
-          && n.getChildCount() == 2
-          && n.getFirstChild().matchesQualifiedName("require")
-          && n.getChildAtIndex(1).isString()) {
-        splitRequireDeclaration(t, n);
+      if (isCall(n, "require")) {
         visitRequireCall(t, n, parent);
+      }
+
+      if (NodeUtil.isNameDeclaration(n)) {
+        ensureGoogRequireDeclarationsInSeparateStatements(t, n);
       }
 
       if (n.isGetProp()
@@ -348,27 +348,37 @@ class NodeModulePass {
      *     var a = require('a');
      *     var b = require('b');
      */
-    private void splitRequireDeclaration(NodeTraversal t, Node require) {
-      Node decl = require.getParent();
-      while (decl != null && !NodeUtil.isNameDeclaration(decl)) {
-        decl = decl.getParent();
-      }
+    private void ensureGoogRequireDeclarationsInSeparateStatements(NodeTraversal t, Node decl) {
+      RequireDetector detector = new RequireDetector();
+      traverseEs6(t.getCompiler(), decl, detector);
 
-      if (decl == null || decl.getFirstChild() == decl.getLastChild()) {
-        return;
-      }
+      if (detector.foundGoogRequire) {
+        Node addAfter = decl;
+        for (Node last = decl.getLastChild();
+             last != decl.getFirstChild();
+             last = decl.getLastChild()) {
+          decl.removeChild(last);
 
-      Node addAfter = decl;
-      for (Node last = decl.getLastChild();
-           last != decl.getFirstChild();
-           last = decl.getLastChild()) {
-        decl.removeChild(last);
-
-        Node newDecl = declaration(last, decl.getType()).srcrefTree(last);
-        decl.getParent().addChildAfter(newDecl, addAfter);
-        addAfter = newDecl;
-        t.getCompiler().reportCodeChange();
+          Node newDecl = declaration(last, decl.getType()).srcrefTree(last);
+          decl.getParent().addChildAfter(newDecl, addAfter);
+          addAfter = newDecl;
+          t.getCompiler().reportCodeChange();
+        }
       }
+    }
+  }
+
+  private static final class RequireDetector implements NodeTraversal.Callback {
+    private boolean foundGoogRequire = false;
+
+    @Override
+    public boolean shouldTraverse(NodeTraversal nodeTraversal, Node n, Node parent) {
+      return !foundGoogRequire;
+    }
+
+    @Override
+    public void visit(NodeTraversal t, Node n, Node parent) {
+      foundGoogRequire = foundGoogRequire || isCall(n, "goog.require");
     }
   }
 
@@ -473,5 +483,11 @@ class NodeModulePass {
     }
 
     return Optional.absent();
+  }
+
+  private static boolean isCall(Node n, String name) {
+    return n.isCall()
+        && n.getFirstChild().matchesQualifiedName(name)
+        && n.getSecondChild().isString();
   }
 }

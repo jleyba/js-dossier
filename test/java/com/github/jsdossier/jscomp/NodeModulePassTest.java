@@ -36,6 +36,7 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.jimfs.Jimfs;
 import com.google.inject.Injector;
+import com.google.javascript.jscomp.CompilerOptions.LanguageMode;
 import com.google.javascript.jscomp.Scope;
 import com.google.javascript.jscomp.SourceFile;
 import com.google.javascript.jscomp.Var;
@@ -1083,7 +1084,7 @@ public class NodeModulePassTest {
   }
 
   @Test
-  public void splitsCompoundRequireDeclarations() {
+  public void splitsMultipleRequireDeclarations() {
     Path foo = fs.getPath("/src/modules/foo/index.js");
     Path bar = fs.getPath("/src/modules/foo/bar.js");
     Path baz = fs.getPath("/src/modules/foo/baz.js");
@@ -1123,6 +1124,88 @@ public class NodeModulePassTest {
                 " module$exports$module$$src$modules$foo$baz;"));
   }
 
+  @Test
+  public void splitsMultipleRequireDeclarations_const() {
+    Path foo = fs.getPath("/src/modules/foo/index.js");
+    Path bar = fs.getPath("/src/modules/foo/bar.js");
+    Path baz = fs.getPath("/src/modules/foo/baz.js");
+
+    CompilerUtil util = createCompiler(foo, bar, baz);
+
+    util.compile(
+        createSourceFile(
+            foo,
+            "const bar = require('./bar'),",
+            "    baz = require('./baz');",
+            "",
+            "exports.bar = bar;",
+            "exports.baz = baz;"),
+        createSourceFile(
+            bar,
+            "/** @constructor */",
+            "exports.Bar = function() {}"),
+        createSourceFile(
+            baz,
+            "/** @constructor */",
+            "exports.Baz = function() {}"));
+
+
+    assertThat(util.toSource())
+        .contains(lines(
+            "var module$exports$module$$src$modules$foo$bar = {};",
+            "module$exports$module$$src$modules$foo$bar.Bar = function() {",
+            "};",
+            "var module$exports$module$$src$modules$foo$baz = {};",
+            "module$exports$module$$src$modules$foo$baz.Baz = function() {",
+            "};",
+            "var module$exports$module$$src$modules$foo$index = {};",
+            "module$exports$module$$src$modules$foo$index.bar =" +
+                " module$exports$module$$src$modules$foo$bar;",
+            "module$exports$module$$src$modules$foo$index.baz =" +
+                " module$exports$module$$src$modules$foo$baz;"));
+  }
+
+  @Test
+  public void splitsMultipleRequireDeclarations_immediatePropertyAccess() {
+    Path foo = fs.getPath("/src/modules/foo/index.js");
+    Path bar = fs.getPath("/src/modules/foo/bar.js");
+    Path baz = fs.getPath("/src/modules/foo/baz.js");
+
+    CompilerUtil util = createCompiler(foo, bar, baz);
+    util.compile(
+        createSourceFile(
+            foo,
+            "let Bar = require('./bar').Bar,",
+            "    baz = require('./baz');",
+            "",
+            "exports.Bar = Bar;",
+            "exports.baz = baz;"),
+        createSourceFile(
+            bar,
+            "/** @constructor */",
+            "exports.Bar = function() {}"),
+        createSourceFile(
+            baz,
+            "/** @constructor */",
+            "exports.Baz = function() {}"));
+
+    assertThat(util.toSource())
+        .contains(lines(
+            "var module$exports$module$$src$modules$foo$bar = {};",
+            "module$exports$module$$src$modules$foo$bar.Bar = function() {",
+            "};",
+            "var module$exports$module$$src$modules$foo$baz = {};",
+            "module$exports$module$$src$modules$foo$baz.Baz = function() {",
+            "};",
+            "var module$exports$module$$src$modules$foo$index = {};",
+            "var module$contents$module$$src$modules$foo$index_Bar =" +
+                " module$exports$module$$src$modules$foo$bar.Bar;",
+            "module$exports$module$$src$modules$foo$index.Bar =" +
+                " module$contents$module$$src$modules$foo$index_Bar;",
+            "module$exports$module$$src$modules$foo$index.baz =" +
+                " module$exports$module$$src$modules$foo$baz;"));
+  }
+
   private void assertIsNodeModule(String id, String path) {
     Module module = typeRegistry.getModule(id);
     assertThat(module.getPath().toString()).isEqualTo(path);
@@ -1150,6 +1233,7 @@ public class NodeModulePassTest {
         .setInputFs(fs)
         .setModuleExterns(externs)
         .setModules(modules)
+        .setLanguageIn(LanguageMode.ECMASCRIPT6_STRICT)
         .build()
         .createInjector();
     injector.injectMembers(this);
