@@ -16,17 +16,18 @@
 
 package com.github.jsdossier.testing;
 
-import com.github.jsdossier.jscomp.CallableCompiler;
-import com.github.jsdossier.jscomp.DossierCompiler;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.Lists;
 import com.google.javascript.jscomp.AbstractCommandLineRunner;
 import com.google.javascript.jscomp.CompilerOptions;
+import com.google.javascript.jscomp.CompilerOptions.Environment;
 import com.google.javascript.jscomp.JSError;
 import com.google.javascript.jscomp.Result;
 import com.google.javascript.jscomp.SourceFile;
-import com.google.javascript.rhino.Node;
+
+import com.github.jsdossier.jscomp.DossierCompiler;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -37,6 +38,9 @@ import javax.inject.Inject;
 public class CompilerUtil {
 
   private static final List<SourceFile> NO_EXTERNS = ImmutableList.of();
+
+  private static final ImmutableListMultimap<Environment, SourceFile> BUILTIN_EXTERN_CACHE =
+      loadBuiltinExterns();
 
   private final DossierCompiler compiler;
   private final CompilerOptions options;
@@ -72,19 +76,30 @@ public class CompilerUtil {
   }
 
   public void compile(List<SourceFile> externs, List<SourceFile> inputs) {
-    if (options.getNewTypeInference()) {
+    externs = ImmutableList.<SourceFile>builder()
+        .addAll(externs)
+        .addAll(getBuiltInExterns(options.getEnvironment()))
+        .build();
+
+    Result result = compiler.compile(externs, inputs, options);
+    assertCompiled(result);
+  }
+
+  private static ImmutableListMultimap<Environment, SourceFile> loadBuiltinExterns() {
+    ImmutableListMultimap.Builder<Environment, SourceFile> externs =
+        ImmutableListMultimap.builder();
+    for (Environment environment : Environment.values()) {
       try {
-        externs = ImmutableList.<SourceFile>builder()
-            .addAll(externs)
-            .addAll(AbstractCommandLineRunner.getBuiltinExterns(options))
-            .build();
+        externs.putAll(environment, AbstractCommandLineRunner.getBuiltinExterns(environment));
       } catch (IOException e) {
         throw new RuntimeException(e);
       }
     }
+    return externs.build();
+  }
 
-    Result result = compiler.compile(externs, inputs, options);
-    assertCompiled(result);
+  private static ImmutableList<SourceFile> getBuiltInExterns(Environment environment) {
+    return BUILTIN_EXTERN_CACHE.get(environment);
   }
 
   private static void assertCompiled(Result result) {

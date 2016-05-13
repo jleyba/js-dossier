@@ -56,6 +56,7 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
+import com.google.javascript.jscomp.CompilerOptions.LanguageMode;
 import com.google.javascript.jscomp.ErrorManager;
 import com.google.javascript.jscomp.PrintStreamErrorManager;
 import com.google.javascript.jscomp.SourceFile;
@@ -814,21 +815,21 @@ abstract class Config {
   }
 
   enum Language {
-    ES3("ECMASCRIPT3"),
-    ES5("ECMASCRIPT5"),
-    ES5_STRICT("ECMASCRIPT5_STRICT"),
-    ES6("ECMASCRIPT6"),
-    ES6_STRICT("ECMASCRIPT6_STRICT"),
+    ES3(LanguageMode.ECMASCRIPT3),
+    ES5(LanguageMode.ECMASCRIPT5),
+    ES5_STRICT(LanguageMode.ECMASCRIPT5_STRICT),
+    ES6(LanguageMode.ECMASCRIPT6),
+    ES6_STRICT(LanguageMode.ECMASCRIPT6_STRICT),
     ;
 
-    private final String fullName;
+    private final LanguageMode mode;
 
-    Language(String fullName) {
-      this.fullName = fullName;
+    Language(LanguageMode mode) {
+      this.mode = mode;
     }
 
-    public String getName() {
-      return fullName;
+    public LanguageMode toMode() {
+      return mode;
     }
   }
 

@@ -18,14 +18,18 @@ package com.github.jsdossier.jscomp;
 
 import static com.github.jsdossier.jscomp.Types.isBuiltInFunctionProperty;
 import static com.github.jsdossier.jscomp.Types.isConstructorTypeDefinition;
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.base.Verify.verify;
+import static com.google.common.collect.Iterables.getFirst;
 import static com.google.javascript.jscomp.NodeTraversal.traverseEs6;
 
 import com.github.jsdossier.annotations.Input;
 import com.github.jsdossier.annotations.ModuleFilter;
 import com.github.jsdossier.annotations.TypeFilter;
+import com.github.jsdossier.jscomp.Module.Type;
+
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.javascript.jscomp.CompilerPass;
@@ -51,6 +55,7 @@ import com.google.javascript.rhino.jstype.Visitor;
 import java.nio.file.FileSystem;
 import java.nio.file.Path;
 import java.util.ArrayDeque;
+import java.util.Collection;
 import java.util.Deque;
 import java.util.HashSet;
 import java.util.Set;
@@ -66,6 +71,8 @@ import javax.inject.Inject;
 public final class TypeCollectionPass implements CompilerPass {
 
   private static final String INTERNAL_NAMESPACE_VAR = "$jscomp";
+  private static final String MODULE_ID_PREFIX = "module$exports$";
+  private static final String MODULE_CONTENTS_PREFIX = "module$contents$";
   private static final Logger log = Logger.getLogger(TypeCollectionPass.class.getName());
 
   private final DossierCompiler compiler;
@@ -264,10 +271,33 @@ public final class TypeCollectionPass implements CompilerPass {
           continue;
         }
 
-        if (nodeLibrary.isModuleId(name)) {
-          logfmt("Recording core node module as an extern: %s", name);
-          externs.addExtern(node.getJSType());
-          continue;
+        Path file = inputFs.getPath(node.getSourceFileName());
+        if (nodeLibrary.isModulePath(node.getSourceFileName())) {
+          if (nodeLibrary.isModuleId(name)) {
+            logfmt("Recording core node module as an extern: %s", name);
+            externs.addExtern(node.getJSType());
+            continue;
+          }
+
+          if (name.startsWith(MODULE_CONTENTS_PREFIX)) {
+            logfmt("Recording extern from node extern: %s", name);
+            externs.addExtern(node.getJSType());
+            String id = nodeLibrary.getIdFromPath(node.getSourceFileName());
+            recordModuleContentsAlias(file, stripContentsPrefix(id, name), name);
+            continue;
+          }
+
+          throw new AssertionError("unexpected case in " + file + " (" + name + ")");
+        }
+
+        if (typeRegistry.isModule(file) && name.startsWith(MODULE_CONTENTS_PREFIX)) {
+          Module module = typeRegistry.getModule(file);
+          if (module.getType() != Type.ES6) {
+            String id = module.getId().substring(MODULE_ID_PREFIX.length());
+            recordModuleContentsAlias(file, stripContentsPrefix(id, name), name);
+            logfmt("Skipping module internal alias: %s", name);
+            continue;
+          }
         }
 
         JSDocInfo info = var.getJSDocInfo();
@@ -304,6 +334,33 @@ public final class TypeCollectionPass implements CompilerPass {
 
         recordType(nominalType);
       }
+    }
+
+    private void recordModuleContentsAlias(Path file, String alias, String name) {
+      AliasRegion aliases = getModuleAliasRegion(file);
+      String existing = aliases.resolveAlias(alias);
+      if (existing == null) {
+        aliases.addAlias(alias, name);
+      }
+    }
+
+    private String getModuleContentsPrefix(String moduleId) {
+      return MODULE_CONTENTS_PREFIX + moduleId + "_";
+    }
+
+    private String stripContentsPrefix(String moduleId, String name) {
+      String prefix = getModuleContentsPrefix(moduleId);
+      checkArgument(name.startsWith(prefix));
+      return name.substring(prefix.length());
+    }
+
+    private AliasRegion getModuleAliasRegion(Path file) {
+      Collection<AliasRegion> regions = typeRegistry.getAliasRegions(file);
+      if (regions.isEmpty()) {
+        typeRegistry.addAliasRegion(AliasRegion.forFile(file));
+        regions = typeRegistry.getAliasRegions(file);
+      }
+      return regions.iterator().next();
     }
 
     private Optional<Module> getModule(String typeName, Node node) {

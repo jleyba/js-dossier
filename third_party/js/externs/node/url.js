@@ -45,14 +45,14 @@ var URL;
  * @param {boolean=} parseQueryString
  * @param {boolean=} slashesDenoteHost
  * @return {URL}
- * @nosideeffects
+ *
  */
 url.parse;
 
 /**
  * @param {URL} urlObj
  * @return {string}
- * @nosideeffects
+ *
  */
 url.format;
 
@@ -60,7 +60,7 @@ url.format;
  * @param {string} from
  * @param {string} to
  * @return {string}
- * @nosideeffects
+ *
  */
 url.resolve;
 

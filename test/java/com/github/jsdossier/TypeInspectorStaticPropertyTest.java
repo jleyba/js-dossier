@@ -275,7 +275,7 @@ public class TypeInspectorStaticPropertyTest extends AbstractTypeInspectorTest {
             "/** Link to a {@link Person}. */",
             "exports.limit = 123;"));
 
-    NominalType type = typeRegistry.getType("module$$src$modules$foo$bar");
+    NominalType type = typeRegistry.getType("module$exports$module$$src$modules$foo$bar");
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectType();
     assertThat(report.getCompilerConstants()).isEmpty();
@@ -301,7 +301,7 @@ public class TypeInspectorStaticPropertyTest extends AbstractTypeInspectorTest {
         "const x = 1234;",
         "export default x;");
 
-    NominalType type = typeRegistry.getType("module$src$modules$foo$baz");
+    NominalType type = typeRegistry.getType("module$$src$modules$foo$baz");
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectType();
     assertThat(report.getProperties()).containsExactly(
@@ -327,7 +327,7 @@ public class TypeInspectorStaticPropertyTest extends AbstractTypeInspectorTest {
             "let bar = require('./bar');",
             "exports.bar = bar;"));
 
-    NominalType type = typeRegistry.getType("module$$src$modules$foo$baz");
+    NominalType type = typeRegistry.getType("module$exports$module$$src$modules$foo$baz");
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectType();
     assertThat(report.getProperties()).containsExactly(

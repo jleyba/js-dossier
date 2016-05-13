@@ -5,6 +5,7 @@ java_library(
         "//lib/maven:args4j",
         "//lib/maven:guava",
         "//lib/maven:closure_compiler",
+        "//src/java/com/github/jsdossier/jscomp",
     ],
 )
 

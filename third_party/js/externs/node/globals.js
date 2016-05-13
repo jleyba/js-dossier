@@ -105,7 +105,7 @@ function clearImmediate(id) {}
 
 /**
  * @constructor
- * @extends events.EventEmitter
+ * @extends module$exports$events.EventEmitter
  */
 function Process() {}
 
@@ -249,7 +249,6 @@ var console;
 /**
  * @param {...*} var_args
  * @constructor
- * @nosideeffects
  */
 var Buffer = function (var_args) {};
 
@@ -262,7 +261,6 @@ Buffer.isEncoding;
 /**
  * @param {*} obj
  * @return {boolean}
- * @nosideeffects
  */
 Buffer.isBuffer;
 
@@ -270,7 +268,6 @@ Buffer.isBuffer;
  * @param {string} string
  * @param {string=} encoding
  * @return {number}
- * @nosideeffects
  */
 Buffer.byteLength;
 
@@ -278,7 +275,6 @@ Buffer.byteLength;
  * @param {Array.<Buffer>} list
  * @param {number=} totalLength
  * @return {Buffer}
- * @nosideeffects
  */
 Buffer.concat;
 
@@ -326,7 +322,6 @@ Buffer.prototype.copy;
  * @param {number=} start
  * @param {number=} end
  * @return {Buffer}
- * @nosideeffects
  */
 Buffer.prototype.slice;
 
@@ -553,7 +548,6 @@ Buffer.prototype.fill;
  * @param {number=} start
  * @param {number=} end
  * @return {string}
- * @nosideeffects
  */
 Buffer.prototype.toString;
 

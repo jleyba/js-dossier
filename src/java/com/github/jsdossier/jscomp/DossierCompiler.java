@@ -41,8 +41,8 @@ import java.util.List;
 import javax.inject.Inject;
 
 /**
- * A specialized version of the {@link com.google.javascript.jscomp.Compiler Closure Compiler} that preserves CommonJS module
- * structure so as to properly extract JSDoc info.
+ * A specialized version of the {@link com.google.javascript.jscomp.Compiler Closure Compiler} that
+ * preserves CommonJS module structure so as to properly extract JSDoc info.
  */
 public final class DossierCompiler extends Compiler {
 
@@ -71,11 +71,6 @@ public final class DossierCompiler extends Compiler {
     this.modulePassFactory = modulePassFactory;
     this.fileVisibilityPassFactory = fileVisibilityPassFactory;
     this.nodeLibrary = nodeLibrary;
-  }
-
-  @Override
-  public CompilerInput newExternInput(String name) {
-    return super.newExternInput(name);
   }
 
   @Override

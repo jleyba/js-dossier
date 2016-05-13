@@ -162,7 +162,6 @@ fs.stat;
 /**
  * @param {string} path
  * @return {fs.Stats}
- * @nosideeffects
  */
 fs.statSync = function(path) {}
 
@@ -176,7 +175,6 @@ fs.fstat;
 /**
  * @param {*} fd
  * @return {fs.Stats}
- * @nosideeffects
  */
 fs.fstatSync = function(fd) {}
 
@@ -190,7 +188,6 @@ fs.lstat;
 /**
  * @param {string} path
  * @return {fs.Stats}
- * @nosideeffects
  */
 fs.lstatSync = function(path) {}
 
@@ -236,7 +233,6 @@ fs.readlink;
 /**
  * @param {string} path
  * @return {string}
- * @nosideeffects
  */
 fs.readlinkSync;
 
@@ -252,7 +248,6 @@ fs.realpath;
  * @param {string} path
  * @param {Object.<string,string>=} cache
  * @return {string}
- * @nosideeffects
  */
 fs.realpathSync;
 
@@ -307,7 +302,6 @@ fs.readdir;
 /**
  * @param {string} path
  * @return {Array.<string>}
- * @nosideeffects
  */
 fs.readdirSync;
 
@@ -338,7 +332,6 @@ fs.open;
  * @param {string} flags
  * @param {number=} mode
  * @return {*}
- * @nosideeffects
  */
 fs.openSync;
 
@@ -428,7 +421,6 @@ fs.read;
  * @param {number} length
  * @param {number} position
  * @return {number}
- * @nosideeffects
  */
 fs.readSync;
 
@@ -444,7 +436,6 @@ fs.readFile;
  * @param {string} filename
  * @param {string=} encoding
  * @return {string|Buffer}
- * @nosideeffects
  */
 fs.readFileSync;
 
@@ -516,7 +507,6 @@ fs.exists;
 /**
  * @param {string} path
  * @return {boolean}
- * @nosideeffects
  */
 fs.existsSync;
 
@@ -527,43 +517,36 @@ fs.Stats = function () {};
 
 /**
  * @return {boolean}
- * @nosideeffects
  */
 fs.Stats.prototype.isFile;
 
 /**
  * @return {boolean}
- * @nosideeffects
  */
 fs.Stats.prototype.isDirectory;
 
 /**
  * @return {boolean}
- * @nosideeffects
  */
 fs.Stats.prototype.isBlockDevice;
 
 /**
  * @return {boolean}
- * @nosideeffects
  */
 fs.Stats.prototype.isCharacterDevice;
 
 /**
  * @return {boolean}
- * @nosideeffects
  */
 fs.Stats.prototype.isSymbolicLink;
 
 /**
  * @return {boolean}
- * @nosideeffects
  */
 fs.Stats.prototype.isFIFO;
 
 /**
  * @return {boolean}
- * @nosideeffects
  */
 fs.Stats.prototype.isSocket;
 
@@ -636,7 +619,6 @@ fs.Stats.prototype.ctime;
  * @param {string} path
  * @param {{flags: string, encoding: ?string, fd: *, mode: number, bufferSize: number}=} options
  * @return {fs.ReadStream}
- * @nosideeffects
  */
 fs.createReadStream;
 
@@ -650,7 +632,6 @@ fs.ReadStream = function () {};
  * @param {string} path
  * @param {{flags: string, encoding: ?string, mode: number}=} options
  * @return {fs.WriteStream}
- * @nosideeffects
  */
 fs.createWriteStream;
 

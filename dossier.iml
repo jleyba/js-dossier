@@ -37,15 +37,15 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/third_party/java/closure_compiler/compiler-v20151216.jar!/" />
+          <root url="jar://$MODULE_DIR$/third_party/java/closure_compiler/compiler.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$MODULE_DIR$/third_party/java/closure_compiler/compiler-v20151216-src.jar!/" />
+          <root url="jar://$MODULE_DIR$/third_party/java/closure_compiler/compiler-src.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="library" name="com.google.guava:guava:19.0" level="project" />
+    <orderEntry type="library" name="com.google.guava:guava:20.0-SNAPSHOT" level="project" />
     <orderEntry type="library" name="com.google.inject:guice:3.0" level="project" />
     <orderEntry type="library" name="com.google.inject.extensions:guice-assistedinject:3.0" level="project" />
     <orderEntry type="library" name="com.google.inject.extensions:guice-multibindings:3.0" level="project" />

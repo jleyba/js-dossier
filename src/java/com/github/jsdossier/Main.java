@@ -24,7 +24,7 @@ import static com.google.common.io.Files.getFileExtension;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.createDirectories;
 
-import com.github.jsdossier.Config.Language;
+import com.github.jsdossier.annotations.Args;
 import com.github.jsdossier.annotations.DocumentationScoped;
 import com.github.jsdossier.annotations.Input;
 import com.github.jsdossier.annotations.ModuleExterns;
@@ -38,7 +38,7 @@ import com.github.jsdossier.annotations.SourceUrlTemplate;
 import com.github.jsdossier.annotations.Stderr;
 import com.github.jsdossier.annotations.Stdout;
 import com.github.jsdossier.annotations.TypeFilter;
-import com.github.jsdossier.jscomp.CallableCompiler;
+import com.github.jsdossier.jscomp.DossierCommandLineRunner;
 import com.github.jsdossier.jscomp.Module;
 import com.github.jsdossier.jscomp.NominalType;
 import com.github.jsdossier.jscomp.TypeRegistry;
@@ -62,14 +62,14 @@ import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.Provides;
 import com.google.inject.TypeLiteral;
+import com.google.javascript.jscomp.CompilerOptions.LanguageMode;
+
 import org.joda.time.Instant;
 import org.joda.time.Period;
 import org.joda.time.format.PeriodFormatterBuilder;
 
 import java.io.IOException;
 import java.io.PrintStream;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import java.net.URI;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
@@ -80,8 +80,6 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
-
-import javax.inject.Qualifier;
 
 final class Main {
   private Main() {}
@@ -113,10 +111,6 @@ final class Main {
       "--jscomp_warning=uselessCode",
       "--jscomp_warning=visibility",
       "--third_party=false");
-
-  @Qualifier
-  @Retention(RetentionPolicy.RUNTIME)
-  private @interface CompilerFlags {}
 
   private static final ExplicitScope DOCUMENTATION_SCOPE = new ExplicitScope();
 
@@ -199,7 +193,13 @@ final class Main {
     }
 
     @Provides
-    @CompilerFlags
+    @Input
+    LanguageMode provideInputLanguage() {
+      return config.getLanguage().toMode();
+    }
+
+    @Provides
+    @Args
     String[] provideCompilerFlags() {
       Iterable<String> standardFlags = STANDARD_FLAGS;
       if (config.isStrict()) {
@@ -215,7 +215,6 @@ final class Main {
           .addAll(transform(config.getSources(), toFlag("--js=")))
           .addAll(transform(config.getModules(), toFlag("--js=")))
           .addAll(transform(config.getExterns(), toFlag("--externs=")))
-          .add("--language_in=" + config.getLanguage().getName())
           .addAll(standardFlags)
           .build();
       return compilerFlags.toArray(new String[compilerFlags.size()]);
@@ -268,28 +267,6 @@ final class Main {
     System.err.println(pad + header + pad);
     System.err.println(gson.toJson(config.toJson()));
     System.err.println(Strings.repeat("=", 79));
-  }
-
-  private static String[] getCompilerFlags(Config config) {
-    Iterable<String> standardFlags = STANDARD_FLAGS;
-    if (config.isStrict()) {
-      standardFlags = transform(standardFlags, new Function<String, String>() {
-        @Override
-        public String apply(String input) {
-          return input.replace("--jscomp_warning", "--jscomp_error");
-        }
-      });
-    }
-
-    ImmutableList<String> compilerFlags = ImmutableList.<String>builder()
-        .addAll(transform(config.getSources(), toFlag("--js=")))
-        .addAll(transform(config.getModules(), toFlag("--js=")))
-        .addAll(transform(config.getExterns(), toFlag("--externs=")))
-        .add("--language_in=" + config.getLanguage().getName())
-        .add("--language_out=" + Language.ES5_STRICT.getName())
-        .addAll(standardFlags)
-        .build();
-    return compilerFlags.toArray(new String[compilerFlags.size()]);
   }
 
   private static void configureLogging() {
@@ -346,20 +323,18 @@ final class Main {
     configureLogging();
 
     Injector injector = Guice.createInjector(
-        new CompilerModule.Builder()
-            .setArgs(getCompilerFlags(config))
-            .build(),
+        new CompilerModule(),
         new DossierModule(flags, config, outputDir));
 
-    CallableCompiler compiler = injector.getInstance(CallableCompiler.class);
-    if (!compiler.shouldRunCompiler()) {
+    DossierCommandLineRunner runner = injector.getInstance(DossierCommandLineRunner.class);
+    if (!runner.shouldRunCompiler()) {
       return -1;
     }
 
     Instant start = Instant.now();
     System.out.println("Generating documentation...");
 
-    int result = compiler.call();
+    int result = runner.call();
     if (result != 0) {
       System.out.println("Compilation failed; aborting...");
       return result;

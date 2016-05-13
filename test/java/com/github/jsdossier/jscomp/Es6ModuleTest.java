@@ -205,7 +205,7 @@ public class Es6ModuleTest {
   public void identifiesModulesWithAbsolutePaths() {
     util.compile(fs.getPath("/one/two.js"),
         "export default function() {}");
-    assertThat(typeRegistry.isModule("module$one$two")).isTrue();
+    assertThat(typeRegistry.isModule("module$$one$two")).isTrue();
   }
 
   @Test
@@ -219,7 +219,21 @@ public class Es6ModuleTest {
 
     util.compile(fs.getPath("C:\\one\\two\\three.js"),
         "export default function() {}");
-    assertThat(typeRegistry.isModule("module$one$two$three")).isTrue();
+    assertThat(typeRegistry.isModule("module$C_$one$two$three")).isTrue();
+  }
+
+  @Test
+  public void identifiesModulesWithAbsolutePaths_windows_withSpace() {
+    FileSystem inputFs = Jimfs.newFileSystem(Configuration.windows());
+    guiceRule.toBuilder()
+        .setInputFs(inputFs)
+        .build()
+        .createInjector()
+        .injectMembers(this);
+
+    util.compile(fs.getPath("C:\\one\\two\\three four.js"),
+        "export default function() {}");
+    assertThat(typeRegistry.isModule("module$C_$one$two$three_four")).isTrue();
   }
 
   @Test
@@ -234,7 +248,7 @@ public class Es6ModuleTest {
         "/** Function one. */ export function one() {}",
         "export /** Function one (a) */ function oneA() {}");
 
-    Module module = typeRegistry.getModule("module$one$two");
+    Module module = typeRegistry.getModule("module$$one$two");
 
     assertThat(module.getInternalVarDocs().keySet())
         .containsExactly("One", "OneA", "Two", "TwoA", "one", "oneA");
@@ -271,10 +285,10 @@ public class Es6ModuleTest {
             "import Bar from './bar';",
             "class Baz extends Bar {}"));
 
-    Module bar = typeRegistry.getModule("module$modules$bar");
+    Module bar = typeRegistry.getModule("module$$modules$bar");
     assertThat(bar.getType()).isEqualTo(Module.Type.ES6);
 
-    Module baz = typeRegistry.getModule("module$modules$baz");
+    Module baz = typeRegistry.getModule("module$$modules$baz");
     assertThat(baz.getType()).isEqualTo(Module.Type.ES6);
   }
 
@@ -300,10 +314,10 @@ public class Es6ModuleTest {
             "import Bar from './bar';",
             "class Baz extends Bar {}"));
 
-    Module bar = typeRegistry.getModule("module$modules$bar");
+    Module bar = typeRegistry.getModule("module$$modules$bar");
     assertThat(bar.getType()).isEqualTo(Module.Type.ES6);
 
-    Module baz = typeRegistry.getModule("module$modules$baz");
+    Module baz = typeRegistry.getModule("module$$modules$baz");
     assertThat(baz.getType()).isEqualTo(Module.Type.ES6);
   }
 
@@ -315,7 +329,7 @@ public class Es6ModuleTest {
         "/** Class does should not be used. */",
         "export class A {}");
 
-    Module module = typeRegistry.getModule("module$one$two");
+    Module module = typeRegistry.getModule("module$$one$two");
 
     assertThat(module.getJsDoc().getBlockComment())
         .isEqualTo("The file overview comment should be used for module docs.");
@@ -327,19 +341,20 @@ public class Es6ModuleTest {
         "/** Class does should not be used. */",
         "export class A {}");
 
-    Module module = typeRegistry.getModule("module$one$two");
+    Module module = typeRegistry.getModule("module$$one$two");
     assertThat(module.getJsDoc().getBlockComment()).isEmpty();
   }
 
   @Test
-  public void modulesWithNoFileOverviewHaveNoDocs_moduleHasDefaultExportClass() {
+  public void modulesWithFileOverview_moduleAlsoHasDefaultExportClass() {
     util.compile(fs.getPath("/one/two.js"),
-        "/** @fileoverview Fileoverview should not be used when there is a default export */",
+        "/** @fileoverview This fileoverview should be used even when there is a default export */",
         "/** This class is the default export */",
         "export default class A {}");
 
-    Module module = typeRegistry.getModule("module$one$two");
-    assertThat(module.getJsDoc().getBlockComment()).isEqualTo("This class is the default export");
+    Module module = typeRegistry.getModule("module$$one$two");
+    assertThat(module.getJsDoc().getBlockComment())
+        .isEqualTo("This fileoverview should be used even when there is a default export");
   }
 
   private static void checkInternalDocs(Module module, String name, String comment) {

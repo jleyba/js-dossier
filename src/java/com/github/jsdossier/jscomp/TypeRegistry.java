@@ -69,7 +69,7 @@ public final class TypeRegistry {
   private final Map<Path, Module> modulesByPath = new HashMap<>();
   private final Map<Path, JSDocInfo.Visibility> defaultVisibilities = new HashMap<>();
   private final Multimap<Path, AliasRegion> aliasRegions =
-      MultimapBuilder.hashKeys().arrayListValues().build();
+      MultimapBuilder.hashKeys().linkedHashSetValues().build();
   private final Map<String, NominalType> typesByName = new HashMap<>();
   private final ListMultimap<JSType, NominalType> typesByJsType = Multimaps.newListMultimap(
       new IdentityHashMap<JSType, Collection<NominalType>>(),
@@ -129,9 +129,7 @@ public final class TypeRegistry {
   public void addModule(Module module) {
     modulesById.put(module.getId(), module);
     modulesByPath.put(module.getPath(), module);
-    if (module.getType() == Module.Type.CLOSURE) {
-      recordProvide(module.getId());
-    }
+    addAliasRegion(module.getAliases());
   }
 
   /**

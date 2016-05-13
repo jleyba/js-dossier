@@ -25,6 +25,7 @@ import static com.google.javascript.rhino.IR.exprResult;
 import static com.google.javascript.rhino.IR.getprop;
 import static com.google.javascript.rhino.IR.name;
 import static com.google.javascript.rhino.IR.string;
+import static com.google.javascript.rhino.IR.var;
 import static java.nio.file.Files.exists;
 import static java.nio.file.Files.isDirectory;
 
@@ -36,6 +37,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.javascript.jscomp.DiagnosticType;
 import com.google.javascript.jscomp.NodeTraversal;
 import com.google.javascript.rhino.JSDocInfo;
+import com.google.javascript.rhino.JSDocInfoBuilder;
 import com.google.javascript.rhino.Node;
 
 import java.io.IOException;
@@ -44,8 +46,10 @@ import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.inject.Inject;
@@ -146,6 +150,7 @@ class NodeModulePass {
   private class CommonJsModuleCallback implements NodeTraversal.Callback {
 
     private final List<Node> moduleExportRefs = new ArrayList<>();
+    private final Map<String, Node> googRequireExpr = new HashMap<>();
 
     @Override
     public boolean shouldTraverse(NodeTraversal t, Node n, Node parent) {
@@ -213,12 +218,16 @@ class NodeModulePass {
               name("goog"),
               string("module")),
           string(currentModule)));
+      for (Node expr : googRequireExpr.values()) {
+        script.addChildToFront(expr.srcrefTree(script));
+      }
       script.addChildToFront(googModule.srcrefTree(script));
 
       t.getInput().addProvide(currentModule);
 
       traverseEs6(t.getCompiler(), script, new TypeCleanup());
 
+      googRequireExpr.clear();
       currentModule = null;
 
       t.getCompiler().reportCodeChange();
@@ -292,6 +301,24 @@ class NodeModulePass {
           Node googRequire = call(
               getprop(name("goog"), string("require")),
               string(moduleId));
+
+          // ClosureCheckModule enforces that goog.require statements are at the top level. To
+          // compensate, if we have a require statement that is not at the top level, we introduce
+          // a hidden variable at the top level that does the actual require. The compiler should
+          // always inline the require making this effectively a no-op.
+          if (!parent.isName()) {
+            String hiddenName = Types.toInternalVar(moduleId);
+
+            JSDocInfoBuilder infoBuilder = new JSDocInfoBuilder(false);
+            infoBuilder.recordConstancy();
+
+            googRequireExpr.put(
+                hiddenName,
+                var(name(hiddenName).setJSDocInfo(infoBuilder.build()),
+                    googRequire));
+            googRequire = name(hiddenName);
+          }
+
           parent.replaceChild(require, googRequire.srcrefTree(require));
           t.getInput().addRequire(moduleId);
 

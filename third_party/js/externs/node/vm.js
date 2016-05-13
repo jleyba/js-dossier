@@ -55,7 +55,7 @@ vm.runInContext;
 /**
  * @param {Object.<string,*>=} initSandbox
  * @return {vm.Context}
- * @nosideeffects
+ *
  */
 vm.createContext;
 
@@ -68,7 +68,7 @@ vm.Script = function() {};
  * @param {string} code
  * @param {string=} filename
  * @return {vm.Script}
- * @nosideeffects
+ *
  */
 vm.createScript;
 

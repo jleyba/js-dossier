@@ -26,7 +26,6 @@ import com.github.jsdossier.annotations.Input;
 import com.google.auto.factory.AutoFactory;
 import com.google.auto.factory.Provided;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Range;
 import com.google.javascript.jscomp.CompilerPass;
 import com.google.javascript.jscomp.ES6ModuleLoader;
 import com.google.javascript.jscomp.NodeTraversal;
@@ -209,7 +208,7 @@ final class Es6ModulePass implements CompilerPass {
           exportedNames.put(second.getQualifiedName(), trueName);
 
           if (!DEFAULT.equals(first.getQualifiedName())) {
-            getAliasRegion(path).addAlias(first.getQualifiedName(), trueName);
+            module.getAliases().addAlias(first.getQualifiedName(), trueName);
           }
         }
       }
@@ -228,13 +227,13 @@ final class Es6ModulePass implements CompilerPass {
       }
 
       Path path = inputFs.getPath(n.getSourceFileName());
-      URI uri = toSimpleUri(path);
-      log.fine(String.format("Found ES6 module: %s (%s)", path, uri));
-
       module = Module.builder()
-          .setId(ES6ModuleLoader.toModuleName(uri))
+          .setId(Types.getModuleId(path))
+          .setOriginalName(path.toString())
           .setPath(path)
+          .setAliases(AliasRegion.forFile(path))
           .setType(Module.Type.ES6);
+      log.fine(String.format("Found ES6 module: %s (%s)", path, module.getId()));
 
       if (n.getJSDocInfo() != null && n.getBooleanProp(Node.EXPORT_DEFAULT)) {
         moduleDocs = JsDoc.from(n.getJSDocInfo());
@@ -243,11 +242,7 @@ final class Es6ModulePass implements CompilerPass {
 
       // The compiler does not generate alias notifications when it rewrites an ES6 module,
       // so we register a region here.
-      AliasRegion region = AliasRegion.builder()
-          .setPath(path)
-          .setRange(Range.atLeast(Position.of(0, 0)))
-          .build();
-      typeRegistry.addAliasRegion(region);
+      typeRegistry.addAliasRegion(module.getAliases());
     }
 
     private void visitScript(Node script) {

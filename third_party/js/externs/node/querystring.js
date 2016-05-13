@@ -30,7 +30,7 @@ var querystring = {};
  * @param {string=} sep
  * @param {string=} eq
  * @return {string}
- * @nosideeffects
+ *
  */
 querystring.stringify;
 
@@ -40,7 +40,7 @@ querystring.stringify;
  * @param {string=} eq
  * @param {*=} options
  * @return {Object.<string|!Array.<string>>}
- * @nosideeffects
+ *
  */
 querystring.parse;
 

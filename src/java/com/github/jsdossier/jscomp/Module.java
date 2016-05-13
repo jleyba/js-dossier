@@ -16,6 +16,8 @@
 
 package com.github.jsdossier.jscomp;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableMap;
 import com.google.javascript.rhino.JSDocInfo;
@@ -40,6 +42,12 @@ public abstract class Module {
 
   // Package private to prevent extensions.
   Module() {}
+
+  /**
+   * Returns this module's original name before the compiler applied any code transformations. For
+   * Node and
+   */
+  public abstract String getOriginalName();
 
   /**
    * Returns the ID used to reference this module in code after any transformations
@@ -87,6 +95,11 @@ public abstract class Module {
   public abstract ImmutableMap<String, JSDocInfo> getInternalVarDocs();
 
   /**
+   * Returns the alias region encompassing this module.
+   */
+  public abstract AliasRegion getAliases();
+
+  /**
    * The recognized module types.
    */
   public enum Type {
@@ -108,14 +121,27 @@ public abstract class Module {
 
   @AutoValue.Builder
   public static abstract class Builder {
+    public abstract Builder setOriginalName(String name);
     public abstract Builder setId(String id);
     public abstract String getId();
     public abstract Builder setPath(Path path);
+    public abstract Path getPath();
     public abstract Builder setType(Type type);
     public abstract Builder setJsDoc(JsDoc doc);
     public abstract Builder setExportedNames(ImmutableMap<String, String> names);
     public abstract Builder setExportedDocs(ImmutableMap<String, JSDocInfo> docs);
     public abstract Builder setInternalVarDocs(ImmutableMap<String, JSDocInfo> docs);
-    public abstract Module build();
+    public abstract Builder setAliases(AliasRegion region);
+    public abstract AliasRegion getAliases();
+
+    abstract Module autoBuild();
+
+    public Module build() {
+      Module m = autoBuild();
+      checkArgument(m.getPath().equals(m.getAliases().getPath()),
+          "Module path does not match alias region path: %s != %s",
+          m.getPath(), m.getAliases().getPath());
+      return m;
+    }
   }
 }

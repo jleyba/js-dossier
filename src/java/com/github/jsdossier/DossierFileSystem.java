@@ -24,6 +24,7 @@ import com.github.jsdossier.annotations.ModulePrefix;
 import com.github.jsdossier.annotations.Output;
 import com.github.jsdossier.annotations.SourcePrefix;
 import com.github.jsdossier.jscomp.Module;
+import com.github.jsdossier.jscomp.Module.Type;
 import com.github.jsdossier.jscomp.NominalType;
 import com.github.jsdossier.jscomp.TypeRegistry;
 import com.github.jsdossier.proto.Resources;
@@ -141,13 +142,15 @@ final class DossierFileSystem {
    * Returns the path to the generated documentation for the given {@code type}.
    */
   public Path getPath(NominalType type) {
-    if (type.isModuleExports() && type.getModule().get().getType() != Module.Type.CLOSURE) {
+    if (type.isModuleExports()) {
       return getPath(type.getModule().get());
     }
 
     Module module = type.getModule().orNull();
-    if (module == null || module.getType() == Module.Type.CLOSURE) {
+    if (module == null) {
       return outputRoot.resolve(type.getName() + ".html");
+    } else if (module.getType() == Module.Type.CLOSURE) {
+      return outputRoot.resolve(getQualifiedDisplayName(type) + ".html");
     }
 
     Path path = getPath(module);
@@ -161,6 +164,9 @@ final class DossierFileSystem {
    * Returns the path to the generated documentation for the given {@code module}.
    */
   public Path getPath(Module module) {
+    if (module.getType() == Type.CLOSURE) {
+      return outputRoot.resolve(getDisplayName(module) + ".html");
+    }
     Path path = stripExtension(modulePrefix.relativize(module.getPath()));
     return outputRoot.resolve(MODULE_DIR).resolve(path + ".html");
   }
@@ -202,7 +208,7 @@ final class DossierFileSystem {
    */
   public String getDisplayName(Module module) {
     if (module.getType() == Module.Type.CLOSURE) {
-      return module.getId();
+      return module.getOriginalName();
     }
 
     Path path = stripExtension(module.getPath());

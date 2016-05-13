@@ -47,6 +47,19 @@ public abstract class AliasRegion implements CompilerOptions.AliasTransformation
     return new AutoValue_AliasRegion.Builder();
   }
 
+  /**
+   * Creates a new alias region for an entire file.
+   *
+   * @param path the path to the file to define a new region for.
+   * @return the new AliasRegion.
+   */
+  public static AliasRegion forFile(Path path) {
+    return AliasRegion.builder()
+        .setPath(path)
+        .setRange(Range.<Position>all())
+        .build();
+  }
+
   // Package-private to prevent extensions.
   AliasRegion() {}
 

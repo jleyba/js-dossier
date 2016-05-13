@@ -16,21 +16,22 @@
 
 package com.github.jsdossier;
 
-import com.github.jsdossier.annotations.Args;
+import com.github.jsdossier.annotations.Input;
 import com.github.jsdossier.annotations.Modules;
 import com.github.jsdossier.jscomp.AliasTransformListener;
 import com.github.jsdossier.jscomp.DossierCompiler;
 import com.github.jsdossier.jscomp.ProvidedSymbolPass;
 import com.github.jsdossier.jscomp.TypeCollectionPass;
+
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.inject.AbstractModule;
-import com.google.inject.Key;
 import com.google.inject.Provides;
 import com.google.inject.Scopes;
-import com.google.inject.TypeLiteral;
 import com.google.javascript.jscomp.ClosureCodingConvention;
 import com.google.javascript.jscomp.CompilationLevel;
 import com.google.javascript.jscomp.CompilerOptions;
+import com.google.javascript.jscomp.CompilerOptions.LanguageMode;
 import com.google.javascript.jscomp.CustomPassExecutionTime;
 import com.google.javascript.rhino.jstype.JSTypeRegistry;
 
@@ -42,21 +43,8 @@ import java.nio.file.Path;
  */
 public class CompilerModule extends AbstractModule {
 
-  private final String[] compilerArgs;
-  private final CompilerOptions.LanguageMode languageIn;
-  private final CompilerOptions.LanguageMode languageOut;
-  private final boolean newTypeInference;
-
-  private CompilerModule(Builder builder) {
-    this.compilerArgs = builder.args;
-    this.languageIn = builder.languageIn;
-    this.languageOut = builder.languageOut;
-    this.newTypeInference = builder.newTypeInference;
-  }
-
   @Override
   protected void configure() {
-    bind(Key.get(new TypeLiteral<String[]>(){}, Args.class)).toInstance(compilerArgs);
     bind(DossierCompiler.class).in(Scopes.SINGLETON);
   }
 
@@ -70,6 +58,7 @@ public class CompilerModule extends AbstractModule {
       AliasTransformListener transformListener,
       ProvidedSymbolPass providedSymbolPass,
       TypeCollectionPass typeCollectionPass,
+      @Input LanguageMode mode,
       @Modules ImmutableSet<Path> modulePaths) throws IOException {
     CompilerOptions options = new CompilerOptions();
 
@@ -78,9 +67,10 @@ public class CompilerModule extends AbstractModule {
       options.setEnvironment(CompilerOptions.Environment.CUSTOM);
     }
 
-    options.setNewTypeInference(newTypeInference);
-    options.setLanguageIn(languageIn);
-    options.setLanguageOut(languageOut);
+    options.setModuleRoots(ImmutableList.<String>of());
+
+    options.setLanguageIn(mode);
+    options.setLanguageOut(LanguageMode.ECMASCRIPT5);
 
     options.setCodingConvention(new ClosureCodingConvention());
     CompilationLevel.ADVANCED_OPTIMIZATIONS.setOptionsForCompilationLevel(options);
@@ -99,31 +89,5 @@ public class CompilerModule extends AbstractModule {
     options.addCustomPass(CustomPassExecutionTime.BEFORE_OPTIMIZATIONS, typeCollectionPass);
 
     return options;
-  }
-
-  public static final class Builder {
-    private String[] args = new String[0];
-    private CompilerOptions.LanguageMode languageIn = CompilerOptions.LanguageMode.ECMASCRIPT5;
-    private CompilerOptions.LanguageMode languageOut = CompilerOptions.LanguageMode.ECMASCRIPT5;
-    private boolean newTypeInference = false;
-
-    public Builder setArgs(String[] args) {
-      this.args = args;
-      return this;
-    }
-
-    public Builder setLanguageIn(CompilerOptions.LanguageMode in) {
-      this.languageIn = in;
-      return this;
-    }
-
-    public Builder setNewTypeInference(boolean set) {
-      this.newTypeInference = set;
-      return this;
-    }
-
-    public CompilerModule build() {
-      return new CompilerModule(this);
-    }
   }
 }

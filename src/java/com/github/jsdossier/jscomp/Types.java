@@ -33,25 +33,10 @@ import java.nio.file.Path;
 public final class Types {
   private Types() {}  // Utility class.
 
+  private static final String DOSSIER_INTERNAL_VAR_PREFIX =
+      "_2ebeecd9_43c9_4616_a2dc_9cf4237e1f78_";
+
   private static final String EXTERN_PREFIX = "dossier$$extern__";
-
-  static final String NODE_CORE_PREFIX = "__dossier$$node__";
-
-  /**
-   * Returns an alias for one of node's core modules.
-   */
-  static String coreAlias(String id) {
-    return NODE_CORE_PREFIX + id;
-  }
-
-  static boolean isNodeModuelId(String name) {
-    return name.startsWith(NODE_CORE_PREFIX);
-  }
-
-  static String getNodeModuleId(String name) {
-    checkArgument(name.startsWith(NODE_CORE_PREFIX));
-    return name.substring(NODE_CORE_PREFIX.length());
-  }
 
   /**
    * Returns whether the given name is for an extern module.
@@ -74,7 +59,11 @@ public final class Types {
    */
   public static String getModuleId(Path path) {
     // NB: don't use modulePath.toUri(), because that will include the file system type.
-    URI uri = URI.create(path.toString()).normalize();
+    String str = path.toString()
+        .replace(':', '_')
+        .replace('\\', '/')
+        .replace(" ", "_");
+    URI uri = URI.create(str).normalize();
     return ES6ModuleLoader.toModuleName(uri);
   }
 
@@ -130,5 +119,19 @@ public final class Types {
         return input.getJsDoc().isTypedef();
       }
     };
+  }
+
+  /**
+   * Prepends a name to create a new variable name for internal dossier use.
+   */
+  static String toInternalVar(String name) {
+    return DOSSIER_INTERNAL_VAR_PREFIX + name;
+  }
+
+  /**
+   * Returns whether the name is for an internal variable created by dossier.
+   */
+  static boolean isInternalVar(String name) {
+    return name.startsWith(DOSSIER_INTERNAL_VAR_PREFIX);
   }
 }

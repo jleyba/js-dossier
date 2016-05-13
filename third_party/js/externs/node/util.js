@@ -29,7 +29,7 @@ var util = {};
  * @param {string} format
  * @param {...*} var_args
  * @return {string}
- * @nosideeffects
+ *
  */
 util.format;
 
@@ -70,35 +70,35 @@ util.log;
  *          colors: (boolean|undefined),
  *          customInspect: (boolean|undefined)}=} options
  * @return {string}
- * @nosideeffects
+ *
  */
 util.inspect;
 
 /**
  * @param {*} object
  * @return {boolean}
- * @nosideeffects
+ *
  */
 util.isArray;
 
 /**
  * @param {*} object
  * @return {boolean}
- * @nosideeffects
+ *
  */
 util.isRegExp;
 
 /**
  * @param {*} object
  * @return {boolean}
- * @nosideeffects
+ *
  */
 util.isDate;
 
 /**
  * @param {*} object
  * @return {boolean}
- * @nosideeffects
+ *
  */
 util.isError;
 

@@ -25,6 +25,9 @@ import static java.nio.file.Files.readAllBytes;
 
 import com.github.jsdossier.annotations.ModuleExterns;
 import com.github.jsdossier.annotations.Modules;
+
+import com.google.common.base.Supplier;
+import com.google.common.base.Suppliers;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableCollection;
@@ -64,38 +67,52 @@ final class NodeLibrary {
   private static final String NODE_EXTERNS_RESOURCE_DIRECTORY = "/third_party/js/externs/node";
   private static final String FILE_NAME_PREFIX = "dossier//node-externs.zip//";
 
-  private final boolean loadExterns;
-  private ImmutableSet<Path> userExterns;
-  private ImmutableSet<String> externIds;
-  private ImmutableList<SourceFile> externFiles;
-  private ImmutableMap<String, SourceFile> modulesByPath;
-  private ImmutableMap<String, String> idsByPath;
+  private static final Supplier<ExternCollection> NODE_EXTERNS = Suppliers.memoize(
+      new Supplier<ExternCollection>() {
+        @Override
+        public ExternCollection get() {
+          URI uri = getExternZipUri();
+          try {
+            if ("file".equals(uri.getScheme())) {
+              return loadDirectory(Paths.get(uri));
+            } else {
+              log.fine("Loading externs from jar: " + uri);
+              ImmutableMap<String, String> env = ImmutableMap.of();
+              try (FileSystem jarFs = FileSystems.newFileSystem(uri, env)) {
+                Path directory = jarFs.getPath(NODE_EXTERNS_RESOURCE_DIRECTORY);
+                verify(Files.isDirectory(directory), "Node externs not found: %s", directory);
+                return loadDirectory(directory);
+              }
+            }
+          } catch (IOException e) {
+            throw new RuntimeException(e);
+          }
+        }
+      });
+
+  private final Supplier<ExternCollection> externs;
 
   @Inject
   NodeLibrary(
       @ModuleExterns ImmutableSet<Path> userExterns,
       @Modules ImmutableSet<Path> modulePaths) {
-    this.userExterns = userExterns;
-    this.loadExterns = !modulePaths.isEmpty();
+    if (modulePaths.isEmpty()) {
+      externs = Suppliers.ofInstance(ExternCollection.empty());
+    } else {
+      externs = Suppliers.memoize(new ExternSupplier(userExterns));
+    }
   }
 
   public ImmutableList<SourceFile> getExternFiles() throws IOException {
-    loadExterns();
-    return externFiles;
+    return externs.get().files;
   }
 
   public ImmutableCollection<SourceFile> getExternModules() throws IOException {
-    loadExterns();
-    return modulesByPath.values();
+    return externs.get().modulesByPath.values();
   }
 
   public boolean isModuleId(String id) {
-    try {
-      loadExterns();
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
-    return externIds.contains(toSafeName(id));
+    return externs.get().ids.contains(toSafeName(id));
   }
 
   public String normalizeModuleId(String id) {
@@ -103,44 +120,75 @@ final class NodeLibrary {
   }
 
   public String getIdFromPath(String path) {
-    checkArgument(idsByPath.containsKey(path), "not an extern module: %s", path);
-    return idsByPath.get(path);
+    checkArgument(
+        externs.get().idsByPath.containsKey(path),
+        "not an extern module: %s", path);
+    return externs.get().idsByPath.get(path);
   }
 
   public boolean isModulePath(String path) {
-    return modulesByPath.containsKey(path);
+    return externs.get().modulesByPath.containsKey(path);
   }
 
-  private void loadExterns() throws IOException {
-    if (externFiles == null) {
-      synchronized (this) {
-        if (externFiles == null) {
-          if (!loadExterns) {
-            externFiles = ImmutableList.of();
-            externIds = ImmutableSet.of();
-            modulesByPath = ImmutableMap.of();
-            idsByPath = ImmutableMap.of();
-            return;
-          }
+  private static String toSafeName(String name) {
+    return name.replace('-', '_');
+  }
 
-          URI uri = getExternZipUri();
-          if ("file".equals(uri.getScheme())) {
-            loadExterns(Paths.get(uri));
-          } else {
-            log.fine("Loading externs from jar: " + uri);
-            ImmutableMap<String, String> env = ImmutableMap.of();
-            try (FileSystem jarFs = FileSystems.newFileSystem(uri, env)) {
-              Path directory = jarFs.getPath(NODE_EXTERNS_RESOURCE_DIRECTORY);
-              verify(Files.isDirectory(directory), "Node externs not found: %s", directory);
-              loadExterns(directory);
-            }
-          }
-        }
+  private static SourceFile loadSource(Path path, boolean isInternal)
+      throws IOException {
+    String sourceName = isInternal ? (FILE_NAME_PREFIX + path.getFileName()) : path.toString();
+    String content = new String(readAllBytes(path), UTF_8);
+    return SourceFile.fromCode(sourceName, content);
+  }
+
+  private static URI getExternZipUri() {
+    URL url = NodeLibrary.class.getResource(NODE_EXTERNS_RESOURCE_DIRECTORY);
+    checkNotNull(url, "Unable to find resource %s", NODE_EXTERNS_RESOURCE_DIRECTORY);
+    try {
+      URI uri = url.toURI();
+      if ("file".equals(uri.getScheme())) {
+        return uri;
       }
+      verify("jar".equals(uri.getScheme()), "Unexpected resource URI: %s", uri);
+      verify(uri.toString().endsWith("!" + NODE_EXTERNS_RESOURCE_DIRECTORY),
+          "Unexpected resource URI: %s", uri);
+
+      String jar = uri.toString();
+      return URI.create(
+          jar.substring(0, jar.length() - NODE_EXTERNS_RESOURCE_DIRECTORY.length() - 1));
+
+    } catch (URISyntaxException e) {
+      throw new RuntimeException(e);
     }
   }
 
-  private void loadExterns(Path directory) throws IOException {
+  private static ExternCollection loadCollection(Iterable<Path> paths) throws IOException {
+    Set<String> externIds = new HashSet<>();
+    Map<String, SourceFile> modulesByPath = new HashMap<>();
+    BiMap<String, String> modulePathsById = HashBiMap.create();
+
+    for (Path path : paths) {
+      String id = toSafeName(getNameWithoutExtension(path.getFileName().toString()));
+      if (modulePathsById.containsKey(id)) {
+        throw new IllegalArgumentException(
+            "Duplicate extern module ID <" + id + "> (" + path + "); originally defined by "
+                + modulePathsById.get(id));
+      }
+      modulePathsById.put(id, path.toString());
+      externIds.add(id);
+      SourceFile source = loadSource(path, false);
+      modulesByPath.put(source.getName(), source);
+      modulePathsById.put(id, source.getName());
+    }
+
+    return new ExternCollection(
+        ImmutableSet.copyOf(externIds),
+        ImmutableList.<SourceFile>of(),
+        ImmutableMap.copyOf(modulesByPath),
+        ImmutableMap.copyOf(modulePathsById.inverse()));
+  }
+
+  private static ExternCollection loadDirectory(Path directory) throws IOException {
     log.fine("Loading node core library externs from " + directory);
 
     final Set<String> externIds = new HashSet<>();
@@ -186,55 +234,75 @@ final class NodeLibrary {
       }
     });
 
-    for (Path path : userExterns) {
-      String id = toSafeName(getNameWithoutExtension(path.getFileName().toString()));
-      if (modulePathsById.containsKey(id)) {
-        throw new IllegalArgumentException(
-            "Duplicate extern module ID <" + id + "> (" + path + "); originally defined by "
-                + modulePathsById.get(id));
-      }
-      modulePathsById.put(id, path.toString());
-      externIds.add(id);
-      SourceFile source = loadSource(path, false);
-      modulesByPath.put(source.getName(), source);
-      modulePathsById.put(id, source.getName());
+    return new ExternCollection(
+        ImmutableSet.copyOf(externIds),
+        ImmutableList.copyOf(externFiles),
+        ImmutableMap.copyOf(modulesByPath),
+        ImmutableMap.copyOf(modulePathsById.inverse()));
+  }
+
+  private static final class ExternSupplier implements Supplier<ExternCollection> {
+    private final ImmutableSet<Path> userExternPaths;
+
+    private ExternSupplier(ImmutableSet<Path> userExternPaths) {
+      this.userExternPaths = userExternPaths;
     }
 
-    this.externIds = ImmutableSet.copyOf(externIds);
-    this.externFiles = ImmutableList.copyOf(externFiles);
-    this.modulesByPath = ImmutableMap.copyOf(modulesByPath);
-    this.idsByPath = ImmutableMap.copyOf(modulePathsById.inverse());
-  }
-
-  private static String toSafeName(String name) {
-    return name.replace('-', '_');
-  }
-
-  private static SourceFile loadSource(Path path, boolean isInternal)
-      throws IOException {
-    String sourceName = isInternal ? (FILE_NAME_PREFIX + path.getFileName()) : path.toString();
-    String content = new String(readAllBytes(path), UTF_8);
-    return SourceFile.fromCode(sourceName, content);
-  }
-
-  private static URI getExternZipUri() {
-    URL url = NodeLibrary.class.getResource(NODE_EXTERNS_RESOURCE_DIRECTORY);
-    checkNotNull(url, "Unable to find resource %s", NODE_EXTERNS_RESOURCE_DIRECTORY);
-    try {
-      URI uri = url.toURI();
-      if ("file".equals(uri.getScheme())) {
-        return uri;
+    @Override
+    public ExternCollection get() {
+      try {
+        ExternCollection nodeExterns = NODE_EXTERNS.get();
+        ExternCollection userExterns = loadCollection(userExternPaths);
+        return nodeExterns.merge(userExterns);
+      } catch (IOException e) {
+        throw new RuntimeException(e);
       }
-      verify("jar".equals(uri.getScheme()), "Unexpected resource URI: %s", uri);
-      verify(uri.toString().endsWith("!" + NODE_EXTERNS_RESOURCE_DIRECTORY),
-          "Unexpected resource URI: %s", uri);
+    }
+  }
 
-      String jar = uri.toString();
-      return URI.create(
-          jar.substring(0, jar.length() - NODE_EXTERNS_RESOURCE_DIRECTORY.length() - 1));
+  private static final class ExternCollection {
+    private final ImmutableSet<String> ids;
+    private final ImmutableList<SourceFile> files;
+    private final ImmutableMap<String, SourceFile> modulesByPath;
+    private final ImmutableMap<String, String> idsByPath;
 
-    } catch (URISyntaxException e) {
-      throw new RuntimeException(e);
+    private ExternCollection(
+        ImmutableSet<String> ids,
+        ImmutableList<SourceFile> externFiles,
+        ImmutableMap<String, SourceFile> modulesByPath,
+        ImmutableMap<String, String> idsByPath) {
+      this.ids = ids;
+      this.files = externFiles;
+      this.modulesByPath = modulesByPath;
+      this.idsByPath = idsByPath;
+    }
+
+    static ExternCollection empty() {
+      return new ExternCollection(
+          ImmutableSet.<String>of(),
+          ImmutableList.<SourceFile>of(),
+          ImmutableMap.<String, SourceFile>of(),
+          ImmutableMap.<String, String>of());
+    }
+
+    ExternCollection merge(ExternCollection other) {
+      return new ExternCollection(
+          ImmutableSet.<String>builder()
+              .addAll(ids)
+              .addAll(other.ids)
+              .build(),
+          ImmutableList.<SourceFile>builder()
+              .addAll(files)
+              .addAll(other.files)
+              .build(),
+          ImmutableMap.<String, SourceFile>builder()
+              .putAll(modulesByPath)
+              .putAll(other.modulesByPath)
+              .build(),
+          ImmutableMap.<String, String>builder()
+              .putAll(idsByPath)
+              .putAll(other.idsByPath)
+              .build());
     }
   }
 }

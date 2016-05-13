@@ -1644,7 +1644,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
             "  greet() {}",
             "}"));
 
-    NominalType type = typeRegistry.getType("module$src$modules$two.CustomGreeter");
+    NominalType type = typeRegistry.getType("module$$src$modules$two.CustomGreeter");
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectInstanceType();
     assertThat(report.getProperties()).isEmpty();
@@ -1678,7 +1678,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
             "import {Z} from './a/b/c';",
             "export class B extends Z {}"));
 
-    NominalType type = typeRegistry.getType("module$src$modules$one.B");
+    NominalType type = typeRegistry.getType("module$$src$modules$one.B");
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectInstanceType();
     assertThat(report.getProperties()).isEmpty();

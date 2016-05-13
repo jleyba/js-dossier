@@ -27,14 +27,14 @@ var path = {};
 /**
  * @param {string} p
  * @return {string}
- * @nosideeffects
+ *
  */
 path.normalize;
 
 /**
  * @param {...string} var_args
  * @return {string}
- * @nosideeffects
+ *
  */
 path.join;
 
@@ -42,7 +42,7 @@ path.join;
  * @param {string} from
  * @param {string=} to
  * @return {string}
- * @nosideeffects
+ *
  */
 path.resolve;
 
@@ -50,14 +50,14 @@ path.resolve;
  * @param {string} from
  * @param {string} to
  * @return {string}
- * @nosideeffects
+ *
  */
 path.relative;
 
 /**
  * @param {string} p
  * @return {string}
- * @nosideeffects
+ *
  */
 path.dirname;
 
@@ -65,14 +65,14 @@ path.dirname;
  * @param {string} p
  * @param {string=} ext
  * @return {string}
- * @nosideeffects
+ *
  */
 path.basename;
 
 /**
  * @param {string} p
  * @return {string}
- * @nosideeffects
+ *
  */
 path.extname;
 

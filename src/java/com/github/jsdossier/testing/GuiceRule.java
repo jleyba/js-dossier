@@ -46,6 +46,8 @@ import com.google.inject.Module;
 import com.google.inject.Provides;
 import com.google.inject.Scopes;
 import com.google.javascript.jscomp.CompilerOptions;
+import com.google.javascript.jscomp.CompilerOptions.LanguageMode;
+
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
@@ -77,7 +79,6 @@ public abstract class GuiceRule implements TestRule {
         .setModulePathFilter(Predicates.<Path>alwaysFalse())
         .setTypeNameFilter(Predicates.<String>alwaysFalse())
         .setSourceUrlTemplate(Optional.<String>absent())
-
         .setOutputFs(Jimfs.newFileSystem())
         .setOutputDir(Optional.<Path>absent())
         ;
@@ -119,10 +120,7 @@ public abstract class GuiceRule implements TestRule {
   public Injector createInjector() {
     ImmutableList<Module> modules = ImmutableList.<Module>builder()
         .addAll(getGuiceModules())
-        .add(new CompilerModule.Builder()
-            .setLanguageIn(getLanguageIn())
-            .setNewTypeInference(getNewTypeInference())
-            .build())
+        .add(new CompilerModule())
         .add(new AbstractModule() {
           @Override
           protected void configure() {
@@ -131,6 +129,12 @@ public abstract class GuiceRule implements TestRule {
             bind(Path.class, Output.class, getOutputDir());
             bindScope(DocumentationScoped.class, Scopes.NO_SCOPE);
             bind(ModuleNamingConvention.class).toInstance(getModuleNamingConvention());
+          }
+
+          @Provides
+          @Input
+          LanguageMode provideInputLanguage() {
+            return getLanguageIn();
           }
 
           @Provides

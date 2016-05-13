@@ -1,6 +1,12 @@
-URL: http://dl.google.com/closure-compiler/compiler-20151015.zip
+URL: https://github.com/google/closure-compiler/archive/799b8513a01906ac7ae75a9e1f2606554c6b47b5.zip
+Version: 799b8513a01906ac7ae75a9e1f2606554c6b47b5
+License: Apache 2.0
+License File: LICENSE
+
+Description:
+
+    mvn -DskipTests
+    ls target/closure-compiler-unshaded-1.0-SNAPSHOT*
 
 Local Modifications:
-Removed dependencies from the compiler jar (args4j, guava, gson, protobuf 2.5,
-etc.). This avoids duplicate, and potentially different definitions on the
-classpath.
+None

@@ -310,7 +310,7 @@ public class TypeInspectorInstancePropertyTest extends AbstractTypeInspectorTest
             "}",
             "export {Person}"));
 
-    NominalType type = typeRegistry.getType("module$src$modules$foo$bar.Person");
+    NominalType type = typeRegistry.getType("module$$src$modules$foo$bar.Person");
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectInstanceType();
     assertThat(report.getCompilerConstants()).isEmpty();
@@ -365,7 +365,7 @@ public class TypeInspectorInstancePropertyTest extends AbstractTypeInspectorTest
             .setType(linkComment("Person", "Person.html"))
             .build());
 
-    type = typeRegistry.getType("module$src$modules$foo$bar.CustomGreeter");
+    type = typeRegistry.getType("module$$src$modules$foo$bar.CustomGreeter");
     typeInspector = typeInspectorFactory.create(type);
     report = typeInspector.inspectInstanceType();
     assertThat(report.getCompilerConstants()).isEmpty();
@@ -405,7 +405,7 @@ public class TypeInspectorInstancePropertyTest extends AbstractTypeInspectorTest
             "  constructor() { this.p = new Person; }",
             "}"));
 
-    NominalType type = typeRegistry.getType("module$src$modules$foo$bar.CustomGreeter");
+    NominalType type = typeRegistry.getType("module$$src$modules$foo$bar.CustomGreeter");
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectInstanceType();
     assertThat(report.getCompilerConstants()).isEmpty();

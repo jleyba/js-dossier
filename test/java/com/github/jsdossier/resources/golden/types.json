@@ -286,13 +286,6 @@
       "qualifiedName": "closure.module.Worker"
     },
     {
-      "href": "closure.html",
-      "interface": false,
-      "name": "closure",
-      "namespace": true,
-      "qualifiedName": "closure"
-    },
-    {
       "href": "closure.module.html",
       "interface": false,
       "name": "closure.module",

@@ -24,61 +24,61 @@ var os = {};
 
 /**
  * @return {string}
- * @nosideeffects
+ *
  */
 os.tmpDir;
 
 /**
  * @return {string}
- * @nosideeffects
+ *
  */
 os.hostname;
 
 /**
  * @return {string}
- * @nosideeffects
+ *
  */
 os.type;
 
 /**
  * @return {string}
- * @nosideeffects
+ *
  */
 os.platform;
 
 /**
  * @return {string}
- * @nosideeffects
+ *
  */
 os.arch;
 
 /**
  * @return {string}
- * @nosideeffects
+ *
  */
 os.release;
 
 /**
  * @return {number}
- * @nosideeffects
+ *
  */
 os.uptime;
 
 /**
  * @return {Array.<number>}
- * @nosideeffects
+ *
  */
 os.loadavg;
 
 /**
  * @return {number}
- * @nosideeffects
+ *
  */
 os.totalmem;
 
 /**
  * @return {number}
- * @nosideeffects
+ *
  */
 os.freemem;
 
@@ -89,7 +89,7 @@ var osCpusInfo;
 
 /**
  * @return {Array.<osCpusInfo>}
- * @nosideeffects
+ *
  */
 os.cpus;
 
@@ -100,7 +100,7 @@ var osNetworkInterfacesInfo;
 
 /**
  * @return {Object.<string, !Array<osNetworkInterfacesInfo>>}
- * @nosideeffects
+ *
  */
 os.networkInterfaces;
 
