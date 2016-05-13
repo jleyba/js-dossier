@@ -52,7 +52,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.UUID;
 
 import javax.inject.Inject;
 
@@ -1081,6 +1080,47 @@ public class NodeModulePassTest {
         lines(
             "var module$exports$module$root$source$foo = {};",
             "module$contents$xml_xml.parse(\"abc\");"));
+  }
+
+  @Test
+  public void splitsCompoundRequireDeclarations() {
+    Path foo = fs.getPath("/src/modules/foo/index.js");
+    Path bar = fs.getPath("/src/modules/foo/bar.js");
+    Path baz = fs.getPath("/src/modules/foo/baz.js");
+
+    CompilerUtil util = createCompiler(foo, bar, baz);
+
+    util.compile(
+        createSourceFile(
+            foo,
+            "var bar = require('./bar'),",
+            "    baz = require('./baz');",
+            "",
+            "exports.bar = bar;",
+            "exports.baz = baz;"),
+        createSourceFile(
+            bar,
+            "/** @constructor */",
+            "exports.Bar = function() {}"),
+        createSourceFile(
+            baz,
+            "/** @constructor */",
+            "exports.Baz = function() {}"));
+
+
+    assertThat(util.toSource())
+        .contains(lines(
+            "var module$exports$module$$src$modules$foo$bar = {};",
+            "module$exports$module$$src$modules$foo$bar.Bar = function() {",
+            "};",
+            "var module$exports$module$$src$modules$foo$baz = {};",
+            "module$exports$module$$src$modules$foo$baz.Baz = function() {",
+            "};",
+            "var module$exports$module$$src$modules$foo$index = {};",
+            "module$exports$module$$src$modules$foo$index.bar =" +
+                " module$exports$module$$src$modules$foo$bar;",
+            "module$exports$module$$src$modules$foo$index.baz =" +
+                " module$exports$module$$src$modules$foo$baz;"));
   }
 
   private void assertIsNodeModule(String id, String path) {

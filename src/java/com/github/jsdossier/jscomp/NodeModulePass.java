@@ -21,6 +21,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.javascript.jscomp.NodeTraversal.traverseEs6;
 import static com.google.javascript.rhino.IR.call;
+import static com.google.javascript.rhino.IR.declaration;
 import static com.google.javascript.rhino.IR.exprResult;
 import static com.google.javascript.rhino.IR.getprop;
 import static com.google.javascript.rhino.IR.name;
@@ -36,6 +37,7 @@ import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableSet;
 import com.google.javascript.jscomp.DiagnosticType;
 import com.google.javascript.jscomp.NodeTraversal;
+import com.google.javascript.jscomp.NodeUtil;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.JSDocInfoBuilder;
 import com.google.javascript.rhino.Node;
@@ -183,6 +185,7 @@ class NodeModulePass {
           && n.getChildCount() == 2
           && n.getFirstChild().matchesQualifiedName("require")
           && n.getChildAtIndex(1).isString()) {
+        splitRequireDeclaration(t, n);
         visitRequireCall(t, n, parent);
       }
 
@@ -331,6 +334,39 @@ class NodeModulePass {
 
       // Else we have an unrecognized module ID. Do nothing, leaving it to the
       // type-checking gods.
+    }
+
+    /**
+     * Splits
+     *
+     *     var a = require('a'), b = require('b');
+     *
+     * into
+     *
+     *     var a = require('a');
+     *     var b = require('b');
+     */
+    private void splitRequireDeclaration(NodeTraversal t, Node require) {
+      Node decl = require.getParent();
+      while (decl != null && !NodeUtil.isNameDeclaration(decl)) {
+        decl = decl.getParent();
+      }
+
+      if (decl == null || decl.getFirstChild() == decl.getLastChild()) {
+        return;
+      }
+
+      Node addAfter = decl;
+      for (Node last = decl.getLastChild();
+           last != decl.getFirstChild();
+           last = decl.getLastChild()) {
+        decl.removeChild(last);
+
+        Node newDecl = declaration(last, decl.getType()).srcrefTree(last);
+        decl.getParent().addChildAfter(newDecl, addAfter);
+        addAfter = newDecl;
+        t.getCompiler().reportCodeChange();
+      }
     }
   }
 
