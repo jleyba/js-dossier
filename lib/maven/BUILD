@@ -88,7 +88,6 @@ java_library(
     name = "commonmark",
     exports = [
         "@commonmark//jar",
-        "@commonmark_gfm_tables//jar",
     ],
 )
 

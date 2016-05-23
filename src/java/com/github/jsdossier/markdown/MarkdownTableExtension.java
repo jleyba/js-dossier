@@ -17,6 +17,9 @@
 package com.github.jsdossier.markdown;
 
 import org.commonmark.html.HtmlRenderer;
+import org.commonmark.html.renderer.NodeRenderer;
+import org.commonmark.html.renderer.NodeRendererContext;
+import org.commonmark.html.renderer.NodeRendererFactory;
 import org.commonmark.parser.Parser;
 
 /**
@@ -26,7 +29,12 @@ public final class MarkdownTableExtension
     implements Parser.ParserExtension, HtmlRenderer.HtmlRendererExtension {
   @Override
   public void extend(HtmlRenderer.Builder builder) {
-    builder.customHtmlRenderer(new TableBlockHtmlRenderer());
+    builder.nodeRendererFactory(new NodeRendererFactory() {
+      @Override
+      public NodeRenderer create(NodeRendererContext context) {
+        return new TableBlockHtmlRenderer(context);
+      }
+    });
   }
 
   @Override

@@ -26,7 +26,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.escape.CharEscaperBuilder;
 import com.google.common.escape.Escaper;
 import org.commonmark.Extension;
-import org.commonmark.ext.gfm.tables.TablesExtension;
 import org.commonmark.html.HtmlRenderer;
 import org.commonmark.node.Node;
 import org.commonmark.parser.Parser;

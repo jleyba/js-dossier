@@ -6,8 +6,8 @@
 - Upgraded to com.google.code.gson:gson:2.6.2
 - Upgraded to com.google.guava:guava:20.0-SNAPSHOT (c6387ede215926b377e812c35906f5bd0eec84f0)
 - Upgraded to com.google.template:soy:2016-01-12
-- Upgraded to com.atlassian.commonmark:commonmark:0.4.1
-- Upgraded to com.atlassian.commonmark:commonmark-ext-gfm-tables:0.4.1
+- Upgraded to com.atlassian.commonmark:commonmark:0.5.0
+- Removed dependency com.atlassian.commonmark:commonmark-ext-gfm-tables
 
 # v0.10.0
 

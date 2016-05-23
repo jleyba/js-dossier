@@ -16,54 +16,67 @@
 
 package com.github.jsdossier.markdown;
 
-import org.commonmark.html.CustomHtmlRenderer;
+import com.google.common.collect.ImmutableSet;
+
 import org.commonmark.html.HtmlWriter;
+import org.commonmark.html.renderer.NodeRenderer;
+import org.commonmark.html.renderer.NodeRendererContext;
 import org.commonmark.node.Node;
-import org.commonmark.node.Visitor;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Renders a {@link TableBlock} to HTML.
  */
-final class TableBlockHtmlRenderer implements CustomHtmlRenderer {
-  @Override
-  public boolean render(Node node, HtmlWriter writer, Visitor visitor) {
-    if (node instanceof TableBlock) {
-      renderBlock(node, writer, visitor, "table");
+final class TableBlockHtmlRenderer implements NodeRenderer {
 
-    } else if (node instanceof TableCaptionNode) {
-      renderBlock(node, writer, visitor, "caption");
+  private final NodeRendererContext context;
 
-    } else if (node instanceof TableHeadNode) {
-      renderBlock(node, writer, visitor, "thead");
-
-    } else if (node instanceof TableBodyNode) {
-      renderBlock(node, writer, visitor, "tbody");
-
-    } else if (node instanceof TableRowNode) {
-      renderBlock(node, writer, visitor, "tr");
-
-    } else if (node instanceof TableCellNode) {
-      renderCell((TableCellNode) node, writer, visitor);
-
-    } else {
-      return false;
-    }
-
-    return true;
+  TableBlockHtmlRenderer(NodeRendererContext context) {
+    this.context = context;
   }
 
-  private void renderBlock(Node node, HtmlWriter writer, Visitor visitor, String tagName) {
+  @Override
+  public Set<Class<? extends Node>> getNodeTypes() {
+    return ImmutableSet.of(
+        TableBlock.class, TableCaptionNode.class, TableHeadNode.class, TableBodyNode.class,
+        TableRowNode.class, TableCellNode.class);
+  }
+
+  @Override
+  public void render(Node node) {
+    if (node instanceof TableBlock) {
+      renderBlock(node, "table");
+
+    } else if (node instanceof TableCaptionNode) {
+      renderBlock(node, "caption");
+
+    } else if (node instanceof TableHeadNode) {
+      renderBlock(node, "thead");
+
+    } else if (node instanceof TableBodyNode) {
+      renderBlock(node, "tbody");
+
+    } else if (node instanceof TableRowNode) {
+      renderBlock(node, "tr");
+
+    } else if (node instanceof TableCellNode) {
+      renderCell((TableCellNode) node);
+    }
+  }
+
+  private void renderBlock(Node node, String tagName) {
+    HtmlWriter writer = context.getHtmlWriter();
     writer.line();
     writer.tag(tagName);
-    renderChildren(node, visitor);
+    renderChildren(node);
     writer.tag("/" + tagName);
     writer.line();
   }
 
-  private void renderCell(TableCellNode cell, HtmlWriter writer, Visitor visitor) {
+  private void renderCell(TableCellNode cell) {
     Map<String, String> attributes = new HashMap<>();
     if (cell.getColSpan() > 1) {
       attributes.put("colspan", String.valueOf(cell.getColSpan()));
@@ -75,14 +88,14 @@ final class TableBlockHtmlRenderer implements CustomHtmlRenderer {
     Node parent = cell.getParent();
     boolean isHead = parent != null && parent.getParent() instanceof TableHeadNode;
     String tag = isHead ? "th" : "td";
-    writer.tag(tag, attributes);
-    renderChildren(cell, visitor);
-    writer.tag("/" + tag);
+    context.getHtmlWriter().tag(tag, attributes);
+    renderChildren(cell);
+    context.getHtmlWriter().tag("/" + tag);
   }
 
-  private void renderChildren(Node node, Visitor visitor) {
+  private void renderChildren(Node node) {
     for (Node child = node.getFirstChild(); child != null; child = child.getNext()) {
-      child.accept(visitor);
+      context.render(child);
     }
   }
 }
