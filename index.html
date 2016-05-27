@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <title>Dossier by jleyba</title>
+  </head>
+
+  <body>
+    <header>
+      <div class="inner">
+        <h1>Dossier</h1>
+        <h2>A JavaScript documentation generation tool.</h2>
+        <a href="https://github.com/jleyba/js-dossier" class="button"><small>View project on</small> GitHub</a>
+      </div>
+    </header>
+
+    <div id="content-wrapper">
+      <div class="inner clearfix">
+        <section id="main-content">
+          <h1>
+<a id="dossier" class="anchor" href="#dossier" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Dossier</h1>
+
+<p>Dossier is a <a href="http://en.wikipedia.org/wiki/JSDoc">JSDoc</a> parsing tool built on
+top of the <a href="https://developers.google.com/closure/compiler/">Closure Compiler</a>.
+Dossier uses the compiler to parse your code and build a type graph. It then
+traverses the graph to find types to generate documentation for. Proper use of
+Closure's <a href="https://developers.google.com/closure/compiler/docs/js-for-compiler">annotations</a>
+will not only improve the type-checking and optimizations of the Closure
+Compiler, but will also improve Dossier's ability to generate meaningful documentation.</p>
+
+<h2>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Usage</h2>
+
+<p><em>Dossier requires <a href="http://openjdk.java.net/">Java 7</a> or newer</em></p>
+
+<div class="highlight highlight-source-shell"><pre>java -jar dossier.jar -c config.json</pre></div>
+
+<p>Where <code>config.json</code> is a configuration file with the options listed below.</p>
+
+<p><strong>Configuration Options</strong></p>
+
+<ul>
+<li><p><code>closureDepFiles</code> Path to a file to parse for calls to <code>goog.addDependency</code>.
+This option requires also setting <code>closureLibraryDir</code>.</p></li>
+<li>
+<p><code>closureLibraryDir</code> Path to the base directory of the Closure library (which
+must contain base.js and deps.js). When this option is specified, Closure's
+deps.js and all of the files specified by <code>closureDepsFile</code> will be parsed
+for calls to <code>goog.addDependency</code>. The resulting map will be used to
+automatically expand the set of <code>sources</code> any time a symbol is
+goog.require'd with the ile that goog.provides that symbol, along with all
+of its transitive dependencies.</p>
+
+<p>For example, suppose you have one source file, <code>foo.js</code>:</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-smi">goog</span>.<span class="pl-en">require</span>(<span class="pl-s"><span class="pl-pds">'</span>goog.array<span class="pl-pds">'</span></span>);
+<span class="pl-c">// ...</span></pre></div>
+
+<p>and your configuration includes:</p>
+
+<div class="highlight highlight-source-json"><pre><span class="pl-s"><span class="pl-pds">"</span>sources<span class="pl-pds">"</span></span>: [<span class="pl-s"><span class="pl-pds">"</span>foo.js<span class="pl-pds">"</span></span>],
+<span class="pl-s"><span class="pl-pds">"</span>closureLibraryDir<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>closure/goog<span class="pl-pds">"</span></span></pre></div>
+
+<p>due to the dependencies of goog.array declared in closure/goog/deps.js,
+this is equivalent to the following configuration:</p>
+
+<div class="highlight highlight-source-json"><pre><span class="pl-s"><span class="pl-pds">"</span>sources<span class="pl-pds">"</span></span>: [
+   <span class="pl-s"><span class="pl-pds">"</span>closure/goog/base.js<span class="pl-pds">"</span></span>,
+   <span class="pl-s"><span class="pl-pds">"</span>closure/goog/debug/error.js<span class="pl-pds">"</span></span>,
+   <span class="pl-s"><span class="pl-pds">"</span>closure/goog/string/string.js<span class="pl-pds">"</span></span>,
+   <span class="pl-s"><span class="pl-pds">"</span>closure/goog/asserts/asserts.js<span class="pl-pds">"</span></span>,
+   <span class="pl-s"><span class="pl-pds">"</span>closure/goog/array/array.js<span class="pl-pds">"</span></span>,
+   <span class="pl-s"><span class="pl-pds">"</span>foo.js<span class="pl-pds">"</span></span>
+]</pre></div>
+
+<p>Notice specifying <code>closureLibraryDir</code> instructs Dossier to sort the input
+files so a a file that goog.provides symbol X comes before any file that
+goog.requires X.</p>
+</li>
+<li><p><code>customPages</code> List of additional files to include in the generated
+documentation. Each page is defined as a {name: string, path: string}
+object, where the name is what's displayed in the navigation menu, and
+<code>path</code> is the path to the markdown file to use. Files will be included in
+the order listed, after the standard navigation items.</p></li>
+<li><p><code>excludes</code> A list of .js files to exclude from processing. If a directory is
+specified, all of the .js files under that directory will be excluded. A
+glob pattern may also be specified to exclude all of the paths under the
+current working directory that match  the provided pattern.</p></li>
+<li><p><code>externModules</code> A list of .js files to include as CommonJS extern module
+definitions. Each module may be required in source by the file's base name,
+excluding the extension. For example, 'extern/libfoo.js' would provide the
+extern definition for the import <code>require('libfoo');</code></p></li>
+<li><p><code>externs</code> A list of .js files to include as an extern file for the Closure
+compiler. These  files are used to satisfy references to external types,
+but are excluded when generating  API documentation.</p></li>
+<li><p><code>language</code> Specifies which version of ECMAScript the input sources conform
+to. Defaults to ES6_STRICT. Must be one of {ES3, ES5, ES5_STRICT, ES6,
+ES6_STRICT}</p></li>
+<li><p><code>moduleFilters</code> List of regular expressions for modules that should be
+excluded from generated documentation, even if found in the type graph. The
+provided expressions will be to the <em>absolute</em> path of the source file for
+each module.</p></li>
+<li><p><code>moduleNamingConvention</code> The module naming convention to use. If set to
+<code>NODE</code>, modules with a basename of index.js will use the name of the parent
+directory (e.g. "foo/bar/index.js" -&gt; "foo/bar/"). Must be one of {ES6,
+NODE}; defaults to ES6</p></li>
+<li><p><code>modulePrefix</code> A prefix to strip from every module's path when generating
+documentation. The specified path must be a directory that is an ancestor
+of every file specified in <code>modules</code>. Note: if this option is omitted, the
+closest common ancestor for all module files will be selected as the
+default.</p></li>
+<li><p><code>modules</code> A list of .js files to extract API documentation from. Each file
+will be processed as a CommonJS module, with only its exported API included
+in the generated output. If a glob pattern is specified, every .js file
+under the current directory matching that pattern will be included.
+Specifying the path to a directory, <code>foo</code>, is the same as the glob pattern
+<code>foo/**.js</code>. The set of paths specified by this option <em>mut</em> be disjoint
+from those specified by <code>sources</code>.</p></li>
+<li><p><code>output</code> Path to the directory to write all generated documentation to. This
+field is required.</p></li>
+<li><p><code>readme</code> Path to a README file to include as the main landing page for the
+generated documentation. This file should use markdown syntax.</p></li>
+<li><p><code>sourcePrefix</code> A prefix to strip from every input file's path (source &amp;
+module) when rendering source paths. Notably, paths will be inserted into
+the source URL template after this prefix has been removed. If this option
+is omitted, the closest common ancestor for all input files will be used as
+the default.</p></li>
+<li>
+<p><code>sourceUrlTemplate</code> Specifies a template from which to generate a HTTP(S)
+links to source files. Within this template, the <code>%path%</code> and <code>%line%</code>
+tokens will be replaced with the linked type's source file path and line
+number, respectively. Source paths will be relative to the closest common
+ancestor of all input files.</p>
+
+<p>If this option is not specified, a rendered copy of each input file will be
+included in the generated output.</p>
+</li>
+<li><p><code>sources</code> A list of .js files to extract API documentation from. If a glob
+pattern is specified, every .js file under the current working directory
+matching that pattern will be included. Specifying the path to a directory,
+<code>foo</code>, is the same as using the glob pattern <code>foo/**.js</code>. The set of paths
+specified by this option <em>must</em> be disjoint from those specified by
+<code>modules</code>.</p></li>
+<li><p><code>strict</code> Whether to run with all type checking flags enabled.</p></li>
+<li><p><code>typeFilters</code> List of regular expressions for types that should be excluded
+from generated documentation, even if found in the type graph.</p></li>
+</ul>
+
+<h2>
+<a id="es6-support" class="anchor" href="#es6-support" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>ES6 Support</h2>
+
+<p>Dossier supports ES6 code insofar as the <a href="https://github.com/google/closure-compiler/wiki/ECMAScript6">Closure Compiler</a>
+does. Since the compiler transpiles ES6 to ES5 for analysis, there is some
+information loss with Dossier. Most notably, type information is lost for
+<code>Symbol</code> types and generator functions. To use Dossier with ES6 code, in your
+configuration file, simply set the input <code>language</code> to <code>ES6</code> or
+<code>ES6_STRICT</code> (which is the default).</p>
+
+<h3>
+<a id="module-support" class="anchor" href="#module-support" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Module Support</h3>
+
+<p>Dossier currently recognizes three types of JavaScript modules:</p>
+
+<ol>
+<li>Closure modules identified by <code>goog.module(id)</code> declaration</li>
+<li>ES6 modules identified by the use of an <code>export</code> or <code>import</code> declaration</li>
+<li>Node-style CommonJS modules</li>
+</ol>
+
+<p>Node modules must be explicitly declared as <code>modules</code> inputs in your
+configuration file so Dossier knows to look for <code>require()</code> and
+<code>exports</code> expressions.</p>
+
+<p>For Node and ES6 modules, you may import other modules by their <em>relative</em>
+path:</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">import</span> {<span class="pl-smi">Foo</span> <span class="pl-k">as</span> <span class="pl-smi">Bar</span>} <span class="pl-k">from</span> <span class="pl-s"><span class="pl-pds">'</span>./lib<span class="pl-pds">'</span></span>;  <span class="pl-c">// ES6</span>
+<span class="pl-k">const</span> <span class="pl-c1">Baz</span> <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>./dir/lib<span class="pl-pds">'</span></span>);  <span class="pl-c">// Node</span></pre></div>
+
+<p>Refer to the section on <a href="#type-linking">type linking</a> below for information
+on how to refer to imported types within a JSDoc comment.</p>
+
+<h2>
+<a id="formatting" class="anchor" href="#formatting" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Formatting</h2>
+
+<p>Before generating the final HTML output, Dossier runs all comments through a
+<a href="http://commonmark.org/">CommonMark</a> parser. Since markdown is sensitive to the
+leading whitespace on each line, care must be taken with comment formatting.
+Comments are extracted from the source according to the follow rules:</p>
+
+<ol>
+<li>The <code>/**</code> on the opening line is removed; all subsequent content is
+considered part of the comment.</li>
+<li>On each subsequent line, all whitespace up to the first non-space character
+is removed.</li>
+<li>If the first character on a line after removing whitespace is a <code>*</code>, it
+is removed from the line. All subsequent content is considered part of the
+comment.</li>
+<li>On the final line, the closing <code>*/</code> is removed.</li>
+</ol>
+
+<p>For example, the JSDoc comment (.'s inserted to highlight whitespace)</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-c">/**</span>
+<span class="pl-c">.*.Line one.</span>
+<span class="pl-c">.*.Line two.</span>
+<span class="pl-c">.*</span>
+<span class="pl-c">.*.* list item one</span>
+<span class="pl-c">.*.* line item two</span>
+<span class="pl-c">.*</span>
+<span class="pl-c">.*.....code block</span>
+<span class="pl-c">.*/</span></pre></div>
+
+<p>is passed to the parser as</p>
+
+<pre><code>.Line one.
+.Line two.
+
+.* list item one
+.* list item two
+
+.....code block
+</code></pre>
+
+<p>When applied to comments attached to annotations, the same rules apply, except
+the comment text starts after the annotation, type, or name (as applicable for
+the annotation). For instance,</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-c">/**</span>
+<span class="pl-c"> * <span class="pl-k">@param</span> <span class="pl-en">{string}</span> <span class="pl-smi">x</span> This is the comment for</span>
+<span class="pl-c"> *     parameter x.</span>
+<span class="pl-c"> */</span></pre></div>
+
+<p>the comment string parsed for parameter <code>x</code> is (again, .'s inserted to denote
+leading whitespace):</p>
+
+<pre><code>.This is the comment for
+.....parameter x.
+</code></pre>
+
+<h3>
+<a id="the-code-and-literal-taglets" class="anchor" href="#the-code-and-literal-taglets" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>The <code>@code</code> and <code>@literal</code> Taglets</h3>
+
+<p>The <code>@code</code> and <code>@literal</code> taglets may be used to specify text that
+should be HTML escaped for rendering; the <code>@code</code> taglet will wrap its
+output in <code>&lt;code&gt;</code> tags. For example, the following</p>
+
+<div class="highlight highlight-source-js"><pre>{@code <span class="pl-c1">1</span> <span class="pl-k">&lt;</span> <span class="pl-c1">2</span> <span class="pl-k">&amp;&amp;</span> <span class="pl-c1">3</span> <span class="pl-k">&lt;</span> <span class="pl-c1">4</span>;}</pre></div>
+
+<p>will produce</p>
+
+<div class="highlight highlight-text-html-basic"><pre>&lt;<span class="pl-ent">code</span>&gt;1 <span class="pl-c1">&amp;lt;</span> 2 <span class="pl-c1">&amp;amp;&amp;amp;</span> 3 <span class="pl-c1">&amp;lt;</span> 4;&lt;/<span class="pl-ent">code</span>&gt;</pre></div>
+
+<h3>
+<a id="type-linking-" class="anchor" href="#type-linking-" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Type Linking <a name="type-linking"></a>
+</h3>
+
+<p>Dossier uses the <code>@link</code> and <code>@linkplain</code> taglets to generate links to
+named types (<code>@link</code> will generate <code>&lt;code&gt;</code> formatted links).  The taglet
+contents up to the first space are parsed as the type name and everything after
+the space is the link text. If there is no text within the taglet, the type
+name will be used. For example, suppose there is a type named
+<code>example.Widget</code>, then</p>
+
+<pre><code>An {@link example.Widget} link.
+A {@link example.Widget widget link}.
+</code></pre>
+
+<p>would produce</p>
+
+<div class="highlight highlight-text-html-basic"><pre>An &lt;<span class="pl-ent">a</span> <span class="pl-e">href</span>=<span class="pl-s"><span class="pl-pds">"</span>path/to/example.Widget.html<span class="pl-pds">"</span></span>&gt;&lt;<span class="pl-ent">code</span>&gt;example.Widget&lt;/<span class="pl-ent">code</span>&gt;&lt;/<span class="pl-ent">a</span>&gt; link.
+A &lt;<span class="pl-ent">a</span> <span class="pl-e">href</span>=<span class="pl-s"><span class="pl-pds">"</span>path/to/example.Widget.html<span class="pl-pds">"</span></span>&gt;&lt;<span class="pl-ent">code</span>&gt;widget link&lt;/<span class="pl-ent">code</span>&gt;&lt;/<span class="pl-ent">a</span>&gt;.</pre></div>
+
+<p>You may use a hash tag (#) to reference a type's property inside a link:
+<code>{@link example.Widget#build()}</code>. You may omit the type's name
+as a qualifier when linking to one of its own properties:
+<code>{@link #build()}</code>. Dossier will favor instance over static
+properties when de-referencing a hash link.</p>
+
+<p>Dossier tracks type aliases so your documentation may reflect the actual source.
+For instance, if you import a type from a module, you may refer to that type
+by its imported alias:</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">import</span> {<span class="pl-smi">Widget</span> <span class="pl-k">as</span> <span class="pl-smi">Whatsit</span>} <span class="pl-k">from</span> <span class="pl-s"><span class="pl-pds">'</span>./lib<span class="pl-pds">'</span></span>;
+
+<span class="pl-c">/** A {@link Whatsit} object. */</span>
+<span class="pl-k">export</span> <span class="pl-k">const</span> <span class="pl-c1">w</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">Whatsit</span>;</pre></div>
+
+<p>Here, the comment on the exported <code>w</code> property produces</p>
+
+<div class="highlight highlight-text-html-basic"><pre>&lt;<span class="pl-ent">p</span>&gt;A &lt;<span class="pl-ent">a</span> <span class="pl-e">href</span>=<span class="pl-s"><span class="pl-pds">"</span>module/lib_exports_Widget<span class="pl-pds">"</span></span>&gt;&lt;<span class="pl-ent">code</span>&gt;Whatsit&lt;/<span class="pl-ent">code</span>&gt;&lt;/<span class="pl-ent">a</span>&gt; object.&lt;/<span class="pl-ent">p</span>&gt;</pre></div>
+
+<p>When using the <a href="https://carldanley.com/js-revealing-module-pattern/">revealing module pattern</a>,
+your module's documentation can refer to a type by its internal name and
+Dossier will generate a link to the exported type.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">class</span> <span class="pl-en">Widget</span> {}
+
+<span class="pl-c">/** A factory that generates {@link Widget} objects. */</span>
+<span class="pl-k">class</span> <span class="pl-en">WidgetFactory</span> {}
+
+<span class="pl-k">export</span> {<span class="pl-smi">Widget</span> <span class="pl-k">as</span> <span class="pl-smi">WhatsIt</span>, <span class="pl-smi">WidgetFactory</span>}</pre></div>
+
+<p>In the above, since <code>Widget</code>'s public name is <code>WhatsIt</code>, the generate
+documentation would be (extra newlines inserted for readability)</p>
+
+<div class="highlight highlight-text-html-basic"><pre>&lt;<span class="pl-ent">p</span>&gt;A factory that generates
+&lt;<span class="pl-ent">a</span> <span class="pl-e">href</span>=<span class="pl-s"><span class="pl-pds">"</span>module/lib_exports_WhatsIt.html<span class="pl-pds">"</span></span>&gt;&lt;<span class="pl-ent">code</span>&gt;Widget&lt;/<span class="pl-ent">code</span>&gt;&lt;/<span class="pl-ent">a</span>&gt; objects.
+&lt;/<span class="pl-ent">p</span>&gt;</pre></div>
+
+<p>Within an ES6 or Node module, you may refer to another module without importing
+using the module's <em>relative</em> path as your type symbol. To refer to an exported
+type from another module, simply qualify it with the module's relative path.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-c">/** A link to module {@link ./foo/bar} */</span>
+<span class="pl-c">/** A link to type {@link ./foo/bar.Baz} */</span></pre></div>
+
+<h3>
+<a id="the-see-annotation" class="anchor" href="#the-see-annotation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>The <code>@see</code> Annotation</h3>
+
+<p>Use the <code>@see</code> annotation in your JSDoc to add a reference to another
+type or an external resource. The text context following the annotation is
+processed in the following order:</p>
+
+<ol>
+<li>The annotation contents are processed as a type link using the rules defined
+in the previous section. If the contents define a valid reference to another
+type or property, a link will be included in the HTML output.</li>
+<li>If the annotation is a well-formed http or https URL, it will be rendered as
+a link.</li>
+<li>Otherwise, the contents of the annotation are processed as markdown like a
+comment's main body.</li>
+</ol>
+
+<p><strong>Example</strong></p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">class</span> <span class="pl-en">Greeter</span> {
+  <span class="pl-c">/** <span class="pl-k">@param</span> {!Person} person . */</span>
+  <span class="pl-en">greet</span>(<span class="pl-smi">person</span>) {}
+}
+
+<span class="pl-c">/**</span>
+<span class="pl-c"> * <span class="pl-k">@see</span> Greeter</span>
+<span class="pl-c"> * <span class="pl-k">@see</span> #name</span>
+<span class="pl-c"> * <span class="pl-k">@see</span> http://www.example.com</span>
+<span class="pl-c"> */</span>
+<span class="pl-k">class</span> <span class="pl-en">Person</span> {
+  <span class="pl-c">/** <span class="pl-k">@return</span> {string} . */</span>
+  <span class="pl-en">name</span>() { <span class="pl-k">return</span> <span class="pl-s"><span class="pl-pds">'</span><span class="pl-pds">'</span></span>; }
+}</pre></div>
+
+<p>In this example, the <code>@see</code> annotations on the <code>Person</code> class would
+generate the following links:</p>
+
+<div class="highlight highlight-text-html-basic"><pre>&lt;<span class="pl-ent">a</span> <span class="pl-e">href</span>=<span class="pl-s"><span class="pl-pds">"</span>Greeter.html<span class="pl-pds">"</span></span>&gt;&lt;<span class="pl-ent">code</span>&gt;Greeter&lt;/<span class="pl-ent">code</span>&gt;&lt;/<span class="pl-ent">a</span>&gt;
+&lt;<span class="pl-ent">a</span> <span class="pl-e">href</span>=<span class="pl-s"><span class="pl-pds">"</span>Person.html#name<span class="pl-pds">"</span></span>&gt;&lt;<span class="pl-ent">code</span>&gt;#name&lt;/<span class="pl-ent">code</span>&gt;&lt;/<span class="pl-ent">a</span>&gt;
+&lt;<span class="pl-ent">a</span> <span class="pl-e">href</span>=<span class="pl-s"><span class="pl-pds">"</span>http://www.example.com<span class="pl-pds">"</span></span>&gt;http://www.example.com&lt;/<span class="pl-ent">a</span>&gt;</pre></div>
+
+<h2>
+<a id="html-sanitization" class="anchor" href="#html-sanitization" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>HTML Sanitization</h2>
+
+<p>All HTML output is sanitized using the <a href="https://github.com/owasp/java-html-sanitizer">owasp HTML sanitizer</a>.
+Refer to the <a href="https://github.com/jleyba/js-dossier/blob/master/src/java/com/github/jsdossier/soy/HtmlSanitizer.java">source</a>
+for an up-to-date list of the supported HTML tags and attributes.</p>
+
+<h2>
+<a id="building" class="anchor" href="#building" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Building</h2>
+
+<p>Dossier is built using <a href="http://bazel.io/">Bazel</a>. Once
+you have <a href="http://bazel.io/docs/install.html">installed</a> Bazel,
+you can use the <code>gendossier.sh</code> script to complete various actions:</p>
+
+<pre><code>./gendossier.sh -h
+</code></pre>
+
+<h2>
+<a id="license" class="anchor" href="#license" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>LICENSE</h2>
+
+<p>Copyright 2013-2015 Jason Leyba</p>
+
+<p>Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at</p>
+
+<p><a href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a></p>
+
+<p>Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.</p>
+        </section>
+
+        <aside id="sidebar">
+          <a href="https://github.com/jleyba/js-dossier/zipball/master" class="button">
+            <small>Download</small>
+            .zip file
+          </a>
+          <a href="https://github.com/jleyba/js-dossier/tarball/master" class="button">
+            <small>Download</small>
+            .tar.gz file
+          </a>
+
+          <p class="repo-owner"><a href="https://github.com/jleyba/js-dossier"></a> is maintained by <a href="https://github.com/jleyba">jleyba</a>.</p>
+
+          <p>This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
+        </aside>
+      </div>
+    </div>
+
+  
+  </body>
+</html>
