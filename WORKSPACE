@@ -48,8 +48,8 @@ maven_jar(
 
 maven_jar(
     name = "commonmark",
-    artifact = "com.atlassian.commonmark:commonmark:0.5.0",
-    sha1 = "16a2927ba798d41f6d569b22c2639b27cf0288ae",
+    artifact = "com.atlassian.commonmark:commonmark:0.5.1",
+    sha1 = "b35ae2353871955674bbfa1a92394272b1dada45",
 )
 
 maven_jar(
@@ -61,7 +61,6 @@ maven_jar(
 maven_jar(
     name = "guava",
     artifact = "com.google.guava:guava:20.0-SNAPSHOT",
-    sha1 = "c6387ede215926b377e812c35906f5bd0eec84f0",
     repository = "http://oss.sonatype.org/content/repositories/snapshots",
 )
 
