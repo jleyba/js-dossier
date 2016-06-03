@@ -326,8 +326,8 @@
       <dl>
         {if $details and length($details) > 0}
           {foreach $detail in $details}
-            <dt{if $detail.name} class="named"{/if}>
-            {if $detail.name}{$detail.name}{/if}
+            <dt{if $detail.name} class="name"{/if}>
+            {if $detail.name}<var>{$detail.name}</var>{/if}
             {if $detail.type and length($detail.type.token)}
               <code>
                 {call .comment}
@@ -402,12 +402,12 @@
  * @param names The list of template type names.
  */
 {template .printTemplateNames}
-  &lt;
+  <var>&lt;
   {foreach $name in $names}
     {$name}
     {if not isLast($name)},{sp}{/if}
   {/foreach}
-  &gt;
+  &gt;</var>
 {/template}
 
 
@@ -415,10 +415,9 @@
 {template .functionArgs}
   {@param fn: dossier.Function}
   (
-  {if length($fn.parameter)}<wbr>{/if}
   {foreach $parameter in $fn.parameter}
-    {$parameter.name}
-    {if not isLast($parameter)},<wbr>{sp}{/if}
+    <var>{$parameter.name}</var>
+    {if not isLast($parameter)},{sp}{/if}
   {/foreach}
   )
 {/template}
@@ -528,11 +527,9 @@
           {/call}
           <div>
             {if $fn.templateName and length($fn.templateName)}
-              <code class="template-name">
-                {call .printTemplateNames}
-                  {param names: $fn.templateName /}
-                {/call}
-              </code>
+              {call .printTemplateNames}
+                {param names: $fn.templateName /}
+              {/call}
               {sp}
             {/if}
             {$fn.base.name}

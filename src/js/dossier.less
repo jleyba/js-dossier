@@ -186,10 +186,18 @@ h3.name {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap-reverse;
+}
 
-  .template-name {
-    padding: 2px 4px;
+var {
+  h1.title &,
+  .name & {
+    font-family: @code_font;
+    opacity: 0.8;
   }
+
+  .name & { font-size: 13px; }
+  h1.title & { font-size: 26px; }
+  dt.name & { font-weight: 500; }
 }
 
 .tags {

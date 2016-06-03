@@ -44,6 +44,8 @@
 @body_bg: #f8f8f8;
 @kbd_bg: #fcfcfc;
 
+@code_font: "Roboto Mono", monospace;
+
 @gutter_small_screen: 16px;
 @gutter_large_screen: 24px;
 
@@ -171,7 +173,7 @@ a {
 }
 
 pre, code, kbd, .srcfile table {
-  font-family: "Roboto Mono", monospace;
+  font-family: @code_font;
 }
 pre, code, .srcfile table {
   font-size: 12px !important;
@@ -262,7 +264,7 @@ dt {
     }
   }
 
-  &.named {
+  &.name {
     font-weight: 400;
     & > code,
     & > i {
@@ -385,7 +387,7 @@ kbd + kbd { margin-left: 3px; }
     font-weight: 300;
   }
 
-  dt.named > i {
+  dt.name > i {
     font-weight: 300;
   }
 }
