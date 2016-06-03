@@ -182,7 +182,8 @@ article {
 }
 
 h1.title,
-h3.name {
+h3.name,
+.types li.summary {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap-reverse;
@@ -205,6 +206,10 @@ var {
 
   h1.title & {
     margin: 2px 8px -2px 0;
+  }
+
+  .types li.summary & {
+    margin: 0 8px 0 0;
   }
 
   .tag-color(@color) {

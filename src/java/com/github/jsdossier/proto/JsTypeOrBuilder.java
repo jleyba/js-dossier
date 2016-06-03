@@ -31,28 +31,17 @@ public interface JsTypeOrBuilder extends
   com.github.jsdossier.proto.SourceLinkOrBuilder getSourceOrBuilder();
 
   /**
-   * <code>repeated .dossier.JsType.TypeSummary nested = 6;</code>
+   * <code>optional .dossier.JsType.NestedTypes nested = 6;</code>
    */
-  java.util.List<com.github.jsdossier.proto.JsType.TypeSummary> 
-      getNestedList();
+  boolean hasNested();
   /**
-   * <code>repeated .dossier.JsType.TypeSummary nested = 6;</code>
+   * <code>optional .dossier.JsType.NestedTypes nested = 6;</code>
    */
-  com.github.jsdossier.proto.JsType.TypeSummary getNested(int index);
+  com.github.jsdossier.proto.JsType.NestedTypes getNested();
   /**
-   * <code>repeated .dossier.JsType.TypeSummary nested = 6;</code>
+   * <code>optional .dossier.JsType.NestedTypes nested = 6;</code>
    */
-  int getNestedCount();
-  /**
-   * <code>repeated .dossier.JsType.TypeSummary nested = 6;</code>
-   */
-  java.util.List<? extends com.github.jsdossier.proto.JsType.TypeSummaryOrBuilder> 
-      getNestedOrBuilderList();
-  /**
-   * <code>repeated .dossier.JsType.TypeSummary nested = 6;</code>
-   */
-  com.github.jsdossier.proto.JsType.TypeSummaryOrBuilder getNestedOrBuilder(
-      int index);
+  com.github.jsdossier.proto.JsType.NestedTypesOrBuilder getNestedOrBuilder();
 
   /**
    * <code>optional .dossier.Comment description = 7;</code>

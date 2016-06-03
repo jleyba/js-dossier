@@ -221,11 +221,18 @@ message Index {
 // message describes a class, enum, interface, or namespace.
 message JsType {
 
-  // Short description for a type defined when this |JsType|.
+  // Short description for a type defined by this |JsType|.
   message TypeSummary {
     string name = 1;                           // The type name.
     string href = 2 [(sanitized).uri = true];  // The hyperlink for the actual type.
     Comment summary = 3;                       // The summary sentence for this type.
+    Tags tags = 4;
+  }
+
+  message NestedTypes {
+    repeated TypeSummary class = 1;
+    repeated TypeSummary enum = 2;
+    repeated TypeSummary interface = 3;
   }
 
   // Describes a typedef defined within this type.
@@ -241,7 +248,7 @@ message JsType {
 
   string name = 1;
   SourceLink source = 5;
-  repeated TypeSummary nested = 6;
+  NestedTypes nested = 6;
   Comment description = 7;
   Tags tags = 8;
   Comment deprecation = 9;

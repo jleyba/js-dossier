@@ -320,7 +320,24 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Ca
 
         TypeLink link = linkFactory.createLink(child);
         Comment summary = typeInspector.getTypeDescription(child, true);
-        spec.addNestedBuilder()
+
+        JsType.TypeSummary.Builder summaryBuilder;
+        if (child.getType().isConstructor()) {
+          summaryBuilder = spec.getNestedBuilder().addClass_Builder();
+        } else if (child.getType().isInterface()) {
+          summaryBuilder = spec.getNestedBuilder().addInterfaceBuilder();
+          summaryBuilder.getTagsBuilder().setIsInterface(true);
+        } else if (child.getType().isEnumType()) {
+          summaryBuilder = spec.getNestedBuilder().addEnumBuilder();
+        } else {
+          throw new AssertionError("unknown nested type: " + child.getName());
+        }
+
+        if (child.getJsDoc().isDeprecated()) {
+          summaryBuilder.getTagsBuilder().setIsDeprecated(true);
+        }
+
+        summaryBuilder
             .setName(getNestedTypeName(child))
             .setHref(link.getHref())
             .setSummary(summary);

@@ -11,6 +11,7 @@
   externs and automatically link to external documentation.
 - Render properties and functions as expandable cards.
 - Improved handling of goog.module.declareLegacyNamespace.
+- Distinguish between the different categories of nested types (e.g. class vs interface)
 - Upgraded to com.google.javascript:closure-compiler-unshaded:v20160517
 - Upgraded to com.google.code.gson:gson:2.6.2
 - Upgraded to com.google.guava:guava:20.0-SNAPSHOT (c6387ede215926b377e812c35906f5bd0eec84f0)
