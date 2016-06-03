@@ -251,7 +251,7 @@
 
   {if length($enumeration.value)}
     <section class="enum-values">
-      <h2>Members</h2>
+      <h2>Values</h2>
       <section class="property">
         {foreach $value in $enumeration.value}
           <div id="{$value.name}">
@@ -515,58 +515,62 @@
   {@param functions: list<dossier.Function>}
 
   {foreach $fn in $functions}
-    <section class="property" id="{$fn.base.name}">
-      {call .codeLink}
-        {param source: $fn.base.source /}
-      {/call}
-
-      <h3 class="name">
-        {call .tags}
-          {param tags: $fn.base.tags /}
-          {param visibility: $fn.base.visibility /}
+    <section class="property expandable" id="{$fn.base.name}">
+      <div class="header">
+        {call .codeLink}
+          {param source: $fn.base.source /}
         {/call}
-        <div>
-          {if $fn.templateName and length($fn.templateName)}
-            <code class="template-name">
-              {call .printTemplateNames}
-                {param names: $fn.templateName /}
-              {/call}
-            </code>
-            {sp}
-          {/if}
-          {$fn.base.name}
-          {call .functionArgs}
-            {param fn: $fn /}
-          {/call}
-        </div>
-      </h3>
 
-      {call .comment}
-        {param comment: $fn.base.description /}
-      {/call}
+        <h3 class="name">
+          {call .tags}
+            {param tags: $fn.base.tags /}
+            {param visibility: $fn.base.visibility /}
+          {/call}
+          <div>
+            {if $fn.templateName and length($fn.templateName)}
+              <code class="template-name">
+                {call .printTemplateNames}
+                  {param names: $fn.templateName /}
+                {/call}
+              </code>
+              {sp}
+            {/if}
+            {$fn.base.name}
+            {call .functionArgs}
+              {param fn: $fn /}
+            {/call}
+          </div>
+        </h3>
+      </div>
 
-      {if ($fn.base.deprecation and length($fn.base.deprecation.token))
-          or $fn.base.overrides
-          or length($fn.base.specifiedBy)
-          or length($fn.parameter)
-          or length($fn.thrown)
-          or ($fn.return and
-              (($fn.return.description and length($fn.return.description.token)) or
-               ($fn.return.type and length($fn.return.type.token))))}
-        <dl>
-          {call .deprecationNotice}
-            {param deprecation: $fn.base.deprecation /}
-          {/call}
-          {call .overrides}
-            {param base: $fn.base /}
-          {/call}
-          {call .fnDetails}
-            {param fn: $fn /}
-          {/call}
-        </dl>
-      {elseif not $fn.base.description or not length($fn.base.description.token)}
-        <p>No information.</p>
-      {/if}
+      <div class="body">
+        {call .comment}
+          {param comment: $fn.base.description /}
+        {/call}
+
+        {if ($fn.base.deprecation and length($fn.base.deprecation.token))
+            or $fn.base.overrides
+            or length($fn.base.specifiedBy)
+            or length($fn.parameter)
+            or length($fn.thrown)
+            or ($fn.return and
+                (($fn.return.description and length($fn.return.description.token)) or
+                 ($fn.return.type and length($fn.return.type.token))))}
+          <dl>
+            {call .deprecationNotice}
+              {param deprecation: $fn.base.deprecation /}
+            {/call}
+            {call .overrides}
+              {param base: $fn.base /}
+            {/call}
+            {call .fnDetails}
+              {param fn: $fn /}
+            {/call}
+          </dl>
+        {elseif not $fn.base.description or not length($fn.base.description.token)}
+          <p>No information.</p>
+        {/if}
+      </div>
     </section>
   {/foreach}
 {/template}
@@ -576,31 +580,27 @@
  */
 {template .printReexportedModules}
   {@param properties: list<dossier.Property>}
-  <section class="property">
-    <dl>
-      {foreach $property in $properties}
-        <div id="{$property.base.name}">
-          <dt class="named">
-            {if $property.base.source}
-              {call .codeLink}
-                {param source: $property.base.source /}
-                {param text: $property.base.name /}
-                {param noDiv: true /}
-              {/call}
-            {else}
-              {$property.base.name}
-            {/if}
-            {if $property.type}
-              <i>(
-                {call .comment}
-                  {param comment: $property.type /}
-                {/call}
-              )</i>
-            {/if}
-        </div>
-      {/foreach}
-    </dl>
-  </section>
+  <ul>
+    {foreach $property in $properties}
+      <li id="{$property.base.name}">
+        {if $property.base.source}
+          {call .codeLink}
+            {param source: $property.base.source /}
+            {param text: $property.base.name /}
+            {param noDiv: true /}
+          {/call}
+        {else}
+          {$property.base.name}
+        {/if}
+        {if $property.type}
+          <i>(
+            {call .comment}
+              {param comment: $property.type /}
+            {/call}
+          )</i>
+        {/if}
+    {/foreach}
+  </ul>
 {/template}
 
 /**
@@ -610,51 +610,55 @@
   {@param properties: list<dossier.Property>}
 
   {foreach $property in $properties}
-    <section class="property" id="{$property.base.name}">
-      {call .codeLink}
-        {param source: $property.base.source /}
-      {/call}
-
-      <h3 class="name">
-        {call .tags}
-          {param tags: $property.base.tags /}
-          {param visibility: $property.base.visibility /}
+    <section class="property expandable" id="{$property.base.name}">
+      <div class="header">
+        {call .codeLink}
+          {param source: $property.base.source /}
         {/call}
-        <div>{$property.base.name}</div>
-      </h3>
 
-      {call .comment}
-        {param comment: $property.base.description /}
-      {/call}
+        <h3 class="name">
+          {call .tags}
+            {param tags: $property.base.tags /}
+            {param visibility: $property.base.visibility /}
+          {/call}
+          <div>{$property.base.name}</div>
+        </h3>
+      </div>
 
-      {if $property.base.overrides
-          or length($property.base.specifiedBy)
-          or $property.type
-          or ($property.base.deprecation and length($property.base.deprecation.token))
-          or length($property.base.seeAlso)}
-        <dl>
-          {call .deprecationNotice}
-            {param deprecation: $property.base.deprecation /}
-          {/call}
-          {if $property.type}
-            <dt class="spec">Type
-            <dd>
-              {call .comment}
-                {param comment: $property.type /}
-              {/call}
-            </dd>
-          {/if}
-          {call .overrides}
-            {param base: $property.base /}
-          {/call}
-          {call .seeAlso}
-            {param base: $property.base /}
-          {/call}
-        </dl>
-      {elseif not $property.base.description
-          or not length($property.base.description.token)}
-        <p>No information.</p>
-      {/if}
+      <div class="body">
+        {call .comment}
+          {param comment: $property.base.description /}
+        {/call}
+
+        {if $property.base.overrides
+            or length($property.base.specifiedBy)
+            or $property.type
+            or ($property.base.deprecation and length($property.base.deprecation.token))
+            or length($property.base.seeAlso)}
+          <dl>
+            {call .deprecationNotice}
+              {param deprecation: $property.base.deprecation /}
+            {/call}
+            {if $property.type}
+              <dt class="spec">Type
+              <dd>
+                {call .comment}
+                  {param comment: $property.type /}
+                {/call}
+              </dd>
+            {/if}
+            {call .overrides}
+              {param base: $property.base /}
+            {/call}
+            {call .seeAlso}
+              {param base: $property.base /}
+            {/call}
+          </dl>
+        {elseif not $property.base.description
+            or not length($property.base.description.token)}
+          <p>No information.</p>
+        {/if}
+      </div>
     </section>
   {/foreach}
 {/template}
@@ -730,7 +734,7 @@
   {/if}
 
   {if $type.tags.isModule and length($type.reexportedModule)}
-    <section class="static-properties">
+    <section class="exported-modules">
       <h2>Exported Modules</h2>
       {call .printReexportedModules}
         {param properties: $type.reexportedModule /}
@@ -816,35 +820,6 @@
       {/if}
     </div>
   </h1>
-
-  {call .classInheritance}
-    {param types: $type.extendedType /}
-  {/call}
-  {if $type.aliasedType
-      or length($type.implementedType)
-      or ($type.enumeration and length($type.enumeration.type.token))
-      or ($type.deprecation and length($type.deprecation.token))}
-    <dl>
-      {if $type.enumeration and length($type.enumeration.type.token)}
-        <dt class="spec">Type
-        <dd>
-          <code>
-            {call .comment}
-              {param comment: $type.enumeration.type /}
-            {/call}
-          </code>
-      {/if}
-      {call .printAliasLink}
-        {param type: $type /}
-      {/call}
-      {call .printInterfaces}
-        {param type: $type /}
-      {/call}
-      {call .deprecationNotice}
-        {param deprecation: $type.deprecation /}
-      {/call}
-    </dl>
-  {/if}
 {/template}
 
 
@@ -914,24 +889,55 @@
           <article>
         {/if}
           <section class="intro">
-            {call .typeHeader}
-              {param type: $type /}
-            {/call}
-
-            {if $type.description
-                and length($type.description.token)}
-              {call .comment}
-                {param comment: $type.description /}
-              {/call}
-            {else}
-              <p>No description available.</p>
-            {/if}
-
-            {if not $type.tags.isInterface and $type.mainFunction}
-              {call .mainFunction}
+            <div class="header">
+              {call .typeHeader}
                 {param type: $type /}
               {/call}
-            {/if}
+            </div>
+            <div class="body">
+              {call .classInheritance}
+                {param types: $type.extendedType /}
+              {/call}
+              {if $type.aliasedType
+                  or length($type.implementedType)
+                  or ($type.enumeration and length($type.enumeration.type.token))
+                  or ($type.deprecation and length($type.deprecation.token))}
+                <dl>
+                  {if $type.enumeration and length($type.enumeration.type.token)}
+                    <dt class="spec">Type
+                    <dd>
+                      <code>
+                        {call .comment}
+                          {param comment: $type.enumeration.type /}
+                        {/call}
+                      </code>
+                  {/if}
+                  {call .printAliasLink}
+                    {param type: $type /}
+                  {/call}
+                  {call .printInterfaces}
+                    {param type: $type /}
+                  {/call}
+                  {call .deprecationNotice}
+                    {param deprecation: $type.deprecation /}
+                  {/call}
+                </dl>
+              {/if}
+              {if $type.description
+                  and length($type.description.token)}
+                {call .comment}
+                  {param comment: $type.description /}
+                {/call}
+              {else}
+                <p>No description available.</p>
+              {/if}
+
+              {if not $type.tags.isInterface and $type.mainFunction}
+                {call .mainFunction}
+                  {param type: $type /}
+                {/call}
+              {/if}
+            </div>
           </section>
 
           {if $type.enumeration}
@@ -956,21 +962,11 @@
               {else}
                 <h2>Types</h2>
               {/if}
-              <section class="property">
-                <dl>
-                  {foreach $nestedType in $type.nested}
-                    <dt><a href="{$nestedType.href}">{$nestedType.name}</a>
-                    <dd>
-                      {if $nestedType.summary and length($nestedType.summary.token)}
-                        {call .comment}
-                          {param comment: $nestedType.summary /}
-                        {/call}
-                      {else}
-                        <p>No description.</p>
-                      {/if}
-                  {/foreach}
-                </dl>
-              </section>
+              <ul>
+                {foreach $nestedType in $type.nested}
+                  <li><a href="{$nestedType.href}">{$nestedType.name}</a>
+                {/foreach}
+              </ul>
             </section>
           {/if}
 
@@ -978,30 +974,34 @@
             <section class="type-defs">
               <h2>Type Definitions</h2>
               {foreach $typedef in $type.typeDef}
-                <section id="{$typedef.name}" class="property">
-                  {call .codeLink}
-                    {param source: $typedef.source /}
-                  {/call}
-                  <h3 class="name">{$typedef.name}</h3>
-                  <dl>
-                    <dt class="spec">Type
-                    <dd>
-                      <code>
-                        {call .comment}
-                          {param comment: $typedef.type /}
-                        {/call}
-                      </code>
-                    {call .deprecationNotice}
-                      {param deprecation: $typedef.deprecation /}
+                <section id="{$typedef.name}" class="property expandable">
+                  <div class="header">
+                    {call .codeLink}
+                      {param source: $typedef.source /}
                     {/call}
-                  </dl>
-                  {if $typedef.description and length($typedef.description.token)}
-                    {call .comment}
-                      {param comment: $typedef.description /}
-                    {/call}
-                  {else}
-                    <p>No description.</p>
-                  {/if}
+                    <h3 class="name">{$typedef.name}</h3>
+                  </div>
+                  <div class="body">
+                    <dl>
+                      <dt class="spec">Type
+                      <dd>
+                        <code>
+                          {call .comment}
+                            {param comment: $typedef.type /}
+                          {/call}
+                        </code>
+                      {call .deprecationNotice}
+                        {param deprecation: $typedef.deprecation /}
+                      {/call}
+                    </dl>
+                    {if $typedef.description and length($typedef.description.token)}
+                      {call .comment}
+                        {param comment: $typedef.description /}
+                      {/call}
+                    {else}
+                      <p>No description.</p>
+                    {/if}
+                  </div>
                 </section>
               {/foreach}
             </section>

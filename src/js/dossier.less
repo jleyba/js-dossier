@@ -32,6 +32,7 @@ h1.title {
   margin-top: 20px;
 }
 
+.exported-modules,
 .instance-methods,
 .instance-properties,
 .static-functions,
@@ -42,27 +43,121 @@ h1.title {
 .constants {
   & > h2 {
     margin-top: 48px;
+    margin-left: 16px;
     opacity: .8;
     font-weight: 300;
   }
 }
 
 .intro,
-.property,
 article.srcfile,
 article.page {
   margin-bottom: 16px;
-  padding: 16px;
   background: @main_column_color;
-  .raise-2dp();
+  .raise-1dp();
+}
+
+article.srcfile,
+article.page {
+  padding: 16px;
+}
+
+.intro,
+.property {
+  padding: 0;
+
+  & > .header {
+    padding: 16px 16px 0;
+    margin-bottom: 16px;
+    border-bottom: 1px solid @section_border_color;
+  }
+
+  & > .body {
+    padding: 0 16px 16px;
+  }
 }
 
 .parentlink {
   float: left;
 }
 
+
+article {
+  .types ul,
+  .exported-modules ul {
+    list-style: none;
+
+    width: ~"calc(100% - 32px)";
+    margin: 0 auto;
+
+    background: @main_column_color;
+    .raise-1dp();
+
+    font: 400 16px/24px Roboto,sans-serif;
+
+    li {
+      padding: 16px;
+      border-bottom: 1px solid @section_border_color;
+    }
+
+    i {
+      margin-left: 8px;
+      color: @link_color;
+    }
+  }
+}
+
+.intro {
+  width: ~"calc(100% - 32px)";
+  margin: 0 auto;
+}
+
 .property {
   @size: 24px;
+
+  background: @main_column_color;
+  .raise-1dp();
+
+  &.expandable {
+    max-height: 56px;
+    overflow: hidden;
+    width: ~"calc(100% - 32px)";
+    margin: 0 auto;
+
+    & > .header {
+      cursor: pointer;
+    }
+
+    &:hover {
+      .code-link {
+        display: block;
+      }
+    }
+
+    &.open {
+      margin: 16px 0;
+      width: 100%;
+      max-width: 100%;
+      max-height: initial;
+      .raise-4dp();
+
+      .code-link {
+        display: block;
+      }
+    }
+  }
+
+  .enum-values & {
+    padding: 16px;
+  }
+
+  h3.name {
+    font-size: 16px;
+  }
+
+  & > .header {
+    margin-bottom: 8px;
+  }
 
   &:target {
     .target();
@@ -71,7 +166,7 @@ article.page {
   .code-link {
     height: @size;
     float: right;
-    padding: 0 0 0 8px;
+    display: none;
 
     a {
       display: block;
@@ -88,9 +183,6 @@ article.page {
 
 h1.title,
 h3.name {
-  border-bottom: 1px solid @section_border_color;
-  padding-bottom: 4px;
-
   display: flex;
   flex-direction: row;
   flex-wrap: wrap-reverse;

@@ -60,6 +60,7 @@ dossier.init = function() {
   dossier.resolveAmbiguity_();
   dossier.initSourceHilite_();
 
+  setTimeout(dossier.initProperties_, 0);
   setTimeout(dossier.adjustTarget_, 0);
   setTimeout(drawer.scrollToCurrent.bind(drawer), 0);
 };
@@ -197,4 +198,35 @@ dossier.initNavList_ = function(typeInfo) {
   const currentFile = window.location.pathname.slice(dossier.BASE_PATH_.length);
   const nav = goog.module.get('dossier.nav');
   return nav.createNavDrawer(typeInfo, currentFile, dossier.BASE_PATH_);
+};
+
+
+/**
+ * @private
+ */
+dossier.initProperties_ = function() {
+  let propHeaders =
+      document.querySelectorAll('.property.expandable > .header:first-child');
+  goog.array.forEach(propHeaders, header => {
+    let prop = header.parentNode;
+    if (!prop || !prop.classList.contains('property')) {
+      return;
+    }
+
+    goog.events.listen(
+        header,
+        goog.events.EventType.CLICK,
+        () => prop.classList.toggle('open'));
+  });
+
+  openCurrentTarget();
+  goog.events.listen(
+      window, goog.events.EventType.HASHCHANGE, openCurrentTarget);
+
+  function openCurrentTarget() {
+    let target = document.querySelector('.property.expandable:target');
+    if (target) {
+      target.classList.add('open');
+    }
+  }
 };

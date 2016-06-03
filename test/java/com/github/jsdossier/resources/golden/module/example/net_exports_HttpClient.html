@@ -1,113 +1,125 @@
 <article>
   <section class="intro">
-    <div class="parentlink">
-      <b>Module:</b>
-      <a href="net.html">example/net</a>
+    <div class="header">
+      <div class="parentlink">
+        <b>Module:</b>
+        <a href="net.html">example/net</a>
+      </div>
+      <div class="codelink">
+        <a href="../../source/example/net.js.src.html#l61">View Source</a>
+      </div>
+      <h1 class="title">
+        <div>
+          class HttpClient
+        </div></h1>
     </div>
-    <div class="codelink">
-      <a href="../../source/example/net.js.src.html#l61">View Source</a>
+    <div class="body">
+      <p>A simple HTTP client.</p>
+      <h3 class="name">
+        <div>
+          new HttpClient()
+        </div></h3>
+      <dt class="spec">
+        Parameters
+      </dt>
+      <dd>
+        <dl>
+          <dd>
+            <p>None.</p>
+          </dd>
+        </dl>
+      </dd>
     </div>
-    <h1 class="title">
-      <div>
-        class HttpClient
-      </div></h1>
-    <p>A simple HTTP client.</p>
-    <h3 class="name">
-      <div>
-        new HttpClient()
-      </div></h3>
-    <dt class="spec">
-      Parameters
-    </dt>
-    <dd>
-      <dl>
-        <dd>
-          <p>None.</p>
-        </dd>
-      </dl>
-    </dd>
   </section>
   <section class="instance-methods">
     <h2>Instance Methods</h2>
-    <section class="property" id="fetchJson">
-      <div class="code-link">
-        <a href="../../source/example/net.js.src.html#l71" title="View source"><i class="material-icons">code</i></a>
+    <section class="property expandable" id="fetchJson">
+      <div class="header">
+        <div class="code-link">
+          <a href="../../source/example/net.js.src.html#l71" title="View source"><i class="material-icons">code</i></a>
+        </div>
+        <h3 class="name">
+          <div>
+            fetchJson(
+            <wbr>url)
+          </div></h3>
       </div>
-      <h3 class="name">
-        <div>
-          fetchJson(
-          <wbr>url)
-        </div></h3>
-      <p>Retrieves a <a href="net.html#fetchJson">JSON resource</a>.</p>
-      <dl>
-        <dt class="spec">
-          Parameters
-        </dt>
-        <dd>
-          <dl>
-            <dt class="named">
-              url
-              <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
-            </dt>
-            <dd>
-              <p>The URL To fetch the resource from.</p>
-            </dd>
-          </dl>
-        </dd>
-        <dt class="spec">
-          Returns
-        </dt>
-        <dd>
-          <dl>
-            <dt>
-              <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>&gt;</code>
-            </dt>
-            <dd>
-              <p>A promise that will be fulfilled with the parsed JSON response.</p>
-            </dd>
-          </dl>
-        </dd>
-      </dl>
+      <div class="body">
+        <p>Retrieves a <a href="net.html#fetchJson">JSON resource</a>.</p>
+        <dl>
+          <dt class="spec">
+            Parameters
+          </dt>
+          <dd>
+            <dl>
+              <dt class="named">
+                url
+                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
+              </dt>
+              <dd>
+                <p>The URL To fetch the resource from.</p>
+              </dd>
+            </dl>
+          </dd>
+          <dt class="spec">
+            Returns
+          </dt>
+          <dd>
+            <dl>
+              <dt>
+                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>&gt;</code>
+              </dt>
+              <dd>
+                <p>A promise that will be fulfilled with the parsed JSON response.</p>
+              </dd>
+            </dl>
+          </dd>
+        </dl>
+      </div>
     </section>
-    <section class="property" id="get">
-      <div class="code-link">
-        <a href="../../source/example/net.js.src.html#l82" title="View source"><i class="material-icons">code</i></a>
+    <section class="property expandable" id="get">
+      <div class="header">
+        <div class="code-link">
+          <a href="../../source/example/net.js.src.html#l82" title="View source"><i class="material-icons">code</i></a>
+        </div>
+        <h3 class="name">
+          <div>
+            get(
+            <wbr>resource)
+          </div></h3>
       </div>
-      <h3 class="name">
-        <div>
-          get(
-          <wbr>resource)
-        </div></h3>
-      <p>Executes a basic <a href="net.html#get">HTTP get request</a>.</p>
-      <dl>
-        <dt class="spec">
-          Parameters
-        </dt>
-        <dd>
-          <dl>
-            <dt class="named">
-              resource
-              <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
-            </dt>
-            <dd>
-              <p>The resource to retrieve.</p>
-            </dd>
-          </dl>
-        </dd>
-        <dt class="spec">
-          Returns
-        </dt>
-        <dd>
-          <dl>
-            <dt>
-              <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>&gt;</code>
-            </dt>
-            <dd>
-              <p>A promise that will be fulfilled with the server's response.</p>
-            </dd>
-          </dl>
-        </dd>
-      </dl>
+      <div class="body">
+        <p>Executes a basic <a href="net.html#get">HTTP get request</a>.</p>
+        <dl>
+          <dt class="spec">
+            Parameters
+          </dt>
+          <dd>
+            <dl>
+              <dt class="named">
+                resource
+                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></code>
+              </dt>
+              <dd>
+                <p>The resource to retrieve.</p>
+              </dd>
+            </dl>
+          </dd>
+          <dt class="spec">
+            Returns
+          </dt>
+          <dd>
+            <dl>
+              <dt>
+                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>&gt;</code>
+              </dt>
+              <dd>
+                <p>A promise that will be fulfilled with the server's response.</p>
+              </dd>
+            </dl>
+          </dd>
+        </dl>
+      </div>
     </section>
   </section>
 </article>

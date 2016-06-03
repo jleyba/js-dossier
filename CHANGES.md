@@ -2,6 +2,7 @@
 
 - Treat the compiler's IArrayLike, IObject, and IThenable like other built-in
   externs and automatically link to external documentation.
+- Render properties and functions as expandable cards.
 - Upgraded Closure compiler to 799b8513a01906ac7ae75a9e1f2606554c6b47b5
 - Upgraded to com.google.code.gson:gson:2.6.2
 - Upgraded to com.google.guava:guava:20.0-SNAPSHOT (c6387ede215926b377e812c35906f5bd0eec84f0)

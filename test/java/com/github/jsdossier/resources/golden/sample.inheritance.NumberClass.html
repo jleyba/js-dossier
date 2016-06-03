@@ -1,222 +1,250 @@
 <article>
   <section class="intro">
-    <div class="parentlink">
-      <b>Namespace:</b>
-      <a href="sample.inheritance.html">sample.inheritance</a>
-    </div>
-    <div class="codelink">
-      <a href="source/inheritance.js.src.html#l121">View Source</a>
-    </div>
-    <h1 class="title">
-      <div class="tags">
-        <span class="struct"></span>
+    <div class="header">
+      <div class="parentlink">
+        <b>Namespace:</b>
+        <a href="sample.inheritance.html">sample.inheritance</a>
       </div>
-      <div>
-        class NumberClass
-      </div></h1>
-    <pre class="inheritance"><a href="sample.inheritance.TemplateClass.html">sample.inheritance.TemplateClass</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>&gt;
+      <div class="codelink">
+        <a href="source/inheritance.js.src.html#l121">View Source</a>
+      </div>
+      <h1 class="title">
+        <div class="tags">
+          <span class="struct"></span>
+        </div>
+        <div>
+          class NumberClass
+        </div></h1>
+    </div>
+    <div class="body">
+      <pre class="inheritance"><a href="sample.inheritance.TemplateClass.html">sample.inheritance.TemplateClass</a>&lt;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>&gt;
   └ sample.inheritance.NumberClass</pre>
-    <p>No description available.</p>
-    <h3 class="name">
-      <div>
-        new NumberClass()
-      </div></h3>
-    <dt class="spec">
-      Parameters
-    </dt>
-    <dd>
-      <dl>
-        <dd>
-          <p>None.</p>
-        </dd>
-      </dl>
-    </dd>
+      <p>No description available.</p>
+      <h3 class="name">
+        <div>
+          new NumberClass()
+        </div></h3>
+      <dt class="spec">
+        Parameters
+      </dt>
+      <dd>
+        <dl>
+          <dd>
+            <p>None.</p>
+          </dd>
+        </dl>
+      </dd>
+    </div>
   </section>
   <section class="instance-methods">
     <h2>Instance Methods</h2>
-    <section class="property" id="add">
-      <div class="code-link">
-        <a href="source/inheritance.js.src.html#l111" title="View source"><i class="material-icons">code</i></a>
+    <section class="property expandable" id="add">
+      <div class="header">
+        <div class="code-link">
+          <a href="source/inheritance.js.src.html#l111" title="View source"><i class="material-icons">code</i></a>
+        </div>
+        <h3 class="name">
+          <div>
+            add(
+            <wbr>value)
+          </div></h3>
       </div>
-      <h3 class="name">
-        <div>
-          add(
-          <wbr>value)
-        </div></h3>
-      <p>Adds a value to this instance's <a href="sample.inheritance.NumberClass.html#getValue"><code>value</code></a>.</p>
-      <dl>
-        <dt class="spec">
-          Defined by
-        </dt>
-        <dd>
-          <a href="sample.inheritance.TemplateClass.html#add">sample.inheritance.TemplateClass</a>
-        </dd>
-        <dt class="spec">
-          Parameters
-        </dt>
-        <dd>
-          <dl>
-            <dt class="named">
-              value
-              <code>T</code>
-            </dt>
-            <dd>
-              <p>The value to add.</p>
-            </dd>
-          </dl>
-        </dd>
-      </dl>
+      <div class="body">
+        <p>Adds a value to this instance's <a href="sample.inheritance.NumberClass.html#getValue"><code>value</code></a>.</p>
+        <dl>
+          <dt class="spec">
+            Defined by
+          </dt>
+          <dd>
+            <a href="sample.inheritance.TemplateClass.html#add">sample.inheritance.TemplateClass</a>
+          </dd>
+          <dt class="spec">
+            Parameters
+          </dt>
+          <dd>
+            <dl>
+              <dt class="named">
+                value
+                <code>T</code>
+              </dt>
+              <dd>
+                <p>The value to add.</p>
+              </dd>
+            </dl>
+          </dd>
+        </dl>
+      </div>
     </section>
-    <section class="property" id="addMany">
-      <div class="code-link">
-        <a href="source/inheritance.js.src.html#l140" title="View source"><i class="material-icons">code</i></a>
+    <section class="property expandable" id="addMany">
+      <div class="header">
+        <div class="code-link">
+          <a href="source/inheritance.js.src.html#l140" title="View source"><i class="material-icons">code</i></a>
+        </div>
+        <h3 class="name">
+          <div>
+            addMany(
+            <wbr>n,
+            <wbr> var_args)
+          </div></h3>
       </div>
-      <h3 class="name">
-        <div>
-          addMany(
-          <wbr>n,
-          <wbr> var_args)
-        </div></h3>
-      <p>Similar to <a href="sample.inheritance.NumberClass.html#add"><code>#add</code></a>, but handles many values.</p>
-      <dl>
-        <dt class="spec">
-          Parameters
-        </dt>
-        <dd>
-          <dl>
-            <dt class="named">
-              n
-              <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></code>
-            </dt>
-            <dd>
-              <p>The first number to add.</p>
-            </dd>
-            <dt class="named">
-              var_args
-              <code>...<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></code>
-            </dt>
-            <dd>
-              <p>The remaining numbers to add.</p>
-            </dd>
-          </dl>
-        </dd>
-        <dt class="spec">
-          Returns
-        </dt>
-        <dd>
-          <dl>
-            <dt>
-              <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></code>
-            </dt>
-            <dd>
-              <p>The result.</p>
-            </dd>
-          </dl>
-        </dd>
-        <dt class="spec">
-          See Also
-        </dt>
-        <dd>
-          <a href="sample.inheritance.NumberClass.html#add">#add</a>
-        </dd>
-      </dl>
+      <div class="body">
+        <p>Similar to <a href="sample.inheritance.NumberClass.html#add"><code>#add</code></a>, but handles many values.</p>
+        <dl>
+          <dt class="spec">
+            Parameters
+          </dt>
+          <dd>
+            <dl>
+              <dt class="named">
+                n
+                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></code>
+              </dt>
+              <dd>
+                <p>The first number to add.</p>
+              </dd>
+              <dt class="named">
+                var_args
+                <code>...<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></code>
+              </dt>
+              <dd>
+                <p>The remaining numbers to add.</p>
+              </dd>
+            </dl>
+          </dd>
+          <dt class="spec">
+            Returns
+          </dt>
+          <dd>
+            <dl>
+              <dt>
+                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></code>
+              </dt>
+              <dd>
+                <p>The result.</p>
+              </dd>
+            </dl>
+          </dd>
+          <dt class="spec">
+            See Also
+          </dt>
+          <dd>
+            <a href="sample.inheritance.NumberClass.html#add">#add</a>
+          </dd>
+        </dl>
+      </div>
     </section>
-    <section class="property" id="getValue">
-      <div class="code-link">
-        <a href="source/inheritance.js.src.html#l102" title="View source"><i class="material-icons">code</i></a>
+    <section class="property expandable" id="getValue">
+      <div class="header">
+        <div class="code-link">
+          <a href="source/inheritance.js.src.html#l102" title="View source"><i class="material-icons">code</i></a>
+        </div>
+        <h3 class="name">
+          <div>
+            getValue()
+          </div></h3>
       </div>
-      <h3 class="name">
-        <div>
-          getValue()
-        </div></h3>
-      <dl>
-        <dt class="spec">
-          Defined by
-        </dt>
-        <dd>
-          <a href="sample.inheritance.TemplateClass.html#getValue">sample.inheritance.TemplateClass</a>
-        </dd>
-        <dt class="spec">
-          Returns
-        </dt>
-        <dd>
-          <dl>
-            <dt>
-              <code>T</code>
-            </dt>
-            <dd>
-              <p>.</p>
-            </dd>
-          </dl>
-        </dd>
-      </dl>
+      <div class="body">
+        <dl>
+          <dt class="spec">
+            Defined by
+          </dt>
+          <dd>
+            <a href="sample.inheritance.TemplateClass.html#getValue">sample.inheritance.TemplateClass</a>
+          </dd>
+          <dt class="spec">
+            Returns
+          </dt>
+          <dd>
+            <dl>
+              <dt>
+                <code>T</code>
+              </dt>
+              <dd>
+                <p>.</p>
+              </dd>
+            </dl>
+          </dd>
+        </dl>
+      </div>
     </section>
   </section>
   <section class="instance-properties">
     <h2>Instance Properties</h2>
-    <section class="property" id="name">
-      <div class="code-link">
-        <a href="source/inheritance.js.src.html#l97" title="View source"><i class="material-icons">code</i></a>
+    <section class="property expandable" id="name">
+      <div class="header">
+        <div class="code-link">
+          <a href="source/inheritance.js.src.html#l97" title="View source"><i class="material-icons">code</i></a>
+        </div>
+        <h3 class="name">
+          <div>
+            name
+          </div></h3>
       </div>
-      <h3 class="name">
-        <div>
-          name
-        </div></h3>
-      <dl>
-        <dt class="spec">
-          Type
-        </dt>
-        <dd>
-          <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>
-        </dd>
-        <dt class="spec">
-          Defined by
-        </dt>
-        <dd>
-          <a href="sample.inheritance.TemplateClass.html#name">sample.inheritance.TemplateClass</a>
-        </dd>
-      </dl>
+      <div class="body">
+        <dl>
+          <dt class="spec">
+            Type
+          </dt>
+          <dd>
+            <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>
+          </dd>
+          <dt class="spec">
+            Defined by
+          </dt>
+          <dd>
+            <a href="sample.inheritance.TemplateClass.html#name">sample.inheritance.TemplateClass</a>
+          </dd>
+        </dl>
+      </div>
     </section>
-    <section class="property" id="value">
-      <div class="code-link">
-        <a href="source/inheritance.js.src.html#l112" title="View source"><i class="material-icons">code</i></a>
+    <section class="property expandable" id="value">
+      <div class="header">
+        <div class="code-link">
+          <a href="source/inheritance.js.src.html#l112" title="View source"><i class="material-icons">code</i></a>
+        </div>
+        <h3 class="name">
+          <div>
+            value
+          </div></h3>
       </div>
-      <h3 class="name">
-        <div>
-          value
-        </div></h3>
-      <dl>
-        <dt class="spec">
-          Type
-        </dt>
-        <dd>
-          T
-        </dd>
-        <dt class="spec">
-          Defined by
-        </dt>
-        <dd>
-          <a href="sample.inheritance.TemplateClass.html#value">sample.inheritance.TemplateClass</a>
-        </dd>
-      </dl>
+      <div class="body">
+        <dl>
+          <dt class="spec">
+            Type
+          </dt>
+          <dd>
+            T
+          </dd>
+          <dt class="spec">
+            Defined by
+          </dt>
+          <dd>
+            <a href="sample.inheritance.TemplateClass.html#value">sample.inheritance.TemplateClass</a>
+          </dd>
+        </dl>
+      </div>
     </section>
   </section>
   <section class="type-defs">
     <h2>Type Definitions</h2>
-    <section id="NumberClass.Result" class="property">
-      <div class="code-link">
-        <a href="source/inheritance.js.src.html#l130" title="View source"><i class="material-icons">code</i></a>
+    <section id="NumberClass.Result" class="property expandable">
+      <div class="header">
+        <div class="code-link">
+          <a href="source/inheritance.js.src.html#l130" title="View source"><i class="material-icons">code</i></a>
+        </div>
+        <h3 class="name">NumberClass.Result</h3>
       </div>
-      <h3 class="name">NumberClass.Result</h3>
-      <dl>
-        <dt class="spec">
-          Type
-        </dt>
-        <dd>
-          <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></code>
-        </dd>
-      </dl>
-      <p>Type definition for an addition result.</p>
+      <div class="body">
+        <dl>
+          <dt class="spec">
+            Type
+          </dt>
+          <dd>
+            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></code>
+          </dd>
+        </dl>
+        <p>Type definition for an addition result.</p>
+      </div>
     </section>
   </section>
 </article>

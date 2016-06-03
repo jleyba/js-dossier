@@ -31,6 +31,9 @@ import static java.nio.file.Files.write;
 import static org.junit.Assert.assertEquals;
 
 import com.google.common.base.Function;
+import com.google.common.base.Joiner;
+import com.google.common.base.Splitter;
+import com.google.common.base.Strings;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -67,6 +70,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+
+import javax.annotation.Nullable;
 
 @RunWith(Enclosed.class)
 public class EndToEndTest {
@@ -523,9 +528,36 @@ public class EndToEndTest {
     }
 
     private void compareWithGoldenFile(String actual, String goldenPath) throws IOException {
+      actual = normalizeLines(actual);
+
+      if (Boolean.getBoolean("dossier.e2e.updateGolden")) {
+        Path localFsPath = FileSystems.getDefault()
+            .getPath("./test/java")
+            .resolve(EndToEndTest.class.getPackage().getName().replace('.', '/'))
+            .resolve("resources/golden")
+            .resolve(goldenPath);
+        Files.write(localFsPath, actual.getBytes(UTF_8));
+      }
+
       goldenPath = "resources/golden/" + goldenPath;
       String golden = Resources.toString(EndToEndTest.class.getResource(goldenPath), UTF_8);
-      assertEquals(golden.trim(), actual.replace(" \n", "\n").trim());
+      golden = normalizeLines(golden);
+      assertEquals(golden, actual);
+    }
+
+    private static String normalizeLines(String in) {
+      Iterable<String> lines = Splitter.on('\n').split(in);
+      lines = Iterables.transform(lines, new Function<String, String>() {
+        @Override
+        public String apply(String input) {
+          int end = input.length();
+          while (end > 0 && input.charAt(end - 1) <= ' ') {
+            end -= 1;
+          }
+          return input.substring(0, end);
+        }
+      });
+      return Joiner.on('\n').join(lines).trim();
     }
 
     private static Document load(Path path) throws IOException {
