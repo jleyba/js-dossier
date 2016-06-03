@@ -1,5 +1,12 @@
 # v0.11.0-dev
 
+## Bug Fixes
+
+- Typedefs are now included in the search index
+- Render tags (visibility, deprecation, etc) for typedefs
+
+## Changes
+
 - Treat the compiler's IArrayLike, IObject, and IThenable like other built-in
   externs and automatically link to external documentation.
 - Render properties and functions as expandable cards.

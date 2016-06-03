@@ -979,7 +979,13 @@
                     {call .codeLink}
                       {param source: $typedef.source /}
                     {/call}
-                    <h3 class="name">{$typedef.name}</h3>
+                    <h3 class="name">
+                      {call .tags}
+                        {param tags: $typedef.tags /}
+                        {param visibility: $typedef.visibility /}
+                      {/call}
+                      <div>{$typedef.name}</div>
+                    </h3>
                   </div>
                   <div class="body">
                     <dl>

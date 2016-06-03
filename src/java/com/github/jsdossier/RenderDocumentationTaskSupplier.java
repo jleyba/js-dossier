@@ -245,18 +245,6 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Ca
       return typeSpec.build();
     }
 
-    private boolean reexportsModules(JsType.Builder typeSpec) {
-      if (!type.isModuleExports()) {
-        return false;
-      }
-      for (com.github.jsdossier.proto.Property property : typeSpec.getStaticPropertyList()) {
-        if (property.getBase().getTags().getIsModule()) {
-          return true;
-        }
-      }
-      return false;
-    }
-
     private void addDescription(JsType.Builder renderSpec) {
       Comment description = typeInspector.getTypeDescription();
 
@@ -344,9 +332,11 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Ca
           .filter(Types.isTypedef())
           .toSortedList(new QualifiedNameComparator());
       for (NominalType typedef : typedefs) {
+        String name = getNestedTypeName(typedef);
+        indexReference.addStaticProperty(name);
         JSDocInfo.Visibility visibility = typeRegistry.getVisibility(typedef);
         JsType.TypeDef.Builder builder = spec.addTypeDefBuilder()
-            .setName(getNestedTypeName(typedef))
+            .setName(name)
             .setType(
                 expressionParserFactory.create(linkFactory.withTypeContext(typedef))
                     .parse(typedef.getJsDoc().getType()))
@@ -359,6 +349,7 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Ca
             .setVisibility(Visibility.valueOf(visibility.name()));
 
         if (typedef.getJsDoc().isDeprecated()) {
+          builder.getTagsBuilder().setIsDeprecated(true);
           builder.setDeprecation(getDeprecation(typedef.getJsDoc()));
         }
       }

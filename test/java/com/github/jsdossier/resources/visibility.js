@@ -52,6 +52,28 @@ vis.Private = class {
 };
 
 /**
+ * This is a private type definition.
+ * @typedef {number}
+ * @private
+ */
+vis.PrivateTypeDef_;
+
+/**
+ * A package-private, deprecated type definition.
+ * @typedef {string}
+ * @deprecated This is deprecated; do not use it.
+ */
+vis.DeprecatedTypeDef;
+
+/**
+ * A package-private, deprecated type definition. This typedef has no
+ * deprecation message.
+ * @typedef {string}
+ * @deprecated
+ */
+vis.DeprecatedTypeDef2;
+
+/**
  * A package-private function.
  */
 vis.one = function() {};

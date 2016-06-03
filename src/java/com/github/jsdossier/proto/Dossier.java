@@ -183,7 +183,7 @@ public final class Dossier {
       "omment\022%\n\013deprecation\030\003 \001(\0132\020.dossier.Co" +
       "mment\"o\n\005Index\022\024\n\004home\030\001 \001(\tB\006\362\201\031\002\010\001\022\025\n\r" +
       "include_types\030\002 \001(\010\022\027\n\017include_modules\030\003" +
-      " \001(\010\022 \n\005links\030\004 \003(\0132\021.dossier.TypeLink\"\216" +
+      " \001(\010\022 \n\005links\030\004 \003(\0132\021.dossier.TypeLink\"\253" +
       "\t\n\006JsType\022\014\n\004name\030\001 \001(\t\022#\n\006source\030\005 \001(\0132" +
       "\023.dossier.SourceLink\022+\n\006nested\030\006 \003(\0132\033.d" +
       "ossier.JsType.TypeSummary\022%\n\013description" +
@@ -206,28 +206,29 @@ public final class Dossier {
       "eexported_module\030\031 \003(\0132\021.dossier.Propert" +
       "y\032T\n\013TypeSummary\022\014\n\004name\030\001 \001(\t\022\024\n\004href\030\002" +
       " \001(\tB\006\362\201\031\002\010\001\022!\n\007summary\030\003 \001(\0132\020.dossier." +
-      "Comment\032\323\001\n\007TypeDef\022\014\n\004name\030\001 \001(\t\022\036\n\004typ" +
+      "Comment\032\360\001\n\007TypeDef\022\014\n\004name\030\001 \001(\t\022\036\n\004typ" +
       "e\030\002 \001(\0132\020.dossier.Comment\022#\n\006source\030\003 \001(" +
       "\0132\023.dossier.SourceLink\022%\n\013description\030\004 ",
       "\001(\0132\020.dossier.Comment\022%\n\013deprecation\030\005 \001" +
       "(\0132\020.dossier.Comment\022\'\n\nvisibility\030\006 \001(\016" +
-      "2\023.dossier.Visibility\032@\n\nParentLink\022\037\n\004l" +
-      "ink\030\001 \001(\0132\021.dossier.TypeLink\022\021\n\tis_modul" +
-      "e\030\002 \001(\010\"\210\001\n\016HtmlRenderSpec\022%\n\tresources\030" +
-      "\001 \001(\0132\022.dossier.Resources\022\r\n\005title\030\002 \001(\t" +
-      "\022!\n\007content\030\003 \001(\0132\020.dossier.Comment\022\035\n\005i" +
-      "ndex\030\004 \001(\0132\016.dossier.Index\"\177\n\024SourceFile" +
-      "RenderSpec\022%\n\tresources\030\001 \001(\0132\022.dossier." +
-      "Resources\022!\n\004file\030\002 \001(\0132\023.dossier.Source",
-      "File\022\035\n\005index\030\003 \001(\0132\016.dossier.Index\"w\n\020J" +
-      "sTypeRenderSpec\022\035\n\004type\030\001 \003(\0132\017.dossier." +
-      "JsType\022%\n\tresources\030\002 \001(\0132\022.dossier.Reso" +
-      "urces\022\035\n\005index\030\003 \001(\0132\016.dossier.Index*A\n\n" +
-      "Visibility\022\n\n\006PUBLIC\020\000\022\r\n\tPROTECTED\020\001\022\013\n" +
-      "\007PRIVATE\020\002\022\013\n\007PACKAGE\020\003:M\n\tsanitized\022\035.g" +
-      "oogle.protobuf.FieldOptions\030\236\220\003 \001(\0132\031.do" +
-      "ssier.SanitizedContentB\036\n\032com.github.jsd" +
-      "ossier.protoP\001b\006proto3"
+      "2\023.dossier.Visibility\022\033\n\004tags\030\007 \001(\0132\r.do" +
+      "ssier.Tags\032@\n\nParentLink\022\037\n\004link\030\001 \001(\0132\021" +
+      ".dossier.TypeLink\022\021\n\tis_module\030\002 \001(\010\"\210\001\n" +
+      "\016HtmlRenderSpec\022%\n\tresources\030\001 \001(\0132\022.dos" +
+      "sier.Resources\022\r\n\005title\030\002 \001(\t\022!\n\007content" +
+      "\030\003 \001(\0132\020.dossier.Comment\022\035\n\005index\030\004 \001(\0132" +
+      "\016.dossier.Index\"\177\n\024SourceFileRenderSpec\022" +
+      "%\n\tresources\030\001 \001(\0132\022.dossier.Resources\022!",
+      "\n\004file\030\002 \001(\0132\023.dossier.SourceFile\022\035\n\005ind" +
+      "ex\030\003 \001(\0132\016.dossier.Index\"w\n\020JsTypeRender" +
+      "Spec\022\035\n\004type\030\001 \003(\0132\017.dossier.JsType\022%\n\tr" +
+      "esources\030\002 \001(\0132\022.dossier.Resources\022\035\n\005in" +
+      "dex\030\003 \001(\0132\016.dossier.Index*A\n\nVisibility\022" +
+      "\n\n\006PUBLIC\020\000\022\r\n\tPROTECTED\020\001\022\013\n\007PRIVATE\020\002\022" +
+      "\013\n\007PACKAGE\020\003:M\n\tsanitized\022\035.google.proto" +
+      "buf.FieldOptions\030\236\220\003 \001(\0132\031.dossier.Sanit" +
+      "izedContentB\036\n\032com.github.jsdossier.prot" +
+      "oP\001b\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -349,7 +350,7 @@ public final class Dossier {
     internal_static_dossier_JsType_TypeDef_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_dossier_JsType_TypeDef_descriptor,
-        new java.lang.String[] { "Name", "Type", "Source", "Description", "Deprecation", "Visibility", });
+        new java.lang.String[] { "Name", "Type", "Source", "Description", "Deprecation", "Visibility", "Tags", });
     internal_static_dossier_JsType_ParentLink_descriptor =
       internal_static_dossier_JsType_descriptor.getNestedTypes().get(2);
     internal_static_dossier_JsType_ParentLink_fieldAccessorTable = new

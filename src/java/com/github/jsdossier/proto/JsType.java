@@ -1296,6 +1296,19 @@ public  final class JsType extends
      * <code>optional .dossier.Visibility visibility = 6;</code>
      */
     com.github.jsdossier.proto.Visibility getVisibility();
+
+    /**
+     * <code>optional .dossier.Tags tags = 7;</code>
+     */
+    boolean hasTags();
+    /**
+     * <code>optional .dossier.Tags tags = 7;</code>
+     */
+    com.github.jsdossier.proto.Tags getTags();
+    /**
+     * <code>optional .dossier.Tags tags = 7;</code>
+     */
+    com.github.jsdossier.proto.TagsOrBuilder getTagsOrBuilder();
   }
   /**
    * Protobuf type {@code dossier.JsType.TypeDef}
@@ -1403,6 +1416,19 @@ public  final class JsType extends
               int rawValue = input.readEnum();
 
               visibility_ = rawValue;
+              break;
+            }
+            case 58: {
+              com.github.jsdossier.proto.Tags.Builder subBuilder = null;
+              if (tags_ != null) {
+                subBuilder = tags_.toBuilder();
+              }
+              tags_ = input.readMessage(com.github.jsdossier.proto.Tags.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(tags_);
+                tags_ = subBuilder.buildPartial();
+              }
+
               break;
             }
           }
@@ -1563,6 +1589,27 @@ public  final class JsType extends
       return result == null ? com.github.jsdossier.proto.Visibility.UNRECOGNIZED : result;
     }
 
+    public static final int TAGS_FIELD_NUMBER = 7;
+    private com.github.jsdossier.proto.Tags tags_;
+    /**
+     * <code>optional .dossier.Tags tags = 7;</code>
+     */
+    public boolean hasTags() {
+      return tags_ != null;
+    }
+    /**
+     * <code>optional .dossier.Tags tags = 7;</code>
+     */
+    public com.github.jsdossier.proto.Tags getTags() {
+      return tags_ == null ? com.github.jsdossier.proto.Tags.getDefaultInstance() : tags_;
+    }
+    /**
+     * <code>optional .dossier.Tags tags = 7;</code>
+     */
+    public com.github.jsdossier.proto.TagsOrBuilder getTagsOrBuilder() {
+      return getTags();
+    }
+
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -1593,6 +1640,9 @@ public  final class JsType extends
       if (visibility_ != com.github.jsdossier.proto.Visibility.PUBLIC.getNumber()) {
         output.writeEnum(6, visibility_);
       }
+      if (tags_ != null) {
+        output.writeMessage(7, getTags());
+      }
     }
 
     public int getSerializedSize() {
@@ -1622,6 +1672,10 @@ public  final class JsType extends
       if (visibility_ != com.github.jsdossier.proto.Visibility.PUBLIC.getNumber()) {
         size += com.google.protobuf.CodedOutputStream
           .computeEnumSize(6, visibility_);
+      }
+      if (tags_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(7, getTags());
       }
       memoizedSize = size;
       return size;
@@ -1766,6 +1820,12 @@ public  final class JsType extends
         }
         visibility_ = 0;
 
+        if (tagsBuilder_ == null) {
+          tags_ = null;
+        } else {
+          tags_ = null;
+          tagsBuilder_ = null;
+        }
         return this;
       }
 
@@ -1810,6 +1870,11 @@ public  final class JsType extends
           result.deprecation_ = deprecationBuilder_.build();
         }
         result.visibility_ = visibility_;
+        if (tagsBuilder_ == null) {
+          result.tags_ = tags_;
+        } else {
+          result.tags_ = tagsBuilder_.build();
+        }
         onBuilt();
         return result;
       }
@@ -1843,6 +1908,9 @@ public  final class JsType extends
         }
         if (other.visibility_ != 0) {
           setVisibilityValue(other.getVisibilityValue());
+        }
+        if (other.hasTags()) {
+          mergeTags(other.getTags());
         }
         onChanged();
         return this;
@@ -2449,6 +2517,123 @@ public  final class JsType extends
         visibility_ = 0;
         onChanged();
         return this;
+      }
+
+      private com.github.jsdossier.proto.Tags tags_ = null;
+      private com.google.protobuf.SingleFieldBuilder<
+          com.github.jsdossier.proto.Tags, com.github.jsdossier.proto.Tags.Builder, com.github.jsdossier.proto.TagsOrBuilder> tagsBuilder_;
+      /**
+       * <code>optional .dossier.Tags tags = 7;</code>
+       */
+      public boolean hasTags() {
+        return tagsBuilder_ != null || tags_ != null;
+      }
+      /**
+       * <code>optional .dossier.Tags tags = 7;</code>
+       */
+      public com.github.jsdossier.proto.Tags getTags() {
+        if (tagsBuilder_ == null) {
+          return tags_ == null ? com.github.jsdossier.proto.Tags.getDefaultInstance() : tags_;
+        } else {
+          return tagsBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>optional .dossier.Tags tags = 7;</code>
+       */
+      public Builder setTags(com.github.jsdossier.proto.Tags value) {
+        if (tagsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          tags_ = value;
+          onChanged();
+        } else {
+          tagsBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>optional .dossier.Tags tags = 7;</code>
+       */
+      public Builder setTags(
+          com.github.jsdossier.proto.Tags.Builder builderForValue) {
+        if (tagsBuilder_ == null) {
+          tags_ = builderForValue.build();
+          onChanged();
+        } else {
+          tagsBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>optional .dossier.Tags tags = 7;</code>
+       */
+      public Builder mergeTags(com.github.jsdossier.proto.Tags value) {
+        if (tagsBuilder_ == null) {
+          if (tags_ != null) {
+            tags_ =
+              com.github.jsdossier.proto.Tags.newBuilder(tags_).mergeFrom(value).buildPartial();
+          } else {
+            tags_ = value;
+          }
+          onChanged();
+        } else {
+          tagsBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>optional .dossier.Tags tags = 7;</code>
+       */
+      public Builder clearTags() {
+        if (tagsBuilder_ == null) {
+          tags_ = null;
+          onChanged();
+        } else {
+          tags_ = null;
+          tagsBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>optional .dossier.Tags tags = 7;</code>
+       */
+      public com.github.jsdossier.proto.Tags.Builder getTagsBuilder() {
+        
+        onChanged();
+        return getTagsFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>optional .dossier.Tags tags = 7;</code>
+       */
+      public com.github.jsdossier.proto.TagsOrBuilder getTagsOrBuilder() {
+        if (tagsBuilder_ != null) {
+          return tagsBuilder_.getMessageOrBuilder();
+        } else {
+          return tags_ == null ?
+              com.github.jsdossier.proto.Tags.getDefaultInstance() : tags_;
+        }
+      }
+      /**
+       * <code>optional .dossier.Tags tags = 7;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          com.github.jsdossier.proto.Tags, com.github.jsdossier.proto.Tags.Builder, com.github.jsdossier.proto.TagsOrBuilder> 
+          getTagsFieldBuilder() {
+        if (tagsBuilder_ == null) {
+          tagsBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              com.github.jsdossier.proto.Tags, com.github.jsdossier.proto.Tags.Builder, com.github.jsdossier.proto.TagsOrBuilder>(
+                  getTags(),
+                  getParentForChildren(),
+                  isClean());
+          tags_ = null;
+        }
+        return tagsBuilder_;
       }
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {

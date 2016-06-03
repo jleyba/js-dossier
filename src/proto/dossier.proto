@@ -236,6 +236,7 @@ message JsType {
     Comment description = 4;
     Comment deprecation = 5;
     Visibility visibility = 6;
+    Tags tags = 7;
   }
 
   string name = 1;

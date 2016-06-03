@@ -422,8 +422,9 @@ public class EndToEndTest {
 
     @Test
     public void checkGeneratedTypeIndex() throws IOException {
-      URL url = EndToEndTest.class.getResource("resources/golden/types.json");
-      String expectedContent = Resources.toString(url, UTF_8);
+      String goldenPath = "resources/golden/types.json";
+      URL url = EndToEndTest.class.getResource(goldenPath);
+      String expectedContent = Resources.toString(url, UTF_8).trim();
 
       String actualContent = new String(readAllBytes(outDir.resolve("types.js")), UTF_8);
       actualContent = actualContent.substring("var TYPES = ".length());
@@ -435,8 +436,10 @@ public class EndToEndTest {
       @SuppressWarnings("unchecked")
       TreeMap<String, Object> map = gson.fromJson(actualContent, TreeMap.class);
       sortIndexMap(map);
+      actualContent = gson.toJson(map).trim();
+      updateGoldenFile(goldenPath, actualContent);
 
-      assertThat(gson.toJson(map).trim()).isEqualTo(expectedContent.trim());
+      assertThat(actualContent).isEqualTo(expectedContent);
     }
 
     @Test
@@ -529,20 +532,23 @@ public class EndToEndTest {
 
     private void compareWithGoldenFile(String actual, String goldenPath) throws IOException {
       actual = normalizeLines(actual);
+      goldenPath = "resources/golden/" + goldenPath;
 
+      updateGoldenFile(goldenPath, actual);
+
+      String golden = Resources.toString(EndToEndTest.class.getResource(goldenPath), UTF_8);
+      golden = normalizeLines(golden);
+      assertEquals(golden, actual);
+    }
+
+    private static void updateGoldenFile(String goldenPath, String content) throws IOException {
       if (Boolean.getBoolean("dossier.e2e.updateGolden")) {
         Path localFsPath = FileSystems.getDefault()
             .getPath("./test/java")
             .resolve(EndToEndTest.class.getPackage().getName().replace('.', '/'))
-            .resolve("resources/golden")
             .resolve(goldenPath);
-        Files.write(localFsPath, actual.getBytes(UTF_8));
+        Files.write(localFsPath, content.getBytes(UTF_8));
       }
-
-      goldenPath = "resources/golden/" + goldenPath;
-      String golden = Resources.toString(EndToEndTest.class.getResource(goldenPath), UTF_8);
-      golden = normalizeLines(golden);
-      assertEquals(golden, actual);
     }
 
     private static String normalizeLines(String in) {

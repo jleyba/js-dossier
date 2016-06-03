@@ -396,7 +396,10 @@
       ],
       "name": "sample.inheritance.NumberClass",
       "namespace": false,
-      "qualifiedName": "sample.inheritance.NumberClass"
+      "qualifiedName": "sample.inheritance.NumberClass",
+      "statics": [
+        "NumberClass.Result"
+      ]
     },
     {
       "href": "sample.inheritance.OtherInterface.html",
@@ -512,6 +515,9 @@
       "namespace": true,
       "qualifiedName": "vis",
       "statics": [
+        "DeprecatedTypeDef",
+        "DeprecatedTypeDef2",
+        "PrivateTypeDef_",
         "deprecated",
         "one",
         "public"
