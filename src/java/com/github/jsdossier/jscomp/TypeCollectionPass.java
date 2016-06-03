@@ -295,7 +295,10 @@ public final class TypeCollectionPass implements CompilerPass {
         if (typeRegistry.isModule(file) && name.startsWith(MODULE_CONTENTS_PREFIX)) {
           Module module = typeRegistry.getModule(file);
           if (module.getType() != Type.ES6) {
-            String id = module.getId().substring(MODULE_ID_PREFIX.length());
+            String id = module.getId();
+            if (id.startsWith(MODULE_ID_PREFIX)) {
+              id = id.substring(MODULE_ID_PREFIX.length());
+            }
             recordModuleContentsAlias(file, stripContentsPrefix(id, name), name);
             logfmt("Skipping module internal alias: %s", name);
             continue;
@@ -347,7 +350,7 @@ public final class TypeCollectionPass implements CompilerPass {
     }
 
     private String getModuleContentsPrefix(String moduleId) {
-      return MODULE_CONTENTS_PREFIX + moduleId + "_";
+      return MODULE_CONTENTS_PREFIX + moduleId.replace('.', '$') + "_";
     }
 
     private String stripContentsPrefix(String moduleId, String name) {
@@ -370,7 +373,15 @@ public final class TypeCollectionPass implements CompilerPass {
       if (!typeRegistry.isModule(path)) {
         return Optional.absent();
       }
+
       Module module = typeRegistry.getModule(path);
+      if (module.getHasLegacyNamespace()) {
+        verify(module.getType() == Type.CLOSURE,
+            "legacy namespace on non-closure module: %s", module.getOriginalName());
+        verify(module.getOriginalName().equals(module.getId()));
+        return Optional.of(module);
+      }
+
       if (typeRegistry.isImplicitNamespace(typeName)) {
         verify(!typeName.equals(module.getId()));
         return Optional.absent();

@@ -90,6 +90,32 @@ public class ProvidedSymbolPassTest {
     assertThat(typeRegistry.getImplicitNamespaces()).isEmpty();
 
     Module module = typeRegistry.getModule(nameToId("sample.module"));
+    assertThat(module.getHasLegacyNamespace()).isFalse();
+    assertThat(module.getPath().toString()).isEqualTo("/foo/bar/module.js");
+    assertThat(module.getType()).isEqualTo(Module.Type.CLOSURE);
+  }
+
+  @Test
+  public void collectsClosureModules_withLegacyNamespace() {
+    util.compile(fs.getPath("/foo/bar/module.js"),
+        "goog.module('sample.module');",
+        "goog.module.declareLegacyNamespace();",
+        "",
+        "function internalFunction1() {}",
+        "var internalFunction2 = function() {};",
+        "var internalX = 1234;",
+        "var internalObj = {};",
+        "",
+        "exports.publicFunction1 = internalFunction1;",
+        "exports.publicFunction2 = internalFunction2;",
+        "exports.publicX = internalX;"
+    );
+
+    assertThat(typeRegistry.getProvidedSymbols()).isEmpty();
+    assertThat(typeRegistry.getImplicitNamespaces()).containsExactly("sample", "sample.module");
+
+    Module module = typeRegistry.getModule("sample.module");
+    assertThat(module.getHasLegacyNamespace()).isTrue();
     assertThat(module.getPath().toString()).isEqualTo("/foo/bar/module.js");
     assertThat(module.getType()).isEqualTo(Module.Type.CLOSURE);
   }

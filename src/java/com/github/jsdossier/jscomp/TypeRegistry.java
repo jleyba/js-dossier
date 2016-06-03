@@ -127,6 +127,9 @@ public final class TypeRegistry {
    * Registers a new module.
    */
   public void addModule(Module module) {
+    if (module.getType() == Module.Type.CLOSURE && module.getHasLegacyNamespace()) {
+      recordImplicitProvide(module.getOriginalName());
+    }
     modulesById.put(module.getId(), module);
     modulesByPath.put(module.getPath(), module);
     addAliasRegion(module.getAliases());
@@ -190,6 +193,10 @@ public final class TypeRegistry {
    */
   public void recordProvide(String symbol) {
     providedSymbols.add(symbol);
+    recordImplicitProvide(symbol);
+  }
+
+  private void recordImplicitProvide(String symbol) {
     implicitNamespaces.add(symbol);
     for (int i = symbol.lastIndexOf('.'); i != -1; i = symbol.lastIndexOf('.')) {
       symbol = symbol.substring(0, i);

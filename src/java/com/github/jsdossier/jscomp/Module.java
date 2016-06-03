@@ -37,7 +37,8 @@ public abstract class Module {
     return new AutoValue_Module.Builder()
         .setExportedDocs(ImmutableMap.<String, JSDocInfo>of())
         .setExportedNames(ImmutableMap.<String, String>of())
-        .setInternalVarDocs(ImmutableMap.<String, JSDocInfo>of());
+        .setInternalVarDocs(ImmutableMap.<String, JSDocInfo>of())
+        .setHasLegacyNamespace(false);
   }
 
   // Package private to prevent extensions.
@@ -100,6 +101,13 @@ public abstract class Module {
   public abstract AliasRegion getAliases();
 
   /**
+   * Returns whether this module has a legacy namespace equal to its
+   * {@link #getOriginalName() original name}. This will always return false
+   * for non-closure modules.
+   */
+  public abstract boolean getHasLegacyNamespace();
+
+  /**
    * The recognized module types.
    */
   public enum Type {
@@ -122,17 +130,20 @@ public abstract class Module {
   @AutoValue.Builder
   public static abstract class Builder {
     public abstract Builder setOriginalName(String name);
+    public abstract String getOriginalName();
     public abstract Builder setId(String id);
     public abstract String getId();
     public abstract Builder setPath(Path path);
     public abstract Path getPath();
     public abstract Builder setType(Type type);
+    public abstract Type getType();
     public abstract Builder setJsDoc(JsDoc doc);
     public abstract Builder setExportedNames(ImmutableMap<String, String> names);
     public abstract Builder setExportedDocs(ImmutableMap<String, JSDocInfo> docs);
     public abstract Builder setInternalVarDocs(ImmutableMap<String, JSDocInfo> docs);
     public abstract Builder setAliases(AliasRegion region);
     public abstract AliasRegion getAliases();
+    public abstract Builder setHasLegacyNamespace(boolean legacy);
 
     abstract Module autoBuild();
 
@@ -141,6 +152,11 @@ public abstract class Module {
       checkArgument(m.getPath().equals(m.getAliases().getPath()),
           "Module path does not match alias region path: %s != %s",
           m.getPath(), m.getAliases().getPath());
+      checkArgument(!m.getHasLegacyNamespace() || m.getType() == Type.CLOSURE,
+          "Only Closure modules may have a legacy namespace: %s", m.getId());
+      checkArgument(!m.getHasLegacyNamespace() || m.getId().equals(m.getOriginalName()),
+          "Module ID and legacy namespace must be the same: %s != %s",
+          m.getOriginalName(), m.getId());
       return m;
     }
   }

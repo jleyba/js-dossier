@@ -264,11 +264,55 @@ public class TypeCollectionPassTest {
         "goog.module('foo');",
         "exports.Bar = class {};");
 
+    assertThat(typeRegistry.getAllTypes())
+        .containsExactly(
+            typeRegistry.getType("module$exports$foo"),
+            typeRegistry.getType("module$exports$foo.Bar"));
+
     NominalType type = typeRegistry.getType("module$exports$foo");
     assertNamespace(type);
     assertPath(type, "foo/bar.js");
     assertPosition(type, 1, 0);
     assertModule(type, Module.Type.CLOSURE, "module$exports$foo", "foo/bar.js");
+  }
+
+  @Test
+  public void recordsGoogModuleExportsAsNominalType_handlesLegacyNamespace() {
+    util.compile(fs.getPath("foo/bar.js"),
+        "goog.module('foo');",
+        "goog.module.declareLegacyNamespace();",
+        "exports.Bar = class {};");
+
+    assertThat(typeRegistry.getAllTypes())
+        .containsExactly(
+            typeRegistry.getType("foo"),
+            typeRegistry.getType("foo.Bar"));
+
+    NominalType type = typeRegistry.getType("foo");
+    assertNamespace(type);
+    assertPath(type, "foo/bar.js");
+    assertPosition(type, 1, 13);
+    assertModule(type, Module.Type.CLOSURE, "foo", "foo/bar.js");
+  }
+
+  @Test
+  public void recordsGoogModuleExportsAsNominalType_handlesLegacyNamespace_2() {
+    util.compile(fs.getPath("foo/bar.js"),
+        "goog.module('foo.bar');",
+        "goog.module.declareLegacyNamespace();",
+        "exports.Baz = class {};");
+
+    assertThat(typeRegistry.getAllTypes())
+        .containsExactly(
+            typeRegistry.getType("foo"),
+            typeRegistry.getType("foo.bar"),
+            typeRegistry.getType("foo.bar.Baz"));
+
+    NominalType type = typeRegistry.getType("foo");
+    assertNamespace(type);
+    assertPath(type, "foo/bar.js");
+    assertPosition(type, 1, 13);
+    assertModule(type, Module.Type.CLOSURE, "foo.bar", "foo/bar.js");
   }
 
   @Test

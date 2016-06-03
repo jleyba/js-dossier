@@ -250,6 +250,26 @@ public class DossierFileSystemTest {
   }
 
   @Test
+  public void getGoogModuleDisplayName_withLegacyNamespace_1() {
+    util.compile(fs.getPath("foo.js"),
+        "goog.module('foo.bar');",
+        "goog.module.declareLegacyNamespace();");
+
+    NominalType type = typeRegistry.getType("foo.bar");
+    assertThat(sut.getDisplayName(type)).isEqualTo("foo.bar");
+  }
+
+  @Test
+  public void getGoogModuleDisplayName_withLegacyNamespace_2() {
+    util.compile(fs.getPath("foo.js"),
+        "goog.module('foo.bar.baz');",
+        "goog.module.declareLegacyNamespace();");
+
+    NominalType type = typeRegistry.getType("foo.bar.baz");
+    assertThat(sut.getDisplayName(type)).isEqualTo("foo.bar.baz");
+  }
+
+  @Test
   public void getModuleExportedTypeDisplayName_es6Module() {
     Path path = fs.getPath("/input/module/foo/bar.js");
     util.compile(path, "export class Foo {}");
@@ -273,6 +293,16 @@ public class DossierFileSystemTest {
         "goog.module('foo.bar');",
         "exports.Baz = class {};");
     NominalType type = typeRegistry.getType("module$exports$foo$bar.Baz");
+    assertThat(sut.getDisplayName(type)).isEqualTo("Baz");
+  }
+
+  @Test
+  public void getGoogModuleExportedTypeDisplayName_moduleHasLegacyNamespace() {
+    util.compile(fs.getPath("foo.js"),
+        "goog.module('foo.bar');",
+        "goog.module.declareLegacyNamespace();",
+        "exports.Baz = class {};");
+    NominalType type = typeRegistry.getType("foo.bar.Baz");
     assertThat(sut.getDisplayName(type)).isEqualTo("Baz");
   }
 

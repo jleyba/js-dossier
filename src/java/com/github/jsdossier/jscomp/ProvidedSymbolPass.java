@@ -125,6 +125,14 @@ public final class ProvidedSymbolPass implements CompilerPass {
               .setType(type);
         }
 
+        if (n.isCall()
+            && "goog.module.declareLegacyNamespace".equals(n.getFirstChild().getQualifiedName())
+            && module != null
+            && module.getType() == Module.Type.CLOSURE) {
+          module.setId(module.getOriginalName());
+          module.setHasLegacyNamespace(true);
+        }
+
         if (n.isScript() && module != null) {
           scriptToModule.put(n, module);
           module = null;
