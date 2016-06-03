@@ -20,14 +20,6 @@
 
 # v0.10.0
 
-- Renamed configuration option `closureDepsFile` to `closureDepFiles`
-- Renamed configuration option `stripModulePrefix` to `modulePrefix`
-- Dossier may now be configured entirely through command line flags
-- API documentation will now differentiate between nominal interfaces (declared
-  with `@interface`) and structural interfaces (declared with `@record`)
-- Changed the `sourceUrlTemplate` configuration option to use `%path%` and
-  `%line%` as replacement tokens instead of `${path}` and `${line}`
-
 ## Bug Fixes
 
 - Include visibility indicators for enums
@@ -36,6 +28,16 @@
   comments
   * Fenced code block info string (`<code class="language-javascript">`)
   * Ordered lists that do not start at (`<ol start="3">`)
+
+## Changes
+
+- Renamed configuration option `closureDepsFile` to `closureDepFiles`
+- Renamed configuration option `stripModulePrefix` to `modulePrefix`
+- Dossier may now be configured entirely through command line flags
+- API documentation will now differentiate between nominal interfaces (declared
+  with `@interface`) and structural interfaces (declared with `@record`)
+- Changed the `sourceUrlTemplate` configuration option to use `%path%` and
+  `%line%` as replacement tokens instead of `${path}` and `${line}`
 
 # v0.9.1
 
