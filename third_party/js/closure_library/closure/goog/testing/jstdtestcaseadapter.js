@@ -19,6 +19,7 @@
  * them to transition to the Closure test runner and allow JSTD runner to be
  * deprecated.
  */
+goog.setTestOnly('goog.testing.JsTdTestCaseAdapter');
 goog.provide('goog.testing.JsTdTestCaseAdapter');
 
 goog.require('goog.async.run');
@@ -43,9 +44,7 @@ goog.testing.JsTdTestCaseAdapter.TestCaseFactory_ = function(
   goog.async.run(function() {
     var t = condition ? new T() : {};
     var testCase = new goog.testing.TestCase(testCaseName);
-    testCase.shouldRunTests = function() {
-      return condition;
-    };
+    testCase.shouldRunTests = function() { return condition; };
     testCase.setTestObj(t);
     goog.testing.TestCase.initializeTestRunner(testCase);
   });
@@ -75,11 +74,11 @@ var TestCase = TestCase || function(testCaseName, opt_proto) {
  * @return {!Function}
  * @suppress {duplicate}
  */
-var ConditionalTestCase = ConditionalTestCase || function(
-    testCaseName, condition, opt_proto) {
-  return goog.testing.JsTdTestCaseAdapter.TestCaseFactory_(
-      testCaseName, condition, opt_proto);
-};
+var ConditionalTestCase =
+    ConditionalTestCase || function(testCaseName, condition, opt_proto) {
+      return goog.testing.JsTdTestCaseAdapter.TestCaseFactory_(
+          testCaseName, condition, opt_proto);
+    };
 
 
 // TODO(johnlenz): AsyncTestCase and AsyncConditionalTestCase are
@@ -119,4 +118,3 @@ if (!jstestdriver.testCaseManager) {
     AsyncConditionalTestCase: AsyncConditionalTestCase
   };
 }
-

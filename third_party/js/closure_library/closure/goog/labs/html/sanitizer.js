@@ -191,8 +191,8 @@ goog.labs.html.Sanitizer.prototype.allowElements = function(var_args) {
  *
  * @return {!goog.labs.html.Sanitizer} {@code this}.
  */
-goog.labs.html.Sanitizer.prototype.allowAttributes =
-    function(elementNames, attrNames, opt_rewriteValue) {
+goog.labs.html.Sanitizer.prototype.allowAttributes = function(
+    elementNames, attrNames, opt_rewriteValue) {
   if (!goog.isArray(elementNames)) {
     elementNames = [elementNames];
   }
@@ -208,7 +208,7 @@ goog.labs.html.Sanitizer.prototype.allowAttributes =
     var elementName = elementNames[ei].toLowerCase();
     goog.asserts.assert(
         goog.labs.html.Sanitizer.isValidHtmlName_(elementName) ||
-        '*' === elementName,
+            '*' === elementName,
         elementName);
     // If the element has not been white-listed then panic.
     // TODO(user): allow allow{Elements,Attributes} to be called in any
@@ -336,7 +336,7 @@ goog.labs.html.Sanitizer.chain_ = function(f, g) {
  * minimal safety properties.
  *
  * <p>
- * For url atributes, it checks that any protocol is on a safe set that
+ * For url attributes, it checks that any protocol is on a safe set that
  * doesn't allow script execution.
  * <p>
  * It also blanket disallows CSS and event handler attributes.

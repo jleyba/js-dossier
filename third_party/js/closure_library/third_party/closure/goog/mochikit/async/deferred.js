@@ -55,13 +55,13 @@ goog.require('goog.debug.Error');
  *
  * Deferreds may be templated to a specific type they produce using generics
  * with syntax such as:
- * <code>
- *   /** @type {goog.async.Deferred<string>} *&#47;
- *   var d = new goog.async.Deferred();
- *   // Compiler can infer that foo is a string.
- *   d.addCallback(function(foo) {...});
- *   d.callback('string');  // Checked to be passed a string
- * </code>
+ *
+ *    /** @type {goog.async.Deferred<string>} *\
+ *    var d = new goog.async.Deferred();
+ *    // Compiler can infer that foo is a string.
+ *    d.addCallback(function(foo) {...});
+ *    d.callback('string');  // Checked to be passed a string
+ *
  * Since deferreds are often used to produce different values across a chain,
  * the type information is not propagated across chains, but rather only
  * associated with specifically cast objects.
@@ -438,19 +438,20 @@ goog.async.Deferred.prototype.addBoth = function(f, opt_scope) {
 /**
  * Like addBoth, but propagates uncaught exceptions in the errback.
  *
- * @param {!function(this:T,?):?} f The function to be called on any result.
+ * @param {function(this:T,?):?} f The function to be called on any result.
  * @param {T=} opt_scope An optional scope to call the function in.
- * @return {!goog.async.Deferred.<VALUE>} This Deferred.
+ * @return {!goog.async.Deferred<VALUE>} This Deferred.
  * @template T
  */
-goog.async.Deferred.prototype.addFinally = function (f, opt_scope) {
-  return this.addCallbacks(f, function (err) {
-    var result = f.call(this, err)
+goog.async.Deferred.prototype.addFinally = function(f, opt_scope) {
+  var self = this;
+  return this.addCallbacks(f, function(err) {
+    var result = f.call(self, err);
     if (!goog.isDef(result)) {
-      throw err
+      throw err;
     }
-    return result
-  }, opt_scope)
+    return result;
+  }, opt_scope);
 };
 
 
@@ -462,9 +463,9 @@ goog.async.Deferred.prototype.addFinally = function (f, opt_scope) {
  * NOTE: This is not equivalent to {@code def.addCallback().addErrback()}! If
  * the callback is invoked, the errback will be skipped, and vice versa.
  *
- * @param {(function(this:T,VALUE):?)|null} cb The function to be called on a
+ * @param {?(function(this:T,VALUE):?)} cb The function to be called on a
  *     successful result.
- * @param {(function(this:T,?):?)|null} eb The function to be called on an
+ * @param {?(function(this:T,?):?)} eb The function to be called on an
  *     unsuccessful result.
  * @param {T=} opt_scope An optional scope to call the functions in.
  * @return {!goog.async.Deferred} This Deferred.
@@ -654,7 +655,9 @@ goog.async.Deferred.prototype.fire_ = function() {
           this.result_ = res = ret;
         }
 
-        if (goog.Thenable.isImplementedBy(res)) {
+        if (goog.Thenable.isImplementedBy(res) ||
+            (typeof goog.global['Promise'] === 'function' &&
+            res instanceof goog.global['Promise'])) {
           isNewlyBlocked = true;
           this.blocked_ = true;
         }
@@ -897,7 +900,7 @@ goog.async.Deferred.Error_.prototype.resetTimer = function() {
 
 /**
  * Map of unhandled errors scheduled to be rethrown in a future timestep.
- * @private {!Object<number|string, goog.async.Deferred.Error_>}
+ * @private {!Object<(number|string), goog.async.Deferred.Error_>}
  */
 goog.async.Deferred.errorMap_ = {};
 

@@ -17,6 +17,7 @@
 - Upgraded to com.google.template:soy:2016-01-12
 - Upgraded to com.atlassian.commonmark:commonmark:0.5.0
 - Removed dependency com.atlassian.commonmark:commonmark-ext-gfm-tables
+- Upgraded closure library to f73e58b8faf3cf8f51c7829c3696c85d37c52fb7
 
 # v0.10.0
 
