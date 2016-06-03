@@ -183,7 +183,9 @@ public class Es6ModuleTest {
       fail("should fail to compile!");
     } catch (CompilerUtil.CompileFailureException expected) {
       assertThat(expected.getMessage()).contains(
-          "Failed to load module \"./does_not_exist\" one.js:1");
+          "required \"module$does_not_exist\" namespace never provided one.js:1");
+      assertThat(expected.getMessage()).contains(
+          "Failed to load module \"./does_not_exist\" null:-1");
     }
   }
 
@@ -197,7 +199,9 @@ public class Es6ModuleTest {
       fail("should fail to compile!");
     } catch (CompilerUtil.CompileFailureException expected) {
       assertThat(expected.getMessage()).contains(
-          "Failed to load module \"./two\" one.js:1");
+          "required \"module$two\" namespace never provided one.js:1");
+      assertThat(expected.getMessage()).contains(
+          "Failed to load module \"./two\" null:-1");
     }
   }
 
