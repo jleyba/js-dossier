@@ -211,6 +211,83 @@ public class ProvidedSymbolPassTest {
   }
 
   @Test
+  public void buildsExportToInternalNameMap_exportsObjectLit_closureModule() {
+    util.compile(fs.getPath("module.js"),
+        "goog.module('sample.module');",
+        "",
+        "function internalFunction1() {}",
+        "var internalFunction2 = function() {}",
+        "var internalX = 1234;",
+        "var internalObj = {};",
+        "",
+        "class A {}",
+        "A.B = class {}",
+        "",
+        "exports = {publicFunction1: internalFunction1,",
+        "           publicFunction2: internalFunction2,",
+        "           publicX: internalX,",
+        "           publicB: A.B",
+        "};");
+
+    assertThat(typeRegistry.getProvidedSymbols()).isEmpty();
+    assertThat(typeRegistry.getImplicitNamespaces()).isEmpty();
+
+    Module module = typeRegistry.getModule(nameToId("sample.module"));
+    assertThat(module.getExportedNames().keySet()).containsExactly(
+        "publicFunction1", "publicFunction2", "publicX", "publicB");
+    assertThat(module.getExportedNames()).containsEntry("publicFunction1", "internalFunction1");
+    assertThat(module.getExportedNames()).containsEntry("publicFunction2", "internalFunction2");
+    assertThat(module.getExportedNames()).containsEntry("publicX", "internalX");
+    assertThat(module.getExportedNames()).containsEntry("publicB", "A.B");
+  }
+
+  @Test
+  public void buildsExportToInternalNameMap_exportsDestructuredObjectLit_closureModule() {
+    util.compile(fs.getPath("module.js"),
+        "goog.module('sample.module');",
+        "",
+        "function internalFunction1() {}",
+        "var internalFunction2 = function() {}",
+        "var internalX = 1234;",
+        "var internalObj = {};",
+        "",
+        "exports = {internalFunction1,",
+        "           internalFunction2,",
+        "           internalX};");
+
+    assertThat(typeRegistry.getProvidedSymbols()).isEmpty();
+    assertThat(typeRegistry.getImplicitNamespaces()).isEmpty();
+
+    Module module = typeRegistry.getModule(nameToId("sample.module"));
+    assertThat(module.getExportedNames().keySet()).containsExactly(
+        "internalFunction1", "internalFunction2", "internalX");
+    assertThat(module.getExportedNames()).containsEntry("internalFunction1", "internalFunction1");
+    assertThat(module.getExportedNames()).containsEntry("internalFunction2", "internalFunction2");
+    assertThat(module.getExportedNames()).containsEntry("internalX", "internalX");
+  }
+
+  @Test
+  public void buildsExportToInternalNameMap_exportsNameAssignedToObjectLit_closureModule() {
+    util.compile(fs.getPath("module.js"),
+        "goog.module('sample.module');",
+        "",
+        "function internalFunction1() {}",
+        "var internalFunction2 = function() {}",
+        "var internalX = 1234;",
+        "var internalObj = {};",
+        "",
+        "exports.Data = {internalFunction1,",
+        "                internalFunction2,",
+        "                internalX};");
+
+    assertThat(typeRegistry.getProvidedSymbols()).isEmpty();
+    assertThat(typeRegistry.getImplicitNamespaces()).isEmpty();
+
+    Module module = typeRegistry.getModule(nameToId("sample.module"));
+    assertThat(module.getExportedNames().keySet()).isEmpty();
+  }
+
+  @Test
   public void buildsExportToInternalNameMap_nodeModule() {
     declareNodeModules();
 
@@ -236,5 +313,39 @@ public class ProvidedSymbolPassTest {
     assertThat(module.getExportedNames()).containsEntry("publicFunction1", "internalFunction1");
     assertThat(module.getExportedNames()).containsEntry("publicFunction2", "internalFunction2");
     assertThat(module.getExportedNames()).containsEntry("publicX", "internalX");
+  }
+
+  @Test
+  public void buildsExportToInternalNameMap_exportsObjectLit_nodeModule() {
+    declareNodeModules();
+
+    util.compile(fs.getPath("/modules/foo/bar.js"),
+        "",
+        "function internalFunction1() {}",
+        "var internalFunction2 = function() {}",
+        "var internalX = 1234;",
+        "var internalObj = {};",
+        "",
+        "class A {}",
+        "A.B = class {}",
+        "",
+        "module.exports = {publicFunction1: internalFunction1,",
+        "                  publicFunction2: internalFunction2,",
+        "                  publicX: internalX,",
+        "                  publicB: A.B",
+        "};");
+
+    assertThat(typeRegistry.getProvidedSymbols()).isEmpty();
+    assertThat(typeRegistry.getImplicitNamespaces()).isEmpty();
+
+    Module module = typeRegistry.getModule(nameToId("module$$modules$foo$bar"));
+    assertThat(module.getPath().toString()).isEqualTo("/modules/foo/bar.js");
+    assertThat(module.getType()).isEqualTo(Module.Type.NODE);
+    assertThat(module.getExportedNames().keySet()).containsExactly(
+        "publicFunction1", "publicFunction2", "publicX", "publicB");
+    assertThat(module.getExportedNames()).containsEntry("publicFunction1", "internalFunction1");
+    assertThat(module.getExportedNames()).containsEntry("publicFunction2", "internalFunction2");
+    assertThat(module.getExportedNames()).containsEntry("publicX", "internalX");
+    assertThat(module.getExportedNames()).containsEntry("publicB", "A.B");
   }
 }

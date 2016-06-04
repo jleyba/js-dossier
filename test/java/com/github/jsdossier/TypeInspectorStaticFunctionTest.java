@@ -870,4 +870,67 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
                 .setDescription(htmlComment("<p>Hello, world!</p>\n")))
             .build());
   }
+
+  @Test
+  public void recordsFunctionDataExportedByClosureModule_1() {
+    util.compile(
+        fs.getPath("/src/foo/bar.js"),
+        "goog.module('foo.bar');",
+        "/**",
+        " * Hello, world!",
+        " * @param {number} x The input.",
+        " * @return {string} The output.",
+        " */",
+        "exports.go = function(x) { return x + ''; };");
+
+    NominalType type = typeRegistry.getType("module$exports$foo$bar");
+    TypeInspector typeInspector = typeInspectorFactory.create(type);
+    TypeInspector.Report report = typeInspector.inspectType();
+    assertThat(report.getFunctions()).containsExactly(
+        Function.newBuilder()
+            .setBase(BaseProperty.newBuilder()
+                .setName("go")
+                .setSource(sourceFile("source/foo/bar.js.src.html", 7))
+                .setDescription(htmlComment("<p>Hello, world!</p>\n")))
+            .addParameter(Detail.newBuilder()
+                .setName("x")
+                .setType(numberTypeComment())
+                .setDescription(htmlComment("<p>The input.</p>\n")))
+            .setReturn(Detail.newBuilder()
+                .setType(stringTypeComment())
+                .setDescription(htmlComment("<p>The output.</p>\n")))
+            .build());
+  }
+
+  @Test
+  public void recordsFunctionDataExportedByClosureModule_2() {
+    util.compile(
+        fs.getPath("/src/foo/bar.js"),
+        "goog.module('foo.bar');",
+        "/**",
+        " * Hello, world!",
+        " * @param {number} x The input.",
+        " * @return {string} The output.",
+        " */",
+        "function go(x) { return x + ''; }",
+        "exports = {go: go};");
+
+    NominalType type = typeRegistry.getType("module$exports$foo$bar");
+    TypeInspector typeInspector = typeInspectorFactory.create(type);
+    TypeInspector.Report report = typeInspector.inspectType();
+    assertThat(report.getFunctions()).containsExactly(
+        Function.newBuilder()
+            .setBase(BaseProperty.newBuilder()
+                .setName("go")
+                .setSource(sourceFile("source/foo/bar.js.src.html", 8))
+                .setDescription(htmlComment("<p>Hello, world!</p>\n")))
+            .addParameter(Detail.newBuilder()
+                .setName("x")
+                .setType(numberTypeComment())
+                .setDescription(htmlComment("<p>The input.</p>\n")))
+            .setReturn(Detail.newBuilder()
+                .setType(stringTypeComment())
+                .setDescription(htmlComment("<p>The output.</p>\n")))
+            .build());
+  }
 }

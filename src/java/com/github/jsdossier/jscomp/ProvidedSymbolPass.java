@@ -16,6 +16,7 @@
 
 package com.github.jsdossier.jscomp;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.base.Verify.verify;
 import static com.google.javascript.jscomp.NodeTraversal.traverseEs6;
@@ -282,6 +283,16 @@ public final class ProvidedSymbolPass implements CompilerPass {
 
         Map<String, String> exportedNames = new HashMap<>();
         for (Node ref : exportAssignments) {
+          if (ref.getLastChild().isObjectLit()) {
+            if (ref.getFirstChild().isGetProp()) {
+              continue;  // Ignore: exports.NAME = {...}
+            }
+
+            Map<String, String> names = extractObjectLitNames(ref.getLastChild());
+            exportedNames.putAll(names);
+            continue;
+          }
+
           String rhsName = ref.getLastChild().getQualifiedName();
           if (isNullOrEmpty(rhsName)) {
             continue;
@@ -323,6 +334,28 @@ public final class ProvidedSymbolPass implements CompilerPass {
         scriptToModule.remove(script);
       }
     });
+  }
+
+  private static Map<String, String> extractObjectLitNames(Node node) {
+    checkArgument(node.isObjectLit());
+
+    Map<String, String> names = new HashMap<>();
+    for (Node key = node.getFirstChild(); key != null; key = key.getNext()) {
+      String lhsName = key.getString();
+      if (isNullOrEmpty(lhsName)) {
+        continue;
+      }
+
+      Node rhsNode = key.getFirstChild();
+      String rhsName = rhsNode == null ? lhsName : rhsNode.getQualifiedName();
+      if (isNullOrEmpty(rhsName)) {
+        continue;
+      }
+
+      names.put(lhsName, rhsName);
+    }
+
+    return names;
   }
 
   private static boolean isTopLevelAssign(Node n) {
