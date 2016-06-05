@@ -45,6 +45,7 @@ import java.nio.file.StandardOpenOption;
 public class Renderer {
 
   private final SoyTofu tofu = SoyFileSet.builder()
+      .add(Renderer.class.getResource("resources/common.soy"))
       .add(Renderer.class.getResource("resources/dossier.soy"))
       .setLocalTypeRegistry(new SoyTypeRegistry(ImmutableSet.of(
           (SoyTypeProvider) new DossierSoyTypeProvider())))
