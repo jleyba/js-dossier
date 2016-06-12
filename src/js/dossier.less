@@ -91,13 +91,15 @@ article {
     margin: 0 auto;
 
     background: @main_column_color;
-    .raise-1dp();
 
     font: 400 16px/24px Roboto,sans-serif;
 
     li {
       padding: 16px;
-      border-bottom: 1px solid @section_border_color;
+      border: 1px solid @section_border_color;
+    }
+    li + li {
+      border-top: 0;
     }
 
     i {
@@ -124,6 +126,15 @@ article {
     overflow: hidden;
     width: ~"calc(100% - 32px)";
     margin: 0 auto;
+    border: 1px solid @section_border_color;
+    box-shadow: none;
+
+    & + & {
+      border-top: 0;
+    }
+    &.open + & {
+      border-top: 1px solid @section_border_color;
+    }
 
     & > .header {
       cursor: pointer;
@@ -136,6 +147,7 @@ article {
     }
 
     &.open {
+      border: 0 !important;
       margin: 16px 0;
       width: 100%;
       max-width: 100%;
