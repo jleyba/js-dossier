@@ -34,6 +34,7 @@ import com.google.javascript.jscomp.CompilerOptions;
 import com.google.javascript.jscomp.CompilerOptions.LanguageMode;
 import com.google.javascript.jscomp.CustomPassExecutionTime;
 import com.google.javascript.rhino.jstype.JSTypeRegistry;
+import com.google.javascript.jscomp.parsing.Config;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -78,6 +79,7 @@ public class CompilerModule extends AbstractModule {
 
     // IDE mode must be enabled or all of the jsdoc info will be stripped from the AST.
     options.setIdeMode(true);
+    options.setParseJsDocDocumentation(Config.JsDocParsing.INCLUDE_DESCRIPTIONS_WITH_WHITESPACE);
 
     // For easier debugging.
     options.setPrettyPrint(true);
