@@ -228,7 +228,7 @@
       <dl>
         {if $details and length($details) > 0}
           {foreach $detail in $details}
-            <dt{if $detail.name} class="name"{/if}>
+            <dt class="type{if $detail.name}{sp}name{/if}">
             {if $detail.name}<var>{$detail.name}</var>{/if}
             {if $detail.type and length($detail.type.token)}
               <code>

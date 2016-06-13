@@ -264,14 +264,23 @@ dt {
     }
   }
 
-  &.name {
+  &.name,
+  &.type {
     font-weight: 400;
+  }
+
+  &.name {
     & > code,
     & > i {
-      font-weight: initial;
-      color: @link_color;
       padding-left: 12px;
     }
+  }
+
+  &.name > code,
+  &.name > i,
+  &.type > code {
+    font-weight: initial;
+    color: @link_color;
   }
 }
 
