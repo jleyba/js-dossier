@@ -24,7 +24,6 @@ import com.github.jsdossier.proto.BaseProperty;
 import com.github.jsdossier.proto.Comment;
 import com.github.jsdossier.proto.Function;
 import com.github.jsdossier.proto.Function.Detail;
-import com.github.jsdossier.proto.Property;
 import com.github.jsdossier.proto.Tags;
 import com.github.jsdossier.proto.Visibility;
 import com.github.jsdossier.testing.Bug;
@@ -1262,7 +1261,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setDescription(Comment.getDefaultInstance())
                 .addSpecifiedBy(linkComment("Greeter", "Greeter.html#greet")))
             .setReturn(Detail.newBuilder()
-                .setType(linkComment("HappyGreeting", "HappyGreeting.html"))
+                .setType(nonNullLinkComment("HappyGreeting", "HappyGreeting.html"))
                 .setDescription(htmlComment("<p>A happy greeting.</p>\n")))
             .build());
 
@@ -1278,7 +1277,9 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setSource(sourceFile("source/foo.js.src.html", 14))
                 .setDescription(Comment.getDefaultInstance()))
             .setReturn(Detail.newBuilder()
-                .setType(linkComment("Greeting", "Greeting.html"))
+                .setType(Comment.newBuilder()
+                    .addToken(textToken("!"))
+                    .addToken(linkToken("Greeting", "Greeting.html")))
                 .setDescription(htmlComment("<p>Returns a greeting.</p>\n")))
             .build());
   }

@@ -139,10 +139,10 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
                 .setDescription(htmlComment("<p>Darkens a color.</p>\n")))
             .addParameter(Detail.newBuilder()
                 .setName("c")
-                .setType(stringTypeComment().toBuilder().addToken(0, textToken("!")))
+                .setType(nonNullLinkComment("Color", "Color.html"))
                 .setDescription(htmlComment("<p>The color to darken.</p>\n")))
             .setReturn(Detail.newBuilder()
-                .setType(stringTypeComment())
+                .setType(nonNullLinkComment("Color", "Color.html"))
                 .setDescription(htmlComment("<p>The darkened color.</p>\n")))
             .addThrown(Detail.newBuilder()
                 .setType(errorTypeComment())
@@ -389,7 +389,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
                 .setDescription(Comment.getDefaultInstance()))
             .setReturn(Detail.newBuilder()
                 .setDescription(htmlComment("<p>A new object.</p>\n"))
-                .setType(textComment("foo.One")))
+                .setType(nonNullLinkComment("foo.One", "foo.html#One")))
             .build());
   }
 
@@ -645,7 +645,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
                 .setType(stringTypeComment())
                 .setDescription(htmlComment("<p>The person's name.</p>\n")))
             .setReturn(Detail.newBuilder()
-                .setType(linkComment("Person", "bar_exports_Person.html"))
+                .setType(nonNullLinkComment("Person", "bar_exports_Person.html"))
                 .setDescription(htmlComment("<p>The new person.</p>\n")))
             .build());
   }
@@ -684,7 +684,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
                 .setType(stringTypeComment())
                 .setDescription(htmlComment("<p>The person's name.</p>\n")))
             .setReturn(Detail.newBuilder()
-                .setType(linkComment("Person", "bar_exports_Person.html"))
+                .setType(nonNullLinkComment("Person", "bar_exports_Person.html"))
                 .setDescription(htmlComment("<p>The new person.</p>\n")))
             .build());
   }

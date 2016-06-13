@@ -26,6 +26,7 @@ import com.github.jsdossier.proto.Comment;
 import com.github.jsdossier.testing.CompilerUtil;
 import com.github.jsdossier.testing.GuiceRule;
 import com.google.javascript.jscomp.CompilerOptions;
+import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.JSTypeExpression;
 import org.junit.Rule;
 import org.junit.Test;
@@ -67,10 +68,10 @@ public class TypeExpressionParserTest {
     Comment comment = parser.parse(type.getJsDoc().getInfo().getTypedefType());
     assertThat(comment).isEqualTo(
         Comment.newBuilder()
-            .addToken(text("{age: "))
-            .addToken(numberLink())
-            .addToken(text(", name: "))
+            .addToken(text("{name: "))
             .addToken(stringLink())
+            .addToken(text(", age: "))
+            .addToken(numberLink())
             .addToken(text("}"))
             .build());
   }
@@ -92,6 +93,95 @@ public class TypeExpressionParserTest {
     assertThat(comment).isEqualTo(
         Comment.newBuilder()
             .addToken(text("function(new: "))
+            .addToken(link("Person", "Person.html"))
+            .addToken(text(")"))
+            .build());
+  }
+
+  @Test
+  public void parseFunctionTypeExpressionWithNoReturnType() {
+    util.compile(fs.getPath("foo.js"),
+        "class Person {}",
+        "/**",
+        " * @param {function(this: Person)} a .",
+        " * @constructor",
+        " */",
+        "function Greeter(a) {}");
+
+    NominalType type = typeRegistry.getType("Greeter");
+    TypeExpressionParser parser = parserFactory.create(linkFactoryBuilder.create(type));
+    JSTypeExpression expression = type.getJsDoc().getParameter("a").getType();
+    Comment comment = parser.parse(expression);
+    assertThat(comment).isEqualTo(
+        Comment.newBuilder()
+            .addToken(text("function(this: "))
+            .addToken(link("Person", "Person.html"))
+            .addToken(text(")"))
+            .build());
+  }
+
+  @Test
+  public void parseFunctionTypeExpressionWithReturnType() {
+    util.compile(fs.getPath("foo.js"),
+        "class Person {}",
+        "/**",
+        " * @param {function(): Person} a .",
+        " * @constructor",
+        " */",
+        "function Greeter(a) {}");
+
+    NominalType type = typeRegistry.getType("Greeter");
+    TypeExpressionParser parser = parserFactory.create(linkFactoryBuilder.create(type));
+    JSTypeExpression expression = type.getJsDoc().getParameter("a").getType();
+    Comment comment = parser.parse(expression);
+    assertThat(comment).isEqualTo(
+        Comment.newBuilder()
+            .addToken(text("function(): "))
+            .addToken(link("Person", "Person.html"))
+            .build());
+  }
+
+  @Test
+  public void parseFunctionTypeExpressionWithVarArgs() {
+    util.compile(fs.getPath("foo.js"),
+        "class Person {}",
+        "/**",
+        " * @param {function(...!Person)} a .",
+        " * @constructor",
+        " */",
+        "function Greeter(a) {}");
+
+    NominalType type = typeRegistry.getType("Greeter");
+    TypeExpressionParser parser = parserFactory.create(linkFactoryBuilder.create(type));
+    JSTypeExpression expression = type.getJsDoc().getParameter("a").getType();
+    Comment comment = parser.parse(expression);
+    assertThat(comment).isEqualTo(
+        Comment.newBuilder()
+            .addToken(text("function(...!"))
+            .addToken(link("Person", "Person.html"))
+            .addToken(text(")"))
+            .build());
+  }
+
+  @Test
+  public void parseFunctionTypeExpressionWithVarArgs_withContext() {
+    util.compile(fs.getPath("foo.js"),
+        "class Person {}",
+        "/**",
+        " * @param {function(this: Person, ...!Person)} a .",
+        " * @constructor",
+        " */",
+        "function Greeter(a) {}");
+
+    NominalType type = typeRegistry.getType("Greeter");
+    TypeExpressionParser parser = parserFactory.create(linkFactoryBuilder.create(type));
+    JSTypeExpression expression = type.getJsDoc().getParameter("a").getType();
+    Comment comment = parser.parse(expression);
+    assertThat(comment).isEqualTo(
+        Comment.newBuilder()
+            .addToken(text("function(this: "))
+            .addToken(link("Person", "Person.html"))
+            .addToken(text(", ...!"))
             .addToken(link("Person", "Person.html"))
             .addToken(text(")"))
             .build());
@@ -145,6 +235,70 @@ public class TypeExpressionParserTest {
         Comment.newBuilder()
             .addToken(text("!"))
             .addToken(stringLink())
+            .build());
+  }
+
+  @Test
+  public void parseExpressionWithTemplatizedType() {
+    util.compile(
+        createSourceFile(fs.getPath("source/global.js"),
+            "/** @template T */",
+            "class Container {}",
+            "class Person {",
+            "  /** @return {!Container<string>} . */",
+            "  name() { return new Container; }",
+            "}"));
+
+    NominalType type = typeRegistry.getType("Person");
+    JSDocInfo info = type.getType()
+        .toMaybeFunctionType()
+        .getPrototype()
+        .getOwnPropertyJSDocInfo("name");
+    JSTypeExpression expression = info.getReturnType();
+
+    TypeExpressionParser parser = parserFactory.create(
+        linkFactoryBuilder.create(type).withTypeContext(type));
+    Comment comment = parser.parse(expression);
+    assertThat(comment).isEqualTo(
+        Comment.newBuilder()
+            .addToken(text("!"))
+            .addToken(link("Container", "Container.html"))
+            .addToken(text("<"))
+            .addToken(stringLink())
+            .addToken(text(">"))
+            .build());
+  }
+
+  @Test
+  public void parseExpressionWithTemplatizedTypeFromAnotherModule() {
+    util.compile(
+        createSourceFile(fs.getPath("source/modules/one.js"),
+            "/** @template T */",
+            "export class Container {}"),
+        createSourceFile(fs.getPath("source/modules/two.js"),
+            "import {Container} from './one';",
+            "export class Person {",
+            "  /** @return {!Container<string>} . */",
+            "  name() { return new Container; }",
+            "}"));
+
+    NominalType type = typeRegistry.getType("module$source$modules$two.Person");
+    JSDocInfo info = type.getType()
+        .toMaybeFunctionType()
+        .getPrototype()
+        .getOwnPropertyJSDocInfo("name");
+    JSTypeExpression expression = info.getReturnType();
+
+    TypeExpressionParser parser = parserFactory.create(
+        linkFactoryBuilder.create(type).withTypeContext(type));
+    Comment comment = parser.parse(expression);
+    assertThat(comment).isEqualTo(
+        Comment.newBuilder()
+            .addToken(text("!"))
+            .addToken(link("Container", "one_exports_Container.html"))
+            .addToken(text("<"))
+            .addToken(stringLink())
+            .addToken(text(">"))
             .build());
   }
 

@@ -54,6 +54,7 @@ import com.google.javascript.rhino.IR;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.StaticSourceFile;
+import com.google.javascript.rhino.Token;
 import com.google.javascript.rhino.jstype.FunctionType;
 import com.google.javascript.rhino.jstype.JSType;
 import com.google.javascript.rhino.jstype.JSTypeRegistry;
@@ -66,7 +67,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -680,7 +680,10 @@ final class TypeInspector {
     //   Clazz.prototype.add = function(x, y) { return x + y; };
     if (foundDocs != null
         && !foundDocs.getJsDoc().getParameters().isEmpty()) {
-      final NominalType contextType = foundDocs.getContextType();
+      final LinkFactory contextualLinkFactory =
+          linkFactory.withTypeContext(foundDocs.getContextType());
+      final TypeExpressionParser expressionParser =
+          expressionParserFactory.create(contextualLinkFactory);
       return FluentIterable.from(foundDocs.getJsDoc().getParameters())
           .transform(new com.google.common.base.Function<Parameter, Detail>() {
             @Override
@@ -688,14 +691,10 @@ final class TypeInspector {
               Detail.Builder detail = Detail.newBuilder().setName(input.getName());
               if (!isNullOrEmpty(input.getDescription())) {
                 detail.setDescription(
-                    parser.parseComment(
-                        input.getDescription(), linkFactory.withTypeContext(contextType)));
+                    parser.parseComment(input.getDescription(), contextualLinkFactory));
               }
               if (input.getType() != null) {
-                detail.setType(
-                    expressionParserFactory
-                        .create(linkFactory.withTypeContext(contextType))
-                        .parse(input.getType()));
+                detail.setType(expressionParser.parse(input.getType()));
               }
               return detail.build();
             }
@@ -800,38 +799,43 @@ final class TypeInspector {
       }
     });
 
-    JSType returnType = function.getReturnType();
-    if (returnType.isUnknownType() && returnDocs != null) {
-      returnType =
-          returnDocs.getJsDoc().getReturnClause().getType().get().evaluate(null, jsRegistry);
-    }
-
-    if (returnType.isUnknownType()) {
-      for (InstanceProperty property : overrides) {
-        if (property.getType() != null && property.getType().isFunctionType()) {
-          FunctionType fn = (FunctionType) property.getType();
-          if (fn.getReturnType() != null && !fn.getReturnType().isUnknownType()) {
-            returnType = fn.getReturnType();
-            break;
-          }
-        }
-      }
-    }
-
     NominalType context = null;
     if (returnDocs != null) {
       context = returnDocs.getContextType();
     } else if (docs != null) {
       context = docs.getContextType();
     }
+    TypeExpressionParser parser =
+        expressionParserFactory.create(linkFactory.withTypeContext(context));
 
-    TypeExpressionParser parser = expressionParserFactory.create(
-        linkFactory.withTypeContext(context));
-    Comment comment = parser.parse(returnType);
+    Comment comment;
+    if (returnDocs != null && isKnownType(returnDocs.getJsDoc().getReturnClause())) {
+      comment = parser.parse(returnDocs.getJsDoc().getReturnClause().getType().get());
+    } else {
+      JSType returnType = function.getReturnType();
+      if (returnType.isUnknownType()) {
+        for (InstanceProperty property : overrides) {
+          if (property.getType() != null && property.getType().isFunctionType()) {
+            FunctionType fn = (FunctionType) property.getType();
+            if (fn.getReturnType() != null && !fn.getReturnType().isUnknownType()) {
+              returnType = fn.getReturnType();
+              break;
+            }
+          }
+        }
+      }
+      comment = parser.parse(returnType);
+    }
+
     if (isVacuousTypeComment(comment)) {
       return Comment.getDefaultInstance();
     }
     return comment;
+  }
+
+  private boolean isKnownType(JsDoc.TypedDescription description) {
+    return description.getType().isPresent()
+        && description.getType().get().getRoot().getType() != Token.QMARK;
   }
 
   private com.github.jsdossier.proto.Property getPropertyData(

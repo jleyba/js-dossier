@@ -18,6 +18,7 @@ package com.github.jsdossier;
 
 import static com.github.jsdossier.jscomp.Types.externToOriginalName;
 import static com.github.jsdossier.jscomp.Types.isExternModule;
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Verify.verify;
 import static com.google.common.collect.Iterables.filter;
@@ -93,9 +94,7 @@ final class TypeExpressionParser {
    * Parses the given JS type expression.
    */
   public Comment parse(JSTypeExpression expression) {
-    return new CommentTypeParser().parse(
-        expression.evaluate(null, jsTypeRegistry),
-        ParseModifier.forExpression(expression));
+    return new CommentTypeParser().parse(expression);
   }
 
   /**
@@ -167,7 +166,22 @@ final class TypeExpressionParser {
 
     private String currentText = "";
 
+    Comment parse(JSTypeExpression expression) {
+      parseNode(expression.getRoot());
+      return finishParse(ParseModifier.NONE);
+    }
+
     Comment parse(JSType type, ParseModifier modifier) {
+      startParse(modifier);
+      if (modifier != ParseModifier.NONE && type.isUnionType()) {
+        caseUnionType((UnionType) type, true);
+      } else {
+        type.visit(this);
+      }
+      return finishParse(modifier);
+    }
+
+    private void startParse(ParseModifier modifier) {
       comment.clear();
       currentText = "";
 
@@ -178,13 +192,9 @@ final class TypeExpressionParser {
       if (modifier == ParseModifier.NON_NULL) {
         currentText += "!";
       }
+    }
 
-      if (modifier != ParseModifier.NONE && type.isUnionType()) {
-        caseUnionType((UnionType) type, true);
-      } else {
-        type.visit(this);
-      }
-
+    private Comment finishParse(ParseModifier modifier) {
       if (modifier == ParseModifier.OPTIONAL_ARG) {
         currentText += "=";
       }
@@ -222,6 +232,178 @@ final class TypeExpressionParser {
       if (!href.isEmpty()) {
         token.setHref(href);
       }
+    }
+
+    private void parseNode(Node n) {
+      switch (n.getType()) {
+        case Token.LC:
+          parseRecordType(n);
+          break;
+
+        case Token.BANG:
+          appendText("!");
+          parseNode(n.getFirstChild());
+          break;
+
+        case Token.QMARK:
+          appendText("?");
+          if (n.getFirstChild() != null) {
+            parseNode(n.getFirstChild());
+          }
+          break;
+
+        case Token.EQUALS:
+          parseNode(n.getFirstChild());
+          appendText("=");
+          break;
+
+        case Token.ELLIPSIS:
+          appendText("...");
+          if (n.getFirstChild() != null) {
+            parseNode(n.getFirstChild());
+          }
+          break;
+
+        case Token.STAR:
+          appendText("*");
+          break;
+
+        case Token.PIPE:
+          appendText("(");
+          for (Node child = n.getFirstChild(); child != null; child = child.getNext()) {
+            parseNode(child);
+            if (child.getNext() != null) {
+              appendText("|");
+            }
+          }
+          appendText(")");
+          break;
+
+        case Token.EMPTY:
+          appendText("?");
+          break;
+
+        case Token.VOID:
+          appendText("void");
+          break;
+
+        case Token.STRING:
+        case Token.NAME:
+          parseNamedType(n);
+          break;
+
+        case Token.FUNCTION:
+          parseFunction(n);
+          break;
+
+        default:
+          throw new AssertionError("Unexpected node in type expression: " + n);
+      }
+    }
+
+    private void parseNamedType(Node n) {
+      checkArgument(n.getType() == Token.STRING || n.getType() == Token.NAME);
+      TypeLink link = getNamedTypeLink(n.getString());
+      appendLink(link);
+
+      // Template types!
+      if (n.getFirstChild() != null && n.getFirstChild().getType() == Token.BLOCK) {
+        appendText("<");
+        for (Node child = n.getFirstFirstChild(); child != null; child = child.getNext()) {
+          parseNode(child);
+          if (child.getNext() != null) {
+            appendText(", ");
+          }
+        }
+        appendText(">");
+      }
+    }
+
+    private void parseFunction(Node n) {
+      checkArgument(n.getType() == Token.FUNCTION);
+      appendText("function(");
+
+      Node current = n.getFirstChild();
+      boolean isCtor = current.getType() == Token.NEW;
+      if (current.getType() == Token.THIS || isCtor) {
+        appendText(current.getType() == Token.THIS ? "this: " : "new: ");
+        parseNode(current.getFirstChild());
+        current = current.getNext();
+        if (current.getType() == Token.PARAM_LIST) {
+          appendText(", ");
+        }
+      }
+
+      if (current.getType() == Token.PARAM_LIST) {
+        for (Node param = current.getFirstChild(); param != null; param = param.getNext()) {
+          parseNode(param);
+          if (param.getNext() != null) {
+            appendText(", ");
+          }
+        }
+        current = current.getNext();
+      }
+      appendText(")");
+
+      if (!isCtor && current != null && current.getType() != Token.EMPTY) {
+        appendText(": ");
+        parseNode(current);
+      }
+
+    }
+
+    private TypeLink getNamedTypeLink(String name) {
+      TypeLink link = linkFactory.createLink(name);
+      if (link.getHref().isEmpty()) {
+        JSType jsType = jsTypeRegistry.getType(name);
+        if (jsType != null) {
+          NominalType ntype = resolve(jsType);
+          if (ntype != null) {
+            link = linkFactory.createLink(ntype);
+          }
+        }
+
+        if (link.getHref().isEmpty()) {
+          int index = name.indexOf("$$module$");
+          if (index > 0) {
+            name = name.substring(0, index);
+            link = linkFactory.createLink(name);
+          }
+        }
+      }
+      return link;
+    }
+
+    private void parseRecordType(Node n) {
+      checkArgument(n.getType() == Token.LC);
+      appendText("{");
+      for (Node fieldType = n.getFirstFirstChild();
+           fieldType != null;
+           fieldType = fieldType.getNext()) {
+        Node fieldName = fieldType;
+        boolean hasType = false;
+        if (fieldType.getType() == Token.COLON) {
+          fieldName = fieldType.getFirstChild();
+          hasType = true;
+        }
+
+        String name = fieldName.getString();
+        if (name.startsWith("'") || name.startsWith("\"")) {
+          name = name.substring(1, name.length() - 1);
+        }
+
+        appendText(name + ": ");
+        if (hasType) {
+          parseNode(fieldType.getLastChild());
+        } else {
+          appendText("?");
+        }
+
+        if (fieldType.getNext() != null) {
+          appendText(", ");
+        }
+      }
+      appendText("}");
     }
 
     @Override
@@ -401,25 +583,7 @@ final class TypeExpressionParser {
     @Override
     public Void caseNamedType(NamedType type) {
       String name = type.getReferenceName();
-
-      TypeLink link = linkFactory.createLink(name);
-      if (link.getHref().isEmpty()) {
-        JSType jsType = jsTypeRegistry.getType(name);
-        if (jsType != null) {
-          NominalType ntype = resolve(jsType);
-          if (ntype != null) {
-            link = linkFactory.createLink(ntype);
-          }
-        }
-
-        if (link.getHref().isEmpty()) {
-          int index = name.indexOf("$$module$");
-          if (index > 0) {
-            name = name.substring(0, index);
-            link = linkFactory.createLink(name);
-          }
-        }
-      }
+      TypeLink link = getNamedTypeLink(name);
 
       if (link != null) {
         appendLink(link);

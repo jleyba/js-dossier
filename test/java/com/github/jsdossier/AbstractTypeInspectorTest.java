@@ -74,10 +74,21 @@ public abstract class AbstractTypeInspectorTest {
     return SourceLink.newBuilder().setPath(path).setLine(line).build();
   }
 
+  protected static Comment nonNullLinkComment(String text, String href) {
+    return Comment.newBuilder()
+        .addToken(textToken("!"))
+        .addToken(linkToken(text, href))
+        .build();
+  }
+
   protected static Comment linkComment(String text, String href) {
     return Comment.newBuilder()
-        .addToken(Token.newBuilder().setText(text).setHref(href))
+        .addToken(linkToken(text, href))
         .build();
+  }
+
+  protected static Token linkToken(String text, String href) {
+    return Token.newBuilder().setText(text).setHref(href).build();
   }
 
   protected static Comment htmlComment(String html) {
