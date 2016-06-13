@@ -78,7 +78,6 @@ public class CompilerModule extends AbstractModule {
 
     // IDE mode must be enabled or all of the jsdoc info will be stripped from the AST.
     options.setIdeMode(true);
-    options.setPreserveJsDocWhitespace(true);
 
     // For easier debugging.
     options.setPrettyPrint(true);
