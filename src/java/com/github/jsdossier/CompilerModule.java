@@ -33,8 +33,8 @@ import com.google.javascript.jscomp.CompilationLevel;
 import com.google.javascript.jscomp.CompilerOptions;
 import com.google.javascript.jscomp.CompilerOptions.LanguageMode;
 import com.google.javascript.jscomp.CustomPassExecutionTime;
-import com.google.javascript.rhino.jstype.JSTypeRegistry;
 import com.google.javascript.jscomp.parsing.Config;
+import com.google.javascript.rhino.jstype.JSTypeRegistry;
 
 import java.io.IOException;
 import java.nio.file.Path;
