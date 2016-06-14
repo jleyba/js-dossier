@@ -53,6 +53,7 @@ http.Server = function(listener) {};
 http.Server.prototype.listen;
 
 /**
+ * @param {Function=} callback
  * @return {void}
  */
 http.Server.prototype.close;
