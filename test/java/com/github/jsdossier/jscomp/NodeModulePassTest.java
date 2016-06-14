@@ -301,7 +301,7 @@ public class NodeModulePassTest {
     assertThat(compiler.toSource().trim())
         .contains(lines(
             "var module$exports$module$foo$module = {};",
-            "module$contents$path_path.join(\"a\", \"b\");"));
+            "module$exports$path.join(\"a\", \"b\");"));
   }
 
   @Test
@@ -319,7 +319,7 @@ public class NodeModulePassTest {
     assertThat(compiler.toSource().trim())
         .contains(lines(
             "var module$exports$module$foo$module = {};",
-            "module$exports$module$foo$module.s = new module$contents$stream_stream.Stream;"));
+            "module$exports$module$foo$module.s = new module$exports$stream.Stream;"));
   }
 
   @Test
@@ -441,7 +441,7 @@ public class NodeModulePassTest {
             "};",
             "module$exports$module$foo$two.go = module$contents$module$foo$two_go;",
             "var module$exports$module$foo$one = {};",
-            "module$contents$module$foo$two_go();",
+            "module$exports$module$foo$two.go();",
             "var module$exports$module$foo$three = {};"));
   }
 
@@ -1080,7 +1080,7 @@ public class NodeModulePassTest {
     assertThat(compiler.toSource()).contains(
         lines(
             "var module$exports$module$root$source$foo = {};",
-            "module$contents$xml_xml.parse(\"abc\");"));
+            "module$exports$xml.parse(\"abc\");"));
   }
 
   @Test

@@ -236,39 +236,39 @@ final class TypeExpressionParser {
 
     private void parseNode(Node n) {
       switch (n.getType()) {
-        case Token.LC:
+        case LC:
           parseRecordType(n);
           break;
 
-        case Token.BANG:
+        case BANG:
           appendText("!");
           parseNode(n.getFirstChild());
           break;
 
-        case Token.QMARK:
+        case QMARK:
           appendText("?");
           if (n.getFirstChild() != null) {
             parseNode(n.getFirstChild());
           }
           break;
 
-        case Token.EQUALS:
+        case EQUALS:
           parseNode(n.getFirstChild());
           appendText("=");
           break;
 
-        case Token.ELLIPSIS:
+        case ELLIPSIS:
           appendText("...");
           if (n.getFirstChild() != null) {
             parseNode(n.getFirstChild());
           }
           break;
 
-        case Token.STAR:
+        case STAR:
           appendText("*");
           break;
 
-        case Token.PIPE:
+        case PIPE:
           appendText("(");
           for (Node child = n.getFirstChild(); child != null; child = child.getNext()) {
             parseNode(child);
@@ -279,20 +279,20 @@ final class TypeExpressionParser {
           appendText(")");
           break;
 
-        case Token.EMPTY:
+        case EMPTY:
           appendText("?");
           break;
 
-        case Token.VOID:
+        case VOID:
           appendText("void");
           break;
 
-        case Token.STRING:
-        case Token.NAME:
+        case STRING:
+        case NAME:
           parseNamedType(n);
           break;
 
-        case Token.FUNCTION:
+        case FUNCTION:
           parseFunction(n);
           break;
 

@@ -17,7 +17,7 @@
 goog.module('dossier.nav');
 
 const Arrays = goog.require('goog.array');
-const assert = goog.require('goog.asserts').assert;
+const asserts = goog.require('goog.asserts');
 const dom = goog.require('goog.dom');
 const events = goog.require('goog.events');
 const KeyCodes = goog.require('goog.events.KeyCodes');
@@ -79,7 +79,7 @@ var TreeNode = goog.defineClass(null, {
 
   /** @param {!TreeNode} node The new child to add. */
   addChild: function(node) {
-    assert(!node.parent_);
+    asserts.assert(!node.parent_);
     if (!this.children_) {
       this.children_ = [];
     }
@@ -107,7 +107,7 @@ var TreeNode = goog.defineClass(null, {
 
   /** @param {!TreeNode} node The node to remove. */
   removeChild: function(node) {
-    assert(node.parent_ === this);
+    asserts.assert(node.parent_ === this);
     node.parent_ = null;
     goog.array.remove(this.children_, node);
   },
@@ -148,7 +148,7 @@ var TreeNode = goog.defineClass(null, {
 function collapseNodes(node) {
   var children = node.getChildren();
   if (!children) {
-    assert(node.getValue());
+    asserts.assert(node.getValue());
     return;
   }
 
@@ -224,7 +224,7 @@ exports.buildTree = function(descriptors, isModule, opt_root) {
       }
       currentNode = found;
     });
-    assert(currentNode.getValue() === null);
+    asserts.assert(currentNode.getValue() === null);
     currentNode.setValue(descriptor);
   });
 
@@ -255,7 +255,7 @@ function getId(descriptor) {
  * @return {!Element} The list item.
  */
 function buildListItem(node, basePath, currentPath, idPrefix) {
-  assert(node.getValue() || node.getChildCount());
+  asserts.assert(node.getValue() || node.getChildCount());
 
   var li = document.createElement('li');
 

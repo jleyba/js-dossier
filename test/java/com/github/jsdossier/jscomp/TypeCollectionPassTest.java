@@ -1044,13 +1044,13 @@ public class TypeCollectionPassTest {
     NominalType type = typeRegistry.getType("module$exports$module$modules$foo$bar.Person");
     assertConstructor(type);
     assertPath(type, "modules/foo/bar.js");
-    assertPosition(type, 6, 0);
+    assertPosition(type, 6, 18);
     assertThat(type.getJsDoc().getBlockComment()).isEqualTo("A person.");
 
     type = typeRegistry.getType("module$exports$module$modules$foo$bar.HappyPerson");
     assertConstructor(type);
     assertPath(type, "modules/foo/bar.js");
-    assertPosition(type, 6, 0);
+    assertPosition(type, 6, 26);
     assertThat(type.getJsDoc().getBlockComment()).isEqualTo("A happy person.");
   }
 
@@ -1070,13 +1070,13 @@ public class TypeCollectionPassTest {
     NominalType type = typeRegistry.getType("module$exports$foo.Person");
     assertConstructor(type);
     assertPath(type, "modules/foo/bar.js");
-    assertPosition(type, 8, 0);
+    assertPosition(type, 8, 11);
     assertThat(type.getJsDoc().getBlockComment()).isEqualTo("A person.");
 
     type = typeRegistry.getType("module$exports$foo.HappyPerson");
     assertConstructor(type);
     assertPath(type, "modules/foo/bar.js");
-    assertPosition(type, 8, 0);
+    assertPosition(type, 8, 19);
     assertThat(type.getJsDoc().getBlockComment()).isEqualTo("A happy person.");
   }
 

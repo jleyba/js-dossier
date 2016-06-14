@@ -21,7 +21,7 @@
 
 goog.module('dossier.keyhandler');
 
-const NavDrawer = goog.require('dossier.nav').NavDrawer;
+const nav = goog.require('dossier.nav');
 const events = goog.require('goog.events');
 const EventType = goog.require('goog.events.EventType');
 const KeyCodes = goog.require('goog.events.KeyCodes');
@@ -29,7 +29,7 @@ const userAgent = goog.require('goog.userAgent');
 
 
 /**
- * @param {!NavDrawer} navDrawer The nav drawer widget.
+ * @param {!nav.NavDrawer} navDrawer The nav drawer widget.
  * @param {!HTMLInputElement} inputEl The search input box element.
  */
 exports.init = function(navDrawer, inputEl) {

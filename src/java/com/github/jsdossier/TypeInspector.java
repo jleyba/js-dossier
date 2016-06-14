@@ -58,6 +58,7 @@ import com.google.javascript.rhino.Token;
 import com.google.javascript.rhino.jstype.FunctionType;
 import com.google.javascript.rhino.jstype.JSType;
 import com.google.javascript.rhino.jstype.JSTypeRegistry;
+import com.google.javascript.rhino.jstype.NamedType;
 import com.google.javascript.rhino.jstype.ObjectType;
 import com.google.javascript.rhino.jstype.Property;
 import com.google.javascript.rhino.jstype.TemplatizedType;
@@ -445,8 +446,8 @@ final class TypeInspector {
   }
 
   private Set<JSType> getAssignableTypes(JSType type) {
-    if (type.isConstructor() || type.isInterface()) {
-      type = ((FunctionType) type).getInstanceType();
+    if (type.isNamedType() && registry.isType(((NamedType) type).getReferenceName())) {
+      type = registry.getType(((NamedType) type).getReferenceName()).getType();
     }
     Set<JSType> types = new LinkedHashSet<>();
     types.add(type);

@@ -340,12 +340,10 @@ public class AliasDetectionTest {
             "goog.module('two');",
             "",
             "var a = goog.require('one');",
-            "var b = goog.require('one').One;",
             "var {One, Two, Three} = goog.require('one');"));
 
     NominalType type = typeRegistry.getType("module$exports$two");
     assertThat(typeRegistry.resolveAlias(type, "a")).isEqualTo("module$exports$one");
-    assertThat(typeRegistry.resolveAlias(type, "b")).isEqualTo("module$exports$one.One");
     assertThat(typeRegistry.resolveAlias(type, "One")).isEqualTo("module$exports$one.One");
     assertThat(typeRegistry.resolveAlias(type, "Two")).isEqualTo("module$exports$one.Two");
     assertThat(typeRegistry.resolveAlias(type, "Three")).isEqualTo("module$exports$one.Three");

@@ -33,6 +33,7 @@ import com.google.javascript.jscomp.CompilationLevel;
 import com.google.javascript.jscomp.CompilerOptions;
 import com.google.javascript.jscomp.CompilerOptions.LanguageMode;
 import com.google.javascript.jscomp.CustomPassExecutionTime;
+import com.google.javascript.jscomp.parsing.Config;
 import com.google.javascript.rhino.jstype.JSTypeRegistry;
 
 import java.io.IOException;
@@ -76,9 +77,11 @@ public class CompilerModule extends AbstractModule {
     CompilationLevel.ADVANCED_OPTIMIZATIONS.setOptionsForCompilationLevel(options);
     CompilationLevel.ADVANCED_OPTIMIZATIONS.setTypeBasedOptimizationOptions(options);
 
-    // IDE mode must be enabled or all of the jsdoc info will be stripped from the AST.
-    options.setIdeMode(true);
-    options.setPreserveJsDocWhitespace(true);
+    options.setChecksOnly(true);
+    options.setContinueAfterErrors(true);
+    options.setAllowHotswapReplaceScript(true);
+    options.setPreserveDetailedSourceInfo(true);
+    options.setParseJsDocDocumentation(Config.JsDocParsing.INCLUDE_DESCRIPTIONS_WITH_WHITESPACE);
 
     // For easier debugging.
     options.setPrettyPrint(true);

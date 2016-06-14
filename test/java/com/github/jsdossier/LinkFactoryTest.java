@@ -1223,15 +1223,13 @@ public class LinkFactoryTest {
             fs.getPath("two.js"),
             "goog.module('two');",
             "",
-            "var a = goog.require('one');",
-            "var b = goog.require('one').One"));
+            "var a = goog.require('one');"));
 
     NominalType ref = typeRegistry.getType("module$exports$two");
     LinkFactory factory = createFactory(ref).withTypeContext(ref);
 
     checkLink(factory.createLink("a"), "one", "one.html");
     checkLink(factory.createLink("a.One"), "One", "one.One.html");
-    checkLink(factory.createLink("b"), "One", "one.One.html");
   }
 
   @Test

@@ -2,12 +2,11 @@
   <library name="com.google.javascript:closure-compiler-unshaded:v20160517" type="repository">
     <properties maven-id="com.google.javascript:closure-compiler-unshaded:v20160517" />
     <CLASSES>
-      <root url="jar://$MAVEN_REPOSITORY$/com/google/javascript/closure-compiler-unshaded/v20160517/closure-compiler-unshaded-v20160517.jar!/" />
-      <root url="jar://$MAVEN_REPOSITORY$/com/google/javascript/closure-compiler-externs/v20160517/closure-compiler-externs-v20160517.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/closure_compiler/closure-compiler-unshaded-1.0-SNAPSHOT.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
-      <root url="jar://$MAVEN_REPOSITORY$/com/google/javascript/closure-compiler-unshaded/v20160517/closure-compiler-unshaded-v20160517-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/closure_compiler/closure-compiler-unshaded-1.0-SNAPSHOT-sources.jar!/" />
     </SOURCES>
   </library>
 </component>

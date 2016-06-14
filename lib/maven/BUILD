@@ -51,9 +51,10 @@ java_plugin(
 
 java_library(
     name = "closure_compiler",
-    exports = ["@closure_compiler//jar"],
+    # exports = ["@closure_compiler//jar"],
+    exports = ["//third_party/java/closure_compiler"],
     runtime_deps = [
-        "@closure_compiler_externs//jar",
+        # "@closure_compiler_externs//jar",
         ":args4j",
         ":gson",
         ":guava",
