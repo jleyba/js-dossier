@@ -1206,9 +1206,6 @@ public class TypeCollectionPassTest {
   }
 
   private static void assertTypedef(NominalType type) {
-    assertThat(type.getType().isConstructor()).isFalse();
-    assertThat(type.getType().isInterface()).isFalse();
-    assertThat(type.getType().isEnumType()).isFalse();
     assertThat(type.getJsDoc().isTypedef()).isTrue();
   }
 

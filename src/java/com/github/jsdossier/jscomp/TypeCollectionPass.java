@@ -22,18 +22,16 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.base.Verify.verify;
-import static com.google.javascript.jscomp.NodeTraversal.traverseEs6;
 
 import com.github.jsdossier.annotations.Input;
 import com.github.jsdossier.annotations.ModuleFilter;
 import com.github.jsdossier.annotations.TypeFilter;
 import com.github.jsdossier.jscomp.Module.Type;
-
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.javascript.jscomp.CompilerPass;
-import com.google.javascript.jscomp.NodeTraversal;
-import com.google.javascript.jscomp.Var;
+import com.google.javascript.jscomp.TypedScope;
+import com.google.javascript.jscomp.TypedVar;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.jstype.EnumElementType;
@@ -57,11 +55,11 @@ import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.annotation.Nullable;
 import javax.inject.Inject;
 
 /**
@@ -103,9 +101,7 @@ public final class TypeCollectionPass implements CompilerPass {
       return;
     }
 
-    Externs externs = new Externs();
-    traverseEs6(compiler, externsRoot, new ExternCollector(externs));
-    traverseEs6(compiler, root, new TypeCollector(externs));
+    new TypeCollector(externsRoot).collectTypes(compiler.getTopScope());
 
     // Check for known modules that did not register as a type. These are modules that import
     // others, but have no exports of their own.
@@ -127,69 +123,33 @@ public final class TypeCollectionPass implements CompilerPass {
     }
   }
 
-  private static final class Externs {
-    private final Set<JSType> types = new HashSet<>();
-
-    public void addExtern(JSType type) {
-      types.add(type);
-    }
-
-    public boolean isExtern(JSType type) {
-      return types.contains(type);
-    }
-  }
-
   private static void logfmt(String msg, Object... args) {
     if (log.isLoggable(Level.FINE)) {
       log.fine(String.format(msg, args));
     }
   }
 
-  private class ExternCollector implements NodeTraversal.Callback, Visitor<Object> {
-    private final Externs externs;
+  private final class ExternCollector implements Visitor<Object> {
+    private final Set<JSType> externs;
 
-    private final Set<JSType> seen = new HashSet<>();
-    private final Deque<String> names = new ArrayDeque<>();
-
-    private ExternCollector(Externs externs) {
+    private ExternCollector(Set<JSType> externs) {
       this.externs = externs;
     }
 
-    @Override
-    public boolean shouldTraverse(NodeTraversal t, Node n, Node parent) {
-      return n.isBlock() && parent == null;
-    }
-
-    @Override
-    public void visit(NodeTraversal t, Node n, Node parent) {
-      verify(t.getScope().isGlobal());
-      for (Var var : t.getScope().getAllSymbols()) {
-        @Nullable JSType type = var.getNameNode().getJSType();
-        if (type != null) {
-          crawl(var.getName(), type);
-        }
-      }
-    }
-
-    private void crawl(String name, JSType type) {
-      names.addLast(name);
-      if (!seen.contains(type)) {
-        type.visit(this);
-      }
-
+    public void crawl(JSType type) {
+      type.visit(this);
       if ((type.isNominalType() && !type.isInstanceType())
           || type.isNominalConstructor()
           || type.isEnumType()) {
-        externs.addExtern(type);
+        externs.add(type);
       }
-      names.removeLast();
     }
 
     @Override
     public Object caseFunctionType(FunctionType type) {
       for (String name : type.getOwnPropertyNames()) {
         if (!isBuiltInFunctionProperty(type, name)) {
-          crawl(name, type.getPropertyType(name));
+          crawl(type.getPropertyType(name));
         }
       }
       return null;
@@ -205,7 +165,7 @@ public final class TypeCollectionPass implements CompilerPass {
         if (type.getPropertyType(name).isEnumElementType()) {
           continue;
         }
-        crawl(name, type.getPropertyType(name));
+        crawl(type.getPropertyType(name));
       }
       return null;
     }
@@ -227,36 +187,94 @@ public final class TypeCollectionPass implements CompilerPass {
     @Override public Object caseTemplateType(TemplateType templateType) { return null; }
   }
 
-  private class TypeCollector implements NodeTraversal.Callback, Visitor<Void> {
+  private class TypeCollector implements Visitor<Void> {
 
-    private final Externs externs;
+    private final Node externsRoot;
+    private final Set<JSType> externTypes = new HashSet<>();
+
     private final Deque<NominalType> types = new ArrayDeque<>();
 
-    private TypeCollector(Externs externs) {
-      this.externs = externs;
+    private TypeCollector(Node externsRoot) {
+      this.externsRoot = externsRoot;
     }
 
-    @Override
-    public boolean shouldTraverse(NodeTraversal nodeTraversal, Node n, Node parent) {
-      return null == parent && n.isBlock();
-    }
-
-    @Override
-    public void visit(NodeTraversal t, Node n, Node parent) {
-      if (!t.getScope().isGlobal()) {
-        logfmt("Skipping non-global scope");
-        return;
+    private boolean isExtern(Node node) {
+      while (node != null) {
+        if (node == externsRoot) {
+          return true;
+        }
+        node = node.getParent();
       }
+      return false;
+    }
 
-      for (Var var : t.getScope().getAllSymbols()) {
+    public void collectTypes(TypedScope topScope) {
+      checkArgument(topScope.isGlobal());
+
+      externTypes.clear();
+      types.clear();
+
+      // Pass 1: identify which types are externs and which are user-defined.
+      ExternCollector externCollector = new ExternCollector(externTypes);
+      Set<TypedVar> userTypes = new LinkedHashSet<>();
+      for (TypedVar var : topScope.getAllSymbols()) {
         String name = var.getName();
-        if (name.startsWith(INTERNAL_NAMESPACE_VAR)) {
-          logfmt("Skipping internal compiler namespace %s", name);
+        if (name.contains(".")) {
+          continue;
+        }
+
+        if (isExtern(var.getParentNode())) {
+          if (var.getType() != null) {
+            externCollector.crawl(var.getType());
+          }
           continue;
         }
 
         Node node = var.getNameNode();
-        if (node == null) {
+        if (node.getSourceFileName() != null
+            && nodeLibrary.isModulePath(node.getSourceFileName())) {
+          if (name.startsWith(MODULE_ID_PREFIX)) {
+            String id = name.substring(MODULE_ID_PREFIX.length());
+            if (nodeLibrary.isModuleId(id)) {
+              logfmt("Recording core node module as an extern: %s", id);
+              externTypes.add(node.getJSType());
+              continue;
+            }
+          }
+
+          Path file = inputFs.getPath(node.getSourceFileName());
+          if (name.startsWith(MODULE_CONTENTS_PREFIX)) {
+            logfmt("Recording extern from node extern: %s", name);
+            externTypes.add(node.getJSType());
+            String id = nodeLibrary.getIdFromPath(node.getSourceFileName());
+            recordModuleContentsAlias(file, stripContentsPrefix(id, name), name);
+            continue;
+          }
+
+          throw new AssertionError("unexpected case in " + file + " (" + name + ")");
+        }
+        userTypes.add(var);
+      }
+
+      // Pass 2: process the user defined types.
+      for (TypedVar var : userTypes) {
+        String name = var.getName();
+        JSType type = var.getType();
+        Node node = var.getNameNode();
+        JSDocInfo info = var.getJSDocInfo();
+
+        if (type == null) {
+          if (info  != null && info.getTypedefType() != null) {
+            type = compiler.getTypeRegistry().getNativeType(JSTypeNative.NO_TYPE);
+          } else {
+            continue;
+          }
+        }
+
+        if (name.startsWith(INTERNAL_NAMESPACE_VAR)) {
+          logfmt("Skipping internal compiler namespace %s", name);
+          continue;
+        } else if (node == null) {
           logfmt("Skipping type without a source node: %s", name);
           continue;
         } else if (node.getJSType() == null) {
@@ -265,8 +283,14 @@ public final class TypeCollectionPass implements CompilerPass {
         } else if (node.getJSType().isGlobalThisType()) {
           logfmt("Skipping global this: %s", name);
           continue;
-        } else if (externs.isExtern(node.getJSType())) {
+        } else if (type.isUnknownType()) {
+          logfmt("Skipping unknown type: %s", name);
+          continue;
+        } else if (isExternAlias(type, info)) {
           logfmt("Skipping extern alias: %s", name);
+          continue;
+        } else if (node.getStaticSourceFile() == null) {
+          logfmt("Skipping type from phantom node: %s", name);
           continue;
         }
 
@@ -276,14 +300,14 @@ public final class TypeCollectionPass implements CompilerPass {
             String id = name.substring(MODULE_ID_PREFIX.length());
             if (nodeLibrary.isModuleId(id)) {
               logfmt("Recording core node module as an extern: %s", id);
-              externs.addExtern(node.getJSType());
+              externTypes.add(node.getJSType());
               continue;
             }
           }
 
           if (name.startsWith(MODULE_CONTENTS_PREFIX)) {
             logfmt("Recording extern from node extern: %s", name);
-            externs.addExtern(node.getJSType());
+            externTypes.add(node.getJSType());
             String id = nodeLibrary.getIdFromPath(node.getSourceFileName());
             recordModuleContentsAlias(file, stripContentsPrefix(id, name), name);
             continue;
@@ -305,7 +329,6 @@ public final class TypeCollectionPass implements CompilerPass {
           }
         }
 
-        JSDocInfo info = var.getJSDocInfo();
         if (info == null || isNullOrEmpty(info.getOriginalCommentString())) {
           info = node.getJSType().getJSDocInfo();
         }
@@ -330,7 +353,7 @@ public final class TypeCollectionPass implements CompilerPass {
 
         NominalType nominalType = NominalType.builder()
             .setName(name)
-            .setType(node.getJSType())
+            .setType(type)
             .setJsDoc(info)
             .setSourceFile(path)
             .setSourcePosition(Position.of(node.getLineno(), node.getCharno()))
@@ -339,6 +362,31 @@ public final class TypeCollectionPass implements CompilerPass {
 
         recordType(nominalType);
       }
+    }
+
+    private boolean isExternAlias(JSType type, JSDocInfo info) {
+      if (externTypes.contains(type)) {
+        return true;
+      }
+
+      // If something is typed as {function(new: Foo)}, it will actually be represented as
+      // {function(new: Foo): ?}, which is different than the real constructor. We can get the real
+      // constructor, however, with a little type manipulation.
+      if (type.isConstructor() && type.toMaybeFunctionType() != null) {
+        JSType ctorType = type.toMaybeFunctionType().getInstanceType().getConstructor();
+        if (externTypes.contains(ctorType)) {
+          return true;
+        }
+      }
+
+      if (info != null && info.getTypedefType() != null) {
+        type = info.getTypedefType().evaluate(compiler.getTopScope(), compiler.getTypeRegistry());
+        if (externTypes.contains(type)) {
+          return true;
+        }
+      }
+
+      return false;
     }
 
     private void recordModuleContentsAlias(Path file, String alias, String name) {
@@ -390,7 +438,7 @@ public final class TypeCollectionPass implements CompilerPass {
     }
 
     private void recordType(NominalType type) {
-      if (externs.isExtern(type.getType())) {
+      if (externTypes.contains(type.getType()) && !type.getJsDoc().isTypedef()) {
         logfmt("Skipping extern alias: %s", type.getName());
         return;
       }
