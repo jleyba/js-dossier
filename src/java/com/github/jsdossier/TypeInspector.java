@@ -836,7 +836,7 @@ final class TypeInspector {
 
   private boolean isKnownType(JsDoc.TypedDescription description) {
     return description.getType().isPresent()
-        && description.getType().get().getRoot().getType() != Token.QMARK;
+        && description.getType().get().getRoot().getKind() != Token.QMARK;
   }
 
   private com.github.jsdossier.proto.Property getPropertyData(

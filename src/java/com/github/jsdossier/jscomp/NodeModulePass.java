@@ -359,7 +359,7 @@ class NodeModulePass {
              last = decl.getLastChild()) {
           decl.removeChild(last);
 
-          Node newDecl = declaration(last, decl.getType()).srcrefTree(last);
+          Node newDecl = declaration(last, decl.getKind()).srcrefTree(last);
           decl.getParent().addChildAfter(newDecl, addAfter);
           addAfter = newDecl;
           t.getCompiler().reportCodeChange();

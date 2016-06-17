@@ -146,7 +146,7 @@ final class TypeExpressionParser {
     }
 
     static ParseModifier forExpression(JSTypeExpression expression) {
-      if (expression.getRoot().getType() == Token.BANG) {
+      if (expression.getRoot().getKind() == Token.BANG) {
         return NON_NULL;
       } else if (expression.isVarArgs()) {
         return VAR_ARGS;
@@ -235,7 +235,7 @@ final class TypeExpressionParser {
     }
 
     private void parseNode(Node n) {
-      switch (n.getType()) {
+      switch (n.getKind()) {
         case LC:
           parseRecordType(n);
           break;
@@ -302,12 +302,12 @@ final class TypeExpressionParser {
     }
 
     private void parseNamedType(Node n) {
-      checkArgument(n.getType() == Token.STRING || n.getType() == Token.NAME);
+      checkArgument(n.getKind() == Token.STRING || n.getKind() == Token.NAME);
       TypeLink link = getNamedTypeLink(n.getString());
       appendLink(link);
 
       // Template types!
-      if (n.getFirstChild() != null && n.getFirstChild().getType() == Token.BLOCK) {
+      if (n.getFirstChild() != null && n.getFirstChild().getKind() == Token.BLOCK) {
         appendText("<");
         for (Node child = n.getFirstFirstChild(); child != null; child = child.getNext()) {
           parseNode(child);
@@ -320,21 +320,21 @@ final class TypeExpressionParser {
     }
 
     private void parseFunction(Node n) {
-      checkArgument(n.getType() == Token.FUNCTION);
+      checkArgument(n.getKind() == Token.FUNCTION);
       appendText("function(");
 
       Node current = n.getFirstChild();
-      boolean isCtor = current.getType() == Token.NEW;
-      if (current.getType() == Token.THIS || isCtor) {
-        appendText(current.getType() == Token.THIS ? "this: " : "new: ");
+      boolean isCtor = current.getKind() == Token.NEW;
+      if (current.getKind() == Token.THIS || isCtor) {
+        appendText(current.getKind() == Token.THIS ? "this: " : "new: ");
         parseNode(current.getFirstChild());
         current = current.getNext();
-        if (current.getType() == Token.PARAM_LIST) {
+        if (current.getKind() == Token.PARAM_LIST) {
           appendText(", ");
         }
       }
 
-      if (current.getType() == Token.PARAM_LIST) {
+      if (current.getKind() == Token.PARAM_LIST) {
         for (Node param = current.getFirstChild(); param != null; param = param.getNext()) {
           parseNode(param);
           if (param.getNext() != null) {
@@ -345,7 +345,7 @@ final class TypeExpressionParser {
       }
       appendText(")");
 
-      if (!isCtor && current != null && current.getType() != Token.EMPTY) {
+      if (!isCtor && current != null && current.getKind() != Token.EMPTY) {
         appendText(": ");
         parseNode(current);
       }
@@ -375,14 +375,14 @@ final class TypeExpressionParser {
     }
 
     private void parseRecordType(Node n) {
-      checkArgument(n.getType() == Token.LC);
+      checkArgument(n.getKind() == Token.LC);
       appendText("{");
       for (Node fieldType = n.getFirstFirstChild();
            fieldType != null;
            fieldType = fieldType.getNext()) {
         Node fieldName = fieldType;
         boolean hasType = false;
-        if (fieldType.getType() == Token.COLON) {
+        if (fieldType.getKind() == Token.COLON) {
           fieldName = fieldType.getFirstChild();
           hasType = true;
         }

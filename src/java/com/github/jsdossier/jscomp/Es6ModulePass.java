@@ -185,7 +185,7 @@ final class Es6ModulePass implements CompilerPass {
       }
 
       // Case: export {Name} or export {Name as Alias}
-      if (n.getFirstChild().getType() == Token.EXPORT_SPECS) {
+      if (n.getFirstChild().getKind() == Token.EXPORT_SPECS) {
         Path path = inputFs.getPath(n.getSourceFileName());
         Node exportSpecs = n.getFirstChild();
 
@@ -291,11 +291,11 @@ final class Es6ModulePass implements CompilerPass {
         aliasRegion.addAlias(alias, def + "." + DEFAULT);
       }
 
-      if (second.getType() == Token.IMPORT_STAR) {
+      if (second.getKind() == Token.IMPORT_STAR) {
         String alias = second.getString();
         aliasRegion.addAlias(alias, def);
 
-      } else if (second.getType() == Token.IMPORT_SPECS) {
+      } else if (second.getKind() == Token.IMPORT_SPECS) {
         for (Node spec = second.getFirstChild(); spec != null; spec = spec.getNext()) {
           String imported = spec.getFirstChild().getQualifiedName();
           String alias = spec.getLastChild().getQualifiedName();
