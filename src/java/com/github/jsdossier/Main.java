@@ -49,7 +49,6 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
-import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -63,7 +62,6 @@ import com.google.inject.Key;
 import com.google.inject.Provides;
 import com.google.inject.TypeLiteral;
 import com.google.javascript.jscomp.CompilerOptions.LanguageMode;
-
 import org.joda.time.Instant;
 import org.joda.time.Period;
 import org.joda.time.format.PeriodFormatterBuilder;
@@ -361,8 +359,12 @@ final class Main {
       Thread.currentThread().interrupt();
       throw new IOException("Rendering was interrupted", e);
     } catch (ExecutionException e) {
-      Throwables.propagateIfInstanceOf(e.getCause(), IOException.class);
-      throw Throwables.propagate(e.getCause());
+      if (e.getCause() instanceof IOException) {
+        throw (IOException) e.getCause();
+      } else if (e.getCause() instanceof RuntimeException) {
+        throw (RuntimeException) e.getCause();
+      }
+      throw new RuntimeException(e.getCause());
     } finally {
       DOCUMENTATION_SCOPE.exit();
     }
