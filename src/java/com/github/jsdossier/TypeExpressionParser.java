@@ -26,10 +26,13 @@ import static com.google.common.collect.Iterables.filter;
 import com.github.jsdossier.jscomp.NominalType;
 import com.github.jsdossier.jscomp.TypeRegistry;
 import com.github.jsdossier.proto.Comment;
+import com.github.jsdossier.proto.RecordType;
+import com.github.jsdossier.proto.TypeExpression;
 import com.github.jsdossier.proto.TypeLink;
 import com.github.jsdossier.proto.TypeLinkOrBuilder;
 import com.google.auto.factory.AutoFactory;
 import com.google.auto.factory.Provided;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
@@ -51,7 +54,10 @@ import com.google.javascript.rhino.jstype.TemplatizedType;
 import com.google.javascript.rhino.jstype.UnionType;
 import com.google.javascript.rhino.jstype.Visitor;
 
+import java.util.ArrayDeque;
 import java.util.Collection;
+import java.util.Comparator;
+import java.util.Deque;
 import java.util.Iterator;
 
 import javax.annotation.CheckReturnValue;
@@ -107,6 +113,34 @@ final class TypeExpressionParser {
     return new CommentTypeParser().parse(type, ParseModifier.NONE);
   }
 
+  public TypeExpression parseExpression(JSType type) {
+    CommentTypeParser parser = new CommentTypeParser();
+    parser.parse(type, ParseModifier.NONE);
+    return parser.expression.build();
+  }
+
+  public TypeExpression parseExpression(JSTypeExpression expression) {
+    CommentTypeParser parser = new CommentTypeParser();
+    parser.parse(expression);
+    return parser.expression.build();
+  }
+
+  @VisibleForTesting
+  static final TypeExpression ANY_TYPE =
+      TypeExpression.newBuilder()
+          .setAllowNull(true)
+          .setAllowUndefined(true)
+          .setAnyType(true)
+          .build();
+
+  @VisibleForTesting
+  static final TypeExpression UNKNOWN_TYPE =
+      TypeExpression.newBuilder()
+          .setAllowNull(true)
+          .setAllowUndefined(true)
+          .setUnknownType(true)
+          .build();
+
   @Nullable
   @CheckReturnValue
   private NominalType resolve(JSType type) {
@@ -130,6 +164,28 @@ final class TypeExpressionParser {
     return linkFactory.createLink(ntype);
   }
 
+  private TypeLink getNamedTypeLink(String name) {
+    TypeLink link = linkFactory.createLink(name);
+    if (link.getHref().isEmpty()) {
+      JSType jsType = jsTypeRegistry.getType(name);
+      if (jsType != null) {
+        NominalType ntype = resolve(jsType);
+        if (ntype != null) {
+          link = linkFactory.createLink(ntype);
+        }
+      }
+
+      if (link.getHref().isEmpty()) {
+        int index = name.indexOf("$$module$");
+        if (index > 0) {
+          name = name.substring(0, index);
+          link = linkFactory.createLink(name);
+        }
+      }
+    }
+    return link;
+  }
+
   private enum ParseModifier {
     NONE,
     NON_NULL,
@@ -144,17 +200,6 @@ final class TypeExpressionParser {
       }
       return NONE;
     }
-
-    static ParseModifier forExpression(JSTypeExpression expression) {
-      if (expression.getRoot().getKind() == Token.BANG) {
-        return NON_NULL;
-      } else if (expression.isVarArgs()) {
-        return VAR_ARGS;
-      } else if (expression.isOptionalArg()) {
-        return OPTIONAL_ARG;
-      }
-      return NONE;
-    }
   }
 
   /**
@@ -163,10 +208,13 @@ final class TypeExpressionParser {
   private class CommentTypeParser implements Visitor<Void> {
 
     private final Comment.Builder comment = Comment.newBuilder();
+    private final TypeExpression.Builder expression = TypeExpression.newBuilder();
+    private final Deque<TypeExpression.Builder> expressions = new ArrayDeque<>();
 
     private String currentText = "";
 
     Comment parse(JSTypeExpression expression) {
+      startParse(ParseModifier.NONE);
       parseNode(expression.getRoot());
       return finishParse(ParseModifier.NONE);
     }
@@ -181,22 +229,33 @@ final class TypeExpressionParser {
       return finishParse(modifier);
     }
 
+    private TypeExpression.Builder currentExpression() {
+      return expressions.getLast();
+    }
+
     private void startParse(ParseModifier modifier) {
+      expression.clear();
+      expressions.clear();
+      expressions.addLast(expression);
+
       comment.clear();
       currentText = "";
 
       if (modifier == ParseModifier.VAR_ARGS) {
         currentText = "...";
+        currentExpression().setIsVarargs(true);
       }
 
       if (modifier == ParseModifier.NON_NULL) {
         currentText += "!";
+        currentExpression().clearAllowNull();
       }
     }
 
     private Comment finishParse(ParseModifier modifier) {
       if (modifier == ParseModifier.OPTIONAL_ARG) {
         currentText += "=";
+        currentExpression().setIsOptional(true);
       }
 
       if (!currentText.isEmpty()) {
@@ -222,6 +281,7 @@ final class TypeExpressionParser {
       if (!currentText.isEmpty()) {
         if (href.isEmpty()) {
           currentText += text;
+          currentExpression().getNamedTypeBuilder().setName(text);
           return;
         }
         comment.addTokenBuilder().setText(currentText);
@@ -229,9 +289,21 @@ final class TypeExpressionParser {
       }
       Comment.Token.Builder token = comment.addTokenBuilder();
       token.setText(text);
+
+      com.github.jsdossier.proto.NamedType.Builder namedType =
+          currentExpression().getNamedTypeBuilder();
+      namedType.setName(text);
+
       if (!href.isEmpty()) {
         token.setHref(href);
+        namedType.setHref(href);
       }
+    }
+
+    private void parseNode(Node n, TypeExpression.Builder expression) {
+      expressions.addLast(expression);
+      parseNode(n);
+      expressions.removeLast();
     }
 
     private void parseNode(Node n) {
@@ -243,22 +315,31 @@ final class TypeExpressionParser {
         case BANG:
           appendText("!");
           parseNode(n.getFirstChild());
+          currentExpression().clearAllowNull();
           break;
 
         case QMARK:
           appendText("?");
-          if (n.getFirstChild() != null) {
+          if (n.getFirstChild() == null) {
+            currentExpression()
+                .setAllowNull(true)
+                .setAllowUndefined(true)
+                .setUnknownType(true);
+          } else {
             parseNode(n.getFirstChild());
+            currentExpression().setAllowNull(true);
           }
           break;
 
         case EQUALS:
           parseNode(n.getFirstChild());
+          currentExpression().setIsOptional(true).setAllowUndefined(true);
           appendText("=");
           break;
 
         case ELLIPSIS:
           appendText("...");
+          currentExpression().setIsVarargs(true);
           if (n.getFirstChild() != null) {
             parseNode(n.getFirstChild());
           }
@@ -266,15 +347,30 @@ final class TypeExpressionParser {
 
         case STAR:
           appendText("*");
+          currentExpression().setAnyType(true).setAllowUndefined(true).setAllowNull(true);
           break;
 
         case PIPE:
           appendText("(");
+          com.github.jsdossier.proto.UnionType.Builder unionType =
+              currentExpression().getUnionTypeBuilder();
+          boolean allowNull = false;
+          boolean allowUndefined = false;
           for (Node child = n.getFirstChild(); child != null; child = child.getNext()) {
-            parseNode(child);
+            TypeExpression.Builder alternate = unionType.addTypeBuilder();
+            parseNode(child, alternate);
+            allowNull = allowNull || alternate.getAllowNull();
+            allowUndefined = allowUndefined || alternate.getAllowUndefined();
+            alternate.clearAllowNull().clearAllowUndefined();
             if (child.getNext() != null) {
               appendText("|");
             }
+          }
+          if (allowNull) {
+            currentExpression().setAllowNull(true);
+          }
+          if (allowUndefined) {
+            currentExpression().setAllowUndefined(true);
           }
           appendText(")");
           break;
@@ -323,11 +419,18 @@ final class TypeExpressionParser {
       checkArgument(n.getKind() == Token.FUNCTION);
       appendText("function(");
 
+      com.github.jsdossier.proto.FunctionType.Builder functionType =
+          currentExpression().getFunctionTypeBuilder();
+
       Node current = n.getFirstChild();
       boolean isCtor = current.getKind() == Token.NEW;
+      if (isCtor) {
+        functionType.setIsConstructor(true);
+      }
       if (current.getKind() == Token.THIS || isCtor) {
         appendText(current.getKind() == Token.THIS ? "this: " : "new: ");
-        parseNode(current.getFirstChild());
+        TypeExpression.Builder instanceType = functionType.getInstanceTypeBuilder();
+        parseNode(current.getFirstChild(), instanceType);
         current = current.getNext();
         if (current.getKind() == Token.PARAM_LIST) {
           appendText(", ");
@@ -336,7 +439,7 @@ final class TypeExpressionParser {
 
       if (current.getKind() == Token.PARAM_LIST) {
         for (Node param = current.getFirstChild(); param != null; param = param.getNext()) {
-          parseNode(param);
+          parseNode(param, functionType.addParameterBuilder());
           if (param.getNext() != null) {
             appendText(", ");
           }
@@ -347,36 +450,16 @@ final class TypeExpressionParser {
 
       if (!isCtor && current != null && current.getKind() != Token.EMPTY) {
         appendText(": ");
-        parseNode(current);
+        parseNode(current, functionType.getReturnTypeBuilder());
       }
 
-    }
-
-    private TypeLink getNamedTypeLink(String name) {
-      TypeLink link = linkFactory.createLink(name);
-      if (link.getHref().isEmpty()) {
-        JSType jsType = jsTypeRegistry.getType(name);
-        if (jsType != null) {
-          NominalType ntype = resolve(jsType);
-          if (ntype != null) {
-            link = linkFactory.createLink(ntype);
-          }
-        }
-
-        if (link.getHref().isEmpty()) {
-          int index = name.indexOf("$$module$");
-          if (index > 0) {
-            name = name.substring(0, index);
-            link = linkFactory.createLink(name);
-          }
-        }
-      }
-      return link;
     }
 
     private void parseRecordType(Node n) {
       checkArgument(n.getKind() == Token.LC);
       appendText("{");
+
+      RecordType.Builder recordType = currentExpression().getRecordTypeBuilder();
       for (Node fieldType = n.getFirstFirstChild();
            fieldType != null;
            fieldType = fieldType.getNext()) {
@@ -392,10 +475,14 @@ final class TypeExpressionParser {
           name = name.substring(1, name.length() - 1);
         }
 
+        RecordType.Entry.Builder entry = recordType.addEntryBuilder();
+        entry.setKey(name);
+
         appendText(name + ": ");
         if (hasType) {
-          parseNode(fieldType.getLastChild());
+          parseNode(fieldType.getLastChild(), entry.getValueBuilder());
         } else {
+          entry.getValueBuilder().setAllowNull(true).setAllowUndefined(true).setUnknownType(true);
           appendText("?");
         }
 
@@ -418,6 +505,10 @@ final class TypeExpressionParser {
 
     @Override
     public Void caseAllType() {
+      expressions.getLast()
+          .setAllowNull(true)
+          .setAllowUndefined(true)
+          .setAnyType(true);
       appendText("*");
       return null;
     }
@@ -436,14 +527,28 @@ final class TypeExpressionParser {
     @Override
     public Void caseFunctionType(FunctionType type) {
       if ("Function".equals(type.getReferenceName())) {
+        currentExpression()
+            .getNamedTypeBuilder()
+            .setName("Function");
         appendText("Function");
         return null;
       }
+
       appendText("function(");
 
+      com.github.jsdossier.proto.FunctionType.Builder functionType =
+          currentExpression().getFunctionTypeBuilder();
+
       if (type.isConstructor()) {
+        functionType.setIsConstructor(true);
         appendText("new: ");
+
+        TypeExpression.Builder thisType = functionType.getInstanceTypeBuilder();
+
+        expressions.addLast(thisType);
         type.getTypeOfThis().visit(this);
+        expressions.removeLast();
+
         if (type.getParameters().iterator().hasNext()) {
           appendText(", ");
         }
@@ -458,24 +563,36 @@ final class TypeExpressionParser {
 
       Iterator<Node> parameters = type.getParameters().iterator();
       while (parameters.hasNext()) {
+        TypeExpression.Builder parameterType = functionType.addParameterBuilder();
+        expressions.addLast(parameterType);
+
         Node node = parameters.next();
+
         if (node.isVarArgs()) {
+          parameterType.setIsVarargs(true);
           appendText("...");
         }
 
         if (node.getJSType().isUnionType()) {
-          caseUnionType((UnionType) node.getJSType(), node.isOptionalArg());
+          caseUnionType((UnionType) node.getJSType(),
+              node.isVarArgs() || node.isOptionalArg());
         } else {
           node.getJSType().visit(this);
         }
 
         if (node.isOptionalArg()) {
+          // Not sure if this is possible, but varargs implies optional and we only permit one
+          // bit to be set.
+          if (!parameterType.getIsVarargs()) {
+            parameterType.setIsOptional(true);
+          }
           appendText("=");
         }
 
         if (parameters.hasNext()) {
           appendText(", ");
         }
+        expressions.removeLast();
       }
       appendText(")");
 
@@ -539,10 +656,15 @@ final class TypeExpressionParser {
       } else {
         appendLink(displayName, link.getHref());
       }
+
+      if (type.isNullable()) {
+        currentExpression().setAllowNull(true);
+      }
     }
 
     private void caseRecordType(final ObjectType type) {
       appendText("{");
+
       Iterator<Property> properties = FluentIterable.from(type.getOwnPropertyNames())
           .transform(new Function<String, Property>() {
             @Override
@@ -556,11 +678,23 @@ final class TypeExpressionParser {
               return input != null && !input.getType().isNoType();
             }
           })
+          .toSortedList(new Comparator<Property>() {
+            @Override
+            public int compare(Property o1, Property o2) {
+              return o1.getName().compareTo(o2.getName());
+            }
+          })
           .iterator();
+
+      RecordType.Builder recordType = currentExpression().getRecordTypeBuilder();
       while (properties.hasNext()) {
         Property property = properties.next();
         appendText(property.getName() + ": ");
+        RecordType.Entry.Builder entry = recordType.addEntryBuilder();
+        entry.setKey(property.getName());
+        expressions.addLast(entry.getValueBuilder());
         property.getType().visit(this);
+        expressions.removeLast();
         if (properties.hasNext()) {
           appendText(", ");
         }
@@ -629,18 +763,21 @@ final class TypeExpressionParser {
       int nullAlternates = 0;
       int voidAlternates = 0;
       boolean containsNonNullable = false;
+
       for (JSType alternate : type.getAlternates()) {
         numAlternates += 1;
         if (alternate.isNullType()) {
           nullAlternates += 1;
         }
-        if (alternate.isVoidType() && filterVoid) {
-          voidAlternates += 1;
+
+        if (alternate.isVoidType()) {
+          if (filterVoid) {
+            voidAlternates += 1;
+            continue;
+          }
         }
-        containsNonNullable = containsNonNullable
-            || (!alternate.isNullable()
-            && !alternate.isInstanceType()
-            && !(alternate instanceof NamedType));
+
+        containsNonNullable = containsNonNullable || !alternate.isNullable();
       }
 
       Iterable<JSType> alternates = type.getAlternates();
@@ -656,17 +793,34 @@ final class TypeExpressionParser {
         });
       }
 
-      if (containsNonNullable && nullAlternates > 0) {
+      boolean allowNull = containsNonNullable && nullAlternates > 0;
+      if (allowNull) {
         appendText("?");
+        currentExpression().setAllowNull(true);
       }
 
       if (numAlternates == 1) {
         alternates.iterator().next().visit(this);
+
       } else {
+        com.github.jsdossier.proto.UnionType.Builder unionType =
+            currentExpression().getUnionTypeBuilder();
+
         appendText("(");
         Iterator<JSType> types = alternates.iterator();
         while (types.hasNext()) {
-          types.next().visit(this);
+          TypeExpression.Builder alternate = unionType.addTypeBuilder();
+          expressions.addLast(alternate);
+
+          JSType alternateType = types.next();
+          alternateType.visit(this);
+
+          expressions.removeLast();
+          if (alternateType.isVoidType()) {
+            unionType.removeType(unionType.getTypeCount() - 1);
+            currentExpression().setAllowUndefined(true);
+          }
+
           if (types.hasNext()) {
             appendText("|");
           }
@@ -680,8 +834,18 @@ final class TypeExpressionParser {
       type.getReferencedType().visit(this);
       appendText("<");
       Iterator<JSType> types = type.getTemplateTypes().iterator();
+
+      if (currentExpression().getNamedType() == null) {
+        throw new IllegalStateException("unexpected templatized type structure");
+      }
+      com.github.jsdossier.proto.NamedType.Builder namedType =
+          currentExpression().getNamedTypeBuilder();
+
       while (types.hasNext()) {
-        types.next().visit(this);
+        JSType templateType = types.next();
+        expressions.addLast(namedType.addTemplateTypeBuilder());
+        templateType.visit(this);
+        expressions.removeLast();
         if (types.hasNext()) {
           appendText(", ");
         }
@@ -693,6 +857,7 @@ final class TypeExpressionParser {
     @Override
     public Void caseTemplateType(TemplateType templateType) {
       appendText(templateType.getReferenceName());
+      currentExpression().getNamedTypeBuilder().setName(templateType.getReferenceName());
       return null;
     }
   }

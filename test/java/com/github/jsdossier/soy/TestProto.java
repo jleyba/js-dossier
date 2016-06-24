@@ -2949,7 +2949,7 @@ public final class TestProto {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\020test_proto.proto\022\004test\032\rdossier.proto\"" +
+      "\n\020test_proto.proto\022\004test\032\roptions.proto\"" +
       "\323\001\n\005Order\022\022\n\nbool_field\030\001 \001(\010\022\021\n\tint_fie" +
       "ld\030\002 \001(\005\022\024\n\014string_field\030\003 \001(\t\022\032\n\005fruit\030" +
       "\004 \001(\0162\013.test.Fruit\022\032\n\005color\030\005 \001(\0162\013.test" +
@@ -2975,7 +2975,7 @@ public final class TestProto {
     com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
-          com.github.jsdossier.proto.Dossier.getDescriptor(),
+          com.github.jsdossier.proto.Options.getDescriptor(),
         }, assigner);
     internal_static_test_Order_descriptor =
       getDescriptor().getMessageTypes().get(0);
@@ -2997,10 +2997,10 @@ public final class TestProto {
         new java.lang.String[] { "Item", });
     com.google.protobuf.ExtensionRegistry registry =
         com.google.protobuf.ExtensionRegistry.newInstance();
-    registry.add(com.github.jsdossier.proto.Dossier.sanitized);
+    registry.add(com.github.jsdossier.proto.Options.sanitized);
     com.google.protobuf.Descriptors.FileDescriptor
         .internalUpdateFileDescriptor(descriptor, registry);
-    com.github.jsdossier.proto.Dossier.getDescriptor();
+    com.github.jsdossier.proto.Options.getDescriptor();
   }
 
   // @@protoc_insertion_point(outer_class_scope)

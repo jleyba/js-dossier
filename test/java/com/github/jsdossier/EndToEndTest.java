@@ -33,7 +33,6 @@ import static org.junit.Assert.assertEquals;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
-import com.google.common.base.Strings;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -70,8 +69,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-
-import javax.annotation.Nullable;
 
 @RunWith(Enclosed.class)
 public class EndToEndTest {

@@ -1,0 +1,64 @@
+{namespace dossier.soy.types}
+
+/**
+ * Renders a type expression.
+ */
+{template .expression}
+  {@param expression: dossier.expression.TypeExpression}
+
+  {if $expression.namedType}
+    {call .namedType}
+      {param type: $expression.namedType /}
+    {/call}
+  {elseif $expression.unionType}
+    {call .unionType}
+      {param type: $expression /}
+    {/call}
+  {/if}
+{/template}
+
+
+/**
+ * Renders a named type expression.
+ */
+{template .namedType private="true"}
+  {@param type: dossier.expression.NamedType}
+  {if $type.href}
+    <a href="{$type.href}">
+  {/if}
+  {$type.name}
+  {if $type.href}
+    </a>
+  {/if}
+  {if length($type.templateType)}
+    &lt;
+    {foreach $template in $type.templateType}
+      {call .expression}
+        {param expression: $template /}
+      {/call}
+      {if not isLast($template)},{sp}{/if}
+    {/foreach}
+    &gt;
+  {/if}
+{/template}
+
+
+/**
+ * Renders a union type.
+ */
+{template .unionType private="true"}
+  {@param type: dossier.expression.TypeExpression}
+
+  {let $union: $type.unionType/}
+
+  (
+  {foreach $alternate in $union.type}
+    {call .expression}
+      {param expression: $alternate /}
+    {/call}
+    {if not isLast($alternate)}|{/if}
+  {/foreach}
+  {if $type.allowNull}|null{/if}
+  {if $type.allowUndefined}|undefined{/if}
+  )
+{/template}

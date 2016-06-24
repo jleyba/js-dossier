@@ -2,6 +2,7 @@ load("/build_tools/java_test_suite", "java_test_suite")
 
 LIB_SRCS = [
     "AbstractTypeInspectorTest.java",
+    "ProtoTruth.java",
 ]
 
 java_library(
@@ -15,6 +16,7 @@ java_library(
         "//lib/maven:jimfs",
         "//lib/maven:junit",
         "//lib/maven:jsr305",
+        "//lib/maven:protobuf",
         "//lib/maven:truth",
         "//src/java/com/github/jsdossier",
         "//src/java/com/github/jsdossier/annotations",

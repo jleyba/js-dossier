@@ -21,6 +21,8 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.base.Suppliers.memoize;
 import static com.google.common.base.Verify.verify;
+import static com.google.common.collect.Iterables.limit;
+import static com.google.common.collect.Lists.reverse;
 import static com.google.common.collect.Lists.transform;
 import static java.nio.file.Files.createDirectories;
 
@@ -35,6 +37,7 @@ import com.github.jsdossier.proto.Enumeration;
 import com.github.jsdossier.proto.JsType;
 import com.github.jsdossier.proto.JsTypeOrBuilder;
 import com.github.jsdossier.proto.JsTypeRenderSpec;
+import com.github.jsdossier.proto.TypeExpression;
 import com.github.jsdossier.proto.TypeLink;
 import com.github.jsdossier.proto.Visibility;
 import com.github.jsdossier.soy.Renderer;
@@ -44,22 +47,20 @@ import com.google.common.base.Function;
 import com.google.common.base.Supplier;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Ordering;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.jstype.EnumType;
-import com.google.javascript.rhino.jstype.FunctionType;
 import com.google.javascript.rhino.jstype.JSType;
 import com.google.javascript.rhino.jstype.JSTypeRegistry;
-import com.google.javascript.rhino.jstype.NamedType;
 import com.google.javascript.rhino.jstype.Property;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.Callable;
 
 import javax.annotation.CheckReturnValue;
@@ -419,34 +420,30 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Ca
     }
 
     private void addExtendedTypes(JsType.Builder spec) {
-      if (!type.getType().isConstructor()) {
-        return;
-      }
-
-      TypeExpressionParser parser = expressionParserFactory.create(linkFactory);
-      List<JSType> types = Lists.reverse(typeRegistry.getTypeHierarchy(type.getType(), jsRegistry));
-      int count = 0;
-      for (JSType jsType : types) {
-        if ((++count) == types.size()) {
-          spec.addExtendedTypeBuilder()
-              .addTokenBuilder()
-              .setText(dfs.getDisplayName(type));
-        } else {
-          if (jsType.isConstructor() || jsType.isInterface()) {
-            jsType = ((FunctionType) jsType).getInstanceType();
-          }
-          verify(jsType.isInstanceType() || jsType instanceof NamedType);
-          spec.addExtendedType(parser.parse(jsType));
+      if (type.getType().isConstructor()) {
+        List<TypeExpression> types = typeInspector.getTypeHierarchy();
+        if (types.isEmpty()) {
+          return;
         }
+
+        Iterable<TypeExpression> iterableTypes = limit(reverse(types), types.size() - 1);
+        spec.addAllExtendedType(iterableTypes);
+
+        TypeExpression.Builder thisType = types.get(0).toBuilder();
+        thisType.getNamedTypeBuilder().clearHref();
+        spec.addExtendedType(thisType);
       }
     }
 
     private void addImplementedTypes(JsType.Builder spec) {
-      Set<JSType> interfaces = typeRegistry.getImplementedTypes(type, jsRegistry);
-      TypeExpressionParser parser = expressionParserFactory.create(linkFactory);
-      for (JSType iface : Ordering.usingToString().sortedCopy(interfaces)) {
-        spec.addImplementedType(parser.parse(iface));
-      }
+      Iterable<TypeExpression> types = FluentIterable.from(typeInspector.getImplementedTypes())
+          .toSortedSet(new Comparator<TypeExpression>() {
+            @Override
+            public int compare(TypeExpression a, TypeExpression b) {
+              return a.getNamedType().getName().compareTo(b.getNamedType().getName());
+            }
+          });
+      spec.addAllImplementedType(types);
     }
 
     private void addEnumValues(JsType.Builder spec) {

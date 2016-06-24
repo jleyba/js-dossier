@@ -16,13 +16,20 @@
 
 package com.github.jsdossier;
 
+import static com.github.jsdossier.ProtoTruth.assertMessage;
+import static com.github.jsdossier.TypeExpressionParser.ANY_TYPE;
+import static com.github.jsdossier.TypeExpressionParser.UNKNOWN_TYPE;
 import static com.github.jsdossier.testing.CompilerUtil.createSourceFile;
-import static com.google.common.truth.Truth.assertThat;
 
 import com.github.jsdossier.annotations.Input;
 import com.github.jsdossier.jscomp.NominalType;
 import com.github.jsdossier.jscomp.TypeRegistry;
 import com.github.jsdossier.proto.Comment;
+import com.github.jsdossier.proto.FunctionType;
+import com.github.jsdossier.proto.NamedType;
+import com.github.jsdossier.proto.RecordType;
+import com.github.jsdossier.proto.TypeExpression;
+import com.github.jsdossier.proto.UnionType;
 import com.github.jsdossier.testing.CompilerUtil;
 import com.github.jsdossier.testing.GuiceRule;
 import com.google.javascript.jscomp.CompilerOptions;
@@ -66,7 +73,7 @@ public class TypeExpressionParserTest {
     TypeExpressionParser parser = parserFactory.create(linkFactoryBuilder.create(type));
 
     Comment comment = parser.parse(type.getJsDoc().getInfo().getTypedefType());
-    assertThat(comment).isEqualTo(
+    assertMessage(comment).isEqualTo(
         Comment.newBuilder()
             .addToken(text("{name: "))
             .addToken(stringLink())
@@ -74,6 +81,21 @@ public class TypeExpressionParserTest {
             .addToken(numberLink())
             .addToken(text("}"))
             .build());
+
+    TypeExpression expression = parser.parseExpression(type.getJsDoc().getInfo().getTypedefType());
+    assertMessage(expression)
+        .isEqualTo(
+            TypeExpression.newBuilder()
+                .setRecordType(
+                    RecordType.newBuilder()
+                        .addEntry(
+                            RecordType.Entry.newBuilder()
+                                .setKey("name")
+                                .setValue(stringType()))
+                        .addEntry(
+                            RecordType.Entry.newBuilder()
+                                .setKey("age")
+                                .setValue(numberType()))));
   }
 
   @Test
@@ -90,7 +112,7 @@ public class TypeExpressionParserTest {
     TypeExpressionParser parser = parserFactory.create(linkFactoryBuilder.create(type));
     JSTypeExpression expression = type.getJsDoc().getParameter("a").getType();
     Comment comment = parser.parse(expression);
-    assertThat(comment).isEqualTo(
+    assertMessage(comment).isEqualTo(
         Comment.newBuilder()
             .addToken(text("function(new: "))
             .addToken(link("Person", "Person.html"))
@@ -112,7 +134,7 @@ public class TypeExpressionParserTest {
     TypeExpressionParser parser = parserFactory.create(linkFactoryBuilder.create(type));
     JSTypeExpression expression = type.getJsDoc().getParameter("a").getType();
     Comment comment = parser.parse(expression);
-    assertThat(comment).isEqualTo(
+    assertMessage(comment).isEqualTo(
         Comment.newBuilder()
             .addToken(text("function(this: "))
             .addToken(link("Person", "Person.html"))
@@ -134,7 +156,7 @@ public class TypeExpressionParserTest {
     TypeExpressionParser parser = parserFactory.create(linkFactoryBuilder.create(type));
     JSTypeExpression expression = type.getJsDoc().getParameter("a").getType();
     Comment comment = parser.parse(expression);
-    assertThat(comment).isEqualTo(
+    assertMessage(comment).isEqualTo(
         Comment.newBuilder()
             .addToken(text("function(): "))
             .addToken(link("Person", "Person.html"))
@@ -154,8 +176,17 @@ public class TypeExpressionParserTest {
     NominalType type = typeRegistry.getType("Greeter");
     TypeExpressionParser parser = parserFactory.create(linkFactoryBuilder.create(type));
     JSTypeExpression expression = type.getJsDoc().getParameter("a").getType();
+
+    TypeExpression typeExpression = parser.parseExpression(expression);
+    assertMessage(typeExpression).isEqualTo(
+        TypeExpression.newBuilder()
+        .setFunctionType(FunctionType.newBuilder()
+            .addParameter(TypeExpression.newBuilder()
+                .setIsVarargs(true)
+                .setNamedType(namedType("Person", "Person.html")))));
+
     Comment comment = parser.parse(expression);
-    assertThat(comment).isEqualTo(
+    assertMessage(comment).isEqualTo(
         Comment.newBuilder()
             .addToken(text("function(...!"))
             .addToken(link("Person", "Person.html"))
@@ -177,7 +208,7 @@ public class TypeExpressionParserTest {
     TypeExpressionParser parser = parserFactory.create(linkFactoryBuilder.create(type));
     JSTypeExpression expression = type.getJsDoc().getParameter("a").getType();
     Comment comment = parser.parse(expression);
-    assertThat(comment).isEqualTo(
+    assertMessage(comment).isEqualTo(
         Comment.newBuilder()
             .addToken(text("function(this: "))
             .addToken(link("Person", "Person.html"))
@@ -207,7 +238,7 @@ public class TypeExpressionParserTest {
         linkFactoryBuilder.create(type).withTypeContext(type));
     JSTypeExpression expression = type.getJsDoc().getParameter("a").getType();
     Comment comment = parser.parse(expression);
-    assertThat(comment).isEqualTo(
+    assertMessage(comment).isEqualTo(
         Comment.newBuilder()
             .addToken(text("!"))
             .addToken(link("Foo", "one_exports_Foo.html"))
@@ -216,7 +247,7 @@ public class TypeExpressionParserTest {
     parser = parserFactory.create(
         linkFactoryBuilder.create(typeRegistry.getType("Person")));
     comment = parser.parse(expression);
-    assertThat(comment).isEqualTo(
+    assertMessage(comment).isEqualTo(
         Comment.newBuilder()
             .addToken(text("!"))
             .addToken(link("Person", "Person.html"))
@@ -231,7 +262,7 @@ public class TypeExpressionParserTest {
     TypeExpressionParser parser = parserFactory.create(linkFactoryBuilder.create(type));
 
     Comment comment = parser.parse(type.getJsDoc().getInfo().getTypedefType());
-    assertThat(comment).isEqualTo(
+    assertMessage(comment).isEqualTo(
         Comment.newBuilder()
             .addToken(text("!"))
             .addToken(stringLink())
@@ -259,7 +290,7 @@ public class TypeExpressionParserTest {
     TypeExpressionParser parser = parserFactory.create(
         linkFactoryBuilder.create(type).withTypeContext(type));
     Comment comment = parser.parse(expression);
-    assertThat(comment).isEqualTo(
+    assertMessage(comment).isEqualTo(
         Comment.newBuilder()
             .addToken(text("!"))
             .addToken(link("Container", "Container.html"))
@@ -292,7 +323,7 @@ public class TypeExpressionParserTest {
     TypeExpressionParser parser = parserFactory.create(
         linkFactoryBuilder.create(type).withTypeContext(type));
     Comment comment = parser.parse(expression);
-    assertThat(comment).isEqualTo(
+    assertMessage(comment).isEqualTo(
         Comment.newBuilder()
             .addToken(text("!"))
             .addToken(link("Container", "one_exports_Container.html"))
@@ -300,6 +331,99 @@ public class TypeExpressionParserTest {
             .addToken(stringLink())
             .addToken(text(">"))
             .build());
+  }
+
+  @Test
+  public void parseExpression_unknownType() {
+    TypeExpression expression = compileExpression("?");
+    assertMessage(expression).isEqualTo(UNKNOWN_TYPE);
+  }
+
+  @Test
+  public void parseExpression_anyType() {
+    TypeExpression expression = compileExpression("*");
+    assertMessage(expression).isEqualTo(ANY_TYPE);
+  }
+
+  @Test
+  public void parsesExpression_primitiveType() {
+    TypeExpression expression = compileExpression("string");
+    assertMessage(expression).isEqualTo(stringType());
+  }
+
+  @Test
+  public void parsesExpression_nullablePrimitiveType1() {
+    TypeExpression expression = compileExpression("?string");
+    assertMessage(expression).isEqualTo(stringType().toBuilder().setAllowNull(true));
+  }
+
+  @Test
+  public void parsesExpression_nullablePrimitiveType2() {
+    TypeExpression expression = compileExpression("string?");
+    assertMessage(expression).isEqualTo(stringType().toBuilder().setAllowNull(true));
+  }
+
+  @Test
+  public void parseExpression_primitiveUnionType() {
+    TypeExpression expression = compileExpression("string|number");
+    assertMessage(expression)
+        .isEqualTo(TypeExpression.newBuilder()
+            .setUnionType(UnionType.newBuilder()
+                .addType(stringType())
+                .addType(numberType())));
+  }
+
+  @Test
+  public void parseExpression_nullablePrimitiveUnionType() {
+    TypeExpression expression = compileExpression("?(string|number)");
+    assertMessage(expression)
+        .isEqualTo(TypeExpression.newBuilder()
+            .setAllowNull(true)
+            .setUnionType(UnionType.newBuilder()
+                .addType(stringType())
+                .addType(numberType())));
+  }
+
+  @Test
+  public void parseExpression_unionWithNullableComponent() {
+    TypeExpression expression = compileExpression("(?string|number)");
+    assertMessage(expression)
+        .isEqualTo(TypeExpression.newBuilder()
+            .setAllowNull(true)
+            .setUnionType(UnionType.newBuilder()
+                .addType(stringType())
+                .addType(numberType())));
+  }
+
+  private TypeExpression compileExpression(String expressionText) {
+    util.compile(
+        createSourceFile(fs.getPath("one.js"),
+            "/**",
+            " * @param {" + expressionText + "} x .",
+            " * @constructor",
+            " */",
+            "function Widget(x) {}"));
+    NominalType type = typeRegistry.getType("Widget");
+    JSTypeExpression expression = type.getJsDoc().getParameter("x").getType();
+    return parserFactory.create(linkFactoryBuilder.create(type)).parseExpression(expression);
+  }
+
+  private static TypeExpression numberType() {
+    return TypeExpression.newBuilder()
+        .setNamedType(NamedType.newBuilder()
+            .setName("number")
+            .setHref("https://developer.mozilla.org/en-US/docs/Web/" +
+                "JavaScript/Reference/Global_Objects/Number"))
+        .build();
+  }
+
+  private static TypeExpression stringType() {
+    return TypeExpression.newBuilder()
+        .setNamedType(NamedType.newBuilder()
+            .setName("string")
+            .setHref("https://developer.mozilla.org/en-US/docs/Web/" +
+                "JavaScript/Reference/Global_Objects/String"))
+        .build();
   }
 
   private static Comment.Token text(String text) {
@@ -319,6 +443,13 @@ public class TypeExpressionParserTest {
   private static Comment.Token link(String text, String href) {
     return Comment.Token.newBuilder()
         .setText(text)
+        .setHref(href)
+        .build();
+  }
+
+  private static NamedType namedType(String text, String href) {
+    return NamedType.newBuilder()
+        .setName(text)
         .setHref(href)
         .build();
   }

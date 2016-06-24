@@ -1,4 +1,4 @@
-// Copyright 2013-2015 Jason Leyba
+// Copyright 2013-2016 Jason Leyba
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,28 +14,13 @@
 
 syntax = "proto3";
 
-import "descriptor.proto";
+import "options.proto";
+import "expression.proto";
 
 option java_package = "com.github.jsdossier.proto";
 option java_multiple_files = true;
 
 package dossier;
-
-message SanitizedContent {
-  oneof kind {
-    // Indicates a field should be treated as a sanitized URI when
-    // injected into a Soy template.
-    bool uri = 1;
-
-    // Indicates a field should be treated as sanitized HTML content when
-    // injected into a Soy template.
-    bool html = 2;
-  }
-}
-
-extend google.protobuf.FieldOptions {
-  SanitizedContent sanitized = 51230;
-}
 
 
 // Describes a documented source file.
@@ -52,12 +37,12 @@ message SourceFile {
 // Describes the resources to include in a generated HTML page.
 message Resources {
   // Paths to stylesheets to link to in the generated page.
-  repeated string css = 1 [(sanitized).uri = true];
+  repeated string css = 1 [(options.sanitized).uri = true];
   // Paths to JavaScript files to include in the generated page's head.
-  repeated string head_script = 2 [(sanitized).uri = true];
+  repeated string head_script = 2 [(options.sanitized).uri = true];
   // Paths to JavaScript files to include in the generated page after
   // the DOM has been defined.
-  repeated string tail_script = 3 [(sanitized).uri = true];
+  repeated string tail_script = 3 [(options.sanitized).uri = true];
 }
 
 
@@ -66,14 +51,14 @@ message TypeLink {
   // The link display text.
   string text = 1;
   // The link href.
-  string href = 2 [(sanitized).uri = true];
+  string href = 2 [(options.sanitized).uri = true];
 }
 
 
 // Defines a link to a symbol's definition in its rendered source file.
 message SourceLink {
   // Path from the current file to the rendered source file.
-  string path = 1  [(sanitized).uri = true];
+  string path = 1  [(options.sanitized).uri = true];
 
   // The line in the source file containing the symbol, if known.
   int32 line = 2;
@@ -94,11 +79,11 @@ message Comment {
       string text = 1;
 
       // The pre-escaped html content for this token.
-      string html = 6 [(sanitized).html = true];
+      string html = 6 [(options.sanitized).html = true];
     }
 
     // If set, this token will be rendered as a hyperlink.
-    string href = 4 [(sanitized).uri = true];
+    string href = 4 [(options.sanitized).uri = true];
   }
 
   // The tokens that comprise this comment.
@@ -204,7 +189,7 @@ message Enumeration {
 // Describes how to build the side index for a generated page.
 message Index {
   // Defines the href from the current page to the main index.
-  string home = 1 [(sanitized).uri = true];
+  string home = 1 [(options.sanitized).uri = true];
 
   // Whether to generate the global type section.
   bool include_types = 2;
@@ -223,9 +208,9 @@ message JsType {
 
   // Short description for a type defined by this |JsType|.
   message TypeSummary {
-    string name = 1;                           // The type name.
-    string href = 2 [(sanitized).uri = true];  // The hyperlink for the actual type.
-    Comment summary = 3;                       // The summary sentence for this type.
+    string name = 1;                                   // The type name.
+    string href = 2 [(options.sanitized).uri = true];  // The hyperlink for the actual type.
+    Comment summary = 3;                               // The summary sentence for this type.
     Tags tags = 4;
   }
 
@@ -272,11 +257,11 @@ message JsType {
 
   // List of inherited types for a class. This should be empty if |is_class|
   // is false. Classes should be listed in order, with the root type first.
-  repeated Comment extended_type = 18;
+  repeated dossier.expression.TypeExpression extended_type = 18;
 
   // The interfaces implemented by a class/extended by an interface. This
   // list should be empty if |is_class| and |is_interface| are false.
-  repeated Comment implemented_type = 19;
+  repeated dossier.expression.TypeExpression implemented_type = 19;
 
   repeated Property compiler_constant = 20;
 

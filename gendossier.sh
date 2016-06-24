@@ -48,7 +48,7 @@ run_protoc() {
     protoc --java_out=src/java \
         --proto_path=src/proto \
         --proto_path=third_party/proto \
-        src/proto/dossier.proto
+        src/proto/*.proto
     protoc --java_out=test/java \
         --proto_path=src/proto \
         --proto_path=test/java/com/github/jsdossier/soy \

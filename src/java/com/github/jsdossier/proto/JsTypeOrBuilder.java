@@ -287,26 +287,26 @@ public interface JsTypeOrBuilder extends
       int index);
 
   /**
-   * <code>repeated .dossier.Comment extended_type = 18;</code>
+   * <code>repeated .dossier.expression.TypeExpression extended_type = 18;</code>
    *
    * <pre>
    * List of inherited types for a class. This should be empty if |is_class|
    * is false. Classes should be listed in order, with the root type first.
    * </pre>
    */
-  java.util.List<com.github.jsdossier.proto.Comment> 
+  java.util.List<com.github.jsdossier.proto.TypeExpression> 
       getExtendedTypeList();
   /**
-   * <code>repeated .dossier.Comment extended_type = 18;</code>
+   * <code>repeated .dossier.expression.TypeExpression extended_type = 18;</code>
    *
    * <pre>
    * List of inherited types for a class. This should be empty if |is_class|
    * is false. Classes should be listed in order, with the root type first.
    * </pre>
    */
-  com.github.jsdossier.proto.Comment getExtendedType(int index);
+  com.github.jsdossier.proto.TypeExpression getExtendedType(int index);
   /**
-   * <code>repeated .dossier.Comment extended_type = 18;</code>
+   * <code>repeated .dossier.expression.TypeExpression extended_type = 18;</code>
    *
    * <pre>
    * List of inherited types for a class. This should be empty if |is_class|
@@ -315,47 +315,47 @@ public interface JsTypeOrBuilder extends
    */
   int getExtendedTypeCount();
   /**
-   * <code>repeated .dossier.Comment extended_type = 18;</code>
+   * <code>repeated .dossier.expression.TypeExpression extended_type = 18;</code>
    *
    * <pre>
    * List of inherited types for a class. This should be empty if |is_class|
    * is false. Classes should be listed in order, with the root type first.
    * </pre>
    */
-  java.util.List<? extends com.github.jsdossier.proto.CommentOrBuilder> 
+  java.util.List<? extends com.github.jsdossier.proto.TypeExpressionOrBuilder> 
       getExtendedTypeOrBuilderList();
   /**
-   * <code>repeated .dossier.Comment extended_type = 18;</code>
+   * <code>repeated .dossier.expression.TypeExpression extended_type = 18;</code>
    *
    * <pre>
    * List of inherited types for a class. This should be empty if |is_class|
    * is false. Classes should be listed in order, with the root type first.
    * </pre>
    */
-  com.github.jsdossier.proto.CommentOrBuilder getExtendedTypeOrBuilder(
+  com.github.jsdossier.proto.TypeExpressionOrBuilder getExtendedTypeOrBuilder(
       int index);
 
   /**
-   * <code>repeated .dossier.Comment implemented_type = 19;</code>
+   * <code>repeated .dossier.expression.TypeExpression implemented_type = 19;</code>
    *
    * <pre>
    * The interfaces implemented by a class/extended by an interface. This
    * list should be empty if |is_class| and |is_interface| are false.
    * </pre>
    */
-  java.util.List<com.github.jsdossier.proto.Comment> 
+  java.util.List<com.github.jsdossier.proto.TypeExpression> 
       getImplementedTypeList();
   /**
-   * <code>repeated .dossier.Comment implemented_type = 19;</code>
+   * <code>repeated .dossier.expression.TypeExpression implemented_type = 19;</code>
    *
    * <pre>
    * The interfaces implemented by a class/extended by an interface. This
    * list should be empty if |is_class| and |is_interface| are false.
    * </pre>
    */
-  com.github.jsdossier.proto.Comment getImplementedType(int index);
+  com.github.jsdossier.proto.TypeExpression getImplementedType(int index);
   /**
-   * <code>repeated .dossier.Comment implemented_type = 19;</code>
+   * <code>repeated .dossier.expression.TypeExpression implemented_type = 19;</code>
    *
    * <pre>
    * The interfaces implemented by a class/extended by an interface. This
@@ -364,24 +364,24 @@ public interface JsTypeOrBuilder extends
    */
   int getImplementedTypeCount();
   /**
-   * <code>repeated .dossier.Comment implemented_type = 19;</code>
+   * <code>repeated .dossier.expression.TypeExpression implemented_type = 19;</code>
    *
    * <pre>
    * The interfaces implemented by a class/extended by an interface. This
    * list should be empty if |is_class| and |is_interface| are false.
    * </pre>
    */
-  java.util.List<? extends com.github.jsdossier.proto.CommentOrBuilder> 
+  java.util.List<? extends com.github.jsdossier.proto.TypeExpressionOrBuilder> 
       getImplementedTypeOrBuilderList();
   /**
-   * <code>repeated .dossier.Comment implemented_type = 19;</code>
+   * <code>repeated .dossier.expression.TypeExpression implemented_type = 19;</code>
    *
    * <pre>
    * The interfaces implemented by a class/extended by an interface. This
    * list should be empty if |is_class| and |is_interface| are false.
    * </pre>
    */
-  com.github.jsdossier.proto.CommentOrBuilder getImplementedTypeOrBuilder(
+  com.github.jsdossier.proto.TypeExpressionOrBuilder getImplementedTypeOrBuilder(
       int index);
 
   /**

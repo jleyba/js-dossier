@@ -197,18 +197,18 @@ public  final class JsType extends
           }
           case 146: {
             if (!((mutable_bitField0_ & 0x00002000) == 0x00002000)) {
-              extendedType_ = new java.util.ArrayList<com.github.jsdossier.proto.Comment>();
+              extendedType_ = new java.util.ArrayList<com.github.jsdossier.proto.TypeExpression>();
               mutable_bitField0_ |= 0x00002000;
             }
-            extendedType_.add(input.readMessage(com.github.jsdossier.proto.Comment.parser(), extensionRegistry));
+            extendedType_.add(input.readMessage(com.github.jsdossier.proto.TypeExpression.parser(), extensionRegistry));
             break;
           }
           case 154: {
             if (!((mutable_bitField0_ & 0x00004000) == 0x00004000)) {
-              implementedType_ = new java.util.ArrayList<com.github.jsdossier.proto.Comment>();
+              implementedType_ = new java.util.ArrayList<com.github.jsdossier.proto.TypeExpression>();
               mutable_bitField0_ |= 0x00004000;
             }
-            implementedType_.add(input.readMessage(com.github.jsdossier.proto.Comment.parser(), extensionRegistry));
+            implementedType_.add(input.readMessage(com.github.jsdossier.proto.TypeExpression.parser(), extensionRegistry));
             break;
           }
           case 162: {
@@ -5261,32 +5261,32 @@ public  final class JsType extends
   }
 
   public static final int EXTENDED_TYPE_FIELD_NUMBER = 18;
-  private java.util.List<com.github.jsdossier.proto.Comment> extendedType_;
+  private java.util.List<com.github.jsdossier.proto.TypeExpression> extendedType_;
   /**
-   * <code>repeated .dossier.Comment extended_type = 18;</code>
+   * <code>repeated .dossier.expression.TypeExpression extended_type = 18;</code>
    *
    * <pre>
    * List of inherited types for a class. This should be empty if |is_class|
    * is false. Classes should be listed in order, with the root type first.
    * </pre>
    */
-  public java.util.List<com.github.jsdossier.proto.Comment> getExtendedTypeList() {
+  public java.util.List<com.github.jsdossier.proto.TypeExpression> getExtendedTypeList() {
     return extendedType_;
   }
   /**
-   * <code>repeated .dossier.Comment extended_type = 18;</code>
+   * <code>repeated .dossier.expression.TypeExpression extended_type = 18;</code>
    *
    * <pre>
    * List of inherited types for a class. This should be empty if |is_class|
    * is false. Classes should be listed in order, with the root type first.
    * </pre>
    */
-  public java.util.List<? extends com.github.jsdossier.proto.CommentOrBuilder> 
+  public java.util.List<? extends com.github.jsdossier.proto.TypeExpressionOrBuilder> 
       getExtendedTypeOrBuilderList() {
     return extendedType_;
   }
   /**
-   * <code>repeated .dossier.Comment extended_type = 18;</code>
+   * <code>repeated .dossier.expression.TypeExpression extended_type = 18;</code>
    *
    * <pre>
    * List of inherited types for a class. This should be empty if |is_class|
@@ -5297,56 +5297,56 @@ public  final class JsType extends
     return extendedType_.size();
   }
   /**
-   * <code>repeated .dossier.Comment extended_type = 18;</code>
+   * <code>repeated .dossier.expression.TypeExpression extended_type = 18;</code>
    *
    * <pre>
    * List of inherited types for a class. This should be empty if |is_class|
    * is false. Classes should be listed in order, with the root type first.
    * </pre>
    */
-  public com.github.jsdossier.proto.Comment getExtendedType(int index) {
+  public com.github.jsdossier.proto.TypeExpression getExtendedType(int index) {
     return extendedType_.get(index);
   }
   /**
-   * <code>repeated .dossier.Comment extended_type = 18;</code>
+   * <code>repeated .dossier.expression.TypeExpression extended_type = 18;</code>
    *
    * <pre>
    * List of inherited types for a class. This should be empty if |is_class|
    * is false. Classes should be listed in order, with the root type first.
    * </pre>
    */
-  public com.github.jsdossier.proto.CommentOrBuilder getExtendedTypeOrBuilder(
+  public com.github.jsdossier.proto.TypeExpressionOrBuilder getExtendedTypeOrBuilder(
       int index) {
     return extendedType_.get(index);
   }
 
   public static final int IMPLEMENTED_TYPE_FIELD_NUMBER = 19;
-  private java.util.List<com.github.jsdossier.proto.Comment> implementedType_;
+  private java.util.List<com.github.jsdossier.proto.TypeExpression> implementedType_;
   /**
-   * <code>repeated .dossier.Comment implemented_type = 19;</code>
+   * <code>repeated .dossier.expression.TypeExpression implemented_type = 19;</code>
    *
    * <pre>
    * The interfaces implemented by a class/extended by an interface. This
    * list should be empty if |is_class| and |is_interface| are false.
    * </pre>
    */
-  public java.util.List<com.github.jsdossier.proto.Comment> getImplementedTypeList() {
+  public java.util.List<com.github.jsdossier.proto.TypeExpression> getImplementedTypeList() {
     return implementedType_;
   }
   /**
-   * <code>repeated .dossier.Comment implemented_type = 19;</code>
+   * <code>repeated .dossier.expression.TypeExpression implemented_type = 19;</code>
    *
    * <pre>
    * The interfaces implemented by a class/extended by an interface. This
    * list should be empty if |is_class| and |is_interface| are false.
    * </pre>
    */
-  public java.util.List<? extends com.github.jsdossier.proto.CommentOrBuilder> 
+  public java.util.List<? extends com.github.jsdossier.proto.TypeExpressionOrBuilder> 
       getImplementedTypeOrBuilderList() {
     return implementedType_;
   }
   /**
-   * <code>repeated .dossier.Comment implemented_type = 19;</code>
+   * <code>repeated .dossier.expression.TypeExpression implemented_type = 19;</code>
    *
    * <pre>
    * The interfaces implemented by a class/extended by an interface. This
@@ -5357,25 +5357,25 @@ public  final class JsType extends
     return implementedType_.size();
   }
   /**
-   * <code>repeated .dossier.Comment implemented_type = 19;</code>
+   * <code>repeated .dossier.expression.TypeExpression implemented_type = 19;</code>
    *
    * <pre>
    * The interfaces implemented by a class/extended by an interface. This
    * list should be empty if |is_class| and |is_interface| are false.
    * </pre>
    */
-  public com.github.jsdossier.proto.Comment getImplementedType(int index) {
+  public com.github.jsdossier.proto.TypeExpression getImplementedType(int index) {
     return implementedType_.get(index);
   }
   /**
-   * <code>repeated .dossier.Comment implemented_type = 19;</code>
+   * <code>repeated .dossier.expression.TypeExpression implemented_type = 19;</code>
    *
    * <pre>
    * The interfaces implemented by a class/extended by an interface. This
    * list should be empty if |is_class| and |is_interface| are false.
    * </pre>
    */
-  public com.github.jsdossier.proto.CommentOrBuilder getImplementedTypeOrBuilder(
+  public com.github.jsdossier.proto.TypeExpressionOrBuilder getImplementedTypeOrBuilder(
       int index) {
     return implementedType_.get(index);
   }
@@ -8765,27 +8765,27 @@ public  final class JsType extends
       return fieldBuilder_;
     }
 
-    private java.util.List<com.github.jsdossier.proto.Comment> extendedType_ =
+    private java.util.List<com.github.jsdossier.proto.TypeExpression> extendedType_ =
       java.util.Collections.emptyList();
     private void ensureExtendedTypeIsMutable() {
       if (!((bitField0_ & 0x00002000) == 0x00002000)) {
-        extendedType_ = new java.util.ArrayList<com.github.jsdossier.proto.Comment>(extendedType_);
+        extendedType_ = new java.util.ArrayList<com.github.jsdossier.proto.TypeExpression>(extendedType_);
         bitField0_ |= 0x00002000;
        }
     }
 
     private com.google.protobuf.RepeatedFieldBuilder<
-        com.github.jsdossier.proto.Comment, com.github.jsdossier.proto.Comment.Builder, com.github.jsdossier.proto.CommentOrBuilder> extendedTypeBuilder_;
+        com.github.jsdossier.proto.TypeExpression, com.github.jsdossier.proto.TypeExpression.Builder, com.github.jsdossier.proto.TypeExpressionOrBuilder> extendedTypeBuilder_;
 
     /**
-     * <code>repeated .dossier.Comment extended_type = 18;</code>
+     * <code>repeated .dossier.expression.TypeExpression extended_type = 18;</code>
      *
      * <pre>
      * List of inherited types for a class. This should be empty if |is_class|
      * is false. Classes should be listed in order, with the root type first.
      * </pre>
      */
-    public java.util.List<com.github.jsdossier.proto.Comment> getExtendedTypeList() {
+    public java.util.List<com.github.jsdossier.proto.TypeExpression> getExtendedTypeList() {
       if (extendedTypeBuilder_ == null) {
         return java.util.Collections.unmodifiableList(extendedType_);
       } else {
@@ -8793,7 +8793,7 @@ public  final class JsType extends
       }
     }
     /**
-     * <code>repeated .dossier.Comment extended_type = 18;</code>
+     * <code>repeated .dossier.expression.TypeExpression extended_type = 18;</code>
      *
      * <pre>
      * List of inherited types for a class. This should be empty if |is_class|
@@ -8808,14 +8808,14 @@ public  final class JsType extends
       }
     }
     /**
-     * <code>repeated .dossier.Comment extended_type = 18;</code>
+     * <code>repeated .dossier.expression.TypeExpression extended_type = 18;</code>
      *
      * <pre>
      * List of inherited types for a class. This should be empty if |is_class|
      * is false. Classes should be listed in order, with the root type first.
      * </pre>
      */
-    public com.github.jsdossier.proto.Comment getExtendedType(int index) {
+    public com.github.jsdossier.proto.TypeExpression getExtendedType(int index) {
       if (extendedTypeBuilder_ == null) {
         return extendedType_.get(index);
       } else {
@@ -8823,7 +8823,7 @@ public  final class JsType extends
       }
     }
     /**
-     * <code>repeated .dossier.Comment extended_type = 18;</code>
+     * <code>repeated .dossier.expression.TypeExpression extended_type = 18;</code>
      *
      * <pre>
      * List of inherited types for a class. This should be empty if |is_class|
@@ -8831,7 +8831,7 @@ public  final class JsType extends
      * </pre>
      */
     public Builder setExtendedType(
-        int index, com.github.jsdossier.proto.Comment value) {
+        int index, com.github.jsdossier.proto.TypeExpression value) {
       if (extendedTypeBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -8845,7 +8845,7 @@ public  final class JsType extends
       return this;
     }
     /**
-     * <code>repeated .dossier.Comment extended_type = 18;</code>
+     * <code>repeated .dossier.expression.TypeExpression extended_type = 18;</code>
      *
      * <pre>
      * List of inherited types for a class. This should be empty if |is_class|
@@ -8853,7 +8853,7 @@ public  final class JsType extends
      * </pre>
      */
     public Builder setExtendedType(
-        int index, com.github.jsdossier.proto.Comment.Builder builderForValue) {
+        int index, com.github.jsdossier.proto.TypeExpression.Builder builderForValue) {
       if (extendedTypeBuilder_ == null) {
         ensureExtendedTypeIsMutable();
         extendedType_.set(index, builderForValue.build());
@@ -8864,14 +8864,14 @@ public  final class JsType extends
       return this;
     }
     /**
-     * <code>repeated .dossier.Comment extended_type = 18;</code>
+     * <code>repeated .dossier.expression.TypeExpression extended_type = 18;</code>
      *
      * <pre>
      * List of inherited types for a class. This should be empty if |is_class|
      * is false. Classes should be listed in order, with the root type first.
      * </pre>
      */
-    public Builder addExtendedType(com.github.jsdossier.proto.Comment value) {
+    public Builder addExtendedType(com.github.jsdossier.proto.TypeExpression value) {
       if (extendedTypeBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -8885,7 +8885,7 @@ public  final class JsType extends
       return this;
     }
     /**
-     * <code>repeated .dossier.Comment extended_type = 18;</code>
+     * <code>repeated .dossier.expression.TypeExpression extended_type = 18;</code>
      *
      * <pre>
      * List of inherited types for a class. This should be empty if |is_class|
@@ -8893,7 +8893,7 @@ public  final class JsType extends
      * </pre>
      */
     public Builder addExtendedType(
-        int index, com.github.jsdossier.proto.Comment value) {
+        int index, com.github.jsdossier.proto.TypeExpression value) {
       if (extendedTypeBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -8907,7 +8907,7 @@ public  final class JsType extends
       return this;
     }
     /**
-     * <code>repeated .dossier.Comment extended_type = 18;</code>
+     * <code>repeated .dossier.expression.TypeExpression extended_type = 18;</code>
      *
      * <pre>
      * List of inherited types for a class. This should be empty if |is_class|
@@ -8915,7 +8915,7 @@ public  final class JsType extends
      * </pre>
      */
     public Builder addExtendedType(
-        com.github.jsdossier.proto.Comment.Builder builderForValue) {
+        com.github.jsdossier.proto.TypeExpression.Builder builderForValue) {
       if (extendedTypeBuilder_ == null) {
         ensureExtendedTypeIsMutable();
         extendedType_.add(builderForValue.build());
@@ -8926,7 +8926,7 @@ public  final class JsType extends
       return this;
     }
     /**
-     * <code>repeated .dossier.Comment extended_type = 18;</code>
+     * <code>repeated .dossier.expression.TypeExpression extended_type = 18;</code>
      *
      * <pre>
      * List of inherited types for a class. This should be empty if |is_class|
@@ -8934,7 +8934,7 @@ public  final class JsType extends
      * </pre>
      */
     public Builder addExtendedType(
-        int index, com.github.jsdossier.proto.Comment.Builder builderForValue) {
+        int index, com.github.jsdossier.proto.TypeExpression.Builder builderForValue) {
       if (extendedTypeBuilder_ == null) {
         ensureExtendedTypeIsMutable();
         extendedType_.add(index, builderForValue.build());
@@ -8945,7 +8945,7 @@ public  final class JsType extends
       return this;
     }
     /**
-     * <code>repeated .dossier.Comment extended_type = 18;</code>
+     * <code>repeated .dossier.expression.TypeExpression extended_type = 18;</code>
      *
      * <pre>
      * List of inherited types for a class. This should be empty if |is_class|
@@ -8953,7 +8953,7 @@ public  final class JsType extends
      * </pre>
      */
     public Builder addAllExtendedType(
-        java.lang.Iterable<? extends com.github.jsdossier.proto.Comment> values) {
+        java.lang.Iterable<? extends com.github.jsdossier.proto.TypeExpression> values) {
       if (extendedTypeBuilder_ == null) {
         ensureExtendedTypeIsMutable();
         com.google.protobuf.AbstractMessageLite.Builder.addAll(
@@ -8965,7 +8965,7 @@ public  final class JsType extends
       return this;
     }
     /**
-     * <code>repeated .dossier.Comment extended_type = 18;</code>
+     * <code>repeated .dossier.expression.TypeExpression extended_type = 18;</code>
      *
      * <pre>
      * List of inherited types for a class. This should be empty if |is_class|
@@ -8983,7 +8983,7 @@ public  final class JsType extends
       return this;
     }
     /**
-     * <code>repeated .dossier.Comment extended_type = 18;</code>
+     * <code>repeated .dossier.expression.TypeExpression extended_type = 18;</code>
      *
      * <pre>
      * List of inherited types for a class. This should be empty if |is_class|
@@ -9001,26 +9001,26 @@ public  final class JsType extends
       return this;
     }
     /**
-     * <code>repeated .dossier.Comment extended_type = 18;</code>
+     * <code>repeated .dossier.expression.TypeExpression extended_type = 18;</code>
      *
      * <pre>
      * List of inherited types for a class. This should be empty if |is_class|
      * is false. Classes should be listed in order, with the root type first.
      * </pre>
      */
-    public com.github.jsdossier.proto.Comment.Builder getExtendedTypeBuilder(
+    public com.github.jsdossier.proto.TypeExpression.Builder getExtendedTypeBuilder(
         int index) {
       return getExtendedTypeFieldBuilder().getBuilder(index);
     }
     /**
-     * <code>repeated .dossier.Comment extended_type = 18;</code>
+     * <code>repeated .dossier.expression.TypeExpression extended_type = 18;</code>
      *
      * <pre>
      * List of inherited types for a class. This should be empty if |is_class|
      * is false. Classes should be listed in order, with the root type first.
      * </pre>
      */
-    public com.github.jsdossier.proto.CommentOrBuilder getExtendedTypeOrBuilder(
+    public com.github.jsdossier.proto.TypeExpressionOrBuilder getExtendedTypeOrBuilder(
         int index) {
       if (extendedTypeBuilder_ == null) {
         return extendedType_.get(index);  } else {
@@ -9028,14 +9028,14 @@ public  final class JsType extends
       }
     }
     /**
-     * <code>repeated .dossier.Comment extended_type = 18;</code>
+     * <code>repeated .dossier.expression.TypeExpression extended_type = 18;</code>
      *
      * <pre>
      * List of inherited types for a class. This should be empty if |is_class|
      * is false. Classes should be listed in order, with the root type first.
      * </pre>
      */
-    public java.util.List<? extends com.github.jsdossier.proto.CommentOrBuilder> 
+    public java.util.List<? extends com.github.jsdossier.proto.TypeExpressionOrBuilder> 
          getExtendedTypeOrBuilderList() {
       if (extendedTypeBuilder_ != null) {
         return extendedTypeBuilder_.getMessageOrBuilderList();
@@ -9044,48 +9044,48 @@ public  final class JsType extends
       }
     }
     /**
-     * <code>repeated .dossier.Comment extended_type = 18;</code>
+     * <code>repeated .dossier.expression.TypeExpression extended_type = 18;</code>
      *
      * <pre>
      * List of inherited types for a class. This should be empty if |is_class|
      * is false. Classes should be listed in order, with the root type first.
      * </pre>
      */
-    public com.github.jsdossier.proto.Comment.Builder addExtendedTypeBuilder() {
+    public com.github.jsdossier.proto.TypeExpression.Builder addExtendedTypeBuilder() {
       return getExtendedTypeFieldBuilder().addBuilder(
-          com.github.jsdossier.proto.Comment.getDefaultInstance());
+          com.github.jsdossier.proto.TypeExpression.getDefaultInstance());
     }
     /**
-     * <code>repeated .dossier.Comment extended_type = 18;</code>
+     * <code>repeated .dossier.expression.TypeExpression extended_type = 18;</code>
      *
      * <pre>
      * List of inherited types for a class. This should be empty if |is_class|
      * is false. Classes should be listed in order, with the root type first.
      * </pre>
      */
-    public com.github.jsdossier.proto.Comment.Builder addExtendedTypeBuilder(
+    public com.github.jsdossier.proto.TypeExpression.Builder addExtendedTypeBuilder(
         int index) {
       return getExtendedTypeFieldBuilder().addBuilder(
-          index, com.github.jsdossier.proto.Comment.getDefaultInstance());
+          index, com.github.jsdossier.proto.TypeExpression.getDefaultInstance());
     }
     /**
-     * <code>repeated .dossier.Comment extended_type = 18;</code>
+     * <code>repeated .dossier.expression.TypeExpression extended_type = 18;</code>
      *
      * <pre>
      * List of inherited types for a class. This should be empty if |is_class|
      * is false. Classes should be listed in order, with the root type first.
      * </pre>
      */
-    public java.util.List<com.github.jsdossier.proto.Comment.Builder> 
+    public java.util.List<com.github.jsdossier.proto.TypeExpression.Builder> 
          getExtendedTypeBuilderList() {
       return getExtendedTypeFieldBuilder().getBuilderList();
     }
     private com.google.protobuf.RepeatedFieldBuilder<
-        com.github.jsdossier.proto.Comment, com.github.jsdossier.proto.Comment.Builder, com.github.jsdossier.proto.CommentOrBuilder> 
+        com.github.jsdossier.proto.TypeExpression, com.github.jsdossier.proto.TypeExpression.Builder, com.github.jsdossier.proto.TypeExpressionOrBuilder> 
         getExtendedTypeFieldBuilder() {
       if (extendedTypeBuilder_ == null) {
         extendedTypeBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
-            com.github.jsdossier.proto.Comment, com.github.jsdossier.proto.Comment.Builder, com.github.jsdossier.proto.CommentOrBuilder>(
+            com.github.jsdossier.proto.TypeExpression, com.github.jsdossier.proto.TypeExpression.Builder, com.github.jsdossier.proto.TypeExpressionOrBuilder>(
                 extendedType_,
                 ((bitField0_ & 0x00002000) == 0x00002000),
                 getParentForChildren(),
@@ -9095,27 +9095,27 @@ public  final class JsType extends
       return extendedTypeBuilder_;
     }
 
-    private java.util.List<com.github.jsdossier.proto.Comment> implementedType_ =
+    private java.util.List<com.github.jsdossier.proto.TypeExpression> implementedType_ =
       java.util.Collections.emptyList();
     private void ensureImplementedTypeIsMutable() {
       if (!((bitField0_ & 0x00004000) == 0x00004000)) {
-        implementedType_ = new java.util.ArrayList<com.github.jsdossier.proto.Comment>(implementedType_);
+        implementedType_ = new java.util.ArrayList<com.github.jsdossier.proto.TypeExpression>(implementedType_);
         bitField0_ |= 0x00004000;
        }
     }
 
     private com.google.protobuf.RepeatedFieldBuilder<
-        com.github.jsdossier.proto.Comment, com.github.jsdossier.proto.Comment.Builder, com.github.jsdossier.proto.CommentOrBuilder> implementedTypeBuilder_;
+        com.github.jsdossier.proto.TypeExpression, com.github.jsdossier.proto.TypeExpression.Builder, com.github.jsdossier.proto.TypeExpressionOrBuilder> implementedTypeBuilder_;
 
     /**
-     * <code>repeated .dossier.Comment implemented_type = 19;</code>
+     * <code>repeated .dossier.expression.TypeExpression implemented_type = 19;</code>
      *
      * <pre>
      * The interfaces implemented by a class/extended by an interface. This
      * list should be empty if |is_class| and |is_interface| are false.
      * </pre>
      */
-    public java.util.List<com.github.jsdossier.proto.Comment> getImplementedTypeList() {
+    public java.util.List<com.github.jsdossier.proto.TypeExpression> getImplementedTypeList() {
       if (implementedTypeBuilder_ == null) {
         return java.util.Collections.unmodifiableList(implementedType_);
       } else {
@@ -9123,7 +9123,7 @@ public  final class JsType extends
       }
     }
     /**
-     * <code>repeated .dossier.Comment implemented_type = 19;</code>
+     * <code>repeated .dossier.expression.TypeExpression implemented_type = 19;</code>
      *
      * <pre>
      * The interfaces implemented by a class/extended by an interface. This
@@ -9138,14 +9138,14 @@ public  final class JsType extends
       }
     }
     /**
-     * <code>repeated .dossier.Comment implemented_type = 19;</code>
+     * <code>repeated .dossier.expression.TypeExpression implemented_type = 19;</code>
      *
      * <pre>
      * The interfaces implemented by a class/extended by an interface. This
      * list should be empty if |is_class| and |is_interface| are false.
      * </pre>
      */
-    public com.github.jsdossier.proto.Comment getImplementedType(int index) {
+    public com.github.jsdossier.proto.TypeExpression getImplementedType(int index) {
       if (implementedTypeBuilder_ == null) {
         return implementedType_.get(index);
       } else {
@@ -9153,7 +9153,7 @@ public  final class JsType extends
       }
     }
     /**
-     * <code>repeated .dossier.Comment implemented_type = 19;</code>
+     * <code>repeated .dossier.expression.TypeExpression implemented_type = 19;</code>
      *
      * <pre>
      * The interfaces implemented by a class/extended by an interface. This
@@ -9161,7 +9161,7 @@ public  final class JsType extends
      * </pre>
      */
     public Builder setImplementedType(
-        int index, com.github.jsdossier.proto.Comment value) {
+        int index, com.github.jsdossier.proto.TypeExpression value) {
       if (implementedTypeBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -9175,7 +9175,7 @@ public  final class JsType extends
       return this;
     }
     /**
-     * <code>repeated .dossier.Comment implemented_type = 19;</code>
+     * <code>repeated .dossier.expression.TypeExpression implemented_type = 19;</code>
      *
      * <pre>
      * The interfaces implemented by a class/extended by an interface. This
@@ -9183,7 +9183,7 @@ public  final class JsType extends
      * </pre>
      */
     public Builder setImplementedType(
-        int index, com.github.jsdossier.proto.Comment.Builder builderForValue) {
+        int index, com.github.jsdossier.proto.TypeExpression.Builder builderForValue) {
       if (implementedTypeBuilder_ == null) {
         ensureImplementedTypeIsMutable();
         implementedType_.set(index, builderForValue.build());
@@ -9194,14 +9194,14 @@ public  final class JsType extends
       return this;
     }
     /**
-     * <code>repeated .dossier.Comment implemented_type = 19;</code>
+     * <code>repeated .dossier.expression.TypeExpression implemented_type = 19;</code>
      *
      * <pre>
      * The interfaces implemented by a class/extended by an interface. This
      * list should be empty if |is_class| and |is_interface| are false.
      * </pre>
      */
-    public Builder addImplementedType(com.github.jsdossier.proto.Comment value) {
+    public Builder addImplementedType(com.github.jsdossier.proto.TypeExpression value) {
       if (implementedTypeBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -9215,7 +9215,7 @@ public  final class JsType extends
       return this;
     }
     /**
-     * <code>repeated .dossier.Comment implemented_type = 19;</code>
+     * <code>repeated .dossier.expression.TypeExpression implemented_type = 19;</code>
      *
      * <pre>
      * The interfaces implemented by a class/extended by an interface. This
@@ -9223,7 +9223,7 @@ public  final class JsType extends
      * </pre>
      */
     public Builder addImplementedType(
-        int index, com.github.jsdossier.proto.Comment value) {
+        int index, com.github.jsdossier.proto.TypeExpression value) {
       if (implementedTypeBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -9237,7 +9237,7 @@ public  final class JsType extends
       return this;
     }
     /**
-     * <code>repeated .dossier.Comment implemented_type = 19;</code>
+     * <code>repeated .dossier.expression.TypeExpression implemented_type = 19;</code>
      *
      * <pre>
      * The interfaces implemented by a class/extended by an interface. This
@@ -9245,7 +9245,7 @@ public  final class JsType extends
      * </pre>
      */
     public Builder addImplementedType(
-        com.github.jsdossier.proto.Comment.Builder builderForValue) {
+        com.github.jsdossier.proto.TypeExpression.Builder builderForValue) {
       if (implementedTypeBuilder_ == null) {
         ensureImplementedTypeIsMutable();
         implementedType_.add(builderForValue.build());
@@ -9256,7 +9256,7 @@ public  final class JsType extends
       return this;
     }
     /**
-     * <code>repeated .dossier.Comment implemented_type = 19;</code>
+     * <code>repeated .dossier.expression.TypeExpression implemented_type = 19;</code>
      *
      * <pre>
      * The interfaces implemented by a class/extended by an interface. This
@@ -9264,7 +9264,7 @@ public  final class JsType extends
      * </pre>
      */
     public Builder addImplementedType(
-        int index, com.github.jsdossier.proto.Comment.Builder builderForValue) {
+        int index, com.github.jsdossier.proto.TypeExpression.Builder builderForValue) {
       if (implementedTypeBuilder_ == null) {
         ensureImplementedTypeIsMutable();
         implementedType_.add(index, builderForValue.build());
@@ -9275,7 +9275,7 @@ public  final class JsType extends
       return this;
     }
     /**
-     * <code>repeated .dossier.Comment implemented_type = 19;</code>
+     * <code>repeated .dossier.expression.TypeExpression implemented_type = 19;</code>
      *
      * <pre>
      * The interfaces implemented by a class/extended by an interface. This
@@ -9283,7 +9283,7 @@ public  final class JsType extends
      * </pre>
      */
     public Builder addAllImplementedType(
-        java.lang.Iterable<? extends com.github.jsdossier.proto.Comment> values) {
+        java.lang.Iterable<? extends com.github.jsdossier.proto.TypeExpression> values) {
       if (implementedTypeBuilder_ == null) {
         ensureImplementedTypeIsMutable();
         com.google.protobuf.AbstractMessageLite.Builder.addAll(
@@ -9295,7 +9295,7 @@ public  final class JsType extends
       return this;
     }
     /**
-     * <code>repeated .dossier.Comment implemented_type = 19;</code>
+     * <code>repeated .dossier.expression.TypeExpression implemented_type = 19;</code>
      *
      * <pre>
      * The interfaces implemented by a class/extended by an interface. This
@@ -9313,7 +9313,7 @@ public  final class JsType extends
       return this;
     }
     /**
-     * <code>repeated .dossier.Comment implemented_type = 19;</code>
+     * <code>repeated .dossier.expression.TypeExpression implemented_type = 19;</code>
      *
      * <pre>
      * The interfaces implemented by a class/extended by an interface. This
@@ -9331,26 +9331,26 @@ public  final class JsType extends
       return this;
     }
     /**
-     * <code>repeated .dossier.Comment implemented_type = 19;</code>
+     * <code>repeated .dossier.expression.TypeExpression implemented_type = 19;</code>
      *
      * <pre>
      * The interfaces implemented by a class/extended by an interface. This
      * list should be empty if |is_class| and |is_interface| are false.
      * </pre>
      */
-    public com.github.jsdossier.proto.Comment.Builder getImplementedTypeBuilder(
+    public com.github.jsdossier.proto.TypeExpression.Builder getImplementedTypeBuilder(
         int index) {
       return getImplementedTypeFieldBuilder().getBuilder(index);
     }
     /**
-     * <code>repeated .dossier.Comment implemented_type = 19;</code>
+     * <code>repeated .dossier.expression.TypeExpression implemented_type = 19;</code>
      *
      * <pre>
      * The interfaces implemented by a class/extended by an interface. This
      * list should be empty if |is_class| and |is_interface| are false.
      * </pre>
      */
-    public com.github.jsdossier.proto.CommentOrBuilder getImplementedTypeOrBuilder(
+    public com.github.jsdossier.proto.TypeExpressionOrBuilder getImplementedTypeOrBuilder(
         int index) {
       if (implementedTypeBuilder_ == null) {
         return implementedType_.get(index);  } else {
@@ -9358,14 +9358,14 @@ public  final class JsType extends
       }
     }
     /**
-     * <code>repeated .dossier.Comment implemented_type = 19;</code>
+     * <code>repeated .dossier.expression.TypeExpression implemented_type = 19;</code>
      *
      * <pre>
      * The interfaces implemented by a class/extended by an interface. This
      * list should be empty if |is_class| and |is_interface| are false.
      * </pre>
      */
-    public java.util.List<? extends com.github.jsdossier.proto.CommentOrBuilder> 
+    public java.util.List<? extends com.github.jsdossier.proto.TypeExpressionOrBuilder> 
          getImplementedTypeOrBuilderList() {
       if (implementedTypeBuilder_ != null) {
         return implementedTypeBuilder_.getMessageOrBuilderList();
@@ -9374,48 +9374,48 @@ public  final class JsType extends
       }
     }
     /**
-     * <code>repeated .dossier.Comment implemented_type = 19;</code>
+     * <code>repeated .dossier.expression.TypeExpression implemented_type = 19;</code>
      *
      * <pre>
      * The interfaces implemented by a class/extended by an interface. This
      * list should be empty if |is_class| and |is_interface| are false.
      * </pre>
      */
-    public com.github.jsdossier.proto.Comment.Builder addImplementedTypeBuilder() {
+    public com.github.jsdossier.proto.TypeExpression.Builder addImplementedTypeBuilder() {
       return getImplementedTypeFieldBuilder().addBuilder(
-          com.github.jsdossier.proto.Comment.getDefaultInstance());
+          com.github.jsdossier.proto.TypeExpression.getDefaultInstance());
     }
     /**
-     * <code>repeated .dossier.Comment implemented_type = 19;</code>
+     * <code>repeated .dossier.expression.TypeExpression implemented_type = 19;</code>
      *
      * <pre>
      * The interfaces implemented by a class/extended by an interface. This
      * list should be empty if |is_class| and |is_interface| are false.
      * </pre>
      */
-    public com.github.jsdossier.proto.Comment.Builder addImplementedTypeBuilder(
+    public com.github.jsdossier.proto.TypeExpression.Builder addImplementedTypeBuilder(
         int index) {
       return getImplementedTypeFieldBuilder().addBuilder(
-          index, com.github.jsdossier.proto.Comment.getDefaultInstance());
+          index, com.github.jsdossier.proto.TypeExpression.getDefaultInstance());
     }
     /**
-     * <code>repeated .dossier.Comment implemented_type = 19;</code>
+     * <code>repeated .dossier.expression.TypeExpression implemented_type = 19;</code>
      *
      * <pre>
      * The interfaces implemented by a class/extended by an interface. This
      * list should be empty if |is_class| and |is_interface| are false.
      * </pre>
      */
-    public java.util.List<com.github.jsdossier.proto.Comment.Builder> 
+    public java.util.List<com.github.jsdossier.proto.TypeExpression.Builder> 
          getImplementedTypeBuilderList() {
       return getImplementedTypeFieldBuilder().getBuilderList();
     }
     private com.google.protobuf.RepeatedFieldBuilder<
-        com.github.jsdossier.proto.Comment, com.github.jsdossier.proto.Comment.Builder, com.github.jsdossier.proto.CommentOrBuilder> 
+        com.github.jsdossier.proto.TypeExpression, com.github.jsdossier.proto.TypeExpression.Builder, com.github.jsdossier.proto.TypeExpressionOrBuilder> 
         getImplementedTypeFieldBuilder() {
       if (implementedTypeBuilder_ == null) {
         implementedTypeBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
-            com.github.jsdossier.proto.Comment, com.github.jsdossier.proto.Comment.Builder, com.github.jsdossier.proto.CommentOrBuilder>(
+            com.github.jsdossier.proto.TypeExpression, com.github.jsdossier.proto.TypeExpression.Builder, com.github.jsdossier.proto.TypeExpressionOrBuilder>(
                 implementedType_,
                 ((bitField0_ & 0x00004000) == 0x00004000),
                 getParentForChildren(),

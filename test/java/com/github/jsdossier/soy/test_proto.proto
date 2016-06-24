@@ -14,7 +14,7 @@
 
 syntax = "proto2";
 
-import "dossier.proto";
+import "options.proto";
 
 option java_package = "com.github.jsdossier.soy";
 
@@ -40,7 +40,7 @@ message Order {
   optional Color color = 5;
   repeated int32 repeated_int = 6;
   repeated Color repeated_color = 7;
-  optional string html_field = 8 [(dossier.sanitized).html = true];
+  optional string html_field = 8 [(dossier.options.sanitized).html = true];
 }
 
 message Top {

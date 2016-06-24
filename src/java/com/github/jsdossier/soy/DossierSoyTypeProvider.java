@@ -17,6 +17,7 @@
 package com.github.jsdossier.soy;
 
 import com.github.jsdossier.proto.Dossier;
+import com.github.jsdossier.proto.Expression;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.Descriptors;
 import com.google.template.soy.types.SoyType;
@@ -32,22 +33,27 @@ class DossierSoyTypeProvider implements SoyTypeProvider {
 
   DossierSoyTypeProvider() {
     Map<String, SoyType> map = new HashMap<>();
+    registerTypes(map, Dossier.getDescriptor());
+    registerTypes(map, Expression.getDescriptor());
+    types = ImmutableMap.copyOf(map);
+  }
 
-    Descriptors.FileDescriptor fileDescriptor = Dossier.getDescriptor();
-
-    for (Descriptors.EnumDescriptor enumDescriptor : fileDescriptor.getEnumTypes()) {
+  private static void registerTypes(Map<String, SoyType> map, Descriptors.FileDescriptor file) {
+    for (Descriptors.EnumDescriptor enumDescriptor : file.getEnumTypes()) {
       ProtoEnumSoyType type = ProtoEnumSoyType.get(enumDescriptor);
       map.put(type.getName(), type);
     }
 
-    for (Descriptors.Descriptor descriptor : fileDescriptor.getMessageTypes()) {
+    for (Descriptors.Descriptor descriptor : file.getMessageTypes()) {
       registerTypes(map, descriptor);
     }
-
-    types = ImmutableMap.copyOf(map);
   }
 
   private static void registerTypes(Map<String, SoyType> map, Descriptors.Descriptor descriptor) {
+    if (map.containsKey(descriptor.getFullName())) {
+      return;
+    }
+
     ProtoMessageSoyType type = ProtoMessageSoyType.get(descriptor);
     map.put(type.getName(), type);
 

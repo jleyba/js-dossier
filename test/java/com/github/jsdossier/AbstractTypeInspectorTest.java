@@ -16,6 +16,7 @@
 
 package com.github.jsdossier;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.truth.Truth.assertAbout;
 import static com.google.common.truth.Truth.assertWithMessage;
 
@@ -24,7 +25,9 @@ import com.github.jsdossier.annotations.Input;
 import com.github.jsdossier.jscomp.TypeRegistry;
 import com.github.jsdossier.proto.Comment;
 import com.github.jsdossier.proto.Comment.Token;
+import com.github.jsdossier.proto.NamedType;
 import com.github.jsdossier.proto.SourceLink;
+import com.github.jsdossier.proto.TypeExpression;
 import com.github.jsdossier.testing.CompilerUtil;
 import com.github.jsdossier.testing.GuiceRule;
 import com.google.common.truth.FailureStrategy;
@@ -39,6 +42,7 @@ import org.junit.Rule;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
+import java.util.Arrays;
 
 import javax.inject.Inject;
 
@@ -120,6 +124,50 @@ public abstract class AbstractTypeInspectorTest {
   protected static Comment stringTypeComment() {
     return linkComment("string",
         "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String");
+  }
+
+  protected static TypeExpression numberTypeExpression() {
+    return namedTypeExpression("number",
+        "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number");
+  }
+
+  protected static TypeExpression stringTypeExpression() {
+    return namedTypeExpression("string",
+        "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String");
+  }
+
+  protected static TypeExpression namedTypeExpression(String name) {
+    return TypeExpression.newBuilder()
+        .setNamedType(namedType(name))
+        .build();
+  }
+
+  protected static TypeExpression namedTypeExpression(String name, String href) {
+    return TypeExpression.newBuilder()
+        .setNamedType(namedType(name, href))
+        .build();
+  }
+
+  protected static NamedType namedType(String name) {
+    return NamedType.newBuilder()
+        .setName(name)
+        .build();
+  }
+
+  protected static NamedType namedType(String name, String href) {
+    return NamedType.newBuilder()
+        .setName(name)
+        .setHref(href)
+        .build();
+  }
+
+  protected static TypeExpression addTemplateTypes(
+      TypeExpression expression, TypeExpression... templateTypes) {
+    checkNotNull(expression.getNamedType());
+    TypeExpression.Builder builder = expression.toBuilder();
+    builder.getNamedTypeBuilder()
+        .addAllTemplateType(Arrays.asList(templateTypes));
+    return builder.build();
   }
 
   protected static InstancePropertySubject assertInstanceProperty(final InstanceProperty property) {

@@ -24,11 +24,8 @@ import static com.google.common.collect.Iterables.transform;
 import static com.google.template.soy.data.SanitizedContent.ContentKind.HTML;
 import static com.google.template.soy.data.SanitizedContent.ContentKind.TRUSTED_RESOURCE_URI;
 
-import com.github.jsdossier.proto.Dossier;
+import com.github.jsdossier.proto.Options;
 import com.google.common.base.Function;
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
@@ -57,13 +54,12 @@ import com.google.template.soy.types.primitive.IntType;
 import com.google.template.soy.types.primitive.NullType;
 import com.google.template.soy.types.primitive.StringType;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 class ProtoMessageSoyType implements SoyObjectType {
@@ -78,55 +74,59 @@ class ProtoMessageSoyType implements SoyObjectType {
           FieldDescriptor.JavaType.INT, IntType.getInstance(),
           FieldDescriptor.JavaType.STRING, StringType.getInstance());
 
-  private static final LoadingCache<Descriptor, ProtoMessageSoyType> CACHE =
-      CacheBuilder.newBuilder()
-          .build(new CacheLoader<Descriptor, ProtoMessageSoyType>() {
-            @Override
-            public ProtoMessageSoyType load(@Nonnull Descriptor key) throws Exception {
-              return new ProtoMessageSoyType(key);
-            }
-          });
+  private static final ImmutableSet<FieldDescriptor.JavaType> CONVERTIBLE_TYPES =
+      ImmutableSet.<FieldDescriptor.JavaType>builder()
+          .addAll(JAVA_TO_PRIMITIVE_TYPES.keySet())
+          .add(FieldDescriptor.JavaType.ENUM)
+          .add(FieldDescriptor.JavaType.MESSAGE)
+          .build();
+
+  private static final Map<Descriptor, ProtoMessageSoyType> CACHE = new HashMap<>();
 
   private final Descriptor descriptor;
-
-  private final ImmutableMap<String, SoyType> fieldTypes;
   private final ImmutableMap<String, FieldDescriptor> fieldDescriptors;
 
   private ProtoMessageSoyType(Descriptor descriptor) {
     this.descriptor = descriptor;
 
-    ImmutableMap.Builder<String, SoyType> typeBuilder = ImmutableMap.builder();
     ImmutableMap.Builder<String, FieldDescriptor> descBuilder = ImmutableMap.builder();
     for (FieldDescriptor field : descriptor.getFields()) {
-      SoyType fieldType;
-
-      if (field.getJavaType() == FieldDescriptor.JavaType.ENUM) {
-        fieldType = ProtoEnumSoyType.get(field.getEnumType());
-      } else if (field.getJavaType() == FieldDescriptor.JavaType.MESSAGE) {
-        fieldType = ProtoMessageSoyType.get(field.getMessageType());
-      } else {
-        fieldType = JAVA_TO_PRIMITIVE_TYPES.get(field.getJavaType());
-      }
-
-      if (fieldType != null) {
-        if (field.isRepeated()) {
-          fieldType = ListType.of(fieldType);
-        }
+      if (CONVERTIBLE_TYPES.contains(field.getJavaType())) {
         String name = LOWER_UNDERSCORE.to(LOWER_CAMEL, field.getName());
-        typeBuilder.put(name, fieldType);
         descBuilder.put(name, field);
       }
     }
-    fieldTypes = typeBuilder.build();
     fieldDescriptors = descBuilder.build();
   }
 
-  static ProtoMessageSoyType get(Descriptor descriptor) {
-    try {
-      return CACHE.get(descriptor);
-    } catch (ExecutionException e) {
-      throw new RuntimeException(e.getCause());
+  private static SoyType toSoyType(FieldDescriptor field) {
+    checkArgument(CONVERTIBLE_TYPES.contains(field.getJavaType()),
+        "unexpected type: %s", field.getJavaType());
+
+    SoyType fieldType;
+    if (field.getJavaType() == FieldDescriptor.JavaType.ENUM) {
+      fieldType = ProtoEnumSoyType.get(field.getEnumType());
+    } else if (field.getJavaType() == FieldDescriptor.JavaType.MESSAGE) {
+      fieldType = ProtoMessageSoyType.get(field.getMessageType());
+    } else {
+      fieldType = JAVA_TO_PRIMITIVE_TYPES.get(field.getJavaType());
     }
+
+    if (fieldType == null) {
+      throw new AssertionError("failed to convert " + field);
+    }
+
+    if (field.isRepeated()) {
+      fieldType = ListType.of(fieldType);
+    }
+    return fieldType;
+  }
+
+  static ProtoMessageSoyType get(Descriptor descriptor) {
+    if (!CACHE.containsKey(descriptor)) {
+      CACHE.put(descriptor, new ProtoMessageSoyType(descriptor));
+    }
+    return CACHE.get(descriptor);
   }
 
   static SoyValue toSoyValue(GeneratedMessage message) {
@@ -195,7 +195,7 @@ class ProtoMessageSoyType implements SoyObjectType {
       }
 
       case STRING: {
-        if (field.getOptions().hasExtension(Dossier.sanitized)) {
+        if (field.getOptions().hasExtension(Options.sanitized)) {
           return toSanitizedContent(field, fieldValue);
         }
         if (field.isRepeated()) {
@@ -256,10 +256,10 @@ class ProtoMessageSoyType implements SoyObjectType {
   }
 
   private static SoyValue toSanitizedContent(FieldDescriptor field, Object fieldValue) {
-    checkArgument(field.getOptions().hasExtension(Dossier.sanitized));
+    checkArgument(field.getOptions().hasExtension(Options.sanitized));
 
     com.github.jsdossier.proto.SanitizedContent sc =
-        field.getOptions().getExtension(Dossier.sanitized);
+        field.getOptions().getExtension(Options.sanitized);
     if (sc.getHtml()) {
       return toSanitizedContent(field, fieldValue, HTML);
     } else if (sc.getUri()) {
@@ -373,7 +373,7 @@ class ProtoMessageSoyType implements SoyObjectType {
   public boolean isInstance(SoyValue soyValue) {
     if (soyValue instanceof SoyRecord) {
       SoyRecord record = (SoyRecord) soyValue;
-      for (String key : fieldTypes.keySet()) {
+      for (String key : fieldDescriptors.keySet()) {
         if (record.hasField(key)) {
           SoyValue item = record.getField(key);
           if (NullType.getInstance().isInstance(item)
@@ -381,7 +381,8 @@ class ProtoMessageSoyType implements SoyObjectType {
             continue;
           }
 
-          if (!fieldTypes .get(key).isInstance(item)) {
+          SoyType fieldType = getFieldType(key);
+          if (fieldType == null || !fieldType.isInstance(item)) {
             return false;
           }
         } else if (!fieldDescriptors.get(key).isOptional()) {
@@ -406,12 +407,13 @@ class ProtoMessageSoyType implements SoyObjectType {
 
   @Override
   public SoyType getFieldType(String fieldName) {
-    return fieldTypes.get(fieldName);
+    FieldDescriptor desc = fieldDescriptors.get(fieldName);
+    return desc == null ? null : toSoyType(desc);
   }
 
   @Override
   public ImmutableSet<String> getFieldNames() {
-    return fieldTypes.keySet();
+    return fieldDescriptors.keySet();
   }
 
   @Override
