@@ -16,6 +16,8 @@
 
 package com.github.jsdossier;
 
+import static com.github.jsdossier.ProtoTruth.assertMessage;
+import static com.github.jsdossier.ProtoTruth.assertMessages;
 import static com.github.jsdossier.TypeInspector.fakeNodeForType;
 import static com.github.jsdossier.testing.CompilerUtil.createSourceFile;
 import static com.google.common.truth.Truth.assertThat;
@@ -269,7 +271,7 @@ public class TypeInspectorTest extends AbstractTypeInspectorTest {
 
     NominalType type = typeRegistry.getType("Foo");
     TypeInspector inspector = typeInspectorFactory.create(type);
-    assertThat(inspector.getTypeDescription())
+    assertMessage(inspector.getTypeDescription())
         .isEqualTo(htmlComment("<p>This is a comment on a type.</p>\n"));
   }
 
@@ -280,7 +282,7 @@ public class TypeInspectorTest extends AbstractTypeInspectorTest {
 
     NominalType type = typeRegistry.getType("Foo");
     TypeInspector inspector = typeInspectorFactory.create(type);
-    assertThat(inspector.getTypeDescription()).isEqualTo(Comment.getDefaultInstance());
+    assertMessage(inspector.getTypeDescription()).isEqualTo(Comment.getDefaultInstance());
   }
 
   @Test
@@ -294,7 +296,7 @@ public class TypeInspectorTest extends AbstractTypeInspectorTest {
 
     NominalType type = typeRegistry.getType("foo.bar.Baz");
     TypeInspector inspector = typeInspectorFactory.create(type);
-    assertThat(inspector.getTypeDescription())
+    assertMessage(inspector.getTypeDescription())
         .isEqualTo(htmlComment("<p>This is a comment on a type.</p>\n"));
   }
 
@@ -309,7 +311,7 @@ public class TypeInspectorTest extends AbstractTypeInspectorTest {
 
     NominalType type = typeRegistry.getType("module$exports$foo$bar.Baz");
     TypeInspector inspector = typeInspectorFactory.create(type);
-    assertThat(inspector.getTypeDescription())
+    assertMessage(inspector.getTypeDescription())
         .isEqualTo(htmlComment("<p>This is a comment on a type.</p>\n"));
   }
 
@@ -323,7 +325,7 @@ public class TypeInspectorTest extends AbstractTypeInspectorTest {
 
     NominalType type = typeRegistry.getType("module$exports$module$$src$modules$foo$bar.Baz");
     TypeInspector inspector = typeInspectorFactory.create(type);
-    assertThat(inspector.getTypeDescription())
+    assertMessage(inspector.getTypeDescription())
         .isEqualTo(htmlComment("<p>This is a comment on a type.</p>\n"));
   }
 
@@ -337,7 +339,7 @@ public class TypeInspectorTest extends AbstractTypeInspectorTest {
 
     NominalType type = typeRegistry.getType("module$$src$modules$foo$bar.Baz");
     TypeInspector inspector = typeInspectorFactory.create(type);
-    assertThat(inspector.getTypeDescription())
+    assertMessage(inspector.getTypeDescription())
         .isEqualTo(htmlComment("<p>This is a comment on a type.</p>\n"));
   }
 
@@ -353,7 +355,7 @@ public class TypeInspectorTest extends AbstractTypeInspectorTest {
 
     NominalType type = typeRegistry.getType("foo.bar.AliasedBaz");
     TypeInspector inspector = typeInspectorFactory.create(type);
-    assertThat(inspector.getTypeDescription())
+    assertMessage(inspector.getTypeDescription())
         .isEqualTo(htmlComment("<p>This is a comment on a type.</p>\n"));
   }
 
@@ -373,7 +375,7 @@ public class TypeInspectorTest extends AbstractTypeInspectorTest {
     NominalType type =
         typeRegistry.getType("module$exports$module$$src$modules$foo$baz.AliasedBaz");
     TypeInspector inspector = typeInspectorFactory.create(type);
-    assertThat(inspector.getTypeDescription())
+    assertMessage(inspector.getTypeDescription())
         .isEqualTo(htmlComment("<p>This is a comment on a type.</p>\n"));
   }
 
@@ -389,7 +391,7 @@ public class TypeInspectorTest extends AbstractTypeInspectorTest {
 
     NominalType type = typeRegistry.getType("module$exports$foo$bar.Baz");
     TypeInspector inspector = typeInspectorFactory.create(type);
-    assertThat(inspector.getTypeDescription())
+    assertMessage(inspector.getTypeDescription())
         .isEqualTo(htmlComment("<p>This is a comment on a type.</p>\n"));
   }
 
@@ -404,7 +406,7 @@ public class TypeInspectorTest extends AbstractTypeInspectorTest {
 
     NominalType type = typeRegistry.getType("module$exports$module$$src$modules$foo$bar.Baz");
     TypeInspector inspector = typeInspectorFactory.create(type);
-    assertThat(inspector.getTypeDescription())
+    assertMessage(inspector.getTypeDescription())
         .isEqualTo(htmlComment("<p>This is a comment on a type.</p>\n"));
   }
 
@@ -420,7 +422,7 @@ public class TypeInspectorTest extends AbstractTypeInspectorTest {
 
     NominalType type = typeRegistry.getType("module$$src$modules$foo$bar.Baz");
     TypeInspector inspector = typeInspectorFactory.create(type);
-    assertThat(inspector.getTypeDescription())
+    assertMessage(inspector.getTypeDescription())
         .isEqualTo(htmlComment(
             "<p>This is a comment on a type.\n" +
                 "<a href=\"bar_exports_Baz.html\"><code>InternalClazz</code></a></p>\n"));
@@ -442,7 +444,7 @@ public class TypeInspectorTest extends AbstractTypeInspectorTest {
 
     NominalType type = typeRegistry.getType("module$$src$modules$foo$bar$baz.Foo");
     TypeInspector inspector = typeInspectorFactory.create(type);
-    assertThat(inspector.getTypeDescription())
+    assertMessage(inspector.getTypeDescription())
         .isEqualTo(htmlComment("<p>This is a comment on a type.</p>\n"));
   }
 
@@ -454,11 +456,11 @@ public class TypeInspectorTest extends AbstractTypeInspectorTest {
 
     NominalType type = typeRegistry.getType("foo");
     TypeInspector inspector = typeInspectorFactory.create(type);
-    assertThat(inspector.getTypeDescription()).isEqualTo(Comment.getDefaultInstance());
+    assertMessage(inspector.getTypeDescription()).isEqualTo(Comment.getDefaultInstance());
 
     type = typeRegistry.getType("foo.bar");
     inspector = typeInspectorFactory.create(type);
-    assertThat(inspector.getTypeDescription()).isEqualTo(Comment.getDefaultInstance());
+    assertMessage(inspector.getTypeDescription()).isEqualTo(Comment.getDefaultInstance());
   }
 
   @Test
@@ -471,7 +473,7 @@ public class TypeInspectorTest extends AbstractTypeInspectorTest {
 
     NominalType type = typeRegistry.getType("module$exports$module$$src$modules$foo$bar");
     TypeInspector inspector = typeInspectorFactory.create(type);
-    assertThat(inspector.getTypeDescription())
+    assertMessage(inspector.getTypeDescription())
         .isEqualTo(htmlComment(
             "<p>Exports <a href=\"bar_exports_A.html\"><code>A</code></a>.</p>\n"));
   }
@@ -486,7 +488,7 @@ public class TypeInspectorTest extends AbstractTypeInspectorTest {
 
     NominalType type = typeRegistry.getType("module$$src$modules$foo$bar");
     TypeInspector inspector = typeInspectorFactory.create(type);
-    assertThat(inspector.getTypeDescription())
+    assertMessage(inspector.getTypeDescription())
         .isEqualTo(htmlComment(
             "<p>Exports <a href=\"bar_exports_A.html\"><code>A</code></a>.</p>\n"));
   }
@@ -501,7 +503,7 @@ public class TypeInspectorTest extends AbstractTypeInspectorTest {
 
     NominalType type = typeRegistry.getType("module$exports$foo$bar");
     TypeInspector inspector = typeInspectorFactory.create(type);
-    assertThat(inspector.getTypeDescription())
+    assertMessage(inspector.getTypeDescription())
         .isEqualTo(htmlComment("<p>The main function.</p>\n"));
   }
 
@@ -515,7 +517,7 @@ public class TypeInspectorTest extends AbstractTypeInspectorTest {
 
     NominalType type = typeRegistry.getType("module$exports$module$$src$modules$foo$bar");
     TypeInspector inspector = typeInspectorFactory.create(type);
-    assertThat(inspector.getTypeDescription())
+    assertMessage(inspector.getTypeDescription())
         .isEqualTo(htmlComment("<p>The main function.</p>\n"));
   }
 
@@ -529,7 +531,7 @@ public class TypeInspectorTest extends AbstractTypeInspectorTest {
 
     NominalType type = typeRegistry.getType("module$$src$modules$foo$bar");
     TypeInspector inspector = typeInspectorFactory.create(type);
-    assertThat(inspector.getTypeDescription())
+    assertMessage(inspector.getTypeDescription())
         .isEqualTo(htmlComment("<p>This is the fileoverview.</p>\n"));
   }
 
@@ -552,7 +554,7 @@ public class TypeInspectorTest extends AbstractTypeInspectorTest {
     Function data = typeInspector.getFunctionData(
         type.getName(), type.getType(), fakeNode, type, type.getJsDoc());
 
-    assertThat(data).isEqualTo(
+    assertMessage(data).isEqualTo(
         Function.newBuilder()
             .setBase(BaseProperty.newBuilder()
                 .setName("Person")
@@ -582,7 +584,7 @@ public class TypeInspectorTest extends AbstractTypeInspectorTest {
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectInstanceType();
     assertThat(report.getProperties()).isEmpty();
-    assertThat(report.getFunctions()).containsExactly(
+    assertMessages(report.getFunctions()).containsExactly(
         Function.newBuilder()
             .setBase(BaseProperty.newBuilder()
                 .setName("a")
@@ -611,7 +613,7 @@ public class TypeInspectorTest extends AbstractTypeInspectorTest {
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectInstanceType();
     assertThat(report.getProperties()).isEmpty();
-    assertThat(report.getFunctions()).containsExactly(
+    assertMessages(report.getFunctions()).containsExactly(
         Function.newBuilder()
             .setBase(BaseProperty.newBuilder()
                 .setName("b")
@@ -634,7 +636,7 @@ public class TypeInspectorTest extends AbstractTypeInspectorTest {
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectInstanceType();
     assertThat(report.getProperties()).isEmpty();
-    assertThat(report.getFunctions()).containsExactly(
+    assertMessages(report.getFunctions()).containsExactly(
         Function.newBuilder()
             .setBase(BaseProperty.newBuilder()
                 .setName("b")
@@ -656,7 +658,7 @@ public class TypeInspectorTest extends AbstractTypeInspectorTest {
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectInstanceType();
     assertThat(report.getProperties()).isEmpty();
-    assertThat(report.getFunctions()).containsExactly(
+    assertMessages(report.getFunctions()).containsExactly(
         Function.newBuilder()
             .setBase(BaseProperty.newBuilder()
                 .setName("b")
@@ -680,7 +682,7 @@ public class TypeInspectorTest extends AbstractTypeInspectorTest {
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectInstanceType();
     assertThat(report.getProperties()).isEmpty();
-    assertThat(report.getFunctions()).containsExactly(
+    assertMessages(report.getFunctions()).containsExactly(
         Function.newBuilder()
             .setBase(BaseProperty.newBuilder()
                 .setName("b")
@@ -708,20 +710,20 @@ public class TypeInspectorTest extends AbstractTypeInspectorTest {
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectType();
     assertThat(report.getProperties()).isEmpty();
-    assertThat(report.getFunctions()).containsExactly(
-        Function.newBuilder()
-            .setBase(BaseProperty.newBuilder()
-                .setName("publicFn")
-                .setSource(sourceFile("source/foo.js.src.html", 6))
-                .setDescription(Comment.getDefaultInstance())
-                .build())
-            .build(),
+    assertMessages(report.getFunctions()).containsExactly(
         Function.newBuilder()
             .setBase(BaseProperty.newBuilder()
                 .setName("inheritsVisFn")
                 .setSource(sourceFile("source/foo.js.src.html", 9))
                 .setDescription(Comment.getDefaultInstance())
                 .setVisibility(Visibility.PACKAGE)
+                .build())
+            .build(),
+        Function.newBuilder()
+            .setBase(BaseProperty.newBuilder()
+                .setName("publicFn")
+                .setSource(sourceFile("source/foo.js.src.html", 6))
+                .setDescription(Comment.getDefaultInstance())
                 .build())
             .build());
   }

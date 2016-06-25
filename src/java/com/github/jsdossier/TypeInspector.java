@@ -49,6 +49,7 @@ import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
@@ -229,27 +230,35 @@ final class TypeInspector {
     TypeExpressionParser parser =
         expressionParserFactory.create(linkFactory.withTypeContext(inspectedType));
 
-    FunctionType ctor = inspectedType.getType().toMaybeFunctionType();
-    if (ctor == null) {
-      return expressions.build();
-    }
-
-    for (JSType instance = ctor.getTypeOfThis();
-         instance != null && ctor.getSuperClassConstructor() != null;) {
+    List<JSType> types = getTypeHierarchyInternal(inspectedType.getType());
+    for (JSType instance : types) {
       TypeExpression expression = parser.parseExpression(instance);
       expressions.add(expression);
+    }
+
+    return expressions.build();
+  }
+
+  private List<JSType> getTypeHierarchyInternal(JSType type) {
+    if (!type.isConstructor() || type.toMaybeFunctionType() == null) {
+      return ImmutableList.of();
+    }
+
+    List<JSType> types = new ArrayList<>();
+    FunctionType ctor = type.toMaybeFunctionType();
+    JSType instance = ctor.getTypeOfThis();
+    while (instance != null && ctor != null && ctor.getSuperClassConstructor() != null) {
+      types.add(instance);
 
       JSType superInstance = getSuperInstance(instance.toMaybeObjectType(), ctor);
-      if (superInstance == null
-          || superInstance.toMaybeObjectType() == null) {
+      if (superInstance == null || superInstance.toMaybeObjectType() == null) {
         break;
       }
 
       instance = superInstance;
       ctor = superInstance.toMaybeObjectType().getConstructor();
     }
-
-    return expressions.build();
+    return types;
   }
 
   private JSType getSuperInstance(ObjectType instance, FunctionType ctor) {
@@ -259,6 +268,20 @@ final class TypeInspector {
       jsRegistry.setTemplateTypeNames(instance.getTemplateTypeMap().getTemplateKeys());
       superInstance = ctor.getJSDocInfo().getBaseType().evaluate(globalScope, jsRegistry);
       jsRegistry.clearTemplateTypeNames();
+
+      // The type expression will resolve to a named type if it is an aliased reference to
+      // a module's exported type. Compensate by checking dossier's type registry, which
+      // tracks exported types by their exported name (whereas the compiler tracks them by
+      // their initially declared name from within the module).
+      if (superInstance.isNamedType()
+          && registry.isType(superInstance.toMaybeNamedType().getReferenceName())) {
+        superInstance =
+            registry.getType(superInstance.toMaybeNamedType().getReferenceName()).getType();
+        if (superInstance.isConstructor() || superInstance.isInterface()) {
+          superInstance = superInstance.toMaybeFunctionType().getTypeOfThis();
+        }
+      }
+
     } else {
       FunctionType superCtor = ctor.getSuperClassConstructor();
       if (superCtor == null) {
@@ -266,6 +289,8 @@ final class TypeInspector {
       }
       superInstance = superCtor.getTypeOfThis();
     }
+
+
     return superInstance.visit(
         new TemplateTypeMapReplacer(jsRegistry, instance.getTemplateTypeMap()));
   }
@@ -288,6 +313,15 @@ final class TypeInspector {
     }
     TypeExpressionParser parser =
         expressionParserFactory.create(linkFactory.withTypeContext(inspectedType));
+    for (JSType iface : getAllImplementedInterfaces(type)) {
+      expressions.add(parser.parseExpression(iface));
+    }
+  }
+
+  private Set<JSType> getAllImplementedInterfaces(JSType type) {
+    if (type.toMaybeFunctionType() == null) {
+      return ImmutableSet.of();
+    }
 
     FunctionType ctor = type.toMaybeFunctionType();
     ObjectType instance = ctor.getTypeOfThis().toMaybeObjectType();
@@ -305,13 +339,14 @@ final class TypeInspector {
       allInterfaces = ctor.getAllImplementedInterfaces();
     }
 
+    ImmutableSet.Builder<JSType> ret = ImmutableSet.builder();
     for (JSType iface : allInterfaces) {
       if (iface.isUnknownType()) {
         continue;
       }
-      iface = iface.visit(replacer);
-      expressions.add(parser.parseExpression(iface));
+      ret.add(iface.visit(replacer));
     }
+    return ret.build();
   }
 
   private void getExtendedInterfaces(
@@ -575,15 +610,18 @@ final class TypeInspector {
     if (type.isNamedType() && registry.isType(((NamedType) type).getReferenceName())) {
       type = registry.getType(((NamedType) type).getReferenceName()).getType();
     }
+
     Set<JSType> types = new LinkedHashSet<>();
-    types.add(type);
-    for (JSType iface : registry.getDeclaredInterfaces(type, jsRegistry)) {
-      types.addAll(getAssignableTypes(iface));
+    if (type.toMaybeFunctionType() != null
+        && (type.isConstructor() || type.isInterface())) {
+      types.add(type.toMaybeFunctionType().getInstanceType());
     }
-    List<JSType> typeHierarchy = registry.getTypeHierarchy(type, jsRegistry);
-    for (int i = 1; i < typeHierarchy.size(); i++) {
-      types.addAll(getAssignableTypes(typeHierarchy.get(i)));
-    }
+
+    types.addAll(getAllImplementedInterfaces(type));
+//    for (JSType iface : getAllImplementedInterfaces(type)) {
+//      types.addAll(getAssignableTypes(iface));
+//    }
+    types.addAll(getTypeHierarchyInternal(type));
     return types;
   }
 

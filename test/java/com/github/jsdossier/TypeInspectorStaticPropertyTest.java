@@ -16,6 +16,7 @@
 
 package com.github.jsdossier;
 
+import static com.github.jsdossier.ProtoTruth.assertMessages;
 import static com.github.jsdossier.testing.CompilerUtil.createSourceFile;
 import static com.google.common.truth.Truth.assertThat;
 
@@ -75,7 +76,7 @@ public class TypeInspectorStaticPropertyTest extends AbstractTypeInspectorTest {
     TypeInspector.Report report = typeInspector.inspectType();
     assertThat(report.getFunctions()).isEmpty();
     assertThat(report.getCompilerConstants()).isEmpty();
-    assertThat(report.getProperties()).containsExactly(
+    assertMessages(report.getProperties()).containsExactly(
         Property.newBuilder()
             .setBase(BaseProperty.newBuilder()
                 .setName("x")
@@ -112,7 +113,7 @@ public class TypeInspectorStaticPropertyTest extends AbstractTypeInspectorTest {
     TypeInspector.Report report = typeInspector.inspectType();
     assertThat(report.getFunctions()).isEmpty();
     assertThat(report.getCompilerConstants()).isEmpty();
-    assertThat(report.getProperties()).containsExactly(
+    assertMessages(report.getProperties()).containsExactly(
         Property.newBuilder()
             .setBase(BaseProperty.newBuilder()
                 .setName("x")
@@ -139,7 +140,7 @@ public class TypeInspectorStaticPropertyTest extends AbstractTypeInspectorTest {
     TypeInspector.Report report = typeInspector.inspectType();
     assertThat(report.getFunctions()).isEmpty();
     assertThat(report.getCompilerConstants()).isEmpty();
-    assertThat(report.getProperties()).containsExactly(
+    assertMessages(report.getProperties()).containsExactly(
         Property.newBuilder()
             .setBase(BaseProperty.newBuilder()
                 .setName("A.b")
@@ -166,7 +167,7 @@ public class TypeInspectorStaticPropertyTest extends AbstractTypeInspectorTest {
     TypeInspector.Report report = typeInspector.inspectType();
     assertThat(report.getFunctions()).isEmpty();
     assertThat(report.getCompilerConstants()).isEmpty();
-    assertThat(report.getProperties()).containsExactly(
+    assertMessages(report.getProperties()).containsExactly(
         Property.newBuilder()
             .setBase(BaseProperty.newBuilder()
                 .setName("A.b")
@@ -192,7 +193,7 @@ public class TypeInspectorStaticPropertyTest extends AbstractTypeInspectorTest {
     TypeInspector.Report report = typeInspector.inspectType();
     assertThat(report.getFunctions()).isEmpty();
     assertThat(report.getCompilerConstants()).isEmpty();
-    assertThat(report.getProperties()).containsExactly(
+    assertMessages(report.getProperties()).containsExactly(
         Property.newBuilder()
             .setBase(BaseProperty.newBuilder()
                 .setName("b")
@@ -279,7 +280,7 @@ public class TypeInspectorStaticPropertyTest extends AbstractTypeInspectorTest {
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectType();
     assertThat(report.getCompilerConstants()).isEmpty();
-    assertThat(report.getProperties()).containsExactly(
+    assertMessages(report.getProperties()).containsExactly(
         Property.newBuilder()
             .setBase(BaseProperty.newBuilder()
                 .setName("limit")
@@ -304,7 +305,7 @@ public class TypeInspectorStaticPropertyTest extends AbstractTypeInspectorTest {
     NominalType type = typeRegistry.getType("module$$src$modules$foo$baz");
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectType();
-    assertThat(report.getProperties()).containsExactly(
+    assertMessages(report.getProperties()).containsExactly(
         Property.newBuilder()
             .setBase(BaseProperty.newBuilder()
                 .setName("default")
@@ -330,7 +331,7 @@ public class TypeInspectorStaticPropertyTest extends AbstractTypeInspectorTest {
     NominalType type = typeRegistry.getType("module$exports$module$$src$modules$foo$baz");
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectType();
-    assertThat(report.getProperties()).containsExactly(
+    assertMessages(report.getProperties()).containsExactly(
         Property.newBuilder()
             .setBase(BaseProperty.newBuilder()
                 .setName("bar")

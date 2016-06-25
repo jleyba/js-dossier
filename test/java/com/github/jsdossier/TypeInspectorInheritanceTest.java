@@ -549,6 +549,20 @@ public class TypeInspectorInheritanceTest extends AbstractTypeInspectorTest {
   }
 
   @Test
+  public void getHierarchyForOneLevelOfInheritance() {
+    compile(
+        "class Base {}",
+        "class Type extends Base {}");
+
+    NominalType type = typeRegistry.getType("Type");
+    TypeInspector typeInspector = typeInspectorFactory.create(type);
+
+    assertMessages(typeInspector.getTypeHierarchy()).containsExactly(
+        namedTypeExpression("Type", "Type.html"),
+        namedTypeExpression("Base", "Base.html"));
+  }
+
+  @Test
   public void getHierarchyForMultipleLevels() {
     compile(
         "class Base {}",

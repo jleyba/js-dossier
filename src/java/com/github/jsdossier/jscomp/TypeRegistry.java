@@ -24,7 +24,6 @@ import static com.google.common.collect.Multimaps.filterKeys;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Predicate;
 import com.google.common.base.Supplier;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
@@ -32,12 +31,7 @@ import com.google.common.collect.Multimaps;
 import com.google.common.collect.SetMultimap;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.JSDocInfo.Visibility;
-import com.google.javascript.rhino.JSTypeExpression;
-import com.google.javascript.rhino.jstype.FunctionType;
 import com.google.javascript.rhino.jstype.JSType;
-import com.google.javascript.rhino.jstype.JSTypeRegistry;
-import com.google.javascript.rhino.jstype.NamedType;
-import com.google.javascript.rhino.jstype.ObjectType;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -49,7 +43,6 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Logger;
 
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nullable;
@@ -60,8 +53,6 @@ import javax.inject.Singleton;
  */
 @Singleton
 public final class TypeRegistry {
-
-  private static final Logger log = Logger.getLogger(TypeRegistry.class.getName());
 
   private final Set<String> providedSymbols = new HashSet<>();
   private final Set<String> implicitNamespaces = new HashSet<>();
@@ -333,114 +324,6 @@ public final class TypeRegistry {
    */
   public Set<NominalType> getNestedTypes(NominalType type) {
     return Collections.unmodifiableSet(nestedTypes.get(type));
-  }
-
-  public List<JSType> getTypeHierarchy(JSType type, JSTypeRegistry jsRegistry) {
-    List<JSType> stack = new ArrayList<>();
-    for (; type != null; type = getBaseType(type, jsRegistry)) {
-      JSType toAdd = type;
-      if (toAdd.isConstructor()) {
-        toAdd = ((FunctionType) toAdd).getInstanceType();
-      }
-      stack.add(toAdd);
-    }
-    return stack;
-  }
-
-  @Nullable
-  private JSType getBaseType(JSType type, JSTypeRegistry jsRegistry) {
-    JSDocInfo info = type.getJSDocInfo();
-    if (info == null) {
-      return null;
-    }
-    JSTypeExpression baseType = info.getBaseType();
-    if (baseType == null) {
-      return null;
-    }
-    type = baseType.evaluate(null, jsRegistry);
-    if (type instanceof NamedType) {
-      String name = ((NamedType) type).getReferenceName();
-      if (typesByName.containsKey(name)) {
-        return typesByName.get(name).getType();
-      }
-      log.fine("Failed to resolve named type: " + name);
-      return null;
-    }
-    return type;
-  }
-
-  /**
-   * Returns the interfaces directly implemented by the given type.
-   */
-  public ImmutableSet<JSType> getDeclaredInterfaces(JSType jsType, JSTypeRegistry jsRegistry) {
-    Iterable<JSTypeExpression> interfaces;
-    if (jsType.isConstructor() && jsType.getJSDocInfo() != null) {
-      interfaces = jsType.getJSDocInfo().getImplementedInterfaces();
-
-    } else if (jsType.isInterface() && jsType.getJSDocInfo() != null) {
-      interfaces = jsType.getJSDocInfo().getExtendedInterfaces();
-
-    } else if (jsType.isInstanceType()) {
-      JSType ctorType = ((ObjectType) jsType).getConstructor();
-      return ctorType == null
-          ? ImmutableSet.<JSType>of() : getDeclaredInterfaces(ctorType, jsRegistry
-      );
-
-    } else {
-      return ImmutableSet.of();
-    }
-
-    ImmutableSet.Builder<JSType> builder = ImmutableSet.builder();
-    for (JSTypeExpression expr : interfaces) {
-      builder.add(expr.evaluate(null, jsRegistry));
-    }
-    return builder.build();
-  }
-
-  /**
-   * Returns the interfaces implemented by the given type. If the type is itself an interface, this
-   * will return the interfaces it extends.
-   */
-  public ImmutableSet<JSType> getImplementedTypes(
-      NominalType nominalType, JSTypeRegistry jsRegistry) {
-    JSType type = nominalType.getType();
-    ImmutableSet.Builder<JSType> builder = ImmutableSet.builder();
-    if (type.isConstructor()) {
-      for (JSType jsType : getTypeHierarchy(type, jsRegistry)) {
-        if (jsType.getJSDocInfo() != null) {
-          for (JSTypeExpression expr : jsType.getJSDocInfo().getImplementedInterfaces()) {
-            JSType exprType = expr.evaluate(null, jsRegistry);
-            if (exprType.getJSDocInfo() != null) {
-              builder.addAll(getExtendedInterfaces(exprType.getJSDocInfo(), jsRegistry));
-            }
-            builder.add(exprType);
-          }
-
-        } else if (jsType.isInstanceType()) {
-          Collection<NominalType> types = getTypes(jsType);
-          if (!types.isEmpty()) {
-            NominalType nt = types.iterator().next();
-            if (nt != nominalType) {
-              builder.addAll(getImplementedTypes(nt, jsRegistry));
-            }
-          }
-        }
-      }
-    } else if (type.isInterface()) {
-      builder.addAll(getExtendedInterfaces(nominalType.getJsDoc().getInfo(), jsRegistry));
-    }
-    return builder.build();
-  }
-
-  private Set<JSType> getExtendedInterfaces(JSDocInfo jsdoc, JSTypeRegistry jsRegistry) {
-    Set<JSType> interfaces = new HashSet<>();
-    for (JSTypeExpression expr : jsdoc.getExtendedInterfaces()) {
-      JSType type = expr.evaluate(null, jsRegistry);
-      if (interfaces.add(type) && type.getJSDocInfo() != null) {
-        interfaces.addAll(getExtendedInterfaces(type.getJSDocInfo(), jsRegistry));
-      }
-    }
-    return interfaces;
   }
 
   /**
