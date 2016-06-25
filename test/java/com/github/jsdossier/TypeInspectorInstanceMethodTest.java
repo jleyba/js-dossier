@@ -77,7 +77,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setType2(stringTypeExpression())
                 .setDescription(htmlComment("<p>A greeting.</p>\n")))
             .addThrown(Detail.newBuilder()
-                .setType(errorTypeComment())
+                .setType2(nullableErrorTypeExpression())
                 .setDescription(htmlComment("<p>If the person does not exist.</p>\n")))
             .build());
   }
@@ -115,7 +115,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setType2(stringTypeExpression())
                 .setDescription(htmlComment("<p>A greeting.</p>\n")))
             .addThrown(Detail.newBuilder()
-                .setType(errorTypeComment())
+                .setType2(nullableErrorTypeExpression())
                 .setDescription(htmlComment("<p>If the person does not exist.</p>\n")))
             .build());
   }
@@ -153,7 +153,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setType2(stringTypeExpression())
                 .setDescription(htmlComment("<p>A greeting.</p>\n")))
             .addThrown(Detail.newBuilder()
-                .setType(errorTypeComment())
+                .setType2(nullableErrorTypeExpression())
                 .setDescription(htmlComment("<p>If the person does not exist.</p>\n")))
             .build());
   }
@@ -191,7 +191,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setType2(stringTypeExpression())
                 .setDescription(htmlComment("<p>A greeting.</p>\n")))
             .addThrown(Detail.newBuilder()
-                .setType(errorTypeComment())
+                .setType2(nullableErrorTypeExpression())
                 .setDescription(htmlComment("<p>If the person does not exist.</p>\n")))
             .build());
   }
@@ -1634,7 +1634,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setSource(sourceFile("source/foo.js.src.html", 7))
                 .setDescription(Comment.getDefaultInstance()))
             .addThrown(Detail.newBuilder()
-                .setType(errorTypeComment())
+                .setType2(nullableErrorTypeExpression())
                 .setDescription(htmlComment("<p>if something goes wrong.</p>\n")))
             .build());
 

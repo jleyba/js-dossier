@@ -25,7 +25,9 @@ import com.github.jsdossier.proto.BaseProperty;
 import com.github.jsdossier.proto.Comment;
 import com.github.jsdossier.proto.Function;
 import com.github.jsdossier.proto.Function.Detail;
+import com.github.jsdossier.proto.NamedType;
 import com.github.jsdossier.proto.Tags;
+import com.github.jsdossier.proto.TypeExpression;
 import com.google.common.base.Predicate;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -70,7 +72,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
                 .setType2(stringTypeExpression())
                 .setDescription(htmlComment("<p>A greeting.</p>\n")))
             .addThrown(Detail.newBuilder()
-                .setType(errorTypeComment())
+                .setType2(nullableErrorTypeExpression())
                 .setDescription(htmlComment("<p>If the person does not exist.</p>\n")))
             .build());
   }
@@ -108,7 +110,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
                 .setType2(stringTypeExpression())
                 .setDescription(htmlComment("<p>A greeting.</p>\n")))
             .addThrown(Detail.newBuilder()
-                .setType(errorTypeComment())
+                .setType2(nullableErrorTypeExpression())
                 .setDescription(htmlComment("<p>If the person does not exist.</p>\n")))
             .build());
   }
@@ -146,7 +148,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
                 .setType2(namedTypeExpression("Color", "Color.html"))
                 .setDescription(htmlComment("<p>The darkened color.</p>\n")))
             .addThrown(Detail.newBuilder()
-                .setType(errorTypeComment())
+                .setType2(nullableErrorTypeExpression())
                 .setDescription(htmlComment("<p>If the color cannot be darkened.</p>\n")))
             .build());
   }
@@ -183,7 +185,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
                 .setType2(stringTypeExpression())
                 .setDescription(htmlComment("<p>The darkened color.</p>\n")))
             .addThrown(Detail.newBuilder()
-                .setType(errorTypeComment())
+                .setType2(nullableErrorTypeExpression())
                 .setDescription(htmlComment("<p>If the color cannot be darkened.</p>\n")))
             .build());
   }
@@ -219,6 +221,54 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
                 .setType2(namedTypeExpression("TYPE"))
                 .setDescription(htmlComment("<p>The value.</p>\n")))
             .addTemplateName("TYPE")
+            .build());
+  }
+
+  @Test
+  public void functionThrowsGenericType() {
+    compile(
+        "goog.provide('foo');",
+        "",
+        "/** @template TYPE */",
+        "class GenericError extends Error {",
+        "  /** @param {!TYPE} value . */",
+        "  constructor(value) {",
+        "    super();",
+        "    this.value = value;",
+        "  }",
+        "}",
+        "",
+        "/**",
+        " * @param {THROWN_TYPE} input .",
+        " * @throws {GenericError<THROWN_TYPE>}",
+        " * @template THROWN_TYPE",
+        " */",
+        "foo.throw = function(input) {};");
+
+    NominalType type = typeRegistry.getType("foo");
+    TypeInspector typeInspector = typeInspectorFactory.create(type);
+    TypeInspector.Report report = typeInspector.inspectType();
+    assertThat(report.getProperties()).isEmpty();
+    assertThat(report.getCompilerConstants()).isEmpty();
+    assertMessages(report.getFunctions()).containsExactly(
+        Function.newBuilder()
+            .setBase(BaseProperty.newBuilder()
+                .setName("throw")
+                .setSource(sourceFile("source/foo.js.src.html", 17))
+                .setDescription(Comment.getDefaultInstance()))
+            .addParameter(Detail.newBuilder()
+                .setName("input")
+                .setType(textComment("THROWN_TYPE"))
+                .setDescription(htmlComment("<p>.</p>\n")))
+            .addThrown(Detail.newBuilder()
+                .setType2(TypeExpression.newBuilder()
+                    .setAllowNull(true)
+                    .setNamedType(
+                        NamedType.newBuilder()
+                            .setName("GenericError")
+                            .setHref("GenericError.html")
+                            .addTemplateType(namedTypeExpression("THROWN_TYPE")))))
+            .addTemplateName("THROWN_TYPE")
             .build());
   }
 
@@ -390,7 +440,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
                 .setDescription(Comment.getDefaultInstance()))
             .setReturn(Detail.newBuilder()
                 .setDescription(htmlComment("<p>A new object.</p>\n"))
-                // This should not have a link b/c foo.One is filtered out.
+                    // This should not have a link b/c foo.One is filtered out.
                 .setType2(namedTypeExpression("foo.One")))
             .build());
   }

@@ -126,6 +126,14 @@ public abstract class AbstractTypeInspectorTest {
         "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String");
   }
 
+  protected static TypeExpression nullableErrorTypeExpression() {
+    return namedTypeExpression("Error",
+        "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error")
+        .toBuilder()
+        .setAllowNull(true)
+        .build();
+  }
+
   protected static TypeExpression numberTypeExpression() {
     return namedTypeExpression("number",
         "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number");

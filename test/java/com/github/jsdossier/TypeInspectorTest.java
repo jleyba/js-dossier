@@ -566,7 +566,7 @@ public class TypeInspectorTest extends AbstractTypeInspectorTest {
                 .setType(stringTypeComment())
                 .setDescription(htmlComment("<p>The person's name.</p>\n")))
             .addThrown(Function.Detail.newBuilder()
-                .setType(errorTypeComment())
+                .setType2(nullableErrorTypeExpression())
                 .setDescription(htmlComment("<p>Randomly.</p>\n")))
             .build());
   }

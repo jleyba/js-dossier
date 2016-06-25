@@ -22,7 +22,9 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.base.Verify.verify;
+import static com.google.common.collect.Iterables.filter;
 import static com.google.common.collect.Iterables.getFirst;
+import static com.google.common.collect.Iterables.toArray;
 import static com.google.common.collect.Iterables.transform;
 
 import com.github.jsdossier.annotations.TypeFilter;
@@ -49,6 +51,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
@@ -67,6 +70,7 @@ import com.google.javascript.rhino.jstype.Property;
 import com.google.javascript.rhino.jstype.StaticTypedScope;
 import com.google.javascript.rhino.jstype.TemplateTypeMapReplacer;
 import com.google.javascript.rhino.jstype.TemplatizedType;
+import com.google.javascript.rhino.jstype.UnionType;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -82,6 +86,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.annotation.CheckReturnValue;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
@@ -933,22 +938,24 @@ final class TypeInspector {
   }
 
   private Iterable<Function.Detail> buildThrowsData(final NominalType context, JsDoc jsDoc) {
+    final LinkFactory contextLinkFactory = linkFactory.withTypeContext(context);
+    final TypeExpressionParser typeParser = expressionParserFactory.create(contextLinkFactory);
     return transform(jsDoc.getThrowsClauses(),
         new com.google.common.base.Function<TypedDescription, Detail>() {
           @Override
           public Function.Detail apply(TypedDescription input) {
-            Comment thrownType = Comment.getDefaultInstance();
-            if (input.getType().isPresent()) {
-              thrownType = expressionParserFactory
-                  .create(linkFactory.withTypeContext(context))
-                  .parse(input.getType().get());
+            Function.Detail.Builder detail = Function.Detail.newBuilder();
+
+            Comment comment = parser.parseComment(input.getDescription(), contextLinkFactory);
+            if (comment.getTokenCount() > 0) {
+              detail.setDescription(comment);
             }
-            return Function.Detail.newBuilder()
-                .setType(thrownType)
-                .setDescription(parser.parseComment(
-                    input.getDescription(),
-                    linkFactory.withTypeContext(context)))
-                .build();
+
+            if (input.getType().isPresent()) {
+              JSType thrownType = input.getType().get().evaluate(globalScope, jsRegistry);
+              detail.setType2(typeParser.parseExpression(thrownType));
+            }
+            return detail.build();
           }
         }
     );
