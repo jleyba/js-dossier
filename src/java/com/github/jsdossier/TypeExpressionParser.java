@@ -59,6 +59,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.Deque;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nullable;
@@ -500,7 +501,14 @@ final class TypeExpressionParser {
 
     @Override
     public Void caseEnumElementType(EnumElementType type) {
-      return type.getPrimitiveType().visit(this);
+      List<NominalType> types = typeRegistry.getTypes(type.getEnumType());
+      if (types.isEmpty()) {
+        type.getEnumType().visit(this);
+      } else {
+        TypeLink link = linkFactory.createLink(types.get(0));
+        appendLink(link);
+      }
+      return null;
     }
 
     @Override

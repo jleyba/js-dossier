@@ -236,6 +236,13 @@
                   {param comment: $detail.type /}
                 {/call}
               </code>
+            {elseif $detail.type2}
+              <code>
+                {call dossier.soy.types.expression}
+                  {param expression: $detail.type2 /}
+                  {param strict: true /}
+                {/call}
+              </code>
             {/if}
             {let $detailComment kind="html"}
               {if $detail.description}

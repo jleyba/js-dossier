@@ -552,7 +552,7 @@ public class TypeInspectorTest extends AbstractTypeInspectorTest {
 
     Node fakeNode = fakeNodeForType(type);
     Function data = typeInspector.getFunctionData(
-        type.getName(), type.getType(), fakeNode, type, type.getJsDoc());
+        type.getName(), type.getType().toMaybeFunctionType(), fakeNode, type, type.getJsDoc());
 
     assertMessage(data).isEqualTo(
         Function.newBuilder()

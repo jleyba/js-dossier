@@ -18,6 +18,7 @@ package com.github.jsdossier;
 
 import static com.github.jsdossier.TypeInspector.fakeNodeForType;
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.base.Suppliers.memoize;
 import static com.google.common.base.Verify.verify;
@@ -52,6 +53,7 @@ import com.google.common.collect.Lists;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.jstype.EnumType;
+import com.google.javascript.rhino.jstype.FunctionType;
 import com.google.javascript.rhino.jstype.JSType;
 import com.google.javascript.rhino.jstype.JSTypeRegistry;
 import com.google.javascript.rhino.jstype.Property;
@@ -414,9 +416,10 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Ca
 
       // TODO: should not be using Node here.
       Node fakeNode = fakeNodeForType(type);
+      FunctionType mainFn = checkNotNull(type.getType().toMaybeFunctionType(),
+          "Expected %s to be a function: %s", type.getName(), type.getType());
       spec.setMainFunction(
-          typeInspector.getFunctionData(
-              getBasename(type), type.getType(), fakeNode, context, docs));
+          typeInspector.getFunctionData(getBasename(type), mainFn, fakeNode, context, docs));
     }
 
     private void addExtendedTypes(JsType.Builder spec) {
@@ -454,7 +457,9 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Ca
       JSDocInfo.Visibility visibility = typeRegistry.getVisibility(type);
 
       Enumeration.Builder enumBuilder = spec.getEnumerationBuilder()
-          .setType(expressionParserFactory.create(linkFactory).parse(elementType))
+          .setType(
+              expressionParserFactory.create(linkFactory)
+                  .parse(elementType.toMaybeEnumElementType().getPrimitiveType()))
           .setVisibility(Visibility.valueOf(visibility.name()));
 
       // Type may be documented as an enum without an associated object literal for us to analyze:

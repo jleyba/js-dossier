@@ -5,15 +5,17 @@
  */
 {template .expression}
   {@param expression: dossier.expression.TypeExpression}
+  {@param? strict: bool}
 
   {if $expression.namedType}
-    {call .namedType}
-      {param type: $expression.namedType /}
-    {/call}
+    {call .namedType data="all" /}
   {elseif $expression.unionType}
     {call .unionType}
       {param type: $expression /}
     {/call}
+  {elseif $expression.anyType}*
+  {elseif $expression.unknownType}undefined
+  {elseif $expression.voidType}void
   {/if}
 {/template}
 
@@ -22,7 +24,17 @@
  * Renders a named type expression.
  */
 {template .namedType private="true"}
-  {@param type: dossier.expression.NamedType}
+  {@param expression: dossier.expression.TypeExpression}
+  {@param? strict: bool}
+  {let $type: $expression.namedType /}
+
+  {if $strict
+      and not $expression.allowNull
+      and $type.name != 'boolean'
+      and $type.name != 'number'
+      and $type.name != 'string'}
+    !
+  {/if}
   {if $type.href}
     <a href="{$type.href}">
   {/if}
@@ -35,6 +47,7 @@
     {foreach $template in $type.templateType}
       {call .expression}
         {param expression: $template /}
+        {param strict: $strict /}
       {/call}
       {if not isLast($template)},{sp}{/if}
     {/foreach}
@@ -48,7 +61,6 @@
  */
 {template .unionType private="true"}
   {@param type: dossier.expression.TypeExpression}
-
   {let $union: $type.unionType/}
 
   (

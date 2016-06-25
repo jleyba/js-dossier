@@ -160,7 +160,10 @@ message Property {
 message Function {
   message Detail {
     string name = 1;
-    Comment type = 2;
+    oneof detail_type {
+      Comment type = 2;
+      dossier.expression.TypeExpression type2 = 4;
+    }
     Comment description = 3;
   }
 

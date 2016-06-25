@@ -67,7 +67,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
                 .setType(stringTypeComment())
                 .setDescription(htmlComment("<p>The person to greet.</p>\n")))
             .setReturn(Detail.newBuilder()
-                .setType(stringTypeComment())
+                .setType2(stringTypeExpression())
                 .setDescription(htmlComment("<p>A greeting.</p>\n")))
             .addThrown(Detail.newBuilder()
                 .setType(errorTypeComment())
@@ -105,7 +105,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
                 .setType(stringTypeComment())
                 .setDescription(htmlComment("<p>The person to greet.</p>\n")))
             .setReturn(Detail.newBuilder()
-                .setType(stringTypeComment())
+                .setType2(stringTypeExpression())
                 .setDescription(htmlComment("<p>A greeting.</p>\n")))
             .addThrown(Detail.newBuilder()
                 .setType(errorTypeComment())
@@ -143,7 +143,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
                 .setType(nonNullLinkComment("Color", "Color.html"))
                 .setDescription(htmlComment("<p>The color to darken.</p>\n")))
             .setReturn(Detail.newBuilder()
-                .setType(nonNullLinkComment("Color", "Color.html"))
+                .setType2(namedTypeExpression("Color", "Color.html"))
                 .setDescription(htmlComment("<p>The darkened color.</p>\n")))
             .addThrown(Detail.newBuilder()
                 .setType(errorTypeComment())
@@ -180,7 +180,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
                 .setType(stringTypeComment())
                 .setDescription(htmlComment("<p>The color to darken.</p>\n")))
             .setReturn(Detail.newBuilder()
-                .setType(stringTypeComment())
+                .setType2(stringTypeExpression())
                 .setDescription(htmlComment("<p>The darkened color.</p>\n")))
             .addThrown(Detail.newBuilder()
                 .setType(errorTypeComment())
@@ -216,7 +216,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
                 .setType(textComment("TYPE"))
                 .setDescription(htmlComment("<p>A value.</p>\n")))
             .setReturn(Detail.newBuilder()
-                .setType(textComment("TYPE"))
+                .setType2(namedTypeExpression("TYPE"))
                 .setDescription(htmlComment("<p>The value.</p>\n")))
             .addTemplateName("TYPE")
             .build());
@@ -390,7 +390,8 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
                 .setDescription(Comment.getDefaultInstance()))
             .setReturn(Detail.newBuilder()
                 .setDescription(htmlComment("<p>A new object.</p>\n"))
-                .setType(nonNullLinkComment("foo.One", "foo.html#One")))
+                // This should not have a link b/c foo.One is filtered out.
+                .setType2(namedTypeExpression("foo.One")))
             .build());
   }
 
@@ -646,7 +647,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
                 .setType(stringTypeComment())
                 .setDescription(htmlComment("<p>The person's name.</p>\n")))
             .setReturn(Detail.newBuilder()
-                .setType(nonNullLinkComment("Person", "bar_exports_Person.html"))
+                .setType2(namedTypeExpression("Person", "bar_exports_Person.html"))
                 .setDescription(htmlComment("<p>The new person.</p>\n")))
             .build());
   }
@@ -685,7 +686,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
                 .setType(stringTypeComment())
                 .setDescription(htmlComment("<p>The person's name.</p>\n")))
             .setReturn(Detail.newBuilder()
-                .setType(nonNullLinkComment("Person", "bar_exports_Person.html"))
+                .setType2(namedTypeExpression("Person", "bar_exports_Person.html"))
                 .setDescription(htmlComment("<p>The new person.</p>\n")))
             .build());
   }
@@ -898,7 +899,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
                 .setType(numberTypeComment())
                 .setDescription(htmlComment("<p>The input.</p>\n")))
             .setReturn(Detail.newBuilder()
-                .setType(stringTypeComment())
+                .setType2(stringTypeExpression())
                 .setDescription(htmlComment("<p>The output.</p>\n")))
             .build());
   }
@@ -930,7 +931,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
                 .setType(numberTypeComment())
                 .setDescription(htmlComment("<p>The input.</p>\n")))
             .setReturn(Detail.newBuilder()
-                .setType(stringTypeComment())
+                .setType2(stringTypeExpression())
                 .setDescription(htmlComment("<p>The output.</p>\n")))
             .build());
   }

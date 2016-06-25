@@ -74,7 +74,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setType(stringTypeComment())
                 .setDescription(htmlComment("<p>The person to greet.</p>\n")))
             .setReturn(Detail.newBuilder()
-                .setType(stringTypeComment())
+                .setType2(stringTypeExpression())
                 .setDescription(htmlComment("<p>A greeting.</p>\n")))
             .addThrown(Detail.newBuilder()
                 .setType(errorTypeComment())
@@ -112,7 +112,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setType(stringTypeComment())
                 .setDescription(htmlComment("<p>The person to greet.</p>\n")))
             .setReturn(Detail.newBuilder()
-                .setType(stringTypeComment())
+                .setType2(stringTypeExpression())
                 .setDescription(htmlComment("<p>A greeting.</p>\n")))
             .addThrown(Detail.newBuilder()
                 .setType(errorTypeComment())
@@ -150,7 +150,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setType(stringTypeComment())
                 .setDescription(htmlComment("<p>The person to greet.</p>\n")))
             .setReturn(Detail.newBuilder()
-                .setType(stringTypeComment())
+                .setType2(stringTypeExpression())
                 .setDescription(htmlComment("<p>A greeting.</p>\n")))
             .addThrown(Detail.newBuilder()
                 .setType(errorTypeComment())
@@ -188,7 +188,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setType(stringTypeComment())
                 .setDescription(htmlComment("<p>The person to greet.</p>\n")))
             .setReturn(Detail.newBuilder()
-                .setType(stringTypeComment())
+                .setType2(stringTypeExpression())
                 .setDescription(htmlComment("<p>A greeting.</p>\n")))
             .addThrown(Detail.newBuilder()
                 .setType(errorTypeComment())
@@ -229,7 +229,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setType(numberTypeComment())
                 .setDescription(htmlComment("<p>the second number.</p>\n")))
             .setReturn(Detail.newBuilder()
-                .setType(numberTypeComment())
+                .setType2(numberTypeExpression())
                 .setDescription(htmlComment("<p>x + y.</p>\n")))
             .build());
   }
@@ -800,7 +800,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setDescription(Comment.getDefaultInstance())
                 .setOverrides(linkComment("A", "A.html#record")))
             .setReturn(Detail.newBuilder()
-                .setType(stringTypeComment())
+                .setType2(stringTypeExpression())
                 .setDescription(htmlComment("<p>Return from A.</p>\n")))
             .build());
   }
@@ -831,7 +831,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setDescription(Comment.getDefaultInstance())
                 .setOverrides(linkComment("A", "A.html#record")))
             .setReturn(Detail.newBuilder()
-                .setType(stringTypeComment())
+                .setType2(stringTypeExpression())
                 .setDescription(htmlComment("<p>Return from A.</p>\n")))
             .build());
   }
@@ -866,7 +866,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setDescription(Comment.getDefaultInstance())
                 .addSpecifiedBy(linkComment("A", "A.html#record")))
             .setReturn(Detail.newBuilder()
-                .setType(stringTypeComment())
+                .setType2(stringTypeExpression())
                 .setDescription(htmlComment("<p>Return from A.</p>\n")))
             .build());
   }
@@ -901,7 +901,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setDescription(Comment.getDefaultInstance())
                 .addSpecifiedBy(linkComment("A", "A.html#record")))
             .setReturn(Detail.newBuilder()
-                .setType(stringTypeComment())
+                .setType2(stringTypeExpression())
                 .setDescription(htmlComment("<p>Return from A.</p>\n")))
             .build());
   }
@@ -937,7 +937,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setDescription(Comment.getDefaultInstance())
                 .addSpecifiedBy(linkComment("A", "A.html#record")))
             .setReturn(Detail.newBuilder()
-                .setType(stringTypeComment())
+                .setType2(stringTypeExpression())
                 .setDescription(htmlComment("<p>Return from A.</p>\n")))
             .build());
   }
@@ -981,7 +981,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setOverrides(linkComment("B", "B.html#record"))
                 .addSpecifiedBy(linkComment("A", "A.html#record")))
             .setReturn(Detail.newBuilder()
-                .setType(stringTypeComment())
+                .setType2(stringTypeExpression())
                 .setDescription(htmlComment("<p>Return from A.</p>\n")))
             .build());
   }
@@ -1020,7 +1020,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setDescription(htmlComment("<p>Returns some value.</p>\n"))
                 .addSpecifiedBy(linkComment("A", "A.html#record")))
             .setReturn(Detail.newBuilder()
-                .setType(stringTypeComment())
+                .setType2(stringTypeExpression())
                 .setDescription(htmlComment("<p>Return from A.</p>\n")))
             .build());
   }
@@ -1059,7 +1059,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setDescription(htmlComment("<p>Returns some value.</p>\n"))
                 .setDefinedBy(linkComment("A", "A.html#record")))
             .setReturn(Detail.newBuilder()
-                .setType(stringTypeComment())
+                .setType2(stringTypeExpression())
                 .setDescription(htmlComment("<p>Return from A.</p>\n")))
             .build());
   }
@@ -1111,8 +1111,281 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .addSpecifiedBy(linkComment(
                     "foo.bar.AnInterface", "foo.bar.AnInterface.html#record")))
             .setReturn(Detail.newBuilder()
-                .setType(stringTypeComment())
+                .setType2(stringTypeExpression())
                 .setDescription(htmlComment("<p>Return from A.</p>\n")))
+            .build());
+  }
+
+  @Test
+  public void usesUnknownReturnTypeForUnqualifiedSubclassOfTemplatizedClass_superClass() {
+    compile(
+        "/**",
+        " * @constructor",
+        " * @template TYPE",
+        " */",
+        "var A = function() {};",
+        "",
+        "/** @return {TYPE} The return value. */",
+        "A.prototype.value = function() {};",
+        "",
+        "/** @constructor @extends {A} */",
+        "var B = function() {};");
+
+    NominalType type = typeRegistry.getType("B");
+    TypeInspector typeInspector = typeInspectorFactory.create(type);
+    TypeInspector.Report report = typeInspector.inspectInstanceType();
+    assertThat(report.getProperties()).isEmpty();
+    assertMessages(report.getFunctions()).containsExactly(
+        Function.newBuilder()
+            .setBase(BaseProperty.newBuilder()
+                .setName("value")
+                .setSource(sourceFile("source/foo.js.src.html", 8))
+                .setDescription(Comment.getDefaultInstance())
+                .setDefinedBy(linkComment("A", "A.html#value")))
+            .setReturn(Detail.newBuilder()
+                .setDescription(htmlComment("<p>The return value.</p>\n")))
+            .build());
+  }
+
+  @Test
+  public void usesUnknownReturnTypeForUnqualifiedSubclassOfTemplatizedClass_superClassEs6() {
+    compile(
+        "/**",
+        " * @template TYPE",
+        " */",
+        "class A {",
+        "  /** @return {TYPE} The return value. */",
+        "  value() {}",
+        "}",
+        "",
+        "class B extends A {}");
+
+    NominalType type = typeRegistry.getType("B");
+    TypeInspector typeInspector = typeInspectorFactory.create(type);
+    TypeInspector.Report report = typeInspector.inspectInstanceType();
+    assertThat(report.getProperties()).isEmpty();
+    assertMessages(report.getFunctions()).containsExactly(
+        Function.newBuilder()
+            .setBase(BaseProperty.newBuilder()
+                .setName("value")
+                .setSource(sourceFile("source/foo.js.src.html", 6))
+                .setDescription(Comment.getDefaultInstance())
+                .setDefinedBy(linkComment("A", "A.html#value")))
+            .setReturn(Detail.newBuilder()
+                .setDescription(htmlComment("<p>The return value.</p>\n")))
+            .build());
+  }
+
+  @Test
+  public void usesUnknownReturnTypeForUnqualifiedSubclassOfTemplatizedClass_superInterface() {
+    compile(
+        "/**",
+        " * @interface",
+        " * @template TYPE",
+        " */",
+        "class A {",
+        "  /** @return {TYPE} The return value. */",
+        "  value() {}",
+        "}",
+        "",
+        "class B extends A {}");
+
+    NominalType type = typeRegistry.getType("B");
+    TypeInspector typeInspector = typeInspectorFactory.create(type);
+    TypeInspector.Report report = typeInspector.inspectInstanceType();
+    assertThat(report.getProperties()).isEmpty();
+    assertMessages(report.getFunctions()).containsExactly(
+        Function.newBuilder()
+            .setBase(BaseProperty.newBuilder()
+                .setName("value")
+                .setSource(sourceFile("source/foo.js.src.html", 7))
+                .setDescription(Comment.getDefaultInstance()))
+            .setReturn(Detail.newBuilder()
+                .setDescription(htmlComment("<p>The return value.</p>\n")))
+            .build());
+  }
+
+  @Test
+  public void resolvesReturnTypeForOverriddenTemplateType_superClass() {
+    compile(
+        "/**",
+        " * @constructor",
+        " * @template TYPE",
+        " */",
+        "var A = function() {};",
+        "",
+        "/** @return {TYPE} The return value. */",
+        "A.prototype.value = function() {};",
+        "",
+        "/** @constructor @extends {A<string>} */",
+        "var B = function() {};");
+
+    NominalType type = typeRegistry.getType("B");
+    TypeInspector typeInspector = typeInspectorFactory.create(type);
+    TypeInspector.Report report = typeInspector.inspectInstanceType();
+    assertThat(report.getProperties()).isEmpty();
+    assertMessages(report.getFunctions()).containsExactly(
+        Function.newBuilder()
+            .setBase(BaseProperty.newBuilder()
+                .setName("value")
+                .setSource(sourceFile("source/foo.js.src.html", 8))
+                .setDescription(Comment.getDefaultInstance())
+                .setDefinedBy(linkComment("A", "A.html#value")))
+            .setReturn(Detail.newBuilder()
+                .setType2(stringTypeExpression())
+                .setDescription(htmlComment("<p>The return value.</p>\n")))
+            .build());
+  }
+
+  @Test
+  public void resolvesReturnTypeForOverriddenTemplateType_superClassEs6() {
+    compile(
+        "/**",
+        " * @template TYPE",
+        " */",
+        "class A {",
+        "  /** @return {TYPE} The return value. */",
+        "  value() {}",
+        "}",
+        "/** @extends {A<string>} */",
+        "class B extends A {}");
+
+    NominalType type = typeRegistry.getType("B");
+    TypeInspector typeInspector = typeInspectorFactory.create(type);
+    TypeInspector.Report report = typeInspector.inspectInstanceType();
+    assertThat(report.getProperties()).isEmpty();
+    assertMessages(report.getFunctions()).containsExactly(
+        Function.newBuilder()
+            .setBase(BaseProperty.newBuilder()
+                .setName("value")
+                .setSource(sourceFile("source/foo.js.src.html", 6))
+                .setDescription(Comment.getDefaultInstance())
+                .setDefinedBy(linkComment("A", "A.html#value")))
+            .setReturn(Detail.newBuilder()
+                .setType2(stringTypeExpression())
+                .setDescription(htmlComment("<p>The return value.</p>\n")))
+            .build());
+  }
+
+  @Test
+  public void resolvesReturnTypeForOverriddenTemplateType_superInterface() {
+    compile(
+        "/**",
+        " * @interface",
+        " * @template TYPE",
+        " */",
+        "class A {",
+        "  /** @return {TYPE} The return value. */",
+        "  value() {}",
+        "}",
+        "/** @extends {A<string>} */",
+        "class B extends A {}");
+
+    NominalType type = typeRegistry.getType("B");
+    TypeInspector typeInspector = typeInspectorFactory.create(type);
+    TypeInspector.Report report = typeInspector.inspectInstanceType();
+    assertThat(report.getProperties()).isEmpty();
+    assertMessages(report.getFunctions()).containsExactly(
+        Function.newBuilder()
+            .setBase(BaseProperty.newBuilder()
+                .setName("value")
+                .setSource(sourceFile("source/foo.js.src.html", 7))
+                .setDescription(Comment.getDefaultInstance()))
+            .setReturn(Detail.newBuilder()
+                .setType2(stringTypeExpression())
+                .setDescription(htmlComment("<p>The return value.</p>\n")))
+            .build());
+  }
+
+  @Test
+  public void usesRespecifiedReturnTemplateTypeForSubClassOfTemplateType_superClass() {
+    compile(
+        "/**",
+        " * @constructor",
+        " * @template TYPE",
+        " */",
+        "var A = function() {};",
+        "",
+        "/** @return {TYPE} The return value. */",
+        "A.prototype.value = function() {};",
+        "",
+        "/** @constructor @extends {A<BTYPE>} @template BTYPE */",
+        "var B = function() {};");
+
+    NominalType type = typeRegistry.getType("B");
+    TypeInspector typeInspector = typeInspectorFactory.create(type);
+    TypeInspector.Report report = typeInspector.inspectInstanceType();
+    assertThat(report.getProperties()).isEmpty();
+    assertMessages(report.getFunctions()).containsExactly(
+        Function.newBuilder()
+            .setBase(BaseProperty.newBuilder()
+                .setName("value")
+                .setSource(sourceFile("source/foo.js.src.html", 8))
+                .setDescription(Comment.getDefaultInstance())
+                .setDefinedBy(linkComment("A", "A.html#value")))
+            .setReturn(Detail.newBuilder()
+                .setType2(namedTypeExpression("BTYPE"))
+                .setDescription(htmlComment("<p>The return value.</p>\n")))
+            .build());
+  }
+
+  @Test
+  public void usesRespecifiedReturnTemplateTypeForSubClassOfTemplateType_superClassEs6() {
+    compile(
+        "/**",
+        " * @template TYPE",
+        " */",
+        "class A {",
+        "  /** @return {TYPE} The return value. */",
+        "  value() {}",
+        "}",
+        "/** @extends {A<BTYPE>} @template BTYPE */",
+        "class B extends A {}");
+
+    NominalType type = typeRegistry.getType("B");
+    TypeInspector typeInspector = typeInspectorFactory.create(type);
+    TypeInspector.Report report = typeInspector.inspectInstanceType();
+    assertThat(report.getProperties()).isEmpty();
+    assertMessages(report.getFunctions()).containsExactly(
+        Function.newBuilder()
+            .setBase(BaseProperty.newBuilder()
+                .setName("value")
+                .setSource(sourceFile("source/foo.js.src.html", 6))
+                .setDescription(Comment.getDefaultInstance())
+                .setDefinedBy(linkComment("A", "A.html#value")))
+            .setReturn(Detail.newBuilder()
+                .setType2(namedTypeExpression("BTYPE"))
+                .setDescription(htmlComment("<p>The return value.</p>\n")))
+            .build());
+  }
+
+  @Test
+  public void usesRespecifiedReturnTemplateTypeForSubClassOfTemplateType_superInterface() {
+    compile(
+        "/**",
+        " * @interface",
+        " * @template TYPE",
+        " */",
+        "class A {",
+        "  /** @return {TYPE} The return value. */",
+        "  value() {}",
+        "}",
+        "/** @extends {A<BTYPE>} @template BTYPE */",
+        "class B extends A {}");
+
+    NominalType type = typeRegistry.getType("B");
+    TypeInspector typeInspector = typeInspectorFactory.create(type);
+    TypeInspector.Report report = typeInspector.inspectInstanceType();
+    assertThat(report.getProperties()).isEmpty();
+    assertMessages(report.getFunctions()).containsExactly(
+        Function.newBuilder()
+            .setBase(BaseProperty.newBuilder()
+                .setName("value")
+                .setSource(sourceFile("source/foo.js.src.html", 7))
+                .setDescription(Comment.getDefaultInstance()))
+            .setReturn(Detail.newBuilder()
+                .setType2(namedTypeExpression("BTYPE"))
+                .setDescription(htmlComment("<p>The return value.</p>\n")))
             .build());
   }
 
@@ -1147,7 +1420,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setDescription(Comment.getDefaultInstance())
                 .addSpecifiedBy(linkComment("A", "A.html#record")))
             .setReturn(Detail.newBuilder()
-                .setType(stringTypeComment())
+                .setType2(stringTypeExpression())
                 .setDescription(htmlComment("<p>Return from B.</p>\n")))
             .build());
   }
@@ -1262,7 +1535,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setDescription(Comment.getDefaultInstance())
                 .addSpecifiedBy(linkComment("Greeter", "Greeter.html#greet")))
             .setReturn(Detail.newBuilder()
-                .setType(nonNullLinkComment("HappyGreeting", "HappyGreeting.html"))
+                .setType2(namedTypeExpression("HappyGreeting", "HappyGreeting.html"))
                 .setDescription(htmlComment("<p>A happy greeting.</p>\n")))
             .build());
 
@@ -1278,9 +1551,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setSource(sourceFile("source/foo.js.src.html", 14))
                 .setDescription(Comment.getDefaultInstance()))
             .setReturn(Detail.newBuilder()
-                .setType(Comment.newBuilder()
-                    .addToken(textToken("!"))
-                    .addToken(linkToken("Greeting", "Greeting.html")))
+                .setType2(namedTypeExpression("Greeting", "Greeting.html"))
                 .setDescription(htmlComment("<p>Returns a greeting.</p>\n")))
             .build());
   }

@@ -16,7 +16,6 @@
 
 package com.github.jsdossier;
 
-import static com.github.jsdossier.Comments.isVacuousTypeComment;
 import static com.github.jsdossier.jscomp.Types.isBuiltInFunctionProperty;
 import static com.github.jsdossier.jscomp.Types.isConstructorTypeDefinition;
 import static com.google.common.base.Preconditions.checkArgument;
@@ -55,6 +54,7 @@ import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
 import com.google.javascript.rhino.IR;
 import com.google.javascript.rhino.JSDocInfo;
+import com.google.javascript.rhino.JSTypeExpression;
 import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.StaticSourceFile;
 import com.google.javascript.rhino.Token;
@@ -412,7 +412,7 @@ final class TypeInspector {
       } else if (property.getType().isFunctionType()) {
         report.addFunction(getFunctionData(
             name,
-            property.getType(),
+            property.getType().toMaybeFunctionType(),
             property.getNode(),
             docs));
 
@@ -561,6 +561,8 @@ final class TypeInspector {
     }
 
     final JSType currentType = ((FunctionType) inspectedType.getType()).getInstanceType();
+    final TemplateTypeMapReplacer replacer = new TemplateTypeMapReplacer(
+        jsRegistry, currentType.getTemplateTypeMap());
 
     for (String key : properties.keySet()) {
       Deque<InstanceProperty> definitions = new ArrayDeque<>(properties.get(key));
@@ -575,10 +577,14 @@ final class TypeInspector {
       NominalType ownerType = property.getOwnerType().or(inspectedType);
       Comment definedBy = getDefinedByComment(linkFactory, ownerType, currentType, property);
 
+      if (!currentType.getTemplateTypeMap().isEmpty()) {
+        propertyType = propertyType.visit(replacer);
+      }
+
       if (propertyType.isFunctionType()) {
         report.addFunction(getFunctionData(
             property.getName(),
-            propertyType,
+            propertyType.toMaybeFunctionType(),
             property.getNode(),
             PropertyDocs.create(ownerType, property.getJsDoc()),
             definedBy,
@@ -618,9 +624,6 @@ final class TypeInspector {
     }
 
     types.addAll(getAllImplementedInterfaces(type));
-//    for (JSType iface : getAllImplementedInterfaces(type)) {
-//      types.addAll(getAssignableTypes(iface));
-//    }
     types.addAll(getTypeHierarchyInternal(type));
     return types;
   }
@@ -755,7 +758,7 @@ final class TypeInspector {
 
   public Function getFunctionData(
       String name,
-      JSType type,
+      FunctionType type,
       Node node,
       NominalType context,
       JsDoc jsDoc) {
@@ -766,7 +769,7 @@ final class TypeInspector {
 
   private Function getFunctionData(
       String name,
-      JSType type,
+      FunctionType type,
       Node node,
       PropertyDocs docs) {
     return getFunctionData(name, type, node, docs, null,
@@ -775,18 +778,16 @@ final class TypeInspector {
 
   private Function getFunctionData(
       String name,
-      JSType type,
+      FunctionType function,
       Node node,
       PropertyDocs docs,
       @Nullable Comment definedBy,
       Iterable<InstanceProperty> overrides) {
-    checkArgument(type.isFunctionType(), "%s is not a function type: %s", name, type);
-
-    boolean isConstructor = type.isConstructor() && !isFunctionTypeConstructor(type);
-    boolean isInterface = !isConstructor && type.isInterface();
+    boolean isConstructor = function.isConstructor() && !isFunctionTypeConstructor(function);
+    boolean isInterface = !isConstructor && function.isInterface();
 
     Function.Builder builder = Function.newBuilder()
-        .setBase(getBasePropertyDetails(name, type, node, docs, definedBy, overrides));
+        .setBase(getBasePropertyDetails(name, function, node, docs, definedBy, overrides));
 
     if (isConstructor) {
       builder.setIsConstructor(true);
@@ -809,15 +810,15 @@ final class TypeInspector {
         }
       }
 
-      Comment returnType = getReturnType(docs, overrides, (FunctionType) type);
-      if (returnType.getTokenCount() > 0) {
-        builder.getReturnBuilder().setType(returnType);
+      TypeExpression returnType = getReturnType(docs, overrides, function);
+      if (returnType != null) {
+        builder.getReturnBuilder().setType2(returnType);
       }
     }
 
     builder.addAllTemplateName(docs.getJsDoc().getTemplateTypeNames())
         .addAllThrown(buildThrowsData(docs.getContextType(), docs.getJsDoc()))
-        .addAllParameter(getParameters(type, node, docs, overrides));
+        .addAllParameter(getParameters(function, node, docs, overrides));
 
     return builder.build();
   }
@@ -953,7 +954,8 @@ final class TypeInspector {
     );
   }
 
-  private Comment getReturnType(
+  @Nullable
+  private TypeExpression getReturnType(
       PropertyDocs docs,
       Iterable<InstanceProperty> overrides,
       FunctionType function) {
@@ -964,21 +966,12 @@ final class TypeInspector {
       }
     });
 
-    NominalType context = null;
-    if (returnDocs != null) {
-      context = returnDocs.getContextType();
-    } else if (docs != null) {
-      context = docs.getContextType();
-    }
-    TypeExpressionParser parser =
-        expressionParserFactory.create(linkFactory.withTypeContext(context));
-
-    Comment comment;
-    if (returnDocs != null && isKnownType(returnDocs.getJsDoc().getReturnClause())) {
-      comment = parser.parse(returnDocs.getJsDoc().getReturnClause().getType().get());
-    } else {
-      JSType returnType = function.getReturnType();
-      if (returnType.isUnknownType()) {
+    JSType returnType = function.getReturnType();
+    if (returnType.isUnknownType() && !returnType.isTemplateType()) {
+      if (returnDocs != null && isKnownType(returnDocs.getJsDoc().getReturnClause())) {
+        JSTypeExpression expression = returnDocs.getJsDoc().getReturnClause().getType().get();
+        returnType = expression.evaluate(globalScope, jsRegistry);
+      } else {
         for (InstanceProperty property : overrides) {
           if (property.getType() != null && property.getType().isFunctionType()) {
             FunctionType fn = (FunctionType) property.getType();
@@ -989,18 +982,32 @@ final class TypeInspector {
           }
         }
       }
-      comment = parser.parse(returnType);
     }
 
-    if (isVacuousTypeComment(comment)) {
-      return Comment.getDefaultInstance();
+    if (returnType.isVoidType()
+        || (returnType.isUnknownType() && !returnType.isTemplateType())) {
+      return null;
     }
-    return comment;
+
+    NominalType context = null;
+    if (returnDocs != null) {
+      context = returnDocs.getContextType();
+    } else if (docs != null) {
+      context = docs.getContextType();
+    }
+
+    TypeExpressionParser parser =
+        expressionParserFactory.create(linkFactory.withTypeContext(context));
+    return parser.parseExpression(returnType);
   }
 
   private boolean isKnownType(JsDoc.TypedDescription description) {
-    return description.getType().isPresent()
-        && description.getType().get().getRoot().getKind() != Token.QMARK;
+    if (!description.getType().isPresent()) {
+      return false;
+    }
+    JSTypeExpression expression = description.getType().get();
+    return expression.getRoot().getKind() != Token.QMARK
+        || expression.getRoot().getFirstChild() != null;
   }
 
   private com.github.jsdossier.proto.Property getPropertyData(
