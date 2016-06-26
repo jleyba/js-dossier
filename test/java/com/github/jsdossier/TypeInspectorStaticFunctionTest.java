@@ -526,7 +526,6 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
         "/** Hello, world! */",
         "function greet() {}",
         "export {greet}");
-    System.out.println(util.toSource());
     NominalType type = typeRegistry.getType("module$$src$modules$foo$bar");
     TypeInspector typeInspector = typeInspectorFactory.create(type);
     TypeInspector.Report report = typeInspector.inspectType();
