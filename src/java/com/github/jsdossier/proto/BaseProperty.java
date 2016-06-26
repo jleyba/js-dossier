@@ -114,11 +114,11 @@ public  final class BaseProperty extends
             break;
           }
           case 58: {
-            com.github.jsdossier.proto.Comment.Builder subBuilder = null;
+            com.github.jsdossier.proto.TypeExpression.Builder subBuilder = null;
             if (definedBy_ != null) {
               subBuilder = definedBy_.toBuilder();
             }
-            definedBy_ = input.readMessage(com.github.jsdossier.proto.Comment.parser(), extensionRegistry);
+            definedBy_ = input.readMessage(com.github.jsdossier.proto.TypeExpression.parser(), extensionRegistry);
             if (subBuilder != null) {
               subBuilder.mergeFrom(definedBy_);
               definedBy_ = subBuilder.buildPartial();
@@ -127,11 +127,11 @@ public  final class BaseProperty extends
             break;
           }
           case 66: {
-            com.github.jsdossier.proto.Comment.Builder subBuilder = null;
+            com.github.jsdossier.proto.TypeExpression.Builder subBuilder = null;
             if (overrides_ != null) {
               subBuilder = overrides_.toBuilder();
             }
-            overrides_ = input.readMessage(com.github.jsdossier.proto.Comment.parser(), extensionRegistry);
+            overrides_ = input.readMessage(com.github.jsdossier.proto.TypeExpression.parser(), extensionRegistry);
             if (subBuilder != null) {
               subBuilder.mergeFrom(overrides_);
               overrides_ = subBuilder.buildPartial();
@@ -141,10 +141,10 @@ public  final class BaseProperty extends
           }
           case 74: {
             if (!((mutable_bitField0_ & 0x00000100) == 0x00000100)) {
-              specifiedBy_ = new java.util.ArrayList<com.github.jsdossier.proto.Comment>();
+              specifiedBy_ = new java.util.ArrayList<com.github.jsdossier.proto.TypeExpression>();
               mutable_bitField0_ |= 0x00000100;
             }
-            specifiedBy_.add(input.readMessage(com.github.jsdossier.proto.Comment.parser(), extensionRegistry));
+            specifiedBy_.add(input.readMessage(com.github.jsdossier.proto.TypeExpression.parser(), extensionRegistry));
             break;
           }
           case 82: {
@@ -365,9 +365,9 @@ public  final class BaseProperty extends
   }
 
   public static final int DEFINED_BY_FIELD_NUMBER = 7;
-  private com.github.jsdossier.proto.Comment definedBy_;
+  private com.github.jsdossier.proto.TypeExpression definedBy_;
   /**
-   * <code>optional .dossier.Comment defined_by = 7;</code>
+   * <code>optional .dossier.expression.TypeExpression defined_by = 7;</code>
    *
    * <pre>
    * The class or interface that defines this property.
@@ -377,30 +377,30 @@ public  final class BaseProperty extends
     return definedBy_ != null;
   }
   /**
-   * <code>optional .dossier.Comment defined_by = 7;</code>
+   * <code>optional .dossier.expression.TypeExpression defined_by = 7;</code>
    *
    * <pre>
    * The class or interface that defines this property.
    * </pre>
    */
-  public com.github.jsdossier.proto.Comment getDefinedBy() {
-    return definedBy_ == null ? com.github.jsdossier.proto.Comment.getDefaultInstance() : definedBy_;
+  public com.github.jsdossier.proto.TypeExpression getDefinedBy() {
+    return definedBy_ == null ? com.github.jsdossier.proto.TypeExpression.getDefaultInstance() : definedBy_;
   }
   /**
-   * <code>optional .dossier.Comment defined_by = 7;</code>
+   * <code>optional .dossier.expression.TypeExpression defined_by = 7;</code>
    *
    * <pre>
    * The class or interface that defines this property.
    * </pre>
    */
-  public com.github.jsdossier.proto.CommentOrBuilder getDefinedByOrBuilder() {
+  public com.github.jsdossier.proto.TypeExpressionOrBuilder getDefinedByOrBuilder() {
     return getDefinedBy();
   }
 
   public static final int OVERRIDES_FIELD_NUMBER = 8;
-  private com.github.jsdossier.proto.Comment overrides_;
+  private com.github.jsdossier.proto.TypeExpression overrides_;
   /**
-   * <code>optional .dossier.Comment overrides = 8;</code>
+   * <code>optional .dossier.expression.TypeExpression overrides = 8;</code>
    *
    * <pre>
    * Parent class that defines this property.
@@ -410,51 +410,51 @@ public  final class BaseProperty extends
     return overrides_ != null;
   }
   /**
-   * <code>optional .dossier.Comment overrides = 8;</code>
+   * <code>optional .dossier.expression.TypeExpression overrides = 8;</code>
    *
    * <pre>
    * Parent class that defines this property.
    * </pre>
    */
-  public com.github.jsdossier.proto.Comment getOverrides() {
-    return overrides_ == null ? com.github.jsdossier.proto.Comment.getDefaultInstance() : overrides_;
+  public com.github.jsdossier.proto.TypeExpression getOverrides() {
+    return overrides_ == null ? com.github.jsdossier.proto.TypeExpression.getDefaultInstance() : overrides_;
   }
   /**
-   * <code>optional .dossier.Comment overrides = 8;</code>
+   * <code>optional .dossier.expression.TypeExpression overrides = 8;</code>
    *
    * <pre>
    * Parent class that defines this property.
    * </pre>
    */
-  public com.github.jsdossier.proto.CommentOrBuilder getOverridesOrBuilder() {
+  public com.github.jsdossier.proto.TypeExpressionOrBuilder getOverridesOrBuilder() {
     return getOverrides();
   }
 
   public static final int SPECIFIED_BY_FIELD_NUMBER = 9;
-  private java.util.List<com.github.jsdossier.proto.Comment> specifiedBy_;
+  private java.util.List<com.github.jsdossier.proto.TypeExpression> specifiedBy_;
   /**
-   * <code>repeated .dossier.Comment specified_by = 9;</code>
+   * <code>repeated .dossier.expression.TypeExpression specified_by = 9;</code>
    *
    * <pre>
    * Interfaces that define this property.
    * </pre>
    */
-  public java.util.List<com.github.jsdossier.proto.Comment> getSpecifiedByList() {
+  public java.util.List<com.github.jsdossier.proto.TypeExpression> getSpecifiedByList() {
     return specifiedBy_;
   }
   /**
-   * <code>repeated .dossier.Comment specified_by = 9;</code>
+   * <code>repeated .dossier.expression.TypeExpression specified_by = 9;</code>
    *
    * <pre>
    * Interfaces that define this property.
    * </pre>
    */
-  public java.util.List<? extends com.github.jsdossier.proto.CommentOrBuilder> 
+  public java.util.List<? extends com.github.jsdossier.proto.TypeExpressionOrBuilder> 
       getSpecifiedByOrBuilderList() {
     return specifiedBy_;
   }
   /**
-   * <code>repeated .dossier.Comment specified_by = 9;</code>
+   * <code>repeated .dossier.expression.TypeExpression specified_by = 9;</code>
    *
    * <pre>
    * Interfaces that define this property.
@@ -464,23 +464,23 @@ public  final class BaseProperty extends
     return specifiedBy_.size();
   }
   /**
-   * <code>repeated .dossier.Comment specified_by = 9;</code>
+   * <code>repeated .dossier.expression.TypeExpression specified_by = 9;</code>
    *
    * <pre>
    * Interfaces that define this property.
    * </pre>
    */
-  public com.github.jsdossier.proto.Comment getSpecifiedBy(int index) {
+  public com.github.jsdossier.proto.TypeExpression getSpecifiedBy(int index) {
     return specifiedBy_.get(index);
   }
   /**
-   * <code>repeated .dossier.Comment specified_by = 9;</code>
+   * <code>repeated .dossier.expression.TypeExpression specified_by = 9;</code>
    *
    * <pre>
    * Interfaces that define this property.
    * </pre>
    */
-  public com.github.jsdossier.proto.CommentOrBuilder getSpecifiedByOrBuilder(
+  public com.github.jsdossier.proto.TypeExpressionOrBuilder getSpecifiedByOrBuilder(
       int index) {
     return specifiedBy_.get(index);
   }
@@ -1680,11 +1680,11 @@ public  final class BaseProperty extends
       return tagsBuilder_;
     }
 
-    private com.github.jsdossier.proto.Comment definedBy_ = null;
+    private com.github.jsdossier.proto.TypeExpression definedBy_ = null;
     private com.google.protobuf.SingleFieldBuilder<
-        com.github.jsdossier.proto.Comment, com.github.jsdossier.proto.Comment.Builder, com.github.jsdossier.proto.CommentOrBuilder> definedByBuilder_;
+        com.github.jsdossier.proto.TypeExpression, com.github.jsdossier.proto.TypeExpression.Builder, com.github.jsdossier.proto.TypeExpressionOrBuilder> definedByBuilder_;
     /**
-     * <code>optional .dossier.Comment defined_by = 7;</code>
+     * <code>optional .dossier.expression.TypeExpression defined_by = 7;</code>
      *
      * <pre>
      * The class or interface that defines this property.
@@ -1694,27 +1694,27 @@ public  final class BaseProperty extends
       return definedByBuilder_ != null || definedBy_ != null;
     }
     /**
-     * <code>optional .dossier.Comment defined_by = 7;</code>
+     * <code>optional .dossier.expression.TypeExpression defined_by = 7;</code>
      *
      * <pre>
      * The class or interface that defines this property.
      * </pre>
      */
-    public com.github.jsdossier.proto.Comment getDefinedBy() {
+    public com.github.jsdossier.proto.TypeExpression getDefinedBy() {
       if (definedByBuilder_ == null) {
-        return definedBy_ == null ? com.github.jsdossier.proto.Comment.getDefaultInstance() : definedBy_;
+        return definedBy_ == null ? com.github.jsdossier.proto.TypeExpression.getDefaultInstance() : definedBy_;
       } else {
         return definedByBuilder_.getMessage();
       }
     }
     /**
-     * <code>optional .dossier.Comment defined_by = 7;</code>
+     * <code>optional .dossier.expression.TypeExpression defined_by = 7;</code>
      *
      * <pre>
      * The class or interface that defines this property.
      * </pre>
      */
-    public Builder setDefinedBy(com.github.jsdossier.proto.Comment value) {
+    public Builder setDefinedBy(com.github.jsdossier.proto.TypeExpression value) {
       if (definedByBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -1728,14 +1728,14 @@ public  final class BaseProperty extends
       return this;
     }
     /**
-     * <code>optional .dossier.Comment defined_by = 7;</code>
+     * <code>optional .dossier.expression.TypeExpression defined_by = 7;</code>
      *
      * <pre>
      * The class or interface that defines this property.
      * </pre>
      */
     public Builder setDefinedBy(
-        com.github.jsdossier.proto.Comment.Builder builderForValue) {
+        com.github.jsdossier.proto.TypeExpression.Builder builderForValue) {
       if (definedByBuilder_ == null) {
         definedBy_ = builderForValue.build();
         onChanged();
@@ -1746,17 +1746,17 @@ public  final class BaseProperty extends
       return this;
     }
     /**
-     * <code>optional .dossier.Comment defined_by = 7;</code>
+     * <code>optional .dossier.expression.TypeExpression defined_by = 7;</code>
      *
      * <pre>
      * The class or interface that defines this property.
      * </pre>
      */
-    public Builder mergeDefinedBy(com.github.jsdossier.proto.Comment value) {
+    public Builder mergeDefinedBy(com.github.jsdossier.proto.TypeExpression value) {
       if (definedByBuilder_ == null) {
         if (definedBy_ != null) {
           definedBy_ =
-            com.github.jsdossier.proto.Comment.newBuilder(definedBy_).mergeFrom(value).buildPartial();
+            com.github.jsdossier.proto.TypeExpression.newBuilder(definedBy_).mergeFrom(value).buildPartial();
         } else {
           definedBy_ = value;
         }
@@ -1768,7 +1768,7 @@ public  final class BaseProperty extends
       return this;
     }
     /**
-     * <code>optional .dossier.Comment defined_by = 7;</code>
+     * <code>optional .dossier.expression.TypeExpression defined_by = 7;</code>
      *
      * <pre>
      * The class or interface that defines this property.
@@ -1786,45 +1786,45 @@ public  final class BaseProperty extends
       return this;
     }
     /**
-     * <code>optional .dossier.Comment defined_by = 7;</code>
+     * <code>optional .dossier.expression.TypeExpression defined_by = 7;</code>
      *
      * <pre>
      * The class or interface that defines this property.
      * </pre>
      */
-    public com.github.jsdossier.proto.Comment.Builder getDefinedByBuilder() {
+    public com.github.jsdossier.proto.TypeExpression.Builder getDefinedByBuilder() {
       
       onChanged();
       return getDefinedByFieldBuilder().getBuilder();
     }
     /**
-     * <code>optional .dossier.Comment defined_by = 7;</code>
+     * <code>optional .dossier.expression.TypeExpression defined_by = 7;</code>
      *
      * <pre>
      * The class or interface that defines this property.
      * </pre>
      */
-    public com.github.jsdossier.proto.CommentOrBuilder getDefinedByOrBuilder() {
+    public com.github.jsdossier.proto.TypeExpressionOrBuilder getDefinedByOrBuilder() {
       if (definedByBuilder_ != null) {
         return definedByBuilder_.getMessageOrBuilder();
       } else {
         return definedBy_ == null ?
-            com.github.jsdossier.proto.Comment.getDefaultInstance() : definedBy_;
+            com.github.jsdossier.proto.TypeExpression.getDefaultInstance() : definedBy_;
       }
     }
     /**
-     * <code>optional .dossier.Comment defined_by = 7;</code>
+     * <code>optional .dossier.expression.TypeExpression defined_by = 7;</code>
      *
      * <pre>
      * The class or interface that defines this property.
      * </pre>
      */
     private com.google.protobuf.SingleFieldBuilder<
-        com.github.jsdossier.proto.Comment, com.github.jsdossier.proto.Comment.Builder, com.github.jsdossier.proto.CommentOrBuilder> 
+        com.github.jsdossier.proto.TypeExpression, com.github.jsdossier.proto.TypeExpression.Builder, com.github.jsdossier.proto.TypeExpressionOrBuilder> 
         getDefinedByFieldBuilder() {
       if (definedByBuilder_ == null) {
         definedByBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-            com.github.jsdossier.proto.Comment, com.github.jsdossier.proto.Comment.Builder, com.github.jsdossier.proto.CommentOrBuilder>(
+            com.github.jsdossier.proto.TypeExpression, com.github.jsdossier.proto.TypeExpression.Builder, com.github.jsdossier.proto.TypeExpressionOrBuilder>(
                 getDefinedBy(),
                 getParentForChildren(),
                 isClean());
@@ -1833,11 +1833,11 @@ public  final class BaseProperty extends
       return definedByBuilder_;
     }
 
-    private com.github.jsdossier.proto.Comment overrides_ = null;
+    private com.github.jsdossier.proto.TypeExpression overrides_ = null;
     private com.google.protobuf.SingleFieldBuilder<
-        com.github.jsdossier.proto.Comment, com.github.jsdossier.proto.Comment.Builder, com.github.jsdossier.proto.CommentOrBuilder> overridesBuilder_;
+        com.github.jsdossier.proto.TypeExpression, com.github.jsdossier.proto.TypeExpression.Builder, com.github.jsdossier.proto.TypeExpressionOrBuilder> overridesBuilder_;
     /**
-     * <code>optional .dossier.Comment overrides = 8;</code>
+     * <code>optional .dossier.expression.TypeExpression overrides = 8;</code>
      *
      * <pre>
      * Parent class that defines this property.
@@ -1847,27 +1847,27 @@ public  final class BaseProperty extends
       return overridesBuilder_ != null || overrides_ != null;
     }
     /**
-     * <code>optional .dossier.Comment overrides = 8;</code>
+     * <code>optional .dossier.expression.TypeExpression overrides = 8;</code>
      *
      * <pre>
      * Parent class that defines this property.
      * </pre>
      */
-    public com.github.jsdossier.proto.Comment getOverrides() {
+    public com.github.jsdossier.proto.TypeExpression getOverrides() {
       if (overridesBuilder_ == null) {
-        return overrides_ == null ? com.github.jsdossier.proto.Comment.getDefaultInstance() : overrides_;
+        return overrides_ == null ? com.github.jsdossier.proto.TypeExpression.getDefaultInstance() : overrides_;
       } else {
         return overridesBuilder_.getMessage();
       }
     }
     /**
-     * <code>optional .dossier.Comment overrides = 8;</code>
+     * <code>optional .dossier.expression.TypeExpression overrides = 8;</code>
      *
      * <pre>
      * Parent class that defines this property.
      * </pre>
      */
-    public Builder setOverrides(com.github.jsdossier.proto.Comment value) {
+    public Builder setOverrides(com.github.jsdossier.proto.TypeExpression value) {
       if (overridesBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -1881,14 +1881,14 @@ public  final class BaseProperty extends
       return this;
     }
     /**
-     * <code>optional .dossier.Comment overrides = 8;</code>
+     * <code>optional .dossier.expression.TypeExpression overrides = 8;</code>
      *
      * <pre>
      * Parent class that defines this property.
      * </pre>
      */
     public Builder setOverrides(
-        com.github.jsdossier.proto.Comment.Builder builderForValue) {
+        com.github.jsdossier.proto.TypeExpression.Builder builderForValue) {
       if (overridesBuilder_ == null) {
         overrides_ = builderForValue.build();
         onChanged();
@@ -1899,17 +1899,17 @@ public  final class BaseProperty extends
       return this;
     }
     /**
-     * <code>optional .dossier.Comment overrides = 8;</code>
+     * <code>optional .dossier.expression.TypeExpression overrides = 8;</code>
      *
      * <pre>
      * Parent class that defines this property.
      * </pre>
      */
-    public Builder mergeOverrides(com.github.jsdossier.proto.Comment value) {
+    public Builder mergeOverrides(com.github.jsdossier.proto.TypeExpression value) {
       if (overridesBuilder_ == null) {
         if (overrides_ != null) {
           overrides_ =
-            com.github.jsdossier.proto.Comment.newBuilder(overrides_).mergeFrom(value).buildPartial();
+            com.github.jsdossier.proto.TypeExpression.newBuilder(overrides_).mergeFrom(value).buildPartial();
         } else {
           overrides_ = value;
         }
@@ -1921,7 +1921,7 @@ public  final class BaseProperty extends
       return this;
     }
     /**
-     * <code>optional .dossier.Comment overrides = 8;</code>
+     * <code>optional .dossier.expression.TypeExpression overrides = 8;</code>
      *
      * <pre>
      * Parent class that defines this property.
@@ -1939,45 +1939,45 @@ public  final class BaseProperty extends
       return this;
     }
     /**
-     * <code>optional .dossier.Comment overrides = 8;</code>
+     * <code>optional .dossier.expression.TypeExpression overrides = 8;</code>
      *
      * <pre>
      * Parent class that defines this property.
      * </pre>
      */
-    public com.github.jsdossier.proto.Comment.Builder getOverridesBuilder() {
+    public com.github.jsdossier.proto.TypeExpression.Builder getOverridesBuilder() {
       
       onChanged();
       return getOverridesFieldBuilder().getBuilder();
     }
     /**
-     * <code>optional .dossier.Comment overrides = 8;</code>
+     * <code>optional .dossier.expression.TypeExpression overrides = 8;</code>
      *
      * <pre>
      * Parent class that defines this property.
      * </pre>
      */
-    public com.github.jsdossier.proto.CommentOrBuilder getOverridesOrBuilder() {
+    public com.github.jsdossier.proto.TypeExpressionOrBuilder getOverridesOrBuilder() {
       if (overridesBuilder_ != null) {
         return overridesBuilder_.getMessageOrBuilder();
       } else {
         return overrides_ == null ?
-            com.github.jsdossier.proto.Comment.getDefaultInstance() : overrides_;
+            com.github.jsdossier.proto.TypeExpression.getDefaultInstance() : overrides_;
       }
     }
     /**
-     * <code>optional .dossier.Comment overrides = 8;</code>
+     * <code>optional .dossier.expression.TypeExpression overrides = 8;</code>
      *
      * <pre>
      * Parent class that defines this property.
      * </pre>
      */
     private com.google.protobuf.SingleFieldBuilder<
-        com.github.jsdossier.proto.Comment, com.github.jsdossier.proto.Comment.Builder, com.github.jsdossier.proto.CommentOrBuilder> 
+        com.github.jsdossier.proto.TypeExpression, com.github.jsdossier.proto.TypeExpression.Builder, com.github.jsdossier.proto.TypeExpressionOrBuilder> 
         getOverridesFieldBuilder() {
       if (overridesBuilder_ == null) {
         overridesBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-            com.github.jsdossier.proto.Comment, com.github.jsdossier.proto.Comment.Builder, com.github.jsdossier.proto.CommentOrBuilder>(
+            com.github.jsdossier.proto.TypeExpression, com.github.jsdossier.proto.TypeExpression.Builder, com.github.jsdossier.proto.TypeExpressionOrBuilder>(
                 getOverrides(),
                 getParentForChildren(),
                 isClean());
@@ -1986,26 +1986,26 @@ public  final class BaseProperty extends
       return overridesBuilder_;
     }
 
-    private java.util.List<com.github.jsdossier.proto.Comment> specifiedBy_ =
+    private java.util.List<com.github.jsdossier.proto.TypeExpression> specifiedBy_ =
       java.util.Collections.emptyList();
     private void ensureSpecifiedByIsMutable() {
       if (!((bitField0_ & 0x00000100) == 0x00000100)) {
-        specifiedBy_ = new java.util.ArrayList<com.github.jsdossier.proto.Comment>(specifiedBy_);
+        specifiedBy_ = new java.util.ArrayList<com.github.jsdossier.proto.TypeExpression>(specifiedBy_);
         bitField0_ |= 0x00000100;
        }
     }
 
     private com.google.protobuf.RepeatedFieldBuilder<
-        com.github.jsdossier.proto.Comment, com.github.jsdossier.proto.Comment.Builder, com.github.jsdossier.proto.CommentOrBuilder> specifiedByBuilder_;
+        com.github.jsdossier.proto.TypeExpression, com.github.jsdossier.proto.TypeExpression.Builder, com.github.jsdossier.proto.TypeExpressionOrBuilder> specifiedByBuilder_;
 
     /**
-     * <code>repeated .dossier.Comment specified_by = 9;</code>
+     * <code>repeated .dossier.expression.TypeExpression specified_by = 9;</code>
      *
      * <pre>
      * Interfaces that define this property.
      * </pre>
      */
-    public java.util.List<com.github.jsdossier.proto.Comment> getSpecifiedByList() {
+    public java.util.List<com.github.jsdossier.proto.TypeExpression> getSpecifiedByList() {
       if (specifiedByBuilder_ == null) {
         return java.util.Collections.unmodifiableList(specifiedBy_);
       } else {
@@ -2013,7 +2013,7 @@ public  final class BaseProperty extends
       }
     }
     /**
-     * <code>repeated .dossier.Comment specified_by = 9;</code>
+     * <code>repeated .dossier.expression.TypeExpression specified_by = 9;</code>
      *
      * <pre>
      * Interfaces that define this property.
@@ -2027,13 +2027,13 @@ public  final class BaseProperty extends
       }
     }
     /**
-     * <code>repeated .dossier.Comment specified_by = 9;</code>
+     * <code>repeated .dossier.expression.TypeExpression specified_by = 9;</code>
      *
      * <pre>
      * Interfaces that define this property.
      * </pre>
      */
-    public com.github.jsdossier.proto.Comment getSpecifiedBy(int index) {
+    public com.github.jsdossier.proto.TypeExpression getSpecifiedBy(int index) {
       if (specifiedByBuilder_ == null) {
         return specifiedBy_.get(index);
       } else {
@@ -2041,14 +2041,14 @@ public  final class BaseProperty extends
       }
     }
     /**
-     * <code>repeated .dossier.Comment specified_by = 9;</code>
+     * <code>repeated .dossier.expression.TypeExpression specified_by = 9;</code>
      *
      * <pre>
      * Interfaces that define this property.
      * </pre>
      */
     public Builder setSpecifiedBy(
-        int index, com.github.jsdossier.proto.Comment value) {
+        int index, com.github.jsdossier.proto.TypeExpression value) {
       if (specifiedByBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -2062,14 +2062,14 @@ public  final class BaseProperty extends
       return this;
     }
     /**
-     * <code>repeated .dossier.Comment specified_by = 9;</code>
+     * <code>repeated .dossier.expression.TypeExpression specified_by = 9;</code>
      *
      * <pre>
      * Interfaces that define this property.
      * </pre>
      */
     public Builder setSpecifiedBy(
-        int index, com.github.jsdossier.proto.Comment.Builder builderForValue) {
+        int index, com.github.jsdossier.proto.TypeExpression.Builder builderForValue) {
       if (specifiedByBuilder_ == null) {
         ensureSpecifiedByIsMutable();
         specifiedBy_.set(index, builderForValue.build());
@@ -2080,13 +2080,13 @@ public  final class BaseProperty extends
       return this;
     }
     /**
-     * <code>repeated .dossier.Comment specified_by = 9;</code>
+     * <code>repeated .dossier.expression.TypeExpression specified_by = 9;</code>
      *
      * <pre>
      * Interfaces that define this property.
      * </pre>
      */
-    public Builder addSpecifiedBy(com.github.jsdossier.proto.Comment value) {
+    public Builder addSpecifiedBy(com.github.jsdossier.proto.TypeExpression value) {
       if (specifiedByBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -2100,14 +2100,14 @@ public  final class BaseProperty extends
       return this;
     }
     /**
-     * <code>repeated .dossier.Comment specified_by = 9;</code>
+     * <code>repeated .dossier.expression.TypeExpression specified_by = 9;</code>
      *
      * <pre>
      * Interfaces that define this property.
      * </pre>
      */
     public Builder addSpecifiedBy(
-        int index, com.github.jsdossier.proto.Comment value) {
+        int index, com.github.jsdossier.proto.TypeExpression value) {
       if (specifiedByBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -2121,14 +2121,14 @@ public  final class BaseProperty extends
       return this;
     }
     /**
-     * <code>repeated .dossier.Comment specified_by = 9;</code>
+     * <code>repeated .dossier.expression.TypeExpression specified_by = 9;</code>
      *
      * <pre>
      * Interfaces that define this property.
      * </pre>
      */
     public Builder addSpecifiedBy(
-        com.github.jsdossier.proto.Comment.Builder builderForValue) {
+        com.github.jsdossier.proto.TypeExpression.Builder builderForValue) {
       if (specifiedByBuilder_ == null) {
         ensureSpecifiedByIsMutable();
         specifiedBy_.add(builderForValue.build());
@@ -2139,14 +2139,14 @@ public  final class BaseProperty extends
       return this;
     }
     /**
-     * <code>repeated .dossier.Comment specified_by = 9;</code>
+     * <code>repeated .dossier.expression.TypeExpression specified_by = 9;</code>
      *
      * <pre>
      * Interfaces that define this property.
      * </pre>
      */
     public Builder addSpecifiedBy(
-        int index, com.github.jsdossier.proto.Comment.Builder builderForValue) {
+        int index, com.github.jsdossier.proto.TypeExpression.Builder builderForValue) {
       if (specifiedByBuilder_ == null) {
         ensureSpecifiedByIsMutable();
         specifiedBy_.add(index, builderForValue.build());
@@ -2157,14 +2157,14 @@ public  final class BaseProperty extends
       return this;
     }
     /**
-     * <code>repeated .dossier.Comment specified_by = 9;</code>
+     * <code>repeated .dossier.expression.TypeExpression specified_by = 9;</code>
      *
      * <pre>
      * Interfaces that define this property.
      * </pre>
      */
     public Builder addAllSpecifiedBy(
-        java.lang.Iterable<? extends com.github.jsdossier.proto.Comment> values) {
+        java.lang.Iterable<? extends com.github.jsdossier.proto.TypeExpression> values) {
       if (specifiedByBuilder_ == null) {
         ensureSpecifiedByIsMutable();
         com.google.protobuf.AbstractMessageLite.Builder.addAll(
@@ -2176,7 +2176,7 @@ public  final class BaseProperty extends
       return this;
     }
     /**
-     * <code>repeated .dossier.Comment specified_by = 9;</code>
+     * <code>repeated .dossier.expression.TypeExpression specified_by = 9;</code>
      *
      * <pre>
      * Interfaces that define this property.
@@ -2193,7 +2193,7 @@ public  final class BaseProperty extends
       return this;
     }
     /**
-     * <code>repeated .dossier.Comment specified_by = 9;</code>
+     * <code>repeated .dossier.expression.TypeExpression specified_by = 9;</code>
      *
      * <pre>
      * Interfaces that define this property.
@@ -2210,24 +2210,24 @@ public  final class BaseProperty extends
       return this;
     }
     /**
-     * <code>repeated .dossier.Comment specified_by = 9;</code>
+     * <code>repeated .dossier.expression.TypeExpression specified_by = 9;</code>
      *
      * <pre>
      * Interfaces that define this property.
      * </pre>
      */
-    public com.github.jsdossier.proto.Comment.Builder getSpecifiedByBuilder(
+    public com.github.jsdossier.proto.TypeExpression.Builder getSpecifiedByBuilder(
         int index) {
       return getSpecifiedByFieldBuilder().getBuilder(index);
     }
     /**
-     * <code>repeated .dossier.Comment specified_by = 9;</code>
+     * <code>repeated .dossier.expression.TypeExpression specified_by = 9;</code>
      *
      * <pre>
      * Interfaces that define this property.
      * </pre>
      */
-    public com.github.jsdossier.proto.CommentOrBuilder getSpecifiedByOrBuilder(
+    public com.github.jsdossier.proto.TypeExpressionOrBuilder getSpecifiedByOrBuilder(
         int index) {
       if (specifiedByBuilder_ == null) {
         return specifiedBy_.get(index);  } else {
@@ -2235,13 +2235,13 @@ public  final class BaseProperty extends
       }
     }
     /**
-     * <code>repeated .dossier.Comment specified_by = 9;</code>
+     * <code>repeated .dossier.expression.TypeExpression specified_by = 9;</code>
      *
      * <pre>
      * Interfaces that define this property.
      * </pre>
      */
-    public java.util.List<? extends com.github.jsdossier.proto.CommentOrBuilder> 
+    public java.util.List<? extends com.github.jsdossier.proto.TypeExpressionOrBuilder> 
          getSpecifiedByOrBuilderList() {
       if (specifiedByBuilder_ != null) {
         return specifiedByBuilder_.getMessageOrBuilderList();
@@ -2250,45 +2250,45 @@ public  final class BaseProperty extends
       }
     }
     /**
-     * <code>repeated .dossier.Comment specified_by = 9;</code>
+     * <code>repeated .dossier.expression.TypeExpression specified_by = 9;</code>
      *
      * <pre>
      * Interfaces that define this property.
      * </pre>
      */
-    public com.github.jsdossier.proto.Comment.Builder addSpecifiedByBuilder() {
+    public com.github.jsdossier.proto.TypeExpression.Builder addSpecifiedByBuilder() {
       return getSpecifiedByFieldBuilder().addBuilder(
-          com.github.jsdossier.proto.Comment.getDefaultInstance());
+          com.github.jsdossier.proto.TypeExpression.getDefaultInstance());
     }
     /**
-     * <code>repeated .dossier.Comment specified_by = 9;</code>
+     * <code>repeated .dossier.expression.TypeExpression specified_by = 9;</code>
      *
      * <pre>
      * Interfaces that define this property.
      * </pre>
      */
-    public com.github.jsdossier.proto.Comment.Builder addSpecifiedByBuilder(
+    public com.github.jsdossier.proto.TypeExpression.Builder addSpecifiedByBuilder(
         int index) {
       return getSpecifiedByFieldBuilder().addBuilder(
-          index, com.github.jsdossier.proto.Comment.getDefaultInstance());
+          index, com.github.jsdossier.proto.TypeExpression.getDefaultInstance());
     }
     /**
-     * <code>repeated .dossier.Comment specified_by = 9;</code>
+     * <code>repeated .dossier.expression.TypeExpression specified_by = 9;</code>
      *
      * <pre>
      * Interfaces that define this property.
      * </pre>
      */
-    public java.util.List<com.github.jsdossier.proto.Comment.Builder> 
+    public java.util.List<com.github.jsdossier.proto.TypeExpression.Builder> 
          getSpecifiedByBuilderList() {
       return getSpecifiedByFieldBuilder().getBuilderList();
     }
     private com.google.protobuf.RepeatedFieldBuilder<
-        com.github.jsdossier.proto.Comment, com.github.jsdossier.proto.Comment.Builder, com.github.jsdossier.proto.CommentOrBuilder> 
+        com.github.jsdossier.proto.TypeExpression, com.github.jsdossier.proto.TypeExpression.Builder, com.github.jsdossier.proto.TypeExpressionOrBuilder> 
         getSpecifiedByFieldBuilder() {
       if (specifiedByBuilder_ == null) {
         specifiedByBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
-            com.github.jsdossier.proto.Comment, com.github.jsdossier.proto.Comment.Builder, com.github.jsdossier.proto.CommentOrBuilder>(
+            com.github.jsdossier.proto.TypeExpression, com.github.jsdossier.proto.TypeExpression.Builder, com.github.jsdossier.proto.TypeExpressionOrBuilder>(
                 specifiedBy_,
                 ((bitField0_ & 0x00000100) == 0x00000100),
                 getParentForChildren(),

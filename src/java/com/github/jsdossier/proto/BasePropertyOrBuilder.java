@@ -123,7 +123,7 @@ public interface BasePropertyOrBuilder extends
   com.github.jsdossier.proto.TagsOrBuilder getTagsOrBuilder();
 
   /**
-   * <code>optional .dossier.Comment defined_by = 7;</code>
+   * <code>optional .dossier.expression.TypeExpression defined_by = 7;</code>
    *
    * <pre>
    * The class or interface that defines this property.
@@ -131,24 +131,24 @@ public interface BasePropertyOrBuilder extends
    */
   boolean hasDefinedBy();
   /**
-   * <code>optional .dossier.Comment defined_by = 7;</code>
+   * <code>optional .dossier.expression.TypeExpression defined_by = 7;</code>
    *
    * <pre>
    * The class or interface that defines this property.
    * </pre>
    */
-  com.github.jsdossier.proto.Comment getDefinedBy();
+  com.github.jsdossier.proto.TypeExpression getDefinedBy();
   /**
-   * <code>optional .dossier.Comment defined_by = 7;</code>
+   * <code>optional .dossier.expression.TypeExpression defined_by = 7;</code>
    *
    * <pre>
    * The class or interface that defines this property.
    * </pre>
    */
-  com.github.jsdossier.proto.CommentOrBuilder getDefinedByOrBuilder();
+  com.github.jsdossier.proto.TypeExpressionOrBuilder getDefinedByOrBuilder();
 
   /**
-   * <code>optional .dossier.Comment overrides = 8;</code>
+   * <code>optional .dossier.expression.TypeExpression overrides = 8;</code>
    *
    * <pre>
    * Parent class that defines this property.
@@ -156,41 +156,41 @@ public interface BasePropertyOrBuilder extends
    */
   boolean hasOverrides();
   /**
-   * <code>optional .dossier.Comment overrides = 8;</code>
+   * <code>optional .dossier.expression.TypeExpression overrides = 8;</code>
    *
    * <pre>
    * Parent class that defines this property.
    * </pre>
    */
-  com.github.jsdossier.proto.Comment getOverrides();
+  com.github.jsdossier.proto.TypeExpression getOverrides();
   /**
-   * <code>optional .dossier.Comment overrides = 8;</code>
+   * <code>optional .dossier.expression.TypeExpression overrides = 8;</code>
    *
    * <pre>
    * Parent class that defines this property.
    * </pre>
    */
-  com.github.jsdossier.proto.CommentOrBuilder getOverridesOrBuilder();
+  com.github.jsdossier.proto.TypeExpressionOrBuilder getOverridesOrBuilder();
 
   /**
-   * <code>repeated .dossier.Comment specified_by = 9;</code>
+   * <code>repeated .dossier.expression.TypeExpression specified_by = 9;</code>
    *
    * <pre>
    * Interfaces that define this property.
    * </pre>
    */
-  java.util.List<com.github.jsdossier.proto.Comment> 
+  java.util.List<com.github.jsdossier.proto.TypeExpression> 
       getSpecifiedByList();
   /**
-   * <code>repeated .dossier.Comment specified_by = 9;</code>
+   * <code>repeated .dossier.expression.TypeExpression specified_by = 9;</code>
    *
    * <pre>
    * Interfaces that define this property.
    * </pre>
    */
-  com.github.jsdossier.proto.Comment getSpecifiedBy(int index);
+  com.github.jsdossier.proto.TypeExpression getSpecifiedBy(int index);
   /**
-   * <code>repeated .dossier.Comment specified_by = 9;</code>
+   * <code>repeated .dossier.expression.TypeExpression specified_by = 9;</code>
    *
    * <pre>
    * Interfaces that define this property.
@@ -198,22 +198,22 @@ public interface BasePropertyOrBuilder extends
    */
   int getSpecifiedByCount();
   /**
-   * <code>repeated .dossier.Comment specified_by = 9;</code>
+   * <code>repeated .dossier.expression.TypeExpression specified_by = 9;</code>
    *
    * <pre>
    * Interfaces that define this property.
    * </pre>
    */
-  java.util.List<? extends com.github.jsdossier.proto.CommentOrBuilder> 
+  java.util.List<? extends com.github.jsdossier.proto.TypeExpressionOrBuilder> 
       getSpecifiedByOrBuilderList();
   /**
-   * <code>repeated .dossier.Comment specified_by = 9;</code>
+   * <code>repeated .dossier.expression.TypeExpression specified_by = 9;</code>
    *
    * <pre>
    * Interfaces that define this property.
    * </pre>
    */
-  com.github.jsdossier.proto.CommentOrBuilder getSpecifiedByOrBuilder(
+  com.github.jsdossier.proto.TypeExpressionOrBuilder getSpecifiedByOrBuilder(
       int index);
 
   /**

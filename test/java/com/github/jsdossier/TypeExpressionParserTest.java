@@ -17,14 +17,11 @@
 package com.github.jsdossier;
 
 import static com.github.jsdossier.ProtoTruth.assertMessage;
-import static com.github.jsdossier.TypeExpressionParser.ANY_TYPE;
-import static com.github.jsdossier.TypeExpressionParser.UNKNOWN_TYPE;
 import static com.github.jsdossier.testing.CompilerUtil.createSourceFile;
 
 import com.github.jsdossier.annotations.Input;
 import com.github.jsdossier.jscomp.NominalType;
 import com.github.jsdossier.jscomp.TypeRegistry;
-import com.github.jsdossier.proto.Comment;
 import com.github.jsdossier.proto.FunctionType;
 import com.github.jsdossier.proto.NamedType;
 import com.github.jsdossier.proto.RecordType;
@@ -35,6 +32,7 @@ import com.github.jsdossier.testing.GuiceRule;
 import com.google.javascript.jscomp.CompilerOptions;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.JSTypeExpression;
+import com.google.javascript.rhino.jstype.JSType;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -71,18 +69,9 @@ public class TypeExpressionParserTest {
 
     NominalType type = typeRegistry.getType("Person");
     TypeExpressionParser parser = parserFactory.create(linkFactoryBuilder.create(type));
+    JSType jsType = util.evaluate(type.getJsDoc().getInfo().getTypedefType());
 
-    Comment comment = parser.parse(type.getJsDoc().getInfo().getTypedefType());
-    assertMessage(comment).isEqualTo(
-        Comment.newBuilder()
-            .addToken(text("{name: "))
-            .addToken(stringLink())
-            .addToken(text(", age: "))
-            .addToken(numberLink())
-            .addToken(text("}"))
-            .build());
-
-    TypeExpression expression = parser.parseExpression(type.getJsDoc().getInfo().getTypedefType());
+    TypeExpression expression = parser.parseExpression(jsType);
     assertMessage(expression)
         .isEqualTo(
             TypeExpression.newBuilder()
@@ -90,12 +79,12 @@ public class TypeExpressionParserTest {
                     RecordType.newBuilder()
                         .addEntry(
                             RecordType.Entry.newBuilder()
-                                .setKey("name")
-                                .setValue(stringType()))
+                                .setKey("age")
+                                .setValue(numberType()))
                         .addEntry(
                             RecordType.Entry.newBuilder()
-                                .setKey("age")
-                                .setValue(numberType()))));
+                                .setKey("name")
+                                .setValue(stringType()))));
   }
 
   @Test
@@ -110,14 +99,15 @@ public class TypeExpressionParserTest {
 
     NominalType type = typeRegistry.getType("Greeter");
     TypeExpressionParser parser = parserFactory.create(linkFactoryBuilder.create(type));
-    JSTypeExpression expression = type.getJsDoc().getParameter("a").getType();
-    Comment comment = parser.parse(expression);
-    assertMessage(comment).isEqualTo(
-        Comment.newBuilder()
-            .addToken(text("function(new: "))
-            .addToken(link("Person", "Person.html"))
-            .addToken(text(")"))
-            .build());
+    JSTypeExpression jsExpression = type.getJsDoc().getParameter("a").getType();
+    JSType jsType = util.evaluate(jsExpression);
+    TypeExpression expression = parser.parseExpression(jsType);
+    assertMessage(expression).isEqualTo(
+        TypeExpression.newBuilder()
+            .setFunctionType(
+                FunctionType.newBuilder()
+                    .setIsConstructor(true)
+                    .setInstanceType(namedTypeExpression("Person", "Person.html"))));
   }
 
   @Test
@@ -132,14 +122,15 @@ public class TypeExpressionParserTest {
 
     NominalType type = typeRegistry.getType("Greeter");
     TypeExpressionParser parser = parserFactory.create(linkFactoryBuilder.create(type));
-    JSTypeExpression expression = type.getJsDoc().getParameter("a").getType();
-    Comment comment = parser.parse(expression);
-    assertMessage(comment).isEqualTo(
-        Comment.newBuilder()
-            .addToken(text("function(this: "))
-            .addToken(link("Person", "Person.html"))
-            .addToken(text(")"))
-            .build());
+    JSTypeExpression jsExpression = type.getJsDoc().getParameter("a").getType();
+    JSType jsType = util.evaluate(jsExpression);
+    TypeExpression expression = parser.parseExpression(jsType);
+    assertMessage(expression).isEqualTo(
+        TypeExpression.newBuilder()
+            .setFunctionType(
+                FunctionType.newBuilder()
+                    .setInstanceType(namedTypeExpression("Person", "Person.html"))
+                    .setReturnType(TypeExpression.newBuilder().setUnknownType(true))));
   }
 
   @Test
@@ -154,13 +145,17 @@ public class TypeExpressionParserTest {
 
     NominalType type = typeRegistry.getType("Greeter");
     TypeExpressionParser parser = parserFactory.create(linkFactoryBuilder.create(type));
-    JSTypeExpression expression = type.getJsDoc().getParameter("a").getType();
-    Comment comment = parser.parse(expression);
-    assertMessage(comment).isEqualTo(
-        Comment.newBuilder()
-            .addToken(text("function(): "))
-            .addToken(link("Person", "Person.html"))
-            .build());
+    JSTypeExpression jsExpression = type.getJsDoc().getParameter("a").getType();
+    JSType jsType = util.evaluate(jsExpression);
+    TypeExpression expression = parser.parseExpression(jsType);
+    assertMessage(expression).isEqualTo(
+        TypeExpression.newBuilder()
+            .setFunctionType(
+                FunctionType.newBuilder()
+                    .setReturnType(
+                        namedTypeExpression("Person", "Person.html")
+                            .toBuilder()
+                            .setAllowNull(true))));
   }
 
   @Test
@@ -176,22 +171,17 @@ public class TypeExpressionParserTest {
     NominalType type = typeRegistry.getType("Greeter");
     TypeExpressionParser parser = parserFactory.create(linkFactoryBuilder.create(type));
     JSTypeExpression expression = type.getJsDoc().getParameter("a").getType();
+    JSType jsType = util.evaluate(expression);
 
-    TypeExpression typeExpression = parser.parseExpression(expression);
+    TypeExpression typeExpression = parser.parseExpression(jsType);
     assertMessage(typeExpression).isEqualTo(
         TypeExpression.newBuilder()
-        .setFunctionType(FunctionType.newBuilder()
-            .addParameter(TypeExpression.newBuilder()
-                .setIsVarargs(true)
-                .setNamedType(namedType("Person", "Person.html")))));
-
-    Comment comment = parser.parse(expression);
-    assertMessage(comment).isEqualTo(
-        Comment.newBuilder()
-            .addToken(text("function(...!"))
-            .addToken(link("Person", "Person.html"))
-            .addToken(text(")"))
-            .build());
+        .setFunctionType(
+            FunctionType.newBuilder()
+                .addParameter(TypeExpression.newBuilder()
+                    .setIsVarargs(true)
+                    .setNamedType(namedType("Person", "Person.html")))
+                .setReturnType(TypeExpression.newBuilder().setUnknownType(true))));
   }
 
   @Test
@@ -206,16 +196,19 @@ public class TypeExpressionParserTest {
 
     NominalType type = typeRegistry.getType("Greeter");
     TypeExpressionParser parser = parserFactory.create(linkFactoryBuilder.create(type));
-    JSTypeExpression expression = type.getJsDoc().getParameter("a").getType();
-    Comment comment = parser.parse(expression);
-    assertMessage(comment).isEqualTo(
-        Comment.newBuilder()
-            .addToken(text("function(this: "))
-            .addToken(link("Person", "Person.html"))
-            .addToken(text(", ...!"))
-            .addToken(link("Person", "Person.html"))
-            .addToken(text(")"))
-            .build());
+    JSTypeExpression jsExpression = type.getJsDoc().getParameter("a").getType();
+    JSType jsType = util.evaluate(jsExpression);
+    TypeExpression expression = parser.parseExpression(jsType);
+    assertMessage(expression).isEqualTo(
+        TypeExpression.newBuilder()
+            .setFunctionType(
+                FunctionType.newBuilder()
+                    .setInstanceType(namedTypeExpression("Person", "Person.html"))
+                    .addParameter(
+                        namedTypeExpression("Person", "Person.html")
+                            .toBuilder()
+                            .setIsVarargs(true))
+                    .setReturnType(TypeExpression.newBuilder().setUnknownType(true))));
   }
 
   @Test
@@ -236,21 +229,20 @@ public class TypeExpressionParserTest {
     NominalType type = typeRegistry.getType("module$source$modules$two.Greeter");
     TypeExpressionParser parser = parserFactory.create(
         linkFactoryBuilder.create(type).withTypeContext(type));
-    JSTypeExpression expression = type.getJsDoc().getParameter("a").getType();
-    Comment comment = parser.parse(expression);
-    assertMessage(comment).isEqualTo(
-        Comment.newBuilder()
-            .addToken(text("!"))
-            .addToken(link("Foo", "one_exports_Foo.html"))
+
+    JSType jsType = util.evaluate(type.getJsDoc().getParameter("a").getType());
+    TypeExpression expression = parser.parseExpression(jsType);
+    assertMessage(expression).isEqualTo(
+        TypeExpression.newBuilder()
+            .setNamedType(namedType("Foo", "one_exports_Foo.html"))
             .build());
 
     parser = parserFactory.create(
         linkFactoryBuilder.create(typeRegistry.getType("Person")));
-    comment = parser.parse(expression);
-    assertMessage(comment).isEqualTo(
-        Comment.newBuilder()
-            .addToken(text("!"))
-            .addToken(link("Person", "Person.html"))
+    expression = parser.parseExpression(jsType);
+    assertMessage(expression).isEqualTo(
+        TypeExpression.newBuilder()
+            .setNamedType(namedType("Person", "Person.html"))
             .build());
   }
 
@@ -261,12 +253,10 @@ public class TypeExpressionParserTest {
     NominalType type = typeRegistry.getType("Name");
     TypeExpressionParser parser = parserFactory.create(linkFactoryBuilder.create(type));
 
-    Comment comment = parser.parse(type.getJsDoc().getInfo().getTypedefType());
-    assertMessage(comment).isEqualTo(
-        Comment.newBuilder()
-            .addToken(text("!"))
-            .addToken(stringLink())
-            .build());
+    JSTypeExpression jsExpression = type.getJsDoc().getInfo().getTypedefType();
+    JSType jsType = util.evaluate(jsExpression);
+    TypeExpression expression = parser.parseExpression(jsType);
+    assertMessage(expression).isEqualTo(stringType());
   }
 
   @Test
@@ -285,19 +275,18 @@ public class TypeExpressionParserTest {
         .toMaybeFunctionType()
         .getPrototype()
         .getOwnPropertyJSDocInfo("name");
-    JSTypeExpression expression = info.getReturnType();
+    JSTypeExpression jsExpression = info.getReturnType();
+    JSType jsType = util.evaluate(jsExpression);
 
     TypeExpressionParser parser = parserFactory.create(
         linkFactoryBuilder.create(type).withTypeContext(type));
-    Comment comment = parser.parse(expression);
-    assertMessage(comment).isEqualTo(
-        Comment.newBuilder()
-            .addToken(text("!"))
-            .addToken(link("Container", "Container.html"))
-            .addToken(text("<"))
-            .addToken(stringLink())
-            .addToken(text(">"))
-            .build());
+    TypeExpression expression = parser.parseExpression(jsType);
+    assertMessage(expression).isEqualTo(
+        TypeExpression.newBuilder()
+            .setNamedType(
+                namedType("Container", "Container.html")
+                    .toBuilder()
+                    .addTemplateType(stringType())));
   }
 
   @Test
@@ -318,31 +307,36 @@ public class TypeExpressionParserTest {
         .toMaybeFunctionType()
         .getPrototype()
         .getOwnPropertyJSDocInfo("name");
-    JSTypeExpression expression = info.getReturnType();
+    JSTypeExpression jsExpression = info.getReturnType();
+    JSType jsType = util.evaluate(jsExpression);
 
     TypeExpressionParser parser = parserFactory.create(
         linkFactoryBuilder.create(type).withTypeContext(type));
-    Comment comment = parser.parse(expression);
-    assertMessage(comment).isEqualTo(
-        Comment.newBuilder()
-            .addToken(text("!"))
-            .addToken(link("Container", "one_exports_Container.html"))
-            .addToken(text("<"))
-            .addToken(stringLink())
-            .addToken(text(">"))
-            .build());
+    TypeExpression expression = parser.parseExpression(jsType);
+    assertMessage(expression).isEqualTo(
+        TypeExpression.newBuilder()
+            .setNamedType(
+                namedType("Container", "one_exports_Container.html")
+                    .toBuilder()
+                    .addTemplateType(stringType())));
   }
 
   @Test
   public void parseExpression_unknownType() {
     TypeExpression expression = compileExpression("?");
-    assertMessage(expression).isEqualTo(UNKNOWN_TYPE);
+    assertMessage(expression)
+        .isEqualTo(TypeExpression.newBuilder().setUnknownType(true));
   }
 
   @Test
   public void parseExpression_anyType() {
     TypeExpression expression = compileExpression("*");
-    assertMessage(expression).isEqualTo(ANY_TYPE);
+    assertMessage(expression)
+        .isEqualTo(
+            TypeExpression.newBuilder()
+                .setAllowNull(true)
+                .setAllowUndefined(true)
+                .setAnyType(true));
   }
 
   @Test
@@ -396,19 +390,18 @@ public class TypeExpressionParserTest {
   }
 
   @Test
-  public void parseExpression_varargsPrimitive() {
-    TypeExpression expression = compileExpression("...string");
+  public void parseExpression_recordTypeWithNullablePrimitive() {
+    TypeExpression expression = compileExpression("{age: ?number}");
     assertMessage(expression)
-        .isEqualTo(stringType().toBuilder().setIsVarargs(true));
-  }
-
-  @Test
-  public void parseExpression_optionalPrimitive() {
-    TypeExpression expression = compileExpression("string=");
-    assertMessage(expression)
-        .isEqualTo(stringType().toBuilder()
-            .setAllowUndefined(true)
-            .setIsOptional(true));
+        .isEqualTo(
+            TypeExpression.newBuilder()
+                .setRecordType(
+                    RecordType.newBuilder()
+                        .addEntry(
+                            RecordType.Entry.newBuilder()
+                                .setKey("age")
+                                .setValue(
+                                    numberType().toBuilder().setAllowNull(true)))));
   }
 
   private TypeExpression compileExpression(String expressionText) {
@@ -421,7 +414,8 @@ public class TypeExpressionParserTest {
             "function Widget(x) {}"));
     NominalType type = typeRegistry.getType("Widget");
     JSTypeExpression expression = type.getJsDoc().getParameter("x").getType();
-    return parserFactory.create(linkFactoryBuilder.create(type)).parseExpression(expression);
+    JSType jsType = util.evaluate(expression);
+    return parserFactory.create(linkFactoryBuilder.create(type)).parseExpression(jsType);
   }
 
   private static TypeExpression numberType() {
@@ -442,25 +436,8 @@ public class TypeExpressionParserTest {
         .build();
   }
 
-  private static Comment.Token text(String text) {
-    return Comment.Token.newBuilder().setText(text).build();
-  }
-
-  private static Comment.Token numberLink() {
-    return link("number",
-        "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number");
-  }
-
-  private static Comment.Token stringLink() {
-    return link("string",
-        "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String");
-  }
-
-  private static Comment.Token link(String text, String href) {
-    return Comment.Token.newBuilder()
-        .setText(text)
-        .setHref(href)
-        .build();
+  private static TypeExpression namedTypeExpression(String text, String href) {
+    return TypeExpression.newBuilder().setNamedType(namedType(text, href)).build();
   }
 
   private static NamedType namedType(String text, String href) {

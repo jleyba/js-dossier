@@ -466,7 +466,7 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Ca
       Enumeration.Builder enumBuilder = spec.getEnumerationBuilder()
           .setType(
               expressionParserFactory.create(linkFactory)
-                  .parse(elementType.toMaybeEnumElementType().getPrimitiveType()))
+                  .parseExpression(elementType.toMaybeEnumElementType().getPrimitiveType()))
           .setVisibility(Visibility.valueOf(visibility.name()));
 
       // Type may be documented as an enum without an associated object literal for us to analyze:

@@ -584,7 +584,7 @@ final class TypeInspector {
       }
 
       NominalType ownerType = property.getOwnerType().or(inspectedType);
-      Comment definedBy = getDefinedByComment(linkFactory, ownerType, currentType, property);
+      TypeExpression definedBy = getDefinedByComment(linkFactory, ownerType, currentType, property);
 
       if (!currentType.getTemplateTypeMap().isEmpty()) {
         propertyType = propertyType.visit(replacer);
@@ -682,7 +682,7 @@ final class TypeInspector {
   }
 
   @Nullable
-  private Comment getDefinedByComment(
+  private TypeExpression getDefinedByComment(
       final LinkFactory linkFactory,
       final NominalType context,
       JSType currentType,
@@ -694,32 +694,46 @@ final class TypeInspector {
             && propertyDefinedOn.toObjectType().getConstructor().isInterface())) {
       return null;
     }
-    if (propertyDefinedOn.isConstructor()) {
-      propertyDefinedOn = ((FunctionType) propertyDefinedOn).getInstanceType();
+    if (propertyDefinedOn.isConstructor() || propertyDefinedOn.isInterface()) {
+      propertyDefinedOn = propertyDefinedOn.toMaybeFunctionType().getInstanceType();
     }
     if (currentType.equals(propertyDefinedOn)) {
       return null;
     }
 
-    final JSType definedByType = stripTemplateTypeInformation(propertyDefinedOn);
+    JSType definedByType = stripTemplateTypeInformation(propertyDefinedOn);
 
     List<NominalType> types = registry.getTypes(definedByType);
     if (types.isEmpty() && definedByType.isInstanceType()) {
       types = registry.getTypes(definedByType.toObjectType().getConstructor());
     }
 
-    if (!types.isEmpty()) {
-      TypeLink link = linkFactory.createLink(types.get(0), "#" + property.getName());
-      Comment.Builder comment = Comment.newBuilder();
-      comment.addTokenBuilder()
-          .setText(stripHash(link.getText()))
-          .setHref(link.getHref());
-      return comment.build();
-    }
-
     TypeExpressionParser parser = expressionParserFactory.create(
         linkFactory.withTypeContext(context));
-    return parser.parse(definedByType);
+
+    if (!types.isEmpty()) {
+      definedByType = types.get(0).getType();
+      if (definedByType.isConstructor() || definedByType.isInterface()) {
+        definedByType =
+            stripTemplateTypeInformation(definedByType.toMaybeFunctionType().getInstanceType());
+      }
+    }
+
+    return buildPropertyLink(parser, definedByType, property.getName());
+  }
+
+  private TypeExpression buildPropertyLink(
+      TypeExpressionParser parser, JSType type, String propertyName) {
+    TypeExpression expression = parser.parseExpression(type);
+    if (!expression.getNamedType().getHref().isEmpty()
+        // Extern links are always fully qualified.
+        && !expression.getNamedType().getHref().startsWith("http")) {
+      TypeExpression.Builder eb = expression.toBuilder();
+      eb.getNamedTypeBuilder()
+          .setHref(expression.getNamedType().getHref() + "#" + propertyName);
+      expression = eb.build();
+    }
+    return expression;
   }
 
   /**
@@ -790,7 +804,7 @@ final class TypeInspector {
       FunctionType function,
       Node node,
       PropertyDocs docs,
-      @Nullable Comment definedBy,
+      @Nullable TypeExpression definedBy,
       Iterable<InstanceProperty> overrides) {
     boolean isConstructor = function.isConstructor() && !isFunctionTypeConstructor(function);
     boolean isInterface = !isConstructor && function.isInterface();
@@ -1054,7 +1068,7 @@ final class TypeInspector {
       JSType type,
       Node node,
       PropertyDocs docs,
-      @Nullable Comment definedBy,
+      @Nullable TypeExpression definedBy,
       Iterable<InstanceProperty> overrides) {
     com.github.jsdossier.proto.Property.Builder builder =
         com.github.jsdossier.proto.Property.newBuilder()
@@ -1080,7 +1094,7 @@ final class TypeInspector {
       JSType type,
       Node node,
       PropertyDocs docs,
-      @Nullable Comment definedBy,
+      @Nullable TypeExpression definedBy,
       Iterable<InstanceProperty> overrides) {
     BaseProperty.Builder builder = BaseProperty.newBuilder()
         .setName(name)
@@ -1214,26 +1228,21 @@ final class TypeInspector {
     return null;
   }
 
-  private Comment getPropertyLink(NominalType context, InstanceProperty property) {
+  private TypeExpression getPropertyLink(NominalType context, InstanceProperty property) {
     JSType type = property.getDefinedByType();
+    TypeExpressionParser parser =
+        expressionParserFactory.create(linkFactory.withTypeContext(context));
 
     if (property.getOwnerType().isPresent()) {
-      TypeLink link =
-          linkFactory.createLink(property.getOwnerType().get(), "#" + property.getName());
-      return Comment.newBuilder()
-          .addToken(Comment.Token.newBuilder()
-              .setText(stripHash(link.getText()))
-              .setHref(link.getHref()))
-          .build();
+      type = property.getOwnerType().get().getType();
     }
 
     if (type.isConstructor() || type.isInterface()) {
       type = ((FunctionType) type).getInstanceType();
     }
     type = stripTemplateTypeInformation(type);
-    return expressionParserFactory
-        .create(linkFactory.withTypeContext(context))
-        .parse(type);
+
+    return buildPropertyLink(parser, type, property.getName());
   }
 
   private JSType evaluate(JSTypeExpression expression) {
@@ -1255,14 +1264,6 @@ final class TypeInspector {
     );
     fakeNode.setLineno(type.getSourcePosition().getLine());
     return fakeNode;
-  }
-
-  private static String stripHash(String text) {
-    int index = text.indexOf('#');
-    if (index != -1) {
-      text = text.substring(0, index);
-    }
-    return text;
   }
 
   private static JSType stripTemplateTypeInformation(JSType type) {

@@ -28,6 +28,8 @@ import com.google.javascript.jscomp.Result;
 import com.google.javascript.jscomp.SourceFile;
 
 import com.github.jsdossier.jscomp.DossierCompiler;
+import com.google.javascript.rhino.JSTypeExpression;
+import com.google.javascript.rhino.jstype.JSType;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -83,6 +85,10 @@ public class CompilerUtil {
 
     Result result = compiler.compile(externs, inputs, options);
     assertCompiled(result);
+  }
+
+  public JSType evaluate(JSTypeExpression expression) {
+    return expression.evaluate(compiler.getTopScope(), compiler.getTypeRegistry());
   }
 
   private static ImmutableListMultimap<Environment, SourceFile> loadBuiltinExterns() {

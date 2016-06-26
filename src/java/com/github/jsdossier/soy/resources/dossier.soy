@@ -385,16 +385,16 @@
   {if $base.definedBy}
     <dt class="spec">Defined by</dt>
     <dd>
-      {call .comment}
-        {param comment: $base.definedBy /}
+      {call dossier.soy.types.expression}
+        {param expression: $base.definedBy /}
       {/call}
     </dd>
   {/if}
   {if $base.overrides}
     <dt class="spec">Overrides</dt>
     <dd>
-      {call .comment}
-        {param comment: $base.overrides /}
+      {call dossier.soy.types.expression}
+        {param expression: $base.overrides /}
       {/call}
     </dd>
   {/if}
@@ -402,8 +402,8 @@
     <dt class="spec">Specified by</dt>
     {foreach $spec in $base.specifiedBy}
       <dd>
-        {call .comment}
-          {param comment: $spec /}
+        {call dossier.soy.types.expression}
+          {param expression: $spec /}
         {/call}
       </dd>
     {/foreach}
@@ -827,15 +827,16 @@
               {/call}
               {if $type.aliasedType
                   or length($type.implementedType)
-                  or ($type.enumeration and length($type.enumeration.type.token))
+                  or ($type.enumeration and $type.enumeration.type)
                   or ($type.deprecation and length($type.deprecation.token))}
                 <dl>
-                  {if $type.enumeration and length($type.enumeration.type.token)}
+                  {if $type.enumeration and $type.enumeration.type}
                     <dt class="spec">Type
                     <dd>
                       <code>
-                        {call .comment}
-                          {param comment: $type.enumeration.type /}
+                        {call dossier.soy.types.expression}
+                          {param expression: $type.enumeration.type /}
+                          {param strict: true /}
                         {/call}
                       </code>
                   {/if}

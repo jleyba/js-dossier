@@ -8,17 +8,17 @@ public interface EnumerationOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>optional .dossier.Comment type = 1;</code>
+   * <code>optional .dossier.expression.TypeExpression type = 1;</code>
    */
   boolean hasType();
   /**
-   * <code>optional .dossier.Comment type = 1;</code>
+   * <code>optional .dossier.expression.TypeExpression type = 1;</code>
    */
-  com.github.jsdossier.proto.Comment getType();
+  com.github.jsdossier.proto.TypeExpression getType();
   /**
-   * <code>optional .dossier.Comment type = 1;</code>
+   * <code>optional .dossier.expression.TypeExpression type = 1;</code>
    */
-  com.github.jsdossier.proto.CommentOrBuilder getTypeOrBuilder();
+  com.github.jsdossier.proto.TypeExpressionOrBuilder getTypeOrBuilder();
 
   /**
    * <code>repeated .dossier.Enumeration.Value value = 2;</code>

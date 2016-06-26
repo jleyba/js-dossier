@@ -135,13 +135,13 @@ message BaseProperty {
   Tags tags = 6;
 
   // The class or interface that defines this property.
-  Comment defined_by = 7;
+  dossier.expression.TypeExpression defined_by = 7;
 
   // Parent class that defines this property.
-  Comment overrides = 8;
+  dossier.expression.TypeExpression overrides = 8;
 
   // Interfaces that define this property.
-  repeated Comment specified_by = 9;
+  repeated dossier.expression.TypeExpression specified_by = 9;
 
   repeated Comment see_also = 10;
 }
@@ -179,7 +179,7 @@ message Enumeration {
     Comment deprecation = 3;
   }
 
-  Comment type = 1;
+  dossier.expression.TypeExpression type = 1;
   repeated Value value = 2;
   Visibility visibility = 3;
 }
