@@ -153,30 +153,17 @@ public  final class Function extends
         getNameBytes();
 
     /**
-     * <code>optional .dossier.Comment type = 2;</code>
+     * <code>optional .dossier.expression.TypeExpression type = 2;</code>
      */
     boolean hasType();
     /**
-     * <code>optional .dossier.Comment type = 2;</code>
+     * <code>optional .dossier.expression.TypeExpression type = 2;</code>
      */
-    com.github.jsdossier.proto.Comment getType();
+    com.github.jsdossier.proto.TypeExpression getType();
     /**
-     * <code>optional .dossier.Comment type = 2;</code>
+     * <code>optional .dossier.expression.TypeExpression type = 2;</code>
      */
-    com.github.jsdossier.proto.CommentOrBuilder getTypeOrBuilder();
-
-    /**
-     * <code>optional .dossier.expression.TypeExpression type2 = 4;</code>
-     */
-    boolean hasType2();
-    /**
-     * <code>optional .dossier.expression.TypeExpression type2 = 4;</code>
-     */
-    com.github.jsdossier.proto.TypeExpression getType2();
-    /**
-     * <code>optional .dossier.expression.TypeExpression type2 = 4;</code>
-     */
-    com.github.jsdossier.proto.TypeExpressionOrBuilder getType2OrBuilder();
+    com.github.jsdossier.proto.TypeExpressionOrBuilder getTypeOrBuilder();
 
     /**
      * <code>optional .dossier.Comment description = 3;</code>
@@ -237,11 +224,11 @@ public  final class Function extends
               break;
             }
             case 18: {
-              com.github.jsdossier.proto.Comment.Builder subBuilder = null;
+              com.github.jsdossier.proto.TypeExpression.Builder subBuilder = null;
               if (type_ != null) {
                 subBuilder = type_.toBuilder();
               }
-              type_ = input.readMessage(com.github.jsdossier.proto.Comment.parser(), extensionRegistry);
+              type_ = input.readMessage(com.github.jsdossier.proto.TypeExpression.parser(), extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(type_);
                 type_ = subBuilder.buildPartial();
@@ -258,19 +245,6 @@ public  final class Function extends
               if (subBuilder != null) {
                 subBuilder.mergeFrom(description_);
                 description_ = subBuilder.buildPartial();
-              }
-
-              break;
-            }
-            case 34: {
-              com.github.jsdossier.proto.TypeExpression.Builder subBuilder = null;
-              if (type2_ != null) {
-                subBuilder = type2_.toBuilder();
-              }
-              type2_ = input.readMessage(com.github.jsdossier.proto.TypeExpression.parser(), extensionRegistry);
-              if (subBuilder != null) {
-                subBuilder.mergeFrom(type2_);
-                type2_ = subBuilder.buildPartial();
               }
 
               break;
@@ -334,45 +308,24 @@ public  final class Function extends
     }
 
     public static final int TYPE_FIELD_NUMBER = 2;
-    private com.github.jsdossier.proto.Comment type_;
+    private com.github.jsdossier.proto.TypeExpression type_;
     /**
-     * <code>optional .dossier.Comment type = 2;</code>
+     * <code>optional .dossier.expression.TypeExpression type = 2;</code>
      */
     public boolean hasType() {
       return type_ != null;
     }
     /**
-     * <code>optional .dossier.Comment type = 2;</code>
+     * <code>optional .dossier.expression.TypeExpression type = 2;</code>
      */
-    public com.github.jsdossier.proto.Comment getType() {
-      return type_ == null ? com.github.jsdossier.proto.Comment.getDefaultInstance() : type_;
+    public com.github.jsdossier.proto.TypeExpression getType() {
+      return type_ == null ? com.github.jsdossier.proto.TypeExpression.getDefaultInstance() : type_;
     }
     /**
-     * <code>optional .dossier.Comment type = 2;</code>
+     * <code>optional .dossier.expression.TypeExpression type = 2;</code>
      */
-    public com.github.jsdossier.proto.CommentOrBuilder getTypeOrBuilder() {
+    public com.github.jsdossier.proto.TypeExpressionOrBuilder getTypeOrBuilder() {
       return getType();
-    }
-
-    public static final int TYPE2_FIELD_NUMBER = 4;
-    private com.github.jsdossier.proto.TypeExpression type2_;
-    /**
-     * <code>optional .dossier.expression.TypeExpression type2 = 4;</code>
-     */
-    public boolean hasType2() {
-      return type2_ != null;
-    }
-    /**
-     * <code>optional .dossier.expression.TypeExpression type2 = 4;</code>
-     */
-    public com.github.jsdossier.proto.TypeExpression getType2() {
-      return type2_ == null ? com.github.jsdossier.proto.TypeExpression.getDefaultInstance() : type2_;
-    }
-    /**
-     * <code>optional .dossier.expression.TypeExpression type2 = 4;</code>
-     */
-    public com.github.jsdossier.proto.TypeExpressionOrBuilder getType2OrBuilder() {
-      return getType2();
     }
 
     public static final int DESCRIPTION_FIELD_NUMBER = 3;
@@ -417,9 +370,6 @@ public  final class Function extends
       if (description_ != null) {
         output.writeMessage(3, getDescription());
       }
-      if (type2_ != null) {
-        output.writeMessage(4, getType2());
-      }
     }
 
     public int getSerializedSize() {
@@ -437,10 +387,6 @@ public  final class Function extends
       if (description_ != null) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(3, getDescription());
-      }
-      if (type2_ != null) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(4, getType2());
       }
       memoizedSize = size;
       return size;
@@ -561,12 +507,6 @@ public  final class Function extends
           type_ = null;
           typeBuilder_ = null;
         }
-        if (type2Builder_ == null) {
-          type2_ = null;
-        } else {
-          type2_ = null;
-          type2Builder_ = null;
-        }
         if (descriptionBuilder_ == null) {
           description_ = null;
         } else {
@@ -601,11 +541,6 @@ public  final class Function extends
         } else {
           result.type_ = typeBuilder_.build();
         }
-        if (type2Builder_ == null) {
-          result.type2_ = type2_;
-        } else {
-          result.type2_ = type2Builder_.build();
-        }
         if (descriptionBuilder_ == null) {
           result.description_ = description_;
         } else {
@@ -632,9 +567,6 @@ public  final class Function extends
         }
         if (other.hasType()) {
           mergeType(other.getType());
-        }
-        if (other.hasType2()) {
-          mergeType2(other.getType2());
         }
         if (other.hasDescription()) {
           mergeDescription(other.getDescription());
@@ -734,29 +666,29 @@ public  final class Function extends
         return this;
       }
 
-      private com.github.jsdossier.proto.Comment type_ = null;
+      private com.github.jsdossier.proto.TypeExpression type_ = null;
       private com.google.protobuf.SingleFieldBuilder<
-          com.github.jsdossier.proto.Comment, com.github.jsdossier.proto.Comment.Builder, com.github.jsdossier.proto.CommentOrBuilder> typeBuilder_;
+          com.github.jsdossier.proto.TypeExpression, com.github.jsdossier.proto.TypeExpression.Builder, com.github.jsdossier.proto.TypeExpressionOrBuilder> typeBuilder_;
       /**
-       * <code>optional .dossier.Comment type = 2;</code>
+       * <code>optional .dossier.expression.TypeExpression type = 2;</code>
        */
       public boolean hasType() {
         return typeBuilder_ != null || type_ != null;
       }
       /**
-       * <code>optional .dossier.Comment type = 2;</code>
+       * <code>optional .dossier.expression.TypeExpression type = 2;</code>
        */
-      public com.github.jsdossier.proto.Comment getType() {
+      public com.github.jsdossier.proto.TypeExpression getType() {
         if (typeBuilder_ == null) {
-          return type_ == null ? com.github.jsdossier.proto.Comment.getDefaultInstance() : type_;
+          return type_ == null ? com.github.jsdossier.proto.TypeExpression.getDefaultInstance() : type_;
         } else {
           return typeBuilder_.getMessage();
         }
       }
       /**
-       * <code>optional .dossier.Comment type = 2;</code>
+       * <code>optional .dossier.expression.TypeExpression type = 2;</code>
        */
-      public Builder setType(com.github.jsdossier.proto.Comment value) {
+      public Builder setType(com.github.jsdossier.proto.TypeExpression value) {
         if (typeBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -770,10 +702,10 @@ public  final class Function extends
         return this;
       }
       /**
-       * <code>optional .dossier.Comment type = 2;</code>
+       * <code>optional .dossier.expression.TypeExpression type = 2;</code>
        */
       public Builder setType(
-          com.github.jsdossier.proto.Comment.Builder builderForValue) {
+          com.github.jsdossier.proto.TypeExpression.Builder builderForValue) {
         if (typeBuilder_ == null) {
           type_ = builderForValue.build();
           onChanged();
@@ -784,13 +716,13 @@ public  final class Function extends
         return this;
       }
       /**
-       * <code>optional .dossier.Comment type = 2;</code>
+       * <code>optional .dossier.expression.TypeExpression type = 2;</code>
        */
-      public Builder mergeType(com.github.jsdossier.proto.Comment value) {
+      public Builder mergeType(com.github.jsdossier.proto.TypeExpression value) {
         if (typeBuilder_ == null) {
           if (type_ != null) {
             type_ =
-              com.github.jsdossier.proto.Comment.newBuilder(type_).mergeFrom(value).buildPartial();
+              com.github.jsdossier.proto.TypeExpression.newBuilder(type_).mergeFrom(value).buildPartial();
           } else {
             type_ = value;
           }
@@ -802,7 +734,7 @@ public  final class Function extends
         return this;
       }
       /**
-       * <code>optional .dossier.Comment type = 2;</code>
+       * <code>optional .dossier.expression.TypeExpression type = 2;</code>
        */
       public Builder clearType() {
         if (typeBuilder_ == null) {
@@ -816,156 +748,39 @@ public  final class Function extends
         return this;
       }
       /**
-       * <code>optional .dossier.Comment type = 2;</code>
+       * <code>optional .dossier.expression.TypeExpression type = 2;</code>
        */
-      public com.github.jsdossier.proto.Comment.Builder getTypeBuilder() {
+      public com.github.jsdossier.proto.TypeExpression.Builder getTypeBuilder() {
         
         onChanged();
         return getTypeFieldBuilder().getBuilder();
       }
       /**
-       * <code>optional .dossier.Comment type = 2;</code>
+       * <code>optional .dossier.expression.TypeExpression type = 2;</code>
        */
-      public com.github.jsdossier.proto.CommentOrBuilder getTypeOrBuilder() {
+      public com.github.jsdossier.proto.TypeExpressionOrBuilder getTypeOrBuilder() {
         if (typeBuilder_ != null) {
           return typeBuilder_.getMessageOrBuilder();
         } else {
           return type_ == null ?
-              com.github.jsdossier.proto.Comment.getDefaultInstance() : type_;
+              com.github.jsdossier.proto.TypeExpression.getDefaultInstance() : type_;
         }
       }
       /**
-       * <code>optional .dossier.Comment type = 2;</code>
+       * <code>optional .dossier.expression.TypeExpression type = 2;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
-          com.github.jsdossier.proto.Comment, com.github.jsdossier.proto.Comment.Builder, com.github.jsdossier.proto.CommentOrBuilder> 
+          com.github.jsdossier.proto.TypeExpression, com.github.jsdossier.proto.TypeExpression.Builder, com.github.jsdossier.proto.TypeExpressionOrBuilder> 
           getTypeFieldBuilder() {
         if (typeBuilder_ == null) {
           typeBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              com.github.jsdossier.proto.Comment, com.github.jsdossier.proto.Comment.Builder, com.github.jsdossier.proto.CommentOrBuilder>(
+              com.github.jsdossier.proto.TypeExpression, com.github.jsdossier.proto.TypeExpression.Builder, com.github.jsdossier.proto.TypeExpressionOrBuilder>(
                   getType(),
                   getParentForChildren(),
                   isClean());
           type_ = null;
         }
         return typeBuilder_;
-      }
-
-      private com.github.jsdossier.proto.TypeExpression type2_ = null;
-      private com.google.protobuf.SingleFieldBuilder<
-          com.github.jsdossier.proto.TypeExpression, com.github.jsdossier.proto.TypeExpression.Builder, com.github.jsdossier.proto.TypeExpressionOrBuilder> type2Builder_;
-      /**
-       * <code>optional .dossier.expression.TypeExpression type2 = 4;</code>
-       */
-      public boolean hasType2() {
-        return type2Builder_ != null || type2_ != null;
-      }
-      /**
-       * <code>optional .dossier.expression.TypeExpression type2 = 4;</code>
-       */
-      public com.github.jsdossier.proto.TypeExpression getType2() {
-        if (type2Builder_ == null) {
-          return type2_ == null ? com.github.jsdossier.proto.TypeExpression.getDefaultInstance() : type2_;
-        } else {
-          return type2Builder_.getMessage();
-        }
-      }
-      /**
-       * <code>optional .dossier.expression.TypeExpression type2 = 4;</code>
-       */
-      public Builder setType2(com.github.jsdossier.proto.TypeExpression value) {
-        if (type2Builder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          type2_ = value;
-          onChanged();
-        } else {
-          type2Builder_.setMessage(value);
-        }
-
-        return this;
-      }
-      /**
-       * <code>optional .dossier.expression.TypeExpression type2 = 4;</code>
-       */
-      public Builder setType2(
-          com.github.jsdossier.proto.TypeExpression.Builder builderForValue) {
-        if (type2Builder_ == null) {
-          type2_ = builderForValue.build();
-          onChanged();
-        } else {
-          type2Builder_.setMessage(builderForValue.build());
-        }
-
-        return this;
-      }
-      /**
-       * <code>optional .dossier.expression.TypeExpression type2 = 4;</code>
-       */
-      public Builder mergeType2(com.github.jsdossier.proto.TypeExpression value) {
-        if (type2Builder_ == null) {
-          if (type2_ != null) {
-            type2_ =
-              com.github.jsdossier.proto.TypeExpression.newBuilder(type2_).mergeFrom(value).buildPartial();
-          } else {
-            type2_ = value;
-          }
-          onChanged();
-        } else {
-          type2Builder_.mergeFrom(value);
-        }
-
-        return this;
-      }
-      /**
-       * <code>optional .dossier.expression.TypeExpression type2 = 4;</code>
-       */
-      public Builder clearType2() {
-        if (type2Builder_ == null) {
-          type2_ = null;
-          onChanged();
-        } else {
-          type2_ = null;
-          type2Builder_ = null;
-        }
-
-        return this;
-      }
-      /**
-       * <code>optional .dossier.expression.TypeExpression type2 = 4;</code>
-       */
-      public com.github.jsdossier.proto.TypeExpression.Builder getType2Builder() {
-        
-        onChanged();
-        return getType2FieldBuilder().getBuilder();
-      }
-      /**
-       * <code>optional .dossier.expression.TypeExpression type2 = 4;</code>
-       */
-      public com.github.jsdossier.proto.TypeExpressionOrBuilder getType2OrBuilder() {
-        if (type2Builder_ != null) {
-          return type2Builder_.getMessageOrBuilder();
-        } else {
-          return type2_ == null ?
-              com.github.jsdossier.proto.TypeExpression.getDefaultInstance() : type2_;
-        }
-      }
-      /**
-       * <code>optional .dossier.expression.TypeExpression type2 = 4;</code>
-       */
-      private com.google.protobuf.SingleFieldBuilder<
-          com.github.jsdossier.proto.TypeExpression, com.github.jsdossier.proto.TypeExpression.Builder, com.github.jsdossier.proto.TypeExpressionOrBuilder> 
-          getType2FieldBuilder() {
-        if (type2Builder_ == null) {
-          type2Builder_ = new com.google.protobuf.SingleFieldBuilder<
-              com.github.jsdossier.proto.TypeExpression, com.github.jsdossier.proto.TypeExpression.Builder, com.github.jsdossier.proto.TypeExpressionOrBuilder>(
-                  getType2(),
-                  getParentForChildren(),
-                  isClean());
-          type2_ = null;
-        }
-        return type2Builder_;
       }
 
       private com.github.jsdossier.proto.Comment description_ = null;

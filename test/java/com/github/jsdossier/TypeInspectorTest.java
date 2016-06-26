@@ -563,10 +563,10 @@ public class TypeInspectorTest extends AbstractTypeInspectorTest {
             .setIsConstructor(true)
             .addParameter(Function.Detail.newBuilder()
                 .setName("name")
-                .setType(stringTypeComment())
+                .setType(stringTypeExpression())
                 .setDescription(htmlComment("<p>The person's name.</p>\n")))
             .addThrown(Function.Detail.newBuilder()
-                .setType2(nullableErrorTypeExpression())
+                .setType(nullableErrorTypeExpression())
                 .setDescription(htmlComment("<p>Randomly.</p>\n")))
             .build());
   }

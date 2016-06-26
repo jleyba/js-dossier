@@ -14,7 +14,7 @@
       {param type: $expression /}
     {/call}
   {elseif $expression.anyType}*
-  {elseif $expression.unknownType}undefined
+  {elseif $expression.unknownType}?
   {elseif $expression.voidType}void
   {/if}
 {/template}
@@ -61,9 +61,12 @@
  */
 {template .unionType private="true"}
   {@param type: dossier.expression.TypeExpression}
-  {let $union: $type.unionType/}
+  {let $union: $type.unionType /}
+  {let $allowUndefined: $type.allowUndefined and not $type.isVarargs /}
+  {let $renderParens: length($union.type) > 1 or $type.allowNull or $allowUndefined /}
 
-  (
+  {if $type.isVarargs}...{/if}
+  {if $renderParens}({/if}
   {foreach $alternate in $union.type}
     {call .expression}
       {param expression: $alternate /}
@@ -71,6 +74,6 @@
     {if not isLast($alternate)}|{/if}
   {/foreach}
   {if $type.allowNull}|null{/if}
-  {if $type.allowUndefined}|undefined{/if}
-  )
+  {if $allowUndefined}|undefined{/if}
+  {if $renderParens}){/if}
 {/template}

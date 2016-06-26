@@ -713,6 +713,7 @@ final class TypeExpressionParser {
     @Override
     public Void caseUnknownType() {
       appendText("?");
+      currentExpression().setUnknownType(true);
       return null;
     }
 

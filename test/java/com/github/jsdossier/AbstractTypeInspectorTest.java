@@ -111,11 +111,6 @@ public abstract class AbstractTypeInspectorTest {
     return Comment.Token.newBuilder().setText(text).build();
   }
 
-  protected static Comment errorTypeComment() {
-    return linkComment("Error",
-        "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error");
-  }
-
   protected static Comment numberTypeComment() {
     return linkComment("number",
         "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number");

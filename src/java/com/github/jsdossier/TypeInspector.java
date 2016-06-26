@@ -22,9 +22,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.base.Verify.verify;
-import static com.google.common.collect.Iterables.filter;
 import static com.google.common.collect.Iterables.getFirst;
-import static com.google.common.collect.Iterables.toArray;
 import static com.google.common.collect.Iterables.transform;
 
 import com.github.jsdossier.annotations.TypeFilter;
@@ -41,6 +39,7 @@ import com.github.jsdossier.proto.Function;
 import com.github.jsdossier.proto.Function.Detail;
 import com.github.jsdossier.proto.TypeExpression;
 import com.github.jsdossier.proto.TypeLink;
+import com.github.jsdossier.proto.UnionType;
 import com.github.jsdossier.proto.Visibility;
 import com.google.auto.factory.AutoFactory;
 import com.google.auto.factory.Provided;
@@ -51,7 +50,6 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
@@ -63,6 +61,7 @@ import com.google.javascript.rhino.StaticSourceFile;
 import com.google.javascript.rhino.Token;
 import com.google.javascript.rhino.jstype.FunctionType;
 import com.google.javascript.rhino.jstype.JSType;
+import com.google.javascript.rhino.jstype.JSTypeNative;
 import com.google.javascript.rhino.jstype.JSTypeRegistry;
 import com.google.javascript.rhino.jstype.NamedType;
 import com.google.javascript.rhino.jstype.ObjectType;
@@ -70,7 +69,6 @@ import com.google.javascript.rhino.jstype.Property;
 import com.google.javascript.rhino.jstype.StaticTypedScope;
 import com.google.javascript.rhino.jstype.TemplateTypeMapReplacer;
 import com.google.javascript.rhino.jstype.TemplatizedType;
-import com.google.javascript.rhino.jstype.UnionType;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -86,7 +84,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.annotation.CheckReturnValue;
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
@@ -118,6 +115,7 @@ final class TypeInspector {
   private final TypeExpressionParserFactory expressionParserFactory;
   private final LinkFactory linkFactory;
   private final NominalType inspectedType;
+  private final TemplateTypeMapReplacer typeMapReplacer;
 
   TypeInspector(
       @Provided DossierFileSystem dfs,
@@ -138,6 +136,14 @@ final class TypeInspector {
     this.typeFilter = typeFilter;
     this.linkFactory = linkFactoryBuilder.create(inspectedType);
     this.inspectedType = inspectedType;
+
+    JSType type = inspectedType.getType();
+    if (type.isConstructor() || type.isInterface()) {
+      type = type.toMaybeFunctionType().getInstanceType();
+    } else {
+      type = jsRegistry.getNativeType(JSTypeNative.UNKNOWN_TYPE);
+    }
+    typeMapReplacer = new TemplateTypeMapReplacer(jsRegistry, type.getTemplateTypeMap());
   }
 
   /**
@@ -294,7 +300,6 @@ final class TypeInspector {
       }
       superInstance = superCtor.getTypeOfThis();
     }
-
 
     return superInstance.visit(
         new TemplateTypeMapReplacer(jsRegistry, instance.getTemplateTypeMap()));
@@ -817,7 +822,7 @@ final class TypeInspector {
 
       TypeExpression returnType = getReturnType(docs, overrides, function);
       if (returnType != null) {
-        builder.getReturnBuilder().setType2(returnType);
+        builder.getReturnBuilder().setType(returnType);
       }
     }
 
@@ -865,7 +870,12 @@ final class TypeInspector {
                     parser.parseComment(input.getDescription(), contextualLinkFactory));
               }
               if (input.getType() != null) {
-                detail.setType(expressionParser.parse(input.getType()));
+                JSType paramType = evaluate(input.getType());
+                TypeExpression expression = expressionParser.parseExpression(paramType);
+                if (input.getType().getRoot().getKind() == Token.ELLIPSIS) {
+                  expression = expression.toBuilder().setIsVarargs(true).build();
+                }
+                detail.setType(expression);
               }
               return detail.build();
             }
@@ -886,9 +896,14 @@ final class TypeInspector {
     for (int i = 0; i < parameterNodes.size(); i++) {
       Detail.Builder detail = Detail.newBuilder().setName("arg" + i);
       Node parameterNode = parameterNodes.get(i);
-      if (!parameterNode.getJSType().isNoType() && !parameterNode.getJSType().isNoResolvedType()) {
-        detail.setType(parser.parse(parameterNode));
+
+      JSType parameterType = parameterNode.getJSType();
+      if (parameterType == null || parameterType.isUnknownType()) {
+        detail.getTypeBuilder().setUnknownType(true);
+      } else {
+        detail.setType(parser.parseExpression(parameterType));
       }
+
       if (paramList != null && i < paramList.getChildCount()) {
         String name = paramList.getChildAtIndex(i).getString();
         detail.setName(name);
@@ -952,8 +967,9 @@ final class TypeInspector {
             }
 
             if (input.getType().isPresent()) {
-              JSType thrownType = input.getType().get().evaluate(globalScope, jsRegistry);
-              detail.setType2(typeParser.parseExpression(thrownType));
+              JSTypeExpression expression = input.getType().get();
+              JSType thrownType = evaluate(expression);
+              detail.setType(typeParser.parseExpression(thrownType));
             }
             return detail.build();
           }
@@ -977,7 +993,7 @@ final class TypeInspector {
     if (returnType.isUnknownType() && !returnType.isTemplateType()) {
       if (returnDocs != null && isKnownType(returnDocs.getJsDoc().getReturnClause())) {
         JSTypeExpression expression = returnDocs.getJsDoc().getReturnClause().getType().get();
-        returnType = expression.evaluate(globalScope, jsRegistry);
+        returnType = evaluate(expression);
       } else {
         for (InstanceProperty property : overrides) {
           if (property.getType() != null && property.getType().isFunctionType()) {
@@ -1206,6 +1222,11 @@ final class TypeInspector {
     return expressionParserFactory
         .create(linkFactory.withTypeContext(context))
         .parse(type);
+  }
+
+  private JSType evaluate(JSTypeExpression expression) {
+    JSType type = expression.evaluate(globalScope, jsRegistry);
+    return type.visit(typeMapReplacer);
   }
 
   static Node fakeNodeForType(final NominalType type) {

@@ -28,6 +28,7 @@ import com.github.jsdossier.proto.Function.Detail;
 import com.github.jsdossier.proto.NamedType;
 import com.github.jsdossier.proto.Tags;
 import com.github.jsdossier.proto.TypeExpression;
+import com.github.jsdossier.proto.UnionType;
 import com.google.common.base.Predicate;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -66,13 +67,13 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
                 .setDescription(htmlComment("<p>Says hello.</p>\n")))
             .addParameter(Detail.newBuilder()
                 .setName("name")
-                .setType(stringTypeComment())
+                .setType(stringTypeExpression())
                 .setDescription(htmlComment("<p>The person to greet.</p>\n")))
             .setReturn(Detail.newBuilder()
-                .setType2(stringTypeExpression())
+                .setType(stringTypeExpression())
                 .setDescription(htmlComment("<p>A greeting.</p>\n")))
             .addThrown(Detail.newBuilder()
-                .setType2(nullableErrorTypeExpression())
+                .setType(nullableErrorTypeExpression())
                 .setDescription(htmlComment("<p>If the person does not exist.</p>\n")))
             .build());
   }
@@ -104,13 +105,13 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
                 .setDescription(htmlComment("<p>Says hello.</p>\n")))
             .addParameter(Detail.newBuilder()
                 .setName("name")
-                .setType(stringTypeComment())
+                .setType(stringTypeExpression())
                 .setDescription(htmlComment("<p>The person to greet.</p>\n")))
             .setReturn(Detail.newBuilder()
-                .setType2(stringTypeExpression())
+                .setType(stringTypeExpression())
                 .setDescription(htmlComment("<p>A greeting.</p>\n")))
             .addThrown(Detail.newBuilder()
-                .setType2(nullableErrorTypeExpression())
+                .setType(nullableErrorTypeExpression())
                 .setDescription(htmlComment("<p>If the person does not exist.</p>\n")))
             .build());
   }
@@ -142,13 +143,13 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
                 .setDescription(htmlComment("<p>Darkens a color.</p>\n")))
             .addParameter(Detail.newBuilder()
                 .setName("c")
-                .setType(nonNullLinkComment("Color", "Color.html"))
+                .setType(namedTypeExpression("Color", "Color.html"))
                 .setDescription(htmlComment("<p>The color to darken.</p>\n")))
             .setReturn(Detail.newBuilder()
-                .setType2(namedTypeExpression("Color", "Color.html"))
+                .setType(namedTypeExpression("Color", "Color.html"))
                 .setDescription(htmlComment("<p>The darkened color.</p>\n")))
             .addThrown(Detail.newBuilder()
-                .setType2(nullableErrorTypeExpression())
+                .setType(nullableErrorTypeExpression())
                 .setDescription(htmlComment("<p>If the color cannot be darkened.</p>\n")))
             .build());
   }
@@ -179,13 +180,13 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
                 .setDescription(htmlComment("<p>Darkens a color.</p>\n")))
             .addParameter(Detail.newBuilder()
                 .setName("c")
-                .setType(stringTypeComment())
+                .setType(stringTypeExpression())
                 .setDescription(htmlComment("<p>The color to darken.</p>\n")))
             .setReturn(Detail.newBuilder()
-                .setType2(stringTypeExpression())
+                .setType(stringTypeExpression())
                 .setDescription(htmlComment("<p>The darkened color.</p>\n")))
             .addThrown(Detail.newBuilder()
-                .setType2(nullableErrorTypeExpression())
+                .setType(nullableErrorTypeExpression())
                 .setDescription(htmlComment("<p>If the color cannot be darkened.</p>\n")))
             .build());
   }
@@ -215,10 +216,10 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
                 .setDescription(Comment.getDefaultInstance()))
             .addParameter(Detail.newBuilder()
                 .setName("v")
-                .setType(textComment("TYPE"))
+                .setType(namedTypeExpression("TYPE"))
                 .setDescription(htmlComment("<p>A value.</p>\n")))
             .setReturn(Detail.newBuilder()
-                .setType2(namedTypeExpression("TYPE"))
+                .setType(namedTypeExpression("TYPE"))
                 .setDescription(htmlComment("<p>The value.</p>\n")))
             .addTemplateName("TYPE")
             .build());
@@ -258,10 +259,10 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
                 .setDescription(Comment.getDefaultInstance()))
             .addParameter(Detail.newBuilder()
                 .setName("input")
-                .setType(textComment("THROWN_TYPE"))
+                .setType(namedTypeExpression("THROWN_TYPE"))
                 .setDescription(htmlComment("<p>.</p>\n")))
             .addThrown(Detail.newBuilder()
-                .setType2(TypeExpression.newBuilder()
+                .setType(TypeExpression.newBuilder()
                     .setAllowNull(true)
                     .setNamedType(
                         NamedType.newBuilder()
@@ -441,7 +442,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
             .setReturn(Detail.newBuilder()
                 .setDescription(htmlComment("<p>A new object.</p>\n"))
                     // This should not have a link b/c foo.One is filtered out.
-                .setType2(namedTypeExpression("foo.One")))
+                .setType(namedTypeExpression("foo.One")))
             .build());
   }
 
@@ -693,10 +694,10 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
                 .setDescription(htmlComment("<p>Creates a person.</p>\n")))
             .addParameter(Detail.newBuilder()
                 .setName("name")
-                .setType(stringTypeComment())
+                .setType(stringTypeExpression())
                 .setDescription(htmlComment("<p>The person's name.</p>\n")))
             .setReturn(Detail.newBuilder()
-                .setType2(namedTypeExpression("Person", "bar_exports_Person.html"))
+                .setType(namedTypeExpression("Person", "bar_exports_Person.html"))
                 .setDescription(htmlComment("<p>The new person.</p>\n")))
             .build());
   }
@@ -732,10 +733,10 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
                 .setDescription(htmlComment("<p>Creates a person.</p>\n")))
             .addParameter(Detail.newBuilder()
                 .setName("name")
-                .setType(stringTypeComment())
+                .setType(stringTypeExpression())
                 .setDescription(htmlComment("<p>The person's name.</p>\n")))
             .setReturn(Detail.newBuilder()
-                .setType2(namedTypeExpression("Person", "bar_exports_Person.html"))
+                .setType(namedTypeExpression("Person", "bar_exports_Person.html"))
                 .setDescription(htmlComment("<p>The new person.</p>\n")))
             .build());
   }
@@ -764,7 +765,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
                 .setDescription(Comment.getDefaultInstance()))
             .addParameter(Detail.newBuilder()
                 .setName("x")
-                .setType(linkComment("X", "bar_exports_X.html"))
+                .setType(namedTypeExpression("X", "bar_exports_X.html"))
                 .setDescription(htmlComment("<p>an object.</p>\n")))
             .build());
   }
@@ -793,7 +794,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
                 .setDescription(Comment.getDefaultInstance()))
             .addParameter(Detail.newBuilder()
                 .setName("x")
-                .setType(linkComment("X", "bar_exports_X.html"))
+                .setType(namedTypeExpression("X", "bar_exports_X.html"))
                 .setDescription(htmlComment("<p>an object.</p>\n")))
             .build());
   }
@@ -945,10 +946,10 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
                 .setDescription(htmlComment("<p>Hello, world!</p>\n")))
             .addParameter(Detail.newBuilder()
                 .setName("x")
-                .setType(numberTypeComment())
+                .setType(numberTypeExpression())
                 .setDescription(htmlComment("<p>The input.</p>\n")))
             .setReturn(Detail.newBuilder()
-                .setType2(stringTypeExpression())
+                .setType(stringTypeExpression())
                 .setDescription(htmlComment("<p>The output.</p>\n")))
             .build());
   }
@@ -977,11 +978,93 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
                 .setDescription(htmlComment("<p>Hello, world!</p>\n")))
             .addParameter(Detail.newBuilder()
                 .setName("x")
-                .setType(numberTypeComment())
+                .setType(numberTypeExpression())
                 .setDescription(htmlComment("<p>The input.</p>\n")))
             .setReturn(Detail.newBuilder()
-                .setType2(stringTypeExpression())
+                .setType(stringTypeExpression())
                 .setDescription(htmlComment("<p>The output.</p>\n")))
+            .build());
+  }
+
+  @Test
+  public void parameterWithExplicitlyUnknownType() {
+    compile(
+        "class Worker {",
+        "  /** @param {?} input Any type will do. */",
+        "  static process(input) {",
+        "  }",
+        "}");
+
+    NominalType type = typeRegistry.getType("Worker");
+    TypeInspector typeInspector = typeInspectorFactory.create(type);
+    TypeInspector.Report report = typeInspector.inspectType();
+    assertMessages(report.getFunctions()).containsExactly(
+        Function.newBuilder()
+            .setBase(BaseProperty.newBuilder()
+                .setName("Worker.process")
+                .setSource(sourceFile("source/foo.js.src.html", 3))
+                .setDescription(Comment.getDefaultInstance()))
+            .addParameter(Detail.newBuilder()
+                .setName("input")
+                .setType(TypeExpression.newBuilder().setUnknownType(true))
+                .setDescription(htmlComment("<p>Any type will do.</p>\n")))
+            .build());
+  }
+
+  @Test
+  public void varargsParameter_moduleExportedFunction() {
+    util.compile(
+        fs.getPath("/src/foo/bar.js"),
+        "goog.module('foo.bar');",
+        "/** @param {...number} numbers The numbers to add. */",
+        "exports.add = function(numbers) {};");
+
+    NominalType type = typeRegistry.getType("module$exports$foo$bar");
+    TypeInspector typeInspector = typeInspectorFactory.create(type);
+    TypeInspector.Report report = typeInspector.inspectType();
+    assertMessages(report.getFunctions()).containsExactly(
+        Function.newBuilder()
+            .setBase(BaseProperty.newBuilder()
+                .setName("add")
+                .setSource(sourceFile("source/foo/bar.js.src.html", 3))
+                .setDescription(Comment.getDefaultInstance()))
+            .addParameter(Detail.newBuilder()
+                .setName("numbers")
+                .setType(
+                    TypeExpression.newBuilder()
+                        .setAllowUndefined(true)
+                        .setIsVarargs(true)
+                        .setUnionType(UnionType.newBuilder().addType(numberTypeExpression())))
+                .setDescription(htmlComment("<p>The numbers to add.</p>\n")))
+            .build());
+  }
+
+  @Test
+  public void varargsParameter_classStaticFunction() {
+    compile(
+        "class Worker {",
+        "  /** @param {...number} numbers The numbers to add. */",
+        "  static add(...numbers) {",
+        "  }",
+        "}");
+
+    NominalType type = typeRegistry.getType("Worker");
+    TypeInspector typeInspector = typeInspectorFactory.create(type);
+    TypeInspector.Report report = typeInspector.inspectType();
+    assertMessages(report.getFunctions()).containsExactly(
+        Function.newBuilder()
+            .setBase(BaseProperty.newBuilder()
+                .setName("Worker.add")
+                .setSource(sourceFile("source/foo.js.src.html", 3))
+                .setDescription(Comment.getDefaultInstance()))
+            .addParameter(Detail.newBuilder()
+                .setName("numbers")
+                .setType(
+                    TypeExpression.newBuilder()
+                        .setAllowUndefined(true)
+                        .setIsVarargs(true)
+                        .setUnionType(UnionType.newBuilder().addType(numberTypeExpression())))
+                .setDescription(htmlComment("<p>The numbers to add.</p>\n")))
             .build());
   }
 }

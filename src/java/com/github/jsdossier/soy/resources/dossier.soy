@@ -230,16 +230,10 @@
           {foreach $detail in $details}
             <dt class="type{if $detail.name}{sp}name{/if}">
             {if $detail.name}<var>{$detail.name}</var>{/if}
-            {if $detail.type and length($detail.type.token)}
-              <code>
-                {call .comment}
-                  {param comment: $detail.type /}
-                {/call}
-              </code>
-            {elseif $detail.type2}
+            {if $detail.type}
               <code>
                 {call dossier.soy.types.expression}
-                  {param expression: $detail.type2 /}
+                  {param expression: $detail.type /}
                   {param strict: true /}
                 {/call}
               </code>
@@ -279,7 +273,7 @@
       or length($fn.base.seeAlso)
       or ($fn.return and not $fn.isConstructor
           and (($fn.return.description and length($fn.return.description.token))
-          or ($fn.return.type and length($fn.return.type.token))))}
+               or $fn.return.type))}
     {call .typeDetails}
       {param header: 'Parameters' /}
       {param details: $fn.parameter /}
@@ -287,8 +281,8 @@
     {/call}
     {if not $fn.isConstructor
         and $fn.return
-        and (($fn.return.description and length($fn.return.description.token)) or
-             ($fn.return.type and length($fn.return.type.token)))}
+        and (($fn.return.description and length($fn.return.description.token))
+             or $fn.return.type)}
       {call .typeDetails}
         {param header: 'Returns' /}
         {param details: [$fn.return] /}
@@ -463,7 +457,7 @@
             or length($fn.thrown)
             or ($fn.return and
                 (($fn.return.description and length($fn.return.description.token)) or
-                 ($fn.return.type and length($fn.return.type.token))))}
+                 $fn.return.type))}
           <dl>
             {call .deprecationNotice}
               {param deprecation: $fn.base.deprecation /}
