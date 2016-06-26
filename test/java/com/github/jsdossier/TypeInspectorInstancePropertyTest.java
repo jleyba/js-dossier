@@ -56,7 +56,7 @@ public class TypeInspectorInstancePropertyTest extends AbstractTypeInspectorTest
                 .setName("age")
                 .setSource(sourceFile("source/foo.js.src.html", 7))
                 .setDescription(htmlComment("<p>This person\'s age.</p>\n")))
-            .setType(numberTypeComment())
+            .setType(numberTypeExpression())
             .build());
   }
 
@@ -82,7 +82,7 @@ public class TypeInspectorInstancePropertyTest extends AbstractTypeInspectorTest
                 .setName("age")
                 .setSource(sourceFile("source/foo.js.src.html", 7))
                 .setDescription(htmlComment("<p>This person\'s age.</p>\n")))
-            .setType(numberTypeComment())
+            .setType(numberTypeExpression())
             .build());
   }
 
@@ -113,7 +113,7 @@ public class TypeInspectorInstancePropertyTest extends AbstractTypeInspectorTest
                 .setSource(sourceFile("source/foo.js.src.html", 7))
                 .setDescription(htmlComment("<p>This person\'s age.</p>\n"))
                 .setDefinedBy(linkComment("Person", "Person.html#age")))
-            .setType(numberTypeComment())
+            .setType(numberTypeExpression())
             .build());
   }
 
@@ -144,7 +144,7 @@ public class TypeInspectorInstancePropertyTest extends AbstractTypeInspectorTest
                 .setSource(sourceFile("source/foo.js.src.html", 7))
                 .setDescription(htmlComment("<p>This person\'s age.</p>\n"))
                 .setDefinedBy(linkComment("Person", "Person.html#age")))
-            .setType(numberTypeComment())
+            .setType(numberTypeExpression())
             .build());
   }
 
@@ -181,7 +181,7 @@ public class TypeInspectorInstancePropertyTest extends AbstractTypeInspectorTest
                 .setSource(sourceFile("source/foo.js.src.html", 7))
                 .setDescription(htmlComment("<p>Original comment.</p>\n"))
                 .setDefinedBy(linkComment("A", "A.html#a")))
-            .setType(numberTypeComment())
+            .setType(numberTypeExpression())
             .build());
   }
 
@@ -216,7 +216,7 @@ public class TypeInspectorInstancePropertyTest extends AbstractTypeInspectorTest
                 .setSource(sourceFile("source/foo.js.src.html", 15))
                 .setDescription(htmlComment("<p>Custom comment.</p>\n"))
                 .setOverrides(linkComment("A", "A.html#a")))
-            .setType(numberTypeComment())
+            .setType(numberTypeExpression())
             .build());
   }
 
@@ -259,7 +259,7 @@ public class TypeInspectorInstancePropertyTest extends AbstractTypeInspectorTest
                 .setDescription(htmlComment("<p>Comment on interface B.</p>\n"))
                 .setOverrides(linkComment("A", "A.html#a"))
                 .addSpecifiedBy(linkComment("B", "B.html#a")))
-            .setType(numberTypeComment())
+            .setType(numberTypeExpression())
             .build());
   }
 
@@ -288,7 +288,7 @@ public class TypeInspectorInstancePropertyTest extends AbstractTypeInspectorTest
                 .setTags(Tags.newBuilder()
                     .setIsDeprecated(true))
                 .setDeprecation(htmlComment("<p>Do not use this.</p>\n")))
-            .setType(numberTypeComment())
+            .setType(numberTypeExpression())
             .build());
   }
 
@@ -324,7 +324,7 @@ public class TypeInspectorInstancePropertyTest extends AbstractTypeInspectorTest
                 .setDescription(htmlComment(
                     "<p>Link to a <a href=\"bar_exports_Person.html\">" +
                         "<code>Person</code></a>.</p>\n")))
-            .setType(numberTypeComment())
+            .setType(numberTypeExpression())
             .build());
   }
 
@@ -363,7 +363,7 @@ public class TypeInspectorInstancePropertyTest extends AbstractTypeInspectorTest
                 .setSource(sourceFile("source/globals.js.src.html", 10))
                 .setDescription(htmlComment(
                     "<p>The <a href=\"Person.html\"><code>Person</code></a> to greet.</p>\n")))
-            .setType(linkComment("Person", "Person.html"))
+            .setType(nullableNamedTypeExpression("Person", "Person.html"))
             .build());
 
     type = typeRegistry.getType("module$$src$modules$foo$bar.CustomGreeter");
@@ -379,7 +379,7 @@ public class TypeInspectorInstancePropertyTest extends AbstractTypeInspectorTest
                 .setDescription(htmlComment(
                     "<p>The <a href=\"../../Person.html\"><code>Person</code></a> to greet.</p>\n"))
                 .setDefinedBy(linkComment("Greeter", "../../Greeter.html#p")))
-            .setType(linkComment("Person", "../../Person.html"))
+            .setType(nullableNamedTypeExpression("Person", "../../Person.html"))
             .build());
   }
 
@@ -419,7 +419,7 @@ public class TypeInspectorInstancePropertyTest extends AbstractTypeInspectorTest
                 .setDescription(htmlComment(
                     "<p>The <a href=\"../../Person.html\"><code>Person</code></a> to greet.</p>\n"))
                 .addSpecifiedBy(linkComment("Greeter", "../../Greeter.html#p")))
-            .setType(linkComment("Person", "../../Person.html"))
+            .setType(namedTypeExpression("Person", "../../Person.html"))
             .build());
   }
 
@@ -466,7 +466,7 @@ public class TypeInspectorInstancePropertyTest extends AbstractTypeInspectorTest
                 .setSource(sourceFile("source/globals.js.src.html", 7))
                 .setDescription(htmlComment("<p>A greeting.</p>\n"))
                 .setVisibility(Visibility.PROTECTED))
-            .setType(stringTypeComment())
+            .setType(stringTypeExpression())
             .build());
 
     type = typeRegistry.getType("CustomGreeter");
@@ -482,7 +482,7 @@ public class TypeInspectorInstancePropertyTest extends AbstractTypeInspectorTest
                 .setDescription(htmlComment("<p>A greeting.</p>\n"))
                 .setOverrides(linkComment("Greeter", "Greeter.html#greeting"))
                 .setVisibility(Visibility.PROTECTED))
-            .setType(stringTypeComment())
+            .setType(stringTypeExpression())
             .build());
 
     type = typeRegistry.getType("FinalGreeter");
@@ -498,7 +498,7 @@ public class TypeInspectorInstancePropertyTest extends AbstractTypeInspectorTest
                 .setDescription(htmlComment("<p>A greeting.</p>\n"))
                 .setOverrides(linkComment("CustomGreeter", "CustomGreeter.html#greeting"))
                 .setVisibility(Visibility.PROTECTED))
-            .setType(stringTypeComment())
+            .setType(stringTypeExpression())
             .build());
   }
 }

@@ -1063,9 +1063,13 @@ final class TypeInspector {
     TypeExpressionParser parser = expressionParserFactory
         .create(linkFactory.withTypeContext(docs.getContextType()));
     if (docs.getJsDoc().getType() != null) {
-      builder.setType(parser.parse(docs.getJsDoc().getType()));
-    } else if (type != null) {
-      builder.setType(parser.parse(type));
+      JSTypeExpression typeExpression = docs.getJsDoc().getType();
+      type = evaluate(typeExpression);
+    }
+
+    if (type != null) {
+      TypeExpression expression = parser.parseExpression(type);
+      builder.setType(expression);
     }
 
     return builder.build();

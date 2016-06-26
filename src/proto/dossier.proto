@@ -150,9 +150,7 @@ message BaseProperty {
 // Describes a non-function JavaScript property.
 message Property {
   BaseProperty base = 1;
-  // HTML snippet declaring the property type. May be omitted if the type is
-  // unknown.
-  Comment type = 2;
+  dossier.expression.TypeExpression type = 2;
 }
 
 

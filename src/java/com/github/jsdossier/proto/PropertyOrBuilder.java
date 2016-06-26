@@ -21,30 +21,15 @@ public interface PropertyOrBuilder extends
   com.github.jsdossier.proto.BasePropertyOrBuilder getBaseOrBuilder();
 
   /**
-   * <code>optional .dossier.Comment type = 2;</code>
-   *
-   * <pre>
-   * HTML snippet declaring the property type. May be omitted if the type is
-   * unknown.
-   * </pre>
+   * <code>optional .dossier.expression.TypeExpression type = 2;</code>
    */
   boolean hasType();
   /**
-   * <code>optional .dossier.Comment type = 2;</code>
-   *
-   * <pre>
-   * HTML snippet declaring the property type. May be omitted if the type is
-   * unknown.
-   * </pre>
+   * <code>optional .dossier.expression.TypeExpression type = 2;</code>
    */
-  com.github.jsdossier.proto.Comment getType();
+  com.github.jsdossier.proto.TypeExpression getType();
   /**
-   * <code>optional .dossier.Comment type = 2;</code>
-   *
-   * <pre>
-   * HTML snippet declaring the property type. May be omitted if the type is
-   * unknown.
-   * </pre>
+   * <code>optional .dossier.expression.TypeExpression type = 2;</code>
    */
-  com.github.jsdossier.proto.CommentOrBuilder getTypeOrBuilder();
+  com.github.jsdossier.proto.TypeExpressionOrBuilder getTypeOrBuilder();
 }

@@ -82,7 +82,7 @@ public class TypeInspectorStaticPropertyTest extends AbstractTypeInspectorTest {
                 .setName("x")
                 .setSource(sourceFile("source/foo.js.src.html", 4))
                 .setDescription(Comment.getDefaultInstance()))
-            .setType(numberTypeComment())
+            .setType(numberTypeExpression())
             .build());
   }
 
@@ -119,7 +119,7 @@ public class TypeInspectorStaticPropertyTest extends AbstractTypeInspectorTest {
                 .setName("x")
                 .setSource(sourceFile("source/foo.js.src.html", 4))
                 .setDescription(Comment.getDefaultInstance()))
-            .setType(numberTypeComment())
+            .setType(numberTypeExpression())
             .build());
   }
 
@@ -146,7 +146,7 @@ public class TypeInspectorStaticPropertyTest extends AbstractTypeInspectorTest {
                 .setName("A.b")
                 .setSource(sourceFile("source/foo.js.src.html", 8))
                 .setDescription(htmlComment("<p>A property.</p>\n")))
-            .setType(numberTypeComment())
+            .setType(numberTypeExpression())
             .build());
   }
 
@@ -173,7 +173,7 @@ public class TypeInspectorStaticPropertyTest extends AbstractTypeInspectorTest {
                 .setName("A.b")
                 .setSource(sourceFile("source/foo.js.src.html", 8))
                 .setDescription(htmlComment("<p>A property.</p>\n")))
-            .setType(numberTypeComment())
+            .setType(numberTypeExpression())
             .build());
   }
 
@@ -199,7 +199,7 @@ public class TypeInspectorStaticPropertyTest extends AbstractTypeInspectorTest {
                 .setName("b")
                 .setSource(sourceFile("source/foo.js.src.html", 7))
                 .setDescription(htmlComment("<p>A property.</p>\n")))
-            .setType(numberTypeComment())
+            .setType(numberTypeExpression())
             .build());
   }
 
@@ -227,7 +227,7 @@ public class TypeInspectorStaticPropertyTest extends AbstractTypeInspectorTest {
                 .setDescription(htmlComment("<p>This is a constant defined on foo.bar.</p>\n"))
                 .setTags(Tags.newBuilder()
                     .setIsConst(true)))
-            .setType(numberTypeComment())
+            .setType(numberTypeExpression())
             .build());
   }
 
@@ -255,7 +255,7 @@ public class TypeInspectorStaticPropertyTest extends AbstractTypeInspectorTest {
                 .setDescription(htmlComment("<p>This is a constant defined on foo.bar.</p>\n"))
                 .setTags(Tags.newBuilder()
                     .setIsConst(true)))
-            .setType(numberTypeComment())
+            .setType(numberTypeExpression())
             .build());
   }
 
@@ -290,7 +290,7 @@ public class TypeInspectorStaticPropertyTest extends AbstractTypeInspectorTest {
                         + "<code>Person</code></a>.</p>\n"))
                 .setTags(Tags.newBuilder()
                     .setIsConst(true)))
-            .setType(numberTypeComment())
+            .setType(numberTypeExpression())
             .build());
   }
 
@@ -313,7 +313,7 @@ public class TypeInspectorStaticPropertyTest extends AbstractTypeInspectorTest {
                 .setDescription(htmlComment("<p>Hello, world!</p>\n"))
                 .setTags(Tags.newBuilder().setIsDefault(true))
                 .build())
-            .setType(numberTypeComment())
+            .setType(numberTypeExpression())
             .build());
   }
 
@@ -339,7 +339,7 @@ public class TypeInspectorStaticPropertyTest extends AbstractTypeInspectorTest {
                 .setDescription(Comment.getDefaultInstance())
                 .setTags(Tags.newBuilder().setIsModule(true))
                 .build())
-            .setType(linkComment("foo/bar", "bar.html"))
+            .setType(namedTypeExpression("foo/bar", "bar.html"))
             .build());
   }
 }

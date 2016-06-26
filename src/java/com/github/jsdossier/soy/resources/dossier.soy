@@ -496,8 +496,9 @@
         {/if}
         {if $property.type}
           <i>(
-            {call .comment}
-              {param comment: $property.type /}
+            {call dossier.soy.types.expression}
+              {param expression: $property.type /}
+              {param strict: true /}
             {/call}
           )</i>
         {/if}
@@ -544,8 +545,9 @@
             {if $property.type}
               <dt class="spec">Type
               <dd>
-                {call .comment}
-                  {param comment: $property.type /}
+                {call dossier.soy.types.expression}
+                  {param expression: $property.type /}
+                  {param strict: true /}
                 {/call}
               </dd>
             {/if}

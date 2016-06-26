@@ -78,47 +78,16 @@ public abstract class AbstractTypeInspectorTest {
     return SourceLink.newBuilder().setPath(path).setLine(line).build();
   }
 
-  protected static Comment nonNullLinkComment(String text, String href) {
-    return Comment.newBuilder()
-        .addToken(textToken("!"))
-        .addToken(linkToken(text, href))
-        .build();
-  }
-
   protected static Comment linkComment(String text, String href) {
     return Comment.newBuilder()
-        .addToken(linkToken(text, href))
+        .addToken(Token.newBuilder().setText(text).setHref(href).build())
         .build();
-  }
-
-  protected static Token linkToken(String text, String href) {
-    return Token.newBuilder().setText(text).setHref(href).build();
   }
 
   protected static Comment htmlComment(String html) {
     return Comment.newBuilder()
         .addToken(Token.newBuilder().setHtml(html))
         .build();
-  }
-
-  protected static Comment textComment(String text) {
-    return Comment.newBuilder()
-        .addToken(Token.newBuilder().setText(text))
-        .build();
-  }
-
-  protected static Comment.Token textToken(String text) {
-    return Comment.Token.newBuilder().setText(text).build();
-  }
-
-  protected static Comment numberTypeComment() {
-    return linkComment("number",
-        "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number");
-  }
-
-  protected static Comment stringTypeComment() {
-    return linkComment("string",
-        "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String");
   }
 
   protected static TypeExpression nullableErrorTypeExpression() {
@@ -155,6 +124,13 @@ public abstract class AbstractTypeInspectorTest {
     return TypeExpression.newBuilder()
         .setAllowNull(true)
         .setNamedType(namedType(name))
+        .build();
+  }
+
+  protected static TypeExpression nullableNamedTypeExpression(String name, String href) {
+    return TypeExpression.newBuilder()
+        .setAllowNull(true)
+        .setNamedType(namedType(name, href))
         .build();
   }
 
