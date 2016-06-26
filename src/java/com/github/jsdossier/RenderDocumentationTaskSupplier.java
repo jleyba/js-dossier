@@ -48,15 +48,15 @@ import com.google.common.base.Function;
 import com.google.common.base.Supplier;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
 import com.google.javascript.rhino.JSDocInfo;
+import com.google.javascript.rhino.JSTypeExpression;
 import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.jstype.EnumType;
 import com.google.javascript.rhino.jstype.FunctionType;
 import com.google.javascript.rhino.jstype.JSType;
 import com.google.javascript.rhino.jstype.JSTypeRegistry;
 import com.google.javascript.rhino.jstype.Property;
+import com.google.javascript.rhino.jstype.StaticTypedScope;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -162,6 +162,7 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Ca
     private final CommentParser parser;
     private final TypeRegistry typeRegistry;
     private final JSTypeRegistry jsRegistry;
+    private final StaticTypedScope<JSType> globalScope;
     private final LinkFactory linkFactory;
     private final TypeExpressionParserFactory expressionParserFactory;
     private final TypeInspector typeInspector;
@@ -174,6 +175,7 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Ca
         @Provided CommentParser parser,
         @Provided TypeRegistry typeRegistry,
         @Provided JSTypeRegistry jsTypeRegistry,
+        @Provided StaticTypedScope<JSType> globalScope,
         @Provided TypeExpressionParserFactory expressionParserFactory,
         @Provided TypeInspectorFactory typeInspectorFactory,
         @Provided TypeIndex typeIndex,
@@ -182,6 +184,7 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Ca
       this.parser = parser;
       this.typeRegistry = typeRegistry;
       this.jsRegistry = jsTypeRegistry;
+      this.globalScope = globalScope;
       this.expressionParserFactory = expressionParserFactory;
       this.linkFactory = linkFactoryBuilder.create(type).withTypeContext(type);
       this.typeInspector = typeInspectorFactory.create(type);
@@ -355,11 +358,15 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Ca
         String name = getNestedTypeName(typedef);
         indexReference.addStaticProperty(name);
         JSDocInfo.Visibility visibility = typeRegistry.getVisibility(typedef);
+
+        JSTypeExpression expression = checkNotNull(typedef.getJsDoc().getType());
+        JSType type = expression.evaluate(globalScope, jsRegistry);
+
         JsType.TypeDef.Builder builder = spec.addTypeDefBuilder()
             .setName(name)
             .setType(
                 expressionParserFactory.create(linkFactory.withTypeContext(typedef))
-                    .parse(typedef.getJsDoc().getType()))
+                    .parseExpression(type))
             .setSource(
                 linkFactory.createLink(typedef.getSourceFile(), typedef.getSourcePosition()))
             .setDescription(

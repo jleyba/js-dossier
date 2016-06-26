@@ -2821,17 +2821,17 @@ public  final class JsType extends
         getNameBytes();
 
     /**
-     * <code>optional .dossier.Comment type = 2;</code>
+     * <code>optional .dossier.expression.TypeExpression type = 2;</code>
      */
     boolean hasType();
     /**
-     * <code>optional .dossier.Comment type = 2;</code>
+     * <code>optional .dossier.expression.TypeExpression type = 2;</code>
      */
-    com.github.jsdossier.proto.Comment getType();
+    com.github.jsdossier.proto.TypeExpression getType();
     /**
-     * <code>optional .dossier.Comment type = 2;</code>
+     * <code>optional .dossier.expression.TypeExpression type = 2;</code>
      */
-    com.github.jsdossier.proto.CommentOrBuilder getTypeOrBuilder();
+    com.github.jsdossier.proto.TypeExpressionOrBuilder getTypeOrBuilder();
 
     /**
      * <code>optional .dossier.SourceLink source = 3;</code>
@@ -2945,11 +2945,11 @@ public  final class JsType extends
               break;
             }
             case 18: {
-              com.github.jsdossier.proto.Comment.Builder subBuilder = null;
+              com.github.jsdossier.proto.TypeExpression.Builder subBuilder = null;
               if (type_ != null) {
                 subBuilder = type_.toBuilder();
               }
-              type_ = input.readMessage(com.github.jsdossier.proto.Comment.parser(), extensionRegistry);
+              type_ = input.readMessage(com.github.jsdossier.proto.TypeExpression.parser(), extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(type_);
                 type_ = subBuilder.buildPartial();
@@ -3074,23 +3074,23 @@ public  final class JsType extends
     }
 
     public static final int TYPE_FIELD_NUMBER = 2;
-    private com.github.jsdossier.proto.Comment type_;
+    private com.github.jsdossier.proto.TypeExpression type_;
     /**
-     * <code>optional .dossier.Comment type = 2;</code>
+     * <code>optional .dossier.expression.TypeExpression type = 2;</code>
      */
     public boolean hasType() {
       return type_ != null;
     }
     /**
-     * <code>optional .dossier.Comment type = 2;</code>
+     * <code>optional .dossier.expression.TypeExpression type = 2;</code>
      */
-    public com.github.jsdossier.proto.Comment getType() {
-      return type_ == null ? com.github.jsdossier.proto.Comment.getDefaultInstance() : type_;
+    public com.github.jsdossier.proto.TypeExpression getType() {
+      return type_ == null ? com.github.jsdossier.proto.TypeExpression.getDefaultInstance() : type_;
     }
     /**
-     * <code>optional .dossier.Comment type = 2;</code>
+     * <code>optional .dossier.expression.TypeExpression type = 2;</code>
      */
-    public com.github.jsdossier.proto.CommentOrBuilder getTypeOrBuilder() {
+    public com.github.jsdossier.proto.TypeExpressionOrBuilder getTypeOrBuilder() {
       return getType();
     }
 
@@ -3591,29 +3591,29 @@ public  final class JsType extends
         return this;
       }
 
-      private com.github.jsdossier.proto.Comment type_ = null;
+      private com.github.jsdossier.proto.TypeExpression type_ = null;
       private com.google.protobuf.SingleFieldBuilder<
-          com.github.jsdossier.proto.Comment, com.github.jsdossier.proto.Comment.Builder, com.github.jsdossier.proto.CommentOrBuilder> typeBuilder_;
+          com.github.jsdossier.proto.TypeExpression, com.github.jsdossier.proto.TypeExpression.Builder, com.github.jsdossier.proto.TypeExpressionOrBuilder> typeBuilder_;
       /**
-       * <code>optional .dossier.Comment type = 2;</code>
+       * <code>optional .dossier.expression.TypeExpression type = 2;</code>
        */
       public boolean hasType() {
         return typeBuilder_ != null || type_ != null;
       }
       /**
-       * <code>optional .dossier.Comment type = 2;</code>
+       * <code>optional .dossier.expression.TypeExpression type = 2;</code>
        */
-      public com.github.jsdossier.proto.Comment getType() {
+      public com.github.jsdossier.proto.TypeExpression getType() {
         if (typeBuilder_ == null) {
-          return type_ == null ? com.github.jsdossier.proto.Comment.getDefaultInstance() : type_;
+          return type_ == null ? com.github.jsdossier.proto.TypeExpression.getDefaultInstance() : type_;
         } else {
           return typeBuilder_.getMessage();
         }
       }
       /**
-       * <code>optional .dossier.Comment type = 2;</code>
+       * <code>optional .dossier.expression.TypeExpression type = 2;</code>
        */
-      public Builder setType(com.github.jsdossier.proto.Comment value) {
+      public Builder setType(com.github.jsdossier.proto.TypeExpression value) {
         if (typeBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -3627,10 +3627,10 @@ public  final class JsType extends
         return this;
       }
       /**
-       * <code>optional .dossier.Comment type = 2;</code>
+       * <code>optional .dossier.expression.TypeExpression type = 2;</code>
        */
       public Builder setType(
-          com.github.jsdossier.proto.Comment.Builder builderForValue) {
+          com.github.jsdossier.proto.TypeExpression.Builder builderForValue) {
         if (typeBuilder_ == null) {
           type_ = builderForValue.build();
           onChanged();
@@ -3641,13 +3641,13 @@ public  final class JsType extends
         return this;
       }
       /**
-       * <code>optional .dossier.Comment type = 2;</code>
+       * <code>optional .dossier.expression.TypeExpression type = 2;</code>
        */
-      public Builder mergeType(com.github.jsdossier.proto.Comment value) {
+      public Builder mergeType(com.github.jsdossier.proto.TypeExpression value) {
         if (typeBuilder_ == null) {
           if (type_ != null) {
             type_ =
-              com.github.jsdossier.proto.Comment.newBuilder(type_).mergeFrom(value).buildPartial();
+              com.github.jsdossier.proto.TypeExpression.newBuilder(type_).mergeFrom(value).buildPartial();
           } else {
             type_ = value;
           }
@@ -3659,7 +3659,7 @@ public  final class JsType extends
         return this;
       }
       /**
-       * <code>optional .dossier.Comment type = 2;</code>
+       * <code>optional .dossier.expression.TypeExpression type = 2;</code>
        */
       public Builder clearType() {
         if (typeBuilder_ == null) {
@@ -3673,33 +3673,33 @@ public  final class JsType extends
         return this;
       }
       /**
-       * <code>optional .dossier.Comment type = 2;</code>
+       * <code>optional .dossier.expression.TypeExpression type = 2;</code>
        */
-      public com.github.jsdossier.proto.Comment.Builder getTypeBuilder() {
+      public com.github.jsdossier.proto.TypeExpression.Builder getTypeBuilder() {
         
         onChanged();
         return getTypeFieldBuilder().getBuilder();
       }
       /**
-       * <code>optional .dossier.Comment type = 2;</code>
+       * <code>optional .dossier.expression.TypeExpression type = 2;</code>
        */
-      public com.github.jsdossier.proto.CommentOrBuilder getTypeOrBuilder() {
+      public com.github.jsdossier.proto.TypeExpressionOrBuilder getTypeOrBuilder() {
         if (typeBuilder_ != null) {
           return typeBuilder_.getMessageOrBuilder();
         } else {
           return type_ == null ?
-              com.github.jsdossier.proto.Comment.getDefaultInstance() : type_;
+              com.github.jsdossier.proto.TypeExpression.getDefaultInstance() : type_;
         }
       }
       /**
-       * <code>optional .dossier.Comment type = 2;</code>
+       * <code>optional .dossier.expression.TypeExpression type = 2;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
-          com.github.jsdossier.proto.Comment, com.github.jsdossier.proto.Comment.Builder, com.github.jsdossier.proto.CommentOrBuilder> 
+          com.github.jsdossier.proto.TypeExpression, com.github.jsdossier.proto.TypeExpression.Builder, com.github.jsdossier.proto.TypeExpressionOrBuilder> 
           getTypeFieldBuilder() {
         if (typeBuilder_ == null) {
           typeBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              com.github.jsdossier.proto.Comment, com.github.jsdossier.proto.Comment.Builder, com.github.jsdossier.proto.CommentOrBuilder>(
+              com.github.jsdossier.proto.TypeExpression, com.github.jsdossier.proto.TypeExpression.Builder, com.github.jsdossier.proto.TypeExpressionOrBuilder>(
                   getType(),
                   getParentForChildren(),
                   isClean());

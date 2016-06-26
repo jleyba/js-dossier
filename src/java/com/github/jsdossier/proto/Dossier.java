@@ -171,7 +171,7 @@ public final class Dossier {
       "\n\013deprecation\030\003 \001(\0132\020.dossier.Comment\"o\n" +
       "\005Index\022\024\n\004home\030\001 \001(\tB\006\362\201\031\002\010\001\022\025\n\rinclude_" +
       "types\030\002 \001(\010\022\027\n\017include_modules\030\003 \001(\010\022 \n\005" +
-      "links\030\004 \003(\0132\021.dossier.TypeLink\"\203\013\n\006JsTyp" +
+      "links\030\004 \003(\0132\021.dossier.TypeLink\"\225\013\n\006JsTyp" +
       "e\022\014\n\004name\030\001 \001(\t\022#\n\006source\030\005 \001(\0132\023.dossie" +
       "r.SourceLink\022+\n\006nested\030\006 \001(\0132\033.dossier.J" +
       "sType.NestedTypes\022%\n\013description\030\007 \001(\0132\020" +
@@ -199,27 +199,27 @@ public final class Dossier {
       "\022*\n\005class\030\001 \003(\0132\033.dossier.JsType.TypeSum",
       "mary\022)\n\004enum\030\002 \003(\0132\033.dossier.JsType.Type" +
       "Summary\022.\n\tinterface\030\003 \003(\0132\033.dossier.JsT" +
-      "ype.TypeSummary\032\360\001\n\007TypeDef\022\014\n\004name\030\001 \001(" +
-      "\t\022\036\n\004type\030\002 \001(\0132\020.dossier.Comment\022#\n\006sou" +
-      "rce\030\003 \001(\0132\023.dossier.SourceLink\022%\n\013descri" +
-      "ption\030\004 \001(\0132\020.dossier.Comment\022%\n\013depreca" +
-      "tion\030\005 \001(\0132\020.dossier.Comment\022\'\n\nvisibili" +
-      "ty\030\006 \001(\0162\023.dossier.Visibility\022\033\n\004tags\030\007 " +
-      "\001(\0132\r.dossier.Tags\032@\n\nParentLink\022\037\n\004link" +
-      "\030\001 \001(\0132\021.dossier.TypeLink\022\021\n\tis_module\030\002",
-      " \001(\010\"\210\001\n\016HtmlRenderSpec\022%\n\tresources\030\001 \001" +
-      "(\0132\022.dossier.Resources\022\r\n\005title\030\002 \001(\t\022!\n" +
-      "\007content\030\003 \001(\0132\020.dossier.Comment\022\035\n\005inde" +
-      "x\030\004 \001(\0132\016.dossier.Index\"\177\n\024SourceFileRen" +
-      "derSpec\022%\n\tresources\030\001 \001(\0132\022.dossier.Res" +
-      "ources\022!\n\004file\030\002 \001(\0132\023.dossier.SourceFil" +
-      "e\022\035\n\005index\030\003 \001(\0132\016.dossier.Index\"w\n\020JsTy" +
-      "peRenderSpec\022\035\n\004type\030\001 \003(\0132\017.dossier.JsT" +
-      "ype\022%\n\tresources\030\002 \001(\0132\022.dossier.Resourc" +
-      "es\022\035\n\005index\030\003 \001(\0132\016.dossier.Index*A\n\nVis",
-      "ibility\022\n\n\006PUBLIC\020\000\022\r\n\tPROTECTED\020\001\022\013\n\007PR" +
-      "IVATE\020\002\022\013\n\007PACKAGE\020\003B\036\n\032com.github.jsdos" +
-      "sier.protoP\001b\006proto3"
+      "ype.TypeSummary\032\202\002\n\007TypeDef\022\014\n\004name\030\001 \001(" +
+      "\t\0220\n\004type\030\002 \001(\0132\".dossier.expression.Typ" +
+      "eExpression\022#\n\006source\030\003 \001(\0132\023.dossier.So" +
+      "urceLink\022%\n\013description\030\004 \001(\0132\020.dossier." +
+      "Comment\022%\n\013deprecation\030\005 \001(\0132\020.dossier.C" +
+      "omment\022\'\n\nvisibility\030\006 \001(\0162\023.dossier.Vis" +
+      "ibility\022\033\n\004tags\030\007 \001(\0132\r.dossier.Tags\032@\n\n" +
+      "ParentLink\022\037\n\004link\030\001 \001(\0132\021.dossier.TypeL",
+      "ink\022\021\n\tis_module\030\002 \001(\010\"\210\001\n\016HtmlRenderSpe" +
+      "c\022%\n\tresources\030\001 \001(\0132\022.dossier.Resources" +
+      "\022\r\n\005title\030\002 \001(\t\022!\n\007content\030\003 \001(\0132\020.dossi" +
+      "er.Comment\022\035\n\005index\030\004 \001(\0132\016.dossier.Inde" +
+      "x\"\177\n\024SourceFileRenderSpec\022%\n\tresources\030\001" +
+      " \001(\0132\022.dossier.Resources\022!\n\004file\030\002 \001(\0132\023" +
+      ".dossier.SourceFile\022\035\n\005index\030\003 \001(\0132\016.dos" +
+      "sier.Index\"w\n\020JsTypeRenderSpec\022\035\n\004type\030\001" +
+      " \003(\0132\017.dossier.JsType\022%\n\tresources\030\002 \001(\013" +
+      "2\022.dossier.Resources\022\035\n\005index\030\003 \001(\0132\016.do",
+      "ssier.Index*A\n\nVisibility\022\n\n\006PUBLIC\020\000\022\r\n" +
+      "\tPROTECTED\020\001\022\013\n\007PRIVATE\020\002\022\013\n\007PACKAGE\020\003B\036" +
+      "\n\032com.github.jsdossier.protoP\001b\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {

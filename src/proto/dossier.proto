@@ -221,7 +221,7 @@ message JsType {
   // Describes a typedef defined within this type.
   message TypeDef {
     string name = 1;
-    Comment type = 2;
+    dossier.expression.TypeExpression type = 2;
     SourceLink source = 3;
     Comment description = 4;
     Comment deprecation = 5;

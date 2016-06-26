@@ -919,8 +919,9 @@
                       <dt class="spec">Type
                       <dd>
                         <code>
-                          {call .comment}
-                            {param comment: $typedef.type /}
+                          {call dossier.soy.types.expression}
+                            {param expression: $typedef.type /}
+                            {param strict: true /}
                           {/call}
                         </code>
                       {call .deprecationNotice}
