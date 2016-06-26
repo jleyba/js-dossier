@@ -7,15 +7,49 @@
   {@param expression: dossier.expression.TypeExpression}
   {@param? strict: bool}
 
-  {if $expression.namedType}
-    {call .namedType data="all" /}
-  {elseif $expression.unionType}
-    {call .unionType}
-      {param type: $expression /}
-    {/call}
+  {if $expression.isVarargs}...{/if}
+
+  {if $expression.functionType}{call .functionType data="all" /}
+  {elseif $expression.namedType}{call .namedType data="all" /}
+  {elseif $expression.recordType}{call .recordType data="all" /}
+  {elseif $expression.unionType}{call .unionType data="all" /}
   {elseif $expression.anyType}*
   {elseif $expression.unknownType}?
   {elseif $expression.voidType}void
+  {/if}
+{/template}
+
+
+/**
+ * Renders a function type.
+ */
+{template .functionType private="true"}
+  {@param expression: dossier.expression.TypeExpression}
+  {let $fn: $expression.functionType /}
+
+  function(
+  {if $fn.instanceType}
+    {if $fn.isConstructor}new{else}this{/if}
+    :{sp}
+    {call .expression}
+      {param expression: $fn.instanceType /}
+    {/call}
+    {if length($fn.parameter)},{sp}{/if}
+  {/if}
+  {foreach $param in $fn.parameter}
+    {call .expression}
+      {param expression: $param /}
+      {param strict: true /}
+    {/call}
+    {if not isLast($param)},{sp}{/if}
+  {/foreach}
+  )
+  {if $fn.returnType}
+    :{sp}
+    {call .expression}
+      {param expression: $fn.returnType /}
+      {param strict: true /}
+    {/call}
   {/if}
 {/template}
 
@@ -57,15 +91,44 @@
 
 
 /**
+ * Renders a record type expression.
+ */
+{template .recordType private="true"}
+  {@param expression: dossier.expression.TypeExpression}
+
+  {lb}
+  {foreach $entry in $expression.recordType.entry}
+    {$entry.key}:
+    {call .expression}
+      {param expression: $entry.value /}
+    {/call}
+    {if not isLast($entry)},{sp}{/if}
+  {/foreach}
+  {rb}
+{/template}
+
+
+/**
  * Renders a union type.
  */
 {template .unionType private="true"}
-  {@param type: dossier.expression.TypeExpression}
-  {let $union: $type.unionType /}
-  {let $allowUndefined: $type.allowUndefined and not $type.isVarargs /}
-  {let $renderParens: length($union.type) > 1 or $type.allowNull or $allowUndefined /}
+  {@param expression: dossier.expression.TypeExpression}
+  {@param? strict: bool}
 
-  {if $type.isVarargs}...{/if}
+  {let $union: $expression.unionType /}
+  {let $allowNull: $expression.allowNull /}
+  {let $allowUndefined: $expression.allowUndefined and not $expression.isVarargs /}
+  {let $renderParens: length($union.type) > 1 or $allowNull or $allowUndefined /}
+
+  {if $strict and not $allowNull}
+    {if length($union.type) != 1
+        or not $union.type[0].namedType
+        or not ($union.type[0].namedType.name == 'boolean'
+                or $union.type[0].namedType.name == 'number'
+                or $union.type[0].namedType.name == 'string')}
+      !
+    {/if}
+  {/if}
   {if $renderParens}({/if}
   {foreach $alternate in $union.type}
     {call .expression}
@@ -73,7 +136,7 @@
     {/call}
     {if not isLast($alternate)}|{/if}
   {/foreach}
-  {if $type.allowNull}|null{/if}
+  {if $allowNull}|null{/if}
   {if $allowUndefined}|undefined{/if}
   {if $renderParens}){/if}
 {/template}

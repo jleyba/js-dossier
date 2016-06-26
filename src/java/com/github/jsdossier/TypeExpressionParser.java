@@ -606,7 +606,9 @@ final class TypeExpressionParser {
 
       if (type.getReturnType() != null && !type.isConstructor()) {
         appendText(": ");
+        expressions.addLast(functionType.getReturnTypeBuilder());
         type.getReturnType().visit(this);
+        expressions.removeLast();
       }
       return null;
     }
@@ -730,6 +732,11 @@ final class TypeExpressionParser {
 
       if (link != null) {
         appendLink(link);
+        // If there is no href, we were not able to resolve the type, so assume it is
+        // nullable by default.
+        if (link.getHref().isEmpty()) {
+          currentExpression().setAllowNull(true);
+        }
       } else if (isExternModule(type.getReferenceName())) {
         appendText(externToOriginalName(type.getReferenceName()));
       } else {

@@ -39,7 +39,6 @@ import com.github.jsdossier.proto.Function;
 import com.github.jsdossier.proto.Function.Detail;
 import com.github.jsdossier.proto.TypeExpression;
 import com.github.jsdossier.proto.TypeLink;
-import com.github.jsdossier.proto.UnionType;
 import com.github.jsdossier.proto.Visibility;
 import com.google.auto.factory.AutoFactory;
 import com.google.auto.factory.Provided;
@@ -834,12 +833,10 @@ final class TypeInspector {
   }
 
   private Iterable<Function.Detail> getParameters(
-      JSType type,
+      FunctionType type,
       Node node,
       PropertyDocs docs,
       Iterable<InstanceProperty> overrides) {
-    checkArgument(type.isFunctionType());
-
     PropertyDocs foundDocs = findPropertyDocs(docs, overrides, new Predicate<JsDoc>() {
       @Override
       public boolean apply(JsDoc input) {
@@ -870,11 +867,22 @@ final class TypeInspector {
                     parser.parseComment(input.getDescription(), contextualLinkFactory));
               }
               if (input.getType() != null) {
-                JSType paramType = evaluate(input.getType());
-                TypeExpression expression = expressionParser.parseExpression(paramType);
-                if (input.getType().getRoot().getKind() == Token.ELLIPSIS) {
-                  expression = expression.toBuilder().setIsVarargs(true).build();
+                JSTypeExpression paramTypeExpression = input.getType();
+                JSType paramType = evaluate(paramTypeExpression);
+
+                TypeExpression.Builder expression =
+                    expressionParser.parseExpression(paramType).toBuilder();
+
+                if (paramTypeExpression.isVarArgs()) {
+                  expression.setIsVarargs(true);
+                } else if (paramTypeExpression.isOptionalArg()) {
+                  expression.setIsOptional(true);
                 }
+
+                if (paramTypeExpression.getRoot().getKind() == Token.BANG) {
+                  expression = expression.clearAllowNull();
+                }
+
                 detail.setType(expression);
               }
               return detail.build();
@@ -886,7 +894,7 @@ final class TypeInspector {
       return ImmutableList.of();
     }
 
-    List<Node> parameterNodes = Lists.newArrayList(((FunctionType) type).getParameters());
+    List<Node> parameterNodes = Lists.newArrayList(type.getParameters());
     List<Detail> details = new ArrayList<>(parameterNodes.size());
     @Nullable Node paramList = findParamList(node);
 

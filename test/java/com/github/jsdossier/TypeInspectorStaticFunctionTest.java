@@ -216,7 +216,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
                 .setDescription(Comment.getDefaultInstance()))
             .addParameter(Detail.newBuilder()
                 .setName("v")
-                .setType(namedTypeExpression("TYPE"))
+                .setType(nullableNamedTypeExpression("TYPE"))
                 .setDescription(htmlComment("<p>A value.</p>\n")))
             .setReturn(Detail.newBuilder()
                 .setType(namedTypeExpression("TYPE"))
@@ -259,7 +259,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
                 .setDescription(Comment.getDefaultInstance()))
             .addParameter(Detail.newBuilder()
                 .setName("input")
-                .setType(namedTypeExpression("THROWN_TYPE"))
+                .setType(nullableNamedTypeExpression("THROWN_TYPE"))
                 .setDescription(htmlComment("<p>.</p>\n")))
             .addThrown(Detail.newBuilder()
                 .setType(TypeExpression.newBuilder()
@@ -268,7 +268,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
                         NamedType.newBuilder()
                             .setName("GenericError")
                             .setHref("GenericError.html")
-                            .addTemplateType(namedTypeExpression("THROWN_TYPE")))))
+                            .addTemplateType(nullableNamedTypeExpression("THROWN_TYPE")))))
             .addTemplateName("THROWN_TYPE")
             .build());
   }

@@ -395,6 +395,22 @@ public class TypeExpressionParserTest {
                 .addType(numberType())));
   }
 
+  @Test
+  public void parseExpression_varargsPrimitive() {
+    TypeExpression expression = compileExpression("...string");
+    assertMessage(expression)
+        .isEqualTo(stringType().toBuilder().setIsVarargs(true));
+  }
+
+  @Test
+  public void parseExpression_optionalPrimitive() {
+    TypeExpression expression = compileExpression("string=");
+    assertMessage(expression)
+        .isEqualTo(stringType().toBuilder()
+            .setAllowUndefined(true)
+            .setIsOptional(true));
+  }
+
   private TypeExpression compileExpression(String expressionText) {
     util.compile(
         createSourceFile(fs.getPath("one.js"),
