@@ -71,7 +71,7 @@ public class TypeExpressionParserTest {
     TypeExpressionParser parser = parserFactory.create(linkFactoryBuilder.create(type));
     JSType jsType = util.evaluate(type.getJsDoc().getInfo().getTypedefType());
 
-    TypeExpression expression = parser.parseExpression(jsType);
+    TypeExpression expression = parser.parse(jsType);
     assertMessage(expression)
         .isEqualTo(
             TypeExpression.newBuilder()
@@ -101,7 +101,7 @@ public class TypeExpressionParserTest {
     TypeExpressionParser parser = parserFactory.create(linkFactoryBuilder.create(type));
     JSTypeExpression jsExpression = type.getJsDoc().getParameter("a").getType();
     JSType jsType = util.evaluate(jsExpression);
-    TypeExpression expression = parser.parseExpression(jsType);
+    TypeExpression expression = parser.parse(jsType);
     assertMessage(expression).isEqualTo(
         TypeExpression.newBuilder()
             .setFunctionType(
@@ -124,7 +124,7 @@ public class TypeExpressionParserTest {
     TypeExpressionParser parser = parserFactory.create(linkFactoryBuilder.create(type));
     JSTypeExpression jsExpression = type.getJsDoc().getParameter("a").getType();
     JSType jsType = util.evaluate(jsExpression);
-    TypeExpression expression = parser.parseExpression(jsType);
+    TypeExpression expression = parser.parse(jsType);
     assertMessage(expression).isEqualTo(
         TypeExpression.newBuilder()
             .setFunctionType(
@@ -147,7 +147,7 @@ public class TypeExpressionParserTest {
     TypeExpressionParser parser = parserFactory.create(linkFactoryBuilder.create(type));
     JSTypeExpression jsExpression = type.getJsDoc().getParameter("a").getType();
     JSType jsType = util.evaluate(jsExpression);
-    TypeExpression expression = parser.parseExpression(jsType);
+    TypeExpression expression = parser.parse(jsType);
     assertMessage(expression).isEqualTo(
         TypeExpression.newBuilder()
             .setFunctionType(
@@ -173,7 +173,7 @@ public class TypeExpressionParserTest {
     JSTypeExpression expression = type.getJsDoc().getParameter("a").getType();
     JSType jsType = util.evaluate(expression);
 
-    TypeExpression typeExpression = parser.parseExpression(jsType);
+    TypeExpression typeExpression = parser.parse(jsType);
     assertMessage(typeExpression).isEqualTo(
         TypeExpression.newBuilder()
         .setFunctionType(
@@ -198,7 +198,7 @@ public class TypeExpressionParserTest {
     TypeExpressionParser parser = parserFactory.create(linkFactoryBuilder.create(type));
     JSTypeExpression jsExpression = type.getJsDoc().getParameter("a").getType();
     JSType jsType = util.evaluate(jsExpression);
-    TypeExpression expression = parser.parseExpression(jsType);
+    TypeExpression expression = parser.parse(jsType);
     assertMessage(expression).isEqualTo(
         TypeExpression.newBuilder()
             .setFunctionType(
@@ -231,7 +231,7 @@ public class TypeExpressionParserTest {
         linkFactoryBuilder.create(type).withTypeContext(type));
 
     JSType jsType = util.evaluate(type.getJsDoc().getParameter("a").getType());
-    TypeExpression expression = parser.parseExpression(jsType);
+    TypeExpression expression = parser.parse(jsType);
     assertMessage(expression).isEqualTo(
         TypeExpression.newBuilder()
             .setNamedType(namedType("Foo", "one_exports_Foo.html"))
@@ -239,7 +239,7 @@ public class TypeExpressionParserTest {
 
     parser = parserFactory.create(
         linkFactoryBuilder.create(typeRegistry.getType("Person")));
-    expression = parser.parseExpression(jsType);
+    expression = parser.parse(jsType);
     assertMessage(expression).isEqualTo(
         TypeExpression.newBuilder()
             .setNamedType(namedType("Person", "Person.html"))
@@ -255,7 +255,7 @@ public class TypeExpressionParserTest {
 
     JSTypeExpression jsExpression = type.getJsDoc().getInfo().getTypedefType();
     JSType jsType = util.evaluate(jsExpression);
-    TypeExpression expression = parser.parseExpression(jsType);
+    TypeExpression expression = parser.parse(jsType);
     assertMessage(expression).isEqualTo(stringType());
   }
 
@@ -280,7 +280,7 @@ public class TypeExpressionParserTest {
 
     TypeExpressionParser parser = parserFactory.create(
         linkFactoryBuilder.create(type).withTypeContext(type));
-    TypeExpression expression = parser.parseExpression(jsType);
+    TypeExpression expression = parser.parse(jsType);
     assertMessage(expression).isEqualTo(
         TypeExpression.newBuilder()
             .setNamedType(
@@ -312,7 +312,7 @@ public class TypeExpressionParserTest {
 
     TypeExpressionParser parser = parserFactory.create(
         linkFactoryBuilder.create(type).withTypeContext(type));
-    TypeExpression expression = parser.parseExpression(jsType);
+    TypeExpression expression = parser.parse(jsType);
     assertMessage(expression).isEqualTo(
         TypeExpression.newBuilder()
             .setNamedType(
@@ -415,7 +415,7 @@ public class TypeExpressionParserTest {
     NominalType type = typeRegistry.getType("Widget");
     JSTypeExpression expression = type.getJsDoc().getParameter("x").getType();
     JSType jsType = util.evaluate(expression);
-    return parserFactory.create(linkFactoryBuilder.create(type)).parseExpression(jsType);
+    return parserFactory.create(linkFactoryBuilder.create(type)).parse(jsType);
   }
 
   private static TypeExpression numberType() {

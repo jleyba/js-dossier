@@ -22,7 +22,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.base.Suppliers.memoize;
 import static com.google.common.base.Verify.verify;
-import static com.google.common.collect.Iterables.limit;
 import static com.google.common.collect.Lists.reverse;
 import static com.google.common.collect.Lists.transform;
 import static java.nio.file.Files.createDirectories;
@@ -366,7 +365,7 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Ca
             .setName(name)
             .setType(
                 expressionParserFactory.create(linkFactory.withTypeContext(typedef))
-                    .parseExpression(type))
+                    .parse(type))
             .setSource(
                 linkFactory.createLink(typedef.getSourceFile(), typedef.getSourcePosition()))
             .setDescription(
@@ -436,12 +435,7 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Ca
           return;
         }
 
-        Iterable<TypeExpression> iterableTypes = limit(reverse(types), types.size() - 1);
-        spec.addAllExtendedType(iterableTypes);
-
-        TypeExpression.Builder thisType = types.get(0).toBuilder();
-        thisType.getNamedTypeBuilder().clearHref();
-        spec.addExtendedType(thisType);
+        spec.addAllExtendedType(reverse(types));
       }
     }
 
@@ -466,7 +460,7 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Ca
       Enumeration.Builder enumBuilder = spec.getEnumerationBuilder()
           .setType(
               expressionParserFactory.create(linkFactory)
-                  .parseExpression(elementType.toMaybeEnumElementType().getPrimitiveType()))
+                  .parse(elementType.toMaybeEnumElementType().getPrimitiveType()))
           .setVisibility(Visibility.valueOf(visibility.name()));
 
       // Type may be documented as an enum without an associated object literal for us to analyze:

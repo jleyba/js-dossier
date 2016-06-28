@@ -16,6 +16,7 @@
 
 package com.github.jsdossier;
 
+import static com.github.jsdossier.TypeExpressionParser.Option.QUALIFIED_NAMES;
 import static com.github.jsdossier.jscomp.Types.isBuiltInFunctionProperty;
 import static com.github.jsdossier.jscomp.Types.isConstructorTypeDefinition;
 import static com.google.common.base.Preconditions.checkArgument;
@@ -72,6 +73,7 @@ import com.google.javascript.rhino.jstype.TemplatizedType;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -150,14 +152,6 @@ final class TypeInspector {
    */
   public Comment getTypeDescription() {
     return getTypeDescription(inspectedType, false);
-  }
-
-  /**
-   * Extracts the summary sentence for the inspected type. This is the substring up to the
-   * first period (.) followed by a blank, tab, or newline.
-   */
-  public Comment getTypeSummary() {
-    return getTypeDescription(inspectedType, true);
   }
 
   /**
@@ -242,7 +236,7 @@ final class TypeInspector {
 
     List<JSType> types = getTypeHierarchyInternal(inspectedType.getType());
     for (JSType instance : types) {
-      TypeExpression expression = parser.parseExpression(instance);
+      TypeExpression expression = parser.parse(instance, QUALIFIED_NAMES);
       expressions.add(expression);
     }
 
@@ -309,22 +303,25 @@ final class TypeInspector {
    * interface, this will return only the extended interfaces, <em>not</em> the interface itself.
    */
   public List<TypeExpression> getImplementedTypes() {
-    ImmutableList.Builder<TypeExpression> expressions = ImmutableList.builder();
-    getImplementedInterfaces(
-        expressions, inspectedType.getType());
-    return expressions.build();
-  }
-
-  private void getImplementedInterfaces(
-      ImmutableList.Builder<TypeExpression> expressions, JSType type) {
+    JSType type = inspectedType.getType();
     if (type.toMaybeFunctionType() == null) {
-      return;
+      return ImmutableList.of();
     }
+
     TypeExpressionParser parser =
         expressionParserFactory.create(linkFactory.withTypeContext(inspectedType));
+    Set<TypeExpression> expressions = new HashSet<>();
     for (JSType iface : getAllImplementedInterfaces(type)) {
-      expressions.add(parser.parseExpression(iface));
+      expressions.add(parser.parse(iface, QUALIFIED_NAMES));
     }
+
+    return FluentIterable.from(expressions)
+        .toSortedList(new Comparator<TypeExpression>() {
+          @Override
+          public int compare(TypeExpression o1, TypeExpression o2) {
+            return o1.getNamedType().getName().compareTo(o2.getNamedType().getName());
+          }
+        });
   }
 
   private Set<JSType> getAllImplementedInterfaces(JSType type) {
@@ -338,18 +335,26 @@ final class TypeInspector {
     TemplateTypeMapReplacer replacer =
         new TemplateTypeMapReplacer(jsRegistry, instance.getTemplateTypeMap());
 
-    Iterable<? extends JSType> allInterfaces;
+    Set<ObjectType> allInterfaces = new HashSet<>();
     if (type.isInterface()) {
       Set<JSType> seen = new HashSet<>();
-      Set<JSType> ifaces = new HashSet<>();
-      getExtendedInterfaces(seen, ifaces, instance);
-      allInterfaces = ifaces;
+      getExtendedInterfaces(seen, allInterfaces, instance);
     } else {
-      allInterfaces = ctor.getAllImplementedInterfaces();
+      Set<JSType> seen = new HashSet<>();
+      for (ObjectType iface : ctor.getAllImplementedInterfaces()) {
+        if (iface.isUnknownType()
+            || iface.getConstructor() == null
+            || !iface.getConstructor().isInterface()) {
+          continue;
+        }
+        allInterfaces.add(iface);
+        seen.add(iface.getConstructor());
+        getExtendedInterfaces(seen, allInterfaces, iface);
+      }
     }
 
     ImmutableSet.Builder<JSType> ret = ImmutableSet.builder();
-    for (JSType iface : allInterfaces) {
+    for (ObjectType iface : allInterfaces) {
       if (iface.isUnknownType()) {
         continue;
       }
@@ -359,7 +364,7 @@ final class TypeInspector {
   }
 
   private void getExtendedInterfaces(
-      Set<JSType> seenCtors, Set<JSType> instanceTypes, ObjectType type) {
+      Set<JSType> seenCtors, Set<ObjectType> instanceTypes, ObjectType type) {
     FunctionType ctor = type.getConstructor();
     if (ctor == null || !ctor.isInterface()) {
       return;
@@ -724,7 +729,7 @@ final class TypeInspector {
 
   private TypeExpression buildPropertyLink(
       TypeExpressionParser parser, JSType type, String propertyName) {
-    TypeExpression expression = parser.parseExpression(type);
+    TypeExpression expression = parser.parse(type);
     if (!expression.getNamedType().getHref().isEmpty()
         // Extern links are always fully qualified.
         && !expression.getNamedType().getHref().startsWith("http")) {
@@ -885,7 +890,7 @@ final class TypeInspector {
                 JSType paramType = evaluate(paramTypeExpression);
 
                 TypeExpression.Builder expression =
-                    expressionParser.parseExpression(paramType).toBuilder();
+                    expressionParser.parse(paramType).toBuilder();
 
                 if (paramTypeExpression.isVarArgs()) {
                   expression.setIsVarargs(true);
@@ -923,7 +928,7 @@ final class TypeInspector {
       if (parameterType == null || parameterType.isUnknownType()) {
         detail.getTypeBuilder().setUnknownType(true);
       } else {
-        detail.setType(parser.parseExpression(parameterType));
+        detail.setType(parser.parse(parameterType));
       }
 
       if (paramList != null && i < paramList.getChildCount()) {
@@ -991,7 +996,7 @@ final class TypeInspector {
             if (input.getType().isPresent()) {
               JSTypeExpression expression = input.getType().get();
               JSType thrownType = evaluate(expression);
-              detail.setType(typeParser.parseExpression(thrownType));
+              detail.setType(typeParser.parse(thrownType));
             }
             return detail.build();
           }
@@ -1043,7 +1048,7 @@ final class TypeInspector {
 
     TypeExpressionParser parser =
         expressionParserFactory.create(linkFactory.withTypeContext(context));
-    return parser.parseExpression(returnType);
+    return parser.parse(returnType);
   }
 
   private boolean isKnownType(JsDoc.TypedDescription description) {
@@ -1082,7 +1087,7 @@ final class TypeInspector {
     }
 
     if (type != null) {
-      TypeExpression expression = parser.parseExpression(type);
+      TypeExpression expression = parser.parse(type);
       builder.setType(expression);
     }
 

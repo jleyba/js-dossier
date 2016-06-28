@@ -31,6 +31,7 @@ import com.google.auto.factory.Provided;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
+import com.google.common.collect.ImmutableSet;
 import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.jstype.EnumElementType;
 import com.google.javascript.rhino.jstype.FunctionType;
@@ -79,63 +80,36 @@ final class TypeExpressionParser {
     this.linkFactory = linkFactory;
   }
 
-  public TypeExpression parseExpression(JSType type) {
-    CommentTypeParser parser = new CommentTypeParser();
+  /**
+   * Converts the given JavaScript type to a type expression message.
+   *
+   * @param type the type to parse.
+   * @param options desired parse options.
+   */
+  public TypeExpression parse(JSType type, Option... options) {
+    Parser parser = new Parser(options);
     return parser.parse(type);
   }
 
-  @Nullable
-  @CheckReturnValue
-  private NominalType resolve(JSType type) {
-    Collection<NominalType> types = typeRegistry.getTypes(type);  // Exact check first.
-    if (types.isEmpty()) {
-      types = typeRegistry.findTypes(type);  // Slow equivalence check next.
-    }
-    if (types.isEmpty()) {
-      return null;
-    }
-    return types.iterator().next();
-  }
-
-  @Nullable
-  @CheckReturnValue
-  private TypeLink getLink(JSType type) {
-    NominalType ntype = resolve(type);
-    if (ntype == null) {
-      return null;
-    }
-    return linkFactory.createLink(ntype);
-  }
-
-  private TypeLink getNamedTypeLink(String name) {
-    TypeLink link = linkFactory.createLink(name);
-    if (link.getHref().isEmpty()) {
-      JSType jsType = jsTypeRegistry.getType(name);
-      if (jsType != null) {
-        NominalType ntype = resolve(jsType);
-        if (ntype != null) {
-          link = linkFactory.createLink(ntype);
-        }
-      }
-
-      if (link.getHref().isEmpty()) {
-        int index = name.indexOf("$$module$");
-        if (index > 0) {
-          name = name.substring(0, index);
-          link = linkFactory.createLink(name);
-        }
-      }
-    }
-    return link;
+  enum Option {
+    /**
+     * Indicates named types should be rendered with their fully qualified names.
+     */
+    QUALIFIED_NAMES
   }
 
   /**
-   * A {@link JSType} visitor that converts the type into a comment type expression.
+   * A {@link JSType} visitor that converts the type into a type expression.
    */
-  private class CommentTypeParser implements Visitor<Void> {
+  private class Parser implements Visitor<Void> {
 
+    private final ImmutableSet<Option> options;
     private final TypeExpression.Builder expression = TypeExpression.newBuilder();
     private final Deque<TypeExpression.Builder> expressions = new ArrayDeque<>();
+
+    Parser(Option... options) {
+      this.options = ImmutableSet.copyOf(options);
+    }
 
     TypeExpression parse(JSType type) {
       expression.clear();
@@ -143,6 +117,63 @@ final class TypeExpressionParser {
       expressions.addLast(expression);
       type.visit(this);
       return expression.build();
+    }
+
+
+    @Nullable
+    @CheckReturnValue
+    private NominalType resolve(JSType type) {
+      Collection<NominalType> types = typeRegistry.getTypes(type);  // Exact check first.
+      if (types.isEmpty()) {
+        types = typeRegistry.findTypes(type);  // Slow equivalence check next.
+      }
+      if (types.isEmpty()) {
+        return null;
+      }
+      return types.iterator().next();
+    }
+
+    private com.github.jsdossier.proto.NamedType.Builder createNamedType(String name) {
+      NominalType nominalType = linkFactory.getTypeContext().resolveType(name);
+      if (nominalType != null) {
+        return createNamedType(nominalType);
+      }
+
+      JSType jsType = jsTypeRegistry.getType(name);
+      if (jsType != null) {
+        nominalType = resolve(jsType);
+        if (nominalType != null) {
+          return createNamedType(nominalType);
+        }
+      }
+
+      int index = name.indexOf("$$module$");
+      if (index > 0) {
+        name = name.substring(0, index);
+        return createNamedType(name);
+      }
+
+      return com.github.jsdossier.proto.NamedType.newBuilder().setName(name);
+    }
+
+    @Nullable
+    @CheckReturnValue
+    private com.github.jsdossier.proto.NamedType.Builder createNamedType(JSType type) {
+      NominalType ntype = resolve(type);
+      if (ntype == null) {
+        return null;
+      }
+      return createNamedType(ntype);
+    }
+
+    private com.github.jsdossier.proto.NamedType.Builder createNamedType(NominalType type) {
+      TypeLink link = linkFactory.createLink(type);
+      return com.github.jsdossier.proto.NamedType.newBuilder()
+          .setHref(link.getHref())
+          .setName(
+              options.contains(Option.QUALIFIED_NAMES)
+                  ? dfs.getQualifiedDisplayName(type)
+                  : dfs.getDisplayName(type));
     }
 
     private TypeExpression.Builder currentExpression() {
@@ -286,16 +317,18 @@ final class TypeExpressionParser {
       if (type.getOwnerFunction() != null) {
         ObjectType obj = type.getOwnerFunction().getTypeOfThis().toObjectType();
 
-        TypeLink link = getLink(obj.getConstructor());
-        if (link != null) {
-          appendLink(link.getText() + ".prototype", link.getHref());
+        com.github.jsdossier.proto.NamedType.Builder namedType =
+            createNamedType(obj.getConstructor());
+        if (namedType != null) {
+          namedType.setName(namedType.getName() + ".prototype");
+          currentExpression().setNamedType(namedType);
         } else {
           caseInstanceType(obj.getReferenceName() + ".prototype", obj);
         }
       } else if (!type.getOwnPropertyNames().isEmpty()) {
-        TypeLink link = getLink(type);
-        if (link != null) {
-          appendLink(link);
+        com.github.jsdossier.proto.NamedType.Builder namedType = createNamedType(type);
+        if (namedType != null) {
+          currentExpression().setNamedType(namedType);
         } else {
           caseRecordType(type);
         }
@@ -314,12 +347,13 @@ final class TypeExpressionParser {
     }
 
     private void caseInstanceType(String displayName, ObjectType type) {
-      TypeLink link = getLink(type.getConstructor());
-      if (link == null) {
-        link = linkFactory.createNativeExternLink(type.getReferenceName());
+      com.github.jsdossier.proto.NamedType.Builder namedType =
+          createNamedType(type.getConstructor());
+      if (namedType == null) {
+        TypeLink link = linkFactory.createNativeExternLink(type.getReferenceName());
         appendLink(displayName, link == null ? "" : link.getHref());
       } else {
-        appendLink(displayName, link.getHref());
+        currentExpression().setNamedType(namedType);
       }
 
       if (type.isNullable()) {
@@ -373,15 +407,13 @@ final class TypeExpressionParser {
     @Override
     public Void caseNamedType(NamedType type) {
       String name = type.getReferenceName();
-      TypeLink link = getNamedTypeLink(name);
 
-      if (link != null) {
-        appendLink(link);
+      com.github.jsdossier.proto.NamedType.Builder namedType = createNamedType(name);
+      currentExpression().setNamedType(namedType);
+      if (namedType.getHref().isEmpty()) {
         // If there is no href, we were not able to resolve the type, so assume it is
         // nullable by default.
-        if (link.getHref().isEmpty()) {
-          currentExpression().setAllowNull(true);
-        }
+        currentExpression().setAllowNull(true);
       }
       return null;
     }

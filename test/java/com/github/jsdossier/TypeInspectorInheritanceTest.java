@@ -294,8 +294,8 @@ public class TypeInspectorInheritanceTest extends AbstractTypeInspectorTest {
     TypeInspector typeInspector = typeInspectorFactory.create(impl);
 
     assertMessages(typeInspector.getImplementedTypes()).containsExactly(
-        TypeExpression.newBuilder().setNamedType(namedType("B", "B.html")),
-        TypeExpression.newBuilder().setNamedType(namedType("A", "A.html")));
+        TypeExpression.newBuilder().setNamedType(namedType("A", "A.html")),
+        TypeExpression.newBuilder().setNamedType(namedType("B", "B.html")));
   }
 
   @Test
@@ -323,10 +323,10 @@ public class TypeInspectorInheritanceTest extends AbstractTypeInspectorTest {
     TypeInspector typeInspector = typeInspectorFactory.create(impl);
 
     assertMessages(typeInspector.getImplementedTypes()).containsExactly(
-        TypeExpression.newBuilder().setNamedType(namedType("D", "D.html")),
-        TypeExpression.newBuilder().setNamedType(namedType("C", "C.html")),
+        TypeExpression.newBuilder().setNamedType(namedType("A", "A.html")),
         TypeExpression.newBuilder().setNamedType(namedType("B", "B.html")),
-        TypeExpression.newBuilder().setNamedType(namedType("A", "A.html")));
+        TypeExpression.newBuilder().setNamedType(namedType("C", "C.html")),
+        TypeExpression.newBuilder().setNamedType(namedType("D", "D.html")));
   }
 
   @Test
@@ -354,10 +354,10 @@ public class TypeInspectorInheritanceTest extends AbstractTypeInspectorTest {
     TypeInspector typeInspector = typeInspectorFactory.create(impl);
 
     assertMessages(typeInspector.getImplementedTypes()).containsExactly(
-        TypeExpression.newBuilder().setNamedType(namedType("D", "D.html")),
-        TypeExpression.newBuilder().setNamedType(namedType("C", "C.html")),
-        TypeExpression.newBuilder().setNamedType(namedType("B", "B.html")),
         TypeExpression.newBuilder().setNamedType(namedType("A", "A.html")),
+        TypeExpression.newBuilder().setNamedType(namedType("B", "B.html")),
+        TypeExpression.newBuilder().setNamedType(namedType("C", "C.html")),
+        TypeExpression.newBuilder().setNamedType(namedType("D", "D.html")),
         TypeExpression.newBuilder()
             .setNamedType(
                 namedType(
@@ -394,10 +394,10 @@ public class TypeInspectorInheritanceTest extends AbstractTypeInspectorTest {
     TypeInspector typeInspector = typeInspectorFactory.create(impl);
 
     assertMessages(typeInspector.getImplementedTypes()).containsExactly(
-        TypeExpression.newBuilder().setNamedType(namedType("B", "B.html")),
         TypeExpression.newBuilder().setNamedType(namedType("A", "A.html")),
-        TypeExpression.newBuilder().setNamedType(namedType("D", "D.html")),
-        TypeExpression.newBuilder().setNamedType(namedType("C", "C.html")));
+        TypeExpression.newBuilder().setNamedType(namedType("B", "B.html")),
+        TypeExpression.newBuilder().setNamedType(namedType("C", "C.html")),
+        TypeExpression.newBuilder().setNamedType(namedType("D", "D.html")));
   }
 
   @Test
@@ -452,8 +452,8 @@ public class TypeInspectorInheritanceTest extends AbstractTypeInspectorTest {
     TypeInspector typeInspector = typeInspectorFactory.create(impl);
 
     assertMessages(typeInspector.getImplementedTypes()).containsExactly(
-        TypeExpression.newBuilder().setNamedType(namedType("B", "B.html")),
-        TypeExpression.newBuilder().setNamedType(namedType("A", "A.html")));
+        TypeExpression.newBuilder().setNamedType(namedType("A", "A.html")),
+        TypeExpression.newBuilder().setNamedType(namedType("B", "B.html")));
   }
 
   @Test
@@ -480,13 +480,13 @@ public class TypeInspectorInheritanceTest extends AbstractTypeInspectorTest {
 
     assertMessages(typeInspector.getImplementedTypes()).containsExactly(
         TypeExpression.newBuilder()
-            .setNamedType(namedType("B", "B.html")
-                .toBuilder()
-                .addTemplateType(numberTypeExpression())),
-        TypeExpression.newBuilder()
             .setNamedType(namedType("A", "A.html")
                 .toBuilder()
-                .addTemplateType(stringTypeExpression())));
+                .addTemplateType(stringTypeExpression())),
+        TypeExpression.newBuilder()
+            .setNamedType(namedType("B", "B.html")
+                .toBuilder()
+                .addTemplateType(numberTypeExpression())));
   }
 
   @Test
@@ -528,11 +528,11 @@ public class TypeInspectorInheritanceTest extends AbstractTypeInspectorTest {
 
     assertMessages(typeInspector.getImplementedTypes()).containsExactly(
         TypeExpression.newBuilder()
-            .setNamedType(namedType("B", "B.html")
+            .setNamedType(namedType("A", "A.html")
                 .toBuilder()
                 .addTemplateType(namedTypeExpression("IMPL_TYPE"))),
         TypeExpression.newBuilder()
-            .setNamedType(namedType("A", "A.html")
+            .setNamedType(namedType("B", "B.html")
                 .toBuilder()
                 .addTemplateType(namedTypeExpression("IMPL_TYPE"))));
   }
