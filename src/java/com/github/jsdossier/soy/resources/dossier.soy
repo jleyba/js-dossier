@@ -88,25 +88,21 @@
 
 
 /**
- * Prints information about the interfaces the given descriptor implements or
- * extends (if itself an interface).
+ * Prints a list of type expressions.
  */
-{template .printInterfaces private="true"}
-  {@param type: dossier.JsType}
+{template .printTypeList private="true"}
+  {@param types: list<dossier.expression.TypeExpression>}
+  {@param title: string}
 
-  // Note: if type is itself an interface, it will not be included in the
-  // |implemented_type| list.
-  {if length($type.implementedType)}
-    <dt class="spec">
-      All {if $type.tags.isInterface}extended{else}implemented{/if} interfaces
-    {foreach $interface in $type.implementedType}
-      <dd><code>
+  <dt class="spec">{$title}
+  {foreach $type in $types}
+    <dd>
+      <code>
         {call dossier.soy.types.expression}
-          {param expression: $interface /}
+          {param expression: $type /}
         {/call}
       </code>
-    {/foreach}
-  {/if}
+  {/foreach}
 {/template}
 
 
@@ -827,6 +823,8 @@
               {/call}
               {if $type.aliasedType
                   or length($type.implementedType)
+                  or length($type.subtype)
+                  or ($type.tags.isInterface and length($type.implementation))
                   or ($type.enumeration and $type.enumeration.type)
                   or ($type.deprecation and length($type.deprecation.token))}
                 <dl>
@@ -843,9 +841,30 @@
                   {call .printAliasLink}
                     {param type: $type /}
                   {/call}
-                  {call .printInterfaces}
-                    {param type: $type /}
-                  {/call}
+
+                  {if length($type.implementedType)}
+                    {call .printTypeList}
+                      {param types: $type.implementedType /}
+                      {param title: 'All ' + ($type.tags.isInterface ? 'Extended' : 'Implemented')
+                          + ' Interfaces' /}
+                    {/call}
+                  {/if}
+
+                  {if length($type.subtype)}
+                    {call .printTypeList}
+                      {param types: $type.subtype /}
+                      {param title: 'All Known '
+                          + ($type.tags.isInterface ? 'Subinterfaces' : 'Direct Subclasses') /}
+                    {/call}
+                  {/if}
+
+                  {if $type.tags.isInterface and length($type.implementation)}
+                    {call .printTypeList}
+                      {param types: $type.implementation /}
+                      {param title: 'All Known Implementations' /}
+                    {/call}
+                  {/if}
+
                   {call .deprecationNotice}
                     {param deprecation: $type.deprecation /}
                   {/call}

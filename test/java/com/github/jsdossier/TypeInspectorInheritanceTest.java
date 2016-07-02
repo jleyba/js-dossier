@@ -29,8 +29,29 @@ import org.junit.runners.JUnit4;
  */
 @RunWith(JUnit4.class)
 public class TypeInspectorInheritanceTest extends AbstractTypeInspectorTest {
+
+  private static final TypeExpression TYPE_A = TypeExpression.newBuilder()
+      .setNamedType(namedType("A", "A.html"))
+      .build();
+
+  private static final TypeExpression TYPE_B = TypeExpression.newBuilder()
+      .setNamedType(namedType("B", "B.html"))
+      .build();
+
+  private static final TypeExpression TYPE_C = TypeExpression.newBuilder()
+      .setNamedType(namedType("C", "C.html"))
+      .build();
+
+  private static final TypeExpression TYPE_D = TypeExpression.newBuilder()
+      .setNamedType(namedType("D", "D.html"))
+      .build();
+
+  private static final TypeExpression TYPE_E = TypeExpression.newBuilder()
+      .setNamedType(namedType("E", "E.html"))
+      .build();
+
   @Test
-  public void getImplementedTypes_interfaceExtendsOneInterface() {
+  public void interfaceThatExtendsOneInterface() {
     compile(
         "/** @interface */",
         "function A() {}",
@@ -41,30 +62,38 @@ public class TypeInspectorInheritanceTest extends AbstractTypeInspectorTest {
         " */",
         "function B() {}");
 
-    NominalType impl = typeRegistry.getType("B");
-    TypeInspector typeInspector = typeInspectorFactory.create(impl);
+    NominalType a = typeRegistry.getType("A");
+    NominalType b = typeRegistry.getType("B");
 
-    assertMessages(typeInspector.getImplementedTypes()).containsExactly(
-        TypeExpression.newBuilder()
-            .setNamedType(namedType("A", "A.html")));
+    assertImplementedTypes(a).isEmpty();
+    assertKnownImplementations(a).isEmpty();
+    assertSubtypes(a).containsExactly(TYPE_B);
+
+    assertImplementedTypes(b).containsExactly(TYPE_A);
+    assertKnownImplementations(b).isEmpty();
+    assertSubtypes(b).isEmpty();
   }
 
   @Test
-  public void getImplementedTypes_interfaceExtendsOneInterface_es6() {
+  public void interfaceThatExtendsOneInterface_es6() {
     compile(
         "/** @interface */ class A {}",
         "/** @interface */ class B extends A {}");
 
-    NominalType impl = typeRegistry.getType("B");
-    TypeInspector typeInspector = typeInspectorFactory.create(impl);
+    NominalType a = typeRegistry.getType("A");
+    NominalType b = typeRegistry.getType("B");
 
-    assertMessages(typeInspector.getImplementedTypes()).containsExactly(
-        TypeExpression.newBuilder()
-            .setNamedType(namedType("A", "A.html")));
+    assertImplementedTypes(a).isEmpty();
+    assertKnownImplementations(a).isEmpty();
+    assertSubtypes(a).containsExactly(TYPE_B);
+
+    assertImplementedTypes(b).containsExactly(TYPE_A);
+    assertKnownImplementations(b).isEmpty();
+    assertSubtypes(b).isEmpty();
   }
 
   @Test
-  public void getImplementedTypes_interfaceExtendsMultipleInterfaces() {
+  public void interfaceThatExtendsMultipleInterfaces() {
     compile(
         "/** @interface */ function A() {}",
         "/** @interface */ function B() {}",
@@ -76,35 +105,114 @@ public class TypeInspectorInheritanceTest extends AbstractTypeInspectorTest {
         " */",
         "function C() {}");
 
-    NominalType impl = typeRegistry.getType("C");
-    TypeInspector typeInspector = typeInspectorFactory.create(impl);
+    NominalType a = typeRegistry.getType("A");
+    NominalType b = typeRegistry.getType("B");
+    NominalType c = typeRegistry.getType("C");
 
-    assertMessages(typeInspector.getImplementedTypes()).containsExactly(
-        TypeExpression.newBuilder().setNamedType(namedType("A", "A.html")),
-        TypeExpression.newBuilder().setNamedType(namedType("B", "B.html")));
+    assertImplementedTypes(a).isEmpty();
+    assertKnownImplementations(a).isEmpty();
+    assertSubtypes(a).containsExactly(TYPE_C);
+
+    assertImplementedTypes(b).isEmpty();
+    assertKnownImplementations(b).isEmpty();
+    assertSubtypes(b).containsExactly(TYPE_C);
+
+    assertImplementedTypes(c).containsExactly(TYPE_A, TYPE_B);
+    assertKnownImplementations(c).isEmpty();
+    assertSubtypes(c).isEmpty();
   }
 
   @Test
-  public void getImplementedTypes_implementsOneInterface() {
+  public void multipleLevelsOfInterfaceExtension_es5() {
     compile(
-        "/** @interface */",
-        "function Runnable() {}",
-        "Runnable.prototype.run = function() {};",
-        "",
-        "/**",
-        " * @constructor",
-        " * @implements {Runnable}",
-        " */",
-        "function RunnableImpl() {}",
-        "/** @override */",
-        "RunnableImpl.prototype.run = function() {};");
+        "/** @interface */ function A() {}",
+        "/** @interface @extends {A} */ function B() {}",
+        "/** @interface @extends {B} */ function C() {}",
+        "/** @interface @extends {C} */ function D() {}");
 
-    NominalType impl = typeRegistry.getType("RunnableImpl");
-    TypeInspector typeInspector = typeInspectorFactory.create(impl);
+    checkMultipleLevelsOfInterfaceExtension();
+  }
 
-    assertMessages(typeInspector.getImplementedTypes()).containsExactly(
-        TypeExpression.newBuilder()
-            .setNamedType(namedType("Runnable", "Runnable.html")));
+  @Test
+  public void multipleLevelsOfInterfaceExtension_es6() {
+    compile(
+        "/** @interface */ class A {}",
+        "/** @interface */ class B extends A {}",
+        "/** @interface */ class C extends B {}",
+        "/** @interface */ class D extends C {}");
+
+    checkMultipleLevelsOfInterfaceExtension();
+  }
+
+  private void checkMultipleLevelsOfInterfaceExtension() {
+    NominalType a = typeRegistry.getType("A");
+    NominalType b = typeRegistry.getType("B");
+    NominalType c = typeRegistry.getType("C");
+    NominalType d = typeRegistry.getType("D");
+
+    assertImplementedTypes(a).isEmpty();
+    assertKnownImplementations(a).isEmpty();
+    assertSubtypes(a).containsExactly(TYPE_B, TYPE_C, TYPE_D);
+
+    assertImplementedTypes(b).containsExactly(TYPE_A);
+    assertKnownImplementations(b).isEmpty();
+    assertSubtypes(b).containsExactly(TYPE_C, TYPE_D);
+
+    assertImplementedTypes(c).containsExactly(TYPE_A, TYPE_B);
+    assertKnownImplementations(c).isEmpty();
+    assertSubtypes(c).containsExactly(TYPE_D);
+
+    assertImplementedTypes(d).containsExactly(TYPE_A, TYPE_B, TYPE_C);
+    assertKnownImplementations(d).isEmpty();
+    assertSubtypes(d).isEmpty();
+  }
+
+  @Test
+  public void multipleBranchesOfInterfaceExtension() {
+    compile(
+        "/** @interface */ class A {}",
+        "/** @interface */ class B extends A {}",
+        "/** @interface */ class C extends A {}",
+        "/** @interface @extends {B} */ class D extends C {}");
+
+    NominalType a = typeRegistry.getType("A");
+    NominalType b = typeRegistry.getType("B");
+    NominalType c = typeRegistry.getType("C");
+    NominalType d = typeRegistry.getType("D");
+
+    assertImplementedTypes(a).isEmpty();
+    assertKnownImplementations(a).isEmpty();
+    assertSubtypes(a).containsExactly(TYPE_B, TYPE_C, TYPE_D);
+
+    assertImplementedTypes(b).containsExactly(TYPE_A);
+    assertKnownImplementations(b).isEmpty();
+    assertSubtypes(b).containsExactly(TYPE_D);
+
+    assertImplementedTypes(c).containsExactly(TYPE_A);
+    assertKnownImplementations(c).isEmpty();
+    assertSubtypes(c).containsExactly(TYPE_D);
+
+    assertImplementedTypes(d).containsExactly(TYPE_A, TYPE_B, TYPE_C);
+    assertKnownImplementations(d).isEmpty();
+    assertSubtypes(d).isEmpty();
+  }
+
+  @Test
+  public void classImplementsOneInterface() {
+    compile(
+        "/** @interface */ class A {}",
+        "/** @implements {A} */ class B {}");
+
+    NominalType a = typeRegistry.getType("A");
+    NominalType b = typeRegistry.getType("B");
+
+    assertImplementedTypes(a).isEmpty();
+    assertKnownImplementations(a).containsExactly(TYPE_B);
+    assertSubtypes(a).isEmpty();
+
+    assertImplementedTypes(b).containsExactly(TYPE_A);
+    assertKnownImplementations(b).isEmpty();
+    assertSubtypes(b).isEmpty();
   }
 
   @Test
@@ -114,24 +222,26 @@ public class TypeInspectorInheritanceTest extends AbstractTypeInspectorTest {
         " * @template T",
         " * @interface",
         " */",
-        "function Container() {}",
+        "function A() {}",
         "",
         "/**",
         " * @constructor",
         " * @template TYPE",
-        " * @implements {Container<TYPE>}",
+        " * @implements {A<TYPE>}",
         " */",
-        "function ContainerImpl() {}");
+        "function B() {}");
 
-    NominalType impl = typeRegistry.getType("ContainerImpl");
-    TypeInspector typeInspector = typeInspectorFactory.create(impl);
+    NominalType a = typeRegistry.getType("A");
+    NominalType b = typeRegistry.getType("B");
 
-    assertMessages(typeInspector.getImplementedTypes()).containsExactly(
-        TypeExpression.newBuilder()
-            .setNamedType(
-                namedType("Container", "Container.html")
-                    .toBuilder()
-                    .addTemplateType(namedTypeExpression("TYPE"))));
+    assertImplementedTypes(a).isEmpty();
+    assertSubtypes(a).isEmpty();
+    assertKnownImplementations(a).containsExactly(TYPE_B);
+
+    assertKnownImplementations(b).isEmpty();
+    assertSubtypes(b).isEmpty();
+    assertImplementedTypes(b)
+        .containsExactly(addTemplateTypes(TYPE_A, namedTypeExpression("TYPE")));
   }
 
   @Test
@@ -141,24 +251,26 @@ public class TypeInspectorInheritanceTest extends AbstractTypeInspectorTest {
         " * @template T",
         " * @interface",
         " */",
-        "function Container() {}",
+        "function A() {}",
         "",
         "/**",
         " * @constructor",
         " * @template TYPE",
-        " * @implements {Container<string>}",
+        " * @implements {A<string>}",
         " */",
-        "function ContainerImpl() {}");
+        "function B() {}");
 
-    NominalType impl = typeRegistry.getType("ContainerImpl");
-    TypeInspector typeInspector = typeInspectorFactory.create(impl);
+    NominalType a = typeRegistry.getType("A");
+    NominalType b = typeRegistry.getType("B");
 
-    assertMessages(typeInspector.getImplementedTypes()).containsExactly(
-        TypeExpression.newBuilder()
-            .setNamedType(
-                namedType("Container", "Container.html")
-                    .toBuilder()
-                    .addTemplateType(stringTypeExpression())));
+    assertImplementedTypes(a).isEmpty();
+    assertSubtypes(a).isEmpty();
+    assertKnownImplementations(a).containsExactly(TYPE_B);
+
+    assertKnownImplementations(b).isEmpty();
+    assertSubtypes(b).isEmpty();
+    assertImplementedTypes(b)
+        .containsExactly(addTemplateTypes(TYPE_A, stringTypeExpression()));
   }
 
   @Test
@@ -167,39 +279,42 @@ public class TypeInspectorInheritanceTest extends AbstractTypeInspectorTest {
         "/**",
         " * @interface",
         " */",
-        "function Container() {}");
+        "function A() {}");
 
-    NominalType impl = typeRegistry.getType("Container");
-    TypeInspector typeInspector = typeInspectorFactory.create(impl);
-    assertMessages(typeInspector.getImplementedTypes()).isEmpty();
+    NominalType a = typeRegistry.getType("A");
+    assertImplementedTypes(a).isEmpty();
+    assertSubtypes(a).isEmpty();
+    assertKnownImplementations(a).isEmpty();
   }
 
   @Test
   public void implementsMultipleInterfaces() {
     compile(
-        "/** @interface */",
-        "function A() {}",
-        "A.prototype.a = function() {};",
-        "",
-        "/** @interface */",
-        "function B() {}",
-        "B.prototype.b = function() {};",
+        "/** @interface */ function A() {}",
+        "/** @interface */ function B() {}",
         "",
         "/**",
         " * @constructor",
         " * @implements {A}",
         " * @implements {B}",
         " */",
-        "function Impl() {}",
-        "Impl.prototype.a = function() {};",
-        "Impl.prototype.b = function() {};");
+        "function C() {}");
 
-    NominalType impl = typeRegistry.getType("Impl");
-    TypeInspector typeInspector = typeInspectorFactory.create(impl);
+    NominalType a = typeRegistry.getType("A");
+    NominalType b = typeRegistry.getType("B");
+    NominalType c = typeRegistry.getType("C");
 
-    assertMessages(typeInspector.getImplementedTypes()).containsExactly(
-        TypeExpression.newBuilder().setNamedType(namedType("A", "A.html")),
-        TypeExpression.newBuilder().setNamedType(namedType("B", "B.html")));
+    assertImplementedTypes(a).isEmpty();
+    assertKnownImplementations(a).containsExactly(TYPE_C);
+    assertSubtypes(a).isEmpty();
+
+    assertImplementedTypes(b).isEmpty();
+    assertKnownImplementations(b).containsExactly(TYPE_C);
+    assertSubtypes(b).isEmpty();
+
+    assertImplementedTypes(c).containsExactly(TYPE_A, TYPE_B);
+    assertKnownImplementations(c).isEmpty();
+    assertSubtypes(c).isEmpty();
   }
 
   @Test
@@ -223,20 +338,26 @@ public class TypeInspectorInheritanceTest extends AbstractTypeInspectorTest {
         " * @implements {A<SPECIFIC_TYPE>}",
         " * @implements {B<SPECIFIC_TYPE>}",
         " */",
-        "function Impl() {}");
+        "function C() {}");
 
-    NominalType impl = typeRegistry.getType("Impl");
-    TypeInspector typeInspector = typeInspectorFactory.create(impl);
+    NominalType a = typeRegistry.getType("A");
+    NominalType b = typeRegistry.getType("B");
+    NominalType c = typeRegistry.getType("C");
 
-    assertMessages(typeInspector.getImplementedTypes()).containsExactly(
-        TypeExpression.newBuilder()
-            .setNamedType(namedType("A", "A.html")
-                .toBuilder()
-                .addTemplateType(namedTypeExpression("SPECIFIC_TYPE"))),
-        TypeExpression.newBuilder()
-            .setNamedType(namedType("B", "B.html")
-                .toBuilder()
-                .addTemplateType(namedTypeExpression("SPECIFIC_TYPE"))));
+    assertImplementedTypes(a).isEmpty();
+    assertKnownImplementations(a).containsExactly(TYPE_C);
+    assertSubtypes(a).isEmpty();
+
+    assertImplementedTypes(b).isEmpty();
+    assertKnownImplementations(b).containsExactly(TYPE_C);
+    assertSubtypes(b).isEmpty();
+
+    assertImplementedTypes(c)
+        .containsExactly(
+            addTemplateTypes(TYPE_A, namedTypeExpression("SPECIFIC_TYPE")),
+            addTemplateTypes(TYPE_B, namedTypeExpression("SPECIFIC_TYPE")));
+    assertKnownImplementations(c).isEmpty();
+    assertSubtypes(c).isEmpty();
   }
 
   @Test
@@ -259,20 +380,26 @@ public class TypeInspectorInheritanceTest extends AbstractTypeInspectorTest {
         " * @implements {A<string>}",
         " * @implements {B<number>}",
         " */",
-        "function Impl() {}");
+        "function C() {}");
 
-    NominalType impl = typeRegistry.getType("Impl");
-    TypeInspector typeInspector = typeInspectorFactory.create(impl);
+    NominalType a = typeRegistry.getType("A");
+    NominalType b = typeRegistry.getType("B");
+    NominalType c = typeRegistry.getType("C");
 
-    assertMessages(typeInspector.getImplementedTypes()).containsExactly(
-        TypeExpression.newBuilder()
-            .setNamedType(namedType("A", "A.html")
-                .toBuilder()
-                .addTemplateType(stringTypeExpression())),
-        TypeExpression.newBuilder()
-            .setNamedType(namedType("B", "B.html")
-                .toBuilder()
-                .addTemplateType(numberTypeExpression())));
+    assertImplementedTypes(a).isEmpty();
+    assertKnownImplementations(a).containsExactly(TYPE_C);
+    assertSubtypes(a).isEmpty();
+
+    assertImplementedTypes(b).isEmpty();
+    assertKnownImplementations(b).containsExactly(TYPE_C);
+    assertSubtypes(b).isEmpty();
+
+    assertImplementedTypes(c)
+        .containsExactly(
+            addTemplateTypes(TYPE_A, stringTypeExpression()),
+            addTemplateTypes(TYPE_B, numberTypeExpression()));
+    assertKnownImplementations(c).isEmpty();
+    assertSubtypes(c).isEmpty();
   }
 
   @Test
@@ -288,14 +415,23 @@ public class TypeInspectorInheritanceTest extends AbstractTypeInspectorTest {
         " * @constructor",
         " * @implements {B}",
         " */",
-        "function Impl() {}");
+        "function C() {}");
 
-    NominalType impl = typeRegistry.getType("Impl");
-    TypeInspector typeInspector = typeInspectorFactory.create(impl);
+    NominalType a = typeRegistry.getType("A");
+    NominalType b = typeRegistry.getType("B");
+    NominalType c = typeRegistry.getType("C");
 
-    assertMessages(typeInspector.getImplementedTypes()).containsExactly(
-        TypeExpression.newBuilder().setNamedType(namedType("A", "A.html")),
-        TypeExpression.newBuilder().setNamedType(namedType("B", "B.html")));
+    assertImplementedTypes(a).isEmpty();
+    assertKnownImplementations(a).containsExactly(TYPE_C);
+    assertSubtypes(a).containsExactly(TYPE_B);
+
+    assertImplementedTypes(b).containsExactly(TYPE_A);
+    assertKnownImplementations(b).containsExactly(TYPE_C);
+    assertSubtypes(b).isEmpty();
+
+    assertImplementedTypes(c).containsExactly(TYPE_A, TYPE_B);
+    assertKnownImplementations(c).isEmpty();
+    assertSubtypes(c).isEmpty();
   }
 
   @Test
@@ -317,16 +453,33 @@ public class TypeInspectorInheritanceTest extends AbstractTypeInspectorTest {
         " * @constructor",
         " * @implements {D}",
         " */",
-        "function Impl() {}");
+        "function E() {}");
 
-    NominalType impl = typeRegistry.getType("Impl");
-    TypeInspector typeInspector = typeInspectorFactory.create(impl);
+    NominalType a = typeRegistry.getType("A");
+    NominalType b = typeRegistry.getType("B");
+    NominalType c = typeRegistry.getType("C");
+    NominalType d = typeRegistry.getType("D");
+    NominalType e = typeRegistry.getType("E");
 
-    assertMessages(typeInspector.getImplementedTypes()).containsExactly(
-        TypeExpression.newBuilder().setNamedType(namedType("A", "A.html")),
-        TypeExpression.newBuilder().setNamedType(namedType("B", "B.html")),
-        TypeExpression.newBuilder().setNamedType(namedType("C", "C.html")),
-        TypeExpression.newBuilder().setNamedType(namedType("D", "D.html")));
+    assertImplementedTypes(a).isEmpty();
+    assertKnownImplementations(a).containsExactly(TYPE_E);
+    assertSubtypes(a).containsExactly(TYPE_B, TYPE_C, TYPE_D);
+
+    assertImplementedTypes(b).containsExactly(TYPE_A);
+    assertKnownImplementations(b).containsExactly(TYPE_E);
+    assertSubtypes(b).containsExactly(TYPE_C, TYPE_D);
+
+    assertImplementedTypes(c).containsExactly(TYPE_A, TYPE_B);
+    assertKnownImplementations(c).containsExactly(TYPE_E);
+    assertSubtypes(c).containsExactly(TYPE_D);
+
+    assertImplementedTypes(d).containsExactly(TYPE_A, TYPE_B, TYPE_C);
+    assertKnownImplementations(d).containsExactly(TYPE_E);
+    assertSubtypes(d).isEmpty();
+
+    assertImplementedTypes(e).containsExactly(TYPE_A, TYPE_B, TYPE_C, TYPE_D);
+    assertKnownImplementations(e).isEmpty();
+    assertSubtypes(e).isEmpty();
   }
 
   @Test
@@ -348,24 +501,43 @@ public class TypeInspectorInheritanceTest extends AbstractTypeInspectorTest {
         " * @constructor",
         " * @implements {D}",
         " */",
-        "function Impl() {}");
+        "function E() {}");
 
-    NominalType impl = typeRegistry.getType("Impl");
-    TypeInspector typeInspector = typeInspectorFactory.create(impl);
+    TypeExpression thenable = TypeExpression.newBuilder()
+        .setNamedType(
+            namedType(
+                "IThenable",
+                "https://github.com/google/closure-compiler/wiki/" +
+                    "Special-types-in-the-Closure-Type-System#ithenable")
+                .toBuilder()
+                .addTemplateType(stringTypeExpression()))
+        .build();
 
-    assertMessages(typeInspector.getImplementedTypes()).containsExactly(
-        TypeExpression.newBuilder().setNamedType(namedType("A", "A.html")),
-        TypeExpression.newBuilder().setNamedType(namedType("B", "B.html")),
-        TypeExpression.newBuilder().setNamedType(namedType("C", "C.html")),
-        TypeExpression.newBuilder().setNamedType(namedType("D", "D.html")),
-        TypeExpression.newBuilder()
-            .setNamedType(
-                namedType(
-                    "IThenable",
-                    "https://github.com/google/closure-compiler/wiki/" +
-                        "Special-types-in-the-Closure-Type-System#ithenable")
-                    .toBuilder()
-                    .addTemplateType(stringTypeExpression())));
+    NominalType a = typeRegistry.getType("A");
+    NominalType b = typeRegistry.getType("B");
+    NominalType c = typeRegistry.getType("C");
+    NominalType d = typeRegistry.getType("D");
+    NominalType e = typeRegistry.getType("E");
+
+    assertImplementedTypes(a).isEmpty();
+    assertKnownImplementations(a).containsExactly(TYPE_E);
+    assertSubtypes(a).containsExactly(TYPE_B, TYPE_C, TYPE_D);
+
+    assertImplementedTypes(b).containsExactly(TYPE_A);
+    assertKnownImplementations(b).containsExactly(TYPE_E);
+    assertSubtypes(b).containsExactly(TYPE_C, TYPE_D);
+
+    assertImplementedTypes(c).containsExactly(TYPE_A, TYPE_B, thenable);
+    assertKnownImplementations(c).containsExactly(TYPE_E);
+    assertSubtypes(c).containsExactly(TYPE_D);
+
+    assertImplementedTypes(d).containsExactly(TYPE_A, TYPE_B, TYPE_C, thenable);
+    assertKnownImplementations(d).containsExactly(TYPE_E);
+    assertSubtypes(d).isEmpty();
+
+    assertImplementedTypes(e).containsExactly(TYPE_A, TYPE_B, TYPE_C, TYPE_D, thenable);
+    assertKnownImplementations(e).isEmpty();
+    assertSubtypes(e).isEmpty();
   }
 
   @Test
@@ -388,16 +560,33 @@ public class TypeInspectorInheritanceTest extends AbstractTypeInspectorTest {
         " * @implements {B}",
         " * @implements {D}",
         " */",
-        "function Impl() {}");
+        "function E() {}");
 
-    NominalType impl = typeRegistry.getType("Impl");
-    TypeInspector typeInspector = typeInspectorFactory.create(impl);
+    NominalType a = typeRegistry.getType("A");
+    NominalType b = typeRegistry.getType("B");
+    NominalType c = typeRegistry.getType("C");
+    NominalType d = typeRegistry.getType("D");
+    NominalType e = typeRegistry.getType("E");
 
-    assertMessages(typeInspector.getImplementedTypes()).containsExactly(
-        TypeExpression.newBuilder().setNamedType(namedType("A", "A.html")),
-        TypeExpression.newBuilder().setNamedType(namedType("B", "B.html")),
-        TypeExpression.newBuilder().setNamedType(namedType("C", "C.html")),
-        TypeExpression.newBuilder().setNamedType(namedType("D", "D.html")));
+    assertImplementedTypes(a).isEmpty();
+    assertKnownImplementations(a).containsExactly(TYPE_E);
+    assertSubtypes(a).containsExactly(TYPE_B);
+
+    assertImplementedTypes(b).containsExactly(TYPE_A);
+    assertKnownImplementations(b).containsExactly(TYPE_E);
+    assertSubtypes(b).isEmpty();
+
+    assertImplementedTypes(c).isEmpty();
+    assertKnownImplementations(c).containsExactly(TYPE_E);
+    assertSubtypes(c).containsExactly(TYPE_D);
+
+    assertImplementedTypes(d).containsExactly(TYPE_C);
+    assertKnownImplementations(d).containsExactly(TYPE_E);
+    assertSubtypes(d).isEmpty();
+
+    assertImplementedTypes(e).containsExactly(TYPE_A, TYPE_B, TYPE_C, TYPE_D);
+    assertKnownImplementations(e).isEmpty();
+    assertSubtypes(e).isEmpty();
   }
 
   @Test
@@ -409,13 +598,13 @@ public class TypeInspectorInheritanceTest extends AbstractTypeInspectorTest {
         "/** @implements {A} */",
         "class B {}",
         "class C extends B {}",
-        "class Impl extends C {}");
+        "class D extends C {}");
 
-    NominalType impl = typeRegistry.getType("Impl");
-    TypeInspector typeInspector = typeInspectorFactory.create(impl);
+    NominalType d = typeRegistry.getType("D");
+    assertImplementedTypes(d).containsExactly(TYPE_A);
 
-    assertMessages(typeInspector.getImplementedTypes()).containsExactly(
-        TypeExpression.newBuilder().setNamedType(namedType("A", "A.html")));
+    NominalType a = typeRegistry.getType("A");
+    assertKnownImplementations(a).containsExactly(TYPE_B, TYPE_C, TYPE_D);
   }
 
   @Test
@@ -429,13 +618,10 @@ public class TypeInspectorInheritanceTest extends AbstractTypeInspectorTest {
         "",
         "/** @implements {A} */",
         "class C extends B {}",
-        "class Impl extends C {}");
+        "class D extends C {}");
 
-    NominalType impl = typeRegistry.getType("Impl");
-    TypeInspector typeInspector = typeInspectorFactory.create(impl);
-
-    assertMessages(typeInspector.getImplementedTypes()).containsExactly(
-        TypeExpression.newBuilder().setNamedType(namedType("A", "A.html")));
+    NominalType d = typeRegistry.getType("D");
+    assertImplementedTypes(d).containsExactly(TYPE_A);
   }
 
   @Test
@@ -444,16 +630,17 @@ public class TypeInspectorInheritanceTest extends AbstractTypeInspectorTest {
         "/** @interface */ class A {}",
         "/** @interface */ class B {}",
         "",
-        "/** @implements {A} */ class One {}",
-        "/** @implements {B} */ class Two extends One {}",
-        "class Impl extends Two {}");
+        "/** @implements {A} */ class C {}",
+        "/** @implements {B} */ class D extends C {}",
+        "class E extends D {}");
 
-    NominalType impl = typeRegistry.getType("Impl");
-    TypeInspector typeInspector = typeInspectorFactory.create(impl);
+    NominalType a = typeRegistry.getType("A");
+    NominalType b = typeRegistry.getType("B");
+    NominalType e = typeRegistry.getType("E");
 
-    assertMessages(typeInspector.getImplementedTypes()).containsExactly(
-        TypeExpression.newBuilder().setNamedType(namedType("A", "A.html")),
-        TypeExpression.newBuilder().setNamedType(namedType("B", "B.html")));
+    assertKnownImplementations(a).containsExactly(TYPE_C, TYPE_D, TYPE_E);
+    assertKnownImplementations(b).containsExactly(TYPE_D, TYPE_E);
+    assertImplementedTypes(e).containsExactly(TYPE_A, TYPE_B);
   }
 
   @Test
@@ -471,22 +658,19 @@ public class TypeInspectorInheritanceTest extends AbstractTypeInspectorTest {
         " */",
         "class B {}",
         "",
-        "/** @implements {A<string>} */ class One {}",
-        "/** @implements {B<number>} */ class Two extends One {}",
-        "class Impl extends Two {}");
+        "/** @implements {A<string>} */ class C {}",
+        "/** @implements {B<number>} */ class D extends C {}",
+        "class E extends D {}");
 
-    NominalType impl = typeRegistry.getType("Impl");
-    TypeInspector typeInspector = typeInspectorFactory.create(impl);
+    NominalType a = typeRegistry.getType("A");
+    NominalType b = typeRegistry.getType("B");
+    NominalType e = typeRegistry.getType("E");
 
-    assertMessages(typeInspector.getImplementedTypes()).containsExactly(
-        TypeExpression.newBuilder()
-            .setNamedType(namedType("A", "A.html")
-                .toBuilder()
-                .addTemplateType(stringTypeExpression())),
-        TypeExpression.newBuilder()
-            .setNamedType(namedType("B", "B.html")
-                .toBuilder()
-                .addTemplateType(numberTypeExpression())));
+    assertKnownImplementations(a).containsExactly(TYPE_C, TYPE_D, TYPE_E);
+    assertKnownImplementations(b).containsExactly(TYPE_D, TYPE_E);
+    assertImplementedTypes(e).containsExactly(
+        addTemplateTypes(TYPE_A, stringTypeExpression()),
+        addTemplateTypes(TYPE_B, numberTypeExpression()));
   }
 
   @Test
@@ -505,93 +689,95 @@ public class TypeInspectorInheritanceTest extends AbstractTypeInspectorTest {
         "class B {}",
         "",
         "/**",
-        " * @template ONE_TYPE",
-        " * @implements {A<ONE_TYPE>}",
+        " * @template C_TYPE",
+        " * @implements {A<C_TYPE>}",
         " */",
-        "class One {}",
+        "class C {}",
         "",
         "/**",
-        " * @template TWO_TYPE",
-        " * @extends {One<TWO_TYPE>}",
-        " * @implements {B<TWO_TYPE>}",
+        " * @template D_TYPE",
+        " * @extends {C<D_TYPE>}",
+        " * @implements {B<D_TYPE>}",
         " */",
-        "class Two extends One {}",
+        "class D extends C {}",
         "",
         "/**",
-        " * @template IMPL_TYPE",
-        " * @extends {Two<IMPL_TYPE>}",
+        " * @template E_TYPE",
+        " * @extends {D<E_TYPE>}",
         " */",
-        "class Impl extends Two {}");
+        "class E extends D {}");
 
-    NominalType impl = typeRegistry.getType("Impl");
-    TypeInspector typeInspector = typeInspectorFactory.create(impl);
+    NominalType e = typeRegistry.getType("E");
 
-    assertMessages(typeInspector.getImplementedTypes()).containsExactly(
-        TypeExpression.newBuilder()
-            .setNamedType(namedType("A", "A.html")
-                .toBuilder()
-                .addTemplateType(namedTypeExpression("IMPL_TYPE"))),
-        TypeExpression.newBuilder()
-            .setNamedType(namedType("B", "B.html")
-                .toBuilder()
-                .addTemplateType(namedTypeExpression("IMPL_TYPE"))));
+    assertImplementedTypes(e).containsExactly(
+        addTemplateTypes(TYPE_A, namedTypeExpression("E_TYPE")),
+        addTemplateTypes(TYPE_B, namedTypeExpression("E_TYPE")));
   }
 
   @Test
   public void getHierarchyForBaseClass() {
-    compile("class Base {}");
+    compile("class A {}");
 
-    NominalType type = typeRegistry.getType("Base");
-    TypeInspector typeInspector = typeInspectorFactory.create(type);
-
-    assertMessages(typeInspector.getTypeHierarchy()).containsExactly(
-        namedTypeExpression("Base", "Base.html"));
+    NominalType type = typeRegistry.getType("A");
+    assertTypeHierarchy(type).containsExactly(TYPE_A);
   }
 
   @Test
   public void getHierarchyForOneLevelOfInheritance() {
     compile(
-        "class Base {}",
-        "class Type extends Base {}");
+        "class A {}",
+        "class B extends A {}");
 
-    NominalType type = typeRegistry.getType("Type");
-    TypeInspector typeInspector = typeInspectorFactory.create(type);
+    NominalType a = typeRegistry.getType("A");
+    NominalType b = typeRegistry.getType("B");
 
-    assertMessages(typeInspector.getTypeHierarchy()).containsExactly(
-        namedTypeExpression("Type", "Type.html"),
-        namedTypeExpression("Base", "Base.html"));
+    assertTypeHierarchy(a).containsExactly(TYPE_A);
+    assertSubtypes(a).containsExactly(TYPE_B);
+
+    assertTypeHierarchy(b).containsExactly(TYPE_B, TYPE_A);
+    assertSubtypes(b).isEmpty();
   }
 
   @Test
   public void getHierarchyForMultipleLevels() {
     compile(
-        "class Base {}",
-        "class Two extends Base {}",
-        "class Three extends Two {}");
+        "class A {}",
+        "class B extends A {}",
+        "class C extends B {}");
 
-    NominalType type = typeRegistry.getType("Three");
-    TypeInspector typeInspector = typeInspectorFactory.create(type);
+    NominalType a = typeRegistry.getType("A");
+    NominalType b = typeRegistry.getType("B");
+    NominalType c = typeRegistry.getType("C");
 
-    assertMessages(typeInspector.getTypeHierarchy()).containsExactly(
-        namedTypeExpression("Three", "Three.html"),
-        namedTypeExpression("Two", "Two.html"),
-        namedTypeExpression("Base", "Base.html"));
+    assertTypeHierarchy(a).containsExactly(TYPE_A);
+    assertSubtypes(a).containsExactly(TYPE_B);
+
+    assertTypeHierarchy(b).containsExactly(TYPE_B, TYPE_A);
+    assertSubtypes(b).containsExactly(TYPE_C);
+
+    assertTypeHierarchy(c).containsExactly(TYPE_C, TYPE_B, TYPE_A);
+    assertSubtypes(c).isEmpty();
   }
 
   @Test
   public void getHierarchyForMultipleLevels_es5Constructors() {
     compile(
-        "/** @constructor */ function Base() {}",
-        "/** @constructor @extends {Base} */ function Two() {}",
-        "/** @constructor @extends {Two} */ function Three() {}");
+        "/** @constructor */ function A() {}",
+        "/** @constructor @extends {A} */ function B() {}",
+        "/** @constructor @extends {B} */ function C() {}");
 
-    NominalType type = typeRegistry.getType("Three");
-    TypeInspector typeInspector = typeInspectorFactory.create(type);
+    NominalType a = typeRegistry.getType("A");
+    NominalType b = typeRegistry.getType("B");
+    NominalType c = typeRegistry.getType("C");
 
-    assertMessages(typeInspector.getTypeHierarchy()).containsExactly(
-        namedTypeExpression("Three", "Three.html"),
-        namedTypeExpression("Two", "Two.html"),
-        namedTypeExpression("Base", "Base.html"));
+    assertTypeHierarchy(a).containsExactly(TYPE_A);
+    assertSubtypes(a).containsExactly(TYPE_B);
+
+    assertTypeHierarchy(b).containsExactly(TYPE_B, TYPE_A);
+    assertSubtypes(b).containsExactly(TYPE_C);
+
+    assertTypeHierarchy(c).containsExactly(TYPE_C, TYPE_B, TYPE_A);
+    assertSubtypes(c).isEmpty();
   }
 
   @Test
@@ -599,100 +785,168 @@ public class TypeInspectorInheritanceTest extends AbstractTypeInspectorTest {
     compile(
         "/**",
         " * @constructor",
-        " * @template BASE_TYPE",
+        " * @template A_TYPE",
         " */",
-        "function Base() {}",
+        "function A() {}",
         "/**",
         " * @constructor",
-        " * @extends {Base<TWO_TYPE>}",
-        " * @template TWO_TYPE",
+        " * @extends {A<B_TYPE>}",
+        " * @template B_TYPE",
         " */",
-        "function Two() {}",
+        "function B() {}",
         "/**",
         " * @constructor",
-        " * @extends {Two<TYPE>}",
-        " * @template TYPE",
+        " * @extends {B<C_TYPE>}",
+        " * @template C_TYPE",
         " */",
-        "function Three() {}");
+        "function C() {}");
 
-    NominalType type = typeRegistry.getType("Three");
-    TypeInspector typeInspector = typeInspectorFactory.create(type);
+    NominalType a = typeRegistry.getType("A");
+    NominalType b = typeRegistry.getType("B");
+    NominalType c = typeRegistry.getType("C");
 
-    assertMessages(typeInspector.getTypeHierarchy()).containsExactly(
-        namedTypeExpression("Three", "Three.html"),
-        addTemplateTypes(
-            namedTypeExpression("Two", "Two.html"),
-            namedTypeExpression("TYPE")),
-        addTemplateTypes(
-            namedTypeExpression("Base", "Base.html"),
-            namedTypeExpression("TYPE")));
+    assertImplementedTypes(a).isEmpty();
+    assertKnownImplementations(a).isEmpty();
+    assertSubtypes(a).containsExactly(
+        addTemplateTypes(TYPE_B, namedTypeExpression("B_TYPE")));
+    assertTypeHierarchy(a).containsExactly(
+        addTemplateTypes(TYPE_A, namedTypeExpression("A_TYPE")));
+
+    assertImplementedTypes(b).isEmpty();
+    assertKnownImplementations(b).isEmpty();
+    assertSubtypes(b).containsExactly(
+        addTemplateTypes(TYPE_C, namedTypeExpression("C_TYPE")));
+    assertTypeHierarchy(b).containsExactly(
+        addTemplateTypes(TYPE_B, namedTypeExpression("B_TYPE")),
+        addTemplateTypes(TYPE_A, namedTypeExpression("B_TYPE")));
+
+    assertImplementedTypes(c).isEmpty();
+    assertKnownImplementations(c).isEmpty();
+    assertSubtypes(c).isEmpty();
+    assertTypeHierarchy(c).containsExactly(
+        addTemplateTypes(TYPE_C, namedTypeExpression("C_TYPE")),
+        addTemplateTypes(TYPE_B, namedTypeExpression("C_TYPE")),
+        addTemplateTypes(TYPE_A, namedTypeExpression("C_TYPE")));
   }
 
   @Test
   public void getHierarchyForTemplatizedTypes_es6Classes() {
     compile(
         "/**",
-        " * @template BASE_TYPE",
+        " * @template A_TYPE",
         " */",
-        "class Base {}",
+        "class A {}",
         "/**",
-        " * @extends {Base<TWO_TYPE>}",
-        " * @template TWO_TYPE",
+        " * @extends {A<B_TYPE>}",
+        " * @template B_TYPE",
         " */",
-        "class Two extends Base {}",
+        "class B extends A {}",
         "/**",
-        " * @extends {Two<TYPE>}",
-        " * @template TYPE",
+        " * @extends {B<C_TYPE>}",
+        " * @template C_TYPE",
         " */",
-        "class Three extends Two {}");
+        "class C extends B {}");
 
-    NominalType type = typeRegistry.getType("Three");
-    TypeInspector typeInspector = typeInspectorFactory.create(type);
+    NominalType a = typeRegistry.getType("A");
+    NominalType b = typeRegistry.getType("B");
+    NominalType c = typeRegistry.getType("C");
 
-    assertMessages(typeInspector.getTypeHierarchy()).containsExactly(
-        namedTypeExpression("Three", "Three.html"),
-        addTemplateTypes(
-            namedTypeExpression("Two", "Two.html"),
-            namedTypeExpression("TYPE")),
-        addTemplateTypes(
-            namedTypeExpression("Base", "Base.html"),
-            namedTypeExpression("TYPE")));
+    assertImplementedTypes(a).isEmpty();
+    assertKnownImplementations(a).isEmpty();
+    assertSubtypes(a).containsExactly(
+        addTemplateTypes(TYPE_B, namedTypeExpression("B_TYPE")));
+    assertTypeHierarchy(a).containsExactly(
+        addTemplateTypes(TYPE_A, namedTypeExpression("A_TYPE")));
+
+    assertImplementedTypes(b).isEmpty();
+    assertKnownImplementations(b).isEmpty();
+    assertSubtypes(b).containsExactly(
+        addTemplateTypes(TYPE_C, namedTypeExpression("C_TYPE")));
+    assertTypeHierarchy(b).containsExactly(
+        addTemplateTypes(TYPE_B, namedTypeExpression("B_TYPE")),
+        addTemplateTypes(TYPE_A, namedTypeExpression("B_TYPE")));
+
+    assertImplementedTypes(c).isEmpty();
+    assertKnownImplementations(c).isEmpty();
+    assertSubtypes(c).isEmpty();
+    assertTypeHierarchy(c).containsExactly(
+        addTemplateTypes(TYPE_C, namedTypeExpression("C_TYPE")),
+        addTemplateTypes(TYPE_B, namedTypeExpression("C_TYPE")),
+        addTemplateTypes(TYPE_A, namedTypeExpression("C_TYPE")));
   }
 
   @Test
-  public void getHierarchyForTemplatizedTypes_rootHasConcreteType() {
+  public void getHierarchyForTemplatizedTypes_leafHasConcreteType() {
     compile(
         "/**",
-        " * @template BASE_TYPE",
+        " * @template A_TYPE",
         " */",
-        "class Base {}",
+        "class A {}",
         "/**",
-        " * @extends {Base<TWO_TYPE>}",
-        " * @template TWO_TYPE",
+        " * @extends {A<B_TYPE>}",
+        " * @template B_TYPE",
         " */",
-        "class Two extends Base {}",
+        "class B extends A {}",
         "/**",
-        " * @extends {Two<TYPE>}",
-        " * @template TYPE",
+        " * @extends {B<C_TYPE>}",
+        " * @template C_TYPE",
         " */",
-        "class Three extends Two {}",
+        "class C extends B {}",
         "",
-        "/** @extends {Three<string>} */",
-        "class Four extends Three {}");
+        "/** @extends {C<string>} */",
+        "class D extends C {}");
 
-    NominalType type = typeRegistry.getType("Four");
-    TypeInspector typeInspector = typeInspectorFactory.create(type);
+    NominalType a = typeRegistry.getType("A");
+    NominalType b = typeRegistry.getType("B");
+    NominalType c = typeRegistry.getType("C");
+    NominalType d = typeRegistry.getType("D");
 
-    assertMessages(typeInspector.getTypeHierarchy()).containsExactly(
-        namedTypeExpression("Four", "Four.html"),
-        addTemplateTypes(
-            namedTypeExpression("Three", "Three.html"),
-            stringTypeExpression()),
-        addTemplateTypes(
-            namedTypeExpression("Two", "Two.html"),
-            stringTypeExpression()),
-        addTemplateTypes(
-            namedTypeExpression("Base", "Base.html"),
-            stringTypeExpression()));
+    assertImplementedTypes(a).isEmpty();
+    assertKnownImplementations(a).isEmpty();
+    assertSubtypes(a).containsExactly(
+        addTemplateTypes(TYPE_B, namedTypeExpression("B_TYPE")));
+    assertTypeHierarchy(a).containsExactly(
+        addTemplateTypes(TYPE_A, namedTypeExpression("A_TYPE")));
+
+    assertImplementedTypes(b).isEmpty();
+    assertKnownImplementations(b).isEmpty();
+    assertSubtypes(b).containsExactly(
+        addTemplateTypes(TYPE_C, namedTypeExpression("C_TYPE")));
+    assertTypeHierarchy(b).containsExactly(
+        addTemplateTypes(TYPE_B, namedTypeExpression("B_TYPE")),
+        addTemplateTypes(TYPE_A, namedTypeExpression("B_TYPE")));
+
+    assertImplementedTypes(c).isEmpty();
+    assertKnownImplementations(c).isEmpty();
+    assertSubtypes(c).containsExactly(TYPE_D);
+    assertTypeHierarchy(c).containsExactly(
+        addTemplateTypes(TYPE_C, namedTypeExpression("C_TYPE")),
+        addTemplateTypes(TYPE_B, namedTypeExpression("C_TYPE")),
+        addTemplateTypes(TYPE_A, namedTypeExpression("C_TYPE")));
+
+    assertImplementedTypes(d).isEmpty();
+    assertKnownImplementations(d).isEmpty();
+    assertSubtypes(d).isEmpty();
+    assertTypeHierarchy(d).containsExactly(
+        TYPE_D,
+        addTemplateTypes(TYPE_C, stringTypeExpression()),
+        addTemplateTypes(TYPE_B, stringTypeExpression()),
+        addTemplateTypes(TYPE_A, stringTypeExpression()));
+  }
+
+  private ProtoTruth.MessageListSubject assertImplementedTypes(NominalType type) {
+    return assertMessages(typeInspectorFactory.create(type).getImplementedTypes());
+  }
+
+  private ProtoTruth.MessageListSubject assertKnownImplementations(NominalType type) {
+    return assertMessages(typeInspectorFactory.create(type).getKnownImplementations());
+  }
+
+  private ProtoTruth.MessageListSubject assertSubtypes(NominalType type) {
+    return assertMessages(typeInspectorFactory.create(type).getSubtypes());
+  }
+
+  private ProtoTruth.MessageListSubject assertTypeHierarchy(NominalType type) {
+    return assertMessages(typeInspectorFactory.create(type).getTypeHierarchy());
   }
 }

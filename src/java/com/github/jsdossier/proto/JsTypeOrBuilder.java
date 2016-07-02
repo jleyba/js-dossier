@@ -385,6 +385,104 @@ public interface JsTypeOrBuilder extends
       int index);
 
   /**
+   * <code>repeated .dossier.expression.TypeExpression subtype = 26;</code>
+   *
+   * <pre>
+   * Known subtypes of this type. If |is_class| is true, this will contain the
+   * know direct subclasses. If |is_interface| is true, this will contain the
+   * known subinterfaces.
+   * </pre>
+   */
+  java.util.List<com.github.jsdossier.proto.TypeExpression> 
+      getSubtypeList();
+  /**
+   * <code>repeated .dossier.expression.TypeExpression subtype = 26;</code>
+   *
+   * <pre>
+   * Known subtypes of this type. If |is_class| is true, this will contain the
+   * know direct subclasses. If |is_interface| is true, this will contain the
+   * known subinterfaces.
+   * </pre>
+   */
+  com.github.jsdossier.proto.TypeExpression getSubtype(int index);
+  /**
+   * <code>repeated .dossier.expression.TypeExpression subtype = 26;</code>
+   *
+   * <pre>
+   * Known subtypes of this type. If |is_class| is true, this will contain the
+   * know direct subclasses. If |is_interface| is true, this will contain the
+   * known subinterfaces.
+   * </pre>
+   */
+  int getSubtypeCount();
+  /**
+   * <code>repeated .dossier.expression.TypeExpression subtype = 26;</code>
+   *
+   * <pre>
+   * Known subtypes of this type. If |is_class| is true, this will contain the
+   * know direct subclasses. If |is_interface| is true, this will contain the
+   * known subinterfaces.
+   * </pre>
+   */
+  java.util.List<? extends com.github.jsdossier.proto.TypeExpressionOrBuilder> 
+      getSubtypeOrBuilderList();
+  /**
+   * <code>repeated .dossier.expression.TypeExpression subtype = 26;</code>
+   *
+   * <pre>
+   * Known subtypes of this type. If |is_class| is true, this will contain the
+   * know direct subclasses. If |is_interface| is true, this will contain the
+   * known subinterfaces.
+   * </pre>
+   */
+  com.github.jsdossier.proto.TypeExpressionOrBuilder getSubtypeOrBuilder(
+      int index);
+
+  /**
+   * <code>repeated .dossier.expression.TypeExpression implementation = 27;</code>
+   *
+   * <pre>
+   * Known implementations of this type. Will be empy if |is_interface| is false.
+   * </pre>
+   */
+  java.util.List<com.github.jsdossier.proto.TypeExpression> 
+      getImplementationList();
+  /**
+   * <code>repeated .dossier.expression.TypeExpression implementation = 27;</code>
+   *
+   * <pre>
+   * Known implementations of this type. Will be empy if |is_interface| is false.
+   * </pre>
+   */
+  com.github.jsdossier.proto.TypeExpression getImplementation(int index);
+  /**
+   * <code>repeated .dossier.expression.TypeExpression implementation = 27;</code>
+   *
+   * <pre>
+   * Known implementations of this type. Will be empy if |is_interface| is false.
+   * </pre>
+   */
+  int getImplementationCount();
+  /**
+   * <code>repeated .dossier.expression.TypeExpression implementation = 27;</code>
+   *
+   * <pre>
+   * Known implementations of this type. Will be empy if |is_interface| is false.
+   * </pre>
+   */
+  java.util.List<? extends com.github.jsdossier.proto.TypeExpressionOrBuilder> 
+      getImplementationOrBuilderList();
+  /**
+   * <code>repeated .dossier.expression.TypeExpression implementation = 27;</code>
+   *
+   * <pre>
+   * Known implementations of this type. Will be empy if |is_interface| is false.
+   * </pre>
+   */
+  com.github.jsdossier.proto.TypeExpressionOrBuilder getImplementationOrBuilder(
+      int index);
+
+  /**
    * <code>repeated .dossier.Property compiler_constant = 20;</code>
    */
   java.util.List<com.github.jsdossier.proto.Property> 

@@ -18,12 +18,17 @@ package com.github.jsdossier.jscomp;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.base.Verify.verify;
 import static com.google.common.collect.Multimaps.filterKeys;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.base.Supplier;
+import com.google.common.collect.FluentIterable;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
@@ -31,7 +36,11 @@ import com.google.common.collect.Multimaps;
 import com.google.common.collect.SetMultimap;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.JSDocInfo.Visibility;
+import com.google.javascript.rhino.jstype.FunctionType;
 import com.google.javascript.rhino.jstype.JSType;
+import com.google.javascript.rhino.jstype.JSTypeRegistry;
+import com.google.javascript.rhino.jstype.ObjectType;
+import com.google.javascript.rhino.jstype.StaticTypedScope;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -73,6 +82,17 @@ public final class TypeRegistry {
 
   private final SetMultimap<NominalType, NominalType> nestedTypes =
       MultimapBuilder.hashKeys().hashSetValues().build();
+
+  private final SetMultimap<FunctionType, ObjectType> subInterfaces =
+      MultimapBuilder.hashKeys().hashSetValues().build();
+  private final SetMultimap<FunctionType, ObjectType> knownImplementations =
+      MultimapBuilder.hashKeys().hashSetValues().build();
+  private final SetMultimap<FunctionType, ObjectType> implementedInterfaces =
+      MultimapBuilder.hashKeys().linkedHashSetValues().build();
+  private final SetMultimap<FunctionType, JSType> directSubtypes =
+      MultimapBuilder.hashKeys().hashSetValues().build();
+  private final ListMultimap<FunctionType, JSType> typeHierarchy =
+      MultimapBuilder.hashKeys().arrayListValues().build();
 
   /**
    * Records a region of a file that defines variable aliases.
@@ -361,5 +381,212 @@ public final class TypeRegistry {
       visibility = Visibility.PUBLIC;
     }
     return visibility;
+  }
+
+  /**
+   * Returns all known implementations of the given interface.
+   */
+  public ImmutableSet<ObjectType> getKnownImplementations(FunctionType type) {
+    return ImmutableSet.copyOf(knownImplementations.get(type));
+  }
+
+  /**
+   * Returns all known sub-interfaces of the given interface.
+   */
+  public ImmutableSet<ObjectType> getSubInterfaces(FunctionType type) {
+    return ImmutableSet.copyOf(subInterfaces.get(type));
+  }
+
+  /**
+   * Returns all known direct subtypes for the given type. An empty set will be returned if the
+   * type is not a constructor.
+   */
+  public ImmutableSet<JSType> getDirectSubTypes(FunctionType type) {
+    return ImmutableSet.copyOf(directSubtypes.get(type));
+  }
+
+  /**
+   * Returns the interfaces implemented by the given type. If the type is itself an interface, the
+   * return set will include the interfaces it extends.
+   *
+   * <p>Note the returned set contains instances of {@link ObjectType} instead of
+   * {@link NominalType} as each type may be an external type.
+   */
+  public ImmutableSet<ObjectType> getImplementedInterfaces(JSType type) {
+    if (type.toMaybeFunctionType() == null) {
+      return ImmutableSet.of();
+    }
+    return ImmutableSet.copyOf(implementedInterfaces.get(type.toMaybeFunctionType()));
+  }
+
+  /**
+   * Returns the hierarchy for the given type, starting from the type itself and going up to, but
+   * not including, the native Object type (Object is excluded as it is implied for all JS types).
+   */
+  public ImmutableList<JSType> getTypeHierarchy(JSType type) {
+    if (type.toMaybeFunctionType() == null) {
+      return ImmutableList.of();
+    }
+    return ImmutableList.copyOf(typeHierarchy.get(type.toMaybeFunctionType()));
+  }
+
+  /**
+   * Recomputes the type hierarchy relationships for all nominal types in this registry using the
+   * given global scope and JS registry.
+   */
+  public void computeTypeRelationships(
+      StaticTypedScope<JSType> globalScope, JSTypeRegistry jsRegistry) {
+    checkArgument(globalScope.getParentScope() == null, "not a global scope");
+
+    knownImplementations.clear();
+    subInterfaces.clear();
+    directSubtypes.clear();
+    implementedInterfaces.clear();
+
+    for (NominalType nominalType : typesByName.values()) {
+      JSType jsType = nominalType.getType();
+      if (!jsType.isConstructor() && !jsType.isInterface()) {
+        continue;
+      }
+
+      FunctionType ctor = jsType.toMaybeFunctionType();
+      if (ctor == null) {
+        continue;
+      }
+
+      if (ctor.isInterface()) {
+        scanExtendedInterfaces(new HashSet<FunctionType>(), ctor);
+
+      } else {
+        scanImplementedInterfaces(ctor);
+        computeTypeHiearchy(ctor, globalScope, jsRegistry);
+      }
+    }
+  }
+
+  private void computeTypeHiearchy(
+      final FunctionType ctor, StaticTypedScope<JSType> globalScope, JSTypeRegistry jsRegistry) {
+    checkArgument(ctor.isConstructor());
+
+    List<JSType> types = new ArrayList<>();
+    FunctionType currentCtor = ctor;
+    JSType currentInstance = getInstanceType(jsRegistry, ctor);
+    while (currentInstance != null
+        && currentCtor != null
+        && currentCtor.getSuperClassConstructor() != null) {
+      types.add(currentInstance);
+
+      JSType superInstance = getSuperInstance(
+          currentInstance.toMaybeObjectType(), currentCtor, globalScope, jsRegistry);
+      if (superInstance == null || superInstance.toMaybeObjectType() == null) {
+        break;
+      }
+
+      FunctionType superCtor = superInstance.toMaybeObjectType().getConstructor();
+      if (superCtor != null) {
+        directSubtypes.put(superCtor, getInstanceType(jsRegistry, currentCtor));
+      }
+      currentInstance = superInstance;
+      currentCtor = superCtor;
+    }
+    typeHierarchy.putAll(ctor, types);
+  }
+
+  private JSType getInstanceType(final JSTypeRegistry jsRegistry, FunctionType ctor) {
+    ObjectType instance = ctor.getInstanceType();
+    if (ctor.getJSDocInfo() != null
+        && !ctor.getJSDocInfo().getTemplateTypeNames().isEmpty()) {
+      ImmutableList<JSType> templateTypes =
+          FluentIterable.from(ctor.getJSDocInfo().getTemplateTypeNames())
+          .transform(new Function<String, JSType>() {
+            @Override
+            public JSType apply(String input) {
+              return jsRegistry.createTemplateType(input);
+            }
+          })
+          .toList();
+      instance = jsRegistry.createTemplatizedType(instance, templateTypes);
+    }
+    return instance;
+  }
+
+  private JSType getSuperInstance(
+      ObjectType instance, FunctionType ctor,
+      StaticTypedScope<JSType> globalScope, JSTypeRegistry jsRegistry) {
+    JSType superInstance;
+    if (ctor.getJSDocInfo() != null
+        && ctor.getJSDocInfo().getBaseType() != null) {
+      jsRegistry.setTemplateTypeNames(instance.getTemplateTypeMap().getTemplateKeys());
+      superInstance = ctor.getJSDocInfo().getBaseType().evaluate(globalScope, jsRegistry);
+      jsRegistry.clearTemplateTypeNames();
+
+      // The type expression will resolve to a named type if it is an aliased reference to
+      // a module's exported type. Compensate by checking dossier's type registry, which
+      // tracks exported types by their exported name (whereas the compiler tracks them by
+      // their initially declared name from within the module).
+      if (superInstance.isNamedType()
+          && isType(superInstance.toMaybeNamedType().getReferenceName())) {
+        superInstance = getType(superInstance.toMaybeNamedType().getReferenceName()).getType();
+        if (superInstance.isConstructor() || superInstance.isInterface()) {
+          superInstance = superInstance.toMaybeFunctionType().getTypeOfThis();
+        }
+      }
+
+    } else {
+      FunctionType superCtor = ctor.getSuperClassConstructor();
+      if (superCtor == null) {
+        return null;
+      }
+      superInstance = superCtor.getTypeOfThis();
+    }
+    return superInstance;
+  }
+
+  private void scanImplementedInterfaces(FunctionType ctor) {
+    checkArgument(ctor.isConstructor());
+
+    Set<FunctionType> seen = new HashSet<>();
+    for (ObjectType iface : ctor.getAllImplementedInterfaces()) {
+      if (iface.isUnknownType()
+          || iface.getConstructor() == null
+          || !iface.getConstructor().isInterface()) {
+        continue;
+      }
+
+      implementedInterfaces.put(ctor, iface);
+      knownImplementations.put(iface.getConstructor(), ctor.getInstanceType());
+
+      scanExtendedInterfaces(seen, iface.getConstructor());
+
+      for (ObjectType superInterface : implementedInterfaces.get(iface.getConstructor())) {
+        implementedInterfaces.put(ctor, superInterface);
+        knownImplementations.put(superInterface.getConstructor(), ctor.getInstanceType());
+      }
+    }
+  }
+
+  private void scanExtendedInterfaces(Set<FunctionType> seenCtors, FunctionType type) {
+    checkArgument(type.isInterface());
+
+    for (ObjectType iface : type.getExtendedInterfaces()) {
+      if (iface.isUnknownType()) {
+        continue;
+      }
+
+      checkState(
+          iface.getConstructor().isInterface(), "unexpected type: %s",
+          iface.getConstructor());
+
+      if (seenCtors.add(iface.getConstructor())) {
+        scanExtendedInterfaces(seenCtors, iface.getConstructor());
+
+        implementedInterfaces.put(type, iface);
+        subInterfaces.put(iface.getConstructor(), type.getInstanceType());
+        for (ObjectType superInterface : implementedInterfaces.get(iface.getConstructor())) {
+          implementedInterfaces.put(type, superInterface);
+          subInterfaces.put(superInterface.getConstructor(), type.getInstanceType());
+        }
+      }
+    }
   }
 }

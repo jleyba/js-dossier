@@ -834,6 +834,7 @@ public class EndToEndTest {
       if (useFlags) {
         List<String> list = new ArrayList<>();
         addAll(list,
+            "--num_threads", "1",
             "--output", output.toString(),
             "--readme", srcDir.resolve("SimpleReadme.md").toString(),
             "--language", "ES6_STRICT",

@@ -60,7 +60,6 @@ import com.google.javascript.rhino.jstype.StaticTypedScope;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -229,7 +228,7 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Ca
       addTypedefInfo(typeSpec);
       addMainFunctionInfo(typeSpec);
       addExtendedTypes(typeSpec);
-      addImplementedTypes(typeSpec);
+      addTypeInheritanceInfo(typeSpec);
       addEnumValues(typeSpec);
       addStaticProperties(typeSpec);
       addInstanceProperties(typeSpec);
@@ -439,15 +438,10 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Ca
       }
     }
 
-    private void addImplementedTypes(JsType.Builder spec) {
-      Iterable<TypeExpression> types = FluentIterable.from(typeInspector.getImplementedTypes())
-          .toSortedSet(new Comparator<TypeExpression>() {
-            @Override
-            public int compare(TypeExpression a, TypeExpression b) {
-              return a.getNamedType().getName().compareTo(b.getNamedType().getName());
-            }
-          });
-      spec.addAllImplementedType(types);
+    private void addTypeInheritanceInfo(JsType.Builder spec) {
+      spec.addAllImplementedType(typeInspector.getImplementedTypes());
+      spec.addAllImplementation(typeInspector.getKnownImplementations());
+      spec.addAllSubtype(typeInspector.getSubtypes());
     }
 
     private void addEnumValues(JsType.Builder spec) {

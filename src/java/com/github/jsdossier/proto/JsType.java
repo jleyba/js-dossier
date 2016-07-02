@@ -28,6 +28,8 @@ public  final class JsType extends
     field_ = java.util.Collections.emptyList();
     extendedType_ = java.util.Collections.emptyList();
     implementedType_ = java.util.Collections.emptyList();
+    subtype_ = java.util.Collections.emptyList();
+    implementation_ = java.util.Collections.emptyList();
     compilerConstant_ = java.util.Collections.emptyList();
     filename_ = "";
     qualifiedName_ = "";
@@ -212,9 +214,9 @@ public  final class JsType extends
             break;
           }
           case 162: {
-            if (!((mutable_bitField0_ & 0x00008000) == 0x00008000)) {
+            if (!((mutable_bitField0_ & 0x00020000) == 0x00020000)) {
               compilerConstant_ = new java.util.ArrayList<com.github.jsdossier.proto.Property>();
-              mutable_bitField0_ |= 0x00008000;
+              mutable_bitField0_ |= 0x00020000;
             }
             compilerConstant_.add(input.readMessage(com.github.jsdossier.proto.Property.parser(), extensionRegistry));
             break;
@@ -258,11 +260,27 @@ public  final class JsType extends
             break;
           }
           case 202: {
-            if (!((mutable_bitField0_ & 0x00100000) == 0x00100000)) {
+            if (!((mutable_bitField0_ & 0x00400000) == 0x00400000)) {
               reexportedModule_ = new java.util.ArrayList<com.github.jsdossier.proto.Property>();
-              mutable_bitField0_ |= 0x00100000;
+              mutable_bitField0_ |= 0x00400000;
             }
             reexportedModule_.add(input.readMessage(com.github.jsdossier.proto.Property.parser(), extensionRegistry));
+            break;
+          }
+          case 210: {
+            if (!((mutable_bitField0_ & 0x00008000) == 0x00008000)) {
+              subtype_ = new java.util.ArrayList<com.github.jsdossier.proto.TypeExpression>();
+              mutable_bitField0_ |= 0x00008000;
+            }
+            subtype_.add(input.readMessage(com.github.jsdossier.proto.TypeExpression.parser(), extensionRegistry));
+            break;
+          }
+          case 218: {
+            if (!((mutable_bitField0_ & 0x00010000) == 0x00010000)) {
+              implementation_ = new java.util.ArrayList<com.github.jsdossier.proto.TypeExpression>();
+              mutable_bitField0_ |= 0x00010000;
+            }
+            implementation_.add(input.readMessage(com.github.jsdossier.proto.TypeExpression.parser(), extensionRegistry));
             break;
           }
         }
@@ -295,11 +313,17 @@ public  final class JsType extends
       if (((mutable_bitField0_ & 0x00004000) == 0x00004000)) {
         implementedType_ = java.util.Collections.unmodifiableList(implementedType_);
       }
-      if (((mutable_bitField0_ & 0x00008000) == 0x00008000)) {
+      if (((mutable_bitField0_ & 0x00020000) == 0x00020000)) {
         compilerConstant_ = java.util.Collections.unmodifiableList(compilerConstant_);
       }
-      if (((mutable_bitField0_ & 0x00100000) == 0x00100000)) {
+      if (((mutable_bitField0_ & 0x00400000) == 0x00400000)) {
         reexportedModule_ = java.util.Collections.unmodifiableList(reexportedModule_);
+      }
+      if (((mutable_bitField0_ & 0x00008000) == 0x00008000)) {
+        subtype_ = java.util.Collections.unmodifiableList(subtype_);
+      }
+      if (((mutable_bitField0_ & 0x00010000) == 0x00010000)) {
+        implementation_ = java.util.Collections.unmodifiableList(implementation_);
       }
       makeExtensionsImmutable();
     }
@@ -5380,6 +5404,126 @@ public  final class JsType extends
     return implementedType_.get(index);
   }
 
+  public static final int SUBTYPE_FIELD_NUMBER = 26;
+  private java.util.List<com.github.jsdossier.proto.TypeExpression> subtype_;
+  /**
+   * <code>repeated .dossier.expression.TypeExpression subtype = 26;</code>
+   *
+   * <pre>
+   * Known subtypes of this type. If |is_class| is true, this will contain the
+   * know direct subclasses. If |is_interface| is true, this will contain the
+   * known subinterfaces.
+   * </pre>
+   */
+  public java.util.List<com.github.jsdossier.proto.TypeExpression> getSubtypeList() {
+    return subtype_;
+  }
+  /**
+   * <code>repeated .dossier.expression.TypeExpression subtype = 26;</code>
+   *
+   * <pre>
+   * Known subtypes of this type. If |is_class| is true, this will contain the
+   * know direct subclasses. If |is_interface| is true, this will contain the
+   * known subinterfaces.
+   * </pre>
+   */
+  public java.util.List<? extends com.github.jsdossier.proto.TypeExpressionOrBuilder> 
+      getSubtypeOrBuilderList() {
+    return subtype_;
+  }
+  /**
+   * <code>repeated .dossier.expression.TypeExpression subtype = 26;</code>
+   *
+   * <pre>
+   * Known subtypes of this type. If |is_class| is true, this will contain the
+   * know direct subclasses. If |is_interface| is true, this will contain the
+   * known subinterfaces.
+   * </pre>
+   */
+  public int getSubtypeCount() {
+    return subtype_.size();
+  }
+  /**
+   * <code>repeated .dossier.expression.TypeExpression subtype = 26;</code>
+   *
+   * <pre>
+   * Known subtypes of this type. If |is_class| is true, this will contain the
+   * know direct subclasses. If |is_interface| is true, this will contain the
+   * known subinterfaces.
+   * </pre>
+   */
+  public com.github.jsdossier.proto.TypeExpression getSubtype(int index) {
+    return subtype_.get(index);
+  }
+  /**
+   * <code>repeated .dossier.expression.TypeExpression subtype = 26;</code>
+   *
+   * <pre>
+   * Known subtypes of this type. If |is_class| is true, this will contain the
+   * know direct subclasses. If |is_interface| is true, this will contain the
+   * known subinterfaces.
+   * </pre>
+   */
+  public com.github.jsdossier.proto.TypeExpressionOrBuilder getSubtypeOrBuilder(
+      int index) {
+    return subtype_.get(index);
+  }
+
+  public static final int IMPLEMENTATION_FIELD_NUMBER = 27;
+  private java.util.List<com.github.jsdossier.proto.TypeExpression> implementation_;
+  /**
+   * <code>repeated .dossier.expression.TypeExpression implementation = 27;</code>
+   *
+   * <pre>
+   * Known implementations of this type. Will be empy if |is_interface| is false.
+   * </pre>
+   */
+  public java.util.List<com.github.jsdossier.proto.TypeExpression> getImplementationList() {
+    return implementation_;
+  }
+  /**
+   * <code>repeated .dossier.expression.TypeExpression implementation = 27;</code>
+   *
+   * <pre>
+   * Known implementations of this type. Will be empy if |is_interface| is false.
+   * </pre>
+   */
+  public java.util.List<? extends com.github.jsdossier.proto.TypeExpressionOrBuilder> 
+      getImplementationOrBuilderList() {
+    return implementation_;
+  }
+  /**
+   * <code>repeated .dossier.expression.TypeExpression implementation = 27;</code>
+   *
+   * <pre>
+   * Known implementations of this type. Will be empy if |is_interface| is false.
+   * </pre>
+   */
+  public int getImplementationCount() {
+    return implementation_.size();
+  }
+  /**
+   * <code>repeated .dossier.expression.TypeExpression implementation = 27;</code>
+   *
+   * <pre>
+   * Known implementations of this type. Will be empy if |is_interface| is false.
+   * </pre>
+   */
+  public com.github.jsdossier.proto.TypeExpression getImplementation(int index) {
+    return implementation_.get(index);
+  }
+  /**
+   * <code>repeated .dossier.expression.TypeExpression implementation = 27;</code>
+   *
+   * <pre>
+   * Known implementations of this type. Will be empy if |is_interface| is false.
+   * </pre>
+   */
+  public com.github.jsdossier.proto.TypeExpressionOrBuilder getImplementationOrBuilder(
+      int index) {
+    return implementation_.get(index);
+  }
+
   public static final int COMPILER_CONSTANT_FIELD_NUMBER = 20;
   private java.util.List<com.github.jsdossier.proto.Property> compilerConstant_;
   /**
@@ -5683,6 +5827,12 @@ public  final class JsType extends
     for (int i = 0; i < reexportedModule_.size(); i++) {
       output.writeMessage(25, reexportedModule_.get(i));
     }
+    for (int i = 0; i < subtype_.size(); i++) {
+      output.writeMessage(26, subtype_.get(i));
+    }
+    for (int i = 0; i < implementation_.size(); i++) {
+      output.writeMessage(27, implementation_.get(i));
+    }
   }
 
   public int getSerializedSize() {
@@ -5770,6 +5920,14 @@ public  final class JsType extends
     for (int i = 0; i < reexportedModule_.size(); i++) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(25, reexportedModule_.get(i));
+    }
+    for (int i = 0; i < subtype_.size(); i++) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(26, subtype_.get(i));
+    }
+    for (int i = 0; i < implementation_.size(); i++) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(27, implementation_.get(i));
     }
     memoizedSize = size;
     return size;
@@ -5890,6 +6048,8 @@ public  final class JsType extends
         getFieldFieldBuilder();
         getExtendedTypeFieldBuilder();
         getImplementedTypeFieldBuilder();
+        getSubtypeFieldBuilder();
+        getImplementationFieldBuilder();
         getCompilerConstantFieldBuilder();
         getReexportedModuleFieldBuilder();
       }
@@ -5982,9 +6142,21 @@ public  final class JsType extends
       } else {
         implementedTypeBuilder_.clear();
       }
+      if (subtypeBuilder_ == null) {
+        subtype_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00008000);
+      } else {
+        subtypeBuilder_.clear();
+      }
+      if (implementationBuilder_ == null) {
+        implementation_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00010000);
+      } else {
+        implementationBuilder_.clear();
+      }
       if (compilerConstantBuilder_ == null) {
         compilerConstant_ = java.util.Collections.emptyList();
-        bitField0_ = (bitField0_ & ~0x00008000);
+        bitField0_ = (bitField0_ & ~0x00020000);
       } else {
         compilerConstantBuilder_.clear();
       }
@@ -6006,7 +6178,7 @@ public  final class JsType extends
 
       if (reexportedModuleBuilder_ == null) {
         reexportedModule_ = java.util.Collections.emptyList();
-        bitField0_ = (bitField0_ & ~0x00100000);
+        bitField0_ = (bitField0_ & ~0x00400000);
       } else {
         reexportedModuleBuilder_.clear();
       }
@@ -6133,10 +6305,28 @@ public  final class JsType extends
       } else {
         result.implementedType_ = implementedTypeBuilder_.build();
       }
-      if (compilerConstantBuilder_ == null) {
+      if (subtypeBuilder_ == null) {
         if (((bitField0_ & 0x00008000) == 0x00008000)) {
-          compilerConstant_ = java.util.Collections.unmodifiableList(compilerConstant_);
+          subtype_ = java.util.Collections.unmodifiableList(subtype_);
           bitField0_ = (bitField0_ & ~0x00008000);
+        }
+        result.subtype_ = subtype_;
+      } else {
+        result.subtype_ = subtypeBuilder_.build();
+      }
+      if (implementationBuilder_ == null) {
+        if (((bitField0_ & 0x00010000) == 0x00010000)) {
+          implementation_ = java.util.Collections.unmodifiableList(implementation_);
+          bitField0_ = (bitField0_ & ~0x00010000);
+        }
+        result.implementation_ = implementation_;
+      } else {
+        result.implementation_ = implementationBuilder_.build();
+      }
+      if (compilerConstantBuilder_ == null) {
+        if (((bitField0_ & 0x00020000) == 0x00020000)) {
+          compilerConstant_ = java.util.Collections.unmodifiableList(compilerConstant_);
+          bitField0_ = (bitField0_ & ~0x00020000);
         }
         result.compilerConstant_ = compilerConstant_;
       } else {
@@ -6155,9 +6345,9 @@ public  final class JsType extends
       result.filename_ = filename_;
       result.qualifiedName_ = qualifiedName_;
       if (reexportedModuleBuilder_ == null) {
-        if (((bitField0_ & 0x00100000) == 0x00100000)) {
+        if (((bitField0_ & 0x00400000) == 0x00400000)) {
           reexportedModule_ = java.util.Collections.unmodifiableList(reexportedModule_);
-          bitField0_ = (bitField0_ & ~0x00100000);
+          bitField0_ = (bitField0_ & ~0x00400000);
         }
         result.reexportedModule_ = reexportedModule_;
       } else {
@@ -6386,11 +6576,63 @@ public  final class JsType extends
           }
         }
       }
+      if (subtypeBuilder_ == null) {
+        if (!other.subtype_.isEmpty()) {
+          if (subtype_.isEmpty()) {
+            subtype_ = other.subtype_;
+            bitField0_ = (bitField0_ & ~0x00008000);
+          } else {
+            ensureSubtypeIsMutable();
+            subtype_.addAll(other.subtype_);
+          }
+          onChanged();
+        }
+      } else {
+        if (!other.subtype_.isEmpty()) {
+          if (subtypeBuilder_.isEmpty()) {
+            subtypeBuilder_.dispose();
+            subtypeBuilder_ = null;
+            subtype_ = other.subtype_;
+            bitField0_ = (bitField0_ & ~0x00008000);
+            subtypeBuilder_ = 
+              com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+                 getSubtypeFieldBuilder() : null;
+          } else {
+            subtypeBuilder_.addAllMessages(other.subtype_);
+          }
+        }
+      }
+      if (implementationBuilder_ == null) {
+        if (!other.implementation_.isEmpty()) {
+          if (implementation_.isEmpty()) {
+            implementation_ = other.implementation_;
+            bitField0_ = (bitField0_ & ~0x00010000);
+          } else {
+            ensureImplementationIsMutable();
+            implementation_.addAll(other.implementation_);
+          }
+          onChanged();
+        }
+      } else {
+        if (!other.implementation_.isEmpty()) {
+          if (implementationBuilder_.isEmpty()) {
+            implementationBuilder_.dispose();
+            implementationBuilder_ = null;
+            implementation_ = other.implementation_;
+            bitField0_ = (bitField0_ & ~0x00010000);
+            implementationBuilder_ = 
+              com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+                 getImplementationFieldBuilder() : null;
+          } else {
+            implementationBuilder_.addAllMessages(other.implementation_);
+          }
+        }
+      }
       if (compilerConstantBuilder_ == null) {
         if (!other.compilerConstant_.isEmpty()) {
           if (compilerConstant_.isEmpty()) {
             compilerConstant_ = other.compilerConstant_;
-            bitField0_ = (bitField0_ & ~0x00008000);
+            bitField0_ = (bitField0_ & ~0x00020000);
           } else {
             ensureCompilerConstantIsMutable();
             compilerConstant_.addAll(other.compilerConstant_);
@@ -6403,7 +6645,7 @@ public  final class JsType extends
             compilerConstantBuilder_.dispose();
             compilerConstantBuilder_ = null;
             compilerConstant_ = other.compilerConstant_;
-            bitField0_ = (bitField0_ & ~0x00008000);
+            bitField0_ = (bitField0_ & ~0x00020000);
             compilerConstantBuilder_ = 
               com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
                  getCompilerConstantFieldBuilder() : null;
@@ -6430,7 +6672,7 @@ public  final class JsType extends
         if (!other.reexportedModule_.isEmpty()) {
           if (reexportedModule_.isEmpty()) {
             reexportedModule_ = other.reexportedModule_;
-            bitField0_ = (bitField0_ & ~0x00100000);
+            bitField0_ = (bitField0_ & ~0x00400000);
           } else {
             ensureReexportedModuleIsMutable();
             reexportedModule_.addAll(other.reexportedModule_);
@@ -6443,7 +6685,7 @@ public  final class JsType extends
             reexportedModuleBuilder_.dispose();
             reexportedModuleBuilder_ = null;
             reexportedModule_ = other.reexportedModule_;
-            bitField0_ = (bitField0_ & ~0x00100000);
+            bitField0_ = (bitField0_ & ~0x00400000);
             reexportedModuleBuilder_ = 
               com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
                  getReexportedModuleFieldBuilder() : null;
@@ -9425,12 +9667,672 @@ public  final class JsType extends
       return implementedTypeBuilder_;
     }
 
+    private java.util.List<com.github.jsdossier.proto.TypeExpression> subtype_ =
+      java.util.Collections.emptyList();
+    private void ensureSubtypeIsMutable() {
+      if (!((bitField0_ & 0x00008000) == 0x00008000)) {
+        subtype_ = new java.util.ArrayList<com.github.jsdossier.proto.TypeExpression>(subtype_);
+        bitField0_ |= 0x00008000;
+       }
+    }
+
+    private com.google.protobuf.RepeatedFieldBuilder<
+        com.github.jsdossier.proto.TypeExpression, com.github.jsdossier.proto.TypeExpression.Builder, com.github.jsdossier.proto.TypeExpressionOrBuilder> subtypeBuilder_;
+
+    /**
+     * <code>repeated .dossier.expression.TypeExpression subtype = 26;</code>
+     *
+     * <pre>
+     * Known subtypes of this type. If |is_class| is true, this will contain the
+     * know direct subclasses. If |is_interface| is true, this will contain the
+     * known subinterfaces.
+     * </pre>
+     */
+    public java.util.List<com.github.jsdossier.proto.TypeExpression> getSubtypeList() {
+      if (subtypeBuilder_ == null) {
+        return java.util.Collections.unmodifiableList(subtype_);
+      } else {
+        return subtypeBuilder_.getMessageList();
+      }
+    }
+    /**
+     * <code>repeated .dossier.expression.TypeExpression subtype = 26;</code>
+     *
+     * <pre>
+     * Known subtypes of this type. If |is_class| is true, this will contain the
+     * know direct subclasses. If |is_interface| is true, this will contain the
+     * known subinterfaces.
+     * </pre>
+     */
+    public int getSubtypeCount() {
+      if (subtypeBuilder_ == null) {
+        return subtype_.size();
+      } else {
+        return subtypeBuilder_.getCount();
+      }
+    }
+    /**
+     * <code>repeated .dossier.expression.TypeExpression subtype = 26;</code>
+     *
+     * <pre>
+     * Known subtypes of this type. If |is_class| is true, this will contain the
+     * know direct subclasses. If |is_interface| is true, this will contain the
+     * known subinterfaces.
+     * </pre>
+     */
+    public com.github.jsdossier.proto.TypeExpression getSubtype(int index) {
+      if (subtypeBuilder_ == null) {
+        return subtype_.get(index);
+      } else {
+        return subtypeBuilder_.getMessage(index);
+      }
+    }
+    /**
+     * <code>repeated .dossier.expression.TypeExpression subtype = 26;</code>
+     *
+     * <pre>
+     * Known subtypes of this type. If |is_class| is true, this will contain the
+     * know direct subclasses. If |is_interface| is true, this will contain the
+     * known subinterfaces.
+     * </pre>
+     */
+    public Builder setSubtype(
+        int index, com.github.jsdossier.proto.TypeExpression value) {
+      if (subtypeBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureSubtypeIsMutable();
+        subtype_.set(index, value);
+        onChanged();
+      } else {
+        subtypeBuilder_.setMessage(index, value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .dossier.expression.TypeExpression subtype = 26;</code>
+     *
+     * <pre>
+     * Known subtypes of this type. If |is_class| is true, this will contain the
+     * know direct subclasses. If |is_interface| is true, this will contain the
+     * known subinterfaces.
+     * </pre>
+     */
+    public Builder setSubtype(
+        int index, com.github.jsdossier.proto.TypeExpression.Builder builderForValue) {
+      if (subtypeBuilder_ == null) {
+        ensureSubtypeIsMutable();
+        subtype_.set(index, builderForValue.build());
+        onChanged();
+      } else {
+        subtypeBuilder_.setMessage(index, builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .dossier.expression.TypeExpression subtype = 26;</code>
+     *
+     * <pre>
+     * Known subtypes of this type. If |is_class| is true, this will contain the
+     * know direct subclasses. If |is_interface| is true, this will contain the
+     * known subinterfaces.
+     * </pre>
+     */
+    public Builder addSubtype(com.github.jsdossier.proto.TypeExpression value) {
+      if (subtypeBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureSubtypeIsMutable();
+        subtype_.add(value);
+        onChanged();
+      } else {
+        subtypeBuilder_.addMessage(value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .dossier.expression.TypeExpression subtype = 26;</code>
+     *
+     * <pre>
+     * Known subtypes of this type. If |is_class| is true, this will contain the
+     * know direct subclasses. If |is_interface| is true, this will contain the
+     * known subinterfaces.
+     * </pre>
+     */
+    public Builder addSubtype(
+        int index, com.github.jsdossier.proto.TypeExpression value) {
+      if (subtypeBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureSubtypeIsMutable();
+        subtype_.add(index, value);
+        onChanged();
+      } else {
+        subtypeBuilder_.addMessage(index, value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .dossier.expression.TypeExpression subtype = 26;</code>
+     *
+     * <pre>
+     * Known subtypes of this type. If |is_class| is true, this will contain the
+     * know direct subclasses. If |is_interface| is true, this will contain the
+     * known subinterfaces.
+     * </pre>
+     */
+    public Builder addSubtype(
+        com.github.jsdossier.proto.TypeExpression.Builder builderForValue) {
+      if (subtypeBuilder_ == null) {
+        ensureSubtypeIsMutable();
+        subtype_.add(builderForValue.build());
+        onChanged();
+      } else {
+        subtypeBuilder_.addMessage(builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .dossier.expression.TypeExpression subtype = 26;</code>
+     *
+     * <pre>
+     * Known subtypes of this type. If |is_class| is true, this will contain the
+     * know direct subclasses. If |is_interface| is true, this will contain the
+     * known subinterfaces.
+     * </pre>
+     */
+    public Builder addSubtype(
+        int index, com.github.jsdossier.proto.TypeExpression.Builder builderForValue) {
+      if (subtypeBuilder_ == null) {
+        ensureSubtypeIsMutable();
+        subtype_.add(index, builderForValue.build());
+        onChanged();
+      } else {
+        subtypeBuilder_.addMessage(index, builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .dossier.expression.TypeExpression subtype = 26;</code>
+     *
+     * <pre>
+     * Known subtypes of this type. If |is_class| is true, this will contain the
+     * know direct subclasses. If |is_interface| is true, this will contain the
+     * known subinterfaces.
+     * </pre>
+     */
+    public Builder addAllSubtype(
+        java.lang.Iterable<? extends com.github.jsdossier.proto.TypeExpression> values) {
+      if (subtypeBuilder_ == null) {
+        ensureSubtypeIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, subtype_);
+        onChanged();
+      } else {
+        subtypeBuilder_.addAllMessages(values);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .dossier.expression.TypeExpression subtype = 26;</code>
+     *
+     * <pre>
+     * Known subtypes of this type. If |is_class| is true, this will contain the
+     * know direct subclasses. If |is_interface| is true, this will contain the
+     * known subinterfaces.
+     * </pre>
+     */
+    public Builder clearSubtype() {
+      if (subtypeBuilder_ == null) {
+        subtype_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00008000);
+        onChanged();
+      } else {
+        subtypeBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .dossier.expression.TypeExpression subtype = 26;</code>
+     *
+     * <pre>
+     * Known subtypes of this type. If |is_class| is true, this will contain the
+     * know direct subclasses. If |is_interface| is true, this will contain the
+     * known subinterfaces.
+     * </pre>
+     */
+    public Builder removeSubtype(int index) {
+      if (subtypeBuilder_ == null) {
+        ensureSubtypeIsMutable();
+        subtype_.remove(index);
+        onChanged();
+      } else {
+        subtypeBuilder_.remove(index);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .dossier.expression.TypeExpression subtype = 26;</code>
+     *
+     * <pre>
+     * Known subtypes of this type. If |is_class| is true, this will contain the
+     * know direct subclasses. If |is_interface| is true, this will contain the
+     * known subinterfaces.
+     * </pre>
+     */
+    public com.github.jsdossier.proto.TypeExpression.Builder getSubtypeBuilder(
+        int index) {
+      return getSubtypeFieldBuilder().getBuilder(index);
+    }
+    /**
+     * <code>repeated .dossier.expression.TypeExpression subtype = 26;</code>
+     *
+     * <pre>
+     * Known subtypes of this type. If |is_class| is true, this will contain the
+     * know direct subclasses. If |is_interface| is true, this will contain the
+     * known subinterfaces.
+     * </pre>
+     */
+    public com.github.jsdossier.proto.TypeExpressionOrBuilder getSubtypeOrBuilder(
+        int index) {
+      if (subtypeBuilder_ == null) {
+        return subtype_.get(index);  } else {
+        return subtypeBuilder_.getMessageOrBuilder(index);
+      }
+    }
+    /**
+     * <code>repeated .dossier.expression.TypeExpression subtype = 26;</code>
+     *
+     * <pre>
+     * Known subtypes of this type. If |is_class| is true, this will contain the
+     * know direct subclasses. If |is_interface| is true, this will contain the
+     * known subinterfaces.
+     * </pre>
+     */
+    public java.util.List<? extends com.github.jsdossier.proto.TypeExpressionOrBuilder> 
+         getSubtypeOrBuilderList() {
+      if (subtypeBuilder_ != null) {
+        return subtypeBuilder_.getMessageOrBuilderList();
+      } else {
+        return java.util.Collections.unmodifiableList(subtype_);
+      }
+    }
+    /**
+     * <code>repeated .dossier.expression.TypeExpression subtype = 26;</code>
+     *
+     * <pre>
+     * Known subtypes of this type. If |is_class| is true, this will contain the
+     * know direct subclasses. If |is_interface| is true, this will contain the
+     * known subinterfaces.
+     * </pre>
+     */
+    public com.github.jsdossier.proto.TypeExpression.Builder addSubtypeBuilder() {
+      return getSubtypeFieldBuilder().addBuilder(
+          com.github.jsdossier.proto.TypeExpression.getDefaultInstance());
+    }
+    /**
+     * <code>repeated .dossier.expression.TypeExpression subtype = 26;</code>
+     *
+     * <pre>
+     * Known subtypes of this type. If |is_class| is true, this will contain the
+     * know direct subclasses. If |is_interface| is true, this will contain the
+     * known subinterfaces.
+     * </pre>
+     */
+    public com.github.jsdossier.proto.TypeExpression.Builder addSubtypeBuilder(
+        int index) {
+      return getSubtypeFieldBuilder().addBuilder(
+          index, com.github.jsdossier.proto.TypeExpression.getDefaultInstance());
+    }
+    /**
+     * <code>repeated .dossier.expression.TypeExpression subtype = 26;</code>
+     *
+     * <pre>
+     * Known subtypes of this type. If |is_class| is true, this will contain the
+     * know direct subclasses. If |is_interface| is true, this will contain the
+     * known subinterfaces.
+     * </pre>
+     */
+    public java.util.List<com.github.jsdossier.proto.TypeExpression.Builder> 
+         getSubtypeBuilderList() {
+      return getSubtypeFieldBuilder().getBuilderList();
+    }
+    private com.google.protobuf.RepeatedFieldBuilder<
+        com.github.jsdossier.proto.TypeExpression, com.github.jsdossier.proto.TypeExpression.Builder, com.github.jsdossier.proto.TypeExpressionOrBuilder> 
+        getSubtypeFieldBuilder() {
+      if (subtypeBuilder_ == null) {
+        subtypeBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+            com.github.jsdossier.proto.TypeExpression, com.github.jsdossier.proto.TypeExpression.Builder, com.github.jsdossier.proto.TypeExpressionOrBuilder>(
+                subtype_,
+                ((bitField0_ & 0x00008000) == 0x00008000),
+                getParentForChildren(),
+                isClean());
+        subtype_ = null;
+      }
+      return subtypeBuilder_;
+    }
+
+    private java.util.List<com.github.jsdossier.proto.TypeExpression> implementation_ =
+      java.util.Collections.emptyList();
+    private void ensureImplementationIsMutable() {
+      if (!((bitField0_ & 0x00010000) == 0x00010000)) {
+        implementation_ = new java.util.ArrayList<com.github.jsdossier.proto.TypeExpression>(implementation_);
+        bitField0_ |= 0x00010000;
+       }
+    }
+
+    private com.google.protobuf.RepeatedFieldBuilder<
+        com.github.jsdossier.proto.TypeExpression, com.github.jsdossier.proto.TypeExpression.Builder, com.github.jsdossier.proto.TypeExpressionOrBuilder> implementationBuilder_;
+
+    /**
+     * <code>repeated .dossier.expression.TypeExpression implementation = 27;</code>
+     *
+     * <pre>
+     * Known implementations of this type. Will be empy if |is_interface| is false.
+     * </pre>
+     */
+    public java.util.List<com.github.jsdossier.proto.TypeExpression> getImplementationList() {
+      if (implementationBuilder_ == null) {
+        return java.util.Collections.unmodifiableList(implementation_);
+      } else {
+        return implementationBuilder_.getMessageList();
+      }
+    }
+    /**
+     * <code>repeated .dossier.expression.TypeExpression implementation = 27;</code>
+     *
+     * <pre>
+     * Known implementations of this type. Will be empy if |is_interface| is false.
+     * </pre>
+     */
+    public int getImplementationCount() {
+      if (implementationBuilder_ == null) {
+        return implementation_.size();
+      } else {
+        return implementationBuilder_.getCount();
+      }
+    }
+    /**
+     * <code>repeated .dossier.expression.TypeExpression implementation = 27;</code>
+     *
+     * <pre>
+     * Known implementations of this type. Will be empy if |is_interface| is false.
+     * </pre>
+     */
+    public com.github.jsdossier.proto.TypeExpression getImplementation(int index) {
+      if (implementationBuilder_ == null) {
+        return implementation_.get(index);
+      } else {
+        return implementationBuilder_.getMessage(index);
+      }
+    }
+    /**
+     * <code>repeated .dossier.expression.TypeExpression implementation = 27;</code>
+     *
+     * <pre>
+     * Known implementations of this type. Will be empy if |is_interface| is false.
+     * </pre>
+     */
+    public Builder setImplementation(
+        int index, com.github.jsdossier.proto.TypeExpression value) {
+      if (implementationBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureImplementationIsMutable();
+        implementation_.set(index, value);
+        onChanged();
+      } else {
+        implementationBuilder_.setMessage(index, value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .dossier.expression.TypeExpression implementation = 27;</code>
+     *
+     * <pre>
+     * Known implementations of this type. Will be empy if |is_interface| is false.
+     * </pre>
+     */
+    public Builder setImplementation(
+        int index, com.github.jsdossier.proto.TypeExpression.Builder builderForValue) {
+      if (implementationBuilder_ == null) {
+        ensureImplementationIsMutable();
+        implementation_.set(index, builderForValue.build());
+        onChanged();
+      } else {
+        implementationBuilder_.setMessage(index, builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .dossier.expression.TypeExpression implementation = 27;</code>
+     *
+     * <pre>
+     * Known implementations of this type. Will be empy if |is_interface| is false.
+     * </pre>
+     */
+    public Builder addImplementation(com.github.jsdossier.proto.TypeExpression value) {
+      if (implementationBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureImplementationIsMutable();
+        implementation_.add(value);
+        onChanged();
+      } else {
+        implementationBuilder_.addMessage(value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .dossier.expression.TypeExpression implementation = 27;</code>
+     *
+     * <pre>
+     * Known implementations of this type. Will be empy if |is_interface| is false.
+     * </pre>
+     */
+    public Builder addImplementation(
+        int index, com.github.jsdossier.proto.TypeExpression value) {
+      if (implementationBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureImplementationIsMutable();
+        implementation_.add(index, value);
+        onChanged();
+      } else {
+        implementationBuilder_.addMessage(index, value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .dossier.expression.TypeExpression implementation = 27;</code>
+     *
+     * <pre>
+     * Known implementations of this type. Will be empy if |is_interface| is false.
+     * </pre>
+     */
+    public Builder addImplementation(
+        com.github.jsdossier.proto.TypeExpression.Builder builderForValue) {
+      if (implementationBuilder_ == null) {
+        ensureImplementationIsMutable();
+        implementation_.add(builderForValue.build());
+        onChanged();
+      } else {
+        implementationBuilder_.addMessage(builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .dossier.expression.TypeExpression implementation = 27;</code>
+     *
+     * <pre>
+     * Known implementations of this type. Will be empy if |is_interface| is false.
+     * </pre>
+     */
+    public Builder addImplementation(
+        int index, com.github.jsdossier.proto.TypeExpression.Builder builderForValue) {
+      if (implementationBuilder_ == null) {
+        ensureImplementationIsMutable();
+        implementation_.add(index, builderForValue.build());
+        onChanged();
+      } else {
+        implementationBuilder_.addMessage(index, builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .dossier.expression.TypeExpression implementation = 27;</code>
+     *
+     * <pre>
+     * Known implementations of this type. Will be empy if |is_interface| is false.
+     * </pre>
+     */
+    public Builder addAllImplementation(
+        java.lang.Iterable<? extends com.github.jsdossier.proto.TypeExpression> values) {
+      if (implementationBuilder_ == null) {
+        ensureImplementationIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, implementation_);
+        onChanged();
+      } else {
+        implementationBuilder_.addAllMessages(values);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .dossier.expression.TypeExpression implementation = 27;</code>
+     *
+     * <pre>
+     * Known implementations of this type. Will be empy if |is_interface| is false.
+     * </pre>
+     */
+    public Builder clearImplementation() {
+      if (implementationBuilder_ == null) {
+        implementation_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00010000);
+        onChanged();
+      } else {
+        implementationBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .dossier.expression.TypeExpression implementation = 27;</code>
+     *
+     * <pre>
+     * Known implementations of this type. Will be empy if |is_interface| is false.
+     * </pre>
+     */
+    public Builder removeImplementation(int index) {
+      if (implementationBuilder_ == null) {
+        ensureImplementationIsMutable();
+        implementation_.remove(index);
+        onChanged();
+      } else {
+        implementationBuilder_.remove(index);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .dossier.expression.TypeExpression implementation = 27;</code>
+     *
+     * <pre>
+     * Known implementations of this type. Will be empy if |is_interface| is false.
+     * </pre>
+     */
+    public com.github.jsdossier.proto.TypeExpression.Builder getImplementationBuilder(
+        int index) {
+      return getImplementationFieldBuilder().getBuilder(index);
+    }
+    /**
+     * <code>repeated .dossier.expression.TypeExpression implementation = 27;</code>
+     *
+     * <pre>
+     * Known implementations of this type. Will be empy if |is_interface| is false.
+     * </pre>
+     */
+    public com.github.jsdossier.proto.TypeExpressionOrBuilder getImplementationOrBuilder(
+        int index) {
+      if (implementationBuilder_ == null) {
+        return implementation_.get(index);  } else {
+        return implementationBuilder_.getMessageOrBuilder(index);
+      }
+    }
+    /**
+     * <code>repeated .dossier.expression.TypeExpression implementation = 27;</code>
+     *
+     * <pre>
+     * Known implementations of this type. Will be empy if |is_interface| is false.
+     * </pre>
+     */
+    public java.util.List<? extends com.github.jsdossier.proto.TypeExpressionOrBuilder> 
+         getImplementationOrBuilderList() {
+      if (implementationBuilder_ != null) {
+        return implementationBuilder_.getMessageOrBuilderList();
+      } else {
+        return java.util.Collections.unmodifiableList(implementation_);
+      }
+    }
+    /**
+     * <code>repeated .dossier.expression.TypeExpression implementation = 27;</code>
+     *
+     * <pre>
+     * Known implementations of this type. Will be empy if |is_interface| is false.
+     * </pre>
+     */
+    public com.github.jsdossier.proto.TypeExpression.Builder addImplementationBuilder() {
+      return getImplementationFieldBuilder().addBuilder(
+          com.github.jsdossier.proto.TypeExpression.getDefaultInstance());
+    }
+    /**
+     * <code>repeated .dossier.expression.TypeExpression implementation = 27;</code>
+     *
+     * <pre>
+     * Known implementations of this type. Will be empy if |is_interface| is false.
+     * </pre>
+     */
+    public com.github.jsdossier.proto.TypeExpression.Builder addImplementationBuilder(
+        int index) {
+      return getImplementationFieldBuilder().addBuilder(
+          index, com.github.jsdossier.proto.TypeExpression.getDefaultInstance());
+    }
+    /**
+     * <code>repeated .dossier.expression.TypeExpression implementation = 27;</code>
+     *
+     * <pre>
+     * Known implementations of this type. Will be empy if |is_interface| is false.
+     * </pre>
+     */
+    public java.util.List<com.github.jsdossier.proto.TypeExpression.Builder> 
+         getImplementationBuilderList() {
+      return getImplementationFieldBuilder().getBuilderList();
+    }
+    private com.google.protobuf.RepeatedFieldBuilder<
+        com.github.jsdossier.proto.TypeExpression, com.github.jsdossier.proto.TypeExpression.Builder, com.github.jsdossier.proto.TypeExpressionOrBuilder> 
+        getImplementationFieldBuilder() {
+      if (implementationBuilder_ == null) {
+        implementationBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+            com.github.jsdossier.proto.TypeExpression, com.github.jsdossier.proto.TypeExpression.Builder, com.github.jsdossier.proto.TypeExpressionOrBuilder>(
+                implementation_,
+                ((bitField0_ & 0x00010000) == 0x00010000),
+                getParentForChildren(),
+                isClean());
+        implementation_ = null;
+      }
+      return implementationBuilder_;
+    }
+
     private java.util.List<com.github.jsdossier.proto.Property> compilerConstant_ =
       java.util.Collections.emptyList();
     private void ensureCompilerConstantIsMutable() {
-      if (!((bitField0_ & 0x00008000) == 0x00008000)) {
+      if (!((bitField0_ & 0x00020000) == 0x00020000)) {
         compilerConstant_ = new java.util.ArrayList<com.github.jsdossier.proto.Property>(compilerConstant_);
-        bitField0_ |= 0x00008000;
+        bitField0_ |= 0x00020000;
        }
     }
 
@@ -9580,7 +10482,7 @@ public  final class JsType extends
     public Builder clearCompilerConstant() {
       if (compilerConstantBuilder_ == null) {
         compilerConstant_ = java.util.Collections.emptyList();
-        bitField0_ = (bitField0_ & ~0x00008000);
+        bitField0_ = (bitField0_ & ~0x00020000);
         onChanged();
       } else {
         compilerConstantBuilder_.clear();
@@ -9657,7 +10559,7 @@ public  final class JsType extends
         compilerConstantBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
             com.github.jsdossier.proto.Property, com.github.jsdossier.proto.Property.Builder, com.github.jsdossier.proto.PropertyOrBuilder>(
                 compilerConstant_,
-                ((bitField0_ & 0x00008000) == 0x00008000),
+                ((bitField0_ & 0x00020000) == 0x00020000),
                 getParentForChildren(),
                 isClean());
         compilerConstant_ = null;
@@ -10116,9 +11018,9 @@ public  final class JsType extends
     private java.util.List<com.github.jsdossier.proto.Property> reexportedModule_ =
       java.util.Collections.emptyList();
     private void ensureReexportedModuleIsMutable() {
-      if (!((bitField0_ & 0x00100000) == 0x00100000)) {
+      if (!((bitField0_ & 0x00400000) == 0x00400000)) {
         reexportedModule_ = new java.util.ArrayList<com.github.jsdossier.proto.Property>(reexportedModule_);
-        bitField0_ |= 0x00100000;
+        bitField0_ |= 0x00400000;
        }
     }
 
@@ -10312,7 +11214,7 @@ public  final class JsType extends
     public Builder clearReexportedModule() {
       if (reexportedModuleBuilder_ == null) {
         reexportedModule_ = java.util.Collections.emptyList();
-        bitField0_ = (bitField0_ & ~0x00100000);
+        bitField0_ = (bitField0_ & ~0x00400000);
         onChanged();
       } else {
         reexportedModuleBuilder_.clear();
@@ -10417,7 +11319,7 @@ public  final class JsType extends
         reexportedModuleBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
             com.github.jsdossier.proto.Property, com.github.jsdossier.proto.Property.Builder, com.github.jsdossier.proto.PropertyOrBuilder>(
                 reexportedModule_,
-                ((bitField0_ & 0x00100000) == 0x00100000),
+                ((bitField0_ & 0x00400000) == 0x00400000),
                 getParentForChildren(),
                 isClean());
         reexportedModule_ = null;

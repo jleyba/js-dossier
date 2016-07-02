@@ -261,6 +261,14 @@ message JsType {
   // list should be empty if |is_class| and |is_interface| are false.
   repeated dossier.expression.TypeExpression implemented_type = 19;
 
+  // Known subtypes of this type. If |is_class| is true, this will contain the
+  // know direct subclasses. If |is_interface| is true, this will contain the
+  // known subinterfaces.
+  repeated dossier.expression.TypeExpression subtype = 26;
+
+  // Known implementations of this type. Will be empy if |is_interface| is false.
+  repeated dossier.expression.TypeExpression implementation = 27;
+
   repeated Property compiler_constant = 20;
 
   // Link to the module or namespace this type belongs to.
@@ -281,6 +289,8 @@ message JsType {
 
   // Re-exported modules.
   repeated Property reexported_module = 25;
+
+  // Next ID: 28
 }
 
 

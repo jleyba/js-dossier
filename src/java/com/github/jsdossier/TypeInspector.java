@@ -19,8 +19,6 @@ package com.github.jsdossier;
 import static com.github.jsdossier.TypeExpressionParser.Option.QUALIFIED_NAMES;
 import static com.github.jsdossier.jscomp.Types.isBuiltInFunctionProperty;
 import static com.github.jsdossier.jscomp.Types.isConstructorTypeDefinition;
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.base.Verify.verify;
 import static com.google.common.collect.Iterables.getFirst;
@@ -234,8 +232,9 @@ final class TypeInspector {
     TypeExpressionParser parser =
         expressionParserFactory.create(linkFactory.withTypeContext(inspectedType));
 
-    List<JSType> types = getTypeHierarchyInternal(inspectedType.getType());
+    ImmutableList<JSType> types = registry.getTypeHierarchy(inspectedType.getType());
     for (JSType instance : types) {
+      instance = instance.visit(typeMapReplacer);
       TypeExpression expression = parser.parse(instance, QUALIFIED_NAMES);
       expressions.add(expression);
     }
@@ -243,143 +242,90 @@ final class TypeInspector {
     return expressions.build();
   }
 
-  private List<JSType> getTypeHierarchyInternal(JSType type) {
-    if (!type.isConstructor() || type.toMaybeFunctionType() == null) {
-      return ImmutableList.of();
-    }
-
-    List<JSType> types = new ArrayList<>();
-    FunctionType ctor = type.toMaybeFunctionType();
-    JSType instance = ctor.getTypeOfThis();
-    while (instance != null && ctor != null && ctor.getSuperClassConstructor() != null) {
-      types.add(instance);
-
-      JSType superInstance = getSuperInstance(instance.toMaybeObjectType(), ctor);
-      if (superInstance == null || superInstance.toMaybeObjectType() == null) {
-        break;
-      }
-
-      instance = superInstance;
-      ctor = superInstance.toMaybeObjectType().getConstructor();
-    }
-    return types;
-  }
-
-  private JSType getSuperInstance(ObjectType instance, FunctionType ctor) {
-    JSType superInstance;
-    if (ctor.getJSDocInfo() != null
-        && ctor.getJSDocInfo().getBaseType() != null) {
-      jsRegistry.setTemplateTypeNames(instance.getTemplateTypeMap().getTemplateKeys());
-      superInstance = ctor.getJSDocInfo().getBaseType().evaluate(globalScope, jsRegistry);
-      jsRegistry.clearTemplateTypeNames();
-
-      // The type expression will resolve to a named type if it is an aliased reference to
-      // a module's exported type. Compensate by checking dossier's type registry, which
-      // tracks exported types by their exported name (whereas the compiler tracks them by
-      // their initially declared name from within the module).
-      if (superInstance.isNamedType()
-          && registry.isType(superInstance.toMaybeNamedType().getReferenceName())) {
-        superInstance =
-            registry.getType(superInstance.toMaybeNamedType().getReferenceName()).getType();
-        if (superInstance.isConstructor() || superInstance.isInterface()) {
-          superInstance = superInstance.toMaybeFunctionType().getTypeOfThis();
-        }
-      }
-
-    } else {
-      FunctionType superCtor = ctor.getSuperClassConstructor();
-      if (superCtor == null) {
-        return null;
-      }
-      superInstance = superCtor.getTypeOfThis();
-    }
-
-    return superInstance.visit(
-        new TemplateTypeMapReplacer(jsRegistry, instance.getTemplateTypeMap()));
-  }
-
   /**
    * Returns the interfaces implemented by this inspected type. If the inspected type is itself an
    * interface, this will return only the extended interfaces, <em>not</em> the interface itself.
    */
-  public List<TypeExpression> getImplementedTypes() {
+  public ImmutableSet<TypeExpression> getImplementedTypes() {
     JSType type = inspectedType.getType();
-    if (type.toMaybeFunctionType() == null) {
-      return ImmutableList.of();
+    if (type.toMaybeFunctionType() == null || !type.toMaybeFunctionType().hasInstanceType()) {
+      return ImmutableSet.of();
+    }
+
+    ImmutableSet<ObjectType> implementedTypes =
+        registry.getImplementedInterfaces(inspectedType.getType());
+    if (implementedTypes.isEmpty()) {
+      return ImmutableSet.of();
+    }
+
+    TypeExpressionParser parser =
+        expressionParserFactory.create(linkFactory.withTypeContext(inspectedType));
+    TemplateTypeMapReplacer replacer =
+        new TemplateTypeMapReplacer(
+            jsRegistry,
+            inspectedType.getType().toMaybeFunctionType()
+                .getInstanceType()
+                .getTemplateTypeMap());
+
+    Set<TypeExpression> expressions = new HashSet<>();
+    for (ObjectType iface : implementedTypes) {
+      JSType t = iface.visit(replacer);
+      expressions.add(parser.parse(t, QUALIFIED_NAMES));
+    }
+
+    return toSortedSet(expressions);
+  }
+
+  /**
+   * Returns the known implementations for the inspected type, if it is an interface.
+   */
+  public ImmutableSet<TypeExpression> getKnownImplementations() {
+    JSType type = inspectedType.getType();
+    if (!type.isFunctionType()) {
+      return ImmutableSet.of();
     }
 
     TypeExpressionParser parser =
         expressionParserFactory.create(linkFactory.withTypeContext(inspectedType));
     Set<TypeExpression> expressions = new HashSet<>();
-    for (JSType iface : getAllImplementedInterfaces(type)) {
-      expressions.add(parser.parse(iface, QUALIFIED_NAMES));
+    for (JSType t : registry.getKnownImplementations(type.toMaybeFunctionType())) {
+      expressions.add(parser.parse(t, QUALIFIED_NAMES));
     }
 
+    return toSortedSet(expressions);
+  }
+
+  /**
+   * Returns the known sub-types of the inspected type. For classes, this will only return the
+   * direct sub-types.
+   */
+  public ImmutableSet<TypeExpression> getSubtypes() {
+    JSType type = inspectedType.getType();
+    if (!type.isFunctionType()) {
+      return ImmutableSet.of();
+    }
+
+    TypeExpressionParser parser =
+        expressionParserFactory.create(linkFactory.withTypeContext(inspectedType));
+    Set<TypeExpression> expressions = new HashSet<>();
+    for (JSType t : registry.getSubInterfaces(type.toMaybeFunctionType())) {
+      expressions.add(parser.parse(t, QUALIFIED_NAMES));
+    }
+    for (JSType t : registry.getDirectSubTypes(type.toMaybeFunctionType())) {
+      expressions.add(parser.parse(t, QUALIFIED_NAMES));
+    }
+
+    return toSortedSet(expressions);
+  }
+
+  private ImmutableSet<TypeExpression> toSortedSet(Iterable<TypeExpression> expressions) {
     return FluentIterable.from(expressions)
-        .toSortedList(new Comparator<TypeExpression>() {
+        .toSortedSet(new Comparator<TypeExpression>() {
           @Override
           public int compare(TypeExpression o1, TypeExpression o2) {
             return o1.getNamedType().getName().compareTo(o2.getNamedType().getName());
           }
         });
-  }
-
-  private Set<JSType> getAllImplementedInterfaces(JSType type) {
-    if (type.toMaybeFunctionType() == null) {
-      return ImmutableSet.of();
-    }
-
-    FunctionType ctor = type.toMaybeFunctionType();
-    ObjectType instance = ctor.getTypeOfThis().toMaybeObjectType();
-    checkNotNull(instance);
-    TemplateTypeMapReplacer replacer =
-        new TemplateTypeMapReplacer(jsRegistry, instance.getTemplateTypeMap());
-
-    Set<ObjectType> allInterfaces = new HashSet<>();
-    if (type.isInterface()) {
-      Set<JSType> seen = new HashSet<>();
-      getExtendedInterfaces(seen, allInterfaces, instance);
-    } else {
-      Set<JSType> seen = new HashSet<>();
-      for (ObjectType iface : ctor.getAllImplementedInterfaces()) {
-        if (iface.isUnknownType()
-            || iface.getConstructor() == null
-            || !iface.getConstructor().isInterface()) {
-          continue;
-        }
-        allInterfaces.add(iface);
-        seen.add(iface.getConstructor());
-        getExtendedInterfaces(seen, allInterfaces, iface);
-      }
-    }
-
-    ImmutableSet.Builder<JSType> ret = ImmutableSet.builder();
-    for (ObjectType iface : allInterfaces) {
-      if (iface.isUnknownType()) {
-        continue;
-      }
-      ret.add(iface.visit(replacer));
-    }
-    return ret.build();
-  }
-
-  private void getExtendedInterfaces(
-      Set<JSType> seenCtors, Set<ObjectType> instanceTypes, ObjectType type) {
-    FunctionType ctor = type.getConstructor();
-    if (ctor == null || !ctor.isInterface()) {
-      return;
-    }
-
-    for (ObjectType iface : ctor.getExtendedInterfaces()) {
-      if (iface.isUnknownType()) {
-        continue;
-      }
-      checkArgument(iface.getConstructor().isInterface(), "unexpected type: %s", ctor);
-      if (seenCtors.add(iface.getConstructor())) {
-        instanceTypes.add(iface);
-        getExtendedInterfaces(seenCtors, instanceTypes, iface);
-      }
-    }
   }
 
   /**
@@ -632,13 +578,12 @@ final class TypeInspector {
     }
 
     Set<JSType> types = new LinkedHashSet<>();
-    if (type.toMaybeFunctionType() != null
-        && (type.isConstructor() || type.isInterface())) {
+    if (type.toMaybeFunctionType() != null && type.toMaybeFunctionType().hasInstanceType()) {
       types.add(type.toMaybeFunctionType().getInstanceType());
     }
 
-    types.addAll(getAllImplementedInterfaces(type));
-    types.addAll(getTypeHierarchyInternal(type));
+    types.addAll(registry.getImplementedInterfaces(type));
+    types.addAll(registry.getTypeHierarchy(type));
     return types;
   }
 

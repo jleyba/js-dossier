@@ -16,6 +16,7 @@
 
 package com.github.jsdossier.testing;
 
+import com.github.jsdossier.jscomp.TypeRegistry;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableListMultimap;
@@ -45,11 +46,16 @@ public class CompilerUtil {
       loadBuiltinExterns();
 
   private final DossierCompiler compiler;
+  private final TypeRegistry typeRegistry;
   private final CompilerOptions options;
 
   @Inject
-  public CompilerUtil(DossierCompiler compiler, CompilerOptions options) {
+  public CompilerUtil(
+      DossierCompiler compiler,
+      TypeRegistry typeRegistry,
+      CompilerOptions options) {
     this.compiler = compiler;
+    this.typeRegistry = typeRegistry;
     this.options = options;
   }
 
@@ -85,6 +91,10 @@ public class CompilerUtil {
 
     Result result = compiler.compile(externs, inputs, options);
     assertCompiled(result);
+
+    typeRegistry.computeTypeRelationships(
+        compiler.getTopScope(),
+        compiler.getTypeRegistry());
   }
 
   public JSType evaluate(JSTypeExpression expression) {

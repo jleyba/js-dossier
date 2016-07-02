@@ -39,6 +39,7 @@ import com.github.jsdossier.annotations.Stderr;
 import com.github.jsdossier.annotations.Stdout;
 import com.github.jsdossier.annotations.TypeFilter;
 import com.github.jsdossier.jscomp.DossierCommandLineRunner;
+import com.github.jsdossier.jscomp.DossierCompiler;
 import com.github.jsdossier.jscomp.Module;
 import com.github.jsdossier.jscomp.NominalType;
 import com.github.jsdossier.jscomp.TypeRegistry;
@@ -338,11 +339,14 @@ final class Main {
       return result;
     }
 
+    TypeRegistry typeRegistry = injector.getInstance(TypeRegistry.class);
+    DossierCompiler compiler = injector.getInstance(DossierCompiler.class);
+    typeRegistry.computeTypeRelationships(compiler.getTopScope(), compiler.getTypeRegistry());
+
     try {
       DOCUMENTATION_SCOPE.enter();
       createDirectories(outputDir);
       DocTemplate template = injector.getInstance(DocTemplate.class);
-      TypeRegistry typeRegistry = injector.getInstance(TypeRegistry.class);
       RenderTaskExecutor executor = injector.getInstance(RenderTaskExecutor.class)
           .renderIndex()
           .renderDocumentation(filter(typeRegistry.getAllTypes(), not(isTypedef())))
