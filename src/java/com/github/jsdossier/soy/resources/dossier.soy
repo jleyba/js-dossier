@@ -114,14 +114,15 @@
   {@param type: dossier.JsType}
 
   {if $type.aliasedType}
-    <dt class="spec">Alias for{sp}
-      <code>
-        {if $type.aliasedType.href}
-          <a href="{$type.aliasedType.href}">{$type.aliasedType.text}</a>
-        {else}
-          {$type.aliasedType.text}
-        {/if}
-      </code>
+    {call .printTypeList}
+      {param types: [$type.aliasedType] /}
+      {param title: 'Alias For' /}
+    {/call}
+  {elseif length($type.knownAlias)}
+    {call .printTypeList}
+      {param types: $type.knownAlias /}
+      {param title: 'All Known Aliases' /}
+    {/call}
   {/if}
 {/template}
 
@@ -822,6 +823,7 @@
                 {param types: $type.extendedType /}
               {/call}
               {if $type.aliasedType
+                  or length($type.knownAlias)
                   or length($type.implementedType)
                   or length($type.subtype)
                   or ($type.tags.isInterface and length($type.implementation))

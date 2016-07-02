@@ -520,7 +520,7 @@ public interface JsTypeOrBuilder extends
   com.github.jsdossier.proto.JsType.ParentLinkOrBuilder getParentOrBuilder();
 
   /**
-   * <code>optional .dossier.TypeLink aliased_type = 22;</code>
+   * <code>optional .dossier.expression.TypeExpression aliased_type = 22;</code>
    *
    * <pre>
    * Link to another type that this type is an alias of.
@@ -528,21 +528,45 @@ public interface JsTypeOrBuilder extends
    */
   boolean hasAliasedType();
   /**
-   * <code>optional .dossier.TypeLink aliased_type = 22;</code>
+   * <code>optional .dossier.expression.TypeExpression aliased_type = 22;</code>
    *
    * <pre>
    * Link to another type that this type is an alias of.
    * </pre>
    */
-  com.github.jsdossier.proto.TypeLink getAliasedType();
+  com.github.jsdossier.proto.TypeExpression getAliasedType();
   /**
-   * <code>optional .dossier.TypeLink aliased_type = 22;</code>
+   * <code>optional .dossier.expression.TypeExpression aliased_type = 22;</code>
    *
    * <pre>
    * Link to another type that this type is an alias of.
    * </pre>
    */
-  com.github.jsdossier.proto.TypeLinkOrBuilder getAliasedTypeOrBuilder();
+  com.github.jsdossier.proto.TypeExpressionOrBuilder getAliasedTypeOrBuilder();
+
+  /**
+   * <code>repeated .dossier.expression.TypeExpression known_alias = 28;</code>
+   */
+  java.util.List<com.github.jsdossier.proto.TypeExpression> 
+      getKnownAliasList();
+  /**
+   * <code>repeated .dossier.expression.TypeExpression known_alias = 28;</code>
+   */
+  com.github.jsdossier.proto.TypeExpression getKnownAlias(int index);
+  /**
+   * <code>repeated .dossier.expression.TypeExpression known_alias = 28;</code>
+   */
+  int getKnownAliasCount();
+  /**
+   * <code>repeated .dossier.expression.TypeExpression known_alias = 28;</code>
+   */
+  java.util.List<? extends com.github.jsdossier.proto.TypeExpressionOrBuilder> 
+      getKnownAliasOrBuilderList();
+  /**
+   * <code>repeated .dossier.expression.TypeExpression known_alias = 28;</code>
+   */
+  com.github.jsdossier.proto.TypeExpressionOrBuilder getKnownAliasOrBuilder(
+      int index);
 
   /**
    * <code>optional string filename = 23;</code>

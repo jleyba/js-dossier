@@ -47,6 +47,7 @@ import com.google.common.base.Function;
 import com.google.common.base.Supplier;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.JSTypeExpression;
 import com.google.javascript.rhino.Node;
@@ -227,7 +228,6 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Ca
       addNestedTypeInfo(typeSpec);
       addTypedefInfo(typeSpec);
       addMainFunctionInfo(typeSpec);
-      addExtendedTypes(typeSpec);
       addTypeInheritanceInfo(typeSpec);
       addEnumValues(typeSpec);
       addStaticProperties(typeSpec);
@@ -254,10 +254,6 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Ca
 
       NominalType primary = getPrimaryDefinition(type);
       if (primary != type) {
-        renderSpec.setAliasedType(
-            linkFactory.createLink(primary)
-                .toBuilder()
-                .setText(dfs.getQualifiedDisplayName(primary)));
         if (description.getTokenCount() == 0) {
           description = parser.parseComment(
               primary.getJsDoc().getBlockComment(),
@@ -427,21 +423,17 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Ca
           typeInspector.getFunctionData(getBasename(type), mainFn, fakeNode, context, docs));
     }
 
-    private void addExtendedTypes(JsType.Builder spec) {
-      if (type.getType().isConstructor()) {
-        List<TypeExpression> types = typeInspector.getTypeHierarchy();
-        if (types.isEmpty()) {
-          return;
-        }
-
-        spec.addAllExtendedType(reverse(types));
-      }
-    }
-
     private void addTypeInheritanceInfo(JsType.Builder spec) {
       spec.addAllImplementedType(typeInspector.getImplementedTypes());
       spec.addAllImplementation(typeInspector.getKnownImplementations());
       spec.addAllSubtype(typeInspector.getSubtypes());
+      spec.addAllExtendedType(reverse(typeInspector.getTypeHierarchy()));
+
+      spec.addAllKnownAlias(typeInspector.getKnownAliases());
+      TypeExpression aliasedType = typeInspector.getAliasedType();
+      if (aliasedType != null) {
+        spec.setAliasedType(aliasedType);
+      }
     }
 
     private void addEnumValues(JsType.Builder spec) {

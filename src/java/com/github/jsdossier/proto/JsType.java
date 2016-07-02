@@ -31,6 +31,7 @@ public  final class JsType extends
     subtype_ = java.util.Collections.emptyList();
     implementation_ = java.util.Collections.emptyList();
     compilerConstant_ = java.util.Collections.emptyList();
+    knownAlias_ = java.util.Collections.emptyList();
     filename_ = "";
     qualifiedName_ = "";
     reexportedModule_ = java.util.Collections.emptyList();
@@ -235,11 +236,11 @@ public  final class JsType extends
             break;
           }
           case 178: {
-            com.github.jsdossier.proto.TypeLink.Builder subBuilder = null;
+            com.github.jsdossier.proto.TypeExpression.Builder subBuilder = null;
             if (aliasedType_ != null) {
               subBuilder = aliasedType_.toBuilder();
             }
-            aliasedType_ = input.readMessage(com.github.jsdossier.proto.TypeLink.parser(), extensionRegistry);
+            aliasedType_ = input.readMessage(com.github.jsdossier.proto.TypeExpression.parser(), extensionRegistry);
             if (subBuilder != null) {
               subBuilder.mergeFrom(aliasedType_);
               aliasedType_ = subBuilder.buildPartial();
@@ -260,9 +261,9 @@ public  final class JsType extends
             break;
           }
           case 202: {
-            if (!((mutable_bitField0_ & 0x00400000) == 0x00400000)) {
+            if (!((mutable_bitField0_ & 0x00800000) == 0x00800000)) {
               reexportedModule_ = new java.util.ArrayList<com.github.jsdossier.proto.Property>();
-              mutable_bitField0_ |= 0x00400000;
+              mutable_bitField0_ |= 0x00800000;
             }
             reexportedModule_.add(input.readMessage(com.github.jsdossier.proto.Property.parser(), extensionRegistry));
             break;
@@ -281,6 +282,14 @@ public  final class JsType extends
               mutable_bitField0_ |= 0x00010000;
             }
             implementation_.add(input.readMessage(com.github.jsdossier.proto.TypeExpression.parser(), extensionRegistry));
+            break;
+          }
+          case 226: {
+            if (!((mutable_bitField0_ & 0x00100000) == 0x00100000)) {
+              knownAlias_ = new java.util.ArrayList<com.github.jsdossier.proto.TypeExpression>();
+              mutable_bitField0_ |= 0x00100000;
+            }
+            knownAlias_.add(input.readMessage(com.github.jsdossier.proto.TypeExpression.parser(), extensionRegistry));
             break;
           }
         }
@@ -316,7 +325,7 @@ public  final class JsType extends
       if (((mutable_bitField0_ & 0x00020000) == 0x00020000)) {
         compilerConstant_ = java.util.Collections.unmodifiableList(compilerConstant_);
       }
-      if (((mutable_bitField0_ & 0x00400000) == 0x00400000)) {
+      if (((mutable_bitField0_ & 0x00800000) == 0x00800000)) {
         reexportedModule_ = java.util.Collections.unmodifiableList(reexportedModule_);
       }
       if (((mutable_bitField0_ & 0x00008000) == 0x00008000)) {
@@ -324,6 +333,9 @@ public  final class JsType extends
       }
       if (((mutable_bitField0_ & 0x00010000) == 0x00010000)) {
         implementation_ = java.util.Collections.unmodifiableList(implementation_);
+      }
+      if (((mutable_bitField0_ & 0x00100000) == 0x00100000)) {
+        knownAlias_ = java.util.Collections.unmodifiableList(knownAlias_);
       }
       makeExtensionsImmutable();
     }
@@ -5581,9 +5593,9 @@ public  final class JsType extends
   }
 
   public static final int ALIASED_TYPE_FIELD_NUMBER = 22;
-  private com.github.jsdossier.proto.TypeLink aliasedType_;
+  private com.github.jsdossier.proto.TypeExpression aliasedType_;
   /**
-   * <code>optional .dossier.TypeLink aliased_type = 22;</code>
+   * <code>optional .dossier.expression.TypeExpression aliased_type = 22;</code>
    *
    * <pre>
    * Link to another type that this type is an alias of.
@@ -5593,24 +5605,59 @@ public  final class JsType extends
     return aliasedType_ != null;
   }
   /**
-   * <code>optional .dossier.TypeLink aliased_type = 22;</code>
+   * <code>optional .dossier.expression.TypeExpression aliased_type = 22;</code>
    *
    * <pre>
    * Link to another type that this type is an alias of.
    * </pre>
    */
-  public com.github.jsdossier.proto.TypeLink getAliasedType() {
-    return aliasedType_ == null ? com.github.jsdossier.proto.TypeLink.getDefaultInstance() : aliasedType_;
+  public com.github.jsdossier.proto.TypeExpression getAliasedType() {
+    return aliasedType_ == null ? com.github.jsdossier.proto.TypeExpression.getDefaultInstance() : aliasedType_;
   }
   /**
-   * <code>optional .dossier.TypeLink aliased_type = 22;</code>
+   * <code>optional .dossier.expression.TypeExpression aliased_type = 22;</code>
    *
    * <pre>
    * Link to another type that this type is an alias of.
    * </pre>
    */
-  public com.github.jsdossier.proto.TypeLinkOrBuilder getAliasedTypeOrBuilder() {
+  public com.github.jsdossier.proto.TypeExpressionOrBuilder getAliasedTypeOrBuilder() {
     return getAliasedType();
+  }
+
+  public static final int KNOWN_ALIAS_FIELD_NUMBER = 28;
+  private java.util.List<com.github.jsdossier.proto.TypeExpression> knownAlias_;
+  /**
+   * <code>repeated .dossier.expression.TypeExpression known_alias = 28;</code>
+   */
+  public java.util.List<com.github.jsdossier.proto.TypeExpression> getKnownAliasList() {
+    return knownAlias_;
+  }
+  /**
+   * <code>repeated .dossier.expression.TypeExpression known_alias = 28;</code>
+   */
+  public java.util.List<? extends com.github.jsdossier.proto.TypeExpressionOrBuilder> 
+      getKnownAliasOrBuilderList() {
+    return knownAlias_;
+  }
+  /**
+   * <code>repeated .dossier.expression.TypeExpression known_alias = 28;</code>
+   */
+  public int getKnownAliasCount() {
+    return knownAlias_.size();
+  }
+  /**
+   * <code>repeated .dossier.expression.TypeExpression known_alias = 28;</code>
+   */
+  public com.github.jsdossier.proto.TypeExpression getKnownAlias(int index) {
+    return knownAlias_.get(index);
+  }
+  /**
+   * <code>repeated .dossier.expression.TypeExpression known_alias = 28;</code>
+   */
+  public com.github.jsdossier.proto.TypeExpressionOrBuilder getKnownAliasOrBuilder(
+      int index) {
+    return knownAlias_.get(index);
   }
 
   public static final int FILENAME_FIELD_NUMBER = 23;
@@ -5833,6 +5880,9 @@ public  final class JsType extends
     for (int i = 0; i < implementation_.size(); i++) {
       output.writeMessage(27, implementation_.get(i));
     }
+    for (int i = 0; i < knownAlias_.size(); i++) {
+      output.writeMessage(28, knownAlias_.get(i));
+    }
   }
 
   public int getSerializedSize() {
@@ -5928,6 +5978,10 @@ public  final class JsType extends
     for (int i = 0; i < implementation_.size(); i++) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(27, implementation_.get(i));
+    }
+    for (int i = 0; i < knownAlias_.size(); i++) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(28, knownAlias_.get(i));
     }
     memoizedSize = size;
     return size;
@@ -6051,6 +6105,7 @@ public  final class JsType extends
         getSubtypeFieldBuilder();
         getImplementationFieldBuilder();
         getCompilerConstantFieldBuilder();
+        getKnownAliasFieldBuilder();
         getReexportedModuleFieldBuilder();
       }
     }
@@ -6172,13 +6227,19 @@ public  final class JsType extends
         aliasedType_ = null;
         aliasedTypeBuilder_ = null;
       }
+      if (knownAliasBuilder_ == null) {
+        knownAlias_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00100000);
+      } else {
+        knownAliasBuilder_.clear();
+      }
       filename_ = "";
 
       qualifiedName_ = "";
 
       if (reexportedModuleBuilder_ == null) {
         reexportedModule_ = java.util.Collections.emptyList();
-        bitField0_ = (bitField0_ & ~0x00400000);
+        bitField0_ = (bitField0_ & ~0x00800000);
       } else {
         reexportedModuleBuilder_.clear();
       }
@@ -6342,12 +6403,21 @@ public  final class JsType extends
       } else {
         result.aliasedType_ = aliasedTypeBuilder_.build();
       }
+      if (knownAliasBuilder_ == null) {
+        if (((bitField0_ & 0x00100000) == 0x00100000)) {
+          knownAlias_ = java.util.Collections.unmodifiableList(knownAlias_);
+          bitField0_ = (bitField0_ & ~0x00100000);
+        }
+        result.knownAlias_ = knownAlias_;
+      } else {
+        result.knownAlias_ = knownAliasBuilder_.build();
+      }
       result.filename_ = filename_;
       result.qualifiedName_ = qualifiedName_;
       if (reexportedModuleBuilder_ == null) {
-        if (((bitField0_ & 0x00400000) == 0x00400000)) {
+        if (((bitField0_ & 0x00800000) == 0x00800000)) {
           reexportedModule_ = java.util.Collections.unmodifiableList(reexportedModule_);
-          bitField0_ = (bitField0_ & ~0x00400000);
+          bitField0_ = (bitField0_ & ~0x00800000);
         }
         result.reexportedModule_ = reexportedModule_;
       } else {
@@ -6660,6 +6730,32 @@ public  final class JsType extends
       if (other.hasAliasedType()) {
         mergeAliasedType(other.getAliasedType());
       }
+      if (knownAliasBuilder_ == null) {
+        if (!other.knownAlias_.isEmpty()) {
+          if (knownAlias_.isEmpty()) {
+            knownAlias_ = other.knownAlias_;
+            bitField0_ = (bitField0_ & ~0x00100000);
+          } else {
+            ensureKnownAliasIsMutable();
+            knownAlias_.addAll(other.knownAlias_);
+          }
+          onChanged();
+        }
+      } else {
+        if (!other.knownAlias_.isEmpty()) {
+          if (knownAliasBuilder_.isEmpty()) {
+            knownAliasBuilder_.dispose();
+            knownAliasBuilder_ = null;
+            knownAlias_ = other.knownAlias_;
+            bitField0_ = (bitField0_ & ~0x00100000);
+            knownAliasBuilder_ = 
+              com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+                 getKnownAliasFieldBuilder() : null;
+          } else {
+            knownAliasBuilder_.addAllMessages(other.knownAlias_);
+          }
+        }
+      }
       if (!other.getFilename().isEmpty()) {
         filename_ = other.filename_;
         onChanged();
@@ -6672,7 +6768,7 @@ public  final class JsType extends
         if (!other.reexportedModule_.isEmpty()) {
           if (reexportedModule_.isEmpty()) {
             reexportedModule_ = other.reexportedModule_;
-            bitField0_ = (bitField0_ & ~0x00400000);
+            bitField0_ = (bitField0_ & ~0x00800000);
           } else {
             ensureReexportedModuleIsMutable();
             reexportedModule_.addAll(other.reexportedModule_);
@@ -6685,7 +6781,7 @@ public  final class JsType extends
             reexportedModuleBuilder_.dispose();
             reexportedModuleBuilder_ = null;
             reexportedModule_ = other.reexportedModule_;
-            bitField0_ = (bitField0_ & ~0x00400000);
+            bitField0_ = (bitField0_ & ~0x00800000);
             reexportedModuleBuilder_ = 
               com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
                  getReexportedModuleFieldBuilder() : null;
@@ -10684,11 +10780,11 @@ public  final class JsType extends
       return parentBuilder_;
     }
 
-    private com.github.jsdossier.proto.TypeLink aliasedType_ = null;
+    private com.github.jsdossier.proto.TypeExpression aliasedType_ = null;
     private com.google.protobuf.SingleFieldBuilder<
-        com.github.jsdossier.proto.TypeLink, com.github.jsdossier.proto.TypeLink.Builder, com.github.jsdossier.proto.TypeLinkOrBuilder> aliasedTypeBuilder_;
+        com.github.jsdossier.proto.TypeExpression, com.github.jsdossier.proto.TypeExpression.Builder, com.github.jsdossier.proto.TypeExpressionOrBuilder> aliasedTypeBuilder_;
     /**
-     * <code>optional .dossier.TypeLink aliased_type = 22;</code>
+     * <code>optional .dossier.expression.TypeExpression aliased_type = 22;</code>
      *
      * <pre>
      * Link to another type that this type is an alias of.
@@ -10698,27 +10794,27 @@ public  final class JsType extends
       return aliasedTypeBuilder_ != null || aliasedType_ != null;
     }
     /**
-     * <code>optional .dossier.TypeLink aliased_type = 22;</code>
+     * <code>optional .dossier.expression.TypeExpression aliased_type = 22;</code>
      *
      * <pre>
      * Link to another type that this type is an alias of.
      * </pre>
      */
-    public com.github.jsdossier.proto.TypeLink getAliasedType() {
+    public com.github.jsdossier.proto.TypeExpression getAliasedType() {
       if (aliasedTypeBuilder_ == null) {
-        return aliasedType_ == null ? com.github.jsdossier.proto.TypeLink.getDefaultInstance() : aliasedType_;
+        return aliasedType_ == null ? com.github.jsdossier.proto.TypeExpression.getDefaultInstance() : aliasedType_;
       } else {
         return aliasedTypeBuilder_.getMessage();
       }
     }
     /**
-     * <code>optional .dossier.TypeLink aliased_type = 22;</code>
+     * <code>optional .dossier.expression.TypeExpression aliased_type = 22;</code>
      *
      * <pre>
      * Link to another type that this type is an alias of.
      * </pre>
      */
-    public Builder setAliasedType(com.github.jsdossier.proto.TypeLink value) {
+    public Builder setAliasedType(com.github.jsdossier.proto.TypeExpression value) {
       if (aliasedTypeBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -10732,14 +10828,14 @@ public  final class JsType extends
       return this;
     }
     /**
-     * <code>optional .dossier.TypeLink aliased_type = 22;</code>
+     * <code>optional .dossier.expression.TypeExpression aliased_type = 22;</code>
      *
      * <pre>
      * Link to another type that this type is an alias of.
      * </pre>
      */
     public Builder setAliasedType(
-        com.github.jsdossier.proto.TypeLink.Builder builderForValue) {
+        com.github.jsdossier.proto.TypeExpression.Builder builderForValue) {
       if (aliasedTypeBuilder_ == null) {
         aliasedType_ = builderForValue.build();
         onChanged();
@@ -10750,17 +10846,17 @@ public  final class JsType extends
       return this;
     }
     /**
-     * <code>optional .dossier.TypeLink aliased_type = 22;</code>
+     * <code>optional .dossier.expression.TypeExpression aliased_type = 22;</code>
      *
      * <pre>
      * Link to another type that this type is an alias of.
      * </pre>
      */
-    public Builder mergeAliasedType(com.github.jsdossier.proto.TypeLink value) {
+    public Builder mergeAliasedType(com.github.jsdossier.proto.TypeExpression value) {
       if (aliasedTypeBuilder_ == null) {
         if (aliasedType_ != null) {
           aliasedType_ =
-            com.github.jsdossier.proto.TypeLink.newBuilder(aliasedType_).mergeFrom(value).buildPartial();
+            com.github.jsdossier.proto.TypeExpression.newBuilder(aliasedType_).mergeFrom(value).buildPartial();
         } else {
           aliasedType_ = value;
         }
@@ -10772,7 +10868,7 @@ public  final class JsType extends
       return this;
     }
     /**
-     * <code>optional .dossier.TypeLink aliased_type = 22;</code>
+     * <code>optional .dossier.expression.TypeExpression aliased_type = 22;</code>
      *
      * <pre>
      * Link to another type that this type is an alias of.
@@ -10790,51 +10886,291 @@ public  final class JsType extends
       return this;
     }
     /**
-     * <code>optional .dossier.TypeLink aliased_type = 22;</code>
+     * <code>optional .dossier.expression.TypeExpression aliased_type = 22;</code>
      *
      * <pre>
      * Link to another type that this type is an alias of.
      * </pre>
      */
-    public com.github.jsdossier.proto.TypeLink.Builder getAliasedTypeBuilder() {
+    public com.github.jsdossier.proto.TypeExpression.Builder getAliasedTypeBuilder() {
       
       onChanged();
       return getAliasedTypeFieldBuilder().getBuilder();
     }
     /**
-     * <code>optional .dossier.TypeLink aliased_type = 22;</code>
+     * <code>optional .dossier.expression.TypeExpression aliased_type = 22;</code>
      *
      * <pre>
      * Link to another type that this type is an alias of.
      * </pre>
      */
-    public com.github.jsdossier.proto.TypeLinkOrBuilder getAliasedTypeOrBuilder() {
+    public com.github.jsdossier.proto.TypeExpressionOrBuilder getAliasedTypeOrBuilder() {
       if (aliasedTypeBuilder_ != null) {
         return aliasedTypeBuilder_.getMessageOrBuilder();
       } else {
         return aliasedType_ == null ?
-            com.github.jsdossier.proto.TypeLink.getDefaultInstance() : aliasedType_;
+            com.github.jsdossier.proto.TypeExpression.getDefaultInstance() : aliasedType_;
       }
     }
     /**
-     * <code>optional .dossier.TypeLink aliased_type = 22;</code>
+     * <code>optional .dossier.expression.TypeExpression aliased_type = 22;</code>
      *
      * <pre>
      * Link to another type that this type is an alias of.
      * </pre>
      */
     private com.google.protobuf.SingleFieldBuilder<
-        com.github.jsdossier.proto.TypeLink, com.github.jsdossier.proto.TypeLink.Builder, com.github.jsdossier.proto.TypeLinkOrBuilder> 
+        com.github.jsdossier.proto.TypeExpression, com.github.jsdossier.proto.TypeExpression.Builder, com.github.jsdossier.proto.TypeExpressionOrBuilder> 
         getAliasedTypeFieldBuilder() {
       if (aliasedTypeBuilder_ == null) {
         aliasedTypeBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-            com.github.jsdossier.proto.TypeLink, com.github.jsdossier.proto.TypeLink.Builder, com.github.jsdossier.proto.TypeLinkOrBuilder>(
+            com.github.jsdossier.proto.TypeExpression, com.github.jsdossier.proto.TypeExpression.Builder, com.github.jsdossier.proto.TypeExpressionOrBuilder>(
                 getAliasedType(),
                 getParentForChildren(),
                 isClean());
         aliasedType_ = null;
       }
       return aliasedTypeBuilder_;
+    }
+
+    private java.util.List<com.github.jsdossier.proto.TypeExpression> knownAlias_ =
+      java.util.Collections.emptyList();
+    private void ensureKnownAliasIsMutable() {
+      if (!((bitField0_ & 0x00100000) == 0x00100000)) {
+        knownAlias_ = new java.util.ArrayList<com.github.jsdossier.proto.TypeExpression>(knownAlias_);
+        bitField0_ |= 0x00100000;
+       }
+    }
+
+    private com.google.protobuf.RepeatedFieldBuilder<
+        com.github.jsdossier.proto.TypeExpression, com.github.jsdossier.proto.TypeExpression.Builder, com.github.jsdossier.proto.TypeExpressionOrBuilder> knownAliasBuilder_;
+
+    /**
+     * <code>repeated .dossier.expression.TypeExpression known_alias = 28;</code>
+     */
+    public java.util.List<com.github.jsdossier.proto.TypeExpression> getKnownAliasList() {
+      if (knownAliasBuilder_ == null) {
+        return java.util.Collections.unmodifiableList(knownAlias_);
+      } else {
+        return knownAliasBuilder_.getMessageList();
+      }
+    }
+    /**
+     * <code>repeated .dossier.expression.TypeExpression known_alias = 28;</code>
+     */
+    public int getKnownAliasCount() {
+      if (knownAliasBuilder_ == null) {
+        return knownAlias_.size();
+      } else {
+        return knownAliasBuilder_.getCount();
+      }
+    }
+    /**
+     * <code>repeated .dossier.expression.TypeExpression known_alias = 28;</code>
+     */
+    public com.github.jsdossier.proto.TypeExpression getKnownAlias(int index) {
+      if (knownAliasBuilder_ == null) {
+        return knownAlias_.get(index);
+      } else {
+        return knownAliasBuilder_.getMessage(index);
+      }
+    }
+    /**
+     * <code>repeated .dossier.expression.TypeExpression known_alias = 28;</code>
+     */
+    public Builder setKnownAlias(
+        int index, com.github.jsdossier.proto.TypeExpression value) {
+      if (knownAliasBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureKnownAliasIsMutable();
+        knownAlias_.set(index, value);
+        onChanged();
+      } else {
+        knownAliasBuilder_.setMessage(index, value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .dossier.expression.TypeExpression known_alias = 28;</code>
+     */
+    public Builder setKnownAlias(
+        int index, com.github.jsdossier.proto.TypeExpression.Builder builderForValue) {
+      if (knownAliasBuilder_ == null) {
+        ensureKnownAliasIsMutable();
+        knownAlias_.set(index, builderForValue.build());
+        onChanged();
+      } else {
+        knownAliasBuilder_.setMessage(index, builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .dossier.expression.TypeExpression known_alias = 28;</code>
+     */
+    public Builder addKnownAlias(com.github.jsdossier.proto.TypeExpression value) {
+      if (knownAliasBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureKnownAliasIsMutable();
+        knownAlias_.add(value);
+        onChanged();
+      } else {
+        knownAliasBuilder_.addMessage(value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .dossier.expression.TypeExpression known_alias = 28;</code>
+     */
+    public Builder addKnownAlias(
+        int index, com.github.jsdossier.proto.TypeExpression value) {
+      if (knownAliasBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureKnownAliasIsMutable();
+        knownAlias_.add(index, value);
+        onChanged();
+      } else {
+        knownAliasBuilder_.addMessage(index, value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .dossier.expression.TypeExpression known_alias = 28;</code>
+     */
+    public Builder addKnownAlias(
+        com.github.jsdossier.proto.TypeExpression.Builder builderForValue) {
+      if (knownAliasBuilder_ == null) {
+        ensureKnownAliasIsMutable();
+        knownAlias_.add(builderForValue.build());
+        onChanged();
+      } else {
+        knownAliasBuilder_.addMessage(builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .dossier.expression.TypeExpression known_alias = 28;</code>
+     */
+    public Builder addKnownAlias(
+        int index, com.github.jsdossier.proto.TypeExpression.Builder builderForValue) {
+      if (knownAliasBuilder_ == null) {
+        ensureKnownAliasIsMutable();
+        knownAlias_.add(index, builderForValue.build());
+        onChanged();
+      } else {
+        knownAliasBuilder_.addMessage(index, builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .dossier.expression.TypeExpression known_alias = 28;</code>
+     */
+    public Builder addAllKnownAlias(
+        java.lang.Iterable<? extends com.github.jsdossier.proto.TypeExpression> values) {
+      if (knownAliasBuilder_ == null) {
+        ensureKnownAliasIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, knownAlias_);
+        onChanged();
+      } else {
+        knownAliasBuilder_.addAllMessages(values);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .dossier.expression.TypeExpression known_alias = 28;</code>
+     */
+    public Builder clearKnownAlias() {
+      if (knownAliasBuilder_ == null) {
+        knownAlias_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00100000);
+        onChanged();
+      } else {
+        knownAliasBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .dossier.expression.TypeExpression known_alias = 28;</code>
+     */
+    public Builder removeKnownAlias(int index) {
+      if (knownAliasBuilder_ == null) {
+        ensureKnownAliasIsMutable();
+        knownAlias_.remove(index);
+        onChanged();
+      } else {
+        knownAliasBuilder_.remove(index);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .dossier.expression.TypeExpression known_alias = 28;</code>
+     */
+    public com.github.jsdossier.proto.TypeExpression.Builder getKnownAliasBuilder(
+        int index) {
+      return getKnownAliasFieldBuilder().getBuilder(index);
+    }
+    /**
+     * <code>repeated .dossier.expression.TypeExpression known_alias = 28;</code>
+     */
+    public com.github.jsdossier.proto.TypeExpressionOrBuilder getKnownAliasOrBuilder(
+        int index) {
+      if (knownAliasBuilder_ == null) {
+        return knownAlias_.get(index);  } else {
+        return knownAliasBuilder_.getMessageOrBuilder(index);
+      }
+    }
+    /**
+     * <code>repeated .dossier.expression.TypeExpression known_alias = 28;</code>
+     */
+    public java.util.List<? extends com.github.jsdossier.proto.TypeExpressionOrBuilder> 
+         getKnownAliasOrBuilderList() {
+      if (knownAliasBuilder_ != null) {
+        return knownAliasBuilder_.getMessageOrBuilderList();
+      } else {
+        return java.util.Collections.unmodifiableList(knownAlias_);
+      }
+    }
+    /**
+     * <code>repeated .dossier.expression.TypeExpression known_alias = 28;</code>
+     */
+    public com.github.jsdossier.proto.TypeExpression.Builder addKnownAliasBuilder() {
+      return getKnownAliasFieldBuilder().addBuilder(
+          com.github.jsdossier.proto.TypeExpression.getDefaultInstance());
+    }
+    /**
+     * <code>repeated .dossier.expression.TypeExpression known_alias = 28;</code>
+     */
+    public com.github.jsdossier.proto.TypeExpression.Builder addKnownAliasBuilder(
+        int index) {
+      return getKnownAliasFieldBuilder().addBuilder(
+          index, com.github.jsdossier.proto.TypeExpression.getDefaultInstance());
+    }
+    /**
+     * <code>repeated .dossier.expression.TypeExpression known_alias = 28;</code>
+     */
+    public java.util.List<com.github.jsdossier.proto.TypeExpression.Builder> 
+         getKnownAliasBuilderList() {
+      return getKnownAliasFieldBuilder().getBuilderList();
+    }
+    private com.google.protobuf.RepeatedFieldBuilder<
+        com.github.jsdossier.proto.TypeExpression, com.github.jsdossier.proto.TypeExpression.Builder, com.github.jsdossier.proto.TypeExpressionOrBuilder> 
+        getKnownAliasFieldBuilder() {
+      if (knownAliasBuilder_ == null) {
+        knownAliasBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+            com.github.jsdossier.proto.TypeExpression, com.github.jsdossier.proto.TypeExpression.Builder, com.github.jsdossier.proto.TypeExpressionOrBuilder>(
+                knownAlias_,
+                ((bitField0_ & 0x00100000) == 0x00100000),
+                getParentForChildren(),
+                isClean());
+        knownAlias_ = null;
+      }
+      return knownAliasBuilder_;
     }
 
     private java.lang.Object filename_ = "";
@@ -11018,9 +11354,9 @@ public  final class JsType extends
     private java.util.List<com.github.jsdossier.proto.Property> reexportedModule_ =
       java.util.Collections.emptyList();
     private void ensureReexportedModuleIsMutable() {
-      if (!((bitField0_ & 0x00400000) == 0x00400000)) {
+      if (!((bitField0_ & 0x00800000) == 0x00800000)) {
         reexportedModule_ = new java.util.ArrayList<com.github.jsdossier.proto.Property>(reexportedModule_);
-        bitField0_ |= 0x00400000;
+        bitField0_ |= 0x00800000;
        }
     }
 
@@ -11214,7 +11550,7 @@ public  final class JsType extends
     public Builder clearReexportedModule() {
       if (reexportedModuleBuilder_ == null) {
         reexportedModule_ = java.util.Collections.emptyList();
-        bitField0_ = (bitField0_ & ~0x00400000);
+        bitField0_ = (bitField0_ & ~0x00800000);
         onChanged();
       } else {
         reexportedModuleBuilder_.clear();
@@ -11319,7 +11655,7 @@ public  final class JsType extends
         reexportedModuleBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
             com.github.jsdossier.proto.Property, com.github.jsdossier.proto.Property.Builder, com.github.jsdossier.proto.PropertyOrBuilder>(
                 reexportedModule_,
-                ((bitField0_ & 0x00400000) == 0x00400000),
+                ((bitField0_ & 0x00800000) == 0x00800000),
                 getParentForChildren(),
                 isClean());
         reexportedModule_ = null;

@@ -279,7 +279,8 @@ message JsType {
   ParentLink parent = 21;
 
   // Link to another type that this type is an alias of.
-  TypeLink aliased_type = 22;
+  dossier.expression.TypeExpression aliased_type = 22;
+  repeated dossier.expression.TypeExpression known_alias = 28;
 
   // Base name for the rendered file for this type.
   string filename = 23;
@@ -290,7 +291,7 @@ message JsType {
   // Re-exported modules.
   repeated Property reexported_module = 25;
 
-  // Next ID: 28
+  // Next ID: 29
 }
 
 

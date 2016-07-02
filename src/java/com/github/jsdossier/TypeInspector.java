@@ -48,6 +48,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
@@ -75,6 +76,7 @@ import java.util.Comparator;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -315,6 +317,51 @@ final class TypeInspector {
       expressions.add(parser.parse(t, QUALIFIED_NAMES));
     }
 
+    return toSortedSet(expressions);
+  }
+
+  /**
+   * Returns the aliased type, if any.
+   */
+  @Nullable
+  @CheckReturnValue
+  public TypeExpression getAliasedType() {
+    List<NominalType> allAliases = registry.getTypes(inspectedType.getType());
+    NominalType primary = allAliases.iterator().next();
+    if (primary == inspectedType) {
+      return null;
+    }
+
+    TypeLink link = linkFactory.withTypeContext(inspectedType).createLink(primary);
+    TypeExpression.Builder typeExpression = TypeExpression.newBuilder();
+    typeExpression.getNamedTypeBuilder()
+        .setName(dfs.getQualifiedDisplayName(primary))
+        .setHref(link.getHref());
+    return typeExpression.build();
+  }
+
+  /**
+   * Returns the known aliases for the inspected type.
+   */
+  public ImmutableSet<TypeExpression> getKnownAliases() {
+    List<NominalType> allAliases = registry.getTypes(inspectedType.getType());
+
+    // The first entry is considered the "true" definition.
+    if (allAliases.get(0) != inspectedType) {
+      return ImmutableSet.of();
+    }
+
+    Set<TypeExpression> expressions = new HashSet<>();
+    for (NominalType type : Iterables.skip(allAliases, 1)) {
+      TypeLink link = linkFactory.withTypeContext(inspectedType).createLink(type);
+
+      TypeExpression.Builder typeExpression = TypeExpression.newBuilder();
+      typeExpression.getNamedTypeBuilder()
+          .setName(dfs.getQualifiedDisplayName(type))
+          .setHref(link.getHref());
+
+      expressions.add(typeExpression.build());
+    }
     return toSortedSet(expressions);
   }
 
