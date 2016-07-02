@@ -311,14 +311,28 @@
 {/template}
 
 
-/** Renders a list of function arguments. */
-{template .functionArgs}
+/** Renders a function signature. */
+{template .functionSignature private="true"}
   {@param fn: dossier.Function}
+
+  {if $fn.isConstructor}
+    new{sp}
+  {/if}
+  {$fn.base.name}
+  {if $fn.templateName and length($fn.templateName)}
+    {call .printTemplateNames}
+      {param names: $fn.templateName /}
+    {/call}
+  {/if}
   (
-  {foreach $parameter in $fn.parameter}
-    <var>{$parameter.name}</var>
-    {if not isLast($parameter)},{sp}{/if}
-  {/foreach}
+  {if length($fn.parameter)}
+    {sp}
+    {foreach $parameter in $fn.parameter}
+      <var>{$parameter.name}</var>
+      {if not isLast($parameter)},{sp}{/if}
+    {/foreach}
+    {sp}
+  {/if}
   )
 {/template}
 
@@ -344,8 +358,7 @@
         {param visibility: $fn.base.visibility /}
       {/call}
       <div>
-        new {$fn.base.name}
-        {call .functionArgs}
+        {call .functionSignature}
           {param fn: $fn /}
         {/call}
       </div>
@@ -357,8 +370,7 @@
   {elseif $isNonTrivial}
     <h3 class="name">
       <div>
-        {$fn.base.name}
-        {call .functionArgs}
+        {call .functionSignature}
           {param fn: $fn /}
         {/call}
       </div>
@@ -428,14 +440,7 @@
             {param visibility: $fn.base.visibility /}
           {/call}
           <div>
-            {if $fn.templateName and length($fn.templateName)}
-              {call .printTemplateNames}
-                {param names: $fn.templateName /}
-              {/call}
-              {sp}
-            {/if}
-            {$fn.base.name}
-            {call .functionArgs}
+            {call .functionSignature}
               {param fn: $fn /}
             {/call}
           </div>
