@@ -330,12 +330,25 @@
   {if length($fn.parameter)}
     {sp}
     {foreach $parameter in $fn.parameter}
-      <var>{$parameter.name}</var>
+      <var>
+        {if $parameter.type.isVarargs}&hellip;{/if}
+        {$parameter.name}
+      </var>
       {if not isLast($parameter)},{sp}{/if}
     {/foreach}
     {sp}
   {/if}
   )
+  {if not $fn.isConstructor
+      and $fn.return
+      and $fn.return.type}
+    {sp}<var>⇒</var>{sp}
+    <code>
+      {call dossier.soy.types.expression}
+        {param expression: $fn.return.type /}
+      {/call}
+    </code>
+  {/if}
 {/template}
 
 

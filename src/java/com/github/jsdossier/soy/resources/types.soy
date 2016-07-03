@@ -7,7 +7,7 @@
   {@param expression: dossier.expression.TypeExpression}
   {@param? strict: bool}
 
-  {if $expression.isVarargs}...{/if}
+  {if $expression.isVarargs}&hellip;{/if}
 
   {if $expression.functionType}{call .functionType data="all" /}
   {elseif $expression.namedType}{call .namedTypeExpression data="all" /}
