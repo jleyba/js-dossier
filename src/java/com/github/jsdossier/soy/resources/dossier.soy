@@ -66,7 +66,7 @@
  * This template is a no-op if given a non-class descriptor.
  */
 {template .classInheritance}
-  {@param types: list<dossier.expression.TypeExpression>}
+  {@param types: list<dossier.expression.NamedType>}
 
   {if length($types) >= 2}
     <pre class="inheritance">
@@ -78,8 +78,9 @@
           {/if}
           &#x2514;{sp}
         {/if}
-        {call dossier.soy.types.expression}
-          {param expression: $type /}
+        {call dossier.soy.types.namedTypeReference}
+          {param type: $type /}
+          {param useQualifiedName: true /}
         {/call}
       {/foreach}
     </pre>
@@ -91,15 +92,16 @@
  * Prints a list of type expressions.
  */
 {template .printTypeList private="true"}
-  {@param types: list<dossier.expression.TypeExpression>}
+  {@param types: list<dossier.expression.NamedType>}
   {@param title: string}
 
   <dt class="spec">{$title}
   {foreach $type in $types}
     <dd>
       <code>
-        {call dossier.soy.types.expression}
-          {param expression: $type /}
+        {call dossier.soy.types.namedTypeReference}
+          {param type: $type /}
+          {param useQualifiedName: true /}
         {/call}
       </code>
   {/foreach}
@@ -394,16 +396,18 @@
   {if $base.definedBy}
     <dt class="spec">Defined by</dt>
     <dd>
-      {call dossier.soy.types.expression}
-        {param expression: $base.definedBy /}
+      {call dossier.soy.types.namedTypeReference}
+        {param type: $base.definedBy /}
+        {param useQualifiedName: true /}
       {/call}
     </dd>
   {/if}
   {if $base.overrides}
     <dt class="spec">Overrides</dt>
     <dd>
-      {call dossier.soy.types.expression}
-        {param expression: $base.overrides /}
+      {call dossier.soy.types.namedTypeReference}
+        {param type: $base.overrides /}
+        {param useQualifiedName: true /}
       {/call}
     </dd>
   {/if}
@@ -411,8 +415,9 @@
     <dt class="spec">Specified by</dt>
     {foreach $spec in $base.specifiedBy}
       <dd>
-        {call dossier.soy.types.expression}
-          {param expression: $spec /}
+        {call dossier.soy.types.namedTypeReference}
+          {param type: $spec /}
+          {param useQualifiedName: true /}
         {/call}
       </dd>
     {/foreach}

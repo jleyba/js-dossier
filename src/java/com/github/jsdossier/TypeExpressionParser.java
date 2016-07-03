@@ -31,7 +31,6 @@ import com.google.auto.factory.Provided;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
-import com.google.common.collect.ImmutableSet;
 import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.jstype.EnumElementType;
 import com.google.javascript.rhino.jstype.FunctionType;
@@ -84,18 +83,10 @@ final class TypeExpressionParser {
    * Converts the given JavaScript type to a type expression message.
    *
    * @param type the type to parse.
-   * @param options desired parse options.
    */
-  public TypeExpression parse(JSType type, Option... options) {
-    Parser parser = new Parser(options);
+  public TypeExpression parse(JSType type) {
+    Parser parser = new Parser();
     return parser.parse(type);
-  }
-
-  enum Option {
-    /**
-     * Indicates named types should be rendered with their fully qualified names.
-     */
-    QUALIFIED_NAMES
   }
 
   /**
@@ -103,13 +94,8 @@ final class TypeExpressionParser {
    */
   private class Parser implements Visitor<Void> {
 
-    private final ImmutableSet<Option> options;
     private final TypeExpression.Builder expression = TypeExpression.newBuilder();
     private final Deque<TypeExpression.Builder> expressions = new ArrayDeque<>();
-
-    Parser(Option... options) {
-      this.options = ImmutableSet.copyOf(options);
-    }
 
     TypeExpression parse(JSType type) {
       expression.clear();
@@ -167,13 +153,7 @@ final class TypeExpressionParser {
     }
 
     private com.github.jsdossier.proto.NamedType.Builder createNamedType(NominalType type) {
-      TypeLink link = linkFactory.createLink(type);
-      return com.github.jsdossier.proto.NamedType.newBuilder()
-          .setHref(link.getHref())
-          .setName(
-              options.contains(Option.QUALIFIED_NAMES)
-                  ? dfs.getQualifiedDisplayName(type)
-                  : dfs.getDisplayName(type));
+      return linkFactory.createNamedTypeReference(type).toBuilder();
     }
 
     private TypeExpression.Builder currentExpression() {
@@ -181,7 +161,15 @@ final class TypeExpressionParser {
     }
 
     private void appendNativeType(String type) {
-      appendLink(checkNotNull(linkFactory.createNativeExternLink(type)));
+      TypeLink link = checkNotNull(linkFactory.createNativeExternLink(type));
+      appendExternLink(link);
+    }
+
+    private com.github.jsdossier.proto.NamedType.Builder appendExternLink(TypeLink link) {
+      return currentExpression().getNamedTypeBuilder()
+          .setName(link.getText())
+          .setHref(link.getHref())
+          .setExtern(true);
     }
 
     private void appendLink(TypeLinkOrBuilder link) {
@@ -351,7 +339,11 @@ final class TypeExpressionParser {
           createNamedType(type.getConstructor());
       if (namedType == null) {
         TypeLink link = linkFactory.createNativeExternLink(type.getReferenceName());
-        appendLink(displayName, link == null ? "" : link.getHref());
+        if (link == null) {
+          currentExpression().getNamedTypeBuilder().setName(displayName);
+        } else {
+          appendExternLink(link).setName(displayName);
+        }
       } else {
         currentExpression().setNamedType(namedType);
       }

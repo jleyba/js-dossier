@@ -33,10 +33,16 @@ message FunctionType {
 // Defines a link to a named type. The link's href will be empty if the type
 // could not be resolved.
 message NamedType {
+  // The type's simple name.
   string name = 1;
-  string href = 2 [(options.sanitized).uri = true];
 
-  repeated TypeExpression template_type = 3;
+  // The type's qualified name. If omitted, the |qualified_name| is considered the same as
+  // the simple |name|.
+  string qualified_name = 2;
+
+  string href = 3 [(options.sanitized).uri = true];
+  bool extern = 4;
+  repeated TypeExpression template_type = 5;
 }
 
 

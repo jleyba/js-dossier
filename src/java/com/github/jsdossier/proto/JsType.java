@@ -200,18 +200,18 @@ public  final class JsType extends
           }
           case 146: {
             if (!((mutable_bitField0_ & 0x00002000) == 0x00002000)) {
-              extendedType_ = new java.util.ArrayList<com.github.jsdossier.proto.TypeExpression>();
+              extendedType_ = new java.util.ArrayList<com.github.jsdossier.proto.NamedType>();
               mutable_bitField0_ |= 0x00002000;
             }
-            extendedType_.add(input.readMessage(com.github.jsdossier.proto.TypeExpression.parser(), extensionRegistry));
+            extendedType_.add(input.readMessage(com.github.jsdossier.proto.NamedType.parser(), extensionRegistry));
             break;
           }
           case 154: {
             if (!((mutable_bitField0_ & 0x00004000) == 0x00004000)) {
-              implementedType_ = new java.util.ArrayList<com.github.jsdossier.proto.TypeExpression>();
+              implementedType_ = new java.util.ArrayList<com.github.jsdossier.proto.NamedType>();
               mutable_bitField0_ |= 0x00004000;
             }
-            implementedType_.add(input.readMessage(com.github.jsdossier.proto.TypeExpression.parser(), extensionRegistry));
+            implementedType_.add(input.readMessage(com.github.jsdossier.proto.NamedType.parser(), extensionRegistry));
             break;
           }
           case 162: {
@@ -236,11 +236,11 @@ public  final class JsType extends
             break;
           }
           case 178: {
-            com.github.jsdossier.proto.TypeExpression.Builder subBuilder = null;
+            com.github.jsdossier.proto.NamedType.Builder subBuilder = null;
             if (aliasedType_ != null) {
               subBuilder = aliasedType_.toBuilder();
             }
-            aliasedType_ = input.readMessage(com.github.jsdossier.proto.TypeExpression.parser(), extensionRegistry);
+            aliasedType_ = input.readMessage(com.github.jsdossier.proto.NamedType.parser(), extensionRegistry);
             if (subBuilder != null) {
               subBuilder.mergeFrom(aliasedType_);
               aliasedType_ = subBuilder.buildPartial();
@@ -270,26 +270,26 @@ public  final class JsType extends
           }
           case 210: {
             if (!((mutable_bitField0_ & 0x00008000) == 0x00008000)) {
-              subtype_ = new java.util.ArrayList<com.github.jsdossier.proto.TypeExpression>();
+              subtype_ = new java.util.ArrayList<com.github.jsdossier.proto.NamedType>();
               mutable_bitField0_ |= 0x00008000;
             }
-            subtype_.add(input.readMessage(com.github.jsdossier.proto.TypeExpression.parser(), extensionRegistry));
+            subtype_.add(input.readMessage(com.github.jsdossier.proto.NamedType.parser(), extensionRegistry));
             break;
           }
           case 218: {
             if (!((mutable_bitField0_ & 0x00010000) == 0x00010000)) {
-              implementation_ = new java.util.ArrayList<com.github.jsdossier.proto.TypeExpression>();
+              implementation_ = new java.util.ArrayList<com.github.jsdossier.proto.NamedType>();
               mutable_bitField0_ |= 0x00010000;
             }
-            implementation_.add(input.readMessage(com.github.jsdossier.proto.TypeExpression.parser(), extensionRegistry));
+            implementation_.add(input.readMessage(com.github.jsdossier.proto.NamedType.parser(), extensionRegistry));
             break;
           }
           case 226: {
             if (!((mutable_bitField0_ & 0x00100000) == 0x00100000)) {
-              knownAlias_ = new java.util.ArrayList<com.github.jsdossier.proto.TypeExpression>();
+              knownAlias_ = new java.util.ArrayList<com.github.jsdossier.proto.NamedType>();
               mutable_bitField0_ |= 0x00100000;
             }
-            knownAlias_.add(input.readMessage(com.github.jsdossier.proto.TypeExpression.parser(), extensionRegistry));
+            knownAlias_.add(input.readMessage(com.github.jsdossier.proto.NamedType.parser(), extensionRegistry));
             break;
           }
         }
@@ -5297,32 +5297,32 @@ public  final class JsType extends
   }
 
   public static final int EXTENDED_TYPE_FIELD_NUMBER = 18;
-  private java.util.List<com.github.jsdossier.proto.TypeExpression> extendedType_;
+  private java.util.List<com.github.jsdossier.proto.NamedType> extendedType_;
   /**
-   * <code>repeated .dossier.expression.TypeExpression extended_type = 18;</code>
+   * <code>repeated .dossier.expression.NamedType extended_type = 18;</code>
    *
    * <pre>
    * List of inherited types for a class. This should be empty if |is_class|
    * is false. Classes should be listed in order, with the root type first.
    * </pre>
    */
-  public java.util.List<com.github.jsdossier.proto.TypeExpression> getExtendedTypeList() {
+  public java.util.List<com.github.jsdossier.proto.NamedType> getExtendedTypeList() {
     return extendedType_;
   }
   /**
-   * <code>repeated .dossier.expression.TypeExpression extended_type = 18;</code>
+   * <code>repeated .dossier.expression.NamedType extended_type = 18;</code>
    *
    * <pre>
    * List of inherited types for a class. This should be empty if |is_class|
    * is false. Classes should be listed in order, with the root type first.
    * </pre>
    */
-  public java.util.List<? extends com.github.jsdossier.proto.TypeExpressionOrBuilder> 
+  public java.util.List<? extends com.github.jsdossier.proto.NamedTypeOrBuilder> 
       getExtendedTypeOrBuilderList() {
     return extendedType_;
   }
   /**
-   * <code>repeated .dossier.expression.TypeExpression extended_type = 18;</code>
+   * <code>repeated .dossier.expression.NamedType extended_type = 18;</code>
    *
    * <pre>
    * List of inherited types for a class. This should be empty if |is_class|
@@ -5333,56 +5333,56 @@ public  final class JsType extends
     return extendedType_.size();
   }
   /**
-   * <code>repeated .dossier.expression.TypeExpression extended_type = 18;</code>
+   * <code>repeated .dossier.expression.NamedType extended_type = 18;</code>
    *
    * <pre>
    * List of inherited types for a class. This should be empty if |is_class|
    * is false. Classes should be listed in order, with the root type first.
    * </pre>
    */
-  public com.github.jsdossier.proto.TypeExpression getExtendedType(int index) {
+  public com.github.jsdossier.proto.NamedType getExtendedType(int index) {
     return extendedType_.get(index);
   }
   /**
-   * <code>repeated .dossier.expression.TypeExpression extended_type = 18;</code>
+   * <code>repeated .dossier.expression.NamedType extended_type = 18;</code>
    *
    * <pre>
    * List of inherited types for a class. This should be empty if |is_class|
    * is false. Classes should be listed in order, with the root type first.
    * </pre>
    */
-  public com.github.jsdossier.proto.TypeExpressionOrBuilder getExtendedTypeOrBuilder(
+  public com.github.jsdossier.proto.NamedTypeOrBuilder getExtendedTypeOrBuilder(
       int index) {
     return extendedType_.get(index);
   }
 
   public static final int IMPLEMENTED_TYPE_FIELD_NUMBER = 19;
-  private java.util.List<com.github.jsdossier.proto.TypeExpression> implementedType_;
+  private java.util.List<com.github.jsdossier.proto.NamedType> implementedType_;
   /**
-   * <code>repeated .dossier.expression.TypeExpression implemented_type = 19;</code>
+   * <code>repeated .dossier.expression.NamedType implemented_type = 19;</code>
    *
    * <pre>
    * The interfaces implemented by a class/extended by an interface. This
    * list should be empty if |is_class| and |is_interface| are false.
    * </pre>
    */
-  public java.util.List<com.github.jsdossier.proto.TypeExpression> getImplementedTypeList() {
+  public java.util.List<com.github.jsdossier.proto.NamedType> getImplementedTypeList() {
     return implementedType_;
   }
   /**
-   * <code>repeated .dossier.expression.TypeExpression implemented_type = 19;</code>
+   * <code>repeated .dossier.expression.NamedType implemented_type = 19;</code>
    *
    * <pre>
    * The interfaces implemented by a class/extended by an interface. This
    * list should be empty if |is_class| and |is_interface| are false.
    * </pre>
    */
-  public java.util.List<? extends com.github.jsdossier.proto.TypeExpressionOrBuilder> 
+  public java.util.List<? extends com.github.jsdossier.proto.NamedTypeOrBuilder> 
       getImplementedTypeOrBuilderList() {
     return implementedType_;
   }
   /**
-   * <code>repeated .dossier.expression.TypeExpression implemented_type = 19;</code>
+   * <code>repeated .dossier.expression.NamedType implemented_type = 19;</code>
    *
    * <pre>
    * The interfaces implemented by a class/extended by an interface. This
@@ -5393,33 +5393,33 @@ public  final class JsType extends
     return implementedType_.size();
   }
   /**
-   * <code>repeated .dossier.expression.TypeExpression implemented_type = 19;</code>
+   * <code>repeated .dossier.expression.NamedType implemented_type = 19;</code>
    *
    * <pre>
    * The interfaces implemented by a class/extended by an interface. This
    * list should be empty if |is_class| and |is_interface| are false.
    * </pre>
    */
-  public com.github.jsdossier.proto.TypeExpression getImplementedType(int index) {
+  public com.github.jsdossier.proto.NamedType getImplementedType(int index) {
     return implementedType_.get(index);
   }
   /**
-   * <code>repeated .dossier.expression.TypeExpression implemented_type = 19;</code>
+   * <code>repeated .dossier.expression.NamedType implemented_type = 19;</code>
    *
    * <pre>
    * The interfaces implemented by a class/extended by an interface. This
    * list should be empty if |is_class| and |is_interface| are false.
    * </pre>
    */
-  public com.github.jsdossier.proto.TypeExpressionOrBuilder getImplementedTypeOrBuilder(
+  public com.github.jsdossier.proto.NamedTypeOrBuilder getImplementedTypeOrBuilder(
       int index) {
     return implementedType_.get(index);
   }
 
   public static final int SUBTYPE_FIELD_NUMBER = 26;
-  private java.util.List<com.github.jsdossier.proto.TypeExpression> subtype_;
+  private java.util.List<com.github.jsdossier.proto.NamedType> subtype_;
   /**
-   * <code>repeated .dossier.expression.TypeExpression subtype = 26;</code>
+   * <code>repeated .dossier.expression.NamedType subtype = 26;</code>
    *
    * <pre>
    * Known subtypes of this type. If |is_class| is true, this will contain the
@@ -5427,11 +5427,11 @@ public  final class JsType extends
    * known subinterfaces.
    * </pre>
    */
-  public java.util.List<com.github.jsdossier.proto.TypeExpression> getSubtypeList() {
+  public java.util.List<com.github.jsdossier.proto.NamedType> getSubtypeList() {
     return subtype_;
   }
   /**
-   * <code>repeated .dossier.expression.TypeExpression subtype = 26;</code>
+   * <code>repeated .dossier.expression.NamedType subtype = 26;</code>
    *
    * <pre>
    * Known subtypes of this type. If |is_class| is true, this will contain the
@@ -5439,12 +5439,12 @@ public  final class JsType extends
    * known subinterfaces.
    * </pre>
    */
-  public java.util.List<? extends com.github.jsdossier.proto.TypeExpressionOrBuilder> 
+  public java.util.List<? extends com.github.jsdossier.proto.NamedTypeOrBuilder> 
       getSubtypeOrBuilderList() {
     return subtype_;
   }
   /**
-   * <code>repeated .dossier.expression.TypeExpression subtype = 26;</code>
+   * <code>repeated .dossier.expression.NamedType subtype = 26;</code>
    *
    * <pre>
    * Known subtypes of this type. If |is_class| is true, this will contain the
@@ -5456,7 +5456,7 @@ public  final class JsType extends
     return subtype_.size();
   }
   /**
-   * <code>repeated .dossier.expression.TypeExpression subtype = 26;</code>
+   * <code>repeated .dossier.expression.NamedType subtype = 26;</code>
    *
    * <pre>
    * Known subtypes of this type. If |is_class| is true, this will contain the
@@ -5464,11 +5464,11 @@ public  final class JsType extends
    * known subinterfaces.
    * </pre>
    */
-  public com.github.jsdossier.proto.TypeExpression getSubtype(int index) {
+  public com.github.jsdossier.proto.NamedType getSubtype(int index) {
     return subtype_.get(index);
   }
   /**
-   * <code>repeated .dossier.expression.TypeExpression subtype = 26;</code>
+   * <code>repeated .dossier.expression.NamedType subtype = 26;</code>
    *
    * <pre>
    * Known subtypes of this type. If |is_class| is true, this will contain the
@@ -5476,36 +5476,36 @@ public  final class JsType extends
    * known subinterfaces.
    * </pre>
    */
-  public com.github.jsdossier.proto.TypeExpressionOrBuilder getSubtypeOrBuilder(
+  public com.github.jsdossier.proto.NamedTypeOrBuilder getSubtypeOrBuilder(
       int index) {
     return subtype_.get(index);
   }
 
   public static final int IMPLEMENTATION_FIELD_NUMBER = 27;
-  private java.util.List<com.github.jsdossier.proto.TypeExpression> implementation_;
+  private java.util.List<com.github.jsdossier.proto.NamedType> implementation_;
   /**
-   * <code>repeated .dossier.expression.TypeExpression implementation = 27;</code>
+   * <code>repeated .dossier.expression.NamedType implementation = 27;</code>
    *
    * <pre>
    * Known implementations of this type. Will be empy if |is_interface| is false.
    * </pre>
    */
-  public java.util.List<com.github.jsdossier.proto.TypeExpression> getImplementationList() {
+  public java.util.List<com.github.jsdossier.proto.NamedType> getImplementationList() {
     return implementation_;
   }
   /**
-   * <code>repeated .dossier.expression.TypeExpression implementation = 27;</code>
+   * <code>repeated .dossier.expression.NamedType implementation = 27;</code>
    *
    * <pre>
    * Known implementations of this type. Will be empy if |is_interface| is false.
    * </pre>
    */
-  public java.util.List<? extends com.github.jsdossier.proto.TypeExpressionOrBuilder> 
+  public java.util.List<? extends com.github.jsdossier.proto.NamedTypeOrBuilder> 
       getImplementationOrBuilderList() {
     return implementation_;
   }
   /**
-   * <code>repeated .dossier.expression.TypeExpression implementation = 27;</code>
+   * <code>repeated .dossier.expression.NamedType implementation = 27;</code>
    *
    * <pre>
    * Known implementations of this type. Will be empy if |is_interface| is false.
@@ -5515,23 +5515,23 @@ public  final class JsType extends
     return implementation_.size();
   }
   /**
-   * <code>repeated .dossier.expression.TypeExpression implementation = 27;</code>
+   * <code>repeated .dossier.expression.NamedType implementation = 27;</code>
    *
    * <pre>
    * Known implementations of this type. Will be empy if |is_interface| is false.
    * </pre>
    */
-  public com.github.jsdossier.proto.TypeExpression getImplementation(int index) {
+  public com.github.jsdossier.proto.NamedType getImplementation(int index) {
     return implementation_.get(index);
   }
   /**
-   * <code>repeated .dossier.expression.TypeExpression implementation = 27;</code>
+   * <code>repeated .dossier.expression.NamedType implementation = 27;</code>
    *
    * <pre>
    * Known implementations of this type. Will be empy if |is_interface| is false.
    * </pre>
    */
-  public com.github.jsdossier.proto.TypeExpressionOrBuilder getImplementationOrBuilder(
+  public com.github.jsdossier.proto.NamedTypeOrBuilder getImplementationOrBuilder(
       int index) {
     return implementation_.get(index);
   }
@@ -5593,9 +5593,9 @@ public  final class JsType extends
   }
 
   public static final int ALIASED_TYPE_FIELD_NUMBER = 22;
-  private com.github.jsdossier.proto.TypeExpression aliasedType_;
+  private com.github.jsdossier.proto.NamedType aliasedType_;
   /**
-   * <code>optional .dossier.expression.TypeExpression aliased_type = 22;</code>
+   * <code>optional .dossier.expression.NamedType aliased_type = 22;</code>
    *
    * <pre>
    * Link to another type that this type is an alias of.
@@ -5605,57 +5605,57 @@ public  final class JsType extends
     return aliasedType_ != null;
   }
   /**
-   * <code>optional .dossier.expression.TypeExpression aliased_type = 22;</code>
+   * <code>optional .dossier.expression.NamedType aliased_type = 22;</code>
    *
    * <pre>
    * Link to another type that this type is an alias of.
    * </pre>
    */
-  public com.github.jsdossier.proto.TypeExpression getAliasedType() {
-    return aliasedType_ == null ? com.github.jsdossier.proto.TypeExpression.getDefaultInstance() : aliasedType_;
+  public com.github.jsdossier.proto.NamedType getAliasedType() {
+    return aliasedType_ == null ? com.github.jsdossier.proto.NamedType.getDefaultInstance() : aliasedType_;
   }
   /**
-   * <code>optional .dossier.expression.TypeExpression aliased_type = 22;</code>
+   * <code>optional .dossier.expression.NamedType aliased_type = 22;</code>
    *
    * <pre>
    * Link to another type that this type is an alias of.
    * </pre>
    */
-  public com.github.jsdossier.proto.TypeExpressionOrBuilder getAliasedTypeOrBuilder() {
+  public com.github.jsdossier.proto.NamedTypeOrBuilder getAliasedTypeOrBuilder() {
     return getAliasedType();
   }
 
   public static final int KNOWN_ALIAS_FIELD_NUMBER = 28;
-  private java.util.List<com.github.jsdossier.proto.TypeExpression> knownAlias_;
+  private java.util.List<com.github.jsdossier.proto.NamedType> knownAlias_;
   /**
-   * <code>repeated .dossier.expression.TypeExpression known_alias = 28;</code>
+   * <code>repeated .dossier.expression.NamedType known_alias = 28;</code>
    */
-  public java.util.List<com.github.jsdossier.proto.TypeExpression> getKnownAliasList() {
+  public java.util.List<com.github.jsdossier.proto.NamedType> getKnownAliasList() {
     return knownAlias_;
   }
   /**
-   * <code>repeated .dossier.expression.TypeExpression known_alias = 28;</code>
+   * <code>repeated .dossier.expression.NamedType known_alias = 28;</code>
    */
-  public java.util.List<? extends com.github.jsdossier.proto.TypeExpressionOrBuilder> 
+  public java.util.List<? extends com.github.jsdossier.proto.NamedTypeOrBuilder> 
       getKnownAliasOrBuilderList() {
     return knownAlias_;
   }
   /**
-   * <code>repeated .dossier.expression.TypeExpression known_alias = 28;</code>
+   * <code>repeated .dossier.expression.NamedType known_alias = 28;</code>
    */
   public int getKnownAliasCount() {
     return knownAlias_.size();
   }
   /**
-   * <code>repeated .dossier.expression.TypeExpression known_alias = 28;</code>
+   * <code>repeated .dossier.expression.NamedType known_alias = 28;</code>
    */
-  public com.github.jsdossier.proto.TypeExpression getKnownAlias(int index) {
+  public com.github.jsdossier.proto.NamedType getKnownAlias(int index) {
     return knownAlias_.get(index);
   }
   /**
-   * <code>repeated .dossier.expression.TypeExpression known_alias = 28;</code>
+   * <code>repeated .dossier.expression.NamedType known_alias = 28;</code>
    */
-  public com.github.jsdossier.proto.TypeExpressionOrBuilder getKnownAliasOrBuilder(
+  public com.github.jsdossier.proto.NamedTypeOrBuilder getKnownAliasOrBuilder(
       int index) {
     return knownAlias_.get(index);
   }
@@ -9103,27 +9103,27 @@ public  final class JsType extends
       return fieldBuilder_;
     }
 
-    private java.util.List<com.github.jsdossier.proto.TypeExpression> extendedType_ =
+    private java.util.List<com.github.jsdossier.proto.NamedType> extendedType_ =
       java.util.Collections.emptyList();
     private void ensureExtendedTypeIsMutable() {
       if (!((bitField0_ & 0x00002000) == 0x00002000)) {
-        extendedType_ = new java.util.ArrayList<com.github.jsdossier.proto.TypeExpression>(extendedType_);
+        extendedType_ = new java.util.ArrayList<com.github.jsdossier.proto.NamedType>(extendedType_);
         bitField0_ |= 0x00002000;
        }
     }
 
     private com.google.protobuf.RepeatedFieldBuilder<
-        com.github.jsdossier.proto.TypeExpression, com.github.jsdossier.proto.TypeExpression.Builder, com.github.jsdossier.proto.TypeExpressionOrBuilder> extendedTypeBuilder_;
+        com.github.jsdossier.proto.NamedType, com.github.jsdossier.proto.NamedType.Builder, com.github.jsdossier.proto.NamedTypeOrBuilder> extendedTypeBuilder_;
 
     /**
-     * <code>repeated .dossier.expression.TypeExpression extended_type = 18;</code>
+     * <code>repeated .dossier.expression.NamedType extended_type = 18;</code>
      *
      * <pre>
      * List of inherited types for a class. This should be empty if |is_class|
      * is false. Classes should be listed in order, with the root type first.
      * </pre>
      */
-    public java.util.List<com.github.jsdossier.proto.TypeExpression> getExtendedTypeList() {
+    public java.util.List<com.github.jsdossier.proto.NamedType> getExtendedTypeList() {
       if (extendedTypeBuilder_ == null) {
         return java.util.Collections.unmodifiableList(extendedType_);
       } else {
@@ -9131,7 +9131,7 @@ public  final class JsType extends
       }
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression extended_type = 18;</code>
+     * <code>repeated .dossier.expression.NamedType extended_type = 18;</code>
      *
      * <pre>
      * List of inherited types for a class. This should be empty if |is_class|
@@ -9146,14 +9146,14 @@ public  final class JsType extends
       }
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression extended_type = 18;</code>
+     * <code>repeated .dossier.expression.NamedType extended_type = 18;</code>
      *
      * <pre>
      * List of inherited types for a class. This should be empty if |is_class|
      * is false. Classes should be listed in order, with the root type first.
      * </pre>
      */
-    public com.github.jsdossier.proto.TypeExpression getExtendedType(int index) {
+    public com.github.jsdossier.proto.NamedType getExtendedType(int index) {
       if (extendedTypeBuilder_ == null) {
         return extendedType_.get(index);
       } else {
@@ -9161,7 +9161,7 @@ public  final class JsType extends
       }
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression extended_type = 18;</code>
+     * <code>repeated .dossier.expression.NamedType extended_type = 18;</code>
      *
      * <pre>
      * List of inherited types for a class. This should be empty if |is_class|
@@ -9169,7 +9169,7 @@ public  final class JsType extends
      * </pre>
      */
     public Builder setExtendedType(
-        int index, com.github.jsdossier.proto.TypeExpression value) {
+        int index, com.github.jsdossier.proto.NamedType value) {
       if (extendedTypeBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -9183,7 +9183,7 @@ public  final class JsType extends
       return this;
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression extended_type = 18;</code>
+     * <code>repeated .dossier.expression.NamedType extended_type = 18;</code>
      *
      * <pre>
      * List of inherited types for a class. This should be empty if |is_class|
@@ -9191,7 +9191,7 @@ public  final class JsType extends
      * </pre>
      */
     public Builder setExtendedType(
-        int index, com.github.jsdossier.proto.TypeExpression.Builder builderForValue) {
+        int index, com.github.jsdossier.proto.NamedType.Builder builderForValue) {
       if (extendedTypeBuilder_ == null) {
         ensureExtendedTypeIsMutable();
         extendedType_.set(index, builderForValue.build());
@@ -9202,14 +9202,14 @@ public  final class JsType extends
       return this;
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression extended_type = 18;</code>
+     * <code>repeated .dossier.expression.NamedType extended_type = 18;</code>
      *
      * <pre>
      * List of inherited types for a class. This should be empty if |is_class|
      * is false. Classes should be listed in order, with the root type first.
      * </pre>
      */
-    public Builder addExtendedType(com.github.jsdossier.proto.TypeExpression value) {
+    public Builder addExtendedType(com.github.jsdossier.proto.NamedType value) {
       if (extendedTypeBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -9223,7 +9223,7 @@ public  final class JsType extends
       return this;
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression extended_type = 18;</code>
+     * <code>repeated .dossier.expression.NamedType extended_type = 18;</code>
      *
      * <pre>
      * List of inherited types for a class. This should be empty if |is_class|
@@ -9231,7 +9231,7 @@ public  final class JsType extends
      * </pre>
      */
     public Builder addExtendedType(
-        int index, com.github.jsdossier.proto.TypeExpression value) {
+        int index, com.github.jsdossier.proto.NamedType value) {
       if (extendedTypeBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -9245,7 +9245,7 @@ public  final class JsType extends
       return this;
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression extended_type = 18;</code>
+     * <code>repeated .dossier.expression.NamedType extended_type = 18;</code>
      *
      * <pre>
      * List of inherited types for a class. This should be empty if |is_class|
@@ -9253,7 +9253,7 @@ public  final class JsType extends
      * </pre>
      */
     public Builder addExtendedType(
-        com.github.jsdossier.proto.TypeExpression.Builder builderForValue) {
+        com.github.jsdossier.proto.NamedType.Builder builderForValue) {
       if (extendedTypeBuilder_ == null) {
         ensureExtendedTypeIsMutable();
         extendedType_.add(builderForValue.build());
@@ -9264,7 +9264,7 @@ public  final class JsType extends
       return this;
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression extended_type = 18;</code>
+     * <code>repeated .dossier.expression.NamedType extended_type = 18;</code>
      *
      * <pre>
      * List of inherited types for a class. This should be empty if |is_class|
@@ -9272,7 +9272,7 @@ public  final class JsType extends
      * </pre>
      */
     public Builder addExtendedType(
-        int index, com.github.jsdossier.proto.TypeExpression.Builder builderForValue) {
+        int index, com.github.jsdossier.proto.NamedType.Builder builderForValue) {
       if (extendedTypeBuilder_ == null) {
         ensureExtendedTypeIsMutable();
         extendedType_.add(index, builderForValue.build());
@@ -9283,7 +9283,7 @@ public  final class JsType extends
       return this;
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression extended_type = 18;</code>
+     * <code>repeated .dossier.expression.NamedType extended_type = 18;</code>
      *
      * <pre>
      * List of inherited types for a class. This should be empty if |is_class|
@@ -9291,7 +9291,7 @@ public  final class JsType extends
      * </pre>
      */
     public Builder addAllExtendedType(
-        java.lang.Iterable<? extends com.github.jsdossier.proto.TypeExpression> values) {
+        java.lang.Iterable<? extends com.github.jsdossier.proto.NamedType> values) {
       if (extendedTypeBuilder_ == null) {
         ensureExtendedTypeIsMutable();
         com.google.protobuf.AbstractMessageLite.Builder.addAll(
@@ -9303,7 +9303,7 @@ public  final class JsType extends
       return this;
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression extended_type = 18;</code>
+     * <code>repeated .dossier.expression.NamedType extended_type = 18;</code>
      *
      * <pre>
      * List of inherited types for a class. This should be empty if |is_class|
@@ -9321,7 +9321,7 @@ public  final class JsType extends
       return this;
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression extended_type = 18;</code>
+     * <code>repeated .dossier.expression.NamedType extended_type = 18;</code>
      *
      * <pre>
      * List of inherited types for a class. This should be empty if |is_class|
@@ -9339,26 +9339,26 @@ public  final class JsType extends
       return this;
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression extended_type = 18;</code>
+     * <code>repeated .dossier.expression.NamedType extended_type = 18;</code>
      *
      * <pre>
      * List of inherited types for a class. This should be empty if |is_class|
      * is false. Classes should be listed in order, with the root type first.
      * </pre>
      */
-    public com.github.jsdossier.proto.TypeExpression.Builder getExtendedTypeBuilder(
+    public com.github.jsdossier.proto.NamedType.Builder getExtendedTypeBuilder(
         int index) {
       return getExtendedTypeFieldBuilder().getBuilder(index);
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression extended_type = 18;</code>
+     * <code>repeated .dossier.expression.NamedType extended_type = 18;</code>
      *
      * <pre>
      * List of inherited types for a class. This should be empty if |is_class|
      * is false. Classes should be listed in order, with the root type first.
      * </pre>
      */
-    public com.github.jsdossier.proto.TypeExpressionOrBuilder getExtendedTypeOrBuilder(
+    public com.github.jsdossier.proto.NamedTypeOrBuilder getExtendedTypeOrBuilder(
         int index) {
       if (extendedTypeBuilder_ == null) {
         return extendedType_.get(index);  } else {
@@ -9366,14 +9366,14 @@ public  final class JsType extends
       }
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression extended_type = 18;</code>
+     * <code>repeated .dossier.expression.NamedType extended_type = 18;</code>
      *
      * <pre>
      * List of inherited types for a class. This should be empty if |is_class|
      * is false. Classes should be listed in order, with the root type first.
      * </pre>
      */
-    public java.util.List<? extends com.github.jsdossier.proto.TypeExpressionOrBuilder> 
+    public java.util.List<? extends com.github.jsdossier.proto.NamedTypeOrBuilder> 
          getExtendedTypeOrBuilderList() {
       if (extendedTypeBuilder_ != null) {
         return extendedTypeBuilder_.getMessageOrBuilderList();
@@ -9382,48 +9382,48 @@ public  final class JsType extends
       }
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression extended_type = 18;</code>
+     * <code>repeated .dossier.expression.NamedType extended_type = 18;</code>
      *
      * <pre>
      * List of inherited types for a class. This should be empty if |is_class|
      * is false. Classes should be listed in order, with the root type first.
      * </pre>
      */
-    public com.github.jsdossier.proto.TypeExpression.Builder addExtendedTypeBuilder() {
+    public com.github.jsdossier.proto.NamedType.Builder addExtendedTypeBuilder() {
       return getExtendedTypeFieldBuilder().addBuilder(
-          com.github.jsdossier.proto.TypeExpression.getDefaultInstance());
+          com.github.jsdossier.proto.NamedType.getDefaultInstance());
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression extended_type = 18;</code>
+     * <code>repeated .dossier.expression.NamedType extended_type = 18;</code>
      *
      * <pre>
      * List of inherited types for a class. This should be empty if |is_class|
      * is false. Classes should be listed in order, with the root type first.
      * </pre>
      */
-    public com.github.jsdossier.proto.TypeExpression.Builder addExtendedTypeBuilder(
+    public com.github.jsdossier.proto.NamedType.Builder addExtendedTypeBuilder(
         int index) {
       return getExtendedTypeFieldBuilder().addBuilder(
-          index, com.github.jsdossier.proto.TypeExpression.getDefaultInstance());
+          index, com.github.jsdossier.proto.NamedType.getDefaultInstance());
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression extended_type = 18;</code>
+     * <code>repeated .dossier.expression.NamedType extended_type = 18;</code>
      *
      * <pre>
      * List of inherited types for a class. This should be empty if |is_class|
      * is false. Classes should be listed in order, with the root type first.
      * </pre>
      */
-    public java.util.List<com.github.jsdossier.proto.TypeExpression.Builder> 
+    public java.util.List<com.github.jsdossier.proto.NamedType.Builder> 
          getExtendedTypeBuilderList() {
       return getExtendedTypeFieldBuilder().getBuilderList();
     }
     private com.google.protobuf.RepeatedFieldBuilder<
-        com.github.jsdossier.proto.TypeExpression, com.github.jsdossier.proto.TypeExpression.Builder, com.github.jsdossier.proto.TypeExpressionOrBuilder> 
+        com.github.jsdossier.proto.NamedType, com.github.jsdossier.proto.NamedType.Builder, com.github.jsdossier.proto.NamedTypeOrBuilder> 
         getExtendedTypeFieldBuilder() {
       if (extendedTypeBuilder_ == null) {
         extendedTypeBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
-            com.github.jsdossier.proto.TypeExpression, com.github.jsdossier.proto.TypeExpression.Builder, com.github.jsdossier.proto.TypeExpressionOrBuilder>(
+            com.github.jsdossier.proto.NamedType, com.github.jsdossier.proto.NamedType.Builder, com.github.jsdossier.proto.NamedTypeOrBuilder>(
                 extendedType_,
                 ((bitField0_ & 0x00002000) == 0x00002000),
                 getParentForChildren(),
@@ -9433,27 +9433,27 @@ public  final class JsType extends
       return extendedTypeBuilder_;
     }
 
-    private java.util.List<com.github.jsdossier.proto.TypeExpression> implementedType_ =
+    private java.util.List<com.github.jsdossier.proto.NamedType> implementedType_ =
       java.util.Collections.emptyList();
     private void ensureImplementedTypeIsMutable() {
       if (!((bitField0_ & 0x00004000) == 0x00004000)) {
-        implementedType_ = new java.util.ArrayList<com.github.jsdossier.proto.TypeExpression>(implementedType_);
+        implementedType_ = new java.util.ArrayList<com.github.jsdossier.proto.NamedType>(implementedType_);
         bitField0_ |= 0x00004000;
        }
     }
 
     private com.google.protobuf.RepeatedFieldBuilder<
-        com.github.jsdossier.proto.TypeExpression, com.github.jsdossier.proto.TypeExpression.Builder, com.github.jsdossier.proto.TypeExpressionOrBuilder> implementedTypeBuilder_;
+        com.github.jsdossier.proto.NamedType, com.github.jsdossier.proto.NamedType.Builder, com.github.jsdossier.proto.NamedTypeOrBuilder> implementedTypeBuilder_;
 
     /**
-     * <code>repeated .dossier.expression.TypeExpression implemented_type = 19;</code>
+     * <code>repeated .dossier.expression.NamedType implemented_type = 19;</code>
      *
      * <pre>
      * The interfaces implemented by a class/extended by an interface. This
      * list should be empty if |is_class| and |is_interface| are false.
      * </pre>
      */
-    public java.util.List<com.github.jsdossier.proto.TypeExpression> getImplementedTypeList() {
+    public java.util.List<com.github.jsdossier.proto.NamedType> getImplementedTypeList() {
       if (implementedTypeBuilder_ == null) {
         return java.util.Collections.unmodifiableList(implementedType_);
       } else {
@@ -9461,7 +9461,7 @@ public  final class JsType extends
       }
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression implemented_type = 19;</code>
+     * <code>repeated .dossier.expression.NamedType implemented_type = 19;</code>
      *
      * <pre>
      * The interfaces implemented by a class/extended by an interface. This
@@ -9476,14 +9476,14 @@ public  final class JsType extends
       }
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression implemented_type = 19;</code>
+     * <code>repeated .dossier.expression.NamedType implemented_type = 19;</code>
      *
      * <pre>
      * The interfaces implemented by a class/extended by an interface. This
      * list should be empty if |is_class| and |is_interface| are false.
      * </pre>
      */
-    public com.github.jsdossier.proto.TypeExpression getImplementedType(int index) {
+    public com.github.jsdossier.proto.NamedType getImplementedType(int index) {
       if (implementedTypeBuilder_ == null) {
         return implementedType_.get(index);
       } else {
@@ -9491,7 +9491,7 @@ public  final class JsType extends
       }
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression implemented_type = 19;</code>
+     * <code>repeated .dossier.expression.NamedType implemented_type = 19;</code>
      *
      * <pre>
      * The interfaces implemented by a class/extended by an interface. This
@@ -9499,7 +9499,7 @@ public  final class JsType extends
      * </pre>
      */
     public Builder setImplementedType(
-        int index, com.github.jsdossier.proto.TypeExpression value) {
+        int index, com.github.jsdossier.proto.NamedType value) {
       if (implementedTypeBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -9513,7 +9513,7 @@ public  final class JsType extends
       return this;
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression implemented_type = 19;</code>
+     * <code>repeated .dossier.expression.NamedType implemented_type = 19;</code>
      *
      * <pre>
      * The interfaces implemented by a class/extended by an interface. This
@@ -9521,7 +9521,7 @@ public  final class JsType extends
      * </pre>
      */
     public Builder setImplementedType(
-        int index, com.github.jsdossier.proto.TypeExpression.Builder builderForValue) {
+        int index, com.github.jsdossier.proto.NamedType.Builder builderForValue) {
       if (implementedTypeBuilder_ == null) {
         ensureImplementedTypeIsMutable();
         implementedType_.set(index, builderForValue.build());
@@ -9532,14 +9532,14 @@ public  final class JsType extends
       return this;
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression implemented_type = 19;</code>
+     * <code>repeated .dossier.expression.NamedType implemented_type = 19;</code>
      *
      * <pre>
      * The interfaces implemented by a class/extended by an interface. This
      * list should be empty if |is_class| and |is_interface| are false.
      * </pre>
      */
-    public Builder addImplementedType(com.github.jsdossier.proto.TypeExpression value) {
+    public Builder addImplementedType(com.github.jsdossier.proto.NamedType value) {
       if (implementedTypeBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -9553,7 +9553,7 @@ public  final class JsType extends
       return this;
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression implemented_type = 19;</code>
+     * <code>repeated .dossier.expression.NamedType implemented_type = 19;</code>
      *
      * <pre>
      * The interfaces implemented by a class/extended by an interface. This
@@ -9561,7 +9561,7 @@ public  final class JsType extends
      * </pre>
      */
     public Builder addImplementedType(
-        int index, com.github.jsdossier.proto.TypeExpression value) {
+        int index, com.github.jsdossier.proto.NamedType value) {
       if (implementedTypeBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -9575,7 +9575,7 @@ public  final class JsType extends
       return this;
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression implemented_type = 19;</code>
+     * <code>repeated .dossier.expression.NamedType implemented_type = 19;</code>
      *
      * <pre>
      * The interfaces implemented by a class/extended by an interface. This
@@ -9583,7 +9583,7 @@ public  final class JsType extends
      * </pre>
      */
     public Builder addImplementedType(
-        com.github.jsdossier.proto.TypeExpression.Builder builderForValue) {
+        com.github.jsdossier.proto.NamedType.Builder builderForValue) {
       if (implementedTypeBuilder_ == null) {
         ensureImplementedTypeIsMutable();
         implementedType_.add(builderForValue.build());
@@ -9594,7 +9594,7 @@ public  final class JsType extends
       return this;
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression implemented_type = 19;</code>
+     * <code>repeated .dossier.expression.NamedType implemented_type = 19;</code>
      *
      * <pre>
      * The interfaces implemented by a class/extended by an interface. This
@@ -9602,7 +9602,7 @@ public  final class JsType extends
      * </pre>
      */
     public Builder addImplementedType(
-        int index, com.github.jsdossier.proto.TypeExpression.Builder builderForValue) {
+        int index, com.github.jsdossier.proto.NamedType.Builder builderForValue) {
       if (implementedTypeBuilder_ == null) {
         ensureImplementedTypeIsMutable();
         implementedType_.add(index, builderForValue.build());
@@ -9613,7 +9613,7 @@ public  final class JsType extends
       return this;
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression implemented_type = 19;</code>
+     * <code>repeated .dossier.expression.NamedType implemented_type = 19;</code>
      *
      * <pre>
      * The interfaces implemented by a class/extended by an interface. This
@@ -9621,7 +9621,7 @@ public  final class JsType extends
      * </pre>
      */
     public Builder addAllImplementedType(
-        java.lang.Iterable<? extends com.github.jsdossier.proto.TypeExpression> values) {
+        java.lang.Iterable<? extends com.github.jsdossier.proto.NamedType> values) {
       if (implementedTypeBuilder_ == null) {
         ensureImplementedTypeIsMutable();
         com.google.protobuf.AbstractMessageLite.Builder.addAll(
@@ -9633,7 +9633,7 @@ public  final class JsType extends
       return this;
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression implemented_type = 19;</code>
+     * <code>repeated .dossier.expression.NamedType implemented_type = 19;</code>
      *
      * <pre>
      * The interfaces implemented by a class/extended by an interface. This
@@ -9651,7 +9651,7 @@ public  final class JsType extends
       return this;
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression implemented_type = 19;</code>
+     * <code>repeated .dossier.expression.NamedType implemented_type = 19;</code>
      *
      * <pre>
      * The interfaces implemented by a class/extended by an interface. This
@@ -9669,26 +9669,26 @@ public  final class JsType extends
       return this;
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression implemented_type = 19;</code>
+     * <code>repeated .dossier.expression.NamedType implemented_type = 19;</code>
      *
      * <pre>
      * The interfaces implemented by a class/extended by an interface. This
      * list should be empty if |is_class| and |is_interface| are false.
      * </pre>
      */
-    public com.github.jsdossier.proto.TypeExpression.Builder getImplementedTypeBuilder(
+    public com.github.jsdossier.proto.NamedType.Builder getImplementedTypeBuilder(
         int index) {
       return getImplementedTypeFieldBuilder().getBuilder(index);
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression implemented_type = 19;</code>
+     * <code>repeated .dossier.expression.NamedType implemented_type = 19;</code>
      *
      * <pre>
      * The interfaces implemented by a class/extended by an interface. This
      * list should be empty if |is_class| and |is_interface| are false.
      * </pre>
      */
-    public com.github.jsdossier.proto.TypeExpressionOrBuilder getImplementedTypeOrBuilder(
+    public com.github.jsdossier.proto.NamedTypeOrBuilder getImplementedTypeOrBuilder(
         int index) {
       if (implementedTypeBuilder_ == null) {
         return implementedType_.get(index);  } else {
@@ -9696,14 +9696,14 @@ public  final class JsType extends
       }
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression implemented_type = 19;</code>
+     * <code>repeated .dossier.expression.NamedType implemented_type = 19;</code>
      *
      * <pre>
      * The interfaces implemented by a class/extended by an interface. This
      * list should be empty if |is_class| and |is_interface| are false.
      * </pre>
      */
-    public java.util.List<? extends com.github.jsdossier.proto.TypeExpressionOrBuilder> 
+    public java.util.List<? extends com.github.jsdossier.proto.NamedTypeOrBuilder> 
          getImplementedTypeOrBuilderList() {
       if (implementedTypeBuilder_ != null) {
         return implementedTypeBuilder_.getMessageOrBuilderList();
@@ -9712,48 +9712,48 @@ public  final class JsType extends
       }
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression implemented_type = 19;</code>
+     * <code>repeated .dossier.expression.NamedType implemented_type = 19;</code>
      *
      * <pre>
      * The interfaces implemented by a class/extended by an interface. This
      * list should be empty if |is_class| and |is_interface| are false.
      * </pre>
      */
-    public com.github.jsdossier.proto.TypeExpression.Builder addImplementedTypeBuilder() {
+    public com.github.jsdossier.proto.NamedType.Builder addImplementedTypeBuilder() {
       return getImplementedTypeFieldBuilder().addBuilder(
-          com.github.jsdossier.proto.TypeExpression.getDefaultInstance());
+          com.github.jsdossier.proto.NamedType.getDefaultInstance());
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression implemented_type = 19;</code>
+     * <code>repeated .dossier.expression.NamedType implemented_type = 19;</code>
      *
      * <pre>
      * The interfaces implemented by a class/extended by an interface. This
      * list should be empty if |is_class| and |is_interface| are false.
      * </pre>
      */
-    public com.github.jsdossier.proto.TypeExpression.Builder addImplementedTypeBuilder(
+    public com.github.jsdossier.proto.NamedType.Builder addImplementedTypeBuilder(
         int index) {
       return getImplementedTypeFieldBuilder().addBuilder(
-          index, com.github.jsdossier.proto.TypeExpression.getDefaultInstance());
+          index, com.github.jsdossier.proto.NamedType.getDefaultInstance());
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression implemented_type = 19;</code>
+     * <code>repeated .dossier.expression.NamedType implemented_type = 19;</code>
      *
      * <pre>
      * The interfaces implemented by a class/extended by an interface. This
      * list should be empty if |is_class| and |is_interface| are false.
      * </pre>
      */
-    public java.util.List<com.github.jsdossier.proto.TypeExpression.Builder> 
+    public java.util.List<com.github.jsdossier.proto.NamedType.Builder> 
          getImplementedTypeBuilderList() {
       return getImplementedTypeFieldBuilder().getBuilderList();
     }
     private com.google.protobuf.RepeatedFieldBuilder<
-        com.github.jsdossier.proto.TypeExpression, com.github.jsdossier.proto.TypeExpression.Builder, com.github.jsdossier.proto.TypeExpressionOrBuilder> 
+        com.github.jsdossier.proto.NamedType, com.github.jsdossier.proto.NamedType.Builder, com.github.jsdossier.proto.NamedTypeOrBuilder> 
         getImplementedTypeFieldBuilder() {
       if (implementedTypeBuilder_ == null) {
         implementedTypeBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
-            com.github.jsdossier.proto.TypeExpression, com.github.jsdossier.proto.TypeExpression.Builder, com.github.jsdossier.proto.TypeExpressionOrBuilder>(
+            com.github.jsdossier.proto.NamedType, com.github.jsdossier.proto.NamedType.Builder, com.github.jsdossier.proto.NamedTypeOrBuilder>(
                 implementedType_,
                 ((bitField0_ & 0x00004000) == 0x00004000),
                 getParentForChildren(),
@@ -9763,20 +9763,20 @@ public  final class JsType extends
       return implementedTypeBuilder_;
     }
 
-    private java.util.List<com.github.jsdossier.proto.TypeExpression> subtype_ =
+    private java.util.List<com.github.jsdossier.proto.NamedType> subtype_ =
       java.util.Collections.emptyList();
     private void ensureSubtypeIsMutable() {
       if (!((bitField0_ & 0x00008000) == 0x00008000)) {
-        subtype_ = new java.util.ArrayList<com.github.jsdossier.proto.TypeExpression>(subtype_);
+        subtype_ = new java.util.ArrayList<com.github.jsdossier.proto.NamedType>(subtype_);
         bitField0_ |= 0x00008000;
        }
     }
 
     private com.google.protobuf.RepeatedFieldBuilder<
-        com.github.jsdossier.proto.TypeExpression, com.github.jsdossier.proto.TypeExpression.Builder, com.github.jsdossier.proto.TypeExpressionOrBuilder> subtypeBuilder_;
+        com.github.jsdossier.proto.NamedType, com.github.jsdossier.proto.NamedType.Builder, com.github.jsdossier.proto.NamedTypeOrBuilder> subtypeBuilder_;
 
     /**
-     * <code>repeated .dossier.expression.TypeExpression subtype = 26;</code>
+     * <code>repeated .dossier.expression.NamedType subtype = 26;</code>
      *
      * <pre>
      * Known subtypes of this type. If |is_class| is true, this will contain the
@@ -9784,7 +9784,7 @@ public  final class JsType extends
      * known subinterfaces.
      * </pre>
      */
-    public java.util.List<com.github.jsdossier.proto.TypeExpression> getSubtypeList() {
+    public java.util.List<com.github.jsdossier.proto.NamedType> getSubtypeList() {
       if (subtypeBuilder_ == null) {
         return java.util.Collections.unmodifiableList(subtype_);
       } else {
@@ -9792,7 +9792,7 @@ public  final class JsType extends
       }
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression subtype = 26;</code>
+     * <code>repeated .dossier.expression.NamedType subtype = 26;</code>
      *
      * <pre>
      * Known subtypes of this type. If |is_class| is true, this will contain the
@@ -9808,7 +9808,7 @@ public  final class JsType extends
       }
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression subtype = 26;</code>
+     * <code>repeated .dossier.expression.NamedType subtype = 26;</code>
      *
      * <pre>
      * Known subtypes of this type. If |is_class| is true, this will contain the
@@ -9816,7 +9816,7 @@ public  final class JsType extends
      * known subinterfaces.
      * </pre>
      */
-    public com.github.jsdossier.proto.TypeExpression getSubtype(int index) {
+    public com.github.jsdossier.proto.NamedType getSubtype(int index) {
       if (subtypeBuilder_ == null) {
         return subtype_.get(index);
       } else {
@@ -9824,7 +9824,7 @@ public  final class JsType extends
       }
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression subtype = 26;</code>
+     * <code>repeated .dossier.expression.NamedType subtype = 26;</code>
      *
      * <pre>
      * Known subtypes of this type. If |is_class| is true, this will contain the
@@ -9833,7 +9833,7 @@ public  final class JsType extends
      * </pre>
      */
     public Builder setSubtype(
-        int index, com.github.jsdossier.proto.TypeExpression value) {
+        int index, com.github.jsdossier.proto.NamedType value) {
       if (subtypeBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -9847,7 +9847,7 @@ public  final class JsType extends
       return this;
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression subtype = 26;</code>
+     * <code>repeated .dossier.expression.NamedType subtype = 26;</code>
      *
      * <pre>
      * Known subtypes of this type. If |is_class| is true, this will contain the
@@ -9856,7 +9856,7 @@ public  final class JsType extends
      * </pre>
      */
     public Builder setSubtype(
-        int index, com.github.jsdossier.proto.TypeExpression.Builder builderForValue) {
+        int index, com.github.jsdossier.proto.NamedType.Builder builderForValue) {
       if (subtypeBuilder_ == null) {
         ensureSubtypeIsMutable();
         subtype_.set(index, builderForValue.build());
@@ -9867,7 +9867,7 @@ public  final class JsType extends
       return this;
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression subtype = 26;</code>
+     * <code>repeated .dossier.expression.NamedType subtype = 26;</code>
      *
      * <pre>
      * Known subtypes of this type. If |is_class| is true, this will contain the
@@ -9875,7 +9875,7 @@ public  final class JsType extends
      * known subinterfaces.
      * </pre>
      */
-    public Builder addSubtype(com.github.jsdossier.proto.TypeExpression value) {
+    public Builder addSubtype(com.github.jsdossier.proto.NamedType value) {
       if (subtypeBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -9889,7 +9889,7 @@ public  final class JsType extends
       return this;
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression subtype = 26;</code>
+     * <code>repeated .dossier.expression.NamedType subtype = 26;</code>
      *
      * <pre>
      * Known subtypes of this type. If |is_class| is true, this will contain the
@@ -9898,7 +9898,7 @@ public  final class JsType extends
      * </pre>
      */
     public Builder addSubtype(
-        int index, com.github.jsdossier.proto.TypeExpression value) {
+        int index, com.github.jsdossier.proto.NamedType value) {
       if (subtypeBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -9912,7 +9912,7 @@ public  final class JsType extends
       return this;
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression subtype = 26;</code>
+     * <code>repeated .dossier.expression.NamedType subtype = 26;</code>
      *
      * <pre>
      * Known subtypes of this type. If |is_class| is true, this will contain the
@@ -9921,7 +9921,7 @@ public  final class JsType extends
      * </pre>
      */
     public Builder addSubtype(
-        com.github.jsdossier.proto.TypeExpression.Builder builderForValue) {
+        com.github.jsdossier.proto.NamedType.Builder builderForValue) {
       if (subtypeBuilder_ == null) {
         ensureSubtypeIsMutable();
         subtype_.add(builderForValue.build());
@@ -9932,7 +9932,7 @@ public  final class JsType extends
       return this;
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression subtype = 26;</code>
+     * <code>repeated .dossier.expression.NamedType subtype = 26;</code>
      *
      * <pre>
      * Known subtypes of this type. If |is_class| is true, this will contain the
@@ -9941,7 +9941,7 @@ public  final class JsType extends
      * </pre>
      */
     public Builder addSubtype(
-        int index, com.github.jsdossier.proto.TypeExpression.Builder builderForValue) {
+        int index, com.github.jsdossier.proto.NamedType.Builder builderForValue) {
       if (subtypeBuilder_ == null) {
         ensureSubtypeIsMutable();
         subtype_.add(index, builderForValue.build());
@@ -9952,7 +9952,7 @@ public  final class JsType extends
       return this;
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression subtype = 26;</code>
+     * <code>repeated .dossier.expression.NamedType subtype = 26;</code>
      *
      * <pre>
      * Known subtypes of this type. If |is_class| is true, this will contain the
@@ -9961,7 +9961,7 @@ public  final class JsType extends
      * </pre>
      */
     public Builder addAllSubtype(
-        java.lang.Iterable<? extends com.github.jsdossier.proto.TypeExpression> values) {
+        java.lang.Iterable<? extends com.github.jsdossier.proto.NamedType> values) {
       if (subtypeBuilder_ == null) {
         ensureSubtypeIsMutable();
         com.google.protobuf.AbstractMessageLite.Builder.addAll(
@@ -9973,7 +9973,7 @@ public  final class JsType extends
       return this;
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression subtype = 26;</code>
+     * <code>repeated .dossier.expression.NamedType subtype = 26;</code>
      *
      * <pre>
      * Known subtypes of this type. If |is_class| is true, this will contain the
@@ -9992,7 +9992,7 @@ public  final class JsType extends
       return this;
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression subtype = 26;</code>
+     * <code>repeated .dossier.expression.NamedType subtype = 26;</code>
      *
      * <pre>
      * Known subtypes of this type. If |is_class| is true, this will contain the
@@ -10011,7 +10011,7 @@ public  final class JsType extends
       return this;
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression subtype = 26;</code>
+     * <code>repeated .dossier.expression.NamedType subtype = 26;</code>
      *
      * <pre>
      * Known subtypes of this type. If |is_class| is true, this will contain the
@@ -10019,12 +10019,12 @@ public  final class JsType extends
      * known subinterfaces.
      * </pre>
      */
-    public com.github.jsdossier.proto.TypeExpression.Builder getSubtypeBuilder(
+    public com.github.jsdossier.proto.NamedType.Builder getSubtypeBuilder(
         int index) {
       return getSubtypeFieldBuilder().getBuilder(index);
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression subtype = 26;</code>
+     * <code>repeated .dossier.expression.NamedType subtype = 26;</code>
      *
      * <pre>
      * Known subtypes of this type. If |is_class| is true, this will contain the
@@ -10032,7 +10032,7 @@ public  final class JsType extends
      * known subinterfaces.
      * </pre>
      */
-    public com.github.jsdossier.proto.TypeExpressionOrBuilder getSubtypeOrBuilder(
+    public com.github.jsdossier.proto.NamedTypeOrBuilder getSubtypeOrBuilder(
         int index) {
       if (subtypeBuilder_ == null) {
         return subtype_.get(index);  } else {
@@ -10040,7 +10040,7 @@ public  final class JsType extends
       }
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression subtype = 26;</code>
+     * <code>repeated .dossier.expression.NamedType subtype = 26;</code>
      *
      * <pre>
      * Known subtypes of this type. If |is_class| is true, this will contain the
@@ -10048,7 +10048,7 @@ public  final class JsType extends
      * known subinterfaces.
      * </pre>
      */
-    public java.util.List<? extends com.github.jsdossier.proto.TypeExpressionOrBuilder> 
+    public java.util.List<? extends com.github.jsdossier.proto.NamedTypeOrBuilder> 
          getSubtypeOrBuilderList() {
       if (subtypeBuilder_ != null) {
         return subtypeBuilder_.getMessageOrBuilderList();
@@ -10057,7 +10057,7 @@ public  final class JsType extends
       }
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression subtype = 26;</code>
+     * <code>repeated .dossier.expression.NamedType subtype = 26;</code>
      *
      * <pre>
      * Known subtypes of this type. If |is_class| is true, this will contain the
@@ -10065,12 +10065,12 @@ public  final class JsType extends
      * known subinterfaces.
      * </pre>
      */
-    public com.github.jsdossier.proto.TypeExpression.Builder addSubtypeBuilder() {
+    public com.github.jsdossier.proto.NamedType.Builder addSubtypeBuilder() {
       return getSubtypeFieldBuilder().addBuilder(
-          com.github.jsdossier.proto.TypeExpression.getDefaultInstance());
+          com.github.jsdossier.proto.NamedType.getDefaultInstance());
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression subtype = 26;</code>
+     * <code>repeated .dossier.expression.NamedType subtype = 26;</code>
      *
      * <pre>
      * Known subtypes of this type. If |is_class| is true, this will contain the
@@ -10078,13 +10078,13 @@ public  final class JsType extends
      * known subinterfaces.
      * </pre>
      */
-    public com.github.jsdossier.proto.TypeExpression.Builder addSubtypeBuilder(
+    public com.github.jsdossier.proto.NamedType.Builder addSubtypeBuilder(
         int index) {
       return getSubtypeFieldBuilder().addBuilder(
-          index, com.github.jsdossier.proto.TypeExpression.getDefaultInstance());
+          index, com.github.jsdossier.proto.NamedType.getDefaultInstance());
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression subtype = 26;</code>
+     * <code>repeated .dossier.expression.NamedType subtype = 26;</code>
      *
      * <pre>
      * Known subtypes of this type. If |is_class| is true, this will contain the
@@ -10092,16 +10092,16 @@ public  final class JsType extends
      * known subinterfaces.
      * </pre>
      */
-    public java.util.List<com.github.jsdossier.proto.TypeExpression.Builder> 
+    public java.util.List<com.github.jsdossier.proto.NamedType.Builder> 
          getSubtypeBuilderList() {
       return getSubtypeFieldBuilder().getBuilderList();
     }
     private com.google.protobuf.RepeatedFieldBuilder<
-        com.github.jsdossier.proto.TypeExpression, com.github.jsdossier.proto.TypeExpression.Builder, com.github.jsdossier.proto.TypeExpressionOrBuilder> 
+        com.github.jsdossier.proto.NamedType, com.github.jsdossier.proto.NamedType.Builder, com.github.jsdossier.proto.NamedTypeOrBuilder> 
         getSubtypeFieldBuilder() {
       if (subtypeBuilder_ == null) {
         subtypeBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
-            com.github.jsdossier.proto.TypeExpression, com.github.jsdossier.proto.TypeExpression.Builder, com.github.jsdossier.proto.TypeExpressionOrBuilder>(
+            com.github.jsdossier.proto.NamedType, com.github.jsdossier.proto.NamedType.Builder, com.github.jsdossier.proto.NamedTypeOrBuilder>(
                 subtype_,
                 ((bitField0_ & 0x00008000) == 0x00008000),
                 getParentForChildren(),
@@ -10111,26 +10111,26 @@ public  final class JsType extends
       return subtypeBuilder_;
     }
 
-    private java.util.List<com.github.jsdossier.proto.TypeExpression> implementation_ =
+    private java.util.List<com.github.jsdossier.proto.NamedType> implementation_ =
       java.util.Collections.emptyList();
     private void ensureImplementationIsMutable() {
       if (!((bitField0_ & 0x00010000) == 0x00010000)) {
-        implementation_ = new java.util.ArrayList<com.github.jsdossier.proto.TypeExpression>(implementation_);
+        implementation_ = new java.util.ArrayList<com.github.jsdossier.proto.NamedType>(implementation_);
         bitField0_ |= 0x00010000;
        }
     }
 
     private com.google.protobuf.RepeatedFieldBuilder<
-        com.github.jsdossier.proto.TypeExpression, com.github.jsdossier.proto.TypeExpression.Builder, com.github.jsdossier.proto.TypeExpressionOrBuilder> implementationBuilder_;
+        com.github.jsdossier.proto.NamedType, com.github.jsdossier.proto.NamedType.Builder, com.github.jsdossier.proto.NamedTypeOrBuilder> implementationBuilder_;
 
     /**
-     * <code>repeated .dossier.expression.TypeExpression implementation = 27;</code>
+     * <code>repeated .dossier.expression.NamedType implementation = 27;</code>
      *
      * <pre>
      * Known implementations of this type. Will be empy if |is_interface| is false.
      * </pre>
      */
-    public java.util.List<com.github.jsdossier.proto.TypeExpression> getImplementationList() {
+    public java.util.List<com.github.jsdossier.proto.NamedType> getImplementationList() {
       if (implementationBuilder_ == null) {
         return java.util.Collections.unmodifiableList(implementation_);
       } else {
@@ -10138,7 +10138,7 @@ public  final class JsType extends
       }
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression implementation = 27;</code>
+     * <code>repeated .dossier.expression.NamedType implementation = 27;</code>
      *
      * <pre>
      * Known implementations of this type. Will be empy if |is_interface| is false.
@@ -10152,13 +10152,13 @@ public  final class JsType extends
       }
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression implementation = 27;</code>
+     * <code>repeated .dossier.expression.NamedType implementation = 27;</code>
      *
      * <pre>
      * Known implementations of this type. Will be empy if |is_interface| is false.
      * </pre>
      */
-    public com.github.jsdossier.proto.TypeExpression getImplementation(int index) {
+    public com.github.jsdossier.proto.NamedType getImplementation(int index) {
       if (implementationBuilder_ == null) {
         return implementation_.get(index);
       } else {
@@ -10166,14 +10166,14 @@ public  final class JsType extends
       }
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression implementation = 27;</code>
+     * <code>repeated .dossier.expression.NamedType implementation = 27;</code>
      *
      * <pre>
      * Known implementations of this type. Will be empy if |is_interface| is false.
      * </pre>
      */
     public Builder setImplementation(
-        int index, com.github.jsdossier.proto.TypeExpression value) {
+        int index, com.github.jsdossier.proto.NamedType value) {
       if (implementationBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -10187,14 +10187,14 @@ public  final class JsType extends
       return this;
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression implementation = 27;</code>
+     * <code>repeated .dossier.expression.NamedType implementation = 27;</code>
      *
      * <pre>
      * Known implementations of this type. Will be empy if |is_interface| is false.
      * </pre>
      */
     public Builder setImplementation(
-        int index, com.github.jsdossier.proto.TypeExpression.Builder builderForValue) {
+        int index, com.github.jsdossier.proto.NamedType.Builder builderForValue) {
       if (implementationBuilder_ == null) {
         ensureImplementationIsMutable();
         implementation_.set(index, builderForValue.build());
@@ -10205,13 +10205,13 @@ public  final class JsType extends
       return this;
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression implementation = 27;</code>
+     * <code>repeated .dossier.expression.NamedType implementation = 27;</code>
      *
      * <pre>
      * Known implementations of this type. Will be empy if |is_interface| is false.
      * </pre>
      */
-    public Builder addImplementation(com.github.jsdossier.proto.TypeExpression value) {
+    public Builder addImplementation(com.github.jsdossier.proto.NamedType value) {
       if (implementationBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -10225,14 +10225,14 @@ public  final class JsType extends
       return this;
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression implementation = 27;</code>
+     * <code>repeated .dossier.expression.NamedType implementation = 27;</code>
      *
      * <pre>
      * Known implementations of this type. Will be empy if |is_interface| is false.
      * </pre>
      */
     public Builder addImplementation(
-        int index, com.github.jsdossier.proto.TypeExpression value) {
+        int index, com.github.jsdossier.proto.NamedType value) {
       if (implementationBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -10246,14 +10246,14 @@ public  final class JsType extends
       return this;
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression implementation = 27;</code>
+     * <code>repeated .dossier.expression.NamedType implementation = 27;</code>
      *
      * <pre>
      * Known implementations of this type. Will be empy if |is_interface| is false.
      * </pre>
      */
     public Builder addImplementation(
-        com.github.jsdossier.proto.TypeExpression.Builder builderForValue) {
+        com.github.jsdossier.proto.NamedType.Builder builderForValue) {
       if (implementationBuilder_ == null) {
         ensureImplementationIsMutable();
         implementation_.add(builderForValue.build());
@@ -10264,14 +10264,14 @@ public  final class JsType extends
       return this;
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression implementation = 27;</code>
+     * <code>repeated .dossier.expression.NamedType implementation = 27;</code>
      *
      * <pre>
      * Known implementations of this type. Will be empy if |is_interface| is false.
      * </pre>
      */
     public Builder addImplementation(
-        int index, com.github.jsdossier.proto.TypeExpression.Builder builderForValue) {
+        int index, com.github.jsdossier.proto.NamedType.Builder builderForValue) {
       if (implementationBuilder_ == null) {
         ensureImplementationIsMutable();
         implementation_.add(index, builderForValue.build());
@@ -10282,14 +10282,14 @@ public  final class JsType extends
       return this;
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression implementation = 27;</code>
+     * <code>repeated .dossier.expression.NamedType implementation = 27;</code>
      *
      * <pre>
      * Known implementations of this type. Will be empy if |is_interface| is false.
      * </pre>
      */
     public Builder addAllImplementation(
-        java.lang.Iterable<? extends com.github.jsdossier.proto.TypeExpression> values) {
+        java.lang.Iterable<? extends com.github.jsdossier.proto.NamedType> values) {
       if (implementationBuilder_ == null) {
         ensureImplementationIsMutable();
         com.google.protobuf.AbstractMessageLite.Builder.addAll(
@@ -10301,7 +10301,7 @@ public  final class JsType extends
       return this;
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression implementation = 27;</code>
+     * <code>repeated .dossier.expression.NamedType implementation = 27;</code>
      *
      * <pre>
      * Known implementations of this type. Will be empy if |is_interface| is false.
@@ -10318,7 +10318,7 @@ public  final class JsType extends
       return this;
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression implementation = 27;</code>
+     * <code>repeated .dossier.expression.NamedType implementation = 27;</code>
      *
      * <pre>
      * Known implementations of this type. Will be empy if |is_interface| is false.
@@ -10335,24 +10335,24 @@ public  final class JsType extends
       return this;
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression implementation = 27;</code>
+     * <code>repeated .dossier.expression.NamedType implementation = 27;</code>
      *
      * <pre>
      * Known implementations of this type. Will be empy if |is_interface| is false.
      * </pre>
      */
-    public com.github.jsdossier.proto.TypeExpression.Builder getImplementationBuilder(
+    public com.github.jsdossier.proto.NamedType.Builder getImplementationBuilder(
         int index) {
       return getImplementationFieldBuilder().getBuilder(index);
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression implementation = 27;</code>
+     * <code>repeated .dossier.expression.NamedType implementation = 27;</code>
      *
      * <pre>
      * Known implementations of this type. Will be empy if |is_interface| is false.
      * </pre>
      */
-    public com.github.jsdossier.proto.TypeExpressionOrBuilder getImplementationOrBuilder(
+    public com.github.jsdossier.proto.NamedTypeOrBuilder getImplementationOrBuilder(
         int index) {
       if (implementationBuilder_ == null) {
         return implementation_.get(index);  } else {
@@ -10360,13 +10360,13 @@ public  final class JsType extends
       }
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression implementation = 27;</code>
+     * <code>repeated .dossier.expression.NamedType implementation = 27;</code>
      *
      * <pre>
      * Known implementations of this type. Will be empy if |is_interface| is false.
      * </pre>
      */
-    public java.util.List<? extends com.github.jsdossier.proto.TypeExpressionOrBuilder> 
+    public java.util.List<? extends com.github.jsdossier.proto.NamedTypeOrBuilder> 
          getImplementationOrBuilderList() {
       if (implementationBuilder_ != null) {
         return implementationBuilder_.getMessageOrBuilderList();
@@ -10375,45 +10375,45 @@ public  final class JsType extends
       }
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression implementation = 27;</code>
+     * <code>repeated .dossier.expression.NamedType implementation = 27;</code>
      *
      * <pre>
      * Known implementations of this type. Will be empy if |is_interface| is false.
      * </pre>
      */
-    public com.github.jsdossier.proto.TypeExpression.Builder addImplementationBuilder() {
+    public com.github.jsdossier.proto.NamedType.Builder addImplementationBuilder() {
       return getImplementationFieldBuilder().addBuilder(
-          com.github.jsdossier.proto.TypeExpression.getDefaultInstance());
+          com.github.jsdossier.proto.NamedType.getDefaultInstance());
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression implementation = 27;</code>
+     * <code>repeated .dossier.expression.NamedType implementation = 27;</code>
      *
      * <pre>
      * Known implementations of this type. Will be empy if |is_interface| is false.
      * </pre>
      */
-    public com.github.jsdossier.proto.TypeExpression.Builder addImplementationBuilder(
+    public com.github.jsdossier.proto.NamedType.Builder addImplementationBuilder(
         int index) {
       return getImplementationFieldBuilder().addBuilder(
-          index, com.github.jsdossier.proto.TypeExpression.getDefaultInstance());
+          index, com.github.jsdossier.proto.NamedType.getDefaultInstance());
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression implementation = 27;</code>
+     * <code>repeated .dossier.expression.NamedType implementation = 27;</code>
      *
      * <pre>
      * Known implementations of this type. Will be empy if |is_interface| is false.
      * </pre>
      */
-    public java.util.List<com.github.jsdossier.proto.TypeExpression.Builder> 
+    public java.util.List<com.github.jsdossier.proto.NamedType.Builder> 
          getImplementationBuilderList() {
       return getImplementationFieldBuilder().getBuilderList();
     }
     private com.google.protobuf.RepeatedFieldBuilder<
-        com.github.jsdossier.proto.TypeExpression, com.github.jsdossier.proto.TypeExpression.Builder, com.github.jsdossier.proto.TypeExpressionOrBuilder> 
+        com.github.jsdossier.proto.NamedType, com.github.jsdossier.proto.NamedType.Builder, com.github.jsdossier.proto.NamedTypeOrBuilder> 
         getImplementationFieldBuilder() {
       if (implementationBuilder_ == null) {
         implementationBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
-            com.github.jsdossier.proto.TypeExpression, com.github.jsdossier.proto.TypeExpression.Builder, com.github.jsdossier.proto.TypeExpressionOrBuilder>(
+            com.github.jsdossier.proto.NamedType, com.github.jsdossier.proto.NamedType.Builder, com.github.jsdossier.proto.NamedTypeOrBuilder>(
                 implementation_,
                 ((bitField0_ & 0x00010000) == 0x00010000),
                 getParentForChildren(),
@@ -10780,11 +10780,11 @@ public  final class JsType extends
       return parentBuilder_;
     }
 
-    private com.github.jsdossier.proto.TypeExpression aliasedType_ = null;
+    private com.github.jsdossier.proto.NamedType aliasedType_ = null;
     private com.google.protobuf.SingleFieldBuilder<
-        com.github.jsdossier.proto.TypeExpression, com.github.jsdossier.proto.TypeExpression.Builder, com.github.jsdossier.proto.TypeExpressionOrBuilder> aliasedTypeBuilder_;
+        com.github.jsdossier.proto.NamedType, com.github.jsdossier.proto.NamedType.Builder, com.github.jsdossier.proto.NamedTypeOrBuilder> aliasedTypeBuilder_;
     /**
-     * <code>optional .dossier.expression.TypeExpression aliased_type = 22;</code>
+     * <code>optional .dossier.expression.NamedType aliased_type = 22;</code>
      *
      * <pre>
      * Link to another type that this type is an alias of.
@@ -10794,27 +10794,27 @@ public  final class JsType extends
       return aliasedTypeBuilder_ != null || aliasedType_ != null;
     }
     /**
-     * <code>optional .dossier.expression.TypeExpression aliased_type = 22;</code>
+     * <code>optional .dossier.expression.NamedType aliased_type = 22;</code>
      *
      * <pre>
      * Link to another type that this type is an alias of.
      * </pre>
      */
-    public com.github.jsdossier.proto.TypeExpression getAliasedType() {
+    public com.github.jsdossier.proto.NamedType getAliasedType() {
       if (aliasedTypeBuilder_ == null) {
-        return aliasedType_ == null ? com.github.jsdossier.proto.TypeExpression.getDefaultInstance() : aliasedType_;
+        return aliasedType_ == null ? com.github.jsdossier.proto.NamedType.getDefaultInstance() : aliasedType_;
       } else {
         return aliasedTypeBuilder_.getMessage();
       }
     }
     /**
-     * <code>optional .dossier.expression.TypeExpression aliased_type = 22;</code>
+     * <code>optional .dossier.expression.NamedType aliased_type = 22;</code>
      *
      * <pre>
      * Link to another type that this type is an alias of.
      * </pre>
      */
-    public Builder setAliasedType(com.github.jsdossier.proto.TypeExpression value) {
+    public Builder setAliasedType(com.github.jsdossier.proto.NamedType value) {
       if (aliasedTypeBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -10828,14 +10828,14 @@ public  final class JsType extends
       return this;
     }
     /**
-     * <code>optional .dossier.expression.TypeExpression aliased_type = 22;</code>
+     * <code>optional .dossier.expression.NamedType aliased_type = 22;</code>
      *
      * <pre>
      * Link to another type that this type is an alias of.
      * </pre>
      */
     public Builder setAliasedType(
-        com.github.jsdossier.proto.TypeExpression.Builder builderForValue) {
+        com.github.jsdossier.proto.NamedType.Builder builderForValue) {
       if (aliasedTypeBuilder_ == null) {
         aliasedType_ = builderForValue.build();
         onChanged();
@@ -10846,17 +10846,17 @@ public  final class JsType extends
       return this;
     }
     /**
-     * <code>optional .dossier.expression.TypeExpression aliased_type = 22;</code>
+     * <code>optional .dossier.expression.NamedType aliased_type = 22;</code>
      *
      * <pre>
      * Link to another type that this type is an alias of.
      * </pre>
      */
-    public Builder mergeAliasedType(com.github.jsdossier.proto.TypeExpression value) {
+    public Builder mergeAliasedType(com.github.jsdossier.proto.NamedType value) {
       if (aliasedTypeBuilder_ == null) {
         if (aliasedType_ != null) {
           aliasedType_ =
-            com.github.jsdossier.proto.TypeExpression.newBuilder(aliasedType_).mergeFrom(value).buildPartial();
+            com.github.jsdossier.proto.NamedType.newBuilder(aliasedType_).mergeFrom(value).buildPartial();
         } else {
           aliasedType_ = value;
         }
@@ -10868,7 +10868,7 @@ public  final class JsType extends
       return this;
     }
     /**
-     * <code>optional .dossier.expression.TypeExpression aliased_type = 22;</code>
+     * <code>optional .dossier.expression.NamedType aliased_type = 22;</code>
      *
      * <pre>
      * Link to another type that this type is an alias of.
@@ -10886,45 +10886,45 @@ public  final class JsType extends
       return this;
     }
     /**
-     * <code>optional .dossier.expression.TypeExpression aliased_type = 22;</code>
+     * <code>optional .dossier.expression.NamedType aliased_type = 22;</code>
      *
      * <pre>
      * Link to another type that this type is an alias of.
      * </pre>
      */
-    public com.github.jsdossier.proto.TypeExpression.Builder getAliasedTypeBuilder() {
+    public com.github.jsdossier.proto.NamedType.Builder getAliasedTypeBuilder() {
       
       onChanged();
       return getAliasedTypeFieldBuilder().getBuilder();
     }
     /**
-     * <code>optional .dossier.expression.TypeExpression aliased_type = 22;</code>
+     * <code>optional .dossier.expression.NamedType aliased_type = 22;</code>
      *
      * <pre>
      * Link to another type that this type is an alias of.
      * </pre>
      */
-    public com.github.jsdossier.proto.TypeExpressionOrBuilder getAliasedTypeOrBuilder() {
+    public com.github.jsdossier.proto.NamedTypeOrBuilder getAliasedTypeOrBuilder() {
       if (aliasedTypeBuilder_ != null) {
         return aliasedTypeBuilder_.getMessageOrBuilder();
       } else {
         return aliasedType_ == null ?
-            com.github.jsdossier.proto.TypeExpression.getDefaultInstance() : aliasedType_;
+            com.github.jsdossier.proto.NamedType.getDefaultInstance() : aliasedType_;
       }
     }
     /**
-     * <code>optional .dossier.expression.TypeExpression aliased_type = 22;</code>
+     * <code>optional .dossier.expression.NamedType aliased_type = 22;</code>
      *
      * <pre>
      * Link to another type that this type is an alias of.
      * </pre>
      */
     private com.google.protobuf.SingleFieldBuilder<
-        com.github.jsdossier.proto.TypeExpression, com.github.jsdossier.proto.TypeExpression.Builder, com.github.jsdossier.proto.TypeExpressionOrBuilder> 
+        com.github.jsdossier.proto.NamedType, com.github.jsdossier.proto.NamedType.Builder, com.github.jsdossier.proto.NamedTypeOrBuilder> 
         getAliasedTypeFieldBuilder() {
       if (aliasedTypeBuilder_ == null) {
         aliasedTypeBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-            com.github.jsdossier.proto.TypeExpression, com.github.jsdossier.proto.TypeExpression.Builder, com.github.jsdossier.proto.TypeExpressionOrBuilder>(
+            com.github.jsdossier.proto.NamedType, com.github.jsdossier.proto.NamedType.Builder, com.github.jsdossier.proto.NamedTypeOrBuilder>(
                 getAliasedType(),
                 getParentForChildren(),
                 isClean());
@@ -10933,22 +10933,22 @@ public  final class JsType extends
       return aliasedTypeBuilder_;
     }
 
-    private java.util.List<com.github.jsdossier.proto.TypeExpression> knownAlias_ =
+    private java.util.List<com.github.jsdossier.proto.NamedType> knownAlias_ =
       java.util.Collections.emptyList();
     private void ensureKnownAliasIsMutable() {
       if (!((bitField0_ & 0x00100000) == 0x00100000)) {
-        knownAlias_ = new java.util.ArrayList<com.github.jsdossier.proto.TypeExpression>(knownAlias_);
+        knownAlias_ = new java.util.ArrayList<com.github.jsdossier.proto.NamedType>(knownAlias_);
         bitField0_ |= 0x00100000;
        }
     }
 
     private com.google.protobuf.RepeatedFieldBuilder<
-        com.github.jsdossier.proto.TypeExpression, com.github.jsdossier.proto.TypeExpression.Builder, com.github.jsdossier.proto.TypeExpressionOrBuilder> knownAliasBuilder_;
+        com.github.jsdossier.proto.NamedType, com.github.jsdossier.proto.NamedType.Builder, com.github.jsdossier.proto.NamedTypeOrBuilder> knownAliasBuilder_;
 
     /**
-     * <code>repeated .dossier.expression.TypeExpression known_alias = 28;</code>
+     * <code>repeated .dossier.expression.NamedType known_alias = 28;</code>
      */
-    public java.util.List<com.github.jsdossier.proto.TypeExpression> getKnownAliasList() {
+    public java.util.List<com.github.jsdossier.proto.NamedType> getKnownAliasList() {
       if (knownAliasBuilder_ == null) {
         return java.util.Collections.unmodifiableList(knownAlias_);
       } else {
@@ -10956,7 +10956,7 @@ public  final class JsType extends
       }
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression known_alias = 28;</code>
+     * <code>repeated .dossier.expression.NamedType known_alias = 28;</code>
      */
     public int getKnownAliasCount() {
       if (knownAliasBuilder_ == null) {
@@ -10966,9 +10966,9 @@ public  final class JsType extends
       }
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression known_alias = 28;</code>
+     * <code>repeated .dossier.expression.NamedType known_alias = 28;</code>
      */
-    public com.github.jsdossier.proto.TypeExpression getKnownAlias(int index) {
+    public com.github.jsdossier.proto.NamedType getKnownAlias(int index) {
       if (knownAliasBuilder_ == null) {
         return knownAlias_.get(index);
       } else {
@@ -10976,10 +10976,10 @@ public  final class JsType extends
       }
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression known_alias = 28;</code>
+     * <code>repeated .dossier.expression.NamedType known_alias = 28;</code>
      */
     public Builder setKnownAlias(
-        int index, com.github.jsdossier.proto.TypeExpression value) {
+        int index, com.github.jsdossier.proto.NamedType value) {
       if (knownAliasBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -10993,10 +10993,10 @@ public  final class JsType extends
       return this;
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression known_alias = 28;</code>
+     * <code>repeated .dossier.expression.NamedType known_alias = 28;</code>
      */
     public Builder setKnownAlias(
-        int index, com.github.jsdossier.proto.TypeExpression.Builder builderForValue) {
+        int index, com.github.jsdossier.proto.NamedType.Builder builderForValue) {
       if (knownAliasBuilder_ == null) {
         ensureKnownAliasIsMutable();
         knownAlias_.set(index, builderForValue.build());
@@ -11007,9 +11007,9 @@ public  final class JsType extends
       return this;
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression known_alias = 28;</code>
+     * <code>repeated .dossier.expression.NamedType known_alias = 28;</code>
      */
-    public Builder addKnownAlias(com.github.jsdossier.proto.TypeExpression value) {
+    public Builder addKnownAlias(com.github.jsdossier.proto.NamedType value) {
       if (knownAliasBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -11023,10 +11023,10 @@ public  final class JsType extends
       return this;
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression known_alias = 28;</code>
+     * <code>repeated .dossier.expression.NamedType known_alias = 28;</code>
      */
     public Builder addKnownAlias(
-        int index, com.github.jsdossier.proto.TypeExpression value) {
+        int index, com.github.jsdossier.proto.NamedType value) {
       if (knownAliasBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -11040,10 +11040,10 @@ public  final class JsType extends
       return this;
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression known_alias = 28;</code>
+     * <code>repeated .dossier.expression.NamedType known_alias = 28;</code>
      */
     public Builder addKnownAlias(
-        com.github.jsdossier.proto.TypeExpression.Builder builderForValue) {
+        com.github.jsdossier.proto.NamedType.Builder builderForValue) {
       if (knownAliasBuilder_ == null) {
         ensureKnownAliasIsMutable();
         knownAlias_.add(builderForValue.build());
@@ -11054,10 +11054,10 @@ public  final class JsType extends
       return this;
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression known_alias = 28;</code>
+     * <code>repeated .dossier.expression.NamedType known_alias = 28;</code>
      */
     public Builder addKnownAlias(
-        int index, com.github.jsdossier.proto.TypeExpression.Builder builderForValue) {
+        int index, com.github.jsdossier.proto.NamedType.Builder builderForValue) {
       if (knownAliasBuilder_ == null) {
         ensureKnownAliasIsMutable();
         knownAlias_.add(index, builderForValue.build());
@@ -11068,10 +11068,10 @@ public  final class JsType extends
       return this;
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression known_alias = 28;</code>
+     * <code>repeated .dossier.expression.NamedType known_alias = 28;</code>
      */
     public Builder addAllKnownAlias(
-        java.lang.Iterable<? extends com.github.jsdossier.proto.TypeExpression> values) {
+        java.lang.Iterable<? extends com.github.jsdossier.proto.NamedType> values) {
       if (knownAliasBuilder_ == null) {
         ensureKnownAliasIsMutable();
         com.google.protobuf.AbstractMessageLite.Builder.addAll(
@@ -11083,7 +11083,7 @@ public  final class JsType extends
       return this;
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression known_alias = 28;</code>
+     * <code>repeated .dossier.expression.NamedType known_alias = 28;</code>
      */
     public Builder clearKnownAlias() {
       if (knownAliasBuilder_ == null) {
@@ -11096,7 +11096,7 @@ public  final class JsType extends
       return this;
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression known_alias = 28;</code>
+     * <code>repeated .dossier.expression.NamedType known_alias = 28;</code>
      */
     public Builder removeKnownAlias(int index) {
       if (knownAliasBuilder_ == null) {
@@ -11109,16 +11109,16 @@ public  final class JsType extends
       return this;
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression known_alias = 28;</code>
+     * <code>repeated .dossier.expression.NamedType known_alias = 28;</code>
      */
-    public com.github.jsdossier.proto.TypeExpression.Builder getKnownAliasBuilder(
+    public com.github.jsdossier.proto.NamedType.Builder getKnownAliasBuilder(
         int index) {
       return getKnownAliasFieldBuilder().getBuilder(index);
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression known_alias = 28;</code>
+     * <code>repeated .dossier.expression.NamedType known_alias = 28;</code>
      */
-    public com.github.jsdossier.proto.TypeExpressionOrBuilder getKnownAliasOrBuilder(
+    public com.github.jsdossier.proto.NamedTypeOrBuilder getKnownAliasOrBuilder(
         int index) {
       if (knownAliasBuilder_ == null) {
         return knownAlias_.get(index);  } else {
@@ -11126,9 +11126,9 @@ public  final class JsType extends
       }
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression known_alias = 28;</code>
+     * <code>repeated .dossier.expression.NamedType known_alias = 28;</code>
      */
-    public java.util.List<? extends com.github.jsdossier.proto.TypeExpressionOrBuilder> 
+    public java.util.List<? extends com.github.jsdossier.proto.NamedTypeOrBuilder> 
          getKnownAliasOrBuilderList() {
       if (knownAliasBuilder_ != null) {
         return knownAliasBuilder_.getMessageOrBuilderList();
@@ -11137,33 +11137,33 @@ public  final class JsType extends
       }
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression known_alias = 28;</code>
+     * <code>repeated .dossier.expression.NamedType known_alias = 28;</code>
      */
-    public com.github.jsdossier.proto.TypeExpression.Builder addKnownAliasBuilder() {
+    public com.github.jsdossier.proto.NamedType.Builder addKnownAliasBuilder() {
       return getKnownAliasFieldBuilder().addBuilder(
-          com.github.jsdossier.proto.TypeExpression.getDefaultInstance());
+          com.github.jsdossier.proto.NamedType.getDefaultInstance());
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression known_alias = 28;</code>
+     * <code>repeated .dossier.expression.NamedType known_alias = 28;</code>
      */
-    public com.github.jsdossier.proto.TypeExpression.Builder addKnownAliasBuilder(
+    public com.github.jsdossier.proto.NamedType.Builder addKnownAliasBuilder(
         int index) {
       return getKnownAliasFieldBuilder().addBuilder(
-          index, com.github.jsdossier.proto.TypeExpression.getDefaultInstance());
+          index, com.github.jsdossier.proto.NamedType.getDefaultInstance());
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression known_alias = 28;</code>
+     * <code>repeated .dossier.expression.NamedType known_alias = 28;</code>
      */
-    public java.util.List<com.github.jsdossier.proto.TypeExpression.Builder> 
+    public java.util.List<com.github.jsdossier.proto.NamedType.Builder> 
          getKnownAliasBuilderList() {
       return getKnownAliasFieldBuilder().getBuilderList();
     }
     private com.google.protobuf.RepeatedFieldBuilder<
-        com.github.jsdossier.proto.TypeExpression, com.github.jsdossier.proto.TypeExpression.Builder, com.github.jsdossier.proto.TypeExpressionOrBuilder> 
+        com.github.jsdossier.proto.NamedType, com.github.jsdossier.proto.NamedType.Builder, com.github.jsdossier.proto.NamedTypeOrBuilder> 
         getKnownAliasFieldBuilder() {
       if (knownAliasBuilder_ == null) {
         knownAliasBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
-            com.github.jsdossier.proto.TypeExpression, com.github.jsdossier.proto.TypeExpression.Builder, com.github.jsdossier.proto.TypeExpressionOrBuilder>(
+            com.github.jsdossier.proto.NamedType, com.github.jsdossier.proto.NamedType.Builder, com.github.jsdossier.proto.NamedTypeOrBuilder>(
                 knownAlias_,
                 ((bitField0_ & 0x00100000) == 0x00100000),
                 getParentForChildren(),

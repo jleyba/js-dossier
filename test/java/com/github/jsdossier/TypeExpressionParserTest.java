@@ -234,7 +234,7 @@ public class TypeExpressionParserTest {
     TypeExpression expression = parser.parse(jsType);
     assertMessage(expression).isEqualTo(
         TypeExpression.newBuilder()
-            .setNamedType(namedType("Foo", "one_exports_Foo.html"))
+            .setNamedType(namedType("Foo", "one.Foo", "one_exports_Foo.html"))
             .build());
 
     parser = parserFactory.create(
@@ -316,7 +316,7 @@ public class TypeExpressionParserTest {
     assertMessage(expression).isEqualTo(
         TypeExpression.newBuilder()
             .setNamedType(
-                namedType("Container", "one_exports_Container.html")
+                namedType("Container", "one.Container", "one_exports_Container.html")
                     .toBuilder()
                     .addTemplateType(stringType())));
   }
@@ -421,6 +421,7 @@ public class TypeExpressionParserTest {
   private static TypeExpression numberType() {
     return TypeExpression.newBuilder()
         .setNamedType(NamedType.newBuilder()
+            .setExtern(true)
             .setName("number")
             .setHref("https://developer.mozilla.org/en-US/docs/Web/" +
                 "JavaScript/Reference/Global_Objects/Number"))
@@ -430,6 +431,7 @@ public class TypeExpressionParserTest {
   private static TypeExpression stringType() {
     return TypeExpression.newBuilder()
         .setNamedType(NamedType.newBuilder()
+            .setExtern(true)
             .setName("string")
             .setHref("https://developer.mozilla.org/en-US/docs/Web/" +
                 "JavaScript/Reference/Global_Objects/String"))
@@ -440,9 +442,17 @@ public class TypeExpressionParserTest {
     return TypeExpression.newBuilder().setNamedType(namedType(text, href)).build();
   }
 
-  private static NamedType namedType(String text, String href) {
+  private static NamedType namedType(String name, String href) {
     return NamedType.newBuilder()
-        .setName(text)
+        .setName(name)
+        .setHref(href)
+        .build();
+  }
+
+  private static NamedType namedType(String name, String qualifiedName, String href) {
+    return NamedType.newBuilder()
+        .setName(name)
+        .setQualifiedName(qualifiedName)
         .setHref(href)
         .build();
   }

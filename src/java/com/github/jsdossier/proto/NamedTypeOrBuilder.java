@@ -18,35 +18,50 @@ public interface NamedTypeOrBuilder extends
       getNameBytes();
 
   /**
-   * <code>optional string href = 2;</code>
+   * <code>optional string qualified_name = 2;</code>
+   */
+  java.lang.String getQualifiedName();
+  /**
+   * <code>optional string qualified_name = 2;</code>
+   */
+  com.google.protobuf.ByteString
+      getQualifiedNameBytes();
+
+  /**
+   * <code>optional string href = 3;</code>
    */
   java.lang.String getHref();
   /**
-   * <code>optional string href = 2;</code>
+   * <code>optional string href = 3;</code>
    */
   com.google.protobuf.ByteString
       getHrefBytes();
 
   /**
-   * <code>repeated .dossier.expression.TypeExpression template_type = 3;</code>
+   * <code>optional bool extern = 4;</code>
+   */
+  boolean getExtern();
+
+  /**
+   * <code>repeated .dossier.expression.TypeExpression template_type = 5;</code>
    */
   java.util.List<com.github.jsdossier.proto.TypeExpression> 
       getTemplateTypeList();
   /**
-   * <code>repeated .dossier.expression.TypeExpression template_type = 3;</code>
+   * <code>repeated .dossier.expression.TypeExpression template_type = 5;</code>
    */
   com.github.jsdossier.proto.TypeExpression getTemplateType(int index);
   /**
-   * <code>repeated .dossier.expression.TypeExpression template_type = 3;</code>
+   * <code>repeated .dossier.expression.TypeExpression template_type = 5;</code>
    */
   int getTemplateTypeCount();
   /**
-   * <code>repeated .dossier.expression.TypeExpression template_type = 3;</code>
+   * <code>repeated .dossier.expression.TypeExpression template_type = 5;</code>
    */
   java.util.List<? extends com.github.jsdossier.proto.TypeExpressionOrBuilder> 
       getTemplateTypeOrBuilderList();
   /**
-   * <code>repeated .dossier.expression.TypeExpression template_type = 3;</code>
+   * <code>repeated .dossier.expression.TypeExpression template_type = 5;</code>
    */
   com.github.jsdossier.proto.TypeExpressionOrBuilder getTemplateTypeOrBuilder(
       int index);

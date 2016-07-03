@@ -112,7 +112,7 @@ public class TypeInspectorInstancePropertyTest extends AbstractTypeInspectorTest
                 .setName("age")
                 .setSource(sourceFile("source/foo.js.src.html", 7))
                 .setDescription(htmlComment("<p>This person\'s age.</p>\n"))
-                .setDefinedBy(namedTypeExpression("Person", "Person.html#age")))
+                .setDefinedBy(namedType("Person", "Person.html#age")))
             .setType(numberTypeExpression())
             .build());
   }
@@ -143,7 +143,7 @@ public class TypeInspectorInstancePropertyTest extends AbstractTypeInspectorTest
                 .setName("age")
                 .setSource(sourceFile("source/foo.js.src.html", 7))
                 .setDescription(htmlComment("<p>This person\'s age.</p>\n"))
-                .setDefinedBy(namedTypeExpression("Person", "Person.html#age")))
+                .setDefinedBy(namedType("Person", "Person.html#age")))
             .setType(numberTypeExpression())
             .build());
   }
@@ -180,7 +180,7 @@ public class TypeInspectorInstancePropertyTest extends AbstractTypeInspectorTest
                 .setName("a")
                 .setSource(sourceFile("source/foo.js.src.html", 7))
                 .setDescription(htmlComment("<p>Original comment.</p>\n"))
-                .setDefinedBy(namedTypeExpression("A", "A.html#a")))
+                .setDefinedBy(namedType("A", "A.html#a")))
             .setType(numberTypeExpression())
             .build());
   }
@@ -215,7 +215,7 @@ public class TypeInspectorInstancePropertyTest extends AbstractTypeInspectorTest
                 .setName("a")
                 .setSource(sourceFile("source/foo.js.src.html", 15))
                 .setDescription(htmlComment("<p>Custom comment.</p>\n"))
-                .setOverrides(namedTypeExpression("A", "A.html#a")))
+                .setOverrides(namedType("A", "A.html#a")))
             .setType(numberTypeExpression())
             .build());
   }
@@ -257,8 +257,8 @@ public class TypeInspectorInstancePropertyTest extends AbstractTypeInspectorTest
                 .setName("a")
                 .setSource(sourceFile("source/foo.js.src.html", 22))
                 .setDescription(htmlComment("<p>Comment on interface B.</p>\n"))
-                .setOverrides(namedTypeExpression("A", "A.html#a"))
-                .addSpecifiedBy(namedTypeExpression("B", "B.html#a")))
+                .setOverrides(namedType("A", "A.html#a"))
+                .addSpecifiedBy(namedType("B", "B.html#a")))
             .setType(numberTypeExpression())
             .build());
   }
@@ -378,7 +378,7 @@ public class TypeInspectorInstancePropertyTest extends AbstractTypeInspectorTest
                 .setSource(sourceFile("../../source/globals.js.src.html", 10))
                 .setDescription(htmlComment(
                     "<p>The <a href=\"../../Person.html\"><code>Person</code></a> to greet.</p>\n"))
-                .setDefinedBy(namedTypeExpression("Greeter", "../../Greeter.html#p")))
+                .setDefinedBy(namedType("Greeter", "../../Greeter.html#p")))
             .setType(nullableNamedTypeExpression("Person", "../../Person.html"))
             .build());
   }
@@ -418,7 +418,7 @@ public class TypeInspectorInstancePropertyTest extends AbstractTypeInspectorTest
                 .setSource(sourceFile("../../source/modules/foo/bar.js.src.html", 4))
                 .setDescription(htmlComment(
                     "<p>The <a href=\"../../Person.html\"><code>Person</code></a> to greet.</p>\n"))
-                .addSpecifiedBy(namedTypeExpression("Greeter", "../../Greeter.html#p")))
+                .addSpecifiedBy(namedType("Greeter", "../../Greeter.html#p")))
             .setType(namedTypeExpression("Person", "../../Person.html"))
             .build());
   }
@@ -480,7 +480,7 @@ public class TypeInspectorInstancePropertyTest extends AbstractTypeInspectorTest
                 .setName("greeting")
                 .setSource(sourceFile("source/globals.js.src.html", 15))
                 .setDescription(htmlComment("<p>A greeting.</p>\n"))
-                .setOverrides(namedTypeExpression("Greeter", "Greeter.html#greeting"))
+                .setOverrides(namedType("Greeter", "Greeter.html#greeting"))
                 .setVisibility(Visibility.PROTECTED))
             .setType(stringTypeExpression())
             .build());
@@ -496,7 +496,7 @@ public class TypeInspectorInstancePropertyTest extends AbstractTypeInspectorTest
                 .setName("greeting")
                 .setSource(sourceFile("source/globals.js.src.html", 23))
                 .setDescription(htmlComment("<p>A greeting.</p>\n"))
-                .setOverrides(namedTypeExpression("CustomGreeter", "CustomGreeter.html#greeting"))
+                .setOverrides(namedType("CustomGreeter", "CustomGreeter.html#greeting"))
                 .setVisibility(Visibility.PROTECTED))
             .setType(stringTypeExpression())
             .build());

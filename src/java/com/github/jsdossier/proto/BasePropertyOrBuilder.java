@@ -123,7 +123,7 @@ public interface BasePropertyOrBuilder extends
   com.github.jsdossier.proto.TagsOrBuilder getTagsOrBuilder();
 
   /**
-   * <code>optional .dossier.expression.TypeExpression defined_by = 7;</code>
+   * <code>optional .dossier.expression.NamedType defined_by = 7;</code>
    *
    * <pre>
    * The class or interface that defines this property.
@@ -131,24 +131,24 @@ public interface BasePropertyOrBuilder extends
    */
   boolean hasDefinedBy();
   /**
-   * <code>optional .dossier.expression.TypeExpression defined_by = 7;</code>
+   * <code>optional .dossier.expression.NamedType defined_by = 7;</code>
    *
    * <pre>
    * The class or interface that defines this property.
    * </pre>
    */
-  com.github.jsdossier.proto.TypeExpression getDefinedBy();
+  com.github.jsdossier.proto.NamedType getDefinedBy();
   /**
-   * <code>optional .dossier.expression.TypeExpression defined_by = 7;</code>
+   * <code>optional .dossier.expression.NamedType defined_by = 7;</code>
    *
    * <pre>
    * The class or interface that defines this property.
    * </pre>
    */
-  com.github.jsdossier.proto.TypeExpressionOrBuilder getDefinedByOrBuilder();
+  com.github.jsdossier.proto.NamedTypeOrBuilder getDefinedByOrBuilder();
 
   /**
-   * <code>optional .dossier.expression.TypeExpression overrides = 8;</code>
+   * <code>optional .dossier.expression.NamedType overrides = 8;</code>
    *
    * <pre>
    * Parent class that defines this property.
@@ -156,41 +156,41 @@ public interface BasePropertyOrBuilder extends
    */
   boolean hasOverrides();
   /**
-   * <code>optional .dossier.expression.TypeExpression overrides = 8;</code>
+   * <code>optional .dossier.expression.NamedType overrides = 8;</code>
    *
    * <pre>
    * Parent class that defines this property.
    * </pre>
    */
-  com.github.jsdossier.proto.TypeExpression getOverrides();
+  com.github.jsdossier.proto.NamedType getOverrides();
   /**
-   * <code>optional .dossier.expression.TypeExpression overrides = 8;</code>
+   * <code>optional .dossier.expression.NamedType overrides = 8;</code>
    *
    * <pre>
    * Parent class that defines this property.
    * </pre>
    */
-  com.github.jsdossier.proto.TypeExpressionOrBuilder getOverridesOrBuilder();
+  com.github.jsdossier.proto.NamedTypeOrBuilder getOverridesOrBuilder();
 
   /**
-   * <code>repeated .dossier.expression.TypeExpression specified_by = 9;</code>
+   * <code>repeated .dossier.expression.NamedType specified_by = 9;</code>
    *
    * <pre>
    * Interfaces that define this property.
    * </pre>
    */
-  java.util.List<com.github.jsdossier.proto.TypeExpression> 
+  java.util.List<com.github.jsdossier.proto.NamedType> 
       getSpecifiedByList();
   /**
-   * <code>repeated .dossier.expression.TypeExpression specified_by = 9;</code>
+   * <code>repeated .dossier.expression.NamedType specified_by = 9;</code>
    *
    * <pre>
    * Interfaces that define this property.
    * </pre>
    */
-  com.github.jsdossier.proto.TypeExpression getSpecifiedBy(int index);
+  com.github.jsdossier.proto.NamedType getSpecifiedBy(int index);
   /**
-   * <code>repeated .dossier.expression.TypeExpression specified_by = 9;</code>
+   * <code>repeated .dossier.expression.NamedType specified_by = 9;</code>
    *
    * <pre>
    * Interfaces that define this property.
@@ -198,22 +198,22 @@ public interface BasePropertyOrBuilder extends
    */
   int getSpecifiedByCount();
   /**
-   * <code>repeated .dossier.expression.TypeExpression specified_by = 9;</code>
+   * <code>repeated .dossier.expression.NamedType specified_by = 9;</code>
    *
    * <pre>
    * Interfaces that define this property.
    * </pre>
    */
-  java.util.List<? extends com.github.jsdossier.proto.TypeExpressionOrBuilder> 
+  java.util.List<? extends com.github.jsdossier.proto.NamedTypeOrBuilder> 
       getSpecifiedByOrBuilderList();
   /**
-   * <code>repeated .dossier.expression.TypeExpression specified_by = 9;</code>
+   * <code>repeated .dossier.expression.NamedType specified_by = 9;</code>
    *
    * <pre>
    * Interfaces that define this property.
    * </pre>
    */
-  com.github.jsdossier.proto.TypeExpressionOrBuilder getSpecifiedByOrBuilder(
+  com.github.jsdossier.proto.NamedTypeOrBuilder getSpecifiedByOrBuilder(
       int index);
 
   /**

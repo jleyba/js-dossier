@@ -16,7 +16,6 @@
 
 package com.github.jsdossier;
 
-import static com.github.jsdossier.TypeExpressionParser.Option.QUALIFIED_NAMES;
 import static com.github.jsdossier.jscomp.Types.isBuiltInFunctionProperty;
 import static com.github.jsdossier.jscomp.Types.isConstructorTypeDefinition;
 import static com.google.common.base.Strings.isNullOrEmpty;
@@ -36,6 +35,7 @@ import com.github.jsdossier.proto.BaseProperty;
 import com.github.jsdossier.proto.Comment;
 import com.github.jsdossier.proto.Function;
 import com.github.jsdossier.proto.Function.Detail;
+import com.github.jsdossier.proto.NamedType;
 import com.github.jsdossier.proto.TypeExpression;
 import com.github.jsdossier.proto.TypeLink;
 import com.github.jsdossier.proto.Visibility;
@@ -62,7 +62,6 @@ import com.google.javascript.rhino.jstype.FunctionType;
 import com.google.javascript.rhino.jstype.JSType;
 import com.google.javascript.rhino.jstype.JSTypeNative;
 import com.google.javascript.rhino.jstype.JSTypeRegistry;
-import com.google.javascript.rhino.jstype.NamedType;
 import com.google.javascript.rhino.jstype.ObjectType;
 import com.google.javascript.rhino.jstype.Property;
 import com.google.javascript.rhino.jstype.StaticTypedScope;
@@ -76,7 +75,6 @@ import java.util.Comparator;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -224,21 +222,21 @@ final class TypeInspector {
    * Returns the type hierarchy for the inspected type, with the type itself listed first and the
    * base type last. If the inspected type is not a constructor, this will return an empty list.
    */
-  public List<TypeExpression> getTypeHierarchy() {
+  public List<NamedType> getTypeHierarchy() {
     if (!inspectedType.getType().isConstructor()
         || inspectedType.getType().toMaybeFunctionType() == null) {
       return ImmutableList.of();
     }
 
-    ImmutableList.Builder<TypeExpression> expressions = ImmutableList.builder();
+    ImmutableList.Builder<NamedType> expressions = ImmutableList.builder();
     TypeExpressionParser parser =
         expressionParserFactory.create(linkFactory.withTypeContext(inspectedType));
 
     ImmutableList<JSType> types = registry.getTypeHierarchy(inspectedType.getType());
     for (JSType instance : types) {
       instance = instance.visit(typeMapReplacer);
-      TypeExpression expression = parser.parse(instance, QUALIFIED_NAMES);
-      expressions.add(expression);
+      NamedType namedType = parseNamedType(parser, instance);
+      expressions.add(namedType);
     }
 
     return expressions.build();
@@ -248,7 +246,7 @@ final class TypeInspector {
    * Returns the interfaces implemented by this inspected type. If the inspected type is itself an
    * interface, this will return only the extended interfaces, <em>not</em> the interface itself.
    */
-  public ImmutableSet<TypeExpression> getImplementedTypes() {
+  public ImmutableSet<NamedType> getImplementedTypes() {
     JSType type = inspectedType.getType();
     if (type.toMaybeFunctionType() == null || !type.toMaybeFunctionType().hasInstanceType()) {
       return ImmutableSet.of();
@@ -269,10 +267,10 @@ final class TypeInspector {
                 .getInstanceType()
                 .getTemplateTypeMap());
 
-    Set<TypeExpression> expressions = new HashSet<>();
+    Set<NamedType> expressions = new HashSet<>();
     for (ObjectType iface : implementedTypes) {
       JSType t = iface.visit(replacer);
-      expressions.add(parser.parse(t, QUALIFIED_NAMES));
+      expressions.add(parseNamedType(parser, t));
     }
 
     return toSortedSet(expressions);
@@ -281,7 +279,7 @@ final class TypeInspector {
   /**
    * Returns the known implementations for the inspected type, if it is an interface.
    */
-  public ImmutableSet<TypeExpression> getKnownImplementations() {
+  public ImmutableSet<NamedType> getKnownImplementations() {
     JSType type = inspectedType.getType();
     if (!type.isFunctionType()) {
       return ImmutableSet.of();
@@ -289,9 +287,9 @@ final class TypeInspector {
 
     TypeExpressionParser parser =
         expressionParserFactory.create(linkFactory.withTypeContext(inspectedType));
-    Set<TypeExpression> expressions = new HashSet<>();
+    Set<NamedType> expressions = new HashSet<>();
     for (JSType t : registry.getKnownImplementations(type.toMaybeFunctionType())) {
-      expressions.add(parser.parse(t, QUALIFIED_NAMES));
+      expressions.add(parseNamedType(parser, t));
     }
 
     return toSortedSet(expressions);
@@ -301,7 +299,7 @@ final class TypeInspector {
    * Returns the known sub-types of the inspected type. For classes, this will only return the
    * direct sub-types.
    */
-  public ImmutableSet<TypeExpression> getSubtypes() {
+  public ImmutableSet<NamedType> getSubtypes() {
     JSType type = inspectedType.getType();
     if (!type.isFunctionType()) {
       return ImmutableSet.of();
@@ -309,12 +307,12 @@ final class TypeInspector {
 
     TypeExpressionParser parser =
         expressionParserFactory.create(linkFactory.withTypeContext(inspectedType));
-    Set<TypeExpression> expressions = new HashSet<>();
+    Set<NamedType> expressions = new HashSet<>();
     for (JSType t : registry.getSubInterfaces(type.toMaybeFunctionType())) {
-      expressions.add(parser.parse(t, QUALIFIED_NAMES));
+      expressions.add(parseNamedType(parser, t));
     }
     for (JSType t : registry.getDirectSubTypes(type.toMaybeFunctionType())) {
-      expressions.add(parser.parse(t, QUALIFIED_NAMES));
+      expressions.add(parseNamedType(parser, t));
     }
 
     return toSortedSet(expressions);
@@ -325,25 +323,20 @@ final class TypeInspector {
    */
   @Nullable
   @CheckReturnValue
-  public TypeExpression getAliasedType() {
+  public NamedType getAliasedType() {
     List<NominalType> allAliases = registry.getTypes(inspectedType.getType());
     NominalType primary = allAliases.iterator().next();
     if (primary == inspectedType) {
       return null;
     }
 
-    TypeLink link = linkFactory.withTypeContext(inspectedType).createLink(primary);
-    TypeExpression.Builder typeExpression = TypeExpression.newBuilder();
-    typeExpression.getNamedTypeBuilder()
-        .setName(dfs.getQualifiedDisplayName(primary))
-        .setHref(link.getHref());
-    return typeExpression.build();
+    return linkFactory.withTypeContext(inspectedType).createNamedTypeReference(primary);
   }
 
   /**
    * Returns the known aliases for the inspected type.
    */
-  public ImmutableSet<TypeExpression> getKnownAliases() {
+  public ImmutableSet<NamedType> getKnownAliases() {
     List<NominalType> allAliases = registry.getTypes(inspectedType.getType());
 
     // The first entry is considered the "true" definition.
@@ -351,26 +344,23 @@ final class TypeInspector {
       return ImmutableSet.of();
     }
 
-    Set<TypeExpression> expressions = new HashSet<>();
+    Set<NamedType> expressions = new HashSet<>();
     for (NominalType type : Iterables.skip(allAliases, 1)) {
-      TypeLink link = linkFactory.withTypeContext(inspectedType).createLink(type);
-
-      TypeExpression.Builder typeExpression = TypeExpression.newBuilder();
-      typeExpression.getNamedTypeBuilder()
-          .setName(dfs.getQualifiedDisplayName(type))
-          .setHref(link.getHref());
-
-      expressions.add(typeExpression.build());
+      NamedType namedType = linkFactory.withTypeContext(inspectedType)
+          .createNamedTypeReference(type);
+      expressions.add(namedType);
     }
     return toSortedSet(expressions);
   }
 
-  private ImmutableSet<TypeExpression> toSortedSet(Iterable<TypeExpression> expressions) {
-    return FluentIterable.from(expressions)
-        .toSortedSet(new Comparator<TypeExpression>() {
+  private ImmutableSet<NamedType> toSortedSet(
+      Iterable<NamedType> types) {
+    return FluentIterable.from(types)
+        .toSortedSet(new Comparator<NamedType>() {
           @Override
-          public int compare(TypeExpression o1, TypeExpression o2) {
-            return o1.getNamedType().getName().compareTo(o2.getNamedType().getName());
+          public int compare(NamedType o1,
+                             NamedType o2) {
+            return o1.getName().compareTo(o2.getName());
           }
         });
   }
@@ -582,7 +572,8 @@ final class TypeInspector {
       }
 
       NominalType ownerType = property.getOwnerType().or(inspectedType);
-      TypeExpression definedBy = getDefinedByComment(linkFactory, ownerType, currentType, property);
+      NamedType definedBy =
+          getDefinedByComment(linkFactory, ownerType, currentType, property);
 
       if (!currentType.getTemplateTypeMap().isEmpty()) {
         propertyType = propertyType.visit(replacer);
@@ -620,8 +611,10 @@ final class TypeInspector {
   }
 
   private Set<JSType> getAssignableTypes(JSType type) {
-    if (type.isNamedType() && registry.isType(((NamedType) type).getReferenceName())) {
-      type = registry.getType(((NamedType) type).getReferenceName()).getType();
+    if (type.isNamedType() && registry.isType(
+        ((com.google.javascript.rhino.jstype.NamedType) type).getReferenceName())) {
+      type = registry.getType(
+          ((com.google.javascript.rhino.jstype.NamedType) type).getReferenceName()).getType();
     }
 
     Set<JSType> types = new LinkedHashSet<>();
@@ -679,7 +672,7 @@ final class TypeInspector {
   }
 
   @Nullable
-  private TypeExpression getDefinedByComment(
+  private NamedType getDefinedByComment(
       final LinkFactory linkFactory,
       final NominalType context,
       JSType currentType,
@@ -719,18 +712,17 @@ final class TypeInspector {
     return buildPropertyLink(parser, definedByType, property.getName());
   }
 
-  private TypeExpression buildPropertyLink(
+  private NamedType buildPropertyLink(
       TypeExpressionParser parser, JSType type, String propertyName) {
-    TypeExpression expression = parser.parse(type);
-    if (!expression.getNamedType().getHref().isEmpty()
+    NamedType namedType = parseNamedType(parser, type);
+    if (!namedType.getHref().isEmpty()
         // Extern links are always fully qualified.
-        && !expression.getNamedType().getHref().startsWith("http")) {
-      TypeExpression.Builder eb = expression.toBuilder();
-      eb.getNamedTypeBuilder()
-          .setHref(expression.getNamedType().getHref() + "#" + propertyName);
-      expression = eb.build();
+        && !namedType.getHref().startsWith("http")) {
+      namedType = namedType.toBuilder()
+          .setHref(namedType.getHref() + "#" + propertyName)
+          .build();
     }
-    return expression;
+    return namedType;
   }
 
   /**
@@ -801,7 +793,7 @@ final class TypeInspector {
       FunctionType function,
       Node node,
       PropertyDocs docs,
-      @Nullable TypeExpression definedBy,
+      @Nullable NamedType definedBy,
       Iterable<InstanceProperty> overrides) {
     boolean isConstructor = function.isConstructor() && !isFunctionTypeConstructor(function);
     boolean isInterface = !isConstructor && function.isInterface();
@@ -1065,7 +1057,7 @@ final class TypeInspector {
       JSType type,
       Node node,
       PropertyDocs docs,
-      @Nullable TypeExpression definedBy,
+      @Nullable NamedType definedBy,
       Iterable<InstanceProperty> overrides) {
     com.github.jsdossier.proto.Property.Builder builder =
         com.github.jsdossier.proto.Property.newBuilder()
@@ -1091,7 +1083,7 @@ final class TypeInspector {
       JSType type,
       Node node,
       PropertyDocs docs,
-      @Nullable TypeExpression definedBy,
+      @Nullable NamedType definedBy,
       Iterable<InstanceProperty> overrides) {
     BaseProperty.Builder builder = BaseProperty.newBuilder()
         .setName(name)
@@ -1225,7 +1217,7 @@ final class TypeInspector {
     return null;
   }
 
-  private TypeExpression getPropertyLink(NominalType context, InstanceProperty property) {
+  private NamedType getPropertyLink(NominalType context, InstanceProperty property) {
     JSType type = property.getDefinedByType();
     TypeExpressionParser parser =
         expressionParserFactory.create(linkFactory.withTypeContext(context));
@@ -1240,6 +1232,15 @@ final class TypeInspector {
     type = stripTemplateTypeInformation(type);
 
     return buildPropertyLink(parser, type, property.getName());
+  }
+
+  private NamedType parseNamedType(
+      TypeExpressionParser parser, JSType type) {
+    TypeExpression expression = parser.parse(type);
+    NamedType namedType = expression.getNamedType();
+    verify(namedType != NamedType.getDefaultInstance(),
+        "Expected a named type expression: %s", expression);
+    return namedType;
   }
 
   private JSType evaluate(JSTypeExpression expression) {

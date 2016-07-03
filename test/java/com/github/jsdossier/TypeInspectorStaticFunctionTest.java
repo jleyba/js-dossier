@@ -697,7 +697,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
                 .setType(stringTypeExpression())
                 .setDescription(htmlComment("<p>The person's name.</p>\n")))
             .setReturn(Detail.newBuilder()
-                .setType(namedTypeExpression("Person", "bar_exports_Person.html"))
+                .setType(namedTypeExpression("Person", "foo/bar.Person", "bar_exports_Person.html"))
                 .setDescription(htmlComment("<p>The new person.</p>\n")))
             .build());
   }
@@ -736,7 +736,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
                 .setType(stringTypeExpression())
                 .setDescription(htmlComment("<p>The person's name.</p>\n")))
             .setReturn(Detail.newBuilder()
-                .setType(namedTypeExpression("Person", "bar_exports_Person.html"))
+                .setType(namedTypeExpression("Person", "foo/bar.Person", "bar_exports_Person.html"))
                 .setDescription(htmlComment("<p>The new person.</p>\n")))
             .build());
   }
@@ -765,7 +765,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
                 .setDescription(Comment.getDefaultInstance()))
             .addParameter(Detail.newBuilder()
                 .setName("x")
-                .setType(namedTypeExpression("X", "bar_exports_X.html"))
+                .setType(namedTypeExpression("X", "foo/bar.X", "bar_exports_X.html"))
                 .setDescription(htmlComment("<p>an object.</p>\n")))
             .build());
   }
@@ -794,7 +794,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
                 .setDescription(Comment.getDefaultInstance()))
             .addParameter(Detail.newBuilder()
                 .setName("x")
-                .setType(namedTypeExpression("X", "bar_exports_X.html"))
+                .setType(namedTypeExpression("X", "foo/bar.X", "bar_exports_X.html"))
                 .setDescription(htmlComment("<p>an object.</p>\n")))
             .build());
   }

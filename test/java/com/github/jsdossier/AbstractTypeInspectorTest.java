@@ -16,7 +16,6 @@
 
 package com.github.jsdossier;
 
-import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.truth.Truth.assertAbout;
 import static com.google.common.truth.Truth.assertWithMessage;
 
@@ -91,21 +90,31 @@ public abstract class AbstractTypeInspectorTest {
   }
 
   protected static TypeExpression nullableErrorTypeExpression() {
-    return namedTypeExpression("Error",
-        "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error")
-        .toBuilder()
+    NamedType error = namedType(
+        "Error",
+        "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error");
+    return TypeExpression.newBuilder()
+        .setNamedType(error.toBuilder().setExtern(true))
         .setAllowNull(true)
         .build();
   }
 
   protected static TypeExpression numberTypeExpression() {
-    return namedTypeExpression("number",
+    NamedType number = namedType(
+        "number",
         "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number");
+    return TypeExpression.newBuilder()
+        .setNamedType(number.toBuilder().setExtern(true))
+        .build();
   }
 
   protected static TypeExpression stringTypeExpression() {
-    return namedTypeExpression("string",
+    NamedType string = namedType(
+        "string",
         "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String");
+    return TypeExpression.newBuilder()
+        .setNamedType(string.toBuilder().setExtern(true))
+        .build();
   }
 
   protected static TypeExpression namedTypeExpression(String name) {
@@ -117,6 +126,13 @@ public abstract class AbstractTypeInspectorTest {
   protected static TypeExpression namedTypeExpression(String name, String href) {
     return TypeExpression.newBuilder()
         .setNamedType(namedType(name, href))
+        .build();
+  }
+
+  protected static TypeExpression namedTypeExpression(
+      String name, String qualifiedName, String href) {
+    return TypeExpression.newBuilder()
+        .setNamedType(namedType(name, qualifiedName, href))
         .build();
   }
 
@@ -147,13 +163,19 @@ public abstract class AbstractTypeInspectorTest {
         .build();
   }
 
-  protected static TypeExpression addTemplateTypes(
-      TypeExpression expression, TypeExpression... templateTypes) {
-    checkNotNull(expression.getNamedType());
-    TypeExpression.Builder builder = expression.toBuilder();
-    builder.getNamedTypeBuilder()
-        .addAllTemplateType(Arrays.asList(templateTypes));
-    return builder.build();
+  protected static NamedType namedType(String name, String qualifiedName, String href) {
+    return NamedType.newBuilder()
+        .setName(name)
+        .setQualifiedName(qualifiedName)
+        .setHref(href)
+        .build();
+  }
+
+  protected static NamedType addTemplateTypes(
+      NamedType namedType, TypeExpression... templateTypes) {
+    return namedType.toBuilder()
+        .addAllTemplateType(Arrays.asList(templateTypes))
+        .build();
   }
 
   protected static InstancePropertySubject assertInstanceProperty(final InstanceProperty property) {

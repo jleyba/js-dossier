@@ -10,7 +10,7 @@
   {if $expression.isVarargs}...{/if}
 
   {if $expression.functionType}{call .functionType data="all" /}
-  {elseif $expression.namedType}{call .namedType data="all" /}
+  {elseif $expression.namedType}{call .namedTypeExpression data="all" /}
   {elseif $expression.recordType}{call .recordType data="all" /}
   {elseif $expression.unionType}{call .unionType data="all" /}
   {elseif $expression.anyType}*
@@ -55,9 +55,50 @@
 
 
 /**
+ * Renders a named type reference.
+ */
+{template .namedTypeReference}
+  {@param type: dossier.expression.NamedType}
+  {@param? useQualifiedName: bool}
+  {@param? strict: bool}
+
+  {if $type.href}
+    <a href="{$type.href}"
+       {if $type.extern}{sp}target="_blank"{/if}
+       {if $type.qualifiedName
+           and $type.qualifiedName != $type.name
+           and not $useQualifiedName}{sp}title="{$type.qualifiedName}"{/if}
+       >
+  {/if}
+
+  {if $useQualifiedName and $type.qualifiedName}
+    {$type.qualifiedName}
+  {else}
+    {$type.name}
+  {/if}
+
+  {if $type.href}
+    </a>
+  {/if}
+
+  {if length($type.templateType)}
+    &lt;
+    {foreach $template in $type.templateType}
+      {call .expression}
+        {param expression: $template /}
+        {param strict: $strict /}
+      {/call}
+      {if not isLast($template)},{sp}{/if}
+    {/foreach}
+    &gt;
+  {/if}
+{/template}
+
+
+/**
  * Renders a named type expression.
  */
-{template .namedType private="true"}
+{template .namedTypeExpression private="true"}
   {@param expression: dossier.expression.TypeExpression}
   {@param? strict: bool}
   {let $type: $expression.namedType /}
@@ -72,24 +113,10 @@
       !
     {/if}
   {/if}
-  {if $type.href}
-    <a href="{$type.href}">
-  {/if}
-  {$type.name}
-  {if $type.href}
-    </a>
-  {/if}
-  {if length($type.templateType)}
-    &lt;
-    {foreach $template in $type.templateType}
-      {call .expression}
-        {param expression: $template /}
-        {param strict: $strict /}
-      {/call}
-      {if not isLast($template)},{sp}{/if}
-    {/foreach}
-    &gt;
-  {/if}
+  {call .namedTypeReference}
+    {param type: $type /}
+    {param strict: $strict /}
+  {/call}
 {/template}
 
 

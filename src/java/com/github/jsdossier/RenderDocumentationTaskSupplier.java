@@ -37,7 +37,7 @@ import com.github.jsdossier.proto.Enumeration;
 import com.github.jsdossier.proto.JsType;
 import com.github.jsdossier.proto.JsTypeOrBuilder;
 import com.github.jsdossier.proto.JsTypeRenderSpec;
-import com.github.jsdossier.proto.TypeExpression;
+import com.github.jsdossier.proto.NamedType;
 import com.github.jsdossier.proto.TypeLink;
 import com.github.jsdossier.proto.Visibility;
 import com.github.jsdossier.soy.Renderer;
@@ -47,7 +47,6 @@ import com.google.common.base.Function;
 import com.google.common.base.Supplier;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.JSTypeExpression;
 import com.google.javascript.rhino.Node;
@@ -430,7 +429,7 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Ca
       spec.addAllExtendedType(reverse(typeInspector.getTypeHierarchy()));
 
       spec.addAllKnownAlias(typeInspector.getKnownAliases());
-      TypeExpression aliasedType = typeInspector.getAliasedType();
+      NamedType aliasedType = typeInspector.getAliasedType();
       if (aliasedType != null) {
         spec.setAliasedType(aliasedType);
       }

@@ -135,13 +135,13 @@ message BaseProperty {
   Tags tags = 6;
 
   // The class or interface that defines this property.
-  dossier.expression.TypeExpression defined_by = 7;
+  dossier.expression.NamedType defined_by = 7;
 
   // Parent class that defines this property.
-  dossier.expression.TypeExpression overrides = 8;
+  dossier.expression.NamedType overrides = 8;
 
   // Interfaces that define this property.
-  repeated dossier.expression.TypeExpression specified_by = 9;
+  repeated dossier.expression.NamedType specified_by = 9;
 
   repeated Comment see_also = 10;
 }
@@ -255,19 +255,19 @@ message JsType {
 
   // List of inherited types for a class. This should be empty if |is_class|
   // is false. Classes should be listed in order, with the root type first.
-  repeated dossier.expression.TypeExpression extended_type = 18;
+  repeated dossier.expression.NamedType extended_type = 18;
 
   // The interfaces implemented by a class/extended by an interface. This
   // list should be empty if |is_class| and |is_interface| are false.
-  repeated dossier.expression.TypeExpression implemented_type = 19;
+  repeated dossier.expression.NamedType implemented_type = 19;
 
   // Known subtypes of this type. If |is_class| is true, this will contain the
   // know direct subclasses. If |is_interface| is true, this will contain the
   // known subinterfaces.
-  repeated dossier.expression.TypeExpression subtype = 26;
+  repeated dossier.expression.NamedType subtype = 26;
 
   // Known implementations of this type. Will be empy if |is_interface| is false.
-  repeated dossier.expression.TypeExpression implementation = 27;
+  repeated dossier.expression.NamedType implementation = 27;
 
   repeated Property compiler_constant = 20;
 
@@ -279,8 +279,8 @@ message JsType {
   ParentLink parent = 21;
 
   // Link to another type that this type is an alias of.
-  dossier.expression.TypeExpression aliased_type = 22;
-  repeated dossier.expression.TypeExpression known_alias = 28;
+  dossier.expression.NamedType aliased_type = 22;
+  repeated dossier.expression.NamedType known_alias = 28;
 
   // Base name for the rendered file for this type.
   string filename = 23;

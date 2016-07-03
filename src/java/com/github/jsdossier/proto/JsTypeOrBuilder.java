@@ -287,26 +287,26 @@ public interface JsTypeOrBuilder extends
       int index);
 
   /**
-   * <code>repeated .dossier.expression.TypeExpression extended_type = 18;</code>
+   * <code>repeated .dossier.expression.NamedType extended_type = 18;</code>
    *
    * <pre>
    * List of inherited types for a class. This should be empty if |is_class|
    * is false. Classes should be listed in order, with the root type first.
    * </pre>
    */
-  java.util.List<com.github.jsdossier.proto.TypeExpression> 
+  java.util.List<com.github.jsdossier.proto.NamedType> 
       getExtendedTypeList();
   /**
-   * <code>repeated .dossier.expression.TypeExpression extended_type = 18;</code>
+   * <code>repeated .dossier.expression.NamedType extended_type = 18;</code>
    *
    * <pre>
    * List of inherited types for a class. This should be empty if |is_class|
    * is false. Classes should be listed in order, with the root type first.
    * </pre>
    */
-  com.github.jsdossier.proto.TypeExpression getExtendedType(int index);
+  com.github.jsdossier.proto.NamedType getExtendedType(int index);
   /**
-   * <code>repeated .dossier.expression.TypeExpression extended_type = 18;</code>
+   * <code>repeated .dossier.expression.NamedType extended_type = 18;</code>
    *
    * <pre>
    * List of inherited types for a class. This should be empty if |is_class|
@@ -315,47 +315,47 @@ public interface JsTypeOrBuilder extends
    */
   int getExtendedTypeCount();
   /**
-   * <code>repeated .dossier.expression.TypeExpression extended_type = 18;</code>
+   * <code>repeated .dossier.expression.NamedType extended_type = 18;</code>
    *
    * <pre>
    * List of inherited types for a class. This should be empty if |is_class|
    * is false. Classes should be listed in order, with the root type first.
    * </pre>
    */
-  java.util.List<? extends com.github.jsdossier.proto.TypeExpressionOrBuilder> 
+  java.util.List<? extends com.github.jsdossier.proto.NamedTypeOrBuilder> 
       getExtendedTypeOrBuilderList();
   /**
-   * <code>repeated .dossier.expression.TypeExpression extended_type = 18;</code>
+   * <code>repeated .dossier.expression.NamedType extended_type = 18;</code>
    *
    * <pre>
    * List of inherited types for a class. This should be empty if |is_class|
    * is false. Classes should be listed in order, with the root type first.
    * </pre>
    */
-  com.github.jsdossier.proto.TypeExpressionOrBuilder getExtendedTypeOrBuilder(
+  com.github.jsdossier.proto.NamedTypeOrBuilder getExtendedTypeOrBuilder(
       int index);
 
   /**
-   * <code>repeated .dossier.expression.TypeExpression implemented_type = 19;</code>
+   * <code>repeated .dossier.expression.NamedType implemented_type = 19;</code>
    *
    * <pre>
    * The interfaces implemented by a class/extended by an interface. This
    * list should be empty if |is_class| and |is_interface| are false.
    * </pre>
    */
-  java.util.List<com.github.jsdossier.proto.TypeExpression> 
+  java.util.List<com.github.jsdossier.proto.NamedType> 
       getImplementedTypeList();
   /**
-   * <code>repeated .dossier.expression.TypeExpression implemented_type = 19;</code>
+   * <code>repeated .dossier.expression.NamedType implemented_type = 19;</code>
    *
    * <pre>
    * The interfaces implemented by a class/extended by an interface. This
    * list should be empty if |is_class| and |is_interface| are false.
    * </pre>
    */
-  com.github.jsdossier.proto.TypeExpression getImplementedType(int index);
+  com.github.jsdossier.proto.NamedType getImplementedType(int index);
   /**
-   * <code>repeated .dossier.expression.TypeExpression implemented_type = 19;</code>
+   * <code>repeated .dossier.expression.NamedType implemented_type = 19;</code>
    *
    * <pre>
    * The interfaces implemented by a class/extended by an interface. This
@@ -364,28 +364,28 @@ public interface JsTypeOrBuilder extends
    */
   int getImplementedTypeCount();
   /**
-   * <code>repeated .dossier.expression.TypeExpression implemented_type = 19;</code>
+   * <code>repeated .dossier.expression.NamedType implemented_type = 19;</code>
    *
    * <pre>
    * The interfaces implemented by a class/extended by an interface. This
    * list should be empty if |is_class| and |is_interface| are false.
    * </pre>
    */
-  java.util.List<? extends com.github.jsdossier.proto.TypeExpressionOrBuilder> 
+  java.util.List<? extends com.github.jsdossier.proto.NamedTypeOrBuilder> 
       getImplementedTypeOrBuilderList();
   /**
-   * <code>repeated .dossier.expression.TypeExpression implemented_type = 19;</code>
+   * <code>repeated .dossier.expression.NamedType implemented_type = 19;</code>
    *
    * <pre>
    * The interfaces implemented by a class/extended by an interface. This
    * list should be empty if |is_class| and |is_interface| are false.
    * </pre>
    */
-  com.github.jsdossier.proto.TypeExpressionOrBuilder getImplementedTypeOrBuilder(
+  com.github.jsdossier.proto.NamedTypeOrBuilder getImplementedTypeOrBuilder(
       int index);
 
   /**
-   * <code>repeated .dossier.expression.TypeExpression subtype = 26;</code>
+   * <code>repeated .dossier.expression.NamedType subtype = 26;</code>
    *
    * <pre>
    * Known subtypes of this type. If |is_class| is true, this will contain the
@@ -393,10 +393,10 @@ public interface JsTypeOrBuilder extends
    * known subinterfaces.
    * </pre>
    */
-  java.util.List<com.github.jsdossier.proto.TypeExpression> 
+  java.util.List<com.github.jsdossier.proto.NamedType> 
       getSubtypeList();
   /**
-   * <code>repeated .dossier.expression.TypeExpression subtype = 26;</code>
+   * <code>repeated .dossier.expression.NamedType subtype = 26;</code>
    *
    * <pre>
    * Known subtypes of this type. If |is_class| is true, this will contain the
@@ -404,9 +404,9 @@ public interface JsTypeOrBuilder extends
    * known subinterfaces.
    * </pre>
    */
-  com.github.jsdossier.proto.TypeExpression getSubtype(int index);
+  com.github.jsdossier.proto.NamedType getSubtype(int index);
   /**
-   * <code>repeated .dossier.expression.TypeExpression subtype = 26;</code>
+   * <code>repeated .dossier.expression.NamedType subtype = 26;</code>
    *
    * <pre>
    * Known subtypes of this type. If |is_class| is true, this will contain the
@@ -416,7 +416,7 @@ public interface JsTypeOrBuilder extends
    */
   int getSubtypeCount();
   /**
-   * <code>repeated .dossier.expression.TypeExpression subtype = 26;</code>
+   * <code>repeated .dossier.expression.NamedType subtype = 26;</code>
    *
    * <pre>
    * Known subtypes of this type. If |is_class| is true, this will contain the
@@ -424,10 +424,10 @@ public interface JsTypeOrBuilder extends
    * known subinterfaces.
    * </pre>
    */
-  java.util.List<? extends com.github.jsdossier.proto.TypeExpressionOrBuilder> 
+  java.util.List<? extends com.github.jsdossier.proto.NamedTypeOrBuilder> 
       getSubtypeOrBuilderList();
   /**
-   * <code>repeated .dossier.expression.TypeExpression subtype = 26;</code>
+   * <code>repeated .dossier.expression.NamedType subtype = 26;</code>
    *
    * <pre>
    * Known subtypes of this type. If |is_class| is true, this will contain the
@@ -435,28 +435,28 @@ public interface JsTypeOrBuilder extends
    * known subinterfaces.
    * </pre>
    */
-  com.github.jsdossier.proto.TypeExpressionOrBuilder getSubtypeOrBuilder(
+  com.github.jsdossier.proto.NamedTypeOrBuilder getSubtypeOrBuilder(
       int index);
 
   /**
-   * <code>repeated .dossier.expression.TypeExpression implementation = 27;</code>
+   * <code>repeated .dossier.expression.NamedType implementation = 27;</code>
    *
    * <pre>
    * Known implementations of this type. Will be empy if |is_interface| is false.
    * </pre>
    */
-  java.util.List<com.github.jsdossier.proto.TypeExpression> 
+  java.util.List<com.github.jsdossier.proto.NamedType> 
       getImplementationList();
   /**
-   * <code>repeated .dossier.expression.TypeExpression implementation = 27;</code>
+   * <code>repeated .dossier.expression.NamedType implementation = 27;</code>
    *
    * <pre>
    * Known implementations of this type. Will be empy if |is_interface| is false.
    * </pre>
    */
-  com.github.jsdossier.proto.TypeExpression getImplementation(int index);
+  com.github.jsdossier.proto.NamedType getImplementation(int index);
   /**
-   * <code>repeated .dossier.expression.TypeExpression implementation = 27;</code>
+   * <code>repeated .dossier.expression.NamedType implementation = 27;</code>
    *
    * <pre>
    * Known implementations of this type. Will be empy if |is_interface| is false.
@@ -464,22 +464,22 @@ public interface JsTypeOrBuilder extends
    */
   int getImplementationCount();
   /**
-   * <code>repeated .dossier.expression.TypeExpression implementation = 27;</code>
+   * <code>repeated .dossier.expression.NamedType implementation = 27;</code>
    *
    * <pre>
    * Known implementations of this type. Will be empy if |is_interface| is false.
    * </pre>
    */
-  java.util.List<? extends com.github.jsdossier.proto.TypeExpressionOrBuilder> 
+  java.util.List<? extends com.github.jsdossier.proto.NamedTypeOrBuilder> 
       getImplementationOrBuilderList();
   /**
-   * <code>repeated .dossier.expression.TypeExpression implementation = 27;</code>
+   * <code>repeated .dossier.expression.NamedType implementation = 27;</code>
    *
    * <pre>
    * Known implementations of this type. Will be empy if |is_interface| is false.
    * </pre>
    */
-  com.github.jsdossier.proto.TypeExpressionOrBuilder getImplementationOrBuilder(
+  com.github.jsdossier.proto.NamedTypeOrBuilder getImplementationOrBuilder(
       int index);
 
   /**
@@ -520,7 +520,7 @@ public interface JsTypeOrBuilder extends
   com.github.jsdossier.proto.JsType.ParentLinkOrBuilder getParentOrBuilder();
 
   /**
-   * <code>optional .dossier.expression.TypeExpression aliased_type = 22;</code>
+   * <code>optional .dossier.expression.NamedType aliased_type = 22;</code>
    *
    * <pre>
    * Link to another type that this type is an alias of.
@@ -528,44 +528,44 @@ public interface JsTypeOrBuilder extends
    */
   boolean hasAliasedType();
   /**
-   * <code>optional .dossier.expression.TypeExpression aliased_type = 22;</code>
+   * <code>optional .dossier.expression.NamedType aliased_type = 22;</code>
    *
    * <pre>
    * Link to another type that this type is an alias of.
    * </pre>
    */
-  com.github.jsdossier.proto.TypeExpression getAliasedType();
+  com.github.jsdossier.proto.NamedType getAliasedType();
   /**
-   * <code>optional .dossier.expression.TypeExpression aliased_type = 22;</code>
+   * <code>optional .dossier.expression.NamedType aliased_type = 22;</code>
    *
    * <pre>
    * Link to another type that this type is an alias of.
    * </pre>
    */
-  com.github.jsdossier.proto.TypeExpressionOrBuilder getAliasedTypeOrBuilder();
+  com.github.jsdossier.proto.NamedTypeOrBuilder getAliasedTypeOrBuilder();
 
   /**
-   * <code>repeated .dossier.expression.TypeExpression known_alias = 28;</code>
+   * <code>repeated .dossier.expression.NamedType known_alias = 28;</code>
    */
-  java.util.List<com.github.jsdossier.proto.TypeExpression> 
+  java.util.List<com.github.jsdossier.proto.NamedType> 
       getKnownAliasList();
   /**
-   * <code>repeated .dossier.expression.TypeExpression known_alias = 28;</code>
+   * <code>repeated .dossier.expression.NamedType known_alias = 28;</code>
    */
-  com.github.jsdossier.proto.TypeExpression getKnownAlias(int index);
+  com.github.jsdossier.proto.NamedType getKnownAlias(int index);
   /**
-   * <code>repeated .dossier.expression.TypeExpression known_alias = 28;</code>
+   * <code>repeated .dossier.expression.NamedType known_alias = 28;</code>
    */
   int getKnownAliasCount();
   /**
-   * <code>repeated .dossier.expression.TypeExpression known_alias = 28;</code>
+   * <code>repeated .dossier.expression.NamedType known_alias = 28;</code>
    */
-  java.util.List<? extends com.github.jsdossier.proto.TypeExpressionOrBuilder> 
+  java.util.List<? extends com.github.jsdossier.proto.NamedTypeOrBuilder> 
       getKnownAliasOrBuilderList();
   /**
-   * <code>repeated .dossier.expression.TypeExpression known_alias = 28;</code>
+   * <code>repeated .dossier.expression.NamedType known_alias = 28;</code>
    */
-  com.github.jsdossier.proto.TypeExpressionOrBuilder getKnownAliasOrBuilder(
+  com.github.jsdossier.proto.NamedTypeOrBuilder getKnownAliasOrBuilder(
       int index);
 
   /**

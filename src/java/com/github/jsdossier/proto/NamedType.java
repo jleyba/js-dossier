@@ -21,7 +21,9 @@ public  final class NamedType extends
   }
   private NamedType() {
     name_ = "";
+    qualifiedName_ = "";
     href_ = "";
+    extern_ = false;
     templateType_ = java.util.Collections.emptyList();
   }
 
@@ -58,13 +60,24 @@ public  final class NamedType extends
           case 18: {
             java.lang.String s = input.readStringRequireUtf8();
 
-            href_ = s;
+            qualifiedName_ = s;
             break;
           }
           case 26: {
-            if (!((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
+            java.lang.String s = input.readStringRequireUtf8();
+
+            href_ = s;
+            break;
+          }
+          case 32: {
+
+            extern_ = input.readBool();
+            break;
+          }
+          case 42: {
+            if (!((mutable_bitField0_ & 0x00000010) == 0x00000010)) {
               templateType_ = new java.util.ArrayList<com.github.jsdossier.proto.TypeExpression>();
-              mutable_bitField0_ |= 0x00000004;
+              mutable_bitField0_ |= 0x00000010;
             }
             templateType_.add(input.readMessage(com.github.jsdossier.proto.TypeExpression.parser(), extensionRegistry));
             break;
@@ -78,7 +91,7 @@ public  final class NamedType extends
           new com.google.protobuf.InvalidProtocolBufferException(
               e.getMessage()).setUnfinishedMessage(this));
     } finally {
-      if (((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
+      if (((mutable_bitField0_ & 0x00000010) == 0x00000010)) {
         templateType_ = java.util.Collections.unmodifiableList(templateType_);
       }
       makeExtensionsImmutable();
@@ -131,10 +144,44 @@ public  final class NamedType extends
     }
   }
 
-  public static final int HREF_FIELD_NUMBER = 2;
+  public static final int QUALIFIED_NAME_FIELD_NUMBER = 2;
+  private volatile java.lang.Object qualifiedName_;
+  /**
+   * <code>optional string qualified_name = 2;</code>
+   */
+  public java.lang.String getQualifiedName() {
+    java.lang.Object ref = qualifiedName_;
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
+    } else {
+      com.google.protobuf.ByteString bs = 
+          (com.google.protobuf.ByteString) ref;
+      java.lang.String s = bs.toStringUtf8();
+      qualifiedName_ = s;
+      return s;
+    }
+  }
+  /**
+   * <code>optional string qualified_name = 2;</code>
+   */
+  public com.google.protobuf.ByteString
+      getQualifiedNameBytes() {
+    java.lang.Object ref = qualifiedName_;
+    if (ref instanceof java.lang.String) {
+      com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString.copyFromUtf8(
+              (java.lang.String) ref);
+      qualifiedName_ = b;
+      return b;
+    } else {
+      return (com.google.protobuf.ByteString) ref;
+    }
+  }
+
+  public static final int HREF_FIELD_NUMBER = 3;
   private volatile java.lang.Object href_;
   /**
-   * <code>optional string href = 2;</code>
+   * <code>optional string href = 3;</code>
    */
   public java.lang.String getHref() {
     java.lang.Object ref = href_;
@@ -149,7 +196,7 @@ public  final class NamedType extends
     }
   }
   /**
-   * <code>optional string href = 2;</code>
+   * <code>optional string href = 3;</code>
    */
   public com.google.protobuf.ByteString
       getHrefBytes() {
@@ -165,35 +212,44 @@ public  final class NamedType extends
     }
   }
 
-  public static final int TEMPLATE_TYPE_FIELD_NUMBER = 3;
+  public static final int EXTERN_FIELD_NUMBER = 4;
+  private boolean extern_;
+  /**
+   * <code>optional bool extern = 4;</code>
+   */
+  public boolean getExtern() {
+    return extern_;
+  }
+
+  public static final int TEMPLATE_TYPE_FIELD_NUMBER = 5;
   private java.util.List<com.github.jsdossier.proto.TypeExpression> templateType_;
   /**
-   * <code>repeated .dossier.expression.TypeExpression template_type = 3;</code>
+   * <code>repeated .dossier.expression.TypeExpression template_type = 5;</code>
    */
   public java.util.List<com.github.jsdossier.proto.TypeExpression> getTemplateTypeList() {
     return templateType_;
   }
   /**
-   * <code>repeated .dossier.expression.TypeExpression template_type = 3;</code>
+   * <code>repeated .dossier.expression.TypeExpression template_type = 5;</code>
    */
   public java.util.List<? extends com.github.jsdossier.proto.TypeExpressionOrBuilder> 
       getTemplateTypeOrBuilderList() {
     return templateType_;
   }
   /**
-   * <code>repeated .dossier.expression.TypeExpression template_type = 3;</code>
+   * <code>repeated .dossier.expression.TypeExpression template_type = 5;</code>
    */
   public int getTemplateTypeCount() {
     return templateType_.size();
   }
   /**
-   * <code>repeated .dossier.expression.TypeExpression template_type = 3;</code>
+   * <code>repeated .dossier.expression.TypeExpression template_type = 5;</code>
    */
   public com.github.jsdossier.proto.TypeExpression getTemplateType(int index) {
     return templateType_.get(index);
   }
   /**
-   * <code>repeated .dossier.expression.TypeExpression template_type = 3;</code>
+   * <code>repeated .dossier.expression.TypeExpression template_type = 5;</code>
    */
   public com.github.jsdossier.proto.TypeExpressionOrBuilder getTemplateTypeOrBuilder(
       int index) {
@@ -215,11 +271,17 @@ public  final class NamedType extends
     if (!getNameBytes().isEmpty()) {
       com.google.protobuf.GeneratedMessage.writeString(output, 1, name_);
     }
+    if (!getQualifiedNameBytes().isEmpty()) {
+      com.google.protobuf.GeneratedMessage.writeString(output, 2, qualifiedName_);
+    }
     if (!getHrefBytes().isEmpty()) {
-      com.google.protobuf.GeneratedMessage.writeString(output, 2, href_);
+      com.google.protobuf.GeneratedMessage.writeString(output, 3, href_);
+    }
+    if (extern_ != false) {
+      output.writeBool(4, extern_);
     }
     for (int i = 0; i < templateType_.size(); i++) {
-      output.writeMessage(3, templateType_.get(i));
+      output.writeMessage(5, templateType_.get(i));
     }
   }
 
@@ -231,12 +293,19 @@ public  final class NamedType extends
     if (!getNameBytes().isEmpty()) {
       size += com.google.protobuf.GeneratedMessage.computeStringSize(1, name_);
     }
+    if (!getQualifiedNameBytes().isEmpty()) {
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(2, qualifiedName_);
+    }
     if (!getHrefBytes().isEmpty()) {
-      size += com.google.protobuf.GeneratedMessage.computeStringSize(2, href_);
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(3, href_);
+    }
+    if (extern_ != false) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeBoolSize(4, extern_);
     }
     for (int i = 0; i < templateType_.size(); i++) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(3, templateType_.get(i));
+        .computeMessageSize(5, templateType_.get(i));
     }
     memoizedSize = size;
     return size;
@@ -357,11 +426,15 @@ public  final class NamedType extends
       super.clear();
       name_ = "";
 
+      qualifiedName_ = "";
+
       href_ = "";
+
+      extern_ = false;
 
       if (templateTypeBuilder_ == null) {
         templateType_ = java.util.Collections.emptyList();
-        bitField0_ = (bitField0_ & ~0x00000004);
+        bitField0_ = (bitField0_ & ~0x00000010);
       } else {
         templateTypeBuilder_.clear();
       }
@@ -390,11 +463,13 @@ public  final class NamedType extends
       int from_bitField0_ = bitField0_;
       int to_bitField0_ = 0;
       result.name_ = name_;
+      result.qualifiedName_ = qualifiedName_;
       result.href_ = href_;
+      result.extern_ = extern_;
       if (templateTypeBuilder_ == null) {
-        if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        if (((bitField0_ & 0x00000010) == 0x00000010)) {
           templateType_ = java.util.Collections.unmodifiableList(templateType_);
-          bitField0_ = (bitField0_ & ~0x00000004);
+          bitField0_ = (bitField0_ & ~0x00000010);
         }
         result.templateType_ = templateType_;
       } else {
@@ -420,15 +495,22 @@ public  final class NamedType extends
         name_ = other.name_;
         onChanged();
       }
+      if (!other.getQualifiedName().isEmpty()) {
+        qualifiedName_ = other.qualifiedName_;
+        onChanged();
+      }
       if (!other.getHref().isEmpty()) {
         href_ = other.href_;
         onChanged();
+      }
+      if (other.getExtern() != false) {
+        setExtern(other.getExtern());
       }
       if (templateTypeBuilder_ == null) {
         if (!other.templateType_.isEmpty()) {
           if (templateType_.isEmpty()) {
             templateType_ = other.templateType_;
-            bitField0_ = (bitField0_ & ~0x00000004);
+            bitField0_ = (bitField0_ & ~0x00000010);
           } else {
             ensureTemplateTypeIsMutable();
             templateType_.addAll(other.templateType_);
@@ -441,7 +523,7 @@ public  final class NamedType extends
             templateTypeBuilder_.dispose();
             templateTypeBuilder_ = null;
             templateType_ = other.templateType_;
-            bitField0_ = (bitField0_ & ~0x00000004);
+            bitField0_ = (bitField0_ & ~0x00000010);
             templateTypeBuilder_ = 
               com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
                  getTemplateTypeFieldBuilder() : null;
@@ -546,9 +628,78 @@ public  final class NamedType extends
       return this;
     }
 
+    private java.lang.Object qualifiedName_ = "";
+    /**
+     * <code>optional string qualified_name = 2;</code>
+     */
+    public java.lang.String getQualifiedName() {
+      java.lang.Object ref = qualifiedName_;
+      if (!(ref instanceof java.lang.String)) {
+        com.google.protobuf.ByteString bs =
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        qualifiedName_ = s;
+        return s;
+      } else {
+        return (java.lang.String) ref;
+      }
+    }
+    /**
+     * <code>optional string qualified_name = 2;</code>
+     */
+    public com.google.protobuf.ByteString
+        getQualifiedNameBytes() {
+      java.lang.Object ref = qualifiedName_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        qualifiedName_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    /**
+     * <code>optional string qualified_name = 2;</code>
+     */
+    public Builder setQualifiedName(
+        java.lang.String value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  
+      qualifiedName_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional string qualified_name = 2;</code>
+     */
+    public Builder clearQualifiedName() {
+      
+      qualifiedName_ = getDefaultInstance().getQualifiedName();
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional string qualified_name = 2;</code>
+     */
+    public Builder setQualifiedNameBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+      
+      qualifiedName_ = value;
+      onChanged();
+      return this;
+    }
+
     private java.lang.Object href_ = "";
     /**
-     * <code>optional string href = 2;</code>
+     * <code>optional string href = 3;</code>
      */
     public java.lang.String getHref() {
       java.lang.Object ref = href_;
@@ -563,7 +714,7 @@ public  final class NamedType extends
       }
     }
     /**
-     * <code>optional string href = 2;</code>
+     * <code>optional string href = 3;</code>
      */
     public com.google.protobuf.ByteString
         getHrefBytes() {
@@ -579,7 +730,7 @@ public  final class NamedType extends
       }
     }
     /**
-     * <code>optional string href = 2;</code>
+     * <code>optional string href = 3;</code>
      */
     public Builder setHref(
         java.lang.String value) {
@@ -592,7 +743,7 @@ public  final class NamedType extends
       return this;
     }
     /**
-     * <code>optional string href = 2;</code>
+     * <code>optional string href = 3;</code>
      */
     public Builder clearHref() {
       
@@ -601,7 +752,7 @@ public  final class NamedType extends
       return this;
     }
     /**
-     * <code>optional string href = 2;</code>
+     * <code>optional string href = 3;</code>
      */
     public Builder setHrefBytes(
         com.google.protobuf.ByteString value) {
@@ -615,12 +766,38 @@ public  final class NamedType extends
       return this;
     }
 
+    private boolean extern_ ;
+    /**
+     * <code>optional bool extern = 4;</code>
+     */
+    public boolean getExtern() {
+      return extern_;
+    }
+    /**
+     * <code>optional bool extern = 4;</code>
+     */
+    public Builder setExtern(boolean value) {
+      
+      extern_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional bool extern = 4;</code>
+     */
+    public Builder clearExtern() {
+      
+      extern_ = false;
+      onChanged();
+      return this;
+    }
+
     private java.util.List<com.github.jsdossier.proto.TypeExpression> templateType_ =
       java.util.Collections.emptyList();
     private void ensureTemplateTypeIsMutable() {
-      if (!((bitField0_ & 0x00000004) == 0x00000004)) {
+      if (!((bitField0_ & 0x00000010) == 0x00000010)) {
         templateType_ = new java.util.ArrayList<com.github.jsdossier.proto.TypeExpression>(templateType_);
-        bitField0_ |= 0x00000004;
+        bitField0_ |= 0x00000010;
        }
     }
 
@@ -628,7 +805,7 @@ public  final class NamedType extends
         com.github.jsdossier.proto.TypeExpression, com.github.jsdossier.proto.TypeExpression.Builder, com.github.jsdossier.proto.TypeExpressionOrBuilder> templateTypeBuilder_;
 
     /**
-     * <code>repeated .dossier.expression.TypeExpression template_type = 3;</code>
+     * <code>repeated .dossier.expression.TypeExpression template_type = 5;</code>
      */
     public java.util.List<com.github.jsdossier.proto.TypeExpression> getTemplateTypeList() {
       if (templateTypeBuilder_ == null) {
@@ -638,7 +815,7 @@ public  final class NamedType extends
       }
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression template_type = 3;</code>
+     * <code>repeated .dossier.expression.TypeExpression template_type = 5;</code>
      */
     public int getTemplateTypeCount() {
       if (templateTypeBuilder_ == null) {
@@ -648,7 +825,7 @@ public  final class NamedType extends
       }
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression template_type = 3;</code>
+     * <code>repeated .dossier.expression.TypeExpression template_type = 5;</code>
      */
     public com.github.jsdossier.proto.TypeExpression getTemplateType(int index) {
       if (templateTypeBuilder_ == null) {
@@ -658,7 +835,7 @@ public  final class NamedType extends
       }
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression template_type = 3;</code>
+     * <code>repeated .dossier.expression.TypeExpression template_type = 5;</code>
      */
     public Builder setTemplateType(
         int index, com.github.jsdossier.proto.TypeExpression value) {
@@ -675,7 +852,7 @@ public  final class NamedType extends
       return this;
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression template_type = 3;</code>
+     * <code>repeated .dossier.expression.TypeExpression template_type = 5;</code>
      */
     public Builder setTemplateType(
         int index, com.github.jsdossier.proto.TypeExpression.Builder builderForValue) {
@@ -689,7 +866,7 @@ public  final class NamedType extends
       return this;
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression template_type = 3;</code>
+     * <code>repeated .dossier.expression.TypeExpression template_type = 5;</code>
      */
     public Builder addTemplateType(com.github.jsdossier.proto.TypeExpression value) {
       if (templateTypeBuilder_ == null) {
@@ -705,7 +882,7 @@ public  final class NamedType extends
       return this;
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression template_type = 3;</code>
+     * <code>repeated .dossier.expression.TypeExpression template_type = 5;</code>
      */
     public Builder addTemplateType(
         int index, com.github.jsdossier.proto.TypeExpression value) {
@@ -722,7 +899,7 @@ public  final class NamedType extends
       return this;
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression template_type = 3;</code>
+     * <code>repeated .dossier.expression.TypeExpression template_type = 5;</code>
      */
     public Builder addTemplateType(
         com.github.jsdossier.proto.TypeExpression.Builder builderForValue) {
@@ -736,7 +913,7 @@ public  final class NamedType extends
       return this;
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression template_type = 3;</code>
+     * <code>repeated .dossier.expression.TypeExpression template_type = 5;</code>
      */
     public Builder addTemplateType(
         int index, com.github.jsdossier.proto.TypeExpression.Builder builderForValue) {
@@ -750,7 +927,7 @@ public  final class NamedType extends
       return this;
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression template_type = 3;</code>
+     * <code>repeated .dossier.expression.TypeExpression template_type = 5;</code>
      */
     public Builder addAllTemplateType(
         java.lang.Iterable<? extends com.github.jsdossier.proto.TypeExpression> values) {
@@ -765,12 +942,12 @@ public  final class NamedType extends
       return this;
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression template_type = 3;</code>
+     * <code>repeated .dossier.expression.TypeExpression template_type = 5;</code>
      */
     public Builder clearTemplateType() {
       if (templateTypeBuilder_ == null) {
         templateType_ = java.util.Collections.emptyList();
-        bitField0_ = (bitField0_ & ~0x00000004);
+        bitField0_ = (bitField0_ & ~0x00000010);
         onChanged();
       } else {
         templateTypeBuilder_.clear();
@@ -778,7 +955,7 @@ public  final class NamedType extends
       return this;
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression template_type = 3;</code>
+     * <code>repeated .dossier.expression.TypeExpression template_type = 5;</code>
      */
     public Builder removeTemplateType(int index) {
       if (templateTypeBuilder_ == null) {
@@ -791,14 +968,14 @@ public  final class NamedType extends
       return this;
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression template_type = 3;</code>
+     * <code>repeated .dossier.expression.TypeExpression template_type = 5;</code>
      */
     public com.github.jsdossier.proto.TypeExpression.Builder getTemplateTypeBuilder(
         int index) {
       return getTemplateTypeFieldBuilder().getBuilder(index);
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression template_type = 3;</code>
+     * <code>repeated .dossier.expression.TypeExpression template_type = 5;</code>
      */
     public com.github.jsdossier.proto.TypeExpressionOrBuilder getTemplateTypeOrBuilder(
         int index) {
@@ -808,7 +985,7 @@ public  final class NamedType extends
       }
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression template_type = 3;</code>
+     * <code>repeated .dossier.expression.TypeExpression template_type = 5;</code>
      */
     public java.util.List<? extends com.github.jsdossier.proto.TypeExpressionOrBuilder> 
          getTemplateTypeOrBuilderList() {
@@ -819,14 +996,14 @@ public  final class NamedType extends
       }
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression template_type = 3;</code>
+     * <code>repeated .dossier.expression.TypeExpression template_type = 5;</code>
      */
     public com.github.jsdossier.proto.TypeExpression.Builder addTemplateTypeBuilder() {
       return getTemplateTypeFieldBuilder().addBuilder(
           com.github.jsdossier.proto.TypeExpression.getDefaultInstance());
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression template_type = 3;</code>
+     * <code>repeated .dossier.expression.TypeExpression template_type = 5;</code>
      */
     public com.github.jsdossier.proto.TypeExpression.Builder addTemplateTypeBuilder(
         int index) {
@@ -834,7 +1011,7 @@ public  final class NamedType extends
           index, com.github.jsdossier.proto.TypeExpression.getDefaultInstance());
     }
     /**
-     * <code>repeated .dossier.expression.TypeExpression template_type = 3;</code>
+     * <code>repeated .dossier.expression.TypeExpression template_type = 5;</code>
      */
     public java.util.List<com.github.jsdossier.proto.TypeExpression.Builder> 
          getTemplateTypeBuilderList() {
@@ -847,7 +1024,7 @@ public  final class NamedType extends
         templateTypeBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
             com.github.jsdossier.proto.TypeExpression, com.github.jsdossier.proto.TypeExpression.Builder, com.github.jsdossier.proto.TypeExpressionOrBuilder>(
                 templateType_,
-                ((bitField0_ & 0x00000004) == 0x00000004),
+                ((bitField0_ & 0x00000010) == 0x00000010),
                 getParentForChildren(),
                 isClean());
         templateType_ = null;

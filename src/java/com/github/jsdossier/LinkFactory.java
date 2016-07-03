@@ -25,6 +25,7 @@ import com.github.jsdossier.jscomp.Module;
 import com.github.jsdossier.jscomp.NominalType;
 import com.github.jsdossier.jscomp.Position;
 import com.github.jsdossier.jscomp.TypeRegistry;
+import com.github.jsdossier.proto.NamedType;
 import com.github.jsdossier.proto.SourceLink;
 import com.github.jsdossier.proto.TypeLink;
 import com.google.auto.factory.AutoFactory;
@@ -188,6 +189,25 @@ final class LinkFactory {
     }
     Path sourcePath = dfs.getSourcePath(node);
     return createLink(sourcePath, Position.of(node.getLineno(), 0));
+  }
+
+  /**
+   * @param type the type to build a reference for.
+   * @return the named type reference.
+   */
+  public NamedType createNamedTypeReference(NominalType type) {
+    TypeLink link = createLink(type);
+    String displayName = dfs.getDisplayName(type);
+    String qualifiedName = dfs.getQualifiedDisplayName(type);
+
+    NamedType.Builder builder = NamedType.newBuilder()
+        .setName(displayName)
+        .setHref(link.getHref());
+    if (!displayName.equals(qualifiedName)) {
+      builder.setQualifiedName(qualifiedName);
+    }
+
+    return builder.build();
   }
 
   /**

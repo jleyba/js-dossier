@@ -19,7 +19,7 @@ package com.github.jsdossier;
 import static com.github.jsdossier.ProtoTruth.assertMessages;
 
 import com.github.jsdossier.jscomp.NominalType;
-import com.github.jsdossier.proto.TypeExpression;
+import com.github.jsdossier.proto.NamedType;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -30,25 +30,11 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class TypeInspectorInheritanceTest extends AbstractTypeInspectorTest {
 
-  private static final TypeExpression TYPE_A = TypeExpression.newBuilder()
-      .setNamedType(namedType("A", "A.html"))
-      .build();
-
-  private static final TypeExpression TYPE_B = TypeExpression.newBuilder()
-      .setNamedType(namedType("B", "B.html"))
-      .build();
-
-  private static final TypeExpression TYPE_C = TypeExpression.newBuilder()
-      .setNamedType(namedType("C", "C.html"))
-      .build();
-
-  private static final TypeExpression TYPE_D = TypeExpression.newBuilder()
-      .setNamedType(namedType("D", "D.html"))
-      .build();
-
-  private static final TypeExpression TYPE_E = TypeExpression.newBuilder()
-      .setNamedType(namedType("E", "E.html"))
-      .build();
+  private static final NamedType TYPE_A = namedType("A", "A.html");
+  private static final NamedType TYPE_B = namedType("B", "B.html");
+  private static final NamedType TYPE_C = namedType("C", "C.html");
+  private static final NamedType TYPE_D = namedType("D", "D.html");
+  private static final NamedType TYPE_E = namedType("E", "E.html");
 
   @Test
   public void interfaceThatExtendsOneInterface() {
@@ -503,15 +489,15 @@ public class TypeInspectorInheritanceTest extends AbstractTypeInspectorTest {
         " */",
         "function E() {}");
 
-    TypeExpression thenable = TypeExpression.newBuilder()
-        .setNamedType(
-            namedType(
-                "IThenable",
-                "https://github.com/google/closure-compiler/wiki/" +
-                    "Special-types-in-the-Closure-Type-System#ithenable")
-                .toBuilder()
-                .addTemplateType(stringTypeExpression()))
-        .build();
+    NamedType thenable =
+        namedType(
+            "IThenable",
+            "https://github.com/google/closure-compiler/wiki/" +
+                "Special-types-in-the-Closure-Type-System#ithenable")
+            .toBuilder()
+            .setExtern(true)
+            .addTemplateType(stringTypeExpression())
+            .build();
 
     NominalType a = typeRegistry.getType("A");
     NominalType b = typeRegistry.getType("B");
