@@ -82,6 +82,12 @@ public final class ProvidedSymbolPass implements CompilerPass {
     return "module$exports$" + name.replace('.', '$');
   }
 
+  private String toContentsVar(Module.Builder module, String varName) {
+    return "module$contents$"
+        + module.getId().substring("module$exports$".length())
+        + "_" + varName;
+  }
+
   private void printTree(Node n) {
     StringWriter sw = new StringWriter();
     try {
@@ -321,6 +327,9 @@ public final class ProvidedSymbolPass implements CompilerPass {
 
         for (Map.Entry<String, String> alias : localAliases.entrySet()) {
           module.getAliases().addAlias(alias.getKey(), alias.getValue());
+          module.getAliases().addAlias(
+              toContentsVar(module, alias.getKey()),
+              alias.getValue());
         }
 
         Module m = module.build();

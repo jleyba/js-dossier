@@ -52,6 +52,7 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
+import com.google.common.collect.Sets;
 import com.google.javascript.rhino.IR;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.JSTypeExpression;
@@ -115,6 +116,8 @@ final class TypeInspector {
   private final LinkFactory linkFactory;
   private final NominalType inspectedType;
   private final TemplateTypeMapReplacer typeMapReplacer;
+
+  private final Set<JSTypeExpression> resolvedExpressions = Sets.newIdentityHashSet();
 
   TypeInspector(
       @Provided DossierFileSystem dfs,
@@ -1001,7 +1004,17 @@ final class TypeInspector {
     });
 
     JSType returnType = function.getReturnType();
-    if (returnType.isUnknownType() && !returnType.isTemplateType()) {
+
+    // Try to compensate for loss of information (how does this happen?). If the type compiler
+    // says it is a templatized type, but does not have template types, or if it is an instance
+    // type with a non-empty template type map, resort to JSDoc to figure out what the user wanted.
+    boolean isUnknownType = returnType.isUnknownType() && !returnType.isTemplateType();
+    boolean isEmptyTemplatizedType =
+        returnType.isTemplatizedType() && returnType.getTemplateTypeMap().isEmpty();
+    boolean isUnresolvedTemplateInstance =
+        returnType.isInstanceType() && !returnType.getTemplateTypeMap().isEmpty();
+
+    if (isUnknownType || isEmptyTemplatizedType || isUnresolvedTemplateInstance) {
       if (returnDocs != null && isKnownType(returnDocs.getJsDoc().getReturnClause())) {
         JSTypeExpression expression = returnDocs.getJsDoc().getReturnClause().getType().get();
         returnType = evaluate(expression);
@@ -1244,8 +1257,35 @@ final class TypeInspector {
   }
 
   private JSType evaluate(JSTypeExpression expression) {
+    if (!resolvedExpressions.contains(expression)) {
+      resolveNames(expression.getRoot());
+      resolvedExpressions.add(expression);
+    }
+
     JSType type = expression.evaluate(globalScope, jsRegistry);
     return type.visit(typeMapReplacer);
+  }
+
+  private void resolveNames(Node node) {
+    if (node.getKind() == Token.NAME || node.getKind() == Token.STRING) {
+      String name = node.getString();
+      if (registry.isType(name)) {
+        NominalType nominalType = registry.getType(name);
+        JSType jsType = nominalType.getType();
+        if (jsType.isConstructor() || jsType.isInterface()) {
+          String referenceName = jsType.toMaybeObjectType().getReferenceName();
+          if (!name.equals(referenceName)
+              && !isNullOrEmpty(referenceName)
+              && !jsRegistry.getType(referenceName).isNamedType()) {
+            node.setString(referenceName);
+          }
+        }
+      }
+    }
+
+    for (Node child = node.getFirstChild(); child != null; child = child.getNext()) {
+      resolveNames(child);
+    }
   }
 
   static Node fakeNodeForType(final NominalType type) {

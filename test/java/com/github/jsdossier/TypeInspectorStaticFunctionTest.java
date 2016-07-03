@@ -765,7 +765,9 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
                 .setDescription(Comment.getDefaultInstance()))
             .addParameter(Detail.newBuilder()
                 .setName("x")
-                .setType(namedTypeExpression("X", "foo/bar.X", "bar_exports_X.html"))
+                .setType(
+                    nullableNamedTypeExpression(
+                        "X", "foo/bar.X", "bar_exports_X.html"))
                 .setDescription(htmlComment("<p>an object.</p>\n")))
             .build());
   }

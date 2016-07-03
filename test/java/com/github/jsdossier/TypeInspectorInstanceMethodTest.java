@@ -2031,4 +2031,117 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setVisibility(Visibility.PROTECTED))
             .build());
   }
+
+  @Test
+  public void methodReturnsTemplatizedType() {
+    compile(
+        "/** @template T */",
+        "class Container {}",
+        "",
+        "/** @interface */",
+        "class Company {",
+        "  /** @return {!Container<string>} . */",
+        "  getEmployees() {}",
+        "}");
+
+    NominalType type = typeRegistry.getType("Company");
+    TypeInspector inspector = typeInspectorFactory.create(type);
+    TypeInspector.Report report = inspector.inspectInstanceType();
+    assertMessages(report.getFunctions()).containsExactly(
+        Function.newBuilder()
+            .setBase(
+                BaseProperty.newBuilder()
+                    .setName("getEmployees")
+                    .setSource(sourceFile("source/foo.js.src.html", 7))
+                    .setDescription(Comment.getDefaultInstance()))
+            .setReturn(
+                Detail.newBuilder()
+                    .setType(
+                        TypeExpression.newBuilder()
+                            .setNamedType(
+                                addTemplateTypes(
+                                    namedType("Container", "Container.html"),
+                                    stringTypeExpression())))
+                    .setDescription(htmlComment("<p>.</p>\n"))));
+  }
+
+  @Test
+  public void methodReturnsTemplatizedType_es6Modules() {
+    util.compile(
+        createSourceFile(
+            fs.getPath("/src/modules/container.js"),
+            "/** @template T */",
+            "export class Container {}"),
+        createSourceFile(
+            fs.getPath("/src/modules/company.js"),
+            "import {Container} from './container';",
+            "",
+            "/** @interface */",
+            "export class Company {",
+            "  /** @return {!Container<string>} . */",
+            "  getEmployees() {}",
+            "}"));
+
+    NominalType type = typeRegistry.getType("module$$src$modules$company.Company");
+    TypeInspector inspector = typeInspectorFactory.create(type);
+    TypeInspector.Report report = inspector.inspectInstanceType();
+    assertMessages(report.getFunctions()).containsExactly(
+        Function.newBuilder()
+            .setBase(
+                BaseProperty.newBuilder()
+                    .setName("getEmployees")
+                    .setSource(sourceFile("../source/modules/company.js.src.html", 6))
+                    .setDescription(Comment.getDefaultInstance()))
+            .setReturn(
+                Detail.newBuilder()
+                    .setType(
+                        TypeExpression.newBuilder()
+                            .setNamedType(
+                                addTemplateTypes(
+                                    namedType("Container", "container.Container",
+                                        "container_exports_Container.html"),
+                                    stringTypeExpression())))
+                    .setDescription(htmlComment("<p>.</p>\n"))));
+  }
+
+  @Test
+  public void methodReturnsTemplatizedType_nodeModules() {
+    util.compile(
+        createSourceFile(
+            fs.getPath("/src/modules/foo/bar.js"),
+            "/** @template T */",
+            "class Container {}",
+            "module.exports = {Container};"),
+        createSourceFile(
+            fs.getPath("/src/modules/foo/baz.js"),
+            "var bar = require('./bar');",
+            "",
+            "/** @interface */",
+            "class Company {",
+            "  /** @return {!bar.Container<string>} . */",
+            "  getEmployees() {}",
+            "}",
+            "module.exports = {Company};"));
+
+    NominalType type = typeRegistry.getType("module$exports$module$$src$modules$foo$baz.Company");
+    TypeInspector inspector = typeInspectorFactory.create(type);
+    TypeInspector.Report report = inspector.inspectInstanceType();
+    assertMessages(report.getFunctions()).containsExactly(
+        Function.newBuilder()
+            .setBase(
+                BaseProperty.newBuilder()
+                    .setName("getEmployees")
+                    .setSource(sourceFile("../../source/modules/foo/baz.js.src.html", 6))
+                    .setDescription(Comment.getDefaultInstance()))
+            .setReturn(
+                Detail.newBuilder()
+                    .setType(
+                        TypeExpression.newBuilder()
+                            .setNamedType(
+                                addTemplateTypes(
+                                    namedType("Container", "foo/bar.Container",
+                                        "bar_exports_Container.html"),
+                                    stringTypeExpression())))
+                    .setDescription(htmlComment("<p>.</p>\n"))));
+  }
 }

@@ -150,6 +150,14 @@ public abstract class AbstractTypeInspectorTest {
         .build();
   }
 
+  protected static TypeExpression nullableNamedTypeExpression(
+      String name, String qualifiedName, String href) {
+    return TypeExpression.newBuilder()
+        .setAllowNull(true)
+        .setNamedType(namedType(name, qualifiedName, href))
+        .build();
+  }
+
   protected static NamedType namedType(String name) {
     return NamedType.newBuilder()
         .setName(name)

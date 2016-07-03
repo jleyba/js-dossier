@@ -349,6 +349,58 @@ public class AliasDetectionTest {
     assertThat(typeRegistry.resolveAlias(type, "Three")).isEqualTo("module$exports$one.Three");
   }
 
+  @Test
+  public void nodeModule_recordsContentAliases() {
+    util.compile(
+        createSourceFile(
+            inputFs.getPath("one.js"),
+            "goog.module('one');",
+            "",
+            "exports.One = class {};",
+            "exports.Two = class {};",
+            "exports.Three = class {};",
+            "class X {}",
+            "class Y {}",
+            "exports.Four = {X, Y};"),
+        createSourceFile(
+            inputFs.getPath("two.js"),
+            "goog.module('two');",
+            "var a = goog.require('one');"));
+
+    NominalType type = typeRegistry.getType("module$exports$two");
+    assertThat(typeRegistry.resolveAlias(type, "module$contents$two_a"))
+        .isEqualTo("module$exports$one");
+  }
+
+  @Test
+  public void closureModule_recordsContentAliases() {
+    defineInputModules("/modules", "/modules/one.js", "/modules/two.js");
+    util.compile(
+        createSourceFile(
+            inputFs.getPath("/modules/one.js"),
+            "exports.One = class {};",
+            "exports.Two = class {};",
+            "exports.Three = class {};",
+            "class X {}",
+            "class Y {}",
+            "exports.Four = {X, Y};"),
+        createSourceFile(
+            inputFs.getPath("/modules/two.js"),
+            "var a = require('./one');",
+            "var b = require('./one').One;",
+            "var {One, Two, Three} = require('./one');"));
+
+    NominalType type = typeRegistry.getType("module$exports$module$$modules$two");
+    assertThat(typeRegistry.resolveAlias(type, "module$contents$module$$modules$two_a"))
+        .isEqualTo("module$exports$module$$modules$one");
+    assertThat(typeRegistry.resolveAlias(type, "module$contents$module$$modules$two_b"))
+        .isEqualTo("module$exports$module$$modules$one.One");
+    assertThat(typeRegistry.resolveAlias(type, "module$contents$module$$modules$two_One"))
+        .isEqualTo("module$exports$module$$modules$one.One");
+    assertThat(typeRegistry.resolveAlias(type, "module$contents$module$$modules$two_Two"))
+        .isEqualTo("module$exports$module$$modules$one.Two");
+  }
+
   private void defineInputModules(String prefix, String... modules) {
     guice.toBuilder()
         .setModulePrefix(prefix)
