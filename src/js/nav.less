@@ -45,11 +45,15 @@
   background: #fff;
 
   transform: translateX(-@nav_width - 16px);
-  will-change: transform;
-  transition: transform cubic-bezier(0.4, 0, 0.2, 1) .2s;
+  will-change: transform, visibility;
+  transition: transform @transition_ease_in_out,
+              visibility @transition_ease_in_out;
+
+  visibility: hidden;
 
   &.visible {
     transform: translateX(0);
+    visibility: visible;
   }
 
   & a {
@@ -117,7 +121,7 @@
     & .material-icons {
       float: right;
       margin: 0 16px 0 0;
-      transition: transform cubic-bezier(0.4, 0, 0.2, 1) .2s;
+      transition: transform @transition_ease_in_out;
     }
 
     &.open .material-icons {
@@ -149,7 +153,6 @@
     margin: 0 0 0 8px;
     padding: 0;
     position: relative;
-    transition: max-height cubic-bezier(0.4, 0, 0.2, 1) .2s;
 
     &:before {
       content: "";
@@ -216,6 +219,11 @@
       margin-left: 16px;
     }
   }
+
+  .close + .tree {
+    max-height: 0 !important;
+    visibility: hidden;
+  }
 }
 
 
@@ -229,7 +237,7 @@
   z-index: @nav_mask_z_index;
 
   background: transparent;
-  transition: background-color cubic-bezier(0.4, 0, 0.2, 1) .2s;
+  transition: background-color @transition_ease_in_out;
   visibility: hidden;
 
   .dossier-nav.visible ~ & {

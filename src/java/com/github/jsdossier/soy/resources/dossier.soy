@@ -813,6 +813,7 @@
   {call dossier.soy.common.pageHeader}
     {param title: $spec.type[0].name /}
     {param resources: $spec.resources /}
+    {param index: $spec.index /}
   {/call}
 
   <div class="content">
@@ -993,7 +994,6 @@
   </div>
 
   {call dossier.soy.common.pageFooter}
-    {param index: $spec.index /}
     {param resources: $spec.resources /}
   {/call}
 {/template}
@@ -1008,6 +1008,7 @@
   {call dossier.soy.common.pageHeader}
     {param title: $spec.title /}
     {param resources: $spec.resources /}
+    {param index: $spec.index /}
   {/call}
 
   <div class="content">
@@ -1026,7 +1027,6 @@
   </div>
 
   {call dossier.soy.common.pageFooter}
-    {param index: $spec.index /}
     {param resources: $spec.resources /}
   {/call}
 {/template}
@@ -1042,6 +1042,7 @@
   {call dossier.soy.common.pageHeader}
     {param title: $spec.file.baseName /}
     {param resources: $spec.resources /}
+    {param index: $spec.index /}
   {/call}
 
   <div class="content">
@@ -1066,7 +1067,6 @@
   </div>
 
   {call dossier.soy.common.pageFooter}
-    {param index: $spec.index /}
     {param resources: $spec.resources /}
   {/call}
 {/template}

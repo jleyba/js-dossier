@@ -26,9 +26,6 @@ const device = goog.require('goog.labs.userAgent.device');
 const Strings = goog.require('goog.string');
 
 
-const SLOW_ANIMATIONS = browser.isSafari() || device.isMobile();
-
-
 /**
  * A generic tree node with an associated key and value.
  * @final
@@ -262,7 +259,7 @@ function buildListItem(node, basePath, currentPath, idPrefix) {
   var a = document.createElement('a');
   a.classList.add('item');
   a.textContent = node.getKey();
-  a.tabIndex = 2;
+  a.tabIndex = 1;
   if (node.getValue()) {
     a.href = basePath + node.getValue().href;
     if (node.getValue().interface) {
@@ -382,6 +379,10 @@ class NavDrawer {
      */
     this.focusSink_ = navEl.ownerDocument.createElement('div');
     this.focusSink_.tabIndex = -1;
+    events.listen(
+        this.focusSink_, 'blur', () => this.focusSink_.tabIndex = -1, false);
+    events.listen(
+        this.focusSink_, 'focus', () => this.focusSink_.tabIndex = 1, false);
     navEl.insertBefore(this.focusSink_, navEl.firstChild);
   }
 
@@ -406,7 +407,7 @@ class NavDrawer {
    */
   hide() {
     this.navEl_.classList.remove('visible');
-    this.updateTabIndices_();
+    this.navButton_.disabled = false;
   }
 
   /**
@@ -414,7 +415,14 @@ class NavDrawer {
    */
   toggleVisibility() {
     this.navEl_.classList.toggle('visible');
-    this.updateTabIndices_();
+    this.navButton_.disabled = this.isOpen;
+    if (this.isOpen) {
+      let scroll = this.navEl_.scrollTop;
+      setTimeout(() => {
+        this.focusSink_.focus();
+        this.navEl_.scrollTop = scroll;
+      }, 200);
+    }
   }
 
   /**
@@ -456,29 +464,6 @@ class NavDrawer {
     }
   }
 
-  /** @private */
-  updateTabIndices_() {
-    this.navButton_.disabled = this.navEl_.classList.contains('visible');
-
-    if (!this.isOpen) {
-      let allControls = this.navEl_.querySelectorAll('span.item, a');
-      Arrays.forEach(allControls, control => control.tabIndex = -1);
-      return;
-    }
-
-    // Make the top level controls tab-able.
-    let topControls = this.navEl_.querySelectorAll('a.title, span.item');
-    Arrays.forEach(topControls, control => control.tabIndex = 1);
-
-    // Get our trees.
-    let trees = this.navEl_.querySelectorAll('section > .toggle.open ~ .tree');
-    Arrays.forEach(trees, tree => this.enableTree_(tree, true));
-
-    let scroll = this.navEl_.scrollTop;
-    this.focusSink_.focus();
-    this.navEl_.scrollTop = scroll;
-  }
-
   /**
    * Handles click events on the nav drawer.
    *
@@ -507,69 +492,18 @@ class NavDrawer {
     if (goog.isBoolean(opt_value)) {
       if (opt_value) {
         el.classList.add('open');
+        el.classList.remove('close');
       } else {
         el.classList.remove('open');
+        el.classList.add('close');
       }
     } else {
       el.classList.toggle('open');
+      el.classList.toggle('close');
     }
 
     if (!opt_skipPersist) {
       this.updateStorage_(el);
-    }
-
-    let tree = el.nextElementSibling;
-    if (tree && tree.classList.contains('tree')) {
-      if (el.classList.contains('open')) {
-        if (SLOW_ANIMATIONS) {
-          tree.style.display = 'block';
-        } else {
-          tree.style.maxHeight = tree.dataset.maxHeight + 'px';
-        }
-        this.enableTree_(tree, this.isOpen);
-      } else {
-        if (SLOW_ANIMATIONS) {
-          tree.style.display = 'none';
-        } else {
-          tree.style.maxHeight = '0';
-        }
-        this.enableTree_(tree, false);
-      }
-    }
-  }
-
-  /**
-   * @param {!Element} tree .
-   * @param {boolean} enable .
-   * @private
-   */
-  enableTree_(tree, enable) {
-    if (enable) {
-      Arrays.forEach(tree.childNodes, function(child) {
-        let firstChild = child.firstChild;
-        if (!firstChild || !firstChild.classList) {
-          return;
-        }
-
-        if (firstChild.classList.contains('item')) {
-          firstChild.tabIndex = 1;
-        } else if (firstChild.classList.contains('toggle')) {
-          let item = firstChild.querySelector('.item');
-          if (item) {
-            item.tabIndex = 1;
-          }
-
-          if (firstChild.classList.contains('open')
-              && firstChild.nextElementSibling
-              && firstChild.nextElementSibling.classList.contains('tree')) {
-            this.enableTree_(firstChild.nextElementSibling, true);
-          }
-        }
-      }, this);
-
-    } else {
-      Arrays.forEach(
-          tree.querySelectorAll('.item'), item => item.tabIndex = -1);
     }
   }
 
@@ -581,7 +515,7 @@ class NavDrawer {
     if (window.localStorage && el.dataset.id) {
       window.localStorage.setItem(
           el.dataset.id,
-          el.classList.contains('open') ? 'open' : 'closed');
+          el.classList.contains('close') ? 'closed' : 'open');
     }
   }
 }
@@ -630,13 +564,7 @@ exports.createNavDrawer = function(typeInfo, currentFile, basePath) {
   for (let i = 0, n = trees.length; i < n; i++) {
     let tree = trees[i];
     let numItems = tree.querySelectorAll('li').length;
-    tree.dataset.maxHeight = numItems * NAV_ITEM_HEIGHT;
-    if (SLOW_ANIMATIONS) {
-      tree.style.transition = 'none';
-      tree.style.display = 'none';
-    } else {
-      tree.style.maxHeight = 0;
-    }
+    tree.style.maxHeight = numItems * NAV_ITEM_HEIGHT + 'px';
   }
 
   if (window.localStorage) {
