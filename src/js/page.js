@@ -1,5 +1,5 @@
 /*
- Copyright 2013-2015 Jason Leyba
+ Copyright 2013-2016 Jason Leyba
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -14,24 +14,15 @@
  limitations under the License.
  */
 
-@import "base";
+goog.module('dossier.page');
 
-footer {
-  font-size: 1.2rem;
-  position: relative;
-  z-index: @footer_z_index;
 
-  div {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: @footer_height;
-    background: @banner_color;
-  }
-
-  a {
-    &, &:visited {
-      color: rgba(255, 255, 255, 0.45) !important;
-    }
-  }
-}
+/**
+ * Returns whether the page is large enough to display the side nav in the
+ * gutter next to the main content
+ *
+ * @return {boolean} Whether the page is large enough to use the gutter nav.
+ */
+exports.useGutterNav = function() {
+ return window.innerWidth >= 1112;  // Keep in sync with nav.less
+};

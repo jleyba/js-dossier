@@ -86,7 +86,6 @@
     overflow: hidden;
     margin: 4px 0 0 0;
     padding: 4px 0 0 16px;
-    border-top: 1px solid @section_border_color;
 
     &:first-child {
       border: 0;
@@ -96,8 +95,12 @@
 
     &:last-child {
       padding-bottom: 4px;
-      margin-bottom: (@footer_height + .4rem);
+      margin-bottom: (@footer_height * 1.5);
     }
+  }
+
+  section + section {
+    border-top: 1px solid @section_border_color;
   }
 
   @item-height: 40px;
@@ -246,6 +249,47 @@
   }
 }
 
+
+// NOTE: keep 1112 in sync with page.js
+// 1112 is (max_main_width + nav_width + scrollbar_width + (main_margin_width * 2))
+// This cannot be specified with a variable in less since it's in a media query.
+@media screen and (min-width: 1112px) {
+  .dossier-nav {
+    box-shadow: none;
+    z-index: @gutter_nav_z_index;
+
+    &,
+    li:last-child:before {
+      background: @body_bg;
+    }
+  }
+
+  .dossier-nav-mask {
+    display: none;
+  }
+}
+
+@media screen and (min-width: 1112px) and (max-width: 1383px) {
+  .dossier-nav.visible ~ .content > main {
+    left: 0;
+    transform: translateX(@nav_width);
+
+    html.webkit & {
+      // Ideally what we want is:
+      //     left: 0;
+      //     transform: translateX(@nav_width);
+      //
+      // The transitions for this look terrible in WebKit, so we have to
+      // approximate the position using only translations. The operations
+      // listed will place the main content at 288px when the screen
+      // is 1112px.
+      left: 50%;
+      transform: translateX(-50%)
+                 translateX(-@main_margin_width)
+                 translateX(@nav_width / 2);
+    }
+  }
+}
 
 @media screen and (max-width: 336px) {
   .dossier-nav {

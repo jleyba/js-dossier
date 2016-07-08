@@ -19,13 +19,18 @@
 @import "footer";
 @import "nav";
 
-@max_main_width: 808px;
-
 main {
   flex: 1 0 auto;
   display: flex;
-  margin: 8px auto 72px auto;
+  margin: 8px @main_margin_width 72px;
   max-width: @max_main_width;
+
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%)
+             translateX(-@main_margin_width);
+  transition: left ease-in-out .1s,
+              transform ease-in-out .1s;
 }
 
 h1.title {

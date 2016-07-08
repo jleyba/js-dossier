@@ -22,6 +22,7 @@
 goog.module('dossier.keyhandler');
 
 const nav = goog.require('dossier.nav');
+const page = goog.require('dossier.page');
 const events = goog.require('goog.events');
 const EventType = goog.require('goog.events.EventType');
 const KeyCodes = goog.require('goog.events.KeyCodes');
@@ -36,7 +37,9 @@ exports.init = function(navDrawer, inputEl) {
   // This isn't *really* a key event, but the user could tab to the
   // search box while the nav drawer is open.
   events.listen(inputEl, EventType.FOCUS, function() {
-    navDrawer.hide();
+    if (!page.useGutterNav()) {
+      navDrawer.hide();
+    }
   });
 
   events.listen(document.documentElement, EventType.KEYDOWN, function(e) {

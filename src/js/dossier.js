@@ -34,6 +34,8 @@ goog.require('goog.events.KeyCodes');
 goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.dom.classlist');
+goog.require('goog.labs.userAgent.browser');
+goog.require('goog.labs.userAgent.engine');
 goog.require('goog.string');
 goog.require('goog.style');
 goog.require('goog.userAgent');
@@ -47,6 +49,14 @@ goog.forwardDeclare('goog.events.EventWrapper');
  * Initializes the dossier page.
  */
 dossier.init = function() {
+  if (goog.labs.userAgent.engine.isWebKit()
+      && !goog.labs.userAgent.browser.isChrome()
+      && !goog.labs.userAgent.browser.isOpera()) {
+    // Tag the browser as webkit (not blink) so we can avoid some ugly
+    // transitions in CSS
+    document.documentElement.classList.add('webkit');
+  }
+
   let typeInfo = /** @type {!TypeRegistry} */(goog.global['TYPES']);
 
   const keyHandler = goog.module.get('dossier.keyhandler');

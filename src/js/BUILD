@@ -6,6 +6,7 @@ js_binary(
         "dossier.js",
         "keyhandler.js",
         "nav.js",
+        "page.js",
         "search.js",
     ],
     externs = ["externs.js"],

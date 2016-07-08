@@ -16,6 +16,7 @@
 
 goog.module('dossier.nav');
 
+const page = goog.require('dossier.page');
 const Arrays = goog.require('goog.array');
 const asserts = goog.require('goog.asserts');
 const dom = goog.require('goog.dom');
@@ -403,6 +404,17 @@ class NavDrawer {
   }
 
   /**
+   * Shows the nav drawer.
+   */
+  show() {
+    this.navEl_.classList.add('visible');
+    this.navButton_.disabled = !page.useGutterNav();
+    setTimeout(() => {
+      this.focusSink_.focus();
+    }, 200);
+  }
+
+  /**
    * Hides the nav drawer.
    */
   hide() {
@@ -414,14 +426,10 @@ class NavDrawer {
    * Toggle the visibility of the nav drawer.
    */
   toggleVisibility() {
-    this.navEl_.classList.toggle('visible');
-    this.navButton_.disabled = this.isOpen;
     if (this.isOpen) {
-      let scroll = this.navEl_.scrollTop;
-      setTimeout(() => {
-        this.focusSink_.focus();
-        this.navEl_.scrollTop = scroll;
-      }, 200);
+      this.hide();
+    } else {
+      this.show();
     }
   }
 
@@ -589,7 +597,11 @@ exports.createNavDrawer = function(typeInfo, currentFile, basePath) {
     revealElement(current);
   }
 
-  drawer.hide();  // Start hidden.
+  if (page.useGutterNav()) {
+    drawer.show();
+  } else {
+    drawer.hide();
+  }
   return drawer;
 
   /**
