@@ -614,6 +614,8 @@ exports.createNavDrawer = function(typeInfo, currentFile, basePath) {
   events.listen(navButton, 'click', drawer.toggleVisibility, false, drawer);
   events.listen(navEl, 'click', drawer.onClick_, false, drawer);
 
+  events.listen(mask, 'touchmove', e => e.preventDefault(), false);
+
   const typeSection = navEl.querySelector('.types');
   if (typeSection && typeInfo.types) {
     buildSectionList(typeSection, typeInfo.types, false);
