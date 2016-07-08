@@ -66,6 +66,7 @@ class ProtoEnumSoyValue extends SoyData implements SoyValue {
     return true;
   }
 
+  @SuppressWarnings("deprecation")  // Reference required to implement interface.
   @Override
   public boolean toBoolean() {
     return false;
