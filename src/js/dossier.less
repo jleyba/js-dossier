@@ -145,6 +145,10 @@ article {
       cursor: pointer;
     }
 
+    & > .body {
+      visibility: hidden;
+    }
+
     &:hover {
       .code-link {
         display: block;
@@ -158,6 +162,10 @@ article {
       max-width: 100%;
       max-height: initial;
       .raise-4dp();
+
+      & > .body {
+        visibility: visible;
+      }
 
       .code-link {
         display: block;
