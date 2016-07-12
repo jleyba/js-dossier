@@ -22,6 +22,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import com.github.jsdossier.proto.Index;
 import com.github.jsdossier.proto.TypeLink;
 import com.google.common.collect.ImmutableSet;
+import org.joda.time.Instant;
 
 import java.nio.file.Path;
 
@@ -60,7 +61,8 @@ final class NavIndexFactory {
     Index.Builder builder = Index.newBuilder()
         .setHome(homePage.getFileName().toString())
         .setIncludeModules(includeModules)
-        .setIncludeTypes(includeTypes);
+        .setIncludeTypes(includeTypes)
+        .setTimestamp(Instant.now().getMillis());
 
     for (MarkdownPage page : markdownPages) {
       String fileName = page.getName().replace(' ', '_') + ".html";

@@ -28,7 +28,8 @@ EOF
 
 
 run_jsc() {
-  bazel build //src/js:dossier_bin
+  bazel build //src/js:dossier
+  write_deps
 }
 
 run_lessc() {
@@ -63,12 +64,16 @@ run_protoc() {
 
 run_tests() {
   bazel test //test/...
+  write_deps
+}
 
+write_deps() {
   bazel run //src/java/com/github/jsdossier/tools:WriteDeps -- \
       -c "${ROOT}/third_party/js/closure_library/closure/goog/" \
-      -i "${ROOT}/src/js/dossier.js" \
-      -i "${ROOT}/src/js/keyhandler.js" \
+      -i "${ROOT}/src/js/app.js" \
+      -i "${ROOT}/src/js/main.js" \
       -i "${ROOT}/src/js/nav.js" \
+      -i "${ROOT}/src/js/page.js" \
       -i "${ROOT}/src/js/search.js" \
       -i "${ROOT}/test/js/nav_test.js" \
       -o "${ROOT}/test/js/deps.js"

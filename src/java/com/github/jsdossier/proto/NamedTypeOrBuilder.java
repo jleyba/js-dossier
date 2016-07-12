@@ -9,20 +9,38 @@ public interface NamedTypeOrBuilder extends
 
   /**
    * <code>optional string name = 1;</code>
+   *
+   * <pre>
+   * The type's simple name.
+   * </pre>
    */
   java.lang.String getName();
   /**
    * <code>optional string name = 1;</code>
+   *
+   * <pre>
+   * The type's simple name.
+   * </pre>
    */
   com.google.protobuf.ByteString
       getNameBytes();
 
   /**
    * <code>optional string qualified_name = 2;</code>
+   *
+   * <pre>
+   * The type's qualified name. If omitted, the |qualified_name| is considered the same as
+   * the simple |name|.
+   * </pre>
    */
   java.lang.String getQualifiedName();
   /**
    * <code>optional string qualified_name = 2;</code>
+   *
+   * <pre>
+   * The type's qualified name. If omitted, the |qualified_name| is considered the same as
+   * the simple |name|.
+   * </pre>
    */
   com.google.protobuf.ByteString
       getQualifiedNameBytes();

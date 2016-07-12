@@ -20,10 +20,10 @@
 
 goog.module('dossier.search');
 
+const page = goog.require('dossier.page');
 const events = goog.require('goog.events');
+const EventTarget = goog.require('goog.events.EventTarget');
 const EventType = goog.require('goog.events.EventType');
-const KeyCodes = goog.require('goog.events.KeyCodes');
-const Strings = goog.require('goog.string');
 const ArrayMatcher = goog.require('goog.ui.ac.ArrayMatcher');
 const AutoComplete = goog.require('goog.ui.ac.AutoComplete');
 const InputHandler = goog.require('goog.ui.ac.InputHandler');
@@ -43,34 +43,28 @@ function getLast(arr) {
 }
 
 
-/**
- * @param {!Array<string>} terms .
- * @param {!Map<string, string>} nameToHref .
- * @param {!Descriptor} descriptor .
- */
-function addTypes(terms, nameToHref, descriptor) {
+function addTypes(/** !Map<string, string> */nameToHref,
+                  /** !Descriptor */descriptor) {
   let baseName = getLast(descriptor.qualifiedName.split(/\./));
 
   nameToHref.set(descriptor.qualifiedName, descriptor.href);
-  terms.push(descriptor.qualifiedName);
 
   if (descriptor.types) {
-    descriptor.types.forEach(type => addTypes(terms, nameToHref, type));
+    descriptor.types.forEach(type => addTypes(nameToHref, type));
   }
 
   if (descriptor.statics) {
     descriptor.statics.forEach(function(name) {
       let href = descriptor.href + '#' + name;
 
-      if (!Strings.startsWith(name, descriptor.qualifiedName + '.')) {
-        if (Strings.startsWith(name, baseName + '.')) {
+      if (!name.startsWith(descriptor.qualifiedName + '.')) {
+        if (name.startsWith(baseName + '.')) {
           name = name.substring(baseName.length + 1);
         }
         name = descriptor.qualifiedName + '.' + name;
       }
 
       nameToHref.set(name, href);
-      terms.push(name);
     });
   }
 
@@ -78,7 +72,6 @@ function addTypes(terms, nameToHref, descriptor) {
     descriptor.members.forEach(function(name) {
       let href = descriptor.href + '#' + name;
       nameToHref.set(descriptor.qualifiedName + '#' + name, href);
-      terms.push(descriptor.qualifiedName + '#' + name);
     });
   }
 }
@@ -113,51 +106,114 @@ function createAutoComplete(data, input) {
 
 
 /**
- * Initializes the auto-complete for the top navigation bar's search box.
- * @param {!TypeRegistry} typeInfo The types to link to from the current
- *     page.
- * @param {string} basePath The base path for the main page.
- * @return {!HTMLInputElement} The search box input element.
+ * Describes a selection made in the search box.
  */
-exports.init = function(typeInfo, basePath) {
-  let nameToHref = /** !Map<string, string> */new Map;
-  let allTerms = /** !Array<string> */[];
+exports.SelectionEvent = class {
+  /**
+   * @param {string} uri The URI for the selected item.
+   */
+  constructor(uri) {
+    /** @const */ this.type = this.constructor.TYPE;
+    /** @const */ this.uri = uri;
+  }
+
+  /** @return {string} The name of this event type. */
+  static get TYPE() {
+    return 'select';
+  }
+};
+
+
+/**
+ * Widget for controlling the top navigation bar's search box.
+ */
+class SearchBox extends EventTarget {
+  /**
+   * @param {!Map<string, string>} nameToUri Map of search term to URI.
+   * @param {!Element} formEl The form element containing the input element.
+   * @private
+   */
+  constructor(nameToUri, formEl) {
+    super();
+
+    let inputEl = /** @type {!Element} */(formEl.querySelector('input'));
+
+    /** @private {!Map<string, string>} */
+    this.nameToUri_ = nameToUri;
+
+    /** @private {!Element} */
+    this.inputEl_ = inputEl;
+
+    events.listen(formEl, 'submit', this.onUpdate_, false, this);
+    events.listen(inputEl, 'focus', () => this.dispatchEvent('focus'));
+
+    let icon = formEl.querySelector('.material-icons');
+    if (icon) {
+      events.listen(icon, 'click', () => this.inputEl_.focus());
+    }
+
+    /** @private {!AutoComplete} */
+    this.ac_ = createAutoComplete(Array.from(nameToUri.keys()), inputEl);
+    this.ac_.listen(AutoComplete.EventType.UPDATE, this.onUpdate_, false, this);
+  }
+
+  /** @override */
+  disposeInternal() {
+    this.ac_.dispose();
+    super.disposeInternal();
+  }
+
+  /**
+   * @param {!goog.events.Event} e the event to respond to.
+   * @private
+   */
+  onUpdate_(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    let uri = this.nameToUri_.get(this.inputEl_.value);
+    if (uri) {
+      uri = page.getBasePath() + uri;
+      this.dispatchEvent(new exports.SelectionEvent(uri));
+    }
+  }
+
+  /**
+   * Focuses the search box.
+   */
+  focus() {
+    this.inputEl_.focus();
+  }
+
+  /**
+   * @return {boolean} Whether the search box is currently focused.
+   */
+  get isActive() {
+    return this.inputEl_.ownerDocument.activeElement === this.inputEl_;
+  }
+}
+exports.SearchBox = SearchBox;
+
+
+/**
+ * @param {!TypeRegistry} typeInfo The type information to populate the search
+ *     auto-complete from.
+ * @return {!SearchBox} a new search box object.
+ */
+exports.createSearchBox = function(typeInfo) {
+  let formEl = /** @type {!Element} */(document.querySelector('header form'));
+
+  let nameToUri = /** !Map<string, string> */new Map;
   if (typeInfo.types) {
-    typeInfo.types.forEach(
-        descriptor => addTypes(allTerms, nameToHref, descriptor));
+    typeInfo.types.forEach(descriptor => addTypes(nameToUri, descriptor));
   }
 
   if (typeInfo.modules) {
-    typeInfo.modules.forEach(module => addTypes(allTerms, nameToHref, module));
+    typeInfo.modules.forEach(module => addTypes(nameToUri, module));
   }
 
-  let searchForm = document.querySelector('header form');
-  events.listen(searchForm, EventType.SUBMIT, function(e) {
-    e.preventDefault();
-    e.stopPropagation();
-    navigatePage();
-    return false;
-  });
-
-  let input =
-      /** @type {!HTMLInputElement} */(searchForm.querySelector('input'));
+  let input = formEl.querySelector('input');
   input.setAttribute(
-      'title', 'Search (/ or ' + (goog.userAgent.MAC ? '⌘' : 'Ctrl+') + 'E)');
+      'title', 'Search (/ or ' + (userAgent.MAC ? '⌘' : 'Ctrl+') + 'E)');
 
-  let icon = searchForm.querySelector('.material-icons');
-  if (icon) {
-    events.listen(icon, EventType.CLICK, () => input.focus());
-  }
-
-  let ac = createAutoComplete(allTerms, input);
-  events.listen(ac, AutoComplete.EventType.UPDATE, navigatePage);
-
-  return input;
-
-  function navigatePage() {
-    let href = nameToHref.get(input.value);
-    if (href) {
-      window.location.href = basePath + href;
-    }
-  }
+  return new SearchBox(nameToUri, formEl);
 };

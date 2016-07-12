@@ -86,4 +86,13 @@ public interface IndexOrBuilder extends
    */
   com.github.jsdossier.proto.TypeLinkOrBuilder getLinksOrBuilder(
       int index);
+
+  /**
+   * <code>optional int64 timestamp = 5;</code>
+   *
+   * <pre>
+   * When this index was generated.
+   * </pre>
+   */
+  long getTimestamp();
 }

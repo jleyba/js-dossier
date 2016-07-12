@@ -197,6 +197,9 @@ message Index {
 
   // Additional links to include in the navigation pane.
   repeated TypeLink links = 4;
+
+  // When this index was generated.
+  int64 timestamp = 5;
 }
 
 

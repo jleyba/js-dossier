@@ -24,7 +24,6 @@ const events = goog.require('goog.events');
 const KeyCodes = goog.require('goog.events.KeyCodes');
 const browser = goog.require('goog.labs.userAgent.browser');
 const device = goog.require('goog.labs.userAgent.device');
-const Strings = goog.require('goog.string');
 
 
 /**
@@ -327,7 +326,7 @@ function getIdPrefix(modules) {
  * @return {!Element} The root element for the tree.
  */
 function buildList(descriptors, basePath, currentPath, isModule) {
-  if (basePath && !Strings.endsWith(basePath, '/')) {
+  if (basePath && !basePath.endsWith('/')) {
     basePath += '/';
   }
   var root = exports.buildTree(descriptors, isModule);
@@ -380,11 +379,15 @@ class NavDrawer {
      */
     this.focusSink_ = navEl.ownerDocument.createElement('div');
     this.focusSink_.tabIndex = -1;
-    events.listen(
-        this.focusSink_, 'blur', () => this.focusSink_.tabIndex = -1, false);
-    events.listen(
-        this.focusSink_, 'focus', () => this.focusSink_.tabIndex = 1, false);
+
+    events.listen(this.focusSink_, 'blur', () => this.focusSink_.tabIndex = -1);
+    events.listen(this.focusSink_, 'focus', () => this.focusSink_.tabIndex = 1);
     navEl.insertBefore(this.focusSink_, navEl.firstChild);
+  }
+
+  /** @return {!Element} The main element for this nav drawer. */
+  get element() {
+    return this.navEl_;
   }
 
   /** @return {boolean} Whether the nav drawer is currently open. */
@@ -393,13 +396,23 @@ class NavDrawer {
   }
 
   /**
-   * Scrolls to the currently selected item in this nav drawer.
+   * Updates the highlighted element in the nav drawer based on the current
+   * page.
    */
-  scrollToCurrent() {
-    let current = this.navEl_.querySelector('.current');
+  updateCurrent() {
+    let currentPage = page.getBasePath() + page.getCurrentFile();
+    let current = this.navEl_.querySelector('a.current');
     if (current) {
-      let top = current.getBoundingClientRect().top;
-      this.navEl_.scrollTop = top - (window.innerHeight / 2);
+      let href = current.getAttribute('href');
+      if (href === currentPage) {
+        return;
+      }
+      current.classList.remove('current');
+    }
+
+    let link = this.navEl_.querySelector(`a[href="${currentPage}"]`);
+    if (link) {
+      link.classList.add('current');
     }
   }
 
@@ -493,10 +506,9 @@ class NavDrawer {
   /**
    * @param {!Element} el .
    * @param {boolean=} opt_value .
-   * @param {boolean=} opt_skipPersist .
    * @private
    */
-  updateControl_(el, opt_value, opt_skipPersist) {
+  updateControl_(el, opt_value) {
     if (goog.isBoolean(opt_value)) {
       if (opt_value) {
         el.classList.add('open');
@@ -508,22 +520,6 @@ class NavDrawer {
     } else {
       el.classList.toggle('open');
       el.classList.toggle('close');
-    }
-
-    if (!opt_skipPersist) {
-      this.updateStorage_(el);
-    }
-  }
-
-  /**
-   * @param {!Element} el .
-   * @private
-   */
-  updateStorage_(el) {
-    if (window.localStorage && el.dataset.id) {
-      window.localStorage.setItem(
-          el.dataset.id,
-          el.classList.contains('close') ? 'closed' : 'open');
     }
   }
 }
@@ -553,10 +549,21 @@ exports.createNavDrawer = function(typeInfo, currentFile, basePath) {
 
   const drawer = new NavDrawer(navButton, navEl);
   events.listen(mask, 'click', drawer.toggleVisibility, false, drawer);
+  events.listen(mask, 'touchmove', e => e.preventDefault());
   events.listen(navButton, 'click', drawer.toggleVisibility, false, drawer);
   events.listen(navEl, 'click', drawer.onClick_, false, drawer);
 
-  events.listen(mask, 'touchmove', e => e.preventDefault(), false);
+  // Normalize existing links so they work consistently as we change the URL
+  // during content swaps.
+  Arrays.forEach(navEl.querySelectorAll('a[href]'), function(link) {
+    let href = link.getAttribute('href');
+    if (href.startsWith('../')) {
+      let index = href.lastIndexOf('../');
+      href = href.substring(index + 3);
+    }
+    href = basePath + href;
+    link.setAttribute('href', href);
+  });
 
   const typeSection = navEl.querySelector('.types');
   if (typeSection && typeInfo.types) {
@@ -575,14 +582,6 @@ exports.createNavDrawer = function(typeInfo, currentFile, basePath) {
     tree.style.maxHeight = numItems * NAV_ITEM_HEIGHT + 'px';
   }
 
-  if (window.localStorage) {
-    let toggles = navEl.querySelectorAll('.toggle[data-id]');
-    Arrays.forEach(toggles, function(el) {
-      var state = window.localStorage.getItem(el.dataset.id);
-      drawer.updateControl_(el, state === 'open');
-    });
-  }
-
   let current = navEl.querySelector('.current');
   if (!current) {
     let titles = navEl.querySelectorAll('a.title[href]');
@@ -594,7 +593,6 @@ exports.createNavDrawer = function(typeInfo, currentFile, basePath) {
 
   if (current) {
     current.classList.add('current');
-    revealElement(current);
   }
 
   if (page.useGutterNav()) {
@@ -615,19 +613,5 @@ exports.createNavDrawer = function(typeInfo, currentFile, basePath) {
 
     let toggle = section.querySelector('.toggle');
     toggle.dataset.id = getIdPrefix(isModule);
-  }
-
-  /** @param {!Element} el . */
-  function revealElement(el) {
-    for (let current = el;
-         current && current != navEl;
-         current = dom.getParentElement(current)) {
-      if (current.classList.contains('tree')) {
-        let control = current.previousElementSibling;
-        if (control && control.classList.contains('toggle')) {
-          drawer.updateControl_(control, true, true);
-        }
-      }
-    }
   }
 };

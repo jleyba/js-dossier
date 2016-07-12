@@ -128,6 +128,23 @@ header {
   }
 }
 
+progress {
+  position: fixed;
+  left: 0;
+  top: @header_height;
+  height: 2px;
+  width: 100%;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  border: 0;
+  z-index: @progress_z_index;
+  color: @link_color;
+}
+progress::-webkit-progress-bar { background: rgba(0, 0, 0, 0); }
+progress::-webkit-progress-value { background: @link_color; }
+progress::-moz-progress-bar { background: @link_color; }
+
 .dossier-ac {
   z-index: 2;
   position: fixed;

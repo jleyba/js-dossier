@@ -23,6 +23,7 @@ public  final class Index extends
     includeTypes_ = false;
     includeModules_ = false;
     links_ = java.util.Collections.emptyList();
+    timestamp_ = 0L;
   }
 
   @java.lang.Override
@@ -71,6 +72,11 @@ public  final class Index extends
               mutable_bitField0_ |= 0x00000008;
             }
             links_.add(input.readMessage(com.github.jsdossier.proto.TypeLink.parser(), extensionRegistry));
+            break;
+          }
+          case 40: {
+
+            timestamp_ = input.readInt64();
             break;
           }
         }
@@ -224,6 +230,19 @@ public  final class Index extends
     return links_.get(index);
   }
 
+  public static final int TIMESTAMP_FIELD_NUMBER = 5;
+  private long timestamp_;
+  /**
+   * <code>optional int64 timestamp = 5;</code>
+   *
+   * <pre>
+   * When this index was generated.
+   * </pre>
+   */
+  public long getTimestamp() {
+    return timestamp_;
+  }
+
   private byte memoizedIsInitialized = -1;
   public final boolean isInitialized() {
     byte isInitialized = memoizedIsInitialized;
@@ -248,6 +267,9 @@ public  final class Index extends
     for (int i = 0; i < links_.size(); i++) {
       output.writeMessage(4, links_.get(i));
     }
+    if (timestamp_ != 0L) {
+      output.writeInt64(5, timestamp_);
+    }
   }
 
   public int getSerializedSize() {
@@ -269,6 +291,10 @@ public  final class Index extends
     for (int i = 0; i < links_.size(); i++) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(4, links_.get(i));
+    }
+    if (timestamp_ != 0L) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeInt64Size(5, timestamp_);
     }
     memoizedSize = size;
     return size;
@@ -398,6 +424,8 @@ public  final class Index extends
       } else {
         linksBuilder_.clear();
       }
+      timestamp_ = 0L;
+
       return this;
     }
 
@@ -434,6 +462,7 @@ public  final class Index extends
       } else {
         result.links_ = linksBuilder_.build();
       }
+      result.timestamp_ = timestamp_;
       result.bitField0_ = to_bitField0_;
       onBuilt();
       return result;
@@ -485,6 +514,9 @@ public  final class Index extends
             linksBuilder_.addAllMessages(other.links_);
           }
         }
+      }
+      if (other.getTimestamp() != 0L) {
+        setTimestamp(other.getTimestamp());
       }
       onChanged();
       return this;
@@ -988,6 +1020,44 @@ public  final class Index extends
         links_ = null;
       }
       return linksBuilder_;
+    }
+
+    private long timestamp_ ;
+    /**
+     * <code>optional int64 timestamp = 5;</code>
+     *
+     * <pre>
+     * When this index was generated.
+     * </pre>
+     */
+    public long getTimestamp() {
+      return timestamp_;
+    }
+    /**
+     * <code>optional int64 timestamp = 5;</code>
+     *
+     * <pre>
+     * When this index was generated.
+     * </pre>
+     */
+    public Builder setTimestamp(long value) {
+      
+      timestamp_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional int64 timestamp = 5;</code>
+     *
+     * <pre>
+     * When this index was generated.
+     * </pre>
+     */
+    public Builder clearTimestamp() {
+      
+      timestamp_ = 0L;
+      onChanged();
+      return this;
     }
     public final Builder setUnknownFields(
         final com.google.protobuf.UnknownFieldSet unknownFields) {

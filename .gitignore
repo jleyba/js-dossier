@@ -7,8 +7,10 @@ bazel-js-dossier
 bazel-out
 bazel-testlogs
 buck-out/
+cert.pem
 generated/
 generated_tests/
+key.pem
 node_modules/
 out/
 out.zip

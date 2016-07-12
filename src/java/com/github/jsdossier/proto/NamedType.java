@@ -114,6 +114,10 @@ public  final class NamedType extends
   private volatile java.lang.Object name_;
   /**
    * <code>optional string name = 1;</code>
+   *
+   * <pre>
+   * The type's simple name.
+   * </pre>
    */
   public java.lang.String getName() {
     java.lang.Object ref = name_;
@@ -129,6 +133,10 @@ public  final class NamedType extends
   }
   /**
    * <code>optional string name = 1;</code>
+   *
+   * <pre>
+   * The type's simple name.
+   * </pre>
    */
   public com.google.protobuf.ByteString
       getNameBytes() {
@@ -148,6 +156,11 @@ public  final class NamedType extends
   private volatile java.lang.Object qualifiedName_;
   /**
    * <code>optional string qualified_name = 2;</code>
+   *
+   * <pre>
+   * The type's qualified name. If omitted, the |qualified_name| is considered the same as
+   * the simple |name|.
+   * </pre>
    */
   public java.lang.String getQualifiedName() {
     java.lang.Object ref = qualifiedName_;
@@ -163,6 +176,11 @@ public  final class NamedType extends
   }
   /**
    * <code>optional string qualified_name = 2;</code>
+   *
+   * <pre>
+   * The type's qualified name. If omitted, the |qualified_name| is considered the same as
+   * the simple |name|.
+   * </pre>
    */
   public com.google.protobuf.ByteString
       getQualifiedNameBytes() {
@@ -562,6 +580,10 @@ public  final class NamedType extends
     private java.lang.Object name_ = "";
     /**
      * <code>optional string name = 1;</code>
+     *
+     * <pre>
+     * The type's simple name.
+     * </pre>
      */
     public java.lang.String getName() {
       java.lang.Object ref = name_;
@@ -577,6 +599,10 @@ public  final class NamedType extends
     }
     /**
      * <code>optional string name = 1;</code>
+     *
+     * <pre>
+     * The type's simple name.
+     * </pre>
      */
     public com.google.protobuf.ByteString
         getNameBytes() {
@@ -593,6 +619,10 @@ public  final class NamedType extends
     }
     /**
      * <code>optional string name = 1;</code>
+     *
+     * <pre>
+     * The type's simple name.
+     * </pre>
      */
     public Builder setName(
         java.lang.String value) {
@@ -606,6 +636,10 @@ public  final class NamedType extends
     }
     /**
      * <code>optional string name = 1;</code>
+     *
+     * <pre>
+     * The type's simple name.
+     * </pre>
      */
     public Builder clearName() {
       
@@ -615,6 +649,10 @@ public  final class NamedType extends
     }
     /**
      * <code>optional string name = 1;</code>
+     *
+     * <pre>
+     * The type's simple name.
+     * </pre>
      */
     public Builder setNameBytes(
         com.google.protobuf.ByteString value) {
@@ -631,6 +669,11 @@ public  final class NamedType extends
     private java.lang.Object qualifiedName_ = "";
     /**
      * <code>optional string qualified_name = 2;</code>
+     *
+     * <pre>
+     * The type's qualified name. If omitted, the |qualified_name| is considered the same as
+     * the simple |name|.
+     * </pre>
      */
     public java.lang.String getQualifiedName() {
       java.lang.Object ref = qualifiedName_;
@@ -646,6 +689,11 @@ public  final class NamedType extends
     }
     /**
      * <code>optional string qualified_name = 2;</code>
+     *
+     * <pre>
+     * The type's qualified name. If omitted, the |qualified_name| is considered the same as
+     * the simple |name|.
+     * </pre>
      */
     public com.google.protobuf.ByteString
         getQualifiedNameBytes() {
@@ -662,6 +710,11 @@ public  final class NamedType extends
     }
     /**
      * <code>optional string qualified_name = 2;</code>
+     *
+     * <pre>
+     * The type's qualified name. If omitted, the |qualified_name| is considered the same as
+     * the simple |name|.
+     * </pre>
      */
     public Builder setQualifiedName(
         java.lang.String value) {
@@ -675,6 +728,11 @@ public  final class NamedType extends
     }
     /**
      * <code>optional string qualified_name = 2;</code>
+     *
+     * <pre>
+     * The type's qualified name. If omitted, the |qualified_name| is considered the same as
+     * the simple |name|.
+     * </pre>
      */
     public Builder clearQualifiedName() {
       
@@ -684,6 +742,11 @@ public  final class NamedType extends
     }
     /**
      * <code>optional string qualified_name = 2;</code>
+     *
+     * <pre>
+     * The type's qualified name. If omitted, the |qualified_name| is considered the same as
+     * the simple |name|.
+     * </pre>
      */
     public Builder setQualifiedNameBytes(
         com.google.protobuf.ByteString value) {

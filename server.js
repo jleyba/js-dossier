@@ -24,6 +24,9 @@
 
 'use strict';
 
+var fs = require('fs');
+var http = require('http');
+var https = require('https');
 var path = require('path');
 
 try {
@@ -34,6 +37,17 @@ try {
   console.log('Try one of the following: ');
   console.log('  npm install express serve-index');
   console.log('  npm install -g express serve-index');
+  throw ex;
+}
+
+try {
+  var options = {
+    key: fs.readFileSync(path.join(__dirname, 'key.pem')),
+    cert: fs.readFileSync(path.join(__dirname, 'cert.pem'))
+  };
+} catch (ex) {
+  console.log('Error reading self-signed certificate');
+  console.log('Did you run gencert.sh?');
   throw ex;
 }
 
@@ -48,8 +62,14 @@ app.use('/', express.static(staticDir, {
  redirect: true
 }));
 
-var server = app.listen(3000, function () {
-  var host = server.address().address;
-  var port = server.address().port;
+var httpServer = http.createServer(app).listen(3000, function() {
+  var host = httpServer.address().address;
+  var port = httpServer.address().port;
   console.log('Example app listening at http://%s:%s', host, port);
+});
+
+var httpsServer = https.createServer(options, app).listen(3001, function() {
+  var host = httpsServer.address().address;
+  var port = httpsServer.address().port;
+  console.log('Example app listening at https://%s:%s', host, port);
 });

@@ -72,6 +72,7 @@ class ProtoMessageSoyType implements SoyObjectType {
       ImmutableMap.of(
           FieldDescriptor.JavaType.BOOLEAN, BoolType.getInstance(),
           FieldDescriptor.JavaType.INT, IntType.getInstance(),
+          FieldDescriptor.JavaType.LONG, IntType.getInstance(),
           FieldDescriptor.JavaType.STRING, StringType.getInstance());
 
   private static final ImmutableSet<FieldDescriptor.JavaType> CONVERTIBLE_TYPES =
@@ -177,6 +178,7 @@ class ProtoMessageSoyType implements SoyObjectType {
         return toSoyValue(value);
       }
 
+      case LONG:
       case INT: {
         if (field.isRepeated()) {
           @SuppressWarnings("unchecked")
@@ -361,7 +363,7 @@ class ProtoMessageSoyType implements SoyObjectType {
 
   @Override
   public Kind getKind() {
-    return Kind.RECORD;
+    return Kind.OBJECT;
   }
 
   @Override

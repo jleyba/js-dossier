@@ -38,7 +38,7 @@ final class DefaultDocTemplate implements DocTemplate {
 
   @Override
   public ImmutableList<TemplateFile> getTailJs() {
-    return ImmutableList.of(loadResourceFile("dossier.js", "/src/js/dossier_bin.js"));
+    return ImmutableList.of(loadResourceFile("dossier.js", "/src/js/dossier.js"));
   }
 
   @Override

@@ -1,10 +1,10 @@
 load("/build_tools/js_binary", "js_binary")
 
 js_binary(
-    name = "dossier_bin",
+    name = "dossier",
     srcs = [
-        "dossier.js",
-        "keyhandler.js",
+        "app.js",
+        "main.js",
         "nav.js",
         "page.js",
         "search.js",
@@ -15,7 +15,7 @@ js_binary(
         "--compilation_level=ADVANCED_OPTIMIZATIONS",
         "--define=goog.DEBUG=false",
         "--manage_closure_dependencies",
-        "--closure_entry_point=dossier",
+        "--closure_entry_point=dossier.main",
         "--jscomp_error=accessControls",
         "--jscomp_error=ambiguousFunctionDecl",
         "--jscomp_error=checkRegExp",
@@ -40,7 +40,7 @@ js_binary(
         "--language_in=ECMASCRIPT6_STRICT",
         "--language_out=ECMASCRIPT5_STRICT",
         "--third_party=false",
-        "--output_wrapper=\\\"(function(){%output%;init();}).call(this);\\\"",
+        "--output_wrapper=\\\"(function(){%output%;}).call(this);\\\"",
     ],
     visibility = ["//src/java/com/github/jsdossier:__pkg__"],
 )
