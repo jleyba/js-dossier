@@ -19,19 +19,17 @@
 footer {
   font-size: 1.2rem;
   position: relative;
-  z-index: @footer_z_index;
 
   div {
     display: flex;
     align-items: center;
     justify-content: center;
     height: @footer_height;
-    background: @banner_color;
   }
 
   a {
     &, &:visited {
-      color: rgba(255, 255, 255, 0.45) !important;
+      color: fade(@font_color, 50%) !important;
     }
   }
 }
