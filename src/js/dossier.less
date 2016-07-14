@@ -86,14 +86,15 @@ article.page {
   float: left;
 }
 
+.standard-margin() {
+  margin: 0 16px;
+}
 
 article {
   .types ul,
   .exported-modules ul {
     list-style: none;
-
-    width: ~"calc(100% - 32px)";
-    margin: 0 auto;
+    .standard-margin();
 
     background: @main_column_color;
 
@@ -116,8 +117,7 @@ article {
 
 .intro,
 .enum-values {
-  width: ~"calc(100% - 32px)";
-  margin: 0 auto;
+  .standard-margin();
 }
 
 .property {
@@ -127,12 +127,22 @@ article {
   .raise-1dp();
 
   &.expandable {
+    .standard-margin();
     max-height: 56px;
+    min-height: 56px;
     overflow: hidden;
-    width: ~"calc(100% - 32px)";
-    margin: 0 auto;
     border: 1px solid @section_border_color;
     box-shadow: none;
+
+    transition: max-height 150ms ease,
+                margin 150ms ease,
+                box-shadow 150ms ease;
+
+    // WebKit (Safari) does not smoothly transition from a fixed max-height to
+    // the "initial" value, so disable that transition.
+    .webkit & {
+      transition: margin 150ms ease, box-shadow 150ms ease;
+    }
 
     & + & {
       border-top: 0;
@@ -158,8 +168,6 @@ article {
     &.open {
       border: 0 !important;
       margin: 16px 0;
-      width: 100%;
-      max-width: 100%;
       max-height: initial;
       .raise-4dp();
 
