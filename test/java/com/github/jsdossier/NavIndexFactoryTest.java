@@ -16,7 +16,7 @@
 
 package com.github.jsdossier;
 
-import static com.google.common.truth.Truth.assertThat;
+import static com.github.jsdossier.ProtoTruth.assertMessage;
 import static org.junit.Assert.fail;
 
 import com.github.jsdossier.proto.Index;
@@ -60,8 +60,7 @@ public class NavIndexFactoryTest {
 
   @Test
   public void generateIndexForMainIndex() {
-    Index index = factory.create(home);
-    assertThat(index).isEqualTo(
+    assertMessage(create(factory, home)).isEqualTo(
         Index.newBuilder()
             .setHome("index.html")
             .setIncludeModules(true)
@@ -77,14 +76,13 @@ public class NavIndexFactoryTest {
 
   @Test
   public void generateIndexForIndexSibling() {
-    assertThat(factory.create(home.resolveSibling("other.html")))
-        .isEqualTo(factory.create(home));
+    assertMessage(create(factory, home.resolveSibling("other.html")))
+        .isEqualTo(create(factory, home));
   }
 
   @Test
   public void generateIndexForDescendantOfRootDir() {
-    Index index = factory.create(root.resolve("a/b/c.html"));
-    assertThat(index).isEqualTo(
+    assertMessage(create(factory, root.resolve("a/b/c.html"))).isEqualTo(
         Index.newBuilder()
             .setHome("../../index.html")
             .setIncludeModules(true)
@@ -109,7 +107,7 @@ public class NavIndexFactoryTest {
             new MarkdownPage("foo", fs.getPath("pages/foo.md")),
             new MarkdownPage("bar", fs.getPath("pages/bar.md"))));
 
-    assertThat(factory.create(root.resolve("a/b/c.html"))).isEqualTo(
+    assertMessage(create(factory, root.resolve("a/b/c.html"))).isEqualTo(
         Index.newBuilder()
             .setHome("../../index.html")
             .setIncludeModules(true)
@@ -121,5 +119,12 @@ public class NavIndexFactoryTest {
                 .setText("bar")
                 .setHref("../../bar.html"))
             .build());
+  }
+
+  private static Index create(NavIndexFactory factory, Path path) {
+    return factory.create(path)
+        .toBuilder()
+        .clearTimestamp()  // Non-determinism is bad for tests.
+        .build();
   }
 }
