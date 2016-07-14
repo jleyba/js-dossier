@@ -121,6 +121,8 @@ public final class TypeCollectionPass implements CompilerPass {
                 .build());
       }
     }
+
+    typeRegistry.collectModuleContentAliases(compiler.getTypeRegistry());
   }
 
   private static void logfmt(String msg, Object... args) {

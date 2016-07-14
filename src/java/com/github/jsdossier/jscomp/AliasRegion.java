@@ -22,6 +22,7 @@ import com.google.javascript.jscomp.CompilerOptions;
 import com.google.javascript.rhino.SourcePosition;
 
 import java.nio.file.Path;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -77,6 +78,13 @@ public abstract class AliasRegion implements CompilerOptions.AliasTransformation
   @CheckReturnValue
   public String resolveAlias(String alias) {
     return aliases.get(alias);
+  }
+
+  /**
+   * Returns all aliases defined in this region.
+   */
+  public Iterable<String> getAliases() {
+    return Collections.unmodifiableCollection(aliases.keySet());
   }
 
   /**

@@ -37,6 +37,17 @@ public final class Types {
       "_2ebeecd9_43c9_4616_a2dc_9cf4237e1f78_";
 
   private static final String EXTERN_PREFIX = "dossier$$extern__";
+  private static final String MODULE_CONTENTS_PREFIX = "module$contents$";
+
+  /**
+   * Returns whether the given variable name could be a defined within a CommonJS or Closure module.
+   * This decisions is based entirely on renaming used by the compiler's ClosureRewriteModule pass
+   * and does not check if there is actually a module with the variable defined.
+   */
+  public static boolean isModuleContentsVar(String name) {
+    return name.startsWith(MODULE_CONTENTS_PREFIX)
+        && name.indexOf('_') > MODULE_CONTENTS_PREFIX.length();
+  }
 
   /**
    * Returns whether the given name is for an extern module.

@@ -49,6 +49,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -80,6 +81,8 @@ public final class TypeRegistry {
         }
       });
 
+  private final Map<String, NominalType> resolvedModuleContentAliases = new HashMap<>();
+
   private final SetMultimap<NominalType, NominalType> nestedTypes =
       MultimapBuilder.hashKeys().hashSetValues().build();
 
@@ -109,6 +112,39 @@ public final class TypeRegistry {
   }
 
   /**
+   * Iterates over all registered node and closure modules, collecting the names of internal
+   * variables that are aliases for other types. This is used for fast lookup in
+   * {@link #resolveAlias(NominalType, String)}.
+   *
+   * @param jsRegistry The JS registry to use when resolving aliases.
+   */
+  public void collectModuleContentAliases(JSTypeRegistry jsRegistry) {
+    for (Module module : getAllModules()) {
+      if (module.getType() == Module.Type.ES6) {
+        continue;
+      }
+
+      AliasRegion aliasRegion = module.getAliases();
+      for (String alias : aliasRegion.getAliases()) {
+        if (Types.isModuleContentsVar(alias)) {
+          String name = aliasRegion.resolveAlias(alias);
+          if (isType(name)) {
+            resolvedModuleContentAliases.put(alias, getType(name));
+          } else {
+            JSType type = jsRegistry.getType(name);
+            if (type != null) {
+              Iterator<NominalType> types = getTypes(type).iterator();
+              if (types.hasNext()) {
+                resolvedModuleContentAliases.put(alias, types.next());
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  /**
    * Resolves an alias created by the compiler relative to the given type.
    *
    * @param type the point of reference for the alias to resolve.
@@ -129,6 +165,10 @@ public final class TypeRegistry {
           return def;
         }
       }
+    }
+
+    if (resolvedModuleContentAliases.containsKey(key)) {
+      return resolvedModuleContentAliases.get(key).getName();
     }
 
     return null;
@@ -263,7 +303,8 @@ public final class TypeRegistry {
    * Returns whether there is a type registered with the given name.
    */
   public boolean isType(String name) {
-    return typesByName.containsKey(name);
+    return typesByName.containsKey(name)
+        || resolvedModuleContentAliases.containsKey(name);
   }
 
   /**
@@ -273,7 +314,13 @@ public final class TypeRegistry {
    */
   public NominalType getType(String name) {
     checkArgument(isType(name), "no such type: %s", name);
-    return typesByName.get(name);
+    if (typesByName.containsKey(name)) {
+      return typesByName.get(name);
+    } else if (resolvedModuleContentAliases.containsKey(name)) {
+      return resolvedModuleContentAliases.get(name);
+    } else {
+      throw new AssertionError();
+    }
   }
 
   /**

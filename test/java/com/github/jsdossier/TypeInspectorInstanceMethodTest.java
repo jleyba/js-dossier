@@ -17,7 +17,10 @@
 package com.github.jsdossier;
 
 import static com.github.jsdossier.ProtoTruth.assertMessages;
+import static com.github.jsdossier.TypeInspector.fakeNodeForType;
 import static com.github.jsdossier.testing.CompilerUtil.createSourceFile;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.collect.Iterables.getOnlyElement;
 import static com.google.common.truth.Truth.assertThat;
 
 import com.github.jsdossier.jscomp.NominalType;
@@ -29,6 +32,8 @@ import com.github.jsdossier.proto.Tags;
 import com.github.jsdossier.proto.TypeExpression;
 import com.github.jsdossier.proto.Visibility;
 import com.github.jsdossier.testing.Bug;
+import com.google.javascript.rhino.Node;
+import com.google.javascript.rhino.jstype.FunctionType;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -2143,5 +2148,92 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                                         "bar_exports_Container.html"),
                                     stringTypeExpression())))
                     .setDescription(htmlComment("<p>.</p>\n"))));
+  }
+
+  @Test
+  public void handlesParameterTypesDefinedFromInsideAnotherModule_closure() {
+    util.compile(
+        createSourceFile(fs.getPath("/src/modules/foo.js"),
+            "goog.module('foo');",
+            "class Foo {}",
+            "exports = {Foo}"),
+        createSourceFile(fs.getPath("/src/modules/bar.js"),
+            "goog.module('bar');",
+            "var foo = goog.require('foo');",
+            "class Bar {",
+            "  /** @param {!foo.Foo} input */",
+            "  work(input) {}",
+            "}",
+            "exports = {Bar}"),
+        createSourceFile(fs.getPath("/src/modules/baz.js"),
+            "goog.module('baz');",
+            "var bar = goog.require('bar');",
+            "class Other {}",
+            "exports = {Baz: bar.Bar, Other}"));
+
+    NominalType type = typeRegistry.getType("module$exports$baz.Baz");
+    TypeInspector inspector = typeInspectorFactory.create(type);
+    TypeInspector.Report report = inspector.inspectInstanceType();
+    Function function = getOnlyElement(report.getFunctions());
+
+    assertThat(function.getBase().getName()).isEqualTo("work");
+    assertMessages(function.getParameterList())
+        .containsExactly(
+            Detail.newBuilder()
+                .setName("input")
+                .setType(namedTypeExpression("Foo", "foo.Foo", "foo.Foo.html")));
+  }
+
+  @Test
+  public void handlesParameterTypesDefinedFromInsideAnotherModule_node() {
+    guice.toBuilder()
+        .setModules("/src/modules/foo.js", "/src/modules/bar.js", "/src/modules/baz.js")
+        .build()
+        .createInjector()
+        .injectMembers(this);
+
+    util.compile(
+        createSourceFile(fs.getPath("/src/modules/foo.js"),
+            "class Foo {}",
+            "module.exports = {Foo}"),
+        createSourceFile(fs.getPath("/src/modules/bar.js"),
+            "var Foo = require('./foo').Foo;",
+            "class Bar {",
+            "  /** @param {!Foo} input */",
+            "  constructor(input) {}",
+            "",
+            "  /** @param {!Foo} input */",
+            "  work(input) {}",
+            "}",
+            "module.exports = {Bar}"),
+        createSourceFile(fs.getPath("/src/modules/baz.js"),
+            "var bar = require('./bar');",
+            "exports.Baz = bar.Bar;"));
+
+    NominalType type = typeRegistry.getType("module$exports$module$$src$modules$baz.Baz");
+    TypeInspector inspector = typeInspectorFactory.create(type);
+
+    Node fakeNode = fakeNodeForType(type);
+    FunctionType mainFn = checkNotNull(type.getType().toMaybeFunctionType(),
+        "Expected %s to be a function: %s", type.getName(), type.getType());
+
+    TypeInspector.Report report = inspector.inspectInstanceType();
+    Function function = getOnlyElement(report.getFunctions());
+
+    // Check an instance method, which should work as it's just a copied alias.
+    assertThat(function.getBase().getName()).isEqualTo("work");
+    assertMessages(function.getParameterList())
+        .containsExactly(
+            Detail.newBuilder()
+                .setName("input")
+                .setType(namedTypeExpression("Foo", "foo.Foo", "foo_exports_Foo.html")));
+
+    // Check the constructor too.
+    function = inspector.getFunctionData("constructor", mainFn, fakeNode, type, type.getJsDoc());
+    assertMessages(function.getParameterList())
+        .containsExactly(
+            Detail.newBuilder()
+                .setName("input")
+                .setType(namedTypeExpression("Foo", "foo.Foo", "foo_exports_Foo.html")));
   }
 }
