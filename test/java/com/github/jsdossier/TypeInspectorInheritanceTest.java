@@ -17,6 +17,7 @@
 package com.github.jsdossier;
 
 import static com.github.jsdossier.ProtoTruth.assertMessages;
+import static com.github.jsdossier.testing.CompilerUtil.createSourceFile;
 
 import com.github.jsdossier.jscomp.NominalType;
 import com.github.jsdossier.proto.NamedType;
@@ -918,6 +919,27 @@ public class TypeInspectorInheritanceTest extends AbstractTypeInspectorTest {
         addTemplateTypes(TYPE_C, stringTypeExpression()),
         addTemplateTypes(TYPE_B, stringTypeExpression()),
         addTemplateTypes(TYPE_A, stringTypeExpression()));
+  }
+
+  @Test
+  public void tracksSubTypesFromDifferentModulesWithSameBaseName() {
+    util.compile(
+        createSourceFile(
+            fs.getPath("/src/modules/one.js"),
+            "export class A {}"),
+        createSourceFile(
+            fs.getPath("/src/modules/two.js"),
+            "import {A} from './one';",
+            "export class B extends A {}"),
+        createSourceFile(
+            fs.getPath("/src/modules/three.js"),
+            "import {A} from './one';",
+            "export class B extends A {}"));
+
+    NominalType a = typeRegistry.getType("module$$src$modules$one.A");
+    assertSubtypes(a).containsExactly(
+        TYPE_B.toBuilder().setQualifiedName("three.B").setHref("three_exports_B.html"),
+        TYPE_B.toBuilder().setQualifiedName("two.B").setHref("two_exports_B.html"));
   }
 
   private ProtoTruth.MessageListSubject assertImplementedTypes(NominalType type) {

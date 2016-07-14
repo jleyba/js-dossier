@@ -361,9 +361,16 @@ final class TypeInspector {
     return FluentIterable.from(types)
         .toSortedSet(new Comparator<NamedType>() {
           @Override
-          public int compare(NamedType o1,
-                             NamedType o2) {
-            return o1.getName().compareTo(o2.getName());
+          public int compare(NamedType o1, NamedType o2) {
+            int diff = o1.getQualifiedName().compareTo(o2.getQualifiedName());
+            if (diff == 0) {
+              // Might not have a qualified name.
+              diff = o1.getName().compareTo(o2.getName());
+              if (diff == 0) {
+                diff = o1.getHref().compareTo(o2.getHref());
+              }
+            }
+            return diff;
           }
         });
   }
