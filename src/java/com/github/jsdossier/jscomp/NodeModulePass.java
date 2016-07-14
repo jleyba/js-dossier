@@ -178,9 +178,6 @@ class NodeModulePass {
 
     @Override
     public void visit(NodeTraversal t, Node n, Node parent) {
-      if ("module$contents$module$$Users$jleyba$Development$selenium$javascript$node$selenium_webdriver$lib$webdriver_Capabilities".equals(n.getQualifiedName())) {
-        printTree(n);
-      }
       if (n.isScript()) {
         visitScript(t, n);
       }
