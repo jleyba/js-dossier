@@ -20,6 +20,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Verify.verify;
 import static com.google.common.collect.Iterables.filter;
 
+import com.github.jsdossier.jscomp.Module;
+import com.github.jsdossier.jscomp.NodeLibrary;
 import com.github.jsdossier.jscomp.NominalType;
 import com.github.jsdossier.jscomp.TypeRegistry;
 import com.github.jsdossier.proto.RecordType;
@@ -66,16 +68,19 @@ final class TypeExpressionParser {
   private final DossierFileSystem dfs;
   private final TypeRegistry typeRegistry;
   private final JSTypeRegistry jsTypeRegistry;
+  private final NodeLibrary nodeLibrary;
   private final LinkFactory linkFactory;
 
   TypeExpressionParser(
       @Provided DossierFileSystem dfs,
       @Provided TypeRegistry typeRegistry,
       @Provided JSTypeRegistry jsTypeRegistry,
+      @Provided NodeLibrary nodeLibrary,
       LinkFactory linkFactory) {
     this.dfs = dfs;
     this.typeRegistry = typeRegistry;
     this.jsTypeRegistry = jsTypeRegistry;
+    this.nodeLibrary = nodeLibrary;
     this.linkFactory = linkFactory;
   }
 
@@ -130,6 +135,18 @@ final class TypeExpressionParser {
         nominalType = resolve(jsType);
         if (nominalType != null) {
           return createNamedType(nominalType);
+        }
+      }
+
+      if (Module.Type.NODE.isModuleId(name)) {
+        String id = Module.Type.NODE.stripModulePrefix(name);
+        if (nodeLibrary.isModuleId(id)) {
+          return com.github.jsdossier.proto.NamedType.newBuilder().setName(id);
+        }
+
+        int index = id.indexOf('.');
+        if (index != 1 && nodeLibrary.isModuleId(id.substring(0, index))) {
+          return com.github.jsdossier.proto.NamedType.newBuilder().setName(id);
         }
       }
 

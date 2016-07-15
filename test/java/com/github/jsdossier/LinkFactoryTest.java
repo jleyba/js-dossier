@@ -1877,6 +1877,24 @@ public class LinkFactoryTest {
     checkLink(factory.createLink("foo.bar.BAZ"), "foo.bar.BAZ", "../../foo.bar.html#foo.bar.BAZ");
   }
 
+  @Test
+  public void createLinkForExternalModule() {
+    util.compile(
+        createSourceFile(
+            fs.getPath("source/modules/one.js"),
+            "let fs = require('fs');",
+            "exports.fs = fs;"));
+
+    NominalType one = typeRegistry.getType("module$exports$module$source$modules$one");
+    LinkFactory factory = createFactory(one).withTypeContext(one);
+
+    TypeLink link = factory.createLink("module$exports$fs");
+    checkLink(link, "fs", "");
+
+    link = factory.createLink("module$exports$fs.stat");
+    checkLink(link, "fs.stat", "");
+  }
+
   private LinkFactory createFactory() {
     return createFactory(null);
   }

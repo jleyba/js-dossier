@@ -22,6 +22,7 @@ import static com.google.common.base.Verify.verify;
 
 import com.github.jsdossier.annotations.SourceUrlTemplate;
 import com.github.jsdossier.jscomp.Module;
+import com.github.jsdossier.jscomp.NodeLibrary;
 import com.github.jsdossier.jscomp.NominalType;
 import com.github.jsdossier.jscomp.Position;
 import com.github.jsdossier.jscomp.TypeRegistry;
@@ -104,6 +105,7 @@ final class LinkFactory {
   private final DossierFileSystem dfs;
   private final TypeRegistry typeRegistry;
   private final JSTypeRegistry jsTypeRegistry;
+  private final NodeLibrary nodeLibrary;
   private final ModuleNamingConvention namingConvention;
   private final Optional<NominalType> pathContext;
   private final TypeContext typeContext;
@@ -124,6 +126,7 @@ final class LinkFactory {
       @Provided DossierFileSystem dfs,
       @Provided TypeRegistry typeRegistry,
       @Provided JSTypeRegistry jsTypeRegistry,
+      @Provided NodeLibrary nodeLibrary,
       @Provided ModuleNamingConvention namingConvention,
       @Provided TypeContext typeContext,
       @Provided @SourceUrlTemplate Optional<String> urlTemplate,
@@ -131,6 +134,7 @@ final class LinkFactory {
     this.dfs = dfs;
     this.typeRegistry = typeRegistry;
     this.jsTypeRegistry = jsTypeRegistry;
+    this.nodeLibrary = nodeLibrary;
     this.namingConvention = namingConvention;
     this.pathContext = Optional.fromNullable(pathContext);
     this.typeContext = typeContext;
@@ -148,7 +152,8 @@ final class LinkFactory {
   public LinkFactory withTypeContext(NominalType context) {
     // NB: Can't use an overloaded constructor b/c AutoFactory tries to generate a constructor
     // for everything, even ones with private visibility.
-    return new LinkFactory(dfs, typeRegistry, jsTypeRegistry, namingConvention,
+    return new LinkFactory(
+        dfs, typeRegistry, jsTypeRegistry, nodeLibrary, namingConvention,
         typeContext.changeContext(context), urlTemplate,
         pathContext.orNull());
   }
@@ -395,7 +400,17 @@ final class LinkFactory {
       return property.isEmpty() ? createLink(type) : createLink(type, property);
     }
 
-    TypeLink link = createNativeExternLink(ref.type);
+    TypeLink link = createExternModuleLink(ref.type);
+    if (link != null) {
+      if (!ref.property.isEmpty()) {
+        link = link.toBuilder()
+            .setText(link.getText() + "." + ref.property)
+            .build();
+      }
+      return link;
+    }
+
+    link = createNativeExternLink(ref.type);
     if (link == null && ref.property.isEmpty()
         && (index = ref.type.indexOf('.')) != -1) {
       link = createNativeExternLink(ref.type.substring(0, index));
@@ -425,6 +440,24 @@ final class LinkFactory {
     }
     verify(type.getType().toObjectType().hasOwnProperty(exportedName));
     return createLink(type, exportedName);
+  }
+
+  @Nullable
+  @CheckReturnValue
+  public TypeLink createExternModuleLink(String name) {
+    if (Module.Type.NODE.isModuleId(name)) {
+      final String externId = Module.Type.NODE.stripModulePrefix(name);
+
+      if (nodeLibrary.isModuleId(externId)) {
+        return TypeLink.newBuilder().setText(externId).build();
+      }
+
+      int index = externId.indexOf('.');
+      if (index != -1 && nodeLibrary.isModuleId(externId.substring(0, index))) {
+        return TypeLink.newBuilder().setText(externId).build();
+      }
+    }
+    return null;
   }
 
   /**

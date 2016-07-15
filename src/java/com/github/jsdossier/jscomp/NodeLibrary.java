@@ -60,7 +60,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 @Singleton
-final class NodeLibrary {
+public final class NodeLibrary {
 
   private static final Logger log = Logger.getLogger(NodeLibrary.class.getName());
 

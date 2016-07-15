@@ -37,6 +37,7 @@ public final class Types {
       "_2ebeecd9_43c9_4616_a2dc_9cf4237e1f78_";
 
   private static final String EXTERN_PREFIX = "dossier$$extern__";
+  private static final String MODULE_EXPORTS_PREFIX = "module$exports$";
   private static final String MODULE_CONTENTS_PREFIX = "module$contents$";
 
   /**
@@ -47,6 +48,10 @@ public final class Types {
   public static boolean isModuleContentsVar(String name) {
     return name.startsWith(MODULE_CONTENTS_PREFIX)
         && name.indexOf('_') > MODULE_CONTENTS_PREFIX.length();
+  }
+
+  public static String toModuleId(String name) {
+    return MODULE_EXPORTS_PREFIX + name.replace('-', '_');
   }
 
   /**

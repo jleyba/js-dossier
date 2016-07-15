@@ -27,6 +27,7 @@ import com.github.jsdossier.jscomp.NominalType;
 import com.github.jsdossier.proto.BaseProperty;
 import com.github.jsdossier.proto.Comment;
 import com.github.jsdossier.proto.Function;
+import com.github.jsdossier.proto.Property;
 import com.github.jsdossier.proto.Visibility;
 import com.github.jsdossier.testing.Bug;
 import com.google.javascript.rhino.Node;
@@ -726,5 +727,32 @@ public class TypeInspectorTest extends AbstractTypeInspectorTest {
                 .setDescription(Comment.getDefaultInstance())
                 .build())
             .build());
+  }
+
+  @Test
+  public void handlesModuleExternTypes() {
+    util.compile(
+        createSourceFile(
+            fs.getPath("/src/modules/foo/bar.js"),
+            "var stream = require('stream');",
+            "/** @constructor */",
+            "function Writer() {}",
+            "/** @type {stream.Stream} */",
+            "Writer.prototype.stream = null;",
+            "exports.Writer = Writer"));
+
+    NominalType type =
+        typeRegistry.getType("module$exports$module$$src$modules$foo$bar.Writer");
+    TypeInspector typeInspector = typeInspectorFactory.create(type);
+    TypeInspector.Report report = typeInspector.inspectInstanceType();
+    assertMessages(report.getProperties())
+        .containsExactly(
+            Property.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("stream")
+                        .setSource(sourceFile("../../source/modules/foo/bar.js.src.html", 5))
+                        .setDescription(Comment.getDefaultInstance()))
+                .setType(nullableNamedTypeExpression("stream.Stream")));
   }
 }

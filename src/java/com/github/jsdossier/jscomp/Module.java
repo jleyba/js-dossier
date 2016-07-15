@@ -114,17 +114,60 @@ public abstract class Module {
     /**
      * A module defined using the Closure library's "goog.module" syntax.
      */
-    CLOSURE,
+    CLOSURE() {
+      @Override
+      public boolean isModuleId(String name) {
+        return name.startsWith("module$exports$");
+      }
+
+      @Override
+      public String stripModulePrefix(String name) {
+        checkArgument(isModuleId(name), "not a module ID: %s", name);
+        return name.substring("module$exports$".length());
+      }
+    },
 
     /**
      * A standard ES6 module.
      */
-    ES6,
+    ES6() {
+      @Override
+      public boolean isModuleId(String name) {
+        return name.startsWith("module$");
+      }
+
+      @Override
+      public String stripModulePrefix(String name) {
+        return name;
+      }
+    },
 
     /**
      * CommonJS modules, as implemented for Node. Modules support "require(id)" syntax for imports.
      */
-    NODE
+    NODE() {
+      @Override
+      public boolean isModuleId(String name) {
+        return CLOSURE.isModuleId(name);
+      }
+
+      @Override
+      public String stripModulePrefix(String name) {
+        return CLOSURE.stripModulePrefix(name);
+      }
+    };
+
+    /**
+     * Returns whether the given variable name could be ID for this type of module.
+     */
+    public abstract boolean isModuleId(String name);
+
+    /**
+     * Strips the module prefix used on the given name to generate a module ID from another
+     * JS identifier. In the case of ES6 modules, the initial value will always be returned
+     * unchanged.
+     */
+    public abstract String stripModulePrefix(String name);
   }
 
   @AutoValue.Builder
