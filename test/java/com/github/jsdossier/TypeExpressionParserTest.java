@@ -29,7 +29,9 @@ import com.github.jsdossier.proto.TypeExpression;
 import com.github.jsdossier.proto.UnionType;
 import com.github.jsdossier.testing.CompilerUtil;
 import com.github.jsdossier.testing.GuiceRule;
+import com.google.common.collect.ImmutableList;
 import com.google.javascript.jscomp.CompilerOptions;
+import com.google.javascript.jscomp.SourceFile;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.JSTypeExpression;
 import com.google.javascript.rhino.jstype.JSType;
@@ -57,11 +59,17 @@ public class TypeExpressionParserTest {
       .setLanguageIn(CompilerOptions.LanguageMode.ECMASCRIPT6_STRICT)
       .build();
 
-  @Inject @Input private FileSystem fs;
-  @Inject private CompilerUtil util;
-  @Inject private TypeRegistry typeRegistry;
-  @Inject private LinkFactoryBuilder linkFactoryBuilder;
-  @Inject private TypeExpressionParserFactory parserFactory;
+  @Inject
+  @Input
+  private FileSystem fs;
+  @Inject
+  private CompilerUtil util;
+  @Inject
+  private TypeRegistry typeRegistry;
+  @Inject
+  private LinkFactoryBuilder linkFactoryBuilder;
+  @Inject
+  private TypeExpressionParserFactory parserFactory;
 
   @Test
   public void parseTypeDefinition() {
@@ -176,12 +184,12 @@ public class TypeExpressionParserTest {
     TypeExpression typeExpression = parser.parse(jsType);
     assertMessage(typeExpression).isEqualTo(
         TypeExpression.newBuilder()
-        .setFunctionType(
-            FunctionType.newBuilder()
-                .addParameter(TypeExpression.newBuilder()
-                    .setIsVarargs(true)
-                    .setNamedType(namedType("Person", "Person.html")))
-                .setReturnType(TypeExpression.newBuilder().setUnknownType(true))));
+            .setFunctionType(
+                FunctionType.newBuilder()
+                    .addParameter(TypeExpression.newBuilder()
+                        .setIsVarargs(true)
+                        .setNamedType(namedType("Person", "Person.html")))
+                    .setReturnType(TypeExpression.newBuilder().setUnknownType(true))));
   }
 
   @Test
@@ -402,6 +410,32 @@ public class TypeExpressionParserTest {
                                 .setKey("age")
                                 .setValue(
                                     numberType().toBuilder().setAllowNull(true)))));
+  }
+
+  @Test
+  public void parseExpression_externalEnumReference() {
+    ImmutableList<SourceFile> externs = ImmutableList.of(
+        createSourceFile(fs.getPath("externs.js"),
+            "/** @enum {string} */",
+            "var Data = {ONE: 'one'};"));
+
+    ImmutableList<SourceFile> sources = ImmutableList.of(
+        createSourceFile(fs.getPath("one.js"),
+            "/**",
+            " * @param {Data} x .",
+            " * @constructor",
+            " */",
+            "function Widget(x) {}"));
+    util.compile(externs, sources);
+
+    NominalType type = typeRegistry.getType("Widget");
+    JSTypeExpression jsTypeExpression = type.getJsDoc().getParameter("x").getType();
+    JSType jsType = util.evaluate(jsTypeExpression);
+    TypeExpression expression = parserFactory.create(linkFactoryBuilder.create(type)).parse(jsType);
+    assertMessage(expression)
+        .isEqualTo(
+            TypeExpression.newBuilder()
+                .setNamedType(NamedType.newBuilder().setName("Data")));
   }
 
   private TypeExpression compileExpression(String expressionText) {

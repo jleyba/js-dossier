@@ -332,6 +332,12 @@ final class TypeExpressionParser {
         }
       } else if (!type.getOwnPropertyNames().isEmpty()) {
         com.github.jsdossier.proto.NamedType.Builder namedType = createNamedType(type);
+
+        if (namedType == null && type.isEnumType()) {
+          namedType = com.github.jsdossier.proto.NamedType.newBuilder()
+              .setName(type.getDisplayName());
+        }
+
         if (namedType != null) {
           currentExpression().setNamedType(namedType);
         } else {
