@@ -12,7 +12,7 @@
 - Render properties and functions as expandable cards.
 - Improved handling of goog.module.declareLegacyNamespace.
 - Distinguish between the different categories of nested types (e.g. class vs interface)
-- Upgraded to com.google.javascript:closure-compiler-unshaded:1.0-SNAPSHOT (4c2c2971a7a9ef58d539c6debe9864f9f44574e4)
+- Upgraded to com.google.javascript:closure-compiler-unshaded:v20160713
 - Upgraded to com.google.code.gson:gson:2.6.2
 - Upgraded to com.google.guava:guava:20.0-SNAPSHOT (c6387ede215926b377e812c35906f5bd0eec84f0)
 - Upgraded to com.google.template:soy:2016-01-12

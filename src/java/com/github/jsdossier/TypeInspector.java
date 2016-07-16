@@ -885,7 +885,7 @@ final class TypeInspector {
                   expression.setIsOptional(true);
                 }
 
-                if (paramTypeExpression.getRoot().getKind() == Token.BANG) {
+                if (paramTypeExpression.getRoot().getToken() == Token.BANG) {
                   expression = expression.clearAllowNull();
                 }
 
@@ -1053,7 +1053,7 @@ final class TypeInspector {
       return false;
     }
     JSTypeExpression expression = description.getType().get();
-    return expression.getRoot().getKind() != Token.QMARK
+    return expression.getRoot().getToken() != Token.QMARK
         || expression.getRoot().getFirstChild() != null;
   }
 
@@ -1267,7 +1267,7 @@ final class TypeInspector {
   }
 
   private void resolveNames(Node node) {
-    if (node.getKind() == Token.NAME || node.getKind() == Token.STRING) {
+    if (node.getToken() == Token.NAME || node.getToken() == Token.STRING) {
       String name = node.getString();
       if (registry.isType(name)) {
         NominalType nominalType = registry.getType(name);

@@ -41,6 +41,7 @@ import com.google.javascript.jscomp.NodeUtil;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.JSDocInfoBuilder;
 import com.google.javascript.rhino.Node;
+import com.google.javascript.rhino.Token;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -219,15 +220,12 @@ class NodeModulePass {
 
       processModuleExportRefs(t);
 
-      Node googModule = exprResult(call(
-          getprop(
-              name("goog"),
-              string("module")),
-          string(currentModule)));
-      for (Node expr : googRequireExpr.values()) {
-        script.addChildToFront(expr.srcrefTree(script));
+      Node moduleBody = createModuleBody();
+      moduleBody.srcrefTree(script);
+      if (script.getChildCount() > 0) {
+        moduleBody.addChildrenToBack(script.removeChildren());
       }
-      script.addChildToFront(googModule.srcrefTree(script));
+      script.addChildToBack(moduleBody);
 
       t.getInput().addProvide(currentModule);
 
@@ -237,6 +235,21 @@ class NodeModulePass {
       currentModule = null;
 
       t.getCompiler().reportCodeChange();
+    }
+
+    private Node createModuleBody() {
+      Node moduleBody = new Node(Token.MODULE_BODY);
+      moduleBody.addChildToBack(
+          exprResult(
+              call(
+                  getprop(
+                      name("goog"),
+                      string("module")),
+                  string(currentModule))));
+      for (Node expr : googRequireExpr.values()) {
+        moduleBody.addChildToBack(expr);
+      }
+      return moduleBody;
     }
 
     private void processModuleExportRefs(NodeTraversal t) {
@@ -362,7 +375,7 @@ class NodeModulePass {
              last = decl.getLastChild()) {
           decl.removeChild(last);
 
-          Node newDecl = declaration(last, decl.getKind()).srcrefTree(last);
+          Node newDecl = declaration(last, decl.getToken()).srcrefTree(last);
           decl.getParent().addChildAfter(newDecl, addAfter);
           addAfter = newDecl;
           t.getCompiler().reportCodeChange();

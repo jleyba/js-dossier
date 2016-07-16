@@ -654,7 +654,7 @@ public class NodeModulePassTest {
     assertNotNull(info);
 
     Node node = getOnlyElement(info.getTypeNodes());
-    assertEquals(Token.BANG, node.getKind());
+    assertEquals(Token.BANG, node.getToken());
 
     node = node.getFirstChild();
     assertTrue(node.isString());

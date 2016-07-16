@@ -106,7 +106,7 @@ public final class ProvidedSymbolPass implements CompilerPass {
 
   @Override
   public void process(Node ignored, Node root) {
-    final Map<Node, Module.Builder> scriptToModule = new HashMap<>();
+    final Map<Node, Module.Builder> blockToModule = new HashMap<>();
     final Set<String> googModules = new HashSet<>();
     final Set<String> moduleFiles = new HashSet<>();
 
@@ -140,8 +140,8 @@ public final class ProvidedSymbolPass implements CompilerPass {
           module.setHasLegacyNamespace(true);
         }
 
-        if (n.isScript() && module != null) {
-          scriptToModule.put(n, module);
+        if (n.isModuleBody() && module != null) {
+          blockToModule.put(n, module);
           module = null;
         }
       }
@@ -163,26 +163,26 @@ public final class ProvidedSymbolPass implements CompilerPass {
           }
         }
 
-        if (n.isScript()) {
-          visitScript(n);
+        if (n.isModuleBody()) {
+          visitModuleBody(n);
           return;
         }
 
-        if (n.isClass() && parent.isScript()) {
+        if (n.isClass() && isModuleBlock(parent)) {
           String name = n.getFirstChild().getQualifiedName();
           if (n.getJSDocInfo() != null) {
             internalDocs.put(name, n.getJSDocInfo());
           }
         }
 
-        if (n.isFunction() && parent.isScript()) {
+        if (n.isFunction() && isModuleBlock(parent)) {
           String name = n.getFirstChild().getQualifiedName();
           if (n.getJSDocInfo() != null) {
             internalDocs.put(name, n.getJSDocInfo());
           }
         }
 
-        if (NodeUtil.isNameDeclaration(n) && parent.isScript()) {
+        if (NodeUtil.isNameDeclaration(n) && isModuleBlock(parent)) {
           visitDeclaration(n);
         }
 
@@ -278,8 +278,12 @@ public final class ProvidedSymbolPass implements CompilerPass {
         return ImmutableList.of();
       }
 
-      private void visitScript(Node script) {
-        Module.Builder module = scriptToModule.get(script);
+      private void visitModuleBody(Node body) {
+        checkArgument(body.isModuleBody(), "must be a module body node: %s", body);
+        checkArgument(body.getParent().isScript(),
+            "parent is not a script node: %s", body.getParent());
+
+        Module.Builder module = blockToModule.get(body);
         if (module == null) {
           exportAssignments.clear();
           internalDocs.clear();
@@ -321,7 +325,7 @@ public final class ProvidedSymbolPass implements CompilerPass {
           exportedNames.put(lhsName, rhsName);
         }
 
-        module.setJsDoc(JsDoc.from(script.getJSDocInfo()))
+        module.setJsDoc(JsDoc.from(body.getParent().getJSDocInfo()))
             .setExportedNames(ImmutableMap.copyOf(exportedNames))
             .setInternalVarDocs(ImmutableMap.copyOf(internalDocs));
 
@@ -340,7 +344,11 @@ public final class ProvidedSymbolPass implements CompilerPass {
         exportAssignments.clear();
         internalDocs.clear();
         localAliases.clear();
-        scriptToModule.remove(script);
+        blockToModule.remove(body);
+      }
+
+      private boolean isModuleBlock(Node n) {
+        return n != null && blockToModule.containsKey(n);
       }
     });
   }
@@ -370,6 +378,6 @@ public final class ProvidedSymbolPass implements CompilerPass {
   private static boolean isTopLevelAssign(Node n) {
     return n.isAssign()
         && n.getParent().isExprResult()
-        && n.getGrandparent().isScript();
+        && n.getGrandparent().isModuleBody();
   }
 }
