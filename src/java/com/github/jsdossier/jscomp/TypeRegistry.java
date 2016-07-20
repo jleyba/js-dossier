@@ -490,6 +490,7 @@ public final class TypeRegistry {
     directSubtypes.clear();
     implementedInterfaces.clear();
 
+    Set<FunctionType> processed = new HashSet<>();
     for (NominalType nominalType : typesByName.values()) {
       JSType jsType = nominalType.getType();
       if (!jsType.isConstructor() && !jsType.isInterface()) {
@@ -497,7 +498,7 @@ public final class TypeRegistry {
       }
 
       FunctionType ctor = jsType.toMaybeFunctionType();
-      if (ctor == null) {
+      if (ctor == null || !processed.add(ctor)) {
         continue;
       }
 
