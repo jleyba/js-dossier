@@ -21,6 +21,7 @@ import static com.github.jsdossier.testing.CompilerUtil.createSourceFile;
 
 import com.github.jsdossier.jscomp.NominalType;
 import com.github.jsdossier.proto.NamedType;
+import com.github.jsdossier.proto.TypeExpression;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -525,6 +526,115 @@ public class TypeInspectorInheritanceTest extends AbstractTypeInspectorTest {
     assertImplementedTypes(e).containsExactly(TYPE_A, TYPE_B, TYPE_C, TYPE_D, thenable);
     assertKnownImplementations(e).isEmpty();
     assertSubtypes(e).isEmpty();
+  }
+
+  @Test
+  public void implementsInterfaceThatExtendsAnother_templatizedImplementations() {
+    compile(
+        "/**",
+        " * @interface",
+        " * @template ATYPE",
+        " */",
+        "function A() {}",
+        "",
+        "/**",
+        " * @interface",
+        " * @extends {A<BTYPE>}",
+        " * @template BTYPE",
+        " */",
+        "function B() {}",
+        "",
+        "/** @constructor */",
+        "function C() {}",
+        "",
+        "/**",
+        " * @constructor",
+        " * @implements {B<!C>}",
+        " */",
+        "function D() {}");
+
+    NominalType a = typeRegistry.getType("A");
+    NominalType b = typeRegistry.getType("B");
+    NominalType c = typeRegistry.getType("C");
+    NominalType d = typeRegistry.getType("D");
+
+    assertImplementedTypes(a).isEmpty();
+    assertKnownImplementations(a).containsExactly(TYPE_D);
+    assertSubtypes(a).containsExactly(TYPE_B);
+
+    assertImplementedTypes(b)
+        .containsExactly(addTemplateTypes(TYPE_A, namedTypeExpression("BTYPE")));
+    assertKnownImplementations(b).containsExactly(TYPE_D);
+    assertSubtypes(b).isEmpty();
+
+    assertImplementedTypes(d)
+        .containsExactly(
+            addTemplateTypes(TYPE_A, TypeExpression.newBuilder().setNamedType(TYPE_C).build()),
+            addTemplateTypes(TYPE_B, TypeExpression.newBuilder().setNamedType(TYPE_C).build()));
+    assertKnownImplementations(d).isEmpty();
+    assertSubtypes(d).isEmpty();
+  }
+
+  @Test
+  public void implementsInterfaceThatExtendsAnother_templatizedImplementations_ithenableCheck() {
+    compile(
+        "/**",
+        " * @interface",
+        " * @extends {IThenable<ATYPE>}",
+        " * @template ATYPE",
+        " */",
+        "function A() {}",
+        "",
+        "/**",
+        " * @interface",
+        " * @extends {A<BTYPE>}",
+        " * @template BTYPE",
+        " */",
+        "function B() {}",
+        "",
+        "/** @constructor */",
+        "function C() {}",
+        "",
+        "/**",
+        " * @constructor",
+        " * @implements {B<!C>}",
+        " */",
+        "function D() {}");
+
+    NominalType a = typeRegistry.getType("A");
+    NominalType b = typeRegistry.getType("B");
+    NominalType c = typeRegistry.getType("C");
+    NominalType d = typeRegistry.getType("D");
+
+    NamedType thenable =
+        namedType(
+            "IThenable",
+            "https://github.com/google/closure-compiler/wiki/" +
+                "Special-types-in-the-Closure-Type-System#ithenable")
+            .toBuilder()
+            .setExtern(true)
+            .build();
+
+    assertImplementedTypes(a)
+        .containsExactly(
+            addTemplateTypes(thenable, namedTypeExpression("ATYPE")));
+    assertKnownImplementations(a).containsExactly(TYPE_D);
+    assertSubtypes(a).containsExactly(TYPE_B);
+
+    assertImplementedTypes(b)
+        .containsExactly(
+            addTemplateTypes(TYPE_A, namedTypeExpression("BTYPE")),
+            addTemplateTypes(thenable, namedTypeExpression("BTYPE")));
+    assertKnownImplementations(b).containsExactly(TYPE_D);
+    assertSubtypes(b).isEmpty();
+
+    assertImplementedTypes(d)
+        .containsExactly(
+            addTemplateTypes(TYPE_A, TypeExpression.newBuilder().setNamedType(TYPE_C).build()),
+            addTemplateTypes(TYPE_B, TypeExpression.newBuilder().setNamedType(TYPE_C).build()),
+            addTemplateTypes(thenable, TypeExpression.newBuilder().setNamedType(TYPE_C).build()));
+    assertKnownImplementations(d).isEmpty();
+    assertSubtypes(d).isEmpty();
   }
 
   @Test
