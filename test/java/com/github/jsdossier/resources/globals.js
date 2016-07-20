@@ -348,8 +348,37 @@ class Formatter {
    * <dd>Definition 2.a</dd>
    * <dd>Definition 2.b</dd>
    * </dl>
+   *
+   * @param {string} a the string to format.
+   * @param {string} b another string to format.
+   * @param {string} c this parameter includes a table in its description. Why?
+   * Because users could do crazy things like that.
+   *
+   * | Fruit  | Color  | Quantity |
+   * | :----- | :----: | -------: |
+   * | Apple  | Red    |        1 |
+   * | Apple  | Green  |        2 |
+   * | Banana | Yellow |        3 |
+   * | Orange ||                4 |
+   * [Table caption]
+   *
+   *
+   * @param {...string} d all the other strings to format.
+   * @return {string} the formatted string.
+   * @throws {TypeError} if input is invalid.
+   * @see Formatter
    */
-  format() {
+  format(a, b, c, d) {
+  }
+
+  /**
+   * @param {string} s the string to format.
+   * @return {string} the formatted string.
+   * @throws {TypeError} if input is invalid.
+   * @deprecated use {@link #format(s)} instead.
+   * @see Formatter
+   */
+  oldFormat(s) {
   }
 }
 

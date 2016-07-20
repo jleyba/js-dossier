@@ -221,24 +221,13 @@ message JsType {
     repeated TypeSummary interface = 3;
   }
 
-  // Describes a typedef defined within this type.
-  message TypeDef {
-    string name = 1;
-    dossier.expression.TypeExpression type = 2;
-    SourceLink source = 3;
-    Comment description = 4;
-    Comment deprecation = 5;
-    Visibility visibility = 6;
-    Tags tags = 7;
-  }
-
   string name = 1;
   SourceLink source = 5;
   NestedTypes nested = 6;
   Comment description = 7;
   Tags tags = 8;
   Comment deprecation = 9;
-  repeated TypeDef type_def = 10;
+  repeated Property type_def = 10;
 
   Enumeration enumeration = 11;
 
@@ -276,7 +265,7 @@ message JsType {
 
   // Link to the module or namespace this type belongs to.
   message ParentLink {
-    TypeLink link = 1;
+    dossier.expression.NamedType type = 1;
     bool is_module = 2;
   }
   ParentLink parent = 21;

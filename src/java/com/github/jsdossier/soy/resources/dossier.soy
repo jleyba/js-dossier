@@ -5,125 +5,102 @@
  */
 {template .comment}
   {@param comment: dossier.Comment}
+  {@param? ensureParagraph: bool}
+
   {if $comment and length($comment.token)}
+    {let $renderParagraph: $ensureParagraph
+                           and length($comment.token) == 1
+                           and not $comment.token[0].html /}
+
+    {if $renderParagraph}
+      <p>
+    {/if}
     {foreach $token in $comment.token}
       {if $token.href}<a href="{$token.href}">{/if}
       {if $token.text}{$token.text}{/if}
       {if $token.html}{$token.html}{/if}
       {if $token.href}</a>{/if}
     {/foreach}
+    {if $renderParagraph}
+      </p>
+    {/if}
   {/if}
 {/template}
 
 
 /**
- * Renders a source link.
+ * Renders a single card.
  */
-{template .sourceLink private="true"}
-  {@param text: string}                // The link text.
-  {@param source: dossier.SourceLink}  // The link.
-  {if $source.uri}
-    <a href="{$source.uri}" target="_blank">{$text}</a>
-  {elseif $source.path}
-    <a href="{$source.path}{if $source.line and $source.line > 0}#l{$source.line}{/if}">{$text}</a>
-  {else}
-    {$text}
-  {/if}
-{/template}
+{template .renderCard private="true"}
+  {@param className: string}
+  {@param? id: string}
+  {@param header: html}
+  {@param body: html}
+  {@param source: dossier.SourceLink}
 
-/**
- * Renders a link to where code is defined in the source.
- */
-{template .codeLink private="true"}
-  {@param source: dossier.SourceLink}  // The link.
-  {@param? text: string}
-  {@param? noDiv: bool}
-  {if $source.path}
-    {if not $noDiv}<div class="code-link">{/if}
-      {if $source.uri}
-        <a href="{$source.uri}" target="_blank" title="View source">
-      {else}
-        <a href="{$source.path}{if $source.line and $source.line > 0}#l{$source.line}{/if}"
-            title="View source">
-      {/if}
-      {if $text}
-        {$text}
-      {else}
-        <i class="material-icons">code</i>
-      {/if}
-      </a>
-    {if not $noDiv}</div>{/if}
-  {/if}
-{/template}
-
-/**
- * Prints a graphical representation of a class's type inheritance:
- * goog.Foo
- *   - goog.Bar
- *       - goog.Bim
- *           - goog.Baz
- *
- * This template is a no-op if given a non-class descriptor.
- */
-{template .classInheritance}
-  {@param types: list<dossier.expression.NamedType>}
-
-  {if length($types) >= 2}
-    <pre class="inheritance">
-      {foreach $type in $types}
-        {if not isFirst($type)}
-          {\n}{print '  '}
-          {if index($type) > 1}
-            {for $i in range(index($type) - 1)}{print '    '}{/for}
+  <section class="{$className}" {if $id}{sp}id="{$id}"{/if}>
+    <div class="header">
+      {$header}
+    </div>
+    <div class="body">
+      {$body}
+      {if $source and ($source.uri or $source.path)}
+        <div class="source">
+          {if $source.uri}
+            <a href="{$source.uri}" target="_blank" title="View source">VIEW SOURCE</a>
+          {else}
+            <a href="{$source.path}{if $source.line and $source.line > 0}#l{$source.line}{/if}"
+                title="View source">VIEW SOURCE</a>
           {/if}
-          &#x2514;{sp}
-        {/if}
-        {call dossier.soy.types.namedTypeReference}
-          {param type: $type /}
-          {param useQualifiedName: true /}
-        {/call}
-      {/foreach}
-    </pre>
-  {/if}
+        </div>
+      {/if}
+    </div>
+  </section>
 {/template}
 
 
 /**
- * Prints a list of type expressions.
+ * Renders a single row in an info table.
+ */
+{template .infoRow private="true"}
+  {@param? title: html}
+  {@param cell1: html}
+  {@param? cell2: html}
+  {@param? id: string}
+  {@param? block: bool}
+
+  <tr class="info-row{if $block} block{/if}" {if $id}id="{$id}"{/if}>
+    {if $title}<th class="info-head">{$title}</th>{/if}
+    <td class="info-cell">{$cell1}</td>
+    {if $cell2}
+      <td class="info-cell">{$cell2}</td>
+    {/if}
+  </tr>
+{/template}
+
+
+/**
+ * Prints a list of type expressions in a table row.
  */
 {template .printTypeList private="true"}
   {@param types: list<dossier.expression.NamedType>}
   {@param title: string}
 
-  <dt class="spec">{$title}
-  {foreach $type in $types}
-    <dd>
-      <code>
-        {call dossier.soy.types.namedTypeReference}
-          {param type: $type /}
-          {param useQualifiedName: true /}
-        {/call}
-      </code>
-  {/foreach}
-{/template}
-
-
-/**
- * Prints a link to another descriptor that the given type is an alias
- * for.
- */
-{template .printAliasLink private="true"}
-  {@param type: dossier.JsType}
-
-  {if $type.aliasedType}
-    {call .printTypeList}
-      {param types: [$type.aliasedType] /}
-      {param title: 'Alias For' /}
-    {/call}
-  {elseif length($type.knownAlias)}
-    {call .printTypeList}
-      {param types: $type.knownAlias /}
-      {param title: 'All Known Aliases' /}
+  {if length($types)}
+    {call .infoRow}
+      {param title kind="html"}{$title}{/param}
+      {param block: true /}
+      {param cell1 kind="html"}
+        <ul class="type-list">
+        {foreach $type in $types}
+          <li>
+            {call dossier.soy.type.typeReference}
+              {param type: $type /}
+              {param useQualifiedName: true /}
+            {/call}
+        {/foreach}
+        </ul>
+      {/param}
     {/call}
   {/if}
 {/template}
@@ -134,12 +111,18 @@
  */
 {template .deprecationNotice private="true"}
   {@param deprecation: dossier.Comment}
+
   {if $deprecation and length($deprecation.token)}
-    <dt class="spec">Deprecated
-    <dd>
-    {call .comment}
-      {param comment: $deprecation /}
-    {/call}
+    <table class="info deprecation">
+      {call .infoRow}
+        {param title kind="html"}<i class="material-icons">warning</i> Deprecated{/param}
+        {param cell1 kind="html"}
+          {call .comment}
+            {param comment: $deprecation /}
+          {/call}
+        {/param}
+      {/call}
+    </table>
   {/if}
 {/template}
 
@@ -154,26 +137,26 @@
     <section class="enum-values">
       <h2>Values</h2>
       <section class="property">
-        {foreach $value in $enumeration.value}
-          <div id="{$value.name}">
-            <dl>
-              <dt{if $value.deprecation and length($value.deprecation.token)} class="deprecated"{/if}>
-                {$value.name}
-              {if ($value.description and length($value.description.token)) or
-                  ($value.deprecation and length($value.deprecation.token))}
-                <dd>
+        <table class="info">
+          {foreach $value in $enumeration.value}
+            {call .infoRow}
+              {param id: $value.name /}
+              {param block: true /}
+              {param title kind="html"}{$value.name}{/param}  // TODO: deprecation tags
+              {param cell1 kind="html"}
+                {if ($value.description and length($value.description.token)) or
+                    ($value.deprecation and length($value.deprecation.token))}
                   {call .comment}
                     {param comment: $value.description /}
                   {/call}
-                  <dl>
-                    {call .deprecationNotice}
-                      {param deprecation: $value.deprecation /}
-                    {/call}
-                  </dl>
-              {/if}
-            </dl>
-          </div>
-        {/foreach}
+                  {call .deprecationNotice}
+                    {param deprecation: $value.deprecation /}
+                  {/call}
+                {/if}
+              {/param}
+            {/call}
+          {/foreach}
+        </table>
       </section>
     </section>
   {/if}
@@ -222,37 +205,53 @@
   {@param? fillEmpty: bool}
 
   {if $fillEmpty or ($details and length($details) > 0)}
-    <dt class="spec">{$header}</dt>
-    <dd>
-      <dl>
+    {call .infoRow}
+      {param block: true /}
+      {param title kind="html"}{$header}{/param}
+      {param cell1 kind="html"}
         {if $details and length($details) > 0}
-          {foreach $detail in $details}
-            <dt class="type{if $detail.name}{sp}name{/if}">
-            {if $detail.name}<var>{$detail.name}</var>{/if}
-            {if $detail.type}
-              <code>
-                {call dossier.soy.types.expression}
-                  {param expression: $detail.type /}
-                  {param strict: true /}
+          <table class="info detail">
+            {foreach $detail in $details}
+              {let $type kind="html"}
+                {if $detail.type}
+                  {call dossier.soy.type.expression}
+                    {param expression: $detail.type /}
+                    {param strict: true /}
+                  {/call}
+                {/if}
+              {/let}
+              {let $content kind="html"}
+                {if $detail.description}
+                  {call .comment}
+                    {param comment: $detail.description /}
+                  {/call}
+                {/if}
+              {/let}
+
+              {if $detail.name}
+                {call .infoRow}
+                  {param cell1 kind="html"}<var>{$detail.name}</var>{/param}
+                  {param cell2 kind="html"}{$type}{/param}
                 {/call}
-              </code>
-            {/if}
-            {let $detailComment kind="html"}
-              {if $detail.description}
-                {call .comment}
-                  {param comment: $detail.description /}
+                {call .infoRow}
+                  {param cell1 kind="html"}{/param}
+                  {param cell2 kind="html"}{$content}{/param}
+                {/call}
+              {else}
+                {call .infoRow}
+                  {param cell1 kind="html"}{$type}{/param}
+                {/call}
+                {call .infoRow}
+                  {param cell1 kind="html"}{$content}{/param}
                 {/call}
               {/if}
-            {/let}
-            {if $detailComment and $detailComment != '.'}
-              <dd>{$detailComment}
-            {/if}
-          {/foreach}
+            {/foreach}
+          </table>
         {else}
-          <dd><p>None.</p>
+          <p>None.</p>
         {/if}
-      </dl>
-    </dd>
+      {/param}
+    {/call}
   {/if}
 {/template}
 
@@ -263,20 +262,18 @@
  */
 {template .fnDetails}
   {@param fn: dossier.Function}
-  {@param? forceParams: bool}
+  {@param? verbose: bool}  // Whether to print the overrides and deprecation notice.
 
-  // Only generate the table if there is data to actually display.
-  {if $forceParams
-      or length($fn.parameter)
-      or length($fn.thrown)
-      or length($fn.base.seeAlso)
-      or ($fn.return and not $fn.isConstructor
-          and (($fn.return.description and length($fn.return.description.token))
-               or $fn.return.type))}
+  <table class="info">
+    {if $verbose}
+      {call .overrides}
+        {param base: $fn.base /}
+      {/call}
+    {/if}
     {call .typeDetails}
       {param header: 'Parameters' /}
       {param details: $fn.parameter /}
-      {param fillEmpty: $forceParams /}
+      {param fillEmpty: true /}
     {/call}
     {if not $fn.isConstructor
         and $fn.return
@@ -294,7 +291,7 @@
     {call .seeAlso}
       {param base: $fn.base /}
     {/call}
-  {/if}
+  </table>
 {/template}
 
 
@@ -331,7 +328,7 @@
     {sp}
     {foreach $parameter in $fn.parameter}
       <var>
-        {if $parameter.type.isVarargs}&hellip;{/if}
+        {if $parameter.type.isVarargs}...{/if}
         {$parameter.name}
       </var>
       {if not isLast($parameter)},{sp}{/if}
@@ -339,15 +336,16 @@
     {sp}
   {/if}
   )
-  {if not $fn.isConstructor
-      and $fn.return
-      and $fn.return.type}
-    {sp}<var>⇒</var>{sp}
-    <code>
-      {call dossier.soy.types.expression}
+  {if not $fn.isConstructor}
+    {if $fn.return and $fn.return.type}
+      {call dossier.soy.type.yields}
         {param expression: $fn.return.type /}
       {/call}
-    </code>
+    {elseif $fn.return}  // Return statement with no type.
+      {call dossier.soy.type.yieldsUnknown /}
+    {else}
+      {call dossier.soy.type.yieldsVoid /}
+    {/if}
   {/if}
 {/template}
 
@@ -380,7 +378,6 @@
     </h3>
     {call .fnDetails}
       {param fn: $fn /}
-      {param forceParams: true /}
     {/call}
   {elseif $isNonTrivial}
     <h3 class="name">
@@ -390,11 +387,9 @@
         {/call}
       </div>
     </h3>
-    <dl>
-      {call .fnDetails}
-        {param fn: $fn /}
-      {/call}
-    </dl>
+    {call .fnDetails}
+      {param fn: $fn /}
+    {/call}
   {/if}
 {/template}
 
@@ -407,35 +402,134 @@
   {@param base: dossier.BaseProperty}
 
   {if $base.definedBy}
-    <dt class="spec">Defined by</dt>
-    <dd>
-      {call dossier.soy.types.namedTypeReference}
-        {param type: $base.definedBy /}
-        {param useQualifiedName: true /}
-      {/call}
-    </dd>
+    {call .printTypeList}
+      {param types: [$base.definedBy] /}
+      {param title: 'Defined by' /}
+    {/call}
   {/if}
   {if $base.overrides}
-    <dt class="spec">Overrides</dt>
-    <dd>
-      {call dossier.soy.types.namedTypeReference}
-        {param type: $base.overrides /}
-        {param useQualifiedName: true /}
-      {/call}
-    </dd>
+    {call .printTypeList}
+      {param types: [$base.overrides] /}
+      {param title: 'Overrides' /}
+    {/call}
   {/if}
-  {if length($base.specifiedBy)}
-    <dt class="spec">Specified by</dt>
-    {foreach $spec in $base.specifiedBy}
-      <dd>
-        {call dossier.soy.types.namedTypeReference}
-          {param type: $spec /}
-          {param useQualifiedName: true /}
-        {/call}
-      </dd>
-    {/foreach}
-  {/if}
+  {call .printTypeList}
+    {param types: $base.specifiedBy /}
+    {param title: 'Specified by' /}
+  {/call}
+{/template}
 
+
+/**
+ * Renders a collection of properties.
+ */
+{template .renderProperties}
+  {@param title: string}
+  {@param? functions: list<dossier.Function>}
+  {@param? properties: list<dossier.Property>}
+
+  {if ($functions and length($functions)) or ($properties and length($properties))}
+    <section class="instance-methods">  // TODO: rename.
+      <h2>{$title}</h2>
+      {if $functions and length($functions)}
+        {foreach $function in $functions}
+          {call .renderProperty}
+            {param function: $function /}
+          {/call}
+        {/foreach}
+      {elseif $properties and length($properties)}
+        {foreach $property in $properties}
+          {call .renderProperty}
+            {param property: $property /}
+          {/call}
+        {/foreach}
+      {/if}
+    </section>
+  {/if}
+{/template}
+
+
+/**
+ * Renders the header for an expandable property section.
+ */
+{template .renderProperty}
+  {@param? function: dossier.Function}
+  {@param? property: dossier.Property}
+
+  {let $base: $function ? $function.base : $property.base /}
+  {call .renderCard}
+    {param className: 'property expandable' /}
+    {param id: $base.name /}
+    {param source: $base.source /}
+    {param header kind="html"}
+      <div class="more">
+        <i class="material-icons">expand_more</i>
+      </div>
+
+      <h3 class="name">
+        {call .tags}
+          {param tags: $base.tags /}
+          {param visibility: $base.visibility /}
+        {/call}
+        <div>
+          {if $function}
+            {call .functionSignature}
+              {param fn: $function /}
+            {/call}
+          {elseif $property}
+            {$base.name}
+            {if $property.type}
+              {call dossier.soy.type.yields}
+                {param expression: $property.type /}
+                {param strict: true /}
+              {/call}
+            {/if}
+          {/if}
+        </div>
+      </h3>
+    {/param}
+    {param body kind="html"}
+      {call .comment}
+        {param comment: $base.description /}
+      {/call}
+      {call .deprecationNotice}
+        {param deprecation: $base.deprecation /}
+      {/call}
+      {let $fn: $function /}
+      {if $fn
+          and (($fn.base.deprecation and length($fn.base.deprecation.token))
+               or $fn.base.overrides
+               or length($fn.base.specifiedBy)
+               or length($fn.parameter)
+               or length($fn.thrown)
+               or ($fn.return
+                   and (($fn.return.description and length($fn.return.description.token))
+                        or $fn.return.type)))}
+        {if $function}  // Extra if required for soy type checking.
+          {call .fnDetails}
+            {param fn: $function /}
+            {param verbose: true /}
+          {/call}
+        {/if}
+      {elseif $property
+          and ($property.base.overrides
+               or length($property.base.specifiedBy)
+               or ($property.base.deprecation and length($property.base.deprecation.token))
+               or length($property.base.seeAlso))}
+        <table class="info">
+          {call .overrides}
+            {param base: $property.base /}
+          {/call}
+          {call .seeAlso}
+            {param base: $property.base /}
+          {/call}
+        </table>
+      {elseif not $base.description
+              or not length($base.description.token)}
+        <p>No information.</p>
+      {/if}
+    {/param}
+  {/call}
 {/template}
 
 
@@ -446,54 +540,9 @@
   {@param functions: list<dossier.Function>}
 
   {foreach $fn in $functions}
-    <section class="property expandable" id="{$fn.base.name}">
-      <div class="header">
-        {call .codeLink}
-          {param source: $fn.base.source /}
-        {/call}
-
-        <h3 class="name">
-          {call .tags}
-            {param tags: $fn.base.tags /}
-            {param visibility: $fn.base.visibility /}
-          {/call}
-          <div>
-            {call .functionSignature}
-              {param fn: $fn /}
-            {/call}
-          </div>
-        </h3>
-      </div>
-
-      <div class="body">
-        {call .comment}
-          {param comment: $fn.base.description /}
-        {/call}
-
-        {if ($fn.base.deprecation and length($fn.base.deprecation.token))
-            or $fn.base.overrides
-            or length($fn.base.specifiedBy)
-            or length($fn.parameter)
-            or length($fn.thrown)
-            or ($fn.return and
-                (($fn.return.description and length($fn.return.description.token)) or
-                 $fn.return.type))}
-          <dl>
-            {call .deprecationNotice}
-              {param deprecation: $fn.base.deprecation /}
-            {/call}
-            {call .overrides}
-              {param base: $fn.base /}
-            {/call}
-            {call .fnDetails}
-              {param fn: $fn /}
-            {/call}
-          </dl>
-        {elseif not $fn.base.description or not length($fn.base.description.token)}
-          <p>No information.</p>
-        {/if}
-      </div>
-    </section>
+    {call .renderProperty}
+      {param function: $fn /}
+    {/call}
   {/foreach}
 {/template}
 
@@ -505,86 +554,28 @@
   <ul>
     {foreach $property in $properties}
       <li id="{$property.base.name}">
-        {if $property.base.source}
-          {call .codeLink}
-            {param source: $property.base.source /}
-            {param text: $property.base.name /}
-            {param noDiv: true /}
-          {/call}
-        {else}
-          {$property.base.name}
+        {let $link: $property.base.source
+                    and ($property.base.source.path or $property.base.source.uri) /}
+        {if $link}
+          {if $property.base.source.uri}
+            <a href="{$property.base.source.uri}" target="_blank" title="View source">
+          {else}
+            {let $hasLine: $property.base.source.line and $property.base.source.line > 0 /}
+            <a href="{$property.base.source.path}{if $hasLine}#l{$property.base.source.line}{/if}"
+                title="View source">
+          {/if}
         {/if}
+        {$property.base.name}
+        {if $link}</a>{/if}
+
         {if $property.type}
-          <i>(
-            {call dossier.soy.types.expression}
-              {param expression: $property.type /}
-              {param strict: true /}
-            {/call}
-          )</i>
+          {call dossier.soy.type.yields}
+            {param expression: $property.type /}
+            {param strict: true /}
+          {/call}
         {/if}
     {/foreach}
   </ul>
-{/template}
-
-/**
- * Print a list of properties.
- */
-{template .printProperties}
-  {@param properties: list<dossier.Property>}
-
-  {foreach $property in $properties}
-    <section class="property expandable" id="{$property.base.name}">
-      <div class="header">
-        {call .codeLink}
-          {param source: $property.base.source /}
-        {/call}
-
-        <h3 class="name">
-          {call .tags}
-            {param tags: $property.base.tags /}
-            {param visibility: $property.base.visibility /}
-          {/call}
-          <div>{$property.base.name}</div>
-        </h3>
-      </div>
-
-      <div class="body">
-        {call .comment}
-          {param comment: $property.base.description /}
-        {/call}
-
-        {if $property.base.overrides
-            or length($property.base.specifiedBy)
-            or $property.type
-            or ($property.base.deprecation and length($property.base.deprecation.token))
-            or length($property.base.seeAlso)}
-          <dl>
-            {call .deprecationNotice}
-              {param deprecation: $property.base.deprecation /}
-            {/call}
-            {if $property.type}
-              <dt class="spec">Type
-              <dd>
-                {call dossier.soy.types.expression}
-                  {param expression: $property.type /}
-                  {param strict: true /}
-                {/call}
-              </dd>
-            {/if}
-            {call .overrides}
-              {param base: $property.base /}
-            {/call}
-            {call .seeAlso}
-              {param base: $property.base /}
-            {/call}
-          </dl>
-        {elseif not $property.base.description
-            or not length($property.base.description.token)}
-          <p>No information.</p>
-        {/if}
-      </div>
-    </section>
-  {/foreach}
 {/template}
 
 
@@ -595,101 +586,18 @@
 {template .seeAlso}
   {@param base: dossier.BaseProperty}
   {if length($base.seeAlso)}
-    <dt class="spec">See Also</dt>
-    {foreach $ref in $base.seeAlso}
-      <dd>
-        {call .comment}
-          {param comment: $ref /}
-        {/call}
-      </dd>
-    {/foreach}
-  {/if}
-{/template}
-
-
-/**
- * Renders documentation for properties defined on the given type's
- * prototype chain.
- */
-{template .prototype}
-  {@param type: dossier.JsType}
-
-  {if length($type.method)}
-    <section class="instance-methods">
-      <h2>Instance Methods</h2>
-      {call .printFunctions}
-        {param functions: $type.method /}
-      {/call}
-    </section>
-  {/if}
-
-  {if length($type.field)}
-    <section class="instance-properties">
-      <h2>Instance Properties</h2>
-      {call .printProperties}
-        {param properties: $type.field /}
-      {/call}
-    </section>
-  {/if}
-{/template}
-
-
-/**
- * Prints the static property information for the given descriptor.
- */
-{template .static}
-  {@param type: dossier.JsType}
-
-  {if length($type.staticFunction)}
-    <section class="static-functions">
-      <h2>
-        {if $type.tags.isModule}
-          Exported Functions
-        {elseif $type.mainFunction and $type.mainFunction.isConstructor}
-          Static Functions
-        {else}
-          Functions
-        {/if}
-      </h2>
-      {call .printFunctions}
-        {param functions: $type.staticFunction /}
-      {/call}
-    </section>
-  {/if}
-
-  {if $type.tags.isModule and length($type.reexportedModule)}
-    <section class="exported-modules">
-      <h2>Exported Modules</h2>
-      {call .printReexportedModules}
-        {param properties: $type.reexportedModule /}
-      {/call}
-    </section>
-  {/if}
-
-  {if length($type.staticProperty)}
-    <section class="static-properties">
-      <h2>
-        {if $type.tags.isModule}
-          Exported Properties
-        {elseif $type.mainFunction and $type.mainFunction.isConstructor}
-          Static Properties
-        {else}
-          Properties
-        {/if}
-      </h2>
-      {call .printProperties}
-        {param properties: $type.staticProperty /}
-      {/call}
-    </section>
-  {/if}
-
-  {if length($type.compilerConstant)}
-    <section class="constants">
-      <h2>Compiler Constants</h2>
-      {call .printProperties}
-        {param properties: $type.compilerConstant /}
-      {/call}
-    </section>
+    {call .infoRow}
+      {param block: true /}
+      {param title kind="html"}See Also{/param}
+      {param cell1 kind="html"}
+        {foreach $ref in $base.seeAlso}
+          {call .comment}
+            {param comment: $ref /}
+            {param ensureParagraph: true /}
+          {/call}
+        {/foreach}
+      {/param}
+    {/call}
   {/if}
 {/template}
 
@@ -701,22 +609,12 @@
   {@param type: dossier.JsType}
 
   {if $type.parent}
-    <div class="parentlink">
-      <b>{if $type.parent.isModule}Module{else}Namespace{/if}:</b>{sp}
-      {if $type.parent.link.href}
-        <a href="{$type.parent.link.href}">{$type.parent.link.text}</a>
-      {else}
-        {$type.parent.link.text}
-      {/if}
-    </div>
-  {/if}
-  {if $type.source}
-    <div class="codelink">
-      {call .sourceLink}
-        {param text: 'View Source' /}
-        {param source: $type.source /}
+    <table class="info">
+      {call .printTypeList}
+        {param types: [$type.parent.type] /}
+        {param title: $type.parent.isModule ? 'Module' : 'Namespace' /}
       {/call}
-    </div>
+    </table>
   {/if}
   <h1 class="title{if $type.deprecation}{sp}deprecated{/if}">
     {call .tags}
@@ -809,15 +707,11 @@
  */
 {template .typefile}
   {@param spec: dossier.JsTypeRenderSpec}
-
-  {call dossier.soy.common.pageHeader}
+  {call dossier.soy.common.renderPage}
     {param title: $spec.type[0].name /}
     {param resources: $spec.resources /}
     {param index: $spec.index /}
-  {/call}
-
-  <div class="content">
-    <main>
+    {param content kind="html"}
       {if length($spec.type) > 1}
         <article>
           <h2>Did you mean?</h2>
@@ -836,66 +730,67 @@
         {else}
           <article>
         {/if}
-          <section class="intro">
-            <div class="header">
+          {call .renderCard}
+            {param className: 'intro' /}
+            {param source: $type.source /}
+            {param header kind="html"}
               {call .typeHeader}
                 {param type: $type /}
               {/call}
-            </div>
-            <div class="body">
-              {call .classInheritance}
-                {param types: $type.extendedType /}
-              {/call}
-              {if $type.aliasedType
-                  or length($type.knownAlias)
+            {/param}
+            {param body kind="html"}
+              {if length($type.extendedType)
                   or length($type.implementedType)
                   or length($type.subtype)
                   or ($type.tags.isInterface and length($type.implementation))
-                  or ($type.enumeration and $type.enumeration.type)
-                  or ($type.deprecation and length($type.deprecation.token))}
-                <dl>
-                  {if $type.enumeration and $type.enumeration.type}
-                    <dt class="spec">Type
-                    <dd>
-                      <code>
-                        {call dossier.soy.types.expression}
+                  or $type.aliasedType
+                  or length($type.knownAlias)
+                  or ($type.enumeration and $type.enumeration.type)}
+                <table class="info">
+                  {call .printTypeList}
+                    {param types: $type.extendedType /}
+                    {param title: 'Extends' /}
+                  {/call}
+                  {call .printTypeList}
+                    {param types: $type.implementedType /}
+                    {param title: 'All ' + ($type.tags.isInterface ? 'Extended' : 'Implemented')
+                                      + ' Interfaces' /}
+                  {/call}
+                  {call .printTypeList}
+                    {param types: $type.subtype /}
+                    {param title: 'All Known '
+                        + ($type.tags.isInterface ? 'Subinterfaces' : 'Direct Subclasses') /}
+                  {/call}
+                  {call .printTypeList}
+                    {param types: $type.implementation /}
+                    {param title: 'All Known Implementations' /}
+                  {/call}
+                  {if $type.aliasedType}
+                    {call .printTypeList}
+                      {param types: [$type.aliasedType] /}
+                      {param title: 'Alias for' /}
+                    {/call}
+                  {/if}
+                  {call .printTypeList}
+                    {param types: $type.knownAlias /}
+                    {param title: 'All Known Aliases' /}
+                  {/call}
+                  {if ($type.enumeration and $type.enumeration.type)}
+                    {call .infoRow}
+                      {param title kind="html"}Type{/param}
+                      {param cell1 kind="html"}
+                        {call dossier.soy.type.expression}
                           {param expression: $type.enumeration.type /}
                           {param strict: true /}
                         {/call}
-                      </code>
-                  {/if}
-                  {call .printAliasLink}
-                    {param type: $type /}
-                  {/call}
-
-                  {if length($type.implementedType)}
-                    {call .printTypeList}
-                      {param types: $type.implementedType /}
-                      {param title: 'All ' + ($type.tags.isInterface ? 'Extended' : 'Implemented')
-                          + ' Interfaces' /}
+                      {/param}
                     {/call}
                   {/if}
-
-                  {if length($type.subtype)}
-                    {call .printTypeList}
-                      {param types: $type.subtype /}
-                      {param title: 'All Known '
-                          + ($type.tags.isInterface ? 'Subinterfaces' : 'Direct Subclasses') /}
-                    {/call}
-                  {/if}
-
-                  {if $type.tags.isInterface and length($type.implementation)}
-                    {call .printTypeList}
-                      {param types: $type.implementation /}
-                      {param title: 'All Known Implementations' /}
-                    {/call}
-                  {/if}
-
-                  {call .deprecationNotice}
-                    {param deprecation: $type.deprecation /}
-                  {/call}
-                </dl>
+                </table>
               {/if}
+              {call .deprecationNotice}
+                {param deprecation: $type.deprecation /}
+              {/call}
               {if $type.description
                   and length($type.description.token)}
                 {call .comment}
@@ -910,8 +805,8 @@
                   {param type: $type /}
                 {/call}
               {/if}
-            </div>
-          </section>
+            {/param}
+          {/call}
 
           {if $type.enumeration}
             {call .enumValues}
@@ -919,82 +814,82 @@
             {/call}
           {/if}
 
-          {call .prototype}
-            {param type: $type /}
+          {call .renderProperties}
+            {param title: 'Instance Methods' /}
+            {param functions: $type.method /}
           {/call}
 
-          {call .static}
-            {param type: $type /}
+          {call .renderProperties}
+            {param title: 'Instance Properties' /}
+            {param properties: $type.field /}
           {/call}
+
+          {let $staticPrefix kind="text"}
+            {if $type.tags.isModule}
+              Exported{sp}
+            {elseif $type.mainFunction and $type.mainFunction.isConstructor}
+              Static{sp}
+            {/if}
+          {/let}
+
+          {if length($type.staticFunction)}
+            {call .renderProperties}
+              {param title: $staticPrefix + 'Functions' /}
+              {param functions: $type.staticFunction /}
+            {/call}
+          {/if}
+
+          {if $type.tags.isModule and length($type.reexportedModule)}
+            <section class="exported-modules">
+              <h2>Exported Modules</h2>
+              {call .printReexportedModules}
+                {param properties: $type.reexportedModule /}
+              {/call}
+            </section>
+          {/if}
+
+          {if length($type.staticProperty)}
+            {call .renderProperties}
+              {param title: $staticPrefix + 'Properties' /}
+              {param properties: $type.staticProperty /}
+            {/call}
+          {/if}
+
+          {if length($type.compilerConstant)}
+            {call .renderProperties}
+              {param title: 'Compiler Constants' /}
+              {param properties: $type.compilerConstant /}
+            {/call}
+          {/if}
 
           {call .nestedTypeSection}
             {param isModule: $type.tags.isModule /}
             {param title: 'Interfaces' /}
             {param types: $type.nested.interface /}
           {/call}
+
           {call .nestedTypeSection}
             {param isModule: $type.tags.isModule /}
             {param title: 'Classes' /}
             {param types: $type.nested.class /}
           {/call}
+
           {call .nestedTypeSection}
             {param isModule: $type.tags.isModule /}
             {param title: 'Enumerations' /}
             {param types: $type.nested.enum /}
           {/call}
 
-          {if length($type.typeDef) > 0}
-            <section class="type-defs">
-              <h2>Type Definitions</h2>
-              {foreach $typedef in $type.typeDef}
-                <section id="{$typedef.name}" class="property expandable">
-                  <div class="header">
-                    {call .codeLink}
-                      {param source: $typedef.source /}
-                    {/call}
-                    <h3 class="name">
-                      {call .tags}
-                        {param tags: $typedef.tags /}
-                        {param visibility: $typedef.visibility /}
-                      {/call}
-                      <div>{$typedef.name}</div>
-                    </h3>
-                  </div>
-                  <div class="body">
-                    <dl>
-                      <dt class="spec">Type
-                      <dd>
-                        <code>
-                          {call dossier.soy.types.expression}
-                            {param expression: $typedef.type /}
-                            {param strict: true /}
-                          {/call}
-                        </code>
-                      {call .deprecationNotice}
-                        {param deprecation: $typedef.deprecation /}
-                      {/call}
-                    </dl>
-                    {if $typedef.description and length($typedef.description.token)}
-                      {call .comment}
-                        {param comment: $typedef.description /}
-                      {/call}
-                    {else}
-                      <p>No description.</p>
-                    {/if}
-                  </div>
-                </section>
-              {/foreach}
-            </section>
+          {if length($type.typeDef)}
+            {call .renderProperties}
+              {param title: 'Type Definitions' /}
+              {param properties: $type.typeDef /}
+            {/call}
           {/if}
 
         </article>
       {/foreach}
-    </main>
-    {call dossier.soy.common.footer /}
-  </div>
-
-  {call dossier.soy.common.pageFooter}
-    {param resources: $spec.resources /}
+    {/param}
   {/call}
 {/template}
 
@@ -1004,15 +899,11 @@
  */
 {template .htmlFile}
   {@param spec: dossier.HtmlRenderSpec}
-
-  {call dossier.soy.common.pageHeader}
+  {call dossier.soy.common.renderPage}
     {param title: $spec.title /}
     {param resources: $spec.resources /}
     {param index: $spec.index /}
-  {/call}
-
-  <div class="content">
-    <main>
+    {param content kind="html"}
       <article class="page">
         {if $spec.content and length($spec.content.token)}
           {call .comment}
@@ -1022,12 +913,7 @@
           <strong>TODO</strong>
          {/if}
       </article>
-    </main>
-    {call dossier.soy.common.footer /}
-  </div>
-
-  {call dossier.soy.common.pageFooter}
-    {param resources: $spec.resources /}
+    {/param}
   {/call}
 {/template}
 
@@ -1038,35 +924,23 @@
  */
 {template .srcfile}
   {@param spec: dossier.SourceFileRenderSpec}
-
-  {call dossier.soy.common.pageHeader}
+  {call dossier.soy.common.renderPage}
     {param title: $spec.file.baseName /}
     {param resources: $spec.resources /}
     {param index: $spec.index /}
-  {/call}
-
-  <div class="content">
-    <main>
+    {param content kind="html"}
       <article class="srcfile">
-      <h1>{$spec.file.path}</h1>
-
-      <div>
-        <table>
-          {foreach $line in $spec.file.lines}
-            <tr>
-              <td><a id="l{index($line) + 1}"></a><a href="#l{index($line) + 1}">{index($line) + 1}</a>
-              <td>{$line}
-          {/foreach}
-        </table>
-      </div>
-
+        <h1 class="title">{$spec.file.path}</h1>
+        <div>
+          <table>
+            {foreach $line in $spec.file.lines}
+              <tr id="l{index($line) + 1}">
+                <td><a href="#l{index($line) + 1}">{index($line) + 1}</a>
+                <td>{$line}
+            {/foreach}
+          </table>
+        </div>
       </article>
-    </main>
-
-    {call dossier.soy.common.footer /}
-  </div>
-
-  {call dossier.soy.common.pageFooter}
-    {param resources: $spec.resources /}
+    {/param}
   {/call}
 {/template}

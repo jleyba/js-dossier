@@ -174,7 +174,8 @@
       "href": "Formatter.html",
       "interface": false,
       "members": [
-        "format"
+        "format",
+        "oldFormat"
       ],
       "name": "Formatter",
       "namespace": false,

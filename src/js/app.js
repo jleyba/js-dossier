@@ -72,9 +72,6 @@ class Application {
     this.version = version;
 
     /** @private {number} */
-    this.seed_ = Date.now();
-
-    /** @private {number} */
     this.stateId_ = 0;
 
     /**
@@ -139,18 +136,19 @@ class Application {
       return;
     }
 
-    let current = srcTable.querySelector('tr.hilite');
+    let current = srcTable.querySelector('tr.target');
     if (current) {
-      current.classList.remove('hilite');
+      current.classList.remove('target');
     }
 
     if (location.hash) {
-      let target = srcTable.querySelector('tr > td a' + location.hash);
+      // We we change the current hash via history.pushState, the browser will
+      // not always properly apply the :target pseudo class, so we manually
+      // track this with the .target class.
+      let target = srcTable.querySelector('tr' + location.hash);
       if (target) {
-        let tr = /** @type {!Element} */(
-            dom.getAncestor(target, node => node.nodeName === 'TR'));
-        tr.classList.add('hilite');
-        this.scrollTo(tr);
+        target.classList.add('target');
+        this.scrollTo(target);
       }
     }
   }
@@ -461,7 +459,7 @@ class Application {
 
   /** @private */
   getDomKey_() {
-    return this.version + ':' + this.seed_ + ':' + this.stateId_;
+    return this.version + ':' + this.stateId_;
   }
 
   /** @private */

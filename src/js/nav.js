@@ -512,14 +512,11 @@ class NavDrawer {
     if (goog.isBoolean(opt_value)) {
       if (opt_value) {
         el.classList.add('open');
-        el.classList.remove('close');
       } else {
         el.classList.remove('open');
-        el.classList.add('close');
       }
     } else {
       el.classList.toggle('open');
-      el.classList.toggle('close');
     }
   }
 }

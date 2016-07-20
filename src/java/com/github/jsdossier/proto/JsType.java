@@ -134,10 +134,10 @@ public  final class JsType extends
           }
           case 82: {
             if (!((mutable_bitField0_ & 0x00000040) == 0x00000040)) {
-              typeDef_ = new java.util.ArrayList<com.github.jsdossier.proto.JsType.TypeDef>();
+              typeDef_ = new java.util.ArrayList<com.github.jsdossier.proto.Property>();
               mutable_bitField0_ |= 0x00000040;
             }
-            typeDef_.add(input.readMessage(com.github.jsdossier.proto.JsType.TypeDef.parser(), extensionRegistry));
+            typeDef_.add(input.readMessage(com.github.jsdossier.proto.Property.parser(), extensionRegistry));
             break;
           }
           case 90: {
@@ -2842,1493 +2842,22 @@ public  final class JsType extends
 
   }
 
-  public interface TypeDefOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:dossier.JsType.TypeDef)
-      com.google.protobuf.MessageOrBuilder {
-
-    /**
-     * <code>optional string name = 1;</code>
-     */
-    java.lang.String getName();
-    /**
-     * <code>optional string name = 1;</code>
-     */
-    com.google.protobuf.ByteString
-        getNameBytes();
-
-    /**
-     * <code>optional .dossier.expression.TypeExpression type = 2;</code>
-     */
-    boolean hasType();
-    /**
-     * <code>optional .dossier.expression.TypeExpression type = 2;</code>
-     */
-    com.github.jsdossier.proto.TypeExpression getType();
-    /**
-     * <code>optional .dossier.expression.TypeExpression type = 2;</code>
-     */
-    com.github.jsdossier.proto.TypeExpressionOrBuilder getTypeOrBuilder();
-
-    /**
-     * <code>optional .dossier.SourceLink source = 3;</code>
-     */
-    boolean hasSource();
-    /**
-     * <code>optional .dossier.SourceLink source = 3;</code>
-     */
-    com.github.jsdossier.proto.SourceLink getSource();
-    /**
-     * <code>optional .dossier.SourceLink source = 3;</code>
-     */
-    com.github.jsdossier.proto.SourceLinkOrBuilder getSourceOrBuilder();
-
-    /**
-     * <code>optional .dossier.Comment description = 4;</code>
-     */
-    boolean hasDescription();
-    /**
-     * <code>optional .dossier.Comment description = 4;</code>
-     */
-    com.github.jsdossier.proto.Comment getDescription();
-    /**
-     * <code>optional .dossier.Comment description = 4;</code>
-     */
-    com.github.jsdossier.proto.CommentOrBuilder getDescriptionOrBuilder();
-
-    /**
-     * <code>optional .dossier.Comment deprecation = 5;</code>
-     */
-    boolean hasDeprecation();
-    /**
-     * <code>optional .dossier.Comment deprecation = 5;</code>
-     */
-    com.github.jsdossier.proto.Comment getDeprecation();
-    /**
-     * <code>optional .dossier.Comment deprecation = 5;</code>
-     */
-    com.github.jsdossier.proto.CommentOrBuilder getDeprecationOrBuilder();
-
-    /**
-     * <code>optional .dossier.Visibility visibility = 6;</code>
-     */
-    int getVisibilityValue();
-    /**
-     * <code>optional .dossier.Visibility visibility = 6;</code>
-     */
-    com.github.jsdossier.proto.Visibility getVisibility();
-
-    /**
-     * <code>optional .dossier.Tags tags = 7;</code>
-     */
-    boolean hasTags();
-    /**
-     * <code>optional .dossier.Tags tags = 7;</code>
-     */
-    com.github.jsdossier.proto.Tags getTags();
-    /**
-     * <code>optional .dossier.Tags tags = 7;</code>
-     */
-    com.github.jsdossier.proto.TagsOrBuilder getTagsOrBuilder();
-  }
-  /**
-   * Protobuf type {@code dossier.JsType.TypeDef}
-   *
-   * <pre>
-   * Describes a typedef defined within this type.
-   * </pre>
-   */
-  public  static final class TypeDef extends
-      com.google.protobuf.GeneratedMessage implements
-      // @@protoc_insertion_point(message_implements:dossier.JsType.TypeDef)
-      TypeDefOrBuilder {
-    // Use TypeDef.newBuilder() to construct.
-    private TypeDef(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
-      super(builder);
-    }
-    private TypeDef() {
-      name_ = "";
-      visibility_ = 0;
-    }
-
-    @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
-      return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
-    }
-    private TypeDef(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
-      this();
-      int mutable_bitField0_ = 0;
-      try {
-        boolean done = false;
-        while (!done) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              done = true;
-              break;
-            default: {
-              if (!input.skipField(tag)) {
-                done = true;
-              }
-              break;
-            }
-            case 10: {
-              java.lang.String s = input.readStringRequireUtf8();
-
-              name_ = s;
-              break;
-            }
-            case 18: {
-              com.github.jsdossier.proto.TypeExpression.Builder subBuilder = null;
-              if (type_ != null) {
-                subBuilder = type_.toBuilder();
-              }
-              type_ = input.readMessage(com.github.jsdossier.proto.TypeExpression.parser(), extensionRegistry);
-              if (subBuilder != null) {
-                subBuilder.mergeFrom(type_);
-                type_ = subBuilder.buildPartial();
-              }
-
-              break;
-            }
-            case 26: {
-              com.github.jsdossier.proto.SourceLink.Builder subBuilder = null;
-              if (source_ != null) {
-                subBuilder = source_.toBuilder();
-              }
-              source_ = input.readMessage(com.github.jsdossier.proto.SourceLink.parser(), extensionRegistry);
-              if (subBuilder != null) {
-                subBuilder.mergeFrom(source_);
-                source_ = subBuilder.buildPartial();
-              }
-
-              break;
-            }
-            case 34: {
-              com.github.jsdossier.proto.Comment.Builder subBuilder = null;
-              if (description_ != null) {
-                subBuilder = description_.toBuilder();
-              }
-              description_ = input.readMessage(com.github.jsdossier.proto.Comment.parser(), extensionRegistry);
-              if (subBuilder != null) {
-                subBuilder.mergeFrom(description_);
-                description_ = subBuilder.buildPartial();
-              }
-
-              break;
-            }
-            case 42: {
-              com.github.jsdossier.proto.Comment.Builder subBuilder = null;
-              if (deprecation_ != null) {
-                subBuilder = deprecation_.toBuilder();
-              }
-              deprecation_ = input.readMessage(com.github.jsdossier.proto.Comment.parser(), extensionRegistry);
-              if (subBuilder != null) {
-                subBuilder.mergeFrom(deprecation_);
-                deprecation_ = subBuilder.buildPartial();
-              }
-
-              break;
-            }
-            case 48: {
-              int rawValue = input.readEnum();
-
-              visibility_ = rawValue;
-              break;
-            }
-            case 58: {
-              com.github.jsdossier.proto.Tags.Builder subBuilder = null;
-              if (tags_ != null) {
-                subBuilder = tags_.toBuilder();
-              }
-              tags_ = input.readMessage(com.github.jsdossier.proto.Tags.parser(), extensionRegistry);
-              if (subBuilder != null) {
-                subBuilder.mergeFrom(tags_);
-                tags_ = subBuilder.buildPartial();
-              }
-
-              break;
-            }
-          }
-        }
-      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw new RuntimeException(e.setUnfinishedMessage(this));
-      } catch (java.io.IOException e) {
-        throw new RuntimeException(
-            new com.google.protobuf.InvalidProtocolBufferException(
-                e.getMessage()).setUnfinishedMessage(this));
-      } finally {
-        makeExtensionsImmutable();
-      }
-    }
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return com.github.jsdossier.proto.Dossier.internal_static_dossier_JsType_TypeDef_descriptor;
-    }
-
-    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return com.github.jsdossier.proto.Dossier.internal_static_dossier_JsType_TypeDef_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              com.github.jsdossier.proto.JsType.TypeDef.class, com.github.jsdossier.proto.JsType.TypeDef.Builder.class);
-    }
-
-    public static final int NAME_FIELD_NUMBER = 1;
-    private volatile java.lang.Object name_;
-    /**
-     * <code>optional string name = 1;</code>
-     */
-    public java.lang.String getName() {
-      java.lang.Object ref = name_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        name_ = s;
-        return s;
-      }
-    }
-    /**
-     * <code>optional string name = 1;</code>
-     */
-    public com.google.protobuf.ByteString
-        getNameBytes() {
-      java.lang.Object ref = name_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        name_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int TYPE_FIELD_NUMBER = 2;
-    private com.github.jsdossier.proto.TypeExpression type_;
-    /**
-     * <code>optional .dossier.expression.TypeExpression type = 2;</code>
-     */
-    public boolean hasType() {
-      return type_ != null;
-    }
-    /**
-     * <code>optional .dossier.expression.TypeExpression type = 2;</code>
-     */
-    public com.github.jsdossier.proto.TypeExpression getType() {
-      return type_ == null ? com.github.jsdossier.proto.TypeExpression.getDefaultInstance() : type_;
-    }
-    /**
-     * <code>optional .dossier.expression.TypeExpression type = 2;</code>
-     */
-    public com.github.jsdossier.proto.TypeExpressionOrBuilder getTypeOrBuilder() {
-      return getType();
-    }
-
-    public static final int SOURCE_FIELD_NUMBER = 3;
-    private com.github.jsdossier.proto.SourceLink source_;
-    /**
-     * <code>optional .dossier.SourceLink source = 3;</code>
-     */
-    public boolean hasSource() {
-      return source_ != null;
-    }
-    /**
-     * <code>optional .dossier.SourceLink source = 3;</code>
-     */
-    public com.github.jsdossier.proto.SourceLink getSource() {
-      return source_ == null ? com.github.jsdossier.proto.SourceLink.getDefaultInstance() : source_;
-    }
-    /**
-     * <code>optional .dossier.SourceLink source = 3;</code>
-     */
-    public com.github.jsdossier.proto.SourceLinkOrBuilder getSourceOrBuilder() {
-      return getSource();
-    }
-
-    public static final int DESCRIPTION_FIELD_NUMBER = 4;
-    private com.github.jsdossier.proto.Comment description_;
-    /**
-     * <code>optional .dossier.Comment description = 4;</code>
-     */
-    public boolean hasDescription() {
-      return description_ != null;
-    }
-    /**
-     * <code>optional .dossier.Comment description = 4;</code>
-     */
-    public com.github.jsdossier.proto.Comment getDescription() {
-      return description_ == null ? com.github.jsdossier.proto.Comment.getDefaultInstance() : description_;
-    }
-    /**
-     * <code>optional .dossier.Comment description = 4;</code>
-     */
-    public com.github.jsdossier.proto.CommentOrBuilder getDescriptionOrBuilder() {
-      return getDescription();
-    }
-
-    public static final int DEPRECATION_FIELD_NUMBER = 5;
-    private com.github.jsdossier.proto.Comment deprecation_;
-    /**
-     * <code>optional .dossier.Comment deprecation = 5;</code>
-     */
-    public boolean hasDeprecation() {
-      return deprecation_ != null;
-    }
-    /**
-     * <code>optional .dossier.Comment deprecation = 5;</code>
-     */
-    public com.github.jsdossier.proto.Comment getDeprecation() {
-      return deprecation_ == null ? com.github.jsdossier.proto.Comment.getDefaultInstance() : deprecation_;
-    }
-    /**
-     * <code>optional .dossier.Comment deprecation = 5;</code>
-     */
-    public com.github.jsdossier.proto.CommentOrBuilder getDeprecationOrBuilder() {
-      return getDeprecation();
-    }
-
-    public static final int VISIBILITY_FIELD_NUMBER = 6;
-    private int visibility_;
-    /**
-     * <code>optional .dossier.Visibility visibility = 6;</code>
-     */
-    public int getVisibilityValue() {
-      return visibility_;
-    }
-    /**
-     * <code>optional .dossier.Visibility visibility = 6;</code>
-     */
-    public com.github.jsdossier.proto.Visibility getVisibility() {
-      com.github.jsdossier.proto.Visibility result = com.github.jsdossier.proto.Visibility.valueOf(visibility_);
-      return result == null ? com.github.jsdossier.proto.Visibility.UNRECOGNIZED : result;
-    }
-
-    public static final int TAGS_FIELD_NUMBER = 7;
-    private com.github.jsdossier.proto.Tags tags_;
-    /**
-     * <code>optional .dossier.Tags tags = 7;</code>
-     */
-    public boolean hasTags() {
-      return tags_ != null;
-    }
-    /**
-     * <code>optional .dossier.Tags tags = 7;</code>
-     */
-    public com.github.jsdossier.proto.Tags getTags() {
-      return tags_ == null ? com.github.jsdossier.proto.Tags.getDefaultInstance() : tags_;
-    }
-    /**
-     * <code>optional .dossier.Tags tags = 7;</code>
-     */
-    public com.github.jsdossier.proto.TagsOrBuilder getTagsOrBuilder() {
-      return getTags();
-    }
-
-    private byte memoizedIsInitialized = -1;
-    public final boolean isInitialized() {
-      byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
-
-      memoizedIsInitialized = 1;
-      return true;
-    }
-
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      if (!getNameBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessage.writeString(output, 1, name_);
-      }
-      if (type_ != null) {
-        output.writeMessage(2, getType());
-      }
-      if (source_ != null) {
-        output.writeMessage(3, getSource());
-      }
-      if (description_ != null) {
-        output.writeMessage(4, getDescription());
-      }
-      if (deprecation_ != null) {
-        output.writeMessage(5, getDeprecation());
-      }
-      if (visibility_ != com.github.jsdossier.proto.Visibility.PUBLIC.getNumber()) {
-        output.writeEnum(6, visibility_);
-      }
-      if (tags_ != null) {
-        output.writeMessage(7, getTags());
-      }
-    }
-
-    public int getSerializedSize() {
-      int size = memoizedSize;
-      if (size != -1) return size;
-
-      size = 0;
-      if (!getNameBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessage.computeStringSize(1, name_);
-      }
-      if (type_ != null) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(2, getType());
-      }
-      if (source_ != null) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(3, getSource());
-      }
-      if (description_ != null) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(4, getDescription());
-      }
-      if (deprecation_ != null) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(5, getDeprecation());
-      }
-      if (visibility_ != com.github.jsdossier.proto.Visibility.PUBLIC.getNumber()) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeEnumSize(6, visibility_);
-      }
-      if (tags_ != null) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(7, getTags());
-      }
-      memoizedSize = size;
-      return size;
-    }
-
-    private static final long serialVersionUID = 0L;
-    public static com.github.jsdossier.proto.JsType.TypeDef parseFrom(
-        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static com.github.jsdossier.proto.JsType.TypeDef parseFrom(
-        com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static com.github.jsdossier.proto.JsType.TypeDef parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static com.github.jsdossier.proto.JsType.TypeDef parseFrom(
-        byte[] data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static com.github.jsdossier.proto.JsType.TypeDef parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return PARSER.parseFrom(input);
-    }
-    public static com.github.jsdossier.proto.JsType.TypeDef parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return PARSER.parseFrom(input, extensionRegistry);
-    }
-    public static com.github.jsdossier.proto.JsType.TypeDef parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return PARSER.parseDelimitedFrom(input);
-    }
-    public static com.github.jsdossier.proto.JsType.TypeDef parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return PARSER.parseDelimitedFrom(input, extensionRegistry);
-    }
-    public static com.github.jsdossier.proto.JsType.TypeDef parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return PARSER.parseFrom(input);
-    }
-    public static com.github.jsdossier.proto.JsType.TypeDef parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return PARSER.parseFrom(input, extensionRegistry);
-    }
-
-    public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
-    public static Builder newBuilder(com.github.jsdossier.proto.JsType.TypeDef prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-    }
-
-    @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
-      Builder builder = new Builder(parent);
-      return builder;
-    }
-    /**
-     * Protobuf type {@code dossier.JsType.TypeDef}
-     *
-     * <pre>
-     * Describes a typedef defined within this type.
-     * </pre>
-     */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:dossier.JsType.TypeDef)
-        com.github.jsdossier.proto.JsType.TypeDefOrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return com.github.jsdossier.proto.Dossier.internal_static_dossier_JsType_TypeDef_descriptor;
-      }
-
-      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return com.github.jsdossier.proto.Dossier.internal_static_dossier_JsType_TypeDef_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                com.github.jsdossier.proto.JsType.TypeDef.class, com.github.jsdossier.proto.JsType.TypeDef.Builder.class);
-      }
-
-      // Construct using com.github.jsdossier.proto.JsType.TypeDef.newBuilder()
-      private Builder() {
-        maybeForceBuilderInitialization();
-      }
-
-      private Builder(
-          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
-        super(parent);
-        maybeForceBuilderInitialization();
-      }
-      private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
-        }
-      }
-      public Builder clear() {
-        super.clear();
-        name_ = "";
-
-        if (typeBuilder_ == null) {
-          type_ = null;
-        } else {
-          type_ = null;
-          typeBuilder_ = null;
-        }
-        if (sourceBuilder_ == null) {
-          source_ = null;
-        } else {
-          source_ = null;
-          sourceBuilder_ = null;
-        }
-        if (descriptionBuilder_ == null) {
-          description_ = null;
-        } else {
-          description_ = null;
-          descriptionBuilder_ = null;
-        }
-        if (deprecationBuilder_ == null) {
-          deprecation_ = null;
-        } else {
-          deprecation_ = null;
-          deprecationBuilder_ = null;
-        }
-        visibility_ = 0;
-
-        if (tagsBuilder_ == null) {
-          tags_ = null;
-        } else {
-          tags_ = null;
-          tagsBuilder_ = null;
-        }
-        return this;
-      }
-
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
-        return com.github.jsdossier.proto.Dossier.internal_static_dossier_JsType_TypeDef_descriptor;
-      }
-
-      public com.github.jsdossier.proto.JsType.TypeDef getDefaultInstanceForType() {
-        return com.github.jsdossier.proto.JsType.TypeDef.getDefaultInstance();
-      }
-
-      public com.github.jsdossier.proto.JsType.TypeDef build() {
-        com.github.jsdossier.proto.JsType.TypeDef result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return result;
-      }
-
-      public com.github.jsdossier.proto.JsType.TypeDef buildPartial() {
-        com.github.jsdossier.proto.JsType.TypeDef result = new com.github.jsdossier.proto.JsType.TypeDef(this);
-        result.name_ = name_;
-        if (typeBuilder_ == null) {
-          result.type_ = type_;
-        } else {
-          result.type_ = typeBuilder_.build();
-        }
-        if (sourceBuilder_ == null) {
-          result.source_ = source_;
-        } else {
-          result.source_ = sourceBuilder_.build();
-        }
-        if (descriptionBuilder_ == null) {
-          result.description_ = description_;
-        } else {
-          result.description_ = descriptionBuilder_.build();
-        }
-        if (deprecationBuilder_ == null) {
-          result.deprecation_ = deprecation_;
-        } else {
-          result.deprecation_ = deprecationBuilder_.build();
-        }
-        result.visibility_ = visibility_;
-        if (tagsBuilder_ == null) {
-          result.tags_ = tags_;
-        } else {
-          result.tags_ = tagsBuilder_.build();
-        }
-        onBuilt();
-        return result;
-      }
-
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.github.jsdossier.proto.JsType.TypeDef) {
-          return mergeFrom((com.github.jsdossier.proto.JsType.TypeDef)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-
-      public Builder mergeFrom(com.github.jsdossier.proto.JsType.TypeDef other) {
-        if (other == com.github.jsdossier.proto.JsType.TypeDef.getDefaultInstance()) return this;
-        if (!other.getName().isEmpty()) {
-          name_ = other.name_;
-          onChanged();
-        }
-        if (other.hasType()) {
-          mergeType(other.getType());
-        }
-        if (other.hasSource()) {
-          mergeSource(other.getSource());
-        }
-        if (other.hasDescription()) {
-          mergeDescription(other.getDescription());
-        }
-        if (other.hasDeprecation()) {
-          mergeDeprecation(other.getDeprecation());
-        }
-        if (other.visibility_ != 0) {
-          setVisibilityValue(other.getVisibilityValue());
-        }
-        if (other.hasTags()) {
-          mergeTags(other.getTags());
-        }
-        onChanged();
-        return this;
-      }
-
-      public final boolean isInitialized() {
-        return true;
-      }
-
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        com.github.jsdossier.proto.JsType.TypeDef parsedMessage = null;
-        try {
-          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (com.github.jsdossier.proto.JsType.TypeDef) e.getUnfinishedMessage();
-          throw e;
-        } finally {
-          if (parsedMessage != null) {
-            mergeFrom(parsedMessage);
-          }
-        }
-        return this;
-      }
-
-      private java.lang.Object name_ = "";
-      /**
-       * <code>optional string name = 1;</code>
-       */
-      public java.lang.String getName() {
-        java.lang.Object ref = name_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          name_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>optional string name = 1;</code>
-       */
-      public com.google.protobuf.ByteString
-          getNameBytes() {
-        java.lang.Object ref = name_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          name_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>optional string name = 1;</code>
-       */
-      public Builder setName(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  
-        name_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string name = 1;</code>
-       */
-      public Builder clearName() {
-        
-        name_ = getDefaultInstance().getName();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string name = 1;</code>
-       */
-      public Builder setNameBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        
-        name_ = value;
-        onChanged();
-        return this;
-      }
-
-      private com.github.jsdossier.proto.TypeExpression type_ = null;
-      private com.google.protobuf.SingleFieldBuilder<
-          com.github.jsdossier.proto.TypeExpression, com.github.jsdossier.proto.TypeExpression.Builder, com.github.jsdossier.proto.TypeExpressionOrBuilder> typeBuilder_;
-      /**
-       * <code>optional .dossier.expression.TypeExpression type = 2;</code>
-       */
-      public boolean hasType() {
-        return typeBuilder_ != null || type_ != null;
-      }
-      /**
-       * <code>optional .dossier.expression.TypeExpression type = 2;</code>
-       */
-      public com.github.jsdossier.proto.TypeExpression getType() {
-        if (typeBuilder_ == null) {
-          return type_ == null ? com.github.jsdossier.proto.TypeExpression.getDefaultInstance() : type_;
-        } else {
-          return typeBuilder_.getMessage();
-        }
-      }
-      /**
-       * <code>optional .dossier.expression.TypeExpression type = 2;</code>
-       */
-      public Builder setType(com.github.jsdossier.proto.TypeExpression value) {
-        if (typeBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          type_ = value;
-          onChanged();
-        } else {
-          typeBuilder_.setMessage(value);
-        }
-
-        return this;
-      }
-      /**
-       * <code>optional .dossier.expression.TypeExpression type = 2;</code>
-       */
-      public Builder setType(
-          com.github.jsdossier.proto.TypeExpression.Builder builderForValue) {
-        if (typeBuilder_ == null) {
-          type_ = builderForValue.build();
-          onChanged();
-        } else {
-          typeBuilder_.setMessage(builderForValue.build());
-        }
-
-        return this;
-      }
-      /**
-       * <code>optional .dossier.expression.TypeExpression type = 2;</code>
-       */
-      public Builder mergeType(com.github.jsdossier.proto.TypeExpression value) {
-        if (typeBuilder_ == null) {
-          if (type_ != null) {
-            type_ =
-              com.github.jsdossier.proto.TypeExpression.newBuilder(type_).mergeFrom(value).buildPartial();
-          } else {
-            type_ = value;
-          }
-          onChanged();
-        } else {
-          typeBuilder_.mergeFrom(value);
-        }
-
-        return this;
-      }
-      /**
-       * <code>optional .dossier.expression.TypeExpression type = 2;</code>
-       */
-      public Builder clearType() {
-        if (typeBuilder_ == null) {
-          type_ = null;
-          onChanged();
-        } else {
-          type_ = null;
-          typeBuilder_ = null;
-        }
-
-        return this;
-      }
-      /**
-       * <code>optional .dossier.expression.TypeExpression type = 2;</code>
-       */
-      public com.github.jsdossier.proto.TypeExpression.Builder getTypeBuilder() {
-        
-        onChanged();
-        return getTypeFieldBuilder().getBuilder();
-      }
-      /**
-       * <code>optional .dossier.expression.TypeExpression type = 2;</code>
-       */
-      public com.github.jsdossier.proto.TypeExpressionOrBuilder getTypeOrBuilder() {
-        if (typeBuilder_ != null) {
-          return typeBuilder_.getMessageOrBuilder();
-        } else {
-          return type_ == null ?
-              com.github.jsdossier.proto.TypeExpression.getDefaultInstance() : type_;
-        }
-      }
-      /**
-       * <code>optional .dossier.expression.TypeExpression type = 2;</code>
-       */
-      private com.google.protobuf.SingleFieldBuilder<
-          com.github.jsdossier.proto.TypeExpression, com.github.jsdossier.proto.TypeExpression.Builder, com.github.jsdossier.proto.TypeExpressionOrBuilder> 
-          getTypeFieldBuilder() {
-        if (typeBuilder_ == null) {
-          typeBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              com.github.jsdossier.proto.TypeExpression, com.github.jsdossier.proto.TypeExpression.Builder, com.github.jsdossier.proto.TypeExpressionOrBuilder>(
-                  getType(),
-                  getParentForChildren(),
-                  isClean());
-          type_ = null;
-        }
-        return typeBuilder_;
-      }
-
-      private com.github.jsdossier.proto.SourceLink source_ = null;
-      private com.google.protobuf.SingleFieldBuilder<
-          com.github.jsdossier.proto.SourceLink, com.github.jsdossier.proto.SourceLink.Builder, com.github.jsdossier.proto.SourceLinkOrBuilder> sourceBuilder_;
-      /**
-       * <code>optional .dossier.SourceLink source = 3;</code>
-       */
-      public boolean hasSource() {
-        return sourceBuilder_ != null || source_ != null;
-      }
-      /**
-       * <code>optional .dossier.SourceLink source = 3;</code>
-       */
-      public com.github.jsdossier.proto.SourceLink getSource() {
-        if (sourceBuilder_ == null) {
-          return source_ == null ? com.github.jsdossier.proto.SourceLink.getDefaultInstance() : source_;
-        } else {
-          return sourceBuilder_.getMessage();
-        }
-      }
-      /**
-       * <code>optional .dossier.SourceLink source = 3;</code>
-       */
-      public Builder setSource(com.github.jsdossier.proto.SourceLink value) {
-        if (sourceBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          source_ = value;
-          onChanged();
-        } else {
-          sourceBuilder_.setMessage(value);
-        }
-
-        return this;
-      }
-      /**
-       * <code>optional .dossier.SourceLink source = 3;</code>
-       */
-      public Builder setSource(
-          com.github.jsdossier.proto.SourceLink.Builder builderForValue) {
-        if (sourceBuilder_ == null) {
-          source_ = builderForValue.build();
-          onChanged();
-        } else {
-          sourceBuilder_.setMessage(builderForValue.build());
-        }
-
-        return this;
-      }
-      /**
-       * <code>optional .dossier.SourceLink source = 3;</code>
-       */
-      public Builder mergeSource(com.github.jsdossier.proto.SourceLink value) {
-        if (sourceBuilder_ == null) {
-          if (source_ != null) {
-            source_ =
-              com.github.jsdossier.proto.SourceLink.newBuilder(source_).mergeFrom(value).buildPartial();
-          } else {
-            source_ = value;
-          }
-          onChanged();
-        } else {
-          sourceBuilder_.mergeFrom(value);
-        }
-
-        return this;
-      }
-      /**
-       * <code>optional .dossier.SourceLink source = 3;</code>
-       */
-      public Builder clearSource() {
-        if (sourceBuilder_ == null) {
-          source_ = null;
-          onChanged();
-        } else {
-          source_ = null;
-          sourceBuilder_ = null;
-        }
-
-        return this;
-      }
-      /**
-       * <code>optional .dossier.SourceLink source = 3;</code>
-       */
-      public com.github.jsdossier.proto.SourceLink.Builder getSourceBuilder() {
-        
-        onChanged();
-        return getSourceFieldBuilder().getBuilder();
-      }
-      /**
-       * <code>optional .dossier.SourceLink source = 3;</code>
-       */
-      public com.github.jsdossier.proto.SourceLinkOrBuilder getSourceOrBuilder() {
-        if (sourceBuilder_ != null) {
-          return sourceBuilder_.getMessageOrBuilder();
-        } else {
-          return source_ == null ?
-              com.github.jsdossier.proto.SourceLink.getDefaultInstance() : source_;
-        }
-      }
-      /**
-       * <code>optional .dossier.SourceLink source = 3;</code>
-       */
-      private com.google.protobuf.SingleFieldBuilder<
-          com.github.jsdossier.proto.SourceLink, com.github.jsdossier.proto.SourceLink.Builder, com.github.jsdossier.proto.SourceLinkOrBuilder> 
-          getSourceFieldBuilder() {
-        if (sourceBuilder_ == null) {
-          sourceBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              com.github.jsdossier.proto.SourceLink, com.github.jsdossier.proto.SourceLink.Builder, com.github.jsdossier.proto.SourceLinkOrBuilder>(
-                  getSource(),
-                  getParentForChildren(),
-                  isClean());
-          source_ = null;
-        }
-        return sourceBuilder_;
-      }
-
-      private com.github.jsdossier.proto.Comment description_ = null;
-      private com.google.protobuf.SingleFieldBuilder<
-          com.github.jsdossier.proto.Comment, com.github.jsdossier.proto.Comment.Builder, com.github.jsdossier.proto.CommentOrBuilder> descriptionBuilder_;
-      /**
-       * <code>optional .dossier.Comment description = 4;</code>
-       */
-      public boolean hasDescription() {
-        return descriptionBuilder_ != null || description_ != null;
-      }
-      /**
-       * <code>optional .dossier.Comment description = 4;</code>
-       */
-      public com.github.jsdossier.proto.Comment getDescription() {
-        if (descriptionBuilder_ == null) {
-          return description_ == null ? com.github.jsdossier.proto.Comment.getDefaultInstance() : description_;
-        } else {
-          return descriptionBuilder_.getMessage();
-        }
-      }
-      /**
-       * <code>optional .dossier.Comment description = 4;</code>
-       */
-      public Builder setDescription(com.github.jsdossier.proto.Comment value) {
-        if (descriptionBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          description_ = value;
-          onChanged();
-        } else {
-          descriptionBuilder_.setMessage(value);
-        }
-
-        return this;
-      }
-      /**
-       * <code>optional .dossier.Comment description = 4;</code>
-       */
-      public Builder setDescription(
-          com.github.jsdossier.proto.Comment.Builder builderForValue) {
-        if (descriptionBuilder_ == null) {
-          description_ = builderForValue.build();
-          onChanged();
-        } else {
-          descriptionBuilder_.setMessage(builderForValue.build());
-        }
-
-        return this;
-      }
-      /**
-       * <code>optional .dossier.Comment description = 4;</code>
-       */
-      public Builder mergeDescription(com.github.jsdossier.proto.Comment value) {
-        if (descriptionBuilder_ == null) {
-          if (description_ != null) {
-            description_ =
-              com.github.jsdossier.proto.Comment.newBuilder(description_).mergeFrom(value).buildPartial();
-          } else {
-            description_ = value;
-          }
-          onChanged();
-        } else {
-          descriptionBuilder_.mergeFrom(value);
-        }
-
-        return this;
-      }
-      /**
-       * <code>optional .dossier.Comment description = 4;</code>
-       */
-      public Builder clearDescription() {
-        if (descriptionBuilder_ == null) {
-          description_ = null;
-          onChanged();
-        } else {
-          description_ = null;
-          descriptionBuilder_ = null;
-        }
-
-        return this;
-      }
-      /**
-       * <code>optional .dossier.Comment description = 4;</code>
-       */
-      public com.github.jsdossier.proto.Comment.Builder getDescriptionBuilder() {
-        
-        onChanged();
-        return getDescriptionFieldBuilder().getBuilder();
-      }
-      /**
-       * <code>optional .dossier.Comment description = 4;</code>
-       */
-      public com.github.jsdossier.proto.CommentOrBuilder getDescriptionOrBuilder() {
-        if (descriptionBuilder_ != null) {
-          return descriptionBuilder_.getMessageOrBuilder();
-        } else {
-          return description_ == null ?
-              com.github.jsdossier.proto.Comment.getDefaultInstance() : description_;
-        }
-      }
-      /**
-       * <code>optional .dossier.Comment description = 4;</code>
-       */
-      private com.google.protobuf.SingleFieldBuilder<
-          com.github.jsdossier.proto.Comment, com.github.jsdossier.proto.Comment.Builder, com.github.jsdossier.proto.CommentOrBuilder> 
-          getDescriptionFieldBuilder() {
-        if (descriptionBuilder_ == null) {
-          descriptionBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              com.github.jsdossier.proto.Comment, com.github.jsdossier.proto.Comment.Builder, com.github.jsdossier.proto.CommentOrBuilder>(
-                  getDescription(),
-                  getParentForChildren(),
-                  isClean());
-          description_ = null;
-        }
-        return descriptionBuilder_;
-      }
-
-      private com.github.jsdossier.proto.Comment deprecation_ = null;
-      private com.google.protobuf.SingleFieldBuilder<
-          com.github.jsdossier.proto.Comment, com.github.jsdossier.proto.Comment.Builder, com.github.jsdossier.proto.CommentOrBuilder> deprecationBuilder_;
-      /**
-       * <code>optional .dossier.Comment deprecation = 5;</code>
-       */
-      public boolean hasDeprecation() {
-        return deprecationBuilder_ != null || deprecation_ != null;
-      }
-      /**
-       * <code>optional .dossier.Comment deprecation = 5;</code>
-       */
-      public com.github.jsdossier.proto.Comment getDeprecation() {
-        if (deprecationBuilder_ == null) {
-          return deprecation_ == null ? com.github.jsdossier.proto.Comment.getDefaultInstance() : deprecation_;
-        } else {
-          return deprecationBuilder_.getMessage();
-        }
-      }
-      /**
-       * <code>optional .dossier.Comment deprecation = 5;</code>
-       */
-      public Builder setDeprecation(com.github.jsdossier.proto.Comment value) {
-        if (deprecationBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          deprecation_ = value;
-          onChanged();
-        } else {
-          deprecationBuilder_.setMessage(value);
-        }
-
-        return this;
-      }
-      /**
-       * <code>optional .dossier.Comment deprecation = 5;</code>
-       */
-      public Builder setDeprecation(
-          com.github.jsdossier.proto.Comment.Builder builderForValue) {
-        if (deprecationBuilder_ == null) {
-          deprecation_ = builderForValue.build();
-          onChanged();
-        } else {
-          deprecationBuilder_.setMessage(builderForValue.build());
-        }
-
-        return this;
-      }
-      /**
-       * <code>optional .dossier.Comment deprecation = 5;</code>
-       */
-      public Builder mergeDeprecation(com.github.jsdossier.proto.Comment value) {
-        if (deprecationBuilder_ == null) {
-          if (deprecation_ != null) {
-            deprecation_ =
-              com.github.jsdossier.proto.Comment.newBuilder(deprecation_).mergeFrom(value).buildPartial();
-          } else {
-            deprecation_ = value;
-          }
-          onChanged();
-        } else {
-          deprecationBuilder_.mergeFrom(value);
-        }
-
-        return this;
-      }
-      /**
-       * <code>optional .dossier.Comment deprecation = 5;</code>
-       */
-      public Builder clearDeprecation() {
-        if (deprecationBuilder_ == null) {
-          deprecation_ = null;
-          onChanged();
-        } else {
-          deprecation_ = null;
-          deprecationBuilder_ = null;
-        }
-
-        return this;
-      }
-      /**
-       * <code>optional .dossier.Comment deprecation = 5;</code>
-       */
-      public com.github.jsdossier.proto.Comment.Builder getDeprecationBuilder() {
-        
-        onChanged();
-        return getDeprecationFieldBuilder().getBuilder();
-      }
-      /**
-       * <code>optional .dossier.Comment deprecation = 5;</code>
-       */
-      public com.github.jsdossier.proto.CommentOrBuilder getDeprecationOrBuilder() {
-        if (deprecationBuilder_ != null) {
-          return deprecationBuilder_.getMessageOrBuilder();
-        } else {
-          return deprecation_ == null ?
-              com.github.jsdossier.proto.Comment.getDefaultInstance() : deprecation_;
-        }
-      }
-      /**
-       * <code>optional .dossier.Comment deprecation = 5;</code>
-       */
-      private com.google.protobuf.SingleFieldBuilder<
-          com.github.jsdossier.proto.Comment, com.github.jsdossier.proto.Comment.Builder, com.github.jsdossier.proto.CommentOrBuilder> 
-          getDeprecationFieldBuilder() {
-        if (deprecationBuilder_ == null) {
-          deprecationBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              com.github.jsdossier.proto.Comment, com.github.jsdossier.proto.Comment.Builder, com.github.jsdossier.proto.CommentOrBuilder>(
-                  getDeprecation(),
-                  getParentForChildren(),
-                  isClean());
-          deprecation_ = null;
-        }
-        return deprecationBuilder_;
-      }
-
-      private int visibility_ = 0;
-      /**
-       * <code>optional .dossier.Visibility visibility = 6;</code>
-       */
-      public int getVisibilityValue() {
-        return visibility_;
-      }
-      /**
-       * <code>optional .dossier.Visibility visibility = 6;</code>
-       */
-      public Builder setVisibilityValue(int value) {
-        visibility_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional .dossier.Visibility visibility = 6;</code>
-       */
-      public com.github.jsdossier.proto.Visibility getVisibility() {
-        com.github.jsdossier.proto.Visibility result = com.github.jsdossier.proto.Visibility.valueOf(visibility_);
-        return result == null ? com.github.jsdossier.proto.Visibility.UNRECOGNIZED : result;
-      }
-      /**
-       * <code>optional .dossier.Visibility visibility = 6;</code>
-       */
-      public Builder setVisibility(com.github.jsdossier.proto.Visibility value) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        
-        visibility_ = value.getNumber();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional .dossier.Visibility visibility = 6;</code>
-       */
-      public Builder clearVisibility() {
-        
-        visibility_ = 0;
-        onChanged();
-        return this;
-      }
-
-      private com.github.jsdossier.proto.Tags tags_ = null;
-      private com.google.protobuf.SingleFieldBuilder<
-          com.github.jsdossier.proto.Tags, com.github.jsdossier.proto.Tags.Builder, com.github.jsdossier.proto.TagsOrBuilder> tagsBuilder_;
-      /**
-       * <code>optional .dossier.Tags tags = 7;</code>
-       */
-      public boolean hasTags() {
-        return tagsBuilder_ != null || tags_ != null;
-      }
-      /**
-       * <code>optional .dossier.Tags tags = 7;</code>
-       */
-      public com.github.jsdossier.proto.Tags getTags() {
-        if (tagsBuilder_ == null) {
-          return tags_ == null ? com.github.jsdossier.proto.Tags.getDefaultInstance() : tags_;
-        } else {
-          return tagsBuilder_.getMessage();
-        }
-      }
-      /**
-       * <code>optional .dossier.Tags tags = 7;</code>
-       */
-      public Builder setTags(com.github.jsdossier.proto.Tags value) {
-        if (tagsBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          tags_ = value;
-          onChanged();
-        } else {
-          tagsBuilder_.setMessage(value);
-        }
-
-        return this;
-      }
-      /**
-       * <code>optional .dossier.Tags tags = 7;</code>
-       */
-      public Builder setTags(
-          com.github.jsdossier.proto.Tags.Builder builderForValue) {
-        if (tagsBuilder_ == null) {
-          tags_ = builderForValue.build();
-          onChanged();
-        } else {
-          tagsBuilder_.setMessage(builderForValue.build());
-        }
-
-        return this;
-      }
-      /**
-       * <code>optional .dossier.Tags tags = 7;</code>
-       */
-      public Builder mergeTags(com.github.jsdossier.proto.Tags value) {
-        if (tagsBuilder_ == null) {
-          if (tags_ != null) {
-            tags_ =
-              com.github.jsdossier.proto.Tags.newBuilder(tags_).mergeFrom(value).buildPartial();
-          } else {
-            tags_ = value;
-          }
-          onChanged();
-        } else {
-          tagsBuilder_.mergeFrom(value);
-        }
-
-        return this;
-      }
-      /**
-       * <code>optional .dossier.Tags tags = 7;</code>
-       */
-      public Builder clearTags() {
-        if (tagsBuilder_ == null) {
-          tags_ = null;
-          onChanged();
-        } else {
-          tags_ = null;
-          tagsBuilder_ = null;
-        }
-
-        return this;
-      }
-      /**
-       * <code>optional .dossier.Tags tags = 7;</code>
-       */
-      public com.github.jsdossier.proto.Tags.Builder getTagsBuilder() {
-        
-        onChanged();
-        return getTagsFieldBuilder().getBuilder();
-      }
-      /**
-       * <code>optional .dossier.Tags tags = 7;</code>
-       */
-      public com.github.jsdossier.proto.TagsOrBuilder getTagsOrBuilder() {
-        if (tagsBuilder_ != null) {
-          return tagsBuilder_.getMessageOrBuilder();
-        } else {
-          return tags_ == null ?
-              com.github.jsdossier.proto.Tags.getDefaultInstance() : tags_;
-        }
-      }
-      /**
-       * <code>optional .dossier.Tags tags = 7;</code>
-       */
-      private com.google.protobuf.SingleFieldBuilder<
-          com.github.jsdossier.proto.Tags, com.github.jsdossier.proto.Tags.Builder, com.github.jsdossier.proto.TagsOrBuilder> 
-          getTagsFieldBuilder() {
-        if (tagsBuilder_ == null) {
-          tagsBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              com.github.jsdossier.proto.Tags, com.github.jsdossier.proto.Tags.Builder, com.github.jsdossier.proto.TagsOrBuilder>(
-                  getTags(),
-                  getParentForChildren(),
-                  isClean());
-          tags_ = null;
-        }
-        return tagsBuilder_;
-      }
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return this;
-      }
-
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return this;
-      }
-
-
-      // @@protoc_insertion_point(builder_scope:dossier.JsType.TypeDef)
-    }
-
-    // @@protoc_insertion_point(class_scope:dossier.JsType.TypeDef)
-    private static final com.github.jsdossier.proto.JsType.TypeDef DEFAULT_INSTANCE;
-    static {
-      DEFAULT_INSTANCE = new com.github.jsdossier.proto.JsType.TypeDef();
-    }
-
-    public static com.github.jsdossier.proto.JsType.TypeDef getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    private static final com.google.protobuf.Parser<TypeDef>
-        PARSER = new com.google.protobuf.AbstractParser<TypeDef>() {
-      public TypeDef parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        try {
-          return new TypeDef(input, extensionRegistry);
-        } catch (RuntimeException e) {
-          if (e.getCause() instanceof
-              com.google.protobuf.InvalidProtocolBufferException) {
-            throw (com.google.protobuf.InvalidProtocolBufferException)
-                e.getCause();
-          }
-          throw e;
-        }
-      }
-    };
-
-    public static com.google.protobuf.Parser<TypeDef> parser() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<TypeDef> getParserForType() {
-      return PARSER;
-    }
-
-    public com.github.jsdossier.proto.JsType.TypeDef getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
-  }
-
   public interface ParentLinkOrBuilder extends
       // @@protoc_insertion_point(interface_extends:dossier.JsType.ParentLink)
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>optional .dossier.TypeLink link = 1;</code>
+     * <code>optional .dossier.expression.NamedType type = 1;</code>
      */
-    boolean hasLink();
+    boolean hasType();
     /**
-     * <code>optional .dossier.TypeLink link = 1;</code>
+     * <code>optional .dossier.expression.NamedType type = 1;</code>
      */
-    com.github.jsdossier.proto.TypeLink getLink();
+    com.github.jsdossier.proto.NamedType getType();
     /**
-     * <code>optional .dossier.TypeLink link = 1;</code>
+     * <code>optional .dossier.expression.NamedType type = 1;</code>
      */
-    com.github.jsdossier.proto.TypeLinkOrBuilder getLinkOrBuilder();
+    com.github.jsdossier.proto.NamedTypeOrBuilder getTypeOrBuilder();
 
     /**
      * <code>optional bool is_module = 2;</code>
@@ -4379,14 +2908,14 @@ public  final class JsType extends
               break;
             }
             case 10: {
-              com.github.jsdossier.proto.TypeLink.Builder subBuilder = null;
-              if (link_ != null) {
-                subBuilder = link_.toBuilder();
+              com.github.jsdossier.proto.NamedType.Builder subBuilder = null;
+              if (type_ != null) {
+                subBuilder = type_.toBuilder();
               }
-              link_ = input.readMessage(com.github.jsdossier.proto.TypeLink.parser(), extensionRegistry);
+              type_ = input.readMessage(com.github.jsdossier.proto.NamedType.parser(), extensionRegistry);
               if (subBuilder != null) {
-                subBuilder.mergeFrom(link_);
-                link_ = subBuilder.buildPartial();
+                subBuilder.mergeFrom(type_);
+                type_ = subBuilder.buildPartial();
               }
 
               break;
@@ -4420,25 +2949,25 @@ public  final class JsType extends
               com.github.jsdossier.proto.JsType.ParentLink.class, com.github.jsdossier.proto.JsType.ParentLink.Builder.class);
     }
 
-    public static final int LINK_FIELD_NUMBER = 1;
-    private com.github.jsdossier.proto.TypeLink link_;
+    public static final int TYPE_FIELD_NUMBER = 1;
+    private com.github.jsdossier.proto.NamedType type_;
     /**
-     * <code>optional .dossier.TypeLink link = 1;</code>
+     * <code>optional .dossier.expression.NamedType type = 1;</code>
      */
-    public boolean hasLink() {
-      return link_ != null;
+    public boolean hasType() {
+      return type_ != null;
     }
     /**
-     * <code>optional .dossier.TypeLink link = 1;</code>
+     * <code>optional .dossier.expression.NamedType type = 1;</code>
      */
-    public com.github.jsdossier.proto.TypeLink getLink() {
-      return link_ == null ? com.github.jsdossier.proto.TypeLink.getDefaultInstance() : link_;
+    public com.github.jsdossier.proto.NamedType getType() {
+      return type_ == null ? com.github.jsdossier.proto.NamedType.getDefaultInstance() : type_;
     }
     /**
-     * <code>optional .dossier.TypeLink link = 1;</code>
+     * <code>optional .dossier.expression.NamedType type = 1;</code>
      */
-    public com.github.jsdossier.proto.TypeLinkOrBuilder getLinkOrBuilder() {
-      return getLink();
+    public com.github.jsdossier.proto.NamedTypeOrBuilder getTypeOrBuilder() {
+      return getType();
     }
 
     public static final int IS_MODULE_FIELD_NUMBER = 2;
@@ -4462,8 +2991,8 @@ public  final class JsType extends
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (link_ != null) {
-        output.writeMessage(1, getLink());
+      if (type_ != null) {
+        output.writeMessage(1, getType());
       }
       if (isModule_ != false) {
         output.writeBool(2, isModule_);
@@ -4475,9 +3004,9 @@ public  final class JsType extends
       if (size != -1) return size;
 
       size = 0;
-      if (link_ != null) {
+      if (type_ != null) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(1, getLink());
+          .computeMessageSize(1, getType());
       }
       if (isModule_ != false) {
         size += com.google.protobuf.CodedOutputStream
@@ -4598,11 +3127,11 @@ public  final class JsType extends
       }
       public Builder clear() {
         super.clear();
-        if (linkBuilder_ == null) {
-          link_ = null;
+        if (typeBuilder_ == null) {
+          type_ = null;
         } else {
-          link_ = null;
-          linkBuilder_ = null;
+          type_ = null;
+          typeBuilder_ = null;
         }
         isModule_ = false;
 
@@ -4628,10 +3157,10 @@ public  final class JsType extends
 
       public com.github.jsdossier.proto.JsType.ParentLink buildPartial() {
         com.github.jsdossier.proto.JsType.ParentLink result = new com.github.jsdossier.proto.JsType.ParentLink(this);
-        if (linkBuilder_ == null) {
-          result.link_ = link_;
+        if (typeBuilder_ == null) {
+          result.type_ = type_;
         } else {
-          result.link_ = linkBuilder_.build();
+          result.type_ = typeBuilder_.build();
         }
         result.isModule_ = isModule_;
         onBuilt();
@@ -4649,8 +3178,8 @@ public  final class JsType extends
 
       public Builder mergeFrom(com.github.jsdossier.proto.JsType.ParentLink other) {
         if (other == com.github.jsdossier.proto.JsType.ParentLink.getDefaultInstance()) return this;
-        if (other.hasLink()) {
-          mergeLink(other.getLink());
+        if (other.hasType()) {
+          mergeType(other.getType());
         }
         if (other.getIsModule() != false) {
           setIsModule(other.getIsModule());
@@ -4681,121 +3210,121 @@ public  final class JsType extends
         return this;
       }
 
-      private com.github.jsdossier.proto.TypeLink link_ = null;
+      private com.github.jsdossier.proto.NamedType type_ = null;
       private com.google.protobuf.SingleFieldBuilder<
-          com.github.jsdossier.proto.TypeLink, com.github.jsdossier.proto.TypeLink.Builder, com.github.jsdossier.proto.TypeLinkOrBuilder> linkBuilder_;
+          com.github.jsdossier.proto.NamedType, com.github.jsdossier.proto.NamedType.Builder, com.github.jsdossier.proto.NamedTypeOrBuilder> typeBuilder_;
       /**
-       * <code>optional .dossier.TypeLink link = 1;</code>
+       * <code>optional .dossier.expression.NamedType type = 1;</code>
        */
-      public boolean hasLink() {
-        return linkBuilder_ != null || link_ != null;
+      public boolean hasType() {
+        return typeBuilder_ != null || type_ != null;
       }
       /**
-       * <code>optional .dossier.TypeLink link = 1;</code>
+       * <code>optional .dossier.expression.NamedType type = 1;</code>
        */
-      public com.github.jsdossier.proto.TypeLink getLink() {
-        if (linkBuilder_ == null) {
-          return link_ == null ? com.github.jsdossier.proto.TypeLink.getDefaultInstance() : link_;
+      public com.github.jsdossier.proto.NamedType getType() {
+        if (typeBuilder_ == null) {
+          return type_ == null ? com.github.jsdossier.proto.NamedType.getDefaultInstance() : type_;
         } else {
-          return linkBuilder_.getMessage();
+          return typeBuilder_.getMessage();
         }
       }
       /**
-       * <code>optional .dossier.TypeLink link = 1;</code>
+       * <code>optional .dossier.expression.NamedType type = 1;</code>
        */
-      public Builder setLink(com.github.jsdossier.proto.TypeLink value) {
-        if (linkBuilder_ == null) {
+      public Builder setType(com.github.jsdossier.proto.NamedType value) {
+        if (typeBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
           }
-          link_ = value;
+          type_ = value;
           onChanged();
         } else {
-          linkBuilder_.setMessage(value);
+          typeBuilder_.setMessage(value);
         }
 
         return this;
       }
       /**
-       * <code>optional .dossier.TypeLink link = 1;</code>
+       * <code>optional .dossier.expression.NamedType type = 1;</code>
        */
-      public Builder setLink(
-          com.github.jsdossier.proto.TypeLink.Builder builderForValue) {
-        if (linkBuilder_ == null) {
-          link_ = builderForValue.build();
+      public Builder setType(
+          com.github.jsdossier.proto.NamedType.Builder builderForValue) {
+        if (typeBuilder_ == null) {
+          type_ = builderForValue.build();
           onChanged();
         } else {
-          linkBuilder_.setMessage(builderForValue.build());
+          typeBuilder_.setMessage(builderForValue.build());
         }
 
         return this;
       }
       /**
-       * <code>optional .dossier.TypeLink link = 1;</code>
+       * <code>optional .dossier.expression.NamedType type = 1;</code>
        */
-      public Builder mergeLink(com.github.jsdossier.proto.TypeLink value) {
-        if (linkBuilder_ == null) {
-          if (link_ != null) {
-            link_ =
-              com.github.jsdossier.proto.TypeLink.newBuilder(link_).mergeFrom(value).buildPartial();
+      public Builder mergeType(com.github.jsdossier.proto.NamedType value) {
+        if (typeBuilder_ == null) {
+          if (type_ != null) {
+            type_ =
+              com.github.jsdossier.proto.NamedType.newBuilder(type_).mergeFrom(value).buildPartial();
           } else {
-            link_ = value;
+            type_ = value;
           }
           onChanged();
         } else {
-          linkBuilder_.mergeFrom(value);
+          typeBuilder_.mergeFrom(value);
         }
 
         return this;
       }
       /**
-       * <code>optional .dossier.TypeLink link = 1;</code>
+       * <code>optional .dossier.expression.NamedType type = 1;</code>
        */
-      public Builder clearLink() {
-        if (linkBuilder_ == null) {
-          link_ = null;
+      public Builder clearType() {
+        if (typeBuilder_ == null) {
+          type_ = null;
           onChanged();
         } else {
-          link_ = null;
-          linkBuilder_ = null;
+          type_ = null;
+          typeBuilder_ = null;
         }
 
         return this;
       }
       /**
-       * <code>optional .dossier.TypeLink link = 1;</code>
+       * <code>optional .dossier.expression.NamedType type = 1;</code>
        */
-      public com.github.jsdossier.proto.TypeLink.Builder getLinkBuilder() {
+      public com.github.jsdossier.proto.NamedType.Builder getTypeBuilder() {
         
         onChanged();
-        return getLinkFieldBuilder().getBuilder();
+        return getTypeFieldBuilder().getBuilder();
       }
       /**
-       * <code>optional .dossier.TypeLink link = 1;</code>
+       * <code>optional .dossier.expression.NamedType type = 1;</code>
        */
-      public com.github.jsdossier.proto.TypeLinkOrBuilder getLinkOrBuilder() {
-        if (linkBuilder_ != null) {
-          return linkBuilder_.getMessageOrBuilder();
+      public com.github.jsdossier.proto.NamedTypeOrBuilder getTypeOrBuilder() {
+        if (typeBuilder_ != null) {
+          return typeBuilder_.getMessageOrBuilder();
         } else {
-          return link_ == null ?
-              com.github.jsdossier.proto.TypeLink.getDefaultInstance() : link_;
+          return type_ == null ?
+              com.github.jsdossier.proto.NamedType.getDefaultInstance() : type_;
         }
       }
       /**
-       * <code>optional .dossier.TypeLink link = 1;</code>
+       * <code>optional .dossier.expression.NamedType type = 1;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
-          com.github.jsdossier.proto.TypeLink, com.github.jsdossier.proto.TypeLink.Builder, com.github.jsdossier.proto.TypeLinkOrBuilder> 
-          getLinkFieldBuilder() {
-        if (linkBuilder_ == null) {
-          linkBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              com.github.jsdossier.proto.TypeLink, com.github.jsdossier.proto.TypeLink.Builder, com.github.jsdossier.proto.TypeLinkOrBuilder>(
-                  getLink(),
+          com.github.jsdossier.proto.NamedType, com.github.jsdossier.proto.NamedType.Builder, com.github.jsdossier.proto.NamedTypeOrBuilder> 
+          getTypeFieldBuilder() {
+        if (typeBuilder_ == null) {
+          typeBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              com.github.jsdossier.proto.NamedType, com.github.jsdossier.proto.NamedType.Builder, com.github.jsdossier.proto.NamedTypeOrBuilder>(
+                  getType(),
                   getParentForChildren(),
                   isClean());
-          link_ = null;
+          type_ = null;
         }
-        return linkBuilder_;
+        return typeBuilder_;
       }
 
       private boolean isModule_ ;
@@ -5022,36 +3551,36 @@ public  final class JsType extends
   }
 
   public static final int TYPE_DEF_FIELD_NUMBER = 10;
-  private java.util.List<com.github.jsdossier.proto.JsType.TypeDef> typeDef_;
+  private java.util.List<com.github.jsdossier.proto.Property> typeDef_;
   /**
-   * <code>repeated .dossier.JsType.TypeDef type_def = 10;</code>
+   * <code>repeated .dossier.Property type_def = 10;</code>
    */
-  public java.util.List<com.github.jsdossier.proto.JsType.TypeDef> getTypeDefList() {
+  public java.util.List<com.github.jsdossier.proto.Property> getTypeDefList() {
     return typeDef_;
   }
   /**
-   * <code>repeated .dossier.JsType.TypeDef type_def = 10;</code>
+   * <code>repeated .dossier.Property type_def = 10;</code>
    */
-  public java.util.List<? extends com.github.jsdossier.proto.JsType.TypeDefOrBuilder> 
+  public java.util.List<? extends com.github.jsdossier.proto.PropertyOrBuilder> 
       getTypeDefOrBuilderList() {
     return typeDef_;
   }
   /**
-   * <code>repeated .dossier.JsType.TypeDef type_def = 10;</code>
+   * <code>repeated .dossier.Property type_def = 10;</code>
    */
   public int getTypeDefCount() {
     return typeDef_.size();
   }
   /**
-   * <code>repeated .dossier.JsType.TypeDef type_def = 10;</code>
+   * <code>repeated .dossier.Property type_def = 10;</code>
    */
-  public com.github.jsdossier.proto.JsType.TypeDef getTypeDef(int index) {
+  public com.github.jsdossier.proto.Property getTypeDef(int index) {
     return typeDef_.get(index);
   }
   /**
-   * <code>repeated .dossier.JsType.TypeDef type_def = 10;</code>
+   * <code>repeated .dossier.Property type_def = 10;</code>
    */
-  public com.github.jsdossier.proto.JsType.TypeDefOrBuilder getTypeDefOrBuilder(
+  public com.github.jsdossier.proto.PropertyOrBuilder getTypeDefOrBuilder(
       int index) {
     return typeDef_.get(index);
   }
@@ -7471,22 +6000,22 @@ public  final class JsType extends
       return deprecationBuilder_;
     }
 
-    private java.util.List<com.github.jsdossier.proto.JsType.TypeDef> typeDef_ =
+    private java.util.List<com.github.jsdossier.proto.Property> typeDef_ =
       java.util.Collections.emptyList();
     private void ensureTypeDefIsMutable() {
       if (!((bitField0_ & 0x00000040) == 0x00000040)) {
-        typeDef_ = new java.util.ArrayList<com.github.jsdossier.proto.JsType.TypeDef>(typeDef_);
+        typeDef_ = new java.util.ArrayList<com.github.jsdossier.proto.Property>(typeDef_);
         bitField0_ |= 0x00000040;
        }
     }
 
     private com.google.protobuf.RepeatedFieldBuilder<
-        com.github.jsdossier.proto.JsType.TypeDef, com.github.jsdossier.proto.JsType.TypeDef.Builder, com.github.jsdossier.proto.JsType.TypeDefOrBuilder> typeDefBuilder_;
+        com.github.jsdossier.proto.Property, com.github.jsdossier.proto.Property.Builder, com.github.jsdossier.proto.PropertyOrBuilder> typeDefBuilder_;
 
     /**
-     * <code>repeated .dossier.JsType.TypeDef type_def = 10;</code>
+     * <code>repeated .dossier.Property type_def = 10;</code>
      */
-    public java.util.List<com.github.jsdossier.proto.JsType.TypeDef> getTypeDefList() {
+    public java.util.List<com.github.jsdossier.proto.Property> getTypeDefList() {
       if (typeDefBuilder_ == null) {
         return java.util.Collections.unmodifiableList(typeDef_);
       } else {
@@ -7494,7 +6023,7 @@ public  final class JsType extends
       }
     }
     /**
-     * <code>repeated .dossier.JsType.TypeDef type_def = 10;</code>
+     * <code>repeated .dossier.Property type_def = 10;</code>
      */
     public int getTypeDefCount() {
       if (typeDefBuilder_ == null) {
@@ -7504,9 +6033,9 @@ public  final class JsType extends
       }
     }
     /**
-     * <code>repeated .dossier.JsType.TypeDef type_def = 10;</code>
+     * <code>repeated .dossier.Property type_def = 10;</code>
      */
-    public com.github.jsdossier.proto.JsType.TypeDef getTypeDef(int index) {
+    public com.github.jsdossier.proto.Property getTypeDef(int index) {
       if (typeDefBuilder_ == null) {
         return typeDef_.get(index);
       } else {
@@ -7514,10 +6043,10 @@ public  final class JsType extends
       }
     }
     /**
-     * <code>repeated .dossier.JsType.TypeDef type_def = 10;</code>
+     * <code>repeated .dossier.Property type_def = 10;</code>
      */
     public Builder setTypeDef(
-        int index, com.github.jsdossier.proto.JsType.TypeDef value) {
+        int index, com.github.jsdossier.proto.Property value) {
       if (typeDefBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -7531,10 +6060,10 @@ public  final class JsType extends
       return this;
     }
     /**
-     * <code>repeated .dossier.JsType.TypeDef type_def = 10;</code>
+     * <code>repeated .dossier.Property type_def = 10;</code>
      */
     public Builder setTypeDef(
-        int index, com.github.jsdossier.proto.JsType.TypeDef.Builder builderForValue) {
+        int index, com.github.jsdossier.proto.Property.Builder builderForValue) {
       if (typeDefBuilder_ == null) {
         ensureTypeDefIsMutable();
         typeDef_.set(index, builderForValue.build());
@@ -7545,9 +6074,9 @@ public  final class JsType extends
       return this;
     }
     /**
-     * <code>repeated .dossier.JsType.TypeDef type_def = 10;</code>
+     * <code>repeated .dossier.Property type_def = 10;</code>
      */
-    public Builder addTypeDef(com.github.jsdossier.proto.JsType.TypeDef value) {
+    public Builder addTypeDef(com.github.jsdossier.proto.Property value) {
       if (typeDefBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -7561,10 +6090,10 @@ public  final class JsType extends
       return this;
     }
     /**
-     * <code>repeated .dossier.JsType.TypeDef type_def = 10;</code>
+     * <code>repeated .dossier.Property type_def = 10;</code>
      */
     public Builder addTypeDef(
-        int index, com.github.jsdossier.proto.JsType.TypeDef value) {
+        int index, com.github.jsdossier.proto.Property value) {
       if (typeDefBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -7578,10 +6107,10 @@ public  final class JsType extends
       return this;
     }
     /**
-     * <code>repeated .dossier.JsType.TypeDef type_def = 10;</code>
+     * <code>repeated .dossier.Property type_def = 10;</code>
      */
     public Builder addTypeDef(
-        com.github.jsdossier.proto.JsType.TypeDef.Builder builderForValue) {
+        com.github.jsdossier.proto.Property.Builder builderForValue) {
       if (typeDefBuilder_ == null) {
         ensureTypeDefIsMutable();
         typeDef_.add(builderForValue.build());
@@ -7592,10 +6121,10 @@ public  final class JsType extends
       return this;
     }
     /**
-     * <code>repeated .dossier.JsType.TypeDef type_def = 10;</code>
+     * <code>repeated .dossier.Property type_def = 10;</code>
      */
     public Builder addTypeDef(
-        int index, com.github.jsdossier.proto.JsType.TypeDef.Builder builderForValue) {
+        int index, com.github.jsdossier.proto.Property.Builder builderForValue) {
       if (typeDefBuilder_ == null) {
         ensureTypeDefIsMutable();
         typeDef_.add(index, builderForValue.build());
@@ -7606,10 +6135,10 @@ public  final class JsType extends
       return this;
     }
     /**
-     * <code>repeated .dossier.JsType.TypeDef type_def = 10;</code>
+     * <code>repeated .dossier.Property type_def = 10;</code>
      */
     public Builder addAllTypeDef(
-        java.lang.Iterable<? extends com.github.jsdossier.proto.JsType.TypeDef> values) {
+        java.lang.Iterable<? extends com.github.jsdossier.proto.Property> values) {
       if (typeDefBuilder_ == null) {
         ensureTypeDefIsMutable();
         com.google.protobuf.AbstractMessageLite.Builder.addAll(
@@ -7621,7 +6150,7 @@ public  final class JsType extends
       return this;
     }
     /**
-     * <code>repeated .dossier.JsType.TypeDef type_def = 10;</code>
+     * <code>repeated .dossier.Property type_def = 10;</code>
      */
     public Builder clearTypeDef() {
       if (typeDefBuilder_ == null) {
@@ -7634,7 +6163,7 @@ public  final class JsType extends
       return this;
     }
     /**
-     * <code>repeated .dossier.JsType.TypeDef type_def = 10;</code>
+     * <code>repeated .dossier.Property type_def = 10;</code>
      */
     public Builder removeTypeDef(int index) {
       if (typeDefBuilder_ == null) {
@@ -7647,16 +6176,16 @@ public  final class JsType extends
       return this;
     }
     /**
-     * <code>repeated .dossier.JsType.TypeDef type_def = 10;</code>
+     * <code>repeated .dossier.Property type_def = 10;</code>
      */
-    public com.github.jsdossier.proto.JsType.TypeDef.Builder getTypeDefBuilder(
+    public com.github.jsdossier.proto.Property.Builder getTypeDefBuilder(
         int index) {
       return getTypeDefFieldBuilder().getBuilder(index);
     }
     /**
-     * <code>repeated .dossier.JsType.TypeDef type_def = 10;</code>
+     * <code>repeated .dossier.Property type_def = 10;</code>
      */
-    public com.github.jsdossier.proto.JsType.TypeDefOrBuilder getTypeDefOrBuilder(
+    public com.github.jsdossier.proto.PropertyOrBuilder getTypeDefOrBuilder(
         int index) {
       if (typeDefBuilder_ == null) {
         return typeDef_.get(index);  } else {
@@ -7664,9 +6193,9 @@ public  final class JsType extends
       }
     }
     /**
-     * <code>repeated .dossier.JsType.TypeDef type_def = 10;</code>
+     * <code>repeated .dossier.Property type_def = 10;</code>
      */
-    public java.util.List<? extends com.github.jsdossier.proto.JsType.TypeDefOrBuilder> 
+    public java.util.List<? extends com.github.jsdossier.proto.PropertyOrBuilder> 
          getTypeDefOrBuilderList() {
       if (typeDefBuilder_ != null) {
         return typeDefBuilder_.getMessageOrBuilderList();
@@ -7675,33 +6204,33 @@ public  final class JsType extends
       }
     }
     /**
-     * <code>repeated .dossier.JsType.TypeDef type_def = 10;</code>
+     * <code>repeated .dossier.Property type_def = 10;</code>
      */
-    public com.github.jsdossier.proto.JsType.TypeDef.Builder addTypeDefBuilder() {
+    public com.github.jsdossier.proto.Property.Builder addTypeDefBuilder() {
       return getTypeDefFieldBuilder().addBuilder(
-          com.github.jsdossier.proto.JsType.TypeDef.getDefaultInstance());
+          com.github.jsdossier.proto.Property.getDefaultInstance());
     }
     /**
-     * <code>repeated .dossier.JsType.TypeDef type_def = 10;</code>
+     * <code>repeated .dossier.Property type_def = 10;</code>
      */
-    public com.github.jsdossier.proto.JsType.TypeDef.Builder addTypeDefBuilder(
+    public com.github.jsdossier.proto.Property.Builder addTypeDefBuilder(
         int index) {
       return getTypeDefFieldBuilder().addBuilder(
-          index, com.github.jsdossier.proto.JsType.TypeDef.getDefaultInstance());
+          index, com.github.jsdossier.proto.Property.getDefaultInstance());
     }
     /**
-     * <code>repeated .dossier.JsType.TypeDef type_def = 10;</code>
+     * <code>repeated .dossier.Property type_def = 10;</code>
      */
-    public java.util.List<com.github.jsdossier.proto.JsType.TypeDef.Builder> 
+    public java.util.List<com.github.jsdossier.proto.Property.Builder> 
          getTypeDefBuilderList() {
       return getTypeDefFieldBuilder().getBuilderList();
     }
     private com.google.protobuf.RepeatedFieldBuilder<
-        com.github.jsdossier.proto.JsType.TypeDef, com.github.jsdossier.proto.JsType.TypeDef.Builder, com.github.jsdossier.proto.JsType.TypeDefOrBuilder> 
+        com.github.jsdossier.proto.Property, com.github.jsdossier.proto.Property.Builder, com.github.jsdossier.proto.PropertyOrBuilder> 
         getTypeDefFieldBuilder() {
       if (typeDefBuilder_ == null) {
         typeDefBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
-            com.github.jsdossier.proto.JsType.TypeDef, com.github.jsdossier.proto.JsType.TypeDef.Builder, com.github.jsdossier.proto.JsType.TypeDefOrBuilder>(
+            com.github.jsdossier.proto.Property, com.github.jsdossier.proto.Property.Builder, com.github.jsdossier.proto.PropertyOrBuilder>(
                 typeDef_,
                 ((bitField0_ & 0x00000040) == 0x00000040),
                 getParentForChildren(),

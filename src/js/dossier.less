@@ -15,8 +15,9 @@
  */
 
 @import "base";
-@import "header";
 @import "footer";
+@import "header";
+@import "info";
 @import "nav";
 
 main {
@@ -33,10 +34,6 @@ main {
               transform ease-in-out .1s;
 }
 
-h1.title {
-  margin-top: 20px;
-}
-
 .exported-modules,
 .instance-methods,
 .instance-properties,
@@ -48,7 +45,7 @@ h1.title {
 .constants {
   & > h2 {
     margin-top: 48px;
-    margin-left: 16px;
+    margin-left: 8px;
     opacity: .8;
     font-weight: 300;
   }
@@ -74,7 +71,6 @@ article.page {
   & > .header {
     padding: 16px 16px 0;
     margin-bottom: 16px;
-    border-bottom: 1px solid @section_border_color;
   }
 
   & > .body {
@@ -82,12 +78,8 @@ article.page {
   }
 }
 
-.parentlink {
-  float: left;
-}
-
 .standard-margin() {
-  margin: 0 16px;
+  margin: 0 8px;
 }
 
 article {
@@ -99,13 +91,13 @@ article {
     background: @main_column_color;
 
     font: 400 16px/24px Roboto,sans-serif;
+    .raise-1dp();
 
     li {
       padding: 16px;
-      border: 1px solid @section_border_color;
     }
     li + li {
-      border-top: 0;
+      border-top: 1px solid rgba(0, 0, 0, .12);
     }
 
     i {
@@ -116,8 +108,20 @@ article {
 }
 
 .intro,
-.enum-values {
-  .standard-margin();
+.property.expandable {
+  .source {
+    margin: 16px -16px -16px;
+    padding: 16px;
+    border-top: 1px solid @section_border_color;
+
+    a {
+      font-weight: 400;
+      display: block;
+      &:hover {
+        text-decoration: none;
+      }
+    }
+  }
 }
 
 .property {
@@ -127,28 +131,16 @@ article {
   .raise-1dp();
 
   &.expandable {
-    .standard-margin();
-    max-height: 56px;
-    min-height: 56px;
     overflow: hidden;
-    border: 1px solid @section_border_color;
-    box-shadow: none;
+    transition: margin 75ms cubic-bezier(0.4, 0.0, 0.2, 1),
+                box-shadow 75ms cubic-bezier(0.4, 0.0, 0.2, 1);
 
-    transition: max-height 150ms ease,
-                margin 150ms ease,
-                box-shadow 150ms ease;
-
-    // WebKit (Safari) does not smoothly transition from a fixed max-height to
-    // the "initial" value, so disable that transition.
-    .webkit & {
-      transition: margin 150ms ease, box-shadow 150ms ease;
+    border-radius: 0;
+    h2 + & {
+      .card-list-top();
     }
-
-    & + & {
-      border-top: 0;
-    }
-    &.open + & {
-      border-top: 1px solid @section_border_color;
+    &:last-child {
+      .card-list-bottom();
     }
 
     & > .header {
@@ -159,30 +151,47 @@ article {
       }
     }
 
-    & > .body {
-      visibility: hidden;
+    &:not(.open) {
+      margin: 0 8px;
     }
 
-    &:hover {
-      .code-link {
-        display: block;
-      }
+    &:not(.open) > .header {
+      margin: 0;
+      border: 0;
+    }
+
+    &:not(.open) > .body {
+      height: 0;
+      padding: 0;
+      display: none;
+      visibility: hidden;
+    }
+    .body {
+      transition: height 150ms ease,
+                  visibility 150ms ease;
+    }
+
+    &:hover .more {
+      display: block;
     }
 
     &.open {
       border: 0 !important;
       margin: 16px 0;
-      max-height: initial;
       .raise-4dp();
 
-      & > .body {
-        visibility: visible;
-      }
-
-      .code-link {
+      .more {
         display: block;
+        transform: rotateX(180deg);
       }
     }
+  }
+
+  .more {
+    height: @size;
+    float: right;
+    display: none;
+    transition: transform 150ms ease;
   }
 
   .enum-values & {
@@ -191,6 +200,7 @@ article {
 
   h3.name {
     font-size: 16px;
+    font-weight: 500;
   }
 
   & > .header {
@@ -199,23 +209,6 @@ article {
 
   &:target {
     .target();
-  }
-
-  .code-link {
-    height: @size;
-    float: right;
-    display: none;
-
-    a {
-      display: block;
-      width: 100%;
-      height: 100%;
-    }
-
-    .material-icons {
-      font-size: 18px;
-      padding: 3px;
-    }
   }
 }
 
@@ -298,14 +291,10 @@ var {
 .intro,
 .property {
   h3.name {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
     margin-top: 0;
-    line-height: 24px;
     padding-left: 16px;
     text-indent: -16px;
-    .tags {
+    &, & .tags {
       margin-right: 24px;
     }
   }
@@ -376,8 +365,10 @@ article {
     padding-bottom: 1rem;
   }
 
-  :target + a { font-weight: 500; }
-  tr.hilite {
+  // The "target" class is used to apply the same styles in the case
+  // the JS runs before the browser updates the :target pseudo class.
+  tr.target, tr:target {
+    a { font-weight: 500; }
     background: fade(@link_color, 10%);
   }
 }

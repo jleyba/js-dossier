@@ -1,13 +1,76 @@
-{namespace dossier.soy.types}
+{namespace dossier.soy.type}
 
 /**
- * Renders a type expression.
+ * Entry point to rendering a type expression.
  */
 {template .expression}
   {@param expression: dossier.expression.TypeExpression}
   {@param? strict: bool}
 
-  {if $expression.isVarargs}&hellip;{/if}
+  <code class="expression">
+    {call .expression_ data="all" /}
+  </code>
+{/template}
+
+
+/**
+ * Renders a reference to a specific type.
+ */
+{template .typeReference}
+  {@param type: dossier.expression.NamedType}
+  {@param? useQualifiedName: bool}
+
+  <code class="expression">
+    {call .namedTypeReference data="all" /}
+  </code>
+{/template}
+
+/**
+ * Renders a type expression that is the result of another operation (function or
+ * property reference).
+ *
+ * Example:      $OPERATION ⇒ $EXPRESSION
+ */
+{template .yields}
+  {@param expression: dossier.expression.TypeExpression}
+  {@param? strict: bool}
+
+  {call .yields_ /}
+  {call .expression data="all" /}
+{/template}
+
+
+/** Render a yields delimiter. */
+{template .yields_ private="true"}
+  {sp}<var class="yield">→</var>{sp}  // Or ⇒?
+{/template}
+
+
+/**
+ * Renders an expression indicating an expression yields void.
+ */
+{template .yieldsVoid}
+  {call .yields_ /}
+  <code class="expression"><i>void</i></code>
+{/template}
+
+/**
+ * Renders an expression indicating an expression has an unknown resulting type.
+ */
+{template .yieldsUnknown}
+  {call .yields_ /}
+  <code class="expression"><i>?</i></code>
+{/template}
+
+
+/**
+ * Renders a type expression.
+ */
+{template .expression_ private="true"}
+  {@param expression: dossier.expression.TypeExpression}
+  {@param? strict: bool}
+
+  {if $expression.isVarargs}...{/if}
 
   {if $expression.functionType}{call .functionType data="all" /}
   {elseif $expression.namedType}{call .namedTypeExpression data="all" /}
@@ -31,13 +94,13 @@
   {if $fn.instanceType}
     {if $fn.isConstructor}new{else}this{/if}
     :{sp}
-    {call .expression}
+    {call .expression_}
       {param expression: $fn.instanceType /}
     {/call}
     {if length($fn.parameter)},{sp}{/if}
   {/if}
   {foreach $param in $fn.parameter}
-    {call .expression}
+    {call .expression_}
       {param expression: $param /}
       {param strict: true /}
     {/call}
@@ -46,7 +109,7 @@
   )
   {if $fn.returnType}
     :{sp}
-    {call .expression}
+    {call .expression_}
       {param expression: $fn.returnType /}
       {param strict: true /}
     {/call}
@@ -57,7 +120,7 @@
 /**
  * Renders a named type reference.
  */
-{template .namedTypeReference}
+{template .namedTypeReference private="true"}
   {@param type: dossier.expression.NamedType}
   {@param? useQualifiedName: bool}
   {@param? strict: bool}
@@ -84,7 +147,7 @@
   {if length($type.templateType)}
     &lt;
     {foreach $template in $type.templateType}
-      {call .expression}
+      {call .expression_}
         {param expression: $template /}
         {param strict: $strict /}
       {/call}
@@ -129,7 +192,7 @@
   {lb}
   {foreach $entry in $expression.recordType.entry}
     {$entry.key}:{sp}
-    {call .expression}
+    {call .expression_}
       {param expression: $entry.value /}
       {param strict: true /}
     {/call}
@@ -162,7 +225,7 @@
   {/if}
   {if $renderParens}({/if}
   {foreach $alternate in $union.type}
-    {call .expression}
+    {call .expression_}
       {param expression: $alternate /}
     {/call}
     {if not isLast($alternate)}|{/if}

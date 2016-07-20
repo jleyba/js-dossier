@@ -83,27 +83,27 @@ public interface JsTypeOrBuilder extends
   com.github.jsdossier.proto.CommentOrBuilder getDeprecationOrBuilder();
 
   /**
-   * <code>repeated .dossier.JsType.TypeDef type_def = 10;</code>
+   * <code>repeated .dossier.Property type_def = 10;</code>
    */
-  java.util.List<com.github.jsdossier.proto.JsType.TypeDef> 
+  java.util.List<com.github.jsdossier.proto.Property> 
       getTypeDefList();
   /**
-   * <code>repeated .dossier.JsType.TypeDef type_def = 10;</code>
+   * <code>repeated .dossier.Property type_def = 10;</code>
    */
-  com.github.jsdossier.proto.JsType.TypeDef getTypeDef(int index);
+  com.github.jsdossier.proto.Property getTypeDef(int index);
   /**
-   * <code>repeated .dossier.JsType.TypeDef type_def = 10;</code>
+   * <code>repeated .dossier.Property type_def = 10;</code>
    */
   int getTypeDefCount();
   /**
-   * <code>repeated .dossier.JsType.TypeDef type_def = 10;</code>
+   * <code>repeated .dossier.Property type_def = 10;</code>
    */
-  java.util.List<? extends com.github.jsdossier.proto.JsType.TypeDefOrBuilder> 
+  java.util.List<? extends com.github.jsdossier.proto.PropertyOrBuilder> 
       getTypeDefOrBuilderList();
   /**
-   * <code>repeated .dossier.JsType.TypeDef type_def = 10;</code>
+   * <code>repeated .dossier.Property type_def = 10;</code>
    */
-  com.github.jsdossier.proto.JsType.TypeDefOrBuilder getTypeDefOrBuilder(
+  com.github.jsdossier.proto.PropertyOrBuilder getTypeDefOrBuilder(
       int index);
 
   /**

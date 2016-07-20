@@ -41,7 +41,7 @@
 
 @main_column_color: #fff;
 @banner_color: #424242;
-@link_color: #66f;
+@link_color: rgb(33, 150, 243);
 @font_color: #212121;
 @caption_color: #333;
 @kbd_color: #555;
@@ -51,22 +51,35 @@
 @body_bg: #f8f8f8;
 @kbd_bg: #fcfcfc;
 
-@code_font: "Roboto Mono", monospace;
+@body_font: "Roboto", "Helvetica", "Arial", sans-serif;
+@code_font: "Roboto Mono", "Menlo", monospace;
 
 @gutter_small_screen: 16px;
 @gutter_large_screen: 24px;
 
 @target_border_width: 3px;
 
+@card_radius: 2px;
+
 .card() {
-  border-radius: 2px;
+  border-radius: @card_radius;
+}
+
+.card-list-top() {
+  border-top-left-radius: @card_radius;
+  border-top-right-radius: @card_radius;
+}
+
+.card-list-bottom() {
+  border-bottom-left-radius: @card_radius;
+  border-bottom-right-radius: @card_radius;
 }
 
 .raise-1dp() {
   .card();
-  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, .14),
-              0 3px 1px -2px rgba(0, 0, 0, .12),
-              0 1px 5px 0 rgba(0, 0, 0, .2);
+  box-shadow: 0 -1px 0 rgba(0, 0, 0, .05),
+              0 0 2px rgba(0, 0, 0, .12),
+              0 2px 4px rgba(0, 0, 0, .2);
 }
 
 .raise-2dp() {
@@ -116,6 +129,10 @@
   margin-top: @header_height / 2;
 }
 
+.material-icons {
+  .disable-select();
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -123,7 +140,7 @@
 }
 
 html {
-  font-size: 10px;
+  font-size: 14px;
   min-height: 100vh;
   // IE requires an explicit height for flex-direction: column to work.
   // See https://connect.microsoft.com/IE/feedback/details/802625
@@ -140,9 +157,9 @@ body {
   color: @font_color;
 
   word-wrap: break-word;
-  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  font-family: @body_font;
   font-size: 14px;
-  line-height: 1.4;
+  line-height: 20px;
   -webkit-font-smoothing: subpixel-antialiased;
 }
 
@@ -158,19 +175,18 @@ body {
   -webkit-overflow-scrolling: touch;
 }
 
-h1, h2, h3, h4, h5, h6 { line-height: 1.1; }
-h1, h2 { margin: 40px 0 20px; }
-h3, h4, h5, h6 { margin: 32px 0 16px; }
-h1 {
-  letter-spacing: -0.01em;
-  font: 400 34px/40px Roboto, sans-serif;
+.font(@weight, @size, @line_height) {
+  font-weight: @weight;
+  font-size: @size;
+  line-height: @line_height;
 }
-.srcfile h1,
-h2 { font: 400 24px/32px Roboto, sans-serif; }
-h3 { font: 500 20px/32px Roboto, sans-serif; }
-h4 { font: 500 18px/32px Roboto, sans-serif; }
-h5 { font: 500 16px/24px Roboto, sans-serif; }
-h6 { font: 400 16px/24px Roboto, sans-serif; }
+
+h1, h2, h3, h4, h5, h6 { margin: 1em 0 16px; }
+h1 { .font(400, 34px, 40px); }
+h1.title, h2 { .font(400, 24px, 32px); }
+h3 { .font(400, 20px, 28px); }
+h4 { .font(400, 16px, 24px); }
+h5 { .font(500, 14px, 24px); }
 
 a {
   &, &:visited {
@@ -225,6 +241,20 @@ li code {
 
 pre code {
   border: 0;
+}
+
+code.expression {
+  font-weight: 400;
+  background: none;
+  padding: 0;
+  border: 0;
+  color: @link_color;
+}
+
+var.yield {
+  font-size: 13px;
+  font-weight: normal;
+  font-style: normal;
 }
 
 .fn-details {
@@ -364,11 +394,6 @@ kbd {
   box-shadow: inset 0 -1px 0 #bbb;
 }
 kbd + kbd { margin-left: 3px; }
-
-.parentlink {
-  float: left;
-  b { font-weight: 400; }
-}
 
 .codelink {
   a {

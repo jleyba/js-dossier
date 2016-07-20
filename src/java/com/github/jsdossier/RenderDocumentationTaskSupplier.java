@@ -22,7 +22,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.base.Suppliers.memoize;
 import static com.google.common.base.Verify.verify;
-import static com.google.common.collect.Lists.reverse;
+import static com.google.common.collect.Iterables.skip;
 import static com.google.common.collect.Lists.transform;
 import static java.nio.file.Files.createDirectories;
 
@@ -287,7 +287,7 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Ca
 
       if (parent != null) {
         spec.getParentBuilder()
-            .setLink(linkFactory.createLink(parent))
+            .setType(linkFactory.createNamedTypeReference(parent))
             .setIsModule(
                 parent.isModuleExports()
                     && parent.getModule().get().getType() != Module.Type.CLOSURE);
@@ -355,13 +355,15 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Ca
         JSTypeExpression expression = checkNotNull(typedef.getJsDoc().getType());
         JSType type = expression.evaluate(globalScope, jsRegistry);
 
-        JsType.TypeDef.Builder builder = spec.addTypeDefBuilder()
+        com.github.jsdossier.proto.Property.Builder builder = spec.addTypeDefBuilder();
+
+        builder.setType(
+            expressionParserFactory.create(linkFactory.withTypeContext(typedef))
+                .parse(type));
+
+        builder.getBaseBuilder()
             .setName(name)
-            .setType(
-                expressionParserFactory.create(linkFactory.withTypeContext(typedef))
-                    .parse(type))
-            .setSource(
-                linkFactory.createLink(typedef.getSourceFile(), typedef.getSourcePosition()))
+            .setSource(linkFactory.createLink(typedef.getSourceFile(), typedef.getSourcePosition()))
             .setDescription(
                 parser.parseComment(
                     typedef.getJsDoc().getBlockComment(),
@@ -369,8 +371,8 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Ca
             .setVisibility(Visibility.valueOf(visibility.name()));
 
         if (typedef.getJsDoc().isDeprecated()) {
-          builder.getTagsBuilder().setIsDeprecated(true);
-          builder.setDeprecation(getDeprecation(typedef.getJsDoc()));
+          builder.getBaseBuilder().getTagsBuilder().setIsDeprecated(true);
+          builder.getBaseBuilder().setDeprecation(getDeprecation(typedef.getJsDoc()));
         }
       }
     }
@@ -426,7 +428,9 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Ca
       spec.addAllImplementedType(typeInspector.getImplementedTypes());
       spec.addAllImplementation(typeInspector.getKnownImplementations());
       spec.addAllSubtype(typeInspector.getSubtypes());
-      spec.addAllExtendedType(reverse(typeInspector.getTypeHierarchy()));
+
+      List<NamedType> hierarchy = typeInspector.getTypeHierarchy();
+      spec.addAllExtendedType(skip(hierarchy, 1));  // First entry is always the type itself.
 
       spec.addAllKnownAlias(typeInspector.getKnownAliases());
       NamedType aliasedType = typeInspector.getAliasedType();
