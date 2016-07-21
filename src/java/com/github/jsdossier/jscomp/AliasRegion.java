@@ -77,7 +77,11 @@ public abstract class AliasRegion implements CompilerOptions.AliasTransformation
   @Nullable
   @CheckReturnValue
   public String resolveAlias(String alias) {
-    return aliases.get(alias);
+    String resolved = aliases.get(alias);
+    while (aliases.containsKey(resolved)) {
+      resolved = aliases.get(resolved);
+    }
+    return resolved;
   }
 
   /**

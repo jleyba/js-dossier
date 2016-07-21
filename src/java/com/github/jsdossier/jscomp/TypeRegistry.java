@@ -160,7 +160,7 @@ public final class TypeRegistry {
 
     for (AliasRegion region : aliasRegions.get(type.getSourceFile())) {
       if (region.getRange().contains(type.getSourcePosition())) {
-        String def = region.resolveAlias(key);
+        String def = tryResolve(region, key);
         if (def != null) {
           return def;
         }
@@ -172,6 +172,26 @@ public final class TypeRegistry {
     }
 
     return null;
+  }
+
+  @CheckReturnValue
+  @Nullable
+  private String tryResolve(AliasRegion region, String alias) {
+    String definition = region.resolveAlias(alias);
+    if (definition == null) {
+      return null;
+    }
+
+    int index = definition.indexOf('.');
+    if (index != -1) {
+      String firstPart = definition.substring(0, index);
+      String firstPartDefinition = tryResolve(region, firstPart);
+      if (firstPartDefinition != null) {
+        return firstPartDefinition + definition.substring(index);
+      }
+    }
+
+    return definition;
   }
 
   /**
