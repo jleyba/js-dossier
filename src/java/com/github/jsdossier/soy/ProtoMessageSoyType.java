@@ -33,6 +33,7 @@ import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.EnumValueDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.GeneratedMessage;
+import com.google.protobuf.Message;
 import com.google.template.soy.base.SoyBackendKind;
 import com.google.template.soy.data.SanitizedContent;
 import com.google.template.soy.data.SoyListData;
@@ -86,18 +87,36 @@ class ProtoMessageSoyType implements SoyObjectType {
 
   private final Descriptor descriptor;
   private final ImmutableMap<String, FieldDescriptor> fieldDescriptors;
+  private final ImmutableSet<String> sanitizedHtmlFields;
+  private final ImmutableSet<String> sanitizedUriFields;
 
   private ProtoMessageSoyType(Descriptor descriptor) {
     this.descriptor = descriptor;
 
     ImmutableMap.Builder<String, FieldDescriptor> descBuilder = ImmutableMap.builder();
+    ImmutableSet.Builder<String> htmlFieldsBuilder = ImmutableSet.builder();
+    ImmutableSet.Builder<String> uriFieldsBuilder = ImmutableSet.builder();
+
     for (FieldDescriptor field : descriptor.getFields()) {
       if (CONVERTIBLE_TYPES.contains(field.getJavaType())) {
         String name = LOWER_UNDERSCORE.to(LOWER_CAMEL, field.getName());
         descBuilder.put(name, field);
       }
+
+      if (field.getOptions().hasExtension(Options.sanitized)) {
+        if (field.getOptions().getExtension(Options.sanitized).getHtml()) {
+          htmlFieldsBuilder.add(field.getName());
+        }
+
+        if (field.getOptions().getExtension(Options.sanitized).getUri()) {
+          uriFieldsBuilder.add(field.getName());
+        }
+      }
     }
+
     fieldDescriptors = descBuilder.build();
+    sanitizedHtmlFields = htmlFieldsBuilder.build();
+    sanitizedUriFields = uriFieldsBuilder.build();
   }
 
   private static SoyType toSoyType(FieldDescriptor field) {
@@ -130,7 +149,7 @@ class ProtoMessageSoyType implements SoyObjectType {
     return CACHE.get(descriptor);
   }
 
-  static SoyValue toSoyValue(GeneratedMessage message) {
+  static SoyValue toSoyValue(Message message) {
     ProtoMessageSoyType type = ProtoMessageSoyType.get(message.getDescriptorForType());
 
     Map<String, Object> data = Maps.newHashMapWithExpectedSize(
@@ -141,7 +160,7 @@ class ProtoMessageSoyType implements SoyObjectType {
     return new SoyMapData(data);
   }
 
-  private static SoyValue toSoyValue(FieldDescriptor field, GeneratedMessage message) {
+  private static SoyValue toSoyValue(FieldDescriptor field, Message message) {
     Object fieldValue = message.getField(field);
     switch (field.getJavaType()) {
       case ENUM: {
@@ -436,5 +455,13 @@ class ProtoMessageSoyType implements SoyObjectType {
   @Override
   public Class<? extends SoyValue> javaType() {
     return SoyRecord.class;
+  }
+
+  public boolean isSanitizedHtml(String fieldName) {
+    return sanitizedHtmlFields.contains(fieldName);
+  }
+
+  public boolean isSanitizedUri(String uri) {
+    return sanitizedUriFields.contains(uri);
   }
 }

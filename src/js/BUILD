@@ -1,13 +1,38 @@
 load("/build_tools/js_binary", "js_binary")
 
+genrule(
+    name = "gen_proto_js",
+    outs = ["proto.dossier.js"],
+    tools = ["//src/java/com/github/jsdossier/soy:ProtoDescriptorsToJs"],
+    cmd = "$(location //src/java/com/github/jsdossier/soy:ProtoDescriptorsToJs) $@",
+)
+
+genrule(
+    name = "gen_soy_js",
+    outs = [
+        "common.soy.js",
+        "dossier.soy.js",
+        "nav.soy.js",
+        "types.soy.js",
+    ],
+    tools = ["//src/java/com/github/jsdossier/soy:GenerateSoyTemplates"],
+    cmd = "$(location //src/java/com/github/jsdossier/soy:GenerateSoyTemplates) $(@D)",
+)
+
 js_binary(
     name = "dossier",
     srcs = [
+        ":gen_proto_js",
+        ":common.soy.js",
+        ":dossier.soy.js",
+        ":nav.soy.js",
+        ":types.soy.js",
         "app.js",
         "main.js",
         "nav.js",
         "page.js",
         "search.js",
+        "//third_party/js/soy",
     ],
     externs = ["externs.js"],
     flags = [

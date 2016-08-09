@@ -16,6 +16,7 @@
 
 package com.github.jsdossier.soy;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.StandardOpenOption.CREATE;
 import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
@@ -24,34 +25,47 @@ import static java.nio.file.StandardOpenOption.WRITE;
 import com.github.jsdossier.proto.HtmlRenderSpec;
 import com.github.jsdossier.proto.JsTypeRenderSpec;
 import com.github.jsdossier.proto.SourceFileRenderSpec;
-import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import com.google.protobuf.GeneratedMessage;
 import com.google.template.soy.SoyFileSet;
 import com.google.template.soy.data.SoyMapData;
+import com.google.template.soy.jssrc.SoyJsSrcOptions;
 import com.google.template.soy.tofu.SoyTofu;
 import com.google.template.soy.types.SoyTypeProvider;
 import com.google.template.soy.types.SoyTypeRegistry;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
+import java.util.Iterator;
+
+import javax.inject.Inject;
 
 /**
  * Renders soy templates.
  */
 public class Renderer {
 
-  private final SoyTofu tofu = SoyFileSet.builder()
-      .add(Renderer.class.getResource("resources/common.soy"))
-      .add(Renderer.class.getResource("resources/types.soy"))
-      .add(Renderer.class.getResource("resources/dossier.soy"))
-      .setLocalTypeRegistry(new SoyTypeRegistry(ImmutableSet.of(
-          (SoyTypeProvider) new DossierSoyTypeProvider())))
-      .build()
-      .compileToTofu();
+  private final SoyTofu tofu;
+
+  @Inject
+  Renderer(
+      SoyFileSet.Builder filesetBuilder,
+      DossierSoyTypeProvider typeProvider) {
+    tofu = filesetBuilder
+        .add(Renderer.class.getResource("resources/common.soy"))
+        .add(Renderer.class.getResource("resources/types.soy"))
+        .add(Renderer.class.getResource("resources/dossier.soy"))
+        .setLocalTypeRegistry(new SoyTypeRegistry(ImmutableSet.of((SoyTypeProvider) typeProvider)))
+        .build()
+        .compileToTofu();
+  }
 
   public void render(Path output, HtmlRenderSpec spec) throws IOException {
     render(output, "dossier.soy.htmlFile", spec);
@@ -75,7 +89,43 @@ public class Renderer {
     }
   }
 
-  @VisibleForTesting SoyTofu getTofu() {
-    return tofu;
+  public static void main(String args[]) throws IOException {
+    checkArgument(args.length > 0, "no output directory specified");
+
+    Path outputDir = FileSystems.getDefault().getPath(args[0]);
+    checkArgument(Files.isDirectory(outputDir), "not a directory: %s", outputDir);
+
+    Injector injector = Guice.createInjector(new DossierSoyModule());
+
+    DossierSoyTypeProvider typeProvider = injector.getInstance(DossierSoyTypeProvider.class);
+    SoyFileSet fileSet = injector.getInstance(SoyFileSet.Builder.class)
+        .add(Renderer.class.getResource("resources/common.soy"))
+        .add(Renderer.class.getResource("resources/dossier.soy"))
+        .add(Renderer.class.getResource("resources/nav.soy"))
+        .add(Renderer.class.getResource("resources/types.soy"))
+        .setLocalTypeRegistry(
+            new SoyTypeRegistry(ImmutableSet.of((SoyTypeProvider) typeProvider)))
+        .build();
+
+    SoyJsSrcOptions options = new SoyJsSrcOptions();
+
+    // These options must be disabled before enabling goog modules below.
+    options.setShouldDeclareTopLevelNamespaces(false);
+    options.setShouldProvideRequireSoyNamespaces(false);
+    options.setShouldProvideRequireJsFunctions(false);
+    options.setShouldProvideBothSoyNamespacesAndJsFunctions(false);
+    options.setShouldGenerateJsdoc(true);
+
+    options.setShouldGenerateGoogModules(true);
+
+    Iterator<Path> files = ImmutableList.of(
+        outputDir.resolve("common.soy.js"),
+        outputDir.resolve("dossier.soy.js"),
+        outputDir.resolve("nav.soy.js"),
+        outputDir.resolve("types.soy.js")).iterator();
+    for (String string : fileSet.compileToJsSrc(options, null)) {
+      Path file = files.next();
+      Files.write(file, string.getBytes(StandardCharsets.UTF_8));
+    }
   }
 }

@@ -5,6 +5,9 @@ java_library(
     deps = [
         "//lib/maven:closure_templates",
         "//lib/maven:guava",
+        "//lib/maven:guice",
+        "//lib/maven:guice_multibindings",
+        "//lib/maven:inject",
         "//lib/maven:jsr305",
         "//lib/maven:owasp_html_sanitizer",
         "//lib/maven:protobuf",
@@ -14,4 +17,18 @@ java_library(
         "//src/java/com/github/jsdossier:__pkg__",
         "//test/java/com/github/jsdossier:__subpackages__",
     ],
+)
+
+java_binary(
+    name = "GenerateSoyTemplates",
+    main_class = "com.github.jsdossier.soy.Renderer",
+    runtime_deps = [":soy"],
+    visibility = ["//src/js:__pkg__"],
+)
+
+java_binary(
+    name = "ProtoDescriptorsToJs",
+    main_class = "com.github.jsdossier.soy.ProtoDescriptorsToJs",
+    runtime_deps = [":soy"],
+    visibility = ["//src/js:__pkg__"],
 )

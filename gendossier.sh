@@ -68,6 +68,11 @@ run_tests() {
 }
 
 write_deps() {
+  echo "Skipping write_deps step"
+  exit
+
+  # TODO(jleyba): get the command below working with generated files.
+
   bazel run //src/java/com/github/jsdossier/tools:WriteDeps -- \
       -c "${ROOT}/third_party/js/closure_library/closure/goog/" \
       -i "${ROOT}/src/js/app.js" \

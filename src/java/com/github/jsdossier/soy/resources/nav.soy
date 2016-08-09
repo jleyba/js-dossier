@@ -1,0 +1,70 @@
+{namespace dossier.soy.nav}
+
+
+/**
+ * Renders a navigation tree widget.
+ */
+{template .tree}
+  {@param children: list<html>}
+
+  <ul class="tree">
+    {foreach $child in $children}
+      {$child}
+    {/foreach}
+  </ul>
+{/template}
+
+
+/**
+ * Renders a list item that contains a plain type link.
+ */
+{template .linkItem}
+  {@param textContent: string}
+  {@param href: string}
+  {@param isCurrent: bool}
+  {@param isInterface: bool}
+
+  <li>{call .link_ data="all" /}
+{/template}
+
+
+/**
+ * Renders a list item that contains a sub-tree.
+ */
+{template .treeItem}
+  {@param id: string}
+  {@param subtreeItems: list<html>}
+  {@param textContent: string}
+  {@param href: string}
+  {@param isCurrent: bool}
+  {@param isInterface: bool}
+
+  <li>
+    <div data-id="{$id}" class="toggle">
+      {call .link_ data="all" /}
+      <i class="material-icons">expand_more</i>
+    </div>
+    {call .tree}
+      {param children: $subtreeItems /}
+    {/call}
+{/template}
+
+
+/**
+ * Renders a link for the nav-tree.
+ */
+{template .link_ private="true"}
+  {@param textContent: string}
+  {@param href: string}
+  {@param isCurrent: bool}
+  {@param isInterface: bool}
+
+  <a tabIndex="1"
+     {if $href}href="{$href}"{/if}
+     class="item
+            {if $isInterface}{sp}interface{/if}
+            {if $isCurrent}{sp}current{/if}
+            ">
+    {$textContent}
+  </a>
+{/template}

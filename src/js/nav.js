@@ -17,6 +17,7 @@
 goog.module('dossier.nav');
 
 const page = goog.require('dossier.page');
+const soyNav = goog.require('dossier.soy.nav');
 const Arrays = goog.require('goog.array');
 const asserts = goog.require('goog.asserts');
 const dom = goog.require('goog.dom');
@@ -24,6 +25,8 @@ const events = goog.require('goog.events');
 const KeyCodes = goog.require('goog.events.KeyCodes');
 const browser = goog.require('goog.labs.userAgent.browser');
 const device = goog.require('goog.labs.userAgent.device');
+const soy = goog.require('goog.soy');
+const SanitizedHtml = goog.require('soydata.SanitizedHtml');
 
 
 /**
@@ -249,56 +252,32 @@ function getId(descriptor) {
  * @param {string} basePath Base path to prepend to any links.
  * @param {string} currentPath Path for the file running this script.
  * @param {string} idPrefix Prefix to prepend to node key for the DOM ID.
- * @return {!Element} The list item.
+ * @return {!SanitizedHtml} The list item.
  */
 function buildListItem(node, basePath, currentPath, idPrefix) {
   asserts.assert(node.getValue() || node.getChildCount());
 
-  var li = document.createElement('li');
+  let textContent = node.getKey();
+  let href = node.getValue() ? node.getValue().href : '';
+  let isCurrent = node.getValue() ? href === currentPath : false;
+  let isInterface = node.getValue() ? node.getValue().interface : false;
 
-  var a = document.createElement('a');
-  a.classList.add('item');
-  a.textContent = node.getKey();
-  a.tabIndex = 1;
-  if (node.getValue()) {
-    a.href = basePath + node.getValue().href;
-    if (node.getValue().interface) {
-      a.classList.add('interface');
-    }
-  }
-
-  if (node.getValue() && node.getValue().href === currentPath) {
-    a.classList.add('current');
-  }
-
-  var children = node.getChildren();
+  let children = node.getChildren();
   if (children) {
-    let i = document.createElement('i');
-    i.classList.add('material-icons');
-    i.textContent = 'expand_more';
-
-    let div = document.createElement('div');
-    div.dataset.id = idPrefix + node.getKey();
-    div.classList.add('toggle');
-    div.appendChild(a);
-    div.appendChild(i);
-
-    li.appendChild(div);
-
-    var ul = document.createElement('ul');
-    ul.classList.add('tree');
-    li.appendChild(ul);
-
-    children.forEach(function(child) {
-      ul.appendChild(
-          buildListItem(
-              child, basePath, currentPath, idPrefix + node.getKey() + '.'));
+    return soyNav.treeItem({
+      id: idPrefix + node.getKey(),
+      subtreeItems: children.map(child => {
+        return buildListItem(
+            child, basePath, currentPath, idPrefix + node.getKey() + '.');
+      }),
+      textContent,
+      href,
+      isCurrent,
+      isInterface
     });
   } else {
-    li.appendChild(a);
+    return soyNav.linkItem({textContent, href, isCurrent, isInterface});
   }
-
-  return li;
 }
 
 
@@ -329,16 +308,17 @@ function buildList(descriptors, basePath, currentPath, isModule) {
   if (basePath && !basePath.endsWith('/')) {
     basePath += '/';
   }
-  var root = exports.buildTree(descriptors, isModule);
-  var rootEl = document.createElement('ul');
-  rootEl.classList.add('tree');
+
+  let root = exports.buildTree(descriptors, isModule);
+  let children = [];
   if (root.getChildren()) {
-    root.getChildren().forEach(function(child) {
-      rootEl.appendChild(buildListItem(child, basePath, currentPath,
-          isModule ? MODULE_TYPE_ID_PREFIX : TYPE_ID_PREFIX));
+    children = root.getChildren().map(child => {
+      return buildListItem(
+          child, basePath, currentPath,
+          isModule ? MODULE_TYPE_ID_PREFIX : TYPE_ID_PREFIX);
     });
   }
-  return rootEl;
+  return /** @type {!Element} */(soy.renderAsFragment(soyNav.tree, {children}));
 }
 exports.buildList = buildList;  // For testing.
 

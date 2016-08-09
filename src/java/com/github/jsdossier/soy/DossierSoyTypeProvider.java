@@ -19,6 +19,7 @@ package com.github.jsdossier.soy;
 import com.github.jsdossier.proto.Dossier;
 import com.github.jsdossier.proto.Expression;
 import com.google.common.collect.ImmutableMap;
+import com.google.protobuf.DescriptorProtos;
 import com.google.protobuf.Descriptors;
 import com.google.template.soy.types.SoyType;
 import com.google.template.soy.types.SoyTypeProvider;
@@ -27,12 +28,19 @@ import com.google.template.soy.types.SoyTypeRegistry;
 import java.util.HashMap;
 import java.util.Map;
 
-class DossierSoyTypeProvider implements SoyTypeProvider {
+import javax.annotation.Nullable;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+@Singleton
+final class DossierSoyTypeProvider implements SoyTypeProvider {
 
   private final ImmutableMap<String, SoyType> types;
 
+  @Inject
   DossierSoyTypeProvider() {
     Map<String, SoyType> map = new HashMap<>();
+    registerTypes(map, DescriptorProtos.getDescriptor());
     registerTypes(map, Dossier.getDescriptor());
     registerTypes(map, Expression.getDescriptor());
     types = ImmutableMap.copyOf(map);
@@ -62,10 +70,15 @@ class DossierSoyTypeProvider implements SoyTypeProvider {
         registerTypes(map, field.getMessageType());
       }
     }
+
+    for (Descriptors.EnumDescriptor enumDescriptor : descriptor.getEnumTypes()) {
+      ProtoEnumSoyType enumType = ProtoEnumSoyType.get(enumDescriptor);
+      map.put(enumType.getName(), enumType);
+    }
   }
 
   @Override
-  public SoyType getType(String name, SoyTypeRegistry soyTypeRegistry) {
+  public SoyType getType(String name, @Nullable SoyTypeRegistry soyTypeRegistry) {
     return types.get(name);
   }
 }

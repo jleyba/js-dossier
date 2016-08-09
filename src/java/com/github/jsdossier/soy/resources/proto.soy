@@ -1,0 +1,197 @@
+{namespace dossier.soy.proto}
+
+{template .render}
+  {@param data: list<[enum: google.protobuf.EnumDescriptorProto,
+                      message: google.protobuf.DescriptorProto,
+                      name: string]>}
+
+{literal}// GENERATED CODE - DO NOT EDIT
+goog.provide('proto.dossier');
+{/literal}
+{foreach $record in $data}
+goog.provide('{$record.name}');{\n}
+{/foreach}
+{literal}
+
+goog.require('soydata.SanitizedHtml');
+goog.require('soydata.SanitizedUri');
+goog.require('soydata.VERY_UNSAFE');
+
+/** @private @const */
+proto.dossier.EMPTY_ARRAY_ = [];
+
+/** @private @const */
+proto.dossier.DEFAULT_INSTANCES_ = new Map;
+
+goog.scope(function() {
+
+const EMPTY_ARRAY = proto.dossier.EMPTY_ARRAY_;
+const DEFAULT_INSTANCES = proto.dossier.DEFAULT_INSTANCES_;
+const SanitizedHtml = soydata.SanitizedHtml;
+const SanitizedUri = soydata.SanitizedUri;
+const ordainSanitizedHtml = soydata.VERY_UNSAFE.ordainSanitizedHtml;
+const ordainSanitizedUri = soydata.VERY_UNSAFE.ordainSanitizedUri;
+{/literal}
+
+{foreach $record in $data}
+  {if $record.enum}
+    {call .renderEnum}
+      {param descriptor: $record.enum /}
+      {param name: $record.name /}
+    {/call}
+  {else}
+    {call .renderMessage}
+      {param descriptor: $record.message /}
+      {param name: $record.name /}
+    {/call}
+  {/if}
+{/foreach}
+
+{literal}
+});  // goog.scope
+{/literal}
+{/template}
+
+
+{template .renderEnum}
+  {@param descriptor: google.protobuf.EnumDescriptorProto}
+  {@param name: string}
+
+{literal}
+/** @enum {number} */
+{/literal}{$name}{literal} = {
+{/literal}
+
+{foreach $value in $descriptor.value}
+  {sp}{sp}
+  {$value.name}: {$value.number}
+  {if not isLast($value)},{/if}
+  {\n}
+{/foreach}
+
+{literal}};
+{/literal}
+{/template}
+
+
+{template .renderMessage}
+  {@param descriptor: google.protobuf.DescriptorProto}
+  {@param name: string}
+
+{\n}
+{$name}{literal} = class {
+  constructor(/** !Object */data) {
+    /** @private @const */
+    this.data_ = data;
+
+    /** @private @const */
+    this.converted_ = new Map;
+  }
+
+  /** @return {!{/literal}{$name}{literal}} */
+  static get DEFAULT_INSTANCE() {
+    let instance = DEFAULT_INSTANCES.get({/literal}{$name}{literal});
+    if (!instance) {
+      instance = new {/literal}{$name}{literal}({});
+      DEFAULT_INSTANCES.set({/literal}{$name}{literal}, instance);
+    }
+    return instance;
+  }
+{/literal}
+
+{foreach $field in $descriptor.field}
+  {let $type kind="text"}
+    {switch $field.type}
+      // Not all number types can be converted to JS, but we include them for completeness.
+      {case google.protobuf.FieldDescriptorProto.Type.TYPE_DOUBLE}number
+      {case google.protobuf.FieldDescriptorProto.Type.TYPE_FLOAT}number
+      {case google.protobuf.FieldDescriptorProto.Type.TYPE_INT64}number
+      {case google.protobuf.FieldDescriptorProto.Type.TYPE_UINT64}number
+      {case google.protobuf.FieldDescriptorProto.Type.TYPE_INT32}number
+      {case google.protobuf.FieldDescriptorProto.Type.TYPE_FIXED64}number
+      {case google.protobuf.FieldDescriptorProto.Type.TYPE_FIXED32}number
+      {case google.protobuf.FieldDescriptorProto.Type.TYPE_SFIXED32}number
+      {case google.protobuf.FieldDescriptorProto.Type.TYPE_SFIXED64}number
+      {case google.protobuf.FieldDescriptorProto.Type.TYPE_SINT32}number
+      {case google.protobuf.FieldDescriptorProto.Type.TYPE_SINT64}number
+
+      {case google.protobuf.FieldDescriptorProto.Type.TYPE_BOOL}boolean
+
+      {case google.protobuf.FieldDescriptorProto.Type.TYPE_BYTES}string
+
+      {case google.protobuf.FieldDescriptorProto.Type.TYPE_STRING}
+        {if isSanitizedHtml($name, $field.name)}
+          SanitizedHtml
+        {elseif isSanitizedUri($name, $field.name)}
+          SanitizedUri
+        {else}
+          string
+        {/if}
+
+      {default}{typeName($field.typeName)}
+    {/switch}
+  {/let}
+
+  {let $isEnum: $field.type == google.protobuf.FieldDescriptorProto.Type.TYPE_ENUM /}
+  {let $isRepeated: $field.label == google.protobuf.FieldDescriptorProto.Label.LABEL_REPEATED /}
+  {let $initData kind="html"}data = this.data_['{$field.number}'];{/let}
+  {let $returnType kind="html"}{if $isRepeated}{arrayType('!' + $type)}{else}!{$type}{/if}{/let}
+
+{literal}
+  /**
+   * @return {{/literal}{$returnType}{literal}}
+   */
+  get {/literal}{toLowerCamelCase($field.name)}{literal}() {
+    {/literal}
+    {if $type != 'boolean' and $type != 'string' and $type != 'number' and not $isEnum}
+      if (this.converted_.has('{$field.number}')) return this.converted_.get('{$field.number}');{\n}
+      {literal}    {/literal}
+    {/if}
+    let data = this.data_['{$field.number}'];{\n}
+
+    {if $type == 'SanitizedHtml' or $type == 'SanitizedUri'}
+      {literal}    {/literal}
+      {call .returnSanitizedData_}
+        {param isRepeated: $isRepeated /}
+        {param sanitizer: $type == 'SanitizedHtml' ? 'ordainSanitizedHtml' : 'ordainSanitizedUri' /}
+      {/call}
+    {else}
+      {if $type == 'boolean' or $type == 'string' or $type == 'number' or $isEnum}
+        {let $defaultValue kind="html"}
+          {if $isRepeated}EMPTY_ARRAY
+          {elseif $type == 'boolean'}false
+          {elseif $type == 'string'}''
+          {else}0
+          {/if}
+        {/let}
+        {literal}    return data || {/literal}{$defaultValue};
+      {else}
+        {literal}    let value = data ? {/literal}
+        {if $isRepeated}
+          data.map(i => new {$type}(i)) : EMPTY_ARRAY;{\n}
+        {else}
+          new {$type}(data) : {$type}.DEFAULT_INSTANCE;{\n}
+        {/if}
+        {literal}    this.converted_.set('{/literal}{$field.number}', value);{\n}
+        {literal}    return value;{/literal}
+      {/if}
+    {/if}
+{literal}
+  }
+{/literal}
+{/foreach}
+
+{literal}};
+{/literal}
+{/template}
+
+
+{template .returnSanitizedData_ private="true"}
+  {@param isRepeated: bool}
+  {@param sanitizer: string}
+  {if $isRepeated}
+    return data ? data.map({$sanitizer}) : EMPTY_ARRAY;
+  {else}
+    return {$sanitizer}(data || '');
+  {/if}
+{/template}
