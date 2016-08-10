@@ -19,6 +19,7 @@ package com.github.jsdossier.tools;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 import com.google.common.base.Function;
+import com.google.common.base.Splitter;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableSet;
 import com.google.javascript.jscomp.CommandLineRunner;
@@ -76,12 +77,23 @@ final class Compile {
 
     List<DependencyInfo> info = new ArrayList<>(flags.inputs.size());
     for (String path : flags.inputs) {
-      Path absPath = fs.getPath(path).toAbsolutePath();
-      Path closureRelativePath = closure.relativize(absPath);
-      info.add(jsFileParser.parseFile(
-          absPath.toString(),
-          closureRelativePath.toString(),
-          new String(Files.readAllBytes(absPath), UTF_8)));
+      if (path.contains(" ")) {
+        for (String part : Splitter.on(" ").omitEmptyStrings().split(path)) {
+          Path absPath = fs.getPath(part).toAbsolutePath();
+          Path closureRelativePath = closure.relativize(absPath);
+          info.add(jsFileParser.parseFile(
+              absPath.toString(),
+              closureRelativePath.toString(),
+              new String(Files.readAllBytes(absPath), UTF_8)));
+        }
+      } else {
+        Path absPath = fs.getPath(path).toAbsolutePath();
+        Path closureRelativePath = closure.relativize(absPath);
+        info.add(jsFileParser.parseFile(
+            absPath.toString(),
+            closureRelativePath.toString(),
+            new String(Files.readAllBytes(absPath), UTF_8)));
+      }
     }
 
     List<DependencyInfo> allDeps = new LinkedList<>(info);
