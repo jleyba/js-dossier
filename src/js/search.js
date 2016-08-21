@@ -23,6 +23,7 @@ goog.module('dossier.search');
 const page = goog.require('dossier.page');
 const events = goog.require('goog.events');
 const EventTarget = goog.require('goog.events.EventTarget');
+const EventType = goog.require('goog.events.EventType');
 const ArrayMatcher = goog.require('goog.ui.ac.ArrayMatcher');
 const AutoComplete = goog.require('goog.ui.ac.AutoComplete');
 const InputHandler = goog.require('goog.ui.ac.InputHandler');
@@ -112,8 +113,8 @@ exports.SelectionEvent = class {
    * @param {string} uri The URI for the selected item.
    */
   constructor(uri) {
-    /** @const {string} */ this.type = this.constructor.TYPE;
-    /** @const {string} */ this.uri = uri;
+    /** @const */ this.type = this.constructor.TYPE;
+    /** @const */ this.uri = uri;
   }
 
   /** @return {string} The name of this event type. */
@@ -125,12 +126,12 @@ exports.SelectionEvent = class {
 
 /**
  * Widget for controlling the top navigation bar's search box.
- * @private
  */
 class SearchBox extends EventTarget {
   /**
    * @param {!Map<string, string>} nameToUri Map of search term to URI.
    * @param {!Element} formEl The form element containing the input element.
+   * @private
    */
   constructor(nameToUri, formEl) {
     super();

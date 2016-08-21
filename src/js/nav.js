@@ -23,6 +23,8 @@ const asserts = goog.require('goog.asserts');
 const dom = goog.require('goog.dom');
 const events = goog.require('goog.events');
 const KeyCodes = goog.require('goog.events.KeyCodes');
+const browser = goog.require('goog.labs.userAgent.browser');
+const device = goog.require('goog.labs.userAgent.device');
 const soy = goog.require('goog.soy');
 const SanitizedHtml = goog.require('soydata.SanitizedHtml');
 
@@ -107,7 +109,7 @@ var TreeNode = goog.defineClass(null, {
   removeChild: function(node) {
     asserts.assert(node.parent_ === this);
     node.parent_ = null;
-    Arrays.remove(this.children_, node);
+    goog.array.remove(this.children_, node);
   },
 
   /** @return {Array<!TreeNode>} The removed children. */
@@ -130,7 +132,7 @@ var TreeNode = goog.defineClass(null, {
     if (!this.children_) {
       return null;
     }
-    return Arrays.find(this.children_, function(child) {
+    return goog.array.find(this.children_, function(child) {
       return child.key_ === key;
     });
   }
@@ -439,13 +441,15 @@ class NavDrawer {
         && e.target
         && e.target.classList
         && e.target.classList.contains('item')) {
-      let parent = /** @type {!Element} */(e.target.parentNode);
-      if (parent && !isToggle(parent)) {
-        parent = /** @type {!Element} */(parent.parentNode);
+      let parent = e.target.parentNode;
+      if (!isToggle(parent) && parent) {
+        parent = parent.parentNode;
       }
 
       if (isToggle(parent)) {
-        this.updateControl_(parent, e.keyCode === KeyCodes.RIGHT);
+        this.updateControl_(
+            /** @type {!Element} */(parent),
+            e.keyCode === KeyCodes.RIGHT);
       }
     }
 
@@ -474,7 +478,6 @@ class NavDrawer {
           && node.classList.contains('toggle');
     }, true, /*maxSteps=*/4);
 
-    el = /** @type {Element} */(el);
     if (el && el.classList.contains('toggle')) {
       this.updateControl_(/** @type {!Element} */(el));
     }
@@ -585,7 +588,7 @@ exports.createNavDrawer = function(typeInfo, currentFile, basePath) {
     let list = buildList(descriptors, basePath, currentFile, isModule);
     section.appendChild(list);
 
-    let toggle = /** @type {!HTMLElement} */(section.querySelector('.toggle'));
+    let toggle = section.querySelector('.toggle');
     toggle.dataset.id = getIdPrefix(isModule);
   }
 };

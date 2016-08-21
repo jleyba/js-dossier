@@ -18,6 +18,7 @@ goog.module('dossier.app');
 
 const page = goog.require('dossier.page');
 const search = goog.require('dossier.search');
+const Promise = goog.require('goog.Promise');
 const array = goog.require('goog.array');
 const dom = goog.require('goog.dom');
 const events = goog.require('goog.events');
@@ -42,13 +43,11 @@ function PageState() {}
  * @param {!Event} e The click event.
  */
 function onCardHeaderClick(e) {
-  let target = /** @type {!Node} */(e.target);
-  if (target.nodeName === 'A') {
+  if (e.target.nodeName == 'A') {
     return;
   }
 
-  let currentTarget = /** @type {!Node} */(e.currentTarget);
-  let prop = currentTarget.parentNode;
+  let prop = e.currentTarget.parentNode;
   if (prop && prop.classList && prop.classList.contains('property')) {
     prop.classList.toggle('open');
   }
@@ -294,8 +293,7 @@ class Application {
     let html;
     if (typeof htmlOrId === 'number') {
       this.stateId_ = htmlOrId;
-      html = /** @type {string} */(
-          window.sessionStorage.getItem(this.getDomKey_()));
+      html = window.sessionStorage.getItem(this.getDomKey_());
     } else {
       html = /** @type {string} */(htmlOrId);
     }
@@ -315,7 +313,7 @@ class Application {
   /**
    * Opens the current target in the main content element.
    *
-   * @param {boolean=} opt_scroll Whether to also scroll the element into view.
+   * @param {boolean} opt_scroll Whether to also scroll the element into view.
    */
   openCurrentTarget(opt_scroll) {
     let targetId = location.hash ? location.hash.substring(1) : null;
@@ -341,11 +339,10 @@ class Application {
 
   /**
    * @param {!Event} e The event to respond to.
-   * @return {(boolean|undefined)}
    * @private
    */
   captureLinkClick_(e) {
-    let target = /** @type {!Element} */(e.target);
+    let target = e.target;
     if (target.nodeName === 'CODE' && target.parentNode.nodeName === 'A') {
       target = target.parentNode;
     }
@@ -354,7 +351,7 @@ class Application {
       return;
     }
 
-    let link = /** @type {!HTMLAnchorElement} */(target);
+    let link = target;
     if (link.target) {
       return;
     }
@@ -398,10 +395,10 @@ class Application {
       return;
     }
 
-    const /** string */currentFile = array.peek(location.pathname.split(/\//));
-    const article = /** @type {!HTMLElement} */(array.find(articles, (a) => {
+    const currentFile = array.peek(location.pathname.split(/\//));
+    const article = array.find(articles, function(a) {
       return a.dataset && a.dataset.filename === currentFile;
-    }));
+    });
 
     if (article) {
       array.forEach(articles, function(a) {
@@ -460,10 +457,7 @@ class Application {
             || (location.pathname + location.search + location.hash));
   }
 
-  /**
-   * @return {string}
-   * @private
-   */
+  /** @private */
   getDomKey_() {
     return this.version + ':' + this.stateId_;
   }
@@ -507,8 +501,8 @@ exports.run = function(searchBox, navDrawer) {
     navDrawer.element.addEventListener('click', captureClick, true);
     mainEl.addEventListener('click', captureClick, true);
 
-    window.onpopstate = function(/** PopStateEvent */e) {
-      let state = /** @type {Object} */(e ? e.state : null);
+    window.onpopstate = function(/** Event */e) {
+      let state = e ? e.state : null;
       if (state) {
         if (state['version'] != app.version) {
           throw Error('application is out of date!');
