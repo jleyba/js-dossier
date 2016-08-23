@@ -4,6 +4,7 @@ java_library(
     resources = glob(["resources/*"]),
     deps = [
         "//lib/maven:closure_templates",
+        "//lib/maven:gson",
         "//lib/maven:guava",
         "//lib/maven:guice",
         "//lib/maven:guice_multibindings",

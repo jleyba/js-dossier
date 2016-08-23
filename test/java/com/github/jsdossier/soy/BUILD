@@ -16,6 +16,7 @@ java_test_suite(
     deps = [
         ":lib",
         "//lib/maven:closure_templates",
+        "//lib/maven:gson",
         "//lib/maven:guava",
         "//lib/maven:jsoup",
         "//lib/maven:jsr305",

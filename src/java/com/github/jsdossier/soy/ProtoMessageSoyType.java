@@ -20,22 +20,17 @@ import static com.google.common.base.CaseFormat.LOWER_CAMEL;
 import static com.google.common.base.CaseFormat.LOWER_UNDERSCORE;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Strings.nullToEmpty;
-import static com.google.common.collect.Iterables.transform;
 import static com.google.template.soy.data.SanitizedContent.ContentKind.HTML;
 import static com.google.template.soy.data.SanitizedContent.ContentKind.TRUSTED_RESOURCE_URI;
 
 import com.github.jsdossier.proto.Options;
-import com.google.common.base.Function;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Maps;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.EnumValueDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import com.google.protobuf.GeneratedMessage;
 import com.google.protobuf.Message;
 import com.google.template.soy.base.SoyBackendKind;
-import com.google.template.soy.data.SanitizedContent;
 import com.google.template.soy.data.SoyListData;
 import com.google.template.soy.data.SoyMapData;
 import com.google.template.soy.data.SoyRecord;
@@ -46,35 +41,32 @@ import com.google.template.soy.data.restricted.FloatData;
 import com.google.template.soy.data.restricted.IntegerData;
 import com.google.template.soy.data.restricted.NullData;
 import com.google.template.soy.data.restricted.StringData;
-import com.google.template.soy.shared.restricted.Sanitizers;
 import com.google.template.soy.types.SoyObjectType;
 import com.google.template.soy.types.SoyType;
 import com.google.template.soy.types.aggregate.ListType;
 import com.google.template.soy.types.primitive.BoolType;
+import com.google.template.soy.types.primitive.FloatType;
 import com.google.template.soy.types.primitive.IntType;
 import com.google.template.soy.types.primitive.NullType;
 import com.google.template.soy.types.primitive.StringType;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.annotation.Nullable;
 
 class ProtoMessageSoyType implements SoyObjectType {
 
-  private static final Pattern PERMISSIBLE_URI_PREFIX_PATTERN =
-      Pattern.compile("^((?:\\.{1,2}/)+)");
-
   private static final
-  ImmutableMap<FieldDescriptor.JavaType, ? extends SoyType> JAVA_TO_PRIMITIVE_TYPES =
-      ImmutableMap.of(
-          FieldDescriptor.JavaType.BOOLEAN, BoolType.getInstance(),
-          FieldDescriptor.JavaType.INT, IntType.getInstance(),
-          FieldDescriptor.JavaType.LONG, IntType.getInstance(),
-          FieldDescriptor.JavaType.STRING, StringType.getInstance());
+  ImmutableMap<FieldDescriptor.JavaType, SoyType> JAVA_TO_PRIMITIVE_TYPES =
+      ImmutableMap.<FieldDescriptor.JavaType, SoyType>builder()
+          .put(FieldDescriptor.JavaType.BOOLEAN, BoolType.getInstance())
+          .put(FieldDescriptor.JavaType.INT, IntType.getInstance())
+          .put(FieldDescriptor.JavaType.LONG, IntType.getInstance())
+          .put(FieldDescriptor.JavaType.FLOAT, FloatType.getInstance())
+          .put(FieldDescriptor.JavaType.DOUBLE, FloatType.getInstance())
+          .put(FieldDescriptor.JavaType.STRING, StringType.getInstance())
+          .build();
 
   private static final ImmutableSet<FieldDescriptor.JavaType> CONVERTIBLE_TYPES =
       ImmutableSet.<FieldDescriptor.JavaType>builder()
@@ -84,6 +76,89 @@ class ProtoMessageSoyType implements SoyObjectType {
           .build();
 
   private static final Map<Descriptor, ProtoMessageSoyType> CACHE = new HashMap<>();
+
+  private static final MessageTransformer<SoyValue> SOY_MESSAGE_TRANSFORMER =
+      new MessageTransformer<SoyValue>() {
+        @Override
+        protected String computeFieldName(FieldDescriptor field) {
+          return LOWER_UNDERSCORE.to(LOWER_CAMEL, field.getName());
+        }
+
+        @Override
+        protected MessageTransformer.MapBuilder<SoyValue> newMapBuilder() {
+          return new MessageTransformer.MapBuilder<SoyValue>() {
+            SoyMapData map = new SoyMapData();
+
+            @Override
+            public void put(String key, SoyValue value) {
+              map.put(key, value);
+            }
+
+            @Override
+            public SoyValue build() {
+              return map;
+            }
+          };
+        }
+
+        @Override
+        protected MessageTransformer.ListBuilder<SoyValue> newListBuilder() {
+          return new MessageTransformer.ListBuilder<SoyValue>() {
+            SoyListData list = new SoyListData();
+
+            @Override
+            public void add(SoyValue value) {
+              list.add(value);
+            }
+
+            @Override
+            public SoyValue build() {
+              return list;
+            }
+          };
+        }
+
+        @Override
+        protected SoyValue transform(EnumValueDescriptor value) {
+          return ProtoEnumSoyValue.get(value);
+        }
+
+        @Override
+        protected SoyValue transform(@Nullable Number value) {
+          if (value == null) {
+            return IntegerData.forValue(0);
+          } else if (value instanceof Float || value instanceof Double) {
+            return FloatData.forValue(value.doubleValue());
+          } else {
+            return IntegerData.forValue(value.longValue());
+          }
+        }
+
+        @Override
+        protected SoyValue transform(@Nullable Boolean value) {
+          return value == null ? BooleanData.forValue(false) : BooleanData.forValue(value);
+        }
+
+        @Override
+        protected SoyValue transform(@Nullable String value) {
+          return StringData.forValue(nullToEmpty(value));
+        }
+
+        @Override
+        protected SoyValue htmlValue(String s) {
+          return UnsafeSanitizedContentOrdainer.ordainAsSafe(s, HTML);
+        }
+
+        @Override
+        protected SoyValue uriValue(String s) {
+          return UnsafeSanitizedContentOrdainer.ordainAsSafe(s, TRUSTED_RESOURCE_URI);
+        }
+
+        @Override
+        protected SoyValue nullValue() {
+          return NullData.INSTANCE;
+        }
+      };
 
   private final Descriptor descriptor;
   private final ImmutableMap<String, FieldDescriptor> fieldDescriptors;
@@ -150,215 +225,7 @@ class ProtoMessageSoyType implements SoyObjectType {
   }
 
   static SoyValue toSoyValue(Message message) {
-    ProtoMessageSoyType type = ProtoMessageSoyType.get(message.getDescriptorForType());
-
-    Map<String, Object> data = Maps.newHashMapWithExpectedSize(
-        type.fieldDescriptors.size());
-    for (Map.Entry<String, FieldDescriptor> entry : type.fieldDescriptors.entrySet()) {
-      data.put(entry.getKey(), toSoyValue(entry.getValue(), message));
-    }
-    return new SoyMapData(data);
-  }
-
-  private static SoyValue toSoyValue(FieldDescriptor field, Message message) {
-    Object fieldValue = message.getField(field);
-    switch (field.getJavaType()) {
-      case ENUM: {
-        if (field.isRepeated()) {
-          @SuppressWarnings("unchecked")
-          List<EnumValueDescriptor> values = (List<EnumValueDescriptor>) fieldValue;
-          return toSoyValue(values, new Function<EnumValueDescriptor, SoyValue>() {
-              @Nullable
-              @Override
-              public SoyValue apply(@Nullable EnumValueDescriptor input) {
-                return input == null ? NullData.INSTANCE : ProtoEnumSoyValue.get(input);
-              }
-            });
-        }
-
-        @SuppressWarnings("unchecked")
-        EnumValueDescriptor value = (EnumValueDescriptor) fieldValue;
-        return ProtoEnumSoyValue.get(value);
-      }
-
-      case MESSAGE: {
-        if (field.isRepeated()) {
-          @SuppressWarnings("unchecked")
-          List<GeneratedMessage> messages = (List<GeneratedMessage>) fieldValue;
-          return toSoyValue(messages);
-        }
-
-        if (!message.hasField(field)) {
-          return NullData.INSTANCE;
-        }
-
-        @SuppressWarnings("unchecked")
-        GeneratedMessage value = (GeneratedMessage) fieldValue;
-        return toSoyValue(value);
-      }
-
-      case LONG:
-      case INT: {
-        if (field.isRepeated()) {
-          @SuppressWarnings("unchecked")
-          List<Number> values = (List<Number>) fieldValue;
-          return toSoyValue(values, new Function<Number, SoyValue>() {
-            @Nullable
-            @Override
-            public SoyValue apply(@Nullable Number input) {
-              return toSoyValue(input);
-            }
-          });
-        }
-        @SuppressWarnings("unchecked")
-        Number value = (Number) fieldValue;
-        return toSoyValue(value);
-      }
-
-      case STRING: {
-        if (field.getOptions().hasExtension(Options.sanitized)) {
-          return toSanitizedContent(field, fieldValue);
-        }
-        if (field.isRepeated()) {
-          @SuppressWarnings("unchecked")
-          List<String> values = (List<String>) fieldValue;
-          return toSoyValue(values, new Function<String, SoyValue>() {
-            @Nullable
-            @Override
-            public SoyValue apply(@Nullable String input) {
-              return toSoyValue(input);
-            }
-          });
-        }
-        @SuppressWarnings("unchecked")
-        String value = (String) fieldValue;
-        return toSoyValue(value);
-      }
-
-      case BOOLEAN: {
-        if (field.isRepeated()) {
-          @SuppressWarnings("unchecked")
-          List<Boolean> values = (List<Boolean>) fieldValue;
-          return toSoyValue(values, new Function<Boolean, SoyValue>() {
-            @Nullable
-            @Override
-            public SoyValue apply(@Nullable Boolean input) {
-              return toSoyValue(input);
-            }
-          });
-        }
-        @SuppressWarnings("unchecked")
-        Boolean value = (Boolean) fieldValue;
-        return toSoyValue(value);
-      }
-
-      default:
-        throw new UnsupportedOperationException(
-            "Cannot convert type for field " + field.getFullName());
-    }
-  }
-
-  private static SoyValue toSoyValue(@Nullable Number value) {
-    if (value == null) {
-      return IntegerData.forValue(0);
-    } else if (value instanceof Float || value instanceof Double) {
-      return FloatData.forValue(value.doubleValue());
-    } else {
-      return IntegerData.forValue(value.longValue());
-    }
-  }
-
-  private static SoyValue toSoyValue(@Nullable String value) {
-    return StringData.forValue(nullToEmpty(value));
-  }
-
-  private static SoyValue toSoyValue(@Nullable Boolean value) {
-    return value == null ? BooleanData.forValue(false) : BooleanData.forValue(value);
-  }
-
-  private static SoyValue toSanitizedContent(FieldDescriptor field, Object fieldValue) {
-    checkArgument(field.getOptions().hasExtension(Options.sanitized));
-
-    com.github.jsdossier.proto.SanitizedContent sc =
-        field.getOptions().getExtension(Options.sanitized);
-    if (sc.getHtml()) {
-      return toSanitizedContent(field, fieldValue, HTML);
-    } else if (sc.getUri()) {
-      if (fieldValue instanceof String) {
-        return toSanitizedUri((String) fieldValue);
-      } else if (field.isRepeated()) {
-        @SuppressWarnings("unchecked")
-        List<String> values = (List<String>) fieldValue;
-        return toSanitizedUri(values);
-      }
-
-      throw new IllegalArgumentException(
-          "sanitized URI fields must be strings: " + field.getName());
-    } else {
-      throw new IllegalArgumentException();
-    }
-  }
-
-  private static SoyListData toSanitizedUri(List<String> uris) {
-    return new SoyListData(transform(uris, new Function<String, SoyValue>() {
-      @Override
-      public SoyValue apply(String input) {
-        return toSanitizedUri(input);
-      }
-    }));
-  }
-
-  private static SoyValue toSanitizedUri(String uri) {
-    Matcher matcher = PERMISSIBLE_URI_PREFIX_PATTERN.matcher(uri);
-    if (matcher.find()) {
-      String prefix = matcher.group(1);
-      String rest = uri.substring(matcher.end());
-      uri = prefix + Sanitizers.filterNormalizeUri(rest);
-    } else {
-      uri = Sanitizers.filterNormalizeUri(uri);
-    }
-    return UnsafeSanitizedContentOrdainer.ordainAsSafe(uri, TRUSTED_RESOURCE_URI);
-  }
-
-  private static SoyValue toSanitizedContent(
-      FieldDescriptor field, Object fieldValue, final SanitizedContent.ContentKind kind) {
-    if (field.isRepeated()) {
-      @SuppressWarnings("unchecked")
-      List<String> values = (List<String>) fieldValue;
-      return toSoyValue(values, new Function<String, SoyValue>() {
-        @Nullable
-        @Override
-        public SoyValue apply(@Nullable String input) {
-          if (input == null) {
-            return NullData.INSTANCE;
-          }
-          if (kind == HTML) {
-            input = HtmlSanitizer.sanitize(input);
-          }
-          return UnsafeSanitizedContentOrdainer.ordainAsSafe(input, kind);
-        }
-      });
-    }
-    @SuppressWarnings("unchecked")
-    String value = (String) fieldValue;
-    if (kind == HTML) {
-      value = HtmlSanitizer.sanitize(value);
-    }
-    return UnsafeSanitizedContentOrdainer.ordainAsSafe(value, kind);
-  }
-
-  private static <T> SoyValue toSoyValue(Iterable<T> values, Function<T, SoyValue> fn) {
-    return new SoyListData(transform(values, fn));
-  }
-
-  static <T extends GeneratedMessage> SoyValue toSoyValue(Iterable<T> messages) {
-    return toSoyValue(messages, new Function<T, SoyValue>() {
-      @Nullable
-      @Override
-      public SoyValue apply(@Nullable T input) {
-        return input == null ? NullData.INSTANCE : toSoyValue(input);
-      }
-    });
+    return SOY_MESSAGE_TRANSFORMER.transform(message);
   }
 
   @Override

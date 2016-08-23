@@ -24,7 +24,6 @@ import static com.google.common.base.Suppliers.memoize;
 import static com.google.common.base.Verify.verify;
 import static com.google.common.collect.Iterables.skip;
 import static com.google.common.collect.Lists.transform;
-import static java.nio.file.Files.createDirectories;
 
 import com.github.jsdossier.jscomp.JsDoc;
 import com.github.jsdossier.jscomp.Module;
@@ -40,6 +39,7 @@ import com.github.jsdossier.proto.JsTypeRenderSpec;
 import com.github.jsdossier.proto.NamedType;
 import com.github.jsdossier.proto.TypeLink;
 import com.github.jsdossier.proto.Visibility;
+import com.github.jsdossier.soy.JsonRenderer;
 import com.github.jsdossier.soy.Renderer;
 import com.google.auto.factory.AutoFactory;
 import com.google.auto.factory.Provided;
@@ -109,7 +109,8 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Ca
     ImmutableList.Builder<Callable<Path>> tasks = ImmutableList.builder();
     for (NominalTypeProcessor processor : processors) {
       tasks.add(renderTaskFactory.create(
-          processor.getOutputPath(),
+          processor.getHtmlOutput(),
+          processor.getJsonOutput(),
           typeSupplier));
     }
     return tasks.build();
@@ -121,7 +122,9 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Ca
     private final DocTemplate template;
     private final NavIndexFactory navIndexFactory;
     private final Renderer renderer;
+    private final JsonRenderer jsonRenderer;
     private final Path output;
+    private final Path jsonOutput;
     private final Supplier<List<JsType>> types;
 
     RenderDocumentationTask(
@@ -129,13 +132,17 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Ca
         @Provided DocTemplate template,
         @Provided NavIndexFactory navIndexFactory,
         @Provided Renderer renderer,
+        @Provided JsonRenderer jsonRenderer,
         Path output,
+        Path jsonOutput,
         Supplier<List<JsType>> types) {
       this.dfs = dfs;
       this.template = template;
       this.navIndexFactory = navIndexFactory;
       this.renderer = renderer;
+      this.jsonRenderer = jsonRenderer;
       this.output = output;
+      this.jsonOutput = jsonOutput;
       this.types = types;
     }
 
@@ -147,8 +154,8 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Ca
           .addAllType(types.get())
           .build();
 
-      createDirectories(output.getParent());
       renderer.render(output, spec);
+      jsonRenderer.render(jsonOutput, spec.getTypeList());
 
       return output;
     }
@@ -205,8 +212,12 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Ca
       }
     }
 
-    public Path getOutputPath() {
+    public Path getHtmlOutput() {
       return dfs.getPath(type);
+    }
+
+    public Path getJsonOutput() {
+      return dfs.getJsonPath(type);
     }
 
     public JsType buildJsType() {

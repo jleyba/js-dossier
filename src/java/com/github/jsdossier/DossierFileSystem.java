@@ -17,6 +17,7 @@
 package com.github.jsdossier;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Verify.verify;
 import static com.google.common.io.Files.getNameWithoutExtension;
 
 import com.github.jsdossier.annotations.DocumentationScoped;
@@ -158,6 +159,17 @@ final class DossierFileSystem {
     String exports =
         stripExtension(path).getFileName().toString() + "_exports_" + name + ".html";
     return path.resolveSibling(exports);
+  }
+
+  /**
+   * Returns the path to the generated JSON data file for the given type.
+   */
+  public Path getJsonPath(NominalType type) {
+    Path path = getPath(type);
+    String name = path.getFileName()
+        .toString()
+        .replaceAll("\\.html$", ".json");
+    return path.resolveSibling(name);
   }
 
   /**
