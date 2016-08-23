@@ -26,8 +26,6 @@ import com.github.jsdossier.jscomp.NominalType;
 import com.github.jsdossier.jscomp.TypeRegistry;
 import com.github.jsdossier.proto.RecordType;
 import com.github.jsdossier.proto.TypeExpression;
-import com.github.jsdossier.proto.TypeLink;
-import com.github.jsdossier.proto.TypeLinkOrBuilder;
 import com.google.auto.factory.AutoFactory;
 import com.google.auto.factory.Provided;
 import com.google.common.base.Function;
@@ -178,34 +176,9 @@ final class TypeExpressionParser {
     }
 
     private void appendNativeType(String type) {
-      TypeLink link = checkNotNull(linkFactory.createNativeExternLink(type));
-      appendExternLink(link);
-    }
-
-    private com.github.jsdossier.proto.NamedType.Builder appendExternLink(TypeLink link) {
-      return currentExpression().getNamedTypeBuilder()
-          .setName(link.getText())
-          .setHref(link.getHref())
-          .setExtern(true);
-    }
-
-    private void appendLink(TypeLinkOrBuilder link) {
-      appendLink(link.getText(), link.getHref());
-    }
-
-    private void appendLink(String text, String href) {
-      if (href.isEmpty()) {
-        currentExpression().getNamedTypeBuilder().setName(text);
-        return;
-      }
-
-      com.github.jsdossier.proto.NamedType.Builder namedType =
-          currentExpression().getNamedTypeBuilder();
-      namedType.setName(text);
-
-      if (!href.isEmpty()) {
-        namedType.setHref(href);
-      }
+      com.github.jsdossier.proto.NamedType link =
+          checkNotNull(linkFactory.createNativeExternLink(type));
+      currentExpression().setNamedType(link);
     }
 
     @Override
@@ -219,8 +192,8 @@ final class TypeExpressionParser {
       if (types.isEmpty()) {
         type.getEnumType().visit(this);
       } else {
-        TypeLink link = linkFactory.createLink(types.get(0));
-        appendLink(link);
+        com.github.jsdossier.proto.NamedType link = linkFactory.createLink(types.get(0));
+        currentExpression().setNamedType(link);
       }
       return null;
     }
@@ -361,11 +334,12 @@ final class TypeExpressionParser {
       com.github.jsdossier.proto.NamedType.Builder namedType =
           createNamedType(type.getConstructor());
       if (namedType == null) {
-        TypeLink link = linkFactory.createNativeExternLink(type.getReferenceName());
+        com.github.jsdossier.proto.NamedType link =
+            linkFactory.createNativeExternLink(type.getReferenceName());
         if (link == null) {
           currentExpression().getNamedTypeBuilder().setName(displayName);
         } else {
-          appendExternLink(link).setName(displayName);
+          currentExpression().setNamedType(link);
         }
       } else {
         currentExpression().setNamedType(namedType);

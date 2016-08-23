@@ -37,7 +37,6 @@ import com.github.jsdossier.proto.JsType;
 import com.github.jsdossier.proto.JsTypeOrBuilder;
 import com.github.jsdossier.proto.JsTypeRenderSpec;
 import com.github.jsdossier.proto.NamedType;
-import com.github.jsdossier.proto.TypeLink;
 import com.github.jsdossier.proto.Visibility;
 import com.github.jsdossier.soy.JsonRenderer;
 import com.github.jsdossier.soy.Renderer;
@@ -328,7 +327,7 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Ca
           continue;
         }
 
-        TypeLink link = linkFactory.createLink(child);
+        NamedType link = linkFactory.createLink(child);
         Comment summary = typeInspector.getTypeDescription(child, true);
 
         JsType.TypeSummary.Builder summaryBuilder;

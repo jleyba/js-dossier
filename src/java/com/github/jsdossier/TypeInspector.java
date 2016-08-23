@@ -37,7 +37,6 @@ import com.github.jsdossier.proto.Function;
 import com.github.jsdossier.proto.Function.Detail;
 import com.github.jsdossier.proto.NamedType;
 import com.github.jsdossier.proto.TypeExpression;
-import com.github.jsdossier.proto.TypeLink;
 import com.github.jsdossier.proto.Visibility;
 import com.google.auto.factory.AutoFactory;
 import com.google.auto.factory.Provided;
@@ -1152,7 +1151,7 @@ final class TypeInspector {
 
     for (String seeAlso : jsdoc.getSeeClauses()) {
       // 1) Try as a link reference to another type.
-      @Nullable TypeLink link = contextLinkFactory.createLink(seeAlso);
+      @Nullable NamedType link = contextLinkFactory.createLink(seeAlso);
       if (link != null && !link.getHref().isEmpty()) {
         builder.addSeeAlsoBuilder()
             .addTokenBuilder()

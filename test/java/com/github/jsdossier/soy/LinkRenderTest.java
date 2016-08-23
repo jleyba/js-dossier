@@ -19,8 +19,8 @@ package com.github.jsdossier.soy;
 import static com.google.common.truth.Truth.assertThat;
 
 import com.github.jsdossier.proto.Comment;
+import com.github.jsdossier.proto.Link;
 import com.github.jsdossier.proto.SourceLink;
-import com.github.jsdossier.proto.TypeLink;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableSet;
 import com.google.template.soy.SoyFileSet;
@@ -45,7 +45,7 @@ public class LinkRenderTest {
               "",
               "/** Renders a TypeLink */",
               "{template .typeLink}",
-              "  {@param link: dossier.TypeLink}",
+              "  {@param link: dossier.Link}",
               "  <a href=\"{$link.href}\">{$link.text}</a>",
               "{/template}",
               "",
@@ -67,16 +67,16 @@ public class LinkRenderTest {
       .compileToTofu();
 
   @Test
-  public void renderTypeLink() {
-    assertThat(renderTypeLink("foo", "bar.html"))
+  public void renderLink() {
+    assertThat(renderLink("foo", "bar.html"))
         .isEqualTo("<a href=\"bar.html\">foo</a>");
-    assertThat(renderTypeLink("foo", "./bar.html"))
+    assertThat(renderLink("foo", "./bar.html"))
         .isEqualTo("<a href=\"./bar.html\">foo</a>");
-    assertThat(renderTypeLink("foo", "../bar.html"))
+    assertThat(renderLink("foo", "../bar.html"))
         .isEqualTo("<a href=\"../bar.html\">foo</a>");
-    assertThat(renderTypeLink("foo", "../../bar.html"))
+    assertThat(renderLink("foo", "../../bar.html"))
         .isEqualTo("<a href=\"../../bar.html\">foo</a>");
-    assertThat(renderTypeLink("foo", "/bar.html"))
+    assertThat(renderLink("foo", "/bar.html"))
         .isEqualTo("<a href=\"/bar.html\">foo</a>");
   }
 
@@ -101,14 +101,14 @@ public class LinkRenderTest {
 
   @Test
   public void sanitizerDisallowsDangerousProtocols() {
-    assertThat(renderTypeLink("foo", "ftp://bar.html")).isEqualTo("<a href=\"#zSoyz\">foo</a>");
+    assertThat(renderLink("foo", "ftp://bar.html")).isEqualTo("<a href=\"#zSoyz\">foo</a>");
     assertThat(renderCommentToken("ftp://bar.html")).isEqualTo("<a href=\"#zSoyz\">test</a>");
     assertThat(renderSourceLink("ftp://bar.html")).isEqualTo("<a href=\"#zSoyz\">test</a>");
   }
 
-  private static String renderTypeLink(String text, String href) {
+  private static String renderLink(String text, String href) {
     StringBuilder builder = new StringBuilder();
-    TypeLink link = TypeLink.newBuilder()
+    Link link = Link.newBuilder()
         .setHref(href)
         .setText(text)
         .build();

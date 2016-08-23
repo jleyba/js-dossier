@@ -3,8 +3,8 @@
 
 package com.github.jsdossier.proto;
 
-public interface TypeLinkOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:dossier.TypeLink)
+public interface LinkOrBuilder extends
+    // @@protoc_insertion_point(interface_extends:dossier.Link)
     com.google.protobuf.MessageOrBuilder {
 
   /**

@@ -28,7 +28,6 @@ import com.github.jsdossier.jscomp.Position;
 import com.github.jsdossier.jscomp.TypeRegistry;
 import com.github.jsdossier.proto.NamedType;
 import com.github.jsdossier.proto.SourceLink;
-import com.github.jsdossier.proto.TypeLink;
 import com.google.auto.factory.AutoFactory;
 import com.google.auto.factory.Provided;
 import com.google.common.base.Optional;
@@ -201,7 +200,7 @@ final class LinkFactory {
    * @return the named type reference.
    */
   public NamedType createNamedTypeReference(NominalType type) {
-    TypeLink link = createLink(type);
+    NamedType link = createLink(type);
     String displayName = dfs.getDisplayName(type);
     String qualifiedName = dfs.getQualifiedDisplayName(type);
 
@@ -220,7 +219,7 @@ final class LinkFactory {
    * will be relative to the context's generated file. Otherwise, the link will be relative to the
    * output root (e.g. the "global" scope).
    */
-  public TypeLink createLink(NominalType type) {
+  public NamedType createLink(NominalType type) {
     Path path;
     String symbol = null;
 
@@ -231,10 +230,10 @@ final class LinkFactory {
         symbol = type.getName();
       } else {
         String parentName = type.getName().substring(0, index);
-        TypeLink link = createLink(typeRegistry.getType(parentName));
+        NamedType link = createLink(typeRegistry.getType(parentName));
         String displayName = dfs.getDisplayName(type);
         return link.toBuilder()
-            .setText(displayName)
+            .setName(displayName)
             .setHref(link.getHref() + "#" + displayName)
             .build();
       }
@@ -253,8 +252,8 @@ final class LinkFactory {
     if (symbol != null) {
       href += "#" + symbol;
     }
-    return TypeLink.newBuilder()
-        .setText(dfs.getDisplayName(type))
+    return NamedType.newBuilder()
+        .setName(dfs.getDisplayName(type))
         .setHref(href)
         .build();
   }
@@ -262,8 +261,8 @@ final class LinkFactory {
   /**
    * Creates a link to a specific property on a type.
    */
-  public TypeLink createLink(NominalType type, String property) {
-    TypeLink link = createLink(type);
+  public NamedType createLink(NominalType type, String property) {
+    NamedType link = createLink(type);
     checkState(!link.getHref().isEmpty(), "Failed to build link for %s", type.getName());
 
     boolean checkPrototype = false;
@@ -281,7 +280,7 @@ final class LinkFactory {
       ObjectType instanceType = ((FunctionType) type.getType()).getInstanceType();
       if (instanceType.getPropertyNames().contains(property)) {
         return link.toBuilder()
-            .setText(link.getText() + "#" + property)
+            .setName(link.getName() + "#" + property)
             .setHref(link.getHref() + "#" + property)
             .build();
       }
@@ -296,7 +295,7 @@ final class LinkFactory {
 
     if (type.getType().toObjectType().getPropertyType(property).isEnumElementType()) {
       return link.toBuilder()
-          .setText(link.getText() + "." + property)
+          .setName(link.getName() + "." + property)
           .setHref(link.getHref() + "#" + property)
           .build();
     }
@@ -305,14 +304,14 @@ final class LinkFactory {
     if (propertyDocs != null && propertyDocs.isDefine()) {
       String name = dfs.getQualifiedDisplayName(type) + "." + property;
       return link.toBuilder()
-          .setText(name)
+          .setName(name)
           .setHref(link.getHref() + "#" + name)
           .build();
     }
 
     if (!type.getType().toObjectType().getPropertyNames().contains(property)) {
       return link.toBuilder()
-          .setText(link.getText() + "." + property)
+          .setName(link.getName() + "." + property)
           .build();
     }
 
@@ -328,7 +327,7 @@ final class LinkFactory {
       id = name + "." + id;
     }
     return link.toBuilder()
-        .setText(link.getText() + "." + property)
+        .setName(link.getName() + "." + property)
         .setHref(link.getHref() + "#" + id)
         .build();
   }
@@ -337,7 +336,7 @@ final class LinkFactory {
    * Generates a link to the given symbol, relative to this factory's context type. If the symbol
    * does not resolve to a type, this method will return a link with no path.
    */
-  public TypeLink createLink(String symbol) {
+  public NamedType createLink(String symbol) {
     // Trim down the target symbol to something that may be indexed.
     int index = symbol.indexOf('(');
     if (index != -1) {
@@ -347,7 +346,7 @@ final class LinkFactory {
     if (symbol.startsWith("#")) {
       return pathContext.isPresent()
           ? createLink(pathContext.get(), symbol)
-          : TypeLink.newBuilder().setText(symbol).build();
+          : NamedType.newBuilder().setName(symbol).build();
 
     } else if (symbol.endsWith("#")) {
       symbol = symbol.substring(0, symbol.length() - 1);
@@ -358,8 +357,8 @@ final class LinkFactory {
 
     TypeRef ref = TypeRef.from(symbol);
     if (ref.type.isEmpty() && typeContext.isGlobalScope()) {
-      return TypeLink.newBuilder()
-          .setText(symbol)
+      return NamedType.newBuilder()
+          .setName(symbol)
           .build();
     }
 
@@ -379,7 +378,7 @@ final class LinkFactory {
         && typeContext.getContextType().getModule().isPresent()
         && typeContext.getContextType().getModule().get().getType() == Module.Type.ES6) {
       Module module = typeContext.getContextType().getModule().get();
-      TypeLink link =
+      NamedType link =
           maybeCreateExportedPropertyLink(typeRegistry.getType(module.getId()), typeName);
       if (link != null) {
         return link;
@@ -400,11 +399,11 @@ final class LinkFactory {
       return property.isEmpty() ? createLink(type) : createLink(type, property);
     }
 
-    TypeLink link = createExternModuleLink(ref.type);
+    NamedType link = createExternModuleLink(ref.type);
     if (link != null) {
       if (!ref.property.isEmpty()) {
         link = link.toBuilder()
-            .setText(link.getText() + "." + ref.property)
+            .setName(link.getName() + "." + ref.property)
             .build();
       }
       return link;
@@ -417,17 +416,17 @@ final class LinkFactory {
     }
 
     if (link != null) {
-      return link.toBuilder().setText(symbol).build();
+      return link.toBuilder().setName(symbol).build();
     }
 
-    return TypeLink.newBuilder()
-        .setText(symbol)
+    return NamedType.newBuilder()
+        .setName(symbol)
         .build();
   }
 
   @Nullable
   @CheckReturnValue
-  private TypeLink maybeCreateExportedPropertyLink(NominalType type, String property) {
+  private NamedType maybeCreateExportedPropertyLink(NominalType type, String property) {
     checkArgument(type.isModuleExports());
     if (type.getType().toObjectType().hasOwnProperty(property)) {
       return createLink(type, property);
@@ -444,17 +443,17 @@ final class LinkFactory {
 
   @Nullable
   @CheckReturnValue
-  public TypeLink createExternModuleLink(String name) {
+  public NamedType createExternModuleLink(String name) {
     if (Module.Type.NODE.isModuleId(name)) {
       final String externId = Module.Type.NODE.stripModulePrefix(name);
 
       if (nodeLibrary.isModuleId(externId)) {
-        return TypeLink.newBuilder().setText(externId).build();
+        return NamedType.newBuilder().setName(externId).build();
       }
 
       int index = externId.indexOf('.');
       if (index != -1 && nodeLibrary.isModuleId(externId.substring(0, index))) {
-        return TypeLink.newBuilder().setText(externId).build();
+        return NamedType.newBuilder().setName(externId).build();
       }
     }
     return null;
@@ -465,11 +464,12 @@ final class LinkFactory {
    */
   @Nullable
   @CheckReturnValue
-  public TypeLink createNativeExternLink(String name) {
+  public NamedType createNativeExternLink(String name) {
     if (BUILTIN_TO_MDN_LINK.containsKey(name)) {
-      return TypeLink.newBuilder()
-          .setText(name)
+      return NamedType.newBuilder()
+          .setName(name)
           .setHref(BUILTIN_TO_MDN_LINK.get(name))
+          .setExtern(true)
           .build();
     }
     return null;

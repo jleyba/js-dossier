@@ -4,21 +4,21 @@
 package com.github.jsdossier.proto;
 
 /**
- * Protobuf type {@code dossier.TypeLink}
+ * Protobuf type {@code dossier.Link}
  *
  * <pre>
  * Describes a type to link to.
  * </pre>
  */
-public  final class TypeLink extends
+public  final class Link extends
     com.google.protobuf.GeneratedMessage implements
-    // @@protoc_insertion_point(message_implements:dossier.TypeLink)
-    TypeLinkOrBuilder {
-  // Use TypeLink.newBuilder() to construct.
-  private TypeLink(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+    // @@protoc_insertion_point(message_implements:dossier.Link)
+    LinkOrBuilder {
+  // Use Link.newBuilder() to construct.
+  private Link(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
     super(builder);
   }
-  private TypeLink() {
+  private Link() {
     text_ = "";
     href_ = "";
   }
@@ -28,7 +28,7 @@ public  final class TypeLink extends
   getUnknownFields() {
     return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
   }
-  private TypeLink(
+  private Link(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
     this();
@@ -73,14 +73,14 @@ public  final class TypeLink extends
   }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return com.github.jsdossier.proto.Dossier.internal_static_dossier_TypeLink_descriptor;
+    return com.github.jsdossier.proto.Dossier.internal_static_dossier_Link_descriptor;
   }
 
   protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return com.github.jsdossier.proto.Dossier.internal_static_dossier_TypeLink_fieldAccessorTable
+    return com.github.jsdossier.proto.Dossier.internal_static_dossier_Link_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
-            com.github.jsdossier.proto.TypeLink.class, com.github.jsdossier.proto.TypeLink.Builder.class);
+            com.github.jsdossier.proto.Link.class, com.github.jsdossier.proto.Link.Builder.class);
   }
 
   public static final int TEXT_FIELD_NUMBER = 1;
@@ -203,53 +203,53 @@ public  final class TypeLink extends
   }
 
   private static final long serialVersionUID = 0L;
-  public static com.github.jsdossier.proto.TypeLink parseFrom(
+  public static com.github.jsdossier.proto.Link parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static com.github.jsdossier.proto.TypeLink parseFrom(
+  public static com.github.jsdossier.proto.Link parseFrom(
       com.google.protobuf.ByteString data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static com.github.jsdossier.proto.TypeLink parseFrom(byte[] data)
+  public static com.github.jsdossier.proto.Link parseFrom(byte[] data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static com.github.jsdossier.proto.TypeLink parseFrom(
+  public static com.github.jsdossier.proto.Link parseFrom(
       byte[] data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static com.github.jsdossier.proto.TypeLink parseFrom(java.io.InputStream input)
+  public static com.github.jsdossier.proto.Link parseFrom(java.io.InputStream input)
       throws java.io.IOException {
     return PARSER.parseFrom(input);
   }
-  public static com.github.jsdossier.proto.TypeLink parseFrom(
+  public static com.github.jsdossier.proto.Link parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return PARSER.parseFrom(input, extensionRegistry);
   }
-  public static com.github.jsdossier.proto.TypeLink parseDelimitedFrom(java.io.InputStream input)
+  public static com.github.jsdossier.proto.Link parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return PARSER.parseDelimitedFrom(input);
   }
-  public static com.github.jsdossier.proto.TypeLink parseDelimitedFrom(
+  public static com.github.jsdossier.proto.Link parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return PARSER.parseDelimitedFrom(input, extensionRegistry);
   }
-  public static com.github.jsdossier.proto.TypeLink parseFrom(
+  public static com.github.jsdossier.proto.Link parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
     return PARSER.parseFrom(input);
   }
-  public static com.github.jsdossier.proto.TypeLink parseFrom(
+  public static com.github.jsdossier.proto.Link parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -260,7 +260,7 @@ public  final class TypeLink extends
   public static Builder newBuilder() {
     return DEFAULT_INSTANCE.toBuilder();
   }
-  public static Builder newBuilder(com.github.jsdossier.proto.TypeLink prototype) {
+  public static Builder newBuilder(com.github.jsdossier.proto.Link prototype) {
     return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
   }
   public Builder toBuilder() {
@@ -275,7 +275,7 @@ public  final class TypeLink extends
     return builder;
   }
   /**
-   * Protobuf type {@code dossier.TypeLink}
+   * Protobuf type {@code dossier.Link}
    *
    * <pre>
    * Describes a type to link to.
@@ -283,21 +283,21 @@ public  final class TypeLink extends
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessage.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:dossier.TypeLink)
-      com.github.jsdossier.proto.TypeLinkOrBuilder {
+      // @@protoc_insertion_point(builder_implements:dossier.Link)
+      com.github.jsdossier.proto.LinkOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.github.jsdossier.proto.Dossier.internal_static_dossier_TypeLink_descriptor;
+      return com.github.jsdossier.proto.Dossier.internal_static_dossier_Link_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.github.jsdossier.proto.Dossier.internal_static_dossier_TypeLink_fieldAccessorTable
+      return com.github.jsdossier.proto.Dossier.internal_static_dossier_Link_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              com.github.jsdossier.proto.TypeLink.class, com.github.jsdossier.proto.TypeLink.Builder.class);
+              com.github.jsdossier.proto.Link.class, com.github.jsdossier.proto.Link.Builder.class);
     }
 
-    // Construct using com.github.jsdossier.proto.TypeLink.newBuilder()
+    // Construct using com.github.jsdossier.proto.Link.newBuilder()
     private Builder() {
       maybeForceBuilderInitialization();
     }
@@ -322,23 +322,23 @@ public  final class TypeLink extends
 
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return com.github.jsdossier.proto.Dossier.internal_static_dossier_TypeLink_descriptor;
+      return com.github.jsdossier.proto.Dossier.internal_static_dossier_Link_descriptor;
     }
 
-    public com.github.jsdossier.proto.TypeLink getDefaultInstanceForType() {
-      return com.github.jsdossier.proto.TypeLink.getDefaultInstance();
+    public com.github.jsdossier.proto.Link getDefaultInstanceForType() {
+      return com.github.jsdossier.proto.Link.getDefaultInstance();
     }
 
-    public com.github.jsdossier.proto.TypeLink build() {
-      com.github.jsdossier.proto.TypeLink result = buildPartial();
+    public com.github.jsdossier.proto.Link build() {
+      com.github.jsdossier.proto.Link result = buildPartial();
       if (!result.isInitialized()) {
         throw newUninitializedMessageException(result);
       }
       return result;
     }
 
-    public com.github.jsdossier.proto.TypeLink buildPartial() {
-      com.github.jsdossier.proto.TypeLink result = new com.github.jsdossier.proto.TypeLink(this);
+    public com.github.jsdossier.proto.Link buildPartial() {
+      com.github.jsdossier.proto.Link result = new com.github.jsdossier.proto.Link(this);
       result.text_ = text_;
       result.href_ = href_;
       onBuilt();
@@ -346,16 +346,16 @@ public  final class TypeLink extends
     }
 
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof com.github.jsdossier.proto.TypeLink) {
-        return mergeFrom((com.github.jsdossier.proto.TypeLink)other);
+      if (other instanceof com.github.jsdossier.proto.Link) {
+        return mergeFrom((com.github.jsdossier.proto.Link)other);
       } else {
         super.mergeFrom(other);
         return this;
       }
     }
 
-    public Builder mergeFrom(com.github.jsdossier.proto.TypeLink other) {
-      if (other == com.github.jsdossier.proto.TypeLink.getDefaultInstance()) return this;
+    public Builder mergeFrom(com.github.jsdossier.proto.Link other) {
+      if (other == com.github.jsdossier.proto.Link.getDefaultInstance()) return this;
       if (!other.getText().isEmpty()) {
         text_ = other.text_;
         onChanged();
@@ -376,11 +376,11 @@ public  final class TypeLink extends
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      com.github.jsdossier.proto.TypeLink parsedMessage = null;
+      com.github.jsdossier.proto.Link parsedMessage = null;
       try {
         parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        parsedMessage = (com.github.jsdossier.proto.TypeLink) e.getUnfinishedMessage();
+        parsedMessage = (com.github.jsdossier.proto.Link) e.getUnfinishedMessage();
         throw e;
       } finally {
         if (parsedMessage != null) {
@@ -578,27 +578,27 @@ public  final class TypeLink extends
     }
 
 
-    // @@protoc_insertion_point(builder_scope:dossier.TypeLink)
+    // @@protoc_insertion_point(builder_scope:dossier.Link)
   }
 
-  // @@protoc_insertion_point(class_scope:dossier.TypeLink)
-  private static final com.github.jsdossier.proto.TypeLink DEFAULT_INSTANCE;
+  // @@protoc_insertion_point(class_scope:dossier.Link)
+  private static final com.github.jsdossier.proto.Link DEFAULT_INSTANCE;
   static {
-    DEFAULT_INSTANCE = new com.github.jsdossier.proto.TypeLink();
+    DEFAULT_INSTANCE = new com.github.jsdossier.proto.Link();
   }
 
-  public static com.github.jsdossier.proto.TypeLink getDefaultInstance() {
+  public static com.github.jsdossier.proto.Link getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 
-  private static final com.google.protobuf.Parser<TypeLink>
-      PARSER = new com.google.protobuf.AbstractParser<TypeLink>() {
-    public TypeLink parsePartialFrom(
+  private static final com.google.protobuf.Parser<Link>
+      PARSER = new com.google.protobuf.AbstractParser<Link>() {
+    public Link parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       try {
-        return new TypeLink(input, extensionRegistry);
+        return new Link(input, extensionRegistry);
       } catch (RuntimeException e) {
         if (e.getCause() instanceof
             com.google.protobuf.InvalidProtocolBufferException) {
@@ -610,16 +610,16 @@ public  final class TypeLink extends
     }
   };
 
-  public static com.google.protobuf.Parser<TypeLink> parser() {
+  public static com.google.protobuf.Parser<Link> parser() {
     return PARSER;
   }
 
   @java.lang.Override
-  public com.google.protobuf.Parser<TypeLink> getParserForType() {
+  public com.google.protobuf.Parser<Link> getParserForType() {
     return PARSER;
   }
 
-  public com.github.jsdossier.proto.TypeLink getDefaultInstanceForType() {
+  public com.github.jsdossier.proto.Link getDefaultInstanceForType() {
     return DEFAULT_INSTANCE;
   }
 

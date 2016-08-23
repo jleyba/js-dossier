@@ -47,7 +47,7 @@ message Resources {
 
 
 // Describes a type to link to.
-message TypeLink {
+message Link {
   // The link display text.
   string text = 1;
   // The link href.
@@ -196,7 +196,7 @@ message Index {
   bool include_modules = 3;
 
   // Additional links to include in the navigation pane.
-  repeated TypeLink links = 4;
+  repeated Link link = 4;
 
   // When this index was generated.
   int64 timestamp = 5;

@@ -20,7 +20,7 @@ import static com.github.jsdossier.ProtoTruth.assertMessage;
 import static org.junit.Assert.fail;
 
 import com.github.jsdossier.proto.Index;
-import com.github.jsdossier.proto.TypeLink;
+import com.github.jsdossier.proto.Link;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.jimfs.Configuration;
 import com.google.common.jimfs.Jimfs;
@@ -65,10 +65,10 @@ public class NavIndexFactoryTest {
             .setHome("index.html")
             .setIncludeModules(true)
             .setIncludeTypes(true)
-            .addLinks(TypeLink.newBuilder()
+            .addLink(Link.newBuilder()
                 .setText("foo")
                 .setHref("foo.html"))
-            .addLinks(TypeLink.newBuilder()
+            .addLink(Link.newBuilder()
                 .setText("bar")
                 .setHref("bar.html"))
             .build());
@@ -87,10 +87,10 @@ public class NavIndexFactoryTest {
             .setHome("../../index.html")
             .setIncludeModules(true)
             .setIncludeTypes(true)
-            .addLinks(TypeLink.newBuilder()
+            .addLink(Link.newBuilder()
                 .setText("foo")
                 .setHref("../../foo.html"))
-            .addLinks(TypeLink.newBuilder()
+            .addLink(Link.newBuilder()
                 .setText("bar")
                 .setHref("../../bar.html"))
             .build());
@@ -112,10 +112,10 @@ public class NavIndexFactoryTest {
             .setHome("../../index.html")
             .setIncludeModules(true)
             .setIncludeTypes(true)
-            .addLinks(TypeLink.newBuilder()
+            .addLink(Link.newBuilder()
                 .setText("foo")
                 .setHref("../../foo.html"))
-            .addLinks(TypeLink.newBuilder()
+            .addLink(Link.newBuilder()
                 .setText("bar")
                 .setHref("../../bar.html"))
             .build());

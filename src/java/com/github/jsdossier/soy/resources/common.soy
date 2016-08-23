@@ -80,7 +80,7 @@
         </div>
       </section>
     {/if}
-    {foreach $link in $index.links}
+    {foreach $link in $index.link}
       {if $link.href and $link.text}
         <section>
           <a class="title" href="{$link.href}" tabindex="1">{$link.text}</a>

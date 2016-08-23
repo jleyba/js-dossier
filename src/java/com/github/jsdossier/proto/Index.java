@@ -22,7 +22,7 @@ public  final class Index extends
     home_ = "";
     includeTypes_ = false;
     includeModules_ = false;
-    links_ = java.util.Collections.emptyList();
+    link_ = java.util.Collections.emptyList();
     timestamp_ = 0L;
   }
 
@@ -68,10 +68,10 @@ public  final class Index extends
           }
           case 34: {
             if (!((mutable_bitField0_ & 0x00000008) == 0x00000008)) {
-              links_ = new java.util.ArrayList<com.github.jsdossier.proto.TypeLink>();
+              link_ = new java.util.ArrayList<com.github.jsdossier.proto.Link>();
               mutable_bitField0_ |= 0x00000008;
             }
-            links_.add(input.readMessage(com.github.jsdossier.proto.TypeLink.parser(), extensionRegistry));
+            link_.add(input.readMessage(com.github.jsdossier.proto.Link.parser(), extensionRegistry));
             break;
           }
           case 40: {
@@ -89,7 +89,7 @@ public  final class Index extends
               e.getMessage()).setUnfinishedMessage(this));
     } finally {
       if (((mutable_bitField0_ & 0x00000008) == 0x00000008)) {
-        links_ = java.util.Collections.unmodifiableList(links_);
+        link_ = java.util.Collections.unmodifiableList(link_);
       }
       makeExtensionsImmutable();
     }
@@ -175,59 +175,59 @@ public  final class Index extends
     return includeModules_;
   }
 
-  public static final int LINKS_FIELD_NUMBER = 4;
-  private java.util.List<com.github.jsdossier.proto.TypeLink> links_;
+  public static final int LINK_FIELD_NUMBER = 4;
+  private java.util.List<com.github.jsdossier.proto.Link> link_;
   /**
-   * <code>repeated .dossier.TypeLink links = 4;</code>
+   * <code>repeated .dossier.Link link = 4;</code>
    *
    * <pre>
    * Additional links to include in the navigation pane.
    * </pre>
    */
-  public java.util.List<com.github.jsdossier.proto.TypeLink> getLinksList() {
-    return links_;
+  public java.util.List<com.github.jsdossier.proto.Link> getLinkList() {
+    return link_;
   }
   /**
-   * <code>repeated .dossier.TypeLink links = 4;</code>
+   * <code>repeated .dossier.Link link = 4;</code>
    *
    * <pre>
    * Additional links to include in the navigation pane.
    * </pre>
    */
-  public java.util.List<? extends com.github.jsdossier.proto.TypeLinkOrBuilder> 
-      getLinksOrBuilderList() {
-    return links_;
+  public java.util.List<? extends com.github.jsdossier.proto.LinkOrBuilder> 
+      getLinkOrBuilderList() {
+    return link_;
   }
   /**
-   * <code>repeated .dossier.TypeLink links = 4;</code>
+   * <code>repeated .dossier.Link link = 4;</code>
    *
    * <pre>
    * Additional links to include in the navigation pane.
    * </pre>
    */
-  public int getLinksCount() {
-    return links_.size();
+  public int getLinkCount() {
+    return link_.size();
   }
   /**
-   * <code>repeated .dossier.TypeLink links = 4;</code>
+   * <code>repeated .dossier.Link link = 4;</code>
    *
    * <pre>
    * Additional links to include in the navigation pane.
    * </pre>
    */
-  public com.github.jsdossier.proto.TypeLink getLinks(int index) {
-    return links_.get(index);
+  public com.github.jsdossier.proto.Link getLink(int index) {
+    return link_.get(index);
   }
   /**
-   * <code>repeated .dossier.TypeLink links = 4;</code>
+   * <code>repeated .dossier.Link link = 4;</code>
    *
    * <pre>
    * Additional links to include in the navigation pane.
    * </pre>
    */
-  public com.github.jsdossier.proto.TypeLinkOrBuilder getLinksOrBuilder(
+  public com.github.jsdossier.proto.LinkOrBuilder getLinkOrBuilder(
       int index) {
-    return links_.get(index);
+    return link_.get(index);
   }
 
   public static final int TIMESTAMP_FIELD_NUMBER = 5;
@@ -264,8 +264,8 @@ public  final class Index extends
     if (includeModules_ != false) {
       output.writeBool(3, includeModules_);
     }
-    for (int i = 0; i < links_.size(); i++) {
-      output.writeMessage(4, links_.get(i));
+    for (int i = 0; i < link_.size(); i++) {
+      output.writeMessage(4, link_.get(i));
     }
     if (timestamp_ != 0L) {
       output.writeInt64(5, timestamp_);
@@ -288,9 +288,9 @@ public  final class Index extends
       size += com.google.protobuf.CodedOutputStream
         .computeBoolSize(3, includeModules_);
     }
-    for (int i = 0; i < links_.size(); i++) {
+    for (int i = 0; i < link_.size(); i++) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(4, links_.get(i));
+        .computeMessageSize(4, link_.get(i));
     }
     if (timestamp_ != 0L) {
       size += com.google.protobuf.CodedOutputStream
@@ -407,7 +407,7 @@ public  final class Index extends
     }
     private void maybeForceBuilderInitialization() {
       if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
-        getLinksFieldBuilder();
+        getLinkFieldBuilder();
       }
     }
     public Builder clear() {
@@ -418,11 +418,11 @@ public  final class Index extends
 
       includeModules_ = false;
 
-      if (linksBuilder_ == null) {
-        links_ = java.util.Collections.emptyList();
+      if (linkBuilder_ == null) {
+        link_ = java.util.Collections.emptyList();
         bitField0_ = (bitField0_ & ~0x00000008);
       } else {
-        linksBuilder_.clear();
+        linkBuilder_.clear();
       }
       timestamp_ = 0L;
 
@@ -453,14 +453,14 @@ public  final class Index extends
       result.home_ = home_;
       result.includeTypes_ = includeTypes_;
       result.includeModules_ = includeModules_;
-      if (linksBuilder_ == null) {
+      if (linkBuilder_ == null) {
         if (((bitField0_ & 0x00000008) == 0x00000008)) {
-          links_ = java.util.Collections.unmodifiableList(links_);
+          link_ = java.util.Collections.unmodifiableList(link_);
           bitField0_ = (bitField0_ & ~0x00000008);
         }
-        result.links_ = links_;
+        result.link_ = link_;
       } else {
-        result.links_ = linksBuilder_.build();
+        result.link_ = linkBuilder_.build();
       }
       result.timestamp_ = timestamp_;
       result.bitField0_ = to_bitField0_;
@@ -489,29 +489,29 @@ public  final class Index extends
       if (other.getIncludeModules() != false) {
         setIncludeModules(other.getIncludeModules());
       }
-      if (linksBuilder_ == null) {
-        if (!other.links_.isEmpty()) {
-          if (links_.isEmpty()) {
-            links_ = other.links_;
+      if (linkBuilder_ == null) {
+        if (!other.link_.isEmpty()) {
+          if (link_.isEmpty()) {
+            link_ = other.link_;
             bitField0_ = (bitField0_ & ~0x00000008);
           } else {
-            ensureLinksIsMutable();
-            links_.addAll(other.links_);
+            ensureLinkIsMutable();
+            link_.addAll(other.link_);
           }
           onChanged();
         }
       } else {
-        if (!other.links_.isEmpty()) {
-          if (linksBuilder_.isEmpty()) {
-            linksBuilder_.dispose();
-            linksBuilder_ = null;
-            links_ = other.links_;
+        if (!other.link_.isEmpty()) {
+          if (linkBuilder_.isEmpty()) {
+            linkBuilder_.dispose();
+            linkBuilder_ = null;
+            link_ = other.link_;
             bitField0_ = (bitField0_ & ~0x00000008);
-            linksBuilder_ = 
+            linkBuilder_ = 
               com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
-                 getLinksFieldBuilder() : null;
+                 getLinkFieldBuilder() : null;
           } else {
-            linksBuilder_.addAllMessages(other.links_);
+            linkBuilder_.addAllMessages(other.link_);
           }
         }
       }
@@ -710,316 +710,316 @@ public  final class Index extends
       return this;
     }
 
-    private java.util.List<com.github.jsdossier.proto.TypeLink> links_ =
+    private java.util.List<com.github.jsdossier.proto.Link> link_ =
       java.util.Collections.emptyList();
-    private void ensureLinksIsMutable() {
+    private void ensureLinkIsMutable() {
       if (!((bitField0_ & 0x00000008) == 0x00000008)) {
-        links_ = new java.util.ArrayList<com.github.jsdossier.proto.TypeLink>(links_);
+        link_ = new java.util.ArrayList<com.github.jsdossier.proto.Link>(link_);
         bitField0_ |= 0x00000008;
        }
     }
 
     private com.google.protobuf.RepeatedFieldBuilder<
-        com.github.jsdossier.proto.TypeLink, com.github.jsdossier.proto.TypeLink.Builder, com.github.jsdossier.proto.TypeLinkOrBuilder> linksBuilder_;
+        com.github.jsdossier.proto.Link, com.github.jsdossier.proto.Link.Builder, com.github.jsdossier.proto.LinkOrBuilder> linkBuilder_;
 
     /**
-     * <code>repeated .dossier.TypeLink links = 4;</code>
+     * <code>repeated .dossier.Link link = 4;</code>
      *
      * <pre>
      * Additional links to include in the navigation pane.
      * </pre>
      */
-    public java.util.List<com.github.jsdossier.proto.TypeLink> getLinksList() {
-      if (linksBuilder_ == null) {
-        return java.util.Collections.unmodifiableList(links_);
+    public java.util.List<com.github.jsdossier.proto.Link> getLinkList() {
+      if (linkBuilder_ == null) {
+        return java.util.Collections.unmodifiableList(link_);
       } else {
-        return linksBuilder_.getMessageList();
+        return linkBuilder_.getMessageList();
       }
     }
     /**
-     * <code>repeated .dossier.TypeLink links = 4;</code>
+     * <code>repeated .dossier.Link link = 4;</code>
      *
      * <pre>
      * Additional links to include in the navigation pane.
      * </pre>
      */
-    public int getLinksCount() {
-      if (linksBuilder_ == null) {
-        return links_.size();
+    public int getLinkCount() {
+      if (linkBuilder_ == null) {
+        return link_.size();
       } else {
-        return linksBuilder_.getCount();
+        return linkBuilder_.getCount();
       }
     }
     /**
-     * <code>repeated .dossier.TypeLink links = 4;</code>
+     * <code>repeated .dossier.Link link = 4;</code>
      *
      * <pre>
      * Additional links to include in the navigation pane.
      * </pre>
      */
-    public com.github.jsdossier.proto.TypeLink getLinks(int index) {
-      if (linksBuilder_ == null) {
-        return links_.get(index);
+    public com.github.jsdossier.proto.Link getLink(int index) {
+      if (linkBuilder_ == null) {
+        return link_.get(index);
       } else {
-        return linksBuilder_.getMessage(index);
+        return linkBuilder_.getMessage(index);
       }
     }
     /**
-     * <code>repeated .dossier.TypeLink links = 4;</code>
+     * <code>repeated .dossier.Link link = 4;</code>
      *
      * <pre>
      * Additional links to include in the navigation pane.
      * </pre>
      */
-    public Builder setLinks(
-        int index, com.github.jsdossier.proto.TypeLink value) {
-      if (linksBuilder_ == null) {
+    public Builder setLink(
+        int index, com.github.jsdossier.proto.Link value) {
+      if (linkBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
         }
-        ensureLinksIsMutable();
-        links_.set(index, value);
+        ensureLinkIsMutable();
+        link_.set(index, value);
         onChanged();
       } else {
-        linksBuilder_.setMessage(index, value);
+        linkBuilder_.setMessage(index, value);
       }
       return this;
     }
     /**
-     * <code>repeated .dossier.TypeLink links = 4;</code>
+     * <code>repeated .dossier.Link link = 4;</code>
      *
      * <pre>
      * Additional links to include in the navigation pane.
      * </pre>
      */
-    public Builder setLinks(
-        int index, com.github.jsdossier.proto.TypeLink.Builder builderForValue) {
-      if (linksBuilder_ == null) {
-        ensureLinksIsMutable();
-        links_.set(index, builderForValue.build());
+    public Builder setLink(
+        int index, com.github.jsdossier.proto.Link.Builder builderForValue) {
+      if (linkBuilder_ == null) {
+        ensureLinkIsMutable();
+        link_.set(index, builderForValue.build());
         onChanged();
       } else {
-        linksBuilder_.setMessage(index, builderForValue.build());
+        linkBuilder_.setMessage(index, builderForValue.build());
       }
       return this;
     }
     /**
-     * <code>repeated .dossier.TypeLink links = 4;</code>
+     * <code>repeated .dossier.Link link = 4;</code>
      *
      * <pre>
      * Additional links to include in the navigation pane.
      * </pre>
      */
-    public Builder addLinks(com.github.jsdossier.proto.TypeLink value) {
-      if (linksBuilder_ == null) {
+    public Builder addLink(com.github.jsdossier.proto.Link value) {
+      if (linkBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
         }
-        ensureLinksIsMutable();
-        links_.add(value);
+        ensureLinkIsMutable();
+        link_.add(value);
         onChanged();
       } else {
-        linksBuilder_.addMessage(value);
+        linkBuilder_.addMessage(value);
       }
       return this;
     }
     /**
-     * <code>repeated .dossier.TypeLink links = 4;</code>
+     * <code>repeated .dossier.Link link = 4;</code>
      *
      * <pre>
      * Additional links to include in the navigation pane.
      * </pre>
      */
-    public Builder addLinks(
-        int index, com.github.jsdossier.proto.TypeLink value) {
-      if (linksBuilder_ == null) {
+    public Builder addLink(
+        int index, com.github.jsdossier.proto.Link value) {
+      if (linkBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
         }
-        ensureLinksIsMutable();
-        links_.add(index, value);
+        ensureLinkIsMutable();
+        link_.add(index, value);
         onChanged();
       } else {
-        linksBuilder_.addMessage(index, value);
+        linkBuilder_.addMessage(index, value);
       }
       return this;
     }
     /**
-     * <code>repeated .dossier.TypeLink links = 4;</code>
+     * <code>repeated .dossier.Link link = 4;</code>
      *
      * <pre>
      * Additional links to include in the navigation pane.
      * </pre>
      */
-    public Builder addLinks(
-        com.github.jsdossier.proto.TypeLink.Builder builderForValue) {
-      if (linksBuilder_ == null) {
-        ensureLinksIsMutable();
-        links_.add(builderForValue.build());
+    public Builder addLink(
+        com.github.jsdossier.proto.Link.Builder builderForValue) {
+      if (linkBuilder_ == null) {
+        ensureLinkIsMutable();
+        link_.add(builderForValue.build());
         onChanged();
       } else {
-        linksBuilder_.addMessage(builderForValue.build());
+        linkBuilder_.addMessage(builderForValue.build());
       }
       return this;
     }
     /**
-     * <code>repeated .dossier.TypeLink links = 4;</code>
+     * <code>repeated .dossier.Link link = 4;</code>
      *
      * <pre>
      * Additional links to include in the navigation pane.
      * </pre>
      */
-    public Builder addLinks(
-        int index, com.github.jsdossier.proto.TypeLink.Builder builderForValue) {
-      if (linksBuilder_ == null) {
-        ensureLinksIsMutable();
-        links_.add(index, builderForValue.build());
+    public Builder addLink(
+        int index, com.github.jsdossier.proto.Link.Builder builderForValue) {
+      if (linkBuilder_ == null) {
+        ensureLinkIsMutable();
+        link_.add(index, builderForValue.build());
         onChanged();
       } else {
-        linksBuilder_.addMessage(index, builderForValue.build());
+        linkBuilder_.addMessage(index, builderForValue.build());
       }
       return this;
     }
     /**
-     * <code>repeated .dossier.TypeLink links = 4;</code>
+     * <code>repeated .dossier.Link link = 4;</code>
      *
      * <pre>
      * Additional links to include in the navigation pane.
      * </pre>
      */
-    public Builder addAllLinks(
-        java.lang.Iterable<? extends com.github.jsdossier.proto.TypeLink> values) {
-      if (linksBuilder_ == null) {
-        ensureLinksIsMutable();
+    public Builder addAllLink(
+        java.lang.Iterable<? extends com.github.jsdossier.proto.Link> values) {
+      if (linkBuilder_ == null) {
+        ensureLinkIsMutable();
         com.google.protobuf.AbstractMessageLite.Builder.addAll(
-            values, links_);
+            values, link_);
         onChanged();
       } else {
-        linksBuilder_.addAllMessages(values);
+        linkBuilder_.addAllMessages(values);
       }
       return this;
     }
     /**
-     * <code>repeated .dossier.TypeLink links = 4;</code>
+     * <code>repeated .dossier.Link link = 4;</code>
      *
      * <pre>
      * Additional links to include in the navigation pane.
      * </pre>
      */
-    public Builder clearLinks() {
-      if (linksBuilder_ == null) {
-        links_ = java.util.Collections.emptyList();
+    public Builder clearLink() {
+      if (linkBuilder_ == null) {
+        link_ = java.util.Collections.emptyList();
         bitField0_ = (bitField0_ & ~0x00000008);
         onChanged();
       } else {
-        linksBuilder_.clear();
+        linkBuilder_.clear();
       }
       return this;
     }
     /**
-     * <code>repeated .dossier.TypeLink links = 4;</code>
+     * <code>repeated .dossier.Link link = 4;</code>
      *
      * <pre>
      * Additional links to include in the navigation pane.
      * </pre>
      */
-    public Builder removeLinks(int index) {
-      if (linksBuilder_ == null) {
-        ensureLinksIsMutable();
-        links_.remove(index);
+    public Builder removeLink(int index) {
+      if (linkBuilder_ == null) {
+        ensureLinkIsMutable();
+        link_.remove(index);
         onChanged();
       } else {
-        linksBuilder_.remove(index);
+        linkBuilder_.remove(index);
       }
       return this;
     }
     /**
-     * <code>repeated .dossier.TypeLink links = 4;</code>
+     * <code>repeated .dossier.Link link = 4;</code>
      *
      * <pre>
      * Additional links to include in the navigation pane.
      * </pre>
      */
-    public com.github.jsdossier.proto.TypeLink.Builder getLinksBuilder(
+    public com.github.jsdossier.proto.Link.Builder getLinkBuilder(
         int index) {
-      return getLinksFieldBuilder().getBuilder(index);
+      return getLinkFieldBuilder().getBuilder(index);
     }
     /**
-     * <code>repeated .dossier.TypeLink links = 4;</code>
+     * <code>repeated .dossier.Link link = 4;</code>
      *
      * <pre>
      * Additional links to include in the navigation pane.
      * </pre>
      */
-    public com.github.jsdossier.proto.TypeLinkOrBuilder getLinksOrBuilder(
+    public com.github.jsdossier.proto.LinkOrBuilder getLinkOrBuilder(
         int index) {
-      if (linksBuilder_ == null) {
-        return links_.get(index);  } else {
-        return linksBuilder_.getMessageOrBuilder(index);
+      if (linkBuilder_ == null) {
+        return link_.get(index);  } else {
+        return linkBuilder_.getMessageOrBuilder(index);
       }
     }
     /**
-     * <code>repeated .dossier.TypeLink links = 4;</code>
+     * <code>repeated .dossier.Link link = 4;</code>
      *
      * <pre>
      * Additional links to include in the navigation pane.
      * </pre>
      */
-    public java.util.List<? extends com.github.jsdossier.proto.TypeLinkOrBuilder> 
-         getLinksOrBuilderList() {
-      if (linksBuilder_ != null) {
-        return linksBuilder_.getMessageOrBuilderList();
+    public java.util.List<? extends com.github.jsdossier.proto.LinkOrBuilder> 
+         getLinkOrBuilderList() {
+      if (linkBuilder_ != null) {
+        return linkBuilder_.getMessageOrBuilderList();
       } else {
-        return java.util.Collections.unmodifiableList(links_);
+        return java.util.Collections.unmodifiableList(link_);
       }
     }
     /**
-     * <code>repeated .dossier.TypeLink links = 4;</code>
+     * <code>repeated .dossier.Link link = 4;</code>
      *
      * <pre>
      * Additional links to include in the navigation pane.
      * </pre>
      */
-    public com.github.jsdossier.proto.TypeLink.Builder addLinksBuilder() {
-      return getLinksFieldBuilder().addBuilder(
-          com.github.jsdossier.proto.TypeLink.getDefaultInstance());
+    public com.github.jsdossier.proto.Link.Builder addLinkBuilder() {
+      return getLinkFieldBuilder().addBuilder(
+          com.github.jsdossier.proto.Link.getDefaultInstance());
     }
     /**
-     * <code>repeated .dossier.TypeLink links = 4;</code>
+     * <code>repeated .dossier.Link link = 4;</code>
      *
      * <pre>
      * Additional links to include in the navigation pane.
      * </pre>
      */
-    public com.github.jsdossier.proto.TypeLink.Builder addLinksBuilder(
+    public com.github.jsdossier.proto.Link.Builder addLinkBuilder(
         int index) {
-      return getLinksFieldBuilder().addBuilder(
-          index, com.github.jsdossier.proto.TypeLink.getDefaultInstance());
+      return getLinkFieldBuilder().addBuilder(
+          index, com.github.jsdossier.proto.Link.getDefaultInstance());
     }
     /**
-     * <code>repeated .dossier.TypeLink links = 4;</code>
+     * <code>repeated .dossier.Link link = 4;</code>
      *
      * <pre>
      * Additional links to include in the navigation pane.
      * </pre>
      */
-    public java.util.List<com.github.jsdossier.proto.TypeLink.Builder> 
-         getLinksBuilderList() {
-      return getLinksFieldBuilder().getBuilderList();
+    public java.util.List<com.github.jsdossier.proto.Link.Builder> 
+         getLinkBuilderList() {
+      return getLinkFieldBuilder().getBuilderList();
     }
     private com.google.protobuf.RepeatedFieldBuilder<
-        com.github.jsdossier.proto.TypeLink, com.github.jsdossier.proto.TypeLink.Builder, com.github.jsdossier.proto.TypeLinkOrBuilder> 
-        getLinksFieldBuilder() {
-      if (linksBuilder_ == null) {
-        linksBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
-            com.github.jsdossier.proto.TypeLink, com.github.jsdossier.proto.TypeLink.Builder, com.github.jsdossier.proto.TypeLinkOrBuilder>(
-                links_,
+        com.github.jsdossier.proto.Link, com.github.jsdossier.proto.Link.Builder, com.github.jsdossier.proto.LinkOrBuilder> 
+        getLinkFieldBuilder() {
+      if (linkBuilder_ == null) {
+        linkBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+            com.github.jsdossier.proto.Link, com.github.jsdossier.proto.Link.Builder, com.github.jsdossier.proto.LinkOrBuilder>(
+                link_,
                 ((bitField0_ & 0x00000008) == 0x00000008),
                 getParentForChildren(),
                 isClean());
-        links_ = null;
+        link_ = null;
       }
-      return linksBuilder_;
+      return linkBuilder_;
     }
 
     private long timestamp_ ;

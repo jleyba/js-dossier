@@ -21,7 +21,7 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 
 import com.github.jsdossier.markdown.MarkdownTableExtension;
 import com.github.jsdossier.proto.Comment;
-import com.github.jsdossier.proto.TypeLink;
+import com.github.jsdossier.proto.NamedType;
 import com.google.common.collect.ImmutableList;
 import com.google.common.escape.CharEscaperBuilder;
 import com.google.common.escape.Escaper;
@@ -110,7 +110,7 @@ public class CommentParser {
         case "link":
         case "linkplain":
           LinkInfo info = LinkInfo.fromText(tagletText);
-          @Nullable TypeLink link = linkFactory.createLink(info.type);
+          @Nullable NamedType link = linkFactory.createLink(info.type);
 
           String linkText = info.text;
           if ("link".equals(tagletName)) {

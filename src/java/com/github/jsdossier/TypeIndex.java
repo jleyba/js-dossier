@@ -19,15 +19,14 @@ package com.github.jsdossier;
 import static com.github.jsdossier.jscomp.Types.isTypedef;
 import static com.google.common.base.Preconditions.checkArgument;
 
+import com.github.jsdossier.annotations.DocumentationScoped;
+import com.github.jsdossier.jscomp.NominalType;
+import com.github.jsdossier.jscomp.TypeRegistry;
+import com.github.jsdossier.proto.NamedType;
 import com.google.common.collect.FluentIterable;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-
-import com.github.jsdossier.annotations.DocumentationScoped;
-import com.github.jsdossier.jscomp.NominalType;
-import com.github.jsdossier.jscomp.TypeRegistry;
-import com.github.jsdossier.proto.TypeLink;
 
 import java.util.HashMap;
 import java.util.List;
@@ -115,11 +114,11 @@ final class TypeIndex {
           .filter(isTypedef())
           .toSortedList(new QualifiedNameComparator());
       for (NominalType typedef : typedefs) {
-        TypeLink link = linkFactory.createLink(typedef);
+        NamedType link = linkFactory.createLink(typedef);
         checkArgument(
             !link.getHref().isEmpty(), "Failed to build link for %s", typedef.getName());
         JsonObject typedefDetails = new JsonObject();
-        typedefDetails.addProperty("name", link.getText());
+        typedefDetails.addProperty("name", link.getName());
         typedefDetails.addProperty("href", link.getHref());
         array.add(typedefDetails);
       }

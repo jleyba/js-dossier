@@ -44,47 +44,47 @@ public interface IndexOrBuilder extends
   boolean getIncludeModules();
 
   /**
-   * <code>repeated .dossier.TypeLink links = 4;</code>
+   * <code>repeated .dossier.Link link = 4;</code>
    *
    * <pre>
    * Additional links to include in the navigation pane.
    * </pre>
    */
-  java.util.List<com.github.jsdossier.proto.TypeLink> 
-      getLinksList();
+  java.util.List<com.github.jsdossier.proto.Link> 
+      getLinkList();
   /**
-   * <code>repeated .dossier.TypeLink links = 4;</code>
+   * <code>repeated .dossier.Link link = 4;</code>
    *
    * <pre>
    * Additional links to include in the navigation pane.
    * </pre>
    */
-  com.github.jsdossier.proto.TypeLink getLinks(int index);
+  com.github.jsdossier.proto.Link getLink(int index);
   /**
-   * <code>repeated .dossier.TypeLink links = 4;</code>
+   * <code>repeated .dossier.Link link = 4;</code>
    *
    * <pre>
    * Additional links to include in the navigation pane.
    * </pre>
    */
-  int getLinksCount();
+  int getLinkCount();
   /**
-   * <code>repeated .dossier.TypeLink links = 4;</code>
+   * <code>repeated .dossier.Link link = 4;</code>
    *
    * <pre>
    * Additional links to include in the navigation pane.
    * </pre>
    */
-  java.util.List<? extends com.github.jsdossier.proto.TypeLinkOrBuilder> 
-      getLinksOrBuilderList();
+  java.util.List<? extends com.github.jsdossier.proto.LinkOrBuilder> 
+      getLinkOrBuilderList();
   /**
-   * <code>repeated .dossier.TypeLink links = 4;</code>
+   * <code>repeated .dossier.Link link = 4;</code>
    *
    * <pre>
    * Additional links to include in the navigation pane.
    * </pre>
    */
-  com.github.jsdossier.proto.TypeLinkOrBuilder getLinksOrBuilder(
+  com.github.jsdossier.proto.LinkOrBuilder getLinkOrBuilder(
       int index);
 
   /**

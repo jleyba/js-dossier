@@ -20,7 +20,7 @@ import static com.github.jsdossier.Paths.toUrlPath;
 import static com.google.common.base.Preconditions.checkArgument;
 
 import com.github.jsdossier.proto.Index;
-import com.github.jsdossier.proto.TypeLink;
+import com.github.jsdossier.proto.Link;
 import com.google.common.collect.ImmutableSet;
 import org.joda.time.Instant;
 
@@ -70,7 +70,7 @@ final class NavIndexFactory {
           "Custom markdown page (%s) may not have the same name as the home page: %s",
           page.getPath(), homePage.getFileName());
 
-      builder.addLinksBuilder()
+      builder.addLinkBuilder()
           .setHref(fileName)
           .setText(page.getName());
     }
@@ -95,7 +95,7 @@ final class NavIndexFactory {
 
     builder.setHome(toUrlPath(toRoot.resolve(mainIndex.getHome())));
 
-    for (TypeLink.Builder link : builder.getLinksBuilderList()) {
+    for (Link.Builder link : builder.getLinkBuilderList()) {
       link.setHref(toUrlPath(toRoot.resolve(link.getHref())));
     }
 
