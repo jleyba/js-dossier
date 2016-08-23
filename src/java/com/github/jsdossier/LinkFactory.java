@@ -57,49 +57,7 @@ final class LinkFactory {
   private static final String CLOSURE_COMPILER_PREFIX =
       "https://github.com/google/closure-compiler/wiki/Special-types-in-the-Closure-Type-System#";
 
-  /**
-   * Maps built-in objects to a link to their definition on the Mozilla Develper Network.
-   * The Closure compiler's externs do not provide links for these types in its externs.
-   */
-  private static final ImmutableMap<String, String> BUILTIN_TO_MDN_LINK =
-      ImmutableMap.<String, String>builder()
-          .put("Arguments", MDN_PREFIX + "Functions/arguments")
-          .put("Array", MDN_PREFIX + "Global_Objects/Array")
-          .put("Boolean", MDN_PREFIX + "Global_Objects/Boolean")
-          .put("Date", MDN_PREFIX + "Global_Objects/Date")
-          .put("Error", MDN_PREFIX + "Global_Objects/Error")
-          .put("Function", MDN_PREFIX + "Global_Objects/Function")
-          .put("Generator", MDN_PREFIX + "Global_Objects/Generaor")
-          .put("IArrayLike", CLOSURE_COMPILER_PREFIX + "iarraylike")
-          .put("IObject", CLOSURE_COMPILER_PREFIX + "iobject")
-          .put("IThenable", CLOSURE_COMPILER_PREFIX + "ithenable")
-          .put("Infinity", MDN_PREFIX + "Global_Objects/Infinity")
-          .put("Iterable", MDN_PREFIX + "Global_Objects/Symbol/iterator")
-          .put("Iterator", MDN + "Guide/The_Iterator_protocol")
-          .put("Map", MDN_PREFIX + "Global_Objects/Map")
-          .put("Math", MDN_PREFIX + "Global_Objects/Math")
-          .put("NaN", MDN_PREFIX + "Global_Objects/NaN")
-          .put("Number", MDN_PREFIX + "Global_Objects/Number")
-          .put("Object", MDN_PREFIX + "Global_Objects/Object")
-          .put("Promise", MDN_PREFIX + "Global_Objects/Promise")
-          .put("RangeError", MDN_PREFIX + "Global_Objects/RangeError")
-          .put("ReferenceError", MDN_PREFIX + "Global_Objects/ReferenceError")
-          .put("RegExp", MDN_PREFIX + "Global_Objects/RegExp")
-          .put("Set", MDN_PREFIX + "Global_Objects/Set")
-          .put("Symbol", MDN_PREFIX + "Global_Objects/Symbol")
-          .put("String", MDN_PREFIX + "Global_Objects/String")
-          .put("SyntaxError", MDN_PREFIX + "Global_Objects/SyntaxError")
-          .put("TypeError", MDN_PREFIX + "Global_Objects/TypeError")
-          .put("URIError", MDN_PREFIX + "Global_Objects/URIError")
-          .put("arguments", MDN_PREFIX + "Functions/arguments")
-          .put("boolean", MDN_PREFIX + "Global_Objects/Boolean")
-          .put("null", MDN_PREFIX + "Global_Objects/Null")
-          .put("number", MDN_PREFIX + "Global_Objects/Number")
-          .put("string", MDN_PREFIX + "Global_Objects/String")
-          .put("undefined", MDN_PREFIX + "Global_Objects/Undefined")
-          .put("WeakMap", MDN_PREFIX + "Global_Objects/WeakMap")
-          .put("WeakSet", MDN_PREFIX + "Global_Objects/WeakSet")
-          .build();
+  private static final ImmutableMap<String, NamedType> EXTERN_TYPE_REFERENCES = createMdnLinkMap();
 
   private final DossierFileSystem dfs;
   private final TypeRegistry typeRegistry;
@@ -160,7 +118,7 @@ final class LinkFactory {
   /**
    * Creates a link to a specific line in a rendered source file.
    */
-  public SourceLink createLink(Path path, Position position) {
+  public SourceLink createSourceLink(Path path, Position position) {
     if (urlTemplate.isPresent()) {
       path = dfs.getSourceRelativePath(path);
     } else {
@@ -187,12 +145,12 @@ final class LinkFactory {
    * Creates a link to the rendered source file for the given node, relative to this factory's
    * current context.
    */
-  public SourceLink createLink(Node node) {
+  public SourceLink createSourceLink(Node node) {
     if (node == null || node.isFromExterns()) {
       return SourceLink.newBuilder().setPath("").build();
     }
     Path sourcePath = dfs.getSourcePath(node);
-    return createLink(sourcePath, Position.of(node.getLineno(), 0));
+    return createSourceLink(sourcePath, Position.of(node.getLineno(), 0));
   }
 
   /**
@@ -200,7 +158,7 @@ final class LinkFactory {
    * will be relative to the context's generated file. Otherwise, the link will be relative to the
    * output root (e.g. the "global" scope).
    */
-  public NamedType createLink(final NominalType type) {
+  public NamedType createTypeReference(final NominalType type) {
     Path path;
     String symbol = null;
 
@@ -211,7 +169,7 @@ final class LinkFactory {
         symbol = type.getName();
       } else {
         String parentName = type.getName().substring(0, index);
-        NamedType link = createLink(typeRegistry.getType(parentName));
+        NamedType link = createTypeReference(typeRegistry.getType(parentName));
         String displayName = dfs.getDisplayName(type);
         return link.toBuilder()
             .setName(displayName)
@@ -249,8 +207,8 @@ final class LinkFactory {
   /**
    * Creates a link to a specific property on a type.
    */
-  public NamedType createLink(NominalType type, String property) {
-    NamedType link = createLink(type);
+  public NamedType createTypeReference(NominalType type, String property) {
+    NamedType link = createTypeReference(type);
     checkState(!link.getHref().isEmpty(), "Failed to build link for %s", type.getName());
 
     boolean checkPrototype = false;
@@ -277,7 +235,7 @@ final class LinkFactory {
     if (type.isModuleExports()) {
       String exportedType = type.getName() + "." + property;
       if (typeRegistry.isType(exportedType)) {
-        return createLink(typeRegistry.getType(exportedType));
+        return createTypeReference(typeRegistry.getType(exportedType));
       }
     }
 
@@ -324,7 +282,7 @@ final class LinkFactory {
    * Generates a link to the given symbol, relative to this factory's context type. If the symbol
    * does not resolve to a type, this method will return a link with no path.
    */
-  public NamedType createLink(String symbol) {
+  public NamedType resolveTypeReference(String symbol) {
     // Trim down the target symbol to something that may be indexed.
     int index = symbol.indexOf('(');
     if (index != -1) {
@@ -333,7 +291,7 @@ final class LinkFactory {
 
     if (symbol.startsWith("#")) {
       return pathContext.isPresent()
-          ? createLink(pathContext.get(), symbol)
+          ? createTypeReference(pathContext.get(), symbol)
           : NamedType.newBuilder().setName(symbol).build();
 
     } else if (symbol.endsWith("#")) {
@@ -384,10 +342,10 @@ final class LinkFactory {
     }
 
     if (type != null) {
-      return property.isEmpty() ? createLink(type) : createLink(type, property);
+      return property.isEmpty() ? createTypeReference(type) : createTypeReference(type, property);
     }
 
-    NamedType link = createExternModuleLink(ref.type);
+    NamedType link = resolveExternModuleReference(ref.type);
     if (link != null) {
       if (!ref.property.isEmpty()) {
         link = link.toBuilder()
@@ -417,7 +375,7 @@ final class LinkFactory {
   private NamedType maybeCreateExportedPropertyLink(NominalType type, String property) {
     checkArgument(type.isModuleExports());
     if (type.getType().toObjectType().hasOwnProperty(property)) {
-      return createLink(type, property);
+      return createTypeReference(type, property);
     }
     Module module = type.getModule().get();
     String exportedName =
@@ -426,12 +384,12 @@ final class LinkFactory {
       return null;
     }
     verify(type.getType().toObjectType().hasOwnProperty(exportedName));
-    return createLink(type, exportedName);
+    return createTypeReference(type, exportedName);
   }
 
   @Nullable
   @CheckReturnValue
-  public NamedType createExternModuleLink(String name) {
+  public NamedType resolveExternModuleReference(String name) {
     if (Module.Type.NODE.isModuleId(name)) {
       final String externId = Module.Type.NODE.stripModulePrefix(name);
 
@@ -453,18 +411,65 @@ final class LinkFactory {
   @Nullable
   @CheckReturnValue
   public NamedType createNativeExternLink(String name) {
-    if (BUILTIN_TO_MDN_LINK.containsKey(name)) {
-      return NamedType.newBuilder()
-          .setName(name)
-          .setHref(BUILTIN_TO_MDN_LINK.get(name))
-          .setExtern(true)
-          .build();
-    }
-    return null;
+    return EXTERN_TYPE_REFERENCES.get(name);
   }
 
   private String getUriPath(Path path) {
     return URI.create(path.normalize().toString()).toString();
+  }
+
+  private static ImmutableMap<String, NamedType> createMdnLinkMap() {
+    ImmutableMap.Builder<String, NamedType> map = ImmutableMap.builder();
+    addExternReference(map, "Arguments", MDN_PREFIX + "Functions/arguments");
+    addExternReference(map, "Array", MDN_PREFIX + "Global_Objects/Array");
+    addExternReference(map, "Boolean", MDN_PREFIX + "Global_Objects/Boolean");
+    addExternReference(map, "Date", MDN_PREFIX + "Global_Objects/Date");
+    addExternReference(map, "Error", MDN_PREFIX + "Global_Objects/Error");
+    addExternReference(map, "Function", MDN_PREFIX + "Global_Objects/Function");
+    addExternReference(map, "Generator", MDN_PREFIX + "Global_Objects/Generaor");
+    addExternReference(map, "IArrayLike", CLOSURE_COMPILER_PREFIX + "iarraylike");
+    addExternReference(map, "IObject", CLOSURE_COMPILER_PREFIX + "iobject");
+    addExternReference(map, "IThenable", CLOSURE_COMPILER_PREFIX + "ithenable");
+    addExternReference(map, "Infinity", MDN_PREFIX + "Global_Objects/Infinity");
+    addExternReference(map, "Iterable", MDN_PREFIX + "Global_Objects/Symbol/iterator");
+    addExternReference(map, "Iterator", MDN + "Guide/The_Iterator_protocol");
+    addExternReference(map, "Map", MDN_PREFIX + "Global_Objects/Map");
+    addExternReference(map, "Math", MDN_PREFIX + "Global_Objects/Math");
+    addExternReference(map, "NaN", MDN_PREFIX + "Global_Objects/NaN");
+    addExternReference(map, "Number", MDN_PREFIX + "Global_Objects/Number");
+    addExternReference(map, "Object", MDN_PREFIX + "Global_Objects/Object");
+    addExternReference(map, "Promise", MDN_PREFIX + "Global_Objects/Promise");
+    addExternReference(map, "RangeError", MDN_PREFIX + "Global_Objects/RangeError");
+    addExternReference(map, "ReferenceError", MDN_PREFIX + "Global_Objects/ReferenceError");
+    addExternReference(map, "RegExp", MDN_PREFIX + "Global_Objects/RegExp");
+    addExternReference(map, "Set", MDN_PREFIX + "Global_Objects/Set");
+    addExternReference(map, "Symbol", MDN_PREFIX + "Global_Objects/Symbol");
+    addExternReference(map, "String", MDN_PREFIX + "Global_Objects/String");
+    addExternReference(map, "SyntaxError", MDN_PREFIX + "Global_Objects/SyntaxError");
+    addExternReference(map, "TypeError", MDN_PREFIX + "Global_Objects/TypeError");
+    addExternReference(map, "URIError", MDN_PREFIX + "Global_Objects/URIError");
+    addExternReference(map, "arguments", MDN_PREFIX + "Functions/arguments");
+    addExternReference(map, "boolean", MDN_PREFIX + "Global_Objects/Boolean");
+    addExternReference(map, "null", MDN_PREFIX + "Global_Objects/Null");
+    addExternReference(map, "number", MDN_PREFIX + "Global_Objects/Number");
+    addExternReference(map, "string", MDN_PREFIX + "Global_Objects/String");
+    addExternReference(map, "undefined", MDN_PREFIX + "Global_Objects/Undefined");
+    addExternReference(map, "WeakMap", MDN_PREFIX + "Global_Objects/WeakMap");
+    addExternReference(map, "WeakSet", MDN_PREFIX + "Global_Objects/WeakSet");
+    return map.build();
+  }
+
+  private static void addExternReference(
+      ImmutableMap.Builder<String, NamedType> map, String name, String href) {
+    map.put(name, createExternReference(name, href));
+  }
+
+  private static NamedType createExternReference(String name, String href) {
+    return NamedType.newBuilder()
+        .setName(name)
+        .setHref(href)
+        .setExtern(true)
+        .build();
   }
 
   private static class TypeRef {

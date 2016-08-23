@@ -230,7 +230,7 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Ca
           .setName(displayName)
           .setQualifiedName(dfs.getQualifiedDisplayName(type))
           .setFilename(dfs.getPath(type).getFileName().toString())
-          .setSource(linkFactory.createLink(type.getSourceFile(), type.getSourcePosition()));
+          .setSource(linkFactory.createSourceLink(type.getSourceFile(), type.getSourcePosition()));
 
       addDescription(typeSpec);
       addParentLink(typeSpec);
@@ -297,7 +297,7 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Ca
 
       if (parent != null) {
         spec.getParentBuilder()
-            .setType(linkFactory.createLink(parent))
+            .setType(linkFactory.createTypeReference(parent))
             .setIsModule(
                 parent.isModuleExports()
                     && parent.getModule().get().getType() != Module.Type.CLOSURE);
@@ -327,7 +327,7 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Ca
           continue;
         }
 
-        NamedType link = linkFactory.createLink(child);
+        NamedType link = linkFactory.createTypeReference(child);
         Comment summary = typeInspector.getTypeDescription(child, true);
 
         JsType.TypeSummary.Builder summaryBuilder;
@@ -373,7 +373,7 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Ca
 
         builder.getBaseBuilder()
             .setName(name)
-            .setSource(linkFactory.createLink(typedef.getSourceFile(), typedef.getSourcePosition()))
+            .setSource(linkFactory.createSourceLink(typedef.getSourceFile(), typedef.getSourcePosition()))
             .setDescription(
                 parser.parseComment(
                     typedef.getJsDoc().getBlockComment(),

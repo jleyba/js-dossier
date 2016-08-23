@@ -114,7 +114,7 @@ final class TypeIndex {
           .filter(isTypedef())
           .toSortedList(new QualifiedNameComparator());
       for (NominalType typedef : typedefs) {
-        NamedType link = linkFactory.createLink(typedef);
+        NamedType link = linkFactory.createTypeReference(typedef);
         checkArgument(
             !link.getHref().isEmpty(), "Failed to build link for %s", typedef.getName());
         JsonObject typedefDetails = new JsonObject();

@@ -168,7 +168,7 @@ final class TypeExpressionParser {
     }
 
     private com.github.jsdossier.proto.NamedType.Builder createNamedType(NominalType type) {
-      return linkFactory.createLink(type).toBuilder();
+      return linkFactory.createTypeReference(type).toBuilder();
     }
 
     private TypeExpression.Builder currentExpression() {
@@ -192,7 +192,7 @@ final class TypeExpressionParser {
       if (types.isEmpty()) {
         type.getEnumType().visit(this);
       } else {
-        com.github.jsdossier.proto.NamedType link = linkFactory.createLink(types.get(0));
+        com.github.jsdossier.proto.NamedType link = linkFactory.createTypeReference(types.get(0));
         currentExpression().setNamedType(link);
       }
       return null;

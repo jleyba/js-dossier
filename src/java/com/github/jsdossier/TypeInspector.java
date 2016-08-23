@@ -332,7 +332,7 @@ final class TypeInspector {
       return null;
     }
 
-    return linkFactory.withTypeContext(inspectedType).createLink(primary);
+    return linkFactory.withTypeContext(inspectedType).createTypeReference(primary);
   }
 
   /**
@@ -349,7 +349,7 @@ final class TypeInspector {
     Set<NamedType> expressions = new HashSet<>();
     for (NominalType type : Iterables.skip(allAliases, 1)) {
       NamedType namedType = linkFactory.withTypeContext(inspectedType)
-          .createLink(type);
+          .createTypeReference(type);
       expressions.add(namedType);
     }
     return toSortedSet(expressions);
@@ -1107,7 +1107,7 @@ final class TypeInspector {
     BaseProperty.Builder builder = BaseProperty.newBuilder()
         .setName(name)
         .setDescription(findBlockComment(linkFactory, docs, overrides))
-        .setSource(linkFactory.withTypeContext(docs.getContextType()).createLink(node));
+        .setSource(linkFactory.withTypeContext(docs.getContextType()).createSourceLink(node));
 
     if (registry.isModule(type)) {
       builder.getTagsBuilder().setIsModule(true);
@@ -1151,7 +1151,7 @@ final class TypeInspector {
 
     for (String seeAlso : jsdoc.getSeeClauses()) {
       // 1) Try as a link reference to another type.
-      @Nullable NamedType link = contextLinkFactory.createLink(seeAlso);
+      @Nullable NamedType link = contextLinkFactory.resolveTypeReference(seeAlso);
       if (link != null && !link.getHref().isEmpty()) {
         builder.addSeeAlsoBuilder()
             .addTokenBuilder()

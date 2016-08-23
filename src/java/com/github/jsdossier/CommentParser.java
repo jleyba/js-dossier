@@ -110,7 +110,7 @@ public class CommentParser {
         case "link":
         case "linkplain":
           LinkInfo info = LinkInfo.fromText(tagletText);
-          @Nullable NamedType link = linkFactory.createLink(info.type);
+          @Nullable NamedType link = linkFactory.resolveTypeReference(info.type);
 
           String linkText = info.text;
           if ("link".equals(tagletName)) {
