@@ -332,7 +332,7 @@ final class TypeInspector {
       return null;
     }
 
-    return linkFactory.withTypeContext(inspectedType).createNamedTypeReference(primary);
+    return linkFactory.withTypeContext(inspectedType).createLink(primary);
   }
 
   /**
@@ -349,7 +349,7 @@ final class TypeInspector {
     Set<NamedType> expressions = new HashSet<>();
     for (NominalType type : Iterables.skip(allAliases, 1)) {
       NamedType namedType = linkFactory.withTypeContext(inspectedType)
-          .createNamedTypeReference(type);
+          .createLink(type);
       expressions.add(namedType);
     }
     return toSortedSet(expressions);

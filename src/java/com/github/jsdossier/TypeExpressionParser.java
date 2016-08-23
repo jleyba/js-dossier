@@ -168,7 +168,7 @@ final class TypeExpressionParser {
     }
 
     private com.github.jsdossier.proto.NamedType.Builder createNamedType(NominalType type) {
-      return linkFactory.createNamedTypeReference(type).toBuilder();
+      return linkFactory.createLink(type).toBuilder();
     }
 
     private TypeExpression.Builder currentExpression() {

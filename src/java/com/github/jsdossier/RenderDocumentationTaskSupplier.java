@@ -297,7 +297,7 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Ca
 
       if (parent != null) {
         spec.getParentBuilder()
-            .setType(linkFactory.createNamedTypeReference(parent))
+            .setType(linkFactory.createLink(parent))
             .setIsModule(
                 parent.isModuleExports()
                     && parent.getModule().get().getType() != Module.Type.CLOSURE);

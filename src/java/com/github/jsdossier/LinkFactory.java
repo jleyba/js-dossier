@@ -196,30 +196,11 @@ final class LinkFactory {
   }
 
   /**
-   * @param type the type to build a reference for.
-   * @return the named type reference.
-   */
-  public NamedType createNamedTypeReference(NominalType type) {
-    NamedType link = createLink(type);
-    String displayName = dfs.getDisplayName(type);
-    String qualifiedName = dfs.getQualifiedDisplayName(type);
-
-    NamedType.Builder builder = NamedType.newBuilder()
-        .setName(displayName)
-        .setHref(link.getHref());
-    if (!displayName.equals(qualifiedName)) {
-      builder.setQualifiedName(qualifiedName);
-    }
-
-    return builder.build();
-  }
-
-  /**
    * Generates a link to the specified type. If this factory has a context type, the generated link
    * will be relative to the context's generated file. Otherwise, the link will be relative to the
    * output root (e.g. the "global" scope).
    */
-  public NamedType createLink(NominalType type) {
+  public NamedType createLink(final NominalType type) {
     Path path;
     String symbol = null;
 
@@ -252,10 +233,17 @@ final class LinkFactory {
     if (symbol != null) {
       href += "#" + symbol;
     }
-    return NamedType.newBuilder()
-        .setName(dfs.getDisplayName(type))
+
+    String displayName = dfs.getDisplayName(type);
+    String qualifiedName = dfs.getQualifiedDisplayName(type);
+
+    NamedType.Builder builder = NamedType.newBuilder()
         .setHref(href)
-        .build();
+        .setName(displayName);
+    if (!displayName.equals(qualifiedName)) {
+      builder.setQualifiedName(qualifiedName);
+    }
+    return builder.build();
   }
 
   /**
