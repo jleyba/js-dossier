@@ -30,6 +30,12 @@ message FunctionType {
 }
 
 
+message TypeLink {
+  string href = 1 [(options.sanitized).uri = true];
+  string json = 2 [(options.sanitized).uri = true];
+}
+
+
 // Defines a link to a named type. The link's href will be empty if the type
 // could not be resolved.
 message NamedType {
@@ -40,7 +46,7 @@ message NamedType {
   // the simple |name|.
   string qualified_name = 2;
 
-  string href = 3 [(options.sanitized).uri = true];
+  TypeLink link = 3;
   bool extern = 4;
   repeated TypeExpression template_type = 5;
 }

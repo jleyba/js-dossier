@@ -25,6 +25,7 @@ import static java.nio.file.StandardOpenOption.WRITE;
 import com.github.jsdossier.proto.HtmlRenderSpec;
 import com.github.jsdossier.proto.JsTypeRenderSpec;
 import com.github.jsdossier.proto.SourceFileRenderSpec;
+import com.github.jsdossier.proto.TypeLink;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.inject.Guice;
@@ -77,6 +78,16 @@ public class Renderer {
 
   public void render(Path output, JsTypeRenderSpec spec) throws IOException {
     render(output, "dossier.soy.typefile", spec);
+  }
+
+  public void render(Appendable appendable, String text, TypeLink link, boolean codeLink)
+      throws IOException {
+    tofu.newRenderer("dossier.soy.type.typeLink")
+        .setData(new SoyMapData(
+            "content", text,
+            "codeLink", codeLink,
+            "link", ProtoMessageSoyType.toSoyValue(link)))
+        .render(appendable);
   }
 
   private void render(Path output, String templateName, GeneratedMessage message)

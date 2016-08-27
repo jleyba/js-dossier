@@ -399,7 +399,7 @@ final class TypeExpressionParser {
 
       com.github.jsdossier.proto.NamedType.Builder namedType = createNamedType(name);
       currentExpression().setNamedType(namedType);
-      if (namedType.getHref().isEmpty()) {
+      if (namedType.getLink().getHref().isEmpty()) {
         // If there is no href, we were not able to resolve the type, so assume it is
         // nullable by default.
         currentExpression().setAllowNull(true);

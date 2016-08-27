@@ -31,6 +31,7 @@ import com.github.jsdossier.annotations.SourcePrefix;
 import com.github.jsdossier.annotations.SourceUrlTemplate;
 import com.github.jsdossier.annotations.Stderr;
 import com.github.jsdossier.annotations.TypeFilter;
+import com.github.jsdossier.soy.DossierSoyModule;
 import com.google.auto.value.AutoValue;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
@@ -121,6 +122,7 @@ public abstract class GuiceRule implements TestRule {
     ImmutableList<Module> modules = ImmutableList.<Module>builder()
         .addAll(getGuiceModules())
         .add(new CompilerModule())
+        .add(new DossierSoyModule())
         .add(new AbstractModule() {
           @Override
           protected void configure() {

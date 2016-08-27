@@ -22,6 +22,8 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 import com.github.jsdossier.markdown.MarkdownTableExtension;
 import com.github.jsdossier.proto.Comment;
 import com.github.jsdossier.proto.NamedType;
+import com.github.jsdossier.proto.TypeLink;
+import com.github.jsdossier.soy.Renderer;
 import com.google.common.collect.ImmutableList;
 import com.google.common.escape.CharEscaperBuilder;
 import com.google.common.escape.Escaper;
@@ -30,11 +32,13 @@ import org.commonmark.html.HtmlRenderer;
 import org.commonmark.node.Node;
 import org.commonmark.parser.Parser;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.annotation.Nullable;
+import javax.inject.Inject;
 
 /**
  * Utility class for working with JSDoc comments.
@@ -51,6 +55,8 @@ public class CommentParser {
 
   private static final Pattern TAGLET_START_PATTERN = Pattern.compile("\\{@(\\w+)\\s");
 
+  private final Renderer soyRenderer;
+
   private final List<? extends Extension> extensions =
       ImmutableList.of(new MarkdownTableExtension());
   private final Parser parser = Parser.builder()
@@ -60,6 +66,11 @@ public class CommentParser {
       .escapeHtml(false)
       .extensions(extensions)
       .build();
+
+  @Inject
+  CommentParser(Renderer soyRenderer) {
+    this.soyRenderer = soyRenderer;
+  }
 
   /**
    * Parses the {@code text} of a JSDoc block comment.
@@ -110,18 +121,22 @@ public class CommentParser {
         case "link":
         case "linkplain":
           LinkInfo info = LinkInfo.fromText(tagletText);
-          @Nullable NamedType link = linkFactory.resolveTypeReference(info.type);
+          @Nullable NamedType type = linkFactory.resolveTypeReference(info.type);
 
           String linkText = info.text;
-          if ("link".equals(tagletName)) {
-            linkText = "<code>" + linkText + "</code>";
-          }
-          if (link == null || link.getHref().isEmpty()) {
+          boolean codeLink = "link".equals(tagletName);
+
+          if (type == null || type.getLink().getHref().isEmpty()) {
+            if (codeLink) {
+              linkText = "<code>" + linkText + "</code>";
+            }
             builder.append(linkText);
           } else {
-            builder.append("<a href=\"").append(link.getHref()).append("\">")
-                .append(linkText)
-                .append("</a>");
+            try {
+              soyRenderer.render(builder, linkText, type.getLink(), codeLink);
+            } catch (IOException e) {
+              throw new AssertionError("should never happen", e);
+            }
           }
           break;
 

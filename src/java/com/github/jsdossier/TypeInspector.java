@@ -366,7 +366,7 @@ final class TypeInspector {
               // Might not have a qualified name.
               diff = o1.getName().compareTo(o2.getName());
               if (diff == 0) {
-                diff = o1.getHref().compareTo(o2.getHref());
+                diff = o1.getLink().getHref().compareTo(o2.getLink().getHref());
               }
             }
             return diff;
@@ -724,11 +724,14 @@ final class TypeInspector {
   private NamedType buildPropertyLink(
       TypeExpressionParser parser, JSType type, String propertyName) {
     NamedType namedType = parseNamedType(parser, type);
-    if (!namedType.getHref().isEmpty()
+    if (!namedType.getLink().getHref().isEmpty()
         // Extern links are always fully qualified.
-        && !namedType.getHref().startsWith("http")) {
+        && !namedType.getLink().getHref().startsWith("http")) {
       namedType = namedType.toBuilder()
-          .setHref(namedType.getHref() + "#" + propertyName)
+          .setLink(
+              namedType.getLink()
+                  .toBuilder()
+                  .setHref(namedType.getLink().getHref() + "#" + propertyName))
           .build();
     }
     return namedType;
@@ -1151,12 +1154,12 @@ final class TypeInspector {
 
     for (String seeAlso : jsdoc.getSeeClauses()) {
       // 1) Try as a link reference to another type.
-      @Nullable NamedType link = contextLinkFactory.resolveTypeReference(seeAlso);
-      if (link != null && !link.getHref().isEmpty()) {
+      @Nullable NamedType typeRef = contextLinkFactory.resolveTypeReference(seeAlso);
+      if (typeRef != null && !typeRef.getLink().getHref().isEmpty()) {
         builder.addSeeAlsoBuilder()
             .addTokenBuilder()
             .setText(seeAlso)
-            .setHref(link.getHref());
+            .setLink(typeRef.getLink());
         continue;
       }
 

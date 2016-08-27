@@ -286,8 +286,8 @@ public class TypeInspectorStaticPropertyTest extends AbstractTypeInspectorTest {
                 .setName("limit")
                 .setSource(sourceFile("../../source/modules/foo/bar.js.src.html", 7))
                 .setDescription(htmlComment(
-                    "<p>Link to a <a href=\"bar_exports_Person.html\">"
-                        + "<code>Person</code></a>.</p>\n"))
+                    "<p>Link to a <a href=\"bar_exports_Person.html\""
+                        + " data-json=\"bar_exports_Person.json\"><code>Person</code></a>.</p>\n"))
                 .setTags(Tags.newBuilder()
                     .setIsConst(true)))
             .setType(numberTypeExpression())

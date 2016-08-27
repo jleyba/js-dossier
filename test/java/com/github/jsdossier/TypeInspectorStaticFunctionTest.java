@@ -25,7 +25,6 @@ import com.github.jsdossier.proto.BaseProperty;
 import com.github.jsdossier.proto.Comment;
 import com.github.jsdossier.proto.Function;
 import com.github.jsdossier.proto.Function.Detail;
-import com.github.jsdossier.proto.NamedType;
 import com.github.jsdossier.proto.Tags;
 import com.github.jsdossier.proto.TypeExpression;
 import com.github.jsdossier.proto.UnionType;
@@ -265,10 +264,9 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
                 .setType(TypeExpression.newBuilder()
                     .setAllowNull(true)
                     .setNamedType(
-                        NamedType.newBuilder()
-                            .setName("GenericError")
-                            .setHref("GenericError.html")
-                            .addTemplateType(nullableNamedTypeExpression("THROWN_TYPE")))))
+                        addTemplateTypes(
+                            namedType("GenericError", "GenericError.html"),
+                            nullableNamedTypeExpression("THROWN_TYPE")))))
             .addTemplateName("THROWN_TYPE")
             .build());
   }
@@ -300,7 +298,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
                 .setName("Clazz.bar")
                 .setSource(sourceFile("source/foo.js.src.html", 12))
                 .setDescription(htmlComment(
-                    "<p>Link to <a href=\"Clazz.html#Clazz.foo\">" +
+                    "<p>Link to <a href=\"Clazz.html#Clazz.foo\" data-json=\"Clazz.json\">" +
                         "<code>Clazz.foo</code></a>.</p>\n")))
             .build(),
         Function.newBuilder()
@@ -308,7 +306,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
                 .setName("Clazz.foo")
                 .setSource(sourceFile("source/foo.js.src.html", 7))
                 .setDescription(htmlComment(
-                    "<p>Link to <a href=\"Clazz.html#Clazz.bar\">" +
+                    "<p>Link to <a href=\"Clazz.html#Clazz.bar\" data-json=\"Clazz.json\">" +
                         "<code>Clazz.bar</code></a>.</p>\n")))
             .build());
   }
@@ -339,7 +337,8 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
                 .setName("Clazz.foo")
                 .setSource(sourceFile("source/foo.js.src.html", 7))
                 .setDescription(htmlComment(
-                    "<p>Link to <a href=\"OtherClazz.html#OtherClazz.bar\">" +
+                    "<p>Link to <a href=\"OtherClazz.html#OtherClazz.bar\"" +
+                        " data-json=\"OtherClazz.json\">" +
                         "<code>OtherClazz.bar</code></a>.</p>\n")))
             .build());
   }
@@ -368,7 +367,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
                 .setName("Clazz.foo")
                 .setSource(sourceFile("source/foo.js.src.html", 7))
                 .setDescription(htmlComment(
-                    "<p>Link to <a href=\"Clazz.html#bar\">" +
+                    "<p>Link to <a href=\"Clazz.html#bar\" data-json=\"Clazz.json\">" +
                         "<code>#bar</code></a>.</p>\n")))
             .build());
   }
@@ -606,7 +605,8 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
                 .setName("greet")
                 .setSource(sourceFile("../../source/modules/foo/bar.js.src.html", 7))
                 .setDescription(htmlComment(
-                    "<p>Greet a <a href=\"bar_exports_Person.html\">"
+                    "<p>Greet a <a href=\"bar_exports_Person.html\"" +
+                        " data-json=\"bar_exports_Person.json\">"
                         + "<code>Person</code></a>.</p>\n")))
             .build());
   }
@@ -841,7 +841,8 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
                 .setName("Y.go")
                 .setSource(sourceFile("../../source/modules/foo/baz.js.src.html", 5))
                 .setDescription(htmlComment(
-                    "<p>Reference to <a href=\"baz_exports_Y.html#x\"><code>#x</code></a></p>\n")))
+                    "<p>Reference to <a href=\"baz_exports_Y.html#x\"" +
+                        " data-json=\"baz_exports_Y.json\"><code>#x</code></a></p>\n")))
             .build());
   }
 

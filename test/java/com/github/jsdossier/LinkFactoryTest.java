@@ -25,6 +25,7 @@ import com.github.jsdossier.jscomp.NominalType;
 import com.github.jsdossier.jscomp.TypeRegistry;
 import com.github.jsdossier.proto.NamedType;
 import com.github.jsdossier.proto.SourceLink;
+import com.github.jsdossier.proto.TypeLink;
 import com.github.jsdossier.testing.CompilerUtil;
 import com.github.jsdossier.testing.GuiceRule;
 import com.google.javascript.jscomp.CompilerOptions;
@@ -1953,7 +1954,7 @@ public class LinkFactoryTest {
   private static void checkLink(NamedType link, String text, String href) {
     NamedType.Builder expected = NamedType.newBuilder().setName(text);
     if (!href.isEmpty()) {
-      expected.setHref(href);
+      expected.setLink(createLink(href));
     }
     assertMessage(link).isEqualTo(expected.build());
   }
@@ -1962,15 +1963,22 @@ public class LinkFactoryTest {
     NamedType expected = NamedType.newBuilder()
         .setName(name)
         .setQualifiedName(qualifiedName)
-        .setHref(href)
+        .setLink(createLink(href))
         .build();
     assertMessage(link).isEqualTo(expected);
+  }
+
+  private static TypeLink createLink(String href) {
+    return TypeLink.newBuilder()
+        .setHref(href)
+        .setJson(href.replaceAll("\\.html(#.*)?$", ".json"))
+        .build();
   }
 
   private static void checkExternLink(NamedType link, String text, String href) {
     NamedType.Builder expected = NamedType.newBuilder().setName(text).setExtern(true);
     if (!href.isEmpty()) {
-      expected.setHref(href);
+      expected.getLinkBuilder().setHref(href);
     }
     assertThat(link).isEqualTo(expected.build());
   }

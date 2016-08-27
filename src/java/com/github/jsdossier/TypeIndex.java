@@ -116,10 +116,10 @@ final class TypeIndex {
       for (NominalType typedef : typedefs) {
         NamedType link = linkFactory.createTypeReference(typedef);
         checkArgument(
-            !link.getHref().isEmpty(), "Failed to build link for %s", typedef.getName());
+            !link.getLink().getHref().isEmpty(), "Failed to build link for %s", typedef.getName());
         JsonObject typedefDetails = new JsonObject();
         typedefDetails.addProperty("name", link.getName());
-        typedefDetails.addProperty("href", link.getHref());
+        typedefDetails.addProperty("href", link.getLink().getHref());
         array.add(typedefDetails);
       }
     }

@@ -17,7 +17,6 @@
 package com.github.jsdossier;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Verify.verify;
 import static com.google.common.io.Files.getNameWithoutExtension;
 
 import com.github.jsdossier.annotations.DocumentationScoped;
@@ -86,6 +85,10 @@ final class DossierFileSystem {
    */
   public Path getGlobalsPath() {
     return outputRoot.resolve(".globals.html");
+  }
+
+  public Path getGlobalsJson() {
+    return outputRoot.resolve(".globals.json");
   }
 
   /**

@@ -25,6 +25,31 @@
   </code>
 {/template}
 
+
+/**
+ * Renders a single type link.
+ */
+{template .typeLink}
+  {@param content: string|html}
+  {@param link: dossier.expression.TypeLink}
+  {@param? target: string}
+  {@param? title: string}
+  {@param? codeLink: bool}
+
+  <a href="{$link.href}"
+     {if $link.json}{sp}data-json="{$link.json}"{/if}
+     {if $target}{sp}target="{$target}"{/if}
+     {if $title}{sp}title="{$title}"{/if}
+     >
+   {if $codeLink}
+    <code>{$content}</code>
+   {else}
+     {$content}
+   {/if}
+  </a>
+{/template}
+
+
 /**
  * Renders a type expression that is the result of another operation (function or
  * property reference).
@@ -125,23 +150,31 @@
   {@param? useQualifiedName: bool}
   {@param? strict: bool}
 
-  {if $type.href}
-    <a href="{$type.href}"
-       {if $type.extern}{sp}target="_blank"{/if}
-       {if $type.qualifiedName
-           and $type.qualifiedName != $type.name
-           and not $useQualifiedName}{sp}title="{$type.qualifiedName}"{/if}
-       >
-  {/if}
+  {let $text kind="text"}
+    {if $useQualifiedName and $type.qualifiedName}
+      {$type.qualifiedName}
+    {else}
+      {$type.name}
+    {/if}
+  {/let}
 
-  {if $useQualifiedName and $type.qualifiedName}
-    {$type.qualifiedName}
+  {let $title kind="text"}
+    {if $type.qualifiedName
+        and $type.qualifiedName != $type.name
+        and not $useQualifiedName}
+      {$type.qualifiedName}
+    {/if}
+  {/let}
+
+  {if $type.link}
+    {call .typeLink}
+      {param content: $text /}
+      {param link: $type.link /}
+      {param target: $type.extern ? '_blank' : '' /}
+      {param title: $title /}
+    {/call}
   {else}
-    {$type.name}
-  {/if}
-
-  {if $type.href}
-    </a>
+    {$text}
   {/if}
 
   {if length($type.templateType)}

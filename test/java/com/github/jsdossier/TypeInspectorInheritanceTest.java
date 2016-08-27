@@ -1048,8 +1048,12 @@ public class TypeInspectorInheritanceTest extends AbstractTypeInspectorTest {
 
     NominalType a = typeRegistry.getType("module$$src$modules$one.A");
     assertSubtypes(a).containsExactly(
-        TYPE_B.toBuilder().setQualifiedName("three.B").setHref("three_exports_B.html"),
-        TYPE_B.toBuilder().setQualifiedName("two.B").setHref("two_exports_B.html"));
+        TYPE_B.toBuilder()
+            .setQualifiedName("three.B")
+            .setLink(typeLink("three_exports_B.html")),
+        TYPE_B.toBuilder()
+            .setQualifiedName("two.B")
+            .setLink(typeLink("two_exports_B.html")));
   }
 
   private ProtoTruth.MessageListSubject assertImplementedTypes(NominalType type) {

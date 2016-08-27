@@ -21,6 +21,7 @@ import static com.google.common.truth.Truth.assertThat;
 import com.github.jsdossier.proto.Comment;
 import com.github.jsdossier.proto.Link;
 import com.github.jsdossier.proto.SourceLink;
+import com.github.jsdossier.proto.TypeLink;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableSet;
 import com.google.template.soy.SoyFileSet;
@@ -58,7 +59,7 @@ public class LinkRenderTest {
               "/** Renders a Comment.Token */",
               "{template .commentToken}",
               "  {@param token: dossier.Comment.Token}",
-              "  <a href=\"{$token.href}\">test</a>",
+              "  <a href=\"{$token.link.href}\">test</a>",
               "{/template}"),
           "test.soy")
       .setLocalTypeRegistry(
@@ -132,7 +133,7 @@ public class LinkRenderTest {
   private static String renderCommentToken(String href) {
     StringBuilder builder = new StringBuilder();
     Comment.Token token = Comment.Token.newBuilder()
-        .setHref(href)
+        .setLink(TypeLink.newBuilder().setHref(href))
         .build();
     TOFU.newRenderer("test.commentToken")
         .setData(new SoyMapData("token", ProtoMessageSoyType.toSoyValue(token)))

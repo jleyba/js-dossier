@@ -105,7 +105,7 @@ public  final class Comment extends
         getTextBytes();
 
     /**
-     * <code>optional string html = 6;</code>
+     * <code>optional string html = 2;</code>
      *
      * <pre>
      * The pre-escaped html content for this token.
@@ -113,7 +113,7 @@ public  final class Comment extends
      */
     java.lang.String getHtml();
     /**
-     * <code>optional string html = 6;</code>
+     * <code>optional string html = 2;</code>
      *
      * <pre>
      * The pre-escaped html content for this token.
@@ -123,22 +123,29 @@ public  final class Comment extends
         getHtmlBytes();
 
     /**
-     * <code>optional string href = 4;</code>
+     * <code>optional .dossier.expression.TypeLink link = 3;</code>
      *
      * <pre>
      * If set, this token will be rendered as a hyperlink.
      * </pre>
      */
-    java.lang.String getHref();
+    boolean hasLink();
     /**
-     * <code>optional string href = 4;</code>
+     * <code>optional .dossier.expression.TypeLink link = 3;</code>
      *
      * <pre>
      * If set, this token will be rendered as a hyperlink.
      * </pre>
      */
-    com.google.protobuf.ByteString
-        getHrefBytes();
+    com.github.jsdossier.proto.TypeLink getLink();
+    /**
+     * <code>optional .dossier.expression.TypeLink link = 3;</code>
+     *
+     * <pre>
+     * If set, this token will be rendered as a hyperlink.
+     * </pre>
+     */
+    com.github.jsdossier.proto.TypeLinkOrBuilder getLinkOrBuilder();
 
     public com.github.jsdossier.proto.Comment.Token.ContentCase getContentCase();
   }
@@ -154,7 +161,6 @@ public  final class Comment extends
       super(builder);
     }
     private Token() {
-      href_ = "";
     }
 
     @java.lang.Override
@@ -187,16 +193,23 @@ public  final class Comment extends
               content_ = s;
               break;
             }
-            case 34: {
+            case 18: {
               java.lang.String s = input.readStringRequireUtf8();
-
-              href_ = s;
+              contentCase_ = 2;
+              content_ = s;
               break;
             }
-            case 50: {
-              java.lang.String s = input.readStringRequireUtf8();
-              contentCase_ = 6;
-              content_ = s;
+            case 26: {
+              com.github.jsdossier.proto.TypeLink.Builder subBuilder = null;
+              if (link_ != null) {
+                subBuilder = link_.toBuilder();
+              }
+              link_ = input.readMessage(com.github.jsdossier.proto.TypeLink.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(link_);
+                link_ = subBuilder.buildPartial();
+              }
+
               break;
             }
           }
@@ -228,7 +241,7 @@ public  final class Comment extends
     public enum ContentCase
         implements com.google.protobuf.Internal.EnumLite {
       TEXT(1),
-      HTML(6),
+      HTML(2),
       CONTENT_NOT_SET(0);
       private int value = 0;
       private ContentCase(int value) {
@@ -237,7 +250,7 @@ public  final class Comment extends
       public static ContentCase valueOf(int value) {
         switch (value) {
           case 1: return TEXT;
-          case 6: return HTML;
+          case 2: return HTML;
           case 0: return CONTENT_NOT_SET;
           default: throw new java.lang.IllegalArgumentException(
             "Value is undefined for this oneof enum.");
@@ -305,9 +318,9 @@ public  final class Comment extends
       }
     }
 
-    public static final int HTML_FIELD_NUMBER = 6;
+    public static final int HTML_FIELD_NUMBER = 2;
     /**
-     * <code>optional string html = 6;</code>
+     * <code>optional string html = 2;</code>
      *
      * <pre>
      * The pre-escaped html content for this token.
@@ -315,7 +328,7 @@ public  final class Comment extends
      */
     public java.lang.String getHtml() {
       java.lang.Object ref = "";
-      if (contentCase_ == 6) {
+      if (contentCase_ == 2) {
         ref = content_;
       }
       if (ref instanceof java.lang.String) {
@@ -324,14 +337,14 @@ public  final class Comment extends
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (contentCase_ == 6) {
+        if (contentCase_ == 2) {
           content_ = s;
         }
         return s;
       }
     }
     /**
-     * <code>optional string html = 6;</code>
+     * <code>optional string html = 2;</code>
      *
      * <pre>
      * The pre-escaped html content for this token.
@@ -340,14 +353,14 @@ public  final class Comment extends
     public com.google.protobuf.ByteString
         getHtmlBytes() {
       java.lang.Object ref = "";
-      if (contentCase_ == 6) {
+      if (contentCase_ == 2) {
         ref = content_;
       }
       if (ref instanceof java.lang.String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
                 (java.lang.String) ref);
-        if (contentCase_ == 6) {
+        if (contentCase_ == 2) {
           content_ = b;
         }
         return b;
@@ -356,46 +369,37 @@ public  final class Comment extends
       }
     }
 
-    public static final int HREF_FIELD_NUMBER = 4;
-    private volatile java.lang.Object href_;
+    public static final int LINK_FIELD_NUMBER = 3;
+    private com.github.jsdossier.proto.TypeLink link_;
     /**
-     * <code>optional string href = 4;</code>
+     * <code>optional .dossier.expression.TypeLink link = 3;</code>
      *
      * <pre>
      * If set, this token will be rendered as a hyperlink.
      * </pre>
      */
-    public java.lang.String getHref() {
-      java.lang.Object ref = href_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        href_ = s;
-        return s;
-      }
+    public boolean hasLink() {
+      return link_ != null;
     }
     /**
-     * <code>optional string href = 4;</code>
+     * <code>optional .dossier.expression.TypeLink link = 3;</code>
      *
      * <pre>
      * If set, this token will be rendered as a hyperlink.
      * </pre>
      */
-    public com.google.protobuf.ByteString
-        getHrefBytes() {
-      java.lang.Object ref = href_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        href_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
+    public com.github.jsdossier.proto.TypeLink getLink() {
+      return link_ == null ? com.github.jsdossier.proto.TypeLink.getDefaultInstance() : link_;
+    }
+    /**
+     * <code>optional .dossier.expression.TypeLink link = 3;</code>
+     *
+     * <pre>
+     * If set, this token will be rendered as a hyperlink.
+     * </pre>
+     */
+    public com.github.jsdossier.proto.TypeLinkOrBuilder getLinkOrBuilder() {
+      return getLink();
     }
 
     private byte memoizedIsInitialized = -1;
@@ -413,11 +417,11 @@ public  final class Comment extends
       if (contentCase_ == 1) {
         com.google.protobuf.GeneratedMessage.writeString(output, 1, content_);
       }
-      if (!getHrefBytes().isEmpty()) {
-        com.google.protobuf.GeneratedMessage.writeString(output, 4, href_);
+      if (contentCase_ == 2) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 2, content_);
       }
-      if (contentCase_ == 6) {
-        com.google.protobuf.GeneratedMessage.writeString(output, 6, content_);
+      if (link_ != null) {
+        output.writeMessage(3, getLink());
       }
     }
 
@@ -429,11 +433,12 @@ public  final class Comment extends
       if (contentCase_ == 1) {
         size += com.google.protobuf.GeneratedMessage.computeStringSize(1, content_);
       }
-      if (!getHrefBytes().isEmpty()) {
-        size += com.google.protobuf.GeneratedMessage.computeStringSize(4, href_);
+      if (contentCase_ == 2) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(2, content_);
       }
-      if (contentCase_ == 6) {
-        size += com.google.protobuf.GeneratedMessage.computeStringSize(6, content_);
+      if (link_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(3, getLink());
       }
       memoizedSize = size;
       return size;
@@ -546,8 +551,12 @@ public  final class Comment extends
       }
       public Builder clear() {
         super.clear();
-        href_ = "";
-
+        if (linkBuilder_ == null) {
+          link_ = null;
+        } else {
+          link_ = null;
+          linkBuilder_ = null;
+        }
         contentCase_ = 0;
         content_ = null;
         return this;
@@ -575,10 +584,14 @@ public  final class Comment extends
         if (contentCase_ == 1) {
           result.content_ = content_;
         }
-        if (contentCase_ == 6) {
+        if (contentCase_ == 2) {
           result.content_ = content_;
         }
-        result.href_ = href_;
+        if (linkBuilder_ == null) {
+          result.link_ = link_;
+        } else {
+          result.link_ = linkBuilder_.build();
+        }
         result.contentCase_ = contentCase_;
         onBuilt();
         return result;
@@ -595,9 +608,8 @@ public  final class Comment extends
 
       public Builder mergeFrom(com.github.jsdossier.proto.Comment.Token other) {
         if (other == com.github.jsdossier.proto.Comment.Token.getDefaultInstance()) return this;
-        if (!other.getHref().isEmpty()) {
-          href_ = other.href_;
-          onChanged();
+        if (other.hasLink()) {
+          mergeLink(other.getLink());
         }
         switch (other.getContentCase()) {
           case TEXT: {
@@ -607,7 +619,7 @@ public  final class Comment extends
             break;
           }
           case HTML: {
-            contentCase_ = 6;
+            contentCase_ = 2;
             content_ = other.content_;
             onChanged();
             break;
@@ -758,7 +770,7 @@ public  final class Comment extends
       }
 
       /**
-       * <code>optional string html = 6;</code>
+       * <code>optional string html = 2;</code>
        *
        * <pre>
        * The pre-escaped html content for this token.
@@ -766,14 +778,14 @@ public  final class Comment extends
        */
       public java.lang.String getHtml() {
         java.lang.Object ref = "";
-        if (contentCase_ == 6) {
+        if (contentCase_ == 2) {
           ref = content_;
         }
         if (!(ref instanceof java.lang.String)) {
           com.google.protobuf.ByteString bs =
               (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
-          if (contentCase_ == 6) {
+          if (contentCase_ == 2) {
             content_ = s;
           }
           return s;
@@ -782,7 +794,7 @@ public  final class Comment extends
         }
       }
       /**
-       * <code>optional string html = 6;</code>
+       * <code>optional string html = 2;</code>
        *
        * <pre>
        * The pre-escaped html content for this token.
@@ -791,14 +803,14 @@ public  final class Comment extends
       public com.google.protobuf.ByteString
           getHtmlBytes() {
         java.lang.Object ref = "";
-        if (contentCase_ == 6) {
+        if (contentCase_ == 2) {
           ref = content_;
         }
         if (ref instanceof String) {
           com.google.protobuf.ByteString b = 
               com.google.protobuf.ByteString.copyFromUtf8(
                   (java.lang.String) ref);
-          if (contentCase_ == 6) {
+          if (contentCase_ == 2) {
             content_ = b;
           }
           return b;
@@ -807,7 +819,7 @@ public  final class Comment extends
         }
       }
       /**
-       * <code>optional string html = 6;</code>
+       * <code>optional string html = 2;</code>
        *
        * <pre>
        * The pre-escaped html content for this token.
@@ -818,20 +830,20 @@ public  final class Comment extends
         if (value == null) {
     throw new NullPointerException();
   }
-  contentCase_ = 6;
+  contentCase_ = 2;
         content_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional string html = 6;</code>
+       * <code>optional string html = 2;</code>
        *
        * <pre>
        * The pre-escaped html content for this token.
        * </pre>
        */
       public Builder clearHtml() {
-        if (contentCase_ == 6) {
+        if (contentCase_ == 2) {
           contentCase_ = 0;
           content_ = null;
           onChanged();
@@ -839,7 +851,7 @@ public  final class Comment extends
         return this;
       }
       /**
-       * <code>optional string html = 6;</code>
+       * <code>optional string html = 2;</code>
        *
        * <pre>
        * The pre-escaped html content for this token.
@@ -851,99 +863,163 @@ public  final class Comment extends
     throw new NullPointerException();
   }
   checkByteStringIsUtf8(value);
-        contentCase_ = 6;
+        contentCase_ = 2;
         content_ = value;
         onChanged();
         return this;
       }
 
-      private java.lang.Object href_ = "";
+      private com.github.jsdossier.proto.TypeLink link_ = null;
+      private com.google.protobuf.SingleFieldBuilder<
+          com.github.jsdossier.proto.TypeLink, com.github.jsdossier.proto.TypeLink.Builder, com.github.jsdossier.proto.TypeLinkOrBuilder> linkBuilder_;
       /**
-       * <code>optional string href = 4;</code>
+       * <code>optional .dossier.expression.TypeLink link = 3;</code>
        *
        * <pre>
        * If set, this token will be rendered as a hyperlink.
        * </pre>
        */
-      public java.lang.String getHref() {
-        java.lang.Object ref = href_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          href_ = s;
-          return s;
+      public boolean hasLink() {
+        return linkBuilder_ != null || link_ != null;
+      }
+      /**
+       * <code>optional .dossier.expression.TypeLink link = 3;</code>
+       *
+       * <pre>
+       * If set, this token will be rendered as a hyperlink.
+       * </pre>
+       */
+      public com.github.jsdossier.proto.TypeLink getLink() {
+        if (linkBuilder_ == null) {
+          return link_ == null ? com.github.jsdossier.proto.TypeLink.getDefaultInstance() : link_;
         } else {
-          return (java.lang.String) ref;
+          return linkBuilder_.getMessage();
         }
       }
       /**
-       * <code>optional string href = 4;</code>
+       * <code>optional .dossier.expression.TypeLink link = 3;</code>
        *
        * <pre>
        * If set, this token will be rendered as a hyperlink.
        * </pre>
        */
-      public com.google.protobuf.ByteString
-          getHrefBytes() {
-        java.lang.Object ref = href_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          href_ = b;
-          return b;
+      public Builder setLink(com.github.jsdossier.proto.TypeLink value) {
+        if (linkBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          link_ = value;
+          onChanged();
         } else {
-          return (com.google.protobuf.ByteString) ref;
+          linkBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>optional .dossier.expression.TypeLink link = 3;</code>
+       *
+       * <pre>
+       * If set, this token will be rendered as a hyperlink.
+       * </pre>
+       */
+      public Builder setLink(
+          com.github.jsdossier.proto.TypeLink.Builder builderForValue) {
+        if (linkBuilder_ == null) {
+          link_ = builderForValue.build();
+          onChanged();
+        } else {
+          linkBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>optional .dossier.expression.TypeLink link = 3;</code>
+       *
+       * <pre>
+       * If set, this token will be rendered as a hyperlink.
+       * </pre>
+       */
+      public Builder mergeLink(com.github.jsdossier.proto.TypeLink value) {
+        if (linkBuilder_ == null) {
+          if (link_ != null) {
+            link_ =
+              com.github.jsdossier.proto.TypeLink.newBuilder(link_).mergeFrom(value).buildPartial();
+          } else {
+            link_ = value;
+          }
+          onChanged();
+        } else {
+          linkBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>optional .dossier.expression.TypeLink link = 3;</code>
+       *
+       * <pre>
+       * If set, this token will be rendered as a hyperlink.
+       * </pre>
+       */
+      public Builder clearLink() {
+        if (linkBuilder_ == null) {
+          link_ = null;
+          onChanged();
+        } else {
+          link_ = null;
+          linkBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>optional .dossier.expression.TypeLink link = 3;</code>
+       *
+       * <pre>
+       * If set, this token will be rendered as a hyperlink.
+       * </pre>
+       */
+      public com.github.jsdossier.proto.TypeLink.Builder getLinkBuilder() {
+        
+        onChanged();
+        return getLinkFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>optional .dossier.expression.TypeLink link = 3;</code>
+       *
+       * <pre>
+       * If set, this token will be rendered as a hyperlink.
+       * </pre>
+       */
+      public com.github.jsdossier.proto.TypeLinkOrBuilder getLinkOrBuilder() {
+        if (linkBuilder_ != null) {
+          return linkBuilder_.getMessageOrBuilder();
+        } else {
+          return link_ == null ?
+              com.github.jsdossier.proto.TypeLink.getDefaultInstance() : link_;
         }
       }
       /**
-       * <code>optional string href = 4;</code>
+       * <code>optional .dossier.expression.TypeLink link = 3;</code>
        *
        * <pre>
        * If set, this token will be rendered as a hyperlink.
        * </pre>
        */
-      public Builder setHref(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  
-        href_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string href = 4;</code>
-       *
-       * <pre>
-       * If set, this token will be rendered as a hyperlink.
-       * </pre>
-       */
-      public Builder clearHref() {
-        
-        href_ = getDefaultInstance().getHref();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string href = 4;</code>
-       *
-       * <pre>
-       * If set, this token will be rendered as a hyperlink.
-       * </pre>
-       */
-      public Builder setHrefBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        
-        href_ = value;
-        onChanged();
-        return this;
+      private com.google.protobuf.SingleFieldBuilder<
+          com.github.jsdossier.proto.TypeLink, com.github.jsdossier.proto.TypeLink.Builder, com.github.jsdossier.proto.TypeLinkOrBuilder> 
+          getLinkFieldBuilder() {
+        if (linkBuilder_ == null) {
+          linkBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              com.github.jsdossier.proto.TypeLink, com.github.jsdossier.proto.TypeLink.Builder, com.github.jsdossier.proto.TypeLinkOrBuilder>(
+                  getLink(),
+                  getParentForChildren(),
+                  isClean());
+          link_ = null;
+        }
+        return linkBuilder_;
       }
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {

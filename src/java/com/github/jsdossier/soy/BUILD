@@ -16,6 +16,7 @@ java_library(
     ],
     visibility = [
         "//src/java/com/github/jsdossier:__pkg__",
+        "//src/java/com/github/jsdossier/testing:__pkg__",
         "//test/java/com/github/jsdossier:__subpackages__",
     ],
 )

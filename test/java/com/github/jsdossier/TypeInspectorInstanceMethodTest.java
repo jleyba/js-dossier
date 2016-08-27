@@ -1751,14 +1751,16 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setName("a")
                 .setSource(sourceFile("source/foo.js.src.html", 5))
                 .setDescription(htmlComment(
-                    "<p>Go to <a href=\"Foo.html#b\"><code>#b</code></a>.</p>\n")))
+                    "<p>Go to <a href=\"Foo.html#b\" data-json=\"Foo.json\">" +
+                        "<code>#b</code></a>.</p>\n")))
             .build(),
         Function.newBuilder()
             .setBase(BaseProperty.newBuilder()
                 .setName("b")
                 .setSource(sourceFile("source/foo.js.src.html", 8))
                 .setDescription(htmlComment(
-                    "<p>Go to <a href=\"Foo.html#a\"><code>#a</code></a>.</p>\n")))
+                    "<p>Go to <a href=\"Foo.html#a\" data-json=\"Foo.json\">" +
+                        "<code>#a</code></a>.</p>\n")))
             .build());
   }
 
@@ -1793,7 +1795,8 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setName("b")
                 .setSource(sourceFile("source/foo.js.src.html", 9))
                 .setDescription(htmlComment(
-                    "<p>Go to <a href=\"Bar.html#a\"><code>#a</code></a>.</p>\n")))
+                    "<p>Go to <a href=\"Bar.html#a\" data-json=\"Bar.json\">" +
+                        "<code>#a</code></a>.</p>\n")))
             .build());
   }
 
@@ -1831,7 +1834,8 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setName("b")
                 .setSource(sourceFile("source/foo.js.src.html", 12))
                 .setDescription(htmlComment(
-                    "<p>Go to <a href=\"Bar.html#a\"><code>#a</code></a>.</p>\n")))
+                    "<p>Go to <a href=\"Bar.html#a\" data-json=\"Bar.json\">" +
+                        "<code>#a</code></a>.</p>\n")))
             .build());
   }
 
@@ -1869,7 +1873,8 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setName("b")
                 .setSource(sourceFile("source/foo.js.src.html", 12))
                 .setDescription(htmlComment(
-                    "<p>Go to <a href=\"Foo.html#a\"><code>Foo#a</code></a>.</p>\n")))
+                    "<p>Go to <a href=\"Foo.html#a\" data-json=\"Foo.json\">" +
+                        "<code>Foo#a</code></a>.</p>\n")))
             .build());
   }
 
@@ -1896,7 +1901,8 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setName("b")
                 .setSource(sourceFile("source/foo.js.src.html", 8))
                 .setDescription(htmlComment(
-                    "<p>Go to <a href=\"Foo.html#a\"><code>Foo#a</code></a>.</p>\n")))
+                    "<p>Go to <a href=\"Foo.html#a\" data-json=\"Foo.json\">" +
+                        "<code>Foo#a</code></a>.</p>\n")))
             .build());
   }
 
@@ -1970,7 +1976,8 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setName("x")
                 .setType(namedTypeExpression("Y", "a/b/c.Y", "a/b/c_exports_Y.html"))
                 .setDescription(htmlComment(
-                    "<p>A reference to <a href=\"a/b/c_exports_Y.html\">" +
+                    "<p>A reference to <a href=\"a/b/c_exports_Y.html\"" +
+                        " data-json=\"a/b/c_exports_Y.json\">" +
                         "<code>X</code></a></p>\n")))
             .build());
   }

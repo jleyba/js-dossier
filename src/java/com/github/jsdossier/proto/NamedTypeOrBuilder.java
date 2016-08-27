@@ -46,14 +46,17 @@ public interface NamedTypeOrBuilder extends
       getQualifiedNameBytes();
 
   /**
-   * <code>optional string href = 3;</code>
+   * <code>optional .dossier.expression.TypeLink link = 3;</code>
    */
-  java.lang.String getHref();
+  boolean hasLink();
   /**
-   * <code>optional string href = 3;</code>
+   * <code>optional .dossier.expression.TypeLink link = 3;</code>
    */
-  com.google.protobuf.ByteString
-      getHrefBytes();
+  com.github.jsdossier.proto.TypeLink getLink();
+  /**
+   * <code>optional .dossier.expression.TypeLink link = 3;</code>
+   */
+  com.github.jsdossier.proto.TypeLinkOrBuilder getLinkOrBuilder();
 
   /**
    * <code>optional bool extern = 4;</code>

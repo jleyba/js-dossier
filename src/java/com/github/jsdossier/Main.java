@@ -43,6 +43,7 @@ import com.github.jsdossier.jscomp.DossierCompiler;
 import com.github.jsdossier.jscomp.Module;
 import com.github.jsdossier.jscomp.NominalType;
 import com.github.jsdossier.jscomp.TypeRegistry;
+import com.github.jsdossier.soy.DossierSoyModule;
 import com.github.jsdossier.soy.Renderer;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Function;
@@ -127,6 +128,8 @@ final class Main {
 
     @Override
     protected void configure() {
+      install(new DossierSoyModule());
+
       bindScope(DocumentationScoped.class, DOCUMENTATION_SCOPE);
 
       bindConstant().annotatedWith(Annotations.NumThreads.class).to(flags.numThreads);

@@ -26,6 +26,7 @@ import com.github.jsdossier.proto.FunctionType;
 import com.github.jsdossier.proto.NamedType;
 import com.github.jsdossier.proto.RecordType;
 import com.github.jsdossier.proto.TypeExpression;
+import com.github.jsdossier.proto.TypeLink;
 import com.github.jsdossier.proto.UnionType;
 import com.github.jsdossier.testing.CompilerUtil;
 import com.github.jsdossier.testing.GuiceRule;
@@ -457,8 +458,10 @@ public class TypeExpressionParserTest {
         .setNamedType(NamedType.newBuilder()
             .setExtern(true)
             .setName("number")
-            .setHref("https://developer.mozilla.org/en-US/docs/Web/" +
-                "JavaScript/Reference/Global_Objects/Number"))
+            .setLink(
+                TypeLink.newBuilder()
+                    .setHref("https://developer.mozilla.org/en-US/docs/Web/" +
+                        "JavaScript/Reference/Global_Objects/Number")))
         .build();
   }
 
@@ -467,8 +470,10 @@ public class TypeExpressionParserTest {
         .setNamedType(NamedType.newBuilder()
             .setExtern(true)
             .setName("string")
-            .setHref("https://developer.mozilla.org/en-US/docs/Web/" +
-                "JavaScript/Reference/Global_Objects/String"))
+            .setLink(
+                TypeLink.newBuilder()
+                    .setHref("https://developer.mozilla.org/en-US/docs/Web/" +
+                        "JavaScript/Reference/Global_Objects/String")))
         .build();
   }
 
@@ -479,7 +484,9 @@ public class TypeExpressionParserTest {
   private static NamedType namedType(String name, String href) {
     return NamedType.newBuilder()
         .setName(name)
-        .setHref(href)
+        .setLink(TypeLink.newBuilder()
+            .setHref(href)
+            .setJson(href.replaceAll("\\.html(#.*)?$", ".json")))
         .build();
   }
 
@@ -487,7 +494,9 @@ public class TypeExpressionParserTest {
     return NamedType.newBuilder()
         .setName(name)
         .setQualifiedName(qualifiedName)
-        .setHref(href)
+        .setLink(TypeLink.newBuilder()
+            .setHref(href)
+            .setJson(href.replaceAll("\\.html(#.*)?$", ".json")))
         .build();
   }
 }

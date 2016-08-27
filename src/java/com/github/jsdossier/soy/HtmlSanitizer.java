@@ -52,6 +52,7 @@ final class HtmlSanitizer {
       .allowAttributes("dir").matching(HTML_DIR).globally()
       .allowAttributes("lang").matching(Pattern.compile("[a-zA-Z]{2,20}")).globally()
       .allowAttributes("href").onElements("a")
+      .allowAttributes("data-json").onElements("a")
       .allowAttributes("border", "cellpadding", "cellspacing").matching(NUMBER).onElements("table")
       .allowAttributes("colspan").matching(NUMBER).onElements("td", "th")
       .allowAttributes("nowrap").onElements("td", "th")

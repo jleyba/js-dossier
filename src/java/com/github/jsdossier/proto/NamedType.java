@@ -22,7 +22,6 @@ public  final class NamedType extends
   private NamedType() {
     name_ = "";
     qualifiedName_ = "";
-    href_ = "";
     extern_ = false;
     templateType_ = java.util.Collections.emptyList();
   }
@@ -64,9 +63,16 @@ public  final class NamedType extends
             break;
           }
           case 26: {
-            java.lang.String s = input.readStringRequireUtf8();
+            com.github.jsdossier.proto.TypeLink.Builder subBuilder = null;
+            if (link_ != null) {
+              subBuilder = link_.toBuilder();
+            }
+            link_ = input.readMessage(com.github.jsdossier.proto.TypeLink.parser(), extensionRegistry);
+            if (subBuilder != null) {
+              subBuilder.mergeFrom(link_);
+              link_ = subBuilder.buildPartial();
+            }
 
-            href_ = s;
             break;
           }
           case 32: {
@@ -196,38 +202,25 @@ public  final class NamedType extends
     }
   }
 
-  public static final int HREF_FIELD_NUMBER = 3;
-  private volatile java.lang.Object href_;
+  public static final int LINK_FIELD_NUMBER = 3;
+  private com.github.jsdossier.proto.TypeLink link_;
   /**
-   * <code>optional string href = 3;</code>
+   * <code>optional .dossier.expression.TypeLink link = 3;</code>
    */
-  public java.lang.String getHref() {
-    java.lang.Object ref = href_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      href_ = s;
-      return s;
-    }
+  public boolean hasLink() {
+    return link_ != null;
   }
   /**
-   * <code>optional string href = 3;</code>
+   * <code>optional .dossier.expression.TypeLink link = 3;</code>
    */
-  public com.google.protobuf.ByteString
-      getHrefBytes() {
-    java.lang.Object ref = href_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      href_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
-    }
+  public com.github.jsdossier.proto.TypeLink getLink() {
+    return link_ == null ? com.github.jsdossier.proto.TypeLink.getDefaultInstance() : link_;
+  }
+  /**
+   * <code>optional .dossier.expression.TypeLink link = 3;</code>
+   */
+  public com.github.jsdossier.proto.TypeLinkOrBuilder getLinkOrBuilder() {
+    return getLink();
   }
 
   public static final int EXTERN_FIELD_NUMBER = 4;
@@ -292,8 +285,8 @@ public  final class NamedType extends
     if (!getQualifiedNameBytes().isEmpty()) {
       com.google.protobuf.GeneratedMessage.writeString(output, 2, qualifiedName_);
     }
-    if (!getHrefBytes().isEmpty()) {
-      com.google.protobuf.GeneratedMessage.writeString(output, 3, href_);
+    if (link_ != null) {
+      output.writeMessage(3, getLink());
     }
     if (extern_ != false) {
       output.writeBool(4, extern_);
@@ -314,8 +307,9 @@ public  final class NamedType extends
     if (!getQualifiedNameBytes().isEmpty()) {
       size += com.google.protobuf.GeneratedMessage.computeStringSize(2, qualifiedName_);
     }
-    if (!getHrefBytes().isEmpty()) {
-      size += com.google.protobuf.GeneratedMessage.computeStringSize(3, href_);
+    if (link_ != null) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(3, getLink());
     }
     if (extern_ != false) {
       size += com.google.protobuf.CodedOutputStream
@@ -446,8 +440,12 @@ public  final class NamedType extends
 
       qualifiedName_ = "";
 
-      href_ = "";
-
+      if (linkBuilder_ == null) {
+        link_ = null;
+      } else {
+        link_ = null;
+        linkBuilder_ = null;
+      }
       extern_ = false;
 
       if (templateTypeBuilder_ == null) {
@@ -482,7 +480,11 @@ public  final class NamedType extends
       int to_bitField0_ = 0;
       result.name_ = name_;
       result.qualifiedName_ = qualifiedName_;
-      result.href_ = href_;
+      if (linkBuilder_ == null) {
+        result.link_ = link_;
+      } else {
+        result.link_ = linkBuilder_.build();
+      }
       result.extern_ = extern_;
       if (templateTypeBuilder_ == null) {
         if (((bitField0_ & 0x00000010) == 0x00000010)) {
@@ -517,9 +519,8 @@ public  final class NamedType extends
         qualifiedName_ = other.qualifiedName_;
         onChanged();
       }
-      if (!other.getHref().isEmpty()) {
-        href_ = other.href_;
-        onChanged();
+      if (other.hasLink()) {
+        mergeLink(other.getLink());
       }
       if (other.getExtern() != false) {
         setExtern(other.getExtern());
@@ -760,73 +761,121 @@ public  final class NamedType extends
       return this;
     }
 
-    private java.lang.Object href_ = "";
+    private com.github.jsdossier.proto.TypeLink link_ = null;
+    private com.google.protobuf.SingleFieldBuilder<
+        com.github.jsdossier.proto.TypeLink, com.github.jsdossier.proto.TypeLink.Builder, com.github.jsdossier.proto.TypeLinkOrBuilder> linkBuilder_;
     /**
-     * <code>optional string href = 3;</code>
+     * <code>optional .dossier.expression.TypeLink link = 3;</code>
      */
-    public java.lang.String getHref() {
-      java.lang.Object ref = href_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        href_ = s;
-        return s;
+    public boolean hasLink() {
+      return linkBuilder_ != null || link_ != null;
+    }
+    /**
+     * <code>optional .dossier.expression.TypeLink link = 3;</code>
+     */
+    public com.github.jsdossier.proto.TypeLink getLink() {
+      if (linkBuilder_ == null) {
+        return link_ == null ? com.github.jsdossier.proto.TypeLink.getDefaultInstance() : link_;
       } else {
-        return (java.lang.String) ref;
+        return linkBuilder_.getMessage();
       }
     }
     /**
-     * <code>optional string href = 3;</code>
+     * <code>optional .dossier.expression.TypeLink link = 3;</code>
      */
-    public com.google.protobuf.ByteString
-        getHrefBytes() {
-      java.lang.Object ref = href_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        href_ = b;
-        return b;
+    public Builder setLink(com.github.jsdossier.proto.TypeLink value) {
+      if (linkBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        link_ = value;
+        onChanged();
       } else {
-        return (com.google.protobuf.ByteString) ref;
+        linkBuilder_.setMessage(value);
+      }
+
+      return this;
+    }
+    /**
+     * <code>optional .dossier.expression.TypeLink link = 3;</code>
+     */
+    public Builder setLink(
+        com.github.jsdossier.proto.TypeLink.Builder builderForValue) {
+      if (linkBuilder_ == null) {
+        link_ = builderForValue.build();
+        onChanged();
+      } else {
+        linkBuilder_.setMessage(builderForValue.build());
+      }
+
+      return this;
+    }
+    /**
+     * <code>optional .dossier.expression.TypeLink link = 3;</code>
+     */
+    public Builder mergeLink(com.github.jsdossier.proto.TypeLink value) {
+      if (linkBuilder_ == null) {
+        if (link_ != null) {
+          link_ =
+            com.github.jsdossier.proto.TypeLink.newBuilder(link_).mergeFrom(value).buildPartial();
+        } else {
+          link_ = value;
+        }
+        onChanged();
+      } else {
+        linkBuilder_.mergeFrom(value);
+      }
+
+      return this;
+    }
+    /**
+     * <code>optional .dossier.expression.TypeLink link = 3;</code>
+     */
+    public Builder clearLink() {
+      if (linkBuilder_ == null) {
+        link_ = null;
+        onChanged();
+      } else {
+        link_ = null;
+        linkBuilder_ = null;
+      }
+
+      return this;
+    }
+    /**
+     * <code>optional .dossier.expression.TypeLink link = 3;</code>
+     */
+    public com.github.jsdossier.proto.TypeLink.Builder getLinkBuilder() {
+      
+      onChanged();
+      return getLinkFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>optional .dossier.expression.TypeLink link = 3;</code>
+     */
+    public com.github.jsdossier.proto.TypeLinkOrBuilder getLinkOrBuilder() {
+      if (linkBuilder_ != null) {
+        return linkBuilder_.getMessageOrBuilder();
+      } else {
+        return link_ == null ?
+            com.github.jsdossier.proto.TypeLink.getDefaultInstance() : link_;
       }
     }
     /**
-     * <code>optional string href = 3;</code>
+     * <code>optional .dossier.expression.TypeLink link = 3;</code>
      */
-    public Builder setHref(
-        java.lang.String value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  
-      href_ = value;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>optional string href = 3;</code>
-     */
-    public Builder clearHref() {
-      
-      href_ = getDefaultInstance().getHref();
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>optional string href = 3;</code>
-     */
-    public Builder setHrefBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-      
-      href_ = value;
-      onChanged();
-      return this;
+    private com.google.protobuf.SingleFieldBuilder<
+        com.github.jsdossier.proto.TypeLink, com.github.jsdossier.proto.TypeLink.Builder, com.github.jsdossier.proto.TypeLinkOrBuilder> 
+        getLinkFieldBuilder() {
+      if (linkBuilder_ == null) {
+        linkBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+            com.github.jsdossier.proto.TypeLink, com.github.jsdossier.proto.TypeLink.Builder, com.github.jsdossier.proto.TypeLinkOrBuilder>(
+                getLink(),
+                getParentForChildren(),
+                isClean());
+        link_ = null;
+      }
+      return linkBuilder_;
     }
 
     private boolean extern_ ;

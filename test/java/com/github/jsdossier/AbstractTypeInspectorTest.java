@@ -27,6 +27,7 @@ import com.github.jsdossier.proto.Comment.Token;
 import com.github.jsdossier.proto.NamedType;
 import com.github.jsdossier.proto.SourceLink;
 import com.github.jsdossier.proto.TypeExpression;
+import com.github.jsdossier.proto.TypeLink;
 import com.github.jsdossier.testing.CompilerUtil;
 import com.github.jsdossier.testing.GuiceRule;
 import com.google.common.truth.FailureStrategy;
@@ -79,7 +80,7 @@ public abstract class AbstractTypeInspectorTest {
 
   protected static Comment linkComment(String text, String href) {
     return Comment.newBuilder()
-        .addToken(Token.newBuilder().setText(text).setHref(href).build())
+        .addToken(Token.newBuilder().setText(text).setLink(typeLink(href)))
         .build();
   }
 
@@ -167,7 +168,7 @@ public abstract class AbstractTypeInspectorTest {
   protected static NamedType namedType(String name, String href) {
     return NamedType.newBuilder()
         .setName(name)
-        .setHref(href)
+        .setLink(typeLink(href))
         .build();
   }
 
@@ -175,8 +176,16 @@ public abstract class AbstractTypeInspectorTest {
     return NamedType.newBuilder()
         .setName(name)
         .setQualifiedName(qualifiedName)
-        .setHref(href)
+        .setLink(typeLink(href))
         .build();
+  }
+
+  protected static TypeLink typeLink(String href) {
+    TypeLink.Builder builder = TypeLink.newBuilder().setHref(href);
+    if (!href.startsWith("https:")) {
+      builder.setJson(href.replaceAll("\\.html(#.*)?$", ".json"));
+    }
+    return builder.build();
   }
 
   protected static NamedType addTemplateTypes(

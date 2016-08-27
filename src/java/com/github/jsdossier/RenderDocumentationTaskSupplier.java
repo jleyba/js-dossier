@@ -348,7 +348,7 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Ca
 
         summaryBuilder
             .setName(getNestedTypeName(child))
-            .setHref(link.getHref())
+            .setHref(link.getLink().getHref())
             .setSummary(summary);
       }
     }

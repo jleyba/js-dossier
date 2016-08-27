@@ -16,10 +16,18 @@
       <p>
     {/if}
     {foreach $token in $comment.token}
-      {if $token.href}<a href="{$token.href}">{/if}
-      {if $token.text}{$token.text}{/if}
-      {if $token.html}{$token.html}{/if}
-      {if $token.href}</a>{/if}
+      {if $token.link and $token.link.href}
+        {call dossier.soy.type.typeLink}
+          {param link: $token.link /}
+          {param content kind="html"}
+            {if $token.text}{$token.text}{/if}
+            {if $token.html}{$token.html}{/if}
+          {/param}
+        {/call}
+      {else}
+        {if $token.text}{$token.text}{/if}
+        {if $token.html}{$token.html}{/if}
+      {/if}
     {/foreach}
     {if $renderParagraph}
       </p>

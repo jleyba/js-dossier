@@ -13,6 +13,7 @@ java_library(
         "//src/java/com/github/jsdossier",
         "//src/java/com/github/jsdossier/annotations",
         "//src/java/com/github/jsdossier/jscomp",
+        "//src/java/com/github/jsdossier/soy",
     ],
     visibility = [
         "//test/java/com/github/jsdossier:__subpackages__",

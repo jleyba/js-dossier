@@ -79,11 +79,11 @@ message Comment {
       string text = 1;
 
       // The pre-escaped html content for this token.
-      string html = 6 [(options.sanitized).html = true];
+      string html = 2 [(options.sanitized).html = true];
     }
 
     // If set, this token will be rendered as a hyperlink.
-    string href = 4 [(options.sanitized).uri = true];
+    dossier.expression.TypeLink link = 3;
   }
 
   // The tokens that comprise this comment.

@@ -28,6 +28,7 @@ import com.github.jsdossier.jscomp.Position;
 import com.github.jsdossier.jscomp.TypeRegistry;
 import com.github.jsdossier.proto.NamedType;
 import com.github.jsdossier.proto.SourceLink;
+import com.github.jsdossier.proto.TypeLink;
 import com.google.auto.factory.AutoFactory;
 import com.google.auto.factory.Provided;
 import com.google.common.base.Optional;
@@ -153,6 +154,10 @@ final class LinkFactory {
     return createSourceLink(sourcePath, Position.of(node.getLineno(), 0));
   }
 
+  private static TypeLink.Builder appendFragment(TypeLink original, String fragment) {
+    return original.toBuilder().setHref(original.getHref() + "#" + fragment);
+  }
+
   /**
    * Generates a link to the specified type. If this factory has a context type, the generated link
    * will be relative to the context's generated file. Otherwise, the link will be relative to the
@@ -160,31 +165,40 @@ final class LinkFactory {
    */
   public NamedType createTypeReference(final NominalType type) {
     Path path;
+    Path jsonPath = null;
     String symbol = null;
 
     if (type.getJsDoc().isTypedef() || type.getJsDoc().isDefine()) {
       int index = type.getName().lastIndexOf('.');
       if (index == -1) {
         path = dfs.getGlobalsPath();
+        jsonPath = dfs.getGlobalsJson();
         symbol = type.getName();
       } else {
         String parentName = type.getName().substring(0, index);
-        NamedType link = createTypeReference(typeRegistry.getType(parentName));
+        NamedType parentType = createTypeReference(typeRegistry.getType(parentName));
         String displayName = dfs.getDisplayName(type);
-        return link.toBuilder()
+        return parentType.toBuilder()
             .setName(displayName)
-            .setHref(link.getHref() + "#" + displayName)
+            .setLink(appendFragment(parentType.getLink(), displayName))
             .build();
       }
 
     } else {
       path = dfs.getPath(type);
+      jsonPath = dfs.getJsonPath(type);
     }
 
     if (pathContext.isPresent()) {
       path = dfs.getRelativePath(pathContext.get(), path);
+      if (jsonPath != null) {
+        jsonPath = dfs.getRelativePath(pathContext.get(), jsonPath);
+      }
     } else {
       path = dfs.getRelativePath(path);
+      if (jsonPath != null) {
+        jsonPath = dfs.getRelativePath(jsonPath);
+      }
     }
 
     String href = getUriPath(path);
@@ -195,11 +209,13 @@ final class LinkFactory {
     String displayName = dfs.getDisplayName(type);
     String qualifiedName = dfs.getQualifiedDisplayName(type);
 
-    NamedType.Builder builder = NamedType.newBuilder()
-        .setHref(href)
-        .setName(displayName);
+    NamedType.Builder builder = NamedType.newBuilder().setName(displayName);
     if (!displayName.equals(qualifiedName)) {
       builder.setQualifiedName(qualifiedName);
+    }
+    builder.getLinkBuilder().setHref(href);
+    if (jsonPath != null) {
+      builder.getLinkBuilder().setJson(getUriPath(jsonPath));
     }
     return builder.build();
   }
@@ -208,8 +224,9 @@ final class LinkFactory {
    * Creates a link to a specific property on a type.
    */
   public NamedType createTypeReference(NominalType type, String property) {
-    NamedType link = createTypeReference(type);
-    checkState(!link.getHref().isEmpty(), "Failed to build link for %s", type.getName());
+    NamedType typeRef = createTypeReference(type);
+    checkState(!typeRef.getLink().getHref().isEmpty(),
+        "Failed to build link for %s", type.getName());
 
     boolean checkPrototype = false;
     if (property.startsWith("#")) {
@@ -218,16 +235,16 @@ final class LinkFactory {
     }
 
     if (property.isEmpty()) {
-      return link;
+      return typeRef;
     }
 
     if (checkPrototype
         && (type.getType().isConstructor() || type.getType().isInterface())) {
       ObjectType instanceType = ((FunctionType) type.getType()).getInstanceType();
       if (instanceType.getPropertyNames().contains(property)) {
-        return link.toBuilder()
-            .setName(link.getName() + "#" + property)
-            .setHref(link.getHref() + "#" + property)
+        return typeRef.toBuilder()
+            .setName(typeRef.getName() + "#" + property)
+            .setLink(appendFragment(typeRef.getLink(), property))
             .build();
       }
     }
@@ -240,24 +257,24 @@ final class LinkFactory {
     }
 
     if (type.getType().toObjectType().getPropertyType(property).isEnumElementType()) {
-      return link.toBuilder()
-          .setName(link.getName() + "." + property)
-          .setHref(link.getHref() + "#" + property)
+      return typeRef.toBuilder()
+          .setName(typeRef.getName() + "." + property)
+          .setLink(appendFragment(typeRef.getLink(), property))
           .build();
     }
 
     JSDocInfo propertyDocs = type.getType().toObjectType().getOwnPropertyJSDocInfo(property);
     if (propertyDocs != null && propertyDocs.isDefine()) {
       String name = dfs.getQualifiedDisplayName(type) + "." + property;
-      return link.toBuilder()
+      return typeRef.toBuilder()
           .setName(name)
-          .setHref(link.getHref() + "#" + name)
+          .setLink(appendFragment(typeRef.getLink(), name))
           .build();
     }
 
     if (!type.getType().toObjectType().getPropertyNames().contains(property)) {
-      return link.toBuilder()
-          .setName(link.getName() + "." + property)
+      return typeRef.toBuilder()
+          .setName(typeRef.getName() + "." + property)
           .build();
     }
 
@@ -272,9 +289,9 @@ final class LinkFactory {
       }
       id = name + "." + id;
     }
-    return link.toBuilder()
-        .setName(link.getName() + "." + property)
-        .setHref(link.getHref() + "#" + id)
+    return typeRef.toBuilder()
+        .setName(typeRef.getName() + "." + property)
+        .setLink(appendFragment(typeRef.getLink(), id))
         .build();
   }
 
@@ -467,7 +484,7 @@ final class LinkFactory {
   private static NamedType createExternReference(String name, String href) {
     return NamedType.newBuilder()
         .setName(name)
-        .setHref(href)
+        .setLink(TypeLink.newBuilder().setHref(href))
         .setExtern(true)
         .build();
   }
