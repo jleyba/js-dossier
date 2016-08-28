@@ -99,20 +99,20 @@ public final class Dossier {
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_dossier_JsType_ParentLink_fieldAccessorTable;
   static com.google.protobuf.Descriptors.Descriptor
-    internal_static_dossier_HtmlRenderSpec_descriptor;
+    internal_static_dossier_PageData_descriptor;
   static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_dossier_HtmlRenderSpec_fieldAccessorTable;
+      internal_static_dossier_PageData_fieldAccessorTable;
   static com.google.protobuf.Descriptors.Descriptor
-    internal_static_dossier_SourceFileRenderSpec_descriptor;
+    internal_static_dossier_PageData_Markdown_descriptor;
   static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_dossier_SourceFileRenderSpec_fieldAccessorTable;
+      internal_static_dossier_PageData_Markdown_fieldAccessorTable;
   static com.google.protobuf.Descriptors.Descriptor
-    internal_static_dossier_JsTypeRenderSpec_descriptor;
+    internal_static_dossier_PageData_TypeCollection_descriptor;
   static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_dossier_JsTypeRenderSpec_fieldAccessorTable;
+      internal_static_dossier_PageData_TypeCollection_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -202,19 +202,18 @@ public final class Dossier {
       "Summary\022.\n\tinterface\030\003 \003(\0132\033.dossier.JsT" +
       "ype.TypeSummary\032L\n\nParentLink\022+\n\004type\030\001 " +
       "\001(\0132\035.dossier.expression.NamedType\022\021\n\tis",
-      "_module\030\002 \001(\010\"\210\001\n\016HtmlRenderSpec\022%\n\treso" +
-      "urces\030\001 \001(\0132\022.dossier.Resources\022\r\n\005title" +
-      "\030\002 \001(\t\022!\n\007content\030\003 \001(\0132\020.dossier.Commen" +
-      "t\022\035\n\005index\030\004 \001(\0132\016.dossier.Index\"\177\n\024Sour" +
-      "ceFileRenderSpec\022%\n\tresources\030\001 \001(\0132\022.do" +
-      "ssier.Resources\022!\n\004file\030\002 \001(\0132\023.dossier." +
-      "SourceFile\022\035\n\005index\030\003 \001(\0132\016.dossier.Inde" +
-      "x\"w\n\020JsTypeRenderSpec\022\035\n\004type\030\001 \003(\0132\017.do" +
-      "ssier.JsType\022%\n\tresources\030\002 \001(\0132\022.dossie" +
-      "r.Resources\022\035\n\005index\030\003 \001(\0132\016.dossier.Ind",
-      "ex*A\n\nVisibility\022\n\n\006PUBLIC\020\000\022\r\n\tPROTECTE" +
-      "D\020\001\022\013\n\007PRIVATE\020\002\022\013\n\007PACKAGE\020\003B\036\n\032com.git" +
-      "hub.jsdossier.protoP\001b\006proto3"
+      "_module\030\002 \001(\010\"\322\002\n\010PageData\022%\n\tresources\030" +
+      "\001 \001(\0132\022.dossier.Resources\022\035\n\005index\030\002 \001(\013" +
+      "2\016.dossier.Index\0221\n\005types\030\003 \001(\0132 .dossie" +
+      "r.PageData.TypeCollectionH\000\022.\n\010markdown\030" +
+      "\004 \001(\0132\032.dossier.PageData.MarkdownH\000\022#\n\004f" +
+      "ile\030\005 \001(\0132\023.dossier.SourceFileH\000\032<\n\010Mark" +
+      "down\022\r\n\005title\030\001 \001(\t\022!\n\007content\030\002 \001(\0132\020.d" +
+      "ossier.Comment\032/\n\016TypeCollection\022\035\n\004type" +
+      "\030\001 \003(\0132\017.dossier.JsTypeB\t\n\007content*A\n\nVi" +
+      "sibility\022\n\n\006PUBLIC\020\000\022\r\n\tPROTECTED\020\001\022\013\n\007P",
+      "RIVATE\020\002\022\013\n\007PACKAGE\020\003B\036\n\032com.github.jsdo" +
+      "ssier.protoP\001b\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -338,24 +337,24 @@ public final class Dossier {
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_dossier_JsType_ParentLink_descriptor,
         new java.lang.String[] { "Type", "IsModule", });
-    internal_static_dossier_HtmlRenderSpec_descriptor =
+    internal_static_dossier_PageData_descriptor =
       getDescriptor().getMessageTypes().get(12);
-    internal_static_dossier_HtmlRenderSpec_fieldAccessorTable = new
+    internal_static_dossier_PageData_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-        internal_static_dossier_HtmlRenderSpec_descriptor,
-        new java.lang.String[] { "Resources", "Title", "Content", "Index", });
-    internal_static_dossier_SourceFileRenderSpec_descriptor =
-      getDescriptor().getMessageTypes().get(13);
-    internal_static_dossier_SourceFileRenderSpec_fieldAccessorTable = new
+        internal_static_dossier_PageData_descriptor,
+        new java.lang.String[] { "Resources", "Index", "Types", "Markdown", "File", "Content", });
+    internal_static_dossier_PageData_Markdown_descriptor =
+      internal_static_dossier_PageData_descriptor.getNestedTypes().get(0);
+    internal_static_dossier_PageData_Markdown_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-        internal_static_dossier_SourceFileRenderSpec_descriptor,
-        new java.lang.String[] { "Resources", "File", "Index", });
-    internal_static_dossier_JsTypeRenderSpec_descriptor =
-      getDescriptor().getMessageTypes().get(14);
-    internal_static_dossier_JsTypeRenderSpec_fieldAccessorTable = new
+        internal_static_dossier_PageData_Markdown_descriptor,
+        new java.lang.String[] { "Title", "Content", });
+    internal_static_dossier_PageData_TypeCollection_descriptor =
+      internal_static_dossier_PageData_descriptor.getNestedTypes().get(1);
+    internal_static_dossier_PageData_TypeCollection_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-        internal_static_dossier_JsTypeRenderSpec_descriptor,
-        new java.lang.String[] { "Type", "Resources", "Index", });
+        internal_static_dossier_PageData_TypeCollection_descriptor,
+        new java.lang.String[] { "Type", });
     com.google.protobuf.ExtensionRegistry registry =
         com.google.protobuf.ExtensionRegistry.newInstance();
     registry.add(com.github.jsdossier.proto.Options.sanitized);

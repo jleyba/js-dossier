@@ -17,7 +17,7 @@
 package com.github.jsdossier;
 
 import com.github.jsdossier.proto.Comment;
-import com.github.jsdossier.proto.HtmlRenderSpec;
+import com.github.jsdossier.proto.PageData;
 import com.github.jsdossier.soy.Renderer;
 
 import java.io.IOException;
@@ -54,11 +54,14 @@ final class HtmlRenderer {
    * @throws IOException if an I/O error occurs.
    */
   public void renderHtml(Path output, String title, Comment content) throws IOException {
-    HtmlRenderSpec.Builder spec = HtmlRenderSpec.newBuilder()
+    PageData page = PageData.newBuilder()
         .setResources(dfs.getResources(output, template))
-        .setTitle(title)
         .setIndex(navIndexFactory.create(output))
-        .setContent(content);
-    renderer.render(output, spec.build());
+        .setMarkdown(
+            PageData.Markdown.newBuilder()
+                .setTitle(title)
+                .setContent(content))
+        .build();
+    renderer.render(output, page);
   }
 }

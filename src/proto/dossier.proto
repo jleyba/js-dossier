@@ -287,39 +287,22 @@ message JsType {
 }
 
 
+message PageData {
+  message Markdown {
+    string title = 1;
+    Comment content = 2;
+  }
 
-// Describes how to render a generic HTML page.
-message HtmlRenderSpec {
-  // The resources to include.
+  message TypeCollection {
+    repeated JsType type = 1;
+  }
+
   Resources resources = 1;
-  // The page title.
-  string title = 2;
-  // The page content, if any.
-  Comment content = 3;
-  // Navigation index.
-  Index index = 4;
-}
+  Index index = 2;
 
-
-// Describes how to render a source file.
-message SourceFileRenderSpec {
-  // The resources to include.
-  Resources resources = 1;
-  // The file to render.
-  SourceFile file = 2;
-  // Navigation index.
-  Index index = 3;
-}
-
-
-// Describes how to render documentation for a JavaScript type.
-message JsTypeRenderSpec {
-  // The types to generate documentation for.
-  repeated JsType type = 1;
-
-  // The resources to include.
-  Resources resources = 2;
-
-  // Navigation index.
-  Index index = 3;
+  oneof content {
+    TypeCollection types = 3;
+    Markdown markdown = 4;
+    SourceFile file = 5;
+  }
 }

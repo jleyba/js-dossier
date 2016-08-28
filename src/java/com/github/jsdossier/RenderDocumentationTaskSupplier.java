@@ -35,8 +35,8 @@ import com.github.jsdossier.proto.Comment;
 import com.github.jsdossier.proto.Enumeration;
 import com.github.jsdossier.proto.JsType;
 import com.github.jsdossier.proto.JsTypeOrBuilder;
-import com.github.jsdossier.proto.JsTypeRenderSpec;
 import com.github.jsdossier.proto.NamedType;
+import com.github.jsdossier.proto.PageData;
 import com.github.jsdossier.proto.Visibility;
 import com.github.jsdossier.soy.JsonRenderer;
 import com.github.jsdossier.soy.Renderer;
@@ -147,14 +147,16 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Ca
 
     @Override
     public Path call() throws Exception {
-      JsTypeRenderSpec spec = JsTypeRenderSpec.newBuilder()
+      PageData page = PageData.newBuilder()
           .setResources(dfs.getResources(output, template))
           .setIndex(navIndexFactory.create(output))
-          .addAllType(types.get())
+          .setTypes(
+              PageData.TypeCollection.newBuilder()
+                  .addAllType(types.get()))
           .build();
 
-      renderer.render(output, spec);
-      jsonRenderer.render(jsonOutput, spec.getTypeList());
+      renderer.render(output, page);
+      jsonRenderer.render(jsonOutput, page.getTypes().getTypeList());
 
       return output;
     }

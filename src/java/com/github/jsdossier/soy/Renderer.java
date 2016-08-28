@@ -18,19 +18,17 @@ package com.github.jsdossier.soy;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.nio.file.Files.newBufferedWriter;
 import static java.nio.file.StandardOpenOption.CREATE;
 import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 import static java.nio.file.StandardOpenOption.WRITE;
 
-import com.github.jsdossier.proto.HtmlRenderSpec;
-import com.github.jsdossier.proto.JsTypeRenderSpec;
-import com.github.jsdossier.proto.SourceFileRenderSpec;
+import com.github.jsdossier.proto.PageData;
 import com.github.jsdossier.proto.TypeLink;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import com.google.protobuf.GeneratedMessage;
 import com.google.template.soy.SoyFileSet;
 import com.google.template.soy.data.SoyMapData;
 import com.google.template.soy.jssrc.SoyJsSrcOptions;
@@ -60,7 +58,6 @@ public class Renderer {
       SoyFileSet.Builder filesetBuilder,
       DossierSoyTypeProvider typeProvider) {
     tofu = filesetBuilder
-        .add(Renderer.class.getResource("resources/common.soy"))
         .add(Renderer.class.getResource("resources/types.soy"))
         .add(Renderer.class.getResource("resources/dossier.soy"))
         .setLocalTypeRegistry(new SoyTypeRegistry(ImmutableSet.of((SoyTypeProvider) typeProvider)))
@@ -68,16 +65,14 @@ public class Renderer {
         .compileToTofu();
   }
 
-  public void render(Path output, HtmlRenderSpec spec) throws IOException {
-    render(output, "dossier.soy.htmlFile", spec);
-  }
-
-  public void render(Path output, SourceFileRenderSpec spec) throws IOException {
-    render(output, "dossier.soy.srcfile", spec);
-  }
-
-  public void render(Path output, JsTypeRenderSpec spec) throws IOException {
-    render(output, "dossier.soy.typefile", spec);
+  public void render(Path output, PageData page) throws IOException {
+    Files.createDirectories(output.getParent());
+    try (BufferedWriter writer =
+             newBufferedWriter(output, UTF_8, CREATE, WRITE, TRUNCATE_EXISTING)) {
+      tofu.newRenderer("dossier.soy.page")
+          .setData(new SoyMapData("data", ProtoMessageSoyType.toSoyValue(page)))
+          .render(writer);
+    }
   }
 
   public void render(Appendable appendable, String text, TypeLink link, boolean codeLink)
@@ -90,16 +85,6 @@ public class Renderer {
         .render(appendable);
   }
 
-  private void render(Path output, String templateName, GeneratedMessage message)
-      throws IOException {
-    Files.createDirectories(output.getParent());
-    try (BufferedWriter writer = Files.newBufferedWriter(output, UTF_8, CREATE, WRITE, TRUNCATE_EXISTING)) {
-      tofu.newRenderer(templateName)
-          .setData(new SoyMapData("spec", ProtoMessageSoyType.toSoyValue(message)))
-          .render(writer);
-    }
-  }
-
   public static void main(String args[]) throws IOException {
     checkArgument(args.length > 0, "no output directory specified");
 
@@ -110,7 +95,6 @@ public class Renderer {
 
     DossierSoyTypeProvider typeProvider = injector.getInstance(DossierSoyTypeProvider.class);
     SoyFileSet fileSet = injector.getInstance(SoyFileSet.Builder.class)
-        .add(Renderer.class.getResource("resources/common.soy"))
         .add(Renderer.class.getResource("resources/dossier.soy"))
         .add(Renderer.class.getResource("resources/nav.soy"))
         .add(Renderer.class.getResource("resources/types.soy"))
@@ -130,7 +114,6 @@ public class Renderer {
     options.setShouldGenerateGoogModules(true);
 
     Iterator<Path> files = ImmutableList.of(
-        outputDir.resolve("common.soy.js"),
         outputDir.resolve("dossier.soy.js"),
         outputDir.resolve("nav.soy.js"),
         outputDir.resolve("types.soy.js")).iterator();

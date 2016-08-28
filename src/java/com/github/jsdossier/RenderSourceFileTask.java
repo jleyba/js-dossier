@@ -19,8 +19,8 @@ package com.github.jsdossier;
 import static java.nio.file.Files.readAllLines;
 
 import com.github.jsdossier.annotations.SourcePrefix;
+import com.github.jsdossier.proto.PageData;
 import com.github.jsdossier.proto.SourceFile;
-import com.github.jsdossier.proto.SourceFileRenderSpec;
 import com.github.jsdossier.soy.Renderer;
 import com.google.auto.factory.AutoFactory;
 import com.google.auto.factory.Provided;
@@ -73,12 +73,13 @@ final class RenderSourceFileTask implements Callable<Path> {
         .addAllLines(readAllLines(path, Charsets.UTF_8))
         .build();
 
-    SourceFileRenderSpec.Builder spec = SourceFileRenderSpec.newBuilder()
+    PageData page = PageData.newBuilder()
         .setFile(file)
         .setResources(dfs.getResources(output, template))
-        .setIndex(navIndexFactory.create(output));
+        .setIndex(navIndexFactory.create(output))
+        .build();
 
-    renderer.render(output, spec.build());
+    renderer.render(output, page);
     return output;
   }
 }
