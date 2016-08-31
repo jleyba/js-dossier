@@ -16,6 +16,7 @@
 
 goog.module('dossier.nav');
 
+const TypeIndex = goog.require('dossier.TypeIndex');
 const page = goog.require('dossier.page');
 const soyNav = goog.require('dossier.soy.nav');
 const Arrays = goog.require('goog.array');
@@ -30,297 +31,82 @@ const SanitizedHtml = goog.require('soydata.SanitizedHtml');
 
 
 /**
- * A generic tree node with an associated key and value.
- * @final
+ * @param {!Array<!dossier.TypeIndex.Entry>} entries
  */
-var TreeNode = goog.defineClass(null, {
-  /**
-   * @param {string} key .
-   * @param {?Descriptor} value .
-   */
-  constructor: function(key, value) {
-    /** @private {string} */
-    this.key_ = key;
-
-    /** @private {?Descriptor} */
-    this.value_ = value;
-
-    /** @private {?TreeNode} */
-    this.parent_ = null;
-
-    /** @private {?Array<!TreeNode>} */
-    this.children_ = null;
-  },
-
-  /** @return {string} The node key. */
-  getKey: function() {
-    return this.key_;
-  },
-
-  /** @param {string} key The new key. */
-  setKey: function(key) {
-    this.key_ = key;
-  },
-
-  /** @return {?Descriptor} The node value. */
-  getValue: function() {
-    return this.value_;
-  },
-
-  /** @param {?Descriptor} v The new value. */
-  setValue: function(v) {
-    this.value_ = v;
-  },
-
-  /** @return {TreeNode} This node's parent. */
-  getParent: function() {
-    return this.parent_;
-  },
-
-  /** @param {!TreeNode} node The new child to add. */
-  addChild: function(node) {
-    asserts.assert(!node.parent_);
-    if (!this.children_) {
-      this.children_ = [];
-    }
-    node.parent_ = this;
-    this.children_.push(node);
-  },
-
-  /** @return {number} The number of children attached to this node. */
-  getChildCount: function() {
-    return this.children_ ? this.children_.length : 0;
-  },
-
-  /** @return {Array<!TreeNode>} This node's children, if any. */
-  getChildren: function() {
-    return this.children_;
-  },
-
-  /**
-   * @param {number} index The index to retrieve.
-   * @return {TreeNode} The child at the given index, if any.
-   */
-  getChildAt: function(index) {
-    return this.children_ ? this.children_[index] : null;
-  },
-
-  /** @param {!TreeNode} node The node to remove. */
-  removeChild: function(node) {
-    asserts.assert(node.parent_ === this);
-    node.parent_ = null;
-    goog.array.remove(this.children_, node);
-  },
-
-  /** @return {Array<!TreeNode>} The removed children. */
-  removeChildren: function() {
-    var ret = this.children_;
-    if (this.children_) {
-      this.children_.forEach(function(child) {
-        child.parent_ = null;
-      });
-      this.children_ = null;
-    }
-    return ret;
-  },
-
-  /**
-   * @param {string} key The key to search for.
-   * @return {TreeNode} The node with the matching key.
-   */
-  findChild: function(key) {
-    if (!this.children_) {
-      return null;
-    }
-    return goog.array.find(this.children_, function(child) {
-      return child.key_ === key;
-    });
-  }
-});
-
-
-/**
- * Collapses all children nodes such that every node has a value and only
- * namespaces have children.
- *
- * @param {!TreeNode} node The node to collapse.
- */
-function collapseNodes(node) {
-  var children = node.getChildren();
-  if (!children) {
-    asserts.assert(node.getValue());
-    return;
-  }
-
-  children.forEach(collapseNodes);
-  children.filter(function(child) {
-    return child.getValue() === null && child.getChildCount() == 1;
-  }).forEach(function(child) {
-    node.removeChild(child);
-    var grandChildren = child.removeChildren();
-    if (grandChildren) {
-      grandChildren.forEach(function(grandchild) {
-        grandchild.setKey(child.getKey() + '.' + grandchild.getKey());
-        node.addChild(grandchild);
-      });
-    }
-  });
-
-  children.filter(function(child) {
-    return child.getValue()
-        && !child.getValue().namespace
-        && !child.getValue().types
-        && child.getChildCount();
-  }).forEach(function(child) {
-    var grandChildren = child.removeChildren();
-    if (grandChildren) {
-      grandChildren.forEach(function(grandchild) {
-        grandchild.setKey(child.getKey() + '.' + grandchild.getKey());
-        node.addChild(grandchild);
-      });
-    }
-  });
-}
-
-
-/**
- * Sorts the tree so each node's children are sorted by key.
- */
-function sortTree(root) {
-  var children = root.getChildren();
-  if (children) {
-    children.sort(function(a, b) {
-      if (a.getKey() < b.getKey()) return -1;
-      if (a.getKey() > b.getKey()) return 1;
+function sortEntries(entries) {
+  entries.sort((a, b) => {
+    let nameA = a.type.qualifiedName || a.type.name;
+    let nameB = b.type.qualifiedName || b.type.name;
+    if (nameA === nameB) {
       return 0;
-    });
-    children.forEach(sortTree);
-  }
+    }
+    return nameA < nameB ? -1 : 1;
+  });
+
+  entries.forEach(entry => {
+    if (entry.child.length) {
+      sortEntries(entry.child);
+    }
+  });
 }
+
 
 /**
  * Builds a tree structure from the given list of descriptors where the
  * root node represents the global scope.
  *
- * @param {!Array<!Descriptor>} descriptors The descriptors.
- * @param {boolean} isModule Whether the descriptors describe CommonJS modules.
- * @param {TreeNode=} opt_root The root node. If not provided, one will be
- *     created.
- * @return {!TreeNode} The root of the tree node.
+ * @param {!Array<!dossier.TypeIndex.Entry>} entries The index entries to
+ *     build a tree from.
+ * @return {!Array<!dossier.TypeIndex.Entry>} The constructed, possibly
+ *     disconnected trees.
  */
-exports.buildTree = function(descriptors, isModule, opt_root) {
-  let root = opt_root || new TreeNode('', null);
-  descriptors.forEach(function(descriptor) {
-    var currentNode = root;
-    var splitOn = isModule ? new RegExp('/') : /\./;
-    descriptor.qualifiedName.split(splitOn).forEach(function(part) {
-      if (currentNode === root && currentNode.getKey() === part) {
+function buildTree(entries) {
+  let roots = [];
+  let stack = [];
+
+  entries.forEach(entry => {
+    if (!entry.type.qualifiedName) {
+      entry.type.qualifiedName = entry.type.name;
+    }
+
+    while (stack.length) {
+      let last = Arrays.peek(stack);
+      let parentName = last.type.qualifiedName;
+      let childName = entry.type.qualifiedName;
+      let isChild = false;
+
+      if (childName.startsWith(parentName + '.')) {
+        entry.type.name = childName.slice(parentName.length + 1);
+        isChild = true;
+      } else if (childName.startsWith(parentName + '/')) {
+        entry.type.name = childName.slice(parentName.length);
+        isChild = true;
+      }
+
+      if (isChild) {
+        last.child.push(entry);
+        if (entry.isNamespace) {
+          stack.push(entry);
+        }
         return;
       }
-      var found = currentNode.findChild(part);
-      if (!found) {
-        found = new TreeNode(part, null);
-        currentNode.addChild(found);
-      }
-      currentNode = found;
-    });
-    asserts.assert(currentNode.getValue() === null);
-    currentNode.setValue(descriptor);
+
+      stack.pop();
+    }
+
+    if (!entry.type.qualifiedName) {
+      entry.type.qualifiedName = entry.type.name;
+    }
+    roots.push(entry);
+    if (entry.isNamespace) {
+      stack.push(entry);
+    }
   });
 
-  if (!isModule) {
-    collapseNodes(root);
-  }
-  sortTree(root);
-
-  return root;
-};
-
-
-/**
- * @param {!Descriptor} descriptor .
- * @return {string} .
- */
-function getId(descriptor) {
-  var prefix = descriptor['module'] ? '.nav.module:' : '.nav:';
-  return prefix + descriptor.name;
+  sortEntries(roots);
+  return roots;
 }
-
-
-/**
- * @param {!TreeNode} node The node.
- * @param {string} basePath Base path to prepend to any links.
- * @param {string} currentPath Path for the file running this script.
- * @param {string} idPrefix Prefix to prepend to node key for the DOM ID.
- * @return {!SanitizedHtml} The list item.
- */
-function buildListItem(node, basePath, currentPath, idPrefix) {
-  asserts.assert(node.getValue() || node.getChildCount());
-
-  let textContent = node.getKey();
-  let href = node.getValue() ? node.getValue().href : '';
-  let isCurrent = node.getValue() ? href === currentPath : false;
-  let isInterface = node.getValue() ? node.getValue().interface : false;
-
-  let children = node.getChildren();
-  if (children) {
-    return soyNav.treeItem({
-      id: idPrefix + node.getKey(),
-      subtreeItems: children.map(child => {
-        return buildListItem(
-            child, basePath, currentPath, idPrefix + node.getKey() + '.');
-      }),
-      textContent,
-      href,
-      isCurrent,
-      isInterface
-    });
-  } else {
-    return soyNav.linkItem({textContent, href, isCurrent, isInterface});
-  }
-}
-
-
-const TYPE_ID_PREFIX = '.nav:';
-const MODULE_TYPE_ID_PREFIX = '.nav-module:';
-
-
-/**
- * Returns the ID prefix used for data types.
- *
- * @param {boolean} modules whether to return the ID for module types.
- * @return {string} the ID prefix.
- */
-function getIdPrefix(modules) {
-  return modules ? MODULE_TYPE_ID_PREFIX : TYPE_ID_PREFIX;
-}
-
-
-/**
- * Builds a nested list for the given types.
- * @param {!Array<!Descriptor>} descriptors The descriptors.
- * @param {string} basePath Base path to prepend to any links.
- * @param {string} currentPath Path for the file running this script.
- * @param {boolean} isModule Whether the descriptors describe CommonJS modules.
- * @return {!Element} The root element for the tree.
- */
-function buildList(descriptors, basePath, currentPath, isModule) {
-  if (basePath && !basePath.endsWith('/')) {
-    basePath += '/';
-  }
-
-  let root = exports.buildTree(descriptors, isModule);
-  let children = [];
-  if (root.getChildren()) {
-    children = root.getChildren().map(child => {
-      return buildListItem(
-          child, basePath, currentPath,
-          isModule ? MODULE_TYPE_ID_PREFIX : TYPE_ID_PREFIX);
-    });
-  }
-  return /** @type {!Element} */(soy.renderAsFragment(soyNav.tree, {children}));
-}
-exports.buildList = buildList;  // For testing.
+exports.buildTree = buildTree;  // For testing.
 
 
 /**
@@ -332,6 +118,24 @@ function createMask() {
   let mask = document.createElement('div');
   mask.classList.add('dossier-nav-mask');
   return mask;
+}
+
+
+/**
+ * @param {!Element} el .
+ * @param {boolean=} opt_value .
+ * @private
+ */
+function updateControl(el, opt_value) {
+  if (goog.isBoolean(opt_value)) {
+    if (opt_value) {
+      el.classList.add('open');
+    } else {
+      el.classList.remove('open');
+    }
+  } else {
+    el.classList.toggle('open');
+  }
 }
 
 
@@ -447,7 +251,7 @@ class NavDrawer {
       }
 
       if (isToggle(parent)) {
-        this.updateControl_(
+        updateControl(
             /** @type {!Element} */(parent),
             e.keyCode === KeyCodes.RIGHT);
       }
@@ -479,24 +283,7 @@ class NavDrawer {
     }, true, /*maxSteps=*/4);
 
     if (el && el.classList.contains('toggle')) {
-      this.updateControl_(/** @type {!Element} */(el));
-    }
-  }
-
-  /**
-   * @param {!Element} el .
-   * @param {boolean=} opt_value .
-   * @private
-   */
-  updateControl_(el, opt_value) {
-    if (goog.isBoolean(opt_value)) {
-      if (opt_value) {
-        el.classList.add('open');
-      } else {
-        el.classList.remove('open');
-      }
-    } else {
-      el.classList.toggle('open');
+      updateControl(/** @type {!Element} */(el));
     }
   }
 }
@@ -509,7 +296,8 @@ const NAV_ITEM_HEIGHT = 45;
 /**
  * Creates the side nav drawer widget.
  *
- * @param {!TypeRegistry} typeInfo The type information to build the list from.
+ * @param {!dossier.TypeIndex} typeInfo The type information to build the list
+ *     from.
  * @param {string} currentFile The path to the file that loaded this script.
  * @param {string} basePath The path to the main index file.
  * @return {!NavDrawer} The created nav drawer widget.
@@ -530,8 +318,24 @@ exports.createNavDrawer = function(typeInfo, currentFile, basePath) {
   events.listen(navButton, 'click', drawer.toggleVisibility, false, drawer);
   events.listen(navEl, 'click', drawer.onClick_, false, drawer);
 
-  // Normalize existing links so they work consistently as we change the URL
-  // during content swaps.
+  const typeSection = navEl.querySelector('.types');
+  if (typeSection) {
+    let types = buildTree(typeInfo.type);
+    let tree = (/** @type {!Element} */(
+        soy.renderAsFragment(soyNav.typeTree, {types})));
+    typeSection.appendChild(tree);
+  }
+
+  const moduleSection = navEl.querySelector('.modules');
+  if (moduleSection) {
+    let modules = buildTree(typeInfo.module);
+    let tree = (/** @type {!Element} */(
+        soy.renderAsFragment(soyNav.moduleTree, {modules})));
+    moduleSection.appendChild(tree);
+  }
+
+  // Normalize all links to be relative to dossier's root. This ensures links
+  // work consistently as we change the URL during content swaps.
   Arrays.forEach(navEl.querySelectorAll('a[href]'), function(link) {
     let href = link.getAttribute('href');
     if (href.startsWith('../')) {
@@ -541,16 +345,6 @@ exports.createNavDrawer = function(typeInfo, currentFile, basePath) {
     href = basePath + href;
     link.setAttribute('href', href);
   });
-
-  const typeSection = navEl.querySelector('.types');
-  if (typeSection && typeInfo.types) {
-    buildSectionList(typeSection, typeInfo.types, false);
-  }
-
-  const moduleSection = navEl.querySelector('.modules');
-  if (moduleSection && typeInfo.modules) {
-    buildSectionList(moduleSection, typeInfo.modules, true);
-  }
 
   let trees = navEl.querySelectorAll('.tree');
   for (let i = 0, n = trees.length; i < n; i++) {
@@ -578,17 +372,4 @@ exports.createNavDrawer = function(typeInfo, currentFile, basePath) {
     drawer.hide();
   }
   return drawer;
-
-  /**
-   * @param {!Element} section .
-   * @param {!Array<!Descriptor>} descriptors .
-   * @param {boolean} isModule .
-   */
-  function buildSectionList(section, descriptors, isModule) {
-    let list = buildList(descriptors, basePath, currentFile, isModule);
-    section.appendChild(list);
-
-    let toggle = section.querySelector('.toggle');
-    toggle.dataset.id = getIdPrefix(isModule);
-  }
 };

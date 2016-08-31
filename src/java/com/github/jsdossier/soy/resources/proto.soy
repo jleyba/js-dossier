@@ -18,14 +18,10 @@ goog.require('soydata.SanitizedUri');
 goog.require('soydata.VERY_UNSAFE');
 
 /** @private @const */
-proto.dossier.EMPTY_ARRAY_ = [];
-
-/** @private @const */
 proto.dossier.DEFAULT_INSTANCES_ = new Map;
 
 goog.scope(function() {
 
-const EMPTY_ARRAY = proto.dossier.EMPTY_ARRAY_;
 const DEFAULT_INSTANCES = proto.dossier.DEFAULT_INSTANCES_;
 const SanitizedHtml = soydata.SanitizedHtml;
 const SanitizedUri = soydata.SanitizedUri;
@@ -80,9 +76,9 @@ const ordainSanitizedUri = soydata.VERY_UNSAFE.ordainSanitizedUri;
 
 {\n}
 {$name}{literal} = class {
-  constructor(/** !Object */data) {
-    /** @private @const */
-    this.data_ = data;
+  constructor(/** Object= */opt_data) {
+    /** @private @const {!Object} */
+    this.data_ = opt_data || {};
 
     /** @private @const */
     this.converted_ = new Map;
@@ -96,6 +92,15 @@ const ordainSanitizedUri = soydata.VERY_UNSAFE.ordainSanitizedUri;
       DEFAULT_INSTANCES.set({/literal}{$name}{literal}, instance);
     }
     return instance;
+  }
+
+  /**
+   * @param {!{/literal}{$name}{literal}} value
+   * @return {!{/literal}{$name}{literal}}
+   */
+  static clone(value) {
+    let data = Object.assign({}, value.data_);
+    return new {/literal}{$name}{literal}(data);
   }
 {/literal}
 
@@ -136,6 +141,7 @@ const ordainSanitizedUri = soydata.VERY_UNSAFE.ordainSanitizedUri;
   {let $isRepeated: $field.label == google.protobuf.FieldDescriptorProto.Label.LABEL_REPEATED /}
   {let $initData kind="html"}data = this.data_['{$field.number}'];{/let}
   {let $returnType kind="html"}{if $isRepeated}{arrayType('!' + $type)}{else}!{$type}{/if}{/let}
+  {let $isMessage: $type != 'boolean' and $type != 'string' and $type != 'number' and not $isEnum /}
 
 {literal}
   /**
@@ -143,7 +149,7 @@ const ordainSanitizedUri = soydata.VERY_UNSAFE.ordainSanitizedUri;
    */
   get {/literal}{toLowerCamelCase($field.name)}{literal}() {
     {/literal}
-    {if $type != 'boolean' and $type != 'string' and $type != 'number' and not $isEnum}
+    {if $isRepeated or $isMessage}
       if (this.converted_.has('{$field.number}')) return this.converted_.get('{$field.number}');{\n}
       {literal}    {/literal}
     {/if}
@@ -153,30 +159,46 @@ const ordainSanitizedUri = soydata.VERY_UNSAFE.ordainSanitizedUri;
       {literal}    {/literal}
       {call .returnSanitizedData_}
         {param isRepeated: $isRepeated /}
+        {param fieldNumber: $field.number /}
         {param sanitizer: $type == 'SanitizedHtml' ? 'ordainSanitizedHtml' : 'ordainSanitizedUri' /}
       {/call}
-    {else}
-      {if $type == 'boolean' or $type == 'string' or $type == 'number' or $isEnum}
-        {let $defaultValue kind="html"}
-          {if $isRepeated}EMPTY_ARRAY
-          {elseif $type == 'boolean'}false
-          {elseif $type == 'string'}''
-          {else}0
-          {/if}
-        {/let}
-        {literal}    return data || {/literal}{$defaultValue};
+    {elseif $isRepeated}
+      {literal}    {/literal}
+      {if $isMessage}
+        let value = data ? data.map(i => new {$type}(i)) : [];{\n}
       {else}
-        {literal}    let value = data ? {/literal}
-        {if $isRepeated}
-          data.map(i => new {$type}(i)) : EMPTY_ARRAY;{\n}
-        {else}
-          new {$type}(data) : {$type}.DEFAULT_INSTANCE;{\n}
-        {/if}
-        {literal}    this.converted_.set('{/literal}{$field.number}', value);{\n}
-        {literal}    return value;{/literal}
+        let value = data || [];{\n}
       {/if}
+      {literal}    this.converted_.set('{/literal}{$field.number}', value);{\n}
+      {literal}    return value;{/literal}
+    {elseif $isMessage}
+      {literal}    let value = data ? {/literal}
+      new {$type}(data) : {$type}.DEFAULT_INSTANCE;{\n}
+      {literal}    this.converted_.set('{/literal}{$field.number}', value);{\n}
+      {literal}    return value;{/literal}
+    {else}
+      {let $defaultValue kind="html"}
+        {if $type == 'boolean'}false
+        {elseif $type == 'string'}''
+        {else}0
+        {/if}
+      {/let}
+      {literal}    return data || {/literal}{$defaultValue};
     {/if}
 {literal}
+  }
+
+  /**
+   * @param {{/literal}{$returnType}{literal}} value
+   */
+  set {/literal}{toLowerCamelCase($field.name)}{literal}(value) {
+    {/literal}
+    {if $isRepeated or $isMessage}
+      this.converted_.set('{$field.number}', value);
+    {else}
+      this.data_['{$field.number}'] = value;
+    {/if}
+    {literal}
   }
 {/literal}
 {/foreach}
@@ -189,9 +211,12 @@ const ordainSanitizedUri = soydata.VERY_UNSAFE.ordainSanitizedUri;
 {template .returnSanitizedData_ private="true"}
   {@param isRepeated: bool}
   {@param sanitizer: string}
+  {@param fieldNumber: int}
   {if $isRepeated}
-    return data ? data.map({$sanitizer}) : EMPTY_ARRAY;
+    let value = data ? data.map({$sanitizer}) : [];{\n}
   {else}
-    return {$sanitizer}(data || '');
+    let value = {$sanitizer}(data || '');{\n}
   {/if}
+  this.converted_.set('{$fieldNumber}', value);{\n}
+  return value;{\n}
 {/template}

@@ -10,7 +10,6 @@ genrule(
 genrule(
     name = "gen_soy_js",
     outs = [
-        "common.soy.js",
         "dossier.soy.js",
         "nav.soy.js",
         "types.soy.js",
@@ -23,7 +22,6 @@ js_binary(
     name = "dossier",
     srcs = [
         ":gen_proto_js",
-        ":common.soy.js",
         ":dossier.soy.js",
         ":nav.soy.js",
         ":types.soy.js",

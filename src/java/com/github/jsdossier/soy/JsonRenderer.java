@@ -48,23 +48,40 @@ public final class JsonRenderer {
     render(output, json);
   }
 
+  public void render(Writer writer, Message message) throws IOException {
+    JsonElement json = new JsonMessageTransformer().transform(message);
+    render(writer, json);
+  }
+
   public void render(Path output, Iterable<? extends Message> messages) throws IOException {
+    render(output, toArray(messages));
+  }
+
+  public void render(Writer writer, Iterable<? extends Message> messages) throws IOException {
+    render(writer, toArray(messages));
+  }
+
+  private static JsonArray toArray(Iterable<? extends Message> messages) {
     JsonArray array = new JsonArray();
     JsonMessageTransformer xform = new JsonMessageTransformer();
     for (Message message : messages) {
       array.add(xform.transform(message));
     }
-    render(output, array);
+    return array;
   }
 
   private void render(Path output, JsonElement json) throws IOException {
     createDirectories(output.getParent());
     try (Writer writer = newBufferedWriter(output, UTF_8, CREATE, WRITE, TRUNCATE_EXISTING)) {
-      JsonWriter jsonWriter = new JsonWriter(writer);
-      jsonWriter.setLenient(false);
-      jsonWriter.setIndent("");
-      jsonWriter.setSerializeNulls(false);
-      Streams.write(json, jsonWriter);
+      render(writer, json);
     }
+  }
+
+  private void render(Writer writer, JsonElement json) throws IOException {
+    JsonWriter jsonWriter = new JsonWriter(writer);
+    jsonWriter.setLenient(false);
+    jsonWriter.setIndent("");
+    jsonWriter.setSerializeNulls(false);
+    Streams.write(json, jsonWriter);
   }
 }

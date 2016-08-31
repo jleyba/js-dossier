@@ -172,7 +172,7 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Ca
     private final LinkFactory linkFactory;
     private final TypeExpressionParserFactory expressionParserFactory;
     private final TypeInspector typeInspector;
-    private final TypeIndex.IndexReference indexReference;
+    private final TypeIndexManager.IndexReference indexReference;
     private final NominalType type;
 
     NominalTypeProcessor(
@@ -184,7 +184,7 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Ca
         @Provided StaticTypedScope<JSType> globalScope,
         @Provided TypeExpressionParserFactory expressionParserFactory,
         @Provided TypeInspectorFactory typeInspectorFactory,
-        @Provided TypeIndex typeIndex,
+        @Provided TypeIndexManager typeIndex,
         NominalType type) {
       this.dfs = dfs;
       this.parser = parser;
@@ -198,7 +198,7 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Ca
       this.indexReference = updateTypeIndex(typeIndex);
     }
 
-    private TypeIndex.IndexReference updateTypeIndex(TypeIndex typeIndex) {
+    private TypeIndexManager.IndexReference updateTypeIndex(TypeIndexManager typeIndex) {
       if (type.getModule().isPresent() && type.getModule().get().getType() != Module.Type.CLOSURE) {
         if (type.isModuleExports()) {
           return typeIndex.addModule(type);
@@ -206,7 +206,7 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Ca
 
         Module module = type.getModule().get();
         NominalType moduleType = typeRegistry.getType(module.getId());
-        TypeIndex.IndexReference moduleRef = typeIndex.addModule(moduleType);
+        TypeIndexManager.IndexReference moduleRef = typeIndex.addModule(moduleType);
         return moduleRef.addNestedType(type);
       } else {
         return typeIndex.addType(type);

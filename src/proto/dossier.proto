@@ -203,6 +203,21 @@ message Index {
 }
 
 
+message TypeIndex {
+  message Entry {
+    dossier.expression.NamedType type = 1;
+    bool is_interface = 2;
+    bool is_namespace = 3;
+    repeated string static_property = 4;
+    repeated string property = 5;
+    repeated Entry child = 6;
+  }
+
+  repeated Entry module = 1;
+  repeated Entry type = 2;
+}
+
+
 // Describes a JavaScript type to generate documentation for. Each |JsType|
 // message describes a class, enum, interface, or namespace.
 message JsType {

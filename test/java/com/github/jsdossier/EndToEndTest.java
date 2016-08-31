@@ -33,7 +33,6 @@ import static org.junit.Assert.assertEquals;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
-import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
@@ -64,10 +63,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.TreeMap;
 
 @RunWith(Enclosed.class)
@@ -430,12 +426,11 @@ public class EndToEndTest {
       Gson gson = new GsonBuilder()
           .setPrettyPrinting()
           .create();
-      @SuppressWarnings("unchecked")
-      TreeMap<String, Object> map = gson.fromJson(actualContent, TreeMap.class);
-      sortIndexMap(map);
-      actualContent = gson.toJson(map).trim();
-      updateGoldenFile(goldenPath, actualContent);
 
+      JsonObject json = gson.fromJson(actualContent, JsonObject.class);
+      actualContent = gson.toJson(json).trim();
+
+      updateGoldenFile(goldenPath, actualContent);
       assertThat(actualContent).isEqualTo(expectedContent);
     }
 
@@ -461,40 +456,6 @@ public class EndToEndTest {
       checkHeader(document);
       checkNav(document);
       checkFooter(document);
-    }
-
-    @SuppressWarnings("unchecked")
-    private void sortIndexMap(TreeMap<String, Object> root) {
-      root.put("modules", sortTypeList((List<Map<String, Object>>) root.get("modules")));
-      root.put("types", sortTypeList((List<Map<String, Object>>) root.get("types")));
-    }
-
-    @SuppressWarnings("unchecked")
-    private List<Map<String, Object>> sortTypeList(List<Map<String, Object>> list) {
-      return FluentIterable.from(list)
-          .transform(new Function<Map<String, Object>, Map<String, Object>>() {
-            @Override
-            public Map<String, Object> apply(Map<String, Object> item) {
-              if (item.containsKey("types")) {
-                item.put("types",  sortTypeList((List<Map<String, Object>>) item.get("types")));
-              }
-              if (item.containsKey("members")) {
-                Collections.sort((List<String>) item.get("members"));
-              }
-              if (item.containsKey("statics")) {
-                Collections.sort((List<String>) item.get("statics"));
-              }
-              return new TreeMap<>(item);
-            }
-          })
-          .toSortedList(new Comparator<Map<String, Object>>() {
-            @Override
-            public int compare(Map<String, Object> o1, Map<String, Object> o2) {
-              String name1 = (String) o1.get("name");
-              String name2 = (String) o2.get("name");
-              return name1.compareTo(name2);
-            }
-          });
     }
 
     private void checkHeader(Document document) throws IOException {

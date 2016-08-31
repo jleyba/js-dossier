@@ -79,6 +79,16 @@ public final class Dossier {
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_dossier_Index_fieldAccessorTable;
   static com.google.protobuf.Descriptors.Descriptor
+    internal_static_dossier_TypeIndex_descriptor;
+  static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_dossier_TypeIndex_fieldAccessorTable;
+  static com.google.protobuf.Descriptors.Descriptor
+    internal_static_dossier_TypeIndex_Entry_descriptor;
+  static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_dossier_TypeIndex_Entry_fieldAccessorTable;
+  static com.google.protobuf.Descriptors.Descriptor
     internal_static_dossier_JsType_descriptor;
   static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
@@ -169,51 +179,58 @@ public final class Dossier {
       "x\022\024\n\004home\030\001 \001(\tB\006\362\201\031\002\010\001\022\025\n\rinclude_types" +
       "\030\002 \001(\010\022\027\n\017include_modules\030\003 \001(\010\022\033\n\004link\030" +
       "\004 \003(\0132\r.dossier.Link\022\021\n\ttimestamp\030\005 \001(\003\"" +
-      "\263\n\n\006JsType\022\014\n\004name\030\001 \001(\t\022#\n\006source\030\005 \001(\013" +
-      "2\023.dossier.SourceLink\022+\n\006nested\030\006 \001(\0132\033." +
-      "dossier.JsType.NestedTypes\022%\n\013descriptio",
-      "n\030\007 \001(\0132\020.dossier.Comment\022\033\n\004tags\030\010 \001(\0132" +
-      "\r.dossier.Tags\022%\n\013deprecation\030\t \001(\0132\020.do" +
-      "ssier.Comment\022#\n\010type_def\030\n \003(\0132\021.dossie" +
-      "r.Property\022)\n\013enumeration\030\013 \001(\0132\024.dossie" +
-      "r.Enumeration\022*\n\017static_function\030\014 \003(\0132\021" +
-      ".dossier.Function\022*\n\017static_property\030\r \003" +
-      "(\0132\021.dossier.Property\022(\n\rmain_function\030\016" +
-      " \001(\0132\021.dossier.Function\022!\n\006method\030\017 \003(\0132" +
-      "\021.dossier.Function\022 \n\005field\030\020 \003(\0132\021.doss" +
-      "ier.Property\0224\n\rextended_type\030\022 \003(\0132\035.do",
-      "ssier.expression.NamedType\0227\n\020implemente" +
-      "d_type\030\023 \003(\0132\035.dossier.expression.NamedT" +
-      "ype\022.\n\007subtype\030\032 \003(\0132\035.dossier.expressio" +
-      "n.NamedType\0225\n\016implementation\030\033 \003(\0132\035.do" +
-      "ssier.expression.NamedType\022,\n\021compiler_c" +
-      "onstant\030\024 \003(\0132\021.dossier.Property\022*\n\006pare" +
-      "nt\030\025 \001(\0132\032.dossier.JsType.ParentLink\0223\n\014" +
-      "aliased_type\030\026 \001(\0132\035.dossier.expression." +
-      "NamedType\0222\n\013known_alias\030\034 \003(\0132\035.dossier" +
-      ".expression.NamedType\022\020\n\010filename\030\027 \001(\t\022",
-      "\026\n\016qualified_name\030\030 \001(\t\022,\n\021reexported_mo" +
-      "dule\030\031 \003(\0132\021.dossier.Property\032q\n\013TypeSum" +
-      "mary\022\014\n\004name\030\001 \001(\t\022\024\n\004href\030\002 \001(\tB\006\362\201\031\002\010\001" +
-      "\022!\n\007summary\030\003 \001(\0132\020.dossier.Comment\022\033\n\004t" +
-      "ags\030\004 \001(\0132\r.dossier.Tags\032\224\001\n\013NestedTypes" +
-      "\022*\n\005class\030\001 \003(\0132\033.dossier.JsType.TypeSum" +
-      "mary\022)\n\004enum\030\002 \003(\0132\033.dossier.JsType.Type" +
-      "Summary\022.\n\tinterface\030\003 \003(\0132\033.dossier.JsT" +
-      "ype.TypeSummary\032L\n\nParentLink\022+\n\004type\030\001 " +
-      "\001(\0132\035.dossier.expression.NamedType\022\021\n\tis",
-      "_module\030\002 \001(\010\"\322\002\n\010PageData\022%\n\tresources\030" +
-      "\001 \001(\0132\022.dossier.Resources\022\035\n\005index\030\002 \001(\013" +
-      "2\016.dossier.Index\0221\n\005types\030\003 \001(\0132 .dossie" +
-      "r.PageData.TypeCollectionH\000\022.\n\010markdown\030" +
-      "\004 \001(\0132\032.dossier.PageData.MarkdownH\000\022#\n\004f" +
-      "ile\030\005 \001(\0132\023.dossier.SourceFileH\000\032<\n\010Mark" +
-      "down\022\r\n\005title\030\001 \001(\t\022!\n\007content\030\002 \001(\0132\020.d" +
-      "ossier.Comment\032/\n\016TypeCollection\022\035\n\004type" +
-      "\030\001 \003(\0132\017.dossier.JsTypeB\t\n\007content*A\n\nVi" +
-      "sibility\022\n\n\006PUBLIC\020\000\022\r\n\tPROTECTED\020\001\022\013\n\007P",
-      "RIVATE\020\002\022\013\n\007PACKAGE\020\003B\036\n\032com.github.jsdo" +
-      "ssier.protoP\001b\006proto3"
+      "\224\002\n\tTypeIndex\022(\n\006module\030\001 \003(\0132\030.dossier." +
+      "TypeIndex.Entry\022&\n\004type\030\002 \003(\0132\030.dossier." +
+      "TypeIndex.Entry\032\264\001\n\005Entry\022+\n\004type\030\001 \001(\0132",
+      "\035.dossier.expression.NamedType\022\024\n\014is_int" +
+      "erface\030\002 \001(\010\022\024\n\014is_namespace\030\003 \001(\010\022\027\n\017st" +
+      "atic_property\030\004 \003(\t\022\020\n\010property\030\005 \003(\t\022\'\n" +
+      "\005child\030\006 \003(\0132\030.dossier.TypeIndex.Entry\"\263" +
+      "\n\n\006JsType\022\014\n\004name\030\001 \001(\t\022#\n\006source\030\005 \001(\0132" +
+      "\023.dossier.SourceLink\022+\n\006nested\030\006 \001(\0132\033.d" +
+      "ossier.JsType.NestedTypes\022%\n\013description" +
+      "\030\007 \001(\0132\020.dossier.Comment\022\033\n\004tags\030\010 \001(\0132\r" +
+      ".dossier.Tags\022%\n\013deprecation\030\t \001(\0132\020.dos" +
+      "sier.Comment\022#\n\010type_def\030\n \003(\0132\021.dossier",
+      ".Property\022)\n\013enumeration\030\013 \001(\0132\024.dossier" +
+      ".Enumeration\022*\n\017static_function\030\014 \003(\0132\021." +
+      "dossier.Function\022*\n\017static_property\030\r \003(" +
+      "\0132\021.dossier.Property\022(\n\rmain_function\030\016 " +
+      "\001(\0132\021.dossier.Function\022!\n\006method\030\017 \003(\0132\021" +
+      ".dossier.Function\022 \n\005field\030\020 \003(\0132\021.dossi" +
+      "er.Property\0224\n\rextended_type\030\022 \003(\0132\035.dos" +
+      "sier.expression.NamedType\0227\n\020implemented" +
+      "_type\030\023 \003(\0132\035.dossier.expression.NamedTy" +
+      "pe\022.\n\007subtype\030\032 \003(\0132\035.dossier.expression",
+      ".NamedType\0225\n\016implementation\030\033 \003(\0132\035.dos" +
+      "sier.expression.NamedType\022,\n\021compiler_co" +
+      "nstant\030\024 \003(\0132\021.dossier.Property\022*\n\006paren" +
+      "t\030\025 \001(\0132\032.dossier.JsType.ParentLink\0223\n\014a" +
+      "liased_type\030\026 \001(\0132\035.dossier.expression.N" +
+      "amedType\0222\n\013known_alias\030\034 \003(\0132\035.dossier." +
+      "expression.NamedType\022\020\n\010filename\030\027 \001(\t\022\026" +
+      "\n\016qualified_name\030\030 \001(\t\022,\n\021reexported_mod" +
+      "ule\030\031 \003(\0132\021.dossier.Property\032q\n\013TypeSumm" +
+      "ary\022\014\n\004name\030\001 \001(\t\022\024\n\004href\030\002 \001(\tB\006\362\201\031\002\010\001\022",
+      "!\n\007summary\030\003 \001(\0132\020.dossier.Comment\022\033\n\004ta" +
+      "gs\030\004 \001(\0132\r.dossier.Tags\032\224\001\n\013NestedTypes\022" +
+      "*\n\005class\030\001 \003(\0132\033.dossier.JsType.TypeSumm" +
+      "ary\022)\n\004enum\030\002 \003(\0132\033.dossier.JsType.TypeS" +
+      "ummary\022.\n\tinterface\030\003 \003(\0132\033.dossier.JsTy" +
+      "pe.TypeSummary\032L\n\nParentLink\022+\n\004type\030\001 \001" +
+      "(\0132\035.dossier.expression.NamedType\022\021\n\tis_" +
+      "module\030\002 \001(\010\"\322\002\n\010PageData\022%\n\tresources\030\001" +
+      " \001(\0132\022.dossier.Resources\022\035\n\005index\030\002 \001(\0132" +
+      "\016.dossier.Index\0221\n\005types\030\003 \001(\0132 .dossier",
+      ".PageData.TypeCollectionH\000\022.\n\010markdown\030\004" +
+      " \001(\0132\032.dossier.PageData.MarkdownH\000\022#\n\004fi" +
+      "le\030\005 \001(\0132\023.dossier.SourceFileH\000\032<\n\010Markd" +
+      "own\022\r\n\005title\030\001 \001(\t\022!\n\007content\030\002 \001(\0132\020.do" +
+      "ssier.Comment\032/\n\016TypeCollection\022\035\n\004type\030" +
+      "\001 \003(\0132\017.dossier.JsTypeB\t\n\007content*A\n\nVis" +
+      "ibility\022\n\n\006PUBLIC\020\000\022\r\n\tPROTECTED\020\001\022\013\n\007PR" +
+      "IVATE\020\002\022\013\n\007PACKAGE\020\003B\036\n\032com.github.jsdos" +
+      "sier.protoP\001b\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -313,8 +330,20 @@ public final class Dossier {
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_dossier_Index_descriptor,
         new java.lang.String[] { "Home", "IncludeTypes", "IncludeModules", "Link", "Timestamp", });
-    internal_static_dossier_JsType_descriptor =
+    internal_static_dossier_TypeIndex_descriptor =
       getDescriptor().getMessageTypes().get(11);
+    internal_static_dossier_TypeIndex_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_dossier_TypeIndex_descriptor,
+        new java.lang.String[] { "Module", "Type", });
+    internal_static_dossier_TypeIndex_Entry_descriptor =
+      internal_static_dossier_TypeIndex_descriptor.getNestedTypes().get(0);
+    internal_static_dossier_TypeIndex_Entry_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_dossier_TypeIndex_Entry_descriptor,
+        new java.lang.String[] { "Type", "IsInterface", "IsNamespace", "StaticProperty", "Property", "Child", });
+    internal_static_dossier_JsType_descriptor =
+      getDescriptor().getMessageTypes().get(12);
     internal_static_dossier_JsType_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_dossier_JsType_descriptor,
@@ -338,7 +367,7 @@ public final class Dossier {
         internal_static_dossier_JsType_ParentLink_descriptor,
         new java.lang.String[] { "Type", "IsModule", });
     internal_static_dossier_PageData_descriptor =
-      getDescriptor().getMessageTypes().get(12);
+      getDescriptor().getMessageTypes().get(13);
     internal_static_dossier_PageData_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_dossier_PageData_descriptor,

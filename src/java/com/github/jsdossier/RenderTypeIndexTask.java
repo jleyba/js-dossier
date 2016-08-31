@@ -22,8 +22,11 @@ import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 import static java.nio.file.StandardOpenOption.WRITE;
 
 import com.github.jsdossier.annotations.DocumentationScoped;
+import com.github.jsdossier.proto.TypeIndex;
+import com.github.jsdossier.soy.JsonRenderer;
 
 import java.io.IOException;
+import java.io.StringWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.Callable;
@@ -37,20 +40,27 @@ import javax.inject.Inject;
 final class RenderTypeIndexTask implements Callable<Path> {
 
   private final DossierFileSystem dfs;
-  private final TypeIndex index;
+  private final JsonRenderer jsonRenderer;
+  private final TypeIndexManager index;
 
   @Inject
-  RenderTypeIndexTask(DossierFileSystem dfs, TypeIndex index) {
+  RenderTypeIndexTask(
+      DossierFileSystem dfs,
+      JsonRenderer jsonRenderer,
+      TypeIndexManager index) {
     this.dfs = dfs;
+    this.jsonRenderer = jsonRenderer;
     this.index = index;
   }
 
   @Override
   public Path call() throws IOException {
-    // NOTE: JSON is not actually a subset of JavaScript, but in our case we know we only
-    // have valid JavaScript input, so we can use JSONObject#toString() as a quick-and-dirty
-    // formatting mechanism.
-    String content = "var TYPES = " + index + ";";
+    TypeIndex message = index.toNormalizedProto();
+
+    StringWriter sw = new StringWriter();
+    jsonRenderer.render(sw, message);
+
+    String content = "var TYPES = " + sw + ";";
     Path path = dfs.getPath("types.js");
     Files.write(path, content.getBytes(UTF_8), CREATE, WRITE, TRUNCATE_EXISTING);
     return path;

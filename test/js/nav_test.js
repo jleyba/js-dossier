@@ -19,349 +19,136 @@
 goog.provide('dossier.nav.test');
 goog.setTestOnly('dossier.nav.test');
 
+goog.require('dossier.TypeIndex');
+goog.require('dossier.expression.NamedType');
 goog.require('dossier.nav');
-goog.require('goog.testing.dom');
 goog.require('goog.testing.jsunit');
 
 
 var nav = goog.module.get('dossier.nav');
 
 
-function assertNode(node, key, value) {
-  assertEquals(key, node.getKey());
-  assertEquals(value, node.getValue());
+function assertEntry(entry, name, qualifiedName) {
+  assertEquals(name, entry.type.name);
+  assertEquals(qualifiedName, entry.type.qualifiedName);
+}
+
+
+function createEntry(name, opt_qualifiedName) {
+  let type = new dossier.expression.NamedType;
+  type.name = name;
+  if (opt_qualifiedName) {
+    type.qualifiedName = opt_qualifiedName;
+  }
+
+  let entry = new dossier.TypeIndex.Entry;
+  entry.type = type;
+  return entry;
+}
+
+
+function createNamespaceEntry(name, opt_qualifiedName) {
+  let entry = createEntry(name, opt_qualifiedName);
+  entry.isNamespace = true;
+  return entry;
 }
 
 
 function testBuildTree_singleNode() {
-  var input = {name: 'foo', qualifiedName: 'foo'};
-  var root = nav.buildTree([input]);
-
-  assertEquals(1, root.getChildCount());
-  assertNode(root.getChildAt(0), 'foo', input);
+  let input = createEntry('foo');
+  let result = nav.buildTree([input]);
+  assertEquals(1, result.length);
+  assertEntry(result[0], 'foo', 'foo');
 }
 
 
 function testBuildTree_singleNodeIsNestedNamespace() {
-  var input = {name: 'foo.bar', qualifiedName: 'foo.bar'};
-  var root = nav.buildTree([input]);
-
-  assertEquals(1, root.getChildCount());
-  assertNode(root.getChildAt(0), 'foo.bar', input);
+  let input = createEntry('foo.bar');
+  let result = nav.buildTree([input]);
+  assertEquals(1, result.length);
+  assertEntry(result[0], 'foo.bar', 'foo.bar');
 }
 
 
 function testBuildTree_multipleNamespaces() {
-  var foo = {name: 'foo', qualifiedName: 'foo'};
-  var bar = {name: 'bar', qualifiedName: 'bar'};
-  var root = nav.buildTree([foo, bar]);
-
-  assertEquals(2, root.getChildCount());
-  assertNode(root.getChildAt(0), 'bar', bar);
-  assertNode(root.getChildAt(1), 'foo', foo);
+  let foo = createEntry('foo');
+  let bar = createEntry('bar');
+  let result = nav.buildTree([foo, bar]);
+  assertEquals(2, result.length);
+  assertEntry(result[0], 'bar', 'bar');
+  assertEntry(result[1], 'foo', 'foo');
 }
 
 
 function testBuildTree_nestedNamespaces() {
   var input = [
-    {name: 'foo', qualifiedName: 'foo', namespace: true},
-    {name: 'foo.bar', qualifiedName: 'foo.bar', namespace: true},
-    {name: 'foo.baz', qualifiedName: 'foo.baz', namespace: true},
-    {name: 'foo.quot', qualifiedName: 'foo.quot', namespace: true},
-    {name: 'foo.quot.quux', qualifiedName: 'foo.quot.quux', namespace: true},
-    {name: 'foo.one.two', qualifiedName: 'foo.one.two'}
+      createNamespaceEntry('foo'),
+      createNamespaceEntry('foo.bar'),
+      createNamespaceEntry('foo.baz'),
+      createNamespaceEntry('foo.quot'),
+      createNamespaceEntry('foo.quot.quux'),
+      createEntry('foo.one.two')
   ];
-  var root = nav.buildTree(input);
+  let result = nav.buildTree(input);
 
-  assertEquals(1, root.getChildCount());
-  assertNode(root.getChildAt(0), 'foo', input[0]);
+  assertEquals(1, result.length);
+  assertEntry(result[0], 'foo', 'foo');
 
-  var foo = root.getChildAt(0);
-  assertEquals(4, foo.getChildCount());
-  assertNode(foo.getChildAt(0), 'bar', input[1]);
-  assertNode(foo.getChildAt(1), 'baz', input[2]);
-  assertNode(foo.getChildAt(2), 'one.two', input[5]);
-  assertNode(foo.getChildAt(3), 'quot', input[3]);
+  let foo = result[0];
+  assertEquals(4, foo.child.length);
+  assertEntry(foo.child[0], 'bar', 'foo.bar');
+  assertEntry(foo.child[1], 'baz', 'foo.baz');
+  assertEntry(foo.child[2], 'one.two', 'foo.one.two');
+  assertEntry(foo.child[3], 'quot', 'foo.quot');
 
-  var quot = foo.getChildAt(3);
-  assertEquals(1, quot.getChildCount());
-  assertNode(quot.getChildAt(0), 'quux', input[4]);
+  let quot = foo.child[3];
+  assertEquals(1, quot.child.length);
+  assertEntry(quot.child[0], 'quux', 'foo.quot.quux');
 }
 
 
 function testBuildTree_multiRooted() {
   var input = [
-    {name: 'foo', qualifiedName: 'foo', namespace: true},
-    {name: 'foo.bar', qualifiedName: 'foo.bar', namespace: true},
-    {name: 'foo.baz', qualifiedName: 'foo.baz', namespace: true},
-    {name: 'quot.quux', qualifiedName: 'quot.quux', namespace: true},
-    {name: 'quot.quux.one.two', qualifiedName: 'quot.quux.one.two'}
+      createNamespaceEntry('foo'),
+      createNamespaceEntry('foo.bar'),
+      createNamespaceEntry('foo.baz'),
+      createNamespaceEntry('quot.quux'),
+      createNamespaceEntry('quot.quux.one.two')
   ];
 
-  var root = nav.buildTree(input);
+  let result = nav.buildTree(input);
+  assertEquals(2, result.length);
+  assertEntry(result[0], 'foo', 'foo');
+  assertEntry(result[1], 'quot.quux', 'quot.quux');
 
-  assertEquals(2, root.getChildCount());
-  assertNode(root.getChildAt(0), 'foo', input[0]);
-  assertNode(root.getChildAt(1), 'quot.quux', input[3]);
+  let foo = result[0];
+  assertEquals(2, foo.child.length);
+  assertEntry(foo.child[0], 'bar', 'foo.bar');
+  assertEntry(foo.child[1], 'baz', 'foo.baz');
 
-  var foo = root.getChildAt(0);
-  assertEquals(2, foo.getChildCount());
-  assertNode(foo.getChildAt(0), 'bar', input[1]);
-  assertNode(foo.getChildAt(1), 'baz', input[2]);
-
-  var quot = root.getChildAt(1);
-  assertEquals(1, quot.getChildCount());
-  assertNode(quot.getChildAt(0), 'one.two', input[4]);
-}
-
-
-function testBuildTree_collapsesNamespacesWithNoDataAndOneChild() {
-  var input = [
-    {name: 'foo.bar.one', qualifiedName: 'foo.bar.one'},
-    {name: 'foo.bar.two', qualifiedName: 'foo.bar.two'},
-    {name: 'foo.baz.quot', qualifiedName: 'foo.baz.quot'},
-    {name: 'foo.baz.quux', qualifiedName: 'foo.baz.quux'}
-  ];
-
-  var root = nav.buildTree(input);
-  assertEquals(1, root.getChildCount());
-  assertNode(root.getChildAt(0), 'foo', null);
-
-  var foo = root.getChildAt(0);
-  assertEquals(2, foo.getChildCount());
-  assertNode(foo.getChildAt(0), 'bar', null);
-  assertNode(foo.getChildAt(1), 'baz', null);
-
-  var bar = foo.getChildAt(0);
-  assertEquals(2, bar.getChildCount());
-  assertNode(bar.getChildAt(0), 'one', input[0]);
-  assertNode(bar.getChildAt(1), 'two', input[1]);
-
-  var baz = foo.getChildAt(1);
-  assertEquals(2, baz.getChildCount());
-  assertNode(baz.getChildAt(0), 'quot', input[2]);
-  assertNode(baz.getChildAt(1), 'quux', input[3]);
+  let quot = result[1];
+  assertEquals(1, quot.child.length);
+  assertEntry(quot.child[0], 'one.two', 'quot.quux.one.two');
 }
 
 
 function testBuildTree_attachesNestedClassesToParentNamespace() {
   var input = [
-    {name: 'foo', qualifiedName: 'foo', namespace: true},
-    {name: 'Bar', qualifiedName: 'foo.Bar'},
-    {name: 'Baz', qualifiedName: 'foo.Bar.Baz'},
-    {name: 'Quot', qualifiedName: 'foo.Bar.Quot'},
-    {name: 'Quux', qualifiedName: 'foo.Bar.Quot.Quux'}
+      createNamespaceEntry('foo'),
+      createEntry('Bar', 'foo.Bar'),
+      createEntry('Baz', 'foo.Bar.Baz'),
+      createEntry('Quot', 'foo.Bar.Quot'),
+      createEntry('Quux', 'foo.Bar.Quot.Quux')
   ];
 
-  var root = nav.buildTree(input);
-  assertEquals(1, root.getChildCount());
-  assertNode(root.getChildAt(0), 'foo', input[0]);
+  let root = nav.buildTree(input);
+  assertEquals(1, root.length);
+  assertEntry(root[0], 'foo', 'foo');
 
-  var foo = root.getChildAt(0);
-  assertEquals(4, foo.getChildCount());
-  assertNode(foo.getChildAt(0), 'Bar', input[1]);
-  assertNode(foo.getChildAt(1), 'Bar.Baz', input[2]);
-  assertNode(foo.getChildAt(2), 'Bar.Quot', input[3]);
-  assertNode(foo.getChildAt(3), 'Bar.Quot.Quux', input[4]);
-}
-
-
-function testBuildTree_modulesAreAlwaysUnderRoot() {
-  var input = [
-    {name: 'foo', qualifiedName: 'foo', types: [{
-      name: 'Clazz', qualifiedName: 'foo.Clazz'
-    }]},
-    {name: 'foo.bar', qualifiedName: 'foo.bar'}
-  ];
-
-  var root = nav.buildTree(input, true);
-  assertEquals(2, root.getChildCount());
-  assertNode(root.getChildAt(0), 'foo', input[0]);
-  assertNode(root.getChildAt(1), 'foo.bar', input[1]);
-
-  var foo = root.getChildAt(0);
-  assertEquals(0, foo.getChildCount());
-
-  var bar = root.getChildAt(1);
-  assertEquals(0, bar.getChildCount());
-}
-
-
-function testBuildTree_sortsNodesByKey() {
-  var input = [
-    {name: 'zz.bb', qualifiedName: 'zz.bb'},
-    {name: 'zz.aa', qualifiedName: 'zz.aa'},
-    {name: 'zz', qualifiedName: 'zz', namespace: true},
-    {name: 'aa', qualifiedName: 'aa'}
-  ];
-
-  var root = nav.buildTree(input);
-  assertEquals(2, root.getChildCount());
-  assertNode(root.getChildAt(0), 'aa', input[3]);
-  assertNode(root.getChildAt(1), 'zz', input[2]);
-
-  var zz = root.getChildAt(1);
-  assertEquals(2, zz.getChildCount());
-  assertNode(zz.getChildAt(0), 'aa', input[1]);
-  assertNode(zz.getChildAt(1), 'bb', input[0]);
-}
-
-
-function testBuildList() {
-  var input = [
-    {name: 'GlobalCtor',
-     qualifiedName: 'GlobalCtor',
-     href: 'class_GlobalCtor.html'},
-    {name: 'Other',
-     qualifiedName: 'GlobalCtor.Other',
-     href: 'class_GlobalCtor_Other.html'},
-    {name: 'closure.module',
-     qualifiedName: 'closure.module',
-     href: 'namespace_closure_module.html',
-     namespace: true},
-    {name: 'Clazz',
-     qualifiedName: 'closure.module.Clazz',
-     href: 'class_closure_module_Clazz.html'},
-    {name: 'PubClass',
-     qualifiedName: 'closure.module.PubClass',
-     href: 'class_closure_module_PubClass.html'},
-    {name: 'foo',
-     qualifiedName: 'foo',
-     href: 'namespace_foo.html',
-     namespace: true},
-    {name: 'One',
-     qualifiedName: 'foo.One',
-     href: 'class_foo_One.html'},
-    {name: 'foo.quot',
-     qualifiedName: 'foo.quot',
-     href: 'namespace_foo_quot.html',
-     namespace: true},
-    {name: 'OneBarAlias',
-     qualifiedName: 'foo.quot.OneBarAlias',
-     href: 'class_foo_quot_OneBarAlias.html'}
-  ];
-
-  var root = nav.buildList(input, '');
-  document.body.appendChild(root);
-  goog.testing.dom.assertHtmlContentsMatch(
-      [
-        '<li><a class="item" tabindex="1" href="class_GlobalCtor.html">GlobalCtor</a></li>',
-        '<li><a class="item" tabindex="1" href="class_GlobalCtor_Other.html">GlobalCtor.Other</a></li>',
-        '<li>',
-        '<div class="toggle" data-id=".nav:closure.module">',
-        '<a class="item" tabindex="1" href="namespace_closure_module.html">closure.module</a>',
-        '<i class="material-icons">expand_more</i>',
-        '</div>',
-        '<ul class="tree">',
-        '<li><a class="item" tabindex="1" href="class_closure_module_Clazz.html">Clazz</a></li>',
-        '<li><a class="item" tabindex="1" href="class_closure_module_PubClass.html">PubClass</a></li>',
-        '</ul>',
-        '</li>',
-        '<li>',
-        '<div class="toggle" data-id=".nav:foo">',
-        '<a class="item" tabindex="1" href="namespace_foo.html">foo</a>',
-        '<i class="material-icons">expand_more</i>',
-        '</div>',
-        '<ul class="tree">',
-        '<li><a class="item" tabindex="1" href="class_foo_One.html">One</a></li>',
-        '<li>',
-        '<div class="toggle" data-id=".nav:foo.quot">',
-        '<a class="item" tabindex="1" href="namespace_foo_quot.html">quot</a>',
-        '<i class="material-icons">expand_more</i>',
-        '</div>',
-        '<ul class="tree">',
-        '<li><a class="item" tabindex="1" href="class_foo_quot_OneBarAlias.html">OneBarAlias</a></li>',
-        '</ul>',
-        '</li>',
-        '</ul>',
-        '</li>'
-      ].join(''),
-      root,
-      true);
-}
-
-
-function testBuildList_forModules() {
-  var input = [
-    {name: 'example',
-     qualifiedName: 'example',
-     href: 'module_example.html',
-     types: [{name: 'Greeter',
-              qualifiedName: 'example.Greeter',
-              href: 'type_Greeter.html'},
-             {name: 'foo',
-              qualifiedName: 'example.foo',
-              namespace: true,
-              href: 'type_foo.html'},
-             {name: 'foo.bar',
-              qualifiedName: 'example.foo.bar',
-              href: 'type_foo.bar.html'}]},
-    {name: 'example/nested',
-     qualifiedName: 'example/nested',
-     href: 'module_example_nested.html',
-     types: [{name: 'IdGenerator',
-              qualifiedName: 'example/nested.IdGenerator',
-              href: 'type_IdGenerator.html'},
-             {name: 'IdGenerator.Impl',
-              qualifiedName: 'example/nested.IdGenerator.Impl',
-              href: 'type_IdGenerator.Impl.html'}]}
-  ];
-
-  var root = nav.buildList(input, '', '', true);
-  document.body.appendChild(root);
-  goog.testing.dom.assertHtmlContentsMatch(
-      [
-        '<li>',
-        '<div class="toggle" data-id=".nav-module:example">',
-        '<a class="item" tabindex="1" href="module_example.html">example</a>',
-        '<i class="material-icons">expand_more</i>',
-        '</div>',
-        '<ul class="tree">',
-        '<li>',
-        '<a class="item" tabindex="1" href="module_example_nested.html">nested</a>',
-        '</li>',
-        '</ul>',
-        '</ul>',
-        '</li>'
-      ].join(''),
-      root,
-      true);
-}
-
-
-function testBuildList_prependsBasePathToLinks() {
-  var input = [{name: 'GlobalCtor', qualifiedName: 'GlobalCtor',
-                href: 'class_GlobalCtor.html'}];
-
-  var root = nav.buildList(input, '../..');
-  var el = root.querySelector('a[href]');
-  assertEquals('../../class_GlobalCtor.html', el.getAttribute('href'));
-}
-
-
-function testBuildList_marksTheNodeForTheCurrentFile() {
-  var input = [{name: 'GlobalCtor', qualifiedName: 'GlobalCtor',
-                href: 'class_GlobalCtor.html'}];
-
-  var root = nav.buildList(input, '../..', 'class_GlobalCtor.html');
-  var el = root.querySelector('.current');
-  assertEquals('A', el.tagName);
-  assertEquals('GlobalCtor', el.textContent);
-}
-
-
-function testBuildList_marksTheNodeForTheCurrentFile_namespace() {
-  var input = [
-    {name: 'foo',
-     qualifiedName: 'foo',
-     namespace: true,
-     href: 'class_GlobalCtor.html'},
-    {name: 'foo.bar', qualifiedName: 'foo.bar', href: ''}
-  ];
-
-  var root = nav.buildList(input, '../..', 'class_GlobalCtor.html');
-  var el = root.querySelector('.current');
-  assertEquals('A', el.tagName);
-  assertEquals('DIV', el.parentNode.tagName);
-  assertEquals('.nav:foo', el.parentNode.dataset.id);
+  let foo = root[0].child;
+  assertEquals(4, foo.length);
+  assertEntry(foo[0], 'Bar', 'foo.Bar');
+  assertEntry(foo[1], 'Bar.Baz', 'foo.Bar.Baz');
+  assertEntry(foo[2], 'Bar.Quot', 'foo.Bar.Quot');
+  assertEntry(foo[3], 'Bar.Quot.Quux', 'foo.Bar.Quot.Quux');
 }

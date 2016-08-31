@@ -32,6 +32,9 @@ const BASE_PATH = (function() {
   var thisFile = 'dossier.js';
   array.find(scripts, function(script) {
     var src = script.getAttribute('src');
+    if (!src) {
+      return false;
+    }
     var len = src.length;
     if (src.slice(len - thisFile.length) === thisFile) {
       dirPath = src.slice(0, len - thisFile.length);

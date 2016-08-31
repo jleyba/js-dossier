@@ -1,521 +1,675 @@
 {
-  "modules": [
+  "1": [
     {
-      "href": "module/example/index.html",
-      "name": "example",
-      "qualifiedName": "example",
-      "statics": [
+      "1": {
+        "1": "example",
+        "3": {
+          "1": "module/example/index.html",
+          "2": "module/example/index.json"
+        }
+      },
+      "3": true,
+      "4": [
         "max",
         "min"
       ],
-      "types": [
+      "6": [
         {
-          "href": "module/example/index_exports_GlobalCtor.html",
-          "interface": false,
-          "members": [
+          "1": {
+            "1": "GlobalCtor",
+            "2": "example.GlobalCtor",
+            "3": {
+              "1": "module/example/index_exports_GlobalCtor.html",
+              "2": "module/example/index_exports_GlobalCtor.json"
+            }
+          },
+          "5": [
             "deprecatedMethod",
             "deprecatedMethod2",
             "instanceMethod",
             "protoMethod"
-          ],
-          "name": "GlobalCtor",
-          "namespace": false,
-          "qualifiedName": "example.GlobalCtor"
+          ]
         },
         {
-          "href": "module/example/index_exports_Greeter.html",
-          "interface": false,
-          "name": "Greeter",
-          "namespace": false,
-          "qualifiedName": "example.Greeter"
+          "1": {
+            "1": "Greeter",
+            "2": "example.Greeter",
+            "3": {
+              "1": "module/example/index_exports_Greeter.html",
+              "2": "module/example/index_exports_Greeter.json"
+            }
+          }
         }
       ]
     },
     {
-      "href": "module/example/empty.html",
-      "name": "example/empty",
-      "qualifiedName": "example/empty"
+      "1": {
+        "1": "example/empty",
+        "3": {
+          "1": "module/example/empty.html",
+          "2": "module/example/empty.json"
+        }
+      },
+      "3": true
     },
     {
-      "href": "module/example/nested.html",
-      "name": "example/nested",
-      "qualifiedName": "example/nested",
-      "types": [
+      "1": {
+        "1": "example/nested",
+        "3": {
+          "1": "module/example/nested.html",
+          "2": "module/example/nested.json"
+        }
+      },
+      "3": true,
+      "6": [
         {
-          "href": "module/example/nested_exports_Greeter.html",
-          "interface": false,
-          "members": [
+          "1": {
+            "1": "Greeter",
+            "2": "example/nested.Greeter",
+            "3": {
+              "1": "module/example/nested_exports_Greeter.html",
+              "2": "module/example/nested_exports_Greeter.json"
+            }
+          },
+          "5": [
             "greet"
-          ],
-          "name": "Greeter",
-          "namespace": false,
-          "qualifiedName": "example/nested.Greeter"
+          ]
         },
         {
-          "href": "module/example/nested_exports_IdGenerator.html",
-          "interface": true,
-          "members": [
+          "1": {
+            "1": "IdGenerator",
+            "2": "example/nested.IdGenerator",
+            "3": {
+              "1": "module/example/nested_exports_IdGenerator.html",
+              "2": "module/example/nested_exports_IdGenerator.json"
+            }
+          },
+          "2": true,
+          "5": [
             "getNext"
-          ],
-          "name": "IdGenerator",
-          "namespace": false,
-          "qualifiedName": "example/nested.IdGenerator"
+          ]
         },
         {
-          "href": "module/example/nested_exports_IncreasingIdGenerator.html",
-          "interface": true,
-          "members": [
+          "1": {
+            "1": "IncreasingIdGenerator",
+            "2": "example/nested.IncreasingIdGenerator",
+            "3": {
+              "1": "module/example/nested_exports_IncreasingIdGenerator.html",
+              "2": "module/example/nested_exports_IncreasingIdGenerator.json"
+            }
+          },
+          "2": true,
+          "5": [
             "getNext"
-          ],
-          "name": "IncreasingIdGenerator",
-          "namespace": false,
-          "qualifiedName": "example/nested.IncreasingIdGenerator"
+          ]
         },
         {
-          "href": "module/example/nested_exports_IncrementingIdGenerator.html",
-          "interface": false,
-          "members": [
+          "1": {
+            "1": "IncrementingIdGenerator",
+            "2": "example/nested.IncrementingIdGenerator",
+            "3": {
+              "1": "module/example/nested_exports_IncrementingIdGenerator.html",
+              "2": "module/example/nested_exports_IncrementingIdGenerator.json"
+            }
+          },
+          "5": [
             "getNext"
-          ],
-          "name": "IncrementingIdGenerator",
-          "namespace": false,
-          "qualifiedName": "example/nested.IncrementingIdGenerator"
+          ]
         },
         {
-          "href": "module/example/nested_exports_Person.html",
-          "interface": false,
-          "members": [
+          "1": {
+            "1": "Person",
+            "2": "example/nested.Person",
+            "3": {
+              "1": "module/example/nested_exports_Person.html",
+              "2": "module/example/nested_exports_Person.json"
+            }
+          },
+          "5": [
             "age",
             "name"
-          ],
-          "name": "Person",
-          "namespace": false,
-          "qualifiedName": "example/nested.Person"
+          ]
         }
       ]
     },
     {
-      "href": "module/example/net.html",
-      "name": "example/net",
-      "qualifiedName": "example/net",
-      "statics": [
+      "1": {
+        "1": "example/net",
+        "3": {
+          "1": "module/example/net.html",
+          "2": "module/example/net.json"
+        }
+      },
+      "3": true,
+      "4": [
         "fetchJson",
         "get"
       ],
-      "types": [
+      "6": [
         {
-          "href": "module/example/net_exports_HttpClient.html",
-          "interface": false,
-          "members": [
+          "1": {
+            "1": "HttpClient",
+            "2": "example/net.HttpClient",
+            "3": {
+              "1": "module/example/net_exports_HttpClient.html",
+              "2": "module/example/net_exports_HttpClient.json"
+            }
+          },
+          "5": [
             "fetchJson",
             "get"
-          ],
-          "name": "HttpClient",
-          "namespace": false,
-          "qualifiedName": "example/net.HttpClient"
+          ]
         }
       ]
     },
     {
-      "href": "module/example/worker.html",
-      "name": "example/worker",
-      "qualifiedName": "example/worker"
+      "1": {
+        "1": "example/worker",
+        "3": {
+          "1": "module/example/worker.html",
+          "2": "module/example/worker.json"
+        }
+      },
+      "3": true
     }
   ],
-  "types": [
+  "2": [
     {
-      "href": "Calculator.html",
-      "interface": false,
-      "members": [
-        "add",
-        "radix"
-      ],
-      "name": "Calculator",
-      "namespace": false,
-      "qualifiedName": "Calculator",
-      "statics": [
+      "1": {
+        "1": "Calculator",
+        "3": {
+          "1": "Calculator.html",
+          "2": "Calculator.json"
+        }
+      },
+      "4": [
         "Calculator.base2",
         "Calculator.decimal",
         "Calculator.fibonacci"
+      ],
+      "5": [
+        "add",
+        "radix"
       ]
     },
     {
-      "href": "closure.module.Clazz.html",
-      "interface": false,
-      "members": [
-        "method"
-      ],
-      "name": "Clazz",
-      "namespace": false,
-      "qualifiedName": "closure.module.Clazz"
+      "1": {
+        "1": "Color",
+        "3": {
+          "1": "Color.html",
+          "2": "Color.json"
+        }
+      }
     },
     {
-      "href": "Color.html",
-      "interface": false,
-      "name": "Color",
-      "namespace": false,
-      "qualifiedName": "Color"
+      "1": {
+        "1": "DeprecatedFoo",
+        "3": {
+          "1": "DeprecatedFoo.html",
+          "2": "DeprecatedFoo.json"
+        }
+      }
     },
     {
-      "href": "DeprecatedFoo.html",
-      "interface": false,
-      "name": "DeprecatedFoo",
-      "namespace": false,
-      "qualifiedName": "DeprecatedFoo"
+      "1": {
+        "1": "EmptyEnum",
+        "3": {
+          "1": "EmptyEnum.html",
+          "2": "EmptyEnum.json"
+        }
+      }
     },
     {
-      "href": "EmptyEnum.html",
-      "interface": false,
-      "name": "EmptyEnum",
-      "namespace": false,
-      "qualifiedName": "EmptyEnum"
-    },
-    {
-      "href": "Formatter.html",
-      "interface": false,
-      "members": [
+      "1": {
+        "1": "Formatter",
+        "3": {
+          "1": "Formatter.html",
+          "2": "Formatter.json"
+        }
+      },
+      "5": [
         "format",
         "oldFormat"
-      ],
-      "name": "Formatter",
-      "namespace": false,
-      "qualifiedName": "Formatter"
+      ]
     },
     {
-      "href": "GlobalCtor.html",
-      "interface": false,
-      "members": [
+      "1": {
+        "1": "GlobalCtor",
+        "3": {
+          "1": "GlobalCtor.html",
+          "2": "GlobalCtor.json"
+        }
+      },
+      "4": [
+        "GlobalCtor.dateCtor",
+        "GlobalCtor.staticFunc",
+        "GlobalCtor.staticProp"
+      ],
+      "5": [
         "deprecatedMethod",
         "deprecatedMethod2",
         "instanceMethod",
         "protoMethod"
-      ],
-      "name": "GlobalCtor",
-      "namespace": false,
-      "qualifiedName": "GlobalCtor",
-      "statics": [
-        "GlobalCtor.dateCtor",
-        "GlobalCtor.staticFunc",
-        "GlobalCtor.staticProp"
       ]
     },
     {
-      "href": "GlobalCtor.Other.html",
-      "interface": false,
-      "name": "GlobalCtor.Other",
-      "namespace": false,
-      "qualifiedName": "GlobalCtor.Other"
+      "1": {
+        "1": "GlobalCtor.Other",
+        "3": {
+          "1": "GlobalCtor.Other.html",
+          "2": "GlobalCtor.Other.json"
+        }
+      }
     },
     {
-      "href": "GlobalEnum.html",
-      "interface": false,
-      "name": "GlobalEnum",
-      "namespace": false,
-      "qualifiedName": "GlobalEnum",
-      "statics": [
+      "1": {
+        "1": "GlobalEnum",
+        "3": {
+          "1": "GlobalEnum.html",
+          "2": "GlobalEnum.json"
+        }
+      },
+      "4": [
         "GlobalEnum.doSomething"
       ]
     },
     {
-      "href": "GlobalPrivateCtor.html",
-      "interface": false,
-      "name": "GlobalPrivateCtor",
-      "namespace": false,
-      "qualifiedName": "GlobalPrivateCtor"
+      "1": {
+        "1": "GlobalPrivateCtor",
+        "3": {
+          "1": "GlobalPrivateCtor.html",
+          "2": "GlobalPrivateCtor.json"
+        }
+      }
     },
     {
-      "href": "closure.module.HardWorker.html",
-      "interface": false,
-      "members": [
-        "taskId"
-      ],
-      "name": "HardWorker",
-      "namespace": false,
-      "qualifiedName": "closure.module.HardWorker"
-    },
-    {
-      "href": "Person.html",
-      "interface": true,
-      "members": [
+      "1": {
+        "1": "Person",
+        "3": {
+          "1": "Person.html",
+          "2": "Person.json"
+        }
+      },
+      "2": true,
+      "5": [
         "age",
         "name"
-      ],
-      "name": "Person",
-      "namespace": false,
-      "qualifiedName": "Person"
+      ]
     },
     {
-      "href": "PrivateColor_.html",
-      "interface": false,
-      "name": "PrivateColor_",
-      "namespace": false,
-      "qualifiedName": "PrivateColor_"
+      "1": {
+        "1": "PrivateColor_",
+        "3": {
+          "1": "PrivateColor_.html",
+          "2": "PrivateColor_.json"
+        }
+      }
     },
     {
-      "href": "closure.module.PubClass.html",
-      "interface": false,
-      "members": [
-        "aMethod"
-      ],
-      "name": "PubClass",
-      "namespace": false,
-      "qualifiedName": "closure.module.PubClass"
+      "1": {
+        "1": "SomeCtor",
+        "3": {
+          "1": "SomeCtor.html",
+          "2": "SomeCtor.json"
+        }
+      }
     },
     {
-      "href": "SomeCtor.html",
-      "interface": false,
-      "name": "SomeCtor",
-      "namespace": false,
-      "qualifiedName": "SomeCtor"
+      "1": {
+        "1": "UndefinedEnum",
+        "3": {
+          "1": "UndefinedEnum.html",
+          "2": "UndefinedEnum.json"
+        }
+      }
     },
     {
-      "href": "UndefinedEnum.html",
-      "interface": false,
-      "name": "UndefinedEnum",
-      "namespace": false,
-      "qualifiedName": "UndefinedEnum"
-    },
-    {
-      "href": "closure.module.Worker.html",
-      "interface": false,
-      "members": [
-        "taskId",
-        "taskName"
-      ],
-      "name": "Worker",
-      "namespace": false,
-      "qualifiedName": "closure.module.Worker"
-    },
-    {
-      "href": "closure.module.html",
-      "interface": false,
-      "name": "closure.module",
-      "namespace": true,
-      "qualifiedName": "closure.module",
-      "statics": [
+      "1": {
+        "1": "closure.module",
+        "3": {
+          "1": "closure.module.html",
+          "2": "closure.module.json"
+        }
+      },
+      "3": true,
+      "4": [
         "publicMethod"
       ]
     },
     {
-      "href": "foo.html",
-      "interface": false,
-      "name": "foo",
-      "namespace": true,
-      "qualifiedName": "foo",
-      "statics": [
+      "1": {
+        "1": "Clazz",
+        "2": "closure.module.Clazz",
+        "3": {
+          "1": "closure.module.Clazz.html",
+          "2": "closure.module.Clazz.json"
+        }
+      },
+      "5": [
+        "method"
+      ]
+    },
+    {
+      "1": {
+        "1": "HardWorker",
+        "2": "closure.module.HardWorker",
+        "3": {
+          "1": "closure.module.HardWorker.html",
+          "2": "closure.module.HardWorker.json"
+        }
+      },
+      "5": [
+        "taskId"
+      ]
+    },
+    {
+      "1": {
+        "1": "PubClass",
+        "2": "closure.module.PubClass",
+        "3": {
+          "1": "closure.module.PubClass.html",
+          "2": "closure.module.PubClass.json"
+        }
+      },
+      "5": [
+        "aMethod"
+      ]
+    },
+    {
+      "1": {
+        "1": "Worker",
+        "2": "closure.module.Worker",
+        "3": {
+          "1": "closure.module.Worker.html",
+          "2": "closure.module.Worker.json"
+        }
+      },
+      "5": [
+        "taskId",
+        "taskName"
+      ]
+    },
+    {
+      "1": {
+        "1": "foo",
+        "3": {
+          "1": "foo.html",
+          "2": "foo.json"
+        }
+      },
+      "3": true,
+      "4": [
         "newFilteredClass"
       ]
     },
     {
-      "href": "foo.One.html",
-      "interface": false,
-      "name": "foo.One",
-      "namespace": false,
-      "qualifiedName": "foo.One"
+      "1": {
+        "1": "foo.One",
+        "3": {
+          "1": "foo.One.html",
+          "2": "foo.One.json"
+        }
+      }
     },
     {
-      "href": "foo.quot.html",
-      "interface": false,
-      "name": "foo.quot",
-      "namespace": true,
-      "qualifiedName": "foo.quot"
+      "1": {
+        "1": "foo.quot",
+        "3": {
+          "1": "foo.quot.html",
+          "2": "foo.quot.json"
+        }
+      },
+      "3": true
     },
     {
-      "href": "foo.quot.OneBarAlias.html",
-      "interface": false,
-      "members": [
+      "1": {
+        "1": "foo.quot.OneBarAlias",
+        "3": {
+          "1": "foo.quot.OneBarAlias.html",
+          "2": "foo.quot.OneBarAlias.json"
+        }
+      },
+      "5": [
         "equals",
         "run"
-      ],
-      "name": "foo.quot.OneBarAlias",
-      "namespace": false,
-      "qualifiedName": "foo.quot.OneBarAlias"
-    },
-    {
-      "href": "sample.html",
-      "interface": false,
-      "name": "sample",
-      "namespace": true,
-      "qualifiedName": "sample"
-    },
-    {
-      "href": "sample.inheritance.html",
-      "interface": false,
-      "name": "sample.inheritance",
-      "namespace": true,
-      "qualifiedName": "sample.inheritance"
-    },
-    {
-      "href": "sample.inheritance.BaseClass.html",
-      "interface": false,
-      "members": [
-        "run"
-      ],
-      "name": "sample.inheritance.BaseClass",
-      "namespace": false,
-      "qualifiedName": "sample.inheritance.BaseClass"
-    },
-    {
-      "href": "sample.inheritance.BaseInterface.html",
-      "interface": true,
-      "name": "sample.inheritance.BaseInterface",
-      "namespace": false,
-      "qualifiedName": "sample.inheritance.BaseInterface"
-    },
-    {
-      "href": "sample.inheritance.DeprecatedFinalClass.html",
-      "interface": false,
-      "members": [
-        "run"
-      ],
-      "name": "sample.inheritance.DeprecatedFinalClass",
-      "namespace": false,
-      "qualifiedName": "sample.inheritance.DeprecatedFinalClass"
-    },
-    {
-      "href": "sample.inheritance.FinalClass.html",
-      "interface": false,
-      "members": [
-        "run"
-      ],
-      "name": "sample.inheritance.FinalClass",
-      "namespace": false,
-      "qualifiedName": "sample.inheritance.FinalClass"
-    },
-    {
-      "href": "sample.inheritance.LeafInterface.html",
-      "interface": true,
-      "name": "sample.inheritance.LeafInterface",
-      "namespace": false,
-      "qualifiedName": "sample.inheritance.LeafInterface"
-    },
-    {
-      "href": "sample.inheritance.NumberClass.html",
-      "interface": false,
-      "members": [
-        "addMany"
-      ],
-      "name": "sample.inheritance.NumberClass",
-      "namespace": false,
-      "qualifiedName": "sample.inheritance.NumberClass",
-      "statics": [
-        "NumberClass.Result"
       ]
     },
     {
-      "href": "sample.inheritance.OtherInterface.html",
-      "interface": true,
-      "name": "sample.inheritance.OtherInterface",
-      "namespace": false,
-      "qualifiedName": "sample.inheritance.OtherInterface"
+      "1": {
+        "1": "sample",
+        "3": {
+          "1": "sample.html",
+          "2": "sample.json"
+        }
+      },
+      "3": true
     },
     {
-      "href": "sample.inheritance.Runnable.html",
-      "interface": true,
-      "members": [
+      "1": {
+        "1": "sample.inheritance",
+        "3": {
+          "1": "sample.inheritance.html",
+          "2": "sample.inheritance.json"
+        }
+      },
+      "3": true
+    },
+    {
+      "1": {
+        "1": "sample.inheritance.BaseClass",
+        "3": {
+          "1": "sample.inheritance.BaseClass.html",
+          "2": "sample.inheritance.BaseClass.json"
+        }
+      },
+      "5": [
         "run"
-      ],
-      "name": "sample.inheritance.Runnable",
-      "namespace": false,
-      "qualifiedName": "sample.inheritance.Runnable"
+      ]
     },
     {
-      "href": "sample.inheritance.RunnableError.html",
-      "interface": false,
-      "members": [
+      "1": {
+        "1": "sample.inheritance.BaseInterface",
+        "3": {
+          "1": "sample.inheritance.BaseInterface.html",
+          "2": "sample.inheritance.BaseInterface.json"
+        }
+      },
+      "2": true
+    },
+    {
+      "1": {
+        "1": "sample.inheritance.DeprecatedFinalClass",
+        "3": {
+          "1": "sample.inheritance.DeprecatedFinalClass.html",
+          "2": "sample.inheritance.DeprecatedFinalClass.json"
+        }
+      },
+      "5": [
         "run"
-      ],
-      "name": "sample.inheritance.RunnableError",
-      "namespace": false,
-      "qualifiedName": "sample.inheritance.RunnableError"
+      ]
     },
     {
-      "href": "sample.inheritance.SecondClass.html",
-      "interface": false,
-      "members": [
+      "1": {
+        "1": "sample.inheritance.FinalClass",
+        "3": {
+          "1": "sample.inheritance.FinalClass.html",
+          "2": "sample.inheritance.FinalClass.json"
+        }
+      },
+      "5": [
         "run"
+      ]
+    },
+    {
+      "1": {
+        "1": "sample.inheritance.LeafInterface",
+        "3": {
+          "1": "sample.inheritance.LeafInterface.html",
+          "2": "sample.inheritance.LeafInterface.json"
+        }
+      },
+      "2": true
+    },
+    {
+      "1": {
+        "1": "sample.inheritance.NumberClass",
+        "3": {
+          "1": "sample.inheritance.NumberClass.html",
+          "2": "sample.inheritance.NumberClass.json"
+        }
+      },
+      "4": [
+        "NumberClass.Result"
       ],
-      "name": "sample.inheritance.SecondClass",
-      "namespace": false,
-      "qualifiedName": "sample.inheritance.SecondClass"
+      "5": [
+        "addMany"
+      ]
     },
     {
-      "href": "sample.inheritance.SecondInterface.html",
-      "interface": true,
-      "name": "sample.inheritance.SecondInterface",
-      "namespace": false,
-      "qualifiedName": "sample.inheritance.SecondInterface"
+      "1": {
+        "1": "sample.inheritance.OtherInterface",
+        "3": {
+          "1": "sample.inheritance.OtherInterface.html",
+          "2": "sample.inheritance.OtherInterface.json"
+        }
+      },
+      "2": true
     },
     {
-      "href": "sample.inheritance.StringClass.html",
-      "interface": false,
-      "members": [
+      "1": {
+        "1": "sample.inheritance.Runnable",
+        "3": {
+          "1": "sample.inheritance.Runnable.html",
+          "2": "sample.inheritance.Runnable.json"
+        }
+      },
+      "2": true,
+      "5": [
+        "run"
+      ]
+    },
+    {
+      "1": {
+        "1": "sample.inheritance.RunnableError",
+        "3": {
+          "1": "sample.inheritance.RunnableError.html",
+          "2": "sample.inheritance.RunnableError.json"
+        }
+      },
+      "5": [
+        "run"
+      ]
+    },
+    {
+      "1": {
+        "1": "sample.inheritance.SecondClass",
+        "3": {
+          "1": "sample.inheritance.SecondClass.html",
+          "2": "sample.inheritance.SecondClass.json"
+        }
+      },
+      "5": [
+        "run"
+      ]
+    },
+    {
+      "1": {
+        "1": "sample.inheritance.SecondInterface",
+        "3": {
+          "1": "sample.inheritance.SecondInterface.html",
+          "2": "sample.inheritance.SecondInterface.json"
+        }
+      },
+      "2": true
+    },
+    {
+      "1": {
+        "1": "sample.inheritance.StringClass",
+        "3": {
+          "1": "sample.inheritance.StringClass.html",
+          "2": "sample.inheritance.StringClass.json"
+        }
+      },
+      "4": [
+        "StringClass.isString"
+      ],
+      "5": [
         "run",
         "substring"
-      ],
-      "name": "sample.inheritance.StringClass",
-      "namespace": false,
-      "qualifiedName": "sample.inheritance.StringClass",
-      "statics": [
-        "StringClass.isString"
       ]
     },
     {
-      "href": "sample.inheritance.TemplateClass.html",
-      "interface": false,
-      "members": [
+      "1": {
+        "1": "sample.inheritance.TemplateClass",
+        "3": {
+          "1": "sample.inheritance.TemplateClass.html",
+          "2": "sample.inheritance.TemplateClass.json"
+        }
+      },
+      "5": [
         "add",
         "getValue",
         "name",
         "value"
-      ],
-      "name": "sample.inheritance.TemplateClass",
-      "namespace": false,
-      "qualifiedName": "sample.inheritance.TemplateClass"
+      ]
     },
     {
-      "href": "sample.json.html",
-      "interface": false,
-      "name": "sample.json",
-      "namespace": true,
-      "qualifiedName": "sample.json",
-      "statics": [
+      "1": {
+        "1": "sample.json",
+        "3": {
+          "1": "sample.json.html",
+          "2": "sample.json.json"
+        }
+      },
+      "3": true,
+      "4": [
         "parse",
         "sample.json.DEBUG",
         "stringify"
       ]
     },
     {
-      "href": "test.html",
-      "interface": false,
-      "name": "test",
-      "namespace": true,
-      "qualifiedName": "test"
+      "1": {
+        "1": "test",
+        "3": {
+          "1": "test.html",
+          "2": "test.json"
+        }
+      },
+      "3": true
     },
     {
-      "href": "test.Registry.html",
-      "interface": false,
-      "name": "test.Registry",
-      "namespace": false,
-      "qualifiedName": "test.Registry"
+      "1": {
+        "1": "test.Registry",
+        "3": {
+          "1": "test.Registry.html",
+          "2": "test.Registry.json"
+        }
+      }
     },
     {
-      "href": "test.registry.html",
-      "interface": false,
-      "name": "test.registry",
-      "namespace": true,
-      "qualifiedName": "test.registry",
-      "statics": [
+      "1": {
+        "1": "test.registry",
+        "3": {
+          "1": "test.registry.html",
+          "2": "test.registry.json"
+        }
+      },
+      "3": true,
+      "4": [
         "register"
       ]
     },
     {
-      "href": "vis.html",
-      "interface": false,
-      "name": "vis",
-      "namespace": true,
-      "qualifiedName": "vis",
-      "statics": [
+      "1": {
+        "1": "vis",
+        "3": {
+          "1": "vis.html",
+          "2": "vis.json"
+        }
+      },
+      "3": true,
+      "4": [
         "DeprecatedTypeDef",
         "DeprecatedTypeDef2",
         "PrivateTypeDef_",
@@ -525,25 +679,31 @@
       ]
     },
     {
-      "href": "vis.InheritsVis.html",
-      "interface": false,
-      "name": "vis.InheritsVis",
-      "namespace": false,
-      "qualifiedName": "vis.InheritsVis"
+      "1": {
+        "1": "vis.InheritsVis",
+        "3": {
+          "1": "vis.InheritsVis.html",
+          "2": "vis.InheritsVis.json"
+        }
+      }
     },
     {
-      "href": "vis.Private.html",
-      "interface": false,
-      "name": "vis.Private",
-      "namespace": false,
-      "qualifiedName": "vis.Private"
+      "1": {
+        "1": "vis.Private",
+        "3": {
+          "1": "vis.Private.html",
+          "2": "vis.Private.json"
+        }
+      }
     },
     {
-      "href": "vis.Public.html",
-      "interface": false,
-      "name": "vis.Public",
-      "namespace": false,
-      "qualifiedName": "vis.Public"
+      "1": {
+        "1": "vis.Public",
+        "3": {
+          "1": "vis.Public.html",
+          "2": "vis.Public.json"
+        }
+      }
     }
   ]
 }

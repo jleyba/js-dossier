@@ -20,6 +20,8 @@
 
 goog.module('dossier.search');
 
+const TypeIndex = goog.require('dossier.TypeIndex');
+const Entry = goog.require('dossier.TypeIndex.Entry');
 const page = goog.require('dossier.page');
 const events = goog.require('goog.events');
 const EventTarget = goog.require('goog.events.EventTarget');
@@ -43,37 +45,34 @@ function getLast(arr) {
 }
 
 
-function addTypes(/** !Map<string, string> */nameToHref,
-                  /** !Descriptor */descriptor) {
-  let baseName = getLast(descriptor.qualifiedName.split(/\./));
+function addTypes(/** !Map<string, string> */nameToHref, /** !Entry */entry) {
+  let qualifiedName = entry.type.qualifiedName || entry.type.name;
+  let baseName = getLast(qualifiedName.split(/\./));
+  let typeHref = entry.type.link.href.getContent();
 
-  nameToHref.set(descriptor.qualifiedName, descriptor.href);
+  nameToHref.set(qualifiedName, typeHref);
 
-  if (descriptor.types) {
-    descriptor.types.forEach(type => addTypes(nameToHref, type));
-  }
+  entry.child.forEach(child => addTypes(nameToHref, child));
 
-  if (descriptor.statics) {
-    descriptor.statics.forEach(function(name) {
-      let href = descriptor.href + '#' + name;
-
-      if (!name.startsWith(descriptor.qualifiedName + '.')) {
-        if (name.startsWith(baseName + '.')) {
-          name = name.substring(baseName.length + 1);
-        }
-        name = descriptor.qualifiedName + '.' + name;
+  entry.staticProperty.forEach(name => {
+    let href = typeHref + '#' + name;
+    if (!name.startsWith(qualifiedName + '.')) {
+      if (name.startsWith(baseName + '.')) {
+        name = name.substring(baseName.length + 1);
       }
+      name = qualifiedName + '.' + name;
+    }
+    nameToHref.set(name, href);
+  });
 
-      nameToHref.set(name, href);
-    });
-  }
+  entry.property.forEach(name => {
+    let href = typeHref + '#' + name;
 
-  if (descriptor.members) {
-    descriptor.members.forEach(function(name) {
-      let href = descriptor.href + '#' + name;
-      nameToHref.set(descriptor.qualifiedName + '#' + name, href);
-    });
-  }
+    // Show as 'Type#property', not '.prototype.' because we don't know if
+    // the property is actually defined on the prototype vs being set in the
+    // constructor.
+    nameToHref.set(qualifiedName + '#' + name, href);
+  });
 }
 
 
@@ -195,7 +194,7 @@ exports.SearchBox = SearchBox;
 
 
 /**
- * @param {!TypeRegistry} typeInfo The type information to populate the search
+ * @param {!TypeIndex} typeInfo The type information to populate the search
  *     auto-complete from.
  * @return {!SearchBox} a new search box object.
  */
@@ -203,13 +202,8 @@ exports.createSearchBox = function(typeInfo) {
   let formEl = /** @type {!Element} */(document.querySelector('header form'));
 
   let nameToUri = /** !Map<string, string> */new Map;
-  if (typeInfo.types) {
-    typeInfo.types.forEach(descriptor => addTypes(nameToUri, descriptor));
-  }
-
-  if (typeInfo.modules) {
-    typeInfo.modules.forEach(module => addTypes(nameToUri, module));
-  }
+  typeInfo.type.forEach(type => addTypes(nameToUri, type));
+  typeInfo.module.forEach(module => addTypes(nameToUri, module));
 
   let input = formEl.querySelector('input');
   input.setAttribute(

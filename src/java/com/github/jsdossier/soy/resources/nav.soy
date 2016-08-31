@@ -2,69 +2,67 @@
 
 
 /**
- * Renders a navigation tree widget.
+ * Renders a list of modules as a tree.
  */
-{template .tree}
-  {@param children: list<html>}
-
-  <ul class="tree">
-    {foreach $child in $children}
-      {$child}
-    {/foreach}
-  </ul>
+{template .moduleTree}
+  {@param modules: list<dossier.TypeIndex.Entry>}
+  {if length($modules)}
+    <ul class="tree">
+      {foreach $module in $modules}
+        {call .treeItem_}
+          {param type: $module /}
+          {param subTypes: $module.child /}
+        {/call}
+      {/foreach}
+    </ul>
+  {/if}
 {/template}
 
 
 /**
- * Renders a list item that contains a plain type link.
+ * Renders a list of types as a tree.
  */
-{template .linkItem}
-  {@param textContent: string}
-  {@param href: string}
-  {@param isCurrent: bool}
-  {@param isInterface: bool}
-
-  <li>{call .link_ data="all" /}
+{template .typeTree}
+  {@param types: list<dossier.TypeIndex.Entry>}
+  {if length($types)}
+    <ul class="tree">
+      {foreach $type in $types}
+        {call .treeItem_}
+          {param type: $type /}
+          {param subTypes: $type.child /}
+        {/call}
+      {/foreach}
+    </ul>
+  {/if}
 {/template}
 
 
-/**
- * Renders a list item that contains a sub-tree.
- */
-{template .treeItem}
-  {@param id: string}
-  {@param subtreeItems: list<html>}
-  {@param textContent: string}
-  {@param href: string}
-  {@param isCurrent: bool}
-  {@param isInterface: bool}
+{template .treeItem_ private="true"}
+  {@param type: dossier.TypeIndex.Entry}
+  {@param? subTypes: list<dossier.TypeIndex.Entry>}
+
+  {let $namedType: $type.type /}
+  {let $link kind="html"}
+    {call dossier.soy.type.typeLink}
+      {param content kind="text"}
+        {$namedType.name}
+      {/param}
+      {param link: $namedType.link /}
+      {param tabIndex: 1 /}
+      {param classes: 'item' /}
+    {/call}
+  {/let}
 
   <li>
-    <div data-id="{$id}" class="toggle">
-      {call .link_ data="all" /}
-      <i class="material-icons">expand_more</i>
-    </div>
-    {call .tree}
-      {param children: $subtreeItems /}
-    {/call}
-{/template}
-
-
-/**
- * Renders a link for the nav-tree.
- */
-{template .link_ private="true"}
-  {@param textContent: string}
-  {@param href: string}
-  {@param isCurrent: bool}
-  {@param isInterface: bool}
-
-  <a tabIndex="1"
-     {if $href}href="{$href}"{/if}
-     class="item
-            {if $isInterface}{sp}interface{/if}
-            {if $isCurrent}{sp}current{/if}
-            ">
-    {$textContent}
-  </a>
+    {if $subTypes and length($subTypes)}
+      <div class="toggle">
+        {$link}
+        <i class="material-icons">expand_more</i>
+      </div>
+      {call .typeTree}
+        {param types: $subTypes /}
+      {/call}
+    {else}
+      {$link}
+    {/if}
 {/template}

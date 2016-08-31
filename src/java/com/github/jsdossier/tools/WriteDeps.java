@@ -80,14 +80,22 @@ final class WriteDeps {
         })
         .toList();
 
+    PrintStreamErrorManager errorManager =  new PrintStreamErrorManager(System.err);
     DepsGenerator generator = new DepsGenerator(
         depsFile,
         sourceFiles,
         DepsGenerator.InclusionStrategy.DO_NOT_DUPLICATE,
         closure.toAbsolutePath().toString(),
-        new PrintStreamErrorManager(System.err));
+        errorManager);
+
+    String calls = generator.computeDependencyCalls();
+    if (errorManager.getErrorCount() > 0) {
+      errorManager.generateReport();
+      return;
+    }
+
     try (BufferedWriter writer = Files.newBufferedWriter(output, UTF_8)) {
-      writer.write(generator.computeDependencyCalls());
+      writer.write(calls);
       writer.flush();
     }
   }
