@@ -8,91 +8,98 @@ public interface IndexOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>optional string home = 1;</code>
-   *
-   * <pre>
-   * Defines the href from the current page to the main index.
-   * </pre>
+   * <code>repeated .dossier.Index.Entry module = 1;</code>
    */
-  java.lang.String getHome();
+  java.util.List<com.github.jsdossier.proto.Index.Entry> 
+      getModuleList();
   /**
-   * <code>optional string home = 1;</code>
-   *
-   * <pre>
-   * Defines the href from the current page to the main index.
-   * </pre>
+   * <code>repeated .dossier.Index.Entry module = 1;</code>
    */
-  com.google.protobuf.ByteString
-      getHomeBytes();
-
+  com.github.jsdossier.proto.Index.Entry getModule(int index);
   /**
-   * <code>optional bool include_types = 2;</code>
-   *
-   * <pre>
-   * Whether to generate the global type section.
-   * </pre>
+   * <code>repeated .dossier.Index.Entry module = 1;</code>
    */
-  boolean getIncludeTypes();
-
+  int getModuleCount();
   /**
-   * <code>optional bool include_modules = 3;</code>
-   *
-   * <pre>
-   * Whether to generate the module type section.
-   * </pre>
+   * <code>repeated .dossier.Index.Entry module = 1;</code>
    */
-  boolean getIncludeModules();
-
+  java.util.List<? extends com.github.jsdossier.proto.Index.EntryOrBuilder> 
+      getModuleOrBuilderList();
   /**
-   * <code>repeated .dossier.Link link = 4;</code>
-   *
-   * <pre>
-   * Additional links to include in the navigation pane.
-   * </pre>
+   * <code>repeated .dossier.Index.Entry module = 1;</code>
    */
-  java.util.List<com.github.jsdossier.proto.Link> 
-      getLinkList();
-  /**
-   * <code>repeated .dossier.Link link = 4;</code>
-   *
-   * <pre>
-   * Additional links to include in the navigation pane.
-   * </pre>
-   */
-  com.github.jsdossier.proto.Link getLink(int index);
-  /**
-   * <code>repeated .dossier.Link link = 4;</code>
-   *
-   * <pre>
-   * Additional links to include in the navigation pane.
-   * </pre>
-   */
-  int getLinkCount();
-  /**
-   * <code>repeated .dossier.Link link = 4;</code>
-   *
-   * <pre>
-   * Additional links to include in the navigation pane.
-   * </pre>
-   */
-  java.util.List<? extends com.github.jsdossier.proto.LinkOrBuilder> 
-      getLinkOrBuilderList();
-  /**
-   * <code>repeated .dossier.Link link = 4;</code>
-   *
-   * <pre>
-   * Additional links to include in the navigation pane.
-   * </pre>
-   */
-  com.github.jsdossier.proto.LinkOrBuilder getLinkOrBuilder(
+  com.github.jsdossier.proto.Index.EntryOrBuilder getModuleOrBuilder(
       int index);
 
   /**
-   * <code>optional int64 timestamp = 5;</code>
-   *
-   * <pre>
-   * When this index was generated.
-   * </pre>
+   * <code>repeated .dossier.Index.Entry type = 2;</code>
    */
-  long getTimestamp();
+  java.util.List<com.github.jsdossier.proto.Index.Entry> 
+      getTypeList();
+  /**
+   * <code>repeated .dossier.Index.Entry type = 2;</code>
+   */
+  com.github.jsdossier.proto.Index.Entry getType(int index);
+  /**
+   * <code>repeated .dossier.Index.Entry type = 2;</code>
+   */
+  int getTypeCount();
+  /**
+   * <code>repeated .dossier.Index.Entry type = 2;</code>
+   */
+  java.util.List<? extends com.github.jsdossier.proto.Index.EntryOrBuilder> 
+      getTypeOrBuilderList();
+  /**
+   * <code>repeated .dossier.Index.Entry type = 2;</code>
+   */
+  com.github.jsdossier.proto.Index.EntryOrBuilder getTypeOrBuilder(
+      int index);
+
+  /**
+   * <code>repeated .dossier.Link page = 3;</code>
+   */
+  java.util.List<com.github.jsdossier.proto.Link> 
+      getPageList();
+  /**
+   * <code>repeated .dossier.Link page = 3;</code>
+   */
+  com.github.jsdossier.proto.Link getPage(int index);
+  /**
+   * <code>repeated .dossier.Link page = 3;</code>
+   */
+  int getPageCount();
+  /**
+   * <code>repeated .dossier.Link page = 3;</code>
+   */
+  java.util.List<? extends com.github.jsdossier.proto.LinkOrBuilder> 
+      getPageOrBuilderList();
+  /**
+   * <code>repeated .dossier.Link page = 3;</code>
+   */
+  com.github.jsdossier.proto.LinkOrBuilder getPageOrBuilder(
+      int index);
+
+  /**
+   * <code>repeated .dossier.Link source_file = 4;</code>
+   */
+  java.util.List<com.github.jsdossier.proto.Link> 
+      getSourceFileList();
+  /**
+   * <code>repeated .dossier.Link source_file = 4;</code>
+   */
+  com.github.jsdossier.proto.Link getSourceFile(int index);
+  /**
+   * <code>repeated .dossier.Link source_file = 4;</code>
+   */
+  int getSourceFileCount();
+  /**
+   * <code>repeated .dossier.Link source_file = 4;</code>
+   */
+  java.util.List<? extends com.github.jsdossier.proto.LinkOrBuilder> 
+      getSourceFileOrBuilderList();
+  /**
+   * <code>repeated .dossier.Link source_file = 4;</code>
+   */
+  com.github.jsdossier.proto.LinkOrBuilder getSourceFileOrBuilder(
+      int index);
 }

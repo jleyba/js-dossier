@@ -16,7 +16,7 @@
 
 goog.module('dossier.nav');
 
-const TypeIndex = goog.require('dossier.TypeIndex');
+const Index = goog.require('dossier.Index');
 const page = goog.require('dossier.page');
 const soyNav = goog.require('dossier.soy.nav');
 const Arrays = goog.require('goog.array');
@@ -31,7 +31,7 @@ const SanitizedHtml = goog.require('soydata.SanitizedHtml');
 
 
 /**
- * @param {!Array<!dossier.TypeIndex.Entry>} entries
+ * @param {!Array<!dossier.Index.Entry>} entries
  */
 function sortEntries(entries) {
   entries.sort((a, b) => {
@@ -55,9 +55,9 @@ function sortEntries(entries) {
  * Builds a tree structure from the given list of descriptors where the
  * root node represents the global scope.
  *
- * @param {!Array<!dossier.TypeIndex.Entry>} entries The index entries to
+ * @param {!Array<!dossier.Index.Entry>} entries The index entries to
  *     build a tree from.
- * @return {!Array<!dossier.TypeIndex.Entry>} The constructed, possibly
+ * @return {!Array<!dossier.Index.Entry>} The constructed, possibly
  *     disconnected trees.
  */
 function buildTree(entries) {
@@ -296,7 +296,7 @@ const NAV_ITEM_HEIGHT = 45;
 /**
  * Creates the side nav drawer widget.
  *
- * @param {!dossier.TypeIndex} typeInfo The type information to build the list
+ * @param {!dossier.Index} typeInfo The type information to build the list
  *     from.
  * @param {string} currentFile The path to the file that loaded this script.
  * @param {string} basePath The path to the main index file.

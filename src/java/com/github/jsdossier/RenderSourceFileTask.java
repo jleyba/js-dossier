@@ -38,14 +38,14 @@ final class RenderSourceFileTask implements Callable<Path> {
   private static final String MODULE_SLASH = "/";
 
   private final DossierFileSystem dfs;
-  private final TypeIndexManager index;
+  private final IndexBuilder index;
   private final PageRenderer renderer;
   private final Path prefix;
   private final Path path;
 
   RenderSourceFileTask(
       @Provided DossierFileSystem dfs,
-      @Provided TypeIndexManager index,
+      @Provided IndexBuilder index,
       @Provided PageRenderer renderer,
       @Provided @SourcePrefix Path prefix,
       Path path) {

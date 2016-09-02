@@ -22,7 +22,7 @@
 
 goog.module('dossier.main');
 
-const TypeIndex = goog.require('dossier.TypeIndex');
+const Index = goog.require('dossier.Index');
 const app = goog.require('dossier.app');
 const nav = goog.require('dossier.nav');
 const page = goog.require('dossier.page');
@@ -36,7 +36,7 @@ if (engine.isWebKit() && !browser.isChrome() && !browser.isOpera()) {
   document.documentElement.classList.add('webkit');
 }
 
-const typeIndex = new TypeIndex(/** @type {!Object} */(goog.global['TYPES']));
+const typeIndex = new Index(/** @type {!Object} */(goog.global['TYPES']));
 app.run(
     search.createSearchBox(typeIndex),
     nav.createNavDrawer(typeIndex, page.getCurrentFile(), page.getBasePath()));

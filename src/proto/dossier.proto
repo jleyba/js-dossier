@@ -186,26 +186,8 @@ message Enumeration {
   Visibility visibility = 3;
 }
 
-// Describes how to build the side index for a generated page.
+
 message Index {
-  // Defines the href from the current page to the main index.
-  string home = 1 [(options.sanitized).uri = true];
-
-  // Whether to generate the global type section.
-  bool include_types = 2;
-
-  // Whether to generate the module type section.
-  bool include_modules = 3;
-
-  // Additional links to include in the navigation pane.
-  repeated Link link = 4;
-
-  // When this index was generated.
-  int64 timestamp = 5;
-}
-
-
-message TypeIndex {
   message Entry {
     dossier.expression.NamedType type = 1;
     bool is_interface = 2;

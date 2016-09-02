@@ -19,7 +19,7 @@
 goog.provide('dossier.nav.test');
 goog.setTestOnly('dossier.nav.test');
 
-goog.require('dossier.TypeIndex');
+goog.require('dossier.Index');
 goog.require('dossier.expression.NamedType');
 goog.require('dossier.nav');
 goog.require('goog.testing.jsunit');
@@ -41,7 +41,7 @@ function createEntry(name, opt_qualifiedName) {
     type.qualifiedName = opt_qualifiedName;
   }
 
-  let entry = new dossier.TypeIndex.Entry;
+  let entry = new dossier.Index.Entry;
   entry.type = type;
   return entry;
 }

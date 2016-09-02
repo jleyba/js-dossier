@@ -24,7 +24,7 @@ import com.github.jsdossier.jscomp.NominalType;
 import com.github.jsdossier.jscomp.TypeRegistry;
 import com.github.jsdossier.proto.Link;
 import com.github.jsdossier.proto.NamedType;
-import com.github.jsdossier.proto.TypeIndex;
+import com.github.jsdossier.proto.Index;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.collect.FluentIterable;
@@ -43,12 +43,12 @@ import javax.inject.Inject;
  * An index of all types and properties in generated documentation.
  */
 @DocumentationScoped
-final class TypeIndexManager {
+final class IndexBuilder {
 
-  private static final Comparator<TypeIndex.Entry> ENTRY_COMPARATOR =
-      new Comparator<TypeIndex.Entry>() {
+  private static final Comparator<Index.Entry> ENTRY_COMPARATOR =
+      new Comparator<Index.Entry>() {
         @Override
-        public int compare(TypeIndex.Entry o1, TypeIndex.Entry o2) {
+        public int compare(Index.Entry o1, Index.Entry o2) {
           String name1 = o1.getType().getQualifiedName().isEmpty()
               ? o1.getType().getName()
               : o1.getType().getQualifiedName();
@@ -74,11 +74,11 @@ final class TypeIndexManager {
   private final TypeRegistry typeRegistry;
   private final ImmutableSet<MarkdownPage> userPages;
 
-  private final TypeIndex.Builder index = TypeIndex.newBuilder();
+  private final Index.Builder index = Index.newBuilder();
   private final Map<NominalType, IndexReference> seenTypes = new HashMap<>();
 
   @Inject
-  TypeIndexManager(
+  IndexBuilder(
       DossierFileSystem dfs,
       LinkFactoryBuilder linkFactoryBuilder,
       TypeRegistry typeRegistry,
@@ -89,8 +89,8 @@ final class TypeIndexManager {
     this.linkFactory = linkFactoryBuilder.create(null).withJsonPaths();
   }
 
-  public TypeIndex toNormalizedProto() {
-    return TypeIndex.newBuilder()
+  public Index toNormalizedProto() {
+    return Index.newBuilder()
         .addAllModule(sortEntries(index.getModuleList()))
         .addAllType(sortEntries(index.getTypeList()))
         .addAllPage(sortPages(userPages))
@@ -124,18 +124,18 @@ final class TypeIndexManager {
     return path.toString().replace(path.getFileSystem().getSeparator(), "/");
   }
 
-  private static List<TypeIndex.Entry> sortEntries(Iterable<TypeIndex.Entry> types) {
+  private static List<Index.Entry> sortEntries(Iterable<Index.Entry> types) {
     return FluentIterable.from(types)
-        .transform(new Function<TypeIndex.Entry, TypeIndex.Entry>() {
+        .transform(new Function<Index.Entry, Index.Entry>() {
           @Override
-          public TypeIndex.Entry apply(TypeIndex.Entry input) {
+          public Index.Entry apply(Index.Entry input) {
             if (input.getStaticPropertyCount() == 0
                 && input.getPropertyCount() == 0
                 && input.getChildCount() == 0) {
               return input;
             }
 
-            return TypeIndex.Entry.newBuilder()
+            return Index.Entry.newBuilder()
                 .setType(input.getType())
                 .setIsInterface(input.getIsInterface())
                 .setIsNamespace(input.getIsNamespace())
@@ -165,7 +165,7 @@ final class TypeIndexManager {
     }
     checkArgument(module.isModuleExports(), "not a module exports object: %s", module.getName());
 
-    TypeIndex.Entry.Builder indexedModule = index.addModuleBuilder()
+    Index.Entry.Builder indexedModule = index.addModuleBuilder()
         .setType(linkFactory.createTypeReference(module))
         .setIsNamespace(true);
 
@@ -175,16 +175,16 @@ final class TypeIndexManager {
   }
 
   public synchronized IndexReference addType(NominalType type) {
-    return addTypeInfo(type, Optional.<TypeIndex.Entry.Builder>absent());
+    return addTypeInfo(type, Optional.<Index.Entry.Builder>absent());
   }
 
   private synchronized IndexReference addTypeInfo(
-      NominalType type, Optional<TypeIndex.Entry.Builder> module) {
+      NominalType type, Optional<Index.Entry.Builder> module) {
     if (seenTypes.containsKey(type)) {
       return seenTypes.get(type);
     }
 
-    TypeIndex.Entry.Builder indexedType = newEntryBuilder(module)
+    Index.Entry.Builder indexedType = newEntryBuilder(module)
         .setType(linkFactory.createTypeReference(type))
         .setIsInterface(type.getType().isInterface())
         .setIsNamespace(type.isNamespace());
@@ -207,7 +207,7 @@ final class TypeIndexManager {
     return ref;
   }
 
-  private TypeIndex.Entry.Builder newEntryBuilder(Optional<TypeIndex.Entry.Builder> module) {
+  private Index.Entry.Builder newEntryBuilder(Optional<Index.Entry.Builder> module) {
     if (module.isPresent()) {
       return module.get().addChildBuilder();
     }
@@ -216,9 +216,9 @@ final class TypeIndexManager {
 
   final class IndexReference {
     private final NominalType type;
-    private final TypeIndex.Entry.Builder entry;
+    private final Index.Entry.Builder entry;
 
-    private IndexReference(NominalType type, TypeIndex.Entry.Builder entry) {
+    private IndexReference(NominalType type, Index.Entry.Builder entry) {
       this.type = type;
       this.entry = entry;
     }

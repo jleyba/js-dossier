@@ -39,7 +39,7 @@ final class RenderIndexTask implements Callable<Path> {
   private final LinkFactory linkFactory;
   private final PageRenderer renderer;
   private final Optional<Path> readmeFile;
-  private final TypeIndexManager index;
+  private final IndexBuilder index;
 
   @Inject
   RenderIndexTask(
@@ -48,7 +48,7 @@ final class RenderIndexTask implements Callable<Path> {
       LinkFactoryBuilder linkFactoryBuilder,
       PageRenderer renderer,
       @Readme Optional<Path> readmeFile,
-      TypeIndexManager index) {
+      IndexBuilder index) {
     this.dfs = dfs;
     this.parser = parser;
     this.index = index;

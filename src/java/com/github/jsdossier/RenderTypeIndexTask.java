@@ -22,7 +22,7 @@ import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 import static java.nio.file.StandardOpenOption.WRITE;
 
 import com.github.jsdossier.annotations.DocumentationScoped;
-import com.github.jsdossier.proto.TypeIndex;
+import com.github.jsdossier.proto.Index;
 import com.github.jsdossier.soy.JsonRenderer;
 
 import java.io.IOException;
@@ -41,13 +41,13 @@ final class RenderTypeIndexTask implements Callable<Path> {
 
   private final DossierFileSystem dfs;
   private final JsonRenderer jsonRenderer;
-  private final TypeIndexManager index;
+  private final IndexBuilder index;
 
   @Inject
   RenderTypeIndexTask(
       DossierFileSystem dfs,
       JsonRenderer jsonRenderer,
-      TypeIndexManager index) {
+      IndexBuilder index) {
     this.dfs = dfs;
     this.jsonRenderer = jsonRenderer;
     this.index = index;
@@ -55,7 +55,7 @@ final class RenderTypeIndexTask implements Callable<Path> {
 
   @Override
   public Path call() throws IOException {
-    TypeIndex message = index.toNormalizedProto();
+    Index message = index.toNormalizedProto();
 
     StringWriter sw = new StringWriter();
     jsonRenderer.render(sw, message);

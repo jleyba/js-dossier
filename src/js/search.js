@@ -20,8 +20,8 @@
 
 goog.module('dossier.search');
 
-const TypeIndex = goog.require('dossier.TypeIndex');
-const Entry = goog.require('dossier.TypeIndex.Entry');
+const Index = goog.require('dossier.Index');
+const Entry = goog.require('dossier.Index.Entry');
 const page = goog.require('dossier.page');
 const events = goog.require('goog.events');
 const EventTarget = goog.require('goog.events.EventTarget');
@@ -194,7 +194,7 @@ exports.SearchBox = SearchBox;
 
 
 /**
- * @param {!TypeIndex} typeInfo The type information to populate the search
+ * @param {!Index} typeInfo The type information to populate the search
  *     auto-complete from.
  * @return {!SearchBox} a new search box object.
  */

@@ -5,8 +5,8 @@
  * Renders the contents of a nav drawer.
  */
 {template .drawerContents}
-  {@param modules: list<dossier.TypeIndex.Entry>}
-  {@param types: list<dossier.TypeIndex.Entry>}
+  {@param modules: list<dossier.Index.Entry>}
+  {@param types: list<dossier.Index.Entry>}
   {@param links: list<dossier.Link>}
 
   <section>
@@ -48,7 +48,7 @@
  * Renders a list of modules as a tree.
  */
 {template .moduleTree_ private="true"}
-  {@param modules: list<dossier.TypeIndex.Entry>}
+  {@param modules: list<dossier.Index.Entry>}
   {if length($modules)}
     <ul class="tree">
       {foreach $module in $modules}
@@ -66,7 +66,7 @@
  * Renders a list of types as a tree.
  */
 {template .typeTree_ private="true"}
-  {@param types: list<dossier.TypeIndex.Entry>}
+  {@param types: list<dossier.Index.Entry>}
   {if length($types)}
     <ul class="tree">
       {foreach $type in $types}
@@ -81,8 +81,8 @@
 
 
 {template .treeItem_ private="true"}
-  {@param type: dossier.TypeIndex.Entry}
-  {@param? subTypes: list<dossier.TypeIndex.Entry>}
+  {@param type: dossier.Index.Entry}
+  {@param? subTypes: list<dossier.Index.Entry>}
 
   {let $namedType: $type.type /}
   {let $link kind="html"}
