@@ -5,7 +5,7 @@
         "1": "example",
         "3": {
           "1": "module/example/index.html",
-          "2": "module/example/index.json"
+          "2": "data/module/example/index.json"
         }
       },
       "3": true,
@@ -20,7 +20,7 @@
             "2": "example.GlobalCtor",
             "3": {
               "1": "module/example/index_exports_GlobalCtor.html",
-              "2": "module/example/index_exports_GlobalCtor.json"
+              "2": "data/module/example/index_exports_GlobalCtor.json"
             }
           },
           "5": [
@@ -36,7 +36,7 @@
             "2": "example.Greeter",
             "3": {
               "1": "module/example/index_exports_Greeter.html",
-              "2": "module/example/index_exports_Greeter.json"
+              "2": "data/module/example/index_exports_Greeter.json"
             }
           }
         }
@@ -47,7 +47,7 @@
         "1": "example/empty",
         "3": {
           "1": "module/example/empty.html",
-          "2": "module/example/empty.json"
+          "2": "data/module/example/empty.json"
         }
       },
       "3": true
@@ -57,7 +57,7 @@
         "1": "example/nested",
         "3": {
           "1": "module/example/nested.html",
-          "2": "module/example/nested.json"
+          "2": "data/module/example/nested.json"
         }
       },
       "3": true,
@@ -68,7 +68,7 @@
             "2": "example/nested.Greeter",
             "3": {
               "1": "module/example/nested_exports_Greeter.html",
-              "2": "module/example/nested_exports_Greeter.json"
+              "2": "data/module/example/nested_exports_Greeter.json"
             }
           },
           "5": [
@@ -81,7 +81,7 @@
             "2": "example/nested.IdGenerator",
             "3": {
               "1": "module/example/nested_exports_IdGenerator.html",
-              "2": "module/example/nested_exports_IdGenerator.json"
+              "2": "data/module/example/nested_exports_IdGenerator.json"
             }
           },
           "2": true,
@@ -95,7 +95,7 @@
             "2": "example/nested.IncreasingIdGenerator",
             "3": {
               "1": "module/example/nested_exports_IncreasingIdGenerator.html",
-              "2": "module/example/nested_exports_IncreasingIdGenerator.json"
+              "2": "data/module/example/nested_exports_IncreasingIdGenerator.json"
             }
           },
           "2": true,
@@ -109,7 +109,7 @@
             "2": "example/nested.IncrementingIdGenerator",
             "3": {
               "1": "module/example/nested_exports_IncrementingIdGenerator.html",
-              "2": "module/example/nested_exports_IncrementingIdGenerator.json"
+              "2": "data/module/example/nested_exports_IncrementingIdGenerator.json"
             }
           },
           "5": [
@@ -122,7 +122,7 @@
             "2": "example/nested.Person",
             "3": {
               "1": "module/example/nested_exports_Person.html",
-              "2": "module/example/nested_exports_Person.json"
+              "2": "data/module/example/nested_exports_Person.json"
             }
           },
           "5": [
@@ -137,7 +137,7 @@
         "1": "example/net",
         "3": {
           "1": "module/example/net.html",
-          "2": "module/example/net.json"
+          "2": "data/module/example/net.json"
         }
       },
       "3": true,
@@ -152,7 +152,7 @@
             "2": "example/net.HttpClient",
             "3": {
               "1": "module/example/net_exports_HttpClient.html",
-              "2": "module/example/net_exports_HttpClient.json"
+              "2": "data/module/example/net_exports_HttpClient.json"
             }
           },
           "5": [
@@ -167,7 +167,7 @@
         "1": "example/worker",
         "3": {
           "1": "module/example/worker.html",
-          "2": "module/example/worker.json"
+          "2": "data/module/example/worker.json"
         }
       },
       "3": true
@@ -179,7 +179,7 @@
         "1": "Calculator",
         "3": {
           "1": "Calculator.html",
-          "2": "Calculator.json"
+          "2": "data/Calculator.json"
         }
       },
       "4": [
@@ -197,7 +197,7 @@
         "1": "Color",
         "3": {
           "1": "Color.html",
-          "2": "Color.json"
+          "2": "data/Color.json"
         }
       }
     },
@@ -206,7 +206,7 @@
         "1": "DeprecatedFoo",
         "3": {
           "1": "DeprecatedFoo.html",
-          "2": "DeprecatedFoo.json"
+          "2": "data/DeprecatedFoo.json"
         }
       }
     },
@@ -215,7 +215,7 @@
         "1": "EmptyEnum",
         "3": {
           "1": "EmptyEnum.html",
-          "2": "EmptyEnum.json"
+          "2": "data/EmptyEnum.json"
         }
       }
     },
@@ -224,7 +224,7 @@
         "1": "Formatter",
         "3": {
           "1": "Formatter.html",
-          "2": "Formatter.json"
+          "2": "data/Formatter.json"
         }
       },
       "5": [
@@ -237,7 +237,7 @@
         "1": "GlobalCtor",
         "3": {
           "1": "GlobalCtor.html",
-          "2": "GlobalCtor.json"
+          "2": "data/GlobalCtor.json"
         }
       },
       "4": [
@@ -257,7 +257,7 @@
         "1": "GlobalCtor.Other",
         "3": {
           "1": "GlobalCtor.Other.html",
-          "2": "GlobalCtor.Other.json"
+          "2": "data/GlobalCtor.Other.json"
         }
       }
     },
@@ -266,7 +266,7 @@
         "1": "GlobalEnum",
         "3": {
           "1": "GlobalEnum.html",
-          "2": "GlobalEnum.json"
+          "2": "data/GlobalEnum.json"
         }
       },
       "4": [
@@ -278,7 +278,7 @@
         "1": "GlobalPrivateCtor",
         "3": {
           "1": "GlobalPrivateCtor.html",
-          "2": "GlobalPrivateCtor.json"
+          "2": "data/GlobalPrivateCtor.json"
         }
       }
     },
@@ -287,7 +287,7 @@
         "1": "Person",
         "3": {
           "1": "Person.html",
-          "2": "Person.json"
+          "2": "data/Person.json"
         }
       },
       "2": true,
@@ -301,7 +301,7 @@
         "1": "PrivateColor_",
         "3": {
           "1": "PrivateColor_.html",
-          "2": "PrivateColor_.json"
+          "2": "data/PrivateColor_.json"
         }
       }
     },
@@ -310,7 +310,7 @@
         "1": "SomeCtor",
         "3": {
           "1": "SomeCtor.html",
-          "2": "SomeCtor.json"
+          "2": "data/SomeCtor.json"
         }
       }
     },
@@ -319,7 +319,7 @@
         "1": "UndefinedEnum",
         "3": {
           "1": "UndefinedEnum.html",
-          "2": "UndefinedEnum.json"
+          "2": "data/UndefinedEnum.json"
         }
       }
     },
@@ -328,7 +328,7 @@
         "1": "closure.module",
         "3": {
           "1": "closure.module.html",
-          "2": "closure.module.json"
+          "2": "data/closure.module.json"
         }
       },
       "3": true,
@@ -342,7 +342,7 @@
         "2": "closure.module.Clazz",
         "3": {
           "1": "closure.module.Clazz.html",
-          "2": "closure.module.Clazz.json"
+          "2": "data/closure.module.Clazz.json"
         }
       },
       "5": [
@@ -355,7 +355,7 @@
         "2": "closure.module.HardWorker",
         "3": {
           "1": "closure.module.HardWorker.html",
-          "2": "closure.module.HardWorker.json"
+          "2": "data/closure.module.HardWorker.json"
         }
       },
       "5": [
@@ -368,7 +368,7 @@
         "2": "closure.module.PubClass",
         "3": {
           "1": "closure.module.PubClass.html",
-          "2": "closure.module.PubClass.json"
+          "2": "data/closure.module.PubClass.json"
         }
       },
       "5": [
@@ -381,7 +381,7 @@
         "2": "closure.module.Worker",
         "3": {
           "1": "closure.module.Worker.html",
-          "2": "closure.module.Worker.json"
+          "2": "data/closure.module.Worker.json"
         }
       },
       "5": [
@@ -394,7 +394,7 @@
         "1": "foo",
         "3": {
           "1": "foo.html",
-          "2": "foo.json"
+          "2": "data/foo.json"
         }
       },
       "3": true,
@@ -407,7 +407,7 @@
         "1": "foo.One",
         "3": {
           "1": "foo.One.html",
-          "2": "foo.One.json"
+          "2": "data/foo.One.json"
         }
       }
     },
@@ -416,7 +416,7 @@
         "1": "foo.quot",
         "3": {
           "1": "foo.quot.html",
-          "2": "foo.quot.json"
+          "2": "data/foo.quot.json"
         }
       },
       "3": true
@@ -426,7 +426,7 @@
         "1": "foo.quot.OneBarAlias",
         "3": {
           "1": "foo.quot.OneBarAlias.html",
-          "2": "foo.quot.OneBarAlias.json"
+          "2": "data/foo.quot.OneBarAlias.json"
         }
       },
       "5": [
@@ -439,7 +439,7 @@
         "1": "sample",
         "3": {
           "1": "sample.html",
-          "2": "sample.json"
+          "2": "data/sample.json"
         }
       },
       "3": true
@@ -449,7 +449,7 @@
         "1": "sample.inheritance",
         "3": {
           "1": "sample.inheritance.html",
-          "2": "sample.inheritance.json"
+          "2": "data/sample.inheritance.json"
         }
       },
       "3": true
@@ -459,7 +459,7 @@
         "1": "sample.inheritance.BaseClass",
         "3": {
           "1": "sample.inheritance.BaseClass.html",
-          "2": "sample.inheritance.BaseClass.json"
+          "2": "data/sample.inheritance.BaseClass.json"
         }
       },
       "5": [
@@ -471,7 +471,7 @@
         "1": "sample.inheritance.BaseInterface",
         "3": {
           "1": "sample.inheritance.BaseInterface.html",
-          "2": "sample.inheritance.BaseInterface.json"
+          "2": "data/sample.inheritance.BaseInterface.json"
         }
       },
       "2": true
@@ -481,7 +481,7 @@
         "1": "sample.inheritance.DeprecatedFinalClass",
         "3": {
           "1": "sample.inheritance.DeprecatedFinalClass.html",
-          "2": "sample.inheritance.DeprecatedFinalClass.json"
+          "2": "data/sample.inheritance.DeprecatedFinalClass.json"
         }
       },
       "5": [
@@ -493,7 +493,7 @@
         "1": "sample.inheritance.FinalClass",
         "3": {
           "1": "sample.inheritance.FinalClass.html",
-          "2": "sample.inheritance.FinalClass.json"
+          "2": "data/sample.inheritance.FinalClass.json"
         }
       },
       "5": [
@@ -505,7 +505,7 @@
         "1": "sample.inheritance.LeafInterface",
         "3": {
           "1": "sample.inheritance.LeafInterface.html",
-          "2": "sample.inheritance.LeafInterface.json"
+          "2": "data/sample.inheritance.LeafInterface.json"
         }
       },
       "2": true
@@ -515,7 +515,7 @@
         "1": "sample.inheritance.NumberClass",
         "3": {
           "1": "sample.inheritance.NumberClass.html",
-          "2": "sample.inheritance.NumberClass.json"
+          "2": "data/sample.inheritance.NumberClass.json"
         }
       },
       "4": [
@@ -530,7 +530,7 @@
         "1": "sample.inheritance.OtherInterface",
         "3": {
           "1": "sample.inheritance.OtherInterface.html",
-          "2": "sample.inheritance.OtherInterface.json"
+          "2": "data/sample.inheritance.OtherInterface.json"
         }
       },
       "2": true
@@ -540,7 +540,7 @@
         "1": "sample.inheritance.Runnable",
         "3": {
           "1": "sample.inheritance.Runnable.html",
-          "2": "sample.inheritance.Runnable.json"
+          "2": "data/sample.inheritance.Runnable.json"
         }
       },
       "2": true,
@@ -553,7 +553,7 @@
         "1": "sample.inheritance.RunnableError",
         "3": {
           "1": "sample.inheritance.RunnableError.html",
-          "2": "sample.inheritance.RunnableError.json"
+          "2": "data/sample.inheritance.RunnableError.json"
         }
       },
       "5": [
@@ -565,7 +565,7 @@
         "1": "sample.inheritance.SecondClass",
         "3": {
           "1": "sample.inheritance.SecondClass.html",
-          "2": "sample.inheritance.SecondClass.json"
+          "2": "data/sample.inheritance.SecondClass.json"
         }
       },
       "5": [
@@ -577,7 +577,7 @@
         "1": "sample.inheritance.SecondInterface",
         "3": {
           "1": "sample.inheritance.SecondInterface.html",
-          "2": "sample.inheritance.SecondInterface.json"
+          "2": "data/sample.inheritance.SecondInterface.json"
         }
       },
       "2": true
@@ -587,7 +587,7 @@
         "1": "sample.inheritance.StringClass",
         "3": {
           "1": "sample.inheritance.StringClass.html",
-          "2": "sample.inheritance.StringClass.json"
+          "2": "data/sample.inheritance.StringClass.json"
         }
       },
       "4": [
@@ -603,7 +603,7 @@
         "1": "sample.inheritance.TemplateClass",
         "3": {
           "1": "sample.inheritance.TemplateClass.html",
-          "2": "sample.inheritance.TemplateClass.json"
+          "2": "data/sample.inheritance.TemplateClass.json"
         }
       },
       "5": [
@@ -618,7 +618,7 @@
         "1": "sample.json",
         "3": {
           "1": "sample.json.html",
-          "2": "sample.json.json"
+          "2": "data/sample.json.json"
         }
       },
       "3": true,
@@ -633,7 +633,7 @@
         "1": "test",
         "3": {
           "1": "test.html",
-          "2": "test.json"
+          "2": "data/test.json"
         }
       },
       "3": true
@@ -643,7 +643,7 @@
         "1": "test.Registry",
         "3": {
           "1": "test.Registry.html",
-          "2": "test.Registry.json"
+          "2": "data/test.Registry.json"
         }
       }
     },
@@ -652,7 +652,7 @@
         "1": "test.registry",
         "3": {
           "1": "test.registry.html",
-          "2": "test.registry.json"
+          "2": "data/test.registry.json"
         }
       },
       "3": true,
@@ -665,7 +665,7 @@
         "1": "vis",
         "3": {
           "1": "vis.html",
-          "2": "vis.json"
+          "2": "data/vis.json"
         }
       },
       "3": true,
@@ -683,7 +683,7 @@
         "1": "vis.InheritsVis",
         "3": {
           "1": "vis.InheritsVis.html",
-          "2": "vis.InheritsVis.json"
+          "2": "data/vis.InheritsVis.json"
         }
       }
     },
@@ -692,7 +692,7 @@
         "1": "vis.Private",
         "3": {
           "1": "vis.Private.html",
-          "2": "vis.Private.json"
+          "2": "data/vis.Private.json"
         }
       }
     },
@@ -701,9 +701,82 @@
         "1": "vis.Public",
         "3": {
           "1": "vis.Public.html",
-          "2": "vis.Public.json"
+          "2": "data/vis.Public.json"
         }
       }
+    }
+  ],
+  "3": [
+    {
+      "1": "Custom Page",
+      "2": "page/Custom_Page.html",
+      "3": "data/page/Custom_Page.json"
+    }
+  ],
+  "4": [
+    {
+      "2": "index.html",
+      "3": "data/index.json"
+    },
+    {
+      "2": "source/closure_module.js.src.html",
+      "3": "data/source/closure_module.js.src.json"
+    },
+    {
+      "2": "source/es2015.js.src.html",
+      "3": "data/source/es2015.js.src.json"
+    },
+    {
+      "2": "source/example/empty.js.src.html",
+      "3": "data/source/example/empty.js.src.json"
+    },
+    {
+      "2": "source/example/filter.js.src.html",
+      "3": "data/source/example/filter.js.src.json"
+    },
+    {
+      "2": "source/example/index.js.src.html",
+      "3": "data/source/example/index.js.src.json"
+    },
+    {
+      "2": "source/example/nested.js.src.html",
+      "3": "data/source/example/nested.js.src.json"
+    },
+    {
+      "2": "source/example/net.js.src.html",
+      "3": "data/source/example/net.js.src.json"
+    },
+    {
+      "2": "source/example/worker.js.src.html",
+      "3": "data/source/example/worker.js.src.json"
+    },
+    {
+      "2": "source/filter.js.src.html",
+      "3": "data/source/filter.js.src.json"
+    },
+    {
+      "2": "source/globals.js.src.html",
+      "3": "data/source/globals.js.src.json"
+    },
+    {
+      "2": "source/inheritance.js.src.html",
+      "3": "data/source/inheritance.js.src.json"
+    },
+    {
+      "2": "source/json.js.src.html",
+      "3": "data/source/json.js.src.json"
+    },
+    {
+      "2": "source/registry.js.src.html",
+      "3": "data/source/registry.js.src.json"
+    },
+    {
+      "2": "source/subdir/emptyenum.js.src.html",
+      "3": "data/source/subdir/emptyenum.js.src.json"
+    },
+    {
+      "2": "source/visibility.js.src.html",
+      "3": "data/source/visibility.js.src.json"
     }
   ]
 }

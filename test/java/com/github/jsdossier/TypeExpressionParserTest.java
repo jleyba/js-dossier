@@ -485,8 +485,7 @@ public class TypeExpressionParserTest {
     return NamedType.newBuilder()
         .setName(name)
         .setLink(TypeLink.newBuilder()
-            .setHref(href)
-            .setJson(href.replaceAll("\\.html(#.*)?$", ".json")))
+            .setHref(href))
         .build();
   }
 
@@ -495,8 +494,7 @@ public class TypeExpressionParserTest {
         .setName(name)
         .setQualifiedName(qualifiedName)
         .setLink(TypeLink.newBuilder()
-            .setHref(href)
-            .setJson(href.replaceAll("\\.html(#.*)?$", ".json")))
+            .setHref(href))
         .build();
   }
 }

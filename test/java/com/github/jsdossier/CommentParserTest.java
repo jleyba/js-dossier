@@ -144,8 +144,7 @@ public class CommentParserTest {
     Comment comment = parser.parseComment("A link to {@link foo.Bar foo}.", linkFactory);
     assertEquals(1, comment.getTokenCount());
     assertHtmlText(comment.getToken(0),
-        "<p>A link to <a href=\"foo.Bar.html\" data-json=\"foo.Bar.json\">" +
-            "<code>foo</code></a>.</p>");
+        "<p>A link to <a href=\"foo.Bar.html\"><code>foo</code></a>.</p>");
   }
 
   @Test
@@ -157,8 +156,7 @@ public class CommentParserTest {
     Comment comment = parser.parseComment("A link to {@link foo.Bar\nfoo}.", linkFactory);
     assertEquals(1, comment.getTokenCount());
     assertHtmlText(comment.getToken(0),
-        "<p>A link to <a href=\"foo.Bar.html\" data-json=\"foo.Bar.json\">" +
-            "<code>foo</code></a>.</p>");
+        "<p>A link to <a href=\"foo.Bar.html\"><code>foo</code></a>.</p>");
   }
 
   @Test
@@ -170,8 +168,7 @@ public class CommentParserTest {
     Comment comment = parser.parseComment("A link to {@link foo.Bar foo\nbar}.", linkFactory);
     assertEquals(1, comment.getTokenCount());
     assertHtmlText(comment.getToken(0),
-        "<p>A link to <a href=\"foo.Bar.html\" data-json=\"foo.Bar.json\">" +
-            "<code>foo\nbar</code></a>.</p>");
+        "<p>A link to <a href=\"foo.Bar.html\"><code>foo\nbar</code></a>.</p>");
   }
 
   @Test
@@ -183,7 +180,7 @@ public class CommentParserTest {
     Comment comment = parser.parseComment("A link to {@linkplain foo.Bar foo}.", linkFactory);
     assertEquals(1, comment.getTokenCount());
     assertHtmlText(comment.getToken(0),
-        "<p>A link to <a href=\"foo.Bar.html\" data-json=\"foo.Bar.json\">foo</a>.</p>");
+        "<p>A link to <a href=\"foo.Bar.html\">foo</a>.</p>");
   }
 
   @Test
@@ -195,7 +192,7 @@ public class CommentParserTest {
     Comment comment = parser.parseComment("A link to {@linkplain foo.Bar#baz baz}.", linkFactory);
     assertEquals(1, comment.getTokenCount());
     assertHtmlText(comment.getToken(0),
-        "<p>A link to <a href=\"foo.Bar.html#baz\" data-json=\"foo.Bar.json\">baz</a>.</p>");
+        "<p>A link to <a href=\"foo.Bar.html#baz\">baz</a>.</p>");
   }
 
   @Test
@@ -340,8 +337,7 @@ public class CommentParserTest {
         linkFactory.withTypeContext(type));
     assertEquals(1, comment.getTokenCount());
     assertHtmlText(comment.getToken(0),
-        "<p>A <a href=\"a.b.c.d.IFace.html\" data-json=\"a.b.c.d.IFace.json\">" +
-            "<code>abcd.IFace</code></a> implementation.</p>");
+        "<p>A <a href=\"a.b.c.d.IFace.html\"><code>abcd.IFace</code></a> implementation.</p>");
   }
 
   @Test

@@ -38,8 +38,6 @@ import com.github.jsdossier.proto.JsTypeOrBuilder;
 import com.github.jsdossier.proto.NamedType;
 import com.github.jsdossier.proto.PageData;
 import com.github.jsdossier.proto.Visibility;
-import com.github.jsdossier.soy.JsonRenderer;
-import com.github.jsdossier.soy.Renderer;
 import com.google.auto.factory.AutoFactory;
 import com.google.auto.factory.Provided;
 import com.google.common.base.Function;
@@ -117,29 +115,17 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Ca
 
   @AutoFactory
   static final class RenderDocumentationTask implements Callable<Path> {
-    private final DossierFileSystem dfs;
-    private final DocTemplate template;
-    private final NavIndexFactory navIndexFactory;
-    private final Renderer renderer;
-    private final JsonRenderer jsonRenderer;
+    private final PageRenderer renderer;
     private final Path output;
     private final Path jsonOutput;
     private final Supplier<List<JsType>> types;
 
     RenderDocumentationTask(
-        @Provided DossierFileSystem dfs,
-        @Provided DocTemplate template,
-        @Provided NavIndexFactory navIndexFactory,
-        @Provided Renderer renderer,
-        @Provided JsonRenderer jsonRenderer,
+        @Provided PageRenderer renderer,
         Path output,
         Path jsonOutput,
         Supplier<List<JsType>> types) {
-      this.dfs = dfs;
-      this.template = template;
-      this.navIndexFactory = navIndexFactory;
       this.renderer = renderer;
-      this.jsonRenderer = jsonRenderer;
       this.output = output;
       this.jsonOutput = jsonOutput;
       this.types = types;
@@ -148,16 +134,13 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Ca
     @Override
     public Path call() throws Exception {
       PageData page = PageData.newBuilder()
-          .setResources(dfs.getResources(output, template))
-          .setIndex(navIndexFactory.create(output))
           .setTypes(
               PageData.TypeCollection.newBuilder()
                   .addAllType(types.get()))
           .build();
 
-      renderer.render(output, page);
-      jsonRenderer.render(jsonOutput, page.getTypes().getTypeList());
-
+      renderer.renderHtml(output, page);
+      renderer.renderJson(jsonOutput, page);
       return output;
     }
   }

@@ -17,6 +17,8 @@ public  final class TypeIndex extends
   private TypeIndex() {
     module_ = java.util.Collections.emptyList();
     type_ = java.util.Collections.emptyList();
+    page_ = java.util.Collections.emptyList();
+    sourceFile_ = java.util.Collections.emptyList();
   }
 
   @java.lang.Override
@@ -59,6 +61,22 @@ public  final class TypeIndex extends
             type_.add(input.readMessage(com.github.jsdossier.proto.TypeIndex.Entry.parser(), extensionRegistry));
             break;
           }
+          case 26: {
+            if (!((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
+              page_ = new java.util.ArrayList<com.github.jsdossier.proto.Link>();
+              mutable_bitField0_ |= 0x00000004;
+            }
+            page_.add(input.readMessage(com.github.jsdossier.proto.Link.parser(), extensionRegistry));
+            break;
+          }
+          case 34: {
+            if (!((mutable_bitField0_ & 0x00000008) == 0x00000008)) {
+              sourceFile_ = new java.util.ArrayList<com.github.jsdossier.proto.Link>();
+              mutable_bitField0_ |= 0x00000008;
+            }
+            sourceFile_.add(input.readMessage(com.github.jsdossier.proto.Link.parser(), extensionRegistry));
+            break;
+          }
         }
       }
     } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -73,6 +91,12 @@ public  final class TypeIndex extends
       }
       if (((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
         type_ = java.util.Collections.unmodifiableList(type_);
+      }
+      if (((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
+        page_ = java.util.Collections.unmodifiableList(page_);
+      }
+      if (((mutable_bitField0_ & 0x00000008) == 0x00000008)) {
+        sourceFile_ = java.util.Collections.unmodifiableList(sourceFile_);
       }
       makeExtensionsImmutable();
     }
@@ -1509,6 +1533,76 @@ public  final class TypeIndex extends
     return type_.get(index);
   }
 
+  public static final int PAGE_FIELD_NUMBER = 3;
+  private java.util.List<com.github.jsdossier.proto.Link> page_;
+  /**
+   * <code>repeated .dossier.Link page = 3;</code>
+   */
+  public java.util.List<com.github.jsdossier.proto.Link> getPageList() {
+    return page_;
+  }
+  /**
+   * <code>repeated .dossier.Link page = 3;</code>
+   */
+  public java.util.List<? extends com.github.jsdossier.proto.LinkOrBuilder> 
+      getPageOrBuilderList() {
+    return page_;
+  }
+  /**
+   * <code>repeated .dossier.Link page = 3;</code>
+   */
+  public int getPageCount() {
+    return page_.size();
+  }
+  /**
+   * <code>repeated .dossier.Link page = 3;</code>
+   */
+  public com.github.jsdossier.proto.Link getPage(int index) {
+    return page_.get(index);
+  }
+  /**
+   * <code>repeated .dossier.Link page = 3;</code>
+   */
+  public com.github.jsdossier.proto.LinkOrBuilder getPageOrBuilder(
+      int index) {
+    return page_.get(index);
+  }
+
+  public static final int SOURCE_FILE_FIELD_NUMBER = 4;
+  private java.util.List<com.github.jsdossier.proto.Link> sourceFile_;
+  /**
+   * <code>repeated .dossier.Link source_file = 4;</code>
+   */
+  public java.util.List<com.github.jsdossier.proto.Link> getSourceFileList() {
+    return sourceFile_;
+  }
+  /**
+   * <code>repeated .dossier.Link source_file = 4;</code>
+   */
+  public java.util.List<? extends com.github.jsdossier.proto.LinkOrBuilder> 
+      getSourceFileOrBuilderList() {
+    return sourceFile_;
+  }
+  /**
+   * <code>repeated .dossier.Link source_file = 4;</code>
+   */
+  public int getSourceFileCount() {
+    return sourceFile_.size();
+  }
+  /**
+   * <code>repeated .dossier.Link source_file = 4;</code>
+   */
+  public com.github.jsdossier.proto.Link getSourceFile(int index) {
+    return sourceFile_.get(index);
+  }
+  /**
+   * <code>repeated .dossier.Link source_file = 4;</code>
+   */
+  public com.github.jsdossier.proto.LinkOrBuilder getSourceFileOrBuilder(
+      int index) {
+    return sourceFile_.get(index);
+  }
+
   private byte memoizedIsInitialized = -1;
   public final boolean isInitialized() {
     byte isInitialized = memoizedIsInitialized;
@@ -1527,6 +1621,12 @@ public  final class TypeIndex extends
     for (int i = 0; i < type_.size(); i++) {
       output.writeMessage(2, type_.get(i));
     }
+    for (int i = 0; i < page_.size(); i++) {
+      output.writeMessage(3, page_.get(i));
+    }
+    for (int i = 0; i < sourceFile_.size(); i++) {
+      output.writeMessage(4, sourceFile_.get(i));
+    }
   }
 
   public int getSerializedSize() {
@@ -1541,6 +1641,14 @@ public  final class TypeIndex extends
     for (int i = 0; i < type_.size(); i++) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(2, type_.get(i));
+    }
+    for (int i = 0; i < page_.size(); i++) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(3, page_.get(i));
+    }
+    for (int i = 0; i < sourceFile_.size(); i++) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(4, sourceFile_.get(i));
     }
     memoizedSize = size;
     return size;
@@ -1651,6 +1759,8 @@ public  final class TypeIndex extends
       if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
         getModuleFieldBuilder();
         getTypeFieldBuilder();
+        getPageFieldBuilder();
+        getSourceFileFieldBuilder();
       }
     }
     public Builder clear() {
@@ -1666,6 +1776,18 @@ public  final class TypeIndex extends
         bitField0_ = (bitField0_ & ~0x00000002);
       } else {
         typeBuilder_.clear();
+      }
+      if (pageBuilder_ == null) {
+        page_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000004);
+      } else {
+        pageBuilder_.clear();
+      }
+      if (sourceFileBuilder_ == null) {
+        sourceFile_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000008);
+      } else {
+        sourceFileBuilder_.clear();
       }
       return this;
     }
@@ -1707,6 +1829,24 @@ public  final class TypeIndex extends
         result.type_ = type_;
       } else {
         result.type_ = typeBuilder_.build();
+      }
+      if (pageBuilder_ == null) {
+        if (((bitField0_ & 0x00000004) == 0x00000004)) {
+          page_ = java.util.Collections.unmodifiableList(page_);
+          bitField0_ = (bitField0_ & ~0x00000004);
+        }
+        result.page_ = page_;
+      } else {
+        result.page_ = pageBuilder_.build();
+      }
+      if (sourceFileBuilder_ == null) {
+        if (((bitField0_ & 0x00000008) == 0x00000008)) {
+          sourceFile_ = java.util.Collections.unmodifiableList(sourceFile_);
+          bitField0_ = (bitField0_ & ~0x00000008);
+        }
+        result.sourceFile_ = sourceFile_;
+      } else {
+        result.sourceFile_ = sourceFileBuilder_.build();
       }
       onBuilt();
       return result;
@@ -1772,6 +1912,58 @@ public  final class TypeIndex extends
                  getTypeFieldBuilder() : null;
           } else {
             typeBuilder_.addAllMessages(other.type_);
+          }
+        }
+      }
+      if (pageBuilder_ == null) {
+        if (!other.page_.isEmpty()) {
+          if (page_.isEmpty()) {
+            page_ = other.page_;
+            bitField0_ = (bitField0_ & ~0x00000004);
+          } else {
+            ensurePageIsMutable();
+            page_.addAll(other.page_);
+          }
+          onChanged();
+        }
+      } else {
+        if (!other.page_.isEmpty()) {
+          if (pageBuilder_.isEmpty()) {
+            pageBuilder_.dispose();
+            pageBuilder_ = null;
+            page_ = other.page_;
+            bitField0_ = (bitField0_ & ~0x00000004);
+            pageBuilder_ = 
+              com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+                 getPageFieldBuilder() : null;
+          } else {
+            pageBuilder_.addAllMessages(other.page_);
+          }
+        }
+      }
+      if (sourceFileBuilder_ == null) {
+        if (!other.sourceFile_.isEmpty()) {
+          if (sourceFile_.isEmpty()) {
+            sourceFile_ = other.sourceFile_;
+            bitField0_ = (bitField0_ & ~0x00000008);
+          } else {
+            ensureSourceFileIsMutable();
+            sourceFile_.addAll(other.sourceFile_);
+          }
+          onChanged();
+        }
+      } else {
+        if (!other.sourceFile_.isEmpty()) {
+          if (sourceFileBuilder_.isEmpty()) {
+            sourceFileBuilder_.dispose();
+            sourceFileBuilder_ = null;
+            sourceFile_ = other.sourceFile_;
+            bitField0_ = (bitField0_ & ~0x00000008);
+            sourceFileBuilder_ = 
+              com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+                 getSourceFileFieldBuilder() : null;
+          } else {
+            sourceFileBuilder_.addAllMessages(other.sourceFile_);
           }
         }
       }
@@ -2280,6 +2472,486 @@ public  final class TypeIndex extends
         type_ = null;
       }
       return typeBuilder_;
+    }
+
+    private java.util.List<com.github.jsdossier.proto.Link> page_ =
+      java.util.Collections.emptyList();
+    private void ensurePageIsMutable() {
+      if (!((bitField0_ & 0x00000004) == 0x00000004)) {
+        page_ = new java.util.ArrayList<com.github.jsdossier.proto.Link>(page_);
+        bitField0_ |= 0x00000004;
+       }
+    }
+
+    private com.google.protobuf.RepeatedFieldBuilder<
+        com.github.jsdossier.proto.Link, com.github.jsdossier.proto.Link.Builder, com.github.jsdossier.proto.LinkOrBuilder> pageBuilder_;
+
+    /**
+     * <code>repeated .dossier.Link page = 3;</code>
+     */
+    public java.util.List<com.github.jsdossier.proto.Link> getPageList() {
+      if (pageBuilder_ == null) {
+        return java.util.Collections.unmodifiableList(page_);
+      } else {
+        return pageBuilder_.getMessageList();
+      }
+    }
+    /**
+     * <code>repeated .dossier.Link page = 3;</code>
+     */
+    public int getPageCount() {
+      if (pageBuilder_ == null) {
+        return page_.size();
+      } else {
+        return pageBuilder_.getCount();
+      }
+    }
+    /**
+     * <code>repeated .dossier.Link page = 3;</code>
+     */
+    public com.github.jsdossier.proto.Link getPage(int index) {
+      if (pageBuilder_ == null) {
+        return page_.get(index);
+      } else {
+        return pageBuilder_.getMessage(index);
+      }
+    }
+    /**
+     * <code>repeated .dossier.Link page = 3;</code>
+     */
+    public Builder setPage(
+        int index, com.github.jsdossier.proto.Link value) {
+      if (pageBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensurePageIsMutable();
+        page_.set(index, value);
+        onChanged();
+      } else {
+        pageBuilder_.setMessage(index, value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .dossier.Link page = 3;</code>
+     */
+    public Builder setPage(
+        int index, com.github.jsdossier.proto.Link.Builder builderForValue) {
+      if (pageBuilder_ == null) {
+        ensurePageIsMutable();
+        page_.set(index, builderForValue.build());
+        onChanged();
+      } else {
+        pageBuilder_.setMessage(index, builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .dossier.Link page = 3;</code>
+     */
+    public Builder addPage(com.github.jsdossier.proto.Link value) {
+      if (pageBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensurePageIsMutable();
+        page_.add(value);
+        onChanged();
+      } else {
+        pageBuilder_.addMessage(value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .dossier.Link page = 3;</code>
+     */
+    public Builder addPage(
+        int index, com.github.jsdossier.proto.Link value) {
+      if (pageBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensurePageIsMutable();
+        page_.add(index, value);
+        onChanged();
+      } else {
+        pageBuilder_.addMessage(index, value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .dossier.Link page = 3;</code>
+     */
+    public Builder addPage(
+        com.github.jsdossier.proto.Link.Builder builderForValue) {
+      if (pageBuilder_ == null) {
+        ensurePageIsMutable();
+        page_.add(builderForValue.build());
+        onChanged();
+      } else {
+        pageBuilder_.addMessage(builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .dossier.Link page = 3;</code>
+     */
+    public Builder addPage(
+        int index, com.github.jsdossier.proto.Link.Builder builderForValue) {
+      if (pageBuilder_ == null) {
+        ensurePageIsMutable();
+        page_.add(index, builderForValue.build());
+        onChanged();
+      } else {
+        pageBuilder_.addMessage(index, builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .dossier.Link page = 3;</code>
+     */
+    public Builder addAllPage(
+        java.lang.Iterable<? extends com.github.jsdossier.proto.Link> values) {
+      if (pageBuilder_ == null) {
+        ensurePageIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, page_);
+        onChanged();
+      } else {
+        pageBuilder_.addAllMessages(values);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .dossier.Link page = 3;</code>
+     */
+    public Builder clearPage() {
+      if (pageBuilder_ == null) {
+        page_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000004);
+        onChanged();
+      } else {
+        pageBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .dossier.Link page = 3;</code>
+     */
+    public Builder removePage(int index) {
+      if (pageBuilder_ == null) {
+        ensurePageIsMutable();
+        page_.remove(index);
+        onChanged();
+      } else {
+        pageBuilder_.remove(index);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .dossier.Link page = 3;</code>
+     */
+    public com.github.jsdossier.proto.Link.Builder getPageBuilder(
+        int index) {
+      return getPageFieldBuilder().getBuilder(index);
+    }
+    /**
+     * <code>repeated .dossier.Link page = 3;</code>
+     */
+    public com.github.jsdossier.proto.LinkOrBuilder getPageOrBuilder(
+        int index) {
+      if (pageBuilder_ == null) {
+        return page_.get(index);  } else {
+        return pageBuilder_.getMessageOrBuilder(index);
+      }
+    }
+    /**
+     * <code>repeated .dossier.Link page = 3;</code>
+     */
+    public java.util.List<? extends com.github.jsdossier.proto.LinkOrBuilder> 
+         getPageOrBuilderList() {
+      if (pageBuilder_ != null) {
+        return pageBuilder_.getMessageOrBuilderList();
+      } else {
+        return java.util.Collections.unmodifiableList(page_);
+      }
+    }
+    /**
+     * <code>repeated .dossier.Link page = 3;</code>
+     */
+    public com.github.jsdossier.proto.Link.Builder addPageBuilder() {
+      return getPageFieldBuilder().addBuilder(
+          com.github.jsdossier.proto.Link.getDefaultInstance());
+    }
+    /**
+     * <code>repeated .dossier.Link page = 3;</code>
+     */
+    public com.github.jsdossier.proto.Link.Builder addPageBuilder(
+        int index) {
+      return getPageFieldBuilder().addBuilder(
+          index, com.github.jsdossier.proto.Link.getDefaultInstance());
+    }
+    /**
+     * <code>repeated .dossier.Link page = 3;</code>
+     */
+    public java.util.List<com.github.jsdossier.proto.Link.Builder> 
+         getPageBuilderList() {
+      return getPageFieldBuilder().getBuilderList();
+    }
+    private com.google.protobuf.RepeatedFieldBuilder<
+        com.github.jsdossier.proto.Link, com.github.jsdossier.proto.Link.Builder, com.github.jsdossier.proto.LinkOrBuilder> 
+        getPageFieldBuilder() {
+      if (pageBuilder_ == null) {
+        pageBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+            com.github.jsdossier.proto.Link, com.github.jsdossier.proto.Link.Builder, com.github.jsdossier.proto.LinkOrBuilder>(
+                page_,
+                ((bitField0_ & 0x00000004) == 0x00000004),
+                getParentForChildren(),
+                isClean());
+        page_ = null;
+      }
+      return pageBuilder_;
+    }
+
+    private java.util.List<com.github.jsdossier.proto.Link> sourceFile_ =
+      java.util.Collections.emptyList();
+    private void ensureSourceFileIsMutable() {
+      if (!((bitField0_ & 0x00000008) == 0x00000008)) {
+        sourceFile_ = new java.util.ArrayList<com.github.jsdossier.proto.Link>(sourceFile_);
+        bitField0_ |= 0x00000008;
+       }
+    }
+
+    private com.google.protobuf.RepeatedFieldBuilder<
+        com.github.jsdossier.proto.Link, com.github.jsdossier.proto.Link.Builder, com.github.jsdossier.proto.LinkOrBuilder> sourceFileBuilder_;
+
+    /**
+     * <code>repeated .dossier.Link source_file = 4;</code>
+     */
+    public java.util.List<com.github.jsdossier.proto.Link> getSourceFileList() {
+      if (sourceFileBuilder_ == null) {
+        return java.util.Collections.unmodifiableList(sourceFile_);
+      } else {
+        return sourceFileBuilder_.getMessageList();
+      }
+    }
+    /**
+     * <code>repeated .dossier.Link source_file = 4;</code>
+     */
+    public int getSourceFileCount() {
+      if (sourceFileBuilder_ == null) {
+        return sourceFile_.size();
+      } else {
+        return sourceFileBuilder_.getCount();
+      }
+    }
+    /**
+     * <code>repeated .dossier.Link source_file = 4;</code>
+     */
+    public com.github.jsdossier.proto.Link getSourceFile(int index) {
+      if (sourceFileBuilder_ == null) {
+        return sourceFile_.get(index);
+      } else {
+        return sourceFileBuilder_.getMessage(index);
+      }
+    }
+    /**
+     * <code>repeated .dossier.Link source_file = 4;</code>
+     */
+    public Builder setSourceFile(
+        int index, com.github.jsdossier.proto.Link value) {
+      if (sourceFileBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureSourceFileIsMutable();
+        sourceFile_.set(index, value);
+        onChanged();
+      } else {
+        sourceFileBuilder_.setMessage(index, value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .dossier.Link source_file = 4;</code>
+     */
+    public Builder setSourceFile(
+        int index, com.github.jsdossier.proto.Link.Builder builderForValue) {
+      if (sourceFileBuilder_ == null) {
+        ensureSourceFileIsMutable();
+        sourceFile_.set(index, builderForValue.build());
+        onChanged();
+      } else {
+        sourceFileBuilder_.setMessage(index, builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .dossier.Link source_file = 4;</code>
+     */
+    public Builder addSourceFile(com.github.jsdossier.proto.Link value) {
+      if (sourceFileBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureSourceFileIsMutable();
+        sourceFile_.add(value);
+        onChanged();
+      } else {
+        sourceFileBuilder_.addMessage(value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .dossier.Link source_file = 4;</code>
+     */
+    public Builder addSourceFile(
+        int index, com.github.jsdossier.proto.Link value) {
+      if (sourceFileBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureSourceFileIsMutable();
+        sourceFile_.add(index, value);
+        onChanged();
+      } else {
+        sourceFileBuilder_.addMessage(index, value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .dossier.Link source_file = 4;</code>
+     */
+    public Builder addSourceFile(
+        com.github.jsdossier.proto.Link.Builder builderForValue) {
+      if (sourceFileBuilder_ == null) {
+        ensureSourceFileIsMutable();
+        sourceFile_.add(builderForValue.build());
+        onChanged();
+      } else {
+        sourceFileBuilder_.addMessage(builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .dossier.Link source_file = 4;</code>
+     */
+    public Builder addSourceFile(
+        int index, com.github.jsdossier.proto.Link.Builder builderForValue) {
+      if (sourceFileBuilder_ == null) {
+        ensureSourceFileIsMutable();
+        sourceFile_.add(index, builderForValue.build());
+        onChanged();
+      } else {
+        sourceFileBuilder_.addMessage(index, builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .dossier.Link source_file = 4;</code>
+     */
+    public Builder addAllSourceFile(
+        java.lang.Iterable<? extends com.github.jsdossier.proto.Link> values) {
+      if (sourceFileBuilder_ == null) {
+        ensureSourceFileIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, sourceFile_);
+        onChanged();
+      } else {
+        sourceFileBuilder_.addAllMessages(values);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .dossier.Link source_file = 4;</code>
+     */
+    public Builder clearSourceFile() {
+      if (sourceFileBuilder_ == null) {
+        sourceFile_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000008);
+        onChanged();
+      } else {
+        sourceFileBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .dossier.Link source_file = 4;</code>
+     */
+    public Builder removeSourceFile(int index) {
+      if (sourceFileBuilder_ == null) {
+        ensureSourceFileIsMutable();
+        sourceFile_.remove(index);
+        onChanged();
+      } else {
+        sourceFileBuilder_.remove(index);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .dossier.Link source_file = 4;</code>
+     */
+    public com.github.jsdossier.proto.Link.Builder getSourceFileBuilder(
+        int index) {
+      return getSourceFileFieldBuilder().getBuilder(index);
+    }
+    /**
+     * <code>repeated .dossier.Link source_file = 4;</code>
+     */
+    public com.github.jsdossier.proto.LinkOrBuilder getSourceFileOrBuilder(
+        int index) {
+      if (sourceFileBuilder_ == null) {
+        return sourceFile_.get(index);  } else {
+        return sourceFileBuilder_.getMessageOrBuilder(index);
+      }
+    }
+    /**
+     * <code>repeated .dossier.Link source_file = 4;</code>
+     */
+    public java.util.List<? extends com.github.jsdossier.proto.LinkOrBuilder> 
+         getSourceFileOrBuilderList() {
+      if (sourceFileBuilder_ != null) {
+        return sourceFileBuilder_.getMessageOrBuilderList();
+      } else {
+        return java.util.Collections.unmodifiableList(sourceFile_);
+      }
+    }
+    /**
+     * <code>repeated .dossier.Link source_file = 4;</code>
+     */
+    public com.github.jsdossier.proto.Link.Builder addSourceFileBuilder() {
+      return getSourceFileFieldBuilder().addBuilder(
+          com.github.jsdossier.proto.Link.getDefaultInstance());
+    }
+    /**
+     * <code>repeated .dossier.Link source_file = 4;</code>
+     */
+    public com.github.jsdossier.proto.Link.Builder addSourceFileBuilder(
+        int index) {
+      return getSourceFileFieldBuilder().addBuilder(
+          index, com.github.jsdossier.proto.Link.getDefaultInstance());
+    }
+    /**
+     * <code>repeated .dossier.Link source_file = 4;</code>
+     */
+    public java.util.List<com.github.jsdossier.proto.Link.Builder> 
+         getSourceFileBuilderList() {
+      return getSourceFileFieldBuilder().getBuilderList();
+    }
+    private com.google.protobuf.RepeatedFieldBuilder<
+        com.github.jsdossier.proto.Link, com.github.jsdossier.proto.Link.Builder, com.github.jsdossier.proto.LinkOrBuilder> 
+        getSourceFileFieldBuilder() {
+      if (sourceFileBuilder_ == null) {
+        sourceFileBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+            com.github.jsdossier.proto.Link, com.github.jsdossier.proto.Link.Builder, com.github.jsdossier.proto.LinkOrBuilder>(
+                sourceFile_,
+                ((bitField0_ & 0x00000008) == 0x00000008),
+                getParentForChildren(),
+                isClean());
+        sourceFile_ = null;
+      }
+      return sourceFileBuilder_;
     }
     public final Builder setUnknownFields(
         final com.google.protobuf.UnknownFieldSet unknownFields) {

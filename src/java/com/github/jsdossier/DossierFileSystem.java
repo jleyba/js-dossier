@@ -42,10 +42,13 @@ import javax.inject.Inject;
 @DocumentationScoped
 final class DossierFileSystem {
 
+  private static final String DATA_DIR = "data";
   private static final String MODULE_DIR = "module";
+  private static final String PAGE_DIR = "page";
   private static final String SOURCE_DIR = "source";
 
   private final Path outputRoot;
+  private final Path dataRoot;
   private final Path modulePrefix;
   private final Path sourcePrefix;
   private final TypeRegistry typeRegistry;
@@ -59,6 +62,7 @@ final class DossierFileSystem {
       TypeRegistry typeRegistry,
       ModuleNamingConvention namingConvention) {
     this.outputRoot = outputRoot;
+    this.dataRoot = outputRoot.resolve(DATA_DIR);
     this.modulePrefix = modulePrefix;
     this.sourcePrefix = sourcePrefix;
     this.typeRegistry = typeRegistry;
@@ -104,10 +108,65 @@ final class DossierFileSystem {
   }
 
   /**
+   * Returns the request path resolved against the output data directory.
+   *
+   * @throws IllegalArgumentException if the requested path is not under the output data root.
+   */
+  public Path getJsonPath(Path path) {
+    checkArgument(path.toString().endsWith(".html"), "not a HTML file: %s", path);
+
+    String name = path.getFileName().toString();
+    name = name.substring(0, name.length() - ".html".length()) + ".json";
+
+    Path jsonPath = path.resolveSibling(name);
+    if (jsonPath.startsWith(dataRoot)) {
+      jsonPath = jsonPath.normalize();
+    } else if (jsonPath.startsWith(outputRoot)) {
+      jsonPath = dataRoot.resolve(outputRoot.relativize(jsonPath)).normalize();
+    } else {
+      jsonPath = dataRoot.resolve(jsonPath).normalize();
+    }
+
+    checkArgument(jsonPath.startsWith(dataRoot),
+        "The requested path is not under the data root: %s", path);
+    return jsonPath;
+  }
+
+  /**
+   * Returns the path for the given markdown page relative to the output directory.
+   *
+   * @throws IllegalArgumentException if the page name generates a path that is not under the ouput
+   *     directory.
+   */
+  public Path getPath(MarkdownPage page) {
+    String name = page.getName()
+        .replace(' ', '_')
+        .replace(outputRoot.getFileSystem().getSeparator(), "_")
+        + ".html";
+
+    Path p = outputRoot.resolve(PAGE_DIR).resolve(name).normalize();
+    checkArgument(p.startsWith(outputRoot),
+        "The requested path is not under the output root: %s", page.getName());
+    return p;
+  }
+
+  /**
    * Returns the path to the given file once copied to the output directory.
    */
   public Path getPath(TemplateFile file) {
     return outputRoot.resolve(file.getName());
+  }
+
+  /**
+   * Returns the given page's JSON companion under the data directory.
+   */
+  public Path getJsonPath(MarkdownPage page) {
+    Path path = getPath(page);
+    String name = path.getFileName()
+        .toString()
+        .replaceAll("\\.html$", ".json");
+    path = outputRoot.relativize(path.resolveSibling(name));
+    return outputRoot.resolve(DATA_DIR).resolve(path);
   }
 
   /**
@@ -172,7 +231,8 @@ final class DossierFileSystem {
     String name = path.getFileName()
         .toString()
         .replaceAll("\\.html$", ".json");
-    return path.resolveSibling(name);
+    path = outputRoot.relativize(path.resolveSibling(name));
+    return outputRoot.resolve(DATA_DIR).resolve(path);
   }
 
   /**

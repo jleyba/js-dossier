@@ -40,8 +40,6 @@ import com.github.jsdossier.annotations.Stdout;
 import com.github.jsdossier.annotations.TypeFilter;
 import com.github.jsdossier.jscomp.DossierCommandLineRunner;
 import com.github.jsdossier.jscomp.DossierCompiler;
-import com.github.jsdossier.jscomp.Module;
-import com.github.jsdossier.jscomp.NominalType;
 import com.github.jsdossier.jscomp.TypeRegistry;
 import com.github.jsdossier.soy.DossierSoyModule;
 import com.github.jsdossier.soy.Renderer;
@@ -85,8 +83,6 @@ final class Main {
   private Main() {}
 
   private static final Logger log = Logger.getLogger(Main.class.getName());
-
-  private static final String INDEX_FILE_NAME = "index.html";
 
   private static final List<String> STANDARD_FLAGS = ImmutableList.of(
       "--jscomp_warning=accessControls",
@@ -220,34 +216,6 @@ final class Main {
           .addAll(standardFlags)
           .build();
       return compilerFlags.toArray(new String[compilerFlags.size()]);
-    }
-
-    @Provides
-    @DocumentationScoped
-    NavIndexFactory provideNavIndexFactory(
-        @Output Path outputDir,
-        TypeRegistry typeRegistry) {
-      boolean showModules = false;
-      for (Module module : typeRegistry.getAllModules()) {
-        if (module.getType() != Module.Type.CLOSURE) {
-          showModules = true;
-          break;
-        }
-      }
-
-      boolean showTypes = false;
-      for (NominalType type : typeRegistry.getAllTypes()) {
-        if (!type.getModule().isPresent()
-            || type.getModule().get().getType() == Module.Type.CLOSURE) {
-          showTypes = true;
-          break;
-        }
-      }
-      return NavIndexFactory.create(
-          outputDir.resolve(INDEX_FILE_NAME),
-          showModules,
-          showTypes,
-          config.getCustomPages());
     }
   }
 

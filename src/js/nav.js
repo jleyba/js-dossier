@@ -318,21 +318,12 @@ exports.createNavDrawer = function(typeInfo, currentFile, basePath) {
   events.listen(navButton, 'click', drawer.toggleVisibility, false, drawer);
   events.listen(navEl, 'click', drawer.onClick_, false, drawer);
 
-  const typeSection = navEl.querySelector('.types');
-  if (typeSection) {
-    let types = buildTree(typeInfo.type);
-    let tree = (/** @type {!Element} */(
-        soy.renderAsFragment(soyNav.typeTree, {types})));
-    typeSection.appendChild(tree);
-  }
-
-  const moduleSection = navEl.querySelector('.modules');
-  if (moduleSection) {
-    let modules = buildTree(typeInfo.module);
-    let tree = (/** @type {!Element} */(
-        soy.renderAsFragment(soyNav.moduleTree, {modules})));
-    moduleSection.appendChild(tree);
-  }
+  let modules = buildTree(typeInfo.module);
+  let types = buildTree(typeInfo.type);
+  let links = typeInfo.page;
+  let fragment =
+      soy.renderAsFragment(soyNav.drawerContents, {modules, types, links});
+  navEl.appendChild(fragment);
 
   // Normalize all links to be relative to dossier's root. This ensures links
   // work consistently as we change the URL during content swaps.

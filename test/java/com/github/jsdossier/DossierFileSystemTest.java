@@ -96,6 +96,18 @@ public class DossierFileSystemTest {
   }
 
   @Test
+  public void getPathToAMarkdownPage() {
+    MarkdownPage page = new MarkdownPage("Readme",
+        outputRoot.getFileSystem().getPath("Readme.html"));
+
+    Path path = sut.getPath(page);
+    assertThat(path.toString()).isEqualTo("/out/page/Readme.html");
+
+    path = sut.getJsonPath(page);
+    assertThat(path.toString()).isEqualTo("/out/data/page/Readme.json");
+  }
+
+  @Test
   public void canGetThePathToANominalType() {
     util.compile(fs.getPath("foo.js"),
         "goog.provide('foo.bar.Baz');",

@@ -18,6 +18,7 @@ package com.github.jsdossier;
 
 import com.github.jsdossier.annotations.Readme;
 import com.github.jsdossier.proto.Comment;
+import com.github.jsdossier.proto.PageData;
 import com.google.common.base.Optional;
 
 import java.io.IOException;
@@ -36,20 +37,23 @@ final class RenderIndexTask implements Callable<Path> {
   private final DossierFileSystem dfs;
   private final CommentParser parser;
   private final LinkFactory linkFactory;
-  private final HtmlRenderer htmlRenderer;
+  private final PageRenderer renderer;
   private final Optional<Path> readmeFile;
+  private final TypeIndexManager index;
 
   @Inject
   RenderIndexTask(
       DossierFileSystem dfs,
       CommentParser parser,
       LinkFactoryBuilder linkFactoryBuilder,
-      HtmlRenderer htmlRenderer,
-      @Readme Optional<Path> readmeFile) {
+      PageRenderer renderer,
+      @Readme Optional<Path> readmeFile,
+      TypeIndexManager index) {
     this.dfs = dfs;
     this.parser = parser;
+    this.index = index;
     this.linkFactory = linkFactoryBuilder.create(null);
-    this.htmlRenderer = htmlRenderer;
+    this.renderer = renderer;
     this.readmeFile = readmeFile;
   }
 
@@ -65,8 +69,18 @@ final class RenderIndexTask implements Callable<Path> {
       content = parser.parseComment(readme, linkFactory);
     }
 
-    Path output = dfs.getPath("index.html");
-    htmlRenderer.renderHtml(output, "Index", content);
-    return output;
+    PageData data = PageData.newBuilder()
+        .setMarkdown(
+            PageData.Markdown.newBuilder()
+                .setTitle("Index")
+                .setContent(content))
+        .build();
+
+    Path htmlPath = dfs.getPath("index.html");
+    Path jsonPath = dfs.getJsonPath(htmlPath);
+    renderer.renderHtml(htmlPath, data);
+    renderer.renderJson(jsonPath, data);
+    index.addSourceFile(htmlPath, jsonPath);
+    return htmlPath;
   }
 }

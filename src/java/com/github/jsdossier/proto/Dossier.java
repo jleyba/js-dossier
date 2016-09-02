@@ -137,100 +137,101 @@ public final class Dossier {
       "name\030\001 \001(\t\022\014\n\004path\030\002 \001(\t\022\r\n\005lines\030\003 \003(\t\"" +
       "Z\n\tResources\022\023\n\003css\030\001 \003(\tB\006\362\201\031\002\010\001\022\033\n\013hea" +
       "d_script\030\002 \003(\tB\006\362\201\031\002\010\001\022\033\n\013tail_script\030\003 " +
-      "\003(\tB\006\362\201\031\002\010\001\"*\n\004Link\022\014\n\004text\030\001 \001(\t\022\024\n\004hre" +
-      "f\030\002 \001(\tB\006\362\201\031\002\010\001\"=\n\nSourceLink\022\024\n\004path\030\001 " +
-      "\001(\tB\006\362\201\031\002\010\001\022\014\n\004line\030\002 \001(\005\022\013\n\003uri\030\003 \001(\t\"\230" +
-      "\001\n\007Comment\022%\n\005token\030\001 \003(\0132\026.dossier.Comm" +
-      "ent.Token\032f\n\005Token\022\016\n\004text\030\001 \001(\tH\000\022\026\n\004ht",
-      "ml\030\002 \001(\tB\006\362\201\031\002\020\001H\000\022*\n\004link\030\003 \001(\0132\034.dossi" +
-      "er.expression.TypeLinkB\t\n\007content\"\265\001\n\004Ta" +
-      "gs\022\020\n\010is_const\030\001 \001(\010\022\025\n\ris_deprecated\030\002 " +
-      "\001(\010\022\017\n\007is_dict\030\003 \001(\010\022\020\n\010is_final\030\004 \001(\010\022\024" +
-      "\n\014is_interface\030\005 \001(\010\022\021\n\tis_module\030\006 \001(\010\022" +
-      "\021\n\tis_struct\030\007 \001(\010\022\022\n\nis_default\030\010 \001(\010\022\021" +
-      "\n\tis_record\030\t \001(\010\"\223\003\n\014BaseProperty\022\014\n\004na" +
-      "me\030\001 \001(\t\022#\n\006source\030\002 \001(\0132\023.dossier.Sourc" +
-      "eLink\022%\n\013description\030\003 \001(\0132\020.dossier.Com" +
-      "ment\022%\n\013deprecation\030\004 \001(\0132\020.dossier.Comm",
-      "ent\022\'\n\nvisibility\030\005 \001(\0162\023.dossier.Visibi" +
-      "lity\022\033\n\004tags\030\006 \001(\0132\r.dossier.Tags\0221\n\ndef" +
-      "ined_by\030\007 \001(\0132\035.dossier.expression.Named" +
-      "Type\0220\n\toverrides\030\010 \001(\0132\035.dossier.expres" +
-      "sion.NamedType\0223\n\014specified_by\030\t \003(\0132\035.d" +
-      "ossier.expression.NamedType\022\"\n\010see_also\030" +
-      "\n \003(\0132\020.dossier.Comment\"a\n\010Property\022#\n\004b" +
-      "ase\030\001 \001(\0132\025.dossier.BaseProperty\0220\n\004type" +
-      "\030\002 \001(\0132\".dossier.expression.TypeExpressi" +
-      "on\"\320\002\n\010Function\022#\n\004base\030\001 \001(\0132\025.dossier.",
-      "BaseProperty\022\025\n\rtemplate_name\030\002 \003(\t\022\026\n\016i" +
-      "s_constructor\030\003 \001(\010\022+\n\tparameter\030\004 \003(\0132\030" +
-      ".dossier.Function.Detail\022(\n\006return\030\005 \001(\013" +
-      "2\030.dossier.Function.Detail\022(\n\006thrown\030\006 \003" +
-      "(\0132\030.dossier.Function.Detail\032o\n\006Detail\022\014" +
-      "\n\004name\030\001 \001(\t\0220\n\004type\030\002 \001(\0132\".dossier.exp" +
-      "ression.TypeExpression\022%\n\013description\030\003 " +
-      "\001(\0132\020.dossier.Comment\"\370\001\n\013Enumeration\0220\n" +
-      "\004type\030\001 \001(\0132\".dossier.expression.TypeExp" +
-      "ression\022)\n\005value\030\002 \003(\0132\032.dossier.Enumera",
-      "tion.Value\022\'\n\nvisibility\030\003 \001(\0162\023.dossier" +
-      ".Visibility\032c\n\005Value\022\014\n\004name\030\001 \001(\t\022%\n\013de" +
-      "scription\030\002 \001(\0132\020.dossier.Comment\022%\n\013dep" +
-      "recation\030\003 \001(\0132\020.dossier.Comment\"}\n\005Inde" +
-      "x\022\024\n\004home\030\001 \001(\tB\006\362\201\031\002\010\001\022\025\n\rinclude_types" +
-      "\030\002 \001(\010\022\027\n\017include_modules\030\003 \001(\010\022\033\n\004link\030" +
-      "\004 \003(\0132\r.dossier.Link\022\021\n\ttimestamp\030\005 \001(\003\"" +
-      "\224\002\n\tTypeIndex\022(\n\006module\030\001 \003(\0132\030.dossier." +
-      "TypeIndex.Entry\022&\n\004type\030\002 \003(\0132\030.dossier." +
-      "TypeIndex.Entry\032\264\001\n\005Entry\022+\n\004type\030\001 \001(\0132",
-      "\035.dossier.expression.NamedType\022\024\n\014is_int" +
-      "erface\030\002 \001(\010\022\024\n\014is_namespace\030\003 \001(\010\022\027\n\017st" +
-      "atic_property\030\004 \003(\t\022\020\n\010property\030\005 \003(\t\022\'\n" +
-      "\005child\030\006 \003(\0132\030.dossier.TypeIndex.Entry\"\263" +
-      "\n\n\006JsType\022\014\n\004name\030\001 \001(\t\022#\n\006source\030\005 \001(\0132" +
-      "\023.dossier.SourceLink\022+\n\006nested\030\006 \001(\0132\033.d" +
-      "ossier.JsType.NestedTypes\022%\n\013description" +
-      "\030\007 \001(\0132\020.dossier.Comment\022\033\n\004tags\030\010 \001(\0132\r" +
-      ".dossier.Tags\022%\n\013deprecation\030\t \001(\0132\020.dos" +
-      "sier.Comment\022#\n\010type_def\030\n \003(\0132\021.dossier",
-      ".Property\022)\n\013enumeration\030\013 \001(\0132\024.dossier" +
-      ".Enumeration\022*\n\017static_function\030\014 \003(\0132\021." +
-      "dossier.Function\022*\n\017static_property\030\r \003(" +
-      "\0132\021.dossier.Property\022(\n\rmain_function\030\016 " +
-      "\001(\0132\021.dossier.Function\022!\n\006method\030\017 \003(\0132\021" +
-      ".dossier.Function\022 \n\005field\030\020 \003(\0132\021.dossi" +
-      "er.Property\0224\n\rextended_type\030\022 \003(\0132\035.dos" +
-      "sier.expression.NamedType\0227\n\020implemented" +
-      "_type\030\023 \003(\0132\035.dossier.expression.NamedTy" +
-      "pe\022.\n\007subtype\030\032 \003(\0132\035.dossier.expression",
-      ".NamedType\0225\n\016implementation\030\033 \003(\0132\035.dos" +
-      "sier.expression.NamedType\022,\n\021compiler_co" +
-      "nstant\030\024 \003(\0132\021.dossier.Property\022*\n\006paren" +
-      "t\030\025 \001(\0132\032.dossier.JsType.ParentLink\0223\n\014a" +
-      "liased_type\030\026 \001(\0132\035.dossier.expression.N" +
-      "amedType\0222\n\013known_alias\030\034 \003(\0132\035.dossier." +
-      "expression.NamedType\022\020\n\010filename\030\027 \001(\t\022\026" +
-      "\n\016qualified_name\030\030 \001(\t\022,\n\021reexported_mod" +
-      "ule\030\031 \003(\0132\021.dossier.Property\032q\n\013TypeSumm" +
-      "ary\022\014\n\004name\030\001 \001(\t\022\024\n\004href\030\002 \001(\tB\006\362\201\031\002\010\001\022",
-      "!\n\007summary\030\003 \001(\0132\020.dossier.Comment\022\033\n\004ta" +
-      "gs\030\004 \001(\0132\r.dossier.Tags\032\224\001\n\013NestedTypes\022" +
-      "*\n\005class\030\001 \003(\0132\033.dossier.JsType.TypeSumm" +
-      "ary\022)\n\004enum\030\002 \003(\0132\033.dossier.JsType.TypeS" +
-      "ummary\022.\n\tinterface\030\003 \003(\0132\033.dossier.JsTy" +
-      "pe.TypeSummary\032L\n\nParentLink\022+\n\004type\030\001 \001" +
-      "(\0132\035.dossier.expression.NamedType\022\021\n\tis_" +
-      "module\030\002 \001(\010\"\322\002\n\010PageData\022%\n\tresources\030\001" +
-      " \001(\0132\022.dossier.Resources\022\035\n\005index\030\002 \001(\0132" +
-      "\016.dossier.Index\0221\n\005types\030\003 \001(\0132 .dossier",
-      ".PageData.TypeCollectionH\000\022.\n\010markdown\030\004" +
-      " \001(\0132\032.dossier.PageData.MarkdownH\000\022#\n\004fi" +
-      "le\030\005 \001(\0132\023.dossier.SourceFileH\000\032<\n\010Markd" +
-      "own\022\r\n\005title\030\001 \001(\t\022!\n\007content\030\002 \001(\0132\020.do" +
-      "ssier.Comment\032/\n\016TypeCollection\022\035\n\004type\030" +
-      "\001 \003(\0132\017.dossier.JsTypeB\t\n\007content*A\n\nVis" +
-      "ibility\022\n\n\006PUBLIC\020\000\022\r\n\tPROTECTED\020\001\022\013\n\007PR" +
-      "IVATE\020\002\022\013\n\007PACKAGE\020\003B\036\n\032com.github.jsdos" +
-      "sier.protoP\001b\006proto3"
+      "\003(\tB\006\362\201\031\002\010\001\"@\n\004Link\022\014\n\004text\030\001 \001(\t\022\024\n\004hre" +
+      "f\030\002 \001(\tB\006\362\201\031\002\010\001\022\024\n\004json\030\003 \001(\tB\006\362\201\031\002\010\001\"=\n" +
+      "\nSourceLink\022\024\n\004path\030\001 \001(\tB\006\362\201\031\002\010\001\022\014\n\004lin" +
+      "e\030\002 \001(\005\022\013\n\003uri\030\003 \001(\t\"\230\001\n\007Comment\022%\n\005toke" +
+      "n\030\001 \003(\0132\026.dossier.Comment.Token\032f\n\005Token",
+      "\022\016\n\004text\030\001 \001(\tH\000\022\026\n\004html\030\002 \001(\tB\006\362\201\031\002\020\001H\000" +
+      "\022*\n\004link\030\003 \001(\0132\034.dossier.expression.Type" +
+      "LinkB\t\n\007content\"\265\001\n\004Tags\022\020\n\010is_const\030\001 \001" +
+      "(\010\022\025\n\ris_deprecated\030\002 \001(\010\022\017\n\007is_dict\030\003 \001" +
+      "(\010\022\020\n\010is_final\030\004 \001(\010\022\024\n\014is_interface\030\005 \001" +
+      "(\010\022\021\n\tis_module\030\006 \001(\010\022\021\n\tis_struct\030\007 \001(\010" +
+      "\022\022\n\nis_default\030\010 \001(\010\022\021\n\tis_record\030\t \001(\010\"" +
+      "\223\003\n\014BaseProperty\022\014\n\004name\030\001 \001(\t\022#\n\006source" +
+      "\030\002 \001(\0132\023.dossier.SourceLink\022%\n\013descripti" +
+      "on\030\003 \001(\0132\020.dossier.Comment\022%\n\013deprecatio",
+      "n\030\004 \001(\0132\020.dossier.Comment\022\'\n\nvisibility\030" +
+      "\005 \001(\0162\023.dossier.Visibility\022\033\n\004tags\030\006 \001(\013" +
+      "2\r.dossier.Tags\0221\n\ndefined_by\030\007 \001(\0132\035.do" +
+      "ssier.expression.NamedType\0220\n\toverrides\030" +
+      "\010 \001(\0132\035.dossier.expression.NamedType\0223\n\014" +
+      "specified_by\030\t \003(\0132\035.dossier.expression." +
+      "NamedType\022\"\n\010see_also\030\n \003(\0132\020.dossier.Co" +
+      "mment\"a\n\010Property\022#\n\004base\030\001 \001(\0132\025.dossie" +
+      "r.BaseProperty\0220\n\004type\030\002 \001(\0132\".dossier.e" +
+      "xpression.TypeExpression\"\320\002\n\010Function\022#\n",
+      "\004base\030\001 \001(\0132\025.dossier.BaseProperty\022\025\n\rte" +
+      "mplate_name\030\002 \003(\t\022\026\n\016is_constructor\030\003 \001(" +
+      "\010\022+\n\tparameter\030\004 \003(\0132\030.dossier.Function." +
+      "Detail\022(\n\006return\030\005 \001(\0132\030.dossier.Functio" +
+      "n.Detail\022(\n\006thrown\030\006 \003(\0132\030.dossier.Funct" +
+      "ion.Detail\032o\n\006Detail\022\014\n\004name\030\001 \001(\t\0220\n\004ty" +
+      "pe\030\002 \001(\0132\".dossier.expression.TypeExpres" +
+      "sion\022%\n\013description\030\003 \001(\0132\020.dossier.Comm" +
+      "ent\"\370\001\n\013Enumeration\0220\n\004type\030\001 \001(\0132\".doss" +
+      "ier.expression.TypeExpression\022)\n\005value\030\002",
+      " \003(\0132\032.dossier.Enumeration.Value\022\'\n\nvisi" +
+      "bility\030\003 \001(\0162\023.dossier.Visibility\032c\n\005Val" +
+      "ue\022\014\n\004name\030\001 \001(\t\022%\n\013description\030\002 \001(\0132\020." +
+      "dossier.Comment\022%\n\013deprecation\030\003 \001(\0132\020.d" +
+      "ossier.Comment\"}\n\005Index\022\024\n\004home\030\001 \001(\tB\006\362" +
+      "\201\031\002\010\001\022\025\n\rinclude_types\030\002 \001(\010\022\027\n\017include_" +
+      "modules\030\003 \001(\010\022\033\n\004link\030\004 \003(\0132\r.dossier.Li" +
+      "nk\022\021\n\ttimestamp\030\005 \001(\003\"\325\002\n\tTypeIndex\022(\n\006m" +
+      "odule\030\001 \003(\0132\030.dossier.TypeIndex.Entry\022&\n" +
+      "\004type\030\002 \003(\0132\030.dossier.TypeIndex.Entry\022\033\n",
+      "\004page\030\003 \003(\0132\r.dossier.Link\022\"\n\013source_fil" +
+      "e\030\004 \003(\0132\r.dossier.Link\032\264\001\n\005Entry\022+\n\004type" +
+      "\030\001 \001(\0132\035.dossier.expression.NamedType\022\024\n" +
+      "\014is_interface\030\002 \001(\010\022\024\n\014is_namespace\030\003 \001(" +
+      "\010\022\027\n\017static_property\030\004 \003(\t\022\020\n\010property\030\005" +
+      " \003(\t\022\'\n\005child\030\006 \003(\0132\030.dossier.TypeIndex." +
+      "Entry\"\263\n\n\006JsType\022\014\n\004name\030\001 \001(\t\022#\n\006source" +
+      "\030\005 \001(\0132\023.dossier.SourceLink\022+\n\006nested\030\006 " +
+      "\001(\0132\033.dossier.JsType.NestedTypes\022%\n\013desc" +
+      "ription\030\007 \001(\0132\020.dossier.Comment\022\033\n\004tags\030",
+      "\010 \001(\0132\r.dossier.Tags\022%\n\013deprecation\030\t \001(" +
+      "\0132\020.dossier.Comment\022#\n\010type_def\030\n \003(\0132\021." +
+      "dossier.Property\022)\n\013enumeration\030\013 \001(\0132\024." +
+      "dossier.Enumeration\022*\n\017static_function\030\014" +
+      " \003(\0132\021.dossier.Function\022*\n\017static_proper" +
+      "ty\030\r \003(\0132\021.dossier.Property\022(\n\rmain_func" +
+      "tion\030\016 \001(\0132\021.dossier.Function\022!\n\006method\030" +
+      "\017 \003(\0132\021.dossier.Function\022 \n\005field\030\020 \003(\0132" +
+      "\021.dossier.Property\0224\n\rextended_type\030\022 \003(" +
+      "\0132\035.dossier.expression.NamedType\0227\n\020impl",
+      "emented_type\030\023 \003(\0132\035.dossier.expression." +
+      "NamedType\022.\n\007subtype\030\032 \003(\0132\035.dossier.exp" +
+      "ression.NamedType\0225\n\016implementation\030\033 \003(" +
+      "\0132\035.dossier.expression.NamedType\022,\n\021comp" +
+      "iler_constant\030\024 \003(\0132\021.dossier.Property\022*" +
+      "\n\006parent\030\025 \001(\0132\032.dossier.JsType.ParentLi" +
+      "nk\0223\n\014aliased_type\030\026 \001(\0132\035.dossier.expre" +
+      "ssion.NamedType\0222\n\013known_alias\030\034 \003(\0132\035.d" +
+      "ossier.expression.NamedType\022\020\n\010filename\030" +
+      "\027 \001(\t\022\026\n\016qualified_name\030\030 \001(\t\022,\n\021reexpor",
+      "ted_module\030\031 \003(\0132\021.dossier.Property\032q\n\013T" +
+      "ypeSummary\022\014\n\004name\030\001 \001(\t\022\024\n\004href\030\002 \001(\tB\006" +
+      "\362\201\031\002\010\001\022!\n\007summary\030\003 \001(\0132\020.dossier.Commen" +
+      "t\022\033\n\004tags\030\004 \001(\0132\r.dossier.Tags\032\224\001\n\013Neste" +
+      "dTypes\022*\n\005class\030\001 \003(\0132\033.dossier.JsType.T" +
+      "ypeSummary\022)\n\004enum\030\002 \003(\0132\033.dossier.JsTyp" +
+      "e.TypeSummary\022.\n\tinterface\030\003 \003(\0132\033.dossi" +
+      "er.JsType.TypeSummary\032L\n\nParentLink\022+\n\004t" +
+      "ype\030\001 \001(\0132\035.dossier.expression.NamedType" +
+      "\022\021\n\tis_module\030\002 \001(\010\"\263\002\n\010PageData\022%\n\treso",
+      "urces\030\001 \001(\0132\022.dossier.Resources\0221\n\005types" +
+      "\030\002 \001(\0132 .dossier.PageData.TypeCollection" +
+      "H\000\022.\n\010markdown\030\003 \001(\0132\032.dossier.PageData." +
+      "MarkdownH\000\022#\n\004file\030\004 \001(\0132\023.dossier.Sourc" +
+      "eFileH\000\032<\n\010Markdown\022\r\n\005title\030\001 \001(\t\022!\n\007co" +
+      "ntent\030\002 \001(\0132\020.dossier.Comment\032/\n\016TypeCol" +
+      "lection\022\035\n\004type\030\001 \003(\0132\017.dossier.JsTypeB\t" +
+      "\n\007content*A\n\nVisibility\022\n\n\006PUBLIC\020\000\022\r\n\tP" +
+      "ROTECTED\020\001\022\013\n\007PRIVATE\020\002\022\013\n\007PACKAGE\020\003B\036\n\032" +
+      "com.github.jsdossier.protoP\001b\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -263,7 +264,7 @@ public final class Dossier {
     internal_static_dossier_Link_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_dossier_Link_descriptor,
-        new java.lang.String[] { "Text", "Href", });
+        new java.lang.String[] { "Text", "Href", "Json", });
     internal_static_dossier_SourceLink_descriptor =
       getDescriptor().getMessageTypes().get(3);
     internal_static_dossier_SourceLink_fieldAccessorTable = new
@@ -335,7 +336,7 @@ public final class Dossier {
     internal_static_dossier_TypeIndex_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_dossier_TypeIndex_descriptor,
-        new java.lang.String[] { "Module", "Type", });
+        new java.lang.String[] { "Module", "Type", "Page", "SourceFile", });
     internal_static_dossier_TypeIndex_Entry_descriptor =
       internal_static_dossier_TypeIndex_descriptor.getNestedTypes().get(0);
     internal_static_dossier_TypeIndex_Entry_fieldAccessorTable = new
@@ -371,7 +372,7 @@ public final class Dossier {
     internal_static_dossier_PageData_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_dossier_PageData_descriptor,
-        new java.lang.String[] { "Resources", "Index", "Types", "Markdown", "File", "Content", });
+        new java.lang.String[] { "Resources", "Types", "Markdown", "File", "Content", });
     internal_static_dossier_PageData_Markdown_descriptor =
       internal_static_dossier_PageData_descriptor.getNestedTypes().get(0);
     internal_static_dossier_PageData_Markdown_fieldAccessorTable = new

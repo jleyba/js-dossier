@@ -68,11 +68,11 @@ final class LinkFactory {
   private final Optional<NominalType> pathContext;
   private final TypeContext typeContext;
   private final Optional<String> urlTemplate;
+  private final boolean jsonPaths;
 
   /**
    * Creates a new link factory.
-   *
-   * @param dfs used to generate paths to documentation in the output file system.
+   *  @param dfs used to generate paths to documentation in the output file system.
    * @param typeRegistry used to lookup nominal types.
    * @param jsTypeRegistry used to lookup JavaScript types.
    * @param typeContext defines the context in which to resolve type names.
@@ -89,6 +89,20 @@ final class LinkFactory {
       @Provided TypeContext typeContext,
       @Provided @SourceUrlTemplate Optional<String> urlTemplate,
       @Nullable NominalType pathContext) {
+    this(dfs, typeRegistry, jsTypeRegistry, nodeLibrary, namingConvention,
+        typeContext, urlTemplate, pathContext, false);
+  }
+
+  LinkFactory(
+      @Provided DossierFileSystem dfs,
+      @Provided TypeRegistry typeRegistry,
+      @Provided JSTypeRegistry jsTypeRegistry,
+      @Provided NodeLibrary nodeLibrary,
+      @Provided ModuleNamingConvention namingConvention,
+      @Provided TypeContext typeContext,
+      @Provided @SourceUrlTemplate Optional<String> urlTemplate,
+      @Nullable NominalType pathContext,
+      boolean jsonPaths) {
     this.dfs = dfs;
     this.typeRegistry = typeRegistry;
     this.jsTypeRegistry = jsTypeRegistry;
@@ -97,6 +111,7 @@ final class LinkFactory {
     this.pathContext = Optional.fromNullable(pathContext);
     this.typeContext = typeContext;
     this.urlTemplate = urlTemplate;
+    this.jsonPaths = jsonPaths;
   }
 
   public TypeContext getTypeContext() {
@@ -113,7 +128,16 @@ final class LinkFactory {
     return new LinkFactory(
         dfs, typeRegistry, jsTypeRegistry, nodeLibrary, namingConvention,
         typeContext.changeContext(context), urlTemplate,
-        pathContext.orNull());
+        pathContext.orNull(), jsonPaths);
+  }
+
+  /**
+   * Creates a new link factory that includes links to the JSON data file for all type references.
+   */
+  public LinkFactory withJsonPaths() {
+    return new LinkFactory(
+        dfs, typeRegistry, jsTypeRegistry, nodeLibrary, namingConvention,
+        typeContext, urlTemplate, pathContext.orNull(), true);
   }
 
   /**
@@ -165,7 +189,7 @@ final class LinkFactory {
    */
   public NamedType createTypeReference(final NominalType type) {
     Path path;
-    Path jsonPath = null;
+    Path jsonPath;
     String symbol = null;
 
     if (type.getJsDoc().isTypedef() || type.getJsDoc().isDefine()) {
@@ -214,7 +238,7 @@ final class LinkFactory {
       builder.setQualifiedName(qualifiedName);
     }
     builder.getLinkBuilder().setHref(href);
-    if (jsonPath != null) {
+    if (jsonPath != null && jsonPaths) {
       builder.getLinkBuilder().setJson(getUriPath(jsonPath));
     }
     return builder.build();

@@ -42,4 +42,22 @@ public interface LinkOrBuilder extends
    */
   com.google.protobuf.ByteString
       getHrefBytes();
+
+  /**
+   * <code>optional string json = 3;</code>
+   *
+   * <pre>
+   * The JSON data associated with this link, if any.
+   * </pre>
+   */
+  java.lang.String getJson();
+  /**
+   * <code>optional string json = 3;</code>
+   *
+   * <pre>
+   * The JSON data associated with this link, if any.
+   * </pre>
+   */
+  com.google.protobuf.ByteString
+      getJsonBytes();
 }

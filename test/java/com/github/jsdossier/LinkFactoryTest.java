@@ -1971,7 +1971,6 @@ public class LinkFactoryTest {
   private static TypeLink createLink(String href) {
     return TypeLink.newBuilder()
         .setHref(href)
-        .setJson(href.replaceAll("\\.html(#.*)?$", ".json"))
         .build();
   }
 

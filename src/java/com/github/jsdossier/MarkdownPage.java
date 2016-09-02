@@ -23,7 +23,7 @@ import java.nio.file.Path;
 /**
  * Defines a markdown file that should be rendered as HTML with the generated documentation.
  */
-final class MarkdownPage {
+public final class MarkdownPage {
   private final String name;
   private final Path path;
 

@@ -54,4 +54,52 @@ public interface TypeIndexOrBuilder extends
    */
   com.github.jsdossier.proto.TypeIndex.EntryOrBuilder getTypeOrBuilder(
       int index);
+
+  /**
+   * <code>repeated .dossier.Link page = 3;</code>
+   */
+  java.util.List<com.github.jsdossier.proto.Link> 
+      getPageList();
+  /**
+   * <code>repeated .dossier.Link page = 3;</code>
+   */
+  com.github.jsdossier.proto.Link getPage(int index);
+  /**
+   * <code>repeated .dossier.Link page = 3;</code>
+   */
+  int getPageCount();
+  /**
+   * <code>repeated .dossier.Link page = 3;</code>
+   */
+  java.util.List<? extends com.github.jsdossier.proto.LinkOrBuilder> 
+      getPageOrBuilderList();
+  /**
+   * <code>repeated .dossier.Link page = 3;</code>
+   */
+  com.github.jsdossier.proto.LinkOrBuilder getPageOrBuilder(
+      int index);
+
+  /**
+   * <code>repeated .dossier.Link source_file = 4;</code>
+   */
+  java.util.List<com.github.jsdossier.proto.Link> 
+      getSourceFileList();
+  /**
+   * <code>repeated .dossier.Link source_file = 4;</code>
+   */
+  com.github.jsdossier.proto.Link getSourceFile(int index);
+  /**
+   * <code>repeated .dossier.Link source_file = 4;</code>
+   */
+  int getSourceFileCount();
+  /**
+   * <code>repeated .dossier.Link source_file = 4;</code>
+   */
+  java.util.List<? extends com.github.jsdossier.proto.LinkOrBuilder> 
+      getSourceFileOrBuilderList();
+  /**
+   * <code>repeated .dossier.Link source_file = 4;</code>
+   */
+  com.github.jsdossier.proto.LinkOrBuilder getSourceFileOrBuilder(
+      int index);
 }

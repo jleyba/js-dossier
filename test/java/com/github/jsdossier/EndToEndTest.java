@@ -64,7 +64,6 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.TreeMap;
 
 @RunWith(Enclosed.class)
 public class EndToEndTest {
@@ -132,7 +131,7 @@ public class EndToEndTest {
           querySelector(document, "article.srcfile"),
           "source/subdir/emptyenum.js.src.html");
       checkHeader(document);
-      compareWithGoldenFile(querySelectorAll(document, "nav"), "source/subdir/nav.html");
+      checkNav(document);
       compareWithGoldenFile(
           querySelectorAll(document, "main ~ footer, main ~ script"), "source/subdir/footer.html");
     }
@@ -272,7 +271,7 @@ public class EndToEndTest {
       Document document = load(outDir.resolve("module/example/index.html"));
       compareWithGoldenFile(querySelector(document, "article"), "module/example/index.html");
       checkHeader(document);
-      checkModuleNav(document);
+      checkNav(document);
       checkModuleFooter(document);
     }
 
@@ -281,7 +280,7 @@ public class EndToEndTest {
       Document document = load(outDir.resolve("module/example/nested.html"));
       compareWithGoldenFile(querySelector(document, "article"), "module/example/nested.html");
       checkHeader(document);
-      checkModuleNav(document);
+      checkNav(document);
       checkModuleFooter(document);
     }
 
@@ -290,7 +289,7 @@ public class EndToEndTest {
       Document document = load(outDir.resolve("module/example/worker.html"));
       compareWithGoldenFile(querySelector(document, "article"), "module/example/worker.html");
       checkHeader(document);
-      checkModuleNav(document);
+      checkNav(document);
       checkModuleFooter(document);
     }
 
@@ -300,7 +299,7 @@ public class EndToEndTest {
       compareWithGoldenFile(
           querySelector(document, "article"), "module/example/index_exports_Greeter.html");
       checkHeader(document);
-      checkModuleNav(document);
+      checkNav(document);
       checkModuleFooter(document);
     }
 
@@ -310,7 +309,7 @@ public class EndToEndTest {
       compareWithGoldenFile(querySelector(document, "article"),
           "module/example/nested_exports_IdGenerator.html");
       checkHeader(document);
-      checkModuleNav(document);
+      checkNav(document);
       checkModuleFooter(document);
     }
 
@@ -321,7 +320,7 @@ public class EndToEndTest {
       compareWithGoldenFile(querySelector(document, "article"),
           "module/example/nested_exports_IncrementingIdGenerator.html");
       checkHeader(document);
-      checkModuleNav(document);
+      checkNav(document);
       checkModuleFooter(document);
     }
 
@@ -332,7 +331,7 @@ public class EndToEndTest {
       compareWithGoldenFile(querySelector(document, "article"),
           "module/example/nested_exports_Person.html");
       checkHeader(document);
-      checkModuleNav(document);
+      checkNav(document);
       checkModuleFooter(document);
     }
 
@@ -390,7 +389,7 @@ public class EndToEndTest {
       Document document = load(outDir.resolve("module/example/net.html"));
       compareWithGoldenFile(querySelector(document, "article"), "module/example/net.html");
       checkHeader(document);
-      checkModuleNav(document);
+      checkNav(document);
       checkModuleFooter(document);
     }
 
@@ -399,7 +398,7 @@ public class EndToEndTest {
       Document document = load(outDir.resolve("module/example/empty.html"));
       compareWithGoldenFile(querySelector(document, "article"), "module/example/empty.html");
       checkHeader(document);
-      checkModuleNav(document);
+      checkNav(document);
       checkModuleFooter(document);
     }
 
@@ -409,7 +408,7 @@ public class EndToEndTest {
       compareWithGoldenFile(querySelector(document, "article"),
           "module/example/net_exports_HttpClient.html");
       checkHeader(document);
-      checkModuleNav(document);
+      checkNav(document);
       checkModuleFooter(document);
     }
 
@@ -472,12 +471,9 @@ public class EndToEndTest {
       compareWithGoldenFile(elements, "module/example/footer.html");
     }
 
-    private void checkNav(Document document) throws IOException {
-      compareWithGoldenFile(querySelectorAll(document, ".dossier-nav"), "nav.html");
-    }
-
-    private void checkModuleNav(Document document) throws IOException {
-      compareWithGoldenFile(querySelectorAll(document, ".dossier-nav"), "module/example/nav.html");
+    private void checkNav(Document document) {
+      Elements elements = querySelectorAll(document, ".dossier-nav");
+      assertThat(elements.size()).isEqualTo(1);
     }
 
     private void compareWithGoldenFile(Element element, String goldenPath) throws IOException {

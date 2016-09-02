@@ -21,42 +21,29 @@ public interface PageDataOrBuilder extends
   com.github.jsdossier.proto.ResourcesOrBuilder getResourcesOrBuilder();
 
   /**
-   * <code>optional .dossier.Index index = 2;</code>
-   */
-  boolean hasIndex();
-  /**
-   * <code>optional .dossier.Index index = 2;</code>
-   */
-  com.github.jsdossier.proto.Index getIndex();
-  /**
-   * <code>optional .dossier.Index index = 2;</code>
-   */
-  com.github.jsdossier.proto.IndexOrBuilder getIndexOrBuilder();
-
-  /**
-   * <code>optional .dossier.PageData.TypeCollection types = 3;</code>
+   * <code>optional .dossier.PageData.TypeCollection types = 2;</code>
    */
   com.github.jsdossier.proto.PageData.TypeCollection getTypes();
   /**
-   * <code>optional .dossier.PageData.TypeCollection types = 3;</code>
+   * <code>optional .dossier.PageData.TypeCollection types = 2;</code>
    */
   com.github.jsdossier.proto.PageData.TypeCollectionOrBuilder getTypesOrBuilder();
 
   /**
-   * <code>optional .dossier.PageData.Markdown markdown = 4;</code>
+   * <code>optional .dossier.PageData.Markdown markdown = 3;</code>
    */
   com.github.jsdossier.proto.PageData.Markdown getMarkdown();
   /**
-   * <code>optional .dossier.PageData.Markdown markdown = 4;</code>
+   * <code>optional .dossier.PageData.Markdown markdown = 3;</code>
    */
   com.github.jsdossier.proto.PageData.MarkdownOrBuilder getMarkdownOrBuilder();
 
   /**
-   * <code>optional .dossier.SourceFile file = 5;</code>
+   * <code>optional .dossier.SourceFile file = 4;</code>
    */
   com.github.jsdossier.proto.SourceFile getFile();
   /**
-   * <code>optional .dossier.SourceFile file = 5;</code>
+   * <code>optional .dossier.SourceFile file = 4;</code>
    */
   com.github.jsdossier.proto.SourceFileOrBuilder getFileOrBuilder();
 

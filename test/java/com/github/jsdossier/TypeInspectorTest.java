@@ -426,7 +426,7 @@ public class TypeInspectorTest extends AbstractTypeInspectorTest {
     assertMessage(inspector.getTypeDescription())
         .isEqualTo(htmlComment(
             "<p>This is a comment on a type.\n" +
-                "<a href=\"bar_exports_Baz.html\" data-json=\"bar_exports_Baz.json\">" +
+                "<a href=\"bar_exports_Baz.html\">" +
                 "<code>InternalClazz</code></a></p>\n"));
   }
 
@@ -477,7 +477,7 @@ public class TypeInspectorTest extends AbstractTypeInspectorTest {
     TypeInspector inspector = typeInspectorFactory.create(type);
     assertMessage(inspector.getTypeDescription())
         .isEqualTo(htmlComment(
-            "<p>Exports <a href=\"bar_exports_A.html\" data-json=\"bar_exports_A.json\">" +
+            "<p>Exports <a href=\"bar_exports_A.html\">" +
                 "<code>A</code></a>.</p>\n"));
   }
 
@@ -493,7 +493,7 @@ public class TypeInspectorTest extends AbstractTypeInspectorTest {
     TypeInspector inspector = typeInspectorFactory.create(type);
     assertMessage(inspector.getTypeDescription())
         .isEqualTo(htmlComment(
-            "<p>Exports <a href=\"bar_exports_A.html\" data-json=\"bar_exports_A.json\">" +
+            "<p>Exports <a href=\"bar_exports_A.html\">" +
                 "<code>A</code></a>.</p>\n"));
   }
 

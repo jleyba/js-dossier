@@ -19,6 +19,7 @@ package com.github.jsdossier.testing;
 import static com.google.common.base.Preconditions.checkArgument;
 
 import com.github.jsdossier.CompilerModule;
+import com.github.jsdossier.MarkdownPage;
 import com.github.jsdossier.ModuleNamingConvention;
 import com.github.jsdossier.annotations.DocumentationScoped;
 import com.github.jsdossier.annotations.Input;
@@ -27,6 +28,7 @@ import com.github.jsdossier.annotations.ModuleFilter;
 import com.github.jsdossier.annotations.ModulePrefix;
 import com.github.jsdossier.annotations.Modules;
 import com.github.jsdossier.annotations.Output;
+import com.github.jsdossier.annotations.Readme;
 import com.github.jsdossier.annotations.SourcePrefix;
 import com.github.jsdossier.annotations.SourceUrlTemplate;
 import com.github.jsdossier.annotations.Stderr;
@@ -48,7 +50,6 @@ import com.google.inject.Provides;
 import com.google.inject.Scopes;
 import com.google.javascript.jscomp.CompilerOptions;
 import com.google.javascript.jscomp.CompilerOptions.LanguageMode;
-
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
@@ -131,6 +132,8 @@ public abstract class GuiceRule implements TestRule {
             bind(Path.class, Output.class, getOutputDir());
             bindScope(DocumentationScoped.class, Scopes.NO_SCOPE);
             bind(ModuleNamingConvention.class).toInstance(getModuleNamingConvention());
+            bind(new Key<ImmutableSet<MarkdownPage>>() {})
+                .toInstance(ImmutableSet.<MarkdownPage>of());
           }
 
           @Provides

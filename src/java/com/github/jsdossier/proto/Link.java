@@ -21,6 +21,7 @@ public  final class Link extends
   private Link() {
     text_ = "";
     href_ = "";
+    json_ = "";
   }
 
   @java.lang.Override
@@ -57,6 +58,12 @@ public  final class Link extends
             java.lang.String s = input.readStringRequireUtf8();
 
             href_ = s;
+            break;
+          }
+          case 26: {
+            java.lang.String s = input.readStringRequireUtf8();
+
+            json_ = s;
             break;
           }
         }
@@ -167,6 +174,48 @@ public  final class Link extends
     }
   }
 
+  public static final int JSON_FIELD_NUMBER = 3;
+  private volatile java.lang.Object json_;
+  /**
+   * <code>optional string json = 3;</code>
+   *
+   * <pre>
+   * The JSON data associated with this link, if any.
+   * </pre>
+   */
+  public java.lang.String getJson() {
+    java.lang.Object ref = json_;
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
+    } else {
+      com.google.protobuf.ByteString bs = 
+          (com.google.protobuf.ByteString) ref;
+      java.lang.String s = bs.toStringUtf8();
+      json_ = s;
+      return s;
+    }
+  }
+  /**
+   * <code>optional string json = 3;</code>
+   *
+   * <pre>
+   * The JSON data associated with this link, if any.
+   * </pre>
+   */
+  public com.google.protobuf.ByteString
+      getJsonBytes() {
+    java.lang.Object ref = json_;
+    if (ref instanceof java.lang.String) {
+      com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString.copyFromUtf8(
+              (java.lang.String) ref);
+      json_ = b;
+      return b;
+    } else {
+      return (com.google.protobuf.ByteString) ref;
+    }
+  }
+
   private byte memoizedIsInitialized = -1;
   public final boolean isInitialized() {
     byte isInitialized = memoizedIsInitialized;
@@ -185,6 +234,9 @@ public  final class Link extends
     if (!getHrefBytes().isEmpty()) {
       com.google.protobuf.GeneratedMessage.writeString(output, 2, href_);
     }
+    if (!getJsonBytes().isEmpty()) {
+      com.google.protobuf.GeneratedMessage.writeString(output, 3, json_);
+    }
   }
 
   public int getSerializedSize() {
@@ -197,6 +249,9 @@ public  final class Link extends
     }
     if (!getHrefBytes().isEmpty()) {
       size += com.google.protobuf.GeneratedMessage.computeStringSize(2, href_);
+    }
+    if (!getJsonBytes().isEmpty()) {
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(3, json_);
     }
     memoizedSize = size;
     return size;
@@ -317,6 +372,8 @@ public  final class Link extends
 
       href_ = "";
 
+      json_ = "";
+
       return this;
     }
 
@@ -341,6 +398,7 @@ public  final class Link extends
       com.github.jsdossier.proto.Link result = new com.github.jsdossier.proto.Link(this);
       result.text_ = text_;
       result.href_ = href_;
+      result.json_ = json_;
       onBuilt();
       return result;
     }
@@ -362,6 +420,10 @@ public  final class Link extends
       }
       if (!other.getHref().isEmpty()) {
         href_ = other.href_;
+        onChanged();
+      }
+      if (!other.getJson().isEmpty()) {
+        json_ = other.json_;
         onChanged();
       }
       onChanged();
@@ -564,6 +626,95 @@ public  final class Link extends
   checkByteStringIsUtf8(value);
       
       href_ = value;
+      onChanged();
+      return this;
+    }
+
+    private java.lang.Object json_ = "";
+    /**
+     * <code>optional string json = 3;</code>
+     *
+     * <pre>
+     * The JSON data associated with this link, if any.
+     * </pre>
+     */
+    public java.lang.String getJson() {
+      java.lang.Object ref = json_;
+      if (!(ref instanceof java.lang.String)) {
+        com.google.protobuf.ByteString bs =
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        json_ = s;
+        return s;
+      } else {
+        return (java.lang.String) ref;
+      }
+    }
+    /**
+     * <code>optional string json = 3;</code>
+     *
+     * <pre>
+     * The JSON data associated with this link, if any.
+     * </pre>
+     */
+    public com.google.protobuf.ByteString
+        getJsonBytes() {
+      java.lang.Object ref = json_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        json_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    /**
+     * <code>optional string json = 3;</code>
+     *
+     * <pre>
+     * The JSON data associated with this link, if any.
+     * </pre>
+     */
+    public Builder setJson(
+        java.lang.String value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  
+      json_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional string json = 3;</code>
+     *
+     * <pre>
+     * The JSON data associated with this link, if any.
+     * </pre>
+     */
+    public Builder clearJson() {
+      
+      json_ = getDefaultInstance().getJson();
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional string json = 3;</code>
+     *
+     * <pre>
+     * The JSON data associated with this link, if any.
+     * </pre>
+     */
+    public Builder setJsonBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+      
+      json_ = value;
       onChanged();
       return this;
     }

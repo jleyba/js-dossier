@@ -17,6 +17,7 @@
 package com.github.jsdossier;
 
 import com.github.jsdossier.proto.Comment;
+import com.github.jsdossier.proto.PageData;
 import com.google.auto.factory.AutoFactory;
 import com.google.auto.factory.Provided;
 
@@ -35,17 +36,17 @@ final class RenderMarkdownTask implements Callable<Path> {
   private final DossierFileSystem dfs;
   private final CommentParser parser;
   private final LinkFactory linkFactory;
-  private final HtmlRenderer htmlRenderer;
+  private final PageRenderer renderer;
   private final MarkdownPage page;
 
   RenderMarkdownTask(
       @Provided DossierFileSystem dfs,
       @Provided CommentParser parser,
       @Provided LinkFactoryBuilder linkFactoryBuilder,
-      @Provided HtmlRenderer htmlRenderer,
+      @Provided PageRenderer renderer,
       MarkdownPage page) {
     this.dfs = dfs;
-    this.htmlRenderer = htmlRenderer;
+    this.renderer = renderer;
     this.linkFactory = linkFactoryBuilder.create(null);
     this.page = page;
     this.parser = parser;
@@ -53,11 +54,20 @@ final class RenderMarkdownTask implements Callable<Path> {
 
   @Override
   public Path call() throws IOException {
-    String name = page.getName();
-    Path output = dfs.getPath(name.replace(' ', '_') + ".html");
     String text = new String(Files.readAllBytes(page.getPath()), StandardCharsets.UTF_8);
     Comment content = parser.parseComment(text, linkFactory);
-    htmlRenderer.renderHtml(output, name, content);
+
+    PageData data = PageData.newBuilder()
+        .setMarkdown(
+            PageData.Markdown.newBuilder()
+            .setTitle(page.getName())
+            .setContent(content))
+        .build();
+
+    // TODO: account for this render result.
+    renderer.renderJson(dfs.getJsonPath(page), data);
+    Path output = dfs.getPath(page);
+    renderer.renderHtml(output, data);
     return output;
   }
 }

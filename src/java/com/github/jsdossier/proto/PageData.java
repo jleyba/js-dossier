@@ -55,21 +55,8 @@ public  final class PageData extends
             break;
           }
           case 18: {
-            com.github.jsdossier.proto.Index.Builder subBuilder = null;
-            if (index_ != null) {
-              subBuilder = index_.toBuilder();
-            }
-            index_ = input.readMessage(com.github.jsdossier.proto.Index.parser(), extensionRegistry);
-            if (subBuilder != null) {
-              subBuilder.mergeFrom(index_);
-              index_ = subBuilder.buildPartial();
-            }
-
-            break;
-          }
-          case 26: {
             com.github.jsdossier.proto.PageData.TypeCollection.Builder subBuilder = null;
-            if (contentCase_ == 3) {
+            if (contentCase_ == 2) {
               subBuilder = ((com.github.jsdossier.proto.PageData.TypeCollection) content_).toBuilder();
             }
             content_ =
@@ -78,12 +65,12 @@ public  final class PageData extends
               subBuilder.mergeFrom((com.github.jsdossier.proto.PageData.TypeCollection) content_);
               content_ = subBuilder.buildPartial();
             }
-            contentCase_ = 3;
+            contentCase_ = 2;
             break;
           }
-          case 34: {
+          case 26: {
             com.github.jsdossier.proto.PageData.Markdown.Builder subBuilder = null;
-            if (contentCase_ == 4) {
+            if (contentCase_ == 3) {
               subBuilder = ((com.github.jsdossier.proto.PageData.Markdown) content_).toBuilder();
             }
             content_ =
@@ -92,12 +79,12 @@ public  final class PageData extends
               subBuilder.mergeFrom((com.github.jsdossier.proto.PageData.Markdown) content_);
               content_ = subBuilder.buildPartial();
             }
-            contentCase_ = 4;
+            contentCase_ = 3;
             break;
           }
-          case 42: {
+          case 34: {
             com.github.jsdossier.proto.SourceFile.Builder subBuilder = null;
-            if (contentCase_ == 5) {
+            if (contentCase_ == 4) {
               subBuilder = ((com.github.jsdossier.proto.SourceFile) content_).toBuilder();
             }
             content_ =
@@ -106,7 +93,7 @@ public  final class PageData extends
               subBuilder.mergeFrom((com.github.jsdossier.proto.SourceFile) content_);
               content_ = subBuilder.buildPartial();
             }
-            contentCase_ = 5;
+            contentCase_ = 4;
             break;
           }
         }
@@ -1449,9 +1436,9 @@ public  final class PageData extends
   private java.lang.Object content_;
   public enum ContentCase
       implements com.google.protobuf.Internal.EnumLite {
-    TYPES(3),
-    MARKDOWN(4),
-    FILE(5),
+    TYPES(2),
+    MARKDOWN(3),
+    FILE(4),
     CONTENT_NOT_SET(0);
     private int value = 0;
     private ContentCase(int value) {
@@ -1459,9 +1446,9 @@ public  final class PageData extends
     }
     public static ContentCase valueOf(int value) {
       switch (value) {
-        case 3: return TYPES;
-        case 4: return MARKDOWN;
-        case 5: return FILE;
+        case 2: return TYPES;
+        case 3: return MARKDOWN;
+        case 4: return FILE;
         case 0: return CONTENT_NOT_SET;
         default: throw new java.lang.IllegalArgumentException(
           "Value is undefined for this oneof enum.");
@@ -1499,82 +1486,61 @@ public  final class PageData extends
     return getResources();
   }
 
-  public static final int INDEX_FIELD_NUMBER = 2;
-  private com.github.jsdossier.proto.Index index_;
+  public static final int TYPES_FIELD_NUMBER = 2;
   /**
-   * <code>optional .dossier.Index index = 2;</code>
-   */
-  public boolean hasIndex() {
-    return index_ != null;
-  }
-  /**
-   * <code>optional .dossier.Index index = 2;</code>
-   */
-  public com.github.jsdossier.proto.Index getIndex() {
-    return index_ == null ? com.github.jsdossier.proto.Index.getDefaultInstance() : index_;
-  }
-  /**
-   * <code>optional .dossier.Index index = 2;</code>
-   */
-  public com.github.jsdossier.proto.IndexOrBuilder getIndexOrBuilder() {
-    return getIndex();
-  }
-
-  public static final int TYPES_FIELD_NUMBER = 3;
-  /**
-   * <code>optional .dossier.PageData.TypeCollection types = 3;</code>
+   * <code>optional .dossier.PageData.TypeCollection types = 2;</code>
    */
   public com.github.jsdossier.proto.PageData.TypeCollection getTypes() {
-    if (contentCase_ == 3) {
+    if (contentCase_ == 2) {
        return (com.github.jsdossier.proto.PageData.TypeCollection) content_;
     }
     return com.github.jsdossier.proto.PageData.TypeCollection.getDefaultInstance();
   }
   /**
-   * <code>optional .dossier.PageData.TypeCollection types = 3;</code>
+   * <code>optional .dossier.PageData.TypeCollection types = 2;</code>
    */
   public com.github.jsdossier.proto.PageData.TypeCollectionOrBuilder getTypesOrBuilder() {
-    if (contentCase_ == 3) {
+    if (contentCase_ == 2) {
        return (com.github.jsdossier.proto.PageData.TypeCollection) content_;
     }
     return com.github.jsdossier.proto.PageData.TypeCollection.getDefaultInstance();
   }
 
-  public static final int MARKDOWN_FIELD_NUMBER = 4;
+  public static final int MARKDOWN_FIELD_NUMBER = 3;
   /**
-   * <code>optional .dossier.PageData.Markdown markdown = 4;</code>
+   * <code>optional .dossier.PageData.Markdown markdown = 3;</code>
    */
   public com.github.jsdossier.proto.PageData.Markdown getMarkdown() {
-    if (contentCase_ == 4) {
+    if (contentCase_ == 3) {
        return (com.github.jsdossier.proto.PageData.Markdown) content_;
     }
     return com.github.jsdossier.proto.PageData.Markdown.getDefaultInstance();
   }
   /**
-   * <code>optional .dossier.PageData.Markdown markdown = 4;</code>
+   * <code>optional .dossier.PageData.Markdown markdown = 3;</code>
    */
   public com.github.jsdossier.proto.PageData.MarkdownOrBuilder getMarkdownOrBuilder() {
-    if (contentCase_ == 4) {
+    if (contentCase_ == 3) {
        return (com.github.jsdossier.proto.PageData.Markdown) content_;
     }
     return com.github.jsdossier.proto.PageData.Markdown.getDefaultInstance();
   }
 
-  public static final int FILE_FIELD_NUMBER = 5;
+  public static final int FILE_FIELD_NUMBER = 4;
   /**
-   * <code>optional .dossier.SourceFile file = 5;</code>
+   * <code>optional .dossier.SourceFile file = 4;</code>
    */
   public com.github.jsdossier.proto.SourceFile getFile() {
-    if (contentCase_ == 5) {
+    if (contentCase_ == 4) {
        return (com.github.jsdossier.proto.SourceFile) content_;
     }
     return com.github.jsdossier.proto.SourceFile.getDefaultInstance();
   }
   /**
-   * <code>optional .dossier.SourceFile file = 5;</code>
+   * <code>optional .dossier.SourceFile file = 4;</code>
    */
   public com.github.jsdossier.proto.SourceFileOrBuilder getFileOrBuilder() {
-    if (contentCase_ == 5) {
+    if (contentCase_ == 4) {
        return (com.github.jsdossier.proto.SourceFile) content_;
     }
     return com.github.jsdossier.proto.SourceFile.getDefaultInstance();
@@ -1595,17 +1561,14 @@ public  final class PageData extends
     if (resources_ != null) {
       output.writeMessage(1, getResources());
     }
-    if (index_ != null) {
-      output.writeMessage(2, getIndex());
+    if (contentCase_ == 2) {
+      output.writeMessage(2, (com.github.jsdossier.proto.PageData.TypeCollection) content_);
     }
     if (contentCase_ == 3) {
-      output.writeMessage(3, (com.github.jsdossier.proto.PageData.TypeCollection) content_);
+      output.writeMessage(3, (com.github.jsdossier.proto.PageData.Markdown) content_);
     }
     if (contentCase_ == 4) {
-      output.writeMessage(4, (com.github.jsdossier.proto.PageData.Markdown) content_);
-    }
-    if (contentCase_ == 5) {
-      output.writeMessage(5, (com.github.jsdossier.proto.SourceFile) content_);
+      output.writeMessage(4, (com.github.jsdossier.proto.SourceFile) content_);
     }
   }
 
@@ -1618,21 +1581,17 @@ public  final class PageData extends
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(1, getResources());
     }
-    if (index_ != null) {
+    if (contentCase_ == 2) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(2, getIndex());
+        .computeMessageSize(2, (com.github.jsdossier.proto.PageData.TypeCollection) content_);
     }
     if (contentCase_ == 3) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(3, (com.github.jsdossier.proto.PageData.TypeCollection) content_);
+        .computeMessageSize(3, (com.github.jsdossier.proto.PageData.Markdown) content_);
     }
     if (contentCase_ == 4) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(4, (com.github.jsdossier.proto.PageData.Markdown) content_);
-    }
-    if (contentCase_ == 5) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(5, (com.github.jsdossier.proto.SourceFile) content_);
+        .computeMessageSize(4, (com.github.jsdossier.proto.SourceFile) content_);
     }
     memoizedSize = size;
     return size;
@@ -1751,12 +1710,6 @@ public  final class PageData extends
         resources_ = null;
         resourcesBuilder_ = null;
       }
-      if (indexBuilder_ == null) {
-        index_ = null;
-      } else {
-        index_ = null;
-        indexBuilder_ = null;
-      }
       contentCase_ = 0;
       content_ = null;
       return this;
@@ -1786,26 +1739,21 @@ public  final class PageData extends
       } else {
         result.resources_ = resourcesBuilder_.build();
       }
-      if (indexBuilder_ == null) {
-        result.index_ = index_;
-      } else {
-        result.index_ = indexBuilder_.build();
-      }
-      if (contentCase_ == 3) {
+      if (contentCase_ == 2) {
         if (typesBuilder_ == null) {
           result.content_ = content_;
         } else {
           result.content_ = typesBuilder_.build();
         }
       }
-      if (contentCase_ == 4) {
+      if (contentCase_ == 3) {
         if (markdownBuilder_ == null) {
           result.content_ = content_;
         } else {
           result.content_ = markdownBuilder_.build();
         }
       }
-      if (contentCase_ == 5) {
+      if (contentCase_ == 4) {
         if (fileBuilder_ == null) {
           result.content_ = content_;
         } else {
@@ -1830,9 +1778,6 @@ public  final class PageData extends
       if (other == com.github.jsdossier.proto.PageData.getDefaultInstance()) return this;
       if (other.hasResources()) {
         mergeResources(other.getResources());
-      }
-      if (other.hasIndex()) {
-        mergeIndex(other.getIndex());
       }
       switch (other.getContentCase()) {
         case TYPES: {
@@ -2009,143 +1954,26 @@ public  final class PageData extends
       return resourcesBuilder_;
     }
 
-    private com.github.jsdossier.proto.Index index_ = null;
-    private com.google.protobuf.SingleFieldBuilder<
-        com.github.jsdossier.proto.Index, com.github.jsdossier.proto.Index.Builder, com.github.jsdossier.proto.IndexOrBuilder> indexBuilder_;
-    /**
-     * <code>optional .dossier.Index index = 2;</code>
-     */
-    public boolean hasIndex() {
-      return indexBuilder_ != null || index_ != null;
-    }
-    /**
-     * <code>optional .dossier.Index index = 2;</code>
-     */
-    public com.github.jsdossier.proto.Index getIndex() {
-      if (indexBuilder_ == null) {
-        return index_ == null ? com.github.jsdossier.proto.Index.getDefaultInstance() : index_;
-      } else {
-        return indexBuilder_.getMessage();
-      }
-    }
-    /**
-     * <code>optional .dossier.Index index = 2;</code>
-     */
-    public Builder setIndex(com.github.jsdossier.proto.Index value) {
-      if (indexBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        index_ = value;
-        onChanged();
-      } else {
-        indexBuilder_.setMessage(value);
-      }
-
-      return this;
-    }
-    /**
-     * <code>optional .dossier.Index index = 2;</code>
-     */
-    public Builder setIndex(
-        com.github.jsdossier.proto.Index.Builder builderForValue) {
-      if (indexBuilder_ == null) {
-        index_ = builderForValue.build();
-        onChanged();
-      } else {
-        indexBuilder_.setMessage(builderForValue.build());
-      }
-
-      return this;
-    }
-    /**
-     * <code>optional .dossier.Index index = 2;</code>
-     */
-    public Builder mergeIndex(com.github.jsdossier.proto.Index value) {
-      if (indexBuilder_ == null) {
-        if (index_ != null) {
-          index_ =
-            com.github.jsdossier.proto.Index.newBuilder(index_).mergeFrom(value).buildPartial();
-        } else {
-          index_ = value;
-        }
-        onChanged();
-      } else {
-        indexBuilder_.mergeFrom(value);
-      }
-
-      return this;
-    }
-    /**
-     * <code>optional .dossier.Index index = 2;</code>
-     */
-    public Builder clearIndex() {
-      if (indexBuilder_ == null) {
-        index_ = null;
-        onChanged();
-      } else {
-        index_ = null;
-        indexBuilder_ = null;
-      }
-
-      return this;
-    }
-    /**
-     * <code>optional .dossier.Index index = 2;</code>
-     */
-    public com.github.jsdossier.proto.Index.Builder getIndexBuilder() {
-      
-      onChanged();
-      return getIndexFieldBuilder().getBuilder();
-    }
-    /**
-     * <code>optional .dossier.Index index = 2;</code>
-     */
-    public com.github.jsdossier.proto.IndexOrBuilder getIndexOrBuilder() {
-      if (indexBuilder_ != null) {
-        return indexBuilder_.getMessageOrBuilder();
-      } else {
-        return index_ == null ?
-            com.github.jsdossier.proto.Index.getDefaultInstance() : index_;
-      }
-    }
-    /**
-     * <code>optional .dossier.Index index = 2;</code>
-     */
-    private com.google.protobuf.SingleFieldBuilder<
-        com.github.jsdossier.proto.Index, com.github.jsdossier.proto.Index.Builder, com.github.jsdossier.proto.IndexOrBuilder> 
-        getIndexFieldBuilder() {
-      if (indexBuilder_ == null) {
-        indexBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-            com.github.jsdossier.proto.Index, com.github.jsdossier.proto.Index.Builder, com.github.jsdossier.proto.IndexOrBuilder>(
-                getIndex(),
-                getParentForChildren(),
-                isClean());
-        index_ = null;
-      }
-      return indexBuilder_;
-    }
-
     private com.google.protobuf.SingleFieldBuilder<
         com.github.jsdossier.proto.PageData.TypeCollection, com.github.jsdossier.proto.PageData.TypeCollection.Builder, com.github.jsdossier.proto.PageData.TypeCollectionOrBuilder> typesBuilder_;
     /**
-     * <code>optional .dossier.PageData.TypeCollection types = 3;</code>
+     * <code>optional .dossier.PageData.TypeCollection types = 2;</code>
      */
     public com.github.jsdossier.proto.PageData.TypeCollection getTypes() {
       if (typesBuilder_ == null) {
-        if (contentCase_ == 3) {
+        if (contentCase_ == 2) {
           return (com.github.jsdossier.proto.PageData.TypeCollection) content_;
         }
         return com.github.jsdossier.proto.PageData.TypeCollection.getDefaultInstance();
       } else {
-        if (contentCase_ == 3) {
+        if (contentCase_ == 2) {
           return typesBuilder_.getMessage();
         }
         return com.github.jsdossier.proto.PageData.TypeCollection.getDefaultInstance();
       }
     }
     /**
-     * <code>optional .dossier.PageData.TypeCollection types = 3;</code>
+     * <code>optional .dossier.PageData.TypeCollection types = 2;</code>
      */
     public Builder setTypes(com.github.jsdossier.proto.PageData.TypeCollection value) {
       if (typesBuilder_ == null) {
@@ -2157,11 +1985,11 @@ public  final class PageData extends
       } else {
         typesBuilder_.setMessage(value);
       }
-      contentCase_ = 3;
+      contentCase_ = 2;
       return this;
     }
     /**
-     * <code>optional .dossier.PageData.TypeCollection types = 3;</code>
+     * <code>optional .dossier.PageData.TypeCollection types = 2;</code>
      */
     public Builder setTypes(
         com.github.jsdossier.proto.PageData.TypeCollection.Builder builderForValue) {
@@ -2171,15 +1999,15 @@ public  final class PageData extends
       } else {
         typesBuilder_.setMessage(builderForValue.build());
       }
-      contentCase_ = 3;
+      contentCase_ = 2;
       return this;
     }
     /**
-     * <code>optional .dossier.PageData.TypeCollection types = 3;</code>
+     * <code>optional .dossier.PageData.TypeCollection types = 2;</code>
      */
     public Builder mergeTypes(com.github.jsdossier.proto.PageData.TypeCollection value) {
       if (typesBuilder_ == null) {
-        if (contentCase_ == 3 &&
+        if (contentCase_ == 2 &&
             content_ != com.github.jsdossier.proto.PageData.TypeCollection.getDefaultInstance()) {
           content_ = com.github.jsdossier.proto.PageData.TypeCollection.newBuilder((com.github.jsdossier.proto.PageData.TypeCollection) content_)
               .mergeFrom(value).buildPartial();
@@ -2188,26 +2016,26 @@ public  final class PageData extends
         }
         onChanged();
       } else {
-        if (contentCase_ == 3) {
+        if (contentCase_ == 2) {
           typesBuilder_.mergeFrom(value);
         }
         typesBuilder_.setMessage(value);
       }
-      contentCase_ = 3;
+      contentCase_ = 2;
       return this;
     }
     /**
-     * <code>optional .dossier.PageData.TypeCollection types = 3;</code>
+     * <code>optional .dossier.PageData.TypeCollection types = 2;</code>
      */
     public Builder clearTypes() {
       if (typesBuilder_ == null) {
-        if (contentCase_ == 3) {
+        if (contentCase_ == 2) {
           contentCase_ = 0;
           content_ = null;
           onChanged();
         }
       } else {
-        if (contentCase_ == 3) {
+        if (contentCase_ == 2) {
           contentCase_ = 0;
           content_ = null;
         }
@@ -2216,32 +2044,32 @@ public  final class PageData extends
       return this;
     }
     /**
-     * <code>optional .dossier.PageData.TypeCollection types = 3;</code>
+     * <code>optional .dossier.PageData.TypeCollection types = 2;</code>
      */
     public com.github.jsdossier.proto.PageData.TypeCollection.Builder getTypesBuilder() {
       return getTypesFieldBuilder().getBuilder();
     }
     /**
-     * <code>optional .dossier.PageData.TypeCollection types = 3;</code>
+     * <code>optional .dossier.PageData.TypeCollection types = 2;</code>
      */
     public com.github.jsdossier.proto.PageData.TypeCollectionOrBuilder getTypesOrBuilder() {
-      if ((contentCase_ == 3) && (typesBuilder_ != null)) {
+      if ((contentCase_ == 2) && (typesBuilder_ != null)) {
         return typesBuilder_.getMessageOrBuilder();
       } else {
-        if (contentCase_ == 3) {
+        if (contentCase_ == 2) {
           return (com.github.jsdossier.proto.PageData.TypeCollection) content_;
         }
         return com.github.jsdossier.proto.PageData.TypeCollection.getDefaultInstance();
       }
     }
     /**
-     * <code>optional .dossier.PageData.TypeCollection types = 3;</code>
+     * <code>optional .dossier.PageData.TypeCollection types = 2;</code>
      */
     private com.google.protobuf.SingleFieldBuilder<
         com.github.jsdossier.proto.PageData.TypeCollection, com.github.jsdossier.proto.PageData.TypeCollection.Builder, com.github.jsdossier.proto.PageData.TypeCollectionOrBuilder> 
         getTypesFieldBuilder() {
       if (typesBuilder_ == null) {
-        if (!(contentCase_ == 3)) {
+        if (!(contentCase_ == 2)) {
           content_ = com.github.jsdossier.proto.PageData.TypeCollection.getDefaultInstance();
         }
         typesBuilder_ = new com.google.protobuf.SingleFieldBuilder<
@@ -2251,7 +2079,7 @@ public  final class PageData extends
                 isClean());
         content_ = null;
       }
-      contentCase_ = 3;
+      contentCase_ = 2;
       onChanged();;
       return typesBuilder_;
     }
@@ -2259,23 +2087,23 @@ public  final class PageData extends
     private com.google.protobuf.SingleFieldBuilder<
         com.github.jsdossier.proto.PageData.Markdown, com.github.jsdossier.proto.PageData.Markdown.Builder, com.github.jsdossier.proto.PageData.MarkdownOrBuilder> markdownBuilder_;
     /**
-     * <code>optional .dossier.PageData.Markdown markdown = 4;</code>
+     * <code>optional .dossier.PageData.Markdown markdown = 3;</code>
      */
     public com.github.jsdossier.proto.PageData.Markdown getMarkdown() {
       if (markdownBuilder_ == null) {
-        if (contentCase_ == 4) {
+        if (contentCase_ == 3) {
           return (com.github.jsdossier.proto.PageData.Markdown) content_;
         }
         return com.github.jsdossier.proto.PageData.Markdown.getDefaultInstance();
       } else {
-        if (contentCase_ == 4) {
+        if (contentCase_ == 3) {
           return markdownBuilder_.getMessage();
         }
         return com.github.jsdossier.proto.PageData.Markdown.getDefaultInstance();
       }
     }
     /**
-     * <code>optional .dossier.PageData.Markdown markdown = 4;</code>
+     * <code>optional .dossier.PageData.Markdown markdown = 3;</code>
      */
     public Builder setMarkdown(com.github.jsdossier.proto.PageData.Markdown value) {
       if (markdownBuilder_ == null) {
@@ -2287,11 +2115,11 @@ public  final class PageData extends
       } else {
         markdownBuilder_.setMessage(value);
       }
-      contentCase_ = 4;
+      contentCase_ = 3;
       return this;
     }
     /**
-     * <code>optional .dossier.PageData.Markdown markdown = 4;</code>
+     * <code>optional .dossier.PageData.Markdown markdown = 3;</code>
      */
     public Builder setMarkdown(
         com.github.jsdossier.proto.PageData.Markdown.Builder builderForValue) {
@@ -2301,15 +2129,15 @@ public  final class PageData extends
       } else {
         markdownBuilder_.setMessage(builderForValue.build());
       }
-      contentCase_ = 4;
+      contentCase_ = 3;
       return this;
     }
     /**
-     * <code>optional .dossier.PageData.Markdown markdown = 4;</code>
+     * <code>optional .dossier.PageData.Markdown markdown = 3;</code>
      */
     public Builder mergeMarkdown(com.github.jsdossier.proto.PageData.Markdown value) {
       if (markdownBuilder_ == null) {
-        if (contentCase_ == 4 &&
+        if (contentCase_ == 3 &&
             content_ != com.github.jsdossier.proto.PageData.Markdown.getDefaultInstance()) {
           content_ = com.github.jsdossier.proto.PageData.Markdown.newBuilder((com.github.jsdossier.proto.PageData.Markdown) content_)
               .mergeFrom(value).buildPartial();
@@ -2318,26 +2146,26 @@ public  final class PageData extends
         }
         onChanged();
       } else {
-        if (contentCase_ == 4) {
+        if (contentCase_ == 3) {
           markdownBuilder_.mergeFrom(value);
         }
         markdownBuilder_.setMessage(value);
       }
-      contentCase_ = 4;
+      contentCase_ = 3;
       return this;
     }
     /**
-     * <code>optional .dossier.PageData.Markdown markdown = 4;</code>
+     * <code>optional .dossier.PageData.Markdown markdown = 3;</code>
      */
     public Builder clearMarkdown() {
       if (markdownBuilder_ == null) {
-        if (contentCase_ == 4) {
+        if (contentCase_ == 3) {
           contentCase_ = 0;
           content_ = null;
           onChanged();
         }
       } else {
-        if (contentCase_ == 4) {
+        if (contentCase_ == 3) {
           contentCase_ = 0;
           content_ = null;
         }
@@ -2346,32 +2174,32 @@ public  final class PageData extends
       return this;
     }
     /**
-     * <code>optional .dossier.PageData.Markdown markdown = 4;</code>
+     * <code>optional .dossier.PageData.Markdown markdown = 3;</code>
      */
     public com.github.jsdossier.proto.PageData.Markdown.Builder getMarkdownBuilder() {
       return getMarkdownFieldBuilder().getBuilder();
     }
     /**
-     * <code>optional .dossier.PageData.Markdown markdown = 4;</code>
+     * <code>optional .dossier.PageData.Markdown markdown = 3;</code>
      */
     public com.github.jsdossier.proto.PageData.MarkdownOrBuilder getMarkdownOrBuilder() {
-      if ((contentCase_ == 4) && (markdownBuilder_ != null)) {
+      if ((contentCase_ == 3) && (markdownBuilder_ != null)) {
         return markdownBuilder_.getMessageOrBuilder();
       } else {
-        if (contentCase_ == 4) {
+        if (contentCase_ == 3) {
           return (com.github.jsdossier.proto.PageData.Markdown) content_;
         }
         return com.github.jsdossier.proto.PageData.Markdown.getDefaultInstance();
       }
     }
     /**
-     * <code>optional .dossier.PageData.Markdown markdown = 4;</code>
+     * <code>optional .dossier.PageData.Markdown markdown = 3;</code>
      */
     private com.google.protobuf.SingleFieldBuilder<
         com.github.jsdossier.proto.PageData.Markdown, com.github.jsdossier.proto.PageData.Markdown.Builder, com.github.jsdossier.proto.PageData.MarkdownOrBuilder> 
         getMarkdownFieldBuilder() {
       if (markdownBuilder_ == null) {
-        if (!(contentCase_ == 4)) {
+        if (!(contentCase_ == 3)) {
           content_ = com.github.jsdossier.proto.PageData.Markdown.getDefaultInstance();
         }
         markdownBuilder_ = new com.google.protobuf.SingleFieldBuilder<
@@ -2381,7 +2209,7 @@ public  final class PageData extends
                 isClean());
         content_ = null;
       }
-      contentCase_ = 4;
+      contentCase_ = 3;
       onChanged();;
       return markdownBuilder_;
     }
@@ -2389,23 +2217,23 @@ public  final class PageData extends
     private com.google.protobuf.SingleFieldBuilder<
         com.github.jsdossier.proto.SourceFile, com.github.jsdossier.proto.SourceFile.Builder, com.github.jsdossier.proto.SourceFileOrBuilder> fileBuilder_;
     /**
-     * <code>optional .dossier.SourceFile file = 5;</code>
+     * <code>optional .dossier.SourceFile file = 4;</code>
      */
     public com.github.jsdossier.proto.SourceFile getFile() {
       if (fileBuilder_ == null) {
-        if (contentCase_ == 5) {
+        if (contentCase_ == 4) {
           return (com.github.jsdossier.proto.SourceFile) content_;
         }
         return com.github.jsdossier.proto.SourceFile.getDefaultInstance();
       } else {
-        if (contentCase_ == 5) {
+        if (contentCase_ == 4) {
           return fileBuilder_.getMessage();
         }
         return com.github.jsdossier.proto.SourceFile.getDefaultInstance();
       }
     }
     /**
-     * <code>optional .dossier.SourceFile file = 5;</code>
+     * <code>optional .dossier.SourceFile file = 4;</code>
      */
     public Builder setFile(com.github.jsdossier.proto.SourceFile value) {
       if (fileBuilder_ == null) {
@@ -2417,11 +2245,11 @@ public  final class PageData extends
       } else {
         fileBuilder_.setMessage(value);
       }
-      contentCase_ = 5;
+      contentCase_ = 4;
       return this;
     }
     /**
-     * <code>optional .dossier.SourceFile file = 5;</code>
+     * <code>optional .dossier.SourceFile file = 4;</code>
      */
     public Builder setFile(
         com.github.jsdossier.proto.SourceFile.Builder builderForValue) {
@@ -2431,15 +2259,15 @@ public  final class PageData extends
       } else {
         fileBuilder_.setMessage(builderForValue.build());
       }
-      contentCase_ = 5;
+      contentCase_ = 4;
       return this;
     }
     /**
-     * <code>optional .dossier.SourceFile file = 5;</code>
+     * <code>optional .dossier.SourceFile file = 4;</code>
      */
     public Builder mergeFile(com.github.jsdossier.proto.SourceFile value) {
       if (fileBuilder_ == null) {
-        if (contentCase_ == 5 &&
+        if (contentCase_ == 4 &&
             content_ != com.github.jsdossier.proto.SourceFile.getDefaultInstance()) {
           content_ = com.github.jsdossier.proto.SourceFile.newBuilder((com.github.jsdossier.proto.SourceFile) content_)
               .mergeFrom(value).buildPartial();
@@ -2448,26 +2276,26 @@ public  final class PageData extends
         }
         onChanged();
       } else {
-        if (contentCase_ == 5) {
+        if (contentCase_ == 4) {
           fileBuilder_.mergeFrom(value);
         }
         fileBuilder_.setMessage(value);
       }
-      contentCase_ = 5;
+      contentCase_ = 4;
       return this;
     }
     /**
-     * <code>optional .dossier.SourceFile file = 5;</code>
+     * <code>optional .dossier.SourceFile file = 4;</code>
      */
     public Builder clearFile() {
       if (fileBuilder_ == null) {
-        if (contentCase_ == 5) {
+        if (contentCase_ == 4) {
           contentCase_ = 0;
           content_ = null;
           onChanged();
         }
       } else {
-        if (contentCase_ == 5) {
+        if (contentCase_ == 4) {
           contentCase_ = 0;
           content_ = null;
         }
@@ -2476,32 +2304,32 @@ public  final class PageData extends
       return this;
     }
     /**
-     * <code>optional .dossier.SourceFile file = 5;</code>
+     * <code>optional .dossier.SourceFile file = 4;</code>
      */
     public com.github.jsdossier.proto.SourceFile.Builder getFileBuilder() {
       return getFileFieldBuilder().getBuilder();
     }
     /**
-     * <code>optional .dossier.SourceFile file = 5;</code>
+     * <code>optional .dossier.SourceFile file = 4;</code>
      */
     public com.github.jsdossier.proto.SourceFileOrBuilder getFileOrBuilder() {
-      if ((contentCase_ == 5) && (fileBuilder_ != null)) {
+      if ((contentCase_ == 4) && (fileBuilder_ != null)) {
         return fileBuilder_.getMessageOrBuilder();
       } else {
-        if (contentCase_ == 5) {
+        if (contentCase_ == 4) {
           return (com.github.jsdossier.proto.SourceFile) content_;
         }
         return com.github.jsdossier.proto.SourceFile.getDefaultInstance();
       }
     }
     /**
-     * <code>optional .dossier.SourceFile file = 5;</code>
+     * <code>optional .dossier.SourceFile file = 4;</code>
      */
     private com.google.protobuf.SingleFieldBuilder<
         com.github.jsdossier.proto.SourceFile, com.github.jsdossier.proto.SourceFile.Builder, com.github.jsdossier.proto.SourceFileOrBuilder> 
         getFileFieldBuilder() {
       if (fileBuilder_ == null) {
-        if (!(contentCase_ == 5)) {
+        if (!(contentCase_ == 4)) {
           content_ = com.github.jsdossier.proto.SourceFile.getDefaultInstance();
         }
         fileBuilder_ = new com.google.protobuf.SingleFieldBuilder<
@@ -2511,7 +2339,7 @@ public  final class PageData extends
                 isClean());
         content_ = null;
       }
-      contentCase_ = 5;
+      contentCase_ = 4;
       onChanged();;
       return fileBuilder_;
     }

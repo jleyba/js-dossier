@@ -22,13 +22,16 @@ import static com.google.common.base.Preconditions.checkArgument;
 import com.github.jsdossier.annotations.DocumentationScoped;
 import com.github.jsdossier.jscomp.NominalType;
 import com.github.jsdossier.jscomp.TypeRegistry;
+import com.github.jsdossier.proto.Link;
 import com.github.jsdossier.proto.NamedType;
 import com.github.jsdossier.proto.TypeIndex;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.collect.FluentIterable;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Ordering;
 
+import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -58,25 +61,67 @@ final class TypeIndexManager {
         }
       };
 
+  private static final Comparator<Link> LINK_HREF_COMPARATOR =
+      new Comparator<Link>() {
+        @Override
+        public int compare(Link o1, Link o2) {
+          return o1.getHref().compareTo(o2.getHref());
+        }
+      };
+
+  private final DossierFileSystem dfs;
   private final LinkFactory linkFactory;
   private final TypeRegistry typeRegistry;
+  private final ImmutableSet<MarkdownPage> userPages;
 
   private final TypeIndex.Builder index = TypeIndex.newBuilder();
   private final Map<NominalType, IndexReference> seenTypes = new HashMap<>();
 
   @Inject
   TypeIndexManager(
+      DossierFileSystem dfs,
       LinkFactoryBuilder linkFactoryBuilder,
-      TypeRegistry typeRegistry) {
+      TypeRegistry typeRegistry,
+      ImmutableSet<MarkdownPage> userPages) {
+    this.dfs = dfs;
     this.typeRegistry = typeRegistry;
-    this.linkFactory = linkFactoryBuilder.create(null);
+    this.userPages = userPages;
+    this.linkFactory = linkFactoryBuilder.create(null).withJsonPaths();
   }
 
   public TypeIndex toNormalizedProto() {
     return TypeIndex.newBuilder()
         .addAllModule(sortEntries(index.getModuleList()))
         .addAllType(sortEntries(index.getTypeList()))
+        .addAllPage(sortPages(userPages))
+        .addAllSourceFile(Ordering.from(LINK_HREF_COMPARATOR).sortedCopy(index.getSourceFileList()))
         .build();
+  }
+
+  private Iterable<Link> sortPages(Iterable<MarkdownPage> pages) {
+    return FluentIterable.from(pages)
+        .transform(new Function<MarkdownPage, Link>() {
+          @Override
+          public Link apply(MarkdownPage input) {
+            final Path htmlPath = dfs.getPath(input);
+            final Path jsonPath = dfs.getJsonPath(input);
+            return Link.newBuilder()
+                .setText(input.getName())
+                .setHref(toUriPath(dfs.getRelativePath(htmlPath)))
+                .setJson(toUriPath(dfs.getRelativePath(jsonPath)))
+                .build();
+          }
+        })
+        .toSortedSet(new Comparator<Link>() {
+          @Override
+          public int compare(Link o1, Link o2) {
+            return o1.getText().compareTo(o2.getText());
+          }
+        });
+  }
+
+  private static String toUriPath(Path path) {
+    return path.toString().replace(path.getFileSystem().getSeparator(), "/");
   }
 
   private static List<TypeIndex.Entry> sortEntries(Iterable<TypeIndex.Entry> types) {
@@ -102,6 +147,16 @@ final class TypeIndexManager {
           }
         })
         .toSortedList(ENTRY_COMPARATOR);
+  }
+
+  public synchronized void addSourceFile(Path html, Path json) {
+    index.addSourceFileBuilder()
+        .setHref(toUri(dfs.getRelativePath(html)))
+        .setJson(toUri(dfs.getRelativePath(json)));
+  }
+
+  private static String toUri(Path path) {
+    return path.toString().replace(path.getFileSystem().getSeparator(), "/");
   }
 
   public synchronized IndexReference addModule(NominalType module) {

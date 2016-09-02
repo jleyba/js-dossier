@@ -21,7 +21,6 @@ import static java.nio.file.Files.readAllLines;
 import com.github.jsdossier.annotations.SourcePrefix;
 import com.github.jsdossier.proto.PageData;
 import com.github.jsdossier.proto.SourceFile;
-import com.github.jsdossier.soy.Renderer;
 import com.google.auto.factory.AutoFactory;
 import com.google.auto.factory.Provided;
 import com.google.common.base.Charsets;
@@ -39,22 +38,19 @@ final class RenderSourceFileTask implements Callable<Path> {
   private static final String MODULE_SLASH = "/";
 
   private final DossierFileSystem dfs;
-  private final DocTemplate template;
-  private final NavIndexFactory navIndexFactory;
-  private final Renderer renderer;
+  private final TypeIndexManager index;
+  private final PageRenderer renderer;
   private final Path prefix;
   private final Path path;
 
   RenderSourceFileTask(
       @Provided DossierFileSystem dfs,
-      @Provided DocTemplate template,
-      @Provided NavIndexFactory navIndexFactory,
-      @Provided Renderer renderer,
+      @Provided TypeIndexManager index,
+      @Provided PageRenderer renderer,
       @Provided @SourcePrefix Path prefix,
       Path path) {
     this.dfs = dfs;
-    this.template = template;
-    this.navIndexFactory = navIndexFactory;
+    this.index = index;
     this.renderer = renderer;
     this.prefix = prefix;
     this.path = path;
@@ -65,7 +61,6 @@ final class RenderSourceFileTask implements Callable<Path> {
     String displayPath = prefix.relativize(path)
         .toString()
         .replace(path.getFileSystem().getSeparator(), MODULE_SLASH);
-    Path output = dfs.getPath(path);
 
     SourceFile file = SourceFile.newBuilder()
         .setBaseName(path.getFileName().toString())
@@ -75,11 +70,16 @@ final class RenderSourceFileTask implements Callable<Path> {
 
     PageData page = PageData.newBuilder()
         .setFile(file)
-        .setResources(dfs.getResources(output, template))
-        .setIndex(navIndexFactory.create(output))
         .build();
 
-    renderer.render(output, page);
-    return output;
+    Path htmlPath = dfs.getPath(path);
+    renderer.renderHtml(htmlPath, page);
+
+    Path jsonPath = dfs.getJsonPath(htmlPath);
+    renderer.renderJson(jsonPath, page);
+
+    index.addSourceFile(htmlPath, jsonPath);
+
+    return htmlPath;
   }
 }

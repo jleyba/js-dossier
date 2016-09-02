@@ -52,6 +52,8 @@ message Link {
   string text = 1;
   // The link href.
   string href = 2 [(options.sanitized).uri = true];
+  // The JSON data associated with this link, if any.
+  string json = 3 [(options.sanitized).uri = true];
 }
 
 
@@ -215,6 +217,8 @@ message TypeIndex {
 
   repeated Entry module = 1;
   repeated Entry type = 2;
+  repeated Link page = 3;
+  repeated Link source_file = 4;
 }
 
 
@@ -313,11 +317,10 @@ message PageData {
   }
 
   Resources resources = 1;
-  Index index = 2;
 
   oneof content {
-    TypeCollection types = 3;
-    Markdown markdown = 4;
-    SourceFile file = 5;
+    TypeCollection types = 2;
+    Markdown markdown = 3;
+    SourceFile file = 4;
   }
 }

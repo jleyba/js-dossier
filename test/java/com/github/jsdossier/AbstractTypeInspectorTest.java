@@ -181,11 +181,7 @@ public abstract class AbstractTypeInspectorTest {
   }
 
   protected static TypeLink typeLink(String href) {
-    TypeLink.Builder builder = TypeLink.newBuilder().setHref(href);
-    if (!href.startsWith("https:")) {
-      builder.setJson(href.replaceAll("\\.html(#.*)?$", ".json"));
-    }
-    return builder.build();
+    return TypeLink.newBuilder().setHref(href).build();
   }
 
   protected static NamedType addTemplateTypes(

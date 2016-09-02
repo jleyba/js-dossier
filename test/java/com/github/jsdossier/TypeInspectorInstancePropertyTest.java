@@ -322,8 +322,8 @@ public class TypeInspectorInstancePropertyTest extends AbstractTypeInspectorTest
                 .setName("limit")
                 .setSource(sourceFile("../../source/modules/foo/bar.js.src.html", 6))
                 .setDescription(htmlComment(
-                    "<p>Link to a <a href=\"bar_exports_Person.html\""
-                        + " data-json=\"bar_exports_Person.json\"><code>Person</code></a>.</p>\n")))
+                    "<p>Link to a <a href=\"bar_exports_Person.html\">" +
+                        "<code>Person</code></a>.</p>\n")))
             .setType(numberTypeExpression())
             .build());
   }
@@ -362,8 +362,7 @@ public class TypeInspectorInstancePropertyTest extends AbstractTypeInspectorTest
                 .setName("p")
                 .setSource(sourceFile("source/globals.js.src.html", 10))
                 .setDescription(htmlComment(
-                    "<p>The <a href=\"Person.html\"" +
-                        " data-json=\"Person.json\"><code>Person</code></a> to greet.</p>\n")))
+                    "<p>The <a href=\"Person.html\"><code>Person</code></a> to greet.</p>\n")))
             .setType(nullableNamedTypeExpression("Person", "Person.html"))
             .build());
 
@@ -378,8 +377,7 @@ public class TypeInspectorInstancePropertyTest extends AbstractTypeInspectorTest
                 .setName("p")
                 .setSource(sourceFile("../../source/globals.js.src.html", 10))
                 .setDescription(htmlComment(
-                    "<p>The <a href=\"../../Person.html\"" +
-                        " data-json=\"../../Person.json\"><code>Person</code></a> to greet.</p>\n"))
+                    "<p>The <a href=\"../../Person.html\"><code>Person</code></a> to greet.</p>\n"))
                 .setDefinedBy(namedType("Greeter", "../../Greeter.html#p")))
             .setType(nullableNamedTypeExpression("Person", "../../Person.html"))
             .build());
@@ -419,8 +417,7 @@ public class TypeInspectorInstancePropertyTest extends AbstractTypeInspectorTest
                 .setName("p")
                 .setSource(sourceFile("../../source/modules/foo/bar.js.src.html", 4))
                 .setDescription(htmlComment(
-                    "<p>The <a href=\"../../Person.html\"" +
-                        " data-json=\"../../Person.json\"><code>Person</code></a> to greet.</p>\n"))
+                    "<p>The <a href=\"../../Person.html\"><code>Person</code></a> to greet.</p>\n"))
                 .addSpecifiedBy(namedType("Greeter", "../../Greeter.html#p")))
             .setType(namedTypeExpression("Person", "../../Person.html"))
             .build());
