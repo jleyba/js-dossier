@@ -102,9 +102,12 @@ public class LinkRenderTest {
 
   @Test
   public void sanitizerDisallowsDangerousProtocols() {
-    assertThat(renderLink("foo", "ftp://bar.html")).isEqualTo("<a href=\"#zSoyz\">foo</a>");
-    assertThat(renderCommentToken("ftp://bar.html")).isEqualTo("<a href=\"#zSoyz\">test</a>");
-    assertThat(renderSourceLink("ftp://bar.html")).isEqualTo("<a href=\"#zSoyz\">test</a>");
+    assertThat(renderLink("foo", "ftp://bar.html"))
+        .isEqualTo("<a href=\"about:invalid#zSoyz\">foo</a>");
+    assertThat(renderCommentToken("ftp://bar.html"))
+        .isEqualTo("<a href=\"about:invalid#zSoyz\">test</a>");
+    assertThat(renderSourceLink("ftp://bar.html"))
+        .isEqualTo("<a href=\"about:invalid#zSoyz\">test</a>");
   }
 
   private static String renderLink(String text, String href) {

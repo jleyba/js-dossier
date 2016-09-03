@@ -319,11 +319,6 @@ class ProtoMessageSoyType implements SoyObjectType {
     return ImmutableSet.of();
   }
 
-  @Override
-  public Class<? extends SoyValue> javaType() {
-    return SoyRecord.class;
-  }
-
   public boolean isSanitizedHtml(String fieldName) {
     return sanitizedHtmlFields.contains(fieldName);
   }
