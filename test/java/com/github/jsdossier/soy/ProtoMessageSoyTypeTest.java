@@ -120,23 +120,14 @@ public class ProtoMessageSoyTypeTest {
     assertTrue(value instanceof SoyMapData);
 
     Map<String, ? extends SoyValue> map = ((SoyMapData) value).asResolvedJavaStringMap();
-    assertThat(map.keySet()).containsExactly(
-        "boolField", "intField", "stringField", "fruit", "color", "repeatedInt",
-        "repeatedColor", "htmlField");
+    assertThat(map.keySet()).containsExactly("repeatedInt", "repeatedColor");
 
-    assertThat(map.get("boolField")).isEqualTo(BooleanData.FALSE);
-    assertThat(map.get("intField")).isEqualTo(IntegerData.ZERO);
-    assertThat(map.get("stringField")).isEqualTo(StringData.EMPTY_STRING);
-    assertThat(map.get("fruit")).isEqualTo(ProtoEnumSoyValue.get(Fruit.UNKNOWN));
-    assertThat(map.get("color")).isEqualTo(ProtoEnumSoyValue.get(Color.RED));
-    assertThat(map.get("htmlField"))
-        .isEqualTo(UnsafeSanitizedContentOrdainer.ordainAsSafe("", ContentKind.HTML));
     assertThat((SoyListData) map.get("repeatedInt")).isEmpty();
     assertThat((SoyListData) map.get("repeatedColor")).isEmpty();
 
     value = ProtoMessageSoyType.toSoyValue(TestProto.Top.newBuilder().build());
     map = ((SoyMapData) value).asResolvedJavaStringMap();
-    assertThat(map.get("nestedMessage")).isEqualTo(NullData.INSTANCE);
+    assertThat(map.get("nestedMessage")).isNull();
     assertThat((SoyListData) map.get("order")).isEmpty();
   }
 

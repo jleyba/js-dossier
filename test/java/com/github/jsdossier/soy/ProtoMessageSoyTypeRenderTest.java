@@ -98,7 +98,7 @@ public class ProtoMessageSoyTypeRenderTest {
   public void renderOptionalEnum_notSet() {
     String got = render("sample.optionalEnum", new SoyMapData(
         "order", toSoy(Order.newBuilder().build())));
-    assertWithMessage("should default to enum entry 0").that(got).isEqualTo("UNKNOWN");
+    assertWithMessage("should default to enum entry 0").that(got).isEmpty();
   }
 
   @Test

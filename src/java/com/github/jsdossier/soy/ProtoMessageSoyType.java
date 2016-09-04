@@ -32,7 +32,6 @@ import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Message;
 import com.google.template.soy.base.SoyBackendKind;
 import com.google.template.soy.data.SoyListData;
-import com.google.template.soy.data.SoyMapData;
 import com.google.template.soy.data.SoyRecord;
 import com.google.template.soy.data.SoyValue;
 import com.google.template.soy.data.UnsafeSanitizedContentOrdainer;
@@ -85,18 +84,18 @@ class ProtoMessageSoyType implements SoyObjectType {
         }
 
         @Override
-        protected MessageTransformer.MapBuilder<SoyValue> newMapBuilder() {
+        protected MessageTransformer.MapBuilder<SoyValue> newMapBuilder(final Message message) {
           return new MessageTransformer.MapBuilder<SoyValue>() {
-            SoyMapData map = new SoyMapData();
+            ProtoMessageSoyValue value = new ProtoMessageSoyValue(message);
 
             @Override
             public void put(String key, SoyValue value) {
-              map.put(key, value);
+              this.value.put(key, value);
             }
 
             @Override
             public SoyValue build() {
-              return map;
+              return value;
             }
           };
         }
@@ -254,33 +253,16 @@ class ProtoMessageSoyType implements SoyObjectType {
 
   @Override
   public boolean isAssignableFrom(SoyType soyType) {
-    return soyType instanceof NullType || this.equals(soyType);
+    return this.equals(soyType);
   }
 
   @Override
   public boolean isInstance(SoyValue soyValue) {
-    if (soyValue instanceof SoyRecord) {
-      SoyRecord record = (SoyRecord) soyValue;
-      for (String key : fieldDescriptors.keySet()) {
-        if (record.hasField(key)) {
-          SoyValue item = record.getField(key);
-          if (NullType.getInstance().isInstance(item)
-              && fieldDescriptors.get(key).isOptional()) {
-            continue;
-          }
-
-          SoyType fieldType = getFieldType(key);
-          if (fieldType == null || !fieldType.isInstance(item)) {
-            return false;
-          }
-        } else if (!fieldDescriptors.get(key).isOptional()) {
-          return false;
-        }
-      }
-      return true;
+    if (soyValue instanceof ProtoMessageSoyValue) {
+      ProtoMessageSoyValue pv = (ProtoMessageSoyValue) soyValue;
+      return pv.getProto().getDescriptorForType().equals(descriptor);
     }
-
-    return soyValue instanceof NullData;
+    return false;
   }
 
   @Override

@@ -55,17 +55,19 @@ abstract class MessageTransformer<T> {
           .build();
 
   public T transform(Message message) {
-    MapBuilder<T> map = newMapBuilder();
+    MapBuilder<T> map = newMapBuilder(message);
     for (FieldDescriptor field : message.getDescriptorForType().getFields()) {
       if (CONVERTIBLE_TYPES.contains(field.getJavaType())) {
-        map.put(computeFieldName(field), transform(message, field));
+        if (field.isRepeated() || message.hasField(field)) {
+          map.put(computeFieldName(field), transform(message, field));
+        }
       }
     }
     return map.build();
   }
 
   protected abstract String computeFieldName(FieldDescriptor field);
-  protected abstract MapBuilder<T> newMapBuilder();
+  protected abstract MapBuilder<T> newMapBuilder(Message message);
   protected abstract ListBuilder<T> newListBuilder();
   protected abstract T transform(EnumValueDescriptor e);
   protected abstract T transform(@Nullable Number n);

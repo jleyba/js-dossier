@@ -24,6 +24,7 @@ import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.google.protobuf.Descriptors;
+import com.google.protobuf.Message;
 
 import javax.annotation.Nullable;
 
@@ -38,7 +39,7 @@ final class JsonMessageTransformer extends MessageTransformer<JsonElement> {
   }
 
   @Override
-  protected MapBuilder<JsonElement> newMapBuilder() {
+  protected MapBuilder<JsonElement> newMapBuilder(Message message) {
     return new MessageTransformer.MapBuilder<JsonElement>() {
       JsonObject object = new JsonObject();
 
@@ -52,8 +53,7 @@ final class JsonMessageTransformer extends MessageTransformer<JsonElement> {
 
       private boolean isFalseLike(JsonElement value) {
         if (value.isJsonNull()
-            || (value.isJsonArray() && value.getAsJsonArray().size() == 0)
-            || (value.isJsonObject() && value.getAsJsonObject().entrySet().isEmpty())) {
+            || (value.isJsonArray() && value.getAsJsonArray().size() == 0)) {
           return true;
         }
 

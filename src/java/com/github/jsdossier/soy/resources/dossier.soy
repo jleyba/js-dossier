@@ -375,7 +375,6 @@
   {if $fn.isConstructor}
     <h3 class="name">
       {call .tags}
-        {param tags: null /}
         {param visibility: $fn.base.visibility /}
       {/call}
       <div>
@@ -657,17 +656,19 @@
  * Renders a list of tags.
  */
 {template .tags private="true"}
-  {@param tags: dossier.Tags}
+  {@param? tags: dossier.Tags}
   {@param? visibility: dossier.Visibility}
   {@param? span: bool}
-  {if $tags.isDeprecated
-      or $tags.isConst
-      or $tags.isFinal
-      or $tags.isDict
-      or $tags.isStruct
-      or ($visibility and $visibility != dossier.Visibility.PUBLIC)}
+
+  {let $hasTags: $tags and ($tags.isDeprecated
+                            or $tags.isConst
+                            or $tags.isFinal
+                            or $tags.isDict
+                            or $tags.isStruct) /}
+
+  {if $hasTags or ($visibility and $visibility != dossier.Visibility.PUBLIC)}
     <{if $span}span{else}div{/if} class="tags">
-      {if $tags.isDeprecated}<span class="deprecated"></span>{/if}
+      {if $tags and $tags.isDeprecated}<span class="deprecated"></span>{/if}
 
       {if $visibility == dossier.Visibility.PACKAGE}
         <span class="package"></span>
@@ -677,10 +678,12 @@
         <span class="protected"></span>
       {/if}
 
-      {if $tags.isConst}<span class="const"></span>{/if}
-      {if $tags.isFinal}<span class="final"></span>{/if}
-      {if $tags.isDict}<span class="dict"></span>{/if}
-      {if $tags.isStruct}<span class="struct"></span>{/if}
+      {if $tags}
+        {if $tags.isConst}<span class="const"></span>{/if}
+        {if $tags.isFinal}<span class="final"></span>{/if}
+        {if $tags.isDict}<span class="dict"></span>{/if}
+        {if $tags.isStruct}<span class="struct"></span>{/if}
+      {/if}
     </{if $span}span{else}div{/if}>
   {/if}
 {/template}
