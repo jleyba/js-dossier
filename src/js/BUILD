@@ -32,7 +32,7 @@ js_binary(
         "search.js",
         "//third_party/js/soy",
     ],
-    externs = ["externs.js"],
+    externs = [],
     flags = [
         "--charset=UTF-8",
         "--compilation_level=ADVANCED_OPTIMIZATIONS",
