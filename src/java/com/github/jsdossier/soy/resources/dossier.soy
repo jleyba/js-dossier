@@ -439,9 +439,9 @@
     <section class="instance-methods">  // TODO: rename.
       <h2>{$title}</h2>
       {if $functions and length($functions)}
-        {foreach $function in $functions}
+        {foreach $fn in $functions}
           {call .renderProperty}
-            {param function: $function /}
+            {param fn: $fn /}
           {/call}
         {/foreach}
       {elseif $properties and length($properties)}
@@ -460,10 +460,10 @@
  * Renders the header for an expandable property section.
  */
 {template .renderProperty}
-  {@param? function: dossier.Function}
+  {@param? fn: dossier.Function}
   {@param? property: dossier.Property}
 
-  {let $base: $function ? $function.base : $property.base /}
+  {let $base: $fn ? $fn.base : $property.base /}
   {call .renderCard}
     {param className: 'property expandable' /}
     {param id: $base.name /}
@@ -479,9 +479,9 @@
           {param visibility: $base.visibility /}
         {/call}
         <div>
-          {if $function}
+          {if $fn}
             {call .functionSignature}
-              {param fn: $function /}
+              {param fn: $fn /}
             {/call}
           {elseif $property}
             {$base.name}
@@ -502,7 +502,6 @@
       {call .deprecationNotice}
         {param deprecation: $base.deprecation /}
       {/call}
-      {let $fn: $function /}
       {if $fn
           and (($fn.base.deprecation and length($fn.base.deprecation.token))
                or $fn.base.overrides
@@ -512,9 +511,9 @@
                or ($fn.return
                    and (($fn.return.description and length($fn.return.description.token))
                         or $fn.return.type)))}
-        {if $function}  // Extra if required for soy type checking.
+        {if $fn}  // Extra if required for soy type checking.
           {call .fnDetails}
-            {param fn: $function /}
+            {param fn: $fn /}
             {param verbose: true /}
           {/call}
         {/if}
@@ -548,7 +547,7 @@
 
   {foreach $fn in $functions}
     {call .renderProperty}
-      {param function: $fn /}
+      {param fn: $fn /}
     {/call}
   {/foreach}
 {/template}
