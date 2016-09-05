@@ -17,16 +17,145 @@ goog.require('soydata.SanitizedHtml');
 goog.require('soydata.SanitizedUri');
 goog.require('soydata.VERY_UNSAFE');
 
-/** @private @const */
-proto.dossier.DEFAULT_INSTANCES_ = new Map;
-
 goog.scope(function() {
 
-const DEFAULT_INSTANCES = proto.dossier.DEFAULT_INSTANCES_;
+const pd = proto.dossier;
+
 const SanitizedHtml = soydata.SanitizedHtml;
 const SanitizedUri = soydata.SanitizedUri;
 const ordainSanitizedHtml = soydata.VERY_UNSAFE.ordainSanitizedHtml;
 const ordainSanitizedUri = soydata.VERY_UNSAFE.ordainSanitizedUri;
+
+
+/** @private */
+pd.Message_ = class {
+  constructor(/** Object= */opt_data) {
+    /** @private @const {!Object} */
+    this.data_ = opt_data || {};
+
+    /** @private @const */
+    this.converted_ = new Map;
+  }
+
+  /**
+   * @param {!pd.Message_} msg
+   * @return {!pd.Message_}
+   */
+  static clone(msg) {
+    let data = Object.assign({}, msg.data_);
+    return new msg.constructor(data);
+  }
+};
+
+
+/**
+ * @param {!pd.Message_} message
+ * @param {number} fieldNumber
+ * @param {T} defaultValue
+ * @return {T}
+ * @template T
+ * @private
+ */
+pd.getPrimitiveField_ = function(message, fieldNumber, defaultValue) {
+  return message.data_[fieldNumber] || defaultValue;
+};
+
+
+/**
+ * @param {!pd.Message_} message
+ * @param {number} fieldNumber
+ * @return {!Array<T>}
+ * @template T
+ * @private
+ */
+pd.getPrimitiveListField_ = function(message, fieldNumber) {
+  if (message.converted_.has(fieldNumber)) {
+    return message.converted_.get(fieldNumber);
+  }
+  let data = message.data_[fieldNumber] || [];
+  message.converted_.set(fieldNumber, data);
+  return data;
+};
+
+
+/**
+ * @param {!pd.Message_} message
+ * @param {number} fieldNumber
+ * @param {(string|number|boolean)} value
+ * @private
+ */
+pd.setPrimitiveField_ = function(message, fieldNumber, value) {
+  message.data_[fieldNumber] = value;
+};
+
+
+/**
+ * @param {!pd.Message_} message
+ * @param {number} fieldNumber
+ * @param {*} value
+ * @private
+ */
+pd.setComplexField_ = function(message, fieldNumber, value) {
+  message.converted_.set(fieldNumber, value);
+};
+
+
+/**
+ * @param {!pd.Message_} message
+ * @param {number} fieldNumber
+ * @param {(function(!Object): !T|function(string): !T)} deserializer
+ * @return {!Array<!T>}
+ * @template T
+ * @private
+ */
+pd.getMessageListField_ = function(message, fieldNumber, deserializer) {
+  if (message.converted_.has(fieldNumber)) {
+    return message.converted_.get(fieldNumber);
+  }
+  let data = message.data_[fieldNumber];
+  let value = data ? data.map(/** @type {(!Object|string)} */(deserializer)) : [];
+  message.converted_.set(fieldNumber, value);
+  return value;
+};
+
+
+/**
+ * @param {!pd.Message_} message
+ * @param {number} fieldNumber
+ * @param {function(!Object): !T} deserializer
+ * @return {T}
+ * @template T
+ * @private
+ */
+pd.getMessageField_ = function(message, fieldNumber, deserializer) {
+  if (message.converted_.has(fieldNumber)) {
+    return message.converted_.get(fieldNumber);
+  }
+  let data = message.data_[fieldNumber];
+  let value = data ? deserializer(/** @type {!Object} */(data)) : null;
+  message.converted_.set(fieldNumber, value);
+  return value;
+};
+
+
+/**
+ * @param {!pd.Message_} message
+ * @param {number} fieldNumber
+ * @param {function(*): !T} deserializer
+ * @return {!T}
+ * @template T
+ * @private
+ */
+pd.getSanitizedField_ = function(message, fieldNumber, deserializer) {
+  if (message.converted_.has(fieldNumber)) {
+    return message.converted_.get(fieldNumber);
+  }
+  let data = message.data_[fieldNumber];
+  let value = deserializer(data || '');
+  message.converted_.set(fieldNumber, value);
+  return value;
+};
+
 {/literal}
 
 {foreach $record in $data}
@@ -75,32 +204,9 @@ const ordainSanitizedUri = soydata.VERY_UNSAFE.ordainSanitizedUri;
   {@param name: string}
 
 {\n}
-{$name}{literal} = class {
+{$name}{literal} = class extends pd.Message_ {
   constructor(/** Object= */opt_data) {
-    /** @private @const {!Object} */
-    this.data_ = opt_data || {};
-
-    /** @private @const */
-    this.converted_ = new Map;
-  }
-
-  /** @return {!{/literal}{$name}{literal}} */
-  static get DEFAULT_INSTANCE() {
-    let instance = DEFAULT_INSTANCES.get({/literal}{$name}{literal});
-    if (!instance) {
-      instance = new {/literal}{$name}{literal}({});
-      DEFAULT_INSTANCES.set({/literal}{$name}{literal}, instance);
-    }
-    return instance;
-  }
-
-  /**
-   * @param {!{/literal}{$name}{literal}} value
-   * @return {!{/literal}{$name}{literal}}
-   */
-  static clone(value) {
-    let data = Object.assign({}, value.data_);
-    return new {/literal}{$name}{literal}(data);
+    super(opt_data);
   }
 {/literal}
 
@@ -140,8 +246,9 @@ const ordainSanitizedUri = soydata.VERY_UNSAFE.ordainSanitizedUri;
   {let $isEnum: $field.type == google.protobuf.FieldDescriptorProto.Type.TYPE_ENUM /}
   {let $isRepeated: $field.label == google.protobuf.FieldDescriptorProto.Label.LABEL_REPEATED /}
   {let $initData kind="html"}data = this.data_['{$field.number}'];{/let}
-  {let $returnType kind="html"}{if $isRepeated}{arrayType('!' + $type)}{else}!{$type}{/if}{/let}
-  {let $isMessage: $type != 'boolean' and $type != 'string' and $type != 'number' and not $isEnum /}
+  {let $returnType kind="html"}{if $isRepeated}{arrayType('!' + $type)}{else}{$type}{/if}{/let}
+  {let $isSanitized: $type == 'SanitizedHtml' or $type == 'SanitizedUri' /}
+  {let $isMessage: not $isSanitized and $type != 'boolean' and $type != 'string' and $type != 'number' and not $isEnum /}
 
 {literal}
   /**
@@ -149,41 +256,28 @@ const ordainSanitizedUri = soydata.VERY_UNSAFE.ordainSanitizedUri;
    */
   get {/literal}{toLowerCamelCase($field.name)}{literal}() {
     {/literal}
-    {if $isRepeated or $isMessage}
-      if (this.converted_.has('{$field.number}')) return this.converted_.get('{$field.number}');{\n}
-      {literal}    {/literal}
-    {/if}
-    let data = this.data_['{$field.number}'];{\n}
-
-    {if $type == 'SanitizedHtml' or $type == 'SanitizedUri'}
-      {literal}    {/literal}
-      {call .returnSanitizedData_}
-        {param isRepeated: $isRepeated /}
-        {param fieldNumber: $field.number /}
-        {param sanitizer: $type == 'SanitizedHtml' ? 'ordainSanitizedHtml' : 'ordainSanitizedUri' /}
-      {/call}
-    {elseif $isRepeated}
-      {literal}    {/literal}
-      {if $isMessage}
-        let value = data ? data.map(i => new {$type}(i)) : [];{\n}
+    {if $isSanitized}
+      {let $deserializer: $type == 'SanitizedHtml' ? 'ordainSanitizedHtml' : 'ordainSanitizedUri' /}
+      {if $isRepeated}
+        return pd.getMessageListField_(this, {$field.number}, {$deserializer});
       {else}
-        let value = data || [];{\n}
+        return pd.getSanitizedField_(this, {$field.number}, {$deserializer});
       {/if}
-      {literal}    this.converted_.set('{/literal}{$field.number}', value);{\n}
-      {literal}    return value;{/literal}
     {elseif $isMessage}
-      {literal}    let value = data ? {/literal}
-      new {$type}(data) : {$type}.DEFAULT_INSTANCE;{\n}
-      {literal}    this.converted_.set('{/literal}{$field.number}', value);{\n}
-      {literal}    return value;{/literal}
+      {if $isRepeated}
+        return pd.getMessageListField_(this, {$field.number}, data => new {$type}(data));
+      {else}
+        return pd.getMessageField_(this, {$field.number}, data => new {$type}(data));
+      {/if}
+    {elseif $isRepeated}
+      return pd.getPrimitiveListField_(this, {$field.number});
     {else}
-      {let $defaultValue kind="html"}
-        {if $type == 'boolean'}false
-        {elseif $type == 'string'}''
-        {else}0
-        {/if}
-      {/let}
-      {literal}    return data || {/literal}{$defaultValue};
+      return pd.getPrimitiveField_(this, {$field.number},{sp}
+      {if $type == 'boolean'}false
+      {elseif $type == 'string'}''
+      {elseif $isEnum}{literal}/** @type {{/literal}{$type}{literal}} */{/literal}(0)
+      {else}0
+      {/if});
     {/if}
 {literal}
   }
@@ -193,10 +287,10 @@ const ordainSanitizedUri = soydata.VERY_UNSAFE.ordainSanitizedUri;
    */
   set {/literal}{toLowerCamelCase($field.name)}{literal}(value) {
     {/literal}
-    {if $isRepeated or $isMessage}
-      this.converted_.set('{$field.number}', value);
+    {if $isRepeated or $isMessage or $isSanitized}
+      pd.setComplexField_(this, {$field.number}, value);
     {else}
-      this.data_['{$field.number}'] = value;
+      pd.setPrimitiveField_(this, {$field.number}, value);
     {/if}
     {literal}
   }
@@ -205,18 +299,4 @@ const ordainSanitizedUri = soydata.VERY_UNSAFE.ordainSanitizedUri;
 
 {literal}};
 {/literal}
-{/template}
-
-
-{template .returnSanitizedData_ private="true"}
-  {@param isRepeated: bool}
-  {@param sanitizer: string}
-  {@param fieldNumber: int}
-  {if $isRepeated}
-    let value = data ? data.map({$sanitizer}) : [];{\n}
-  {else}
-    let value = {$sanitizer}(data || '');{\n}
-  {/if}
-  this.converted_.set('{$fieldNumber}', value);{\n}
-  return value;{\n}
 {/template}
