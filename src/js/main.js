@@ -38,5 +38,6 @@ if (engine.isWebKit() && !browser.isChrome() && !browser.isOpera()) {
 
 const typeIndex = new Index(/** @type {!Object} */(goog.global['TYPES']));
 app.run(
+    typeIndex,
     search.createSearchBox(typeIndex),
     nav.createNavDrawer(typeIndex, page.getCurrentFile(), page.getBasePath()));

@@ -336,7 +336,7 @@
     {sp}
     {foreach $parameter in $fn.parameter}
       <var>
-        {if $parameter.type.isVarargs}...{/if}
+        {if $parameter.type and $parameter.type.isVarargs}...{/if}
         {$parameter.name}
       </var>
       {if not isLast($parameter)},{sp}{/if}
@@ -629,11 +629,11 @@
       {param visibility: $type.enumeration ? $type.enumeration.visibility : null /}
     {/call}
     <div>
-      {if $type.tags.isModule}
+      {if $type.tags and $type.tags.isModule}
         module {$type.name}
-      {elseif $type.tags.isRecord}
+      {elseif $type.tags and $type.tags.isRecord}
         record {$type.name}
-      {elseif $type.tags.isInterface}
+      {elseif $type.tags and $type.tags.isInterface}
         interface {$type.name}
       {elseif $type.mainFunction and $type.mainFunction.isConstructor}
         class {$type.name}
@@ -748,7 +748,7 @@
           {if length($type.extendedType)
               or length($type.implementedType)
               or length($type.subtype)
-              or ($type.tags.isInterface and length($type.implementation))
+              or ($type.tags and $type.tags.isInterface and length($type.implementation))
               or $type.aliasedType
               or length($type.knownAlias)
               or ($type.enumeration and $type.enumeration.type)}
@@ -759,13 +759,13 @@
               {/call}
               {call .printTypeList}
                 {param types: $type.implementedType /}
-                {param title: 'All ' + ($type.tags.isInterface ? 'Extended' : 'Implemented')
+                {param title: 'All ' + ($type.tags and $type.tags.isInterface ? 'Extended' : 'Implemented')
                                   + ' Interfaces' /}
               {/call}
               {call .printTypeList}
                 {param types: $type.subtype /}
                 {param title: 'All Known '
-                    + ($type.tags.isInterface ? 'Subinterfaces' : 'Direct Subclasses') /}
+                    + ($type.tags and $type.tags.isInterface ? 'Subinterfaces' : 'Direct Subclasses') /}
               {/call}
               {call .printTypeList}
                 {param types: $type.implementation /}
@@ -797,8 +797,7 @@
           {call .deprecationNotice}
             {param deprecation: $type.deprecation /}
           {/call}
-          {if $type.description
-              and length($type.description.token)}
+          {if $type.description and length($type.description.token)}
             {call .comment}
               {param comment: $type.description /}
             {/call}
@@ -806,7 +805,7 @@
             <p>No description available.</p>
           {/if}
 
-          {if not $type.tags.isInterface and $type.mainFunction}
+          {if not ($type.tags and $type.tags.isInterface) and $type.mainFunction}
             {call .mainFunction}
               {param type: $type /}
             {/call}
@@ -831,7 +830,7 @@
       {/call}
 
       {let $staticPrefix kind="text"}
-        {if $type.tags.isModule}
+        {if $type.tags and $type.tags.isModule}
           Exported{sp}
         {elseif $type.mainFunction and $type.mainFunction.isConstructor}
           Static{sp}
@@ -845,7 +844,7 @@
         {/call}
       {/if}
 
-      {if $type.tags.isModule and length($type.reexportedModule)}
+      {if $type.tags and $type.tags.isModule and length($type.reexportedModule)}
         <section class="exported-modules">
           <h2>Exported Modules</h2>
           {call .printReexportedModules}
@@ -868,23 +867,26 @@
         {/call}
       {/if}
 
-      {call .nestedTypeSection}
-        {param isModule: $type.tags.isModule /}
-        {param title: 'Interfaces' /}
-        {param types: $type.nested.interface /}
-      {/call}
+      {if $type.nested}
+        {let $isModule: $type.tags and $type.tags.isModule /}
+        {call .nestedTypeSection}
+          {param isModule: $isModule /}
+          {param title: 'Interfaces' /}
+          {param types: $type.nested.interface /}
+        {/call}
 
-      {call .nestedTypeSection}
-        {param isModule: $type.tags.isModule /}
-        {param title: 'Classes' /}
-        {param types: $type.nested.class /}
-      {/call}
+        {call .nestedTypeSection}
+          {param isModule: $isModule /}
+          {param title: 'Classes' /}
+          {param types: $type.nested.class /}
+        {/call}
 
-      {call .nestedTypeSection}
-        {param isModule: $type.tags.isModule /}
-        {param title: 'Enumerations' /}
-        {param types: $type.nested.enum /}
-      {/call}
+        {call .nestedTypeSection}
+          {param isModule: $isModule /}
+          {param title: 'Enumerations' /}
+          {param types: $type.nested.enum /}
+        {/call}
+      {/if}
 
       {if length($type.typeDef)}
         {call .renderProperties}
@@ -925,7 +927,7 @@
         {foreach $line in $file.lines}
           <tr id="l{index($line) + 1}">
             <td><a href="#l{index($line) + 1}">{index($line) + 1}</a>
-            <td>{$line}
+            <td>{if $line}{$line}{/if}
         {/foreach}
       </table>
     </div>
@@ -946,21 +948,15 @@
   <meta http-equiv="Content-Language" content="en">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <title>
-    {if $data.types and length($data.types.type)}
-      {$data.types.type[0].name}
-    {elseif $data.markdown and $data.markdown.content}
-      {$data.markdown.title}
-    {elseif $data.file}
-      {$data.file.baseName}
-    {/if}
-  </title>
-  {foreach $script in $data.resources.headScript}
-    <script src="{$script}"></script>
-  {/foreach}
-  {foreach $styleSheet in $data.resources.css}
-    <link href="{$styleSheet}" rel="stylesheet" type="text/css">
-  {/foreach}
+  {call .pageTitle data="all" /}
+  {if $data.resources}
+    {foreach $script in $data.resources.headScript}
+      <script src="{$script}"></script>
+    {/foreach}
+    {foreach $styleSheet in $data.resources.css}
+      <link href="{$styleSheet}" rel="stylesheet" type="text/css">
+    {/foreach}
+  {/if}
   <header>
     <button class="dossier-menu">
       <i class="material-icons">menu</i>
@@ -981,9 +977,28 @@
       </div>
     </footer>
   </div>
-  {foreach $script in $data.resources.tailScript}
-    <script src="{$script}"></script>
-  {/foreach}
+  {if $data.resources}
+    {foreach $script in $data.resources.tailScript}
+      <script src="{$script}"></script>
+    {/foreach}
+  {/if}
+{/template}
+
+
+/**
+ * Renders the page title.
+ */
+{template .pageTitle}
+  {@param data: dossier.PageData}
+  <title>
+    {if $data.types and length($data.types.type)}
+      {$data.types.type[0].name}
+    {elseif $data.markdown and $data.markdown.content}
+      {$data.markdown.title}
+    {elseif $data.file}
+      {$data.file.baseName}
+    {/if}
+  </title>
 {/template}
 
 

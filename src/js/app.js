@@ -16,13 +16,16 @@
 
 goog.module('dossier.app');
 
+const PageData = goog.require('dossier.PageData');
 const page = goog.require('dossier.page');
 const search = goog.require('dossier.search');
+const {mainPageContent, pageTitle} = goog.require('dossier.soy');
 const Promise = goog.require('goog.Promise');
 const array = goog.require('goog.array');
 const dom = goog.require('goog.dom');
 const events = goog.require('goog.events');
 const KeyCodes = goog.require('goog.events.KeyCodes');
+const soy = goog.require('goog.soy');
 const style = goog.require('goog.style');
 const userAgent = goog.require('goog.userAgent');
 
@@ -54,22 +57,39 @@ function onCardHeaderClick(e) {
 }
 
 
+let /** !HTMLAnchorElement */linkResolver;
+
+
+/**
+ * @param {string} uri The URI to resolve.
+ * @return {string} The resolved URI.
+ */
+function resolveUri(uri) {
+  if (!linkResolver) {
+    linkResolver =
+        /** @type {!HTMLAnchorElement} */(document.createElement('A'));
+    linkResolver.style.display = 'none';
+    document.documentElement.appendChild(linkResolver);
+  }
+  linkResolver.href = uri;
+  return linkResolver.href;
+}
+
+
 /**
  * Maintains global application state.
  */
 class Application {
   /**
-   * @param {string} version The app version serialized in the DOM.
+   * @param {!Map<string, string>} uriDataMap Maps URIs for HTML pages to their
+   *     corresponding JSON data file.
    * @param {!dossier.search.SearchBox} searchBox The search box widget to use.
    * @param {!dossier.nav.NavDrawer} navDrawer The nav drawer widget to use.
    * @param {!Element} mainEl The main content element.
    */
-  constructor(version, searchBox, navDrawer, mainEl) {
-    /**
-     * @type {string}
-     * @const
-     */
-    this.version = version;
+  constructor(uriDataMap, searchBox, navDrawer, mainEl) {
+    /** @private @const {!Map<string, string>} */
+    this.uriDataMap_ = uriDataMap;
 
     /** @private {number} */
     this.stateId_ = 0;
@@ -201,77 +221,103 @@ class Application {
       this.navDrawer.hide();
     }
 
-    if (location.protocol.startsWith('http')) {
-      let index = uri.indexOf('#');
-      if (index == 0) {
-        location.hash = uri;
-        return;
-      } else if (index > 0) {
-        let targetPage = uri.substring(0, index);
-        let currentPage = location.pathname.substring(1);
-        if (targetPage === currentPage) {
-          location.hash = uri.substring(index + 1);
-          return;
-        }
-      }
-
-      if (this.pendingXhr_) {
-        this.pendingXhr_.abort();
-        this.hideProgressBar();
-      }
-
-      let xhr = new XMLHttpRequest;
-      this.pendingXhr_ = xhr;
-      xhr.open('GET', uri, true);
-      xhr.onloadstart = () => {
-        this.progressBar_.max = 100;
-        this.progressBar_.value = 0;
-        this.progressBar_.style.display = 'initial';
-      };
-      xhr.onprogress = e => {
-        if (e.lengthComputable) {
-          this.progressBar_.max = e.total;
-          this.progressBar_.value = e.loaded;
-        }
-      };
-      xhr.onloadend = e => this.progressBar_.value = e.loaded;
-      xhr.onerror = (error) => {
-        console.error(error);
-        location.href = uri;
-      };
-      xhr.onload = () => {
-        this.pendingXhr_ = null;
-        if (xhr.status > 199 && xhr.status < 300) {
-          this.onload(uri, xhr.responseText);
-        } else {
-          xhr.onerror(
-              Error(`Request failed (${xhr.status}): ${xhr.responseText}`));
-        }
-      };
-      xhr.send();
-
-    } else {
+    if (!location.protocol.startsWith('http')) {
       location.href = page.getBasePath() + uri;
-    }
-  }
-
-  onload(/** string */uri, /** string */text) {
-    this.replacePageState();
-
-    let div = document.createElement('div');
-    div.innerHTML = text;
-
-    let newVersion = page.getTimeStamp(div);
-    let newTitle = div.querySelector('title');
-    let newMain = div.querySelector('main');
-    if (!newMain || this.version !== newVersion) {
-      // TODO: prompt the user to reload?
-      history.pushState(null, '', uri);
-      location.reload();
       return;
     }
 
-    this.updatePageContent(newTitle.textContent, newMain.innerHTML, 0, uri);
+    let index = uri.indexOf('#');
+    if (index == 0) {
+      location.hash = uri;
+      return;
+    } else if (index > 0) {
+      let targetPage = uri.substring(0, index);
+      let currentPage = location.pathname.substring(1);
+      if (targetPage === currentPage) {
+        location.hash = uri.substring(index + 1);
+        return;
+      }
+    }
+
+    if (this.pendingXhr_) {
+      this.pendingXhr_.abort();
+      this.hideProgressBar();
+    }
+
+    let resolvedUri = this.resolveDataUri_(uri);
+    if (!resolvedUri) {
+      location.href = uri;
+      return;
+    }
+
+    let xhr = new XMLHttpRequest;
+    this.pendingXhr_ = xhr;
+    xhr.open('GET', resolvedUri, true);
+    xhr.onloadstart = () => {
+      this.progressBar_.max = 100;
+      this.progressBar_.value = 0;
+      this.progressBar_.style.display = 'initial';
+    };
+    xhr.onprogress = e => {
+      if (e.lengthComputable) {
+        this.progressBar_.max = e.total;
+        this.progressBar_.value = e.loaded;
+      }
+    };
+    xhr.onloadend = e => this.progressBar_.value = e.loaded;
+    xhr.onerror = (error) => {
+      console.error(error);
+      location.href = uri;
+    };
+    xhr.onload = () => {
+      this.pendingXhr_ = null;
+      if (xhr.status > 199 && xhr.status < 300) {
+        this.onload(uri, xhr.responseText);
+      } else {
+        xhr.onerror(
+            Error(`Request failed (${xhr.status}): ${xhr.responseText}`));
+      }
+    };
+    xhr.send();
+  }
+
+  /**
+   * @param {string} uri
+   * @return {?string}
+   * @private
+   */
+  resolveDataUri_(uri) {
+    let path = uri;
+    if (!path.startsWith('/')) {
+      let currentPath = location.pathname;
+      let index = currentPath.lastIndexOf('/');
+      path = currentPath.slice(0, index + 1) + path;
+    }
+    let resolved = resolveUri(path);
+    let index = resolved.indexOf('?');
+    if (index != -1) {
+      resolved = resolved.slice(0, index);
+    } else if ((index = resolved.indexOf('#')) != -1) {
+      resolved = resolved.slice(0, index);
+    }
+    resolved = this.uriDataMap_.get(resolved) || null;
+    return resolved;
+  }
+
+  onload(/** string */uri, /** string */text) {
+    let parsed = JSON.parse(text);
+    if (!goog.isObject(parsed)) {
+      location.href = uri;
+      return;
+    }
+
+    this.replacePageState();
+
+    let data = new PageData(parsed);
+    let newTitle = soy.renderAsFragment(pageTitle, {data});
+    let newMain = soy.renderAsFragment(mainPageContent, {data});
+
+    this.updatePageContent(newTitle.textContent, newMain, 0, uri);
     this.hideProgressBar();
     this.resolveAmbiguity();
 
@@ -283,22 +329,22 @@ class Application {
 
   /**
    * @param {string} title the new title.
-   * @param {(number|string)} htmlOrId the new inner HTML, or an ID for HTML
+   * @param {(number|!Node)} htmlOrId the new content node, or an ID for HTML
    *     content saved in session storage.
    * @param {number} scroll the new content scroll position.
    * @param {string=} opt_path the page path to save in page history. If
    *     omitted, history will not be updated.
    */
   updatePageContent(title, htmlOrId, scroll, opt_path) {
-    let html;
     if (typeof htmlOrId === 'number') {
       this.stateId_ = htmlOrId;
-      html = window.sessionStorage.getItem(this.getDomKey_());
+      let html = window.sessionStorage.getItem(this.getDomKey_());
+      this.mainEl.innerHTML = html;
     } else {
-      html = /** @type {string} */(htmlOrId);
+      this.mainEl.innerHTML = '';
+      this.mainEl.appendChild(/** @type {!Node} */(htmlOrId));
     }
     document.title = title;
-    this.mainEl.innerHTML = html;
     this.mainEl.parentElement.scrollTop = scroll;
 
     if (opt_path) {
@@ -421,7 +467,6 @@ class Application {
       this.stateId_ += 1;
     }
     return {
-      version: this.version,
       id: this.stateId_,
       title: document.title,
       scroll: this.mainEl.parentElement.scrollTop
@@ -459,7 +504,7 @@ class Application {
 
   /** @private */
   getDomKey_() {
-    return this.version + ':' + this.stateId_;
+    return this.stateId_;
   }
 
   /** @private */
@@ -472,18 +517,41 @@ class Application {
 /**
  * Runs the main application.
  *
+ * @param {!dossier.Index} typeIndex The main type index.
  * @param {!dossier.search.SearchBox} searchBox The search box widget to use.
  * @param {!dossier.nav.NavDrawer} navDrawer The nav drawer widget to use.
  * @throws {Error} if the application has already been started.
  */
-exports.run = function(searchBox, navDrawer) {
+exports.run = function(typeIndex, searchBox, navDrawer) {
   if (app) {
     throw Error('application is already running');
   }
 
+  let uriMap = /** !Map<string, string> */new Map;
+
+  function processLink(/** !(dossier.Link|dossier.expression.TypeLink) */link) {
+    if (link.href && !link.href.toString().startsWith('http') && link.json) {
+      let href = resolveUri(page.getBasePath() + link.href);
+      let json = resolveUri(page.getBasePath() + link.json);
+      uriMap.set(href, json);
+    }
+  }
+
+  function processEntry(/** !dossier.Index.Entry */entry) {
+    if (entry.type && entry.type.link) {
+      processLink(entry.type.link);
+    }
+    entry.child.forEach(processEntry);
+  }
+
+  typeIndex.module.forEach(processEntry);
+  typeIndex.type.forEach(processEntry);
+  typeIndex.page.forEach(processLink);
+  typeIndex.sourceFile.forEach(processLink);
+
   let mainEl = /** @type {!Element} */(document.querySelector('main'));
 
-  app = new Application(page.getTimeStamp(), searchBox, navDrawer, mainEl);
+  app = new Application(uriMap, searchBox, navDrawer, mainEl);
   events.listen(searchBox, 'focus', () => app.maybeHideNavDrawer());
   events.listen(
       searchBox, search.SelectionEvent.TYPE,
@@ -504,9 +572,6 @@ exports.run = function(searchBox, navDrawer) {
     window.onpopstate = function(/** Event */e) {
       let state = e ? e.state : null;
       if (state) {
-        if (state['version'] != app.version) {
-          throw Error('application is out of date!');
-        }
         app.updatePageContent(state['title'], state['id'], state['scroll']);
       }
     };

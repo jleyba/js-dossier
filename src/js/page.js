@@ -59,23 +59,6 @@ const BASE_PATH = (function() {
 
 
 /**
- * Extracts the timestamp for when this page was generated.
- *
- * @param {Element=} opt_el The element to extract timestamp metadata from. If
- *     omitted, will look under the main document.
- * @return {string} The extracted timestamp.
- */
-exports.getTimeStamp = function(opt_el) {
-  let root = opt_el || document;
-  let meta = root.querySelector('meta[http-equiv="X-Dossier-TimeStamp"]');
-  if (!meta) {
-    return '';
-  }
-  return meta.getAttribute('content') || '';
-};
-
-
-/**
  * @return {string} the path for the root directory on the server under which
  *     all resources are served.
  */

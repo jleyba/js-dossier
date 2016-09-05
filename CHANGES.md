@@ -12,6 +12,7 @@
 - Render properties and functions as expandable cards.
 - Improved handling of goog.module.declareLegacyNamespace.
 - Distinguish between the different categories of nested types (e.g. class vs interface)
+- Use client-side rendering when navigating between Dossier generated pages.
 - Upgraded to com.google.javascript:closure-compiler-unshaded:v20160713
 - Upgraded to com.google.code.gson:gson:2.6.2
 - Upgraded to com.google.guava:guava:20.0-SNAPSHOT (c6387ede215926b377e812c35906f5bd0eec84f0)
