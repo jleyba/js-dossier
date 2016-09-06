@@ -159,14 +159,6 @@ public final class JsonMessageTransformerTest {
   }
 
   @Test
-  public void omitsEmptyNestedMessage() {
-    TestProto.Top top = TestProto.Top.newBuilder()
-        .setNestedMessage(TestProto.Top.NestedMessage.getDefaultInstance())
-        .build();
-    assertThat(transform(top)).isEqualTo(new JsonObject());
-  }
-
-  @Test
   public void nestedMessage() {
     TestProto.Top top = TestProto.Top.newBuilder()
         .setNestedMessage(TestProto.Top.NestedMessage.newBuilder().setItem(true))
