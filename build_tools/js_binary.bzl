@@ -40,14 +40,18 @@ _js_binary = rule(
 
 
 def js_binary(name, srcs, externs, flags, visibility):
+    js_file = "%s.js" % name
+    map_file = "%s.map" % js_file
+
     cmd = [
         "$(location //src/java/com/github/jsdossier/tools:Compile)",
         '-c "$$(dirname $(location //third_party/js/closure_library:base))"',
-        ' -f "--js_output_file=\\"$@\\""'
+        ' -f "--js_output_file=\\"$(location %s)\\""' % js_file
     ]
     cmd += [' -i "$(location %s)"' % src for src in srcs]
     cmd += [' -f "--externs=\\"$(location %s)\\""' % e for e in externs]
     cmd += [' -f "%s"' % f for f in flags]
+    cmd += [' -f "--create_source_map=\\"%outname%.map\\""']
 
     native.genrule(
         name=name,
@@ -55,7 +59,10 @@ def js_binary(name, srcs, externs, flags, visibility):
             "//third_party/js/closure_library",
             "//third_party/js/closure_library:base"
         ],
-        outs=["%s.js" % name],
+        outs=[
+            js_file,
+            map_file,
+        ],
         tools=["//src/java/com/github/jsdossier/tools:Compile"],
         cmd=' '.join(cmd),
         visibility=visibility,
