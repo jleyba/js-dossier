@@ -577,6 +577,8 @@ exports.run = function(typeIndex, searchBox, navDrawer) {
     };
   }
 
+  document.documentElement.classList.remove('loading');
+
   function onhashchange() {
     app.updateSourceHighlight();
     app.openCurrentTarget(true);
