@@ -991,7 +991,7 @@
   {@param data: dossier.PageData}
   <title>
     {if $data.types and length($data.types.type)}
-      {$data.types.type[0].name}
+      {$data.types.type[0].qualifiedName}
     {elseif $data.markdown and $data.markdown.content}
       {$data.markdown.title}
     {elseif $data.file}

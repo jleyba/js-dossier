@@ -205,14 +205,8 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Ca
     }
 
     public JsType buildJsType() {
-      String displayName = dfs.getDisplayName(type);
-      if (!type.isModuleExports()
-          && (type.getType().isConstructor() || type.getType().isInterface())) {
-        displayName = getBasename(type);
-      }
-
       JsType.Builder typeSpec = JsType.newBuilder()
-          .setName(displayName)
+          .setName(dfs.getDisplayName(type))
           .setQualifiedName(dfs.getQualifiedDisplayName(type))
           .setFilename(dfs.getPath(type).getFileName().toString())
           .setSource(linkFactory.createSourceLink(type.getSourceFile(), type.getSourcePosition()));
