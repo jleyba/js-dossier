@@ -32,6 +32,11 @@ import java.net.URL;
 final class DefaultDocTemplate implements DocTemplate {
 
   @Override
+  public ImmutableList<TemplateFile> getAdditionalFiles() {
+    return ImmutableList.of(loadResourceFile("serviceworker.js", "/src/js/serviceworker.js"));
+  }
+
+  @Override
   public ImmutableList<TemplateFile> getHeadJs() {
     return ImmutableList.of();
   }

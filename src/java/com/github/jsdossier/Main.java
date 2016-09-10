@@ -322,7 +322,12 @@ final class Main {
           .renderIndex()
           .renderDocumentation(filter(typeRegistry.getAllTypes(), not(isTypedef())))
           .renderMarkdown(config.getCustomPages())
-          .renderResources(concat(template.getCss(), template.getHeadJs(), template.getTailJs()));
+          .renderResources(
+              concat(
+                  template.getAdditionalFiles(),
+                  template.getCss(),
+                  template.getHeadJs(),
+                  template.getTailJs()));
       if (!config.getSourceUrlTemplate().isPresent()) {
         executor.renderSourceFiles(concat(config.getSources(), config.getModules()));
       }

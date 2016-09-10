@@ -36,6 +36,11 @@ if (engine.isWebKit() && !browser.isChrome() && !browser.isOpera()) {
   document.documentElement.classList.add('webkit');
 }
 
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register(page.getBasePath() + 'serviceworker.js')
+      .catch(err => console.error('ServiceWorker registration failed: ' + err));
+}
+
 const typeIndex = new Index(/** @type {!Object} */(goog.global['TYPES']));
 app.run(
     typeIndex,

@@ -3,6 +3,7 @@ java_library(
     srcs = glob(["*.java"]),
     resources = [
         "//src/js:dossier",
+        "//src/js:serviceworker",
     ] + glob(["resources/*.css"]),
     deps = [
         "//lib/maven:args4j",

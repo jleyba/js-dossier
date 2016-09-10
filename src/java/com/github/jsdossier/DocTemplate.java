@@ -24,6 +24,11 @@ import com.google.common.collect.ImmutableList;
 interface DocTemplate {
 
   /**
+   * Returns the list of additional files that should be copied to the output directory.
+   */
+  ImmutableList<TemplateFile> getAdditionalFiles();
+
+  /**
    * Returns the list of JS files that should be loaded in HEAD by each generated file.
    */
   ImmutableList<TemplateFile> getHeadJs();
