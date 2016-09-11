@@ -222,7 +222,7 @@ class Application {
     }
 
     if (!location.protocol.startsWith('http')) {
-      location.href = page.getBasePath() + uri;
+      location.href = uri;
       return;
     }
 

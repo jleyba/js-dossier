@@ -9,6 +9,8 @@
   to a constructor by Closure's `goog.addSingletonGetter` function.
 - Fixed a ConcurrentModificationException that can occur when evaluating
   type expressions in multiple threads with unresolvable properties.
+- Fixed navigation from the search bar when files are loaded directly from disk
+  (e.g. using a `file://` scheme).
 
 ## Changes
 
