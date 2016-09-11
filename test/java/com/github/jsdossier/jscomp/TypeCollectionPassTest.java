@@ -1138,6 +1138,29 @@ public class TypeCollectionPassTest {
   }
 
   @Test
+  public void doesNotCountStaticInstancesOnConstructorAsAType() {
+    util.compile(
+        createSourceFile(
+            fs.getPath("foobar.js"),
+            "goog.provide('foo.Bar');",
+            "",
+            "/** @constructor */",
+            "foo.Bar = function() {};",
+            "",
+            "foo.Bar.getInstance = function() {",
+            "  if (foo.Bar.instance) {",
+            "    return foo.Bar.instance;",
+            "  }",
+            "  return foo.Bar.instance = new foo.Bar;",
+            "};"));
+
+    assertThat(typeRegistry.getAllTypes())
+        .containsExactly(
+            typeRegistry.getType("foo"),
+            typeRegistry.getType("foo.Bar"));
+  }
+
+  @Test
   public void detectsNodeExternUsage() throws IOException {
     Injector injector = guice.toBuilder()
         .setModulePrefix("modules")

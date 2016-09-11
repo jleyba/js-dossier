@@ -758,4 +758,35 @@ public class TypeInspectorTest extends AbstractTypeInspectorTest {
                         .setDescription(Comment.getDefaultInstance()))
                 .setType(nullableNamedTypeExpression("stream.Stream")));
   }
+
+  @Test
+  public void registersSingleInstanceAsStaticPropertyNotAnotherType_1() {
+    compile(
+        "goog.provide('foo.Bar');",
+        "",
+        "/** @constructor */",
+        "foo.Bar = function() {};",
+        "",
+        "foo.Bar.getInstance = function() {",
+        "  if (foo.Bar.instance) {",
+        "    return foo.Bar.instance;",
+        "  }",
+        "  return foo.Bar.instance = new foo.Bar;",
+        "};");
+
+    NominalType type = typeRegistry.getType("foo.Bar");
+    assertThat(typeRegistry.isType("foo.Bar.instance")).isFalse();
+
+    TypeInspector typeInspector = typeInspectorFactory.create(type);
+    TypeInspector.Report report = typeInspector.inspectType();
+    assertMessages(report.getProperties())
+        .containsExactly(
+            Property.newBuilder()
+                .setBase(
+                    BaseProperty.newBuilder()
+                        .setName("Bar.instance")
+                        .setSource(sourceFile("source/foo.js.src.html", 10))
+                        .setDescription(Comment.getDefaultInstance()))
+                .setType(namedTypeExpression("foo.Bar", "foo.Bar.html")));
+  }
 }

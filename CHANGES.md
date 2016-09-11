@@ -4,6 +4,9 @@
 
 - Typedefs are now included in the search index
 - Render tags (visibility, deprecation, etc) for typedefs
+- Instance types defined on a constructor are no longer registered as distinct
+  types. This most often manifested with the private `instance_` property added
+  to a constructor by Closure's `goog.addSingletonGetter` function.
 
 ## Changes
 

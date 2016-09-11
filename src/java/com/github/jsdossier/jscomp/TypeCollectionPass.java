@@ -512,6 +512,9 @@ public final class TypeCollectionPass implements CompilerPass {
 
     private void crawlProperty(Property property) {
       checkState(!types.isEmpty());
+      if (property.getType().isInstanceType()) {
+        return;
+      }
 
       NominalType parent = types.peek();
 
