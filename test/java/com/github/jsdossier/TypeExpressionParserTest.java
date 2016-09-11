@@ -17,7 +17,12 @@
 package com.github.jsdossier;
 
 import static com.github.jsdossier.ProtoTruth.assertMessage;
+import static com.github.jsdossier.TypeExpressions.ANY_TYPE;
+import static com.github.jsdossier.TypeExpressions.NULL_TYPE;
+import static com.github.jsdossier.TypeExpressions.UNKNOWN_TYPE;
+import static com.github.jsdossier.TypeExpressions.VOID_TYPE;
 import static com.github.jsdossier.testing.CompilerUtil.createSourceFile;
+import static com.google.common.base.Preconditions.checkArgument;
 
 import com.github.jsdossier.annotations.Input;
 import com.github.jsdossier.jscomp.NominalType;
@@ -36,12 +41,14 @@ import com.google.javascript.jscomp.SourceFile;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.JSTypeExpression;
 import com.google.javascript.rhino.jstype.JSType;
+import com.google.javascript.rhino.jstype.Property;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import java.nio.file.FileSystem;
+import java.util.Arrays;
 
 import javax.inject.Inject;
 
@@ -162,9 +169,9 @@ public class TypeExpressionParserTest {
             .setFunctionType(
                 FunctionType.newBuilder()
                     .setReturnType(
-                        namedTypeExpression("Person", "Person.html")
-                            .toBuilder()
-                            .setAllowNull(true))));
+                        unionType(
+                            namedTypeExpression("Person", "Person.html"),
+                            NULL_TYPE))));
   }
 
   @Test
@@ -190,7 +197,7 @@ public class TypeExpressionParserTest {
                     .addParameter(TypeExpression.newBuilder()
                         .setIsVarargs(true)
                         .setNamedType(namedType("Person", "Person.html")))
-                    .setReturnType(TypeExpression.newBuilder().setUnknownType(true))));
+                    .setReturnType(UNKNOWN_TYPE)));
   }
 
   @Test
@@ -333,19 +340,13 @@ public class TypeExpressionParserTest {
   @Test
   public void parseExpression_unknownType() {
     TypeExpression expression = compileExpression("?");
-    assertMessage(expression)
-        .isEqualTo(TypeExpression.newBuilder().setUnknownType(true));
+    assertMessage(expression).isEqualTo(UNKNOWN_TYPE);
   }
 
   @Test
   public void parseExpression_anyType() {
     TypeExpression expression = compileExpression("*");
-    assertMessage(expression)
-        .isEqualTo(
-            TypeExpression.newBuilder()
-                .setAllowNull(true)
-                .setAllowUndefined(true)
-                .setAnyType(true));
+    assertMessage(expression).isEqualTo(ANY_TYPE);
   }
 
   @Test
@@ -357,45 +358,52 @@ public class TypeExpressionParserTest {
   @Test
   public void parsesExpression_nullablePrimitiveType1() {
     TypeExpression expression = compileExpression("?string");
-    assertMessage(expression).isEqualTo(stringType().toBuilder().setAllowNull(true));
+    assertMessage(expression).isEqualTo(unionType(stringType(), NULL_TYPE));
   }
 
   @Test
   public void parsesExpression_nullablePrimitiveType2() {
     TypeExpression expression = compileExpression("string?");
-    assertMessage(expression).isEqualTo(stringType().toBuilder().setAllowNull(true));
+    assertMessage(expression).isEqualTo(unionType(stringType(), NULL_TYPE));
   }
 
   @Test
   public void parseExpression_primitiveUnionType() {
     TypeExpression expression = compileExpression("string|number");
     assertMessage(expression)
-        .isEqualTo(TypeExpression.newBuilder()
-            .setUnionType(UnionType.newBuilder()
-                .addType(stringType())
-                .addType(numberType())));
+        .isEqualTo(unionType(stringType(), numberType()));
   }
 
   @Test
   public void parseExpression_nullablePrimitiveUnionType() {
     TypeExpression expression = compileExpression("?(string|number)");
     assertMessage(expression)
-        .isEqualTo(TypeExpression.newBuilder()
-            .setAllowNull(true)
-            .setUnionType(UnionType.newBuilder()
-                .addType(stringType())
-                .addType(numberType())));
+        .isEqualTo(unionType(stringType(), numberType(), NULL_TYPE));
   }
 
   @Test
   public void parseExpression_unionWithNullableComponent() {
     TypeExpression expression = compileExpression("(?string|number)");
     assertMessage(expression)
-        .isEqualTo(TypeExpression.newBuilder()
-            .setAllowNull(true)
-            .setUnionType(UnionType.newBuilder()
-                .addType(stringType())
-                .addType(numberType())));
+        .isEqualTo(unionType(stringType(), numberType(), NULL_TYPE));
+  }
+
+  @Test
+  public void parseExpression_unionAnyTypeIsAnyType() {
+    TypeExpression expression = compileExpression("(string|*)");
+    assertMessage(expression).isEqualTo(ANY_TYPE);
+  }
+
+  @Test
+  public void parseExpression_unionWithUnknownTypeIsUnknownType() {
+    TypeExpression expression = compileExpression("(string|?)");
+    assertMessage(expression).isEqualTo(UNKNOWN_TYPE);
+  }
+
+  @Test
+  public void parseExpression_unionOfNullAndUndefined() {
+    TypeExpression expression = compileExpression("(null|undefined)");
+    assertMessage(expression).isEqualTo(unionType(NULL_TYPE, VOID_TYPE));
   }
 
   @Test
@@ -409,8 +417,7 @@ public class TypeExpressionParserTest {
                         .addEntry(
                             RecordType.Entry.newBuilder()
                                 .setKey("age")
-                                .setValue(
-                                    numberType().toBuilder().setAllowNull(true)))));
+                                .setValue(unionType(numberType(), NULL_TYPE)))));
   }
 
   @Test
@@ -437,6 +444,31 @@ public class TypeExpressionParserTest {
         .isEqualTo(
             TypeExpression.newBuilder()
                 .setNamedType(NamedType.newBuilder().setName("Data")));
+  }
+
+  @Test
+  public void parseExpression_typeIsReferenceToNullableExtern() {
+    util.compile(
+        createSourceFile(
+            fs.getPath("source/modules/one.js"),
+            "var stream = require('stream');",
+            "/** @constructor */",
+            "function Writer() {}",
+            "/** @type {stream.Stream} */",
+            "Writer.prototype.stream = null;",
+            "exports.Writer = Writer"));
+
+    NominalType type = typeRegistry.getType("module$exports$module$source$modules$one.Writer");
+
+    Property property = type.getType().toMaybeFunctionType().getInstanceType().getSlot("stream");
+    TypeExpression expression =
+        parserFactory.create(linkFactoryBuilder.create(type))
+            .parse(property.getType());
+    assertMessage(expression)
+        .isEqualTo(
+            unionType(
+                namedTypeExpression("stream.Stream"),
+                NULL_TYPE));
   }
 
   private TypeExpression compileExpression(String expressionText) {
@@ -477,15 +509,31 @@ public class TypeExpressionParserTest {
         .build();
   }
 
+  private static TypeExpression unionType(TypeExpression... expressions) {
+    checkArgument(expressions.length > 0);
+    return TypeExpression.newBuilder()
+        .setUnionType(
+            UnionType.newBuilder()
+                .addAllType(Arrays.asList(expressions)))
+        .build();
+  }
+
+  private static TypeExpression namedTypeExpression(String text) {
+    return TypeExpression.newBuilder().setNamedType(namedType(text)).build();
+  }
+
   private static TypeExpression namedTypeExpression(String text, String href) {
     return TypeExpression.newBuilder().setNamedType(namedType(text, href)).build();
+  }
+
+  private static NamedType namedType(String name) {
+    return NamedType.newBuilder().setName(name).build();
   }
 
   private static NamedType namedType(String name, String href) {
     return NamedType.newBuilder()
         .setName(name)
-        .setLink(TypeLink.newBuilder()
-            .setHref(href))
+        .setLink(TypeLink.newBuilder().setHref(href))
         .build();
   }
 

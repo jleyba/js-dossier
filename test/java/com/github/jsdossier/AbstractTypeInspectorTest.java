@@ -16,6 +16,7 @@
 
 package com.github.jsdossier;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.truth.Truth.assertAbout;
 import static com.google.common.truth.Truth.assertWithMessage;
 
@@ -28,6 +29,7 @@ import com.github.jsdossier.proto.NamedType;
 import com.github.jsdossier.proto.SourceLink;
 import com.github.jsdossier.proto.TypeExpression;
 import com.github.jsdossier.proto.TypeLink;
+import com.github.jsdossier.proto.UnionType;
 import com.github.jsdossier.testing.CompilerUtil;
 import com.github.jsdossier.testing.GuiceRule;
 import com.google.common.truth.FailureStrategy;
@@ -90,14 +92,24 @@ public abstract class AbstractTypeInspectorTest {
         .build();
   }
 
+  protected static TypeExpression unionType(TypeExpression... expressions) {
+    checkArgument(expressions.length > 0);
+    return TypeExpression.newBuilder()
+        .setUnionType(
+            UnionType.newBuilder()
+                .addAllType(Arrays.asList(expressions)))
+        .build();
+  }
+
   protected static TypeExpression nullableErrorTypeExpression() {
     NamedType error = namedType(
         "Error",
         "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error");
-    return TypeExpression.newBuilder()
-        .setNamedType(error.toBuilder().setExtern(true))
-        .setAllowNull(true)
-        .build();
+    return unionType(
+        TypeExpression.newBuilder()
+            .setNamedType(error.toBuilder().setExtern(true))
+            .build(),
+        TypeExpressions.NULL_TYPE);
   }
 
   protected static TypeExpression numberTypeExpression() {
@@ -138,25 +150,28 @@ public abstract class AbstractTypeInspectorTest {
   }
 
   protected static TypeExpression nullableNamedTypeExpression(String name) {
-    return TypeExpression.newBuilder()
-        .setAllowNull(true)
-        .setNamedType(namedType(name))
-        .build();
+    return unionType(
+        TypeExpression.newBuilder()
+            .setNamedType(namedType(name))
+            .build(),
+        TypeExpressions.NULL_TYPE);
   }
 
   protected static TypeExpression nullableNamedTypeExpression(String name, String href) {
-    return TypeExpression.newBuilder()
-        .setAllowNull(true)
-        .setNamedType(namedType(name, href))
-        .build();
+    return unionType(
+        TypeExpression.newBuilder()
+            .setNamedType(namedType(name, href))
+            .build(),
+        TypeExpressions.NULL_TYPE);
   }
 
   protected static TypeExpression nullableNamedTypeExpression(
       String name, String qualifiedName, String href) {
-    return TypeExpression.newBuilder()
-        .setAllowNull(true)
-        .setNamedType(namedType(name, qualifiedName, href))
-        .build();
+    return unionType(
+        TypeExpression.newBuilder()
+            .setNamedType(namedType(name, qualifiedName, href))
+            .build(),
+        TypeExpressions.NULL_TYPE);
   }
 
   protected static NamedType namedType(String name) {

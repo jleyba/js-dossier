@@ -261,12 +261,15 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
                 .setType(nullableNamedTypeExpression("THROWN_TYPE"))
                 .setDescription(htmlComment("<p>.</p>\n")))
             .addThrown(Detail.newBuilder()
-                .setType(TypeExpression.newBuilder()
-                    .setAllowNull(true)
-                    .setNamedType(
-                        addTemplateTypes(
-                            namedType("GenericError", "GenericError.html"),
-                            nullableNamedTypeExpression("THROWN_TYPE")))))
+                .setType(
+                    unionType(
+                        TypeExpression.newBuilder()
+                            .setNamedType(
+                                addTemplateTypes(
+                                  namedType("GenericError", "GenericError.html"),
+                                  nullableNamedTypeExpression("THROWN_TYPE")))
+                            .build(),
+                        TypeExpressions.NULL_TYPE)))
             .addTemplateName("THROWN_TYPE")
             .build());
   }
@@ -778,7 +781,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
             "exports.X = class {}"),
         createSourceFile(
             fs.getPath("/src/modules/foo/baz.js"),
-            "/** @param {./bar.X} x an object. */",
+            "/** @param {!./bar.X} x an object. */",
             "exports.go = function(x) {};"));
 
     NominalType type = typeRegistry.getType("module$exports$module$$src$modules$foo$baz");
@@ -1030,11 +1033,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
                 .setDescription(Comment.getDefaultInstance()))
             .addParameter(Detail.newBuilder()
                 .setName("numbers")
-                .setType(
-                    TypeExpression.newBuilder()
-                        .setAllowUndefined(true)
-                        .setIsVarargs(true)
-                        .setUnionType(UnionType.newBuilder().addType(numberTypeExpression())))
+                .setType(numberTypeExpression().toBuilder().setIsVarargs(true))
                 .setDescription(htmlComment("<p>The numbers to add.</p>\n")))
             .build());
   }
@@ -1059,11 +1058,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
                 .setDescription(Comment.getDefaultInstance()))
             .addParameter(Detail.newBuilder()
                 .setName("numbers")
-                .setType(
-                    TypeExpression.newBuilder()
-                        .setAllowUndefined(true)
-                        .setIsVarargs(true)
-                        .setUnionType(UnionType.newBuilder().addType(numberTypeExpression())))
+                .setType(numberTypeExpression().toBuilder().setIsVarargs(true))
                 .setDescription(htmlComment("<p>The numbers to add.</p>\n")))
             .build());
   }

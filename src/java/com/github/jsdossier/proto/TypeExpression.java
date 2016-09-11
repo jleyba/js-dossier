@@ -15,8 +15,6 @@ public  final class TypeExpression extends
     super(builder);
   }
   private TypeExpression() {
-    allowNull_ = false;
-    allowUndefined_ = false;
   }
 
   @java.lang.Override
@@ -44,28 +42,18 @@ public  final class TypeExpression extends
             break;
           }
           case 8: {
-
-            allowNull_ = input.readBool();
+            modifierCase_ = 1;
+            modifier_ = input.readBool();
             break;
           }
           case 16: {
-
-            allowUndefined_ = input.readBool();
-            break;
-          }
-          case 24: {
-            modifierCase_ = 3;
+            modifierCase_ = 2;
             modifier_ = input.readBool();
             break;
           }
-          case 32: {
-            modifierCase_ = 4;
-            modifier_ = input.readBool();
-            break;
-          }
-          case 42: {
+          case 26: {
             com.github.jsdossier.proto.FunctionType.Builder subBuilder = null;
-            if (nodeTypeCase_ == 5) {
+            if (nodeTypeCase_ == 3) {
               subBuilder = ((com.github.jsdossier.proto.FunctionType) nodeType_).toBuilder();
             }
             nodeType_ =
@@ -74,12 +62,12 @@ public  final class TypeExpression extends
               subBuilder.mergeFrom((com.github.jsdossier.proto.FunctionType) nodeType_);
               nodeType_ = subBuilder.buildPartial();
             }
-            nodeTypeCase_ = 5;
+            nodeTypeCase_ = 3;
             break;
           }
-          case 50: {
+          case 34: {
             com.github.jsdossier.proto.NamedType.Builder subBuilder = null;
-            if (nodeTypeCase_ == 6) {
+            if (nodeTypeCase_ == 4) {
               subBuilder = ((com.github.jsdossier.proto.NamedType) nodeType_).toBuilder();
             }
             nodeType_ =
@@ -88,12 +76,12 @@ public  final class TypeExpression extends
               subBuilder.mergeFrom((com.github.jsdossier.proto.NamedType) nodeType_);
               nodeType_ = subBuilder.buildPartial();
             }
-            nodeTypeCase_ = 6;
+            nodeTypeCase_ = 4;
             break;
           }
-          case 58: {
+          case 42: {
             com.github.jsdossier.proto.RecordType.Builder subBuilder = null;
-            if (nodeTypeCase_ == 7) {
+            if (nodeTypeCase_ == 5) {
               subBuilder = ((com.github.jsdossier.proto.RecordType) nodeType_).toBuilder();
             }
             nodeType_ =
@@ -102,12 +90,12 @@ public  final class TypeExpression extends
               subBuilder.mergeFrom((com.github.jsdossier.proto.RecordType) nodeType_);
               nodeType_ = subBuilder.buildPartial();
             }
-            nodeTypeCase_ = 7;
+            nodeTypeCase_ = 5;
             break;
           }
-          case 66: {
+          case 50: {
             com.github.jsdossier.proto.UnionType.Builder subBuilder = null;
-            if (nodeTypeCase_ == 8) {
+            if (nodeTypeCase_ == 6) {
               subBuilder = ((com.github.jsdossier.proto.UnionType) nodeType_).toBuilder();
             }
             nodeType_ =
@@ -116,7 +104,17 @@ public  final class TypeExpression extends
               subBuilder.mergeFrom((com.github.jsdossier.proto.UnionType) nodeType_);
               nodeType_ = subBuilder.buildPartial();
             }
+            nodeTypeCase_ = 6;
+            break;
+          }
+          case 56: {
+            nodeTypeCase_ = 7;
+            nodeType_ = input.readBool();
+            break;
+          }
+          case 64: {
             nodeTypeCase_ = 8;
+            nodeType_ = input.readBool();
             break;
           }
           case 72: {
@@ -126,11 +124,6 @@ public  final class TypeExpression extends
           }
           case 80: {
             nodeTypeCase_ = 10;
-            nodeType_ = input.readBool();
-            break;
-          }
-          case 88: {
-            nodeTypeCase_ = 11;
             nodeType_ = input.readBool();
             break;
           }
@@ -162,8 +155,8 @@ public  final class TypeExpression extends
   private java.lang.Object modifier_;
   public enum ModifierCase
       implements com.google.protobuf.Internal.EnumLite {
-    IS_OPTIONAL(3),
-    IS_VARARGS(4),
+    IS_OPTIONAL(1),
+    IS_VARARGS(2),
     MODIFIER_NOT_SET(0);
     private int value = 0;
     private ModifierCase(int value) {
@@ -171,8 +164,8 @@ public  final class TypeExpression extends
     }
     public static ModifierCase valueOf(int value) {
       switch (value) {
-        case 3: return IS_OPTIONAL;
-        case 4: return IS_VARARGS;
+        case 1: return IS_OPTIONAL;
+        case 2: return IS_VARARGS;
         case 0: return MODIFIER_NOT_SET;
         default: throw new java.lang.IllegalArgumentException(
           "Value is undefined for this oneof enum.");
@@ -193,13 +186,14 @@ public  final class TypeExpression extends
   private java.lang.Object nodeType_;
   public enum NodeTypeCase
       implements com.google.protobuf.Internal.EnumLite {
-    FUNCTION_TYPE(5),
-    NAMED_TYPE(6),
-    RECORD_TYPE(7),
-    UNION_TYPE(8),
-    ANY_TYPE(9),
-    UNKNOWN_TYPE(10),
-    VOID_TYPE(11),
+    FUNCTION_TYPE(3),
+    NAMED_TYPE(4),
+    RECORD_TYPE(5),
+    UNION_TYPE(6),
+    ANY_TYPE(7),
+    UNKNOWN_TYPE(8),
+    VOID_TYPE(9),
+    NULL_TYPE(10),
     NODETYPE_NOT_SET(0);
     private int value = 0;
     private NodeTypeCase(int value) {
@@ -207,13 +201,14 @@ public  final class TypeExpression extends
     }
     public static NodeTypeCase valueOf(int value) {
       switch (value) {
-        case 5: return FUNCTION_TYPE;
-        case 6: return NAMED_TYPE;
-        case 7: return RECORD_TYPE;
-        case 8: return UNION_TYPE;
-        case 9: return ANY_TYPE;
-        case 10: return UNKNOWN_TYPE;
-        case 11: return VOID_TYPE;
+        case 3: return FUNCTION_TYPE;
+        case 4: return NAMED_TYPE;
+        case 5: return RECORD_TYPE;
+        case 6: return UNION_TYPE;
+        case 7: return ANY_TYPE;
+        case 8: return UNKNOWN_TYPE;
+        case 9: return VOID_TYPE;
+        case 10: return NULL_TYPE;
         case 0: return NODETYPE_NOT_SET;
         default: throw new java.lang.IllegalArgumentException(
           "Value is undefined for this oneof enum.");
@@ -230,154 +225,147 @@ public  final class TypeExpression extends
         nodeTypeCase_);
   }
 
-  public static final int ALLOW_NULL_FIELD_NUMBER = 1;
-  private boolean allowNull_;
+  public static final int IS_OPTIONAL_FIELD_NUMBER = 1;
   /**
-   * <code>optional bool allow_null = 1;</code>
-   */
-  public boolean getAllowNull() {
-    return allowNull_;
-  }
-
-  public static final int ALLOW_UNDEFINED_FIELD_NUMBER = 2;
-  private boolean allowUndefined_;
-  /**
-   * <code>optional bool allow_undefined = 2;</code>
-   */
-  public boolean getAllowUndefined() {
-    return allowUndefined_;
-  }
-
-  public static final int IS_OPTIONAL_FIELD_NUMBER = 3;
-  /**
-   * <code>optional bool is_optional = 3;</code>
+   * <code>optional bool is_optional = 1;</code>
    */
   public boolean getIsOptional() {
-    if (modifierCase_ == 3) {
+    if (modifierCase_ == 1) {
       return (java.lang.Boolean) modifier_;
     }
     return false;
   }
 
-  public static final int IS_VARARGS_FIELD_NUMBER = 4;
+  public static final int IS_VARARGS_FIELD_NUMBER = 2;
   /**
-   * <code>optional bool is_varargs = 4;</code>
+   * <code>optional bool is_varargs = 2;</code>
    */
   public boolean getIsVarargs() {
-    if (modifierCase_ == 4) {
+    if (modifierCase_ == 2) {
       return (java.lang.Boolean) modifier_;
     }
     return false;
   }
 
-  public static final int FUNCTION_TYPE_FIELD_NUMBER = 5;
+  public static final int FUNCTION_TYPE_FIELD_NUMBER = 3;
   /**
-   * <code>optional .dossier.expression.FunctionType function_type = 5;</code>
+   * <code>optional .dossier.expression.FunctionType function_type = 3;</code>
    */
   public com.github.jsdossier.proto.FunctionType getFunctionType() {
-    if (nodeTypeCase_ == 5) {
+    if (nodeTypeCase_ == 3) {
        return (com.github.jsdossier.proto.FunctionType) nodeType_;
     }
     return com.github.jsdossier.proto.FunctionType.getDefaultInstance();
   }
   /**
-   * <code>optional .dossier.expression.FunctionType function_type = 5;</code>
+   * <code>optional .dossier.expression.FunctionType function_type = 3;</code>
    */
   public com.github.jsdossier.proto.FunctionTypeOrBuilder getFunctionTypeOrBuilder() {
-    if (nodeTypeCase_ == 5) {
+    if (nodeTypeCase_ == 3) {
        return (com.github.jsdossier.proto.FunctionType) nodeType_;
     }
     return com.github.jsdossier.proto.FunctionType.getDefaultInstance();
   }
 
-  public static final int NAMED_TYPE_FIELD_NUMBER = 6;
+  public static final int NAMED_TYPE_FIELD_NUMBER = 4;
   /**
-   * <code>optional .dossier.expression.NamedType named_type = 6;</code>
+   * <code>optional .dossier.expression.NamedType named_type = 4;</code>
    */
   public com.github.jsdossier.proto.NamedType getNamedType() {
-    if (nodeTypeCase_ == 6) {
+    if (nodeTypeCase_ == 4) {
        return (com.github.jsdossier.proto.NamedType) nodeType_;
     }
     return com.github.jsdossier.proto.NamedType.getDefaultInstance();
   }
   /**
-   * <code>optional .dossier.expression.NamedType named_type = 6;</code>
+   * <code>optional .dossier.expression.NamedType named_type = 4;</code>
    */
   public com.github.jsdossier.proto.NamedTypeOrBuilder getNamedTypeOrBuilder() {
-    if (nodeTypeCase_ == 6) {
+    if (nodeTypeCase_ == 4) {
        return (com.github.jsdossier.proto.NamedType) nodeType_;
     }
     return com.github.jsdossier.proto.NamedType.getDefaultInstance();
   }
 
-  public static final int RECORD_TYPE_FIELD_NUMBER = 7;
+  public static final int RECORD_TYPE_FIELD_NUMBER = 5;
   /**
-   * <code>optional .dossier.expression.RecordType record_type = 7;</code>
+   * <code>optional .dossier.expression.RecordType record_type = 5;</code>
    */
   public com.github.jsdossier.proto.RecordType getRecordType() {
-    if (nodeTypeCase_ == 7) {
+    if (nodeTypeCase_ == 5) {
        return (com.github.jsdossier.proto.RecordType) nodeType_;
     }
     return com.github.jsdossier.proto.RecordType.getDefaultInstance();
   }
   /**
-   * <code>optional .dossier.expression.RecordType record_type = 7;</code>
+   * <code>optional .dossier.expression.RecordType record_type = 5;</code>
    */
   public com.github.jsdossier.proto.RecordTypeOrBuilder getRecordTypeOrBuilder() {
-    if (nodeTypeCase_ == 7) {
+    if (nodeTypeCase_ == 5) {
        return (com.github.jsdossier.proto.RecordType) nodeType_;
     }
     return com.github.jsdossier.proto.RecordType.getDefaultInstance();
   }
 
-  public static final int UNION_TYPE_FIELD_NUMBER = 8;
+  public static final int UNION_TYPE_FIELD_NUMBER = 6;
   /**
-   * <code>optional .dossier.expression.UnionType union_type = 8;</code>
+   * <code>optional .dossier.expression.UnionType union_type = 6;</code>
    */
   public com.github.jsdossier.proto.UnionType getUnionType() {
-    if (nodeTypeCase_ == 8) {
+    if (nodeTypeCase_ == 6) {
        return (com.github.jsdossier.proto.UnionType) nodeType_;
     }
     return com.github.jsdossier.proto.UnionType.getDefaultInstance();
   }
   /**
-   * <code>optional .dossier.expression.UnionType union_type = 8;</code>
+   * <code>optional .dossier.expression.UnionType union_type = 6;</code>
    */
   public com.github.jsdossier.proto.UnionTypeOrBuilder getUnionTypeOrBuilder() {
-    if (nodeTypeCase_ == 8) {
+    if (nodeTypeCase_ == 6) {
        return (com.github.jsdossier.proto.UnionType) nodeType_;
     }
     return com.github.jsdossier.proto.UnionType.getDefaultInstance();
   }
 
-  public static final int ANY_TYPE_FIELD_NUMBER = 9;
+  public static final int ANY_TYPE_FIELD_NUMBER = 7;
   /**
-   * <code>optional bool any_type = 9;</code>
+   * <code>optional bool any_type = 7;</code>
    */
   public boolean getAnyType() {
+    if (nodeTypeCase_ == 7) {
+      return (java.lang.Boolean) nodeType_;
+    }
+    return false;
+  }
+
+  public static final int UNKNOWN_TYPE_FIELD_NUMBER = 8;
+  /**
+   * <code>optional bool unknown_type = 8;</code>
+   */
+  public boolean getUnknownType() {
+    if (nodeTypeCase_ == 8) {
+      return (java.lang.Boolean) nodeType_;
+    }
+    return false;
+  }
+
+  public static final int VOID_TYPE_FIELD_NUMBER = 9;
+  /**
+   * <code>optional bool void_type = 9;</code>
+   */
+  public boolean getVoidType() {
     if (nodeTypeCase_ == 9) {
       return (java.lang.Boolean) nodeType_;
     }
     return false;
   }
 
-  public static final int UNKNOWN_TYPE_FIELD_NUMBER = 10;
+  public static final int NULL_TYPE_FIELD_NUMBER = 10;
   /**
-   * <code>optional bool unknown_type = 10;</code>
+   * <code>optional bool null_type = 10;</code>
    */
-  public boolean getUnknownType() {
+  public boolean getNullType() {
     if (nodeTypeCase_ == 10) {
-      return (java.lang.Boolean) nodeType_;
-    }
-    return false;
-  }
-
-  public static final int VOID_TYPE_FIELD_NUMBER = 11;
-  /**
-   * <code>optional bool void_type = 11;</code>
-   */
-  public boolean getVoidType() {
-    if (nodeTypeCase_ == 11) {
       return (java.lang.Boolean) nodeType_;
     }
     return false;
@@ -395,31 +383,33 @@ public  final class TypeExpression extends
 
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (allowNull_ != false) {
-      output.writeBool(1, allowNull_);
-    }
-    if (allowUndefined_ != false) {
-      output.writeBool(2, allowUndefined_);
-    }
-    if (modifierCase_ == 3) {
+    if (modifierCase_ == 1) {
       output.writeBool(
-          3, (boolean)((java.lang.Boolean) modifier_));
+          1, (boolean)((java.lang.Boolean) modifier_));
     }
-    if (modifierCase_ == 4) {
+    if (modifierCase_ == 2) {
       output.writeBool(
-          4, (boolean)((java.lang.Boolean) modifier_));
+          2, (boolean)((java.lang.Boolean) modifier_));
+    }
+    if (nodeTypeCase_ == 3) {
+      output.writeMessage(3, (com.github.jsdossier.proto.FunctionType) nodeType_);
+    }
+    if (nodeTypeCase_ == 4) {
+      output.writeMessage(4, (com.github.jsdossier.proto.NamedType) nodeType_);
     }
     if (nodeTypeCase_ == 5) {
-      output.writeMessage(5, (com.github.jsdossier.proto.FunctionType) nodeType_);
+      output.writeMessage(5, (com.github.jsdossier.proto.RecordType) nodeType_);
     }
     if (nodeTypeCase_ == 6) {
-      output.writeMessage(6, (com.github.jsdossier.proto.NamedType) nodeType_);
+      output.writeMessage(6, (com.github.jsdossier.proto.UnionType) nodeType_);
     }
     if (nodeTypeCase_ == 7) {
-      output.writeMessage(7, (com.github.jsdossier.proto.RecordType) nodeType_);
+      output.writeBool(
+          7, (boolean)((java.lang.Boolean) nodeType_));
     }
     if (nodeTypeCase_ == 8) {
-      output.writeMessage(8, (com.github.jsdossier.proto.UnionType) nodeType_);
+      output.writeBool(
+          8, (boolean)((java.lang.Boolean) nodeType_));
     }
     if (nodeTypeCase_ == 9) {
       output.writeBool(
@@ -429,10 +419,6 @@ public  final class TypeExpression extends
       output.writeBool(
           10, (boolean)((java.lang.Boolean) nodeType_));
     }
-    if (nodeTypeCase_ == 11) {
-      output.writeBool(
-          11, (boolean)((java.lang.Boolean) nodeType_));
-    }
   }
 
   public int getSerializedSize() {
@@ -440,39 +426,41 @@ public  final class TypeExpression extends
     if (size != -1) return size;
 
     size = 0;
-    if (allowNull_ != false) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBoolSize(1, allowNull_);
-    }
-    if (allowUndefined_ != false) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBoolSize(2, allowUndefined_);
-    }
-    if (modifierCase_ == 3) {
+    if (modifierCase_ == 1) {
       size += com.google.protobuf.CodedOutputStream
         .computeBoolSize(
-            3, (boolean)((java.lang.Boolean) modifier_));
+            1, (boolean)((java.lang.Boolean) modifier_));
     }
-    if (modifierCase_ == 4) {
+    if (modifierCase_ == 2) {
       size += com.google.protobuf.CodedOutputStream
         .computeBoolSize(
-            4, (boolean)((java.lang.Boolean) modifier_));
+            2, (boolean)((java.lang.Boolean) modifier_));
+    }
+    if (nodeTypeCase_ == 3) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(3, (com.github.jsdossier.proto.FunctionType) nodeType_);
+    }
+    if (nodeTypeCase_ == 4) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(4, (com.github.jsdossier.proto.NamedType) nodeType_);
     }
     if (nodeTypeCase_ == 5) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(5, (com.github.jsdossier.proto.FunctionType) nodeType_);
+        .computeMessageSize(5, (com.github.jsdossier.proto.RecordType) nodeType_);
     }
     if (nodeTypeCase_ == 6) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(6, (com.github.jsdossier.proto.NamedType) nodeType_);
+        .computeMessageSize(6, (com.github.jsdossier.proto.UnionType) nodeType_);
     }
     if (nodeTypeCase_ == 7) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(7, (com.github.jsdossier.proto.RecordType) nodeType_);
+        .computeBoolSize(
+            7, (boolean)((java.lang.Boolean) nodeType_));
     }
     if (nodeTypeCase_ == 8) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(8, (com.github.jsdossier.proto.UnionType) nodeType_);
+        .computeBoolSize(
+            8, (boolean)((java.lang.Boolean) nodeType_));
     }
     if (nodeTypeCase_ == 9) {
       size += com.google.protobuf.CodedOutputStream
@@ -483,11 +471,6 @@ public  final class TypeExpression extends
       size += com.google.protobuf.CodedOutputStream
         .computeBoolSize(
             10, (boolean)((java.lang.Boolean) nodeType_));
-    }
-    if (nodeTypeCase_ == 11) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBoolSize(
-            11, (boolean)((java.lang.Boolean) nodeType_));
     }
     memoizedSize = size;
     return size;
@@ -600,10 +583,6 @@ public  final class TypeExpression extends
     }
     public Builder clear() {
       super.clear();
-      allowNull_ = false;
-
-      allowUndefined_ = false;
-
       modifierCase_ = 0;
       modifier_ = null;
       nodeTypeCase_ = 0;
@@ -630,49 +609,50 @@ public  final class TypeExpression extends
 
     public com.github.jsdossier.proto.TypeExpression buildPartial() {
       com.github.jsdossier.proto.TypeExpression result = new com.github.jsdossier.proto.TypeExpression(this);
-      result.allowNull_ = allowNull_;
-      result.allowUndefined_ = allowUndefined_;
-      if (modifierCase_ == 3) {
+      if (modifierCase_ == 1) {
         result.modifier_ = modifier_;
       }
-      if (modifierCase_ == 4) {
+      if (modifierCase_ == 2) {
         result.modifier_ = modifier_;
       }
-      if (nodeTypeCase_ == 5) {
+      if (nodeTypeCase_ == 3) {
         if (functionTypeBuilder_ == null) {
           result.nodeType_ = nodeType_;
         } else {
           result.nodeType_ = functionTypeBuilder_.build();
         }
       }
-      if (nodeTypeCase_ == 6) {
+      if (nodeTypeCase_ == 4) {
         if (namedTypeBuilder_ == null) {
           result.nodeType_ = nodeType_;
         } else {
           result.nodeType_ = namedTypeBuilder_.build();
         }
       }
-      if (nodeTypeCase_ == 7) {
+      if (nodeTypeCase_ == 5) {
         if (recordTypeBuilder_ == null) {
           result.nodeType_ = nodeType_;
         } else {
           result.nodeType_ = recordTypeBuilder_.build();
         }
       }
-      if (nodeTypeCase_ == 8) {
+      if (nodeTypeCase_ == 6) {
         if (unionTypeBuilder_ == null) {
           result.nodeType_ = nodeType_;
         } else {
           result.nodeType_ = unionTypeBuilder_.build();
         }
       }
+      if (nodeTypeCase_ == 7) {
+        result.nodeType_ = nodeType_;
+      }
+      if (nodeTypeCase_ == 8) {
+        result.nodeType_ = nodeType_;
+      }
       if (nodeTypeCase_ == 9) {
         result.nodeType_ = nodeType_;
       }
       if (nodeTypeCase_ == 10) {
-        result.nodeType_ = nodeType_;
-      }
-      if (nodeTypeCase_ == 11) {
         result.nodeType_ = nodeType_;
       }
       result.modifierCase_ = modifierCase_;
@@ -692,12 +672,6 @@ public  final class TypeExpression extends
 
     public Builder mergeFrom(com.github.jsdossier.proto.TypeExpression other) {
       if (other == com.github.jsdossier.proto.TypeExpression.getDefaultInstance()) return this;
-      if (other.getAllowNull() != false) {
-        setAllowNull(other.getAllowNull());
-      }
-      if (other.getAllowUndefined() != false) {
-        setAllowUndefined(other.getAllowUndefined());
-      }
       switch (other.getModifierCase()) {
         case IS_OPTIONAL: {
           setIsOptional(other.getIsOptional());
@@ -738,6 +712,10 @@ public  final class TypeExpression extends
         }
         case VOID_TYPE: {
           setVoidType(other.getVoidType());
+          break;
+        }
+        case NULL_TYPE: {
+          setNullType(other.getNullType());
           break;
         }
         case NODETYPE_NOT_SET: {
@@ -800,81 +778,29 @@ public  final class TypeExpression extends
     }
 
 
-    private boolean allowNull_ ;
     /**
-     * <code>optional bool allow_null = 1;</code>
-     */
-    public boolean getAllowNull() {
-      return allowNull_;
-    }
-    /**
-     * <code>optional bool allow_null = 1;</code>
-     */
-    public Builder setAllowNull(boolean value) {
-      
-      allowNull_ = value;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>optional bool allow_null = 1;</code>
-     */
-    public Builder clearAllowNull() {
-      
-      allowNull_ = false;
-      onChanged();
-      return this;
-    }
-
-    private boolean allowUndefined_ ;
-    /**
-     * <code>optional bool allow_undefined = 2;</code>
-     */
-    public boolean getAllowUndefined() {
-      return allowUndefined_;
-    }
-    /**
-     * <code>optional bool allow_undefined = 2;</code>
-     */
-    public Builder setAllowUndefined(boolean value) {
-      
-      allowUndefined_ = value;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>optional bool allow_undefined = 2;</code>
-     */
-    public Builder clearAllowUndefined() {
-      
-      allowUndefined_ = false;
-      onChanged();
-      return this;
-    }
-
-    /**
-     * <code>optional bool is_optional = 3;</code>
+     * <code>optional bool is_optional = 1;</code>
      */
     public boolean getIsOptional() {
-      if (modifierCase_ == 3) {
+      if (modifierCase_ == 1) {
         return (java.lang.Boolean) modifier_;
       }
       return false;
     }
     /**
-     * <code>optional bool is_optional = 3;</code>
+     * <code>optional bool is_optional = 1;</code>
      */
     public Builder setIsOptional(boolean value) {
-      modifierCase_ = 3;
+      modifierCase_ = 1;
       modifier_ = value;
       onChanged();
       return this;
     }
     /**
-     * <code>optional bool is_optional = 3;</code>
+     * <code>optional bool is_optional = 1;</code>
      */
     public Builder clearIsOptional() {
-      if (modifierCase_ == 3) {
+      if (modifierCase_ == 1) {
         modifierCase_ = 0;
         modifier_ = null;
         onChanged();
@@ -883,28 +809,28 @@ public  final class TypeExpression extends
     }
 
     /**
-     * <code>optional bool is_varargs = 4;</code>
+     * <code>optional bool is_varargs = 2;</code>
      */
     public boolean getIsVarargs() {
-      if (modifierCase_ == 4) {
+      if (modifierCase_ == 2) {
         return (java.lang.Boolean) modifier_;
       }
       return false;
     }
     /**
-     * <code>optional bool is_varargs = 4;</code>
+     * <code>optional bool is_varargs = 2;</code>
      */
     public Builder setIsVarargs(boolean value) {
-      modifierCase_ = 4;
+      modifierCase_ = 2;
       modifier_ = value;
       onChanged();
       return this;
     }
     /**
-     * <code>optional bool is_varargs = 4;</code>
+     * <code>optional bool is_varargs = 2;</code>
      */
     public Builder clearIsVarargs() {
-      if (modifierCase_ == 4) {
+      if (modifierCase_ == 2) {
         modifierCase_ = 0;
         modifier_ = null;
         onChanged();
@@ -915,23 +841,23 @@ public  final class TypeExpression extends
     private com.google.protobuf.SingleFieldBuilder<
         com.github.jsdossier.proto.FunctionType, com.github.jsdossier.proto.FunctionType.Builder, com.github.jsdossier.proto.FunctionTypeOrBuilder> functionTypeBuilder_;
     /**
-     * <code>optional .dossier.expression.FunctionType function_type = 5;</code>
+     * <code>optional .dossier.expression.FunctionType function_type = 3;</code>
      */
     public com.github.jsdossier.proto.FunctionType getFunctionType() {
       if (functionTypeBuilder_ == null) {
-        if (nodeTypeCase_ == 5) {
+        if (nodeTypeCase_ == 3) {
           return (com.github.jsdossier.proto.FunctionType) nodeType_;
         }
         return com.github.jsdossier.proto.FunctionType.getDefaultInstance();
       } else {
-        if (nodeTypeCase_ == 5) {
+        if (nodeTypeCase_ == 3) {
           return functionTypeBuilder_.getMessage();
         }
         return com.github.jsdossier.proto.FunctionType.getDefaultInstance();
       }
     }
     /**
-     * <code>optional .dossier.expression.FunctionType function_type = 5;</code>
+     * <code>optional .dossier.expression.FunctionType function_type = 3;</code>
      */
     public Builder setFunctionType(com.github.jsdossier.proto.FunctionType value) {
       if (functionTypeBuilder_ == null) {
@@ -943,11 +869,11 @@ public  final class TypeExpression extends
       } else {
         functionTypeBuilder_.setMessage(value);
       }
-      nodeTypeCase_ = 5;
+      nodeTypeCase_ = 3;
       return this;
     }
     /**
-     * <code>optional .dossier.expression.FunctionType function_type = 5;</code>
+     * <code>optional .dossier.expression.FunctionType function_type = 3;</code>
      */
     public Builder setFunctionType(
         com.github.jsdossier.proto.FunctionType.Builder builderForValue) {
@@ -957,15 +883,15 @@ public  final class TypeExpression extends
       } else {
         functionTypeBuilder_.setMessage(builderForValue.build());
       }
-      nodeTypeCase_ = 5;
+      nodeTypeCase_ = 3;
       return this;
     }
     /**
-     * <code>optional .dossier.expression.FunctionType function_type = 5;</code>
+     * <code>optional .dossier.expression.FunctionType function_type = 3;</code>
      */
     public Builder mergeFunctionType(com.github.jsdossier.proto.FunctionType value) {
       if (functionTypeBuilder_ == null) {
-        if (nodeTypeCase_ == 5 &&
+        if (nodeTypeCase_ == 3 &&
             nodeType_ != com.github.jsdossier.proto.FunctionType.getDefaultInstance()) {
           nodeType_ = com.github.jsdossier.proto.FunctionType.newBuilder((com.github.jsdossier.proto.FunctionType) nodeType_)
               .mergeFrom(value).buildPartial();
@@ -974,26 +900,26 @@ public  final class TypeExpression extends
         }
         onChanged();
       } else {
-        if (nodeTypeCase_ == 5) {
+        if (nodeTypeCase_ == 3) {
           functionTypeBuilder_.mergeFrom(value);
         }
         functionTypeBuilder_.setMessage(value);
       }
-      nodeTypeCase_ = 5;
+      nodeTypeCase_ = 3;
       return this;
     }
     /**
-     * <code>optional .dossier.expression.FunctionType function_type = 5;</code>
+     * <code>optional .dossier.expression.FunctionType function_type = 3;</code>
      */
     public Builder clearFunctionType() {
       if (functionTypeBuilder_ == null) {
-        if (nodeTypeCase_ == 5) {
+        if (nodeTypeCase_ == 3) {
           nodeTypeCase_ = 0;
           nodeType_ = null;
           onChanged();
         }
       } else {
-        if (nodeTypeCase_ == 5) {
+        if (nodeTypeCase_ == 3) {
           nodeTypeCase_ = 0;
           nodeType_ = null;
         }
@@ -1002,32 +928,32 @@ public  final class TypeExpression extends
       return this;
     }
     /**
-     * <code>optional .dossier.expression.FunctionType function_type = 5;</code>
+     * <code>optional .dossier.expression.FunctionType function_type = 3;</code>
      */
     public com.github.jsdossier.proto.FunctionType.Builder getFunctionTypeBuilder() {
       return getFunctionTypeFieldBuilder().getBuilder();
     }
     /**
-     * <code>optional .dossier.expression.FunctionType function_type = 5;</code>
+     * <code>optional .dossier.expression.FunctionType function_type = 3;</code>
      */
     public com.github.jsdossier.proto.FunctionTypeOrBuilder getFunctionTypeOrBuilder() {
-      if ((nodeTypeCase_ == 5) && (functionTypeBuilder_ != null)) {
+      if ((nodeTypeCase_ == 3) && (functionTypeBuilder_ != null)) {
         return functionTypeBuilder_.getMessageOrBuilder();
       } else {
-        if (nodeTypeCase_ == 5) {
+        if (nodeTypeCase_ == 3) {
           return (com.github.jsdossier.proto.FunctionType) nodeType_;
         }
         return com.github.jsdossier.proto.FunctionType.getDefaultInstance();
       }
     }
     /**
-     * <code>optional .dossier.expression.FunctionType function_type = 5;</code>
+     * <code>optional .dossier.expression.FunctionType function_type = 3;</code>
      */
     private com.google.protobuf.SingleFieldBuilder<
         com.github.jsdossier.proto.FunctionType, com.github.jsdossier.proto.FunctionType.Builder, com.github.jsdossier.proto.FunctionTypeOrBuilder> 
         getFunctionTypeFieldBuilder() {
       if (functionTypeBuilder_ == null) {
-        if (!(nodeTypeCase_ == 5)) {
+        if (!(nodeTypeCase_ == 3)) {
           nodeType_ = com.github.jsdossier.proto.FunctionType.getDefaultInstance();
         }
         functionTypeBuilder_ = new com.google.protobuf.SingleFieldBuilder<
@@ -1037,7 +963,7 @@ public  final class TypeExpression extends
                 isClean());
         nodeType_ = null;
       }
-      nodeTypeCase_ = 5;
+      nodeTypeCase_ = 3;
       onChanged();;
       return functionTypeBuilder_;
     }
@@ -1045,23 +971,23 @@ public  final class TypeExpression extends
     private com.google.protobuf.SingleFieldBuilder<
         com.github.jsdossier.proto.NamedType, com.github.jsdossier.proto.NamedType.Builder, com.github.jsdossier.proto.NamedTypeOrBuilder> namedTypeBuilder_;
     /**
-     * <code>optional .dossier.expression.NamedType named_type = 6;</code>
+     * <code>optional .dossier.expression.NamedType named_type = 4;</code>
      */
     public com.github.jsdossier.proto.NamedType getNamedType() {
       if (namedTypeBuilder_ == null) {
-        if (nodeTypeCase_ == 6) {
+        if (nodeTypeCase_ == 4) {
           return (com.github.jsdossier.proto.NamedType) nodeType_;
         }
         return com.github.jsdossier.proto.NamedType.getDefaultInstance();
       } else {
-        if (nodeTypeCase_ == 6) {
+        if (nodeTypeCase_ == 4) {
           return namedTypeBuilder_.getMessage();
         }
         return com.github.jsdossier.proto.NamedType.getDefaultInstance();
       }
     }
     /**
-     * <code>optional .dossier.expression.NamedType named_type = 6;</code>
+     * <code>optional .dossier.expression.NamedType named_type = 4;</code>
      */
     public Builder setNamedType(com.github.jsdossier.proto.NamedType value) {
       if (namedTypeBuilder_ == null) {
@@ -1073,11 +999,11 @@ public  final class TypeExpression extends
       } else {
         namedTypeBuilder_.setMessage(value);
       }
-      nodeTypeCase_ = 6;
+      nodeTypeCase_ = 4;
       return this;
     }
     /**
-     * <code>optional .dossier.expression.NamedType named_type = 6;</code>
+     * <code>optional .dossier.expression.NamedType named_type = 4;</code>
      */
     public Builder setNamedType(
         com.github.jsdossier.proto.NamedType.Builder builderForValue) {
@@ -1087,15 +1013,15 @@ public  final class TypeExpression extends
       } else {
         namedTypeBuilder_.setMessage(builderForValue.build());
       }
-      nodeTypeCase_ = 6;
+      nodeTypeCase_ = 4;
       return this;
     }
     /**
-     * <code>optional .dossier.expression.NamedType named_type = 6;</code>
+     * <code>optional .dossier.expression.NamedType named_type = 4;</code>
      */
     public Builder mergeNamedType(com.github.jsdossier.proto.NamedType value) {
       if (namedTypeBuilder_ == null) {
-        if (nodeTypeCase_ == 6 &&
+        if (nodeTypeCase_ == 4 &&
             nodeType_ != com.github.jsdossier.proto.NamedType.getDefaultInstance()) {
           nodeType_ = com.github.jsdossier.proto.NamedType.newBuilder((com.github.jsdossier.proto.NamedType) nodeType_)
               .mergeFrom(value).buildPartial();
@@ -1104,26 +1030,26 @@ public  final class TypeExpression extends
         }
         onChanged();
       } else {
-        if (nodeTypeCase_ == 6) {
+        if (nodeTypeCase_ == 4) {
           namedTypeBuilder_.mergeFrom(value);
         }
         namedTypeBuilder_.setMessage(value);
       }
-      nodeTypeCase_ = 6;
+      nodeTypeCase_ = 4;
       return this;
     }
     /**
-     * <code>optional .dossier.expression.NamedType named_type = 6;</code>
+     * <code>optional .dossier.expression.NamedType named_type = 4;</code>
      */
     public Builder clearNamedType() {
       if (namedTypeBuilder_ == null) {
-        if (nodeTypeCase_ == 6) {
+        if (nodeTypeCase_ == 4) {
           nodeTypeCase_ = 0;
           nodeType_ = null;
           onChanged();
         }
       } else {
-        if (nodeTypeCase_ == 6) {
+        if (nodeTypeCase_ == 4) {
           nodeTypeCase_ = 0;
           nodeType_ = null;
         }
@@ -1132,32 +1058,32 @@ public  final class TypeExpression extends
       return this;
     }
     /**
-     * <code>optional .dossier.expression.NamedType named_type = 6;</code>
+     * <code>optional .dossier.expression.NamedType named_type = 4;</code>
      */
     public com.github.jsdossier.proto.NamedType.Builder getNamedTypeBuilder() {
       return getNamedTypeFieldBuilder().getBuilder();
     }
     /**
-     * <code>optional .dossier.expression.NamedType named_type = 6;</code>
+     * <code>optional .dossier.expression.NamedType named_type = 4;</code>
      */
     public com.github.jsdossier.proto.NamedTypeOrBuilder getNamedTypeOrBuilder() {
-      if ((nodeTypeCase_ == 6) && (namedTypeBuilder_ != null)) {
+      if ((nodeTypeCase_ == 4) && (namedTypeBuilder_ != null)) {
         return namedTypeBuilder_.getMessageOrBuilder();
       } else {
-        if (nodeTypeCase_ == 6) {
+        if (nodeTypeCase_ == 4) {
           return (com.github.jsdossier.proto.NamedType) nodeType_;
         }
         return com.github.jsdossier.proto.NamedType.getDefaultInstance();
       }
     }
     /**
-     * <code>optional .dossier.expression.NamedType named_type = 6;</code>
+     * <code>optional .dossier.expression.NamedType named_type = 4;</code>
      */
     private com.google.protobuf.SingleFieldBuilder<
         com.github.jsdossier.proto.NamedType, com.github.jsdossier.proto.NamedType.Builder, com.github.jsdossier.proto.NamedTypeOrBuilder> 
         getNamedTypeFieldBuilder() {
       if (namedTypeBuilder_ == null) {
-        if (!(nodeTypeCase_ == 6)) {
+        if (!(nodeTypeCase_ == 4)) {
           nodeType_ = com.github.jsdossier.proto.NamedType.getDefaultInstance();
         }
         namedTypeBuilder_ = new com.google.protobuf.SingleFieldBuilder<
@@ -1167,7 +1093,7 @@ public  final class TypeExpression extends
                 isClean());
         nodeType_ = null;
       }
-      nodeTypeCase_ = 6;
+      nodeTypeCase_ = 4;
       onChanged();;
       return namedTypeBuilder_;
     }
@@ -1175,23 +1101,23 @@ public  final class TypeExpression extends
     private com.google.protobuf.SingleFieldBuilder<
         com.github.jsdossier.proto.RecordType, com.github.jsdossier.proto.RecordType.Builder, com.github.jsdossier.proto.RecordTypeOrBuilder> recordTypeBuilder_;
     /**
-     * <code>optional .dossier.expression.RecordType record_type = 7;</code>
+     * <code>optional .dossier.expression.RecordType record_type = 5;</code>
      */
     public com.github.jsdossier.proto.RecordType getRecordType() {
       if (recordTypeBuilder_ == null) {
-        if (nodeTypeCase_ == 7) {
+        if (nodeTypeCase_ == 5) {
           return (com.github.jsdossier.proto.RecordType) nodeType_;
         }
         return com.github.jsdossier.proto.RecordType.getDefaultInstance();
       } else {
-        if (nodeTypeCase_ == 7) {
+        if (nodeTypeCase_ == 5) {
           return recordTypeBuilder_.getMessage();
         }
         return com.github.jsdossier.proto.RecordType.getDefaultInstance();
       }
     }
     /**
-     * <code>optional .dossier.expression.RecordType record_type = 7;</code>
+     * <code>optional .dossier.expression.RecordType record_type = 5;</code>
      */
     public Builder setRecordType(com.github.jsdossier.proto.RecordType value) {
       if (recordTypeBuilder_ == null) {
@@ -1203,11 +1129,11 @@ public  final class TypeExpression extends
       } else {
         recordTypeBuilder_.setMessage(value);
       }
-      nodeTypeCase_ = 7;
+      nodeTypeCase_ = 5;
       return this;
     }
     /**
-     * <code>optional .dossier.expression.RecordType record_type = 7;</code>
+     * <code>optional .dossier.expression.RecordType record_type = 5;</code>
      */
     public Builder setRecordType(
         com.github.jsdossier.proto.RecordType.Builder builderForValue) {
@@ -1217,15 +1143,15 @@ public  final class TypeExpression extends
       } else {
         recordTypeBuilder_.setMessage(builderForValue.build());
       }
-      nodeTypeCase_ = 7;
+      nodeTypeCase_ = 5;
       return this;
     }
     /**
-     * <code>optional .dossier.expression.RecordType record_type = 7;</code>
+     * <code>optional .dossier.expression.RecordType record_type = 5;</code>
      */
     public Builder mergeRecordType(com.github.jsdossier.proto.RecordType value) {
       if (recordTypeBuilder_ == null) {
-        if (nodeTypeCase_ == 7 &&
+        if (nodeTypeCase_ == 5 &&
             nodeType_ != com.github.jsdossier.proto.RecordType.getDefaultInstance()) {
           nodeType_ = com.github.jsdossier.proto.RecordType.newBuilder((com.github.jsdossier.proto.RecordType) nodeType_)
               .mergeFrom(value).buildPartial();
@@ -1234,26 +1160,26 @@ public  final class TypeExpression extends
         }
         onChanged();
       } else {
-        if (nodeTypeCase_ == 7) {
+        if (nodeTypeCase_ == 5) {
           recordTypeBuilder_.mergeFrom(value);
         }
         recordTypeBuilder_.setMessage(value);
       }
-      nodeTypeCase_ = 7;
+      nodeTypeCase_ = 5;
       return this;
     }
     /**
-     * <code>optional .dossier.expression.RecordType record_type = 7;</code>
+     * <code>optional .dossier.expression.RecordType record_type = 5;</code>
      */
     public Builder clearRecordType() {
       if (recordTypeBuilder_ == null) {
-        if (nodeTypeCase_ == 7) {
+        if (nodeTypeCase_ == 5) {
           nodeTypeCase_ = 0;
           nodeType_ = null;
           onChanged();
         }
       } else {
-        if (nodeTypeCase_ == 7) {
+        if (nodeTypeCase_ == 5) {
           nodeTypeCase_ = 0;
           nodeType_ = null;
         }
@@ -1262,32 +1188,32 @@ public  final class TypeExpression extends
       return this;
     }
     /**
-     * <code>optional .dossier.expression.RecordType record_type = 7;</code>
+     * <code>optional .dossier.expression.RecordType record_type = 5;</code>
      */
     public com.github.jsdossier.proto.RecordType.Builder getRecordTypeBuilder() {
       return getRecordTypeFieldBuilder().getBuilder();
     }
     /**
-     * <code>optional .dossier.expression.RecordType record_type = 7;</code>
+     * <code>optional .dossier.expression.RecordType record_type = 5;</code>
      */
     public com.github.jsdossier.proto.RecordTypeOrBuilder getRecordTypeOrBuilder() {
-      if ((nodeTypeCase_ == 7) && (recordTypeBuilder_ != null)) {
+      if ((nodeTypeCase_ == 5) && (recordTypeBuilder_ != null)) {
         return recordTypeBuilder_.getMessageOrBuilder();
       } else {
-        if (nodeTypeCase_ == 7) {
+        if (nodeTypeCase_ == 5) {
           return (com.github.jsdossier.proto.RecordType) nodeType_;
         }
         return com.github.jsdossier.proto.RecordType.getDefaultInstance();
       }
     }
     /**
-     * <code>optional .dossier.expression.RecordType record_type = 7;</code>
+     * <code>optional .dossier.expression.RecordType record_type = 5;</code>
      */
     private com.google.protobuf.SingleFieldBuilder<
         com.github.jsdossier.proto.RecordType, com.github.jsdossier.proto.RecordType.Builder, com.github.jsdossier.proto.RecordTypeOrBuilder> 
         getRecordTypeFieldBuilder() {
       if (recordTypeBuilder_ == null) {
-        if (!(nodeTypeCase_ == 7)) {
+        if (!(nodeTypeCase_ == 5)) {
           nodeType_ = com.github.jsdossier.proto.RecordType.getDefaultInstance();
         }
         recordTypeBuilder_ = new com.google.protobuf.SingleFieldBuilder<
@@ -1297,7 +1223,7 @@ public  final class TypeExpression extends
                 isClean());
         nodeType_ = null;
       }
-      nodeTypeCase_ = 7;
+      nodeTypeCase_ = 5;
       onChanged();;
       return recordTypeBuilder_;
     }
@@ -1305,23 +1231,23 @@ public  final class TypeExpression extends
     private com.google.protobuf.SingleFieldBuilder<
         com.github.jsdossier.proto.UnionType, com.github.jsdossier.proto.UnionType.Builder, com.github.jsdossier.proto.UnionTypeOrBuilder> unionTypeBuilder_;
     /**
-     * <code>optional .dossier.expression.UnionType union_type = 8;</code>
+     * <code>optional .dossier.expression.UnionType union_type = 6;</code>
      */
     public com.github.jsdossier.proto.UnionType getUnionType() {
       if (unionTypeBuilder_ == null) {
-        if (nodeTypeCase_ == 8) {
+        if (nodeTypeCase_ == 6) {
           return (com.github.jsdossier.proto.UnionType) nodeType_;
         }
         return com.github.jsdossier.proto.UnionType.getDefaultInstance();
       } else {
-        if (nodeTypeCase_ == 8) {
+        if (nodeTypeCase_ == 6) {
           return unionTypeBuilder_.getMessage();
         }
         return com.github.jsdossier.proto.UnionType.getDefaultInstance();
       }
     }
     /**
-     * <code>optional .dossier.expression.UnionType union_type = 8;</code>
+     * <code>optional .dossier.expression.UnionType union_type = 6;</code>
      */
     public Builder setUnionType(com.github.jsdossier.proto.UnionType value) {
       if (unionTypeBuilder_ == null) {
@@ -1333,11 +1259,11 @@ public  final class TypeExpression extends
       } else {
         unionTypeBuilder_.setMessage(value);
       }
-      nodeTypeCase_ = 8;
+      nodeTypeCase_ = 6;
       return this;
     }
     /**
-     * <code>optional .dossier.expression.UnionType union_type = 8;</code>
+     * <code>optional .dossier.expression.UnionType union_type = 6;</code>
      */
     public Builder setUnionType(
         com.github.jsdossier.proto.UnionType.Builder builderForValue) {
@@ -1347,15 +1273,15 @@ public  final class TypeExpression extends
       } else {
         unionTypeBuilder_.setMessage(builderForValue.build());
       }
-      nodeTypeCase_ = 8;
+      nodeTypeCase_ = 6;
       return this;
     }
     /**
-     * <code>optional .dossier.expression.UnionType union_type = 8;</code>
+     * <code>optional .dossier.expression.UnionType union_type = 6;</code>
      */
     public Builder mergeUnionType(com.github.jsdossier.proto.UnionType value) {
       if (unionTypeBuilder_ == null) {
-        if (nodeTypeCase_ == 8 &&
+        if (nodeTypeCase_ == 6 &&
             nodeType_ != com.github.jsdossier.proto.UnionType.getDefaultInstance()) {
           nodeType_ = com.github.jsdossier.proto.UnionType.newBuilder((com.github.jsdossier.proto.UnionType) nodeType_)
               .mergeFrom(value).buildPartial();
@@ -1364,26 +1290,26 @@ public  final class TypeExpression extends
         }
         onChanged();
       } else {
-        if (nodeTypeCase_ == 8) {
+        if (nodeTypeCase_ == 6) {
           unionTypeBuilder_.mergeFrom(value);
         }
         unionTypeBuilder_.setMessage(value);
       }
-      nodeTypeCase_ = 8;
+      nodeTypeCase_ = 6;
       return this;
     }
     /**
-     * <code>optional .dossier.expression.UnionType union_type = 8;</code>
+     * <code>optional .dossier.expression.UnionType union_type = 6;</code>
      */
     public Builder clearUnionType() {
       if (unionTypeBuilder_ == null) {
-        if (nodeTypeCase_ == 8) {
+        if (nodeTypeCase_ == 6) {
           nodeTypeCase_ = 0;
           nodeType_ = null;
           onChanged();
         }
       } else {
-        if (nodeTypeCase_ == 8) {
+        if (nodeTypeCase_ == 6) {
           nodeTypeCase_ = 0;
           nodeType_ = null;
         }
@@ -1392,32 +1318,32 @@ public  final class TypeExpression extends
       return this;
     }
     /**
-     * <code>optional .dossier.expression.UnionType union_type = 8;</code>
+     * <code>optional .dossier.expression.UnionType union_type = 6;</code>
      */
     public com.github.jsdossier.proto.UnionType.Builder getUnionTypeBuilder() {
       return getUnionTypeFieldBuilder().getBuilder();
     }
     /**
-     * <code>optional .dossier.expression.UnionType union_type = 8;</code>
+     * <code>optional .dossier.expression.UnionType union_type = 6;</code>
      */
     public com.github.jsdossier.proto.UnionTypeOrBuilder getUnionTypeOrBuilder() {
-      if ((nodeTypeCase_ == 8) && (unionTypeBuilder_ != null)) {
+      if ((nodeTypeCase_ == 6) && (unionTypeBuilder_ != null)) {
         return unionTypeBuilder_.getMessageOrBuilder();
       } else {
-        if (nodeTypeCase_ == 8) {
+        if (nodeTypeCase_ == 6) {
           return (com.github.jsdossier.proto.UnionType) nodeType_;
         }
         return com.github.jsdossier.proto.UnionType.getDefaultInstance();
       }
     }
     /**
-     * <code>optional .dossier.expression.UnionType union_type = 8;</code>
+     * <code>optional .dossier.expression.UnionType union_type = 6;</code>
      */
     private com.google.protobuf.SingleFieldBuilder<
         com.github.jsdossier.proto.UnionType, com.github.jsdossier.proto.UnionType.Builder, com.github.jsdossier.proto.UnionTypeOrBuilder> 
         getUnionTypeFieldBuilder() {
       if (unionTypeBuilder_ == null) {
-        if (!(nodeTypeCase_ == 8)) {
+        if (!(nodeTypeCase_ == 6)) {
           nodeType_ = com.github.jsdossier.proto.UnionType.getDefaultInstance();
         }
         unionTypeBuilder_ = new com.google.protobuf.SingleFieldBuilder<
@@ -1427,33 +1353,93 @@ public  final class TypeExpression extends
                 isClean());
         nodeType_ = null;
       }
-      nodeTypeCase_ = 8;
+      nodeTypeCase_ = 6;
       onChanged();;
       return unionTypeBuilder_;
     }
 
     /**
-     * <code>optional bool any_type = 9;</code>
+     * <code>optional bool any_type = 7;</code>
      */
     public boolean getAnyType() {
+      if (nodeTypeCase_ == 7) {
+        return (java.lang.Boolean) nodeType_;
+      }
+      return false;
+    }
+    /**
+     * <code>optional bool any_type = 7;</code>
+     */
+    public Builder setAnyType(boolean value) {
+      nodeTypeCase_ = 7;
+      nodeType_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional bool any_type = 7;</code>
+     */
+    public Builder clearAnyType() {
+      if (nodeTypeCase_ == 7) {
+        nodeTypeCase_ = 0;
+        nodeType_ = null;
+        onChanged();
+      }
+      return this;
+    }
+
+    /**
+     * <code>optional bool unknown_type = 8;</code>
+     */
+    public boolean getUnknownType() {
+      if (nodeTypeCase_ == 8) {
+        return (java.lang.Boolean) nodeType_;
+      }
+      return false;
+    }
+    /**
+     * <code>optional bool unknown_type = 8;</code>
+     */
+    public Builder setUnknownType(boolean value) {
+      nodeTypeCase_ = 8;
+      nodeType_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional bool unknown_type = 8;</code>
+     */
+    public Builder clearUnknownType() {
+      if (nodeTypeCase_ == 8) {
+        nodeTypeCase_ = 0;
+        nodeType_ = null;
+        onChanged();
+      }
+      return this;
+    }
+
+    /**
+     * <code>optional bool void_type = 9;</code>
+     */
+    public boolean getVoidType() {
       if (nodeTypeCase_ == 9) {
         return (java.lang.Boolean) nodeType_;
       }
       return false;
     }
     /**
-     * <code>optional bool any_type = 9;</code>
+     * <code>optional bool void_type = 9;</code>
      */
-    public Builder setAnyType(boolean value) {
+    public Builder setVoidType(boolean value) {
       nodeTypeCase_ = 9;
       nodeType_ = value;
       onChanged();
       return this;
     }
     /**
-     * <code>optional bool any_type = 9;</code>
+     * <code>optional bool void_type = 9;</code>
      */
-    public Builder clearAnyType() {
+    public Builder clearVoidType() {
       if (nodeTypeCase_ == 9) {
         nodeTypeCase_ = 0;
         nodeType_ = null;
@@ -1463,58 +1449,28 @@ public  final class TypeExpression extends
     }
 
     /**
-     * <code>optional bool unknown_type = 10;</code>
+     * <code>optional bool null_type = 10;</code>
      */
-    public boolean getUnknownType() {
+    public boolean getNullType() {
       if (nodeTypeCase_ == 10) {
         return (java.lang.Boolean) nodeType_;
       }
       return false;
     }
     /**
-     * <code>optional bool unknown_type = 10;</code>
+     * <code>optional bool null_type = 10;</code>
      */
-    public Builder setUnknownType(boolean value) {
+    public Builder setNullType(boolean value) {
       nodeTypeCase_ = 10;
       nodeType_ = value;
       onChanged();
       return this;
     }
     /**
-     * <code>optional bool unknown_type = 10;</code>
+     * <code>optional bool null_type = 10;</code>
      */
-    public Builder clearUnknownType() {
+    public Builder clearNullType() {
       if (nodeTypeCase_ == 10) {
-        nodeTypeCase_ = 0;
-        nodeType_ = null;
-        onChanged();
-      }
-      return this;
-    }
-
-    /**
-     * <code>optional bool void_type = 11;</code>
-     */
-    public boolean getVoidType() {
-      if (nodeTypeCase_ == 11) {
-        return (java.lang.Boolean) nodeType_;
-      }
-      return false;
-    }
-    /**
-     * <code>optional bool void_type = 11;</code>
-     */
-    public Builder setVoidType(boolean value) {
-      nodeTypeCase_ = 11;
-      nodeType_ = value;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>optional bool void_type = 11;</code>
-     */
-    public Builder clearVoidType() {
-      if (nodeTypeCase_ == 11) {
         nodeTypeCase_ = 0;
         nodeType_ = null;
         onChanged();

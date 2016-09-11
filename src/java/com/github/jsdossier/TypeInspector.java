@@ -37,6 +37,7 @@ import com.github.jsdossier.proto.Function;
 import com.github.jsdossier.proto.Function.Detail;
 import com.github.jsdossier.proto.NamedType;
 import com.github.jsdossier.proto.TypeExpression;
+import com.github.jsdossier.proto.UnionType;
 import com.github.jsdossier.proto.Visibility;
 import com.google.auto.factory.AutoFactory;
 import com.google.auto.factory.Provided;
@@ -890,12 +891,13 @@ final class TypeInspector {
 
                 if (paramTypeExpression.isVarArgs()) {
                   expression.setIsVarargs(true);
+                  removeVoid(expression);
                 } else if (paramTypeExpression.isOptionalArg()) {
                   expression.setIsOptional(true);
                 }
 
                 if (paramTypeExpression.getRoot().getToken() == Token.BANG) {
-                  expression = expression.clearAllowNull();
+                  removeNull(expression);
                 }
 
                 detail.setType(expression);
@@ -934,6 +936,42 @@ final class TypeInspector {
       details.add(detail.build());
     }
     return details;
+  }
+
+  private static void removeNull(TypeExpression.Builder expression) {
+    expression.clearNullType();
+    if (!TypeExpression.NodeTypeCase.UNION_TYPE.equals(expression.getNodeTypeCase())) {
+      return;
+    }
+    UnionType.Builder union = expression.getUnionTypeBuilder();
+    for (int i = union.getTypeCount() - 1; i >= 0; i -= 1) {
+      if (union.getType(i).getNullType()) {
+        union.removeType(i);
+        if (union.getTypeCount() == 1) {
+          expression.clearUnionType();
+          expression.mergeFrom(union.getType(0));
+          return;
+        }
+      }
+    }
+  }
+
+  private static void removeVoid(TypeExpression.Builder expression) {
+    expression.clearNullType();
+    if (!TypeExpression.NodeTypeCase.UNION_TYPE.equals(expression.getNodeTypeCase())) {
+      return;
+    }
+    UnionType.Builder union = expression.getUnionTypeBuilder();
+    for (int i = union.getTypeCount() - 1; i >= 0; i -= 1) {
+      if (union.getType(i).getVoidType()) {
+        union.removeType(i);
+        if (union.getTypeCount() == 1) {
+          expression.clearUnionType();
+          expression.mergeFrom(union.getType(0));
+          return;
+        }
+      }
+    }
   }
 
   /**

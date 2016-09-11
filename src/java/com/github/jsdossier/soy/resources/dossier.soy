@@ -211,6 +211,7 @@
   {@param header: string}
   {@param details: list<dossier.Function.Detail>}
   {@param? fillEmpty: bool}
+  {@param? undefinedAsVoid: bool}
 
   {if $fillEmpty or ($details and length($details) > 0)}
     {call .infoRow}
@@ -225,6 +226,7 @@
                   {call dossier.soy.type.expression}
                     {param expression: $detail.type /}
                     {param strict: true /}
+                    {param undefinedAsVoid: $undefinedAsVoid /}
                   {/call}
                 {/if}
               {/let}
@@ -290,6 +292,7 @@
       {call .typeDetails}
         {param header: 'Returns' /}
         {param details: [$fn.return] /}
+        {param undefinedAsVoid: true /}
       {/call}
     {/if}
     {call .typeDetails}

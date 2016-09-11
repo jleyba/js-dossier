@@ -16,9 +16,10 @@
 
 package com.github.jsdossier;
 
+import static com.github.jsdossier.TypeExpressions.NULL_TYPE;
+import static com.github.jsdossier.TypeExpressions.VOID_TYPE;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Verify.verify;
-import static com.google.common.collect.Iterables.filter;
 
 import com.github.jsdossier.jscomp.Module;
 import com.github.jsdossier.jscomp.NodeLibrary;
@@ -31,6 +32,7 @@ import com.google.auto.factory.Provided;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
+import com.google.common.collect.Ordering;
 import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.jstype.EnumElementType;
 import com.google.javascript.rhino.jstype.FunctionType;
@@ -52,7 +54,9 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.Deque;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nullable;
@@ -200,10 +204,7 @@ final class TypeExpressionParser {
 
     @Override
     public Void caseAllType() {
-      expressions.getLast()
-          .setAllowNull(true)
-          .setAllowUndefined(true)
-          .setAnyType(true);
+      expressions.getLast().setAnyType(true);
       return null;
     }
 
@@ -331,22 +332,30 @@ final class TypeExpressionParser {
     }
 
     private void caseInstanceType(String displayName, ObjectType type) {
+      TypeExpression.Builder expression = currentExpression();
+
+      com.github.jsdossier.proto.UnionType.Builder unionType = null;
+      if (type.isNullable()) {
+        unionType = expression.getUnionTypeBuilder();
+        expression = unionType.addTypeBuilder();
+      }
+
       com.github.jsdossier.proto.NamedType.Builder namedType =
           createNamedType(type.getConstructor());
       if (namedType == null) {
         com.github.jsdossier.proto.NamedType link =
             linkFactory.createNativeExternLink(type.getReferenceName());
         if (link == null) {
-          currentExpression().getNamedTypeBuilder().setName(displayName);
+          expression.getNamedTypeBuilder().setName(displayName);
         } else {
-          currentExpression().setNamedType(link);
+          expression.setNamedType(link);
         }
       } else {
-        currentExpression().setNamedType(namedType);
+        expression.setNamedType(namedType);
       }
 
-      if (type.isNullable()) {
-        currentExpression().setAllowNull(true);
+      if (unionType != null && type.isNullable()) {
+        unionType.addTypeBuilder().setNullType(true);
       }
     }
 
@@ -389,7 +398,7 @@ final class TypeExpressionParser {
 
     @Override
     public Void caseNullType() {
-      appendNativeType("null");
+      currentExpression().setNullType(true);
       return null;
     }
 
@@ -398,11 +407,14 @@ final class TypeExpressionParser {
       String name = type.getReferenceName();
 
       com.github.jsdossier.proto.NamedType.Builder namedType = createNamedType(name);
-      currentExpression().setNamedType(namedType);
       if (namedType.getLink().getHref().isEmpty()) {
         // If there is no href, we were not able to resolve the type, so assume it is
         // nullable by default.
-        currentExpression().setAllowNull(true);
+        currentExpression().getUnionTypeBuilder()
+            .addType(TypeExpression.newBuilder().setNamedType(namedType))
+            .addType(NULL_TYPE);
+      } else {
+        currentExpression().setNamedType(namedType);
       }
       return null;
     }
@@ -413,7 +425,7 @@ final class TypeExpressionParser {
     }
 
     @Override
-    public Void caseNumberType() {
+    public Void caseNumberType () {
       appendNativeType("number");
       return null;
     }
@@ -426,7 +438,7 @@ final class TypeExpressionParser {
 
     @Override
     public Void caseVoidType() {
-      appendNativeType("undefined");
+      currentExpression().setVoidType(true);
       return null;
     }
 
@@ -437,61 +449,36 @@ final class TypeExpressionParser {
     }
 
     private void caseUnionType(UnionType type, boolean filterVoid) {
-      int numAlternates = 0;
-      int nullAlternates = 0;
-      int voidAlternates = 0;
-      boolean containsNonNullable = false;
+      com.github.jsdossier.proto.UnionType.Builder unionType =
+          currentExpression().getUnionTypeBuilder();
 
+      Set<TypeExpression> alternateTypes = new LinkedHashSet<>();
       for (JSType alternate : type.getAlternates()) {
-        numAlternates += 1;
-        if (alternate.isNullType()) {
-          nullAlternates += 1;
-        }
+        TypeExpression.Builder alternateType = TypeExpression.newBuilder();
 
-        if (alternate.isVoidType()) {
-          if (filterVoid) {
-            voidAlternates += 1;
-            continue;
-          }
-        }
+        expressions.addLast(alternateType);
+        alternate.visit(this);
+        expressions.removeLast();
 
-        containsNonNullable = containsNonNullable || !alternate.isNullable();
+        if (TypeExpression.NodeTypeCase.UNION_TYPE.equals(alternateType.getNodeTypeCase())) {
+          alternateTypes.addAll(alternateType.getUnionType().getTypeList());
+        } else {
+          alternateTypes.add(alternateType.build());
+        }
       }
 
-      Iterable<JSType> alternates = type.getAlternates();
-      if (nullAlternates > 0 || voidAlternates > 0) {
-        numAlternates -= nullAlternates;
-        numAlternates -= voidAlternates;
-
-        alternates = filter(alternates, new Predicate<JSType>() {
-          @Override
-          public boolean apply(JSType input) {
-            return !input.isNullType() && !input.isVoidType();
-          }
-        });
-      }
-
-      boolean allowNull = containsNonNullable && nullAlternates > 0;
-      if (allowNull) {
-        currentExpression().setAllowNull(true);
-      }
-
-      if (numAlternates == 1) {
-        alternates.iterator().next().visit(this);
-
-      } else {
-        com.github.jsdossier.proto.UnionType.Builder unionType =
-            currentExpression().getUnionTypeBuilder();
-
-        for (JSType alternate : alternates) {
-          expressions.addLast(unionType.addTypeBuilder());
-          alternate.visit(this);
-          expressions.removeLast();
-          if (alternate.isVoidType()) {
-            unionType.removeType(unionType.getTypeCount() - 1);
-            currentExpression().setAllowUndefined(true);
-          }
+      if (filterVoid) {
+        alternateTypes.remove(VOID_TYPE);
+        if (alternateTypes.size() == 1) {
+          currentExpression().mergeFrom(alternateTypes.iterator().next());
         }
+        return;
+      }
+
+      unionType.addAllType(UNION_ORDERING.sortedCopy(alternateTypes));
+      if (unionType.getTypeCount() == 1) {
+        currentExpression().clearUnionType();
+        currentExpression().mergeFrom(unionType.getType(0));
       }
     }
 
@@ -521,4 +508,27 @@ final class TypeExpressionParser {
       return null;
     }
   }
+
+  private static final Ordering<TypeExpression> UNION_ORDERING =
+      Ordering.from(new Comparator<TypeExpression>() {
+        @Override
+        public int compare(TypeExpression o1, TypeExpression o2) {
+          if (o1.equals(o2)) {
+            return 0;
+          }
+          if (o1.getAnyType() || o2.getAnyType()) {
+            return o1.getAnyType() ? 1 : -1;
+          }
+          if (o1.getVoidType() || o2.getVoidType()) {
+            return o1.getVoidType() ? 1 : -1;
+          }
+          if (o1.getNullType() || o2.getNullType()) {
+            return o1.getNullType() ? 1 : -1;
+          }
+          if (o1.getUnknownType() || o2.getUnknownType()) {
+            return o1.getUnknownType() ? 1 : -1;
+          }
+          return 0;
+        }
+      });
 }

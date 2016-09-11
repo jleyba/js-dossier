@@ -5,7 +5,6 @@
  */
 {template .expression}
   {@param expression: dossier.expression.TypeExpression}
-  {@param? strict: bool}
 
   <code class="expression">
     {call .expression_ data="all" /}
@@ -61,7 +60,6 @@
  */
 {template .yields}
   {@param expression: dossier.expression.TypeExpression}
-  {@param? strict: bool}
 
   {call .yields_ /}
   {call .expression data="all" /}
@@ -96,17 +94,21 @@
  */
 {template .expression_ private="true"}
   {@param expression: dossier.expression.TypeExpression}
-  {@param? strict: bool}
+  {@param? undefinedAsVoid: bool}
 
   {if $expression.isVarargs}...{/if}
 
   {if $expression.functionType}{call .functionType data="all" /}
-  {elseif $expression.namedType}{call .namedTypeExpression data="all" /}
+  {elseif $expression.namedType}
+    {call .namedTypeReference}
+      {param type: $expression.namedType /}
+    {/call}
   {elseif $expression.recordType}{call .recordType data="all" /}
   {elseif $expression.unionType}{call .unionType data="all" /}
   {elseif $expression.anyType}*
   {elseif $expression.unknownType}?
-  {elseif $expression.voidType}void
+  {elseif $expression.voidType}{if $undefinedAsVoid}void{else}undefined{/if}
+  {elseif $expression.nullType}null
   {/if}
 {/template}
 
@@ -130,7 +132,6 @@
   {foreach $param in $fn.parameter}
     {call .expression_}
       {param expression: $param /}
-      {param strict: true /}
     {/call}
     {if not isLast($param)},{sp}{/if}
   {/foreach}
@@ -139,7 +140,6 @@
     :{sp}
     {call .expression_}
       {param expression: $fn.returnType /}
-      {param strict: true /}
     {/call}
   {/if}
 {/template}
@@ -151,7 +151,6 @@
 {template .namedTypeReference private="true"}
   {@param type: dossier.expression.NamedType}
   {@param? useQualifiedName: bool}
-  {@param? strict: bool}
 
   {let $text kind="text"}
     {if $useQualifiedName and $type.qualifiedName}
@@ -185,7 +184,6 @@
     {foreach $template in $type.templateType}
       {call .expression_}
         {param expression: $template /}
-        {param strict: $strict /}
       {/call}
       {if not isLast($template)},{sp}{/if}
     {/foreach}
@@ -199,22 +197,8 @@
  */
 {template .namedTypeExpression private="true"}
   {@param expression: dossier.expression.TypeExpression}
-  {@param? strict: bool}
-  {let $type: $expression.namedType /}
-  {let $isPrimitive: $type.name == 'boolean'
-                     or $type.name == 'number'
-                     or $type.name == 'string' /}
-
-  {if $strict}
-    {if $expression.allowNull and $isPrimitive}
-      ?
-    {elseif not $expression.allowNull and not $isPrimitive}
-      !
-    {/if}
-  {/if}
   {call .namedTypeReference}
-    {param type: $type /}
-    {param strict: $strict /}
+    {param type: $expression.namedType /}
   {/call}
 {/template}
 
@@ -230,7 +214,6 @@
     {$entry.key}:{sp}
     {call .expression_}
       {param expression: $entry.value /}
-      {param strict: true /}
     {/call}
     {if not isLast($entry)},{sp}{/if}
   {/foreach}
@@ -243,30 +226,13 @@
  */
 {template .unionType private="true"}
   {@param expression: dossier.expression.TypeExpression}
-  {@param? strict: bool}
 
-  {let $union: $expression.unionType /}
-  {let $allowNull: $expression.allowNull /}
-  {let $allowUndefined: $expression.allowUndefined and not $expression.isVarargs /}
-  {let $renderParens: length($union.type) > 1 or $allowNull or $allowUndefined /}
-
-  {if $strict and not $allowNull}
-    {if length($union.type) != 1
-        or not $union.type[0].namedType
-        or not ($union.type[0].namedType.name == 'boolean'
-                or $union.type[0].namedType.name == 'number'
-                or $union.type[0].namedType.name == 'string')}
-      !
-    {/if}
-  {/if}
-  {if $renderParens}({/if}
-  {foreach $alternate in $union.type}
+  (
+  {foreach $alternate in $expression.unionType.type}
     {call .expression_}
       {param expression: $alternate /}
     {/call}
     {if not isLast($alternate)}|{/if}
   {/foreach}
-  {if $allowNull}|null{/if}
-  {if $allowUndefined}|undefined{/if}
-  {if $renderParens}){/if}
+  )
 {/template}

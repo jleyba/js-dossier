@@ -69,18 +69,18 @@ public final class Expression {
       "RecordType\0223\n\005entry\030\001 \003(\0132$.dossier.expr" +
       "ession.RecordType.Entry\032G\n\005Entry\022\013\n\003key\030" +
       "\001 \001(\t\0221\n\005value\030\002 \001(\0132\".dossier.expressio" +
-      "n.TypeExpression\"\240\003\n\016TypeExpression\022\022\n\na" +
-      "llow_null\030\001 \001(\010\022\027\n\017allow_undefined\030\002 \001(\010" +
-      "\022\025\n\013is_optional\030\003 \001(\010H\000\022\024\n\nis_varargs\030\004 ",
-      "\001(\010H\000\0229\n\rfunction_type\030\005 \001(\0132 .dossier.e" +
-      "xpression.FunctionTypeH\001\0223\n\nnamed_type\030\006" +
-      " \001(\0132\035.dossier.expression.NamedTypeH\001\0225\n" +
-      "\013record_type\030\007 \001(\0132\036.dossier.expression." +
-      "RecordTypeH\001\0223\n\nunion_type\030\010 \001(\0132\035.dossi" +
-      "er.expression.UnionTypeH\001\022\022\n\010any_type\030\t " +
-      "\001(\010H\001\022\026\n\014unknown_type\030\n \001(\010H\001\022\023\n\tvoid_ty" +
-      "pe\030\013 \001(\010H\001B\n\n\010modifierB\013\n\tnode_typeB\036\n\032c" +
-      "om.github.jsdossier.protoP\001b\006proto3"
+      "n.TypeExpression\"\210\003\n\016TypeExpression\022\025\n\013i" +
+      "s_optional\030\001 \001(\010H\000\022\024\n\nis_varargs\030\002 \001(\010H\000" +
+      "\0229\n\rfunction_type\030\003 \001(\0132 .dossier.expres",
+      "sion.FunctionTypeH\001\0223\n\nnamed_type\030\004 \001(\0132" +
+      "\035.dossier.expression.NamedTypeH\001\0225\n\013reco" +
+      "rd_type\030\005 \001(\0132\036.dossier.expression.Recor" +
+      "dTypeH\001\0223\n\nunion_type\030\006 \001(\0132\035.dossier.ex" +
+      "pression.UnionTypeH\001\022\022\n\010any_type\030\007 \001(\010H\001" +
+      "\022\026\n\014unknown_type\030\010 \001(\010H\001\022\023\n\tvoid_type\030\t " +
+      "\001(\010H\001\022\023\n\tnull_type\030\n \001(\010H\001B\n\n\010modifierB\013" +
+      "\n\tnode_typeB\036\n\032com.github.jsdossier.prot" +
+      "oP\001b\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -136,7 +136,7 @@ public final class Expression {
     internal_static_dossier_expression_TypeExpression_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_dossier_expression_TypeExpression_descriptor,
-        new java.lang.String[] { "AllowNull", "AllowUndefined", "IsOptional", "IsVarargs", "FunctionType", "NamedType", "RecordType", "UnionType", "AnyType", "UnknownType", "VoidType", "Modifier", "NodeType", });
+        new java.lang.String[] { "IsOptional", "IsVarargs", "FunctionType", "NamedType", "RecordType", "UnionType", "AnyType", "UnknownType", "VoidType", "NullType", "Modifier", "NodeType", });
     com.google.protobuf.ExtensionRegistry registry =
         com.google.protobuf.ExtensionRegistry.newInstance();
     registry.add(com.github.jsdossier.proto.Options.sanitized);

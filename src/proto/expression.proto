@@ -68,22 +68,20 @@ message RecordType {
 
 
 message TypeExpression {
-  bool allow_null = 1;
-  bool allow_undefined = 2;
-
   oneof modifier {
-    bool is_optional = 3;
-    bool is_varargs = 4;
+    bool is_optional = 1;
+    bool is_varargs = 2;
   }
 
   oneof node_type {
-    FunctionType function_type = 5;
-    NamedType named_type = 6;
-    RecordType record_type = 7;
-    UnionType union_type = 8;
+    FunctionType function_type = 3;
+    NamedType named_type = 4;
+    RecordType record_type = 5;
+    UnionType union_type = 6;
 
-    bool any_type = 9;
-    bool unknown_type = 10;
-    bool void_type = 11;
+    bool any_type = 7;
+    bool unknown_type = 8;
+    bool void_type = 9;
+    bool null_type = 10;
   }
 }

@@ -8,75 +8,70 @@ public interface TypeExpressionOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>optional bool allow_null = 1;</code>
-   */
-  boolean getAllowNull();
-
-  /**
-   * <code>optional bool allow_undefined = 2;</code>
-   */
-  boolean getAllowUndefined();
-
-  /**
-   * <code>optional bool is_optional = 3;</code>
+   * <code>optional bool is_optional = 1;</code>
    */
   boolean getIsOptional();
 
   /**
-   * <code>optional bool is_varargs = 4;</code>
+   * <code>optional bool is_varargs = 2;</code>
    */
   boolean getIsVarargs();
 
   /**
-   * <code>optional .dossier.expression.FunctionType function_type = 5;</code>
+   * <code>optional .dossier.expression.FunctionType function_type = 3;</code>
    */
   com.github.jsdossier.proto.FunctionType getFunctionType();
   /**
-   * <code>optional .dossier.expression.FunctionType function_type = 5;</code>
+   * <code>optional .dossier.expression.FunctionType function_type = 3;</code>
    */
   com.github.jsdossier.proto.FunctionTypeOrBuilder getFunctionTypeOrBuilder();
 
   /**
-   * <code>optional .dossier.expression.NamedType named_type = 6;</code>
+   * <code>optional .dossier.expression.NamedType named_type = 4;</code>
    */
   com.github.jsdossier.proto.NamedType getNamedType();
   /**
-   * <code>optional .dossier.expression.NamedType named_type = 6;</code>
+   * <code>optional .dossier.expression.NamedType named_type = 4;</code>
    */
   com.github.jsdossier.proto.NamedTypeOrBuilder getNamedTypeOrBuilder();
 
   /**
-   * <code>optional .dossier.expression.RecordType record_type = 7;</code>
+   * <code>optional .dossier.expression.RecordType record_type = 5;</code>
    */
   com.github.jsdossier.proto.RecordType getRecordType();
   /**
-   * <code>optional .dossier.expression.RecordType record_type = 7;</code>
+   * <code>optional .dossier.expression.RecordType record_type = 5;</code>
    */
   com.github.jsdossier.proto.RecordTypeOrBuilder getRecordTypeOrBuilder();
 
   /**
-   * <code>optional .dossier.expression.UnionType union_type = 8;</code>
+   * <code>optional .dossier.expression.UnionType union_type = 6;</code>
    */
   com.github.jsdossier.proto.UnionType getUnionType();
   /**
-   * <code>optional .dossier.expression.UnionType union_type = 8;</code>
+   * <code>optional .dossier.expression.UnionType union_type = 6;</code>
    */
   com.github.jsdossier.proto.UnionTypeOrBuilder getUnionTypeOrBuilder();
 
   /**
-   * <code>optional bool any_type = 9;</code>
+   * <code>optional bool any_type = 7;</code>
    */
   boolean getAnyType();
 
   /**
-   * <code>optional bool unknown_type = 10;</code>
+   * <code>optional bool unknown_type = 8;</code>
    */
   boolean getUnknownType();
 
   /**
-   * <code>optional bool void_type = 11;</code>
+   * <code>optional bool void_type = 9;</code>
    */
   boolean getVoidType();
+
+  /**
+   * <code>optional bool null_type = 10;</code>
+   */
+  boolean getNullType();
 
   public com.github.jsdossier.proto.TypeExpression.ModifierCase getModifierCase();
 
