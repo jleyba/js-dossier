@@ -324,9 +324,12 @@
 /** Renders a function signature. */
 {template .functionSignature private="true"}
   {@param fn: dossier.Function}
+  {@param? instanceProperty: bool}
 
   {if $fn.isConstructor}
     new{sp}
+  {elseif $instanceProperty}
+    <var>this.</var>
   {/if}
   {$fn.base.name}
   {if $fn.templateName and length($fn.templateName)}
@@ -437,6 +440,7 @@
   {@param title: string}
   {@param? functions: list<dossier.Function>}
   {@param? properties: list<dossier.Property>}
+  {@param? instanceProperties: bool}
 
   {if ($functions and length($functions)) or ($properties and length($properties))}
     <section class="instance-methods">  // TODO: rename.
@@ -445,12 +449,14 @@
         {foreach $fn in $functions}
           {call .renderProperty}
             {param fn: $fn /}
+            {param instanceProperty: $instanceProperties /}
           {/call}
         {/foreach}
       {elseif $properties and length($properties)}
         {foreach $property in $properties}
           {call .renderProperty}
             {param property: $property /}
+            {param instanceProperty: $instanceProperties /}
           {/call}
         {/foreach}
       {/if}
@@ -465,6 +471,7 @@
 {template .renderProperty}
   {@param? fn: dossier.Function}
   {@param? property: dossier.Property}
+  {@param? instanceProperty: bool}
 
   {let $base: $fn ? $fn.base : $property.base /}
   {call .renderCard}
@@ -485,8 +492,12 @@
           {if $fn}
             {call .functionSignature}
               {param fn: $fn /}
+              {param instanceProperty: $instanceProperty /}
             {/call}
           {elseif $property}
+            {if $instanceProperty}
+              <var>this.</var>
+            {/if}
             {$base.name}
             {if $property.type}
               {call dossier.soy.type.yields}
@@ -824,11 +835,13 @@
       {call .renderProperties}
         {param title: 'Instance Methods' /}
         {param functions: $type.method /}
+        {param instanceProperties: true /}
       {/call}
 
       {call .renderProperties}
         {param title: 'Instance Properties' /}
         {param properties: $type.field /}
+        {param instanceProperties: true /}
       {/call}
 
       {let $staticPrefix kind="text"}
