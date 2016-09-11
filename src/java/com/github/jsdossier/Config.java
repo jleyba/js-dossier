@@ -65,6 +65,7 @@ import com.google.javascript.jscomp.deps.DepsFileParser;
 import com.google.javascript.jscomp.deps.DepsGenerator;
 
 import com.github.jsdossier.jscomp.ClosureSortedDependencies;
+import com.google.javascript.jscomp.deps.ModuleLoader;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -640,7 +641,8 @@ abstract class Config {
         sourceFiles,
         DepsGenerator.InclusionStrategy.ALWAYS,
         closureBase.toAbsolutePath().toString(),
-        errorManager);
+        errorManager,
+        ModuleLoader.EMPTY);
 
     String rawDeps = generator.computeDependencyCalls();
     errorManager.generateReport();

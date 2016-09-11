@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="com.google.javascript:closure-compiler-unshaded:v20160822" type="repository">
+    <properties maven-id="com.google.javascript:closure-compiler-unshaded:v20160822" />
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/google/javascript/closure-compiler-unshaded/v20160822/closure-compiler-unshaded-v20160822.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/com/google/javascript/closure-compiler-externs/v20160822/closure-compiler-externs-v20160822.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/google/javascript/closure-compiler-unshaded/v20160822/closure-compiler-unshaded-v20160822-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

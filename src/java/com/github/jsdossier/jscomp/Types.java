@@ -16,18 +16,15 @@
 
 package com.github.jsdossier.jscomp;
 
-import static com.google.common.base.Preconditions.checkArgument;
-
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
-import com.google.javascript.jscomp.ES6ModuleLoader;
+import com.google.javascript.jscomp.deps.ModuleNames;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.JSTypeExpression;
 import com.google.javascript.rhino.TypeIRegistry;
 import com.google.javascript.rhino.jstype.JSType;
 import com.google.javascript.rhino.jstype.StaticTypedScope;
 
-import java.net.URI;
 import java.nio.file.Path;
 import java.util.ConcurrentModificationException;
 
@@ -40,8 +37,6 @@ public final class Types {
   private static final String DOSSIER_INTERNAL_VAR_PREFIX =
       "_2ebeecd9_43c9_4616_a2dc_9cf4237e1f78_";
 
-  private static final String EXTERN_PREFIX = "dossier$$extern__";
-  private static final String MODULE_EXPORTS_PREFIX = "module$exports$";
   private static final String MODULE_CONTENTS_PREFIX = "module$contents$";
 
   private static final Object EVALUATION_LOCK = new Object();
@@ -56,37 +51,11 @@ public final class Types {
         && name.indexOf('_') > MODULE_CONTENTS_PREFIX.length();
   }
 
-  public static String toModuleId(String name) {
-    return MODULE_EXPORTS_PREFIX + name.replace('-', '_');
-  }
-
-  /**
-   * Returns whether the given name is for an extern module.
-   */
-  public static boolean isExternModule(String name) {
-    return name.startsWith(EXTERN_PREFIX);
-  }
-
-  /**
-   * Converts an extern module's ID back to its original name as it appeared in
-   * source.
-   */
-  public static String externToOriginalName(String name) {
-    checkArgument(isExternModule(name));
-    return name.substring(EXTERN_PREFIX.length());
-  }
-
   /**
    * Converts a file path to its internal module ID.
    */
   public static String getModuleId(Path path) {
-    // NB: don't use modulePath.toUri(), because that will include the file system type.
-    String str = path.toString()
-        .replace(':', '_')
-        .replace('\\', '/')
-        .replace(" ", "_");
-    URI uri = URI.create(str).normalize();
-    return ES6ModuleLoader.toModuleName(uri);
+    return ModuleNames.fileToModuleName(path.normalize().toString());
   }
 
   /**

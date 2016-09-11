@@ -21,6 +21,7 @@ import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.base.Verify.verify;
 
 import com.github.jsdossier.annotations.SourceUrlTemplate;
+import com.github.jsdossier.annotations.TypeFilter;
 import com.github.jsdossier.jscomp.Module;
 import com.github.jsdossier.jscomp.NodeLibrary;
 import com.github.jsdossier.jscomp.NominalType;
@@ -32,6 +33,7 @@ import com.github.jsdossier.proto.TypeLink;
 import com.google.auto.factory.AutoFactory;
 import com.google.auto.factory.Provided;
 import com.google.common.base.Optional;
+import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
 import com.google.javascript.rhino.JSDocInfo;
@@ -68,6 +70,7 @@ final class LinkFactory {
   private final Optional<NominalType> pathContext;
   private final TypeContext typeContext;
   private final Optional<String> urlTemplate;
+  private final Predicate<String> typeNameFilter;
   private final boolean jsonPaths;
 
   /**
@@ -88,9 +91,10 @@ final class LinkFactory {
       @Provided ModuleNamingConvention namingConvention,
       @Provided TypeContext typeContext,
       @Provided @SourceUrlTemplate Optional<String> urlTemplate,
+      @Provided @TypeFilter Predicate<String> typeNameFilter,
       @Nullable NominalType pathContext) {
     this(dfs, typeRegistry, jsTypeRegistry, nodeLibrary, namingConvention,
-        typeContext, urlTemplate, pathContext, false);
+        typeContext, urlTemplate, typeNameFilter, pathContext, false);
   }
 
   LinkFactory(
@@ -101,6 +105,7 @@ final class LinkFactory {
       @Provided ModuleNamingConvention namingConvention,
       @Provided TypeContext typeContext,
       @Provided @SourceUrlTemplate Optional<String> urlTemplate,
+      @Provided @TypeFilter Predicate<String> typeNameFilter,
       @Nullable NominalType pathContext,
       boolean jsonPaths) {
     this.dfs = dfs;
@@ -111,6 +116,7 @@ final class LinkFactory {
     this.pathContext = Optional.fromNullable(pathContext);
     this.typeContext = typeContext;
     this.urlTemplate = urlTemplate;
+    this.typeNameFilter = typeNameFilter;
     this.jsonPaths = jsonPaths;
   }
 
@@ -127,7 +133,7 @@ final class LinkFactory {
     // for everything, even ones with private visibility.
     return new LinkFactory(
         dfs, typeRegistry, jsTypeRegistry, nodeLibrary, namingConvention,
-        typeContext.changeContext(context), urlTemplate,
+        typeContext.changeContext(context), urlTemplate, typeNameFilter,
         pathContext.orNull(), jsonPaths);
   }
 
@@ -137,7 +143,7 @@ final class LinkFactory {
   public LinkFactory withJsonPaths() {
     return new LinkFactory(
         dfs, typeRegistry, jsTypeRegistry, nodeLibrary, namingConvention,
-        typeContext, urlTemplate, pathContext.orNull(), true);
+        typeContext, urlTemplate, typeNameFilter, pathContext.orNull(), true);
   }
 
   /**
@@ -313,8 +319,13 @@ final class LinkFactory {
       }
       id = name + "." + id;
     }
+
+    String fullName = typeRef.getName() + "." + property;
+    if (typeNameFilter.apply(fullName)) {
+      return NamedType.newBuilder().setName(fullName).build();
+    }
     return typeRef.toBuilder()
-        .setName(typeRef.getName() + "." + property)
+        .setName(fullName)
         .setLink(appendFragment(typeRef.getLink(), id))
         .build();
   }

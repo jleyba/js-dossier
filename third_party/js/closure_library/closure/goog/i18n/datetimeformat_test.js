@@ -732,6 +732,28 @@ function testConstructorSymbols() {
   assertEquals('Freitag, 15. November 2013', fmtDe.format(date));
 }
 
+function testQuotedPattern() {
+  // Regression test for b/29990921.
+  goog.i18n.DateTimeSymbols = goog.i18n.DateTimeSymbols_en;
+  date = new Date(2013, 10, 15);
+
+  // Literal apostrophe
+  var fmt = new goog.i18n.DateTimeFormat('MMM \'\'yy');
+  assertEquals('Nov \'13', fmt.format(date));
+  // Quoted text
+  fmt = new goog.i18n.DateTimeFormat('MMM dd\'th\' yyyy');
+  assertEquals('Nov 15th 2013', fmt.format(date));
+  // Quoted text (only opening apostrophe)
+  fmt = new goog.i18n.DateTimeFormat('MMM dd\'th yyyy');
+  assertEquals('Nov 15th yyyy', fmt.format(date));
+  // Quoted text with literal apostrophe
+  fmt = new goog.i18n.DateTimeFormat('MMM dd\'th\'\'\'');
+  assertEquals('Nov 15th\'', fmt.format(date));
+  // Quoted text with literal apostrophe (only opening apostrophe)
+  fmt = new goog.i18n.DateTimeFormat('MMM dd\'th\'\'');
+  assertEquals('Nov 15th\'', fmt.format(date));
+}
+
 function testSupportForWeekInYear() {
   var date = new Date(2013, 1, 25);
 

@@ -412,7 +412,7 @@ function testGetClientPositionOfOffscreenElement() {
 }
 
 function testGetClientPositionOfOrphanElement() {
-  var orphanElem = document.createElement(goog.dom.TagName.DIV);
+  var orphanElem = goog.dom.createElement(goog.dom.TagName.DIV);
   var pos = goog.style.getClientPosition(orphanElem);
   assertEquals(0, pos.x);
   assertEquals(0, pos.y);
@@ -903,7 +903,7 @@ function hasWebkitTransform() {
 }
 
 function testGetSizeOfOrphanElement() {
-  var orphanElem = document.createElement(goog.dom.TagName.DIV);
+  var orphanElem = goog.dom.createElement(goog.dom.TagName.DIV);
   var size = goog.style.getSize(orphanElem);
   assertEquals(0, size.width);
   assertEquals(0, size.height);
@@ -1308,7 +1308,7 @@ function testGetPaddingBox() {
 }
 
 function testGetPaddingBoxUnattached() {
-  var el = document.createElement(goog.dom.TagName.DIV);
+  var el = goog.dom.createElement(goog.dom.TagName.DIV);
   var box = goog.style.getPaddingBox(el);
   if (goog.userAgent.WEBKIT) {
     assertTrue(isNaN(box.top));
@@ -2152,6 +2152,67 @@ function testScrollIntoContainerViewStandard() {
       goog.dom.getElement('item4'), container, true);
   assertEquals('scroll position is rounded down', 66, container.scrollTop);
   goog.dom.getElement('item4').style.height = '';
+}
+
+function testScrollIntoContainerViewSvg() {
+  if (!goog.dom.isCss1CompatMode()) {
+    return;
+  }
+
+  var svgEl = document.createElementNS &&
+      document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  if (!svgEl || svgEl.getAttribute('transform') == '' ||
+      (goog.userAgent.WEBKIT && !goog.userAgent.isVersionOrHigher(534.8))) {
+    // SVG not supported, or getBoundingClientRect not supported on SVG
+    // elements.
+    return;
+  }
+
+  var assertEqualsForSvgPos = function(expected, actual) {
+    if (goog.userAgent.EDGE_OR_IE) {
+      // The bounding size is 1 larger than the SVG element in IE. The scrollTop
+      // value maybe 1 less or 1 more than the expected value depending on the
+      // scroll direction.
+      assertRoughlyEquals(expected, actual, 1);
+    } else {
+      assertEquals(expected, actual);
+    }
+  };
+
+  var svgItem1 = goog.dom.getElement('svg-item1');
+  var svgItem2 = goog.dom.getElement('svg-item2');
+  var svgItem3 = goog.dom.getElement('svg-item3');
+
+  // Scroll the minimum amount to make the elements visible.
+  var container = goog.dom.getElement('svg-container');
+  goog.style.scrollIntoContainerView(svgItem1, container);
+  assertEquals(0, container.scrollTop);
+  goog.style.scrollIntoContainerView(svgItem2, container);
+  assertEqualsForSvgPos(50, container.scrollTop);
+  goog.style.scrollIntoContainerView(svgItem3, container);
+  assertEqualsForSvgPos(150, container.scrollTop);
+  goog.style.scrollIntoContainerView(svgItem2, container);
+  assertEqualsForSvgPos(100, container.scrollTop);
+
+  // Center the element in the first argument.
+  goog.style.scrollIntoContainerView(svgItem2, container, true);
+  assertEqualsForSvgPos(75, container.scrollTop);
+  goog.style.scrollIntoContainerView(svgItem3, container, true);
+  assertEqualsForSvgPos(175, container.scrollTop);
+
+  // The element is higher than the container.
+  svgItem3.setAttribute('height', 200);
+  goog.style.scrollIntoContainerView(svgItem3, container);
+  assertEqualsForSvgPos(200, container.scrollTop);
+  goog.style.scrollIntoContainerView(svgItem3, container, true);
+  assertEqualsForSvgPos(225, container.scrollTop);
+
+  // Scroll to non-integer position.
+  svgItem3.setAttribute('height', 75);
+  goog.style.scrollIntoContainerView(svgItem3, container, true);
+  // Scroll position is rounded down from 162.5
+  assertEqualsForSvgPos(162, container.scrollTop);
+  svgItem3.setAttribute('height', 100);
 }
 
 function testOffsetParent() {

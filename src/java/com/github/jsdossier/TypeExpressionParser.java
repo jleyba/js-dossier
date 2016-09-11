@@ -346,7 +346,7 @@ final class TypeExpressionParser {
         com.github.jsdossier.proto.NamedType link =
             linkFactory.createNativeExternLink(type.getReferenceName());
         if (link == null) {
-          expression.getNamedTypeBuilder().setName(displayName);
+          expression.setNamedType(linkFactory.resolveTypeReference(displayName));
         } else {
           expression.setNamedType(link);
         }

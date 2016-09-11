@@ -28,6 +28,7 @@ import com.github.jsdossier.proto.SourceLink;
 import com.github.jsdossier.proto.TypeLink;
 import com.github.jsdossier.testing.CompilerUtil;
 import com.github.jsdossier.testing.GuiceRule;
+import com.google.common.base.Predicate;
 import com.google.javascript.jscomp.CompilerOptions;
 import org.junit.Rule;
 import org.junit.Test;
@@ -1909,7 +1910,7 @@ public class LinkFactoryTest {
   }
 
   @Test
-  public void createLinkForExternalModule() {
+  public void createLinkForExternalModule_1() {
     util.compile(
         createSourceFile(
             fs.getPath("source/modules/one.js"),
@@ -1924,6 +1925,47 @@ public class LinkFactoryTest {
 
     link = factory.resolveTypeReference("module$exports$fs.stat");
     checkLink(link, "fs.stat", "");
+  }
+
+  @Test
+  public void createLinkForExternalModule_2() {
+    util.compile(
+        createSourceFile(
+            fs.getPath("source/modules/one.js"),
+            "let stream = require('stream');",
+            "exports.Stream = stream.Stream;"));
+
+    NominalType one = typeRegistry.getType("module$exports$module$source$modules$one");
+    LinkFactory factory = createFactory(one).withTypeContext(one);
+
+    NamedType link = factory.resolveTypeReference("module$exports$stream");
+    checkLink(link, "stream", "");
+
+    link = factory.resolveTypeReference("module$exports$stream.Stream");
+    checkLink(link, "Stream", "one.Stream", "one_exports_Stream.html");
+  }
+
+  @Test
+  public void resolveReferenceToFilteredType() {
+    guice.toBuilder()
+        .setTypeNameFilter(new Predicate<String>() {
+          @Override
+          public boolean apply(String input) {
+            return input.endsWith("FilteredClass");
+          }
+        })
+        .build()
+        .createInjector()
+        .injectMembers(this);
+
+    util.compile(
+        createSourceFile(
+            fs.getPath("foo.js"),
+            "goog.provide('foo');",
+            "foo.FilteredClass = class {};"));
+
+    NamedType link = createFactory().resolveTypeReference("foo.FilteredClass");
+    assertMessage(link).isEqualTo(NamedType.newBuilder().setName("foo.FilteredClass"));
   }
 
   private LinkFactory createFactory() {

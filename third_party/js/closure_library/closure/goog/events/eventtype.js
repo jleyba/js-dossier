@@ -55,8 +55,10 @@ goog.events.EventType = {
   MOUSEMOVE: 'mousemove',
   MOUSEENTER: 'mouseenter',
   MOUSELEAVE: 'mouseleave',
-  // Select start is non-standard.
-  // See http://msdn.microsoft.com/en-us/library/ie/ms536969(v=vs.85).aspx.
+
+  // Selection events.
+  // https://www.w3.org/TR/selection-api/
+  SELECTIONCHANGE: 'selectionchange',
   SELECTSTART: 'selectstart',  // IE, Safari, Chrome
 
   // Wheel events
@@ -121,8 +123,27 @@ goog.events.EventType = {
   READYSTATECHANGE: 'readystatechange',
   RESIZE: 'resize',
   SCROLL: 'scroll',
-  TIMEUPDATE: 'timeupdate',
   UNLOAD: 'unload',
+
+  // Media events
+  CANPLAY: 'canplay',
+  CANPLAYTHROUGH: 'canplaythrough',
+  DURATIONCHANGE: 'durationchange',
+  EMPTIED: 'emptied',
+  ENDED: 'ended',
+  LOADEDDATA: 'loadeddata',
+  LOADEDMETADATA: 'loadedmetadata',
+  PAUSE: 'pause',
+  PLAY: 'play',
+  PLAYING: 'playing',
+  RATECHANGE: 'ratechange',
+  SEEKED: 'seeked',
+  SEEKING: 'seeking',
+  STALLED: 'stalled',
+  SUSPEND: 'suspend',
+  TIMEUPDATE: 'timeupdate',
+  VOLUMECHANGE: 'volumechange',
+  WAITING: 'waiting',
 
   // HTML 5 History events
   // See http://www.w3.org/TR/html5/browsers.html#event-definitions-0

@@ -227,7 +227,8 @@ public class NodeModulePassTest {
     CompilerUtil compiler = createCompiler(path("foo/leaf.js"), path("foo/root.js"));
 
     compiler.compile(
-        createSourceFile(path("foo/root.js"), ""),
+        createSourceFile(path("foo/root.js"),
+            "exports.bar = function(value) {};"),
         createSourceFile(path("foo/leaf.js"),
             "var foo = require('./root');",
             "var bar = require('./root').bar;",
@@ -236,6 +237,8 @@ public class NodeModulePassTest {
     assertThat(compiler.toSource()).startsWith(
         lines(
             "var module$exports$module$foo$root = {};",
+            "module$exports$module$foo$root.bar = function(value) {",
+            "};",
             "var module$exports$module$foo$leaf = {};",
             "var module$contents$module$foo$leaf_bar = module$exports$module$foo$root.bar;",
             "module$exports$module$foo$root.bar(module$exports$module$foo$root);"));
@@ -276,7 +279,7 @@ public class NodeModulePassTest {
         createSourceFile(path("foo/main.js"),
             "var bar1 = require('./bar');",
             "var bar2 = require('./bar/');",
-            "exports.c = bar1.a * bar2.b;"));
+            "exports.c = bar1.b * bar2.a;"));
 
     assertThat(compiler.toSource()).startsWith(
         lines(
@@ -286,7 +289,7 @@ public class NodeModulePassTest {
             "module$exports$module$foo$bar.b = 456;",
             "var module$exports$module$foo$main = {};",
             "module$exports$module$foo$main.c =" +
-                " module$exports$module$foo$bar.a * module$exports$module$foo$bar$index.b;"));
+                " module$exports$module$foo$bar.b * module$exports$module$foo$bar$index.a;"));
   }
 
   @Test
@@ -344,7 +347,7 @@ public class NodeModulePassTest {
     CompilerUtil compiler = createCompiler(path("foo/leaf.js"), path("foo/root.js"));
 
     compiler.compile(
-        createSourceFile(path("foo/root.js"), ""),
+        createSourceFile(path("foo/root.js"), "exports.bar = function(value) {};"),
         createSourceFile(path("foo/leaf.js"),
             "var foo = require('./root');",
             "var bar = require('./root').bar;",
@@ -353,6 +356,8 @@ public class NodeModulePassTest {
     assertThat(compiler.toSource()).contains(
         lines(
             "var module$exports$module$foo$root = {};",
+            "module$exports$module$foo$root.bar = function(value) {",
+            "};",
             "var module$exports$module$foo$leaf = {};",
             "var module$contents$module$foo$leaf_bar = module$exports$module$foo$root.bar;",
             "module$exports$module$foo$root.bar(module$exports$module$foo$root);"));

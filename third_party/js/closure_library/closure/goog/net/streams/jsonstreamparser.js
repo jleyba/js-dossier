@@ -183,13 +183,14 @@ Parser.prototype.getErrorMessage = function() {
 
 
 /**
- * @param {string|!ArrayBuffer} input The current input string (always)
+ * @param {string|!ArrayBuffer|!Array<number>} input
+ *     The current input string (always)
  * @param {number} pos The position in the current input that triggers the error
- * @throws {Error} Throws an error message indicating where
- *     the stream is broken.
+ * @throws {!Error} Throws an error indicating where the stream is broken
  * @private
  */
 Parser.prototype.error_ = function(input, pos) {
+  this.streamState_ = Parser.StreamState_.INVALID;
   this.errorMessage_ = 'The stream is broken @' + this.pos_ + '/' + pos +
       '. With input:\n' + input;
   throw Error(this.errorMessage_);
@@ -652,7 +653,7 @@ Parser.prototype.parse = function(input) {
   }
 
   /**
-   * @param {(!Object|!string)=} opt_data The message to add
+   * @param {(!Object|string)=} opt_data The message to add
    */
   function addMessage(opt_data) {
     if (parser.depth_ > 1) {

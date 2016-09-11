@@ -39,7 +39,7 @@
     <orderEntry type="library" name="com.google.inject:guice:3.0" level="project" />
     <orderEntry type="library" name="com.google.inject.extensions:guice-assistedinject:3.0" level="project" />
     <orderEntry type="library" name="com.google.inject.extensions:guice-multibindings:3.0" level="project" />
-    <orderEntry type="library" name="com.google.javascript:closure-compiler-unshaded:v20160713" level="project" />
+    <orderEntry type="library" name="com.google.javascript:closure-compiler-unshaded:v20160822" level="project" />
     <orderEntry type="library" name="com.googlecode.owasp-java-html-sanitizer:owasp-java-html-sanitizer:r239" level="project" />
     <orderEntry type="library" name="com.google.protobuf:protobuf-java:3.0.0-beta-2" level="project" />
     <orderEntry type="library" name="com.google.template:soy:2016-08-25" level="project" />

@@ -24,6 +24,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.javascript.jscomp.PrintStreamErrorManager;
 import com.google.javascript.jscomp.SourceFile;
 import com.google.javascript.jscomp.deps.DepsGenerator;
+import com.google.javascript.jscomp.deps.ModuleLoader;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
@@ -86,7 +87,8 @@ final class WriteDeps {
         sourceFiles,
         DepsGenerator.InclusionStrategy.DO_NOT_DUPLICATE,
         closure.toAbsolutePath().toString(),
-        errorManager);
+        errorManager,
+        ModuleLoader.EMPTY);
 
     String calls = generator.computeDependencyCalls();
     if (errorManager.getErrorCount() > 0) {

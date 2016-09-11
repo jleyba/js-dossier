@@ -23,6 +23,8 @@ goog.require('goog.dom');
 goog.require('goog.html.SafeHtml');
 goog.require('goog.html.SafeUrl');
 goog.require('goog.html.sanitizer.HtmlSanitizer');
+goog.require('goog.html.sanitizer.TagWhitelist');
+goog.require('goog.html.sanitizer.unsafe');
 goog.require('goog.html.testing');
 goog.require('goog.testing.dom');
 goog.require('goog.testing.jsunit');
@@ -117,6 +119,7 @@ function testHtmlSanitizeSafeHtml() {
 }
 
 
+// TODO(pelizzi): name of test does not make sense
 function testDefaultCssSanitizeImage() {
   var html = '<div></div>';
   assertSanitizedHtml(html, html);
@@ -293,7 +296,7 @@ function testHtmlSanitizeXSS() {
   // On IE9, the null character actually causes us to only see <SCR. The
   // sanitizer on IE9 doesn't "recover as well" as other browsers but the
   // result is safe.
-  safeHtml = isIE9() ? '' : '<div>alert("XSS")</div>';
+  safeHtml = isIE9() ? '' : '<span>alert("XSS")</span>';
   xssHtml = '<SCR\0IPT>alert(\"XSS\")</SCR\0IPT>';
   assertSanitizedHtml(xssHtml, safeHtml);
 
@@ -606,7 +609,7 @@ function testHtmlSanitizeXSS() {
   // Anonymous HTML with STYLE attribute (IE6.0 and Netscape 8.1+ in IE
   // rendering engine mode don't really care if the HTML tag you build exists
   // or not, as long as it starts with an open angle bracket and a letter):
-  safeHtml = '<div></div>';
+  safeHtml = '<span></span>';
   xssHtml = '<XSS STYLE="xss:expression(alert(window))">';
   assertSanitizedHtml(xssHtml, safeHtml);
 
@@ -681,7 +684,7 @@ function testHtmlSanitizeXSS() {
   // XML namespace. The htc file must be located on the same server as your XSS
   // vector:
   // Browser support: [IE7.0|IE6.0|NS8.1-IE]
-  safeHtml = '<div>XSS</div>';
+  safeHtml = '<span>XSS</span>';
   xssHtml = '<HTML xmlns:xss>' +
       '<?import namespace="xss" implementation="http://ha.ckers.org/xss.htc">' +
       '<xss:xss>XSS</xss:xss>' +
@@ -692,9 +695,8 @@ function testHtmlSanitizeXSS() {
   // and Netscape 8.1 in IE rendering engine mode) - vector found by Sec Consult
   // while auditing Yahoo:
   // Browser support: [IE6.0|NS8.1-IE]
-  safeHtml = isIE9() ?
-      '<div><span></span></div>' :
-      '<div><div><div>]]&gt;</div></div></div>' +
+  safeHtml = isIE9() ? '<span><span></span></span>' :
+                       '<span><span><span>]]&gt;</span></span></span>' +
           '<span></span>';
   xssHtml = '<XML ID=I><X><C><![CDATA[<IMG SRC="javas]]>' +
       '<![CDATA[cript:xss=true;">]]>' +
@@ -706,7 +708,7 @@ function testHtmlSanitizeXSS() {
   // mode and remember that you need to be between HTML and BODY tags for this
   // to work:
   // Browser support: [IE7.0|IE6.0|NS8.1-IE]
-  safeHtml = '<div></div>';
+  safeHtml = '<span></span>';
   xssHtml = '<HTML><BODY>' +
       '<?xml:namespace prefix="t" ns="urn:schemas-microsoft-com:time">' +
       '<?import namespace="t" implementation="#default#time2">' +
@@ -827,6 +829,30 @@ function testStyleTag() {
 }
 
 
+function testOnlyAllowTags() {
+  var result = '<div><span></span>' +
+      '<a href="http://www.google.com">hi</a>' +
+      '<br>Test.<span></span><div align="right">Test</div></div>';
+  // If we were mimicing goog.labs.html.sanitizer, our output would be
+  // '<div><a>hi</a><br>Test.<div>Test</div></div>';
+  assertSanitizedHtml(
+      '<div><img id="bar" name=foo class="c d" ' +
+          'src="http://wherever.com">' +
+          '<a href=" http://www.google.com">hi</a>' +
+          '<br>Test.<hr><div align="right">Test</div></div>',
+      result, new goog.html.sanitizer.HtmlSanitizer.Builder()
+                  .onlyAllowTags(['bR', 'a', 'DIV'])
+                  .build());
+}
+
+
+function testDisallowNonWhitelistedTags() {
+  assertThrows('Should error on elements not whitelisted', function() {
+    new goog.html.sanitizer.HtmlSanitizer.Builder().onlyAllowTags(['x'])
+  });
+}
+
+
 function testDefaultPoliciesAreApplied() {
   var result = '<img /><a href="http://www.google.com">hi</a>' +
       '<a href="ftp://whatever.com">another</a>';
@@ -837,6 +863,7 @@ function testDefaultPoliciesAreApplied() {
           '<a href=ftp://whatever.com>another</a>',
       result);
 }
+
 
 function testCustomNamePolicyIsApplied() {
   var result = '<img name="myOwnPrefix-foo" />' +
@@ -1088,8 +1115,199 @@ function testOverridingGetOrSetAttribute() {
 }
 
 
-function testOverridingBookKeepingAttribute() {
-  var input = '<div data-html-foo=1>Hello</div>';
-  var expected = '<div>Hello</div>';
+function testOverridingBookkeepingAttribute() {
+  var input = '<div data-sanitizer-foo="1" alt="b">Hello</div>';
+  var expected = '<div alt="b">Hello</div>';
+  assertSanitizedHtml(
+      input, expected,
+      new goog.html.sanitizer.HtmlSanitizer.Builder()
+          .withCustomTokenPolicy(function(token) { return token; })
+          .build());
+}
+
+
+function testTemplateRemoved() {
+  var input = '<div><template><h1>boo</h1></template></div>';
+  var expected = '<div></div>';
   assertSanitizedHtml(input, expected);
+}
+
+
+// shorthand for sanitized tags
+function otag(tag) {
+  return 'data-sanitizer-original-tag="' + tag + '"';
+}
+
+
+function testOriginalTag() {
+  var input = '<p>Line1<magic></magic></p>';
+  var expected = '<p>Line1<span ' + otag('magic') + '></span></p>';
+  assertSanitizedHtml(
+      input, expected, new goog.html.sanitizer.HtmlSanitizer.Builder()
+                           .addOriginalTagNames()
+                           .build());
+}
+
+
+function testOriginalTagOverwrite() {
+  var input = '<div id="qqq">hello' +
+      '<a:b id="hi" class="hnn a" boo="3">qqq</a:b></div>';
+  var expected = '<div>hello<span ' + otag('a:b') + ' id="HI" class="hnn a">' +
+      'qqq</span></div>';
+  assertSanitizedHtml(
+      input, expected, new goog.html.sanitizer.HtmlSanitizer.Builder()
+                           .addOriginalTagNames()
+                           .withCustomTokenPolicy(function(token, hints) {
+                             var an = hints.attributeName;
+                             if (an === 'id' && token === 'hi') {
+                               return 'HI';
+                             } else if (an === 'class') {
+                               return token;
+                             }
+                             return null;
+                           })
+                           .build());
+}
+
+
+function testOriginalTagClobber() {
+  var input = '<a:b data-sanitizer-original-tag="xss"></a:b>';
+  var expected = '<span ' + otag('a:b') + '></span>';
+  assertSanitizedHtml(
+      input, expected, new goog.html.sanitizer.HtmlSanitizer.Builder()
+                           .addOriginalTagNames()
+                           .build());
+}
+
+
+// the tests below investigate how <span> behaves when it is unknowingly put
+// as child or parent of other elements due to sanitization. <div> had even more
+// problems (e.g. cannot be a child of <p>)
+
+
+// let the browser apply its own HTML tree correction, it only does it after
+// you attach the tree to the document.
+function assertAfterInsertionEquals(expected, input) {
+  var sanitizer =
+      new goog.html.sanitizer.HtmlSanitizer.Builder().allowFormTag().build();
+  input = goog.html.SafeHtml.unwrap(sanitizer.sanitize(input));
+  var div = document.createElement('div');
+  document.body.appendChild(div);
+  div.innerHTML = input;
+  goog.testing.dom.assertHtmlMatches(
+      expected, div.innerHTML, true /* opt_strictAttributes */);
+  div.parentNode.removeChild(div);
+}
+
+
+function testSpanNotCorrectedByBrowsersOuter() {
+  if (isIE8() || isIE9()) {
+    return;
+  }
+  goog.array.forEach(
+      goog.object.getKeys(goog.html.sanitizer.TagWhitelist), function(tag) {
+        if (goog.array.contains(
+                [
+                  'BR', 'IMG', 'AREA', 'COL', 'COLGROUP', 'HR', 'INPUT',
+                  'SOURCE', 'WBR'
+                ],
+                tag)) {
+          return;  // empty elements, ok
+        }
+        if (goog.array.contains(['CAPTION'], tag)) {
+          return;  // potential problems
+        }
+        if (goog.array.contains(['NOSCRIPT'], tag)) {
+          return;  // weird/not important
+        }
+        if (goog.array.contains(
+                [
+                  'SELECT', 'TABLE', 'TBODY', 'TD', 'TR', 'TEXTAREA', 'TFOOT',
+                  'THEAD', 'TH'
+                ],
+                tag)) {
+          return;  // consistent in whitelist, ok
+        }
+        var input = '<' + tag.toLowerCase() + '>a<span></span>a</' +
+            tag.toLowerCase() + '>';
+        assertAfterInsertionEquals(input, input);
+      });
+}
+
+
+function testSpanNotCorrectedByBrowsersInner() {
+  if (isIE8() || isIE9()) {
+    return;
+  }
+  goog.array.forEach(
+      goog.object.getKeys(goog.html.sanitizer.TagWhitelist), function(tag) {
+        if (goog.array.contains(
+                [
+                  'CAPTION', 'TABLE', 'TBODY', 'TD', 'TR', 'TEXTAREA', 'TFOOT',
+                  'THEAD', 'TH'
+                ],
+                tag)) {
+          return;  // consistent in whitelist, ok
+        }
+        if (goog.array.contains(['COL', 'COLGROUP'], tag)) {
+          return;  // potential problems
+        }
+        var input;
+        if (goog.array.contains(
+                [
+                  'BR', 'IMG', 'AREA', 'COL', 'COLGROUP', 'HR', 'INPUT',
+                  'SOURCE', 'WBR'  // empty elements, ok
+                ],
+                tag)) {
+          input = '<span>a<' + tag.toLowerCase() + '>a</span>';
+        } else {
+          input = '<span>a<' + tag.toLowerCase() + '>a</' + tag.toLowerCase() +
+              '>a</span>';
+        }
+        assertAfterInsertionEquals(input, input);
+      });
+}
+
+function testTemplateTagToSpan() {
+  var input = '<template alt="yes"><p>q</p></template>';
+  var expected = '<span alt="yes"><p>q</p></span>';
+  // TODO(pelizzi): use unblockTag once it's available
+  delete goog.html.sanitizer.TagBlacklist['TEMPLATE'];
+  assertSanitizedHtml(input, expected);
+  goog.html.sanitizer.TagBlacklist['TEMPLATE'] = true;
+}
+
+
+var just = goog.string.Const.from('test');
+
+
+function testTemplateTagWhitelisted() {
+  var input = '<div><template alt="yes"><p>q</p></template></div>';
+  // TODO(pelizzi): use unblockTag once it's available
+  delete goog.html.sanitizer.TagBlacklist['TEMPLATE'];
+  var builder = new goog.html.sanitizer.HtmlSanitizer.Builder();
+  goog.html.sanitizer.unsafe.alsoAllowTags(just, builder, ['TEMPLATE']);
+  assertSanitizedHtml(input, input, builder.build());
+  goog.html.sanitizer.TagBlacklist['TEMPLATE'] = true;
+}
+
+
+function testTemplateTagFake() {
+  var input = '<template data-sanitizer-original-tag="template">a</template>';
+  var expected = '';
+  assertSanitizedHtml(input, expected);
+}
+
+
+function testTemplateNested() {
+  var input = '<template><p>a</p><zzz alt="a"/><script>z</script><template>' +
+      '<p>a</p><zzz alt="a"/><script>z</script></template></template>';
+  var expected = '<template><p>a</p><span alt="a"></span><template>' +
+      '<p>a</p><span alt="a"></span></template></template>';
+  // TODO(pelizzi): use unblockTag once it's available
+  delete goog.html.sanitizer.TagBlacklist['TEMPLATE'];
+  var builder = new goog.html.sanitizer.HtmlSanitizer.Builder();
+  goog.html.sanitizer.unsafe.alsoAllowTags(just, builder, ['TEMPLATE']);
+  assertSanitizedHtml(input, expected, builder.build());
+  goog.html.sanitizer.TagBlacklist['TEMPLATE'] = true;
 }

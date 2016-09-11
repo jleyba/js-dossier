@@ -91,9 +91,13 @@ goog.dom.forms.submitFormDataInNewWindow = function(
 
   var newDocument = newWin.document;
 
-  var newForm = newDocument.createElement('form');
+  var newForm =
+      /** @type {!HTMLFormElement} */ (newDocument.createElement('form'));
   newForm.method = method;
   newForm.action = actionUri;
+
+  // After this point, do not directly reference the form object's functions as
+  // field names can shadow the form's properties.
 
   formData.forEach(function(fieldValues, fieldName) {
     for (var i = 0; i < fieldValues.length; i++) {
@@ -102,11 +106,11 @@ goog.dom.forms.submitFormDataInNewWindow = function(
       newInput.name = fieldName;
       newInput.value = fieldValue;
       newInput.type = 'hidden';
-      newForm.appendChild(newInput);
+      HTMLFormElement.prototype.appendChild.call(newForm, newInput);
     }
   });
 
-  newForm.submit();
+  HTMLFormElement.prototype.submit.call(newForm);
   return true;
 };
 
@@ -190,7 +194,7 @@ goog.dom.forms.getFormDataHelper_ = function(form, result, fnAppend) {
   }
 
   // input[type=image] are not included in the elements collection
-  var inputs = form.getElementsByTagName(goog.dom.TagName.INPUT);
+  var inputs = form.getElementsByTagName(String(goog.dom.TagName.INPUT));
   for (var input, i = 0; input = inputs[i]; i++) {
     if (input.form == form &&
         input.type.toLowerCase() == goog.dom.InputType.IMAGE) {

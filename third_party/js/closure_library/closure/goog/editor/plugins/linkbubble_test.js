@@ -179,7 +179,7 @@ function testDeleteClicked() {
       goog.dom.$(goog.editor.plugins.LinkBubble.DELETE_LINK_ID_));
   var element = goog.userAgent.GECKO ? document.body : fieldDiv;
   assertNotEquals(
-      'Link removed', element.firstChild.nodeName, goog.dom.TagName.A);
+      'Link removed', element.firstChild.nodeName, String(goog.dom.TagName.A));
   assertNoBubble();
   var range = goog.dom.Range.createFromWindow();
   assertEquals('Link selection on link text', linkChild, range.getEndNode());
@@ -209,7 +209,7 @@ function testDeletePressed() {
   assertTrue(defaultPrevented);
   var element = goog.userAgent.GECKO ? document.body : fieldDiv;
   assertNotEquals(
-      'Link removed', element.firstChild.nodeName, goog.dom.TagName.A);
+      'Link removed', element.firstChild.nodeName, String(goog.dom.TagName.A));
   assertNoBubble();
   var range = goog.dom.Range.createFromWindow();
   assertEquals('Link selection on link text', linkChild, range.getEndNode());
@@ -315,7 +315,7 @@ function testDontLinkifyInvalidScheme() {
   FIELDMOCK.$replay();
   linkBubble.enable(FIELDMOCK);
 
-  var badLink = document.createElement(goog.dom.TagName.A);
+  var badLink = goog.dom.createElement(goog.dom.TagName.A);
   badLink.href = 'javascript:alert(1)';
   goog.dom.setTextContent(badLink, 'bad link');
 
@@ -383,7 +383,7 @@ function testLongUrlTestLinkAnchorTextCorrect() {
       'becauseitistoolong.com';
   var truncatedLongUrl = goog.string.truncateMiddle(longUrl, 48);
 
-  var longLink = document.createElement(goog.dom.TagName.A);
+  var longLink = goog.dom.createElement(goog.dom.TagName.A);
   longLink.href = longUrl;
   goog.dom.setTextContent(longLink, 'Google');
   fieldDiv.appendChild(longLink);

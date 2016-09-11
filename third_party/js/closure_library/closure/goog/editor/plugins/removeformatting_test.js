@@ -27,6 +27,7 @@ goog.require('goog.testing.editor.FieldMock');
 goog.require('goog.testing.editor.TestHelper');
 goog.require('goog.testing.jsunit');
 goog.require('goog.userAgent');
+goog.require('goog.userAgent.product');
 
 var SAVED_HTML;
 var FIELDMOCK;
@@ -63,8 +64,12 @@ function setUpPage() {
     insertImageBoldGarbage = '<b><br/></b>';
     insertImageFontGarbage = '<font size="1"><br/></font>';
   } else if (goog.userAgent.EDGE) {
-    insertImageFontGarbage =
-        '<fontsize="-1"><font class="p" size="-1"></font></fontsize="-1">';
+    if (goog.userAgent.product.isVersion(14)) {
+      insertImageFontGarbage = '<fontsize="-1"></fontsize="-1">';
+    } else {
+      insertImageFontGarbage =
+          '<fontsize="-1"><font class="p" size="-1"></font></fontsize="-1">';
+    }
   }
   // Extra html to add to test html to make sure removeformatting is actually
   // getting called when you're testing if it leaves certain styles alone
@@ -311,6 +316,21 @@ function testRemoveFormattingNestedDivs() {
 }
 
 
+function testTheJavascriptReplaceMetacharacters() {
+  var div = document.getElementById('html');
+  div.innerHTML = '123 $< $> $" $& $$ $` $\' 456';
+  var expected = '123 $&lt; $&gt; $" $&amp; $$ $` $\' 456' +
+      (goog.userAgent.product.SAFARI ? '<br>' : '');
+  // No idea why these <br> appear, but they're fairly insignificant anyways.
+
+  goog.dom.Range.createFromNodeContents(div).select();
+
+  FORMATTER.removeFormatting_();
+  assertHTMLEquals(
+      'String.prototype.replace metacharacters should not trigger', expected,
+      div.innerHTML);
+}
+
 /**
  * Test that when we perform remove formatting on an entire table,
  * that the visual look is similar to as if there was a table there.
@@ -421,10 +441,13 @@ function testPartialListRemoveFormat() {
       goog.userAgent.IE, 'IE leaves behind an empty LI.');
   expectedFailures.expectFailureFor(
       goog.userAgent.WEBKIT, 'WebKit completely loses the "one".');
-  expectedFailures.expectFailureFor(
-      goog.userAgent.EDGE,
-      'Edge leaves "two" and "threeafter" orphaned outside of an li ' +
-          'but inside the ul (invalid HTML).');
+  if (goog.userAgent.EDGE) {
+    // Edge leaves "two" and "threeafter" orphaned outside of an li but inside
+    // the ul (invalid HTML).
+    // Skip this test instead of using expectedFailures because this failure
+    // mode wrecks the DOM and causes later tests to fail as well.
+    return;
+  }
 
   expectedFailures.run(function() {
     FORMATTER.removeFormatting_();
@@ -986,7 +1009,37 @@ function testKeyboardShortcut_other() {
   FIELDMOCK.$replay();
 
   var e = {};
-  var key = 'a';
+  var key = 'x';
+  var result = FORMATTER.handleKeyboardShortcut(e, key, true);
+  assertFalse(result);
+
+  FIELDMOCK.$verify();
+}
+
+function testCustomKeyboardShortcut_custom() {
+  FIELDMOCK.$reset();
+
+  FIELDMOCK.execCommand(
+      goog.editor.plugins.RemoveFormatting.REMOVE_FORMATTING_COMMAND);
+
+  FIELDMOCK.$replay();
+
+  var e = {};
+  var key = '\\';
+  FORMATTER.setKeyboardShortcutKey(key);
+  var result = FORMATTER.handleKeyboardShortcut(e, key, true);
+  assertTrue(result);
+
+  FIELDMOCK.$verify();
+}
+
+function testCustomKeyboardShortcut_default() {
+  FIELDMOCK.$reset();
+  FIELDMOCK.$replay();
+
+  var e = {};
+  var key = ' ';
+  FORMATTER.setKeyboardShortcutKey('\\');
   var result = FORMATTER.handleKeyboardShortcut(e, key, true);
   assertFalse(result);
 

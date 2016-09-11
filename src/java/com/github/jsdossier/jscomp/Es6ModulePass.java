@@ -27,15 +27,14 @@ import com.google.auto.factory.AutoFactory;
 import com.google.auto.factory.Provided;
 import com.google.common.collect.ImmutableMap;
 import com.google.javascript.jscomp.CompilerPass;
-import com.google.javascript.jscomp.ES6ModuleLoader;
 import com.google.javascript.jscomp.NodeTraversal;
+import com.google.javascript.jscomp.deps.ModuleNames;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.Token;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import java.net.URI;
 import java.nio.file.FileSystem;
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -73,17 +72,6 @@ final class Es6ModulePass implements CompilerPass {
   @Override
   public void process(Node externs, Node root) {
     traverseEs6(compiler, root, new Es6ModuleTraversal());
-  }
-
-  /**
-   * Returns a URI from the path's string representation. This is used instead of the URI from the
-   * file system provider for compatibility with the compiler in testing.
-   */
-  private static URI toSimpleUri(Path path) {
-    if (path.isAbsolute()) {
-      path = path.getRoot().relativize(path);
-    }
-    return URI.create(path.toString().replace('\\', '/')).normalize();
   }
 
   @SuppressWarnings("unused")
@@ -326,8 +314,8 @@ final class Es6ModulePass implements CompilerPass {
     }
 
     private String guessModuleId(Path ctx, String path) {
-      Path module = ctx.resolveSibling(path);
-      return ES6ModuleLoader.toModuleName(toSimpleUri(module));
+      Path module = ctx.resolveSibling(path).normalize();
+      return ModuleNames.fileToModuleName(module.toString());
     }
   }
 }

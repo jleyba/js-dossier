@@ -20,13 +20,13 @@
  * high level table modifications: Adding and deleting rows and columns,
  * and merging and splitting cells.
  *
- * @supported IE6+, WebKit 525+, Firefox 2+.
  */
 
 goog.provide('goog.editor.Table');
 goog.provide('goog.editor.TableCell');
 goog.provide('goog.editor.TableRow');
 
+goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.DomHelper');
 goog.require('goog.dom.NodeType');
@@ -75,7 +75,8 @@ goog.editor.Table.prototype.logger_ = goog.log.getLogger('goog.editor.Table');
 // every time there is a change to the DOM.
 goog.editor.Table.prototype.refresh = function() {
   var rows = this.rows = [];
-  var tbody = this.element.getElementsByTagName(goog.dom.TagName.TBODY)[0];
+  var tbody = goog.dom.getElementsByTagName(
+      goog.dom.TagName.TBODY, goog.asserts.assert(this.element))[0];
   if (!tbody) {
     return;
   }
@@ -547,7 +548,7 @@ goog.editor.Table.createDomTable = function(
           goog.editor.Table.OPTIMUM_EMPTY_CELL_WIDTH,
           goog.editor.Table.OPTIMUM_MAX_NEW_TABLE_WIDTH / columns));
 
-  var tds = tableElement.getElementsByTagName(goog.dom.TagName.TD);
+  var tds = goog.dom.getElementsByTagName(goog.dom.TagName.TD, tableElement);
   for (var i = 0, td; td = tds[i]; i++) {
     td.style.width = cellWidth + 'px';
   }

@@ -20,6 +20,7 @@ goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.dom.classlist');
 goog.require('goog.events');
+goog.require('goog.events.KeyCodes');
 goog.require('goog.object');
 goog.require('goog.testing.events');
 goog.require('goog.testing.jsunit');
@@ -37,8 +38,8 @@ function setUp() {
   zippy =
       new goog.ui.Zippy(goog.dom.getElement('t1'), goog.dom.getElement('c1'));
 
-  var fakeControlEl = document.createElement(goog.dom.TagName.BUTTON);
-  var fakeContentEl = document.createElement(goog.dom.TagName.DIV);
+  var fakeControlEl = goog.dom.createElement(goog.dom.TagName.BUTTON);
+  var fakeContentEl = goog.dom.createElement(goog.dom.TagName.DIV);
 
   fakeZippy1 = new goog.ui.Zippy(
       fakeControlEl.cloneNode(true), fakeContentEl.cloneNode(true), true);
@@ -278,4 +279,28 @@ function testIsHandleMouseEvent() {
       'Zippy setHandleMouseEvents does not affect handling key events',
       zippy.isHandleKeyEvents());
   assertNotEquals(0, zippy.mouseEventHandler_.getListenerCount());
+}
+
+function testKeyDownEventTriggersHeader() {
+  var actionEventCount = 0;
+  var toggleEventCount = 0;
+  var handleEvent = function(e) {
+    if (e.type == goog.ui.Zippy.Events.TOGGLE) {
+      toggleEventCount++;
+    } else if (e.type == goog.ui.Zippy.Events.ACTION) {
+      actionEventCount++;
+      assertTrue(
+          'toggle must have been called first',
+          toggleEventCount >= actionEventCount);
+    }
+  };
+  zippy.setHandleKeyboardEvents(true);
+  goog.events.listen(
+      zippy, goog.object.getValues(goog.ui.Zippy.Events), handleEvent);
+
+  goog.testing.events.fireKeySequence(
+      zippy.elHeader_, goog.events.KeyCodes.SPACE);
+
+  assertEquals('Zippy ACTION event fired', 1, actionEventCount);
+  assertEquals('Zippy TOGGLE event fired', 1, toggleEventCount);
 }

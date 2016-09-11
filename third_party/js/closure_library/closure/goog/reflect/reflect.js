@@ -37,6 +37,25 @@ goog.reflect.object = function(type, object) {
   return object;
 };
 
+/**
+ * Syntax for renaming property strings.
+ * @see http://go/jscompiler-renaming
+ * @see https://goo.gl/CRs09P
+ *
+ * Use this if you have an need to access a property as a string, but want
+ * to also have the property renamed by the compiler. In contrast to
+ * goog.reflect.object, this method takes an instance of an object.
+ *
+ * Properties must be simple names (not qualified names).
+ *
+ * @param {string} prop Name of the property
+ * @param {!Object} object Instance of the object whose type will be used
+ *     for renaming
+ * @return {string} The renamed property.
+ */
+goog.reflect.objectProperty = function(prop, object) {
+  return prop;
+};
 
 /**
  * To assert to the compiler that an operation is needed when it would
@@ -91,13 +110,13 @@ goog.reflect.canAccessProperty = function(obj, prop) {
  * the value was never used, it would still always be stored in the cache.
  *
  * Providing a side-effect free {@code valueFn} and {@code opt_keyFn}
- * allows unused calls to {@code goog.cache} to be pruned.
+ * allows unused calls to {@code goog.reflect.cache} to be pruned.
  *
  * @param {!Object<K, V>} cacheObj The object that contains the cached values.
  * @param {?} key The key to lookup in the cache. If it is not string or number
  *     then a {@code opt_keyFn} should be provided. The key is also used as the
  *     parameter to the {@code valueFn}.
- * @param {!function(?):V} valueFn The value provider to use to calculate the
+ * @param {function(?):V} valueFn The value provider to use to calculate the
  *     value to store in the cache. This function should be side-effect free
  *     to take advantage of the optimization.
  * @param {function(?):K=} opt_keyFn The key provider to determine the cache

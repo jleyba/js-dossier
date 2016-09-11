@@ -15,6 +15,7 @@
 /**
  * @fileoverview Unit tests for goog.Uri.
  *
+ * @author msamuel@google.com (Mike Samuel)
  */
 
 goog.provide('goog.UriTest');
@@ -37,6 +38,17 @@ function testUriParse() {
   assertEquals(
       'terer258+foo@gmail.com',
       goog.Uri.parse('mailto:terer258+foo@gmail.com').getPath());
+}
+
+function testUriParseWithNewline() {
+  var uri = new goog.Uri('http://www.google.com:80/path?q=query#frag\nmento');
+  assertEquals('http', uri.getScheme());
+  assertEquals('', uri.getUserInfo());
+  assertEquals('www.google.com', uri.getDomain());
+  assertEquals(80, uri.getPort());
+  assertEquals('/path', uri.getPath());
+  assertEquals('q=query', uri.getQuery());
+  assertEquals('frag\nmento', uri.getFragment());
 }
 
 function testUriParseAcceptsThingsWithToString() {

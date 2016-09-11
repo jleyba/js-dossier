@@ -36,7 +36,9 @@ goog.require('goog.debug.Error');
 goog.require('goog.functions');
 goog.require('goog.labs.mock.verification');
 goog.require('goog.labs.mock.verification.VerificationMode');
-goog.require('goog.object');
+goog.require('goog.testing.MockUtil');
+
+goog.setTestOnly('goog.labs.mock');
 
 
 /**
@@ -269,7 +271,7 @@ goog.labs.mock.formatValue_ = function(obj, opt_id) {
  *
  * @param {Array<!goog.labs.mock.MethodBinding_>} recordedCalls
  *     The recorded calls that didn't match the expectation.
- * @param {!string} methodName The expected method call.
+ * @param {string} methodName The expected method call.
  * @param {!goog.labs.mock.verification.VerificationMode} verificationMode The
  *     expected verification mode which failed verification.
  * @param {!Array<?>} args The expected arguments.
@@ -309,7 +311,7 @@ goog.labs.mock.PROTOTYPE_FIELDS_ = [
  * @private
  * @param {Array<!goog.labs.mock.MethodBinding_>} recordedCalls
  *     The recorded calls that didn't match the expectation.
- * @param {!string} methodName The expected method call.
+ * @param {string} methodName The expected method call.
  * @param {!goog.labs.mock.verification.VerificationMode} verificationMode The
  *     expected verification mode that failed verification.
  * @param {!Array<?>} args The expected arguments.
@@ -612,7 +614,7 @@ goog.labs.mock.MockObjectManager_ = function(objOrClass) {
   mockedItemCtor.prototype = obj;
   this.mockedItem = new mockedItemCtor();
 
-  var enumerableProperties = goog.object.getKeys(obj);
+  var enumerableProperties = goog.testing.MockUtil.getAllProperties(obj);
   // The non enumerable properties are added due to the fact that IE8 does not
   // enumerate any of the prototype Object functions even when overriden and
   // mocking these is sometimes needed.
@@ -970,7 +972,7 @@ goog.labs.mock.MethodBinding_.prototype.matches = function(
       goog.array.equals(calls, specs, function(arg, spec) {
         // Duck-type to see if this is an object that implements the
         // goog.labs.testing.Matcher interface.
-        if (goog.isFunction(spec.matches)) {
+        if (spec && goog.isFunction(spec.matches)) {
           return spec.matches(arg);
         } else {
           return goog.array.defaultCompareEquality(spec, arg);

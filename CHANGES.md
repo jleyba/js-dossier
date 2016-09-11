@@ -20,13 +20,13 @@
 - Improved handling of goog.module.declareLegacyNamespace.
 - Distinguish between the different categories of nested types (e.g. class vs interface)
 - Use client-side rendering when navigating between Dossier generated pages.
-- Upgraded to com.google.javascript:closure-compiler-unshaded:v20160713
+- Upgraded to com.google.javascript:closure-compiler-unshaded:v20160822
 - Upgraded to com.google.code.gson:gson:2.6.2
 - Upgraded to com.google.guava:guava:20.0-SNAPSHOT (c6387ede215926b377e812c35906f5bd0eec84f0)
 - Upgraded to com.google.template:soy:2016-08-25
 - Upgraded to com.atlassian.commonmark:commonmark:0.5.0
 - Removed dependency com.atlassian.commonmark:commonmark-ext-gfm-tables
-- Upgraded closure library to f73e58b8faf3cf8f51c7829c3696c85d37c52fb7
+- Upgraded closure library to 727733c022dcf60d1561b27ae6ea4d1cb011370c
 
 # v0.10.0
 

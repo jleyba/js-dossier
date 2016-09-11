@@ -43,6 +43,10 @@ function assertModuleFails(namespace) {
       goog.partial(goog.module, namespace));
 }
 
+function assertLoadModule(msg, moduleDef) {
+  assertNotThrows(msg, goog.partial(goog.loadModule, moduleDef));
+}
+
 testSuite({
   teardown: function() { stubs.reset(); },
 
@@ -83,6 +87,14 @@ testSuite({
     nodots = undefined;
   },
 
+  testLoadModule: function() {
+    assertLoadModule(
+        'Loading a module that exports a typedef should succeed',
+        'goog.module(\'goog.test_module_typedef\');' +
+            'var typedef;' +
+            'exports = typedef;');
+  },
+
   //=== tests for Require logic ===
 
   testLegacyRequire: function() {
@@ -115,6 +127,15 @@ testSuite({
     assertTrue('module failed: testModule', goog.isFunction(testModule));
   },
 
-  testThisInModule:
-      goog.bind(function() { assertEquals(this, goog.global); }, this)
+  testThisInModule: goog.bind(
+      function() {
+        // IE9 and below don't support "strict" mode and "undefined" gets
+        // coersed to "window".
+        if (!goog.userAgent.IE || goog.userAgent.isVersionOrHigher('10')) {
+          assertEquals(this, undefined);
+        } else {
+          assertEquals(this, goog.global);
+        }
+      },
+      this)
 });

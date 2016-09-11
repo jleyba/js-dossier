@@ -219,6 +219,9 @@ goog.i18n.NumberFormat.prototype.setMaximumFractionDigits = function(max) {
 
 /**
  * Sets number of significant digits to show. Only fractions will be rounded.
+ * Regardless of the number of significant digits set, the number of fractional
+ * digits shown will always be capped by the maximum number of fractional digits
+ * set on {@link #setMaximumFractionDigits}.
  * @param {number} number The number of significant digits to include.
  * @return {!goog.i18n.NumberFormat} Reference to this NumberFormat object.
  */
@@ -892,6 +895,33 @@ goog.i18n.NumberFormat.prototype.addExponentPart_ = function(exponent, parts) {
   parts.push(exponentDigits);
 };
 
+/**
+ * Returns the mantissa for the given value and its exponent.
+ *
+ * @param {number} value
+ * @param {number} exponent
+ * @return {number}
+ * @private
+ */
+goog.i18n.NumberFormat.prototype.getMantissa_ = function(value, exponent) {
+  var divisor = Math.pow(10, exponent);
+  if (isFinite(divisor) && divisor !== 0) {
+    return value / divisor;
+  } else {
+    // If the exponent is too big pow returns 0. In such a case we calculate
+    // half of the divisor and apply it twice.
+    divisor = Math.pow(10, Math.floor(exponent / 2));
+    var result = value / divisor / divisor;
+    if (exponent % 2 == 1) {  // Correcting for odd exponents.
+      if (exponent > 0) {
+        result /= 10;
+      } else {
+        result *= 10;
+      }
+    }
+    return result;
+  }
+};
 
 /**
  * Formats Number in exponential format.
@@ -910,7 +940,7 @@ goog.i18n.NumberFormat.prototype.subformatExponential_ = function(
   }
 
   var exponent = goog.math.safeFloor(Math.log(number) / Math.log(10));
-  number /= Math.pow(10, exponent);
+  number = this.getMantissa_(number, exponent);
 
   var minIntDigits = this.minimumIntegerDigits_;
   if (this.maximumIntegerDigits_ > 1 &&

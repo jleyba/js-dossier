@@ -84,6 +84,7 @@ goog.i18n.currency.addTier2Support = function() {
 
 
 /**
+ * Deprecated.
  * Global currency pattern always uses ISO-4217 currency code as prefix. Local
  * currency sign is added if it is different from currency code. Each currency
  * is unique in this form. The negative side is that ISO code looks weird in
@@ -92,6 +93,9 @@ goog.i18n.currency.addTier2Support = function() {
  *
  * @param {string} currencyCode ISO-4217 3-letter currency code.
  * @return {string} Global currency pattern string for given currency.
+ * @deprecated Format numbers using {@link goog.i18n.NumberFormat} with
+ *   {@link goog.i18n.NumberFormat.Format.CURRENCY} and
+ *   {@link goog.i18n.NumberFormat.CurrencyStyle.GLOBAL}
  */
 goog.i18n.currency.getGlobalCurrencyPattern = function(currencyCode) {
   var info = goog.i18n.currency.CurrencyInfo[currencyCode];
@@ -119,12 +123,16 @@ goog.i18n.currency.getGlobalCurrencySign = function(currencyCode) {
 
 
 /**
+ * Deprecated.
  * Local currency pattern is the most frequently used pattern in currency's
  * native region. It does not care about how it is distinguished from other
  * currencies.
  *
  * @param {string} currencyCode ISO-4217 3-letter currency code.
  * @return {string} Local currency pattern string for given currency.
+ * @deprecated Format numbers using {@link goog.i18n.NumberFormat} with
+ *   {@link goog.i18n.NumberFormat.Format.CURRENCY} and
+ *   {@link goog.i18n.NumberFormat.CurrencyStyle.LOCAL}
  */
 goog.i18n.currency.getLocalCurrencyPattern = function(currencyCode) {
   var info = goog.i18n.currency.CurrencyInfo[currencyCode];
@@ -145,6 +153,7 @@ goog.i18n.currency.getLocalCurrencySign = function(currencyCode) {
 
 
 /**
+ * Deprecated.
  * Portable currency pattern is a compromise between local and global. It is
  * not a mere blend or mid-way between the two. Currency sign is chosen so that
  * it looks familiar to native users. It also has enough information to
@@ -154,6 +163,9 @@ goog.i18n.currency.getLocalCurrencySign = function(currencyCode) {
  *
  * @param {string} currencyCode ISO-4217 3-letter currency code.
  * @return {string} Portable currency pattern string for given currency.
+ * @deprecated Format numbers using {@link goog.i18n.NumberFormat} with
+ *   {@link goog.i18n.NumberFormat.Format.CURRENCY} and
+ *   {@link goog.i18n.NumberFormat.CurrencyStyle.PORTABLE}
  */
 goog.i18n.currency.getPortableCurrencyPattern = function(currencyCode) {
   var info = goog.i18n.currency.CurrencyInfo[currencyCode];
@@ -174,12 +186,17 @@ goog.i18n.currency.getPortableCurrencySign = function(currencyCode) {
 
 
 /**
- * This function returns the default currency sign position. Some applications
+ * This function returns the default currency sign's position. Some applications
  * may want to handle currency sign and currency amount separately. This
  * function can be used in such situations to correctly position the currency
  * sign relative to the amount.
  *
- * To match the behavior of ICU, position is not determined by display locale.
+ * Use {@link goog.i18n.NumberFormat#isCurrencyCodeBeforeValue} for a locale
+ * aware version of this API (recommended). isPrefixSignPosition() returns the
+ * default currency sign's position in the currency's default locale (e.g. 'en'
+ * for 'USD'), but most commonly the position is needed for the locale in which
+ * the number is going to be displayed. For example, in 'fr' 10.10 USD would be
+ * displayed as '10,10 $'.
  *
  * @param {string} currencyCode ISO-4217 3-letter currency code.
  * @return {boolean} true if currency should be positioned before amount field.
@@ -267,6 +284,10 @@ goog.i18n.currency.adjustPrecision = function(pattern, currencyCode) {
  * 18: two decimals precision (2), currency sign last (16), no space (0)
  * 50: two decimals precision (2), currency sign last (16), space (32)
  *
+ * It's not recommended to read this data directly. Format numbers using
+ * {@link goog.i18n.NumberFormat} with
+ * {@link goog.i18n.NumberFormat.Format.CURRENCY} instead.
+ *
  * @const {!Object<!Array<?>>}
  */
 goog.i18n.currency.CurrencyInfo = {
@@ -310,7 +331,7 @@ goog.i18n.currency.CurrencyInfo = {
   'NOK': [50, 'kr', 'NOkr'],
   'PAB': [2, 'B/.', 'B/.'],
   'PEN': [2, 'S/.', 'S/.'],
-  'PHP': [2, '\u20B1', 'Php'],
+  'PHP': [2, '\u20B1', 'PHP'],
   'PKR': [0, 'Rs', 'PKRs.'],
   'PLN': [50, 'z\u0142', 'z\u0142'],
   'RON': [2, 'RON', 'RON'],
@@ -431,7 +452,7 @@ goog.i18n.currency.CurrencyInfoTier2 = {
   'XAF': [0, 'FCFA', 'FCFA'],
   'XCD': [2, '$', 'EC$'],
   'XOF': [0, 'CFA', 'CFA'],
-  'XPF': [0, 'FCFP', 'FCFP'],
+  'XPF': [48, 'FCFP', 'FCFP'],
   'ZMW': [0, 'ZMW', 'ZMW'],
   'ZWD': [0, '$', 'Z$']
 };

@@ -43,7 +43,7 @@
  * htmlSanitize is relatively heavy considering that it is designed to parse
  * large html files.
  *
- * @supported IE6, IE7, IE8, FF1.5, FF2, FF3, Chrome 4.0, Safari and Opera 10.
+ * @author msamuel@google.com (Mike Samuel)
  */
 
 goog.provide('goog.string.html.HtmlSanitizer');

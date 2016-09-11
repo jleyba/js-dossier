@@ -195,8 +195,7 @@ goog.ui.DrilldownRow.prototype.enterDocument = function() {
 /** @override */
 goog.ui.DrilldownRow.prototype.createDom = function() {
   this.setElementInternal(
-      goog.ui.DrilldownRow.createRowNode_(
-          this.html_, this.getDomHelper().getDocument()));
+      goog.ui.DrilldownRow.createRowNode_(this.html_, this.getDomHelper()));
 };
 
 
@@ -393,7 +392,8 @@ goog.ui.DrilldownRow.decorate = function(selfObj) {
       row, selfObj.isExpanded() ? goog.getCssName('goog-drilldown-expanded') :
                                   goog.getCssName('goog-drilldown-collapsed'));
   // Default mouse event handling:
-  var toggler = fragment.getElementsByTagName(goog.dom.TagName.DIV)[0];
+  var toggler =
+      goog.dom.getElementsByTagName(goog.dom.TagName.DIV, fragment)[0];
   var key = selfObj.getHandler().listen(toggler, 'click', function(event) {
     selfObj.setExpanded(!selfObj.isExpanded());
   });
@@ -456,14 +456,14 @@ goog.ui.DrilldownRow.prototype.isVisible_ = function() {
  * "<tr> ... </tr>".
  *
  * @param {!goog.html.SafeHtml} html for one row.
- * @param {Document} doc object to hold the Element.
+ * @param {!goog.dom.DomHelper} dom DOM to hold the Element.
  * @return {Element} table row node created from the HTML.
  * @private
  */
-goog.ui.DrilldownRow.createRowNode_ = function(html, doc) {
+goog.ui.DrilldownRow.createRowNode_ = function(html, dom) {
   // Note: this may be slow.
   var tableHtml = goog.html.SafeHtml.create(goog.dom.TagName.TABLE, {}, html);
-  var div = doc.createElement(goog.dom.TagName.DIV);
+  var div = dom.createElement(goog.dom.TagName.DIV);
   goog.dom.safe.setInnerHtml(div, tableHtml);
   return div.firstChild.rows[0];
 };

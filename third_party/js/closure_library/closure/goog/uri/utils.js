@@ -42,6 +42,7 @@
  *   http://www.ietf.org/rfc/rfc3986.txt
  *
  * @author gboyer@google.com (Garrett Boyer) - The "lightened" design.
+ * @author msamuel@google.com (Mike Samuel) - Domain knowledge and regexes.
  */
 
 goog.provide('goog.uri.utils');
@@ -198,9 +199,9 @@ goog.uri.utils.splitRe_ = new RegExp(
     '(?::([0-9]+))?' +   // port
     '(?=[/#?]|$)' +      // authority-terminating character
     ')?' +
-    '([^?#]+)?' +        // path
-    '(?:\\?([^#]*))?' +  // query
-    '(?:#(.*))?' +       // fragment
+    '([^?#]+)?' +          // path
+    '(?:\\?([^#]*))?' +    // query
+    '(?:#([\\s\\S]*))?' +  // fragment
     '$');
 
 

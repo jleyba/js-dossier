@@ -24,6 +24,7 @@ goog.setTestOnly('goog.baseTest');
 goog.require('goog.Promise');
 // Used to test dynamic loading works, see testRequire*
 goog.require('goog.Timer');
+goog.require('goog.dom');
 goog.require('goog.dom.TagName');
 goog.require('goog.functions');
 goog.require('goog.object');
@@ -553,7 +554,7 @@ function testRemoveUidFromObjectWithoutUid() {
 }
 
 function testRemoveUidFromNode() {
-  var node = document.createElement(goog.dom.TagName.DIV);
+  var node = goog.dom.createElement(goog.dom.TagName.DIV);
   var nodeUid = goog.getUid(node);
   goog.removeUid(node);
   assertNotEquals(
@@ -594,14 +595,14 @@ function testConstructorUid() {
  * property set but undefined. See bug 1252508.
  */
 function testUidNotUndefinedOnReusedElement() {
-  var div = document.createElement(goog.dom.TagName.DIV);
+  var div = goog.dom.createElement(goog.dom.TagName.DIV);
   document.body.appendChild(div);
   div.innerHTML = '<form id="form"></form>';
-  var span = div.getElementsByTagName(goog.dom.TagName.FORM)[0];
+  var span = goog.dom.getElementsByTagName(goog.dom.TagName.FORM, div)[0];
   goog.getUid(span);
 
   div.innerHTML = '<form id="form"></form>';
-  var span2 = div.getElementsByTagName(goog.dom.TagName.FORM)[0];
+  var span2 = goog.dom.getElementsByTagName(goog.dom.TagName.FORM, div)[0];
   assertNotUndefined(goog.getUid(span2));
 }
 
@@ -1071,6 +1072,24 @@ function testGetCssName() {
   assertEquals('a', g);
   assertEquals('a-b', goog.getCssName(g, 'active'));
   assertEquals('goog-disabled', goog.getCssName('goog-disabled'));
+
+  e = assertThrows(function() { goog.getCssName('.name'); });
+  assertEquals(
+      'className passed in goog.getCssName must not start with ".".' +
+          ' You passed: .name',
+      e.message);
+
+  assertNull(goog.getCssName(null));
+}
+
+function testGetCssName_nameMapFn() {
+  assertEquals('classname', goog.getCssName('classname'));
+
+  goog.global.CLOSURE_CSS_NAME_MAP_FN = function(classname) {
+    return classname + '!';
+  };
+
+  assertEquals('classname!', goog.getCssName('classname'));
 }
 
 function testAddDependency() {
@@ -1301,14 +1320,14 @@ function testClassBaseOnMethodAndBaseCtor() {
 }
 
 function testGoogRequireCheck() {
-  stubs.set(goog, 'ENABLE_DEBUG_LOADER', false);
+  stubs.set(goog, 'ENABLE_DEBUG_LOADER', true);
   stubs.set(goog, 'useStrictRequires', true);
   stubs.set(goog, 'implicitNamespaces_', {});
 
   // Aliased so that build tools do not mistake this for an actual call.
   var require = goog.require;
   assertThrows('Requiring non-required namespace should fail', function() {
-    require('far.out');
+    require('far.outnotprovided');
   });
 
   assertUndefined(goog.global.far);

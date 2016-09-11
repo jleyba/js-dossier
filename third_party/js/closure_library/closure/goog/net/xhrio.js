@@ -257,6 +257,13 @@ goog.net.XhrIo.CONTENT_TYPE_HEADER = 'Content-Type';
 
 
 /**
+ * The Content-Transfer-Encoding HTTP header name
+ * @type {string}
+ */
+goog.net.XhrIo.CONTENT_TRANSFER_ENCODING = 'Content-Transfer-Encoding';
+
+
+/**
  * The pattern matching the 'http' and 'https' URI schemes
  * @type {!RegExp}
  */
@@ -1281,6 +1288,30 @@ goog.net.XhrIo.prototype.getResponseHeaders = function() {
     }
   }
   return headersObject;
+};
+
+
+/**
+ * Get the value of the response-header with the given name from the Xhr object.
+ * As opposed to {@link #getResponseHeader}, this method does not require that
+ * the request has completed.
+ * @param {string} key The name of the response-header to retrieve.
+ * @return {?string} The value of the response-header, or null if it is
+ *     unavailable.
+ */
+goog.net.XhrIo.prototype.getStreamingResponseHeader = function(key) {
+  return this.xhr_ ? this.xhr_.getResponseHeader(key) : null;
+};
+
+
+/**
+ * Gets the text of all the headers in the response. As opposed to
+ * {@link #getAllResponseHeaders}, this method does not require that the request
+ * has completed.
+ * @return {string} The value of the response headers or empty string.
+ */
+goog.net.XhrIo.prototype.getAllStreamingResponseHeaders = function() {
+  return this.xhr_ ? this.xhr_.getAllResponseHeaders() : '';
 };
 
 

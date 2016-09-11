@@ -18,37 +18,39 @@ goog.module('dossier.serviceworker.main');
 
 const CACHE_NAME = 'dossier-cache-v1';
 
+
+/**
+ * Returns a properly typed reference to the global scope.
+ * @return {!ServiceWorkerGlobalScope}
+ */
+function globalScope() {
+  return /** @type {!ServiceWorkerGlobalScope} */(self);
+}
+
+
 self.addEventListener('install', function(event) {
-  if ('skipWaiting' in self) {
-    // Compiler does not know about skipWaiting yet.
-    event.waitUntil(self.skipWaiting());
-  }
+  event.waitUntil(globalScope().skipWaiting());
 });
 
 self.addEventListener('activate', function(event) {
   event.waitUntil(
-      caches.keys()
+      self.caches.keys()
           .then(keys => {
-            return Promise.all(keys.map(key => caches.delete(key)));
+            return Promise.all(keys.map(key => self.caches.delete(key)));
           })
-          .then(() => {
-            // Compiler does not know about clients yet.
-            if ('clients' in self) {
-              return self.clients.claim();
-            }
-          }));
+          .then(() => globalScope().clients.claim()));
 });
 
 self.addEventListener('fetch', function(event) {
   event.respondWith(
-      caches.match(event.request).then(cacheHit => {
+      self.caches.match(event.request).then(cacheHit => {
         let fetchResponse = fetch(event.request).then(response => {
           if (!response || response.status !== 200) {
             return response;
           }
 
           let responseToCache = response.clone();
-          caches.open(CACHE_NAME)
+          self.caches.open(CACHE_NAME)
               .then(cache => cache.put(event.request, responseToCache))
               .catch(e => console.error('failed to cache response: ' + e));
           return response;
