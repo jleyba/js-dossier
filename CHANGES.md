@@ -7,6 +7,8 @@
 - Instance types defined on a constructor are no longer registered as distinct
   types. This most often manifested with the private `instance_` property added
   to a constructor by Closure's `goog.addSingletonGetter` function.
+- Fixed a ConcurrentModificationException that can occur when evaluating
+  type expressions in multiple threads with unresolvable properties.
 
 ## Changes
 

@@ -36,6 +36,7 @@ import com.google.common.collect.Multimaps;
 import com.google.common.collect.SetMultimap;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.JSDocInfo.Visibility;
+import com.google.javascript.rhino.JSTypeExpression;
 import com.google.javascript.rhino.jstype.FunctionType;
 import com.google.javascript.rhino.jstype.JSType;
 import com.google.javascript.rhino.jstype.JSTypeRegistry;
@@ -585,7 +586,9 @@ public final class TypeRegistry {
     if (ctor.getJSDocInfo() != null
         && ctor.getJSDocInfo().getBaseType() != null) {
       jsRegistry.setTemplateTypeNames(instance.getTemplateTypeMap().getTemplateKeys());
-      superInstance = ctor.getJSDocInfo().getBaseType().evaluate(globalScope, jsRegistry);
+
+      JSTypeExpression baseTypeExpression = ctor.getJSDocInfo().getBaseType();
+      superInstance = Types.evaluate(baseTypeExpression, globalScope, jsRegistry);
       jsRegistry.clearTemplateTypeNames();
 
       // The type expression will resolve to a named type if it is an aliased reference to

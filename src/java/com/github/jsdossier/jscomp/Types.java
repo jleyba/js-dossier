@@ -22,10 +22,14 @@ import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.javascript.jscomp.ES6ModuleLoader;
 import com.google.javascript.rhino.JSDocInfo;
+import com.google.javascript.rhino.JSTypeExpression;
+import com.google.javascript.rhino.TypeIRegistry;
 import com.google.javascript.rhino.jstype.JSType;
+import com.google.javascript.rhino.jstype.StaticTypedScope;
 
 import java.net.URI;
 import java.nio.file.Path;
+import java.util.ConcurrentModificationException;
 
 /**
  * Utilities for working with JavaScript types.
@@ -39,6 +43,8 @@ public final class Types {
   private static final String EXTERN_PREFIX = "dossier$$extern__";
   private static final String MODULE_EXPORTS_PREFIX = "module$exports$";
   private static final String MODULE_CONTENTS_PREFIX = "module$contents$";
+
+  private static final Object EVALUATION_LOCK = new Object();
 
   /**
    * Returns whether the given variable name could be a defined within a CommonJS or Closure module.
@@ -149,5 +155,19 @@ public final class Types {
    */
   static boolean isInternalVar(String name) {
     return name.startsWith(DOSSIER_INTERNAL_VAR_PREFIX);
+  }
+
+  /**
+   * Evaluates the given {@code expression}. Internally this method will synchronize evaluations to
+   * avoid {@link ConcurrentModificationException} in case evaluating the expression modifies the
+   * internal state of the registry (this appears to happen with unknown properties).
+   *
+   * @see "https://github.com/jleyba/js-dossier/issues/78"
+   */
+  public static JSType evaluate(
+      JSTypeExpression expression, StaticTypedScope<JSType> scope, TypeIRegistry registry) {
+    synchronized (EVALUATION_LOCK) {
+      return expression.evaluate(scope, registry);
+    }
   }
 }

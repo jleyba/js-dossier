@@ -33,6 +33,7 @@ import com.google.javascript.jscomp.CompilerPass;
 import com.google.javascript.jscomp.TypedScope;
 import com.google.javascript.jscomp.TypedVar;
 import com.google.javascript.rhino.JSDocInfo;
+import com.google.javascript.rhino.JSTypeExpression;
 import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.jstype.EnumElementType;
 import com.google.javascript.rhino.jstype.FunctionType;
@@ -382,7 +383,8 @@ public final class TypeCollectionPass implements CompilerPass {
       }
 
       if (info != null && info.getTypedefType() != null) {
-        type = info.getTypedefType().evaluate(compiler.getTopScope(), compiler.getTypeRegistry());
+        JSTypeExpression expression = info.getTypedefType();
+        type = Types.evaluate(expression, compiler.getTopScope(), compiler.getTypeRegistry());
         if (externTypes.contains(type)) {
           return true;
         }

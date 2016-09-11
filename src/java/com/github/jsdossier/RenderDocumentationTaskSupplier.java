@@ -342,7 +342,7 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Ca
         JSDocInfo.Visibility visibility = typeRegistry.getVisibility(typedef);
 
         JSTypeExpression expression = checkNotNull(typedef.getJsDoc().getType());
-        JSType type = expression.evaluate(globalScope, jsRegistry);
+        JSType type = Types.evaluate(expression, globalScope, jsRegistry);
 
         com.github.jsdossier.proto.Property.Builder builder = spec.addTypeDefBuilder();
 

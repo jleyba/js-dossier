@@ -31,6 +31,7 @@ import com.github.jsdossier.jscomp.Module;
 import com.github.jsdossier.jscomp.NominalType;
 import com.github.jsdossier.jscomp.Parameter;
 import com.github.jsdossier.jscomp.TypeRegistry;
+import com.github.jsdossier.jscomp.Types;
 import com.github.jsdossier.proto.BaseProperty;
 import com.github.jsdossier.proto.Comment;
 import com.github.jsdossier.proto.Function;
@@ -1309,7 +1310,7 @@ final class TypeInspector {
       resolvedExpressions.add(expression);
     }
 
-    JSType type = expression.evaluate(globalScope, jsRegistry);
+    JSType type = Types.evaluate(expression, globalScope, jsRegistry);
     return type.visit(typeMapReplacer);
   }
 
