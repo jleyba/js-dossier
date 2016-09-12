@@ -25,6 +25,7 @@ const array = goog.require('goog.array');
 const dom = goog.require('goog.dom');
 const events = goog.require('goog.events');
 const KeyCodes = goog.require('goog.events.KeyCodes');
+const xhr = goog.require('goog.labs.net.xhr');
 const soy = goog.require('goog.soy');
 const style = goog.require('goog.style');
 const userAgent = goog.require('goog.userAgent');
@@ -77,19 +78,100 @@ function resolveUri(uri) {
 
 
 /**
+ * @param {string} data
+ * @return {!PageData}
+ * @throws {!TypeError}
+ */
+function parsePageData(data) {
+  let parsed = JSON.parse(data);
+  if (!goog.isObject(parsed)) {
+    throw TypeError('did parse to a JSON object');
+  }
+  return new PageData(parsed);
+}
+
+
+/** @final */
+class DataService {
+  /**
+   * @param {!Map<string, string>} uriDataMap Maps URIs for HTML pages to their
+   *     corresponding JSON data file.
+   */
+  constructor(uriDataMap) {
+    /** @private @const {!Map<string, string>} */
+    this.uriDataMap_ = uriDataMap;
+
+    /** @private {Promise<string>} */
+    this.pendingXhr_ = null;
+  }
+
+  /**
+   * @param {string} uri The URI to load.
+   * @return {!Promise<!PageData>} The loaded page data.
+   */
+  load(uri) {
+    let dataUri = this.resolveDataUri_(uri);
+    if (!dataUri) {
+      return Promise.reject(Error('failed to resolve URL'));
+    }
+
+    if (this.pendingXhr_) {
+      this.pendingXhr_.cancel();
+    }
+
+    return this.pendingXhr_ = Promise.resolve().then(() => {
+      // Force the compiler to recognize this value as non-null.
+      let jsonUrl = /** @type {string} */(dataUri);
+      let json = window.sessionStorage.getItem(jsonUrl);
+      if (json) {
+        return parsePageData(json);
+      }
+      return xhr.get(jsonUrl).then(responseText => {
+        let data = parsePageData(responseText);
+        window.sessionStorage.setItem(jsonUrl, responseText);
+        return data;
+      });
+    });
+  }
+
+  /**
+   * @param {string} uri
+   * @return {?string}
+   * @private
+   */
+  resolveDataUri_(uri) {
+    let path = uri;
+    if (!path.startsWith('/')) {
+      let currentPath = location.pathname;
+      let index = currentPath.lastIndexOf('/');
+      path = currentPath.slice(0, index + 1) + path;
+    }
+    let resolved = resolveUri(path);
+    let index = resolved.indexOf('?');
+    if (index != -1) {
+      resolved = resolved.slice(0, index);
+    } else if ((index = resolved.indexOf('#')) != -1) {
+      resolved = resolved.slice(0, index);
+    }
+    resolved = this.uriDataMap_.get(resolved) || null;
+    return resolved;
+  }
+}
+
+
+/**
  * Maintains global application state.
  */
 class Application {
   /**
-   * @param {!Map<string, string>} uriDataMap Maps URIs for HTML pages to their
-   *     corresponding JSON data file.
+   * @param {!DataService} dataService Service used to load JSON data files.
    * @param {!dossier.search.SearchBox} searchBox The search box widget to use.
    * @param {!dossier.nav.NavDrawer} navDrawer The nav drawer widget to use.
    * @param {!Element} mainEl The main content element.
    */
-  constructor(uriDataMap, searchBox, navDrawer, mainEl) {
-    /** @private @const {!Map<string, string>} */
-    this.uriDataMap_ = uriDataMap;
+  constructor(dataService, searchBox, navDrawer, mainEl) {
+    /** @private @const {!DataService} */
+    this.dataService_ = dataService;
 
     /** @private {number} */
     this.stateId_ = 0;
@@ -108,9 +190,6 @@ class Application {
 
     /** @type {!Element} */
     this.mainEl = mainEl;
-
-    /** @private {XMLHttpRequest} */
-    this.pendingXhr_ = null;
 
     /** @private {!Element} */
     this.progressBar_ = document.createElement('progress');
@@ -239,81 +318,26 @@ class Application {
       }
     }
 
-    if (this.pendingXhr_) {
-      this.pendingXhr_.abort();
-      this.hideProgressBar();
-    }
-
-    let resolvedUri = this.resolveDataUri_(uri);
-    if (!resolvedUri) {
-      location.href = uri;
-      return;
-    }
-
-    let xhr = new XMLHttpRequest;
-    this.pendingXhr_ = xhr;
-    xhr.open('GET', resolvedUri, true);
-    xhr.onloadstart = () => {
-      this.progressBar_.max = 100;
-      this.progressBar_.value = 0;
-      this.progressBar_.style.display = 'initial';
-    };
-    xhr.onprogress = e => {
-      if (e.lengthComputable) {
-        this.progressBar_.max = e.total;
-        this.progressBar_.value = e.loaded;
-      }
-    };
-    xhr.onloadend = e => this.progressBar_.value = e.loaded;
-    xhr.onerror = (error) => {
-      console.error(error);
-      location.href = uri;
-    };
-    xhr.onload = () => {
-      this.pendingXhr_ = null;
-      if (xhr.status > 199 && xhr.status < 300) {
-        this.onload(uri, xhr.responseText);
-      } else {
-        xhr.onerror(
-            Error(`Request failed (${xhr.status}): ${xhr.responseText}`));
-      }
-    };
-    xhr.send();
+    this.dataService_.load(uri)
+        .then(
+            data => this.onload_(uri, data),
+            err => {
+              if (err instanceof Promise.CancellationError) {
+                return;
+              }
+              console.error(err);
+              location.href = uri;
+            });
   }
 
   /**
    * @param {string} uri
-   * @return {?string}
+   * @param {!PageData} data
    * @private
    */
-  resolveDataUri_(uri) {
-    let path = uri;
-    if (!path.startsWith('/')) {
-      let currentPath = location.pathname;
-      let index = currentPath.lastIndexOf('/');
-      path = currentPath.slice(0, index + 1) + path;
-    }
-    let resolved = resolveUri(path);
-    let index = resolved.indexOf('?');
-    if (index != -1) {
-      resolved = resolved.slice(0, index);
-    } else if ((index = resolved.indexOf('#')) != -1) {
-      resolved = resolved.slice(0, index);
-    }
-    resolved = this.uriDataMap_.get(resolved) || null;
-    return resolved;
-  }
-
-  onload(/** string */uri, /** string */text) {
-    let parsed = JSON.parse(text);
-    if (!goog.isObject(parsed)) {
-      location.href = uri;
-      return;
-    }
-
+  onload_(uri, data) {
     this.replacePageState();
 
-    let data = new PageData(parsed);
     let newTitle = soy.renderAsFragment(pageTitle, {data});
     let newMain = soy.renderAsFragment(mainPageContent, {data});
 
@@ -550,8 +574,9 @@ exports.run = function(typeIndex, searchBox, navDrawer) {
   typeIndex.sourceFile.forEach(processLink);
 
   let mainEl = /** @type {!Element} */(document.querySelector('main'));
+  let dataService = new DataService(uriMap);
 
-  app = new Application(uriMap, searchBox, navDrawer, mainEl);
+  app = new Application(dataService, searchBox, navDrawer, mainEl);
   events.listen(searchBox, 'focus', () => app.maybeHideNavDrawer());
   events.listen(
       searchBox, search.SelectionEvent.TYPE,
