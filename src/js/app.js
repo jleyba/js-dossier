@@ -17,28 +17,22 @@
 goog.module('dossier.app');
 
 const PageData = goog.require('dossier.PageData');
+const PageSnapshot = goog.require('dossier.state.PageSnapshot');
 const page = goog.require('dossier.page');
 const search = goog.require('dossier.search');
 const {mainPageContent, pageTitle} = goog.require('dossier.soy');
 const Promise = goog.require('goog.Promise');
 const array = goog.require('goog.array');
+const asserts = goog.require('goog.asserts');
 const dom = goog.require('goog.dom');
 const events = goog.require('goog.events');
+const EventTarget = goog.require('goog.events.EventTarget');
 const KeyCodes = goog.require('goog.events.KeyCodes');
 const xhr = goog.require('goog.labs.net.xhr');
 const soy = goog.require('goog.soy');
+const {getRandomString} = goog.require('goog.string');
 const style = goog.require('goog.style');
 const userAgent = goog.require('goog.userAgent');
-
-let app = null;
-
-
-/** @record */
-function PageState() {}
-/** @type {string} */ PageState.prototype['version'] = '';
-/** @type {number} */ PageState.prototype['id'] = 0;
-/** @type {string} */ PageState.prototype['title'] = '';
-/** @type {number} */ PageState.prototype['scroll'] = 0;
 
 
 /**
@@ -101,8 +95,8 @@ class DataService {
     /** @private @const {!Map<string, string>} */
     this.uriDataMap_ = uriDataMap;
 
-    /** @private {Promise<string>} */
-    this.pendingXhr_ = null;
+    /** @private @const {!Set<string>} */
+    this.dataUris_ = new Set(uriDataMap.values());
   }
 
   /**
@@ -110,16 +104,12 @@ class DataService {
    * @return {!Promise<!PageData>} The loaded page data.
    */
   load(uri) {
-    let dataUri = this.resolveDataUri_(uri);
+    let dataUri = this.resolveDataUri(uri);
     if (!dataUri) {
       return Promise.reject(Error('failed to resolve URL'));
     }
 
-    if (this.pendingXhr_) {
-      this.pendingXhr_.cancel();
-    }
-
-    return this.pendingXhr_ = Promise.resolve().then(() => {
+    return Promise.resolve().then(() => {
       // Force the compiler to recognize this value as non-null.
       let jsonUrl = /** @type {string} */(dataUri);
       let json = window.sessionStorage.getItem(jsonUrl);
@@ -137,24 +127,111 @@ class DataService {
   /**
    * @param {string} uri
    * @return {?string}
-   * @private
    */
-  resolveDataUri_(uri) {
-    let path = uri;
-    if (!path.startsWith('/')) {
-      let currentPath = location.pathname;
-      let index = currentPath.lastIndexOf('/');
-      path = currentPath.slice(0, index + 1) + path;
+  resolveDataUri(uri) {
+    if (this.dataUris_.has(uri)) {
+      return uri;
     }
-    let resolved = resolveUri(path);
-    let index = resolved.indexOf('?');
+    if (!uri.startsWith('http://') && !uri.startsWith('https://')) {
+      let path = uri;
+      if (!path.startsWith('/')) {
+        let currentPath = location.pathname;
+        let index = currentPath.lastIndexOf('/');
+        path = currentPath.slice(0, index + 1) + path;
+      }
+      uri = resolveUri(path);
+    }
+    let index = uri.indexOf('?');
     if (index != -1) {
-      resolved = resolved.slice(0, index);
-    } else if ((index = resolved.indexOf('#')) != -1) {
-      resolved = resolved.slice(0, index);
+      uri = uri.slice(0, index);
+    } else if ((index = uri.indexOf('#')) != -1) {
+      uri = uri.slice(0, index);
     }
-    resolved = this.uriDataMap_.get(resolved) || null;
-    return resolved;
+    return this.uriDataMap_.get(uri) || null;
+  }
+}
+
+
+/**
+ * @param {!PageSnapshot} snapshot
+ * @param {string} title
+ * @param {string} url
+ * @param {boolean=} opt_replaceHistory
+ */
+function recordSnapshot(snapshot, title, url, opt_replaceHistory) {
+  window.sessionStorage.setItem(snapshot.id, JSON.stringify(snapshot));
+  if (opt_replaceHistory) {
+    window.history.replaceState(snapshot.toJSON(), title, url);
+  } else {
+    window.history.pushState(snapshot.toJSON(), title, url);
+  }
+}
+
+
+/** @final */
+class PopstateEvent {
+  /** @param {!PageSnapshot} snapshot */
+  constructor(snapshot) {
+    /** @const */ this.snapshot = snapshot;
+    /** @const */ this.type = PopstateEvent.TYPE;
+  }
+}
+PopstateEvent.TYPE = 'popstate';
+
+
+/** @final */
+class HistoryService extends EventTarget {
+  /**
+   * @param {function(string): !PageSnapshot} snapshotFactory
+   */
+  constructor(snapshotFactory) {
+    super();
+
+    /** @private @const {function(string): !PageSnapshot} */
+    this.snapshotFactory_ = snapshotFactory;
+
+    /** @private {string} */
+    this.id_ = getRandomString();
+
+    /** @private {!Array<string>} */
+    this.forwardStack_ = [];
+  }
+
+  installPopstateListener() {
+    window.onpopstate = (/** Event */ e) => {
+      let state = e ? e.state : null;
+      if (goog.isObject(state)) {
+        let snapshot = new PageSnapshot(/** @type {!Object} */(state));
+        if (array.peek(this.forwardStack_) === snapshot.id) {
+          this.forwardStack_.pop();
+        } else {
+          this.forwardStack_.push(this.id_);
+        }
+        this.id_ = snapshot.id;
+        this.dispatchEvent(new PopstateEvent(snapshot));
+      }
+    };
+  }
+
+  /**
+   * @param {string} title
+   * @param {string} url
+   */
+  captureSnapshot(title, url) {
+    this.id_ = getRandomString();
+    let snapshot = this.snapshotFactory_(this.id_);
+    recordSnapshot(snapshot, title, url);
+    this.forwardStack_.forEach(id => window.sessionStorage.removeItem(id));
+    this.forwardStack_ = [];
+  }
+
+  /**
+   * @param {string} title
+   * @param {string} url
+   */
+  updateSnapshot(title, url) {
+    let snapshot = this.snapshotFactory_(this.id_);
+    recordSnapshot(snapshot, title, url, true);
   }
 }
 
@@ -173,8 +250,23 @@ class Application {
     /** @private @const {!DataService} */
     this.dataService_ = dataService;
 
-    /** @private {number} */
-    this.stateId_ = 0;
+    /** @private @const {!HistoryService} */
+    this.historyService_ = new HistoryService(id => {
+      let snapshot = new PageSnapshot({});
+      snapshot.id = id;
+      snapshot.title = document.title;
+      snapshot.scroll = this.mainEl.parentElement.scrollTop;
+      snapshot.dataUri =
+          this.dataService_.resolveDataUri(window.location.href) || '';
+      snapshot.openCard =
+          array.map(
+              this.mainEl.querySelectorAll('.property.expandable.open[id]'),
+                  el => el.id);
+      return snapshot;
+    });
+
+    /** @private {Promise<!PageData>} */
+    this.pendingLoad_ = null;
 
     /**
      * @type {!dossier.search.SearchBox}
@@ -195,6 +287,37 @@ class Application {
     this.progressBar_ = document.createElement('progress');
     document.body.appendChild(this.progressBar_);
     this.hideProgressBar();
+  }
+
+  init() {
+    events.listen(
+        this.searchBox, 'focus', () => this.maybeHideNavDrawer());
+    events.listen(
+        this.searchBox, search.SelectionEvent.TYPE, e => this.load(e.uri));
+    events.listen(
+        document.documentElement, 'keydown', this.onKeyDown, false, this);
+    events.listen(window, 'hashchange', () => this.onhashchange_());
+
+    this.resolveAmbiguity();
+    this.initProperties();
+    this.onhashchange_();
+    this.navDrawer.updateCurrent();
+
+    if (location.protocol.startsWith('http') && window.sessionStorage) {
+      let captureClick = (/** !Event */e) => this.captureLinkClick_(e);
+      this.navDrawer.element.addEventListener('click', captureClick, true);
+      this.mainEl.addEventListener('click', captureClick, true);
+      this.historyService_.installPopstateListener();
+      events.listen(
+          this.historyService_, PopstateEvent.TYPE,
+          (/** !PopstateEvent */ e) => this.restorePageContent_(e.snapshot));
+    }
+  }
+
+  /** @private */
+  onhashchange_() {
+    this.updateSourceHighlight();
+    this.openCurrentTarget(true);
   }
 
   hideProgressBar() {
@@ -318,16 +441,24 @@ class Application {
       }
     }
 
-    this.dataService_.load(uri)
-        .then(
-            data => this.onload_(uri, data),
-            err => {
-              if (err instanceof Promise.CancellationError) {
-                return;
-              }
-              console.error(err);
-              location.href = uri;
-            });
+    if (this.pendingLoad_) {
+      this.pendingLoad_.cancel();
+    }
+
+    this.pendingLoad_ = this.dataService_.load(uri);
+    this.pendingLoad_.then(
+        data => {
+          this.pendingLoad_ = null;
+          this.onload_(uri, data);
+        },
+        err => {
+          this.pendingLoad_ = null;
+          if (err instanceof Promise.CancellationError) {
+            return;
+          }
+          console.error(err);
+          location.href = uri;
+        });
   }
 
   /**
@@ -336,48 +467,70 @@ class Application {
    * @private
    */
   onload_(uri, data) {
-    this.replacePageState();
+    this.historyService_.updateSnapshot(
+        document.title, (location.pathname + location.search + location.hash));
 
-    let newTitle = soy.renderAsFragment(pageTitle, {data});
-    let newMain = soy.renderAsFragment(mainPageContent, {data});
-
-    this.updatePageContent(newTitle.textContent, newMain, 0, uri);
+    this.updatePageContent(data, null, uri);
     this.hideProgressBar();
     this.resolveAmbiguity();
 
     // Scroll to the new page's target and re-save page state to capture that
     // scroll position.
     this.openCurrentTarget(true);
-    this.replacePageState();
+    this.historyService_.updateSnapshot(
+        document.title, (location.pathname + location.search + location.hash));
   }
 
   /**
-   * @param {string} title the new title.
-   * @param {(number|!Node)} htmlOrId the new content node, or an ID for HTML
-   *     content saved in session storage.
-   * @param {number} scroll the new content scroll position.
+   * @param {!PageData} data the data to render.
+   * @param {PageSnapshot} snapshot The snapshot this page is being updated
+   *     from, if any.
    * @param {string=} opt_path the page path to save in page history. If
    *     omitted, history will not be updated.
    */
-  updatePageContent(title, htmlOrId, scroll, opt_path) {
-    if (typeof htmlOrId === 'number') {
-      this.stateId_ = htmlOrId;
-      let html = window.sessionStorage.getItem(this.getDomKey_());
-      this.mainEl.innerHTML = html;
-    } else {
-      this.mainEl.innerHTML = '';
-      this.mainEl.appendChild(/** @type {!Node} */(htmlOrId));
+  updatePageContent(data, snapshot, opt_path) {
+    let newTitle = soy.renderAsFragment(pageTitle, {data});
+    let newMain = soy.renderAsFragment(mainPageContent, {data});
+
+    this.mainEl.innerHTML = '';
+    this.mainEl.appendChild(newMain);
+    document.title = newTitle.textContent;
+
+    if (snapshot) {
+      snapshot.openCard.forEach(id => {
+        let card = this.mainEl.querySelector(`#${id}`);
+        if (card) {
+          card.classList.add('open');
+        }
+      });
+      this.mainEl.parentElement.scrollTop = snapshot.scroll;
     }
-    document.title = title;
-    this.mainEl.parentElement.scrollTop = scroll;
 
     if (opt_path) {
-      this.savePageState(opt_path);
+      this.historyService_.captureSnapshot(document.title, opt_path);
     }
 
     this.initProperties();
     this.updateSourceHighlight();
     this.navDrawer.updateCurrent();
+  }
+
+  /**
+   * @param {!PageSnapshot} snapshot The snapshot to restore.
+   * @private
+   */
+  restorePageContent_(snapshot) {
+    let dataUri = snapshot.dataUri;
+    if (!dataUri) {
+      location.reload();
+      return;
+    }
+    this.dataService_.load(dataUri).then(
+        data => this.updatePageContent(data, snapshot),
+        error => {
+          console.error('failed to load JSON data: ' + error);
+          location.reload();
+        });
   }
 
   /**
@@ -481,60 +634,6 @@ class Application {
       document.title = article.dataset.name;
     }
   }
-
-  /**
-   * @param {boolean=} opt_increment Whether to increment page state.
-   * @return {PageState} a description of the current page state.
-   */
-  getPageState(opt_increment) {
-    if (opt_increment) {
-      this.stateId_ += 1;
-    }
-    return {
-      id: this.stateId_,
-      title: document.title,
-      scroll: this.mainEl.parentElement.scrollTop
-    };
-  }
-
-  /**
-   * Replaces the current page state.
-   */
-  replacePageState() {
-    let state = this.getPageState();
-    this.saveDom_();
-    history.replaceState(
-        state,
-        document.title,
-        (location.pathname + location.search + location.hash));
-  }
-
-  /**
-   * Generates a new history entry for the page.
-   *
-   * @param {string=} opt_newLocation The desired location. If omitted, the
-   *     current location will be preserved and the entry will simply capture
-   *     the state of the DOM.
-   */
-  savePageState(opt_newLocation) {
-    let state = this.getPageState(true);
-    this.saveDom_();
-    history.pushState(
-        state,
-        document.title,
-        opt_newLocation
-            || (location.pathname + location.search + location.hash));
-  }
-
-  /** @private */
-  getDomKey_() {
-    return this.stateId_;
-  }
-
-  /** @private */
-  saveDom_() {
-    window.sessionStorage.setItem(this.getDomKey_(), this.mainEl.innerHTML);
-  }
 }
 
 
@@ -547,10 +646,6 @@ class Application {
  * @throws {Error} if the application has already been started.
  */
 exports.run = function(typeIndex, searchBox, navDrawer) {
-  if (app) {
-    throw Error('application is already running');
-  }
-
   let uriMap = /** !Map<string, string> */new Map;
 
   function processLink(/** !(dossier.Link|dossier.expression.TypeLink) */link) {
@@ -576,36 +671,7 @@ exports.run = function(typeIndex, searchBox, navDrawer) {
   let mainEl = /** @type {!Element} */(document.querySelector('main'));
   let dataService = new DataService(uriMap);
 
-  app = new Application(dataService, searchBox, navDrawer, mainEl);
-  events.listen(searchBox, 'focus', () => app.maybeHideNavDrawer());
-  events.listen(
-      searchBox, search.SelectionEvent.TYPE,
-      e => app.load(e.uri));
-  events.listen(document.documentElement, 'keydown', app.onKeyDown, false, app);
-  events.listen(window, 'hashchange', onhashchange);
-
-  app.resolveAmbiguity();
-  app.initProperties();
-  onhashchange();
-  navDrawer.updateCurrent();
-
-  if (location.protocol.startsWith('http') && window.sessionStorage) {
-    let captureClick = (/** Event */e) => app.captureLinkClick_(e);
-    navDrawer.element.addEventListener('click', captureClick, true);
-    mainEl.addEventListener('click', captureClick, true);
-
-    window.onpopstate = function(/** Event */e) {
-      let state = e ? e.state : null;
-      if (state) {
-        app.updatePageContent(state['title'], state['id'], state['scroll']);
-      }
-    };
-  }
+  new Application(dataService, searchBox, navDrawer, mainEl).init();
 
   document.documentElement.classList.remove('loading');
-
-  function onhashchange() {
-    app.updateSourceHighlight();
-    app.openCurrentTarget(true);
-  }
 };

@@ -20,6 +20,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 
 import com.github.jsdossier.proto.Dossier;
 import com.github.jsdossier.proto.Expression;
+import com.github.jsdossier.proto.State;
 import com.google.common.collect.ImmutableSet;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
@@ -139,6 +140,7 @@ final class ProtoDescriptorsToJs {
     injector.getInstance(ProtoDescriptorsToJs.class)
         .processFiles(
             Dossier.getDescriptor(),
-            Expression.getDescriptor());
+            Expression.getDescriptor(),
+            State.getDescriptor());
   }
 }

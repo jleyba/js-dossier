@@ -45,6 +45,13 @@ pd.Message_ = class {
     let data = Object.assign({}, msg.data_);
     return new msg.constructor(data);
   }
+
+  /** @return {!Object} */
+  toJSON() {
+    let json = Object.assign({}, this.data_);
+    this.converted_.forEach((value, key) => json[key] = value);
+    return json;
+  }
 };
 
 
