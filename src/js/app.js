@@ -567,6 +567,12 @@ class Application {
    * @private
    */
   captureLinkClick_(e) {
+    // Do not capture the click if any of the modifier keys are down.
+    // This allows users to open new tabs.
+    if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) {
+      return;
+    }
+
     let target = e.target;
     if (target.nodeName === 'CODE' && target.parentNode.nodeName === 'A') {
       target = target.parentNode;
