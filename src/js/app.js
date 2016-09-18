@@ -498,7 +498,7 @@ class Application {
 
     if (snapshot) {
       snapshot.openCard.forEach(id => {
-        let card = this.mainEl.querySelector(`#${id}`);
+        let card = this.mainEl.querySelector(`#${id.replace(/\./g, '\\.')}`);
         if (card) {
           card.classList.add('open');
         }
