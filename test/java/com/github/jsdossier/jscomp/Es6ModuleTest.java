@@ -185,7 +185,7 @@ public class Es6ModuleTest {
       assertThat(expected.getMessage()).contains(
           "required \"module$does_not_exist\" namespace never provided one.js:1");
       assertThat(expected.getMessage()).contains(
-          "Failed to load module \"./does_not_exist\" null:-1");
+          "Failed to load module \"./does_not_exist.js\" null:-1");
     }
   }
 
@@ -201,7 +201,7 @@ public class Es6ModuleTest {
       assertThat(expected.getMessage()).contains(
           "required \"module$two\" namespace never provided one.js:1");
       assertThat(expected.getMessage()).contains(
-          "Failed to load module \"./two\" null:-1");
+          "Failed to load module \"./two.js\" null:-1");
     }
   }
 
