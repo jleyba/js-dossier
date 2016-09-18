@@ -654,17 +654,17 @@
     {/call}
     <div>
       {if $type.tags and $type.tags.isModule}
-        module {$type.name}
+        Module {$type.name}
       {elseif $type.tags and $type.tags.isRecord}
-        record {$type.name}
+        Record {$type.name}
       {elseif $type.tags and $type.tags.isInterface}
-        interface {$type.name}
+        Interface {$type.name}
       {elseif $type.mainFunction and $type.mainFunction.isConstructor}
-        class {$type.name}
+        Class {$type.name}
       {elseif $type.enumeration}
-        enum {$type.name}
+        Enumeration {$type.name}
       {else}
-        namespace {$type.name}
+        Namespace {$type.name}
       {/if}
       {if $type.mainFunction and length($type.mainFunction.templateName)}
         {call .printTemplateNames}
