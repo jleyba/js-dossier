@@ -48,8 +48,9 @@ GlobalCtor.staticFunc = function() {};
  * This is function defined on the prototype.
  * @param {string} x description.
  * @param y description only.
+ * @param {number} z
  */
-GlobalCtor.prototype.protoMethod = function(x, y) {
+GlobalCtor.prototype.protoMethod = function(x, y, z) {
 };
 
 

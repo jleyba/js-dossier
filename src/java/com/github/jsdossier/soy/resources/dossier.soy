@@ -73,15 +73,17 @@
 {template .infoRow private="true"}
   {@param? title: html}
   {@param cell1: html}
+  {@param? cell1Attributes: attributes}
   {@param? cell2: html}
+  {@param? cell2Attributes: attributes}
   {@param? id: string}
   {@param? block: bool}
 
   <tr class="info-row{if $block} block{/if}" {if $id}id="{$id}"{/if}>
     {if $title}<th class="info-head">{$title}</th>{/if}
-    <td class="info-cell">{$cell1}</td>
+    <td class="info-cell" {if $cell1Attributes}{$cell1Attributes}{/if}>{$cell1}</td>
     {if $cell2}
-      <td class="info-cell">{$cell2}</td>
+      <td class="info-cell" {if $cell2Attributes}{$cell2Attributes}{/if}>{$cell2}</td>
     {/if}
   </tr>
 {/template}
@@ -241,19 +243,28 @@
               {if $detail.name}
                 {call .infoRow}
                   {param cell1 kind="html"}<var>{$detail.name}</var>{/param}
+                  {param cell1Attributes kind="attributes"}
+                    {if not $type}colspan="2"{/if}
+                  {/param}
                   {param cell2 kind="html"}{$type}{/param}
                 {/call}
-                {call .infoRow}
-                  {param cell1 kind="html"}{/param}
-                  {param cell2 kind="html"}{$content}{/param}
-                {/call}
+                {if $content}
+                  {call .infoRow}
+                    {param cell1 kind="html"}{/param}
+                    {param cell2 kind="html"}{$content}{/param}
+                  {/call}
+                {/if}
               {else}
-                {call .infoRow}
-                  {param cell1 kind="html"}{$type}{/param}
-                {/call}
-                {call .infoRow}
-                  {param cell1 kind="html"}{$content}{/param}
-                {/call}
+                {if $type}
+                  {call .infoRow}
+                    {param cell1 kind="html"}{$type}{/param}
+                  {/call}
+                {/if}
+                {if $content}
+                  {call .infoRow}
+                    {param cell1 kind="html"}{$content}{/param}
+                  {/call}
+                {/if}
               {/if}
             {/foreach}
           </table>
