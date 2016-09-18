@@ -75,6 +75,13 @@ sample.inheritance.SecondClass.prototype.run = function() {};
 /**
  * @constructor
  * @extends {sample.inheritance.SecondClass}
+ */
+sample.inheritance.ThirdClass = function() {};
+
+
+/**
+ * @constructor
+ * @extends {sample.inheritance.ThirdClass}
  * @implements {sample.inheritance.Runnable}
  * @final
  */

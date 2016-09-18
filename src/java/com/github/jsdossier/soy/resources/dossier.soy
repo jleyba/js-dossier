@@ -95,6 +95,7 @@
 {template .printTypeList private="true"}
   {@param types: list<dossier.expression.NamedType>}
   {@param title: string}
+  {@param? typeClass: string}
 
   {if length($types)}
     {call .infoRow}
@@ -103,7 +104,7 @@
       {param cell1 kind="html"}
         <ul class="type-list">
         {foreach $type in $types}
-          <li>
+          <li {if $typeClass}{sp}class="{$typeClass}"{/if}>
             {call dossier.soy.type.typeReference}
               {param type: $type /}
               {param useQualifiedName: true /}
@@ -780,6 +781,7 @@
               {call .printTypeList}
                 {param types: $type.extendedType /}
                 {param title: 'Extends' /}
+                {param typeClass: 'super-class' /}
               {/call}
               {call .printTypeList}
                 {param types: $type.implementedType /}

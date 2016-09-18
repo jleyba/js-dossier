@@ -13,6 +13,18 @@ table.info {
         margin: 0;
       }
     }
+
+    .super-class {
+      &:before {
+        content: '\21b3';
+        margin-right: 4px;
+      }
+
+      &:first-child:before {
+        content: '';
+        margin: 0;
+      }
+    }
   }
 
   &.deprecation {
