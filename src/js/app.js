@@ -504,6 +504,8 @@ class Application {
         }
       });
       this.mainEl.parentElement.scrollTop = snapshot.scroll;
+    } else {
+      this.mainEl.parentElement.scrollTop = 0;
     }
 
     if (opt_path) {
