@@ -15,8 +15,6 @@
  */
 package com.github.jsdossier;
 
-import static com.github.jsdossier.jscomp.Types.isTypedef;
-import static com.google.common.base.Predicates.not;
 import static com.google.common.collect.Iterables.concat;
 import static com.google.common.collect.Iterables.filter;
 import static com.google.common.collect.Iterables.transform;
@@ -40,6 +38,7 @@ import com.github.jsdossier.annotations.Stdout;
 import com.github.jsdossier.annotations.TypeFilter;
 import com.github.jsdossier.jscomp.DossierCommandLineRunner;
 import com.github.jsdossier.jscomp.DossierCompiler;
+import com.github.jsdossier.jscomp.NominalType;
 import com.github.jsdossier.jscomp.TypeRegistry;
 import com.github.jsdossier.soy.DossierSoyModule;
 import com.github.jsdossier.soy.Renderer;
@@ -68,6 +67,8 @@ import org.joda.time.format.PeriodFormatterBuilder;
 
 import java.io.IOException;
 import java.io.PrintStream;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.net.URI;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
@@ -78,6 +79,9 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
+
+import javax.inject.Inject;
+import javax.inject.Qualifier;
 
 final class Main {
   private Main() {}
@@ -217,6 +221,47 @@ final class Main {
           .build();
       return compilerFlags.toArray(new String[compilerFlags.size()]);
     }
+
+    @Provides
+    @DocumentationScoped
+    @DocumentableTypes
+    Iterable<NominalType> provideDocumentableTypes(
+        TypeRegistry registry, DocumentableType predicate) {
+      return filter(registry.getAllTypes(), predicate);
+    }
+  }
+
+  @Qualifier
+  @Retention(RetentionPolicy.RUNTIME)
+  private @interface DocumentableTypes {}
+
+  private static final class DocumentableType implements Predicate<NominalType> {
+    private final TypeRegistry typeRegistry;
+    private final TypeInspectorFactory typeInspectorFactory;
+
+    @Inject
+    DocumentableType(
+        TypeRegistry typeRegistry,
+        TypeInspectorFactory typeInspectorFactory) {
+      this.typeRegistry = typeRegistry;
+      this.typeInspectorFactory = typeInspectorFactory;
+    }
+
+    @Override
+    public boolean apply(NominalType input) {
+      if (input.getJsDoc().isTypedef()) {
+        return false;
+      }
+
+      if (typeRegistry.isImplicitNamespace(input.getName())) {
+        TypeInspector.Report report = typeInspectorFactory.create(input).inspectType();
+        return !report.getCompilerConstants().isEmpty()
+            || !report.getFunctions().isEmpty()
+            || !report.getProperties().isEmpty();
+      }
+
+      return true;
+    }
   }
 
   private static Function<Path, String> toFlag(final String flagPrefix) {
@@ -317,10 +362,14 @@ final class Main {
     try {
       DOCUMENTATION_SCOPE.enter();
       createDirectories(outputDir);
+
       DocTemplate template = injector.getInstance(DocTemplate.class);
+      Iterable<NominalType> types = injector.getInstance(
+          Key.get(new TypeLiteral<Iterable<NominalType>>() {}, DocumentableTypes.class));
+
       RenderTaskExecutor executor = injector.getInstance(RenderTaskExecutor.class)
           .renderIndex()
-          .renderDocumentation(filter(typeRegistry.getAllTypes(), not(isTypedef())))
+          .renderDocumentation(types)
           .renderMarkdown(config.getCustomPages())
           .renderResources(
               concat(

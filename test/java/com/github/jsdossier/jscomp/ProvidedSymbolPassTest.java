@@ -69,6 +69,9 @@ public class ProvidedSymbolPassTest {
     assertThat(typeRegistry.getImplicitNamespaces()).containsExactly(
         "Foo", "foo", "foo.Bar", "foo.bar", "foo.bar.Baz",
         "one", "one.two", "one.two.three", "one.two.three.Four");
+
+    assertThat(typeRegistry.isProvided("one.two.three")).isFalse();
+    assertThat(typeRegistry.isProvided("one.two.three.Four")).isTrue();
   }
 
   @Test

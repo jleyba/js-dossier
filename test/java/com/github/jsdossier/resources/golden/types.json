@@ -436,13 +436,72 @@
     },
     {
       "1": {
-        "1": "sample",
+        "1": "namespace",
         "3": {
-          "1": "sample.html",
-          "2": "data/sample.json"
+          "1": "namespace.html",
+          "2": "data/namespace.json"
         }
       },
       "3": true
+    },
+    {
+      "1": {
+        "1": "namespace.Widget",
+        "3": {
+          "1": "namespace.Widget.html",
+          "2": "data/namespace.Widget.json"
+        }
+      }
+    },
+    {
+      "1": {
+        "1": "namespace.nested.internal",
+        "3": {
+          "1": "namespace.nested.internal.html",
+          "2": "data/namespace.nested.internal.json"
+        }
+      },
+      "3": true
+    },
+    {
+      "1": {
+        "1": "namespace.nested.internal.Component",
+        "3": {
+          "1": "namespace.nested.internal.Component.html",
+          "2": "data/namespace.nested.internal.Component.json"
+        }
+      }
+    },
+    {
+      "1": {
+        "1": "namespace.nested.internal.implicit.Foo",
+        "3": {
+          "1": "namespace.nested.internal.implicit.Foo.html",
+          "2": "data/namespace.nested.internal.implicit.Foo.json"
+        }
+      }
+    },
+    {
+      "1": {
+        "1": "namespace.nested.logging",
+        "3": {
+          "1": "namespace.nested.logging.html",
+          "2": "data/namespace.nested.logging.json"
+        }
+      },
+      "3": true,
+      "4": [
+        "log"
+      ]
+    },
+    {
+      "1": {
+        "1": "namespace.nested.logging.Console",
+        "3": {
+          "1": "namespace.nested.logging.Console.html",
+          "2": "data/namespace.nested.logging.Console.json"
+        }
+      }
     },
     {
       "1": {
@@ -774,6 +833,10 @@
     {
       "2": "source/json.js.src.html",
       "3": "data/source/json.js.src.json"
+    },
+    {
+      "2": "source/namespace.js.src.html",
+      "3": "data/source/namespace.js.src.json"
     },
     {
       "2": "source/registry.js.src.html",

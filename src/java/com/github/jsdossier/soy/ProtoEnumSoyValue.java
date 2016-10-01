@@ -63,13 +63,13 @@ class ProtoEnumSoyValue extends SoyData implements SoyValue {
 
   @Override
   public boolean coerceToBoolean() {
-    return true;
+    return value.getNumber() != 0;
   }
 
   @SuppressWarnings("deprecation")  // Reference required to implement interface.
   @Override
   public boolean toBoolean() {
-    return false;
+    return value.getNumber() != 0;
   }
 
   @Override

@@ -264,12 +264,19 @@ message JsType {
 
   repeated Property compiler_constant = 20;
 
-  // Link to the module or namespace this type belongs to.
-  message ParentLink {
+  // Metadata about where this type is declared.
+  message Declaration {
+    enum Type {
+      UNKNOWN = 0;
+      COMMONJS_MODULE = 1;
+      ES6_MODULE = 2;
+      GOOG_MODULE = 3;
+      GOOG_PROVIDE = 4;
+    }
     dossier.expression.NamedType type = 1;
-    bool is_module = 2;
+    Type declaration_type = 2;
   }
-  ParentLink parent = 21;
+  Declaration declaration = 21;
 
   // Link to another type that this type is an alias of.
   dossier.expression.NamedType aliased_type = 22;

@@ -733,6 +733,7 @@ public class EndToEndTest {
       copyResource("resources/globals.js", srcDir.resolve("main/globals.js"));
       copyResource("resources/json.js", srcDir.resolve("main/json.js"));
       copyResource("resources/inheritance.js", srcDir.resolve("main/inheritance.js"));
+      copyResource("resources/namespace.js", srcDir.resolve("main/namespace.js"));
       copyResource("resources/registry.js", srcDir.resolve("main/registry.js"));
       copyResource("resources/visibility.js", srcDir.resolve("main/visibility.js"));
       copyResource("resources/emptyenum.js", srcDir.resolve("main/subdir/emptyenum.js"));
@@ -772,6 +773,7 @@ public class EndToEndTest {
           srcDir.resolve("main/globals.js"),
           srcDir.resolve("main/json.js"),
           srcDir.resolve("main/inheritance.js"),
+          srcDir.resolve("main/namespace.js"),
           srcDir.resolve("main/registry.js"),
           srcDir.resolve("main/visibility.js"),
           srcDir.resolve("main/subdir/emptyenum.js"),

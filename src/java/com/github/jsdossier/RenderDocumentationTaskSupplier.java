@@ -257,29 +257,59 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Ca
     }
 
     private void addParentLink(JsType.Builder spec) {
-      if (type.isModuleExports() || (type.isNamespace() && !type.getModule().isPresent())) {
+      if (type.isModuleExports()
+          && !Module.Type.CLOSURE.equals(type.getModule().get().getType())) {
         return;
       }
 
-      NominalType parent;
+      if (type.isNamespace()
+          && !type.getModule().isPresent()
+          && !typeRegistry.isProvided(type.getName())) {
+        return;
+      }
+
+      NominalType declaringType;
       if (type.getModule().isPresent()) {
-        parent = getParent(type);
-        while (parent != null && !parent.isModuleExports()) {
-          parent = getParent(parent);
+        if (type.isModuleExports()) {
+          declaringType = type;
+        } else {
+          declaringType = getParent(type);
+          while (declaringType != null && !declaringType.isModuleExports()) {
+            declaringType = getParent(declaringType);
+          }
         }
       } else {
-        parent = getParent(type);
-        while (parent != null && !parent.isNamespace()) {
-          parent = getParent(parent);
+        if (typeRegistry.isProvided(type.getName())) {
+          declaringType = type;
+        } else {
+          declaringType = getParent(type);
+          while (declaringType != null && !typeRegistry.isProvided(declaringType.getName())) {
+            declaringType = getParent(declaringType);
+          }
         }
       }
 
-      if (parent != null) {
-        spec.getParentBuilder()
-            .setType(linkFactory.createTypeReference(parent))
-            .setIsModule(
-                parent.isModuleExports()
-                    && parent.getModule().get().getType() != Module.Type.CLOSURE);
+      if (declaringType != null) {
+        JsType.Declaration.Builder metadata = spec.getDeclarationBuilder();
+        metadata.setType(linkFactory.createTypeReference(declaringType));
+        if (declaringType.getModule().isPresent()) {
+          switch (declaringType.getModule().get().getType()) {
+            case CLOSURE:
+              metadata.setDeclarationType(JsType.Declaration.Type.GOOG_MODULE);
+              break;
+            case ES6:
+              metadata.setDeclarationType(JsType.Declaration.Type.ES6_MODULE);
+              break;
+            case NODE:
+              metadata.setDeclarationType(JsType.Declaration.Type.COMMONJS_MODULE);
+              break;
+            default:
+              throw new AssertionError(
+                  "unexpected module type: " + declaringType.getModule().get().getType());
+          }
+        } else if (typeRegistry.isProvided(declaringType.getName())) {
+          metadata.setDeclarationType(JsType.Declaration.Type.GOOG_PROVIDE);
+        }
       }
     }
 

@@ -99,10 +99,10 @@ public final class Dossier {
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_dossier_JsType_NestedTypes_fieldAccessorTable;
   static com.google.protobuf.Descriptors.Descriptor
-    internal_static_dossier_JsType_ParentLink_descriptor;
+    internal_static_dossier_JsType_Declaration_descriptor;
   static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_dossier_JsType_ParentLink_fieldAccessorTable;
+      internal_static_dossier_JsType_Declaration_fieldAccessorTable;
   static com.google.protobuf.Descriptors.Descriptor
     internal_static_dossier_PageData_descriptor;
   static
@@ -179,7 +179,7 @@ public final class Dossier {
       "pression.NamedType\022\024\n\014is_interface\030\002 \001(\010",
       "\022\024\n\014is_namespace\030\003 \001(\010\022\027\n\017static_propert" +
       "y\030\004 \003(\t\022\020\n\010property\030\005 \003(\t\022#\n\005child\030\006 \003(\013" +
-      "2\024.dossier.Index.Entry\"\263\n\n\006JsType\022\014\n\004nam" +
+      "2\024.dossier.Index.Entry\"\301\013\n\006JsType\022\014\n\004nam" +
       "e\030\001 \001(\t\022#\n\006source\030\005 \001(\0132\023.dossier.Source" +
       "Link\022+\n\006nested\030\006 \001(\0132\033.dossier.JsType.Ne" +
       "stedTypes\022%\n\013description\030\007 \001(\0132\020.dossier" +
@@ -198,32 +198,35 @@ public final class Dossier {
       "\003(\0132\035.dossier.expression.NamedType\0225\n\016im" +
       "plementation\030\033 \003(\0132\035.dossier.expression.",
       "NamedType\022,\n\021compiler_constant\030\024 \003(\0132\021.d" +
-      "ossier.Property\022*\n\006parent\030\025 \001(\0132\032.dossie" +
-      "r.JsType.ParentLink\0223\n\014aliased_type\030\026 \001(" +
-      "\0132\035.dossier.expression.NamedType\0222\n\013know" +
-      "n_alias\030\034 \003(\0132\035.dossier.expression.Named" +
-      "Type\022\020\n\010filename\030\027 \001(\t\022\026\n\016qualified_name" +
-      "\030\030 \001(\t\022,\n\021reexported_module\030\031 \003(\0132\021.doss" +
-      "ier.Property\032q\n\013TypeSummary\022\014\n\004name\030\001 \001(" +
-      "\t\022\024\n\004href\030\002 \001(\tB\006\362\201\031\002\010\001\022!\n\007summary\030\003 \001(\013" +
-      "2\020.dossier.Comment\022\033\n\004tags\030\004 \001(\0132\r.dossi",
-      "er.Tags\032\224\001\n\013NestedTypes\022*\n\005class\030\001 \003(\0132\033" +
-      ".dossier.JsType.TypeSummary\022)\n\004enum\030\002 \003(" +
-      "\0132\033.dossier.JsType.TypeSummary\022.\n\tinterf" +
-      "ace\030\003 \003(\0132\033.dossier.JsType.TypeSummary\032L" +
-      "\n\nParentLink\022+\n\004type\030\001 \001(\0132\035.dossier.exp" +
-      "ression.NamedType\022\021\n\tis_module\030\002 \001(\010\"\263\002\n" +
-      "\010PageData\022%\n\tresources\030\001 \001(\0132\022.dossier.R" +
-      "esources\0221\n\005types\030\002 \001(\0132 .dossier.PageDa" +
-      "ta.TypeCollectionH\000\022.\n\010markdown\030\003 \001(\0132\032." +
-      "dossier.PageData.MarkdownH\000\022#\n\004file\030\004 \001(",
-      "\0132\023.dossier.SourceFileH\000\032<\n\010Markdown\022\r\n\005" +
-      "title\030\001 \001(\t\022!\n\007content\030\002 \001(\0132\020.dossier.C" +
-      "omment\032/\n\016TypeCollection\022\035\n\004type\030\001 \003(\0132\017" +
-      ".dossier.JsTypeB\t\n\007content*A\n\nVisibility" +
-      "\022\n\n\006PUBLIC\020\000\022\r\n\tPROTECTED\020\001\022\013\n\007PRIVATE\020\002" +
-      "\022\013\n\007PACKAGE\020\003B\036\n\032com.github.jsdossier.pr" +
-      "otoP\001b\006proto3"
+      "ossier.Property\0220\n\013declaration\030\025 \001(\0132\033.d" +
+      "ossier.JsType.Declaration\0223\n\014aliased_typ" +
+      "e\030\026 \001(\0132\035.dossier.expression.NamedType\0222" +
+      "\n\013known_alias\030\034 \003(\0132\035.dossier.expression" +
+      ".NamedType\022\020\n\010filename\030\027 \001(\t\022\026\n\016qualifie" +
+      "d_name\030\030 \001(\t\022,\n\021reexported_module\030\031 \003(\0132" +
+      "\021.dossier.Property\032q\n\013TypeSummary\022\014\n\004nam" +
+      "e\030\001 \001(\t\022\024\n\004href\030\002 \001(\tB\006\362\201\031\002\010\001\022!\n\007summary" +
+      "\030\003 \001(\0132\020.dossier.Comment\022\033\n\004tags\030\004 \001(\0132\r",
+      ".dossier.Tags\032\224\001\n\013NestedTypes\022*\n\005class\030\001" +
+      " \003(\0132\033.dossier.JsType.TypeSummary\022)\n\004enu" +
+      "m\030\002 \003(\0132\033.dossier.JsType.TypeSummary\022.\n\t" +
+      "interface\030\003 \003(\0132\033.dossier.JsType.TypeSum" +
+      "mary\032\323\001\n\013Declaration\022+\n\004type\030\001 \001(\0132\035.dos" +
+      "sier.expression.NamedType\022:\n\020declaration" +
+      "_type\030\002 \001(\0162 .dossier.JsType.Declaration" +
+      ".Type\"[\n\004Type\022\013\n\007UNKNOWN\020\000\022\023\n\017COMMONJS_M" +
+      "ODULE\020\001\022\016\n\nES6_MODULE\020\002\022\017\n\013GOOG_MODULE\020\003" +
+      "\022\020\n\014GOOG_PROVIDE\020\004\"\263\002\n\010PageData\022%\n\tresou",
+      "rces\030\001 \001(\0132\022.dossier.Resources\0221\n\005types\030" +
+      "\002 \001(\0132 .dossier.PageData.TypeCollectionH" +
+      "\000\022.\n\010markdown\030\003 \001(\0132\032.dossier.PageData.M" +
+      "arkdownH\000\022#\n\004file\030\004 \001(\0132\023.dossier.Source" +
+      "FileH\000\032<\n\010Markdown\022\r\n\005title\030\001 \001(\t\022!\n\007con" +
+      "tent\030\002 \001(\0132\020.dossier.Comment\032/\n\016TypeColl" +
+      "ection\022\035\n\004type\030\001 \003(\0132\017.dossier.JsTypeB\t\n" +
+      "\007content*A\n\nVisibility\022\n\n\006PUBLIC\020\000\022\r\n\tPR" +
+      "OTECTED\020\001\022\013\n\007PRIVATE\020\002\022\013\n\007PACKAGE\020\003B\036\n\032c" +
+      "om.github.jsdossier.protoP\001b\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -334,7 +337,7 @@ public final class Dossier {
     internal_static_dossier_JsType_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_dossier_JsType_descriptor,
-        new java.lang.String[] { "Name", "Source", "Nested", "Description", "Tags", "Deprecation", "TypeDef", "Enumeration", "StaticFunction", "StaticProperty", "MainFunction", "Method", "Field", "ExtendedType", "ImplementedType", "Subtype", "Implementation", "CompilerConstant", "Parent", "AliasedType", "KnownAlias", "Filename", "QualifiedName", "ReexportedModule", });
+        new java.lang.String[] { "Name", "Source", "Nested", "Description", "Tags", "Deprecation", "TypeDef", "Enumeration", "StaticFunction", "StaticProperty", "MainFunction", "Method", "Field", "ExtendedType", "ImplementedType", "Subtype", "Implementation", "CompilerConstant", "Declaration", "AliasedType", "KnownAlias", "Filename", "QualifiedName", "ReexportedModule", });
     internal_static_dossier_JsType_TypeSummary_descriptor =
       internal_static_dossier_JsType_descriptor.getNestedTypes().get(0);
     internal_static_dossier_JsType_TypeSummary_fieldAccessorTable = new
@@ -347,12 +350,12 @@ public final class Dossier {
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_dossier_JsType_NestedTypes_descriptor,
         new java.lang.String[] { "Class_", "Enum", "Interface", });
-    internal_static_dossier_JsType_ParentLink_descriptor =
+    internal_static_dossier_JsType_Declaration_descriptor =
       internal_static_dossier_JsType_descriptor.getNestedTypes().get(2);
-    internal_static_dossier_JsType_ParentLink_fieldAccessorTable = new
+    internal_static_dossier_JsType_Declaration_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-        internal_static_dossier_JsType_ParentLink_descriptor,
-        new java.lang.String[] { "Type", "IsModule", });
+        internal_static_dossier_JsType_Declaration_descriptor,
+        new java.lang.String[] { "Type", "DeclarationType", });
     internal_static_dossier_PageData_descriptor =
       getDescriptor().getMessageTypes().get(12);
     internal_static_dossier_PageData_fieldAccessorTable = new

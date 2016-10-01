@@ -223,14 +223,14 @@ public  final class JsType extends
             break;
           }
           case 170: {
-            com.github.jsdossier.proto.JsType.ParentLink.Builder subBuilder = null;
-            if (parent_ != null) {
-              subBuilder = parent_.toBuilder();
+            com.github.jsdossier.proto.JsType.Declaration.Builder subBuilder = null;
+            if (declaration_ != null) {
+              subBuilder = declaration_.toBuilder();
             }
-            parent_ = input.readMessage(com.github.jsdossier.proto.JsType.ParentLink.parser(), extensionRegistry);
+            declaration_ = input.readMessage(com.github.jsdossier.proto.JsType.Declaration.parser(), extensionRegistry);
             if (subBuilder != null) {
-              subBuilder.mergeFrom(parent_);
-              parent_ = subBuilder.buildPartial();
+              subBuilder.mergeFrom(declaration_);
+              declaration_ = subBuilder.buildPartial();
             }
 
             break;
@@ -2842,8 +2842,8 @@ public  final class JsType extends
 
   }
 
-  public interface ParentLinkOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:dossier.JsType.ParentLink)
+  public interface DeclarationOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:dossier.JsType.Declaration)
       com.google.protobuf.MessageOrBuilder {
 
     /**
@@ -2860,27 +2860,31 @@ public  final class JsType extends
     com.github.jsdossier.proto.NamedTypeOrBuilder getTypeOrBuilder();
 
     /**
-     * <code>optional bool is_module = 2;</code>
+     * <code>optional .dossier.JsType.Declaration.Type declaration_type = 2;</code>
      */
-    boolean getIsModule();
+    int getDeclarationTypeValue();
+    /**
+     * <code>optional .dossier.JsType.Declaration.Type declaration_type = 2;</code>
+     */
+    com.github.jsdossier.proto.JsType.Declaration.Type getDeclarationType();
   }
   /**
-   * Protobuf type {@code dossier.JsType.ParentLink}
+   * Protobuf type {@code dossier.JsType.Declaration}
    *
    * <pre>
-   * Link to the module or namespace this type belongs to.
+   * Metadata about where this type is declared.
    * </pre>
    */
-  public  static final class ParentLink extends
+  public  static final class Declaration extends
       com.google.protobuf.GeneratedMessage implements
-      // @@protoc_insertion_point(message_implements:dossier.JsType.ParentLink)
-      ParentLinkOrBuilder {
-    // Use ParentLink.newBuilder() to construct.
-    private ParentLink(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      // @@protoc_insertion_point(message_implements:dossier.JsType.Declaration)
+      DeclarationOrBuilder {
+    // Use Declaration.newBuilder() to construct.
+    private Declaration(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
     }
-    private ParentLink() {
-      isModule_ = false;
+    private Declaration() {
+      declarationType_ = 0;
     }
 
     @java.lang.Override
@@ -2888,7 +2892,7 @@ public  final class JsType extends
     getUnknownFields() {
       return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
     }
-    private ParentLink(
+    private Declaration(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
       this();
@@ -2921,8 +2925,9 @@ public  final class JsType extends
               break;
             }
             case 16: {
+              int rawValue = input.readEnum();
 
-              isModule_ = input.readBool();
+              declarationType_ = rawValue;
               break;
             }
           }
@@ -2939,14 +2944,133 @@ public  final class JsType extends
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.github.jsdossier.proto.Dossier.internal_static_dossier_JsType_ParentLink_descriptor;
+      return com.github.jsdossier.proto.Dossier.internal_static_dossier_JsType_Declaration_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.github.jsdossier.proto.Dossier.internal_static_dossier_JsType_ParentLink_fieldAccessorTable
+      return com.github.jsdossier.proto.Dossier.internal_static_dossier_JsType_Declaration_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              com.github.jsdossier.proto.JsType.ParentLink.class, com.github.jsdossier.proto.JsType.ParentLink.Builder.class);
+              com.github.jsdossier.proto.JsType.Declaration.class, com.github.jsdossier.proto.JsType.Declaration.Builder.class);
+    }
+
+    /**
+     * Protobuf enum {@code dossier.JsType.Declaration.Type}
+     */
+    public enum Type
+        implements com.google.protobuf.ProtocolMessageEnum {
+      /**
+       * <code>UNKNOWN = 0;</code>
+       */
+      UNKNOWN(0, 0),
+      /**
+       * <code>COMMONJS_MODULE = 1;</code>
+       */
+      COMMONJS_MODULE(1, 1),
+      /**
+       * <code>ES6_MODULE = 2;</code>
+       */
+      ES6_MODULE(2, 2),
+      /**
+       * <code>GOOG_MODULE = 3;</code>
+       */
+      GOOG_MODULE(3, 3),
+      /**
+       * <code>GOOG_PROVIDE = 4;</code>
+       */
+      GOOG_PROVIDE(4, 4),
+      UNRECOGNIZED(-1, -1),
+      ;
+
+      /**
+       * <code>UNKNOWN = 0;</code>
+       */
+      public static final int UNKNOWN_VALUE = 0;
+      /**
+       * <code>COMMONJS_MODULE = 1;</code>
+       */
+      public static final int COMMONJS_MODULE_VALUE = 1;
+      /**
+       * <code>ES6_MODULE = 2;</code>
+       */
+      public static final int ES6_MODULE_VALUE = 2;
+      /**
+       * <code>GOOG_MODULE = 3;</code>
+       */
+      public static final int GOOG_MODULE_VALUE = 3;
+      /**
+       * <code>GOOG_PROVIDE = 4;</code>
+       */
+      public static final int GOOG_PROVIDE_VALUE = 4;
+
+
+      public final int getNumber() {
+        if (index == -1) {
+          throw new java.lang.IllegalArgumentException(
+              "Can't get the number of an unknown enum value.");
+        }
+        return value;
+      }
+
+      public static Type valueOf(int value) {
+        switch (value) {
+          case 0: return UNKNOWN;
+          case 1: return COMMONJS_MODULE;
+          case 2: return ES6_MODULE;
+          case 3: return GOOG_MODULE;
+          case 4: return GOOG_PROVIDE;
+          default: return null;
+        }
+      }
+
+      public static com.google.protobuf.Internal.EnumLiteMap<Type>
+          internalGetValueMap() {
+        return internalValueMap;
+      }
+      private static final com.google.protobuf.Internal.EnumLiteMap<
+          Type> internalValueMap =
+            new com.google.protobuf.Internal.EnumLiteMap<Type>() {
+              public Type findValueByNumber(int number) {
+                return Type.valueOf(number);
+              }
+            };
+
+      public final com.google.protobuf.Descriptors.EnumValueDescriptor
+          getValueDescriptor() {
+        return getDescriptor().getValues().get(index);
+      }
+      public final com.google.protobuf.Descriptors.EnumDescriptor
+          getDescriptorForType() {
+        return getDescriptor();
+      }
+      public static final com.google.protobuf.Descriptors.EnumDescriptor
+          getDescriptor() {
+        return com.github.jsdossier.proto.JsType.Declaration.getDescriptor().getEnumTypes().get(0);
+      }
+
+      private static final Type[] VALUES = values();
+
+      public static Type valueOf(
+          com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+        if (desc.getType() != getDescriptor()) {
+          throw new java.lang.IllegalArgumentException(
+            "EnumValueDescriptor is not for this type.");
+        }
+        if (desc.getIndex() == -1) {
+          return UNRECOGNIZED;
+        }
+        return VALUES[desc.getIndex()];
+      }
+
+      private final int index;
+      private final int value;
+
+      private Type(int index, int value) {
+        this.index = index;
+        this.value = value;
+      }
+
+      // @@protoc_insertion_point(enum_scope:dossier.JsType.Declaration.Type)
     }
 
     public static final int TYPE_FIELD_NUMBER = 1;
@@ -2970,13 +3094,20 @@ public  final class JsType extends
       return getType();
     }
 
-    public static final int IS_MODULE_FIELD_NUMBER = 2;
-    private boolean isModule_;
+    public static final int DECLARATION_TYPE_FIELD_NUMBER = 2;
+    private int declarationType_;
     /**
-     * <code>optional bool is_module = 2;</code>
+     * <code>optional .dossier.JsType.Declaration.Type declaration_type = 2;</code>
      */
-    public boolean getIsModule() {
-      return isModule_;
+    public int getDeclarationTypeValue() {
+      return declarationType_;
+    }
+    /**
+     * <code>optional .dossier.JsType.Declaration.Type declaration_type = 2;</code>
+     */
+    public com.github.jsdossier.proto.JsType.Declaration.Type getDeclarationType() {
+      com.github.jsdossier.proto.JsType.Declaration.Type result = com.github.jsdossier.proto.JsType.Declaration.Type.valueOf(declarationType_);
+      return result == null ? com.github.jsdossier.proto.JsType.Declaration.Type.UNRECOGNIZED : result;
     }
 
     private byte memoizedIsInitialized = -1;
@@ -2994,8 +3125,8 @@ public  final class JsType extends
       if (type_ != null) {
         output.writeMessage(1, getType());
       }
-      if (isModule_ != false) {
-        output.writeBool(2, isModule_);
+      if (declarationType_ != com.github.jsdossier.proto.JsType.Declaration.Type.UNKNOWN.getNumber()) {
+        output.writeEnum(2, declarationType_);
       }
     }
 
@@ -3008,62 +3139,62 @@ public  final class JsType extends
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(1, getType());
       }
-      if (isModule_ != false) {
+      if (declarationType_ != com.github.jsdossier.proto.JsType.Declaration.Type.UNKNOWN.getNumber()) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(2, isModule_);
+          .computeEnumSize(2, declarationType_);
       }
       memoizedSize = size;
       return size;
     }
 
     private static final long serialVersionUID = 0L;
-    public static com.github.jsdossier.proto.JsType.ParentLink parseFrom(
+    public static com.github.jsdossier.proto.JsType.Declaration parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.github.jsdossier.proto.JsType.ParentLink parseFrom(
+    public static com.github.jsdossier.proto.JsType.Declaration parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.github.jsdossier.proto.JsType.ParentLink parseFrom(byte[] data)
+    public static com.github.jsdossier.proto.JsType.Declaration parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.github.jsdossier.proto.JsType.ParentLink parseFrom(
+    public static com.github.jsdossier.proto.JsType.Declaration parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.github.jsdossier.proto.JsType.ParentLink parseFrom(java.io.InputStream input)
+    public static com.github.jsdossier.proto.JsType.Declaration parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return PARSER.parseFrom(input);
     }
-    public static com.github.jsdossier.proto.JsType.ParentLink parseFrom(
+    public static com.github.jsdossier.proto.JsType.Declaration parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return PARSER.parseFrom(input, extensionRegistry);
     }
-    public static com.github.jsdossier.proto.JsType.ParentLink parseDelimitedFrom(java.io.InputStream input)
+    public static com.github.jsdossier.proto.JsType.Declaration parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return PARSER.parseDelimitedFrom(input);
     }
-    public static com.github.jsdossier.proto.JsType.ParentLink parseDelimitedFrom(
+    public static com.github.jsdossier.proto.JsType.Declaration parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return PARSER.parseDelimitedFrom(input, extensionRegistry);
     }
-    public static com.github.jsdossier.proto.JsType.ParentLink parseFrom(
+    public static com.github.jsdossier.proto.JsType.Declaration parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return PARSER.parseFrom(input);
     }
-    public static com.github.jsdossier.proto.JsType.ParentLink parseFrom(
+    public static com.github.jsdossier.proto.JsType.Declaration parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -3074,7 +3205,7 @@ public  final class JsType extends
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(com.github.jsdossier.proto.JsType.ParentLink prototype) {
+    public static Builder newBuilder(com.github.jsdossier.proto.JsType.Declaration prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() {
@@ -3089,29 +3220,29 @@ public  final class JsType extends
       return builder;
     }
     /**
-     * Protobuf type {@code dossier.JsType.ParentLink}
+     * Protobuf type {@code dossier.JsType.Declaration}
      *
      * <pre>
-     * Link to the module or namespace this type belongs to.
+     * Metadata about where this type is declared.
      * </pre>
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessage.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:dossier.JsType.ParentLink)
-        com.github.jsdossier.proto.JsType.ParentLinkOrBuilder {
+        // @@protoc_insertion_point(builder_implements:dossier.JsType.Declaration)
+        com.github.jsdossier.proto.JsType.DeclarationOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.github.jsdossier.proto.Dossier.internal_static_dossier_JsType_ParentLink_descriptor;
+        return com.github.jsdossier.proto.Dossier.internal_static_dossier_JsType_Declaration_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.github.jsdossier.proto.Dossier.internal_static_dossier_JsType_ParentLink_fieldAccessorTable
+        return com.github.jsdossier.proto.Dossier.internal_static_dossier_JsType_Declaration_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                com.github.jsdossier.proto.JsType.ParentLink.class, com.github.jsdossier.proto.JsType.ParentLink.Builder.class);
+                com.github.jsdossier.proto.JsType.Declaration.class, com.github.jsdossier.proto.JsType.Declaration.Builder.class);
       }
 
-      // Construct using com.github.jsdossier.proto.JsType.ParentLink.newBuilder()
+      // Construct using com.github.jsdossier.proto.JsType.Declaration.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -3133,56 +3264,56 @@ public  final class JsType extends
           type_ = null;
           typeBuilder_ = null;
         }
-        isModule_ = false;
+        declarationType_ = 0;
 
         return this;
       }
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.github.jsdossier.proto.Dossier.internal_static_dossier_JsType_ParentLink_descriptor;
+        return com.github.jsdossier.proto.Dossier.internal_static_dossier_JsType_Declaration_descriptor;
       }
 
-      public com.github.jsdossier.proto.JsType.ParentLink getDefaultInstanceForType() {
-        return com.github.jsdossier.proto.JsType.ParentLink.getDefaultInstance();
+      public com.github.jsdossier.proto.JsType.Declaration getDefaultInstanceForType() {
+        return com.github.jsdossier.proto.JsType.Declaration.getDefaultInstance();
       }
 
-      public com.github.jsdossier.proto.JsType.ParentLink build() {
-        com.github.jsdossier.proto.JsType.ParentLink result = buildPartial();
+      public com.github.jsdossier.proto.JsType.Declaration build() {
+        com.github.jsdossier.proto.JsType.Declaration result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      public com.github.jsdossier.proto.JsType.ParentLink buildPartial() {
-        com.github.jsdossier.proto.JsType.ParentLink result = new com.github.jsdossier.proto.JsType.ParentLink(this);
+      public com.github.jsdossier.proto.JsType.Declaration buildPartial() {
+        com.github.jsdossier.proto.JsType.Declaration result = new com.github.jsdossier.proto.JsType.Declaration(this);
         if (typeBuilder_ == null) {
           result.type_ = type_;
         } else {
           result.type_ = typeBuilder_.build();
         }
-        result.isModule_ = isModule_;
+        result.declarationType_ = declarationType_;
         onBuilt();
         return result;
       }
 
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.github.jsdossier.proto.JsType.ParentLink) {
-          return mergeFrom((com.github.jsdossier.proto.JsType.ParentLink)other);
+        if (other instanceof com.github.jsdossier.proto.JsType.Declaration) {
+          return mergeFrom((com.github.jsdossier.proto.JsType.Declaration)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(com.github.jsdossier.proto.JsType.ParentLink other) {
-        if (other == com.github.jsdossier.proto.JsType.ParentLink.getDefaultInstance()) return this;
+      public Builder mergeFrom(com.github.jsdossier.proto.JsType.Declaration other) {
+        if (other == com.github.jsdossier.proto.JsType.Declaration.getDefaultInstance()) return this;
         if (other.hasType()) {
           mergeType(other.getType());
         }
-        if (other.getIsModule() != false) {
-          setIsModule(other.getIsModule());
+        if (other.declarationType_ != 0) {
+          setDeclarationTypeValue(other.getDeclarationTypeValue());
         }
         onChanged();
         return this;
@@ -3196,11 +3327,11 @@ public  final class JsType extends
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        com.github.jsdossier.proto.JsType.ParentLink parsedMessage = null;
+        com.github.jsdossier.proto.JsType.Declaration parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (com.github.jsdossier.proto.JsType.ParentLink) e.getUnfinishedMessage();
+          parsedMessage = (com.github.jsdossier.proto.JsType.Declaration) e.getUnfinishedMessage();
           throw e;
         } finally {
           if (parsedMessage != null) {
@@ -3327,28 +3458,46 @@ public  final class JsType extends
         return typeBuilder_;
       }
 
-      private boolean isModule_ ;
+      private int declarationType_ = 0;
       /**
-       * <code>optional bool is_module = 2;</code>
+       * <code>optional .dossier.JsType.Declaration.Type declaration_type = 2;</code>
        */
-      public boolean getIsModule() {
-        return isModule_;
+      public int getDeclarationTypeValue() {
+        return declarationType_;
       }
       /**
-       * <code>optional bool is_module = 2;</code>
+       * <code>optional .dossier.JsType.Declaration.Type declaration_type = 2;</code>
        */
-      public Builder setIsModule(boolean value) {
-        
-        isModule_ = value;
+      public Builder setDeclarationTypeValue(int value) {
+        declarationType_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional bool is_module = 2;</code>
+       * <code>optional .dossier.JsType.Declaration.Type declaration_type = 2;</code>
        */
-      public Builder clearIsModule() {
+      public com.github.jsdossier.proto.JsType.Declaration.Type getDeclarationType() {
+        com.github.jsdossier.proto.JsType.Declaration.Type result = com.github.jsdossier.proto.JsType.Declaration.Type.valueOf(declarationType_);
+        return result == null ? com.github.jsdossier.proto.JsType.Declaration.Type.UNRECOGNIZED : result;
+      }
+      /**
+       * <code>optional .dossier.JsType.Declaration.Type declaration_type = 2;</code>
+       */
+      public Builder setDeclarationType(com.github.jsdossier.proto.JsType.Declaration.Type value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
         
-        isModule_ = false;
+        declarationType_ = value.getNumber();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .dossier.JsType.Declaration.Type declaration_type = 2;</code>
+       */
+      public Builder clearDeclarationType() {
+        
+        declarationType_ = 0;
         onChanged();
         return this;
       }
@@ -3363,27 +3512,27 @@ public  final class JsType extends
       }
 
 
-      // @@protoc_insertion_point(builder_scope:dossier.JsType.ParentLink)
+      // @@protoc_insertion_point(builder_scope:dossier.JsType.Declaration)
     }
 
-    // @@protoc_insertion_point(class_scope:dossier.JsType.ParentLink)
-    private static final com.github.jsdossier.proto.JsType.ParentLink DEFAULT_INSTANCE;
+    // @@protoc_insertion_point(class_scope:dossier.JsType.Declaration)
+    private static final com.github.jsdossier.proto.JsType.Declaration DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new com.github.jsdossier.proto.JsType.ParentLink();
+      DEFAULT_INSTANCE = new com.github.jsdossier.proto.JsType.Declaration();
     }
 
-    public static com.github.jsdossier.proto.JsType.ParentLink getDefaultInstance() {
+    public static com.github.jsdossier.proto.JsType.Declaration getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
-    private static final com.google.protobuf.Parser<ParentLink>
-        PARSER = new com.google.protobuf.AbstractParser<ParentLink>() {
-      public ParentLink parsePartialFrom(
+    private static final com.google.protobuf.Parser<Declaration>
+        PARSER = new com.google.protobuf.AbstractParser<Declaration>() {
+      public Declaration parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
         try {
-          return new ParentLink(input, extensionRegistry);
+          return new Declaration(input, extensionRegistry);
         } catch (RuntimeException e) {
           if (e.getCause() instanceof
               com.google.protobuf.InvalidProtocolBufferException) {
@@ -3395,16 +3544,16 @@ public  final class JsType extends
       }
     };
 
-    public static com.google.protobuf.Parser<ParentLink> parser() {
+    public static com.google.protobuf.Parser<Declaration> parser() {
       return PARSER;
     }
 
     @java.lang.Override
-    public com.google.protobuf.Parser<ParentLink> getParserForType() {
+    public com.google.protobuf.Parser<Declaration> getParserForType() {
       return PARSER;
     }
 
-    public com.github.jsdossier.proto.JsType.ParentLink getDefaultInstanceForType() {
+    public com.github.jsdossier.proto.JsType.Declaration getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -4100,25 +4249,25 @@ public  final class JsType extends
     return compilerConstant_.get(index);
   }
 
-  public static final int PARENT_FIELD_NUMBER = 21;
-  private com.github.jsdossier.proto.JsType.ParentLink parent_;
+  public static final int DECLARATION_FIELD_NUMBER = 21;
+  private com.github.jsdossier.proto.JsType.Declaration declaration_;
   /**
-   * <code>optional .dossier.JsType.ParentLink parent = 21;</code>
+   * <code>optional .dossier.JsType.Declaration declaration = 21;</code>
    */
-  public boolean hasParent() {
-    return parent_ != null;
+  public boolean hasDeclaration() {
+    return declaration_ != null;
   }
   /**
-   * <code>optional .dossier.JsType.ParentLink parent = 21;</code>
+   * <code>optional .dossier.JsType.Declaration declaration = 21;</code>
    */
-  public com.github.jsdossier.proto.JsType.ParentLink getParent() {
-    return parent_ == null ? com.github.jsdossier.proto.JsType.ParentLink.getDefaultInstance() : parent_;
+  public com.github.jsdossier.proto.JsType.Declaration getDeclaration() {
+    return declaration_ == null ? com.github.jsdossier.proto.JsType.Declaration.getDefaultInstance() : declaration_;
   }
   /**
-   * <code>optional .dossier.JsType.ParentLink parent = 21;</code>
+   * <code>optional .dossier.JsType.Declaration declaration = 21;</code>
    */
-  public com.github.jsdossier.proto.JsType.ParentLinkOrBuilder getParentOrBuilder() {
-    return getParent();
+  public com.github.jsdossier.proto.JsType.DeclarationOrBuilder getDeclarationOrBuilder() {
+    return getDeclaration();
   }
 
   public static final int ALIASED_TYPE_FIELD_NUMBER = 22;
@@ -4388,8 +4537,8 @@ public  final class JsType extends
     for (int i = 0; i < compilerConstant_.size(); i++) {
       output.writeMessage(20, compilerConstant_.get(i));
     }
-    if (parent_ != null) {
-      output.writeMessage(21, getParent());
+    if (declaration_ != null) {
+      output.writeMessage(21, getDeclaration());
     }
     if (aliasedType_ != null) {
       output.writeMessage(22, getAliasedType());
@@ -4482,9 +4631,9 @@ public  final class JsType extends
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(20, compilerConstant_.get(i));
     }
-    if (parent_ != null) {
+    if (declaration_ != null) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(21, getParent());
+        .computeMessageSize(21, getDeclaration());
     }
     if (aliasedType_ != null) {
       size += com.google.protobuf.CodedOutputStream
@@ -4744,11 +4893,11 @@ public  final class JsType extends
       } else {
         compilerConstantBuilder_.clear();
       }
-      if (parentBuilder_ == null) {
-        parent_ = null;
+      if (declarationBuilder_ == null) {
+        declaration_ = null;
       } else {
-        parent_ = null;
-        parentBuilder_ = null;
+        declaration_ = null;
+        declarationBuilder_ = null;
       }
       if (aliasedTypeBuilder_ == null) {
         aliasedType_ = null;
@@ -4922,10 +5071,10 @@ public  final class JsType extends
       } else {
         result.compilerConstant_ = compilerConstantBuilder_.build();
       }
-      if (parentBuilder_ == null) {
-        result.parent_ = parent_;
+      if (declarationBuilder_ == null) {
+        result.declaration_ = declaration_;
       } else {
-        result.parent_ = parentBuilder_.build();
+        result.declaration_ = declarationBuilder_.build();
       }
       if (aliasedTypeBuilder_ == null) {
         result.aliasedType_ = aliasedType_;
@@ -5253,8 +5402,8 @@ public  final class JsType extends
           }
         }
       }
-      if (other.hasParent()) {
-        mergeParent(other.getParent());
+      if (other.hasDeclaration()) {
+        mergeDeclaration(other.getDeclaration());
       }
       if (other.hasAliasedType()) {
         mergeAliasedType(other.getAliasedType());
@@ -9192,121 +9341,121 @@ public  final class JsType extends
       return compilerConstantBuilder_;
     }
 
-    private com.github.jsdossier.proto.JsType.ParentLink parent_ = null;
+    private com.github.jsdossier.proto.JsType.Declaration declaration_ = null;
     private com.google.protobuf.SingleFieldBuilder<
-        com.github.jsdossier.proto.JsType.ParentLink, com.github.jsdossier.proto.JsType.ParentLink.Builder, com.github.jsdossier.proto.JsType.ParentLinkOrBuilder> parentBuilder_;
+        com.github.jsdossier.proto.JsType.Declaration, com.github.jsdossier.proto.JsType.Declaration.Builder, com.github.jsdossier.proto.JsType.DeclarationOrBuilder> declarationBuilder_;
     /**
-     * <code>optional .dossier.JsType.ParentLink parent = 21;</code>
+     * <code>optional .dossier.JsType.Declaration declaration = 21;</code>
      */
-    public boolean hasParent() {
-      return parentBuilder_ != null || parent_ != null;
+    public boolean hasDeclaration() {
+      return declarationBuilder_ != null || declaration_ != null;
     }
     /**
-     * <code>optional .dossier.JsType.ParentLink parent = 21;</code>
+     * <code>optional .dossier.JsType.Declaration declaration = 21;</code>
      */
-    public com.github.jsdossier.proto.JsType.ParentLink getParent() {
-      if (parentBuilder_ == null) {
-        return parent_ == null ? com.github.jsdossier.proto.JsType.ParentLink.getDefaultInstance() : parent_;
+    public com.github.jsdossier.proto.JsType.Declaration getDeclaration() {
+      if (declarationBuilder_ == null) {
+        return declaration_ == null ? com.github.jsdossier.proto.JsType.Declaration.getDefaultInstance() : declaration_;
       } else {
-        return parentBuilder_.getMessage();
+        return declarationBuilder_.getMessage();
       }
     }
     /**
-     * <code>optional .dossier.JsType.ParentLink parent = 21;</code>
+     * <code>optional .dossier.JsType.Declaration declaration = 21;</code>
      */
-    public Builder setParent(com.github.jsdossier.proto.JsType.ParentLink value) {
-      if (parentBuilder_ == null) {
+    public Builder setDeclaration(com.github.jsdossier.proto.JsType.Declaration value) {
+      if (declarationBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
         }
-        parent_ = value;
+        declaration_ = value;
         onChanged();
       } else {
-        parentBuilder_.setMessage(value);
+        declarationBuilder_.setMessage(value);
       }
 
       return this;
     }
     /**
-     * <code>optional .dossier.JsType.ParentLink parent = 21;</code>
+     * <code>optional .dossier.JsType.Declaration declaration = 21;</code>
      */
-    public Builder setParent(
-        com.github.jsdossier.proto.JsType.ParentLink.Builder builderForValue) {
-      if (parentBuilder_ == null) {
-        parent_ = builderForValue.build();
+    public Builder setDeclaration(
+        com.github.jsdossier.proto.JsType.Declaration.Builder builderForValue) {
+      if (declarationBuilder_ == null) {
+        declaration_ = builderForValue.build();
         onChanged();
       } else {
-        parentBuilder_.setMessage(builderForValue.build());
+        declarationBuilder_.setMessage(builderForValue.build());
       }
 
       return this;
     }
     /**
-     * <code>optional .dossier.JsType.ParentLink parent = 21;</code>
+     * <code>optional .dossier.JsType.Declaration declaration = 21;</code>
      */
-    public Builder mergeParent(com.github.jsdossier.proto.JsType.ParentLink value) {
-      if (parentBuilder_ == null) {
-        if (parent_ != null) {
-          parent_ =
-            com.github.jsdossier.proto.JsType.ParentLink.newBuilder(parent_).mergeFrom(value).buildPartial();
+    public Builder mergeDeclaration(com.github.jsdossier.proto.JsType.Declaration value) {
+      if (declarationBuilder_ == null) {
+        if (declaration_ != null) {
+          declaration_ =
+            com.github.jsdossier.proto.JsType.Declaration.newBuilder(declaration_).mergeFrom(value).buildPartial();
         } else {
-          parent_ = value;
+          declaration_ = value;
         }
         onChanged();
       } else {
-        parentBuilder_.mergeFrom(value);
+        declarationBuilder_.mergeFrom(value);
       }
 
       return this;
     }
     /**
-     * <code>optional .dossier.JsType.ParentLink parent = 21;</code>
+     * <code>optional .dossier.JsType.Declaration declaration = 21;</code>
      */
-    public Builder clearParent() {
-      if (parentBuilder_ == null) {
-        parent_ = null;
+    public Builder clearDeclaration() {
+      if (declarationBuilder_ == null) {
+        declaration_ = null;
         onChanged();
       } else {
-        parent_ = null;
-        parentBuilder_ = null;
+        declaration_ = null;
+        declarationBuilder_ = null;
       }
 
       return this;
     }
     /**
-     * <code>optional .dossier.JsType.ParentLink parent = 21;</code>
+     * <code>optional .dossier.JsType.Declaration declaration = 21;</code>
      */
-    public com.github.jsdossier.proto.JsType.ParentLink.Builder getParentBuilder() {
+    public com.github.jsdossier.proto.JsType.Declaration.Builder getDeclarationBuilder() {
       
       onChanged();
-      return getParentFieldBuilder().getBuilder();
+      return getDeclarationFieldBuilder().getBuilder();
     }
     /**
-     * <code>optional .dossier.JsType.ParentLink parent = 21;</code>
+     * <code>optional .dossier.JsType.Declaration declaration = 21;</code>
      */
-    public com.github.jsdossier.proto.JsType.ParentLinkOrBuilder getParentOrBuilder() {
-      if (parentBuilder_ != null) {
-        return parentBuilder_.getMessageOrBuilder();
+    public com.github.jsdossier.proto.JsType.DeclarationOrBuilder getDeclarationOrBuilder() {
+      if (declarationBuilder_ != null) {
+        return declarationBuilder_.getMessageOrBuilder();
       } else {
-        return parent_ == null ?
-            com.github.jsdossier.proto.JsType.ParentLink.getDefaultInstance() : parent_;
+        return declaration_ == null ?
+            com.github.jsdossier.proto.JsType.Declaration.getDefaultInstance() : declaration_;
       }
     }
     /**
-     * <code>optional .dossier.JsType.ParentLink parent = 21;</code>
+     * <code>optional .dossier.JsType.Declaration declaration = 21;</code>
      */
     private com.google.protobuf.SingleFieldBuilder<
-        com.github.jsdossier.proto.JsType.ParentLink, com.github.jsdossier.proto.JsType.ParentLink.Builder, com.github.jsdossier.proto.JsType.ParentLinkOrBuilder> 
-        getParentFieldBuilder() {
-      if (parentBuilder_ == null) {
-        parentBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-            com.github.jsdossier.proto.JsType.ParentLink, com.github.jsdossier.proto.JsType.ParentLink.Builder, com.github.jsdossier.proto.JsType.ParentLinkOrBuilder>(
-                getParent(),
+        com.github.jsdossier.proto.JsType.Declaration, com.github.jsdossier.proto.JsType.Declaration.Builder, com.github.jsdossier.proto.JsType.DeclarationOrBuilder> 
+        getDeclarationFieldBuilder() {
+      if (declarationBuilder_ == null) {
+        declarationBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+            com.github.jsdossier.proto.JsType.Declaration, com.github.jsdossier.proto.JsType.Declaration.Builder, com.github.jsdossier.proto.JsType.DeclarationOrBuilder>(
+                getDeclaration(),
                 getParentForChildren(),
                 isClean());
-        parent_ = null;
+        declaration_ = null;
       }
-      return parentBuilder_;
+      return declarationBuilder_;
     }
 
     private com.github.jsdossier.proto.NamedType aliasedType_ = null;

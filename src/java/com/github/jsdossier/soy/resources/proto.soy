@@ -46,6 +46,16 @@ pd.Message_ = class {
     return new msg.constructor(data);
   }
 
+  /**
+   * @param {!MESSAGE_TYPE} destination
+   * @param {!MESSAGE_TYPE} source
+   * @template MESSAGE_TYPE
+   */
+  static merge(destination, source) {
+    destination.data_ = source.data_;
+    destination.converted_ = source.converted_;
+  }
+
   /** @return {!Object} */
   toJSON() {
     let json = Object.assign({}, this.data_);

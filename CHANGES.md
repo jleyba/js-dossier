@@ -14,6 +14,11 @@
 
 ## Changes
 
+- Dossier will no longer generate documentation for implicit namespaces.
+  An implicit namespace only exists through the definition of another symbol
+  using `goog.module` or `goog.provide`. For example, the statement
+  `goog.provide('foo.bar.baz');`, implicitly creates the namespaces
+  `foo` and `foo.bar`.
 - Treat the compiler's IArrayLike, IObject, and IThenable like other built-in
   externs and automatically link to external documentation.
 - Render properties and functions as expandable cards.

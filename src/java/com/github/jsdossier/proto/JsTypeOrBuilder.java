@@ -507,17 +507,17 @@ public interface JsTypeOrBuilder extends
       int index);
 
   /**
-   * <code>optional .dossier.JsType.ParentLink parent = 21;</code>
+   * <code>optional .dossier.JsType.Declaration declaration = 21;</code>
    */
-  boolean hasParent();
+  boolean hasDeclaration();
   /**
-   * <code>optional .dossier.JsType.ParentLink parent = 21;</code>
+   * <code>optional .dossier.JsType.Declaration declaration = 21;</code>
    */
-  com.github.jsdossier.proto.JsType.ParentLink getParent();
+  com.github.jsdossier.proto.JsType.Declaration getDeclaration();
   /**
-   * <code>optional .dossier.JsType.ParentLink parent = 21;</code>
+   * <code>optional .dossier.JsType.Declaration declaration = 21;</code>
    */
-  com.github.jsdossier.proto.JsType.ParentLinkOrBuilder getParentOrBuilder();
+  com.github.jsdossier.proto.JsType.DeclarationOrBuilder getDeclarationOrBuilder();
 
   /**
    * <code>optional .dossier.expression.NamedType aliased_type = 22;</code>

@@ -472,8 +472,10 @@ public final class TypeCollectionPass implements CompilerPass {
           && !jsType.isEnumType()
           && !type.getJsDoc().isTypedef()
           && !type.getJsDoc().isDefine()
-          && !typeRegistry.isProvided(type.getName())) {
+          && !typeRegistry.isProvided(type.getName())
+          && !typeRegistry.isImplicitNamespace(type.getName())) {
         logfmt("Ignoring undeclared namespace %s", type.getName());
+        System.out.printf("Ignoring undeclared namespace %s\n", type.getName());
         return;
       }
 
@@ -598,7 +600,8 @@ public final class TypeCollectionPass implements CompilerPass {
       } else if (!propertyType.isInstanceType()
           && propertyType instanceof PrototypeObjectType
           && (typeRegistry.isProvided(parent.getName() + "." + property.getName())
-          || !typeRegistry.getTypes(propertyType).isEmpty())) {
+              || typeRegistry.isImplicitNamespace(parent.getName() + "." + property.getName())
+              || !typeRegistry.getTypes(propertyType).isEmpty())) {
         recordType(nt);
       }
     }

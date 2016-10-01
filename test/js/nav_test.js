@@ -107,6 +107,41 @@ function testBuildTree_nestedNamespaces() {
 }
 
 
+function testBuildTree_collapsesEmptyNamespaces_oneEntry() {
+  let result = nav.buildTree([createNamespaceEntry('foo.bar.baz')]);
+  assertEquals(1, result.length);
+  assertEntry(result[0], 'foo.bar.baz', 'foo.bar.baz');
+}
+
+
+function testBuildTree_collapsesEmptyNamespaces_emptyIsCommonAncestor() {
+  let result = nav.buildTree([
+    createNamespaceEntry('foo.bar.baz.quot'),
+    createNamespaceEntry('foo.bar.baz.quux')
+  ]);
+
+  assertEquals(1, result.length);
+  assertEntry(result[0], 'foo.bar.baz', 'foo.bar.baz');
+
+  assertEquals(2, result[0].child.length);
+  assertEntry(result[0].child[0], 'quot', 'foo.bar.baz.quot');
+  assertEntry(result[0].child[1], 'quux', 'foo.bar.baz.quux');
+}
+
+
+function testBuildTree_twoRoots() {
+  var input = [
+    createNamespaceEntry('foo'),
+    createNamespaceEntry('bar')
+  ];
+
+  let result = nav.buildTree(input);
+  assertEquals(2, result.length);
+  assertEntry(result[0], 'bar', 'bar');
+  assertEntry(result[1], 'foo', 'foo');
+}
+
+
 function testBuildTree_multiRooted() {
   var input = [
       createNamespaceEntry('foo'),
@@ -128,7 +163,10 @@ function testBuildTree_multiRooted() {
 
   let quot = result[1];
   assertEquals(1, quot.child.length);
-  assertEntry(quot.child[0], 'one.two', 'quot.quux.one.two');
+
+  let one = quot.child[0];
+  assertEntry(one, 'one.two', 'quot.quux.one.two');
+  assertEquals(0, one.child.length);
 }
 
 
@@ -151,4 +189,114 @@ function testBuildTree_attachesNestedClassesToParentNamespace() {
   assertEntry(foo[1], 'Bar.Baz', 'foo.Bar.Baz');
   assertEntry(foo[2], 'Bar.Quot', 'foo.Bar.Quot');
   assertEntry(foo[3], 'Bar.Quot.Quux', 'foo.Bar.Quot.Quux');
+}
+
+
+function testBuildTree_insertsSyntheticNamespaces() {
+  var input = [
+    createNamespaceEntry('foo'),
+    createNamespaceEntry('foo.a.b.c.red.green.blue'),
+    createNamespaceEntry('foo.a.b.c.one.two.three'),
+    createNamespaceEntry('foo.a.apple')
+  ];
+
+  let result = nav.buildTree(input);
+  assertEquals(1, result.length);
+  assertEntry(result[0], 'foo', 'foo');
+  assertEquals(1, result[0].child.length);
+
+  let a = result[0].child[0];
+  assertEntry(a, 'a', 'foo.a');
+  assertEquals(2, a.child.length);
+  assertEntry(a.child[0], 'apple', 'foo.a.apple');
+
+  let bc = a.child[1];
+  assertEntry(bc, 'b.c', 'foo.a.b.c');
+  assertEquals(2, bc.child.length);
+  assertEntry(bc.child[0], 'one.two.three', 'foo.a.b.c.one.two.three');
+  assertEntry(bc.child[1], 'red.green.blue', 'foo.a.b.c.red.green.blue');
+}
+
+
+function testBuildTree_collapsesSyntheticNamespcaesWithOneChild() {
+  let result = nav.buildTree([
+      createNamespaceEntry('foo'),
+      createEntry('foo.Bar'),
+      createNamespaceEntry('foo.bar.baz'),
+      createEntry('foo.bar.baz.quot.Quux'),
+      createEntry('foo.bar.other.One')
+  ]);
+
+  assertEquals(1, result.length);
+  assertEntry(result[0], 'foo', 'foo');
+
+  let foo = result[0];
+  assertEquals(2, foo.child.length);
+
+  assertEntry(foo.child[0], 'Bar', 'foo.Bar');
+  assertEquals(0, foo.child[0].child.length);
+
+  let bar = foo.child[1];
+  assertEntry(bar, 'bar', 'foo.bar');
+  assertEquals(2, bar.child.length);
+  assertEntry(bar.child[0], 'baz', 'foo.bar.baz');
+  assertEntry(bar.child[1], 'other.One', 'foo.bar.other.One');
+
+  let baz = bar.child[0];
+  assertEquals(1, baz.child.length);
+  assertEntry(baz.child[0], 'quot.Quux', 'foo.bar.baz.quot.Quux');
+}
+
+
+function testBuildTree_modules() {
+  var input = [
+    createNamespaceEntry('foo'),
+    createNamespaceEntry('foo/a/b'),
+    createNamespaceEntry('foo/a/b/c'),
+    createNamespaceEntry('foo/a/red.fruit'),
+    createNamespaceEntry('foo/a/red.fruit/apple'),
+    createNamespaceEntry('foo/a/b/x/y/z'),
+    createNamespaceEntry('bar/baz')
+  ];
+
+  let result = nav.buildTree(input, true);
+  assertEquals(2, result.length);
+  assertEntry(result[0], 'bar/baz', 'bar/baz');
+  assertEquals(0, result[0].child.length);
+
+  let foo = result[1];
+  assertEntry(foo, 'foo', 'foo');
+  assertEquals(1, foo.child.length);
+
+  let a = foo.child[0];
+  assertEntry(a, '/a', 'foo/a');
+  assertEquals(2, a.child.length);
+
+  let ab = a.child[0];
+  assertEntry(ab, '/b', 'foo/a/b');
+  assertEquals(2, ab.child.length);
+  assertEntry(ab.child[0], '/c', 'foo/a/b/c');
+  assertEntry(ab.child[1], '/x/y/z', 'foo/a/b/x/y/z');
+
+  let redFruit = a.child[1];
+  assertEntry(redFruit, '/red.fruit', 'foo/a/red.fruit');
+  assertEquals(1, redFruit.child.length);
+  assertEntry(redFruit.child[0], '/apple', 'foo/a/red.fruit/apple');
+}
+
+
+function testBuildTree_collapsesModules() {
+  let result = nav.buildTree([
+    createNamespaceEntry('foo'),
+    createNamespaceEntry('foo/bar/a'),
+    createNamespaceEntry('foo/bar/b'),
+    createNamespaceEntry('foo/bar/c')
+  ], true);
+
+  assertEquals(1, result.length);
+  assertEntry(result[0], 'foo', 'foo');
+
+  let foo = result[0];
+  assertEquals(1, foo.child.length);
+  assertEntry(foo.child[0], '/bar', 'foo/bar');
 }

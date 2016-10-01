@@ -290,7 +290,7 @@ public final class TypeRegistry {
    * Returns whether the provided symbol was declared with a "goog.provide" statement.
    */
   public boolean isProvided(String symbol) {
-    return providedSymbols.contains(symbol) || implicitNamespaces.contains(symbol);
+    return providedSymbols.contains(symbol);
   }
 
   /**

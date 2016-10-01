@@ -17,6 +17,7 @@
 goog.module('dossier.nav');
 
 const Index = goog.require('dossier.Index');
+const NamedType = goog.require('dossier.expression.NamedType');
 const page = goog.require('dossier.page');
 const soyNav = goog.require('dossier.soy.nav');
 const Arrays = goog.require('goog.array');
@@ -30,23 +31,24 @@ const soy = goog.require('goog.soy');
 const SanitizedHtml = goog.require('soydata.SanitizedHtml');
 
 
-/**
- * @param {!Array<!dossier.Index.Entry>} entries
- */
-function sortEntries(entries) {
+function sortEntries(/** !Array<!Index.Entry> */entries) {
+  entries.forEach(entry => {
+    if (!entry.type.qualifiedName) {
+      entry.type.qualifiedName = entry.type.name;
+    }
+
+    if (entry.child.length) {
+      sortEntries(entry.child);
+    }
+  });
+
   entries.sort((a, b) => {
-    let nameA = a.type.qualifiedName || a.type.name;
-    let nameB = b.type.qualifiedName || b.type.name;
+    let nameA = a.type.qualifiedName;
+    let nameB = b.type.qualifiedName;
     if (nameA === nameB) {
       return 0;
     }
     return nameA < nameB ? -1 : 1;
-  });
-
-  entries.forEach(entry => {
-    if (entry.child.length) {
-      sortEntries(entry.child);
-    }
   });
 }
 
@@ -55,55 +57,129 @@ function sortEntries(entries) {
  * Builds a tree structure from the given list of descriptors where the
  * root node represents the global scope.
  *
- * @param {!Array<!dossier.Index.Entry>} entries The index entries to
- *     build a tree from.
- * @return {!Array<!dossier.Index.Entry>} The constructed, possibly
- *     disconnected trees.
+ * @param {!Array<!Index.Entry>} entries The index entries to build a tree from.
+ * @param {boolean=} opt_modules Whether the entries are modules.
+ * @return {!Array<!Index.Entry>} The constructed, possibly disconnected trees.
  */
-function buildTree(entries) {
+function buildTree(entries, opt_modules) {
+  sortEntries(entries);
+
+  const delimiter = opt_modules ? '/' : '.';
   let roots = [];
   let stack = [];
+  let allEntries = new Set;
 
-  entries.forEach(entry => {
-    if (!entry.type.qualifiedName) {
-      entry.type.qualifiedName = entry.type.name;
+  /**
+   * @type {!Array<{parent: (Index.Entry|undefined),
+   *                fakeEntry: !Index.Entry,
+   *                childIndex: number}>}
+   */
+  let fakeEntries = [];
+  let entriesToResort = /** !Set<!Index.Entry> */new Set;
+
+  function recordEntry(/** !Index.Entry */entry) {
+    let last = Arrays.peek(stack);
+    allEntries.add(entry.type.qualifiedName);
+
+    if (entry.isNamespace) {
+      stack.push(entry);
+    }
+    let list = last ? last.child : roots;
+
+    if (opt_modules && last) {
+      entry.type.name =
+          entry.type.qualifiedName.slice(last.type.qualifiedName.length);
     }
 
+    return list.push(entry) - 1;
+  }
+
+  function recordFakeEntry(/** string */name, /** string */qualifiedName) {
+    let fakeEntry = new Index.Entry({});
+    fakeEntry.isNamespace = true;
+    fakeEntry.type = new NamedType({});
+    fakeEntry.type.name = name;
+    fakeEntry.type.qualifiedName = qualifiedName;
+
+    let parent = Arrays.peek(stack);
+    let childIndex = recordEntry(fakeEntry);
+    fakeEntries.push({parent, fakeEntry, childIndex});
+  }
+
+  function processEntry(/** !Index.Entry */entry, /** string */name) {
+    for (let index = name.indexOf(delimiter, 1);
+         index != -1;
+         index = name.indexOf(delimiter)) {
+      let parent = Arrays.peek(stack);
+      let fakeName = name.slice(0, index);
+      let fakeQualifiedName = parent
+          ? `${parent.type.qualifiedName}${opt_modules ? '' : '.'}${fakeName}`
+          : fakeName;
+
+      if (allEntries.has(fakeQualifiedName)) {
+        break;
+      }
+
+      recordFakeEntry(fakeName, fakeQualifiedName);
+      name = opt_modules ? name.slice(index) : name.slice(index + 1);
+    }
+
+    entry.type.name = name;
+    recordEntry(entry);
+  }
+
+  entries.forEach(entry => {
     while (stack.length) {
       let last = Arrays.peek(stack);
       let parentName = last.type.qualifiedName;
       let childName = entry.type.qualifiedName;
-      let isChild = false;
 
-      if (childName.startsWith(parentName + '.')) {
-        entry.type.name = childName.slice(parentName.length + 1);
-        isChild = true;
-      } else if (childName.startsWith(parentName + '/')) {
-        entry.type.name = childName.slice(parentName.length);
-        isChild = true;
-      }
+      if (!opt_modules && childName.startsWith(parentName + '.')) {
+        childName = childName.slice(parentName.length + 1);
+        processEntry(entry, childName);
+        return;
 
-      if (isChild) {
-        last.child.push(entry);
-        if (entry.isNamespace) {
-          stack.push(entry);
-        }
+      } else if (opt_modules && childName.startsWith(parentName + '/')) {
+        childName = childName.slice(parentName.length);
+        processEntry(entry, childName);
         return;
       }
 
       stack.pop();
     }
 
-    if (!entry.type.qualifiedName) {
-      entry.type.qualifiedName = entry.type.name;
-    }
-    roots.push(entry);
-    if (entry.isNamespace) {
-      stack.push(entry);
+    if (opt_modules) {
+      recordEntry(entry);
+    } else {
+      processEntry(entry, entry.type.name);
     }
   });
 
-  sortEntries(roots);
+  for (let i = fakeEntries.length - 1; i >= 0; i -= 1) {
+    let {parent, fakeEntry, childIndex} = fakeEntries[i];
+
+    if (fakeEntry.child.length === 1) {
+      let child = fakeEntry.child[0];
+      child.type.name =
+          `${fakeEntry.type.name}${opt_modules ? '' : '.'}${child.type.name}`;
+      // If there is a parent, simply swap out the children. Otherwise, we can
+      // merge the child's data into the current record to preserve all data.
+      if (parent) {
+        entriesToResort.add(parent);
+        entriesToResort.delete(fakeEntry);
+        parent.child[childIndex] = child;
+      } else {
+        entriesToResort.add(fakeEntry);
+        entriesToResort.delete(child);
+        Index.Entry.merge(fakeEntry, child);
+      }
+    }
+  }
+
+  if (fakeEntries.length) {
+    sortEntries(roots);
+  }
+
   return roots;
 }
 exports.buildTree = buildTree;  // For testing.
@@ -318,7 +394,7 @@ exports.createNavDrawer = function(typeInfo, currentFile, basePath) {
   events.listen(navButton, 'click', drawer.toggleVisibility, false, drawer);
   events.listen(navEl, 'click', drawer.onClick_, false, drawer);
 
-  let modules = buildTree(typeInfo.module);
+  let modules = buildTree(typeInfo.module, true);
   let types = buildTree(typeInfo.type);
   let links = typeInfo.page;
   let fragment =

@@ -640,14 +640,6 @@
 {template .typeHeader}
   {@param type: dossier.JsType}
 
-  {if $type.parent}
-    <table class="info">
-      {call .printTypeList}
-        {param types: [$type.parent.type] /}
-        {param title: $type.parent.isModule ? 'Module' : 'Namespace' /}
-      {/call}
-    </table>
-  {/if}
   <h1 class="title{if $type.deprecation}{sp}deprecated{/if}">
     {call .tags}
       {param tags: $type.tags /}
@@ -770,7 +762,8 @@
           {/call}
         {/param}
         {param body kind="html"}
-          {if length($type.extendedType)
+          {if ($type.declaration and $type.declaration.declarationType)
+              or length($type.extendedType)
               or length($type.implementedType)
               or length($type.subtype)
               or ($type.tags and $type.tags.isInterface and length($type.implementation))
@@ -778,6 +771,25 @@
               or length($type.knownAlias)
               or ($type.enumeration and $type.enumeration.type)}
             <table class="info">
+              {if $type.declaration and $type.declaration.declarationType}
+                {call .printTypeList}
+                  {param types: [$type.declaration.type] /}
+                  {param title kind="text"}
+                    {switch $type.declaration.declarationType}
+                      {case dossier.JsType.Declaration.Type.GOOG_PROVIDE}
+                        Provided By
+                      {case dossier.JsType.Declaration.Type.GOOG_MODULE}
+                        {if $type.tags and $type.tags.isModule}
+                          Module ID
+                        {else}
+                          Exported By
+                        {/if}
+                      {default}  // Must be a module of some kind
+                        Exported By
+                    {/switch}
+                  {/param}
+                {/call}
+              {/if}
               {call .printTypeList}
                 {param types: $type.extendedType /}
                 {param title: 'Extends' /}

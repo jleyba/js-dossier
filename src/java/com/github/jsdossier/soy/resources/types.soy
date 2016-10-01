@@ -37,7 +37,7 @@
   {@param? tabIndex: int}
   {@param? classes: string}
 
-  <a href="{$link.href}"
+  <a {if $link}href="{$link.href}"{/if}
      {if $target}{sp}target="{$target}"{/if}
      {if $title}{sp}title="{$title}"{/if}
      {if $tabIndex}{sp}tabIndex="{$tabIndex}"{/if}
