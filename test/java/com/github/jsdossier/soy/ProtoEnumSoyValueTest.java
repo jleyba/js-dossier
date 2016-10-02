@@ -17,6 +17,7 @@
 package com.github.jsdossier.soy;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -34,8 +35,9 @@ public class ProtoEnumSoyValueTest {
 
   @Test
   public void testCoerceToBoolean() {
-    assertTrue(RED.booleanValue());
-    assertTrue(RED.coerceToBoolean());
+    assertEquals(0, RED.integerValue());
+    assertFalse(RED.booleanValue());
+    assertFalse(RED.coerceToBoolean());
 
     assertTrue(BLUE.booleanValue());
     assertTrue(BLUE.coerceToBoolean());
