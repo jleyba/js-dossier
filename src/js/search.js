@@ -22,11 +22,13 @@ goog.module('dossier.search');
 
 const Index = goog.require('dossier.Index');
 const Entry = goog.require('dossier.Index.Entry');
+const Heap = goog.require('dossier.Heap');
 const page = goog.require('dossier.page');
+const asserts = goog.require('goog.asserts');
 const events = goog.require('goog.events');
 const EventTarget = goog.require('goog.events.EventTarget');
 const EventType = goog.require('goog.events.EventType');
-const ArrayMatcher = goog.require('goog.ui.ac.ArrayMatcher');
+const googString = goog.require('goog.string');
 const AutoComplete = goog.require('goog.ui.ac.AutoComplete');
 const InputHandler = goog.require('goog.ui.ac.InputHandler');
 const Renderer = goog.require('goog.ui.ac.Renderer');
@@ -77,7 +79,116 @@ function addTypes(/** !Map<string, string> */nameToHref, /** !Entry */entry) {
 
 
 /**
- * @param {!Array<?>} data The input data array.
+ * Matcher used for auto-complete suggestions in the search box. This class
+ * uses multiple passes for its suggestions:
+ *
+ * 1) A case insensitive substring match is performed on all known words.
+ * 2) If the previous step matches more terms than requested, the list is
+ *    further filtered using the Damerau–Levenshtein distance.
+ *
+ * @see https://en.wikipedia.org/wiki/Damerau%E2%80%93Levenshtein_distance
+ */
+class AutoCompleteMatcher {
+  /** @param {!Array<string>} terms */
+  constructor(terms) {
+    /** @private @const */
+    this.terms_ = terms;
+  }
+
+  /**
+   * Method used by the {@link AutoComplete} class to request matches on an
+   * input token.
+   * @param {string} token
+   * @param {number} max
+   * @param {function(string, !Array<string>)} callback
+   */
+  requestMatchingRows(token, max, callback) {
+    callback(token, this.match(token, max));
+  }
+
+  /**
+   * @param {string} token The token to match on this matcher's terms.
+   * @param {number} max The maximum number of results to return.
+   * @return {!Array<string>} The matched entries.
+   */
+  match(token, max) {
+    if (!token) {
+      return [];
+    }
+
+    let matcher = new RegExp(googString.regExpEscape(token), 'i');
+    let heap = new Heap((a, b) => b.key - a.key);
+    for (let term of this.terms_) {
+      // 1) Require at least a substring match.
+      if (!term.match(matcher)) {
+        continue;
+      }
+
+      // 2) Select the if it is K-closest (K=max) using Damerau–Levenshtein
+      // distance.
+      //
+      // NB: we could apply this second pass only if there are >max substring
+      // matches, but this ensures suggestions are always consistently sorted
+      // based on D-L distance.
+      let distance = this.damerauLevenshteinDistance_(token, term);
+      if (heap.size() < max) {
+        heap.insert(distance, term);
+      } else if (distance < heap.peekKey()) {
+        heap.remove();
+        heap.insert(distance, term);
+      }
+    }
+
+    return heap.entries()
+        .sort((a, b) => a.key - b.key)
+        .map(e => e.value);
+  }
+
+  /**
+   * @param {string} a
+   * @param {string} b
+   * @return {number}
+   * @private
+   */
+  damerauLevenshteinDistance_(a, b) {
+    let d = [];
+
+    for (let i = 0; i <= a.length; i++) {
+      d[i] = [i];
+    }
+
+    for (let j = 0; j <= b.length; j++) {
+      d[0][j] = j;
+    }
+
+    for (let i = 1; i <= a.length; i++) {
+      for (let j = 1; j <= b.length; j++) {
+        let cost = a.charAt(i - 1) === b.charAt(j - 1) ? 0 : 1;
+        d[i][j] = Math.min(
+            d[i - 1][j] + 1,        // Deletion
+            d[i][j - 1] + 1,        // Insertion
+            d[i - 1][j - 1] + cost  // Substitution
+        );
+
+        if (i > 1 && j > 1
+            && a.charAt(i - 1) == b.charAt(j - 2)
+            && a.charAt(i - 2) == b.charAt(j - 1)) {
+          d[i][j] = Math.min(
+              d[i][j],
+              d[i - 2][j - 2] + cost  // Transposition
+          );
+        }
+      }
+    }
+
+    return d[a.length][b.length];
+  }
+}
+exports.AutoCompleteMatcher = AutoCompleteMatcher;
+
+
+/**
+ * @param {!Array<string>} data The input data array.
  * @param {!Element} input The controlling input element.
  * @return {!AutoComplete} A new auto-complete object.
  */
@@ -86,7 +197,7 @@ function createAutoComplete(data, input) {
   parent.classList.add('dossier-ac');
   parent.ownerDocument.body.appendChild(parent);
 
-  let matcher = new ArrayMatcher(data, true);
+  let matcher = new AutoCompleteMatcher(data);
   let renderer = new Renderer(parent);
   let inputHandler = new InputHandler(null, null, false);
 

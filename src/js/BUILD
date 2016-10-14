@@ -26,6 +26,7 @@ js_binary(
         ":nav.soy.js",
         ":types.soy.js",
         "app.js",
+        "heap.js",
         "main.js",
         "nav.js",
         "page.js",

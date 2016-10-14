@@ -11,6 +11,8 @@
   type expressions in multiple threads with unresolvable properties.
 - Fixed navigation from the search bar when files are loaded directly from disk
   (e.g. using a `file://` scheme).
+- Refine search box auto-complete suggestions using Damerau–Levenshtein the
+  distance between terms.
 
 ## Changes
 
