@@ -102,31 +102,25 @@ public abstract class AbstractTypeInspectorTest {
   }
 
   protected static TypeExpression nullableErrorTypeExpression() {
-    NamedType error = namedType(
-        "Error",
-        "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error");
+    NamedType error = namedType("Error").toBuilder().setExtern(true).build();
     return unionType(
         TypeExpression.newBuilder()
-            .setNamedType(error.toBuilder().setExtern(true))
+            .setNamedType(error)
             .build(),
         TypeExpressions.NULL_TYPE);
   }
 
   protected static TypeExpression numberTypeExpression() {
-    NamedType number = namedType(
-        "number",
-        "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number");
+    NamedType number = namedType("number").toBuilder().setExtern(true).build();
     return TypeExpression.newBuilder()
-        .setNamedType(number.toBuilder().setExtern(true))
+        .setNamedType(number)
         .build();
   }
 
   protected static TypeExpression stringTypeExpression() {
-    NamedType string = namedType(
-        "string",
-        "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String");
+    NamedType string = namedType("string").toBuilder().setExtern(true).build();
     return TypeExpression.newBuilder()
-        .setNamedType(string.toBuilder().setExtern(true))
+        .setNamedType(string)
         .build();
   }
 

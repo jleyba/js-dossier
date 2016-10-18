@@ -489,11 +489,7 @@ public class TypeExpressionParserTest {
     return TypeExpression.newBuilder()
         .setNamedType(NamedType.newBuilder()
             .setExtern(true)
-            .setName("number")
-            .setLink(
-                TypeLink.newBuilder()
-                    .setHref("https://developer.mozilla.org/en-US/docs/Web/" +
-                        "JavaScript/Reference/Global_Objects/Number")))
+            .setName("number"))
         .build();
   }
 
@@ -501,11 +497,7 @@ public class TypeExpressionParserTest {
     return TypeExpression.newBuilder()
         .setNamedType(NamedType.newBuilder()
             .setExtern(true)
-            .setName("string")
-            .setLink(
-                TypeLink.newBuilder()
-                    .setHref("https://developer.mozilla.org/en-US/docs/Web/" +
-                        "JavaScript/Reference/Global_Objects/String")))
+            .setName("string"))
         .build();
   }
 

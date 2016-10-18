@@ -55,12 +55,8 @@ import javax.annotation.Nullable;
 @AutoFactory(className = "LinkFactoryBuilder")  // Avoid generating a LinkFactoryFactory.
 final class LinkFactory {
 
-  private static final String MDN = "https://developer.mozilla.org/en-US/docs/Web/JavaScript/";
-  private static final String MDN_PREFIX = MDN + "Reference/";
-  private static final String CLOSURE_COMPILER_PREFIX =
-      "https://github.com/google/closure-compiler/wiki/Special-types-in-the-Closure-Type-System#";
-
-  private static final ImmutableMap<String, NamedType> EXTERN_TYPE_REFERENCES = createMdnLinkMap();
+  private static final ImmutableMap<String, NamedType> EXTERN_TYPE_REFERENCES =
+      createExternReferences();
 
   private final DossierFileSystem dfs;
   private final TypeRegistry typeRegistry;
@@ -470,56 +466,54 @@ final class LinkFactory {
     return URI.create(path.normalize().toString()).toString();
   }
 
-  private static ImmutableMap<String, NamedType> createMdnLinkMap() {
+  private static ImmutableMap<String, NamedType> createExternReferences() {
     ImmutableMap.Builder<String, NamedType> map = ImmutableMap.builder();
-    addExternReference(map, "Arguments", MDN_PREFIX + "Functions/arguments");
-    addExternReference(map, "Array", MDN_PREFIX + "Global_Objects/Array");
-    addExternReference(map, "Boolean", MDN_PREFIX + "Global_Objects/Boolean");
-    addExternReference(map, "Date", MDN_PREFIX + "Global_Objects/Date");
-    addExternReference(map, "Error", MDN_PREFIX + "Global_Objects/Error");
-    addExternReference(map, "Function", MDN_PREFIX + "Global_Objects/Function");
-    addExternReference(map, "Generator", MDN_PREFIX + "Global_Objects/Generaor");
-    addExternReference(map, "IArrayLike", CLOSURE_COMPILER_PREFIX + "iarraylike");
-    addExternReference(map, "IObject", CLOSURE_COMPILER_PREFIX + "iobject");
-    addExternReference(map, "IThenable", CLOSURE_COMPILER_PREFIX + "ithenable");
-    addExternReference(map, "Infinity", MDN_PREFIX + "Global_Objects/Infinity");
-    addExternReference(map, "Iterable", MDN_PREFIX + "Global_Objects/Symbol/iterator");
-    addExternReference(map, "Iterator", MDN + "Guide/The_Iterator_protocol");
-    addExternReference(map, "Map", MDN_PREFIX + "Global_Objects/Map");
-    addExternReference(map, "Math", MDN_PREFIX + "Global_Objects/Math");
-    addExternReference(map, "NaN", MDN_PREFIX + "Global_Objects/NaN");
-    addExternReference(map, "Number", MDN_PREFIX + "Global_Objects/Number");
-    addExternReference(map, "Object", MDN_PREFIX + "Global_Objects/Object");
-    addExternReference(map, "Promise", MDN_PREFIX + "Global_Objects/Promise");
-    addExternReference(map, "RangeError", MDN_PREFIX + "Global_Objects/RangeError");
-    addExternReference(map, "ReferenceError", MDN_PREFIX + "Global_Objects/ReferenceError");
-    addExternReference(map, "RegExp", MDN_PREFIX + "Global_Objects/RegExp");
-    addExternReference(map, "Set", MDN_PREFIX + "Global_Objects/Set");
-    addExternReference(map, "Symbol", MDN_PREFIX + "Global_Objects/Symbol");
-    addExternReference(map, "String", MDN_PREFIX + "Global_Objects/String");
-    addExternReference(map, "SyntaxError", MDN_PREFIX + "Global_Objects/SyntaxError");
-    addExternReference(map, "TypeError", MDN_PREFIX + "Global_Objects/TypeError");
-    addExternReference(map, "URIError", MDN_PREFIX + "Global_Objects/URIError");
-    addExternReference(map, "arguments", MDN_PREFIX + "Functions/arguments");
-    addExternReference(map, "boolean", MDN_PREFIX + "Global_Objects/Boolean");
-    addExternReference(map, "null", MDN_PREFIX + "Global_Objects/Null");
-    addExternReference(map, "number", MDN_PREFIX + "Global_Objects/Number");
-    addExternReference(map, "string", MDN_PREFIX + "Global_Objects/String");
-    addExternReference(map, "undefined", MDN_PREFIX + "Global_Objects/Undefined");
-    addExternReference(map, "WeakMap", MDN_PREFIX + "Global_Objects/WeakMap");
-    addExternReference(map, "WeakSet", MDN_PREFIX + "Global_Objects/WeakSet");
+    addExternReference(map, "Arguments");
+    addExternReference(map, "Array");
+    addExternReference(map, "Boolean");
+    addExternReference(map, "Date");
+    addExternReference(map, "Error");
+    addExternReference(map, "Function");
+    addExternReference(map, "Generator");
+    addExternReference(map, "IArrayLike");
+    addExternReference(map, "IObject");
+    addExternReference(map, "IThenable");
+    addExternReference(map, "Infinity");
+    addExternReference(map, "Iterable");
+    addExternReference(map, "Iterator");
+    addExternReference(map, "Map");
+    addExternReference(map, "Math");
+    addExternReference(map, "NaN");
+    addExternReference(map, "Number");
+    addExternReference(map, "Object");
+    addExternReference(map, "Promise");
+    addExternReference(map, "RangeError");
+    addExternReference(map, "ReferenceError");
+    addExternReference(map, "RegExp");
+    addExternReference(map, "Set");
+    addExternReference(map, "Symbol");
+    addExternReference(map, "String");
+    addExternReference(map, "SyntaxError");
+    addExternReference(map, "TypeError");
+    addExternReference(map, "URIError");
+    addExternReference(map, "arguments");
+    addExternReference(map, "boolean");
+    addExternReference(map, "null");
+    addExternReference(map, "number");
+    addExternReference(map, "string");
+    addExternReference(map, "undefined");
+    addExternReference(map, "WeakMap");
+    addExternReference(map, "WeakSet");
     return map.build();
   }
 
-  private static void addExternReference(
-      ImmutableMap.Builder<String, NamedType> map, String name, String href) {
-    map.put(name, createExternReference(name, href));
+  private static void addExternReference(ImmutableMap.Builder<String, NamedType> map, String name) {
+    map.put(name, createExternReference(name));
   }
 
-  private static NamedType createExternReference(String name, String href) {
+  private static NamedType createExternReference(String name) {
     return NamedType.newBuilder()
         .setName(name)
-        .setLink(TypeLink.newBuilder().setHref(href))
         .setExtern(true)
         .build();
   }

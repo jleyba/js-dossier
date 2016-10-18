@@ -1580,15 +1580,12 @@ public class LinkFactoryTest {
     util.compile(fs.getPath("foo.js"), "class NotUsed {}");
     LinkFactory factory = createFactory();
 
-    String url =
-        "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String";
-
-    checkExternLink(factory.resolveTypeReference("string"), "string", url);
-    checkExternLink(factory.resolveTypeReference("String"), "String", url);
+    checkExternLink(factory.resolveTypeReference("string"), "string");
+    checkExternLink(factory.resolveTypeReference("String"), "String");
     checkExternLink(factory.resolveTypeReference("String.prototype.indexOf"),
-        "String.prototype.indexOf", url);
-    checkExternLink(factory.resolveTypeReference("String#indexOf"), "String#indexOf", url);
-    checkExternLink(factory.resolveTypeReference("String.fromCharCode"), "String.fromCharCode", url);
+        "String.prototype.indexOf");
+    checkExternLink(factory.resolveTypeReference("String#indexOf"), "String#indexOf");
+    checkExternLink(factory.resolveTypeReference("String.fromCharCode"), "String.fromCharCode");
   }
 
   @Test
@@ -2016,11 +2013,8 @@ public class LinkFactoryTest {
         .build();
   }
 
-  private static void checkExternLink(NamedType link, String text, String href) {
+  private static void checkExternLink(NamedType link, String text) {
     NamedType.Builder expected = NamedType.newBuilder().setName(text).setExtern(true);
-    if (!href.isEmpty()) {
-      expected.getLinkBuilder().setHref(href);
-    }
     assertThat(link).isEqualTo(expected.build());
   }
 }

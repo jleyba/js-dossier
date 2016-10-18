@@ -77,11 +77,14 @@ public class Renderer {
 
   public void render(Appendable appendable, String text, TypeLink link, boolean codeLink)
       throws IOException {
+    @SuppressWarnings("unchecked")
+    ProtoMessageSoyValue linkValue = (ProtoMessageSoyValue) ProtoMessageSoyType.toSoyValue(link);
+
     tofu.newRenderer("dossier.soy.type.typeLink")
         .setData(new SoyMapData(
             "content", text,
             "codeLink", codeLink,
-            "link", ProtoMessageSoyType.toSoyValue(link)))
+            "href", linkValue.getField("href")))
         .render(appendable);
   }
 

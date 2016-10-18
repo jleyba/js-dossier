@@ -46,8 +46,10 @@ message NamedType {
   // the simple |name|.
   string qualified_name = 2;
 
-  TypeLink link = 3;
-  bool extern = 4;
+  oneof location {
+    TypeLink link = 3;
+    bool extern = 4;
+  }
   repeated TypeExpression template_type = 5;
 }
 

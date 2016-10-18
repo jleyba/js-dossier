@@ -31,6 +31,7 @@ js_binary(
         "nav.js",
         "page.js",
         "search.js",
+        "soyplugins.js",
         "//third_party/js/soy",
     ],
     externs = [],

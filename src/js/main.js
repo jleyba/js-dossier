@@ -22,6 +22,11 @@
 
 goog.module('dossier.main');
 
+// There is no way to specify additional goog.require statements for generated
+// soy code, so require this here to ensure it is loaded before needed by the
+// soy templates.
+goog.require('dossier.soyplugins');
+
 const Index = goog.require('dossier.Index');
 const app = goog.require('dossier.app');
 const nav = goog.require('dossier.nav');

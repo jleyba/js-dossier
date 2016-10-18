@@ -30,14 +30,14 @@
  */
 {template .typeLink}
   {@param content: string|html}
-  {@param link: dossier.expression.TypeLink}
+  {@param href: string}
   {@param? target: string}
   {@param? title: string}
   {@param? codeLink: bool}
   {@param? tabIndex: int}
   {@param? classes: string}
 
-  <a {if $link}href="{$link.href}"{/if}
+  <a {if $href}href="{$href}"{/if}
      {if $target}{sp}target="{$target}"{/if}
      {if $title}{sp}title="{$title}"{/if}
      {if $tabIndex}{sp}tabIndex="{$tabIndex}"{/if}
@@ -168,11 +168,22 @@
     {/if}
   {/let}
 
-  {if $type.link}
+  {if $type.extern}
+    {let $href: externLink($text) /}
+    {if $href}
+      {call .typeLink}
+        {param content: $text /}
+        {param href: $href /}
+        {param target: '_blank' /}
+        {param title: $title /}
+      {/call}
+    {else}
+      {$text}
+    {/if}
+  {elseif $type.link}
     {call .typeLink}
       {param content: $text /}
-      {param link: $type.link /}
-      {param target: $type.extern ? '_blank' : '' /}
+      {param href: $type.link.href /}
       {param title: $title /}
     {/call}
   {else}

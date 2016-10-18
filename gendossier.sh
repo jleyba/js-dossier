@@ -81,6 +81,7 @@ write_deps() {
       -i "${ROOT}/src/js/nav.js" \
       -i "${ROOT}/src/js/page.js" \
       -i "${ROOT}/src/js/search.js" \
+      -i "${ROOT}/src/js/soyplugins.js" \
       -i "${ROOT}/src/js/serviceworker/main.js" \
       -i "${ROOT}/test/js/heap_test.js" \
       -i "${ROOT}/test/js/nav_test.js" \

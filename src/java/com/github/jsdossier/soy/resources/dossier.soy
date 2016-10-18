@@ -18,7 +18,7 @@
     {foreach $token in $comment.token}
       {if $token.link and $token.link.href}
         {call dossier.soy.type.typeLink}
-          {param link: $token.link /}
+          {param href: $token.link.href /}
           {param content kind="html"}
             {if $token.text}{$token.text}{/if}
             {if $token.html}{$token.html}{/if}

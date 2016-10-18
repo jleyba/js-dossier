@@ -492,10 +492,7 @@ public class TypeInspectorInheritanceTest extends AbstractTypeInspectorTest {
         "function E() {}");
 
     NamedType thenable =
-        namedType(
-            "IThenable",
-            "https://github.com/google/closure-compiler/wiki/" +
-                "Special-types-in-the-Closure-Type-System#ithenable")
+        namedType("IThenable")
             .toBuilder()
             .setExtern(true)
             .addTemplateType(stringTypeExpression())
@@ -607,10 +604,7 @@ public class TypeInspectorInheritanceTest extends AbstractTypeInspectorTest {
     NominalType d = typeRegistry.getType("D");
 
     NamedType thenable =
-        namedType(
-            "IThenable",
-            "https://github.com/google/closure-compiler/wiki/" +
-                "Special-types-in-the-Closure-Type-System#ithenable")
+        namedType("IThenable")
             .toBuilder()
             .setExtern(true)
             .build();

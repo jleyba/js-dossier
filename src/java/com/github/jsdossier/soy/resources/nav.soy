@@ -90,7 +90,11 @@
       {param content kind="text"}
         {$namedType.name}
       {/param}
-      {param link: $namedType.link /}
+      {param href kind="text"}
+        {if $namedType.link}
+          {$namedType.link.href}
+        {/if}
+      {/param}
       {param tabIndex: 1 /}
       {param classes: 'item' /}
     {/call}
