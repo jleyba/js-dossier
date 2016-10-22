@@ -13,6 +13,9 @@
   (e.g. using a `file://` scheme).
 - Refine search box auto-complete suggestions using Damerau–Levenshtein the
   distance between terms.
+- In CommonJS modules, fixed type checking for destructuring assignments where
+  the RHS is a requirement statement.
+  Example: `let {Foo, Bar} = require('./module');`
 
 ## Changes
 

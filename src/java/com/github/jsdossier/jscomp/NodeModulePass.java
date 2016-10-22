@@ -36,6 +36,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableSet;
 import com.google.javascript.jscomp.DiagnosticType;
+import com.google.javascript.jscomp.Es6RewriteDestructuring;
 import com.google.javascript.jscomp.NodeTraversal;
 import com.google.javascript.jscomp.NodeUtil;
 import com.google.javascript.rhino.JSDocInfo;
@@ -137,6 +138,7 @@ class NodeModulePass {
     }
   }
 
+  @SuppressWarnings("unused")
   private void printTree(Node n) {
     StringWriter sw = new StringWriter();
     try {
@@ -172,6 +174,9 @@ class NodeModulePass {
         } else {
           currentModule = getModuleId(path);
         }
+
+        traverseEs6(t.getCompiler(), n, new SplitRequireDeclarations());
+        traverseEs6(t.getCompiler(), n, new Es6RewriteDestructuring(t.getCompiler()));
       }
       return true;
     }
@@ -184,10 +189,6 @@ class NodeModulePass {
 
       if (isCall(n, "require")) {
         visitRequireCall(t, n, parent);
-      }
-
-      if (NodeUtil.isNameDeclaration(n)) {
-        ensureGoogRequireDeclarationsInSeparateStatements(t, n);
       }
 
       if (n.isGetProp()
@@ -350,48 +351,59 @@ class NodeModulePass {
       // Else we have an unrecognized module ID. Do nothing, leaving it to the
       // type-checking gods.
     }
+  }
 
-    /**
-     * Splits
-     *
-     *     var a = require('a'), b = require('b');
-     *
-     * into
-     *
-     *     var a = require('a');
-     *     var b = require('b');
-     */
-    private void ensureGoogRequireDeclarationsInSeparateStatements(NodeTraversal t, Node decl) {
-      RequireDetector detector = new RequireDetector();
-      traverseEs6(t.getCompiler(), decl, detector);
+  /**
+   * Rewrites all compound require statements into multiple statements to aid
+   * type checking.
+   *
+   * That is, splits
+   *
+   *     var a = require('a'), b = require('b');
+   *
+   * into
+   *
+   *     var a = require('a');
+   *     var b = require('b');
+   */
+  private final class SplitRequireDeclarations implements NodeTraversal.Callback {
+    @Override
+    public boolean shouldTraverse(NodeTraversal nodeTraversal, Node n, Node parent) {
+      return true;
+    }
 
-      if (detector.foundGoogRequire) {
-        Node addAfter = decl;
-        for (Node last = decl.getLastChild();
-             last != decl.getFirstChild();
-             last = decl.getLastChild()) {
-          decl.removeChild(last);
+    @Override
+    public void visit(NodeTraversal t, Node n, Node parent) {
+      if (NodeUtil.isNameDeclaration(n)) {
+        RequireDetector detector = new RequireDetector();
+        traverseEs6(t.getCompiler(), n, detector);
 
-          Node newDecl = declaration(last, decl.getToken()).srcrefTree(last);
-          decl.getParent().addChildAfter(newDecl, addAfter);
-          addAfter = newDecl;
-          t.getCompiler().reportCodeChange();
+        if (detector.foundRequire) {
+          Node addAfter = n;
+          for (Node last = n.getLastChild(); last != n.getFirstChild(); last = n.getLastChild()) {
+            n.removeChild(last);
+
+            Node newDecl = declaration(last, n.getToken()).srcrefTree(last);
+            n.getParent().addChildAfter(newDecl, addAfter);
+            addAfter = newDecl;
+            t.getCompiler().reportCodeChange();
+          }
         }
       }
     }
   }
 
   private static final class RequireDetector implements NodeTraversal.Callback {
-    private boolean foundGoogRequire = false;
+    private boolean foundRequire = false;
 
     @Override
     public boolean shouldTraverse(NodeTraversal nodeTraversal, Node n, Node parent) {
-      return !foundGoogRequire;
+      return !foundRequire;
     }
 
     @Override
     public void visit(NodeTraversal t, Node n, Node parent) {
-      foundGoogRequire = foundGoogRequire || isCall(n, "goog.require");
+      foundRequire = foundRequire || isCall(n, "require") || isCall(n, "goog.require");
     }
   }
 
