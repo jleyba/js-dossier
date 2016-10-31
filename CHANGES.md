@@ -1,3 +1,9 @@
+# v0.11.1
+
+## Changes
+
+- Upgraded to com.google.guava:guava:20.0
+
 # v0.11.0
 
 ## Bug Fixes

@@ -60,8 +60,8 @@ maven_jar(
 
 maven_jar(
     name = "guava",
-    artifact = "com.google.guava:guava:20.0-SNAPSHOT",
-    repository = "http://oss.sonatype.org/content/repositories/snapshots",
+    artifact = "com.google.guava:guava:20.0",
+    sha1 = "89507701249388e1ed5ddcf8c41f4ce1be7831ef",
 )
 
 maven_jar(
