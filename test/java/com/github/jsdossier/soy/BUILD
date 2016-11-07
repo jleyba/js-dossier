@@ -1,12 +1,14 @@
-load("/build_tools/java_test_suite", "java_test_suite")
+load("//build_tools:java_test_suite.bzl", "java_test_suite")
+load("//build_tools:proto.bzl", "java_proto_library", "proto_library")
 
-java_library(
-    name = "lib",
-    srcs = ["TestProto.java"],
-    deps = [
-        "//lib/maven:protobuf",
-        "//src/java/com/github/jsdossier/proto",
-    ],
+proto_library(
+    name = "proto",
+    srcs = ["test_proto.proto"],
+)
+
+java_proto_library(
+    name = "proto_lib",
+    deps = [":proto"],
 )
 
 java_test_suite(
@@ -14,7 +16,7 @@ java_test_suite(
     srcs = glob(["*.java"]),
     resources = glob(["*.soy"]),
     deps = [
-        ":lib",
+        ":proto_lib",
         "//lib/maven:closure_templates",
         "//lib/maven:gson",
         "//lib/maven:guava",
@@ -27,8 +29,8 @@ java_test_suite(
         "//lib/maven:protobuf",
         "//lib/maven:truth",
         "//src/java/com/github/jsdossier",
-        "//src/java/com/github/jsdossier/proto",
         "//src/java/com/github/jsdossier/soy",
+        "//src/proto:java_proto",
         "//test/java/com/github/jsdossier/testing",
     ],
 )

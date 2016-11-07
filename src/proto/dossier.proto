@@ -14,7 +14,7 @@
 
 syntax = "proto3";
 
-import "expression.proto";
+import "src/proto/expression.proto";
 
 option java_package = "com.github.jsdossier.proto";
 option java_multiple_files = true;

@@ -1,3 +1,15 @@
+http_file(
+  name = "protoc_linux_x86_64",
+  url = "http://bazel-mirror.storage.googleapis.com/github.com/google/protobuf/releases/download/v3.1.0/protoc-3.1.0-linux-x86_64.zip",
+  sha256 = "7c98f9e8a3d77e49a072861b7a9b18ffb22c98e37d2a80650264661bfaad5b3a",
+)
+
+http_file(
+  name = "protoc_macosx",
+  url = "http://bazel-mirror.storage.googleapis.com/github.com/google/protobuf/releases/download/v3.1.0/protoc-3.1.0-osx-x86_64.zip",
+  sha256 = "2cea7b1acb86671362f7aa554a21b907d18de70b15ad1f68e72ad2b50502920e",
+)
+
 maven_jar(
     name = "aopalliance",
     artifact = "aopalliance:aopalliance:1.0",

@@ -21,8 +21,8 @@ java_library(
         "//src/java/com/github/jsdossier/annotations",
         "//src/java/com/github/jsdossier/jscomp",
         "//src/java/com/github/jsdossier/markdown",
-        "//src/java/com/github/jsdossier/proto",
         "//src/java/com/github/jsdossier/soy",
+        "//src/proto:java_proto",
     ],
     visibility = [
         "//src/java/com/github/jsdossier/testing:__pkg__",
@@ -40,8 +40,8 @@ genrule(
     "//src/java/com/github/jsdossier/annotations",
     "//src/java/com/github/jsdossier/jscomp",
     "//src/java/com/github/jsdossier/markdown",
-    "//src/java/com/github/jsdossier/proto",
     "//src/java/com/github/jsdossier/soy",
+    "//src/proto:java_proto",
   ],
   outs = ["dossier-no-deps.jar"],
   cmd = 'readonly GENFILE="$$(pwd)/$@"; ' +
@@ -53,8 +53,8 @@ genrule(
         'jar -xf $$CWD/$(location //src/java/com/github/jsdossier/annotations) && ' +
         'jar -xf $$CWD/$(location //src/java/com/github/jsdossier/jscomp) && ' +
         'jar -xf $$CWD/$(location //src/java/com/github/jsdossier/markdown) && ' +
-        'jar -xf $$CWD/$(location //src/java/com/github/jsdossier/proto) && ' +
         'jar -xf $$CWD/$(location //src/java/com/github/jsdossier/soy) && ' +
+        'jar -xf $$CWD/$(location //src/proto:java_proto) && ' +
         'jar -cf $$GENFILE -C $$OUT . && ' +
         'cd $$(dirname $$GENFILE) && rm -rf $$OUT/',
 )

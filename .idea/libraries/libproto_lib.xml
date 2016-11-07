@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="libproto_lib">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/bazel-bin/test/java/com/github/jsdossier/soy/libproto_lib.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

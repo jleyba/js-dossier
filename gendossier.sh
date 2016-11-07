@@ -19,7 +19,6 @@ OPTIONS:
   -d       Refresh the project's readme documentation
   -j       Run the Closure Compiler on dossier.js
   -l       Run lessc on dossier.less
-  -p       Run protoc on dossier.proto
   -r       Build a release
   -s       Build sample documentation for dossier.js
   -t       Run all tests
@@ -40,24 +39,6 @@ run_lessc() {
   else
     echo >&2 "[ERROR] lessc not found: install node from https://nodejs.org, then run:"
     echo >&2 "  $ npm install -g less less-plugin-clean-css less-plugin-autoprefix"
-    exit 2
-  fi
-}
-
-run_protoc() {
-  if type -P protoc >/dev/null; then
-    protoc --java_out=src/java \
-        --proto_path=src/proto \
-        --proto_path=third_party/proto \
-        src/proto/*.proto
-    protoc --java_out=test/java \
-        --proto_path=src/proto \
-        --proto_path=test/java/com/github/jsdossier/soy \
-        --proto_path=third_party/proto \
-        test/java/com/github/jsdossier/soy/test_proto.proto
-  else
-    echo >&2 "[ERROR] protoc not found: download v2.6.1 from:"
-    echo >&2 "  https://developers.google.com/protocol-buffers/docs/downloads"
     exit 2
   fi
 }
@@ -112,7 +93,6 @@ main() {
   local no_options=1
   local js=0
   local less=0
-  local proto=0
   local readme=0
   local release=0
   local sample=0
@@ -133,9 +113,6 @@ main() {
         ;;
       l)
         no_options=0; less=1
-        ;;
-      p)
-        no_options=0; proto=1
         ;;
       r)
         no_options=0; release=1
@@ -163,10 +140,6 @@ main() {
 
   if (( $less )); then
     run_lessc
-  fi
-
-  if (( $proto )); then
-    run_protoc
   fi
 
   if (( $test )); then

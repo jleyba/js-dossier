@@ -11,7 +11,7 @@ java_library(
         "//lib/maven:inject",
         "//lib/maven:jsr305",
         "//lib/maven:protobuf",
-        "//src/java/com/github/jsdossier/proto",
+        "//src/proto:java_proto",
     ],
     visibility = [
         "//src/java/com/github/jsdossier:__pkg__",
