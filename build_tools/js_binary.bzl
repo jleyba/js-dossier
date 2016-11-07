@@ -29,6 +29,7 @@ _js_binary = rule(
     attrs={
         "compiler": attr.label(
             default=Label("//lib/maven:ClosureCompiler"),
+            cfg="host",
             executable=True),
         "deps": attr.label_list(
             allow_files=False,

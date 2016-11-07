@@ -29,7 +29,7 @@ final class DefaultDocTemplate implements DocTemplate {
 
   @Override
   public ImmutableList<TemplateFile> getAdditionalFiles() {
-    return ImmutableList.of(loadResourceFile("serviceworker.js", "/src/js/serviceworker.js"));
+    return ImmutableList.of(loadResourceFile("serviceworker.js", "/js/serviceworker.js"));
   }
 
   @Override
@@ -39,7 +39,7 @@ final class DefaultDocTemplate implements DocTemplate {
 
   @Override
   public ImmutableList<TemplateFile> getTailJs() {
-    return ImmutableList.of(loadResourceFile("dossier.js", "/src/js/dossier.js"));
+    return ImmutableList.of(loadResourceFile("dossier.js", "/js/dossier.js"));
   }
 
   @Override

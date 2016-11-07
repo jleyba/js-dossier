@@ -25,6 +25,7 @@ java_library(
         "//src/java/com/github/jsdossier/testing",
         "//test/java/com/github/jsdossier/testing",
     ],
+    testonly = 1,
 )
 
 java_test_suite(
