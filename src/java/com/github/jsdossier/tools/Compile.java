@@ -18,6 +18,7 @@ package com.github.jsdossier.tools;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
+import com.github.jsdossier.jscomp.ClosureSortedDependencies;
 import com.google.common.base.Function;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableSet;
@@ -27,11 +28,6 @@ import com.google.javascript.jscomp.PrintStreamErrorManager;
 import com.google.javascript.jscomp.deps.DependencyInfo;
 import com.google.javascript.jscomp.deps.DepsFileParser;
 import com.google.javascript.jscomp.deps.JsFileParser;
-
-import com.github.jsdossier.jscomp.ClosureSortedDependencies;
-import org.kohsuke.args4j.CmdLineParser;
-import org.kohsuke.args4j.Option;
-
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
@@ -39,6 +35,8 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import org.kohsuke.args4j.CmdLineParser;
+import org.kohsuke.args4j.Option;
 
 /**
  * Invokes the Closure compiler.

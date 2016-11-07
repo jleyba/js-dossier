@@ -26,7 +26,6 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Ordering;
-
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.FileSystem;
@@ -35,8 +34,6 @@ import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
-
-import javax.annotation.Nullable;
 
 /**
  * Utilities for working with {@link Path paths}.

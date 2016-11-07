@@ -33,6 +33,7 @@ import static java.nio.file.Files.newInputStream;
 import static java.nio.file.Files.readAllBytes;
 import static java.nio.file.Files.write;
 
+import com.github.jsdossier.jscomp.ClosureSortedDependencies;
 import com.google.auto.value.AutoValue;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Function;
@@ -63,10 +64,7 @@ import com.google.javascript.jscomp.SourceFile;
 import com.google.javascript.jscomp.deps.DependencyInfo;
 import com.google.javascript.jscomp.deps.DepsFileParser;
 import com.google.javascript.jscomp.deps.DepsGenerator;
-
-import com.github.jsdossier.jscomp.ClosureSortedDependencies;
 import com.google.javascript.jscomp.deps.ModuleLoader;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -96,7 +94,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
-
 import javax.annotation.Nullable;
 
 /**

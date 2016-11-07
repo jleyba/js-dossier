@@ -20,17 +20,15 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.newInputStream;
 
+import com.github.jsdossier.annotations.Args;
+import com.github.jsdossier.annotations.Input;
+import com.github.jsdossier.annotations.Stderr;
+import com.github.jsdossier.annotations.Stdout;
 import com.google.common.collect.ImmutableList;
 import com.google.inject.Provider;
 import com.google.javascript.jscomp.CommandLineRunner;
 import com.google.javascript.jscomp.CompilerOptions;
 import com.google.javascript.jscomp.SourceFile;
-
-import com.github.jsdossier.annotations.Args;
-import com.github.jsdossier.annotations.Input;
-import com.github.jsdossier.annotations.Stderr;
-import com.github.jsdossier.annotations.Stdout;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
@@ -38,7 +36,6 @@ import java.nio.file.FileSystem;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.concurrent.Callable;
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
 

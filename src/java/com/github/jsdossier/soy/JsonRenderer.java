@@ -28,11 +28,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.internal.Streams;
 import com.google.gson.stream.JsonWriter;
 import com.google.protobuf.Message;
-
 import java.io.IOException;
 import java.io.Writer;
 import java.nio.file.Path;
-
 import javax.inject.Inject;
 
 /**

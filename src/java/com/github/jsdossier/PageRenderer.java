@@ -19,10 +19,8 @@ package com.github.jsdossier;
 import com.github.jsdossier.proto.PageData;
 import com.github.jsdossier.soy.JsonRenderer;
 import com.github.jsdossier.soy.Renderer;
-
 import java.io.IOException;
 import java.nio.file.Path;
-
 import javax.inject.Inject;
 
 final class PageRenderer {

@@ -31,9 +31,7 @@ import com.github.jsdossier.proto.Resources;
 import com.google.common.base.Function;
 import com.google.common.collect.FluentIterable;
 import com.google.javascript.rhino.Node;
-
 import java.nio.file.Path;
-
 import javax.inject.Inject;
 
 /**

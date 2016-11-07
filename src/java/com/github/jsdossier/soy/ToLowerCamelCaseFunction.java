@@ -22,10 +22,8 @@ import static com.google.common.base.CaseFormat.LOWER_UNDERSCORE;
 import com.google.common.collect.ImmutableSet;
 import com.google.template.soy.data.SoyValue;
 import com.google.template.soy.data.restricted.StringData;
-
 import java.util.List;
 import java.util.Set;
-
 import javax.inject.Inject;
 
 /**

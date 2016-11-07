@@ -18,9 +18,7 @@ package com.github.jsdossier.jscomp;
 
 import static com.google.common.base.Strings.nullToEmpty;
 
-import com.google.common.base.Strings;
 import com.google.javascript.rhino.JSTypeExpression;
-
 import javax.annotation.Nullable;
 
 /**

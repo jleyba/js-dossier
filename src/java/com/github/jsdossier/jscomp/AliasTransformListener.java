@@ -19,9 +19,7 @@ package com.github.jsdossier.jscomp;
 import com.github.jsdossier.annotations.Input;
 import com.google.javascript.jscomp.CompilerOptions;
 import com.google.javascript.rhino.SourcePosition;
-
 import java.nio.file.FileSystem;
-
 import javax.inject.Inject;
 
 /**

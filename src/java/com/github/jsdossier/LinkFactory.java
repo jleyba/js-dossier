@@ -41,10 +41,8 @@ import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.jstype.FunctionType;
 import com.google.javascript.rhino.jstype.JSTypeRegistry;
 import com.google.javascript.rhino.jstype.ObjectType;
-
 import java.net.URI;
 import java.nio.file.Path;
-
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nullable;
 

@@ -17,15 +17,13 @@
 package com.github.jsdossier.markdown;
 
 import com.google.common.collect.ImmutableSet;
-
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 import org.commonmark.html.HtmlWriter;
 import org.commonmark.html.renderer.NodeRenderer;
 import org.commonmark.html.renderer.NodeRendererContext;
 import org.commonmark.node.Node;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Renders a {@link TableBlock} to HTML.

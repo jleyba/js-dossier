@@ -48,7 +48,6 @@ import com.google.javascript.rhino.jstype.TemplateType;
 import com.google.javascript.rhino.jstype.TemplatizedType;
 import com.google.javascript.rhino.jstype.UnionType;
 import com.google.javascript.rhino.jstype.Visitor;
-
 import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.Comparator;
@@ -57,7 +56,6 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nullable;
 

@@ -17,7 +17,6 @@
 package com.github.jsdossier;
 
 import com.google.gson.JsonObject;
-
 import java.nio.file.Path;
 
 /**

@@ -17,7 +17,6 @@
 package com.github.jsdossier;
 
 import com.google.javascript.rhino.jstype.Property;
-
 import java.util.Comparator;
 
 /**

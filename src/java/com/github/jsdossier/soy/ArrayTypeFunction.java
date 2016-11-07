@@ -21,10 +21,8 @@ import static com.google.template.soy.data.UnsafeSanitizedContentOrdainer.ordain
 import com.google.common.collect.ImmutableSet;
 import com.google.template.soy.data.SanitizedContent;
 import com.google.template.soy.data.SoyValue;
-
 import java.util.List;
 import java.util.Set;
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
 

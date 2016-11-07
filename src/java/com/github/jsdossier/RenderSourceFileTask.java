@@ -24,7 +24,6 @@ import com.github.jsdossier.proto.SourceFile;
 import com.google.auto.factory.AutoFactory;
 import com.google.auto.factory.Provided;
 import com.google.common.base.Charsets;
-
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.concurrent.Callable;

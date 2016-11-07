@@ -20,7 +20,6 @@ import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 import com.google.auto.factory.AutoFactory;
 import com.google.auto.factory.Provided;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;

@@ -27,6 +27,13 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import com.google.common.escape.CharEscaperBuilder;
 import com.google.common.escape.Escaper;
+import java.io.IOException;
+import java.util.List;
+import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import javax.annotation.Nullable;
+import javax.inject.Inject;
 import org.commonmark.Extension;
 import org.commonmark.html.HtmlRenderer;
 import org.commonmark.node.Node;
@@ -35,15 +42,6 @@ import org.owasp.html.HtmlChangeListener;
 import org.owasp.html.HtmlPolicyBuilder;
 import org.owasp.html.PolicyFactory;
 import org.owasp.html.Sanitizers;
-
-import java.io.IOException;
-import java.util.List;
-import java.util.logging.Logger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.annotation.Nullable;
-import javax.inject.Inject;
 
 /**
  * Utility class for working with JSDoc comments.

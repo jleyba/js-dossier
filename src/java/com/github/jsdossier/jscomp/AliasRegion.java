@@ -20,13 +20,11 @@ import com.google.auto.value.AutoValue;
 import com.google.common.collect.Range;
 import com.google.javascript.jscomp.CompilerOptions;
 import com.google.javascript.rhino.SourcePosition;
-
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
-
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nullable;
 

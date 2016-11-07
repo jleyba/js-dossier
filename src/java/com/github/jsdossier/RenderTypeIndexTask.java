@@ -24,13 +24,11 @@ import static java.nio.file.StandardOpenOption.WRITE;
 import com.github.jsdossier.annotations.DocumentationScoped;
 import com.github.jsdossier.proto.Index;
 import com.github.jsdossier.soy.JsonRenderer;
-
 import java.io.IOException;
 import java.io.StringWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.Callable;
-
 import javax.inject.Inject;
 
 /**

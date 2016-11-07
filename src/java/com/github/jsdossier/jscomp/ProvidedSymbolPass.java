@@ -23,7 +23,6 @@ import static com.google.javascript.jscomp.NodeTraversal.traverseEs6;
 
 import com.github.jsdossier.annotations.Input;
 import com.github.jsdossier.annotations.Modules;
-
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -34,7 +33,6 @@ import com.google.javascript.jscomp.NodeTraversal.AbstractShallowCallback;
 import com.google.javascript.jscomp.NodeUtil;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.Node;
-
 import java.io.IOException;
 import java.io.StringWriter;
 import java.nio.file.FileSystem;
@@ -45,7 +43,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 

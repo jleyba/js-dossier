@@ -20,7 +20,6 @@ import com.github.jsdossier.proto.Comment;
 import com.github.jsdossier.proto.PageData;
 import com.google.auto.factory.AutoFactory;
 import com.google.auto.factory.Provided;
-
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;

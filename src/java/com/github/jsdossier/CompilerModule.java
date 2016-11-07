@@ -22,7 +22,6 @@ import com.github.jsdossier.jscomp.AliasTransformListener;
 import com.github.jsdossier.jscomp.DossierCompiler;
 import com.github.jsdossier.jscomp.ProvidedSymbolPass;
 import com.github.jsdossier.jscomp.TypeCollectionPass;
-
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.inject.AbstractModule;
@@ -37,7 +36,6 @@ import com.google.javascript.jscomp.parsing.Config;
 import com.google.javascript.rhino.jstype.JSType;
 import com.google.javascript.rhino.jstype.JSTypeRegistry;
 import com.google.javascript.rhino.jstype.StaticTypedScope;
-
 import java.io.IOException;
 import java.nio.file.Path;
 

@@ -25,7 +25,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.google.protobuf.Descriptors;
 import com.google.protobuf.Message;
-
 import javax.annotation.Nullable;
 
 /**

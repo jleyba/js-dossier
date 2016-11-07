@@ -7,10 +7,8 @@ import com.google.template.soy.data.SoyValue;
 import com.google.template.soy.data.UnsafeSanitizedContentOrdainer;
 import com.google.template.soy.jssrc.restricted.JsExpr;
 import com.google.template.soy.jssrc.restricted.SoyJsSrcFunction;
-
 import java.util.List;
 import java.util.Set;
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
 

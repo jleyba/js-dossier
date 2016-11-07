@@ -30,10 +30,8 @@ import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableSet;
-
 import java.nio.file.FileSystem;
 import java.nio.file.Path;
-
 import javax.inject.Inject;
 import javax.inject.Provider;
 

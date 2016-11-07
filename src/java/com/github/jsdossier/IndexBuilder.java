@@ -22,21 +22,19 @@ import static com.google.common.base.Preconditions.checkArgument;
 import com.github.jsdossier.annotations.DocumentationScoped;
 import com.github.jsdossier.jscomp.NominalType;
 import com.github.jsdossier.jscomp.TypeRegistry;
+import com.github.jsdossier.proto.Index;
 import com.github.jsdossier.proto.Link;
 import com.github.jsdossier.proto.NamedType;
-import com.github.jsdossier.proto.Index;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Ordering;
-
 import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.inject.Inject;
 
 /**

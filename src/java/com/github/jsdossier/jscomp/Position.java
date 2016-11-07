@@ -18,7 +18,6 @@ package com.github.jsdossier.jscomp;
 
 import com.google.auto.value.AutoValue;
 import com.google.javascript.rhino.SourcePosition;
-
 import javax.annotation.Nonnull;
 
 /**

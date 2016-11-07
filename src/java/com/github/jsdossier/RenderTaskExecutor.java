@@ -19,6 +19,9 @@ package com.github.jsdossier;
 import static com.google.common.util.concurrent.Futures.transformAsync;
 import static com.google.common.util.concurrent.MoreExecutors.directExecutor;
 
+import com.github.jsdossier.Annotations.NumThreads;
+import com.github.jsdossier.annotations.DocumentationScoped;
+import com.github.jsdossier.jscomp.NominalType;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
@@ -29,11 +32,6 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.SettableFuture;
-
-import com.github.jsdossier.Annotations.NumThreads;
-import com.github.jsdossier.annotations.DocumentationScoped;
-import com.github.jsdossier.jscomp.NominalType;
-
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -43,7 +41,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
 

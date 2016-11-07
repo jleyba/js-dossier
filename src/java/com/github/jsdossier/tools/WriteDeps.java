@@ -25,10 +25,6 @@ import com.google.javascript.jscomp.PrintStreamErrorManager;
 import com.google.javascript.jscomp.SourceFile;
 import com.google.javascript.jscomp.deps.DepsGenerator;
 import com.google.javascript.jscomp.deps.ModuleLoader;
-import org.kohsuke.args4j.CmdLineException;
-import org.kohsuke.args4j.CmdLineParser;
-import org.kohsuke.args4j.Option;
-
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.FileSystem;
@@ -37,6 +33,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import org.kohsuke.args4j.CmdLineException;
+import org.kohsuke.args4j.CmdLineParser;
+import org.kohsuke.args4j.Option;
 
 /**
  * Writes the dependency map info needed for JavaScript testing.

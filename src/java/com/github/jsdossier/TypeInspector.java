@@ -39,7 +39,6 @@ import com.github.jsdossier.proto.Function.Detail;
 import com.github.jsdossier.proto.NamedType;
 import com.github.jsdossier.proto.TypeExpression;
 import com.github.jsdossier.proto.UnionType;
-import com.github.jsdossier.proto.Visibility;
 import com.google.auto.factory.AutoFactory;
 import com.google.auto.factory.Provided;
 import com.google.auto.value.AutoValue;
@@ -69,7 +68,6 @@ import com.google.javascript.rhino.jstype.Property;
 import com.google.javascript.rhino.jstype.StaticTypedScope;
 import com.google.javascript.rhino.jstype.TemplateTypeMapReplacer;
 import com.google.javascript.rhino.jstype.TemplatizedType;
-
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -83,7 +81,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nullable;
 

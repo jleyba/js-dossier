@@ -25,7 +25,6 @@ import static java.nio.file.Files.readAllBytes;
 
 import com.github.jsdossier.annotations.ModuleExterns;
 import com.github.jsdossier.annotations.Modules;
-
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
 import com.google.common.collect.BiMap;
@@ -35,7 +34,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.javascript.jscomp.SourceFile;
-
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -55,7 +53,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
 

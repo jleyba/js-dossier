@@ -23,10 +23,8 @@ import com.google.common.base.Optional;
 import com.google.common.io.Files;
 import com.google.javascript.rhino.jstype.JSType;
 import com.google.javascript.rhino.jstype.JSTypeRegistry;
-
 import java.nio.file.Path;
 import java.util.Collection;
-
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nullable;
 import javax.inject.Inject;

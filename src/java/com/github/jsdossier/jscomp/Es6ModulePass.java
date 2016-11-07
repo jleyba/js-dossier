@@ -32,7 +32,6 @@ import com.google.javascript.jscomp.deps.ModuleNames;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.Token;
-
 import java.io.IOException;
 import java.io.StringWriter;
 import java.nio.file.FileSystem;
@@ -42,7 +41,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
-
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nullable;
 

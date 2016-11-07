@@ -20,9 +20,7 @@ import com.google.auto.value.AutoValue;
 import com.google.common.base.Optional;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.jstype.JSType;
-
 import java.nio.file.Path;
-
 import javax.annotation.Nullable;
 
 /**

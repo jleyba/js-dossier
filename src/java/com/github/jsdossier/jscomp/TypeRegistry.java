@@ -42,7 +42,6 @@ import com.google.javascript.rhino.jstype.JSType;
 import com.google.javascript.rhino.jstype.JSTypeRegistry;
 import com.google.javascript.rhino.jstype.ObjectType;
 import com.google.javascript.rhino.jstype.StaticTypedScope;
-
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -54,7 +53,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nullable;
 import javax.inject.Singleton;

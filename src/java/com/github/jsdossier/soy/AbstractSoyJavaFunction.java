@@ -24,7 +24,6 @@ import static com.google.common.base.Preconditions.checkState;
 import com.google.template.soy.data.SoyValue;
 import com.google.template.soy.data.restricted.SoyString;
 import com.google.template.soy.shared.restricted.SoyJavaFunction;
-
 import java.util.List;
 
 /**

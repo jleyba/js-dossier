@@ -21,7 +21,6 @@ import static com.google.common.base.Preconditions.checkArgument;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableMap;
 import com.google.javascript.rhino.JSDocInfo;
-
 import java.nio.file.Path;
 
 /**

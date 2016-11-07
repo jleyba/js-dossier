@@ -37,7 +37,6 @@ import com.github.jsdossier.proto.JsType;
 import com.github.jsdossier.proto.JsTypeOrBuilder;
 import com.github.jsdossier.proto.NamedType;
 import com.github.jsdossier.proto.PageData;
-import com.github.jsdossier.proto.Visibility;
 import com.google.auto.factory.AutoFactory;
 import com.google.auto.factory.Provided;
 import com.google.common.base.Function;
@@ -53,13 +52,11 @@ import com.google.javascript.rhino.jstype.JSType;
 import com.google.javascript.rhino.jstype.JSTypeRegistry;
 import com.google.javascript.rhino.jstype.Property;
 import com.google.javascript.rhino.jstype.StaticTypedScope;
-
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
-
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nullable;
 

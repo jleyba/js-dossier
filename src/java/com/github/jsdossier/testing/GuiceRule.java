@@ -28,7 +28,6 @@ import com.github.jsdossier.annotations.ModuleFilter;
 import com.github.jsdossier.annotations.ModulePrefix;
 import com.github.jsdossier.annotations.Modules;
 import com.github.jsdossier.annotations.Output;
-import com.github.jsdossier.annotations.Readme;
 import com.github.jsdossier.annotations.SourcePrefix;
 import com.github.jsdossier.annotations.SourceUrlTemplate;
 import com.github.jsdossier.annotations.Stderr;
@@ -50,14 +49,13 @@ import com.google.inject.Provides;
 import com.google.inject.Scopes;
 import com.google.javascript.jscomp.CompilerOptions;
 import com.google.javascript.jscomp.CompilerOptions.LanguageMode;
-import org.junit.rules.TestRule;
-import org.junit.runner.Description;
-import org.junit.runners.model.Statement;
-
 import java.io.PrintStream;
 import java.lang.annotation.Annotation;
 import java.nio.file.FileSystem;
 import java.nio.file.Path;
+import org.junit.rules.TestRule;
+import org.junit.runner.Description;
+import org.junit.runners.model.Statement;
 
 /**
  * A simple rule for injecting necessary values into an object prior to evaluating a statement.

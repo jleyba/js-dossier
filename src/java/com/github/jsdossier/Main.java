@@ -61,10 +61,6 @@ import com.google.inject.Key;
 import com.google.inject.Provides;
 import com.google.inject.TypeLiteral;
 import com.google.javascript.jscomp.CompilerOptions.LanguageMode;
-import org.joda.time.Instant;
-import org.joda.time.Period;
-import org.joda.time.format.PeriodFormatterBuilder;
-
 import java.io.IOException;
 import java.io.PrintStream;
 import java.lang.annotation.Retention;
@@ -79,9 +75,11 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
-
 import javax.inject.Inject;
 import javax.inject.Qualifier;
+import org.joda.time.Instant;
+import org.joda.time.Period;
+import org.joda.time.format.PeriodFormatterBuilder;
 
 final class Main {
   private Main() {}

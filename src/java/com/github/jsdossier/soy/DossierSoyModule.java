@@ -30,12 +30,10 @@ import com.google.template.soy.shared.restricted.SoyFunction;
 import com.google.template.soy.types.SoyTypeProvider;
 import com.google.template.soy.types.proto.SoyProtoTypeProvider;
 import com.google.template.soy.types.proto.SoyProtoValueConverter;
-
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import javax.inject.Singleton;
 
 /**

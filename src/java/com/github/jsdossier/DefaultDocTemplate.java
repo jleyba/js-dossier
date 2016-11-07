@@ -19,11 +19,7 @@ package com.github.jsdossier;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.io.ByteSource;
 import com.google.common.io.Resources;
-
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 
 /**

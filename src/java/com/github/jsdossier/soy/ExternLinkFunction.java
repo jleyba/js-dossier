@@ -23,10 +23,8 @@ import com.google.template.soy.data.restricted.NullData;
 import com.google.template.soy.data.restricted.StringData;
 import com.google.template.soy.jssrc.restricted.JsExpr;
 import com.google.template.soy.jssrc.restricted.SoyJsSrcFunction;
-
 import java.util.List;
 import java.util.Set;
-
 import javax.inject.Inject;
 
 /**

@@ -49,7 +49,6 @@ import com.google.javascript.rhino.jstype.TemplateType;
 import com.google.javascript.rhino.jstype.TemplatizedType;
 import com.google.javascript.rhino.jstype.UnionType;
 import com.google.javascript.rhino.jstype.Visitor;
-
 import java.nio.file.FileSystem;
 import java.nio.file.Path;
 import java.util.ArrayDeque;
@@ -60,7 +59,6 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import javax.inject.Inject;
 
 /**

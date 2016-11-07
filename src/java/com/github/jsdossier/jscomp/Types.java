@@ -24,7 +24,6 @@ import com.google.javascript.rhino.JSTypeExpression;
 import com.google.javascript.rhino.TypeIRegistry;
 import com.google.javascript.rhino.jstype.JSType;
 import com.google.javascript.rhino.jstype.StaticTypedScope;
-
 import java.nio.file.Path;
 import java.util.ConcurrentModificationException;
 

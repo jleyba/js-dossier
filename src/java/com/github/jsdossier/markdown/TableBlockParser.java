@@ -17,12 +17,16 @@
 package com.github.jsdossier.markdown;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
-import static com.google.common.collect.Lists.newArrayList;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
+import java.nio.CharBuffer;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.commonmark.node.Block;
 import org.commonmark.node.Node;
 import org.commonmark.parser.InlineParser;
@@ -32,12 +36,6 @@ import org.commonmark.parser.block.BlockContinue;
 import org.commonmark.parser.block.BlockStart;
 import org.commonmark.parser.block.MatchedBlockParser;
 import org.commonmark.parser.block.ParserState;
-
-import java.nio.CharBuffer;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Created by jleyba on 1/1/16.

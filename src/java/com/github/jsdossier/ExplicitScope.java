@@ -23,7 +23,6 @@ import com.google.inject.OutOfScopeException;
 import com.google.inject.Provider;
 import com.google.inject.Scope;
 import com.google.inject.internal.CircularDependencyProxy;
-
 import java.util.HashMap;
 import java.util.Map;
 
