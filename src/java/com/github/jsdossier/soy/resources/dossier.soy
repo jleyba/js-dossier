@@ -7,26 +7,26 @@
   {@param comment: dossier.Comment}
   {@param? ensureParagraph: bool}
 
-  {if $comment and length($comment.token)}
+  {if $comment and length($comment.tokenList)}
     {let $renderParagraph: $ensureParagraph
-                           and length($comment.token) == 1
-                           and not $comment.token[0].html /}
+                           and length($comment.tokenList) == 1
+                           and not $comment.tokenList[0].html /}
 
     {if $renderParagraph}
       <p>
     {/if}
-    {foreach $token in $comment.token}
+    {foreach $token in $comment.tokenList}
       {if $token.link and $token.link.href}
         {call dossier.soy.type.typeLink}
           {param href: $token.link.href /}
           {param content kind="html"}
             {if $token.text}{$token.text}{/if}
-            {if $token.html}{$token.html}{/if}
+            {if $token.html}{sanitizeHtml($token.html)}{/if}
           {/param}
         {/call}
       {else}
         {if $token.text}{$token.text}{/if}
-        {if $token.html}{$token.html}{/if}
+        {if $token.html}{sanitizeHtml($token.html)}{/if}
       {/if}
     {/foreach}
     {if $renderParagraph}
@@ -55,9 +55,9 @@
       {if $source and ($source.uri or $source.path)}
         <div class="source">
           {if $source.uri}
-            <a href="{$source.uri}" target="_blank" title="View source">VIEW SOURCE</a>
+            <a href="{sanitizeUri($source.uri)}" target="_blank" title="View source">VIEW SOURCE</a>
           {else}
-            <a href="{$source.path}{if $source.line and $source.line > 0}#l{$source.line}{/if}"
+            <a href="{sanitizeUri($source.path)}{if $source.line and $source.line > 0}#l{$source.line}{/if}"
                 title="View source">VIEW SOURCE</a>
           {/if}
         </div>
@@ -123,7 +123,7 @@
 {template .deprecationNotice private="true"}
   {@param deprecation: dossier.Comment}
 
-  {if $deprecation and length($deprecation.token)}
+  {if $deprecation and length($deprecation.tokenList)}
     <table class="info deprecation">
       {call .infoRow}
         {param title kind="html"}<i class="material-icons">warning</i> Deprecated{/param}
@@ -144,19 +144,19 @@
 {template .enumValues private="true"}
   {@param enumeration: dossier.Enumeration}
 
-  {if length($enumeration.value)}
+  {if length($enumeration.valueList)}
     <section class="enum-values">
       <h2>Values</h2>
       <section class="property">
         <table class="info">
-          {foreach $value in $enumeration.value}
+          {foreach $value in $enumeration.valueList}
             {call .infoRow}
               {param id: $value.name /}
               {param block: true /}
               {param title kind="html"}{$value.name}{/param}  // TODO: deprecation tags
               {param cell1 kind="html"}
-                {if ($value.description and length($value.description.token)) or
-                    ($value.deprecation and length($value.deprecation.token))}
+                {if ($value.description and length($value.description.tokenList)) or
+                    ($value.deprecation and length($value.deprecation.tokenList))}
                   {call .comment}
                     {param comment: $value.description /}
                   {/call}
@@ -188,9 +188,9 @@
       <div class="type-summary">
         <dl>
           {foreach $type in $types}
-            <dt><a href="{$type.href}">{$type.name}</a>
+            <dt><a href="{sanitizeUri($type.href)}">{$type.name}</a>
             <dd>
-              {if $type.summary and length($type.summary.token)}
+              {if $type.summary and length($type.summary.tokenList)}
                 {call .comment}
                   {param comment: $type.summary /}
                 {/call}
@@ -294,12 +294,12 @@
     {/if}
     {call .typeDetails}
       {param header: 'Parameters' /}
-      {param details: $fn.parameter /}
+      {param details: $fn.parameterList /}
       {param fillEmpty: true /}
     {/call}
     {if not $fn.isConstructor
         and $fn.return
-        and (($fn.return.description and length($fn.return.description.token))
+        and (($fn.return.description and length($fn.return.description.tokenList))
              or $fn.return.type)}
       {call .typeDetails}
         {param header: 'Returns' /}
@@ -309,7 +309,7 @@
     {/if}
     {call .typeDetails}
       {param header: 'Throws' /}
-      {param details: $fn.thrown /}
+      {param details: $fn.thrownList /}
     {/call}
     {call .seeAlso}
       {param base: $fn.base /}
@@ -344,15 +344,15 @@
     <var>this.</var>
   {/if}
   {$fn.base.name}
-  {if $fn.templateName and length($fn.templateName)}
+  {if $fn.templateNameList and length($fn.templateNameList)}
     {call .printTemplateNames}
-      {param names: $fn.templateName /}
+      {param names: $fn.templateNameList /}
     {/call}
   {/if}
   (
-  {if length($fn.parameter)}
+  {if length($fn.parameterList)}
     {sp}
-    {foreach $parameter in $fn.parameter}
+    {foreach $parameter in $fn.parameterList}
       <var>
         {if $parameter.type and $parameter.type.isVarargs}...{/if}
         {$parameter.name}
@@ -385,11 +385,11 @@
   {@param type: dossier.JsType}
 
   {let $fn: $type.mainFunction /}
-  {let $isNonTrivial: length($fn.parameter)
-                      or length($fn.thrown)
+  {let $isNonTrivial: length($fn.parameterList)
+                      or length($fn.thrownList)
                       or ($fn.return
                           and $fn.return.description
-                          and length($fn.return.description.token)) /}
+                          and length($fn.return.description.tokenList)) /}
   {if $fn.isConstructor}
     <h3 class="name">
       {call .tags}
@@ -439,7 +439,7 @@
     {/call}
   {/if}
   {call .printTypeList}
-    {param types: $base.specifiedBy /}
+    {param types: $base.specifiedByList /}
     {param title: 'Specified by' /}
   {/call}
 {/template}
@@ -529,13 +529,13 @@
         {param deprecation: $base.deprecation /}
       {/call}
       {if $fn
-          and (($fn.base.deprecation and length($fn.base.deprecation.token))
+          and (($fn.base.deprecation and length($fn.base.deprecation.tokenList))
                or $fn.base.overrides
-               or length($fn.base.specifiedBy)
-               or length($fn.parameter)
-               or length($fn.thrown)
+               or length($fn.base.specifiedByList)
+               or length($fn.parameterList)
+               or length($fn.thrownList)
                or ($fn.return
-                   and (($fn.return.description and length($fn.return.description.token))
+                   and (($fn.return.description and length($fn.return.description.tokenList))
                         or $fn.return.type)))}
         {if $fn}  // Extra if required for soy type checking.
           {call .fnDetails}
@@ -545,9 +545,9 @@
         {/if}
       {elseif $property
           and ($property.base.overrides
-               or length($property.base.specifiedBy)
-               or ($property.base.deprecation and length($property.base.deprecation.token))
-               or length($property.base.seeAlso))}
+               or length($property.base.specifiedByList)
+               or ($property.base.deprecation and length($property.base.deprecation.tokenList))
+               or length($property.base.seeAlsoList))}
         <table class="info">
           {call .overrides}
             {param base: $property.base /}
@@ -557,7 +557,7 @@
           {/call}
         </table>
       {elseif not $base.description
-              or not length($base.description.token)}
+              or not length($base.description.tokenList)}
         <p>No information.</p>
       {/if}
     {/param}
@@ -593,7 +593,7 @@
             <a href="{$property.base.source.uri}" target="_blank" title="View source">
           {else}
             {let $hasLine: $property.base.source.line and $property.base.source.line > 0 /}
-            <a href="{$property.base.source.path}{if $hasLine}#l{$property.base.source.line}{/if}"
+            <a href="{sanitizeUri($property.base.source.path)}{if $hasLine}#l{$property.base.source.line}{/if}"
                 title="View source">
           {/if}
         {/if}
@@ -617,12 +617,12 @@
  */
 {template .seeAlso}
   {@param base: dossier.BaseProperty}
-  {if length($base.seeAlso)}
+  {if length($base.seeAlsoList)}
     {call .infoRow}
       {param block: true /}
       {param title kind="html"}See Also{/param}
       {param cell1 kind="html"}
-        {foreach $ref in $base.seeAlso}
+        {foreach $ref in $base.seeAlsoList}
           {call .comment}
             {param comment: $ref /}
             {param ensureParagraph: true /}
@@ -659,9 +659,9 @@
       {else}
         Namespace {$type.name}
       {/if}
-      {if $type.mainFunction and length($type.mainFunction.templateName)}
+      {if $type.mainFunction and length($type.mainFunction.templateNameList)}
         {call .printTemplateNames}
-          {param names: $type.mainFunction.templateName /}
+          {param names: $type.mainFunction.templateNameList /}
         {/call}
       {/if}
     </div>
@@ -683,15 +683,15 @@
                             or $tags.isDict
                             or $tags.isStruct) /}
 
-  {if $hasTags or ($visibility and $visibility != dossier.Visibility.PUBLIC)}
+  {if $hasTags or ($visibility and not $visibility.public)}
     <{if $span}span{else}div{/if} class="tags">
       {if $tags and $tags.isDeprecated}<span class="deprecated"></span>{/if}
 
-      {if $visibility == dossier.Visibility.PACKAGE}
+      {if $visibility and $visibility.package}
         <span class="package"></span>
-      {elseif $visibility == dossier.Visibility.PRIVATE}
+      {elseif $visibility and $visibility.private}
         <span class="private"></span>
-      {elseif $visibility == dossier.Visibility.PROTECTED}
+      {elseif $visibility and $visibility.protected}
         <span class="protected"></span>
       {/if}
 
@@ -721,7 +721,7 @@
             {call .tags}
               {param tags: $type.tags /}
             {/call}
-            <div><a href="{$type.href}">{$type.name}</a></div>
+            <div><a href="{sanitizeUri($type.href)}">{$type.name}</a></div>
         {/foreach}
       </ul>
     </section>
@@ -762,51 +762,52 @@
           {/call}
         {/param}
         {param body kind="html"}
-          {if ($type.declaration and $type.declaration.declarationType)
-              or length($type.extendedType)
-              or length($type.implementedType)
-              or length($type.subtype)
-              or ($type.tags and $type.tags.isInterface and length($type.implementation))
+          {if ($type.declaration
+               and ($type.declaration.moduleExport
+                    or $type.declaration.googModule
+                    or $type.declaration.googProvide))
+              or length($type.extendedTypeList)
+              or length($type.implementedTypeList)
+              or length($type.subtypeList)
+              or ($type.tags and $type.tags.isInterface and length($type.implementationList))
               or $type.aliasedType
-              or length($type.knownAlias)
+              or length($type.knownAliasList)
               or ($type.enumeration and $type.enumeration.type)}
             <table class="info">
-              {if $type.declaration and $type.declaration.declarationType}
+              {if $type.declaration
+                  and ($type.declaration.moduleExport
+                       or $type.declaration.googModule
+                       or $type.declaration.googProvide)}
                 {call .printTypeList}
                   {param types: [$type.declaration.type] /}
                   {param title kind="text"}
-                    {switch $type.declaration.declarationType}
-                      {case dossier.JsType.Declaration.Type.GOOG_PROVIDE}
-                        Provided By
-                      {case dossier.JsType.Declaration.Type.GOOG_MODULE}
-                        {if $type.tags and $type.tags.isModule}
-                          Module ID
-                        {else}
-                          Exported By
-                        {/if}
-                      {default}  // Must be a module of some kind
-                        Exported By
-                    {/switch}
+                    {if $type.declaration.googProvide}
+                      Provided By
+                    {elseif $type.declaration.googModule}
+                      Module ID
+                    {elseif $type.declaration.moduleExport}
+                      Exported By  // Must be a module of some kind.
+                    {/if}
                   {/param}
                 {/call}
               {/if}
               {call .printTypeList}
-                {param types: $type.extendedType /}
+                {param types: $type.extendedTypeList /}
                 {param title: 'Extends' /}
                 {param typeClass: 'super-class' /}
               {/call}
               {call .printTypeList}
-                {param types: $type.implementedType /}
+                {param types: $type.implementedTypeList /}
                 {param title: 'All ' + ($type.tags and $type.tags.isInterface ? 'Extended' : 'Implemented')
                                   + ' Interfaces' /}
               {/call}
               {call .printTypeList}
-                {param types: $type.subtype /}
+                {param types: $type.subtypeList /}
                 {param title: 'All Known '
                     + ($type.tags and $type.tags.isInterface ? 'Subinterfaces' : 'Direct Subclasses') /}
               {/call}
               {call .printTypeList}
-                {param types: $type.implementation /}
+                {param types: $type.implementationList /}
                 {param title: 'All Known Implementations' /}
               {/call}
               {if $type.aliasedType}
@@ -816,7 +817,7 @@
                 {/call}
               {/if}
               {call .printTypeList}
-                {param types: $type.knownAlias /}
+                {param types: $type.knownAliasList /}
                 {param title: 'All Known Aliases' /}
               {/call}
               {if ($type.enumeration and $type.enumeration.type)}
@@ -835,7 +836,7 @@
           {call .deprecationNotice}
             {param deprecation: $type.deprecation /}
           {/call}
-          {if $type.description and length($type.description.token)}
+          {if $type.description and length($type.description.tokenList)}
             {call .comment}
               {param comment: $type.description /}
             {/call}
@@ -859,13 +860,13 @@
 
       {call .renderProperties}
         {param title: 'Instance Methods' /}
-        {param functions: $type.method /}
+        {param functions: $type.methodList /}
         {param instanceProperties: true /}
       {/call}
 
       {call .renderProperties}
         {param title: 'Instance Properties' /}
-        {param properties: $type.field /}
+        {param properties: $type.fieldList /}
         {param instanceProperties: true /}
       {/call}
 
@@ -877,33 +878,33 @@
         {/if}
       {/let}
 
-      {if length($type.staticFunction)}
+      {if length($type.staticFunctionList)}
         {call .renderProperties}
           {param title: $staticPrefix + 'Functions' /}
-          {param functions: $type.staticFunction /}
+          {param functions: $type.staticFunctionList /}
         {/call}
       {/if}
 
-      {if $type.tags and $type.tags.isModule and length($type.reexportedModule)}
+      {if $type.tags and $type.tags.isModule and length($type.reexportedModuleList)}
         <section class="exported-modules">
           <h2>Exported Modules</h2>
           {call .printReexportedModules}
-            {param properties: $type.reexportedModule /}
+            {param properties: $type.reexportedModuleList /}
           {/call}
         </section>
       {/if}
 
-      {if length($type.staticProperty)}
+      {if length($type.staticPropertyList)}
         {call .renderProperties}
           {param title: $staticPrefix + 'Properties' /}
-          {param properties: $type.staticProperty /}
+          {param properties: $type.staticPropertyList /}
         {/call}
       {/if}
 
-      {if length($type.compilerConstant)}
+      {if length($type.compilerConstantList)}
         {call .renderProperties}
           {param title: 'Compiler Constants' /}
-          {param properties: $type.compilerConstant /}
+          {param properties: $type.compilerConstantList /}
         {/call}
       {/if}
 
@@ -912,26 +913,26 @@
         {call .nestedTypeSection}
           {param isModule: $isModule /}
           {param title: 'Interfaces' /}
-          {param types: $type.nested.interface /}
+          {param types: $type.nested.interfaceList /}
         {/call}
 
         {call .nestedTypeSection}
           {param isModule: $isModule /}
           {param title: 'Classes' /}
-          {param types: $type.nested.class /}
+          {param types: $type.nested.classList /}
         {/call}
 
         {call .nestedTypeSection}
           {param isModule: $isModule /}
           {param title: 'Enumerations' /}
-          {param types: $type.nested.enum /}
+          {param types: $type.nested.enumList /}
         {/call}
       {/if}
 
-      {if length($type.typeDef)}
+      {if length($type.typeDefList)}
         {call .renderProperties}
           {param title: 'Type Definitions' /}
-          {param properties: $type.typeDef /}
+          {param properties: $type.typeDefList /}
         {/call}
       {/if}
 
@@ -946,7 +947,7 @@
 {template .htmlFile private="true"}
   {@param comment: dossier.Comment}
   <article class="page">
-    {if length($comment.token)}
+    {if length($comment.tokenList)}
       {call .comment data="all" /}
     {else}
       <strong>TODO</strong>
@@ -964,7 +965,7 @@
     <h1 class="title">{$file.path}</h1>
     <div>
       <table>
-        {foreach $line in $file.lines}
+        {foreach $line in $file.linesList}
           <tr id="l{index($line) + 1}">
             <td><a href="#l{index($line) + 1}">{index($line) + 1}</a>
             <td>{if $line}{$line}{/if}
@@ -990,11 +991,11 @@
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   {call .pageTitle data="all" /}
   {if $data.resources}
-    {foreach $script in $data.resources.headScript}
-      <script src="{$script}"></script>
+    {foreach $script in $data.resources.headScriptList}
+      <script src="{sanitizeUri($script)}"></script>
     {/foreach}
-    {foreach $styleSheet in $data.resources.css}
-      <link href="{$styleSheet}" rel="stylesheet" type="text/css">
+    {foreach $styleSheet in $data.resources.cssList}
+      <link href="{sanitizeUri($styleSheet)}" rel="stylesheet" type="text/css">
     {/foreach}
   {/if}
   <header>
@@ -1018,8 +1019,8 @@
     </footer>
   </div>
   {if $data.resources}
-    {foreach $script in $data.resources.tailScript}
-      <script src="{$script}"></script>
+    {foreach $script in $data.resources.tailScriptList}
+      <script src="{sanitizeUri($script)}"></script>
     {/foreach}
   {/if}
 {/template}
@@ -1031,8 +1032,8 @@
 {template .pageTitle}
   {@param data: dossier.PageData}
   <title>
-    {if $data.types and length($data.types.type)}
-      {$data.types.type[0].qualifiedName}
+    {if $data.types and length($data.types.typeList)}
+      {$data.types.typeList[0].qualifiedName}
     {elseif $data.markdown and $data.markdown.content}
       {$data.markdown.title}
     {elseif $data.file}
@@ -1047,9 +1048,9 @@
  */
 {template .mainPageContent}
   {@param data: dossier.PageData}
-  {if $data.types and length($data.types.type)}
+  {if $data.types and length($data.types.typeList)}
     {call .typeFile}
-      {param types: $data.types.type /}
+      {param types: $data.types.typeList /}
     {/call}
   {elseif $data.markdown and $data.markdown.content}
     {call .htmlFile}

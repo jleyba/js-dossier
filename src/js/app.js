@@ -16,8 +16,6 @@
 
 goog.module('dossier.app');
 
-const PageData = goog.require('dossier.PageData');
-const PageSnapshot = goog.require('dossier.state.PageSnapshot');
 const page = goog.require('dossier.page');
 const search = goog.require('dossier.search');
 const {mainPageContent, pageTitle} = goog.require('dossier.soy');
@@ -33,6 +31,8 @@ const soy = goog.require('goog.soy');
 const {getRandomString} = goog.require('goog.string');
 const style = goog.require('goog.style');
 const userAgent = goog.require('goog.userAgent');
+const PageData = goog.require('proto.dossier.PageData');
+const PageSnapshot = goog.require('proto.dossier.state.PageSnapshot');
 
 
 /**
@@ -159,7 +159,7 @@ class DataService {
  * @param {boolean=} opt_replaceHistory
  */
 function recordSnapshot(snapshot, title, url, opt_replaceHistory) {
-  window.sessionStorage.setItem(snapshot.id, JSON.stringify(snapshot));
+  window.sessionStorage.setItem(snapshot.getId(), JSON.stringify(snapshot));
   if (opt_replaceHistory) {
     window.history.replaceState(snapshot.toJSON(), title, url);
   } else {
@@ -202,12 +202,12 @@ class HistoryService extends EventTarget {
       let state = e ? e.state : null;
       if (goog.isObject(state)) {
         let snapshot = new PageSnapshot(/** @type {!Object} */(state));
-        if (array.peek(this.forwardStack_) === snapshot.id) {
+        if (array.peek(this.forwardStack_) === snapshot.getId()) {
           this.forwardStack_.pop();
         } else {
           this.forwardStack_.push(this.id_);
         }
-        this.id_ = snapshot.id;
+        this.id_ = snapshot.getId();
         this.dispatchEvent(new PopstateEvent(snapshot));
       }
     };
@@ -253,15 +253,15 @@ class Application {
     /** @private @const {!HistoryService} */
     this.historyService_ = new HistoryService(id => {
       let snapshot = new PageSnapshot({});
-      snapshot.id = id;
-      snapshot.title = document.title;
-      snapshot.scroll = this.mainEl.parentElement.scrollTop;
-      snapshot.dataUri =
-          this.dataService_.resolveDataUri(window.location.href) || '';
-      snapshot.openCard =
+      snapshot.setId(id);
+      snapshot.setTitle(document.title);
+      snapshot.setScroll(this.mainEl.parentElement.scrollTop);
+      snapshot.setDataUri(
+          this.dataService_.resolveDataUri(window.location.href) || '');
+      snapshot.setOpenCardList(
           array.map(
               this.mainEl.querySelectorAll('.property.expandable.open[id]'),
-                  el => el.id);
+                  el => el.id));
       return snapshot;
     });
 
@@ -497,13 +497,13 @@ class Application {
     document.title = newTitle.textContent;
 
     if (snapshot) {
-      snapshot.openCard.forEach(id => {
+      snapshot.getOpenCardList().forEach(id => {
         let card = this.mainEl.querySelector(`#${id.replace(/\./g, '\\.')}`);
         if (card) {
           card.classList.add('open');
         }
       });
-      this.mainEl.parentElement.scrollTop = snapshot.scroll;
+      this.mainEl.parentElement.scrollTop = snapshot.getScroll();
     } else {
       this.mainEl.parentElement.scrollTop = 0;
     }
@@ -522,7 +522,7 @@ class Application {
    * @private
    */
   restorePageContent_(snapshot) {
-    let dataUri = snapshot.dataUri;
+    let dataUri = snapshot.getDataUri();
     if (!dataUri) {
       location.reload();
       return;
@@ -648,7 +648,7 @@ class Application {
 /**
  * Runs the main application.
  *
- * @param {!dossier.Index} typeIndex The main type index.
+ * @param {!proto.dossier.Index} typeIndex The main type index.
  * @param {!dossier.search.SearchBox} searchBox The search box widget to use.
  * @param {!dossier.nav.NavDrawer} navDrawer The nav drawer widget to use.
  * @throws {Error} if the application has already been started.
@@ -656,25 +656,28 @@ class Application {
 exports.run = function(typeIndex, searchBox, navDrawer) {
   let uriMap = /** !Map<string, string> */new Map;
 
-  function processLink(/** !(dossier.Link|dossier.expression.TypeLink) */link) {
-    if (link.href && !link.href.toString().startsWith('http') && link.json) {
-      let href = resolveUri(page.getBasePath() + link.href);
-      let json = resolveUri(page.getBasePath() + link.json);
+  function processLink(
+      /** !(proto.dossier.Link|proto.dossier.expression.TypeLink) */link) {
+    if (link.getHref() && !link.getHref().toString().startsWith('http') && link.getJson()) {
+      let href = resolveUri(page.getBasePath() + link.getHref());
+      let json = resolveUri(page.getBasePath() + link.getJson());
       uriMap.set(href, json);
     }
   }
 
-  function processEntry(/** !dossier.Index.Entry */entry) {
-    if (entry.type && entry.type.link) {
-      processLink(entry.type.link);
+  function processEntry(/** !proto.dossier.Index.Entry */entry) {
+    if (entry.getType() && entry.getType().getLink()) {
+      let link = /** @type {!proto.dossier.expression.TypeLink} */(
+          entry.getType().getLink());
+      processLink(link);
     }
-    entry.child.forEach(processEntry);
+    entry.getChildList().forEach(processEntry);
   }
 
-  typeIndex.module.forEach(processEntry);
-  typeIndex.type.forEach(processEntry);
-  typeIndex.page.forEach(processLink);
-  typeIndex.sourceFile.forEach(processLink);
+  typeIndex.getModuleList().forEach(processEntry);
+  typeIndex.getTypeList().forEach(processEntry);
+  typeIndex.getPageList().forEach(processLink);
+  typeIndex.getSourceFileList().forEach(processLink);
 
   let mainEl = /** @type {!Element} */(document.querySelector('main'));
   let dataService = new DataService(uriMap);

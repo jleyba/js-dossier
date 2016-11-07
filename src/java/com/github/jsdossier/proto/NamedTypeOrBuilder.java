@@ -48,10 +48,6 @@ public interface NamedTypeOrBuilder extends
   /**
    * <code>optional .dossier.expression.TypeLink link = 3;</code>
    */
-  boolean hasLink();
-  /**
-   * <code>optional .dossier.expression.TypeLink link = 3;</code>
-   */
   com.github.jsdossier.proto.TypeLink getLink();
   /**
    * <code>optional .dossier.expression.TypeLink link = 3;</code>
@@ -86,4 +82,6 @@ public interface NamedTypeOrBuilder extends
    */
   com.github.jsdossier.proto.TypeExpressionOrBuilder getTemplateTypeOrBuilder(
       int index);
+
+  public com.github.jsdossier.proto.NamedType.LocationCase getLocationCase();
 }

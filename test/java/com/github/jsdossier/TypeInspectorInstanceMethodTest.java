@@ -236,7 +236,7 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setDescription(htmlComment("<p>the second number.</p>\n")))
             .setReturn(Detail.newBuilder()
                 .setType(numberTypeExpression())
-                .setDescription(htmlComment("<p>x + y.</p>\n")))
+                .setDescription(htmlComment("<p>x &#43; y.</p>\n")))
             .build());
   }
 
@@ -2003,8 +2003,8 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setName("greet")
                 .setSource(sourceFile("source/globals.js.src.html", 2))
                 .setDescription(Comment.getDefaultInstance())
-                .setVisibility(Visibility.PROTECTED))
-            .build());
+                .setVisibility(Visibility.newBuilder().setProtected(true))
+            .build()));
 
     type = typeRegistry.getType("CustomGreeter");
     typeInspector = typeInspectorFactory.create(type);
@@ -2018,8 +2018,8 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setSource(sourceFile("source/globals.js.src.html", 6))
                 .setDescription(Comment.getDefaultInstance())
                 .setOverrides(namedType("Greeter", "Greeter.html#greet"))
-                .setVisibility(Visibility.PROTECTED))
-            .build());
+                .setVisibility(Visibility.newBuilder().setProtected(true))
+            .build()));
 
     type = typeRegistry.getType("FinalGreeter");
     typeInspector = typeInspectorFactory.create(type);
@@ -2033,8 +2033,8 @@ public class TypeInspectorInstanceMethodTest extends AbstractTypeInspectorTest {
                 .setSource(sourceFile("source/globals.js.src.html", 10))
                 .setDescription(Comment.getDefaultInstance())
                 .setOverrides(namedType("CustomGreeter", "CustomGreeter.html#greet"))
-                .setVisibility(Visibility.PROTECTED))
-            .build());
+                .setVisibility(Visibility.newBuilder().setProtected(true))
+            .build()));
   }
 
   @Test

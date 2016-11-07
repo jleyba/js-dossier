@@ -4,151 +4,696 @@
 package com.github.jsdossier.proto;
 
 /**
- * Protobuf enum {@code dossier.Visibility}
+ * Protobuf type {@code dossier.Visibility}
  *
  * <pre>
  * Describes a type/property's visibility.
  * </pre>
  */
-public enum Visibility
-    implements com.google.protobuf.ProtocolMessageEnum {
-  /**
-   * <code>PUBLIC = 0;</code>
-   *
-   * <pre>
-   * The type is globally accessible.
-   * </pre>
-   */
-  PUBLIC(0, 0),
-  /**
-   * <code>PROTECTED = 1;</code>
-   *
-   * <pre>
-   * The type may only be used by subclasses or other code in the same file.
-   * </pre>
-   */
-  PROTECTED(1, 1),
-  /**
-   * <code>PRIVATE = 2;</code>
-   *
-   * <pre>
-   * The type may only be used by other code in the same file.
-   * </pre>
-   */
-  PRIVATE(2, 2),
-  /**
-   * <code>PACKAGE = 3;</code>
-   *
-   * <pre>
-   * The type may only be used by subclasses, or other code in the same
-   * package.
-   * </pre>
-   */
-  PACKAGE(3, 3),
-  UNRECOGNIZED(-1, -1),
-  ;
-
-  /**
-   * <code>PUBLIC = 0;</code>
-   *
-   * <pre>
-   * The type is globally accessible.
-   * </pre>
-   */
-  public static final int PUBLIC_VALUE = 0;
-  /**
-   * <code>PROTECTED = 1;</code>
-   *
-   * <pre>
-   * The type may only be used by subclasses or other code in the same file.
-   * </pre>
-   */
-  public static final int PROTECTED_VALUE = 1;
-  /**
-   * <code>PRIVATE = 2;</code>
-   *
-   * <pre>
-   * The type may only be used by other code in the same file.
-   * </pre>
-   */
-  public static final int PRIVATE_VALUE = 2;
-  /**
-   * <code>PACKAGE = 3;</code>
-   *
-   * <pre>
-   * The type may only be used by subclasses, or other code in the same
-   * package.
-   * </pre>
-   */
-  public static final int PACKAGE_VALUE = 3;
-
-
-  public final int getNumber() {
-    if (index == -1) {
-      throw new java.lang.IllegalArgumentException(
-          "Can't get the number of an unknown enum value.");
-    }
-    return value;
+public  final class Visibility extends
+    com.google.protobuf.GeneratedMessage implements
+    // @@protoc_insertion_point(message_implements:dossier.Visibility)
+    VisibilityOrBuilder {
+  // Use Visibility.newBuilder() to construct.
+  private Visibility(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+    super(builder);
+  }
+  private Visibility() {
   }
 
-  public static Visibility valueOf(int value) {
-    switch (value) {
-      case 0: return PUBLIC;
-      case 1: return PROTECTED;
-      case 2: return PRIVATE;
-      case 3: return PACKAGE;
-      default: return null;
-    }
+  @java.lang.Override
+  public final com.google.protobuf.UnknownFieldSet
+  getUnknownFields() {
+    return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
   }
-
-  public static com.google.protobuf.Internal.EnumLiteMap<Visibility>
-      internalGetValueMap() {
-    return internalValueMap;
-  }
-  private static final com.google.protobuf.Internal.EnumLiteMap<
-      Visibility> internalValueMap =
-        new com.google.protobuf.Internal.EnumLiteMap<Visibility>() {
-          public Visibility findValueByNumber(int number) {
-            return Visibility.valueOf(number);
+  private Visibility(
+      com.google.protobuf.CodedInputStream input,
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
+    this();
+    int mutable_bitField0_ = 0;
+    try {
+      boolean done = false;
+      while (!done) {
+        int tag = input.readTag();
+        switch (tag) {
+          case 0:
+            done = true;
+            break;
+          default: {
+            if (!input.skipField(tag)) {
+              done = true;
+            }
+            break;
           }
-        };
-
-  public final com.google.protobuf.Descriptors.EnumValueDescriptor
-      getValueDescriptor() {
-    return getDescriptor().getValues().get(index);
+          case 8: {
+            typeCase_ = 1;
+            type_ = input.readBool();
+            break;
+          }
+          case 16: {
+            typeCase_ = 2;
+            type_ = input.readBool();
+            break;
+          }
+          case 24: {
+            typeCase_ = 3;
+            type_ = input.readBool();
+            break;
+          }
+          case 32: {
+            typeCase_ = 4;
+            type_ = input.readBool();
+            break;
+          }
+        }
+      }
+    } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+      throw new RuntimeException(e.setUnfinishedMessage(this));
+    } catch (java.io.IOException e) {
+      throw new RuntimeException(
+          new com.google.protobuf.InvalidProtocolBufferException(
+              e.getMessage()).setUnfinishedMessage(this));
+    } finally {
+      makeExtensionsImmutable();
+    }
   }
-  public final com.google.protobuf.Descriptors.EnumDescriptor
-      getDescriptorForType() {
-    return getDescriptor();
-  }
-  public static final com.google.protobuf.Descriptors.EnumDescriptor
+  public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return com.github.jsdossier.proto.Dossier.getDescriptor()
-        .getEnumTypes().get(0);
+    return com.github.jsdossier.proto.Dossier.internal_static_dossier_Visibility_descriptor;
   }
 
-  private static final Visibility[] VALUES = values();
+  protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internalGetFieldAccessorTable() {
+    return com.github.jsdossier.proto.Dossier.internal_static_dossier_Visibility_fieldAccessorTable
+        .ensureFieldAccessorsInitialized(
+            com.github.jsdossier.proto.Visibility.class, com.github.jsdossier.proto.Visibility.Builder.class);
+  }
 
-  public static Visibility valueOf(
-      com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
-    if (desc.getType() != getDescriptor()) {
-      throw new java.lang.IllegalArgumentException(
-        "EnumValueDescriptor is not for this type.");
+  private int typeCase_ = 0;
+  private java.lang.Object type_;
+  public enum TypeCase
+      implements com.google.protobuf.Internal.EnumLite {
+    PUBLIC(1),
+    PROTECTED(2),
+    PRIVATE(3),
+    PACKAGE(4),
+    TYPE_NOT_SET(0);
+    private int value = 0;
+    private TypeCase(int value) {
+      this.value = value;
     }
-    if (desc.getIndex() == -1) {
-      return UNRECOGNIZED;
+    public static TypeCase valueOf(int value) {
+      switch (value) {
+        case 1: return PUBLIC;
+        case 2: return PROTECTED;
+        case 3: return PRIVATE;
+        case 4: return PACKAGE;
+        case 0: return TYPE_NOT_SET;
+        default: throw new java.lang.IllegalArgumentException(
+          "Value is undefined for this oneof enum.");
+      }
     }
-    return VALUES[desc.getIndex()];
+    public int getNumber() {
+      return this.value;
+    }
+  };
+
+  public TypeCase
+  getTypeCase() {
+    return TypeCase.valueOf(
+        typeCase_);
   }
 
-  private final int index;
-  private final int value;
-
-  private Visibility(int index, int value) {
-    this.index = index;
-    this.value = value;
+  public static final int PUBLIC_FIELD_NUMBER = 1;
+  /**
+   * <code>optional bool public = 1;</code>
+   *
+   * <pre>
+   * The type is globally accessible.
+   * </pre>
+   */
+  public boolean getPublic() {
+    if (typeCase_ == 1) {
+      return (java.lang.Boolean) type_;
+    }
+    return false;
   }
 
-  // @@protoc_insertion_point(enum_scope:dossier.Visibility)
+  public static final int PROTECTED_FIELD_NUMBER = 2;
+  /**
+   * <code>optional bool protected = 2;</code>
+   *
+   * <pre>
+   * The type may only be used by subclasses or other code in the same file.
+   * </pre>
+   */
+  public boolean getProtected() {
+    if (typeCase_ == 2) {
+      return (java.lang.Boolean) type_;
+    }
+    return false;
+  }
+
+  public static final int PRIVATE_FIELD_NUMBER = 3;
+  /**
+   * <code>optional bool private = 3;</code>
+   *
+   * <pre>
+   * The type may only be used by other code in the same file.
+   * </pre>
+   */
+  public boolean getPrivate() {
+    if (typeCase_ == 3) {
+      return (java.lang.Boolean) type_;
+    }
+    return false;
+  }
+
+  public static final int PACKAGE_FIELD_NUMBER = 4;
+  /**
+   * <code>optional bool package = 4;</code>
+   *
+   * <pre>
+   * The type may only be used by subclasses, or other code in the same
+   * package.
+   * </pre>
+   */
+  public boolean getPackage() {
+    if (typeCase_ == 4) {
+      return (java.lang.Boolean) type_;
+    }
+    return false;
+  }
+
+  private byte memoizedIsInitialized = -1;
+  public final boolean isInitialized() {
+    byte isInitialized = memoizedIsInitialized;
+    if (isInitialized == 1) return true;
+    if (isInitialized == 0) return false;
+
+    memoizedIsInitialized = 1;
+    return true;
+  }
+
+  public void writeTo(com.google.protobuf.CodedOutputStream output)
+                      throws java.io.IOException {
+    if (typeCase_ == 1) {
+      output.writeBool(
+          1, (boolean)((java.lang.Boolean) type_));
+    }
+    if (typeCase_ == 2) {
+      output.writeBool(
+          2, (boolean)((java.lang.Boolean) type_));
+    }
+    if (typeCase_ == 3) {
+      output.writeBool(
+          3, (boolean)((java.lang.Boolean) type_));
+    }
+    if (typeCase_ == 4) {
+      output.writeBool(
+          4, (boolean)((java.lang.Boolean) type_));
+    }
+  }
+
+  public int getSerializedSize() {
+    int size = memoizedSize;
+    if (size != -1) return size;
+
+    size = 0;
+    if (typeCase_ == 1) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeBoolSize(
+            1, (boolean)((java.lang.Boolean) type_));
+    }
+    if (typeCase_ == 2) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeBoolSize(
+            2, (boolean)((java.lang.Boolean) type_));
+    }
+    if (typeCase_ == 3) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeBoolSize(
+            3, (boolean)((java.lang.Boolean) type_));
+    }
+    if (typeCase_ == 4) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeBoolSize(
+            4, (boolean)((java.lang.Boolean) type_));
+    }
+    memoizedSize = size;
+    return size;
+  }
+
+  private static final long serialVersionUID = 0L;
+  public static com.github.jsdossier.proto.Visibility parseFrom(
+      com.google.protobuf.ByteString data)
+      throws com.google.protobuf.InvalidProtocolBufferException {
+    return PARSER.parseFrom(data);
+  }
+  public static com.github.jsdossier.proto.Visibility parseFrom(
+      com.google.protobuf.ByteString data,
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+      throws com.google.protobuf.InvalidProtocolBufferException {
+    return PARSER.parseFrom(data, extensionRegistry);
+  }
+  public static com.github.jsdossier.proto.Visibility parseFrom(byte[] data)
+      throws com.google.protobuf.InvalidProtocolBufferException {
+    return PARSER.parseFrom(data);
+  }
+  public static com.github.jsdossier.proto.Visibility parseFrom(
+      byte[] data,
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+      throws com.google.protobuf.InvalidProtocolBufferException {
+    return PARSER.parseFrom(data, extensionRegistry);
+  }
+  public static com.github.jsdossier.proto.Visibility parseFrom(java.io.InputStream input)
+      throws java.io.IOException {
+    return PARSER.parseFrom(input);
+  }
+  public static com.github.jsdossier.proto.Visibility parseFrom(
+      java.io.InputStream input,
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+      throws java.io.IOException {
+    return PARSER.parseFrom(input, extensionRegistry);
+  }
+  public static com.github.jsdossier.proto.Visibility parseDelimitedFrom(java.io.InputStream input)
+      throws java.io.IOException {
+    return PARSER.parseDelimitedFrom(input);
+  }
+  public static com.github.jsdossier.proto.Visibility parseDelimitedFrom(
+      java.io.InputStream input,
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+      throws java.io.IOException {
+    return PARSER.parseDelimitedFrom(input, extensionRegistry);
+  }
+  public static com.github.jsdossier.proto.Visibility parseFrom(
+      com.google.protobuf.CodedInputStream input)
+      throws java.io.IOException {
+    return PARSER.parseFrom(input);
+  }
+  public static com.github.jsdossier.proto.Visibility parseFrom(
+      com.google.protobuf.CodedInputStream input,
+      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+      throws java.io.IOException {
+    return PARSER.parseFrom(input, extensionRegistry);
+  }
+
+  public Builder newBuilderForType() { return newBuilder(); }
+  public static Builder newBuilder() {
+    return DEFAULT_INSTANCE.toBuilder();
+  }
+  public static Builder newBuilder(com.github.jsdossier.proto.Visibility prototype) {
+    return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+  }
+  public Builder toBuilder() {
+    return this == DEFAULT_INSTANCE
+        ? new Builder() : new Builder().mergeFrom(this);
+  }
+
+  @java.lang.Override
+  protected Builder newBuilderForType(
+      com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+    Builder builder = new Builder(parent);
+    return builder;
+  }
+  /**
+   * Protobuf type {@code dossier.Visibility}
+   *
+   * <pre>
+   * Describes a type/property's visibility.
+   * </pre>
+   */
+  public static final class Builder extends
+      com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+      // @@protoc_insertion_point(builder_implements:dossier.Visibility)
+      com.github.jsdossier.proto.VisibilityOrBuilder {
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.github.jsdossier.proto.Dossier.internal_static_dossier_Visibility_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.github.jsdossier.proto.Dossier.internal_static_dossier_Visibility_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              com.github.jsdossier.proto.Visibility.class, com.github.jsdossier.proto.Visibility.Builder.class);
+    }
+
+    // Construct using com.github.jsdossier.proto.Visibility.newBuilder()
+    private Builder() {
+      maybeForceBuilderInitialization();
+    }
+
+    private Builder(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      super(parent);
+      maybeForceBuilderInitialization();
+    }
+    private void maybeForceBuilderInitialization() {
+      if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+      }
+    }
+    public Builder clear() {
+      super.clear();
+      typeCase_ = 0;
+      type_ = null;
+      return this;
+    }
+
+    public com.google.protobuf.Descriptors.Descriptor
+        getDescriptorForType() {
+      return com.github.jsdossier.proto.Dossier.internal_static_dossier_Visibility_descriptor;
+    }
+
+    public com.github.jsdossier.proto.Visibility getDefaultInstanceForType() {
+      return com.github.jsdossier.proto.Visibility.getDefaultInstance();
+    }
+
+    public com.github.jsdossier.proto.Visibility build() {
+      com.github.jsdossier.proto.Visibility result = buildPartial();
+      if (!result.isInitialized()) {
+        throw newUninitializedMessageException(result);
+      }
+      return result;
+    }
+
+    public com.github.jsdossier.proto.Visibility buildPartial() {
+      com.github.jsdossier.proto.Visibility result = new com.github.jsdossier.proto.Visibility(this);
+      if (typeCase_ == 1) {
+        result.type_ = type_;
+      }
+      if (typeCase_ == 2) {
+        result.type_ = type_;
+      }
+      if (typeCase_ == 3) {
+        result.type_ = type_;
+      }
+      if (typeCase_ == 4) {
+        result.type_ = type_;
+      }
+      result.typeCase_ = typeCase_;
+      onBuilt();
+      return result;
+    }
+
+    public Builder mergeFrom(com.google.protobuf.Message other) {
+      if (other instanceof com.github.jsdossier.proto.Visibility) {
+        return mergeFrom((com.github.jsdossier.proto.Visibility)other);
+      } else {
+        super.mergeFrom(other);
+        return this;
+      }
+    }
+
+    public Builder mergeFrom(com.github.jsdossier.proto.Visibility other) {
+      if (other == com.github.jsdossier.proto.Visibility.getDefaultInstance()) return this;
+      switch (other.getTypeCase()) {
+        case PUBLIC: {
+          setPublic(other.getPublic());
+          break;
+        }
+        case PROTECTED: {
+          setProtected(other.getProtected());
+          break;
+        }
+        case PRIVATE: {
+          setPrivate(other.getPrivate());
+          break;
+        }
+        case PACKAGE: {
+          setPackage(other.getPackage());
+          break;
+        }
+        case TYPE_NOT_SET: {
+          break;
+        }
+      }
+      onChanged();
+      return this;
+    }
+
+    public final boolean isInitialized() {
+      return true;
+    }
+
+    public Builder mergeFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      com.github.jsdossier.proto.Visibility parsedMessage = null;
+      try {
+        parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        parsedMessage = (com.github.jsdossier.proto.Visibility) e.getUnfinishedMessage();
+        throw e;
+      } finally {
+        if (parsedMessage != null) {
+          mergeFrom(parsedMessage);
+        }
+      }
+      return this;
+    }
+    private int typeCase_ = 0;
+    private java.lang.Object type_;
+    public TypeCase
+        getTypeCase() {
+      return TypeCase.valueOf(
+          typeCase_);
+    }
+
+    public Builder clearType() {
+      typeCase_ = 0;
+      type_ = null;
+      onChanged();
+      return this;
+    }
+
+
+    /**
+     * <code>optional bool public = 1;</code>
+     *
+     * <pre>
+     * The type is globally accessible.
+     * </pre>
+     */
+    public boolean getPublic() {
+      if (typeCase_ == 1) {
+        return (java.lang.Boolean) type_;
+      }
+      return false;
+    }
+    /**
+     * <code>optional bool public = 1;</code>
+     *
+     * <pre>
+     * The type is globally accessible.
+     * </pre>
+     */
+    public Builder setPublic(boolean value) {
+      typeCase_ = 1;
+      type_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional bool public = 1;</code>
+     *
+     * <pre>
+     * The type is globally accessible.
+     * </pre>
+     */
+    public Builder clearPublic() {
+      if (typeCase_ == 1) {
+        typeCase_ = 0;
+        type_ = null;
+        onChanged();
+      }
+      return this;
+    }
+
+    /**
+     * <code>optional bool protected = 2;</code>
+     *
+     * <pre>
+     * The type may only be used by subclasses or other code in the same file.
+     * </pre>
+     */
+    public boolean getProtected() {
+      if (typeCase_ == 2) {
+        return (java.lang.Boolean) type_;
+      }
+      return false;
+    }
+    /**
+     * <code>optional bool protected = 2;</code>
+     *
+     * <pre>
+     * The type may only be used by subclasses or other code in the same file.
+     * </pre>
+     */
+    public Builder setProtected(boolean value) {
+      typeCase_ = 2;
+      type_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional bool protected = 2;</code>
+     *
+     * <pre>
+     * The type may only be used by subclasses or other code in the same file.
+     * </pre>
+     */
+    public Builder clearProtected() {
+      if (typeCase_ == 2) {
+        typeCase_ = 0;
+        type_ = null;
+        onChanged();
+      }
+      return this;
+    }
+
+    /**
+     * <code>optional bool private = 3;</code>
+     *
+     * <pre>
+     * The type may only be used by other code in the same file.
+     * </pre>
+     */
+    public boolean getPrivate() {
+      if (typeCase_ == 3) {
+        return (java.lang.Boolean) type_;
+      }
+      return false;
+    }
+    /**
+     * <code>optional bool private = 3;</code>
+     *
+     * <pre>
+     * The type may only be used by other code in the same file.
+     * </pre>
+     */
+    public Builder setPrivate(boolean value) {
+      typeCase_ = 3;
+      type_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional bool private = 3;</code>
+     *
+     * <pre>
+     * The type may only be used by other code in the same file.
+     * </pre>
+     */
+    public Builder clearPrivate() {
+      if (typeCase_ == 3) {
+        typeCase_ = 0;
+        type_ = null;
+        onChanged();
+      }
+      return this;
+    }
+
+    /**
+     * <code>optional bool package = 4;</code>
+     *
+     * <pre>
+     * The type may only be used by subclasses, or other code in the same
+     * package.
+     * </pre>
+     */
+    public boolean getPackage() {
+      if (typeCase_ == 4) {
+        return (java.lang.Boolean) type_;
+      }
+      return false;
+    }
+    /**
+     * <code>optional bool package = 4;</code>
+     *
+     * <pre>
+     * The type may only be used by subclasses, or other code in the same
+     * package.
+     * </pre>
+     */
+    public Builder setPackage(boolean value) {
+      typeCase_ = 4;
+      type_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>optional bool package = 4;</code>
+     *
+     * <pre>
+     * The type may only be used by subclasses, or other code in the same
+     * package.
+     * </pre>
+     */
+    public Builder clearPackage() {
+      if (typeCase_ == 4) {
+        typeCase_ = 0;
+        type_ = null;
+        onChanged();
+      }
+      return this;
+    }
+    public final Builder setUnknownFields(
+        final com.google.protobuf.UnknownFieldSet unknownFields) {
+      return this;
+    }
+
+    public final Builder mergeUnknownFields(
+        final com.google.protobuf.UnknownFieldSet unknownFields) {
+      return this;
+    }
+
+
+    // @@protoc_insertion_point(builder_scope:dossier.Visibility)
+  }
+
+  // @@protoc_insertion_point(class_scope:dossier.Visibility)
+  private static final com.github.jsdossier.proto.Visibility DEFAULT_INSTANCE;
+  static {
+    DEFAULT_INSTANCE = new com.github.jsdossier.proto.Visibility();
+  }
+
+  public static com.github.jsdossier.proto.Visibility getDefaultInstance() {
+    return DEFAULT_INSTANCE;
+  }
+
+  private static final com.google.protobuf.Parser<Visibility>
+      PARSER = new com.google.protobuf.AbstractParser<Visibility>() {
+    public Visibility parsePartialFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      try {
+        return new Visibility(input, extensionRegistry);
+      } catch (RuntimeException e) {
+        if (e.getCause() instanceof
+            com.google.protobuf.InvalidProtocolBufferException) {
+          throw (com.google.protobuf.InvalidProtocolBufferException)
+              e.getCause();
+        }
+        throw e;
+      }
+    }
+  };
+
+  public static com.google.protobuf.Parser<Visibility> parser() {
+    return PARSER;
+  }
+
+  @java.lang.Override
+  public com.google.protobuf.Parser<Visibility> getParserForType() {
+    return PARSER;
+  }
+
+  public com.github.jsdossier.proto.Visibility getDefaultInstanceForType() {
+    return DEFAULT_INSTANCE;
+  }
+
 }
 

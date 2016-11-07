@@ -14,8 +14,6 @@
 
 syntax = "proto2";
 
-import "options.proto";
-
 option java_package = "com.github.jsdossier.soy";
 
 package test;
@@ -40,7 +38,7 @@ message Order {
   optional Color color = 5;
   repeated int32 repeated_int = 6;
   repeated Color repeated_color = 7;
-  optional string html_field = 8 [(dossier.options.sanitized).html = true];
+  optional string html_field = 8;
 }
 
 message Top {
@@ -49,6 +47,9 @@ message Top {
   }
 
   message NestedMessage {
+    enum MoreNestedEnum {
+      OTHER_VALUE = 0;
+    }
     optional bool item = 1;
   }
 

@@ -1810,6 +1810,81 @@ public final class TestProto {
                 com.github.jsdossier.soy.TestProto.Top.NestedMessage.class, com.github.jsdossier.soy.TestProto.Top.NestedMessage.Builder.class);
       }
 
+      /**
+       * Protobuf enum {@code test.Top.NestedMessage.MoreNestedEnum}
+       */
+      public enum MoreNestedEnum
+          implements com.google.protobuf.ProtocolMessageEnum {
+        /**
+         * <code>OTHER_VALUE = 0;</code>
+         */
+        OTHER_VALUE(0, 0),
+        ;
+
+        /**
+         * <code>OTHER_VALUE = 0;</code>
+         */
+        public static final int OTHER_VALUE_VALUE = 0;
+
+
+        public final int getNumber() {
+          return value;
+        }
+
+        public static MoreNestedEnum valueOf(int value) {
+          switch (value) {
+            case 0: return OTHER_VALUE;
+            default: return null;
+          }
+        }
+
+        public static com.google.protobuf.Internal.EnumLiteMap<MoreNestedEnum>
+            internalGetValueMap() {
+          return internalValueMap;
+        }
+        private static final com.google.protobuf.Internal.EnumLiteMap<
+            MoreNestedEnum> internalValueMap =
+              new com.google.protobuf.Internal.EnumLiteMap<MoreNestedEnum>() {
+                public MoreNestedEnum findValueByNumber(int number) {
+                  return MoreNestedEnum.valueOf(number);
+                }
+              };
+
+        public final com.google.protobuf.Descriptors.EnumValueDescriptor
+            getValueDescriptor() {
+          return getDescriptor().getValues().get(index);
+        }
+        public final com.google.protobuf.Descriptors.EnumDescriptor
+            getDescriptorForType() {
+          return getDescriptor();
+        }
+        public static final com.google.protobuf.Descriptors.EnumDescriptor
+            getDescriptor() {
+          return com.github.jsdossier.soy.TestProto.Top.NestedMessage.getDescriptor().getEnumTypes().get(0);
+        }
+
+        private static final MoreNestedEnum[] VALUES = values();
+
+        public static MoreNestedEnum valueOf(
+            com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+          if (desc.getType() != getDescriptor()) {
+            throw new java.lang.IllegalArgumentException(
+              "EnumValueDescriptor is not for this type.");
+          }
+          return VALUES[desc.getIndex()];
+        }
+
+        private final int index;
+        private final int value;
+
+        private MoreNestedEnum(int index, int value) {
+          this.index = index;
+          this.value = value;
+        }
+
+        // @@protoc_insertion_point(enum_scope:test.Top.NestedMessage.MoreNestedEnum)
+      }
+
       private int bitField0_;
       public static final int ITEM_FIELD_NUMBER = 1;
       private boolean item_;
@@ -2949,20 +3024,21 @@ public final class TestProto {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\020test_proto.proto\022\004test\032\roptions.proto\"" +
-      "\323\001\n\005Order\022\022\n\nbool_field\030\001 \001(\010\022\021\n\tint_fie" +
-      "ld\030\002 \001(\005\022\024\n\014string_field\030\003 \001(\t\022\032\n\005fruit\030" +
-      "\004 \001(\0162\013.test.Fruit\022\032\n\005color\030\005 \001(\0162\013.test" +
-      ".Color\022\024\n\014repeated_int\030\006 \003(\005\022#\n\016repeated" +
-      "_color\030\007 \003(\0162\013.test.Color\022\032\n\nhtml_field\030" +
-      "\010 \001(\tB\006\362\201\031\002\020\001\"\265\001\n\003Top\022)\n\013nested_enum\030\001 \001" +
-      "(\0162\024.test.Top.NestedEnum\022\032\n\005order\030\002 \003(\0132" +
-      "\013.test.Order\022/\n\016nested_message\030\003 \001(\0132\027.t" +
-      "est.Top.NestedMessage\032\035\n\rNestedMessage\022\014",
-      "\n\004item\030\001 \001(\010\"\027\n\nNestedEnum\022\t\n\005VALUE\020\000*%\n" +
-      "\005Color\022\007\n\003RED\020\000\022\010\n\004BLUE\020\001\022\t\n\005GREEN\020\002*+\n\005" +
-      "Fruit\022\013\n\007UNKNOWN\020\000\022\t\n\005APPLE\020\001\022\n\n\006ORANGE\020" +
-      "\002B\032\n\030com.github.jsdossier.soy"
+      "\n\020test_proto.proto\022\004test\"\313\001\n\005Order\022\022\n\nbo" +
+      "ol_field\030\001 \001(\010\022\021\n\tint_field\030\002 \001(\005\022\024\n\014str" +
+      "ing_field\030\003 \001(\t\022\032\n\005fruit\030\004 \001(\0162\013.test.Fr" +
+      "uit\022\032\n\005color\030\005 \001(\0162\013.test.Color\022\024\n\014repea" +
+      "ted_int\030\006 \003(\005\022#\n\016repeated_color\030\007 \003(\0162\013." +
+      "test.Color\022\022\n\nhtml_field\030\010 \001(\t\"\330\001\n\003Top\022)" +
+      "\n\013nested_enum\030\001 \001(\0162\024.test.Top.NestedEnu" +
+      "m\022\032\n\005order\030\002 \003(\0132\013.test.Order\022/\n\016nested_" +
+      "message\030\003 \001(\0132\027.test.Top.NestedMessage\032@" +
+      "\n\rNestedMessage\022\014\n\004item\030\001 \001(\010\"!\n\016MoreNes",
+      "tedEnum\022\017\n\013OTHER_VALUE\020\000\"\027\n\nNestedEnum\022\t" +
+      "\n\005VALUE\020\000*%\n\005Color\022\007\n\003RED\020\000\022\010\n\004BLUE\020\001\022\t\n" +
+      "\005GREEN\020\002*+\n\005Fruit\022\013\n\007UNKNOWN\020\000\022\t\n\005APPLE\020" +
+      "\001\022\n\n\006ORANGE\020\002B\032\n\030com.github.jsdossier.so" +
+      "y"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -2975,7 +3051,6 @@ public final class TestProto {
     com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
-          com.github.jsdossier.proto.Options.getDescriptor(),
         }, assigner);
     internal_static_test_Order_descriptor =
       getDescriptor().getMessageTypes().get(0);
@@ -2995,12 +3070,6 @@ public final class TestProto {
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_test_Top_NestedMessage_descriptor,
         new java.lang.String[] { "Item", });
-    com.google.protobuf.ExtensionRegistry registry =
-        com.google.protobuf.ExtensionRegistry.newInstance();
-    registry.add(com.github.jsdossier.proto.Options.sanitized);
-    com.google.protobuf.Descriptors.FileDescriptor
-        .internalUpdateFileDescriptor(descriptor, registry);
-    com.github.jsdossier.proto.Options.getDescriptor();
   }
 
   // @@protoc_insertion_point(outer_class_scope)

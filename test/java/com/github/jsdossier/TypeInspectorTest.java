@@ -568,7 +568,7 @@ public class TypeInspectorTest extends AbstractTypeInspectorTest {
             .addParameter(Function.Detail.newBuilder()
                 .setName("name")
                 .setType(stringTypeExpression())
-                .setDescription(htmlComment("<p>The person's name.</p>\n")))
+                .setDescription(htmlComment("<p>The person&#39;s name.</p>\n")))
             .addThrown(Function.Detail.newBuilder()
                 .setType(nullableErrorTypeExpression())
                 .setDescription(htmlComment("<p>Randomly.</p>\n")))
@@ -720,7 +720,7 @@ public class TypeInspectorTest extends AbstractTypeInspectorTest {
                 .setName("inheritsVisFn")
                 .setSource(sourceFile("source/foo.js.src.html", 9))
                 .setDescription(Comment.getDefaultInstance())
-                .setVisibility(Visibility.PACKAGE)
+                .setVisibility(Visibility.newBuilder().setPackage(true))
                 .build())
             .build(),
         Function.newBuilder()

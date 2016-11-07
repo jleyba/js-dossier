@@ -37,7 +37,7 @@
   {foreach $link in $links}
     {if $link.href and $link.text}
       <section>
-        <a class="title" href="{$link.href}" tabindex="1">{$link.text}</a>
+        <a class="title" href="{sanitizeUri($link.href)}" tabindex="1">{$link.text}</a>
       </section>
     {/if}
   {/foreach}
@@ -54,7 +54,7 @@
       {foreach $module in $modules}
         {call .treeItem_}
           {param type: $module /}
-          {param subTypes: $module.child /}
+          {param subTypes: $module.childList /}
         {/call}
       {/foreach}
     </ul>
@@ -72,7 +72,7 @@
       {foreach $type in $types}
         {call .treeItem_}
           {param type: $type /}
-          {param subTypes: $type.child /}
+          {param subTypes: $type.childList /}
         {/call}
       {/foreach}
     </ul>
@@ -92,7 +92,7 @@
       {/param}
       {param href kind="text"}
         {if $namedType.link}
-          {$namedType.link.href}
+          {sanitizeUri($namedType.link.href)}
         {/if}
       {/param}
       {param tabIndex: 1 /}

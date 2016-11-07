@@ -18,6 +18,8 @@ java_test_suite(
         "//lib/maven:closure_templates",
         "//lib/maven:gson",
         "//lib/maven:guava",
+        "//lib/maven:guice",
+        "//lib/maven:inject",
         "//lib/maven:jsoup",
         "//lib/maven:jsr305",
         "//lib/maven:junit",

@@ -21,6 +21,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import com.github.jsdossier.proto.Dossier;
 import com.github.jsdossier.proto.Expression;
 import com.github.jsdossier.proto.State;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
@@ -28,8 +29,6 @@ import com.google.inject.Injector;
 import com.google.inject.Provides;
 import com.google.protobuf.Descriptors;
 import com.google.template.soy.SoyFileSet;
-import com.google.template.soy.data.SoyMapData;
-import com.google.template.soy.data.SoyRecord;
 import com.google.template.soy.tofu.SoyTofu;
 import com.google.template.soy.types.SoyTypeProvider;
 import com.google.template.soy.types.SoyTypeRegistry;
@@ -43,6 +42,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 import javax.inject.Qualifier;
@@ -62,7 +62,7 @@ final class ProtoDescriptorsToJs {
   }
 
   private void processFiles(Descriptors.FileDescriptor... files) throws IOException {
-    List<SoyRecord> data = new ArrayList<>();
+    List<Object> data = new ArrayList<>();
 
     for (Descriptors.FileDescriptor file : files) {
       collectEnumData(file.getEnumTypes(), data);
@@ -71,20 +71,20 @@ final class ProtoDescriptorsToJs {
 
     try (PrintWriter writer = new PrintWriter(Files.newOutputStream(output))) {
       tofu.newRenderer("dossier.soy.proto.render")
-          .setData(new SoyMapData("data", data))
+          .setData(ImmutableMap.of("data", data))
           .render(writer);
     }
   }
 
   private static void collectEnumData(
-      Iterable<Descriptors.EnumDescriptor> items, List<SoyRecord> data) {
+      Iterable<Descriptors.EnumDescriptor> items, List<Object> data) {
     for (Descriptors.EnumDescriptor item : items) {
       data.add(asRecord(item));
     }
   }
 
   private static void collectMessageData(
-      Iterable<Descriptors.Descriptor> items, List<SoyRecord> data) {
+      Iterable<Descriptors.Descriptor> items, List<Object> data) {
     for (Descriptors.Descriptor item : items) {
       data.add(asRecord(item));
       collectEnumData(item.getEnumTypes(), data);
@@ -92,15 +92,15 @@ final class ProtoDescriptorsToJs {
     }
   }
 
-  private static SoyRecord asRecord(Descriptors.EnumDescriptor descriptor) {
-    return new SoyMapData(
-        "enum", ProtoMessageSoyType.toSoyValue(descriptor.toProto()),
+  private static Map<String, ?> asRecord(Descriptors.EnumDescriptor descriptor) {
+    return ImmutableMap.of(
+        "enum", descriptor.toProto(),
         "name", descriptor.getFullName());
   }
 
-  private static SoyRecord asRecord(Descriptors.Descriptor descriptor) {
-    return new SoyMapData(
-        "message", ProtoMessageSoyType.toSoyValue(descriptor.toProto()),
+  private static Map<String, ?> asRecord(Descriptors.Descriptor descriptor) {
+    return ImmutableMap.of(
+        "message", descriptor.toProto(),
         "name", descriptor.getFullName());
   }
 
@@ -127,11 +127,9 @@ final class ProtoDescriptorsToJs {
 
           @Provides
           @Internal
-          SoyTofu provideTofu(
-              SoyFileSet.Builder builder, DossierSoyTypeProvider typeProvider) {
+          SoyTofu provideTofu(SoyFileSet.Builder builder, SoyTypeProvider typeProvider) {
             return builder.add(ProtoDescriptorsToJs.class.getResource("resources/proto.soy"))
-                .setLocalTypeRegistry(
-                    new SoyTypeRegistry(ImmutableSet.of((SoyTypeProvider) typeProvider)))
+                .setLocalTypeRegistry(new SoyTypeRegistry(ImmutableSet.of(typeProvider)))
                 .build()
                 .compileToTofu();
           }

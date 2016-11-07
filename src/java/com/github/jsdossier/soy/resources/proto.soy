@@ -9,7 +9,7 @@
 goog.provide('proto.dossier');
 {/literal}
 {foreach $record in $data}
-goog.provide('{$record.name}');{\n}
+goog.provide('proto.{$record.name}');{\n}
 {/foreach}
 {literal}
 
@@ -201,10 +201,10 @@ pd.getSanitizedField_ = function(message, fieldNumber, deserializer) {
 
 {literal}
 /** @enum {number} */
-{/literal}{$name}{literal} = {
+{/literal}proto.{$name}{literal} = {
 {/literal}
 
-{foreach $value in $descriptor.value}
+{foreach $value in $descriptor.valueList}
   {sp}{sp}
   {$value.name}: {$value.number}
   {if not isLast($value)},{/if}
@@ -221,13 +221,13 @@ pd.getSanitizedField_ = function(message, fieldNumber, deserializer) {
   {@param name: string}
 
 {\n}
-{$name}{literal} = class extends pd.Message_ {
+proto.{$name}{literal} = class extends pd.Message_ {
   constructor(/** Object= */opt_data) {
     super(opt_data);
   }
 {/literal}
 
-{foreach $field in $descriptor.field}
+{foreach $field in $descriptor.fieldList}
   {let $type kind="text"}
     {switch $field.type}
       // Not all number types can be converted to JS, but we include them for completeness.
@@ -247,16 +247,8 @@ pd.getSanitizedField_ = function(message, fieldNumber, deserializer) {
 
       {case google.protobuf.FieldDescriptorProto.Type.TYPE_BYTES}string
 
-      {case google.protobuf.FieldDescriptorProto.Type.TYPE_STRING}
-        {if isSanitizedHtml($name, $field.name)}
-          SanitizedHtml
-        {elseif isSanitizedUri($name, $field.name)}
-          SanitizedUri
-        {else}
-          string
-        {/if}
-
-      {default}{typeName($field.typeName)}
+      {case google.protobuf.FieldDescriptorProto.Type.TYPE_STRING}string
+      {default}proto.{typeName($field.typeName)}
     {/switch}
   {/let}
 
@@ -264,23 +256,15 @@ pd.getSanitizedField_ = function(message, fieldNumber, deserializer) {
   {let $isRepeated: $field.label == google.protobuf.FieldDescriptorProto.Label.LABEL_REPEATED /}
   {let $initData kind="html"}data = this.data_['{$field.number}'];{/let}
   {let $returnType kind="html"}{if $isRepeated}{arrayType('!' + $type)}{else}{$type}{/if}{/let}
-  {let $isSanitized: $type == 'SanitizedHtml' or $type == 'SanitizedUri' /}
-  {let $isMessage: not $isSanitized and $type != 'boolean' and $type != 'string' and $type != 'number' and not $isEnum /}
+  {let $isMessage: $type != 'boolean' and $type != 'string' and $type != 'number' and not $isEnum /}
 
 {literal}
   /**
    * @return {{/literal}{$returnType}{literal}}
    */
-  get {/literal}{toLowerCamelCase($field.name)}{literal}() {
+  get{/literal}{toUpperCamelCase($field.name)}{if $isRepeated}List{/if}{literal}() {
     {/literal}
-    {if $isSanitized}
-      {let $deserializer: $type == 'SanitizedHtml' ? 'ordainSanitizedHtml' : 'ordainSanitizedUri' /}
-      {if $isRepeated}
-        return pd.getMessageListField_(this, {$field.number}, {$deserializer});
-      {else}
-        return pd.getSanitizedField_(this, {$field.number}, {$deserializer});
-      {/if}
-    {elseif $isMessage}
+    {if $isMessage}
       {if $isRepeated}
         return pd.getMessageListField_(this, {$field.number}, data => new {$type}(data));
       {else}
@@ -302,9 +286,9 @@ pd.getSanitizedField_ = function(message, fieldNumber, deserializer) {
   /**
    * @param {{/literal}{$returnType}{literal}} value
    */
-  set {/literal}{toLowerCamelCase($field.name)}{literal}(value) {
+  set{/literal}{toUpperCamelCase($field.name)}{if $isRepeated}List{/if}{literal}(value) {
     {/literal}
-    {if $isRepeated or $isMessage or $isSanitized}
+    {if $isRepeated or $isMessage}
       pd.setComplexField_(this, {$field.number}, value);
     {else}
       pd.setPrimitiveField_(this, {$field.number}, value);

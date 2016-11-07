@@ -126,16 +126,6 @@ final class JsonMessageTransformer extends MessageTransformer<JsonElement> {
   }
 
   @Override
-  protected JsonElement htmlValue(String s) {
-    return transform(s);
-  }
-
-  @Override
-  protected JsonElement uriValue(String s) {
-    return transform(s);
-  }
-
-  @Override
   protected JsonElement nullValue() {
     return JsonNull.INSTANCE;
   }

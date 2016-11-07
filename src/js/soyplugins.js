@@ -17,6 +17,9 @@
 goog.module('dossier.soyplugins');
 goog.module.declareLegacyNamespace();
 
+const {ordainSanitizedHtml, ordainSanitizedUri} = goog.require('soydata.VERY_UNSAFE');
+
+
 const MDN_URL = `https://developer.mozilla.org/en-US/docs/Web/JavaScript/`;
 const MDN_REFERENCE_URL = MDN_URL + 'Reference/';
 const CLOSURE_URL =
@@ -71,4 +74,22 @@ const TYPE_MAP = new Map([
  */
 exports.getExternLink = function(type) {
   return TYPE_MAP.get(type.toString());
+};
+
+
+/**
+ * @param {!goog.soy.data.SanitizedContent} arg The arg to wrap in sanitized content.
+ * @return {!soydata.SanitizedHtml} The sanitized content.
+ */
+exports.sanitizeHtml = function(arg) {
+  return ordainSanitizedHtml(arg.toString());
+};
+
+
+/**
+ * @param {!goog.soy.data.SanitizedContent} arg The arg to wrap in sanitized content.
+ * @return {!soydata.SanitizedUri} The sanitized content.
+ */
+exports.sanitizeUri = function(arg) {
+  return ordainSanitizedUri(arg.toString());
 };

@@ -22,7 +22,6 @@ public  final class NamedType extends
   private NamedType() {
     name_ = "";
     qualifiedName_ = "";
-    extern_ = false;
     templateType_ = java.util.Collections.emptyList();
   }
 
@@ -64,20 +63,21 @@ public  final class NamedType extends
           }
           case 26: {
             com.github.jsdossier.proto.TypeLink.Builder subBuilder = null;
-            if (link_ != null) {
-              subBuilder = link_.toBuilder();
+            if (locationCase_ == 3) {
+              subBuilder = ((com.github.jsdossier.proto.TypeLink) location_).toBuilder();
             }
-            link_ = input.readMessage(com.github.jsdossier.proto.TypeLink.parser(), extensionRegistry);
+            location_ =
+                input.readMessage(com.github.jsdossier.proto.TypeLink.parser(), extensionRegistry);
             if (subBuilder != null) {
-              subBuilder.mergeFrom(link_);
-              link_ = subBuilder.buildPartial();
+              subBuilder.mergeFrom((com.github.jsdossier.proto.TypeLink) location_);
+              location_ = subBuilder.buildPartial();
             }
-
+            locationCase_ = 3;
             break;
           }
           case 32: {
-
-            extern_ = input.readBool();
+            locationCase_ = 4;
+            location_ = input.readBool();
             break;
           }
           case 42: {
@@ -116,6 +116,37 @@ public  final class NamedType extends
   }
 
   private int bitField0_;
+  private int locationCase_ = 0;
+  private java.lang.Object location_;
+  public enum LocationCase
+      implements com.google.protobuf.Internal.EnumLite {
+    LINK(3),
+    EXTERN(4),
+    LOCATION_NOT_SET(0);
+    private int value = 0;
+    private LocationCase(int value) {
+      this.value = value;
+    }
+    public static LocationCase valueOf(int value) {
+      switch (value) {
+        case 3: return LINK;
+        case 4: return EXTERN;
+        case 0: return LOCATION_NOT_SET;
+        default: throw new java.lang.IllegalArgumentException(
+          "Value is undefined for this oneof enum.");
+      }
+    }
+    public int getNumber() {
+      return this.value;
+    }
+  };
+
+  public LocationCase
+  getLocationCase() {
+    return LocationCase.valueOf(
+        locationCase_);
+  }
+
   public static final int NAME_FIELD_NUMBER = 1;
   private volatile java.lang.Object name_;
   /**
@@ -203,33 +234,34 @@ public  final class NamedType extends
   }
 
   public static final int LINK_FIELD_NUMBER = 3;
-  private com.github.jsdossier.proto.TypeLink link_;
-  /**
-   * <code>optional .dossier.expression.TypeLink link = 3;</code>
-   */
-  public boolean hasLink() {
-    return link_ != null;
-  }
   /**
    * <code>optional .dossier.expression.TypeLink link = 3;</code>
    */
   public com.github.jsdossier.proto.TypeLink getLink() {
-    return link_ == null ? com.github.jsdossier.proto.TypeLink.getDefaultInstance() : link_;
+    if (locationCase_ == 3) {
+       return (com.github.jsdossier.proto.TypeLink) location_;
+    }
+    return com.github.jsdossier.proto.TypeLink.getDefaultInstance();
   }
   /**
    * <code>optional .dossier.expression.TypeLink link = 3;</code>
    */
   public com.github.jsdossier.proto.TypeLinkOrBuilder getLinkOrBuilder() {
-    return getLink();
+    if (locationCase_ == 3) {
+       return (com.github.jsdossier.proto.TypeLink) location_;
+    }
+    return com.github.jsdossier.proto.TypeLink.getDefaultInstance();
   }
 
   public static final int EXTERN_FIELD_NUMBER = 4;
-  private boolean extern_;
   /**
    * <code>optional bool extern = 4;</code>
    */
   public boolean getExtern() {
-    return extern_;
+    if (locationCase_ == 4) {
+      return (java.lang.Boolean) location_;
+    }
+    return false;
   }
 
   public static final int TEMPLATE_TYPE_FIELD_NUMBER = 5;
@@ -285,11 +317,12 @@ public  final class NamedType extends
     if (!getQualifiedNameBytes().isEmpty()) {
       com.google.protobuf.GeneratedMessage.writeString(output, 2, qualifiedName_);
     }
-    if (link_ != null) {
-      output.writeMessage(3, getLink());
+    if (locationCase_ == 3) {
+      output.writeMessage(3, (com.github.jsdossier.proto.TypeLink) location_);
     }
-    if (extern_ != false) {
-      output.writeBool(4, extern_);
+    if (locationCase_ == 4) {
+      output.writeBool(
+          4, (boolean)((java.lang.Boolean) location_));
     }
     for (int i = 0; i < templateType_.size(); i++) {
       output.writeMessage(5, templateType_.get(i));
@@ -307,13 +340,14 @@ public  final class NamedType extends
     if (!getQualifiedNameBytes().isEmpty()) {
       size += com.google.protobuf.GeneratedMessage.computeStringSize(2, qualifiedName_);
     }
-    if (link_ != null) {
+    if (locationCase_ == 3) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(3, getLink());
+        .computeMessageSize(3, (com.github.jsdossier.proto.TypeLink) location_);
     }
-    if (extern_ != false) {
+    if (locationCase_ == 4) {
       size += com.google.protobuf.CodedOutputStream
-        .computeBoolSize(4, extern_);
+        .computeBoolSize(
+            4, (boolean)((java.lang.Boolean) location_));
     }
     for (int i = 0; i < templateType_.size(); i++) {
       size += com.google.protobuf.CodedOutputStream
@@ -440,20 +474,14 @@ public  final class NamedType extends
 
       qualifiedName_ = "";
 
-      if (linkBuilder_ == null) {
-        link_ = null;
-      } else {
-        link_ = null;
-        linkBuilder_ = null;
-      }
-      extern_ = false;
-
       if (templateTypeBuilder_ == null) {
         templateType_ = java.util.Collections.emptyList();
         bitField0_ = (bitField0_ & ~0x00000010);
       } else {
         templateTypeBuilder_.clear();
       }
+      locationCase_ = 0;
+      location_ = null;
       return this;
     }
 
@@ -480,12 +508,16 @@ public  final class NamedType extends
       int to_bitField0_ = 0;
       result.name_ = name_;
       result.qualifiedName_ = qualifiedName_;
-      if (linkBuilder_ == null) {
-        result.link_ = link_;
-      } else {
-        result.link_ = linkBuilder_.build();
+      if (locationCase_ == 3) {
+        if (linkBuilder_ == null) {
+          result.location_ = location_;
+        } else {
+          result.location_ = linkBuilder_.build();
+        }
       }
-      result.extern_ = extern_;
+      if (locationCase_ == 4) {
+        result.location_ = location_;
+      }
       if (templateTypeBuilder_ == null) {
         if (((bitField0_ & 0x00000010) == 0x00000010)) {
           templateType_ = java.util.Collections.unmodifiableList(templateType_);
@@ -496,6 +528,7 @@ public  final class NamedType extends
         result.templateType_ = templateTypeBuilder_.build();
       }
       result.bitField0_ = to_bitField0_;
+      result.locationCase_ = locationCase_;
       onBuilt();
       return result;
     }
@@ -518,12 +551,6 @@ public  final class NamedType extends
       if (!other.getQualifiedName().isEmpty()) {
         qualifiedName_ = other.qualifiedName_;
         onChanged();
-      }
-      if (other.hasLink()) {
-        mergeLink(other.getLink());
-      }
-      if (other.getExtern() != false) {
-        setExtern(other.getExtern());
       }
       if (templateTypeBuilder_ == null) {
         if (!other.templateType_.isEmpty()) {
@@ -551,6 +578,19 @@ public  final class NamedType extends
           }
         }
       }
+      switch (other.getLocationCase()) {
+        case LINK: {
+          mergeLink(other.getLink());
+          break;
+        }
+        case EXTERN: {
+          setExtern(other.getExtern());
+          break;
+        }
+        case LOCATION_NOT_SET: {
+          break;
+        }
+      }
       onChanged();
       return this;
     }
@@ -576,6 +616,21 @@ public  final class NamedType extends
       }
       return this;
     }
+    private int locationCase_ = 0;
+    private java.lang.Object location_;
+    public LocationCase
+        getLocationCase() {
+      return LocationCase.valueOf(
+          locationCase_);
+    }
+
+    public Builder clearLocation() {
+      locationCase_ = 0;
+      location_ = null;
+      onChanged();
+      return this;
+    }
+
     private int bitField0_;
 
     private java.lang.Object name_ = "";
@@ -761,23 +816,22 @@ public  final class NamedType extends
       return this;
     }
 
-    private com.github.jsdossier.proto.TypeLink link_ = null;
     private com.google.protobuf.SingleFieldBuilder<
         com.github.jsdossier.proto.TypeLink, com.github.jsdossier.proto.TypeLink.Builder, com.github.jsdossier.proto.TypeLinkOrBuilder> linkBuilder_;
     /**
      * <code>optional .dossier.expression.TypeLink link = 3;</code>
      */
-    public boolean hasLink() {
-      return linkBuilder_ != null || link_ != null;
-    }
-    /**
-     * <code>optional .dossier.expression.TypeLink link = 3;</code>
-     */
     public com.github.jsdossier.proto.TypeLink getLink() {
       if (linkBuilder_ == null) {
-        return link_ == null ? com.github.jsdossier.proto.TypeLink.getDefaultInstance() : link_;
+        if (locationCase_ == 3) {
+          return (com.github.jsdossier.proto.TypeLink) location_;
+        }
+        return com.github.jsdossier.proto.TypeLink.getDefaultInstance();
       } else {
-        return linkBuilder_.getMessage();
+        if (locationCase_ == 3) {
+          return linkBuilder_.getMessage();
+        }
+        return com.github.jsdossier.proto.TypeLink.getDefaultInstance();
       }
     }
     /**
@@ -788,12 +842,12 @@ public  final class NamedType extends
         if (value == null) {
           throw new NullPointerException();
         }
-        link_ = value;
+        location_ = value;
         onChanged();
       } else {
         linkBuilder_.setMessage(value);
       }
-
+      locationCase_ = 3;
       return this;
     }
     /**
@@ -802,12 +856,12 @@ public  final class NamedType extends
     public Builder setLink(
         com.github.jsdossier.proto.TypeLink.Builder builderForValue) {
       if (linkBuilder_ == null) {
-        link_ = builderForValue.build();
+        location_ = builderForValue.build();
         onChanged();
       } else {
         linkBuilder_.setMessage(builderForValue.build());
       }
-
+      locationCase_ = 3;
       return this;
     }
     /**
@@ -815,17 +869,21 @@ public  final class NamedType extends
      */
     public Builder mergeLink(com.github.jsdossier.proto.TypeLink value) {
       if (linkBuilder_ == null) {
-        if (link_ != null) {
-          link_ =
-            com.github.jsdossier.proto.TypeLink.newBuilder(link_).mergeFrom(value).buildPartial();
+        if (locationCase_ == 3 &&
+            location_ != com.github.jsdossier.proto.TypeLink.getDefaultInstance()) {
+          location_ = com.github.jsdossier.proto.TypeLink.newBuilder((com.github.jsdossier.proto.TypeLink) location_)
+              .mergeFrom(value).buildPartial();
         } else {
-          link_ = value;
+          location_ = value;
         }
         onChanged();
       } else {
-        linkBuilder_.mergeFrom(value);
+        if (locationCase_ == 3) {
+          linkBuilder_.mergeFrom(value);
+        }
+        linkBuilder_.setMessage(value);
       }
-
+      locationCase_ = 3;
       return this;
     }
     /**
@@ -833,32 +891,37 @@ public  final class NamedType extends
      */
     public Builder clearLink() {
       if (linkBuilder_ == null) {
-        link_ = null;
-        onChanged();
+        if (locationCase_ == 3) {
+          locationCase_ = 0;
+          location_ = null;
+          onChanged();
+        }
       } else {
-        link_ = null;
-        linkBuilder_ = null;
+        if (locationCase_ == 3) {
+          locationCase_ = 0;
+          location_ = null;
+        }
+        linkBuilder_.clear();
       }
-
       return this;
     }
     /**
      * <code>optional .dossier.expression.TypeLink link = 3;</code>
      */
     public com.github.jsdossier.proto.TypeLink.Builder getLinkBuilder() {
-      
-      onChanged();
       return getLinkFieldBuilder().getBuilder();
     }
     /**
      * <code>optional .dossier.expression.TypeLink link = 3;</code>
      */
     public com.github.jsdossier.proto.TypeLinkOrBuilder getLinkOrBuilder() {
-      if (linkBuilder_ != null) {
+      if ((locationCase_ == 3) && (linkBuilder_ != null)) {
         return linkBuilder_.getMessageOrBuilder();
       } else {
-        return link_ == null ?
-            com.github.jsdossier.proto.TypeLink.getDefaultInstance() : link_;
+        if (locationCase_ == 3) {
+          return (com.github.jsdossier.proto.TypeLink) location_;
+        }
+        return com.github.jsdossier.proto.TypeLink.getDefaultInstance();
       }
     }
     /**
@@ -868,29 +931,36 @@ public  final class NamedType extends
         com.github.jsdossier.proto.TypeLink, com.github.jsdossier.proto.TypeLink.Builder, com.github.jsdossier.proto.TypeLinkOrBuilder> 
         getLinkFieldBuilder() {
       if (linkBuilder_ == null) {
+        if (!(locationCase_ == 3)) {
+          location_ = com.github.jsdossier.proto.TypeLink.getDefaultInstance();
+        }
         linkBuilder_ = new com.google.protobuf.SingleFieldBuilder<
             com.github.jsdossier.proto.TypeLink, com.github.jsdossier.proto.TypeLink.Builder, com.github.jsdossier.proto.TypeLinkOrBuilder>(
-                getLink(),
+                (com.github.jsdossier.proto.TypeLink) location_,
                 getParentForChildren(),
                 isClean());
-        link_ = null;
+        location_ = null;
       }
+      locationCase_ = 3;
+      onChanged();;
       return linkBuilder_;
     }
 
-    private boolean extern_ ;
     /**
      * <code>optional bool extern = 4;</code>
      */
     public boolean getExtern() {
-      return extern_;
+      if (locationCase_ == 4) {
+        return (java.lang.Boolean) location_;
+      }
+      return false;
     }
     /**
      * <code>optional bool extern = 4;</code>
      */
     public Builder setExtern(boolean value) {
-      
-      extern_ = value;
+      locationCase_ = 4;
+      location_ = value;
       onChanged();
       return this;
     }
@@ -898,9 +968,11 @@ public  final class NamedType extends
      * <code>optional bool extern = 4;</code>
      */
     public Builder clearExtern() {
-      
-      extern_ = false;
-      onChanged();
+      if (locationCase_ == 4) {
+        locationCase_ = 0;
+        location_ = null;
+        onChanged();
+      }
       return this;
     }
 

@@ -37,7 +37,7 @@
   {@param? tabIndex: int}
   {@param? classes: string}
 
-  <a {if $href}href="{$href}"{/if}
+  <a {if $href}href="{sanitizeUri($href)}"{/if}
      {if $target}{sp}target="{$target}"{/if}
      {if $title}{sp}title="{$title}"{/if}
      {if $tabIndex}{sp}tabIndex="{$tabIndex}"{/if}
@@ -127,9 +127,9 @@
     {call .expression_}
       {param expression: $fn.instanceType /}
     {/call}
-    {if length($fn.parameter)},{sp}{/if}
+    {if length($fn.parameterList)},{sp}{/if}
   {/if}
-  {foreach $param in $fn.parameter}
+  {foreach $param in $fn.parameterList}
     {call .expression_}
       {param expression: $param /}
     {/call}
@@ -190,9 +190,9 @@
     {$text}
   {/if}
 
-  {if length($type.templateType)}
+  {if length($type.templateTypeList)}
     &lt;
-    {foreach $template in $type.templateType}
+    {foreach $template in $type.templateTypeList}
       {call .expression_}
         {param expression: $template /}
       {/call}
@@ -221,7 +221,7 @@
   {@param expression: dossier.expression.TypeExpression}
 
   {lb}
-  {foreach $entry in $expression.recordType.entry}
+  {foreach $entry in $expression.recordType.entryList}
     {$entry.key}:{sp}
     {call .expression_}
       {param expression: $entry.value /}
@@ -239,7 +239,7 @@
   {@param expression: dossier.expression.TypeExpression}
 
   (
-  {foreach $alternate in $expression.unionType.type}
+  {foreach $alternate in $expression.unionType.typeList}
     {call .expression_}
       {param expression: $alternate /}
     {/call}

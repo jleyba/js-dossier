@@ -20,8 +20,6 @@
 
 goog.module('dossier.search');
 
-const Index = goog.require('dossier.Index');
-const Entry = goog.require('dossier.Index.Entry');
 const Heap = goog.require('dossier.Heap');
 const page = goog.require('dossier.page');
 const asserts = goog.require('goog.asserts');
@@ -33,6 +31,8 @@ const AutoComplete = goog.require('goog.ui.ac.AutoComplete');
 const InputHandler = goog.require('goog.ui.ac.InputHandler');
 const Renderer = goog.require('goog.ui.ac.Renderer');
 const userAgent = goog.require('goog.userAgent');
+const Index = goog.require('proto.dossier.Index');
+const Entry = goog.require('proto.dossier.Index.Entry');
 
 goog.forwardDeclare('goog.ui.ac.RenderOptions');
 
@@ -48,15 +48,15 @@ function getLast(arr) {
 
 
 function addTypes(/** !Map<string, string> */nameToHref, /** !Entry */entry) {
-  let qualifiedName = entry.type.qualifiedName || entry.type.name;
+  let qualifiedName = entry.getType().getQualifiedName() || entry.getType().getName();
   let baseName = getLast(qualifiedName.split(/\./));
-  let typeHref = entry.type.link.href.getContent();
+  let typeHref = entry.getType().getLink().getHref();
 
   nameToHref.set(qualifiedName, typeHref);
 
-  entry.child.forEach(child => addTypes(nameToHref, child));
+  entry.getChildList().forEach(child => addTypes(nameToHref, child));
 
-  entry.staticProperty.forEach(name => {
+  entry.getStaticPropertyList().forEach(name => {
     let href = typeHref + '#' + name;
     if (!name.startsWith(qualifiedName + '.')) {
       if (name.startsWith(baseName + '.')) {
@@ -67,7 +67,7 @@ function addTypes(/** !Map<string, string> */nameToHref, /** !Entry */entry) {
     nameToHref.set(name, href);
   });
 
-  entry.property.forEach(name => {
+  entry.getPropertyList().forEach(name => {
     let href = typeHref + '#' + name;
 
     // Show as 'Type#property', not '.prototype.' because we don't know if
@@ -313,8 +313,8 @@ exports.createSearchBox = function(typeInfo) {
   let formEl = /** @type {!Element} */(document.querySelector('header form'));
 
   let nameToUri = /** !Map<string, string> */new Map;
-  typeInfo.type.forEach(type => addTypes(nameToUri, type));
-  typeInfo.module.forEach(module => addTypes(nameToUri, module));
+  typeInfo.getTypeList().forEach(type => addTypes(nameToUri, type));
+  typeInfo.getModuleList().forEach(module => addTypes(nameToUri, module));
 
   let input = formEl.querySelector('input');
   input.setAttribute(

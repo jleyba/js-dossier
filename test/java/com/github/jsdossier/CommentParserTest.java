@@ -69,7 +69,7 @@ public class CommentParserTest {
   public void parseCommentWithUnterminatedInlineTaglet() {
     Comment comment = parser.parseComment("Hello {@code world", linkFactory);
     assertHtmlText(Iterables.getOnlyElement(comment.getTokenList()),
-        "<p>Hello {@code world</p>");
+        "<p>Hello {&#64;code world</p>");
   }
 
   @Test
@@ -104,21 +104,21 @@ public class CommentParserTest {
   public void parseNestedCodeTaglets() {
     Comment comment = parser.parseComment("{@code {@code hi}}", linkFactory);
     assertEquals(1, comment.getTokenCount());
-    assertHtmlText(comment.getToken(0), "<p><code>{@code hi}</code></p>");
+    assertHtmlText(comment.getToken(0), "<p><code>{&#64;code hi}</code></p>");
   }
 
   @Test
   public void parseLiteralInsideCode() {
     Comment comment = parser.parseComment("{@code a {@literal b} c}", linkFactory);
     assertEquals(1, comment.getTokenCount());
-    assertHtmlText(comment.getToken(0), "<p><code>a {@literal b} c</code></p>");
+    assertHtmlText(comment.getToken(0), "<p><code>a {&#64;literal b} c</code></p>");
   }
 
   @Test
   public void parseCodeInsideLiteral() {
     Comment comment = parser.parseComment("{@literal a {@code b} c}", linkFactory);
     assertEquals(1, comment.getTokenCount());
-    assertHtmlText(comment.getToken(0), "<p>a {@code b} c</p>");
+    assertHtmlText(comment.getToken(0), "<p>a {&#64;code b} c</p>");
   }
 
   @Test
@@ -230,9 +230,9 @@ public class CommentParserTest {
     assertEquals(1, comment.getTokenCount());
     assertHtmlText(comment.getToken(0),
         "<p>This is a class comment.</p>\n" +
-            "<ul>\n" +
-            "<li>with\nlist</li>\n" +
-            "<li>items</li>\n" +
+            "<ul>" +
+            "<li>with\nlist</li>" +
+            "<li>items</li>" +
             "</ul>\n<p>And a</p>\n" +
             "<pre><code> code block\n" +
             "</code></pre>");
@@ -264,8 +264,8 @@ public class CommentParserTest {
     assertEquals(1, comment.getTokenCount());
     assertHtmlText(comment.getToken(0),
         "<p>This is a class comment.</p>\n" +
-            "<ul>\n" +
-            "<li>This is a list item</li>\n" +
+            "<ul>" +
+            "<li>This is a list item</li>" +
             "</ul>\n" +
             "<p>and this</p>\n" +
             "<pre><code>is a code block\n" +
@@ -309,14 +309,14 @@ public class CommentParserTest {
     assertEquals(1, comment.getTokenCount());
     assertHtmlText(comment.getToken(0),
         "<p>Leading paragraph.</p>\n" +
-            "<table>\n" +
-            "<thead>\n" +
-            "<tr><th>a</th><th>b</th><th>c</th></tr>\n" +
-            "</thead>\n" +
-            "<tbody>\n" +
-            "<tr><td>d</td><td>e</td><td>f</td></tr>\n" +
-            "</tbody>\n" +
-            "</table>\n");
+            "<table>" +
+            "<thead>" +
+            "<tr><th>a</th><th>b</th><th>c</th></tr>" +
+            "</thead>" +
+            "<tbody>" +
+            "<tr><td>d</td><td>e</td><td>f</td></tr>" +
+            "</tbody>" +
+            "</table>");
   }
 
   @Test
@@ -356,7 +356,7 @@ public class CommentParserTest {
         type.getJsDoc().getBlockComment(),
         linkFactory.withTypeContext(type));
     assertEquals(1, comment.getTokenCount());
-    assertHtmlText(comment.getToken(0), "<ul>\n<li>One</li>\n<li>Two</li>\n</ul>");
+    assertHtmlText(comment.getToken(0), "<ul><li>One</li><li>Two</li></ul>");
   }
 
   private static void assertHtmlText(Comment.Token token, String text) {

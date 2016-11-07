@@ -16,45 +16,34 @@
 
 package com.github.jsdossier.soy;
 
+import static com.google.common.base.CaseFormat.LOWER_UNDERSCORE;
+import static com.google.common.base.CaseFormat.UPPER_CAMEL;
+
 import com.google.common.collect.ImmutableSet;
 import com.google.template.soy.data.SoyValue;
-import com.google.template.soy.data.restricted.BooleanData;
-import com.google.template.soy.types.SoyType;
+import com.google.template.soy.data.restricted.StringData;
 
 import java.util.List;
 import java.util.Set;
 
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
 /**
- * Function for testing if a message has a field that is a sanitized URI.
+ * Custom soy rendering function for converting a string to lowerCamelCase.
  */
-@Singleton
-final class IsSanitizedUriFunction extends AbstractSoyJavaFunction {
-
-  private final DossierSoyTypeProvider typeProvider;
-
+final class ToUpperCamelCaseFunction extends AbstractSoyJavaFunction {
   @Inject
-  IsSanitizedUriFunction(DossierSoyTypeProvider typeProvider) {
-    this.typeProvider = typeProvider;
-  }
+  ToUpperCamelCaseFunction() {}
 
   @Override
   public SoyValue computeForJava(List<SoyValue> args) {
-    String typeName = getStringArgument(args, 0);
-    String fieldName = getStringArgument(args, 1);
-
-    SoyType type = typeProvider.getType(typeName, null);
-    if (type instanceof ProtoMessageSoyType) {
-      ProtoMessageSoyType messageType = (ProtoMessageSoyType) type;
-      return BooleanData.forValue(messageType.isSanitizedUri(fieldName));
-    }
-    return BooleanData.FALSE;
+    String value = getStringArgument(args, 0);
+    value = LOWER_UNDERSCORE.to(UPPER_CAMEL, value);
+    return StringData.forValue(value);
   }
 
   @Override
   public Set<Integer> getValidArgsSizes() {
-    return ImmutableSet.of(2);
+    return ImmutableSet.of(1);
   }
 }

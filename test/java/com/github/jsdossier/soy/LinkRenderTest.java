@@ -23,15 +23,21 @@ import com.github.jsdossier.proto.Link;
 import com.github.jsdossier.proto.SourceLink;
 import com.github.jsdossier.proto.TypeLink;
 import com.google.common.base.Joiner;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.google.inject.AbstractModule;
+import com.google.inject.Guice;
+import com.google.inject.Provides;
 import com.google.template.soy.SoyFileSet;
-import com.google.template.soy.data.SoyMapData;
 import com.google.template.soy.tofu.SoyTofu;
 import com.google.template.soy.types.SoyTypeProvider;
 import com.google.template.soy.types.SoyTypeRegistry;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+
+import javax.inject.Inject;
 
 /**
  * Link rendering tests.
@@ -39,33 +45,50 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class LinkRenderTest {
 
-  private static final SoyTofu TOFU = SoyFileSet.builder()
-      .add(
-          Joiner.on("\n").join(
-              "{namespace test}",
-              "",
-              "/** Renders a TypeLink */",
-              "{template .typeLink}",
-              "  {@param link: dossier.Link}",
-              "  <a href=\"{$link.href}\">{$link.text}</a>",
-              "{/template}",
-              "",
-              "/** Renders a SourceLink */",
-              "{template .sourceLink}",
-              "  {@param link: dossier.SourceLink}",
-              "  <a href=\"{$link.path}\">test</a>",
-              "{/template}",
-              "",
-              "/** Renders a Comment.Token */",
-              "{template .commentToken}",
-              "  {@param token: dossier.Comment.Token}",
-              "  <a href=\"{$token.link.href}\">test</a>",
-              "{/template}"),
-          "test.soy")
-      .setLocalTypeRegistry(
-          new SoyTypeRegistry(ImmutableSet.of((SoyTypeProvider) new DossierSoyTypeProvider())))
-      .build()
-      .compileToTofu();
+  @Inject
+  private SoyTofu tofu;
+
+  @Before
+  public void setUp() {
+    Guice.createInjector(
+        new DossierSoyModule(),
+        new AbstractModule() {
+          @Override protected void configure() {}
+
+          @Provides
+          SoyTofu provideSoyTofu(
+              SoyFileSet.Builder filesetBuilder,
+              SoyTypeProvider typeProvider) {
+            return filesetBuilder
+                .add(
+                    Joiner.on("\n").join(
+                        "{namespace test}",
+                        "",
+                        "/** Renders a TypeLink */",
+                        "{template .typeLink}",
+                        "  {@param link: dossier.Link}",
+                        "  <a href=\"{sanitizeUri($link.href)}\">{$link.text}</a>",
+                        "{/template}",
+                        "",
+                        "/** Renders a SourceLink */",
+                        "{template .sourceLink}",
+                        "  {@param link: dossier.SourceLink}",
+                        "  <a href=\"{sanitizeUri($link.path)}\">test</a>",
+                        "{/template}",
+                        "",
+                        "/** Renders a Comment.Token */",
+                        "{template .commentToken}",
+                        "  {@param token: dossier.Comment.Token}",
+                        "  <a href=\"{sanitizeUri($token.link.href)}\">test</a>",
+                        "{/template}"),
+                    "test.soy")
+                .setLocalTypeRegistry(new SoyTypeRegistry(ImmutableSet.of(typeProvider)))
+                .build()
+                .compileToTofu();
+          }
+        })
+        .injectMembers(this);
+  }
 
   @Test
   public void renderLink() {
@@ -110,36 +133,36 @@ public class LinkRenderTest {
         .isEqualTo("<a href=\"about:invalid#zSoyz\">test</a>");
   }
 
-  private static String renderLink(String text, String href) {
+  private String renderLink(String text, String href) {
     StringBuilder builder = new StringBuilder();
     Link link = Link.newBuilder()
         .setHref(href)
         .setText(text)
         .build();
-    TOFU.newRenderer("test.typeLink")
-        .setData(new SoyMapData("link", ProtoMessageSoyType.toSoyValue(link)))
+    tofu.newRenderer("test.typeLink")
+        .setData(ImmutableMap.of("link", link))
         .render(builder);
     return builder.toString();
   }
 
-  private static String renderSourceLink(String path) {
+  private String renderSourceLink(String path) {
     StringBuilder builder = new StringBuilder();
     SourceLink link = SourceLink.newBuilder()
         .setPath(path)
         .build();
-    TOFU.newRenderer("test.sourceLink")
-        .setData(new SoyMapData("link", ProtoMessageSoyType.toSoyValue(link)))
+    tofu.newRenderer("test.sourceLink")
+        .setData(ImmutableMap.of("link", link))
         .render(builder);
     return builder.toString();
   }
 
-  private static String renderCommentToken(String href) {
+  private String renderCommentToken(String href) {
     StringBuilder builder = new StringBuilder();
     Comment.Token token = Comment.Token.newBuilder()
         .setLink(TypeLink.newBuilder().setHref(href))
         .build();
-    TOFU.newRenderer("test.commentToken")
-        .setData(new SoyMapData("token", ProtoMessageSoyType.toSoyValue(token)))
+    tofu.newRenderer("test.commentToken")
+        .setData(ImmutableMap.of("token", token))
         .render(builder);
     return builder.toString();
   }

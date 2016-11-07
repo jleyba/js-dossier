@@ -52,35 +52,34 @@ public final class Expression {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\020expression.proto\022\022dossier.expression\032\r" +
-      "options.proto\"\321\001\n\014FunctionType\022\026\n\016is_con" +
-      "structor\030\001 \001(\010\0229\n\rinstance_type\030\002 \001(\0132\"." +
-      "dossier.expression.TypeExpression\0225\n\tpar" +
-      "ameter\030\003 \003(\0132\".dossier.expression.TypeEx" +
-      "pression\0227\n\013return_type\030\004 \001(\0132\".dossier." +
-      "expression.TypeExpression\"6\n\010TypeLink\022\024\n" +
-      "\004href\030\001 \001(\tB\006\362\201\031\002\010\001\022\024\n\004json\030\002 \001(\tB\006\362\201\031\002\010" +
-      "\001\"\250\001\n\tNamedType\022\014\n\004name\030\001 \001(\t\022\026\n\016qualifi" +
-      "ed_name\030\002 \001(\t\022*\n\004link\030\003 \001(\0132\034.dossier.ex",
-      "pression.TypeLink\022\016\n\006extern\030\004 \001(\010\0229\n\rtem" +
-      "plate_type\030\005 \003(\0132\".dossier.expression.Ty" +
-      "peExpression\"=\n\tUnionType\0220\n\004type\030\001 \003(\0132" +
-      "\".dossier.expression.TypeExpression\"\212\001\n\n" +
-      "RecordType\0223\n\005entry\030\001 \003(\0132$.dossier.expr" +
-      "ession.RecordType.Entry\032G\n\005Entry\022\013\n\003key\030" +
-      "\001 \001(\t\0221\n\005value\030\002 \001(\0132\".dossier.expressio" +
-      "n.TypeExpression\"\210\003\n\016TypeExpression\022\025\n\013i" +
-      "s_optional\030\001 \001(\010H\000\022\024\n\nis_varargs\030\002 \001(\010H\000" +
-      "\0229\n\rfunction_type\030\003 \001(\0132 .dossier.expres",
-      "sion.FunctionTypeH\001\0223\n\nnamed_type\030\004 \001(\0132" +
-      "\035.dossier.expression.NamedTypeH\001\0225\n\013reco" +
-      "rd_type\030\005 \001(\0132\036.dossier.expression.Recor" +
-      "dTypeH\001\0223\n\nunion_type\030\006 \001(\0132\035.dossier.ex" +
-      "pression.UnionTypeH\001\022\022\n\010any_type\030\007 \001(\010H\001" +
-      "\022\026\n\014unknown_type\030\010 \001(\010H\001\022\023\n\tvoid_type\030\t " +
-      "\001(\010H\001\022\023\n\tnull_type\030\n \001(\010H\001B\n\n\010modifierB\013" +
-      "\n\tnode_typeB\036\n\032com.github.jsdossier.prot" +
-      "oP\001b\006proto3"
+      "\n\020expression.proto\022\022dossier.expression\"\321" +
+      "\001\n\014FunctionType\022\026\n\016is_constructor\030\001 \001(\010\022" +
+      "9\n\rinstance_type\030\002 \001(\0132\".dossier.express" +
+      "ion.TypeExpression\0225\n\tparameter\030\003 \003(\0132\"." +
+      "dossier.expression.TypeExpression\0227\n\013ret" +
+      "urn_type\030\004 \001(\0132\".dossier.expression.Type" +
+      "Expression\"&\n\010TypeLink\022\014\n\004href\030\001 \001(\t\022\014\n\004" +
+      "json\030\002 \001(\t\"\270\001\n\tNamedType\022\014\n\004name\030\001 \001(\t\022\026" +
+      "\n\016qualified_name\030\002 \001(\t\022,\n\004link\030\003 \001(\0132\034.d" +
+      "ossier.expression.TypeLinkH\000\022\020\n\006extern\030\004",
+      " \001(\010H\000\0229\n\rtemplate_type\030\005 \003(\0132\".dossier." +
+      "expression.TypeExpressionB\n\n\010location\"=\n" +
+      "\tUnionType\0220\n\004type\030\001 \003(\0132\".dossier.expre" +
+      "ssion.TypeExpression\"\212\001\n\nRecordType\0223\n\005e" +
+      "ntry\030\001 \003(\0132$.dossier.expression.RecordTy" +
+      "pe.Entry\032G\n\005Entry\022\013\n\003key\030\001 \001(\t\0221\n\005value\030" +
+      "\002 \001(\0132\".dossier.expression.TypeExpressio" +
+      "n\"\210\003\n\016TypeExpression\022\025\n\013is_optional\030\001 \001(" +
+      "\010H\000\022\024\n\nis_varargs\030\002 \001(\010H\000\0229\n\rfunction_ty" +
+      "pe\030\003 \001(\0132 .dossier.expression.FunctionTy",
+      "peH\001\0223\n\nnamed_type\030\004 \001(\0132\035.dossier.expre" +
+      "ssion.NamedTypeH\001\0225\n\013record_type\030\005 \001(\0132\036" +
+      ".dossier.expression.RecordTypeH\001\0223\n\nunio" +
+      "n_type\030\006 \001(\0132\035.dossier.expression.UnionT" +
+      "ypeH\001\022\022\n\010any_type\030\007 \001(\010H\001\022\026\n\014unknown_typ" +
+      "e\030\010 \001(\010H\001\022\023\n\tvoid_type\030\t \001(\010H\001\022\023\n\tnull_t" +
+      "ype\030\n \001(\010H\001B\n\n\010modifierB\013\n\tnode_typeB\036\n\032" +
+      "com.github.jsdossier.protoP\001b\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -93,7 +92,6 @@ public final class Expression {
     com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
-          com.github.jsdossier.proto.Options.getDescriptor(),
         }, assigner);
     internal_static_dossier_expression_FunctionType_descriptor =
       getDescriptor().getMessageTypes().get(0);
@@ -112,7 +110,7 @@ public final class Expression {
     internal_static_dossier_expression_NamedType_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_dossier_expression_NamedType_descriptor,
-        new java.lang.String[] { "Name", "QualifiedName", "Link", "Extern", "TemplateType", });
+        new java.lang.String[] { "Name", "QualifiedName", "Link", "Extern", "TemplateType", "Location", });
     internal_static_dossier_expression_UnionType_descriptor =
       getDescriptor().getMessageTypes().get(3);
     internal_static_dossier_expression_UnionType_fieldAccessorTable = new
@@ -137,12 +135,6 @@ public final class Expression {
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_dossier_expression_TypeExpression_descriptor,
         new java.lang.String[] { "IsOptional", "IsVarargs", "FunctionType", "NamedType", "RecordType", "UnionType", "AnyType", "UnknownType", "VoidType", "NullType", "Modifier", "NodeType", });
-    com.google.protobuf.ExtensionRegistry registry =
-        com.google.protobuf.ExtensionRegistry.newInstance();
-    registry.add(com.github.jsdossier.proto.Options.sanitized);
-    com.google.protobuf.Descriptors.FileDescriptor
-        .internalUpdateFileDescriptor(descriptor, registry);
-    com.github.jsdossier.proto.Options.getDescriptor();
   }
 
   // @@protoc_insertion_point(outer_class_scope)

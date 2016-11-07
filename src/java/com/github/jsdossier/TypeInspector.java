@@ -1176,8 +1176,8 @@ final class TypeInspector {
     }
 
     JSDocInfo.Visibility visibility = determineVisibility(docs, overrides);
-    if (visibility != JSDocInfo.Visibility.PUBLIC) {
-      builder.setVisibility(Visibility.valueOf(visibility.name()));
+    if (JSDocInfo.Visibility.PUBLIC  != visibility) {
+      Protos.setVisibility(builder.getVisibilityBuilder(), visibility);
     }
 
     LinkFactory contextLinkFactory = linkFactory.withTypeContext(docs.getContextType());

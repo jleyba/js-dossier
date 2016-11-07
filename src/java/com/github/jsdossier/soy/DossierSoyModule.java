@@ -16,16 +16,34 @@
 
 package com.github.jsdossier.soy;
 
+import com.github.jsdossier.proto.Dossier;
+import com.github.jsdossier.proto.Expression;
+import com.google.common.collect.ImmutableList;
 import com.google.inject.AbstractModule;
+import com.google.inject.Provides;
 import com.google.inject.multibindings.Multibinder;
+import com.google.protobuf.DescriptorProtos;
+import com.google.protobuf.Descriptors;
 import com.google.template.soy.SoyModule;
+import com.google.template.soy.data.SoyCustomValueConverter;
 import com.google.template.soy.shared.restricted.SoyFunction;
+import com.google.template.soy.types.SoyTypeProvider;
+import com.google.template.soy.types.proto.SoyProtoTypeProvider;
+import com.google.template.soy.types.proto.SoyProtoValueConverter;
+
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import javax.inject.Singleton;
 
 /**
  * Module for configuring all of Dossier's soy rendering. This module will install the standard
  * {@link SoyModule}.
  */
 public final class DossierSoyModule extends AbstractModule {
+
   @Override
   protected void configure() {
     install(new SoyModule());
@@ -33,9 +51,59 @@ public final class DossierSoyModule extends AbstractModule {
     Multibinder<SoyFunction> binder = Multibinder.newSetBinder(binder(), SoyFunction.class);
     binder.addBinding().to(ArrayTypeFunction.class);
     binder.addBinding().to(ExternLinkFunction.class);
-    binder.addBinding().to(IsSanitizedHtmlFunction.class);
-    binder.addBinding().to(IsSanitizedUriFunction.class);
+    binder.addBinding().to(SanitizeHtmlFunction.class);
+    binder.addBinding().to(SanitizeUriFunction.class);
     binder.addBinding().to(ToLowerCamelCaseFunction.class);
+    binder.addBinding().to(ToUpperCamelCaseFunction.class);
     binder.addBinding().to(TypeNameFunction.class);
+  }
+
+  @Provides
+  List<SoyCustomValueConverter> provideConverters(SoyProtoValueConverter protoConverter) {
+    return ImmutableList.of(protoConverter);
+  }
+
+  @Provides
+  SoyTypeProvider provideTypeProvider(SoyProtoTypeProvider provider) {
+    return provider;
+  }
+
+  @Provides
+  @Singleton
+  SoyProtoTypeProvider provideSoyTypeProvider()
+      throws IOException, Descriptors.DescriptorValidationException {
+    return new SoyProtoTypeProvider.Builder()
+        .addDescriptors(
+            collectDescriptors(
+                DescriptorProtos.getDescriptor(),
+                Dossier.getDescriptor(),
+                Expression.getDescriptor()))
+        .build();
+  }
+
+  private static Set<Descriptors.GenericDescriptor> collectDescriptors(
+      Descriptors.FileDescriptor... fileDescriptors) {
+    Set<Descriptors.GenericDescriptor> set = new HashSet<>();
+    for (Descriptors.FileDescriptor file : fileDescriptors) {
+      set.addAll(file.getEnumTypes());
+      for (Descriptors.Descriptor descriptor : file.getMessageTypes()) {
+        collectDescriptors(set, descriptor);
+      }
+    }
+    return set;
+  }
+
+  private static void collectDescriptors(
+      Set<Descriptors.GenericDescriptor> set, Descriptors.Descriptor descriptor) {
+    if (!set.add(descriptor)) {
+      return;
+    }
+
+    set.addAll(descriptor.getEnumTypes());
+    for (Descriptors.FieldDescriptor field : descriptor.getFields()) {
+      if (field.getJavaType() == Descriptors.FieldDescriptor.JavaType.MESSAGE) {
+        collectDescriptors(set, field.getMessageType());
+      }
+    }
   }
 }

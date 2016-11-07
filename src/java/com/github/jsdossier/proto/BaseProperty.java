@@ -20,7 +20,6 @@ public  final class BaseProperty extends
   }
   private BaseProperty() {
     name_ = "";
-    visibility_ = 0;
     specifiedBy_ = java.util.Collections.emptyList();
     seeAlso_ = java.util.Collections.emptyList();
   }
@@ -94,12 +93,6 @@ public  final class BaseProperty extends
 
             break;
           }
-          case 40: {
-            int rawValue = input.readEnum();
-
-            visibility_ = rawValue;
-            break;
-          }
           case 50: {
             com.github.jsdossier.proto.Tags.Builder subBuilder = null;
             if (tags_ != null) {
@@ -153,6 +146,19 @@ public  final class BaseProperty extends
               mutable_bitField0_ |= 0x00000200;
             }
             seeAlso_.add(input.readMessage(com.github.jsdossier.proto.Comment.parser(), extensionRegistry));
+            break;
+          }
+          case 90: {
+            com.github.jsdossier.proto.Visibility.Builder subBuilder = null;
+            if (visibility_ != null) {
+              subBuilder = visibility_.toBuilder();
+            }
+            visibility_ = input.readMessage(com.github.jsdossier.proto.Visibility.parser(), extensionRegistry);
+            if (subBuilder != null) {
+              subBuilder.mergeFrom(visibility_);
+              visibility_ = subBuilder.buildPartial();
+            }
+
             break;
           }
         }
@@ -327,20 +333,25 @@ public  final class BaseProperty extends
     return getDeprecation();
   }
 
-  public static final int VISIBILITY_FIELD_NUMBER = 5;
-  private int visibility_;
+  public static final int VISIBILITY_FIELD_NUMBER = 11;
+  private com.github.jsdossier.proto.Visibility visibility_;
   /**
-   * <code>optional .dossier.Visibility visibility = 5;</code>
+   * <code>optional .dossier.Visibility visibility = 11;</code>
    */
-  public int getVisibilityValue() {
-    return visibility_;
+  public boolean hasVisibility() {
+    return visibility_ != null;
   }
   /**
-   * <code>optional .dossier.Visibility visibility = 5;</code>
+   * <code>optional .dossier.Visibility visibility = 11;</code>
    */
   public com.github.jsdossier.proto.Visibility getVisibility() {
-    com.github.jsdossier.proto.Visibility result = com.github.jsdossier.proto.Visibility.valueOf(visibility_);
-    return result == null ? com.github.jsdossier.proto.Visibility.UNRECOGNIZED : result;
+    return visibility_ == null ? com.github.jsdossier.proto.Visibility.getDefaultInstance() : visibility_;
+  }
+  /**
+   * <code>optional .dossier.Visibility visibility = 11;</code>
+   */
+  public com.github.jsdossier.proto.VisibilityOrBuilder getVisibilityOrBuilder() {
+    return getVisibility();
   }
 
   public static final int TAGS_FIELD_NUMBER = 6;
@@ -544,9 +555,6 @@ public  final class BaseProperty extends
     if (deprecation_ != null) {
       output.writeMessage(4, getDeprecation());
     }
-    if (visibility_ != com.github.jsdossier.proto.Visibility.PUBLIC.getNumber()) {
-      output.writeEnum(5, visibility_);
-    }
     if (tags_ != null) {
       output.writeMessage(6, getTags());
     }
@@ -561,6 +569,9 @@ public  final class BaseProperty extends
     }
     for (int i = 0; i < seeAlso_.size(); i++) {
       output.writeMessage(10, seeAlso_.get(i));
+    }
+    if (visibility_ != null) {
+      output.writeMessage(11, getVisibility());
     }
   }
 
@@ -584,10 +595,6 @@ public  final class BaseProperty extends
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(4, getDeprecation());
     }
-    if (visibility_ != com.github.jsdossier.proto.Visibility.PUBLIC.getNumber()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeEnumSize(5, visibility_);
-    }
     if (tags_ != null) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(6, getTags());
@@ -607,6 +614,10 @@ public  final class BaseProperty extends
     for (int i = 0; i < seeAlso_.size(); i++) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(10, seeAlso_.get(i));
+    }
+    if (visibility_ != null) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(11, getVisibility());
     }
     memoizedSize = size;
     return size;
@@ -745,8 +756,12 @@ public  final class BaseProperty extends
         deprecation_ = null;
         deprecationBuilder_ = null;
       }
-      visibility_ = 0;
-
+      if (visibilityBuilder_ == null) {
+        visibility_ = null;
+      } else {
+        visibility_ = null;
+        visibilityBuilder_ = null;
+      }
       if (tagsBuilder_ == null) {
         tags_ = null;
       } else {
@@ -817,7 +832,11 @@ public  final class BaseProperty extends
       } else {
         result.deprecation_ = deprecationBuilder_.build();
       }
-      result.visibility_ = visibility_;
+      if (visibilityBuilder_ == null) {
+        result.visibility_ = visibility_;
+      } else {
+        result.visibility_ = visibilityBuilder_.build();
+      }
       if (tagsBuilder_ == null) {
         result.tags_ = tags_;
       } else {
@@ -880,8 +899,8 @@ public  final class BaseProperty extends
       if (other.hasDeprecation()) {
         mergeDeprecation(other.getDeprecation());
       }
-      if (other.visibility_ != 0) {
-        setVisibilityValue(other.getVisibilityValue());
+      if (other.hasVisibility()) {
+        mergeVisibility(other.getVisibility());
       }
       if (other.hasTags()) {
         mergeTags(other.getTags());
@@ -1519,48 +1538,121 @@ public  final class BaseProperty extends
       return deprecationBuilder_;
     }
 
-    private int visibility_ = 0;
+    private com.github.jsdossier.proto.Visibility visibility_ = null;
+    private com.google.protobuf.SingleFieldBuilder<
+        com.github.jsdossier.proto.Visibility, com.github.jsdossier.proto.Visibility.Builder, com.github.jsdossier.proto.VisibilityOrBuilder> visibilityBuilder_;
     /**
-     * <code>optional .dossier.Visibility visibility = 5;</code>
+     * <code>optional .dossier.Visibility visibility = 11;</code>
      */
-    public int getVisibilityValue() {
-      return visibility_;
+    public boolean hasVisibility() {
+      return visibilityBuilder_ != null || visibility_ != null;
     }
     /**
-     * <code>optional .dossier.Visibility visibility = 5;</code>
-     */
-    public Builder setVisibilityValue(int value) {
-      visibility_ = value;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>optional .dossier.Visibility visibility = 5;</code>
+     * <code>optional .dossier.Visibility visibility = 11;</code>
      */
     public com.github.jsdossier.proto.Visibility getVisibility() {
-      com.github.jsdossier.proto.Visibility result = com.github.jsdossier.proto.Visibility.valueOf(visibility_);
-      return result == null ? com.github.jsdossier.proto.Visibility.UNRECOGNIZED : result;
+      if (visibilityBuilder_ == null) {
+        return visibility_ == null ? com.github.jsdossier.proto.Visibility.getDefaultInstance() : visibility_;
+      } else {
+        return visibilityBuilder_.getMessage();
+      }
     }
     /**
-     * <code>optional .dossier.Visibility visibility = 5;</code>
+     * <code>optional .dossier.Visibility visibility = 11;</code>
      */
     public Builder setVisibility(com.github.jsdossier.proto.Visibility value) {
-      if (value == null) {
-        throw new NullPointerException();
+      if (visibilityBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        visibility_ = value;
+        onChanged();
+      } else {
+        visibilityBuilder_.setMessage(value);
       }
-      
-      visibility_ = value.getNumber();
-      onChanged();
+
       return this;
     }
     /**
-     * <code>optional .dossier.Visibility visibility = 5;</code>
+     * <code>optional .dossier.Visibility visibility = 11;</code>
+     */
+    public Builder setVisibility(
+        com.github.jsdossier.proto.Visibility.Builder builderForValue) {
+      if (visibilityBuilder_ == null) {
+        visibility_ = builderForValue.build();
+        onChanged();
+      } else {
+        visibilityBuilder_.setMessage(builderForValue.build());
+      }
+
+      return this;
+    }
+    /**
+     * <code>optional .dossier.Visibility visibility = 11;</code>
+     */
+    public Builder mergeVisibility(com.github.jsdossier.proto.Visibility value) {
+      if (visibilityBuilder_ == null) {
+        if (visibility_ != null) {
+          visibility_ =
+            com.github.jsdossier.proto.Visibility.newBuilder(visibility_).mergeFrom(value).buildPartial();
+        } else {
+          visibility_ = value;
+        }
+        onChanged();
+      } else {
+        visibilityBuilder_.mergeFrom(value);
+      }
+
+      return this;
+    }
+    /**
+     * <code>optional .dossier.Visibility visibility = 11;</code>
      */
     public Builder clearVisibility() {
-      
-      visibility_ = 0;
-      onChanged();
+      if (visibilityBuilder_ == null) {
+        visibility_ = null;
+        onChanged();
+      } else {
+        visibility_ = null;
+        visibilityBuilder_ = null;
+      }
+
       return this;
+    }
+    /**
+     * <code>optional .dossier.Visibility visibility = 11;</code>
+     */
+    public com.github.jsdossier.proto.Visibility.Builder getVisibilityBuilder() {
+      
+      onChanged();
+      return getVisibilityFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>optional .dossier.Visibility visibility = 11;</code>
+     */
+    public com.github.jsdossier.proto.VisibilityOrBuilder getVisibilityOrBuilder() {
+      if (visibilityBuilder_ != null) {
+        return visibilityBuilder_.getMessageOrBuilder();
+      } else {
+        return visibility_ == null ?
+            com.github.jsdossier.proto.Visibility.getDefaultInstance() : visibility_;
+      }
+    }
+    /**
+     * <code>optional .dossier.Visibility visibility = 11;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilder<
+        com.github.jsdossier.proto.Visibility, com.github.jsdossier.proto.Visibility.Builder, com.github.jsdossier.proto.VisibilityOrBuilder> 
+        getVisibilityFieldBuilder() {
+      if (visibilityBuilder_ == null) {
+        visibilityBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+            com.github.jsdossier.proto.Visibility, com.github.jsdossier.proto.Visibility.Builder, com.github.jsdossier.proto.VisibilityOrBuilder>(
+                getVisibility(),
+                getParentForChildren(),
+                isClean());
+        visibility_ = null;
+      }
+      return visibilityBuilder_;
     }
 
     private com.github.jsdossier.proto.Tags tags_ = null;

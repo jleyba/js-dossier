@@ -74,6 +74,7 @@ java_library(
     exports = ["@closure_templates//jar"],
     runtime_deps = [
         "@icu4j//jar",
+        "@safe_types//jar",
         ":args4j",
         ":guava",
         ":guice",

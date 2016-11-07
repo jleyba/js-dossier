@@ -10,7 +10,6 @@ java_library(
         "//lib/maven:guice_multibindings",
         "//lib/maven:inject",
         "//lib/maven:jsr305",
-        "//lib/maven:owasp_html_sanitizer",
         "//lib/maven:protobuf",
         "//src/java/com/github/jsdossier/proto",
     ],

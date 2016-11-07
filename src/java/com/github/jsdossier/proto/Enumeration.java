@@ -20,7 +20,6 @@ public  final class Enumeration extends
   }
   private Enumeration() {
     value_ = java.util.Collections.emptyList();
-    visibility_ = 0;
   }
 
   @java.lang.Override
@@ -68,10 +67,17 @@ public  final class Enumeration extends
             value_.add(input.readMessage(com.github.jsdossier.proto.Enumeration.Value.parser(), extensionRegistry));
             break;
           }
-          case 24: {
-            int rawValue = input.readEnum();
+          case 34: {
+            com.github.jsdossier.proto.Visibility.Builder subBuilder = null;
+            if (visibility_ != null) {
+              subBuilder = visibility_.toBuilder();
+            }
+            visibility_ = input.readMessage(com.github.jsdossier.proto.Visibility.parser(), extensionRegistry);
+            if (subBuilder != null) {
+              subBuilder.mergeFrom(visibility_);
+              visibility_ = subBuilder.buildPartial();
+            }
 
-            visibility_ = rawValue;
             break;
           }
         }
@@ -977,20 +983,25 @@ public  final class Enumeration extends
     return value_.get(index);
   }
 
-  public static final int VISIBILITY_FIELD_NUMBER = 3;
-  private int visibility_;
+  public static final int VISIBILITY_FIELD_NUMBER = 4;
+  private com.github.jsdossier.proto.Visibility visibility_;
   /**
-   * <code>optional .dossier.Visibility visibility = 3;</code>
+   * <code>optional .dossier.Visibility visibility = 4;</code>
    */
-  public int getVisibilityValue() {
-    return visibility_;
+  public boolean hasVisibility() {
+    return visibility_ != null;
   }
   /**
-   * <code>optional .dossier.Visibility visibility = 3;</code>
+   * <code>optional .dossier.Visibility visibility = 4;</code>
    */
   public com.github.jsdossier.proto.Visibility getVisibility() {
-    com.github.jsdossier.proto.Visibility result = com.github.jsdossier.proto.Visibility.valueOf(visibility_);
-    return result == null ? com.github.jsdossier.proto.Visibility.UNRECOGNIZED : result;
+    return visibility_ == null ? com.github.jsdossier.proto.Visibility.getDefaultInstance() : visibility_;
+  }
+  /**
+   * <code>optional .dossier.Visibility visibility = 4;</code>
+   */
+  public com.github.jsdossier.proto.VisibilityOrBuilder getVisibilityOrBuilder() {
+    return getVisibility();
   }
 
   private byte memoizedIsInitialized = -1;
@@ -1011,8 +1022,8 @@ public  final class Enumeration extends
     for (int i = 0; i < value_.size(); i++) {
       output.writeMessage(2, value_.get(i));
     }
-    if (visibility_ != com.github.jsdossier.proto.Visibility.PUBLIC.getNumber()) {
-      output.writeEnum(3, visibility_);
+    if (visibility_ != null) {
+      output.writeMessage(4, getVisibility());
     }
   }
 
@@ -1029,9 +1040,9 @@ public  final class Enumeration extends
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(2, value_.get(i));
     }
-    if (visibility_ != com.github.jsdossier.proto.Visibility.PUBLIC.getNumber()) {
+    if (visibility_ != null) {
       size += com.google.protobuf.CodedOutputStream
-        .computeEnumSize(3, visibility_);
+        .computeMessageSize(4, getVisibility());
     }
     memoizedSize = size;
     return size;
@@ -1161,8 +1172,12 @@ public  final class Enumeration extends
       } else {
         valueBuilder_.clear();
       }
-      visibility_ = 0;
-
+      if (visibilityBuilder_ == null) {
+        visibility_ = null;
+      } else {
+        visibility_ = null;
+        visibilityBuilder_ = null;
+      }
       return this;
     }
 
@@ -1201,7 +1216,11 @@ public  final class Enumeration extends
       } else {
         result.value_ = valueBuilder_.build();
       }
-      result.visibility_ = visibility_;
+      if (visibilityBuilder_ == null) {
+        result.visibility_ = visibility_;
+      } else {
+        result.visibility_ = visibilityBuilder_.build();
+      }
       result.bitField0_ = to_bitField0_;
       onBuilt();
       return result;
@@ -1247,8 +1266,8 @@ public  final class Enumeration extends
           }
         }
       }
-      if (other.visibility_ != 0) {
-        setVisibilityValue(other.getVisibilityValue());
+      if (other.hasVisibility()) {
+        mergeVisibility(other.getVisibility());
       }
       onChanged();
       return this;
@@ -1634,48 +1653,121 @@ public  final class Enumeration extends
       return valueBuilder_;
     }
 
-    private int visibility_ = 0;
+    private com.github.jsdossier.proto.Visibility visibility_ = null;
+    private com.google.protobuf.SingleFieldBuilder<
+        com.github.jsdossier.proto.Visibility, com.github.jsdossier.proto.Visibility.Builder, com.github.jsdossier.proto.VisibilityOrBuilder> visibilityBuilder_;
     /**
-     * <code>optional .dossier.Visibility visibility = 3;</code>
+     * <code>optional .dossier.Visibility visibility = 4;</code>
      */
-    public int getVisibilityValue() {
-      return visibility_;
+    public boolean hasVisibility() {
+      return visibilityBuilder_ != null || visibility_ != null;
     }
     /**
-     * <code>optional .dossier.Visibility visibility = 3;</code>
-     */
-    public Builder setVisibilityValue(int value) {
-      visibility_ = value;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>optional .dossier.Visibility visibility = 3;</code>
+     * <code>optional .dossier.Visibility visibility = 4;</code>
      */
     public com.github.jsdossier.proto.Visibility getVisibility() {
-      com.github.jsdossier.proto.Visibility result = com.github.jsdossier.proto.Visibility.valueOf(visibility_);
-      return result == null ? com.github.jsdossier.proto.Visibility.UNRECOGNIZED : result;
+      if (visibilityBuilder_ == null) {
+        return visibility_ == null ? com.github.jsdossier.proto.Visibility.getDefaultInstance() : visibility_;
+      } else {
+        return visibilityBuilder_.getMessage();
+      }
     }
     /**
-     * <code>optional .dossier.Visibility visibility = 3;</code>
+     * <code>optional .dossier.Visibility visibility = 4;</code>
      */
     public Builder setVisibility(com.github.jsdossier.proto.Visibility value) {
-      if (value == null) {
-        throw new NullPointerException();
+      if (visibilityBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        visibility_ = value;
+        onChanged();
+      } else {
+        visibilityBuilder_.setMessage(value);
       }
-      
-      visibility_ = value.getNumber();
-      onChanged();
+
       return this;
     }
     /**
-     * <code>optional .dossier.Visibility visibility = 3;</code>
+     * <code>optional .dossier.Visibility visibility = 4;</code>
+     */
+    public Builder setVisibility(
+        com.github.jsdossier.proto.Visibility.Builder builderForValue) {
+      if (visibilityBuilder_ == null) {
+        visibility_ = builderForValue.build();
+        onChanged();
+      } else {
+        visibilityBuilder_.setMessage(builderForValue.build());
+      }
+
+      return this;
+    }
+    /**
+     * <code>optional .dossier.Visibility visibility = 4;</code>
+     */
+    public Builder mergeVisibility(com.github.jsdossier.proto.Visibility value) {
+      if (visibilityBuilder_ == null) {
+        if (visibility_ != null) {
+          visibility_ =
+            com.github.jsdossier.proto.Visibility.newBuilder(visibility_).mergeFrom(value).buildPartial();
+        } else {
+          visibility_ = value;
+        }
+        onChanged();
+      } else {
+        visibilityBuilder_.mergeFrom(value);
+      }
+
+      return this;
+    }
+    /**
+     * <code>optional .dossier.Visibility visibility = 4;</code>
      */
     public Builder clearVisibility() {
-      
-      visibility_ = 0;
-      onChanged();
+      if (visibilityBuilder_ == null) {
+        visibility_ = null;
+        onChanged();
+      } else {
+        visibility_ = null;
+        visibilityBuilder_ = null;
+      }
+
       return this;
+    }
+    /**
+     * <code>optional .dossier.Visibility visibility = 4;</code>
+     */
+    public com.github.jsdossier.proto.Visibility.Builder getVisibilityBuilder() {
+      
+      onChanged();
+      return getVisibilityFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>optional .dossier.Visibility visibility = 4;</code>
+     */
+    public com.github.jsdossier.proto.VisibilityOrBuilder getVisibilityOrBuilder() {
+      if (visibilityBuilder_ != null) {
+        return visibilityBuilder_.getMessageOrBuilder();
+      } else {
+        return visibility_ == null ?
+            com.github.jsdossier.proto.Visibility.getDefaultInstance() : visibility_;
+      }
+    }
+    /**
+     * <code>optional .dossier.Visibility visibility = 4;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilder<
+        com.github.jsdossier.proto.Visibility, com.github.jsdossier.proto.Visibility.Builder, com.github.jsdossier.proto.VisibilityOrBuilder> 
+        getVisibilityFieldBuilder() {
+      if (visibilityBuilder_ == null) {
+        visibilityBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+            com.github.jsdossier.proto.Visibility, com.github.jsdossier.proto.Visibility.Builder, com.github.jsdossier.proto.VisibilityOrBuilder>(
+                getVisibility(),
+                getParentForChildren(),
+                isClean());
+        visibility_ = null;
+      }
+      return visibilityBuilder_;
     }
     public final Builder setUnknownFields(
         final com.google.protobuf.UnknownFieldSet unknownFields) {

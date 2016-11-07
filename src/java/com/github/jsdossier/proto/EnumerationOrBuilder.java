@@ -45,11 +45,15 @@ public interface EnumerationOrBuilder extends
       int index);
 
   /**
-   * <code>optional .dossier.Visibility visibility = 3;</code>
+   * <code>optional .dossier.Visibility visibility = 4;</code>
    */
-  int getVisibilityValue();
+  boolean hasVisibility();
   /**
-   * <code>optional .dossier.Visibility visibility = 3;</code>
+   * <code>optional .dossier.Visibility visibility = 4;</code>
    */
   com.github.jsdossier.proto.Visibility getVisibility();
+  /**
+   * <code>optional .dossier.Visibility visibility = 4;</code>
+   */
+  com.github.jsdossier.proto.VisibilityOrBuilder getVisibilityOrBuilder();
 }

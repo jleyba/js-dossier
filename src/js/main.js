@@ -27,13 +27,13 @@ goog.module('dossier.main');
 // soy templates.
 goog.require('dossier.soyplugins');
 
-const Index = goog.require('dossier.Index');
 const app = goog.require('dossier.app');
 const nav = goog.require('dossier.nav');
 const page = goog.require('dossier.page');
 const search = goog.require('dossier.search');
 const browser = goog.require('goog.labs.userAgent.browser');
 const engine = goog.require('goog.labs.userAgent.engine');
+const Index = goog.require('proto.dossier.Index');
 
 if (engine.isWebKit() && !browser.isChrome() && !browser.isOpera()) {
   // Tag the browser as webkit (not blink) so we can avoid some ugly

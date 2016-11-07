@@ -295,20 +295,23 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Ca
         if (declaringType.getModule().isPresent()) {
           switch (declaringType.getModule().get().getType()) {
             case CLOSURE:
-              metadata.setDeclarationType(JsType.Declaration.Type.GOOG_MODULE);
+              if (declaringType == type) {
+                verify(declaringType.isModuleExports());
+                metadata.setGoogModule(true);
+              } else {
+                metadata.setModuleExport(true);
+              }
               break;
             case ES6:
-              metadata.setDeclarationType(JsType.Declaration.Type.ES6_MODULE);
-              break;
             case NODE:
-              metadata.setDeclarationType(JsType.Declaration.Type.COMMONJS_MODULE);
+              metadata.setModuleExport(true);
               break;
             default:
               throw new AssertionError(
                   "unexpected module type: " + declaringType.getModule().get().getType());
           }
         } else if (typeRegistry.isProvided(declaringType.getName())) {
-          metadata.setDeclarationType(JsType.Declaration.Type.GOOG_PROVIDE);
+          metadata.setGoogProvide(true);
         }
       }
     }
@@ -382,12 +385,15 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Ca
 
         builder.getBaseBuilder()
             .setName(name)
-            .setSource(linkFactory.createSourceLink(typedef.getSourceFile(), typedef.getSourcePosition()))
+            .setSource(
+                linkFactory.createSourceLink(typedef.getSourceFile(), typedef.getSourcePosition()))
             .setDescription(
                 parser.parseComment(
                     typedef.getJsDoc().getBlockComment(),
-                    linkFactory.withTypeContext(typedef)))
-            .setVisibility(Visibility.valueOf(visibility.name()));
+                    linkFactory.withTypeContext(typedef)));
+        if (JSDocInfo.Visibility.PUBLIC  != visibility) {
+          Protos.setVisibility(builder.getBaseBuilder().getVisibilityBuilder(), visibility);
+        }
 
         if (typedef.getJsDoc().isDeprecated()) {
           builder.getBaseBuilder().getTagsBuilder().setIsDeprecated(true);
@@ -468,8 +474,10 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Ca
       Enumeration.Builder enumBuilder = spec.getEnumerationBuilder()
           .setType(
               expressionParserFactory.create(linkFactory)
-                  .parse(elementType.toMaybeEnumElementType().getPrimitiveType()))
-          .setVisibility(Visibility.valueOf(visibility.name()));
+                  .parse(elementType.toMaybeEnumElementType().getPrimitiveType()));
+      if (JSDocInfo.Visibility.PUBLIC  != visibility) {
+        Protos.setVisibility(enumBuilder.getVisibilityBuilder(), visibility);
+      }
 
       // Type may be documented as an enum without an associated object literal for us to analyze:
       //     /** @enum {string} */ namespace.foo;

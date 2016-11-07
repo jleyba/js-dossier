@@ -26,15 +26,16 @@ import static java.nio.file.StandardOpenOption.WRITE;
 import com.github.jsdossier.proto.PageData;
 import com.github.jsdossier.proto.TypeLink;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.template.soy.SoyFileSet;
-import com.google.template.soy.data.SoyMapData;
 import com.google.template.soy.jssrc.SoyJsSrcOptions;
 import com.google.template.soy.tofu.SoyTofu;
 import com.google.template.soy.types.SoyTypeProvider;
 import com.google.template.soy.types.SoyTypeRegistry;
+import com.google.template.soy.types.proto.SoyProtoTypeProvider;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -56,11 +57,11 @@ public class Renderer {
   @Inject
   Renderer(
       SoyFileSet.Builder filesetBuilder,
-      DossierSoyTypeProvider typeProvider) {
-    tofu = filesetBuilder
+      SoyTypeProvider typeProvider) {
+    this.tofu = filesetBuilder
         .add(Renderer.class.getResource("resources/types.soy"))
         .add(Renderer.class.getResource("resources/dossier.soy"))
-        .setLocalTypeRegistry(new SoyTypeRegistry(ImmutableSet.of((SoyTypeProvider) typeProvider)))
+        .setLocalTypeRegistry(new SoyTypeRegistry(ImmutableSet.of(typeProvider)))
         .build()
         .compileToTofu();
   }
@@ -70,21 +71,19 @@ public class Renderer {
     try (BufferedWriter writer =
              newBufferedWriter(output, UTF_8, CREATE, WRITE, TRUNCATE_EXISTING)) {
       tofu.newRenderer("dossier.soy.page")
-          .setData(new SoyMapData("data", ProtoMessageSoyType.toSoyValue(page)))
+          .setData(ImmutableMap.of("data", page))
           .render(writer);
     }
   }
 
   public void render(Appendable appendable, String text, TypeLink link, boolean codeLink)
       throws IOException {
-    @SuppressWarnings("unchecked")
-    ProtoMessageSoyValue linkValue = (ProtoMessageSoyValue) ProtoMessageSoyType.toSoyValue(link);
-
     tofu.newRenderer("dossier.soy.type.typeLink")
-        .setData(new SoyMapData(
-            "content", text,
-            "codeLink", codeLink,
-            "href", linkValue.getField("href")))
+        .setData(
+            ImmutableMap.of(
+                "content", text,
+                "codeLink", codeLink,
+                "href", link.getHref()))
         .render(appendable);
   }
 
@@ -96,13 +95,12 @@ public class Renderer {
 
     Injector injector = Guice.createInjector(new DossierSoyModule());
 
-    DossierSoyTypeProvider typeProvider = injector.getInstance(DossierSoyTypeProvider.class);
+    SoyTypeProvider typeProvider = injector.getInstance(SoyProtoTypeProvider.class);
     SoyFileSet fileSet = injector.getInstance(SoyFileSet.Builder.class)
         .add(Renderer.class.getResource("resources/dossier.soy"))
         .add(Renderer.class.getResource("resources/nav.soy"))
         .add(Renderer.class.getResource("resources/types.soy"))
-        .setLocalTypeRegistry(
-            new SoyTypeRegistry(ImmutableSet.of((SoyTypeProvider) typeProvider)))
+        .setLocalTypeRegistry(new SoyTypeRegistry(ImmutableSet.of(typeProvider)))
         .build();
 
     SoyJsSrcOptions options = new SoyJsSrcOptions();

@@ -14,7 +14,6 @@
 
 syntax = "proto3";
 
-import "options.proto";
 import "expression.proto";
 
 option java_package = "com.github.jsdossier.proto";
@@ -37,12 +36,12 @@ message SourceFile {
 // Describes the resources to include in a generated HTML page.
 message Resources {
   // Paths to stylesheets to link to in the generated page.
-  repeated string css = 1 [(options.sanitized).uri = true];
+  repeated string css = 1;
   // Paths to JavaScript files to include in the generated page's head.
-  repeated string head_script = 2 [(options.sanitized).uri = true];
+  repeated string head_script = 2;
   // Paths to JavaScript files to include in the generated page after
   // the DOM has been defined.
-  repeated string tail_script = 3 [(options.sanitized).uri = true];
+  repeated string tail_script = 3;
 }
 
 
@@ -51,16 +50,16 @@ message Link {
   // The link display text.
   string text = 1;
   // The link href.
-  string href = 2 [(options.sanitized).uri = true];
+  string href = 2;
   // The JSON data associated with this link, if any.
-  string json = 3 [(options.sanitized).uri = true];
+  string json = 3;
 }
 
 
 // Defines a link to a symbol's definition in its rendered source file.
 message SourceLink {
   // Path from the current file to the rendered source file.
-  string path = 1  [(options.sanitized).uri = true];
+  string path = 1;
 
   // The line in the source file containing the symbol, if known.
   int32 line = 2;
@@ -81,7 +80,7 @@ message Comment {
       string text = 1;
 
       // The pre-escaped html content for this token.
-      string html = 2 [(options.sanitized).html = true];
+      string html = 2;
     }
 
     // If set, this token will be rendered as a hyperlink.
@@ -94,16 +93,18 @@ message Comment {
 
 
 // Describes a type/property's visibility.
-enum Visibility {
-  // The type is globally accessible.
-  PUBLIC = 0;
-  // The type may only be used by subclasses or other code in the same file.
-  PROTECTED = 1;
-  // The type may only be used by other code in the same file.
-  PRIVATE = 2;
-  // The type may only be used by subclasses, or other code in the same
-  // package.
-  PACKAGE = 3;
+message Visibility {
+  oneof type {
+    // The type is globally accessible.
+    bool public = 1;
+    // The type may only be used by subclasses or other code in the same file.
+    bool protected = 2;
+    // The type may only be used by other code in the same file.
+    bool private = 3;
+    // The type may only be used by subclasses, or other code in the same
+    // package.
+    bool package = 4;
+  }
 }
 
 
@@ -133,7 +134,8 @@ message BaseProperty {
 
   // Whether this property is deprecated.
   Comment deprecation = 4;
-  Visibility visibility = 5;
+  reserved 5;
+  Visibility visibility = 11;
   Tags tags = 6;
 
   // The class or interface that defines this property.
@@ -183,7 +185,8 @@ message Enumeration {
 
   dossier.expression.TypeExpression type = 1;
   repeated Value value = 2;
-  Visibility visibility = 3;
+  reserved 3;
+  Visibility visibility = 4;
 }
 
 
@@ -210,9 +213,9 @@ message JsType {
 
   // Short description for a type defined by this |JsType|.
   message TypeSummary {
-    string name = 1;                                   // The type name.
-    string href = 2 [(options.sanitized).uri = true];  // The hyperlink for the actual type.
-    Comment summary = 3;                               // The summary sentence for this type.
+    string name = 1;      // The type name.
+    string href = 2;      // The hyperlink for the actual type.
+    Comment summary = 3;  // The summary sentence for this type.
     Tags tags = 4;
   }
 
@@ -266,15 +269,13 @@ message JsType {
 
   // Metadata about where this type is declared.
   message Declaration {
-    enum Type {
-      UNKNOWN = 0;
-      COMMONJS_MODULE = 1;
-      ES6_MODULE = 2;
-      GOOG_MODULE = 3;
-      GOOG_PROVIDE = 4;
-    }
     dossier.expression.NamedType type = 1;
-    Type declaration_type = 2;
+    reserved 2;
+    oneof declaration_type {
+      bool goog_module = 3;
+      bool goog_provide = 4;
+      bool module_export = 5;
+    }
   }
   Declaration declaration = 21;
 

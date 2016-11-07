@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="com.google.common.html.types:types:1.0.5" type="repository">
+    <properties maven-id="com.google.common.html.types:types:1.0.5" />
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/google/common/html/types/types/1.0.5/types-1.0.5.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/google/common/html/types/types/1.0.5/types-1.0.5-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

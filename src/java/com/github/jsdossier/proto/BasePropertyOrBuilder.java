@@ -101,13 +101,17 @@ public interface BasePropertyOrBuilder extends
   com.github.jsdossier.proto.CommentOrBuilder getDeprecationOrBuilder();
 
   /**
-   * <code>optional .dossier.Visibility visibility = 5;</code>
+   * <code>optional .dossier.Visibility visibility = 11;</code>
    */
-  int getVisibilityValue();
+  boolean hasVisibility();
   /**
-   * <code>optional .dossier.Visibility visibility = 5;</code>
+   * <code>optional .dossier.Visibility visibility = 11;</code>
    */
   com.github.jsdossier.proto.Visibility getVisibility();
+  /**
+   * <code>optional .dossier.Visibility visibility = 11;</code>
+   */
+  com.github.jsdossier.proto.VisibilityOrBuilder getVisibilityOrBuilder();
 
   /**
    * <code>optional .dossier.Tags tags = 6;</code>

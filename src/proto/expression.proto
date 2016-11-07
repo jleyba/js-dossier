@@ -14,8 +14,6 @@
 
 syntax = "proto3";
 
-import "options.proto";
-
 option java_package = "com.github.jsdossier.proto";
 option java_multiple_files = true;
 
@@ -31,8 +29,8 @@ message FunctionType {
 
 
 message TypeLink {
-  string href = 1 [(options.sanitized).uri = true];
-  string json = 2 [(options.sanitized).uri = true];
+  string href = 1;
+  string json = 2;
 }
 
 

@@ -2860,13 +2860,21 @@ public  final class JsType extends
     com.github.jsdossier.proto.NamedTypeOrBuilder getTypeOrBuilder();
 
     /**
-     * <code>optional .dossier.JsType.Declaration.Type declaration_type = 2;</code>
+     * <code>optional bool goog_module = 3;</code>
      */
-    int getDeclarationTypeValue();
+    boolean getGoogModule();
+
     /**
-     * <code>optional .dossier.JsType.Declaration.Type declaration_type = 2;</code>
+     * <code>optional bool goog_provide = 4;</code>
      */
-    com.github.jsdossier.proto.JsType.Declaration.Type getDeclarationType();
+    boolean getGoogProvide();
+
+    /**
+     * <code>optional bool module_export = 5;</code>
+     */
+    boolean getModuleExport();
+
+    public com.github.jsdossier.proto.JsType.Declaration.DeclarationTypeCase getDeclarationTypeCase();
   }
   /**
    * Protobuf type {@code dossier.JsType.Declaration}
@@ -2884,7 +2892,6 @@ public  final class JsType extends
       super(builder);
     }
     private Declaration() {
-      declarationType_ = 0;
     }
 
     @java.lang.Override
@@ -2924,10 +2931,19 @@ public  final class JsType extends
 
               break;
             }
-            case 16: {
-              int rawValue = input.readEnum();
-
-              declarationType_ = rawValue;
+            case 24: {
+              declarationTypeCase_ = 3;
+              declarationType_ = input.readBool();
+              break;
+            }
+            case 32: {
+              declarationTypeCase_ = 4;
+              declarationType_ = input.readBool();
+              break;
+            }
+            case 40: {
+              declarationTypeCase_ = 5;
+              declarationType_ = input.readBool();
               break;
             }
           }
@@ -2954,123 +2970,37 @@ public  final class JsType extends
               com.github.jsdossier.proto.JsType.Declaration.class, com.github.jsdossier.proto.JsType.Declaration.Builder.class);
     }
 
-    /**
-     * Protobuf enum {@code dossier.JsType.Declaration.Type}
-     */
-    public enum Type
-        implements com.google.protobuf.ProtocolMessageEnum {
-      /**
-       * <code>UNKNOWN = 0;</code>
-       */
-      UNKNOWN(0, 0),
-      /**
-       * <code>COMMONJS_MODULE = 1;</code>
-       */
-      COMMONJS_MODULE(1, 1),
-      /**
-       * <code>ES6_MODULE = 2;</code>
-       */
-      ES6_MODULE(2, 2),
-      /**
-       * <code>GOOG_MODULE = 3;</code>
-       */
-      GOOG_MODULE(3, 3),
-      /**
-       * <code>GOOG_PROVIDE = 4;</code>
-       */
-      GOOG_PROVIDE(4, 4),
-      UNRECOGNIZED(-1, -1),
-      ;
-
-      /**
-       * <code>UNKNOWN = 0;</code>
-       */
-      public static final int UNKNOWN_VALUE = 0;
-      /**
-       * <code>COMMONJS_MODULE = 1;</code>
-       */
-      public static final int COMMONJS_MODULE_VALUE = 1;
-      /**
-       * <code>ES6_MODULE = 2;</code>
-       */
-      public static final int ES6_MODULE_VALUE = 2;
-      /**
-       * <code>GOOG_MODULE = 3;</code>
-       */
-      public static final int GOOG_MODULE_VALUE = 3;
-      /**
-       * <code>GOOG_PROVIDE = 4;</code>
-       */
-      public static final int GOOG_PROVIDE_VALUE = 4;
-
-
-      public final int getNumber() {
-        if (index == -1) {
-          throw new java.lang.IllegalArgumentException(
-              "Can't get the number of an unknown enum value.");
-        }
-        return value;
-      }
-
-      public static Type valueOf(int value) {
-        switch (value) {
-          case 0: return UNKNOWN;
-          case 1: return COMMONJS_MODULE;
-          case 2: return ES6_MODULE;
-          case 3: return GOOG_MODULE;
-          case 4: return GOOG_PROVIDE;
-          default: return null;
-        }
-      }
-
-      public static com.google.protobuf.Internal.EnumLiteMap<Type>
-          internalGetValueMap() {
-        return internalValueMap;
-      }
-      private static final com.google.protobuf.Internal.EnumLiteMap<
-          Type> internalValueMap =
-            new com.google.protobuf.Internal.EnumLiteMap<Type>() {
-              public Type findValueByNumber(int number) {
-                return Type.valueOf(number);
-              }
-            };
-
-      public final com.google.protobuf.Descriptors.EnumValueDescriptor
-          getValueDescriptor() {
-        return getDescriptor().getValues().get(index);
-      }
-      public final com.google.protobuf.Descriptors.EnumDescriptor
-          getDescriptorForType() {
-        return getDescriptor();
-      }
-      public static final com.google.protobuf.Descriptors.EnumDescriptor
-          getDescriptor() {
-        return com.github.jsdossier.proto.JsType.Declaration.getDescriptor().getEnumTypes().get(0);
-      }
-
-      private static final Type[] VALUES = values();
-
-      public static Type valueOf(
-          com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
-        if (desc.getType() != getDescriptor()) {
-          throw new java.lang.IllegalArgumentException(
-            "EnumValueDescriptor is not for this type.");
-        }
-        if (desc.getIndex() == -1) {
-          return UNRECOGNIZED;
-        }
-        return VALUES[desc.getIndex()];
-      }
-
-      private final int index;
-      private final int value;
-
-      private Type(int index, int value) {
-        this.index = index;
+    private int declarationTypeCase_ = 0;
+    private java.lang.Object declarationType_;
+    public enum DeclarationTypeCase
+        implements com.google.protobuf.Internal.EnumLite {
+      GOOG_MODULE(3),
+      GOOG_PROVIDE(4),
+      MODULE_EXPORT(5),
+      DECLARATIONTYPE_NOT_SET(0);
+      private int value = 0;
+      private DeclarationTypeCase(int value) {
         this.value = value;
       }
+      public static DeclarationTypeCase valueOf(int value) {
+        switch (value) {
+          case 3: return GOOG_MODULE;
+          case 4: return GOOG_PROVIDE;
+          case 5: return MODULE_EXPORT;
+          case 0: return DECLARATIONTYPE_NOT_SET;
+          default: throw new java.lang.IllegalArgumentException(
+            "Value is undefined for this oneof enum.");
+        }
+      }
+      public int getNumber() {
+        return this.value;
+      }
+    };
 
-      // @@protoc_insertion_point(enum_scope:dossier.JsType.Declaration.Type)
+    public DeclarationTypeCase
+    getDeclarationTypeCase() {
+      return DeclarationTypeCase.valueOf(
+          declarationTypeCase_);
     }
 
     public static final int TYPE_FIELD_NUMBER = 1;
@@ -3094,20 +3024,37 @@ public  final class JsType extends
       return getType();
     }
 
-    public static final int DECLARATION_TYPE_FIELD_NUMBER = 2;
-    private int declarationType_;
+    public static final int GOOG_MODULE_FIELD_NUMBER = 3;
     /**
-     * <code>optional .dossier.JsType.Declaration.Type declaration_type = 2;</code>
+     * <code>optional bool goog_module = 3;</code>
      */
-    public int getDeclarationTypeValue() {
-      return declarationType_;
+    public boolean getGoogModule() {
+      if (declarationTypeCase_ == 3) {
+        return (java.lang.Boolean) declarationType_;
+      }
+      return false;
     }
+
+    public static final int GOOG_PROVIDE_FIELD_NUMBER = 4;
     /**
-     * <code>optional .dossier.JsType.Declaration.Type declaration_type = 2;</code>
+     * <code>optional bool goog_provide = 4;</code>
      */
-    public com.github.jsdossier.proto.JsType.Declaration.Type getDeclarationType() {
-      com.github.jsdossier.proto.JsType.Declaration.Type result = com.github.jsdossier.proto.JsType.Declaration.Type.valueOf(declarationType_);
-      return result == null ? com.github.jsdossier.proto.JsType.Declaration.Type.UNRECOGNIZED : result;
+    public boolean getGoogProvide() {
+      if (declarationTypeCase_ == 4) {
+        return (java.lang.Boolean) declarationType_;
+      }
+      return false;
+    }
+
+    public static final int MODULE_EXPORT_FIELD_NUMBER = 5;
+    /**
+     * <code>optional bool module_export = 5;</code>
+     */
+    public boolean getModuleExport() {
+      if (declarationTypeCase_ == 5) {
+        return (java.lang.Boolean) declarationType_;
+      }
+      return false;
     }
 
     private byte memoizedIsInitialized = -1;
@@ -3125,8 +3072,17 @@ public  final class JsType extends
       if (type_ != null) {
         output.writeMessage(1, getType());
       }
-      if (declarationType_ != com.github.jsdossier.proto.JsType.Declaration.Type.UNKNOWN.getNumber()) {
-        output.writeEnum(2, declarationType_);
+      if (declarationTypeCase_ == 3) {
+        output.writeBool(
+            3, (boolean)((java.lang.Boolean) declarationType_));
+      }
+      if (declarationTypeCase_ == 4) {
+        output.writeBool(
+            4, (boolean)((java.lang.Boolean) declarationType_));
+      }
+      if (declarationTypeCase_ == 5) {
+        output.writeBool(
+            5, (boolean)((java.lang.Boolean) declarationType_));
       }
     }
 
@@ -3139,9 +3095,20 @@ public  final class JsType extends
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(1, getType());
       }
-      if (declarationType_ != com.github.jsdossier.proto.JsType.Declaration.Type.UNKNOWN.getNumber()) {
+      if (declarationTypeCase_ == 3) {
         size += com.google.protobuf.CodedOutputStream
-          .computeEnumSize(2, declarationType_);
+          .computeBoolSize(
+              3, (boolean)((java.lang.Boolean) declarationType_));
+      }
+      if (declarationTypeCase_ == 4) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(
+              4, (boolean)((java.lang.Boolean) declarationType_));
+      }
+      if (declarationTypeCase_ == 5) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(
+              5, (boolean)((java.lang.Boolean) declarationType_));
       }
       memoizedSize = size;
       return size;
@@ -3264,8 +3231,8 @@ public  final class JsType extends
           type_ = null;
           typeBuilder_ = null;
         }
-        declarationType_ = 0;
-
+        declarationTypeCase_ = 0;
+        declarationType_ = null;
         return this;
       }
 
@@ -3293,7 +3260,16 @@ public  final class JsType extends
         } else {
           result.type_ = typeBuilder_.build();
         }
-        result.declarationType_ = declarationType_;
+        if (declarationTypeCase_ == 3) {
+          result.declarationType_ = declarationType_;
+        }
+        if (declarationTypeCase_ == 4) {
+          result.declarationType_ = declarationType_;
+        }
+        if (declarationTypeCase_ == 5) {
+          result.declarationType_ = declarationType_;
+        }
+        result.declarationTypeCase_ = declarationTypeCase_;
         onBuilt();
         return result;
       }
@@ -3312,8 +3288,22 @@ public  final class JsType extends
         if (other.hasType()) {
           mergeType(other.getType());
         }
-        if (other.declarationType_ != 0) {
-          setDeclarationTypeValue(other.getDeclarationTypeValue());
+        switch (other.getDeclarationTypeCase()) {
+          case GOOG_MODULE: {
+            setGoogModule(other.getGoogModule());
+            break;
+          }
+          case GOOG_PROVIDE: {
+            setGoogProvide(other.getGoogProvide());
+            break;
+          }
+          case MODULE_EXPORT: {
+            setModuleExport(other.getModuleExport());
+            break;
+          }
+          case DECLARATIONTYPE_NOT_SET: {
+            break;
+          }
         }
         onChanged();
         return this;
@@ -3340,6 +3330,21 @@ public  final class JsType extends
         }
         return this;
       }
+      private int declarationTypeCase_ = 0;
+      private java.lang.Object declarationType_;
+      public DeclarationTypeCase
+          getDeclarationTypeCase() {
+        return DeclarationTypeCase.valueOf(
+            declarationTypeCase_);
+      }
+
+      public Builder clearDeclarationType() {
+        declarationTypeCase_ = 0;
+        declarationType_ = null;
+        onChanged();
+        return this;
+      }
+
 
       private com.github.jsdossier.proto.NamedType type_ = null;
       private com.google.protobuf.SingleFieldBuilder<
@@ -3458,47 +3463,93 @@ public  final class JsType extends
         return typeBuilder_;
       }
 
-      private int declarationType_ = 0;
       /**
-       * <code>optional .dossier.JsType.Declaration.Type declaration_type = 2;</code>
+       * <code>optional bool goog_module = 3;</code>
        */
-      public int getDeclarationTypeValue() {
-        return declarationType_;
+      public boolean getGoogModule() {
+        if (declarationTypeCase_ == 3) {
+          return (java.lang.Boolean) declarationType_;
+        }
+        return false;
       }
       /**
-       * <code>optional .dossier.JsType.Declaration.Type declaration_type = 2;</code>
+       * <code>optional bool goog_module = 3;</code>
        */
-      public Builder setDeclarationTypeValue(int value) {
+      public Builder setGoogModule(boolean value) {
+        declarationTypeCase_ = 3;
         declarationType_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional .dossier.JsType.Declaration.Type declaration_type = 2;</code>
+       * <code>optional bool goog_module = 3;</code>
        */
-      public com.github.jsdossier.proto.JsType.Declaration.Type getDeclarationType() {
-        com.github.jsdossier.proto.JsType.Declaration.Type result = com.github.jsdossier.proto.JsType.Declaration.Type.valueOf(declarationType_);
-        return result == null ? com.github.jsdossier.proto.JsType.Declaration.Type.UNRECOGNIZED : result;
+      public Builder clearGoogModule() {
+        if (declarationTypeCase_ == 3) {
+          declarationTypeCase_ = 0;
+          declarationType_ = null;
+          onChanged();
+        }
+        return this;
+      }
+
+      /**
+       * <code>optional bool goog_provide = 4;</code>
+       */
+      public boolean getGoogProvide() {
+        if (declarationTypeCase_ == 4) {
+          return (java.lang.Boolean) declarationType_;
+        }
+        return false;
       }
       /**
-       * <code>optional .dossier.JsType.Declaration.Type declaration_type = 2;</code>
+       * <code>optional bool goog_provide = 4;</code>
        */
-      public Builder setDeclarationType(com.github.jsdossier.proto.JsType.Declaration.Type value) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        
-        declarationType_ = value.getNumber();
+      public Builder setGoogProvide(boolean value) {
+        declarationTypeCase_ = 4;
+        declarationType_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional .dossier.JsType.Declaration.Type declaration_type = 2;</code>
+       * <code>optional bool goog_provide = 4;</code>
        */
-      public Builder clearDeclarationType() {
-        
-        declarationType_ = 0;
+      public Builder clearGoogProvide() {
+        if (declarationTypeCase_ == 4) {
+          declarationTypeCase_ = 0;
+          declarationType_ = null;
+          onChanged();
+        }
+        return this;
+      }
+
+      /**
+       * <code>optional bool module_export = 5;</code>
+       */
+      public boolean getModuleExport() {
+        if (declarationTypeCase_ == 5) {
+          return (java.lang.Boolean) declarationType_;
+        }
+        return false;
+      }
+      /**
+       * <code>optional bool module_export = 5;</code>
+       */
+      public Builder setModuleExport(boolean value) {
+        declarationTypeCase_ = 5;
+        declarationType_ = value;
         onChanged();
+        return this;
+      }
+      /**
+       * <code>optional bool module_export = 5;</code>
+       */
+      public Builder clearModuleExport() {
+        if (declarationTypeCase_ == 5) {
+          declarationTypeCase_ = 0;
+          declarationType_ = null;
+          onChanged();
+        }
         return this;
       }
       public final Builder setUnknownFields(

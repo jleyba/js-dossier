@@ -16,8 +16,6 @@
 
 goog.module('dossier.nav');
 
-const Index = goog.require('dossier.Index');
-const NamedType = goog.require('dossier.expression.NamedType');
 const page = goog.require('dossier.page');
 const soyNav = goog.require('dossier.soy.nav');
 const Arrays = goog.require('goog.array');
@@ -28,23 +26,25 @@ const KeyCodes = goog.require('goog.events.KeyCodes');
 const browser = goog.require('goog.labs.userAgent.browser');
 const device = goog.require('goog.labs.userAgent.device');
 const soy = goog.require('goog.soy');
+const Index = goog.require('proto.dossier.Index');
+const NamedType = goog.require('proto.dossier.expression.NamedType');
 const SanitizedHtml = goog.require('soydata.SanitizedHtml');
 
 
 function sortEntries(/** !Array<!Index.Entry> */entries) {
   entries.forEach(entry => {
-    if (!entry.type.qualifiedName) {
-      entry.type.qualifiedName = entry.type.name;
+    if (!entry.getType().getQualifiedName()) {
+      entry.getType().setQualifiedName(entry.getType().getName());
     }
 
-    if (entry.child.length) {
-      sortEntries(entry.child);
+    if (entry.getChildList().length) {
+      sortEntries(entry.getChildList());
     }
   });
 
   entries.sort((a, b) => {
-    let nameA = a.type.qualifiedName;
-    let nameB = b.type.qualifiedName;
+    let nameA = a.getType().getQualifiedName();
+    let nameB = b.getType().getQualifiedName();
     if (nameA === nameB) {
       return 0;
     }
@@ -79,16 +79,17 @@ function buildTree(entries, opt_modules) {
 
   function recordEntry(/** !Index.Entry */entry) {
     let last = Arrays.peek(stack);
-    allEntries.add(entry.type.qualifiedName);
+    allEntries.add(entry.getType().getQualifiedName());
 
-    if (entry.isNamespace) {
+    if (entry.getIsNamespace()) {
       stack.push(entry);
     }
-    let list = last ? last.child : roots;
+    let list = last ? last.getChildList() : roots;
 
     if (opt_modules && last) {
-      entry.type.name =
-          entry.type.qualifiedName.slice(last.type.qualifiedName.length);
+      entry.getType().setName(
+          entry.getType().getQualifiedName()
+              .slice(last.getType().getQualifiedName().length));
     }
 
     return list.push(entry) - 1;
@@ -96,10 +97,10 @@ function buildTree(entries, opt_modules) {
 
   function recordFakeEntry(/** string */name, /** string */qualifiedName) {
     let fakeEntry = new Index.Entry({});
-    fakeEntry.isNamespace = true;
-    fakeEntry.type = new NamedType({});
-    fakeEntry.type.name = name;
-    fakeEntry.type.qualifiedName = qualifiedName;
+    fakeEntry.setIsNamespace(true);
+    fakeEntry.setType(new NamedType({}));
+    fakeEntry.getType().setName(name);
+    fakeEntry.getType().setQualifiedName(qualifiedName);
 
     let parent = Arrays.peek(stack);
     let childIndex = recordEntry(fakeEntry);
@@ -113,7 +114,7 @@ function buildTree(entries, opt_modules) {
       let parent = Arrays.peek(stack);
       let fakeName = name.slice(0, index);
       let fakeQualifiedName = parent
-          ? `${parent.type.qualifiedName}${opt_modules ? '' : '.'}${fakeName}`
+          ? `${parent.getType().getQualifiedName()}${opt_modules ? '' : '.'}${fakeName}`
           : fakeName;
 
       if (allEntries.has(fakeQualifiedName)) {
@@ -124,15 +125,15 @@ function buildTree(entries, opt_modules) {
       name = opt_modules ? name.slice(index) : name.slice(index + 1);
     }
 
-    entry.type.name = name;
+    entry.getType().setName(name);
     recordEntry(entry);
   }
 
   entries.forEach(entry => {
     while (stack.length) {
       let last = Arrays.peek(stack);
-      let parentName = last.type.qualifiedName;
-      let childName = entry.type.qualifiedName;
+      let parentName = last.getType().getQualifiedName();
+      let childName = entry.getType().getQualifiedName();
 
       if (!opt_modules && childName.startsWith(parentName + '.')) {
         childName = childName.slice(parentName.length + 1);
@@ -151,23 +152,23 @@ function buildTree(entries, opt_modules) {
     if (opt_modules) {
       recordEntry(entry);
     } else {
-      processEntry(entry, entry.type.name);
+      processEntry(entry, entry.getType().getName());
     }
   });
 
   for (let i = fakeEntries.length - 1; i >= 0; i -= 1) {
     let {parent, fakeEntry, childIndex} = fakeEntries[i];
 
-    if (fakeEntry.child.length === 1) {
-      let child = fakeEntry.child[0];
-      child.type.name =
-          `${fakeEntry.type.name}${opt_modules ? '' : '.'}${child.type.name}`;
+    if (fakeEntry.getChildList().length === 1) {
+      let child = fakeEntry.getChildList()[0];
+      child.getType().setName(
+          `${fakeEntry.getType().getName()}${opt_modules ? '' : '.'}${child.getType().getName()}`);
       // If there is a parent, simply swap out the children. Otherwise, we can
       // merge the child's data into the current record to preserve all data.
       if (parent) {
         entriesToResort.add(parent);
         entriesToResort.delete(fakeEntry);
-        parent.child[childIndex] = child;
+        parent.getChildList()[childIndex] = child;
       } else {
         entriesToResort.add(fakeEntry);
         entriesToResort.delete(child);
@@ -372,7 +373,7 @@ const NAV_ITEM_HEIGHT = 45;
 /**
  * Creates the side nav drawer widget.
  *
- * @param {!dossier.Index} typeInfo The type information to build the list
+ * @param {!proto.dossier.Index} typeInfo The type information to build the list
  *     from.
  * @param {string} currentFile The path to the file that loaded this script.
  * @param {string} basePath The path to the main index file.
@@ -394,9 +395,9 @@ exports.createNavDrawer = function(typeInfo, currentFile, basePath) {
   events.listen(navButton, 'click', drawer.toggleVisibility, false, drawer);
   events.listen(navEl, 'click', drawer.onClick_, false, drawer);
 
-  let modules = buildTree(typeInfo.module, true);
-  let types = buildTree(typeInfo.type);
-  let links = typeInfo.page;
+  let modules = buildTree(typeInfo.getModuleList(), true);
+  let types = buildTree(typeInfo.getTypeList());
+  let links = typeInfo.getPageList();
   let fragment =
       soy.renderAsFragment(soyNav.drawerContents, {modules, types, links});
   navEl.appendChild(fragment);

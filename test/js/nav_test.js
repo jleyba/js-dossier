@@ -19,37 +19,37 @@
 goog.provide('dossier.nav.test');
 goog.setTestOnly('dossier.nav.test');
 
-goog.require('dossier.Index');
-goog.require('dossier.expression.NamedType');
 goog.require('dossier.nav');
 goog.require('goog.testing.jsunit');
+goog.require('proto.dossier.Index');
+goog.require('proto.dossier.expression.NamedType');
 
 
 var nav = goog.module.get('dossier.nav');
 
 
 function assertEntry(entry, name, qualifiedName) {
-  assertEquals(name, entry.type.name);
-  assertEquals(qualifiedName, entry.type.qualifiedName);
+  assertEquals(name, entry.getType().getName());
+  assertEquals(qualifiedName, entry.getType().getQualifiedName());
 }
 
 
 function createEntry(name, opt_qualifiedName) {
-  let type = new dossier.expression.NamedType;
-  type.name = name;
+  let type = new proto.dossier.expression.NamedType;
+  type.setName(name);
   if (opt_qualifiedName) {
-    type.qualifiedName = opt_qualifiedName;
+    type.setQualifiedName(opt_qualifiedName);
   }
 
-  let entry = new dossier.Index.Entry;
-  entry.type = type;
+  let entry = new proto.dossier.Index.Entry;
+  entry.setType(type);
   return entry;
 }
 
 
 function createNamespaceEntry(name, opt_qualifiedName) {
   let entry = createEntry(name, opt_qualifiedName);
-  entry.isNamespace = true;
+  entry.setIsNamespace(true);
   return entry;
 }
 
@@ -95,15 +95,15 @@ function testBuildTree_nestedNamespaces() {
   assertEntry(result[0], 'foo', 'foo');
 
   let foo = result[0];
-  assertEquals(4, foo.child.length);
-  assertEntry(foo.child[0], 'bar', 'foo.bar');
-  assertEntry(foo.child[1], 'baz', 'foo.baz');
-  assertEntry(foo.child[2], 'one.two', 'foo.one.two');
-  assertEntry(foo.child[3], 'quot', 'foo.quot');
+  assertEquals(4, foo.getChildList().length);
+  assertEntry(foo.getChildList()[0], 'bar', 'foo.bar');
+  assertEntry(foo.getChildList()[1], 'baz', 'foo.baz');
+  assertEntry(foo.getChildList()[2], 'one.two', 'foo.one.two');
+  assertEntry(foo.getChildList()[3], 'quot', 'foo.quot');
 
-  let quot = foo.child[3];
-  assertEquals(1, quot.child.length);
-  assertEntry(quot.child[0], 'quux', 'foo.quot.quux');
+  let quot = foo.getChildList()[3];
+  assertEquals(1, quot.getChildList().length);
+  assertEntry(quot.getChildList()[0], 'quux', 'foo.quot.quux');
 }
 
 
@@ -123,9 +123,9 @@ function testBuildTree_collapsesEmptyNamespaces_emptyIsCommonAncestor() {
   assertEquals(1, result.length);
   assertEntry(result[0], 'foo.bar.baz', 'foo.bar.baz');
 
-  assertEquals(2, result[0].child.length);
-  assertEntry(result[0].child[0], 'quot', 'foo.bar.baz.quot');
-  assertEntry(result[0].child[1], 'quux', 'foo.bar.baz.quux');
+  assertEquals(2, result[0].getChildList().length);
+  assertEntry(result[0].getChildList()[0], 'quot', 'foo.bar.baz.quot');
+  assertEntry(result[0].getChildList()[1], 'quux', 'foo.bar.baz.quux');
 }
 
 
@@ -157,16 +157,16 @@ function testBuildTree_multiRooted() {
   assertEntry(result[1], 'quot.quux', 'quot.quux');
 
   let foo = result[0];
-  assertEquals(2, foo.child.length);
-  assertEntry(foo.child[0], 'bar', 'foo.bar');
-  assertEntry(foo.child[1], 'baz', 'foo.baz');
+  assertEquals(2, foo.getChildList().length);
+  assertEntry(foo.getChildList()[0], 'bar', 'foo.bar');
+  assertEntry(foo.getChildList()[1], 'baz', 'foo.baz');
 
   let quot = result[1];
-  assertEquals(1, quot.child.length);
+  assertEquals(1, quot.getChildList().length);
 
-  let one = quot.child[0];
+  let one = quot.getChildList()[0];
   assertEntry(one, 'one.two', 'quot.quux.one.two');
-  assertEquals(0, one.child.length);
+  assertEquals(0, one.getChildList().length);
 }
 
 
@@ -183,7 +183,7 @@ function testBuildTree_attachesNestedClassesToParentNamespace() {
   assertEquals(1, root.length);
   assertEntry(root[0], 'foo', 'foo');
 
-  let foo = root[0].child;
+  let foo = root[0].getChildList();
   assertEquals(4, foo.length);
   assertEntry(foo[0], 'Bar', 'foo.Bar');
   assertEntry(foo[1], 'Bar.Baz', 'foo.Bar.Baz');
@@ -203,18 +203,18 @@ function testBuildTree_insertsSyntheticNamespaces() {
   let result = nav.buildTree(input);
   assertEquals(1, result.length);
   assertEntry(result[0], 'foo', 'foo');
-  assertEquals(1, result[0].child.length);
+  assertEquals(1, result[0].getChildList().length);
 
-  let a = result[0].child[0];
+  let a = result[0].getChildList()[0];
   assertEntry(a, 'a', 'foo.a');
-  assertEquals(2, a.child.length);
-  assertEntry(a.child[0], 'apple', 'foo.a.apple');
+  assertEquals(2, a.getChildList().length);
+  assertEntry(a.getChildList()[0], 'apple', 'foo.a.apple');
 
-  let bc = a.child[1];
+  let bc = a.getChildList()[1];
   assertEntry(bc, 'b.c', 'foo.a.b.c');
-  assertEquals(2, bc.child.length);
-  assertEntry(bc.child[0], 'one.two.three', 'foo.a.b.c.one.two.three');
-  assertEntry(bc.child[1], 'red.green.blue', 'foo.a.b.c.red.green.blue');
+  assertEquals(2, bc.getChildList().length);
+  assertEntry(bc.getChildList()[0], 'one.two.three', 'foo.a.b.c.one.two.three');
+  assertEntry(bc.getChildList()[1], 'red.green.blue', 'foo.a.b.c.red.green.blue');
 }
 
 
@@ -231,20 +231,20 @@ function testBuildTree_collapsesSyntheticNamespcaesWithOneChild() {
   assertEntry(result[0], 'foo', 'foo');
 
   let foo = result[0];
-  assertEquals(2, foo.child.length);
+  assertEquals(2, foo.getChildList().length);
 
-  assertEntry(foo.child[0], 'Bar', 'foo.Bar');
-  assertEquals(0, foo.child[0].child.length);
+  assertEntry(foo.getChildList()[0], 'Bar', 'foo.Bar');
+  assertEquals(0, foo.getChildList()[0].getChildList().length);
 
-  let bar = foo.child[1];
+  let bar = foo.getChildList()[1];
   assertEntry(bar, 'bar', 'foo.bar');
-  assertEquals(2, bar.child.length);
-  assertEntry(bar.child[0], 'baz', 'foo.bar.baz');
-  assertEntry(bar.child[1], 'other.One', 'foo.bar.other.One');
+  assertEquals(2, bar.getChildList().length);
+  assertEntry(bar.getChildList()[0], 'baz', 'foo.bar.baz');
+  assertEntry(bar.getChildList()[1], 'other.One', 'foo.bar.other.One');
 
-  let baz = bar.child[0];
-  assertEquals(1, baz.child.length);
-  assertEntry(baz.child[0], 'quot.Quux', 'foo.bar.baz.quot.Quux');
+  let baz = bar.getChildList()[0];
+  assertEquals(1, baz.getChildList().length);
+  assertEntry(baz.getChildList()[0], 'quot.Quux', 'foo.bar.baz.quot.Quux');
 }
 
 
@@ -262,26 +262,26 @@ function testBuildTree_modules() {
   let result = nav.buildTree(input, true);
   assertEquals(2, result.length);
   assertEntry(result[0], 'bar/baz', 'bar/baz');
-  assertEquals(0, result[0].child.length);
+  assertEquals(0, result[0].getChildList().length);
 
   let foo = result[1];
   assertEntry(foo, 'foo', 'foo');
-  assertEquals(1, foo.child.length);
+  assertEquals(1, foo.getChildList().length);
 
-  let a = foo.child[0];
+  let a = foo.getChildList()[0];
   assertEntry(a, '/a', 'foo/a');
-  assertEquals(2, a.child.length);
+  assertEquals(2, a.getChildList().length);
 
-  let ab = a.child[0];
+  let ab = a.getChildList()[0];
   assertEntry(ab, '/b', 'foo/a/b');
-  assertEquals(2, ab.child.length);
-  assertEntry(ab.child[0], '/c', 'foo/a/b/c');
-  assertEntry(ab.child[1], '/x/y/z', 'foo/a/b/x/y/z');
+  assertEquals(2, ab.getChildList().length);
+  assertEntry(ab.getChildList()[0], '/c', 'foo/a/b/c');
+  assertEntry(ab.getChildList()[1], '/x/y/z', 'foo/a/b/x/y/z');
 
-  let redFruit = a.child[1];
+  let redFruit = a.getChildList()[1];
   assertEntry(redFruit, '/red.fruit', 'foo/a/red.fruit');
-  assertEquals(1, redFruit.child.length);
-  assertEntry(redFruit.child[0], '/apple', 'foo/a/red.fruit/apple');
+  assertEquals(1, redFruit.getChildList().length);
+  assertEntry(redFruit.getChildList()[0], '/apple', 'foo/a/red.fruit/apple');
 }
 
 
@@ -297,6 +297,6 @@ function testBuildTree_collapsesModules() {
   assertEntry(result[0], 'foo', 'foo');
 
   let foo = result[0];
-  assertEquals(1, foo.child.length);
-  assertEntry(foo.child[0], '/bar', 'foo/bar');
+  assertEquals(1, foo.getChildList().length);
+  assertEntry(foo.getChildList()[0], '/bar', 'foo/bar');
 }
