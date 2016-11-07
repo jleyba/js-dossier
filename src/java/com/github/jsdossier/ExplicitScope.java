@@ -46,27 +46,24 @@ final class ExplicitScope implements Scope {
 
   @Override
   public <T> Provider<T> scope(final Key<T> key, final Provider<T> unscoped) {
-    return new Provider<T>() {
-      @Override
-      public T get() {
-        if (scope == null) {
-          throw new OutOfScopeException("Not in scope");
-        }
-
-        Object value = scope.get(key);
-        if (value == null) {
-          T provided = unscoped.get();
-          if (provided instanceof CircularDependencyProxy) {
-            return provided;
-          }
-          value = (provided == null) ? NULL_SENTINEL : provided;
-          scope.put(key, value);
-        }
-
-        @SuppressWarnings("unchecked")
-        T result = (value != NULL_SENTINEL) ? (T) value : null;
-        return result;
+    return () -> {
+      if (scope == null) {
+        throw new OutOfScopeException("Not in scope");
       }
+
+      Object value = scope.get(key);
+      if (value == null) {
+        T provided = unscoped.get();
+        if (provided instanceof CircularDependencyProxy) {
+          return provided;
+        }
+        value = (provided == null) ? NULL_SENTINEL : provided;
+        scope.put(key, value);
+      }
+
+      @SuppressWarnings("unchecked")
+      T result = (value != NULL_SENTINEL) ? (T) value : null;
+      return result;
     };
   }
 }

@@ -25,14 +25,12 @@ import com.github.jsdossier.jscomp.NominalType;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
-import com.google.common.util.concurrent.AsyncFunction;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.SettableFuture;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +39,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.annotation.Nonnull;
 import javax.inject.Inject;
 
 /**
@@ -237,12 +234,9 @@ final class RenderTaskExecutor {
       Futures.addCallback(task, callback);
     }
 
-    return transformAsync(completedTasks, new AsyncFunction<List<Path>, List<Path>>() {
-      @Override
-      public ListenableFuture<List<Path>> apply(@Nonnull List<Path> input) throws IOException {
-        input.add(typeIndexTask.call());
-        return Futures.immediateFuture(input);
-      }
+    return transformAsync(completedTasks, input -> {
+      input.add(typeIndexTask.call());
+      return Futures.immediateFuture(input);
     }, directExecutor());
   }
 }

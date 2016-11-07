@@ -85,6 +85,7 @@ public final class ProvidedSymbolPass implements CompilerPass {
         + "_" + varName;
   }
 
+  @SuppressWarnings("unused")
   private void printTree(Node n) {
     StringWriter sw = new StringWriter();
     try {

@@ -16,7 +16,6 @@
 
 package com.github.jsdossier;
 
-import com.google.gson.JsonObject;
 import java.nio.file.Path;
 
 /**
@@ -37,12 +36,5 @@ public final class MarkdownPage {
 
   public Path getPath() {
     return path;
-  }
-
-  public JsonObject toJson() {
-    JsonObject json = new JsonObject();
-    json.addProperty("name", name);
-    json.addProperty("path", path.toString());
-    return json;
   }
 }

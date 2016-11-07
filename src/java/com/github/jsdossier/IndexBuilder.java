@@ -25,7 +25,6 @@ import com.github.jsdossier.jscomp.TypeRegistry;
 import com.github.jsdossier.proto.Index;
 import com.github.jsdossier.proto.Link;
 import com.github.jsdossier.proto.NamedType;
-import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableSet;
@@ -35,6 +34,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import javax.inject.Inject;
 
 /**
@@ -43,29 +43,20 @@ import javax.inject.Inject;
 @DocumentationScoped
 final class IndexBuilder {
 
-  private static final Comparator<Index.Entry> ENTRY_COMPARATOR =
-      new Comparator<Index.Entry>() {
-        @Override
-        public int compare(Index.Entry o1, Index.Entry o2) {
-          String name1 = o1.getType().getQualifiedName().isEmpty()
-              ? o1.getType().getName()
-              : o1.getType().getQualifiedName();
+  private static final Comparator<Index.Entry> ENTRY_COMPARATOR = (o1, o2) -> {
+    String name1 = o1.getType().getQualifiedName().isEmpty()
+        ? o1.getType().getName()
+        : o1.getType().getQualifiedName();
 
-          String name2 = o2.getType().getQualifiedName().isEmpty()
-              ? o2.getType().getName()
-              : o2.getType().getQualifiedName();
+    String name2 = o2.getType().getQualifiedName().isEmpty()
+        ? o2.getType().getName()
+        : o2.getType().getQualifiedName();
 
-          return name1.compareTo(name2);
-        }
-      };
+    return name1.compareTo(name2);
+  };
 
   private static final Comparator<Link> LINK_HREF_COMPARATOR =
-      new Comparator<Link>() {
-        @Override
-        public int compare(Link o1, Link o2) {
-          return o1.getHref().compareTo(o2.getHref());
-        }
-      };
+      (o1, o2) -> o1.getHref().compareTo(o2.getHref());
 
   private final DossierFileSystem dfs;
   private final LinkFactory linkFactory;
@@ -98,53 +89,43 @@ final class IndexBuilder {
 
   private Iterable<Link> sortPages(Iterable<MarkdownPage> pages) {
     return FluentIterable.from(pages)
-        .transform(new Function<MarkdownPage, Link>() {
-          @Override
-          public Link apply(MarkdownPage input) {
-            final Path htmlPath = dfs.getPath(input);
-            final Path jsonPath = dfs.getJsonPath(input);
-            return Link.newBuilder()
-                .setText(input.getName())
-                .setHref(toUriPath(dfs.getRelativePath(htmlPath)))
-                .setJson(toUriPath(dfs.getRelativePath(jsonPath)))
-                .build();
-          }
+        .transform(input -> {
+          final Path htmlPath = dfs.getPath(input);
+          final Path jsonPath = dfs.getJsonPath(input);
+          return Link.newBuilder()
+              .setText(input.getName())
+              .setHref(toUriPath(dfs.getRelativePath(htmlPath)))
+              .setJson(toUriPath(dfs.getRelativePath(jsonPath)))
+              .build();
         })
-        .toSortedSet(new Comparator<Link>() {
-          @Override
-          public int compare(Link o1, Link o2) {
-            return o1.getText().compareTo(o2.getText());
-          }
-        });
+        .toSortedSet((o1, o2) -> o1.getText().compareTo(o2.getText()));
   }
 
   private static String toUriPath(Path path) {
     return path.toString().replace(path.getFileSystem().getSeparator(), "/");
   }
 
-  private static List<Index.Entry> sortEntries(Iterable<Index.Entry> types) {
-    return FluentIterable.from(types)
-        .transform(new Function<Index.Entry, Index.Entry>() {
-          @Override
-          public Index.Entry apply(Index.Entry input) {
-            if (input.getStaticPropertyCount() == 0
-                && input.getPropertyCount() == 0
-                && input.getChildCount() == 0) {
-              return input;
-            }
-
-            return Index.Entry.newBuilder()
-                .setType(input.getType())
-                .setIsInterface(input.getIsInterface())
-                .setIsNamespace(input.getIsNamespace())
-                .addAllChild(sortEntries(input.getChildList()))
-                .addAllProperty(Ordering.usingToString().sortedCopy(input.getPropertyList()))
-                .addAllStaticProperty(
-                    Ordering.usingToString().sortedCopy(input.getStaticPropertyList()))
-                .build();
+  private static List<Index.Entry> sortEntries(List<Index.Entry> types) {
+    return types.stream()
+        .map(input -> {
+          if (input.getStaticPropertyCount() == 0
+              && input.getPropertyCount() == 0
+              && input.getChildCount() == 0) {
+            return input;
           }
+
+          return Index.Entry.newBuilder()
+              .setType(input.getType())
+              .setIsInterface(input.getIsInterface())
+              .setIsNamespace(input.getIsNamespace())
+              .addAllChild(sortEntries(input.getChildList()))
+              .addAllProperty(Ordering.usingToString().sortedCopy(input.getPropertyList()))
+              .addAllStaticProperty(
+                  Ordering.usingToString().sortedCopy(input.getStaticPropertyList()))
+              .build();
         })
-        .toSortedList(ENTRY_COMPARATOR);
+        .sorted(ENTRY_COMPARATOR)
+        .collect(Collectors.toList());
   }
 
   public synchronized void addSourceFile(Path html, Path json) {

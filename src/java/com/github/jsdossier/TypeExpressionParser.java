@@ -359,24 +359,9 @@ final class TypeExpressionParser {
 
     private void caseRecordType(final ObjectType type) {
       Iterable<Property> properties = FluentIterable.from(type.getOwnPropertyNames())
-          .transform(new Function<String, Property>() {
-            @Override
-            public Property apply(String input) {
-              return type.getOwnSlot(input);
-            }
-          })
-          .filter(new Predicate<Property>() {
-            @Override
-            public boolean apply(@Nullable Property input) {
-              return input != null && !input.getType().isNoType();
-            }
-          })
-          .toSortedList(new Comparator<Property>() {
-            @Override
-            public int compare(Property o1, Property o2) {
-              return o1.getName().compareTo(o2.getName());
-            }
-          });
+          .transform(type::getOwnSlot)
+          .filter(input -> input != null && !input.getType().isNoType())
+          .toSortedList((o1, o2) -> o1.getName().compareTo(o2.getName()));
 
       RecordType.Builder recordType = currentExpression().getRecordTypeBuilder();
       for (Property property : properties) {

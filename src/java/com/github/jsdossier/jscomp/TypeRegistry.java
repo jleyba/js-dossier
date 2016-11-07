@@ -23,9 +23,7 @@ import static com.google.common.base.Verify.verify;
 import static com.google.common.collect.Multimaps.filterKeys;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Function;
 import com.google.common.base.Predicate;
-import com.google.common.base.Supplier;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -71,14 +69,8 @@ public final class TypeRegistry {
   private final Multimap<Path, AliasRegion> aliasRegions =
       MultimapBuilder.hashKeys().linkedHashSetValues().build();
   private final Map<String, NominalType> typesByName = new HashMap<>();
-  private final ListMultimap<JSType, NominalType> typesByJsType = Multimaps.newListMultimap(
-      new IdentityHashMap<JSType, Collection<NominalType>>(),
-      new Supplier<List<NominalType>>() {
-        @Override
-        public List<NominalType> get() {
-          return new ArrayList<>();
-        }
-      });
+  private final ListMultimap<JSType, NominalType> typesByJsType =
+      Multimaps.newListMultimap(new IdentityHashMap<>(), ArrayList::new);
 
   private final Map<String, NominalType> resolvedModuleContentAliases = new HashMap<>();
 
@@ -355,12 +347,7 @@ public final class TypeRegistry {
    * exact JSType.
    */
   public Collection<NominalType> findTypes(final JSType type) {
-    Predicate<JSType> predicate = new Predicate<JSType>() {
-      @Override
-      public boolean apply(JSType input) {
-        return typesEqual(type, input);
-      }
-    };
+    Predicate<JSType> predicate = input -> typesEqual(type, input);
     Multimap<JSType, NominalType> filtered = filterKeys(typesByJsType, predicate);
     return Collections.unmodifiableCollection(filtered.values());
   }
@@ -522,7 +509,7 @@ public final class TypeRegistry {
       }
 
       if (ctor.isInterface()) {
-        scanExtendedInterfaces(new HashSet<FunctionType>(), ctor);
+        scanExtendedInterfaces(new HashSet<>(), ctor);
 
       } else {
         scanImplementedInterfaces(ctor);
@@ -565,12 +552,7 @@ public final class TypeRegistry {
         && !ctor.getJSDocInfo().getTemplateTypeNames().isEmpty()) {
       ImmutableList<JSType> templateTypes =
           FluentIterable.from(ctor.getJSDocInfo().getTemplateTypeNames())
-          .transform(new Function<String, JSType>() {
-            @Override
-            public JSType apply(String input) {
-              return jsRegistry.createTemplateType(input);
-            }
-          })
+          .transform(input -> (JSType) jsRegistry.createTemplateType(input))
           .toList();
       instance = jsRegistry.createTemplatizedType(instance, templateTypes);
     }

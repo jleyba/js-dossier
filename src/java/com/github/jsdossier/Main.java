@@ -173,23 +173,13 @@ final class Main {
     @Provides
     @ModuleFilter
     Predicate<Path> provideModulePathFilter() {
-      return new Predicate<Path>() {
-        @Override
-        public boolean apply(Path input) {
-          return config.isFilteredModule(input);
-        }
-      };
+      return config::isFilteredModule;
     }
 
     @Provides
     @TypeFilter
     Predicate<String> provideTypeNameFilter() {
-      return new Predicate<String>() {
-        @Override
-        public boolean apply(String input) {
-          return config.isFilteredType(input);
-        }
-      };
+      return config::isFilteredType;
     }
 
     @Provides
@@ -203,12 +193,8 @@ final class Main {
     String[] provideCompilerFlags() {
       Iterable<String> standardFlags = STANDARD_FLAGS;
       if (config.isStrict()) {
-        standardFlags = transform(standardFlags, new Function<String, String>() {
-          @Override
-          public String apply(String input) {
-            return input.replace("--jscomp_warning", "--jscomp_error");
-          }
-        });
+        standardFlags =
+            transform(standardFlags, input -> input.replace("--jscomp_warning", "--jscomp_error"));
       }
 
       ImmutableList<String> compilerFlags = ImmutableList.<String>builder()
@@ -263,12 +249,7 @@ final class Main {
   }
 
   private static Function<Path, String> toFlag(final String flagPrefix) {
-    return new Function<Path, String>() {
-      @Override
-      public String apply(Path input) {
-        return flagPrefix + input;
-      }
-    };
+    return input -> flagPrefix + input;
   }
 
   private static void print(Config config) {

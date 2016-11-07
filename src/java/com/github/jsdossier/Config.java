@@ -88,13 +88,13 @@ import java.nio.file.PathMatcher;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
-import javax.annotation.Nullable;
+import java.util.stream.Collectors;
 
 /**
  * Describes the runtime configuration for the app.
@@ -375,7 +375,6 @@ abstract class Config {
     abstract Optional<Path> getSourcePrefix();
     abstract Builder setSourcePrefix(Optional<Path> path);
 
-    abstract Optional<Path> getModulePrefix();
     abstract Builder setModulePrefix(Optional<Path> path);
 
     abstract ImmutableSet<Path> getExterns();
@@ -671,35 +670,22 @@ abstract class Config {
     final ImmutableSet<Path> sourcesSet = FluentIterable.from(sources)
         .transform(toNormalizedAbsolutePath())
         .toSet();
-    return new Predicate<DependencyInfo>() {
-      @Override
-      public boolean apply(DependencyInfo input) {
-        return sourcesSet.contains(pathTransform.apply(input));
-      }
-    };
+    return input -> sourcesSet.contains(pathTransform.apply(input));
   }
 
   private static Function<DependencyInfo, Path> toPath(final Path closureBaseDir) {
-    return new Function<DependencyInfo, Path>() {
-      @Override
-      public Path apply(DependencyInfo input) {
-        return closureBaseDir.resolve(input.getPathRelativeToClosureBase())
-            .normalize()
-            .toAbsolutePath();
-      }
-    };
+    return input -> closureBaseDir.resolve(input.getPathRelativeToClosureBase())
+        .normalize()
+        .toAbsolutePath();
   }
 
   private static Function<Path, SourceFile> toSourceFile() {
-    return new Function<Path, SourceFile>() {
-      @Override
-      public SourceFile apply(Path input) {
-        try {
-          String content = new String(readAllBytes(input), UTF_8);
-          return SourceFile.fromCode(input.toString(), content);
-        } catch (IOException e) {
-          throw new RuntimeException(e);
-        }
+    return input -> {
+      try {
+        String content = new String(readAllBytes(input), UTF_8);
+        return SourceFile.fromCode(input.toString(), content);
+      } catch (IOException e) {
+        throw new RuntimeException(e);
       }
     };
   }
@@ -713,22 +699,12 @@ abstract class Config {
       pw.println();
     }
 
-    Iterable<Description> descriptions =
-        FluentIterable.from(ImmutableList.copyOf(Config.class.getDeclaredMethods()))
-            .transform(new Function<Method, Description>() {
-              @Nullable
-              @Override
-              public Description apply(@Nullable Method input) {
-                return input == null ? null : input.getAnnotation(Description.class);
-              }
-            })
-            .filter(Predicates.notNull())
-            .toSortedList(new Comparator<Description>() {
-              @Override
-              public int compare(Description a, Description b) {
-                return a.name().compareTo(b.name());
-              }
-            });
+    Iterable<Description> descriptions = Arrays.asList(Config.class.getDeclaredMethods())
+        .stream()
+        .map(m -> m == null ? null : m.getAnnotation(Description.class))
+        .filter(desc -> desc != null)
+        .sorted((a, b) -> a.name().compareTo(b.name()))
+        .collect(Collectors.toList());
 
     for (Description description : descriptions) {
       String str = " * `" + description.name() + "` " + description.desc().trim();

@@ -37,9 +37,6 @@ import org.commonmark.parser.block.BlockStart;
 import org.commonmark.parser.block.MatchedBlockParser;
 import org.commonmark.parser.block.ParserState;
 
-/**
- * Created by jleyba on 1/1/16.
- */
 final class TableBlockParser extends AbstractBlockParser {
 
   private static final Pattern HEADER_SEPARATOR = Pattern.compile(

@@ -22,7 +22,6 @@ import static com.google.common.collect.Iterables.isEmpty;
 import static com.google.common.collect.Iterables.transform;
 
 import com.google.common.base.Function;
-import com.google.common.base.Joiner;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Ordering;
@@ -57,19 +56,7 @@ class Paths {
    * Returns a function that transforms paths to an absolute, normalized path.
    */
   static Function<Path, Path> toNormalizedAbsolutePath() {
-    return new Function<Path, Path>() {
-      @Override
-      public Path apply(Path input) {
-        return input.toAbsolutePath().normalize();
-      }
-    };
-  }
-
-  /**
-   * Normalizes the path separators in {@code p} to forward slashes.
-   */
-  static String toUrlPath(Path p) {
-    return Joiner.on('/').join(p.iterator());
+    return input -> input.toAbsolutePath().normalize();
   }
 
   /**
@@ -145,54 +132,31 @@ class Paths {
    * Returns a predicate that accepts paths not in the provided set.
    */
   static Predicate<Path> notIn(final ImmutableSet<Path> paths) {
-    return new Predicate<Path>() {
-      @Override
-      public boolean apply(Path input) {
-        return !paths.contains(input);
-      }
-    };
+    return input -> !paths.contains(input);
   }
 
   /**
    * Returns a predicate that accepts paths to files that are not hidden.
    */
   static Predicate<Path> notHidden() {
-    return new Predicate<Path>() {
-      @Override
-      public boolean apply(Path input) {
-        try {
-          return !Files.isHidden(input);
-        } catch (IOException e) {
-          throw new RuntimeException(e);
-        }
+    return input -> {
+      try {
+        return !Files.isHidden(input);
+      } catch (IOException e) {
+        throw new RuntimeException(e);
       }
     };
   }
 
   private static Predicate<Path> startsWith(final Path root) {
-    return new Predicate<Path>() {
-      @Override
-      public boolean apply(Path input) {
-        return input.startsWith(root);
-      }
-    };
+    return input -> input.startsWith(root);
   }
 
   private static Function<Path, Path> normalizeRelativeTo(final Path root) {
-    return new Function<Path, Path>() {
-      @Override
-      public Path apply(Path input) {
-        return root.resolve(input).normalize();
-      }
-    };
+    return input -> root.resolve(input).normalize();
   }
 
   private static Comparator<Path> length() {
-    return new Comparator<Path>() {
-      @Override
-      public int compare(Path o1, Path o2) {
-        return Integer.compare(o1.getNameCount(), o2.getNameCount());
-      }
-    };
+    return (o1, o2) -> Integer.compare(o1.getNameCount(), o2.getNameCount());
   }
 }

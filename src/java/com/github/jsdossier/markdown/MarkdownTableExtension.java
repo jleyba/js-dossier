@@ -29,12 +29,7 @@ public final class MarkdownTableExtension
     implements Parser.ParserExtension, HtmlRenderer.HtmlRendererExtension {
   @Override
   public void extend(HtmlRenderer.Builder builder) {
-    builder.nodeRendererFactory(new NodeRendererFactory() {
-      @Override
-      public NodeRenderer create(NodeRendererContext context) {
-        return new TableBlockHtmlRenderer(context);
-      }
-    });
+    builder.nodeRendererFactory(TableBlockHtmlRenderer::new);
   }
 
   @Override

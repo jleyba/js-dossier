@@ -252,9 +252,7 @@ final class Es6ModulePass implements CompilerPass {
       module = null;
       moduleDocs = null;
 
-      for (Node imp : imports) {
-        processImportStatement(imp);
-      }
+      imports.forEach(this::processImportStatement);
       imports.clear();
     }
 

@@ -85,18 +85,8 @@ final class ModulePrefixProvider implements Provider<Path>  {
 
   private ImmutableSet<Path> getModulePaths() {
     return FluentIterable.from(typeRegistry.getAllModules())
-        .filter(new Predicate<Module>() {
-          @Override
-          public boolean apply(Module module) {
-            return module.getType() != Module.Type.CLOSURE;
-          }
-        })
-        .transform(new Function<Module, Path>() {
-          @Override
-          public Path apply(Module module) {
-            return module.getPath();
-          }
-        })
+        .filter(module -> module.getType() != Module.Type.CLOSURE)
+        .transform(Module::getPath)
         .toSet();
   }
 }

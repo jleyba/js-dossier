@@ -103,12 +103,7 @@ public final class Types {
    * Returns a predicate that accepts typedefs.
    */
   public static Predicate<NominalType> isTypedef() {
-    return new Predicate<NominalType>() {
-      @Override
-      public boolean apply(NominalType input) {
-        return input.getJsDoc().isTypedef();
-      }
-    };
+    return input -> input.getJsDoc().isTypedef();
   }
 
   /**

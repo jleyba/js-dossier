@@ -64,28 +64,24 @@ public final class NodeLibrary {
   private static final String NODE_EXTERNS_RESOURCE_DIRECTORY = "/third_party/js/externs/node";
   private static final String FILE_NAME_PREFIX = "dossier//node-externs.zip//";
 
-  private static final Supplier<ExternCollection> NODE_EXTERNS = Suppliers.memoize(
-      new Supplier<ExternCollection>() {
-        @Override
-        public ExternCollection get() {
-          URI uri = getExternZipUri();
-          try {
-            if ("file".equals(uri.getScheme())) {
-              return loadDirectory(Paths.get(uri));
-            } else {
-              log.fine("Loading externs from jar: " + uri);
-              ImmutableMap<String, String> env = ImmutableMap.of();
-              try (FileSystem jarFs = FileSystems.newFileSystem(uri, env)) {
-                Path directory = jarFs.getPath(NODE_EXTERNS_RESOURCE_DIRECTORY);
-                verify(Files.isDirectory(directory), "Node externs not found: %s", directory);
-                return loadDirectory(directory);
-              }
-            }
-          } catch (IOException e) {
-            throw new RuntimeException(e);
-          }
+  private static final Supplier<ExternCollection> NODE_EXTERNS = Suppliers.memoize(() -> {
+    URI uri = getExternZipUri();
+    try {
+      if ("file".equals(uri.getScheme())) {
+        return loadDirectory(Paths.get(uri));
+      } else {
+        log.fine("Loading externs from jar: " + uri);
+        ImmutableMap<String, String> env = ImmutableMap.of();
+        try (FileSystem jarFs = FileSystems.newFileSystem(uri, env)) {
+          Path directory = jarFs.getPath(NODE_EXTERNS_RESOURCE_DIRECTORY);
+          verify(Files.isDirectory(directory), "Node externs not found: %s", directory);
+          return loadDirectory(directory);
         }
-      });
+      }
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+  });
 
   private final Supplier<ExternCollection> externs;
 

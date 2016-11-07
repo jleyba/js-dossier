@@ -26,10 +26,8 @@ import static com.google.common.collect.Iterables.transform;
 import com.github.jsdossier.annotations.TypeFilter;
 import com.github.jsdossier.jscomp.JsDoc;
 import com.github.jsdossier.jscomp.JsDoc.Annotation;
-import com.github.jsdossier.jscomp.JsDoc.TypedDescription;
 import com.github.jsdossier.jscomp.Module;
 import com.github.jsdossier.jscomp.NominalType;
-import com.github.jsdossier.jscomp.Parameter;
 import com.github.jsdossier.jscomp.TypeRegistry;
 import com.github.jsdossier.jscomp.Types;
 import com.github.jsdossier.proto.BaseProperty;
@@ -71,7 +69,6 @@ import com.google.javascript.rhino.jstype.TemplatizedType;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -357,19 +354,16 @@ final class TypeInspector {
   private ImmutableSet<NamedType> toSortedSet(
       Iterable<NamedType> types) {
     return FluentIterable.from(types)
-        .toSortedSet(new Comparator<NamedType>() {
-          @Override
-          public int compare(NamedType o1, NamedType o2) {
-            int diff = o1.getQualifiedName().compareTo(o2.getQualifiedName());
+        .toSortedSet((o1, o2) -> {
+          int diff = o1.getQualifiedName().compareTo(o2.getQualifiedName());
+          if (diff == 0) {
+            // Might not have a qualified name.
+            diff = o1.getName().compareTo(o2.getName());
             if (diff == 0) {
-              // Might not have a qualified name.
-              diff = o1.getName().compareTo(o2.getName());
-              if (diff == 0) {
-                diff = o1.getLink().getHref().compareTo(o2.getLink().getHref());
-              }
+              diff = o1.getLink().getHref().compareTo(o2.getLink().getHref());
             }
-            return diff;
           }
+          return diff;
         });
   }
 
@@ -761,21 +755,18 @@ final class TypeInspector {
    * Given a list of properties, finds those that are specified on an interface.
    */
   private Iterable<InstanceProperty> findSpecifications(Iterable<InstanceProperty> properties) {
-    return FluentIterable.from(properties).filter(new Predicate<InstanceProperty>() {
-      @Override
-      public boolean apply(InstanceProperty property) {
-        JSType definedOn = property.getDefinedByType();
-        if (!definedOn.isInterface()) {
-          JSType ctor = null;
-          if (definedOn.isInstanceType()) {
-            ctor = definedOn.toObjectType().getConstructor();
-          }
-          if (ctor == null || !ctor.isInterface()) {
-            return false;
-          }
+    return FluentIterable.from(properties).filter(property -> {
+      JSType definedOn = property.getDefinedByType();
+      if (!definedOn.isInterface()) {
+        JSType ctor = null;
+        if (definedOn.isInstanceType()) {
+          ctor = definedOn.toObjectType().getConstructor();
         }
-        return true;
+        if (ctor == null || !ctor.isInterface()) {
+          return false;
+        }
       }
+      return true;
     });
   }
 
@@ -817,12 +808,8 @@ final class TypeInspector {
     }
 
     if (!isConstructor && !isInterface) {
-      PropertyDocs returnDocs = findPropertyDocs(docs, overrides, new Predicate<JsDoc>() {
-        @Override
-        public boolean apply(JsDoc input) {
-          return input.hasAnnotation(Annotation.RETURN);
-        }
-      });
+      PropertyDocs returnDocs =
+          findPropertyDocs(docs, overrides, input -> input.hasAnnotation(Annotation.RETURN));
 
       if (returnDocs != null) {
         Comment returnComment = parser.parseComment(
@@ -851,12 +838,8 @@ final class TypeInspector {
       Node node,
       PropertyDocs docs,
       Iterable<InstanceProperty> overrides) {
-    PropertyDocs foundDocs = findPropertyDocs(docs, overrides, new Predicate<JsDoc>() {
-      @Override
-      public boolean apply(JsDoc input) {
-        return !input.getParameters().isEmpty();
-      }
-    });
+    PropertyDocs foundDocs =
+        findPropertyDocs(docs, overrides, input -> !input.getParameters().isEmpty());
 
     // Even though we found docs with @param annotations, they may have been
     // meaningless docs with a type, no name, and no description:
@@ -872,36 +855,33 @@ final class TypeInspector {
       final TypeExpressionParser expressionParser =
           expressionParserFactory.create(contextualLinkFactory);
       return FluentIterable.from(foundDocs.getJsDoc().getParameters())
-          .transform(new com.google.common.base.Function<Parameter, Detail>() {
-            @Override
-            public Detail apply(Parameter input) {
-              Detail.Builder detail = Detail.newBuilder().setName(input.getName());
-              if (!isNullOrEmpty(input.getDescription())) {
-                detail.setDescription(
-                    parser.parseComment(input.getDescription(), contextualLinkFactory));
-              }
-              if (input.getType() != null) {
-                JSTypeExpression paramTypeExpression = input.getType();
-                JSType paramType = evaluate(paramTypeExpression);
-
-                TypeExpression.Builder expression =
-                    expressionParser.parse(paramType).toBuilder();
-
-                if (paramTypeExpression.isVarArgs()) {
-                  expression.setIsVarargs(true);
-                  removeVoid(expression);
-                } else if (paramTypeExpression.isOptionalArg()) {
-                  expression.setIsOptional(true);
-                }
-
-                if (paramTypeExpression.getRoot().getToken() == Token.BANG) {
-                  removeNull(expression);
-                }
-
-                detail.setType(expression);
-              }
-              return detail.build();
+          .transform(input -> {
+            Detail.Builder detail = Detail.newBuilder().setName(input.getName());
+            if (!isNullOrEmpty(input.getDescription())) {
+              detail.setDescription(
+                  parser.parseComment(input.getDescription(), contextualLinkFactory));
             }
+            if (input.getType() != null) {
+              JSTypeExpression paramTypeExpression = input.getType();
+              JSType paramType = evaluate(paramTypeExpression);
+
+              TypeExpression.Builder expression =
+                  expressionParser.parse(paramType).toBuilder();
+
+              if (paramTypeExpression.isVarArgs()) {
+                expression.setIsVarargs(true);
+                removeVoid(expression);
+              } else if (paramTypeExpression.isOptionalArg()) {
+                expression.setIsOptional(true);
+              }
+
+              if (paramTypeExpression.getRoot().getToken() == Token.BANG) {
+                removeNull(expression);
+              }
+
+              detail.setType(expression);
+            }
+            return detail.build();
           });
     }
 
@@ -1014,26 +994,21 @@ final class TypeInspector {
   private Iterable<Function.Detail> buildThrowsData(final NominalType context, JsDoc jsDoc) {
     final LinkFactory contextLinkFactory = linkFactory.withTypeContext(context);
     final TypeExpressionParser typeParser = expressionParserFactory.create(contextLinkFactory);
-    return transform(jsDoc.getThrowsClauses(),
-        new com.google.common.base.Function<TypedDescription, Detail>() {
-          @Override
-          public Function.Detail apply(TypedDescription input) {
-            Function.Detail.Builder detail = Function.Detail.newBuilder();
+    return transform(jsDoc.getThrowsClauses(), input -> {
+      Detail.Builder detail = Detail.newBuilder();
 
-            Comment comment = parser.parseComment(input.getDescription(), contextLinkFactory);
-            if (comment.getTokenCount() > 0) {
-              detail.setDescription(comment);
-            }
+      Comment comment = parser.parseComment(input.getDescription(), contextLinkFactory);
+      if (comment.getTokenCount() > 0) {
+        detail.setDescription(comment);
+      }
 
-            if (input.getType().isPresent()) {
-              JSTypeExpression expression = input.getType().get();
-              JSType thrownType = evaluate(expression);
-              detail.setType(typeParser.parse(thrownType));
-            }
-            return detail.build();
-          }
-        }
-    );
+      if (input.getType().isPresent()) {
+        JSTypeExpression expression = input.getType().get();
+        JSType thrownType = evaluate(expression);
+        detail.setType(typeParser.parse(thrownType));
+      }
+      return detail.build();
+    });
   }
 
   @Nullable
@@ -1041,12 +1016,8 @@ final class TypeInspector {
       PropertyDocs docs,
       Iterable<InstanceProperty> overrides,
       FunctionType function) {
-    PropertyDocs returnDocs = findPropertyDocs(docs, overrides, new Predicate<JsDoc>() {
-      @Override
-      public boolean apply(@Nullable JsDoc input) {
-        return input != null && input.getReturnClause().getType().isPresent();
-      }
-    });
+    PropertyDocs returnDocs = findPropertyDocs(
+        docs, overrides, input -> input != null && input.getReturnClause().getType().isPresent());
 
     JSType returnType = function.getReturnType();
 
@@ -1242,12 +1213,7 @@ final class TypeInspector {
       LinkFactory linkFactory,
       PropertyDocs docs,
       Iterable<InstanceProperty> overrides) {
-    docs = findPropertyDocs(docs, overrides, new Predicate<JsDoc>() {
-      @Override
-      public boolean apply(JsDoc input) {
-        return !isNullOrEmpty(input.getBlockComment());
-      }
-    });
+    docs = findPropertyDocs(docs, overrides, input -> !isNullOrEmpty(input.getBlockComment()));
     return docs == null
         ? Comment.getDefaultInstance()
         : parser.parseComment(

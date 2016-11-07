@@ -79,21 +79,6 @@ public abstract class NominalType {
   }
 
   /**
-   * Returns whether this object is the default export for is module.
-   */
-  public boolean isDefaultExport() {
-    if (!getModule().isPresent() || !getName().endsWith(".default")) {
-      return false;
-    }
-
-    Module module = getModule().get();
-    return
-        module.getType() == Module.Type.ES6
-        &&  module.getId().equals(
-            getName().substring(0, getName().length() - ".default".length()));
-  }
-
-  /**
    * Returns whether this type is a "namespace" object: an object that is neither a constructor,
    * an interface, nor an enum.
    */

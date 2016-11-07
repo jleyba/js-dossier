@@ -333,12 +333,9 @@ final class DossierFileSystem {
    * @return the resource set for the generated file.
    */
   public Resources getResources(final Path outputPath, DocTemplate template) {
-    Function<TemplateFile, String> toOutputPath = new Function<TemplateFile, String>() {
-      @Override
-      public String apply(TemplateFile file) {
-        Path toFile = getPath(file);
-        return Paths.getRelativePath(outputPath, toFile).toString();
-      }
+    Function<TemplateFile, String> toOutputPath = file -> {
+      Path toFile = getPath(file);
+      return Paths.getRelativePath(outputPath, toFile).toString();
     };
     Path typesJs = outputRoot.resolve("types.js");
     return Resources.newBuilder()

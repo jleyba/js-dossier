@@ -242,9 +242,7 @@ class NodeModulePass {
                       name("goog"),
                       string("module")),
                   string(currentModule))));
-      for (Node expr : googRequireExpr.values()) {
-        moduleBody.addChildToBack(expr);
-      }
+      googRequireExpr.values().forEach(moduleBody::addChildToBack);
       return moduleBody;
     }
 

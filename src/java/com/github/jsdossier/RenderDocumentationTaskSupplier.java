@@ -39,7 +39,6 @@ import com.github.jsdossier.proto.NamedType;
 import com.github.jsdossier.proto.PageData;
 import com.google.auto.factory.AutoFactory;
 import com.google.auto.factory.Provided;
-import com.google.common.base.Function;
 import com.google.common.base.Supplier;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
@@ -82,22 +81,14 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Ca
   @Override
   public ImmutableList<Callable<Path>> get() {
     final List<NominalTypeProcessor> processors =
-        transform(types, new Function<NominalType, NominalTypeProcessor>() {
-          @Override
-          public NominalTypeProcessor apply(NominalType input) {
-            return processorFactory.create(input);
-          }
-        });
+        transform(types, processorFactory::create);
 
-    final Supplier<List<JsType>> typeSupplier = memoize(new Supplier<List<JsType>>() {
-      @Override
-      public List<JsType> get() {
-        List<JsType> types = new ArrayList<>();
-        for (NominalTypeProcessor processor : processors) {
-          types.add(processor.buildJsType());
-        }
-        return types;
+    final Supplier<List<JsType>> typeSupplier = memoize(() -> {
+      List<JsType> types1 = new ArrayList<>();
+      for (NominalTypeProcessor processor : processors) {
+        types1.add(processor.buildJsType());
       }
+      return types1;
     });
 
     ImmutableList.Builder<Callable<Path>> tasks = ImmutableList.builder();

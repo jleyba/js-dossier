@@ -31,7 +31,6 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -115,7 +114,7 @@ public final class ClosureSortedDependencies<INPUT extends DependencyInfo>
       subGraph.removeAll(sortedList);
 
       throw new IllegalArgumentException(
-          "cycle detected: " + cycleToString(findCycle(subGraph, deps)));
+          "cycle detected: " + cycleToString(findCycle(subGraph)));
     }
   }
 
@@ -137,19 +136,15 @@ public final class ClosureSortedDependencies<INPUT extends DependencyInfo>
    * items in reverse dependency order (the second element depends on the
    * first, etc.).
    */
-  private List<INPUT> findCycle(
-      List<INPUT> subGraph, Multimap<INPUT, INPUT> deps) {
-    return findCycle(subGraph.get(0), new HashSet<>(subGraph),
-        deps, new HashSet<INPUT>());
+  private List<INPUT> findCycle(List<INPUT> subGraph) {
+    return findCycle(subGraph.get(0), new HashSet<>(subGraph), new HashSet<>());
   }
 
-  private List<INPUT> findCycle(
-      INPUT current, Set<INPUT> subGraph, Multimap<INPUT, INPUT> deps,
-      Set<INPUT> covered) {
+  private List<INPUT> findCycle(INPUT current, Set<INPUT> subGraph, Set<INPUT> covered) {
     if (covered.add(current)) {
       List<INPUT> cycle = findCycle(
           findRequireInSubGraphOrFail(current, subGraph),
-          subGraph, deps, covered);
+          subGraph, covered);
 
       if (current == cycle.get(0)) {
         return cycle;
@@ -257,12 +252,7 @@ public final class ClosureSortedDependencies<INPUT extends DependencyInfo>
     }
 
     PriorityQueue<T> inDegreeZero = new PriorityQueue<>(items.size(),
-        new Comparator<T>() {
-          @Override
-          public int compare(T a, T b) {
-            return originalIndex.get(a).intValue() - originalIndex.get(b).intValue();
-          }
-        });
+        (a, b) -> originalIndex.get(a) - originalIndex.get(b));
     List<T> result = new ArrayList<>();
 
     Multiset<T> inDegree = HashMultiset.create();
