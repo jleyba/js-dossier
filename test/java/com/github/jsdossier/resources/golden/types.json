@@ -4,8 +4,10 @@
       "1": {
         "1": "example",
         "3": {
-          "1": "module/example/index.html",
-          "2": "data/module/example/index.json"
+          "2": "data/module/example/index.json",
+          "3": {
+            "3": "module/example/index.html"
+          }
         }
       },
       "3": true,
@@ -19,8 +21,10 @@
             "1": "GlobalCtor",
             "2": "example.GlobalCtor",
             "3": {
-              "1": "module/example/index_exports_GlobalCtor.html",
-              "2": "data/module/example/index_exports_GlobalCtor.json"
+              "2": "data/module/example/index_exports_GlobalCtor.json",
+              "3": {
+                "3": "module/example/index_exports_GlobalCtor.html"
+              }
             }
           },
           "5": [
@@ -35,8 +39,10 @@
             "1": "Greeter",
             "2": "example.Greeter",
             "3": {
-              "1": "module/example/index_exports_Greeter.html",
-              "2": "data/module/example/index_exports_Greeter.json"
+              "2": "data/module/example/index_exports_Greeter.json",
+              "3": {
+                "3": "module/example/index_exports_Greeter.html"
+              }
             }
           }
         }
@@ -46,8 +52,10 @@
       "1": {
         "1": "example/empty",
         "3": {
-          "1": "module/example/empty.html",
-          "2": "data/module/example/empty.json"
+          "2": "data/module/example/empty.json",
+          "3": {
+            "3": "module/example/empty.html"
+          }
         }
       },
       "3": true
@@ -56,8 +64,10 @@
       "1": {
         "1": "example/nested",
         "3": {
-          "1": "module/example/nested.html",
-          "2": "data/module/example/nested.json"
+          "2": "data/module/example/nested.json",
+          "3": {
+            "3": "module/example/nested.html"
+          }
         }
       },
       "3": true,
@@ -67,8 +77,10 @@
             "1": "Greeter",
             "2": "example/nested.Greeter",
             "3": {
-              "1": "module/example/nested_exports_Greeter.html",
-              "2": "data/module/example/nested_exports_Greeter.json"
+              "2": "data/module/example/nested_exports_Greeter.json",
+              "3": {
+                "3": "module/example/nested_exports_Greeter.html"
+              }
             }
           },
           "5": [
@@ -80,8 +92,10 @@
             "1": "IdGenerator",
             "2": "example/nested.IdGenerator",
             "3": {
-              "1": "module/example/nested_exports_IdGenerator.html",
-              "2": "data/module/example/nested_exports_IdGenerator.json"
+              "2": "data/module/example/nested_exports_IdGenerator.json",
+              "3": {
+                "3": "module/example/nested_exports_IdGenerator.html"
+              }
             }
           },
           "2": true,
@@ -94,8 +108,10 @@
             "1": "IncreasingIdGenerator",
             "2": "example/nested.IncreasingIdGenerator",
             "3": {
-              "1": "module/example/nested_exports_IncreasingIdGenerator.html",
-              "2": "data/module/example/nested_exports_IncreasingIdGenerator.json"
+              "2": "data/module/example/nested_exports_IncreasingIdGenerator.json",
+              "3": {
+                "3": "module/example/nested_exports_IncreasingIdGenerator.html"
+              }
             }
           },
           "2": true,
@@ -108,8 +124,10 @@
             "1": "IncrementingIdGenerator",
             "2": "example/nested.IncrementingIdGenerator",
             "3": {
-              "1": "module/example/nested_exports_IncrementingIdGenerator.html",
-              "2": "data/module/example/nested_exports_IncrementingIdGenerator.json"
+              "2": "data/module/example/nested_exports_IncrementingIdGenerator.json",
+              "3": {
+                "3": "module/example/nested_exports_IncrementingIdGenerator.html"
+              }
             }
           },
           "5": [
@@ -121,8 +139,10 @@
             "1": "Person",
             "2": "example/nested.Person",
             "3": {
-              "1": "module/example/nested_exports_Person.html",
-              "2": "data/module/example/nested_exports_Person.json"
+              "2": "data/module/example/nested_exports_Person.json",
+              "3": {
+                "3": "module/example/nested_exports_Person.html"
+              }
             }
           },
           "5": [
@@ -136,8 +156,10 @@
       "1": {
         "1": "example/net",
         "3": {
-          "1": "module/example/net.html",
-          "2": "data/module/example/net.json"
+          "2": "data/module/example/net.json",
+          "3": {
+            "3": "module/example/net.html"
+          }
         }
       },
       "3": true,
@@ -151,8 +173,10 @@
             "1": "HttpClient",
             "2": "example/net.HttpClient",
             "3": {
-              "1": "module/example/net_exports_HttpClient.html",
-              "2": "data/module/example/net_exports_HttpClient.json"
+              "2": "data/module/example/net_exports_HttpClient.json",
+              "3": {
+                "3": "module/example/net_exports_HttpClient.html"
+              }
             }
           },
           "5": [
@@ -166,8 +190,10 @@
       "1": {
         "1": "example/worker",
         "3": {
-          "1": "module/example/worker.html",
-          "2": "data/module/example/worker.json"
+          "2": "data/module/example/worker.json",
+          "3": {
+            "3": "module/example/worker.html"
+          }
         }
       },
       "3": true
@@ -178,8 +204,10 @@
       "1": {
         "1": "Calculator",
         "3": {
-          "1": "Calculator.html",
-          "2": "data/Calculator.json"
+          "2": "data/Calculator.json",
+          "3": {
+            "3": "Calculator.html"
+          }
         }
       },
       "4": [
@@ -196,8 +224,10 @@
       "1": {
         "1": "Color",
         "3": {
-          "1": "Color.html",
-          "2": "data/Color.json"
+          "2": "data/Color.json",
+          "3": {
+            "3": "Color.html"
+          }
         }
       }
     },
@@ -205,8 +235,10 @@
       "1": {
         "1": "DeprecatedFoo",
         "3": {
-          "1": "DeprecatedFoo.html",
-          "2": "data/DeprecatedFoo.json"
+          "2": "data/DeprecatedFoo.json",
+          "3": {
+            "3": "DeprecatedFoo.html"
+          }
         }
       }
     },
@@ -214,8 +246,10 @@
       "1": {
         "1": "EmptyEnum",
         "3": {
-          "1": "EmptyEnum.html",
-          "2": "data/EmptyEnum.json"
+          "2": "data/EmptyEnum.json",
+          "3": {
+            "3": "EmptyEnum.html"
+          }
         }
       }
     },
@@ -223,8 +257,10 @@
       "1": {
         "1": "Formatter",
         "3": {
-          "1": "Formatter.html",
-          "2": "data/Formatter.json"
+          "2": "data/Formatter.json",
+          "3": {
+            "3": "Formatter.html"
+          }
         }
       },
       "5": [
@@ -236,8 +272,10 @@
       "1": {
         "1": "GlobalCtor",
         "3": {
-          "1": "GlobalCtor.html",
-          "2": "data/GlobalCtor.json"
+          "2": "data/GlobalCtor.json",
+          "3": {
+            "3": "GlobalCtor.html"
+          }
         }
       },
       "4": [
@@ -256,8 +294,10 @@
       "1": {
         "1": "GlobalCtor.Other",
         "3": {
-          "1": "GlobalCtor.Other.html",
-          "2": "data/GlobalCtor.Other.json"
+          "2": "data/GlobalCtor.Other.json",
+          "3": {
+            "3": "GlobalCtor.Other.html"
+          }
         }
       }
     },
@@ -265,8 +305,10 @@
       "1": {
         "1": "GlobalEnum",
         "3": {
-          "1": "GlobalEnum.html",
-          "2": "data/GlobalEnum.json"
+          "2": "data/GlobalEnum.json",
+          "3": {
+            "3": "GlobalEnum.html"
+          }
         }
       },
       "4": [
@@ -277,8 +319,10 @@
       "1": {
         "1": "GlobalPrivateCtor",
         "3": {
-          "1": "GlobalPrivateCtor.html",
-          "2": "data/GlobalPrivateCtor.json"
+          "2": "data/GlobalPrivateCtor.json",
+          "3": {
+            "3": "GlobalPrivateCtor.html"
+          }
         }
       }
     },
@@ -286,8 +330,10 @@
       "1": {
         "1": "Person",
         "3": {
-          "1": "Person.html",
-          "2": "data/Person.json"
+          "2": "data/Person.json",
+          "3": {
+            "3": "Person.html"
+          }
         }
       },
       "2": true,
@@ -300,8 +346,10 @@
       "1": {
         "1": "PrivateColor_",
         "3": {
-          "1": "PrivateColor_.html",
-          "2": "data/PrivateColor_.json"
+          "2": "data/PrivateColor_.json",
+          "3": {
+            "3": "PrivateColor_.html"
+          }
         }
       }
     },
@@ -309,8 +357,10 @@
       "1": {
         "1": "SomeCtor",
         "3": {
-          "1": "SomeCtor.html",
-          "2": "data/SomeCtor.json"
+          "2": "data/SomeCtor.json",
+          "3": {
+            "3": "SomeCtor.html"
+          }
         }
       }
     },
@@ -318,8 +368,10 @@
       "1": {
         "1": "UndefinedEnum",
         "3": {
-          "1": "UndefinedEnum.html",
-          "2": "data/UndefinedEnum.json"
+          "2": "data/UndefinedEnum.json",
+          "3": {
+            "3": "UndefinedEnum.html"
+          }
         }
       }
     },
@@ -327,8 +379,10 @@
       "1": {
         "1": "closure.module",
         "3": {
-          "1": "closure.module.html",
-          "2": "data/closure.module.json"
+          "2": "data/closure.module.json",
+          "3": {
+            "3": "closure.module.html"
+          }
         }
       },
       "3": true,
@@ -341,8 +395,10 @@
         "1": "Clazz",
         "2": "closure.module.Clazz",
         "3": {
-          "1": "closure.module.Clazz.html",
-          "2": "data/closure.module.Clazz.json"
+          "2": "data/closure.module.Clazz.json",
+          "3": {
+            "3": "closure.module.Clazz.html"
+          }
         }
       },
       "5": [
@@ -354,8 +410,10 @@
         "1": "HardWorker",
         "2": "closure.module.HardWorker",
         "3": {
-          "1": "closure.module.HardWorker.html",
-          "2": "data/closure.module.HardWorker.json"
+          "2": "data/closure.module.HardWorker.json",
+          "3": {
+            "3": "closure.module.HardWorker.html"
+          }
         }
       },
       "5": [
@@ -367,8 +425,10 @@
         "1": "PubClass",
         "2": "closure.module.PubClass",
         "3": {
-          "1": "closure.module.PubClass.html",
-          "2": "data/closure.module.PubClass.json"
+          "2": "data/closure.module.PubClass.json",
+          "3": {
+            "3": "closure.module.PubClass.html"
+          }
         }
       },
       "5": [
@@ -380,8 +440,10 @@
         "1": "Worker",
         "2": "closure.module.Worker",
         "3": {
-          "1": "closure.module.Worker.html",
-          "2": "data/closure.module.Worker.json"
+          "2": "data/closure.module.Worker.json",
+          "3": {
+            "3": "closure.module.Worker.html"
+          }
         }
       },
       "5": [
@@ -393,8 +455,10 @@
       "1": {
         "1": "foo",
         "3": {
-          "1": "foo.html",
-          "2": "data/foo.json"
+          "2": "data/foo.json",
+          "3": {
+            "3": "foo.html"
+          }
         }
       },
       "3": true,
@@ -406,8 +470,10 @@
       "1": {
         "1": "foo.One",
         "3": {
-          "1": "foo.One.html",
-          "2": "data/foo.One.json"
+          "2": "data/foo.One.json",
+          "3": {
+            "3": "foo.One.html"
+          }
         }
       }
     },
@@ -415,8 +481,10 @@
       "1": {
         "1": "foo.quot",
         "3": {
-          "1": "foo.quot.html",
-          "2": "data/foo.quot.json"
+          "2": "data/foo.quot.json",
+          "3": {
+            "3": "foo.quot.html"
+          }
         }
       },
       "3": true
@@ -425,8 +493,10 @@
       "1": {
         "1": "foo.quot.OneBarAlias",
         "3": {
-          "1": "foo.quot.OneBarAlias.html",
-          "2": "data/foo.quot.OneBarAlias.json"
+          "2": "data/foo.quot.OneBarAlias.json",
+          "3": {
+            "3": "foo.quot.OneBarAlias.html"
+          }
         }
       },
       "5": [
@@ -438,8 +508,10 @@
       "1": {
         "1": "namespace",
         "3": {
-          "1": "namespace.html",
-          "2": "data/namespace.json"
+          "2": "data/namespace.json",
+          "3": {
+            "3": "namespace.html"
+          }
         }
       },
       "3": true
@@ -448,8 +520,10 @@
       "1": {
         "1": "namespace.Widget",
         "3": {
-          "1": "namespace.Widget.html",
-          "2": "data/namespace.Widget.json"
+          "2": "data/namespace.Widget.json",
+          "3": {
+            "3": "namespace.Widget.html"
+          }
         }
       }
     },
@@ -457,8 +531,10 @@
       "1": {
         "1": "namespace.nested.internal",
         "3": {
-          "1": "namespace.nested.internal.html",
-          "2": "data/namespace.nested.internal.json"
+          "2": "data/namespace.nested.internal.json",
+          "3": {
+            "3": "namespace.nested.internal.html"
+          }
         }
       },
       "3": true
@@ -467,8 +543,10 @@
       "1": {
         "1": "namespace.nested.internal.Component",
         "3": {
-          "1": "namespace.nested.internal.Component.html",
-          "2": "data/namespace.nested.internal.Component.json"
+          "2": "data/namespace.nested.internal.Component.json",
+          "3": {
+            "3": "namespace.nested.internal.Component.html"
+          }
         }
       }
     },
@@ -476,8 +554,10 @@
       "1": {
         "1": "namespace.nested.internal.implicit.Foo",
         "3": {
-          "1": "namespace.nested.internal.implicit.Foo.html",
-          "2": "data/namespace.nested.internal.implicit.Foo.json"
+          "2": "data/namespace.nested.internal.implicit.Foo.json",
+          "3": {
+            "3": "namespace.nested.internal.implicit.Foo.html"
+          }
         }
       }
     },
@@ -485,8 +565,10 @@
       "1": {
         "1": "namespace.nested.logging",
         "3": {
-          "1": "namespace.nested.logging.html",
-          "2": "data/namespace.nested.logging.json"
+          "2": "data/namespace.nested.logging.json",
+          "3": {
+            "3": "namespace.nested.logging.html"
+          }
         }
       },
       "3": true,
@@ -498,8 +580,10 @@
       "1": {
         "1": "namespace.nested.logging.Console",
         "3": {
-          "1": "namespace.nested.logging.Console.html",
-          "2": "data/namespace.nested.logging.Console.json"
+          "2": "data/namespace.nested.logging.Console.json",
+          "3": {
+            "3": "namespace.nested.logging.Console.html"
+          }
         }
       }
     },
@@ -507,8 +591,10 @@
       "1": {
         "1": "sample.inheritance",
         "3": {
-          "1": "sample.inheritance.html",
-          "2": "data/sample.inheritance.json"
+          "2": "data/sample.inheritance.json",
+          "3": {
+            "3": "sample.inheritance.html"
+          }
         }
       },
       "3": true
@@ -517,8 +603,10 @@
       "1": {
         "1": "sample.inheritance.BaseClass",
         "3": {
-          "1": "sample.inheritance.BaseClass.html",
-          "2": "data/sample.inheritance.BaseClass.json"
+          "2": "data/sample.inheritance.BaseClass.json",
+          "3": {
+            "3": "sample.inheritance.BaseClass.html"
+          }
         }
       },
       "5": [
@@ -529,8 +617,10 @@
       "1": {
         "1": "sample.inheritance.BaseInterface",
         "3": {
-          "1": "sample.inheritance.BaseInterface.html",
-          "2": "data/sample.inheritance.BaseInterface.json"
+          "2": "data/sample.inheritance.BaseInterface.json",
+          "3": {
+            "3": "sample.inheritance.BaseInterface.html"
+          }
         }
       },
       "2": true
@@ -539,8 +629,10 @@
       "1": {
         "1": "sample.inheritance.DeprecatedFinalClass",
         "3": {
-          "1": "sample.inheritance.DeprecatedFinalClass.html",
-          "2": "data/sample.inheritance.DeprecatedFinalClass.json"
+          "2": "data/sample.inheritance.DeprecatedFinalClass.json",
+          "3": {
+            "3": "sample.inheritance.DeprecatedFinalClass.html"
+          }
         }
       },
       "5": [
@@ -551,8 +643,10 @@
       "1": {
         "1": "sample.inheritance.FinalClass",
         "3": {
-          "1": "sample.inheritance.FinalClass.html",
-          "2": "data/sample.inheritance.FinalClass.json"
+          "2": "data/sample.inheritance.FinalClass.json",
+          "3": {
+            "3": "sample.inheritance.FinalClass.html"
+          }
         }
       },
       "5": [
@@ -563,8 +657,10 @@
       "1": {
         "1": "sample.inheritance.LeafInterface",
         "3": {
-          "1": "sample.inheritance.LeafInterface.html",
-          "2": "data/sample.inheritance.LeafInterface.json"
+          "2": "data/sample.inheritance.LeafInterface.json",
+          "3": {
+            "3": "sample.inheritance.LeafInterface.html"
+          }
         }
       },
       "2": true
@@ -573,8 +669,10 @@
       "1": {
         "1": "sample.inheritance.NumberClass",
         "3": {
-          "1": "sample.inheritance.NumberClass.html",
-          "2": "data/sample.inheritance.NumberClass.json"
+          "2": "data/sample.inheritance.NumberClass.json",
+          "3": {
+            "3": "sample.inheritance.NumberClass.html"
+          }
         }
       },
       "4": [
@@ -588,8 +686,10 @@
       "1": {
         "1": "sample.inheritance.OtherInterface",
         "3": {
-          "1": "sample.inheritance.OtherInterface.html",
-          "2": "data/sample.inheritance.OtherInterface.json"
+          "2": "data/sample.inheritance.OtherInterface.json",
+          "3": {
+            "3": "sample.inheritance.OtherInterface.html"
+          }
         }
       },
       "2": true
@@ -598,8 +698,10 @@
       "1": {
         "1": "sample.inheritance.Runnable",
         "3": {
-          "1": "sample.inheritance.Runnable.html",
-          "2": "data/sample.inheritance.Runnable.json"
+          "2": "data/sample.inheritance.Runnable.json",
+          "3": {
+            "3": "sample.inheritance.Runnable.html"
+          }
         }
       },
       "2": true,
@@ -611,8 +713,10 @@
       "1": {
         "1": "sample.inheritance.RunnableError",
         "3": {
-          "1": "sample.inheritance.RunnableError.html",
-          "2": "data/sample.inheritance.RunnableError.json"
+          "2": "data/sample.inheritance.RunnableError.json",
+          "3": {
+            "3": "sample.inheritance.RunnableError.html"
+          }
         }
       },
       "5": [
@@ -623,8 +727,10 @@
       "1": {
         "1": "sample.inheritance.SecondClass",
         "3": {
-          "1": "sample.inheritance.SecondClass.html",
-          "2": "data/sample.inheritance.SecondClass.json"
+          "2": "data/sample.inheritance.SecondClass.json",
+          "3": {
+            "3": "sample.inheritance.SecondClass.html"
+          }
         }
       },
       "5": [
@@ -635,8 +741,10 @@
       "1": {
         "1": "sample.inheritance.SecondInterface",
         "3": {
-          "1": "sample.inheritance.SecondInterface.html",
-          "2": "data/sample.inheritance.SecondInterface.json"
+          "2": "data/sample.inheritance.SecondInterface.json",
+          "3": {
+            "3": "sample.inheritance.SecondInterface.html"
+          }
         }
       },
       "2": true
@@ -645,8 +753,10 @@
       "1": {
         "1": "sample.inheritance.StringClass",
         "3": {
-          "1": "sample.inheritance.StringClass.html",
-          "2": "data/sample.inheritance.StringClass.json"
+          "2": "data/sample.inheritance.StringClass.json",
+          "3": {
+            "3": "sample.inheritance.StringClass.html"
+          }
         }
       },
       "4": [
@@ -661,8 +771,10 @@
       "1": {
         "1": "sample.inheritance.TemplateClass",
         "3": {
-          "1": "sample.inheritance.TemplateClass.html",
-          "2": "data/sample.inheritance.TemplateClass.json"
+          "2": "data/sample.inheritance.TemplateClass.json",
+          "3": {
+            "3": "sample.inheritance.TemplateClass.html"
+          }
         }
       },
       "5": [
@@ -676,8 +788,10 @@
       "1": {
         "1": "sample.inheritance.ThirdClass",
         "3": {
-          "1": "sample.inheritance.ThirdClass.html",
-          "2": "data/sample.inheritance.ThirdClass.json"
+          "2": "data/sample.inheritance.ThirdClass.json",
+          "3": {
+            "3": "sample.inheritance.ThirdClass.html"
+          }
         }
       }
     },
@@ -685,8 +799,10 @@
       "1": {
         "1": "sample.json",
         "3": {
-          "1": "sample.json.html",
-          "2": "data/sample.json.json"
+          "2": "data/sample.json.json",
+          "3": {
+            "3": "sample.json.html"
+          }
         }
       },
       "3": true,
@@ -700,8 +816,10 @@
       "1": {
         "1": "test",
         "3": {
-          "1": "test.html",
-          "2": "data/test.json"
+          "2": "data/test.json",
+          "3": {
+            "3": "test.html"
+          }
         }
       },
       "3": true
@@ -710,8 +828,10 @@
       "1": {
         "1": "test.Registry",
         "3": {
-          "1": "test.Registry.html",
-          "2": "data/test.Registry.json"
+          "2": "data/test.Registry.json",
+          "3": {
+            "3": "test.Registry.html"
+          }
         }
       }
     },
@@ -719,8 +839,10 @@
       "1": {
         "1": "test.registry",
         "3": {
-          "1": "test.registry.html",
-          "2": "data/test.registry.json"
+          "2": "data/test.registry.json",
+          "3": {
+            "3": "test.registry.html"
+          }
         }
       },
       "3": true,
@@ -732,8 +854,10 @@
       "1": {
         "1": "vis",
         "3": {
-          "1": "vis.html",
-          "2": "data/vis.json"
+          "2": "data/vis.json",
+          "3": {
+            "3": "vis.html"
+          }
         }
       },
       "3": true,
@@ -750,8 +874,10 @@
       "1": {
         "1": "vis.InheritsVis",
         "3": {
-          "1": "vis.InheritsVis.html",
-          "2": "data/vis.InheritsVis.json"
+          "2": "data/vis.InheritsVis.json",
+          "3": {
+            "3": "vis.InheritsVis.html"
+          }
         }
       }
     },
@@ -759,8 +885,10 @@
       "1": {
         "1": "vis.Private",
         "3": {
-          "1": "vis.Private.html",
-          "2": "data/vis.Private.json"
+          "2": "data/vis.Private.json",
+          "3": {
+            "3": "vis.Private.html"
+          }
         }
       }
     },
@@ -768,8 +896,10 @@
       "1": {
         "1": "vis.Public",
         "3": {
-          "1": "vis.Public.html",
-          "2": "data/vis.Public.json"
+          "2": "data/vis.Public.json",
+          "3": {
+            "3": "vis.Public.html"
+          }
         }
       }
     }

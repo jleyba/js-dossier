@@ -34,6 +34,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
+
+import com.google.common.html.types.SafeUrls;
 import org.commonmark.Extension;
 import org.commonmark.html.HtmlRenderer;
 import org.commonmark.node.Node;
@@ -179,7 +181,8 @@ public class CommentParser {
           String linkText = info.text;
           boolean codeLink = "link".equals(tagletName);
 
-          if (type == null || type.getLink().getHref().isEmpty()) {
+          if (type == null
+              || SafeUrls.fromProto(type.getLink().getHref()).getSafeUrlString().isEmpty()) {
             if (codeLink) {
               linkText = "<code>" + linkText + "</code>";
             }

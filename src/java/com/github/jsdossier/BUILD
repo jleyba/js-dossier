@@ -18,6 +18,7 @@ java_library(
         "//lib/maven:joda_time",
         "//lib/maven:jsr305",
         "//lib/maven:owasp_html_sanitizer",
+        "//lib/maven:safe_types",
         "//src/java/com/github/jsdossier/annotations",
         "//src/java/com/github/jsdossier/jscomp",
         "//src/java/com/github/jsdossier/markdown",

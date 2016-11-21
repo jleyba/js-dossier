@@ -32,7 +32,9 @@ js_binary(
         "page.js",
         "search.js",
         "soyplugins.js",
-        "//third_party/js/soy",
+        "//third_party/js/soy:jspbconversions",
+        "//third_party/js/soy:soydata_converters",
+        "//third_party/js/soy:soyutils_usegoog",
     ],
     externs = [],
     flags = [

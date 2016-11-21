@@ -14,7 +14,6 @@ java_proto_library(
 java_test_suite(
     name = "AllTests",
     srcs = glob(["*.java"]),
-    resources = glob(["*.soy"]),
     deps = [
         ":proto_lib",
         "//lib/maven:closure_templates",
@@ -27,6 +26,7 @@ java_test_suite(
         "//lib/maven:junit",
         "//lib/maven:mockito",
         "//lib/maven:protobuf",
+        "//lib/maven:safe_types",
         "//lib/maven:truth",
         "//src/java/com/github/jsdossier",
         "//src/java/com/github/jsdossier/soy",

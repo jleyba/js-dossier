@@ -37,7 +37,7 @@
   {foreach $link in $links}
     {if $link.href and $link.text}
       <section>
-        <a class="title" href="{sanitizeUri($link.href)}" tabindex="1">{$link.text}</a>
+        <a class="title" href="{$link.href}" tabindex="1">{$link.text}</a>
       </section>
     {/if}
   {/foreach}
@@ -92,7 +92,7 @@
       {/param}
       {param href kind="text"}
         {if $namedType.link}
-          {sanitizeUri($namedType.link.href)}
+          {$namedType.link.href}
         {/if}
       {/param}
       {param tabIndex: 1 /}

@@ -183,6 +183,11 @@ java_library(
 )
 
 java_library(
+    name = "safe_types",
+    exports = ["@safe_types//jar"],
+)
+
+java_library(
     name = "truth",
     exports = ["@truth//jar"],
     runtime_deps = [

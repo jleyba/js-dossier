@@ -37,7 +37,7 @@
   {@param? tabIndex: int}
   {@param? classes: string}
 
-  <a {if $href}href="{sanitizeUri($href)}"{/if}
+  <a {if $href}href="{$href}"{/if}
      {if $target}{sp}target="{$target}"{/if}
      {if $title}{sp}title="{$title}"{/if}
      {if $tabIndex}{sp}tabIndex="{$tabIndex}"{/if}

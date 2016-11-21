@@ -33,6 +33,7 @@ const Renderer = goog.require('goog.ui.ac.Renderer');
 const userAgent = goog.require('goog.userAgent');
 const Index = goog.require('proto.dossier.Index');
 const Entry = goog.require('proto.dossier.Index.Entry');
+const unpackProtoToSanitizedUri = goog.require('soydata.unpackProtoToSanitizedUri');
 
 goog.forwardDeclare('goog.ui.ac.RenderOptions');
 
@@ -50,7 +51,7 @@ function getLast(arr) {
 function addTypes(/** !Map<string, string> */nameToHref, /** !Entry */entry) {
   let qualifiedName = entry.getType().getQualifiedName() || entry.getType().getName();
   let baseName = getLast(qualifiedName.split(/\./));
-  let typeHref = entry.getType().getLink().getHref();
+  let typeHref = unpackProtoToSanitizedUri(entry.getType().getLink().getHref()).getContent();
 
   nameToHref.set(qualifiedName, typeHref);
 

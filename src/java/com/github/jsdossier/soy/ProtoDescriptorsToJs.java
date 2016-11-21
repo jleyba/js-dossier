@@ -23,6 +23,7 @@ import com.github.jsdossier.proto.Expression;
 import com.github.jsdossier.proto.State;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.html.types.TrustedResourceUrlProto;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -135,6 +136,7 @@ final class ProtoDescriptorsToJs {
 
     injector.getInstance(ProtoDescriptorsToJs.class)
         .processFiles(
+            TrustedResourceUrlProto.getDescriptor().getFile(),
             Dossier.getDescriptor(),
             Expression.getDescriptor(),
             State.getDescriptor());

@@ -51,6 +51,9 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
 import com.google.common.collect.Sets;
+import com.google.common.html.types.SafeUrl;
+import com.google.common.html.types.SafeUrlProto;
+import com.google.common.html.types.SafeUrls;
 import com.google.javascript.rhino.IR;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.JSTypeExpression;
@@ -360,7 +363,9 @@ final class TypeInspector {
             // Might not have a qualified name.
             diff = o1.getName().compareTo(o2.getName());
             if (diff == 0) {
-              diff = o1.getLink().getHref().compareTo(o2.getLink().getHref());
+              String href1 = SafeUrls.fromProto(o1.getLink().getHref()).getSafeUrlString();
+              String href2 = SafeUrls.fromProto(o2.getLink().getHref()).getSafeUrlString();
+              diff = href1.compareTo(href2);
             }
           }
           return diff;
@@ -717,14 +722,17 @@ final class TypeInspector {
   private NamedType buildPropertyLink(
       TypeExpressionParser parser, JSType type, String propertyName) {
     NamedType namedType = parseNamedType(parser, type);
-    if (!namedType.getLink().getHref().isEmpty()
+    if (!urlString(namedType.getLink().getHref()).isEmpty()
         // Extern links are always fully qualified.
-        && !namedType.getLink().getHref().startsWith("http")) {
+        && !urlString(namedType.getLink().getHref()).startsWith("http")) {
+      SafeUrl url = SafeUrls.fromProto(namedType.getLink().getHref());
+      url = SafeUrls.sanitize(url.getSafeUrlString() + "#" + propertyName);
+      
       namedType = namedType.toBuilder()
           .setLink(
               namedType.getLink()
                   .toBuilder()
-                  .setHref(namedType.getLink().getHref() + "#" + propertyName))
+                  .setHref(SafeUrls.toProto(url)))
           .build();
     }
     return namedType;
@@ -1162,7 +1170,7 @@ final class TypeInspector {
     for (String seeAlso : jsdoc.getSeeClauses()) {
       // 1) Try as a link reference to another type.
       @Nullable NamedType typeRef = contextLinkFactory.resolveTypeReference(seeAlso);
-      if (typeRef != null && !typeRef.getLink().getHref().isEmpty()) {
+      if (typeRef != null && !urlString(typeRef.getLink().getHref()).isEmpty()) {
         builder.addSeeAlsoBuilder()
             .addTokenBuilder()
             .setText(seeAlso)
@@ -1181,6 +1189,10 @@ final class TypeInspector {
       builder.getTagsBuilder().setIsConst(true);
     }
     return builder.build();
+  }
+  
+  private static String urlString(SafeUrlProto url) {
+    return SafeUrls.fromProto(url).getSafeUrlString();
   }
 
   private JSDocInfo.Visibility determineVisibility(

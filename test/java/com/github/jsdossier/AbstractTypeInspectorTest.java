@@ -32,6 +32,7 @@ import com.github.jsdossier.proto.TypeLink;
 import com.github.jsdossier.proto.UnionType;
 import com.github.jsdossier.testing.CompilerUtil;
 import com.github.jsdossier.testing.GuiceRule;
+import com.google.common.html.types.testing.HtmlConversions;
 import com.google.common.truth.FailureStrategy;
 import com.google.common.truth.Subject;
 import com.google.common.truth.SubjectFactory;
@@ -77,7 +78,10 @@ public abstract class AbstractTypeInspectorTest {
   }
 
   protected static SourceLink sourceFile(String path, int line) {
-    return SourceLink.newBuilder().setPath(path).setLine(line).build();
+    return SourceLink.newBuilder()
+        .setPath(HtmlConversions.newSafeUrlProtoForTest(path))
+        .setLine(line)
+        .build();
   }
 
   protected static Comment linkComment(String text, String href) {
@@ -190,7 +194,9 @@ public abstract class AbstractTypeInspectorTest {
   }
 
   protected static TypeLink typeLink(String href) {
-    return TypeLink.newBuilder().setHref(href).build();
+    return TypeLink.newBuilder()
+        .setHref(HtmlConversions.newSafeUrlProtoForTest(href))
+        .build();
   }
 
   protected static NamedType addTemplateTypes(

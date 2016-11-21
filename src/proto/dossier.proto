@@ -15,6 +15,7 @@
 syntax = "proto3";
 
 import "src/proto/expression.proto";
+import "webutil/html/types/proto/html.proto";
 
 option java_package = "com.github.jsdossier.proto";
 option java_multiple_files = true;
@@ -35,13 +36,17 @@ message SourceFile {
 
 // Describes the resources to include in a generated HTML page.
 message Resources {
+  reserved 1, 2, 3;
+
   // Paths to stylesheets to link to in the generated page.
-  repeated string css = 1;
+  repeated webutil.html.types.SafeUrlProto css = 4;
+
   // Paths to JavaScript files to include in the generated page's head.
-  repeated string head_script = 2;
+  repeated webutil.html.types.SafeUrlProto head_script = 5;
+
   // Paths to JavaScript files to include in the generated page after
   // the DOM has been defined.
-  repeated string tail_script = 3;
+  repeated webutil.html.types.SafeUrlProto tail_script = 6;
 }
 
 
@@ -50,23 +55,29 @@ message Link {
   // The link display text.
   string text = 1;
   // The link href.
+  // This will always be a path relative to the root of the output directory.
   string href = 2;
   // The JSON data associated with this link, if any.
+  // This will always be a path relative to the root of the output directory.
   string json = 3;
 }
 
 
 // Defines a link to a symbol's definition in its rendered source file.
 message SourceLink {
-  // Path from the current file to the rendered source file.
-  string path = 1;
+  reserved 1;
 
   // The line in the source file containing the symbol, if known.
   int32 line = 2;
 
+  reserved 3;
+
+  // Path from the current file to the rendered source file.
+  webutil.html.types.SafeUrlProto path = 4;
+
   // A user-provided URI to use for the source link instead of |path| and
   // |line|. This URI is not sanitized.
-  string uri = 3;
+  webutil.html.types.SafeUrlProto url = 5;
 }
 
 
@@ -213,10 +224,11 @@ message JsType {
 
   // Short description for a type defined by this |JsType|.
   message TypeSummary {
-    string name = 1;      // The type name.
-    string href = 2;      // The hyperlink for the actual type.
-    Comment summary = 3;  // The summary sentence for this type.
+    string name = 1;                           // The type name.
+    reserved 2;
+    Comment summary = 3;                       // The summary sentence for this type.
     Tags tags = 4;
+    webutil.html.types.SafeUrlProto href = 5;  // The hyperlink for the actual type.
   }
 
   message NestedTypes {

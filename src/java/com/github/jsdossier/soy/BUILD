@@ -11,6 +11,7 @@ java_library(
         "//lib/maven:inject",
         "//lib/maven:jsr305",
         "//lib/maven:protobuf",
+        "//lib/maven:safe_types",
         "//src/proto:java_proto",
     ],
     visibility = [

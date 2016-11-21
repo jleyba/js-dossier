@@ -6,13 +6,15 @@ def java_proto_library(name, deps, visibility=None):
 
   cmd = ["PROTO_OUT=$$(mktemp -d $${TMPDIR:-/tmp}/genrule.XXXXXXXXXX);"]
   cmd += ["$(location %s)" % protoc]
+  cmd += ["--proto_path=."]
+  cmd += ["--proto_path=./third_party"]
   cmd += ["--java_out=$$PROTO_OUT"]
   cmd += ["$(locations " + dep + ")" for dep in deps]
-  cmd += ["&& $(location @local_jdk//:jar) -cf $(@) -C $$PROTO_OUT ."]
+  cmd += ["&& jar -cf $(@) -C $$PROTO_OUT ."]
 
   native.genrule(
       name = name + "_gen",
-      srcs = deps + ["@local_jdk//:jar"],
+      srcs = deps + ["//third_party/webutil/html/types/proto"],
       message = "Compiling Protocol Buffers",
       tools = [protoc],
       outs = [name + "_gen.srcjar"],
@@ -22,6 +24,9 @@ def java_proto_library(name, deps, visibility=None):
   native.java_library(
       name = name,
       srcs = [name + "_gen.srcjar"],
-      deps = ["//lib/maven:protobuf"],
+      deps = [
+          "@protobuf//jar",
+          "@safe_types//jar",
+      ],
       visibility = visibility,
   )

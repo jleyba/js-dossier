@@ -52,12 +52,12 @@
     </div>
     <div class="body">
       {$body}
-      {if $source and ($source.uri or $source.path)}
+      {if $source and ($source.url or $source.path)}
         <div class="source">
-          {if $source.uri}
-            <a href="{sanitizeUri($source.uri)}" target="_blank" title="View source">VIEW SOURCE</a>
+          {if $source.url}
+            <a href="{$source.url}" target="_blank" title="View source">VIEW SOURCE</a>
           {else}
-            <a href="{sanitizeUri($source.path)}{if $source.line and $source.line > 0}#l{$source.line}{/if}"
+            <a href="{$source.path}{if $source.line and $source.line > 0}#l{$source.line}{/if}"
                 title="View source">VIEW SOURCE</a>
           {/if}
         </div>
@@ -177,18 +177,18 @@
 /**
  * Prints the summaries for the types nested within this type (e.g. classes,
  * enums, and interfaces).
- *
- * @param title The section title.
- * @param types A list of Dossier.JsType.NestedTypes.TypeSummary objects.
  */
 {template .nestedTypeSummaries}
+  {@param title: string}
+  {@param types: list<dossier.JsType.TypeSummary>}
+
   {if length($types) > 0}
     <section>
       <h2>{$title}</h2>
       <div class="type-summary">
         <dl>
           {foreach $type in $types}
-            <dt><a href="{sanitizeUri($type.href)}">{$type.name}</a>
+            <dt><a href="{$type.href}">{$type.name}</a>
             <dd>
               {if $type.summary and length($type.summary.tokenList)}
                 {call .comment}
@@ -587,13 +587,13 @@
     {foreach $property in $properties}
       <li id="{$property.base.name}">
         {let $link: $property.base.source
-                    and ($property.base.source.path or $property.base.source.uri) /}
+                    and ($property.base.source.path or $property.base.source.url) /}
         {if $link}
-          {if $property.base.source.uri}
-            <a href="{$property.base.source.uri}" target="_blank" title="View source">
+          {if $property.base.source.url}
+            <a href="{$property.base.source.url}" target="_blank" title="View source">
           {else}
             {let $hasLine: $property.base.source.line and $property.base.source.line > 0 /}
-            <a href="{sanitizeUri($property.base.source.path)}{if $hasLine}#l{$property.base.source.line}{/if}"
+            <a href="{$property.base.source.path}{if $hasLine}#l{$property.base.source.line}{/if}"
                 title="View source">
           {/if}
         {/if}
@@ -721,7 +721,7 @@
             {call .tags}
               {param tags: $type.tags /}
             {/call}
-            <div><a href="{sanitizeUri($type.href)}">{$type.name}</a></div>
+            <div><a href="{$type.href}">{$type.name}</a></div>
         {/foreach}
       </ul>
     </section>
@@ -976,6 +976,31 @@
 {/template}
 
 
+{template .importScripts_ private="true"}
+  {@param scripts: list<webutil.html.types.SafeUrlProto>}  
+  {if length($scripts)}
+    // Script need to be imported dynamically b/c the URLs are generated dynamically
+    // and can only be injected into soy templates as SafeUrlProtos (and not
+    // TrustedResourceUrlProtos). SafeUrlProtos cannot be used to load scripts, but
+    // we can get around it with dynamically loading via the DOM. For now at least.
+    <script>
+      (function() {lb}
+        let scripts = [
+          {foreach $script in $scripts}
+            {$script}{if not isLast($script)},{/if}
+          {/foreach}
+        ];
+        scripts.forEach(function(src) {lb}
+          let s = document.createElement('script');
+          s.src = src;
+          document.body.appendChild(s);
+        {rb});
+      {rb})();
+    </script>
+  {/if}
+{/template}
+
+
 /**
  * Renders a full page.
  */
@@ -991,11 +1016,11 @@
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   {call .pageTitle data="all" /}
   {if $data.resources}
-    {foreach $script in $data.resources.headScriptList}
-      <script src="{sanitizeUri($script)}"></script>
-    {/foreach}
+    {call .importScripts_}
+      {param scripts: $data.resources.headScriptList /}
+    {/call}
     {foreach $styleSheet in $data.resources.cssList}
-      <link href="{sanitizeUri($styleSheet)}" rel="stylesheet" type="text/css">
+      <link href="{$styleSheet}" rel="stylesheet" type="text/css">
     {/foreach}
   {/if}
   <header>
@@ -1019,9 +1044,9 @@
     </footer>
   </div>
   {if $data.resources}
-    {foreach $script in $data.resources.tailScriptList}
-      <script src="{sanitizeUri($script)}"></script>
-    {/foreach}
+    {call .importScripts_}
+      {param scripts: $data.resources.tailScriptList /}
+    {/call}
   {/if}
 {/template}
 

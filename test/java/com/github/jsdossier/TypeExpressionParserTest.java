@@ -23,6 +23,7 @@ import static com.github.jsdossier.TypeExpressions.UNKNOWN_TYPE;
 import static com.github.jsdossier.TypeExpressions.VOID_TYPE;
 import static com.github.jsdossier.testing.CompilerUtil.createSourceFile;
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.html.types.testing.HtmlConversions.newSafeUrlProtoForTest;
 
 import com.github.jsdossier.annotations.Input;
 import com.github.jsdossier.jscomp.NominalType;
@@ -36,6 +37,7 @@ import com.github.jsdossier.proto.UnionType;
 import com.github.jsdossier.testing.CompilerUtil;
 import com.github.jsdossier.testing.GuiceRule;
 import com.google.common.collect.ImmutableList;
+import com.google.common.html.types.testing.HtmlConversions;
 import com.google.javascript.jscomp.CompilerOptions;
 import com.google.javascript.jscomp.SourceFile;
 import com.google.javascript.rhino.JSDocInfo;
@@ -525,7 +527,7 @@ public class TypeExpressionParserTest {
   private static NamedType namedType(String name, String href) {
     return NamedType.newBuilder()
         .setName(name)
-        .setLink(TypeLink.newBuilder().setHref(href))
+        .setLink(TypeLink.newBuilder().setHref(newSafeUrlProtoForTest(href)))
         .build();
   }
 
@@ -533,8 +535,7 @@ public class TypeExpressionParserTest {
     return NamedType.newBuilder()
         .setName(name)
         .setQualifiedName(qualifiedName)
-        .setLink(TypeLink.newBuilder()
-            .setHref(href))
+        .setLink(TypeLink.newBuilder().setHref(newSafeUrlProtoForTest(href)))
         .build();
   }
 }

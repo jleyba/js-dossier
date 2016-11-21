@@ -29,6 +29,8 @@ import com.google.common.base.Optional;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Ordering;
+import com.google.common.html.types.SafeUrls;
+
 import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -175,7 +177,7 @@ final class IndexBuilder {
           .toSortedList(new QualifiedNameComparator());
       for (NominalType typedef : typedefs) {
         NamedType ref = linkFactory.createTypeReference(typedef);
-        checkArgument(!ref.getLink().getHref().isEmpty(),
+        checkArgument(!SafeUrls.fromProto(ref.getLink().getHref()).getSafeUrlString().isEmpty(),
             "Failed to build link for %s", typedef.getName());
         newEntryBuilder(module).setType(ref);
       }

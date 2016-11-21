@@ -28,10 +28,11 @@ import com.github.jsdossier.jscomp.Module.Type;
 import com.github.jsdossier.jscomp.NominalType;
 import com.github.jsdossier.jscomp.TypeRegistry;
 import com.github.jsdossier.proto.Resources;
-import com.google.common.base.Function;
-import com.google.common.collect.FluentIterable;
+import com.google.common.html.types.*;
 import com.google.javascript.rhino.Node;
 import java.nio.file.Path;
+import java.util.List;
+import java.util.stream.Collectors;
 import javax.inject.Inject;
 
 /**
@@ -332,17 +333,21 @@ final class DossierFileSystem {
    * @param template the template to pull resources from.
    * @return the resource set for the generated file.
    */
-  public Resources getResources(final Path outputPath, DocTemplate template) {
-    Function<TemplateFile, String> toOutputPath = file -> {
-      Path toFile = getPath(file);
-      return Paths.getRelativePath(outputPath, toFile).toString();
+  Resources getResources(Path outputPath, DocTemplate template) {
+    java.util.function.Function<Path, SafeUrlProto> pathToUrl = path -> {
+      SafeUrl url = SafeUrls.sanitize(Paths.getRelativePath(outputPath, path).toString());
+      return SafeUrls.toProto(url);
     };
+    
+    java.util.function.Function<List<TemplateFile>, List<SafeUrlProto>> toSafeUrls =
+        files -> files.stream().map(this::getPath).map(pathToUrl).collect(Collectors.toList());
+
     Path typesJs = outputRoot.resolve("types.js");
     return Resources.newBuilder()
-        .addAllCss(FluentIterable.from(template.getCss()).transform(toOutputPath))
-        .addAllHeadScript(FluentIterable.from(template.getHeadJs()).transform(toOutputPath))
-        .addTailScript(Paths.getRelativePath(outputPath, typesJs).toString())
-        .addAllTailScript(FluentIterable.from(template.getTailJs()).transform(toOutputPath))
+        .addAllCss(toSafeUrls.apply(template.getCss()))
+        .addAllHeadScript(toSafeUrls.apply(template.getHeadJs()))
+        .addTailScript(pathToUrl.apply(typesJs))
+        .addAllTailScript(toSafeUrls.apply(template.getTailJs()))
         .build();
   }
 

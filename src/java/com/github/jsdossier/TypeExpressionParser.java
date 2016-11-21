@@ -33,6 +33,7 @@ import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Ordering;
+import com.google.common.html.types.SafeUrls;
 import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.jstype.EnumElementType;
 import com.google.javascript.rhino.jstype.FunctionType;
@@ -390,7 +391,7 @@ final class TypeExpressionParser {
       String name = type.getReferenceName();
 
       com.github.jsdossier.proto.NamedType.Builder namedType = createNamedType(name);
-      if (namedType.getLink().getHref().isEmpty()) {
+      if (SafeUrls.fromProto(namedType.getLink().getHref()).getSafeUrlString().isEmpty()) {
         // If there is no href, we were not able to resolve the type, so assume it is
         // nullable by default.
         currentExpression().getUnionTypeBuilder()

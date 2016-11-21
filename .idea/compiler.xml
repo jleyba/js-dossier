@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="CompilerConfiguration">
-    <option name="DEFAULT_COMPILER" value="Javac" />
+    <option name="DEFAULT_COMPILER" value="error-prone" />
     <excludeFromCompile>
       <file url="file://$PROJECT_DIR$/src/java/com/github/jsdossier/BUCK" />
       <file url="file://$PROJECT_DIR$/test/java/com/github/jsdossier/BUCK" />

@@ -19,6 +19,7 @@ package com.github.jsdossier;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.base.Verify.verify;
+import static com.google.common.html.types.SafeUrls.sanitize;
 
 import com.github.jsdossier.annotations.SourceUrlTemplate;
 import com.github.jsdossier.annotations.TypeFilter;
@@ -36,6 +37,10 @@ import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
+import com.google.common.html.types.SafeUrl;
+import com.google.common.html.types.SafeUrls;
+import com.google.common.html.types.TrustedResourceUrlBuilder;
+import com.google.common.html.types.TrustedResourceUrls;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.jstype.FunctionType;
@@ -155,13 +160,14 @@ final class LinkFactory {
 
     String pathStr = getUriPath(path);
     SourceLink.Builder link = SourceLink.newBuilder()
-        .setPath(pathStr)
+        .setPath(SafeUrls.toProto(sanitize(pathStr)))
         .setLine(position.getLine());
     if (urlTemplate.isPresent()) {
       String url = urlTemplate.get()
           .replaceAll("%path%", pathStr)
           .replaceAll("%line%", String.valueOf(position.getLine()));
-      link.setUri(url);
+
+      link.setUrl(SafeUrls.toProto(sanitize(url)));
     }
     return link.build();
   }
@@ -172,14 +178,16 @@ final class LinkFactory {
    */
   public SourceLink createSourceLink(Node node) {
     if (node == null || node.isFromExterns()) {
-      return SourceLink.newBuilder().setPath("").build();
+      return SourceLink.newBuilder().setPath(SafeUrls.toProto(SafeUrls.fromConstant(""))).build();
     }
     Path sourcePath = dfs.getSourcePath(node);
     return createSourceLink(sourcePath, Position.of(node.getLineno(), 0));
   }
 
   private static TypeLink.Builder appendFragment(TypeLink original, String fragment) {
-    return original.toBuilder().setHref(original.getHref() + "#" + fragment);
+    SafeUrl url = SafeUrls.fromProto(original.getHref());
+    url = sanitize(url.getSafeUrlString() + "#" + fragment);
+    return original.toBuilder().setHref(SafeUrls.toProto(url));
   }
 
   /**
@@ -237,7 +245,7 @@ final class LinkFactory {
     if (!displayName.equals(qualifiedName)) {
       builder.setQualifiedName(qualifiedName);
     }
-    builder.getLinkBuilder().setHref(href);
+    builder.getLinkBuilder().setHref(SafeUrls.toProto(sanitize(href)));
     if (jsonPath != null && jsonPaths) {
       builder.getLinkBuilder().setJson(getUriPath(jsonPath));
     }
@@ -249,7 +257,7 @@ final class LinkFactory {
    */
   public NamedType createTypeReference(NominalType type, String property) {
     NamedType typeRef = createTypeReference(type);
-    checkState(!typeRef.getLink().getHref().isEmpty(),
+    checkState(!SafeUrls.fromProto(typeRef.getLink().getHref()).getSafeUrlString().isEmpty(),
         "Failed to build link for %s", type.getName());
 
     boolean checkPrototype = false;

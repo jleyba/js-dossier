@@ -29,6 +29,8 @@ import com.github.jsdossier.proto.TypeLink;
 import com.github.jsdossier.testing.CompilerUtil;
 import com.github.jsdossier.testing.GuiceRule;
 import com.google.common.base.Predicate;
+import com.google.common.html.types.SafeUrls;
+import com.google.common.html.types.testing.HtmlConversions;
 import com.google.javascript.jscomp.CompilerOptions;
 import org.junit.Rule;
 import org.junit.Test;
@@ -1975,7 +1977,7 @@ public class LinkFactoryTest {
 
   private static void checkLink(SourceLink link, String text, int line) {
     SourceLink expected = SourceLink.newBuilder()
-        .setPath(text)
+        .setPath(HtmlConversions.newSafeUrlProtoForTest(text))
         .setLine(line)
         .build();
     assertMessage(link).isEqualTo(expected);
@@ -1983,9 +1985,9 @@ public class LinkFactoryTest {
 
   private static void checkLink(SourceLink link, String url, String text, int line) {
     SourceLink expected = SourceLink.newBuilder()
-        .setPath(text)
+        .setPath(HtmlConversions.newSafeUrlProtoForTest(text))
         .setLine(line)
-        .setUri(url)
+        .setUrl(SafeUrls.toProto(SafeUrls.sanitize(url)))
         .build();
     assertMessage(link).isEqualTo(expected);
   }
@@ -2009,7 +2011,7 @@ public class LinkFactoryTest {
 
   private static TypeLink createLink(String href) {
     return TypeLink.newBuilder()
-        .setHref(href)
+        .setHref(HtmlConversions.newSafeUrlProtoForTest(href))
         .build();
   }
 

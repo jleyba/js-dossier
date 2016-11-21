@@ -29,7 +29,8 @@ const ordainSanitizedUri = soydata.VERY_UNSAFE.ordainSanitizedUri;
 
 /** @private */
 pd.Message_ = class {
-  constructor(/** Object= */opt_data) {
+  /** @param {Object=} opt_data */
+  constructor(opt_data) {
     /** @private @const {!Object} */
     this.data_ = opt_data || {};
 
@@ -222,7 +223,8 @@ pd.getSanitizedField_ = function(message, fieldNumber, deserializer) {
 
 {\n}
 proto.{$name}{literal} = class extends pd.Message_ {
-  constructor(/** Object= */opt_data) {
+  /** @param {Object=} opt_data */
+  constructor(opt_data) {
     super(opt_data);
   }
 {/literal}
