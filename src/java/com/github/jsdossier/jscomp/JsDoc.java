@@ -273,6 +273,8 @@ public class JsDoc {
           }
           break;
         }
+        default:
+          break;  // Do nothing.
       }
     }
 
