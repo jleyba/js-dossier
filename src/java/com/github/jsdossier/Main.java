@@ -17,7 +17,6 @@ package com.github.jsdossier;
 
 import static com.google.common.collect.Iterables.concat;
 import static com.google.common.collect.Iterables.filter;
-import static com.google.common.collect.Iterables.transform;
 import static com.google.common.io.Files.getFileExtension;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.createDirectories;
@@ -75,6 +74,7 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
+import java.util.stream.Stream;
 import javax.inject.Inject;
 import javax.inject.Qualifier;
 import org.joda.time.Instant;
@@ -191,19 +191,18 @@ final class Main {
     @Provides
     @Args
     String[] provideCompilerFlags() {
-      Iterable<String> standardFlags = STANDARD_FLAGS;
+      Stream<String> standardFlags = STANDARD_FLAGS.stream();
       if (config.isStrict()) {
         standardFlags =
-            transform(standardFlags, input -> input.replace("--jscomp_warning", "--jscomp_error"));
+            standardFlags.map(input -> input.replace("--jscomp_warning", "--jscomp_error"));
       }
-
-      ImmutableList<String> compilerFlags = ImmutableList.<String>builder()
-          .addAll(transform(config.getSources(), toFlag("--js=")))
-          .addAll(transform(config.getModules(), toFlag("--js=")))
-          .addAll(transform(config.getExterns(), toFlag("--externs=")))
-          .addAll(standardFlags)
-          .build();
-      return compilerFlags.toArray(new String[compilerFlags.size()]);
+      
+      Stream<String> flags = Stream.concat(
+          config.getSources().stream().map(path -> "--js=" + path),
+          config.getModules().stream().map(path -> "--js=" + path));
+      flags = Stream.concat(flags, config.getExterns().stream().map(path -> "--externs=" + path));
+      flags = Stream.concat(flags, standardFlags);
+      return flags.toArray(String[]::new);
     }
 
     @Provides
@@ -246,10 +245,6 @@ final class Main {
 
       return true;
     }
-  }
-
-  private static Function<Path, String> toFlag(final String flagPrefix) {
-    return input -> flagPrefix + input;
   }
 
   private static void print(Config config) {
