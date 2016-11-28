@@ -1,0 +1,86 @@
+{
+  "2": {
+    "1": [
+      {
+        "1": "PubClass",
+        "5": {
+          "2": 33,
+          "4": {
+            "3": "source/closure_module.js.src.html"
+          }
+        },
+        "7": {
+          "1": [
+            {
+              "2": "\u003cp\u003eThis class is defined internally, but assigned to exports and thus\nshould be documented.\u003c/p\u003e\n"
+            }
+          ]
+        },
+        "8": {},
+        "14": {
+          "1": {
+            "1": "PubClass",
+            "2": {
+              "2": 33,
+              "4": {
+                "3": "source/closure_module.js.src.html"
+              }
+            },
+            "3": {
+              "1": [
+                {
+                  "2": "\u003cp\u003eThis class is defined internally, but assigned to exports and thus\nshould be documented.\u003c/p\u003e\n"
+                }
+              ]
+            }
+          },
+          "3": true
+        },
+        "15": [
+          {
+            "1": {
+              "1": "aMethod",
+              "2": {
+                "2": 29,
+                "4": {
+                  "3": "source/closure_module.js.src.html"
+                }
+              },
+              "3": {
+                "1": [
+                  {
+                    "2": "\u003cp\u003eThis is a method.\u003c/p\u003e\n"
+                  }
+                ]
+              }
+            }
+          }
+        ],
+        "26": [
+          {
+            "1": "Clazz",
+            "2": "closure.module.Clazz",
+            "3": {
+              "3": {
+                "3": "closure.module.Clazz.html"
+              }
+            }
+          }
+        ],
+        "21": {
+          "1": {
+            "1": "closure.module",
+            "3": {
+              "3": {
+                "3": "closure.module.html"
+              }
+            }
+          },
+          "5": true
+        },
+        "23": "closure.module.PubClass.html",
+        "24": "closure.module.PubClass"
+      }
+    ]
+  }
+}

@@ -680,6 +680,15 @@ exports.run = function(typeIndex, searchBox, navDrawer) {
   typeIndex.getSourceFileList().forEach(processLink);
 
   let mainEl = /** @type {!Element} */(document.querySelector('main'));
+  if (mainEl.dataset['pageData']) {
+    let jsonData = JSON.parse(mainEl.dataset['pageData']);
+    if (goog.isObject(jsonData)) {
+      let data = new PageData(jsonData);
+      soy.renderElement(mainEl, mainPageContent, {data});
+      delete mainEl.dataset['pageData'];
+    }
+  }
+
   let dataService = new DataService(uriMap);
 
   new Application(dataService, searchBox, navDrawer, mainEl).init();

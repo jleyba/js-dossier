@@ -1,0 +1,122 @@
+{
+  "2": {
+    "1": [
+      {
+        "1": "Greeter",
+        "5": {
+          "2": 40,
+          "4": {
+            "3": "../../source/example/index.js.src.html"
+          }
+        },
+        "7": {
+          "1": [
+            {
+              "2": "\u003cp\u003eA greeter.\u003c/p\u003e\n"
+            }
+          ]
+        },
+        "8": {},
+        "14": {
+          "1": {
+            "1": "Greeter",
+            "2": {
+              "2": 40,
+              "4": {
+                "3": "../../source/example/index.js.src.html"
+              }
+            },
+            "3": {
+              "1": [
+                {
+                  "2": "\u003cp\u003eA greeter.\u003c/p\u003e\n"
+                }
+              ]
+            }
+          },
+          "3": true
+        },
+        "15": [
+          {
+            "1": {
+              "1": "greet",
+              "2": {
+                "2": 33,
+                "4": {
+                  "3": "../../source/example/nested.js.src.html"
+                }
+              },
+              "3": {
+                "1": [
+                  {
+                    "2": "\u003cp\u003eGreet the person.\u003c/p\u003e\n"
+                  }
+                ]
+              }
+            },
+            "4": [
+              {
+                "1": "person",
+                "2": {
+                  "4": {
+                    "1": "Person",
+                    "2": "example/nested.Person",
+                    "3": {
+                      "3": {
+                        "3": "nested_exports_Person.html"
+                      }
+                    }
+                  }
+                },
+                "3": {
+                  "1": [
+                    {
+                      "2": "\u003cp\u003eThe person to greet.\u003c/p\u003e\n"
+                    }
+                  ]
+                }
+              }
+            ],
+            "5": {
+              "2": {
+                "4": {
+                  "1": "string",
+                  "4": true
+                }
+              },
+              "3": {
+                "1": [
+                  {
+                    "2": "\u003cp\u003eA greeting.\u003c/p\u003e\n"
+                  }
+                ]
+              }
+            }
+          }
+        ],
+        "21": {
+          "1": {
+            "1": "example",
+            "3": {
+              "3": {
+                "3": "index.html"
+              }
+            }
+          },
+          "5": true
+        },
+        "22": {
+          "1": "Greeter",
+          "2": "example/nested.Greeter",
+          "3": {
+            "3": {
+              "3": "nested_exports_Greeter.html"
+            }
+          }
+        },
+        "23": "index_exports_Greeter.html",
+        "24": "example.Greeter"
+      }
+    ]
+  }
+}

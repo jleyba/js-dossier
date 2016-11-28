@@ -1,0 +1,12 @@
+{
+  "3": {
+    "1": "Index",
+    "2": {
+      "1": [
+        {
+          "2": "\u003ch1\u003eHeader 1\u003c/h1\u003e\n\u003ch2\u003eHeader 2\u003c/h2\u003e\n\u003cp\u003eThis is a simple readme file.\u003c/p\u003e\n\u003ch3\u003eHeader 3\u003c/h3\u003e\n\u003cp\u003eIt should be rendered as HTML in index.html\u003c/p\u003e\n\u003cp\u003eIt should be possible to link to types...\u003c/p\u003e\n\u003cul\u003e\u003cli\u003eby qualified name: \u003ca href\u003d\"sample.json.html\"\u003e\u003ccode\u003esample.json\u003c/code\u003e\u003c/a\u003e\u003c/li\u003e\u003cli\u003eby qualified name with \u003ca href\u003d\"GlobalCtor.html\"\u003e\u003ccode\u003ewith text\u003c/code\u003e\u003c/a\u003e\u003c/li\u003e\u003cli\u003ethat are modules: \u003ca href\u003d\"module/example/index.html\"\u003e\u003ccode\u003eexample\u003c/code\u003e\u003c/a\u003e\u003c/li\u003e\u003cli\u003ethat are module exported types: \u003ca href\u003d\"module/example/nested_exports_Greeter.html\"\u003e\u003ccode\u003eexample/nested.Greeter\u003c/code\u003e\u003c/a\u003e\u003c/li\u003e\u003cli\u003ethat are module type properties: \u003ca href\u003d\"module/example/nested_exports_Greeter.html#greet\"\u003e\u003ccode\u003eexample/nested.Greeter#greet\u003c/code\u003e\u003c/a\u003e\u003c/li\u003e\u003c/ul\u003e\n"
+        }
+      ]
+    }
+  }
+}

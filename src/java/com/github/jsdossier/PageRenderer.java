@@ -17,7 +17,6 @@
 package com.github.jsdossier;
 
 import com.github.jsdossier.proto.PageData;
-import com.github.jsdossier.soy.JsonRenderer;
 import com.github.jsdossier.soy.Renderer;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -28,26 +27,18 @@ final class PageRenderer {
   private final DossierFileSystem dfs;
   private final DocTemplate template;
   private final Renderer renderer;
-  private final JsonRenderer jsonRenderer;
 
   @Inject
   PageRenderer(
       DossierFileSystem dfs,
       DocTemplate template,
-      Renderer renderer,
-      JsonRenderer jsonRenderer) {
+      Renderer renderer) {
     this.dfs = dfs;
     this.template = template;
     this.renderer = renderer;
-    this.jsonRenderer = jsonRenderer;
   }
 
-  void renderHtml(Path output, PageData data) throws IOException {
-    data = data.toBuilder().setResources(dfs.getResources(output, template)).build();
-    renderer.render(output, data);
-  }
-
-  void renderJson(Path output, PageData data) throws IOException {
-    jsonRenderer.render(output, data);
+  void render(Path htmlOut, Path jsonOut, PageData data) throws IOException {
+    renderer.render(htmlOut, jsonOut, dfs.getResources(htmlOut, template), data);
   }
 }

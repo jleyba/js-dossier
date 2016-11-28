@@ -1,0 +1,97 @@
+{
+  "2": {
+    "1": [
+      {
+        "1": "foo.quot.OneBarAlias",
+        "5": {
+          "2": 76,
+          "4": {
+            "3": "source/filter.js.src.html"
+          }
+        },
+        "7": {},
+        "8": {},
+        "14": {
+          "1": {
+            "1": "OneBarAlias",
+            "2": {
+              "2": 76,
+              "4": {
+                "3": "source/filter.js.src.html"
+              }
+            },
+            "3": {}
+          },
+          "3": true
+        },
+        "15": [
+          {
+            "1": {
+              "1": "equals",
+              "2": {
+                "2": 64,
+                "4": {
+                  "3": "source/filter.js.src.html"
+                }
+              },
+              "3": {}
+            },
+            "4": [
+              {
+                "1": "other",
+                "2": {
+                  "4": {
+                    "1": "foo.quot.OneBarAlias",
+                    "3": {
+                      "3": {
+                        "3": "foo.quot.OneBarAlias.html"
+                      }
+                    }
+                  }
+                },
+                "3": {
+                  "1": [
+                    {
+                      "2": "\u003cp\u003eThe other instance to compare.\u003c/p\u003e\n"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "1": {
+              "1": "run",
+              "2": {
+                "2": 70,
+                "4": {
+                  "3": "source/filter.js.src.html"
+                }
+              },
+              "3": {
+                "1": [
+                  {
+                    "2": "\u003cp\u003eRun, forest, run!\u003c/p\u003e\n"
+                  }
+                ]
+              }
+            }
+          }
+        ],
+        "21": {
+          "1": {
+            "1": "foo.quot",
+            "3": {
+              "3": {
+                "3": "foo.quot.html"
+              }
+            }
+          },
+          "4": true
+        },
+        "23": "foo.quot.OneBarAlias.html",
+        "24": "foo.quot.OneBarAlias"
+      }
+    ]
+  }
+}

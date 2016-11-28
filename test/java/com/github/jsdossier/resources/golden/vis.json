@@ -1,0 +1,239 @@
+{
+  "2": {
+    "1": [
+      {
+        "1": "vis",
+        "5": {
+          "2": 24,
+          "4": {
+            "3": "source/visibility.js.src.html"
+          }
+        },
+        "6": {
+          "1": [
+            {
+              "1": "InheritsVis",
+              "3": {
+                "1": [
+                  {
+                    "2": "\u003cp\u003eThis class inherits its visibility from the file.\u003c/p\u003e\n"
+                  }
+                ]
+              },
+              "5": {
+                "3": "vis.InheritsVis.html"
+              }
+            },
+            {
+              "1": "Private",
+              "3": {
+                "1": [
+                  {
+                    "2": "\u003cp\u003eThis class is explicitly private.\u003c/p\u003e\n"
+                  }
+                ]
+              },
+              "5": {
+                "3": "vis.Private.html"
+              }
+            },
+            {
+              "1": "Public",
+              "3": {
+                "1": [
+                  {
+                    "2": "\u003cp\u003eThis class is explicitly public.\u003c/p\u003e\n"
+                  }
+                ]
+              },
+              "5": {
+                "3": "vis.Public.html"
+              }
+            }
+          ]
+        },
+        "7": {},
+        "8": {},
+        "10": [
+          {
+            "1": {
+              "1": "DeprecatedTypeDef",
+              "2": {
+                "2": 66,
+                "4": {
+                  "3": "source/visibility.js.src.html"
+                }
+              },
+              "3": {
+                "1": [
+                  {
+                    "2": "\u003cp\u003eA package-private, deprecated type definition.\u003c/p\u003e\n"
+                  }
+                ]
+              },
+              "4": {
+                "1": [
+                  {
+                    "2": "\u003cp\u003eThis is deprecated; do not use it.\u003c/p\u003e\n"
+                  }
+                ]
+              },
+              "11": {
+                "4": true
+              },
+              "6": {
+                "2": true
+              }
+            },
+            "2": {
+              "4": {
+                "1": "string",
+                "4": true
+              }
+            }
+          },
+          {
+            "1": {
+              "1": "DeprecatedTypeDef2",
+              "2": {
+                "2": 74,
+                "4": {
+                  "3": "source/visibility.js.src.html"
+                }
+              },
+              "3": {
+                "1": [
+                  {
+                    "2": "\u003cp\u003eA package-private, deprecated type definition. This typedef has no\ndeprecation message.\u003c/p\u003e\n"
+                  }
+                ]
+              },
+              "4": {},
+              "11": {
+                "4": true
+              },
+              "6": {
+                "2": true
+              }
+            },
+            "2": {
+              "4": {
+                "1": "string",
+                "4": true
+              }
+            }
+          },
+          {
+            "1": {
+              "1": "PrivateTypeDef_",
+              "2": {
+                "2": 59,
+                "4": {
+                  "3": "source/visibility.js.src.html"
+                }
+              },
+              "3": {
+                "1": [
+                  {
+                    "2": "\u003cp\u003eThis is a private type definition.\u003c/p\u003e\n"
+                  }
+                ]
+              },
+              "11": {
+                "3": true
+              }
+            },
+            "2": {
+              "4": {
+                "1": "number",
+                "4": true
+              }
+            }
+          }
+        ],
+        "12": [
+          {
+            "1": {
+              "1": "deprecated",
+              "2": {
+                "2": 85,
+                "4": {
+                  "3": "source/visibility.js.src.html"
+                }
+              },
+              "3": {
+                "1": [
+                  {
+                    "2": "\u003cp\u003eA deprecated, package-private function.\u003c/p\u003e\n"
+                  }
+                ]
+              },
+              "4": {},
+              "11": {
+                "4": true
+              },
+              "6": {
+                "2": true
+              }
+            }
+          },
+          {
+            "1": {
+              "1": "one",
+              "2": {
+                "2": 79,
+                "4": {
+                  "3": "source/visibility.js.src.html"
+                }
+              },
+              "3": {
+                "1": [
+                  {
+                    "2": "\u003cp\u003eA package-private function.\u003c/p\u003e\n"
+                  }
+                ]
+              },
+              "11": {
+                "4": true
+              }
+            }
+          },
+          {
+            "1": {
+              "1": "public",
+              "2": {
+                "2": 90,
+                "4": {
+                  "3": "source/visibility.js.src.html"
+                }
+              },
+              "3": {
+                "1": [
+                  {
+                    "2": "\u003cp\u003eA public function.\u003c/p\u003e\n"
+                  }
+                ]
+              },
+              "11": {
+                "4": true
+              }
+            }
+          }
+        ],
+        "21": {
+          "1": {
+            "1": "vis",
+            "3": {
+              "3": {
+                "3": "vis.html"
+              }
+            }
+          },
+          "4": true
+        },
+        "23": "vis.html",
+        "24": "vis"
+      }
+    ]
+  }
+}

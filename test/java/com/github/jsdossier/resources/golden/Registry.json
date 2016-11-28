@@ -1,0 +1,117 @@
+{
+  "2": {
+    "1": [
+      {
+        "1": "test.registry",
+        "5": {
+          "2": 23,
+          "4": {
+            "3": "source/registry.js.src.html"
+          }
+        },
+        "7": {},
+        "8": {},
+        "12": [
+          {
+            "1": {
+              "1": "register",
+              "2": {
+                "2": 39,
+                "4": {
+                  "3": "source/registry.js.src.html"
+                }
+              },
+              "3": {
+                "1": [
+                  {
+                    "2": "\u003cp\u003eAdds a name to the global registry.\u003c/p\u003e\n"
+                  }
+                ]
+              }
+            },
+            "4": [
+              {
+                "1": "name",
+                "2": {
+                  "4": {
+                    "1": "string",
+                    "4": true
+                  }
+                },
+                "3": {
+                  "1": [
+                    {
+                      "2": "\u003cp\u003eThe name to register.\u003c/p\u003e\n"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ],
+        "21": {
+          "1": {
+            "1": "test.registry",
+            "3": {
+              "3": {
+                "3": "test.registry.html"
+              }
+            }
+          },
+          "4": true
+        },
+        "23": "test.registry.html",
+        "24": "test.registry"
+      },
+      {
+        "1": "test.Registry",
+        "5": {
+          "2": 29,
+          "4": {
+            "3": "source/registry.js.src.html"
+          }
+        },
+        "7": {
+          "1": [
+            {
+              "2": "\u003cp\u003eA generic registry.\u003c/p\u003e\n"
+            }
+          ]
+        },
+        "8": {},
+        "14": {
+          "1": {
+            "1": "Registry",
+            "2": {
+              "2": 29,
+              "4": {
+                "3": "source/registry.js.src.html"
+              }
+            },
+            "3": {
+              "1": [
+                {
+                  "2": "\u003cp\u003eA generic registry.\u003c/p\u003e\n"
+                }
+              ]
+            }
+          },
+          "3": true
+        },
+        "21": {
+          "1": {
+            "1": "test",
+            "3": {
+              "3": {
+                "3": "test.html"
+              }
+            }
+          },
+          "4": true
+        },
+        "23": "test.Registry.html",
+        "24": "test.Registry"
+      }
+    ]
+  }
+}

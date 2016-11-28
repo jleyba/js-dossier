@@ -72,10 +72,8 @@ final class RenderSourceFileTask implements Callable<Path> {
         .build();
 
     Path htmlPath = dfs.getPath(path);
-    renderer.renderHtml(htmlPath, page);
-
     Path jsonPath = dfs.getJsonPath(htmlPath);
-    renderer.renderJson(jsonPath, page);
+    renderer.render(htmlPath, jsonPath, page);
 
     index.addSourceFile(htmlPath, jsonPath);
 

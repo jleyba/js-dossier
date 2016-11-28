@@ -76,8 +76,7 @@ final class RenderIndexTask implements Callable<Path> {
 
     Path htmlPath = dfs.getPath("index.html");
     Path jsonPath = dfs.getJsonPath(htmlPath);
-    renderer.renderHtml(htmlPath, data);
-    renderer.renderJson(jsonPath, data);
+    renderer.render(htmlPath, jsonPath, data);
     index.addSourceFile(htmlPath, jsonPath);
     return htmlPath;
   }

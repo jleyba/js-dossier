@@ -1,0 +1,122 @@
+{
+  "2": {
+    "1": [
+      {
+        "1": "IdGenerator",
+        "5": {
+          "2": 67,
+          "4": {
+            "3": "../../source/example/nested.js.src.html"
+          }
+        },
+        "7": {
+          "1": [
+            {
+              "2": "\u003cp\u003eGenerates IDs.\u003c/p\u003e\n"
+            }
+          ]
+        },
+        "8": {
+          "5": true
+        },
+        "14": {
+          "1": {
+            "1": "IdGenerator",
+            "2": {
+              "2": 67,
+              "4": {
+                "3": "../../source/example/nested.js.src.html"
+              }
+            },
+            "3": {
+              "1": [
+                {
+                  "2": "\u003cp\u003eGenerates IDs.\u003c/p\u003e\n"
+                }
+              ]
+            }
+          }
+        },
+        "15": [
+          {
+            "1": {
+              "1": "getNext",
+              "2": {
+                "2": 49,
+                "4": {
+                  "3": "../../source/example/nested.js.src.html"
+                }
+              },
+              "3": {}
+            },
+            "5": {
+              "2": {
+                "4": {
+                  "1": "string",
+                  "4": true
+                }
+              },
+              "3": {
+                "1": [
+                  {
+                    "2": "\u003cp\u003eA new ID.\u003c/p\u003e\n"
+                  }
+                ]
+              }
+            },
+            "6": [
+              {
+                "2": {
+                  "6": {
+                    "1": [
+                      {
+                        "4": {
+                          "1": "Error",
+                          "4": true
+                        }
+                      },
+                      {
+                        "10": true
+                      }
+                    ]
+                  }
+                },
+                "3": {
+                  "1": [
+                    {
+                      "2": "\u003cp\u003eIf an ID could not be generated.\u003c/p\u003e\n"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ],
+        "27": [
+          {
+            "1": "IncrementingIdGenerator",
+            "2": "example/nested.IncrementingIdGenerator",
+            "3": {
+              "3": {
+                "3": "nested_exports_IncrementingIdGenerator.html"
+              }
+            }
+          }
+        ],
+        "21": {
+          "1": {
+            "1": "example/nested",
+            "3": {
+              "3": {
+                "3": "nested.html"
+              }
+            }
+          },
+          "5": true
+        },
+        "23": "nested_exports_IdGenerator.html",
+        "24": "example/nested.IdGenerator"
+      }
+    ]
+  }
+}

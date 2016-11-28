@@ -1,0 +1,112 @@
+{
+  "2": {
+    "1": [
+      {
+        "1": "sample.inheritance.LeafInterface",
+        "5": {
+          "2": 35,
+          "4": {
+            "3": "source/inheritance.js.src.html"
+          }
+        },
+        "7": {},
+        "8": {
+          "5": true
+        },
+        "14": {
+          "1": {
+            "1": "LeafInterface",
+            "2": {
+              "2": 35,
+              "4": {
+                "3": "source/inheritance.js.src.html"
+              }
+            },
+            "3": {}
+          }
+        },
+        "19": [
+          {
+            "1": "sample.inheritance.BaseInterface",
+            "3": {
+              "3": {
+                "3": "sample.inheritance.BaseInterface.html"
+              }
+            }
+          },
+          {
+            "1": "sample.inheritance.OtherInterface",
+            "3": {
+              "3": {
+                "3": "sample.inheritance.OtherInterface.html"
+              }
+            },
+            "5": [
+              {
+                "4": {
+                  "1": "number",
+                  "4": true
+                }
+              }
+            ]
+          },
+          {
+            "1": "sample.inheritance.SecondInterface",
+            "3": {
+              "3": {
+                "3": "sample.inheritance.SecondInterface.html"
+              }
+            }
+          }
+        ],
+        "27": [
+          {
+            "1": "sample.inheritance.DeprecatedFinalClass",
+            "3": {
+              "3": {
+                "3": "sample.inheritance.DeprecatedFinalClass.html"
+              }
+            }
+          },
+          {
+            "1": "sample.inheritance.FinalClass",
+            "3": {
+              "3": {
+                "3": "sample.inheritance.FinalClass.html"
+              }
+            }
+          },
+          {
+            "1": "sample.inheritance.SecondClass",
+            "3": {
+              "3": {
+                "3": "sample.inheritance.SecondClass.html"
+              }
+            }
+          },
+          {
+            "1": "sample.inheritance.ThirdClass",
+            "3": {
+              "3": {
+                "3": "sample.inheritance.ThirdClass.html"
+              }
+            }
+          }
+        ],
+        "21": {
+          "1": {
+            "1": "sample.inheritance",
+            "3": {
+              "3": {
+                "3": "sample.inheritance.html"
+              }
+            }
+          },
+          "4": true
+        },
+        "23": "sample.inheritance.LeafInterface.html",
+        "24": "sample.inheritance.LeafInterface"
+      }
+    ]
+  }
+}

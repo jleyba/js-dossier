@@ -24,6 +24,7 @@ import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 import static java.nio.file.StandardOpenOption.WRITE;
 
 import com.github.jsdossier.proto.PageData;
+import com.github.jsdossier.proto.Resources;
 import com.github.jsdossier.proto.TypeLink;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -36,8 +37,9 @@ import com.google.template.soy.tofu.SoyTofu;
 import com.google.template.soy.types.SoyTypeProvider;
 import com.google.template.soy.types.SoyTypeRegistry;
 import com.google.template.soy.types.proto.SoyProtoTypeProvider;
-import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
@@ -51,25 +53,42 @@ import javax.inject.Inject;
 public class Renderer {
 
   private final SoyTofu tofu;
+  private final JsonRenderer jsonRenderer;
 
   @Inject
   Renderer(
       SoyFileSet.Builder filesetBuilder,
-      SoyTypeProvider typeProvider) {
+      SoyTypeProvider typeProvider,
+      JsonRenderer jsonRenderer) {
     this.tofu = filesetBuilder
         .add(Renderer.class.getResource("resources/types.soy"))
         .add(Renderer.class.getResource("resources/dossier.soy"))
         .setLocalTypeRegistry(new SoyTypeRegistry(ImmutableSet.of(typeProvider)))
         .build()
         .compileToTofu();
+    this.jsonRenderer = jsonRenderer;
   }
 
-  public void render(Path output, PageData page) throws IOException {
-    Files.createDirectories(output.getParent());
-    try (BufferedWriter writer =
-             newBufferedWriter(output, UTF_8, CREATE, WRITE, TRUNCATE_EXISTING)) {
+  public void render(
+      Path htmlOut,
+      Path jsonOut,
+      Resources resources,
+      PageData data) throws IOException {
+    StringWriter sw = new StringWriter();
+    jsonRenderer.render(sw, data);
+    String jsonData = sw.toString();
+
+    Files.createDirectories(htmlOut.getParent());
+    Files.createDirectories(jsonOut.getParent());
+
+    Files.write(jsonOut, jsonData.getBytes(UTF_8), CREATE, WRITE, TRUNCATE_EXISTING);
+
+    try (Writer writer = newBufferedWriter(htmlOut, UTF_8, CREATE, WRITE, TRUNCATE_EXISTING)) {
       tofu.newRenderer("dossier.soy.page")
-          .setData(ImmutableMap.of("data", page))
+          .setData(ImmutableMap.of(
+              "resources", resources,
+              "data", data,
+              "jsonData", jsonData))
           .render(writer);
     }
   }

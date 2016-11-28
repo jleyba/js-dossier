@@ -1,0 +1,314 @@
+{
+  "2": {
+    "1": [
+      {
+        "1": "sample.inheritance.NumberClass",
+        "5": {
+          "2": 128,
+          "4": {
+            "3": "source/inheritance.js.src.html"
+          }
+        },
+        "7": {},
+        "8": {
+          "7": true
+        },
+        "10": [
+          {
+            "1": {
+              "1": "NumberClass.Result",
+              "2": {
+                "2": 137,
+                "4": {
+                  "3": "source/inheritance.js.src.html"
+                }
+              },
+              "3": {
+                "1": [
+                  {
+                    "2": "\u003cp\u003eType definition for an addition result.\u003c/p\u003e\n"
+                  }
+                ]
+              }
+            },
+            "2": {
+              "4": {
+                "1": "number",
+                "4": true
+              }
+            }
+          }
+        ],
+        "14": {
+          "1": {
+            "1": "NumberClass",
+            "2": {
+              "2": 128,
+              "4": {
+                "3": "source/inheritance.js.src.html"
+              }
+            },
+            "3": {}
+          },
+          "3": true
+        },
+        "15": [
+          {
+            "1": {
+              "1": "add",
+              "2": {
+                "2": 118,
+                "4": {
+                  "3": "source/inheritance.js.src.html"
+                }
+              },
+              "3": {
+                "1": [
+                  {
+                    "2": "\u003cp\u003eAdds a value to this instance\u0026#39;s \u003ca href\u003d\"sample.inheritance.NumberClass.html#getValue\"\u003e\u003ccode\u003evalue\u003c/code\u003e\u003c/a\u003e.\u003c/p\u003e\n"
+                  }
+                ]
+              },
+              "7": {
+                "1": "sample.inheritance.TemplateClass",
+                "3": {
+                  "3": {
+                    "3": "sample.inheritance.TemplateClass.html#add"
+                  }
+                }
+              }
+            },
+            "4": [
+              {
+                "1": "value",
+                "2": {
+                  "6": {
+                    "1": [
+                      {
+                        "4": {
+                          "1": "T"
+                        }
+                      },
+                      {
+                        "10": true
+                      }
+                    ]
+                  }
+                },
+                "3": {
+                  "1": [
+                    {
+                      "2": "\u003cp\u003eThe value to add.\u003c/p\u003e\n"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "1": {
+              "1": "addMany",
+              "2": {
+                "2": 147,
+                "4": {
+                  "3": "source/inheritance.js.src.html"
+                }
+              },
+              "3": {
+                "1": [
+                  {
+                    "2": "\u003cp\u003eSimilar to \u003ca href\u003d\"sample.inheritance.NumberClass.html#add\"\u003e\u003ccode\u003e#add\u003c/code\u003e\u003c/a\u003e, but handles many values.\u003c/p\u003e\n"
+                  }
+                ]
+              },
+              "10": [
+                {
+                  "1": [
+                    {
+                      "1": "#add",
+                      "3": {
+                        "3": {
+                          "3": "sample.inheritance.NumberClass.html#add"
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            "4": [
+              {
+                "1": "n",
+                "2": {
+                  "4": {
+                    "1": "number",
+                    "4": true
+                  }
+                },
+                "3": {
+                  "1": [
+                    {
+                      "2": "\u003cp\u003eThe first number to add.\u003c/p\u003e\n"
+                    }
+                  ]
+                }
+              },
+              {
+                "1": "var_args",
+                "2": {
+                  "2": true,
+                  "4": {
+                    "1": "number",
+                    "4": true
+                  }
+                },
+                "3": {
+                  "1": [
+                    {
+                      "2": "\u003cp\u003eThe remaining numbers to add.\u003c/p\u003e\n"
+                    }
+                  ]
+                }
+              }
+            ],
+            "5": {
+              "2": {
+                "4": {
+                  "1": "number",
+                  "4": true
+                }
+              },
+              "3": {
+                "1": [
+                  {
+                    "2": "\u003cp\u003eThe result.\u003c/p\u003e\n"
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "1": {
+              "1": "getValue",
+              "2": {
+                "2": 109,
+                "4": {
+                  "3": "source/inheritance.js.src.html"
+                }
+              },
+              "3": {},
+              "7": {
+                "1": "sample.inheritance.TemplateClass",
+                "3": {
+                  "3": {
+                    "3": "sample.inheritance.TemplateClass.html#getValue"
+                  }
+                }
+              }
+            },
+            "5": {
+              "2": {
+                "4": {
+                  "1": "number",
+                  "4": true
+                }
+              },
+              "3": {
+                "1": [
+                  {
+                    "2": "\u003cp\u003e.\u003c/p\u003e\n"
+                  }
+                ]
+              }
+            }
+          }
+        ],
+        "16": [
+          {
+            "1": {
+              "1": "name",
+              "2": {
+                "2": 104,
+                "4": {
+                  "3": "source/inheritance.js.src.html"
+                }
+              },
+              "3": {},
+              "7": {
+                "1": "sample.inheritance.TemplateClass",
+                "3": {
+                  "3": {
+                    "3": "sample.inheritance.TemplateClass.html#name"
+                  }
+                }
+              }
+            },
+            "2": {
+              "4": {
+                "1": "string",
+                "4": true
+              }
+            }
+          },
+          {
+            "1": {
+              "1": "value",
+              "2": {
+                "2": 119,
+                "4": {
+                  "3": "source/inheritance.js.src.html"
+                }
+              },
+              "3": {},
+              "7": {
+                "1": "sample.inheritance.TemplateClass",
+                "3": {
+                  "3": {
+                    "3": "sample.inheritance.TemplateClass.html#value"
+                  }
+                }
+              }
+            },
+            "2": {
+              "4": {
+                "1": "number",
+                "4": true
+              }
+            }
+          }
+        ],
+        "18": [
+          {
+            "1": "sample.inheritance.TemplateClass",
+            "3": {
+              "3": {
+                "3": "sample.inheritance.TemplateClass.html"
+              }
+            },
+            "5": [
+              {
+                "4": {
+                  "1": "number",
+                  "4": true
+                }
+              }
+            ]
+          }
+        ],
+        "21": {
+          "1": {
+            "1": "sample.inheritance",
+            "3": {
+              "3": {
+                "3": "sample.inheritance.html"
+              }
+            }
+          },
+          "4": true
+        },
+        "23": "sample.inheritance.NumberClass.html",
+        "24": "sample.inheritance.NumberClass"
+      }
+    ]
+  }
+}

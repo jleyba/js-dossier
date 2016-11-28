@@ -1005,7 +1005,9 @@
  * Renders a full page.
  */
 {template .page}
+  {@param resources: dossier.Resources}
   {@param data: dossier.PageData}
+  {@param jsonData: string}
 
   <!DOCTYPE html>
   <html lang="en" class="loading">
@@ -1015,11 +1017,11 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   {call .pageTitle data="all" /}
-  {if $data.resources}
+  {if $resources}
     {call .importScripts_}
-      {param scripts: $data.resources.headScriptList /}
+      {param scripts: $resources.headScriptList /}
     {/call}
-    {foreach $styleSheet in $data.resources.cssList}
+    {foreach $styleSheet in $resources.cssList}
       <link href="{$styleSheet}" rel="stylesheet" type="text/css">
     {/foreach}
   {/if}
@@ -1034,8 +1036,8 @@
   </header>
   <nav class="dossier-nav"></nav>
   <div class="content">
-    <main>
-      {call .mainPageContent data="all" /}
+    <main data-page-data="{$jsonData}">
+//      {call .mainPageContent data="all" /}
     </main>
     <footer>
       <div>
@@ -1043,9 +1045,9 @@
       </div>
     </footer>
   </div>
-  {if $data.resources}
+  {if $resources}
     {call .importScripts_}
-      {param scripts: $data.resources.tailScriptList /}
+      {param scripts: $resources.tailScriptList /}
     {/call}
   {/if}
 {/template}

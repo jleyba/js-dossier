@@ -30,7 +30,6 @@ import static java.nio.file.Files.readAllBytes;
 import static java.nio.file.Files.write;
 import static org.junit.Assert.assertEquals;
 
-import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
@@ -43,16 +42,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.runners.Enclosed;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -64,6 +53,15 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.experimental.runners.Enclosed;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 @RunWith(Enclosed.class)
 public class EndToEndTest {
@@ -127,9 +125,7 @@ public class EndToEndTest {
     @Test
     public void checkSourceFileRendering() throws IOException {
       Document document = load(outDir.resolve("source/subdir/emptyenum.js.src.html"));
-      compareWithGoldenFile(
-          querySelector(document, "article.srcfile"),
-          "source/subdir/emptyenum.js.src.html");
+      compareWithGoldenFile(extractPageData(document), "source/subdir/emptyenum.js.src.json");
       checkHeader(document);
       checkNav(document);
       compareWithGoldenFile(
@@ -139,7 +135,7 @@ public class EndToEndTest {
     @Test
     public void checkMarkdownIndexProcessing() throws IOException {
       Document document = load(outDir.resolve("index.html"));
-      compareWithGoldenFile(querySelector(document, "article.page"), "index.html");
+      compareWithGoldenFile(extractPageData(document), "index.json");
       checkHeader(document);
       checkNav(document);
       checkFooter(document);
@@ -148,7 +144,7 @@ public class EndToEndTest {
     @Test
     public void checkGlobalClass() throws IOException {
       Document document = load(outDir.resolve("GlobalCtor.html"));
-      compareWithGoldenFile(querySelector(document, "article"), "GlobalCtor.html");
+      compareWithGoldenFile(extractPageData(document), "GlobalCtor.json");
       checkHeader(document);
       checkNav(document);
       checkFooter(document);
@@ -157,7 +153,7 @@ public class EndToEndTest {
     @Test
     public void checkGlobalEnum() throws IOException {
       Document document = load(outDir.resolve("GlobalEnum.html"));
-      compareWithGoldenFile(querySelector(document, "article"), "GlobalEnum.html");
+      compareWithGoldenFile(extractPageData(document), "GlobalEnum.json");
       checkHeader(document);
       checkNav(document);
       checkFooter(document);
@@ -166,7 +162,7 @@ public class EndToEndTest {
     @Test
     public void checkEmptyGlobalEnum() throws IOException {
       Document document = load(outDir.resolve("EmptyEnum.html"));
-      compareWithGoldenFile(querySelector(document, "article"), "EmptyEnum.html");
+      compareWithGoldenFile(extractPageData(document), "EmptyEnum.json");
       checkHeader(document);
       checkNav(document);
       checkFooter(document);
@@ -175,7 +171,7 @@ public class EndToEndTest {
     @Test
     public void checkGlobalUndefinedEnum() throws IOException {
       Document document = load(outDir.resolve("UndefinedEnum.html"));
-      compareWithGoldenFile(querySelector(document, "article"), "UndefinedEnum.html");
+      compareWithGoldenFile(extractPageData(document), "UndefinedEnum.json");
       checkHeader(document);
       checkNav(document);
       checkFooter(document);
@@ -184,7 +180,7 @@ public class EndToEndTest {
     @Test
     public void checkDeprecatedClass() throws IOException {
       Document document = load(outDir.resolve("DeprecatedFoo.html"));
-      compareWithGoldenFile(querySelector(document, "article"), "DeprecatedFoo.html");
+      compareWithGoldenFile(extractPageData(document), "DeprecatedFoo.json");
       checkHeader(document);
       checkNav(document);
       checkFooter(document);
@@ -193,7 +189,7 @@ public class EndToEndTest {
     @Test
     public void checkFunctionNamespace() throws IOException {
       Document document = load(outDir.resolve("sample.json.html"));
-      compareWithGoldenFile(querySelector(document, "article"), "sample.json.html");
+      compareWithGoldenFile(extractPageData(document), "sample.json.json");
       checkHeader(document);
       checkNav(document);
       checkFooter(document);
@@ -202,8 +198,7 @@ public class EndToEndTest {
     @Test
     public void checkInterfaceThatExtendsOtherInterfaces() throws IOException {
       Document document = load(outDir.resolve("sample.inheritance.LeafInterface.html"));
-      compareWithGoldenFile(querySelector(document, "article"),
-          "sample.inheritance.LeafInterface.html");
+      compareWithGoldenFile(extractPageData(document), "sample.inheritance.LeafInterface.json");
       checkHeader(document);
       checkNav(document);
       checkFooter(document);
@@ -212,7 +207,7 @@ public class EndToEndTest {
     @Test
     public void checkExportedApiOfClosureModule() throws IOException {
       Document document = load(outDir.resolve("closure.module.html"));
-      compareWithGoldenFile(querySelector(document, "article"), "closure.module.html");
+      compareWithGoldenFile(extractPageData(document), "closure.module.json");
       checkHeader(document);
       checkNav(document);
       checkFooter(document);
@@ -221,7 +216,7 @@ public class EndToEndTest {
     @Test
     public void checkClassDefiendOnClosureModuleExportsObject() throws IOException {
       Document document = load(outDir.resolve("closure.module.Clazz.html"));
-      compareWithGoldenFile(querySelector(document, "article"), "closure.module.Clazz.html");
+      compareWithGoldenFile(extractPageData(document), "closure.module.Clazz.json");
       checkHeader(document);
       checkNav(document);
       checkFooter(document);
@@ -230,7 +225,7 @@ public class EndToEndTest {
     @Test
     public void checkClassExportedByClosureModule() throws IOException {
       Document document = load(outDir.resolve("closure.module.PubClass.html"));
-      compareWithGoldenFile(querySelector(document, "article"), "closure.module.PubClass.html");
+      compareWithGoldenFile(extractPageData(document), "closure.module.PubClass.json");
       checkHeader(document);
       checkNav(document);
       checkFooter(document);
@@ -239,8 +234,7 @@ public class EndToEndTest {
     @Test
     public void checkClassExtendsTemplateClass() throws IOException {
       Document document = load(outDir.resolve("sample.inheritance.NumberClass.html"));
-      compareWithGoldenFile(querySelector(document, "article"),
-          "sample.inheritance.NumberClass.html");
+      compareWithGoldenFile(extractPageData(document), "sample.inheritance.NumberClass.json");
       checkHeader(document);
       checkNav(document);
       checkFooter(document);
@@ -249,8 +243,7 @@ public class EndToEndTest {
     @Test
     public void checkGoogDefinedClass() throws IOException {
       Document document = load(outDir.resolve("sample.inheritance.StringClass.html"));
-      compareWithGoldenFile(querySelector(document, "article"),
-          "sample.inheritance.StringClass.html");
+      compareWithGoldenFile(extractPageData(document), "sample.inheritance.StringClass.json");
       checkHeader(document);
       checkNav(document);
       checkFooter(document);
@@ -259,8 +252,7 @@ public class EndToEndTest {
     @Test
     public void checkDeprecatedClassWithSuperTypes() throws IOException {
       Document document = load(outDir.resolve("sample.inheritance.DeprecatedFinalClass.html"));
-      compareWithGoldenFile(querySelector(document, "article"),
-          "sample.inheritance.DeprecatedFinalClass.html");
+      compareWithGoldenFile(extractPageData(document), "sample.inheritance.DeprecatedFinalClass.json");
       checkHeader(document);
       checkNav(document);
       checkFooter(document);
@@ -269,7 +261,7 @@ public class EndToEndTest {
     @Test
     public void checkPackageIndexCommonJsModule() throws IOException {
       Document document = load(outDir.resolve("module/example/index.html"));
-      compareWithGoldenFile(querySelector(document, "article"), "module/example/index.html");
+      compareWithGoldenFile(extractPageData(document), "module/example/index.json");
       checkHeader(document);
       checkNav(document);
       checkModuleFooter(document);
@@ -278,7 +270,7 @@ public class EndToEndTest {
     @Test
     public void checkCommonJsModule() throws IOException {
       Document document = load(outDir.resolve("module/example/nested.html"));
-      compareWithGoldenFile(querySelector(document, "article"), "module/example/nested.html");
+      compareWithGoldenFile(extractPageData(document), "module/example/nested.json");
       checkHeader(document);
       checkNav(document);
       checkModuleFooter(document);
@@ -287,7 +279,7 @@ public class EndToEndTest {
     @Test
     public void checkCommonJsModuleThatIsExportedConstructor() throws IOException {
       Document document = load(outDir.resolve("module/example/worker.html"));
-      compareWithGoldenFile(querySelector(document, "article"), "module/example/worker.html");
+      compareWithGoldenFile(extractPageData(document), "module/example/worker.json");
       checkHeader(document);
       checkNav(document);
       checkModuleFooter(document);
@@ -296,8 +288,7 @@ public class EndToEndTest {
     @Test
     public void checkCommonJsModuleClassAlias() throws IOException {
       Document document = load(outDir.resolve("module/example/index_exports_Greeter.html"));
-      compareWithGoldenFile(
-          querySelector(document, "article"), "module/example/index_exports_Greeter.html");
+      compareWithGoldenFile(extractPageData(document), "module/example/index_exports_Greeter.json");
       checkHeader(document);
       checkNav(document);
       checkModuleFooter(document);
@@ -306,8 +297,8 @@ public class EndToEndTest {
     @Test
     public void checkCommonJsModuleExportedInterface() throws IOException {
       Document document = load(outDir.resolve("module/example/nested_exports_IdGenerator.html"));
-      compareWithGoldenFile(querySelector(document, "article"),
-          "module/example/nested_exports_IdGenerator.html");
+      compareWithGoldenFile(
+          extractPageData(document), "module/example/nested_exports_IdGenerator.json");
       checkHeader(document);
       checkNav(document);
       checkModuleFooter(document);
@@ -317,8 +308,8 @@ public class EndToEndTest {
     public void checkCommonJsModuleInterfaceImplementation() throws IOException {
       Document document = load(outDir.resolve(
           "module/example/nested_exports_IncrementingIdGenerator.html"));
-      compareWithGoldenFile(querySelector(document, "article"),
-          "module/example/nested_exports_IncrementingIdGenerator.html");
+      compareWithGoldenFile(
+          extractPageData(document), "module/example/nested_exports_IncrementingIdGenerator.json");
       checkHeader(document);
       checkNav(document);
       checkModuleFooter(document);
@@ -328,8 +319,8 @@ public class EndToEndTest {
     public void checkModuleExportedClass() throws IOException {
       Document document = load(outDir.resolve(
           "module/example/nested_exports_Person.html"));
-      compareWithGoldenFile(querySelector(document, "article"),
-          "module/example/nested_exports_Person.html");
+      compareWithGoldenFile(
+          extractPageData(document), "module/example/nested_exports_Person.json");
       checkHeader(document);
       checkNav(document);
       checkModuleFooter(document);
@@ -339,8 +330,7 @@ public class EndToEndTest {
     public void checkClassThatExtendsExternType() throws IOException {
       Document document = load(outDir.resolve(
           "sample.inheritance.RunnableError.html"));
-      compareWithGoldenFile(querySelector(document, "article"),
-          "sample.inheritance.RunnableError.html");
+      compareWithGoldenFile(extractPageData(document), "sample.inheritance.RunnableError.json");
       checkHeader(document);
       checkNav(document);
       checkFooter(document);
@@ -349,7 +339,7 @@ public class EndToEndTest {
     @Test
     public void checkNamespaceWithFilteredTypes() throws IOException {
       Document document = load(outDir.resolve("foo.html"));
-      compareWithGoldenFile(querySelector(document, "article"), "foo.html");
+      compareWithGoldenFile(extractPageData(document), "foo.json");
       checkHeader(document);
       checkNav(document);
       checkFooter(document);
@@ -358,7 +348,7 @@ public class EndToEndTest {
     @Test
     public void checkUnfilteredAliasOfFilteredClass() throws IOException {
       Document document = load(outDir.resolve("foo.quot.OneBarAlias.html"));
-      compareWithGoldenFile(querySelector(document, "article"), "foo.quot.OneBarAlias.html");
+      compareWithGoldenFile(extractPageData(document), "foo.quot.OneBarAlias.json");
       checkHeader(document);
       checkNav(document);
       checkFooter(document);
@@ -367,7 +357,7 @@ public class EndToEndTest {
     @Test
     public void checkEs6Class() throws IOException {
       Document document = load(outDir.resolve("Calculator.html"));
-      compareWithGoldenFile(querySelector(document, "article"), "Calculator.html");
+      compareWithGoldenFile(extractPageData(document), "Calculator.json");
       checkHeader(document);
       checkNav(document);
       checkFooter(document);
@@ -377,7 +367,7 @@ public class EndToEndTest {
     public void checkTypesWithCaseInsensitiveOutputFileNameCollision() throws IOException {
       for (String file : ImmutableList.of("test.Registry.html", "test.registry.html")) {
         Document document = load(outDir.resolve(file));
-        compareWithGoldenFile(querySelector(document, "main"), "Registry.html");
+        compareWithGoldenFile(extractPageData(document), "Registry.json");
         checkHeader(document);
         checkNav(document);
         checkFooter(document);
@@ -387,7 +377,7 @@ public class EndToEndTest {
     @Test
     public void checkEs6Module() throws IOException {
       Document document = load(outDir.resolve("module/example/net.html"));
-      compareWithGoldenFile(querySelector(document, "article"), "module/example/net.html");
+      compareWithGoldenFile(extractPageData(document), "module/example/net.json");
       checkHeader(document);
       checkNav(document);
       checkModuleFooter(document);
@@ -396,7 +386,7 @@ public class EndToEndTest {
     @Test
     public void checkEs6ModuleWithImportButNoExports() throws IOException {
       Document document = load(outDir.resolve("module/example/empty.html"));
-      compareWithGoldenFile(querySelector(document, "article"), "module/example/empty.html");
+      compareWithGoldenFile(extractPageData(document), "module/example/empty.json");
       checkHeader(document);
       checkNav(document);
       checkModuleFooter(document);
@@ -405,8 +395,8 @@ public class EndToEndTest {
     @Test
     public void checkEs6ModuleExportedClass() throws IOException {
       Document document = load(outDir.resolve("module/example/net_exports_HttpClient.html"));
-      compareWithGoldenFile(querySelector(document, "article"),
-          "module/example/net_exports_HttpClient.html");
+      compareWithGoldenFile(
+          extractPageData(document), "module/example/net_exports_HttpClient.json");
       checkHeader(document);
       checkNav(document);
       checkModuleFooter(document);
@@ -436,13 +426,13 @@ public class EndToEndTest {
     @Test
     public void visibilityRendering() throws IOException {
       Document document = load(outDir.resolve("vis.html"));
-      compareWithGoldenFile(querySelector(document, "article"), "vis.html");
+      compareWithGoldenFile(extractPageData(document), "vis.json");
       checkHeader(document);
       checkNav(document);
       checkFooter(document);
 
       document = load(outDir.resolve("vis.InheritsVis.html"));
-      compareWithGoldenFile(querySelector(document, "article"), "vis.InheritsVis.html");
+      compareWithGoldenFile(extractPageData(document), "vis.InheritsVis.json");
       checkHeader(document);
       checkNav(document);
       checkFooter(document);
@@ -451,7 +441,7 @@ public class EndToEndTest {
     @Test
     public void checkRecord() throws IOException {
       Document document = load(outDir.resolve("Person.html"));
-      compareWithGoldenFile(querySelector(document, "article"), "Person.html");
+      compareWithGoldenFile(extractPageData(document), "Person.json");
       checkHeader(document);
       checkNav(document);
       checkFooter(document);
@@ -507,15 +497,12 @@ public class EndToEndTest {
 
     private static String normalizeLines(String in) {
       Iterable<String> lines = Splitter.on('\n').split(in);
-      lines = Iterables.transform(lines, new Function<String, String>() {
-        @Override
-        public String apply(String input) {
-          int end = input.length();
-          while (end > 0 && input.charAt(end - 1) <= ' ') {
-            end -= 1;
-          }
-          return input.substring(0, end);
+      lines = Iterables.transform(lines, input -> {
+        int end = input.length();
+        while (end > 0 && input.charAt(end - 1) <= ' ') {
+          end -= 1;
         }
+        return input.substring(0, end);
       });
       return Joiner.on('\n').join(lines).trim();
     }
@@ -527,6 +514,18 @@ public class EndToEndTest {
           .prettyPrint(true)
           .indentAmount(2);
       return document;
+    }
+    
+    private static String extractPageData(Document document) {
+      Elements elements = document.select("main[data-page-data]");
+      checkState(!elements.isEmpty(), "Main element not found in %s", document);
+      Element element = Iterables.getOnlyElement(elements);
+
+      Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
+      String data = element.attributes().dataset().get("page-data");
+      JsonObject json = gson.fromJson(data, JsonObject.class);
+      return gson.toJson(json).trim();
     }
 
     private static Element querySelector(Document document, String selector) {

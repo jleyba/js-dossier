@@ -1,0 +1,169 @@
+{
+  "2": {
+    "1": [
+      {
+        "1": "sample.inheritance.DeprecatedFinalClass",
+        "5": {
+          "2": 223,
+          "4": {
+            "3": "source/inheritance.js.src.html"
+          }
+        },
+        "7": {},
+        "8": {
+          "2": true,
+          "4": true
+        },
+        "9": {
+          "1": [
+            {
+              "2": "\u003cp\u003eUse \u003ca href\u003d\"sample.inheritance.FinalClass.html\"\u003e\u003ccode\u003esample.inheritance.FinalClass\u003c/code\u003e\u003c/a\u003e instead.\u003c/p\u003e\n"
+            }
+          ]
+        },
+        "14": {
+          "1": {
+            "1": "DeprecatedFinalClass",
+            "2": {
+              "2": 223,
+              "4": {
+                "3": "source/inheritance.js.src.html"
+              }
+            },
+            "3": {},
+            "4": {
+              "1": [
+                {
+                  "2": "\u003cp\u003eUse \u003ca href\u003d\"sample.inheritance.FinalClass.html\"\u003e\u003ccode\u003esample.inheritance.FinalClass\u003c/code\u003e\u003c/a\u003e instead.\u003c/p\u003e\n"
+                }
+              ]
+            },
+            "6": {
+              "2": true
+            }
+          },
+          "3": true
+        },
+        "15": [
+          {
+            "1": {
+              "1": "run",
+              "2": {
+                "2": 227,
+                "4": {
+                  "3": "source/inheritance.js.src.html"
+                }
+              },
+              "3": {
+                "1": [
+                  {
+                    "2": "\u003cp\u003eRun this instance.\u003c/p\u003e\n"
+                  }
+                ]
+              },
+              "8": {
+                "1": "sample.inheritance.SecondClass",
+                "3": {
+                  "3": {
+                    "3": "sample.inheritance.SecondClass.html#run"
+                  }
+                }
+              },
+              "9": [
+                {
+                  "1": "sample.inheritance.Runnable",
+                  "3": {
+                    "3": {
+                      "3": "sample.inheritance.Runnable.html#run"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        ],
+        "18": [
+          {
+            "1": "sample.inheritance.SecondClass",
+            "3": {
+              "3": {
+                "3": "sample.inheritance.SecondClass.html"
+              }
+            }
+          },
+          {
+            "1": "sample.inheritance.BaseClass",
+            "3": {
+              "3": {
+                "3": "sample.inheritance.BaseClass.html"
+              }
+            }
+          }
+        ],
+        "19": [
+          {
+            "1": "sample.inheritance.BaseInterface",
+            "3": {
+              "3": {
+                "3": "sample.inheritance.BaseInterface.html"
+              }
+            }
+          },
+          {
+            "1": "sample.inheritance.LeafInterface",
+            "3": {
+              "3": {
+                "3": "sample.inheritance.LeafInterface.html"
+              }
+            }
+          },
+          {
+            "1": "sample.inheritance.OtherInterface",
+            "3": {
+              "3": {
+                "3": "sample.inheritance.OtherInterface.html"
+              }
+            },
+            "5": [
+              {
+                "4": {
+                  "1": "number",
+                  "4": true
+                }
+              }
+            ]
+          },
+          {
+            "1": "sample.inheritance.Runnable",
+            "3": {
+              "3": {
+                "3": "sample.inheritance.Runnable.html"
+              }
+            }
+          },
+          {
+            "1": "sample.inheritance.SecondInterface",
+            "3": {
+              "3": {
+                "3": "sample.inheritance.SecondInterface.html"
+              }
+            }
+          }
+        ],
+        "21": {
+          "1": {
+            "1": "sample.inheritance",
+            "3": {
+              "3": {
+                "3": "sample.inheritance.html"
+              }
+            }
+          },
+          "4": true
+        },
+        "23": "sample.inheritance.DeprecatedFinalClass.html",
+        "24": "sample.inheritance.DeprecatedFinalClass"
+      }
+    ]
+  }
+}

@@ -1,0 +1,113 @@
+{
+  "2": {
+    "1": [
+      {
+        "1": "Clazz",
+        "5": {
+          "2": 42,
+          "4": {
+            "3": "source/closure_module.js.src.html"
+          }
+        },
+        "7": {
+          "1": [
+            {
+              "2": "\u003cp\u003eThis class is defined on exports and should be documented.\nIt is an extension of the internally defined \u003ca href\u003d\"closure.module.PubClass.html\"\u003e\u003ccode\u003ePublicClass\u003c/code\u003e\u003c/a\u003e.\u003c/p\u003e\n"
+            }
+          ]
+        },
+        "8": {},
+        "14": {
+          "1": {
+            "1": "Clazz",
+            "2": {
+              "2": 42,
+              "4": {
+                "3": "source/closure_module.js.src.html"
+              }
+            },
+            "3": {
+              "1": [
+                {
+                  "2": "\u003cp\u003eThis class is defined on exports and should be documented.\nIt is an extension of the internally defined \u003ca href\u003d\"closure.module.PubClass.html\"\u003e\u003ccode\u003ePublicClass\u003c/code\u003e\u003c/a\u003e.\u003c/p\u003e\n"
+                }
+              ]
+            }
+          },
+          "3": true
+        },
+        "15": [
+          {
+            "1": {
+              "1": "aMethod",
+              "2": {
+                "2": 29,
+                "4": {
+                  "3": "source/closure_module.js.src.html"
+                }
+              },
+              "3": {
+                "1": [
+                  {
+                    "2": "\u003cp\u003eThis is a method.\u003c/p\u003e\n"
+                  }
+                ]
+              },
+              "7": {
+                "1": "PubClass",
+                "2": "closure.module.PubClass",
+                "3": {
+                  "3": {
+                    "3": "closure.module.PubClass.html#aMethod"
+                  }
+                }
+              }
+            }
+          },
+          {
+            "1": {
+              "1": "method",
+              "2": {
+                "2": 49,
+                "4": {
+                  "3": "source/closure_module.js.src.html"
+                }
+              },
+              "3": {
+                "1": [
+                  {
+                    "2": "\u003cp\u003eLorem ipsum.\u003c/p\u003e\n"
+                  }
+                ]
+              }
+            }
+          }
+        ],
+        "18": [
+          {
+            "1": "PubClass",
+            "2": "closure.module.PubClass",
+            "3": {
+              "3": {
+                "3": "closure.module.PubClass.html"
+              }
+            }
+          }
+        ],
+        "21": {
+          "1": {
+            "1": "closure.module",
+            "3": {
+              "3": {
+                "3": "closure.module.html"
+              }
+            }
+          },
+          "5": true
+        },
+        "23": "closure.module.Clazz.html",
+        "24": "closure.module.Clazz"
+      }
+    ]
+  }
+}

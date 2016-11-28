@@ -64,9 +64,9 @@ final class RenderMarkdownTask implements Callable<Path> {
         .build();
 
     // TODO: account for this render result.
-    renderer.renderJson(dfs.getJsonPath(page), data);
+    Path jsonPath = dfs.getJsonPath(page);
     Path output = dfs.getPath(page);
-    renderer.renderHtml(output, data);
+    renderer.render(output, jsonPath, data);
     return output;
   }
 }

@@ -1,0 +1,173 @@
+{
+  "2": {
+    "1": [
+      {
+        "1": "closure.module",
+        "5": {
+          "2": 6,
+          "4": {
+            "3": "source/closure_module.js.src.html"
+          }
+        },
+        "6": {
+          "1": [
+            {
+              "1": "Clazz",
+              "3": {
+                "1": [
+                  {
+                    "2": "\u003cp\u003eThis class is defined on exports and should be documented.\u003c/p\u003e\n"
+                  }
+                ]
+              },
+              "5": {
+                "3": "closure.module.Clazz.html"
+              }
+            },
+            {
+              "1": "HardWorker",
+              "3": {
+                "1": [
+                  {
+                    "2": "\u003cp\u003eWorks extra hard.\u003c/p\u003e\n"
+                  }
+                ]
+              },
+              "5": {
+                "3": "closure.module.HardWorker.html"
+              }
+            },
+            {
+              "1": "PubClass",
+              "3": {
+                "1": [
+                  {
+                    "2": "\u003cp\u003eThis class is defined internally, but assigned to exports and thus\nshould be documented.\u003c/p\u003e\n"
+                  }
+                ]
+              },
+              "5": {
+                "3": "closure.module.PubClass.html"
+              }
+            },
+            {
+              "1": "Worker",
+              "3": {
+                "1": [
+                  {
+                    "2": "\u003cp\u003eA generic worker class.\u003c/p\u003e\n"
+                  }
+                ]
+              },
+              "5": {
+                "3": "closure.module.Worker.html"
+              }
+            }
+          ]
+        },
+        "7": {
+          "1": [
+            {
+              "2": "\u003cp\u003eThis comment should be the used for the module\nsummary in the generated documentation.\u003c/p\u003e\n"
+            }
+          ]
+        },
+        "8": {
+          "6": true
+        },
+        "12": [
+          {
+            "1": {
+              "1": "publicMethod",
+              "2": {
+                "2": 60,
+                "4": {
+                  "3": "source/closure_module.js.src.html"
+                }
+              },
+              "3": {
+                "1": [
+                  {
+                    "2": "\u003cp\u003eThis is an internal function exposed below.\u003c/p\u003e\n"
+                  }
+                ]
+              }
+            },
+            "4": [
+              {
+                "1": "a",
+                "2": {
+                  "4": {
+                    "1": "PubClass",
+                    "2": "closure.module.PubClass",
+                    "3": {
+                      "3": {
+                        "3": "closure.module.PubClass.html"
+                      }
+                    }
+                  }
+                },
+                "3": {
+                  "1": [
+                    {
+                      "2": "\u003cp\u003eReference to internal class as parameter.\u003c/p\u003e\n"
+                    }
+                  ]
+                }
+              },
+              {
+                "1": "b",
+                "2": {
+                  "6": {
+                    "1": [
+                      {
+                        "4": {
+                          "1": "string",
+                          "4": true
+                        }
+                      },
+                      {
+                        "4": {
+                          "1": "PubClass",
+                          "2": "closure.module.PubClass",
+                          "3": {
+                            "3": {
+                              "3": "closure.module.PubClass.html"
+                            }
+                          }
+                        }
+                      },
+                      {
+                        "10": true
+                      }
+                    ]
+                  }
+                },
+                "3": {
+                  "1": [
+                    {
+                      "2": "\u003cp\u003eReference to internal class in union.\u003c/p\u003e\n"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ],
+        "21": {
+          "1": {
+            "1": "closure.module",
+            "3": {
+              "3": {
+                "3": "closure.module.html"
+              }
+            }
+          },
+          "3": true
+        },
+        "23": "closure.module.html",
+        "24": "closure.module"
+      }
+    ]
+  }
+}

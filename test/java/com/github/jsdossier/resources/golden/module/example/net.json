@@ -1,0 +1,204 @@
+{
+  "2": {
+    "1": [
+      {
+        "1": "example/net",
+        "5": {
+          "2": 29,
+          "4": {
+            "3": "../../source/example/net.js.src.html"
+          }
+        },
+        "6": {
+          "1": [
+            {
+              "1": "HttpClient",
+              "3": {
+                "1": [
+                  {
+                    "2": "\u003cp\u003eA simple HTTP client.\u003c/p\u003e\n"
+                  }
+                ]
+              },
+              "5": {
+                "3": "net_exports_HttpClient.html"
+              }
+            }
+          ]
+        },
+        "7": {
+          "1": [
+            {
+              "2": "\u003cp\u003eModule provides network related functionality.\u003c/p\u003e\n"
+            }
+          ]
+        },
+        "8": {
+          "6": true
+        },
+        "12": [
+          {
+            "1": {
+              "1": "fetchJson",
+              "2": {
+                "2": 29,
+                "4": {
+                  "3": "../../source/example/net.js.src.html"
+                }
+              },
+              "3": {
+                "1": [
+                  {
+                    "2": "\u003cp\u003eFetches a JSON resource from the given URL.\u003c/p\u003e\n"
+                  }
+                ]
+              }
+            },
+            "4": [
+              {
+                "1": "url",
+                "2": {
+                  "4": {
+                    "1": "string",
+                    "4": true
+                  }
+                },
+                "3": {
+                  "1": [
+                    {
+                      "2": "\u003cp\u003eThe URL To fetch the resource from.\u003c/p\u003e\n"
+                    }
+                  ]
+                }
+              }
+            ],
+            "5": {
+              "2": {
+                "4": {
+                  "1": "Promise",
+                  "4": true,
+                  "5": [
+                    {
+                      "4": {
+                        "1": "Object",
+                        "4": true
+                      }
+                    }
+                  ]
+                }
+              },
+              "3": {
+                "1": [
+                  {
+                    "2": "\u003cp\u003eA promise that will be fulfilled with the parsed\nJSON response.\u003c/p\u003e\n"
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "1": {
+              "1": "get",
+              "2": {
+                "2": 55,
+                "4": {
+                  "3": "../../source/example/net.js.src.html"
+                }
+              },
+              "3": {
+                "1": [
+                  {
+                    "2": "\u003cp\u003ePerforms a HTTP GET request using a XMLHttpRequest.\u003c/p\u003e\n"
+                  }
+                ]
+              }
+            },
+            "4": [
+              {
+                "1": "path",
+                "2": {
+                  "4": {
+                    "1": "string",
+                    "4": true
+                  }
+                },
+                "3": {
+                  "1": [
+                    {
+                      "2": "\u003cp\u003eThe resource to retrieve.\u003c/p\u003e\n"
+                    }
+                  ]
+                }
+              },
+              {
+                "1": "opt_headers",
+                "2": {
+                  "1": true,
+                  "6": {
+                    "1": [
+                      {
+                        "4": {
+                          "1": "Map",
+                          "4": true,
+                          "5": [
+                            {
+                              "4": {
+                                "1": "string",
+                                "4": true
+                              }
+                            },
+                            {
+                              "4": {
+                                "1": "string",
+                                "4": true
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "9": true
+                      }
+                    ]
+                  }
+                },
+                "3": {
+                  "1": [
+                    {
+                      "2": "\u003cp\u003eAny extra headers to include with\nthe request.\u003c/p\u003e\n"
+                    }
+                  ]
+                }
+              }
+            ],
+            "5": {
+              "2": {
+                "4": {
+                  "1": "Promise",
+                  "4": true,
+                  "5": [
+                    {
+                      "4": {
+                        "1": "string",
+                        "4": true
+                      }
+                    }
+                  ]
+                }
+              },
+              "3": {
+                "1": [
+                  {
+                    "2": "\u003cp\u003eA promise that will be fulfilled with the server\u0026#39;s\nresponse.\u003c/p\u003e\n"
+                  }
+                ]
+              }
+            }
+          }
+        ],
+        "23": "net.html",
+        "24": "example/net"
+      }
+    ]
+  }
+}

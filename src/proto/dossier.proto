@@ -91,6 +91,7 @@ message Comment {
       string text = 1;
 
       // The pre-escaped html content for this token.
+      // TODO: use webutil.html.types.SafeHtmlProto
       string html = 2;
     }
 
@@ -318,7 +319,7 @@ message PageData {
     repeated JsType type = 1;
   }
 
-  Resources resources = 1;
+  reserved 1;
 
   oneof content {
     TypeCollection types = 2;

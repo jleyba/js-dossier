@@ -1,0 +1,67 @@
+{
+  "2": {
+    "1": [
+      {
+        "1": "example/worker",
+        "5": {
+          "2": 10,
+          "4": {
+            "3": "../../source/example/worker.js.src.html"
+          }
+        },
+        "7": {
+          "1": [
+            {
+              "2": "\u003cp\u003eAnd this is the exported constructor comment.\u003c/p\u003e\n"
+            }
+          ]
+        },
+        "8": {
+          "6": true
+        },
+        "14": {
+          "1": {
+            "1": "worker",
+            "2": {
+              "2": 10,
+              "4": {
+                "3": "../../source/example/worker.js.src.html"
+              }
+            },
+            "3": {
+              "1": [
+                {
+                  "2": "\u003cp\u003eAnd this is the exported constructor comment.\u003c/p\u003e\n"
+                }
+              ]
+            },
+            "6": {
+              "6": true
+            }
+          },
+          "3": true,
+          "4": [
+            {
+              "1": "name",
+              "2": {
+                "4": {
+                  "1": "string",
+                  "4": true
+                }
+              },
+              "3": {
+                "1": [
+                  {
+                    "2": "\u003cp\u003eWorker name.\u003c/p\u003e\n"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "23": "worker.html",
+        "24": "example/worker"
+      }
+    ]
+  }
+}

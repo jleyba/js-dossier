@@ -127,8 +127,7 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Ca
                   .addAllType(types.get()))
           .build();
 
-      renderer.renderHtml(output, page);
-      renderer.renderJson(jsonOutput, page);
+      renderer.render(output, jsonOutput, page);
       return output;
     }
   }

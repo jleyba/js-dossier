@@ -1,0 +1,220 @@
+{
+  "2": {
+    "1": [
+      {
+        "1": "sample.json",
+        "5": {
+          "2": 10,
+          "4": {
+            "3": "source/json.js.src.html"
+          }
+        },
+        "7": {},
+        "8": {},
+        "12": [
+          {
+            "1": {
+              "1": "parse",
+              "2": {
+                "2": 39,
+                "4": {
+                  "3": "source/json.js.src.html"
+                }
+              },
+              "3": {
+                "1": [
+                  {
+                    "2": "\u003cp\u003eParses a JSON string.\u003c/p\u003e\n"
+                  }
+                ]
+              },
+              "11": {
+                "4": true
+              },
+              "10": [
+                {
+                  "1": [
+                    {
+                      "1": "sample.json.stringify",
+                      "3": {
+                        "3": {
+                          "3": "sample.json.html#stringify"
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "1": [
+                    {
+                      "2": "\u003cp\u003e\u003ca href\u003d\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON\"\u003ehttps://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON\u003c/a\u003e\u003c/p\u003e\n"
+                    }
+                  ]
+                }
+              ]
+            },
+            "4": [
+              {
+                "1": "str",
+                "2": {
+                  "4": {
+                    "1": "string",
+                    "4": true
+                  }
+                },
+                "3": {
+                  "1": [
+                    {
+                      "2": "\u003cp\u003eThe string to parse.\u003c/p\u003e\n"
+                    }
+                  ]
+                }
+              }
+            ],
+            "5": {
+              "2": {
+                "7": true
+              },
+              "3": {
+                "1": [
+                  {
+                    "2": "\u003cp\u003eThe parsed value.\u003c/p\u003e\n"
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "1": {
+              "1": "stringify",
+              "2": {
+                "2": 28,
+                "4": {
+                  "3": "source/json.js.src.html"
+                }
+              },
+              "3": {
+                "1": [
+                  {
+                    "2": "\u003cp\u003eConverts a value to its JSON representation.\u003c/p\u003e\n"
+                  }
+                ]
+              },
+              "11": {
+                "4": true
+              },
+              "10": [
+                {
+                  "1": [
+                    {
+                      "1": "sample.json.parse",
+                      "3": {
+                        "3": {
+                          "3": "sample.json.html#parse"
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "1": [
+                    {
+                      "1": "sample.json.DEBUG",
+                      "3": {
+                        "3": {
+                          "3": "sample.json.html#sample.json.DEBUG"
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "1": [
+                    {
+                      "2": "\u003cp\u003e\u003ca href\u003d\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON\"\u003ehttps://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON\u003c/a\u003e\u003c/p\u003e\n"
+                    }
+                  ]
+                }
+              ]
+            },
+            "4": [
+              {
+                "1": "value",
+                "2": {
+                  "7": true
+                },
+                "3": {
+                  "1": [
+                    {
+                      "2": "\u003cp\u003eThe value to convert.\u003c/p\u003e\n"
+                    }
+                  ]
+                }
+              }
+            ],
+            "5": {
+              "2": {
+                "4": {
+                  "1": "string",
+                  "4": true
+                }
+              },
+              "3": {
+                "1": [
+                  {
+                    "2": "\u003cp\u003eThe value\u0026#39;s JSON representation.\u003c/p\u003e\n"
+                  }
+                ]
+              }
+            }
+          }
+        ],
+        "20": [
+          {
+            "1": {
+              "1": "sample.json.DEBUG",
+              "2": {
+                "2": 17,
+                "4": {
+                  "3": "source/json.js.src.html"
+                }
+              },
+              "3": {
+                "1": [
+                  {
+                    "2": "\u003cp\u003eWhether to enable debug mode.\u003c/p\u003e\n"
+                  }
+                ]
+              },
+              "11": {
+                "4": true
+              },
+              "6": {
+                "1": true
+              }
+            },
+            "2": {
+              "4": {
+                "1": "boolean",
+                "4": true
+              }
+            }
+          }
+        ],
+        "21": {
+          "1": {
+            "1": "sample.json",
+            "3": {
+              "3": {
+                "3": "sample.json.html"
+              }
+            }
+          },
+          "4": true
+        },
+        "23": "sample.json.html",
+        "24": "sample.json"
+      }
+    ]
+  }
+}

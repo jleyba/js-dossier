@@ -1,0 +1,76 @@
+{
+  "2": {
+    "1": [
+      {
+        "1": "vis.InheritsVis",
+        "5": {
+          "2": 49,
+          "4": {
+            "3": "source/visibility.js.src.html"
+          }
+        },
+        "7": {
+          "1": [
+            {
+              "2": "\u003cp\u003eThis class inherits its visibility from the file.\u003c/p\u003e\n"
+            }
+          ]
+        },
+        "8": {},
+        "14": {
+          "1": {
+            "1": "InheritsVis",
+            "2": {
+              "2": 49,
+              "4": {
+                "3": "source/visibility.js.src.html"
+              }
+            },
+            "3": {
+              "1": [
+                {
+                  "2": "\u003cp\u003eThis class inherits its visibility from the file.\u003c/p\u003e\n"
+                }
+              ]
+            },
+            "11": {
+              "4": true
+            }
+          },
+          "3": true,
+          "4": [
+            {
+              "1": "x",
+              "2": {
+                "4": {
+                  "1": "number",
+                  "4": true
+                }
+              },
+              "3": {
+                "1": [
+                  {
+                    "2": "\u003cp\u003eA number.\u003c/p\u003e\n"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "21": {
+          "1": {
+            "1": "vis",
+            "3": {
+              "3": {
+                "3": "vis.html"
+              }
+            }
+          },
+          "4": true
+        },
+        "23": "vis.InheritsVis.html",
+        "24": "vis.InheritsVis"
+      }
+    ]
+  }
+}

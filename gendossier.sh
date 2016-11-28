@@ -67,6 +67,8 @@ write_deps() {
       -i "${ROOT}/test/js/heap_test.js" \
       -i "${ROOT}/test/js/nav_test.js" \
       -i "${ROOT}/test/js/search_test.js" \
+      -i "${ROOT}/third_party/js/soy/jspbconversions.js" \
+      -i "${ROOT}/third_party/js/soy/soydata_converters.js" \
       -i "${ROOT}/third_party/js/soy/soyutils_usegoog.js" \
       -o "${ROOT}/test/js/deps.js"
 }

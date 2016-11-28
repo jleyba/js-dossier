@@ -1,0 +1,127 @@
+{
+  "2": {
+    "1": [
+      {
+        "1": "Person",
+        "5": {
+          "2": 69,
+          "4": {
+            "3": "../../source/example/nested.js.src.html"
+          }
+        },
+        "7": {
+          "1": [
+            {
+              "2": "\u003cp\u003eBasic description of a person.\u003c/p\u003e\n"
+            }
+          ]
+        },
+        "8": {},
+        "14": {
+          "1": {
+            "1": "Person",
+            "2": {
+              "2": 69,
+              "4": {
+                "3": "../../source/example/nested.js.src.html"
+              }
+            },
+            "3": {
+              "1": [
+                {
+                  "2": "\u003cp\u003eBasic description of a person.\u003c/p\u003e\n"
+                }
+              ]
+            }
+          },
+          "3": true,
+          "4": [
+            {
+              "1": "name",
+              "2": {
+                "4": {
+                  "1": "string",
+                  "4": true
+                }
+              },
+              "3": {
+                "1": [
+                  {
+                    "2": "\u003cp\u003ethe person\u0026#39;s name.\u003c/p\u003e\n"
+                  }
+                ]
+              }
+            },
+            {
+              "1": "age",
+              "2": {
+                "4": {
+                  "1": "number",
+                  "4": true
+                }
+              },
+              "3": {
+                "1": [
+                  {
+                    "2": "\u003cp\u003ethe person\u0026#39;s age.\u003c/p\u003e\n"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "16": [
+          {
+            "1": {
+              "1": "age",
+              "2": {
+                "2": 16,
+                "4": {
+                  "3": "../../source/example/nested.js.src.html"
+                }
+              },
+              "3": {}
+            },
+            "2": {
+              "4": {
+                "1": "number",
+                "4": true
+              }
+            }
+          },
+          {
+            "1": {
+              "1": "name",
+              "2": {
+                "2": 15,
+                "4": {
+                  "3": "../../source/example/nested.js.src.html"
+                }
+              },
+              "3": {}
+            },
+            "2": {
+              "4": {
+                "1": "string",
+                "4": true
+              }
+            }
+          }
+        ],
+        "21": {
+          "1": {
+            "1": "example/nested",
+            "3": {
+              "3": {
+                "3": "nested.html"
+              }
+            }
+          },
+          "5": true
+        },
+        "23": "nested_exports_Person.html",
+        "24": "example/nested.Person"
+      }
+    ]
+  }
+}
