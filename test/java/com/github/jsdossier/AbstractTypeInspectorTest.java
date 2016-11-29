@@ -223,15 +223,15 @@ public abstract class AbstractTypeInspectorTest {
     }
 
     public void isNamed(String name) {
-      assertWithMessage("wrong name").that(getSubject().getName()).isEqualTo(name);
+      assertWithMessage("wrong name").that(actual().getName()).isEqualTo(name);
     }
 
     public void hasType(JSType type) {
-      assertWithMessage("wrong type").that(getSubject().getType()).isEqualTo(type);
+      assertWithMessage("wrong type").that(actual().getType()).isEqualTo(type);
     }
 
     public void isInstanceMethod(JSType typeOfThis) {
-      JSType type = getSubject().getType();
+      JSType type = actual().getType();
       assertWithMessage("not a function").that(type.isFunctionType()).isTrue();
 
       if (typeOfThis.isConstructor() || typeOfThis.isInterface()) {
@@ -242,7 +242,7 @@ public abstract class AbstractTypeInspectorTest {
     }
 
     public void isDefinedOn(JSType type) {
-      assertWithMessage("wrong defining type").that(getSubject().getDefinedByType())
+      assertWithMessage("wrong defining type").that(actual().getDefinedByType())
           .isEqualTo(type);
     }
   }

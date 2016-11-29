@@ -140,9 +140,7 @@ public class TableBlockParserTest {
     assertHeader("    |:-|:-:|-:|").isEmpty();
   }
 
-  private static
-  IterableSubject<? extends IterableSubject<?, Alignment, Iterable<Alignment>>, Alignment,
-      Iterable<Alignment>> assertHeader(String str) {
+  private static IterableSubject assertHeader(String str) {
     return assertThat(parseHeaderDivider(str));
   }
 }

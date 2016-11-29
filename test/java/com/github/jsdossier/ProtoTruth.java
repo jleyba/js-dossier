@@ -64,11 +64,11 @@ final class ProtoTruth {
     }
 
     public void isEmpty() {
-      assertThat(getSubject()).isEmpty();
+      assertThat(actual()).isEmpty();
     }
 
     public void containsExactly(MessageOrBuilder... messages) {
-      Iterable<String> actual = transform(getSubject(), new Function<MessageOrBuilder, String>() {
+      Iterable<String> actual = transform(actual(), new Function<MessageOrBuilder, String>() {
         @Nullable
         @Override
         public String apply(MessageOrBuilder input) {
@@ -101,7 +101,7 @@ final class ProtoTruth {
     public void isEqualTo(@Nullable Object other) {
       if (other instanceof MessageOrBuilder) {
         this.isNotNull();
-        assertThat(printToString(getSubject()))
+        assertThat(printToString(actual()))
             .isEqualTo(printToString((MessageOrBuilder) other));
       } else {
         super.isEqualTo(other);
