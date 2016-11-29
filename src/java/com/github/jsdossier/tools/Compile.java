@@ -17,11 +17,9 @@
 package com.github.jsdossier.tools;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.stream.Collectors.toList;
 
 import com.github.jsdossier.jscomp.ClosureSortedDependencies;
-import com.google.common.base.Function;
-import com.google.common.collect.FluentIterable;
-import com.google.common.collect.ImmutableSet;
 import com.google.javascript.jscomp.CommandLineRunner;
 import com.google.javascript.jscomp.ErrorManager;
 import com.google.javascript.jscomp.PrintStreamErrorManager;
@@ -85,22 +83,17 @@ final class Compile {
     List<DependencyInfo> allDeps = new LinkedList<>(info);
     allDeps.addAll(
         new DepsFileParser(errorManager).parseFile(closure.resolve("deps.js").toString()));
-    List<DependencyInfo> sortedDeps = new ClosureSortedDependencies<>(allDeps)
-        .getSortedDependenciesOf(info);
 
-    ImmutableSet<String> compilerFlags = FluentIterable.from(sortedDeps)
-        .transform(new Function<DependencyInfo, String>() {
-          @Override
-          public String apply(DependencyInfo input) {
-            return "--js=" + closure.resolve(input.getPathRelativeToClosureBase())
-                .toAbsolutePath()
-                .normalize()
-                .toString();
-          }
-        })
-        .append("--js=" + closure.resolve("base.js"))
-        .append(flags.flags)
-        .toSet();
+    List<String> compilerFlags = new ClosureSortedDependencies<>(allDeps)
+        .getSortedDependenciesOf(info)
+        .stream()
+        .map(input -> closure.resolve(input.getPathRelativeToClosureBase()))
+        .map(Path::toAbsolutePath)
+        .map(Path::normalize)
+        .map(path -> "--js=" + path)
+        .collect(toList());
+    compilerFlags.add("--js=" + closure.resolve("base.js"));
+    compilerFlags.addAll(flags.flags);
 
     CommandLineRunner.main(compilerFlags.toArray(new String[compilerFlags.size()]));
   }

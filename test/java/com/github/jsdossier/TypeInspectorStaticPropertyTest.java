@@ -25,7 +25,6 @@ import com.github.jsdossier.proto.BaseProperty;
 import com.github.jsdossier.proto.Comment;
 import com.github.jsdossier.proto.Property;
 import com.github.jsdossier.proto.Tags;
-import com.google.common.base.Predicate;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -89,12 +88,7 @@ public class TypeInspectorStaticPropertyTest extends AbstractTypeInspectorTest {
   @Test
   public void doesNotReturnNestedNamespacesAsProperty_subNamespaceHasBeenFiltered() {
     guice.toBuilder()
-        .setTypeNameFilter(new Predicate<String>() {
-          @Override
-          public boolean apply(String input) {
-            return "foo.bar".equals(input);
-          }
-        })
+        .setTypeNameFilter("foo.bar"::equals)
         .build()
         .createInjector()
         .injectMembers(this);

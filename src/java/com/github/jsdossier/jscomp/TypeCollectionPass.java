@@ -27,8 +27,6 @@ import com.github.jsdossier.annotations.Input;
 import com.github.jsdossier.annotations.ModuleFilter;
 import com.github.jsdossier.annotations.TypeFilter;
 import com.github.jsdossier.jscomp.Module.Type;
-import com.google.common.base.Optional;
-import com.google.common.base.Predicate;
 import com.google.javascript.jscomp.CompilerPass;
 import com.google.javascript.jscomp.TypedScope;
 import com.google.javascript.jscomp.TypedVar;
@@ -56,7 +54,9 @@ import java.util.Collection;
 import java.util.Deque;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.inject.Inject;
@@ -105,7 +105,7 @@ public final class TypeCollectionPass implements CompilerPass {
     // Check for known modules that did not register as a type. These are modules that import
     // others, but have no exports of their own.
     for (Module module : typeRegistry.getAllModules()) {
-      if (modulePathFilter.apply(module.getPath())) {
+      if (modulePathFilter.test(module.getPath())) {
         continue;
       }
       if (module.getType() != Module.Type.CLOSURE && !typeRegistry.isType(module.getId())) {
@@ -348,7 +348,7 @@ public final class TypeCollectionPass implements CompilerPass {
 
         Path path = inputFs.getPath(node.getSourceFileName());
         Optional<Module> module = getModule(name, node);
-        if (module.isPresent() && modulePathFilter.apply(module.get().getPath())) {
+        if (module.isPresent() && modulePathFilter.test(module.get().getPath())) {
           continue;
         }
 
@@ -421,7 +421,7 @@ public final class TypeCollectionPass implements CompilerPass {
     private Optional<Module> getModule(String typeName, Node node) {
       Path path = inputFs.getPath(node.getSourceFileName());
       if (!typeRegistry.isModule(path)) {
-        return Optional.absent();
+        return Optional.empty();
       }
 
       Module module = typeRegistry.getModule(path);
@@ -434,7 +434,7 @@ public final class TypeCollectionPass implements CompilerPass {
 
       if (typeRegistry.isImplicitNamespace(typeName)) {
         verify(!typeName.equals(module.getId()));
-        return Optional.absent();
+        return Optional.empty();
       }
       return Optional.of(module);
     }
@@ -497,7 +497,7 @@ public final class TypeCollectionPass implements CompilerPass {
      * @return whether the type was registered.
      */
     private boolean addType(NominalType type) {
-      if (typeNameFilter.apply(type.getName())) {
+      if (typeNameFilter.test(type.getName())) {
         return false;
       }
       typeRegistry.addType(type);
@@ -531,7 +531,7 @@ public final class TypeCollectionPass implements CompilerPass {
         String name = parent.getName() + "." + property.getName();
 
         Optional<Module> module = getModule(name, node);
-        if (module.isPresent() && modulePathFilter.apply(module.get().getPath())) {
+        if (module.isPresent() && modulePathFilter.test(module.get().getPath())) {
           return;
         }
 
@@ -560,7 +560,7 @@ public final class TypeCollectionPass implements CompilerPass {
 
       String name = parent.getName() + "." + property.getName();
       Optional<Module> module = getModule(name, node);
-      if (module.isPresent() && modulePathFilter.apply(module.get().getPath())) {
+      if (module.isPresent() && modulePathFilter.test(module.get().getPath())) {
         return;
       }
 

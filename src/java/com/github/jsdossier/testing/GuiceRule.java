@@ -34,9 +34,6 @@ import com.github.jsdossier.annotations.Stderr;
 import com.github.jsdossier.annotations.TypeFilter;
 import com.github.jsdossier.soy.DossierSoyModule;
 import com.google.auto.value.AutoValue;
-import com.google.common.base.Optional;
-import com.google.common.base.Predicate;
-import com.google.common.base.Predicates;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.jimfs.Jimfs;
@@ -53,6 +50,8 @@ import java.io.PrintStream;
 import java.lang.annotation.Annotation;
 import java.nio.file.FileSystem;
 import java.nio.file.Path;
+import java.util.Optional;
+import java.util.function.Predicate;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
@@ -72,15 +71,15 @@ public abstract class GuiceRule implements TestRule {
         .setNewTypeInference(false)
         .setGuiceModules(ImmutableList.copyOf(modules))
         .setInputFs(Jimfs.newFileSystem())
-        .setModulePrefix(Optional.<Path>absent())
-        .setSourcePrefix(Optional.<Path>absent())
-        .setModuleExterns(ImmutableSet.<Path>of())
-        .setModules(ImmutableSet.<Path>of())
-        .setModulePathFilter(Predicates.<Path>alwaysFalse())
-        .setTypeNameFilter(Predicates.<String>alwaysFalse())
-        .setSourceUrlTemplate(Optional.<String>absent())
+        .setModulePrefix(Optional.empty())
+        .setSourcePrefix(Optional.empty())
+        .setModuleExterns(ImmutableSet.of())
+        .setModules(ImmutableSet.of())
+        .setModulePathFilter(path -> false)
+        .setTypeNameFilter(path -> false)
+        .setSourceUrlTemplate(Optional.empty())
         .setOutputFs(Jimfs.newFileSystem())
-        .setOutputDir(Optional.<Path>absent())
+        .setOutputDir(Optional.empty())
         ;
   }
 

@@ -27,8 +27,6 @@ import com.github.jsdossier.proto.Function;
 import com.github.jsdossier.proto.Function.Detail;
 import com.github.jsdossier.proto.Tags;
 import com.github.jsdossier.proto.TypeExpression;
-import com.github.jsdossier.proto.UnionType;
-import com.google.common.base.Predicate;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -410,12 +408,7 @@ public class TypeInspectorStaticFunctionTest extends AbstractTypeInspectorTest {
   @Test
   public void doesNotIdentifyConstructorPropertyAsStaticFunction3() {
     guice.toBuilder()
-        .setTypeNameFilter(new Predicate<String>() {
-          @Override
-          public boolean apply(String input) {
-            return "foo.One".equals(input);
-          }
-        })
+        .setTypeNameFilter("foo.One"::equals)
         .build()
         .createInjector()
         .injectMembers(this);

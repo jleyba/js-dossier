@@ -21,7 +21,6 @@ import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.base.Strings.nullToEmpty;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.JSDocInfo.Marker;
@@ -32,6 +31,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import javax.annotation.Nullable;
 
@@ -199,7 +199,7 @@ public class JsDoc {
   public boolean hasAnnotation(Annotation target) {
     for (Marker marker : info.getMarkers()) {
       Optional<Annotation> annotation = Annotation.forMarker(marker);
-      if (target.equals(annotation.orNull())) {
+      if (target.equals(annotation.orElse(null))) {
         return true;
       }
     }
@@ -209,11 +209,11 @@ public class JsDoc {
   public Optional<Marker> getMarker(Annotation target) {
     for (Marker marker : info.getMarkers()) {
       Optional<Annotation> annotation = Annotation.forMarker(marker);
-      if (target.equals(annotation.orNull())) {
+      if (target.equals(annotation.orElse(null))) {
         return Optional.of(marker);
       }
     }
-    return Optional.absent();
+    return Optional.empty();
   }
 
   private void parse() {
@@ -305,7 +305,7 @@ public class JsDoc {
     private final String description;
 
     private TypedDescription(@Nullable JSTypeExpression type, @Nullable String description) {
-      this.type = Optional.fromNullable(type);
+      this.type = Optional.ofNullable(type);
       this.description = nullToEmpty(description).trim();
     }
 
@@ -348,7 +348,7 @@ public class JsDoc {
           return Optional.of(a);
         }
       }
-      return Optional.absent();
+      return Optional.empty();
     }
 
     String getAnnotation() {

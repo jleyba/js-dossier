@@ -16,6 +16,7 @@
 
 package com.github.jsdossier;
 
+import static com.github.jsdossier.GuavaCollections.toImmutableSet;
 import static com.github.jsdossier.Paths.getCommonPrefix;
 import static com.google.common.base.MoreObjects.firstNonNull;
 import static com.google.common.base.Preconditions.checkArgument;
@@ -25,13 +26,10 @@ import com.github.jsdossier.annotations.Input;
 import com.github.jsdossier.annotations.ModulePrefix;
 import com.github.jsdossier.jscomp.Module;
 import com.github.jsdossier.jscomp.TypeRegistry;
-import com.google.common.base.Function;
-import com.google.common.base.Optional;
-import com.google.common.base.Predicate;
-import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableSet;
 import java.nio.file.FileSystem;
 import java.nio.file.Path;
+import java.util.Optional;
 import javax.inject.Inject;
 import javax.inject.Provider;
 
@@ -84,9 +82,10 @@ final class ModulePrefixProvider implements Provider<Path>  {
   }
 
   private ImmutableSet<Path> getModulePaths() {
-    return FluentIterable.from(typeRegistry.getAllModules())
+    return typeRegistry.getAllModules()
+        .stream()
         .filter(module -> module.getType() != Module.Type.CLOSURE)
-        .transform(Module::getPath)
-        .toSet();
+        .map(Module::getPath)
+        .collect(toImmutableSet());
   }
 }

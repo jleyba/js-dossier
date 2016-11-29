@@ -208,7 +208,7 @@ final class DossierFileSystem {
       return getPath(type.getModule().get());
     }
 
-    Module module = type.getModule().orNull();
+    Module module = type.getModule().orElse(null);
     if (module == null) {
       return outputRoot.resolve(type.getName() + ".html");
     } else if (module.getType() == Module.Type.CLOSURE) {

@@ -24,6 +24,7 @@ import static com.google.common.base.Suppliers.memoize;
 import static com.google.common.base.Verify.verify;
 import static com.google.common.collect.Iterables.skip;
 import static com.google.common.collect.Lists.transform;
+import static java.util.stream.Collectors.toList;
 
 import com.github.jsdossier.jscomp.JsDoc;
 import com.github.jsdossier.jscomp.Module;
@@ -40,7 +41,6 @@ import com.github.jsdossier.proto.PageData;
 import com.google.auto.factory.AutoFactory;
 import com.google.auto.factory.Provided;
 import com.google.common.base.Supplier;
-import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.JSTypeExpression;
@@ -91,14 +91,10 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Ca
       return types1;
     });
 
-    ImmutableList.Builder<Callable<Path>> tasks = ImmutableList.builder();
-    for (NominalTypeProcessor processor : processors) {
-      tasks.add(renderTaskFactory.create(
-          processor.getHtmlOutput(),
-          processor.getJsonOutput(),
-          typeSupplier));
-    }
-    return tasks.build();
+    List<Callable<Path>> tasks = processors.stream()
+        .map(p -> renderTaskFactory.create(p.getHtmlOutput(), p.getJsonOutput(), typeSupplier))
+        .collect(toList());
+    return ImmutableList.copyOf(tasks);
   }
 
   @AutoFactory
@@ -183,15 +179,15 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Ca
       }
     }
 
-    public Path getHtmlOutput() {
+    Path getHtmlOutput() {
       return dfs.getPath(type);
     }
 
-    public Path getJsonOutput() {
+    Path getJsonOutput() {
       return dfs.getJsonPath(type);
     }
 
-    public JsType buildJsType() {
+    JsType buildJsType() {
       JsType.Builder typeSpec = JsType.newBuilder()
           .setName(dfs.getDisplayName(type))
           .setQualifiedName(dfs.getQualifiedDisplayName(type))
@@ -319,8 +315,9 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Ca
 
     private void addNestedTypeInfo(JsType.Builder spec) {
       Iterable<NominalType> types =
-          FluentIterable.from(typeRegistry.getNestedTypes(type))
-              .toSortedList(new QualifiedNameComparator());
+          typeRegistry.getNestedTypes(type).stream()
+              .sorted(new QualifiedNameComparator())
+              .collect(toList());
       for (NominalType child : types) {
         if (child.isNamespace() || child.getJsDoc().isTypedef()) {
           continue;
@@ -353,9 +350,11 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Ca
     }
 
     private void addTypedefInfo(JsType.Builder spec) {
-      Iterable<NominalType> typedefs = FluentIterable.from(typeRegistry.getNestedTypes(type))
-          .filter(Types.isTypedef())
-          .toSortedList(new QualifiedNameComparator());
+      Iterable<NominalType> typedefs = typeRegistry.getNestedTypes(type)
+          .stream()
+          .filter(NominalType::isTypedef)
+          .sorted(new QualifiedNameComparator())
+          .collect(toList());
       for (NominalType typedef : typedefs) {
         String name = getNestedTypeName(typedef);
         indexReference.addStaticProperty(name);

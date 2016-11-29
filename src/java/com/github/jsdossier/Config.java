@@ -21,10 +21,7 @@ import static com.github.jsdossier.Paths.notIn;
 import static com.github.jsdossier.Paths.toNormalizedAbsolutePath;
 import static com.google.common.base.MoreObjects.firstNonNull;
 import static com.google.common.base.Verify.verify;
-import static com.google.common.collect.FluentIterable.from;
 import static com.google.common.collect.Iterables.concat;
-import static com.google.common.collect.Iterables.transform;
-import static com.google.common.collect.Lists.newLinkedList;
 import static com.google.common.collect.Sets.intersection;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.exists;
@@ -32,16 +29,13 @@ import static java.nio.file.Files.isDirectory;
 import static java.nio.file.Files.newInputStream;
 import static java.nio.file.Files.readAllBytes;
 import static java.nio.file.Files.write;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 
 import com.github.jsdossier.jscomp.ClosureSortedDependencies;
 import com.google.auto.value.AutoValue;
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Function;
-import com.google.common.base.Optional;
-import com.google.common.base.Predicate;
-import com.google.common.base.Predicates;
 import com.google.common.base.Splitter;
-import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.io.Resources;
@@ -90,11 +84,14 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 /**
  * Describes the runtime configuration for the app.
@@ -339,23 +336,23 @@ abstract class Config {
 
   public static Builder builder() {
     return new AutoValue_Config.Builder()
-        .setClosureLibraryDir(Optional.<Path>absent())
-        .setClosureDepFiles(ImmutableSet.<Path>of())
-        .setSources(ImmutableSet.<Path>of())
-        .setModules(ImmutableSet.<Path>of())
-        .setSourcePrefix(Optional.<Path>absent())
-        .setModulePrefix(Optional.<Path>absent())
-        .setExterns(ImmutableSet.<Path>of())
-        .setExternModules(ImmutableSet.<Path>of())
-        .setExcludes(ImmutableSet.<Path>of())
-        .setReadme(Optional.<Path>absent())
-        .setCustomPages(ImmutableSet.<MarkdownPage>of())
+        .setClosureLibraryDir(Optional.empty())
+        .setClosureDepFiles(ImmutableSet.of())
+        .setSources(ImmutableSet.of())
+        .setModules(ImmutableSet.of())
+        .setSourcePrefix(Optional.empty())
+        .setModulePrefix(Optional.empty())
+        .setExterns(ImmutableSet.of())
+        .setExternModules(ImmutableSet.of())
+        .setExcludes(ImmutableSet.of())
+        .setReadme(Optional.empty())
+        .setCustomPages(ImmutableSet.of())
         .setStrict(false)
         .setLanguage(Language.ES6_STRICT)
         .setModuleNamingConvention(ModuleNamingConvention.ES6)
-        .setSourceUrlTemplate(Optional.<String>absent())
-        .setTypeFilters(ImmutableSet.<Pattern>of())
-        .setModuleFilters(ImmutableSet.<Pattern>of());
+        .setSourceUrlTemplate(Optional.empty())
+        .setTypeFilters(ImmutableSet.of())
+        .setModuleFilters(ImmutableSet.of());
   }
 
   @AutoValue.Builder
@@ -368,9 +365,15 @@ abstract class Config {
 
     abstract ImmutableSet<Path> getSources();
     abstract Builder setSources(ImmutableSet<Path> paths);
+    Builder setSources(Set<Path> paths) {
+      return setSources(ImmutableSet.copyOf(paths));
+    }
 
     abstract ImmutableSet<Path> getModules();
     abstract Builder setModules(ImmutableSet<Path> paths);
+    Builder setModules(Set<Path> paths) {
+      return setSources(ImmutableSet.copyOf(paths));
+    }
 
     abstract Optional<Path> getSourcePrefix();
     abstract Builder setSourcePrefix(Optional<Path> path);
@@ -421,10 +424,10 @@ abstract class Config {
 
       if (!excludes.isEmpty()) {
         @SuppressWarnings("unchecked")
-        Predicate<Path> filter = Predicates.and(notIn(excludes), notHidden());
+        Predicate<Path> filter = path -> notIn(excludes).test(path) && notHidden().test(path);
 
-        setSources(from(getSources()).filter(filter).toSet());
-        setModules(from(getModules()).filter(filter).toSet());
+        setSources(getSources().stream().filter(filter).collect(toSet()));
+        setModules(getModules().stream().filter(filter).collect(toSet()));
       }
 
       if (getClosureLibraryDir().isPresent()) {
@@ -559,8 +562,11 @@ abstract class Config {
 
     private static Path getSourcePrefixPath(
         FileSystem fileSystem, ImmutableSet<Path> sources, ImmutableSet<Path> modules) {
-      Path prefix = Paths.getCommonPrefix(fileSystem.getPath("").toAbsolutePath(),
-          concat(sources, modules));
+      Set<Path> allPaths = new HashSet<>();
+      allPaths.addAll(sources);
+      allPaths.addAll(modules);
+
+      Path prefix = Paths.getCommonPrefix(fileSystem.getPath("").toAbsolutePath(), allPaths);
       if (sources.contains(prefix) || modules.contains(prefix)) {
         prefix = prefix.getParent();
       }
@@ -624,11 +630,11 @@ abstract class Config {
   }
 
   private static ImmutableSet<Path> processClosureSources(
-      Iterable<Path> sources, ImmutableSet<Path> deps,
+      Collection<Path> sources, ImmutableSet<Path> deps,
       Path closureBase) throws IOException {
 
-    Collection<SourceFile> depsFiles = newLinkedList(transform(deps, toSourceFile()));
-    Collection<SourceFile> sourceFiles = newLinkedList(transform(sources, toSourceFile()));
+    Collection<SourceFile> depsFiles = deps.stream().map(toSourceFile()).collect(toList());
+    Collection<SourceFile> sourceFiles = sources.stream().map(toSourceFile()).collect(toList());
 
     ErrorManager errorManager = new PrintStreamErrorManager(System.err);
 
@@ -649,27 +655,27 @@ abstract class Config {
     List<DependencyInfo> allDeps = new DepsFileParser(errorManager)
         .parseFile("*generated-deps*", rawDeps);
 
-    List<DependencyInfo> sourceDeps =
-        from(allDeps)
+    List<DependencyInfo> sourceDeps = allDeps.stream()
         .filter(isInSources(sources, closureBase))
-        .toList();
+        .collect(toList());
 
-    List<DependencyInfo> sortedDeps = new ClosureSortedDependencies<>(allDeps)
-        .getDependenciesOf(sourceDeps, true);
+    List<Path> sortedDeps = new ClosureSortedDependencies<>(allDeps)
+        .getDependenciesOf(sourceDeps, true)
+        .stream()
+        .map(toPath(closureBase))
+        .collect(toList());
 
     return ImmutableSet.<Path>builder()
         // Always include Closure's base.js first.
         .add(closureBase.resolve("base.js"))
-        .addAll(transform(sortedDeps, toPath(closureBase)))
+        .addAll(sortedDeps)
         .build();
   }
 
   private static Predicate<DependencyInfo> isInSources(
-      final Iterable<Path> sources, Path closureBaseDir) {
+      final Collection<Path> sources, Path closureBaseDir) {
     final Function<DependencyInfo, Path> pathTransform = toPath(closureBaseDir);
-    final ImmutableSet<Path> sourcesSet = FluentIterable.from(sources)
-        .transform(toNormalizedAbsolutePath())
-        .toSet();
+    final Set<Path> sourcesSet = sources.stream().map(toNormalizedAbsolutePath()).collect(toSet());
     return input -> sourcesSet.contains(pathTransform.apply(input));
   }
 
@@ -699,12 +705,11 @@ abstract class Config {
       pw.println();
     }
 
-    Iterable<Description> descriptions = Arrays.asList(Config.class.getDeclaredMethods())
-        .stream()
+    Iterable<Description> descriptions = Arrays.stream(Config.class.getDeclaredMethods())
         .map(m -> m == null ? null : m.getAnnotation(Description.class))
         .filter(desc -> desc != null)
         .sorted((a, b) -> a.name().compareTo(b.name()))
-        .collect(Collectors.toList());
+        .collect(toList());
 
     for (Description description : descriptions) {
       String str = " * `" + description.name() + "` " + description.desc().trim();
@@ -766,7 +771,7 @@ abstract class Config {
 
     List<Path> collectFiles(final Path baseDir, String glob) throws IOException {
       final PathMatcher matcher = baseDir.getFileSystem().getPathMatcher("glob:" + glob);
-      final ImmutableList.Builder<Path> files = ImmutableList.builder();
+      final List<Path> files = new ArrayList<>();
       Files.walkFileTree(baseDir, new SimpleFileVisitor<Path>() {
         @Override
         public FileVisitResult visitFile(Path file, BasicFileAttributes attrs)
@@ -777,7 +782,7 @@ abstract class Config {
           return FileVisitResult.CONTINUE;
         }
       });
-      return files.build();
+      return ImmutableList.copyOf(files);
     }
   }
 
@@ -941,7 +946,7 @@ abstract class Config {
     public ImmutableSet<Path> deserialize(
         JsonElement json, Type typeOfT, JsonDeserializationContext context)
         throws JsonParseException {
-      ImmutableSet.Builder<Path> paths = ImmutableSet.builder();
+      Set<Path> paths = new HashSet<>();
       if (expandPaths) {
         Type type = new TypeToken<List<PathSpec>>(){}.getType();
         List<PathSpec> specs = context.deserialize(json, type);
@@ -961,7 +966,7 @@ abstract class Config {
         List<Path> list = context.deserialize(json, type);
         paths.addAll(list);
       }
-      return paths.build();
+      return ImmutableSet.copyOf(paths);
     }
   }
 
@@ -1009,10 +1014,10 @@ abstract class Config {
         JsonElement jsonElement, Type type, JsonDeserializationContext context)
         throws JsonParseException {
       if (jsonElement.isJsonNull()) {
-        return Optional.absent();
+        return Optional.empty();
       }
       T value = context.deserialize(jsonElement, componentType);
-      return Optional.fromNullable(value);
+      return Optional.ofNullable(value);
     }
   }
 
@@ -1020,7 +1025,7 @@ abstract class Config {
 
     private final FileSystem fileSystem;
 
-    public PathDeserializer(FileSystem fileSystem) {
+    PathDeserializer(FileSystem fileSystem) {
       this.fileSystem = fileSystem;
     }
 
@@ -1035,7 +1040,7 @@ abstract class Config {
 
     private final Path baseDir;
 
-    public PathSpecDeserializer(Path baseDir) {
+    PathSpecDeserializer(Path baseDir) {
       this.baseDir = baseDir;
     }
 

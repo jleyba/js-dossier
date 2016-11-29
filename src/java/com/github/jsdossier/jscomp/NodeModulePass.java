@@ -33,7 +33,6 @@ import static java.nio.file.Files.isDirectory;
 import com.github.jsdossier.annotations.Input;
 import com.github.jsdossier.annotations.Modules;
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableSet;
 import com.google.javascript.jscomp.DiagnosticType;
 import com.google.javascript.jscomp.Es6RewriteDestructuring;
@@ -53,6 +52,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import javax.inject.Inject;
 
@@ -503,7 +503,7 @@ class NodeModulePass {
       return Optional.of(path.resolve("index"));
     }
 
-    return Optional.absent();
+    return Optional.empty();
   }
 
   private static boolean isCall(Node n, String name) {

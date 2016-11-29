@@ -16,16 +16,15 @@
 
 package com.github.jsdossier.jscomp;
 
-import com.google.common.base.Optional;
-import com.google.common.base.Predicate;
 import com.google.javascript.jscomp.deps.ModuleNames;
-import com.google.javascript.rhino.JSDocInfo;
+import com.google.javascript.rhino.JSDocInfo.Marker;
 import com.google.javascript.rhino.JSTypeExpression;
 import com.google.javascript.rhino.TypeIRegistry;
 import com.google.javascript.rhino.jstype.JSType;
 import com.google.javascript.rhino.jstype.StaticTypedScope;
 import java.nio.file.Path;
 import java.util.ConcurrentModificationException;
+import java.util.Optional;
 
 /**
  * Utilities for working with JavaScript types.
@@ -79,7 +78,7 @@ public final class Types {
             && !hasTypeExpression(jsdoc.getMarker(JsDoc.Annotation.PRIVATE)));
   }
 
-  private static boolean hasTypeExpression(Optional<JSDocInfo.Marker> marker) {
+  private static boolean hasTypeExpression(Optional<Marker> marker) {
     return marker.isPresent() && marker.get().getType() != null;
   }
 
@@ -97,13 +96,6 @@ public final class Types {
         || "bind".equals(propertyName)
         || "call".equals(propertyName)
         || "prototype".equals(propertyName));
-  }
-
-  /**
-   * Returns a predicate that accepts typedefs.
-   */
-  public static Predicate<NominalType> isTypedef() {
-    return input -> input.getJsDoc().isTypedef();
   }
 
   /**

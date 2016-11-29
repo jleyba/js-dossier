@@ -17,12 +17,8 @@
 package com.github.jsdossier;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.collect.Iterables.all;
-import static com.google.common.collect.Iterables.isEmpty;
-import static com.google.common.collect.Iterables.transform;
+import static java.util.stream.Collectors.toList;
 
-import com.google.common.base.Function;
-import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Ordering;
 import java.io.IOException;
@@ -30,9 +26,12 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 /**
  * Utilities for working with {@link Path paths}.
@@ -84,18 +83,18 @@ class Paths {
    *
    * <p>If all of the provided {@code paths} do not designate
    */
-  static Path getCommonPrefix(Path root, Iterable<Path> paths) {
-    if (isEmpty(paths)) {
+  static Path getCommonPrefix(Path root, Collection<Path> paths) {
+    if (paths.isEmpty()) {
       return root;
     }
     root = root.toAbsolutePath();
-    paths = transform(paths, normalizeRelativeTo(root));
+    paths = paths.stream().map(normalizeRelativeTo(root)).collect(toList());
 
     Path prefix = root.getRoot();
     Path shortest = Ordering.from(length()).min(paths);
     for (Path part : shortest) {
       Path possiblePrefix = prefix.resolve(part);
-      if (all(paths, startsWith(possiblePrefix))) {
+      if (paths.stream().allMatch(startsWith(possiblePrefix))) {
         prefix = possiblePrefix;
       } else {
         break;

@@ -16,10 +16,10 @@
 package com.github.jsdossier;
 
 import static com.google.common.collect.Iterables.concat;
-import static com.google.common.collect.Iterables.filter;
 import static com.google.common.io.Files.getFileExtension;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.createDirectories;
+import static java.util.stream.Collectors.toList;
 
 import com.github.jsdossier.annotations.Args;
 import com.github.jsdossier.annotations.DocumentationScoped;
@@ -42,10 +42,7 @@ import com.github.jsdossier.jscomp.TypeRegistry;
 import com.github.jsdossier.soy.DossierSoyModule;
 import com.github.jsdossier.soy.Renderer;
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Function;
 import com.google.common.base.Joiner;
-import com.google.common.base.Optional;
-import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -69,7 +66,9 @@ import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
+import java.util.function.Predicate;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
@@ -136,19 +135,15 @@ final class Main {
       bind(PrintStream.class).annotatedWith(Stdout.class).toInstance(
           new PrintStream(ByteStreams.nullOutputStream()));
 
-      bind(Key.get(new TypeLiteral<Optional<Path>>() {}, Readme.class))
-          .toInstance(config.getReadme());
-      bind(Key.get(new TypeLiteral<Iterable<Path>>() {}, Input.class))
+      bind(new Key<Optional<Path>>(Readme.class){}).toInstance(config.getReadme());
+      bind(new Key<Iterable<Path>>(Input.class){})
           .toInstance(concat(config.getSources(), config.getModules()));
-      bind(Key.get(new TypeLiteral<ImmutableSet<Path>>() {}, Modules.class))
-          .toInstance(config.getModules());
-      bind(Key.get(new TypeLiteral<ImmutableSet<Path>>() {}, ModuleExterns.class))
+      bind(new Key<ImmutableSet<Path>>(Modules.class){}).toInstance(config.getModules());
+      bind(new Key<ImmutableSet<Path>>(ModuleExterns.class){})
           .toInstance(config.getExternModules());
-      bind(new TypeLiteral<ImmutableSet<MarkdownPage>>(){})
-          .toInstance(config.getCustomPages());
+      bind(new Key<ImmutableSet<MarkdownPage>>(){}).toInstance(config.getCustomPages());
 
-      bind(Key.get(new TypeLiteral<Optional<Path>>() {}, ModulePrefix.class))
-          .toInstance(config.getModulePrefix());
+      bind(new Key<Optional<Path>>(ModulePrefix.class){}).toInstance(config.getModulePrefix());
       bind(Key.get(Path.class, ModulePrefix.class))
           .toProvider(ModulePrefixProvider.class)
           .in(DocumentationScoped.class);
@@ -210,7 +205,7 @@ final class Main {
     @DocumentableTypes
     Iterable<NominalType> provideDocumentableTypes(
         TypeRegistry registry, DocumentableType predicate) {
-      return filter(registry.getAllTypes(), predicate);
+      return registry.getAllTypes().stream().filter(predicate).collect(toList());
     }
   }
 
@@ -231,7 +226,7 @@ final class Main {
     }
 
     @Override
-    public boolean apply(NominalType input) {
+    public boolean test(NominalType input) {
       if (input.getJsDoc().isTypedef()) {
         return false;
       }

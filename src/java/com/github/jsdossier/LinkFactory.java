@@ -33,14 +33,10 @@ import com.github.jsdossier.proto.SourceLink;
 import com.github.jsdossier.proto.TypeLink;
 import com.google.auto.factory.AutoFactory;
 import com.google.auto.factory.Provided;
-import com.google.common.base.Optional;
-import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
 import com.google.common.html.types.SafeUrl;
 import com.google.common.html.types.SafeUrls;
-import com.google.common.html.types.TrustedResourceUrlBuilder;
-import com.google.common.html.types.TrustedResourceUrls;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.Node;
 import com.google.javascript.rhino.jstype.FunctionType;
@@ -48,6 +44,8 @@ import com.google.javascript.rhino.jstype.JSTypeRegistry;
 import com.google.javascript.rhino.jstype.ObjectType;
 import java.net.URI;
 import java.nio.file.Path;
+import java.util.Optional;
+import java.util.function.Predicate;
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nullable;
 
@@ -112,7 +110,7 @@ final class LinkFactory {
     this.jsTypeRegistry = jsTypeRegistry;
     this.nodeLibrary = nodeLibrary;
     this.namingConvention = namingConvention;
-    this.pathContext = Optional.fromNullable(pathContext);
+    this.pathContext = Optional.ofNullable(pathContext);
     this.typeContext = typeContext;
     this.urlTemplate = urlTemplate;
     this.typeNameFilter = typeNameFilter;
@@ -133,7 +131,7 @@ final class LinkFactory {
     return new LinkFactory(
         dfs, typeRegistry, jsTypeRegistry, nodeLibrary, namingConvention,
         typeContext.changeContext(context), urlTemplate, typeNameFilter,
-        pathContext.orNull(), jsonPaths);
+        pathContext.orElse(null), jsonPaths);
   }
 
   /**
@@ -142,7 +140,7 @@ final class LinkFactory {
   public LinkFactory withJsonPaths() {
     return new LinkFactory(
         dfs, typeRegistry, jsTypeRegistry, nodeLibrary, namingConvention,
-        typeContext, urlTemplate, typeNameFilter, pathContext.orNull(), true);
+        typeContext, urlTemplate, typeNameFilter, pathContext.orElse(null), true);
   }
 
   /**
@@ -323,7 +321,7 @@ final class LinkFactory {
     }
 
     String fullName = typeRef.getName() + "." + property;
-    if (typeNameFilter.apply(fullName)) {
+    if (typeNameFilter.test(fullName)) {
       return NamedType.newBuilder().setName(fullName).build();
     }
     return typeRef.toBuilder()

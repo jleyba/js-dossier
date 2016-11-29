@@ -17,9 +17,8 @@
 package com.github.jsdossier.tools;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.stream.Collectors.toList;
 
-import com.google.common.base.Function;
-import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.google.javascript.jscomp.PrintStreamErrorManager;
 import com.google.javascript.jscomp.SourceFile;
@@ -71,14 +70,8 @@ final class WriteDeps {
 
     ImmutableList<SourceFile> depsFile = ImmutableList.of(
         SourceFile.fromFile(closure.resolve("deps.js").toString()));
-    ImmutableList<SourceFile> sourceFiles = FluentIterable.from(flags.inputs)
-        .transform(new Function<String, SourceFile>() {
-          @Override
-          public SourceFile apply(String input) {
-            return SourceFile.fromFile(input);
-          }
-        })
-        .toList();
+    List<SourceFile> sourceFiles =
+        flags.inputs.stream().map(SourceFile::fromFile).collect(toList());
 
     PrintStreamErrorManager errorManager =  new PrintStreamErrorManager(System.err);
     DepsGenerator generator = new DepsGenerator(

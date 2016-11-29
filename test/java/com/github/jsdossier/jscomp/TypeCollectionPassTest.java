@@ -24,22 +24,19 @@ import com.github.jsdossier.annotations.Input;
 import com.github.jsdossier.testing.Bug;
 import com.github.jsdossier.testing.CompilerUtil;
 import com.github.jsdossier.testing.GuiceRule;
-import com.google.common.base.Predicate;
 import com.google.inject.Injector;
 import com.google.javascript.jscomp.CompilerOptions;
 import com.google.javascript.rhino.jstype.JSType;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
-
 import javax.inject.Inject;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 /**
  * Tests for {@link TypeCollectionPass}.
@@ -747,12 +744,7 @@ public class TypeCollectionPassTest {
   @Test
   public void doesNotRegisterFilteredTypes() {
     guice.toBuilder()
-        .setTypeNameFilter(new Predicate<String>() {
-          @Override
-          public boolean apply(String input) {
-            return input.startsWith("one.") || input.contains("two");
-          }
-        })
+        .setTypeNameFilter(input -> input.startsWith("one.") || input.contains("two"))
         .build()
         .createInjector()
         .injectMembers(this);
@@ -843,7 +835,7 @@ public class TypeCollectionPassTest {
     assertThat(typeRegistry.getAllTypes()).hasSize(2);
 
     NominalType bar = typeRegistry.getType("module$exports$foo$bar");
-    assertThat(bar.getModule()).isPresent();
+    assertThat(bar.getModule().isPresent()).isTrue();
 
     NominalType baz = typeRegistry.getType("module$exports$foo$bar.Baz");
     assertConstructor(baz);
@@ -858,7 +850,7 @@ public class TypeCollectionPassTest {
     assertThat(typeRegistry.getAllTypes()).hasSize(2);
 
     NominalType bazExports = typeRegistry.getType("module$exports$foo$bar$baz");
-    assertThat(bazExports.getModule()).isPresent();
+    assertThat(bazExports.getModule().isPresent()).isTrue();
 
     NominalType bazClass = typeRegistry.getType("module$exports$foo$bar$baz.Baz");
     assertConstructor(bazClass);
@@ -1241,7 +1233,7 @@ public class TypeCollectionPassTest {
   }
 
   private static void assertNoModule(NominalType type) {
-    assertThat(type.getModule()).isAbsent();
+    assertThat(type.getModule().isPresent()).isFalse();
   }
 
   private static void assertModule(

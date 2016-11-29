@@ -26,12 +26,12 @@ import static java.nio.file.Files.write;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.jimfs.Jimfs;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+import java.util.Optional;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -266,8 +266,9 @@ public class ConfigTest {
     createFile(fs.getPath("not-there.md"));
 
     Config config = builder.build();
-    assertThat(config.getReadme()).isPresent();
-    assertThat(config.getReadme()).hasValue(fs.getPath("not-there.md"));
+    assertThat(config.getReadme().isPresent()).isTrue();
+    assertThat(config.getReadme().get().toString())
+        .isEqualTo(fs.getPath("not-there.md").toString());
   }
 
   @Test
@@ -357,7 +358,7 @@ public class ConfigTest {
             rootDir.resolve("nested/bunnies.js")))
         .build();
     assertThat(config).isEqualTo(expected);
-    assertThat(config.getSourcePrefix()).hasValue(rootDir);
+    assertThat(config.getSourcePrefix().get().toString()).isEqualTo(rootDir.toString());
   }
 
   @Test

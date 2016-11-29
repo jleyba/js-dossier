@@ -19,11 +19,11 @@ package com.github.jsdossier;
 import com.github.jsdossier.annotations.Readme;
 import com.github.jsdossier.proto.Comment;
 import com.github.jsdossier.proto.PageData;
-import com.google.common.base.Optional;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Optional;
 import java.util.concurrent.Callable;
 import javax.inject.Inject;
 

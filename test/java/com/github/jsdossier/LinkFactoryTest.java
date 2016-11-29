@@ -28,19 +28,16 @@ import com.github.jsdossier.proto.SourceLink;
 import com.github.jsdossier.proto.TypeLink;
 import com.github.jsdossier.testing.CompilerUtil;
 import com.github.jsdossier.testing.GuiceRule;
-import com.google.common.base.Predicate;
 import com.google.common.html.types.SafeUrls;
 import com.google.common.html.types.testing.HtmlConversions;
 import com.google.javascript.jscomp.CompilerOptions;
+import java.nio.file.FileSystem;
+import javax.annotation.Nullable;
+import javax.inject.Inject;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-
-import java.nio.file.FileSystem;
-
-import javax.annotation.Nullable;
-import javax.inject.Inject;
 
 /**
  * Tests for {@link LinkFactory}.
@@ -1947,12 +1944,7 @@ public class LinkFactoryTest {
   @Test
   public void resolveReferenceToFilteredType() {
     guice.toBuilder()
-        .setTypeNameFilter(new Predicate<String>() {
-          @Override
-          public boolean apply(String input) {
-            return input.endsWith("FilteredClass");
-          }
-        })
+        .setTypeNameFilter(input -> input.endsWith("FilteredClass"))
         .build()
         .createInjector()
         .injectMembers(this);

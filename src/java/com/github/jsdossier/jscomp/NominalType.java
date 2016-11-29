@@ -17,10 +17,10 @@
 package com.github.jsdossier.jscomp;
 
 import com.google.auto.value.AutoValue;
-import com.google.common.base.Optional;
 import com.google.javascript.rhino.JSDocInfo;
 import com.google.javascript.rhino.jstype.JSType;
 import java.nio.file.Path;
+import java.util.Optional;
 import javax.annotation.Nullable;
 
 /**
@@ -88,6 +88,13 @@ public abstract class NominalType {
         && !getType().isEnumType();
   }
 
+  /**
+   * Returns whether this is a typedef.
+   */
+  public boolean isTypedef() {
+    return getJsDoc().isTypedef();
+  }
+
   @AutoValue.Builder
   public static abstract class Builder {
     public abstract Builder setName(String name);
@@ -102,7 +109,7 @@ public abstract class NominalType {
 
     public abstract Builder setModule(Optional<Module> module);
     public Builder setModule(@Nullable Module module) {
-      return setModule(Optional.fromNullable(module));
+      return setModule(Optional.ofNullable(module));
     }
 
     public abstract NominalType build();

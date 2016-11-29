@@ -16,12 +16,12 @@
 
 package com.github.jsdossier.soy;
 
-import com.google.common.base.Function;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.Descriptors.EnumValueDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Message;
 import java.util.List;
+import java.util.function.Function;
 import javax.annotation.Nullable;
 
 /**
@@ -43,13 +43,11 @@ abstract class MessageTransformer<T> {
 
   public T transform(Message message) {
     MapBuilder<T> map = newMapBuilder(message);
-    for (FieldDescriptor field : message.getDescriptorForType().getFields()) {
-      if (CONVERTIBLE_TYPES.contains(field.getJavaType())) {
-        if (field.isRepeated() || message.hasField(field)) {
-          map.put(computeFieldName(field), transform(message, field));
-        }
-      }
-    }
+    message.getDescriptorForType().getFields()
+        .stream()
+        .filter(field -> CONVERTIBLE_TYPES.contains(field.getJavaType()))
+        .filter(field -> field.isRepeated() || message.hasField(field))
+        .forEach(field -> map.put(computeFieldName(field), transform(message, field)));
     return map.build();
   }
 

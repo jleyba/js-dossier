@@ -20,6 +20,7 @@ import static com.github.jsdossier.TypeExpressions.NULL_TYPE;
 import static com.github.jsdossier.TypeExpressions.VOID_TYPE;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Verify.verify;
+import static java.util.stream.Collectors.toList;
 
 import com.github.jsdossier.jscomp.Module;
 import com.github.jsdossier.jscomp.NodeLibrary;
@@ -29,9 +30,6 @@ import com.github.jsdossier.proto.RecordType;
 import com.github.jsdossier.proto.TypeExpression;
 import com.google.auto.factory.AutoFactory;
 import com.google.auto.factory.Provided;
-import com.google.common.base.Function;
-import com.google.common.base.Predicate;
-import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Ordering;
 import com.google.common.html.types.SafeUrls;
 import com.google.javascript.rhino.Node;
@@ -359,10 +357,12 @@ final class TypeExpressionParser {
     }
 
     private void caseRecordType(final ObjectType type) {
-      Iterable<Property> properties = FluentIterable.from(type.getOwnPropertyNames())
-          .transform(type::getOwnSlot)
+      Iterable<Property> properties = type.getOwnPropertyNames()
+          .stream()
+          .map(type::getOwnSlot)
           .filter(input -> input != null && !input.getType().isNoType())
-          .toSortedList((o1, o2) -> o1.getName().compareTo(o2.getName()));
+          .sorted((o1, o2) -> o1.getName().compareTo(o2.getName()))
+          .collect(toList());
 
       RecordType.Builder recordType = currentExpression().getRecordTypeBuilder();
       for (Property property : properties) {
@@ -494,25 +494,22 @@ final class TypeExpressionParser {
   }
 
   private static final Ordering<TypeExpression> UNION_ORDERING =
-      Ordering.from(new Comparator<TypeExpression>() {
-        @Override
-        public int compare(TypeExpression o1, TypeExpression o2) {
-          if (o1.equals(o2)) {
-            return 0;
-          }
-          if (o1.getAnyType() || o2.getAnyType()) {
-            return o1.getAnyType() ? 1 : -1;
-          }
-          if (o1.getVoidType() || o2.getVoidType()) {
-            return o1.getVoidType() ? 1 : -1;
-          }
-          if (o1.getNullType() || o2.getNullType()) {
-            return o1.getNullType() ? 1 : -1;
-          }
-          if (o1.getUnknownType() || o2.getUnknownType()) {
-            return o1.getUnknownType() ? 1 : -1;
-          }
+      Ordering.from((o1, o2) -> {
+        if (o1.equals(o2)) {
           return 0;
         }
+        if (o1.getAnyType() || o2.getAnyType()) {
+          return o1.getAnyType() ? 1 : -1;
+        }
+        if (o1.getVoidType() || o2.getVoidType()) {
+          return o1.getVoidType() ? 1 : -1;
+        }
+        if (o1.getNullType() || o2.getNullType()) {
+          return o1.getNullType() ? 1 : -1;
+        }
+        if (o1.getUnknownType() || o2.getUnknownType()) {
+          return o1.getUnknownType() ? 1 : -1;
+        }
+        return 0;
       });
 }

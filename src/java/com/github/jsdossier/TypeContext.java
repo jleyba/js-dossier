@@ -19,12 +19,12 @@ package com.github.jsdossier;
 import com.github.jsdossier.jscomp.Module;
 import com.github.jsdossier.jscomp.NominalType;
 import com.github.jsdossier.jscomp.TypeRegistry;
-import com.google.common.base.Optional;
 import com.google.common.io.Files;
 import com.google.javascript.rhino.jstype.JSType;
 import com.google.javascript.rhino.jstype.JSTypeRegistry;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.Optional;
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
@@ -74,8 +74,7 @@ final class TypeContext {
       TypeRegistry typeRegistry,
       JSTypeRegistry jsTypeRegistry,
       ModuleNamingConvention moduleNamingConvention, DossierFileSystem dfs) {
-    this(typeRegistry, jsTypeRegistry, dfs, moduleNamingConvention,
-        Optional.<NominalType>absent());
+    this(typeRegistry, jsTypeRegistry, dfs, moduleNamingConvention, Optional.empty());
   }
 
   private TypeContext(
@@ -96,7 +95,7 @@ final class TypeContext {
   public TypeContext clearContext() {
     if (context.isPresent()) {
       return new TypeContext(typeRegistry, jsTypeRegistry, dfs, moduleNamingConvention,
-          Optional.<NominalType>absent());
+          Optional.empty());
     }
     return this;
   }
@@ -106,7 +105,7 @@ final class TypeContext {
    */
   public TypeContext changeContext(@Nullable NominalType context) {
     return new TypeContext(
-        typeRegistry, jsTypeRegistry, dfs, moduleNamingConvention, Optional.fromNullable(context));
+        typeRegistry, jsTypeRegistry, dfs, moduleNamingConvention, Optional.ofNullable(context));
   }
 
   public boolean isGlobalScope() {
@@ -118,7 +117,7 @@ final class TypeContext {
    */
   @Nullable
   public NominalType getContextType() {
-    return context.orNull();
+    return context.orElse(null);
   }
 
   /**
