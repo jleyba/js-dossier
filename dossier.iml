@@ -14,6 +14,7 @@
       <sourceFolder url="file://$MODULE_DIR$/bazel-out/host" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/third_party" type="java-resource" relativeOutputPath="third_party" />
       <sourceFolder url="file://$MODULE_DIR$/bazel-genfiles/src" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/java/com/github/jsdossier/jscomp/resources" type="java-resource" />
       <excludeFolder url="file://$MODULE_DIR$/.idea" />
       <excludeFolder url="file://$MODULE_DIR$/bazel-bin/lib" />
       <excludeFolder url="file://$MODULE_DIR$/bazel-bin/src/java" />

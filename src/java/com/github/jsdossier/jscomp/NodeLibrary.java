@@ -33,6 +33,7 @@ import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.io.Resources;
 import com.google.javascript.jscomp.SourceFile;
 import java.io.IOException;
 import java.net.URI;
@@ -61,7 +62,8 @@ public final class NodeLibrary {
 
   private static final Logger log = Logger.getLogger(NodeLibrary.class.getName());
 
-  private static final String NODE_EXTERNS_RESOURCE_DIRECTORY = "/third_party/js/externs/node";
+  private static final String NODE_EXTERNS_RESOURCE_DIRECTORY =
+      "/" + NodeLibrary.class.getPackage().getName().replace('.', '/') + "/resources/externs/node";
   private static final String FILE_NAME_PREFIX = "dossier//node-externs.zip//";
 
   private static final Supplier<ExternCollection> NODE_EXTERNS = Suppliers.memoize(() -> {
@@ -135,8 +137,7 @@ public final class NodeLibrary {
   }
 
   private static URI getExternZipUri() {
-    URL url = NodeLibrary.class.getResource(NODE_EXTERNS_RESOURCE_DIRECTORY);
-    checkNotNull(url, "Unable to find resource %s", NODE_EXTERNS_RESOURCE_DIRECTORY);
+    URL url = Resources.getResource(NodeLibrary.class, NODE_EXTERNS_RESOURCE_DIRECTORY);
     try {
       URI uri = url.toURI();
       if ("file".equals(uri.getScheme())) {
@@ -144,7 +145,8 @@ public final class NodeLibrary {
       }
       verify("jar".equals(uri.getScheme()), "Unexpected resource URI: %s", uri);
       verify(uri.toString().endsWith("!" + NODE_EXTERNS_RESOURCE_DIRECTORY),
-          "Unexpected resource URI: %s", uri);
+          "Unexpected resource URI: %s\nExpected final path: %s", uri,
+          NODE_EXTERNS_RESOURCE_DIRECTORY);
 
       String jar = uri.toString();
       return URI.create(
@@ -176,7 +178,7 @@ public final class NodeLibrary {
 
     return new ExternCollection(
         ImmutableSet.copyOf(externIds),
-        ImmutableList.<SourceFile>of(),
+        ImmutableList.of(),
         ImmutableMap.copyOf(modulesByPath),
         ImmutableMap.copyOf(modulePathsById.inverse()));
   }
@@ -272,10 +274,10 @@ public final class NodeLibrary {
 
     static ExternCollection empty() {
       return new ExternCollection(
-          ImmutableSet.<String>of(),
-          ImmutableList.<SourceFile>of(),
-          ImmutableMap.<String, SourceFile>of(),
-          ImmutableMap.<String, String>of());
+          ImmutableSet.of(),
+          ImmutableList.of(),
+          ImmutableMap.of(),
+          ImmutableMap.of());
     }
 
     ExternCollection merge(ExternCollection other) {

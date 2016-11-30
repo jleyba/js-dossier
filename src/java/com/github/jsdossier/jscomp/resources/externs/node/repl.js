@@ -28,8 +28,30 @@ var stream = require('stream');
  */
 var repl = {};
 
+/** @const */
+repl.REPL_MODE_SLOPPY;
+
+/** @const */
+repl.REPL_MODE_STRICT;
+
+/** @const */
+repl.REPL_MODE_MAGIC;
+
 /**
- * @param {{prompt: ?string, input: ?stream.Readable, output: ?stream.Writable, terminal: ?boolean, eval: ?function(string), useColors: ?boolean, useGlobal: ?boolean, ignoreUndefined: ?boolean, writer: ?function(string)}} options
+ * @param {{
+ *     prompt: ?string,
+ *     input: ?stream.Readable,
+ *     output: ?stream.Writable,
+ *     terminal: ?boolean,
+ *     eval: ?function(string),
+ *     useColors: ?boolean,
+ *     useGlobal: ?boolean,
+ *     ignoreUndefined: ?boolean,
+ *     writer: ?function(string),
+ *     completer: ?function(string): !Array<string>,
+ *     replMode: ?,
+ *     breakEvalOnSigint: boolean
+ * }} options
  * @return {repl.REPLServer}
  */
 repl.start;
@@ -39,6 +61,17 @@ repl.start;
  * @extends events.EventEmitter
  */
 repl.REPLServer = function() {};
+
+/**
+ * @param {string} keyword
+ * @param {!(Function|{help: string, action: !Function})} cmd
+ */
+repl.REPLServer.prototype.defineCommand = function(keyword, cmd) {};
+
+/**
+ * @param {boolean=} opt_preserveCursor
+ */
+repl.REPLServer.prototype.displayPrompt = function(opt_preserveCursor) {}
 
 /**
  * @type {Object.<string,*>}
