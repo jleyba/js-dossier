@@ -17,10 +17,16 @@ package com.github.jsdossier;
 
 import static com.google.common.collect.Iterables.concat;
 import static com.google.common.io.Files.getFileExtension;
+import static com.google.common.util.concurrent.Futures.allAsList;
+import static com.google.common.util.concurrent.Futures.transform;
+import static com.google.common.util.concurrent.MoreExecutors.listeningDecorator;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.createDirectories;
+import static java.util.concurrent.Executors.newFixedThreadPool;
 import static java.util.stream.Collectors.toList;
 
+import com.github.jsdossier.Annotations.PostRenderingTasks;
+import com.github.jsdossier.Annotations.RenderingTasks;
 import com.github.jsdossier.annotations.Args;
 import com.github.jsdossier.annotations.DocumentationScoped;
 import com.github.jsdossier.annotations.Input;
@@ -37,7 +43,6 @@ import com.github.jsdossier.annotations.Stdout;
 import com.github.jsdossier.annotations.TypeFilter;
 import com.github.jsdossier.jscomp.DossierCommandLineRunner;
 import com.github.jsdossier.jscomp.DossierCompiler;
-import com.github.jsdossier.jscomp.NominalType;
 import com.github.jsdossier.jscomp.TypeRegistry;
 import com.github.jsdossier.soy.DossierSoyModule;
 import com.github.jsdossier.soy.Renderer;
@@ -48,6 +53,8 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.io.ByteStreams;
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.inject.AbstractModule;
@@ -55,12 +62,10 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.Provides;
-import com.google.inject.TypeLiteral;
 import com.google.javascript.jscomp.CompilerOptions.LanguageMode;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Annotation;
 import java.net.URI;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
@@ -74,8 +79,6 @@ import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
-import javax.inject.Inject;
-import javax.inject.Qualifier;
 import org.joda.time.Instant;
 import org.joda.time.Period;
 import org.joda.time.format.PeriodFormatterBuilder;
@@ -199,47 +202,6 @@ final class Main {
       flags = Stream.concat(flags, standardFlags);
       return flags.toArray(String[]::new);
     }
-
-    @Provides
-    @DocumentationScoped
-    @DocumentableTypes
-    Iterable<NominalType> provideDocumentableTypes(
-        TypeRegistry registry, DocumentableType predicate) {
-      return registry.getAllTypes().stream().filter(predicate).collect(toList());
-    }
-  }
-
-  @Qualifier
-  @Retention(RetentionPolicy.RUNTIME)
-  private @interface DocumentableTypes {}
-
-  private static final class DocumentableType implements Predicate<NominalType> {
-    private final TypeRegistry typeRegistry;
-    private final TypeInspectorFactory typeInspectorFactory;
-
-    @Inject
-    DocumentableType(
-        TypeRegistry typeRegistry,
-        TypeInspectorFactory typeInspectorFactory) {
-      this.typeRegistry = typeRegistry;
-      this.typeInspectorFactory = typeInspectorFactory;
-    }
-
-    @Override
-    public boolean test(NominalType input) {
-      if (input.getJsDoc().isTypedef()) {
-        return false;
-      }
-
-      if (typeRegistry.isImplicitNamespace(input.getName())) {
-        TypeInspector.Report report = typeInspectorFactory.create(input).inspectType();
-        return !report.getCompilerConstants().isEmpty()
-            || !report.getFunctions().isEmpty()
-            || !report.getProperties().isEmpty();
-      }
-
-      return true;
-    }
   }
 
   private static void print(Config config) {
@@ -302,13 +264,25 @@ final class Main {
     // An in-memory file system used for testing.
     return zip.getFileSystem().provider().newFileSystem(zip, attributes);
   }
+  
+  private static ListenableFuture<List<Path>> submitRenderingTasks(
+      ListeningExecutorService executor, Injector injector, Class<? extends Annotation> qualifier)
+      throws InterruptedException {
+    List<RenderTask> tasks = injector.getInstance(new Key<List<RenderTask>>(qualifier) {});
+
+    @SuppressWarnings("unchecked")  // Safe by the contract of invokeAll().
+    List<ListenableFuture<List<Path>>> stage1 = (List) executor.invokeAll(tasks);
+    ListenableFuture<List<List<Path>>> stage2 = allAsList(stage1);
+    return transform(stage2, lists ->  lists.stream().flatMap(List::stream).collect(toList()));
+  }
 
   private static int run(Flags flags, Config config, Path outputDir) throws IOException {
     configureLogging();
 
     Injector injector = Guice.createInjector(
         new CompilerModule(),
-        new DossierModule(flags, config, outputDir));
+        new DossierModule(flags, config, outputDir),
+        new RenderTaskModule());
 
     DossierCommandLineRunner runner = injector.getInstance(DossierCommandLineRunner.class);
     if (!runner.shouldRunCompiler()) {
@@ -328,30 +302,20 @@ final class Main {
     DossierCompiler compiler = injector.getInstance(DossierCompiler.class);
     typeRegistry.computeTypeRelationships(compiler.getTopScope(), compiler.getTypeRegistry());
 
+    ListeningExecutorService executor = null;
     try {
       DOCUMENTATION_SCOPE.enter();
       createDirectories(outputDir);
 
-      DocTemplate template = injector.getInstance(DocTemplate.class);
-      Iterable<NominalType> types = injector.getInstance(
-          Key.get(new TypeLiteral<Iterable<NominalType>>() {}, DocumentableTypes.class));
+      executor = listeningDecorator(newFixedThreadPool(flags.numThreads));
+      
+      List<Path> stage1Results =
+          submitRenderingTasks(executor, injector, RenderingTasks.class).get();
+      List<Path> stage2Results =
+          submitRenderingTasks(executor, injector, PostRenderingTasks.class).get();
 
-      RenderTaskExecutor executor = injector.getInstance(RenderTaskExecutor.class)
-          .renderIndex()
-          .renderDocumentation(types)
-          .renderMarkdown(config.getCustomPages())
-          .renderResources(
-              concat(
-                  template.getAdditionalFiles(),
-                  template.getCss(),
-                  template.getHeadJs(),
-                  template.getTailJs()));
-      if (!config.getSourceUrlTemplate().isPresent()) {
-        executor.renderSourceFiles(concat(config.getSources(), config.getModules()));
-      }
-      List<Path> files = executor.awaitTermination().get();
       if (log.isLoggable(Level.FINER)) {
-        log.fine("Rendered:\n  " + Joiner.on("\n  ").join(files));
+        log.fine("Rendered:\n  " + Joiner.on("\n  ").join(concat(stage1Results, stage2Results)));
       }
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();
@@ -364,6 +328,9 @@ final class Main {
       }
       throw new RuntimeException(e.getCause());
     } finally {
+      if (executor != null) {
+        executor.shutdownNow();
+      }
       DOCUMENTATION_SCOPE.exit();
     }
 

@@ -20,17 +20,18 @@ import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 import com.google.auto.factory.AutoFactory;
 import com.google.auto.factory.Provided;
+import com.google.common.collect.ImmutableList;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.concurrent.Callable;
+import java.util.List;
 
 /**
  * Task copies a resource file to the output directory.
  */
 @AutoFactory
-final class RenderResourceTask implements Callable<Path> {
+final class RenderResourceTask implements RenderTask {
 
   private final DossierFileSystem dfs;
   private final TemplateFile file;
@@ -43,11 +44,11 @@ final class RenderResourceTask implements Callable<Path> {
   }
 
   @Override
-  public Path call() throws IOException {
+  public List<Path> call() throws IOException {
     Path output = dfs.getPath(file);
     try (InputStream input = file.getSource().openStream()) {
       Files.copy(input, output, REPLACE_EXISTING);
     }
-    return output;
+    return ImmutableList.of(output);
   }
 }

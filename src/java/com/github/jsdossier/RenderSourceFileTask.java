@@ -24,15 +24,16 @@ import com.github.jsdossier.proto.SourceFile;
 import com.google.auto.factory.AutoFactory;
 import com.google.auto.factory.Provided;
 import com.google.common.base.Charsets;
+import com.google.common.collect.ImmutableList;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.concurrent.Callable;
+import java.util.List;
 
 /**
  * Renders a single source file in the output tree.
  */
 @AutoFactory
-final class RenderSourceFileTask implements Callable<Path> {
+final class RenderSourceFileTask implements RenderTask {
 
   private static final String MODULE_SLASH = "/";
 
@@ -56,7 +57,7 @@ final class RenderSourceFileTask implements Callable<Path> {
   }
 
   @Override
-  public Path call() throws IOException {
+  public List<Path> call() throws IOException {
     String displayPath = prefix.relativize(path)
         .toString()
         .replace(path.getFileSystem().getSeparator(), MODULE_SLASH);
@@ -77,6 +78,6 @@ final class RenderSourceFileTask implements Callable<Path> {
 
     index.addSourceFile(htmlPath, jsonPath);
 
-    return htmlPath;
+    return ImmutableList.of(htmlPath, jsonPath);
   }
 }

@@ -16,6 +16,7 @@
 
 package com.github.jsdossier;
 
+import static com.github.jsdossier.GuavaCollections.toImmutableList;
 import static com.github.jsdossier.TypeInspector.fakeNodeForType;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -55,7 +56,6 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.Callable;
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nullable;
 
@@ -63,7 +63,7 @@ import javax.annotation.Nullable;
  * Generates tasks for rendering a list of types.
  */
 @AutoFactory
-final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Callable<Path>>> {
+final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<RenderTask>> {
 
   private final ImmutableList<NominalType> types;
   private final RenderDocumentationTaskSupplier_NominalTypeProcessorFactory processorFactory;
@@ -79,7 +79,7 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Ca
   }
 
   @Override
-  public ImmutableList<Callable<Path>> get() {
+  public ImmutableList<RenderTask> get() {
     final List<NominalTypeProcessor> processors =
         transform(types, processorFactory::create);
 
@@ -91,14 +91,13 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Ca
       return types1;
     });
 
-    List<Callable<Path>> tasks = processors.stream()
+    return processors.stream()
         .map(p -> renderTaskFactory.create(p.getHtmlOutput(), p.getJsonOutput(), typeSupplier))
-        .collect(toList());
-    return ImmutableList.copyOf(tasks);
+        .collect(toImmutableList());
   }
 
   @AutoFactory
-  static final class RenderDocumentationTask implements Callable<Path> {
+  static final class RenderDocumentationTask implements RenderTask {
     private final PageRenderer renderer;
     private final Path output;
     private final Path jsonOutput;
@@ -116,7 +115,7 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Ca
     }
 
     @Override
-    public Path call() throws Exception {
+    public List<Path> call() throws Exception {
       PageData page = PageData.newBuilder()
           .setTypes(
               PageData.TypeCollection.newBuilder()
@@ -124,7 +123,7 @@ final class RenderDocumentationTaskSupplier implements Supplier<ImmutableList<Ca
           .build();
 
       renderer.render(output, jsonOutput, page);
-      return output;
+      return ImmutableList.of(output, jsonOutput);
     }
   }
 

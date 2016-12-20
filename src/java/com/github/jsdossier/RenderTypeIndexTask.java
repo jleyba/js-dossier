@@ -24,18 +24,19 @@ import static java.nio.file.StandardOpenOption.WRITE;
 import com.github.jsdossier.annotations.DocumentationScoped;
 import com.github.jsdossier.proto.Index;
 import com.github.jsdossier.soy.JsonRenderer;
+import com.google.common.collect.ImmutableList;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.concurrent.Callable;
+import java.util.List;
 import javax.inject.Inject;
 
 /**
  * Task for rendering the main type index.
  */
 @DocumentationScoped
-final class RenderTypeIndexTask implements Callable<Path> {
+final class RenderTypeIndexTask implements RenderTask {
 
   private final DossierFileSystem dfs;
   private final JsonRenderer jsonRenderer;
@@ -52,7 +53,7 @@ final class RenderTypeIndexTask implements Callable<Path> {
   }
 
   @Override
-  public Path call() throws IOException {
+  public List<Path> call() throws IOException {
     Index message = index.toNormalizedProto();
 
     StringWriter sw = new StringWriter();
@@ -61,6 +62,6 @@ final class RenderTypeIndexTask implements Callable<Path> {
     String content = "var TYPES = " + sw + ";";
     Path path = dfs.getPath("types.js");
     Files.write(path, content.getBytes(UTF_8), CREATE, WRITE, TRUNCATE_EXISTING);
-    return path;
+    return ImmutableList.of(path);
   }
 }

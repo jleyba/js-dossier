@@ -19,18 +19,19 @@ package com.github.jsdossier;
 import com.github.jsdossier.annotations.Readme;
 import com.github.jsdossier.proto.Comment;
 import com.github.jsdossier.proto.PageData;
+import com.google.common.collect.ImmutableList;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.Callable;
 import javax.inject.Inject;
 
 /**
  * Renders the main index file.
  */
-final class RenderIndexTask implements Callable<Path> {
+final class RenderIndexTask implements RenderTask {
 
   private final DossierFileSystem dfs;
   private final CommentParser parser;
@@ -56,7 +57,7 @@ final class RenderIndexTask implements Callable<Path> {
   }
 
   @Override
-  public Path call() throws IOException {
+  public List<Path> call() throws IOException {
     // TODO: render an index of all the types.
     Comment content = Comment.getDefaultInstance();
 
@@ -78,6 +79,6 @@ final class RenderIndexTask implements Callable<Path> {
     Path jsonPath = dfs.getJsonPath(htmlPath);
     renderer.render(htmlPath, jsonPath, data);
     index.addSourceFile(htmlPath, jsonPath);
-    return htmlPath;
+    return ImmutableList.of(htmlPath, jsonPath);
   }
 }

@@ -20,17 +20,18 @@ import com.github.jsdossier.proto.Comment;
 import com.github.jsdossier.proto.PageData;
 import com.google.auto.factory.AutoFactory;
 import com.google.auto.factory.Provided;
+import com.google.common.collect.ImmutableList;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.concurrent.Callable;
+import java.util.List;
 
 /**
  * Renders a single markdown file.
  */
 @AutoFactory
-final class RenderMarkdownTask implements Callable<Path> {
+final class RenderMarkdownTask implements RenderTask {
 
   private final DossierFileSystem dfs;
   private final CommentParser parser;
@@ -52,7 +53,7 @@ final class RenderMarkdownTask implements Callable<Path> {
   }
 
   @Override
-  public Path call() throws IOException {
+  public List<Path> call() throws IOException {
     String text = new String(Files.readAllBytes(page.getPath()), StandardCharsets.UTF_8);
     Comment content = parser.parseComment(text, linkFactory);
 
@@ -67,6 +68,6 @@ final class RenderMarkdownTask implements Callable<Path> {
     Path jsonPath = dfs.getJsonPath(page);
     Path output = dfs.getPath(page);
     renderer.render(output, jsonPath, data);
-    return output;
+    return ImmutableList.of(output, jsonPath);
   }
 }
