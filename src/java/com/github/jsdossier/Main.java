@@ -27,58 +27,32 @@ import static java.util.stream.Collectors.toList;
 
 import com.github.jsdossier.Annotations.PostRenderingTasks;
 import com.github.jsdossier.Annotations.RenderingTasks;
-import com.github.jsdossier.annotations.Args;
-import com.github.jsdossier.annotations.DocumentationScoped;
-import com.github.jsdossier.annotations.Input;
-import com.github.jsdossier.annotations.ModuleExterns;
-import com.github.jsdossier.annotations.ModuleFilter;
-import com.github.jsdossier.annotations.ModulePrefix;
-import com.github.jsdossier.annotations.Modules;
-import com.github.jsdossier.annotations.Output;
-import com.github.jsdossier.annotations.Readme;
-import com.github.jsdossier.annotations.SourcePrefix;
-import com.github.jsdossier.annotations.SourceUrlTemplate;
-import com.github.jsdossier.annotations.Stderr;
-import com.github.jsdossier.annotations.Stdout;
-import com.github.jsdossier.annotations.TypeFilter;
 import com.github.jsdossier.jscomp.DossierCommandLineRunner;
 import com.github.jsdossier.jscomp.DossierCompiler;
 import com.github.jsdossier.jscomp.TypeRegistry;
-import com.github.jsdossier.soy.DossierSoyModule;
-import com.github.jsdossier.soy.Renderer;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.io.ByteStreams;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Key;
-import com.google.inject.Provides;
-import com.google.javascript.jscomp.CompilerOptions.LanguageMode;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.lang.annotation.Annotation;
 import java.net.URI;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.ExecutionException;
-import java.util.function.Predicate;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
-import java.util.stream.Stream;
 import org.joda.time.Instant;
 import org.joda.time.Period;
 import org.joda.time.format.PeriodFormatterBuilder;
@@ -87,122 +61,6 @@ final class Main {
   private Main() {}
 
   private static final Logger log = Logger.getLogger(Main.class.getName());
-
-  private static final List<String> STANDARD_FLAGS = ImmutableList.of(
-      "--jscomp_warning=accessControls",
-      "--jscomp_warning=ambiguousFunctionDecl",
-      "--jscomp_warning=checkRegExp",
-      "--jscomp_warning=checkTypes",
-      "--jscomp_warning=checkVars",
-      "--jscomp_warning=constantProperty",
-      "--jscomp_warning=deprecated",
-      "--jscomp_warning=duplicateMessage",
-      "--jscomp_warning=es5Strict",
-      "--jscomp_warning=externsValidation",
-      "--jscomp_warning=fileoverviewTags",
-      "--jscomp_warning=globalThis",
-      "--jscomp_warning=invalidCasts",
-      "--jscomp_warning=missingProperties",
-      "--jscomp_warning=nonStandardJsDocs",
-      "--jscomp_warning=strictModuleDepCheck",
-      "--jscomp_warning=typeInvalidation",
-      "--jscomp_warning=undefinedVars",
-      "--jscomp_warning=unknownDefines",
-      "--jscomp_warning=uselessCode",
-      "--jscomp_warning=visibility",
-      "--third_party=false");
-
-  private static final ExplicitScope DOCUMENTATION_SCOPE = new ExplicitScope();
-
-  private static class DossierModule extends AbstractModule {
-
-    private final Flags flags;
-    private final Config config;
-    private final Path outputDir;
-
-    private DossierModule(Flags flags, Config config, Path outputDir) {
-      this.flags = flags;
-      this.config = config;
-      this.outputDir = outputDir;
-    }
-
-    @Override
-    protected void configure() {
-      install(new DossierSoyModule());
-
-      bindScope(DocumentationScoped.class, DOCUMENTATION_SCOPE);
-
-      bindConstant().annotatedWith(Annotations.NumThreads.class).to(flags.numThreads);
-
-      bind(PrintStream.class).annotatedWith(Stderr.class).toInstance(System.err);
-      bind(PrintStream.class).annotatedWith(Stdout.class).toInstance(
-          new PrintStream(ByteStreams.nullOutputStream()));
-
-      bind(new Key<Optional<Path>>(Readme.class){}).toInstance(config.getReadme());
-      bind(new Key<Iterable<Path>>(Input.class){})
-          .toInstance(concat(config.getSources(), config.getModules()));
-      bind(new Key<ImmutableSet<Path>>(Modules.class){}).toInstance(config.getModules());
-      bind(new Key<ImmutableSet<Path>>(ModuleExterns.class){})
-          .toInstance(config.getExternModules());
-      bind(new Key<ImmutableSet<MarkdownPage>>(){}).toInstance(config.getCustomPages());
-
-      bind(new Key<Optional<Path>>(ModulePrefix.class){}).toInstance(config.getModulePrefix());
-      bind(Key.get(Path.class, ModulePrefix.class))
-          .toProvider(ModulePrefixProvider.class)
-          .in(DocumentationScoped.class);
-      bind(Path.class).annotatedWith(SourcePrefix.class).toInstance(config.getSrcPrefix());
-
-      bind(Path.class).annotatedWith(Output.class).toInstance(outputDir);
-      bind(FileSystem.class).annotatedWith(Output.class).toInstance(outputDir.getFileSystem());
-      bind(FileSystem.class).annotatedWith(Input.class).toInstance(config.getFileSystem());
-
-      bind(ModuleNamingConvention.class).toInstance(config.getModuleNamingConvention());
-
-      bind(DocTemplate.class).to(DefaultDocTemplate.class).in(DocumentationScoped.class);
-      bind(Renderer.class).in(DocumentationScoped.class);
-    }
-
-    @Provides
-    @SourceUrlTemplate
-    Optional<String> provideUrlTemplate() {
-      return config.getSourceUrlTemplate();
-    }
-
-    @Provides
-    @ModuleFilter
-    Predicate<Path> provideModulePathFilter() {
-      return config::isFilteredModule;
-    }
-
-    @Provides
-    @TypeFilter
-    Predicate<String> provideTypeNameFilter() {
-      return config::isFilteredType;
-    }
-
-    @Provides
-    @Input
-    LanguageMode provideInputLanguage() {
-      return config.getLanguage().toMode();
-    }
-
-    @Provides
-    @Args
-    String[] provideCompilerFlags() {
-      Stream<String> standardFlags = STANDARD_FLAGS.stream();
-      if (config.isStrict()) {
-        standardFlags =
-            standardFlags.map(input -> input.replace("--jscomp_warning", "--jscomp_error"));
-      }
-      
-      Stream<String> flags = Stream.concat(
-          config.getSources().stream().map(path -> "--js=" + path),
-          config.getModules().stream().map(path -> "--js=" + path));
-      flags = Stream.concat(flags, config.getExterns().stream().map(path -> "--externs=" + path));
-      flags = Stream.concat(flags, standardFlags);
-      return flags.toArray(String[]::new);
-    }
-  }
 
   private static void print(Config config) {
     Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -278,10 +136,12 @@ final class Main {
 
   private static int run(Flags flags, Config config, Path outputDir) throws IOException {
     configureLogging();
+    
+    ExplicitScope documentationScope = new ExplicitScope();
 
     Injector injector = Guice.createInjector(
         new CompilerModule(),
-        new DossierModule(flags, config, outputDir),
+        new ConfigModule(flags, config, outputDir, documentationScope),
         new RenderTaskModule());
 
     DossierCommandLineRunner runner = injector.getInstance(DossierCommandLineRunner.class);
@@ -304,7 +164,7 @@ final class Main {
 
     ListeningExecutorService executor = null;
     try {
-      DOCUMENTATION_SCOPE.enter();
+      documentationScope.enter();
       createDirectories(outputDir);
 
       executor = listeningDecorator(newFixedThreadPool(flags.numThreads));
@@ -331,7 +191,7 @@ final class Main {
       if (executor != null) {
         executor.shutdownNow();
       }
-      DOCUMENTATION_SCOPE.exit();
+      documentationScope.exit();
     }
 
     Instant stop = Instant.now();
