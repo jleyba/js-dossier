@@ -16,10 +16,8 @@
 
 package com.github.jsdossier;
 
-import static com.google.common.collect.Iterables.concat;
-
-import com.github.jsdossier.annotations.Args;
 import com.github.jsdossier.annotations.DocumentationScoped;
+import com.github.jsdossier.annotations.Externs;
 import com.github.jsdossier.annotations.Input;
 import com.github.jsdossier.annotations.ModuleExterns;
 import com.github.jsdossier.annotations.ModuleFilter;
@@ -31,10 +29,10 @@ import com.github.jsdossier.annotations.SourcePrefix;
 import com.github.jsdossier.annotations.SourceUrlTemplate;
 import com.github.jsdossier.annotations.Stderr;
 import com.github.jsdossier.annotations.Stdout;
+import com.github.jsdossier.annotations.StrictMode;
 import com.github.jsdossier.annotations.TypeFilter;
 import com.github.jsdossier.soy.DossierSoyModule;
 import com.github.jsdossier.soy.Renderer;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.io.ByteStreams;
 import com.google.inject.AbstractModule;
@@ -45,37 +43,11 @@ import com.google.javascript.jscomp.CompilerOptions;
 import java.io.PrintStream;
 import java.nio.file.FileSystem;
 import java.nio.file.Path;
-import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
-import java.util.stream.Stream;
 
 /** Provides the main configuration bindings. */
 final class ConfigModule extends AbstractModule {
-
-  private static final List<String> STANDARD_FLAGS = ImmutableList.of(
-      "--jscomp_warning=accessControls",
-      "--jscomp_warning=ambiguousFunctionDecl",
-      "--jscomp_warning=checkRegExp",
-      "--jscomp_warning=checkTypes",
-      "--jscomp_warning=checkVars",
-      "--jscomp_warning=constantProperty",
-      "--jscomp_warning=deprecated",
-      "--jscomp_warning=duplicateMessage",
-      "--jscomp_warning=es5Strict",
-      "--jscomp_warning=externsValidation",
-      "--jscomp_warning=fileoverviewTags",
-      "--jscomp_warning=globalThis",
-      "--jscomp_warning=invalidCasts",
-      "--jscomp_warning=missingProperties",
-      "--jscomp_warning=nonStandardJsDocs",
-      "--jscomp_warning=strictModuleDepCheck",
-      "--jscomp_warning=typeInvalidation",
-      "--jscomp_warning=undefinedVars",
-      "--jscomp_warning=unknownDefines",
-      "--jscomp_warning=uselessCode",
-      "--jscomp_warning=visibility",
-      "--third_party=false");
 
   private final Flags flags;
   private final Config config;
@@ -105,21 +77,22 @@ final class ConfigModule extends AbstractModule {
     bind(PrintStream.class).annotatedWith(Stdout.class).toInstance(
         new PrintStream(ByteStreams.nullOutputStream()));
 
-    bind(new Key<Optional<Path>>(Readme.class) {
-    }).toInstance(config.getReadme());
-    bind(new Key<Iterable<Path>>(Input.class) {
-    })
-        .toInstance(concat(config.getSources(), config.getModules()));
-    bind(new Key<ImmutableSet<Path>>(Modules.class) {
-    }).toInstance(config.getModules());
-    bind(new Key<ImmutableSet<Path>>(ModuleExterns.class) {
-    })
-        .toInstance(config.getExternModules());
-    bind(new Key<ImmutableSet<MarkdownPage>>() {
-    }).toInstance(config.getCustomPages());
+    bind(new Key<Optional<Path>>(Readme.class) {}).toInstance(config.getReadme());
 
-    bind(new Key<Optional<Path>>(ModulePrefix.class) {
-    }).toInstance(config.getModulePrefix());
+    ImmutableSet<Path> allInputs = ImmutableSet.<Path>builder()
+        .addAll(config.getSources())
+        .addAll(config.getModules())
+        .build();
+    // TODO(jleyba): Move uses to ImmutableSet<Path>
+    bind(new Key<Iterable<Path>>(Input.class) {}).toInstance(allInputs);
+    bind(new Key<ImmutableSet<Path>>(Input.class) {}).toInstance(allInputs);
+    bind(new Key<ImmutableSet<Path>>(Externs.class) {}).toInstance(config.getExterns());
+    bind(new Key<ImmutableSet<Path>>(Modules.class) {}).toInstance(config.getModules());
+    bind(new Key<ImmutableSet<Path>>(ModuleExterns.class) {})
+        .toInstance(config.getExternModules());
+    bind(new Key<ImmutableSet<MarkdownPage>>() {}).toInstance(config.getCustomPages());
+
+    bind(new Key<Optional<Path>>(ModulePrefix.class) {}).toInstance(config.getModulePrefix());
     bind(Key.get(Path.class, ModulePrefix.class))
         .toProvider(ModulePrefixProvider.class)
         .in(DocumentationScoped.class);
@@ -160,19 +133,8 @@ final class ConfigModule extends AbstractModule {
   }
 
   @Provides
-  @Args
-  String[] provideCompilerFlags() {
-    Stream<String> standardFlags = STANDARD_FLAGS.stream();
-    if (config.isStrict()) {
-      standardFlags =
-          standardFlags.map(input -> input.replace("--jscomp_warning", "--jscomp_error"));
-    }
-
-    Stream<String> flags = Stream.concat(
-        config.getSources().stream().map(path -> "--js=" + path),
-        config.getModules().stream().map(path -> "--js=" + path));
-    flags = Stream.concat(flags, config.getExterns().stream().map(path -> "--externs=" + path));
-    flags = Stream.concat(flags, standardFlags);
-    return flags.toArray(String[]::new);
+  @StrictMode
+  boolean provideStrictMode() {
+    return config.isStrict();
   }
 }

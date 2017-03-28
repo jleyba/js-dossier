@@ -21,8 +21,8 @@ import java.lang.annotation.RetentionPolicy;
 import javax.inject.Qualifier;
 
 /**
- * Identifies a list of command line flags.
+ * Qualifier for user specified extern files.
  */
 @Qualifier
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Args {}
+public @interface Externs {}
