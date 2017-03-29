@@ -5,8 +5,8 @@ licenses(["notice"])
 genrule(
     name = "protoc_bin",
     srcs = select({
-        ":darwin": ["@protoc_macosx//file"],
-        "//conditions:default": ["@protoc_linux_x86_64//file"],
+        ":darwin": ["@dossier_protoc_macosx//file"],
+        "//conditions:default": ["@dossier_protoc_linux_x86_64//file"],
     }),
     outs = ["protoc"],
     cmd = " && ".join([

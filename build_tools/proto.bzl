@@ -25,8 +25,8 @@ def java_proto_library(name, deps, visibility=None):
       name = name,
       srcs = [name + "_gen.srcjar"],
       deps = [
-          "@protobuf//jar",
-          "@safe_types//jar",
+          "//lib/maven:protobuf",
+          "//lib/maven:safe_types",
       ],
       visibility = visibility,
   )
