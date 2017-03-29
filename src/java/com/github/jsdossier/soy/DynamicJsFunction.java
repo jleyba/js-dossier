@@ -16,27 +16,46 @@
 
 package com.github.jsdossier.soy;
 
-import static com.google.template.soy.data.UnsafeSanitizedContentOrdainer.ordainAsSafe;
-
 import com.google.common.collect.ImmutableSet;
-import com.google.template.soy.data.SanitizedContent;
+import com.google.template.soy.SoyFileSet.Builder;
+import com.google.template.soy.data.SanitizedContent.ContentKind;
 import com.google.template.soy.data.SoyValue;
 import java.util.List;
 import java.util.Set;
 import javax.inject.Inject;
+import javax.inject.Provider;
 import javax.inject.Singleton;
 
 /**
- * Function for printing an array type expression.
+ * Function for dynamically generating sanitized JS content within a soy template.
+ *
+ * <p>Usage:
+ * <pre><code>{dynamicJs('/** @param {' + $type + '}')}</code></pre>
  */
 @Singleton
-final class ArrayTypeFunction extends AbstractSoyJavaFunction {
-  @Inject ArrayTypeFunction() {}
+final class DynamicJsFunction extends AbstractSoyJavaFunction {
+  private final Provider<Builder> sfsBuilder;
+
+  @Inject
+  DynamicJsFunction(Provider<Builder> sfsBuilder) {
+    this.sfsBuilder = sfsBuilder;
+  }
 
   @Override
   public SoyValue computeForJava(List<SoyValue> args) {
-    String type = getStringArgument(args, 0);
-    return ordainAsSafe("!Array<" + type + ">", SanitizedContent.ContentKind.HTML);
+
+    return sfsBuilder.get()
+        .add(
+            "{namespace dossier.generate}"
+                + "{template .js kind=\"js\"}"
+                + "{literal}" + getStringArgument(args, 0)+ "{/literal}"
+                + "{/template}",
+            "<synthetic>")
+        .build()
+        .compileToTofu()
+        .newRenderer("dossier.generate.js")
+        .setContentKind(ContentKind.JS)
+        .renderStrict();
   }
 
   @Override

@@ -28,8 +28,11 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Provides;
+import com.google.inject.multibindings.Multibinder;
 import com.google.protobuf.Descriptors;
 import com.google.template.soy.SoyFileSet;
+import com.google.template.soy.data.SanitizedContent.ContentKind;
+import com.google.template.soy.shared.restricted.SoyFunction;
 import com.google.template.soy.tofu.SoyTofu;
 import com.google.template.soy.types.SoyTypeProvider;
 import com.google.template.soy.types.SoyTypeRegistry;
@@ -71,7 +74,9 @@ final class ProtoDescriptorsToJs {
     try (PrintWriter writer = new PrintWriter(Files.newOutputStream(output))) {
       tofu.newRenderer("dossier.soy.proto.render")
           .setData(ImmutableMap.of("data", data))
+          .setContentKind(ContentKind.JS)
           .render(writer);
+      writer.flush();
     }
   }
 
@@ -116,6 +121,11 @@ final class ProtoDescriptorsToJs {
         new AbstractModule() {
           @Override
           protected void configure() {
+            Multibinder<SoyFunction> binder = Multibinder.newSetBinder(binder(), SoyFunction.class);
+            binder.addBinding().to(DynamicJsFunction.class);
+            binder.addBinding().to(TypeNameFunction.class);
+            binder.addBinding().to(ToLowerCamelCaseFunction.class);
+            binder.addBinding().to(ToUpperCamelCaseFunction.class);
           }
 
           @Provides

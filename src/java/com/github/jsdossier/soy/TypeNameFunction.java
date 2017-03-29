@@ -17,11 +17,14 @@
 package com.github.jsdossier.soy;
 
 import com.google.common.collect.ImmutableSet;
+import com.google.template.soy.SoyFileSet.Builder;
+import com.google.template.soy.data.SanitizedContent.ContentKind;
 import com.google.template.soy.data.SoyValue;
 import com.google.template.soy.data.restricted.StringData;
 import java.util.List;
 import java.util.Set;
 import javax.inject.Inject;
+import javax.inject.Provider;
 import javax.inject.Singleton;
 
 /**
@@ -29,12 +32,26 @@ import javax.inject.Singleton;
  */
 @Singleton
 final class TypeNameFunction extends AbstractSoyJavaFunction {
-  @Inject TypeNameFunction() {}
+  private final Provider<Builder> sfsBuilder;
+
+  @Inject TypeNameFunction(Provider<Builder> sfsBuilder) {
+    this.sfsBuilder = sfsBuilder;
+  }
 
   @Override
   public SoyValue computeForJava(List<SoyValue> args) {
     String arg = getStringArgument(args, 0);
-    return StringData.forValue(arg.startsWith(".") ? arg.substring(1) : arg);
+    String type = arg.startsWith(".") ? arg.substring(1) : arg;
+    return sfsBuilder.get()
+        .add(
+            "{namespace dossier.generated}"
+                + "{template .type kind=\"js\"}proto." + type + "{/template}",
+            "<synthetic type name>")
+        .build()
+        .compileToTofu()
+        .newRenderer("dossier.generated.type")
+        .setContentKind(ContentKind.JS)
+        .renderStrict();
   }
 
   @Override

@@ -1,6 +1,6 @@
 {namespace dossier.soy.proto}
 
-{template .render}
+{template .render kind="js"}
   {@param data: list<[enum: google.protobuf.EnumDescriptorProto,
                       message: google.protobuf.DescriptorProto,
                       name: string]>}
@@ -196,13 +196,13 @@ pd.getSanitizedField_ = function(message, fieldNumber, deserializer) {
 {/template}
 
 
-{template .renderEnum}
+{template .renderEnum kind="js"}
   {@param descriptor: google.protobuf.EnumDescriptorProto}
   {@param name: string}
 
 {literal}
 /** @enum {number} */
-{/literal}proto.{$name}{literal} = {
+{/literal}{typeName($name)}{literal} = {
 {/literal}
 
 {foreach $value in $descriptor.valueList}
@@ -217,12 +217,12 @@ pd.getSanitizedField_ = function(message, fieldNumber, deserializer) {
 {/template}
 
 
-{template .renderMessage}
+{template .renderMessage kind="js"}
   {@param descriptor: google.protobuf.DescriptorProto}
   {@param name: string}
 
 {\n}
-proto.{$name}{literal} = class extends pd.Message_ {
+{typeName($name)}{literal} = class extends pd.Message_ {
   /** @param {Object=} opt_data */
   constructor(opt_data) {
     super(opt_data);
@@ -250,27 +250,26 @@ proto.{$name}{literal} = class extends pd.Message_ {
       {case google.protobuf.FieldDescriptorProto.Type.TYPE_BYTES}string
 
       {case google.protobuf.FieldDescriptorProto.Type.TYPE_STRING}string
-      {default}proto.{typeName($field.typeName)}
+      {default}{typeName($field.typeName)}
     {/switch}
   {/let}
 
   {let $isEnum: $field.type == google.protobuf.FieldDescriptorProto.Type.TYPE_ENUM /}
   {let $isRepeated: $field.label == google.protobuf.FieldDescriptorProto.Label.LABEL_REPEATED /}
-  {let $initData kind="html"}data = this.data_['{$field.number}'];{/let}
-  {let $returnType kind="html"}{if $isRepeated}{arrayType('!' + $type)}{else}{$type}{/if}{/let}
+  {let $initData kind="js"}data = this.data_['{$field.number}'];{/let}
+  {let $typeStr kind="text"}{if $isRepeated}!Array<!{$type}>{else}!{$type}{/if}{/let}
   {let $isMessage: $type != 'boolean' and $type != 'string' and $type != 'number' and not $isEnum /}
+  {let $accessorSuffix kind="text"}{toUpperCamelCase($field.name)}{if $isRepeated}List{/if}{/let}
 
 {literal}
-  /**
-   * @return {{/literal}{$returnType}{literal}}
-   */
-  get{/literal}{toUpperCamelCase($field.name)}{if $isRepeated}List{/if}{literal}() {
+  {/literal}{dynamicJs('/** @return {' + $typeStr + '} */')}{literal}
+  get{/literal}{dynamicJs($accessorSuffix)}{literal}() {
     {/literal}
     {if $isMessage}
       {if $isRepeated}
-        return pd.getMessageListField_(this, {$field.number}, data => new {$type}(data));
+        return pd.getMessageListField_(this, {$field.number}, data => new {typeName($field.typeName)}(data));
       {else}
-        return pd.getMessageField_(this, {$field.number}, data => new {$type}(data));
+        return pd.getMessageField_(this, {$field.number}, data => new {typeName($field.typeName)}(data));
       {/if}
     {elseif $isRepeated}
       return pd.getPrimitiveListField_(this, {$field.number});
@@ -278,17 +277,15 @@ proto.{$name}{literal} = class extends pd.Message_ {
       return pd.getPrimitiveField_(this, {$field.number},{sp}
       {if $type == 'boolean'}false
       {elseif $type == 'string'}''
-      {elseif $isEnum}{literal}/** @type {{/literal}{$type}{literal}} */{/literal}(0)
+      {elseif $isEnum}{dynamicJs('/** @type {' + $type + '} */')}(0)
       {else}0
       {/if});
     {/if}
 {literal}
   }
 
-  /**
-   * @param {{/literal}{$returnType}{literal}} value
-   */
-  set{/literal}{toUpperCamelCase($field.name)}{if $isRepeated}List{/if}{literal}(value) {
+  {/literal}{dynamicJs('/** @param {' + $typeStr + '} value */')}{literal}
+  set{/literal}{dynamicJs($accessorSuffix)}{literal}(value) {
     {/literal}
     {if $isRepeated or $isMessage}
       pd.setComplexField_(this, {$field.number}, value);
