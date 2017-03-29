@@ -17,7 +17,6 @@
 package com.github.jsdossier.jscomp;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Verify.verify;
 import static com.google.common.io.Files.getNameWithoutExtension;
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -157,7 +156,7 @@ public final class NodeLibrary {
     }
   }
 
-  private static ExternCollection loadCollection(Iterable<Path> paths) throws IOException {
+  private static ExternCollection loadCollection(ImmutableSet<Path> paths) throws IOException {
     Set<String> externIds = new HashSet<>();
     Map<String, SourceFile> modulesByPath = new HashMap<>();
     BiMap<String, String> modulePathsById = HashBiMap.create();

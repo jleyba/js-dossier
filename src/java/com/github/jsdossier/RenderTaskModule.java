@@ -37,7 +37,6 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.Callable;
 import java.util.stream.StreamSupport;
 import javax.inject.Qualifier;
 
@@ -138,7 +137,7 @@ final class RenderTaskModule extends AbstractModule {
   @SourceFileTasks
   List<RenderTask> provieSourceFileTasks(
       @SourceUrlTemplate Optional<String> template,
-      @Input Iterable<Path> sourceFiles,
+      @Input ImmutableSet<Path> sourceFiles,
       RenderSourceFileTaskFactory factory) {
     if (template.isPresent()) {
       return ImmutableList.of();

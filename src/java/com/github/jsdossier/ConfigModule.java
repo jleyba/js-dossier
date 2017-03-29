@@ -83,8 +83,6 @@ final class ConfigModule extends AbstractModule {
         .addAll(config.getSources())
         .addAll(config.getModules())
         .build();
-    // TODO(jleyba): Move uses to ImmutableSet<Path>
-    bind(new Key<Iterable<Path>>(Input.class) {}).toInstance(allInputs);
     bind(new Key<ImmutableSet<Path>>(Input.class) {}).toInstance(allInputs);
     bind(new Key<ImmutableSet<Path>>(Externs.class) {}).toInstance(config.getExterns());
     bind(new Key<ImmutableSet<Path>>(Modules.class) {}).toInstance(config.getModules());
