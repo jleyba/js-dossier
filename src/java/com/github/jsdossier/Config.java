@@ -372,7 +372,7 @@ abstract class Config {
     abstract ImmutableSet<Path> getModules();
     abstract Builder setModules(ImmutableSet<Path> paths);
     Builder setModules(Set<Path> paths) {
-      return setSources(ImmutableSet.copyOf(paths));
+      return setModules(ImmutableSet.copyOf(paths));
     }
 
     abstract Optional<Path> getSourcePrefix();
