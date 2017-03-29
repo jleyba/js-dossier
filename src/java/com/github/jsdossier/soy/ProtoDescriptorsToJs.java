@@ -64,7 +64,7 @@ final class ProtoDescriptorsToJs {
   }
 
   private void processFiles(Descriptors.FileDescriptor... files) throws IOException {
-    List<Object> data = new ArrayList<>();
+    List<Map<String, ?>> data = new ArrayList<>();
 
     for (Descriptors.FileDescriptor file : files) {
       collectEnumData(file.getEnumTypes(), data);
@@ -81,14 +81,14 @@ final class ProtoDescriptorsToJs {
   }
 
   private static void collectEnumData(
-      Iterable<Descriptors.EnumDescriptor> items, List<Object> data) {
+      Iterable<Descriptors.EnumDescriptor> items, List<Map<String, ?>> data) {
     for (Descriptors.EnumDescriptor item : items) {
       data.add(asRecord(item));
     }
   }
 
   private static void collectMessageData(
-      Iterable<Descriptors.Descriptor> items, List<Object> data) {
+      Iterable<Descriptors.Descriptor> items, List<Map<String, ?>> data) {
     for (Descriptors.Descriptor item : items) {
       data.add(asRecord(item));
       collectEnumData(item.getEnumTypes(), data);
