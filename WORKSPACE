@@ -174,6 +174,18 @@ maven_jar(
 
 maven_jar(
     name = "dossier_truth",
-    artifact = "com.google.truth:truth:0.30",
-    sha1 = "9d591b5a66eda81f0b88cf1c748ab8853d99b18b",
+    artifact = "com.google.truth:truth:0.32",
+    sha1 = "e996fb4b41dad04365112786796c945f909cfdf7",
+)
+
+maven_jar(
+    name = "dossier_truth_proto",
+    artifact = "com.google.truth.extensions:truth-proto-extension:0.32",
+    sha1 = "b3d8f4a713af63029511917bc8e2775d6256df18",
+)
+
+maven_jar(
+    name = "dossier_truth_liteproto",
+    artifact = "com.google.truth.extensions:truth-liteproto-extension:0.32",
+    sha1 = "f8bd960b1c5a8ff8a2d621fe20fff488beafd0ee",
 )

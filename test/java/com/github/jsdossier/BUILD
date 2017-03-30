@@ -2,11 +2,11 @@ load("/build_tools/java_test_suite", "java_test_suite")
 
 LIB_SRCS = [
     "AbstractTypeInspectorTest.java",
-    "ProtoTruth.java",
 ]
 
 java_library(
     name = "lib",
+    testonly = 1,
     srcs = LIB_SRCS,
     deps = [
         "//lib/maven:closure_compiler",
@@ -14,8 +14,8 @@ java_library(
         "//lib/maven:guice",
         "//lib/maven:inject",
         "//lib/maven:jimfs",
-        "//lib/maven:junit",
         "//lib/maven:jsr305",
+        "//lib/maven:junit",
         "//lib/maven:protobuf",
         "//lib/maven:safe_types",
         "//lib/maven:truth",
@@ -26,12 +26,14 @@ java_library(
         "//src/proto:java_proto",
         "//test/java/com/github/jsdossier/testing",
     ],
-    testonly = 1,
 )
 
 java_test_suite(
     name = "AllTests",
-    srcs = glob(["*.java"], exclude = LIB_SRCS),
+    srcs = glob(
+        ["*.java"],
+        exclude = LIB_SRCS,
+    ),
     resources = glob(["resources/**"]),
     deps = [
         ":lib",

@@ -16,8 +16,8 @@
 
 package com.github.jsdossier;
 
-import static com.github.jsdossier.ProtoTruth.assertMessage;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.truth.extensions.proto.ProtoTruth.assertThat;
 import static org.junit.Assert.assertEquals;
 
 import com.github.jsdossier.annotations.Input;
@@ -29,15 +29,13 @@ import com.github.jsdossier.testing.CompilerUtil;
 import com.github.jsdossier.testing.GuiceRule;
 import com.google.common.collect.Iterables;
 import com.google.javascript.jscomp.CompilerOptions;
+import java.nio.file.FileSystem;
+import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-
-import java.nio.file.FileSystem;
-
-import javax.inject.Inject;
 
 @RunWith(JUnit4.class)
 public class CommentParserTest {
@@ -54,8 +52,7 @@ public class CommentParserTest {
   @Inject @Input FileSystem fs;
   @Inject CompilerUtil util;
   @Inject CommentParser parser;
-  @Inject
-  TypeRegistry typeRegistry;
+  @Inject TypeRegistry typeRegistry;
   @Inject LinkFactoryBuilder linkFactoryBuilder;
 
   private LinkFactory linkFactory;
@@ -363,6 +360,6 @@ public class CommentParserTest {
     if (!text.endsWith("\n")) {
       text += "\n";
     }
-    assertMessage(token).isEqualTo(Comment.Token.newBuilder().setHtml(text));
+    assertThat(token).isEqualTo(Comment.Token.newBuilder().setHtml(text).build());
   }
 }

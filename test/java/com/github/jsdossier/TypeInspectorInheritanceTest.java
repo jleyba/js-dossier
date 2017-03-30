@@ -16,12 +16,13 @@
 
 package com.github.jsdossier;
 
-import static com.github.jsdossier.ProtoTruth.assertMessages;
 import static com.github.jsdossier.testing.CompilerUtil.createSourceFile;
+import static com.google.common.truth.extensions.proto.ProtoTruth.assertThat;
 
 import com.github.jsdossier.jscomp.NominalType;
 import com.github.jsdossier.proto.NamedType;
 import com.github.jsdossier.proto.TypeExpression;
+import com.google.common.truth.extensions.proto.IterableOfProtosSubject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -1041,28 +1042,35 @@ public class TypeInspectorInheritanceTest extends AbstractTypeInspectorTest {
             "export class B extends A {}"));
 
     NominalType a = typeRegistry.getType("module$$src$modules$one.A");
-    assertSubtypes(a).containsExactly(
+    assertSubtypes(a)
+        .containsExactly(
         TYPE_B.toBuilder()
             .setQualifiedName("three.B")
-            .setLink(typeLink("three_exports_B.html")),
+            .setLink(typeLink("three_exports_B.html"))
+            .build(),
         TYPE_B.toBuilder()
             .setQualifiedName("two.B")
-            .setLink(typeLink("two_exports_B.html")));
+            .setLink(typeLink("two_exports_B.html"))
+            .build());
   }
 
-  private ProtoTruth.MessageListSubject assertImplementedTypes(NominalType type) {
-    return assertMessages(typeInspectorFactory.create(type).getImplementedTypes());
+  private IterableOfProtosSubject<?, NamedType, Iterable<NamedType>> assertImplementedTypes(
+      NominalType type) {
+    return assertThat(typeInspectorFactory.create(type).getImplementedTypes());
   }
 
-  private ProtoTruth.MessageListSubject assertKnownImplementations(NominalType type) {
-    return assertMessages(typeInspectorFactory.create(type).getKnownImplementations());
+  private IterableOfProtosSubject<?, NamedType, Iterable<NamedType>> assertKnownImplementations(
+      NominalType type) {
+    return assertThat(typeInspectorFactory.create(type).getKnownImplementations());
   }
 
-  private ProtoTruth.MessageListSubject assertSubtypes(NominalType type) {
-    return assertMessages(typeInspectorFactory.create(type).getSubtypes());
+  private IterableOfProtosSubject<?, NamedType, Iterable<NamedType>> assertSubtypes(
+      NominalType type) {
+    return assertThat(typeInspectorFactory.create(type).getSubtypes());
   }
 
-  private ProtoTruth.MessageListSubject assertTypeHierarchy(NominalType type) {
-    return assertMessages(typeInspectorFactory.create(type).getTypeHierarchy());
+  private IterableOfProtosSubject<?, NamedType, Iterable<NamedType>> assertTypeHierarchy(
+      NominalType type) {
+    return assertThat(typeInspectorFactory.create(type).getTypeHierarchy());
   }
 }

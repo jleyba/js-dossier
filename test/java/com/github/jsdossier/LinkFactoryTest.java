@@ -16,9 +16,9 @@
 
 package com.github.jsdossier;
 
-import static com.github.jsdossier.ProtoTruth.assertMessage;
 import static com.github.jsdossier.testing.CompilerUtil.createSourceFile;
 import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.extensions.proto.ProtoTruth.assertThat;
 
 import com.github.jsdossier.annotations.Input;
 import com.github.jsdossier.jscomp.NominalType;
@@ -1956,7 +1956,7 @@ public class LinkFactoryTest {
             "foo.FilteredClass = class {};"));
 
     NamedType link = createFactory().resolveTypeReference("foo.FilteredClass");
-    assertMessage(link).isEqualTo(NamedType.newBuilder().setName("foo.FilteredClass"));
+    assertThat(link).isEqualTo(NamedType.newBuilder().setName("foo.FilteredClass").build());
   }
 
   private LinkFactory createFactory() {
@@ -1972,7 +1972,7 @@ public class LinkFactoryTest {
         .setPath(HtmlConversions.newSafeUrlProtoForTest(text))
         .setLine(line)
         .build();
-    assertMessage(link).isEqualTo(expected);
+    assertThat(link).isEqualTo(expected);
   }
 
   private static void checkLink(SourceLink link, String url, String text, int line) {
@@ -1981,7 +1981,7 @@ public class LinkFactoryTest {
         .setLine(line)
         .setUrl(SafeUrls.toProto(SafeUrls.sanitize(url)))
         .build();
-    assertMessage(link).isEqualTo(expected);
+    assertThat(link).isEqualTo(expected);
   }
 
   private static void checkLink(NamedType link, String text, String href) {
@@ -1989,7 +1989,7 @@ public class LinkFactoryTest {
     if (!href.isEmpty()) {
       expected.setLink(createLink(href));
     }
-    assertMessage(link).isEqualTo(expected.build());
+    assertThat(link).isEqualTo(expected.build());
   }
 
   private static void checkLink(NamedType link, String name, String qualifiedName, String href) {
@@ -1998,7 +1998,7 @@ public class LinkFactoryTest {
         .setQualifiedName(qualifiedName)
         .setLink(createLink(href))
         .build();
-    assertMessage(link).isEqualTo(expected);
+    assertThat(link).isEqualTo(expected);
   }
 
   private static TypeLink createLink(String href) {

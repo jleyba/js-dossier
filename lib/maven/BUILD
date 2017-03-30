@@ -190,7 +190,11 @@ java_library(
 java_library(
     name = "truth",
     testonly = 1,
-    exports = ["@dossier_truth//jar"],
+    exports = [
+        "@dossier_truth//jar",
+        "@dossier_truth_liteproto//jar",
+        "@dossier_truth_proto//jar",
+    ],
     runtime_deps = [
         ":guava",
         ":jsr305",
