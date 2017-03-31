@@ -30,12 +30,6 @@ const nav = goog.require('dossier.nav');
 const page = goog.require('dossier.page');
 const search = goog.require('dossier.search');
 
-// There is no way to specify additional goog.require statements for generated
-// soy code, so require this here to ensure it is loaded before needed by the
-// soy templates.
-/** @suppress {extraRequire} */
-goog.require('dossier.soyplugins');
-
 if (engine.isWebKit() && !browser.isChrome() && !browser.isOpera()) {
   // Tag the browser as webkit (not blink) so we can avoid some ugly
   // transitions in CSS

@@ -1,11 +1,4 @@
-load("/build_tools/js_binary", "js_binary")
-
-genrule(
-    name = "gen_proto_js",
-    outs = ["proto.dossier.js"],
-    tools = ["//src/java/com/github/jsdossier/soy:ProtoDescriptorsToJs"],
-    cmd = "$(location //src/java/com/github/jsdossier/soy:ProtoDescriptorsToJs) $@",
-)
+load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_binary", "closure_js_library")
 
 genrule(
     name = "gen_soy_js",
@@ -14,35 +7,30 @@ genrule(
         "nav.soy.js",
         "types.soy.js",
     ],
-    tools = ["//src/java/com/github/jsdossier/soy:GenerateSoyTemplates"],
     cmd = "$(location //src/java/com/github/jsdossier/soy:GenerateSoyTemplates) $(@D)",
+    tools = ["//src/java/com/github/jsdossier/soy:GenerateSoyTemplates"],
 )
 
-js_binary(
+closure_js_library(
+    name = "app_lib",
+    srcs = glob(["*js"]) + [
+        ":gen_soy_js",
+        "//src/proto:js_proto",
+        "//third_party/webutil/html/types/proto:js_proto",
+    ],
+    language = "ECMASCRIPT6_STRICT",
+    visibility = ["//visibility:private"],
+    deps = [
+        "@io_bazel_rules_closure//closure/library",
+        "@io_bazel_rules_closure//closure/protobuf:jspb",
+        "@io_bazel_rules_closure//closure/templates:soy_jssrc",
+    ],
+)
+
+closure_js_binary(
     name = "dossier",
-    srcs = [
-        ":gen_proto_js",
-        ":dossier.soy.js",
-        ":nav.soy.js",
-        ":types.soy.js",
-        "app.js",
-        "heap.js",
-        "main.js",
-        "nav.js",
-        "page.js",
-        "search.js",
-        "soyplugins.js",
-        "//third_party/js/soy:jspbconversions",
-        "//third_party/js/soy:soydata_converters",
-        "//third_party/js/soy:soyutils_usegoog",
-    ],
-    externs = [],
-    flags = [
-        "--charset=UTF-8",
-        "--compilation_level=ADVANCED_OPTIMIZATIONS",
-        "--define=goog.DEBUG=false",
-        "--manage_closure_dependencies",
-        "--closure_entry_point=dossier.main",
+    compilation_level = "ADVANCED",
+    defs = [
         "--jscomp_error=accessControls",
         "--jscomp_error=ambiguousFunctionDecl",
         "--jscomp_error=checkRegExp",
@@ -64,26 +52,29 @@ js_binary(
         "--jscomp_error=unknownDefines",
         "--jscomp_error=uselessCode",
         "--jscomp_error=visibility",
-        "--language_in=ECMASCRIPT6_STRICT",
-        "--language_out=ECMASCRIPT5_STRICT",
-        "--third_party=false",
-        "--output_wrapper=\\\"(function(){%output%;}).call(this);\\\"",
+        "--rewrite_polyfills=False",
     ],
+    dependency_mode = "STRICT",
+    entry_points = ["goog:dossier.main"],
+    language = "ECMASCRIPT5_STRICT",
+    output_wrapper = "(function(){%output%;}).call(this);",
+    pedantic = False,  # TODO: enable when es6 polyfills pass checks.
     visibility = ["//src/java/com/github/jsdossier:__pkg__"],
+    deps = [":app_lib"],
 )
 
-js_binary(
+closure_js_library(
+    name = "serviceworker_lib",
+    srcs = ["serviceworker/main.js"],
+    language = "ECMASCRIPT6_STRICT",
+    visibility = ["//visibility:private"],
+    deps = ["@io_bazel_rules_closure//closure/library"],
+)
+
+closure_js_binary(
     name = "serviceworker",
-    srcs = [
-        "serviceworker/main.js",
-    ],
-    externs = [],
-    flags = [
-        "--charset=UTF-8",
-        "--compilation_level=ADVANCED_OPTIMIZATIONS",
-        "--define=goog.DEBUG=false",
-        "--manage_closure_dependencies",
-        "--closure_entry_point=dossier.serviceworker.main",
+    compilation_level = "ADVANCED",
+    defs = [
         "--jscomp_error=accessControls",
         "--jscomp_error=ambiguousFunctionDecl",
         "--jscomp_error=checkRegExp",
@@ -105,9 +96,12 @@ js_binary(
         "--jscomp_error=unknownDefines",
         "--jscomp_error=uselessCode",
         "--jscomp_error=visibility",
-        "--language_in=ECMASCRIPT6_STRICT",
-        "--language_out=ECMASCRIPT5_STRICT",
-        "--third_party=false",
+        "--rewrite_polyfills=False",
     ],
+    dependency_mode = "STRICT",
+    entry_points = ["goog:dossier.serviceworker.main"],
+    language = "ECMASCRIPT5_STRICT",
+    pedantic = False,  # TODO: enable when es6 polyfills pass checks.
     visibility = ["//src/java/com/github/jsdossier:__pkg__"],
+    deps = [":serviceworker_lib"],
 )

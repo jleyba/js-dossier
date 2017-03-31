@@ -28,7 +28,6 @@ EOF
 
 run_jsc() {
   bazel build //src/js:all
-  write_deps
 }
 
 run_lessc() {
@@ -45,7 +44,6 @@ run_lessc() {
 
 run_tests() {
   bazel test //test/...
-  write_deps
 }
 
 write_deps() {

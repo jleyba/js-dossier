@@ -8,7 +8,7 @@ proto_library(
 
 java_proto_library(
     name = "proto_lib",
-    deps = [":proto"],
+    proto_deps = [":proto"],
 )
 
 java_test_suite(

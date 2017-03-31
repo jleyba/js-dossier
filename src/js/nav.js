@@ -19,6 +19,7 @@ goog.module('dossier.nav');
 const Arrays = goog.require('goog.array');
 const Index = goog.require('proto.dossier.Index');
 const KeyCodes = goog.require('goog.events.KeyCodes');
+const Message = goog.require('jspb.Message');
 const NamedType = goog.require('proto.dossier.expression.NamedType');
 const dom = goog.require('goog.dom');
 const events = goog.require('goog.events');
@@ -66,7 +67,7 @@ function buildTree(entries, opt_modules) {
   let allEntries = new Set;
 
   /**
-   * @type {!Array<{parent: (Index.Entry|undefined),
+   * @type {!Array<{parent: (?Index.Entry|undefined),
    *                fakeEntry: !Index.Entry,
    *                childIndex: number}>}
    */
@@ -168,7 +169,7 @@ function buildTree(entries, opt_modules) {
       } else {
         entriesToResort.add(fakeEntry);
         entriesToResort.delete(child);
-        Index.Entry.merge(fakeEntry, child);
+        Message.copyInto(child, fakeEntry);
       }
     }
   }

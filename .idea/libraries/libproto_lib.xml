@@ -4,6 +4,8 @@
       <root url="jar://$PROJECT_DIR$/bazel-bin/test/java/com/github/jsdossier/soy/libproto_lib.jar!/" />
     </CLASSES>
     <JAVADOC />
-    <SOURCES />
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/bazel-genfiles/test/java/com/github/jsdossier/soy/proto_lib_src.srcjar!/" />
+    </SOURCES>
   </library>
 </component>

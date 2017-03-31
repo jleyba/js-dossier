@@ -10,6 +10,17 @@ http_file(
   sha256 = "2cea7b1acb86671362f7aa554a21b907d18de70b15ad1f68e72ad2b50502920e",
 )
 
+http_archive(
+    name = "io_bazel_rules_closure",
+    strip_prefix = "rules_closure-0.4.1",
+    sha256 = "ba5e2e10cdc4027702f96e9bdc536c6595decafa94847d08ae28c6cb48225124",
+    url = "http://bazel-mirror.storage.googleapis.com/github.com/bazelbuild/rules_closure/archive/0.4.1.tar.gz",
+)
+
+load("@io_bazel_rules_closure//closure:defs.bzl", "closure_repositories")
+
+closure_repositories()
+
 maven_jar(
     name = "dossier_aopalliance",
     artifact = "aopalliance:aopalliance:1.0",

@@ -2,8 +2,12 @@
   <library name="libjava_proto">
     <CLASSES>
       <root url="jar://$PROJECT_DIR$/bazel-bin/src/proto/libjava_proto.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bazel-bin/third_party/webutil/html/types/proto/libjava_proto.jar!/" />
     </CLASSES>
     <JAVADOC />
-    <SOURCES />
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/bazel-genfiles/third_party/webutil/html/types/proto/java_proto_src.srcjar!/" />
+      <root url="jar://$PROJECT_DIR$/bazel-genfiles/src/proto/java_proto_src.srcjar!/" />
+    </SOURCES>
   </library>
 </component>

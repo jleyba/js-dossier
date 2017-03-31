@@ -159,11 +159,12 @@ class DataService {
  * @param {boolean=} opt_replaceHistory
  */
 function recordSnapshot(snapshot, title, url, opt_replaceHistory) {
-  window.sessionStorage.setItem(snapshot.getId(), JSON.stringify(snapshot));
+  let array = snapshot.toArray();
+  window.sessionStorage.setItem(snapshot.getId(), JSON.stringify(array));
   if (opt_replaceHistory) {
-    window.history.replaceState(snapshot.toJSON(), title, url);
+    window.history.replaceState(array, title, url);
   } else {
-    window.history.pushState(snapshot.toJSON(), title, url);
+    window.history.pushState(array, title, url);
   }
 }
 
@@ -198,7 +199,7 @@ class HistoryService extends EventTarget {
   }
 
   installPopstateListener() {
-    window.onpopstate = (/** Event */ e) => {
+    window.onpopstate = (/** ?Event */ e) => {
       let state = e ? e.state : null;
       if (goog.isArray(state)) {
         let snapshot = new PageSnapshot(/** @type {!Array} */(state));
@@ -265,7 +266,7 @@ class Application {
       return snapshot;
     });
 
-    /** @private {Promise<!PageData>} */
+    /** @private {?Promise<!PageData>} */
     this.pendingLoad_ = null;
 
     /**
@@ -483,7 +484,7 @@ class Application {
 
   /**
    * @param {!PageData} data the data to render.
-   * @param {PageSnapshot} snapshot The snapshot this page is being updated
+   * @param {?PageSnapshot} snapshot The snapshot this page is being updated
    *     from, if any.
    * @param {string=} opt_path the page path to save in page history. If
    *     omitted, history will not be updated.

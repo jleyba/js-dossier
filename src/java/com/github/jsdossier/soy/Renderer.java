@@ -45,6 +45,8 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Iterator;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.inject.Inject;
 
 /**
@@ -131,11 +133,23 @@ public class Renderer {
 
     options.setShouldGenerateGoogModules(true);
 
+    Pattern googModulePattern = Pattern.compile("(goog\\.module\\('.*'\\);)");
+    String missingContent =
+        "\n/** @suppress {extraRequire} */\n"
+            + "goog.require('dossier.soyplugins');\n"
+            + "/** @suppress {extraRequire} */\n"
+            + "goog.require('goog.soy.data.SanitizedContent');\n";
+
     Iterator<Path> files = ImmutableList.of(
         outputDir.resolve("dossier.soy.js"),
         outputDir.resolve("nav.soy.js"),
         outputDir.resolve("types.soy.js")).iterator();
     for (String string : fileSet.compileToJsSrc(options, null)) {
+      Matcher matcher = googModulePattern.matcher(string);
+      if (matcher.find()) {
+        string = matcher.replaceFirst("$1\n" + missingContent);
+      }
+
       Path file = files.next();
       Files.write(file, string.getBytes(StandardCharsets.UTF_8));
     }

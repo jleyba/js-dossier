@@ -1,1 +1,1 @@
-build --strategy=Javac=worker  --javacopt="-extra_checks:off"
+build --strategy=Javac=worker --strategy=Closure=worker  --javacopt="-extra_checks:off"
