@@ -16,24 +16,23 @@
 
 goog.module('dossier.app');
 
-const page = goog.require('dossier.page');
-const search = goog.require('dossier.search');
-const {mainPageContent, pageTitle} = goog.require('dossier.soy');
-const Promise = goog.require('goog.Promise');
-const array = goog.require('goog.array');
-const asserts = goog.require('goog.asserts');
-const dom = goog.require('goog.dom');
-const events = goog.require('goog.events');
 const EventTarget = goog.require('goog.events.EventTarget');
 const KeyCodes = goog.require('goog.events.KeyCodes');
-const xhr = goog.require('goog.labs.net.xhr');
-const soy = goog.require('goog.soy');
-const {getRandomString} = goog.require('goog.string');
-const style = goog.require('goog.style');
-const userAgent = goog.require('goog.userAgent');
 const Link = goog.require('proto.dossier.Link');
 const PageData = goog.require('proto.dossier.PageData');
 const PageSnapshot = goog.require('proto.dossier.state.PageSnapshot');
+const Promise = goog.require('goog.Promise');
+const array = goog.require('goog.array');
+const dom = goog.require('goog.dom');
+const events = goog.require('goog.events');
+const page = goog.require('dossier.page');
+const search = goog.require('dossier.search');
+const soy = goog.require('goog.soy');
+const style = goog.require('goog.style');
+const userAgent = goog.require('goog.userAgent');
+const xhr = goog.require('goog.labs.net.xhr');
+const {getRandomString} = goog.require('goog.string');
+const {mainPageContent, pageTitle} = goog.require('dossier.soy');
 
 
 /**
@@ -243,7 +242,7 @@ class HistoryService extends EventTarget {
 class Application {
   /**
    * @param {!DataService} dataService Service used to load JSON data files.
-   * @param {!dossier.search.SearchBox} searchBox The search box widget to use.
+   * @param {!search.SearchBox} searchBox The search box widget to use.
    * @param {!dossier.nav.NavDrawer} navDrawer The nav drawer widget to use.
    * @param {!Element} mainEl The main content element.
    */
@@ -270,7 +269,7 @@ class Application {
     this.pendingLoad_ = null;
 
     /**
-     * @type {!dossier.search.SearchBox}
+     * @type {!search.SearchBox}
      * @const
      */
     this.searchBox = searchBox;
@@ -338,7 +337,7 @@ class Application {
   /**
    * Focuses the search box.
    *
-   * @param {!goog.events.BrowserEvent=} opt_e The browser event this action is
+   * @param {!events.BrowserEvent=} opt_e The browser event this action is
    *     in response to. If provided, the event's propagation will be cancelled.
    */
   focusSearchBox(opt_e) {
@@ -391,7 +390,7 @@ class Application {
     }
   }
 
-  onKeyDown(/** !goog.events.BrowserEvent */e) {
+  onKeyDown(/** !events.BrowserEvent */e) {
     if (this.searchBox.isActive) {
       return;
     }
@@ -650,7 +649,7 @@ class Application {
  * Runs the main application.
  *
  * @param {!proto.dossier.Index} typeIndex The main type index.
- * @param {!dossier.search.SearchBox} searchBox The search box widget to use.
+ * @param {!search.SearchBox} searchBox The search box widget to use.
  * @param {!dossier.nav.NavDrawer} navDrawer The nav drawer widget to use.
  * @throws {Error} if the application has already been started.
  */

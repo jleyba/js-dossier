@@ -20,20 +20,18 @@
 
 goog.module('dossier.search');
 
-const Heap = goog.require('dossier.Heap');
-const page = goog.require('dossier.page');
-const asserts = goog.require('goog.asserts');
-const events = goog.require('goog.events');
-const EventTarget = goog.require('goog.events.EventTarget');
-const EventType = goog.require('goog.events.EventType');
-const googString = goog.require('goog.string');
 const AutoComplete = goog.require('goog.ui.ac.AutoComplete');
+const Entry = goog.require('proto.dossier.Index.Entry');
+const EventTarget = goog.require('goog.events.EventTarget');
+const Heap = goog.require('dossier.Heap');
+const Index = goog.require('proto.dossier.Index');
 const InputHandler = goog.require('goog.ui.ac.InputHandler');
 const Renderer = goog.require('goog.ui.ac.Renderer');
-const userAgent = goog.require('goog.userAgent');
-const Index = goog.require('proto.dossier.Index');
-const Entry = goog.require('proto.dossier.Index.Entry');
+const events = goog.require('goog.events');
+const googString = goog.require('goog.string');
+const page = goog.require('dossier.page');
 const unpackProtoToSanitizedUri = goog.require('soydata.unpackProtoToSanitizedUri');
+const userAgent = goog.require('goog.userAgent');
 
 goog.forwardDeclare('goog.ui.ac.RenderOptions');
 
@@ -237,12 +235,12 @@ exports.SelectionEvent = class {
 
 /**
  * Widget for controlling the top navigation bar's search box.
+ * @private
  */
 class SearchBox extends EventTarget {
   /**
    * @param {!Map<string, string>} nameToUri Map of search term to URI.
    * @param {!Element} formEl The form element containing the input element.
-   * @private
    */
   constructor(nameToUri, formEl) {
     super();
@@ -275,7 +273,7 @@ class SearchBox extends EventTarget {
   }
 
   /**
-   * @param {!goog.events.Event} e the event to respond to.
+   * @param {!events.Event} e the event to respond to.
    * @private
    */
   onUpdate_(e) {

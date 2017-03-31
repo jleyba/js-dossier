@@ -16,19 +16,15 @@
 
 goog.module('dossier.nav');
 
-const page = goog.require('dossier.page');
-const soyNav = goog.require('dossier.soy.nav');
 const Arrays = goog.require('goog.array');
-const asserts = goog.require('goog.asserts');
+const Index = goog.require('proto.dossier.Index');
+const KeyCodes = goog.require('goog.events.KeyCodes');
+const NamedType = goog.require('proto.dossier.expression.NamedType');
 const dom = goog.require('goog.dom');
 const events = goog.require('goog.events');
-const KeyCodes = goog.require('goog.events.KeyCodes');
-const browser = goog.require('goog.labs.userAgent.browser');
-const device = goog.require('goog.labs.userAgent.device');
+const page = goog.require('dossier.page');
 const soy = goog.require('goog.soy');
-const Index = goog.require('proto.dossier.Index');
-const NamedType = goog.require('proto.dossier.expression.NamedType');
-const SanitizedHtml = goog.require('soydata.SanitizedHtml');
+const soyNav = goog.require('dossier.soy.nav');
 
 
 function sortEntries(/** !Array<!Index.Entry> */entries) {
@@ -310,7 +306,7 @@ class NavDrawer {
   /**
    * Handles a keyboard event on the side nav pane.
    *
-   * @param {!goog.events.BrowserEvent} e The browser event.
+   * @param {!events.BrowserEvent} e The browser event.
    */
   handleKeyEvent(e) {
     if (!this.isOpen || e.type !== 'keydown') {
@@ -349,7 +345,7 @@ class NavDrawer {
   /**
    * Handles click events on the nav drawer.
    *
-   * @param {!goog.events.BrowserEvent} e .
+   * @param {!events.BrowserEvent} e .
    * @private
    */
   onClick_(e) {
@@ -373,8 +369,7 @@ const NAV_ITEM_HEIGHT = 45;
 /**
  * Creates the side nav drawer widget.
  *
- * @param {!proto.dossier.Index} typeInfo The type information to build the list
- *     from.
+ * @param {!Index} typeInfo The type information to build the list from.
  * @param {string} currentFile The path to the file that loaded this script.
  * @param {string} basePath The path to the main index file.
  * @return {!NavDrawer} The created nav drawer widget.

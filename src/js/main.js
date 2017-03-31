@@ -22,18 +22,19 @@
 
 goog.module('dossier.main');
 
-// There is no way to specify additional goog.require statements for generated
-// soy code, so require this here to ensure it is loaded before needed by the
-// soy templates.
-goog.require('dossier.soyplugins');
-
+const Index = goog.require('proto.dossier.Index');
 const app = goog.require('dossier.app');
+const browser = goog.require('goog.labs.userAgent.browser');
+const engine = goog.require('goog.labs.userAgent.engine');
 const nav = goog.require('dossier.nav');
 const page = goog.require('dossier.page');
 const search = goog.require('dossier.search');
-const browser = goog.require('goog.labs.userAgent.browser');
-const engine = goog.require('goog.labs.userAgent.engine');
-const Index = goog.require('proto.dossier.Index');
+
+// There is no way to specify additional goog.require statements for generated
+// soy code, so require this here to ensure it is loaded before needed by the
+// soy templates.
+/** @suppress {extraRequire} */
+goog.require('dossier.soyplugins');
 
 if (engine.isWebKit() && !browser.isChrome() && !browser.isOpera()) {
   // Tag the browser as webkit (not blink) so we can avoid some ugly
